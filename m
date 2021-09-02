@@ -2,170 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1773FE765
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E763FE76C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232910AbhIBCIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 22:08:51 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:51394 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229871AbhIBCIs (ORCPT
+        id S233114AbhIBCJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 22:09:42 -0400
+Received: from mail-oln040093003004.outbound.protection.outlook.com ([40.93.3.4]:39453
+        "EHLO outbound.mail.eo.outlook.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232517AbhIBCJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 22:08:48 -0400
-X-UUID: e8559baf59a24602a2fe04415c5369d0-20210902
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=vlceq4ZSRrI3NsqXyY4IeOxTjhqftckEq9WQnY9jq08=;
-        b=i+2nV3L7zqcDqF8aRC//gisZAgG9tBWRdpk/EFIZThHFfhCg2M4BzCdK8qMbHtL+kZ5ePSPH+rV9MZh0XPoD1VygDHHa5/CsFbDuC0p83yVqoBJDslEegt42shuNFMCSTO+ZPd/7WpoeZ5I/zaa/pthtzbXp4tKSfAmbsw24Ll4=;
-X-UUID: e8559baf59a24602a2fe04415c5369d0-20210902
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <jianjun.wang@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 44523773; Thu, 02 Sep 2021 10:07:49 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 2 Sep 2021 10:07:47 +0800
-Received: from APC01-HK2-obe.outbound.protection.outlook.com (172.21.101.239)
- by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
- 15.2.792.3 via Frontend Transport; Thu, 2 Sep 2021 10:07:47 +0800
+        Wed, 1 Sep 2021 22:09:40 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jGMepEREq8+CkCCdKRbetJWpJVQd5K0s/VDDNaWiIx8cnI23SHDORQiLjWc0AqIwVKOu2fLPN2CXRRPl4Tuc3Mp7D2KjdGWkFv1v0fwIRArcE0x1+hyHxnWVDPANj+lSrPsSnyDmamMEng1p5LZUAqU1yLGOyYM7GZ5Drm5bYA7dGh+7LrSIbJa4mGCx76YKcAeXaAOklvrSiFJoZBl7GETU3ZZZYAtbk++tlNhSClxUYlX/TDy6e10nVGegUAhF2BRT8McGA2mTL6X4T4kB/k587LOe7aDaUT2j3MH5hUIPR9V4qgiuEfdkuLHuk+jqjxICDj2sldyNMt1xUH1zVA==
+ b=IUpSChkKBWMqyiukbEC8IxJNip992xfSXG5TmpQZhkTvCM/aDZMzscsPteLJxO9Z+5nnAwfCHVRJ2W0YK/xFtjDjwHurm+0Uoqtr6zVSPfMdiMi6cSkgOZkktBCMP8rEmFLNUaWJ2Dhp7THgrZYlneAqfo9iUKClaU0aHvP1AmlX3TXvz93tpYlHU/qOF6/hlZFIwPYBV7ek4LskPSoO3CPFQvILuX9vbB3Zbp+hxpChe0+AufmBZ5o6B+FBxq9NEGICdotV83xIIWBC64c6PrUYihGmPpQEwMmJhcJtqBnnwvbmXJY6CGbXFBAY1rdoHC5K+nZ+RhLtZij0t2NT7Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=vlceq4ZSRrI3NsqXyY4IeOxTjhqftckEq9WQnY9jq08=;
- b=YtgeYNi84HFRalGBFh8I5NHlniUOkmnY6lUbue6YZ9pdDCAz9DRX+0ymcDOnzELaJxPa8i4iiL6GvSC36xFJO08AKMccES4HubCT/0+C5zqtLI4Z025fYZXueGYEVmL85ya5yJXStGMie+HQm4gH8InlYNNq4Hred0GgqHK8FlFlJUrqR6maPUolftm7tHWUUKh0ckUqXy5vXMhFczg7OEgYcnkQifum0+YJpTFWm9dTFvjkE2kg/hxRqO+tEAiPM2sUyPoWB2Uh4JKE+/AC2mqV4+dBBs4d5kAqd+zgZBiRqdn0SPr3b7lGwcXs8UfQoR7UBzJrKLmAxsWUMR/iGA==
+ bh=m8Z4zZgDo/ng30TsOukCORL2mWs0iQjFTdzvLSYEXk8=;
+ b=j3uJ/vgN2Svy1/0rRfkdPjkX3676/Ve/pCQkW24hZX2cQlqfjygR2sWm6x9pTpyd/XcmeLGdWLTF+9XdRWXSrHmrmRKXNRiIpyX8sH81E5g2zkeOIQqEanzEwbrslp+dKshg/BmJ/bhCENBW4Vz9E1KcigFSaLX90cGresqjzboZ4X1nTRmGBYJQnQDEfcQbAdE6tGxM1l7KMRhs43sQkkktASolHwV/KUNZ4JC07adFBSl020syB2TBtyEkp/uLGjdjYd5Ds9bgq9aDxTDkXVrAReL86MfBx9lPiT8heE/mPlRzU24k276JY4geouUHknOK91hgN4/lTs/Zk4rzWw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vlceq4ZSRrI3NsqXyY4IeOxTjhqftckEq9WQnY9jq08=;
- b=nOf7SRjW8ZYL0pLbXsdpVKC+2BJmiLkHqKIe1F38vu5s3HLfp6Eq7ie1YUsOUEzZ/UWMxO07gVQt7GxU8hHEhksw1lhjU/KupGAVFe5Q7+M4wzJWXqSDJfolgNlQW7t5B8Xeu2OJrqFmChl4zdJOJQEe39Jb2bFv5KhJUwFMZ1I=
-Received: from PSAPR03MB5365.apcprd03.prod.outlook.com (2603:1096:301:17::5)
- by PU1PR03MB2762.apcprd03.prod.outlook.com (2603:1096:803:17::17) with
+ bh=m8Z4zZgDo/ng30TsOukCORL2mWs0iQjFTdzvLSYEXk8=;
+ b=bd/JOGRzT95HRhvOUNcHOfelq5cct9xFQv9lwJCNx7oSiw34v9MsYGLbyVgS39nixvvJ8lcvmPh920F5WnTGKtg3zCvRIW/DKiesmXiXZ80gITl9JyjYcJHTfA5qIhgnqZS859ZT4dw1V+ArSVbyybPU+uOdhKiAKbZdBI1rOf8=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by CO2PR21MB3009.namprd21.prod.outlook.com (2603:10b6:102:18::25) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.14; Thu, 2 Sep
- 2021 02:07:35 +0000
-Received: from PSAPR03MB5365.apcprd03.prod.outlook.com
- ([fe80::3d11:979f:9b79:dcbb]) by PSAPR03MB5365.apcprd03.prod.outlook.com
- ([fe80::3d11:979f:9b79:dcbb%6]) with mapi id 15.20.4478.019; Thu, 2 Sep 2021
- 02:07:34 +0000
-From:   =?utf-8?B?Smlhbmp1biBXYW5nICjnjovlu7rlhpsp?= 
-        <Jianjun.Wang@mediatek.com>
-To:     "robh+dt@kernel.org" <robh+dt@kernel.org>
-CC:     "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.4; Thu, 2 Sep
+ 2021 02:08:38 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::3c8b:6387:cd5:7d86]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::3c8b:6387:cd5:7d86%8]) with mapi id 15.20.4478.014; Thu, 2 Sep 2021
+ 02:08:38 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Tianyu Lan <ltykernel@gmail.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>, "hch@lst.de" <hch@lst.de>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "pgonda@google.com" <pgonda@google.com>,
+        "martin.b.radev@gmail.com" <martin.b.radev@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
+        "saravanand@fb.com" <saravanand@fb.com>,
         "linux-arm-kernel@lists.infradead.org" 
         <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        =?utf-8?B?UnlkZXIgTGVlICjmnY7luproq7op?= <Ryder.Lee@mediatek.com>,
-        =?utf-8?B?VGluZ0hhbiBTaGVuICjmsojlu7fnv7Ap?= 
-        <TingHan.Shen@mediatek.com>,
-        =?utf-8?B?UmV4LUJDIENoZW4gKOmZs+afj+i+sCk=?= 
-        <Rex-BC.Chen@mediatek.com>
-Subject: Re: [PATCH v2] dt-bindings: PCI: mediatek-gen3: Add support for
- MT8195
-Thread-Topic: [PATCH v2] dt-bindings: PCI: mediatek-gen3: Add support for
- MT8195
-Thread-Index: AQHXmusBSJDNQKcBAkqOkyDyEySVGKuMOwYAgAPLvYA=
-Date:   Thu, 2 Sep 2021 02:07:34 +0000
-Message-ID: <36c66b737afa96563be128d822f862eea5839dcb.camel@mediatek.com>
-References: <20210827022638.3573-1-jianjun.wang@mediatek.com>
-         <CAL_JsqJTW=ot=BBWQfOj9rJ82dnVV21TpHGf3vieUQ_Jd8i9Rg@mail.gmail.com>
-In-Reply-To: <CAL_JsqJTW=ot=BBWQfOj9rJ82dnVV21TpHGf3vieUQ_Jd8i9Rg@mail.gmail.com>
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "ardb@kernel.org" <ardb@kernel.org>
+CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>
+Subject: RE: [PATCH V4 13/13] hv_storvsc: Add Isolation VM support for storvsc
+ driver
+Thread-Topic: [PATCH V4 13/13] hv_storvsc: Add Isolation VM support for
+ storvsc driver
+Thread-Index: AQHXm2gLgD2LnlrK1Ui6MWEQREt+OKuIA2QQ
+Date:   Thu, 2 Sep 2021 02:08:38 +0000
+Message-ID: <MWHPR21MB1593CB6AD9521190CA0AB0DED7CE9@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210827172114.414281-1-ltykernel@gmail.com>
+ <20210827172114.414281-14-ltykernel@gmail.com>
+In-Reply-To: <20210827172114.414281-14-ltykernel@gmail.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=mediatek.com;
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=f3fb0eb4-3fe0-4fc3-9520-c93e315d7a42;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-08-27T23:41:48Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0fa596e5-5766-492d-01a8-08d96db66de2
-x-ms-traffictypediagnostic: PU1PR03MB2762:
-x-ld-processed: a7687ede-7a6b-4ef6-bace-642f677fbe31,ExtAddr
+x-ms-office365-filtering-correlation-id: 6ea2dd65-3c0f-43cb-0521-08d96db693fe
+x-ms-traffictypediagnostic: CO2PR21MB3009:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <PU1PR03MB27629F8EA0054DDD07E5A81FE7CE9@PU1PR03MB2762.apcprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <CO2PR21MB30092A47D1401DE9FFD4B0BDD7CE9@CO2PR21MB3009.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2449;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9m2HNaC/7GkDs6G+RBaThZv4LpL7Yw6hdyhrWBL+N85ibpKcmNcOvGOMqIPwAKpbaPuZExdGVCWy5C+lcUm3JWCdUdK5ZE3EKIf1Zzv4NQbQq0qpEiyN7F7HP2B9PADoAsWIHby1hU+G2hE/2S7yn5z4evlY7OFMnvsBABB9eVfBLJ0cPG7BdskNhi5rnWLEzBSfyJKjd24E0YhX9xJpDWrplnIO3B0E8kmGU8PQY5cL0LUHaJZlwlRGz5RJf8baEq/ZGfGk4CEoyuo3qfdv5b1Hh65XTMJzeOb0RGQIf3O5mHzA6q0RXyNLlGPsAI9KQ1NaEDWSQ7KsFUN2MFBqmP/XI9WSC0D/PMTl1rMblIGx48b4+rG7iERDZXQAE0fjyQwqv6lWZPmX9JM/4P2AXHFeSMLE1uPFKKZhwiSbMGUesRdlMKAstVeRlHgyqyExh8ue7IbJ6waVyWF49TF2C0aqngpPnBzeVUC96nB16vLsu/Pj3Ygf+bS96nT25zfMRLa6NUwZnnw07gEuQ8AKGbIDh9eazcI5DdrGUnjaefpebnOjmyGpw/JjG7eEoA50hltDA9ZvtwpwpejGOJOk2e5g9KjNPrPkj1K4GV8Wk6ngyhioOoOLL06r9Sr7xL8xmxvOGg0mkeCpDTv7d/qv8xJowD8KcLC9AnZQSZPly6Sren8FHRxRg6U0zKuDsw+XIsIu4sRecR50uy3I/mi7DA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PSAPR03MB5365.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(376002)(396003)(366004)(64756008)(26005)(36756003)(2906002)(54906003)(85182001)(4326008)(66446008)(83380400001)(8936002)(122000001)(186003)(6486002)(5660300002)(66556008)(316002)(76116006)(38070700005)(66476007)(2616005)(53546011)(6506007)(38100700002)(71200400001)(478600001)(91956017)(6512007)(107886003)(66946007)(86362001)(8676002);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: ndTLqZdHuCSzY96whS6o3zQp5pWBl/+LPOxouGx7MvdNaYKuKvaFNQwUMEMZfwmHr4jOi6oWBYiz3uNN1AIyg7MhnWomwEL0ihAtK7DvmJFI1pwN23oEItvoA9pfELcTzjHqzto7bCclgTX/tL8m2FVSWS9DznLZ6SL5bED36RZkXCgWoZ61O2xsYrmNK2BYGQJZqTbGKL8JnYl6a1VckOlhVdTcP0kloEzheeMPbCao6ltZge2w3RTnxLv22Ap1BXZKd5XelSzST1sQ2afXyEbqeK+gHzbQeItQFBGpcdjBoy4bU1Ou2Bzw2Ywm9ZmzAgYWhsQCsjwaUgtTmad6fEEO8kOVFKE3mNsXM/zB9yvCObJ1w3dqn7fesYfaweLGMdsWkx80wNt87AjQS+VuaML7txbgbnsj9Sh1pTWE8BQru7dwe3i+e4HyJQSi9RzvoqBvVNbd+n2Wn64j2hrkR7K0QiRW25kzFfeWGwxqIrxhyQ00KRYF8fVPVWDn1zrJUc2GjpQdJuUvR6pQ0ibrmPBeMJgLnb2KDAC0KCTMtEsB1uXDSF1BfkvUnPbYlQv3iq1KsDsPYIHFz7oKMnTKE2KvuGVD8tYcxf/YQdJAN3jNDLQWWp1ORhABKivtbremVstJAU2ihezQYo77y3CPHdlF81y59pgSoKUtaskzqrOzL8EWJtkpNf0UmCBSDzCuYTmwjdSI/nxE35dzdARuaGYoiP+gfuPjhNpq6jMqsI8=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(82950400001)(82960400001)(4326008)(186003)(76116006)(316002)(8990500004)(110136005)(66476007)(83380400001)(7406005)(7416002)(7366002)(66946007)(66556008)(64756008)(66446008)(54906003)(6506007)(9686003)(55016002)(122000001)(26005)(2906002)(52536014)(921005)(86362001)(71200400001)(5660300002)(38070700005)(7696005)(8676002)(8936002)(38100700002)(508600001)(33656002)(10290500003);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?L1ZkWnFZMDZENjdQYlRrUlo5MEM4MVFRNng4UGVPUkJrVTMzQW5Ic2xRcDFR?=
- =?utf-8?B?WFVROEw3c1ZlVDRHZ2Q5a1Q2MmtVcjY4RWdwQ2VWR3JLUE5UaUhWekRZM2Nw?=
- =?utf-8?B?emczL0lRSHFCZ2RPcXAxdjdnTElxQXRZOVlBcUFQUUhSZzFIVTZ1S2xFS3Z6?=
- =?utf-8?B?RlRPeWdqSldBeTRJSTl2WmJhWVNXR0hBMmRVdGp2QWpvbkFDemxiRkJsc2ta?=
- =?utf-8?B?THB6SjhZR04vYmJ2TUl2cXdWTnFRdnBDWW1TSEZHdy9FMW1jUENjZmh0Wmxu?=
- =?utf-8?B?S2JMb2VkS2lmQnMvd2pOZlFxRmh2OHFpdWNrOURLeTZwbXdiWjVMcVgxU290?=
- =?utf-8?B?eUtFMi93SWdnczVvN01JclF5QTBJRFpUdWM2REI3aStjeCtwVXBWRDdjOGNs?=
- =?utf-8?B?S2pCOXRSNG8xNmNsRWlRMHJsYnRTM0VxaTJYN3JhYS9QWTg0MmlmY0NTSnJt?=
- =?utf-8?B?dUI1ZTFSSjhGY1NJeVN4U09ZSUlRZWNIYTBQdDBXT0g0RTdVM3NjUmlCZEJT?=
- =?utf-8?B?ejJSOXM2am9PM016V1AzU2xGOURwTDVycWJYU2hDQlZyRjFTbzZQbnZtaVlk?=
- =?utf-8?B?YmlTV09taXpXUnc2bE1KcDhRcDVCRnFyWGlrbHZEajFzcmtMMXBDK0RCd3pv?=
- =?utf-8?B?cm56MkNVNzlpSytacm5nOEFIUnR0bWs0c1dwRnVsSWhjaXZlbUJWbVFTbGxy?=
- =?utf-8?B?K2RTbERpcDRFcGNNWm95dFZDQkZRM0RkNnZwV2tEUCtORjNPQ3dRT1RjMys1?=
- =?utf-8?B?RVNZdU1NNyt3LzlJNnF4bllHUXpxNkhqdmFoVlVaWkF6Z1pSWTY2VkZpSzdY?=
- =?utf-8?B?VVRJOVJVRzE4MFE1aWVJaGlnMkdXUDU2eDcza3dTdXhBTVp2QzkvajU1RzVZ?=
- =?utf-8?B?R3djR0JOR1pDdEFqNUNUUGs4S1VsdjlPTDRvNmg5Zkh5M0I5MHA4OGF5eWRv?=
- =?utf-8?B?ZDRGNEplbVhickZuMS85QzJTTk5lbXJqbktDOXZRb245Vmw0S1MzUzltMmMz?=
- =?utf-8?B?WE10WGhqdi85c04vWldYN0NlUmUyeWE1allITCs0aktRSXN0TVI3bnRwVUV6?=
- =?utf-8?B?U3JFNzU1cG5LZnl2cUxDM0NoQUVwazNKQkpHVzJaa3NwdHF1S09ZeHcxa0Yr?=
- =?utf-8?B?a1FFdm9BVnlQaEhCdFJ3SVAza1ZLQWgvZ3F2d2VUYnRuZVRIbDAxNkdpUnF6?=
- =?utf-8?B?UXYwcnFoSUc1S2F6TnpTd3FjRUtrYTROK2tNQy9adkZicjNuV0x2anEwTnVh?=
- =?utf-8?B?OGhtbS84am5nU0I5eUtYeENLMVZ0NkxObkU2TFRSWkZxell3czlBWEdxazNt?=
- =?utf-8?B?L3dQUHlra3cxNng0MkhnRVZMakRlRnl4RmVEWVB0czJSSy8xakd6bEVjRngr?=
- =?utf-8?B?bzVkajRLUXh6VlBMQzVNNWtubGRuclVQbFZEN0RPMDdtaElraXl6SEtEbVdS?=
- =?utf-8?B?SUpxcEFpWXJtRXFyQnh0aTV3Mkw4RmRHbGRhR3FxNVNWcStNOXFjTnpuS2tw?=
- =?utf-8?B?cUx3K1c1V3gzMFBPZUhyOWFLV29UL3l0cDEvbUNrR29EYnVNcWt1enZuQ1VB?=
- =?utf-8?B?YnJFZld6b09FZ1U0RG9pclluTkZ0NGJudGo2eno1VGg1WHlvZjNxa2FPdXR1?=
- =?utf-8?B?cWlNVFJNVnl3bk92eFlmS0J1MzBMcElXWExIVHdFWmNTYXZHQTZndGs5TjFW?=
- =?utf-8?B?RVo4Q1RCclJ5eU5mQk05Y2lEbUR3L1Z3NW55TFhUKzZWUVMyK3NMUXl2bnh1?=
- =?utf-8?Q?I9+vEp1SGAc7nRnNQNJfotS2Plw+LZaYfXPNxfx?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <CC18FF469CC0FB4782AACA8E6CC5B104@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?DolnhatuDAmIAaAz1/YX4Nu77VLxLJi5Z5u3+A6UHOQkEZWqwmLzr6hkf5h6?=
+ =?us-ascii?Q?mVAM7sfILM0sb62t/FIdI2R41We7PR+TF1q7yPx6JbgXnRJQjOGD7e6VAlL0?=
+ =?us-ascii?Q?VYlx3oYPMhMWiZoMNmNhSz2nfZTsTT/s8eRHAg5yZtQHCyQJGnBRXvLo2ZT0?=
+ =?us-ascii?Q?zllaDQdkxQxV7ukn+Bt6fJgbkj8n2gr1b/uO4SQXC7NISFP1EyxCgQ6JQ7Fc?=
+ =?us-ascii?Q?jV4VmCJP8+JQNgbqAyardqPmpig/GBcw/1UqOeybTfbfoSVxOsatsZERTnP5?=
+ =?us-ascii?Q?UxSKKL6MuvTM5sTNREAIy2bYLBDu4U0OhiPvTlUJpnYMfyXYNKH267zIFzCM?=
+ =?us-ascii?Q?PldhdohAzJfsYI0h6w2kOSo7q8IBiuWm+zf+aaRpA9PB7MlLaixaNGZcU4lE?=
+ =?us-ascii?Q?gjYWnJJoud5x0cHcwyYxq8sUexK1uweGy3v6UEKjsTVj/m4FyZ2vXqirFf4H?=
+ =?us-ascii?Q?JkbMuFrXswddWR1K8OpAK1204L0MPy5x9yuzN7+maWBfL+enrzX3W+tzdxs4?=
+ =?us-ascii?Q?f/1SdBIJEDEM3OYuR9P/7zhpNhHDIL++WxG8hrWBN7w3IkOCRGlCO0rUW/hX?=
+ =?us-ascii?Q?E1kEuquD99AvKjJK+AGHbABnEfuVNY3viHqFns4Yx0N3O29ES8uVUvwVSY/q?=
+ =?us-ascii?Q?+l3hpQlfW1lBAVS/zySdayy9k4GLK6ubKQfh9vHhnx7ccUqzzuw5w18Pgs3W?=
+ =?us-ascii?Q?VRTWWM2CMj5YA1zbaCKGqvuXdOyY0XYRog8BcGfUdaczLPsyPQCLGNqwQGU2?=
+ =?us-ascii?Q?AqEnxtXliDQDWBFJSrNj/c1k911nSNH4BGyPKYlT4zHgcDL+97I4sJ2OoBp9?=
+ =?us-ascii?Q?KyBj4U1Du4CbFvWCafngd6ltxm1/GKtYyAEZrP7Qya5gxRfabpq2pmyMcAmf?=
+ =?us-ascii?Q?lbXmuOj9wMIO2kVGMbHqdvd2octK5nt3V+7yNs2wI876Xq7lDMRF2Gee7USb?=
+ =?us-ascii?Q?ZpRrKueEWAIPyLJKQ26Kj/f8msXqtX6JMPvdt0iunoCn5X0YJwFET5D9eDn8?=
+ =?us-ascii?Q?GWtR1tpnTxey2vk4daEsB2DBReKe8Hj20zwcaezjVCEwUo7/evMJ4lxdeSv2?=
+ =?us-ascii?Q?9pmAy+NcK9mp0y78xdFmLKyXxk82K2vRtiOA7SxTlAFsleQE4DHwPMte4tfC?=
+ =?us-ascii?Q?kN+9LxsXMpZ8Z1qM7k5Pf/nedS/xTbiRCsjqmXAwwMjgPtQKTgPVY3xLtLjT?=
+ =?us-ascii?Q?bybW5G1aOMa+Vf7yWoRXHxa/Ha4Sans5gAcg2zsEFAIyoTy4qGFChbOT0mGz?=
+ =?us-ascii?Q?CiPjKJ3SsfvxpRmVUTLDus/nOnN6kdsW79nDuLhkSL3No277Wu/5FMMUS18+?=
+ =?us-ascii?Q?+15h35tJ4UXVtGV1HnHg+BNj?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PSAPR03MB5365.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0fa596e5-5766-492d-01a8-08d96db66de2
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2021 02:07:34.3116
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ea2dd65-3c0f-43cb-0521-08d96db693fe
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2021 02:08:38.0541
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yvveNF3UXyJjX3KDCUjTZskCHCSPL1+8oPOVmEhHXJ0Yn+OTNxCbeTitW6PC8KEDAz0ADAM05XcTBk+q4s3zzyD5rn4+wSBxltZNR1P187c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PU1PR03MB2762
+X-MS-Exchange-CrossTenant-userprincipalname: tXT0bjcyirvjVG/opzOIdPJBrRMiRaNV9Y9VlcCS+iP2p9aRelS7uwRI97sbYAJCtJayrUXtfu+t7qPz3kutGOq/HYyGfA8POko7JlWeOqw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO2PR21MB3009
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIxLTA4LTMwIGF0IDExOjAyIC0wNTAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
-T24gVGh1LCBBdWcgMjYsIDIwMjEgYXQgOToyNiBQTSBKaWFuanVuIFdhbmcgPA0KPiBqaWFuanVu
-LndhbmdAbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPiANCj4gPiBNVDgxOTUgaXMgYW4gQVJNIHBs
-YXRmb3JtIFNvQyB3aGljaCBoYXMgdGhlIHNhbWUgUENJZSBJUCB3aXRoDQo+ID4gTVQ4MTkyLg0K
-PiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IEppYW5qdW4gV2FuZyA8amlhbmp1bi53YW5nQG1lZGlh
-dGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L3BjaS9tZWRpYXRlay1wY2llLWdlbjMueWFtbCB8IDQNCj4gPiArKystDQo+ID4gIDEgZmlsZSBj
-aGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gPiANCj4gPiBkaWZmIC0t
-Z2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9tZWRpYXRlay1wY2ll
-LQ0KPiA+IGdlbjMueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wY2kv
-bWVkaWF0ZWstcGNpZS0NCj4gPiBnZW4zLnlhbWwNCj4gPiBpbmRleCA3NDIyMDZkYmQ5NjUuLjkz
-ZTA5YzMwMjliNyAxMDA2NDQNCj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvcGNpL21lZGlhdGVrLXBjaWUtZ2VuMy55YW1sDQo+ID4gKysrIGIvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3BjaS9tZWRpYXRlay1wY2llLWdlbjMueWFtbA0KPiA+IEBA
-IC00OCw3ICs0OCw5IEBAIGFsbE9mOg0KPiA+IA0KPiA+ICBwcm9wZXJ0aWVzOg0KPiA+ICAgIGNv
-bXBhdGlibGU6DQo+ID4gLSAgICBjb25zdDogbWVkaWF0ZWssbXQ4MTkyLXBjaWUNCj4gPiArICAg
-IGVudW06DQo+ID4gKyAgICAgIC0gbWVkaWF0ZWssbXQ4MTkyLXBjaWUNCj4gPiArICAgICAgLSBt
-ZWRpYXRlayxtdDgxOTUtcGNpZQ0KPiANCj4gSSB0aG91Z2h0IHlvdSB3YW50ZWQgdG8gc3VwcG9y
-dCA4MTkyIGFzIHRoZSBmYWxsYmFjazoNCj4gDQo+IGNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4
-MTk1LXBjaWUiLCAibWVkaWF0ZWssbXQ4MTkyLXBjaWUiOw0KPiANCj4gVGhlIGFib3ZlIHNjaGVt
-YSBkb2Vzbid0IGFsbG93IHRoaXMuDQo+IA0KPiBSb2INCg0KSGkgUm9iLA0KDQpZZXMsIEkgd2Fu
-dCB0aGlzIGZhbGxiYWNrIHRvIHN1cHBvcnQgTVQ4MTk1LCBidXQgdGhlcmUgYXJlIHNvbWUgdW4t
-DQpkb2N1bWVudGVkIHdhcm5pbmdzIGlmIEkgZG9uJ3QgYWRkIGl0cyBjb21wYXRpYmxlIHN0cmlu
-ZyB0byB0aGUgeWFtbA0KZmlsZS4NCg0KRG8geW91IGhhdmUgYW55IHN1Z2dlc3Rpb25zIGluIHRo
-aXMgY2FzZT8NCg0KVGhhbmtzLg0K
+From: Tianyu Lan <ltykernel@gmail.com> Sent: Friday, August 27, 2021 10:21 =
+AM
+>=20
+
+Per previous comment, the Subject line tag should be "scsi: storvsc: "
+
+> In Isolation VM, all shared memory with host needs to mark visible
+> to host via hvcall. vmbus_establish_gpadl() has already done it for
+> storvsc rx/tx ring buffer. The page buffer used by vmbus_sendpacket_
+> mpb_desc() still needs to be handled. Use DMA API(dma_map_sg) to map
+> these memory during sending/receiving packet and return swiotlb bounce
+> buffer dma address. In Isolation VM, swiotlb  bounce buffer is marked
+> to be visible to host and the swiotlb force mode is enabled.
+>=20
+> Set device's dma min align mask to HV_HYP_PAGE_SIZE - 1 in order to
+> keep the original data offset in the bounce buffer.
+>=20
+> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+> ---
+> Change since v3:
+> 	* Rplace dma_map_page with dma_map_sg()
+> 	* Use for_each_sg() to populate payload->range.pfn_array.
+> 	* Remove storvsc_dma_map macro
+> ---
+>  drivers/hv/vmbus_drv.c     |  1 +
+>  drivers/scsi/storvsc_drv.c | 41 +++++++++++++++-----------------------
+>  include/linux/hyperv.h     |  1 +
+>  3 files changed, 18 insertions(+), 25 deletions(-)
+>=20
+> diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+> index f068e22a5636..270d526fd9de 100644
+> --- a/drivers/hv/vmbus_drv.c
+> +++ b/drivers/hv/vmbus_drv.c
+> @@ -2124,6 +2124,7 @@ int vmbus_device_register(struct hv_device *child_d=
+evice_obj)
+>  	hv_debug_add_dev_dir(child_device_obj);
+>=20
+>  	child_device_obj->device.dma_mask =3D &vmbus_dma_mask;
+> +	child_device_obj->device.dma_parms =3D &child_device_obj->dma_parms;
+>  	return 0;
+>=20
+>  err_kset_unregister:
+> diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
+> index 328bb961c281..4f1793be1fdc 100644
+> --- a/drivers/scsi/storvsc_drv.c
+> +++ b/drivers/scsi/storvsc_drv.c
+> @@ -21,6 +21,8 @@
+>  #include <linux/device.h>
+>  #include <linux/hyperv.h>
+>  #include <linux/blkdev.h>
+> +#include <linux/dma-mapping.h>
+> +
+>  #include <scsi/scsi.h>
+>  #include <scsi/scsi_cmnd.h>
+>  #include <scsi/scsi_host.h>
+> @@ -1312,6 +1314,9 @@ static void storvsc_on_channel_callback(void *conte=
+xt)
+>  					continue;
+>  				}
+>  				request =3D (struct storvsc_cmd_request *)scsi_cmd_priv(scmnd);
+> +				if (scsi_sg_count(scmnd))
+> +					dma_unmap_sg(&device->device, scsi_sglist(scmnd),
+> +						     scsi_sg_count(scmnd), scmnd->sc_data_direction);
+
+Use scsi_dma_unmap(), which does exactly what you have written
+above. :-)
+
+>  			}
+>=20
+>  			storvsc_on_receive(stor_device, packet, request);
+> @@ -1725,7 +1730,6 @@ static int storvsc_queuecommand(struct Scsi_Host *h=
+ost, struct scsi_cmnd *scmnd)
+>  	struct hv_host_device *host_dev =3D shost_priv(host);
+>  	struct hv_device *dev =3D host_dev->dev;
+>  	struct storvsc_cmd_request *cmd_request =3D scsi_cmd_priv(scmnd);
+> -	int i;
+>  	struct scatterlist *sgl;
+>  	unsigned int sg_count;
+>  	struct vmscsi_request *vm_srb;
+> @@ -1807,10 +1811,11 @@ static int storvsc_queuecommand(struct Scsi_Host =
+*host, struct scsi_cmnd *scmnd)
+>  	payload_sz =3D sizeof(cmd_request->mpb);
+>=20
+>  	if (sg_count) {
+> -		unsigned int hvpgoff, hvpfns_to_add;
+>  		unsigned long offset_in_hvpg =3D offset_in_hvpage(sgl->offset);
+>  		unsigned int hvpg_count =3D HVPFN_UP(offset_in_hvpg + length);
+> -		u64 hvpfn;
+> +		struct scatterlist *sg;
+> +		unsigned long hvpfn, hvpfns_to_add;
+> +		int j, i =3D 0;
+>=20
+>  		if (hvpg_count > MAX_PAGE_BUFFER_COUNT) {
+>=20
+> @@ -1824,31 +1829,16 @@ static int storvsc_queuecommand(struct Scsi_Host =
+*host, struct scsi_cmnd *scmnd)
+>  		payload->range.len =3D length;
+>  		payload->range.offset =3D offset_in_hvpg;
+>=20
+> +		if (dma_map_sg(&dev->device, sgl, sg_count,
+> +		    scmnd->sc_data_direction) =3D=3D 0)
+> +			return SCSI_MLQUEUE_DEVICE_BUSY;
+>=20
+> -		for (i =3D 0; sgl !=3D NULL; sgl =3D sg_next(sgl)) {
+> -			/*
+> -			 * Init values for the current sgl entry. hvpgoff
+> -			 * and hvpfns_to_add are in units of Hyper-V size
+> -			 * pages. Handling the PAGE_SIZE !=3D HV_HYP_PAGE_SIZE
+> -			 * case also handles values of sgl->offset that are
+> -			 * larger than PAGE_SIZE. Such offsets are handled
+> -			 * even on other than the first sgl entry, provided
+> -			 * they are a multiple of PAGE_SIZE.
+> -			 */
+
+Any reason not to keep this comment?  It's still correct and
+mentions important cases that must be handled.
+
+> -			hvpgoff =3D HVPFN_DOWN(sgl->offset);
+> -			hvpfn =3D page_to_hvpfn(sg_page(sgl)) + hvpgoff;
+> -			hvpfns_to_add =3D	HVPFN_UP(sgl->offset + sgl->length) -
+> -						hvpgoff;
+> +		for_each_sg(sgl, sg, sg_count, j) {
+
+There's a subtle issue here in that the number of entries in the
+mapped sgl might not be the same as the number of entries prior
+to the mapping.  A change in the count probably never happens for
+the direct DMA mapping being done here, but let's code to be
+correct in the general case.  Either need to refetch the value of
+sg_count, or arrange to use something like for_each_sgtable_dma_sg().
+
+> +			hvpfns_to_add =3D HVPFN_UP(sg_dma_len(sg));
+
+This simplification in calculating hvpnfs_to_add is not correct.  Consider
+the case of one sgl entry specifying a buffer of 3 Kbytes that starts at a
+2K offset in the first page and runs over into the second page.  This case
+can happen when the physical memory for the two pages is contiguous
+due to random happenstance, due to huge pages, or due to being on an
+architecture like ARM64 where the guest page size may be larger than
+the Hyper-V page size.
+
+In this case, we need two Hyper-V PFNs because the buffer crosses a
+Hyper-V page boundary.   But the above will calculate only one PFN.
+The original algorithm handles this case correctly.
+
+> +			hvpfn =3D HVPFN_DOWN(sg_dma_address(sg));
+>=20
+> -			/*
+> -			 * Fill the next portion of the PFN array with
+> -			 * sequential Hyper-V PFNs for the continguous physical
+> -			 * memory described by the sgl entry. The end of the
+> -			 * last sgl should be reached at the same time that
+> -			 * the PFN array is filled.
+> -			 */
+
+Any reason not to keep this comment?  It's still correct.
+
+>  			while (hvpfns_to_add--)
+> -				payload->range.pfn_array[i++] =3D	hvpfn++;
+> +				payload->range.pfn_array[i++] =3D hvpfn++;
+>  		}
+>  	}
+>=20
+> @@ -1992,6 +1982,7 @@ static int storvsc_probe(struct hv_device *device,
+>  	stor_device->vmscsi_size_delta =3D sizeof(struct vmscsi_win8_extension)=
+;
+>  	spin_lock_init(&stor_device->lock);
+>  	hv_set_drvdata(device, stor_device);
+> +	dma_set_min_align_mask(&device->device, HV_HYP_PAGE_SIZE - 1);
+>=20
+>  	stor_device->port_number =3D host->host_no;
+>  	ret =3D storvsc_connect_to_vsp(device, storvsc_ringbuffer_size, is_fc);
+> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+> index 139a43ad65a1..8f39893f8ccf 100644
+> --- a/include/linux/hyperv.h
+> +++ b/include/linux/hyperv.h
+> @@ -1274,6 +1274,7 @@ struct hv_device {
+>=20
+>  	struct vmbus_channel *channel;
+>  	struct kset	     *channels_kset;
+> +	struct device_dma_parameters dma_parms;
+>=20
+>  	/* place holder to keep track of the dir for hv device in debugfs */
+>  	struct dentry *debug_dir;
+> --
+> 2.25.1
+
