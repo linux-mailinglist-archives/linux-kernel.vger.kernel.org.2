@@ -2,79 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A753FF5C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9808E3FF5CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347527AbhIBVrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:47:40 -0400
-Received: from www62.your-server.de ([213.133.104.62]:48642 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244085AbhIBVrj (ORCPT
+        id S1347535AbhIBVsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347526AbhIBVsM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:47:39 -0400
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mLuXP-000GF4-02; Thu, 02 Sep 2021 23:46:23 +0200
-Received: from [85.5.47.65] (helo=linux-3.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1mLuXO-0006U6-KK; Thu, 02 Sep 2021 23:46:22 +0200
-Subject: Re: [syzbot] bpf build error (3)
-To:     syzbot <syzbot+8a8ba69ec56c60331e1f@syzkaller.appspotmail.com>,
-        akpm@linux-foundation.org, ast@kernel.org, bp@alien8.de,
-        hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
-        netdev@vger.kernel.org, rafael.j.wysocki@intel.com,
-        rppt@kernel.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, x86@kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Konrad Rzeszutek Wilk <konrad@kernel.org>,
-        Maurizio Lombardi <mlombard@redhat.com>,
-        Mike Rapoport <rppt@linux.ibm.com>, andrii.nakryiko@gmail.com
-References: <000000000000d0dfda05cb0697d7@google.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <d85f7e26-9b37-d682-d15a-0224b8c5e8c1@iogearbox.net>
-Date:   Thu, 2 Sep 2021 23:46:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Thu, 2 Sep 2021 17:48:12 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB98C061575;
+        Thu,  2 Sep 2021 14:47:13 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id r7so5061751edd.6;
+        Thu, 02 Sep 2021 14:47:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qcG+HyKA1Y8i+Z2Jw3IqzPhdrYZ9oVs7LkF6xRpI/6w=;
+        b=Jx21egLuzS9P61dWMI1/PuMwpnMGqcgecpJ5XF1P4gj/NXBWr/OKEzAPe7ksXFBUUw
+         5BTKMAT9ohV3RMh0iNkpclriES5lI/arIzig+aqNib1gMg5LhDTiBgSbCoGS9xsEUUxM
+         EglEqcSl2wt0VPhNLoB8WM9cnZpM3yO+DEEAxIoV7jQzypH1td+pllkbQcGI+stM/0WR
+         hx2zzrfKKXZlGke/fSmQQpYzEhXuukvGraUVpUDlVEV9FbEkGjYG1JlJyovppisuBr4Q
+         Dpmbw3ECbPDxQD0x2W5B2hjD3PC4RZThrd/dd4cFKGXxWiYWLxyQuKL2sWAZt+rF0V0z
+         Hl2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qcG+HyKA1Y8i+Z2Jw3IqzPhdrYZ9oVs7LkF6xRpI/6w=;
+        b=sCQ0JM1NMIWO26LPcCl3anqHDRfcfFa9rOdesG0MAM1x/mmFXosSPTcNGvaLPwH2py
+         ux1UcX7vIcVbTKSV/Yxfk76Yc4DAEv79l3BluWXvrmJZUypzwlPtPBN6e2pTL5huxiGs
+         w0M1FYNpuo9kYh4rFHDFfY7eQOs1bJO1A9GFxOacHml+BfQcLmLbBVx8F6eoLqNre81a
+         wkbJ59hp+qLsRlTx+GMZm3o3UjXP4YuCD5lni0ixWBdlffNxlzlHgvIV0OFXj/u7IPs4
+         YODDqwKMN4iaruDeTphofNlE2nRppNqnlzFO/rc62GDKuFrb/qxnxKbQZj9WFlViPUiM
+         lkfg==
+X-Gm-Message-State: AOAM5323XxOdgYEX/EaDEvAdLwt7BEHKun4ga0PY1qkvXuxEuXgeHuvW
+        RKCVUiZDuUb6eU9vV4wufZE=
+X-Google-Smtp-Source: ABdhPJxuwlAiNA8w5FFSvXCjj3DJwEcBxEIliMZILWUv3xB6CSvXbe7IdxpdKcF7TXQFcRvgrjOWTw==
+X-Received: by 2002:a05:6402:1d05:: with SMTP id dg5mr415159edb.375.1630619232325;
+        Thu, 02 Sep 2021 14:47:12 -0700 (PDT)
+Received: from localhost.localdomain ([188.252.220.158])
+        by smtp.googlemail.com with ESMTPSA id h7sm1888331edr.4.2021.09.02.14.47.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 14:47:11 -0700 (PDT)
+From:   Robert Marko <robimarko@gmail.com>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robimarko@gmail.com>
+Subject: [PATCH] arm64: dts: qcom: ipq8074: add SMEM support
+Date:   Thu,  2 Sep 2021 23:47:08 +0200
+Message-Id: <20210902214708.1776690-1-robimarko@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <000000000000d0dfda05cb0697d7@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26282/Thu Sep  2 10:22:04 2021)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/21 7:34 PM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    49ca6153208f bpf: Relicense disassembler as GPL-2.0-only O..
-> git tree:       bpf
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17835513300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=bd61edfef9fa14b1
-> dashboard link: https://syzkaller.appspot.com/bug?extid=8a8ba69ec56c60331e1f
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+8a8ba69ec56c60331e1f@syzkaller.appspotmail.com
-> 
-> arch/x86/kernel/setup.c:916:6: error: implicit declaration of function 'acpi_mps_check' [-Werror=implicit-function-declaration]
-> arch/x86/kernel/setup.c:1110:2: error: implicit declaration of function 'acpi_table_upgrade' [-Werror=implicit-function-declaration]
-> arch/x86/kernel/setup.c:1112:2: error: implicit declaration of function 'acpi_boot_table_init' [-Werror=implicit-function-declaration]
-> arch/x86/kernel/setup.c:1120:2: error: implicit declaration of function 'early_acpi_boot_init'; did you mean 'early_cpu_init'? [-Werror=implicit-function-declaration]
-> arch/x86/kernel/setup.c:1162:2: error: implicit declaration of function 'acpi_boot_init' [-Werror=implicit-function-declaration]
+IPQ8074 uses SMEM like other modern QCA SoC-s, so since its already
+supported by the kernel add the required DT nodes.
 
-See also Stephen's recent report:
+Signed-off-by: Robert Marko <robimarko@gmail.com>
+---
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi | 28 +++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-   https://lore.kernel.org/lkml/20210901165450.5898f1c7@canb.auug.org.au/
+diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+index a620ac0d0b19..83e9243046aa 100644
+--- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+@@ -82,6 +82,29 @@ scm {
+ 		};
+ 	};
+ 
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		smem_region: memory@4ab00000 {
++			no-map;
++			reg = <0x0 0x4ab00000 0x0 0x00100000>;
++		};
++	};
++
++	tcsr_mutex: hwlock {
++		compatible = "qcom,tcsr-mutex";
++		syscon = <&tcsr_mutex_regs 0 0x80>;
++		#hwlock-cells = <1>;
++	};
++
++	smem {
++		compatible = "qcom,smem";
++		memory-region = <&smem_region>;
++		hwlocks = <&tcsr_mutex 0>;
++	};
++
+ 	soc: soc {
+ 		#address-cells = <0x1>;
+ 		#size-cells = <0x1>;
+@@ -293,6 +316,11 @@ gcc: gcc@1800000 {
+ 			#reset-cells = <0x1>;
+ 		};
+ 
++		tcsr_mutex_regs: syscon@1905000 {
++			compatible = "syscon";
++			reg = <0x01905000 0x8000>;
++		};
++
+ 		sdhc_1: sdhci@7824900 {
+ 			compatible = "qcom,sdhci-msm-v4";
+ 			reg = <0x7824900 0x500>, <0x7824000 0x800>;
+-- 
+2.31.1
 
-Maurizio/Konrad, did you have a chance to take a look?
-
-Thanks,
-Daniel
