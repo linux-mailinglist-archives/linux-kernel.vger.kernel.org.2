@@ -2,110 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E78BD3FF55D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F3F3FF55E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346901AbhIBVJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56936 "EHLO
+        id S1346837AbhIBVJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:09:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346696AbhIBVJH (ORCPT
+        with ESMTP id S1347003AbhIBVJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:09:07 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2B8C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:08:08 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id b10so4301215ioq.9
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:08:08 -0700 (PDT)
+        Thu, 2 Sep 2021 17:09:14 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9523C061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:08:15 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id d5so2265631pjx.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:08:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QNlvKyocSbzCvO9CW/S4ozdKVMf5jmvLtYdfRVLUT7M=;
-        b=HVStBy/xTTuVL0VzYJJW66/jAWAr/V7lfgEHeKg6iwJ02uaEz6Dc8TIqj9Kq/I0sSJ
-         3itc1L722n6PfmlUXy+vMKnGA0weFwpA5jvORhsCJzNFjsQGSnP+pqzL0lqxvepcLH8J
-         oFCQPo9L2ibV8EesfKMiiBkVrBA45JJjpG6K4=
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Jsw+0RVz7kftEoRLavLgOo4GczdDf7aQJBZW/qWLrRg=;
+        b=ka0Oj+PjP0myE0BToQV3XzncczscdjeGITakU0uoU2xiaHRnNeILJeuczOtmgz8P3d
+         yELQU2R4mfWM6643HaIjUfniTIpSJxo/F9D5mn3sdXlFCPSzXAreDXb8K6ISu2KZa+qG
+         WDcLvcG886JSY82qWMOSgbV7LrkN4stezqeSrPQdwsT0SOvAM0ui0At1yu1ppDDVIPct
+         Gks8lW3uWkq2Fo/CmTq3VYOXdsKtfsdN4uWP/UDdBNk7XJhQzSlZnNBUtMIcxNNCb8u6
+         CAY0wu82mF3SVke9rBAdhzNcDXGln2trGkSCi6UU5tZb0sH1VG9I7P4jbl2JXowUoVlk
+         MFVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QNlvKyocSbzCvO9CW/S4ozdKVMf5jmvLtYdfRVLUT7M=;
-        b=hG6IO2gvdXWI2T0Q8oQxfo3jAfkRqcVGSzJVPC6mfG905taUWVNzpFo7+Yv4ULIlQP
-         rBIqNLzOY2a8CD0tNv1iqxqmtVCfOlIRFWSAd+5YDgAbjbAet+jHR6Lx5YUOnM7Gm8xj
-         EbyOOR+jht7cq3w7/URG9oYgxYjwx2s5LUwrHv4RY3nyMm/DgkUeTpxPndPqMbmP4XkK
-         bPpvidiT9XlvqfugxBlj1JDnaCDvChTzFshohrNQsZ3KLDtivHqhlQq0sVSqhVV1RHGu
-         Gf9Smpf+KMW8rYrdpoYZMS1RT0u622qSoIHJCxEGFL9I+6Kc4q5d+utYXVlAPRwKzxbE
-         jB2Q==
-X-Gm-Message-State: AOAM531ihhV7K3+N1I3Oq1R/GfQaNhWM9WzIiLQ0DodXwLDA81GMMeWx
-        BD9AMXCEMy0xqYVxWX4mJclh9Q==
-X-Google-Smtp-Source: ABdhPJwiMeCAqGbdJpdasKrAHyVZ+PwegE7nTHtqLYwVSFDWz29O+UKflzZ0URqfHKgBLoRUOmd1gA==
-X-Received: by 2002:a05:6638:1646:: with SMTP id a6mr215464jat.27.1630616887436;
-        Thu, 02 Sep 2021 14:08:07 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id c11sm1469438ilo.57.2021.09.02.14.08.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 14:08:06 -0700 (PDT)
-Subject: Re: [PATCH] selftests/gpio: Fix gpio compiling error
-To:     Li Zhijian <lizhijian@cn.fujitsu.com>, bamv2005@gmail.com,
-        shuah@kernel.org, linux-gpio@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Philip Li <philip.li@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210902084635.103622-1-lizhijian@cn.fujitsu.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <22f8bef6-a399-8579-b73a-5c6b96dd6145@linuxfoundation.org>
-Date:   Thu, 2 Sep 2021 15:08:06 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Jsw+0RVz7kftEoRLavLgOo4GczdDf7aQJBZW/qWLrRg=;
+        b=AkkgVff4yUlGs1OtxpMYvK4T2eSg/p93LtP/KsWlVptu1JaEV9nF4Nct+mrBD1hs9l
+         qMcKc59OOwKqOTni5EHHJet3BK0ObbAy6tZ69ZNVdeRTh2crFnJGKvkLrShnvv7jU2ii
+         waJ/6hqP+c2tKt7vV41PWkYPOTmkgzFVtRJF/Or1foz0i5MRLWBDGDTYLMqKbdzgPhjJ
+         3Qx1kvr+/qQCYpSrApTjVN18iQp4Eus0KGCOZn9v3QhF6aQEhd7KMx379VfRnFTd45ca
+         5TYH1vDiIHats9UJE1au0K6zkD71t93VBPxVlu4O7WCW/0HYE6s07LT6JAWeUIleJFKl
+         8wMA==
+X-Gm-Message-State: AOAM532hG94qL/6kfsYKtlJIbXcrPmyKxo8OD82dEtu65wEvfc7Y8XrB
+        HSQxverV/hwOaD2eQUyy1r7tfA==
+X-Google-Smtp-Source: ABdhPJyGGdSHjvZNith8nn/rlOSbpsGt4FmNaUkcIVgELS/5Et4dd93zq81nzbWh9rJTTJ/rSiYyaA==
+X-Received: by 2002:a17:90a:f18d:: with SMTP id bv13mr6178724pjb.70.1630616895004;
+        Thu, 02 Sep 2021 14:08:15 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id gm5sm3087181pjb.32.2021.09.02.14.08.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 14:08:14 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 21:08:10 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 7/8] KVM: Pre-allocate cpumasks for
+ kvm_make_all_cpus_request_except()
+Message-ID: <YTE9OsXABLzUitUd@google.com>
+References: <20210827092516.1027264-1-vkuznets@redhat.com>
+ <20210827092516.1027264-8-vkuznets@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210902084635.103622-1-lizhijian@cn.fujitsu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827092516.1027264-8-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/21 2:46 AM, Li Zhijian wrote:
-
-I like to see the reason for this compile error followed by how
-it is fixed.
-
-> [root@iaas-rpma gpio]# make
-> gcc     gpio-mockup-cdev.c  -o /home/lizhijian/linux/tools/testing/selftests/gpio/gpio-mockup-cdev
-> gpio-mockup-cdev.c: In function ‘request_line_v2’:
-> gpio-mockup-cdev.c:24:30: error: storage size of ‘req’ isn’t known
->     24 |  struct gpio_v2_line_request req;
->        |                              ^~~
-> gpio-mockup-cdev.c:32:14: error: ‘GPIO_V2_LINE_FLAG_OUTPUT’ undeclared (first use in this function); did you mean ‘GPIOLINE_FLAG_IS_OUT’?
->     32 |  if (flags & GPIO_V2_LINE_FLAG_OUTPUT) {
->        |              ^~~~~~~~~~~~~~~~~~~~~~~~
+On Fri, Aug 27, 2021, Vitaly Kuznetsov wrote:
+> Allocating cpumask dynamically in zalloc_cpumask_var() is not ideal.
+> Allocation is somewhat slow and can (in theory and when CPUMASK_OFFSTACK)
+> fail. kvm_make_all_cpus_request_except() already disables preemption so
+> we can use pre-allocated per-cpu cpumasks instead.
 > 
-> Search headers from linux tree like others, such as sched
-
-
-> 
-> CC: Philip Li <philip.li@intel.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 > ---
->   tools/testing/selftests/gpio/Makefile | 1 +
->   1 file changed, 1 insertion(+)
+>  virt/kvm/kvm_main.c | 29 +++++++++++++++++++++++------
+>  1 file changed, 23 insertions(+), 6 deletions(-)
 > 
-> diff --git a/tools/testing/selftests/gpio/Makefile b/tools/testing/selftests/gpio/Makefile
-> index 39f2bbe8dd3d..42ea7d2aa844 100644
-> --- a/tools/testing/selftests/gpio/Makefile
-> +++ b/tools/testing/selftests/gpio/Makefile
-> @@ -3,5 +3,6 @@
->   TEST_PROGS := gpio-mockup.sh
->   TEST_FILES := gpio-mockup-sysfs.sh
->   TEST_GEN_PROGS_EXTENDED := gpio-mockup-cdev
-> +CFLAGS += -I../../../../usr/include
->   
->   include ../lib.mk
-> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 2e9927c4eb32..2f5fe4f54a51 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -155,6 +155,8 @@ static void kvm_uevent_notify_change(unsigned int type, struct kvm *kvm);
+>  static unsigned long long kvm_createvm_count;
+>  static unsigned long long kvm_active_vms;
+>  
+> +static DEFINE_PER_CPU(cpumask_var_t, cpu_kick_mask);
+> +
+>  __weak void kvm_arch_mmu_notifier_invalidate_range(struct kvm *kvm,
+>  						   unsigned long start, unsigned long end)
+>  {
+> @@ -323,14 +325,15 @@ bool kvm_make_all_cpus_request_except(struct kvm *kvm, unsigned int req,
+>  				      struct kvm_vcpu *except)
+>  {
+>  	struct kvm_vcpu *vcpu;
+> -	cpumask_var_t cpus;
+> +	struct cpumask *cpus;
+>  	bool called;
+>  	int i, me;
+>  
+> -	zalloc_cpumask_var(&cpus, GFP_ATOMIC);
+> -
+>  	me = get_cpu();
+>  
+> +	cpus = this_cpu_cpumask_var_ptr(cpu_kick_mask);
+> +	cpumask_clear(cpus);
+> +
+>  	kvm_for_each_vcpu(i, vcpu, kvm) {
+>  		if (vcpu == except)
+>  			continue;
+> @@ -340,7 +343,6 @@ bool kvm_make_all_cpus_request_except(struct kvm *kvm, unsigned int req,
+>  	called = kvm_kick_many_cpus(cpus, !!(req & KVM_REQUEST_WAIT));
+>  	put_cpu();
+>  
+> -	free_cpumask_var(cpus);
+>  	return called;
+>  }
+>  
+> @@ -5581,9 +5583,15 @@ int kvm_init(void *opaque, unsigned vcpu_size, unsigned vcpu_align,
+>  		goto out_free_3;
+>  	}
+>  
+> +	for_each_possible_cpu(cpu) {
+> +		if (!alloc_cpumask_var_node(&per_cpu(cpu_kick_mask, cpu),
+> +					    GFP_KERNEL, cpu_to_node(cpu)))
+> +			goto out_free_4;
 
-thanks,
--- Shuah
+'r' needs to be explicitly set to -EFAULT, e.g. in the current code it's
+guaranteed to be 0 here.
+
+> +	}
+> +
+>  	r = kvm_async_pf_init();
+>  	if (r)
+> -		goto out_free;
+> +		goto out_free_5;
+>  
+>  	kvm_chardev_ops.owner = module;
+>  	kvm_vm_fops.owner = module;
+> @@ -5609,7 +5617,11 @@ int kvm_init(void *opaque, unsigned vcpu_size, unsigned vcpu_align,
+>  
+>  out_unreg:
+>  	kvm_async_pf_deinit();
+> -out_free:
+> +out_free_5:
+> +	for_each_possible_cpu(cpu) {
+
+Unnecessary braces.
+
+> +		free_cpumask_var(per_cpu(cpu_kick_mask, cpu));
+> +	}
+> +out_free_4:
+>  	kmem_cache_destroy(kvm_vcpu_cache);
+>  out_free_3:
+>  	unregister_reboot_notifier(&kvm_reboot_notifier);
+> @@ -5629,8 +5641,13 @@ EXPORT_SYMBOL_GPL(kvm_init);
+>  
+>  void kvm_exit(void)
+>  {
+> +	int cpu;
+> +
+>  	debugfs_remove_recursive(kvm_debugfs_dir);
+>  	misc_deregister(&kvm_dev);
+> +	for_each_possible_cpu(cpu) {
+
+Same here.
+
+> +		free_cpumask_var(per_cpu(cpu_kick_mask, cpu));
+> +	}
+>  	kmem_cache_destroy(kvm_vcpu_cache);
+>  	kvm_async_pf_deinit();
+>  	unregister_syscore_ops(&kvm_syscore_ops);
+> -- 
+> 2.31.1
+> 
