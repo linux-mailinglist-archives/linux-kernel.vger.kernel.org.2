@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B8D3FE9D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C8AF3FE9D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242608AbhIBHOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 03:14:39 -0400
-Received: from relay.sw.ru ([185.231.240.75]:41040 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233363AbhIBHOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 03:14:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=jcxB9UZFDlTKnN6RO3VLRHt6sc+pufmSIvofaIuTdIM=; b=Z+Cg/Kwu6zgpcbGu5
-        Nr3tsqTQTBrG8tZ1J+aj8ISSz8iOZw7jq2U55gSnFZy2DK39jSLX3EC1quge/gHNEi2flMx7TwFin
-        Yraf7fdUctizqCDDsplHe0517wzVI9pvR+x5oMgGmmdm842KNgCGb6wtPxOeS9KnvyBuxf/QIqpPY
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mLgug-000YI2-TL; Thu, 02 Sep 2021 10:13:30 +0300
-Subject: Re: [PATCH net-next v4] skb_expand_head() adjust skb->truesize
- incorrectly
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Christoph Paasch <christoph.paasch@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@openvz.org, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Julian Wiedmann <jwi@linux.ibm.com>
-References: <b653692b-1550-e17a-6c51-894832c56065@virtuozzo.com>
- <ee5b763a-c39d-80fd-3dd4-bca159b5f5ac@virtuozzo.com>
- <ce783b33-c81f-4760-1f9e-90b7d8c51fd7@gmail.com>
- <b7c2cb05-7307-f04e-530e-89fc466aa83f@virtuozzo.com>
- <ef7ccff8-700b-79c2-9a82-199b9ed3d95b@gmail.com>
- <67740366-7f1b-c953-dfe1-d2085297bdf3@gmail.com>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <8a183782-f4b9-e12a-55d1-c4a3c4078369@virtuozzo.com>
-Date:   Thu, 2 Sep 2021 10:13:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S243192AbhIBHPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 03:15:46 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:35260 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231133AbhIBHPp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 03:15:45 -0400
+X-UUID: 59fcbcd1a388466bab211785bc791fb5-20210902
+X-UUID: 59fcbcd1a388466bab211785bc791fb5-20210902
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <trevor.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1633932517; Thu, 02 Sep 2021 15:14:42 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 2 Sep 2021 15:14:41 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 2 Sep 2021 15:14:41 +0800
+From:   Trevor Wu <trevor.wu@mediatek.com>
+To:     <broonie@kernel.org>, <tiwai@suse.com>, <matthias.bgg@gmail.com>
+CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ASoC: mt8195: remove unnecessary CONFIG_PM
+Date:   Thu, 2 Sep 2021 15:14:40 +0800
+Message-ID: <20210902071440.6087-1-trevor.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <67740366-7f1b-c953-dfe1-d2085297bdf3@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/21 7:48 AM, Eric Dumazet wrote:
-> On 9/1/21 9:32 PM, Eric Dumazet wrote:
->> I think you missed netem case, in particular
->> skb_orphan_partial() which I already pointed out.
->>
->> You can setup a stack of virtual devices (tunnels),
->> with a qdisc on them, before ip6_xmit() is finally called...
->>
->> Socket might have been closed already.
->>
->> To test your patch, you could force a skb_orphan_partial() at the beginning
->> of skb_expand_head() (extending code coverage)
-> 
-> To clarify :
-> 
-> It is ok to 'downgrade' an skb->destructor having a ref on sk->sk_wmem_alloc to
-> something owning a ref on sk->refcnt.
-> 
-> But the opposite operation (ref on sk->sk_refcnt -->  ref on sk->sk_wmem_alloc) is not safe.
+The unnecessary conditional inclusion caused the following warning.
 
-Could you please explain in more details, since I stil have a completely opposite point of view?
+>> sound/soc/mediatek/mt8195/mt8195-afe-pcm.c:3260:32: warning: unused
+>> variable 'mt8195_afe_pm_ops' [-Wunused-const-variable]
+   static const struct dev_pm_ops mt8195_afe_pm_ops = {
+                                  ^
+   1 warning generated.
 
-Every sk referenced in skb have sk_wmem_alloc > 9 
-It is assigned to 1 in sk_alloc and decremented right before last __sk_free(),
-inside  both sk_free() sock_wfree() and __sock_wfree()
+Because runtime_pm already handles the case without CONFIG_PM, we
+can remove CONFIG_PM condition.
 
-So it is safe to adjust skb->sk->sk_wmem_alloc, 
-because alive skb keeps reference to alive sk and last one keeps sk_wmem_alloc > 0
+Fixes: 6746cc858259 ("ASoC: mediatek: mt8195: add platform driver")
+Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
+Reported-by: kernel test robot <lkp@intel.com>
+---
+ sound/soc/mediatek/mt8195/mt8195-afe-pcm.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-So any destructor used sk->sk_refcnt will already have sk_wmem_alloc > 0, 
-because last sock_put() calls sk_free().
+diff --git a/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c b/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
+index 6635c3f72ecc..f8dd50c8a7da 100644
+--- a/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
++++ b/sound/soc/mediatek/mt8195/mt8195-afe-pcm.c
+@@ -3266,9 +3266,7 @@ static struct platform_driver mt8195_afe_pcm_driver = {
+ 	.driver = {
+ 		   .name = "mt8195-audio",
+ 		   .of_match_table = mt8195_afe_pcm_dt_match,
+-#ifdef CONFIG_PM
+ 		   .pm = &mt8195_afe_pm_ops,
+-#endif
+ 	},
+ 	.probe = mt8195_afe_pcm_dev_probe,
+ 	.remove = mt8195_afe_pcm_dev_remove,
+-- 
+2.18.0
 
-However now I'm not sure in reversed direction.
-skb_set_owner_w() check !sk_fullsock(sk) and call sock_hold(sk);
-If sk->sk_refcnt can be 0 here (i.e. after execution of old destructor inside skb_orphan) 
--- it can be trigger pointed problem:
-"refcount_add() will trigger a warning (panic under KASAN)".
-
-Could you please explain where I'm wrong?
-
-Thank you,
-	Vasily Averin
