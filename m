@@ -2,135 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C7B3FEEE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DABB13FEEE9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345248AbhIBNpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:45:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33332 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234188AbhIBNpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:45:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0605161056;
-        Thu,  2 Sep 2021 13:44:36 +0000 (UTC)
-Date:   Thu, 2 Sep 2021 15:44:34 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Eugene Syromiatnikov <esyr@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Chris Hyser <chris.hyser@oracle.com>,
-        Josh Don <joshdon@google.com>, Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Dmitry V. Levin" <ldv@strace.io>, linux-doc@vger.kernel.org,
-        linux-api@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v4] uapi/linux/prctl: provide macro definitions for the
- PR_SCHED_CORE type argument
-Message-ID: <20210902134434.gdctjkc5pvrwm3db@wittgenstein>
-References: <20210825170613.GA3884@asgard.redhat.com>
- <20210826100025.pdakvmg24gomnuk5@wittgenstein>
+        id S1345265AbhIBNp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345255AbhIBNp4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 09:45:56 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FB2C061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 06:44:57 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id mf2so4487154ejb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 06:44:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=WCgF28ct4Cl5XxiLUUReZqZDk/KfxZD8XIMHdol3+tQ=;
+        b=XXGPrhQNE8dNJKYRoxA7d9aU3YZjTCqmgdZWS2si7LW6soT4X4NdbP74REuihTTmjD
+         uuSS/TxVSWHLlq0hywYd5p7+KXQLYMYgDZUiT3FhGtiG152mC75qIFbYbm3i5rJEaN7u
+         vkBJrLvElLpd1LD1rNBaXqOqEodVKFzTcsniZK8osgbn/uaJdM22oL6vnNX0Si5czzsu
+         tpCa5NcB2DhhK31qfgFnhZOnTnezNbQAHTW65HCnXoCfQKXX7BQOITYxmyMLFT5Int7C
+         dOlflxoffVT5hBtwLCaJMTkoaa6eJWVxpY9+3QPLOl2eTY4IJwFDQ0vtfC+q8dczlIvY
+         /9gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=WCgF28ct4Cl5XxiLUUReZqZDk/KfxZD8XIMHdol3+tQ=;
+        b=aFmMe6Nbjs5Kp6vPfwaFUIev9Loj6L0YH5tuGTWqzLR7m5dEqeKRMhzZj4OiLRcEU7
+         s3DrCXGiqIl+Ed8nbhCzVXS8r2h+hSVKhPMEIvTdfUm6zjMOsQNDtr3wLQ+atQLwBeMX
+         NnyMz7rhpEuOiXdSmgN17e2V8DXgir2LCHwKA6Xlb4RrUuLLTBL+82OjFXsxIhWsNzuk
+         rNMJ5sX/SDrbFKc7X1Kre3TMwIFBr5+BSczBONGdrxdOHWycV5i9HVXWsr7HuaCPXPmW
+         RnY7FB2tLLn/BUwu+g4F/twOGVexJiefnhPYJFG4yBb407KNqNfnVz8fmgP//y50Rm+3
+         aJOQ==
+X-Gm-Message-State: AOAM533rLKGKO6qClzA73zUCyo/U8ArO7fvzZ1BQNwSccYREeirmJ53g
+        u0kBJlJRbnXFMg9B/qv/vwca81GhQzHW/x690sc=
+X-Google-Smtp-Source: ABdhPJyOiUTaFN5PgwWpWOsW1CJfqjnlKoAMEV9LEIPfcS2hsnNf/G+0/C7F4+4ZaVzC9BINhL6biqs9XTwujaPaxcE=
+X-Received: by 2002:a17:906:51d4:: with SMTP id v20mr3943687ejk.9.1630590296472;
+ Thu, 02 Sep 2021 06:44:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210826100025.pdakvmg24gomnuk5@wittgenstein>
+Received: by 2002:a17:906:3388:0:0:0:0 with HTTP; Thu, 2 Sep 2021 06:44:55
+ -0700 (PDT)
+Reply-To: dinkarim06@gmail.com
+From:   Din Karim <katiehiggin24@gmail.com>
+Date:   Thu, 2 Sep 2021 14:44:55 +0100
+Message-ID: <CALfmd_xU2EF9FheAVDH3GHyjdfQh7aS5_bE1mS0+Ju2HSdtUdQ@mail.gmail.com>
+Subject: Hello.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 12:00:25PM +0200, Christian Brauner wrote:
-> On Wed, Aug 25, 2021 at 07:06:13PM +0200, Eugene Syromiatnikov wrote:
-> > Commit 7ac592aa35a684ff ("sched: prctl() core-scheduling interface")
-> > made use of enum pid_type in prctl's arg4; this type and the associated
-> > enumeration definitions are not exposed to userspace.  Christian
-> > has suggested to provide additional macro definitions that convey
-> > the meaning of the type argument more in alignment with its actual
-> > usage, and this patch does exactly that.
-> > 
-> > Suggested-by: Christian Brauner <christian.brauner@ubuntu.com>
-> > Complements: 7ac592aa35a684ff ("sched: prctl() core-scheduling interface")
-> > Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
-> > ---
-> 
-> I mean, I proposed the names so I'm ok with them. :)
-> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-> 
-> Peter et al. are you ok with this and do the names make sense to you?
+Hello dear,
 
-I'll pick this up once the merge window closes then.
+I'm Barr Din Karim from the Republic of Ghana. Please, I wish to
+communicate with you.
 
-Thanks!
-Christian
+I wait for your response.
 
-> 
-> Christian
-> 
-> > v4:
-> >   - Rewritten in accordance with Christian Brauner's suggestion to provide
-> >     macro definitions that are explicitly tailored for the prctl op.
-> > 
-> > v3: https://lore.kernel.org/lkml/20210807120905.GA14706@asgard.redhat.com/
-> >   - Fixed header guard macro: s/_UAPI_LINUX_PID_H/_UAPI_LINUX_PIDTYPE_H/,
-> >     as noted by Dmitry Levin.
-> > 
-> > v2: https://lore.kernel.org/lkml/20210807104800.GA22620@asgard.redhat.com/
-> >   - Header file is renamed from pid.h to pidtype.h to avoid collisions
-> >     with include/linux/pid.h when included from uapi headers;
-> >   - The enum type has renamed from __kernel_pid_type to __kernel_pidtype
-> >     to avoid possible confusion with __kernel_pid_t.
-> > 
-> > v1: https://lore.kernel.org/lkml/20210807010123.GA5174@asgard.redhat.com/
-> > ---
-> >  Documentation/admin-guide/hw-vuln/core-scheduling.rst | 5 +++--
-> >  include/uapi/linux/prctl.h                            | 3 +++
-> >  kernel/sched/core_sched.c                             | 4 ++++
-> >  3 files changed, 10 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/admin-guide/hw-vuln/core-scheduling.rst b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
-> > index 7b410ae..9a65fed 100644
-> > --- a/Documentation/admin-guide/hw-vuln/core-scheduling.rst
-> > +++ b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
-> > @@ -61,8 +61,9 @@ arg3:
-> >      ``pid`` of the task for which the operation applies.
-> >  
-> >  arg4:
-> > -    ``pid_type`` for which the operation applies. It is of type ``enum pid_type``.
-> > -    For example, if arg4 is ``PIDTYPE_TGID``, then the operation of this command
-> > +    ``pid_type`` for which the operation applies. It is one of
-> > +    ``PR_SCHED_CORE_SCOPE_``-prefixed macro constants.  For example, if arg4
-> > +    is ``PR_SCHED_CORE_SCOPE_THREAD_GROUP``, then the operation of this command
-> >      will be performed for all tasks in the task group of ``pid``.
-> >  
-> >  arg5:
-> > diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-> > index 967d9c5..644a3b4 100644
-> > --- a/include/uapi/linux/prctl.h
-> > +++ b/include/uapi/linux/prctl.h
-> > @@ -266,5 +266,8 @@ struct prctl_mm_map {
-> >  # define PR_SCHED_CORE_SHARE_TO		2 /* push core_sched cookie to pid */
-> >  # define PR_SCHED_CORE_SHARE_FROM	3 /* pull core_sched cookie to pid */
-> >  # define PR_SCHED_CORE_MAX		4
-> > +# define PR_SCHED_CORE_SCOPE_THREAD		0
-> > +# define PR_SCHED_CORE_SCOPE_THREAD_GROUP	1
-> > +# define PR_SCHED_CORE_SCOPE_PROCESS_GROUP	2
-> >  
-> >  #endif /* _LINUX_PRCTL_H */
-> > diff --git a/kernel/sched/core_sched.c b/kernel/sched/core_sched.c
-> > index 9a80e9a..20f6409 100644
-> > --- a/kernel/sched/core_sched.c
-> > +++ b/kernel/sched/core_sched.c
-> > @@ -134,6 +134,10 @@ int sched_core_share_pid(unsigned int cmd, pid_t pid, enum pid_type type,
-> >  	if (!static_branch_likely(&sched_smt_present))
-> >  		return -ENODEV;
-> >  
-> > +	BUILD_BUG_ON(PR_SCHED_CORE_SCOPE_THREAD != PIDTYPE_PID);
-> > +	BUILD_BUG_ON(PR_SCHED_CORE_SCOPE_THREAD_GROUP != PIDTYPE_TGID);
-> > +	BUILD_BUG_ON(PR_SCHED_CORE_SCOPE_PROCESS_GROUP != PIDTYPE_PGID);
-> > +
-> >  	if (type > PIDTYPE_PGID || cmd >= PR_SCHED_CORE_MAX || pid < 0 ||
-> >  	    (cmd != PR_SCHED_CORE_GET && uaddr))
-> >  		return -EINVAL;
-> > -- 
-> > 2.1.4
-> > 
+Barr Din Karim(Esq)
