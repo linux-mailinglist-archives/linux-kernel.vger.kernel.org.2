@@ -2,150 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB513FE9B1
+	by mail.lfdr.de (Postfix) with ESMTP id BC9DA3FE9B3
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242669AbhIBHFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 03:05:54 -0400
-Received: from pi.codeconstruct.com.au ([203.29.241.158]:53068 "EHLO
-        codeconstruct.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242126AbhIBHFt (ORCPT
+        id S242608AbhIBHGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 03:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240424AbhIBHGB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 03:05:49 -0400
-Received: from [172.16.66.18] (unknown [49.255.141.98])
-        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id E01AA20164;
-        Thu,  2 Sep 2021 15:04:48 +0800 (AWST)
-Message-ID: <513cb05f8d83d08a5c1e491dc0a9b6784195e7dd.camel@codeconstruct.com.au>
-Subject: Re: [PATCH v4 3/4] soc: aspeed: Add eSPI driver
-From:   Jeremy Kerr <jk@codeconstruct.com.au>
-To:     ChiaWei Wang <chiawei_wang@aspeedtech.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Morris Mao <morris_mao@aspeedtech.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>
-Date:   Thu, 02 Sep 2021 15:04:47 +0800
-In-Reply-To: <HK0PR06MB37792273A075533C2570002391CE9@HK0PR06MB3779.apcprd06.prod.outlook.com>
-References: <20210901033015.910-1-chiawei_wang@aspeedtech.com>
-         <20210901033015.910-4-chiawei_wang@aspeedtech.com>
-         <20c13b9bb023091758cac3a07fb4037b7d796578.camel@codeconstruct.com.au>
-         <HK0PR06MB37792273A075533C2570002391CE9@HK0PR06MB3779.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        Thu, 2 Sep 2021 03:06:01 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B56AC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 00:05:03 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so806606pjt.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 00:05:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=HBaL61QBYMUZzotrZtJQEFy+kr+3Pv8VSTjmOd/YXyc=;
+        b=gpq0+vByj5ZSakSAjmhB412QEKXYdbHQRt6Wrovgsdv2THWPRdvv7VmHPJny18IvW+
+         UL1jW2O4X/utRsV9mUkdSIDkSjQSAanBZ1D2yv9r8aWO1lk5a4v1/IUhviaTUCXodQEH
+         M0VoNSQ/S9BxwE7HaYDjf/fxqmYskFlTkyRwXEaLM4hrpTgIXVpavUM7mVUEvdoFgDt9
+         XN1AO6niSrcOKJo2Xcp8ituadZv38hO1gg7ZUbIMVvGQC2alXEORX5t2puTz2wmEkFIQ
+         UxmW3iWRbxPxbHbSome9N7OF+K4bSIQ8zqa144SZUhifjaFwwIg8+f4GeA2BmK7clJ84
+         2bDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=HBaL61QBYMUZzotrZtJQEFy+kr+3Pv8VSTjmOd/YXyc=;
+        b=Mcslsl0QnJDRW17yFUESbik9k6aUcIHP+IopbRQfslyk6YYkkgICRx3rO0iltKYeuh
+         LrW3844tMW60PUIlcqNgNGpSJENnUDqT3sDuqeg7mNqK9eDvSV/XYTZlteqk7Hi4Jit6
+         Vyj12celhCIncEZprtzPJZ1V/bUk5IZam22AdL/5qFAtfXl/9Cwukj7AFBU7sakiOxth
+         yzTCqvFY1uOeof2oSLhPG8yFmMHlsh+C7U0UaH/Gd1kgvjjLDmQ9q1Ry4JhdwEFl5xZn
+         26rPtpIgOU74m74BqqrL4dwq/GkEEwni22AbiOTMEKpWjXp0j1eXWtMeefAOoCn14CIj
+         PdGQ==
+X-Gm-Message-State: AOAM5320KT97mkznrC88PjAj8eZWvLalm7xyPdodZSz+j7bu16ZfGkIH
+        YyBUFdKjcBbkDtWexPyVohGRPg==
+X-Google-Smtp-Source: ABdhPJwpJqPKt9Y7iE8kwSXxa86EER+DXHn4/hF1fRP/w8Fj/bNnbhwN4Ru5ZqkqVVCTzkNLo39/kw==
+X-Received: by 2002:a17:90a:d990:: with SMTP id d16mr2305089pjv.2.1630566302822;
+        Thu, 02 Sep 2021 00:05:02 -0700 (PDT)
+Received: from [10.254.207.253] ([139.177.225.243])
+        by smtp.gmail.com with ESMTPSA id ev12sm984854pjb.57.2021.09.02.00.04.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 00:05:02 -0700 (PDT)
+Subject: Re: [PATCH v2 6/9] mm: free user PTE page table pages
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        David Hildenbrand <david@redhat.com>
+Cc:     akpm@linux-foundation.org, tglx@linutronix.de, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        kirill.shutemov@linux.intel.com, mika.penttila@nextfour.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com
+References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
+ <20210819031858.98043-7-zhengqi.arch@bytedance.com>
+ <20210901135314.GA1859446@nvidia.com>
+ <0c9766c9-6e8b-5445-83dc-9f2b71a76b4f@redhat.com>
+ <20210901153247.GJ1721383@nvidia.com>
+ <7789261d-6a64-c47b-be6c-c9be680e5d33@redhat.com>
+ <20210901161613.GN1721383@nvidia.com>
+ <e8ebb0bb-b268-c43b-6fc1-e5240dc085c9@redhat.com>
+ <20210901171039.GO1721383@nvidia.com>
+ <ef7a722d-0bc0-1c68-b11b-9ede073516e0@redhat.com>
+ <20210901175547.GP1721383@nvidia.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+Message-ID: <b013b637-a3d6-9caf-32d4-9c04fac29c64@bytedance.com>
+Date:   Thu, 2 Sep 2021 15:04:53 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210901175547.GP1721383@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chiawei,
 
-> The eSPI on BMC side is a slave device. Most of time it listen to the
-> Host requests and then react.
-> This makes it not quite fit to interfaces that act as a master role.
 
-That's a good point, but I don't think it precludes using existing
-interfaces.
-
-> > 1) The VW channel is essentially a GPIO interface, and we have a
-> > kernel    subsystem to expose GPIOs. We might want to add additional
-> > support    for in-kernel system event handlers, but that's a minor
-> > addition that    can be done separately if we don't want that
-> > handled by a gpio    consumer in userspace.
+On 2021/9/2 AM1:55, Jason Gunthorpe wrote:
+> On Wed, Sep 01, 2021 at 07:49:23PM +0200, David Hildenbrand wrote:
+>> On 01.09.21 19:10, Jason Gunthorpe wrote:
+>>> On Wed, Sep 01, 2021 at 06:19:03PM +0200, David Hildenbrand wrote:
+>>>
+>>>>> I wouldn't think it works everywhere, bit it works in a lot of places,
+>>>>> and it is a heck of a lot better than what is proposed here. I'd
+>>>>> rather see the places that can use it be moved, and the few places
+>>>>> that can't be opencoded.
+>>>>
+>>>> Well, I used ptep_get_map_lock() and friends. But hacking directly into
+>>>> ptep_map_lock() and friends wasn't possible due to all the corner cases.
+>>>
+>>> Sure, I'm not surprised you can't get every single case, but that just
+>>> suggest we need two API families, today's to support the special cases
+>>> and a different one for the other regular simple cases.
+>>>
+>>> A new function family pte_try_map/_locked() and paired unmap that can
+>>> internally do the recounting and THP trickery and convert the easy
+>>> callsites.
+>>>
+>>> Very rough counting suggest at least half of the pte_offset_map_lock()
+>>> call sites can trivially use the simpler API.
+>>>
+>>> The other cases can stay as is and get open coded refcounts, or maybe
+>>> someone will have a better idea once they are more clearly identified.
+>>>
+>>> But I don't think we should take a performance hit of additional
+>>> atomics in cases like GUP where this is trivially delt with by using a
+>>> better API.
+>>
+>> Right, but as I said in the cover letter, we can happily optimize once we
+>> have the basic infrastructure in place and properly reviewed. Getting rid of
+>> some unnecessary atomics by introducing additional fancy helpers falls under
+>> that category.
 > 
-> eSPI VW channel can be used to forward a byte value to/from GPIO.
-
-I'm not referring to the hardware GPIOs that can be connected here,
-rather the logic values represented over the VW channel. The eSPI master
-is transferring IO states over the channel, and we could represnt those
-on the BMC side as "virtual" GPIOs.
-
-If that model doesn't fit though, that's OK, but I think we need some
-rationale there.
-
-> > 
-> > 2) The out-of-band (OOB) channel provides a way to issue SMBus
-> >    transactions, so could well provide an i2c controller interface.
-> >    Additionally, the eSPI specs imply that this is intended to
-> > support
-> >    MCTP - in which case, you'll *need* a kernel i2c controller
-> > device to
-> >    be able to use the new kernel MCTP stack.
+> I'm not sure I agree given how big and wide this patch series is. It
+> would be easier to review if it was touching less places. The helpers
+> are not fancy, it is a logical re-arrangement of existing code that
+> shrinks the LOC of this series and makes it more reviewable.
 > 
-> Could you share us more information about the i2c need of kernel MCTP
-> kernel stack?
+> Or stated another way, a niche feature like this try much harder not
+> to add more complexity everywhere.
 
-The currently proposed mctp-i2c interface driver binds to a kernel i2c
-device. If you expose a kernel i2c device here, we can connect that as
-an MCTP interface.
+Totally agree, I will rework this patch series based on you and David's
+suggestions.
 
-With the packet interface proposed here, we can't do that, and would
-need a whole new driver for this, implemented in userspace. The same
-would apply to any other usage of the i2c bus (EEPROM access, etc).
+Thank you very much,
+Qi
 
-> > 3) The flash channel exposes read/write/erase operations, which
-> > would be
-> >    much more useful as an actual flash-type device, perhaps using
-> > the
-> >    existing mtd interface? Or is there additional functionality
-> >    expected for this?
 > 
-> The flash channel works in either the Master Attached Flash Sharing
-> (MAFS) or Slave Attached Flash Sharing (SAFS) mode.
+> Jason
 > 
-> For MAFS, BMC issues eSPI flash R/W/E packets to the Host.
-> In this case, it may fit into the MTD interface.
-> 
-> For SAFS (mostly used), BMC needs to listen, parse and filter eSPI
-> flash R/W/E packets from the Host.
-> And then send replies in the eSPI success/unsuccess completion packet
-> format.
-> This behaves differently from MTD.
-> 
-> To support both the two scenario, the MTD interface might not be
-> suitable.
-
-OK, that makes sense. In this case the BMC is acting as the virtual
-flash device, right?
-
-> > 4) The peripheral channel is the only one that would seem to require
-> > arbitrary cycle access, but we'll still need a proper uapi
-> > definition to support that. At the minimum, your ioctl definitions
-> > should go under include/uapi/ - you shouldn't need to duplicate the
-> > header into each userspace repo, as you've done for the test
-> > examples.
-> 
-> In the first submission, I was told that the include/uapi patch is
-> not going to be accepted.
-
-This is what you were told in the v1 submission:
-
-> >  create mode 100644 include/uapi/linux/aspeed-espi.h
->
-> This userspace interface is not going to be accepted upstream.
-
-It sees like that was a comment about the API itself, not the location
-of the header (Rob, correct me if I'm wrong). Simply moving the header
-out of the uapi directory, while retaining the same API, is not a
-solution to this.
-
-> In summary, considering the various applications that might be
-> constructed upon eSPI transaction,
-> we thought that the raw packet paradigm might be the first step to
-> start with.
-
-Keep in mind that you're creating a kernel ABI here, which has to stay
-in place forever - even if it's the first step to something else, we
-cannot break future compatibility.
-
-Regards,
-
-
-Jeremy
-
