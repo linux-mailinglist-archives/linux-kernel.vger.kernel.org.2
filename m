@@ -2,106 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4E963FE98B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 08:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2AD3FE99C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242458AbhIBGxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 02:53:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233363AbhIBGxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 02:53:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9F3F60C3E;
-        Thu,  2 Sep 2021 06:52:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630565573;
-        bh=Tv65ZWVxn/+fMQglBkEG2bViohQl6I7pMD5PRiDb/OY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zkCACKOHW+/1wPgjnLO9CWoKRkNWPwCBuFETWGmgqgHMfYAokbL91qIXIRaeMLZX6
-         QHK7uMeRtgBzHAe1Mha1kFZ9Dr8aV2+aPFvT5+fax8HqXBuClP644379CI4V9H4WmQ
-         nY2AnuWhX1xuIsKoBemem4jhbTuFu8wiLukApgr0=
-Date:   Thu, 2 Sep 2021 08:52:45 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     rafael@kernel.org, patrice.chotard@foss.st.com, mchehab@kernel.org,
-        ryder.lee@mediatek.com, jianjun.wang@mediatek.com,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
-        bhelgaas@google.com, matthias.bgg@gmail.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v2 1/3] driver core: platform: Add the helper function
- devm_platform_get_and_ioremap_resource_byname()
-Message-ID: <YTB0vegl2YFfaWzM@kroah.com>
-References: <20210902063702.32066-1-caihuoqing@baidu.com>
- <20210902063702.32066-2-caihuoqing@baidu.com>
+        id S242504AbhIBHBo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Sep 2021 03:01:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242156AbhIBHBn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 03:01:43 -0400
+X-Greylist: delayed 425 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 02 Sep 2021 00:00:45 PDT
+Received: from mail.newemail.store (unknown [IPv6:2001:df7:c600:4:f816:3eff:fe9f:834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B5B93C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 00:00:45 -0700 (PDT)
+Received: from newemail.store (unknown [103.171.1.39])
+        by mail.newemail.store (Postfix) with ESMTPA id 0F70EEC12E
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 13:53:35 +0700 (+07)
+Reply-To: fbdirectdesk10@gmail.com
+From:   "Facebook Inc" <admin@newemail.store>
+To:     linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?RG9icsO9IGRlbg==?=
+Date:   1 Sep 2021 23:53:36 -0700
+Message-ID: <20210901235336.CB069FAF5C9843FA@newemail.store>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902063702.32066-2-caihuoqing@baidu.com>
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 02:37:00PM +0800, Cai Huoqing wrote:
-> Since provide the helper function devm_platform_ioremap_resource_byname()
-> which is wrap platform_get_resource_byname() and devm_ioremap_resource().
-> But sometimes, many drivers still need to use the resource variables
-> obtained by platform_get_resource(). In these cases, provide this helper
-> function devm_platform_get_and_ioremap_resource_byname().
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
-> v1->v2: Resend this patch as part of a patch series that uses
-> 	the new function. 
-> 
->  drivers/base/platform.c         | 30 ++++++++++++++++++++++++++----
->  include/linux/platform_device.h |  3 +++
->  2 files changed, 29 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-> index 652531f67135..34bb581338d9 100644
-> --- a/drivers/base/platform.c
-> +++ b/drivers/base/platform.c
-> @@ -124,6 +124,31 @@ void __iomem *devm_platform_ioremap_resource(struct platform_device *pdev,
->  }
->  EXPORT_SYMBOL_GPL(devm_platform_ioremap_resource);
->  
-> +/**
-> + * devm_platform_get_and_ioremap_resource_byname - call devm_ioremap_resource() for a
-> + *						   platform device and get resource
-> + *
-> + * @pdev: platform device to use both for memory resource lookup as well as
-> + *        resource management
-> + * @name: name of the resource
-> + * @res: optional output parameter to store a pointer to the obtained resource.
-> + *
-> + * Return: a pointer to the remapped memory or an ERR_PTR() encoded error code
-> + * on failure.
-> + */
-> +void __iomem *
-> +devm_platform_get_and_ioremap_resource_byname(struct platform_device *pdev,
-> +					      const char *name, struct resource **res)
-> +{
-> +	struct resource *r;
-> +
-> +	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, name);
-> +	if (res)
-> +		*res = r;
+FACEBOOK INC
+1601 WILLOW ROAD MENLO PARK, CA 94025
+www.facebook.com
 
-You forgot to check the return value of this call :(
+Vážený uživateli Facebooku:
 
-Which means you did not test this?  Why not?
+Chceme vás informovat, že váš Facebook účet s e -mailem vyhrál 
+peněžní odměnu 4 200 000,00 EUR (čtyři miliony dvě stě tisíc eur) 
+za propagaci Facebooku na rok 2021.
 
-But step back, _WHY_ is this needed at all?  How deep are we going to
-get with the "devm_platform_get_and_do_this_and_that_and_that" type
-functions here?
+Blahopřejeme vám k tomu, že jste jedním z vybraných lidí.
 
-You show 2 users of this call, and they save what, 1-2 lines of code
-here?
+Doporučujeme vám zaslat následující informace vedení společnosti 
+Facebook Inc. za účelem zpracování vaší žádosti.
 
-What is the real need for this?
+  1. Celé jméno:
+  2. Země:
+  3. Kontaktní adresa:
+  4. Telefonní číslo:
+  5. Rodinný stav:
+  6. Povolání:
+  7. Společnost:
+  8. Věk:
 
-thanks,
+  Gratulujeme!! Ještě jednou.
 
-greg k-h
+Z bezpečnostních důvodů doporučujeme všem výhercům, aby 
+uchovávali tyto informace před veřejností v tajnosti, dokud 
+nebude váš nárok zpracován a vaše cena vám nebude vydána. Toto je 
+součást našeho bezpečnostního protokolu, abychom se vyhnuli 
+dvojímu nárokování a neoprávněnému využívání výhod tohoto 
+programu nezúčastněným nebo neoficiálním personálem.
+
+Kancelář prezidenta
+Generální ředitel Facebooku
+Mark Zuckerberg
