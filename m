@@ -2,121 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D8F3FF520
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDEC13FF522
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345442AbhIBUrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:47:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26387 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232087AbhIBUrb (ORCPT
+        id S1345082AbhIBUuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 16:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231559AbhIBUuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 16:47:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630615592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RCglRUEE7rogtAfOGbvk+uUlCVK6Cupx/05Png5N9W0=;
-        b=hbgY3y1CsYgoN9JihIq49VqkJUIOszJvQVApwCrCSiwCVBpT8fFbcbmCAjsUsqqflZocw+
-        vD6j45dg8nn2xzkxQoGXmmY6OurWr7SHY5sfmv0xX0gvrk5do3xBxO5f5r/kJ9zFSL6mYr
-        AQIkjAGYXr/itPnemkTCv2GzF1yoJNk=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-196-erW04FsyNzyJG-i5XmYo3w-1; Thu, 02 Sep 2021 16:46:31 -0400
-X-MC-Unique: erW04FsyNzyJG-i5XmYo3w-1
-Received: by mail-ej1-f70.google.com with SMTP id c25-20020a170906529900b005c56c92caa2so1577407ejm.19
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 13:46:30 -0700 (PDT)
+        Thu, 2 Sep 2021 16:50:50 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FC0C061575;
+        Thu,  2 Sep 2021 13:49:51 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id a13so4229363iol.5;
+        Thu, 02 Sep 2021 13:49:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=Cf2q5M5Fwhi9VrSL2gabLLP20Hp7viOnQrVVuJp13nI=;
+        b=dEWFPXxpAf++gO4BzjkoJgMY2ommnojOTiE3wvGbo2f39MJ7WFrK0zZNjnqJpfUQlT
+         7ZP8yxnP6sNXcvM/mrn1zDOAMGuVGfAmtGwsDMG/2BxjKZd88pPXjaAWlqyxBzz55gua
+         t9W0XPJ80KzVhCSHCZiE8FrLpSe4TrtLp2n4X0CtlA7QewkFI1ZW55+0btSdG07NrVe1
+         lFZt29k14KlHwlTNJtW5CWGoYVf31vZj5hc+MfZl2mypuW8f4frmGeh1d/inLKmzDsJy
+         Vnm5LYmSIQBiwOormAKzqwtwTW9Vu5INOlSFwX2gS7joVhoy/JTnifaU4NbZ59ZkjcmI
+         0b4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RCglRUEE7rogtAfOGbvk+uUlCVK6Cupx/05Png5N9W0=;
-        b=ZLijVStC5SsLaOlX9fxiIP2Wt6ImSgRP6gHHqJI89LHCARLcK+nOwGM9J5sl5y/VMT
-         QWt+1J2lVol8ZWzWT2h0HP+UT2ENfDjPPtfMwsndBrzXMrj0S6Lf8UEjg7QZxpif1rki
-         h60tq1LNS5JM2TJej6i5wXjSBCxVr3O/mYnFPW3n+xApXgtfLRXugjwG5Yh40QPj4SZr
-         hlcCYMNMajpNOBy+VTdR6okXERuePAm3nGsXnntys7D966DTj2V6ROIx5mLcoivKRzi7
-         TGVZncJ6EFiNXdL25jlxqOYHCS1ajTZmCma6vPi1oCuyF+tkXa58y4gHRnqi2kGZbL9N
-         wXbg==
-X-Gm-Message-State: AOAM532SULDPcaOZJDbSs8mVQCTT/izyDSRAyKJNj+rKC4al4s7UcSYD
-        QhbEPlqYEFm6RuboxEYO143uKcgzSwMnpG+5/prSrTV/znNEzYweOgYr2M3eF5jeV3hA165coJA
-        vFf3kMH0jhMFOliQo7joH9LXGjKL1lx3e9RMGAOJ8aRQo1EEjXHItn+26L52B0b/6UeEC0+4UkC
-        lN
-X-Received: by 2002:a05:6402:714:: with SMTP id w20mr270982edx.62.1630615589424;
-        Thu, 02 Sep 2021 13:46:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwZkrpfUmKqFbYAigKUyboyl/I0MERdGX15LTrs0VwKkrMD1DPYnzz5haBWGo8xBvrcLPNz0w==
-X-Received: by 2002:a05:6402:714:: with SMTP id w20mr270966edx.62.1630615589234;
-        Thu, 02 Sep 2021 13:46:29 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id mb14sm1703522ejb.81.2021.09.02.13.46.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 13:46:28 -0700 (PDT)
-Subject: Re: [PATCH v5] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung 860
- and 870 SSD.
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Kate Hsuan <hpa@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Tor Vic <torvic9@mailbox.org>, linux-ide@vger.kernel.org,
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=Cf2q5M5Fwhi9VrSL2gabLLP20Hp7viOnQrVVuJp13nI=;
+        b=o17xIooGTCHZEk5oI2iGXvkdSyJI70xpilnW1mQuHVhm4Xcck7Xfa7MpoZLhnl4bWY
+         p0KML6QEOYeTszdjfka6dW2wZMdTca8rY+XO0nvxxRgKRVeSujwrybcUuegHjqb/waIQ
+         IZe2/6pKcfh6HAsxt8NKpH8sxyQBMX/ANQvN3SdzHx0jM5O6nLxtxaVQeIJYkQvfjKbl
+         FhMWCVtZy6ag5eodh6+PQnbC3IwcXO6hFYOSn2iGDC6R5ICvkNWdYB1yeJvDk4+pJ5+B
+         t1dSTvCJ7GwEteSi/pBI13mYcY1JVkA4nW3MxtkHYSn5RkAt7RYWlMZowCC5GQ0DL/tu
+         YRUw==
+X-Gm-Message-State: AOAM5329lJBDe/fYhKKkjCj9Y40llj1rKiWHuA0UJ3WLgmyszYhMHY0N
+        UKAj1Bb8HnbUTJdVt7FSL/o=
+X-Google-Smtp-Source: ABdhPJwv4ADR4J+mmssAFyqRNHgIGKK+EfG3o1aivo4JYwPu+UA2KNk0cUecfuXyRjl/OKOieyfe+Q==
+X-Received: by 2002:a5e:d80c:: with SMTP id l12mr226738iok.120.1630615790613;
+        Thu, 02 Sep 2021 13:49:50 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id g13sm1519011ile.68.2021.09.02.13.49.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 13:49:50 -0700 (PDT)
+Date:   Thu, 02 Sep 2021 13:49:43 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210901151643.13562-1-hpa@redhat.com>
- <3e26e7a5-0d99-b993-d5ce-aa517e1bf1bb@redhat.com>
- <yq1h7f24y6f.fsf@ca-mkp.ca.oracle.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <238d0841-0f03-928f-5441-89d5c9dcf9b9@redhat.com>
-Date:   Thu, 2 Sep 2021 22:46:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <yq1h7f24y6f.fsf@ca-mkp.ca.oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Cc:     acme@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        kjain@linux.ibm.com, kernel-team@fb.com,
+        Song Liu <songliubraving@fb.com>
+Message-ID: <613138e72048_2c56f20869@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210902165706.2812867-2-songliubraving@fb.com>
+References: <20210902165706.2812867-1-songliubraving@fb.com>
+ <20210902165706.2812867-2-songliubraving@fb.com>
+Subject: RE: [PATCH v5 bpf-next 1/3] perf: enable branch record for software
+ events
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 9/2/21 9:01 PM, Martin K. Petersen wrote:
+Song Liu wrote:
+> The typical way to access branch record (e.g. Intel LBR) is via hardware
+> perf_event. For CPUs with FREEZE_LBRS_ON_PMI support, PMI could capture
+> reliable LBR. On the other hand, LBR could also be useful in non-PMI
+> scenario. For example, in kretprobe or bpf fexit program, LBR could
+> provide a lot of information on what happened with the function. Add API
+> to use branch record for software use.
 > 
-> Hans,
+> Note that, when the software event triggers, it is necessary to stop the
+> branch record hardware asap. Therefore, static_call is used to remove some
+> branch instructions in this process.
 > 
->> So it looks like we actually need to disable NCQ for Samsung 860/870
->> devices when the SATA controller has a vendor-id of PCI_VENDOR_ID_ATI
->> rather then AMD.
-> 
-> That's another great data point!
-> 
-> I wonder if there actually is a Samsung problem (given that these drives
-> work fine on other controllers). Or if it is just the queued trim
-> handling that's broken on 1002:4391 controllers from ATI.
-> 
-> When I originally experimented with queued trim I had systems I could
-> not get to work. But queued trim worked fine when the same drives were
-> connected to more modern chipsets (note that this was "did not work at
-> all" as opposed to "randomly corrupting data").
->
-> Do we have any evidence at all of queued trim working with non-Samsung
-> drives on these controllers? Not sure how many modern SATA drives
-> actually implement this feature. Maybe the reason we see Samsung drives
-> in the bug reports is due to a combination of popularity and the fact
-> that these drives actually implement queued trim support.
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
 
-The Samsung 860 / 870 series causing issues when queued trim support
-is enabled are quite wide-spread, covering many different controller
-models from all well known controller vendors (Intel, Asmedia, Marvell
-and AMD). So disabling queued-trim support definitely is the right
-thing to do (and we should have done so a long time ago, I am to
-blame for this not being done sooner).
+[...]
 
-As for your theory that it is really a problem with the controller
-and not the the SSDs, I honestly do not know, but I doubt it,
-there are no such reports with any other vendor's SSD or newer
-Samsung models, so this seems unlikely.
+>  void intel_pmu_auto_reload_read(struct perf_event *event);
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index fe156a8170aa3..4fe11f4f896b1 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -57,6 +57,7 @@ struct perf_guest_info_callbacks {
+>  #include <linux/cgroup.h>
+>  #include <linux/refcount.h>
+>  #include <linux/security.h>
+> +#include <linux/static_call.h>
+>  #include <asm/local.h>
+>  
+>  struct perf_callchain_entry {
+> @@ -1612,4 +1613,26 @@ extern void __weak arch_perf_update_userpage(struct perf_event *event,
+>  extern __weak u64 arch_perf_get_page_size(struct mm_struct *mm, unsigned long addr);
+>  #endif
+>  
+> +/*
+> + * Snapshot branch stack on software events.
+> + *
+> + * Branch stack can be very useful in understanding software events. For
+> + * example, when a long function, e.g. sys_perf_event_open, returns an
+> + * errno, it is not obvious why the function failed. Branch stack could
+> + * provide very helpful information in this type of scenarios.
+> + *
+> + * On software event, it is necessary to stop the hardware branch recorder
+> + * fast. Otherwise, the hardware register/buffer will be flushed with
+> + * entries af the triggering event. Therefore, static call is used to
+              ^^
+nit, af->of
 
-Regards,
+> + * stop the hardware recorder.
+> + */
+> +
+> +/*
+> + * cnt is the number of entries allocated for entries.
+> + * Return number of entries copied to .
+> + */
 
-Hans
+A bit out of scope, but LGTM.
 
+Acked-by: John Fastabend <john.fastabend@gmail.com>
