@@ -2,179 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58E13FF4C5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7CD23FF4CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345795AbhIBUTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:19:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24738 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231559AbhIBUTj (ORCPT
+        id S1345907AbhIBUUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 16:20:50 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:46671 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231321AbhIBUUs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 16:19:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630613919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TOAJdCsxdWRdNb0ovj0EkYvPsElPPpeSCrnOTkOMPhM=;
-        b=XjQCkzNMLCexekIeO61t6fj9RVf3vUvDGpuLXZvaFaLzS7gcokrprinotyaFnEoP2eUvuN
-        aP8LvwMuqRUqkiZxcP2g8b5lw8BLw1mRWO6W5CvOECAM9AMHrystzltIF3ZkoWVzOw7vzu
-        B3MXDBgM5+MT4hv0IXhXgfzWEjb7kwA=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-585-2Y618DpFPJuiXtA5UnfLXg-1; Thu, 02 Sep 2021 16:18:39 -0400
-X-MC-Unique: 2Y618DpFPJuiXtA5UnfLXg-1
-Received: by mail-qv1-f69.google.com with SMTP id w6-20020a0cfc46000000b00370b0997afeso3442457qvp.15
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 13:18:39 -0700 (PDT)
+        Thu, 2 Sep 2021 16:20:48 -0400
+Received: by mail-ot1-f52.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso4079540ott.13;
+        Thu, 02 Sep 2021 13:19:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TOAJdCsxdWRdNb0ovj0EkYvPsElPPpeSCrnOTkOMPhM=;
-        b=hce8FWb9dppyHZu8xCRNM1VKqpgoaiUYs+Eopi0bDr0wA0TVgQur4M74JXn3DlytFP
-         u3XhhVz/EAczEiO1Ode0AmUjmbu0JVPcK65ZRehT4je9LCqWHQlduqhujUkFGqdIds1n
-         BEghea31oRKoBtVydre7TLd3/+ALmSBtFZa38buioAfOWjLE+63OCO7hsRjWyEizbEVI
-         pRKBfGmma+W5rOT3SgupVhEoANvD4YamQ/tEt/cGYIJPaW72DFyLt9p//7m9KNKEUN3r
-         PyrzgsfluYBqehVKCcaTeFIZys5aKP0ZAzzErhWJBVp/lZFIoeO3RzWlFFOdfecC6uhM
-         SGAw==
-X-Gm-Message-State: AOAM530vY0W0H8ad/C5RGhpEXxswQRQ92CRe9JVRlO2oQO1ANVvhDuCO
-        c8yt/KOg6RRRyTkBR+A6QnDZK8jaqB653EG8Zdg8KO4mz256OC73teReLD89l+hQATRMWgheA3p
-        k81+BOliQIYH3r/2768DHcgnZ
-X-Received: by 2002:ac8:6601:: with SMTP id c1mr143865qtp.179.1630613918575;
-        Thu, 02 Sep 2021 13:18:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx++efQTIvasHbdh2PP0MzWi88Mh6mwdgtTP9JqFrJvmkxBs6mFuxVsRBJhqxz9qndbwxPGvg==
-X-Received: by 2002:ac8:6601:: with SMTP id c1mr143838qtp.179.1630613918342;
-        Thu, 02 Sep 2021 13:18:38 -0700 (PDT)
-Received: from t490s.redhat.com ([2607:fea8:56a3:500::ad7f])
-        by smtp.gmail.com with ESMTPSA id c4sm2381805qkf.122.2021.09.02.13.18.36
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Zc4Bka7Z27BGz/FwvwBav+oDcWlZ03tv3Oc8DdWUZWI=;
+        b=HHbWATxTs5k98teAMuG8uT+YyQeXZr+kfQ26OAXFXn+1jnpA8plgzjlW8e2GtoMf0F
+         0hh2T++G42nq18G7FO1qo1FF+60E2uDmVdygQ3MY84yFdJnUp7WTQ6bn3rv8RnmWBnLS
+         7acMvrKBDbN4EXLEF0vnT59EwkDjF09cTPvyxrDFjy9BTm96XqVWBeaqoKBas+FnEDnY
+         3rgfESGddWPTpWelF5z+9MyIQhNOz0VrKtBKT7n2wvM9ReAQA9CFMvnjHzA7PLGdtovD
+         Qr1HB8qH0/csDVhbw9G+kaa4uqLWoNZgNWtYeEDYxlUFSA7/x9ZHlP9Wbz0lbquCMjOU
+         7I1g==
+X-Gm-Message-State: AOAM533ovryQj4aGTyMj1Jc1jI5vBnyXK/MAnayAYa/XawOUUr9Or7Xp
+        L790/+8DreYlWZ4SNnbm7g==
+X-Google-Smtp-Source: ABdhPJw04aku2y1a3SMsnpZ4nOCM6NowBUS6YDQcqSvrA7ax/OabLLpjd1UAk6sQK81rJWoJ0YGwIQ==
+X-Received: by 2002:a9d:705d:: with SMTP id x29mr53896otj.260.1630613989387;
+        Thu, 02 Sep 2021 13:19:49 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id c7sm536107otm.27.2021.09.02.13.19.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 13:18:37 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Miaohe Lin <linmiaohe@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>, peterx@redhat.com,
-        Jerome Glisse <jglisse@redhat.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>
-Subject: [PATCH v2 5/5] mm: Add ZAP_FLAG_SKIP_SWAP and zap_flags
-Date:   Thu,  2 Sep 2021 16:18:36 -0400
-Message-Id: <20210902201836.53605-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210902201721.52796-1-peterx@redhat.com>
-References: <20210902201721.52796-1-peterx@redhat.com>
+        Thu, 02 Sep 2021 13:19:48 -0700 (PDT)
+Received: (nullmailer pid 1341550 invoked by uid 1000);
+        Thu, 02 Sep 2021 20:19:47 -0000
+Date:   Thu, 2 Sep 2021 15:19:47 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     tony@atomide.com, krzysztof.kozlowski@canonical.com,
+        miquel.raynal@bootlin.com, nm@ti.com, lokeshvutla@ti.com,
+        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] dt-bindings: memory-controllers: ti,gpmc: Convert
+ to yaml
+Message-ID: <YTEx44lPKf0jaIU3@robh.at.kernel.org>
+References: <20210902095609.16583-1-rogerq@kernel.org>
+ <20210902095609.16583-3-rogerq@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902095609.16583-3-rogerq@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Firstly, the comment in zap_pte_range() is misleading because it checks against
-details rather than check_mappings, so it's against what the code did.
+On Thu, Sep 02, 2021 at 12:56:05PM +0300, Roger Quadros wrote:
+> Convert omap-gpmc.txt to ti,gpmc.yaml.
+> 
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
+>  .../bindings/memory-controllers/omap-gpmc.txt | 157 --------
+>  .../bindings/memory-controllers/ti,gpmc.yaml  | 364 ++++++++++++++++++
+>  .../devicetree/bindings/mtd/gpmc-nand.txt     |   2 +-
+>  .../devicetree/bindings/mtd/gpmc-nor.txt      |   4 +-
+>  .../devicetree/bindings/mtd/gpmc-onenand.txt  |   2 +-
+>  .../devicetree/bindings/net/gpmc-eth.txt      |   4 +-
+>  6 files changed, 370 insertions(+), 163 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
 
-Meanwhile, it's confusing too on not explaining why passing in the details
-pointer would mean to skip all swap entries.  New user of zap_details could
-very possibly miss this fact if they don't read deep until zap_pte_range()
-because there's no comment at zap_details talking about it at all, so swap
-entries could be errornously skipped without being noticed.
+Also, please install yamllint and fix all the warnings:
 
-Actually very recently we introduced unmap_mapping_page() in 22061a1ffabd, I
-think that should also look into swap entries.  Add a comment there.  IOW, this
-patch will be a functional change to unmap_mapping_page() but hopefully in the
-right way to do it.
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:97:6: [warning] wrong indentation: expected 4 but found 5 (indentation)                                                                                                      
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:135:9: [warning] wrong indentation: expected 10 but found 8 (indentation)                                                                                                    
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:190:27: [warning] too many spaces after colon (colons)                                                                                                                       
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:193:26: [warning] too many spaces after colon (colons)                                                                                                                       
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:199:23: [warning] too many spaces after colon (colons)                                                                                                                       
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:202:34: [warning] too many spaces after colon (colons)                                                                                                                       
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:205:32: [warning] too many spaces after colon (colons)                                                                                                                       
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:208:32: [warning] too many spaces after colon (colons)                                                                                                                       
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:211:26: [warning] too many spaces after colon (colons)                                                                                                                       
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:214:23: [warning] too many spaces after colon (colons)                                                                                                                       
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:217:26: [warning] too many spaces after colon (colons)                                                                                                                       
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:220:25: [warning] too many spaces after colon (colons)                                                                                                                       
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:226:28: [warning] too many spaces after colon (colons)                                                                                                                       
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:229:29: [warning] too many spaces after colon (colons)                                                                                                                       
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:242:29: [warning] too many spaces after colon (colons)
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:245:29: [warning] too many spaces after colon (colons)
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:248:22: [warning] too many spaces after colon (colons)
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:270:25: [warning] too many spaces after colon (colons)
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:274:27: [warning] too many spaces after colon (colons)
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:277:27: [warning] too many spaces after colon (colons)
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:280:26: [warning] too many spaces after colon (colons)
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:314:25: [warning] too many spaces after colon (colons)
+../Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml:317:24: [warning] too many spaces after colon (colons)
 
-This partly reverts 3e8715fdc03e ("mm: drop zap_details::check_swap_entries"),
-but introduce ZAP_FLAG_SKIP_SWAP flag, which means the opposite of previous
-"details" parameter: the caller should explicitly set this to skip swap
-entries, otherwise swap entries will always be considered (which should still
-be the major case here).
-
-Cc: Kirill A. Shutemov <kirill@shutemov.name>
-Cc: Hugh Dickins <hughd@google.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- include/linux/mm.h | 16 ++++++++++++++++
- mm/memory.c        |  6 +++---
- 2 files changed, 19 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 81e402a5fbc9..a7bcdb2ec956 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1716,12 +1716,18 @@ static inline bool can_do_mlock(void) { return false; }
- extern int user_shm_lock(size_t, struct ucounts *);
- extern void user_shm_unlock(size_t, struct ucounts *);
- 
-+typedef unsigned int __bitwise zap_flags_t;
-+
-+/* Whether to skip zapping swap entries */
-+#define  ZAP_FLAG_SKIP_SWAP  ((__force zap_flags_t) BIT(0))
-+
- /*
-  * Parameter block passed down to zap_pte_range in exceptional cases.
-  */
- struct zap_details {
- 	struct address_space *zap_mapping;	/* Check page->mapping if set */
- 	struct page *single_page;		/* Locked page to be unmapped */
-+	zap_flags_t zap_flags;			/* Extra flags for zapping */
- };
- 
- /*
-@@ -1737,6 +1743,16 @@ zap_skip_check_mapping(struct zap_details *details, struct page *page)
- 	return details->zap_mapping != page_rmapping(page);
- }
- 
-+/* Return true if skip swap entries, false otherwise */
-+static inline bool
-+zap_skip_swap(struct zap_details *details)
-+{
-+	if (!details)
-+		return false;
-+
-+	return details->zap_flags & ZAP_FLAG_SKIP_SWAP;
-+}
-+
- struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
- 			     pte_t pte);
- struct page *vm_normal_page_pmd(struct vm_area_struct *vma, unsigned long addr,
-diff --git a/mm/memory.c b/mm/memory.c
-index e5ee8399d270..4cb269ca8249 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1379,8 +1379,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 			continue;
- 		}
- 
--		/* If details->check_mapping, we leave swap entries. */
--		if (unlikely(details))
-+		if (unlikely(zap_skip_swap(details)))
- 			continue;
- 
- 		if (!non_swap_entry(entry))
-@@ -3351,6 +3350,7 @@ void unmap_mapping_page(struct page *page)
- 	first_index = page->index;
- 	last_index = page->index + thp_nr_pages(page) - 1;
- 
-+	/* Keep ZAP_FLAG_SKIP_SWAP cleared because we're truncating */
- 	details.zap_mapping = mapping;
- 	details.single_page = page;
- 
-@@ -3377,7 +3377,7 @@ void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
- 		pgoff_t nr, bool even_cows)
- {
- 	pgoff_t	first_index = start, last_index = start + nr - 1;
--	struct zap_details details = { };
-+	struct zap_details details = { .zap_flags = ZAP_FLAG_SKIP_SWAP };
- 
- 	details.zap_mapping = even_cows ? NULL : mapping;
- 	if (last_index < first_index)
--- 
-2.31.1
-
+Rob
