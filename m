@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AD23FEE57
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 900E83FEE5F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344867AbhIBNIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:08:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:49222 "EHLO foss.arm.com"
+        id S1344979AbhIBNJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:09:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234054AbhIBNIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:08:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6FBE51FB;
-        Thu,  2 Sep 2021 06:07:19 -0700 (PDT)
-Received: from [10.57.15.112] (unknown [10.57.15.112])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 41B0D3F5A1;
-        Thu,  2 Sep 2021 06:07:17 -0700 (PDT)
-Subject: Re: [PATCH v4] iommu/of: Fix pci_request_acs() before enumerating PCI
- devices
-To:     Anders Roxell <anders.roxell@linaro.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Wang Xingang <wangxingang5@huawei.com>,
-        Rob Herring <robh@kernel.org>, Will Deacon <will@kernel.org>,
-        joro@8bytes.org, helgaas@kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        iommu@lists.linux-foundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org, xieyingtai@huawei.com,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-References: <1621566204-37456-1-git-send-email-wangxingang5@huawei.com>
- <CGME20210901085937eucas1p2d02da65cac797706ca3a10b8a2eb8ba2@eucas1p2.samsung.com>
- <01314d70-41e6-70f9-e496-84091948701a@samsung.com>
- <f3087045-1f0e-aa1a-d3f7-9e88bccca925@arm.com>
- <CADYN=9JWU3CMLzMEcD5MSQGnaLyDRSKc5SofBFHUax6YuTRaJA@mail.gmail.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <25b0b214-b9b4-4066-3912-a5bcb054dc0d@arm.com>
-Date:   Thu, 2 Sep 2021 14:07:12 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234054AbhIBNJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 09:09:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 118B060C3E;
+        Thu,  2 Sep 2021 13:08:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630588093;
+        bh=F1qtrOBY4LN3J6iz02W647VE8/3nrTJT54AKxL7E9zo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=NNxOfzQrF7tPK5FFn2HQlMPLOaqaJExWydozIe3JMFEwYLILhzEduJIEFe5Brk/zP
+         sPRUR2/24n0H5cjwjNKfY/tCXvMqa3oFF2r1b8F3PZHYEYuqfs+IlXFfKsxFxPnN3m
+         uBkidjNAHp4YdXnE2Lk0TQ9WgvVxvGVfU6qSWcy9BzPP68og5IyZkItD+dOjZkNKiN
+         8a11AVs7AyGUNzNNFCwSvVUBoXKkxiBDX38DF44jgiPYbD1T7DhSPgyPpq6ok2PyDP
+         be6YzzzqQ0UyVDH5AEB6IXRuvw+GKArWlpFkTQDoGmM7rxTnh+AJ4xrPxu7TYpAcd+
+         aZFB1Gf7yNUAQ==
+Message-ID: <84fd35193e293894c4e64704e18dc063995b62c0.camel@kernel.org>
+Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
+ restore_fpregs_from_user()
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Date:   Thu, 02 Sep 2021 16:08:11 +0300
+In-Reply-To: <YS+upEmTfpZub3s9@google.com>
+References: <20210830154702.247681585@linutronix.de>
+         <20210830162545.374070793@linutronix.de> <YS0ylo9nTHD9NiAp@zn.tnic>
+         <87zgsyg0eg.ffs@tglx> <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
+         <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
+         <87r1e8cxp5.ffs@tglx> <87o89ccmyu.ffs@tglx> <YS+upEmTfpZub3s9@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <CADYN=9JWU3CMLzMEcD5MSQGnaLyDRSKc5SofBFHUax6YuTRaJA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-02 13:51, Anders Roxell wrote:
-> On Wed, 1 Sept 2021 at 11:58, Robin Murphy <robin.murphy@arm.com> wrote:
->>
->> On 2021-09-01 09:59, Marek Szyprowski wrote:
->>> On 21.05.2021 05:03, Wang Xingang wrote:
->>>> From: Xingang Wang <wangxingang5@huawei.com>
->>>>
->>>> When booting with devicetree, the pci_request_acs() is called after the
->>>> enumeration and initialization of PCI devices, thus the ACS is not
->>>> enabled. And ACS should be enabled when IOMMU is detected for the
->>>> PCI host bridge, so add check for IOMMU before probe of PCI host and call
->>>> pci_request_acs() to make sure ACS will be enabled when enumerating PCI
->>>> devices.
->>>>
->>>> Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
->>>> configuring IOMMU linkage")
->>>> Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
->>>
->>> This patch landed in linux-next as commit 57a4ab1584e6 ("iommu/of: Fix
->>> pci_request_acs() before enumerating PCI devices"). Sadly it breaks PCI
->>> operation on ARM Juno R1 board (arch/arm64/boot/dts/arm/juno-r1.dts). It
-> 
-> We've seen this on ARM Juno R2 boards too in the Linaro testfarm.
-> 
-> The problem is that the device can't get the "SATA link up" while booting.
-> 
-> see https://lkft.validation.linaro.org/scheduler/job/3416767#L577
+On Wed, 2021-09-01 at 16:47 +0000, Sean Christopherson wrote:
+> On Wed, Sep 01, 2021, Thomas Gleixner wrote:
+> > On Wed, Sep 01 2021 at 14:00, Thomas Gleixner wrote:
+> > > commit b2f9d678e28c ("x86/mce: Check for faults tagged in
+> > > EXTABLE_CLASS_FAULT exception table entries") made use of this in MCE=
+ to
+> > > allow in kernel recovery. The only thing it uses is checking the
+> > > exception handler type.
+> > >=20
+> > > Bah. I'll fix that up to make that less obscure.
+> > >=20
+> > > The remaining two use cases (SGX and FPU) make use of the stored trap
+> > > number.
+> >=20
+> > Though while for the FPU use case we really want to handle the #MC case=
+,
+> > it's not clear to me whether this is actually correct for SGX.
+> >=20
+> > Jarkko, Sean, Dave?
+>=20
+> Are you asking about #MC specifically, or about SGX consuming the trap nu=
+mber in
+> general?
+>=20
+> For #MC, it's probably a moot point because #MC on ENCLS is not recoverab=
+le for
+> current hardware.  If #MC somehow occurs on ENCLS and doesn't kill the pl=
+atform,
+> "handling" the #MC in SGX is probably wrong.  Note, Tony is working on a =
+series to
+> support recoverable #MC on SGX stuff on future hardware[*], but I'm not s=
+ure that's
+> relevant to this discussion.
+>=20
+> As for SGX consuming the trap number in general, it's correct.  For non-K=
+VM usage,
+> it's nice to have but not strictly necessary.  Any fault except #PF on EN=
+CLS is
+> guaranteed to be a kernel or hardware bug; SGX uses the trap number to WA=
+RN on a
+> !#PF exception, e.g. on #GP or #UD.  Not having the trap number would mea=
+n losing
+> those sanity checks, which have been useful in the past.
 
-Hmm, what's odd there is that you don't seem to be even detecting any of 
-the endpoints there. Notably, the switch (which both the slots and the 
-on-board endpoints are behind) *does* support ACS even though the Root 
-Complex doesn't, so I wonder if it's getting enabled there and causing 
-it to forward TLPs with ACS bits set which the RC doesn't like?
+AFAIK, we do not consider #UD as a bug. Agree with the conclusion that SGX
+should never #MC, I just did not get this part. #UD is something that is
+useful for SGX run-time.
 
-I'm far from a PCI expert, but I might try running this patch on my 
-board to see if anything else stands out.
+/Jarkko
 
-Robin.
-
-> When reverting this patch we are able to see the "SATA link up".
-> 
-> Cheers,
-> Anders
-> 
