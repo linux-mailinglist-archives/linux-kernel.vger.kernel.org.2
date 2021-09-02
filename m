@@ -2,121 +2,412 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16AB63FEB6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:41:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B343FEB6F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343648AbhIBJfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 05:35:19 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:41156 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S245186AbhIBJfS (ORCPT
+        id S1343707AbhIBJhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 05:37:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343632AbhIBJhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 05:35:18 -0400
-X-UUID: 85c7b912786f47d1a103bd5831e8bd65-20210902
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ZPDQyXrInu0IQssPczuqbUdeSDCOSdcmMPprWdZX5fA=;
-        b=ukqblwj6wBxjKfQ9K3+7xnfsoyB0O6uqn2flde0iLc3SJ6TQLE1O9XpQUD0OXepxMyPaaZMXY3UHBZ1tgk/V3x83glIWsq9IlPJX3vzcsgEqevi5CNtjqfz+DTwBPLoOc30fIZ9IJs7Vhqn//1Gj0gtcjyestb8P90h5A9q995Q=;
-X-UUID: 85c7b912786f47d1a103bd5831e8bd65-20210902
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <chuanjia.liu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1573750120; Thu, 02 Sep 2021 17:34:10 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 2 Sep 2021 17:34:09 +0800
-Received: from mhfsdcap04 (10.17.3.154) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 2 Sep 2021 17:34:06 +0800
-Message-ID: <eb855d186d572e8a0343456bb5d76797f8f3870f.camel@mediatek.com>
-Subject: Re: [PATCH v12 2/6] PCI: mediatek: Add new method to get shared
- pcie-cfg base address
-From:   Chuanjia Liu <chuanjia.liu@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>
-CC:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        "Jianjun Wang" <jianjun.wang@mediatek.com>,
-        Yong Wu <yong.wu@mediatek.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Thu, 2 Sep 2021 17:34:08 +0800
-In-Reply-To: <CAL_Jsq+dBi-XUDJD_STP=jWw+RLkRpX1U9XsRMhqK4U1H=0FHw@mail.gmail.com>
-References: <20210830214317.GA27606@bjorn-Precision-5520>
-         <ccf767340afe13a6d273ad8fbc29c6bc966d6314.camel@mediatek.com>
-         <CAL_Jsq+dBi-XUDJD_STP=jWw+RLkRpX1U9XsRMhqK4U1H=0FHw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Thu, 2 Sep 2021 05:37:13 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6ABEC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 02:36:13 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id e21so2834467ejz.12
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 02:36:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oiVUqhUzpAXi5Rrv/SQZ56bBHzWbW+Shhib5BpCPN5Y=;
+        b=aaMA4sU6ovNLlj7FMTDIadUW73pHrmNBhlkWjosPY0t6nrgx09rC0pa/zXV7/JkUp2
+         g5VA0MlNB0f/7FpELsEi5K/lbZfwWhDaXhLWsIC6wbaUdD0zkJhkszDbq2lxt+MywFCX
+         UcSin86HDRU24z6f9NlAgbx/I8wFi77JrwXP5FZfTcGwJaIIdjjxQB9/IEPtCMV4i0hN
+         q+WRcjQ2AFx+ktK91WHRFYE7K0QshnnYzLAGXpBm70DNqE6WAEBtA2zvvr/gqPUXKmgS
+         AY1hSczJMbqUxA/PWwneAS951ynpC1nKEkLnWxoJgdUg8KeHsH7emcksKjDUSDY+Ylx7
+         DDsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oiVUqhUzpAXi5Rrv/SQZ56bBHzWbW+Shhib5BpCPN5Y=;
+        b=gkgi+8zMU2BHds8PC7JmnHlrP4Q8Z9uaZM2AQFZXDijAOlcrZ4Fu7eF92J8afl0BdV
+         hLieItNqznqeuGdeSSWQSEtas5+T4TdmaONVrrS7R/Ppyvy6hi5lSFMsHgYKMYCzFszM
+         q3bQZ1odrz/bGo/lOia7tdeCdu48ry4PyWeVY3zhLsYvDFQ6IOuo1D6QhE0Bf19jURRU
+         7nHIn5Y1dfxFXHvKEOHlDyMR7xjuUGBVX8ImEDmgStGGoGUzMdHskxRtYt+/bIZ/zStZ
+         /ugHn7KYKRS2Q1Etr/IYi0izBXja5iCm7q2BSvIfpxh3gIUpsjIzuFi6GzUbDpShFCsL
+         Q3rg==
+X-Gm-Message-State: AOAM530ro9P9+B3yd51eAj4anF4Dy+n7SRoWZE57JahBLi3p87x584Fr
+        Zu6l0sTqTv2YDI8oNr8BOBw=
+X-Google-Smtp-Source: ABdhPJyommdU6h5XPRV1zAEEBXwxoRv0/9ecTN+wwzRITHDZ96QNP6QeLjOy/xVa06cAJ+/iKLZQCA==
+X-Received: by 2002:a17:906:498b:: with SMTP id p11mr2818526eju.295.1630575372457;
+        Thu, 02 Sep 2021 02:36:12 -0700 (PDT)
+Received: from agape ([5.171.72.108])
+        by smtp.gmail.com with ESMTPSA id d6sm775701edx.0.2021.09.02.02.36.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 02:36:11 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Martin Kaiser <martin@kaiser.cx>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Michael Straube <straube.linux@gmail.com>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Fabio Aiuto <fabioaiuto83@gmail.com>
+Subject: [PATCH v2] staging: rtl8723bs: remove possible deadlock when disconnect
+Date:   Thu,  2 Sep 2021 11:35:59 +0200
+Message-Id: <20210902093559.9779-1-fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA4LTMxIGF0IDEwOjE3IC0wNTAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
-T24gTW9uLCBBdWcgMzAsIDIwMjEgYXQgMTA6MzEgUE0gQ2h1YW5qaWEgTGl1IDwNCj4gY2h1YW5q
-aWEubGl1QG1lZGlhdGVrLmNvbT4gd3JvdGU6DQo+ID4gDQo+ID4gT24gTW9uLCAyMDIxLTA4LTMw
-IGF0IDE2OjQzIC0wNTAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0KPiA+ID4gT24gTW9uLCBBdWcg
-MzAsIDIwMjEgYXQgMDM6MDk6NDRQTSArMDgwMCwgQ2h1YW5qaWEgTGl1IHdyb3RlOg0KPiA+ID4g
-PiBPbiBGcmksIDIwMjEtMDgtMjcgYXQgMTE6NDYgLTA1MDAsIEJqb3JuIEhlbGdhYXMgd3JvdGU6
-DQo+ID4gPiA+ID4gT24gTW9uLCBBdWcgMjMsIDIwMjEgYXQgMTE6Mjc6NTZBTSArMDgwMCwgQ2h1
-YW5qaWEgTGl1IHdyb3RlOg0KPiA+ID4gPiA+ID4gQEAgLTk5NSw2ICsxMDA0LDE0IEBAIHN0YXRp
-YyBpbnQNCj4gPiA+ID4gPiA+IG10a19wY2llX3N1YnN5c19wb3dlcnVwKHN0cnVjdA0KPiA+ID4g
-PiA+ID4gbXRrX3BjaWUgKnBjaWUpDQo+ID4gPiA+ID4gPiAgICAgICAgICAgICAgICAgICAgICAg
-ICByZXR1cm4gUFRSX0VSUihwY2llLT5iYXNlKTsNCj4gPiA+ID4gPiA+ICAgICAgICAgfQ0KPiA+
-ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiArICAgICAgIGNmZ19ub2RlID0gb2ZfZmluZF9jb21wYXRp
-YmxlX25vZGUoTlVMTCwgTlVMTCwNCj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAibWVkaWF0ZWssZ2VuZXJpDQo+ID4gPiA+ID4gPiBjLQ0KPiA+
-ID4gPiA+ID4gcGNpZWNmZyIpOw0KPiA+ID4gPiA+ID4gKyAgICAgICBpZiAoY2ZnX25vZGUpIHsN
-Cj4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICBwY2llLT5jZmcgPQ0KPiA+ID4gPiA+ID4gc3lz
-Y29uX25vZGVfdG9fcmVnbWFwKGNmZ19ub2RlKTsNCj4gPiA+ID4gPiANCj4gPiA+ID4gPiBPdGhl
-ciBkcml2ZXJzIGluIGRyaXZlcnMvcGNpL2NvbnRyb2xsZXIvIHVzZQ0KPiA+ID4gPiA+IHN5c2Nv
-bl9yZWdtYXBfbG9va3VwX2J5X3BoYW5kbGUoKSAoajcyMWUsIGRyYTd4eCwga2V5c3RvbmUsDQo+
-ID4gPiA+ID4gbGF5ZXJzY2FwZSwgYXJ0cGVjNikgb3Igc3lzY29uX3JlZ21hcF9sb29rdXBfYnlf
-Y29tcGF0aWJsZSgpDQo+ID4gPiA+ID4gKGlteDYsDQo+ID4gPiA+ID4ga2lyaW4sIHYzLXNlbWkp
-Lg0KPiA+ID4gPiA+IA0KPiA+ID4gPiA+IFlvdSBzaG91bGQgZG8gaXQgdGhlIHNhbWUgd2F5IHVu
-bGVzcyB0aGVyZSdzIGEgbmVlZCB0byBiZQ0KPiA+ID4gPiA+IGRpZmZlcmVudC4NCj4gPiA+ID4g
-DQo+ID4gPiA+IEkgaGF2ZSB1c2VkIHBoYW5kbGUsIGJ1dCBSb2Igc3VnZ2VzdGVkIHRvIHNlYXJj
-aCBmb3IgdGhlIG5vZGUNCj4gPiA+ID4gYnkNCj4gPiA+ID4gY29tcGF0aWJsZS4NCj4gPiA+ID4g
-VGhlIHJlYXNvbiB3aHkgc3lzY29uX3JlZ21hcF9sb29rdXBfYnlfY29tcGF0aWJsZSgpIGlzIG5v
-dA0KPiA+ID4gPiB1c2VkIGhlcmUgaXMgdGhhdCB0aGUgcGNpZWNmZyBub2RlIGlzIG9wdGlvbmFs
-LCBhbmQgdGhlcmUgaXMgbm8NCj4gPiA+ID4gbmVlZCB0bw0KPiA+ID4gPiByZXR1cm4gZXJyb3Ig
-d2hlbiB0aGUgbm9kZSBpcyBub3Qgc2VhcmNoZWQuDQo+ID4gPiANCj4gPiA+IEhvdyBhYm91dCB0
-aGlzPw0KPiA+ID4gDQo+ID4gPiAgIHJlZ21hcCA9IHN5c2Nvbl9yZWdtYXBfbG9va3VwX2J5X2Nv
-bXBhdGlibGUoIm1lZGlhdGVrLGdlbmVyaWMtDQo+ID4gPiBwY2llY2ZnIik7DQo+ID4gPiAgIGlm
-ICghSVNfRVJSKHJlZ21hcCkpDQo+ID4gPiAgICAgcGNpZS0+Y2ZnID0gcmVnbWFwOw0KPiANCj4g
-KzENCj4gDQo+ID4gDQo+ID4gSGkgQmpvcm4sDQo+ID4gDQo+ID4gV2UgbmVlZCB0byBkZWFsIHdp
-dGggdGhyZWUgc2l0dWF0aW9ucw0KPiA+IDEpIE5vIGVycm9yDQo+ID4gMikgVGhlIGVycm9yIG9m
-IHRoZSBub2RlIG5vdCBmb3VuZCwgZG9uJ3QgZG8gYW55dGhpbmcNCj4gPiAzKSBPdGhlciBlcnJv
-cnMsIHJldHVybiBlcnJvcnMNCj4gPiANCj4gPiBJIGd1ZXNzIHlvdSBtZWFuDQo+ID4gDQo+ID4g
-cmVnbWFwID0gc3lzY29uX3JlZ21hcF9sb29rdXBfYnlfY29tcGF0aWJsZSgibWVkaWF0ZWssZ2Vu
-ZXJpYy0NCj4gPiBwY2llY2ZnIik7DQo+ID4gICBpZiAoIUlTX0VSUihyZWdtYXApKQ0KPiA+ICAg
-ICAgIHBjaWUtPmNmZyA9IHJlZ21hcDsNCj4gPiAgIGVsc2UgaWYgKElTX0VSUihyZWdtYXApICYm
-IFBUUl9FUlIocmVnbWFwKSAhPSAtRU5PREVWKQ0KPiANCj4gWW91IGFscmVhZHkga25vdyAgSVNf
-RVJSIGlzIHRydWUgaGVyZS4NCj4gDQo+ID4gICAgICAgcmV0dXJuIFBUUl9FUlIocmVnbWFwKTsN
-Cj4gDQo+IHN5c2Nvbl9yZWdtYXBfbG9va3VwX2J5X2NvbXBhdGlibGVfb3B0aW9uYWwgaXMgdGhl
-IGZ1bmN0aW9uIHlvdSBhcmUNCj4gbG9va2luZyBmb3IuIFRoZSBfb3B0aW9uYWwgZmxhdm9yIGRv
-ZXNuJ3QgZXhpc3QsIHNvIGNyZWF0ZSBpdC4gVGhlcmUNCj4gaXMgb25lIGZvciB0aGUgcGhhbmRs
-ZSBsb29rdXAuDQo+IA0KPiA+IA0KPiA+IEknbSBub3Qgc3VyZSBpZiB3ZSBuZWVkIHRoaXMsIGl0
-IHNlZW1zIGEgbGl0dGxlIHdlaXJkIGFuZCB0aGVyZSBhcmUNCj4gPiBtYW55IGRyaXZlcnMgaW4g
-b3RoZXIgc3Vic3lzdGVtcyB0aGF0IHVzZSBzeXNjb25fbm9kZV90b19yZWdtYXAoKS4NCj4gDQo+
-IFlvdSBhcmUgaW1wbGVtZW50aW5nIHRoZSBleGFjdCBzYW1lIHNlcXVlbmNlIHRoYXQNCj4gc3lz
-Y29uX3JlZ21hcF9sb29rdXBfYnlfY29tcGF0aWJsZSgpIGRvZXMsIHNvIGNsZWFybHkgeW91IHNo
-b3VsZCBiZQ0KPiB1c2luZyBpdC4gVGhlIG9uZSBkaWZmZXJlbmNlIGlzIHlvdSBmb3Jnb3QgdGhl
-IG9mX25vZGVfcHV0KCkuDQoNCkhpLFJvYg0KVGhhbmtzIGZvciB5b3VyIGV4cGxhbmF0aW9uLiBZ
-b3UncmUgcmlnaHQuIA0KTm93IEkgdW5kZXJzdGFuZCB1c2Ugc3lzY29uX3JlZ21hcF9sb29rdXBf
-YnlfY29tcGF0aWJsZSgpIGlzIGEgYmV0dGVyDQp3YXkuIEknbGwgZm9sbG93IHlvdXIgYWR2aWNl
-DQogDQpyZWdtYXAgPSBzeXNjb25fcmVnbWFwX2xvb2t1cF9ieV9jb21wYXRpYmxlKCJtZWRpYXRl
-ayxnZW5lcmljLQ0KcGNpZWNmZyIpOw0KaWYgKCFJU19FUlIocmVnbWFwKSkNCglwY2llLT5jZmcg
-PSByZWdtYXA7DQplbHNlIGlmIChQVFJfRVJSKHJlZ21hcCkgIT0gLUVOT0RFVikNCglyZXR1cm4g
-UFRSX0VSUihyZWdtYXApOw0KDQpCZXN0IHJlZ2FyZHMNCkNodWFuamlhDQogDQo+IA0KPiBSb2IN
-Cj4gDQo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+
-IExpbnV4LW1lZGlhdGVrIG1haWxpbmcgbGlzdA0KPiBMaW51eC1tZWRpYXRla0BsaXN0cy5pbmZy
-YWRlYWQub3JnDQo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-bGludXgtbWVkaWF0ZWsNCg==
+when turning off a connection, lockdep complains with the
+following warning (a modprobe has been done but the same
+happens with a disconnection from NetworkManager,
+it's enough to trigger a cfg80211_disconnect call):
+
+[  682.855867] ======================================================
+[  682.855877] WARNING: possible circular locking dependency detected
+[  682.855887] 5.14.0-rc6+ #16 Tainted: G         C OE
+[  682.855898] ------------------------------------------------------
+[  682.855906] modprobe/1770 is trying to acquire lock:
+[  682.855916] ffffb6d000332b00 (&pxmitpriv->lock){+.-.}-{2:2},
+		at: rtw_free_stainfo+0x52/0x4a0 [r8723bs]
+[  682.856073]
+               but task is already holding lock:
+[  682.856081] ffffb6d0003336a8 (&pstapriv->sta_hash_lock){+.-.}-{2:2},
+		at: rtw_free_assoc_resources+0x48/0x110 [r8723bs]
+[  682.856207]
+               which lock already depends on the new lock.
+
+[  682.856215]
+               the existing dependency chain (in reverse order) is:
+[  682.856223]
+               -> #1 (&pstapriv->sta_hash_lock){+.-.}-{2:2}:
+[  682.856247]        _raw_spin_lock_bh+0x34/0x40
+[  682.856265]        rtw_get_stainfo+0x9a/0x110 [r8723bs]
+[  682.856389]        rtw_xmit_classifier+0x27/0x130 [r8723bs]
+[  682.856515]        rtw_xmitframe_enqueue+0xa/0x20 [r8723bs]
+[  682.856642]        rtl8723bs_hal_xmit+0x3b/0xb0 [r8723bs]
+[  682.856752]        rtw_xmit+0x4ef/0x890 [r8723bs]
+[  682.856879]        _rtw_xmit_entry+0xba/0x350 [r8723bs]
+[  682.856981]        dev_hard_start_xmit+0xee/0x320
+[  682.856999]        sch_direct_xmit+0x8c/0x330
+[  682.857014]        __dev_queue_xmit+0xba5/0xf00
+[  682.857030]        packet_sendmsg+0x981/0x1b80
+[  682.857047]        sock_sendmsg+0x5b/0x60
+[  682.857060]        __sys_sendto+0xf1/0x160
+[  682.857073]        __x64_sys_sendto+0x24/0x30
+[  682.857087]        do_syscall_64+0x3a/0x80
+[  682.857102]        entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  682.857117]
+               -> #0 (&pxmitpriv->lock){+.-.}-{2:2}:
+[  682.857142]        __lock_acquire+0xfd9/0x1b50
+[  682.857158]        lock_acquire+0xb4/0x2c0
+[  682.857172]        _raw_spin_lock_bh+0x34/0x40
+[  682.857185]        rtw_free_stainfo+0x52/0x4a0 [r8723bs]
+[  682.857308]        rtw_free_assoc_resources+0x53/0x110 [r8723bs]
+[  682.857415]        cfg80211_rtw_disconnect+0x4b/0x70 [r8723bs]
+[  682.857522]        cfg80211_disconnect+0x12e/0x2f0 [cfg80211]
+[  682.857759]        cfg80211_leave+0x2b/0x40 [cfg80211]
+[  682.857961]        cfg80211_netdev_notifier_call+0xa9/0x560 [cfg80211]
+[  682.858163]        raw_notifier_call_chain+0x41/0x50
+[  682.858180]        __dev_close_many+0x62/0x100
+[  682.858195]        dev_close_many+0x7d/0x120
+[  682.858209]        unregister_netdevice_many+0x416/0x680
+[  682.858225]        unregister_netdevice_queue+0xab/0xf0
+[  682.858240]        unregister_netdev+0x18/0x20
+[  682.858255]        rtw_unregister_netdevs+0x28/0x40 [r8723bs]
+[  682.858360]        rtw_dev_remove+0x24/0xd0 [r8723bs]
+[  682.858463]        sdio_bus_remove+0x31/0xd0 [mmc_core]
+[  682.858532]        device_release_driver_internal+0xf7/0x1d0
+[  682.858550]        driver_detach+0x47/0x90
+[  682.858564]        bus_remove_driver+0x77/0xd0
+[  682.858579]        rtw_drv_halt+0xc/0x678 [r8723bs]
+[  682.858685]        __x64_sys_delete_module+0x13f/0x250
+[  682.858699]        do_syscall_64+0x3a/0x80
+[  682.858715]        entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  682.858729]
+               other info that might help us debug this:
+
+[  682.858737]  Possible unsafe locking scenario:
+
+[  682.858744]        CPU0                    CPU1
+[  682.858751]        ----                    ----
+[  682.858758]   lock(&pstapriv->sta_hash_lock);
+[  682.858772]                                lock(&pxmitpriv->lock);
+[  682.858786]                                lock(&pstapriv->sta_hash_lock);
+[  682.858799]   lock(&pxmitpriv->lock);
+[  682.858812]
+                *** DEADLOCK ***
+
+[  682.858820] 5 locks held by modprobe/1770:
+[  682.858831]  #0: ffff8d870697d980 (&dev->mutex){....}-{3:3},
+		at: device_release_driver_internal+0x1a/0x1d0
+[  682.858869]  #1: ffffffffbdbbf1c8 (rtnl_mutex){+.+.}-{3:3},
+		at: unregister_netdev+0xe/0x20
+[  682.858906]  #2: ffff8d87054ee5e8 (&rdev->wiphy.mtx){+.+.}-{3:3},
+		at: cfg80211_netdev_notifier_call+0x9e/0x560 [cfg80211]
+[  682.859131]  #3: ffff8d870f2bc8f0 (&wdev->mtx){+.+.}-{3:3},
+		at: cfg80211_leave+0x20/0x40 [cfg80211]
+[  682.859354]  #4: ffffb6d0003336a8 (&pstapriv->sta_hash_lock){+.-.}-{2:2},
+		at: rtw_free_assoc_resources+0x48/0x110 [r8723bs]
+[  682.859482]
+               stack backtrace:
+[  682.859491] CPU: 1 PID: 1770 Comm: modprobe Tainted: G
+		C OE     5.14.0-rc6+ #16
+[  682.859507] Hardware name: LENOVO 80NR/Madrid, BIOS DACN25WW 08/20/2015
+[  682.859517] Call Trace:
+[  682.859531]  dump_stack_lvl+0x56/0x6f
+[  682.859551]  check_noncircular+0xdb/0xf0
+[  682.859579]  __lock_acquire+0xfd9/0x1b50
+[  682.859606]  lock_acquire+0xb4/0x2c0
+[  682.859623]  ? rtw_free_stainfo+0x52/0x4a0 [r8723bs]
+[  682.859752]  ? mark_held_locks+0x48/0x70
+[  682.859769]  ? rtw_free_stainfo+0x4a/0x4a0 [r8723bs]
+[  682.859898]  _raw_spin_lock_bh+0x34/0x40
+[  682.859914]  ? rtw_free_stainfo+0x52/0x4a0 [r8723bs]
+[  682.860039]  rtw_free_stainfo+0x52/0x4a0 [r8723bs]
+[  682.860171]  rtw_free_assoc_resources+0x53/0x110 [r8723bs]
+[  682.860286]  cfg80211_rtw_disconnect+0x4b/0x70 [r8723bs]
+[  682.860397]  cfg80211_disconnect+0x12e/0x2f0 [cfg80211]
+[  682.860629]  cfg80211_leave+0x2b/0x40 [cfg80211]
+[  682.860836]  cfg80211_netdev_notifier_call+0xa9/0x560 [cfg80211]
+[  682.861048]  ? __lock_acquire+0x4dc/0x1b50
+[  682.861070]  ? lock_is_held_type+0xa8/0x110
+[  682.861089]  ? lock_is_held_type+0xa8/0x110
+[  682.861104]  ? find_held_lock+0x2d/0x90
+[  682.861120]  ? packet_notifier+0x173/0x300
+[  682.861141]  ? lock_release+0xb3/0x250
+[  682.861160]  ? packet_notifier+0x192/0x300
+[  682.861184]  raw_notifier_call_chain+0x41/0x50
+[  682.861205]  __dev_close_many+0x62/0x100
+[  682.861224]  dev_close_many+0x7d/0x120
+[  682.861245]  unregister_netdevice_many+0x416/0x680
+[  682.861264]  ? find_held_lock+0x2d/0x90
+[  682.861284]  unregister_netdevice_queue+0xab/0xf0
+[  682.861306]  unregister_netdev+0x18/0x20
+[  682.861325]  rtw_unregister_netdevs+0x28/0x40 [r8723bs]
+[  682.861434]  rtw_dev_remove+0x24/0xd0 [r8723bs]
+[  682.861542]  sdio_bus_remove+0x31/0xd0 [mmc_core]
+[  682.861615]  device_release_driver_internal+0xf7/0x1d0
+[  682.861637]  driver_detach+0x47/0x90
+[  682.861656]  bus_remove_driver+0x77/0xd0
+[  682.861674]  rtw_drv_halt+0xc/0x678 [r8723bs]
+[  682.861782]  __x64_sys_delete_module+0x13f/0x250
+[  682.861801]  ? lockdep_hardirqs_on_prepare+0xf3/0x170
+[  682.861817]  ? syscall_enter_from_user_mode+0x20/0x70
+[  682.861836]  do_syscall_64+0x3a/0x80
+[  682.861855]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[  682.861873] RIP: 0033:0x7f6dbe85400b
+[  682.861890] Code: 73 01 c3 48 8b 0d 6d 1e 0c 00 f7 d8 64 89
+01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa
+b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 3d
+1e 0c 00 f7 d8 64 89 01 48
+[  682.861906] RSP: 002b:00007ffe7a82f538 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
+[  682.861923] RAX: ffffffffffffffda RBX: 000055a64693bd20 RCX: 00007f6dbe85400b
+[  682.861935] RDX: 0000000000000000 RSI: 0000000000000800 RDI: 000055a64693bd88
+[  682.861946] RBP: 000055a64693bd20 R08: 0000000000000000 R09: 0000000000000000
+[  682.861957] R10: 00007f6dbe8c7ac0 R11: 0000000000000206 R12: 000055a64693bd88
+[  682.861967] R13: 0000000000000000 R14: 000055a64693bd88 R15: 00007ffe7a831848
+
+This happens because when we enqueue a frame for
+transmission we do it under xmit_priv lock, then calling
+rtw_get_stainfo (needed for enqueuing) takes sta_hash_lock
+and this leads to the following lock dependency:
+
+xmit_priv->lock -> sta_hash_lock
+
+Turning off a connection will bring to call
+rtw_free_assoc_resources which will set up
+the inverse dependency:
+
+sta_hash_lock -> xmit_priv_lock
+
+This could lead to a deadlock as lockdep complains.
+
+Fix it by removing the xmit_priv->lock around
+rtw_xmitframe_enqueue call inside rtl8723bs_hal_xmit
+and put it in a smaller critical section inside
+rtw_xmit_classifier, the only place where
+xmit_priv data are actually accessed.
+
+Replace spin_{lock,unlock}_bh(pxmitpriv->lock)
+in other tx paths leading to rtw_xmitframe_enqueue
+call with spin_{lock,unlock}_bh(psta->sleep_q.lock)
+- it's not clear why accessing a sleep_q was protected
+by a spinlock on xmitpriv->lock.
+
+This way is avoided the same faulty lock nesting
+order.
+
+CC: Larry Finger <Larry.Finger@lwfinger.net>
+Tested-on: Lenovo Ideapad MiiX 300-10IBY
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+Changes in v2:
+	- remove an unused local variable to suppress
+	  gcc warning intoduced by the patch
+
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c  |  7 ++-----
+ drivers/staging/rtl8723bs/core/rtw_recv.c      | 10 +++-------
+ drivers/staging/rtl8723bs/core/rtw_xmit.c      | 13 +++++++------
+ drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c |  2 --
+ 4 files changed, 12 insertions(+), 20 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+index 375d2a742dd2..a1ae16ec69eb 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+@@ -5919,7 +5919,6 @@ u8 chk_bmc_sleepq_hdl(struct adapter *padapter, unsigned char *pbuf)
+ 	struct sta_info *psta_bmc;
+ 	struct list_head *xmitframe_plist, *xmitframe_phead, *tmp;
+ 	struct xmit_frame *pxmitframe = NULL;
+-	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
+ 	struct sta_priv  *pstapriv = &padapter->stapriv;
+ 
+ 	/* for BC/MC Frames */
+@@ -5930,8 +5929,7 @@ u8 chk_bmc_sleepq_hdl(struct adapter *padapter, unsigned char *pbuf)
+ 	if ((pstapriv->tim_bitmap&BIT(0)) && (psta_bmc->sleepq_len > 0)) {
+ 		msleep(10);/*  10ms, ATIM(HIQ) Windows */
+ 
+-		/* spin_lock_bh(&psta_bmc->sleep_q.lock); */
+-		spin_lock_bh(&pxmitpriv->lock);
++		spin_lock_bh(&psta_bmc->sleep_q.lock);
+ 
+ 		xmitframe_phead = get_list_head(&psta_bmc->sleep_q);
+ 		list_for_each_safe(xmitframe_plist, tmp, xmitframe_phead) {
+@@ -5954,8 +5952,7 @@ u8 chk_bmc_sleepq_hdl(struct adapter *padapter, unsigned char *pbuf)
+ 			rtw_hal_xmitframe_enqueue(padapter, pxmitframe);
+ 		}
+ 
+-		/* spin_unlock_bh(&psta_bmc->sleep_q.lock); */
+-		spin_unlock_bh(&pxmitpriv->lock);
++		spin_unlock_bh(&psta_bmc->sleep_q.lock);
+ 
+ 		/* check hi queue and bmc_sleepq */
+ 		rtw_chk_hi_queue_cmd(padapter);
+diff --git a/drivers/staging/rtl8723bs/core/rtw_recv.c b/drivers/staging/rtl8723bs/core/rtw_recv.c
+index 105fe0e3482a..41bfca549c64 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_recv.c
++++ b/drivers/staging/rtl8723bs/core/rtw_recv.c
+@@ -957,10 +957,8 @@ static signed int validate_recv_ctrl_frame(struct adapter *padapter, union recv_
+ 		if ((psta->state&WIFI_SLEEP_STATE) && (pstapriv->sta_dz_bitmap&BIT(psta->aid))) {
+ 			struct list_head	*xmitframe_plist, *xmitframe_phead;
+ 			struct xmit_frame *pxmitframe = NULL;
+-			struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
+ 
+-			/* spin_lock_bh(&psta->sleep_q.lock); */
+-			spin_lock_bh(&pxmitpriv->lock);
++			spin_lock_bh(&psta->sleep_q.lock);
+ 
+ 			xmitframe_phead = get_list_head(&psta->sleep_q);
+ 			xmitframe_plist = get_next(xmitframe_phead);
+@@ -991,12 +989,10 @@ static signed int validate_recv_ctrl_frame(struct adapter *padapter, union recv_
+ 					update_beacon(padapter, WLAN_EID_TIM, NULL, true);
+ 				}
+ 
+-				/* spin_unlock_bh(&psta->sleep_q.lock); */
+-				spin_unlock_bh(&pxmitpriv->lock);
++				spin_unlock_bh(&psta->sleep_q.lock);
+ 
+ 			} else {
+-				/* spin_unlock_bh(&psta->sleep_q.lock); */
+-				spin_unlock_bh(&pxmitpriv->lock);
++				spin_unlock_bh(&psta->sleep_q.lock);
+ 
+ 				if (pstapriv->tim_bitmap&BIT(psta->aid)) {
+ 					if (psta->sleepq_len == 0) {
+diff --git a/drivers/staging/rtl8723bs/core/rtw_xmit.c b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+index 3eb6db2f26bb..878264f46980 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_xmit.c
++++ b/drivers/staging/rtl8723bs/core/rtw_xmit.c
+@@ -1797,6 +1797,7 @@ s32 rtw_xmit_classifier(struct adapter *padapter, struct xmit_frame *pxmitframe)
+ 	struct sta_info *psta;
+ 	struct tx_servq	*ptxservq;
+ 	struct pkt_attrib	*pattrib = &pxmitframe->attrib;
++	struct xmit_priv *xmit_priv = &padapter->xmitpriv;
+ 	struct hw_xmit	*phwxmits =  padapter->xmitpriv.hwxmits;
+ 	signed int res = _SUCCESS;
+ 
+@@ -1814,12 +1815,14 @@ s32 rtw_xmit_classifier(struct adapter *padapter, struct xmit_frame *pxmitframe)
+ 
+ 	ptxservq = rtw_get_sta_pending(padapter, psta, pattrib->priority, (u8 *)(&ac_index));
+ 
++	spin_lock_bh(&xmit_priv->lock);
+ 	if (list_empty(&ptxservq->tx_pending))
+ 		list_add_tail(&ptxservq->tx_pending, get_list_head(phwxmits[ac_index].sta_queue));
+ 
+ 	list_add_tail(&pxmitframe->list, get_list_head(&ptxservq->sta_pending));
+ 	ptxservq->qcnt++;
+ 	phwxmits[ac_index].accnt++;
++	spin_unlock_bh(&xmit_priv->lock);
+ 
+ exit:
+ 
+@@ -2202,11 +2205,10 @@ void wakeup_sta_to_xmit(struct adapter *padapter, struct sta_info *psta)
+ 	struct list_head *xmitframe_plist, *xmitframe_phead, *tmp;
+ 	struct xmit_frame *pxmitframe = NULL;
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
+-	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
+ 
+ 	psta_bmc = rtw_get_bcmc_stainfo(padapter);
+ 
+-	spin_lock_bh(&pxmitpriv->lock);
++	spin_lock_bh(&psta->sleep_q.lock);
+ 
+ 	xmitframe_phead = get_list_head(&psta->sleep_q);
+ 	list_for_each_safe(xmitframe_plist, tmp, xmitframe_phead) {
+@@ -2307,7 +2309,7 @@ void wakeup_sta_to_xmit(struct adapter *padapter, struct sta_info *psta)
+ 
+ _exit:
+ 
+-	spin_unlock_bh(&pxmitpriv->lock);
++	spin_unlock_bh(&psta->sleep_q.lock);
+ 
+ 	if (update_mask)
+ 		update_beacon(padapter, WLAN_EID_TIM, NULL, true);
+@@ -2319,9 +2321,8 @@ void xmit_delivery_enabled_frames(struct adapter *padapter, struct sta_info *pst
+ 	struct list_head *xmitframe_plist, *xmitframe_phead, *tmp;
+ 	struct xmit_frame *pxmitframe = NULL;
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
+-	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
+ 
+-	spin_lock_bh(&pxmitpriv->lock);
++	spin_lock_bh(&psta->sleep_q.lock);
+ 
+ 	xmitframe_phead = get_list_head(&psta->sleep_q);
+ 	list_for_each_safe(xmitframe_plist, tmp, xmitframe_phead) {
+@@ -2374,7 +2375,7 @@ void xmit_delivery_enabled_frames(struct adapter *padapter, struct sta_info *pst
+ 		}
+ 	}
+ 
+-	spin_unlock_bh(&pxmitpriv->lock);
++	spin_unlock_bh(&psta->sleep_q.lock);
+ }
+ 
+ void enqueue_pending_xmitbuf(struct xmit_priv *pxmitpriv, struct xmit_buf *pxmitbuf)
+diff --git a/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c b/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c
+index 156d6aba18ca..5f5c4719b586 100644
+--- a/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c
++++ b/drivers/staging/rtl8723bs/hal/rtl8723bs_xmit.c
+@@ -507,9 +507,7 @@ s32 rtl8723bs_hal_xmit(
+ 			rtw_issue_addbareq_cmd(padapter, pxmitframe);
+ 	}
+ 
+-	spin_lock_bh(&pxmitpriv->lock);
+ 	err = rtw_xmitframe_enqueue(padapter, pxmitframe);
+-	spin_unlock_bh(&pxmitpriv->lock);
+ 	if (err != _SUCCESS) {
+ 		rtw_free_xmitframe(pxmitpriv, pxmitframe);
+ 
+-- 
+2.20.1
 
