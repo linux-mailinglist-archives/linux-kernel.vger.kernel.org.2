@@ -2,130 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA783FEB2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4598B3FEB32
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245505AbhIBJ1c convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Sep 2021 05:27:32 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:62203 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245489AbhIBJ1Z (ORCPT
+        id S245565AbhIBJ2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 05:28:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245139AbhIBJ2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 05:27:25 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id E1E9740006;
-        Thu,  2 Sep 2021 09:26:25 +0000 (UTC)
-Date:   Thu, 2 Sep 2021 11:26:19 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     "Sa, Nuno" <Nuno.Sa@analog.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 12/16] iio: adc: max1027: Introduce an end of conversion
- helper
-Message-ID: <20210902112619.248bca16@xps13>
-In-Reply-To: <SJ0PR03MB635976F76F5121FFF26E858B99C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
-References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
-        <20210818111139.330636-13-miquel.raynal@bootlin.com>
-        <SJ0PR03MB635976F76F5121FFF26E858B99C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 2 Sep 2021 05:28:24 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAFF1C061575;
+        Thu,  2 Sep 2021 02:27:26 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id t42so1152474pfg.12;
+        Thu, 02 Sep 2021 02:27:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5eh/glHsJ8jkOW+kWHIi3NmtKaQUQdLU+4tO181UN7Y=;
+        b=oaH/d0E0Ho4VV9lo48x1+E38Z6h0g+HzFEPpck5bucZvK65hrec7GlSgUCetVurSdr
+         fm2FzpZqZieSl6QnyRQFGgoqaLV9FiY4XqGVZ2T7+5/pDRji8kZp6VSUk0Q+Y0B2o6nf
+         ZdmVH5coxVtusISG05cFPBjkEu7/lbKpQGU8uZIVVN+YdKDV2fYsbHQac4nWtNhcvCXH
+         CL6+XWWDFxJmdcmE+bWbMjpashCwW78+5PuMeA9fAT8msm4suEkNTA8Wb6Tx2YwTV+xR
+         /LmIUmTW69dtR6wFThyxGvrMTr7/rLq0k/vF3nlCHuBYYxJfcVvOdXXM/XQ5SahPfZlG
+         vUqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5eh/glHsJ8jkOW+kWHIi3NmtKaQUQdLU+4tO181UN7Y=;
+        b=cSkfeZgaYQxOSm5gWNVBZEUBBVN3xDPi+/nbA20GedWHeehSDT3UZ/lN0/MfXXWHaX
+         1GmlpVqIYnDXcLMkO3ilDoHIm/O+u6HalpJ5hS3Tw4RQmcu19CtCbPQpiNcbHaHZSLd6
+         79ROT1qLLDQa7AeanmBgFxogjTEiZiJNHxIo3AoIWvCmoBq/kEb7Umfdhuo0+HE4V2Ry
+         R4G46idC7hzOTHwBh1HirbBHTXNEnFlwJ5/JcJA5ab5mjWOwcWAx1fOQZdibk7WKTX3c
+         rHDrCw2ZcCiHx/v1KCiADcxb5n1UhbPo6mCV64vvsP2eirD1cCNcZJBdseM7IS8WxtkS
+         bkSA==
+X-Gm-Message-State: AOAM5312whyok4kw5qOKwzBEH1RoBFHm5yNleErhdRRNB3CpPHZM5iV1
+        J+fPiMfFk+U4RdnlhQ1ojIE=
+X-Google-Smtp-Source: ABdhPJzJ6Pz5nO5o8PukyJhRE0xNeP8YLs3eEf0JrqcClvTsVTAqXKz4JUwBy3rTsfBe5vbTJNIMFQ==
+X-Received: by 2002:a65:400c:: with SMTP id f12mr2338150pgp.296.1630574846270;
+        Thu, 02 Sep 2021 02:27:26 -0700 (PDT)
+Received: from ubt.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id 23sm2071467pgk.89.2021.09.02.02.27.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 02:27:25 -0700 (PDT)
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>
+Cc:     devicetree@vger.kernel.org, Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] of: fix of_address_to_resource and of_iomap undefined
+Date:   Thu,  2 Sep 2021 17:27:03 +0800
+Message-Id: <20210902092704.2678277-1-zhang.lyra@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nuno,
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-"Sa, Nuno" <Nuno.Sa@analog.com> wrote on Fri, 20 Aug 2021 07:28:17
-+0000:
+If CONFIG_OF is selected, but CONFIG_OF_ADDRESS is not, when compiling
+files (sunch as timer_of.c) in which the function of_iomap() is invoked,
+compiler would report 'undefined reference to of_iomap', the same case
+is for of_address_to_resource().
 
-> > -----Original Message-----
-> > From: Miquel Raynal <miquel.raynal@bootlin.com>
-> > Sent: Wednesday, August 18, 2021 1:12 PM
-> > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
-> > <lars@metafoo.de>
-> > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>; linux-
-> > iio@vger.kernel.org; linux-kernel@vger.kernel.org; Miquel Raynal
-> > <miquel.raynal@bootlin.com>
-> > Subject: [PATCH 12/16] iio: adc: max1027: Introduce an end of
-> > conversion helper
-> > 
-> > [External]
-> > 
-> > For now this helper only waits for the maximum duration of a
-> > conversion,
-> > but it will soon be improved to properly handle the end of conversion
-> > interrupt.
-> > 
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > ---
-> >  drivers/iio/adc/max1027.c | 23 +++++++++++++++++++++--
-> >  1 file changed, 21 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
-> > index afc3ce69f7ea..2d6485591761 100644
-> > --- a/drivers/iio/adc/max1027.c
-> > +++ b/drivers/iio/adc/max1027.c
-> > @@ -60,6 +60,9 @@
-> >  #define MAX1027_NAVG_32   (0x03 << 2)
-> >  #define MAX1027_AVG_EN    BIT(4)
-> > 
-> > +/* Device can achieve 300ksps so we assume a 3.33us conversion
-> > delay */
-> > +#define MAX1027_CONVERSION_UDELAY 4
-> > +
-> >  enum max1027_id {
-> >  	max1027,
-> >  	max1029,
-> > @@ -236,6 +239,20 @@ struct max1027_state {
-> >  	u8				reg ____cacheline_aligned;
-> >  };
-> > 
-> > +static DECLARE_WAIT_QUEUE_HEAD(max1027_queue);
-> > +
-> > +static int max1027_wait_eoc(struct iio_dev *indio_dev)
-> > +{
-> > +	unsigned int conversion_time =
-> > MAX1027_CONVERSION_UDELAY;
-> > +
-> > +	if (indio_dev->active_scan_mask)
-> > +		conversion_time *= hweight32(*indio_dev-  
-> > >active_scan_mask);  
-> > +
-> > +	usleep_range(conversion_time, conversion_time * 2);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  /* Scan from 0 to the highest requested channel */
-> >  static int max1027_configure_chans_to_scan(struct iio_dev
-> > *indio_dev)
-> >  {
-> > @@ -310,9 +327,11 @@ static int max1027_read_single_value(struct
-> > iio_dev *indio_dev,
-> >  	/*
-> >  	 * For an unknown reason, when we use the mode "10" (write
-> >  	 * conversion register), the interrupt doesn't occur every time.
-> > -	 * So we just wait 1 ms.
-> > +	 * So we just wait the maximum conversion time and deliver
-> > the value.
-> >  	 */
-> > -	mdelay(1);
-> > +	ret = max1027_wait_eoc(indio_dev);
-> > +	if (ret)
-> > +		return ret;  
-> 
-> I'm a bit confused here... Why are we looking at the active_scan_mask?
-> Aren't we preventing this for running concurrently with buffering?
+This patch also makes sure that of_iomap() and of_address_to_resource()
+are declared for sparc so that sparc can have its specific
+implementations in arch/sparc/kernel/of_device_common.c, even if
+including include/linux/of_address.h in it.
 
-Sorry for the confusion, at this stage the "if (active_masks)" is
-useless, I moved it later in the series when we actually start to use
-this EOC helper for the buffered reads as well.
+Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+---
+ include/linux/of_address.h | 33 +++++++++++++++++----------------
+ 1 file changed, 17 insertions(+), 16 deletions(-)
 
-Thanks,
-Miquèl
+diff --git a/include/linux/of_address.h b/include/linux/of_address.h
+index 45598dbec269..02a719d58466 100644
+--- a/include/linux/of_address.h
++++ b/include/linux/of_address.h
+@@ -80,6 +80,23 @@ static inline u64 of_translate_address(struct device_node *np,
+ 	return OF_BAD_ADDR;
+ }
+ 
++#ifdef CONFIG_SPARC
++extern int of_address_to_resource(struct device_node *dev, int index,
++				  struct resource *r);
++void __iomem *of_iomap(struct device_node *device, int index);
++#else
++static inline int of_address_to_resource(struct device_node *dev, int index,
++					 struct resource *r)
++{
++	return -EINVAL;
++}
++
++static inline void __iomem *of_iomap(struct device_node *device, int index)
++{
++	return NULL;
++}
++#endif
++
+ static inline const __be32 *__of_get_address(struct device_node *dev, int index, int bar_no,
+ 					     u64 *size, unsigned int *flags)
+ {
+@@ -124,22 +141,6 @@ static inline bool of_dma_is_coherent(struct device_node *np)
+ }
+ #endif /* CONFIG_OF_ADDRESS */
+ 
+-#ifdef CONFIG_OF
+-extern int of_address_to_resource(struct device_node *dev, int index,
+-				  struct resource *r);
+-void __iomem *of_iomap(struct device_node *node, int index);
+-#else
+-static inline int of_address_to_resource(struct device_node *dev, int index,
+-					 struct resource *r)
+-{
+-	return -EINVAL;
+-}
+-
+-static inline void __iomem *of_iomap(struct device_node *device, int index)
+-{
+-	return NULL;
+-}
+-#endif
+ #define of_range_parser_init of_pci_range_parser_init
+ 
+ static inline const __be32 *of_get_address(struct device_node *dev, int index,
+-- 
+2.25.1
+
