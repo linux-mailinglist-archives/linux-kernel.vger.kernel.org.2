@@ -2,66 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 203D63FE92D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 08:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FF93FE90C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 08:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238110AbhIBGRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 02:17:53 -0400
-Received: from business122-5.web-hosting.com ([192.64.117.134]:38066 "EHLO
-        business122-5.web-hosting.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230215AbhIBGRw (ORCPT
+        id S232125AbhIBGD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 02:03:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhIBGD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 02:17:52 -0400
-X-Greylist: delayed 1868 seconds by postgrey-1.27 at vger.kernel.org; Thu, 02 Sep 2021 02:17:52 EDT
-Received: from [::1] (port=48898 helo=business122.web-hosting.com)
-        by business122.web-hosting.com with esmtpa (Exim 4.94.2)
-        (envelope-from <info@maincompany.org>)
-        id 1mLfXV-000pNH-0f; Thu, 02 Sep 2021 01:45:29 -0400
+        Thu, 2 Sep 2021 02:03:56 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F9FC061575;
+        Wed,  1 Sep 2021 23:02:59 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id x16so516031pll.2;
+        Wed, 01 Sep 2021 23:02:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4Re97f8GY8el/iMPEVsgvs7BOVwiJIsCI6/eriuguFs=;
+        b=qYM0fQHbJkFQBDJkvzUuDFiPIL9wUxxedWDBsnxtjqQ1jsEMrFcnKPeCW00LVfmuDv
+         lpej30BlLxCHsbjmobKInFNUsVZ5oBG7ihweYbzozYQhwdkcYaqSq+05fCQp22eP61hN
+         +YhPn6xJ+lzUN/5dHRS9CN7zauoJMAJGZ3PTANaRxmClQgMzc3YgKRzxHA7x27IMzbBP
+         AsD3gWqNBPXRixc4QuEXQDomuj1tk4txgCRK7SSKnmEw1/O0EN/+Asx9nzBFcVrJZgNq
+         88mP5GH2RWnHm7bxs3H5s12BKPyf+a+XDM6b4730vlA+uo3BWc+agCQxHEejXtGyA+v8
+         bzDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4Re97f8GY8el/iMPEVsgvs7BOVwiJIsCI6/eriuguFs=;
+        b=ZolzaEBRJ7zVbM2FdLt8Ti7DIfmLQz1a1Ke2jYbKHZlPMDUtZ0PPU6ELEr1bEeisFc
+         TI6JuTkNlkit6sVfE78RL4KaXTRQ5RuVn95f2/jk2hmDs+D6nRIERKnGFPmz2w/1uB6z
+         JtFFrtHgt+dbc9xvFIbqehd9Ok8u1xNArJHIXZwakG1W7rL4fOsbAbRcIO6L0aO5afVu
+         a8BRytgudIBMFPz2Bzbheduth6qYy/wRP62tO3rakU/0lBLJxt6/YZOY2gWtl6cV/LQI
+         bommoDwhPFjBXuOtMtHbC8YhdCwD2A5yB9q8oWi5axBy3MNXPhD+74lW1bKX+Nv32RUO
+         Mfng==
+X-Gm-Message-State: AOAM5312qDkyz/eTtU+eAhiaLY3bx/DVCsWgDn2RzlMIlcbF/8ofGqo4
+        QiDEUqgPSuQEoPz4q1VyC+0iR3UurkdPe64Y
+X-Google-Smtp-Source: ABdhPJwWPxm9CgEPO6s+JVRKWITau8HOy+nSIb3lsNVCGvxW2B4ol2HQM+TcVuR4Z2k+TCFscKBoLw==
+X-Received: by 2002:a17:902:e291:b0:138:de28:bee5 with SMTP id o17-20020a170902e29100b00138de28bee5mr1522293plc.40.1630562578473;
+        Wed, 01 Sep 2021 23:02:58 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.48])
+        by smtp.gmail.com with ESMTPSA id g17sm844047pfi.168.2021.09.01.23.02.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 23:02:57 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 4.19] fbmem: add margin check to fb_check_caps()
+Date:   Thu,  2 Sep 2021 14:02:08 +0800
+Message-Id: <20210902060213.1702544-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Date:   Thu, 02 Sep 2021 01:45:12 -0400
-From:   "Mrs. Asil Almrsali" <info@maincompany.org>
-To:     undisclosed-recipients:;
-Subject: I am soliciting for your kind recommendation or advice on any short
- term and highly lucrative investment
-Reply-To: asilalmrsali@gmail.com
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <63b47b4318281d71edc750f616dfbc98@maincompany.org>
-X-Sender: info@maincompany.org
-Organization: investment
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - business122.web-hosting.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - maincompany.org
-X-Get-Message-Sender-Via: business122.web-hosting.com: authenticated_id: info@maincompany.org
-X-Authenticated-Sender: business122.web-hosting.com: info@maincompany.org
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-From-Rewrite: unmodified, already matched
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+[ Upstream commit a49145acfb975d921464b84fe00279f99827d816 ]
 
+A fb_ioctl() FBIOPUT_VSCREENINFO call with invalid xres setting
+or yres setting in struct fb_var_screeninfo will result in a
+KASAN: vmalloc-out-of-bounds failure in bitfill_aligned() as
+the margins are being cleared. The margins are cleared in
+chunks and if the xres setting or yres setting is a value of
+zero upto the chunk size, the failure will occur.
 
-How are you? I hope my email will arrive to you in good time.
+Add a margin check to validate xres and yres settings.
 
-I am soliciting for your kind recommendation or advice on any short term 
-and highly lucrative investment concept in your country.
+Note that, this patch needs special handling to backport it to linux
+kernel 4.19, 4.14, 4.9, 4.4.
 
-Also I want to know if a foreign investor can build or acquire permanent 
-residence.
+Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+Reported-by: syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Dhaval Giani <dhaval.giani@oracle.com>
+Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/1594149963-13801-1-git-send-email-george.kennedy@oracle.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/video/fbdev/core/fbmem.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Looking forward to your mail.
-
-Regards,
-Mrs. Asil Almrsali
-
-
-
-
+diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+index 84845275dbef..de04c097d67c 100644
+--- a/drivers/video/fbdev/core/fbmem.c
++++ b/drivers/video/fbdev/core/fbmem.c
+@@ -991,6 +991,10 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
+ 			goto done;
+ 		}
+ 
++		/* bitfill_aligned() assumes that it's at least 8x8 */
++		if (var->xres < 8 || var->yres < 8)
++			return -EINVAL;
++
+ 		ret = info->fbops->fb_check_var(var, info);
+ 
+ 		if (ret)
+-- 
+2.25.1
 
