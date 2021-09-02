@@ -2,202 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 702283FEB1D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:20:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924C53FEAD3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245186AbhIBJUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 05:20:47 -0400
-Received: from lgeamrelo13.lge.com ([156.147.23.53]:38474 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S245168AbhIBJUp (ORCPT
+        id S244636AbhIBIwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 04:52:01 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:33156 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S244361AbhIBIwA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 05:20:45 -0400
-Received: from unknown (HELO lgeamrelo04.lge.com) (156.147.1.127)
-        by 156.147.23.53 with ESMTP; 2 Sep 2021 17:49:44 +0900
-X-Original-SENDERIP: 156.147.1.127
-X-Original-MAILFROM: kyeongdon.kim@lge.com
-Received: from unknown (HELO localhost.localdomain) (10.159.40.99)
-        by 156.147.1.127 with ESMTP; 2 Sep 2021 17:49:44 +0900
-X-Original-SENDERIP: 10.159.40.99
-X-Original-MAILFROM: kyeongdon.kim@lge.com
-From:   Kyeongdon Kim <kyeongdon.kim@lge.com>
-To:     laurent.pinchart@ideasonboard.com
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kyeongdon Kim <kyeongdon.kim@lge.com>
-Subject: [PATCH] media: uvcvideo: use dynamic allocation for uvc_copy_op
-Date:   Thu,  2 Sep 2021 17:49:40 +0900
-Message-Id: <20210902084940.15285-1-kyeongdon.kim@lge.com>
-X-Mailer: git-send-email 2.10.2
+        Thu, 2 Sep 2021 04:52:00 -0400
+X-UUID: b07593f9166e4d58894110fbe3380758-20210902
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=VcHem3PlhQ3Tc6PDE0J4s73cFxeHqcwfm2J9cr3QOVY=;
+        b=Sa1mtb7/GfavGJ2As6yYjjms9Zo6tXOi64+CcKuGYCtx6CrA2pm005xVFRBo65jfHn8KJAnHgCc5MSs4G+8OzpmGlXE0p6ARzpsdfzrSSBCkWO0K/jL7h/nbnT1gtQqrQ1EHjBdzB7sS1pnjZNbrHhboUSaxnI0wq/fktYlWvZE=;
+X-UUID: b07593f9166e4d58894110fbe3380758-20210902
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        (envelope-from <trevor.wu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1319195617; Thu, 02 Sep 2021 16:50:59 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by mtkexhb01.mediatek.inc
+ (172.21.101.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 2 Sep
+ 2021 16:50:58 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 2 Sep 2021 16:50:57 +0800
+Message-ID: <43d231a765a2106b6ef0cbbe842ba3ec37b45878.camel@mediatek.com>
+Subject: Re: linux-next: Tree for Sep 1
+ [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko]
+From:   Trevor Wu <trevor.wu@mediatek.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+CC:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Mark Brown <broonie@kernel.org>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        Bicycle Tsai <bicycle.tsai@mediatek.com>
+Date:   Thu, 2 Sep 2021 16:50:57 +0800
+In-Reply-To: <CAMuHMdXVxNfQYwP7+iMq+CbuDx3wjHgG2xsr9jP4WwL4OLLL-Q@mail.gmail.com>
+References: <20210901181740.3a0a69f2@canb.auug.org.au>
+         <3ee0b878-b78c-2483-1a0b-7570bda0132b@infradead.org>
+         <299c7f0a7b1dede1e2f704a0133f4045e85641b5.camel@mediatek.com>
+         <CAMuHMdXVxNfQYwP7+iMq+CbuDx3wjHgG2xsr9jP4WwL4OLLL-Q@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are some issues to handle frame throughput with camera devices
-
-Using devices:
-- Logitech Webcam
-- Intel(R) RealSense(TM) Depth Camera
-
-To improve efficiency, and maximise throughput,
-use dynamic allocation for uvc_copy_op.
-
-Change from struct uvc_copy_op copy_operations[UVC_MAX_PACKETS];
-to struct uvc_copy_op *copy_operations;
-
-Now, only tested bulk video options.
-
-On test device & own debug log to check frame duration(us),
-refer to test result the below:
-
-Use copy_operations[UVC_MAX_PACKETS]
-[UVC] Check time duration(us) : 64732 / 66000
-[UVC] Check time duration(us) : 67452 / 66000
-[UVC] Check time duration(us) : 67413 / 66000
-[UVC] Check time duration(us) : 66713 / 66000
-[UVC] Check time duration(us) : 67967 / 66000
-
-Use *copy_operations
-[UVC] Check time duration(us) : 30804 / 66000
-[UVC] Check time duration(us) : 38642 / 66000
-[UVC] Check time duration(us) : 26011 / 66000
-[UVC] Check time duration(us) : 30116 / 66000
-[UVC] Check time duration(us) : 29265 / 66000
-
-Signed-off-by: Kyeongdon Kim <kyeongdon.kim@lge.com>
----
- drivers/media/usb/uvc/uvc_video.c | 52 ++++++++++++++++++++++++++++++++++++---
- drivers/media/usb/uvc/uvcvideo.h  |  3 ++-
- 2 files changed, 51 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index e164646..32bc98e 100644
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -1614,6 +1614,33 @@ static void uvc_video_complete(struct urb *urb)
- 	queue_work(stream->async_wq, &uvc_urb->work);
- }
- 
-+static void uvc_free_urb_cop(struct uvc_streaming *stream)
-+{
-+	for_each_uvc_urb(uvc_urb, stream) {
-+		if (uvc_urb->copy_operations) {
-+			kfree(uvc_urb->copy_operations);
-+			uvc_urb->copy_operations = NULL;
-+		}
-+	}
-+}
-+
-+static int uvc_alloc_urb_cop(struct uvc_streaming *stream, gfp_t gfp_flags)
-+{
-+	int max_packet = stream->urb_max_packets;
-+
-+	for_each_uvc_urb(uvc_urb, stream) {
-+		uvc_urb->copy_operations
-+				= kcalloc(max_packet, sizeof(struct uvc_copy_op), gfp_flags);
-+		if (uvc_urb->copy_operations == NULL)
-+			goto error;
-+	}
-+	return 0;
-+error:
-+	uvc_free_urb_cop(stream);
-+
-+	return -ENOMEM;
-+}
-+
- /*
-  * Free transfer buffers.
-  */
-@@ -1687,8 +1714,8 @@ static int uvc_alloc_urb_buffers(struct uvc_streaming *stream,
- 	 * payloads across multiple URBs.
- 	 */
- 	npackets = DIV_ROUND_UP(size, psize);
--	if (npackets > UVC_MAX_PACKETS)
--		npackets = UVC_MAX_PACKETS;
-+	if (npackets > stream->urb_max_packets)
-+		npackets = stream->urb_max_packets;
- 
- 	/* Retry allocations until one succeed. */
- 	for (; npackets > 1; npackets /= 2) {
-@@ -1744,8 +1771,10 @@ static void uvc_video_stop_transfer(struct uvc_streaming *stream,
- 		uvc_urb->urb = NULL;
- 	}
- 
--	if (free_buffers)
-+	if (free_buffers) {
- 		uvc_free_urb_buffers(stream);
-+		uvc_free_urb_cop(stream);
-+	}
- }
- 
- /*
-@@ -1790,10 +1819,18 @@ static int uvc_init_video_isoc(struct uvc_streaming *stream,
- 	psize = uvc_endpoint_max_bpi(stream->dev->udev, ep);
- 	size = stream->ctrl.dwMaxVideoFrameSize;
- 
-+	stream->urb_max_packets = UVC_MAX_PACKETS;
-+
- 	npackets = uvc_alloc_urb_buffers(stream, size, psize, gfp_flags);
- 	if (npackets == 0)
- 		return -ENOMEM;
- 
-+	if (uvc_alloc_urb_cop(stream, gfp_flags) != 0) {
-+		uvc_dbg(stream->dev, VIDEO,
-+				"Failed to init URBs copy operations.\n");
-+		return -ENOMEM;
-+	}
-+
- 	size = npackets * psize;
- 
- 	for_each_uvc_urb(uvc_urb, stream) {
-@@ -1842,11 +1879,18 @@ static int uvc_init_video_bulk(struct uvc_streaming *stream,
- 	psize = usb_endpoint_maxp(&ep->desc);
- 	size = stream->ctrl.dwMaxPayloadTransferSize;
- 	stream->bulk.max_payload_size = size;
-+	stream->urb_max_packets = DIV_ROUND_UP(size, psize);
- 
- 	npackets = uvc_alloc_urb_buffers(stream, size, psize, gfp_flags);
- 	if (npackets == 0)
- 		return -ENOMEM;
- 
-+	if (uvc_alloc_urb_cop(stream, gfp_flags) != 0) {
-+		uvc_dbg(stream->dev, VIDEO,
-+				"Failed to init URBs copy operations.\n");
-+		return -ENOMEM;
-+	}
-+
- 	size = npackets * psize;
- 
- 	if (usb_endpoint_dir_in(&ep->desc))
-@@ -2147,6 +2191,8 @@ int uvc_video_init(struct uvc_streaming *stream)
- 		}
- 	}
- 
-+	stream->urb_max_packets = UVC_MAX_PACKETS;
-+
- 	/* Prepare asynchronous work items. */
- 	for_each_uvc_urb(uvc_urb, stream)
- 		INIT_WORK(&uvc_urb->work, uvc_video_copy_data_work);
-diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index cce5e38..00cf6c9 100644
---- a/drivers/media/usb/uvc/uvcvideo.h
-+++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -561,7 +561,7 @@ struct uvc_urb {
- 	struct sg_table *sgt;
- 
- 	unsigned int async_operations;
--	struct uvc_copy_op copy_operations[UVC_MAX_PACKETS];
-+	struct uvc_copy_op *copy_operations;
- 	struct work_struct work;
- };
- 
-@@ -616,6 +616,7 @@ struct uvc_streaming {
- 
- 	struct uvc_urb uvc_urb[UVC_URBS];
- 	unsigned int urb_size;
-+	unsigned int urb_max_packets;
- 
- 	u32 sequence;
- 	u8 last_fid;
--- 
-2.10.2
+T24gVGh1LCAyMDIxLTA5LTAyIGF0IDEwOjIyICswMjAwLCBHZWVydCBVeXR0ZXJob2V2ZW4gd3Jv
+dGU6DQo+IEhpIFRyZXZvciwNCj4gDQo+IE9uIFRodSwgU2VwIDIsIDIwMjEgYXQgNDozNyBBTSBU
+cmV2b3IgV3UgPHRyZXZvci53dUBtZWRpYXRlay5jb20+DQo+IHdyb3RlOg0KPiA+IE9uIFdlZCwg
+MjAyMS0wOS0wMSBhdCAxMzo1NSAtMDcwMCwgUmFuZHkgRHVubGFwIHdyb3RlOg0KPiA+ID4gT24g
+OS8xLzIxIDE6MTcgQU0sIFN0ZXBoZW4gUm90aHdlbGwgd3JvdGU6DQo+ID4gPiA+IFBsZWFzZSBk
+byBub3QgYWRkIGFueSB2NS4xNiByZWxhdGVkIGNvZGUgdG8geW91ciBsaW51eC1uZXh0DQo+ID4g
+PiA+IGluY2x1ZGVkDQo+ID4gPiA+IGJyYW5jaGVzIHVudGlsIGFmdGVyIHY1LjE1LXJjMSBoYXMg
+YmVlbiByZWxlYXNlZC4NCj4gPiA+ID4gDQo+ID4gPiA+IENoYW5nZXMgc2luY2UgMjAyMTA4MzE6
+DQo+ID4gPiA+IA0KPiA+ID4gDQo+ID4gPiANCj4gPiA+IG9uIHg4Nl82NDoNCj4gPiA+IA0KPiA+
+ID4gRVJST1I6IG1vZHBvc3Q6ICJjbGtkZXZfYWRkIiBbc291bmQvc29jL21lZGlhdGVrL210ODE5
+NS9zbmQtc29jLQ0KPiA+ID4gbXQ4MTk1LWFmZS5rb10gdW5kZWZpbmVkIQ0KPiA+ID4gRVJST1I6
+IG1vZHBvc3Q6ICJjbGtkZXZfZHJvcCIgW3NvdW5kL3NvYy9tZWRpYXRlay9tdDgxOTUvc25kLXNv
+Yy0NCj4gPiA+IG10ODE5NS1hZmUua29dIHVuZGVmaW5lZCENCj4gPiA+IEVSUk9SOiBtb2Rwb3N0
+OiAiY2xrX3VucmVnaXN0ZXJfZ2F0ZSINCj4gPiA+IFtzb3VuZC9zb2MvbWVkaWF0ZWsvbXQ4MTk1
+L3NuZC0NCj4gPiA+IHNvYy1tdDgxOTUtYWZlLmtvXSB1bmRlZmluZWQhDQo+ID4gPiBFUlJPUjog
+bW9kcG9zdDogImNsa19yZWdpc3Rlcl9nYXRlIg0KPiA+ID4gW3NvdW5kL3NvYy9tZWRpYXRlay9t
+dDgxOTUvc25kLQ0KPiA+ID4gc29jLW10ODE5NS1hZmUua29dIHVuZGVmaW5lZCENCj4gPiA+IA0K
+PiA+ID4gRnVsbCByYW5kY29uZmlnIGZpbGUgaXMgYXR0YWNoZWQuDQo+ID4gPiANCj4gPiANCj4g
+PiBIaSBSYW5keSwNCj4gPiANCj4gPiBUaGUgcHJvYmxlbSBpcyBjYXVzZWQgYnkgdGhlIGRlcGVu
+ZGVuY3kgZGVjbGFyYXRpb24sIGJlY2F1c2UgaXQncw0KPiA+IG5vdCBhDQo+ID4gZHJpdmVyIGZv
+ciB4ODZfNjQuDQo+ID4gVGhlIGRlcGVuZGVuY3kgZGVjbGFyYXRpb24gaGFzIGJlZW4gYWRkZWQg
+aW4gdGhlIGZvbGxvd2luZyBwYXRjaC4NCj4gPiANCj4gPiANCmh0dHBzOi8vdXJsZGVmZW5zZS5j
+b20vdjMvX19odHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvYWxzYS1kZXZlbC9w
+YXRjaC83ZTYyOGUzNTliZGUwNGNlYjlkZGQ3NGE0NTkzMTA1OWI0YTQ2MjNjLjE2MzA0MTU4NjAu
+Z2l0LmdlZXJ0KnJlbmVzYXNAZ2xpZGVyLmJlL19fO0t3ISFDVFJOS0E5d01nMEFSYnchd01xMTMw
+bUFvLXM0NXBQNlNoUTFTOFVJUnVKTGh3T25DYlFOQVFISUUyenZOaGpBZDY3aDFybHFrSUR4SnZD
+NV9nJA0KPiA+ICANCj4gDQo+IFRoYXQgaXMgbm90IHN1ZmZpY2llbnQsIGlmIENPTVBJTEVfVEVT
+VCBpcyBlbmFibGVkLg0KPiANCj4gTG9va3MgbGlrZSBpdCBuZWVkcyBhIGRlcGVuZGVuY3kgb24g
+Q09NTU9OX0NMSywgdG9vLg0KPiANCj4gR3J7b2V0amUsZWV0aW5nfXMsDQo+IA0KPiAgICAgICAg
+ICAgICAgICAgICAgICAgICBHZWVydA0KPiANCg0KSGkgR2VlcnQsDQoNCkJlY2F1c2UgaXQncyBh
+IEFSTTY0IGRyaXZlciwgQVJNNjQgd2lsbCBzZWxlY3QgQ09NTU9OX0NMSy4NCkl0IHNlZW1zIHRo
+YXQgc29tZSBkZXBlbmRlbmN5IHNob3VsZCBiZSBjaGVja2VkIGlmIENPTVBJTEVfVEVTVCBpcw0K
+ZW5hYmxlZCBhbmQgdGhlIGRyaXZlciBpcyBjb21waWxlZCBvbiBub24tQVJNNjQgZW52aXJvbm1l
+bnQuDQpXZSBkb24ndCBleHBlY3QgdGhlIGRyaXZlciBjYW4gYmUgdXNlZCBvbiBub24tQVJNNjQg
+ZW52aXJvbm1lbnQsbWF5IEkNCnJlbW92ZSBDT01QSUxFX1RFU1QgdG8gc29sdmUgdGhlIHByb2Js
+ZW0/DQpJZiB0aGUgZHJpdmVyIG9ubHkgZGVwZW5kcyBvbiBBUkNIX01FRElBVEVLLCBpdCBtdXN0
+IGJlIGNvbXBpbGVkIG9uDQpBUk02NC4NCg0KVGhhbmtzLA0KVHJldm9yDQo=
 
