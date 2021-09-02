@@ -2,76 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EDD63FF42E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF94F3FF435
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347390AbhIBT3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 15:29:09 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:37806 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243515AbhIBT3G (ORCPT
+        id S1347394AbhIBTaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 15:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347360AbhIBTaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 15:29:06 -0400
-Received: by mail-ot1-f50.google.com with SMTP id i3-20020a056830210300b0051af5666070so3936046otc.4;
-        Thu, 02 Sep 2021 12:28:07 -0700 (PDT)
+        Thu, 2 Sep 2021 15:30:23 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC59BC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 12:29:24 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id a93so5975304ybi.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 12:29:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6hx1TLChVu3Xib6wqsnsKYGm7+kh5wmG/kTdmIBWwZA=;
+        b=pCy+LvikQOzafTsIDf1jhSBUsaa4z1gSDIb5NPlrmQ0dAU2iDuI+m+meN9VKC30Q5s
+         4n6Usl3d8sfl2KUQwI02L5x3qfh6XFGTNsBg4yQ5vDZnhFRIAEnAMAmbHIqPZqC5c5Lo
+         ok6T67ZxpsaYearZS8C4j7alQ2DeE+FtwjQ+TPDcfiOXdQEfabHbCTFk6brgPY3Ib2g4
+         vumaK+GK5aGj1axDkPs/sNQwNbpXnl8Q/FmiQ3kB7JGT/H/3qmRuAn1Dob7jLdJuJfq3
+         HBDVbF10zguNCTJ9GqY7ys3WgeCYOUtHh7NigmaE5tUvqwdeWDCR/CjsoedT7daQTF3j
+         Aw9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m/WVOkYf8zMCeB0Htd9Y4czHm4q56hYufFumoOKAa78=;
-        b=Qu8kmof0BJwOQrFRbzq72gvxmA5KmOFFhU5dzwKBIC6YIqz4/B7V+Oq2QYZTQ/I2Fa
-         B1q92PxPFCUEpetQzFMA1wQIxcos3qGL0Qemt/JJWCnnBUJ0fc3uUC8A8C7Of/rl1DGk
-         I9yZDovfwtJgJRipQVEsZvdg2djF0hcokvZ82z1vcUM+PXQE3eE61EBwj/TXjAECSQxK
-         iFIbpJYOAgpPIVy30zcOYks7p2Y19Iv96jNOBXuMhSkMrSbrTfZxetdaw3qja0LajLDQ
-         3pc4yaECaBqnVTZ3w3uHf4OK2QStXsk+AU3ZLyrzXEFLMUkY/NtfpzL/rJ8+zWr+Xqo5
-         nYog==
-X-Gm-Message-State: AOAM531FUmXbKGdyH+6PsjU2zOMLtnlrutTHhpuj/YiIvYMswWNcridG
-        aLuk6QUXHO6sS2eGHHX1hQ==
-X-Google-Smtp-Source: ABdhPJzrIgQcHIrxJDMYkFaoqLDV9CU+oZ0ddQ2nDFfqe3jdbik2bk1LWsjDAFVLoB9iKneiwv/EtQ==
-X-Received: by 2002:a05:6830:3115:: with SMTP id b21mr4251122ots.240.1630610887169;
-        Thu, 02 Sep 2021 12:28:07 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l3sm540732ooo.7.2021.09.02.12.28.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 12:28:06 -0700 (PDT)
-Received: (nullmailer pid 1248879 invoked by uid 1000);
-        Thu, 02 Sep 2021 19:28:05 -0000
-Date:   Thu, 2 Sep 2021 14:28:05 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     jonathanh@nvidia.com, jbrunet@baylibre.com, stephan@gerhold.net,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        thierry.reding@gmail.com, robh+dt@kernel.org, broonie@kernel.org,
-        lgirdwood@gmail.com
-Subject: Re: [PATCH v2 2/3] ASoC: Use schema reference for sound-name-prefix
-Message-ID: <YTElxe4wwe8LPQqE@robh.at.kernel.org>
-References: <1630562033-13231-1-git-send-email-spujar@nvidia.com>
- <1630562033-13231-3-git-send-email-spujar@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6hx1TLChVu3Xib6wqsnsKYGm7+kh5wmG/kTdmIBWwZA=;
+        b=B7M1+IDrUvkno4XqpgyaJ0TL/skK9ssaUkhxhyzAgME1Sr5EagOvFxrwVqmkC9GgQQ
+         gtYq746on0DZb9zrFfSJZvcpIV6HIvLTcYDLsbbUdCH7VzpWv4zoap82/2acrHxK1pyd
+         5cotTGytvZEq+LeptMHUnJUkTbkqfam/DW2TTz1t8+y6+wjCOEtKjxANVyo4qG78DPU5
+         tEdZ7oJrDcXBrf0IQtsIN/tYKNqzoBntXgphJSM7sp9pGVFSY9vUw8cKdye+NNMZL93V
+         l5FPYP2xGZgZhHVwk0ZsDjfe9ZVfLTUaMwMzd2j0LNCApIhp/jNPV/XHIDR3TPInr7kS
+         6ZjA==
+X-Gm-Message-State: AOAM532qJBPFalQXdefW6vidBofK9VIc4Bwn2XG1PBJ/nDHX9W87gOmc
+        zMR3PveCr2g3iLN+Wb8BIMjAeF7zgvBXMZ69x9BOHQ==
+X-Google-Smtp-Source: ABdhPJy2CjO1I67T+PQpg8YLPijsHlOxA6EHAyqe5+JzRgKtib9fvCVULpHBG6yc/KMPxLIkBNOW/ULSCVkrAFwXN8Q=
+X-Received: by 2002:a5b:50b:: with SMTP id o11mr6645741ybp.466.1630610963746;
+ Thu, 02 Sep 2021 12:29:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1630562033-13231-3-git-send-email-spujar@nvidia.com>
+References: <20210902025528.1017391-1-saravanak@google.com>
+ <20210902025528.1017391-3-saravanak@google.com> <CAL_JsqJOv7D5nHteGPDKC2+ns1caVNs-NFFJppLuK0OEB8dztQ@mail.gmail.com>
+ <CAGETcx-rOakAX_apu2ecu6jWCwzO0RgMkwdfzyF+UaxQfVj4CA@mail.gmail.com> <CAL_Jsq+A1T5+KK5xsVVtrMVeuMre3B6sAAroX+a3gQy6wY+r8A@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+A1T5+KK5xsVVtrMVeuMre3B6sAAroX+a3gQy6wY+r8A@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 2 Sep 2021 12:28:47 -0700
+Message-ID: <CAGETcx9wY66TsFX_1rFUO+toE-OpkAvWSdcNVK7M=LYwa6xbAw@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] of: platform: Mark bus devices nodes with FWNODE_FLAG_NEVER_PROBES
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Len Brown <lenb@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 02 Sep 2021 11:23:52 +0530, Sameer Pujar wrote:
-> Use schema reference for 'sound-name-prefix' property wherever
-> necessary.
-> 
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> Cc: Jerome Brunet <jbrunet@baylibre.com>
-> Cc: Stephan Gerhold <stephan@gerhold.net>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> ---
->  .../devicetree/bindings/sound/nvidia,tegra186-dspk.yaml          | 9 +++------
->  .../devicetree/bindings/sound/nvidia,tegra210-dmic.yaml          | 9 +++------
->  Documentation/devicetree/bindings/sound/nvidia,tegra210-i2s.yaml | 9 +++------
->  Documentation/devicetree/bindings/sound/nxp,tfa989x.yaml         | 9 +++------
->  Documentation/devicetree/bindings/sound/rt5659.txt               | 2 +-
->  Documentation/devicetree/bindings/sound/simple-audio-mux.yaml    | 9 +++------
->  6 files changed, 16 insertions(+), 31 deletions(-)
-> 
+On Thu, Sep 2, 2021 at 12:03 PM Rob Herring <robh+dt@kernel.org> wrote:
+>
+> On Thu, Sep 2, 2021 at 11:57 AM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > On Thu, Sep 2, 2021 at 7:24 AM Rob Herring <robh+dt@kernel.org> wrote:
+> > >
+> > > On Wed, Sep 1, 2021 at 9:55 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > >
+> > > > We don't want fw_devlink creating device links for bus devices as
+> > > > they'll never probe. So mark those device node with this flag.
+> > > >
+> > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > ---
+> > > >  drivers/of/platform.c | 16 ++++++++++++++++
+> > > >  1 file changed, 16 insertions(+)
+> > > >
+> > > > diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+> > > > index 74afbb7a4f5e..42b3936d204a 100644
+> > > > --- a/drivers/of/platform.c
+> > > > +++ b/drivers/of/platform.c
+> > > > @@ -392,6 +392,22 @@ static int of_platform_bus_create(struct device_node *bus,
+> > > >         if (!dev || !of_match_node(matches, bus))
+> > > >                 return 0;
+> > > >
+> > > > +       /*
+> > > > +        * If the bus node has only one compatible string value and it has
+> > > > +        * matched as a bus node, it's never going to get probed by a device
+> > > > +        * driver. So flag it as such so that fw_devlink knows not to create
+> > > > +        * device links with this device.
+> > > > +        *
+> > > > +        * This doesn't catch all devices that'll never probe, but this is good
+> > > > +        * enough for now.
+> > > > +        *
+> > > > +        * This doesn't really work for PPC because of how it uses
+> > > > +        * of_platform_bus_probe() to add normal devices. So ignore PPC cases.
+> > > > +        */
+> > > > +       if (!IS_ENABLED(CONFIG_PPC) &&
+> > > > +           of_property_count_strings(bus, "compatible") == 1)
+> > > > +               bus->fwnode.flags |= FWNODE_FLAG_NOT_DEVICE;
+> > >
+> > > This looks fragile relying on 1 compatible string, and the DT flags in
+> > > this code have been fragile too. I'm pretty sure we have cases of
+> > > simple-bus or simple-mfd that also have another compatible.
+> > >
+> > > Couldn't we solve this with a simple driver?
+> >
+> > Oh, I didn't think you'd like that. I'd lean towards that option too
+> > if we can address some of the other concerns below.
+> >
+> > > Make 'simple-pm-bus'
+> > > driver work for other cases?
+> >
+> > > BTW, this patch doesn't even work for
+> > > simple-pm-bus.
+> >
+> > How do you mean? Because simple-pm-bus already has a driver and
+> > doesn't set "matches" param when it calls of_platform_populate() and
+> > this flag won't be set. So at least for simple-pm-bus I don't see any
+> > issue.
+>
+> You're right.
+>
+> > I was trying to reuse of_default_bus_match_table without explicitly
+> > referring to it, but if it's confusing I can add a separate list of
+> > compatible strings and use those here instead of using "matches".
+>
+> What happens with a non-default table? I'm not sure we can assume the
+> same behavior.
+>
+> > > A driver for simple-bus may cause issues if there's a
+> > > more specific driver to bind to as we don't handle that. It's simply
+> > > whichever matches first.
+> >
+> > Right, this is my worry. Especially for devices like this (there are
+> > plenty of cases like this) which have a driver that probes them but
+> > also lists simple-bus
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/arm-realview-pb11mp.dts?id=73f3af7b4611d77bdaea303fb639333eb28e37d7#n299
+>
+> Uhh, that one is certainly a leakage of wanting an soc_device in the
+> hierarchy, not any real bus structure reflecting the h/w. I'm not a
+> fan of the soc_device stuff and its optional nature. Everything is an
+> SoC, so it should always be there? Or your device hierarchy should
+> change when you decide to add a soc_device?
+>
+> > So as long as there's a compatible string that's not one of the
+> > "transparent" busses, this driver shouldn't match. So, I don't think I
+> > can get away from checking the compatible strings.
+> >
+> > How about I check here to make sure all the "compatible" strings are
+> > from an approved transparent bus list, and if it's true, I use
+> > driver_override to force match it to a transparent bus driver? Would
+> > you be okay with that?
+>
+> Can't we do that within a driver? We check this and fail probe if
+> there's a more specific compatible.  Then another driver can match and
+> probe.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I was thinking that initially, but if we fail a probe, the driver core
+will permanently give up (won't search further) or might end up
+retrying with the same driver and never get to the other driver. I'll
+send out a v2 with what I described above. It's not too bad and it
+will also allow us to handle the PPC cases (we'll just need to keep
+adding the simple-bus equivalent entries to a table).
+
+-Saravana
