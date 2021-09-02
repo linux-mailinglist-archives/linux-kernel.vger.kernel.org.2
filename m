@@ -2,107 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248303FF6F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E9F3FF6F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240849AbhIBWMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 18:12:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34272 "EHLO mail.kernel.org"
+        id S240899AbhIBWPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 18:15:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231297AbhIBWMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 18:12:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55C5660E9B;
-        Thu,  2 Sep 2021 22:11:25 +0000 (UTC)
+        id S231684AbhIBWPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 18:15:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B607160FA0;
+        Thu,  2 Sep 2021 22:14:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630620685;
-        bh=EoBMWi7HOlvzsuS15srDlfB6FhCF/CcwEIOS16SFOE0=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=s38N3ay/Xf8PFVbtN6Eg/jidBYwgg5d8SNY0FsCdYPoZ966m3hxOcr0hAnZ4QKmJg
-         aQCT4OY7k+nCUbcVj4a/EL1zqfS+t7mLdjL1vSQFfPeX47T8JfeuFIgNnZ41s/BHsA
-         HK0ZrxaZPiApLhyT4Xj8vFwetRZWug4tc1DXU9zLpf36uYFdvg8UP7AGkweRN6Up82
-         7ARwQablur19qSCt8R6zPiwIbc8Ta8fyghNqJkM53vWU3i6KORXI4eXVyQIhffdJXR
-         50kzjxmDuAcT4e+wzJi+FUn76L4bcO2yRCwySYAcmGl4KNenLiADtVLxRlHDk4NqQG
-         mJq3EYRpcRA9w==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 139115C0E58; Thu,  2 Sep 2021 15:11:25 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 15:11:25 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [rcu:dev.2021.08.25a 99/115] kernel/time/hrtimer.c:1478:7:
- warning: no previous prototype for '__run_hrtimer_get_debug'
-Message-ID: <20210902221125.GQ4156@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <202109030640.6NuTjfs6-lkp@intel.com>
+        s=k20201202; t=1630620846;
+        bh=8yv/aTWXZ1bFs2b2YTiMap+cbrcYIgcA/mWm+A2evrA=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=T9FtD/CFDgBXFIXE3kP+Kgyk4oQLmT4wuuBXZLzziPYa4gvtOBOqU6b91IouZNX4V
+         SA/lTA0nmtoI8YL7HSIcwgWxnQVI+SpgQcMu7bO4XXktI98xiGcJVX2B89+pwr/Pdo
+         AgOA3O6LltUM3Jw1qyK4e3eBYbj/S1qWPjSGPDqFj8tuX1q7UIgqgCRuwojzfVfeuK
+         LZQ+Pc5cbYLk1pHjE8ySifvt73B7d9ipZXpNl3po/ScTRkeWLxpc8Xs8NMo2zyxQhi
+         udlYoM2zE/U+FsKFiVNvj9jAwRakOrgNBYw9wc+jNhemPnq2o6qK7HJQlHntMTLf4c
+         a8UWuy51EZ55g==
+Message-ID: <752079ce7233280d2ca67d725a4d552d9e4bcdc6.camel@kernel.org>
+Subject: Re: [PATCH v3 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Date:   Fri, 03 Sep 2021 01:14:03 +0300
+In-Reply-To: <20210903095616.9806a6dd4938c021aa204b33@intel.com>
+References: <20210825235234.153013-1-jarkko@kernel.org>
+         <20210825235234.153013-2-jarkko@kernel.org>
+         <20210826141959.5f13ff3c9c560c23b58443b1@intel.com>
+         <54923ac01fc303e5105cadca06b7c5cbd322d815.camel@kernel.org>
+         <20210828000335.1d40dfff0f408b2d91467491@intel.com>
+         <04b90a702328712204430db604b2a92ddfe8f990.camel@kernel.org>
+         <20210901173322.78f94b694b4be6b1225bee98@intel.com>
+         <6a9fccdb6a458960e43a63afcce87cc62184adf9.camel@kernel.org>
+         <20210901174705.3b1a943ef8c4bb09323c6d76@intel.com>
+         <41e9b099f6492c389b3ed3bbe107d61804a307e9.camel@kernel.org>
+         <20210903095616.9806a6dd4938c021aa204b33@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202109030640.6NuTjfs6-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 06:01:47AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.08.25a
-> head:   2ba1d046d9bc5b4496027d120e3ddcdfbb2fe9f4
-> commit: b5d3ff1ac4a5c2cad4fe4c253029971886ff7fcf [99/115] EXP cpu: Print out last hrtimer handler
+On Fri, 2021-09-03 at 09:56 +1200, Kai Huang wrote:
+> On Thu, 02 Sep 2021 15:15:51 +0300 Jarkko Sakkinen wrote:
+> > On Wed, 2021-09-01 at 17:47 +1200, Kai Huang wrote:
+> > > On Wed, 01 Sep 2021 08:41:12 +0300 Jarkko Sakkinen wrote:
+> > > > On Wed, 2021-09-01 at 17:33 +1200, Kai Huang wrote:
+> > > > > On Wed, 01 Sep 2021 05:02:45 +0300 Jarkko Sakkinen wrote:
+> > > > > > On Sat, 2021-08-28 at 00:03 +1200, Kai Huang wrote:
+> > > > > > > > > > -/* The free page list lock protected variables prepend=
+ the lock. */
+> > > > > > > > > > +/* The number of usable EPC pages in the system. */
+> > > > > > > > > > +unsigned long sgx_nr_all_pages;
+> > > > > > > > > > +
+> > > > > > > > > > +/* The number of free EPC pages in all nodes. */
+> > > > > > > > > >  static unsigned long sgx_nr_free_pages;
+> > > > > > > > > > =20
+> > > > > > > > > >  /* Nodes with one or more EPC sections. */
+> > > > > > > > > > @@ -656,6 +659,8 @@ static bool __init sgx_setup_epc_se=
+ction(u64 phys_addr, u64 size,
+> > > > > > > > > >  		list_add_tail(&section->pages[i].list, &sgx_dirty_pa=
+ge_list);
+> > > > > > > > > >  	}
+> > > > > > > > > > =20
+> > > > > > > > > > +	sgx_nr_all_pages +=3D nr_pages;
+> > > > > > > > > > +
+> > > > > > > > >=20
+> > > > > > > > > EPC sections can be freed again in sgx_init() after they =
+are successfully
+> > > > > > > > > initialized, when any further initialization fails (i.e. =
+when fails to create
+> > > > > > > > > ksgxd, or fails to register /dev/sgx_provision).  In whic=
+h case, I think
+> > > > > > > > > sgx_nr_all_pages should also be cleared.  But current sgx=
+_init() seems doesn't
+> > > > > > > > > reset it.  Do you need to fix that too?
+> > > > > > > >=20
+> > > > > > > > sgx_nr_all_pages tells just the total pages in the system, =
+i.e. it's a constant.
+> > > > > > > >=20
+> > > > > > > > Maybe a rename to "sgx_nr_total_pages" would be a good idea=
+? Would match with
+> > > > > > > > the meminfo field better too.
+> > > > > > >=20
+> > > > > > > I don't have preference on name.  I just think if there's no =
+actual user of
+> > > > > > > EPC (when both driver and KVM SGX cannot be enabled), it's po=
+intless to print
+> > > > > > > number of EPC pages.
+> > > > > >=20
+> > > > > > I'd presume that you refer to the code, which prints the number=
+ of *bytes* in
+> > > > > > the system because code printing the number of pages does not e=
+xist in this
+> > > > > > patch set.
+> > > > > >=20
+> > > > > > I have troubles the decipher your statement.
+> > > > > >=20
+> > > > > > You think that only if both the driver and KVM are *both* enabl=
+ed, only then
+> > > > > > it makes sense to have this information available for sysadmin?
+> > > > >=20
+> > > > > Only if at least one of them is enabled.
+> > > >=20
+> > > > OK, thank you, that does make sense.
+> > > >=20
+> > > > What would happen if neither is enabled is that SGX_MemTotal would
+> > > > state that there is zero bytes of EPC.=20
+> > >=20
+> > > This is the problem I pointed out at the beginning, that (if I read c=
+ode
+> > > correctly), it seems your current patch doesn't clear sgx_nr_all_page=
+s when
+> > > neither is enabled (in sgx_init() in sgx/main.c).
+> >=20
+> > It's initialized to zero, so are you talking about fallback when someth=
+ing
+> > fails?
+> >=20
+> > /Jarkko
+>=20
+> Yes, shouldn't you have something similar to below?
+>=20
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
+n.c
+> index 63d3de02bbcc..270f6103b6c0 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -836,6 +836,7 @@ static int __init sgx_init(void)
+>                 vfree(sgx_epc_sections[i].pages);
+>                 memunmap(sgx_epc_sections[i].virt_addr);
+>         }
+> +       sgx_nr_all_pages =3D 0;
+> =20
+>         return ret;
+>  }
 
-This is a debug-only commit, and will not go to mainline.  Plus I am
-getting rid of it soon.  (Famous last words...)
+Yeah, something along the lines. Thanks, this was really good
+remark. The fallback path is clearly broken.
 
-							Thanx, Paul
-
-> config: i386-tinyconfig (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build):
->         # https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=b5d3ff1ac4a5c2cad4fe4c253029971886ff7fcf
->         git remote add rcu https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
->         git fetch --no-tags rcu dev.2021.08.25a
->         git checkout b5d3ff1ac4a5c2cad4fe4c253029971886ff7fcf
->         # save the attached .config to linux build tree
->         make W=1 ARCH=i386 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    kernel/time/hrtimer.c:120:21: warning: initialized field overwritten [-Woverride-init]
->      120 |  [CLOCK_REALTIME] = HRTIMER_BASE_REALTIME,
->          |                     ^~~~~~~~~~~~~~~~~~~~~
->    kernel/time/hrtimer.c:120:21: note: (near initialization for 'hrtimer_clock_to_base_table[0]')
->    kernel/time/hrtimer.c:121:22: warning: initialized field overwritten [-Woverride-init]
->      121 |  [CLOCK_MONOTONIC] = HRTIMER_BASE_MONOTONIC,
->          |                      ^~~~~~~~~~~~~~~~~~~~~~
->    kernel/time/hrtimer.c:121:22: note: (near initialization for 'hrtimer_clock_to_base_table[1]')
->    kernel/time/hrtimer.c:122:21: warning: initialized field overwritten [-Woverride-init]
->      122 |  [CLOCK_BOOTTIME] = HRTIMER_BASE_BOOTTIME,
->          |                     ^~~~~~~~~~~~~~~~~~~~~
->    kernel/time/hrtimer.c:122:21: note: (near initialization for 'hrtimer_clock_to_base_table[7]')
->    kernel/time/hrtimer.c:123:17: warning: initialized field overwritten [-Woverride-init]
->      123 |  [CLOCK_TAI]  = HRTIMER_BASE_TAI,
->          |                 ^~~~~~~~~~~~~~~~
->    kernel/time/hrtimer.c:123:17: note: (near initialization for 'hrtimer_clock_to_base_table[11]')
-> >> kernel/time/hrtimer.c:1478:7: warning: no previous prototype for '__run_hrtimer_get_debug' [-Wmissing-prototypes]
->     1478 | void *__run_hrtimer_get_debug(int cpu)
->          |       ^~~~~~~~~~~~~~~~~~~~~~~
->    kernel/time/hrtimer.c: In function '__run_hrtimer':
->    kernel/time/hrtimer.c:1507:7: warning: variable 'expires_in_hardirq' set but not used [-Wunused-but-set-variable]
->     1507 |  bool expires_in_hardirq;
->          |       ^~~~~~~~~~~~~~~~~~
-> 
-> 
-> vim +/__run_hrtimer_get_debug +1478 kernel/time/hrtimer.c
-> 
->   1477	
-> > 1478	void *__run_hrtimer_get_debug(int cpu)
->   1479	{
->   1480		return READ_ONCE(per_cpu(__run_hrtimer_fn, cpu));
->   1481	}
->   1482	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
+/Jarkko
 
