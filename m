@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F7D3FEB22
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C7EA3FEB26
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245381AbhIBJW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 05:22:56 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:33287 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245139AbhIBJWx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 05:22:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Un.S-zH_1630574511;
-Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Un.S-zH_1630574511)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 02 Sep 2021 17:21:51 +0800
-Subject: Re: [PATCH 02/24] x86/traps: Move arch/x86/kernel/traps.c to
- arch/x86/entry/
-To:     Joerg Roedel <jroedel@suse.de>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Chester Lin <clin@suse.com>, Juergen Gross <jgross@suse.com>
-References: <20210831175025.27570-1-jiangshanlai@gmail.com>
- <20210831175025.27570-3-jiangshanlai@gmail.com> <YTCGov+vvAMvso7q@suse.de>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-Message-ID: <1f327579-e62a-df65-0763-e88243829db3@linux.alibaba.com>
-Date:   Thu, 2 Sep 2021 17:21:51 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S245185AbhIBJZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 05:25:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244578AbhIBJZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 05:25:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20CE061058;
+        Thu,  2 Sep 2021 09:24:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630574654;
+        bh=zIj7EQLNOtKs8u2vD/qBGXMIOQRpa8s5VsWEc1wDKn8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aAmyV4KMzNzdUtemIe4LXd7UPFqmAoHK9HeAEXzd58xgeF+VmtRCmOOv9NWbeDB8H
+         UrqiMXE2BjfZKNdFLimQT4KkG98Oid6EQR0vNUb36S0cTrcMi3Ek+eb8G0XboXdlo+
+         QrICBAP4mXoNvhnuc2ImeMBm07de6omqUojEyHl0=
+Date:   Thu, 2 Sep 2021 11:23:34 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] staging: r8188eu: remove unused constants from wifi.h
+Message-ID: <YTCYFu6fAi5vs2IE@kroah.com>
+References: <20210829180717.15393-1-straube.linux@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YTCGov+vvAMvso7q@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210829180717.15393-1-straube.linux@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/9/2 16:09, Joerg Roedel wrote:
-> On Wed, Sep 01, 2021 at 01:50:03AM +0800, Lai Jiangshan wrote:
->>   arch/x86/entry/Makefile            | 5 ++++-
->>   arch/x86/{kernel => entry}/traps.c | 0
->>   arch/x86/kernel/Makefile           | 5 +----
->>   3 files changed, 5 insertions(+), 5 deletions(-)
->>   rename arch/x86/{kernel => entry}/traps.c (100%)
+On Sun, Aug 29, 2021 at 08:07:16PM +0200, Michael Straube wrote:
+> The constants WLAN_REASON_PWR_CAPABILITY_NOT_VALID and
+> WLAN_REASON_SUPPORTED_CHANNEL_NOT_VALID defined in wifi.h
+> are unused, remove them.
 > 
->  From looking over the patch-set I didn't spot the reason for putting the
-> entry C code into traps.c. Can you explain that please? Otherwise I'd
-> prefer to create a new file, like arch/x86/entry/entry64.c.
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+>  drivers/staging/r8188eu/include/wifi.h | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/include/wifi.h b/drivers/staging/r8188eu/include/wifi.h
+> index 0b3fd94cea18..eb07ac9b8943 100644
+> --- a/drivers/staging/r8188eu/include/wifi.h
+> +++ b/drivers/staging/r8188eu/include/wifi.h
+> @@ -126,8 +126,6 @@ enum WIFI_REASON_CODE	{
+>  #define WLAN_REASON_DISASSOC_STA_HAS_LEFT 8
+>  #define WLAN_REASON_STA_REQ_ASSOC_WITHOUT_AUTH 9 */
+>  /* IEEE 802.11h */
 
+This comment can now be deleted, right?
 
-I agree, and I think Peter is handling it.
+thanks,
 
-Thanks
-Lai
+greg k-h
