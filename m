@@ -2,162 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0249B3FF555
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78BD3FF55D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346621AbhIBVIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
+        id S1346901AbhIBVJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344283AbhIBVIM (ORCPT
+        with ESMTP id S1346696AbhIBVJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:08:12 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D45EC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:07:13 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id t12so7058980lfg.9
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:07:13 -0700 (PDT)
+        Thu, 2 Sep 2021 17:09:07 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2B8C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:08:08 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id b10so4301215ioq.9
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:08:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XguslLdPIXxVxFmZIelMYc4XAgNZi0tFqmUYgQxOp5M=;
-        b=GRl6nsj+q44z1Ha5UTrEb/YbOYWdRlaK0fubHiqDSnXS8sWWJcwTGWoDIW2UCbn6Zr
-         Cin4HyfAIjK1TVjdigRZ9ja7ecjITroQf2sZC4PC79Xaz+k+vtV6XvjQXxLLGFS3Tgvd
-         rZxyeNE+Shn/fy1exk3CDfTmR+G77EyuLt2WAGw8j5ATWWbDt8eRpAfxm4LgmHc7p2us
-         SdVcNLtNJiQPkMgU50e+CmDwIvKnHFdoc0jTOcrwRN3F83mIHv0PA+s/3GaM1tNx243Z
-         gMITCnX0rWgJVXu10k47y/pC6aRMKRjTFKL60xjdzuDoDoXohJ5vAGs0C1TJ9uxuED5z
-         b2tA==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QNlvKyocSbzCvO9CW/S4ozdKVMf5jmvLtYdfRVLUT7M=;
+        b=HVStBy/xTTuVL0VzYJJW66/jAWAr/V7lfgEHeKg6iwJ02uaEz6Dc8TIqj9Kq/I0sSJ
+         3itc1L722n6PfmlUXy+vMKnGA0weFwpA5jvORhsCJzNFjsQGSnP+pqzL0lqxvepcLH8J
+         oFCQPo9L2ibV8EesfKMiiBkVrBA45JJjpG6K4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XguslLdPIXxVxFmZIelMYc4XAgNZi0tFqmUYgQxOp5M=;
-        b=GW7sf6wXcaPIBYA4f1I6p/Se7PeTea0N5fYdV7kXLpHWP//UyP9RKDcXCu4YhxT+4J
-         NmDQoz+EWILlLiuYB0jNrycui/CKz65j4+vPZt4KaHHWYrf7Pf3uI73YJbuOQZjKZP1O
-         InyWEIgyKjX4BJrQw5Xr86Kum6cePinsZi8wSF8eIxPSZrA4OkP6YvrOR6WRDUETgYZd
-         FnkQ7Ndf6eb4XXEv6TOFwqwIByvTDny7+LiP0d+W2lZUfOVzqSI7XMVbTrf7Mi05DKNA
-         bwuTgaEXFcoE+tdutKk93upcGSBBMACaUIf5iv03/dLiO2KUWCDSmEpwEbSJdOjB/qiM
-         J78Q==
-X-Gm-Message-State: AOAM531RSvAGX+fSeujWeVkcFgypNg2XijCugT0fPPVGBoZsw5rmBlSd
-        nSMtySTsNsylKJ+EoUkhH1Yb8tdp3gB7YTISxUKRrQ==
-X-Google-Smtp-Source: ABdhPJy8xnwpcjzdbh31Silho7ZsIAfWPr+R+NuwJ6UvcoeGh2m0fcJ/FCsJ2/qFTEX7zkqJV51h+rVv6z0QgWfOt/4=
-X-Received: by 2002:a05:6512:6c3:: with SMTP id u3mr80050lff.411.1630616831502;
- Thu, 02 Sep 2021 14:07:11 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QNlvKyocSbzCvO9CW/S4ozdKVMf5jmvLtYdfRVLUT7M=;
+        b=hG6IO2gvdXWI2T0Q8oQxfo3jAfkRqcVGSzJVPC6mfG905taUWVNzpFo7+Yv4ULIlQP
+         rBIqNLzOY2a8CD0tNv1iqxqmtVCfOlIRFWSAd+5YDgAbjbAet+jHR6Lx5YUOnM7Gm8xj
+         EbyOOR+jht7cq3w7/URG9oYgxYjwx2s5LUwrHv4RY3nyMm/DgkUeTpxPndPqMbmP4XkK
+         bPpvidiT9XlvqfugxBlj1JDnaCDvChTzFshohrNQsZ3KLDtivHqhlQq0sVSqhVV1RHGu
+         Gf9Smpf+KMW8rYrdpoYZMS1RT0u622qSoIHJCxEGFL9I+6Kc4q5d+utYXVlAPRwKzxbE
+         jB2Q==
+X-Gm-Message-State: AOAM531ihhV7K3+N1I3Oq1R/GfQaNhWM9WzIiLQ0DodXwLDA81GMMeWx
+        BD9AMXCEMy0xqYVxWX4mJclh9Q==
+X-Google-Smtp-Source: ABdhPJwiMeCAqGbdJpdasKrAHyVZ+PwegE7nTHtqLYwVSFDWz29O+UKflzZ0URqfHKgBLoRUOmd1gA==
+X-Received: by 2002:a05:6638:1646:: with SMTP id a6mr215464jat.27.1630616887436;
+        Thu, 02 Sep 2021 14:08:07 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id c11sm1469438ilo.57.2021.09.02.14.08.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 14:08:06 -0700 (PDT)
+Subject: Re: [PATCH] selftests/gpio: Fix gpio compiling error
+To:     Li Zhijian <lizhijian@cn.fujitsu.com>, bamv2005@gmail.com,
+        shuah@kernel.org, linux-gpio@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Philip Li <philip.li@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210902084635.103622-1-lizhijian@cn.fujitsu.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <22f8bef6-a399-8579-b73a-5c6b96dd6145@linuxfoundation.org>
+Date:   Thu, 2 Sep 2021 15:08:06 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210901211412.4171835-1-rananta@google.com> <20210901211412.4171835-9-rananta@google.com>
-In-Reply-To: <20210901211412.4171835-9-rananta@google.com>
-From:   Oliver Upton <oupton@google.com>
-Date:   Thu, 2 Sep 2021 14:06:58 -0700
-Message-ID: <CAOQ_QsiYHkyDVUuUjFb5Zc=o4=yrmVEERNqt1aAY=4uy91mbgQ@mail.gmail.com>
-Subject: Re: [PATCH v3 08/12] KVM: arm64: selftests: Add light-weight spinlock support
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <Alexandru.Elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210902084635.103622-1-lizhijian@cn.fujitsu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 2:14 PM Raghavendra Rao Ananta
-<rananta@google.com> wrote:
->
-> Add a simpler version of spinlock support for ARM64 for
-> the guests to use.
->
-> The implementation is loosely based on the spinlock
-> implementation in kvm-unit-tests.
->
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+On 9/2/21 2:46 AM, Li Zhijian wrote:
+
+I like to see the reason for this compile error followed by how
+it is fixed.
+
+> [root@iaas-rpma gpio]# make
+> gcc     gpio-mockup-cdev.c  -o /home/lizhijian/linux/tools/testing/selftests/gpio/gpio-mockup-cdev
+> gpio-mockup-cdev.c: In function ‘request_line_v2’:
+> gpio-mockup-cdev.c:24:30: error: storage size of ‘req’ isn’t known
+>     24 |  struct gpio_v2_line_request req;
+>        |                              ^~~
+> gpio-mockup-cdev.c:32:14: error: ‘GPIO_V2_LINE_FLAG_OUTPUT’ undeclared (first use in this function); did you mean ‘GPIOLINE_FLAG_IS_OUT’?
+>     32 |  if (flags & GPIO_V2_LINE_FLAG_OUTPUT) {
+>        |              ^~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> Search headers from linux tree like others, such as sched
+
+
+> 
+> CC: Philip Li <philip.li@intel.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
 > ---
->  tools/testing/selftests/kvm/Makefile          |  2 +-
->  .../selftests/kvm/include/aarch64/spinlock.h  | 13 +++++++++
->  .../selftests/kvm/lib/aarch64/spinlock.c      | 27 +++++++++++++++++++
->  3 files changed, 41 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/kvm/include/aarch64/spinlock.h
->  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/spinlock.c
->
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index 5d05801ab816..61f0d376af99 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -35,7 +35,7 @@ endif
->
->  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
->  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
-> -LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S
-> +LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c
->  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
->
->  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
-> diff --git a/tools/testing/selftests/kvm/include/aarch64/spinlock.h b/tools/testing/selftests/kvm/include/aarch64/spinlock.h
-> new file mode 100644
-> index 000000000000..cf0984106d14
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/include/aarch64/spinlock.h
-> @@ -0,0 +1,13 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef SELFTEST_KVM_ARM64_SPINLOCK_H
-> +#define SELFTEST_KVM_ARM64_SPINLOCK_H
-> +
-> +struct spinlock {
-> +       int v;
-> +};
-> +
-> +extern void spin_lock(struct spinlock *lock);
-> +extern void spin_unlock(struct spinlock *lock);
-> +
-> +#endif /* SELFTEST_KVM_ARM64_SPINLOCK_H */
-> diff --git a/tools/testing/selftests/kvm/lib/aarch64/spinlock.c b/tools/testing/selftests/kvm/lib/aarch64/spinlock.c
-> new file mode 100644
-> index 000000000000..6d66a3dac237
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/lib/aarch64/spinlock.c
-> @@ -0,0 +1,27 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * ARM64 Spinlock support
-> + */
-> +#include <stdint.h>
-> +
-> +#include "spinlock.h"
-> +
-> +void spin_lock(struct spinlock *lock)
-> +{
-> +       uint32_t val, res;
+>   tools/testing/selftests/gpio/Makefile | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/testing/selftests/gpio/Makefile b/tools/testing/selftests/gpio/Makefile
+> index 39f2bbe8dd3d..42ea7d2aa844 100644
+> --- a/tools/testing/selftests/gpio/Makefile
+> +++ b/tools/testing/selftests/gpio/Makefile
+> @@ -3,5 +3,6 @@
+>   TEST_PROGS := gpio-mockup.sh
+>   TEST_FILES := gpio-mockup-sysfs.sh
+>   TEST_GEN_PROGS_EXTENDED := gpio-mockup-cdev
+> +CFLAGS += -I../../../../usr/include
+>   
+>   include ../lib.mk
+> 
 
-nit: use 'int' to match the lock value type.
-
-> +
-> +       asm volatile(
-> +       "1:     ldaxr   %w0, [%2]\n"
-> +       "       cbnz    %w0, 1b\n"
-> +       "       mov     %w0, #1\n"
-> +       "       stxr    %w1, %w0, [%2]\n"
-> +       "       cbnz    %w1, 1b\n"
-> +       : "=&r" (val), "=&r" (res)
-> +       : "r" (&lock->v)
-> +       : "memory");
-> +}
-> +
-> +void spin_unlock(struct spinlock *lock)
-> +{
-> +       asm volatile("stlr wzr, [%0]\n" : : "r" (&lock->v) : "memory");
-> +}
-> --
-> 2.33.0.153.gba50c8fa24-goog
->
-
-Otherwise, LGTM.
-
-Reviewed-by: Oliver Upton <oupton@google.com>
+thanks,
+-- Shuah
