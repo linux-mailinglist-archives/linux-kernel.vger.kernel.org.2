@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1673FF1B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09503FF1BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346372AbhIBQmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:42:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234436AbhIBQmg (ORCPT
+        id S1346436AbhIBQpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:45:23 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:6916 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242304AbhIBQpO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:42:36 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCC6C061575;
-        Thu,  2 Sep 2021 09:41:38 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id s29so2098089pfw.5;
-        Thu, 02 Sep 2021 09:41:38 -0700 (PDT)
+        Thu, 2 Sep 2021 12:45:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VleJPFXhbF8WRqOsaBBQPjzgoQ2bIzoPQ5j5gsdJ/N4=;
-        b=Cz8RabjQzuMJtB8RAsceldQG5nNB5DV0r/TRNB6W4SHV0C7nj2fupVpn1nAt6PO5F0
-         jOppsn8OM5ApPZjPQVVAl7sLfx+B8ktsABfi/5YeAX9HMb5XP7e0PI3MfqBAxnJ4PVi0
-         b9u07dUzUxkDHikaB2qwGUKzV1HSRSGOHGoy3VXOBmgfz2OUBx8nKqkhfGJvEH1Kfue/
-         IsPXFKGhsyrcSigiBUFGazrK0ySWJhF38AcwqaHjUk87HCr7ghGUjWGCkywXVrezq+VR
-         c/SWbHlMAHii1BbzBCAUMg3Zq7WnFh7jpKvwN4CKmpJru5haf74WfBjqPeEMWzgvITd4
-         icOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VleJPFXhbF8WRqOsaBBQPjzgoQ2bIzoPQ5j5gsdJ/N4=;
-        b=INbrfIJpOfz+oxEMYiOma98ZveTxR3N+ioigcPM9HEhxTl/qiQiWl0J51ghXdVkBel
-         0QlRtrF07NCtLOGahIz/tBvzlpXSvVbzeMm17s8xGIoBgP29lOj3sCAOf5V2O1CZWALb
-         eGdrLNXvtde/m6TANsBFYulpD5WOytR7OfZphwOTnW/SYLG9XEBU2/UueA1TzaGQJMAG
-         tU96Zz0PQSLo6dbYuN6Ol2NRnZ+zbflDZrcEYFK2UnfFIPdMWhTWaAcUUmYch606+zi+
-         OCcw7zaPOOHkqwCBaH8pjQAoF38EGZ4hjXjevPEbisyL+fQH5UR5+KHAK3sewep9+iy0
-         YA3g==
-X-Gm-Message-State: AOAM533zxADhpB/4Vw3ovHydkIINdgXhBm7gDquvwB+rMUHhnikprlqB
-        /1VaF/Khhge+6Ytf2qrx06wGEsAASo4=
-X-Google-Smtp-Source: ABdhPJxlf/isZnGLzzFeBV8SO4M3XZMMNeLyhuVmrTumSc21EOHaCoUVi6IYD/XkO0BebwVR7FBubw==
-X-Received: by 2002:a63:34c6:: with SMTP id b189mr3964133pga.122.1630600897300;
-        Thu, 02 Sep 2021 09:41:37 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.45.42.119])
-        by smtp.googlemail.com with ESMTPSA id v8sm2774059pjh.24.2021.09.02.09.41.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 09:41:36 -0700 (PDT)
-Subject: Re: [PATCH linux-next] ipv4: Fix NULL deference in
- fnhe_remove_oldest()
-To:     Eric Dumazet <edumazet@google.com>,
-        Tim Gardner <tim.gardner@canonical.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210902163205.17164-1-tim.gardner@canonical.com>
- <CANn89i+ey++b=dBXUZjXYyVessr49yZJBagVJxP-mpcreYyjCA@mail.gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <9a1962e2-fa9f-f423-c16d-8ba529a931eb@gmail.com>
-Date:   Thu, 2 Sep 2021 09:41:35 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1630601057; x=1662137057;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=B9I29+nLfN1HhtPMBvajbM4PPB+iF05uDdsVf19ddmU=;
+  b=UoIsUvP5na6QGpD2gvF6LwBa7r+66F8+BKLYLvkEWKL0zVVlbusf61+N
+   IYXgN9rtGdZZwW5WdlQFe9c8xX74HjI9c4nyp4gBddT+ptKh3Vk9VJ4iQ
+   MYG5ksJ6+vhIuadKeo65gHfQvunGZGcK5q2Kz9xm+PPOuX29RB/v5XVHL
+   o=;
+X-IronPort-AV: E=Sophos;i="5.85,262,1624320000"; 
+   d="scan'208";a="157198972"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 02 Sep 2021 16:44:16 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id 77001A1DFD;
+        Thu,  2 Sep 2021 16:44:14 +0000 (UTC)
+Received: from EX13D46UWB002.ant.amazon.com (10.43.161.70) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Thu, 2 Sep 2021 16:44:13 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (10.43.61.77) by
+ EX13D46UWB002.ant.amazon.com (10.43.161.70) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Thu, 2 Sep 2021 16:44:13 +0000
+Received: from dev-dsk-shaoyi-2b-c0ca772a.us-west-2.amazon.com (172.22.152.76)
+ by mail-relay.amazon.com (10.43.61.169) with Microsoft SMTP Server id
+ 15.0.1497.23 via Frontend Transport; Thu, 2 Sep 2021 16:44:12 +0000
+Received: by dev-dsk-shaoyi-2b-c0ca772a.us-west-2.amazon.com (Postfix, from userid 13116433)
+        id 8B6A741AC5; Thu,  2 Sep 2021 16:44:12 +0000 (UTC)
+From:   Shaoying Xu <shaoyi@amazon.com>
+To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>
+CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <benh@amazon.com>, <shaoyi@amazon.com>
+Subject: [PATCH 0/1] [RESEND] ext4: fix lazy initialization next schedule time computation in more granular unit
+Date:   Thu, 2 Sep 2021 16:44:11 +0000
+Message-ID: <20210902164412.9994-1-shaoyi@amazon.com>
+X-Mailer: git-send-email 2.16.6
 MIME-Version: 1.0
-In-Reply-To: <CANn89i+ey++b=dBXUZjXYyVessr49yZJBagVJxP-mpcreYyjCA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/21 9:38 AM, Eric Dumazet wrote:
-> On Thu, Sep 2, 2021 at 9:32 AM Tim Gardner <tim.gardner@canonical.com> wrote:
->>
->> Coverity complains that linux-next commit 67d6d681e15b5 ("ipv4: make
->> exception cache less predictible") neglected to check for NULL before
->> dereferencing 'oldest'. It appears to be possible to fall through the for
->> loop without ever setting 'oldest'.
-> 
-> Coverity is wrong.
-> 
->  fnhe_remove_oldest() is only called when there are at least 6 items
-> in the list.
-> 
-> There is no way oldest could be NULL, or that oldest_p could contain garbage.
-> 
+Description
+===========
+Ext4 FS has inappropriate implementations on the next schedule time calculation
+that use jiffies to measure the time for one request to zero out inode table. This
+actually makes the wait time effectively dependent on CONFIG_HZ, which is
+undesirable. We have observed on server systems with 100HZ some fairly long delays
+in initialization as a result. Therefore, we propose to use more granular unit to
+calculate the next schedule time.
 
-+1
+Test
+====
+Tested the patch in stable kernel 5.10 with FS volume 2T and 3T on EC2
+instances. Before the fix, instances with 250HZ finished the lazy initialization 
+in around 2.4x time less than instances with 100HZ. 
+After the fix, both of them finished within approximately same time. 
+
+Patch
+=====
+Shaoying Xu (1):
+  ext4: fix lazy initialization next schedule time computation in more
+    granular unit
+
+ fs/ext4/super.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
+
+-- 
+2.16.6
+
