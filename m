@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955993FF180
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E447F3FF189
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:36:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346369AbhIBQfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:35:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242414AbhIBQfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:35:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83320600CC;
-        Thu,  2 Sep 2021 16:34:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630600445;
-        bh=I+UdrRBmYFaWK3oBwVCt9HxFGvt0IAgmwkIcUTzH7xM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EYIycoiS5EF3FWRx/vNxubQ06zX8ZPKHRyGJTPNQq+7cwO6+yfdMCnmYnI6UNiPUE
-         h9r2HTL+RdQEelKGYZjBkV1rQmaf1QL2LFl9wqnWD8qazN4dAfL9tea2QrFUIhdNzq
-         ubCmcMX93xfR8O8fnm6xSVzA5paUUiuArWQGMaPs=
-Date:   Thu, 2 Sep 2021 18:34:02 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Nirmoy Das <nirmoy.das@amd.com>, rafael@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] debugfs: use IS_ERR to check for error
-Message-ID: <YTD8+tLP7KeGRXEc@kroah.com>
-References: <20210902102917.2233-1-nirmoy.das@amd.com>
- <YTCpuo00wM7jGSIc@kroah.com>
- <5ab7739d-15a4-2e84-0320-fee8d5df1e83@amd.com>
- <YTDBfO/byKzGWV8G@kroah.com>
- <c918f1a5-7c88-bf47-14b6-b6e892695951@amd.com>
+        id S1346378AbhIBQgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244016AbhIBQgn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 12:36:43 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 474C9C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:35:45 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id y6so4709893lje.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:35:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vPrsMqCFWN5ib/jexjJbOwaX0GY7GM4LAYtcBkjQs5Q=;
+        b=b3xI1nUr2/Mn5lXTe8nymD6u/TZbVZW+KxgxiDD6kyYY168iu2pTlL23fELvbHgCpN
+         4Fj+7xzFU3A8C58jpF8+C+JtLfgp1XCOGuw0IiJgEozDRP+l/GRHkybpYixOynp9lv2/
+         Y952+XTnIiHmfQ+eXPBncvGvwPdqXLKde1dnU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vPrsMqCFWN5ib/jexjJbOwaX0GY7GM4LAYtcBkjQs5Q=;
+        b=dssIzSueC90x7XoA6TaFUnO2lnq7Ai3Yr9KmgMsktjdVy+NhehxNBLCOaoACiSsMB7
+         yQb6qi3piOZehVUP6agc4pvEk+A7HvE8At17fguZ/6cVPCjEoU7hJDuup2DShBPHaBUb
+         vxrXCVrgEVQ/Z5hXit+UUBG9iIqDHYAUIWz+y2jWjoywRwXcMglraFcRP5dGV8wiJein
+         j1yGhwi0yOI8IZdOMGg/4FnKvHNaN/+W8d0HDR8lySW+E+p7QH34ey2r84ltTSVFrfWZ
+         T+GX39/f9pHizKkdxnPb4FvivdjtI7rQ21upu/cAsL4tMD7JkjEWF7/RcrQPdXDTfGUR
+         Q5sQ==
+X-Gm-Message-State: AOAM532RU/HIVNVFPz+TNYYKCvzAcYBk29+gVK1y75jBPTTZCxqELFY5
+        R16pj5PDZWH7YiDwwMQNlu6pNX8RZUGtBNU40Og=
+X-Google-Smtp-Source: ABdhPJwlY6mwL/CCSstalAqfmPdey4Y4mSX8e0iYvyqp/xxiHfrxl2iu3eFdT5rbvoOa7mJU2u+PiA==
+X-Received: by 2002:a05:651c:1305:: with SMTP id u5mr3319512lja.198.1630600543409;
+        Thu, 02 Sep 2021 09:35:43 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id bi25sm244338lfb.68.2021.09.02.09.35.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 09:35:42 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id k13so5636162lfv.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:35:41 -0700 (PDT)
+X-Received: by 2002:a05:6512:3b7:: with SMTP id v23mr3194130lfp.41.1630600540703;
+ Thu, 02 Sep 2021 09:35:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c918f1a5-7c88-bf47-14b6-b6e892695951@amd.com>
+References: <YTDW+b3x+5yMYVK0@miu.piliscsaba.redhat.com>
+In-Reply-To: <YTDW+b3x+5yMYVK0@miu.piliscsaba.redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 2 Sep 2021 09:35:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiiYSSpmgLRaq+AXg5NjCh_02ShSXRxsa8CfoKa0OooEQ@mail.gmail.com>
+Message-ID: <CAHk-=wiiYSSpmgLRaq+AXg5NjCh_02ShSXRxsa8CfoKa0OooEQ@mail.gmail.com>
+Subject: Re: [GIT PULL] overlayfs update for 5.15
+To:     Miklos Szeredi <miklos@szeredi.hu>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-unionfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 05:10:24PM +0200, Christian König wrote:
-> Am 02.09.21 um 14:20 schrieb Greg KH:
-> > On Thu, Sep 02, 2021 at 02:03:12PM +0200, Christian König wrote:
-> > > 
-> > > Am 02.09.21 um 12:38 schrieb Greg KH:
-> > > > On Thu, Sep 02, 2021 at 12:29:17PM +0200, Nirmoy Das wrote:
-> > > > > debugfs_create_file() returns encoded error so
-> > > > > use IS_ERR for checking return value.
-> > > > > 
-> > > > > References: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.freedesktop.org%2Fdrm%2Famd%2F-%2Fissues%2F1686&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cffc1109aeb744082181b08d96e0c06db%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637661820207117289%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=6NDHX9sEhGF2jakVfUJ7Qurql6UAdNpFQZ6XvCjwz0E%3D&amp;reserved=0
-> > > > > Signed-off-by: Nirmoy Das <nirmoy.das@amd.com>
-> > > > > ---
-> > > > >    fs/debugfs/inode.c | 2 +-
-> > > > >    1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
-> > > > > index 8129a430d789..2f117c57160d 100644
-> > > > > --- a/fs/debugfs/inode.c
-> > > > > +++ b/fs/debugfs/inode.c
-> > > > > @@ -528,7 +528,7 @@ void debugfs_create_file_size(const char *name, umode_t mode,
-> > > > >    {
-> > > > >    	struct dentry *de = debugfs_create_file(name, mode, parent, data, fops);
-> > > > > -	if (de)
-> > > > > +	if (!IS_ERR(de))
-> > > > >    		d_inode(de)->i_size = file_size;
-> > > > >    }
-> > > > >    EXPORT_SYMBOL_GPL(debugfs_create_file_size);
-> > > > > -- 
-> > > > > 2.32.0
-> > > > > 
-> > > > Ah, good catch, I'll queue this up after 5.15-rc1 is out, thanks!
-> > > Thinking more about this if I'm not completely mistaken
-> > > debugfs_create_file() returns -ENODEV when debugfs is disabled and NULL on
-> > > any other error.
-> > How can this function be called if debugfs is not enabled in the system
-> > configuration?  This _is_ the debugfs core code.
-> 
-> Well, that's what I meant. The original code is correct and Nirmoy's patch
-> here is breaking it.
+On Thu, Sep 2, 2021 at 6:51 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> The reason this touches so many files is that the ->get_acl() method now
+> gets a "bool rcu" argument.  The ->get_acl() API was updated based on
+> comments from Al and Linus:
+>
+>   https://lore.kernel.org/linux-fsdevel/CAJfpeguQxpd6Wgc0Jd3ks77zcsAv_bn0q17L3VNnnmPKu11t8A@mail.gmail.com/
 
-Ah, yes, sorry, you are right.  This function can not return an error
-value, if something went wrong, the result will always be NULL.
+That link might have been good in the individual commit message too,
+but I did it in the merge commit instead.
 
-> Nirmoys other patch is for a driver and there the function can indeed return
-> both error code and NULL.
+I did notice that we now have a stale comment about ->get_acl() in fs/namei.c:
 
-You should never be checking this stuff in a caller anyway, so no, don't
-do it there either.
+                acl = get_cached_acl_rcu(inode, ACL_TYPE_ACCESS);
+                if (!acl)
+                        return -EAGAIN;
+                /* no ->get_acl() calls in RCU mode... */
+                if (is_uncached_acl(acl))
+                        return -ECHILD;
 
-thanks,
+but we actually did the RCU-mode ->get_acl() call already in
+get_cached_acl_rcu().
 
-greg k-h
+Of course, get_cached_acl_rcu() only does it for ACL_DONT_CACHE, not
+for ACL_NOT_CACHED, so RCU mode is still a bit special.
+
+At some point we probably should make get_cached_acl_rcu() do the
+right thing for a successful lookup with ACL_NOT_CACHED set too, and
+actually install the newly looked-up ACL. But I haven't thought much
+about locking (but I think it would be ok, we use "cmpxchg" to update
+the cached entry).
+
+This is just a "maybe fixme for the future" note about that comment
+and about get_cached_acl_rcu() behavior. I've pulled this, and I think
+we're ok, it's just a small oddity.
+
+                  Linus
