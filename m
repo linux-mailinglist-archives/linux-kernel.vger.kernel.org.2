@@ -2,171 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747953FF04C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5F93FF059
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:39:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345870AbhIBPgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 11:36:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345822AbhIBPgr (ORCPT
+        id S1345873AbhIBPj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 11:39:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25338 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345837AbhIBPjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 11:36:47 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C21AC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 08:35:49 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id m4so4327726ljq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 08:35:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gqsE0hcACBYtzOEUSRWmq502BlYXjpyMpHHF4zb++1Y=;
-        b=YvMoLhTqope6Anvbg2E/49DdR0bfBTbd3WBFEpizcH0H43hqwki7cGgzsjtRtm+AoT
-         38FGEfBZmCZH/fn2WSrE++8YwficAwTcjLRvKO3D6bSuwFqVx5xBEgPxK9YLo7hVU5rj
-         dPqO+SLEHJoOqbsTFmWAXZ9/nLfrf980M/fNjCa6aDWHW3jRJis7MGBQyl0ZmGZ4Gnpg
-         8LO/NCLH8ziH2DY+BmiRAIvw9INsp90XK5BE73m7OhmMpz2/99leispqO6agIGSvQtXh
-         1qQ6+kgAfUZY0Do2zuglHu0P6NbjVln1NC3EVkF46q0Ufila1YAXVB5lZAvfabZFqDG5
-         YACg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gqsE0hcACBYtzOEUSRWmq502BlYXjpyMpHHF4zb++1Y=;
-        b=WnT+J5HxiPaIapYLDP4p9j7pCs2PzBOtbQh5NLGGZbgisaEOeLWfc6BGJ7IznWCkdQ
-         tNdnhso2Bslznn2jdiqXoL92Hbw7lIp9Y4ryEOD2JIZUf/MJP2lS8c0KY+Y5zh0OfIAI
-         z0xDoZAJ+8C1Jszc3AB/XrkiJnMl+RKpDSR+YPXAe1dJpQ5M1msOsRFBM9tp12GR7fwX
-         wbOghKKn4KlIEPbyUTzE3h4VofAanim86yX43AgMx2kEBWZNQ6YoNYLYuVuhRPwHxJEN
-         gOfDvKAulNyy47bwitCtz2AfxdzsVmOrcXiHRkz55nApn5dOLBFhBLLHix9u5Uja3aI8
-         PNrg==
-X-Gm-Message-State: AOAM533EAXavDJ/0mALOs2L+MDm5eG7NhJtlfwqWZflT4EmzaQvf1mtT
-        c1Nm9+dSoG2j5Hxv1XvRPDClB3KzeJM40aCLWrK7XQ==
-X-Google-Smtp-Source: ABdhPJzJ2ZXLD2ye7fiTVTjas7hr69B87RP5P3F3ORamACWW63F58/LqhV8yp2vp3VXog/b65mHOHs0VwizfSYBzHlQ=
-X-Received: by 2002:a05:651c:118f:: with SMTP id w15mr3130589ljo.47.1630596947384;
- Thu, 02 Sep 2021 08:35:47 -0700 (PDT)
+        Thu, 2 Sep 2021 11:39:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630597135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dThrFUEauS0PVKV2QOhWb7PoGtgPW3EHRoCBlNIp8ng=;
+        b=GdV4Q3M/yb5GB8iBS1zWk5RORuPPol5m8SZsaCmciWDmRkUkVid3OH9ce6so5VoXKgyLC8
+        Fd8OXuGwQNWKRuuJcW5RiFG9Hg9mSLHjDu286eyMeMoZtKZIyCPdlH2UtUVzjHv3FZGaJE
+        32b1qzSuvNhTHyZMyAUS09jZ2xgDO4A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-509-fWh-sNzWP9GaIwZRi3O0-A-1; Thu, 02 Sep 2021 11:38:54 -0400
+X-MC-Unique: fWh-sNzWP9GaIwZRi3O0-A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7C0A6801AE3;
+        Thu,  2 Sep 2021 15:38:52 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.22.8.149])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B2AF728554;
+        Thu,  2 Sep 2021 15:38:48 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 52139220257; Thu,  2 Sep 2021 11:38:48 -0400 (EDT)
+Date:   Thu, 2 Sep 2021 11:38:48 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     linux-api@vger.kernel.org, mtk.manpages@gmail.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, dwalsh@redhat.com, dgilbert@redhat.com,
+        christian.brauner@ubuntu.com, casey.schaufler@intel.com,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
+        bfields@redhat.com, stephen.smalley.work@gmail.com,
+        agruenba@redhat.com, david@fromorbit.com, viro@zeniv.linux.org.uk
+Subject: [PATCH 2/1] man-pages: xattr.7: Update text for user extended xattr
+ behavior change
+Message-ID: <YTDwCFbO9Jl6a7vP@redhat.com>
+References: <20210902152228.665959-1-vgoyal@redhat.com>
 MIME-Version: 1.0
-References: <20210830195146.587206-1-tkjos@google.com> <CAB0TPYFmUgPTONABLTJAdonK7fY7oqURKCpLp1-WqHLtyen7Zw@mail.gmail.com>
-In-Reply-To: <CAB0TPYFmUgPTONABLTJAdonK7fY7oqURKCpLp1-WqHLtyen7Zw@mail.gmail.com>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Thu, 2 Sep 2021 08:35:35 -0700
-Message-ID: <CAHRSSExONtUFu0Mb8uJeVKcyDYb8=1PO7a=aQ=DUEpA5kAcTQA@mail.gmail.com>
-Subject: Re: [PATCH] binder: make sure fd closes complete
-To:     Martijn Coenen <maco@android.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Christian Brauner <christian@brauner.io>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        "open list:ANDROID DRIVERS" <devel@driverdev.osuosl.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martijn Coenen <maco@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        kernel-team@android.com, stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902152228.665959-1-vgoyal@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 12:24 AM Martijn Coenen <maco@android.com> wrote:
->
-> On Mon, Aug 30, 2021 at 9:51 PM 'Todd Kjos' via kernel-team
-> <kernel-team@android.com> wrote:
-> >
-> > During BC_FREE_BUFFER processing, the BINDER_TYPE_FDA object
-> > cleanup may close 1 or more fds. The close operations are
-> > completed using the task work mechanism -- which means the thread
-> > needs to return to userspace or the file object may never be
-> > dereferenced -- which can lead to hung processes.
-> >
-> > Force the binder thread back to userspace if an fd is closed during
-> > BC_FREE_BUFFER handling.
-> >
-> > Signed-off-by: Todd Kjos <tkjos@google.com>
-> Reviewed-by: Martijn Coenen <maco@android.com>
+I have proposed a patch to relax restrictions on user extended xattrs and
+allow file owner (or CAP_FOWNER) to get/set user extended xattrs on symlink
+and device files.
 
-Please also add to stable releases 5.4 and later.
+Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+---
+ man7/xattr.7 |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
->
-> > ---
-> >  drivers/android/binder.c | 23 +++++++++++++++++------
-> >  1 file changed, 17 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> > index bcec598b89f2..c2823f0d588f 100644
-> > --- a/drivers/android/binder.c
-> > +++ b/drivers/android/binder.c
-> > @@ -1852,6 +1852,7 @@ static void binder_deferred_fd_close(int fd)
-> >  }
-> >
-> >  static void binder_transaction_buffer_release(struct binder_proc *proc,
-> > +                                             struct binder_thread *thread,
-> >                                               struct binder_buffer *buffer,
-> >                                               binder_size_t failed_at,
-> >                                               bool is_failure)
-> > @@ -2011,8 +2012,16 @@ static void binder_transaction_buffer_release(struct binder_proc *proc,
-> >                                                 &proc->alloc, &fd, buffer,
-> >                                                 offset, sizeof(fd));
-> >                                 WARN_ON(err);
-> > -                               if (!err)
-> > +                               if (!err) {
-> >                                         binder_deferred_fd_close(fd);
-> > +                                       /*
-> > +                                        * Need to make sure the thread goes
-> > +                                        * back to userspace to complete the
-> > +                                        * deferred close
-> > +                                        */
-> > +                                       if (thread)
-> > +                                               thread->looper_need_return = true;
-> > +                               }
-> >                         }
-> >                 } break;
-> >                 default:
-> > @@ -3105,7 +3114,7 @@ static void binder_transaction(struct binder_proc *proc,
-> >  err_copy_data_failed:
-> >         binder_free_txn_fixups(t);
-> >         trace_binder_transaction_failed_buffer_release(t->buffer);
-> > -       binder_transaction_buffer_release(target_proc, t->buffer,
-> > +       binder_transaction_buffer_release(target_proc, NULL, t->buffer,
-> >                                           buffer_offset, true);
-> >         if (target_node)
-> >                 binder_dec_node_tmpref(target_node);
-> > @@ -3184,7 +3193,9 @@ static void binder_transaction(struct binder_proc *proc,
-> >   * Cleanup buffer and free it.
-> >   */
-> >  static void
-> > -binder_free_buf(struct binder_proc *proc, struct binder_buffer *buffer)
-> > +binder_free_buf(struct binder_proc *proc,
-> > +               struct binder_thread *thread,
-> > +               struct binder_buffer *buffer)
-> >  {
-> >         binder_inner_proc_lock(proc);
-> >         if (buffer->transaction) {
-> > @@ -3212,7 +3223,7 @@ binder_free_buf(struct binder_proc *proc, struct binder_buffer *buffer)
-> >                 binder_node_inner_unlock(buf_node);
-> >         }
-> >         trace_binder_transaction_buffer_release(buffer);
-> > -       binder_transaction_buffer_release(proc, buffer, 0, false);
-> > +       binder_transaction_buffer_release(proc, thread, buffer, 0, false);
-> >         binder_alloc_free_buf(&proc->alloc, buffer);
-> >  }
-> >
-> > @@ -3414,7 +3425,7 @@ static int binder_thread_write(struct binder_proc *proc,
-> >                                      proc->pid, thread->pid, (u64)data_ptr,
-> >                                      buffer->debug_id,
-> >                                      buffer->transaction ? "active" : "finished");
-> > -                       binder_free_buf(proc, buffer);
-> > +                       binder_free_buf(proc, thread, buffer);
-> >                         break;
-> >                 }
-> >
-> > @@ -4107,7 +4118,7 @@ static int binder_thread_read(struct binder_proc *proc,
-> >                         buffer->transaction = NULL;
-> >                         binder_cleanup_transaction(t, "fd fixups failed",
-> >                                                    BR_FAILED_REPLY);
-> > -                       binder_free_buf(proc, buffer);
-> > +                       binder_free_buf(proc, thread, buffer);
-> >                         binder_debug(BINDER_DEBUG_FAILED_TRANSACTION,
-> >                                      "%d:%d %stransaction %d fd fixups failed %d/%d, line %d\n",
-> >                                      proc->pid, thread->pid,
-> > --
-> > 2.33.0.259.gc128427fd7-goog
-> >
-> >
+Index: man-pages/man7/xattr.7
+===================================================================
+--- man-pages.orig/man7/xattr.7	2021-09-01 13:46:16.165016463 -0400
++++ man-pages/man7/xattr.7	2021-09-01 16:31:51.038016463 -0400
+@@ -129,8 +129,13 @@ a way not controllable by disk quotas fo
+ special files and directories.
+ .PP
+ For this reason,
+-user extended attributes are allowed only for regular files and directories,
+-and access to user extended attributes is restricted to the
++user extended attributes are allowed only for regular files and directories
++till kernel 5.14. In newer kernel (5.15 onwards), restrictions have been
++relaxed a bit and user extended attributes are also allowed on symlinks
++and special files as long as caller is either owner of the file or is
++privileged (CAP_FOWNER).
++
++Access to user extended attributes is restricted to the
+ owner and to users with appropriate capabilities for directories with the
+ sticky bit set (see the
+ .BR chmod (1)
+
