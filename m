@@ -2,100 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68803FF535
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B55C73FF53A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347175AbhIBU6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:58:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344797AbhIBU6M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 16:58:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D1EF600D4;
-        Thu,  2 Sep 2021 20:57:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630616233;
-        bh=HWrI6rFLd2/Y9jP7+A8RsUe5lf2U6wY+IKNzSYzswdE=;
-        h=Subject:From:To:Cc:Date:From;
-        b=i7GiS3L6j2/PtfT3x+w8JVdeEtGJU+1ehYpiF+usA0nhl3E6jlPTKkMn6ZK6ObDrH
-         B4+d/AyDu7G0vvk54XShvL3C0XCOCoc2HDjbSeuLO35zsQTJVDz5/koDA5+Wh/YN2R
-         Grfg49uwlQqo8vDoqE0TP7IGsPlZQZi312IxBwVn2RORQCxWiK46b2yXtuTkpASISl
-         yvMI5rZztTF4IRDBdXatIVpW8kZvoAuoTDdL9Gegxb4RlodRVlT6VgUaqRzhRxc+VL
-         TuQXqchT7ffI6OYoUmmLumIiGWvFbrD+Hiw0f+XlJSzsqqT/bvw63omtV/T4T9AmmE
-         Mh14NqqLYKcNg==
-Message-ID: <d52ae0ad5e1b59af7c4f54faf3fc098461fd82b3.camel@kernel.org>
-Subject: [PATCH] tracing: Dynamically allocate the per-elt hist_elt_data
- array
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Artem Bityutskiy <dedekind1@gmail.com>,
+        id S239449AbhIBVBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:01:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234242AbhIBVBJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 17:01:09 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E52CBC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:00:10 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so2418552pjx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:00:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8fkdHIt1+3BNKFqb98a/8L9VuMWl2vCFSjJjZfHORi0=;
+        b=gUvUTtgDwWLxh6DEiBet5qN9Jf5ASf5QnkslelRw3K6yduEfgOf726+efViNuffMOi
+         CqLNd6ue1urPA31xTzULGZosorTKqf3gHBAHtRHdFkWgwbhsuyhIMuibck4bF3NO52bq
+         sTy4k7eASqzgaDdmBeXMEeLa44f+BaJJovi4lzb+qfh3D++7UVXg/7s7Zqhh8ykgsTO1
+         uMtGpL0bA1u9fxPHJVDd1WpiD43Dq9eeqGeKrlqq7whNGAsYTlJpU+jy+Wixj0+ryIZA
+         qNGzwWnR/BGD7fZlwQKRkKfl0W7qLrxDKE9m75sH7F3EYAynI6/VVmAjTNopU0hl0lsV
+         hqxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8fkdHIt1+3BNKFqb98a/8L9VuMWl2vCFSjJjZfHORi0=;
+        b=ss36S2EftUYhZPxa9kAYuhwJTVdg4CdrHJ+mjpmPloDRo5Vjja6xdC4FIBzCjDrO5g
+         EDEgGF0F/qgo7ATH2cN+ET0K+/PBhFohGyjMntcXCjJte1XBOyybSmL3zK7aK0E5d6/7
+         bWSZkE6+sAV1bJOW74QPfT0hhEVaAA5Ypu4P/9HvTR2K7nCmURDHpbzKBl7nPXYQ7Ftx
+         qMXR0Lwty40roj3OaqHcXfFGQg2aAzkPnGFso8zFEi7p62a/fRq87gQxj8z7S+bnBxp2
+         SNYfxyYMzS/swMuok2ej9O8FYot8Ps2ewuRom0tgyj0yWNsJRKp5PJ4kevu8CL1+xCnn
+         Z0Rg==
+X-Gm-Message-State: AOAM530tB7hsRV/X17qODClZI/2UreSaqkTY4j0cKXI/A1JUKVmIGw0f
+        YdwdhkVOx2rG96e1nS+PQNNXfQ==
+X-Google-Smtp-Source: ABdhPJz3z1eNM5QauHlFUZdx/fwxZnmsnGR0Bo+8X0nj6efD9oqyH2TSLhCPL+yF+Evv6RFDA5z1Ew==
+X-Received: by 2002:a17:902:a385:b0:138:4c9:a39e with SMTP id x5-20020a170902a38500b0013804c9a39emr42011pla.42.1630616409677;
+        Thu, 02 Sep 2021 14:00:09 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id q12sm3129921pfj.153.2021.09.02.14.00.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 14:00:09 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 21:00:05 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
         linux-kernel@vger.kernel.org
-Date:   Thu, 02 Sep 2021 15:57:12 -0500
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v4 4/8] KVM: Optimize kvm_make_vcpus_request_mask() a bit
+Message-ID: <YTE7VWJFivPR8Mrh@google.com>
+References: <20210827092516.1027264-1-vkuznets@redhat.com>
+ <20210827092516.1027264-5-vkuznets@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827092516.1027264-5-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting the hist_elt_data.field_var_str[] array unconditionally to a
-size of SYNTH_FIELD_MAX elements wastes space unnecessarily.  The
-actual number of elements needed can be calculated at run-time
-instead.
+On Fri, Aug 27, 2021, Vitaly Kuznetsov wrote:
+> Iterating over set bits in 'vcpu_bitmap' should be faster than going
+> through all vCPUs, especially when just a few bits are set.
+> 
+> Drop kvm_make_vcpus_request_mask() call from kvm_make_all_cpus_request_except()
+> to avoid handling the special case when 'vcpu_bitmap' is NULL, move the
+> code to kvm_make_all_cpus_request_except() itself.
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  virt/kvm/kvm_main.c | 88 +++++++++++++++++++++++++++------------------
+>  1 file changed, 53 insertions(+), 35 deletions(-)
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 2082aceffbf6..e32ba210025f 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -261,50 +261,57 @@ static inline bool kvm_kick_many_cpus(cpumask_var_t tmp, bool wait)
+>  	return true;
+>  }
+>  
+> +static void kvm_make_vcpu_request(struct kvm *kvm, struct kvm_vcpu *vcpu,
+> +				  unsigned int req, cpumask_var_t tmp,
+> +				  int current_cpu)
+> +{
+> +	int cpu = vcpu->cpu;
 
-In most cases, this will save a lot of space since it's a per-elt
-array which isn't normally close to being full.  It also allows us to
-increase SYNTH_FIELD_MAX without worrying about even more wastage when
-we do that.
+'cpu' doesn't need to be initialized here.  Leaving it uninitialized will also
+deter consumption before the READ_ONCE below.
 
-Signed-off-by: Tom Zanussi <zanussi@kernel.org>
----
- kernel/trace/trace_events_hist.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-index 9d91b1c06957..a6061a69aa84 100644
---- a/kernel/trace/trace_events_hist.c
-+++ b/kernel/trace/trace_events_hist.c
-@@ -508,7 +508,8 @@ struct track_data {
- struct hist_elt_data {
- 	char *comm;
- 	u64 *var_ref_vals;
--	char *field_var_str[SYNTH_FIELDS_MAX];
-+	char **field_var_str;
-+	int n_field_var_str;
- };
- 
- struct snapshot_context {
-@@ -1401,9 +1402,11 @@ static void hist_elt_data_free(struct hist_elt_data *elt_data)
- {
- 	unsigned int i;
- 
--	for (i = 0; i < SYNTH_FIELDS_MAX; i++)
-+	for (i = 0; i < elt_data->n_field_var_str; i++)
- 		kfree(elt_data->field_var_str[i]);
- 
-+	kfree(elt_data->field_var_str);
-+
- 	kfree(elt_data->comm);
- 	kfree(elt_data);
- }
-@@ -1451,6 +1454,13 @@ static int hist_trigger_elt_data_alloc(struct tracing_map_elt *elt)
- 
- 	size = STR_VAR_LEN_MAX;
- 
-+	elt_data->field_var_str = kcalloc(n_str, sizeof(char *), GFP_KERNEL);
-+	if (!elt_data->field_var_str) {
-+		hist_elt_data_free(elt_data);
-+		return -EINVAL;
-+	}
-+	elt_data->n_field_var_str = n_str;
-+
- 	for (i = 0; i < n_str; i++) {
- 		elt_data->field_var_str[i] = kzalloc(size, GFP_KERNEL);
- 		if (!elt_data->field_var_str[i]) {
--- 
-2.17.1
-
-
+> +
+> +	kvm_make_request(req, vcpu);
+> +
+> +	if (!(req & KVM_REQUEST_NO_WAKEUP) && kvm_vcpu_wake_up(vcpu))
+> +		return;
+> +
+> +	/*
+> +	 * tmp can be "unavailable" if cpumasks are allocated off stack as
+> +	 * allocation of the mask is deliberately not fatal and is handled by
+> +	 * falling back to kicking all online CPUs.
+> +	 */
+> +	if (!cpumask_available(tmp))
+> +		return;
+> +
+> +	/*
+> +	 * Note, the vCPU could get migrated to a different pCPU at any point
+> +	 * after kvm_request_needs_ipi(), which could result in sending an IPI
+> +	 * to the previous pCPU.  But, that's OK because the purpose of the IPI
+> +	 * is to ensure the vCPU returns to OUTSIDE_GUEST_MODE, which is
+> +	 * satisfied if the vCPU migrates. Entering READING_SHADOW_PAGE_TABLES
+> +	 * after this point is also OK, as the requirement is only that KVM wait
+> +	 * for vCPUs that were reading SPTEs _before_ any changes were
+> +	 * finalized. See kvm_vcpu_kick() for more details on handling requests.
+> +	 */
+> +	if (kvm_request_needs_ipi(vcpu, req)) {
+> +		cpu = READ_ONCE(vcpu->cpu);
+> +		if (cpu != -1 && cpu != current_cpu)
+> +			__cpumask_set_cpu(cpu, tmp);
+> +	}
+> +}
