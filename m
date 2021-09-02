@@ -2,126 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA883FF005
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:21:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F4F3FF012
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345736AbhIBPWD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Sep 2021 11:22:03 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:52117 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239584AbhIBPWC (ORCPT
+        id S1345774AbhIBPXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 11:23:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38176 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345770AbhIBPXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 11:22:02 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 4259C10000A;
-        Thu,  2 Sep 2021 15:21:01 +0000 (UTC)
-Date:   Thu, 2 Sep 2021 17:21:00 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-iio@vger.kernel.org, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 15/16] iio: adc: max1027: Support software triggers
-Message-ID: <20210902172100.3200b3b6@xps13>
-In-Reply-To: <20210830115046.3727ccc4@jic23-huawei>
-References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
-        <20210818111139.330636-16-miquel.raynal@bootlin.com>
-        <20210830115046.3727ccc4@jic23-huawei>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Thu, 2 Sep 2021 11:23:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630596166;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=QzUOsHXMIDWOAqPBo9u7M1z5IuvL3zXT1jeF9JdpLYg=;
+        b=Xqeuad+L/cjN0iSQtzqm9WmBnsFksd6Ek+CX7/GSsyO7B1S4c5pk/AsPHENKctA1LlZgmw
+        Ls4GM1mRW6T5G/+4Bc4oSx6MEOwEdSOnhe6V8zkC1imVtl9qOpc7SrtJ0JIgRIbpqOi5ab
+        rXn/39n1fvllrKaJSV1rzBmD/rdpRgU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-dbbv2vMKPXyQX_ZS3tISzA-1; Thu, 02 Sep 2021 11:22:45 -0400
+X-MC-Unique: dbbv2vMKPXyQX_ZS3tISzA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 61A48194092E;
+        Thu,  2 Sep 2021 15:22:43 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.22.8.149])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4485E5D6B1;
+        Thu,  2 Sep 2021 15:22:39 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id C6199220257; Thu,  2 Sep 2021 11:22:38 -0400 (EDT)
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, dwalsh@redhat.com, dgilbert@redhat.com,
+        vgoyal@redhat.com, christian.brauner@ubuntu.com,
+        casey.schaufler@intel.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org, tytso@mit.edu, miklos@szeredi.hu,
+        gscrivan@redhat.com, bfields@redhat.com,
+        stephen.smalley.work@gmail.com, agruenba@redhat.com,
+        david@fromorbit.com
+Subject: [PATCH v3 0/1] Relax restrictions on user.* xattr
+Date:   Thu,  2 Sep 2021 11:22:27 -0400
+Message-Id: <20210902152228.665959-1-vgoyal@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+Hi,
 
-Jonathan Cameron <jic23@kernel.org> wrote on Mon, 30 Aug 2021 11:50:46
-+0100:
+This is V3 of the patch. Previous versions were posted here.
 
-> On Wed, 18 Aug 2021 13:11:38 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> 
-> > Now that max1027_trigger_handler() has been freed from handling hardware
-> > triggers EOC situations, we can use it for what it has been designed in
-> > the first place: trigger software originated conversions.  
-> 
-> As mentioned earlier, this is not how I'd normally expect this sort of
-> case to be handled. I'd be expecting the cnvst trigger to still be calling
-> this function and the function to do the relevant check to ensure it
-> knows the data is already available in that case.
+v2:
+https://lore.kernel.org/linux-fsdevel/20210708175738.360757-1-vgoyal@redhat.com/
+v1:
+https://lore.kernel.org/linux-fsdevel/20210625191229.1752531-1-vgoyal@redhat.co
++m/
 
-I tried to follow your advice and Nuno's regarding this, I hope the new
-version will match your expectations (new version coming soon).
-However if my changes do not match, I will probably need more guidance
-to understand in deep what you suggest.
+Changes since v2
+----------------
+- Do not call inode_permission() for special files as file mode bits
+  on these files represent permissions to read/write from/to device
+  and not necessarily permission to read/write xattrs. In this case
+  now user.* extended xattrs can be read/written on special files
+  as long as caller is owner of file or has CAP_FOWNER.
+ 
+- Fixed "man xattr". Will post a patch in same thread little later. (J.
+  Bruce Fields)
 
-> > In other
-> > words, when userspace initiates a conversion with a sysfs trigger or a
-> > hrtimer trigger, we must do all configuration steps, ie:
-> > 1- Configuring the trigger
-> > 2- Configuring the channels to scan
-> > 3- Starting the conversion (actually done automatically by step 2 in
-> >    this case)
-> > 4- Waiting for the conversion to end
-> > 5- Retrieving the data from the ADC
-> > 6- Push the data to the IIO core and notify it
-> > 
-> > Add the missing steps to this helper and drop the trigger verification
-> > hook otherwise software triggers would simply not be accepted at all.
-> > 
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > ---
-> >  drivers/iio/adc/max1027.c | 26 ++++++++++++++------------
-> >  1 file changed, 14 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
-> > index 8c5995ae59f2..bb437e43adaf 100644
-> > --- a/drivers/iio/adc/max1027.c
-> > +++ b/drivers/iio/adc/max1027.c
-> > @@ -413,17 +413,6 @@ static int max1027_debugfs_reg_access(struct iio_dev *indio_dev,
-> >  	return spi_write(st->spi, val, 1);
-> >  }
-> >  
-> > -static int max1027_validate_trigger(struct iio_dev *indio_dev,
-> > -				    struct iio_trigger *trig)
-> > -{
-> > -	struct max1027_state *st = iio_priv(indio_dev);
-> > -
-> > -	if (st->trig != trig)
-> > -		return -EINVAL;
-> > -
-> > -	return 0;
-> > -}
-> > -
-> >  static int max1027_set_cnvst_trigger_state(struct iio_trigger *trig, bool state)
-> >  {
-> >  	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
-> > @@ -512,7 +501,21 @@ static irqreturn_t max1027_trigger_handler(int irq, void *private)
-> >  
-> >  	pr_debug("%s(irq=%d, private=0x%p)\n", __func__, irq, private);
-> >  
-> > +	ret = max1027_configure_trigger(indio_dev);  
-> 
-> I'd not expect to see this ever time.  The configuration shouldn't change
-> from one call of this function to the next.
+- Fixed xfstest 062. Changed it to run only on older kernels where
+  user extended xattrs are not allowed on symlinks/special files. Added
+  a new replacement test 648 which does exactly what 062. Just that
+  it is supposed to run on newer kernels where user extended xattrs
+  are allowed on symlinks and special files. Will post patch in 
+  same thread (Ted Ts'o).
 
-True, this is not needed.
+Testing
+-------
+- Ran xfstest "./check -g auto" with and without patches and did not
+  notice any new failures.
 
-> > +	if (ret)
-> > +		goto out;
-> > +
-> > +	ret = max1027_configure_chans_to_scan(indio_dev);  
-> 
-> This should also not change unless it is also responsible for the 'go' signal.
-> If that's true then it is badly named.
+- Tested setting "user.*" xattr with ext4/xfs/btrfs/overlay/nfs
+  filesystems and it works.
+ 
+Description
+===========
 
-It's responsible for the go signal, I renamed it "configure_and_start".
+Right now we don't allow setting user.* xattrs on symlinks and special
+files at all. Initially I thought that real reason behind this
+restriction is quota limitations but from last conversation it seemed
+that real reason is that permission bits on symlink and special files
+are special and different from regular files and directories, hence
+this restriction is in place. (I tested with xfs user quota enabled and
+quota restrictions kicked in on symlink).
 
-However, just for my own understanding, when would I be supposed to
-configure the channels requested by the user otherwise?
+This version of patch allows reading/writing user.* xattr on symlink and
+special files if caller is owner or priviliged (has CAP_FOWNER) w.r.t inode.
 
-Thanks,
-Miquèl
+Who wants to set user.* xattr on symlink/special files
+-----------------------------------------------------
+I have primarily two users at this point of time.
+
+- virtiofs daemon.
+
+- fuse-overlay. Giuseppe, seems to set user.* xattr attrs on unpriviliged
+  fuse-overlay as well and he ran into similar issue. So fuse-overlay
+  should benefit from this change as well.
+
+Why virtiofsd wants to set user.* xattr on symlink/special files
+----------------------------------------------------------------
+In virtiofs, actual file server is virtiosd daemon running on host.
+There we have a mode where xattrs can be remapped to something else.
+For example security.selinux can be remapped to
+user.virtiofsd.securit.selinux on the host.
+
+This remapping is useful when SELinux is enabled in guest and virtiofs
+as being used as rootfs. Guest and host SELinux policy might not match
+and host policy might deny security.selinux xattr setting by guest
+onto host. Or host might have SELinux disabled and in that case to
+be able to set security.selinux xattr, virtiofsd will need to have
+CAP_SYS_ADMIN (which we are trying to avoid). Being able to remap
+guest security.selinux (or other xattrs) on host to something else
+is also better from security point of view.
+
+But when we try this, we noticed that SELinux relabeling in guest
+is failing on some symlinks. When I debugged a little more, I
+came to know that "user.*" xattrs are not allowed on symlinks
+or special files.
+
+So if we allow owner (or CAP_FOWNER) to set user.* xattr, it will
+allow virtiofs to arbitrarily remap guests's xattrs to something
+else on host and that solves this SELinux issue nicely and provides
+two SELinux policies (host and guest) to co-exist nicely without
+interfering with each other.
+
+Thanks
+Vivek
+
+Vivek Goyal (1):
+  xattr: Allow user.* xattr on symlink and special files
+
+ fs/xattr.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
+
+-- 
+2.31.1
+
