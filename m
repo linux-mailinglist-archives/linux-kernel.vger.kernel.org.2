@@ -2,156 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92F803FEF00
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21D53FEEFE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345216AbhIBNxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhIBNw5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:52:57 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74300C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 06:51:58 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id dm15so3002511edb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 06:51:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=sV4cn+GEhcdtXg9aDRpPOIs8C7SJiwcSKge0piQkjHM=;
-        b=EfagH3rYTV78jcOA+jKJRrfxGtJfTrD4gRkYsK39UuD/CK2U1q4NzepLyjJqvWVgzc
-         7uUGypz51kA5RvlsQK56veBhTSCTJnlntAV/znbUk8vQJTb+oBWLzEBHDLW7z7ugh0jN
-         P/YQBqGqfgsYbhuCwHEhVWhtncUZPZ+rEdzRM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=sV4cn+GEhcdtXg9aDRpPOIs8C7SJiwcSKge0piQkjHM=;
-        b=Uu7nYXzTWgsDdjk7xlQ48o0hREzzavHdmti2KB5VBw0zQFCnpjQFF65J1X60+fIYRU
-         lrl1JSNsfi+ZDtB3eAXdsShBwBiazD9zsvabp+ai0oxQWOqy2QRUM30pJxP5XwcmhSUv
-         ZX39xTTvinOHDBcx5uHjEoaia5U//JujtQAPUf7jg1ZKw+i8tcdZRp4oXTbjWQIduyJA
-         PkeJ/Kqcv3w1GOjxivVgJWlcz4taAqVBHQHIe6uKU2KttPA0F4/qVmiO/51HcCdEGs3C
-         TAvpeA8Rj3lv85JpYPR1i2t3ecEHDzgeGN+M3zY3sWeKpEi00SjGx54wj4is5/9BHzEU
-         oeUw==
-X-Gm-Message-State: AOAM5303Ke4iHHSJgce1WbDA12n1Z7rjCM8qOrLFcwE/87/l0ibwiiP1
-        vzNYM8ll3II3pcSHBUyFAJMDLg==
-X-Google-Smtp-Source: ABdhPJxRZEJvrX7u1muEOVAnKrmtJF6P0eWg8Xv+oR/FRc2y4+mj4YRRWZW0OCrHeE6T170yTIVubg==
-X-Received: by 2002:aa7:dace:: with SMTP id x14mr3627185eds.169.1630590716605;
-        Thu, 02 Sep 2021 06:51:56 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-16.catv.broadband.hu. [86.101.169.16])
-        by smtp.gmail.com with ESMTPSA id d22sm1202634ejj.47.2021.09.02.06.51.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 06:51:56 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 15:51:53 +0200
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org
-Subject: [GIT PULL] overlayfs update for 5.15
-Message-ID: <YTDW+b3x+5yMYVK0@miu.piliscsaba.redhat.com>
+        id S239677AbhIBNxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:53:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230473AbhIBNw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 09:52:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E270610A1;
+        Thu,  2 Sep 2021 13:51:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630590717;
+        bh=dgIzmPo1P6m2cyM7pyKV1/gksgOBtehkPWZag/5Vm6o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WlRyCrDfyqg/IC3joO7zvX3DBgpe35Fqn5W+UZB/Ra0RC1kJpbjjPriXozRfNOja8
+         Zjicp2Dd4n5vCgIyrykcuK246FDkVuQApg06lPZJaY4HQokZMOo3oz81Omq83XJUYo
+         zSp15enInSRmjp7wBTKxbcRpApjMHMyPMWtnrAN/zyh6VgHy2TYj/grT/ZD7jrZTb1
+         bGbmjgBoQuDHsdcAlnzzUn52Ct82P36yQO/OWA/kZJSl0tf8AI6ba6c3q+GvS2ZB2Q
+         XfP6CgvSGLkDinK6Z68A5zkPUlv3GD1zjJlmxe49vBgI3qEIbxe/VPblcKJ1z/iP5H
+         V08PuN7GOfCnQ==
+Date:   Thu, 2 Sep 2021 09:51:56 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 5.10 047/103] net: stmmac: add mutex lock to protect est
+ parameters
+Message-ID: <YTDW/KTUpKz6C771@sashalap>
+References: <20210901122300.503008474@linuxfoundation.org>
+ <20210901122302.156121465@linuxfoundation.org>
+ <20210901200953.GB8962@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
+In-Reply-To: <20210901200953.GB8962@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Sep 01, 2021 at 10:09:53PM +0200, Pavel Machek wrote:
+>Hi!
+>
+>> [ Upstream commit b2aae654a4794ef898ad33a179f341eb610f6b85 ]
+>>
+>> Add a mutex lock to protect est structure parameters so that the
+>> EST parameters can be updated by other threads.
+>
+>Mainline version of the patch is okay, but I believe we need one more
+>mutex_unlock in 5.10.
 
-Please pull from:
+I think you're right. Looks like it's because we don't have 5a5586112b92
+("net: stmmac: support FPE link partner hand-shaking procedure") in 5.10
+(and I don't think it makes sense to backport it either).
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-update-5.15
+I've squashed your patch into the backport, thanks!
 
-- Copy up immutable/append/sync/noatime attributes (Amir Goldstein)
-
-- Improve performance by enabling RCU lookup.
-
-- Misc fixes and improvements
-
-The reason this touches so many files is that the ->get_acl() method now
-gets a "bool rcu" argument.  The ->get_acl() API was updated based on
-comments from Al and Linus:
-
-  https://lore.kernel.org/linux-fsdevel/CAJfpeguQxpd6Wgc0Jd3ks77zcsAv_bn0q17L3VNnnmPKu11t8A@mail.gmail.com/
-
+-- 
 Thanks,
-Miklos
-
----
-Amir Goldstein (5):
-      fs: add generic helper for filling statx attribute flags
-      ovl: pass ovl_fs to ovl_check_setxattr()
-      ovl: copy up sync/noatime fileattr flags
-      ovl: consistent behavior for immutable/append-only inodes
-      ovl: relax lookup error on mismatch origin ftype
-
-Chengguang Xu (2):
-      ovl: skip checking lower file's i_writecount on truncate
-      ovl: update ctime when changing fileattr
-
-Miklos Szeredi (3):
-      ovl: use kvalloc in xattr copy-up
-      vfs: add rcu argument to ->get_acl() callback
-      ovl: enable RCU'd ->get_acl()
-
-Vyacheslav Yurkov (3):
-      ovl: disable decoding null uuid with redirect_dir
-      ovl: add ovl_allow_offline_changes() helper
-      ovl: do not set overlay.opaque for new directories
-
-chenying (1):
-      ovl: fix BUG_ON() in may_delete() when called from ovl_cleanup()
-
----
- Documentation/filesystems/locking.rst   |   2 +-
- Documentation/filesystems/overlayfs.rst |   3 +
- Documentation/filesystems/vfs.rst       |   2 +-
- fs/9p/acl.c                             |   5 +-
- fs/9p/acl.h                             |   2 +-
- fs/bad_inode.c                          |   2 +-
- fs/btrfs/acl.c                          |   5 +-
- fs/btrfs/ctree.h                        |   2 +-
- fs/ceph/acl.c                           |   5 +-
- fs/ceph/super.h                         |   2 +-
- fs/erofs/xattr.c                        |   5 +-
- fs/erofs/xattr.h                        |   2 +-
- fs/ext2/acl.c                           |   5 +-
- fs/ext2/acl.h                           |   2 +-
- fs/ext4/acl.c                           |   5 +-
- fs/ext4/acl.h                           |   2 +-
- fs/f2fs/acl.c                           |   5 +-
- fs/f2fs/acl.h                           |   2 +-
- fs/fuse/acl.c                           |   5 +-
- fs/fuse/fuse_i.h                        |   2 +-
- fs/gfs2/acl.c                           |   5 +-
- fs/gfs2/acl.h                           |   2 +-
- fs/jffs2/acl.c                          |   5 +-
- fs/jffs2/acl.h                          |   2 +-
- fs/jfs/acl.c                            |   5 +-
- fs/jfs/jfs_acl.h                        |   2 +-
- fs/nfs/nfs3_fs.h                        |   2 +-
- fs/nfs/nfs3acl.c                        |   5 +-
- fs/ocfs2/acl.c                          |   5 +-
- fs/ocfs2/acl.h                          |   2 +-
- fs/orangefs/acl.c                       |   5 +-
- fs/orangefs/inode.c                     |   7 +--
- fs/orangefs/orangefs-kernel.h           |   2 +-
- fs/overlayfs/copy_up.c                  |  83 ++++++++++++++++++++-----
- fs/overlayfs/dir.c                      |  16 +++--
- fs/overlayfs/inode.c                    | 105 +++++++++++++++++++++++++-------
- fs/overlayfs/namei.c                    |   4 +-
- fs/overlayfs/overlayfs.h                |  44 +++++++++++--
- fs/overlayfs/super.c                    |   4 +-
- fs/overlayfs/util.c                     |  92 ++++++++++++++++++++++++++--
- fs/posix_acl.c                          |  15 ++++-
- fs/reiserfs/acl.h                       |   2 +-
- fs/reiserfs/xattr_acl.c                 |   5 +-
- fs/stat.c                               |  18 ++++++
- fs/xfs/xfs_acl.c                        |   5 +-
- fs/xfs/xfs_acl.h                        |   4 +-
- include/linux/fs.h                      |   8 ++-
- include/linux/posix_acl.h               |   3 +-
- include/linux/stat.h                    |   4 ++
- 49 files changed, 424 insertions(+), 102 deletions(-)
+Sasha
