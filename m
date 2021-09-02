@@ -2,126 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4F03FECC4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33293FECC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244867AbhIBLQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 07:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
+        id S245221AbhIBLSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 07:18:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhIBLQw (ORCPT
+        with ESMTP id S230256AbhIBLSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 07:16:52 -0400
-Received: from lb2-smtp-cloud9.xs4all.net (lb2-smtp-cloud9.xs4all.net [IPv6:2001:888:0:108::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BA4C061575;
-        Thu,  2 Sep 2021 04:15:52 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id LkhCmj5EklQKhLkhDmKRvQ; Thu, 02 Sep 2021 13:15:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1630581351; bh=M9kFlv397udHSVcT2A9pjvQRtbjYdLswfiMvJlJ6c9I=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=s8N+W4kRsCubAN5Z55S6Xf/bnlI/fYZ+XbnMZnLaa+cDsLPv5YjgT3pilik16tJkY
-         gqnbqrVPkjy7bvjB+jva4LArxQiwTPQDjU0VA/q7T4U4ap/WEj0mw9RVQRRZTi/HcM
-         QTF50SjgLFDmsuAQ7+2WX7h8CdacKi82KJjQtF5YyS/L28ZZgJFVIwKSlApWARhXGj
-         vtjfeoP0NYjMaVR4wFejRqlVQu1CKqanzRQcGY/MEozJYfRswPLFHrkQ9CCnm0fnVM
-         7qvMWDbURGQ/V8O0TI8W2mWAr7+L4cwExoLmkRtNarrzc2m6ckIr03XVDz0Rz/VBuI
-         vlLRp5ggyoyNw==
-Subject: Re: [PATCH] media: usb: fix memory leak in stk_camera_probe
-To:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-media@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Pavel Skripkin <paskripkin@gmail.com>
-References: <20210714032340.504836-1-mudongliangabcd@gmail.com>
- <CAD-N9QXWHeNvR06wyg3Pym8xUb27TsuFKKKG=tZ0-x5ZGCr-Hw@mail.gmail.com>
- <CAD-N9QWj8w-xVAni2cGHyEei78iKEX_V0a00r0x3We7tfFGZjw@mail.gmail.com>
- <YTCp6d1umr7AXRZW@kroah.com> <20210902125416.1ad73fad@coco.lan>
- <CAD-N9QVZQo+YPjNwAUqg-kQ_fEwicLR=1am1E99h8oHi0aXocA@mail.gmail.com>
- <CAD-N9QXPJz60jKfHg1Yh6tnzJRBFAwkmV+LUoSY+f7cZ_5kYww@mail.gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <2c3e496a-fdc7-020b-4234-58441e766f7d@xs4all.nl>
-Date:   Thu, 2 Sep 2021 13:15:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 2 Sep 2021 07:18:03 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A31AC061575;
+        Thu,  2 Sep 2021 04:17:05 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a25so3458322ejv.6;
+        Thu, 02 Sep 2021 04:17:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uFEkTCd/xhh2jHjXLDAM0hWxj6RGslNzQrjo3X/7zUU=;
+        b=A/cYi8R1cALl21mnfBisBtq/UcUEk6B9DJHllYb1B8XYF6oP8CKv0eLrTDrXmwVhN2
+         sWCn2WtsylxzWyApOwb9EVbnqD5s9dS1fx3dQ18RJlfSMV1A1wj9+CqpEJYzKdaKYpB2
+         pi9U8uYZG4sONB1kkD+eTiiN186QrJ24rf1e6ANx14m05K7DDb2XvP0zTDAUoEUkbbR/
+         YPxsu0s6oQv6Kv705tXMzlJPqAknOda6hnKwLjoVPFY8Oi71ux+wYE01I/LJY48VeMmC
+         xOxSSyhOzYAN5ZcHx8i8URE4wk3k76PdeTZPc3mCRXFHDnRwVGmz+DhC9Kg8RCkAFHMz
+         XzFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uFEkTCd/xhh2jHjXLDAM0hWxj6RGslNzQrjo3X/7zUU=;
+        b=t6nfM9CYcrQN5SmiI5cYlyN6BifsLMSC6OO1BKdQz+5KVfl0Oz2XybsXWHf9h2gFWk
+         hN/DKDDxIW8hkjllIAk8CNciWwwslSmrjw2fKWJ6gESbvV0F5l724jeUbvFrzCb60tGZ
+         YSTuprPjvz2tz5lnx609IBB9VvHxW5QtIdZyHXyG9fRoSlwoyEH+VxvJhuJa1csmQdpB
+         Gi24KzbA9HD4qZrTq1a7W0a+07Pg8SW0If3Gudpm+AM1+peD/Oym4L9bKAsz4SwEPuj2
+         SywBbo6mv7Cuozdfxxl5ARbTGGgJ2BarzDYQv9X5/O1BeGiuromsFRF7rAk1GgnBv6Qe
+         ckSA==
+X-Gm-Message-State: AOAM532vAmsNkP8FA0yxjI3tXWUMtJ+xXzcqLma5v+gfuE7VLFmoFnOT
+        gsEemLpQkdfc4UyUUNVC6KA=
+X-Google-Smtp-Source: ABdhPJxVJn37EXfC1Kkgvx/x3vaArliD0lsBCMi/Vq5/WEkUoTCbcdl5fExGTGuKoQC3WyMe6MlzxQ==
+X-Received: by 2002:a17:907:7844:: with SMTP id lb4mr3117219ejc.381.1630581423928;
+        Thu, 02 Sep 2021 04:17:03 -0700 (PDT)
+Received: from skbuf ([82.78.148.104])
+        by smtp.gmail.com with ESMTPSA id t16sm901503ejj.54.2021.09.02.04.17.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 04:17:03 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 14:17:02 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [RFC PATCH net-next 1/3] net: phy: don't bind genphy in
+ phy_attach_direct if the specific driver defers probe
+Message-ID: <20210902111702.4n6suxfbze46wcgb@skbuf>
+References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
+ <20210901225053.1205571-2-vladimir.oltean@nxp.com>
+ <YTBkbvYYy2f/b3r2@kroah.com>
+ <20210902101150.dnd2gycc7ekjwgc6@skbuf>
+ <YTCpbkDMUfBtJM1V@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <CAD-N9QXPJz60jKfHg1Yh6tnzJRBFAwkmV+LUoSY+f7cZ_5kYww@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfDt5fKd03AmAOzuheOBootkpYTxN/OSMx534Yj6GMFJ4QhzWv5hZB/KrSoIrGCcvUVp9V+2JP2R8WhcUuK4tZlSISh4BZa5sLNDB9MkWmjc2meyEmoB0
- sG8Li+l6wsJnEDTtd1l5fT6rB819VfugiQBIXEGQXW99A6BGJDgZgNk5O/j9awKYIQy+hqxHzun8CZdPyffdL50xSg+h93HQ7kTzCrIwTpRVWjylpEhIKQ/1
- GD7kNRwKIsz57Qn1nJa0fwyzc3XnAzahGDQdRuf/DJQjRBNlof0K6cvqfYZdGu2vsvzvMHYIlLLDOHj4kClqYIaSdrquucurE4BH0nzdvqptIYMUwdsQSiTW
- 53SkhImdnzKxvuNM/lb6E0su8fIAVv+PZabglqbbvHYkKD7yQQawbtYIY0sAOxQIlbm97kqi9LJt9BvpWWnAb+jAByEFhPz+KNoqkn5YDjHYQcrHqom6caRk
- 8KL8N5m2CS0snFWXykdiIvo/J34vqlIdzJOLuA==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTCpbkDMUfBtJM1V@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/09/2021 13:10, Dongliang Mu wrote:
-> On Thu, Sep 2, 2021 at 6:59 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->>
->> On Thu, Sep 2, 2021 at 6:54 PM Mauro Carvalho Chehab <mchehab@kernel.org> wrote:
->>>
->>> Em Thu, 2 Sep 2021 12:39:37 +0200
->>> Greg KH <gregkh@linuxfoundation.org> escreveu:
->>>
->>>> On Thu, Sep 02, 2021 at 06:23:36PM +0800, Dongliang Mu wrote:
->>>>> On Fri, Jul 23, 2021 at 6:11 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->>>>>>
->>>>>> On Wed, Jul 14, 2021 at 11:23 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->>>>>>>
->>>>>>> stk_camera_probe mistakenly execute usb_get_intf and increase the
->>>>>>> refcount of interface->dev.
->>>>>>>
->>>>>>> Fix this by removing the execution of usb_get_intf.
->>>>>>
->>>>>> Any idea about this patch?
->>>>>
->>>>> +cc Dan Carpenter, gregkh
->>>>>
->>>>> There is no reply in this thread in one month. Can someone give some
->>>>> feedback on this patch?
->>>>
->>>> This is the media developers domain, not much I can do here.
->>>
->>> There is a high volume of patches for the media subsystem. Anyway,
->>> as your patch is at our patchwork instance:
->>>
->>>         https://patchwork.linuxtv.org/project/linux-media/patch/20210714032340.504836-1-mudongliangabcd@gmail.com/
->>>
->>> It should be properly tracked, and likely handled after the end of
->>> the merge window.
-> 
-> Hi Mauro,
-> 
-> I found there is another fix [1] for the same memory leak from Pavel
-> Skripkin (already cc-ed in this thread).
-> 
-> [1] https://www.spinics.net/lists/stable/msg479628.html
+On Thu, Sep 02, 2021 at 12:37:34PM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Sep 02, 2021 at 01:11:50PM +0300, Vladimir Oltean wrote:
+> > On Thu, Sep 02, 2021 at 07:43:10AM +0200, Greg Kroah-Hartman wrote:
+> > > Wait, no, this should not be a "special" thing, and why would the list
+> > > of deferred probe show this?
+> >
+> > Why as in why would it work/do what I want, or as in why would you want to do that?
+>
+> Both!  :)
 
-Ah, that's why I marked it as Obsoleted :-)
+So first: why would it work.
+You seem to have a misconception that I am "messing with the probe
+function list".
+I am not, I am just exporting the information whether the device had a
+driver which returned -EPROBE_DEFER during probe, or not. For that I am
+looking at the presence of this device on the deferred_probe_pending_list.
 
-Regards,
+driver_probe_device
+-> if (ret == -EPROBE_DEFER || ret == EPROBE_DEFER) driver_deferred_probe_add(dev);
+   -> list_add_tail(&dev->p->deferred_probe, &deferred_probe_pending_list);
 
-	Hans
+driver_bound
+-> driver_deferred_probe_del
+   -> list_del_init(&dev->p->deferred_probe);
 
-> 
->>>
->>>>>>> Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
->>>>>>> Fixes: 0aa77f6c2954 ("[media] move the remaining USB drivers to drivers/media/usb")
->>>>>>> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
->>>
->>> If you're the author of the patch, it doesn't make much sense to
->>> add a "Reported-by:" tag there. We only use it in order to give
->>> someone's else credit to report an issue.
->>
->> I see. Someone told me this rule in another thread. I will update this
->> in the next version.
->>
->>>
->>> Thanks,
->>> Mauro
+So the presence of "dev" inside deferred_probe_pending_list means
+precisely that a driver is pending to be bound.
 
+Second: why would I want to do that.
+In the case of PHY devices, the driver binding process starts here:
+
+phy_device_register
+-> device_add
+
+It begins synchronously, but may not finish due to probe deferral.
+So after device_add finishes, phydev->drv might be NULL due to 2 reasons:
+
+1. -EPROBE_DEFER triggered by "somebody", either by the PHY driver probe
+   function itself, or by third parties (like device_links_check_suppliers
+   happening to notice that before even calling the driver's probe fn).
+   Anyway, the distinction between these 2 is pretty much irrelevant.
+
+2. There genuinely was no driver loaded in the system for this PHY. Note
+   that the way things are written, the Generic PHY driver will not
+   match on any device in phy_bus_match(). It is bound manually, separately.
+
+The PHY library is absolutely happy to work with a headless chicken, a
+phydev with a NULL phydev->drv. Just search for "if (!phydev->drv)"
+inside drivers/net/phy/phy.c and drivers/net/phy/phy_device.c.
+
+However, the phydev walking with a NULL drv can only last for so long.
+An Ethernet port will soon need that PHY device, and will attach to it.
+There are many code paths, all ending in phy_attach_direct.
+However, when an Ethernet port decides to attach to a PHY device is
+completely asynchronous to the lifetime of the PHY device itself.
+This moment is where a driver is really needed, and if none is present,
+the generic one is force-bound.
+
+My patch only distinguishes between case 1 and 2 for which phydev->drv
+might be NULL. It avoids force-binding the generic PHY when a specific
+PHY driver was found, but did not finish binding due to probe deferral.
+
+> > > If a bus wants to have this type of "generic vs. specific" logic, then
+> > > it needs to handle it in the bus logic itself as that does NOT fit into
+> > > the normal driver model at all.  Don't try to get a "hint" of this by
+> > > messing with the probe function list.
+> >
+> > Where and how? Do you have an example?
+>
+> No I do not, sorry, most busses do not do this for obvious ordering /
+> loading / we are not that crazy reasons.
+>
+> What is causing this all to suddenly break?  The devlink stuff?
+
+There was a report related to fw_devlink indeed, however strictly
+speaking, I wouldn't say it is the cause of all this. It is pretty
+uncommon for a PHY device to defer probing I think, hence the bad
+assumptions made around it.
