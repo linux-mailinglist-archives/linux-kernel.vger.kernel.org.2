@@ -2,70 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 280493FF59B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF613FF59E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347027AbhIBV1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:27:39 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:59366
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245379AbhIBV1i (ORCPT
+        id S1347017AbhIBVcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:32:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245379AbhIBVcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:27:38 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 4927D3F112;
-        Thu,  2 Sep 2021 21:26:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630617992;
-        bh=E0+rjETp1q3bF8ZXs+1AdT+BHFcfxbmgeeVYX//s5wE=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=MkRRkl08bMgIfGvpGCeikhiC1LBLteA04+O8lK+1IjhGyLbwS8lBHyX1iuvHyl8QE
-         65XKOtGSGaQpipZBucZKrwcYgPkigcJwq6T79FyBRa0SYjl6IQOf5CZvova+nvYJKS
-         gREk0bWrL9Q6KrdQjxMSq1FqZK588z7iOhqaKSIP6t1Z+v77sSBNAqvsB2CMDFzCVb
-         AdEwg+1cBk6kAFxqy2z7kDm78JzmuvtNvOJ5OxA6NNEiN1LCmgvY/TleHuEkw5Hqq8
-         JJcA6nkXeu4hEVJDTB4hnkbLkDL84ih2cnsXGusn8w63JZPwCc1EcXrcB6iPRW9IFU
-         lsuDC6SAWKOSA==
-From:   Colin King <colin.king@canonical.com>
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, kvm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] vfio/pci: add missing identifier name in argument of function prototype
-Date:   Thu,  2 Sep 2021 22:26:31 +0100
-Message-Id: <20210902212631.54260-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 2 Sep 2021 17:32:35 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897EBC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:31:36 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id p2so4426147oif.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:31:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Rc7U7oANFcXg5hGEDkjPvORFIQ7OCYwYWB6mwWTbGbs=;
+        b=M4B9RpCQEac5hi63UmX5b33SchKFeP9/F67P4mfdzvDojWIu3Qz6WXxLYwP4T5XGVp
+         F73kBAS83xgrFjD1tgFXstmuUzQEuHaodZKLRP7yhKiFkQGr89jQFgo1p8fIFiyDRa4Y
+         OOYkBNLZkOCnEIB+MnxuSdiJ92R5igK9EQYRo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Rc7U7oANFcXg5hGEDkjPvORFIQ7OCYwYWB6mwWTbGbs=;
+        b=T5EZbbbpPOyE6U0Gq8+/V0ZkxeSEyKgfqb6XQKM9PMjUGRdoNDzJ54IqmbATC1a1VW
+         XJByOf7SG6IpC1Qs1ARoG2iJlDQP/0J6r8bV/sA4eoqsDXklUuh1BCwWMmPn1xoBViUh
+         Cuepn6T9Mgs7DywcjDqp4Z3LgvTzAug5+WXyNxdsNxa5O+SU8dxFTyXhoGaf69b6qtY8
+         ojIBkyCfRLqcflYNQRp5lalFJrxdMcc9z9Q4YO8ePcLv7pmVfxbdzyvoMsrTZjA3rDsW
+         T9Q4c0ygKNVYPmJP3PCuIjtH/DREZ2zrZXBjxXRwxSc/iJ5LNq99q6iBBnP9pcC3VAQW
+         77IA==
+X-Gm-Message-State: AOAM532kyzHlugd2JHKg638x4ueBvtuW9Wx+CR8YPGHpa0hbLwnQ5KAM
+        j0SYYkm4rWmtJfod6pJ71Dl7PA==
+X-Google-Smtp-Source: ABdhPJxDZYaWMFolfko9P2jlcT4J7L/7wh9LaX11B+bzCFX778dlPirw5nwkJxsjeGc9WTkRDlDU9Q==
+X-Received: by 2002:a05:6808:cf:: with SMTP id t15mr3925022oic.108.1630618295763;
+        Thu, 02 Sep 2021 14:31:35 -0700 (PDT)
+Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
+        by smtp.gmail.com with ESMTPSA id s198sm602717oie.47.2021.09.02.14.31.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 14:31:35 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 16:31:33 -0500
+From:   Justin Forbes <jmforbes@linuxtx.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.13 000/113] 5.13.14-rc1 review
+Message-ID: <YTFCtSDTwYGvqzRF@fedora64.linuxtx.org>
+References: <20210901122301.984263453@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901122301.984263453@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Sep 01, 2021 at 02:27:15PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.13.14 release.
+> There are 113 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.14-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-The function prototype is missing an identifier name. Add one.
+Tested rc1 against the Fedora build system (aarch64, armv7, ppc64le,
+s390x, x86_64), and boot tested x86_64. No regressions noted.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/vfio/pci/vfio_pci_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-index 68198e0f2a63..a03b5a99c2da 100644
---- a/drivers/vfio/pci/vfio_pci_core.c
-+++ b/drivers/vfio/pci/vfio_pci_core.c
-@@ -565,7 +565,7 @@ static bool vfio_pci_dev_below_slot(struct pci_dev *pdev, struct pci_slot *slot)
- }
- 
- struct vfio_pci_walk_info {
--	int (*fn)(struct pci_dev *, void *data);
-+	int (*fn)(struct pci_dev *pdev, void *data);
- 	void *data;
- 	struct pci_dev *pdev;
- 	bool slot;
--- 
-2.32.0
-
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
