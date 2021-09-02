@@ -2,86 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C05543FF35D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D4F3FF35F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347094AbhIBSm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 14:42:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347038AbhIBSmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:42:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EF57610A2;
-        Thu,  2 Sep 2021 18:41:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630608115;
-        bh=6BoMcP5chkSrsK2RXEOXpWWeA5RODkgv0ciR/OeFF8g=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=axDU97TcWl+9FSZON5idbTgysIzP76JnTwD2j70wq7tXEJG584bESMkUgODDcoXmG
-         6h0E9pFLwN4xCMh7eji6pPQPs/K2m/m43kPVPem6kHCDQ7tk9Mlyhx++NPF3AcwXBs
-         Kv3O0fGOGSPHbSOxgSBAdKOr4PG+KVRhtYEGdZBymVGSGOamZbyVNJwF6K2X+twFOl
-         +FX0hC6Zsg5AfnH/DBVHfjJRIM8hYa8aVX/yf3WbDBFMM8KLCPx5Ypg05oUoyCZS9U
-         BhweFV3VPwGpbLXpsnRi2iyaHG5zy3mF+GOn5ZoZ8byw5L6VBaDpcqBE7qp1TsQQNa
-         4esShkL525PWA==
-Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
- memory
-To:     Joerg Roedel <jroedel@suse.de>
-Cc:     Yu Zhang <yu.c.zhang@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Varad Gautam <varad.gautam@suse.com>,
-        Dario Faggioli <dfaggioli@suse.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-mm@kvack.org, linux-coco@lists.linux.dev,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Sathyanarayanan Kuppuswamy 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>
-References: <20210824005248.200037-1-seanjc@google.com>
- <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
- <20210827023150.jotwvom7mlsawjh4@linux.intel.com>
- <8f3630ff-bd6d-4d57-8c67-6637ea2c9560@www.fastmail.com>
- <20210901102437.g5wrgezmrjqn3mvy@linux.intel.com>
- <f37a61ba-b7ef-c789-5763-f7f237ae41cc@kernel.org> <YTCZAjdci5yx+n6l@suse.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <b10b09b0-d5ea-b72a-106a-4e1b0df4dc66@kernel.org>
-Date:   Thu, 2 Sep 2021 11:41:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S1347061AbhIBSoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 14:44:15 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:35720 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244734AbhIBSoM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 14:44:12 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51]:53998)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mLrg9-00DUWH-8w; Thu, 02 Sep 2021 12:43:13 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:33786 helo=email.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mLrg8-00GaA4-8v; Thu, 02 Sep 2021 12:43:12 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <fd7938d94008711d441551c06b25a033669a0618.1629732940.git.christophe.leroy@csgroup.eu>
+        <a94be61f008ab29c231b805e1a97e9dab35cb0cc.1629732940.git.christophe.leroy@csgroup.eu>
+Date:   Thu, 02 Sep 2021 13:43:05 -0500
+In-Reply-To: <a94be61f008ab29c231b805e1a97e9dab35cb0cc.1629732940.git.christophe.leroy@csgroup.eu>
+        (Christophe Leroy's message of "Mon, 23 Aug 2021 15:35:53 +0000
+        (UTC)")
+Message-ID: <87mtoux1hi.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <YTCZAjdci5yx+n6l@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-XM-SPF: eid=1mLrg8-00GaA4-8v;;;mid=<87mtoux1hi.fsf@disp2133>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1+mQ5IOX/RusWRKxSCXXYWUBmlaH17KK1A=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa07.xmission.com
+X-Spam-Level: ****
+X-Spam-Status: No, score=4.4 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,LotsOfNums_01,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
+        T_TooManySym_02,T_TooManySym_03,XMGappySubj_01,XMGappySubj_02,
+        XMSubLong,XM_B_SpammyTLD,XM_B_SpammyWords autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4744]
+        *  0.7 XMSubLong Long Subject
+        *  0.5 XMGappySubj_01 Very gappy subject
+        *  1.0 XMGappySubj_02 Gappier still
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        *  1.2 LotsOfNums_01 BODY: Lots of long strings of numbers
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_03 6+ unique symbols in subject
+        *  0.2 XM_B_SpammyWords One or more commonly used spammy words
+        *  1.0 XM_B_SpammyTLD Contains uncommon/spammy TLD
+        *  0.0 T_TooManySym_02 5+ unique symbols in subject
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ****;Christophe Leroy <christophe.leroy@csgroup.eu>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 426 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 13 (3.0%), b_tie_ro: 11 (2.6%), parse: 0.86
+        (0.2%), extract_message_metadata: 15 (3.5%), get_uri_detail_list: 1.90
+        (0.4%), tests_pri_-1000: 22 (5.2%), tests_pri_-950: 1.20 (0.3%),
+        tests_pri_-900: 1.00 (0.2%), tests_pri_-90: 78 (18.3%), check_bayes:
+        77 (17.9%), b_tokenize: 8 (1.9%), b_tok_get_all: 7 (1.6%),
+        b_comp_prob: 2.0 (0.5%), b_tok_touch_all: 57 (13.3%), b_finish: 0.80
+        (0.2%), tests_pri_0: 283 (66.4%), check_dkim_signature: 0.51 (0.1%),
+        check_dkim_adsp: 2.6 (0.6%), poll_dns_idle: 0.79 (0.2%), tests_pri_10:
+        2.1 (0.5%), tests_pri_500: 7 (1.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v2 3/5] signal: Add unsafe_copy_siginfo_to_user()
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/21 2:27 AM, Joerg Roedel wrote:
-> On Wed, Sep 01, 2021 at 09:07:59AM -0700, Andy Lutomirski wrote:
->> In principle, you could actually initialize a TDX guest with all of its
->> memory shared and all of it mapped in the host IOMMU.
-> 
-> Not sure how this works in TDX, but in SEV code fetches are always
-> treated as encrypted. So this approach would not work with SEV, not to
-> speak about attestation, which will not work with this approach either
-> :)
-> 
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
 
-Oof.
+> In the same spirit as commit fb05121fd6a2 ("signal: Add
+> unsafe_get_compat_sigset()"), implement an 'unsafe' version of
+> copy_siginfo_to_user() in order to use it within user access blocks.
+>
+> For that, also add an 'unsafe' version of clear_user().
+
+Looking at your use cases you need the 32bit compat version of this
+as well.
+
+The 32bit compat version is too complicated to become a macro, so I
+don't think you can make this work correctly for the 32bit compat case.
+
+Probably-Not-by: "Eric W. Biederman" <ebiederm@xmission.com>
+
+Eric
+
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  include/linux/signal.h  | 15 +++++++++++++++
+>  include/linux/uaccess.h |  1 +
+>  kernel/signal.c         |  5 -----
+>  3 files changed, 16 insertions(+), 5 deletions(-)
+>
+> diff --git a/include/linux/signal.h b/include/linux/signal.h
+> index 3454c7ff0778..659bd43daf10 100644
+> --- a/include/linux/signal.h
+> +++ b/include/linux/signal.h
+> @@ -35,6 +35,21 @@ static inline void copy_siginfo_to_external(siginfo_t *to,
+>  int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from);
+>  int copy_siginfo_from_user(kernel_siginfo_t *to, const siginfo_t __user *from);
+>  
+> +static __always_inline char __user *si_expansion(const siginfo_t __user *info)
+> +{
+> +	return ((char __user *)info) + sizeof(struct kernel_siginfo);
+> +}
+> +
+> +#define unsafe_copy_siginfo_to_user(to, from, label) do {		\
+> +	siginfo_t __user *__ucs_to = to;				\
+> +	const kernel_siginfo_t *__ucs_from = from;			\
+> +	char __user *__ucs_expansion = si_expansion(__ucs_to);		\
+> +									\
+> +	unsafe_copy_to_user(__ucs_to, __ucs_from,			\
+> +			    sizeof(struct kernel_siginfo), label);	\
+> +	unsafe_clear_user(__ucs_expansion, SI_EXPANSION_SIZE, label);	\
+> +} while (0)
+> +
+>  enum siginfo_layout {
+>  	SIL_KILL,
+>  	SIL_TIMER,
+> diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+> index c05e903cef02..37073caac474 100644
+> --- a/include/linux/uaccess.h
+> +++ b/include/linux/uaccess.h
+> @@ -398,6 +398,7 @@ long strnlen_user_nofault(const void __user *unsafe_addr, long count);
+>  #define unsafe_put_user(x,p,e) unsafe_op_wrap(__put_user(x,p),e)
+>  #define unsafe_copy_to_user(d,s,l,e) unsafe_op_wrap(__copy_to_user(d,s,l),e)
+>  #define unsafe_copy_from_user(d,s,l,e) unsafe_op_wrap(__copy_from_user(d,s,l),e)
+> +#define unsafe_clear_user(d, l, e) unsafe_op_wrap(__clear_user(d, l), e)
+>  static inline unsigned long user_access_save(void) { return 0UL; }
+>  static inline void user_access_restore(unsigned long flags) { }
+>  #endif
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index a3229add4455..83b5971e4304 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -3261,11 +3261,6 @@ enum siginfo_layout siginfo_layout(unsigned sig, int si_code)
+>  	return layout;
+>  }
+>  
+> -static inline char __user *si_expansion(const siginfo_t __user *info)
+> -{
+> -	return ((char __user *)info) + sizeof(struct kernel_siginfo);
+> -}
+> -
+>  int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from)
+>  {
+>  	char __user *expansion = si_expansion(to);
