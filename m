@@ -2,148 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6890A3FF4FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C073FF4FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344271AbhIBUfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:35:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234254AbhIBUe7 (ORCPT
+        id S234656AbhIBUgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 16:36:17 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:44862 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232057AbhIBUgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 16:34:59 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38747C061575;
-        Thu,  2 Sep 2021 13:34:01 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id gp20-20020a17090adf1400b00196b761920aso2375743pjb.3;
-        Thu, 02 Sep 2021 13:34:01 -0700 (PDT)
+        Thu, 2 Sep 2021 16:36:16 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 182KDvmx002200;
+        Thu, 2 Sep 2021 20:35:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2021-07-09;
+ bh=/Jy9Uu0XW5QuZh9sfOe0Za5474fp6sEYmS0dRv8Iryc=;
+ b=lYYXdFidNMOrc/T99NE+6M2cWIGdA7mjlTsVXe+VYXzWtaU3RcRYoRCgFLzri/47wmRA
+ rD0jLZ3wjy7xHbh8ZayyzxwZRI1u+x3UavvYdLocgGmAdE0fs7HzQ3w1QAe0yTwDhcMR
+ osscCjI3cIaBFLLL7PZuaxnC925/3R625k8mhiweeYqEN8yEeJLB7TKTaB2lfx/L63vY
+ ijl4wad3A1CGxC7tKj29zy7/j5o0PrgH+ZdQ03hKrXzhx7rB32I7xc+hOx4sW091sdjl
+ mLzirxjkdeuIoAjsxHtPAYBGv+age6gM22i/1+c49/ArxnKAavwWEg9/E7HwcShlOKjo gQ== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=/Jy9Uu0XW5QuZh9sfOe0Za5474fp6sEYmS0dRv8Iryc=;
+ b=TSMLOQllPz3QotPbd24/HkFTARY320Pyz0n77uU1s4WjpiU22tOF8JqysYVm/13Wro/B
+ MAfIw8A58Tndn+p2gp6Wc1Ju87uArGgKNM+DrFikRRw8D+5iZH8EXN4RnJek8V/1b12T
+ PZhQbFoJWGVUdFqbcS6zkTwuHGWgkuFdoussjtget0FGrUV+Pj1AEJ6/cVfoY/OLMoD0
+ qhQPkFGk/bRQS1rJdKTEJbczaymiok80TPsQULVn1P152leDnuOIv+e31iJUCQqeeinF
+ n839P0gwT/P5fji8lEXALcK8qmetCjpD80U5miF4wPvq08ukT3A8Le3LZEg8fMTldfJq mA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3atdw5c03w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Sep 2021 20:35:14 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 182KGX1t032443;
+        Thu, 2 Sep 2021 20:35:13 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2048.outbound.protection.outlook.com [104.47.66.48])
+        by userp3030.oracle.com with ESMTP id 3ate06dhac-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 02 Sep 2021 20:35:13 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GvhXhYJi6eiIZY68ymt5yCzqbMFsCirnqeu9LfHvAK9zpiT7SDBtL5DJ0ZHBNzPb+1VYW0jJJ6CE1umKTIb/RmEPfbFpuq+oLwwVuFkzxuQxMV9hPpYcOH2EMdeeF+wJEsDXXx9FIc+prNwGMlbUJZf2ng9drfZdFwAYVDfV+yzTGXP10gGxQqLvjd0O3DltUVdxAKjAENLaqhkToSNnCwAlYOuAAeU4PgWaFaLkQCxYS/3QNMohwqlDYREWagxIayVbU7wpSk/obpWuqmPTFBYhYdpnM+ntEAEWVjwSB0cLCkIvjvQNoKY14zw1u6Vsvff9Jy2pWJtwSFcehPb0QA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/Jy9Uu0XW5QuZh9sfOe0Za5474fp6sEYmS0dRv8Iryc=;
+ b=HD6mJGVwbXtI8cOl7pSyN8OYM9P2HZf6iuW2wsZciQCksqTLWYsjaTct5HxPGadKpasAJtFKdVklqeOqZFXG9FNX3MyKsf5Viw3/J2OQo7jla7IwCN6dAymHoZguROxOOnmJn21KiFhv2zpArTmvErxcrOWTK+GOv2mzQDK9JTeNwMwWBM/DoJokmq1MZp0Zw/2+BAySEqy7F3xdfaS9OBPhippohyO9GkarlRsa8rIHK1n6jQBp7I5uICeWcNOV4BaoQsQcJqN0YqLySxIQl7QC1m3uKkSAnDJVh57t8+Xpmr5p5GKJYI7Jh/+1NZiVpfSQ+4SXTkpNjhPTELOUCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=/bfjN48Z09yXV4KccPup9W0U2yVe6pNdsmk7960L1N8=;
-        b=J88wLlImNGuaCGqsHnsA4XkqlqcmEuUD62qb19XqSvBF0cKWJinQZvTMGlMGkdhOKz
-         rPte5RLBrrImOImoCpGp2Ao+tLjtkU+08dq9p8Ov2qLxw5mQYq/B2NynEy2hnAQ27z2y
-         V+rC/Yt3FYHAYoraNf/GKr8KjdJuA/2JRDaVFMyu/+vczpsLnRii5y/0DI6XBQc+RRsQ
-         TPO46cqguBD6yEKq1qmtXOrrD2Oc1av8z6EZB0NuDbo2DmcIt7upAqR2n6I7pqTo9dgM
-         ca6cMke/UPT++Atl2Kkr7mRoWai3xoDhsxGrCw4E2/CBFgVJ0Fg4FI6Yh372IPl/2JO8
-         rBbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=/bfjN48Z09yXV4KccPup9W0U2yVe6pNdsmk7960L1N8=;
-        b=NQUvD4MzVmrxRr4W5tcCKxua8hXNaXv1v6gjfCcyxQ95nZA2nOquVJoh4prQRVIfpd
-         IdlzsUuYTmWpzVoDsFORpnXRSPX7ZtZMfuou2/YMFQo3iLPFrNzCy4CQMQoiyEJk3Q20
-         gnj03W09npbkv23tQYOlDZs1WmbBFOXnGAxSEz/ZtKPxqjJ+Nvm0FlCTHXtVbBvYghqx
-         SfJZGArsOsfcHf9MtBm2Zkeuw2V9/SNd8/ydaIwMgXIKvn6Znrq5iCxjE3+hmc3K63eD
-         NiRs+Q0IbcLhdZ6URcMntWvSiaHJYGIljwbHoJW618+ePBGGWUkNt+y7MflyH5vWoA6N
-         0OyQ==
-X-Gm-Message-State: AOAM531RIdqcrexluewr3ImBGlmINIzk1OuR5PPKqfGpMSw0jOTeNsaP
-        Q9ZRuQrmWeRTlmQSo4W4Sx8=
-X-Google-Smtp-Source: ABdhPJwICHHXt7n0nNltVC7hsLNg3fqbTzq8J76wmDWi2wz7pv73q1VR8Y2/wXLKSpoxlRuhKZdPvw==
-X-Received: by 2002:a17:90b:3603:: with SMTP id ml3mr37303pjb.96.1630614840591;
-        Thu, 02 Sep 2021 13:34:00 -0700 (PDT)
-Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id y4sm2977057pjw.57.2021.09.02.13.33.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 13:34:00 -0700 (PDT)
-Message-ID: <bd7c9398-5d3d-ccd8-8804-25074cff6bde@gmail.com>
-Date:   Thu, 2 Sep 2021 13:33:57 -0700
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/Jy9Uu0XW5QuZh9sfOe0Za5474fp6sEYmS0dRv8Iryc=;
+ b=hmBbfitKmMIjwPeAiRJ6Sc776tIRrcq3nlL/EaoyBbcWjBRlgC+X8ePct4emv2g3M1VT9s7fJAG+h3XCFThCTMw2+uwPhfeaXZErGQifdx+Lrh9Bq2kPayXYALgFTmXERJ4TqFQhTtaSXbtzShxe6QzGbUt7Jrs6RVejf8jImGY=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
+ by BY5PR10MB4179.namprd10.prod.outlook.com (2603:10b6:a03:206::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.21; Thu, 2 Sep
+ 2021 20:35:11 +0000
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::cdbb:4673:98bd:7f2c]) by BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::cdbb:4673:98bd:7f2c%5]) with mapi id 15.20.4457.024; Thu, 2 Sep 2021
+ 20:35:11 +0000
+Date:   Thu, 2 Sep 2021 16:35:03 -0400
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, vijayendra.suman@oracle.com,
+        mlombard@redhat.com, pjones@redhat.com,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] iscsi_ibft: Fix isa_bus_to_virt not working under ARM
+Message-ID: <YTE1dzQ7ytQWW4Ow@char.us.oracle.com>
+References: <20210902140313.1555053-1-konrad.wilk@oracle.com>
+ <20210902140313.1555053-2-konrad.wilk@oracle.com>
+ <YTEGhPnQkgOiOHf7@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTEGhPnQkgOiOHf7@kernel.org>
+X-ClientProxiedBy: SA9PR13CA0045.namprd13.prod.outlook.com
+ (2603:10b6:806:22::20) To BYAPR10MB2999.namprd10.prod.outlook.com
+ (2603:10b6:a03:85::27)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [RFC PATCH net-next 1/3] net: phy: don't bind genphy in
- phy_attach_direct if the specific driver defers probe
-Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?UTF-8?Q?Alvin_=c5=a0ipraga?= <alsi@bang-olufsen.dk>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Len Brown <lenb@kernel.org>
-References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
- <20210901225053.1205571-2-vladimir.oltean@nxp.com>
- <20210902185016.GL22278@shell.armlinux.org.uk> <YTErTRBnRYJpWDnH@lunn.ch>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <YTErTRBnRYJpWDnH@lunn.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from char.us.oracle.com (138.3.200.57) by SA9PR13CA0045.namprd13.prod.outlook.com (2603:10b6:806:22::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.6 via Frontend Transport; Thu, 2 Sep 2021 20:35:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b40d9b0f-22fc-42b0-df67-08d96e5128b8
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4179:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR10MB417935227FEEF5F34A69723789CE9@BY5PR10MB4179.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dX12fHRTzUvt2RSh/aJ8N/6hQ2FOIfLZH3pVcYcxnnsuJ0CLY7ygC2YsQFA47Fnnz/q88iJwN+gYDv5bK3AFe/2aZHjgbNPVkJnzVC/wBDBUwOaYGvmZzr9qqqAWZHRbDPmu4FXxapFSW6a5wwS3XlTYXa0hkS5/pOeSFrU2+nH6SjcmstSgAK6ETQr9Gl8furCWFHY4B+VMq32al/USWxdabVFvucSfH2dfS4Y1pd+NJOdrucbFNXWMH3OdKtcU8DT9CjTZVTnqJpVhx4r0bzk154vKI3qJiJUPCQ3E8JoDhb/LN3T8gtmhP6F4pWu+OIzgs3r6sRPpJBe2zhMa1yncT42cyaaSUxd4Cf/p6rFN/Wy2lFsNDMS0aHDVKnSbbdd20gSGSFXdPvdK0z5qfbV7dGAdk2I6EsVNLuCsDDhxjhCGf2BtMF01l3Vkx24hJEFlAYZ8phYUe+YmkFCNqGjRbIdfrKCExhzDktWl3eYmIdmBRgPmiTFdhW3Bm77OwnDupTD5Lem72Ky5Pjco2JPDrGZV2AYa0Eo29C3exfHyybNddFdUJl/Vsk/NZvoDEUkjYhJ5NPn6azAZR4z/OKDIQ8kfToI9lpDRTlpMnGW1S0JHw2EGovkjJhSnhXiq0Mma60qzlzCHkRneszI0rFGYnI0AqwiPhtV4hosrWuZELITZRdDkpM0qxJZiO30usaMhsoeu9qSRA8C3Z+aTGA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(39860400002)(396003)(366004)(186003)(53546011)(66476007)(66556008)(66946007)(26005)(55016002)(2906002)(38350700002)(38100700002)(316002)(4326008)(6916009)(956004)(5660300002)(86362001)(8936002)(83380400001)(478600001)(7696005)(8676002)(52116002)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LiWzPluIaWlSI3+gRhA6X55oIYwLSIPyJ/N1Ia/5qFFeMDVA/kX2T0SbdUAS?=
+ =?us-ascii?Q?1Ke+CFUficWF4+T4VX5II3O43+YV39w/6Sj4Pw/8cHTKLNOuxUJp5JalFnkc?=
+ =?us-ascii?Q?fCgTWz5TzCkHs12jHgq7g6q1DJgILLCUnsTdVMB/g2v3PHwdrgqwgAcmcIVr?=
+ =?us-ascii?Q?T/87a8cVYSWoauDTWNz1VWK7eSoHcLP/vDk5uy/XUuiF3F8tpMF0ygo26nIM?=
+ =?us-ascii?Q?zXGksZQvJ0V9lZwHKd2AJnt1soFx4ynonebXd3aWQuEE2bizKPS3qkm6AvEl?=
+ =?us-ascii?Q?Frx/ZbvGF6WDgjHtB6Lcj+Ay5tOC+gU8FUokyORwRdh3enTZe7+qGbRcoezP?=
+ =?us-ascii?Q?3QS08KVheVaJQZ7MGMwmqrsinc104DqMceONXAV6+QCvXWC2vWPA8MCtb1nd?=
+ =?us-ascii?Q?GuhWk0hr4NT+/NlmHK1vRS2q+c8P149nAG8EXFfnwO/iaEcv14af4nhtA9wX?=
+ =?us-ascii?Q?vF3nE4igN/6bVqM8zmNbRIbJdp1QGyp/NW3RGZbQdpEt3j3unqNwnM5igL5W?=
+ =?us-ascii?Q?B9TfqEHr0Ibg8OpBBXLLRcElM48tuDHo4EBmiq1uvQEkAW365dDIv611rCv0?=
+ =?us-ascii?Q?nmVVRP00mVuw3Ig2uTGsylEBjPCKU+nFBy9SJvLNqsVmIfxmQSTwoyqlM8G4?=
+ =?us-ascii?Q?fxf0rahq6bCGpWMlVJCM20v9148H4JE8Rtmbbx/BJaHhaLMPgLFno7B+W/il?=
+ =?us-ascii?Q?7v+rRfePxS0PZOwtw8AElnv67siogDNfOxo8Rm41W3ZZVrFQB//yPtyBr6Jf?=
+ =?us-ascii?Q?bJBwEKslUSIHZUgt74qLK3ULc/WjmhIPeag2mUhPqdVOMjXPMstkp+/KOGiG?=
+ =?us-ascii?Q?Iizi7+34t3NkZ5Sst+nNwPsWhdvsVseu/b+2oapywJM7sr2fmr//OrhUwegy?=
+ =?us-ascii?Q?UaT4ivrEu+auFF+frQO2uf/Zzm4q+/KDPI3t4qIbklN9Lfc38fI8rs72ijvG?=
+ =?us-ascii?Q?w1CMrhNLMExAyNmOUtJt/wgwjfU9shod6/QROja/BGH0kHDkFaqna42o8Eoc?=
+ =?us-ascii?Q?GEY4eOvrwkSfCa4GPPRP3rEBfwBA0OiKHBjYKI1vbkvtxDU+7osRSiXn9zjs?=
+ =?us-ascii?Q?oSZu+NW1MlzWuzClon0QaGEpogBSpXIQrbSZQhjow/o/eO8eq27IKh2DjzTY?=
+ =?us-ascii?Q?tMcFepS4SpO0r6E2jxZSJiMlaiDS6Z04uY03NniMtHkwY8pISt365+FgjH14?=
+ =?us-ascii?Q?D7KGXKE8hZVMrwsSZFbulsob39DCNTu4fNcpGQbculngYjui/LC/ESu0Y0Zr?=
+ =?us-ascii?Q?7RgsZ6ePNMC+3UqCx9EN6one02HjdMRpGhGcJrL5Q/bOr+wRJ/DlUKuZQzfc?=
+ =?us-ascii?Q?iquPDQ9c//yb++PMdSPxFDa1?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b40d9b0f-22fc-42b0-df67-08d96e5128b8
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2021 20:35:10.9753
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aFx6t4HxsipnBuJbXIh77Ea8kbNvWmJwI+i8h9LHZwx+3Aey6o33X85ZYvDz5rESJSO1bsAuKeEtC+8BOm+jPQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4179
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10095 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2108310000
+ definitions=main-2109020116
+X-Proofpoint-GUID: GsPiE7wwu_9fdt_D-DMHYS20FOoLEV2G
+X-Proofpoint-ORIG-GUID: GsPiE7wwu_9fdt_D-DMHYS20FOoLEV2G
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/2/2021 12:51 PM, Andrew Lunn wrote:
-> On Thu, Sep 02, 2021 at 07:50:16PM +0100, Russell King (Oracle) wrote:
->> On Thu, Sep 02, 2021 at 01:50:51AM +0300, Vladimir Oltean wrote:
->>> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
->>> index 52310df121de..2c22a32f0a1c 100644
->>> --- a/drivers/net/phy/phy_device.c
->>> +++ b/drivers/net/phy/phy_device.c
->>> @@ -1386,8 +1386,16 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
->>>   
->>>   	/* Assume that if there is no driver, that it doesn't
->>>   	 * exist, and we should use the genphy driver.
->>> +	 * The exception is during probing, when the PHY driver might have
->>> +	 * attempted a probe but has requested deferral. Since there might be
->>> +	 * MAC drivers which also attach to the PHY during probe time, try
->>> +	 * harder to bind the specific PHY driver, and defer the MAC driver's
->>> +	 * probing until then.
->>>   	 */
->>>   	if (!d->driver) {
->>> +		if (device_pending_probe(d))
->>> +			return -EPROBE_DEFER;
->>
->> Something else that concerns me here.
->>
->> As noted, many network drivers attempt to attach their PHY when the
->> device is brought up, and not during their probe function.
+On Thu, Sep 02, 2021 at 08:14:44PM +0300, Mike Rapoport wrote:
+> On Thu, Sep 02, 2021 at 02:03:13PM +0000, Konrad Rzeszutek Wilk wrote:
+> > The isa_bus_to_virt is only needed under X86 and in fact the code
+> > that sets the ibft_phys_addr is only compiled under X86.
+> > 
+> > As such lets just ifdef the code.
+> > 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Reported-by: Vijayendra Suman <vijayendra.suman@oracle.com>
+> > CC: Maurizio Lombardi <mlombard@redhat.com>
+> > CC: Mike Rapoport <rppt@kernel.org>
+> > Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> > ---
+> >  drivers/firmware/iscsi_ibft.c | 22 +++++++++++++++++-----
+> >  1 file changed, 17 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/firmware/iscsi_ibft.c b/drivers/firmware/iscsi_ibft.c
+> > index 612a59e213df..7cde1a7a3ab1 100644
+> > --- a/drivers/firmware/iscsi_ibft.c
+> > +++ b/drivers/firmware/iscsi_ibft.c
+> > @@ -86,7 +86,7 @@ MODULE_VERSION(IBFT_ISCSI_VERSION);
+> >  
+> >  static struct acpi_table_ibft *ibft_addr;
+> >  
+> > -#ifndef CONFIG_ISCSI_IBFT_FIND
+> > +#ifdef CONFIG_ISCSI_IBFT_FIND
+> >  phys_addr_t ibft_phys_addr;
+> >  #endif
 > 
-> Yes, this is going to be a problem. I agree it is too late to return
-> -EPROBE_DEFER. Maybe phy_attach_direct() needs to wait around, if the
-> device is still on the deferred list, otherwise use genphy. And maybe
-> a timeout and return -ENODEV, which is not 100% correct, we know the
-> device exists, we just cannot drive it.
-
-Is it really going to be a problem though? The two cases where this will 
-matter is if we use IP auto-configuration within the kernel, which this 
-patchset ought to be helping with, if we are already in user-space and 
-the PHY is connected at .ndo_open() time, there is a whole lot of things 
-that did happen prior to getting there, such as udevd using modaliases 
-in order to load every possible module we might, so I am debating 
-whether we will really see a probe deferral at all.
-
+> I think this declaration should be removed after you added
+> acpi_find_ibft_region().
 > 
-> Can we tell we are in the context of a driver probe? Or do we need to
-> add a parameter to the various phy_attach API calls to let the core
-> know if this is probe or open?
-
-Actually we do the RTNL lock will be held during ndo_open and it won't 
-during driver probe.
-
+> Before your changes we had ibft_phys_addr defined in iscsi_ibft_find.c for
+> CONFIG_ISCSI_IBFT_FIND=y and the declaration above was needed to avoid
+> compilation error in ibft_init().
 > 
-> This is more likely to be a problem with NFS root, with the kernel
-> bringing up an interface as soon as its registered. userspace bringing
-> up interfaces is generally much later, and udev tends to wait around
-> until there are no more driver load requests before the boot
-> continues.
+> With the only use of ibft_phys_addr hidden under #ifdef CONFIG_ISCSI_IBFT_FIND
+> this declaration actually hides ibft_phys_addr defined in
+> iscsi_ibft_find.c.
 
-See my point above, with Vladimir's change, we should have fw_devlink do 
-its job such that by the time the network interface is needed for IP 
-auto-configuration, all of its depending resources should also be ready, 
-would not they?
+Yes good idea. I think this below will work rather nicely:
+
+From 799206c1302e8fabfab5a4151e74a2fe90090590 Mon Sep 17 00:00:00 2001
+From: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Date: Wed, 1 Sep 2021 20:22:11 -0400
+Subject: [PATCH] iscsi_ibft: Fix isa_bus_to_virt not working under ARM
+
+The isa_bus_to_virt is only needed under X86 and in fact the code
+that sets the ibft_phys_addr is only compiled under X86.
+
+As such lets just ifdef the code.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Vijayendra Suman <vijayendra.suman@oracle.com>
+CC: Maurizio Lombardi <mlombard@redhat.com>
+CC: Mike Rapoport <rppt@kernel.org>
+Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+---
+v2: Remove the ibft_phys_addr as it is defined in iscsi_ibft.h
+---
+ drivers/firmware/iscsi_ibft.c | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/firmware/iscsi_ibft.c b/drivers/firmware/iscsi_ibft.c
+index 612a59e213df..6e9788324fea 100644
+--- a/drivers/firmware/iscsi_ibft.c
++++ b/drivers/firmware/iscsi_ibft.c
+@@ -86,10 +86,6 @@ MODULE_VERSION(IBFT_ISCSI_VERSION);
+ 
+ static struct acpi_table_ibft *ibft_addr;
+ 
+-#ifndef CONFIG_ISCSI_IBFT_FIND
+-phys_addr_t ibft_phys_addr;
+-#endif
+-
+ struct ibft_hdr {
+ 	u8 id;
+ 	u8 version;
+@@ -851,7 +847,21 @@ static void __init acpi_find_ibft_region(void)
+ {
+ }
+ #endif
+-
++#ifdef CONFIG_ISCSI_IBFT_FIND
++static int __init acpi_find_isa_region(void)
++{
++	if (ibft_phys_addr) {
++		ibft_addr = isa_bus_to_virt(ibft_phys_addr);
++		return 0;
++	}
++	return -ENODEV;
++}
++#else
++static int __init acpi_find_isa_region(void)
++{
++	return -ENODEV;
++}
++#endif
+ /*
+  * ibft_init() - creates sysfs tree entries for the iBFT data.
+  */
+@@ -864,9 +874,7 @@ static int __init ibft_init(void)
+ 	   is called before ACPI tables are parsed and it only does
+ 	   legacy finding.
+ 	*/
+-	if (ibft_phys_addr)
+-		ibft_addr = isa_bus_to_virt(ibft_phys_addr);
+-	else
++	if (acpi_find_isa_region())
+ 		acpi_find_ibft_region();
+ 
+ 	if (ibft_addr) {
 -- 
-Florian
+2.27.0
+
