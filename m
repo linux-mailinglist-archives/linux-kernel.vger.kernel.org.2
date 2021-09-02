@@ -2,87 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490963FF01D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536433FF020
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345807AbhIBPZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 11:25:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53082 "EHLO mail.kernel.org"
+        id S1345735AbhIBP0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 11:26:07 -0400
+Received: from mga04.intel.com ([192.55.52.120]:46851 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229941AbhIBPZn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 11:25:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3187360F4B;
-        Thu,  2 Sep 2021 15:24:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630596284;
-        bh=5xHwpTyrJz/V1ecWOpG2oVcDhIQ65r7ovJhDHEp+hFg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FUqArlOmcFL226oWhkLx8xHTMVV1zWf5cDzsmYYuqROLrebShV/2ogjHbCLfVspMd
-         pTzMmBb2rQMwx6StXCtSmKXbyixRiEl3izZ+FVeKV5p7cjGUDIgQIYD+lmFuXvuW8R
-         p4XSGqm/ONRbDGtZ6gZZnwsg6Nqu+H8+ywij6bYUA00H+mThqKlHKoFysbB+AVZdVN
-         2cb0/jKB3ZhvxffGmQOp6E1B4shOEfZUTJSLwhbi4ch7h+Ct/b/mB4Hwn0UvbFn6IH
-         Vy0+yavTirOEweqG1Qkkb4aM/0r6W/O+u+X1nBMk1QE1WOXlc7NVcHwZLS22H39QNg
-         edCe0fRUj0iXw==
-Date:   Thu, 2 Sep 2021 16:24:12 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Takashi Iwai <tiwai@suse.com>
-Subject: Re: [PATCH v2] ASoC: Intel: boards: Fix CONFIG_SND_SOC_SDW_MOCKUP
- select
-Message-ID: <20210902152412.GF11164@sirena.org.uk>
-References: <20210802190351.3201677-1-nathan@kernel.org>
- <20210802212409.3207648-1-nathan@kernel.org>
- <da246896-fbd3-be8d-355f-3c0a83e7d4eb@linux.intel.com>
+        id S229941AbhIBP0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 11:26:04 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="217290489"
+X-IronPort-AV: E=Sophos;i="5.85,262,1624345200"; 
+   d="scan'208";a="217290489"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 08:25:05 -0700
+X-IronPort-AV: E=Sophos;i="5.85,262,1624345200"; 
+   d="scan'208";a="533335602"
+Received: from yzhai-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.209.161.204])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 08:25:04 -0700
+Subject: Re: [PATCH v5 07/12] x86/traps: Add #VE support for TDX guest
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+References: <20210804181329.2899708-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210804181329.2899708-8-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YSTHMAUA1LjjOQPe@zn.tnic>
+ <99c5f6e9-a747-1a4a-d0f4-95b8b28e0d02@linux.intel.com>
+ <YSUwi2HraMFVanTP@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <42201ef7-6552-3fbc-23ef-013cb3e93649@linux.intel.com>
+Date:   Thu, 2 Sep 2021 08:24:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/QKKmeG/X/bPShih"
-Content-Disposition: inline
-In-Reply-To: <da246896-fbd3-be8d-355f-3c0a83e7d4eb@linux.intel.com>
-X-Cookie: Famous last words:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YSUwi2HraMFVanTP@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---/QKKmeG/X/bPShih
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Thu, Sep 02, 2021 at 10:02:18AM -0500, Pierre-Louis Bossart wrote:
-> On 8/2/21 4:24 PM, Nathan Chancellor wrote:
-> > When CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH is enabled without
-> > CONFIG_EXPERT, there is a Kconfig warning about unmet dependencies:
+On 8/24/21 10:46 AM, Borislav Petkov wrote:
+> On Tue, Aug 24, 2021 at 10:32:13AM -0700, Kuppuswamy, Sathyanarayanan wrote:
+>> Mainly chose it avoid future name conflicts with KVM (tdx) calls. But
+> 
+> What name conflicts with KVM calls? Please explain.
 
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Currently there are no name conflicts. But in our initial submissions (RFC v?)
+we had some conflicts in functions like (tdx_get_tdreport() and
+tdx_get_quote()).
 
-> This patch was missed, maybe because I didn't provide a formal ack on my
-> own suggestion, so here goes:
+Since it is no longer true and "tdg" is not a favorite prefix, I will
+rename tdg -> tdx in next submission.
 
-> Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> 
+>> It is required to handle #VE exceptions raised by unhandled MSR
+>> read/writes.
+> 
+> Example? Please elaborate.
 
-It looks like this was sent in reply to an old thread so got deleted
-along with the old thread.  In any case I don't have it any more...
+If MSR read/write failed in tdx_handle_virtualization_exception(), it will
+return non zero return value which in turn will trigger ve_raise_fault().
 
---/QKKmeG/X/bPShih
-Content-Type: application/pgp-signature; name="signature.asc"
+If we don't call fixup_exception() for such case, it will trigger oops
+and eventually panic in TDX. For MSR read/write failures we don't want
+to panic.
 
------BEGIN PGP SIGNATURE-----
+#VE MSR read/write
+  -> exc_virtualization_exception()
+     -> tdx_handle_virtualization_exception()
+        ->tdx_write_msr_safe()
+     -> ve_raise_fault
+        -> fixup_exception()
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEw7JsACgkQJNaLcl1U
-h9C2Kwf/VIq50TNTUN4NObepN1GojSmpDkg+Cd9qAYJ9R9hHuZ0m5S8MJQsnv0ws
-Jct981brHL3nh6HjM2oG6/t7oLaRvuc5TQCrH5rQKQcIooXJJ8f86WmjZreJp3SR
-ZLdchWIHuF1a5dwx+gKWXTpxVBAC7vaiBxGGQJwLjoOlhFBvkkCMi67SgWvnddk6
-ouM+jUhfmNU+L1yL2KsgCUpa1yzRuMqoCEklFgtTGvLqtkwU/q+SckMR09X3PlvM
-twzFq/8xEvsVnzzA9uhxlcXSdez1mP8HgmJwdhCpRkwsjr8Hgof0NAmRgt4uxfSi
-D5NBEI/o+aB/HoyctOXVmPRSHBd4Cw==
-=vJrj
------END PGP SIGNATURE-----
+> 
+>> Ok. I can check it. But there is only one statement after this call.
+>> So it may not be very helpful.
+> 
+> Looking at die_addr(), that calls the die notifier too. So do you
+> even *have* to call it here with VEFSTR? As yo say, there's only one
+> statement after that call and box is dead in the water after that so why
+> even bother...
 
---/QKKmeG/X/bPShih--
+Reason for calling die_addr() is to trigger oops for failed #VE handling, which
+is desirable for TDX. Also sending die notification may be useful for debuggers.
+
+This sequence of calls are similar to exc_general_protection().
+
+> 
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
