@@ -2,61 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6E33FE77A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F773FE77D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236466AbhIBCPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 22:15:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233041AbhIBCPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 22:15:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id A0E55610CA;
-        Thu,  2 Sep 2021 02:14:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630548851;
-        bh=kKqf5AOp6ZK+VPZzX5LEbzAxpYG9hJXwZgERkx5stgM=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=S5MwE4Gp4/WE6EAaXxE+zhTTcyQgJwG4vq6PtNmPVQ+Liv5PiCKpvqWYtNBHB+OD9
-         PRyvhPR/0X1igO3oUq+YU9lxJYNS6y+XeAW7Mfp9eTT2g+HbotBDyTVaDdJE7ZEXiG
-         34N+4hiVwOhLr3VZlLNZu8nPTK4Xu8bJzQrPCyuyq34/DItz4a/HggHNlxFtEqZ2wI
-         BBOlBEayY5x17Z62pi6xcoA0gXBAoBwDWJjwd3oq7ck0A4jjZghlxQNOJnYQMW5907
-         4lYYnkEPXUUqPoJxmyhL1opVjBXlr3IFLJBjdQqTnaPeolah2onkHvBTJudVjAxySw
-         irCjqK9Ofz4Sw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 991CC6098E;
-        Thu,  2 Sep 2021 02:14:11 +0000 (UTC)
-Subject: Re: [git pull] m68knommu changes for v5.15
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <40f5e521-673a-dbfb-efff-62bdd8c01f49@linux-m68k.org>
-References: <40f5e521-673a-dbfb-efff-62bdd8c01f49@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <40f5e521-673a-dbfb-efff-62bdd8c01f49@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.15
-X-PR-Tracked-Commit-Id: db87db65c1059f3be04506d122f8ec9b2fa3b05e
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6104dde096eba9f443845686a2c4b3fa31129eb4
-Message-Id: <163054885162.9778.12867962222805284981.pr-tracker-bot@kernel.org>
-Date:   Thu, 02 Sep 2021 02:14:11 +0000
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     torvalds@linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+        id S239572AbhIBCQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 22:16:15 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:55948 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240891AbhIBCQF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 22:16:05 -0400
+Received: by mail-io1-f71.google.com with SMTP id o128-20020a6bbe86000000b005bd06eaeca6so316968iof.22
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 19:15:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=0JUwZXH8tXwg/Y0mzczq64iCoCbtgnTNDv2GYMyLZD4=;
+        b=AEBf/vHWodjfmsQd+E6toLXFjuqleC+MkdNIFaMeyQ13hLfdLfaOSMShf4P782Ieq4
+         uKcWspSZwg8DixGtMdf0ILJ/SuuWS4iBMaObaRFZFW3LgOx4ytTk/0DVh/ABlIb8r6f5
+         8l/rvdLMQPihYQGH6C5Hj0zo72iU8h7gowVWpjQZgHs9KFAjHzSr4pwgmF8gAqyZlxiq
+         PCTA1sFhTuYgdapjBDCcSIJJ+5u9N75GE/gWB5R2NVTjTCauByQkunIb9USbWVW30abR
+         gFCPEcr9poavNtasgY57mFZQ51JGHETLxKcvZjuk8Qc6dSNcnUx0QmKeI4rH32WsTfr0
+         IeQA==
+X-Gm-Message-State: AOAM531AdaGiyp7JWBSHXl4NMCXyiNx4U4x/3h7IAwW8i+O+nFuTR4Un
+        APxCSEYXuVIyVo3fHHywoS25MuE1OjH9ZgFnkRzhmNOq2SsV
+X-Google-Smtp-Source: ABdhPJzvo2XBa5Xt8glOx7p+H6enrDvMxXqgaVoutT9Y28986VCjR6HokMFItWtv9YD2/QfiZ32Yg5pL0uuNQzqyuUXRiLagRd+N
+MIME-Version: 1.0
+X-Received: by 2002:a5d:9617:: with SMTP id w23mr739002iol.115.1630548907681;
+ Wed, 01 Sep 2021 19:15:07 -0700 (PDT)
+Date:   Wed, 01 Sep 2021 19:15:07 -0700
+In-Reply-To: <983049ea-3023-8dbe-cbb4-51fb5661d2cb@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006e715f05caf9c044@google.com>
+Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in xfrm_get_default
+From:   syzbot <syzbot+b2be9dd8ca6f6c73ee2d@syzkaller.appspotmail.com>
+To:     antony.antony@secunet.com, christian.langrock@secunet.com,
+        davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        paskripkin@gmail.com, steffen.klassert@secunet.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 2 Sep 2021 10:09:20 +1000:
+Hello,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.15
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6104dde096eba9f443845686a2c4b3fa31129eb4
+Reported-and-tested-by: syzbot+b2be9dd8ca6f6c73ee2d@syzkaller.appspotmail.com
 
-Thank you!
+Tested on:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+commit:         9e9fb765 Merge tag 'net-next-5.15' of git://git.kernel..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git master
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bd61edfef9fa14b1
+dashboard link: https://syzkaller.appspot.com/bug?extid=b2be9dd8ca6f6c73ee2d
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=12546ba9300000
+
+Note: testing is done by a robot and is best-effort only.
