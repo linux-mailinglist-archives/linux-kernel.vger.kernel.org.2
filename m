@@ -2,136 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B58A3FE824
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 05:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98B213FE829
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 05:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242624AbhIBDrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 23:47:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41794 "EHLO mail.kernel.org"
+        id S242950AbhIBDrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 23:47:32 -0400
+Received: from mga09.intel.com ([134.134.136.24]:52520 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233122AbhIBDrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 23:47:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF09761041;
-        Thu,  2 Sep 2021 03:46:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630554367;
-        bh=e/r7aNYpXqByZsD0ObhSpe/4xl4wcGCv20OudDQBW9Y=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=BkJcSTHPMbL1+5MtpZOJLVg+Nnrfc2PyezFl0mS8WjZ6eQrzEDmGhFdhwXSgDGbJn
-         OjFzEFjxRgH48VZxYkfLoV3a1pBh1tVTfMUKA92k8S9mxeI5AoHJjwSFm5Hhqpotm6
-         vcl9GRWine+M1ZEkmEPukQzrDx1wKGjzZ1wPkMcrIuUpSzd9b0PHLnGAUgM4p5S0zK
-         DtOo0e5p9VKARBXoOumhoNCs9lNRcCCByZK5muQyPayjzlKB2351XVtIiaUQw2HB3D
-         GZbLb0PlDH2Ca/z0EikPWuZ742PsJyJykQPtVpMw9RSspJMVgpgwDoKo+lRoqCQF2t
-         DfjIKKYWgeisg==
-Content-Type: text/plain; charset="utf-8"
+        id S233122AbhIBDrb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 23:47:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="218966125"
+X-IronPort-AV: E=Sophos;i="5.84,371,1620716400"; 
+   d="scan'208";a="218966125"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 20:46:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,371,1620716400"; 
+   d="scan'208";a="520831994"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by fmsmga004.fm.intel.com with ESMTP; 01 Sep 2021 20:46:29 -0700
+Date:   Thu, 2 Sep 2021 11:46:28 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Michal Koutn?? <mkoutny@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        andi.kleen@intel.com, kernel test robot <oliver.sang@intel.com>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>
+Subject: Re: [mm] 2d146aa3aa: vm-scalability.throughput -36.4% regression
+Message-ID: <20210902034628.GA76472@shbuild999.sh.intel.com>
+References: <20210817024500.GC72770@shbuild999.sh.intel.com>
+ <20210817164737.GA23342@blackbody.suse.cz>
+ <20210818023004.GA17956@shbuild999.sh.intel.com>
+ <YSzwWIeapkzNElwV@blackbook>
+ <20210831063036.GA46357@shbuild999.sh.intel.com>
+ <20210831092304.GA17119@blackbody.suse.cz>
+ <20210901045032.GA21937@shbuild999.sh.intel.com>
+ <877dg0wcrr.fsf@linux.intel.com>
+ <20210902013558.GA97410@shbuild999.sh.intel.com>
+ <e8d087a4-a286-3561-66ef-1e9cfb38605f@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YS8+hnrf6FZVif0D@Marijn-Arch-PC.localdomain>
-References: <20210830182445.167527-1-marijn.suijten@somainline.org> <20210830182445.167527-2-marijn.suijten@somainline.org> <163036177339.2676726.12271104951144475163@swboyd.mtv.corp.google.com> <YS1fllEswGQEGWPc@Marijn-Arch-PC.localdomain> <163036399040.2676726.5816296584899284140@swboyd.mtv.corp.google.com> <YS1lYui5aXadgkEr@Marijn-Arch-PC.localdomain> <163047451225.42057.10341429266269552927@swboyd.mtv.corp.google.com> <YS8+hnrf6FZVif0D@Marijn-Arch-PC.localdomain>
-Subject: Re: [PATCH v2 1/2] drm/msm/dsi: Use "ref" fw clock instead of global name for VCO parent
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Stephen Boyd <swboyd@chromium.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>
-Date:   Wed, 01 Sep 2021 20:46:06 -0700
-Message-ID: <163055436647.405991.3416730531261875767@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e8d087a4-a286-3561-66ef-1e9cfb38605f@linux.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Marijn Suijten (2021-09-01 01:49:10)
-> Hi Stephen,
->=20
-> On 2021-08-31 22:35:12, Stephen Boyd wrote:
-> > Quoting Marijn Suijten (2021-08-30 16:10:26)
-> > >=20
-> > > I'm 95% sure this shouldn't cause any problems given current DTs and
-> > > their history, but that's probably not enough.  This might also impact
-> > > DTs that have not yet been upstreamed, but afaik the general stance is
-> > > to not care and actually serve as a fair hint/warning before new DTs
-> > > make it to the list.
-> > >=20
-> > > If there is a protocol in place to deprecate, warn, and eventually
-> > > remove this reliance on global clock names I'm more than happy to add
-> > > .name as a temporary fallback, even if likely unneeded.  Otherwise we
-> > > might never get rid of it.
-> >=20
-> > I'm not aware of any protocol to deprecate, warn, and remove the
-> > fallback name. It's a fallback because it can't ever really be removed.
->=20
-> That is unfortunate, I was hoping for a breaking "kernel release" at
-> some point where we could say "no more, update your DTs first".  But
-> that may not be possible in every scenario?
->=20
-> > Anyway, if you're not willing to add the .name then that's fine.
->=20
-> I feel like .name has caused more problems for us than it solves, but in
-> a fallback position it might be fine.  My main gripe is that I don't
-> want DT to rely on the clock to also be discoverable through the clock
-> tree, which we've seen on many occasions (not sure if the former was
-> done upstream, but: "xo" being renamed to "xo_board", and DSI PLL clocks
-> loosing +1 causing a naming mismatch with what mmcc expects, to name
-> some examples).  Omitting .name is the only way to enforce that.
+On Wed, Sep 01, 2021 at 07:23:24PM -0700, Andi Kleen wrote:
+> 
+> On 9/1/2021 6:35 PM, Feng Tang wrote:
+> >On Wed, Sep 01, 2021 at 08:12:24AM -0700, Andi Kleen wrote:
+> >>Feng Tang <feng.tang@intel.com> writes:
+> >>>Yes, the tests I did is no matter where the 128B padding is added, the
+> >>>performance can be restored and even improved.
+> >>I wonder if we can find some cold, rarely accessed, data to put into the
+> >>padding to not waste it. Perhaps some name strings? Or the destroy
+> >>support, which doesn't sound like its commonly used.
+> >Yes, I tried to move 'destroy_work', 'destroy_rwork' and 'parent' over
+> >before the 'refcnt' together with some padding, it restored the performance
+> >to about 10~15% regression. (debug patch pasted below)
+> >
+> >But I'm not sure if we should use it, before we can fully explain the
+> >regression.
+> 
+> Narrowing it down to a single prefetcher seems good enough to me. The
+> behavior of the prefetchers is fairly complicated and hard to predict, so I
+> doubt you'll ever get a 100% step by step explanation.
 
-The simple approach to take is anything new should use fw_name. The name
-member is only there for the backup mode when the DT isn't properly
-setup to describe connections between clk controllers. If the code is
-new then name can be omitted and everything is OK. Otherwise, if
-parent_names was already being used, then most likely it will need to be
-set as .name in the clk_parent_data struct to maintain compatibility. If
-parent_names was wrong, then it was all broken to begin with and .name
-can be omitted.
+Yes, I'm afriad so, given that the policy/algorithm used by perfetcher
+keeps changing from generation to generation.
 
->=20
-> > We can
-> > deal with the problem easily by adding a .name in the future if someone
-> > complains that things aren't working. Sound like a plan? If so, it's
-> > probably good to add some sort of note in the commit text so that when
-> > the bisector lands on this patch they can realize that this
-> > intentionally broke them.
->=20
-> I'm all for this but lack the industrial knowledge to sign off on the
-> approach.  Bjorn and Dmitry should ack/agree before going ahead (you may
-> wonder why I'm worrying about getting clock drivers and DT in sync on
-> platforms I don't own...):
->=20
-> We have the following situations:
-> - apq8064 used the wrong clock.  Bjorn acknowledged that landing the DT
->   fix in 5.15, and this patch in 5.16 should give enough time for DT to
->   be updated (this is nothing we can fix with .name anyway).
-> - msm8974 doesn't have the clock at all.  Dmitry recommended to add
->   .name for this specific case, but I'm wondering if the 5.15 -> 5.16
->   window is enough to update DTs too?
-> - msm8916 and sdm845 had the missing "ref" clock added three years ago.
->   Would a 5.16 kernel still work in any meaningful way with a DT that
->   old?
->=20
-> Should we decide on a case-by-case basis whether to add .name, ie. only
-> for (some/all) of the aforementioned SoCs?
->=20
+I will test the patch more with other benchmarks.
 
-I sort of glossed over this, sorry. Hopefully what I wrote above can
-guide you and then we shouldn't really need to worry about anything?
+Thanks,
+Feng
+
+> 
+> -Andi
+> 
