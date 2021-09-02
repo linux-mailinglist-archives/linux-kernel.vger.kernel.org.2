@@ -2,89 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20763FF54C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7183FF54F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346444AbhIBVGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
+        id S1346558AbhIBVGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:06:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346354AbhIBVGa (ORCPT
+        with ESMTP id S1346194AbhIBVGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:06:30 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FCE1C061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:05:32 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id l10so3212374ilh.8
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:05:32 -0700 (PDT)
+        Thu, 2 Sep 2021 17:06:48 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D39C061575;
+        Thu,  2 Sep 2021 14:05:49 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so2429598pjx.5;
+        Thu, 02 Sep 2021 14:05:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UKQA6105U/KVkWHwxi6wOBNzf8KnL2jJdYFFqD/Cpts=;
-        b=AL45Z9yfhzYsQXhwsWSSSzmSFoHTh1zXmGbd5aRZ7bMHRzX3/6EzZJOX+caYIleCK4
-         yar37y95+8ts5wed/FTUHeCjZNtm9B/u5DEsYplmUreErb3Ii608+msxCKVLGx5fFIHm
-         G4G2TdtEn1JmzXhnKwOYbw0CPuunD5ad2bh/I=
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=767k+M+A1x1kdLgaTK6PFpHMV5G+KT+3ZYp7Me4sE7k=;
+        b=YeiveY6OMoQOw5bqx+p0dWtjCKYLw7LQtKWci6h23HoSteAtCl7pazRwHZqk7ME11e
+         TZSLfkY/xrjTCbp2Z9F5zXZz4eAO+WgzPNTfhlzadeGZnB2c+CdQrj9Oq1/Q0cxkeEpg
+         cSEApySmy1cMX4QywLCne8OU5tZ7X6CuMxpA2Q2RM9QwIM9dz80X41xuE2wSaVgStZ5+
+         W5gQgYHzyB330+E/sl8T31m0/UfRVRMnuy6f6Pcd+c1mf76/RRv001seefr2JzViEe6Y
+         E622ERkg91unMGPYs9vlJstQgyKzYIy75y0wk9dMP40Re+SzqBSoCcGQGZLZvtTDBlx5
+         jqzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UKQA6105U/KVkWHwxi6wOBNzf8KnL2jJdYFFqD/Cpts=;
-        b=SndkRqj6H//cbS8+PAZfwR1SXpTW2T9ElPNMIAPowtcXfSsr+DBS327KfWF5Jopp/c
-         hwcjY/t1N4jKdIlt7tUw60LI0VajpGTvwTNLSJJnZaHcZ+vtjbdCv2i75Ba5iFpmNq2G
-         bI0sObBA7c6HW+tcLKToq4v/0Pk/VuIjaJikK2H0bUxpRNfR6JZEm9IANS89Mcwwf1s7
-         tFMLOdzXI5zCQRcKGqDEzexBz5J8Qt9NuFFWXBCzW3JwD3Qajx//MMcxQwy5PtE0lJiN
-         C+TUb/gBy4bQWPO5hK3hmfRCn770x2YM7iKvE/Vc0Sqc1JD7xTkC0j8xcY/0o4kMFGa6
-         T0PQ==
-X-Gm-Message-State: AOAM530jaMMDo1IWqHWHelKQkyRIvNHAwjE2beedmWzds4pYVnDu8EZy
-        ROq95hzNBrQqOAE7kqvld8cZSQ==
-X-Google-Smtp-Source: ABdhPJw5GAc9DTRWylSMfJnI1zbZ0iQjuwMt7FZFYe2a3rMq6xrlZ5peC24FrbeFUtjMrOgHri01iA==
-X-Received: by 2002:a92:c109:: with SMTP id p9mr98850ile.115.1630616731535;
-        Thu, 02 Sep 2021 14:05:31 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id d14sm1719037iod.18.2021.09.02.14.05.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 14:05:31 -0700 (PDT)
-Subject: Re: [V3][PATCH] selftests/x86: Fix error: variably modified
- 'altstack_data' at file scope
-To:     Jun Miao <jun.miao@windriver.com>, shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210824024358.4183342-1-jun.miao@windriver.com>
- <09fb52ee-3041-991a-0277-ff01eef2643f@windriver.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <c21053a0-c3bb-4cda-4f16-24427dd5b0ff@linuxfoundation.org>
-Date:   Thu, 2 Sep 2021 15:05:30 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=767k+M+A1x1kdLgaTK6PFpHMV5G+KT+3ZYp7Me4sE7k=;
+        b=k15y2xYbpSrj/PA9qLNIGhK3NccL9gyZ/OqL27FhvJzDG+xODrZsSZjQAQcCUlB34l
+         6gNtE1/v5MSKUrobJtL7FdlVrtOrqvuRj9yHeZa32732oVs+ydXxu00Yghjq2Cdrxpxg
+         Tl1hSi4+HKZ+Gdy9w0XQNQeeXBtIHL9TkodqWblAFp3J8np6Bw2bqE2gMtzRfngpic0M
+         Y303p19K40UC0HL1W55g6/I7aMKR9/+pWaJOiRPryXehjXg3F4yozkIQ7JB+iDhkR15y
+         qGztC2lns3kJDq+udCP6IWW/WaDpGTXYIMHBE1DkjQAnl5rV80nN3X7l9WOzTcxZYLMW
+         +Ceg==
+X-Gm-Message-State: AOAM532+PKT/IH/tMA7Gat4/atMxnAQ0xw7WBF66D0c35/nSi6gcXCj4
+        yWLXFbUK27E3jMFvbWBlvYw=
+X-Google-Smtp-Source: ABdhPJx0Rkelt6jZUhu5xShedfI10iXFBVHznlXL5sRuIB8ieluqJS2B7UgKLdAT92iF+/6bW/GX1w==
+X-Received: by 2002:a17:90a:31b:: with SMTP id 27mr6187850pje.6.1630616749452;
+        Thu, 02 Sep 2021 14:05:49 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id f24sm3131284pjh.15.2021.09.02.14.05.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 14:05:48 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     bcm-kernel-feedback-list@broadcom.com,
+        Matthew Hagan <mnhagan88@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/5] ARM: dts: NSP: Fix MX64/MX65 eeprom node name
+Date:   Thu,  2 Sep 2021 14:05:47 -0700
+Message-Id: <20210902210547.3103078-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210829223752.2748091-4-mnhagan88@gmail.com>
+References: <20210829223752.2748091-1-mnhagan88@gmail.com> <20210829223752.2748091-4-mnhagan88@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <09fb52ee-3041-991a-0277-ff01eef2643f@windriver.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/21 2:45 AM, Jun Miao wrote:
-> Hi all,
+On Sun, 29 Aug 2021 22:37:50 +0000, Matthew Hagan <mnhagan88@gmail.com> wrote:
+> Running dtbs_check yields the following message when checking the
+> MX64/MX65 devicetree:
+> at24@50: $nodename:0: 'at24@50' does not match '^eeprom@[0-9a-f]{1,2}$'
 > 
-> What about this patch?
+> This patch fixes the issue by renaming the at24 node appropriately.
 > 
-> Thanks
-> Jun
-> 
-> 
-> On 8/24/21 10:43 AM, Jun Miao wrote:
->> Based on glibc 2.33 -> 2.34, there is one new feature:
->>
+> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+> ---
 
-Please don't top post.
-
-It is applied to linux-kselftest next for Linux 5.15-rc1
-
-https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/log/?h=next
-
-thanks,
--- Shuah
+Applied to https://github.com/Broadcom/stblinux/commits/devicetree/next, thanks!
+--
+Florian
