@@ -2,56 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29CEA3FF26E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C095D3FF275
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346716AbhIBRiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 13:38:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35522 "EHLO mail.kernel.org"
+        id S1346782AbhIBRiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 13:38:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234504AbhIBRiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1346636AbhIBRiO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Sep 2021 13:38:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id DDCAA610E7;
-        Thu,  2 Sep 2021 17:37:15 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 29DC7610F7;
+        Thu,  2 Sep 2021 17:37:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630604235;
-        bh=2xm+18OybcggZ8NknSshjjbxsTWnPTVm8djTfpirJFg=;
+        s=k20201202; t=1630604236;
+        bh=QBYTml/x3K/PePcy/qE1VF3LU3rtoHrlLGNyqEMZ92s=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=B+VS0W4JWk5Vi6jDJWqituFL482EcIjPT165t8R2+jiDTYd8OYqnKyKu4arUn1Lky
-         lP0QIfNsbHoS9edHytFc+sJX5EDnDBMAlhKpmM3IOCh0jo1KDAK/Y6mGMX8dytSYOO
-         A/sz2tY9N1lxU5UDoSEQb4UzmFFNzXRoxsEdl1yry6ht5Qgf64PHqvET++i2bVQjpe
-         oNqZKVh/aT8YrywUycnzmdRqpjd+2lmqrUtFPxF/afeihIsxTv97djiZEobsBf3ukJ
-         DLugKAyYNVm9w9rdUJnrcICfX6TPJpVgV7+rIAVYRcMLwK40V8Yq9VQdqPX271oN4R
-         iq0d9Ix7p7jCQ==
+        b=UNkwfzAIAzBZQlZojuPKcz1iQUGdPUJ56ZnZbHxPIB4qOBTqBnKKfgn2KFlXyFTrr
+         HwiYtpU3pGvxHJcEDsAUwcZx84Ql7pGyArhsu6WRUbEPumM4PW65hKzqx/aC+LyZmO
+         RvCokvVoyd5LZ+PGNwMqopjPhXa2buEShtUiv6ZFZu732n7iLiiG0uOL6/aGlxUofV
+         FcQWQij7soMcGV5B3ECHDx/JsyqPNw3JJpOSIZQQsVmLLKAJLbEiMssfjaPAPl8Kl0
+         4N9ix8Av1PiN4mIrsvUrLqxFubleSVi2gh+Ph7FsYx45TwGTRmt0x6umjLiWWiQ7h1
+         hjJgASIqS3kvA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CDE4A60982;
-        Thu,  2 Sep 2021 17:37:15 +0000 (UTC)
-Subject: Re: [GIT PULL] ext4 changes for 5.15
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 21B2D60A0C;
+        Thu,  2 Sep 2021 17:37:16 +0000 (UTC)
+Subject: Re: [GIT PULL] erofs updates for 5.15-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YTDnt5RzyL+gOoHK@mit.edu>
-References: <YTDnt5RzyL+gOoHK@mit.edu>
-X-PR-Tracked-List-Id: <linux-ext4.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YTDnt5RzyL+gOoHK@mit.edu>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
-X-PR-Tracked-Commit-Id: baaae979b112642a41b71c71c599d875c067d257
+In-Reply-To: <20210831225935.GA26537@hsiangkao-HP-ZHAN-66-Pro-G1>
+References: <20210831225935.GA26537@hsiangkao-HP-ZHAN-66-Pro-G1>
+X-PR-Tracked-List-Id: Development of Linux EROFS file system <linux-erofs.lists.ozlabs.org>
+X-PR-Tracked-Message-Id: <20210831225935.GA26537@hsiangkao-HP-ZHAN-66-Pro-G1>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-5.15-rc1
+X-PR-Tracked-Commit-Id: 1266b4a7ecb679587dc4d098abe56ea53313d569
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 111c1aa8cad4a0069dfe98fc093507b5b2cdfda7
-Message-Id: <163060423577.29568.3596244468595528780.pr-tracker-bot@kernel.org>
-Date:   Thu, 02 Sep 2021 17:37:15 +0000
-To:     Theodore Ts'o <tytso@mit.edu>
+X-PR-Merge-Commit-Id: 412106c203b759fa7fbcc4f855a90ab18e681ccb
+Message-Id: <163060423613.29568.6718988652036312622.pr-tracker-bot@kernel.org>
+Date:   Thu, 02 Sep 2021 17:37:16 +0000
+To:     Gao Xiang <xiang@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Peng Tao <tao.peng@linux.alibaba.com>,
+        Miao Xie <miaoxie@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Yue Hu <huyue2@yulong.com>, Liu Bo <bo.liu@linux.alibaba.com>,
+        linux-fsdevel@vger.kernel.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Liu Jiang <gerry@linux.alibaba.com>,
+        linux-erofs@lists.ozlabs.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 2 Sep 2021 11:03:19 -0400:
+The pull request you sent on Wed, 1 Sep 2021 06:59:42 +0800:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-5.15-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/111c1aa8cad4a0069dfe98fc093507b5b2cdfda7
+https://git.kernel.org/torvalds/c/412106c203b759fa7fbcc4f855a90ab18e681ccb
 
 Thank you!
 
