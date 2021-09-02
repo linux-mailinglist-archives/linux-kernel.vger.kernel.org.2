@@ -2,104 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEDFD3FF43C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283113FF44C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347403AbhIBTfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 15:35:38 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51646 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347257AbhIBTfh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 15:35:37 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 77FCB22465;
-        Thu,  2 Sep 2021 19:34:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1630611277; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9NIKFGy2Vshrszzk+gQOVieDLd7SGIo3rGkRcbRxXnQ=;
-        b=vTQiy7g6q2j7ML9f3gFk7RHqEx3RUxKzRfepetU3gLrb9H0kCLnZT6C9AYh+fepc+RdJHP
-        OUm0dvdIa/GY+Vl9EJJVMb2MnOg/nSgaefdEGnofUozBZPKa+T/ReydOb9nqWF60xAzKrk
-        eiqikCRA2+KAEtJIzjh6zxVQ6JAuWt0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1630611277;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9NIKFGy2Vshrszzk+gQOVieDLd7SGIo3rGkRcbRxXnQ=;
-        b=7vyoYxyQ+6R6Hu7FQbvNslgoZipn4WE6ToVaD1sw85WXh2PHaTOuf1ftWUXPxfDmTmp26r
-        VzuAleKPU/03KxCA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 63CEB1369B;
-        Thu,  2 Sep 2021 19:34:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 1NwNGE0nMWH7bQAAGKfGzw
-        (envelope-from <bp@suse.de>); Thu, 02 Sep 2021 19:34:37 +0000
-Date:   Thu, 2 Sep 2021 21:35:12 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        x86-ml <x86@kernel.org>
-Subject: Re: vmlinux.o: warning: objtool: mce_wrmsrl.constprop.0()+0x6b: call
- to __sanitizer_cov_trace_pc() leaves .noinstr.text section
-Message-ID: <YTEncGj84Sj/IdDb@zn.tnic>
-References: <202108221334.TiXxFSTZ-lkp@intel.com>
+        id S231476AbhIBTnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 15:43:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:56226 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230462AbhIBTnd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 15:43:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E227A101E;
+        Thu,  2 Sep 2021 12:42:33 -0700 (PDT)
+Received: from [10.57.15.112] (unknown [10.57.15.112])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 582093F694;
+        Thu,  2 Sep 2021 12:42:32 -0700 (PDT)
+Subject: Re: [PATCH v2 3/8] iommu/dma: Disable get_sgtable for granule >
+ PAGE_SIZE
+To:     Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc:     Sven Peter <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Alexander Graf <graf@amazon.com>,
+        Hector Martin <marcan@marcan.st>, linux-kernel@vger.kernel.org
+References: <20210828153642.19396-1-sven@svenpeter.dev>
+ <20210828153642.19396-4-sven@svenpeter.dev> <YS6fasuqPURbmC6X@sunset>
+ <c8bc7f77-3b46-4675-a642-76871fcec963@www.fastmail.com>
+ <YS/sMckPUJRMYwYq@sunset>
+ <ac34e920-d1b4-4044-a8fe-5172d5ebfa9c@www.fastmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <74621c69-ef68-c12a-3770-319cb7a0db73@arm.com>
+Date:   Thu, 2 Sep 2021 20:42:27 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202108221334.TiXxFSTZ-lkp@intel.com>
+In-Reply-To: <ac34e920-d1b4-4044-a8fe-5172d5ebfa9c@www.fastmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 01:39:40PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   9ff50bf2f2ff5fab01cac26d8eed21a89308e6ef
-> commit: e100777016fdf6ec3a9d7c1773b15a2b5eca6c55 x86/mce: Annotate mce_rd/wrmsrl() with noinstr
-> date:   11 months ago
-> config: x86_64-buildonly-randconfig-r003-20210822 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build):
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e100777016fdf6ec3a9d7c1773b15a2b5eca6c55
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout e100777016fdf6ec3a9d7c1773b15a2b5eca6c55
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+On 2021-09-02 19:19, Sven Peter wrote:
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> All warnings (new ones prefixed by >>):
+> On Wed, Sep 1, 2021, at 23:10, Alyssa Rosenzweig wrote:
+>>> My biggest issue is that I do not understand how this function is supposed
+>>> to be used correctly. It would work fine as-is if it only ever gets passed buffers
+>>> allocated by the coherent API but there's not way to check or guarantee that.
+>>> There may also be callers making assumptions that no longer hold when
+>>> iovad->granule > PAGE_SIZE.
+>>>
+>>> Regarding your case: I'm not convinced the function is meant to be used there.
+>>> If I understand it correctly, your code first allocates memory with dma_alloc_coherent
+>>> (which possibly creates a sgt internally and then maps it with iommu_map_sg),
+>>> then coerces that back into a sgt with dma_get_sgtable, and then maps that sgt to
+>>> another iommu domain with dma_map_sg while assuming that the result will be contiguous
+>>> in IOVA space. It'll work out because dma_alloc_coherent is the very thing
+>>> meant to allocate pages that can be mapped into kernel and device VA space
+>>> as a single contiguous block and because both of your IOMMUs are different
+>>> instances of the same HW block. Anything allocated by dma_alloc_coherent for the
+>>> first IOMMU will have the right shape that will allow it to be mapped as
+>>> a single contiguous block for the second IOMMU.
+>>>
+>>> What could be done in your case is to instead use the IOMMU API,
+>>> allocate the pages yourself (while ensuring the sgt your create is made up
+>>> of blocks with size and physaddr aligned to max(domain_a->granule, domain_b->granule))
+>>> and then just use iommu_map_sg for both domains which actually comes with the
+>>> guarantee that the result will be a single contiguous block in IOVA space and
+>>> doesn't required the sgt roundtrip.
+>>
+>> In principle I agree. I am getting the sense this function can't be used
+>> correctly in general, and yet is the function that's meant to be used.
+>> If my interpretation of prior LKML discussion holds, the problems are
+>> far deeper than my code or indeed page size problems...
 > 
-> >> vmlinux.o: warning: objtool: mce_wrmsrl.constprop.0()+0x6b: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
->    vmlinux.o: warning: objtool: do_machine_check()+0xe1a: call to mce_panic.isra.0() leaves .noinstr.text section
->    vmlinux.o: warning: objtool: exc_machine_check()+0x1af: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
->    vmlinux.o: warning: objtool: lock_is_held_type()+0x3c: call to check_flags() leaves .noinstr.text section
->    vmlinux.o: warning: objtool: __context_tracking_enter()+0x9d: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
->    vmlinux.o: warning: objtool: __context_tracking_exit()+0x42: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
+> Right, which makes reasoning about this function and its behavior if the
+> IOMMU pages size is unexpected very hard for me. I'm not opposed to just
+> keeping this function as-is when there's a mismatch between PAGE_SIZE and
+> the IOMMU page size (and it will probably work that way) but I'd like to
+> be sure that won't introduce unexpected behavior.
+> 
+>>
+>> If the right way to handle this is with the IOMMU and IOVA APIs, I really wish
+>> that dance were wrapped up in a safe helper function instead of open
+>> coding it in every driver that does cross device sharing.
+>>
+>> We might even call that helper... hmm... dma_map_sg.... *ducks*
+>>
+> 
+> There might be another way to do this correctly. I'm likely just a little
+> bit biased because I've spent the past weeks wrapping my head around the
+> IOMMU and DMA APIs and when all you have is a hammer everything looks like
+> a nail.
+> 
+> But dma_map_sg operates at the DMA API level and at that point the dma-ops
+> for two different devices could be vastly different.
+> In the worst case one of them could be behind an IOMMU that can easily map
+> non-contiguous pages while the other one is directly connected to the bus and
+> can't even access >4G pages without swiotlb support.
+> It's really only possible to guarantee that it will map N buffers to <= N
+> DMA-addressable buffers (possibly by using an IOMMU or swiotlb internally) at
+> that point.
+> 
+> On the IOMMU API level you have much more information available about the actual
+> hardware and can prepare the buffers in a way that makes both devices happy.
+> That's why iommu_map_sgtable combined with iovad->granule aligned sgt entries
+> can actually guarantee to map the entire list to a single contiguous IOVA block.
 
-The sanitizer stuff is being NOPed out with newer compilers, says
-peterz. And I can confirm after testing with your .config and with
-gcc-11.
+Essentially there are two reasonable options, and doing pretend dma-buf 
+export/import between two devices effectively owned by the same driver 
+is neither of them. Handily, DRM happens to be exactly where all the 
+precedent is, too; unsurprisingly this is not a new concern.
 
-The mce_panic() thing I'm working on.
+One is to go full IOMMU API, like rockchip or tegra, attaching the 
+relevant devices to your own unmanaged domain(s) and mapping pages 
+exactly where you choose. You still make dma_map/dma_unmap calls for the 
+sake of cache maintenance and other housekeeping on the underlying 
+memory, but you ignore the provided DMA addresses in favour of your own 
+IOVAs when it comes to programming the devices.
 
--- 
-Regards/Gruss,
-    Boris.
+The lazier option if you can rely on all relevant devices having equal 
+DMA and IOMMU capabilities is to follow exynos, and herd the devices 
+into a common default domain. Instead of allocating you own domain, you 
+grab the current domain for one device (which will be its default 
+domain) and manually attach the other devices to that. Then you forget 
+all about IOMMUs but make sure to do all your regular DMA API calls 
+using that first device, and the DMA addresses which come back should be 
+magically valid for the other devices too. It was a bit of a cheeky hack 
+TBH, but I'd still much prefer more of that over any usage of 
+get_sgtable outside of actual dma-buf...
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Note that where multiple IOMMU instances are involved, the latter 
+approach does depend on the IOMMU driver being able to support sharing a 
+single domain across them; I think that might sort-of-work for DART 
+already, but may need a little more attention.
+
+Robin.
