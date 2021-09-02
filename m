@@ -2,187 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AC163FE7A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:27:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09CDF3FE7A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241375AbhIBC2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 22:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54098 "EHLO
+        id S242795AbhIBC3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 22:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbhIBC2Q (ORCPT
+        with ESMTP id S231680AbhIBC3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 22:28:16 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061E7C061575;
-        Wed,  1 Sep 2021 19:27:19 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id y144so511174qkb.6;
-        Wed, 01 Sep 2021 19:27:18 -0700 (PDT)
+        Wed, 1 Sep 2021 22:29:33 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 260D4C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 19:28:36 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id u6so487398pfi.0
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 19:28:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=J2bQ/MwPCTbrlkKoza/EVPxViIYBE0qHwqdYXeHVEcM=;
-        b=IumXDT07dit1hpnuKUTUl635o9PnhYHsDFfM3ZN3AaTTbH/aZUSwEBdOpn7KZC0MNq
-         3s87u7qPN2oi61zYOqR8ogz4N9FNZiiQ4J2TqGbjvUgFnYEVjgtCfEox/7QS3gfcYRiG
-         1y+Wiyub/ZmJTYb/el1tiu5GHrK5Dv/picTVzKujAodLrYmAreZcWUgCWNB1IYLc8k0C
-         4inCOPJ1SBufjT/c5+qi5j/6wTpGJAMexDFFgPYvdTT72pXFwgjnqyXp2JqwTOvCX0cP
-         U/NgvqTQN6Boy1H5NNpHN/8FVqUjRP9hRQDj0ccod3qCmTY/fgzuIw56Fp+oEhLv05eE
-         26+A==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=ydBex6o6dWHHUMf/r9q2siCinDhH7TcT23iy9juoHGQ=;
+        b=Ne5LEKcXWuVgVpaA0gqDLEXA5FKYGn4dDaVL1Q7v4WKejc+4Jhe7Yc7JSEN/wSf4fa
+         wVB9GvxlnHe3GMcB1NqaD6o6xo8TVeTpWJ07+MyPxalBoAcgbhCd0j321y7keMkxUVRh
+         86GrDkTA+HtsLxjYLdPTyMMN3r+aklmalILkURDG/pSvotb+X9yc6v0bNZyitmp7+neJ
+         HbLelofTu0Fx1D5DeJzF5+Irz2jynDswSkEMR1lhJSqeBHkupbJsCSnENn5E7OmjwDZj
+         uanb+UHTuSLrvI3abU1pq+useGKYvdOg22mpXK0ciMUGAmaUY7SjPd4GpEV8WhtHNI7S
+         Fk3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J2bQ/MwPCTbrlkKoza/EVPxViIYBE0qHwqdYXeHVEcM=;
-        b=OAfk4Jb0ksMcR2fSsmV/FV1lSqRI0qaf2hNxMp/t1nWFX0rn0+Ps6gKOahryb2aKmR
-         mjcIEDMllI+wiGt1FUgEvWYfhoN2lbyKXMJR8/M2pnOdAi0ddjo7/NfPjSNHwJif7Vlo
-         xGplTJf0Z0SENnydh4FPN4MvXZ7HvyMkQiIsDLzaCMOMwdXIcLfNa4u1UxEL1qdkxrDH
-         tTFPP8PqyQ3bqvwquIVknjAz2fFBHUn1v3Ui16w6EQMNDKh3dI77Qk22jxdxVrdsTvqp
-         bbjLTpbsjhOgJT4rHxaB9DnYAKg0cLcUAcxHW/ILJZNSgOEaHhxBi8nNrW2QWi8VVuHx
-         vjCQ==
-X-Gm-Message-State: AOAM532R+sdVuWA2eNQFFkIb7va4jg7nRLyfXn7obCZvF9OLAJnaz11x
-        l2MvLwiFPc9wHQX4fzFEkzXt/DmQ56Y=
-X-Google-Smtp-Source: ABdhPJyd4t5wC1YlCk/a0i8EavBwMFZ/4uNPlfsuKyh6+27EayDo3pY2J3DOHnB4WTNS0AVm02Gzlw==
-X-Received: by 2002:a05:620a:1aa8:: with SMTP id bl40mr1097903qkb.180.1630549638131;
-        Wed, 01 Sep 2021 19:27:18 -0700 (PDT)
-Received: from shaak ([198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id a24sm227570qto.18.2021.09.01.19.27.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Sep 2021 19:27:17 -0700 (PDT)
-Date:   Wed, 1 Sep 2021 22:27:15 -0400
-From:   Liam Beguin <liambeguin@gmail.com>
-To:     Peter Rosin <peda@axentia.se>
-Cc:     Jonathan Cameron <jic23@kernel.org>, lars@metafoo.de,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH v8 09/14] iio: afe: rescale: fix accuracy for small
- fractional scales
-Message-ID: <YTA2g2iHB3WtEMBp@shaak>
-References: <20210820191714.69898-1-liambeguin@gmail.com>
- <20210820191714.69898-10-liambeguin@gmail.com>
- <2d028a60-d1fe-7fa1-da4a-0d80f8d468ea@axentia.se>
- <20210830122224.3efc5a63@jic23-huawei>
- <e1542f14-f271-a0a3-eaa1-092e12c3ed6c@axentia.se>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ydBex6o6dWHHUMf/r9q2siCinDhH7TcT23iy9juoHGQ=;
+        b=kftoOFFTI85lhZfthEoLVbhb+Ymrw32FF94fAfIDG5C//qDmAU/uth1KIemU+44eS3
+         j8gVQ7/i9U+klHNxlOSxWeZvcoZnZlaS4F6vHSW+fIGWyl/h7CeotjJ1opYrMQg5ODsK
+         5RtDfif25XwgfVFHrcoy34CQQ68BKL4Mul7lMjCp1uTfWJTVcNuzRyuB4FP4cp7hPPtQ
+         NuOq8ObJDKznm7+0nqCCioU6uQ43O8P9CI4RKJUEAjVarRNFhV/3kiY2oYIqNrD7t5HK
+         jASqNtHsxiuoXUQm7Ckgpt6gAwxu3GUI1GfKcU3jGizgcIMiaCxbrgl59dzqKcLUbjh9
+         SuJQ==
+X-Gm-Message-State: AOAM5300gRC1mf9Fovmu2x/SmHh5abtnn+1V18E8u+BY64Ndk+xHIT46
+        wrp85N1hGg2i80YYnZv2lUVEbBjOI6Q=
+X-Google-Smtp-Source: ABdhPJwCXT534aCKvrEIvWxU4Tvtw4FJCrEa/7idUAgVUefjfO6uMEcTDCjHBadXJ55CL+wskG0vQg==
+X-Received: by 2002:a63:4f54:: with SMTP id p20mr791768pgl.437.1630549715433;
+        Wed, 01 Sep 2021 19:28:35 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id j9sm285825pgl.1.2021.09.01.19.28.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 19:28:35 -0700 (PDT)
+Subject: Re: [PATCH 10/10] seqlock: Add do_read_seqcount_retry() in front of
+ seqcount_lockdep_reader_access() in read_seqbegin()
+To:     jiasheng <jiasheng@iscas.ac.cn>, linux-kernel@vger.kernel.org
+References: <1630549000-3731606-1-git-send-email-jiasheng@iscas.ac.cn>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <54d7cad8-30fc-e96e-bf70-ca371b08b128@gmail.com>
+Date:   Wed, 1 Sep 2021 19:28:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e1542f14-f271-a0a3-eaa1-092e12c3ed6c@axentia.se>
+In-Reply-To: <1630549000-3731606-1-git-send-email-jiasheng@iscas.ac.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 04:30:54PM +0200, Peter Rosin wrote:
-> On 2021-08-30 13:22, Jonathan Cameron wrote:
-> > On Mon, 23 Aug 2021 00:18:55 +0200
-> > Peter Rosin <peda@axentia.se> wrote:
-> > 
-> >> [I started to write an answer to your plans in the v7 thread, but didn't
-> >> have time to finish before v8 appeared...]
-> >>
-> >> On 2021-08-20 21:17, Liam Beguin wrote:
-> >>> From: Liam Beguin <lvb@xiphos.com>
-> >>>
-> >>> The approximation caused by integer divisions can be costly on smaller
-> >>> scale values since the decimal part is significant compared to the
-> >>> integer part. Switch to an IIO_VAL_INT_PLUS_NANO scale type in such
-> >>> cases to maintain accuracy.  
-> >>
-> >> The conversion to int-plus-nano may also carry a cost of accuracy.
-> >>
-> >> 90/1373754273 scaled by 261/509 is 3.359e-8, the old code returns 3.348e-8,
-> >> but the new one gets you 3.3e-8 (0.000000033, it simply cannot provide more
-> >> digits). So, in this case you lose precision with the new code.
-> >>
-> >> Similar problem with 100 / 2^30 scaled by 3782/7000. It is 5.032e-8, the old
-> >> code returns 5.029e-8, but the new one gets you the inferior 5.0e-8.
-> >>
-> >> I'm also wondering if it is wise to not always return the same scale type?
-> >> What happens if we want to extend this driver to scale a buffered channel?
-> >> Honest question! I don't know, but I fear that this patch may make that
-> >> step more difficult to take??
-> >>
-> >> Jonathan, do you have any input on that?
-> > 
-> > I'm a bit lost.  As things currently stand IIO buffered data flows all use
-> > _RAW.  It's either up to userspace or the inkernel user to query scale
-> > and use that to compute the appropriate _processed values.  There have been
-> > various discussions over the years on how to add metadata but it's tricky
-> > without adding significant complexity and for vast majority of usecases not
-> > necessary.  Given the rescaler copes with _raw and _processed inputs, we
-> > would only support buffered flows if using the _raw ones.
-> > 
-> > If nothing changes in configuration of the rescaler, the scale should be
-> > static for a given device.  What format that 'scale' takes is something
-> > that userspace code or inkernel users should cope fine with given they
-> > need to do that anyway for different devices.
-> 
-> Ok, if 'scale' (and 'offset') of the source channel is to be considered
-> static, then it is much safer to ignore the "island problem" and rescale
-> each value independently on a case-by-case basis. We should add an
-> explicit comment somewhere that we make this assumption.
-> 
-> Sorry for wasting time and effort by not realizing by myself (and earlier).
 
-No worries, I was also under the impression that the source channel
-scale (and offset) could change.
 
+On 9/1/21 7:16 PM, jiasheng wrote:
+> We have found that in the complied files seqcount_lockdep_reader_access()
+> appear more than 20 times, and under at least 90% circumstances
+> that do_read_seqcount_retry() and seqcount_lockdep_reader_access()
+> appear in pairs.
+> For example, they appear together in the irqfd_wakeup()
+> of the file complie from 'virt/kvm/eventfd.c'.
+> But we have found that in the read_seqbegin(), there is only
+> seqcount_lockdep_reader_access() instead of the pair.
+> Therefore, we consider that the do_read_seqcount_retry()
+> might be forgotten.
 > 
-> Maybe something like this?
+> Signed-off-by: jiasheng <jiasheng@iscas.ac.cn>
+> ---
+>  include/linux/seqlock.h | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> /*
->  * The rescaler assumes that the 'scale' and 'offset' properties of
->  * the source channel are static. If they are not, there exist some
->  * corner cases where rounding/truncating might cause confusing
->  * mathematical properties (non-linearity).
->  */
+> diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+> index f61e34f..14169ce 100644
+> --- a/include/linux/seqlock.h
+> +++ b/include/linux/seqlock.h
+> @@ -837,8 +837,10 @@ typedef struct {
+>   */
+>  static inline unsigned read_seqbegin(const seqlock_t *sl)
+>  {
+> -	unsigned ret = read_seqcount_begin(&sl->seqcount);
+> -
+> +	unsigned int ret;
+
+ret contains garbage at this point.
+
+Calling read_seqcount_retry() with garbage is not going to fly.
+
+Have you really compiled and tested this patch ?
+
+A sane compiler would have complained.
+
+> +
+> +	if (read_seqcount_retry(&sl->seqcount, ret))
+> +		ret = read_seqcount_begin(&sl->seqcount);
+>  	kcsan_atomic_next(0);  /* non-raw usage, assume closing read_seqretry() */
+>  	kcsan_flat_atomic_begin();
+>  	return ret;
 > 
 
-If this is more of a general assumption, is there a place in the
-Documentation/ that we could put this comment?
 
-If not, I'll add it here.
-
-> I then propose that we rescale IIO_VAL_FRACTIONAL as before if that works,
-> thus preserving any previous exact rescaling, but if there is an overflow
-> while doing that, then we fall back to new code that rescales to a
-> IIO_VAL_INT_PLUS_NANO value. Trying the gcd-thing as it ended up in v7 still
-> seems expensive to me, but maybe I overestimate the cost of gcd? Anyway, my
-> guts vote for completely skipping gcd and that we aim directly for
-> IIO_VAL_INT_PLUS_NANO in case of overflow while doing the old thing.
-
-I agree with you, I'd much rather drop gcd() from rescale_process_scale()
-altogether.
-
-I was planning on keeping IIO_VAL_FRACTIONAL and IIO_VAL_FRACTIONAL_LOG2
-combined, but getting rid of the 100ppm condition in favor of a simple
-if (rem).
-
-> 
-> Having said that, if 'scale' and 'offset' indeed are static, then the gcd
-> cost can be mitigated by caching the result. Exact rescaling is always
-> nice...
-> 
-> If IIO_VAL_INT overflows while rescaling, we are SOL whichever way we turn,
-> so ignore doing anything about that.
-
-I was thinking of using check_mul_overflow() to do something about the
-overflow, but I'm happy to leave it out for now.
-
-> 
-> Liam, was it IIO_VAL_FRACTIONAL or IIO_VAL_FRACTIONAL_LOG2 that was your
-> real use case? Anyway, your 100 ppm threshold is probably as good a
-> compromise as any for this case. However, that threshold does nothing for
-> the case where the conversion to IIO_VAL_INT_PLUS_NANO throws away way
-> more precision than the existing operations. It would probably be good
-> to somehow stay with the old method for the really tiny values, if there
-> is a viable test/threshold for when to do what.
-> 
-
-My original issue was with IIO_VAL_FRACTIONAL.
-I'll look into what we can do for small IIO_VAL_FRACTIONAL_LOG2 values,
-and will add more tests for that too.
-
-Thanks,
-Liam
-
-> Cheers,
-> Peter
