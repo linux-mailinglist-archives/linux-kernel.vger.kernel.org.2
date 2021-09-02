@@ -2,118 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7619A3FF03E
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378BC3FF045
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345812AbhIBPcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 11:32:23 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:59112 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229941AbhIBPcV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 11:32:21 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 182Ehat5032332;
-        Thu, 2 Sep 2021 17:30:59 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=selector1;
- bh=FqkU+U2qaJ6aY22CM876gTpmSnYzT1Zb7tNI+fa5WoY=;
- b=r2k3EHW9CDxpMe6gIJbnOrL8BawSiDBuAkKMPvEoweet4/ueOXi3cmsM0K5nioK3/+sS
- BV1SCjcp/RUAfi2VgPSVwS2Ovh7cOvvJdVAMaxypk0nORjIdqc++bvs1etrbKvne1LYF
- fOvjoQ8EckSPaEbnDrZLkc0EpXJapBz4MatKKagIw6sh79EmUJhrBWiNguMbixKXuxur
- NwyIE01OaDcNnjNiugsLI7ltysATmrDKDf6tm9SzSiINZw5qlcrbUKTY8b69d7qdiXEx
- 5xgv3jVlhDgmNrquMMQPz3BI+yDpgBLRIl1ljJd3L7+mMUdt/0GH+VZzOqx7fmYXTufb BA== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3atujr26nq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Sep 2021 17:30:59 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 05EEA10002A;
-        Thu,  2 Sep 2021 17:30:59 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node1.st.com [10.75.127.4])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EA875218104;
-        Thu,  2 Sep 2021 17:30:58 +0200 (CEST)
-Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE1.st.com
- (10.75.127.4) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 2 Sep
- 2021 17:30:58 +0200
-Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
- SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
- 15.00.1497.015; Thu, 2 Sep 2021 17:30:58 +0200
-From:   Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com>
-To:     Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
-        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>
-CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com>,
-        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>
-Subject: [PATCH] drm/stm: ltdc: attach immutable zpos property to planes
-Thread-Topic: [PATCH] drm/stm: ltdc: attach immutable zpos property to planes
-Thread-Index: AQHXoA+GiNV5N6DIcUSGOuN2jPsbMQ==
-Date:   Thu, 2 Sep 2021 15:30:57 +0000
-Message-ID: <20210902152605.12420-1-raphael.gallais-pou@foss.st.com>
-Accept-Language: fr-FR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.75.127.45]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S1345860AbhIBPeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 11:34:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234465AbhIBPeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 11:34:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52A8E610CD;
+        Thu,  2 Sep 2021 15:33:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630596790;
+        bh=WwYdTWP6eNm+J5Il2EKANSs5L/HmsnHp5e3hmUJfBUg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A4dHS+sw0sVgMoOs4ab8XO8E1JWv1xdOpnvBUhIGkzrIgp/Vrxy8AO6lFMvOdJ2VN
+         uqUDpGALQTD51UZivGlUovONCe/bL16WwCOMEV6oyDeX9ob3pjohfGLQIriwHVw3zC
+         astHWlG++5QQnQXWEQlUvZ+6xlZKULakXzuDEhFuOxoBdyjOPqwbbc/p6sov2ZeGmg
+         PoG/UScH30YwdA/4XhG1Ql2uG90sufLtmm1Ec58x1ugVLt5nt26uF4Aw8EnMxnPKzB
+         nmiGnXdbovq9NWIZDPZ6glaw8XaC46cjuXICGx58o/YbdKxhNkKQ3P8cfE62Z32Et1
+         VgnrIt3Y2sBjQ==
+Date:   Thu, 2 Sep 2021 08:33:09 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Shiyang Ruan <ruansy.fnst@fujitsu.com>, linux-xfs@vger.kernel.org,
+        dan.j.williams@intel.com, david@fromorbit.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nvdimm@lists.linux.dev, rgoldwyn@suse.de, viro@zeniv.linux.org.uk,
+        willy@infradead.org
+Subject: Re: [PATCH v8 6/7] xfs: support CoW in fsdax mode
+Message-ID: <20210902153309.GB9892@magnolia>
+References: <20210829122517.1648171-1-ruansy.fnst@fujitsu.com>
+ <20210829122517.1648171-7-ruansy.fnst@fujitsu.com>
+ <20210902074308.GE13867@lst.de>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-02_04,2021-09-02_03,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902074308.GE13867@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Defines plane ordering by hard-coding an immutable Z position from the
-first plane, used as primary layer, to the next ones as overlay in order
-of instantiation.
+On Thu, Sep 02, 2021 at 09:43:08AM +0200, Christoph Hellwig wrote:
+> On Sun, Aug 29, 2021 at 08:25:16PM +0800, Shiyang Ruan wrote:
+> > In fsdax mode, WRITE and ZERO on a shared extent need CoW performed.
+> > After that, new allocated extents needs to be remapped to the file.  Add
+> > an implementation of ->iomap_end() for dax write ops to do the remapping
+> > work.
+> 
+> Please split the new dax infrastructure from the XFS changes.
+> 
+> >  static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
+> > -			       int *iomap_errp, const struct iomap_ops *ops)
+> > +		int *iomap_errp, const struct iomap_ops *ops)
+> >  {
+> >  	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
+> >  	XA_STATE(xas, &mapping->i_pages, vmf->pgoff);
+> > @@ -1631,7 +1664,7 @@ static bool dax_fault_check_fallback(struct vm_fault *vmf, struct xa_state *xas,
+> >  }
+> >  
+> >  static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
+> > -			       const struct iomap_ops *ops)
+> > +		const struct iomap_ops *ops)
+> 
+> These looks like unrelated whitespace changes.
+> 
+> > -static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+> > +loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+> >  {
+> >  	const struct iomap *iomap = &iter->iomap;
+> >  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
+> > @@ -918,6 +918,7 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+> >  
+> >  	return written;
+> >  }
+> > +EXPORT_SYMBOL_GPL(iomap_zero_iter);
+> 
+> I don't see why this would have to be exported.
+> 
+> > +	unsigned 		flags,
+> > +	struct iomap 		*iomap)
+> > +{
+> > +	int			error = 0;
+> > +	struct xfs_inode	*ip = XFS_I(inode);
+> > +	bool			cow = xfs_is_cow_inode(ip);
+> 
+> The cow variable is only used once, so I think we can drop it.
+> 
+> > +	const struct iomap_iter *iter =
+> > +				container_of(iomap, typeof(*iter), iomap);
+> 
+> Please comment this as it is a little unusual.
+> 
+> > +
+> > +	if (cow) {
+> > +		if (iter->processed <= 0)
+> > +			xfs_reflink_cancel_cow_range(ip, pos, length, true);
+> > +		else
+> > +			error = xfs_reflink_end_cow(ip, pos, iter->processed);
+> > +	}
+> > +	return error ?: iter->processed;
+> 
+> The ->iomap_end convention is to return 0 or a negative error code.
+> Also i'd much prefer to just spell this out in a normal sequential way:
+> 
+> 	if (!xfs_is_cow_inode(ip))
+> 		return 0;
+> 
+> 	if (iter->processed <= 0) {
+> 		xfs_reflink_cancel_cow_range(ip, pos, length, true);
+> 		return 0;
+> 	}
+> 
+> 	return xfs_reflink_end_cow(ip, pos, iter->processed);
 
-This zpos is only an information as it is not possible to modify it,
-blending operations are still applied from the top to the bottom layer.
+Seeing as written either contains iter->processed if it's positive, or
+zero if nothing got written or there were errors, I wonder why this
+isn't just:
 
-This patch helps to remove a warning message from the Android
-Hardware Composer.
+	if (!xfs_is_cow_inode(ip));
+		return 0;
 
-Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
----
- drivers/gpu/drm/stm/ltdc.c | 3 +++
- 1 file changed, 3 insertions(+)
+	if (!written) {
+		xfs_reflink_cancel_cow_range(ip, pos, length, true);
+		return 0;
+	}
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 195de30eb90c..bd603ef5e935 100644
---- a/drivers/gpu/drm/stm/ltdc.c
-+++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -1024,6 +1024,8 @@ static int ltdc_crtc_init(struct drm_device *ddev, st=
-ruct drm_crtc *crtc)
- 		return -EINVAL;
- 	}
-=20
-+	drm_plane_create_zpos_immutable_property(primary, 0);
-+
- 	ret =3D drm_crtc_init_with_planes(ddev, crtc, primary, NULL,
- 					&ltdc_crtc_funcs, NULL);
- 	if (ret) {
-@@ -1046,6 +1048,7 @@ static int ltdc_crtc_init(struct drm_device *ddev, st=
-ruct drm_crtc *crtc)
- 			DRM_ERROR("Can not create overlay plane %d\n", i);
- 			goto cleanup;
- 		}
-+		drm_plane_create_zpos_immutable_property(overlay, i);
- 	}
-=20
- 	return 0;
---=20
-2.17.1
+	return xfs_reflink_end_cow(ip, pos, written);
+
+? (He says while cleaning up trying to leave for vacation, pardon me
+if this comment is totally boneheaded...)
+
+--D
+
+> > +static inline int
+> > +xfs_iomap_zero_range(
+> > +	struct xfs_inode	*ip,
+> > +	loff_t			pos,
+> > +	loff_t			len,
+> > +	bool			*did_zero)
+> > +{
+> > +	struct inode		*inode = VFS_I(ip);
+> > +
+> > +	return IS_DAX(inode)
+> > +			? dax_iomap_zero_range(inode, pos, len, did_zero,
+> > +					       &xfs_dax_write_iomap_ops)
+> > +			: iomap_zero_range(inode, pos, len, did_zero,
+> > +					       &xfs_buffered_write_iomap_ops);
+> > +}
+> 
+> 	if (IS_DAX(inode))
+> 		return dax_iomap_zero_range(inode, pos, len, did_zero,
+> 					    &xfs_dax_write_iomap_ops);
+> 	return iomap_zero_range(inode, pos, len, did_zero,
+> 				&xfs_buffered_write_iomap_ops);
+> 
+> > +static inline int
+> > +xfs_iomap_truncate_page(
+> > +	struct xfs_inode	*ip,
+> > +	loff_t			pos,
+> > +	bool			*did_zero)
+> > +{
+> > +	struct inode		*inode = VFS_I(ip);
+> > +
+> > +	return IS_DAX(inode)
+> > +			? dax_iomap_truncate_page(inode, pos, did_zero,
+> > +					       &xfs_dax_write_iomap_ops)
+> > +			: iomap_truncate_page(inode, pos, did_zero,
+> > +					       &xfs_buffered_write_iomap_ops);
+> > +}
+> 
+> Same here.
