@@ -2,165 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955343FF82A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 01:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D183FF82C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 01:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346092AbhIBX7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 19:59:14 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:40699 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245324AbhIBX7M (ORCPT
+        id S1345735AbhIBX7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 19:59:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245324AbhIBX7p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 19:59:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1630627092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eORnII1p6ybdZX010DWyf9E/n3GKWgpyLl3LJKm2bU4=;
-        b=nJO5kNyGhrOc2s1tTjIzw1AkH2CtP+B8GEbvpWtVLmcrey9MFhbQM6ukt/GuwRpjCNERQ6
-        0BILiCsqdgN6tMjhJUqEZwOyQxjQuBK71n+Cw8onPRHus2n29m/gx2eQG0Iuj7ko0ENzfq
-        8H5bIfDghEwPnQqfyzlY0KhR3yxPq+I=
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur04lp2053.outbound.protection.outlook.com [104.47.14.53]) (Using
- TLS) by relay.mimecast.com with ESMTP id de-mta-1-F5XEtpihOmKhtdn_-mqiIw-1;
- Fri, 03 Sep 2021 01:58:11 +0200
-X-MC-Unique: F5XEtpihOmKhtdn_-mqiIw-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LTlxENPhZ5De3grrgrYruzjEDyFGb8GoZ0ab5HaIcFt/fCjW/yDQqumlUmXVE6VMerkUMbi/yQI9TPpzi27KynVXUFfqt96og38oPv5QPQTqCQx6yxiZzXLx2v+2bCXVoPQkLFWuw3exbW5OJeUqTxBZQ7waFA/PeWXHyl5sCNlj3tFbC5+nvn89OG0GooL2pgHqFHgcylx49OcJOBgo6PseRXqbfAEPWtXmJZhl/WO6zmd3LlRDnMvMwhnqn4/VRkjY0g22nGRFkgwhgFK4Z4IveznKWeGTWV/3W4Hp1X+bCj3cj4Chi+8wrrmkrxHxCzh2I0OYcLCVPVthY/ME3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=rrKFuDMgSPTwieDtLGyFGEzItYFqmnpMM5jrDMheh+8=;
- b=cejSLHp7svdSWghfqFcPKcOoQsmkO7YSMeOvLsRFn0qXzyh87sfg+mAj7QKunFcpNCS8vHmgwHISsv/FplAncqnk7+gi1cKZ1niEphr62XsMQJTiB31+YcDWmA9s73gNwdCHtpZaWWHWk9c6jtcAq5WHl8jllBozlSEm/BWPzPVXQy6QiX03zWU1o2XX68ZWu9pnwvpk25qogDLTlXzA1BZcGaURTNUhUCMh4GcuEa62UFJVzOw0I76HNcrkgJw20d8k67y8+W0OCi7+iifBFGU8NH7GnqftnRyVR3PdWD6srlDm1ppc0pfhv8P6NSYSwhiBaGcUG25PR3XxHAuGhw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=suse.com;
-Received: from AM5PR04MB3089.eurprd04.prod.outlook.com (2603:10a6:206:b::28)
- by AM6PR04MB4375.eurprd04.prod.outlook.com (2603:10a6:20b:20::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Thu, 2 Sep
- 2021 23:58:10 +0000
-Received: from AM5PR04MB3089.eurprd04.prod.outlook.com
- ([fe80::2d7c:6469:ec6a:b3ce]) by AM5PR04MB3089.eurprd04.prod.outlook.com
- ([fe80::2d7c:6469:ec6a:b3ce%5]) with mapi id 15.20.4436.027; Thu, 2 Sep 2021
- 23:58:09 +0000
-Subject: Re: [PATCH -next] scsi: iscsi: Adjuest iface sysfs attr detection
-To:     Baokun Li <libaokun1@huawei.com>, cleech@redhat.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-CC:     patchwork@huawei.com, yukuai3@huawei.com
-References: <20210901085336.2264295-1-libaokun1@huawei.com>
-From:   Lee Duncan <lduncan@suse.com>
-Message-ID: <91d4e2a7-0a10-ef7b-37b1-3ef884a3c3c0@suse.com>
-Date:   Thu, 2 Sep 2021 16:58:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-In-Reply-To: <20210901085336.2264295-1-libaokun1@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: PR3P193CA0048.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:102:51::23) To AM5PR04MB3089.eurprd04.prod.outlook.com
- (2603:10a6:206:b::28)
+        Thu, 2 Sep 2021 19:59:45 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650ACC061575;
+        Thu,  2 Sep 2021 16:58:46 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id q21so2223993plq.3;
+        Thu, 02 Sep 2021 16:58:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=+NU2YOSnshAhAfj7HPnfTJ/ZV8MW6iNFINNL9VzpNvw=;
+        b=ddAppI87UDd90sTltAARDY7/zFqCvV7KxrUMjK+5PvVD0CsicD4rBaWCJYvXCblds0
+         FnIb0Jes1npCdlKoGPQU/9A1zKrCV+/ewvTIFQnEnI4jkHDCstyjjCaJuUS21ANP0Jix
+         w9bmZyMVQboaSwExgwFrg3+wxAivZ9Lqqw1hlHlEtcUNKBbm0rhYiTGU5kuhngQwZSw9
+         RefNEFfloA+tq2BUt/0/dgCY04jv0hBJeQ//MIOIhFI7X+e/pAgwurjHIqYEys8igHEA
+         iFLZgHcGTdK37knLuU8WMGWvfMrk86e+yjTpRLIsQJ4BFz4fgkanhPrKMnNRh0oAmL9y
+         RdHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=+NU2YOSnshAhAfj7HPnfTJ/ZV8MW6iNFINNL9VzpNvw=;
+        b=WMMwXrmoBwXJdkeA8AS6SjU+EqT7G0oSDZWAkn0xNcevhDQ3H0jCVneNh3PrVWkUAo
+         DAH1zfDQNikHg1hoiz4oUZRkfkQFAYKFWABVwptpxlTUkVuxfTWB28Y3tvgyJ5VRclKH
+         3DWlpK0yHmUYXKNoLWpfZeI1wMKyT0L68l+aUsGR1GmS5s+egNHnUy7WBA6HIW0TUDuC
+         eCSUSNfvvNgHK2ld1bMr8U6gy/A1s5KWUL1nD26ozwZCo/6p4/RVvQ/etIm2+ClCQm/4
+         Pqd6qLfdmfhUNiT+dmVh7tCs1h2LUkInIcqSCiGHRjUkHkcMW63TD5rkrV1a1W278Ll3
+         p0HQ==
+X-Gm-Message-State: AOAM5332PMNORiutuelzJPk817qUhJn7V9hynLm+CFVeNmVfyjsBGoYh
+        2jiQ42a1OVGg6w7zFQ4zWzo=
+X-Google-Smtp-Source: ABdhPJycx1NhZBmEWP2ncvB8Z2dVY7TGuZkISarQF2DjsHtN6dN+G9N+reJ0Hc6joA0bBOqmhFGJmA==
+X-Received: by 2002:a17:90a:d304:: with SMTP id p4mr765313pju.176.1630627125645;
+        Thu, 02 Sep 2021 16:58:45 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id a194sm3365962pfa.119.2021.09.02.16.58.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 16:58:45 -0700 (PDT)
+Message-ID: <e5dd61f7-899b-29e6-7b36-7ee9c24895ae@gmail.com>
+Date:   Thu, 2 Sep 2021 16:58:43 -0700
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.20.3] (73.25.22.216) by PR3P193CA0048.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:51::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.21 via Frontend Transport; Thu, 2 Sep 2021 23:58:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dc414b07-334d-4da8-cce7-08d96e6d8412
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4375:
-X-Microsoft-Antispam-PRVS: <AM6PR04MB437535007873A1129B584E10DACE9@AM6PR04MB4375.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yfud2sEam3forLd6vRTrTyjc+LfodoFCJSWTlHN6LKITdHmOTCZmCLuE88fteGz+UxA8tWxWuB62JrCjqoJlkfdELWA+stvqwvuhr9s2vKM75f8FHJsNJiqnXqiadxNz2SVd7mkyL7uagu0hIGoFv52jowoQlB3udB1Ku85FwqTLTff1YHosvt23t1ai78ylGT4IlMxufvMK7UfZ85u+6Mq422QUIOknVBU0wnQ1akpYhaps2uDs3+4beeiwUkv2aBcAmQLbb+HfslKoS7sZkkx1nTPfu+mMqzF87TJSIoZiJvnImaHTwBTtxF1SQwKJVbF8dwR1XRj333Gin1uK0s+r3VUQXZGQgnzoO/5tbqkDUL1c02dn3m/2syomL7zQACHz1gQ/0px8Hyspl7KY5gMGcRSywL+GMQ8JsF3UeAJNTJkXIBT2xP07byji2ZUTtsjB3A2WKMt9SST0epRK73rdIJ5kVGV65rDFPCrgb5Uzo1qhnJwyUaTLh8LvsH02z5eVRMl+b5Xl5QJWiRbH9fa8hB5VeyL/hYUlp2w/FHBYYgiObn6ZFiw70shszt3fQpZkdHVH470CTRmDqaG2KBQqVa3u40MD1/cGTcxn8LLZ6vixLJaVq9ur8sxFyDu7Z0nFFX4WdR1Ubdnqlp10DLAaBLTvyeyRbcDuTd9pt/1xAPdEWNHhiFFszuIH+8Qvsw/s7tF/lcoea98FElHcg0kNXfjsJgULPaUmbCcxZS8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM5PR04MB3089.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(346002)(136003)(39850400004)(376002)(66476007)(66556008)(8936002)(38100700002)(83380400001)(66946007)(26005)(186003)(316002)(16576012)(36756003)(53546011)(2906002)(4326008)(478600001)(6666004)(956004)(2616005)(86362001)(6486002)(31686004)(31696002)(5660300002)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dKqY2sSw+VxnoL+OIAOv0aZVSoGAtZYmH2zgW2k5HL9Z3HJjaYtlUZz16bnZ?=
- =?us-ascii?Q?geAlwI2qwH6sBUcmCklXCH4hsO1VOSlJXkAuZY1C9is6HZvsAAkHVTOXrwVt?=
- =?us-ascii?Q?zoQ4eWlrsw5wHnHLgZZsaGX67m2SKIxPdxy5oIzd81ge8hA8dF7e2TMhFNwj?=
- =?us-ascii?Q?TRc19ariDiKDp4mQoWze8JHBvJqlijnXTC2/gO9JaEUuSPmoDmAp6KvQ5W6i?=
- =?us-ascii?Q?OIlZYP7Fkv0fB2rpN8GdbsjhRWCzHQQSRX+Rq8BCtFH48H6wqgZ2tdoNXQzO?=
- =?us-ascii?Q?nWZCahoAZSNAhqI9OUvnGLY7xNVPxipqaHKbpsylh2Qf+HJQvovbP1wa0bfQ?=
- =?us-ascii?Q?VzaPqRm+7NyqnHrY6hKQf6bAXAImdBrUUrJIsxCBIMSM8s87gpvjbAbqCsGf?=
- =?us-ascii?Q?uf4Npqyjfg7IssS2CCvTgzQ0uYo7FDf3y9LSsgFUyyxg43XG3LUnmdBi9JLL?=
- =?us-ascii?Q?8aBNrQ/p12c8ktlt3BxhEMPAigH9dhLEDS4Ax733n/N0ZW72uU4i29Kv6yFp?=
- =?us-ascii?Q?78vys8OBQXIgQqXJmp7I9OlewOmPUhfoAbJe1DzShapzRyi3HON5ro4Dbj+S?=
- =?us-ascii?Q?46ArMHYZcHKm99KZX+YGc7oHXWq9nO184f0RncBFPqVD93RPxFJbvOJDDECp?=
- =?us-ascii?Q?+YOhkfz2eiiSUFslUMWqCt0MY04j2dV5KlwI7q5aMl5hgUGDYvi7OA1vPwEW?=
- =?us-ascii?Q?RFfhZAyfJDDrtM4vaJ56Ubx8mhw08Z/WRy6X4l5jkCKUz6okqQj2cmwcCvLk?=
- =?us-ascii?Q?Mo3zJdZQS5oyfR+uN+4gn8nPK+XMRCsuRdaHhQ/H/YuNsd+ytmelVx0U46JG?=
- =?us-ascii?Q?Txb7AurppMVbVdELsFEVoRzeucujMaQMRltXTWTChKduEbb+7nBJn6rutvE5?=
- =?us-ascii?Q?2dogPMGX32leXxN9OtT9K/mcLEvkpAltNv9HCWb/m75RJfaJQxEqUm0L3CVa?=
- =?us-ascii?Q?Edg9sNx3S8jiXMAMZCxqulnz480kVppSWD5QChGImDHtTtexnqeu3TGXiE9c?=
- =?us-ascii?Q?lWdxmEs2RQ9f7HuxLdMik2n+9CoDdNp7b0qaLir+bfJYXG3/kdfbGXNnnXXX?=
- =?us-ascii?Q?i1QR6/WAaa7SDqrXIzvL+2rFB6Cst6S2O0wxq6XSRxMaT+eB4xHyTFjM1baq?=
- =?us-ascii?Q?Ux+NM5eyJeJNM1ifvymHA0z3fGLpB/5d1oaa5aQyfXlJIvEWsA2hJEhFBgQD?=
- =?us-ascii?Q?TI4SxuCXRwuvUdVbCMuoosL9vtdudRe9TlPuXJ4V38cW5fhWMG+qTJ1AK9vY?=
- =?us-ascii?Q?vr5RV6BZ7gxO255lPAVLy57nmeO1MqAt1Ey3Da8pmsuS0RpYYZDn5RCcLekW?=
- =?us-ascii?Q?OTNUu8Fz/NKOQ9nCXUsYg6iA?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dc414b07-334d-4da8-cce7-08d96e6d8412
-X-MS-Exchange-CrossTenant-AuthSource: AM5PR04MB3089.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2021 23:58:09.8019
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +cnhihunOPXn/n+P71MXDzwAGHzwbBrg3fL8JfsnjzAMBIUEooX9cbS7VUrqtvMfy2wZiSciyGNT+IxCF3Nwdg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4375
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [PATCH 5.14 00/11] 5.14.1-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210901122249.520249736@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20210901122249.520249736@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/21 1:53 AM, Baokun Li wrote:
-> ISCSI_NET_PARAM_IFACE_ENABLE belongs to enum iscsi_net_param instead of
-> iscsi_iface_param=EF=BC=8Cso move it to ISCSI_NET_PARAM. Otherwise, when =
-we call
-> into the driver we might not match and return that we don't want attr
-> visible in sysfs. Found in code review.
->=20
-> Fixes: e746f3451ec7 ("scsi: iscsi: Fix iface sysfs attr detection")
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> ---
->  drivers/scsi/scsi_transport_iscsi.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_tran=
-sport_iscsi.c
-> index d8b05d8b5470..58027207f08d 100644
-> --- a/drivers/scsi/scsi_transport_iscsi.c
-> +++ b/drivers/scsi/scsi_transport_iscsi.c
-> @@ -441,9 +441,7 @@ static umode_t iscsi_iface_attr_is_visible(struct kob=
-ject *kobj,
->  	struct iscsi_transport *t =3D iface->transport;
->  	int param =3D -1;
-> =20
-> -	if (attr =3D=3D &dev_attr_iface_enabled.attr)
-> -		param =3D ISCSI_NET_PARAM_IFACE_ENABLE;
-> -	else if (attr =3D=3D &dev_attr_iface_def_taskmgmt_tmo.attr)
-> +	if (attr =3D=3D &dev_attr_iface_def_taskmgmt_tmo.attr)
->  		param =3D ISCSI_IFACE_PARAM_DEF_TASKMGMT_TMO;
->  	else if (attr =3D=3D &dev_attr_iface_header_digest.attr)
->  		param =3D ISCSI_IFACE_PARAM_HDRDGST_EN;
-> @@ -483,7 +481,9 @@ static umode_t iscsi_iface_attr_is_visible(struct kob=
-ject *kobj,
->  	if (param !=3D -1)
->  		return t->attr_is_visible(ISCSI_IFACE_PARAM, param);
-> =20
-> -	if (attr =3D=3D &dev_attr_iface_vlan_id.attr)
-> +	if (attr =3D=3D &dev_attr_iface_enabled.attr)
-> +		param =3D ISCSI_NET_PARAM_IFACE_ENABLE;
-> +	else if (attr =3D=3D &dev_attr_iface_vlan_id.attr)
->  		param =3D ISCSI_NET_PARAM_VLAN_ID;
->  	else if (attr =3D=3D &dev_attr_iface_vlan_priority.attr)
->  		param =3D ISCSI_NET_PARAM_VLAN_PRIORITY;
->=20
 
-Reviewed-by: Lee Duncan <lduncan@suse.com>
 
+On 9/1/2021 5:29 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.14.1 release.
+> There are 11 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.1-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+--
+Florian
