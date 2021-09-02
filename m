@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA4B3FE856
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 06:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA953FE85B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 06:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbhIBETQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 00:19:16 -0400
-Received: from mga12.intel.com ([192.55.52.136]:29881 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231298AbhIBETO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 00:19:14 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="198514701"
-X-IronPort-AV: E=Sophos;i="5.84,371,1620716400"; 
-   d="scan'208";a="198514701"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 21:18:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,371,1620716400"; 
-   d="scan'208";a="542336836"
-Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 01 Sep 2021 21:18:15 -0700
-Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mLeB4-0008bB-Ei; Thu, 02 Sep 2021 04:18:14 +0000
-Date:   Thu, 2 Sep 2021 12:17:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andi Kleen <ak@linux.intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Subject: [RFC PATCH intel-tdx] x86/tdx: x86_disable_prot can be static
-Message-ID: <20210902041720.GA47763@e994d071fa58>
-References: <202109021222.Ayz3RnA1-lkp@intel.com>
+        id S231809AbhIBEXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 00:23:20 -0400
+Received: from smtprelay0010.hostedemail.com ([216.40.44.10]:44804 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229536AbhIBEXT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 00:23:19 -0400
+Received: from omf05.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 6D5B1299A1;
+        Thu,  2 Sep 2021 04:22:21 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf05.hostedemail.com (Postfix) with ESMTPA id 94D59B2795;
+        Thu,  2 Sep 2021 04:22:20 +0000 (UTC)
+Message-ID: <1d303f4553e67abee4f0c4cdc32231813a4bcb3f.camel@perches.com>
+Subject: Re: [PATCH 2/5] fs/ntfs3: Use consistent spacing around '+'
+From:   Joe Perches <joe@perches.com>
+To:     Kari Argillander <kari.argillander@gmail.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev
+Cc:     linux-kernel@vger.kernel.org
+Date:   Wed, 01 Sep 2021 21:22:19 -0700
+In-Reply-To: <20210831181505.1074767-3-kari.argillander@gmail.com>
+References: <20210831181505.1074767-1-kari.argillander@gmail.com>
+         <20210831181505.1074767-3-kari.argillander@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202109021222.Ayz3RnA1-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=2.41
+X-Stat-Signature: 6ywud8xu4eygy654qqjibymws8n1m811
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 94D59B2795
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19sh78KRiSh5KevcMk8MxvtAdMM0b+8bpY=
+X-HE-Tag: 1630556540-782866
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arch/x86/kernel/cpu/intel.c:66:14: warning: symbol 'x86_disable_prot' was not declared. Should it be static?
+On Tue, 2021-08-31 at 21:15 +0300, Kari Argillander wrote:
+> Use consistent spacing around '+' for better code reading. Checkpatch
+> will also be happy.
 
-Fixes: 88ae938a9403 ("x86/tdx: Add option to override prot values")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
- intel.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think you should remove the + instead
 
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index d2b3527b2c71a..187bea52363b7 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -63,7 +63,7 @@ static bool cpu_model_supports_sld __ro_after_init;
- 
- #ifdef CONFIG_ARCH_HAS_PROTECTED_GUEST
- 
--unsigned int x86_disable_prot = -1;
-+static unsigned int x86_disable_prot = -1;
- 
- static int __init x86_prot_clear_setup(char *arg)
- {
+> diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
+[]
+> @@ -1451,7 +1451,7 @@ int ni_insert_resident(struct ntfs_inode *ni, u32 data_size,
+>  		attr->res.flags = RESIDENT_FLAG_INDEXED;
+>  
+> 
+>  		/* is_attr_indexed(attr)) == true */
+> -		le16_add_cpu(&ni->mi.mrec->hard_links, +1);
+> +		le16_add_cpu(&ni->mi.mrec->hard_links, + 1);
+
+		le16_add_cpu(&ni->mi.mrec->hard_links, 1);
+
+
