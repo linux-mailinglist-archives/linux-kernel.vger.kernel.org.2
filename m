@@ -2,107 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 738C43FF1BE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F893FF1C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:44:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346411AbhIBQpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:45:20 -0400
-Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:1921 "EHLO
-        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240292AbhIBQpO (ORCPT
+        id S1346448AbhIBQpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:45:35 -0400
+Received: from mail-vk1-f175.google.com ([209.85.221.175]:33380 "EHLO
+        mail-vk1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242304AbhIBQpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:45:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1630601057; x=1662137057;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=MzJcUtfc7iPoM8SpKJzbe6uipwEa0d0bW+92yrWo/JI=;
-  b=MSL6/WWjz64zqFTG/JPub7febH0ZKZ5ZYXeasuIdv/iwenfqiB+Al29A
-   RT99yfZuzQuqSaUhq5NEu5KEIYgQrha05uf8/0rHzQFfIJrbe1+JsYX/Q
-   Qgh7/QqvzTdEpbuvPY5kws2CYQ4j2FOo4Ip+zx8iupqUqNDw6HI6/W16h
-   I=;
-X-IronPort-AV: E=Sophos;i="5.85,262,1624320000"; 
-   d="scan'208";a="24073115"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1a-67b371d8.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 02 Sep 2021 16:44:16 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1a-67b371d8.us-east-1.amazon.com (Postfix) with ESMTPS id 6F54CA1DDC;
-        Thu,  2 Sep 2021 16:44:14 +0000 (UTC)
-Received: from EX13D21UWB001.ant.amazon.com (10.43.161.108) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Thu, 2 Sep 2021 16:44:13 +0000
-Received: from EX13MTAUEB002.ant.amazon.com (10.43.60.12) by
- EX13D21UWB001.ant.amazon.com (10.43.161.108) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Thu, 2 Sep 2021 16:44:13 +0000
-Received: from dev-dsk-shaoyi-2b-c0ca772a.us-west-2.amazon.com (172.22.152.76)
- by mail-relay.amazon.com (10.43.60.234) with Microsoft SMTP Server id
- 15.0.1497.23 via Frontend Transport; Thu, 2 Sep 2021 16:44:12 +0000
-Received: by dev-dsk-shaoyi-2b-c0ca772a.us-west-2.amazon.com (Postfix, from userid 13116433)
-        id 8D41A41A9E; Thu,  2 Sep 2021 16:44:12 +0000 (UTC)
-From:   Shaoying Xu <shaoyi@amazon.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>
-CC:     <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <benh@amazon.com>, <shaoyi@amazon.com>
-Subject: [PATCH 1/1] ext4: fix lazy initialization next schedule time computation in more granular unit
-Date:   Thu, 2 Sep 2021 16:44:12 +0000
-Message-ID: <20210902164412.9994-2-shaoyi@amazon.com>
-X-Mailer: git-send-email 2.16.6
-In-Reply-To: <20210902164412.9994-1-shaoyi@amazon.com>
-References: <20210902164412.9994-1-shaoyi@amazon.com>
+        Thu, 2 Sep 2021 12:45:34 -0400
+Received: by mail-vk1-f175.google.com with SMTP id j5so851338vki.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:44:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=S8ciweqCSnmF0lrcF+dCm4bYbs7yF6R8RNgWL4GCGc4=;
+        b=ClONLIvrv7snOUZq2GVGNiucW/N2YWqRv+VSTm6rRxv156HTZXPLGvXXjoeYhbavPs
+         pCTW9YaUrwZyeSDMeAmUsZA2k6T4MYAnss/mGGPp3k63qbyTwlPosz1aIAkar2zL1CfZ
+         68eLbMTvKUmXvi4DEXUGFVovCL19zV5PWtpmmcNIzkoZC65wNOZVA49AlddaoH9jDuEX
+         U8l59xX6AbgbPvkuUhvyYFVZiFyJ7vQ1esNKTaiIUZjHuW/68w5sowu6pBlqCX72OTo1
+         9tuweA8j+LwlThoCb5elUzgeZEQTHIiOABuQDSn372Z4T2Jtme1gmOu0Z4aaZbnyiNvn
+         sgpA==
+X-Gm-Message-State: AOAM532p0t8mn9kHvBkDWCVH5I1Ns3lN7A2IZ/yBBSS/1erq9n94qUsR
+        /wnlCHMA86gPU+xaVmIQAv6aFd4cJe1K1ApDlNAlXlxqfzg=
+X-Google-Smtp-Source: ABdhPJxW6799mxeUzoB48DvT0FXTNwmWHONPl+cHVkxeRwWgBN0xlWUX+n978nIvNloFpd/wE8Q+PSrXa+QzmCwfVeQ=
+X-Received: by 2002:a1f:fe04:: with SMTP id l4mr2579598vki.9.1630601075662;
+ Thu, 02 Sep 2021 09:44:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210707214752.3831-1-rdunlap@infradead.org> <fca8f952-2be0-5c57-d60d-5c4f025abc4d@microchip.com>
+ <49495ab9-5039-f332-2895-1a79c034f58d@infradead.org>
+In-Reply-To: <49495ab9-5039-f332-2895-1a79c034f58d@infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 2 Sep 2021 18:44:23 +0200
+Message-ID: <CAMuHMdU=ODKZJ0OOsuCeJnTWuM3fP5DE7coSzB=fvAbxPQWDcg@mail.gmail.com>
+Subject: Re: [PATCH v3] ASoC: atmel: ATMEL drivers don't need HAS_DMA
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Codrin.Ciubotariu@microchip.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, mirq-linux@rere.qmqm.pl,
+        Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ext4 file system has default lazy inode table initialization setup once
-it is mounted. However, it has issue on computing the next schedule time
-that makes the timeout same amount in jiffies but different real time in
-secs if with various HZ values. Therefore, fix by measuring the current
-time in a more granular unit nanoseconds and make the next schedule time
-independent of the HZ value.
+Hi Randy,
 
-Fixes: bfff68738f1c ("ext4: add support for lazy inode table initialization")
-Signed-off-by: Shaoying Xu <shaoyi@amazon.com>
-Cc: stable@vger.kernel.org
----
- fs/ext4/super.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+On Thu, Jul 8, 2021 at 6:51 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 7/8/21 1:19 AM, Codrin.Ciubotariu@microchip.com wrote:
+> > On 08.07.2021 00:47, Randy Dunlap wrote:
+> >> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> >>
+> >> On a config (such as arch/sh/) which does not set HAS_DMA when MMU
+> >> is not set, several ATMEL ASoC drivers select symbols that cause
+> >> kconfig warnings. There is one "depends on HAS_DMA" which is no longer
+> >> needed. Dropping it eliminates the kconfig warnings and still builds
+> >> with no problems reported.
+> >>
+> >> Fix the following kconfig warnings:
+> >>
+> >> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
+> >>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
+> >>    Selected by [m]:
+> >>    - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
+> >>    - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
+> >>
+> >> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
+> >>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
+> >>    Selected by [m]:
+> >>    - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
+> >>
+> >> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
+> >>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
+> >>    Selected by [m]:
+> >>    - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
+> >>
+> >> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
+> >>    Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
+> >>    Selected by [m]:
+> >>    - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
+> >>    - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
+> >>
+> >> Fixes: 3951e4aae2ce ("ASoC: atmel-pcm: dma support based on pcm dmaengine")
+> >> Fixes: 18291410557f ("ASoC: atmel: enable SOC_SSC_PDC and SOC_SSC_DMA in Kconfig")
+> >> Fixes: 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
+> >
+> > I am not sure about these fixes tags. As Alexandre mentioned, it looks
+> > like the reason for HAS_DMA in the first place was the COMPILE_TEST with
+> > m32r arch. I dig a bit, and, if any, I think we should use:
+> > Fixes: eb17726b00b3 ("m32r: add simple dma")
+> > since this commit adds dummy DMA support for m32r and seems to fix the
+> > HAS_DMA dependency.
+>
+> Ah, I forgot to update the Fixes: tag(s).
+>
+> I won't disagree with your Fixes: suggestion (good digging) but
+> I would probably have used 8d7d11005e930:
+>   ASoC: atmel: fix build failure
+> which is the commit that added "depends on HAS_DMA".
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index dfa09a277b56..399cbe9c14a8 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -3421,9 +3421,9 @@ static int ext4_run_li_request(struct ext4_li_request *elr)
- 	struct super_block *sb = elr->lr_super;
- 	ext4_group_t ngroups = EXT4_SB(sb)->s_groups_count;
- 	ext4_group_t group = elr->lr_next_group;
--	unsigned long timeout = 0;
- 	unsigned int prefetch_ios = 0;
- 	int ret = 0;
-+	u64 start_time;
- 
- 	if (elr->lr_mode == EXT4_LI_MODE_PREFETCH_BBITMAP) {
- 		elr->lr_next_group = ext4_mb_prefetch(sb, group,
-@@ -3460,14 +3460,13 @@ static int ext4_run_li_request(struct ext4_li_request *elr)
- 		ret = 1;
- 
- 	if (!ret) {
--		timeout = jiffies;
-+		start_time = ktime_get_real_ns();
- 		ret = ext4_init_inode_table(sb, group,
- 					    elr->lr_timeout ? 0 : 1);
- 		trace_ext4_lazy_itable_init(sb, group);
- 		if (elr->lr_timeout == 0) {
--			timeout = (jiffies - timeout) *
--				EXT4_SB(elr->lr_super)->s_li_wait_mult;
--			elr->lr_timeout = timeout;
-+			elr->lr_timeout = nsecs_to_jiffies((ktime_get_real_ns() - start_time) *
-+				EXT4_SB(elr->lr_super)->s_li_wait_mult);
- 		}
- 		elr->lr_next_sched = jiffies + elr->lr_timeout;
- 		elr->lr_next_group = group + 1;
+M32r was not the only platform NO_DMA, so I guess the build would
+have failed for the others, too (e.g. Sun-3).
+
+So the real fix was probably commit f29ab49b5388b2f8 ("dma-mapping:
+Convert NO_DMA get_dma_ops() into a real dummy"), or one of the
+related commits adding dummies to subsystems.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.16.6
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
