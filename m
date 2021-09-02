@@ -2,186 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5843FF2DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1B453FF2E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346797AbhIBRx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 13:53:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21156 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346712AbhIBRxy (ORCPT
+        id S1346831AbhIBR43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 13:56:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229881AbhIBR4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 13:53:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630605175;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IGgz/DAvR7xRFawq5YYv7/qKBT6IhTR9s5xg+w37MzM=;
-        b=CiQaEVtFmf2ZzRCQF08sk+lu1KXCD5C4wlnGekPPbU87KELbaXVrmOTyGbHG31tYZvjmlp
-        Sc2wxSVHeRt+RFmvRhTtEQK61d291DiMD0Z0RHudfJvqO1rio0w62OxqJhcnVkmHsf+gu+
-        DSgSp87a6kGQ2/59nbqTcKoKyTQYv/k=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-6rwjpAtkOXq86itGybhOSg-1; Thu, 02 Sep 2021 13:52:54 -0400
-X-MC-Unique: 6rwjpAtkOXq86itGybhOSg-1
-Received: by mail-wr1-f70.google.com with SMTP id 102-20020adf82ef000000b001576e345169so819981wrc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 10:52:54 -0700 (PDT)
+        Thu, 2 Sep 2021 13:56:18 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD732C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 10:55:19 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id c206so5417863ybb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 10:55:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gqxRE7kir7W0L8sbl3qxABrwWx/ImNi+hvYh+LGW41A=;
+        b=cv9zdd1oi04eIr1gf7nRpzyMmnd2MFSg9K1LzVavTuRHOmcg94Y/OCdNFhlu8mz9xI
+         oKwwTN71H2su8FeDC+5CjPNWW2dx1NeBB9PbWwtccN50LjfaiAYpRGr0Ktf0ocOj7pEc
+         affqCVcuKVaXYBJZjI3dCdsWOzLl3UrUXHbrsmA3LZZ3W/ofMk0Fr8JJhlUL9286/lnE
+         XGyK3RURH0w0A4PQaU5s8EqiyDQ9sOy9CTYyYXy5LIIaa5qXylR2Df1Ac854OuYRjUvh
+         PoyzOpVUq7CiEfefE0vfqTjSVfZBzMW6vJinsJ9Og1Nw/ERoRneAoNly1w5levpfnQOu
+         J1bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IGgz/DAvR7xRFawq5YYv7/qKBT6IhTR9s5xg+w37MzM=;
-        b=re8cvp8k6myLQDS2JCgZ9kvmRbhn4DbR/9259zAPHb3mQuhahVIYDG6KO1OY3xxfCh
-         Tpw17yvJO/jyQD01Hd64IAUS3AhbvYW0HMG6w/jdINsnittYz9mVpjmF+St55dIXz/kO
-         KSL4fYxFzS0k6WI3kPL3QsejuLictgtkxQFQKEF4cEKNKHxFLINDe12N9r9n9wBC3ORT
-         iq95lqtkG5oTp9enomAOKzTIPOzDTYw4iRm4RfqJSma91yjLAOWG5yt2k90fneulKiq7
-         rn3Hw25kmEgw2AEzgw5lNS+afhWjWtlM05N6qbH7nbd5vOY9HNmKkWBlWiuRkzMIdVG3
-         un5Q==
-X-Gm-Message-State: AOAM531CKdNFmnK205Srmj65tUjYnEf/WVzjVbT+JJ7CXK97+9J/DMFy
-        DnpykzS1X118QVtNuLYnU5t5ziUkigOCmqs9esrnauWoRSAo9gI+xqgbkiDwX+XRk1AGahhOxFt
-        WlD7gR0+8GQCP06br56ECmY4ICfHMawC9+3xvl1pF
-X-Received: by 2002:a05:6000:1150:: with SMTP id d16mr4393832wrx.357.1630605173422;
-        Thu, 02 Sep 2021 10:52:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyh60vnYnPsananb52FqQ9yBDe+vklZykFx/lhJt9v1VzExu90P4TAUbNHWr44MGvno31emeutULtDXbJmfXOo=
-X-Received: by 2002:a05:6000:1150:: with SMTP id d16mr4393813wrx.357.1630605173219;
- Thu, 02 Sep 2021 10:52:53 -0700 (PDT)
+        bh=gqxRE7kir7W0L8sbl3qxABrwWx/ImNi+hvYh+LGW41A=;
+        b=GO62nhrc2TGwXZ3kksE8rlOzcpiaEsk44+T/Boq9MdVy6df5svnAeOSZfrlXJqB391
+         8/OqaxRmxIEi1LFD9yIB8ngrJE14gCo9bYCZbJhFisgm6cH+n41YcxXt0HxD+Sagkr43
+         vN5GMoCboP8dWM13F5xTP7eqi16zxLHkq5c8DWFU2D886isHjKm/D7LJd6Dlha5QbOX/
+         Z/UBx8V5fEmhIym/VZ3gtaBXuEhFg6+w/iVSF3Nkd7SJ7Relh0spelEuWVhoJ+ry3DsE
+         jbuv/DR8pRU2K+5mjKbF5DYLX9MmWrI968039EBkJ1uDFobuHVNtX6Ks+TXnS/Des7Gs
+         P+OA==
+X-Gm-Message-State: AOAM5319qagoObD8CktDA2jl1iDOVelUg2E9HpVsCX0Tex4cJT4FLfQF
+        Ltfuo3KEiM9DaA5cZqUNJTFQ9jS5EOFfG52ekst7RA==
+X-Google-Smtp-Source: ABdhPJwUZwqrwOekpIYyTz0pzYA+LEPg2QXTbJ63dba3PQAQ8pp85mpwvFE+9uO8Y0Cnfe82N+/p5oaHg8isCinoM0E=
+X-Received: by 2002:a05:6902:513:: with SMTP id x19mr5997339ybs.90.1630605318839;
+ Thu, 02 Sep 2021 10:55:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210902152228.665959-1-vgoyal@redhat.com>
-In-Reply-To: <20210902152228.665959-1-vgoyal@redhat.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Thu, 2 Sep 2021 19:52:41 +0200
-Message-ID: <CAHc6FU4foW+9ZwTRis3DXSJSMAvdb4jXcq7EFFArYgX7FQ1QYg@mail.gmail.com>
-Subject: Re: [PATCH v3 0/1] Relax restrictions on user.* xattr
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, virtio-fs@redhat.com,
-        dwalsh@redhat.com, dgilbert@redhat.com,
-        christian.brauner@ubuntu.com, casey.schaufler@intel.com,
-        LSM <linux-security-module@vger.kernel.org>,
-        selinux@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Miklos Szeredi <miklos@szeredi.hu>, gscrivan@redhat.com,
-        "Fields, Bruce" <bfields@redhat.com>,
-        stephen.smalley.work@gmail.com, Dave Chinner <david@fromorbit.com>
+References: <20210901211412.4171835-1-rananta@google.com> <20210901211412.4171835-3-rananta@google.com>
+ <YS/wfBTnCJWn05Kn@google.com> <YS/53N7LdJOgdzNu@google.com>
+ <CAJHc60xU3XvmkBHoB8ihyjy6k4RJ9dhqt31ytHDGjd5xsaJjFA@mail.gmail.com>
+ <YTAHYrQslkY12715@google.com> <20210902123110.royrzw4dsykkrcjx@gator>
+In-Reply-To: <20210902123110.royrzw4dsykkrcjx@gator>
+From:   Raghavendra Rao Ananta <rananta@google.com>
+Date:   Thu, 2 Sep 2021 10:55:08 -0700
+Message-ID: <CAJHc60xLj77n3pvqQNn_+LoLL=UZtQV+hz3r4VmPpqpZ7SBPVg@mail.gmail.com>
+Subject: Re: [PATCH v3 02/12] KVM: arm64: selftests: Add write_sysreg_s and read_sysreg_s
+To:     Andrew Jones <drjones@redhat.com>
+Cc:     Oliver Upton <oupton@google.com>, kvm@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, Sep 2, 2021 at 5:22 PM Vivek Goyal <vgoyal@redhat.com> wrote:
-> This is V3 of the patch. Previous versions were posted here.
+On Thu, Sep 2, 2021 at 5:31 AM Andrew Jones <drjones@redhat.com> wrote:
 >
-> v2: https://lore.kernel.org/linux-fsdevel/20210708175738.360757-1-vgoyal@redhat.com/
-> v1: https://lore.kernel.org/linux-fsdevel/20210625191229.1752531-1-vgoyal@redhat.com/
+> On Wed, Sep 01, 2021 at 11:06:10PM +0000, Oliver Upton wrote:
+> > On Wed, Sep 01, 2021 at 03:48:40PM -0700, Raghavendra Rao Ananta wrote:
+> > > On Wed, Sep 1, 2021 at 3:08 PM Oliver Upton <oupton@google.com> wrote:
+> > > >
+> > > > On Wed, Sep 01, 2021 at 09:28:28PM +0000, Oliver Upton wrote:
+> > > > > On Wed, Sep 01, 2021 at 09:14:02PM +0000, Raghavendra Rao Ananta wrote:
+> > > > > > For register names that are unsupported by the assembler or the ones
+> > > > > > without architectural names, add the macros write_sysreg_s and
+> > > > > > read_sysreg_s to support them.
+> > > > > >
+> > > > > > The functionality is derived from kvm-unit-tests and kernel's
+> > > > > > arch/arm64/include/asm/sysreg.h.
+> > > > > >
+> > > > > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > > > >
+> > > > > Would it be possible to just include <asm/sysreg.h>? See
+> > > > > tools/arch/arm64/include/asm/sysreg.h
+> > > >
+> > > > Geez, sorry for the noise. I mistakenly searched from the root of my
+> > > > repository, not the tools/ directory.
+> > > >
+> > > No worries :)
+> > >
+> > > > In any case, you could perhaps just drop the kernel header there just to
+> > > > use the exact same source for kernel and selftest.
+> > > >
+> > > You mean just copy/paste the entire header? There's a lot of stuff in
+> > > there which we
+> > > don't need it (yet).
+> >
+> > Right. It's mostly register definitions, which I don't think is too high
+> > of an overhead. Don't know where others stand, but I would prefer a
+> > header that is equivalent between kernel & selftests over a concise
+> > header.
+> >
 >
-> Changes since v2
-> ----------------
-> - Do not call inode_permission() for special files as file mode bits
->   on these files represent permissions to read/write from/to device
->   and not necessarily permission to read/write xattrs. In this case
->   now user.* extended xattrs can be read/written on special files
->   as long as caller is owner of file or has CAP_FOWNER.
+> Until now we haven't needed the sys_reg(...) type of definitions for
+> sysregs in selftests. In case we did, we defined the registers we
+> needed for get/set_one_reg by their parts, e.g.
 >
-> - Fixed "man xattr". Will post a patch in same thread little later. (J.
->   Bruce Fields)
+>  #define ID_AA64DFR0_EL1 3, 0,  0, 5, 0
 >
-> - Fixed xfstest 062. Changed it to run only on older kernels where
->   user extended xattrs are not allowed on symlinks/special files. Added
->   a new replacement test 648 which does exactly what 062. Just that
->   it is supposed to run on newer kernels where user extended xattrs
->   are allowed on symlinks and special files. Will post patch in
->   same thread (Ted Ts'o).
+> allowing us to choose how we use them, ARM64_SYS_REG(...) vs.
+> sys_reg(...).
 >
-> Testing
-> -------
-> - Ran xfstest "./check -g auto" with and without patches and did not
->   notice any new failures.
->
-> - Tested setting "user.*" xattr with ext4/xfs/btrfs/overlay/nfs
->   filesystems and it works.
->
-> Description
-> ===========
->
-> Right now we don't allow setting user.* xattrs on symlinks and special
-> files at all. Initially I thought that real reason behind this
-> restriction is quota limitations but from last conversation it seemed
-> that real reason is that permission bits on symlink and special files
-> are special and different from regular files and directories, hence
-> this restriction is in place. (I tested with xfs user quota enabled and
-> quota restrictions kicked in on symlink).
->
-> This version of patch allows reading/writing user.* xattr on symlink and
-> special files if caller is owner or priviliged (has CAP_FOWNER) w.r.t inode.
-
-the idea behind user.* xattrs is that they behave similar to file
-contents as far as permissions go. It follows from that that symlinks
-and special files cannot have user.* xattrs. This has been the model
-for many years now and applications may be expecting these semantics,
-so we cannot simply change the behavior. So NACK from me.
-
-> Who wants to set user.* xattr on symlink/special files
-> -----------------------------------------------------
-> I have primarily two users at this point of time.
->
-> - virtiofs daemon.
->
-> - fuse-overlay. Giuseppe, seems to set user.* xattr attrs on unpriviliged
->   fuse-overlay as well and he ran into similar issue. So fuse-overlay
->   should benefit from this change as well.
->
-> Why virtiofsd wants to set user.* xattr on symlink/special files
-> ----------------------------------------------------------------
-> In virtiofs, actual file server is virtiosd daemon running on host.
-> There we have a mode where xattrs can be remapped to something else.
-> For example security.selinux can be remapped to
-> user.virtiofsd.securit.selinux on the host.
->
-> This remapping is useful when SELinux is enabled in guest and virtiofs
-> as being used as rootfs. Guest and host SELinux policy might not match
-> and host policy might deny security.selinux xattr setting by guest
-> onto host. Or host might have SELinux disabled and in that case to
-> be able to set security.selinux xattr, virtiofsd will need to have
-> CAP_SYS_ADMIN (which we are trying to avoid). Being able to remap
-> guest security.selinux (or other xattrs) on host to something else
-> is also better from security point of view.
->
-> But when we try this, we noticed that SELinux relabeling in guest
-> is failing on some symlinks. When I debugged a little more, I
-> came to know that "user.*" xattrs are not allowed on symlinks
-> or special files.
->
-> So if we allow owner (or CAP_FOWNER) to set user.* xattr, it will
-> allow virtiofs to arbitrarily remap guests's xattrs to something
-> else on host and that solves this SELinux issue nicely and provides
-> two SELinux policies (host and guest) to co-exist nicely without
-> interfering with each other.
-
-The fact that user.* xattrs don't work in this remapping scenario
-should have told you that you're doing things wrong; the user.*
-namespace seriously was never meant to be abused in this way.
-
-You may be able to get away with using trusted.* xattrs which support
-roughly the kind of daemon use I think you're talking about here, but
-I'm not sure selinux will be happy with labels that aren't fully under
-its own control. I really wonder why this wasn't obvious enough.
-
-Thanks,
-Andreas
-
-> Thanks
-> Vivek
->
-> Vivek Goyal (1):
->   xattr: Allow user.* xattr on symlink and special files
->
->  fs/xattr.c | 23 ++++++++++++++++++-----
->  1 file changed, 18 insertions(+), 5 deletions(-)
->
-> --
-> 2.31.1
+> Bringing over sysreg.h is probably a good idea though. If we do, then
+> I'd suggest we define a new macro that allows us to convert a SYS_*
+> register definition from sysreg.h into an ARM64_SYS_REG definition
+> for get/set_one_reg in order to avoid redundant definitions.
 >
 
+I agree. Will look into it, and plan to pull the original sysreg.h
+into selftests.
+
+Regards,
+Raghavendra
+
+> Thanks,
+> drew
+>
