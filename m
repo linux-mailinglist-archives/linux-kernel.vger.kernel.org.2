@@ -2,97 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B083FEC86
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0483D3FEC6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242421AbhIBK4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 06:56:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233761AbhIBK4A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 06:56:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CFAC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 03:55:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xRZI+EF7Bb02HlmhwHew/8U98K28CzYAN65inQkPbLA=; b=qgwUZG/cFtFFmCiMx1IAFICojh
-        7f+SYg96TVtEcKoLz294qVnFHbDWbjrJd2j+kqW133UQ+BxcHU2Au9HHWps9azq2TRqXcezFZ7Y5/
-        08FUDzdXgjuyfo+hnflXXnTPqJfmqjxjJLo0SyuIuyhRsKkxdqtlZGiFJD/DTGrTQYNjgj0qTCUaK
-        pHq3Vv9yJxKZAT147cfr5AFOtbjWgQ6HkB9UeGlsW0BprwWDk1WlyrQQSFkbZsuJkscbbTIPodzXA
-        PXO7c2bR9km4keuJe333Kh3qIyfyojkCSiz1r6WuiDnf74Vf313kNBUfBO8aTfryLvkrKzwx4bwJ3
-        DpsGReSw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mLkIG-003OPI-OB; Thu, 02 Sep 2021 10:50:36 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 20D6B30029F;
-        Thu,  2 Sep 2021 12:50:03 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 054722B1DE8E8; Thu,  2 Sep 2021 12:50:02 +0200 (CEST)
-Date:   Thu, 2 Sep 2021 12:50:02 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
-Cc:     Joerg Roedel <jroedel@suse.de>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Chester Lin <clin@suse.com>, Juergen Gross <jgross@suse.com>,
-        andrew.cooper3@citrix.com
-Subject: Re: [PATCH 02/24] x86/traps: Move arch/x86/kernel/traps.c to
- arch/x86/entry/
-Message-ID: <YTCsWpSmPYvXa1xz@hirez.programming.kicks-ass.net>
-References: <20210831175025.27570-1-jiangshanlai@gmail.com>
- <20210831175025.27570-3-jiangshanlai@gmail.com>
- <YTCGov+vvAMvso7q@suse.de>
- <1f327579-e62a-df65-0763-e88243829db3@linux.alibaba.com>
+        id S245623AbhIBKwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 06:52:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245510AbhIBKvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 06:51:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7D541610CE;
+        Thu,  2 Sep 2021 10:50:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630579805;
+        bh=6ZC72MkkUiRA7idv+wrbolVrOjl4rY32njlxwN5wTgE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=H4fl9VoFhPtlEd54b2qRnF4WV1/VyfDP2OFtnue/pdIHBZpX3wbTGeIkl4YugLXTD
+         Ny2tCoFEKOesZoFEgfBpsoeq93/df8ec1EUntWw4Vpx97O4bPSSioHhEiPrKPptVNp
+         JuxD6NuTjm7VQtSSUhoNuY51Aa6e49D7WZB7EfgMhdqfatYaqw500Augnowq/HJ9lQ
+         a92obewjMtyGTlyw8Q4vEFbuiT6DoTMMuqBdO2yELRwQPXwRysqbFXCaDimxf0Bvg4
+         5gGRFUrtHkBKBb0A/bmSEDGAD1v1+lRaOQvIq8fi8g4Klz+Re9JnsHoEt2lRBUhe7S
+         qFPwAbbBSHQvQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6D58960982;
+        Thu,  2 Sep 2021 10:50:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f327579-e62a-df65-0763-e88243829db3@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] Set fc_nlinfo in nh_create_ipv4, nh_create_ipv6
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163057980544.19226.5142981830562504937.git-patchwork-notify@kernel.org>
+Date:   Thu, 02 Sep 2021 10:50:05 +0000
+References: <20210902052014.605249-1-contact@proelbtn.com>
+In-Reply-To: <20210902052014.605249-1-contact@proelbtn.com>
+To:     Ryoga Saito <contact@proelbtn.com>
+Cc:     dsahern@kernel.org, davem@davemloft.net, yoshfuji@linux-ipv6.org,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 05:21:51PM +0800, Lai Jiangshan wrote:
-> 
-> 
-> On 2021/9/2 16:09, Joerg Roedel wrote:
-> > On Wed, Sep 01, 2021 at 01:50:03AM +0800, Lai Jiangshan wrote:
-> > >   arch/x86/entry/Makefile            | 5 ++++-
-> > >   arch/x86/{kernel => entry}/traps.c | 0
-> > >   arch/x86/kernel/Makefile           | 5 +----
-> > >   3 files changed, 5 insertions(+), 5 deletions(-)
-> > >   rename arch/x86/{kernel => entry}/traps.c (100%)
-> > 
-> >  From looking over the patch-set I didn't spot the reason for putting the
-> > entry C code into traps.c. Can you explain that please? Otherwise I'd
-> > prefer to create a new file, like arch/x86/entry/entry64.c.
-> 
-> 
-> I agree, and I think Peter is handling it.
+Hello:
 
-I don't think I said that. I said I like the patches but there's a lot
-of scary code and details to review, which takes time.
+This patch was applied to netdev/net.git (refs/heads/master):
 
-I've now done a second reading of the patches and provided some more
-feedback, but I'm very sure I didn't get to the scary details yet.
+On Thu,  2 Sep 2021 05:20:14 +0000 you wrote:
+> This patch fixes kernel NULL pointer dereference when creating nexthop
+> which is bound with SRv6 decapsulation. In the creation of nexthop,
+> __seg6_end_dt_vrf_build is called. __seg6_end_dt_vrf_build expects
+> fc_lninfo in fib6_config is set correctly, but it isn't set in
+> nh_create_ipv6, which causes kernel crash.
+> 
+> Here is steps to reproduce kernel crash:
+> 
+> [...]
 
-One thing that got pointed out (by Andrew Cooper) is that by moving the
-whole SWAPGS trainwreck to C it becomes entirely 'trivial' to sneak in
-an 'accidental' per-cpu reference before having done the SWAPGS dance.
+Here is the summary with links:
+  - Set fc_nlinfo in nh_create_ipv4, nh_create_ipv6
+    https://git.kernel.org/netdev/net/c/9aca491e0dcc
 
-I'm myself not (yet) convinced that's a good enough reason to leave it
-in ASM, but it does certainly need consideration.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
