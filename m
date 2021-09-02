@@ -2,317 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E4F3FF0FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 420313FF123
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346257AbhIBQRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346137AbhIBQQs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:16:48 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCDEC0612E7
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:15:48 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id l10so5483153lfg.4
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:15:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=L+ujP72zE5mIa6mjcPx3K31BUPem18c3ppcTzUA+PFM=;
-        b=I2PM4wzET84+uy6hRxB6RSBNGmmiF5yBPNBqeAoE0+3qXVgJijxRU/dV8kKQ1kzxft
-         LTQ3ApIOybY1X8vNiDyz+3MwKv9wii9aYkq2ihm1nKz0LfA2nRm1YuCANFMxDrP8pbMJ
-         ZPl3SVUjmEEKHqZrCwR0IRlcJSg7sw5ubMjbe005l575ILPWOrGvHITFT2NP+ejyy+1v
-         3c2mL5VNtoDmJPeBdlaORqG3vjVFBPjVEWf/UGNMZ9KAgLx5DE+QCOhcZOwfSluwcIco
-         OxfKlaj9+dkgguT8GRuKNNDncD2DzxjFeOd+Z+lD6d+K+lV2DcEbw7M0sLB0Li5BnTrD
-         iIBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=L+ujP72zE5mIa6mjcPx3K31BUPem18c3ppcTzUA+PFM=;
-        b=O6yl77INbjaJY2gBcU+md+SGgp0peNgjOxgmra/rvLBYpFzuN0D/pJUc8bw7TGeOE/
-         YWdmwtMIZkaOqIwJSuRLny/lGwrjIQPYfpJLoFgbgwRB/9meYiIiCFkJtgdsNtq/3Ihp
-         VWqAVdT3KEnq42cAc1am73rzzA3RDzGQPJGVgv4rVOU/mDPx/NAXr7oBTuRDZWeyWqwj
-         L3Q7Aw4EtAwrIxcST9qbDrXUUTdLa7mOSCjyZW4mOlzkGUSXgHEplXfNxe0VssGhLJ7G
-         6Wq8LpcglPW2hHkWquVgB6QzPcgYFgdHq2SE1BbC6F/DVqo+cdouD1hKHzJypwEum9cw
-         eBUQ==
-X-Gm-Message-State: AOAM533lgkrhwC+rYcQGbtc8H3tuIkgugx7KE+oWExPWyRJa226EYn/Z
-        DkAoPdYSE6b7WyrF5orGneLLCfY0ne8gAQ==
-X-Google-Smtp-Source: ABdhPJxfnzeOXD2d5VlVp9iLDI1hn/KPlkZ8EHQ5z6I96wOBHY+x+ie/w+bDiL+5+Uhng+pRD8ITjg==
-X-Received: by 2002:a05:6512:3089:: with SMTP id z9mr2080720lfd.395.1630599347056;
-        Thu, 02 Sep 2021 09:15:47 -0700 (PDT)
-Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id m7sm267811ljj.58.2021.09.02.09.15.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 09:15:46 -0700 (PDT)
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev
-Cc:     Kari Argillander <kari.argillander@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 8/8] fs/ntfs3: Remove unneeded header files from c files
-Date:   Thu,  2 Sep 2021 19:15:28 +0300
-Message-Id: <20210902161528.6262-9-kari.argillander@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210902161528.6262-1-kari.argillander@gmail.com>
-References: <20210902161528.6262-1-kari.argillander@gmail.com>
+        id S1346312AbhIBQTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:19:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54174 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346300AbhIBQTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 12:19:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 778E46187D;
+        Thu,  2 Sep 2021 16:18:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630599521;
+        bh=JcYHOKNx0hNjqmpLEEHso3KVVidsGV0+VqdBVx4KJ+E=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=a6+vJTGRHe9Xk+46Babj4Gu37PjdCTzZYp0DfDtkOJqquwkr/5mOPt4qdYrECoU8t
+         49oSyyN+AzKd/DqIfJ7DlWYaJJrRlGox7+furvQdwPKa66x9Te8SlUFYGKH+SCgb7o
+         uNTQcaDM5ZWsyxuoR8pdw1g2F7At4e3p1XAQO145v1W5/+g6LTxWNEONuFXdbEpbkv
+         jv6ZNJrcDavta44h8cPv1I6sjItQ1f/mzsAKR/dnB/AJgvgq/lkReFAhaLWvTmiOsF
+         xdYsndBmLwUTtVzBXMQnoVNjY1SqfANX4zVIHMaeL8xtf97NFimFW2Tt36qW3MtCzT
+         j1JEI1UPDLqPQ==
+Received: by mail-ot1-f54.google.com with SMTP id i3-20020a056830210300b0051af5666070so3200908otc.4;
+        Thu, 02 Sep 2021 09:18:41 -0700 (PDT)
+X-Gm-Message-State: AOAM530NEJklET1K1auVD1gnvWx6mwsyR0aN/tJdaWxGQPNbQcIqf0ly
+        C9e5xQi85MTlqOc2lwuQ/Ve7b5hIZpexuWtOUKI=
+X-Google-Smtp-Source: ABdhPJxfaiUX2hrLyMECVCPFUe0KB68VWCzNVh8WiWCsq55R8cwzjxP/YB85hPhk+fGyzUWOXODcvPEpwiPMUcAX4EE=
+X-Received: by 2002:a05:6830:444:: with SMTP id d4mr3261443otc.108.1630599520694;
+ Thu, 02 Sep 2021 09:18:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210902155429.3987201-1-keithp@keithp.com> <202109020904.976207C@keescook>
+In-Reply-To: <202109020904.976207C@keescook>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 2 Sep 2021 18:18:29 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGfQuEFOh79TZ089+9eP4S5svWgTMbZLugmD8Hq9b=fMQ@mail.gmail.com>
+Message-ID: <CAMj1kXGfQuEFOh79TZ089+9eP4S5svWgTMbZLugmD8Hq9b=fMQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2]: ARM: Enable THREAD_INFO_IN_TASK
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Keith Packard <keithp@keithp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Jens Axboe <axboe@kernel.dk>, Jian Cai <jiancai@google.com>,
+        Joe Perches <joe@perches.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Maninder Singh <maninder1.s@samsung.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vaneet Narang <v.narang@samsung.com>,
+        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Keith Packard <keithpac@amazon.com>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have lot of unnecessary headers in these files. Remove them so that
-we help compiler a little bit.
+On Thu, 2 Sept 2021 at 18:07, Kees Cook <keescook@chromium.org> wrote:
+>
+> On Thu, Sep 02, 2021 at 08:54:26AM -0700, Keith Packard wrote:
+> > Placing thread_info in the kernel stack leaves it vulnerable to stack
+> > overflow attacks. This short series addresses that by using the
+> > existing THREAD_INFO_IN_TASK infrastructure.
+>
+> Very cool! Thanks for working on this. If you want, you can refer to the
+> KSPP bug for this too:
+> https://github.com/KSPP/linux/issues/1
+>
+> (Anyone want to do MIPS?)
+>
 
-Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
----
- fs/ntfs3/attrib.c   | 5 -----
- fs/ntfs3/attrlist.c | 3 ---
- fs/ntfs3/bitmap.c   | 3 ---
- fs/ntfs3/dir.c      | 3 ---
- fs/ntfs3/file.c     | 1 -
- fs/ntfs3/frecord.c  | 3 ---
- fs/ntfs3/fslog.c    | 4 ----
- fs/ntfs3/fsntfs.c   | 1 -
- fs/ntfs3/index.c    | 1 -
- fs/ntfs3/inode.c    | 2 --
- fs/ntfs3/namei.c    | 4 ----
- fs/ntfs3/record.c   | 3 ---
- fs/ntfs3/run.c      | 2 --
- fs/ntfs3/super.c    | 2 --
- fs/ntfs3/xattr.c    | 3 ---
- 15 files changed, 40 deletions(-)
+I take it this breaks the GCC plugin based per-task stack protector,
+given that it emits code to mask the stack pointer and apply an offset
+to the resulting value.
 
-diff --git a/fs/ntfs3/attrib.c b/fs/ntfs3/attrib.c
-index 34c4cbf7e29b..456251210c1c 100644
---- a/fs/ntfs3/attrib.c
-+++ b/fs/ntfs3/attrib.c
-@@ -6,12 +6,7 @@
-  * TODO: Merge attr_set_size/attr_data_get_block/attr_allocate_frame?
-  */
- 
--#include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/hash.h>
--#include <linux/nls.h>
--#include <linux/ratelimit.h>
- #include <linux/slab.h>
- 
- #include "debug.h"
-diff --git a/fs/ntfs3/attrlist.c b/fs/ntfs3/attrlist.c
-index fa32399eb517..b9da527b96aa 100644
---- a/fs/ntfs3/attrlist.c
-+++ b/fs/ntfs3/attrlist.c
-@@ -5,10 +5,7 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/nls.h>
- 
- #include "debug.h"
- #include "ntfs.h"
-diff --git a/fs/ntfs3/bitmap.c b/fs/ntfs3/bitmap.c
-index 831501555009..a03584674fea 100644
---- a/fs/ntfs3/bitmap.c
-+++ b/fs/ntfs3/bitmap.c
-@@ -10,12 +10,9 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
- #include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/nls.h>
- 
--#include "debug.h"
- #include "ntfs.h"
- #include "ntfs_fs.h"
- 
-diff --git a/fs/ntfs3/dir.c b/fs/ntfs3/dir.c
-index 93f6d485564e..76697ec3c146 100644
---- a/fs/ntfs3/dir.c
-+++ b/fs/ntfs3/dir.c
-@@ -7,10 +7,7 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/iversion.h>
- #include <linux/nls.h>
- 
- #include "debug.h"
-diff --git a/fs/ntfs3/file.c b/fs/ntfs3/file.c
-index 89557d60a9b0..4aab7de1886e 100644
---- a/fs/ntfs3/file.c
-+++ b/fs/ntfs3/file.c
-@@ -12,7 +12,6 @@
- #include <linux/compat.h>
- #include <linux/falloc.h>
- #include <linux/fiemap.h>
--#include <linux/nls.h>
- 
- #include "debug.h"
- #include "ntfs.h"
-diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-index 938b12d56ca6..080264ced909 100644
---- a/fs/ntfs3/frecord.c
-+++ b/fs/ntfs3/frecord.c
-@@ -5,11 +5,8 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fiemap.h>
- #include <linux/fs.h>
--#include <linux/nls.h>
- #include <linux/vmalloc.h>
- 
- #include "debug.h"
-diff --git a/fs/ntfs3/fslog.c b/fs/ntfs3/fslog.c
-index b5853aed0e25..6e7f9b72792b 100644
---- a/fs/ntfs3/fslog.c
-+++ b/fs/ntfs3/fslog.c
-@@ -6,12 +6,8 @@
-  */
- 
- #include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/hash.h>
--#include <linux/nls.h>
- #include <linux/random.h>
--#include <linux/ratelimit.h>
- #include <linux/slab.h>
- 
- #include "debug.h"
-diff --git a/fs/ntfs3/fsntfs.c b/fs/ntfs3/fsntfs.c
-index 91e3743e1442..9232a7f410c6 100644
---- a/fs/ntfs3/fsntfs.c
-+++ b/fs/ntfs3/fsntfs.c
-@@ -8,7 +8,6 @@
- #include <linux/blkdev.h>
- #include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/nls.h>
- 
- #include "debug.h"
- #include "ntfs.h"
-diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
-index 0daca9adc54c..affae36d0bc9 100644
---- a/fs/ntfs3/index.c
-+++ b/fs/ntfs3/index.c
-@@ -8,7 +8,6 @@
- #include <linux/blkdev.h>
- #include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/nls.h>
- 
- #include "debug.h"
- #include "ntfs.h"
-diff --git a/fs/ntfs3/inode.c b/fs/ntfs3/inode.c
-index db2a5a4c38e4..b474aa352056 100644
---- a/fs/ntfs3/inode.c
-+++ b/fs/ntfs3/inode.c
-@@ -5,10 +5,8 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
- #include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/iversion.h>
- #include <linux/mpage.h>
- #include <linux/namei.h>
- #include <linux/nls.h>
-diff --git a/fs/ntfs3/namei.c b/fs/ntfs3/namei.c
-index e58415d07132..1c475da4e19d 100644
---- a/fs/ntfs3/namei.c
-+++ b/fs/ntfs3/namei.c
-@@ -5,11 +5,7 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/iversion.h>
--#include <linux/namei.h>
- #include <linux/nls.h>
- 
- #include "debug.h"
-diff --git a/fs/ntfs3/record.c b/fs/ntfs3/record.c
-index 103705c86772..861e35791506 100644
---- a/fs/ntfs3/record.c
-+++ b/fs/ntfs3/record.c
-@@ -5,10 +5,7 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/nls.h>
- 
- #include "debug.h"
- #include "ntfs.h"
-diff --git a/fs/ntfs3/run.c b/fs/ntfs3/run.c
-index 26ed2b64345e..a8fec651f973 100644
---- a/fs/ntfs3/run.c
-+++ b/fs/ntfs3/run.c
-@@ -7,10 +7,8 @@
-  */
- 
- #include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
- #include <linux/log2.h>
--#include <linux/nls.h>
- 
- #include "debug.h"
- #include "ntfs.h"
-diff --git a/fs/ntfs3/super.c b/fs/ntfs3/super.c
-index dbecf095da59..cfacba61d41d 100644
---- a/fs/ntfs3/super.c
-+++ b/fs/ntfs3/super.c
-@@ -23,12 +23,10 @@
-  *
-  */
- 
--#include <linux/backing-dev.h>
- #include <linux/blkdev.h>
- #include <linux/buffer_head.h>
- #include <linux/exportfs.h>
- #include <linux/fs.h>
--#include <linux/iversion.h>
- #include <linux/log2.h>
- #include <linux/module.h>
- #include <linux/nls.h>
-diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-index b15d532e4a17..7ec7e09031aa 100644
---- a/fs/ntfs3/xattr.c
-+++ b/fs/ntfs3/xattr.c
-@@ -5,10 +5,7 @@
-  *
-  */
- 
--#include <linux/blkdev.h>
--#include <linux/buffer_head.h>
- #include <linux/fs.h>
--#include <linux/nls.h>
- #include <linux/posix_acl.h>
- #include <linux/posix_acl_xattr.h>
- #include <linux/xattr.h>
--- 
-2.25.1
+It would be nice if we could replace this with something suitable for
+THREAD_INFO_IN_TASK, and if it is suitable enough, try and get the
+GCC/Clang folks to adopt it as well (which was never going to happen
+for the stack pointer mask/offset approach)
 
+Where can I find these patches? I don't see them on linux-arm-kernel@
