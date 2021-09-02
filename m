@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C3B3FF5C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A753FF5C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347362AbhIBVqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:46:13 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:59708
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244085AbhIBVqM (ORCPT
+        id S1347527AbhIBVrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:47:40 -0400
+Received: from www62.your-server.de ([213.133.104.62]:48642 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244085AbhIBVrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:46:12 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id ECE8F3FE71;
-        Thu,  2 Sep 2021 21:45:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630619112;
-        bh=s9p5QLB1+aDHhWrCWaZs6bVSkWVQnpCvcnaOFCjNF1w=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=uqdIoGDigSHGeux/F/gdDe1/0r9C8ZJjDg/Zssuiyaf7iStZADcs8G1Agx+zAG0Zz
-         DavD3If6UqRelNJ7Iyu3VYe4DxH/B5WA/JhdMMOoWqblbAs0ideETSSn2WfrtcCmEg
-         PQKlH8kp5ziQ+8jNGWGV/KsHB6TQpsi4h2C7voTwuCBigjptd8reBUmcjWdo1HDL83
-         xgQ+AEE2pNYMB5ceNhLrugjnODd1AkQOPa47EKmWfAviEipmR1aQkIL4Hgh1vTH5Hr
-         bvLNmiZJ0p0KseS3Bkd2I9mPoACChBoB9/6UajHNv1c4yL6MjC9OlccsaMZJyjMsAE
-         iZpzC0q9yQ7/A==
-From:   Colin King <colin.king@canonical.com>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Xinhui.Pan@amd.com, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/amdgpu: clean up inconsistent indenting
-Date:   Thu,  2 Sep 2021 22:45:10 +0100
-Message-Id: <20210902214510.55070-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 2 Sep 2021 17:47:39 -0400
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mLuXP-000GF4-02; Thu, 02 Sep 2021 23:46:23 +0200
+Received: from [85.5.47.65] (helo=linux-3.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1mLuXO-0006U6-KK; Thu, 02 Sep 2021 23:46:22 +0200
+Subject: Re: [syzbot] bpf build error (3)
+To:     syzbot <syzbot+8a8ba69ec56c60331e1f@syzkaller.appspotmail.com>,
+        akpm@linux-foundation.org, ast@kernel.org, bp@alien8.de,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
+        netdev@vger.kernel.org, rafael.j.wysocki@intel.com,
+        rppt@kernel.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Konrad Rzeszutek Wilk <konrad@kernel.org>,
+        Maurizio Lombardi <mlombard@redhat.com>,
+        Mike Rapoport <rppt@linux.ibm.com>, andrii.nakryiko@gmail.com
+References: <000000000000d0dfda05cb0697d7@google.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <d85f7e26-9b37-d682-d15a-0224b8c5e8c1@iogearbox.net>
+Date:   Thu, 2 Sep 2021 23:46:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <000000000000d0dfda05cb0697d7@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26282/Thu Sep  2 10:22:04 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 9/2/21 7:34 PM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    49ca6153208f bpf: Relicense disassembler as GPL-2.0-only O..
+> git tree:       bpf
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17835513300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=bd61edfef9fa14b1
+> dashboard link: https://syzkaller.appspot.com/bug?extid=8a8ba69ec56c60331e1f
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+8a8ba69ec56c60331e1f@syzkaller.appspotmail.com
+> 
+> arch/x86/kernel/setup.c:916:6: error: implicit declaration of function 'acpi_mps_check' [-Werror=implicit-function-declaration]
+> arch/x86/kernel/setup.c:1110:2: error: implicit declaration of function 'acpi_table_upgrade' [-Werror=implicit-function-declaration]
+> arch/x86/kernel/setup.c:1112:2: error: implicit declaration of function 'acpi_boot_table_init' [-Werror=implicit-function-declaration]
+> arch/x86/kernel/setup.c:1120:2: error: implicit declaration of function 'early_acpi_boot_init'; did you mean 'early_cpu_init'? [-Werror=implicit-function-declaration]
+> arch/x86/kernel/setup.c:1162:2: error: implicit declaration of function 'acpi_boot_init' [-Werror=implicit-function-declaration]
 
-There are a couple of statements that are indented one character
-too deeply, clean these up.
+See also Stephen's recent report:
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+   https://lore.kernel.org/lkml/20210901165450.5898f1c7@canb.auug.org.au/
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-index d6aa032890ee..a573424a6e0b 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c
-@@ -60,10 +60,9 @@ static vm_fault_t amdgpu_gem_fault(struct vm_fault *vmf)
- 			goto unlock;
- 		}
- 
--		 ret = ttm_bo_vm_fault_reserved(vmf, vmf->vma->vm_page_prot,
--						TTM_BO_VM_NUM_PREFAULT, 1);
--
--		 drm_dev_exit(idx);
-+		ret = ttm_bo_vm_fault_reserved(vmf, vmf->vma->vm_page_prot,
-+					       TTM_BO_VM_NUM_PREFAULT, 1);
-+		drm_dev_exit(idx);
- 	} else {
- 		ret = ttm_bo_vm_dummy_page(vmf, vmf->vma->vm_page_prot);
- 	}
--- 
-2.32.0
+Maurizio/Konrad, did you have a chance to take a look?
 
+Thanks,
+Daniel
