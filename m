@@ -2,61 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A453FF52F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D5F3FF533
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346272AbhIBU4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:56:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245324AbhIBU43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 16:56:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D46726109E;
-        Thu,  2 Sep 2021 20:55:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630616130;
-        bh=aTFedgOw8MTX7QfrksRz9iKRq1Ip8bf6ti8F3t3he3Y=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=r+oxrJjqBnv6PXEubx993TZaEkf9Jp/AyUA3g0dAKRoy1HxctFyQjmTTs+L8iJPTq
-         ALJiIZphtGcxbLYXaOPpqOcby77AUMFJgkdmQ+ss0dmKN6zh/Vzm2zMQraplhxWNSS
-         BUlGUuScgNGONd+hmXwLAQcdgbAd8reBfawXPZhYdgMqyguxKPBSlTojyW8nlLoO0b
-         vrFE6UeyU5N54R93e8+K1Aj1qdxKCJ0fY7kpW0NGdxM1csH374LH2Ox7HJhV7N3o0a
-         bs6PsXGLzaHfzbVl46DMlgmnHMafs9uHQWZU6fjNNt3ZUP2Mqb4ojxqau4JqTC7mT7
-         tHQBuw1YjEMbw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CF0D460A0C;
-        Thu,  2 Sep 2021 20:55:30 +0000 (UTC)
-Subject: Re: [GIT PULL] parisc architecture updates for kernel v5.15-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YTEOIq86QHceYCO9@ls3530>
-References: <YTEOIq86QHceYCO9@ls3530>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YTEOIq86QHceYCO9@ls3530>
-X-PR-Tracked-Remote: http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.15/parisc
-X-PR-Tracked-Commit-Id: 6f1fce595b78b775d7fb585c15c2dc3a6994f96e
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a2d616b935a0df24bc9375785b19bf30d7fc9c6a
-Message-Id: <163061613084.4397.16763023463770407145.pr-tracker-bot@kernel.org>
-Date:   Thu, 02 Sep 2021 20:55:30 +0000
-To:     Helge Deller <deller@gmx.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
+        id S1347145AbhIBU55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 16:57:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242413AbhIBU54 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 16:57:56 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D292C061575;
+        Thu,  2 Sep 2021 13:56:57 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id x5so3210972ill.3;
+        Thu, 02 Sep 2021 13:56:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=E1S+5jcQWtYE5x5qrFpgfYh9OaMNAx9YRcmdcbIaK6o=;
+        b=ChEuHje9Z9mTGPnt9v3KD+WXVDNxocrqhat7qwkCyKtXkS5EXxCbtVyjH7Sv2chiVx
+         M7rbQ1HftU4Ydq+ZrvmH6scvsgFryZn2S30Yy7bZWJoEQmDDQhvfI2F80ZhnEqFKrqPy
+         XSeFVKHEE6QFQQGwl5p6EIstrbIcof9ecDt8BDjRBdEwRT2e1mgarqMjCcAY5EgmcToh
+         edXrdheQ2WAZON0iKD5CGUDTw1DvkWg7y7SGFPbl6VBRBcsx8thDnAL9bKoEN8YI977s
+         1gidKOMrNOMO63X0NGAL6Jgf2EC3PLhrnHcgsRxpHMtzMxcdMdsNSCs7scfufrsAmBOb
+         ngSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=E1S+5jcQWtYE5x5qrFpgfYh9OaMNAx9YRcmdcbIaK6o=;
+        b=FPhFJqFZXBafH1TH8E9WQGIEWqOKmWfuTlrJHUkX3wIeiG7ESiwcsMDvEIVINaWOxs
+         aiyDsgOBzQMza0tWB+Lb/hy4IVsAMVbQoJEaA9UhhLd0XZ+U50+TTOOCN+GJ5FarrBqV
+         fq9zMFeB0wOQiND0ls3+FrHVP0H2ZTr7CQvfgt2jYb09gcnzpg20zbBRc/TdKhbzxzrN
+         7xooDIu4ucg9Oeh++5kPgBO+Yo5dVSHCpjtgwvkNKZk2ABNDQPRxvh6xzcI9nhM/Qs42
+         7bm3PrGBOWiY1CaCFM4YlNzP0h6WAXT/um6ne1ouR/+GcqbFjT5AxO2193d+ph4gybSO
+         snRA==
+X-Gm-Message-State: AOAM533sQBEYVjmxQOy0SAMbgJNUKl6wF+Q7uuBKpQsP6mAWIsUCYPYd
+        rJ08J+fbi2YLQ13TbMSa97A=
+X-Google-Smtp-Source: ABdhPJxnzpCc8Kz1ZhInbesLw1eMGFRroGaGqN2turdSPsmyR5bFQdHxNOXyj0nhfJ/ntaxMCyr4tQ==
+X-Received: by 2002:a92:c70e:: with SMTP id a14mr60918ilp.299.1630616216688;
+        Thu, 02 Sep 2021 13:56:56 -0700 (PDT)
+Received: from localhost ([172.243.157.240])
+        by smtp.gmail.com with ESMTPSA id j6sm1601683iom.5.2021.09.02.13.56.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 13:56:56 -0700 (PDT)
+Date:   Thu, 02 Sep 2021 13:56:47 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     acme@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        kjain@linux.ibm.com, kernel-team@fb.com,
+        Song Liu <songliubraving@fb.com>
+Message-ID: <61313a8fda896_2c56f208bb@john-XPS-13-9370.notmuch>
+In-Reply-To: <20210902165706.2812867-3-songliubraving@fb.com>
+References: <20210902165706.2812867-1-songliubraving@fb.com>
+ <20210902165706.2812867-3-songliubraving@fb.com>
+Subject: RE: [PATCH v5 bpf-next 2/3] bpf: introduce helper
+ bpf_get_branch_snapshot
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 2 Sep 2021 19:47:14 +0200:
+Song Liu wrote:
+> Introduce bpf_get_branch_snapshot(), which allows tracing pogram to get
+> branch trace from hardware (e.g. Intel LBR). To use the feature, the
+> user need to create perf_event with proper branch_record filtering
+> on each cpu, and then calls bpf_get_branch_snapshot in the bpf function.
+> On Intel CPUs, VLBR event (raw event 0x1b00) can be use for this.
+> 
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
 
-> http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.15/parisc
+[...]
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a2d616b935a0df24bc9375785b19bf30d7fc9c6a
+>  
+> +BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
+> +{
+> +#ifndef CONFIG_X86
+> +	return -ENOENT;
+> +#else
+> +	static const u32 br_entry_size = sizeof(struct perf_branch_entry);
+> +	u32 entry_cnt = size / br_entry_size;
+> +
+> +	if (unlikely(flags))
+> +		return -EINVAL;
+> +
+> +	if (!buf || (size % br_entry_size != 0))
+> +		return -EINVAL;
 
-Thank you!
+LGTM, but why fail if buffer is slightly larger than expected? I guess its a slightly
+buggy program that would do this, but not actually harmful right?
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Acked-by: John Fastabend <john.fastabend@gmail.com>
