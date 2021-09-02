@@ -2,71 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EEB3FF700
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142C23FF708
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347567AbhIBWSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 18:18:47 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:60880
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236148AbhIBWSq (ORCPT
+        id S236148AbhIBWUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 18:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237981AbhIBWTu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 18:18:46 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id E69C43F231;
-        Thu,  2 Sep 2021 22:17:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630621065;
-        bh=rkLqk2H3cfzfe0pZb/HQsYkLLWbNkb74kYaENpGnHRs=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=QxLVZAJ7jNAVxsh60jcOMAf1wJ28usLdkpHLTN2vJSNmfbkoz3bYfscZEWRXdCBjl
-         yPTawrC59vBZtsPCJSYjNXRmPmjAwNmrhtv1sQ/67J3ioW5QvgoZ7qS8VPQHX/Szdr
-         JX0eHQaGXmSoq97rdJmwbwpr4o5sHCRQF2K4u9dDaq0HbLwMpHywfjvKDCUwkk1DE0
-         aXh5B7XZdDJH+cCqAd7mcHgr926MhbmlK87LpaiFooRfCy54VbZmBEN7R0qgaWaaaB
-         i1GoBpMTbHAeRsUnoD5DhO7+wZbRLOk4QwESbo5BodLA7NR2fjYB+wmWSCyLDN/MGx
-         PEfOPxsH4jcBw==
-From:   Colin King <colin.king@canonical.com>
-To:     Steffen Klassert <klassert@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: 3com: 3c59x: clean up inconsistent indenting
-Date:   Thu,  2 Sep 2021 23:17:45 +0100
-Message-Id: <20210902221745.56194-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 2 Sep 2021 18:19:50 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC95C061764
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 15:18:51 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id t12so7415031lfg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 15:18:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=I80/njeEuIl/GJzCkVNPmxV3BIOQ6IK40gpDFUmpFPE=;
+        b=tLstc1tkclrh6VOyGN9XpBl8QeZOtuFjU0HMW1kDqb2Ro3mZk9hu2ykmGSK5LV9IO0
+         cnD0qj8qJXnnQGJSjxUeWU9eK5WUXuA/q4LmwChkV3jY/PY+JvPKsNGaH9bYiF6OZ2tZ
+         e252aM2vQxImXCclXV/qCdELwWNFAB+2LfJKcDbC8H6ZQ2fkcbdRJWz2d7WNF3qxobyD
+         cxHCZuA7LdbG6bsMMVrQ93rq/sqzxXo+uiOCkRAW94unqvdYhZVK1FBaV7585PRI59dA
+         Qg4lLcdre8f9qfQYqgBP4/A4VwpdqjwkLUePQVbBmWk1N2xKomIrBd0bI5osbXD0j/xn
+         Ls4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=I80/njeEuIl/GJzCkVNPmxV3BIOQ6IK40gpDFUmpFPE=;
+        b=tLnbFum1WHlWbXEhq3ftr73J6QWl5vLBPD3Z3lq5JlbcVz5yBiIe9UA6vQXIlJVHoH
+         zV+VyXb31c5yEudpB27z8L7j4pED50/73oMImOkZypAqoykECSBnArvdeCeOYO9whAzu
+         u6Qy4MZB2l5bzOfeK9FcIN/qbgf7xkuD+nIiXPkNBilIx1yDWXCdrwKYfy0aHuIiC6Dt
+         /2MsxUUNsmlRA4MS6OXxOCPvBlq12r3agKAiN+BgoI5khEdLnELm3VocbQjCtui9VQyv
+         hqxITYjBRB2QG/LhLakeMyU9PxhWh1yeZjzqlsqi7QVimrB0ORNTYaSQucBDcJl/06Lr
+         /N8g==
+X-Gm-Message-State: AOAM532ABraN2y8A6csCg4RnAKcgvBwiQGRnd+C0lqOQ1Xsel/VxxQZS
+        kOlsfMZFpYweYwGXgT/5Agt4zWBZVmOV8Q==
+X-Google-Smtp-Source: ABdhPJxKIbhDHEhz+WnPbtRExtRO7GyqAmUYcs+ViGPRRMFhDPW3GRnWUUrydse7XnAuWXqHyU6+jw==
+X-Received: by 2002:a19:c3ca:: with SMTP id t193mr262222lff.21.1630621129639;
+        Thu, 02 Sep 2021 15:18:49 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id m5sm309732lfk.267.2021.09.02.15.18.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 15:18:49 -0700 (PDT)
+Subject: Re: [PATCH 1/2] drm/msm/dsi: Add phy configuration for MSM8953
+To:     Sireesh Kodali <sireeshkodali1@gmail.com>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        dri-devel@lists.freedesktop.org, airlied@linux.ie,
+        robdclark@gmail.com, linux-arm-msm@vger.kernel.org,
+        Vladimir Lypak <vladimir.lypak@gmail.com>,
+        Sean Paul <sean@poorly.run>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Rajeev Nandan <rajeevny@codeaurora.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210902155951.6672-1-sireeshkodali1@gmail.com>
+ <20210902155951.6672-2-sireeshkodali1@gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <70676288-731f-fc14-42bb-c955efc64c57@linaro.org>
+Date:   Fri, 3 Sep 2021 01:18:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210902155951.6672-2-sireeshkodali1@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 02/09/2021 18:59, Sireesh Kodali wrote:
+> From: Vladimir Lypak <vladimir.lypak@gmail.com>
+> 
+> Add phy configuration for 14nm dsi phy found on MSM8953 SoC. Only
+> difference from existing configurations are io_start addresses.
+> 
+> Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
+> Signed-off-by: Sireesh Kodali <sireeshkodali1@gmail.com>
+> ---
+>   .../bindings/display/msm/dsi-phy-14nm.yaml    |  1 +
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy.c         |  2 ++
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy.h         |  1 +
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c    | 21 +++++++++++++++++++
+>   4 files changed, 25 insertions(+)
 
-There is a statement that is not indented correctly, add in the
-missing tab.
+Please split dt-bindings to a separate patch, to be acked by Rob Herring.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/ethernet/3com/3c59x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+After that, the dsi/phy/* part is:
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-diff --git a/drivers/net/ethernet/3com/3c59x.c b/drivers/net/ethernet/3com/3c59x.c
-index 17c16333a412..7b0ae9efc004 100644
---- a/drivers/net/ethernet/3com/3c59x.c
-+++ b/drivers/net/ethernet/3com/3c59x.c
-@@ -2786,7 +2786,7 @@ static void
- dump_tx_ring(struct net_device *dev)
- {
- 	if (vortex_debug > 0) {
--	struct vortex_private *vp = netdev_priv(dev);
-+		struct vortex_private *vp = netdev_priv(dev);
- 		void __iomem *ioaddr = vp->ioaddr;
- 
- 		if (vp->full_bus_master_tx) {
+> 
+> diff --git a/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml b/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
+> index 72a00cce0147..7527fb299caa 100644
+> --- a/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
+> +++ b/Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
+> @@ -17,6 +17,7 @@ properties:
+>       oneOf:
+>         - const: qcom,dsi-phy-14nm
+>         - const: qcom,dsi-phy-14nm-660
+> +      - const: qcom,dsi-phy-14nm-8953
+>   
+>     reg:
+>       items:
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> index 8c65ef6968ca..9842e04b5858 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
+> @@ -627,6 +627,8 @@ static const struct of_device_id dsi_phy_dt_match[] = {
+>   	  .data = &dsi_phy_14nm_cfgs },
+>   	{ .compatible = "qcom,dsi-phy-14nm-660",
+>   	  .data = &dsi_phy_14nm_660_cfgs },
+> +	{ .compatible = "qcom,dsi-phy-14nm-8953",
+> +	  .data = &dsi_phy_14nm_8953_cfgs },
+>   #endif
+>   #ifdef CONFIG_DRM_MSM_DSI_10NM_PHY
+>   	{ .compatible = "qcom,dsi-phy-10nm",
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> index b91303ada74f..4c8257581bfc 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.h
+> @@ -48,6 +48,7 @@ extern const struct msm_dsi_phy_cfg dsi_phy_20nm_cfgs;
+>   extern const struct msm_dsi_phy_cfg dsi_phy_28nm_8960_cfgs;
+>   extern const struct msm_dsi_phy_cfg dsi_phy_14nm_cfgs;
+>   extern const struct msm_dsi_phy_cfg dsi_phy_14nm_660_cfgs;
+> +extern const struct msm_dsi_phy_cfg dsi_phy_14nm_8953_cfgs;
+>   extern const struct msm_dsi_phy_cfg dsi_phy_10nm_cfgs;
+>   extern const struct msm_dsi_phy_cfg dsi_phy_10nm_8998_cfgs;
+>   extern const struct msm_dsi_phy_cfg dsi_phy_7nm_cfgs;
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> index d13552b2213b..9a6b1f0cbbaf 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> @@ -1065,3 +1065,24 @@ const struct msm_dsi_phy_cfg dsi_phy_14nm_660_cfgs = {
+>   	.io_start = { 0xc994400, 0xc996000 },
+>   	.num_dsi_phy = 2,
+>   };
+> +
+> +const struct msm_dsi_phy_cfg dsi_phy_14nm_8953_cfgs = {
+> +	.has_phy_lane = true,
+> +	.reg_cfg = {
+> +		.num = 1,
+> +		.regs = {
+> +			{"vcca", 17000, 32},
+> +		},
+> +	},
+> +	.ops = {
+> +		.enable = dsi_14nm_phy_enable,
+> +		.disable = dsi_14nm_phy_disable,
+> +		.pll_init = dsi_pll_14nm_init,
+> +		.save_pll_state = dsi_14nm_pll_save_state,
+> +		.restore_pll_state = dsi_14nm_pll_restore_state,
+> +	},
+> +	.min_pll_rate = VCO_MIN_RATE,
+> +	.max_pll_rate = VCO_MAX_RATE,
+> +	.io_start = { 0x1a94400, 0x1a96400 },
+> +	.num_dsi_phy = 2,
+> +};
+> 
+
+
 -- 
-2.32.0
-
+With best wishes
+Dmitry
