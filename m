@@ -2,224 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1A33FE8A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 06:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1ABA3FE8A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 07:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbhIBE5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 00:57:45 -0400
-Received: from mail-oln040093008015.outbound.protection.outlook.com ([40.93.8.15]:21027
-        "EHLO outbound.mail.eo.outlook.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230168AbhIBE5n (ORCPT
+        id S230365AbhIBFEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 01:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhIBFEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 00:57:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=diHzAfLzvHkLnGDBA77CxjILWQ0f4yi16eeG/tktyrNTahSkFhlY4zM/KqPreJW5GvOG5lnHcmdLoGHxu/GnypUBLdOuwXZrB5X5iaY5ZWEAeYUkQ24CYeU4XYbHPPdY087rZ66Koj/CtdHhpbAoLdiv29fYui7rEWaz/E27FLQq4rbC/Hllk84wAkRx508cuEPKqwMTKZ9ljCmxYaY2YO6mP13CeUCYq73ntFtINifFfzfQQOEVAET6RG99JNrSjos94yTmg/FFPHJilJRaADS4sL0ziwKi/JCEUn4vnRovq4pAbFLothJaUzEMLrmrFw6BTPrd4QxTnwBYH+m9hg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=/g+2tfLa4TWsUYnWx7YAfFpKGu7PCDx8XRRyHbecAJY=;
- b=ISc15lW0YFYaIzGaYZcf7eSaag/OIA6d2PDby2AN03uuws9YkkDRS+BeaCF7hDi7FXbNdZOTM0OfreC8gKqKzWfX72n7NrfVJkN+FO+NSX+QZpPgRCRrzp/FwD12TK9KxuxOlMpaTsdTwoHKRTgr2FH8j8Y7zzTqzjQe6nVTtLjFrs8+Wm+27I5fNZzWXR8yPUJSbfJ1edY2u8maoJ1GatLGyKvvc9eNya/tFT8wmytGJc2cQdEffaAcKbISwnCgxSxNy3F/um/brEfwunRTOYzzOUAta2qrVU9LIMuRmx1daNCem7Pv/NVK7BGArSXRwZFRNbAvhSKwV7BBI4gW0g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/g+2tfLa4TWsUYnWx7YAfFpKGu7PCDx8XRRyHbecAJY=;
- b=GmQbcuvDU5mYwcbUJ2PC5qkKcAeHuBop+hvo5IULzB7MP/WHRrNX3ze0EQRNBGFccqbV1wj7garo8nxApCLffgPlbZhUM1lgqoD4lOwClaPJmtlvW4qaERy1vXfh3eAXrbLY/sLKD9tYs/o8RhHB94SvVCQcDPRLUSRNJ5CQP9M=
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
- by MWHPR21MB0704.namprd21.prod.outlook.com (2603:10b6:300:128::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.1; Thu, 2 Sep
- 2021 04:56:41 +0000
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::3c8b:6387:cd5:7d86]) by MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::3c8b:6387:cd5:7d86%8]) with mapi id 15.20.4478.014; Thu, 2 Sep 2021
- 04:56:40 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     Tianyu Lan <ltykernel@gmail.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>, "hch@lst.de" <hch@lst.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "pgonda@google.com" <pgonda@google.com>,
-        "martin.b.radev@gmail.com" <martin.b.radev@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
-        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
-        "saravanand@fb.com" <saravanand@fb.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "ardb@kernel.org" <ardb@kernel.org>
-CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>
-Subject: RE: [PATCH V4 12/13] hv_netvsc: Add Isolation VM support for netvsc
- driver
-Thread-Topic: [PATCH V4 12/13] hv_netvsc: Add Isolation VM support for netvsc
- driver
-Thread-Index: AQHXm2gP6jy1GRuc+0K7S1qphPLgHKuQCC+wgAAtP2A=
-Date:   Thu, 2 Sep 2021 04:56:40 +0000
-Message-ID: <MWHPR21MB1593A3909B3DB49EABB78CF5D7CE9@MWHPR21MB1593.namprd21.prod.outlook.com>
-References: <20210827172114.414281-1-ltykernel@gmail.com>
- <20210827172114.414281-13-ltykernel@gmail.com>
- <MWHPR21MB1593CD9E7B545EF5A268B745D7CE9@MWHPR21MB1593.namprd21.prod.outlook.com>
-In-Reply-To: <MWHPR21MB1593CD9E7B545EF5A268B745D7CE9@MWHPR21MB1593.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=24c2ad3d-af1e-4524-bef7-f93352ae7e8f;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-09-02T02:09:02Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7f4c007b-0072-45e0-73ee-08d96dce0d9d
-x-ms-traffictypediagnostic: MWHPR21MB0704:
-x-ms-exchange-transport-forked: True
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-microsoft-antispam-prvs: <MWHPR21MB07040B6B69FEF6567783EBCAD7CE9@MWHPR21MB0704.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 64n9ZHQNFsz+NZtjmS32VhXFDsqb8zSWHHkpOgEAVkAOEYbK/lXOyJqt83v3+p/qJhmo1s4vtVRa5OFw+A80IEGG56thQ86l8sHgNWJJZzk+y80rlDn3zM74xtFvm0zFR9PXp4daK9ZEV+5x4R12LF0mVAAAh3i5Jx/ncYh1K73KkVgtBS7G0aAgZ33DJ0VLYZixVKxyZgiqIrr4GKstKHTQf7oSCByGiv8ykKVEeRYQ2zzX3FKEJ46WvygnaZWc2/i27ylRxUqCsE3FVujK4swpkfIEBbT3s9hFiufZ/agR0+EuqeuPdnKwDYPZVFxdqm+4yElIMyN4W9TsEXbaHohZHwwJJY/nHZhrJSTEWqDD5Dn4Tk01ukOe4E5rhnh1tQXionIjcAm13RTUZSWBP3ceRArg3r74e/XGA5YEmeZBWoDg79JJJY/GBwB5DtR8C/7RRvG4463rpwlG4oEoEv4WfOeTY77ikav98zTrcOXnUoUbLksknqpkwvAinPOTTEjyJFVNhdtZIZVD1ekXcbgKONHpVy6VLyiRqONqcq9w81ZRlRtw15+42oi4QhLpgK6ve5dokzz7q0iGJRtEWq6ELDLbn5OCOJH7SQEBBvP0iNNOJO0uRpAoYPaYvQTS8fdYfyvLbuoAFRWyyBAK+jOA/k+AyczCL5J1FGCb1Dk7wjVYuBSEnCwmvmwStG7YOfHdthwm2QC9hE9j7GdtYa2fO0PngUipTC7szx/U3Q8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(9686003)(66476007)(66556008)(10290500003)(76116006)(64756008)(508600001)(186003)(7696005)(66446008)(122000001)(2940100002)(5660300002)(8936002)(316002)(921005)(6506007)(8676002)(33656002)(83380400001)(110136005)(8990500004)(2906002)(38070700005)(26005)(82950400001)(38100700002)(71200400001)(82960400001)(86362001)(52536014)(7416002)(7366002)(7406005)(55016002)(4326008)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?6EXkemG7X07lxyyEVGMWnZY1RJrvvTxJhOuuA3ahPWNi/QB6p2Fe1JSTWrhL?=
- =?us-ascii?Q?zNvbAB2OIg6osr5Wcg38XUQKN95LY8icqsTsmNQQMyPhQ4WqC7Pr6I/YnHIY?=
- =?us-ascii?Q?kAehk0612De9pWwHx2JufPylsK+6aLdZxTS0kOFlVuYHJMfyTZA4QrSdFTRb?=
- =?us-ascii?Q?l941Wi26kmgYfHho1pRjLJdBU0+3HBfO9MAQ54nGFq+cViyI5WFZO14ywN4P?=
- =?us-ascii?Q?dkf05ljqyoJeEqKb5ODxUl3MaE1NDDXlwsPTSqPi+YlKhtU3nw7LqFRuPv77?=
- =?us-ascii?Q?fva9x9vDPH9wRGCJMZExTTl3ffVGILZJtmp48Eowql8wJoTBxp0L6d+ibw7l?=
- =?us-ascii?Q?yLI5Hicoqgvp1GGDioypge+6qDJMQW3p+06HR1ethl5meh8SS+549sQzSOTh?=
- =?us-ascii?Q?t7XFV1DVuKl2ZTt6+u3mm3gcCb2vuwWsbSEltgn4Pjgs3zS+U8EPGnNNMckG?=
- =?us-ascii?Q?dpFxBEq7P3O4xwgINCk80PSIhLFeHsmh55wxSyArjayop2e5MY9fQ0T/7YGn?=
- =?us-ascii?Q?3o229iwTW5zpedYah+f4zMkX9MQfQ8P9CGN7t4pqXnb/JTSmjwdbPy0L4+A5?=
- =?us-ascii?Q?aiyR0LAlWMcZhk24zw+TYSBVEbQ36LBikmKzICRL+5TyimSGEXmuVDOxsGyu?=
- =?us-ascii?Q?zOeylCJ70LTnZPR+0xx+nxTBxhyAnfTpImGYrPiye7uhk11aiVwWbGaxaspe?=
- =?us-ascii?Q?Dci8Tu62eUS8EUGCGQo/G3x3DqcR7fStDnQ1Fl5pvV9NCC/+ou91D4q4U8yC?=
- =?us-ascii?Q?GYHb9sAC9MIMG99g7i8RvZ5XArm25QKCu5+tz9pcp3C3so0F5/TPlkgePyf8?=
- =?us-ascii?Q?bnNPvwFJQrA4h7857rad4qC1K//+ntDXp3mso0Gf4k1NoCs30CW7ha2+MObm?=
- =?us-ascii?Q?VT+LZay4wDOgoQDEfWO+LRcd0wWHB9ozah3a2RRt7HRdrCbZSFY5Dyu6+hN5?=
- =?us-ascii?Q?SE4Uo7p0YZyONhi6oLj2T1c8+/ou7hxoNYwTfW/QER5yN6ats56gLjLR9F8e?=
- =?us-ascii?Q?ycfJhEcfMewHC/123Moiy6lcUUHPmXehUFwNhAaGrnyXPTOOE9LqLAlL8GaC?=
- =?us-ascii?Q?GpHY00fVHl0FhFa9Zw3mMJ1rBFGi7ysY9atT4KZGRwSt4OaacwO5CJyTvSVu?=
- =?us-ascii?Q?NXsRm7QwfkenbM9NfewkB8NT8LPagUyTMthGedIdo+kyHF9e4UCwbElo+A3t?=
- =?us-ascii?Q?lDGdJ07HBcp76BT7Fz2zHC0T/mlvuwEBTdapFc3ts6fOURINtJ5pir67PgHa?=
- =?us-ascii?Q?oOPkvGdqPu8l5XwHFt1lY0aemWmDCUyFohffPqTqvMLEX0jgNifasxn5Jt3Q?=
- =?us-ascii?Q?XjnOeVB+bdznBYzrnkKcTU01?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 2 Sep 2021 01:04:14 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FFFC061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 22:03:16 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id a1so542205ilj.6
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 22:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=03DUozIjnGa1/TSc9TP5KtjMwxy2FvrFi5tMBcRbf9c=;
+        b=CdvHnb1hrFoKsSsoCnWFCJeNR3R7FrvJSe8f4gZQeQmYcFUP2RXAAKtishqRDzlNOh
+         yfIsMrtmjwIBzlOlMbPaRqk3YeQZ3a8XLBojQV87W9NFsfCY7Ejx4ihOEaHW+8tAjNMu
+         9CqkjsXA0CrcDSLW938q6gaB0HOA1ik1IK2lJgdZ3Ww8hbZgqbtckV5XrLfUwt6fOrNS
+         3qNte2dcgUZpJdJmbMeynEg1GSB5eSd50gKdPl+8XB/kzwmhYuyAFLbFJaZ4pUD5lj3H
+         y6dtoX1A5NpORf5fV3CauAhfhN5AaIVz3Wal/eLn0hIXHILz3uDHQm9uQVnhMaJoaFFq
+         cAJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=03DUozIjnGa1/TSc9TP5KtjMwxy2FvrFi5tMBcRbf9c=;
+        b=UNKidyB0DachQiFxLChm2zwvrvVIxo/K/Et6JZTkZ7A9/J0mm673AI+sgk0LosSznN
+         lE3iPqd9v2ViyIGKhHLD75eAo4Z58ABNSSC4Uz/P02+9uPz8FKgRaDo87TER+4RIJx3S
+         RI0T78irBY4O8Wc6C4SS1lb1Aq3WnDoaLjPhqYT9ZLmn6Mn3tots3sQu6mQK1SoF5txj
+         hAltv37FggTYUCpTwdov3M+1YsTz5iT60Ph6zwDDZOsQ/J6KkV2MpGflCpAJZC9ISa0f
+         ByRGARplPRz9kR38TouUXbHjbltS48ZQGspDl5wh3hZoTZCMJdrec2/F7vStVjOvDgbf
+         TGgg==
+X-Gm-Message-State: AOAM531CyZrZB1iU1OCkHYiy7FyE9jdc3ywf7kCe/nceWR0MbvyoRwHV
+        NqB0FdCT5EJcWKMH5kk43JKYZScTRoVsyw==
+X-Google-Smtp-Source: ABdhPJw2d/ccfWVab0xI3ALkjqnuq550iCbTlCMK0eii/S/M1PL27tt+7xBIwVnCnE/tkN2Ejk5mdA==
+X-Received: by 2002:a92:c20e:: with SMTP id j14mr935985ilo.83.1630558995775;
+        Wed, 01 Sep 2021 22:03:15 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id p15sm392574ilc.12.2021.09.01.22.03.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Sep 2021 22:03:15 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 764AB27C0054;
+        Thu,  2 Sep 2021 01:03:13 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Thu, 02 Sep 2021 01:03:14 -0400
+X-ME-Sender: <xms:EFswYd08V230DBlc4hS8JU729O3AyaphHggtXeTWa080XGg3GQkk5g>
+    <xme:EFswYUGUhfjBv3S2f3KF2v_LWolLv9Ag1pR-wWRZAhv6oVpXZTOFr0Bka1zP_z_3Q
+    -f3b1_1ZwCg5-0meA>
+X-ME-Received: <xmr:EFswYd7dXtVPkHHJ82ncTsOQ4JyXXqpKUJEHmC87PdYMoKYdPCJ9JKyEONM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvgedgledtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
+    geejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:EFswYa1XRWaW2N5X2auuhMRBEjFLJOv8vLSMhn3Hfv2rlgDyjzF2HQ>
+    <xmx:EFswYQGHC-6AlHZ6W0wmc5wdZooF7XsTXTOdEilsAR9VbrLyCCXSTg>
+    <xmx:EFswYb_9BYrkNsCJrhfhHY_upGfoX7GT31CgK2T_67kJ4HfBxWSy-g>
+    <xmx:EVswYT_-ovBVZuMrJ01iC4TsLsr0KcRh7o0LRnZDan5rkvSohpl_OPN0r3Q>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 2 Sep 2021 01:03:11 -0400 (EDT)
+Date:   Thu, 2 Sep 2021 13:02:01 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] locking: rwbase: Take care of ordering guarantee for
+ fastpath reader
+Message-ID: <YTBayYS1KPGlgl6c@boqun-archlinux>
+References: <20210901150627.620830-1-boqun.feng@gmail.com>
+ <20210901202242.2bzb6fbwyorfux3f@offworld>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f4c007b-0072-45e0-73ee-08d96dce0d9d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2021 04:56:40.6250
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HQFrIKEO1/7vXPGsi6Dj8gkGAUk2kVTDMG1CDEjqxBoLGRSW2nnJEeXs7PCEgMxxQYhcC5DNiGsb5npNJkcRdevFW1BZIHUZ93h3srjzPa0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0704
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901202242.2bzb6fbwyorfux3f@offworld>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Kelley <mikelley@microsoft.com> Sent: Wednesday, September 1,=
- 2021 7:34 PM
+On Wed, Sep 01, 2021 at 01:22:42PM -0700, Davidlohr Bueso wrote:
+> On Wed, 01 Sep 2021, Boqun Feng wrote:
+> > diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
+> > index 4ba15088e640..a1886fd8bde6 100644
+> > --- a/kernel/locking/rwbase_rt.c
+> > +++ b/kernel/locking/rwbase_rt.c
+> > @@ -41,6 +41,12 @@
+> >  * The risk of writer starvation is there, but the pathological use cases
+> >  * which trigger it are not necessarily the typical RT workloads.
+> >  *
+> > + * Fast-path orderings:
+> > + * The lock/unlock of readers can run in fast paths: lock and unlock are only
+> > + * atomic ops, and there is no inner lock to provide ACQUIRE and RELEASE
+> > + * semantics of rwbase_rt. Atomic ops then should be stronger than _acquire()
+> > + * and _release() to provide necessary ordering guarantee.
+> 
+> Perhaps the following instead?
+> 
 
-[snip]
+Thanks.
 
-> > +int netvsc_dma_map(struct hv_device *hv_dev,
-> > +		   struct hv_netvsc_packet *packet,
-> > +		   struct hv_page_buffer *pb)
-> > +{
-> > +	u32 page_count =3D  packet->cp_partial ?
-> > +		packet->page_buf_cnt - packet->rmsg_pgcnt :
-> > +		packet->page_buf_cnt;
-> > +	dma_addr_t dma;
-> > +	int i;
-> > +
-> > +	if (!hv_is_isolation_supported())
-> > +		return 0;
-> > +
-> > +	packet->dma_range =3D kcalloc(page_count,
-> > +				    sizeof(*packet->dma_range),
-> > +				    GFP_KERNEL);
-> > +	if (!packet->dma_range)
-> > +		return -ENOMEM;
-> > +
-> > +	for (i =3D 0; i < page_count; i++) {
-> > +		char *src =3D phys_to_virt((pb[i].pfn << HV_HYP_PAGE_SHIFT)
-> > +					 + pb[i].offset);
-> > +		u32 len =3D pb[i].len;
-> > +
-> > +		dma =3D dma_map_single(&hv_dev->device, src, len,
-> > +				     DMA_TO_DEVICE);
-> > +		if (dma_mapping_error(&hv_dev->device, dma)) {
-> > +			kfree(packet->dma_range);
-> > +			return -ENOMEM;
-> > +		}
-> > +
-> > +		packet->dma_range[i].dma =3D dma;
-> > +		packet->dma_range[i].mapping_size =3D len;
-> > +		pb[i].pfn =3D dma >> HV_HYP_PAGE_SHIFT;
-> > +		pb[i].offset =3D offset_in_hvpage(dma);
-> > +		pb[i].len =3D len;
-> > +	}
->=20
-> Just to confirm, this driver does *not* set the DMA min_align_mask
-> like storvsc does.  So after the call to dma_map_single(), the offset
-> in the page could be different.  That's why you are updating
-> the pb[i].offset value.  Alternatively, you could set the DMA
-> min_align_mask, which would ensure the offset is unchanged.
-> I'm OK with either approach, though perhaps a comment is
-> warranted to explain, as this is a subtle issue.
->=20
+> + * Ordering guarantees: As with any locking primitive, (load)-ACQUIRE and
+> + * (store)-RELEASE semantics are guaranteed for lock and unlock operations,
+> + * respectively; such that nothing leaks out of the critical region. When
+> + * writers are involved this is provided through the rtmutex. However, for
+> + * reader fast-paths, the atomics provide at least such guarantees.
+> 
 
-On second thought, I don't think either approach is OK.  The default
-alignment in the swiotlb is 2K, and if the length of the data in the
-buffer was 3K, the data could cross a page boundary in the bounce
-buffer when it originally did not.  This would break the above code
-which can only deal with one page at a time.  So I think the netvsc
-driver also must set the DMA min_align_mask to 4K, which will
-preserve the offset.
+However, this is a bit inaccurate, yes, writers always acquire the lock
+(->readers) in the critical sections of ->wait_lock. But if readers run
+the fast-paths, the atomics of the writers have to provide the ordering,
+because we can rely on rtmutex orderings only if both sides run in
+slow-paths.
 
-Michael
+> Also, I think you could remove most of the comments wrt _acquire or _release
+> in the fastpath for each ->readers atomic op, unless it isn't obvious.
+> 
+> > + *
+> >  * Common code shared between RT rw_semaphore and rwlock
+> >  */
+> > 
+> > @@ -53,6 +59,7 @@ static __always_inline int rwbase_read_trylock(struct rwbase_rt *rwb)
+> > 	 * set.
+> > 	 */
+> > 	for (r = atomic_read(&rwb->readers); r < 0;) {
+> 
+> Unrelated, but we probably wanna get rid of these abusing for-loops throughout.
+> 
+
+Agreed, let me see what I can do.
+
+> > +		/* Fully-ordered if cmpxchg() succeeds, provides ACQUIRE */
+> > 		if (likely(atomic_try_cmpxchg(&rwb->readers, &r, r + 1)))
+> 
+> As Waiman suggested, this can be _acquire() - albeit we're only missing
+> an L->L for acquire semantics upon returning, per the control dependency
+> already guaranteeing L->S. That way we would loop with _relaxed().
+> 
+
+_acquire() is fine, I think. But probably a separate patch. We should be
+careful when relaxing the ordering, and perhaps, with some performance
+numbers showing the benefits.
+
+> > 			return 1;
+> > 	}
+> > @@ -162,6 +169,8 @@ static __always_inline void rwbase_read_unlock(struct rwbase_rt *rwb,
+> > 	/*
+> > 	 * rwb->readers can only hit 0 when a writer is waiting for the
+> > 	 * active readers to leave the critical section.
+> > +	 *
+> > +	 * dec_and_test() is fully ordered, provides RELEASE.
+> > 	 */
+> > 	if (unlikely(atomic_dec_and_test(&rwb->readers)))
+> > 		__rwbase_read_unlock(rwb, state);
+> > @@ -172,7 +181,11 @@ static inline void __rwbase_write_unlock(struct rwbase_rt *rwb, int bias,
+> > {
+> > 	struct rt_mutex_base *rtm = &rwb->rtmutex;
+> > 
+> > -	atomic_add(READER_BIAS - bias, &rwb->readers);
+> > +	/*
+> > +	 * _release() is needed in case that reader is in fast path, pairing
+> > +	 * with atomic_try_cmpxchg() in rwbase_read_trylock(), provides RELEASE
+> > +	 */
+> > +	(void)atomic_add_return_release(READER_BIAS - bias, &rwb->readers);
+> 
+> Hmmm while defined, there are no users atomic_add_return_release (yet?). I think
+
+There is a usage of atomic_sub_return_release() in queued_spin_unlock()
+;-)
+
+> this is because the following is preferred when the return value is not really
+> wanted, but only the Rmw ordering it provides:
+> 
+> +       smp_mb__before_atomic(); /* provide RELEASE semantics */
+> 	atomic_add(READER_BIAS - bias, &rwb->readers);
+> 	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
+> 	rwbase_rtmutex_unlock(rtm);
+> 
+
+smp_mb__before_atomic() + atomic will be a smp_mb() + atomic on weakly
+ordered archs (e.g. ARM64 and PowerPC), while atomic_*_return_release()
+will be a release atomic operation (e.g. ldxr/stxlr on ARM64), the
+latter is considered more cheap.
+
+Regards,
+Boqun
+
+> > 	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
+> > 	rwbase_rtmutex_unlock(rtm);
+> > }
+> 
+> Thanks,
+> Davidlohr
