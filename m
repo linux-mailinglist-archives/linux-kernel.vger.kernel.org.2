@@ -2,154 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2A53FF5B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574683FF5B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347467AbhIBVhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
+        id S1347444AbhIBVja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347479AbhIBVhW (ORCPT
+        with ESMTP id S1347069AbhIBVj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:37:22 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21247C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:36:23 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id w8so3402368pgf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:36:23 -0700 (PDT)
+        Thu, 2 Sep 2021 17:39:29 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A0CC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:38:30 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id d5so2314591pjx.2
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:38:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8y6wF+XQ52afzGRquz6577KWZV/UU/rjnNku3tx/TIU=;
-        b=kFc970RVraCTGWGhfGtzUtm6CShTtpLV6TYXR2MBGnvekHUyEEaaQSUT0tUYlYS+Nn
-         uKCZcYkaK0K3mDCNttkgSUi38AOq4FCuXmk+6T4krnNlME6t+hcN8JH3b8HlBqeQ1SK1
-         KzwIWj6/LXmU76t7TWm7sqUfT+P6slzw4wZ0s=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XAVKUYQj+y0aHlDsMuwQRtXtekPEP3GaQHKhvci9zCc=;
+        b=BsC8e7/IPAUVyOmLsfsZS4cNOu3rDeFoMkJRDJiBK7MKiWrwojy2RlVOQgGIDrYvBp
+         CXRJSOz3Vp+Q25sMBjo8CLxlirW/pCpSyqHFeeBPMjae/OOAZEP4L5Gt9IZyWoQwThex
+         PkWHCxxVM1tOvlHrYL0H99gZ9VQMW0oc962UzBSzlSV4ytUWh2IuxGvK+icru3LKLUsg
+         q3TOfXV8pvxK/8sRgvNayzmCf6dtoztdLpDvxaLn5OZwomu4BLlXblZrrZUvxCbcYZFH
+         sg7NXHERVcIalxYhndZP0Hiv9z40ZdhVP3eYA9SX/arRegAkUdC3xK8hjq2hGIjJUqxb
+         PtAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8y6wF+XQ52afzGRquz6577KWZV/UU/rjnNku3tx/TIU=;
-        b=OZ3TAHDJF9b7F6kXGj5lX+ARLo4VxbMoIxtIifr2d32Apv9Vd5p9HdVojyMYajt3Kc
-         hz2AzZhTVqLwfMoZn+GofDOpjOjfhyLjX/bb71rYCQFtuCMoEZW2v+G0ZrE99uUm6oeQ
-         bvQ6HOdCgPI2WCWrmUI1v8vMfzpAE1ZwWvz53EFN7gDUcUgdT4wzAvKcqQa8TcHaQy8i
-         Xi6a8HdH0jS/ge+J807E78Jb9xwSkNOHC25H/O1Yh+NXxrD4gPLu3VPEtiieoU6ZdMxe
-         7+psCYa6GwQu23oHYPVi49JdA97kQjCmuB6Jrdsd6mhigqDzCUin7bKUYc21KiMjVuRJ
-         2PGg==
-X-Gm-Message-State: AOAM533KWSa42/p7uWk5yz9FeI3IhASIqdxw2rjtv6GeF8igNYHwrMkn
-        4G70pUlvHGssKZlixw3foqzFYgHJmctKXg==
-X-Google-Smtp-Source: ABdhPJyYmRju1CuAw4JTzujNjj7+qmkPyWJVyeKPIhKs5FgBhCIzTZw+RvZ6xOVOlv942yLfLLnJKg==
-X-Received: by 2002:aa7:9250:0:b0:3f9:2b90:b34f with SMTP id 16-20020aa79250000000b003f92b90b34fmr237985pfp.7.1630618582491;
-        Thu, 02 Sep 2021 14:36:22 -0700 (PDT)
-Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:d082:352a:f346:411a])
-        by smtp.gmail.com with ESMTPSA id c68sm3167872pfc.150.2021.09.02.14.36.21
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XAVKUYQj+y0aHlDsMuwQRtXtekPEP3GaQHKhvci9zCc=;
+        b=TWj38nqLJm1r5Kl8GMUPy4Vh5p7nSh4sAIe2GF1psCGWO7ETRiHwMmD3w07SPU2jTH
+         AamMWv6X3Riv7fJHLhxXVdRjMfN3DoTezPjNv8TMHmtEs79gpbypqb9GYK68JCxXfMcc
+         MeJXYg7LPu72HVKxPf/syQFXKcWiujV1eFGNFl+CUm5OA1kBIi1Al2mMfidoXT3m5ar6
+         rIirjkGVGUjHFmdf02Nj2TzutrZQxLYr/R2BGSOdXqb2nobiW+IRRQMOSuNAh6dLbxI7
+         3TuG/imGqoIKHkErPWoRmdY6IhNYk3h9LQbQ0FOZnPPpQz1xodOqQu+oSK6ShLgoGDK8
+         spcg==
+X-Gm-Message-State: AOAM532NSNX48vrzvWGrRESFCHT6csIn8XVk+ryCjN/C+iK6wObh+Evb
+        EozRVLXVRQHhG+klFCC/2CkhuA==
+X-Google-Smtp-Source: ABdhPJzeLRhYVtk7E31sohG+Cbp0WZ5nszCMPGF2I7t97uxYs/StEtFzGwnAM6MJTJZuf1ikMk3y5w==
+X-Received: by 2002:a17:90b:4a03:: with SMTP id kk3mr231648pjb.30.1630618710262;
+        Thu, 02 Sep 2021 14:38:30 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id b5sm3003604pjq.2.2021.09.02.14.38.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 14:36:22 -0700 (PDT)
-From:   Prashant Malani <pmalani@chromium.org>
-To:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-pm@vger.kernel.org, bleung@chromium.org,
-        heikki.krogerus@linux.intel.com, badhri@google.com
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [RFC PATCH 3/3] usb: typec: Add partner power registration call
-Date:   Thu,  2 Sep 2021 14:35:02 -0700
-Message-Id: <20210902213500.3795948-4-pmalani@chromium.org>
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-In-Reply-To: <20210902213500.3795948-1-pmalani@chromium.org>
-References: <20210902213500.3795948-1-pmalani@chromium.org>
+        Thu, 02 Sep 2021 14:38:29 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 21:38:26 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Avi Kivity <avi@redhat.com>, kvm@vger.kernel.org
+Subject: Re: [PATCH 1/7] KVM: X86: Fix missed remote tlb flush in
+ rmap_write_protect()
+Message-ID: <YTFEUmrjcyI9V1z9@google.com>
+References: <20210824075524.3354-1-jiangshanlai@gmail.com>
+ <20210824075524.3354-2-jiangshanlai@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210824075524.3354-2-jiangshanlai@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a function to register a power supply device for a partner. Also,
-ensure that the registered power supply gets unregistered when the
-partner is removed.
+On Tue, Aug 24, 2021, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
+> 
+> When kvm->tlbs_dirty > 0, some rmaps might have been deleted
+> without flushing tlb remotely after kvm_sync_page().  If @gfn
+> was writable before and it's rmaps was deleted in kvm_sync_page(),
+> we need to flush tlb too even if __rmap_write_protect() doesn't
+> request it.
+> 
+> Fixes: 4731d4c7a077 ("KVM: MMU: out of sync shadow core")
 
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
----
- drivers/usb/typec/class.c | 18 +++++++++++++++++-
- drivers/usb/typec/class.h |  2 ++
- include/linux/usb/typec.h |  5 +++++
- 3 files changed, 24 insertions(+), 1 deletion(-)
+Should be
 
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index aeef453aa658..14a898440342 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -845,11 +845,27 @@ EXPORT_SYMBOL_GPL(typec_register_partner);
-  */
- void typec_unregister_partner(struct typec_partner *partner)
- {
--	if (!IS_ERR_OR_NULL(partner))
-+	if (!IS_ERR_OR_NULL(partner)) {
-+		power_supply_unregister(partner->psy);
- 		device_unregister(&partner->dev);
-+	}
- }
- EXPORT_SYMBOL_GPL(typec_unregister_partner);
- 
-+int typec_partner_register_psy(struct typec_partner *partner, const struct power_supply_desc *desc,
-+			       const struct power_supply_config *cfg)
-+{
-+	partner->psy = power_supply_register(&partner->dev, desc, cfg);
-+	if (IS_ERR(partner->psy)) {
-+		dev_err(&partner->dev, "failed to register partner power supply (%ld)\n",
-+				PTR_ERR(partner->psy));
-+		return PTR_ERR(partner->psy);
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(typec_partner_register_psy);
-+
- /* ------------------------------------------------------------------------- */
- /* Type-C Cable Plugs */
- 
-diff --git a/drivers/usb/typec/class.h b/drivers/usb/typec/class.h
-index aef03eb7e152..b75b0f22d982 100644
---- a/drivers/usb/typec/class.h
-+++ b/drivers/usb/typec/class.h
-@@ -4,6 +4,7 @@
- #define __USB_TYPEC_CLASS__
- 
- #include <linux/device.h>
-+#include <linux/power_supply.h>
- #include <linux/usb/typec.h>
- 
- struct typec_mux;
-@@ -33,6 +34,7 @@ struct typec_partner {
- 	int				num_altmodes;
- 	u16				pd_revision; /* 0300H = "3.0" */
- 	enum usb_pd_svdm_ver		svdm_version;
-+	struct power_supply		*psy;
- };
- 
- struct typec_port {
-diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
-index e2e44bb1dad8..905527dab78c 100644
---- a/include/linux/usb/typec.h
-+++ b/include/linux/usb/typec.h
-@@ -22,6 +22,9 @@ struct typec_altmode_ops;
- struct fwnode_handle;
- struct device;
- 
-+struct power_supply_desc;
-+struct power_supply_config;
-+
- enum typec_port_type {
- 	TYPEC_PORT_SRC,
- 	TYPEC_PORT_SNK,
-@@ -132,6 +135,8 @@ int typec_partner_set_num_altmodes(struct typec_partner *partner, int num_altmod
- struct typec_altmode
- *typec_partner_register_altmode(struct typec_partner *partner,
- 				const struct typec_altmode_desc *desc);
-+int typec_partner_register_psy(struct typec_partner *partner, const struct power_supply_desc *desc,
-+			       const struct power_supply_config *cfg);
- int typec_plug_set_num_altmodes(struct typec_plug *plug, int num_altmodes);
- struct typec_altmode
- *typec_plug_register_altmode(struct typec_plug *plug,
--- 
-2.33.0.153.gba50c8fa24-goog
+Fixes: a4ee1ca4a36e ("KVM: MMU: delay flush all tlbs on sync_page path")
+
+> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 4853c033e6ce..313918df1a10 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -1420,6 +1420,14 @@ bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
+>  			rmap_head = gfn_to_rmap(gfn, i, slot);
+>  			write_protected |= __rmap_write_protect(kvm, rmap_head, true);
+>  		}
+> +		/*
+> +		 * When kvm->tlbs_dirty > 0, some rmaps might have been deleted
+> +		 * without flushing tlb remotely after kvm_sync_page().  If @gfn
+> +		 * was writable before and it's rmaps was deleted in kvm_sync_page(),
+> +		 * we need to flush tlb too.
+> +		 */
+> +		if (min_level == PG_LEVEL_4K && kvm->tlbs_dirty)
+> +			write_protected = true;
+>  	}
+>  
+>  	if (is_tdp_mmu_enabled(kvm))
+> @@ -5733,6 +5741,14 @@ void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
+>  		flush = slot_handle_level(kvm, memslot, slot_rmap_write_protect,
+>  					  start_level, KVM_MAX_HUGEPAGE_LEVEL,
+>  					  false);
+> +		/*
+> +		 * When kvm->tlbs_dirty > 0, some rmaps might have been deleted
+> +		 * without flushing tlb remotely after kvm_sync_page().  If @gfn
+> +		 * was writable before and it's rmaps was deleted in kvm_sync_page(),
+> +		 * we need to flush tlb too.
+> +		 */
+> +		if (start_level == PG_LEVEL_4K && kvm->tlbs_dirty)
+> +			flush = true;
+>  		write_unlock(&kvm->mmu_lock);
+>  	}
+
+My vote is to do a revert of a4ee1ca4a36e with slightly less awful batching, and
+then improve the batching even further if there's a noticeable loss of performance
+(or just tell people to stop using shadow paging :-D).  Zapping SPTEs but not
+flushing is just asking for these types of whack-a-mole bugs.
+
+E.g. instead of a straight revert, do this for sync_page():
+
+diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+index 50ade6450ace..1fca27a08c00 100644
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -1095,13 +1095,7 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+                        return 0;
+
+                if (FNAME(prefetch_invalid_gpte)(vcpu, sp, &sp->spt[i], gpte)) {
+-                       /*
+-                        * Update spte before increasing tlbs_dirty to make
+-                        * sure no tlb flush is lost after spte is zapped; see
+-                        * the comments in kvm_flush_remote_tlbs().
+-                        */
+-                       smp_wmb();
+-                       vcpu->kvm->tlbs_dirty++;
++                       set_spte_ret |= SET_SPTE_NEED_REMOTE_TLB_FLUSH;
+                        continue;
+                }
+
+@@ -1116,12 +1110,7 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
+
+                if (gfn != sp->gfns[i]) {
+                        drop_spte(vcpu->kvm, &sp->spt[i]);
+-                       /*
+-                        * The same as above where we are doing
+-                        * prefetch_invalid_gpte().
+-                        */
+-                       smp_wmb();
+-                       vcpu->kvm->tlbs_dirty++;
++                       set_spte_ret |= SET_SPTE_NEED_REMOTE_TLB_FLUSH;
+                        continue;
+                }
+
 
