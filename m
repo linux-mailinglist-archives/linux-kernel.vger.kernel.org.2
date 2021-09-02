@@ -2,98 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7964D3FEF04
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB963FEF06
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345243AbhIBN5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:57:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234331AbhIBN5h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:57:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C26760FD7;
-        Thu,  2 Sep 2021 13:56:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630590999;
-        bh=iaVXwyBRILapg+8HdQPSL9NVl17PaDxNtztyoI9tlCw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=xMjv4Eo8GN5K9tbMSTWIb620A3guSq1gCKdvs5pXttOj8jEFQOgTusUhyNwrSc7qF
-         SB9wWbEaP9/bzSNGL224IdD7NMWMy4Z7ehVWFFPThBbQURYOxiyB0r1O49iVq0Px5U
-         sUxFRjEvfcv6TTIReSUQbnzV+Hoip3qB6IcTQ4aQ=
-Date:   Thu, 2 Sep 2021 15:56:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, John Stultz <john.stultz@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/4] misc: hisi_hikey_usb: change the DT schema
-Message-ID: <YTDYFCH/DbK1SFVv@kroah.com>
-References: <cover.1630581434.git.mchehab+huawei@kernel.org>
- <d990e75f28c443c0c5a5fc857b87acc4be3f9464.1630581434.git.mchehab+huawei@kernel.org>
- <YTC4LPDem9uKXyMd@kroah.com>
- <20210902151053.7ddfbe3a@coco.lan>
- <20210902153820.5624b57f@coco.lan>
+        id S1345278AbhIBN6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:58:00 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:49270 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345262AbhIBN5y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 09:57:54 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id B39C420367;
+        Thu,  2 Sep 2021 13:56:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1630591015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FBJbFYS9GOV6EVOWjJDcmNKkVbrLdPLLQpcRZp1U3Lo=;
+        b=F13lE2uqBNL7cIzpI01TniOVlc4xNW5ZO2BZI2dJ6afYyrB454Zmhn+mH9+SatFH9xVzpQ
+        ZfKGEBTckXRsgH8XBybfpxxHNQcA0mnznOCjT3CPuats9GRwVCYadzJyd8u+Vlmli+7bU2
+        X8hLoWJ+sLTVb8upO6g24YHeDKIxivA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1630591015;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FBJbFYS9GOV6EVOWjJDcmNKkVbrLdPLLQpcRZp1U3Lo=;
+        b=i9b7kb31nHLHFzgkDvG366ucXQh4DnidX/PceibcSoTwZ1jwf/pQ9lpN0AwFldF98FLLzx
+        5nxmRNdWDsvlmKCQ==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7BE4C13732;
+        Thu,  2 Sep 2021 13:56:55 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id S3cxHSfYMGH7HwAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Thu, 02 Sep 2021 13:56:55 +0000
+Message-ID: <38d2a358-4146-bfc9-2a4f-68ce02f75c94@suse.cz>
+Date:   Thu, 2 Sep 2021 15:56:55 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902153820.5624b57f@coco.lan>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Content-Language: en-US
+To:     Mike Rapoport <rppt@kernel.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "kernel-hardening@lists.openwall.com" 
+        <kernel-hardening@lists.openwall.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "shakeelb@google.com" <shakeelb@google.com>
+References: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
+ <20210830235927.6443-12-rick.p.edgecombe@intel.com>
+ <YS3uhdT88XFvP9n3@kernel.org>
+ <f77f3312a1b17b8f8de2ccf0f40f9f19f4a9f151.camel@intel.com>
+ <YS8qRHrGzevns32P@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [RFC PATCH v2 11/19] mm/sparsemem: Use alloc_table() for table
+ allocations
+In-Reply-To: <YS8qRHrGzevns32P@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 03:38:20PM +0200, Mauro Carvalho Chehab wrote:
-> Em Thu, 2 Sep 2021 15:10:53 +0200
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
-> 
-> > Em Thu, 2 Sep 2021 13:40:28 +0200
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
-> > 
-> > > On Thu, Sep 02, 2021 at 01:28:35PM +0200, Mauro Carvalho Chehab wrote:  
-> > > > As there's no upstream DT bindings for this driver, let's
-> > > > update its DT schema, while it is not too late.    
-> > > 
-> > > So this is for 5.15-final?  
-> > 
-> > It can either be for 5.15 or 5.16, as there aren't any compatible
-> > under arch/ which uses the DT schema there. All patches adding
-> > such compatible are on this series. So, whatever version this
-> > is applied should be OK.
-> 
-> On a separate note, despite having "hisi_" on this driver's name, there's
-> nothing there that is really HiSilicon specific. What this driver does is
-> to control an USB HUB integrated inside a DT-based board, doing those 
-> functions:
-> 
-> 	- Power on/off the chip;
-> 	- reset the HUB;
-> 	- control its OTG switch;
-> 	- control power on/off for an USB type-C connector;
-> 	- set USB role as host or device.
-> 
-> This is used on both HiKey 960 and HiKey 970 with the following
-> topology:
-> 
->   +-----+      +--------+       +---------+
->   | SoC | ---> | USB PHY|  ---> | USB HUB | ---> USB 3.0
->   +-----+      +--------+       +---------+      and type-C ports 
-> 
-> Both Kirin 960 and 970 SoCs have a Synapsys IP (DWC 3). 
-> 
-> Both HiKey 960 and 970 cards use Richtek RT1711H Type-C Chip Driver
-> as part of the USB PHY logic, but they use different USB HUBs:
-> 
-> 	- HiKey 960 use a Microchip USB5734 HUB
-> 	- HiKey 970 use a TI TUSB8041 HUB
-> 
-> While I'm not sure how generic this driver can be, I'm thinking that
-> maybe a future patch could rename it to 'generic-usb-hub' or 
-> something similar - finding a good name is always the hardest 
-> part :-)
+On 9/1/21 09:22, Mike Rapoport wrote:
+> On Tue, Aug 31, 2021 at 06:25:23PM +0000, Edgecombe, Rick P wrote:
+>> On Tue, 2021-08-31 at 11:55 +0300, Mike Rapoport wrote:
+>> > On Mon, Aug 30, 2021 at 04:59:19PM -0700, Rick Edgecombe wrote:
+>> <trim> 
+>> > > -static void * __meminit vmemmap_alloc_block_zero(unsigned long
+>> > > size, int node)
+>> > > +static void * __meminit vmemmap_alloc_table(int node)
+>> > >  {
+>> > > -	void *p = vmemmap_alloc_block(size, node);
+>> > > +	void *p;
+>> > > +	if (slab_is_available()) {
+>> > > +		struct page *page = alloc_table_node(GFP_KERNEL |
+>> > > __GFP_ZERO, node);
+>> > 
+>> > This change removes __GFP_RETRY_MAYFAIL|__GFP_NOWARN from the
+>> > original gfp
+>> > vmemmap_alloc_block() used.
+>> Oh, yea good point. Hmm, I guess grouped pages could be aware of that
+>> flag too. Would be a small addition, but it starts to grow
+>> unfortunately.
+>> 
+>> > Not sure __GFP_RETRY_MAYFAIL is really needed in
+>> > vmemmap_alloc_block_zero()
+>> > at the first place, though.
+>> Looks like due to a real issue:
+>> 055e4fd96e95b0eee0d92fd54a26be7f0d3bcad0
 
-Try looking at:
-	https://lore.kernel.org/r/20210813195228.2003500-1-mka@chromium.org
-for another example of this.
+That commit added __GFP_REPEAT, but __GFP_RETRY_MAYFAIL these days became
+subtly different.
 
-thanks,
+> I believe the issue was with memory map blocks rather than with page
+> tables, but since sparse-vmemmap uses the same vmemmap_alloc_block() for
+> both, the GFP flag got stick with both.
+> 
+> I'm not really familiar with reclaim internals to say if
+> __GFP_RETRY_MAYFAIL would help much for order-0 allocation.
 
-greg k-h
+For costly allocation, __GFP_RETRY_MAYFAIL will try harder, thus the RETRY
+part is accented. For order-0 the only difference is that it will skip OOM,
+thus the MAYFAIL part. It usually means there's a fallback. I guess in this
+case there's no fallback, so allocating without __GFP_RETRY_MAYFAIL would be
+better.
+
+> Vlastimil, can you comment on this?
+>  
+>> I think it should not affect PKS tables for now, so maybe I can make
+>> separate logic instead. I'll look into it. Thanks.
+>> > 
+>> > More broadly, maybe it makes sense to split boot time and memory
+>> > hotplug
+>> > paths and use pxd_alloc() for the latter.
+>> > 
+>> > > +
+>> > > +		if (!page)
+>> > > +			return NULL;
+>> > > +		return page_address(page);
+>> > > +	}
+>> > >  
+>> > > +	p = __earlyonly_bootmem_alloc(node, PAGE_SIZE, PAGE_SIZE,
+>> > > __pa(MAX_DMA_ADDRESS));
+>> > 
+>> > Opportunistically rename to __earlyonly_memblock_alloc()? ;-)
+>> > 
+>> Heh, I can. Just grepping, there are several other instances of
+>> foo_bootmem() only calling foo_memblock() pattern scattered about. Or
+>> maybe I'm missing the distinction.
+> 
+> Heh, I didn't do s/bootmem/memblock/g, so foo_bootmem() are reminders we
+> had bootmem allocator once.
+> Maybe it's a good time to remove them :)
+>  
+>> <trim>
+> 
+
