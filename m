@@ -2,192 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3683FED45
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 489643FED49
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343985AbhIBL4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 07:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
+        id S1343940AbhIBL50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 07:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343940AbhIBL4p (ORCPT
+        with ESMTP id S1343994AbhIBL5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 07:56:45 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B271DC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 04:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3OEWNGsQK3O9uYcAmIpyIF+r20b4fZUMBAlU+pfNSuc=; b=A0LWcXorRin0EZpqAAItGK2jez
-        RKDRX+4fQcyJT51pl7PGouIRBmsmkZ0E5xOOw91QTsDTPG2a2xzFRGpzxochZkUnVh0pgaVou4okA
-        HFFtNtKQ2MW2F8/6phLHyhIA+5bEFz9DsrXH/nQ4/ckmcUfMPcS+jjHeWg4U5jm0i57TcrNq7vek5
-        Pv5OiIs/+fr2sTXVOkXk0JiSswslRLBtWxukxQXwQg3fuzva8UWw4NOA4txjIJ5NqAuV4CjIK3Gwp
-        e9jEuBhMIPYZgKFqlEjFIF3H6qHku9c872Erc3/gfvc/vZp3x8kN/Apq8oB8az8WjFeya6NMU5hey
-        8KiZmomA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mLlJZ-00077U-F2; Thu, 02 Sep 2021 11:55:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E5F2730029F;
-        Thu,  2 Sep 2021 13:55:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CDFCA2BC015B6; Thu,  2 Sep 2021 13:55:29 +0200 (CEST)
-Date:   Thu, 2 Sep 2021 13:55:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] locking: rwbase: Take care of ordering guarantee for
- fastpath reader
-Message-ID: <YTC7sariSyBW48nh@hirez.programming.kicks-ass.net>
-References: <20210901150627.620830-1-boqun.feng@gmail.com>
+        Thu, 2 Sep 2021 07:57:09 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F20C0613C1
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 04:56:11 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id t190so1648740qke.7
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 04:56:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HmG+SzrqI25IfuOzYDDubE9mgxl445AA/VbS1PiElag=;
+        b=mSo12sAwclW6At6xkB9mlrVJ+Tc5FkqDtEY9LlDtlFK+hxBuTNvTDbNpFL1xxTFNlF
+         nwDxpSko/dvgY9CnDlh6ty1+2auJybtEU1Asz0VwepEiBdzfLWvQVHZaVUCFa1NcrIbP
+         0756JE6st4fVmFOBe5pas+MDy6lTF+uMPvBbelLD09/zofzYLbhF3peAr0gh5TSdxgSj
+         vGdJwUXHFGNSFIya472jKpvz/TmVROAC0XByV5AAea/3S8FYelU9Pmmx3T56kGSnwX6N
+         YSYN+Tn2seNFplpmMvZouN1DaPkG8f1OHvjQ4TwMjA+uPq8+oQZZNPHcnG04B7q52o6H
+         +9tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HmG+SzrqI25IfuOzYDDubE9mgxl445AA/VbS1PiElag=;
+        b=jC3aWrSQkB2nP6o5u5gO+kAIN3tqdejhz+1FlfXvo/9sS+ihJysk5go+p90VPcjl/n
+         6ftytAKi4wb8iLN7VjW2KUvIfiZN3S7MCr4TY/ElLMMzN91Zwl0gUjW+zvSk2M7WtoBc
+         kSWFfhFQise4SOMutpFXc9+SyC3N6Owy6dpvxphxoGPTN77eRy47asIobSyBBV7+0y6N
+         PAgP/9mJ9vKt48p6UBkwluXQmoBgLhDdwrPrnHCri0a9sDUb7zDRtWLchxBrvLkBE4G9
+         8ZlgZAD8sXh8rqpcr5DUjsHy0P5vSujly4fyyjdYsLoR0lt92h67RWX6oNhEXbKehS8X
+         nXOg==
+X-Gm-Message-State: AOAM533C7KKSKTpQUcOiGmQU4t2SZsQ/ydjExgtTlGa4YylPjV4fk19C
+        QgjrCNfch9vf4gS3MwBOZ96oNmbxqgkoFg==
+X-Google-Smtp-Source: ABdhPJzfScLfeuE+0zAzb7fUqVmoYa1Qsnj1IFjKnXefyb+6m30XuswOw0QGO3EbayUr06CRv/J2rQ==
+X-Received: by 2002:ae9:ed53:: with SMTP id c80mr2846027qkg.402.1630583770159;
+        Thu, 02 Sep 2021 04:56:10 -0700 (PDT)
+Received: from [192.168.15.25] ([186.204.255.226])
+        by smtp.gmail.com with ESMTPSA id v7sm1256373qkd.41.2021.09.02.04.56.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 04:56:09 -0700 (PDT)
+Subject: Re: VKMS: New plane formats
+To:     Simon Ser <contact@emersion.fr>
+Cc:     rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
+        hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <d1ceaa32-e143-8d3c-4bfb-7b31673cc76c@gmail.com>
+ <Qkd7rIf9j9Y-IlDoCbF8VB8T5sIKykTIuTfZIc1pCFPfvnfwIBGOMTnFo8i5jAWqGitlGEBH865MLF3C2jdIVk7TbRRFb_KVlte_FI0hjgI=@emersion.fr>
+From:   Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Message-ID: <22b20ed0-f3d1-c70c-1f3d-ca897330f7c6@gmail.com>
+Date:   Thu, 2 Sep 2021 08:56:06 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901150627.620830-1-boqun.feng@gmail.com>
+In-Reply-To: <Qkd7rIf9j9Y-IlDoCbF8VB8T5sIKykTIuTfZIc1pCFPfvnfwIBGOMTnFo8i5jAWqGitlGEBH865MLF3C2jdIVk7TbRRFb_KVlte_FI0hjgI=@emersion.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 11:06:27PM +0800, Boqun Feng wrote:
-
-> Sorry I'm late for the party of PREEMPT_RT lock review. Just want to
-> point the problem with this patch. Not even compile test, but show the
-> idea and check if I'm missing something subtle.
-
-No worries, glad you could have a look. I think you're right and we
-missed this.
-
-> diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
-> index 4ba15088e640..a1886fd8bde6 100644
-> --- a/kernel/locking/rwbase_rt.c
-> +++ b/kernel/locking/rwbase_rt.c
-> @@ -41,6 +41,12 @@
->   * The risk of writer starvation is there, but the pathological use cases
->   * which trigger it are not necessarily the typical RT workloads.
->   *
-> + * Fast-path orderings:
-> + * The lock/unlock of readers can run in fast paths: lock and unlock are only
-> + * atomic ops, and there is no inner lock to provide ACQUIRE and RELEASE
-> + * semantics of rwbase_rt. Atomic ops then should be stronger than _acquire()
-> + * and _release() to provide necessary ordering guarantee.
-> + *
->   * Common code shared between RT rw_semaphore and rwlock
->   */
->  
-> @@ -53,6 +59,7 @@ static __always_inline int rwbase_read_trylock(struct rwbase_rt *rwb)
->  	 * set.
->  	 */
->  	for (r = atomic_read(&rwb->readers); r < 0;) {
-> +		/* Fully-ordered if cmpxchg() succeeds, provides ACQUIRE */
->  		if (likely(atomic_try_cmpxchg(&rwb->readers, &r, r + 1)))
->  			return 1;
->  	}
-> @@ -162,6 +169,8 @@ static __always_inline void rwbase_read_unlock(struct rwbase_rt *rwb,
->  	/*
->  	 * rwb->readers can only hit 0 when a writer is waiting for the
->  	 * active readers to leave the critical section.
-> +	 *
-> +	 * dec_and_test() is fully ordered, provides RELEASE.
->  	 */
->  	if (unlikely(atomic_dec_and_test(&rwb->readers)))
->  		__rwbase_read_unlock(rwb, state);
-> @@ -172,7 +181,11 @@ static inline void __rwbase_write_unlock(struct rwbase_rt *rwb, int bias,
->  {
->  	struct rt_mutex_base *rtm = &rwb->rtmutex;
->  
-> -	atomic_add(READER_BIAS - bias, &rwb->readers);
-> +	/*
-> +	 * _release() is needed in case that reader is in fast path, pairing
-> +	 * with atomic_try_cmpxchg() in rwbase_read_trylock(), provides RELEASE
-> +	 */
-> +	(void)atomic_add_return_release(READER_BIAS - bias, &rwb->readers);
-
-Very narrow race with the unlock below, but yes agreed.
-
->  	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
->  	rwbase_rtmutex_unlock(rtm);
->  }
-> @@ -216,8 +229,14 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
->  	 */
->  	rwbase_set_and_save_current_state(state);
->  
-> -	/* Block until all readers have left the critical section. */
-> -	for (; atomic_read(&rwb->readers);) {
-> +	/*
-> +	 * Block until all readers have left the critical section.
-> +	 *
-> +	 * _acqurie() is needed in case that the reader side runs in the fast
-> +	 * path, pairing with the atomic_dec_and_test() in rwbase_read_unlock(),
-> +	 * provides ACQUIRE.
-> +	 */
-> +	for (; atomic_read_acquire(&rwb->readers);) {
->  		/* Optimized out for rwlocks */
->  		if (rwbase_signal_pending_state(state, current)) {
->  			__set_current_state(TASK_RUNNING);
-
-I think we can restructure things to avoid this one, but yes. Suppose we
-do:
-
-	readers = atomic_sub_return_relaxed(READER_BIAS, &rwb->readers);
-
-	/*
-	 * These two provide either an smp_mb() or an UNLOCK+LOCK
-	 * ordering, either is strong enough to provide ACQUIRE order
-	 * for the above load of @readers.
-	 */
-	rwbase_set_and_save_current_state(state);
-	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
-
-	while (readers) {
-		...
-		readers = atomic_read(&rwb->readers);
-		if (readers)
-			rwbase_schedule();
-		...
-	}
-
-
-> @@ -229,6 +248,9 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
->  		/*
->  		 * Schedule and wait for the readers to leave the critical
->  		 * section. The last reader leaving it wakes the waiter.
-> +		 *
-> +		 * _acquire() is not needed, because we can rely on the smp_mb()
-> +		 * in set_current_state() to provide ACQUIRE.
->  		 */
->  		if (atomic_read(&rwb->readers) != 0)
->  			rwbase_schedule();
-> @@ -253,7 +275,11 @@ static inline int rwbase_write_trylock(struct rwbase_rt *rwb)
->  	atomic_sub(READER_BIAS, &rwb->readers);
->  
->  	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
-> -	if (!atomic_read(&rwb->readers)) {
-> +	/*
-> +	 * _acquire() is needed in case reader is in the fast path, pairing with
-> +	 * rwbase_read_unlock(), provides ACQUIRE.
-> +	 */
-> +	if (!atomic_read_acquire(&rwb->readers)) {
-
-Moo; the alternative is using dec_and_lock instead of dec_and_test, but
-that's not going to be worth it.
-
->  		atomic_set(&rwb->readers, WRITER_BIAS);
->  		raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
->  		return 1;
-> -- 
-> 2.32.0
+On 9/1/21 5:24 PM, Simon Ser wrote:
+> Ideally the final composition format would have enough precision for
+> all of the planes. I think it'd make sense to use ARGB16161616 if the
+> primary plane uses ARGB8888 and an overlay plane uses ARGB16161616.
 > 
+> To simplify the code, maybe it's fine to always use ARGB16161616 for
+> the output, and add getters which fetch an ARGB16161616 row for each
+> supported plane format.
+> 
+
+This makes sense to me. I will try to implement this way.
+
+Thanks!
