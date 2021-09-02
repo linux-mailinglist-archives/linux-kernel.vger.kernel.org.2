@@ -2,157 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9A53FEAD1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702283FEB1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244583AbhIBIua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 04:50:30 -0400
-Received: from mga12.intel.com ([192.55.52.136]:39751 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244443AbhIBIu3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 04:50:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="198586495"
-X-IronPort-AV: E=Sophos;i="5.84,371,1620716400"; 
-   d="scan'208";a="198586495"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 01:49:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,371,1620716400"; 
-   d="scan'208";a="602243544"
-Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 02 Sep 2021 01:49:30 -0700
-Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mLiPZ-0008nA-R7; Thu, 02 Sep 2021 08:49:29 +0000
-Date:   Thu, 02 Sep 2021 16:49:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:smp/urgent] BUILD SUCCESS
- 4b92d4add5f6dcf21275185c997d6ecb800054cd
-Message-ID: <6130900a.g+gh9Dl0uo2zjKqk%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S245186AbhIBJUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 05:20:47 -0400
+Received: from lgeamrelo13.lge.com ([156.147.23.53]:38474 "EHLO
+        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S245168AbhIBJUp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 05:20:45 -0400
+Received: from unknown (HELO lgeamrelo04.lge.com) (156.147.1.127)
+        by 156.147.23.53 with ESMTP; 2 Sep 2021 17:49:44 +0900
+X-Original-SENDERIP: 156.147.1.127
+X-Original-MAILFROM: kyeongdon.kim@lge.com
+Received: from unknown (HELO localhost.localdomain) (10.159.40.99)
+        by 156.147.1.127 with ESMTP; 2 Sep 2021 17:49:44 +0900
+X-Original-SENDERIP: 10.159.40.99
+X-Original-MAILFROM: kyeongdon.kim@lge.com
+From:   Kyeongdon Kim <kyeongdon.kim@lge.com>
+To:     laurent.pinchart@ideasonboard.com
+Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kyeongdon Kim <kyeongdon.kim@lge.com>
+Subject: [PATCH] media: uvcvideo: use dynamic allocation for uvc_copy_op
+Date:   Thu,  2 Sep 2021 17:49:40 +0900
+Message-Id: <20210902084940.15285-1-kyeongdon.kim@lge.com>
+X-Mailer: git-send-email 2.10.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp/urgent
-branch HEAD: 4b92d4add5f6dcf21275185c997d6ecb800054cd  drivers: base: cacheinfo: Get rid of DEFINE_SMP_CALL_CACHE_FUNCTION()
+There are some issues to handle frame throughput with camera devices
 
-elapsed time: 1452m
+Using devices:
+- Logitech Webcam
+- Intel(R) RealSense(TM) Depth Camera
 
-configs tested: 99
-configs skipped: 3
+To improve efficiency, and maximise throughput,
+use dynamic allocation for uvc_copy_op.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Change from struct uvc_copy_op copy_operations[UVC_MAX_PACKETS];
+to struct uvc_copy_op *copy_operations;
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210831
-arm                          moxart_defconfig
-sh                        edosk7760_defconfig
-riscv                            alldefconfig
-arm                          pxa168_defconfig
-sh                        edosk7705_defconfig
-mips                   sb1250_swarm_defconfig
-nios2                         3c120_defconfig
-sh                          urquell_defconfig
-mips                        maltaup_defconfig
-arm                          pxa910_defconfig
-powerpc                  iss476-smp_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20210831
-x86_64               randconfig-a001-20210831
-x86_64               randconfig-a003-20210831
-x86_64               randconfig-a002-20210831
-x86_64               randconfig-a004-20210831
-x86_64               randconfig-a006-20210831
-i386                 randconfig-a005-20210831
-i386                 randconfig-a002-20210831
-i386                 randconfig-a003-20210831
-i386                 randconfig-a006-20210831
-i386                 randconfig-a004-20210831
-i386                 randconfig-a001-20210831
-x86_64               randconfig-a016-20210901
-x86_64               randconfig-a011-20210901
-x86_64               randconfig-a012-20210901
-x86_64               randconfig-a015-20210901
-x86_64               randconfig-a014-20210901
-x86_64               randconfig-a013-20210901
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Now, only tested bulk video options.
 
-clang tested configs:
-s390                 randconfig-c005-20210901
-mips                 randconfig-c004-20210901
-x86_64               randconfig-c007-20210901
-powerpc              randconfig-c003-20210901
-i386                 randconfig-c001-20210901
-arm                  randconfig-c002-20210901
-riscv                randconfig-c006-20210901
-i386                 randconfig-a016-20210831
-i386                 randconfig-a011-20210831
-i386                 randconfig-a015-20210831
-i386                 randconfig-a014-20210831
-i386                 randconfig-a012-20210831
-i386                 randconfig-a013-20210831
-s390                 randconfig-r044-20210831
-hexagon              randconfig-r041-20210831
-hexagon              randconfig-r045-20210831
-riscv                randconfig-r042-20210831
+On test device & own debug log to check frame duration(us),
+refer to test result the below:
 
+Use copy_operations[UVC_MAX_PACKETS]
+[UVC] Check time duration(us) : 64732 / 66000
+[UVC] Check time duration(us) : 67452 / 66000
+[UVC] Check time duration(us) : 67413 / 66000
+[UVC] Check time duration(us) : 66713 / 66000
+[UVC] Check time duration(us) : 67967 / 66000
+
+Use *copy_operations
+[UVC] Check time duration(us) : 30804 / 66000
+[UVC] Check time duration(us) : 38642 / 66000
+[UVC] Check time duration(us) : 26011 / 66000
+[UVC] Check time duration(us) : 30116 / 66000
+[UVC] Check time duration(us) : 29265 / 66000
+
+Signed-off-by: Kyeongdon Kim <kyeongdon.kim@lge.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/media/usb/uvc/uvc_video.c | 52 ++++++++++++++++++++++++++++++++++++---
+ drivers/media/usb/uvc/uvcvideo.h  |  3 ++-
+ 2 files changed, 51 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index e164646..32bc98e 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -1614,6 +1614,33 @@ static void uvc_video_complete(struct urb *urb)
+ 	queue_work(stream->async_wq, &uvc_urb->work);
+ }
+ 
++static void uvc_free_urb_cop(struct uvc_streaming *stream)
++{
++	for_each_uvc_urb(uvc_urb, stream) {
++		if (uvc_urb->copy_operations) {
++			kfree(uvc_urb->copy_operations);
++			uvc_urb->copy_operations = NULL;
++		}
++	}
++}
++
++static int uvc_alloc_urb_cop(struct uvc_streaming *stream, gfp_t gfp_flags)
++{
++	int max_packet = stream->urb_max_packets;
++
++	for_each_uvc_urb(uvc_urb, stream) {
++		uvc_urb->copy_operations
++				= kcalloc(max_packet, sizeof(struct uvc_copy_op), gfp_flags);
++		if (uvc_urb->copy_operations == NULL)
++			goto error;
++	}
++	return 0;
++error:
++	uvc_free_urb_cop(stream);
++
++	return -ENOMEM;
++}
++
+ /*
+  * Free transfer buffers.
+  */
+@@ -1687,8 +1714,8 @@ static int uvc_alloc_urb_buffers(struct uvc_streaming *stream,
+ 	 * payloads across multiple URBs.
+ 	 */
+ 	npackets = DIV_ROUND_UP(size, psize);
+-	if (npackets > UVC_MAX_PACKETS)
+-		npackets = UVC_MAX_PACKETS;
++	if (npackets > stream->urb_max_packets)
++		npackets = stream->urb_max_packets;
+ 
+ 	/* Retry allocations until one succeed. */
+ 	for (; npackets > 1; npackets /= 2) {
+@@ -1744,8 +1771,10 @@ static void uvc_video_stop_transfer(struct uvc_streaming *stream,
+ 		uvc_urb->urb = NULL;
+ 	}
+ 
+-	if (free_buffers)
++	if (free_buffers) {
+ 		uvc_free_urb_buffers(stream);
++		uvc_free_urb_cop(stream);
++	}
+ }
+ 
+ /*
+@@ -1790,10 +1819,18 @@ static int uvc_init_video_isoc(struct uvc_streaming *stream,
+ 	psize = uvc_endpoint_max_bpi(stream->dev->udev, ep);
+ 	size = stream->ctrl.dwMaxVideoFrameSize;
+ 
++	stream->urb_max_packets = UVC_MAX_PACKETS;
++
+ 	npackets = uvc_alloc_urb_buffers(stream, size, psize, gfp_flags);
+ 	if (npackets == 0)
+ 		return -ENOMEM;
+ 
++	if (uvc_alloc_urb_cop(stream, gfp_flags) != 0) {
++		uvc_dbg(stream->dev, VIDEO,
++				"Failed to init URBs copy operations.\n");
++		return -ENOMEM;
++	}
++
+ 	size = npackets * psize;
+ 
+ 	for_each_uvc_urb(uvc_urb, stream) {
+@@ -1842,11 +1879,18 @@ static int uvc_init_video_bulk(struct uvc_streaming *stream,
+ 	psize = usb_endpoint_maxp(&ep->desc);
+ 	size = stream->ctrl.dwMaxPayloadTransferSize;
+ 	stream->bulk.max_payload_size = size;
++	stream->urb_max_packets = DIV_ROUND_UP(size, psize);
+ 
+ 	npackets = uvc_alloc_urb_buffers(stream, size, psize, gfp_flags);
+ 	if (npackets == 0)
+ 		return -ENOMEM;
+ 
++	if (uvc_alloc_urb_cop(stream, gfp_flags) != 0) {
++		uvc_dbg(stream->dev, VIDEO,
++				"Failed to init URBs copy operations.\n");
++		return -ENOMEM;
++	}
++
+ 	size = npackets * psize;
+ 
+ 	if (usb_endpoint_dir_in(&ep->desc))
+@@ -2147,6 +2191,8 @@ int uvc_video_init(struct uvc_streaming *stream)
+ 		}
+ 	}
+ 
++	stream->urb_max_packets = UVC_MAX_PACKETS;
++
+ 	/* Prepare asynchronous work items. */
+ 	for_each_uvc_urb(uvc_urb, stream)
+ 		INIT_WORK(&uvc_urb->work, uvc_video_copy_data_work);
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index cce5e38..00cf6c9 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -561,7 +561,7 @@ struct uvc_urb {
+ 	struct sg_table *sgt;
+ 
+ 	unsigned int async_operations;
+-	struct uvc_copy_op copy_operations[UVC_MAX_PACKETS];
++	struct uvc_copy_op *copy_operations;
+ 	struct work_struct work;
+ };
+ 
+@@ -616,6 +616,7 @@ struct uvc_streaming {
+ 
+ 	struct uvc_urb uvc_urb[UVC_URBS];
+ 	unsigned int urb_size;
++	unsigned int urb_max_packets;
+ 
+ 	u32 sequence;
+ 	u8 last_fid;
+-- 
+2.10.2
+
