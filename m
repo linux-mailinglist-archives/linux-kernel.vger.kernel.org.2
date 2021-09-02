@@ -2,139 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D60D3FEBF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A6D3FEBF7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239028AbhIBKRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 06:17:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46610 "EHLO
+        id S240346AbhIBKSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 06:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236589AbhIBKRm (ORCPT
+        with ESMTP id S240160AbhIBKR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 06:17:42 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1EAC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 03:16:43 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id s3so2526976ljp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 03:16:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Q8gHKZlIfNMsE2pwpZyxC6yykTeyy3ncWsPcdI97ZBw=;
-        b=Oz8M17UZ6Gx8M9KbOtjRmP3bgfiYuuxEHm6LOcO2pUnB9laFx5UVB5VKthK6ntGR0x
-         cgOiXgmpxCBMTPt/U5URfmDm6XbHPMzJPBpI8F9nPcS+UPXKuUjf9oO6SsetA3IbfmGh
-         zjk9F3KXuQ/XWjnP2i6TL9e7xb5KIWe2AoGuVI3F013ag+8+I8dOKA2qxSRwxORsd7WE
-         pju3HKN/TnJi0qfjLLYp9ZNuqr0/mWb+6mbuC8HIyNI4UYHCT0kiYobL4YoyUXJpPTnW
-         8nFlCLi9dH+VxjezfhukcYdstS5keqcN+GyypIPpk2DtDWWXlg9sYWKqg7huXgJyvhP7
-         w0Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Q8gHKZlIfNMsE2pwpZyxC6yykTeyy3ncWsPcdI97ZBw=;
-        b=Oej1uH3V2771gl/S9dfoBDyj2TuCu3BwluMqsSFKcc8biDTi7cbJBfVw5gudqsgQ1a
-         5sNV8VSe/D5iAxij6fcz2UAs7+omxOGhBSQWEKehifq4uXgSS/C0TktHIXhKCzSG5zDB
-         VisToKHpFYu30BYJO0yGaoqCpwvs8Q0ouf4oyE3l80+fi06ULKLnPrtDvgxeQMesEAlc
-         FPKP7wHgiSl8yWZOzwuQF1hckRRhhnXX4w/NHgbFAlbZmVTFvqIK+8ZX9ni9a3AdnGOY
-         6QUxFNZanrqQgARBYbyUfFz3mksM5a3Tm86A25Muw1weHV3RrY8fMmcSgXsDMfDmdbnS
-         4yIw==
-X-Gm-Message-State: AOAM531NAyn/Ds3XSokNv7l4XgSSIXlH8P0aEfN+esbTCyWtq7UxwhAy
-        FWaybCggMSwyh9vq9JZaxD8P/w==
-X-Google-Smtp-Source: ABdhPJzB9h6Twzy69IlKpaCmsSc174yIyH9MuvDLdUFpiBXC0tvx5XVeFz7kIcQaHw3PYf6tMNnYrA==
-X-Received: by 2002:a2e:5758:: with SMTP id r24mr1849768ljd.432.1630577802207;
-        Thu, 02 Sep 2021 03:16:42 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id s4sm155897lfd.53.2021.09.02.03.16.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 03:16:41 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Dmitry Osipenko <digetx@gmail.com>, linux-pm@vger.kernel.org
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH 3/3] PM: domains: Add a ->dev_get_performance_state() callback to genpd
-Date:   Thu,  2 Sep 2021 12:16:34 +0200
-Message-Id: <20210902101634.827187-4-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210902101634.827187-1-ulf.hansson@linaro.org>
-References: <20210902101634.827187-1-ulf.hansson@linaro.org>
+        Thu, 2 Sep 2021 06:17:59 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55582C061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 03:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hSXBOO+IhYekR6dWOzJNmWSb5Ms7mb6kt3x7AvComFM=; b=eOo0Q11qJRuSuvby/5TbqaJjP2
+        vunrDMHLbEbfYUpHYLHtDhW1KWFQAMWA43YOks9BSU8Wefw5ar8LCjs+0Sg6mL8snxgQlL+aMwn2o
+        JktuCzRvXep42Yffb/lAUfKNrze+Xa6R4XMSOvLZGH1ozY4L4gH6JDuHgHn8CQhd3X/e/lkQI2TmM
+        AsXPaFPpadPtWhCWG9AHVYhOF87E6Aabja3BLnwS5QqEsB9qI/nIpJf976qAFLgosmLFe7aR+wz//
+        XJy71W+z0LZiaCekYW3CaGiB8Obbqpkm+qV/A1yYgUUBtSTEkQ9CfTTrBrLh6D+PRDGZdKb7PrlOE
+        3XWZ3aGQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mLjlq-0006KW-R4; Thu, 02 Sep 2021 10:16:37 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 87981300332;
+        Thu,  2 Sep 2021 12:16:35 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6FFDB285E114E; Thu,  2 Sep 2021 12:16:35 +0200 (CEST)
+Date:   Thu, 2 Sep 2021 12:16:35 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Youquan Song <youquan.song@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Subject: Re: [PATCH 11/24] x86/entry: Replace the most of asm code of
+ error_entry to C code
+Message-ID: <YTCkgw/4v+mBBUIN@hirez.programming.kicks-ass.net>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
+ <20210831175025.27570-12-jiangshanlai@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210831175025.27570-12-jiangshanlai@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hardware may be preprogrammed to a specific performance state, which may
-not be zero initially during boot. This may lead to that genpd's current
-performance state becomes inconsistent with the state of the hardware. To
-deal with this, the driver for a device that is being attached to its
-genpd, need to request an initial performance state vote, which is
-typically done by calling some of the OPP APIs while probing.
+On Wed, Sep 01, 2021 at 01:50:12AM +0800, Lai Jiangshan wrote:
+> diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
+> index 42d2918f5646..bc9e2f5ad370 100644
+> --- a/arch/x86/entry/entry_64.S
+> +++ b/arch/x86/entry/entry_64.S
+> @@ -972,83 +972,14 @@ SYM_CODE_START_LOCAL(error_entry)
+>  	cld
+>  	PUSH_AND_CLEAR_REGS save_ret=1
+>  	ENCODE_FRAME_POINTER 8
+>  
+>  	popq	%r12				/* save return addr in %12 */
+>  	movq	%rsp, %rdi			/* arg0 = pt_regs pointer */
+> +	call	do_error_entry
+>  	movq	%rax, %rsp			/* switch stack */
+>  	ENCODE_FRAME_POINTER
+>  	pushq	%r12
+>  	ret
 
-In some cases this would lead to boilerplate code in the drivers. Let's
-make it possible to avoid this, by adding a new optional callback to genpd
-and invoke it per device during the attach process. In this way, the genpd
-provider driver can inform genpd about the initial performance state that
-is needed for the device.
+There's only a single error_entry callsite, which is idtentry_body. One
+of the things I wanted to do is change this lot so we change to the
+task_stack in 'C', using an adaptation of call_on_irqstack() and
+basically don't return frrom C until we're done with \cfunc.
 
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
- drivers/base/power/domain.c | 8 +++++---
- include/linux/pm_domain.h   | 2 ++
- 2 files changed, 7 insertions(+), 3 deletions(-)
+That is, once we call C, stay there, and don't do this back and forth
+between C and asm.
 
-diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-index 800adf831cae..1a6f3538af8d 100644
---- a/drivers/base/power/domain.c
-+++ b/drivers/base/power/domain.c
-@@ -2640,13 +2640,15 @@ static void genpd_dev_pm_sync(struct device *dev)
- 	genpd_queue_power_off_work(pd);
- }
- 
--static int genpd_get_default_performance_state(struct device *dev,
-+static int genpd_get_default_performance_state(struct generic_pm_domain *genpd,
-+					       struct device *dev,
- 					       unsigned int index)
- {
- 	int pstate = of_get_required_opp_performance_state(dev->of_node, index);
- 
- 	if (pstate == -ENODEV || pstate == -EOPNOTSUPP)
--		return 0;
-+		pstate = genpd->dev_get_performance_state ?
-+			 genpd->dev_get_performance_state(genpd, dev) : 0;
- 
- 	return pstate;
- }
-@@ -2701,7 +2703,7 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
- 	}
- 
- 	/* Set the default performance state */
--	pstate = genpd_get_default_performance_state(dev, index);
-+	pstate = genpd_get_default_performance_state(pd, dev, index);
- 	if (pstate < 0) {
- 		ret = pstate;
- 		goto err;
-diff --git a/include/linux/pm_domain.h b/include/linux/pm_domain.h
-index 21a0577305ef..da694489a05a 100644
---- a/include/linux/pm_domain.h
-+++ b/include/linux/pm_domain.h
-@@ -131,6 +131,8 @@ struct generic_pm_domain {
- 	struct opp_table *opp_table;	/* OPP table of the genpd */
- 	unsigned int (*opp_to_performance_state)(struct generic_pm_domain *genpd,
- 						 struct dev_pm_opp *opp);
-+	int (*dev_get_performance_state)(struct generic_pm_domain *genpd,
-+					 struct device *dev);
- 	int (*set_performance_state)(struct generic_pm_domain *genpd,
- 				     unsigned int state);
- 	struct gpd_dev_ops dev_ops;
--- 
-2.25.1
+As is, the resulting asm in error_entry is somewhat confusing given that
+we sometimes don't actually switch stacks.
 
