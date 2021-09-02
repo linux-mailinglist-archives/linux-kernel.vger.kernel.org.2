@@ -2,75 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD233FE7EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 05:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8AF3FE762
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhIBDOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 23:14:18 -0400
-Received: from rosenzweig.io ([138.197.143.207]:45444 "EHLO rosenzweig.io"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233143AbhIBDON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 23:14:13 -0400
-Date:   Wed, 1 Sep 2021 21:35:40 -0400
-From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= 
-        <ville.syrjala@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] drm: Add drm_fixed_16_16 helper
-Message-ID: <YTAqbAhoYPe6Stjn@sunset>
-References: <20210901175431.14060-1-alyssa@rosenzweig.io>
- <YS/CsCSqKeFYF9x7@pendragon.ideasonboard.com>
+        id S232787AbhIBCG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 22:06:59 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15380 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229871AbhIBCG6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 22:06:58 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H0PLf2QtmzbgYH;
+        Thu,  2 Sep 2021 10:02:02 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 2 Sep 2021 10:05:58 +0800
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2308.8; Thu, 2 Sep 2021
+ 10:05:58 +0800
+Subject: Re: [PATCH net-next] tcp: add tcp_tx_skb_cache_key checking in
+ sk_stream_alloc_skb()
+To:     Eric Dumazet <edumazet@google.com>
+CC:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        "David Ahern" <dsahern@kernel.org>
+References: <1630492744-60396-1-git-send-email-linyunsheng@huawei.com>
+ <ba7a0854-6841-2ebc-c329-4c13f1a997df@huawei.com>
+ <CANn89i+X_K2A1kepmLh1ySC_UE=+ov=Cya2mtW7R0LT68kyb2w@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <b4c6f14a-31dc-f1e1-3669-5b6721a4c87d@huawei.com>
+Date:   Thu, 2 Sep 2021 10:05:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YS/CsCSqKeFYF9x7@pendragon.ideasonboard.com>
+In-Reply-To: <CANn89i+X_K2A1kepmLh1ySC_UE=+ov=Cya2mtW7R0LT68kyb2w@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme714-chm.china.huawei.com (10.1.199.110) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Missing documentation :-)
-
-Ack.
-
-> > +static inline int drm_fixed_16_16(s32 mult, s32 div)
+On 2021/9/2 9:13, Eric Dumazet wrote:
+> On Wed, Sep 1, 2021 at 5:47 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2021/9/1 18:39, Yunsheng Lin wrote:
+>>> Since tcp_tx_skb_cache is disabled by default in:
+>>> commit 0b7d7f6b2208 ("tcp: add tcp_tx_skb_cache sysctl")
+>>>
+>>> Add tcp_tx_skb_cache_key checking in sk_stream_alloc_skb() to
+>>> avoid possible branch-misses.
+>>>
+>>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+>>> ---
+>>> Also, the sk->sk_tx_skb_cache may be both changed by allocation
+>>> and freeing side, I assume there may be some implicit protection
+>>> here too, such as the NAPI protection for rx?
+>>
+>> Hi, Eric
+>>    Is there any implicit protection for sk->sk_tx_skb_cache?
+>> As my understanding, sk_stream_alloc_skb() seems to be protected
+>> by lock_sock(), and the sk_wmem_free_skb() seems to be mostly
+>> happening in NAPI polling for TCP(when ack packet is received)
+>> without lock_sock(), so it seems there is no protection here?
+>>
 > 
-> You should return a s32.
+> Please look again.
+> This is protected by socket lock of course.
+> Otherwise sk_mem_uncharge() would be very broken, sk->sk_forward_alloc
+> is not an atomic field.
 
-Ack.
+Thanks for clarifying.
+I have been looking for a point to implement the socket'pp_alloc_cache for
+page pool, and sk_wmem_free_skb() seems like the place to avoid the
+scalablity problem of ptr_ring in page pool.
 
-> The function name isn't very explicit, and departs from the naming
-> scheme of other functions in the same file. As fixed-point numbers are
-> stored in a s64 for the drm_fixp_* helpers, we shouldn't rese the
-> drm_fixp_ prefix, maybe drm_fixp_s16_16_ would be a good prefix. The
-> function should probably be named drm_fixp_s16_16 from_fraction() then,
-> but then the same logic should possibly be replicated to ensure optimal
-> precision. I wonder if it wouldn't be best to simply use
-> drm_fixp_from_fraction() and shift the result right by 16 bits.
+The protection for sk_wmem_free_skb() is in tcp_v4_rcv(), right?
+https://elixir.bootlin.com/linux/latest/source/net/ipv4/tcp_ipv4.c#L2081
 
-Sure, I'm not attached to the naming ... will wait to hear what colours
-everyone else wants the bikehed painted.
-
-As for the implementation, I just went with what was used across
-multiple drivers already (no chance of regressions that way) but could
-reuse other helpers if it's better..? If the behaviour changes this goes
-from a trivial cleanup to a much more invasive changeset. I don't own
-half of the hardware here.
+> 
+> TCP stack has no direct relation  with NAPI.
+> It can run over loopback interface, no NAPI there.
+> .
+> 
