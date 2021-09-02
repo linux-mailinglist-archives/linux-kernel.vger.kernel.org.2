@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C413FF1DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2173FF1DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346410AbhIBQzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
+        id S1346448AbhIBQ4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234528AbhIBQzu (ORCPT
+        with ESMTP id S1346378AbhIBQ4N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:55:50 -0400
+        Thu, 2 Sep 2021 12:56:13 -0400
 Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31DABC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:54:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 846ECC061575;
+        Thu,  2 Sep 2021 09:55:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
         MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
         Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
         List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=642EGsn3CAgugI9d6ee0+b40u3yojON00QOXQhzKqzc=; b=vOvAANbUzTnwWRDtlQwMjLe1x
-        p8/xFwiZNHd3m06Kua45cHNIcAHKk1RzTHhE6z2uW1CCrBcdgXo36vtOKxz1QPOglPu7ypL+2ZI8n
-        bX7Ri34ModPn2VBbzRwWjKg28zybAeGmJSS2EbMETvbUkl+vNMnM6U8tq+YS+8qej5g5Qk5v6ilP5
-        A4A4GGDWEUtxn3wGUiH21bI2JBz2WyipHHraJ7/X2FXI9zp7w3wwkqZVI0dJyD3/dddh5KX592Xmv
-        gswVIWf57OyzOEwnqZ17CELp0nJZ5S6gE8umtdJc0+Qw/qRoE2/O2uHIK0IoOqF3d8UMvUnxwb6do
-        ydHB6rwRA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48094)
+         bh=rzf/6LcMzbI/PQP7yFlRIA7pmDSDhpmLqpTRt4zcusM=; b=KA0wsFCq85MvWpCbZrfWAzFK9
+        DFF3VTTxKeQwwxkQ3ZwEssNR7QluZij19whJHnhW+i+XfQ79kjrQW4hMhY/bF/TXx5/kvN/OjBCkW
+        +7bkjwNzX/hrFMk51unl46AAG2zLcUlGeyITeTNUFDf5Z9XFTxuqFPnybr7P5Ynmc54aJAoJbpZFN
+        ILRTPWqJZuM48e2TqGNBsnA9KyAItSgKjTcW5HmDJDaPybw9R+7waM4Cq/AOGxBy8A9C0cPvr8+b1
+        nRMn1a+G0/6zKfjGyz7N0MhaOhkAjYqVhiIel9nMuGLmM+/j0YksZAQPlDXPzu4Yhw7ZzFrOhLbMO
+        5iPUXz2Vg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48096)
         by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <linux@armlinux.org.uk>)
-        id 1mLpyT-0001hN-PU; Thu, 02 Sep 2021 17:54:01 +0100
+        id 1mLpzI-0001iR-BC; Thu, 02 Sep 2021 17:54:52 +0100
 Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
         (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mLpyM-000819-0H; Thu, 02 Sep 2021 17:53:54 +0100
-Date:   Thu, 2 Sep 2021 17:53:53 +0100
+        id 1mLpzH-00081q-Ns; Thu, 02 Sep 2021 17:54:51 +0100
+Date:   Thu, 2 Sep 2021 17:54:51 +0100
 From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Keith Packard <keithp@keithp.com>
-Cc:     linux-kernel@vger.kernel.org, Abbott Liu <liuwenliang@huawei.com>,
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Keith Packard <keithp@keithp.com>, linux-kernel@vger.kernel.org,
+        Abbott Liu <liuwenliang@huawei.com>,
         Alexander Sverdlin <alexander.sverdlin@gmail.com>,
         Al Viro <viro@zeniv.linux.org.uk>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -69,73 +70,33 @@ Cc:     linux-kernel@vger.kernel.org, Abbott Liu <liuwenliang@huawei.com>,
         Vaneet Narang <v.narang@samsung.com>,
         "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
         YiFei Zhu <yifeifz2@illinois.edu>,
-        Keith Packard <keithpac@amazon.com>
+        Keith Packard <keithpac@amazon.com>,
+        linux-hardening@vger.kernel.org
 Subject: Re: [PATCH 0/2]: ARM: Enable THREAD_INFO_IN_TASK
-Message-ID: <20210902165353.GI22278@shell.armlinux.org.uk>
+Message-ID: <20210902165451.GJ22278@shell.armlinux.org.uk>
 References: <20210902155429.3987201-1-keithp@keithp.com>
+ <202109020904.976207C@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210902155429.3987201-1-keithp@keithp.com>
+In-Reply-To: <202109020904.976207C@keescook>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 08:54:26AM -0700, Keith Packard wrote:
-> Placing thread_info in the kernel stack leaves it vulnerable to stack
-> overflow attacks. This short series addresses that by using the
-> existing THREAD_INFO_IN_TASK infrastructure.
+On Thu, Sep 02, 2021 at 09:07:42AM -0700, Kees Cook wrote:
+> On Thu, Sep 02, 2021 at 08:54:26AM -0700, Keith Packard wrote:
+> > Placing thread_info in the kernel stack leaves it vulnerable to stack
+> > overflow attacks. This short series addresses that by using the
+> > existing THREAD_INFO_IN_TASK infrastructure.
 > 
-> As this is my first patch in this part of the kernel, I'm looking for
-> feedback about the general approach as well as specific comments on
-> places where I've missed something.
-> 
-> I've only run this on armhf running under qemu, so while I've tried to
-> make patches for other code paths, I haven't been able to test those.
-> 
-> (yes, I know checkpatch.pl complains about whitespace in asm-offsets.c, I
-> decided to leave the existing whitespace alone)
-> 
-> Signed-off-by: Keith Packard <keithpac@amazon.com>
+> Very cool! Thanks for working on this. If you want, you can refer to the
+> KSPP bug for this too:
+> https://github.com/KSPP/linux/issues/1
 
-I think you're introducing a circular dependency with this for
-certain kernel configurations:
-
-E.g. Have you tried running this with CONFIG_CPU_V6 enabled?
-
-+#define raw_smp_processor_id() this_cpu_read(cpu_number)
-+#define __smp_processor_id() __this_cpu_read(cpu_number)
-+
-+DECLARE_PER_CPU_READ_MOSTLY(unsigned int, cpu_number);
-
-this_cpu_read() is defined as:
-
-#define this_cpu_read(pcp) __pcpu_size_call_return(this_cpu_read_, pcp)
-(which will call this_cpu_read_4)
-
-#define this_cpu_read_4(pcp)            this_cpu_generic_read(pcp)
-=> __this_cpu_generic_read_nopreempt()
-=>         ___ret = READ_ONCE(*raw_cpu_ptr(&(pcp)));
-
-#define raw_cpu_ptr(ptr)                                                \
-({                                                                      \
-        __verify_pcpu_ptr(ptr);                                         \
-        arch_raw_cpu_ptr(ptr);                                          \
-})
-
-#ifndef arch_raw_cpu_ptr
-#define arch_raw_cpu_ptr(ptr) SHIFT_PERCPU_PTR(ptr, __my_cpu_offset)
-#endif
-
-#ifndef __my_cpu_offset
-#define __my_cpu_offset per_cpu_offset(raw_smp_processor_id())
-#endif
-
-... which then leads back to a use of raw_smp_processor_id(), thereby
-creating a circular loop of preprocessor definitions that the compiler
-can't resolve.
+Not so fast. It's buggy. I've rejected this "solution" before.
 
 -- 
 RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
