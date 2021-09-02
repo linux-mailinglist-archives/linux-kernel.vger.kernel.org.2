@@ -2,126 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 719023FEDA0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9FC3FEDA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344316AbhIBMRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 08:17:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26507 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234142AbhIBMRS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 08:17:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630584979;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0KB5SyFwwSjd3I7RFdLEADuQgZugol7EKe1fCuJWPl0=;
-        b=DZR299q5fQz8LPzs6zZuZwTAlkSs58H9rGeFd1QGe1cGfZbJ9g/3+bWAgexPo9+Pd4TPbE
-        kAsqglWsRpqxR8Z8JKloDgn8HNgjzpHkV2OT3CRUXl+pcUXla3JNYut8iEH0ESGKk5P1Y1
-        jnewhODo7q35q+IY/SZBmMMZ1nFuqoo=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-XQPQ0pVVMgmrFpNlI9ENAw-1; Thu, 02 Sep 2021 08:16:18 -0400
-X-MC-Unique: XQPQ0pVVMgmrFpNlI9ENAw-1
-Received: by mail-wm1-f69.google.com with SMTP id y188-20020a1c7dc5000000b002e80e0b2f87so931018wmc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 05:16:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=0KB5SyFwwSjd3I7RFdLEADuQgZugol7EKe1fCuJWPl0=;
-        b=jZk3TqaOFaoKodLJhaSUtO+sY3t7wzXSniqdcFRKiiP+kxE2L/vl/GiFReUJaIkX+/
-         XEQkyX/9hrFh/9Phi1gHZZ1xwQy77a6bC2BvUbRVT9nVLNoq+i5ESgpqTnbwk+jYMUXE
-         /j7IKLwHdjI4FcqgBDmFMQwwuPL5Cx9DyN9OimOv26KAI46LBB7DQroBtMfTOSatnPyF
-         5mZXIYalKVMITUlUZ513uKvqHijOkZCwFUJcs8cgD49TmlqSYGjFAttNoeBxdOk0WkNO
-         iNynR1xaJpOg559xLVBtUKJTA4M61KKVZQAKAeF5iVZi5R0SEbApqxEHCp3BYLrs9ELU
-         Vw2Q==
-X-Gm-Message-State: AOAM530b46wTc7dJNa7H0ZlawBkza1uauExj83lPtnu44db6xT+7NM2h
-        ePrnrQfucuOmRS4Yk3m0WJvQHLHYCoDMxVJorkxXsOBvlj5ynDf8h2fAk6IuCEcaQgib214kYuW
-        RArkt1ZWLIvHzeLd8tCoqRDmj711a9kwjNchX7b2CjQpvoHZJWAc3lnVmlbsbWl7C05rDclZl
-X-Received: by 2002:a5d:6781:: with SMTP id v1mr3393720wru.249.1630584977473;
-        Thu, 02 Sep 2021 05:16:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyxLVdMLy9E2mqTLvOGLjmzD7yZiwY5dVGzMc0woHfMYLZKh3OehsTEMsYjvAj3cc5ucR6Ohg==
-X-Received: by 2002:a5d:6781:: with SMTP id v1mr3393681wru.249.1630584977132;
-        Thu, 02 Sep 2021 05:16:17 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c60bd.dip0.t-ipconnect.de. [91.12.96.189])
-        by smtp.gmail.com with ESMTPSA id k16sm1722414wrx.87.2021.09.02.05.16.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 05:16:16 -0700 (PDT)
-Subject: Re: [PATCH v2 5/5] mm/page_alloc.c: avoid allocating highmem pages
- via alloc_pages_exact[_nid]
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     vbabka@suse.cz, sfr@canb.auug.org.au, peterz@infradead.org,
-        mgorman@techsingularity.net, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210902121242.41607-1-linmiaohe@huawei.com>
- <20210902121242.41607-6-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <1ef3dc5d-7eb9-90a5-afbf-f551afcf7d8b@redhat.com>
-Date:   Thu, 2 Sep 2021 14:16:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210902121242.41607-6-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1343940AbhIBMU0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Sep 2021 08:20:26 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:60146 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234098AbhIBMUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 08:20:24 -0400
+Received: from BC-Mail-Ex25.internal.baidu.com (unknown [172.31.51.19])
+        by Forcepoint Email with ESMTPS id 0F222B22C10458F716F9;
+        Thu,  2 Sep 2021 20:19:23 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex25.internal.baidu.com (172.31.51.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Thu, 2 Sep 2021 20:19:22 +0800
+Received: from BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) by
+ BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) with mapi id
+ 15.01.2308.014; Thu, 2 Sep 2021 20:19:22 +0800
+From:   "Cai,Huoqing" <caihuoqing@baidu.com>
+To:     "Cai,Huoqing" <caihuoqing@baidu.com>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Subject: RE: [PATCH v3] usb: stkwebcam: Update the reference count of the usb
+ device structure
+Thread-Topic: [PATCH v3] usb: stkwebcam: Update the reference count of the usb
+ device structure
+Thread-Index: AQHXny9yBe2iT1uHw0mYSX48IokVQKuQqfuA
+Date:   Thu, 2 Sep 2021 12:19:22 +0000
+Message-ID: <ddf5d61acbef4c60885cc5372c10a1df@baidu.com>
+References: <20210901124650.31653-1-caihuoqing@baidu.com>
+In-Reply-To: <20210901124650.31653-1-caihuoqing@baidu.com>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.18.80.52]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.09.21 14:12, Miaohe Lin wrote:
-> Don't use with __GFP_HIGHMEM because page_address() cannot represent
-> highmem pages without kmap(). Newly allocated pages would leak as
-> page_address() will return NULL for highmem pages here. But It works
-> now because the callers do not specify __GFP_HIGHMEM now.
+Hello,
+
++Cc Hans Verkuil <hverkuil@xs4all.nl>
+Cai
+> Subject: [PATCH v3] usb: stkwebcam: Update the reference count of the usb
+> device structure
 > 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> Use usb_get_dev() to increment the reference count of the usb device
+> structure in order to avoid releasing the structure while it is still in
+> use. And use usb_put_dev() to decrement the reference count and thus,
+> when it will be equal to 0 the structure will be released.
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 > ---
->   mm/page_alloc.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
+> v2->v3:
+> *call usb_put_dev() in the error path of stk_camera_probe
+> *move v4l2_ctrl_handler_free/v4l2_device_unregister/kfree(dev)
+>  from stk_camera_disconnect() to stk_v4l_dev_release()
 > 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 9c09dcb24149..e1d0e27d005a 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5614,8 +5614,8 @@ void *alloc_pages_exact(size_t size, gfp_t gfp_mask)
->   	unsigned int order = get_order(size);
->   	unsigned long addr;
->   
-> -	if (WARN_ON_ONCE(gfp_mask & __GFP_COMP))
-> -		gfp_mask &= ~__GFP_COMP;
-> +	if (WARN_ON_ONCE(gfp_mask & (__GFP_COMP | __GFP_HIGHMEM)))
-> +		gfp_mask &= ~(__GFP_COMP | __GFP_HIGHMEM);
->   
->   	addr = __get_free_pages(gfp_mask, order);
->   	return make_alloc_exact(addr, order, size);
-> @@ -5639,8 +5639,8 @@ void * __meminit alloc_pages_exact_nid(int nid, size_t size, gfp_t gfp_mask)
->   	unsigned int order = get_order(size);
->   	struct page *p;
->   
-> -	if (WARN_ON_ONCE(gfp_mask & __GFP_COMP))
-> -		gfp_mask &= ~__GFP_COMP;
-> +	if (WARN_ON_ONCE(gfp_mask & (__GFP_COMP | __GFP_HIGHMEM)))
-> +		gfp_mask &= ~(__GFP_COMP | __GFP_HIGHMEM);
->   
->   	p = alloc_pages_node(nid, gfp_mask, order);
->   	if (!p)
+> drivers/media/usb/stkwebcam/stk-webcam.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
 > 
-
-Ideally we would convert this WARN_ON_ONCE() to pr_warn_once(), but I 
-guess this really never ever happens on a production system and would 
-get caught early while testing.
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
+> diff --git a/drivers/media/usb/stkwebcam/stk-webcam.c
+> b/drivers/media/usb/stkwebcam/stk-webcam.c
+> index 0e231e576dc3..9f445e6ab5fa 100644
+> --- a/drivers/media/usb/stkwebcam/stk-webcam.c
+> +++ b/drivers/media/usb/stkwebcam/stk-webcam.c
+> @@ -1234,6 +1234,11 @@ static void stk_v4l_dev_release(struct
+> video_device *vd)
+>  	if (dev->sio_bufs != NULL || dev->isobufs != NULL)
+>  		pr_err("We are leaking memory\n");
+>  	usb_put_intf(dev->interface);
+> +	usb_put_dev(dev->udev);
+> +
+> +	v4l2_ctrl_handler_free(&dev->hdl);
+> +	v4l2_device_unregister(&dev->v4l2_dev);
+> +	kfree(dev);
+>  }
+> 
+>  static const struct video_device stk_v4l_data = {
+> @@ -1309,7 +1314,7 @@ static int stk_camera_probe(struct usb_interface
+> *interface,
+>  	init_waitqueue_head(&dev->wait_frame);
+>  	dev->first_init = 1; /* webcam LED management */
+> 
+> -	dev->udev = udev;
+> +	dev->udev = usb_get_dev(udev);
+>  	dev->interface = interface;
+>  	usb_get_intf(interface);
+> 
+> @@ -1365,6 +1370,7 @@ static int stk_camera_probe(struct usb_interface
+> *interface,
+> 
+>  error_put:
+>  	usb_put_intf(interface);
+> +	usb_put_dev(dev->udev);
+>  error:
+>  	v4l2_ctrl_handler_free(hdl);
+>  	v4l2_device_unregister(&dev->v4l2_dev);
+> @@ -1385,9 +1391,6 @@ static void stk_camera_disconnect(struct
+> usb_interface *interface)
+>  		video_device_node_name(&dev->vdev));
+> 
+>  	video_unregister_device(&dev->vdev);
+> -	v4l2_ctrl_handler_free(&dev->hdl);
+> -	v4l2_device_unregister(&dev->v4l2_dev);
+> -	kfree(dev);
+>  }
+> 
+>  #ifdef CONFIG_PM
+> --
+> 2.25.1
 
