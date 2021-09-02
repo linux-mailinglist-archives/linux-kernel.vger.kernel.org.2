@@ -2,263 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572113FF322
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 000B23FF326
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346982AbhIBSTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 14:19:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346952AbhIBSTF (ORCPT
+        id S1346952AbhIBSUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 14:20:38 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:33169 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233296AbhIBSUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:19:05 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E1EC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 11:18:06 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id dv7-20020ad44ee7000000b0036fa79fd337so3162082qvb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 11:18:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=Sn+g2bADD404qqjx2up6VXRVrUYy8eh5xavXQUrq6zk=;
-        b=YA/z9SWZizIuQlkt7Sah9G1tInnrR7SLQie53RYcf0VJIaF2AzSr1TfkmKDWUKTTdS
-         ss7ynVvdbhCl5Xi4b5gC9125rH40UCFUN78/XN5LfTTOKKFcF5v6d0uKvuJKmO+aX5aK
-         Lxp7zrrZE5oJjiK9hZySN1OB+mu5M+8wIyWif6P/9ifWehxROkhyrDdxxi6q0oSji/Ej
-         KJgmTgxu0y1KXtDN5Vfxn3ewUIcFlt3Jn2//wcmhjc4VvLQQh8AISXjThuQfZGnUzDLi
-         CGphYzq55Sb/RYdwW3tUvlqXVF8GeYc//IilYx7EgY+FgADgIjCqg0fGD/iUkSfq2pj7
-         tldg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Sn+g2bADD404qqjx2up6VXRVrUYy8eh5xavXQUrq6zk=;
-        b=hpt1XfcHs3kRcZw7bnn/6D1Yyzq9+pErzvbJFq4KxACIwTTBCIrD2vcJ8uIgRCHAWZ
-         ui5LHglWr0e2MiMAqJPzJscVBlkGTIhDjdWU24QwdAV2Qm8+zyD20oWn9py/SgjPhvdj
-         pIMQBNYh5VD7xx3Pd31g9inhvrm1cp+4ZNK0YfoxZyWrwcmDi5+A6ex6H/BF9r9OfFev
-         Zwr+Yy5vMZIbHGhTdkTeDqziv9dBmOHrA66jBOO8nZ5+Q/PEfplNfD+0qTHAPFUPgzfl
-         9xbqrJKOQRrPt8vuxYt9+EgtptdpwGPCj63NnROy1x4mq3dY1sJMJeXxuT3LKmIp6peY
-         Ku6A==
-X-Gm-Message-State: AOAM533iikg23DfJJBKpMJj7eldUP+EK8aYs/4PG+OCcIDGfKTs/5WpO
-        sbUWFEmttZAFh5wBNf8CJ7178+jHCSI=
-X-Google-Smtp-Source: ABdhPJwcG8CnRLSx8mq6diZXX4lSPsxjiKeHD4iJow4eFxlcGB4nxa4pkFw1OzWn3WssEiBSwrC8rqJ21UY=
-X-Received: from pgonda1.kir.corp.google.com ([2620:15c:29:204:faf4:6e40:7b4e:999f])
- (user=pgonda job=sendgmr) by 2002:a0c:be8e:: with SMTP id n14mr4314725qvi.16.1630606685750;
- Thu, 02 Sep 2021 11:18:05 -0700 (PDT)
-Date:   Thu,  2 Sep 2021 11:17:51 -0700
-In-Reply-To: <20210902181751.252227-1-pgonda@google.com>
-Message-Id: <20210902181751.252227-4-pgonda@google.com>
+        Thu, 2 Sep 2021 14:20:35 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5AB1B5C01ED;
+        Thu,  2 Sep 2021 14:19:36 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute1.internal (MEProxy); Thu, 02 Sep 2021 14:19:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm2; bh=rWeCfc9VwEpivgH3ElxeF4AP9Em0
+        hx7fi+pEfHiMVP4=; b=AuInL9tN1I1ovcXm4oG4VDeb5jtx8G5LKfAsBPLTi6Lf
+        dnZAs/tBmxQBlex49291A2gqYLEcepIl5T7llHDUrBvJkRRHWXY/SfqfFloLxwUM
+        fIWQ7LmoGv4Oc+uxNQH5TsXifPiY0sCO/gAzY3z6DSKJYEsExMZXbII69AoqY22l
+        Bm4dJHFQn+YRHScbkKXtHyqBVhE1P083J6RZhUYPNFyud+JSzRNV++MHS+iEk6ci
+        PoERh7wq7dUbh0ygvb39am+89kbKIdeFfolYAB6G/oh3vd6oYLY4aAM2PBRWZE0S
+        iMm1hfgO+/YQjr5E8Ih5NkA0H4Gza0XUDW5QzQizVw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=rWeCfc
+        9VwEpivgH3ElxeF4AP9Em0hx7fi+pEfHiMVP4=; b=G2ACLst9n6EmcBeuB8t9Cn
+        UBicpUedbICpaGir/glrW/F8YtEdsTQdUGbkupVVEgEt0yxShv1Zx/tW5wZK944B
+        IzbJZxfsh6km8yo1bOllE/K/D9CXaqHmRIoWOcwMybF7ZNwCJ4VbyKpPkQw32AwD
+        /mpI5FdyNtBjj8tlCMVR4SeT1+DnkjkWVWyhuVSWnbfRfHbtYhSlYcaLPzkVgEI9
+        0fm7ydZz79dAdthQ8FdjXtgz5r9JVZCM9SXVoDXdj7VzrfdMR/smQne6fQ6A9qRA
+        oEZXqavnx4GHO8CDDelMs03dJf7ZngDiWXGHoPDH8ZX56gyWWE2qSEIjkf5Xqofw
+        ==
+X-ME-Sender: <xms:thUxYVZuhxZYcoe_qdFU0FdyQ4gCxYPYbOaeeJlRqbKTPEYbZjrmUA>
+    <xme:thUxYcZaCdjbboWop334Ue9vAs-H740nzRJW12JLCekcEGHoQbH6l2fCasjsD1-42
+    zkeS9TE3tgzcLuj8d8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvhedguddvgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedfufhv
+    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
+    grthhtvghrnhepheejgfdttdefleefteejieefudeuheelkedtgedtjeehieetueelheeu
+    hfegheegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:thUxYX_icb1Yp-gID7QAuwGMOImvvcuh6gjHKsc6OX1BV5lXF3Ifxg>
+    <xmx:thUxYTr28i5ympL4m7VJYC9L6G7dTTPSozfvQEfsZ6b3izsU5zyvuw>
+    <xmx:thUxYQq3ZszLDwtsPx25SdK5ff4GnVjVRxdxzyQ2Vw8C8cH9Drpn4Q>
+    <xmx:uBUxYYIiN0F8L85rZKUf0uGrySzkqfGJkE9RfT4WvNi65pZzcH7qGg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 8810451C0060; Thu,  2 Sep 2021 14:19:34 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1126-g6962059b07-fm-20210901.001-g6962059b
 Mime-Version: 1.0
-References: <20210902181751.252227-1-pgonda@google.com>
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH 3/3 V7] selftest: KVM: Add intra host migration tests
-From:   Peter Gonda <pgonda@google.com>
-To:     kvm@vger.kernel.org
-Cc:     Peter Gonda <pgonda@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Marc Orr <marcorr@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <ac34e920-d1b4-4044-a8fe-5172d5ebfa9c@www.fastmail.com>
+In-Reply-To: <YS/sMckPUJRMYwYq@sunset>
+References: <20210828153642.19396-1-sven@svenpeter.dev>
+ <20210828153642.19396-4-sven@svenpeter.dev> <YS6fasuqPURbmC6X@sunset>
+ <c8bc7f77-3b46-4675-a642-76871fcec963@www.fastmail.com>
+ <YS/sMckPUJRMYwYq@sunset>
+Date:   Thu, 02 Sep 2021 20:19:14 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Alyssa Rosenzweig" <alyssa@rosenzweig.io>
+Cc:     "Sven Peter" <iommu@lists.linux-foundation.org>,
+        "Joerg Roedel" <joro@8bytes.org>, "Will Deacon" <will@kernel.org>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        "Arnd Bergmann" <arnd@kernel.org>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
+        "Alexander Graf" <graf@amazon.com>,
+        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[PATCH_v2_3/8]_iommu/dma:_Disable_get=5Fsgtable_for_granul?=
+ =?UTF-8?Q?e_>_PAGE=5FSIZE?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds testcases for intra host migration for SEV and SEV-ES. Also adds
-locking test to confirm no deadlock exists.
 
-Signed-off-by: Peter Gonda <pgonda@google.com>
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Cc: Marc Orr <marcorr@google.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: kvm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../selftests/kvm/x86_64/sev_vm_tests.c       | 159 ++++++++++++++++++
- 2 files changed, 160 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index c103873531e0..44fd3566fb51 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -72,6 +72,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/vmx_pmu_msrs_test
- TEST_GEN_PROGS_x86_64 += x86_64/xen_shinfo_test
- TEST_GEN_PROGS_x86_64 += x86_64/xen_vmcall_test
- TEST_GEN_PROGS_x86_64 += x86_64/vmx_pi_mmio_test
-+TEST_GEN_PROGS_x86_64 += x86_64/sev_vm_tests
- TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
- TEST_GEN_PROGS_x86_64 += demand_paging_test
- TEST_GEN_PROGS_x86_64 += dirty_log_test
-diff --git a/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
-new file mode 100644
-index 000000000000..8ce8dd63ca85
---- /dev/null
-+++ b/tools/testing/selftests/kvm/x86_64/sev_vm_tests.c
-@@ -0,0 +1,159 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <linux/kvm.h>
-+#include <linux/psp-sev.h>
-+#include <stdio.h>
-+#include <sys/ioctl.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <pthread.h>
-+
-+#include "test_util.h"
-+#include "kvm_util.h"
-+#include "processor.h"
-+#include "svm_util.h"
-+#include "kselftest.h"
-+#include "../lib/kvm_util_internal.h"
-+
-+#define SEV_DEV_PATH "/dev/sev"
-+
-+#define MIGRATE_TEST_NUM_VCPUS 4
-+#define MIGRATE_TEST_VMS 3
-+#define LOCK_TESTING_THREADS 3
-+#define LOCK_TESTING_ITERATIONS 10000
-+
-+/*
-+ * Open SEV_DEV_PATH if available, otherwise exit the entire program.
-+ *
-+ * Input Args:
-+ *   flags - The flags to pass when opening SEV_DEV_PATH.
-+ *
-+ * Return:
-+ *   The opened file descriptor of /dev/sev.
-+ */
-+static int open_sev_dev_path_or_exit(int flags)
-+{
-+	static int fd;
-+
-+	if (fd != 0)
-+		return fd;
-+
-+	fd = open(SEV_DEV_PATH, flags);
-+	if (fd < 0) {
-+		print_skip("%s not available, is SEV not enabled? (errno: %d)",
-+			   SEV_DEV_PATH, errno);
-+		exit(KSFT_SKIP);
-+	}
-+
-+	return fd;
-+}
-+
-+static void sev_ioctl(int vm_fd, int cmd_id, void *data)
-+{
-+	struct kvm_sev_cmd cmd = {
-+		.id = cmd_id,
-+		.data = (uint64_t)data,
-+		.sev_fd = open_sev_dev_path_or_exit(0),
-+	};
-+	int ret;
-+
-+	TEST_ASSERT(cmd_id < KVM_SEV_NR_MAX && cmd_id >= 0,
-+		    "Unknown SEV CMD : %d\n", cmd_id);
-+
-+	ret = ioctl(vm_fd, KVM_MEMORY_ENCRYPT_OP, &cmd);
-+	TEST_ASSERT((ret == 0 || cmd.error == SEV_RET_SUCCESS),
-+		    "%d failed: return code: %d, errno: %d, fw error: %d",
-+		    cmd_id, ret, errno, cmd.error);
-+}
-+
-+static struct kvm_vm *sev_vm_create(bool es)
-+{
-+	struct kvm_vm *vm;
-+	struct kvm_sev_launch_start start = { 0 };
-+	int i;
-+
-+	vm = vm_create(VM_MODE_DEFAULT, 0, O_RDWR);
-+	sev_ioctl(vm->fd, es ? KVM_SEV_ES_INIT : KVM_SEV_INIT, NULL);
-+	for (i = 0; i < MIGRATE_TEST_NUM_VCPUS; ++i)
-+		vm_vcpu_add(vm, i);
-+	start.policy |= (es) << 2;
-+	sev_ioctl(vm->fd, KVM_SEV_LAUNCH_START, &start);
-+	if (es)
-+		sev_ioctl(vm->fd, KVM_SEV_LAUNCH_UPDATE_VMSA, NULL);
-+	return vm;
-+}
-+
-+static void test_sev_migrate_from(bool es)
-+{
-+	struct kvm_vm *vms[MIGRATE_TEST_VMS];
-+	struct kvm_enable_cap cap = {
-+		.cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM
-+	};
-+	int i;
-+
-+	for (i = 0; i < MIGRATE_TEST_VMS; ++i) {
-+		vms[i] = sev_vm_create(es);
-+		if (i > 0) {
-+			cap.args[0] = vms[i - 1]->fd;
-+			vm_enable_cap(vms[i], &cap);
-+		}
-+	}
-+}
-+
-+struct locking_thread_input {
-+	struct kvm_vm *vm;
-+	int source_fds[LOCK_TESTING_THREADS];
-+};
-+
-+static void *locking_test_thread(void *arg)
-+{
-+	/*
-+	 * This test case runs a number of threads all trying to use the intra
-+	 * host migration ioctls. This tries to detect if a deadlock exists.
-+	 */
-+	struct kvm_enable_cap cap = {
-+		.cap = KVM_CAP_VM_MIGRATE_ENC_CONTEXT_FROM
-+	};
-+	int i, j;
-+	struct locking_thread_input *input = (struct locking_test_thread *)arg;
-+
-+	for (i = 0; i < LOCK_TESTING_ITERATIONS; ++i) {
-+		j = input->source_fds[i % LOCK_TESTING_THREADS];
-+		cap.args[0] = input->source_fds[j];
-+		/*
-+		 * Call IOCTL directly without checking return code or
-+		 * asserting. We are * simply trying to confirm there is no
-+		 * deadlock from userspace * not check correctness of
-+		 * migration here.
-+		 */
-+		ioctl(input->vm->fd, KVM_ENABLE_CAP, &cap);
-+	}
-+}
-+
-+static void test_sev_migrate_locking(void)
-+{
-+	struct locking_thread_input input[LOCK_TESTING_THREADS];
-+	pthread_t pt[LOCK_TESTING_THREADS];
-+	int i;
-+
-+	for (i = 0; i < LOCK_TESTING_THREADS; ++i) {
-+		input[i].vm = sev_vm_create(/* es= */ false);
-+		input[0].source_fds[i] = input[i].vm->fd;
-+	}
-+	for (i = 1; i < LOCK_TESTING_THREADS; ++i)
-+		memcpy(input[i].source_fds, input[0].source_fds,
-+		       sizeof(input[i].source_fds));
-+
-+	for (i = 0; i < LOCK_TESTING_THREADS; ++i)
-+		pthread_create(&pt[i], NULL, locking_test_thread, &input[i]);
-+
-+	for (i = 0; i < LOCK_TESTING_THREADS; ++i)
-+		pthread_join(pt[i], NULL);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	test_sev_migrate_from(/* es= */ false);
-+	test_sev_migrate_from(/* es= */ true);
-+	test_sev_migrate_locking();
-+	return 0;
-+}
--- 
-2.33.0.153.gba50c8fa24-goog
+On Wed, Sep 1, 2021, at 23:10, Alyssa Rosenzweig wrote:
+> > My biggest issue is that I do not understand how this function is supposed
+> > to be used correctly. It would work fine as-is if it only ever gets passed buffers
+> > allocated by the coherent API but there's not way to check or guarantee that.
+> > There may also be callers making assumptions that no longer hold when
+> > iovad->granule > PAGE_SIZE.
+> > 
+> > Regarding your case: I'm not convinced the function is meant to be used there.
+> > If I understand it correctly, your code first allocates memory with dma_alloc_coherent
+> > (which possibly creates a sgt internally and then maps it with iommu_map_sg),
+> > then coerces that back into a sgt with dma_get_sgtable, and then maps that sgt to
+> > another iommu domain with dma_map_sg while assuming that the result will be contiguous
+> > in IOVA space. It'll work out because dma_alloc_coherent is the very thing
+> > meant to allocate pages that can be mapped into kernel and device VA space
+> > as a single contiguous block and because both of your IOMMUs are different
+> > instances of the same HW block. Anything allocated by dma_alloc_coherent for the
+> > first IOMMU will have the right shape that will allow it to be mapped as
+> > a single contiguous block for the second IOMMU.
+> > 
+> > What could be done in your case is to instead use the IOMMU API,
+> > allocate the pages yourself (while ensuring the sgt your create is made up
+> > of blocks with size and physaddr aligned to max(domain_a->granule, domain_b->granule))
+> > and then just use iommu_map_sg for both domains which actually comes with the
+> > guarantee that the result will be a single contiguous block in IOVA space and
+> > doesn't required the sgt roundtrip.
+> 
+> In principle I agree. I am getting the sense this function can't be used
+> correctly in general, and yet is the function that's meant to be used.
+> If my interpretation of prior LKML discussion holds, the problems are
+> far deeper than my code or indeed page size problems...
 
+Right, which makes reasoning about this function and its behavior if the
+IOMMU pages size is unexpected very hard for me. I'm not opposed to just
+keeping this function as-is when there's a mismatch between PAGE_SIZE and
+the IOMMU page size (and it will probably work that way) but I'd like to
+be sure that won't introduce unexpected behavior. 
+
+> 
+> If the right way to handle this is with the IOMMU and IOVA APIs, I really wish
+> that dance were wrapped up in a safe helper function instead of open
+> coding it in every driver that does cross device sharing.
+> 
+> We might even call that helper... hmm... dma_map_sg.... *ducks*
+> 
+
+There might be another way to do this correctly. I'm likely just a little
+bit biased because I've spent the past weeks wrapping my head around the
+IOMMU and DMA APIs and when all you have is a hammer everything looks like
+a nail.
+
+But dma_map_sg operates at the DMA API level and at that point the dma-ops
+for two different devices could be vastly different. 
+In the worst case one of them could be behind an IOMMU that can easily map
+non-contiguous pages while the other one is directly connected to the bus and
+can't even access >4G pages without swiotlb support.
+It's really only possible to guarantee that it will map N buffers to <= N
+DMA-addressable buffers (possibly by using an IOMMU or swiotlb internally) at
+that point.
+
+On the IOMMU API level you have much more information available about the actual
+hardware and can prepare the buffers in a way that makes both devices happy.
+That's why iommu_map_sgtable combined with iovad->granule aligned sgt entries
+can actually guarantee to map the entire list to a single contiguous IOVA block.
+
+
+Sven
