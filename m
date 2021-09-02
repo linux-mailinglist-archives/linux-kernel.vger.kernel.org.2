@@ -2,73 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACCA3FE7B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BED43FE7C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243133AbhIBCg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 22:36:27 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:35616 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233145AbhIBCg0 (ORCPT
+        id S243194AbhIBCiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 22:38:15 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:38377 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233145AbhIBCiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 22:36:26 -0400
-X-UUID: 32d966e8fe2746a49b5d40d11e4f32d7-20210902
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=QOTKsLIYJE11qFg8eBBPd7FPd11PtcpPDGYrw9m8oEE=;
-        b=GwcTVptjejg36Z/KVINTC6/shtkZ9NiWyRYC8gUw8fQr7DJJCpIcMpeCrjBbJ8aMBWiSmgVAbYm7ZaC3AmL/fgjhZXstnnX0EKqs6eQQSGVkGTpe5jXR8N59kUj6ioLucI0pCo2sGw715fYwn6tfQ6hJedXHGh6lVHdx0yDO66o=;
-X-UUID: 32d966e8fe2746a49b5d40d11e4f32d7-20210902
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2102975702; Thu, 02 Sep 2021 10:35:24 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 2 Sep 2021 10:35:23 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 2 Sep 2021 10:35:22 +0800
-Message-ID: <299c7f0a7b1dede1e2f704a0133f4045e85641b5.camel@mediatek.com>
-Subject: Re: linux-next: Tree for Sep 1
- [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko]
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Bicycle Tsai <bicycle.tsai@mediatek.com>
-Date:   Thu, 2 Sep 2021 10:35:22 +0800
-In-Reply-To: <3ee0b878-b78c-2483-1a0b-7570bda0132b@infradead.org>
-References: <20210901181740.3a0a69f2@canb.auug.org.au>
-         <3ee0b878-b78c-2483-1a0b-7570bda0132b@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Wed, 1 Sep 2021 22:38:13 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Umym6tP_1630550233;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0Umym6tP_1630550233)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 02 Sep 2021 10:37:14 +0800
+Subject: Re: [PATCH] Revert "net: fix NULL pointer reference in
+ cipso_v4_doi_free"
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <c6864908-d093-1705-76ce-94d6af85e092@linux.alibaba.com>
+ <18f0171e-0cc8-6ae6-d04a-a69a2a3c1a39@linux.alibaba.com>
+ <7f239a0e-7a09-3dc0-43ce-27c19c7a309d@linux.alibaba.com>
+ <4c000115-4069-5277-ce82-946f2fdb790a@linux.alibaba.com>
+ <CAHC9VhRBhCfX45V701rbGsvmOPQ4Nyp7dX2GA6NL8FxnA9akXg@mail.gmail.com>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <a53753dc-0cce-4f9a-cb97-fc790d30a234@linux.alibaba.com>
+Date:   Thu, 2 Sep 2021 10:37:13 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <CAHC9VhRBhCfX45V701rbGsvmOPQ4Nyp7dX2GA6NL8FxnA9akXg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA5LTAxIGF0IDEzOjU1IC0wNzAwLCBSYW5keSBEdW5sYXAgd3JvdGU6DQo+
-IE9uIDkvMS8yMSAxOjE3IEFNLCBTdGVwaGVuIFJvdGh3ZWxsIHdyb3RlOg0KPiA+IEhpIGFsbCwN
-Cj4gPiANCj4gPiBQbGVhc2UgZG8gbm90IGFkZCBhbnkgdjUuMTYgcmVsYXRlZCBjb2RlIHRvIHlv
-dXIgbGludXgtbmV4dA0KPiA+IGluY2x1ZGVkDQo+ID4gYnJhbmNoZXMgdW50aWwgYWZ0ZXIgdjUu
-MTUtcmMxIGhhcyBiZWVuIHJlbGVhc2VkLg0KPiA+IA0KPiA+IENoYW5nZXMgc2luY2UgMjAyMTA4
-MzE6DQo+ID4gDQo+IA0KPiANCj4gb24geDg2XzY0Og0KPiANCj4gRVJST1I6IG1vZHBvc3Q6ICJj
-bGtkZXZfYWRkIiBbc291bmQvc29jL21lZGlhdGVrL210ODE5NS9zbmQtc29jLQ0KPiBtdDgxOTUt
-YWZlLmtvXSB1bmRlZmluZWQhDQo+IEVSUk9SOiBtb2Rwb3N0OiAiY2xrZGV2X2Ryb3AiIFtzb3Vu
-ZC9zb2MvbWVkaWF0ZWsvbXQ4MTk1L3NuZC1zb2MtDQo+IG10ODE5NS1hZmUua29dIHVuZGVmaW5l
-ZCENCj4gRVJST1I6IG1vZHBvc3Q6ICJjbGtfdW5yZWdpc3Rlcl9nYXRlIiBbc291bmQvc29jL21l
-ZGlhdGVrL210ODE5NS9zbmQtDQo+IHNvYy1tdDgxOTUtYWZlLmtvXSB1bmRlZmluZWQhDQo+IEVS
-Uk9SOiBtb2Rwb3N0OiAiY2xrX3JlZ2lzdGVyX2dhdGUiIFtzb3VuZC9zb2MvbWVkaWF0ZWsvbXQ4
-MTk1L3NuZC0NCj4gc29jLW10ODE5NS1hZmUua29dIHVuZGVmaW5lZCENCj4gDQo+IEZ1bGwgcmFu
-ZGNvbmZpZyBmaWxlIGlzIGF0dGFjaGVkLg0KPiANCg0KSGkgUmFuZHksDQoNClRoZSBwcm9ibGVt
-IGlzIGNhdXNlZCBieSB0aGUgZGVwZW5kZW5jeSBkZWNsYXJhdGlvbiwgYmVjYXVzZSBpdCdzIG5v
-dCBhDQpkcml2ZXIgZm9yIHg4Nl82NC4NClRoZSBkZXBlbmRlbmN5IGRlY2xhcmF0aW9uIGhhcyBi
-ZWVuIGFkZGVkIGluIHRoZSBmb2xsb3dpbmcgcGF0Y2guDQoNCg0KaHR0cHM6Ly9wYXRjaHdvcmsu
-a2VybmVsLm9yZy9wcm9qZWN0L2Fsc2EtZGV2ZWwvcGF0Y2gvN2U2MjhlMzU5YmRlMDRjZWI5ZGRk
-NzRhNDU5MzEwNTliNGE0NjIzYy4xNjMwNDE1ODYwLmdpdC5nZWVydCtyZW5lc2FzQGdsaWRlci5i
-ZS8NCg0KVGhhbmtzLA0KVHJldm9yDQoNCg0K
 
+
+On 2021/9/2 上午5:05, Paul Moore wrote:
+> On Tue, Aug 31, 2021 at 10:21 PM 王贇 <yun.wang@linux.alibaba.com> wrote:
+>>
+>> Hi Paul, it confused me since it's the first time I face
+>> such situation, but I just realized what you're asking is
+>> actually this revert, correct?
+> 
+> I believe DaveM already answered your question in the other thread,
+> but if you are still unsure about the patch let me know.
+
+I do failed to get the point :-(
+
+As I checked the:
+  https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
+
+both v1 and v2 are there with the same description and both code modification
+are applied.
+
+We want revert v1 but not in a revert patch style, then do you suggest
+send a normal patch to do the code revert?
+
+Regards,
+Michael Wang
+
+> 
