@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B613FEF45
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 16:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCFDD3FEF62
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 16:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345374AbhIBOSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 10:18:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33549 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234355AbhIBOSt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 10:18:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630592270;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=2e6dsZkQgBYFJNmC6Zh9miYYi2IrqOsHwbxDd3eYftY=;
-        b=KCnxKg/DErYZvqxtfRXfdXHnf+GJ3MugsG1AqXILXTUzM4DZojcul4qi3GRukgG6xmRE7P
-        3PSoSJtWaNT+CiAgbpxB9LzPIi9TTR38QBgmLTSifmWTO8yu6X1xOEO8TUrW4iTQgnGYC5
-        EQJXzwdTyDl6vi5GnN3hJg7ZD/D1wlI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-403-LtuVe0swNuuzvGwzj_-Jxg-1; Thu, 02 Sep 2021 10:17:49 -0400
-X-MC-Unique: LtuVe0swNuuzvGwzj_-Jxg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0985518FF44D;
-        Thu,  2 Sep 2021 14:17:48 +0000 (UTC)
-Received: from redhat.com (unknown [10.15.80.136])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C074C60E3A;
-        Thu,  2 Sep 2021 14:17:47 +0000 (UTC)
-Date:   Thu, 2 Sep 2021 09:17:45 -0500
-From:   David Teigland <teigland@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] dlm updates for 5.15
-Message-ID: <20210902141745.GA31274@redhat.com>
+        id S1345475AbhIBOWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 10:22:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234283AbhIBOWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 10:22:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F3C3610A4;
+        Thu,  2 Sep 2021 14:21:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630592505;
+        bh=sUsA0gFbABycvbiHzVJiJQ+UzKuwYnPW95lbREpcEWw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=XANpgNcQspq5z8PetoCzgkEbmqNZk7yTrPFnmupbUnt9JFfFxRDbj7QpyT5IxnI0j
+         XdWYsC7EEEbB9lE8GPjnQ+N9CizsW0oGNvdnQCJwwCAlD7UlgaJV8jmWETXD+NyyqI
+         vMGZrUwujYY4diEYs8O3EqqtCVQPEqlwz1oKinBswVYMbbSnw2NtFm0YKOqyGDAty5
+         BZI98ASpP55dAZ7NhkHQp5ofmZ1wn/BOC1+2ff8DrGLGPuCdOulNCbr/khiY8WTs1x
+         OA08OZrDB3Zlrz1C8/wuJzSRLXZD4jH2Ht9zWlT+j59bs7KpqFWBOWGIXTkFGC7gIt
+         4oT6bdu3WSBOQ==
+Subject: Re: [PATCH v2 2/6] dt-bindings: memory-controllers: ti,gpmc: Convert
+ to yaml
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, nm@ti.com,
+        linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+        lokeshvutla@ti.com, robh+dt@kernel.org,
+        krzysztof.kozlowski@canonical.com, miquel.raynal@bootlin.com,
+        tony@atomide.com, linux-kernel@vger.kernel.org
+References: <20210902095609.16583-1-rogerq@kernel.org>
+ <20210902095609.16583-3-rogerq@kernel.org>
+ <1630584239.117607.685604.nullmailer@robh.at.kernel.org>
+From:   Roger Quadros <rogerq@kernel.org>
+Message-ID: <d6b5a2b3-6a29-0c5d-cbe5-eda9b07b2c65@kernel.org>
+Date:   Thu, 2 Sep 2021 17:21:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.8.3 (2017-05-23)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <1630584239.117607.685604.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Rob,
 
-Please pull dlm updates from tag:
+On 02/09/2021 15:03, Rob Herring wrote:
+> On Thu, 02 Sep 2021 12:56:05 +0300, Roger Quadros wrote:
+>> Convert omap-gpmc.txt to ti,gpmc.yaml.
+>>
+>> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+>> ---
+>>  .../bindings/memory-controllers/omap-gpmc.txt | 157 --------
+>>  .../bindings/memory-controllers/ti,gpmc.yaml  | 364 ++++++++++++++++++
+>>  .../devicetree/bindings/mtd/gpmc-nand.txt     |   2 +-
+>>  .../devicetree/bindings/mtd/gpmc-nor.txt      |   4 +-
+>>  .../devicetree/bindings/mtd/gpmc-onenand.txt  |   2 +-
+>>  .../devicetree/bindings/net/gpmc-eth.txt      |   4 +-
+>>  6 files changed, 370 insertions(+), 163 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+>>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+>>
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> Documentation/devicetree/bindings/memory-controllers/ti,gpmc.example.dt.yaml:0:0: /example-0/memory-controller@50000000/nand@0,0: failed to match any schema with compatible: ['ti,omap2-nand']
 
-git://git.kernel.org/pub/scm/linux/kernel/git/teigland/linux-dlm.git dlm-5.15
+'ti,omap2-nand' compatible is being added in patch 3 of this series.
+So the error will go away there.
 
-This set includes a number of minor fixes and cleanups
-related to the networking changes in the last release.
-A patch to delay ack messages reduces network traffic
-significantly.
+cheers,
+-roger
 
-Thanks,
-Dave
-
-Alexander Aring (15):
-      fs: dlm: use sk->sk_socket instead of con->sock
-      fs: dlm: use READ_ONCE for config var
-      fs: dlm: fix typo in tlv prefix
-      fs: dlm: clear CF_APP_LIMITED on close
-      fs: dlm: cleanup and remove _send_rcom
-      fs: dlm: introduce con_next_wq helper
-      fs: dlm: move to static proto ops
-      fs: dlm: introduce generic listen
-      fs: dlm: auto load sctp module
-      fs: dlm: generic connect func
-      fs: dlm: fix multiple empty writequeue alloc
-      fs: dlm: move receive loop into receive handler
-      fs: dlm: implement delayed ack handling
-      fs: dlm: fix return -EINTR on recovery stopped
-      fs: dlm: avoid comms shutdown delay in release_lockspace
-
- fs/dlm/dir.c          |   4 +-
- fs/dlm/dlm_internal.h |   2 +-
- fs/dlm/lockspace.c    |   3 +-
- fs/dlm/lowcomms.c     | 770 +++++++++++++++++++++++++-------------------------
- fs/dlm/lowcomms.h     |   1 +
- fs/dlm/member.c       |   4 +-
- fs/dlm/midcomms.c     |  56 +++-
- fs/dlm/rcom.c         |  29 +-
- fs/dlm/recoverd.c     |   4 +-
- 9 files changed, 458 insertions(+), 415 deletions(-)
-
+> doc reference errors (make refcheckdocs):
+> 
+> See https://patchwork.ozlabs.org/patch/1523568
+> 
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit.
+> 
