@@ -2,82 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90D23FF29D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6717A3FF2AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347066AbhIBRmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 13:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346791AbhIBRmR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 13:42:17 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD7CC061757;
-        Thu,  2 Sep 2021 10:41:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=7V8FZ80qIliivCO2ypIuGl2Awrc5ZK57tRJ4fo+fTPQ=; b=kjbVAj8y8kqrHOxzh5HG+PkbB9
-        Y6I1Ri0p1OX8ZojE1JOAtx4zNb9br0bIT6kKcK0pwb43OF/nWHFc+nzS0JUAXe3mIT6QK9s5vu4ue
-        fVEEbUgJeTgtw4VwPNvigT+lKIU6Dc8233ERbzZkIIXiwvWz4Hyfz6tf4LrQ28A1u9dDSaA6rYFq9
-        35uMQ4WV2bbPVzdnA4rPEVZgLiAh6l2P8UTq9MmGpEaNGRNmvPKTLrfXBUgdDd1mjX1O5JxBV7YmM
-        e8r3pzUqdi2C5GoAQ05/qJlFjCC4Bdm93rQ4fhe1239c5f20fXZ37R5oExtjYihS2xkkljbg05j1x
-        Sjh2fZXQ==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mLqi2-00A9FS-An; Thu, 02 Sep 2021 17:41:06 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     axboe@kernel.dk, gregkh@linuxfoundation.org,
-        chaitanya.kulkarni@wdc.com, atulgopinathan@gmail.com, hare@suse.de,
-        maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org,
-        colin.king@canonical.com, shubhankarvk@gmail.com,
-        baijiaju1990@gmail.com, trix@redhat.com,
-        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, borntraeger@de.ibm.com, oberpar@linux.ibm.com,
-        tj@kernel.org
-Cc:     linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>
-Subject: [PATCH 9/9] s390/block/xpram: add error handling support for add_disk()
-Date:   Thu,  2 Sep 2021 10:41:05 -0700
-Message-Id: <20210902174105.2418771-10-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210902174105.2418771-1-mcgrof@kernel.org>
-References: <20210902174105.2418771-1-mcgrof@kernel.org>
+        id S1346842AbhIBRnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 13:43:05 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:53780 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346632AbhIBRmT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 13:42:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=VtDdRsvYXvPM91L9W6La/FIYqWBh7JU22fy4eU4q8YI=; b=SIxlOcdujqgPVHNPYQx7mBMoYR
+        k8Y5DQyburGjlxK0llEtHbv+mUjHVW5BxcEVjzVUlqjm8B/DO0maHJMtimq7PVLJL75z2fmBrPBjJ
+        DI29J//drW58AM0CWof/L3TDPpOUJzLpxqUaQglBvzFp/i6dMXFXb1Z1WLGb2z+XR5fI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mLqi3-0051nR-1E; Thu, 02 Sep 2021 19:41:07 +0200
+Date:   Thu, 2 Sep 2021 19:41:07 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
+        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for
+ FWNODE_FLAG_BROKEN_PARENT
+Message-ID: <YTEMs1mMIT/Z0c4H@lunn.ch>
+References: <YSpr/BOZj2PKoC8B@lunn.ch>
+ <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
+ <YS4rw7NQcpRmkO/K@lunn.ch>
+ <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
+ <YS6nxLp5TYCK+mJP@lunn.ch>
+ <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
+ <YS608fdIhH4+qJsn@lunn.ch>
+ <20210831231804.zozyenear45ljemd@skbuf>
+ <CAGETcx-ktuU1RqXwj_qV8tCOLAg3DXU-wCAm6+NukyxRencSjw@mail.gmail.com>
+ <20210901084625.sqzh3oacwgdbhc7f@skbuf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901084625.sqzh3oacwgdbhc7f@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We never checked for errors on add_disk() as this function
-returned void. Now that this is fixed, use the shiny new
-error handling.
+>   How would this be avoided? Or are you thinking of some kind of two-level
+>   component driver system:
+>   - the DSA switch is a component master, with components being its
+>     sub-devices such as internal PHYs etc
+>   - the DSA switch is also a component of the DSA switch tree
 
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
----
- drivers/s390/block/xpram.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+I think you might be missing a level. Think about the automotive
+reference design system you posted the DT for a couple of days
+ago. Don't you have cascaded switches, which are not members of the
+same DSA tree. You might need a component for that whole group of
+switches, above what you suggest here.
 
-diff --git a/drivers/s390/block/xpram.c b/drivers/s390/block/xpram.c
-index ce98fab4d43c..ed3904b6a9c8 100644
---- a/drivers/s390/block/xpram.c
-+++ b/drivers/s390/block/xpram.c
-@@ -371,7 +371,9 @@ static int __init xpram_setup_blkdev(void)
- 		disk->private_data = &xpram_devices[i];
- 		sprintf(disk->disk_name, "slram%d", i);
- 		set_capacity(disk, xpram_sizes[i] << 1);
--		add_disk(disk);
-+		rc = add_disk(disk);
-+		if (rc)
-+			goto out;
- 	}
- 
- 	return 0;
--- 
-2.30.2
+Can you nest components? How deep can you nest them?
 
+    Andrew
