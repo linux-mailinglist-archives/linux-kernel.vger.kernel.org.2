@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD3033FF1E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A11E3FF1E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346464AbhIBQ4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54488 "EHLO
+        id S1346489AbhIBQ5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:57:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234446AbhIBQ4i (ORCPT
+        with ESMTP id S1346369AbhIBQ5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:56:38 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832E6C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:55:39 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id n27so5948038eja.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:55:39 -0700 (PDT)
+        Thu, 2 Sep 2021 12:57:52 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B0BC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:56:54 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id fs6so1765655pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:56:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DdjT4Us6xIPBwUlhi0ZmrboIND0msaui3k9fDHdcywk=;
-        b=MRQ5J5NcSS7kJA+NVAT9d1mDsJd8/n7Rnu9sLmT8pLWh9ftJXZqtSi8PlEUhOL84AT
-         tTxglMgU891q1EsiSmgMa9okBFOpmeT3hK8xZlyZNM5AUc0/JVm8rb2WBHSnACSrWfTY
-         dpWAWSt//ZkKIq9EVQw25M0w5NtMLQx/NGVskYLV7hA7B9gl4D4sHJJ4zabbj2wkgAo5
-         kzKWnYZ6QigeYm/QNjmp5uC2ZGgdQuzp0lAsBHa4v6wNHNoxc8xeSWIZcTglFTneUvmp
-         3wKkWOPGpfOg75hZI6Lq6kSPiYOimtTBzD9LPozCWMXgYq8QzyUgG+Pkue477uU6shQz
-         QYEw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+Qgo5364SnUWK2dNQ5Zfdn6/xMGj0/q4OzZE+MW9D64=;
+        b=Evzzbucq1EgSUqQiruSqadL7VBZWvcldiKDimfrvXEg2S2TIo8Qi7uQJNX4b6v0/10
+         amVv7sNRRqnhTCHLFKdhLz4k2XZdMlH5DoUJtSQuUFXB8cyLL3Gfh1JDVUtpwmRcAW8n
+         erExgzMPh+2aOt1IQneL1CT0RB5brkkoCorwcFsSEtSBRh8J31DpoWmB5zCZbsCkPMYJ
+         PiTP1GUacJKMTHmMt3RgZdaj1U+nm29ZX8mnsDEXSX0v15aqK9zJjo+wWokpp1taEA67
+         6bJ4VywXke3JWSDCw3ZJh9mEixqfMlBrvKB8mNPKm+yJ6beIMIcDjnHqz8jN8Sam+ve8
+         0eJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DdjT4Us6xIPBwUlhi0ZmrboIND0msaui3k9fDHdcywk=;
-        b=ftGC5+IzBQ+s3TpZaSyNYDmySd+ZoKotVni4t0KAoiabv5IC8me0jUPE9XGJC+WlNn
-         kyok4v7UeT6T5X5R3hVf+Q64YSaXaNdEPMikJFnCOwe/89Iz7GRQDOzXT5mXfp/5i5aF
-         Qu1YEVghZ3iO1thm+0heBT+jesWfHSx11iAIthcvMOe3a/7bKkTh+REd2tykDRgokQWo
-         V65HbZ1C1CA0lNVWBs3Bk656YZaoZsHxoZcttPzTLYuqtFr7Rto7EL1gjNnlsS3KzYkd
-         GHs+duv9yJcTY22Brn/QAgU5PVnAfP0yCN26ygbGqnPVUzKetNrcMDbuSpIqRmil9xVA
-         7dxw==
-X-Gm-Message-State: AOAM53182mabjWC/lmwaC50mFXWYvnDsRLV1YyRcLRDGhgz2Cv5G8GBC
-        Sy51gUsqVDC67jzzhmJLxZJpN10haNGDz5gwfsv/tA==
-X-Google-Smtp-Source: ABdhPJwh0/RZoQbsfLsqpqYa2DxpxgVPhTrvfHT/R7bfvGSqtM20ZcJksUFa4sf2GDzTTqsDLOUud4ibRTEhfeHDVWo=
-X-Received: by 2002:a17:906:7749:: with SMTP id o9mr4966675ejn.141.1630601738117;
- Thu, 02 Sep 2021 09:55:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+Qgo5364SnUWK2dNQ5Zfdn6/xMGj0/q4OzZE+MW9D64=;
+        b=kT2KRrjiFrM1MAgI92f2MeBTvJvY09zEL3jgst5e06FexjGNcQM1Y5+s2lO0a2834V
+         3Z/qazDlcfuHBPHaKfolXOy0phrNjw1Ejn56B9w+2B3oDg8DYntEzm2gwZu+z/CgbbBy
+         j+YgjTy6aePXSdG/46ifiwjbpixU2msBhRCJ5wOZG2A7q2XYH1PApKqJOOmHX0tSbBud
+         PAW5vPranWjSoVl+iiiuDo/0wYKgOvlicDvlRCvNwuMCJJRlndOjrMQ/WXeA/GxJkhDO
+         1IJiLNRf9swDpSy/YqEf597Pnraoh4XV+JbmxJUO3awroI79MMshY+uVCMd504G6cOVR
+         YcXQ==
+X-Gm-Message-State: AOAM53186XBmbi8kUDNOrjuISut5z9qXas2K0YcC708cPIuLryeSrUNd
+        rp9aoveeo7DVly54su/2hOLqfA==
+X-Google-Smtp-Source: ABdhPJz7WaOCKKUUXKC5QJrEjYscQ8+A1ETyUmwukoerUYpRIYH60c0efD2qdHXWwPpJG40jHiDkyQ==
+X-Received: by 2002:a17:90a:588f:: with SMTP id j15mr5059145pji.177.1630601813323;
+        Thu, 02 Sep 2021 09:56:53 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id v190sm2968216pfv.166.2021.09.02.09.56.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 09:56:52 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 16:56:49 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Kieran Bingham <kbingham@kernel.org>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jessica Yu <jeyu@kernel.org>,
+        Jim Mattson <jmattson@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Yang Weijiang <weijiang.yang@intel.com>,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>
+Subject: Re: [PATCH v3 2/6] KVM: x86: add force_intercept_exceptions_mask
+Message-ID: <YTECUaPa9kySQxRX@google.com>
+References: <20210811122927.900604-1-mlevitsk@redhat.com>
+ <20210811122927.900604-3-mlevitsk@redhat.com>
 MIME-Version: 1.0
-References: <20210831094900.203283-1-benjamin.gaignard@collabora.com> <1484b5ebb9c943c72d7d7a0481c1a2cd9899705b.camel@ndufresne.ca>
-In-Reply-To: <1484b5ebb9c943c72d7d7a0481c1a2cd9899705b.camel@ndufresne.ca>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Thu, 2 Sep 2021 13:55:26 -0300
-Message-ID: <CAAEAJfA9Sjr78c==1tCoqja4abY2sZ++UcAT7fgBrK7wid1-2A@mail.gmail.com>
-Subject: Re: [PATCH 0/2] media: HEVC: RPS clean up
-To:     Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        =?UTF-8?Q?Jernej_=C5=A0krabec?= <jernej.skrabec@gmail.com>,
-        John Cox <jc@kynesim.co.uk>,
-        linux-media <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-staging@lists.linux.dev,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-sunxi@lists.linux.dev, Lucas Stach <l.stach@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210811122927.900604-3-mlevitsk@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hans, Nicolas,
+Assuming this hasn't been abandoned...
 
-On Tue, 31 Aug 2021 at 16:19, Nicolas Dufresne <nicolas@ndufresne.ca> wrote:
->
-> As per discussion with Ezequiel, I think this patch should perhaps be made an
-> RFC titled "media: uapi: clean and make HEVC uAPI public". Keep it RFC until we
-> have collected all the needed changes.
->
-> Opinion ?
+On Wed, Aug 11, 2021, Maxim Levitsky wrote:
+> This parameter will be used by VMX and SVM code to force
+> interception of a set of exceptions, given by a bitmask
+> for guest debug and/or kvm debug.
+> 
+> This is based on an idea first shown here:
+> https://patchwork.kernel.org/project/kvm/patch/20160301192822.GD22677@pd.tnic/
+> 
+> CC: Borislav Petkov <bp@suse.de>
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>  arch/x86/kvm/x86.c | 3 +++
+>  arch/x86/kvm/x86.h | 2 ++
+>  2 files changed, 5 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index fdc0c18339fb..092e2fad3c0d 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -184,6 +184,9 @@ module_param(force_emulation_prefix, bool, S_IRUGO);
+>  int __read_mostly pi_inject_timer = -1;
+>  module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
+>  
+> +uint force_intercept_exceptions_mask;
+> +module_param(force_intercept_exceptions_mask, uint, S_IRUGO | S_IWUSR);
 
-I agree.
-
-IMO, it makes no sense to keep merging anything on Hantro G2 HEVC
-support, until the BLK-CTRL part is ready [1]. Without that, we can't
-test anything
-so we may introduce regressions without knowing.
-
-Also, I think it's time to start discussing the HEVC uAPI as a whole,
-with the goal is having a stable interface that can be used by userspace
-frameworks (GStreamer).
-
-[1] https://www.spinics.net/lists/arm-kernel/msg913881.html
-
-Thanks,
-Ezequiel
+Use octal permissions.  This also can't be a simple writable param, at least not
+without a well-documented disclaimer, as there's no guarantee a vCPU will update
+its exception bitmap in a timely fashion.  An alternative to a module param would
+be to extend/add a per-VM ioctl(), e.g. maybe KVM_SET_GUEST_DEBUG?  The downside
+of an ioctl() is that it would require userspace enabling :-/
