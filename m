@@ -2,240 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035733FEE98
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:23:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37E3F3FEEA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:26:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345049AbhIBNYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:24:14 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19004 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345038AbhIBNYK (ORCPT
+        id S1345099AbhIBN1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234277AbhIBN1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:24:10 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H0hN02rV2zbl2R;
-        Thu,  2 Sep 2021 21:19:12 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 2 Sep 2021 21:23:08 +0800
-Received: from [10.174.176.73] (10.174.176.73) by
- dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Thu, 2 Sep 2021 21:23:08 +0800
-Subject: Re: [PATCH v2 1/4] block, bfq: add support to track if root_group
- have any pending requests
-To:     Paolo Valente <paolo.valente@linaro.org>
-CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
-References: <20210806020826.1407257-1-yukuai3@huawei.com>
- <20210806020826.1407257-2-yukuai3@huawei.com>
- <2968B663-F855-4C41-AE9B-E33787DA6AF9@linaro.org>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <7ee856f6-ca13-67dc-d2db-d73ef31ffdd9@huawei.com>
-Date:   Thu, 2 Sep 2021 21:23:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Thu, 2 Sep 2021 09:27:40 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C91AC061575;
+        Thu,  2 Sep 2021 06:26:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=tJw4vBFLbw26+n1iOurtCAPTzn5rxnS3DNMi7TNfPu4=; b=oIGip4OBLINXP3hGDVMrz4UNy
+        sRLEzFetWGuINThhg/NMbm5BAWE+uQtRcc8rjJK5CWA59kG3Ku2J/uvwA1YYaHh7jNyLIbhY80sFI
+        hsDuIkP63vfNDjrbbiombOov7fiGH9OK2rhRzSQezYv2W2IIppiQ+EXztGrCBttvvJsZV24RX8kpk
+        2ib6T1cYQnuJFbh7j+qhuWb5uFlEPymImOimpGjibhCpSANyt/g55tegIEhhUiNzqqUEmTn0a5AJM
+        6auJjQEUIG2JhhuT5eae/lgVd9FpWFSmDF9BBCwz+f7EVuwOFY6cGvEWMjIUlALsAwXZnlUN5W+E+
+        skq7igmmw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48090)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mLmjm-0001Tp-KB; Thu, 02 Sep 2021 14:26:38 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mLmjj-0007rI-PN; Thu, 02 Sep 2021 14:26:35 +0100
+Date:   Thu, 2 Sep 2021 14:26:35 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [RFC PATCH net-next 0/3] Make the PHY library stop being so
+ greedy when binding the generic PHY driver
+Message-ID: <20210902132635.GG22278@shell.armlinux.org.uk>
+References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
+ <20210902121927.GE22278@shell.armlinux.org.uk>
+ <20210902123532.ruvuecxoig67yv5v@skbuf>
 MIME-Version: 1.0
-In-Reply-To: <2968B663-F855-4C41-AE9B-E33787DA6AF9@linaro.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.73]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902123532.ruvuecxoig67yv5v@skbuf>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/08/27 1:00, Paolo Valente wrote:
+On Thu, Sep 02, 2021 at 03:35:32PM +0300, Vladimir Oltean wrote:
+> On Thu, Sep 02, 2021 at 01:19:27PM +0100, Russell King (Oracle) wrote:
+> > On Thu, Sep 02, 2021 at 01:50:50AM +0300, Vladimir Oltean wrote:
+> > > The central point of that discussion is that DSA seems "broken" for
+> > > expecting the PHY driver to probe immediately on PHYs belonging to the
+> > > internal MDIO buses of switches. A few suggestions were made about what
+> > > to do, but some were not satisfactory and some did not solve the problem.
+> > 
+> > I think you need to describe the mechanism here. Why wouldn't a PHY
+> > belonging to an internal MDIO bus of a switch not probe immediately?
+> > What resources may not be available?
 > 
+> As you point out below, the interrupt-controller is what is not available.
+> There is a mechanism called fw_devlink which infers links from one OF
+> node to another based on phandles. When you have an interrupt-parent,
+> that OF node becomes a supplier to you. Those OF node links are then
+> transferred to device links once the devices having those OF nodes are
+> created.
 > 
->> Il giorno 6 ago 2021, alle ore 04:08, Yu Kuai <yukuai3@huawei.com> ha scritto:
->>
->> Add a new member in bfq_data to track number of queues that are in
->> root_group with any pending requests.
+> > If we have a DSA driver that tries to probe the PHYs before e.g. the
+> > interrupt controller inside the DSA switch has been configured, aren't
+> > we just making completely unnecessary problems for ourselves?
 > 
-> maybe modify the last part of the sentence as: ... and that have some pending request
+> This is not what happens, if that were the case, of course I would fix
+> _that_ and not in this way.
 > 
->> This will be used in next patch
->> to optmize queue idle judgment when root_group doesn't have any
->> pending requests.
->>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->> block/bfq-iosched.c |  8 +++++++-
->> block/bfq-iosched.h | 13 +++++++++++--
->> block/bfq-wf2q.c    | 37 ++++++++++++++++++++++++-------------
->> 3 files changed, 42 insertions(+), 16 deletions(-)
->>
->> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
->> index 727955918563..7c6b412f9a9c 100644
->> --- a/block/bfq-iosched.c
->> +++ b/block/bfq-iosched.c
->> @@ -859,8 +859,14 @@ void __bfq_weights_tree_remove(struct bfq_data *bfqd,
->> void bfq_weights_tree_remove(struct bfq_data *bfqd,
->> 			     struct bfq_queue *bfqq)
->> {
->> -	struct bfq_entity *entity = bfqq->entity.parent;
->> +	struct bfq_entity *entity = &bfqq->entity;
->> +
->> +	if (entity->in_groups_with_pending_reqs) {
->> +		entity->in_groups_with_pending_reqs = false;
->> +		bfqd->num_queues_with_pending_reqs_in_root--;
+> > Wouldn't it be saner to ensure that the interrupt controller has been
+> > setup and become available prior to attempting to setup anything that
+> > relies upon that interrupt controller?
 > 
-> Here you cross the comment "The decrement of
-> num_groups_with_pending_reqs is not performed immediately upon ...".
+> The interrupt controller _has_ been set up. The trouble is that the
+> interrupt controller has the same OF node as the switch itself, and the
+> same OF node. Therefore, fw_devlink waits for the _entire_ switch to
+> finish probing, it doesn't have insight into the fact that the
+> dependency is just on the interrupt controller.
 > 
-> Find a way to
-> - move that comment up, and to make it correct for this slightly
->    different decrement
-> - leave a correct comment (probably shorter) in the original position
+> > From what I see of Marvell switches, the internal PHYs only ever rely
+> > on internal resources of the switch they are embedded in.
+> > 
+> > External PHYs to the switch are a different matter - these can rely on
+> > external clocks, and in that scenario, it would make sense for a
+> > deferred probe to cause the entire switch to defer, since we don't
+> > have all the resources for the switch to be functional (and, because we
+> > want the PHYs to be present at switch probe time, not when we try to
+> > bring up the interface, I don't see there's much other choice.)
+> > 
+> > Trying to move that to interface-up time /will/ break userspace - for
+> > example, Debian's interfaces(8) bridge support will become unreliable,
+> > and probably a whole host of other userspace. It will cause regressions
+> > and instability to userspace. So that's a big no.
 > 
->> +	}
->>
->> +	entity = entity->parent;
->> 	for_each_entity(entity) {
->> 		struct bfq_sched_data *sd = entity->my_sched_data;
->>
->> diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
->> index 99c2a3cb081e..610769214f72 100644
->> --- a/block/bfq-iosched.h
->> +++ b/block/bfq-iosched.h
->> @@ -195,7 +195,12 @@ struct bfq_entity {
->> 	/* flag, set to request a weight, ioprio or ioprio_class change  */
->> 	int prio_changed;
->>
->> -	/* flag, set if the entity is counted in groups_with_pending_reqs */
->> +	/*
->> +	 * If entity represents bfq_group, this flag will set
-> 
-> will be set?
-> 
->> if the group is
->> +	 * not root_group and have
-> 
-> has
-> 
->> any pending requests; If entity represents
-> 
-> one more nit: use lowercase after semicolon
-> 
->> +	 * bfq_queue, this flag will set
-> 
-> will be set
-> 
->> if the queue is in root_group and have
->> +	 * any pending requests.
->> +	 */
->> 	bool in_groups_with_pending_reqs;
->>
-> 
-> The name of the above field follows from the fact that entity is
-> counted in groups_with_pending_reqs.  You change this fact, because,
-> in your patch, a queue is not counted in groups_with_pending_reqs.
-> But you leave the same name. This creates confusion.
-> 
-> 
->> 	/* last child queue of entity created (for non-leaf entities) */
->> @@ -539,7 +544,11 @@ struct bfq_data {
->> 	 * with no request waiting for completion.
->> 	 */
->> 	unsigned int num_groups_with_pending_reqs;
->> -
->> +	/*
->> +	 * number of queues that are in root_group with at least one request
->> +	 * waiting for completion.
-> 
-> please link somehow this comment to the long comment that comes before it
-> 
->> +	 */
->> +	unsigned int num_queues_with_pending_reqs_in_root;
-> 
-> Why using two counters?  I mean, couldn't you simply count also the
-> root group in num_groups_with_pending_reqs?
+> Why a big no?
 
-Hi, Paolo
+Fundamental rule of kernel programming: we do not break existing
+userspace.
 
-Thanks for taking time reviewing these patches
+Debian has had support for configuring bridges at boot time via
+the interfaces file for years. Breaking that is going to upset a
+lot of people (me included) resulting in busted networks. It
+would be a sure way to make oneself unpopular.
 
-I was doing this too complicated, while counting root group into
-num_groups_with_pending_reqs is much easier. I'll do this in next
-iteration.
+> I expect there to be 2 call paths of phy_attach_direct:
+> - At probe time. Both the MAC driver and the PHY driver are probing.
+>   This is what has this patch addresses. There is no issue to return
+>   -EPROBE_DEFER at that time, since drivers connect to the PHY before
+>   they register their netdev. So if connecting defers, there is no
+>   netdev to unregister, and user space knows nothing of this.
+> - At .ndo_open time. This is where it maybe gets interesting, but not to
+>   user space. If you open a netdev and it connects to the PHY then, I
+>   wouldn't expect the PHY to be undergoing a probing process, all of
+>   that should have been settled by then, should it not? Where it might
+>   get interesting is with NFS root, and I admit I haven't tested that.
 
-Thanks
-Yu Kuai
+I don't think you can make that assumption. Consider the case where
+systemd is being used, DSA stuff is modular, and we're trying to
+setup a bridge device on DSA. DSA could be probing while the bridge
+is being setup.
 
-> 
->> 	/*
->> 	 * Per-class (RT, BE, IDLE) number of bfq_queues containing
->> 	 * requests (including the queue in service, even if it is
->> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
->> index 7a462df71f68..188c8f907219 100644
->> --- a/block/bfq-wf2q.c
->> +++ b/block/bfq-wf2q.c
->> @@ -946,6 +946,29 @@ static void bfq_update_fin_time_enqueue(struct bfq_entity *entity,
->> 	bfq_active_insert(st, entity);
->> }
->>
->> +static void bfq_update_groups_with_pending_reqs(struct bfq_entity *entity)
->> +{
->> +#ifdef CONFIG_BFQ_GROUP_IOSCHED
->> +	struct bfq_queue *bfqq = bfq_entity_to_bfqq(entity);
->> +
-> 
-> why do you introduce an extra variable bfqq, instead of doing as in
-> the original version of the code?  In addition, you remove the comment
-> /* bfq_group */
-> 
-> Thanks,
-> Paolo
-> 
->> +	if (bfqq) {
->> +		if (!entity->parent && !entity->in_groups_with_pending_reqs) {
->> +			entity->in_groups_with_pending_reqs = true;
->> +			bfqq->bfqd->num_queues_with_pending_reqs_in_root++;
->> +		}
->> +	} else {
->> +		if (!entity->in_groups_with_pending_reqs) {
->> +			struct bfq_group *bfqg =
->> +				container_of(entity, struct bfq_group, entity);
->> +			struct bfq_data *bfqd = bfqg->bfqd;
->> +
->> +			entity->in_groups_with_pending_reqs = true;
->> +			bfqd->num_groups_with_pending_reqs++;
->> +		}
->> +	}
->> +#endif
->> +}
->> +
->> /**
->>   * __bfq_activate_entity - handle activation of entity.
->>   * @entity: the entity being activated.
->> @@ -999,19 +1022,7 @@ static void __bfq_activate_entity(struct bfq_entity *entity,
->> 		entity->on_st_or_in_serv = true;
->> 	}
->>
->> -#ifdef CONFIG_BFQ_GROUP_IOSCHED
->> -	if (!bfq_entity_to_bfqq(entity)) { /* bfq_group */
->> -		struct bfq_group *bfqg =
->> -			container_of(entity, struct bfq_group, entity);
->> -		struct bfq_data *bfqd = bfqg->bfqd;
->> -
->> -		if (!entity->in_groups_with_pending_reqs) {
->> -			entity->in_groups_with_pending_reqs = true;
->> -			bfqd->num_groups_with_pending_reqs++;
->> -		}
->> -	}
->> -#endif
->> -
->> +	bfq_update_groups_with_pending_reqs(entity);
->> 	bfq_update_fin_time_enqueue(entity, st, backshifted);
->> }
->>
->> -- 
->> 2.31.1
->>
-> 
-> .
-> 
+Sadly, this isn't theoretical. I've ended up needing:
+
+	pre-up sleep 1
+
+in my bridge configuration to allow time for DSA to finish probing.
+It's not a pleasant solution, nor a particularly reliable one at
+that, but it currently works around the problem. We don't need more
+cases of this kind of thing leading to boot time unreliability...
+
+Or if we do, then we're turning Linux into Windows, where you can
+end up with different behaviours each time the system is boot
+depending on the exact order that various stuff comes up.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
