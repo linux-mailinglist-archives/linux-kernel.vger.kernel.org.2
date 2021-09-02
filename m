@@ -2,249 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927BF3FF463
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EAC23FF468
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347451AbhIBTzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 15:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244551AbhIBTzi (ORCPT
+        id S1347464AbhIBT4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 15:56:03 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45894 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244551AbhIBT4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 15:55:38 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026D8C061575;
-        Thu,  2 Sep 2021 12:54:40 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id f22so3485325qkm.5;
-        Thu, 02 Sep 2021 12:54:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zIApn+pVyxRyKvTHD5IYjvS4FfZyz2qp0mFhAC5RqDE=;
-        b=RYAAw82B2YZo6aPonx+n8OdCrki0Dpl7PdxB4iZ9xXa/dROrWmA53lFC63z4HBDZIp
-         U9wfa4y+DZbW/0qyAGbjxFndBLzk/qUE+lMtsBZNu8K3tuvfneRuHaH6iwpuv3CIYtLD
-         BSn6UPgi+zg/vETCOJNkI95bjTCBMhYYQ1gfM8BNK8tfxHXX45WGapo4gpKZ8tYNb0Se
-         ctDjyIwEzhxxj1mYiuboySLhhzHd5+6JgH8iK7k120DUPrEZzT22O74pS3du2L1pzOCI
-         08CFREuZ0Ns1tj4rEa6ZUpeBCuZZxw7PrjoVEJCEkCQtZcl0IiBTS9gVds+5aMWK3fMh
-         qg/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zIApn+pVyxRyKvTHD5IYjvS4FfZyz2qp0mFhAC5RqDE=;
-        b=CWgC6vmhgSGeS1TOYaVr/HEJokWTrfZsCI1OWdicTxLDmcO+6/SlzoTHb4Sq4/SvVK
-         varNbnkGi8HATB8CF863al/ReA/IMEcwzWjrVWR6GudM8XsBxSDLCpXoW9VEyo1jb2G/
-         e6DxDfNxbP7V6XNsABbVbfI3QinMPLXGHaAknPQQ3itGO6gNrhWI90FhfpR+rTPpyESz
-         wgsI4eDRN31q7nK68eFfLtkxE/2WCfHKsVzSYt4eUeLob06xvIVHqCsBQKmhZ+RalrPp
-         RmG/uOIK9a5PIcUUgF6DrLD9Z8RBheEFXB7CFP0yW/C0ojyZZPCG/iY8vwFuWxbwgrfH
-         0xhg==
-X-Gm-Message-State: AOAM5334cpUlgyarF8n8vf1Si06q6i7R/xTfxchVSlJOoCrCKSS/LJYo
-        9o96sck5/v00BWPxTsn/9Xfzf54j8rro6Q==
-X-Google-Smtp-Source: ABdhPJxBA/wWSn+nXtBLSSV61lcyPYd2x2WJshaC0nVveSwUICm/yOnKZQnNKmRqltq/Gpr1QLd7hQ==
-X-Received: by 2002:a05:620a:983:: with SMTP id x3mr4809407qkx.151.1630612478996;
-        Thu, 02 Sep 2021 12:54:38 -0700 (PDT)
-Received: from ?IPv6:2620:6e:6000:3100:dedd:4a4a:8e3e:2af5? ([2620:6e:6000:3100:dedd:4a4a:8e3e:2af5])
-        by smtp.gmail.com with ESMTPSA id n14sm1679493qti.47.2021.09.02.12.54.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 12:54:38 -0700 (PDT)
-Subject: Re: [syzbot] INFO: task can't die in __lock_sock
-To:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+7d51f807c81b190a127d@syzkaller.appspotmail.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000b1c39505c99bd67c@google.com>
- <20210902031752.2502-1-hdanton@sina.com>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <a43c3f8f-66b5-164f-c299-53d15c015845@gmail.com>
-Date:   Thu, 2 Sep 2021 15:54:37 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Thu, 2 Sep 2021 15:56:01 -0400
+Date:   Thu, 02 Sep 2021 19:55:00 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630612501;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fMrhv14BFtoGc4kLHNkSrwY2UScGKgBY/SHt02PK8lA=;
+        b=MqP8O7LlAUI132rM830qNofWA04YLGNTV2cv0B693Kx57MDYzpa8CxYOvoeGcEL40oyhbh
+        VDGbziO/RsLeuS3hfVIXhFSChqUDRPwdFhcVjR0pqwPec9gqecrcs73ppHW95Nd7D+HtYw
+        Iaw41tt0Px83/R87y1s1iDBY4hhm9Skagm3rlWZcfoHZQNO5GLPtF0XrpNH+AvsT+42hcx
+        gT2ikiq9TAWyypvy+Aj7y1CT8EqTq/xvvlaPiAxSR+pdd7CU9wjv+td57UqWCDqKrWZrws
+        NfRKVpkqKxseQumnUhK/RawY81QVv95OR8i93dyJeIja47pL/IDa/uK36mGD3g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630612501;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fMrhv14BFtoGc4kLHNkSrwY2UScGKgBY/SHt02PK8lA=;
+        b=c+AtSndMYfsamL2cdAOJjmkOZ2DW9UbX5gmsH5Y6hJj/rTHwxxGcWiIINolpAQaXpFB8n4
+        NBUP+FFopUf9BWCQ==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] futex: Avoid redundant task lookup
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210902094414.676104881@linutronix.de>
+References: <20210902094414.676104881@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210902031752.2502-1-hdanton@sina.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
+Message-ID: <163061250004.25758.18319268632920188158.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/9/21 11:17 pm, Hillf Danton wrote:
-> On Wed, 01 Sep 2021 10:34:21 -0700
->> syzbot has found a reproducer for the following issue on:
->>
->> HEAD commit:    c1b13fe76e95 Add linux-next specific files for 20210901
->> git tree:       linux-next
->> console output: https://syzkaller.appspot.com/x/log.txt?x=12c6034d300000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=e2afff7bc32736e5
->> dashboard link: https://syzkaller.appspot.com/bug?extid=7d51f807c81b190a127d
->> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d42469300000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1107d815300000
->>
->> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->> Reported-by: syzbot+7d51f807c81b190a127d@syzkaller.appspotmail.com
->>
->> INFO: task syz-executor157:6562 blocked for more than 143 seconds.
->>        Not tainted 5.14.0-next-20210901-syzkaller #0
->> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->> task:syz-executor157 state:D stack:26880 pid: 6562 ppid:  6530 flags:0x00004006
->> Call Trace:
->>   context_switch kernel/sched/core.c:4955 [inline]
->>   __schedule+0x940/0x26f0 kernel/sched/core.c:6302
->>   schedule+0xd3/0x270 kernel/sched/core.c:6381
->>   __lock_sock+0x13d/0x260 net/core/sock.c:2644
->>   lock_sock_nested+0xf6/0x120 net/core/sock.c:3185
->>   lock_sock include/net/sock.h:1612 [inline]
-> 
-> This is due to b7ce436a5d79 ("Bluetooth: switch to lock_sock in RFCOMM").
-> 
->>   rfcomm_sk_state_change+0xb4/0x390 net/bluetooth/rfcomm/sock.c:73
->>   __rfcomm_dlc_close+0x1b6/0x8a0 net/bluetooth/rfcomm/core.c:489
->>   rfcomm_dlc_close+0x1ea/0x240 net/bluetooth/rfcomm/core.c:520
->>   __rfcomm_sock_close+0xac/0x260 net/bluetooth/rfcomm/sock.c:220
->>   rfcomm_sock_shutdown+0xe9/0x210 net/bluetooth/rfcomm/sock.c:931
->>   rfcomm_sock_release+0x5f/0x140 net/bluetooth/rfcomm/sock.c:951
->>   __sock_release+0xcd/0x280 net/socket.c:649
->>   sock_close+0x18/0x20 net/socket.c:1314
->>   __fput+0x288/0x9f0 fs/file_table.c:280
->>   task_work_run+0xdd/0x1a0 kernel/task_work.c:164
->>   exit_task_work include/linux/task_work.h:32 [inline]
->>   do_exit+0xbae/0x2a30 kernel/exit.c:825
->>   do_group_exit+0x125/0x310 kernel/exit.c:922
->>   get_signal+0x47f/0x2160 kernel/signal.c:2868
->>   arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
->>   handle_signal_work kernel/entry/common.c:148 [inline]
->>   exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
->>   exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
->>   __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
->>   syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
->>   do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
->>   entry_SYSCALL_64_after_hwframe+0x44/0xae
->> RIP: 0033:0x445fe9
->> RSP: 002b:00007fff85049fe8 EFLAGS: 00000246 ORIG_RAX: 000000000000002a
->> RAX: fffffffffffffffc RBX: 0000000000000003 RCX: 0000000000445fe9
->> RDX: 0000000000000080 RSI: 0000000020000000 RDI: 0000000000000004
->> RBP: 0000000000000003 R08: 000000ff00000001 R09: 000000ff00000001
->> R10: 0000000000000000 R11: 0000000000000246 R12: 00000000014112b8
->> R13: 0000000000000072 R14: 00007fff8504a040 R15: 0000000000000003
->>
->> Showing all locks held in the system:
->> 1 lock held by khungtaskd/26:
->>   #0: ffffffff8b97fbe0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
->> 1 lock held by krfcommd/2876:
->>   #0: ffffffff8d31ede8 (rfcomm_mutex){+.+.}-{3:3}, at: rfcomm_process_sessions net/bluetooth/rfcomm/core.c:1979 [inline]
->>   #0: ffffffff8d31ede8 (rfcomm_mutex){+.+.}-{3:3}, at: rfcomm_run+0x2ed/0x4a20 net/bluetooth/rfcomm/core.c:2086
->> 1 lock held by in:imklog/6232:
->> 4 locks held by syz-executor157/6562:
->>   #0: ffff888145e26210 (&sb->s_type->i_mutex_key#13){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:786 [inline]
->>   #0: ffff888145e26210 (&sb->s_type->i_mutex_key#13){+.+.}-{3:3}, at: __sock_release+0x86/0x280 net/socket.c:648
->>   #1: ffff88801d622120 (sk_lock-AF_BLUETOOTH-BTPROTO_RFCOMM){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1612 [inline]
->>   #1: ffff88801d622120 (sk_lock-AF_BLUETOOTH-BTPROTO_RFCOMM){+.+.}-{0:0}, at: rfcomm_sock_shutdown+0x54/0x210 net/bluetooth/rfcomm/sock.c:928
-> 
-> But sk is already locked before b7ce436a5d79.
-> 
-> What is wierd here is lock_sock() fails to complain about recursive locking
-> like this one if syzbot turned lockdep on. Any light on this, Eric?
-> 
-> Thanks
-> Hillf
-> 
+The following commit has been merged into the locking/urgent branch of tip:
 
-Sorry, this one was my bad. The patch swapped out spin_lock_bh for 
-lock_sock, to provide synchronization with other functions that use 
-lock_sock.
+Commit-ID:     c7e54b66384ca3e2c03e9021dc0627446dae2966
+Gitweb:        https://git.kernel.org/tip/c7e54b66384ca3e2c03e9021dc0627446dae2966
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Thu, 02 Sep 2021 11:48:51 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 02 Sep 2021 21:29:48 +02:00
 
-Problem is that in one of the call traces, we hit the following deadlock:
+futex: Avoid redundant task lookup
 
-   rfcomm_sock_close():
-     lock_sock();
-     __rfcomm_sock_close():
-       rfcomm_dlc_close():
-         __rfcomm_dlc_close():
-           rfcomm_sk_state_change():
-             lock_sock();
+No need to do the full VPID based task lookup and validation of the top
+waiter when the user space futex was acquired on it's behalf during the
+requeue_pi operation. The task is known already and it cannot go away
+before requeue_pi_wake_futex() has been invoked.
 
-But we don't always hold onto the socket lock before calling 
-rfcomm_sk_state_change.
+Split out the actual attach code from attach_pi_state_owner() and use that
+instead of the full blown variant.
 
-I'm still working and testing a fix, but I think one possibility is to 
-schedule rfcomm_sk_state_change on a workqueue. This seems to fit with 
-the rest of the code, since in rfcomm_sock_shutdown we call 
-rfcomm_sock_close then wait for the sk state to change to BT_CLOSED.
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20210902094414.676104881@linutronix.de
 
->>   #2: ffffffff8d31ede8 (rfcomm_mutex){+.+.}-{3:3}, at: rfcomm_dlc_close+0x34/0x240 net/bluetooth/rfcomm/core.c:507
->>   #3: ffff88807edd9928 (&d->lock){+.+.}-{3:3}, at: __rfcomm_dlc_close+0x162/0x8a0 net/bluetooth/rfcomm/core.c:487
->>
->> =============================================
->>
->> NMI backtrace for cpu 1
->> CPU: 1 PID: 26 Comm: khungtaskd Not tainted 5.14.0-next-20210901-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> Call Trace:
->>   __dump_stack lib/dump_stack.c:88 [inline]
->>   dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
->>   nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
->>   nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
->>   trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
->>   check_hung_uninterruptible_tasks kernel/hung_task.c:254 [inline]
->>   watchdog+0xcb7/0xed0 kernel/hung_task.c:339
->>   kthread+0x3e5/0x4d0 kernel/kthread.c:319
->>   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
->> Sending NMI from CPU 1 to CPUs 0:
->> NMI backtrace for cpu 0
->> CPU: 0 PID: 2958 Comm: systemd-journal Not tainted 5.14.0-next-20210901-syzkaller #0
->> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
->> RIP: 0010:check_kcov_mode kernel/kcov.c:163 [inline]
->> RIP: 0010:__sanitizer_cov_trace_pc+0x7/0x60 kernel/kcov.c:197
->> Code: fd ff ff b9 ff ff ff ff ba 08 00 00 00 4d 8b 03 48 0f bd ca 49 8b 45 00 48 63 c9 e9 64 ff ff ff 0f 1f 00 65 8b 05 39 e6 8b 7e <89> c1 48 8b 34 24 81 e1 00 01 00 00 65 48 8b 14 25 40 f0 01 00 a9
->> RSP: 0018:ffffc900014dfde0 EFLAGS: 00000282
->> RAX: 0000000080000000 RBX: ffffc900014dff58 RCX: 1ffff9200029bfc7
->> RDX: dffffc0000000000 RSI: 1ffff9200029bfcd RDI: ffffc900014dfe38
->> RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff8176c71a
->> R10: ffffffff81765c97 R11: 0000000000000002 R12: 0000000000000053
->> R13: 0000000000000002 R14: 0000000000000000 R15: ffffc900014dfe30
->> FS:  00007f43756768c0(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007f4372a49000 CR3: 000000001a5d4000 CR4: 00000000001506f0
->> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->> Call Trace:
->>   get_current arch/x86/include/asm/current.h:15 [inline]
->>   seccomp_run_filters kernel/seccomp.c:402 [inline]
->>   __seccomp_filter+0x88/0x1040 kernel/seccomp.c:1180
->>   __secure_computing+0xfc/0x360 kernel/seccomp.c:1311
->>   syscall_trace_enter.constprop.0+0x94/0x270 kernel/entry/common.c:68
->>   do_syscall_64+0x16/0xb0 arch/x86/entry/common.c:76
->>   entry_SYSCALL_64_after_hwframe+0x44/0xae
->> RIP: 0033:0x7f4374931687
->> Code: 00 b8 ff ff ff ff c3 0f 1f 40 00 48 8b 05 09 d8 2b 00 64 c7 00 5f 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 b8 53 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e1 d7 2b 00 f7 d8 64 89 01 48
->> RSP: 002b:00007ffc79978938 EFLAGS: 00000293 ORIG_RAX: 0000000000000053
->> RAX: ffffffffffffffda RBX: 00007ffc7997b850 RCX: 00007f4374931687
->> RDX: 00007f43753a2a00 RSI: 00000000000001ed RDI: 00005646c59898a0
->> RBP: 00007ffc79978970 R08: 0000000000000000 R09: 0000000000000000
->> R10: 0000000000000069 R11: 0000000000000293 R12: 0000000000000000
->> R13: 0000000000000000 R14: 00007ffc7997b850 R15: 00007ffc79978e60
->> ----------------
->> Code disassembly (best guess), 3 bytes skipped:
->>     0:	b9 ff ff ff ff       	mov    $0xffffffff,%ecx
->>     5:	ba 08 00 00 00       	mov    $0x8,%edx
->>     a:	4d 8b 03             	mov    (%r11),%r8
->>     d:	48 0f bd ca          	bsr    %rdx,%rcx
->>    11:	49 8b 45 00          	mov    0x0(%r13),%rax
->>    15:	48 63 c9             	movslq %ecx,%rcx
->>    18:	e9 64 ff ff ff       	jmpq   0xffffff81
->>    1d:	0f 1f 00             	nopl   (%rax)
->>    20:	65 8b 05 39 e6 8b 7e 	mov    %gs:0x7e8be639(%rip),%eax        # 0x7e8be660
->> * 27:	89 c1                	mov    %eax,%ecx <-- trapping instruction
->>    29:	48 8b 34 24          	mov    (%rsp),%rsi
->>    2d:	81 e1 00 01 00 00    	and    $0x100,%ecx
->>    33:	65 48 8b 14 25 40 f0 	mov    %gs:0x1f040,%rdx
->>    3a:	01 00
->>    3c:	a9                   	.byte 0xa9
->>
->>
+---
+ kernel/futex.c | 67 +++++++++++++++++++++++++++----------------------
+ 1 file changed, 37 insertions(+), 30 deletions(-)
 
+diff --git a/kernel/futex.c b/kernel/futex.c
+index 82cd270..a316dce 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1263,6 +1263,36 @@ static int handle_exit_race(u32 __user *uaddr, u32 uval,
+ 	return -ESRCH;
+ }
+ 
++static void __attach_to_pi_owner(struct task_struct *p, union futex_key *key,
++				 struct futex_pi_state **ps)
++{
++	/*
++	 * No existing pi state. First waiter. [2]
++	 *
++	 * This creates pi_state, we have hb->lock held, this means nothing can
++	 * observe this state, wait_lock is irrelevant.
++	 */
++	struct futex_pi_state *pi_state = alloc_pi_state();
++
++	/*
++	 * Initialize the pi_mutex in locked state and make @p
++	 * the owner of it:
++	 */
++	rt_mutex_init_proxy_locked(&pi_state->pi_mutex, p);
++
++	/* Store the key for possible exit cleanups: */
++	pi_state->key = *key;
++
++	WARN_ON(!list_empty(&pi_state->list));
++	list_add(&pi_state->list, &p->pi_state_list);
++	/*
++	 * Assignment without holding pi_state->pi_mutex.wait_lock is safe
++	 * because there is no concurrency as the object is not published yet.
++	 */
++	pi_state->owner = p;
++
++	*ps = pi_state;
++}
+ /*
+  * Lookup the task for the TID provided from user space and attach to
+  * it after doing proper sanity checks.
+@@ -1272,7 +1302,6 @@ static int attach_to_pi_owner(u32 __user *uaddr, u32 uval, union futex_key *key,
+ 			      struct task_struct **exiting)
+ {
+ 	pid_t pid = uval & FUTEX_TID_MASK;
+-	struct futex_pi_state *pi_state;
+ 	struct task_struct *p;
+ 
+ 	/*
+@@ -1324,36 +1353,11 @@ static int attach_to_pi_owner(u32 __user *uaddr, u32 uval, union futex_key *key,
+ 		return ret;
+ 	}
+ 
+-	/*
+-	 * No existing pi state. First waiter. [2]
+-	 *
+-	 * This creates pi_state, we have hb->lock held, this means nothing can
+-	 * observe this state, wait_lock is irrelevant.
+-	 */
+-	pi_state = alloc_pi_state();
+-
+-	/*
+-	 * Initialize the pi_mutex in locked state and make @p
+-	 * the owner of it:
+-	 */
+-	rt_mutex_init_proxy_locked(&pi_state->pi_mutex, p);
+-
+-	/* Store the key for possible exit cleanups: */
+-	pi_state->key = *key;
+-
+-	WARN_ON(!list_empty(&pi_state->list));
+-	list_add(&pi_state->list, &p->pi_state_list);
+-	/*
+-	 * Assignment without holding pi_state->pi_mutex.wait_lock is safe
+-	 * because there is no concurrency as the object is not published yet.
+-	 */
+-	pi_state->owner = p;
++	__attach_to_pi_owner(p, key, ps);
+ 	raw_spin_unlock_irq(&p->pi_lock);
+ 
+ 	put_task_struct(p);
+ 
+-	*ps = pi_state;
+-
+ 	return 0;
+ }
+ 
+@@ -1464,11 +1468,14 @@ static int futex_lock_pi_atomic(u32 __user *uaddr, struct futex_hash_bucket *hb,
+ 		 * @task is guaranteed to be alive and it cannot be exiting
+ 		 * because it is either sleeping or waiting in
+ 		 * futex_requeue_pi_wakeup_sync().
++		 *
++		 * No need to do the full attach_to_pi_owner() exercise
++		 * because @task is known and valid.
+ 		 */
+ 		if (set_waiters) {
+-			 ret = attach_to_pi_owner(uaddr, newval, key, ps,
+-						  exiting);
+-			 WARN_ON(ret);
++			raw_spin_lock_irq(&task->pi_lock);
++			__attach_to_pi_owner(task, key, ps);
++			raw_spin_unlock_irq(&task->pi_lock);
+ 		}
+ 		return 1;
+ 	}
