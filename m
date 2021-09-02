@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F333FE780
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352533FE781
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhIBCSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 22:18:11 -0400
-Received: from smtp21.cstnet.cn ([159.226.251.21]:37760 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232666AbhIBCSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 22:18:09 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-01 (Coremail) with SMTP id qwCowAB3WHEKNDBhDMs2AQ--.59037S2;
-        Thu, 02 Sep 2021 10:16:43 +0800 (CST)
-From:   jiasheng <jiasheng@iscas.ac.cn>
+        id S234297AbhIBCSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 22:18:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232666AbhIBCSV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 22:18:21 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC79C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 19:17:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=mequYaOSC8flI66LQgtrrKi6Dh4jUXB1i7lEFHYul5o=; b=dLOW0jSHug5ohyKzJC83Hc1+J3
+        5ZV4XGai8OxJqDtw9LwtoqW0XqUsB5MMmwk9K/FuheA9TqrWXrsY25xeE3qvuPc+asIPlhPfthQBP
+        EC2ErdwoTlDg+VR2MHnrzi3yBtqiMo3ux1vGjIMznPAADcjeB390zI/NJNSODWpNlHG3KxXsnFk1k
+        GmIDYccfXiCpZidr5Rs7NpbYyIvXnEDXIT5ShpHsdF8nytXiu3qcb10RvX9QsRO75kW2g/gXw7XjE
+        jzPQeJr+Zc44Q+jFO3VGJRBQ4xZ8qaBtye0waA+ektyM6XdxkpIsvHtbN440WM7FV571tUzcfm1Pi
+        2EBVUgXw==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mLcI6-008BRB-8f; Thu, 02 Sep 2021 02:17:22 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     jiasheng <jiasheng@iscas.ac.cn>
-Subject: [PATCH 10/10] seqlock: Add do_read_seqcount_retry() in front of seqcount_lockdep_reader_access() in read_seqbegin()
-Date:   Thu,  2 Sep 2021 02:16:40 +0000
-Message-Id: <1630549000-3731606-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: qwCowAB3WHEKNDBhDMs2AQ--.59037S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tFy5ArWDJFW8Xry5uFWDtwb_yoW8JF43pw
-        1kury8Kr4FkF1xuayDJ39FvFyrtwn7AF1DXrZav343ZF17tw4aq3yUur4ayF1UZw4IyF4j
-        qFW7WanxZFsrGFJanT9S1TB71UUUUj7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
-        1j6F4UJwAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
-        4I1lc7CjxVAaw2AFwI0_Jw0_GFylc2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMxC20s
-        026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_
-        Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwI
-        xGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWx
-        JwCI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcV
-        C2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUj3CzJUUUUU==
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org
+Subject: [PATCH] drm/r128: fix build for UML
+Date:   Wed,  1 Sep 2021 19:17:21 -0700
+Message-Id: <20210902021721.27274-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have found that in the complied files seqcount_lockdep_reader_access()
-appear more than 20 times, and under at least 90% circumstances
-that do_read_seqcount_retry() and seqcount_lockdep_reader_access()
-appear in pairs.
-For example, they appear together in the irqfd_wakeup()
-of the file complie from 'virt/kvm/eventfd.c'.
-But we have found that in the read_seqbegin(), there is only
-seqcount_lockdep_reader_access() instead of the pair.
-Therefore, we consider that the do_read_seqcount_retry()
-might be forgotten.
+Fix a build error on CONFIG_UML, which does not support (provide)
+wbinvd(). UML can use the generic mb() instead.
 
-Signed-off-by: jiasheng <jiasheng@iscas.ac.cn>
+../drivers/gpu/drm/r128/ati_pcigart.c: In function ‘drm_ati_pcigart_init’:
+../drivers/gpu/drm/r128/ati_pcigart.c:218:2: error: implicit declaration of function ‘wbinvd’ [-Werror=implicit-function-declaration]
+  wbinvd();
+  ^~~~~~
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2") # pre-git
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
 ---
- include/linux/seqlock.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/r128/ati_pcigart.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index f61e34f..14169ce 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -837,8 +837,10 @@ typedef struct {
-  */
- static inline unsigned read_seqbegin(const seqlock_t *sl)
- {
--	unsigned ret = read_seqcount_begin(&sl->seqcount);
--
-+	unsigned int ret;
-+
-+	if (read_seqcount_retry(&sl->seqcount, ret))
-+		ret = read_seqcount_begin(&sl->seqcount);
- 	kcsan_atomic_next(0);  /* non-raw usage, assume closing read_seqretry() */
- 	kcsan_flat_atomic_begin();
- 	return ret;
--- 
-2.7.4
-
+--- linux-next-20210901.orig/drivers/gpu/drm/r128/ati_pcigart.c
++++ linux-next-20210901/drivers/gpu/drm/r128/ati_pcigart.c
+@@ -214,7 +214,7 @@ int drm_ati_pcigart_init(struct drm_devi
+ 	}
+ 	ret = 0;
+ 
+-#if defined(__i386__) || defined(__x86_64__)
++#if (defined(__i386__) || defined(__x86_64__)) && !defined(CONFIG_UML)
+ 	wbinvd();
+ #else
+ 	mb();
