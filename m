@@ -2,81 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB343FE956
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 08:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC073FE95C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 08:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242190AbhIBGiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 02:38:15 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:35996 "EHLO baidu.com"
+        id S242376AbhIBGio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 02:38:44 -0400
+Received: from smtp23.cstnet.cn ([159.226.251.23]:59916 "EHLO cstnet.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241743AbhIBGiM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 02:38:12 -0400
-Received: from BJHW-Mail-Ex08.internal.baidu.com (unknown [10.127.64.18])
-        by Forcepoint Email with ESMTPS id 2702A7305C619AF5E1D2;
-        Thu,  2 Sep 2021 14:37:12 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-Mail-Ex08.internal.baidu.com (10.127.64.18) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Thu, 2 Sep 2021 14:37:12 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Thu, 2 Sep 2021 14:37:11 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
-        <patrice.chotard@foss.st.com>, <mchehab@kernel.org>,
-        <ryder.lee@mediatek.com>, <jianjun.wang@mediatek.com>,
-        <lorenzo.pieralisi@arm.com>, <robh@kernel.org>, <kw@linux.com>,
-        <bhelgaas@google.com>, <matthias.bgg@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-media@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Cai Huoqing <caihuoqing@baidu.com>
-Subject: [PATCH v2 3/3] PCI: mediatek-gen3: Make use of the helper function devm_platform_get_and_ioremap_resource_byname()
-Date:   Thu, 2 Sep 2021 14:37:02 +0800
-Message-ID: <20210902063702.32066-4-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210902063702.32066-1-caihuoqing@baidu.com>
-References: <20210902063702.32066-1-caihuoqing@baidu.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex28.internal.baidu.com (172.31.51.22) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
-X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex08_2021-09-02 14:37:12:149
+        id S241529AbhIBGin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 02:38:43 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-03 (Coremail) with SMTP id rQCowABHyo0pcTBhUXPEAA--.41173S2;
+        Thu, 02 Sep 2021 14:37:29 +0800 (CST)
+From:   jiasheng <jiasheng@iscas.ac.cn>
+To:     linux-kernel@vger.kernel.org
+Cc:     jiasheng <jiasheng@iscas.ac.cn>
+Subject: [PATCH] bpf: Add env_type_is_resolved() in front of env_stack_push() in btf_resolve()
+Date:   Thu,  2 Sep 2021 06:37:28 +0000
+Message-Id: <1630564648-552423-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: rQCowABHyo0pcTBhUXPEAA--.41173S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruw4UKr4fArWUKw48uw4fuFg_yoWkArg_K3
+        W8uF1rGwsxKFsaya1jvw4furW2k3yYqFn7Za1aqFs8G3s8WF15Jrn8Xas3JrsrGrWkKrZF
+        vFZ8G3sIgF1avjkaLaAFLSUrUUUUrb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbgkYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2kKe7AKxVWUtVW8ZwAS0I0E0xvYzxvE52x082IY62kv
+        0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z2
+        80aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq
+        67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVW8ZVWrXwCY02Avz4vE14v_GF1l42xK82
+        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jw0_GFylx2Iq
+        xVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r
+        1Y6r17MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY
+        6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E87Iv67
+        AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuY
+        vj4RC5l1UUUUU
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the devm_platform_get_and_ioremap_resource_byname() helper
-instead of calling platform_get_resource_byname() and
-devm_ioremap_resource() separately.
+We have found that in the complied files env_stack_push()
+appear more than 10 times, and under at least 90% circumstances
+that env_type_is_resolved() and env_stack_push() appear in pairs.
+For example, they appear together in the btf_modifier_resolve()
+of the file complie from 'kernel/bpf/btf.c'.
+But we have found that in the btf_resolve(), there is only
+env_stack_push() instead of the pair.
+Therefore, we consider that the env_type_is_resolved()
+might be forgotten.
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+Signed-off-by: jiasheng <jiasheng@iscas.ac.cn>
 ---
-v1->v2: Use devm_platform_get_and_ioremap_resource_byname()
-	instead of devm_platform_ioremap_resource_byname().
+ kernel/bpf/btf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
- drivers/pci/controller/pcie-mediatek-gen3.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
-index 17c59b0d6978..27009da62ec1 100644
---- a/drivers/pci/controller/pcie-mediatek-gen3.c
-+++ b/drivers/pci/controller/pcie-mediatek-gen3.c
-@@ -715,10 +715,7 @@ static int mtk_pcie_parse_port(struct mtk_pcie_port *port)
- 	struct resource *regs;
- 	int ret;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index f982a9f0..454c249 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -4002,7 +4002,8 @@ static int btf_resolve(struct btf_verifier_env *env,
+ 	int err = 0;
  
--	regs = platform_get_resource_byname(pdev, IORESOURCE_MEM, "pcie-mac");
--	if (!regs)
--		return -EINVAL;
--	port->base = devm_ioremap_resource(dev, regs);
-+	port->base = devm_platform_get_and_ioremap_resource_byname(pdev, "pcie-mac", &regs);
- 	if (IS_ERR(port->base)) {
- 		dev_err(dev, "failed to map register base\n");
- 		return PTR_ERR(port->base);
+ 	env->resolve_mode = RESOLVE_TBD;
+-	env_stack_push(env, t, type_id);
++	if (env_type_is_resolved(env, type_id))
++		env_stack_push(env, t, type_id);
+ 	while (!err && (v = env_stack_peak(env))) {
+ 		env->log_type_id = v->type_id;
+ 		err = btf_type_ops(v->t)->resolve(env, v);
 -- 
-2.25.1
+2.7.4
 
