@@ -2,245 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 282FC3FEFFA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C29B33FEFD9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345755AbhIBPSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 11:18:20 -0400
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:33528 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345637AbhIBPST (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 11:18:19 -0400
-Received: by mail-oo1-f43.google.com with SMTP id v20-20020a4a2554000000b0028f8cc17378so647859ooe.0;
-        Thu, 02 Sep 2021 08:17:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wb8GAkVFI8Sl87zRPGOegu+hAFVLLxzYkVhxsVOueuQ=;
-        b=Vv9njS9fL7fz/8eYVG3kqVGV4ZQecwHTdU2gCfxrzVE0JlazpUTBeaEKct4gYMKWVa
-         PAjXHiW3GUWWat+C8oFMpcqw/efk8VpIqTVv4jI3+YW5wlis4ivbnSaiQj8lnWUwW+RF
-         w/bbXp93OTIfmRJtimMehK7GiMKOMzfoSKJiDAmhW3DdfznSdYYNbi2x509AipUHJKCi
-         SMUhwglcJW35DixDzygQINyRgmZyyAfQfIwfwcgabdM0TU76KhKg3FFbphiwMjab6smI
-         1f4y3VaKg9R/9qWZAyP5PKeXjHYl8Mj2hz7wK9S2fvjcOlxc9zMA/PVAs+6z36wbzs0G
-         4swQ==
-X-Gm-Message-State: AOAM532w8YL4ZJpD3LwC92h0Pp0vyEjGTpzkqkakw6VrqlrkRiUNL0Em
-        Ad/1x5+sUt3o1OXQDDvJmA==
-X-Google-Smtp-Source: ABdhPJyHT2iskMmpIirm793k/KgiFwRfX7emNwuGQj8LONOKcauHnPKJaq88rx2wFJQuHLCYfFFShw==
-X-Received: by 2002:a4a:ba0f:: with SMTP id b15mr3027879oop.31.1630595840199;
-        Thu, 02 Sep 2021 08:17:20 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id z78sm419358ooa.29.2021.09.02.08.17.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 08:17:19 -0700 (PDT)
-Received: (nullmailer pid 936408 invoked by uid 1000);
-        Thu, 02 Sep 2021 15:17:18 -0000
-Date:   Thu, 2 Sep 2021 10:17:18 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, shengjiu.wang@gmail.com
-Subject: Re: [PATCH v2 1/2] dt-bindings: remoteproc: Add fsl,imx-dsp-rproc
- binding document
-Message-ID: <YTDq/kWFPLHUnHMN@robh.at.kernel.org>
-References: <1629876516-16513-1-git-send-email-shengjiu.wang@nxp.com>
+        id S1345731AbhIBPIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 11:08:00 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:41306 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234984AbhIBPH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 11:07:58 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id 73FA84D048;
+        Thu,  2 Sep 2021 15:06:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-transfer-encoding:mime-version:user-agent:content-type
+        :content-type:organization:references:in-reply-to:date:date:from
+        :from:subject:subject:message-id:received:received:received; s=
+        mta-01; t=1630595213; x=1632409614; bh=ohzBaHIQJi6XFUgN9Za1egaft
+        OTNkTgtCcHs5jiUnuQ=; b=gQtz9/zJnfSt09MuRU5JcwnKjSFT6mVvhBq7fgvNz
+        UbDk8kUZe14HQjDrWd4O89wzdHWNB1YFYeDKJKngHTkTcAD7ACwINPMvJABlAlNG
+        SkqPEX1lrL6yzUMYItAaFWjW25SLPsNR/Y6OdQxhXZyIckIJbceXS81lmp6VZIfg
+        FY=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id he5YG7Tih9hI; Thu,  2 Sep 2021 18:06:53 +0300 (MSK)
+Received: from T-EXCH-04.corp.yadro.com (t-exch-04.corp.yadro.com [172.17.100.104])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 5E25A4D01B;
+        Thu,  2 Sep 2021 18:06:51 +0300 (MSK)
+Received: from [10.199.0.231] (10.199.0.231) by T-EXCH-04.corp.yadro.com
+ (172.17.100.104) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Thu, 2 Sep
+ 2021 18:06:50 +0300
+Message-ID: <cb9dedaf242264f76eca18e94934703300be5a7e.camel@yadro.com>
+Subject: Re:  [PATCH 1/1] net/ncsi: add get MAC address command to get Intel
+ i210 MAC address
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     Milton Miller II <miltonm@us.ibm.com>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        Brad Ho <Brad_Ho@phoenix.com>,
+        Paul Fertser <fercerpav@gmail.com>, <openbmc@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Date:   Thu, 2 Sep 2021 18:17:30 +0300
+In-Reply-To: <OF2487FB9E.ECED277D-ON00258741.006BEF89-00258744.001FE4C0@ibm.com>
+References: <20210830171806.119857-2-i.mikhaylov@yadro.com>
+         <OF2487FB9E.ECED277D-ON00258741.006BEF89-00258744.001FE4C0@ibm.com>
+Organization: YADRO
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1629876516-16513-1-git-send-email-shengjiu.wang@nxp.com>
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.199.0.231]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-04.corp.yadro.com (172.17.100.104)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 03:28:35PM +0800, Shengjiu Wang wrote:
-> Define the compatible string and properties needed by imx_dsp_rproc
-> driver.
+On Thu, 2021-09-02 at 05:48 +0000, Milton Miller II wrote:
+> On August 30, 2021, Ivan Mikhaylov" <i.mikhaylov@yadro.com> wrote:
+> > This patch adds OEM Intel GMA command and response handler for it.
+> > 
+> > /* Get Link Status */
+> > struct ncsi_rsp_gls_pkt {
+> >         struct ncsi_rsp_pkt_hdr rsp;        /* Response header   */
+> > diff --git a/net/ncsi/ncsi-rsp.c b/net/ncsi/ncsi-rsp.c
+> > index d48374894817..6447a09932f5 100644
+> > --- a/net/ncsi/ncsi-rsp.c
+> > +++ b/net/ncsi/ncsi-rsp.c
+> > @@ -699,9 +699,51 @@ static int ncsi_rsp_handler_oem_bcm(struct
+> > ncsi_request *nr)
+> >         return 0;
+> > }
+> > 
+> > +/* Response handler for Intel command Get Mac Address */
+> > +static int ncsi_rsp_handler_oem_intel_gma(struct ncsi_request *nr)
+> > +{
+> > +       struct ncsi_dev_priv *ndp = nr->ndp;
+> > +       struct net_device *ndev = ndp->ndev.dev;
+> > +       const struct net_device_ops *ops = ndev->netdev_ops;
+> > +       struct ncsi_rsp_oem_pkt *rsp;
+> > +       struct sockaddr saddr;
+> > +       int ret = 0;
+> > +
+> > +       /* Get the response header */
+> > +       rsp = (struct ncsi_rsp_oem_pkt *)skb_network_header(nr->rsp);
+> > +
+> > +       saddr.sa_family = ndev->type;
+> > +       ndev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
+> > +       memcpy(saddr.sa_data, &rsp->data[INTEL_MAC_ADDR_OFFSET], ETH_ALEN);
+> > +       /* Increase mac address by 1 for BMC's address */
+> > +       eth_addr_inc((u8 *)saddr.sa_data);
+> > +       if (!is_valid_ether_addr((const u8 *)saddr.sa_data))
+> > +               return -ENXIO;
 > 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
-> changes in v2:
-> - add items for clock-names
-> - change syscon to fsl,dsp-ctrl 
+> The Intel GMA retireves the MAC address of the host, and the datasheet
+> anticipates the BMC will "share" the MAC by stealing specific TCP and 
+> UDP port traffic destined to the host.
 > 
->  .../remoteproc/fsl,imx-dsp-rproc.yaml         | 150 ++++++++++++++++++
->  1 file changed, 150 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml
+> This "add one" allocation of the MAC is therefore a policy, and one that 
+> is beyond the data sheet.
 > 
-> diff --git a/Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml
-> new file mode 100644
-> index 000000000000..edf6e4b8d7bb
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml
-> @@ -0,0 +1,150 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/remoteproc/fsl,imx-dsp-rproc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: i.MX DSP Remoteproc Devices
-> +
-> +maintainers:
-> +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> +
-> +description:
-> +  This binding provides support for DSP processors found on i.mX family of SoCs
-
-i.MX
-
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx8qxp-hifi4
-> +      - fsl,imx8qm-hifi4
-> +      - fsl,imx8mp-hifi4
-> +      - fsl,imx8ulp-hifi4
-> +
-> +  clocks:
-> +    description:
-> +      Main functional clock for the remote processor
-> +    minItems: 1
-> +    maxItems: 32
-> +
-> +  clock-names:
-> +    description: |
-> +      List of clock names for the remote processor.
-> +      dsp_clkx for clocks of dsp itself.
-> +      per_clkx for clocks of peripherals used by dsp.
-
-I still don't like your random collection of clocks. What if you have 
-other resources besides clocks to manage? Pin mux, resets, power 
-domains, etc. It would be better if you describe the peripherals in DT 
-and then link to them here. But maybe the devices themselves aren't 
-visible?
-
-> +    minItems: 1
-> +    maxItems: 26
-> +    items:
-> +      - const: dsp_clk1
-> +      - const: dsp_clk2
-> +      - const: dsp_clk3
-> +      - const: dsp_clk4
-> +      - const: dsp_clk5
-> +      - const: dsp_clk6
-> +      - const: dsp_clk7
-> +      - const: dsp_clk8
-
-Surely you can name these by function? e.g. core, bus, axi, etc.
-
-> +      - const: per_clk1
-> +      - const: per_clk2
-> +      - const: per_clk3
-> +      - const: per_clk4
-> +      - const: per_clk5
-> +      - const: per_clk6
-> +      - const: per_clk7
-> +      - const: per_clk8
-> +      - const: per_clk9
-> +      - const: per_clk10
-> +      - const: per_clk11
-> +      - const: per_clk12
-> +      - const: per_clk13
-> +      - const: per_clk14
-> +      - const: per_clk15
-> +      - const: per_clk16
-> +      - const: per_clk17
-> +      - const: per_clk18
-> +
-> +  fsl,dsp-ctrl:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle to syscon block which provide access for processor enablement
-> +
-> +  mbox-names:
-> +    items:
-> +      - const: tx
-> +      - const: rx
-> +      - const: rxdb
-> +
-> +  mboxes:
-> +    description:
-> +      This property is required only if the rpmsg/virtio functionality is used.
-> +      List of <&phandle type channel> - 1 channel for TX, 1 channel for RX, 1 channel for RXDB.
-> +      (see mailbox/fsl,mu.yaml)
-> +    minItems: 1
-> +    maxItems: 3
-> +
-> +  firmware-name:
-> +    description: |
-> +      Default name of the firmware to load to the remote processor.
-> +
-> +  memory-region:
-> +    description:
-> +      If present, a phandle for a reserved memory area that used for vdev buffer,
-> +      resource table, vring region and others used by remote processor.
-> +    minItems: 1
-> +    maxItems: 32
-> +
-> +  reg:
-> +    description: |
-> +      Address space for any remoteproc memories present on the SoC.
-> +
-> +  power-domains:
-> +    minItems: 1
-> +    maxItems: 32
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - mboxes
-> +  - mbox-names
-> +  - clocks
-> +  - clock-names
-> +  - firmware-name
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/imx8mp-clock.h>
-> +    dsp_reserved: dsp@92400000 {
-> +      reg = <0x92400000 0x1000000>;
-> +      no-map;
-> +    };
-> +    dsp_vdev0vring0: vdev0vring0@942f0000 {
-> +      reg = <0x942f0000 0x8000>;
-> +      no-map;
-> +    };
-> +    dsp_vdev0vring1: vdev0vring1@942f8000 {
-> +      reg = <0x942f8000 0x8000>;
-> +      no-map;
-> +    };
-> +    dsp_vdev0buffer: vdev0buffer@94300000 {
-> +      compatible = "shared-dma-pool";
-> +      reg = <0x94300000 0x100000>;
-> +      no-map;
-> +    };
-> +
-> +    dsp: dsp@3b6e8000 {
-> +      compatible = "fsl,imx8mp-hifi4";
-> +      reg = <0x3B6E8000 0x88000>;
-> +      clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_OCRAMA_IPG>,
-> +               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSP_ROOT>,
-> +               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSPDBG_ROOT>;
-> +      clock-names = "dsp_clk1", "dsp_clk2", "dsp_clk3";
-> +      firmware-name = "imx/dsp/hifi4.bin";
-> +      power-domains = <&audiomix_pd>;
-> +      mbox-names = "tx", "rx", "rxdb";
-> +      mboxes = <&mu2 0 0>,
-> +               <&mu2 1 0>,
-> +               <&mu2 3 0>;
-> +      memory-region = <&dsp_vdev0buffer>, <&dsp_vdev0vring0>,
-> +                      <&dsp_vdev0vring1>, <&dsp_reserved>;
-> +      fsl,dsp-ctrl = <&audio_blk_ctrl>;
-> +    };
-> -- 
-> 2.17.1
+> While this +1 policy may work for some OEM boards, there are other boards 
+> where the MAC address assigned to the BMC does not follow this pattern, 
+> but instead the MAC is stored in some platform dependent location obtained 
+> in a platform specific manner.
+> 
+> I suggest this BMC = ether_addr_inc(GMA) be opt in via a device tree
+> property.  
+> 
+> as it appears it would be generic to more than one vendor.
+> 
+> Unfortunately, we missed this when we added the broadcom and mellanox
+> handlers.
 > 
 > 
+> 
+
+Milton,
+
+maybe something like "mac_addr_inc" or "ncsi,mac_addr_inc"? Also those 3(intel,
+mellanox, broadcom) functions even with handlers similar to each other, they
+could be unified on idea, difference in addresses, payload lengths, ids only as
+I see. Joel proposed in the past about dts option for Intel OEM keep_phy option,
+maybe that's the right time to reorganize all OEM related parts to fit in one
+direction with dts options for ethernet interface without Kconfig options?
+
+Thanks.
+
