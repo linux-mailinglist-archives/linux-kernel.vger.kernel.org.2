@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D80E3FE9BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD14F3FE9C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242745AbhIBHK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 03:10:28 -0400
-Received: from smtp21.cstnet.cn ([159.226.251.21]:46898 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S242504AbhIBHK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 03:10:27 -0400
-Received: from localhost.localdomain (unknown [124.16.138.128])
-        by APP-01 (Coremail) with SMTP id qwCowACnlNKSeDBh4Ic9AQ--.4291S2;
-        Thu, 02 Sep 2021 15:09:06 +0800 (CST)
-From:   jiasheng <jiasheng@iscas.ac.cn>
-To:     linux-kernel@vger.kernel.org
-Cc:     jiasheng <jiasheng@iscas.ac.cn>
-Subject: [PATCH 2/2] tracing: Add trace_trigger_soft_disabled() in front of trace_event_buffer_commit() in trace_inject_entry()
-Date:   Thu,  2 Sep 2021 07:09:03 +0000
-Message-Id: <1630566543-598084-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: qwCowACnlNKSeDBh4Ic9AQ--.4291S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7JF4DJry7tF1UJw4xuF18AFb_yoW8JrWUpw
-        nxKr9xKrW8Ja12g3WxuF48GryUZ397tr9rJFW8G343J3s8CrnrXFZ2qFn8Z34Yyw48J3ya
-        yw1jyrW7CrWUXFJanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
-        CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUIApnUUUUU=
-X-Originating-IP: [124.16.138.128]
-X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+        id S243065AbhIBHLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 03:11:03 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:41836 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242504AbhIBHLA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 03:11:00 -0400
+Received: from [192.168.254.32] (unknown [47.187.212.181])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E8C3220B71D5;
+        Thu,  2 Sep 2021 00:10:01 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E8C3220B71D5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1630566602;
+        bh=Gm7mDHFy4xsNam3X90cB6VLAwXc244muiywxwcxc5AM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=AKZ78sIeyyFosHBcUapsnPcDOwYmBWVj5KPX0ePT2j71QU2tRfgXeU11TTrduE0mY
+         bFScIuyDUGp5Qlw91QIlec1KFRVt/7i9VENeBcHFzUtOO48PPNooX6shHO6Xea1zia
+         sBV+Sq/qdNlNpIL96hflImYaSJ1iLMP5feid79MI=
+Subject: Re: [RFC PATCH v8 2/4] arm64: Reorganize the unwinder code for better
+ consistency and maintenance
+To:     Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        nobuta.keiya@fujitsu.com, sjitindarsingh@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, jthierry@redhat.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <b45aac2843f16ca759e065ea547ab0afff8c0f01>
+ <20210812190603.25326-1-madvenka@linux.microsoft.com>
+ <20210812190603.25326-3-madvenka@linux.microsoft.com>
+ <YSe3WogpFIu97i/7@sirena.org.uk>
+ <ecf0e4d1-7c47-426e-1350-fe5dc8bd88a5@linux.microsoft.com>
+ <20210901162005.GH5976@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <dbd7f035-ad4e-1b92-3f09-d4fddb21f5a3@linux.microsoft.com>
+Date:   Thu, 2 Sep 2021 02:10:01 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <20210901162005.GH5976@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have found that in the complied files trace_event_buffer_commit()
-appear more than 200 times, and under at least 90% circumstances
-that trace_trigger_soft_disabled() and trace_event_buffer_commit()
-appear in pairs.
-For example, they appear together in the trace_event_raw_event_##call()
-of the file complie from 'include/trace/trace_events.h'.
-But we have found that in the trace_inject_entry(), there is only
-trace_event_buffer_commit() instead of the pair.
-Therefore, we consider that the trace_trigger_soft_disabled()
-might be forgotten.
 
-Signed-off-by: jiasheng <jiasheng@iscas.ac.cn>
----
- kernel/trace/trace_events_inject.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/trace/trace_events_inject.c b/kernel/trace/trace_events_inject.c
-index c188045..6dfd3cd 100644
---- a/kernel/trace/trace_events_inject.c
-+++ b/kernel/trace/trace_events_inject.c
-@@ -21,6 +21,8 @@ trace_inject_entry(struct trace_event_file *file, void *rec, int len)
- 	void *entry;
- 
- 	rcu_read_lock_sched();
-+	if (trace_trigger_soft_disabled(file))
-+		return written;
- 	entry = trace_event_buffer_reserve(&fbuffer, file, len);
- 	if (entry) {
- 		memcpy(entry, rec, len);
--- 
-2.7.4
+On 9/1/21 11:20 AM, Mark Brown wrote:
+> On Thu, Aug 26, 2021 at 06:19:07PM -0500, Madhavan T. Venkataraman wrote:
+> 
+>> Mark Rutland,
+> 
+>> Do you also approve the idea of placing unreliable functions (from an unwind
+>> perspective) in a special section and using that in the unwinder for
+>> reliable stack trace?
+> 
+> Rutland is on vacation for a couple of weeks so he's unlikely to reply
+> before the merge window is over I'm afraid.
+> 
 
+OK. I am pretty sure he is fine with the special sections idea. So, I will
+send out version 8 with the changes you requested and without the "RFC".
+
+Thanks.
+
+Madhavan
