@@ -2,87 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337AC3FF53C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A103FF543
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345082AbhIBVBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243944AbhIBVB3 (ORCPT
+        id S1345524AbhIBVDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:03:14 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:45609 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234242AbhIBVDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:01:29 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 497B2C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:00:30 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id r13so2615708pff.7
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:00:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YMhfaodcgc77ZP8ABkUmOAdhtqO4++UxJv6RcpOUv/w=;
-        b=eWmYUlZrxbqNuuMJ/0PDLmAq8uKaypddRBaU11mMZBstxElgL2M6PYro90x+u8uYwJ
-         I4sMfaFz3cZLrHxdWT1tbUdOxj1PelcqFSh5MH+2EBr81IXepqqNNMmvYSsHw3kbBVmw
-         a5YNZysGloOEgYu8wLvDxpkeAEz2LQfBXGu8xdurstGe0PWZA6RPE9DPOIO5SIlkhkXi
-         tqGc2LC1/098pNwdbB91XwDiLoCloE/vM+JYbxa2EYlGPl4R6tpT5lZGEVEtl99Ilq59
-         FZN97QCzYsimZYp7fekRjIa/vI+7if8apNyeEm5juRDsmrILIc3rbphILHVbO5T0e9/3
-         tntQ==
+        Thu, 2 Sep 2021 17:03:13 -0400
+Received: by mail-oi1-f173.google.com with SMTP id q39so4254683oiw.12;
+        Thu, 02 Sep 2021 14:02:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=YMhfaodcgc77ZP8ABkUmOAdhtqO4++UxJv6RcpOUv/w=;
-        b=igFDpr9TGIltocqtdVLeygOjQst9a92BsbZw5RzzpDnPqyCDc+VfSP1vsJb6YjYm4V
-         mWNHt0P8Hpf11lo77NE8vFNM+9cLmvVi0sEeNyY6L0sXs7Q2FuA29AK82CarE+WmuO9B
-         zR6Jg6oNerUNU3KD2h6JKky+OrRuOFhaEMgxUI/u9LqFafRI1UaUo54FOp84NRFRdGeI
-         kFrl7k1KYcDE2mro0k4mGSpNwq1NzX8XmSElwKGBUz4fleQDqPXNGZOAmLn2cceBj67n
-         w4b0z5948Yc6aiELwPaH24JTt4CFQq29xgM8TxJtva4TqetZYwUTu3iDFQIXBR4RQff5
-         mLeA==
-X-Gm-Message-State: AOAM53155lqZNVT3EXGIjG3KlDo5POAENrEgZQuMRIq/cefHGwb9V9TS
-        s9gS8eAJ9IpwrdYqwFsrJTlTOA==
-X-Google-Smtp-Source: ABdhPJybtFU71yoL/8EACzoVoe1O4RBTw6PhlXl6pINq5M7Du4FD99aQaNRl0wcu39Gj15GDLdnefA==
-X-Received: by 2002:a65:6a09:: with SMTP id m9mr256953pgu.269.1630616429603;
-        Thu, 02 Sep 2021 14:00:29 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id 11sm3195915pfm.208.2021.09.02.14.00.28
+        bh=IG8K7Ak73Pm6+oIzwqp5J2waDXTL9oO9Diu9ISkZy4o=;
+        b=GGCm6hYZTDdDa4GUnXp1lxZzLpEvdLCdPujg0H67qVM0HkcsQaaV6zXPrXA8n49om7
+         2LPdvsQHrrhU0aWWZVUdGlacVXbDCeq/ME+E1fMRhzCKDt8ZVQ3drp5mx37DA9DtDVHI
+         lb1p/yubuNt73N9D2w/I9ffV9YSHljnuTMf4F6Q/eQ/d4Rfd91vCB4FbgEnCUIWbstey
+         L4my/kaznfbzH31YVROvTah5tHYhEPlqMuVIaGvj8xlNaT8h7Cia1fjmsg5PrulNXB0b
+         JHt3B6Ewx7z8n9hsyxxYXActIbnEyv4hu0YbBWFEbL6Ttbp1aI1mIE3ht93j0wIRwS1S
+         HWEg==
+X-Gm-Message-State: AOAM5312H3mqECsjw7jfAt9jmd6Ba/FKa9jlgiFvhYC15s8co9p7W3Vj
+        HuXQ+IOu0oAEAjuNUiYYJg==
+X-Google-Smtp-Source: ABdhPJycAPaGXMQZQwQA6zRj5ZZ6eg7ysG9pNURlWAHTcxdaLDZMnVyOZFbf3yHxdVuQhmrWzWJTdQ==
+X-Received: by 2002:a05:6808:10c8:: with SMTP id s8mr188252ois.6.1630616533982;
+        Thu, 02 Sep 2021 14:02:13 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id u27sm581943otj.6.2021.09.02.14.02.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 14:00:29 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 21:00:25 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 5/8] KVM: Drop 'except' parameter from
- kvm_make_vcpus_request_mask()
-Message-ID: <YTE7aQ4HnlI6cx1f@google.com>
-References: <20210827092516.1027264-1-vkuznets@redhat.com>
- <20210827092516.1027264-6-vkuznets@redhat.com>
+        Thu, 02 Sep 2021 14:02:13 -0700 (PDT)
+Received: (nullmailer pid 1417644 invoked by uid 1000);
+        Thu, 02 Sep 2021 21:02:12 -0000
+Date:   Thu, 2 Sep 2021 16:02:12 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        Duc Nguyen <duc.nguyen.ub@renesas.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Subject: Re: [PATCH] dt-bindings: pwm: tpu: Add R-Car V3U device tree bindings
+Message-ID: <YTE71AmRgTzhW2PZ@robh.at.kernel.org>
+References: <20210901090719.35375-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210827092516.1027264-6-vkuznets@redhat.com>
+In-Reply-To: <20210901090719.35375-1-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021, Vitaly Kuznetsov wrote:
-> Both remaining callers of kvm_make_vcpus_request_mask() pass 'NULL' for
-> 'except' parameter so it can just be dropped.
+On Wed, 01 Sep 2021 11:07:19 +0200, Wolfram Sang wrote:
+> From: Duc Nguyen <duc.nguyen.ub@renesas.com>
 > 
-> No functional change intended.
-
-Trademark infringement.
-
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Add device tree bindings for TPU with the PWM controller found
+> on R-Car V3U SoCs.
+> 
+> Signed-off-by: Duc Nguyen <duc.nguyen.ub@renesas.com>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 > ---
+>  Documentation/devicetree/bindings/pwm/renesas,tpu-pwm.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Reviewed-by: Sean Christopherson <seanjc@google.com> 
+Acked-by: Rob Herring <robh@kernel.org>
