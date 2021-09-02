@@ -2,118 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63CFE3FF166
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFFCD3FF16B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346311AbhIBQav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48286 "EHLO
+        id S1346319AbhIBQb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235316AbhIBQat (ORCPT
+        with ESMTP id S1346145AbhIBQb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:30:49 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E01FC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:29:51 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id w7so2504856pgk.13
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:29:51 -0700 (PDT)
+        Thu, 2 Sep 2021 12:31:57 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1C0C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:30:59 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id z19so3755745edi.9
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:30:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g7rNCRYI4FVtRdLWcxPgYOxxATANuLmHX5p0OHhQ/OQ=;
-        b=e3awIW1zIGCxTic+i6+lboTIlwUoY/CE6fjKlEcBGAvlSXQ2NkpAyDAw6W2E0uHp2L
-         xzWL8JbP4vpFgizBQTrlJ+CpT9kmhxkrd1clie/oJm/r2J8t3SJ4mzZvR7A7TMmvZD7/
-         TNcx8f+k/skk/Af98c9JjoT65hCMkEz6K5ADL1vdk+DdF35xKaWh36kQsj60l0Oat4Av
-         ntkPHMkeoUm3mBKVe9ynsvU19hXytkI5BsE4KIskCpfG8+JV3PvgP+FmdvYT+u71BUbB
-         XowX3ZIgiSVQUO3yzgC+rh4Re+sDCxJjLP11qlMtwnK9RIYjJfg1Z1xYf56hwzSQG7AD
-         nxOg==
+        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=USYcfZjcg7/rxlJ01qDkInwsA0jQO3CoE6DaEmLtMHw=;
+        b=SDXUXUjmEVYZVRMiOjlF6C4d8OElSn6OzwvpYK2P3+X6vbGGhNs3jl1Ah1E0/7xecX
+         WWKAnRPN44pWc3rcAL4fQhmzfslDo5omfiE/1QZB2cYPVDj2K3bHJezEtHeyfh4cZlHb
+         d8c+n71v8TI/B/n08wsJhylVzu1ptUpffH6Tj9cHySfMqmneUXvCAGax3A+ws/lnAOzo
+         o7vHeWehks3XPV9NwG3j6PWL5/2PsZisukEAt1fEfETB+2q4LMGvOHld5BCtF9YHg0LS
+         +TDuif9usO4s7ySKeqHgR01drPlO+/7cMmNeK7GuHBQiBM6gtzzq7oAPTXu1Grr4gx3+
+         C2QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=g7rNCRYI4FVtRdLWcxPgYOxxATANuLmHX5p0OHhQ/OQ=;
-        b=BgUGgn/pUQlqQKlqE8HGLLxfFEj0HmHPqwhfI5SQQy8+zu45RPN0Egi7/3l1ANPCva
-         P/CCUf3y56xPw4WAqDd/uNWfQZyBBAkq8qQk10TVGgKzgxbYZzztJrOCyZOuOzBPLCwx
-         FzGLPLKdaCticy5m3hysHjYUaxbeDwCGnLBu2+9028CSAXy7fJVtxq4Vd8mlyyprMaa9
-         bchkAiSdspElcbUiCPTtoxK/GSUVBhROHUfn63jh2lsidhofjZOvIitZwVJGMJboOUw1
-         Z0KBwomLZHRrBwhaXzKqjigrojan/6cwrsmEBCBAiBpuxVcUd3WQUgoR3vPOn+sLAlfn
-         M/rQ==
-X-Gm-Message-State: AOAM531flf2cguSYF4xeOfW5vrXgxjvEHbUptzyllL5lVBdKyvxMLQnw
-        eeCbdCHAgPQ/q8s3Yx6a8JrDGQ==
-X-Google-Smtp-Source: ABdhPJxYjlp2lHOOkXQQ6Czv2IjhTjuzKEhU3sS9GRs/1+YZ1bP5W46NJ4V9NDtdX71qvY4afwJ9kw==
-X-Received: by 2002:a63:f154:: with SMTP id o20mr4113169pgk.298.1630600190841;
-        Thu, 02 Sep 2021 09:29:50 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id v25sm2770900pfm.202.2021.09.02.09.29.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 09:29:50 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 16:29:46 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Chenyi Qiang <chenyi.qiang@intel.com>
-Cc:     Xiaoyao Li <xiaoyao.li@intel.com>, Tao Xu <tao3.xu@intel.com>,
-        pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
-Message-ID: <YTD7+v2t0dSZqVHF@google.com>
-References: <20210525051204.1480610-1-tao3.xu@intel.com>
- <YQRkBI9RFf6lbifZ@google.com>
- <b0c90258-3f68-57a2-664a-e20a6d251e45@intel.com>
- <YQgTPakbT+kCwMLP@google.com>
- <080602dc-f998-ec13-ddf9-42902aa477de@intel.com>
- <4079f0c9-e34c-c034-853a-b26908a58182@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=USYcfZjcg7/rxlJ01qDkInwsA0jQO3CoE6DaEmLtMHw=;
+        b=ZJCmkV/gbIUD2/0iAHrdoEovUCjvOR8Y3MvpD3GctSWrJfUfXj6+zUhQWx1mImuKf5
+         x9Il0MqYtwCsLPKzSVOg7jDDWyXpVyiawGBhNlyQDxkbl/iy4EKBjx0av+lYQKutQALm
+         OqokiLMTDoNiDgoQ+qhl1181g+V/Gtlnb0DqvmIax9JhgdRLgIbF6hIFjAg0fGvkrpgs
+         AQTRndCgOXkc+f9scgv+LHuPayWW+zJYJmtIdyZdXDcrcx6ShCWTcuTUDdy+meGsBByR
+         xmeRRBl+7vg6URVJZLasQpIsed92UqaSvQ0P/16NQbSKACi3N1rUmu9bK/UBViqK2SFF
+         TjbA==
+X-Gm-Message-State: AOAM533P8mwNCgn6gdvlBrj2mYoF4au77y8i8+ZPvALUkjYXUH696Idt
+        /BsIgLa9DCAJ7WihY8WA/wD/tLwV4+M5PSDFQjOOOQ==
+X-Google-Smtp-Source: ABdhPJy5d8mB0+bh+1dUQc9dMKYmM1vESBNDZccve874Sy179Xy0j7+SM+XKQHqNCiicfZiEUKLtVAnozq+y+AYfH1E=
+X-Received: by 2002:aa7:d157:: with SMTP id r23mr4287441edo.322.1630600257783;
+ Thu, 02 Sep 2021 09:30:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4079f0c9-e34c-c034-853a-b26908a58182@intel.com>
+References: <20210901083215.25984-1-yunfei.dong@mediatek.com>
+In-Reply-To: <20210901083215.25984-1-yunfei.dong@mediatek.com>
+From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Date:   Thu, 2 Sep 2021 13:30:46 -0300
+Message-ID: <CAAEAJfDOt_GyDPojcj5P6Wou9HC2GC8YzRt2wYyqdrCOjfeOog@mail.gmail.com>
+Subject: Re: [PATCH v6, 00/15] Using component framework to support multi
+ hardware decode
+To:     Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021, Chenyi Qiang wrote:
-> On 8/3/2021 8:38 AM, Xiaoyao Li wrote:
-> > On 8/2/2021 11:46 PM, Sean Christopherson wrote:
-> > > IIRC, SGX instructions have a hard upper bound of 25k cycles before they
-> > > have to check for pending interrupts, e.g. it's why EINIT is
-> > > interruptible.  The 25k cycle limit is likely a good starting point for
-> > > the combined minimum.  That's why I want to know the internal minimum; if
-> > > the internal minimum is _guaranteed_ to be >25k, then KVM can be more
-> > > aggressive with its default value.
-> > 
-> > OK. I will go internally to see if we can publish the internal threshold.
-> > 
-> 
-> Hi Sean,
-> 
-> After syncing internally, we know that the internal threshold is not
-> architectural but a model-specific value. It will be published in some place
-> in future.
+On Wed, 1 Sept 2021 at 05:32, Yunfei Dong <yunfei.dong@mediatek.com> wrote:
+>
+> This series adds support for multi hardware decode into mtk-vcodec, by first
+> adding component framework to manage each hardware information: interrupt,
+> clock, register bases and power. Secondly add core thread to deal with core
+> hardware message, at the same time, add msg queue for different hardware
+> share messages. Lastly, the architecture of different specs are not the same,
+> using specs type to separate them.
+>
+> This series has been tested with both MT8183 and MT8173. Decoding was working
+> for both chips.
+>
+> Patches 1~3 rewrite get register bases and power on/off interface.
+>
+> Patch 4 add component framework to support multi hardware.
+>
+> Patch 5 separate video encoder and decoder document
+>
+> Patches 6-15 add interfaces to support core hardware.
+> ----
+> This patch dependents on : "media: mtk-vcodec: support for MT8183 decoder"[1] and
+> "Mediatek MT8192 clock support"[2].
+>
+> 1: Multi hardware decode is based on stateless decoder, MT8183 is the first time
+> to add stateless decoder. Otherwise it will cause conflict. This patch will be
+> accepted in 5.15[1].
+>
+> 2: The definition of decoder clocks are in mt8192-clk.h, this patch already in clk tree[2].
+>
+> [1]https://patchwork.linuxtv.org/project/linux-media/list/?series=5826
+> [2]https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/commit/?h=clk-next&id=f35f1a23e0e12e3173e9e9dedbc150d139027189
+> ----
+> Changes compared with v5:
+> -Add decoder hardware block diagram for patch 13/15
+>
 
-Any chance it will also be discoverable, e.g. via an MSR?  That would be ideal
-as we could give the module param an "auto" mode where the combined threshold is
-set to a minimum KVM-defined value, e.g.
 
-	static int __read_mostly notify_window = -1;
-	module_param(notify_window, int, 444);
+The discussion on v5 was still on-going, so sending this v6
+is not helpful. The context for v5's discussion is now harder to find.
 
-	...
+Please avoid sending a new version without properly
+discussing all the feedback, and without reaching consensus.
+This is very important, please keep it in mind.
 
-	rdmsrl_safe(MSR_NOTIFY_WINDOW_BUFFER, &buffer);
-	if (notify_window == -1) {
-		if (buffer < KVM_DEFAULT_NOTIFY_WINDOW)
-			notify_window = 0;
-		else
-			notifiy_window = KVM_DEFAULT_NOTIFY_WINDOW - buffer;
-	}
-		
-> On Sapphire Rapids platform, the threshold is 128k. With this in mind, is it
-> appropriate to set 0 as the default value of notify_window?
+Specifically, the feedback on v5 was NAK, with the request to avoid
+using any async framework, and instead try to find a simpler solution.
 
-Maybe?  That's still not a guarantee that _future_ CPUs will have an internal
-threshold >25k.
+For instance, you can model things with a bus-like pattern,
+which ties all the devices together, under a parent node.
+This pattern is common in the kernel, the parent
+node can use of_platform_populate or similar
+(git grep of_platform_populate, you will see plenty of examples).
 
-On a related topic, this needs tests.  One thought would be to stop unconditionally
-intercepting #AC if NOTIFY_WINDOW is enabled, and then have the test set up the
-infinite #AC vectoring scenario.
+You will still have to do some work to have the proper
+regs resources, but this is doable. Each child is a device,
+so it can have its own resources (clocks, interrupts, iommus).
+
+You don't need any async framework.
+
+    vcodec_dec: vcodec_dec@16000000 {
+        compatible = "mediatek,mt8192-vcodec-dec";
+        reg = <something>;
+        mediatek,scp = <&scp>;
+        iommus = <&iommu0 M4U_PORT_L4_VDEC_MC_EXT>;
+        dma-ranges = <0x1 0x0 0x0 0x40000000 0x0 0xfff00000>;
+
+        vcodec_lat@0x10000 {
+            compatible = "mediatek,mtk-vcodec-lat";
+            reg = <0x10000 0x800>;      /* VDEC_MISC */
+            interrupts = <GIC_SPI 426 IRQ_TYPE_LEVEL_HIGH 0>;
+            // etc
+        };
+
+        vcodec_core@0x25000 {
+           compatible = "mediatek,mtk-vcodec-core";
+           reg = <0x25000 0x1000>;      /* VDEC_CORE_MISC */
+           interrupts = <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH 0>;
+           // etc
+        };
+    };
+
+Thanks,
+Ezequiel
