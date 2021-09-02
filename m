@@ -2,144 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C79DF3FEA23
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F7E3FEA29
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243458AbhIBHoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 03:44:13 -0400
-Received: from verein.lst.de ([213.95.11.211]:50306 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243361AbhIBHoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 03:44:09 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 51A986736F; Thu,  2 Sep 2021 09:43:08 +0200 (CEST)
-Date:   Thu, 2 Sep 2021 09:43:08 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     djwong@kernel.org, hch@lst.de, linux-xfs@vger.kernel.org,
-        dan.j.williams@intel.com, david@fromorbit.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nvdimm@lists.linux.dev, rgoldwyn@suse.de, viro@zeniv.linux.org.uk,
-        willy@infradead.org
-Subject: Re: [PATCH v8 6/7] xfs: support CoW in fsdax mode
-Message-ID: <20210902074308.GE13867@lst.de>
-References: <20210829122517.1648171-1-ruansy.fnst@fujitsu.com> <20210829122517.1648171-7-ruansy.fnst@fujitsu.com>
+        id S243762AbhIBHow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 03:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243361AbhIBHov (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 03:44:51 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0767C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 00:43:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=cPw2UIImbh1rU9+9v0uyD9QdNxdfxbeQEJ1fObWlMwA=;
+        t=1630568633; x=1631778233; b=uU458lENfMInptjHlatCNN+T8vTYi7iJ0iUsoO9KCANDXJA
+        5ZSo5E6weTFpcrZ+wCjjgyGWtUy7dD+Qu05C0slN6KYgbgK5q2mwbEeCQc5Q/9GST4VcVKHCsjluE
+        1Nz4lQe625YM7KNIF4ZGlauHzk7Sjj76mfH4ptcpgfQDMLNqe9YX2ZqlDk/kQRGXhroGD2lI/1Z1V
+        SpzfFuSb1adapuNtv+wEUYCj2sXcWdfN0ygkapOpR1PCX6Y3wAemC4EpylbGlQlie3yQqwyKs3ArV
+        2fAVQK8zsh6RNVkvyHqXAM1nEg8Gc4XTzUTNEyK5WWEs/6LEM6RlJhr8JzwXNVKg==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94.2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mLhNn-001W6C-8D; Thu, 02 Sep 2021 09:43:35 +0200
+Message-ID: <288a2d4dbcb1e6b0fbeff6da86569aa92df09202.camel@sipsolutions.net>
+Subject: Re: [PATCH] drm/ttm: provide default page protection for UML
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Thomas =?ISO-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-um@lists.infradead.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 02 Sep 2021 09:43:33 +0200
+In-Reply-To: <0887903c-483d-49c7-0d35-f59be2f85bac@cambridgegreys.com>
+References: <20210902020129.25952-1-rdunlap@infradead.org>
+         <9faacbc8-3346-8033-5b4d-60543eae959e@cambridgegreys.com>
+         <f978cae5-7275-6780-8a17-c6e61247bce7@infradead.org>
+         <0887903c-483d-49c7-0d35-f59be2f85bac@cambridgegreys.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210829122517.1648171-7-ruansy.fnst@fujitsu.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 29, 2021 at 08:25:16PM +0800, Shiyang Ruan wrote:
-> In fsdax mode, WRITE and ZERO on a shared extent need CoW performed.
-> After that, new allocated extents needs to be remapped to the file.  Add
-> an implementation of ->iomap_end() for dax write ops to do the remapping
-> work.
+On Thu, 2021-09-02 at 07:19 +0100, Anton Ivanov wrote:
+> > > 
+> > > I have a question though - why all of DRM is not !UML in config. Not 
+> > > like we can use them.
+> > 
+> > I have no idea about that.
+> > Hopefully one of the (other) UML maintainers can answer you.
+> 
+> Touche.
+> 
+> We will discuss that and possibly push a patch to !UML that part of the 
+> tree. IMHO it is not applicable.
 
-Please split the new dax infrastructure from the XFS changes.
+As I just said on the other patch, all of this is fallout from my commit
+68f5d3f3b654 ("um: add PCI over virtio emulation driver") which is the
+first time that you could have PCI on UML.
 
->  static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
-> -			       int *iomap_errp, const struct iomap_ops *ops)
-> +		int *iomap_errp, const struct iomap_ops *ops)
->  {
->  	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
->  	XA_STATE(xas, &mapping->i_pages, vmf->pgoff);
-> @@ -1631,7 +1664,7 @@ static bool dax_fault_check_fallback(struct vm_fault *vmf, struct xa_state *xas,
->  }
->  
->  static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
-> -			       const struct iomap_ops *ops)
-> +		const struct iomap_ops *ops)
+Without having checked, in this particular case it's probably something
+like
 
-These looks like unrelated whitespace changes.
+	depends on PCI && X86_64
 
-> -static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
-> +loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
->  {
->  	const struct iomap *iomap = &iter->iomap;
->  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
-> @@ -918,6 +918,7 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
->  
->  	return written;
->  }
-> +EXPORT_SYMBOL_GPL(iomap_zero_iter);
+as we've seen in other drivers (idxd, ioat).
 
-I don't see why this would have to be exported.
+The biggest problem is probably that UML internally uses X86_64
+(arch/x86/um/Kconfig), which is ... unexpected ... since CONFIG_X86_64
+is typically considered the ARCH, and now the ARCH is actually um.
 
-> +	unsigned 		flags,
-> +	struct iomap 		*iomap)
-> +{
-> +	int			error = 0;
-> +	struct xfs_inode	*ip = XFS_I(inode);
-> +	bool			cow = xfs_is_cow_inode(ip);
+I think we can just fix that and get rid of this entire class of
+problems? Something like
 
-The cow variable is only used once, so I think we can drop it.
+https://p.sipsolutions.net/fbac19d86637e286.txt
 
-> +	const struct iomap_iter *iter =
-> +				container_of(iomap, typeof(*iter), iomap);
+johannes
 
-Please comment this as it is a little unusual.
 
-> +
-> +	if (cow) {
-> +		if (iter->processed <= 0)
-> +			xfs_reflink_cancel_cow_range(ip, pos, length, true);
-> +		else
-> +			error = xfs_reflink_end_cow(ip, pos, iter->processed);
-> +	}
-> +	return error ?: iter->processed;
-
-The ->iomap_end convention is to return 0 or a negative error code.
-Also i'd much prefer to just spell this out in a normal sequential way:
-
-	if (!xfs_is_cow_inode(ip))
-		return 0;
-
-	if (iter->processed <= 0) {
-		xfs_reflink_cancel_cow_range(ip, pos, length, true);
-		return 0;
-	}
-
-	return xfs_reflink_end_cow(ip, pos, iter->processed);
-
-> +static inline int
-> +xfs_iomap_zero_range(
-> +	struct xfs_inode	*ip,
-> +	loff_t			pos,
-> +	loff_t			len,
-> +	bool			*did_zero)
-> +{
-> +	struct inode		*inode = VFS_I(ip);
-> +
-> +	return IS_DAX(inode)
-> +			? dax_iomap_zero_range(inode, pos, len, did_zero,
-> +					       &xfs_dax_write_iomap_ops)
-> +			: iomap_zero_range(inode, pos, len, did_zero,
-> +					       &xfs_buffered_write_iomap_ops);
-> +}
-
-	if (IS_DAX(inode))
-		return dax_iomap_zero_range(inode, pos, len, did_zero,
-					    &xfs_dax_write_iomap_ops);
-	return iomap_zero_range(inode, pos, len, did_zero,
-				&xfs_buffered_write_iomap_ops);
-
-> +static inline int
-> +xfs_iomap_truncate_page(
-> +	struct xfs_inode	*ip,
-> +	loff_t			pos,
-> +	bool			*did_zero)
-> +{
-> +	struct inode		*inode = VFS_I(ip);
-> +
-> +	return IS_DAX(inode)
-> +			? dax_iomap_truncate_page(inode, pos, did_zero,
-> +					       &xfs_dax_write_iomap_ops)
-> +			: iomap_truncate_page(inode, pos, did_zero,
-> +					       &xfs_buffered_write_iomap_ops);
-> +}
-
-Same here.
