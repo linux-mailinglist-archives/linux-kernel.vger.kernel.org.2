@@ -2,93 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7FE3FF337
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2B413FF338
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241887AbhIBS1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 14:27:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235359AbhIBS1V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:27:21 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BE6C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 11:26:22 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id c8so6342824lfi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 11:26:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9bAI7/az5oT+9KLtJNJ6ONhWWEIRpA4hVYuz5o04UH4=;
-        b=ZD0GazsyXaKAE96usk6ZiM6fZMzpsBZXxt2XIZQMBQTwYc7rabtbOqix7wSgzZMy+O
-         b0iV4pQ7nDEPJ7iYprW5c8Lfq/kIHiDHUhYEe4K0BNrd4gdaFQJSN7lVX0fE2nviICar
-         jAfbRnuvj+TzW75phO6P9+PgaKxNrRZT66VLpiXCOxgMEZk+BnROQ15MUKZ444ST/k82
-         OdoQSi2TfLTuzTUJa4gnySH5YkgMzXN3wpJedBb9z4GPYoqeJK+6cqhaRzUMLG+QbHjX
-         2pMMPSY9P7TJsGwKvweMkTRcSyMNXzbXjutFgVF/fTiioa2V1owoGrL+CNy4aGMlmzcM
-         Ye8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9bAI7/az5oT+9KLtJNJ6ONhWWEIRpA4hVYuz5o04UH4=;
-        b=HwqHinNtQrQSRYpvTrvI04UvbfGZsnk52EAHnQQD+2C046FfFs3Ar1tVnCG2xh7191
-         tK+ZoUyUuQ26EOma8XdjolElLPq2pKzjnh8ywIbHkoWbw6tjzymYl0dm/2nGzg6sK3Ht
-         I+BdOJ2+FPyj/dCILgOeeo6wSLll3dRt6irzCk9n1WEN4PoHwGOTnKTcBMms1zffZHse
-         SjLg2eFHZVyvg9p2TrvP+x1QGPjF4kRGxkqbxRbCBgdFs033vKMCWiZE68RIVdF6TZ+i
-         DV5fHib8EmZs4xuoHC1hKVcU99Nh3AE+l6VlcyYdzjfHn+S5HtSGi1H5YE99LFIKcIUV
-         psmA==
-X-Gm-Message-State: AOAM533pKDFSpzmwiaqUr0ARTjtAbo8sXmAL2XjFySQwBWgVHleggK8L
-        7wAnLygMMrpZ1fcc2+vn8k/PQxCBpWqAGHJjpqWS4w==
-X-Google-Smtp-Source: ABdhPJyjbxaJGgSIw3DkIXztNQJAtxmD0CuTFGEm/cPzhaonnrRIe1uMJSblQgOl3AJZwIsWsfxYto+l4TI35MaWEfU=
-X-Received: by 2002:a05:6512:2296:: with SMTP id f22mr3517156lfu.547.1630607180568;
- Thu, 02 Sep 2021 11:26:20 -0700 (PDT)
+        id S1346954AbhIBS2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 14:28:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235359AbhIBS2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 14:28:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AB1361041;
+        Thu,  2 Sep 2021 18:27:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630607228;
+        bh=CN6VfpJ6jbtvL+pY5FWJO2QEw5tgM1IquTBPB0VMzEA=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=MEcpEUfQXpUnT9P3hNd5t02YjLiwygNAYmd6CRA2FvrrQn5ttZpcjHfv3qY/PU9cd
+         byrno9FtcENKEA5MolJzLaL+IGlvgq5Bf6pvxH4Aaei44BfzAxsVo1qIvfMBabUCn3
+         kteXahGBC+wRIS/EgK1z7R9jFX7U9eGYRzS7Gz5yThl3xIX0gDpR4pBQxhgi+NkNjL
+         bdBrRDh/+OsKGZG5VmMbWg+tNGPJYocdTcbcXBZQuwEFksR4+A36JttuwkY3q0p1Ay
+         25/K/7OcIWUqmZA3fYJzMCz14XbdD5EknIEMrbp5WLw+WDALIV/VcjhLvzEvNIKLQy
+         OhDnqmsa+OqlA==
+Subject: Re: kernel/sched/core.c:5854:20: warning: unused function
+ 'sched_core_cpu_deactivate'
+To:     kernel test robot <lkp@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Josh Don <joshdon@google.com>
+References: <202109030259.bGgH5Lv6-lkp@intel.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <ab74f0f3-a7ea-e525-0725-946b1c754df3@kernel.org>
+Date:   Thu, 2 Sep 2021 11:27:06 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210802202326.1817503-1-ndesaulniers@google.com>
- <1847b77a-093a-ce59-5c3b-1a21d3bb66c7@kernel.org> <CAKwvOd=F_OexmHctcW6x7d6up8+zOb5-iLWU9-Ji1dv9-S3F+A@mail.gmail.com>
- <CANiq72mGnjy50kd4gMrOsWwmnM3YFp01qO5JzSyZyPGwCL0CwA@mail.gmail.com>
-In-Reply-To: <CANiq72mGnjy50kd4gMrOsWwmnM3YFp01qO5JzSyZyPGwCL0CwA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 2 Sep 2021 11:26:09 -0700
-Message-ID: <CAKwvOd=e1jrzsW=-KFBdw2f3Q-ewZhRJ=rRCgYhDwJCrQo0efw@mail.gmail.com>
-Subject: Re: [PATCH v2] compiler_attributes.h: move __compiletime_{error|warning}
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Marco Elver <elver@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Will Deacon <will@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Tom Stellard <tstellar@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <202109030259.bGgH5Lv6-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 10:49 AM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> On Wed, Aug 4, 2021 at 7:44 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
-> >
-> > Ah, I forgot the release/13.x branch was cut before I sent this.  I'd
-> > rather this feature "ride the trains" so that it gets more soak time.
-> >
-> > Miguel, would you like a v3 updating the comment above (and the
-> > comment below) to s/13.0/14.0/g, or can you simply fold that change
-> > into this one when applying it?
->
-> I can do the replacements on my side, no worries!
+On 9/2/2021 11:21 AM, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   4a3bb4200a5958d76cc26ebe4db4257efa56812b
+> commit: 3c474b3239f12fe0b00d7e82481f36a1f31e79ab sched: Fix Core-wide rq->lock for uninitialized CPUs
+> date:   13 days ago
+> config: mips-randconfig-r004-20210902 (attached as .config)
+> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c9948e9254fbb6ea00f66c7b4542311d21e060be)
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # install mips cross compiling tool for clang build
+>          # apt-get install binutils-mips-linux-gnu
+>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c474b3239f12fe0b00d7e82481f36a1f31e79ab
+>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>          git fetch --no-tags linus master
+>          git checkout 3c474b3239f12fe0b00d7e82481f36a1f31e79ab
+>          # save the attached .config to linux build tree
+>          mkdir build_dir
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=mips SHELL=/bin/bash kernel/sched/
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>     kernel/sched/core.c:3272:20: warning: unused function 'rq_has_pinned_tasks'
+>     static inline bool rq_has_pinned_tasks(struct rq
+>     ^
+>     kernel/sched/core.c:5123:20: warning: unused function 'sched_tick_start'
+>     static inline void sched_tick_start(int cpu) { }
+>     ^
+>     kernel/sched/core.c:5124:20: warning: unused function 'sched_tick_stop'
+>     static inline void sched_tick_stop(int cpu) { }
+>     ^
+>     kernel/sched/core.c:5853:20: warning: unused function 'sched_core_cpu_starting'
+>     static inline void sched_core_cpu_starting(unsigned int cpu) {}
+>     ^
+>>> kernel/sched/core.c:5854:20: warning: unused function 'sched_core_cpu_deactivate'
+>     static inline void sched_core_cpu_deactivate(unsigned int cpu) {}
+>     ^
+>>> kernel/sched/core.c:5855:20: warning: unused function 'sched_core_cpu_dying'
+>     static inline void sched_core_cpu_dying(unsigned int cpu) {}
+>     ^
+>     fatal error: error in backend: Nested variants found in inline asm string: ' .set push
+>     .set noat
+>     .set push
+>     .set arch=r4000
+>     .if ( 0x00 ) != -1)) 0x00 ) != -1)) : ($( static struct ftrace_branch_data __attribute__((__aligned__(4))) __attribute__((__section__("_ftrace_branch"))) __if_trace = $( .func = __func__, .file = "arch/mips/include/asm/cmpxchg.h", .line = 163, $); 0x00 ) != -1)) : $))) ) && ( 0 ); .set push; .set mips64r2; .rept 1; sync 0x00; .endr; .set pop; .else; ; .endif
+>     1: ll $0, $2 # __cmpxchg_asm
+>     bne $0, ${3:z}, 2f
+>     .set pop
+>     move $$1, ${4:z}
+>     .set arch=r4000
+>     sc $$1, $1
+>     beqz $$1, 1b
+>     .set pop
+>     2: .if ( 0x00 ) != -1)) 0x00 ) != -1)) : ($( static struct ftrace_branch_data __attribute__((__aligned__(4))) __attribute__((__section__("_ftrace_branch"))) __if_trace = $( .func = __func__, .file = "arch/mips/include/asm/cmpxchg.h", .line = 163, $); 0x00 ) != -1)) : $))) ) && ( 0 ); .set push; .set mips64r2; .rept 1; sync 0x00; .endr; .set pop; .else; ; .endif
+>     '
+>     clang-14: error: clang frontend command failed with exit code 70 (use -v to see invocation)
+>     clang version 14.0.0 (git://gitmirror/llvm_project c9948e9254fbb6ea00f66c7b4542311d21e060be)
+>     Target: mipsel-unknown-linux
+>     Thread model: posix
+>     InstalledDir: /opt/cross/clang-c9948e9254/bin
+>     clang-14: note: diagnostic msg:
+>     Makefile arch include kernel mm nr_bisected scripts source usr
+> 
+> 
+> vim +/sched_core_cpu_deactivate +5854 kernel/sched/core.c
+> 
+>    5852	
+>    5853	static inline void sched_core_cpu_starting(unsigned int cpu) {}
+>> 5854	static inline void sched_core_cpu_deactivate(unsigned int cpu) {}
+>> 5855	static inline void sched_core_cpu_dying(unsigned int cpu) {}
+>    5856	
 
-Bump, this has landed in llvm 14 (so needs a fixup when applying locally).
--- 
-Thanks,
-~Nick Desaulniers
+Is there any way for the test robot to ignore -Wunused-function warnings 
+for stub functions? Masahiro purposefully wanted these warnings shown 
+for static inline functions after commit 6863f5643dd7 ("kbuild: allow 
+Clang to find unused static inline functions for W=1 build") but the 
+entire point of the stub functions is that there should be no warnings 
+ever (even though I know this is a W=1 build but still...).
+
+Cheers,
+Nathan
