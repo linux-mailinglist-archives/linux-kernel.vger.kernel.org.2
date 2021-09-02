@@ -2,107 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 807FB3FF2EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE12C3FF2E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:58:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346809AbhIBSAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 14:00:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbhIBSAF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:00:05 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 300F7C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 10:59:07 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id c206so5436507ybb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 10:59:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jjW6xdHTM5+s0n5Gr94VMOZzqZcFAl+XMK5rvNwK9j4=;
-        b=W9uW0mxtfIcS9be8lr+K8+Nbfvy+mMukhnBRlOizysy/Yd/Vbr6CXq9YHCzyqMQvg/
-         kHRRH70A7ymqkX7O9dve9kv6ImHrszcAYR+2A9tjJ6zomtEg2A7WfbIDyHjbyIJSfXnd
-         iNYGXe2BKR646sTqU5i58gXNs2GB+macRvilIrW/73gY2dnHfU0F/Aha253ghA5369Kt
-         7Y6KbqgkMGOcZ83P2mznnkCgQvxuFPcgd8YXcdfy7CVhyf9nBlJHkg1q5llUPQKyUUxv
-         FRVwZSDq28Jj/mOZwYgzsLohmmvpD8rRI0OfjkAbC3dciJj4ljJe392qmeXRdiykmhF6
-         gQHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jjW6xdHTM5+s0n5Gr94VMOZzqZcFAl+XMK5rvNwK9j4=;
-        b=kWXbP9wbWlCTs/K+7uUmKM43NYOe+UcO6l+2L43jOUGX2emk/0eHRbXp1lOaiHHmBc
-         /n5A1HNrZQDxn7yRglTv4mEDOcPR6GvLYLn7fKXuJf5o6Xb1JBrIDuQZxmAaXrllSZvt
-         E4G7i6Nfhh96rUm9DRCoaSMrct5g+T892yKC9EkYPODC5cZYkwEF1CIehftLDgnJLb+A
-         rdP2E5xH8gneWLmA8/YngPqJ/62pLV8oOuoJM3duP3tSrcQczel6qumo6xRb9wemaLrD
-         mtCu+bRCbWTz0desktav5pXU0L35nX4ygekonYdpSuoxTgccsqs2u07J3IdBI39kCSri
-         Uqbg==
-X-Gm-Message-State: AOAM530h/h751YouKLas80U7H/G/VgIj2trzVXw3Xi0dJEMilQO81NAJ
-        jC/pWk+YNUw3AOnt42iRawxHttGZpdpp84l5eYIlFw==
-X-Google-Smtp-Source: ABdhPJywXj+nljc4ROlXKw+RojrvVBHmblH2vd8rtBZiDkasl81c596R2ZD949ecUE3IwC4urBiaxNdrKciMbnr5MAg=
-X-Received: by 2002:a25:d213:: with SMTP id j19mr6450877ybg.20.1630605546131;
- Thu, 02 Sep 2021 10:59:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <YSpr/BOZj2PKoC8B@lunn.ch> <CAGETcx_mjY10WzaOvb=vuojbodK7pvY1srvKmimu4h6xWkeQuQ@mail.gmail.com>
- <YS4rw7NQcpRmkO/K@lunn.ch> <CAGETcx_QPh=ppHzBdM2_TYZz3o+O7Ab9-JSY52Yz1--iLnykxA@mail.gmail.com>
- <YS6nxLp5TYCK+mJP@lunn.ch> <CAGETcx90dOkw+Yp5ZRNqQq2Ny_ToOKvGJNpvyRohaRQi=SQxhw@mail.gmail.com>
- <YS608fdIhH4+qJsn@lunn.ch> <20210831231804.zozyenear45ljemd@skbuf>
- <CAGETcx-ktuU1RqXwj_qV8tCOLAg3DXU-wCAm6+NukyxRencSjw@mail.gmail.com>
- <20210901084625.sqzh3oacwgdbhc7f@skbuf> <YTEMs1mMIT/Z0c4H@lunn.ch>
-In-Reply-To: <YTEMs1mMIT/Z0c4H@lunn.ch>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 2 Sep 2021 10:58:29 -0700
-Message-ID: <CAGETcx9gTEr6O2u0VwAgowaMynx=bGQpttw6dRHsud-kM0QmKg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Add support for FWNODE_FLAG_BROKEN_PARENT
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
+        id S1346827AbhIBR7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 13:59:39 -0400
+Received: from home.keithp.com ([63.227.221.253]:54500 "EHLO elaine.keithp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346809AbhIBR7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 13:59:37 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by elaine.keithp.com (Postfix) with ESMTP id A49CB3F30805;
+        Thu,  2 Sep 2021 10:58:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=keithp.com; s=mail;
+        t=1630605495; bh=TYiDI4/h43REKTZqe6SThSKOMp9tdXU7h56KuM3s8uU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=HXr3afV3CIQ4pvhYRHMGCmFA9GlxeL+hMHgwJGdkhOpcXJ02iSnkFHz4JBxYeNoxb
+         G+y543USj5pysieM+es1LpnCem7yr9rV0P932yyQs8pSt86gfdC6lQqMCh5l9YlCci
+         YyJToSMdCQeh2pSQhinAGX6PJwcXBaWz4ud6+nLAJhy2kY/A0JkQ2IA2t29ud9z7x3
+         lQZ7+Jp3loWfJKVypsHTp9do3pPEG7jIyjBYRKm/Q3pDd3DsRRPN6xs768YvLYv/qS
+         f1d7a/0E2RovDnXTB0+xzrfCDvuwpt00po+7STDfw80xmlMel239FeAVTMIiWLVmBZ
+         liU9JM11/schA==
+X-Virus-Scanned: Debian amavisd-new at keithp.com
+Received: from elaine.keithp.com ([127.0.0.1])
+        by localhost (elaine.keithp.com [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id W0TBSWDwJTET; Thu,  2 Sep 2021 10:58:10 -0700 (PDT)
+Received: from keithp.com (168-103-156-98.tukw.qwest.net [168.103.156.98])
+        by elaine.keithp.com (Postfix) with ESMTPSA id C815A3F30803;
+        Thu,  2 Sep 2021 10:58:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=keithp.com; s=mail;
+        t=1630605490; bh=TYiDI4/h43REKTZqe6SThSKOMp9tdXU7h56KuM3s8uU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=hqPDiRun0rYLMssA2cdH5hnWaVPr3uROXZrwRL9eb/glrR+NIi7nYEMl6F+vebH57
+         QI8FUlLqvKQ3IkGAfwrQGpuMM64DfqCNrrku0ay8efhpP+WifI8NZLE803Kzo54mbp
+         Jvdnk9KaRz/EJo/sTDa0XCHXj1E2BfjZdCVEBaGbMGafHcJGKw3vn3wGlOrjt2J2PM
+         ku1g1ZuPmRcg5kS8NWo144W7v0FziGIDaJUw8BUhsrzBDd7r9K96OokIqhtMi+R+uN
+         m9JCvHgqUtZw6ScytXmMsxP+4pqU3+CgpErBqpSxxNhradiRXvcugpjSDe4mCq4eNu
+         CbjSm/ytGA85w==
+Received: by keithp.com (Postfix, from userid 1000)
+        id 9D65B1E60119; Thu,  2 Sep 2021 10:58:32 -0700 (PDT)
+From:   Keith Packard <keithp@keithp.com>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     linux-kernel@vger.kernel.org, Abbott Liu <liuwenliang@huawei.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Len Brown <lenb@kernel.org>,
-        Alvin Sipraga <ALSI@bang-olufsen.dk>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Jens Axboe <axboe@kernel.dk>, Jian Cai <jiancai@google.com>,
+        Joe Perches <joe@perches.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Maninder Singh <maninder1.s@samsung.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vaneet Narang <v.narang@samsung.com>,
+        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>
+Subject: RE: [PATCH 0/2]: ARM: Enable THREAD_INFO_IN_TASK
+In-Reply-To: <20210902165353.GI22278@shell.armlinux.org.uk>
+References: <20210902155429.3987201-1-keithp@keithp.com>
+ <20210902165353.GI22278@shell.armlinux.org.uk>
+Date:   Thu, 02 Sep 2021 10:58:32 -0700
+Message-ID: <87a6kuhnav.fsf@keithp.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 10:41 AM Andrew Lunn <andrew@lunn.ch> wrote:
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+"Russell King (Oracle)" <linux@armlinux.org.uk> writes:
+
+> I think you're introducing a circular dependency with this for
+> certain kernel configurations:
 >
-> >   How would this be avoided? Or are you thinking of some kind of two-level
-> >   component driver system:
-> >   - the DSA switch is a component master, with components being its
-> >     sub-devices such as internal PHYs etc
-> >   - the DSA switch is also a component of the DSA switch tree
->
-> I think you might be missing a level. Think about the automotive
-> reference design system you posted the DT for a couple of days
-> ago. Don't you have cascaded switches, which are not members of the
-> same DSA tree. You might need a component for that whole group of
-> switches, above what you suggest here.
->
-> Can you nest components? How deep can you nest them?
+> E.g. Have you tried running this with CONFIG_CPU_V6 enabled?
 
-As far as I know you can nest components.
+That's very useful feedback -- no, I hadn't ever tried this
+configuration (presumably the compiler would have complained).
 
-Also, technically you can make your own lightweight component model
-like behaviour using stateful device links or fwnode links (probably
-just a simple for loop). Just create a new "dsa_switch_tree" device
-and create device links between that and whatever other devices that
-need to probe first. And then you'll just have a common
-"dsa_switch_tree" driver that probes these types of devices.
+> #define __my_cpu_offset per_cpu_offset(raw_smp_processor_id())
 
-I'm waiting for [1] to land before I jump in and clean up the
-component model to be more flexible and cleaner by using device links.
-The current implementation does a lot of stuff that device links will
-take care of for free.
+I've read through the v6 architecture reference manual (again) and
+cannot find any place to store either a per_cpu_offset or even a small
+processor id, which I didn't find surprising as I would have expected it
+to already be used for this purpose.
 
-[1] - https://lore.kernel.org/lkml/CAGETcx-mRrqC_sGiBk+wx8RtwjJjXf0KJo+ejU6SweEBiATaLw@mail.gmail.com/
+I'll re-spin the changes making them conditional on !CONFIG_CPU_V6,
+unless someone has an idea of how to identify the current core in a
+multi-core ARMv6 system.
 
--Saravana
+=2D-=20
+=2Dkeith
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEw4O3eCVWE9/bQJ2R2yIaaQAAABEFAmExEMgACgkQ2yIaaQAA
+ABH/ug/9ELJJBXQv/84eOLswDo8KROwQ23CzASf0Nz0YaullHqpG6xKO/DYiFFvp
+3EceURpqdgbIyLI/o9K8l9k//A2cTx62u3kB6JgYcJVouADBFZmcmUrgf1Aqb55i
+uK16O3iMOUbTcCp8Ye1A3IEKuqfUx/f6199pRh775JUwSbZdWXum3poOSwouxVcz
+G2C9bRYtbcO7u92O+CHCqXnnUDib39SnWyRs1eu31pYaHsqwNCBC+ECKn+zKi66f
+K1WKjth/X/+sUQLYQasf6HfvT+503dAl0NyxpjS0TknDPgXDtUU/+sOitxS9AY2/
+fSzTHd3cXxIUWgr6gShvPVH1/hdtXk2oajADHBwXmRqdjCaZYXWGX1YzpWL0/sTv
+mEiiK05x0ORbgWBhjAiwzcqPGNdJkNsFOVr+zgABlwjRxfmn3Mr/7BgDWuEamgUe
+x/UMqlYJDYLAkOO6xedgiJ6MKvkVxS8r/yBx8kNHCKbqf1/5JewOFIExpYAnE9G1
+VAbaEnV0DY6usJFg05zktEoIfMikBO388YjqOrWSKYN5R1GqCc63so71pfLI0lXx
+gbiPRuvWNW6+p/rvGP38r9ckS/e/BAQBOMV2bcIay153qEZvBpIq3N0sAmk1gKei
+K4k0jWVWtMT63NnYqUCYMly9CPntUy3+OPmY4dRvx9wrFoyD0QQ=
+=S1aA
+-----END PGP SIGNATURE-----
+--=-=-=--
