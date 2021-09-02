@@ -2,126 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D179D3FEDEC
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C913FEE17
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344481AbhIBMpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 08:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52340 "EHLO
+        id S1344875AbhIBMxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 08:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234098AbhIBMpF (ORCPT
+        with ESMTP id S1344801AbhIBMxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 08:45:05 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2435C061575;
-        Thu,  2 Sep 2021 05:44:06 -0700 (PDT)
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id DA80682DBA;
-        Thu,  2 Sep 2021 14:44:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1630586644;
-        bh=h+eb+xNiGGcksHiVR36S/ZDem9MgmoQYhpwzDPG17oE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=i3+xHaLd35OXBSq7MVhtXRBbtMf3+CE9GXoONQaFUqXGZPU/kfDDU9awzuV965+T3
-         1nIri/64h1GBiUmKOXQK/dp+HwhJub7GNRJGq5uHrUd0utrhOczPV5ksA2MCGKX4TZ
-         UkTvnsGLpGMYQ+hGxHeHqnJFCrJwiqu2ez1rH4r31Lk5NUZZeo/XnbbnH09et1s5ek
-         kng6Kid5w+HHwSqlaebOz3Z60dBe6ITwfBSCwQJzIv0xEeF0V978+3qia7pjTLr48Y
-         f9Yyr0MpCsGPp5393RGGun8YuvBY80U6N5CTEijIVkVQPXvQ9WF6HoZB7u8O3qx32p
-         omGQm3ukkqtRQ==
-Subject: Re: [PATCH] Input: ili210x - Set the device name according to the
- device model
-To:     Rogerio Pimentel <rpimentel.silva@gmail.com>
-Cc:     dmitry.torokhov@gmail.com, hansemro@outlook.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210901192229.29864-1-rpimentel.silva@gmail.com>
- <4e8ad91c-2554-4b8f-94db-aa5add5f524d@denx.de>
- <CAOkaPuUYQQHQZrjj3CcS1dOZrA=rH=nJJPKaPNNdBJaXO_t7ng@mail.gmail.com>
- <c0f13f0f-48c8-f58d-4589-ad78b64fe809@denx.de>
- <CAOkaPuVV3HK8OvVMQxjRPh1S_pFjvbEgsR-5UB51H8aguCw6Lw@mail.gmail.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <2cf4320e-1111-2c2d-dc5a-92b171647450@denx.de>
-Date:   Thu, 2 Sep 2021 14:44:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 2 Sep 2021 08:53:04 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD7FC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 05:52:06 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id k5-20020a05600c1c8500b002f76c42214bso1354968wms.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 05:52:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:date:in-reply-to
+         :message-id:mime-version;
+        bh=XUQYJFf0VLoed4JNR3bJk8DdGmygiKizVinf3zNZhJo=;
+        b=QTk5hM6cRX7Vag5fBHfIGeza7Gcb1CrOImwXRWX/tUo4pmpjLmUx9zGHyE/mC3pJPT
+         NwPl+3wafeOiVJQqeXPoo/qK3fM6Xdo83WhZEVjwLWn1EK++PdfKrpWF1feAG02UOamx
+         Qvxjnks2r6bbean2ZB3OiwA8WW7OKO0iO0O8MOIAuKLafEcdSNsFNIpKLCPrKrCvhfFL
+         HGcA7Dg/hEBxAdqHLwQkS5DofZuFFMxF70Ikc0MHAFnfd+aIKsRlHW32pk6cSmJoYUwB
+         eUoDkKJwfd0ychlZhdLxmRkOhCUNHYiebn2sBPtQbiE0KLqY21JHwDzfd9fjiCoO3P0G
+         MhUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+         :in-reply-to:message-id:mime-version;
+        bh=XUQYJFf0VLoed4JNR3bJk8DdGmygiKizVinf3zNZhJo=;
+        b=LM5m/Jrkbxw1M6YE9Eb4mgjMqVtfY48i2KUKFy0Be2C0iHLhUOaZl0JNtt6xIDHQDR
+         VBVn6Ng/0bnfl/DWejlPxUlbj/Nmkf7eF51ZMDQC6j0eclmoJdxehSj/rE+gSVCZh06h
+         w5BmXnnKA1OrzT/RvmhGc1C7M08bL6eEtV1nEQFfjiOyJbzKL2SS2jqSlVlPi7NtvP5v
+         J0F60/r2Jtpm520eO4VRdm9qwhhEA7rO6VVArrfUM7h9cxCIb1li2ZHYX9SAZtK8QzCr
+         hIGY+vu9t690dKeYxsGrsveO7/iZ9cEYp6Vs60VhrKQD+uSX/yZ6Vf2s7bLmHokcZUXa
+         r3IQ==
+X-Gm-Message-State: AOAM531wJ86sHWo5QfpfyfWY+an66FTJBY4AWcwesg4XK0AFijxeBaV0
+        GIanWYoVcAZrBdW0DzzofMrovQ==
+X-Google-Smtp-Source: ABdhPJzPz9XOAIc35pFuBE/Q9Eg6RqNF24BiJ5nOV48yKD7O45stK/C7AYYFgjow2p8m9xr050S43A==
+X-Received: by 2002:a05:600c:259:: with SMTP id 25mr2997861wmj.82.1630587124128;
+        Thu, 02 Sep 2021 05:52:04 -0700 (PDT)
+Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id n4sm2071215wro.81.2021.09.02.05.52.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 05:52:03 -0700 (PDT)
+References: <1630562033-13231-1-git-send-email-spujar@nvidia.com>
+User-agent: mu4e 1.6.5; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org,
+        lgirdwood@gmail.com, robh+dt@kernel.org, thierry.reding@gmail.com
+Cc:     jonathanh@nvidia.com, stephan@gerhold.net,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] Convert name-prefix doc to json-schema
+Date:   Thu, 02 Sep 2021 14:44:12 +0200
+In-reply-to: <1630562033-13231-1-git-send-email-spujar@nvidia.com>
+Message-ID: <1jilzj5edo.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <CAOkaPuVV3HK8OvVMQxjRPh1S_pFjvbEgsR-5UB51H8aguCw6Lw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/21 2:39 PM, Rogerio Pimentel wrote:
-> On Wed, Sep 1, 2021 at 5:48 PM Marek Vasut <marex@denx.de> wrote:
->>
->> On 9/1/21 10:27 PM, Rogerio Pimentel wrote:
->>> On Wed, Sep 1, 2021 at 4:46 PM Marek Vasut <marex@denx.de> wrote:
->>>>
->>>> On 9/1/21 9:22 PM, Rogerio Pimentel wrote:
->>>>
->>>> [...]
->>>>
->>>>> diff --git a/drivers/input/touchscreen/ili210x.c b/drivers/input/touchscreen/ili210x.c
->>>>> index 30576a5f2f04..ca7af4a6f588 100644
->>>>> --- a/drivers/input/touchscreen/ili210x.c
->>>>> +++ b/drivers/input/touchscreen/ili210x.c
->>>>> @@ -19,6 +19,8 @@
->>>>>     #define ILI251X_DATA_SIZE1  31
->>>>>     #define ILI251X_DATA_SIZE2  20
->>>>>
->>>>> +#define ILI_NAME_LEN         27
->>>>> +
->>>>>     /* Touchscreen commands */
->>>>>     #define REG_TOUCHDATA               0x10
->>>>>     #define REG_PANEL_INFO              0x20
->>>>> @@ -394,6 +396,7 @@ static int ili210x_i2c_probe(struct i2c_client *client,
->>>>>         struct input_dev *input;
->>>>>         int error;
->>>>>         unsigned int max_xy;
->>>>> +     char *model_name;
->>>>>
->>>>>         dev_dbg(dev, "Probing for ILI210X I2C Touschreen driver");
->>>>>
->>>>> @@ -440,7 +443,11 @@ static int ili210x_i2c_probe(struct i2c_client *client,
->>>>>         i2c_set_clientdata(client, priv);
->>>>>
->>>>>         /* Setup input device */
->>>>> -     input->name = "ILI210x Touchscreen";
->>>>> +     input->name = "Ilitek         Touchscreen";
->>>>> +     model_name = (char *)input->name;
->>>>> +     snprintf(model_name, ILI_NAME_LEN, "Ilitek %s Touchscreen",
->>>>
->>>> Which ilitek devices do you have available exactly ?
->>>>
->>>> There is a firmware interface which does report the device type, but I
->>>> don't know whether it works on all the ilitek touchscreen devices. If it
->>>> does, then it could be used here to pull the type from the firmware and
->>>> then use this instead
->>>>
->>>> snprintf(model_name, ILI_NAME_LEN, "Ilitek ILI%04x Touchscreen", type);
->>>>
->>>> Try this command against the touch controller, it sends it command 0x61
->>>> and reads two bytes of the reply:
->>>> i2ctransfer -f -y 1 w1@0x41 0x61 r2
->>>> 0x10 0x25 # <---- on ILI2510 it reports 0x25 0x10 in reverse
->>>
->>> Thanks for the comments and suggestions. I'll make the changes and send V2.
->>
->> Can you tell which ILI2xxx touch controller you have exactly ?
-> 
-> Now I have only the ILI2511. Will also have to support ILI2510 and ILI2118.
-> 
->> Can you share the output of the 'i2ctransfer' (from i2c-tools) command
->> above ?
-> 
-> # i2ctransfer -f -y 3 w1@0x41 0x61 r2
-> 0x11 0x25
 
-Nice, so this works at least with the 251x series. Let's see how the 
-2118 behaves, I bet you will get 0x18 0x21 there too.
+On Thu 02 Sep 2021 at 11:23, Sameer Pujar <spujar@nvidia.com> wrote:
+
+> Following are the changes:
+>   - Add json-schema for 'sound-name-prefix' documentation under
+>     'name-perfix.yaml'
+>   - Use schema references wherever needed.
+>   - Remove txt based doc
+>
+>
+> Changelog
+> =========
+>
+> v1 -> v2
+> --------
+>  * Provide top reference to name-prefix.yaml as suggested by Rob
+>    for patch 2/3
+>  * Dropped couple of unreachable email ids from Cc list in commit
+>    message of patch 2/3
+>  * No changes in remaining patches
+>   
+>
+> Sameer Pujar (3):
+>   ASoC: Add json-schema documentation for sound-name-prefix
+>   ASoC: Use schema reference for sound-name-prefix
+>   ASoC: Remove name-prefix.txt
+
+Thanks a lot for this Sameer.
+With the small update required by Rob's bot and the comment on patch #1
+taken care of, you may add:
+
+Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
+
+>
+>  .../devicetree/bindings/sound/name-prefix.txt      | 24 ---------------
+>  .../devicetree/bindings/sound/name-prefix.yaml     | 35 ++++++++++++++++++++++
+>  .../bindings/sound/nvidia,tegra186-dspk.yaml       |  9 ++----
+>  .../bindings/sound/nvidia,tegra210-dmic.yaml       |  9 ++----
+>  .../bindings/sound/nvidia,tegra210-i2s.yaml        |  9 ++----
+>  .../devicetree/bindings/sound/nxp,tfa989x.yaml     |  9 ++----
+>  Documentation/devicetree/bindings/sound/rt5659.txt |  2 +-
+>  .../bindings/sound/simple-audio-mux.yaml           |  9 ++----
+>  8 files changed, 51 insertions(+), 55 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/sound/name-prefix.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/name-prefix.yaml
+
