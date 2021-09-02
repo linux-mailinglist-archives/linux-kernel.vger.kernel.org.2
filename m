@@ -2,190 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545233FF486
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A60B53FF487
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245428AbhIBUEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41736 "EHLO
+        id S1345288AbhIBUEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 16:04:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhIBUEH (ORCPT
+        with ESMTP id S1344200AbhIBUEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 16:04:07 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C866EC061575;
-        Thu,  2 Sep 2021 13:03:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=HjCPobaicATTQhQvs0MFgxl93rLs6U0O7or7Fen91wA=; b=uqsMXDZaQHY+hAnQkNxWRvQq3
-        K7o5qh8Z0AxzTtcdHTzhA7OgJdalCne+0doPhBBrOXfVIHhyNndMh82OQu8I1HdSW88a8V/Fw+XWz
-        jIetSLLC3jC6v6QWY7v3J66ZVwq6p0WHxclG/I8+ifo+DTAMEnjUF1WESIAnAWc3PSbwEFmnlnWtL
-        5Mu1YLsrpKy/7URjauscklPrpEXQJbTGaqUu50da8d79zHO7yReGwthKMC5rPV+vFP714EF/W+BHZ
-        klxn+wdE+UdRxD8JYYJC2sKHrJZoGlklxmEzJGT4OqvArrPt5UucPj+unzmb9pwmyME6tuWqmkMfA
-        dRzNeni1Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48108)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mLsvQ-0001xW-IY; Thu, 02 Sep 2021 21:03:04 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mLsvN-0008Ao-SB; Thu, 02 Sep 2021 21:03:01 +0100
-Date:   Thu, 2 Sep 2021 21:03:01 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Thu, 2 Sep 2021 16:04:16 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046B4C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 13:03:18 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id r2so3143156pgl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 13:03:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TAAe1Qk4hJTsBo1P0uuQjp0FfLmalTA5KfOdOLqGMEU=;
+        b=VLuQZeLiU+Uont5QUkBVe7CHel3fR6ufQoDQMRfZaU8eiAC9AYXY2DL2jMLjVu/aes
+         Wf439FrimgzlNZa7hhbZk+rpkwvp3G+d9RPvGKsDGlkUzHe+Oclvo2t3CjPDUN+PPpqo
+         ksKyMUECQY+9Cc0KGnnthu0X93CWvMtzsTKM8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TAAe1Qk4hJTsBo1P0uuQjp0FfLmalTA5KfOdOLqGMEU=;
+        b=oG2gmiImraiCMrw+t04WkN5YoIYaBzXUGFBvpBllq5Zh9GvWeodzQ4HcmF7aL31b7w
+         4Z7+4L4YTdL33Aqm92BV7oK4k6Z84zvBBdtyGX/91fFgqNtRwsquVzMzPa9onnax+gm0
+         hgs07omBlT2QClFnVXIayVi74wgK5DXSjLZuEO0pID2dTrTR/BQnj73rksCdS93Ox7Jl
+         Up4dsCO+fTVat59Kr+YOIiV0mG+03XcQS1Ub06WiP4wH7GeoYkBn6htVavHT9ghCx7jT
+         4tXmC11JDqS3vqLembMpCXHESLg8gL0+fxz1QVUiQ3+LFU7lDJTcAHCYccfuIy7FBudk
+         NPmg==
+X-Gm-Message-State: AOAM532XuVVbejP9jjxf0qU32Ch6SfjSNzSDYdKFi+EFByrRDwDqyRUY
+        pDyvgHiYOJlLapdGGhuvxH1ttQ==
+X-Google-Smtp-Source: ABdhPJwAbVH81plXjNNTw1ct4J4G+xuEXQ/WfFTZK2D7zZZU7HnEvdrrUDyF4ktfc18SoCjX5DLqdQ==
+X-Received: by 2002:a63:af12:: with SMTP id w18mr55891pge.221.1630612997438;
+        Thu, 02 Sep 2021 13:03:17 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:76ac:d178:a633:4fb5])
+        by smtp.gmail.com with UTF8SMTPSA id u8sm3626275pgc.69.2021.09.02.13.03.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 13:03:16 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 13:03:15 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [RFC PATCH net-next 0/3] Make the PHY library stop being so
- greedy when binding the generic PHY driver
-Message-ID: <20210902200301.GM22278@shell.armlinux.org.uk>
-References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
- <20210902121927.GE22278@shell.armlinux.org.uk>
- <20210902123532.ruvuecxoig67yv5v@skbuf>
- <20210902132635.GG22278@shell.armlinux.org.uk>
- <20210902152342.vett7qfhvhiyejvo@skbuf>
- <20210902163144.GH22278@shell.armlinux.org.uk>
- <20210902171033.4byfnu3g25ptnghg@skbuf>
- <20210902175043.GK22278@shell.armlinux.org.uk>
- <20210902190507.shcdmfi3v55l2zuj@skbuf>
+        Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, Arnd Bergmann <arnd@arndb.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: Re: [PATCH v3 2/4] misc: hisi_hikey_usb: change the DT schema
+Message-ID: <YTEuA+Z3f50RVGgX@google.com>
+References: <cover.1630581434.git.mchehab+huawei@kernel.org>
+ <d990e75f28c443c0c5a5fc857b87acc4be3f9464.1630581434.git.mchehab+huawei@kernel.org>
+ <YTC4LPDem9uKXyMd@kroah.com>
+ <20210902151053.7ddfbe3a@coco.lan>
+ <20210902153820.5624b57f@coco.lan>
+ <YTDYFCH/DbK1SFVv@kroah.com>
+ <20210902163529.734b8e0e@coco.lan>
+ <YTEJuK50e5PBBJfO@google.com>
+ <CALAqxLUxgRCUweDcE1WWV1gTsstZAvjUT6ZuTij5Mro8MHKi8Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210902190507.shcdmfi3v55l2zuj@skbuf>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <CALAqxLUxgRCUweDcE1WWV1gTsstZAvjUT6ZuTij5Mro8MHKi8Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 10:05:07PM +0300, Vladimir Oltean wrote:
-> On Thu, Sep 02, 2021 at 06:50:43PM +0100, Russell King (Oracle) wrote:
-> > On Thu, Sep 02, 2021 at 05:10:34PM +0000, Vladimir Oltean wrote:
-> > > On Thu, Sep 02, 2021 at 05:31:44PM +0100, Russell King (Oracle) wrote:
-> > > > On Thu, Sep 02, 2021 at 06:23:42PM +0300, Vladimir Oltean wrote:
-> > > > > On Thu, Sep 02, 2021 at 02:26:35PM +0100, Russell King (Oracle) wrote:
-> > > > > > Debian has had support for configuring bridges at boot time via
-> > > > > > the interfaces file for years. Breaking that is going to upset a
-> > > > > > lot of people (me included) resulting in busted networks. It
-> > > > > > would be a sure way to make oneself unpopular.
-> > > > > >
-> > > > > > > I expect there to be 2 call paths of phy_attach_direct:
-> > > > > > > - At probe time. Both the MAC driver and the PHY driver are probing.
-> > > > > > >   This is what has this patch addresses. There is no issue to return
-> > > > > > >   -EPROBE_DEFER at that time, since drivers connect to the PHY before
-> > > > > > >   they register their netdev. So if connecting defers, there is no
-> > > > > > >   netdev to unregister, and user space knows nothing of this.
-> > > > > > > - At .ndo_open time. This is where it maybe gets interesting, but not to
-> > > > > > >   user space. If you open a netdev and it connects to the PHY then, I
-> > > > > > >   wouldn't expect the PHY to be undergoing a probing process, all of
-> > > > > > >   that should have been settled by then, should it not? Where it might
-> > > > > > >   get interesting is with NFS root, and I admit I haven't tested that.
-> > > > > >
-> > > > > > I don't think you can make that assumption. Consider the case where
-> > > > > > systemd is being used, DSA stuff is modular, and we're trying to
-> > > > > > setup a bridge device on DSA. DSA could be probing while the bridge
-> > > > > > is being setup.
-> > > > > >
-> > > > > > Sadly, this isn't theoretical. I've ended up needing:
-> > > > > >
-> > > > > > 	pre-up sleep 1
-> > > > > >
-> > > > > > in my bridge configuration to allow time for DSA to finish probing.
-> > > > > > It's not a pleasant solution, nor a particularly reliable one at
-> > > > > > that, but it currently works around the problem.
-> > > > >
-> > > > > What problem? This is the first time I've heard of this report, and you
-> > > > > should definitely not need that.
+On Thu, Sep 02, 2021 at 11:29:49AM -0700, John Stultz wrote:
+> On Thu, Sep 2, 2021 at 10:28 AM Matthias Kaehlcke <mka@chromium.org> wrote:
+> > On Thu, Sep 02, 2021 at 04:35:29PM +0200, Mauro Carvalho Chehab wrote:
+> > > Em Thu, 2 Sep 2021 15:56:36 +0200
+> > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+> > > > On Thu, Sep 02, 2021 at 03:38:20PM +0200, Mauro Carvalho Chehab wrote:
+> > > > > While I'm not sure how generic this driver can be, I'm thinking that
+> > > > > maybe a future patch could rename it to 'generic-usb-hub' or
+> > > > > something similar - finding a good name is always the hardest
+> > > > > part :-)
 > > > >
-> > > > I found it when upgrading the Clearfog by the DSL modems to v5.13.
-> > > > When I rebooted it with a previously working kernel (v5.7) it has
-> > > > never had a problem. With v5.13, it failed to add all the lan ports
-> > > > into the bridge, because the bridge was still being setup by the
-> > > > kernel while userspace was trying to configure it. Note that I have
-> > > > extra debug in my kernels, hence the extra messages:
+> > > > Try looking at:
+> > > >     https://lore.kernel.org/r/20210813195228.2003500-1-mka@chromium.org
+> > > > for another example of this.
 > > >
-> > > Ok, first you talked about the interfaces file, then systemd. If it's
-> > > not about systemd's network manager then I don't see how it is relevant.
+> > > (C/C Matthias here).
+> > >
+> > > Interesting to know that someone else is also needing to add support
+> > > for USB chips.
 > >
-> > You're reading in stuff to what I write that I did not write... I said:
+> > Yeah, there were several attempts over the years, but so far none of
+> > them landed upstream ...
 > >
-> > "Consider the case where systemd is being used, DSA stuff is modular,
-> > and we're trying to setup a bridge device on DSA."
+> > > Yet, the approach took there won't work with HiKey 960/970, as
+> > > it needs to control not only the regulator, but it should also
+> > > work as as usb-role-switch.
+> > >
+> > > So, besides controlling the regulator, which seems to be basically what
+> > > the onboard_usb_hub_driver does, but it should also be able to:
+> > >
+> > >       - (optionally) reset the HUB;
+> > >       - control its OTG switch;
+> > >       - control power on/off for an USB type-C connector;
+> > >       - set USB role as host or device.
 > >
-> > That does not mean I'm using systemd's network manager - which is
-> > something I know little about and have never used.
+> > > Perhaps it would be possible to merge both approaches by modifying
+> > > hisi_hikey_usb in order to add the extra bits required by the boards that
+> > > Matthias is currently working, and requiring the GPIOs for OTG and
+> > > type-C connectors only if DT contains usb-role-switch.
+> >
+> > I'm not convinced that a hub driver should be in charge of role switching.
+> > I wonder if the hub part could remain separate, and the role switching be
+> > done by a dedicated driver that interacts with the hub driver through
+> > some interface. From the above list the hub driver could still be in charge
+> > of:
+> >
+> > - (optionally) reset the HUB;
+> > - control power on/off for an USB type-C connector;
+> >
+> > Maybe the hub driver could implement a reset controller to allow the role
+> > switching driver to switch it on and off (including type-C power).
+> >
+> > The role switch driver (a leaner version of hisi_hikey_usb) could model
+> > the mux and switch the hub on and off, without being concerned about all
+> > the details.
 > 
-> You should definitely try it out, it gets a lot of new features added
-> all the time, it uses the netlink interface, it reacts on udev events.
+> Apologies, I may be misunderstanding you, but I think the missing
+> issue there is: "what triggers the hub driver to switch it on or off?"
 > 
-> > The reason I mentioned systemd is precisely because with systemd, you
-> > get a hell of a lot happening parallel - and that's significiant in
-> > this case, because it's very clear that modules are being loaded in
-> > parallel with networking being brought up - and that is where the
-> > problems begin. In fact, modules themselves get loaded in paralllel
-> > with systemd.
+> For the hikey960/970 boards, removing/plugging in the usb-c cable is
+> what we use to enable/disable the mux/hub.
 > 
-> So that's what I don't understand. You're saying that the ifupdown
-> service runs in parallel with systemd-modules-load.service, and
-> networking is a kernel module? Doesn't that mean it behaves as expected,
-> then? /shrug/
-> Have you tried adding an 'After=systemd-modules-load.service' dependency
-> to the ifupdown service? I don't think that DSA is that bad that it
-> registers its net devices outside of the process context in which the
-> insmod mv88e6xxx.ko is called. Quite the opposite, I think (but I
-> haven't actually taken a close look yet) that the component stuff
-> Saravana is proposing would do exactly that. So you "fix" one issue, you
-> introduce another.
+> The current iteration (of which there have been many) of hikey hub
+> driver uses the role switch notification as its trigger. It's not
+> really controlling the role switching, just using that signal. That's
+> why the driver works as an intermediary/relay of the roleswitch
+> notification.
 
-# systemctl list-dependencies networking.service
-networking.service
-  ├─ifupdown-pre.service
-  ├─system.slice
-  └─network.target
-# systemctl list-dependencies ifupdown-pre.service
-ifupdown-pre.service
-  ├─system.slice
-  └─systemd-udevd.service
+Apologies too, my terminology wasn't very clear, I had little exposure to
+OTG so far.
 
-Looking in the service files for a better idea:
+The hisi_hikey_usb driver doesn't control the role of the USB controller,
+however it deals with platform specific role switching stuff, like muxing
+the USB PHY to the hub (host mode) or directly to the type-C port (device
+mode), or controlling the power of the type-C port.
 
-networking.service:
-Requires=ifupdown-pre.service
-Wants=network.target
-After=local-fs.target network-pre.target apparmor.service systemd-sysctl.service systemd-modules-load.service ifupdown-pre.service
-Before=network.target shutdown.target network-online.target
+> We had earlier efforts that had hacks to specific drivers as well as
+> attempts to add notifiers on role switches (but those were terribly
+> racy), so the intermediary/relay approach has been a great improvement
+> on reliability with little impact to other drivers.
 
-ifupdown-pre.service:
-Wants=systemd-udevd.service
-After=systemd-udev-trigger.service
-Before=network.target
+I can see how raciness can be a problem. I'm not proprosing to use
+notifiers in the driver that deals with the hub, from the hub's
+perspective it is connected to a host port and it shouldn't have to care
+about OTG.
 
-So, the dependency you mention is already present. As is a dependency
-on udev. The problem is udev does all the automatic module loading
-asynchronously and in a multithreaded way.
-
-I don't think there's a way to make systemd wait for all module loads
-to complete.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+But the 'hub driver' could expose a synchronous interface that allows the
+hisi_hikey_usb driver to power the hub on and off (or keep it in reset).
+That would maintain the relay approach, but without having a driver that
+tries to do too many things at once. For example the onboard_usb_hub driver
+has the option to power the hub down during suspend if no wakeup capable
+devices are connected downstream, I'm not convinced that this and the
+handling of the mux should be done by the same driver.
