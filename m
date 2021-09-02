@@ -2,93 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D813FF588
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A623FF58D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346988AbhIBVQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:16:24 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:57241 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347331AbhIBVPw (ORCPT
+        id S1346353AbhIBVUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:20:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345890AbhIBVUb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:15:52 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 727C424000A;
-        Thu,  2 Sep 2021 21:14:51 +0000 (UTC)
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Nuno Sa <Nuno.Sa@analog.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 16/16] iio: adc: max1027: Don't reject external triggers when there is no IRQ
-Date:   Thu,  2 Sep 2021 23:14:37 +0200
-Message-Id: <20210902211437.503623-17-miquel.raynal@bootlin.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210902211437.503623-1-miquel.raynal@bootlin.com>
-References: <20210902211437.503623-1-miquel.raynal@bootlin.com>
+        Thu, 2 Sep 2021 17:20:31 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16FA3C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:19:31 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id e7so2011607plh.8
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:19:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0MoWvyBuxB6hnlX9UmpIsvYzqqn+8XE9V419opjL2bw=;
+        b=Zu2Coku2+ZwBlMjajRny8atHMOyAHnXbEcL+N7yiRBORXdpdLHuR/towrWP07B8stp
+         vj5rMhVt3EeAIm9/OS2nXhX6ZHhYGo+I6n7ZMYSjT8G2PKpdAgBfpdlqFpGJKnH77z0/
+         20j8hM6ZU1uK6HFKIdH76zfwNTPcwcBtL1GG495lum874kXJnxOTQZ2kZBa9eEnGPMpf
+         bWj14fvfNvCIRvLJcA86g6TSj9SBh/lx709Tzp6bL8tMTAG4aI0+7Sjm/FBpAdhGu4wD
+         a9Kadd73F2k/ftDiiiFI15juAfz9iWtfTMJBtKvog97Cld4zFZNofL/yqI9+cpaHhBDU
+         rflA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0MoWvyBuxB6hnlX9UmpIsvYzqqn+8XE9V419opjL2bw=;
+        b=hcCR5SRSm43ov4ryFXb/GfG3PKKr6l7mkEnbsDm1WF4sgtd85mrhta3mdxjYfOosRr
+         +Eba0B0I8wyCpCIv2/wQuhzlWWfSGWp/iGQdpg7bZlerFmebp0+LPAm9dEVhcvhHVNYh
+         H5Ka4qcutUo5qpijW5E+hFoLAyEmJOCN3r4DGn+N634K0KhzfcZN7HG44efNEukpq5Cc
+         qPknsVtOkYIrHZIVMErTcVPCDIkUmXOWqVwzBB9zikwuhVtdMxG6BpD3xjurTtLVFj5w
+         MnaQnDdWKKRcmfYwVHR2bHzg20w6n6vFHaWHEQy8GAyf60wOB0R4+sUGh1ingpf6ILQk
+         SB0A==
+X-Gm-Message-State: AOAM530G4v/yMQdTGU/chg8e8MFRnaxeGDtrp38zfvTdiOCHoFwMMxfq
+        eRZg3Zb4U51tSjWaiozl4ASumg==
+X-Google-Smtp-Source: ABdhPJx4MZirR3AER4juXjw0qQOKg9JnGBvEa3T+2unkQDzxI3pB5oJdQYPmdoZKyTxBP7QXRaDivg==
+X-Received: by 2002:a17:90a:b702:: with SMTP id l2mr119269pjr.71.1630617570971;
+        Thu, 02 Sep 2021 14:19:30 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id n13sm3053146pff.164.2021.09.02.14.19.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 14:19:30 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 21:19:26 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 8/8] KVM: Make kvm_make_vcpus_request_mask() use
+ pre-allocated cpu_kick_mask
+Message-ID: <YTE/3pUnUb9Ivwmk@google.com>
+References: <20210827092516.1027264-1-vkuznets@redhat.com>
+ <20210827092516.1027264-9-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827092516.1027264-9-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-External triggers do not necessarily need the EOC interrupt to be
-populated to work properly. The end of conversion status may either come
-from an interrupt or from a sufficient enough extra delay. IRQs are not
-mandatory so move the triggered buffer setup out of the IRQ condition
-and add the logic to wait enough time for all the requested conversions
-to be in the device's FIFO.
+On Fri, Aug 27, 2021, Vitaly Kuznetsov wrote:
+> kvm_make_vcpus_request_mask() already disables preemption so just like
+> kvm_make_all_cpus_request_except() it can be switched to using
+> pre-allocated per-cpu cpumasks. This allows for improvements for both
+> users of the function: in Hyper-V emulation code 'tlb_flush' can now be
+> dropped from 'struct kvm_vcpu_hv' and kvm_make_scan_ioapic_request_mask()
+> gets rid of dynamic allocation.
+> 
+> cpumask_available() check in kvm_make_vcpu_request() can now be dropped as
+> it checks for an impossible condition: kvm_init() makes sure per-cpu masks
+> are allocated.
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  1 -
+>  arch/x86/kvm/hyperv.c           |  5 +----
+>  arch/x86/kvm/x86.c              |  8 +-------
+>  include/linux/kvm_host.h        |  2 +-
+>  virt/kvm/kvm_main.c             | 18 +++++++-----------
+>  5 files changed, 10 insertions(+), 24 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 09b256db394a..846552fa2012 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -569,7 +569,6 @@ struct kvm_vcpu_hv {
+>  	struct kvm_hyperv_exit exit;
+>  	struct kvm_vcpu_hv_stimer stimer[HV_SYNIC_STIMER_COUNT];
+>  	DECLARE_BITMAP(stimer_pending_bitmap, HV_SYNIC_STIMER_COUNT);
+> -	cpumask_t tlb_flush;
+>  	bool enforce_cpuid;
+>  	struct {
+>  		u32 features_eax; /* HYPERV_CPUID_FEATURES.EAX */
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index 5704bfe53ee0..f76e7228f687 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -1755,7 +1755,6 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  	int i;
+>  	gpa_t gpa;
+>  	struct kvm *kvm = vcpu->kvm;
+> -	struct kvm_vcpu_hv *hv_vcpu = to_hv_vcpu(vcpu);
+>  	struct hv_tlb_flush_ex flush_ex;
+>  	struct hv_tlb_flush flush;
+>  	u64 vp_bitmap[KVM_HV_MAX_SPARSE_VCPU_SET_BITS];
+> @@ -1837,8 +1836,6 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  		}
+>  	}
+>  
+> -	cpumask_clear(&hv_vcpu->tlb_flush);
+> -
+>  	/*
+>  	 * vcpu->arch.cr3 may not be up-to-date for running vCPUs so we can't
+>  	 * analyze it here, flush TLB regardless of the specified address space.
+> @@ -1850,7 +1847,7 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
+>  						    vp_bitmap, vcpu_bitmap);
+>  
+>  		kvm_make_vcpus_request_mask(kvm, KVM_REQ_TLB_FLUSH_GUEST,
+> -					    vcpu_mask, &hv_vcpu->tlb_flush);
+> +					    vcpu_mask);
+>  	}
+>  
+>  ret_success:
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index a4752dcc2a75..91c1e6c98b0f 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9224,14 +9224,8 @@ static void process_smi(struct kvm_vcpu *vcpu)
+>  void kvm_make_scan_ioapic_request_mask(struct kvm *kvm,
+>  				       unsigned long *vcpu_bitmap)
+>  {
+> -	cpumask_var_t cpus;
+> -
+> -	zalloc_cpumask_var(&cpus, GFP_ATOMIC);
+> -
+>  	kvm_make_vcpus_request_mask(kvm, KVM_REQ_SCAN_IOAPIC,
+> -				    vcpu_bitmap, cpus);
+> -
+> -	free_cpumask_var(cpus);
+> +				    vcpu_bitmap);
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/iio/adc/max1027.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+This can opportunistically all go on a single line.
 
-diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
-index b9b7b9245509..a673cd468051 100644
---- a/drivers/iio/adc/max1027.c
-+++ b/drivers/iio/adc/max1027.c
-@@ -275,6 +275,9 @@ static int max1027_wait_eoc(struct iio_dev *indio_dev)
+>  }
+>  
+>  void kvm_make_scan_ioapic_request(struct kvm *kvm)
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 2f149ed140f7..1ee85de0bf74 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -160,7 +160,7 @@ static inline bool is_error_page(struct page *page)
+>  #define KVM_ARCH_REQ(nr)           KVM_ARCH_REQ_FLAGS(nr, 0)
+>  
+>  bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
+> -				 unsigned long *vcpu_bitmap, cpumask_var_t tmp);
+> +				 unsigned long *vcpu_bitmap);
+>  bool kvm_make_all_cpus_request(struct kvm *kvm, unsigned int req);
+>  bool kvm_make_all_cpus_request_except(struct kvm *kvm, unsigned int req,
+>  				      struct kvm_vcpu *except);
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 2f5fe4f54a51..dc52a04f0586 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -274,14 +274,6 @@ static void kvm_make_vcpu_request(struct kvm *kvm, struct kvm_vcpu *vcpu,
+>  	if (!(req & KVM_REQUEST_NO_WAKEUP) && kvm_vcpu_wake_up(vcpu))
+>  		return;
+>  
+> -	/*
+> -	 * tmp can be "unavailable" if cpumasks are allocated off stack as
+> -	 * allocation of the mask is deliberately not fatal and is handled by
+> -	 * falling back to kicking all online CPUs.
+> -	 */
+> -	if (!cpumask_available(tmp))
+> -		return;
+
+Hmm, maybe convert the param to an explicit "struct cpumask *" to try and convey
+that cpumask_available() doesn't need to be checked?
+
+And I believe you can also do:
+
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index dc52a04f0586..bfd2ecbd97a8 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -247,15 +247,8 @@ static void ack_flush(void *_completed)
+ {
+ }
  
- 		reinit_completion(&st->complete);
- 	} else {
-+		if (indio_dev->active_scan_mask)
-+			conversion_time *= hweight32(*indio_dev->active_scan_mask);
-+
- 		usleep_range(conversion_time, conversion_time * 2);
- 	}
- 
-@@ -573,16 +576,18 @@ static int max1027_probe(struct spi_device *spi)
- 	if (!st->buffer)
- 		return -ENOMEM;
- 
-+	/* Enable triggered buffers */
-+	ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
-+					      &iio_pollfunc_store_time,
-+					      &max1027_threaded_handler,
-+					      NULL);
-+	if (ret < 0) {
-+		dev_err(&indio_dev->dev, "Failed to setup buffer\n");
-+		goto free_buffer;
-+	}
-+
-+	/* If there is an EOC interrupt, register the hardware trigger (cnvst) */
- 	if (spi->irq) {
--		ret = devm_iio_triggered_buffer_setup(&spi->dev, indio_dev,
--						      &iio_pollfunc_store_time,
--						      &max1027_threaded_handler,
--						      NULL);
--		if (ret < 0) {
--			dev_err(&indio_dev->dev, "Failed to setup buffer\n");
--			goto free_buffer;
--		}
+-static inline bool kvm_kick_many_cpus(cpumask_var_t tmp, bool wait)
++static inline bool kvm_kick_many_cpus(struct cpumask *cpus, bool wait)
+ {
+-       const struct cpumask *cpus;
 -
- 		st->trig = devm_iio_trigger_alloc(&spi->dev, "%s-trigger",
- 						  indio_dev->name);
- 		if (!st->trig) {
--- 
-2.27.0
-
+-       if (likely(cpumask_available(tmp)))
+-               cpus = tmp;
+-       else
+-               cpus = cpu_online_mask;
+-
+        if (cpumask_empty(cpus))
+                return false;
+ 
+> -
+>  	/*
+>  	 * Note, the vCPU could get migrated to a different pCPU at any point
+>  	 * after kvm_request_needs_ipi(), which could result in sending an IPI
+> @@ -300,22 +292,26 @@ static void kvm_make_vcpu_request(struct kvm *kvm, struct kvm_vcpu *vcpu,
+>  }
+>  
+>  bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
+> -				 unsigned long *vcpu_bitmap, cpumask_var_t tmp)
+> +				 unsigned long *vcpu_bitmap)
+>  {
+>  	struct kvm_vcpu *vcpu;
+> +	struct cpumask *cpus;
+>  	int i, me;
+>  	bool called;
+>  
+>  	me = get_cpu();
+>  
+> +	cpus = this_cpu_cpumask_var_ptr(cpu_kick_mask);
+> +	cpumask_clear(cpus);
+> +
+>  	for_each_set_bit(i, vcpu_bitmap, KVM_MAX_VCPUS) {
+>  		vcpu = kvm_get_vcpu(kvm, i);
+>  		if (!vcpu)
+>  			continue;
+> -		kvm_make_vcpu_request(kvm, vcpu, req, tmp, me);
+> +		kvm_make_vcpu_request(kvm, vcpu, req, cpus, me);
+>  	}
+>  
+> -	called = kvm_kick_many_cpus(tmp, !!(req & KVM_REQUEST_WAIT));
+> +	called = kvm_kick_many_cpus(cpus, !!(req & KVM_REQUEST_WAIT));
+>  	put_cpu();
+>  
+>  	return called;
+> -- 
+> 2.31.1
+> 
