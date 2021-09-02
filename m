@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D053FF4A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF113FF4A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345222AbhIBUIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:08:55 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:54068 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231983AbhIBUIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 16:08:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=Gt3zeHnWw3U8+QneEn3jIF6T3ece/2vIGoTVWj+Z/e4=; b=detHc482lludQ9s41A/nqX3VNt
-        zu61vALLwts07jdQEu+29nehJFjAxlY6p5QubVguBLFc0zWASHzQAMvW3+CacL599NBR2cLDyzSfw
-        SGFTo4uzg6k2HuRynKf0zt5J7qI5ivqFxe2wBQ+J7dv86dB4Rq6aISKc4qScFDY7dD3U=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mLt01-0052vS-9S; Thu, 02 Sep 2021 22:07:49 +0200
-Date:   Thu, 2 Sep 2021 22:07:49 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        netdev@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [RFC PATCH net-next 0/3] Make the PHY library stop being so
- greedy when binding the generic PHY driver
-Message-ID: <YTEvFR2WGQmG3h/C@lunn.ch>
-References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
- <20210902121927.GE22278@shell.armlinux.org.uk>
- <20210902123532.ruvuecxoig67yv5v@skbuf>
+        id S1345296AbhIBUOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 16:14:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345536AbhIBUOW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 16:14:22 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0817C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 13:13:23 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id t42so2526985pfg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 13:13:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CLRB1fmY18sRspCB9D7hr3FKnvNokdnWWOzE6+3PPlQ=;
+        b=GmrNngoCk4V04BfxSA0bkXqg0TGLiQdCGNSwC670QeK+u8i3NrdmdCXYpRokKSweO0
+         yumzbdZ4MDej2pXYUcUHRH8wA2U3wnPuHLUDTNQ9KfNu0iSO2SXWLtKUn57y47gPML8M
+         bIGl+e5zYvRxG97IP6R/k1SssxWUy7yXAQT6Dt7JaXtT0cEswmF3TOQpgU6KD9jX5Thf
+         NohTcFr7AjYlqycsmzmtD5z/M7l+x2Z2FOalh1BpC2bt0erayx2Q9t3ydOYez7F06z/B
+         3sKhGwmWb/3jZ+YRbepbeZZoKYrBaw3uYVLvcFzA3287OXtcDYdZYU9UWDVTt2jEeSTy
+         agow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CLRB1fmY18sRspCB9D7hr3FKnvNokdnWWOzE6+3PPlQ=;
+        b=XGHL7V2gDLXmUBrIaC9cRGWaquEpo//EZ6W3uFzVZKge3SNDMBOUUWFuQC9Uh+fGKu
+         3eOR0oC9VnSTBDtLI8/nBlMMFgy8upjFBWvR4KaMHpymqpbXu+TdSTxT85HZzCYGpEBN
+         BC810Ap9ZqLU/3/ydyRX3kJ0GyseJal3/EzEAMfVLPYiZ/uzDaxKHHallXgYsFo+hffk
+         5/n5VWGSvpcmbVgMoBtjyal3klIRkl68/mulgY49KJm2Jx3MYCJyop+/qmMbjPO+Zq+s
+         KDjg5m0cz/hQQWeL07mvzHOCfC6EtPPP5OSuhWRevPgFRu+c8IwO3B8gGMBVAOFMomt0
+         WgEA==
+X-Gm-Message-State: AOAM531mZyBTXaNZ8a2iEmdWPGMGFw6d3ALI74TSuiAuqJ/mx5ZvabTF
+        uMmiJM/bNeY51Mysp+7kS4dUFg==
+X-Google-Smtp-Source: ABdhPJyEAVRd+rq9AbELMXl8dUzDNh8MEn8lpzeau0IqxK3acWf20Q1OkhetryKYRYWDmaHvBo1p+w==
+X-Received: by 2002:a63:f62:: with SMTP id 34mr100328pgp.159.1630613603007;
+        Thu, 02 Sep 2021 13:13:23 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id v20sm3663656pgi.39.2021.09.02.13.13.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 13:13:22 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 20:13:18 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] KVM: Drop unused kvm_dirty_gfn_harvested()
+Message-ID: <YTEwXjghbR3hnHLj@google.com>
+References: <20210901230506.13362-1-peterx@redhat.com>
+ <87y28flyxj.fsf@vitty.brq.redhat.com>
+ <YTD+eBj+9+mb9LVg@google.com>
+ <87r1e7lycp.fsf@vitty.brq.redhat.com>
+ <YTErzxipuwv7X0Qk@t490s>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210902123532.ruvuecxoig67yv5v@skbuf>
+In-Reply-To: <YTErzxipuwv7X0Qk@t490s>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The interrupt controller _has_ been set up. The trouble is that the
-> interrupt controller has the same OF node as the switch itself, and the
-> same OF node. Therefore, fw_devlink waits for the _entire_ switch to
-> finish probing, it doesn't have insight into the fact that the
-> dependency is just on the interrupt controller.
+On Thu, Sep 02, 2021, Peter Xu wrote:
+> On Thu, Sep 02, 2021 at 06:46:14PM +0200, Vitaly Kuznetsov wrote:
+> > Sean Christopherson <seanjc@google.com> writes:
+> > 
+> > > On Thu, Sep 02, 2021, Vitaly Kuznetsov wrote:
+> > >> Peter Xu <peterx@redhat.com> writes:
+> > >> 
+> > >> > Drop the unused function as reported by test bot.
+> > >> 
+> > >> Your subject line says "Drop unused kvm_dirty_gfn_harvested()" while in
+> > >> reallity you drop "kvm_dirty_gfn_invalid()".
+> > >
+> > > Heh, Peter already sent v2[*].  Though that's a good reminder that it's helpful
+> > > to reviewers to respond to your own patch if there's a fatal mistake and you're
+> > > going to immediately post a new version.  For tiny patches it's not a big deal,
+> > > but for larger patches it can avoid wasting reviewers' time.
+> > >
+> > 
+> > Indeed. It's also a good reminder for reviewers that inbox is best
+> > treated like a stack and not like a queue :-)
+> 
+> It should really be a queue, to be fair. :)
 
-That seems to be the problem. fw_devlink appears to think probe is an
-atomic operation. A device is not probed, or full probed. Where as the
-drivers are making use of it being non atomic.
-
-Maybe fw_devlink needs the third state, probing. And when deciding if
-a device can be probed and depends on a device which is currently
-probing, it looks deeper, follows the phandle and see if the resource
-is actually available?
-
-	 Andrew
-
+Ya, a queue plus a deferred work queue for things that can't be handled in
+interrupt context ;-)
