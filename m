@@ -2,151 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E330D3FEAE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E853FEAE1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244919AbhIBI6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 04:58:01 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:13770 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244902AbhIBI6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 04:58:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630573023; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=H6hpSVRunzvfqnycIZ6/BaR3NskiDQJfsejgtp/GrDE=; b=P2GE+/Ge9YUjTk85kqA9qx4rkpSA36R0sB3R1KrfEbIa3Uw26kqPCgs6HIWaIFnVYUgHMBAq
- Z5ucwEOT0xahY4KIwGU2NDLr1dLYGs2dCUoPUShz7z7Ckl36JpeJ/DWYOUahZ1FRZ1xpPdhG
- vurkvGI53gySPspUA1UIrVe1UYs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 613091c6cd680e8969802f82 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 02 Sep 2021 08:56:38
- GMT
-Sender: zijuhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 94BA5C4360D; Thu,  2 Sep 2021 08:56:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from zijuhu-gv.qualcomm.com (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: zijuhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2C3EFC4338F;
-        Thu,  2 Sep 2021 08:56:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 2C3EFC4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-From:   Zijun Hu <zijuhu@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        c-hbandi@codeaurora.org, hemantg@codeaurora.org, mka@chromium.org,
-        rjliao@codeaurora.org, zijuhu@codeaurora.org, tjiang@codeaurora.org
-Subject: [PATCH v7] Bluetooth: btusb: Add support using different nvm for variant WCN6855 controller
-Date:   Thu,  2 Sep 2021 16:56:26 +0800
-Message-Id: <1630572986-30786-1-git-send-email-zijuhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S244875AbhIBI5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 04:57:44 -0400
+Received: from mail-bn8nam12on2051.outbound.protection.outlook.com ([40.107.237.51]:55136
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S244850AbhIBI5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 04:57:43 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N3Bh5BM155a5ViJVt+CLrZUK/UkVvV8xEdIxFqkKWZIwDlq2ECbNq4bd8y4LmNHonY/tJY8hQkqfJelxLZQu2lFIftVVP+6vyrkgPV+rPN8vgXVE0/Qy/Xa0G2BozIqMxgnwkLA6Q03wJ3pBk8U4m6E3UDTr1JkCxEUOv0egQP+ljdYr7zT5xms6p2j+B1jur9qEI7SfwmQ9hPzxxjH05EM/zQcIzoUTH9d9qSXEa+YM0d2eL78xRb0ZjeBqHTSzUuKeA5GbY0ZRfN1AN/m+N90HKtEptp0i1i9+pltXU+uYrcKYRcrlOQSGgrl2cH6FCKSqnE/QNTDfTsreCNumfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=88LUEYD00A19pUUsQF13FobaYWXSdIRkLDUMyBtILxI=;
+ b=UlQMt0bv4c6cbTeGf35tAl0a0KrhLPbw5IB8q/6FoXtRT5N1lJlPnHZzinnzVGh8QUf3vh1oZBN6DTcsNHDUsIX/WzOwRw+gyOOUTJkQAa0vHtym1tqVyorwqCxVkyHqlnESxXLlOpbud/eAiYEzb6/IiEKBc3tHXIMYzI7VIC/QXOBAPJKJiAOcd9G4fqNIZSLAkjX5fw4B/C7t0XF8bZWEeieAnBzbdSYA/l0dw4zCTRGrj0RXrVdKyq3HgSv7+nAkEc71hmxkNpo6P0kXl5oCtJ6fH16eZw/OeEESJsUCIWugrNGf0yz5wYnyIUobqjhpMHQhHO6jY9kgFPd9WA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=88LUEYD00A19pUUsQF13FobaYWXSdIRkLDUMyBtILxI=;
+ b=v75M4Ilvk5bAMwef/CT+NdUN0J3TJ/lNaMv2DA3WXTojhGV1mAPlI+jBSNUmiecNgBWquye8HRnQBW9BFbvTwdtu+Ly8ER6fIbpHP7rDsvJq6u46B6f4Kp36ujiRAt/Q4vcmquiVDahsZLKC1325+4XcoOElk7P+Z0FRjfNXHL8=
+Authentication-Results: ffwll.ch; dkim=none (message not signed)
+ header.d=none;ffwll.ch; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB3184.namprd12.prod.outlook.com (2603:10b6:208:100::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Thu, 2 Sep
+ 2021 08:56:43 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4478.021; Thu, 2 Sep 2021
+ 08:56:42 +0000
+Subject: Re: [PATCH] drm/ttm: provide default page protection for UML
+To:     Johannes Berg <johannes@sipsolutions.net>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>, Huang Rui <ray.huang@amd.com>,
+        dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-um@lists.infradead.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+References: <20210902020129.25952-1-rdunlap@infradead.org>
+ <9faacbc8-3346-8033-5b4d-60543eae959e@cambridgegreys.com>
+ <f978cae5-7275-6780-8a17-c6e61247bce7@infradead.org>
+ <0887903c-483d-49c7-0d35-f59be2f85bac@cambridgegreys.com>
+ <288a2d4dbcb1e6b0fbeff6da86569aa92df09202.camel@sipsolutions.net>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <e4e4a4c2-6729-4964-edc9-8e06733207a9@amd.com>
+Date:   Thu, 2 Sep 2021 10:56:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <288a2d4dbcb1e6b0fbeff6da86569aa92df09202.camel@sipsolutions.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: AM8P190CA0001.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:20b:219::6) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
+MIME-Version: 1.0
+Received: from [IPv6:2a02:908:1252:fb60:eecb:a21b:e309:246] (2a02:908:1252:fb60:eecb:a21b:e309:246) by AM8P190CA0001.EURP190.PROD.OUTLOOK.COM (2603:10a6:20b:219::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend Transport; Thu, 2 Sep 2021 08:56:40 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: eeb1e388-ac09-42d2-9341-08d96def952b
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3184:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB3184348D99EAFA338E2121E883CE9@MN2PR12MB3184.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Kxob7+ddY0ZGlmI4bcqZHmlnoJ5YoBmpN6xZXGv3dCJBsYvIm8NVE21/F+Z9Va4S3RQ/xvouLjhrodgyATXTeEqjaVTUMhI8nufh0zFDYTiqilQLKuDft/bk+dWlrEzgGKM/iJIRPnsw/I5FucDVDpZ/0974U168FEgL1jRaH9mOqE8ghfsmIpQBODdNhKCf+XNeEFdqBNhCco/7D5/XitNG17O34oP+0ixBulynIUhLihSgj+zAIQnc4IvUl88kDCFykW2ytPgLCVSQry57MwDUsHdZFugqIrbuiuStE1H9ZVCMg+c8a0LTysFVb8Bj4mZHUdEQS4M7u8p+TtsM9gIs3OG+4jr/Rxw7Va1QAdnkCqSwfuWZ6jY5Xesudc0y9Hu1ru/eZsQJSxKXYZQAG757FbmLZXwXjUVqgH5VKpSf6bwyueNhsqDTYDsWwooRRM6Y0ywW+J8f+OhZfC/JmmJ48XWOq/iU08AukAd0kwKN1gErUXOChW53uFAv5VUcPv6BMB5sA/OtoCJbQwWv7Nns+oRn9P03RizjgA43a8OqIgUk9yedRXy/OIudbykZz/oZq0olLiXPyMzoFYL2C86i8X2IBFUvfA0AvF39sYatT46KEt9xLwHRq5vual49GCgW9WD8pSmp7Fbr5mRjkvQ1OG2/C4J89+3Setelc1X/UaiFT12TU9N/YxjTv5JHnSAQsLFzBuOeKwytpmrJHeaO/2Q74kugrspczFS5lUaZO7EkNk4VqA0b9/5fR+2clyR1Ri9JCbCUOdPrXD819/9a0iOqldcO77O9drIFOpGBhxkTqBbBUZAFKui5Y3VM
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(4326008)(36756003)(86362001)(316002)(186003)(6666004)(966005)(8936002)(31686004)(54906003)(8676002)(508600001)(45080400002)(2906002)(38100700002)(7416002)(2616005)(5660300002)(66556008)(110136005)(66476007)(6486002)(66946007)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Rk4yTkU1Rk4xZ1dZSUlxMjdkWFlJWEs2NlQrdGZ2T1BybVJ0Y1NzUy9Lckhr?=
+ =?utf-8?B?SjlTeFZXai9zMDRCQTlJK0dxVXRTUFdLRkxZR09NbnMzVUJETDdTRmp0RUJD?=
+ =?utf-8?B?bTByVE5zamtUT2trL2dabnZad1ltbjNDWFc3cnlTZ1pjQ0FEYjd2ZENBSjlR?=
+ =?utf-8?B?QjBhdVZWanN6bTVXcjBDY3RvV0pQWGtrUDZYM2h1RzhsMG1OY0xSYTY5NmZ5?=
+ =?utf-8?B?cy9hSmZ3RHcxc1RFWHFnNHZDeGozbW9qQjQ4Rlo0M3Avb255SGlpam9YWFFL?=
+ =?utf-8?B?QzU2RWxDVStaeExvdys4MGp3UjFuWjF2ZjhMQUZYQVIrVXhqTldMS2JzKzUz?=
+ =?utf-8?B?ZTdxM3lZM0tEbkhFSC9yZkpiVVErbGJWZTdTcDlDZGVOUWN2R2RKTFlVbFlX?=
+ =?utf-8?B?VmUreXZNL0w2eEtKZjVDdGY3ODVVeWVQL2dZUUlmWEliR3huVHo3c1NKQ3N4?=
+ =?utf-8?B?TUFUbXI2WkhMU2RZQWNYcGtER2lvSHg3aHFPYkZ5bWJzR2JRT3dmblovOEZx?=
+ =?utf-8?B?SzM3ZnNZbUlUeldDUVpNSXlQUkltc1FrU2cybFhDUVI4QmZzUXJna2ovSHhq?=
+ =?utf-8?B?SGlJcVZDVkQ2akFxSjlCOXNrNTcybXc5SGFaalhUdG51ak9RQkoxN0JQcm1s?=
+ =?utf-8?B?MEZheFBRazZjbFhXaWU1MEFJNFNBdHNheXZHRk9YOFN6YXppT2ZnUHlEUG5M?=
+ =?utf-8?B?OE0yRUFQK0s3MUlkd0FiZlEveTFqbXY4Z1lDVTVpYTFsRTdKZzVSZ0xwTm5D?=
+ =?utf-8?B?VEwwVlNHODJEMmh6SG1sc2ZFeThBMURoSXRVOU1yUk1ieXppbWlhTkw5Q1Nh?=
+ =?utf-8?B?bjVWdGJ3SU1DdlJsdmxUdmF2RlVKNm1Rc1JhZHhmcjF1d01FVHgrbXV0U2Ru?=
+ =?utf-8?B?dXlxUk5pVzF3eEpRM09IaHQvQVNJSTE2NkEvQmhET1l0TXJzWjVvODk3d2RQ?=
+ =?utf-8?B?SmFwSGFNQVNWSUxPYTRQNnRJRGYvdDk0dHAyemdOU1VLTUxkaWM0Sm80ZlM3?=
+ =?utf-8?B?c1NZQlpzM2xDUS9Mbi9rcUk3NFRNc0dXcGhRckQ0dDRVM2tRdW1Xb1lZNDcw?=
+ =?utf-8?B?STVseS9sZGZaanB4SFprRTBJMVR5aERBYUlzUEs1eGJqM29TWGQvWE1Bb0k3?=
+ =?utf-8?B?N2dUVHB3NUdFL1VZQ0t2eXBITjMxVkkvL0NjZGpVNHkranJmQzJRZnJGc2hQ?=
+ =?utf-8?B?TUIwVU5ZSm5nTStVSzdjY1ExTnJoaXVoUjVhTllYQWRYN3REREZ1R1ozL0R6?=
+ =?utf-8?B?ZjJucnlNZC9tK2JsVW9Xb2M3RzlGZThqeHU1enp5OFQzeXYwajRkK25oRGY0?=
+ =?utf-8?B?M0VZR0RHT3AvUVFoZ1lsM3crakFKYnF1MFU1dHlFakxYQVBINjJXRHRBQ2dQ?=
+ =?utf-8?B?WkFEaFBCckdSRTZ4NmZISXNuV0pNRTZjSnBUdVdVYVB4VW5wKzIzR0lZRklO?=
+ =?utf-8?B?SWJlQVEyc01iNTk5RXdnd1N0T2V6VDB1OTRqam1BbGZQeFkzRkhreldldmdS?=
+ =?utf-8?B?TVI0WEpQN3F3UlF1a0c2ZTB6MjhmSlFiejhmQkVqZlR0b1RYUmZia2NwdElh?=
+ =?utf-8?B?TE9Tc1hOalZPWHl1ZHB0NmN0ZFpYWjJCYWNEVXFEaE1ISzFrRldDVDgxejNJ?=
+ =?utf-8?B?b0k2a1l0R2hIVDBPRUVENzl1Qk51TUNtUEsrcittNEtpMHdOVjQ0cGMzVVVz?=
+ =?utf-8?B?QmllSGJwb0phMlUwTDR0QTJFSkdndDQ4bUh3RkNYOUNkWW1ZWTJKTTdSU05y?=
+ =?utf-8?B?a1BGcEQwdW5INE1vcVZtZXk2eUlpalUwM1ZIa2lCZ1F1eDlJZXFRNjhlaEJm?=
+ =?utf-8?B?ZFU0RVhSMDhiNDQwQWhxaENrdVVqbFZSYUd4dDJRWE9XR3dWR0pVU2orSFht?=
+ =?utf-8?Q?8rQ7NVvWAUaO1?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eeb1e388-ac09-42d2-9341-08d96def952b
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2021 08:56:42.3404
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2nyrWczuuFzzmeuAOdk7zm0KY2sG/2iLNzdl8ELaoe7awi3EA3x7C6MTZCtPM6u1
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3184
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tim Jiang <tjiang@codeaurora.org>
+Am 02.09.21 um 09:43 schrieb Johannes Berg:
+> On Thu, 2021-09-02 at 07:19 +0100, Anton Ivanov wrote:
+>>>> I have a question though - why all of DRM is not !UML in config. Not
+>>>> like we can use them.
+>>> I have no idea about that.
+>>> Hopefully one of the (other) UML maintainers can answer you.
+>> Touche.
+>>
+>> We will discuss that and possibly push a patch to !UML that part of the
+>> tree. IMHO it is not applicable.
+> As I just said on the other patch, all of this is fallout from my commit
+> 68f5d3f3b654 ("um: add PCI over virtio emulation driver") which is the
+> first time that you could have PCI on UML.
+>
+> Without having checked, in this particular case it's probably something
+> like
+>
+> 	depends on PCI && X86_64
+>
+> as we've seen in other drivers (idxd, ioat).
+>
+> The biggest problem is probably that UML internally uses X86_64
+> (arch/x86/um/Kconfig), which is ... unexpected ... since CONFIG_X86_64
+> is typically considered the ARCH, and now the ARCH is actually um.
 
-the RF perfermence of wcn6855 soc chip from different foundries will be
-difference, so we should use different nvm to configure them.
+Yeah, as TTM maintainer I was about to NAK that approach here.
 
-Signed-off-by: Tim Jiang <tjiang@codeaurora.org>
----
- drivers/bluetooth/btusb.c | 50 +++++++++++++++++++++++++++++++++++------------
- 1 file changed, 37 insertions(+), 13 deletions(-)
+Basically you are claiming to be X86_64, but then you don't use the 
+X86_64 architecture and are surprised that it things break somewhere else.
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 928cbfa4c42d..218547f6097e 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3161,6 +3161,9 @@ static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
- #define QCA_DFU_TIMEOUT		3000
- #define QCA_FLAG_MULTI_NVM      0x80
- 
-+#define WCN6855_2_0_RAM_VERSION_GF 0x400c1200
-+#define WCN6855_2_1_RAM_VERSION_GF 0x400c1211
-+
- struct qca_version {
- 	__le32	rom_version;
- 	__le32	patch_version;
-@@ -3192,6 +3195,7 @@ static const struct qca_device_info qca_devices_table[] = {
- 	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
- 	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
- 	{ 0x00130200, 40, 4, 16 }, /* WCN6855 2.0 */
-+	{ 0x00130201, 40, 4, 16 }, /* WCN6855 2.1 */
- };
- 
- static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
-@@ -3346,6 +3350,31 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
- 	return err;
- }
- 
-+static void btusb_generate_qca_nvm_name(char *fwname,
-+					size_t max_size,
-+					struct qca_version *ver,
-+					char *variant)
-+{
-+	char *separator = (strlen(variant) == 0) ? "" : "_";
-+	u16 board_id = le16_to_cpu(ver->board_id);
-+	u32 rom_version = le32_to_cpu(ver->rom_version);
-+
-+	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
-+		/* if boardid equal 0, use default nvm without suffix */
-+		if (board_id == 0x0) {
-+			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s%s.bin",
-+				 rom_version, separator, variant);
-+		} else {
-+			snprintf(fwname, max_size, "qca/nvm_usb_%08x%s%s_%04x.bin",
-+				rom_version, separator,	variant, board_id);
-+		}
-+	} else {
-+		snprintf(fwname, max_size, "qca/nvm_usb_%08x.bin",
-+			 rom_version);
-+	}
-+
-+}
-+
- static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
- 				    struct qca_version *ver,
- 				    const struct qca_device_info *info)
-@@ -3354,19 +3383,14 @@ static int btusb_setup_qca_load_nvm(struct hci_dev *hdev,
- 	char fwname[64];
- 	int err;
- 
--	if (((ver->flag >> 8) & 0xff) == QCA_FLAG_MULTI_NVM) {
--		/* if boardid equal 0, use default nvm without surfix */
--		if (le16_to_cpu(ver->board_id) == 0x0) {
--			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
--				 le32_to_cpu(ver->rom_version));
--		} else {
--			snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x_%04x.bin",
--				le32_to_cpu(ver->rom_version),
--				le16_to_cpu(ver->board_id));
--		}
--	} else {
--		snprintf(fwname, sizeof(fwname), "qca/nvm_usb_%08x.bin",
--			 le32_to_cpu(ver->rom_version));
-+	switch (ver->ram_version) {
-+	case WCN6855_2_0_RAM_VERSION_GF:
-+	case WCN6855_2_1_RAM_VERSION_GF:
-+			btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "gf");
-+		break;
-+	default:
-+			btusb_generate_qca_nvm_name(fwname, sizeof(fwname), ver, "");
-+		break;
- 	}
- 
- 	err = request_firmware(&fw, fwname, &hdev->dev);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
+This is not something you can blame on subsystems or even drivers, but 
+rather just a broken architectural design and so needs to be fixed there.
+
+Regards,
+Christian.
+
+>
+> I think we can just fix that and get rid of this entire class of
+> problems? Something like
+>
+> https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fp.sipsolutions.net%2Ffbac19d86637e286.txt&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cd773b1e8b66643874d1308d96de56a86%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637661654674393046%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=xBT%2Fj%2FbEgltQfvE%2B7%2FGRV7IctGn3sDvy8ycmBvTTSXU%3D&amp;reserved=0
+>
+> johannes
+>
+>
 
