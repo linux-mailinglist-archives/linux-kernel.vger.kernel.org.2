@@ -2,97 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D500E3FE817
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 05:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918123FE819
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 05:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236724AbhIBDit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 23:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
+        id S242325AbhIBDi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 23:38:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232770AbhIBDis (ORCPT
+        with ESMTP id S242299AbhIBDiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 23:38:48 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87E5C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 20:37:50 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id g4-20020a4ab044000000b002900bf3b03fso129677oon.1
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 20:37:50 -0700 (PDT)
+        Wed, 1 Sep 2021 23:38:54 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E2DC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 20:37:56 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id n18so334188plp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 20:37:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=jTP/sG1HuvFKXr+3xQRfYJQh8HDh4ZXkCSrzx8/zILA=;
-        b=jK7DTpWCdzZ36LyxOqDmYAbosBcu7xVDGahQiC+dPcCbJm11HRmSPMvWnxO4jb9FoC
-         zpiJgMN95jn/Oc5IzsDVNWDhubX5S1Sc7DzgSaAsbs5TSEAZlT3dUI1sS9jKsdKd/A8N
-         orgpEHbC32aA5KkyoJautVtKk4qX6Dw5/yrZA=
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=LMC0ZY88gAL6RTkv4xL+oZp7+cMqJy7aqBDRcgQaHno=;
+        b=DIhUPQjEdjNap6fD8xJWky1waFmqa2pCnSzkt7GAV4CHm/Sw0eRIibRXuZETtBYLaf
+         3dLjOmCHuCMVNYaai75i/gsqR0cOGfi0sS+B0qhvRZkyMQCIHey3F2O1b58whifEM3H7
+         BK4hK6SDPI92ly3Sub5ykDTN972hevgr8S5TKjDOhe9Lj4mZFv+UsRNkQlUsam/xmk9H
+         QGBG5EpTU12SM6/qYw2fC+n9aJG9KPysSo7zXFykgNjIkFufvBI3rufxPVBHXFqoux9v
+         0EilelqJVkFt/lzhcdnZe6wlDyV9MXP3HcdibQ5DpARN2M6kP3/CzKMREzkT6CziOOuw
+         +u9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=jTP/sG1HuvFKXr+3xQRfYJQh8HDh4ZXkCSrzx8/zILA=;
-        b=E7w6t3POdG5RiQYVHQXqKr4eQGVrf5yHhpHCfHSxfy8Yppi99Fo8FP5sghjLbC43rp
-         uJkPY0t07r9SGmNF5WWA24q9uP0VzU2jO5QjRx8jGnB53tz/j7rIfpoZlaobih5R9vnN
-         yc4JmuMk7oCY/SOS4n/MqzEuk37trsE0gqMO9gQn2BSKyfk0Jqo9siLoi9ZJjUdq8rsB
-         dpIa0+IP4iyX5CAESs5A+IY9I3QosF8Ij9znW8vcQA3yApqImDfI9mtEDbpWChyLFuxZ
-         9cjo/5OWMea3VBq+R8BIlM7Z2cQwqH8L07sJpl8Dr95yx0u8SKWs2/K1kb56rMF1RtM0
-         tXZQ==
-X-Gm-Message-State: AOAM531oSDaBMF+ZH3buZA/fReDbhLOtT9ynEvled3MfY/t7MrRszB2O
-        XPgEhZ9Zl4UO3W/ghvhjfFJdtcYpcRGasaPfriOijA==
-X-Google-Smtp-Source: ABdhPJxWjgk6/3pIlbxH85C1ptiNv0bNKyYD19/tfQg0xIqiQUFjM2i0BdYDC3Ps5LwCFqpjGowDB1MlUFcs5zuH4TM=
-X-Received: by 2002:a4a:a98c:: with SMTP id w12mr910632oom.29.1630553870182;
- Wed, 01 Sep 2021 20:37:50 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 1 Sep 2021 20:37:49 -0700
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=LMC0ZY88gAL6RTkv4xL+oZp7+cMqJy7aqBDRcgQaHno=;
+        b=nX3RBslq4qibF4hrIzbdnaf+jtBJovKRjNiHve+Urn8mTfd0AnYFE9O9URRhKmizug
+         OqbLRd+6Df62I7BNV0EN3dPChDapDWLOttsPfKiF5ftdY7Rzot8CkSV+RsoDStAxl0gP
+         uZFOdDYma0dGXC5yYQkQckRfJmCd9oRTnDuuylsULzId/SOU1ajmbxrhsz8AeUXksyr9
+         9VJ+2xrKKuaetWEIu/QusDr8t/N7kFPLHI98t5ehtAP+PYIn9MOhCj4wguAiIQfUtsMG
+         Bs08FZyUt9tJVkyjex82LYkPaPXnFb3YTAqo1qcyeRhPtwqg79Djev454jX+0/JlGZhN
+         jaKQ==
+X-Gm-Message-State: AOAM530HwpQQz9OyJdE0KD9TkW3TiZ2Wrvc3g+MhrOR1cx+CafWlIGDa
+        oEeh2ZqLNZQxrlp2ugE91pPYhbg/RdxaPA==
+X-Google-Smtp-Source: ABdhPJxxY/aETUb7Ba4h6KkazHoICL5lr6pUJsdxkGcVy3wpIwkqPRoNlC+zjR6yU0QsBg+r9vdikA==
+X-Received: by 2002:a17:902:684d:b0:138:7bed:7471 with SMTP id f13-20020a170902684d00b001387bed7471mr967257pln.68.1630553876253;
+        Wed, 01 Sep 2021 20:37:56 -0700 (PDT)
+Received: from [10.254.207.253] ([139.177.225.243])
+        by smtp.gmail.com with ESMTPSA id 10sm361917pjc.41.2021.09.01.20.37.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 20:37:55 -0700 (PDT)
+Subject: Re: [PATCH v2 0/9] Free user PTE page table pages
+To:     David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+        tglx@linutronix.de, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, kirill.shutemov@linux.intel.com,
+        mika.penttila@nextfour.com, jgg@ziepe.ca
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, songmuchun@bytedance.com
+References: <20210819031858.98043-1-zhengqi.arch@bytedance.com>
+ <5b9348fc-95fe-5be2-e9df-7c906e0c9b81@redhat.com>
+From:   Qi Zheng <zhengqi.arch@bytedance.com>
+Message-ID: <1a6afa69-a955-9da7-1ff8-818bfcc7131e@bytedance.com>
+Date:   Thu, 2 Sep 2021 11:37:49 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <5be25c9710b7706cff91f1db71f9e25e@codeaurora.org>
-References: <1628830531-14648-1-git-send-email-skakit@codeaurora.org>
- <1628830531-14648-2-git-send-email-skakit@codeaurora.org> <CACRpkdZteWY6X+prHeAF0rtPVbCk+X9=ZYgpjgAMH24LhOjhaQ@mail.gmail.com>
- <4af8171aefd6f0387438225666ec1ccc@codeaurora.org> <CAE-0n53sR12fEa_cNPeT5eGcQVzzL57pd-tYnJbpP0NXkHMTsw@mail.gmail.com>
- <6801879ddd0edf9a8d0e3605f3868e79@codeaurora.org> <CAE-0n52Ki2tA6qy6ADym3r4UQ0tkvgz3bpif_Mm2q3Y+N=huGg@mail.gmail.com>
- <5be25c9710b7706cff91f1db71f9e25e@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 1 Sep 2021 20:37:49 -0700
-Message-ID: <CAE-0n51_v3rjoknfFTt3QcMnyNnHgXnkazDEsfJuroHZ_s5TRg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] pinctrl: qcom: spmi-gpio: correct parent irqspec translation
-To:     skakit@codeaurora.org
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Kiran Gunda <kgunda@codeaurora.org>,
-        linux-gpio@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5b9348fc-95fe-5be2-e9df-7c906e0c9b81@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting skakit@codeaurora.org (2021-08-17 22:26:18)
-> On 2021-08-18 00:45, Stephen Boyd wrote:
-> > Quoting skakit@codeaurora.org (2021-08-17 02:06:42)
-> >> On 2021-08-17 02:38, Stephen Boyd wrote:
-> >> >
-> >> > Are there any boards supported upstream that have a gpio block that
-> >> > isn't at 0xc000?
-> >>
-> >> yes, all the pmics used in sm8350-mtp.dts board have gpio block at
-> >> addresses different than 0xc000.
-> >>
-> >
-> > So maybe
-> >
-> > Fixes: f67cc6a91d88 ("arm64: dts: qcom: sm8350-mtp: Add PMICs")
-> >
-> > is appropriate then?
->
-> This patch is actually fixing the pinctrl-spmi-gpio.c driver.
-> So, I think we should add
->
-> Fixes: ca69e2d165eb ("qcom: spmi-gpio: add support for hierarchical IRQ
-> chip")
 
-OK. Were you going to resend this patch? I don't see it in linux-next so
-I worry that Linus dropped it while the Fixes tag was figured out.
+
+On 2021/9/1 PM8:32, David Hildenbrand wrote:
+> On 19.08.21 05:18, Qi Zheng wrote:
+>> Hi,
+>>
+>> This patch series aims to free user PTE page table pages when all PTE 
+>> entries
+>> are empty.
+>>
+>> The beginning of this story is that some malloc libraries(e.g. 
+>> jemalloc or
+>> tcmalloc) usually allocate the amount of VAs by mmap() and do not 
+>> unmap those VAs.
+>> They will use madvise(MADV_DONTNEED) to free physical memory if they 
+>> want.
+>> But the page tables do not be freed by madvise(), so it can produce many
+>> page tables when the process touches an enormous virtual address space.
+>>
+>> The following figures are a memory usage snapshot of one process which 
+>> actually
+>> happened on our server:
+>>
+>>     VIRT:  55t
+>>     RES:   590g
+>>     VmPTE: 110g
+>>
+>> As we can see, the PTE page tables size is 110g, while the RES is 
+>> 590g. In
+>> theory, the process only need 1.2g PTE page tables to map those physical
+>> memory. The reason why PTE page tables occupy a lot of memory is that
+>> madvise(MADV_DONTNEED) only empty the PTE and free physical memory but
+>> doesn't free the PTE page table pages. So we can free those empty PTE 
+>> page
+>> tables to save memory. In the above cases, we can save memory about 
+>> 108g(best
+>> case). And the larger the difference between the size of VIRT and RES, 
+>> the
+>> more memory we save.
+>>
+>> In this patch series, we add a pte_refcount field to the struct page 
+>> of page
+>> table to track how many users of PTE page table. Similar to the 
+>> mechanism of
+>> page refcount, the user of PTE page table should hold a refcount to it 
+>> before
+>> accessing. The PTE page table page will be freed when the last 
+>> refcount is
+>> dropped.
+>>
+>> Testing:
+>>
+>> The following code snippet can show the effect of optimization:
+>>
+>>     mmap 50G
+>>     while (1) {
+>>         for (; i < 1024 * 25; i++) {
+>>             touch 2M memory
+>>             madvise MADV_DONTNEED 2M
+>>         }
+>>     }
+>>
+>> As we can see, the memory usage of VmPTE is reduced:
+>>
+>>             before                        after
+>> VIRT               50.0 GB                  50.0 GB
+>> RES                3.1 MB                   3.6 MB
+>> VmPTE             102640 kB                   248 kB
+>>
+>> I also have tested the stability by LTP[1] for several weeks. I have 
+>> not seen
+>> any crash so far.
+>>
+>> The performance of page fault can be affected because of the 
+>> allocation/freeing
+>> of PTE page table pages. The following is the test result by using a 
+>> micro
+>> benchmark[2]:
+>>
+>> root@~# perf stat -e page-faults --repeat 5 ./multi-fault $threads:
+>>
+>> threads         before (pf/min)                     after (pf/min)
+>>      1                32,085,255                         31,880,833 
+>> (-0.64%)
+>>      8               101,674,967                        100,588,311 
+>> (-1.17%)
+>>     16               113,207,000                        112,801,832 
+>> (-0.36%)
+>>
+>> (The "pfn/min" means how many page faults in one minute.)
+>>
+>> The performance of page fault is ~1% slower than before.
+>>
+>> This series is based on next-20210812.
+>>
+>> Comments and suggestions are welcome.
+>>
+>> Thanks,
+>> Qi.
+>>
+> 
+> 
+> Some high-level feedback after studying the code:
+> 
+> 1. Try introducing the new dummy primitives ("API") first, and then 
+> convert each subsystem individually; especially, maybe convert the whole 
+> pagefault handling in a single patch, because it's far from trivial. 
+> This will make this series much easier to digest.
+> 
+> Then, have a patch that adds actual logic to the dummy primitives via a 
+> config option.
+> 
+> 2. Minimize the API.
+> 
+> a) pte_alloc_get{,_map,_map_lock}() is really ugly. Maybe restrict it to 
+> pte_alloc_get().
+> 
+> b) pmd_trans_unstable_or_pte_try_get() and friends are really ugly.
+> 
+> Handle it independently for now, even if it implies duplicate runtime 
+> checks.
+> 
+> if (pmd_trans_unstable() || !pte_try_get()) ...
+> 
+> We can always optimize later, once we can come up with something cleaner.
+> 
+> 3. Merge #6, and #7, after factoring out all changes to other subsystems 
+> to use the API
+> 
+> 4. Merge #8 into #6. There is a lot of unnecessary code churn back and 
+> forth, and IMHO the whole approach might not make sense without RCU due 
+> to the additional locking overhead.
+> 
+> Or at least, try to not modify the API you introduced in patch #6 or #7 
+> in #8 again. Converting all call sites back and forth just makes review 
+> quite hard.
+> 
+
+Very detailed feedback! Thank you very much for your time and energy,
+I will seriously adopt and implement these modification suggestions.
+
+> 
+> I am preparing some some cleanups that will make get_locked_pte() and 
+> similar a little nicer to handle. I'll send them out this or next week.
+> 
+
+Yup, we just simply convert the pte_alloc_map_lock() in
+__get_locked_pte() to pte_alloc_get_map_lock(), and then
+call the paired pte_put() in the caller of get_locked_pte().
+Like the following pattern:
+
+	insert_page
+	--> get_locked_pte
+	    --> __get_locked_pte
+		--> pte_alloc_get_map_lock
+
+	    "do some things"
+
+	    pte_put
+
+This is really ugly and hard to review.
+
+I look forward to your cleanups, besides, can you outline your approach?
+
+Thanks again,
+Qi
