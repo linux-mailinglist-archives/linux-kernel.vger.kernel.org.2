@@ -2,93 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8DD3FEEF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F803FEF00
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345298AbhIBNu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39174 "EHLO
+        id S1345216AbhIBNxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234364AbhIBNuW (ORCPT
+        with ESMTP id S229625AbhIBNw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:50:22 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9ECCC0613C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 06:49:23 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id g138so1327857wmg.4
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 06:49:23 -0700 (PDT)
+        Thu, 2 Sep 2021 09:52:57 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74300C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 06:51:58 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id dm15so3002511edb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 06:51:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oj4j/+RKPWZynb1QTKEYiXoK5GFx0DuIh0dsK+YOz70=;
-        b=Q2Z7V5PgsCJ85ScYojuBJgHK46WzEFCDleMnYLwQ4pQnV/smerrBx8EXlxWwElHsII
-         4cpj3+u5PI5T/KPeW7PzUon33Qsdr6RCOogPrrrTbyyuMiufJpvVrMUiNQlzKk3lwcMB
-         QlMWnbWPDf6RgpUk3AsJUDSwW9yv2tzBUt7+14S6cvk9mqZfQ+4COlZ+zuvbBal4Lz/d
-         JQnEman2NRmmwLH5QI4PnmRtR6QCDHuCHT3/UDgnGjF/jKo8x40HGeb1LAaN8CA2iwyr
-         kyKgwhkP8MqwWn8Vmyv/tdWGJpZ73VLDV371iwCE8xtJrZPe9dvYhSJ0wkMWz5I/aQhv
-         /HdQ==
+        d=szeredi.hu; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=sV4cn+GEhcdtXg9aDRpPOIs8C7SJiwcSKge0piQkjHM=;
+        b=EfagH3rYTV78jcOA+jKJRrfxGtJfTrD4gRkYsK39UuD/CK2U1q4NzepLyjJqvWVgzc
+         7uUGypz51kA5RvlsQK56veBhTSCTJnlntAV/znbUk8vQJTb+oBWLzEBHDLW7z7ugh0jN
+         P/YQBqGqfgsYbhuCwHEhVWhtncUZPZ+rEdzRM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oj4j/+RKPWZynb1QTKEYiXoK5GFx0DuIh0dsK+YOz70=;
-        b=brElTlbXIxXwxob8/WOoiHaow+6lPuJ9J/2Z67Y/MB34vERMA8HsELDGQ0F5ZLyzBH
-         atWSMEdavs0DNgzVkpmwJo6znQ1G+g58Eq4X+JKw8hMYI0nEcIhtaBoesu6oB7ZTVj7/
-         3A5rlNRRj9/8Us7LS0JENGd7wVJ+/KSxWSHlZ02cKS+Y+iEHUScfqnAA+bLY3ptZGdeL
-         lWfTSmJUWBzZLSAq4yjeRv8DE5MuWVgj3G8rxcPtmoxHkRo69WW4Xw2pPtwERek6tCmQ
-         K9SfbbT7b291CH1gMMqu3jdxLvO5nUJvDf+jmiqkN68GT/MExTA8ld9hG3uLoTmsLlB7
-         SSag==
-X-Gm-Message-State: AOAM531l0dM22Pi39jtLfW17AqfyXHLXllXBJ4JpUZrVEy9VQ9wZwvYD
-        UGV5vHrx0qClF0/c6UiGuG/2TA==
-X-Google-Smtp-Source: ABdhPJzXWKeLkhVS1joNTc2NUQrEZ7RsSDad/Dyg9eBJNYQBgSa9vVh1As/lmTmZzAmztrcHAEMw2A==
-X-Received: by 2002:a1c:f713:: with SMTP id v19mr3250388wmh.188.1630590562305;
-        Thu, 02 Sep 2021 06:49:22 -0700 (PDT)
-Received: from localhost.localdomain ([2001:861:44c0:66c0:98:6312:3c8:6531])
-        by smtp.gmail.com with ESMTPSA id z5sm1710162wmp.26.2021.09.02.06.49.21
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=sV4cn+GEhcdtXg9aDRpPOIs8C7SJiwcSKge0piQkjHM=;
+        b=Uu7nYXzTWgsDdjk7xlQ48o0hREzzavHdmti2KB5VBw0zQFCnpjQFF65J1X60+fIYRU
+         lrl1JSNsfi+ZDtB3eAXdsShBwBiazD9zsvabp+ai0oxQWOqy2QRUM30pJxP5XwcmhSUv
+         ZX39xTTvinOHDBcx5uHjEoaia5U//JujtQAPUf7jg1ZKw+i8tcdZRp4oXTbjWQIduyJA
+         PkeJ/Kqcv3w1GOjxivVgJWlcz4taAqVBHQHIe6uKU2KttPA0F4/qVmiO/51HcCdEGs3C
+         TAvpeA8Rj3lv85JpYPR1i2t3ecEHDzgeGN+M3zY3sWeKpEi00SjGx54wj4is5/9BHzEU
+         oeUw==
+X-Gm-Message-State: AOAM5303Ke4iHHSJgce1WbDA12n1Z7rjCM8qOrLFcwE/87/l0ibwiiP1
+        vzNYM8ll3II3pcSHBUyFAJMDLg==
+X-Google-Smtp-Source: ABdhPJxRZEJvrX7u1muEOVAnKrmtJF6P0eWg8Xv+oR/FRc2y4+mj4YRRWZW0OCrHeE6T170yTIVubg==
+X-Received: by 2002:aa7:dace:: with SMTP id x14mr3627185eds.169.1630590716605;
+        Thu, 02 Sep 2021 06:51:56 -0700 (PDT)
+Received: from miu.piliscsaba.redhat.com (catv-86-101-169-16.catv.broadband.hu. [86.101.169.16])
+        by smtp.gmail.com with ESMTPSA id d22sm1202634ejj.47.2021.09.02.06.51.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 06:49:21 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     maz@kernel.org, tglx@linutronix.de, jbrunet@baylibre.com
-Cc:     khilman@baylibre.com, lee.jones@linaro.org, saravanak@google.com,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH 2/2] arm64: meson: remove MESON_IRQ_GPIO selection
-Date:   Thu,  2 Sep 2021 15:49:14 +0200
-Message-Id: <20210902134914.176986-3-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210902134914.176986-1-narmstrong@baylibre.com>
-References: <20210902134914.176986-1-narmstrong@baylibre.com>
+        Thu, 02 Sep 2021 06:51:56 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 15:51:53 +0200
+From:   Miklos Szeredi <miklos@szeredi.hu>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org
+Subject: [GIT PULL] overlayfs update for 5.15
+Message-ID: <YTDW+b3x+5yMYVK0@miu.piliscsaba.redhat.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=810; h=from:subject; bh=owkhlb4ciqjjQmULPQLOVbgzD27XBXXd7036af5Wvz8=; b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBhMNYVFMjvCnxnhaNrw0vw+U5deLnZE1I3QXIFVD07 OWgHzauJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCYTDWFQAKCRB33NvayMhJ0ei0D/ 94rKxPedZsvrnEc1oCh+9e2Dw+iN18I5LHLklE1zVH2UD3Z82MiEiSB4ug5WNxF1bqsTYsfofVHoZx xBAL1H19GKYK9UwFBvt7RNj+4ahjFRxDtKx+hN7nxYld2CjIdpqs0pvBiVabZNRtcRphQ3u/PgPu/q OAJPcxFD1B0qH2x8zwUc56KkQjjQ7PgdbNHHMnWQwSA9pFCzkPVvwmC2Wr0zQ8qW8wsIvHkG31MZO0 MuvzmxPcTnRPI2rT/Mfz31cPNUe1OxfIKkdpYj5c044djZD75QNnRbUydkZODdhSwhZPlNGGXBdngA JIrikQ/2+MyhNjBYgadk8sjiLRs9RtJykemEjqEB1Xkhcxl0qXz3MWpk4nLWRm9AHWr3GxRQHTKGad r+K+UYpAzZaAinvsTzINzvX42P3A3Ll0oyVWeyXPJ1hVJfdXK2ZaQnXxs5f2+hcbxYVamwtetsSATk eD154UaAaJWFd0vHJvG1U8K6R6uZxC60Zdw5i/oXsw+yjjNkR7uY8k34iwM4K18ykg0iqGMPn8o9ke oCE05tqb0P9MMu8ghT+zWpwPwjQvRSUPZ6K7owPwNQv7N3Cx1bmx0zxTJkFDQ+wQH5rtYdAWj9zUOy mYlBMaeanC7iwARbjsxfJgrSfeNm3GJYvY0fObdhz9GzbKiY44RCoFirwvAg==
-X-Developer-Key: i=narmstrong@baylibre.com; a=openpgp; fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Selecting MESON_IRQ_GPIO forces it as built-in, but we may need to build it
-as a module, thus remove it here and let the "default ARCH_MESON" build as
-built-in by default with the option to switch it to module.
+Hi Linus,
 
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Please pull from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git tags/ovl-update-5.15
+
+- Copy up immutable/append/sync/noatime attributes (Amir Goldstein)
+
+- Improve performance by enabling RCU lookup.
+
+- Misc fixes and improvements
+
+The reason this touches so many files is that the ->get_acl() method now
+gets a "bool rcu" argument.  The ->get_acl() API was updated based on
+comments from Al and Linus:
+
+  https://lore.kernel.org/linux-fsdevel/CAJfpeguQxpd6Wgc0Jd3ks77zcsAv_bn0q17L3VNnnmPKu11t8A@mail.gmail.com/
+
+Thanks,
+Miklos
+
 ---
- arch/arm64/Kconfig.platforms | 1 -
- 1 file changed, 1 deletion(-)
+Amir Goldstein (5):
+      fs: add generic helper for filling statx attribute flags
+      ovl: pass ovl_fs to ovl_check_setxattr()
+      ovl: copy up sync/noatime fileattr flags
+      ovl: consistent behavior for immutable/append-only inodes
+      ovl: relax lookup error on mismatch origin ftype
 
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index b0ce18d4cc98..ff2d83fbbde1 100644
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -167,7 +167,6 @@ config ARCH_MEDIATEK
- config ARCH_MESON
- 	bool "Amlogic Platforms"
- 	select COMMON_CLK
--	select MESON_IRQ_GPIO
- 	help
- 	  This enables support for the arm64 based Amlogic SoCs
- 	  such as the s905, S905X/D, S912, A113X/D or S905X/D2
--- 
-2.25.1
+Chengguang Xu (2):
+      ovl: skip checking lower file's i_writecount on truncate
+      ovl: update ctime when changing fileattr
 
+Miklos Szeredi (3):
+      ovl: use kvalloc in xattr copy-up
+      vfs: add rcu argument to ->get_acl() callback
+      ovl: enable RCU'd ->get_acl()
+
+Vyacheslav Yurkov (3):
+      ovl: disable decoding null uuid with redirect_dir
+      ovl: add ovl_allow_offline_changes() helper
+      ovl: do not set overlay.opaque for new directories
+
+chenying (1):
+      ovl: fix BUG_ON() in may_delete() when called from ovl_cleanup()
+
+---
+ Documentation/filesystems/locking.rst   |   2 +-
+ Documentation/filesystems/overlayfs.rst |   3 +
+ Documentation/filesystems/vfs.rst       |   2 +-
+ fs/9p/acl.c                             |   5 +-
+ fs/9p/acl.h                             |   2 +-
+ fs/bad_inode.c                          |   2 +-
+ fs/btrfs/acl.c                          |   5 +-
+ fs/btrfs/ctree.h                        |   2 +-
+ fs/ceph/acl.c                           |   5 +-
+ fs/ceph/super.h                         |   2 +-
+ fs/erofs/xattr.c                        |   5 +-
+ fs/erofs/xattr.h                        |   2 +-
+ fs/ext2/acl.c                           |   5 +-
+ fs/ext2/acl.h                           |   2 +-
+ fs/ext4/acl.c                           |   5 +-
+ fs/ext4/acl.h                           |   2 +-
+ fs/f2fs/acl.c                           |   5 +-
+ fs/f2fs/acl.h                           |   2 +-
+ fs/fuse/acl.c                           |   5 +-
+ fs/fuse/fuse_i.h                        |   2 +-
+ fs/gfs2/acl.c                           |   5 +-
+ fs/gfs2/acl.h                           |   2 +-
+ fs/jffs2/acl.c                          |   5 +-
+ fs/jffs2/acl.h                          |   2 +-
+ fs/jfs/acl.c                            |   5 +-
+ fs/jfs/jfs_acl.h                        |   2 +-
+ fs/nfs/nfs3_fs.h                        |   2 +-
+ fs/nfs/nfs3acl.c                        |   5 +-
+ fs/ocfs2/acl.c                          |   5 +-
+ fs/ocfs2/acl.h                          |   2 +-
+ fs/orangefs/acl.c                       |   5 +-
+ fs/orangefs/inode.c                     |   7 +--
+ fs/orangefs/orangefs-kernel.h           |   2 +-
+ fs/overlayfs/copy_up.c                  |  83 ++++++++++++++++++++-----
+ fs/overlayfs/dir.c                      |  16 +++--
+ fs/overlayfs/inode.c                    | 105 +++++++++++++++++++++++++-------
+ fs/overlayfs/namei.c                    |   4 +-
+ fs/overlayfs/overlayfs.h                |  44 +++++++++++--
+ fs/overlayfs/super.c                    |   4 +-
+ fs/overlayfs/util.c                     |  92 ++++++++++++++++++++++++++--
+ fs/posix_acl.c                          |  15 ++++-
+ fs/reiserfs/acl.h                       |   2 +-
+ fs/reiserfs/xattr_acl.c                 |   5 +-
+ fs/stat.c                               |  18 ++++++
+ fs/xfs/xfs_acl.c                        |   5 +-
+ fs/xfs/xfs_acl.h                        |   4 +-
+ include/linux/fs.h                      |   8 ++-
+ include/linux/posix_acl.h               |   3 +-
+ include/linux/stat.h                    |   4 ++
+ 49 files changed, 424 insertions(+), 102 deletions(-)
