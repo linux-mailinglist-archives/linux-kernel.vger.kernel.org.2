@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8D73FF3A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD3FB3FF3A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347182AbhIBS5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 14:57:07 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:47616 "EHLO
+        id S1347307AbhIBS5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 14:57:15 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:47622 "EHLO
         fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347233AbhIBS5D (ORCPT
+        with ESMTP id S1347267AbhIBS5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:57:03 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 182Itxgc116591;
-        Thu, 2 Sep 2021 13:55:59 -0500
+        Thu, 2 Sep 2021 14:57:07 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 182Iu3uO116611;
+        Thu, 2 Sep 2021 13:56:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1630608959;
-        bh=cYIHM6l3anHP3+cMX0IlkGf02NRiuvGfrKjROTJ2ptI=;
+        s=ti-com-17Q1; t=1630608963;
+        bh=PDhtaIE1w+aqXcN9ZL4ogIDa66D+bPFpiU0ryRquifY=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=RvRQXmVPcQAeSIjdYQCfODn6GlbAZTpPckoP5/YbiD7+rFqCiibP74GOxaAZ+0Wvu
-         Ub1YseQtjXOyyAI05qVIQ8E4gmyG/yUGK7mGf8rndCeEXawlq/XVmSQRSc6fEceRjN
-         zYz/4L0tabjpRC5aYTrqLa09SQBRUIzD84jqGPJE=
-Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 182ItxVK015947
+        b=eoNED7AHqIL0PQvs0qP+t+IK2AdZ5N9+7JoRlHrfW9b94MoQMVl/ll7VykJmOQr1k
+         vMtkEQNbM0qSfHA1ugFQMFjZF97i3OXwTH1Rmzv9WMg3V6PnhH/3kbIXOwekDxFpBI
+         r/UQTOIjya0C0KZEQ1ssO6w25pNgI7+JskxzMwRg=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 182Iu2jC003591
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 2 Sep 2021 13:55:59 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+        Thu, 2 Sep 2021 13:56:03 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Thu, 2
- Sep 2021 13:55:58 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ Sep 2021 13:56:02 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Thu, 2 Sep 2021 13:55:58 -0500
+ Frontend Transport; Thu, 2 Sep 2021 13:56:02 -0500
 Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 182Itiar017156;
-        Thu, 2 Sep 2021 13:55:55 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 182Itias017156;
+        Thu, 2 Sep 2021 13:55:59 -0500
 From:   Pratyush Yadav <p.yadav@ti.com>
 To:     Vinod Koul <vkoul@kernel.org>
 CC:     Vignesh Raghavendra <vigneshr@ti.com>,
@@ -48,9 +48,9 @@ CC:     Vignesh Raghavendra <vigneshr@ti.com>,
         Kishon Vijay Abraham I <kishon@ti.com>,
         Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-phy@lists.infradead.org>
-Subject: [PATCH v5 3/6] phy: dt-bindings: Convert Cadence DPHY binding to YAML
-Date:   Fri, 3 Sep 2021 00:25:40 +0530
-Message-ID: <20210902185543.18875-4-p.yadav@ti.com>
+Subject: [PATCH v5 4/6] phy: dt-bindings: cdns,dphy: make clocks optional for Rx mode
+Date:   Fri, 3 Sep 2021 00:25:41 +0530
+Message-ID: <20210902185543.18875-5-p.yadav@ti.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210902185543.18875-1-p.yadav@ti.com>
 References: <20210902185543.18875-1-p.yadav@ti.com>
@@ -62,115 +62,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert Cadence DPHY binding to YAML.
+The clocks are not used by the DPHY when used in Rx mode so make them
+optional for it by using a conditional based on compatible.
 
 Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
 
 ---
 
-(no changes since v3)
+Changes in v5:
+- Make clocks a required property based on the compatible.
 
 Changes in v3:
-- Add Rob's R-by.
+- Add Rob's Ack.
 
 Changes in v2:
-- Drop reg description.
-- Add a description for each DPHY clock.
-- Rename dphy@... to phy@... in example.
-- Add Laurent's R-by.
 - Re-order subject prefixes.
 
- .../devicetree/bindings/phy/cdns,dphy.txt     | 20 --------
- .../devicetree/bindings/phy/cdns,dphy.yaml    | 51 +++++++++++++++++++
- 2 files changed, 51 insertions(+), 20 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/phy/cdns,dphy.txt
- create mode 100644 Documentation/devicetree/bindings/phy/cdns,dphy.yaml
+ .../devicetree/bindings/phy/cdns,dphy.yaml          | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/phy/cdns,dphy.txt b/Documentation/devicetree/bindings/phy/cdns,dphy.txt
-deleted file mode 100644
-index 1095bc4e72d9..000000000000
---- a/Documentation/devicetree/bindings/phy/cdns,dphy.txt
-+++ /dev/null
-@@ -1,20 +0,0 @@
--Cadence DPHY
--============
--
--Cadence DPHY block.
--
--Required properties:
--- compatible: should be set to "cdns,dphy".
--- reg: physical base address and length of the DPHY registers.
--- clocks: DPHY reference clocks.
--- clock-names: must contain "psm" and "pll_ref".
--- #phy-cells: must be set to 0.
--
--Example:
--	dphy0: dphy@fd0e0000{
--		compatible = "cdns,dphy";
--		reg = <0x0 0xfd0e0000 0x0 0x1000>;
--		clocks = <&psm_clk>, <&pll_ref_clk>;
--		clock-names = "psm", "pll_ref";
--		#phy-cells = <0>;
--	};
 diff --git a/Documentation/devicetree/bindings/phy/cdns,dphy.yaml b/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
-new file mode 100644
-index 000000000000..b90a58773bf2
---- /dev/null
+index b90a58773bf2..558f110fda9e 100644
+--- a/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
 +++ b/Documentation/devicetree/bindings/phy/cdns,dphy.yaml
-@@ -0,0 +1,51 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/phy/cdns,dphy.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+@@ -33,10 +33,19 @@ properties:
+ required:
+   - compatible
+   - reg
+-  - clocks
+-  - clock-names
+   - "#phy-cells"
+ 
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: cdns,dphy
++    then:
++      required:
++        - clocks
++        - clock-names
 +
-+title: Cadence DPHY Device Tree Bindings
-+
-+maintainers:
-+  - Pratyush Yadav <p.yadav@ti.com>
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: cdns,dphy
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: PMA state machine clock
-+      - description: PLL reference clock
-+
-+  clock-names:
-+    items:
-+      - const: psm
-+      - const: pll_ref
-+
-+  "#phy-cells":
-+    const: 0
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - "#phy-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+
-+    dphy0: phy@fd0e0000{
-+        compatible = "cdns,dphy";
-+        reg = <0xfd0e0000 0x1000>;
-+        clocks = <&psm_clk>, <&pll_ref_clk>;
-+        clock-names = "psm", "pll_ref";
-+        #phy-cells = <0>;
-+    };
+ additionalProperties: false
+ 
+ examples:
 -- 
 2.33.0
 
