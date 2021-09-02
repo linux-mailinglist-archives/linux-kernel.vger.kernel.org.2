@@ -2,138 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7003FEAF6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894D53FEAF7
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244917AbhIBJJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 05:09:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244578AbhIBJJz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 05:09:55 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E98FC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 02:08:56 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id e133so2566235ybh.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 02:08:56 -0700 (PDT)
+        id S244932AbhIBJLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 05:11:15 -0400
+Received: from mail-eopbgr30056.outbound.protection.outlook.com ([40.107.3.56]:13134
+        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233656AbhIBJLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 05:11:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=P0kCHpPOOL3dNqM1Er9IK8svbjCrXH6iIVAplB2JhO0qfNmr/MUIl16pufhzuy9LCpR4bcjF6TC/rfyapLQv+0Fex4EDUvsP4tp3keFCheWpKv481xfKYTeMbJh5eKcsJ6o8teBdPkh650X0m5lg5AlgvGb36O0z2JB9DEeKs1WUX+Dl3SHvqKOrLaTt7XFT6dqxqBWCCbQsIiUFwxvBbkIH+leScieC6jOm+GrZGJFgcP6Q+YmJVD65yQCRu2k/8a7G+rvVcDKXY30M4nL/C7wxHRl6cyUt64/VkWnOAq1tClJMW7s/WzpmbBlJwVNu8lSoK279c2IvBJkM+0WwZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=WCjtCYTJfV48qY3xCKHSKblYz8OYhntV+jtDSy1meEU=;
+ b=iX1P1Hemgj+08OXwMEey1oZWRLQxalNiisa3dcv0YEtDS4QL88MkF+/qsOjrDem2uuyxCyGmkBTBIn4KM4ka7Cjv1zXFsjqyaN2T5TODw5Uh9WjEn1lgRy095mdK+4dCyACqpS6WHVBp5OYtXIZQAvl5kkZHt0wvCqYFRpnvds0HPrVlRY/0+zSe9c7esIRm4724e8hRjvsQHEL5zcyYlB8PhksNqy6vRGZmpe4kcNkG9lItLvj/31Tm/yd4G2QGGRiGV4m3U9UZDwOrUKT39xIlJdNOj69QmxdYagBlWwSVWYJUOglFOIpj3y2uYWdqsZRbL6FNIpzrRI11hUNbPw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
+ dkim=pass header.d=diasemi.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=mQr/L7ZjVpmLfN8cENBwEeg7NglFMIF4ED9673cgn3A=;
-        b=ajhH2QZuD5pICF/MTN/xhRY8PZ8pix2SLAjQ7OORIOp2PFhgSC/kazkh7Y3QrZFj5o
-         nfSfh7DFh8CaSKq6J2apjdnzDCiYCg+xgF1wCmFR0/X2J1wzzEtC40J30ieRCytuBDsw
-         GP8neNxMnL71tU6gLnNikZk/aNOQQeXY+P0taZEcTFx1bs475NKpcj0JwqgpWv8PqqWr
-         6xaWxNjUhJYGs3vpR+9ZBk9xscGWJ8ghu2L3I/QjcIhnTtjpvj3HlbKFWBmlEZwfcrAP
-         TTDSTfr+x5hRGgfT+4odTdyE3tRfidYHjMMssrIAZ5kyyf02qYl1R51zBFu7xVyt/CNf
-         yTOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=mQr/L7ZjVpmLfN8cENBwEeg7NglFMIF4ED9673cgn3A=;
-        b=f0wa/sDCvAJ15aF+VN6rrrmVTRgDIUZoiA9T2VZGSk5533aV67UyXjlaqeVHoUZv3M
-         Aivcl15sJakNutU5heoNUUCXT719TAxKdZQ6T6OHuRkrAS7aIuq+r7zov8hHzjnlTvtF
-         7AGODweOtDN1gPM2DogD/o6Z97LQBNWoJCMnrOKQsq5igAnpi26V6A6MaMPUQBSU3RTY
-         lne3dPXU0EF9kHsO24AHvNqRGa3aKyQbp79ElcEZ5aElWYE+jtEZQGL4LRYaUadzvuOZ
-         1TGaZd0rjdkzi6wMITtbQAhJh5vIU4+RGk+ruQ07HHTSutyfqofW+EFLTG53efJ0CY9V
-         wlCA==
-X-Gm-Message-State: AOAM5311svg8fLETQN0pi+WtLxUyPVTUzfnvBR7dbJnBcf+Tm3i2JcK0
-        vTIRjbgUpHNpf2eCLvq2q094Ml00P6e8BZ2FacRM844+XOo=
-X-Google-Smtp-Source: ABdhPJx3NLSARENTHnXXyb4JxKDC2aWF8hyYDlBhrUqz1UfE+XVEMP3p+wxqLqU2X8A5UZ0jcauto+81232EGJwYZE8=
-X-Received: by 2002:a25:2b48:: with SMTP id r69mr3258398ybr.448.1630573735406;
- Thu, 02 Sep 2021 02:08:55 -0700 (PDT)
+ d=dialogsemiconductor.onmicrosoft.com;
+ s=selector1-dialogsemiconductor-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WCjtCYTJfV48qY3xCKHSKblYz8OYhntV+jtDSy1meEU=;
+ b=K9MbGnLH1F93Av2M9QbG4pFFx9OR5o8serMwvbu4XQywFcivsegwp+c89MpjXsVkrydiRzcDU+lWJJu5pG5Yjjc4GfsRx8heoLlIgnqd4fmt1unN9kM9jDAaaFrJrH2YWP1rTeibdNihOupy9xCtiTonam04OOBBRMS3aIzOZL0=
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:255::23)
+ by DB6PR10MB1750.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:6:3b::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.17; Thu, 2 Sep
+ 2021 09:10:13 +0000
+Received: from DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::dc0f:9e52:6dbb:1144]) by DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::dc0f:9e52:6dbb:1144%7]) with mapi id 15.20.4478.021; Thu, 2 Sep 2021
+ 09:10:12 +0000
+From:   Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+To:     Carlos de Paula <me@carlosedp.com>
+CC:     Support Opensource <Support.Opensource@diasemi.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] mfd: da9063: Add support for latest EA silicon revision
+Thread-Topic: [PATCH] mfd: da9063: Add support for latest EA silicon revision
+Thread-Index: AQHXndkb/hVG8n2v10q1oab93VM1fquQd/uA
+Date:   Thu, 2 Sep 2021 09:10:12 +0000
+Message-ID: <DB9PR10MB4652CCDA7C49C115167AC42580CE9@DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM>
+References: <20210830195345.71853-1-me@carlosedp.com>
+In-Reply-To: <20210830195345.71853-1-me@carlosedp.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: carlosedp.com; dkim=none (message not signed)
+ header.d=none;carlosedp.com; dmarc=none action=none header.from=diasemi.com;
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 76f75e4f-d90a-4633-245a-08d96df178bf
+x-ms-traffictypediagnostic: DB6PR10MB1750:
+x-ms-exchange-sharedmailbox-routingagent-processed: True
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB6PR10MB17503AA0B3B25012936E0DEEA7CE9@DB6PR10MB1750.EURPRD10.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:1923;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: hXXihyOhf7ZoOJg/n4OBnvNXQSEWDs6gpPyDoNyQjUfvWOPSMTNWW5iCcGd0xE+k3QJfSHaSOLmJzFyhyPpF07PIc1QBV45m8NdODgJGuoi8xaifm4iNQkjtQ586jATn487cbuftn+eQVySiqQ+Wn8QsWIkjauHiNERV14D5lk4NfDspsdB0pcwdLMY/Gaa4HVcmyoLHPm9vlaFMEmCKtzIXfsoyXqonT6mJmXD9VUqtTdbgvQuVcg7sArSRyIQN7zE3QViXX6OvvrAUaGvYAHHD6EDD8flpbfJJqVkwwN2CPuVo00cClxcHcyrfDclq/Ak59jiFj8kO8zSE+4okNUL864GuD2bPWQNF0J/farhwfHY55JMcC3PpdljfxaRWvfIl27DVHU8lWewPB734ebKMg2XAso1TYPI3jiQky13FAW+aq8GMOCUmaWFD5LYTyjP6Y6JvF1G4vv7MZ/mfPE0OkDMbQT6hjKkJbDHyCI8BkuYxWWsWPKx9/1iX8ugrRYnYmtob8fMzqW3oKnQdXCVH6nLXfJYOcLuZ+aNCCARbCXE5gFdraduBaIVPzxkGKXDHZ01jNfBq9ns65dUbydYBUXoFdTMLILCG2CgXECuM0x6/0CMa6aXtasZT+qc7jAaHqhGrX6zAyMDmW66V/rhWaWi++eXAD2SFfn5QTPxHDYbi83mkf+tCVTvDTZIZBv4JwWkaypp0U7R4Qzi8wA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(366004)(376002)(396003)(6916009)(478600001)(26005)(38100700002)(5660300002)(55016002)(52536014)(9686003)(6506007)(71200400001)(53546011)(122000001)(4326008)(38070700005)(7696005)(66556008)(316002)(66946007)(76116006)(558084003)(8936002)(66446008)(86362001)(64756008)(2906002)(33656002)(186003)(83380400001)(8676002)(66476007)(54906003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?jIsEevXIwapb9jgsG8ZM3gDHx8Y6qpqmWlraM8mgOVLlkz5NTARyHk6xpIyu?=
+ =?us-ascii?Q?jhYDyKlkrfcxAi4KAs/TtXUuwkLjE3xYc2aGU48TE9BIVNekwueFBfI42yf0?=
+ =?us-ascii?Q?1n7ONgCvKxLWIJGP/9hGSNDeohM5ReHcZtoj3pEiVGG7qTT1kCoKu7vqGoMh?=
+ =?us-ascii?Q?pyHynzBB0sUOIj3WuV8AZYgvymCKseh5+k4jRGfg5RnTH5NaOa2bnRuGBq6A?=
+ =?us-ascii?Q?F2Ud1MdZhLuBuKn70ZIlcM3uKa6IRrtFjUzJj/t04QsTYvr8CuDuE2BGCyp0?=
+ =?us-ascii?Q?69DiZ68AbbFUAIlKnIzzSJKhn0XnCmzwvXogWLu96PdvWtZmH87svvvON8cR?=
+ =?us-ascii?Q?RKGoFbD1PhCnnm/jElfIwUx39xApiO7o6i7ZnqtIh29KnmPpD4HWh++r3CtT?=
+ =?us-ascii?Q?PEbiU74aNLVRQxbcbEOsBfQxa8hpTRd4GALi/BUVKQctzv57I3eAGEG4ziFj?=
+ =?us-ascii?Q?AKOZUceK9jlcjPe8mAmGocjmDBugmtnkMt2uOZKLpF9dhq3Ith8YWQqvViUz?=
+ =?us-ascii?Q?hSHGygju/iO4CqiO9IVy2s9dFqIncd2aYshpjqi0TUQ6aubxN7goHxXUjrAH?=
+ =?us-ascii?Q?QfnCyiSOyI1ec73KgTJX1k60yzqoS6HNmvLDiwipEBH2Duz9Gypa/q1xfpjN?=
+ =?us-ascii?Q?NWmsqa3poBL5f5Zh5P3+ZnE81a1k1X0sZJASNJgcQL6RGR/Vq503+W2AHhLh?=
+ =?us-ascii?Q?bmUb9MpsEJXzKtlwFFxG4N46LaIvH2hCHLlieOSXuiyaF1tgFvLLiiPKC/n+?=
+ =?us-ascii?Q?WynBgUZjHyizBxSrGuHdgDD/NUQiLtXp/uyUw2TOoNTYAYX2LDpyKeBpmpCv?=
+ =?us-ascii?Q?u8TOc0faWZqCVByLFknZt0n/w+p04A6eEEDyIByfNtzBTTufkgRrZdkLlwsx?=
+ =?us-ascii?Q?xp2DVCymWa+1DjjL8KLtNi+Cdz9nPCTDvNoXRrqbd/sJopvIVdYxrrxqdhke?=
+ =?us-ascii?Q?RyPmZJ7qVRAQz1M8abKfRE4u2yBrh2bDLlwkmRCN4vWpojvKx/fs5iyGwyoM?=
+ =?us-ascii?Q?M/PEUsDSmJiTyniZxEt//yyijhjgkQikmJbiGXuqLtyl0b+p0JJuC7H2Qgg6?=
+ =?us-ascii?Q?8yTE3gKk5zR/d5wN1qDE2A1TMbGSFyEJP6A7AQz3+wIskVGlPen8s7abuBUg?=
+ =?us-ascii?Q?+q24wutZaVH5mDgezH5BdJDXgta+oJXbzoAQC2xVziRf8afJNhm5/Yz0Xl3R?=
+ =?us-ascii?Q?JJniBYTgKPt8BPYqWxEM3YsM4GIQCRyjQ1m4gmgfzZ0ubkhjPHJO920bJT5t?=
+ =?us-ascii?Q?mhAdNq+bmSSHXexuX4XIMu32VUmOpeGU3Ws12xlFnPJZWkCodfuZtPN2k1Vv?=
+ =?us-ascii?Q?eLNKEilg+MYnMJUZ9aAoGco9?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Thu, 2 Sep 2021 10:08:19 +0100
-Message-ID: <CADVatmPB9-oKd=ypvj25UYysVo6EZhQ6bCM7EvztQBMyiZfAyw@mail.gmail.com>
-Subject: Regression with mainline kernel on rpi4
-To:     Emma Anholt <emma@anholt.net>, Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: diasemi.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR10MB4652.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76f75e4f-d90a-4633-245a-08d96df178bf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2021 09:10:12.9456
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: e8CvAYQgZ3iRM7eVlxciM8nHCIsYxR+Fa8KEhhuO69k2P3BcUQPH789hjcj63Tn0tqQ4H1vknkJ01qYpdkNH2e6B66eiTRawQjpz+uClmk0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR10MB1750
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On 30 August 2021 20:54, Carlos de Paula wrote:
 
-Our last night's test on rpi4 had a nasty trace. The test was with
-7c636d4d20f8 ("Merge tag 'dt-5.15' of
-git://git.kernel.org/pub/scm/linux/kernel/git/soc/soc"). Previous test
-was on 9e9fb7655ed5 ("Merge tag 'net-next-5.15' of
-git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next") and it
-did not have this trace.
+> This update adds new regmap to support the latest EA silicon
+> which will be selected based on the chip and variant
+> information read from the device.
+>=20
+> Signed-off-by: Carlos de Paula <me@carlosedp.com>
 
-[   40.975161] Unable to handle kernel access to user memory outside
-uaccess routines at virtual address 0000000000000348
-[   40.986187] Mem abort info:
-[   40.989062]   ESR = 0x96000004
-[   40.992233]   EC = 0x25: DABT (current EL), IL = 32 bits
-[   40.997699]   SET = 0, FnV = 0
-[   41.001205]   EA = 0, S1PTW = 0
-[   41.004428]   FSC = 0x04: level 0 translation fault
-[   41.009468] Data abort info:
-[   41.012410]   ISV = 0, ISS = 0x00000004
-[   41.016325]   CM = 0, WnR = 0
-[   41.019358] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000042ae1000
-[   41.025926] [0000000000000348] pgd=0000000000000000, p4d=0000000000000000
-[   41.032845] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-[   41.038495] Modules linked in: overlay algif_hash algif_skcipher
-af_alg bnep sch_fq_codel ppdev lp parport ip_tables x_tables autofs4
-btrfs blake2b_generic zstd_compress raid10 raid456 async_raid6_recov
-async_memcpy async_pq async_xor async_tx xor xor_neon raid6_pq
-libcrc32c raid1 raid0 multipath linear uas usb_storage
-snd_soc_hdmi_codec btsdio brcmfmac brcmutil hci_uart btqca btrtl
-bcm2835_v4l2(C) btbcm crct10dif_ce bcm2835_mmal_vchiq(C) btintel
-raspberrypi_hwmon videobuf2_vmalloc videobuf2_memops bluetooth
-videobuf2_v4l2 videobuf2_common cfg80211 ecdh_generic ecc vc4
-drm_kms_helper videodev dwc2 cec snd_bcm2835(C) i2c_brcmstb udc_core
-roles drm xhci_pci mc pwm_bcm2835 xhci_pci_renesas snd_soc_core
-ac97_bus snd_pcm_dmaengine snd_pcm phy_generic snd_timer
-uio_pdrv_genirq snd fb_sys_fops syscopyarea sysfillrect sysimgblt uio
-aes_neon_bs aes_neon_blk crypto_simd cryptd
-[   41.116584] CPU: 0 PID: 1569 Comm: pulseaudio Tainted: G         C
-      5.14.0-7c636d4d20f8 #1
-[   41.125494] Hardware name: Raspberry Pi 4 Model B (DT)
-[   41.130699] pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-[   41.137756] pc : vc4_hdmi_audio_prepare+0x3c0/0xba4 [vc4]
-[   41.143256] lr : vc4_hdmi_audio_prepare+0x308/0xba4 [vc4]
-[   41.148747] sp : ffff800012f73a50
-[   41.152099] x29: ffff800012f73a50 x28: ffff0000562ecc00 x27: 0000000000000000
-[   41.159338] x26: 0000000000000000 x25: 000000000000ac44 x24: 0000000021002003
-[   41.166574] x23: ffff800012f73b40 x22: 0000000000000003 x21: ffff000059400080
-[   41.173811] x20: ffff0000594004c8 x19: 0005833333380600 x18: 0000000000000000
-[   41.181047] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
-[   41.188283] x14: 0000000000000000 x13: 0000000000000000 x12: 0000000000000991
-[   41.195520] x11: 0000000000000001 x10: 000000000001d4c0 x9 : ffff800009047838
-[   41.202757] x8 : 0000000000000031 x7 : 000000000001d4c0 x6 : 0000000000000030
-[   41.209993] x5 : ffff800012f73a98 x4 : ffff80000905bb60 x3 : 0000000010624dd3
-[   41.217230] x2 : 00000000000003e8 x1 : 0000000000000000 x0 : 0000000000562200
-[   41.224466] Call trace:
-[   41.226939]  vc4_hdmi_audio_prepare+0x3c0/0xba4 [vc4]
-[   41.232080]  hdmi_codec_prepare+0xe8/0x1b0 [snd_soc_hdmi_codec]
-[   41.238083]  snd_soc_pcm_dai_prepare+0x5c/0x10c [snd_soc_core]
-[   41.244038]  soc_pcm_prepare+0x5c/0x130 [snd_soc_core]
-[   41.249276]  snd_pcm_prepare+0x150/0x1f0 [snd_pcm]
-[   41.254149]  snd_pcm_common_ioctl+0x1644/0x1d14 [snd_pcm]
-[   41.259635]  snd_pcm_ioctl+0x3c/0x5c [snd_pcm]
-[   41.264152]  __arm64_sys_ioctl+0xb4/0x100
-[   41.268216]  invoke_syscall+0x50/0x120
-[   41.272014]  el0_svc_common+0x18c/0x1a4
-[   41.275899]  do_el0_svc+0x34/0x9c
-[   41.279254]  el0_svc+0x2c/0xc0
-[   41.282348]  el0t_64_sync_handler+0xa4/0x12c
-[   41.286673]  el0t_64_sync+0x1a4/0x1a8
-[   41.290385] Code: 52807d02 72a20c43 f9400421 9ba37c13 (f941a423)
-[   41.296563] ---[ end trace dcfe08f10aaf6873 ]---
-
-You can see the complete dmesg at
-https://openqa.qa.codethink.co.uk/tests/76#step/dmesg/8
-
--- 
-Regards
-Sudip
+Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
