@@ -2,158 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6C13FF795
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 01:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6753FF797
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 01:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348494AbhIBXET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 19:04:19 -0400
-Received: from ozlabs.org ([203.11.71.1]:60529 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348033AbhIBXEK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 19:04:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630623790;
-        bh=EQCA+y9FfDgV+4Yb2KesMZHXUnD88mVisnlsn+rCf5M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MxTJ9NBi46fL5TBxnoabxGO7Leo15Dfpg7EbpdRQgjILQKVA6V6AKkJZjcE3KYY9+
-         cHsmqxcYDN7B14FJNdU7k2KvKLOlLx0T+WCwJC+/4NdLr7UJjxeRYE8L18r2GTJXyK
-         zaTMePvZ5E+j0XwVJOt1Yu/MImUoH3LK42JFvxGCntTweoTujskZE+H2Etz5CCPjZ+
-         w1z/ltcHpuez9GnL1c908jQb72dWy+j3FX/QDucIcqkGm1+1FAyCs3qzThE/U0BxjR
-         cnrutFrfZN2hRHJp6A60mBYbwqFp3R0UQhi2Kv9z1OnWg8t89B2Pnh//svVoU29tus
-         Mlq74SWenf5iA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H0xKn4c3pz9sPf;
-        Fri,  3 Sep 2021 09:03:08 +1000 (AEST)
-Date:   Fri, 3 Sep 2021 09:03:07 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: linux-next: build failure after merge of the overlayfs tree
-Message-ID: <20210903090307.48f05d83@canb.auug.org.au>
-In-Reply-To: <20210819093910.55f96720@canb.auug.org.au>
-References: <20210819093910.55f96720@canb.auug.org.au>
+        id S1348034AbhIBXEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 19:04:40 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:54511 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347937AbhIBXEj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 19:04:39 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id DA9DD3200A07;
+        Thu,  2 Sep 2021 19:03:39 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Thu, 02 Sep 2021 19:03:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=rspByYKuMKIepMHyyNh663Mha1
+        e5KFmbBZesXve1h4E=; b=Y0cL7CLS5ViYIqVAo05a015lr+HQYQsd7VYzXNNKWa
+        13TZkpDQHih598d6KPLoKVum/DwLmsNGRapKyAVrBnhwDoNo+JEVw770Zj166qIB
+        U0OKv2Rt2xR1lSVhV7TjxPoRIa18Xuw9b09ytUuVwmOvbmDrAjeeB/lJqufaJOyb
+        ybXI8sybibSFVNXkQACgvAx9gfsoUo9j4G5ritP8Z1GYAJ3i0yNSOWFStkftCKNu
+        X8qhFUFjTgVojrNNK7lWzQv909GXhmuyzLRcTwuI++gv1nWWZtzX9ncT3y2S5INm
+        yRJI23pveKJ9b2mHw8qCzweArmNVuEM9m08CY0TBdPXQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=rspByYKuMKIepMHyy
+        Nh663Mha1e5KFmbBZesXve1h4E=; b=CkF45+BL10r7keKriqqtoCKGjGVFBfZBb
+        qdl+9Ib3UQllupWcKAtr4yQKgw2i0boSqWvwgJjgS9H9OUyNPD2tjoJy29MtNGk1
+        UA6VHuYXnMKB7dnY1rCg19oK6LDK94iI0Z8ywRzqQAMFWgXZqxAblyfgsWGpnBHC
+        3ifLwumOB3XF6UPTbbeXtfe03cJhFOX8rNyr+Ow8lJOrPowjwleZFasIcJlEpc3i
+        Dg++0kDMXyYJq7U/kes5WkZcK1VTozFb5LQAmCvf2P35x7Oib+LxBoZzIOc+NMA/
+        29RyA7r6pVEaorlQygb41Tad5sCKwP4Xny87KKNYMBQPB2ga7Xftw==
+X-ME-Sender: <xms:SVgxYcFm20vkwbW6gMdojwYOz7k5g2cDhWP83A50KnTx09c0Lr2jfg>
+    <xme:SVgxYVVCnsqAMbzBj_ZkdoPipltGve0GX8Uy4gq4Fy5y76MkPtuKV5Ud3VGrVyxOg
+    352_8BwMr3gNgFDPw>
+X-ME-Received: <xmr:SVgxYWL0tkhYI8macrYRFtCVr3dsm8Ifoh7epl5jjuzPPpB3kLNOBIDQpiAWookF6J-wrY0rZRx8knry96mqtU7X6XlKSdO0oyID1gpxEsXpFJi3zizXWUiAJVpz4JzqIwgh6A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddviedgudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
+    vedtveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:SVgxYeGFseDuPO56Agdscq92y1TtaNcuKvK-rVl4mli1RNHJnT0XWA>
+    <xmx:SVgxYSXrje8pi8NUOvIYTGy9Qc5_N3ZAC1fTHaqES62y1JY81vKyOw>
+    <xmx:SVgxYRP5st2ki9bEpabsK0VLPEQ6cof0Ma0TuRigoefvNKRR82anfg>
+    <xmx:S1gxYWq5c5iX9-rfuhttO7AuPCX7G5gPfL15kkEpeqjjQ6mqpPwSaw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 2 Sep 2021 19:03:37 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH] clk: sunxi-ng: mux: Remove unused 'reg' field
+Date:   Thu,  2 Sep 2021 18:03:36 -0500
+Message-Id: <20210902230336.29745-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/C+FxG_NLnqc5.ViBj5.mkA/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/C+FxG_NLnqc5.ViBj5.mkA/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The driver uses 'reg' from 'struct ccu_common' everywhere, so this
+duplicate field is unused and unnecessary. Remove it.
 
-Hi all,
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ drivers/clk/sunxi-ng/ccu_mux.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-On Thu, 19 Aug 2021 09:39:10 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the overlayfs tree, today's linux-next build (x86_64
-> allmodconfig) failed like this:
->=20
-> fs/ntfs3/file.c:1231:13: error: initialization of 'struct posix_acl * (*)=
-(struct inode *, int,  bool)' {aka 'struct posix_acl * (*)(struct inode *, =
-int,  _Bool)'} from incompatible pointer type 'struct posix_acl * (*)(struc=
-t inode *, int)' [-Werror=3Dincompatible-pointer-types]
->  1231 |  .get_acl =3D ntfs_get_acl,
->       |             ^~~~~~~~~~~~
-> fs/ntfs3/file.c:1231:13: note: (near initialization for 'ntfs_file_inode_=
-operations.get_acl')
->=20
-> Caused by commit
->=20
->   0cad6246621b ("vfs: add rcu argument to ->get_acl() callback")
->=20
-> interacting with commits
->=20
->   4534a70b7056 ("fs/ntfs3: Add headers and misc files")
->   82cae269cfa9 ("fs/ntfs3: Add initialization of super block")
->   4342306f0f0d ("fs/ntfs3: Add file operations and implementation")
->=20
-> from the ntfs3 tree.
->=20
-> I have added the following merge resolution patch.
->=20
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Thu, 19 Aug 2021 09:31:21 +1000
-> Subject: [PATCH] ntfs3: fix up for "vfs: add rcu argument to ->get_acl() =
-callback"
->=20
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  fs/ntfs3/ntfs_fs.h | 2 +-
->  fs/ntfs3/xattr.c   | 7 +++++--
->  2 files changed, 6 insertions(+), 3 deletions(-)
->=20
-> diff --git a/fs/ntfs3/ntfs_fs.h b/fs/ntfs3/ntfs_fs.h
-> index 0c3ac89c3115..a0655b8b7be1 100644
-> --- a/fs/ntfs3/ntfs_fs.h
-> +++ b/fs/ntfs3/ntfs_fs.h
-> @@ -787,7 +787,7 @@ int ntfs_cmp_names_cpu(const struct cpu_str *uni1, co=
-nst struct le_str *uni2,
-> =20
->  /* globals from xattr.c */
->  #ifdef CONFIG_NTFS3_FS_POSIX_ACL
-> -struct posix_acl *ntfs_get_acl(struct inode *inode, int type);
-> +struct posix_acl *ntfs_get_acl(struct inode *inode, int type, bool rcu);
->  int ntfs_set_acl(struct user_namespace *mnt_userns, struct inode *inode,
->  		 struct posix_acl *acl, int type);
->  int ntfs_init_acl(struct user_namespace *mnt_userns, struct inode *inode,
-> diff --git a/fs/ntfs3/xattr.c b/fs/ntfs3/xattr.c
-> index 98871c895e77..9239c388050e 100644
-> --- a/fs/ntfs3/xattr.c
-> +++ b/fs/ntfs3/xattr.c
-> @@ -539,8 +539,11 @@ static struct posix_acl *ntfs_get_acl_ex(struct user=
-_namespace *mnt_userns,
->   *
->   * inode_operations::get_acl
->   */
-> -struct posix_acl *ntfs_get_acl(struct inode *inode, int type)
-> +struct posix_acl *ntfs_get_acl(struct inode *inode, int type, bool rcu)
->  {
-> +	if (rcu)
-> +		return ERR_PTR(-ECHILD);
-> +
->  	/* TODO: init_user_ns? */
->  	return ntfs_get_acl_ex(&init_user_ns, inode, type, 0);
->  }
-> @@ -640,7 +643,7 @@ static int ntfs_xattr_get_acl(struct user_namespace *=
-mnt_userns,
->  	if (!(inode->i_sb->s_flags & SB_POSIXACL))
->  		return -EOPNOTSUPP;
-> =20
-> -	acl =3D ntfs_get_acl(inode, type);
-> +	acl =3D ntfs_get_acl(inode, type, false);
->  	if (IS_ERR(acl))
->  		return PTR_ERR(acl);
-> =20
+diff --git a/drivers/clk/sunxi-ng/ccu_mux.h b/drivers/clk/sunxi-ng/ccu_mux.h
+index f165395effb5..e31efc509b3d 100644
+--- a/drivers/clk/sunxi-ng/ccu_mux.h
++++ b/drivers/clk/sunxi-ng/ccu_mux.h
+@@ -40,7 +40,6 @@ struct ccu_mux_internal {
+ 	_SUNXI_CCU_MUX_TABLE(_shift, _width, NULL)
+ 
+ struct ccu_mux {
+-	u16			reg;
+ 	u32			enable;
+ 
+ 	struct ccu_mux_internal	mux;
+-- 
+2.31.1
 
-This merge fix patch is now needed when the ntfs3 tree is merged with
-Linus' tree.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/C+FxG_NLnqc5.ViBj5.mkA/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmExWCsACgkQAVBC80lX
-0GxJ9Af+KdKVLMGSh7UpcfXo6FqbKkMVoQOWvFaZOUDKP0kDGCcnyyR35JgzqKmM
-JWyx/5XBuBdBcku7aDvDG2Sev3yV7J0NF80ctKVAivh7nuL7O/V99Zvfap28ZUsv
-gb/IZUDDHdV3TvFbCmwA3ns+RerxQdbvY+iLKQRfokMciy8MpJrCsbl3aF1mI21b
-o+3RA+PagOPKwSd8wV0ZB0KUx8a8jRXtJY4ROX95jg8E20BB6mCU/mwn0xrzLExz
-prxcEE8cBfYfSYVptgnbTek5EE+h2CxF9Vor1QHL4Ju58CNHAgD0+2EPkUdZC6wA
-G/G9Oe3SKTQMzge1cU1jQcAi4vZN4g==
-=p5ZK
------END PGP SIGNATURE-----
-
---Sig_/C+FxG_NLnqc5.ViBj5.mkA/--
