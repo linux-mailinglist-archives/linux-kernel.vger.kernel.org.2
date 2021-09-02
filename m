@@ -2,542 +2,331 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637F13FF473
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE26E3FF479
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233769AbhIBT6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 15:58:05 -0400
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:40953 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbhIBT56 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 15:57:58 -0400
-Received: by mail-ot1-f52.google.com with SMTP id 107-20020a9d0bf4000000b0051b8be1192fso4015320oth.7;
-        Thu, 02 Sep 2021 12:56:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=67uMxnPWs2pqPiAcoLp1W3bCHosm6s7LjIRc88lc44M=;
-        b=K1Zxo+KTmHsxWwqysCpfGtIv973cMLbaQZtv7zKHt09uVgrZfiqQ8Y24mXqfh8ugfJ
-         GZ7kG/CviRofMwCOsZ/duuA1qrh6pq/CaxPcmECUbMvk5T67G4p2wKaCxKs9xtv3uWiO
-         3VLO7yTToR6OcjxuWYNC2AYw86UVhktqJeoj/VrE9Cov75PJppRfdNItutGlG+jYS35r
-         ToMJ35qsrAIu/EApNoWoPQDNscCrwiWKBjqQrn/yJREoB0TVmVYEnTZJzV527j+Rj0M/
-         7gKdn55O9T3zBY++vUhX+hKtMsnvszwloIcSaHj8mAIWN+nGtfqZ02iSqGYLBsCAFATq
-         RAZA==
-X-Gm-Message-State: AOAM533UCQSqJ3hb7cPED8clXq1BQoi0zZ1Urh30WHMVfu4agbVPbofV
-        PkTSGRJ3sF/P3AwYFepliw==
-X-Google-Smtp-Source: ABdhPJx3tfWtLy71AWCRhfoZWS9kWc46C/X77EzbXavd9F0D/PZDF4Sbsr6QbzNfT3IMJ4Utc0x06g==
-X-Received: by 2002:a9d:331:: with SMTP id 46mr4182343otv.359.1630612618759;
-        Thu, 02 Sep 2021 12:56:58 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id i19sm581328ooe.44.2021.09.02.12.56.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 12:56:57 -0700 (PDT)
-Received: (nullmailer pid 1286607 invoked by uid 1000);
-        Thu, 02 Sep 2021 19:56:56 -0000
-Date:   Thu, 2 Sep 2021 14:56:56 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Roger Quadros <rogerq@kernel.org>
-Cc:     tony@atomide.com, krzysztof.kozlowski@canonical.com,
-        miquel.raynal@bootlin.com, nm@ti.com, lokeshvutla@ti.com,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] dt-bindings: memory-controllers: ti,gpmc: Convert
- to yaml
-Message-ID: <YTEsiJiLMRYon5s3@robh.at.kernel.org>
-References: <20210902095609.16583-1-rogerq@kernel.org>
- <20210902095609.16583-3-rogerq@kernel.org>
+        id S243090AbhIBT7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 15:59:23 -0400
+Received: from mail-dm6nam11on2064.outbound.protection.outlook.com ([40.107.223.64]:29153
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S244285AbhIBT7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 15:59:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MHqGCxMb49QPJMT3P3fds06ejrxc8JpLXhZETeYocXPr4+LTX65lkZqcAcjAiGd9X3KFPYQ6JpFirWx5gXSYO2EOIBJ3gl8Y6QEuPa/u6O/I0zxyfIQC/WaIt6dl1HVrWOWxszh0BHMs+iNH2oOYmx3jWB4aXqwQAqUyz7OCNSNXRktmE6KyxkT9lIG4OeL8/zeMhDYZeQPZLGa5bCwAx/HDpEcuxxKnqFcY7h31UrIVBbdE5WHXa1WUrgyt6uygGhTHWTPFmDBaEMlQ3+/I+yVnJUx5qwESd7XaQxVIyT4TIPQugtDL0Hz+mUMPMoD06tIHPAdm0V1ps/+3Fe2m1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=akTcLH0xyVsnbrJwZSmmka2JWwRXl69BnJ7k/ieocBI=;
+ b=YlXPfBRhHLwQsCqVM1GezIMKEFFgpxptrR8p6jPPYcSuAPKr/st61FlSfkKmetgUr4IlXzBMIkt5GCSB6rl+diY8pd3Pmq/xzdjMNTmyZzrPvBmS5Y3sbzJLgw4dGQpR+l7cfwYZQMxUahYwB4BThc0RX2G4JDq5E4qaH6pkr0rxml75aOgkZfQNl/upfz9pAJRh/pIUBLCbRrmdhhOmZS9onldY+9MElpzi1VSKDqkftUhMKu3pFvQPaSb224zvCjWrQaSGJ2cJfuvmeEm3WJPbd4JLwPR9IwU2W3G2aXZS0fv6AxdxGT1VLJvm6/H8fmqrg0WEmS9uZ4ReKHObwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=akTcLH0xyVsnbrJwZSmmka2JWwRXl69BnJ7k/ieocBI=;
+ b=EUWHoquAdmcFvkmjrgl3TSEkL9iKTDvR731aDYPUnlQkcrE9t74X7S77PEjrn9cOTAewvGP2n6Zmi4ATh8TDiZLA3DHd7hYjyF946D+50MbdFuJQtgnfy4xjuL1raxwr/+dSs6tVEABKk4JCklMyCKb21K/dC/vTI90u9MN59ao=
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SN1PR12MB2511.namprd12.prod.outlook.com (2603:10b6:802:23::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Thu, 2 Sep
+ 2021 19:58:13 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::78b7:7336:d363:9be3]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::78b7:7336:d363:9be3%6]) with mapi id 15.20.4478.021; Thu, 2 Sep 2021
+ 19:58:13 +0000
+Cc:     brijesh.singh@amd.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dov Murik <dovmurik@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+Subject: Re: [PATCH Part1 v5 35/38] x86/sev: Register SNP guest request
+ platform device
+To:     Borislav Petkov <bp@alien8.de>
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-36-brijesh.singh@amd.com> <YTD+go747TIU6k9g@zn.tnic>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <5428d654-a24d-7d8b-489c-b666d72043c1@amd.com>
+Date:   Thu, 2 Sep 2021 14:58:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <YTD+go747TIU6k9g@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SA9PR13CA0173.namprd13.prod.outlook.com
+ (2603:10b6:806:28::28) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902095609.16583-3-rogerq@kernel.org>
+Received: from [10.236.31.95] (165.204.77.1) by SA9PR13CA0173.namprd13.prod.outlook.com (2603:10b6:806:28::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.4 via Frontend Transport; Thu, 2 Sep 2021 19:58:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 76874350-8662-4b76-a8b8-08d96e4bff01
+X-MS-TrafficTypeDiagnostic: SN1PR12MB2511:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN1PR12MB2511F7177E788180A1C0ABC5E5CE9@SN1PR12MB2511.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: i4kuJ3YWuVogLQy8ZvqSasI6CbT2JPGV8KKecHBv/5/QxG7oExHKoPHn5x2V6kSGq9Ez9VBR+R+ZaWCFvDkCWQU/YZX3ubwj4xNfiyYetxew3KskcEgQvLdPjQKOODjFUqD4EgrqivYGBcAJViq6Rm3lbTgnQ3kCgyMjSTt/bSMWWoldWSZIcy92k2ZjfxPDj9ryHvA8bsqHkSfnP572Y+ZOlZuq0/6/KZ1LUrSU+UIyojKkWK6fFLJC5ZAeWck4KMFOQSu1JG0UrSv6ZW6z+70tv1qHLJBVF2Namnla2r+F5EECPU232+0YdwKoQmvoEAOHpNRr+0DAwpVsUc1BUy7rFHHDQiGiKulQrz+XrWuVPeDsw/XNkRTlbEVjuJixprm9Y9FVUpsrZPwzPkrzHAx3mgzPqvR71y5zr9Fv8wG2TGRq6IvaER+W6XNL99Jk8BAnSj2fUt6i7z5HPzxa7vjWApcZcxEIDZDQfqwDODOE0jXHJ3BW/9pcMObjm8xC38MrE3xtD6APUc/iRdFKLpJ3M1+jUdCQ3QOA6TvqSce79MA6Xsyx8lxVCuRcJpSFgkK8H2MAFu7ypyMfSH3jkBiSNJoKCbx4bfrjK2kljIZGO659WukvI78Cdj7ieAV2KIsVkeKlUpnRSept9C5OHF36SuQCBB4Wq2nJZkIx63MutBkDBn+U9Z5z2dxcF7Zp3alVckUfPJ1dk04wPIeqTQHCGckOTCBHvE5j28uwSBOfm7MEM9wKDx8L6LgzwOFHgK4fpMPB8otNnVunUpuvVg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(396003)(366004)(136003)(316002)(66946007)(66556008)(66476007)(38350700002)(36756003)(52116002)(6916009)(8676002)(31696002)(16576012)(54906003)(5660300002)(31686004)(38100700002)(8936002)(478600001)(86362001)(2906002)(53546011)(7416002)(7406005)(2616005)(26005)(186003)(6486002)(956004)(44832011)(4326008)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZDZDQmszbEVjTjVwN0lrcDhKdWJ6YU1hUnZaLytMck9qenJ1bDEwazlmWXpO?=
+ =?utf-8?B?OWNsbVNVblZ5VHJTNDE4SHRaemhzOWFQK1pEcUp2TUNLNHc0dU5XR0YwYjc3?=
+ =?utf-8?B?VGx3NGZML0FCMjE2aVg2VUkxS2VRU041WGY4MHQ4U0FJdklXR1VMekZYcGNV?=
+ =?utf-8?B?bDJGZG1MaHRtd3dmMy9id2NqbHUxMUhYWFVna0t4WThSanBOV2xQbmxDKzQr?=
+ =?utf-8?B?c2VpbGl2ODNRU1NOL2lvVWwzRlhRTzVPZDNnTnRta1V1OTZVcm5FR2w5Wjkv?=
+ =?utf-8?B?cGsvZTZxSlZ3QVU3UTkyYTFsMkVxNWMrdjJINzJYZjZwSHJndEVEWHRsQ01V?=
+ =?utf-8?B?Zm13VVlYTHVObFBNdmNwWXVmRE1GeWx2K21WMWtXZUNYYTcxWVN6ZGJOZnlq?=
+ =?utf-8?B?OEtFR3Nsalk2V3dubmlFVnkyRWR1K3ZTL2VBWTQ3SWFGV1R3QWhNQmlMNXcx?=
+ =?utf-8?B?LytwL1FyREFLanltVkd3ZmZWWFZJN2oxN3QrdVNBS3lIUUFpR3UwWGNCaGhM?=
+ =?utf-8?B?cGYwb2JNZDhyRGdFKzNaN2xvSjlRVXl6WVRTazJWazBxWkd5ZlBLUkJ5a3F0?=
+ =?utf-8?B?d3FLdnFqN2hKK3VpcjFyNUtvUHlnK2pXeUs1UTc4TzcxOUp1bExxQzdMbGVz?=
+ =?utf-8?B?YUxTOHFQbG8yZHBJV1MzSjVQRmRYRTE1K0NQeTdlYWloMnlXYTlOR1lTRC9L?=
+ =?utf-8?B?dEdNdHQwb2NKalJtWUUzR3pSYnp4MCtVdGJHcTVTTVA2eGlVNWc0OHQ4Y2ZU?=
+ =?utf-8?B?UmhaeWJWQkdiNURjekUxWWpxbmltUGVGZmwveGlqVXkyQUh4a1U2N2xZcHFV?=
+ =?utf-8?B?bVFJa0pCaWVacjJpUWFSSlZ3ZUFDWHduMjArWWp2UVJpeEYvdnV2Y0ZQWjN6?=
+ =?utf-8?B?VFpJMTJNNFVGaytRdVQwSlZISi9TTnQ3ODdSZkRzRnBPWUhNQnFYVkl0S2Y1?=
+ =?utf-8?B?alRqS1g4aFEyckgzY2ZvZzVETjY3U3ZmWDk2bjZnNWpzVkJaMCtRdmRQZU44?=
+ =?utf-8?B?LytZL1lYcGlMOVMwbUtYSlUzOElPYUNlTkZ5MG9XdGtXSWVZa2xLaGZxRXFv?=
+ =?utf-8?B?Qng5L1N3S041cEhDOTlpZy9MV0wyREtaUmIrdWdsa0QrKzk3bmlubTA5dEpj?=
+ =?utf-8?B?QWFjYzFRUDRPdmpoZUsyb3NaaWxaZWZPMnp6QmhROUdIWG9XbnV6MlF1STRh?=
+ =?utf-8?B?NVUwU2Fpd29sZmVYTkp6OHRoQ0JMcGpSS1h0NUEyTk90cmxlQjlyaEtqV0o1?=
+ =?utf-8?B?Tjl5QU5xQnRhVUNpRkFLRktaN0lEc1RwWTFxeVF6ZlpoTVE5OHk5cTRnRS83?=
+ =?utf-8?B?MXd0WFc2TTFQb254WFhKak80cUQzdEZMRXpleWpzUCsvLzZob2lhZHBWQ2g3?=
+ =?utf-8?B?eVBjYXNIQ1UzaEErUXNMRUxDVjV3dExiVy9pVXMwYmpsT25XZUxmK2VDWmlC?=
+ =?utf-8?B?S1Q2VXNCOUE4S3ByUVdoT0V3Q1RYWkRuOGp4OFJnbUtDai9jMWNKQXYwaFRy?=
+ =?utf-8?B?a1JXTExsYUJZS3pPS1p4VVU1UXRUZ3IzVVlPSWk1aHlkYWdMVVZ6cFFkSTE0?=
+ =?utf-8?B?dWptWHg1MFdaOXhNTzAreURGNW9YajJwS2JSVU9jdUJ0cjRWMGJDdlpidExW?=
+ =?utf-8?B?Z3k3RzdNOG4wUmZqU0dRRmpETEQzanh2MUtmYTBQaDF0bmdUbXlDREJodDlZ?=
+ =?utf-8?B?Y3lqaUpuWjU0S1B6WnZvZ1k4Z09zcjlsUldNaHR1bTVBUXVpaWhPcGYrb2Zv?=
+ =?utf-8?Q?Lad/egsVQOYEGvlYzA9waj98IlfNtRPPq7xnNTA?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76874350-8662-4b76-a8b8-08d96e4bff01
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2021 19:58:13.2275
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fe/o2v03R/8HqmeUQC36QTtd4g6URpR3Phojwk8IDP/ycH3tSAkjaQOyEPToMcoTh22GS5c6PJzldL12DyKVLw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2511
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 12:56:05PM +0300, Roger Quadros wrote:
-> Convert omap-gpmc.txt to ti,gpmc.yaml.
+
+
+On 9/2/21 11:40 AM, Borislav Petkov wrote:
+> On Fri, Aug 20, 2021 at 10:19:30AM -0500, Brijesh Singh wrote:
+>> Version 2 of GHCB specification provides NAEs that can be used by the SNP
 > 
-> Signed-off-by: Roger Quadros <rogerq@kernel.org>
-> ---
->  .../bindings/memory-controllers/omap-gpmc.txt | 157 --------
->  .../bindings/memory-controllers/ti,gpmc.yaml  | 364 ++++++++++++++++++
->  .../devicetree/bindings/mtd/gpmc-nand.txt     |   2 +-
->  .../devicetree/bindings/mtd/gpmc-nor.txt      |   4 +-
->  .../devicetree/bindings/mtd/gpmc-onenand.txt  |   2 +-
->  .../devicetree/bindings/net/gpmc-eth.txt      |   4 +-
->  6 files changed, 370 insertions(+), 163 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+> Resolve the "NAE" abbreviation here so that it is clear what this means.
+> 
+Noted.
 
-> diff --git a/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
-> new file mode 100644
-> index 000000000000..b7d43370a95d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
-> @@ -0,0 +1,364 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/memory-controllers/ti,gpmc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Texas Instruments GPMC Memory Controller device-tree bindings
-> +
-> +maintainers:
-> +  - Tony Lindgren <tony@atomide.com>
-> +  - Roger Quadros <rogerq@kernel.org>
-> +
-> +description:
-> +  The GPMC is a unified memory controller dedicated for interfacing
-> +  with external memory devices like
-> +  - Asynchronous SRAM-like memories and ASICs
-> +  - Asynchronous, synchronous, and page mode burst NOR flash
-> +  - NAND flash
-> +  - Pseudo-SRAM devices
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - ti,omap2420-gpmc
-> +          - ti,omap2430-gpmc
-> +          - ti,omap3430-gpmc
-> +          - ti,omap4430-gpmc
-> +          - ti,am3352-gpmc
-> +
-> +  reg:
-> +    items:
-> +      - description:
-> +          Configuration registers for the controller.
+>> guest to communicate with the PSP without risk from a malicious hypervisor
+>> who wishes to read, alter, drop or replay the messages sent.
+> 
+> This here says "malicious hypervisor" from which we protect from...
+> 
+>> In order to communicate with the PSP, the guest need to locate the secrets
+>> page inserted by the hypervisor during the SEV-SNP guest launch. The
+> 
+> ... but this here says the secrets page is inserted by the same
+> hypervisor from which we're actually protecting.
+> 
 
-Just 'maxItems: 1' is sufficient.
+The content of the secret page is populated by the PSP. Hypervisor 
+cannot alter the contents; all it can do tell the guest where the 
+secrets page is present in the memory. The guest will read the secrets 
+page to get the VM communication key and use that key to encrypt the 
+message send between the PSP and guest.
 
-> +
-> +  interrupts: true
 
-Need to define how many.
+> You wanna rephrase that to explain what exactly happens so that it
+> doesn't sound like we're really trusting the HV with the secrets page.
+> 
 
-> +
-> +  clocks:
-> +    maxItems: 1
-> +    description: |
-> +      Functional clock. Used for bus timing calculations and
-> +      GPMC configuration.
-> +
-> +  clock-names:
-> +    items:
-> +      - const: fck
-> +
-> +  dmas:
-> +    items:
-> +      - description: DMA channel for GPMC NAND prefetch
-> +
-> +  dma-names:
-> +    items:
-> +      - const: rxtx
-> +
-> +  "#address-cells":
-> +    const: 2
-> +
-> +  "#size-cells":
-> +    const: 1
-> +
-> +  gpmc,num-cs:
-> +    description: maximum number of supported chip-select lines.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +  gpmc,num-waitpins:
-> +    description: maximum number of supported wait pins.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +  ranges:
-> +    minItems: 1
-> +    description: |
-> +      Must be set up to reflect the memory layout with four
-> +      integer values for each chip-select line in use,
-> +      <cs-number> 0 <physical address of mapping> <size>
-> +
-> +    items:
-> +      - description: NAND bank 0
-> +      - description: NOR/SRAM bank 0
-> +      - description: NOR/SRAM bank 1
-> +
-> +  '#interrupt-cells':
-> +    const: 2
-> +
-> +  interrupt-controller:
-> +    description: |
-> +      The GPMC driver implements and interrupt controller for
-> +      the NAND events "fifoevent" and "termcount" plus the
-> +      rising/falling edges on the GPMC_WAIT pins.
-> +      The interrupt number mapping is as follows
-> +      0 - NAND_fifoevent
-> +      1 - NAND_termcount
-> +      2 - GPMC_WAIT0 pin edge
-> +      3 - GPMC_WAIT1 pin edge, and so on.
-> +
-> +  '#gpio-cells':
-> +     const: 2
-> +
-> +  gpio-controller:
-> +    description: |
-> +      The GPMC driver implements a GPIO controller for the
-> +      GPMC WAIT pins that can be used as general purpose inputs.
-> +      0 maps to GPMC_WAIT0 pin.
-> +
-> +  ti,hwmods:
-> +    description:
-> +      Name of the HWMOD associated with GPMC. This is for legacy
-> +      omap2/3 platforms only.
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    deprecated: true
-> +
-> +  ti,no-idle-on-init:
-> +    description:
-> +      Prevent idling the module at init. This is for legacy omap2/3
-> +      platforms only.
-> +    type: boolean
-> +    deprecated: true
-> +
-> +patternProperties:
-> +#  "@[0-3],[a-f0-9]+$":
-> +  "^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$":
+Sure, I will expand it a bit more.
 
-Why the commented regex. There's no need for a full regex as we already 
-do that elsewhere. You only need to define the unit-address format.
+>> secrets page contains the communication keys used to send and receive the
+>> encrypted messages between the guest and the PSP. The secrets page location
+>> is passed through the setup_data.
+>>
+>> Create a platform device that the SNP guest driver can bind to get the
+>> platform resources such as encryption key and message id to use to
+>> communicate with the PSP. The SNP guest driver can provide userspace
+>> interface to get the attestation report, key derivation, extended
+>> attestation report etc.
+>>
+>> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+>> ---
+>>   arch/x86/kernel/sev.c     | 68 +++++++++++++++++++++++++++++++++++++++
+>>   include/linux/sev-guest.h |  5 +++
+>>   2 files changed, 73 insertions(+)
+> 
+> ...
+> 
+>> +static u64 find_secrets_paddr(void)
+>> +{
+>> +	u64 pa_data = boot_params.cc_blob_address;
+>> +	struct cc_blob_sev_info info;
+>> +	void *map;
+>> +
+>> +	/*
+>> +	 * The CC blob contains the address of the secrets page, check if the
+>> +	 * blob is present.
+>> +	 */
+>> +	if (!pa_data)
+>> +		return 0;
+>> +
+>> +	map = early_memremap(pa_data, sizeof(info));
+>> +	memcpy(&info, map, sizeof(info));
+>> +	early_memunmap(map, sizeof(info));
+>> +
+>> +	/* Verify that secrets page address is passed */
+> 
+> That's hardly verifying something - if anything, it should say
+> 
+> 	/* smoke-test the secrets page passed */
+> 
+Noted.
 
-> +    type: object
-> +    description: |
-> +      The child device node represents the device connected to the GPMC
-> +      bus. The device can be a NAND controller, SRAM device, NOR device
-> +      or an ASIC.
-> +
-> +    properties:
-> +      compatible:
-> +        description:
-> +          Compatible of attached device.
+>> +	if (info.secrets_phys && info.secrets_len == PAGE_SIZE)
+>> +		return info.secrets_phys;
+> 
+> ... which begs the question: how do we verify the HV is not passing some
+> garbage instead of an actual secrets page?
+> 
 
-Duh. Drop.
+Unfortunately, the secrets page does not contain a magic header or uuid 
+which a guest can read to verify that the page is actually populated by 
+the PSP. But since the page is encrypted before the launch so this page 
+is always accessed encrypted. If hypervisor is tricking us then all that 
+means is guest OS will get a wrong key and will not be able to 
+communicate with the PSP to get the attestation reports etc.
 
-> +
-> +      reg:
-> +        items:
-> +        - description: Register access space for the device
 
-A device with 2 register ranges isn't allowed?
+> I guess it is that:
+> 
+> "SNP_LAUNCH_UPDATE can insert two special pages into the guest’s
+> memory: the secrets page and the CPUID page. The secrets page contains
+> encryption keys used by the guest to interact with the firmware. Because
+> the secrets page is encrypted with the guest’s memory encryption
+> key, the hypervisor cannot read the keys. The CPUID page contains
+> hypervisor provided CPUID function values that it passes to the guest.
+> The firmware validates these values to ensure the hypervisor is not
+> providing out-of-range values."
+> 
+>  From "4.5 Launching a Guest" in the SNP FW ABI spec.
+> 
+> I think that explanation above is very important wrt to explaining the
+> big picture how this all works with those pages injected into the guest
+> so I guess somewhere around here a comment should say
+> 
 
-> +
-> +# GPMC Timing properties for child nodes. All are optional and default to 0.
-> +
-> +      gpmc,sync-clk-ps:
-> +        description: Minimum clock period for synchronous mode, in picoseconds
-> +        $ref: /schemas/types.yaml#/definitions/uint32
- 
-           default: 0
+I will add more explanation.
 
-And elsewhere...
+> "See section 4.5 Launching a Guest in the SNP FW ABI spec for details
+> about those special pages."
+> 
+> or so.
+> 
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int __init add_snp_guest_request(void)
+> 
+> If anything, that should be called
+> 
+> init_snp_platform_device()
+> 
+> or so.
+> 
 
-> +
-> +# Chip-select signal timings (in nanoseconds) corresponding to GPMC_CONFIG2:
-> +      gpmc,cs-on-ns:
-> +        description: Assertion time
-> +        $ref: /schemas/types.yaml#/definitions/uint32
+Noted.
 
-Blank line between DT properties.
+>> +{
+>> +	struct snp_secrets_page_layout *layout;
+>> +	struct snp_guest_platform_data data;
+>> +
+>> +	if (!sev_feature_enabled(SEV_SNP))
+>> +		return -ENODEV;
+>> +
+>> +	snp_secrets_phys = find_secrets_paddr();
+>> +	if (!snp_secrets_phys)
+>> +		return -ENODEV;
+>> +
+>> +	layout = snp_map_secrets_page();
+>> +	if (!layout)
+>> +		return -ENODEV;
+>> +
+>> +	/*
+>> +	 * The secrets page contains three VMPCK that can be used for
+> 
+> What's VMPCK?
+> 
 
-Don't need a type ref with a standard unit suffix.
+VM platform communication key.
 
-Is there a maximum value for all these?
+>> +	 * communicating with the PSP. We choose the VMPCK0 to encrypt guest
+> 
+> "We" is?
+> 
+>> +	 * messages send and receive by the Linux. Provide the key and
+> 
+> "... by the Linux."?! That sentence needs more love.
+> 
 
-> +      gpmc,cs-rd-off-ns:
-> +        description: Read deassertion time
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,cs-wr-off-ns:
-> +        description: Write deassertion time
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +# ADV signal timings (in nanoseconds) corresponding to GPMC_CONFIG3:
-> +      gpmc,adv-on-ns:
-> +        description: Assertion time
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,adv-rd-off-ns:
-> +        description: Read deassertion time
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,adv-wr-off-ns:
-> +        description: Write deassertion time
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,adv-aad-mux-on-ns:
-> +        description: Assertion time for AAD
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,adv-aad-mux-rd-off-ns:
-> +        description: Read deassertion time for AAD
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,adv-aad-mux-wr-off-ns:
-> +        description: Write deassertion time for AAD
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +# WE signals timings (in nanoseconds) corresponding to GPMC_CONFIG4:
-> +      gpmc,we-on-ns:
-> +        description: Assertion time
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,we-off-ns:
-> +        description: Deassertion time
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +# OE signals timings (in nanoseconds) corresponding to GPMC_CONFIG4:
-> +      gpmc,oe-on-ns:
-> +        description: Assertion time
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,oe-off-ns:
-> +        description: Deassertion time
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,oe-aad-mux-on-ns:
-> +        description:       Assertion time for AAD
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,oe-aad-mux-off-ns:
-> +        description:      Deassertion time for AAD
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +# Access time and cycle time timings (in nanoseconds) corresponding to
-> +# GPMC_CONFIG5:
-> +      gpmc,page-burst-access-ns:
-> +        description:   Multiple access word delay
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,access-ns:
-> +        description:              Start-cycle to first data valid delay
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,rd-cycle-ns:
-> +        description:            Total read cycle time
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,wr-cycle-ns:
-> +        description:            Total write cycle time
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,bus-turnaround-ns:
-> +        description:      Turn-around time between successive accesses
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,cycle2cycle-delay-ns:
-> +        description:   Delay between chip-select pulses
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,clk-activation-ns:
-> +        description:      GPMC clock activation time
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,wait-monitoring-ns:
-> +        description:     Start of wait monitoring with regard to valid data
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +# Boolean timing parameters. If property is present, parameter is enabled
-> +# otherwise disabled.
-> +      gpmc,adv-extra-delay:
-> +        description:        ADV signal is delayed by half GPMC clock
-> +        type: boolean
-> +      gpmc,cs-extra-delay:
-> +        description:         CS signal is delayed by half GPMC clock
-> +        type: boolean
-> +      gpmc,cycle2cycle-diffcsen:
-> +        description: |
-> +          Add "cycle2cycle-delay" between successive accesses
-> +          to a different CS
-> +        type: boolean
-> +      gpmc,cycle2cycle-samecsen:
-> +        description: |
-> +          Add "cycle2cycle-delay" between successive accesses
-> +          to the same CS
-> +        type: boolean
-> +      gpmc,oe-extra-delay:
-> +        description:         OE signal is delayed by half GPMC clock
-> +        type: boolean
-> +      gpmc,we-extra-delay:
-> +        description:         WE signal is delayed by half GPMC clock
-> +        type: boolean
-> +      gpmc,time-para-granularity:
-> +        description:  Multiply all access times by 2
-> +        type: boolean
-> +
-> +# The following two properties are applicable only to OMAP3+ and AM335x:
-> +      gpmc,wr-access-ns:
-> +        description: |
-> +          In synchronous write mode, for single or
-> +          burst accesses, defines the number of
-> +          GPMC_FCLK cycles from start access time
-> +          to the GPMC_CLK rising edge used by the
-> +          memory device for the first data capture.
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,wr-data-mux-bus-ns:
-> +        description: |
-> +          In address-data multiplex mode, specifies
-> +          the time when the first data is driven on
-> +          the address-data bus.
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +# GPMC chip-select settings properties for child nodes. All are optional.
-> +
-> +      gpmc,burst-length:
-> +        description:     Page/burst length. Must be 4, 8 or 16.
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        enum: [4, 8, 16]
-> +      gpmc,burst-wrap:
-> +        description:       Enables wrap bursting
-> +        type: boolean
-> +      gpmc,burst-read:
-> +        description:       Enables read page/burst mode
-> +        type: boolean
-> +      gpmc,burst-write:
-> +        description:      Enables write page/burst mode
-> +        type: boolean
-> +      gpmc,device-width:
-> +        description: |
-> +          Total width of device(s) connected to a GPMC
-> +          chip-select in bytes. The GPMC supports 8-bit
-> +          and 16-bit devices and so this property must be
-> +          1 or 2.
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        enum: [1, 2]
-> +      gpmc,mux-add-data:
-> +        description: |
-> +          Address and data multiplexing configuration.
-> +          Valid values are:
-> +          0 for Non multiplexed mode
-> +          1 for address-address-data multiplexing mode and
-> +          2 for address-data multiplexing mode.
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +        enum: [0, 1, 2]
-> +      gpmc,sync-read:
-> +        description: |
-> +          Enables synchronous read. Defaults to asynchronous
-> +          is this is not set.
-> +        type: boolean
-> +      gpmc,sync-write:
-> +        description: |
-> +          Enables synchronous writes. Defaults to asynchronous
-> +          is this is not set.
-> +        type: boolean
-> +      gpmc,wait-pin:
-> +        description: |
-> +          Wait-pin used by client. Must be less than "gpmc,num-waitpins".
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +      gpmc,wait-on-read:
-> +        description:     Enables wait monitoring on reads.
-> +        type: boolean
-> +      gpmc,wait-on-write:
-> +        description:    Enables wait monitoring on writes.
-> +        type: boolean
-> +
-> +    required:
-> +      - reg
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - gpmc,num-cs
-> +  - gpmc,num-waitpins
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    gpmc: memory-controller@50000000 {
-> +      compatible = "ti,am3352-gpmc";
-> +      reg = <0x50000000 0x2000>;
-> +      interrupts = <100>;
-> +      clocks = <&l3s_clkctrl>;
-> +      clock-names = "fck";
-> +      dmas = <&edma 52 0>;
-> +      dma-names = "rxtx";
-> +      gpmc,num-cs = <8>;
-> +      gpmc,num-waitpins = <2>;
-> +      #address-cells = <2>;
-> +      #size-cells = <1>;
-> +      ranges = <0 0 0x08000000 0x10000000>; /* CS0 @addr 0x8000000, size 0x10000000 */
-> +      interrupt-controller;
-> +      #interrupt-cells = <2>;
-> +      gpio-controller;
-> +      #gpio-cells = <2>;
-> +
-> +      nand@0,0 {
-> +        compatible = "ti,omap2-nand";
-> +        reg = <0 0 4>;
-> +        interrupt-parent = <&gpmc>;
-> +        interrupts = <0 IRQ_TYPE_NONE>, /* fifoevent */
-> +                     <1 IRQ_TYPE_NONE>; /* termcount */
-> +        rb-gpios = <&gpmc 0 GPIO_ACTIVE_HIGH>; /* gpmc_wait0 pin */
-> +      };
-> +    };
-> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> index 44919d48d241..e439949d49e6 100644
-> --- a/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/gpmc-nand.txt
-> @@ -5,7 +5,7 @@ the GPMC controller with a name of "nand".
->  
->  All timing relevant properties as well as generic gpmc child properties are
->  explained in a separate documents - please refer to
-> -Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-> +Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->  
->  For NAND specific properties such as ECC modes or bus width, please refer to
->  Documentation/devicetree/bindings/mtd/nand-controller.yaml
-> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-nor.txt b/Documentation/devicetree/bindings/mtd/gpmc-nor.txt
-> index c8567b40fe13..c9bea106ea65 100644
-> --- a/Documentation/devicetree/bindings/mtd/gpmc-nor.txt
-> +++ b/Documentation/devicetree/bindings/mtd/gpmc-nor.txt
-> @@ -5,7 +5,7 @@ child nodes of the GPMC controller with a name of "nor".
->  
->  All timing relevant properties as well as generic GPMC child properties are
->  explained in a separate documents. Please refer to
-> -Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-> +Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->  
->  Required properties:
->  - bank-width: 		Width of NOR flash in bytes. GPMC supports 8-bit and
-> @@ -28,7 +28,7 @@ Required properties:
->  
->  Optional properties:
->  - gpmc,XXX		Additional GPMC timings and settings parameters. See
-> -			Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-> +			Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->  
->  Optional properties for partition table parsing:
->  - #address-cells: should be set to 1
-> diff --git a/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt b/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
-> index e9f01a963a0a..0da78cc4ccca 100644
-> --- a/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
-> @@ -5,7 +5,7 @@ the GPMC controller with a name of "onenand".
->  
->  All timing relevant properties as well as generic gpmc child properties are
->  explained in a separate documents - please refer to
-> -Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-> +Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->  
->  Required properties:
->  
-> diff --git a/Documentation/devicetree/bindings/net/gpmc-eth.txt b/Documentation/devicetree/bindings/net/gpmc-eth.txt
-> index 32821066a85b..5e2f610455fa 100644
-> --- a/Documentation/devicetree/bindings/net/gpmc-eth.txt
-> +++ b/Documentation/devicetree/bindings/net/gpmc-eth.txt
-> @@ -9,7 +9,7 @@ the GPMC controller with an "ethernet" name.
->  
->  All timing relevant properties as well as generic GPMC child properties are
->  explained in a separate documents. Please refer to
-> -Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-> +Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->  
->  For the properties relevant to the ethernet controller connected to the GPMC
->  refer to the binding documentation of the device. For example, the documentation
-> @@ -43,7 +43,7 @@ Required properties:
->  
->  Optional properties:
->  - gpmc,XXX		Additional GPMC timings and settings parameters. See
-> -			Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
-> +			Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+I will expand comment a bit more.
 
-Perhaps delete this file first in the series so you don't have to 
-update it.
+>> +	 * id through the platform data to the driver.
+>> +	 */
+>> +	data.vmpck_id = 0;
+>> +	memcpy_fromio(data.vmpck, layout->vmpck0, sizeof(data.vmpck));
+>> +
+>> +	iounmap(layout);
+>> +
+>> +	platform_device_add_data(&guest_req_device, &data, sizeof(data));
+> 
+> Oh look, that function can return an error.
+> 
 
-Rob
+Yes, after seeing Dov comment I am adding more checks and return failure.
+
+
+>> +
+>> +	if (!platform_device_register(&guest_req_device))
+>> +		dev_info(&guest_req_device.dev, "secret phys 0x%llx\n", snp_secrets_phys);
+> 
+> Make that message human-readable - not a debug one.
+> 
+
+Sure.
+
+thank
