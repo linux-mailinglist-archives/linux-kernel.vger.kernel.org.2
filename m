@@ -2,107 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B63C3FEA80
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1403FEA8A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243987AbhIBITT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 04:19:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47628 "EHLO
+        id S244400AbhIBIUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 04:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233546AbhIBITS (ORCPT
+        with ESMTP id S244339AbhIBIUd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 04:19:18 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C087C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 01:18:20 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id s29so1040531pfw.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 01:18:20 -0700 (PDT)
+        Thu, 2 Sep 2021 04:20:33 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9022C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 01:19:35 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id h9so2439309ejs.4
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 01:19:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wI2EeO/lKrV6ZOTCZm6ZqifjFiAszk20GuR/ni0HaV8=;
-        b=BYvawW1FNkTQ4OSXiV70BTle3CN+Z19E5m0SNV4TdEFkQUwUhukUs2Ya/sYgujZxyM
-         IHU3OAJ+zWP8HXc4jTpw9jo4x7k+yLF/AAih9wp2ULMpJCIDRKtKA3/XxZdP9uNiDMWe
-         BsImcIA8A/2Sgot8xkbgzCFo+rwNSp+8alJtsmrkGP4fH8OWdfmlSKZ4jPSyemFYenwj
-         Tdd1z/5Vlrefr/hQG3zQJhMVJli5oS7axfUTZRq+mAGyOh7Lt7d9HJgBAtw6QHu+4/UQ
-         1lfmLtmiesQpgjpM9Mwevjdd33w3JxfWNz3rY/fBcApDsRGDH0FT6nPr3EPUpAibQVT8
-         f80w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=gFiQ6i9XW7BIqSyRN+BbO3nnGGXqz7dQGc3ivcA8ZM0=;
+        b=J8Hh0yoSoutPTJOlF3mT/vZj7ZkbPd8U5Hpb2hor+g29NYFcysNpxj/1pVF/mLsR2k
+         45XbOCXcW5n24AkudS1WKqVwAGjRTekWuT31NXEOb9k2rqweTJUC4sOfNE6mN0IQ+Zfq
+         8HRmlqw2sWuT9P/HsG9QNzvdJDkLcH9ayd3OeEx66TFIQkNv8fUYmu6sC8NBHnIXBeom
+         RKrGeuyKa6u4csCCrSbarPuqlLyYfAFLGjzpLMrJBjYsAckyF/QxFu15R3gBXVtd02jp
+         yHVCY90fzsFnTSzxtaHrF/zTK+43cl+XpEtcwFRCe1QZXOX77mIHrvEWQLJFNJMeV/hC
+         LWsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wI2EeO/lKrV6ZOTCZm6ZqifjFiAszk20GuR/ni0HaV8=;
-        b=Lr7LhCR8e2HDGDl/AEoImvKa/uuofQbbb0HdrDl3RFJOEWwcCGood7hr4Y9r/9xq5p
-         qTw16f8jP0d10VyvhM52iLVZi6rKz5a/4T3eQ2UxnE9f3agmtrU+fQAofa5St2Zm1cXh
-         M+Z65IvopqZV/8J1CHQ0tOSLyOU5DZa0GhAxsM1l0rbdtz22Vl8ynh873VzgcnvFR2UM
-         p8kiuRizwwV4s0kkRTIwVG4FAyJ3IWZTfS3KJg0Y6COQhF5z/l62EZ36bLBgXwMPnrYJ
-         KaoPJV1TavnCkm/7ce2j4Ni17ZAyX7kKvjRzLQN3uL9ye/PfhrvogHFfvXnhpv0MvIx8
-         vvKw==
-X-Gm-Message-State: AOAM530ieonmSqUFhr9cvy29r8dC75vBxze38/ccZ/Psqg+RLmh665HZ
-        ropO/SjTQkOTifn5F66iqyrLmi+phBlGqVIhDK0=
-X-Google-Smtp-Source: ABdhPJy9/N+eC1lvVXexIoXNMMzcJWV4EbnbFybPCyhnGO+OC1B5ul/gyqfhodAMgaTbjZY/5G6KSA==
-X-Received: by 2002:a63:4384:: with SMTP id q126mr2045158pga.1.1630570699951;
-        Thu, 02 Sep 2021 01:18:19 -0700 (PDT)
-Received: from localhost ([204.124.181.224])
-        by smtp.gmail.com with ESMTPSA id gk8sm1377002pjb.49.2021.09.02.01.18.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 01:18:19 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
-        mike.leach@linaro.org, suzuki.poulose@arm.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v2] perf build: Report failure for testing feature libopencsd
-Date:   Thu,  2 Sep 2021 16:18:00 +0800
-Message-Id: <20210902081800.550016-1-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gFiQ6i9XW7BIqSyRN+BbO3nnGGXqz7dQGc3ivcA8ZM0=;
+        b=To+dohnRMbEZGdT95ZFgFXQQRozJVZglNto4tU3t2OKKuHwqM137UrLzUznK4VuhYP
+         rPDPdPna8Zm6PzR9VQzuzKSZ6pfD24Ru1ZR5hZ6c4VRjDHAJMwnup0Ma3ptHvo5PrDH6
+         sSqLGR5oWtJM0xxmCpntaKBKWzbRPrZZtX/G2DfqzvcabFgm5viPLj+li5PR11vawtvg
+         opLkEFWGFyL1UU83Qc7tF7y1z7joDKvacQRc1XGqUhV3ieCtdC4qWnb/YWdrU0dMU5cE
+         P+7e4xUW0ad6wf7dfhwh7Be2pTM6JXAPEyOl9eaAoXPeCyYn6QbFBNTVIhL+/FMIw9kf
+         r3bA==
+X-Gm-Message-State: AOAM531d4UBkllYkb+b8d3+KTmqRD4EKA/yidP6O0riPCRgoIdWjQ2IC
+        1ijpiM+2AyvrJvMpMwBUF+T8YMzI42aWcxFbMpMCjg==
+X-Google-Smtp-Source: ABdhPJyPGWlZQFIEgh0z0b2eeHHYfQlymOjK/g3vv+0lGumbd+mmG/bsgb+vLQXEr76gPIYLDJ0VHnnnVX+G6mPwM7E=
+X-Received: by 2002:a17:906:32ce:: with SMTP id k14mr2436793ejk.503.1630570774121;
+ Thu, 02 Sep 2021 01:19:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210901122253.388326997@linuxfoundation.org>
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 2 Sep 2021 13:49:22 +0530
+Message-ID: <CA+G9fYvJqppD8xKCnmLvt=BZ=Y4BJp0Ld1DikjoT5yJh7nFG2A@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/48] 5.4.144-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When build perf tool with passing option 'CORESIGHT=1' explicitly, if
-the feature test fails for library libopencsd, the build doesn't
-complain the feature failure and continue to build the tool with
-disabling the CoreSight feature insteadly.
+On Wed, 1 Sept 2021 at 18:02, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.144 release.
+> There are 48 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.144-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-This patch changes the building behaviour, when build perf tool with the
-option 'CORESIGHT=1' and detect the failure for testing feature
-libopencsd, the build process will be aborted and it shows the complaint
-info.
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Changes from v1:
-Fixed a typo in the error message.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
- tools/perf/Makefile.config | 2 ++
- 1 file changed, 2 insertions(+)
+## Build
+* kernel: 5.4.144-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.4.y
+* git commit: fa7f9f53436ea73ba28358d682e08577f20c1342
+* git describe: v5.4.143-49-gfa7f9f53436e
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
+43-49-gfa7f9f53436e
 
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index 4a0d9a6defc7..5df79538486b 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -489,6 +489,8 @@ ifdef CORESIGHT
-         CFLAGS += -DCS_RAW_PACKED
-       endif
-     endif
-+  else
-+    dummy := $(error Error: No libopencsd library found or the version is not up-to-date. Please install recent libopencsd to build with CORESIGHT=1)
-   endif
- endif
- 
--- 
-2.25.1
+## No regressions (compared to v5.4.143-28-g66b6adc3ce6e)
 
+## No fixes (compared to v5.4.143-28-g66b6adc3ce6e)
+
+## Test result summary
+total: 82537, pass: 67479, fail: 741, skip: 12958, xfail: 1359
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 257 total, 257 passed, 0 failed
+* arm64: 35 total, 35 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 16 total, 16 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 51 total, 51 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 27 total, 27 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 35 total, 35 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
