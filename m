@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 243303FE9B8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D80E3FE9BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242730AbhIBHIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 03:08:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240424AbhIBHIO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 03:08:14 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB31EC061575;
-        Thu,  2 Sep 2021 00:07:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=6sjnkjopQPMxohcGm3e2DVG2cvE/ih6IU12E9ib69XQ=;
-        t=1630566437; x=1631776037; b=NsgjSPP1mvxmNeZHsQnKjY4PsnFAKdtkfr4uw/dobmBTmQG
-        9mJzd0tf2BPLc3cDYpiFIseWWcTb+hrRiH8kn9w23yZYcwifZdA8InevYGUVSNRE+PotmJ88K2ELW
-        Jg9ET6guZzarXLTibvWEd/4X77NWkK8ZfbciM5A18riuwZXY5XrKHylrAPE1yvZrayH7KlZNWgeAz
-        HrBoW1MAOZuO+/ID1dY+/uHm/oIL+NXgBKfWCEXkj66RM9niwvYjv8jS2sna4C+h/lbEcm/6X9GO3
-        vX+VOh/Y024TI3kD3uFPDJAZaaM7Ujgcyhdo/HipZeJbfjPdvaZKvEP9ksWH+EmQ==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94.2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mLgoQ-001VOD-By; Thu, 02 Sep 2021 09:07:02 +0200
-Message-ID: <f226f487ca0e815c197e6638ba57f06490ba9cbe.camel@sipsolutions.net>
-Subject: Re: [GIT PULL] Networking for v5.15
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        David Miller <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-wireless@vger.kernel.org,
-        Miri Korenblit <miriam.rachel.korenblit@intel.com>
-Date:   Thu, 02 Sep 2021 09:07:01 +0200
-In-Reply-To: <bb2a4294-b0b3-e36f-8828-25fde646be2c@lwfinger.net>
-References: <20210831203727.3852294-1-kuba@kernel.org>
-         <CAHk-=wjB_zBwZ+WR9LOpvgjvaQn=cqryoKigod8QnZs=iYGEhA@mail.gmail.com>
-         <20210901124131.0bc62578@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-         <bb2a4294-b0b3-e36f-8828-25fde646be2c@lwfinger.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+        id S242745AbhIBHK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 03:10:28 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:46898 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S242504AbhIBHK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 03:10:27 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-01 (Coremail) with SMTP id qwCowACnlNKSeDBh4Ic9AQ--.4291S2;
+        Thu, 02 Sep 2021 15:09:06 +0800 (CST)
+From:   jiasheng <jiasheng@iscas.ac.cn>
+To:     linux-kernel@vger.kernel.org
+Cc:     jiasheng <jiasheng@iscas.ac.cn>
+Subject: [PATCH 2/2] tracing: Add trace_trigger_soft_disabled() in front of trace_event_buffer_commit() in trace_inject_entry()
+Date:   Thu,  2 Sep 2021 07:09:03 +0000
+Message-Id: <1630566543-598084-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: qwCowACnlNKSeDBh4Ic9AQ--.4291S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7JF4DJry7tF1UJw4xuF18AFb_yoW8JrWUpw
+        nxKr9xKrW8Ja12g3WxuF48GryUZ397tr9rJFW8G343J3s8CrnrXFZ2qFn8Z34Yyw48J3ya
+        yw1jyrW7CrWUXFJanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8
+        CwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij
+        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUIApnUUUUU=
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-09-02 at 00:55 -0500, Larry Finger wrote:
-> 
-> I did not get the bisection finished tonight, but commit eb09ae93dabf is not the 
-> problem.
-> 
-> My bisection has identified commit 7a3f5b0de36 ("netfilter: add netfilter hooks 
-> to SRv6 data plane") as bad, and commit 9055a2f59162 ("ixp4xx_eth: make ptp 
-> support a platform driver") as good.
+We have found that in the complied files trace_event_buffer_commit()
+appear more than 200 times, and under at least 90% circumstances
+that trace_trigger_soft_disabled() and trace_event_buffer_commit()
+appear in pairs.
+For example, they appear together in the trace_event_raw_event_##call()
+of the file complie from 'include/trace/trace_events.h'.
+But we have found that in the trace_inject_entry(), there is only
+trace_event_buffer_commit() instead of the pair.
+Therefore, we consider that the trace_trigger_soft_disabled()
+might be forgotten.
 
-Can you send the backtraces from the RTNL assertions you posted?
-Probably easier that way anyway.
+Signed-off-by: jiasheng <jiasheng@iscas.ac.cn>
+---
+ kernel/trace/trace_events_inject.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-johannes
+diff --git a/kernel/trace/trace_events_inject.c b/kernel/trace/trace_events_inject.c
+index c188045..6dfd3cd 100644
+--- a/kernel/trace/trace_events_inject.c
++++ b/kernel/trace/trace_events_inject.c
+@@ -21,6 +21,8 @@ trace_inject_entry(struct trace_event_file *file, void *rec, int len)
+ 	void *entry;
+ 
+ 	rcu_read_lock_sched();
++	if (trace_trigger_soft_disabled(file))
++		return written;
+ 	entry = trace_event_buffer_reserve(&fbuffer, file, len);
+ 	if (entry) {
+ 		memcpy(entry, rec, len);
+-- 
+2.7.4
 
