@@ -2,71 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2223FE9C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B8D3FE9D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243112AbhIBHLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 03:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242504AbhIBHLa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 03:11:30 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C1F5C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 00:10:32 -0700 (PDT)
+        id S242608AbhIBHOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 03:14:39 -0400
+Received: from relay.sw.ru ([185.231.240.75]:41040 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233363AbhIBHOi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 03:14:38 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=wsEUpJDilSHKQhB8V4biJ9qqXdXIwzngZTn7EDF2jGE=;
-        t=1630566632; x=1631776232; b=QTk7gxor1qd3aki0bN5ixnuRNBKDEvG6xMIp9MOWb4GUSJl
-        nIOiNHAWdFsGkAqdjrTBC11h5Reln9QFEfyfXjazS2AaDH4kVuD7puFgQs6GcEI5s1YXWmx3iVdiG
-        cvsbfj9Yy7dH1vhAkvJ68ZbUPs/azJk0jPOC5KWX5TSeXestGxntk+7yKeWsjLfRlSJIEkVZy5uiT
-        VRlGur/LZLdMdFHSJKDxiiP9rIgWjYduch/w6Lt9jFj8NzaHnmv+hER1VQnZGni52lhxw5ex4qsmG
-        +sWX/tAdBVzEpyWaZqUddy7wymSPdZZmObB7hsA3/XiS5phYiswIv2rmoo1vYPjw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94.2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1mLgrd-001VVH-8J; Thu, 02 Sep 2021 09:10:21 +0200
-Message-ID: <626cc3f828c2dab14cd66e8cac0c8ea84e7ba088.camel@sipsolutions.net>
-Subject: Re: [PATCH] drm/r128: fix build for UML
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org
-Date:   Thu, 02 Sep 2021 09:10:20 +0200
-In-Reply-To: <20210902021721.27274-1-rdunlap@infradead.org>
-References: <20210902021721.27274-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=jcxB9UZFDlTKnN6RO3VLRHt6sc+pufmSIvofaIuTdIM=; b=Z+Cg/Kwu6zgpcbGu5
+        Nr3tsqTQTBrG8tZ1J+aj8ISSz8iOZw7jq2U55gSnFZy2DK39jSLX3EC1quge/gHNEi2flMx7TwFin
+        Yraf7fdUctizqCDDsplHe0517wzVI9pvR+x5oMgGmmdm842KNgCGb6wtPxOeS9KnvyBuxf/QIqpPY
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mLgug-000YI2-TL; Thu, 02 Sep 2021 10:13:30 +0300
+Subject: Re: [PATCH net-next v4] skb_expand_head() adjust skb->truesize
+ incorrectly
+To:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Christoph Paasch <christoph.paasch@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        kernel@openvz.org, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Julian Wiedmann <jwi@linux.ibm.com>
+References: <b653692b-1550-e17a-6c51-894832c56065@virtuozzo.com>
+ <ee5b763a-c39d-80fd-3dd4-bca159b5f5ac@virtuozzo.com>
+ <ce783b33-c81f-4760-1f9e-90b7d8c51fd7@gmail.com>
+ <b7c2cb05-7307-f04e-530e-89fc466aa83f@virtuozzo.com>
+ <ef7ccff8-700b-79c2-9a82-199b9ed3d95b@gmail.com>
+ <67740366-7f1b-c953-dfe1-d2085297bdf3@gmail.com>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <8a183782-f4b9-e12a-55d1-c4a3c4078369@virtuozzo.com>
+Date:   Thu, 2 Sep 2021 10:13:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
+In-Reply-To: <67740366-7f1b-c953-dfe1-d2085297bdf3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-01 at 19:17 -0700, Randy Dunlap wrote:
-> Fix a build error on CONFIG_UML, which does not support (provide)
-> wbinvd(). UML can use the generic mb() instead.
+On 9/2/21 7:48 AM, Eric Dumazet wrote:
+> On 9/1/21 9:32 PM, Eric Dumazet wrote:
+>> I think you missed netem case, in particular
+>> skb_orphan_partial() which I already pointed out.
+>>
+>> You can setup a stack of virtual devices (tunnels),
+>> with a qdisc on them, before ip6_xmit() is finally called...
+>>
+>> Socket might have been closed already.
+>>
+>> To test your patch, you could force a skb_orphan_partial() at the beginning
+>> of skb_expand_head() (extending code coverage)
 > 
-> ../drivers/gpu/drm/r128/ati_pcigart.c: In function ‘drm_ati_pcigart_init’:
-> ../drivers/gpu/drm/r128/ati_pcigart.c:218:2: error: implicit declaration of function ‘wbinvd’ [-Werror=implicit-function-declaration]
->   wbinvd();
->   ^~~~~~
+> To clarify :
 > 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2") # pre-git
+> It is ok to 'downgrade' an skb->destructor having a ref on sk->sk_wmem_alloc to
+> something owning a ref on sk->refcnt.
+> 
+> But the opposite operation (ref on sk->sk_refcnt -->  ref on sk->sk_wmem_alloc) is not safe.
 
-Arguably, that could be
+Could you please explain in more details, since I stil have a completely opposite point of view?
 
-Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
+Every sk referenced in skb have sk_wmem_alloc > 9 
+It is assigned to 1 in sk_alloc and decremented right before last __sk_free(),
+inside  both sk_free() sock_wfree() and __sock_wfree()
 
-because prior to that, Kconfig options depending on PCI couldn't be
-selected on ARCH=um.
+So it is safe to adjust skb->sk->sk_wmem_alloc, 
+because alive skb keeps reference to alive sk and last one keeps sk_wmem_alloc > 0
 
-johannes
+So any destructor used sk->sk_refcnt will already have sk_wmem_alloc > 0, 
+because last sock_put() calls sk_free().
 
+However now I'm not sure in reversed direction.
+skb_set_owner_w() check !sk_fullsock(sk) and call sock_hold(sk);
+If sk->sk_refcnt can be 0 here (i.e. after execution of old destructor inside skb_orphan) 
+-- it can be trigger pointed problem:
+"refcount_add() will trigger a warning (panic under KASAN)".
+
+Could you please explain where I'm wrong?
+
+Thank you,
+	Vasily Averin
