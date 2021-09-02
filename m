@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4249C3FF309
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F373FF307
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346911AbhIBSM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 14:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346898AbhIBSMy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:12:54 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3ED3C061760;
-        Thu,  2 Sep 2021 11:11:55 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id n4so1710374plh.9;
-        Thu, 02 Sep 2021 11:11:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=x8mcWyM7ld5BFaHR/hqJRtA5/ybLclhzA9CEtyCDlE0=;
-        b=pNBDSAhU+x6hiGldE98Yt4lF6DSsMuKbIuhIugukPr3PpPv6mPllgTE8KBy0446Rey
-         1J1CPpdt2V2SwQb09y85JVrYGoNMqp/spezwNPG53GyUOdCGt/k8Q4u+tMAoxR9hiqzI
-         LvFN64xuQB5boMo7pCNFUIVA0KahOfKmlfs9Fna+ccDypx17jhFONiIngPL1q1+LgL4s
-         EicE4hbOcesN6en43x4lx7hwVu4nPav+OtABJ6azrlYfl9N8jLVmLk7ejerfRw1QSlHH
-         a4tNeIHQkcZFKl9p/JXnklwGIHko4tO6ZNt2mWE1a0FTWSgUj1ynTnG5tVUCGkx4cjIf
-         bDsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=x8mcWyM7ld5BFaHR/hqJRtA5/ybLclhzA9CEtyCDlE0=;
-        b=gBLztpEAjOkMKxVd2vTnHjNQNMkeNJ2YKNRNaACFM3EvaVrsLKjVmkoA0CaMR1ogm/
-         RnCYSF/xhMfD6m/yL+gdsS72yq0aoN9/6P56ENBokmKS+69psymUYJaOjvT9Ay/+9Q9+
-         R+8wLdBLwZIhsxKHNZjfB67BIpglH30UZdhccOkh0NO8x9SFlC+0TA0uAMr0+tibM23v
-         HTwE3NNoO5wgZzBfapO0mGQxgkXgN31YJpOYZWvwNuqr1iO1dIyxKI/hQnAztE7qWh6N
-         F9dHpk1yFC0wS8Gch6pCpSFjJn7p0ycFZS39L/naZHA1HRICEF6hxA0dKJh1AXj9oyDc
-         pTbA==
-X-Gm-Message-State: AOAM530zOVG3xX3b0ySWTqNT9sUVuUXhx9uHtWbiMcM51oGG356yUTuF
-        2YW9qLJblkIiAJr4DdPoNb4=
-X-Google-Smtp-Source: ABdhPJzxrS/g/O3rgmVbFC64kd0LIoDxabN8omFxdIOqCQWpbb45DFSVKjGOmI9yV73K+KLQUwvt2g==
-X-Received: by 2002:a17:90b:3b82:: with SMTP id pc2mr5255527pjb.224.1630606314857;
-        Thu, 02 Sep 2021 11:11:54 -0700 (PDT)
-Received: from [10.69.44.239] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id h127sm2896583pfe.191.2021.09.02.11.11.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 11:11:54 -0700 (PDT)
-Subject: Re: [PATCH] scsi: lpfc: remove unneeded variable
-To:     cgel.zte@gmail.com, james.smart@broadcom.com
-Cc:     dick.kennedy@broadcom.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chi Minghao <chi.minghao@zte.com.cn>,
-        Zeal Robot <zealci@zte.com.cm>
-References: <20210831114058.17817-1-lv.ruyi@zte.com.cn>
-From:   James Smart <jsmart2021@gmail.com>
-Message-ID: <4a9cee32-5585-a3e0-aff2-3d3989a1b13f@gmail.com>
-Date:   Thu, 2 Sep 2021 11:11:48 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <20210831114058.17817-1-lv.ruyi@zte.com.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1346894AbhIBSMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 14:12:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229939AbhIBSMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 14:12:49 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 235E360724;
+        Thu,  2 Sep 2021 18:11:51 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mLrBl-008h0e-4X; Thu, 02 Sep 2021 19:11:49 +0100
+Date:   Thu, 02 Sep 2021 19:11:48 +0100
+Message-ID: <875yvix2xn.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jia He <justin.he@arm.com>
+Cc:     James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] KVM: arm64: Add memcg accounting to KVM allocations
+In-Reply-To: <20210902002801.32618-2-justin.he@arm.com>
+References: <20210902002801.32618-1-justin.he@arm.com>
+        <20210902002801.32618-2-justin.he@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: justin.he@arm.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, liushixin2@huawei.com, eric.auger@redhat.com, keescook@chromium.org, ndesaulniers@google.com, lushenming@huawei.com, samitolvanen@google.com, lorenzo.pieralisi@arm.com, nixiaoming@huawei.com, yuzenghui@huawei.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/2021 4:40 AM, cgel.zte@gmail.com wrote:
-> From: Chi Minghao <chi.minghao@zte.com.cn>
+On Thu, 02 Sep 2021 01:28:01 +0100,
+Jia He <justin.he@arm.com> wrote:
 > 
-> Fix the following coccicheck REVIEW:
-> ./drivers/scsi/lpfc/lpfc_scsi.c:1498:9-12 REVIEW Unneeded variable
+> Inspired by commit 254272ce6505 ("kvm: x86: Add memcg accounting to KVM
+> allocations"), it would be better to make arm64 KVM consistent with
+> common kvm codes.
 > 
-> Reported-by: Zeal Robot <zealci@zte.com.cm>
-> Signed-off-by: Chi Minghao <chi.minghao@zte.com.cn>
+> The memory allocations of VM scope should be charged into VM process
+> cgroup, hence change GFP_KERNEL to GFP_KERNEL_ACCOUNT.
+> 
+> There remained a few cases since these allocations are global, not in VM
+> scope.
+> 
+> Signed-off-by: Jia He <justin.he@arm.com>
 > ---
->   drivers/scsi/lpfc/lpfc_scsi.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+>  arch/arm64/kvm/arm.c      | 6 ++++--
+>  arch/arm64/kvm/mmu.c      | 2 +-
+>  arch/arm64/kvm/pmu-emul.c | 2 +-
+>  arch/arm64/kvm/reset.c    | 2 +-
+>  4 files changed, 7 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index e9a2b8f27792..9d6f5bcaddef 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -289,10 +289,12 @@ long kvm_arch_dev_ioctl(struct file *filp,
+>  
+>  struct kvm *kvm_arch_alloc_vm(void)
+>  {
+> +	unsigned long sz = sizeof(struct kvm);
 
-Looks Good - Thanks!
+If you are going to introduce an extra variable, please use the
+correct type (size_t).
 
-Reviewed-by: James Smart <jsmart2021@gmail.com>
+> +
+>  	if (!has_vhe())
+> -		return kzalloc(sizeof(struct kvm), GFP_KERNEL);
+> +		return kzalloc(sz, GFP_KERNEL | GFP_KERNEL_ACCOUNT);
 
--- james
+Why both GFP_KERNEL and GFP_KERNEL_ACCOUNT?
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
