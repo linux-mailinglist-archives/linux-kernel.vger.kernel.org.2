@@ -2,97 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E65D3FE63F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB94E3FE64B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243154AbhIBAEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 20:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242703AbhIBAD5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 20:03:57 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02ABC061575;
-        Wed,  1 Sep 2021 17:02:59 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id q70so283249ybg.11;
-        Wed, 01 Sep 2021 17:02:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=j5eS9joUEQxD2OUktUs9JyC6lsbZ0ql447Y8GghkRzc=;
-        b=Xe9EoBAnQSexng2ntYcSbkLT+YZ28oNmzoAcZ9tdeeXYr8eamXz1oaT7RsoKqBuuh+
-         tCAdBWus2CXqTCeaTQU3e4yZe0Rbk8tALkU2JJ8QO7OKSaJkSg3P/WI3KeNdaYAYVSI4
-         Mav7Q5KkUq6KkeSQqpARfxFUdQ4W/u5mW8Brzhek1tcN1A8Y9pdDSywpa3+D6vRCIzV1
-         L8UaCwQ/K/3BgXcH4KjvuC0NxeBGK+kuORp5S9Gx6Xs/gTMMsONwCMHX7wjw+Wy6d5Hi
-         ras9IH3r5taXcI6j0LZSb2cIupb3YUCG2Kt+Kww39+82wdhmY37cLkpdjxsm7pY2XKTS
-         JSJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=j5eS9joUEQxD2OUktUs9JyC6lsbZ0ql447Y8GghkRzc=;
-        b=Du6SIpQmfB19dkdpxK4s8H4YPgUrwVZXrcHZA2DiRlBUTB5JZFQZIxBKp8z446kr/7
-         16JGVOtsmyiHJAjRHnRwdYIbq+6PIVZkZXPH5Yzet4M4/4JDBAawMhh9mEenkbFygzB0
-         uK96IGw6TFAGLKFC1VqdsTzhlECDrkyC2guH6mhjBtdX/1tgflnu/rgxt4e97GWrupZa
-         6whr3jglzCikNJYbZOJc+UaZVUCNKYY6klw1CwNoXa9bviyPM7CRQgvqxTEbvMUzlgCm
-         NjouHD9OzRGBq96jEcjMORJCoEnTd3zz3I7krcb8zP7ioL2mAhuyueUCh8QyOEBwMC7X
-         GtjA==
-X-Gm-Message-State: AOAM531wyNis+EptG1bD79xiWqSSfd0TIqDMFy4C79xr9f2W3gYQXhgj
-        MZZJNVncPUUFv619LCG4Cqe46S4WuG06Vz0ZEIU=
-X-Google-Smtp-Source: ABdhPJw3paOQWUG+WZlV3zarXo6C9quj40RT4qzOvN0ZooEovcpBZ32Gw6TkVPLvldFmZW/OaSGz3IZqECL2VE7gnzQ=
-X-Received: by 2002:a5b:142:: with SMTP id c2mr624932ybp.425.1630540978949;
- Wed, 01 Sep 2021 17:02:58 -0700 (PDT)
+        id S242632AbhIBAKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 20:10:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46688 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232490AbhIBAKV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 20:10:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20D4060FE6;
+        Thu,  2 Sep 2021 00:09:22 +0000 (UTC)
+From:   Greg Ungerer <gerg@linux-m68k.org>
+Subject: [git pull] m68knommu changes for v5.15
+To:     torvalds@linux-foundation.org
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux/m68k <linux-m68k@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+Message-ID: <40f5e521-673a-dbfb-efff-62bdd8c01f49@linux-m68k.org>
+Date:   Thu, 2 Sep 2021 10:09:20 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210831203727.3852294-1-kuba@kernel.org>
-In-Reply-To: <20210831203727.3852294-1-kuba@kernel.org>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Wed, 1 Sep 2021 17:02:46 -0700
-Message-ID: <CANcMJZBOymZNNdFZqPypC7r+JFgDWKgiD6c125t3PnP1O309AA@mail.gmail.com>
-Subject: Re: [GIT PULL] Networking for v5.15
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 1:41 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Hi Linus!
->
-> No conflicts at the time of writing. There were conflicts with
-> char-misc but I believe Greg dropped the commits in question.
->
-> The following changes since commit 73367f05b25dbd064061aee780638564d15b01d1:
->
->   Merge tag 'nfsd-5.14-1' of git://linux-nfs.org/~bfields/linux (2021-08-26 13:26:40 -0700)
->
-> are available in the Git repository at:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git tags/net-next-5.15
-...
-> Dan Carpenter (7):
-...
->       net: qrtr: make checks in qrtr_endpoint_post() stricter
+Hi Linus,
 
-Hey all,
-  Just as a heads up, I've just bisected down this change (commit
-aaa8e4922c88 "net: qrtr: make checks in qrtr_endpoint_post()
-stricter") as breaking audio (and I think wifi as well) on the db845c
-devboard.
+Please pull the m68knommu changes for v5.15.
 
-Let me know if there is anything you would like me to try. I have to
-run now, but I'll be doing some further debugging on this later
-tonight.
+As per the tag comment, changes include:
 
-thanks
--john
+. flexcan platform support (for m5441x)
+. fix CONFIG_ROMKERNEL linking
+. fix compilation when CONFIG_ISA_DMA_API is set
+. fix local ColdFire clk_enable() for NULL clk
+
+Regards
+Greg
+
+
+
+The following changes since commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93:
+
+   Linux 5.14-rc7 (2021-08-22 14:24:56 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.15
+
+for you to fetch changes up to db87db65c1059f3be04506d122f8ec9b2fa3b05e:
+
+   m68knommu: only set CONFIG_ISA_DMA_API for ColdFire sub-arch (2021-08-23 08:40:05 +1000)
+
+----------------------------------------------------------------
+m68knommu: collection of fixes for 5.15
+
+. flexcan platform support (for m5441x)
+. fix CONFIG_ROMKERNEL linking
+. fix compilation when CONFIG_ISA_DMA_API is set
+. fix local ColdFire clk_enable() for NULL clk
+
+----------------------------------------------------------------
+Angelo Dureghello (2):
+       m68k: stmark2: update board setup
+       m68k: m5441x: add flexcan support
+
+Arnd Bergmann (1):
+       m68knommu: only set CONFIG_ISA_DMA_API for ColdFire sub-arch
+
+Dan Carpenter (1):
+       m68k: coldfire: return success for clk_enable(NULL)
+
+Randy Dunlap (1):
+       m68k/nommu: prevent setting ROMKERNEL when ROM is not set
+
+  arch/m68k/Kconfig.bus             |  2 +-
+  arch/m68k/Kconfig.machine         |  1 +
+  arch/m68k/coldfire/clk.c          |  2 +-
+  arch/m68k/coldfire/device.c       | 44 +++++++++++++++++++++++++++++++++++++++
+  arch/m68k/coldfire/m5441x.c       |  8 +++----
+  arch/m68k/coldfire/stmark2.c      |  6 ++++--
+  arch/m68k/include/asm/m5441xsim.h | 19 +++++++++++++++++
+  7 files changed, 74 insertions(+), 8 deletions(-)
