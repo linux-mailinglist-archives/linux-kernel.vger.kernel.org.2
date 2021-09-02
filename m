@@ -2,79 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603D43FEA0F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E0A3FEA12
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243480AbhIBHdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 03:33:17 -0400
-Received: from verein.lst.de ([213.95.11.211]:50267 "EHLO verein.lst.de"
+        id S243172AbhIBHeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 03:34:18 -0400
+Received: from relay.sw.ru ([185.231.240.75]:43126 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233360AbhIBHdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 03:33:16 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 116426736F; Thu,  2 Sep 2021 09:32:16 +0200 (CEST)
-Date:   Thu, 2 Sep 2021 09:32:15 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
-Cc:     djwong@kernel.org, hch@lst.de, linux-xfs@vger.kernel.org,
-        dan.j.williams@intel.com, david@fromorbit.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nvdimm@lists.linux.dev, rgoldwyn@suse.de, viro@zeniv.linux.org.uk,
-        willy@infradead.org, Ritesh Harjani <riteshh@linux.ibm.com>
-Subject: Re: [PATCH v8 4/7] fsdax: Add dax_iomap_cow_copy() for
- dax_iomap_zero
-Message-ID: <20210902073215.GC13867@lst.de>
-References: <20210829122517.1648171-1-ruansy.fnst@fujitsu.com> <20210829122517.1648171-5-ruansy.fnst@fujitsu.com>
+        id S233401AbhIBHeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 03:34:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=dSXhbvgJCpxM7HEdHstfIRuSSvLCB6hGd2m4qJH9i3U=; b=WzrkzilRTeoP0oKLS
+        D8+9YGrkV23/Rt892VOpynELXGb6V6Q0M8+uFoUyr3s2IydvrzLGOnWRqJlQcLksWYesmH+Vd1ZlN
+        SK4cRYglfSjgob6fMxorKcLrhV3gYCGLISUNgNawr+VAOLi3hnjLL73ogbyVPq6gttdBGqk7vOxBc
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mLhDh-000YMb-VB; Thu, 02 Sep 2021 10:33:09 +0300
+Subject: Re: [PATCH net-next v4] skb_expand_head() adjust skb->truesize
+ incorrectly
+From:   Vasily Averin <vvs@virtuozzo.com>
+To:     Eric Dumazet <eric.dumazet@gmail.com>,
+        Christoph Paasch <christoph.paasch@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        kernel@openvz.org, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Julian Wiedmann <jwi@linux.ibm.com>
+References: <b653692b-1550-e17a-6c51-894832c56065@virtuozzo.com>
+ <ee5b763a-c39d-80fd-3dd4-bca159b5f5ac@virtuozzo.com>
+ <ce783b33-c81f-4760-1f9e-90b7d8c51fd7@gmail.com>
+ <b7c2cb05-7307-f04e-530e-89fc466aa83f@virtuozzo.com>
+ <ef7ccff8-700b-79c2-9a82-199b9ed3d95b@gmail.com>
+ <67740366-7f1b-c953-dfe1-d2085297bdf3@gmail.com>
+ <8a183782-f4b9-e12a-55d1-c4a3c4078369@virtuozzo.com>
+Message-ID: <2984f16b-7f20-e72d-1661-b942fdc4ff9b@virtuozzo.com>
+Date:   Thu, 2 Sep 2021 10:33:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210829122517.1648171-5-ruansy.fnst@fujitsu.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <8a183782-f4b9-e12a-55d1-c4a3c4078369@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 29, 2021 at 08:25:14PM +0800, Shiyang Ruan wrote:
-> Punch hole on a reflinked file needs dax_iomap_cow_copy() too.
-> Otherwise, data in not aligned area will be not correct.  So, add the
-> srcmap to dax_iomap_zero() and replace memset() as dax_iomap_cow_copy().
+On 9/2/21 10:13 AM, Vasily Averin wrote:
+> On 9/2/21 7:48 AM, Eric Dumazet wrote:
+>> On 9/1/21 9:32 PM, Eric Dumazet wrote:
+>>> I think you missed netem case, in particular
+>>> skb_orphan_partial() which I already pointed out.
+>>>
+>>> You can setup a stack of virtual devices (tunnels),
+>>> with a qdisc on them, before ip6_xmit() is finally called...
+>>>
+>>> Socket might have been closed already.
+>>>
+>>> To test your patch, you could force a skb_orphan_partial() at the beginning
+>>> of skb_expand_head() (extending code coverage)
+>>
+>> To clarify :
+>>
+>> It is ok to 'downgrade' an skb->destructor having a ref on sk->sk_wmem_alloc to
+>> something owning a ref on sk->refcnt.
+>>
+>> But the opposite operation (ref on sk->sk_refcnt -->  ref on sk->sk_wmem_alloc) is not safe.
 > 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
-> Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-> ---
->  fs/dax.c               | 26 ++++++++++++++++----------
->  fs/iomap/buffered-io.c |  4 ++--
->  include/linux/dax.h    |  3 ++-
->  3 files changed, 20 insertions(+), 13 deletions(-)
+> Could you please explain in more details, since I stil have a completely opposite point of view?
 > 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index f4acb79cb811..b294900e574e 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -1209,7 +1209,8 @@ static vm_fault_t dax_pmd_load_hole(struct xa_state *xas, struct vm_fault *vmf,
->  }
->  #endif /* CONFIG_FS_DAX_PMD */
->  
-> -s64 dax_iomap_zero(loff_t pos, u64 length, struct iomap *iomap)
-> +s64 dax_iomap_zero(loff_t pos, u64 length, const struct iomap *iomap,
-> +		const struct iomap *srcmap)
+> Every sk referenced in skb have sk_wmem_alloc > 9 
+> It is assigned to 1 in sk_alloc and decremented right before last __sk_free(),
+> inside  both sk_free() sock_wfree() and __sock_wfree()
+> 
+> So it is safe to adjust skb->sk->sk_wmem_alloc, 
+> because alive skb keeps reference to alive sk and last one keeps sk_wmem_alloc > 0
+> 
+> So any destructor used sk->sk_refcnt will already have sk_wmem_alloc > 0, 
+> because last sock_put() calls sk_free().
+> 
+> However now I'm not sure in reversed direction.
+> skb_set_owner_w() check !sk_fullsock(sk) and call sock_hold(sk);
+> If sk->sk_refcnt can be 0 here (i.e. after execution of old destructor inside skb_orphan) 
+> -- it can be trigger pointed problem:
+> "refcount_add() will trigger a warning (panic under KASAN)".
+> 
+> Could you please explain where I'm wrong?
 
-We can in fact pass the iomap_iter here as well.  (probably as a prep
-patch).
+To clarify:
+I'm agree it is unsafe  to call on alive skb:
+skb_orphan(skb)
+adjust(skb_>sk->sk_wmem_alloc)
 
->  	if (page_aligned)
->  		rc = dax_zero_page_range(iomap->dax_dev, pgoff, 1);
-> -	else
-> +	else {
->  		rc = dax_direct_access(iomap->dax_dev, pgoff, 1, &kaddr, NULL);
+becasue 2 reasone:
+1) old destructor can decrease sk_vmem_alloc to zero and free sk
+2) becasue old destructor if !sk_fullsock(sk) can call sock_out and release last sk->sk_refcnt reference.
+  in this case sock_hold() will trigger warning.
 
-I'd clean this up a bit by doing:
+1) can be handled, we can adjust(sk_wmem_alloc) before skb_orphan()
+but I badly understand how to handle 2nd case.
 
-	id = dax_read_lock();	
-	if (page_aligned) {
-		rc = dax_zero_page_range(iomap->dax_dev, pgoff, 1);
-		goto out;
-	}
-
-	// non aligned case here without extra indentation or checks
+Thank you,
+	Vasily Averin
