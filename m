@@ -2,84 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489643FED49
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:56:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 656A43FED4A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343940AbhIBL50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 07:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41254 "EHLO
+        id S245623AbhIBL5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 07:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343994AbhIBL5J (ORCPT
+        with ESMTP id S1344017AbhIBL5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 07:57:09 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37F20C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 04:56:11 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id t190so1648740qke.7
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 04:56:11 -0700 (PDT)
+        Thu, 2 Sep 2021 07:57:32 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F890C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 04:56:33 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id w8so1651273pgf.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 04:56:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HmG+SzrqI25IfuOzYDDubE9mgxl445AA/VbS1PiElag=;
-        b=mSo12sAwclW6At6xkB9mlrVJ+Tc5FkqDtEY9LlDtlFK+hxBuTNvTDbNpFL1xxTFNlF
-         nwDxpSko/dvgY9CnDlh6ty1+2auJybtEU1Asz0VwepEiBdzfLWvQVHZaVUCFa1NcrIbP
-         0756JE6st4fVmFOBe5pas+MDy6lTF+uMPvBbelLD09/zofzYLbhF3peAr0gh5TSdxgSj
-         vGdJwUXHFGNSFIya472jKpvz/TmVROAC0XByV5AAea/3S8FYelU9Pmmx3T56kGSnwX6N
-         YSYN+Tn2seNFplpmMvZouN1DaPkG8f1OHvjQ4TwMjA+uPq8+oQZZNPHcnG04B7q52o6H
-         +9tQ==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=wXPEshFYPreebAoTX3ABJCbi6RIUZePUnpogyL8TPAk=;
+        b=RP6u4NYpyYK6LDkqa4Cm18mwbwBQO3c9MYcN6LoBlH2bQMPeKIV2TSGqZZ8iEFHuGA
+         jJmtWc6VH7d6by3BLhlJ6lbjRKQ9WR9G8XQUnUXMN16oqwW9gjQ9d9bPE7OTakxPy85d
+         e9xhtYAUTnz3Pucr6VIqfhiwDSdh4qTBMi7Bd52MUS1VZHOiRkvUsWI+FrheaDa1Xca8
+         jGe0xpqVRwRIHawiU3Z37fDrYWP6oAcEJN54/MI1FEK21MgF/0wbqD3onlKKJavpvVF0
+         C8womYlkLSetD6wee4nz1G2X8H+f6FG67FMRpOLW5UPojTldOQKIpb9tCOUKdT4N5GZo
+         4bnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HmG+SzrqI25IfuOzYDDubE9mgxl445AA/VbS1PiElag=;
-        b=jC3aWrSQkB2nP6o5u5gO+kAIN3tqdejhz+1FlfXvo/9sS+ihJysk5go+p90VPcjl/n
-         6ftytAKi4wb8iLN7VjW2KUvIfiZN3S7MCr4TY/ElLMMzN91Zwl0gUjW+zvSk2M7WtoBc
-         kSWFfhFQise4SOMutpFXc9+SyC3N6Owy6dpvxphxoGPTN77eRy47asIobSyBBV7+0y6N
-         PAgP/9mJ9vKt48p6UBkwluXQmoBgLhDdwrPrnHCri0a9sDUb7zDRtWLchxBrvLkBE4G9
-         8ZlgZAD8sXh8rqpcr5DUjsHy0P5vSujly4fyyjdYsLoR0lt92h67RWX6oNhEXbKehS8X
-         nXOg==
-X-Gm-Message-State: AOAM533C7KKSKTpQUcOiGmQU4t2SZsQ/ydjExgtTlGa4YylPjV4fk19C
-        QgjrCNfch9vf4gS3MwBOZ96oNmbxqgkoFg==
-X-Google-Smtp-Source: ABdhPJzfScLfeuE+0zAzb7fUqVmoYa1Qsnj1IFjKnXefyb+6m30XuswOw0QGO3EbayUr06CRv/J2rQ==
-X-Received: by 2002:ae9:ed53:: with SMTP id c80mr2846027qkg.402.1630583770159;
-        Thu, 02 Sep 2021 04:56:10 -0700 (PDT)
-Received: from [192.168.15.25] ([186.204.255.226])
-        by smtp.gmail.com with ESMTPSA id v7sm1256373qkd.41.2021.09.02.04.56.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 04:56:09 -0700 (PDT)
-Subject: Re: VKMS: New plane formats
-To:     Simon Ser <contact@emersion.fr>
-Cc:     rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
-        hamohammed.sa@gmail.com, daniel@ffwll.ch, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <d1ceaa32-e143-8d3c-4bfb-7b31673cc76c@gmail.com>
- <Qkd7rIf9j9Y-IlDoCbF8VB8T5sIKykTIuTfZIc1pCFPfvnfwIBGOMTnFo8i5jAWqGitlGEBH865MLF3C2jdIVk7TbRRFb_KVlte_FI0hjgI=@emersion.fr>
-From:   Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Message-ID: <22b20ed0-f3d1-c70c-1f3d-ca897330f7c6@gmail.com>
-Date:   Thu, 2 Sep 2021 08:56:06 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=wXPEshFYPreebAoTX3ABJCbi6RIUZePUnpogyL8TPAk=;
+        b=MGVuTDhAsmgLjYg33k/vnycPs/k8FTNbkVa26xcB+t3lRmVRUS24ZmeAEYZj4MP/oz
+         Nwy8mUDiaUhI+5qfwe6eRc8qR0KZFeLXonseqoPKi7BJYdnouTLMsCyedolhq0TxTKf2
+         1Tbd0yt0fRRwqL5eg8ox9WNL7hCDgyoWKc3A/aXpLdi3RrRDr+Em55RgJrdIWbz9VV4J
+         fKcIMUwxEopKUg6pOXdw/yP25Nam75kxzVQi+QxsNqHjqsHCtVSvRp0TqmyQu+ZPGZIv
+         7C06+Ov3HfbjUOedvWAXfz9QkAWBBmFi6jDArVPiHKgazfiW5vfkvyzK7UFA3pWiQ2jo
+         duAA==
+X-Gm-Message-State: AOAM531D/viIXwQZ0yyz2xA/VujiEyg6gDfh1R7CfK/rA0nUZ3meG6FC
+        38iOdDQvIGHtWorwwreX8cL0MS8nsy6jr01qwgg=
+X-Google-Smtp-Source: ABdhPJyC0QFxKiTOgE9GH7Mbd7yFYdZxHEhJYOZ5dsdJ/afo3+HC1274XRHn9dvgFneJHLKHz9TGIsnduVZFYgE/1j0=
+X-Received: by 2002:a63:f30c:: with SMTP id l12mr2855549pgh.360.1630583792309;
+ Thu, 02 Sep 2021 04:56:32 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <Qkd7rIf9j9Y-IlDoCbF8VB8T5sIKykTIuTfZIc1pCFPfvnfwIBGOMTnFo8i5jAWqGitlGEBH865MLF3C2jdIVk7TbRRFb_KVlte_FI0hjgI=@emersion.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a17:90b:1b42:0:0:0:0 with HTTP; Thu, 2 Sep 2021 04:56:31
+ -0700 (PDT)
+Reply-To: nnoelie64@gmail.com
+From:   Noelie Nikiema <telexdepartment19@gmail.com>
+Date:   Thu, 2 Sep 2021 04:56:31 -0700
+Message-ID: <CAOVp_5YCQ-pzxe8tURE9FEBTRHfzC0ehEAqmu+gibgO6wQu6HA@mail.gmail.com>
+Subject: Dear Beneficiary,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/21 5:24 PM, Simon Ser wrote:
-> Ideally the final composition format would have enough precision for
-> all of the planes. I think it'd make sense to use ARGB16161616 if the
-> primary plane uses ARGB8888 and an overlay plane uses ARGB16161616.
-> 
-> To simplify the code, maybe it's fine to always use ARGB16161616 for
-> the output, and add getters which fetch an ARGB16161616 row for each
-> supported plane format.
-> 
+-- 
+2021 FUND RECOVERY COMPENSATION PAYMENT.
 
-This makes sense to me. I will try to implement this way.
 
-Thanks!
+I am a foreign delegate from the United Nations fund recovery
+committee office/ compensation directive office , your name and
+address has been selected lucky ones for the payment of
+US$1,550.000.00 compensations funds.
+
+On this faith full recommendations, I want you to know that during the
+last UN meetings held at Africa ,it was alarmed so much by the rest of
+the world in the meetings on the lost of funds by various foreigners
+to the scams artists operating in syndicates all over the world today,
+in other to retain the good image of the country, the president UN is
+now paying 50 victims of this operators US$1,550.000.00 each, Due to
+the corrupt and inefficient banking systems in Africa, the payments
+are to be wired via direct transfer, online banking transfer or ATM
+visa card,
+Your urgent response is needed for more directives.
+
+Thanks
+Dr. Noelie Nikiema
