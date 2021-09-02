@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FAB93FF22B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA9F3FF22C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346546AbhIBRUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 13:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
+        id S1346560AbhIBRUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 13:20:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242982AbhIBRUB (ORCPT
+        with ESMTP id S242982AbhIBRUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 13:20:01 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B54C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 10:19:01 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id m26so2190354pff.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 10:19:01 -0700 (PDT)
+        Thu, 2 Sep 2021 13:20:17 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E421C061757;
+        Thu,  2 Sep 2021 10:19:19 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id a1so2583842ilj.6;
+        Thu, 02 Sep 2021 10:19:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=necS4VUpe4t7hOX5NZ6mXxMU8h8wBvfjay7U9C07eQQ=;
-        b=VJLDdqzk3qgXNuXYDr1ZSorcfVQ3xeVIK8eVgKzfW+ov5t5VVcrbXTNquA/KMLDwsK
-         q9GrsDuRDs/GxmQh0UrshO6ONiRcJOm0gUfRD28EBJL6JiifFpJLolnUhUGtFVkJdD0C
-         0GTeHI0FgfIZ8p4ITsXEZRNdnYBhTULje1nDYYgfMUxSL/zo/oJxDogSBZ6UtNt1E7q+
-         TmBwv8q+RubCc5JZKskX2ukB5Rb4u4zxFvP+bO9NN9aEn22197h7JlfIQW+Mp9xhoA2H
-         1otIcgNe5u+u5r6+WWAq46kO0vVrBXz3VovtGj4wrAmQ8qtHLZX1jlI9VYF8hT742n9V
-         7BZw==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cRSdJMrEAQZ3ln6whQqTjQVnLVFP0/+gTx++A3ONYf4=;
+        b=nt2b2vGMZNqBZgiRnEaDloVqz+kQhT0EpQVxuan/SRY1CmuPrNg+yCi7SLZZOSmhBY
+         NefD/jKRoTZuj+iqPY30sdMG7iaAkONX1x/IgleMHLy9fM7+0G87gozuepvZNvYhxd55
+         tkd0XvsX2nrfCcWloTAP10OswAP7PBIR16QZAafZAKJWvcpPipgp33oZSU/UxRwrRKVm
+         +jjGzJ3c7yyzS8FY7lTxBbtfn8LrX8zjzMqV/50CDsrNpLDmGK8qkMaJZtJ/QXMTO7Gc
+         X++BYzJSBDoLEyQucMqiB0eX87kXC7FjlB3T9DvK2kIRnTfZeE+9MAHuGlkCLVh5qsUG
+         4AYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=necS4VUpe4t7hOX5NZ6mXxMU8h8wBvfjay7U9C07eQQ=;
-        b=MSm+q8iyiBlLeTO2spmS+CUJ8fS34AvKK3lEqSYfwpTfmPAxkknBjI95BnSJzlEFoc
-         0SsfxYmK1acme1cRr24b2fH3JQSnTV1c8DFl2ukoiyAix6uwkErEo3jdSBfAENfw3FOl
-         QcbuekLPlkh3DsFIiJiWnTk3+L6Nh8olLiouFlL9Q6dpcsjZ9BOBCJODvYDa+ZsooTdn
-         XvhhRb4u5p370CTqIBeK6bgLpzV1/9i170B/WJ/Wd/yTSvYHYxroA6JYG52B1OfBPFU5
-         85IcvYu6yEEsfCmvqdKFxOnjyYCASjhdSQdsA+AH0UU8QWDdDaf9WqMNzX/QvP2ztBVC
-         KxPQ==
-X-Gm-Message-State: AOAM5328Fb/KPj86Et9LsnqewRZWzucyNG9oKzGyPlXQS7EQ1tsJ8jl4
-        GWdlfIvGzs21/o7Ytn3Kfvhu3w==
-X-Google-Smtp-Source: ABdhPJw6m0R3eeCOVwfyAds9HNp2lYE8IdVFXoztsykKcDM4eZDfaWpyCE+rO2hwcXIfstyHDVA7rg==
-X-Received: by 2002:aa7:938c:0:b0:3b2:87fe:a598 with SMTP id t12-20020aa7938c000000b003b287fea598mr4258210pfe.74.1630603141401;
-        Thu, 02 Sep 2021 10:19:01 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id a11sm3083215pgj.75.2021.09.02.10.18.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 10:18:59 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 11:18:56 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Tao Zhang <quic_taozha@quicinc.com>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Mao Jinlong <quic_jinlmao@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>
-Subject: Re: [PATCH] coresight: cti: Correct the parameter for pm_runtime_put
-Message-ID: <20210902171856.GA1078000@p14s>
-References: <1629365377-5937-1-git-send-email-quic_taozha@quicinc.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cRSdJMrEAQZ3ln6whQqTjQVnLVFP0/+gTx++A3ONYf4=;
+        b=ecGJEKYgmMMttWY993rb9qnsiiOlYMf1IJQV2vUGjikMG4i+Y37ZIFGGCYMqojwEOC
+         uthwuS4CMMj6ftq+YFhAO/N0mzHWClk0MrgjvF72x965GxLem5b7oQRiXAp5+kbEFZaJ
+         EHulrIKazbykYs/DLdMVU7XemzByQNl4UmRqTfSL+TlzxDUzyF8Mj4tM6CX6BGEBguqE
+         UVLQ5xYkchIBWHTNJumpKcvow3JWygP6WFagSxp1smImnmBPUUFz5IC6JWXkEkN0bWSq
+         M//6bURMYKFaoZfpGA//d7WC7CwjamoKQamPLvPY5mnATG9m56OPMj3lqcyq40ThOQbP
+         nMaA==
+X-Gm-Message-State: AOAM533ah2s63nS+SlQ2OdFaTxog2WkE4QYrOaUbufrm5rdTOxg+FT69
+        HxUeVtLu5Z9lu2thvP0cw5/mQpvfSVVU/sRakJ4=
+X-Google-Smtp-Source: ABdhPJyeP3QsIvNivGbvX7tcO0HFKR0dkXvTELpcBQizz6jPmEzyclTVDOkWs0dKuDSrQ/D+h+XybqyBsV0Wn+KQPgg=
+X-Received: by 2002:a05:6e02:2183:: with SMTP id j3mr3131941ila.149.1630603158758;
+ Thu, 02 Sep 2021 10:19:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1629365377-5937-1-git-send-email-quic_taozha@quicinc.com>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
+ <20210831175025.27570-3-jiangshanlai@gmail.com> <YTCGov+vvAMvso7q@suse.de>
+ <1f327579-e62a-df65-0763-e88243829db3@linux.alibaba.com> <YTCsWpSmPYvXa1xz@hirez.programming.kicks-ass.net>
+ <4c589fef-8c98-a6fc-693f-b205a7710e42@linux.alibaba.com> <YTC+FTo4uLLdyBxA@hirez.programming.kicks-ass.net>
+ <YTDS/p/bnsTFzNES@hirez.programming.kicks-ass.net> <CAKwvOdmhUzR0QfAU+nVRtSPu11vg9yvyJ09Pb8q1X6CEfez=8w@mail.gmail.com>
+In-Reply-To: <CAKwvOdmhUzR0QfAU+nVRtSPu11vg9yvyJ09Pb8q1X6CEfez=8w@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Thu, 2 Sep 2021 19:19:07 +0200
+Message-ID: <CANiq72=OH0FYLnRfiVt5kjC39bZZsmjsMLCAAfh9iN1KQyzBaw@mail.gmail.com>
+Subject: Re: [PATCH 02/24] x86/traps: Move arch/x86/kernel/traps.c to arch/x86/entry/
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        =?UTF-8?Q?Martin_Li=C5=A1ka?= <mliska@suse.cz>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Chester Lin <clin@suse.com>, Juergen Gross <jgross@suse.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tao,
+On Thu, Sep 2, 2021 at 7:05 PM Nick Desaulniers <ndesaulniers@google.com> wrote:
+>
+> The above 2 hunks should go in include/linux/compiler_attributes.h,
+> but yes.  I'd been meaning to send such a patch; it's nice to have
 
-Apologies for the late reply - this patch fell through the cracks.
+Note that `compiler_attributes.h` does not keep attributes that depend
+on config options.
 
-On Thu, Aug 19, 2021 at 05:29:37PM +0800, Tao Zhang wrote:
-> The input parameter of the function pm_runtime_put should be the
-> same in the function cti_enable_hw and cti_disable_hw. The correct
-> parameter to use here should be dev->parent.
-> 
-> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> ---
->  drivers/hwtracing/coresight/coresight-cti-core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c b/drivers/hwtracing/coresight/coresight-cti-core.c
-> index e2a3620..8988b2e 100644
-> --- a/drivers/hwtracing/coresight/coresight-cti-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-cti-core.c
-> @@ -175,7 +175,7 @@ static int cti_disable_hw(struct cti_drvdata *drvdata)
->  	coresight_disclaim_device_unlocked(csdev);
->  	CS_LOCK(drvdata->base);
->  	spin_unlock(&drvdata->spinlock);
-> -	pm_runtime_put(dev);
-> +	pm_runtime_put(dev->parent);
+On one hand, I feel we should put them there. On the other hand, I
+want to avoid making a mess again since the purpose of the file is to
+keep things clean for the majority of attributes.
 
-You are correct - I have added this patch to my next tree.
+Perhaps we should do a middle-ground, and only allow those that depend
+on a single config option, i.e. no nesting `#if`s or complex
+conditions.
 
-Thanks,
-Mathieu
-
->  	return 0;
->  
->  	/* not disabled this call */
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Cheers,
+Miguel
