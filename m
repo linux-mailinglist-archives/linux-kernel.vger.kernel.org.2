@@ -2,113 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6667C3FEED6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A3F3FEEDF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345326AbhIBNkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:40:31 -0400
-Received: from mga02.intel.com ([134.134.136.20]:44394 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345306AbhIBNk3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:40:29 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="206335089"
-X-IronPort-AV: E=Sophos;i="5.84,372,1620716400"; 
-   d="scan'208";a="206335089"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 06:39:28 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,372,1620716400"; 
-   d="scan'208";a="542702720"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
-  by fmsmga002.fm.intel.com with ESMTP; 02 Sep 2021 06:39:24 -0700
-Date:   Thu, 2 Sep 2021 21:39:24 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michal Koutn?? <mkoutny@suse.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        andi.kleen@intel.com, kernel test robot <oliver.sang@intel.com>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>
-Subject: Re: [mm] 2d146aa3aa: vm-scalability.throughput -36.4% regression
-Message-ID: <20210902133924.GA72811@shbuild999.sh.intel.com>
-References: <20210818023004.GA17956@shbuild999.sh.intel.com>
- <YSzwWIeapkzNElwV@blackbook>
- <20210831063036.GA46357@shbuild999.sh.intel.com>
- <20210831092304.GA17119@blackbody.suse.cz>
- <20210901045032.GA21937@shbuild999.sh.intel.com>
- <877dg0wcrr.fsf@linux.intel.com>
- <20210902013558.GA97410@shbuild999.sh.intel.com>
- <e8d087a4-a286-3561-66ef-1e9cfb38605f@linux.intel.com>
- <20210902034628.GA76472@shbuild999.sh.intel.com>
- <20210902105306.GC17119@blackbody.suse.cz>
+        id S1345051AbhIBNon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:44:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234188AbhIBNon (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 09:44:43 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7187C061575;
+        Thu,  2 Sep 2021 06:43:44 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso2579287otu.0;
+        Thu, 02 Sep 2021 06:43:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HE235/mk/bT/zxikKcuwhXM6G64fh6+hmbGzpNdUjKk=;
+        b=ivdbizEGV4wUWpUSChSsswSUp1vDcIzdNH51EL1xTFsqgMvjN06Z53ZUte0lZipv2H
+         HY/EXq4DZvSqEGxjZu0VxoqF5DGtJEY6CEIIDF54r6GX+T9jSYo3vMRKSZ3+EKaj0tTh
+         j7LEwuDV91aJJJztofZZJgyXDfEwffga72yTysYx5e7AiQjiVgt+m0uSM6LnTpuSAX7/
+         ARAwjfz/yfxjAb75yhxyomktUso3zseD+aFCSjhTEPMJggF7nF81vThVx3KNdBHdNA21
+         2+qnm7gTotuifhGSqeWScp8SNTBdtYJuv+xKzWBZhk/YO5hK9j2YkEo19awMN7LPAdIV
+         ml8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HE235/mk/bT/zxikKcuwhXM6G64fh6+hmbGzpNdUjKk=;
+        b=YHCUKLh4Ctxiy1UHdtaK0BV3FNUOzTL9G+hIKRl7qYiaf7iEt2C+jXY1Z4Mp28t+xG
+         5Zlbh3pnRxQBDU24ZXaatpeHcMCfvx0EOO+0aZ50IrdTQi2Rl+0BduAw7AG3JLHOsAR6
+         u04OmsFUiHo0dM3ZtHQrd2OigSVY1xjkw6xHhw7Dv0MdMKa5osyNhth3e4N8e305/0HK
+         yyjf1JpRRpOBlDuf7TMVy3gyhIGLS/zHuamLFRBdcZBE1w7y8lJ4zq7WBfIuUXKTp/fm
+         L88ePE1/2MGKnQ4sDq5ODwVA0cehdkNDKzufikAmHfcSRun8w7Fze2h4SJ+GQc1ugqe2
+         9/Fw==
+X-Gm-Message-State: AOAM530VfSwhwJKVZGI4kdLSnXGbhJ14hCyJxQwJS7jGVsNC4ipS9QsY
+        y7/5PSNPMtunqwiYLhNS4Uo=
+X-Google-Smtp-Source: ABdhPJzvT9pgA/VoTeJa1wp735xrELEdJoBuboxjZ3tM94W9m/5OuIAGxdBFRadPLGFIQ1Jmqq3WfA==
+X-Received: by 2002:a05:6830:124b:: with SMTP id s11mr2657581otp.90.1630590224195;
+        Thu, 02 Sep 2021 06:43:44 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f5sm387641oij.6.2021.09.02.06.43.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 06:43:43 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] watchdog: mtk: add disable_wdt_extrst support
+To:     Fengquan Chen <Fengquan.Chen@mediatek.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     tinghan.shen@mediatek.com, randy.wu@mediatek.com,
+        rex-bc.chen@mediatek.com, christine.zhu@mediatek.com,
+        joe.yang@mediatek.com, zhishuang.zhang@mediatek.com
+References: <1630569881-6032-1-git-send-email-Fengquan.Chen@mediatek.com>
+ <1630569881-6032-2-git-send-email-Fengquan.Chen@mediatek.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <5fe9c774-c619-604e-1f74-12ff6bfe826f@roeck-us.net>
+Date:   Thu, 2 Sep 2021 06:43:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902105306.GC17119@blackbody.suse.cz>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <1630569881-6032-2-git-send-email-Fengquan.Chen@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 12:53:06PM +0200, Michal Koutn?? wrote:
-> Hi.
-> 
-> On Thu, Sep 02, 2021 at 11:46:28AM +0800, Feng Tang <feng.tang@intel.com> wrote:
-> > > Narrowing it down to a single prefetcher seems good enough to me. The
-> > > behavior of the prefetchers is fairly complicated and hard to predict, so I
-> > > doubt you'll ever get a 100% step by step explanation.
->  
-> My layman explanation with the available information is that the
-> prefetcher somehow behaves as if it marked the offending cacheline as
-> modified (even though reading only) therefore slowing down the remote reader.
+On 9/2/21 1:04 AM, Fengquan Chen wrote:
+> From: "fengquan.chen" <fengquan.chen@mediatek.com>
 
-But this can't explain the test that adding 128 bytes before css->cgroup
-can restore/improve the performance.
- 
-> On Thu, Sep 02, 2021 at 09:35:58AM +0800, Feng Tang <feng.tang@intel.com> wrote:
-> > @@ -139,10 +139,21 @@ struct cgroup_subsys_state {
-> >       /* PI: the cgroup that this css is attached to */
-> >       struct cgroup *cgroup;
-> >
-> > +     struct cgroup_subsys_state *parent;
-> > +
-> >       /* PI: the cgroup subsystem that this css is attached to */
-> >       struct cgroup_subsys *ss;
-> 
-> Hm, an interesting move; be mindful of commit b8b1a2e5eca6 ("cgroup:
-> move cgroup_subsys_state parent field for cache locality"). It might be
-> a regression for systems with cpuacct root css present. (That is likely
-> a big amount nowadays, that may be the reason why you don't see full
-> recovery?  For future, we may at least guard cpuacct_charge() with
-> cgroup_subsys_enabled() static branch.)
-
-Goot catch! 
-
-Acutally I also tested only moving 'destroy_work' and 'destroy_rwork'
-('parent' is not touched with the cost of 8 bytes more padding), which
-has simliar effect that restore to about 15% regression. 
-
-> > [snip]
-> > Yes, I'm afriad so, given that the policy/algorithm used by perfetcher
-> > keeps changing from generation to generation.
-> 
-> Exactly. I'm afraid of relayouting the structure with each new
-> generation. A robust solution is putting all frequently accessed members
-> into individual cache-lines + separating them with one more cache line? :-/
-
-Yes, this is hard. Even for my debug patch, we can only say it works
-as restoring the regression partly, but not knowing the exact reason.
-
-Thansk,
-Feng
+There should not be such From: line.
 
 > 
-> Michal
+> In some cases, we may need watchdog just to trigger an
+> internal soc reset without sending any output signal.
+> 
+> Provide a disable_wdt_extrst parameter for configuration.
+> We can disable or enable it just by configuring dts.
+> 
+> igned-off-by: Fengquan Chen <fengquan.chen@mediatek.com>
+
+Missing "S".
+
+> ---
+>   drivers/watchdog/mtk_wdt.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
+> index 97ca993..4824c07 100644
+> --- a/drivers/watchdog/mtk_wdt.c
+> +++ b/drivers/watchdog/mtk_wdt.c
+> @@ -63,6 +63,7 @@ struct mtk_wdt_dev {
+>   	void __iomem *wdt_base;
+>   	spinlock_t lock; /* protects WDT_SWSYSRST reg */
+>   	struct reset_controller_dev rcdev;
+> +	bool disable_wdt_extrst;
+>   };
+>   
+>   struct mtk_wdt_data {
+> @@ -240,6 +241,8 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
+>   
+>   	reg = ioread32(wdt_base + WDT_MODE);
+>   	reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
+> +	if (mtk_wdt->disable_wdt_extrst)
+> +		reg &= ~WDT_MODE_EXRST_EN;
+>   	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
+>   	iowrite32(reg, wdt_base + WDT_MODE);
+>   
+> @@ -309,6 +312,10 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+>   		if (err)
+>   			return err;
+>   	}
+> +
+> +	mtk_wdt->disable_wdt_extrst =
+> +		of_property_read_bool(dev->of_node, "disable_extrst");
+> +
+
+The new property needs to be documented and approved by a DT maintainer
+(separate patch). Something like "mtk,disable-extrst" would probably be
+a better property name.
+
+Guenter
