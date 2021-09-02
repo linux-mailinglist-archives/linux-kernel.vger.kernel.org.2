@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 172753FF78E
+	by mail.lfdr.de (Postfix) with ESMTP id 84AE73FF790
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 01:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347780AbhIBXDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 19:03:10 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:39251 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232013AbhIBXDC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 19:03:02 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id BB964320094B;
-        Thu,  2 Sep 2021 19:02:02 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 02 Sep 2021 19:02:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm3; bh=dMOJsy0kcae44XC/LGRiBL+H+K
-        kmGvDivPUnj3WmBgw=; b=dvPutcBJY4eJd8M7UK+vpFfytx5TbRf1kpv3ThMjf6
-        xoOsmnpUc3kFC2zMKU1g+i2hg5Qp1yl391esO5/sMl4H44Gl29MgyiyOL3/8t0BN
-        vabFn7u1YjZOpa4P6+0xAkNVON4hiYAdnq/VhH3cUcG0XSzxzCR1HvqZlaY/g34q
-        MKVof879q1XCO3dOO3mh19y7noDvDN7Sl0FgV4P0OCltQbyWLUEuzHsaTN3uh7aL
-        Me8ZE8IFh9vqjmzwqv+u20SwdSBmzBov6YNr4pMwJmFW/5iQo9goxR70rOhqAXsk
-        E3dlDKoysZZonZF6T96I3lF3mmlSUtTk/8brxIxpxHSQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=dMOJsy0kcae44XC/L
-        GRiBL+H+KkmGvDivPUnj3WmBgw=; b=vgK59s62AuIfb0qx6Gwm/dhLmOprhmhyP
-        YK9Dwmeq/g/LAUn+55AK5JieQyY8feGffRareN7YvBz/pC8/KNDWBlmWW9nbqugL
-        g2f/DdIjWlfDXR7e6CB8iLlcx8gQiFq0PwNTBxVusldY8bZsPdg3eVq86mPqh8J5
-        C4U3+EaKy/r+z4VoOwAv3Wqx/RkIq39zP+RIbBa04fBmcnj/XjsbMa8MB21pR6MM
-        j2dOdJGNbU5kUhJGCg5NAr1OL4iniEVF6o51lLNwF4owkLYQo+PRfvp5VNadck0M
-        3dAidDImdzGtNtMxD4cEYab3MjOvVvCyBnbfJMrhb435dmRtwresw==
-X-ME-Sender: <xms:6VcxYblyDtqaj5ANTOsBaXh3fNxpIb-EtqVRR8xv3AkakgX3Lrb2JA>
-    <xme:6VcxYe0qu0uf7Q6gxaYt33eNMDx-61CZJLxrQOQvbE7MOYwJlri5DugykBXF8Xs6-
-    B4DG3Kphsb0SQkUdA>
-X-ME-Received: <xmr:6VcxYRqNHne3-sRjrAFXzvN9h35uWJZN6y2hvFQNgjKzEsEWU9gXL2HXr7WYhfOAojTttC4eevHsZOMIkbY-6LAmeCT3Wx4UvdUnqpM4BZgNj4JTxU1C0D3sXTv8sSe2CLcPrQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddviedgudekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
-    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
-    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
-    vedtveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:6VcxYTncog_H_QsHoc2nziLWQLL0Ob0mcDIlr4rqlAXL25kRpXnJPw>
-    <xmx:6VcxYZ2-Aqns-46q8DEvu3GUIaqbl0Af-xKmMFk-e7JqKfFg0Pc_ig>
-    <xmx:6VcxYSvTDs2EL3OtU6a01iHGytsDA1M5i7u7xiRk8UzeacypjW44sA>
-    <xmx:6lcxYSLwUmNNfU8H-FuRMgQU_JzjNbxtt6yFHgIJ_O8VPSvihdSrgQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 2 Sep 2021 19:02:01 -0400 (EDT)
-From:   Samuel Holland <samuel@sholland.org>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Samuel Holland <samuel@sholland.org>
-Subject: [PATCH] clk: sunxi-ng: Add machine dependency to A83T CCU
-Date:   Thu,  2 Sep 2021 18:02:00 -0500
-Message-Id: <20210902230200.29574-1-samuel@sholland.org>
-X-Mailer: git-send-email 2.31.1
+        id S1347985AbhIBXDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 19:03:19 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:54282 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347855AbhIBXDR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 19:03:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=OYFToequarzac4GcuUzxdyCTeg1E65wYgDUFdHDP4Uo=; b=Brb8sRznxEqSdqZBTUb1/AgPss
+        Cdfiz/moRjSVVbhoYXQ+U2mDxo4gRpMKwWEbPLPVFixvmZb4lPd73Oh1rV+zTueyJkT6cdOrL9yJ4
+        wpit+vQ4qgFAwE0tZ3yXnbs2xWA/5s1pqO88QV8cFVyWJpiztsq1vTIf7klgpy3dkd0k=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mLvig-0053pN-8j; Fri, 03 Sep 2021 01:02:06 +0200
+Date:   Fri, 3 Sep 2021 01:02:06 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [RFC PATCH net-next 1/3] net: phy: don't bind genphy in
+ phy_attach_direct if the specific driver defers probe
+Message-ID: <YTFX7n9qj2cUh0Ap@lunn.ch>
+References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
+ <20210901225053.1205571-2-vladimir.oltean@nxp.com>
+ <20210902185016.GL22278@shell.armlinux.org.uk>
+ <YTErTRBnRYJpWDnH@lunn.ch>
+ <bd7c9398-5d3d-ccd8-8804-25074cff6bde@gmail.com>
+ <20210902213303.GO22278@shell.armlinux.org.uk>
+ <20210902213949.r3q5764wykqgjm4z@skbuf>
+ <20210902222439.GQ22278@shell.armlinux.org.uk>
+ <20210902224506.5h7bnybjbljs5uxz@skbuf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902224506.5h7bnybjbljs5uxz@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CCUs for all other 32-bit SoCs have a dependency on a specific
-MACH_SUNxI symbol. This effectively hides these drivers when building
-an ARCH=arm64 kernel. However, the A83T CCU still shows up because it
-is missing this dependency. Let's add it for consistency.
+> > Note that phylink_destroy() is documented as:
+> >
+> >  * Note: the rtnl lock must not be held when calling this function.
+> >
 
-Signed-off-by: Samuel Holland <samuel@sholland.org>
----
- drivers/clk/sunxi-ng/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+...
 
-diff --git a/drivers/clk/sunxi-ng/Kconfig b/drivers/clk/sunxi-ng/Kconfig
-index cd46d8853876..e76e1676f0f0 100644
---- a/drivers/clk/sunxi-ng/Kconfig
-+++ b/drivers/clk/sunxi-ng/Kconfig
-@@ -71,6 +71,7 @@ config SUN8I_A33_CCU
- config SUN8I_A83T_CCU
- 	bool "Support for the Allwinner A83T CCU"
- 	default MACH_SUN8I
-+	depends on MACH_SUN8I || COMPILE_TEST
- 
- config SUN8I_H3_CCU
- 	bool "Support for the Allwinner H3 CCU"
--- 
-2.31.1
+> 
+> Any other issues besides needing to take rtnl_mutex top-level when
+> calling phylink_destroy?
 
+We should try to keep phylink_create and phylink_destroy symmetrical:
+
+/**
+ * phylink_create() - create a phylink instance
+ * @config: a pointer to the target &struct phylink_config
+ * @fwnode: a pointer to a &struct fwnode_handle describing the network
+ *      interface
+ * @iface: the desired link mode defined by &typedef phy_interface_t
+ * @mac_ops: a pointer to a &struct phylink_mac_ops for the MAC.
+ *
+ * Create a new phylink instance, and parse the link parameters found in @np.
+ * This will parse in-band modes, fixed-link or SFP configuration.
+ *
+ * Note: the rtnl lock must not be held when calling this function.
+
+Having different locking requirements will catch people out.
+
+Interestingly, there is no ASSERT_NO_RTNL(). Maybe we should add such
+a macro.
+
+    Andrew
