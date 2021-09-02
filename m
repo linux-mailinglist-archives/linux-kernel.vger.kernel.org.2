@@ -2,204 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35E683FF06A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2103FF06E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345908AbhIBPpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 11:45:00 -0400
-Received: from sonic315-26.consmr.mail.ne1.yahoo.com ([66.163.190.152]:44890
-        "EHLO sonic315-26.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234405AbhIBPo4 (ORCPT
+        id S1345918AbhIBPqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 11:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234405AbhIBPqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 11:44:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1630597438; bh=CMnoZ/z+WCWqz9q0+OWHxHAsEKwK8gfCAByMzG17zlc=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=LL1DeJ4PgBoj42RjYAmPM2HZ8gP2b5YRFxo8kfXnmv1W7/liWY7iS8P8vVuQf7+5k/71nF1AvyMrlnyn0PMkOeAK3ELtsYUeoxxMLYQE0Q34YO4IRffq1y8F1p11qVtM85y+niy6j3cvd7dQuppZUjAPfZLSYLSWJPPb1SnB5Mwcl+r/KUu3QqgjEsGB38ugtk70uJs476ndSba7qKqFQWRufdRr3n9D6eq3B/8sxYRMF9CL8x78Kmqu/VXPmUqK1d7WlSFgJAslgOoJ6F7oAtqdUi5TkKXImqoNf2TAKm/jZM2hG9BlseEcykbkjo2gyE14qvDtN8nf561R8anluA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1630597438; bh=v7YKDwBsX/9bZwWX7SqyNcNss+A3MacF2cpHAJ/3v/I=; h=X-Sonic-MF:Subject:To:From:Date:From:Subject; b=BKHHS3QjEtFsHxqPu+FtyikuJ3D6AIaZ/ZGpgPQqEd58WcPm5iFjRrPFm3qNSRWRmgsZOI34iPvslMmbygYm4H1ODMxoqXiqe3YD7+rmZf22GeLcvyHA+5aPX2B4LoAN2TQml4dMOSWPPTC4sIOQMA1H7vzcVxQB2PLkBRpp2Xf4Q9w3qPIXsa9j/QSOYpCZIoITystseazU+V/9FoBYxC4jB6zCIsB9RRi195pCmEe9fvlRRBmCo2uN8ETFhH5Z+PafK3mpbg3Xo946gYPA3WSlGm0+Vf1NvcvxHSC/BBNzEb99v/BbyeM02o5mHJ9giADs2pG7sWTvyZOvJ/ExDw==
-X-YMail-OSG: k6H_CZ4VM1nidKRD.43oA7hT5UhAAVuB1EkPRFafErnvCgRsC7UH_b1WDAReV0O
- XlqRzE2aRpnpHDkJgfiwrE.mJDfppRCv0oT.wSyLr3QcEJT0VOFtiZEAquggUtt0FvAQyQzceb.T
- P9GMGR_FahuizNZv51p95sJZv1XVS9l4PNWmsvODaQIW91ABtJppBqt6RI8UA0GgxKm2_r9h0Vwz
- Kz2mNe20I9QKdqxvdmaY3YQcGHwEGt5TeaceH91ymLQIW0vdmyXGv_a2Pc9bTDkGddDsYFCGqG1V
- w4a4ZtNvxIv9iAugPVjiocaJrgi1mf8A1H7p5vbs90ZlfvZLGkH7ueXhiMyHra7MuezmAGK1GoHM
- uAoa4qy9ppJ0HXRVP62OMeTp3QMS8165CGrLMnhGi_kBgq6gSCtMBy7Dw8gnMBxUqXo.DWjUZ.cB
- lhplsUlohWTokv9ohAq.p9yOnPVQ3iIAcH2aXVpFI_ilmnWavnS17FivZu.T3nrbqMjv2yxa0utE
- ezGOFp9jXzG4sWDScAi_NX.TS0rMH4sQDVqa346WkTvQL7WBXdhPZBHkX3ceYyQFJU_pfZl5u4KP
- 6d2e_OjXtEiXHq86heBFPT8HJcrFjxuNw.58byp6T1AHjaLfivS8LcAQtHVfLBVcgSrkiQI.5axZ
- iRXozM5grS4t8kN359ntV1XINV6YQ4TGkArehcKNTwhMMalzaVtKITZ3GYAZaHBRIQDvp4RYZ3UV
- CjgnUpbcoTgI6FtCiO4CQeInniTRJCcS3Tvv9W7KqngSNGjqH1IObE5uUcc4cDHUWBG9OuTLj208
- WL5uNxBuLdGZmzVUrgY6xJlNicofi8_wD.okAR.bVIw7Qvc7QhKCakq_.HcycvqTE_sMBeF78vaW
- Vs2328h9U7dDyFHVezDW52aH_y0aZ0UiThiCHem9mGadugxeatetSc7JElk57ELAqIser8W7VScw
- DqeWjmJlnNoFkjvASyTOdpcKHOWLoR0viwlkuqdgBlFTSPmRTwnS8BQLcrJnn5OQjwRG2JQJLNz_
- 5rz8isGNw18qIP0dsw0lWmLqclcxqZimGFevdIwWB_zrIfG8_L5x5cqVmucm15GVqj4pU7EXaDWZ
- GqQk6UcmWS7yic9NRjBGxJf8_cLFOUkoDuAXYM3VKNBFVzrkZs4sxBTdVM3wK5CqDB1L.whCz_Nc
- 7jfz783ghgrOJW.9vgRl21ntDhTXSbKaQEX0q3KGsqVogyZPbZd7K_MjEGtAQHfYXXzvfuEOf8n5
- AkqQOyzvWbCcPyXpipDEULRVrM4IGHe4emuUVBtC3_zoHF4_AkgGD9Q.YECt2HFLj3dN_UsdpXpu
- 3T6tmqlYjMyxBSD9QJ1wkrbQvFP7Gj3rRKvVFDYw9zxRgz1FrGSjYYFiyic14iR9iPDiwgz2Yv9C
- 1WXKlFuqkdrlFr9wzHuab_rTG6zHiTbTSeYgwaNr4E0KgY64QUyn06Pts6_B_A_HsADMFWq9jyNE
- KvGYYpOvhOgF2_T4uX_qYjYQvogKTbjrSO7rGwes5zaoTJ8D2O741Y6cnoEkihpB90bpF6sYKRjH
- zuH2JJJv9ELRUAZIUHiudfhRpURqhbkhVzB9S5VKa.KJh27GDjjUG1IQi_g1b293ufix8ZRL3TKY
- hCnQVc.Ne80cLgafYyHJCJPQ59745UThga4P00mijhwB5pPfEvttw586.Sq56Io4VYE9KY1Ucmy4
- Aa6TXxboqVF1Xtgm9hPrvkcgR5W5c566cKeLtbARNR71Gz7NS0gnchFtALkgXKJ1qAqW3BfHo0U.
- sTvQ.3oN629Z3xg44Ab4m1IIK3rBILNLNuCio4.M1JLERZgB6k7WZiRzuow6aIleRuR41_HPiiQS
- PW0buXRlHq6GCditvJNqqQFPRSD7fhEsj1OVk83FZ513sV1c_lxhEhfqtaAYGPsXwvL8jSagrJ7B
- Fka4y39jIIvVI7UwkNbYVbyoJ97fR4mSz5uRlC4nHi6oMLInr0npTE14NayfGtoZsv46HH5Akrto
- K5nvnHFNZhCttomkuAaACMzJ_OnZtTIWy7hVg6DxQGZlOwDDDrntYiBtE18B.o83ujAt6.E4hA4V
- Hx1vFJnmiT.jJM0VS.aC2ygGvYB3l.UFP3SagbQeyeHtcd.IZBqNKPOdVAYnRF7vBCbVRA3t3D1S
- SHpa6gB2HfA7pKOYvqYI90R0dXABVws3gSphEYXS8LvePRlp6pG6Q8A4Ua4sJyxFtM3NUfYXH04a
- viWN1YbuhESSU0Wnu5p.dKSg8TFH2YEv8ZSZE0cncO7TlC8_HJxf1FcjjsqeE07t.6ih30wnGaID
- yNGRXO_C4IbYn
-X-Sonic-MF: <casey@schaufler-ca.com>
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic315.consmr.mail.ne1.yahoo.com with HTTP; Thu, 2 Sep 2021 15:43:58 +0000
-Received: by kubenode520.mail-prod1.omega.bf1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 869f6cf839dbfeb4ab142416924cbaa4;
-          Thu, 02 Sep 2021 15:43:54 +0000 (UTC)
-Subject: Re: [PATCH v3 0/1] Relax restrictions on user.* xattr
-To:     Vivek Goyal <vgoyal@redhat.com>, viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com, dwalsh@redhat.com, dgilbert@redhat.com,
-        christian.brauner@ubuntu.com, casey.schaufler@intel.com,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
-        bfields@redhat.com, stephen.smalley.work@gmail.com,
-        agruenba@redhat.com, david@fromorbit.com,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20210902152228.665959-1-vgoyal@redhat.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-Message-ID: <79dcd300-a441-cdba-e523-324733f892ca@schaufler-ca.com>
-Date:   Thu, 2 Sep 2021 08:43:50 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 2 Sep 2021 11:46:10 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06FAFC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 08:45:12 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id v10so3672412wrd.4
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 08:45:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rDNftNGmU54xsGRS67zsRu7m0uNE4X5v/MoeNFVfn7E=;
+        b=sDw++GMRrMyzpeH1bwkM+FYPVg6fxrVV0LN1kGCn4YN+vcSZbmpwOKB4KWRrH4PWzF
+         tplhblDAyL2RdW+Ojd3dMWXFs2O8dskVrgRaQw6rYDu3d21HyGhW2c9qOWLRe4bz8B6i
+         cyaCcddl/Sqvj49yDnQyEXtu/D8DBfXbMOXgd2/IebWbFgSpslUPSbYQtpxBr0flFAg3
+         VoEYbRI5+J/DxzgpC3s2PCyLmjQpPoRg9WVFh9sc1Xm8ZKxAKAe+kUVsnNZTO2l5TLdD
+         EOko/woKE+VkWyg9+PV9wbXM+hb11rL9RZGyx4LMfgz8v5ab/VJ7gXtmNZdSq0bWr1DD
+         +YPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rDNftNGmU54xsGRS67zsRu7m0uNE4X5v/MoeNFVfn7E=;
+        b=Alg6cWcGZVDOgRer+qeaFtu+UMLuaoVhsTk2NSAjMcaktSqsD7xXyu/UOS89efryJp
+         aq+nSivncbl5ZxJiRVBnmPCiZ79dRyMeDlpY1Ly5TgSkw/83pMgBxqwdg2VEV+tXk1pm
+         CGSwiZEdXviGn4R2iRPBiqgqpClZSC5MFggcmqmV/YWhgtL3N0L2zoUyrpeOH6CVp6oI
+         vvZosgPeDwjYaUbvT2Szqv52IOCsW3tS3ztwM/EQyTfLIzwNfnYdj3QcVcIgnXvwS/0u
+         cJG6NrLV5lDNEgTecGcx9zxnCLRMg9KYX02K0ov5pM3f0gCjn68pY1s7RcpXhMKGld5+
+         dzCA==
+X-Gm-Message-State: AOAM531Azi7BjI0x/rdj0FS4EAyKl7ulxbMbjwWTFMnS10e1Q70Qcq7A
+        JwNvOUZaJ8qrMQubzx4Y/mrSi0ycyyuE7+TwSRaIOA==
+X-Google-Smtp-Source: ABdhPJzrEuwh9wgaE+IJ9h+uXMRqJBofSl0PNBOp35s9vzEP0/FozcYSj/LHKR3v8LJwVerCjPOjjlIAbzBATeDztN8=
+X-Received: by 2002:adf:e4ce:: with SMTP id v14mr4523745wrm.49.1630597510045;
+ Thu, 02 Sep 2021 08:45:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210902152228.665959-1-vgoyal@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Mailer: WebService/1.1.18924 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
+References: <20210902093358.28345-1-yan2228598786@gmail.com>
+In-Reply-To: <20210902093358.28345-1-yan2228598786@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 2 Sep 2021 08:44:57 -0700
+Message-ID: <CANn89iLHg8cjLFKVzO+CkewLs_NkjEjQGetwARVnkuKRS9iUfQ@mail.gmail.com>
+Subject: Re: [PATCH] net: tcp_drop adds `reason` and SNMP parameters for
+ tracing v3
+To:     Zhongya Yan <yan2228598786@gmail.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>, hengqi.chen@gmail.com,
+        Yonghong Song <yhs@fb.com>,
+        Brendan Gregg <brendan.d.gregg@gmail.com>, 2228598786@qq.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/2021 8:22 AM, Vivek Goyal wrote:
-> Hi,
+On Thu, Sep 2, 2021 at 2:34 AM Zhongya Yan <yan2228598786@gmail.com> wrote:
 >
-> This is V3 of the patch. Previous versions were posted here.
+> I used the suggestion from `Brendan Gregg`. In addition to the
+> `reason` parameter there is also the `field` parameter pointing
+> to `SNMP` to distinguish the `tcp_drop` cause. I know what I
+> submitted is not accurate, so I am submitting the current
+> patch to get comments and criticism from everyone so that I
+> can submit better code and solutions.And of course to make me
+> more familiar and understand the `linux` kernel network code.
+> Thank you everyone!
 >
-> v2:
-> https://lore.kernel.org/linux-fsdevel/20210708175738.360757-1-vgoyal@re=
-dhat.com/
-> v1:
-> https://lore.kernel.org/linux-fsdevel/20210625191229.1752531-1-vgoyal@r=
-edhat.co
-> +m/
+> Signed-off-by: Zhongya Yan <yan2228598786@gmail.com>
+> ---
+>  include/trace/events/tcp.h |  39 +++---------
+>  net/ipv4/tcp_input.c       | 126 ++++++++++++++-----------------------
+>  2 files changed, 57 insertions(+), 108 deletions(-)
 >
-> Changes since v2
-> ----------------
-> - Do not call inode_permission() for special files as file mode bits
->   on these files represent permissions to read/write from/to device
->   and not necessarily permission to read/write xattrs. In this case
->   now user.* extended xattrs can be read/written on special files
->   as long as caller is owner of file or has CAP_FOWNER.
-> =20
-> - Fixed "man xattr". Will post a patch in same thread little later. (J.=
+> diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
+> index 699539702ea9..80892660458e 100644
+> --- a/include/trace/events/tcp.h
+> +++ b/include/trace/events/tcp.h
+> @@ -371,28 +371,10 @@ DEFINE_EVENT(tcp_event_skb, tcp_bad_csum,
+>         TP_ARGS(skb)
+>  );
+>
+> -// from author @{Steven Rostedt}
+> -#define TCP_DROP_REASON                                                        \
+> -       REASON_STRING(TCP_OFO_QUEUE,            ofo_queue)                      \
+> -       REASON_STRING(TCP_DATA_QUEUE_OFO,               data_queue_ofo)                 \
+> -       REASON_STRING(TCP_DATA_QUEUE,           data_queue)                     \
+> -       REASON_STRING(TCP_PRUNE_OFO_QUEUE,              prune_ofo_queue)                \
+> -       REASON_STRING(TCP_VALIDATE_INCOMING,    validate_incoming)              \
+> -       REASON_STRING(TCP_RCV_ESTABLISHED,              rcv_established)                \
+> -       REASON_STRING(TCP_RCV_SYNSENT_STATE_PROCESS, rcv_synsent_state_process) \
+> -       REASON_STRINGe(TCP_RCV_STATE_PROCESS,   rcv_state_proces)
 
->   Bruce Fields)
->
-> - Fixed xfstest 062. Changed it to run only on older kernels where
->   user extended xattrs are not allowed on symlinks/special files. Added=
+??? On which tree / branch this patch is based on ?
 
->   a new replacement test 648 which does exactly what 062. Just that
->   it is supposed to run on newer kernels where user extended xattrs
->   are allowed on symlinks and special files. Will post patch in=20
->   same thread (Ted Ts'o).
+> -
+> -#undef REASON_STRING
+> -#undef REASON_STRINGe
+> -
+> -#define REASON_STRING(code, name) {code , #name},
+> -#define REASON_STRINGe(code, name) {code, #name}
+> -
+> -
+>  TRACE_EVENT(tcp_drop,
+> -               TP_PROTO(struct sock *sk, struct sk_buff *skb, __u32 reason),
+> +               TP_PROTO(struct sock *sk, struct sk_buff *skb, int field, const char *reason),
 >
-> Testing
-> -------
-> - Ran xfstest "./check -g auto" with and without patches and did not
->   notice any new failures.
+> -               TP_ARGS(sk, skb, reason),
+> +               TP_ARGS(sk, skb, field, reason),
 >
-> - Tested setting "user.*" xattr with ext4/xfs/btrfs/overlay/nfs
->   filesystems and it works.
-> =20
-> Description
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>                 TP_STRUCT__entry(
+>                         __array(__u8, saddr, sizeof(struct sockaddr_in6))
+> @@ -409,9 +391,8 @@ TRACE_EVENT(tcp_drop,
+>                         __field(__u32, srtt)
+>                         __field(__u32, rcv_wnd)
+>                         __field(__u64, sock_cookie)
+> -                       __field(__u32, reason)
+> -                       __field(__u32, reason_code)
+> -                       __field(__u32, reason_line)
+> +                       __field(int, field)
+> +                       __string(reason, reason)
+>                         ),
 >
-> Right now we don't allow setting user.* xattrs on symlinks and special
-> files at all. Initially I thought that real reason behind this
-> restriction is quota limitations but from last conversation it seemed
-> that real reason is that permission bits on symlink and special files
-> are special and different from regular files and directories, hence
-> this restriction is in place. (I tested with xfs user quota enabled and=
+>                 TP_fast_assign(
+> @@ -437,21 +418,19 @@ TRACE_EVENT(tcp_drop,
+>                                 __entry->ssthresh = tcp_current_ssthresh(sk);
+>                                 __entry->srtt = tp->srtt_us >> 3;
+>                                 __entry->sock_cookie = sock_gen_cookie(sk);
+> -                               __entry->reason = reason;
+> -                               __entry->reason_code = TCP_DROP_CODE(reason);
+> -                               __entry->reason_line = TCP_DROP_LINE(reason);
+> +                               __entry->field = field;
+> +
+> +                               __assign_str(reason, reason);
+>                 ),
+>
+>                 TP_printk("src=%pISpc dest=%pISpc mark=%#x data_len=%d snd_nxt=%#x snd_una=%#x \
+>                                 snd_cwnd=%u ssthresh=%u snd_wnd=%u srtt=%u rcv_wnd=%u \
+> -                               sock_cookie=%llx reason=%d reason_type=%s reason_line=%d",
+> +                               sock_cookie=%llx field=%d reason=%s",
+>                                 __entry->saddr, __entry->daddr, __entry->mark,
+>                                 __entry->data_len, __entry->snd_nxt, __entry->snd_una,
+>                                 __entry->snd_cwnd, __entry->ssthresh, __entry->snd_wnd,
+>                                 __entry->srtt, __entry->rcv_wnd, __entry->sock_cookie,
+> -                               __entry->reason,
+> -                               __print_symbolic(__entry->reason_code, TCP_DROP_REASON),
+> -                               __entry->reason_line)
+> +                               field, __get_str(reason))
+>  );
+>
+>  #endif /* _TRACE_TCP_H */
+> diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+> index b2bc49f1f0de..bd33fd466e1e 100644
+> --- a/net/ipv4/tcp_input.c
+> +++ b/net/ipv4/tcp_input.c
+> @@ -100,7 +100,6 @@ int sysctl_tcp_max_orphans __read_mostly = NR_FILE;
+>  #define FLAG_UPDATE_TS_RECENT  0x4000 /* tcp_replace_ts_recent() */
+>  #define FLAG_NO_CHALLENGE_ACK  0x8000 /* do not call tcp_send_challenge_ack()  */
+>  #define FLAG_ACK_MAYBE_DELAYED 0x10000 /* Likely a delayed ACK */
+> -#define FLAG_DSACK_TLP         0x20000 /* DSACK for tail loss probe */
+>
+>  #define FLAG_ACKED             (FLAG_DATA_ACKED|FLAG_SYN_ACKED)
+>  #define FLAG_NOT_DUP           (FLAG_DATA|FLAG_WIN_UPDATE|FLAG_ACKED)
+> @@ -455,12 +454,11 @@ static void tcp_sndbuf_expand(struct sock *sk)
+>   */
+>
+>  /* Slow part of check#2. */
+> -static int __tcp_grow_window(const struct sock *sk, const struct sk_buff *skb,
+> -                            unsigned int skbtruesize)
+> +static int __tcp_grow_window(const struct sock *sk, const struct sk_buff *skb)
 
-> quota restrictions kicked in on symlink).
->
-> This version of patch allows reading/writing user.* xattr on symlink an=
-d
-> special files if caller is owner or priviliged (has CAP_FOWNER) w.r.t i=
-node.
+???
 
-This part of your project makes perfect sense. There's no good
-security reason that you shouldn't set user.* xattrs on symlinks
-and/or special files.
+>  {
+>         struct tcp_sock *tp = tcp_sk(sk);
+>         /* Optimize this! */
+> -       int truesize = tcp_win_from_space(sk, skbtruesize) >> 1;
+> +       int truesize = tcp_win_from_space(sk, skb->truesize) >> 1;
 
-However, your virtiofs use case is unreasonable.
+???
 
-> Who wants to set user.* xattr on symlink/special files
-> -----------------------------------------------------
-> I have primarily two users at this point of time.
+>         int window = tcp_win_from_space(sk, sock_net(sk)->ipv4.sysctl_tcp_rmem[2]) >> 1;
 >
-> - virtiofs daemon.
+>         while (tp->rcv_ssthresh <= window) {
+> @@ -473,27 +471,7 @@ static int __tcp_grow_window(const struct sock *sk, const struct sk_buff *skb,
+>         return 0;
+>  }
 >
-> - fuse-overlay. Giuseppe, seems to set user.* xattr attrs on unprivilig=
-ed
->   fuse-overlay as well and he ran into similar issue. So fuse-overlay
->   should benefit from this change as well.
->
-> Why virtiofsd wants to set user.* xattr on symlink/special files
-> ----------------------------------------------------------------
-> In virtiofs, actual file server is virtiosd daemon running on host.
-> There we have a mode where xattrs can be remapped to something else.
-> For example security.selinux can be remapped to
-> user.virtiofsd.securit.selinux on the host.
+> -/* Even if skb appears to have a bad len/truesize ratio, TCP coalescing
+> - * can play nice with us, as sk_buff and skb->head might be either
+> - * freed or shared with up to MAX_SKB_FRAGS segments.
+> - * Only give a boost to drivers using page frag(s) to hold the frame(s),
+> - * and if no payload was pulled in skb->head before reaching us.
+> - */
+> -static u32 truesize_adjust(bool adjust, const struct sk_buff *skb)
+> -{
+> -       u32 truesize = skb->truesize;
+> -
+> -       if (adjust && !skb_headlen(skb)) {
+> -               truesize -= SKB_TRUESIZE(skb_end_offset(skb));
+> -               /* paranoid check, some drivers might be buggy */
+> -               if (unlikely((int)truesize < (int)skb->len))
+> -                       truesize = skb->truesize;
+> -       }
+> -       return truesize;
+> -}
 
-As I have stated before, this introduces a breach in security.
-It allows an unprivileged process on the host to manipulate the
-security state of the guest. This is horribly wrong. It is not
-sufficient to claim that the breach requires misconfiguration
-to exploit. Don't do this.
+It seems clear you are doing wrong things.
 
-> This remapping is useful when SELinux is enabled in guest and virtiofs
-> as being used as rootfs. Guest and host SELinux policy might not match
-> and host policy might deny security.selinux xattr setting by guest
-> onto host. Or host might have SELinux disabled and in that case to
-> be able to set security.selinux xattr, virtiofsd will need to have
-> CAP_SYS_ADMIN (which we are trying to avoid).
-
-Adding this mapping to virtiofs provides the breach for any
-LSM using xattrs.
-
->  Being able to remap
-> guest security.selinux (or other xattrs) on host to something else
-> is also better from security point of view.
->
-> But when we try this, we noticed that SELinux relabeling in guest
-> is failing on some symlinks. When I debugged a little more, I
-> came to know that "user.*" xattrs are not allowed on symlinks
-> or special files.
->
-> So if we allow owner (or CAP_FOWNER) to set user.* xattr, it will
-> allow virtiofs to arbitrarily remap guests's xattrs to something
-> else on host and that solves this SELinux issue nicely and provides
-> two SELinux policies (host and guest) to co-exist nicely without
-> interfering with each other.
-
-virtiofs could use security.* or system.* xattrs instead of user.*
-xattrs. Don't use user.* xattrs.
-
->
-> Thanks
-> Vivek
->
-> Vivek Goyal (1):
->   xattr: Allow user.* xattr on symlink and special files
->
->  fs/xattr.c | 23 ++++++++++++++++++-----
->  1 file changed, 18 insertions(+), 5 deletions(-)
->
-
+Have you silently reverted a prior patch ?
