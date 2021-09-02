@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A614A3FF442
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDFD3FF43C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347420AbhIBTfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 15:35:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34668 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347356AbhIBTfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 15:35:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 231B260F42;
-        Thu,  2 Sep 2021 19:34:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630611292;
-        bh=lkU0Lg08Q92PGe4kuQ+5cTptrzCavgcMALCXl/UW/aw=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=pHOYUBoPGg/0YvR6uixHYK6V+0HOgvvWB6/QWB4NXXBIkPvQRiRstlkBnZ37YUt8O
-         aW+qzwreY0wQXQGsIpHrpmL13pJDUflsG1vpgSG4Tu7XDBSmkIsY/G5ITmXU1GEBFo
-         4UmEBWepaeTqsjVpiDaAWwc4bH2oOduaFLbnAvhBGmnNr4lTWJ4HORaoF+xItUQrwO
-         m3YrNmP1UZ/WwRYTa6mu6TUYL8v7Lzgh81EYfDYzknYOpqdOz8usZ9ZCuPkff/kl4I
-         sr6sWIBqW9/77+RQFGSBw9DDDYcsx6ViHJFQ4sS24j4ET9V2ezV1u/fRWJ7S5QdbeT
-         1ho+CFS5gYaiw==
-Content-Type: text/plain; charset="utf-8"
+        id S1347403AbhIBTfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 15:35:38 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51646 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347257AbhIBTfh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 15:35:37 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 77FCB22465;
+        Thu,  2 Sep 2021 19:34:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630611277; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9NIKFGy2Vshrszzk+gQOVieDLd7SGIo3rGkRcbRxXnQ=;
+        b=vTQiy7g6q2j7ML9f3gFk7RHqEx3RUxKzRfepetU3gLrb9H0kCLnZT6C9AYh+fepc+RdJHP
+        OUm0dvdIa/GY+Vl9EJJVMb2MnOg/nSgaefdEGnofUozBZPKa+T/ReydOb9nqWF60xAzKrk
+        eiqikCRA2+KAEtJIzjh6zxVQ6JAuWt0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630611277;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9NIKFGy2Vshrszzk+gQOVieDLd7SGIo3rGkRcbRxXnQ=;
+        b=7vyoYxyQ+6R6Hu7FQbvNslgoZipn4WE6ToVaD1sw85WXh2PHaTOuf1ftWUXPxfDmTmp26r
+        VzuAleKPU/03KxCA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 63CEB1369B;
+        Thu,  2 Sep 2021 19:34:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 1NwNGE0nMWH7bQAAGKfGzw
+        (envelope-from <bp@suse.de>); Thu, 02 Sep 2021 19:34:37 +0000
+Date:   Thu, 2 Sep 2021 21:35:12 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        x86-ml <x86@kernel.org>
+Subject: Re: vmlinux.o: warning: objtool: mce_wrmsrl.constprop.0()+0x6b: call
+ to __sanitizer_cov_trace_pc() leaves .noinstr.text section
+Message-ID: <YTEncGj84Sj/IdDb@zn.tnic>
+References: <202108221334.TiXxFSTZ-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YTDMHq3rLUrldNfB@Marijn-Arch-Book.localdomain>
-References: <20210830182445.167527-1-marijn.suijten@somainline.org> <20210830182445.167527-3-marijn.suijten@somainline.org> <163047455623.42057.15513441659841056105@swboyd.mtv.corp.google.com> <YS9Aa0tADAf5KMSl@Marijn-Arch-PC.localdomain> <163055439497.405991.16122720273000010218@swboyd.mtv.corp.google.com> <YTDMHq3rLUrldNfB@Marijn-Arch-Book.localdomain>
-Subject: Re: [PATCH v2 2/2] clk: qcom: gcc-sdm660: Remove transient global "xo" clock
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
-To:     Marijn Suijten <marijn.suijten@somainline.org>
-Date:   Thu, 02 Sep 2021 12:34:50 -0700
-Message-ID: <163061129079.405991.11763080753220412244@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <202108221334.TiXxFSTZ-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Marijn Suijten (2021-09-02 06:05:34)
-> On 2021-09-01 20:46:34, Stephen Boyd wrote:
-> > Quoting Marijn Suijten (2021-09-01 01:57:15)
-> > > On 2021-08-31 22:35:56, Stephen Boyd wrote:
-> > > > Quoting Marijn Suijten (2021-08-30 11:24:45)
-> > > > > The DSI PHY/PLL was relying on a global "xo" clock to be found, b=
-ut the
-> > > > > real clock is named "xo_board" in the DT.  The standard nowadays =
-is to
-> > > > > never use global clock names anymore but require the firmware (DT=
-) to
-> > > > > provide every clock binding explicitly with .fw_name.  The DSI PL=
-Ls have
-> > > > > since been converted to this mechanism (specifically 14nm for SDM=
-660)
-> > > > > and this transient clock can now be removed.
-> > > > >=20
-> > > > > This issue was originally discovered in:
-> > > > > https://lore.kernel.org/linux-arm-msm/386db1a6-a1cd-3c7d-a88e-dc8=
-3f8a1be96@somainline.org/
-> > > > > and prevented the removal of "xo" at that time.
-> > > > >=20
-> > > > > Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> > > > > ---
-> > > >=20
-> > > > Presumably this wants to go with the first one.
-> > >=20
-> > > What are you referring to with "the first one"?  This patch can only =
-go
-> > > in after patch 1/2 of this series, unless you are suggesting to squash
-> > > it with Bjorns cleanup and making sure that lands after the fix in the
-> > > DSI?
-> >=20
-> > The first patch in this series.
->=20
-> Are you suggesting to squash this patch into the first patch in this
-> series?  Note that the first patch touches drm/msm/dsi, the second
-> (this) patch touches clk/qcom.
+On Sun, Aug 22, 2021 at 01:39:40PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   9ff50bf2f2ff5fab01cac26d8eed21a89308e6ef
+> commit: e100777016fdf6ec3a9d7c1773b15a2b5eca6c55 x86/mce: Annotate mce_rd/wrmsrl() with noinstr
+> date:   11 months ago
+> config: x86_64-buildonly-randconfig-r003-20210822 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e100777016fdf6ec3a9d7c1773b15a2b5eca6c55
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout e100777016fdf6ec3a9d7c1773b15a2b5eca6c55
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> vmlinux.o: warning: objtool: mce_wrmsrl.constprop.0()+0x6b: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
+>    vmlinux.o: warning: objtool: do_machine_check()+0xe1a: call to mce_panic.isra.0() leaves .noinstr.text section
+>    vmlinux.o: warning: objtool: exc_machine_check()+0x1af: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
+>    vmlinux.o: warning: objtool: lock_is_held_type()+0x3c: call to check_flags() leaves .noinstr.text section
+>    vmlinux.o: warning: objtool: __context_tracking_enter()+0x9d: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
+>    vmlinux.o: warning: objtool: __context_tracking_exit()+0x42: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
 
-No.
+The sanitizer stuff is being NOPed out with newer compilers, says
+peterz. And I can confirm after testing with your .config and with
+gcc-11.
+
+The mce_panic() thing I'm working on.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
