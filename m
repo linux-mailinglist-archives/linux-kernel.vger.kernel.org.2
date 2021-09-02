@@ -2,60 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D323FEE70
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FA33FEE86
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344953AbhIBNL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:11:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244365AbhIBNL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:11:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6187060FDC;
-        Thu,  2 Sep 2021 13:10:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630588258;
-        bh=adA+jwZq7aqHTm2b2+AsjCLQWY9GYqG8UkiSZIh/6mE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jcaYOT75OBj7MXM0nCLn8W+X7XSJ7kMWhNNQoSUO4/SV4bfl/gteCdC8257rL4tG0
-         B+v78Ij+8frK/aXYQYs5HSSRYCUHRr+WzwkJBkbW2qEF51MXkuNcghwuihcSCUirPr
-         stRdvzMvSzkTKC30nCxck4ewa8oxYhQMP5DmWucj8esbK2I/fTc4a5ts/rXb/pu7x+
-         mJvsG5MO0kYgxNOfzzDAlFZ5gdWzCKGUzIHR84CHkM2u3lVgHGlGeCHD3RTNBIKITw
-         VTGNBO2qdlfAosnOYK9GHNt02BObrk1agz1a9FnX1HbReGvC/hGWkChClgSvO/j+c2
-         YGDBmjc/mgRgg==
-Date:   Thu, 2 Sep 2021 15:10:53 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, John Stultz <john.stultz@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/4] misc: hisi_hikey_usb: change the DT schema
-Message-ID: <20210902151053.7ddfbe3a@coco.lan>
-In-Reply-To: <YTC4LPDem9uKXyMd@kroah.com>
-References: <cover.1630581434.git.mchehab+huawei@kernel.org>
-        <d990e75f28c443c0c5a5fc857b87acc4be3f9464.1630581434.git.mchehab+huawei@kernel.org>
-        <YTC4LPDem9uKXyMd@kroah.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S1345018AbhIBNQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:16:38 -0400
+Received: from mail-vk1-f171.google.com ([209.85.221.171]:45908 "EHLO
+        mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244365AbhIBNQe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 09:16:34 -0400
+Received: by mail-vk1-f171.google.com with SMTP id h13so597331vkc.12;
+        Thu, 02 Sep 2021 06:15:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=97U7yjyC9u7K560fHPV0AzvZLQ1JtD7v4r1SnsrSUGw=;
+        b=G1yN86/PcmtMQIxqQ1SH2PVic7yweUn0FPrNVmeWWsAciPys7w0TUzFviD/Ri7wcqV
+         Z+TbkBnbDtQy6aqtYGYvKtrkJkLSkKJd9AdHOfllZUPI2IAv7OVUv0BLyvn/s4gkQtVp
+         8IrXMccbmMKDwv/O6IbbbgPLcMNA4heUM6gEAXVvTpTzlm9B+vWrhE5cl9LcfCDZ28fW
+         VegICkSHE0W69va4CDOX8ko9h6y6bFfi02rxrAOw1TddEKOaL8tXAElAkhERycWa5/jH
+         jv16G1xjuX2+oTdh/u1u6LKq//YFBYJT9C7VVoWYW6ouMXUezC+voNgxHJuG5VigGgu7
+         cmQQ==
+X-Gm-Message-State: AOAM532Ehp08nCAqKsx9on35GKU20SviDeFVeGuopBBSzrNoRgaCRzXD
+        JJj8UwalYe0L5QzUwQGkL258s3VO4cAj0ke97+Y=
+X-Google-Smtp-Source: ABdhPJyQfNHd8eekTjjRF+Djs44a/sSv6U+YNBayDddfjAvJLpLh7J03k+WxXm3fVzYEOjiv/xorOOUMd/FOKfZUqC4=
+X-Received: by 2002:a1f:bd0a:: with SMTP id n10mr1537493vkf.5.1630588535725;
+ Thu, 02 Sep 2021 06:15:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210902060213.1702544-1-mudongliangabcd@gmail.com>
+In-Reply-To: <20210902060213.1702544-1-mudongliangabcd@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 2 Sep 2021 15:15:24 +0200
+Message-ID: <CAMuHMdVPUMGZ7Sq2rBgr+US0H3ZF4WVkfPPnKQD1cMg5Wd0+-w@mail.gmail.com>
+Subject: Re: [PATCH 4.19] fbmem: add margin check to fb_check_caps()
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Sasha Levin <sashal@kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 2 Sep 2021 13:40:28 +0200
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+Hi Dongliang,
 
-> On Thu, Sep 02, 2021 at 01:28:35PM +0200, Mauro Carvalho Chehab wrote:
-> > As there's no upstream DT bindings for this driver, let's
-> > update its DT schema, while it is not too late.  
-> 
-> So this is for 5.15-final?
+On Thu, Sep 2, 2021 at 8:04 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> [ Upstream commit a49145acfb975d921464b84fe00279f99827d816 ]
 
-It can either be for 5.15 or 5.16, as there aren't any compatible
-under arch/ which uses the DT schema there. All patches adding
-such compatible are on this series. So, whatever version this
-is applied should be OK.
+Oops, looks like I missed when that one was submitted for review...
 
-Thanks,
-Mauro
+> A fb_ioctl() FBIOPUT_VSCREENINFO call with invalid xres setting
+> or yres setting in struct fb_var_screeninfo will result in a
+> KASAN: vmalloc-out-of-bounds failure in bitfill_aligned() as
+> the margins are being cleared. The margins are cleared in
+> chunks and if the xres setting or yres setting is a value of
+> zero upto the chunk size, the failure will occur.
+>
+> Add a margin check to validate xres and yres settings.
+
+Shouldn't (the caller of) bitfill_aligned() be fixed instead?
+Can this be triggered by e.g. using the mini_4x6 font?
+
+> Note that, this patch needs special handling to backport it to linux
+> kernel 4.19, 4.14, 4.9, 4.4.
+>
+> Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+> Reported-by: syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com
+> Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Cc: Dhaval Giani <dhaval.giani@oracle.com>
+> Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> Link: https://patchwork.freedesktop.org/patch/msgid/1594149963-13801-1-git-send-email-george.kennedy@oracle.com
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/video/fbdev/core/fbmem.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+> index 84845275dbef..de04c097d67c 100644
+> --- a/drivers/video/fbdev/core/fbmem.c
+> +++ b/drivers/video/fbdev/core/fbmem.c
+> @@ -991,6 +991,10 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
+>                         goto done;
+>                 }
+>
+> +               /* bitfill_aligned() assumes that it's at least 8x8 */
+> +               if (var->xres < 8 || var->yres < 8)
+> +                       return -EINVAL;
+
+Are you sure there don't exist such small displays (e.g. OLED)?
+
+> +
+>                 ret = info->fbops->fb_check_var(var, info);
+>
+>                 if (ret)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
