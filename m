@@ -2,201 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 562D13FECBA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4F03FECC4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244308AbhIBLNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 07:13:30 -0400
-Received: from relay.sw.ru ([185.231.240.75]:39524 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230256AbhIBLN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 07:13:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
-        :From; bh=0wuwi6ZrUkLZon/1tg0YWMGItyLI6Mu6MrFFHtSexJg=; b=CfWrwTqOtBp3kW6xSLW
-        ZbtruvdcIXZEZaSqsGUBThUducWiw7pcTbSzWafgKt/LPT10hZFoDHhj7tz6SVl1qiQffdyHcOOE7
-        CTrLUx6HM18vryZbnzHUDzXP7qcYFH1BD1lm9lCJrF8rXZXN8whnhCs854pJgYg4GOsV6OoBlZI=;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mLkdp-000ZoL-8w; Thu, 02 Sep 2021 14:12:21 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH net-next v5] skb_expand_head() adjust skb->truesize
- incorrectly
-To:     Christoph Paasch <christoph.paasch@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@openvz.org, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Julian Wiedmann <jwi@linux.ibm.com>
-References: <27f87dd8-f6e4-b2b0-2b3a-9378fddf147f@virtuozzo.com>
-Message-ID: <053307fc-cc3d-68f5-1994-fe447428b1f2@virtuozzo.com>
-Date:   Thu, 2 Sep 2021 14:12:20 +0300
+        id S244867AbhIBLQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 07:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhIBLQw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 07:16:52 -0400
+Received: from lb2-smtp-cloud9.xs4all.net (lb2-smtp-cloud9.xs4all.net [IPv6:2001:888:0:108::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5BA4C061575;
+        Thu,  2 Sep 2021 04:15:52 -0700 (PDT)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id LkhCmj5EklQKhLkhDmKRvQ; Thu, 02 Sep 2021 13:15:51 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1630581351; bh=M9kFlv397udHSVcT2A9pjvQRtbjYdLswfiMvJlJ6c9I=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=s8N+W4kRsCubAN5Z55S6Xf/bnlI/fYZ+XbnMZnLaa+cDsLPv5YjgT3pilik16tJkY
+         gqnbqrVPkjy7bvjB+jva4LArxQiwTPQDjU0VA/q7T4U4ap/WEj0mw9RVQRRZTi/HcM
+         QTF50SjgLFDmsuAQ7+2WX7h8CdacKi82KJjQtF5YyS/L28ZZgJFVIwKSlApWARhXGj
+         vtjfeoP0NYjMaVR4wFejRqlVQu1CKqanzRQcGY/MEozJYfRswPLFHrkQ9CCnm0fnVM
+         7qvMWDbURGQ/V8O0TI8W2mWAr7+L4cwExoLmkRtNarrzc2m6ckIr03XVDz0Rz/VBuI
+         vlLRp5ggyoyNw==
+Subject: Re: [PATCH] media: usb: fix memory leak in stk_camera_probe
+To:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-media@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Pavel Skripkin <paskripkin@gmail.com>
+References: <20210714032340.504836-1-mudongliangabcd@gmail.com>
+ <CAD-N9QXWHeNvR06wyg3Pym8xUb27TsuFKKKG=tZ0-x5ZGCr-Hw@mail.gmail.com>
+ <CAD-N9QWj8w-xVAni2cGHyEei78iKEX_V0a00r0x3We7tfFGZjw@mail.gmail.com>
+ <YTCp6d1umr7AXRZW@kroah.com> <20210902125416.1ad73fad@coco.lan>
+ <CAD-N9QVZQo+YPjNwAUqg-kQ_fEwicLR=1am1E99h8oHi0aXocA@mail.gmail.com>
+ <CAD-N9QXPJz60jKfHg1Yh6tnzJRBFAwkmV+LUoSY+f7cZ_5kYww@mail.gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <2c3e496a-fdc7-020b-4234-58441e766f7d@xs4all.nl>
+Date:   Thu, 2 Sep 2021 13:15:50 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <27f87dd8-f6e4-b2b0-2b3a-9378fddf147f@virtuozzo.com>
+In-Reply-To: <CAD-N9QXPJz60jKfHg1Yh6tnzJRBFAwkmV+LUoSY+f7cZ_5kYww@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfDt5fKd03AmAOzuheOBootkpYTxN/OSMx534Yj6GMFJ4QhzWv5hZB/KrSoIrGCcvUVp9V+2JP2R8WhcUuK4tZlSISh4BZa5sLNDB9MkWmjc2meyEmoB0
+ sG8Li+l6wsJnEDTtd1l5fT6rB819VfugiQBIXEGQXW99A6BGJDgZgNk5O/j9awKYIQy+hqxHzun8CZdPyffdL50xSg+h93HQ7kTzCrIwTpRVWjylpEhIKQ/1
+ GD7kNRwKIsz57Qn1nJa0fwyzc3XnAzahGDQdRuf/DJQjRBNlof0K6cvqfYZdGu2vsvzvMHYIlLLDOHj4kClqYIaSdrquucurE4BH0nzdvqptIYMUwdsQSiTW
+ 53SkhImdnzKxvuNM/lb6E0su8fIAVv+PZabglqbbvHYkKD7yQQawbtYIY0sAOxQIlbm97kqi9LJt9BvpWWnAb+jAByEFhPz+KNoqkn5YDjHYQcrHqom6caRk
+ 8KL8N5m2CS0snFWXykdiIvo/J34vqlIdzJOLuA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christoph Paasch reports [1] about incorrect skb->truesize
-after skb_expand_head() call in ip6_xmit.
-This may happen because of two reasons:
-- skb_set_owner_w() for newly cloned skb is called too early,
-before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
-- pskb_expand_head() does not adjust truesize in (skb->sk) case.
-In this case sk->sk_wmem_alloc should be adjusted too.
+On 02/09/2021 13:10, Dongliang Mu wrote:
+> On Thu, Sep 2, 2021 at 6:59 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>>
+>> On Thu, Sep 2, 2021 at 6:54 PM Mauro Carvalho Chehab <mchehab@kernel.org> wrote:
+>>>
+>>> Em Thu, 2 Sep 2021 12:39:37 +0200
+>>> Greg KH <gregkh@linuxfoundation.org> escreveu:
+>>>
+>>>> On Thu, Sep 02, 2021 at 06:23:36PM +0800, Dongliang Mu wrote:
+>>>>> On Fri, Jul 23, 2021 at 6:11 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>>>>>>
+>>>>>> On Wed, Jul 14, 2021 at 11:23 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>>>>>>>
+>>>>>>> stk_camera_probe mistakenly execute usb_get_intf and increase the
+>>>>>>> refcount of interface->dev.
+>>>>>>>
+>>>>>>> Fix this by removing the execution of usb_get_intf.
+>>>>>>
+>>>>>> Any idea about this patch?
+>>>>>
+>>>>> +cc Dan Carpenter, gregkh
+>>>>>
+>>>>> There is no reply in this thread in one month. Can someone give some
+>>>>> feedback on this patch?
+>>>>
+>>>> This is the media developers domain, not much I can do here.
+>>>
+>>> There is a high volume of patches for the media subsystem. Anyway,
+>>> as your patch is at our patchwork instance:
+>>>
+>>>         https://patchwork.linuxtv.org/project/linux-media/patch/20210714032340.504836-1-mudongliangabcd@gmail.com/
+>>>
+>>> It should be properly tracked, and likely handled after the end of
+>>> the merge window.
+> 
+> Hi Mauro,
+> 
+> I found there is another fix [1] for the same memory leak from Pavel
+> Skripkin (already cc-ed in this thread).
+> 
+> [1] https://www.spinics.net/lists/stable/msg479628.html
 
-[1] https://lkml.org/lkml/2021/8/20/1082
+Ah, that's why I marked it as Obsoleted :-)
 
-Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
-Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
-v5: fixed else condition, thanks to Eric
-    reworked update of expanded skb,
-    added corresponding comments
-v4: decided to use is_skb_wmem() after pskb_expand_head() call
-    fixed 'return (EXPRESSION);' in os_skb_wmem according to Eric Dumazet
-v3: removed __pskb_expand_head(),
-    added is_skb_wmem() helper for skb with wmem-compatible destructors
-    there are 2 ways to use it:
-     - before pskb_expand_head(), to create skb clones
-     - after successfull pskb_expand_head() to change owner on extended skb.
-v2: based on patch version from Eric Dumazet,
-    added __pskb_expand_head() function, which can be forced
-    to adjust skb->truesize and sk->sk_wmem_alloc.
----
- include/net/sock.h |  1 +
- net/core/skbuff.c  | 63 ++++++++++++++++++++++++++++++++++++++++++++++--------
- net/core/sock.c    |  8 +++++++
- 3 files changed, 63 insertions(+), 9 deletions(-)
+Regards,
 
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 95b2577..173d58c 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -1695,6 +1695,7 @@ struct sk_buff *sock_wmalloc(struct sock *sk, unsigned long size, int force,
- 			     gfp_t priority);
- void __sock_wfree(struct sk_buff *skb);
- void sock_wfree(struct sk_buff *skb);
-+bool is_skb_wmem(const struct sk_buff *skb);
- struct sk_buff *sock_omalloc(struct sock *sk, unsigned long size,
- 			     gfp_t priority);
- void skb_orphan_partial(struct sk_buff *skb);
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index f931176..29bb92e7 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -1804,28 +1804,73 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
- struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
- {
- 	int delta = headroom - skb_headroom(skb);
-+	int osize = skb_end_offset(skb);
-+	struct sk_buff *oskb = NULL;
-+	struct sock *sk = skb->sk;
- 
- 	if (WARN_ONCE(delta <= 0,
- 		      "%s is expecting an increase in the headroom", __func__))
- 		return skb;
- 
--	/* pskb_expand_head() might crash, if skb is shared */
-+	delta = SKB_DATA_ALIGN(delta);
-+	/* pskb_expand_head() might crash, if skb is shared.
-+	 * Also we should clone skb if its destructor does
-+	 * not adjust skb->truesize and sk->sk_wmem_alloc
-+	 */
- 	if (skb_shared(skb)) {
- 		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
- 
--		if (likely(nskb)) {
--			if (skb->sk)
--				skb_set_owner_w(nskb, skb->sk);
--			consume_skb(skb);
--		} else {
-+		if (unlikely(!nskb)) {
- 			kfree_skb(skb);
-+			return NULL;
- 		}
-+		oskb = skb;
- 		skb = nskb;
- 	}
--	if (skb &&
--	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
-+	if (pskb_expand_head(skb, delta, 0, GFP_ATOMIC)) {
- 		kfree_skb(skb);
--		skb = NULL;
-+		kfree_skb(oskb);
-+		return NULL;
-+	}
-+	if (oskb) {
-+		if (sk)
-+			skb_set_owner_w(skb, sk);
-+		consume_skb(oskb);
-+	} else if (sk && skb->destructor != sock_edemux) {
-+		bool ref, set_owner;
-+
-+		ref = false; set_owner = false;
-+		delta = osize - skb_end_offset(skb);
-+		/* skb_set_owner_w() calls current skb destructor.
-+		 * It can decrease sk_wmem_alloc to 0 and release sk,
-+		 * To prevnt it we increase sk_wmem_alloc earlier.
-+		 * Another kind of destructors can release last sk_refcnt,
-+		 * so it will be impossible to call sock_hold for !fullsock
-+		 * Take extra sk_refcnt to prevent it.
-+		 * Otherwise just increase truesize of expanded skb.
-+		 */
-+		refcount_add(delta, &sk->sk_wmem_alloc);
-+		if (!is_skb_wmem(skb)) {
-+			set_owner = true;
-+			if (!sk_fullsock(sk) && IS_ENABLED(CONFIG_INET)) {
-+				/* skb_set_owner_w can set sock_edemux */
-+				ref = refcount_inc_not_zero(&sk->sk_refcnt);
-+				if (!ref) {
-+					set_owner = false;
-+					WARN_ON(refcount_sub_and_test(delta, &sk->sk_wmem_alloc));
-+				}
-+			}
-+		}
-+		if (set_owner)
-+			skb_set_owner_w(skb, sk);
-+#ifdef CONFIG_INET
-+		if (skb->destructor == sock_edemux) {
-+			WARN_ON(refcount_sub_and_test(delta, &sk->sk_wmem_alloc));
-+			if (ref)
-+				WARN_ON(refcount_dec_and_test(&sk->sk_refcnt));
-+		}
-+#endif
-+		skb->truesize += delta;
- 	}
- 	return skb;
- }
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 950f1e7..6cbda43 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -2227,6 +2227,14 @@ void skb_set_owner_w(struct sk_buff *skb, struct sock *sk)
- }
- EXPORT_SYMBOL(skb_set_owner_w);
- 
-+bool is_skb_wmem(const struct sk_buff *skb)
-+{
-+	return skb->destructor == sock_wfree ||
-+	       skb->destructor == __sock_wfree ||
-+	       (IS_ENABLED(CONFIG_INET) && skb->destructor == tcp_wfree);
-+}
-+EXPORT_SYMBOL(is_skb_wmem);
-+
- static bool can_skb_orphan_partial(const struct sk_buff *skb)
- {
- #ifdef CONFIG_TLS_DEVICE
--- 
-1.8.3.1
+	Hans
+
+> 
+>>>
+>>>>>>> Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
+>>>>>>> Fixes: 0aa77f6c2954 ("[media] move the remaining USB drivers to drivers/media/usb")
+>>>>>>> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+>>>
+>>> If you're the author of the patch, it doesn't make much sense to
+>>> add a "Reported-by:" tag there. We only use it in order to give
+>>> someone's else credit to report an issue.
+>>
+>> I see. Someone told me this rule in another thread. I will update this
+>> in the next version.
+>>
+>>>
+>>> Thanks,
+>>> Mauro
 
