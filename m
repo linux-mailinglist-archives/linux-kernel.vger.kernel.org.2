@@ -2,159 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB963FEF06
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CEF3FEF0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345278AbhIBN6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:58:00 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:49270 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345262AbhIBN5y (ORCPT
+        id S235635AbhIBN7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:59:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234331AbhIBN7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:57:54 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B39C420367;
-        Thu,  2 Sep 2021 13:56:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630591015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FBJbFYS9GOV6EVOWjJDcmNKkVbrLdPLLQpcRZp1U3Lo=;
-        b=F13lE2uqBNL7cIzpI01TniOVlc4xNW5ZO2BZI2dJ6afYyrB454Zmhn+mH9+SatFH9xVzpQ
-        ZfKGEBTckXRsgH8XBybfpxxHNQcA0mnznOCjT3CPuats9GRwVCYadzJyd8u+Vlmli+7bU2
-        X8hLoWJ+sLTVb8upO6g24YHeDKIxivA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630591015;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FBJbFYS9GOV6EVOWjJDcmNKkVbrLdPLLQpcRZp1U3Lo=;
-        b=i9b7kb31nHLHFzgkDvG366ucXQh4DnidX/PceibcSoTwZ1jwf/pQ9lpN0AwFldF98FLLzx
-        5nxmRNdWDsvlmKCQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7BE4C13732;
-        Thu,  2 Sep 2021 13:56:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id S3cxHSfYMGH7HwAAGKfGzw
-        (envelope-from <vbabka@suse.cz>); Thu, 02 Sep 2021 13:56:55 +0000
-Message-ID: <38d2a358-4146-bfc9-2a4f-68ce02f75c94@suse.cz>
-Date:   Thu, 2 Sep 2021 15:56:55 +0200
+        Thu, 2 Sep 2021 09:59:42 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20A49C061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 06:58:44 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id u19so3043233edb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 06:58:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NXEJdGninkBdVtpXQoG13dqQs8Qs+Jfbydk0oWk896M=;
+        b=Nls/IV4MSQuu3HJFeiLRnplV4yq96ldDKDyz8BGmf/lYykqGly+V3DRC3aYr81i/4N
+         LA8f7+nfAe3DgnlL6YnyXMLM0X2nWRa1jTXj9S7k4HaCGpzBmjzlufRQp7rx14D44QEJ
+         CbD1NjZyH1P70Ts8g1Ss/+n6oGegK5PPgrK3azF9ItKkUSY00LwjPdkrDDHn7JW4vVw6
+         8TfUn0jeZTy1CgPPB2E02YpgD3JfZ+nJaPnxf+C/N/cEoPasKqabw2YB/bch4ytIWFkA
+         I29vWhap8RtKiU/PsrV5ikjOjgrRlWrljWQ0l1YH6JZyv+IPy1xEeZvxiseu+Gm2NNxy
+         gFow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NXEJdGninkBdVtpXQoG13dqQs8Qs+Jfbydk0oWk896M=;
+        b=ErUCgJHWAiVhHQe5CZEXuQy5e4FAo0xnLw300UKxPzoypx7/i0JmE7a/mfhLb6AUrA
+         RKSgNzMZNW+BIDlD6L9oh4oiZriyy6nbPe/QAyHX9X0AFawTZlDU64W4A/oh5r/28v1I
+         A7w7LHqfwAavG/+/BZwJA1jGiKqD/K6/i/cJsz9meShK4vrWuV95P5wp42KVLTFhZV76
+         wKWxmGxgZrhjJDAaTv98XIEhj4QmFPBV89QLedFl5YFo4Ybq2ma/rhwUjXPcj+yozBLW
+         SYmr1aIjf1DofRHGWJcqTkuW7Bwr3/H/i28ziny9iQ6Q6bv3Eg5W2A20FcBfQzTH+ZTW
+         e6xQ==
+X-Gm-Message-State: AOAM533txeFumzkv5yYD1VTmR7LbAgVbiBIYAwHlcGzHZzUDjJG1XC5b
+        heOyo/mr0EcmHO5nh3dHPh770RHQgGuxlJBHjVmv
+X-Google-Smtp-Source: ABdhPJw6QC4FMVNA86SoALbyyyEG6UMKskge2SDZ8noyZveyOk2NS6c2yrsdp8J/q7V+M4RSUyJzH5IVh/rven6EEo0=
+X-Received: by 2002:aa7:d613:: with SMTP id c19mr3671822edr.196.1630591122604;
+ Thu, 02 Sep 2021 06:58:42 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Content-Language: en-US
-To:     Mike Rapoport <rppt@kernel.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "kernel-hardening@lists.openwall.com" 
-        <kernel-hardening@lists.openwall.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "shakeelb@google.com" <shakeelb@google.com>
-References: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
- <20210830235927.6443-12-rick.p.edgecombe@intel.com>
- <YS3uhdT88XFvP9n3@kernel.org>
- <f77f3312a1b17b8f8de2ccf0f40f9f19f4a9f151.camel@intel.com>
- <YS8qRHrGzevns32P@kernel.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [RFC PATCH v2 11/19] mm/sparsemem: Use alloc_table() for table
- allocations
-In-Reply-To: <YS8qRHrGzevns32P@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20210902005238.2413-1-hdanton@sina.com> <0000000000002d262305caf9fdde@google.com>
+ <20210902041238.2559-1-hdanton@sina.com>
+In-Reply-To: <20210902041238.2559-1-hdanton@sina.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 2 Sep 2021 09:58:33 -0400
+Message-ID: <CAHC9VhQBX8SsKBDHJGSyNC_Ewn3JgWK1_VixK48V8FRi7Tf=pA@mail.gmail.com>
+Subject: Re: [syzbot] WARNING: refcount bug in qrtr_node_lookup
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     syzbot <syzbot+c613e88b3093ebf3686e@syzkaller.appspotmail.com>,
+        bjorn.andersson@linaro.org, dan.carpenter@oracle.com,
+        eric.dumazet@gmail.com, linux-kernel@vger.kernel.org,
+        manivannan.sadhasivam@linaro.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/21 09:22, Mike Rapoport wrote:
-> On Tue, Aug 31, 2021 at 06:25:23PM +0000, Edgecombe, Rick P wrote:
->> On Tue, 2021-08-31 at 11:55 +0300, Mike Rapoport wrote:
->> > On Mon, Aug 30, 2021 at 04:59:19PM -0700, Rick Edgecombe wrote:
->> <trim> 
->> > > -static void * __meminit vmemmap_alloc_block_zero(unsigned long
->> > > size, int node)
->> > > +static void * __meminit vmemmap_alloc_table(int node)
->> > >  {
->> > > -	void *p = vmemmap_alloc_block(size, node);
->> > > +	void *p;
->> > > +	if (slab_is_available()) {
->> > > +		struct page *page = alloc_table_node(GFP_KERNEL |
->> > > __GFP_ZERO, node);
->> > 
->> > This change removes __GFP_RETRY_MAYFAIL|__GFP_NOWARN from the
->> > original gfp
->> > vmemmap_alloc_block() used.
->> Oh, yea good point. Hmm, I guess grouped pages could be aware of that
->> flag too. Would be a small addition, but it starts to grow
->> unfortunately.
->> 
->> > Not sure __GFP_RETRY_MAYFAIL is really needed in
->> > vmemmap_alloc_block_zero()
->> > at the first place, though.
->> Looks like due to a real issue:
->> 055e4fd96e95b0eee0d92fd54a26be7f0d3bcad0
+On Thu, Sep 2, 2021 at 12:13 AM Hillf Danton <hdanton@sina.com> wrote:
+> On Wed, 01 Sep 2021 19:32:06 -0700
+> >
+> > syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> > UBSAN: object-size-mismatch in send4
+> >
+> > ================================================================================
+> > UBSAN: object-size-mismatch in ./include/net/flow.h:197:33
+> > member access within address 000000001597b753 with insufficient space
+> > for an object of type 'struct flowi'
+> > CPU: 1 PID: 231 Comm: kworker/u4:4 Not tainted 5.14.0-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Workqueue: wg-kex-wg0 wg_packet_handshake_send_worker
+> > Call Trace:
+> >  __dump_stack lib/dump_stack.c:88 [inline]
+> >  dump_stack_lvl+0x15e/0x1d3 lib/dump_stack.c:105
+> >  ubsan_epilogue lib/ubsan.c:148 [inline]
+> >  handle_object_size_mismatch lib/ubsan.c:229 [inline]
+> >  ubsan_type_mismatch_common+0x1de/0x390 lib/ubsan.c:242
+> >  __ubsan_handle_type_mismatch_v1+0x41/0x50 lib/ubsan.c:271
+> >  flowi4_to_flowi_common include/net/flow.h:197 [inline]
+>
+> This was added in 3df98d79215a ("lsm,selinux: pass flowi_common instead of
+> flowi to the LSM hooks"), could you take a look at the UBSAN report, Paul?
 
-That commit added __GFP_REPEAT, but __GFP_RETRY_MAYFAIL these days became
-subtly different.
+Sure, although due to some flooding here at home it might take a day
+(two?) before I have any real comments on this.
 
-> I believe the issue was with memory map blocks rather than with page
-> tables, but since sparse-vmemmap uses the same vmemmap_alloc_block() for
-> both, the GFP flag got stick with both.
-> 
-> I'm not really familiar with reclaim internals to say if
-> __GFP_RETRY_MAYFAIL would help much for order-0 allocation.
-
-For costly allocation, __GFP_RETRY_MAYFAIL will try harder, thus the RETRY
-part is accented. For order-0 the only difference is that it will skip OOM,
-thus the MAYFAIL part. It usually means there's a fallback. I guess in this
-case there's no fallback, so allocating without __GFP_RETRY_MAYFAIL would be
-better.
-
-> Vlastimil, can you comment on this?
->  
->> I think it should not affect PKS tables for now, so maybe I can make
->> separate logic instead. I'll look into it. Thanks.
->> > 
->> > More broadly, maybe it makes sense to split boot time and memory
->> > hotplug
->> > paths and use pxd_alloc() for the latter.
->> > 
->> > > +
->> > > +		if (!page)
->> > > +			return NULL;
->> > > +		return page_address(page);
->> > > +	}
->> > >  
->> > > +	p = __earlyonly_bootmem_alloc(node, PAGE_SIZE, PAGE_SIZE,
->> > > __pa(MAX_DMA_ADDRESS));
->> > 
->> > Opportunistically rename to __earlyonly_memblock_alloc()? ;-)
->> > 
->> Heh, I can. Just grepping, there are several other instances of
->> foo_bootmem() only calling foo_memblock() pattern scattered about. Or
->> maybe I'm missing the distinction.
-> 
-> Heh, I didn't do s/bootmem/memblock/g, so foo_bootmem() are reminders we
-> had bootmem allocator once.
-> Maybe it's a good time to remove them :)
->  
->> <trim>
-> 
-
+-- 
+paul moore
+www.paul-moore.com
