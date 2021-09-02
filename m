@@ -2,129 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B413FF338
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7963FF33A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346954AbhIBS2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 14:28:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48714 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235359AbhIBS2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:28:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AB1361041;
-        Thu,  2 Sep 2021 18:27:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630607228;
-        bh=CN6VfpJ6jbtvL+pY5FWJO2QEw5tgM1IquTBPB0VMzEA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=MEcpEUfQXpUnT9P3hNd5t02YjLiwygNAYmd6CRA2FvrrQn5ttZpcjHfv3qY/PU9cd
-         byrno9FtcENKEA5MolJzLaL+IGlvgq5Bf6pvxH4Aaei44BfzAxsVo1qIvfMBabUCn3
-         kteXahGBC+wRIS/EgK1z7R9jFX7U9eGYRzS7Gz5yThl3xIX0gDpR4pBQxhgi+NkNjL
-         bdBrRDh/+OsKGZG5VmMbWg+tNGPJYocdTcbcXBZQuwEFksR4+A36JttuwkY3q0p1Ay
-         25/K/7OcIWUqmZA3fYJzMCz14XbdD5EknIEMrbp5WLw+WDALIV/VcjhLvzEvNIKLQy
-         OhDnqmsa+OqlA==
-Subject: Re: kernel/sched/core.c:5854:20: warning: unused function
- 'sched_core_cpu_deactivate'
-To:     kernel test robot <lkp@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Josh Don <joshdon@google.com>
-References: <202109030259.bGgH5Lv6-lkp@intel.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <ab74f0f3-a7ea-e525-0725-946b1c754df3@kernel.org>
-Date:   Thu, 2 Sep 2021 11:27:06 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1346989AbhIBS3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 14:29:07 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:48052 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346971AbhIBS3F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 14:29:05 -0400
+Received: by mail-io1-f72.google.com with SMTP id f1-20020a5edf01000000b005b85593f933so2002775ioq.14
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 11:28:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=efhwk1n9DuG/RUbEblIFId1q49zGnCoR05RCbVNCapo=;
+        b=MnDO8aj4zxkvqLYSpHUcqTPqm+aEpGXQumoaSWR3l8zjFn9Mqk1acPNsPMe88i4Cp4
+         TGTWsuAYQGXN1gfIqwvMwZIc4T3RFRDB6+YmNQIqjBVq8srYWV09JDIgUcZGU7LtCF5o
+         z0g4N2MGhk1lMmDsYi73EOIRr2LKraCi2i/OZODbupG7+dcB+UV1mCyrke/RbAYXY9MY
+         yTf5xpE5Zy2jcpxGy0zf3UOCgd9KBj6PKhRfsBbwqmUaZweH0oAVJMvWrYg/gEuWbO1Y
+         gehTHqScDywepXDKZGj/2EIDN0NoV9Mm76mF1OnTE7MkQQgSxHaG6nBTN0JTCkLbzCdF
+         lNvA==
+X-Gm-Message-State: AOAM532rQ+Mjn2lRj/pPGAQrd1AuRZE8FIY3bBjMlMqTxpi8/yvSR7M5
+        OhPPlmeBpdUsFQ+fnPw32jbnMGsY+HVTZqgPSs/ZMe7i2gj0
+X-Google-Smtp-Source: ABdhPJz/k5cez3kpq7cXPTBYfQVfN29zN44Y5LdAv+pGbQ4AhgvwGlVRz6l7r1KYmSKcuMGyKTxE5ssP6RjFBa9MMGcYfs+/ZrSf
 MIME-Version: 1.0
-In-Reply-To: <202109030259.bGgH5Lv6-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a92:d20d:: with SMTP id y13mr3305657ily.294.1630607286919;
+ Thu, 02 Sep 2021 11:28:06 -0700 (PDT)
+Date:   Thu, 02 Sep 2021 11:28:06 -0700
+In-Reply-To: <c2b300d4-9d52-9bab-813c-f11deedc434d@kernel.dk>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001ae8cc05cb075852@google.com>
+Subject: Re: [syzbot] general protection fault in io_issue_sqe
+From:   syzbot <syzbot+de67aa0cf1053e405871@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, haoxu@linux.alibaba.com,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/2021 11:21 AM, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   4a3bb4200a5958d76cc26ebe4db4257efa56812b
-> commit: 3c474b3239f12fe0b00d7e82481f36a1f31e79ab sched: Fix Core-wide rq->lock for uninitialized CPUs
-> date:   13 days ago
-> config: mips-randconfig-r004-20210902 (attached as .config)
-> compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project c9948e9254fbb6ea00f66c7b4542311d21e060be)
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # install mips cross compiling tool for clang build
->          # apt-get install binutils-mips-linux-gnu
->          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3c474b3239f12fe0b00d7e82481f36a1f31e79ab
->          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->          git fetch --no-tags linus master
->          git checkout 3c474b3239f12fe0b00d7e82481f36a1f31e79ab
->          # save the attached .config to linux build tree
->          mkdir build_dir
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross O=build_dir ARCH=mips SHELL=/bin/bash kernel/sched/
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
->     kernel/sched/core.c:3272:20: warning: unused function 'rq_has_pinned_tasks'
->     static inline bool rq_has_pinned_tasks(struct rq
->     ^
->     kernel/sched/core.c:5123:20: warning: unused function 'sched_tick_start'
->     static inline void sched_tick_start(int cpu) { }
->     ^
->     kernel/sched/core.c:5124:20: warning: unused function 'sched_tick_stop'
->     static inline void sched_tick_stop(int cpu) { }
->     ^
->     kernel/sched/core.c:5853:20: warning: unused function 'sched_core_cpu_starting'
->     static inline void sched_core_cpu_starting(unsigned int cpu) {}
->     ^
->>> kernel/sched/core.c:5854:20: warning: unused function 'sched_core_cpu_deactivate'
->     static inline void sched_core_cpu_deactivate(unsigned int cpu) {}
->     ^
->>> kernel/sched/core.c:5855:20: warning: unused function 'sched_core_cpu_dying'
->     static inline void sched_core_cpu_dying(unsigned int cpu) {}
->     ^
->     fatal error: error in backend: Nested variants found in inline asm string: ' .set push
->     .set noat
->     .set push
->     .set arch=r4000
->     .if ( 0x00 ) != -1)) 0x00 ) != -1)) : ($( static struct ftrace_branch_data __attribute__((__aligned__(4))) __attribute__((__section__("_ftrace_branch"))) __if_trace = $( .func = __func__, .file = "arch/mips/include/asm/cmpxchg.h", .line = 163, $); 0x00 ) != -1)) : $))) ) && ( 0 ); .set push; .set mips64r2; .rept 1; sync 0x00; .endr; .set pop; .else; ; .endif
->     1: ll $0, $2 # __cmpxchg_asm
->     bne $0, ${3:z}, 2f
->     .set pop
->     move $$1, ${4:z}
->     .set arch=r4000
->     sc $$1, $1
->     beqz $$1, 1b
->     .set pop
->     2: .if ( 0x00 ) != -1)) 0x00 ) != -1)) : ($( static struct ftrace_branch_data __attribute__((__aligned__(4))) __attribute__((__section__("_ftrace_branch"))) __if_trace = $( .func = __func__, .file = "arch/mips/include/asm/cmpxchg.h", .line = 163, $); 0x00 ) != -1)) : $))) ) && ( 0 ); .set push; .set mips64r2; .rept 1; sync 0x00; .endr; .set pop; .else; ; .endif
->     '
->     clang-14: error: clang frontend command failed with exit code 70 (use -v to see invocation)
->     clang version 14.0.0 (git://gitmirror/llvm_project c9948e9254fbb6ea00f66c7b4542311d21e060be)
->     Target: mipsel-unknown-linux
->     Thread model: posix
->     InstalledDir: /opt/cross/clang-c9948e9254/bin
->     clang-14: note: diagnostic msg:
->     Makefile arch include kernel mm nr_bisected scripts source usr
-> 
-> 
-> vim +/sched_core_cpu_deactivate +5854 kernel/sched/core.c
-> 
->    5852	
->    5853	static inline void sched_core_cpu_starting(unsigned int cpu) {}
->> 5854	static inline void sched_core_cpu_deactivate(unsigned int cpu) {}
->> 5855	static inline void sched_core_cpu_dying(unsigned int cpu) {}
->    5856	
+Hello,
 
-Is there any way for the test robot to ignore -Wunused-function warnings 
-for stub functions? Masahiro purposefully wanted these warnings shown 
-for static inline functions after commit 6863f5643dd7 ("kbuild: allow 
-Clang to find unused static inline functions for W=1 build") but the 
-entire point of the stub functions is that there should be no warnings 
-ever (even though I know this is a W=1 build but still...).
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+general protection fault in io_ring_ctx_wait_and_kill
 
-Cheers,
-Nathan
+general protection fault, probably for non-canonical address 0xdffffc0000000016: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x00000000000000b0-0x00000000000000b7]
+CPU: 0 PID: 10163 Comm: syz-executor.2 Not tainted 5.14.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:io_ring_ctx_wait_and_kill+0x24d/0x450 fs/io_uring.c:9180
+Code: ff 48 89 df e8 c4 fb ff ff e8 6f a8 94 ff 48 8b 04 24 48 8d b8 b0 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d3 01 00 00 48 8b 04 24 48 8b a8 b0 00 00 00 48
+RSP: 0018:ffffc9000a8b7a60 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff888046aa6000 RCX: 0000000000000000
+RDX: 0000000000000016 RSI: ffffffff81e10061 RDI: 00000000000000b0
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888046aa6643
+R10: ffffffff81e1004b R11: 0000000000000000 R12: ffff888046aa63f8
+R13: ffffc9000a8b7a90 R14: ffff8881453f4000 R15: ffff888046aa6040
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000561b3ede9400 CR3: 000000000b68e000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ io_uring_release+0x3e/0x50 fs/io_uring.c:9198
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xdd/0x1a0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ do_exit+0xbae/0x2a30 kernel/exit.c:825
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ get_signal+0x47f/0x2160 kernel/signal.c:2808
+ arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: Unable to access opcode bytes at RIP 0x4665cf.
+RSP: 002b:00007faa595bc218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 000000000056c040 RCX: 00000000004665f9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056c040
+RBP: 000000000056c038 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c044
+R13: 00007fff98399dff R14: 00007faa595bc300 R15: 0000000000022000
+Modules linked in:
+---[ end trace 641488e48828d1de ]---
+RIP: 0010:io_ring_ctx_wait_and_kill+0x24d/0x450 fs/io_uring.c:9180
+Code: ff 48 89 df e8 c4 fb ff ff e8 6f a8 94 ff 48 8b 04 24 48 8d b8 b0 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d3 01 00 00 48 8b 04 24 48 8b a8 b0 00 00 00 48
+RSP: 0018:ffffc9000a8b7a60 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff888046aa6000 RCX: 0000000000000000
+RDX: 0000000000000016 RSI: ffffffff81e10061 RDI: 00000000000000b0
+RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888046aa6643
+R10: ffffffff81e1004b R11: 0000000000000000 R12: ffff888046aa63f8
+R13: ffffc9000a8b7a90 R14: ffff8881453f4000 R15: ffff888046aa6040
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000561b3ede9400 CR3: 000000003cbf0000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	48 89 df             	mov    %rbx,%rdi
+   3:	e8 c4 fb ff ff       	callq  0xfffffbcc
+   8:	e8 6f a8 94 ff       	callq  0xff94a87c
+   d:	48 8b 04 24          	mov    (%rsp),%rax
+  11:	48 8d b8 b0 00 00 00 	lea    0xb0(%rax),%rdi
+  18:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  1f:	fc ff df
+  22:	48 89 fa             	mov    %rdi,%rdx
+  25:	48 c1 ea 03          	shr    $0x3,%rdx
+* 29:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2d:	0f 85 d3 01 00 00    	jne    0x206
+  33:	48 8b 04 24          	mov    (%rsp),%rax
+  37:	48 8b a8 b0 00 00 00 	mov    0xb0(%rax),%rbp
+  3e:	48                   	rex.W
+
+
+Tested on:
+
+commit:         f85aaf32 io_uring: trigger worker exit when ring is ex..
+git tree:       git://git.kernel.dk/linux-block for-5.15/io_uring
+console output: https://syzkaller.appspot.com/x/log.txt?x=12c280a3300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fa8e68781da309a
+dashboard link: https://syzkaller.appspot.com/bug?extid=de67aa0cf1053e405871
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+
