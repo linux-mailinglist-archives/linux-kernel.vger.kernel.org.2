@@ -2,174 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF94F3FF435
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752CD3FF438
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347394AbhIBTaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 15:30:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34036 "EHLO
+        id S1347401AbhIBTda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 15:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347360AbhIBTaX (ORCPT
+        with ESMTP id S1347257AbhIBTd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 15:30:23 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC59BC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 12:29:24 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id a93so5975304ybi.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 12:29:24 -0700 (PDT)
+        Thu, 2 Sep 2021 15:33:29 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A403C061575;
+        Thu,  2 Sep 2021 12:32:30 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id ew6so1869488qvb.5;
+        Thu, 02 Sep 2021 12:32:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6hx1TLChVu3Xib6wqsnsKYGm7+kh5wmG/kTdmIBWwZA=;
-        b=pCy+LvikQOzafTsIDf1jhSBUsaa4z1gSDIb5NPlrmQ0dAU2iDuI+m+meN9VKC30Q5s
-         4n6Usl3d8sfl2KUQwI02L5x3qfh6XFGTNsBg4yQ5vDZnhFRIAEnAMAmbHIqPZqC5c5Lo
-         ok6T67ZxpsaYearZS8C4j7alQ2DeE+FtwjQ+TPDcfiOXdQEfabHbCTFk6brgPY3Ib2g4
-         vumaK+GK5aGj1axDkPs/sNQwNbpXnl8Q/FmiQ3kB7JGT/H/3qmRuAn1Dob7jLdJuJfq3
-         HBDVbF10zguNCTJ9GqY7ys3WgeCYOUtHh7NigmaE5tUvqwdeWDCR/CjsoedT7daQTF3j
-         Aw9w==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aHE7zhQdsgMlH+QYp+lhq1R1P0X5X+hqgUKEq7BGKS4=;
+        b=ZY0/brsioDgMyqZX/2nrccZCzAy3jjpWaMHMsxHA/v9M8bZDqF/r7muWlirT+gp7hd
+         9AlSUBkDvObiuRydUBfnkCaJTuXyRTysPs9upUxcjfXxQQ1y6PKkntnn4rtLsH3fXh+W
+         jANNYJio0IiiDjRRNxBCLa7wuyxrfQGfEamZXNCHzKZ/4iju/DhvWMXlWAOn8gZOKM/0
+         iBF38O+35wDqKGP0Wy4YD7o+D60prPcrELMjaT5jZ90rgi/9oFbQLdjQQRYSzpnm0AE1
+         w57VqnWwYgP/LuxMn7eQfb9rN7uiIt36vJpz06KgbO1Cpecrk6GYo5NW7SsY7amrojv+
+         YgtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6hx1TLChVu3Xib6wqsnsKYGm7+kh5wmG/kTdmIBWwZA=;
-        b=B7M1+IDrUvkno4XqpgyaJ0TL/skK9ssaUkhxhyzAgME1Sr5EagOvFxrwVqmkC9GgQQ
-         gtYq746on0DZb9zrFfSJZvcpIV6HIvLTcYDLsbbUdCH7VzpWv4zoap82/2acrHxK1pyd
-         5cotTGytvZEq+LeptMHUnJUkTbkqfam/DW2TTz1t8+y6+wjCOEtKjxANVyo4qG78DPU5
-         tEdZ7oJrDcXBrf0IQtsIN/tYKNqzoBntXgphJSM7sp9pGVFSY9vUw8cKdye+NNMZL93V
-         l5FPYP2xGZgZhHVwk0ZsDjfe9ZVfLTUaMwMzd2j0LNCApIhp/jNPV/XHIDR3TPInr7kS
-         6ZjA==
-X-Gm-Message-State: AOAM532qJBPFalQXdefW6vidBofK9VIc4Bwn2XG1PBJ/nDHX9W87gOmc
-        zMR3PveCr2g3iLN+Wb8BIMjAeF7zgvBXMZ69x9BOHQ==
-X-Google-Smtp-Source: ABdhPJy2CjO1I67T+PQpg8YLPijsHlOxA6EHAyqe5+JzRgKtib9fvCVULpHBG6yc/KMPxLIkBNOW/ULSCVkrAFwXN8Q=
-X-Received: by 2002:a5b:50b:: with SMTP id o11mr6645741ybp.466.1630610963746;
- Thu, 02 Sep 2021 12:29:23 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aHE7zhQdsgMlH+QYp+lhq1R1P0X5X+hqgUKEq7BGKS4=;
+        b=eMOaSx1Sd3VHGFC7CkCQ2+NYyOu+PJk59ClzCTYMIVPx9iWNKNHHeQoJNesKD2Pm8y
+         VtL3KRs2kclVwdlHanUqc442NukjeAlqe5E3mqtYutAgCoscP5y/6o7so8BdQjzrsCMc
+         JZnK0g8qemLbAokXl9sWLmkOazeGbJ/4V2KJBurJjRqpWE2LFQbo1+iivDBNJQ0n1piE
+         W53IwcNBMN+9ifRQkziILhYArYfv/jIWlXMGtnh+wBhslIJRDvnSVyc/IoLsYZHKBXTZ
+         v9nSKL0pzZcz6vuTyb7CDQxoiGtfJLqrBacO5VEYKzEWn3lgIfvKtR1OhNDG5wrwPPK2
+         rl2g==
+X-Gm-Message-State: AOAM5305p4pEMXXFnQJkk2XQlaQGOYKkUb+Gd6z2Av78riXNcE6+usLY
+        74W/BNJMWI0NuwUEU6bg57Y=
+X-Google-Smtp-Source: ABdhPJxJ0LoTmr9L/ypJePJEoM5Crj9PywoaJjjt/idCHx20b4lcg6f5IS4bwA+SGlhimA2gxIJ7Kg==
+X-Received: by 2002:a0c:c707:: with SMTP id w7mr4942176qvi.14.1630611148794;
+        Thu, 02 Sep 2021 12:32:28 -0700 (PDT)
+Received: from ?IPv6:2620:6e:6000:3100:dedd:4a4a:8e3e:2af5? ([2620:6e:6000:3100:dedd:4a4a:8e3e:2af5])
+        by smtp.gmail.com with ESMTPSA id 207sm2217988qkh.45.2021.09.02.12.32.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 12:32:28 -0700 (PDT)
+Subject: Re: [PATCH v6 1/6] Bluetooth: schedule SCO timeouts with delayed_work
+To:     Eric Dumazet <eric.dumazet@gmail.com>, marcel@holtmann.org,
+        johan.hedberg@gmail.com, luiz.dentz@gmail.com, davem@davemloft.net,
+        kuba@kernel.org, sudipm.mukherjee@gmail.com
+Cc:     linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+References: <20210810041410.142035-1-desmondcheongzx@gmail.com>
+ <20210810041410.142035-2-desmondcheongzx@gmail.com>
+ <0b33a7fe-4da0-058c-cff3-16bb5cfe8f45@gmail.com>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <bad67d05-366b-bebe-cbdb-6555386497de@gmail.com>
+Date:   Thu, 2 Sep 2021 15:32:27 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210902025528.1017391-1-saravanak@google.com>
- <20210902025528.1017391-3-saravanak@google.com> <CAL_JsqJOv7D5nHteGPDKC2+ns1caVNs-NFFJppLuK0OEB8dztQ@mail.gmail.com>
- <CAGETcx-rOakAX_apu2ecu6jWCwzO0RgMkwdfzyF+UaxQfVj4CA@mail.gmail.com> <CAL_Jsq+A1T5+KK5xsVVtrMVeuMre3B6sAAroX+a3gQy6wY+r8A@mail.gmail.com>
-In-Reply-To: <CAL_Jsq+A1T5+KK5xsVVtrMVeuMre3B6sAAroX+a3gQy6wY+r8A@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 2 Sep 2021 12:28:47 -0700
-Message-ID: <CAGETcx9wY66TsFX_1rFUO+toE-OpkAvWSdcNVK7M=LYwa6xbAw@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] of: platform: Mark bus devices nodes with FWNODE_FLAG_NEVER_PROBES
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <0b33a7fe-4da0-058c-cff3-16bb5cfe8f45@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 12:03 PM Rob Herring <robh+dt@kernel.org> wrote:
->
-> On Thu, Sep 2, 2021 at 11:57 AM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > On Thu, Sep 2, 2021 at 7:24 AM Rob Herring <robh+dt@kernel.org> wrote:
-> > >
-> > > On Wed, Sep 1, 2021 at 9:55 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > >
-> > > > We don't want fw_devlink creating device links for bus devices as
-> > > > they'll never probe. So mark those device node with this flag.
-> > > >
-> > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > ---
-> > > >  drivers/of/platform.c | 16 ++++++++++++++++
-> > > >  1 file changed, 16 insertions(+)
-> > > >
-> > > > diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-> > > > index 74afbb7a4f5e..42b3936d204a 100644
-> > > > --- a/drivers/of/platform.c
-> > > > +++ b/drivers/of/platform.c
-> > > > @@ -392,6 +392,22 @@ static int of_platform_bus_create(struct device_node *bus,
-> > > >         if (!dev || !of_match_node(matches, bus))
-> > > >                 return 0;
-> > > >
-> > > > +       /*
-> > > > +        * If the bus node has only one compatible string value and it has
-> > > > +        * matched as a bus node, it's never going to get probed by a device
-> > > > +        * driver. So flag it as such so that fw_devlink knows not to create
-> > > > +        * device links with this device.
-> > > > +        *
-> > > > +        * This doesn't catch all devices that'll never probe, but this is good
-> > > > +        * enough for now.
-> > > > +        *
-> > > > +        * This doesn't really work for PPC because of how it uses
-> > > > +        * of_platform_bus_probe() to add normal devices. So ignore PPC cases.
-> > > > +        */
-> > > > +       if (!IS_ENABLED(CONFIG_PPC) &&
-> > > > +           of_property_count_strings(bus, "compatible") == 1)
-> > > > +               bus->fwnode.flags |= FWNODE_FLAG_NOT_DEVICE;
-> > >
-> > > This looks fragile relying on 1 compatible string, and the DT flags in
-> > > this code have been fragile too. I'm pretty sure we have cases of
-> > > simple-bus or simple-mfd that also have another compatible.
-> > >
-> > > Couldn't we solve this with a simple driver?
-> >
-> > Oh, I didn't think you'd like that. I'd lean towards that option too
-> > if we can address some of the other concerns below.
-> >
-> > > Make 'simple-pm-bus'
-> > > driver work for other cases?
-> >
-> > > BTW, this patch doesn't even work for
-> > > simple-pm-bus.
-> >
-> > How do you mean? Because simple-pm-bus already has a driver and
-> > doesn't set "matches" param when it calls of_platform_populate() and
-> > this flag won't be set. So at least for simple-pm-bus I don't see any
-> > issue.
->
-> You're right.
->
-> > I was trying to reuse of_default_bus_match_table without explicitly
-> > referring to it, but if it's confusing I can add a separate list of
-> > compatible strings and use those here instead of using "matches".
->
-> What happens with a non-default table? I'm not sure we can assume the
-> same behavior.
->
-> > > A driver for simple-bus may cause issues if there's a
-> > > more specific driver to bind to as we don't handle that. It's simply
-> > > whichever matches first.
-> >
-> > Right, this is my worry. Especially for devices like this (there are
-> > plenty of cases like this) which have a driver that probes them but
-> > also lists simple-bus
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/arm-realview-pb11mp.dts?id=73f3af7b4611d77bdaea303fb639333eb28e37d7#n299
->
-> Uhh, that one is certainly a leakage of wanting an soc_device in the
-> hierarchy, not any real bus structure reflecting the h/w. I'm not a
-> fan of the soc_device stuff and its optional nature. Everything is an
-> SoC, so it should always be there? Or your device hierarchy should
-> change when you decide to add a soc_device?
->
-> > So as long as there's a compatible string that's not one of the
-> > "transparent" busses, this driver shouldn't match. So, I don't think I
-> > can get away from checking the compatible strings.
-> >
-> > How about I check here to make sure all the "compatible" strings are
-> > from an approved transparent bus list, and if it's true, I use
-> > driver_override to force match it to a transparent bus driver? Would
-> > you be okay with that?
->
-> Can't we do that within a driver? We check this and fail probe if
-> there's a more specific compatible.  Then another driver can match and
-> probe.
+On 2/9/21 3:17 pm, Eric Dumazet wrote:
+> 
+> 
+> On 8/9/21 9:14 PM, Desmond Cheong Zhi Xi wrote:
+>> struct sock.sk_timer should be used as a sock cleanup timer. However,
+>> SCO uses it to implement sock timeouts.
+>>
+>> This causes issues because struct sock.sk_timer's callback is run in
+>> an IRQ context, and the timer callback function sco_sock_timeout takes
+>> a spin lock on the socket. However, other functions such as
+>> sco_conn_del and sco_conn_ready take the spin lock with interrupts
+>> enabled.
+>>
+>> This inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} lock usage could
+>> lead to deadlocks as reported by Syzbot [1]:
+>>         CPU0
+>>         ----
+>>    lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+>>    <Interrupt>
+>>      lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+>>
+>> To fix this, we use delayed work to implement SCO sock timouts
+>> instead. This allows us to avoid taking the spin lock on the socket in
+>> an IRQ context, and corrects the misuse of struct sock.sk_timer.
+>>
+>> As a note, cancel_delayed_work is used instead of
+>> cancel_delayed_work_sync in sco_sock_set_timer and
+>> sco_sock_clear_timer to avoid a deadlock. In the future, the call to
+>> bh_lock_sock inside sco_sock_timeout should be changed to lock_sock to
+>> synchronize with other functions using lock_sock. However, since
+>> sco_sock_set_timer and sco_sock_clear_timer are sometimes called under
+>> the locked socket (in sco_connect and __sco_sock_close),
+>> cancel_delayed_work_sync might cause them to sleep until an
+>> sco_sock_timeout that has started finishes running. But
+>> sco_sock_timeout would also sleep until it can grab the lock_sock.
+>>
+>> Using cancel_delayed_work is fine because sco_sock_timeout does not
+>> change from run to run, hence there is no functional difference
+>> between:
+>> 1. waiting for a timeout to finish running before scheduling another
+>> timeout
+>> 2. scheduling another timeout while a timeout is running.
+>>
+>> Link: https://syzkaller.appspot.com/bug?id=9089d89de0502e120f234ca0fc8a703f7368b31e [1]
+>> Reported-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+>> Tested-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
+>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+>> ---
+>>   net/bluetooth/sco.c | 35 +++++++++++++++++++++++++++++------
+>>   1 file changed, 29 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
+>> index ffa2a77a3e4c..62e638f971a9 100644
+>> --- a/net/bluetooth/sco.c
+>> +++ b/net/bluetooth/sco.c
+>> @@ -48,6 +48,8 @@ struct sco_conn {
+>>   	spinlock_t	lock;
+>>   	struct sock	*sk;
+>>   
+>> +	struct delayed_work	timeout_work;
+>> +
+>>   	unsigned int    mtu;
+>>   };
+>>   
+>> @@ -74,9 +76,20 @@ struct sco_pinfo {
+>>   #define SCO_CONN_TIMEOUT	(HZ * 40)
+>>   #define SCO_DISCONN_TIMEOUT	(HZ * 2)
+>>   
+>> -static void sco_sock_timeout(struct timer_list *t)
+>> +static void sco_sock_timeout(struct work_struct *work)
+>>   {
+>> -	struct sock *sk = from_timer(sk, t, sk_timer);
+>> +	struct sco_conn *conn = container_of(work, struct sco_conn,
+>> +					     timeout_work.work);
+>> +	struct sock *sk;
+>> +
+>> +	sco_conn_lock(conn);
+>> +	sk = conn->sk;
+>> +	if (sk)
+>> +		sock_hold(sk);
+> 
+> syzbot complains here that sk refcount can be zero at this time.
+> 
+> refcount_t: addition on 0; use-after-free.
+> WARNING: CPU: 0 PID: 10451 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+> Modules linked in:
+> CPU: 0 PID: 10451 Comm: kworker/0:8 Not tainted 5.14.0-rc7-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: events sco_sock_timeout
+> RIP: 0010:refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
+> Code: 09 31 ff 89 de e8 d7 c9 9e fd 84 db 0f 85 36 ff ff ff e8 8a c3 9e fd 48 c7 c7 20 8f e3 89 c6 05 e8 7f 81 09 01 e8 f0 98 16 05 <0f> 0b e9 17 ff ff ff e8 6b c3 9e fd 0f b6 1d cd 7f 81 09 31 ff 89
+> RSP: 0018:ffffc9001766fce8 EFLAGS: 00010282
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: ffff88802cea3880 RSI: ffffffff815d87a5 RDI: fffff52002ecdf8f
+> RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000000
+> R10: ffffffff815d25de R11: 0000000000000000 R12: ffff88806d23ce08
+> R13: ffff8880712c8080 R14: ffff88802edf4500 R15: ffff8880b9c51240
+> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007f3748c20000 CR3: 0000000017644000 CR4: 00000000001506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>   __refcount_add include/linux/refcount.h:199 [inline]
+>   __refcount_inc include/linux/refcount.h:250 [inline]
+>   refcount_inc include/linux/refcount.h:267 [inline]
+>   sock_hold include/net/sock.h:702 [inline]
+>   sco_sock_timeout+0x216/0x290 net/bluetooth/sco.c:88
+>   process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
+>   worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
+>   kthread+0x3e5/0x4d0 kernel/kthread.c:319
+> 
+> 
+>> +	sco_conn_unlock(conn);
+>> +
+>> +	if (!sk)
+>> +		return;
+>>   
+>>   	BT_DBG("sock %p state %d", sk, sk->sk_state);
+>>   
+>> @@ -91,14 +104,21 @@ static void sco_sock_timeout(struct timer_list *t)
+>>   
+>>   static void sco_sock_set_timer(struct sock *sk, long timeout)
+>>   {
+>> +	if (!sco_pi(sk)->conn)
+>> +		return;
+>> +
+>>   	BT_DBG("sock %p state %d timeout %ld", sk, sk->sk_state, timeout);
+>> -	sk_reset_timer(sk, &sk->sk_timer, jiffies + timeout);
+>> +	cancel_delayed_work(&sco_pi(sk)->conn->timeout_work);
+>> +	schedule_delayed_work(&sco_pi(sk)->conn->timeout_work, timeout);
+> 
+>>   }
+>>   
+>>   static void sco_sock_clear_timer(struct sock *sk)
+>>   {
+>> +	if (!sco_pi(sk)->conn)
+>> +		return;
+>> +
+>>   	BT_DBG("sock %p state %d", sk, sk->sk_state);
+>> -	sk_stop_timer(sk, &sk->sk_timer);
+>> +	cancel_delayed_work(&sco_pi(sk)->conn->timeout_work);
+> 
+> 
+>>   }
+>>   
+>>   /* ---- SCO connections ---- */
+>> @@ -179,6 +199,9 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
+>>   		bh_unlock_sock(sk);
+>>   		sco_sock_kill(sk);
+>>   		sock_put(sk);
+>> +
+>> +		/* Ensure no more work items will run before freeing conn. */
+> 
+> Maybe you should have done this cancel_delayed_work_sync() before the prior sock_put(sk) ?
+> 
+>> +		cancel_delayed_work_sync(&conn->timeout_work);
+>>   	}
+>>   
+>>   	hcon->sco_data = NULL;
+>> @@ -193,6 +216,8 @@ static void __sco_chan_add(struct sco_conn *conn, struct sock *sk,
+>>   	sco_pi(sk)->conn = conn;
+>>   	conn->sk = sk;
+>>   
+>> +	INIT_DELAYED_WORK(&conn->timeout_work, sco_sock_timeout);
+>> +
+>>   	if (parent)
+>>   		bt_accept_enqueue(parent, sk, true);
+>>   }
+>> @@ -500,8 +525,6 @@ static struct sock *sco_sock_alloc(struct net *net, struct socket *sock,
+>>   
+>>   	sco_pi(sk)->setting = BT_VOICE_CVSD_16BIT;
+>>   
+>> -	timer_setup(&sk->sk_timer, sco_sock_timeout, 0);
+>> -
+>>   	bt_sock_link(&sco_sk_list, sk);
+>>   	return sk;
+>>   }
+>>
 
-I was thinking that initially, but if we fail a probe, the driver core
-will permanently give up (won't search further) or might end up
-retrying with the same driver and never get to the other driver. I'll
-send out a v2 with what I described above. It's not too bad and it
-will also allow us to handle the PPC cases (we'll just need to keep
-adding the simple-bus equivalent entries to a table).
+Hi Eric,
 
--Saravana
+This actually seems to be a pre-existing error in sco_sock_connect that 
+we now hit in sco_sock_timeout.
+
+Any thoughts on the following patch to address the problem?
+
+Link: 
+https://lore.kernel.org/lkml/20210831065601.101185-1-desmondcheongzx@gmail.com/
