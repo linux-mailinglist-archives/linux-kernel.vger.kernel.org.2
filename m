@@ -2,162 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9233A3FF5A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F2053FF5A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347139AbhIBVeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34676 "EHLO
+        id S1347170AbhIBVf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347059AbhIBVeI (ORCPT
+        with ESMTP id S233964AbhIBVf0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:34:08 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE797C061575;
-        Thu,  2 Sep 2021 14:33:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=c9VrKlIQFUEkJNSWwGh5FhWwSAwLHU/yc0GKasdTsno=; b=PhTlPHkQSR76SQ6vPZIPfez88
-        w1hIL9OjrC3Hq9LRoRraV/YRdDHZ1uFhPsTeA0HotoexTlCM3kE7iaz7Opp54tndEHOdhICgZBy7C
-        CsiyrkvBetGrN9C1xEUmjm0eTKP6Ash0CrasJ2Wi9zuJnoW3epaYDU8D5j4RoGFGNJaAmriOTMT0g
-        mXFosO4BzuWjb5i/p3LpZkRaK18WnAEBsnLNzy0v7d2yGBnVbirzwbMDeS0lQ4Jc7wvs6Zds0uIse
-        xegXRoFRH3njKLWptl+3dFnthPk8fVX32Z8hcWwKA7D3WOnO0WEcizVCy/xONfL0MKLs0StWw5UnX
-        Vg/IWBGCQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48112)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mLuKX-00024F-Nn; Thu, 02 Sep 2021 22:33:05 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mLuKV-0008EU-98; Thu, 02 Sep 2021 22:33:03 +0100
-Date:   Thu, 2 Sep 2021 22:33:03 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        netdev@vger.kernel.org,
+        Thu, 2 Sep 2021 17:35:26 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91ED9C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:34:27 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id fs6so2287429pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:34:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=i7HY1LYPv1dhPpnIu1wCK4txAEaMyR8o4SYid4oPsvA=;
+        b=DmrubWizS0AhSm2kUYbIl+th5II9zZMfk/AN6u7Jcqh/xrbtpMrCgXE9ooG9Zwc2Ag
+         RxFhGLiIiBk7MN8FGwudIISRGQAgoQ5MWnWjJz6ggL4UF3kbRotlFvdQ5baYioYystRR
+         b8/m3aowIkxjyNdOBhRIU/+slLUtZJWiEkK3A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i7HY1LYPv1dhPpnIu1wCK4txAEaMyR8o4SYid4oPsvA=;
+        b=Ccp4FNdsl/k+zoPB6eSo8jItzSWhDVpoEUwxSKkgJ4lZ+G6+UNlATw48k/Odul6n3I
+         73qEOFqxAJwCY6rjQ2PPvPnhSgRsmGIcRgDKulBT6A4BEyQjnln52rSTuxGpf7fwzjcM
+         pY5DikhBl1Es+lO2TcLs65PL6S+RoQ9o85e6IeTfYTTc/P3Ey7XSDycn6VEtOjP9sgr4
+         imz+SXgUbpx/F8VuzwUiecn6ElXvrdjAoww0UkBMkq/inq1DvYkt6GSm84qlYl1VZnwu
+         +HZXKzGFJkyGx5ekuKmB78zl+BpDQKo7SWd3INTgr/akSmXraSuPUPohPSDKRbyUzAj2
+         Wyqw==
+X-Gm-Message-State: AOAM531+Pag8HyvldmlzK/Bg1KVMAC/dYYF+xEhCaQ8oMRC10ETgdV2/
+        W6APb0WHXOm7EuaVhsYbypHpdg==
+X-Google-Smtp-Source: ABdhPJzvlAGSbVfg2xPnOLT097EV7UuzgmSDDDhGVVJrT/ZAMQpXX7yyqiewCEBGFrpAMt7QRYijpw==
+X-Received: by 2002:a17:90a:7881:: with SMTP id x1mr210595pjk.102.1630618467061;
+        Thu, 02 Sep 2021 14:34:27 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:76ac:d178:a633:4fb5])
+        by smtp.gmail.com with UTF8SMTPSA id d22sm3077903pjw.38.2021.09.02.14.34.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 14:34:26 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 14:34:25 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [RFC PATCH net-next 1/3] net: phy: don't bind genphy in
- phy_attach_direct if the specific driver defers probe
-Message-ID: <20210902213303.GO22278@shell.armlinux.org.uk>
-References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
- <20210901225053.1205571-2-vladimir.oltean@nxp.com>
- <20210902185016.GL22278@shell.armlinux.org.uk>
- <YTErTRBnRYJpWDnH@lunn.ch>
- <bd7c9398-5d3d-ccd8-8804-25074cff6bde@gmail.com>
+        Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, Arnd Bergmann <arnd@arndb.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: Re: [PATCH v3 2/4] misc: hisi_hikey_usb: change the DT schema
+Message-ID: <YTFDYWsTSYlbbIje@google.com>
+References: <d990e75f28c443c0c5a5fc857b87acc4be3f9464.1630581434.git.mchehab+huawei@kernel.org>
+ <YTC4LPDem9uKXyMd@kroah.com>
+ <20210902151053.7ddfbe3a@coco.lan>
+ <20210902153820.5624b57f@coco.lan>
+ <YTDYFCH/DbK1SFVv@kroah.com>
+ <20210902163529.734b8e0e@coco.lan>
+ <YTEJuK50e5PBBJfO@google.com>
+ <CALAqxLUxgRCUweDcE1WWV1gTsstZAvjUT6ZuTij5Mro8MHKi8Q@mail.gmail.com>
+ <YTEuA+Z3f50RVGgX@google.com>
+ <CALAqxLW_wwRFaWASsy6rFHir23MfFU3psq6pjavDeUF5hNS5OA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <bd7c9398-5d3d-ccd8-8804-25074cff6bde@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+In-Reply-To: <CALAqxLW_wwRFaWASsy6rFHir23MfFU3psq6pjavDeUF5hNS5OA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 01:33:57PM -0700, Florian Fainelli wrote:
-> On 9/2/2021 12:51 PM, Andrew Lunn wrote:
-> > On Thu, Sep 02, 2021 at 07:50:16PM +0100, Russell King (Oracle) wrote:
-> > > On Thu, Sep 02, 2021 at 01:50:51AM +0300, Vladimir Oltean wrote:
-> > > > diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> > > > index 52310df121de..2c22a32f0a1c 100644
-> > > > --- a/drivers/net/phy/phy_device.c
-> > > > +++ b/drivers/net/phy/phy_device.c
-> > > > @@ -1386,8 +1386,16 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
-> > > >   	/* Assume that if there is no driver, that it doesn't
-> > > >   	 * exist, and we should use the genphy driver.
-> > > > +	 * The exception is during probing, when the PHY driver might have
-> > > > +	 * attempted a probe but has requested deferral. Since there might be
-> > > > +	 * MAC drivers which also attach to the PHY during probe time, try
-> > > > +	 * harder to bind the specific PHY driver, and defer the MAC driver's
-> > > > +	 * probing until then.
-> > > >   	 */
-> > > >   	if (!d->driver) {
-> > > > +		if (device_pending_probe(d))
-> > > > +			return -EPROBE_DEFER;
-> > > 
-> > > Something else that concerns me here.
-> > > 
-> > > As noted, many network drivers attempt to attach their PHY when the
-> > > device is brought up, and not during their probe function.
-> > 
-> > Yes, this is going to be a problem. I agree it is too late to return
-> > -EPROBE_DEFER. Maybe phy_attach_direct() needs to wait around, if the
-> > device is still on the deferred list, otherwise use genphy. And maybe
-> > a timeout and return -ENODEV, which is not 100% correct, we know the
-> > device exists, we just cannot drive it.
+On Thu, Sep 02, 2021 at 01:31:45PM -0700, John Stultz wrote:
+> On Thu, Sep 2, 2021 at 1:03 PM Matthias Kaehlcke <mka@chromium.org> wrote:
+> > On Thu, Sep 02, 2021 at 11:29:49AM -0700, John Stultz wrote:
+> > > The current iteration (of which there have been many) of hikey hub
+> > > driver uses the role switch notification as its trigger. It's not
+> > > really controlling the role switching, just using that signal. That's
+> > > why the driver works as an intermediary/relay of the roleswitch
+> > > notification.
+> >
+> > Apologies too, my terminology wasn't very clear, I had little exposure to
+> > OTG so far.
+> >
+> > The hisi_hikey_usb driver doesn't control the role of the USB controller,
+> > however it deals with platform specific role switching stuff, like muxing
+> > the USB PHY to the hub (host mode) or directly to the type-C port (device
+> > mode), or controlling the power of the type-C port.
 > 
-> Is it really going to be a problem though? The two cases where this will
-> matter is if we use IP auto-configuration within the kernel, which this
-> patchset ought to be helping with
-
-There is no handling of EPROBE_DEFER in the IP auto-configuration
-code while trying to bring up interfaces:
-
-        for_each_netdev(&init_net, dev) {
-                if (ic_is_init_dev(dev)) {
-...
-                        oflags = dev->flags;
-                        if (dev_change_flags(dev, oflags | IFF_UP, NULL) < 0) {
-                                pr_err("IP-Config: Failed to open %s\n",
-                                       dev->name);
-                                continue;
-                        }
-
-So, the only way this could be reliable is if we can guarantee that
-all deferred probes will have been retried by the time we get here.
-Do we have that guarantee?
-
-> if we are already in user-space and the
-> PHY is connected at .ndo_open() time, there is a whole lot of things that
-> did happen prior to getting there, such as udevd using modaliases in order
-> to load every possible module we might, so I am debating whether we will
-> really see a probe deferral at all.
-
-As can be seen from my recent posts which show on Debian Buster that
-interfaces are attempted to be brought up while e.g. mv88e6xxx is still
-probing, we can't make any guarantees that things have "settled" by the
-time userspace attempts to bring up the network interfaces.
-
-I may have more on why that is happening... I won't post it here, I'll
-post to the other thread.
-
-> > Can we tell we are in the context of a driver probe? Or do we need to
-> > add a parameter to the various phy_attach API calls to let the core
-> > know if this is probe or open?
+> True, though the exact configuration of powering type-c port, the mux
+> and the hub power that we want to set depends on the role.
 > 
-> Actually we do the RTNL lock will be held during ndo_open and it won't
-> during driver probe.
+> > > We had earlier efforts that had hacks to specific drivers as well as
+> > > attempts to add notifiers on role switches (but those were terribly
+> > > racy), so the intermediary/relay approach has been a great improvement
+> > > on reliability with little impact to other drivers.
+> >
+> > I can see how raciness can be a problem. I'm not proprosing to use
+> > notifiers in the driver that deals with the hub, from the hub's
+> > perspective it is connected to a host port and it shouldn't have to care
+> > about OTG.
+> >
+> > But the 'hub driver' could expose a synchronous interface that allows the
+> > hisi_hikey_usb driver to power the hub on and off (or keep it in reset).
+> > That would maintain the relay approach, but without having a driver that
+> > tries to do too many things at once. For example the onboard_usb_hub driver
+> > has the option to power the hub down during suspend if no wakeup capable
+> > devices are connected downstream, I'm not convinced that this and the
+> > handling of the mux should be done by the same driver.
+> 
+> I'm not sure I'm totally following your proposal, so apologies if I
+> have it wrong.
+> It seems you're suggesting to move just the hub power logic out of the
+> hisi hub driver, and utilize the onboard_usb_hub driver for that?
 
-That's probably an unreliable indicator. DPAA2 has weirdness in the
-way it can dynamically create and destroy network interfaces, which
-does lead to problems with the rtnl lock. I've been carrying a patch
-from NXP for this for almost two years now, which NXP still haven't
-submitted:
+Yes
 
-http://git.armlinux.org.uk/cgit/linux-arm.git/commit/?h=cex7&id=a600f2ee50223e9bcdcf86b65b4c427c0fd425a4
+> I guess that could be done, but I also feel like it's really just the
+> regulator control, which is a pretty small part of the hisi hub driver
+> logic.
+> Additionally, if you look at the logic that handles the different
+> setting configurations needed for the different roles:
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/misc/hisi_hikey_usb.c#n97
+> 
+> You'll see the ordering of powering things on/off and switching the
+> mux is a bit subtle.
 
-... and I've no idea why that patch never made mainline. I need it
-to avoid the stated deadlock on SolidRun Honeycomb platforms when
-creating additional network interfaces for the SFP cages in userspace.
+Indeed, that would make things a bit more involved.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> So while I guess we could call some onboard_usb_hub hook for the hub
+> power on/off calls (hub_power_ctrl() in the hisi driver), I'm not sure
+> that really is saving much logic wise, and splits the details across
+> an additional driver in an already somewhat complicated config.
+
++ probing, tearing down and potentially reset.
+
+It might not be worth as long as only a single hub model (or compatible
+ones) is supported, things might look different if other power on/off/reset
+sequences need to be added.
+
+> Again, apologies if I'm being thick headed. :)
+
+no worries, same here :)
+
+I have no objections to leaving the driver structure as is, especially
+since it already has been in upstream for a while, I was mainly looking
+for possible synergies.
