@@ -2,98 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4003FF710
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2F83FF717
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347586AbhIBWW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 18:22:56 -0400
-Received: from esa1.mentor.iphmx.com ([68.232.129.153]:31897 "EHLO
-        esa1.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237981AbhIBWW4 (ORCPT
+        id S240043AbhIBWZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 18:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231642AbhIBWZm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 18:22:56 -0400
-IronPort-SDR: PYZ+NIRvI/eplJBuQp7mjtKfvNfEtaML2OMRHWCIdyxtfcNkWG0c6Xr4T2tYF4IUazet29VHFh
- Okl1WFOu6USYmC+Epb/onhnfCQApSTzDs7lctSwd/77YQ1Z6xQPYam/vQRnjFhoavtal+JmpRP
- XoGqBm7oiRo3/BXCRtbMIcmbmL4P9JJh0mKbrOAFJwjPZ5+oe8mxbQzSd27qM8ij58KbMtDN2y
- xJX7ZEq2BbIgjKj7hzBtMbH3Zd40mfwKT06wOr5Fy5QqcYPYGqNPko7XF46KigaHq+Ockak6Zs
- Q59Q0OXxNIpOJuZPatglOY9u
-X-IronPort-AV: E=Sophos;i="5.85,263,1624348800"; 
-   d="scan'208";a="67936561"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa1.mentor.iphmx.com with ESMTP; 02 Sep 2021 14:21:57 -0800
-IronPort-SDR: yU1HWBHHRAEUHUo59GbicS/kyr5ibWc1Rj04iAsrvqC/JpOnHq8XNbMCtZV8lsooAk+VXuK6rr
- Q85fsL7AgW0M2N9aINRSnEvbFvxW5AjMeU+M+tvo+Kq6pHcGKPnpqIv8U3DapDamaMPGhTFjM9
- 4MMnO8nvwG+fhsJ7mPgaUdyKFIytFVqNytr4kw9uqVRsVwXMDGZ7S0zBqWAiORWDwv0pPrjQpF
- vrA9UXPKzhVv7ufY+N5u4zPYP1ykSYNDbiZfdd9LYKXgUdUAM0gZLLJFIPPo5C+UPYlW0EKRK8
- QN0=
-Date:   Thu, 2 Sep 2021 18:21:53 -0400
-From:   "George G. Davis" <george_davis@mentor.com>
-To:     David Hildenbrand <david@redhat.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        "George G. Davis" <davis.george@siemens.com>
-Subject: Re: [RFC][PATCH] mm/page_isolation: tracing: trace all
- test_pages_isolated failures
-Message-ID: <20210902222152.GA25844@mam-gdavis-dt>
-References: <20210823202823.13765-1-george_davis@mentor.com>
- <4f680b5a-9076-3ba4-caea-bdd6eafeb899@redhat.com>
+        Thu, 2 Sep 2021 18:25:42 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF784C061575;
+        Thu,  2 Sep 2021 15:24:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=PBzyx3b13E88ZqIykmsooULNl81ACAy1mgmIEC9rA0w=; b=MoZ1ROTlk9qs+uyOJbq2GbS3C
+        tG9jBwKyPz4AFi2V0PPrU2hxzC0RTyzfEkx8bRMPch2u9AIJFVTW485ufyrH0eu/SKgn1R+VY2EKr
+        kHgRB0TKyAslZLruVCsf/2j86V/bgLQDdb3jAJa4AYXftByhZ+CirOtSnWFRH5AKjeFU8Ofnh2ziQ
+        sFdngdrSQqFXAC7XH54BbP2c7qUQLnOpF09HImFm5KCNGpRRA5RtJnhWnrY2Eg7o/0RohBsKofG1l
+        kYUsu0TDoTS0ozsAmJKcGyy++8zP+HHJoquEWVO+rrDMcieN8IJ1mukzywkCWvLcmgjXVuPJlPaiG
+        sGwMyDoMg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48116)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mLv8S-00028L-Mj; Thu, 02 Sep 2021 23:24:40 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mLv8R-0008HC-5I; Thu, 02 Sep 2021 23:24:39 +0100
+Date:   Thu, 2 Sep 2021 23:24:39 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [RFC PATCH net-next 1/3] net: phy: don't bind genphy in
+ phy_attach_direct if the specific driver defers probe
+Message-ID: <20210902222439.GQ22278@shell.armlinux.org.uk>
+References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
+ <20210901225053.1205571-2-vladimir.oltean@nxp.com>
+ <20210902185016.GL22278@shell.armlinux.org.uk>
+ <YTErTRBnRYJpWDnH@lunn.ch>
+ <bd7c9398-5d3d-ccd8-8804-25074cff6bde@gmail.com>
+ <20210902213303.GO22278@shell.armlinux.org.uk>
+ <20210902213949.r3q5764wykqgjm4z@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4f680b5a-9076-3ba4-caea-bdd6eafeb899@redhat.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: SVR-ORW-MBX-05.mgc.mentorg.com (147.34.90.205) To
- svr-orw-mbx-01.mgc.mentorg.com (147.34.90.201)
+In-Reply-To: <20210902213949.r3q5764wykqgjm4z@skbuf>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 04:53:31PM +0200, David Hildenbrand wrote:
-> On 23.08.21 22:28, George G. Davis wrote:
-> > From: "George G. Davis" <davis.george@siemens.com>
+On Fri, Sep 03, 2021 at 12:39:49AM +0300, Vladimir Oltean wrote:
+> On Thu, Sep 02, 2021 at 10:33:03PM +0100, Russell King (Oracle) wrote:
+> > That's probably an unreliable indicator. DPAA2 has weirdness in the
+> > way it can dynamically create and destroy network interfaces, which
+> > does lead to problems with the rtnl lock. I've been carrying a patch
+> > from NXP for this for almost two years now, which NXP still haven't
+> > submitted:
 > > 
-> > Some test_pages_isolated failure conditions don't include trace points.
-> > For debugging issues caused by "pinned" pages, make sure to trace all
-> > calls whether they succeed or fail. In this case, a failure case did not
-> > result in a trace point. So add the missing failure case in
-> > test_pages_isolated traces.
+> > http://git.armlinux.org.uk/cgit/linux-arm.git/commit/?h=cex7&id=a600f2ee50223e9bcdcf86b65b4c427c0fd425a4
+> > 
+> > ... and I've no idea why that patch never made mainline. I need it
+> > to avoid the stated deadlock on SolidRun Honeycomb platforms when
+> > creating additional network interfaces for the SFP cages in userspace.
 > 
-> In which setups did you actually run into these cases?
-
-Good question!
-
-Although I'm not 100% certain that this specific failure condition has
-occurred in my recent testing, I'm able to reproduce cma_alloc -EBUSY
-faiure conditions when testing latest/recent master on arm64 based
-Renesas R-Car Starter Kit [1] using defconfig with
-CONFIG_CMA_SIZE_MBYTES=384 while running the following test case:
-
-trace-cmd record -N 192.168.1.87:12345 -b 4096 -e cma -e page_isolation -e compaction -e migrate &
-sleep 10
-while true; do a=$(( ( RANDOM % 10000 ) + 1 )); echo $a > /sys/kernel/debug/cma/cma-reserved/alloc && (usleep $a; echo $a > /sys/kernel/debug/cma/cma-reserved/free); done &
-while true; do b=$(( ( RANDOM % 10000 ) + 1 )); echo $b > /sys/kernel/debug/cma/cma-reserved/alloc && (usleep $b; echo $b > /sys/kernel/debug/cma/cma-reserved/free); done &
-while true; do c=$(( ( RANDOM % 10000 ) + 1 )); echo $c > /sys/kernel/debug/cma/cma-reserved/alloc && (usleep $c; echo $c > /sys/kernel/debug/cma/cma-reserved/free); done &
-while true; do d=$(( ( RANDOM % 10000 ) + 1 )); echo $d > /sys/kernel/debug/cma/cma-reserved/alloc && (usleep $d; echo $d > /sys/kernel/debug/cma/cma-reserved/free); done &
-while true; do e=$(( ( RANDOM % 10000 ) + 1 )); echo $e > /sys/kernel/debug/cma/cma-reserved/alloc && (usleep $e; echo $e > /sys/kernel/debug/cma/cma-reserved/free); done &
-/selftests/vm/transhuge-stress &
-
-The cma_alloc -EBUSY failures are caused by THP compound pages allocated
-from the CMA region where migration does not seem to work for compound
-THP pages. The work around is to disable CONFIG_TRANSPARENT_HUGEPAGE
-since it seems incompatible with the intended use of the CMA region.
-
+> Ah, nice, I've copied that broken logic for the dpaa2-switch too:
+> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=d52ef12f7d6c016f3b249db95af33f725e3dd065
 > 
-> 
-> -- 
-> Thanks,
-> 
-> David / dhildenb
-> 
+> So why don't you send the patch? I can send it too if you want to, one
+> for the switch and one for the DPNI driver.
+
+Sorry, I mis-stated. NXP did submit that exact patch, but it's actually
+incorrect for the reason I stated when it was sent:
+
+https://patchwork.ozlabs.org/project/netdev/patch/1574363727-5437-2-git-send-email-ioana.ciornei@nxp.com/
+
+I did miss the rtnl_lock() around phylink_disconnect_phy() in the
+description of the race, which goes someway towards hiding it, but
+there is still a race between phylink_destroy() and another thread
+calling dpaa2_eth_get_link_ksettings(), and priv->mac being freed:
+
+static int
+dpaa2_eth_get_link_ksettings(struct net_device *net_dev,
+                             struct ethtool_link_ksettings *link_settings)
+{
+        struct dpaa2_eth_priv *priv = netdev_priv(net_dev);
+
+        if (dpaa2_eth_is_type_phy(priv))
+                return phylink_ethtool_ksettings_get(priv->mac->phylink,
+                                                     link_settings);
+
+which dereferences priv->mac and priv->mac->phylink, vs:
+
+static irqreturn_t dpni_irq0_handler_thread(int irq_num, void *arg)
+{
+...
+        if (status & DPNI_IRQ_EVENT_ENDPOINT_CHANGED) {
+                dpaa2_eth_set_mac_addr(netdev_priv(net_dev));
+                dpaa2_eth_update_tx_fqids(priv);
+
+                if (dpaa2_eth_has_mac(priv))
+                        dpaa2_eth_disconnect_mac(priv);
+                else
+                        dpaa2_eth_connect_mac(priv);
+        }
+
+static void dpaa2_eth_disconnect_mac(struct dpaa2_eth_priv *priv)
+{
+        if (dpaa2_eth_is_type_phy(priv))
+                dpaa2_mac_disconnect(priv->mac);
+
+        if (!dpaa2_eth_has_mac(priv))
+                return;
+
+        dpaa2_mac_close(priv->mac);
+        kfree(priv->mac);		<== potential use after free bug by
+        priv->mac = NULL;		<== dpaa2_eth_get_link_ksettings()
+}
+
+void dpaa2_mac_disconnect(struct dpaa2_mac *mac)
+{
+        if (!mac->phylink)
+                return;
+
+        phylink_disconnect_phy(mac->phylink);
+        phylink_destroy(mac->phylink);	<== another use-after-free bug via
+					    dpaa2_eth_get_link_ksettings()
+        dpaa2_pcs_destroy(mac);
+}
+
+Note that phylink_destroy() is documented as:
+
+ * Note: the rtnl lock must not be held when calling this function.
+
+because it calls sfp_bus_del_upstream(), which will take the rtnl lock
+itself. An alternative solution would be to remove the rtnl locking
+from sfp_bus_del_upstream(), but then force _everyone_ to take the
+rtnl lock before calling phylink_destroy() - meaning a larger block of
+code ends up executing under the lock than is really necessary.
+
+However, as I stated in my review of the patch "As I've already stated,
+the phylink is not designed to be created and destroyed on a published
+network device." That still remains true today, and it seems that the
+issue has never been fixed in DPAA2 despite having been pointed out.
 
 -- 
-Regards,
-George
-
-[1] https://elinux.org/R-Car/Boards/H3SK
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
