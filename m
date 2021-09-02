@@ -2,90 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF40F3FF750
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E083FF752
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347813AbhIBWnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 18:43:21 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:33754
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347699AbhIBWnP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 18:43:15 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 3EA8740178;
-        Thu,  2 Sep 2021 22:42:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630622535;
-        bh=hzMq+mvgujqtRWYknQ4NY0yiqZ+ExiooC1lQTywchwE=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=uxKD3uOgVi+8FJ+7BuL1LJyvOwg4JeNgZkrdPWJWo9kFm6REg6WCpnH/2wbi8HLHl
-         qEIrchxaFj5hdvG54iFOWNTrD9mWHJ/j5ikQYMDNvGbTRk61USfNhwIDTXNQeCpdFs
-         rB6eX2QVBP2iTurAPZfqm0s9MGvFUkbneAGGQ9GrKkoehg42ev39nKN8eDvLVyTerw
-         kzuScPLHVXf4GJ77HMYvyJPn0ymjWNZXDFdanTe5NV0S44y3V/MnPV3SepLOKGYatk
-         Cs+HZ83X0cQwmzPZD9hCz5EpqwKTlV+t3ERiUziQpz+3H8Yzs5//lBh5BrnTKWOc+w
-         zBftdCfzMvioA==
-From:   Colin King <colin.king@canonical.com>
-To:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: mpt3sas: clean up some inconsistent indenting
-Date:   Thu,  2 Sep 2021 23:42:15 +0100
-Message-Id: <20210902224215.57286-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        id S1347827AbhIBWnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 18:43:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45830 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347749AbhIBWnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 18:43:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 381C76023F;
+        Thu,  2 Sep 2021 22:42:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630622552;
+        bh=4aUlYHvBzCqFQa64GvyxlbVMnHl1SyWbd2V7JWduEH8=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=PaRzT7w1t7FH9dl/99DBlvY65PltBaVq7qfVa1oaQ/qBw0hY1Wgg0udA89CT/tvAJ
+         6WEFjmWnwzpArHNrLBeRvsQrTOs+MAcEj8aMXSeFn1t5K/He0L8fQkEHe+KWEdSjx7
+         WMDl++zpqUbZDjfnL2uZ/WecTXrDHAd3PZIJj7kIf2LYFGEm/zJEz027uSQ/ZnjV5S
+         Ow0oRCNm2C6h4Vf0eefYnrmaznz5AKTa7ww+7aIocQEwTPBlArJU0e/mIjGef37Bp8
+         CWZlM7vlKqrOv+IQpQEz9SnpTK8A6WgtTRe78LM0sgQeztw8bV9G8wkUfEic59UdOJ
+         nEKrZIMBxvaHg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 294D160A0C;
+        Thu,  2 Sep 2021 22:42:32 +0000 (UTC)
+Subject: Re: [GIT PULL] pin control changes for v5.15
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CACRpkdaQGYoyJ2R1zF2P-S5VMFyPZtySdmNAhuv7KVAjE+o_wg@mail.gmail.com>
+References: <CACRpkdaQGYoyJ2R1zF2P-S5VMFyPZtySdmNAhuv7KVAjE+o_wg@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CACRpkdaQGYoyJ2R1zF2P-S5VMFyPZtySdmNAhuv7KVAjE+o_wg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.15-1
+X-PR-Tracked-Commit-Id: 04853352952b7dd17f355ed54bd81305b341af55
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c793011242d182e5f12800c12dbaf37af80be735
+Message-Id: <163062255210.25965.5032934280915714613.pr-tracker-bot@kernel.org>
+Date:   Thu, 02 Sep 2021 22:42:32 +0000
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+The pull request you sent on Thu, 2 Sep 2021 21:52:35 +0200:
 
-There are a couple of statements where the indentation is not correct,
-clean these up. Remove a redundant break statement.
+> git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git tags/pinctrl-v5.15-1
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/scsi/mpt3sas/mpt3sas_ctl.c   | 2 +-
- drivers/scsi/mpt3sas/mpt3sas_scsih.c | 3 +--
- 2 files changed, 2 insertions(+), 3 deletions(-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c793011242d182e5f12800c12dbaf37af80be735
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-index 770b241d7bb2..1b79f01f03a4 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
-@@ -2178,7 +2178,7 @@ mpt3sas_send_diag_release(struct MPT3SAS_ADAPTER *ioc, u8 buffer_type,
- 		mpt3sas_check_cmd_timeout(ioc,
- 		    ioc->ctl_cmds.status, mpi_request,
- 		    sizeof(Mpi2DiagReleaseRequest_t)/4, reset_needed);
--		 *issue_reset = reset_needed;
-+		*issue_reset = reset_needed;
- 		rc = -EFAULT;
- 		goto out;
- 	}
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_scsih.c b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-index 2f82b1e629af..d383d4a03436 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_scsih.c
-@@ -10749,8 +10749,7 @@ _mpt3sas_fw_work(struct MPT3SAS_ADAPTER *ioc, struct fw_event_work *fw_event)
- 	case MPI2_EVENT_PCIE_TOPOLOGY_CHANGE_LIST:
- 		_scsih_pcie_topology_change_event(ioc, fw_event);
- 		ioc->current_event = NULL;
--			return;
--	break;
-+		return;
- 	}
- out:
- 	fw_event_work_put(fw_event);
+Thank you!
+
 -- 
-2.32.0
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
