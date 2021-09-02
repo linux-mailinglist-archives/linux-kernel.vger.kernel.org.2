@@ -2,180 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2943FEDB3
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:22:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56E433FEDBA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344333AbhIBMXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 08:23:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234098AbhIBMXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 08:23:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9018F6054E;
-        Thu,  2 Sep 2021 12:22:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630585345;
-        bh=LtO9so53QFcq+GSVqeOS9+q6OqRT7pG2sQXE1iTcrqo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i+arjeBtP60Jc0aWJJ3X8l1UHnzxL6ArOqmFjNAFMJkA2xQHDAyurmji05dmCS0AX
-         ASrFCM88WJSxodnXXqw+ddL39T9QoJigLw9bzaWIRNlB7i2Pirod+wARCRJpLS5P4N
-         AeVxCMM1EKx1ewf9T8Vye/Gmza39Mg3b8VCu10W+jJ0zkG98iK0vIMMEj4REPVhg4O
-         27wIWarQJD2ZWL9Etr2pnkCBKT1Mz/JjmIcql9GVL7bPRVqKAy9XSbypJEDq7CsOwt
-         brn4AjNL6ruUIx2V8PdrY1ek9izEaa3/YTQnwO3NZ7xWiL0sJqWXfSqtYpHgZjIBwC
-         RizJuqgWYfreg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 5708F4007E; Thu,  2 Sep 2021 09:22:21 -0300 (-03)
-Date:   Thu, 2 Sep 2021 09:22:21 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
-        mike.leach@linaro.org, suzuki.poulose@arm.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] perf build: Report failure for testing feature
- libopencsd
-Message-ID: <YTDB/VuANx5c+5sk@kernel.org>
-References: <20210902081800.550016-1-leo.yan@linaro.org>
+        id S1344368AbhIBMZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 08:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234098AbhIBMZz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 08:25:55 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C367EC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 05:24:56 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mLlm2-0007FX-Ph; Thu, 02 Sep 2021 14:24:54 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1mLlm2-0001GM-9y; Thu, 02 Sep 2021 14:24:54 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, stable@kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paulburton@kernel.org>
+Subject: [PATCH v2] MIPS: Malta: fix alignment of the devicetree buffer
+Date:   Thu,  2 Sep 2021 14:24:53 +0200
+Message-Id: <20210902122453.4805-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902081800.550016-1-leo.yan@linaro.org>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Sep 02, 2021 at 04:18:00PM +0800, Leo Yan escreveu:
-> When build perf tool with passing option 'CORESIGHT=1' explicitly, if
-> the feature test fails for library libopencsd, the build doesn't
-> complain the feature failure and continue to build the tool with
-> disabling the CoreSight feature insteadly.
-> 
-> This patch changes the building behaviour, when build perf tool with the
-> option 'CORESIGHT=1' and detect the failure for testing feature
-> libopencsd, the build process will be aborted and it shows the complaint
-> info.
+Starting with following patch MIPS Malta is not able to boot:
+| commit 79edff12060fe7772af08607eff50c0e2486c5ba
+| Author: Rob Herring <robh@kernel.org>
+| scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9
 
-Thanks, added some committer notes to show that it now works:
+The reason is the alignment test added to the fdt_ro_probe_(). To fix
+this issue, we need to make sure that fdt_buf is aligned.
 
-commit 8fb36b1f54873870262810d3db10526559e1d6c2
-Author: Leo Yan <leo.yan@linaro.org>
-Date:   Thu Sep 2 16:18:00 2021 +0800
+Fixes: 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
+Cc: <stable@kernel.org> # v5.12+
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ arch/mips/mti-malta/malta-dtshim.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-    perf build: Report failure for testing feature libopencsd
-    
-    When build perf tool with passing option 'CORESIGHT=1' explicitly, if
-    the feature test fails for library libopencsd, the build doesn't
-    complain the feature failure and continue to build the tool with
-    disabling the CoreSight feature insteadly.
-    
-    This patch changes the building behaviour, when build perf tool with the
-    option 'CORESIGHT=1' and detect the failure for testing feature
-    libopencsd, the build process will be aborted and it shows the complaint
-    info.
-    
-    Committer testing:
-    
-    First make sure there is no opencsd library installed:
-    
-      $ rpm -qa | grep -i csd
-      $ sudo rm -rf `find /usr/local -name "*csd*"`
-      $ find /usr/local -name "*csd*"
-      $
-    
-    Then cleanup the perf build output directory:
-    
-      $ rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf ;
-      $
-    
-    And try to build explicitely asking for coresight:
-    
-      $ make O=/tmp/build/perf CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin
-      make: Entering directory '/var/home/acme/git/perf/tools/perf'
-        BUILD:   Doing 'make -j24' parallel build
-        HOSTCC  /tmp/build/perf/fixdep.o
-        HOSTLD  /tmp/build/perf/fixdep-in.o
-        LINK    /tmp/build/perf/fixdep
-      Makefile.config:493: *** Error: No libopencsd library found or the version is not up-to-date. Please install recent libopencsd to build with CORESIGHT=1.  Stop.
-      make[1]: *** [Makefile.perf:238: sub-make] Error 2
-      make: *** [Makefile:113: install-bin] Error 2
-      make: Leaving directory '/var/home/acme/git/perf/tools/perf'
-      $
-    
-    Now install the opencsd library present in Fedora 34:
-    
-      $ sudo dnf install opencsd-devel
-      <SNIP>
-      Installed:
-        opencsd-1.0.0-1.fc34.x86_64 opencsd-devel-1.0.0-1.fc34.x86_64
-      Complete!
-      $
-    
-    Try again building with coresight:
-    
-      $ make O=/tmp/build/perf CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin
-      make: Entering directory '/var/home/acme/git/perf/tools/perf'
-        BUILD:   Doing 'make -j24' parallel build
-      Makefile.config:493: *** Error: No libopencsd library found or the version is not up-to-date. Please install recent libopencsd to build with CORESIGHT=1.  Stop.
-      make[1]: *** [Makefile.perf:238: sub-make] Error 2
-      make: *** [Makefile:113: install-bin] Error 2
-      make: Leaving directory '/var/home/acme/git/perf/tools/perf'
-      $
-    
-    Since Fedora 34 is pretty recent, one assumes we need to get it from its
-    upstream git repository, use rpm to find where that is:
-    
-      $ rpm -q --qf "%{URL}\n" opencsd
-      https://github.com/Linaro/OpenCSD
-      $
-    
-    Go there, clone the repo, build it and install into /usr/local, then try
-    again:
-    
-      $ cd ~acme/git/perf
-      $ make O=/tmp/build/perf VF=1 CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin | grep -i opencsd
-      ...                    libopencsd: [ on  ]
-        PERF_VERSION = 5.14.g454719f67a3d
-      $ export LD_LIBRARY_PATH=/usr/local/lib
-      $ ldd ~/bin/perf | grep opencsd
-            libopencsd_c_api.so.1 => /usr/local/lib/libopencsd_c_api.so.1 (0x00007f28f78a4000)
-            libopencsd.so.1 => /usr/local/lib/libopencsd.so.1 (0x00007f28f6a2e000)
-      $
-    
-    Now it works.
-    
-    Requested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-    Signed-off-by: Leo Yan <leo.yan@linaro.org>
-    Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-    Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-    Cc: James Clark <james.clark@arm.com>
-    Cc: Jiri Olsa <jolsa@redhat.com>
-    Cc: Mark Rutland <mark.rutland@arm.com>
-    Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-    Cc: Mike Leach <mike.leach@linaro.org>
-    Cc: Namhyung Kim <namhyung@kernel.org>
-    Cc: Peter Zijlstra <peterz@infradead.org>
-    Cc: Suzuki Poulouse <suzuki.poulose@arm.com>
-    Cc: coresight@lists.linaro.org
-    Link: http://lore.kernel.org/lkml/20210902081800.550016-1-leo.yan@linaro.org
-    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index b051c0c312c5243a..b66cf128cbc76d07 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -489,6 +489,8 @@ ifdef CORESIGHT
-         CFLAGS += -DCS_RAW_PACKED
-       endif
-     endif
-+  else
-+    dummy := $(error Error: No libopencsd library found or the version is not up-to-date. Please install recent libopencsd to build with CORESIGHT=1)
-   endif
- endif
+diff --git a/arch/mips/mti-malta/malta-dtshim.c b/arch/mips/mti-malta/malta-dtshim.c
+index 0ddf03df6268..f451268f6c38 100644
+--- a/arch/mips/mti-malta/malta-dtshim.c
++++ b/arch/mips/mti-malta/malta-dtshim.c
+@@ -22,7 +22,7 @@
+ #define  ROCIT_CONFIG_GEN1_MEMMAP_SHIFT	8
+ #define  ROCIT_CONFIG_GEN1_MEMMAP_MASK	(0xf << 8)
  
+-static unsigned char fdt_buf[16 << 10] __initdata;
++static unsigned char fdt_buf[16 << 10] __initdata __aligned(8);
+ 
+ /* determined physical memory size, not overridden by command line args	 */
+ extern unsigned long physical_memsize;
+-- 
+2.30.2
+
