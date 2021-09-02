@@ -2,141 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A61D3FF4B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8033C3FF4BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345567AbhIBUPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345522AbhIBUPc (ORCPT
+        id S1344469AbhIBUSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 16:18:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43469 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229802AbhIBUSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 16:15:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1A7C061575;
-        Thu,  2 Sep 2021 13:14:33 -0700 (PDT)
-Date:   Thu, 02 Sep 2021 20:14:31 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630613672;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=49+gjQxJGFuoNNdQY/0uc4SSe/U/0IFK8zhkJTzEwgw=;
-        b=Bvljnnvneg+9qt1d3jJvp0yREOlHdnWL8YN5/Lw/lqOkqDL8Z9kgW2qmQCcMml4jLcgBGB
-        ohUPYvuc3JsT0c9Fvbtj5BBeQ8jhDdt0ozt30CZFxFYPsXwGS8hB9pckqnsriW8K1p0CF5
-        TKlrc8aoSHhZy2VZV/pL2ToqsQXV+IaUzHu9CnPVFYtXaSTiVBif5lPRhLrg9Fm/2eNV2c
-        b3qCL2iLZkUW8QzKfGcuhuFhVrzpPWXPt9g3H26G9K8AcejfHjPeAEg7J6cC0R8RskDapp
-        Ai1laDk3XaG1m/qAXANVRADMjiOv7gwOQYQgdc8rYfyAf/gO+PJGOhyg0WXkwQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630613672;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=49+gjQxJGFuoNNdQY/0uc4SSe/U/0IFK8zhkJTzEwgw=;
-        b=B1PpJ6FGqtqakjzqQYcZZmwsjbkZnJY/dklWyvOf/ny2DhD5W0qPs/tNzPzBCv0eJ6rfqs
-        7FfNCGR+ZBD+70AQ==
-From:   "tip-bot2 for Mike Galbraith" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] locking/rwsem: Add missing __init_rwsem() for
- PREEMPT_RT
-Cc:     Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <50a936b7d8f12277d6ec7ed2ef0421a381056909.camel@gmx.de>
-References: <50a936b7d8f12277d6ec7ed2ef0421a381056909.camel@gmx.de>
-MIME-Version: 1.0
-Message-ID: <163061367170.25758.10664619926039078214.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+        Thu, 2 Sep 2021 16:18:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630613845;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=cD1W3dntLgg1x3vkXVCT9JGKq3SQlkeHYUmqX0fImm4=;
+        b=Ar5X45d9UPWK1VBEFq7oD6rOUK6Nv1a05LNAyynB+0DXb1s0wZApRWq/O9uSm747L2IjB3
+        9Zvi3iG5tbN8MchpkmN2GDuBjd6pmJssNEkuFfnqeqIM3XqUs2PMwXAeCtfI5GOeD7N/Td
+        3GxUCEdNVS02fTRYZDlSf0zB81b3fiI=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-240-JSZjy7V6P3aP_Jw4IAMXdA-1; Thu, 02 Sep 2021 16:17:24 -0400
+X-MC-Unique: JSZjy7V6P3aP_Jw4IAMXdA-1
+Received: by mail-qt1-f197.google.com with SMTP id m6-20020ac807c6000000b0029994381c5fso2822775qth.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 13:17:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cD1W3dntLgg1x3vkXVCT9JGKq3SQlkeHYUmqX0fImm4=;
+        b=J8MhkG+n2mee5F4kKogX7PRuKs2uKXkcxwCxl+iGCMldNEo2I2uwqQV1QKxyz4l1lq
+         GLgozDSoUXf9p0oyD3ntyijwq4XCHTMAQTmsTPekUWdnKSRKg3tYqD9P4CnqybwdIQyU
+         T/d58L85PjQAmxyyBpWwt+NPIN5wtjC5vptDipYz1mvxaCFiiy9WvkeVzm0YxTNwS5B7
+         jpMcyD+qy8Quler8WrH2O3GJ/2tliRttXyOuuMgAM16/Md5K+P46/6g5YFZc0xR4i3vI
+         0SAsuD1C8ItcmmzvB/bfF08hCZeHnuwS91WE8Uxo7EmlbhwTt/E2A8fbaZBhohKSG2Ny
+         u63Q==
+X-Gm-Message-State: AOAM532MqasmbnII2iqrn8R4cYUspCLYRxxxuNFq5Dv2tdKtL90oHm8F
+        hfBqzYpXXMoc0GZWThFWTSTBkPnfgEpZNLOgcWzsEneTljP1moZnF2TglkmKR+2Y+KzkE1+thPG
+        w+tS2+CRUZ81EDFKf61eHtviuNa26Yk2KkZCfUA7xVdoa/V6kVbKitkILa82DrGlzznGWS1CAVg
+        ==
+X-Received: by 2002:ac8:a0a:: with SMTP id b10mr167553qti.164.1630613844063;
+        Thu, 02 Sep 2021 13:17:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz/2PxgUG48VI5CyWpSrsgmcN4+bm4tOjKozx0or1bv7gKrDgWp7u41BOWsDuMOfcRu4ITTeA==
+X-Received: by 2002:ac8:a0a:: with SMTP id b10mr167496qti.164.1630613843647;
+        Thu, 02 Sep 2021 13:17:23 -0700 (PDT)
+Received: from t490s.redhat.com ([2607:fea8:56a3:500::ad7f])
+        by smtp.gmail.com with ESMTPSA id m8sm2219962qkk.130.2021.09.02.13.17.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 13:17:23 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>, peterx@redhat.com,
+        Jerome Glisse <jglisse@redhat.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        David Hildenbrand <david@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>
+Subject: [PATCH v2 0/5] mm: A few cleanup patches around zap, shmem and uffd
+Date:   Thu,  2 Sep 2021 16:17:16 -0400
+Message-Id: <20210902201721.52796-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+[Based on tag v5.14, but it should still apply to -mm too.  If not, I can
+ repost anytime]
 
-Commit-ID:     15eb7c888e749fbd1cc0370f3d38de08ad903700
-Gitweb:        https://git.kernel.org/tip/15eb7c888e749fbd1cc0370f3d38de08ad903700
-Author:        Mike Galbraith <efault@gmx.de>
-AuthorDate:    Tue, 31 Aug 2021 08:38:19 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 02 Sep 2021 22:07:17 +02:00
+Hugh,
 
-locking/rwsem: Add missing __init_rwsem() for PREEMPT_RT
+So I found one thing that I feel like a bug of commit 22061a1ffabdb9c3, but I'm
+not sure.  If that's the case, patch 5 of this series may be the fix for it.
 
-730633f0b7f95 became the first direct caller of __init_rwsem() vs the
-usual init_rwsem(), exposing PREEMPT_RT's lack thereof.  Add it.
+The problem is unmap_mapping_page() in current tree is calling
+unmap_mapping_range_tree() with a details pointer, while by default when detail
+pointer is specified, it means "we want to skip zapping swap entries".
 
-[ tglx: Move it out of line ]
+I didn't mention this in v1 simply because I thought it was fine, e.g., swap
+entry won't be kept in shmem ptes so skipped is okay (it is never okay with
+shmem uffd-wp but uffd-wp code is not landed yet).  However I just remembered
+there could also be e.g. shmem migration entries if I'm not wrong.  From that
+pov, skipping swap entries for unmap_mapping_page() seems wrong.  Would you
+please help check?
 
-Signed-off-by: Mike Galbraith <efault@gmx.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/50a936b7d8f12277d6ec7ed2ef0421a381056909.camel@gmx.de
+It'll be great if you can comment on patch 1 too, to see whether that's okay
+and what I could have been missing there (e.g., if you have other concern on
+breaking stuff, I'll be happy to test).
 
----
- include/linux/rwsem.h  | 12 ++----------
- kernel/locking/rwsem.c | 10 ++++++----
- 2 files changed, 8 insertions(+), 14 deletions(-)
+v2:
+- Patch "mm: Clear vmf->pte after pte_unmap_same() returns"
+  - Remove one comment [David]
+- Collect r-b for patch 2/3
+- Rewrite the last two patches to drop ZAP_FLAG_CHECK_MAPPING, dropping
+  Alistair's r-b on patch 5 because it changed [David, Matthew]
 
-diff --git a/include/linux/rwsem.h b/include/linux/rwsem.h
-index 426e98e..352c612 100644
---- a/include/linux/rwsem.h
-+++ b/include/linux/rwsem.h
-@@ -142,22 +142,14 @@ struct rw_semaphore {
- #define DECLARE_RWSEM(lockname) \
- 	struct rw_semaphore lockname = __RWSEM_INITIALIZER(lockname)
- 
--#ifdef CONFIG_DEBUG_LOCK_ALLOC
--extern void  __rwsem_init(struct rw_semaphore *rwsem, const char *name,
-+extern void  __init_rwsem(struct rw_semaphore *rwsem, const char *name,
- 			  struct lock_class_key *key);
--#else
--static inline void  __rwsem_init(struct rw_semaphore *rwsem, const char *name,
--				 struct lock_class_key *key)
--{
--}
--#endif
- 
- #define init_rwsem(sem)						\
- do {								\
- 	static struct lock_class_key __key;			\
- 								\
--	init_rwbase_rt(&(sem)->rwbase);			\
--	__rwsem_init((sem), #sem, &__key);			\
-+	__init_rwsem((sem), #sem, &__key);			\
- } while (0)
- 
- static __always_inline int rwsem_is_locked(struct rw_semaphore *sem)
-diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-index 9215b4d..000e8d5 100644
---- a/kernel/locking/rwsem.c
-+++ b/kernel/locking/rwsem.c
-@@ -1376,15 +1376,17 @@ static inline void __downgrade_write(struct rw_semaphore *sem)
- 
- #include "rwbase_rt.c"
- 
--#ifdef CONFIG_DEBUG_LOCK_ALLOC
--void __rwsem_init(struct rw_semaphore *sem, const char *name,
-+void __init_rwsem(struct rw_semaphore *sem, const char *name,
- 		  struct lock_class_key *key)
- {
-+	init_rwbase_rt(&(sem)->rwbase);
-+
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
- 	debug_check_no_locks_freed((void *)sem, sizeof(*sem));
- 	lockdep_init_map_wait(&sem->dep_map, name, key, 0, LD_WAIT_SLEEP);
--}
--EXPORT_SYMBOL(__rwsem_init);
- #endif
-+}
-+EXPORT_SYMBOL(__init_rwsem);
- 
- static inline void __down_read(struct rw_semaphore *sem)
- {
+===== v1 cover letter =====
+
+I picked up these patches from uffd-wp v5 series here:
+
+https://lore.kernel.org/lkml/20210715201422.211004-1-peterx@redhat.com/
+
+IMHO all of them are very nice cleanups to existing code already, they're all
+small and self-contained.  They'll be needed by uffd-wp coming series.  I would
+appreciate if they can be accepted earlier, so as to not carry them over always
+with the uffd-wp series.
+
+I removed some CC from the uffd-wp v5 series to reduce the noise, and added a
+few more into it.
+
+Reviews are greatly welcomed, thanks.
+
+Peter Xu (5):
+  mm/shmem: Unconditionally set pte dirty in mfill_atomic_install_pte
+  mm: Clear vmf->pte after pte_unmap_same() returns
+  mm: Drop first_index/last_index in zap_details
+  mm: Add zap_skip_check_mapping() helper
+  mm: Add ZAP_FLAG_SKIP_SWAP and zap_flags
+
+ include/linux/mm.h | 33 ++++++++++++++++++--
+ mm/memory.c        | 76 +++++++++++++++++++---------------------------
+ mm/shmem.c         |  1 -
+ mm/userfaultfd.c   |  3 +-
+ 4 files changed, 62 insertions(+), 51 deletions(-)
+
+-- 
+2.31.1
+
