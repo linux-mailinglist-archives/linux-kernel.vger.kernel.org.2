@@ -2,110 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A92D3FEED1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA9E3FEECF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:38:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345288AbhIBNje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:39:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345197AbhIBNjb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:39:31 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1A0C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 06:38:32 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id i21so4472409ejd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 06:38:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2hsT12q9l6TQD8145m1U6RLvhDKw5cK3afIq0kPWG8Y=;
-        b=rm/K83xLimD8/Sar4CK6jKhvkSa3m9Jrf3cSQ7xtnLA7XNvmZ9FKMs8h6ATGhGAauY
-         RfiQRcLCjv+jwK2X4TjUG1F6F3LKb/61hz/DAKL6B3ki1IHOEJQ/cLDpKQfbIxR+VZdq
-         eXQPwDgVYP/f+A7UDsQx/5ryCVfpRLMMKn5EtWGwkBdaB0joxiKKFQir8PchzyvvetQ/
-         I2GK5PTVSUi9hEverlXoJgY5J9kRQDER/YR4MLQdQJWKQHR43QdImTfobEjcrsxIYumE
-         6m6rCJRg2oxS+4wDFbnYkB2Z1nExNRNE/YblBxy//cMseHkltHpyxw5gqAyXnMh62Q1z
-         zriA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2hsT12q9l6TQD8145m1U6RLvhDKw5cK3afIq0kPWG8Y=;
-        b=miyHtA8VqKcwI1EuL4Jl/1knAXnWmLgkBmMAIJc7pdVMtxB/NV/leDrNb5nhy5a7TG
-         5HdAYreT0rIUis8mOGZ6Uerwc/nhZjvqEfFl75Q9wlRD89Bb4UTaEm1JQC1zF3WdNWrc
-         +KfI1nSq+fd7fUm7yID+67w2Er2qHeY+S4/dGS2lkHpW5MimF9YbJ6E0/OAItfvjwUc3
-         wJeTimpcHQYYip6gLrzb1cv/LQIzyIqsienp5zj0Er5Bb9+Z/84uk7PWbnNhwPETwIUo
-         aQizJst+JCtOsIz4j2+yzLrZueesDImugefdC0/Oqr0aqft4aRYy1uYMCFLEU67mABIx
-         /1cw==
-X-Gm-Message-State: AOAM532IqR7WhLJrAEioNEieFWGq0BNe1IvUwVrJfzXQLcjsNBsoXxpQ
-        w99S4y7uAKcadMfCLNmevN7by2ynEiOs09AYwhMkrSDelO5srg==
-X-Google-Smtp-Source: ABdhPJyJWl450Wi5qIiOaXpuOqVYxulEz/9ni1Ysxuz5mfzlO+VbWOJzlcVLLMFXeHcGj+1ecJ8Tb+IhyMO/kLKIT1M=
-X-Received: by 2002:a17:906:802:: with SMTP id e2mr3810130ejd.133.1630589910058;
- Thu, 02 Sep 2021 06:38:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210824165607.709387-1-sashal@kernel.org> <20210824165607.709387-127-sashal@kernel.org>
- <CA+G9fYveOoHUydWRjRWtKcF3smTXt3F3ChxuZuDSoxCkDA1rPw@mail.gmail.com> <YTDSFr52yweeAkSa@kroah.com>
-In-Reply-To: <YTDSFr52yweeAkSa@kroah.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 2 Sep 2021 19:08:17 +0530
-Message-ID: <CA+G9fYuhJzH28u16ht6MesRdgZs7tGi4wTo+FtbfH-uuU+ChAA@mail.gmail.com>
-Subject: Re: [PATCH 5.13 126/127] fs: warn about impending deprecation of
- mandatory locks
+        id S1345278AbhIBNjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:39:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234646AbhIBNjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 09:39:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E007960FC4;
+        Thu,  2 Sep 2021 13:38:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630589904;
+        bh=l6uGBy344Ik/n8UBlJrjcnIquIgfHVdam3N42gR+sUI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SjYuVkEAVYAjQp+u9hSTMc3fC7P9udJYCb7RaLZvFIvUL5h5EW63rHf2Mtk/kjQp5
+         Kft841UbbviIMIIurDAJnWL2rVRiMQGSa/wPYmVk5icJeicJXicDqWDLUqOPLFLrN1
+         /FajbLW5FQbfUtKbfHI3psfOaL/61R7tYAGDWdfgh56Yzi1sEaD+2XYND4fiBpV2Nx
+         KX0kx7xQq8VJAzMBiSD7KHFfQsIN23m7mg5SgxDvgtH8Fg5TOZJgUlzSJ/Da727ZPK
+         HBFB6c6B0R7oxUwYUIW2CZYIzS7bLRbRvkecE9i9T5ieFmTeNjfw9N1U8EWMESeGVy
+         FEmOUWlKjTCHA==
+Date:   Thu, 2 Sep 2021 15:38:20 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Jeff Layton <jlayton@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, John Stultz <john.stultz@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] misc: hisi_hikey_usb: change the DT schema
+Message-ID: <20210902153820.5624b57f@coco.lan>
+In-Reply-To: <20210902151053.7ddfbe3a@coco.lan>
+References: <cover.1630581434.git.mchehab+huawei@kernel.org>
+        <d990e75f28c443c0c5a5fc857b87acc4be3f9464.1630581434.git.mchehab+huawei@kernel.org>
+        <YTC4LPDem9uKXyMd@kroah.com>
+        <20210902151053.7ddfbe3a@coco.lan>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Sept 2021 at 19:01, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Sep 02, 2021 at 06:50:48PM +0530, Naresh Kamboju wrote:
-> > On Tue, 24 Aug 2021 at 22:35, Sasha Levin <sashal@kernel.org> wrote:
-> > >
-> > > From: Jeff Layton <jlayton@kernel.org>
-> > >
-> > > [ Upstream commit fdd92b64d15bc4aec973caa25899afd782402e68 ]
-> > >
-> > > We've had CONFIG_MANDATORY_FILE_LOCKING since 2015 and a lot of distros
-> > > have disabled it. Warn the stragglers that still use "-o mand" that
-> > > we'll be dropping support for that mount option.
-> > >
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > ---
-> > >  fs/namespace.c | 6 +++++-
-> > >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/fs/namespace.c b/fs/namespace.c
-> > > index caad091fb204..03770bae9dd5 100644
-> > > --- a/fs/namespace.c
-> > > +++ b/fs/namespace.c
-> > > @@ -1716,8 +1716,12 @@ static inline bool may_mount(void)
-> > >  }
-> > >
-> > >  #ifdef CONFIG_MANDATORY_FILE_LOCKING
-> > > -static inline bool may_mandlock(void)
-> > > +static bool may_mandlock(void)
-> > >  {
-> > > +       pr_warn_once("======================================================\n"
-> > > +                    "WARNING: the mand mount option is being deprecated and\n"
-> > > +                    "         will be removed in v5.15!\n"
-> > > +                    "======================================================\n");
-> >
-> > We are getting this error on all devices while running LTP syscalls
-> > ftruncate test cases
-> > on all the stable-rc branches.
->
-> It's not an "error", it's a warning that the test should be fixed :)
+Em Thu, 2 Sep 2021 15:10:53 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
-You are right, it is a warning :)
+> Em Thu, 2 Sep 2021 13:40:28 +0200
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+> 
+> > On Thu, Sep 02, 2021 at 01:28:35PM +0200, Mauro Carvalho Chehab wrote:  
+> > > As there's no upstream DT bindings for this driver, let's
+> > > update its DT schema, while it is not too late.    
+> > 
+> > So this is for 5.15-final?  
+> 
+> It can either be for 5.15 or 5.16, as there aren't any compatible
+> under arch/ which uses the DT schema there. All patches adding
+> such compatible are on this series. So, whatever version this
+> is applied should be OK.
 
- - Naresh
+On a separate note, despite having "hisi_" on this driver's name, there's
+nothing there that is really HiSilicon specific. What this driver does is
+to control an USB HUB integrated inside a DT-based board, doing those 
+functions:
+
+	- Power on/off the chip;
+	- reset the HUB;
+	- control its OTG switch;
+	- control power on/off for an USB type-C connector;
+	- set USB role as host or device.
+
+This is used on both HiKey 960 and HiKey 970 with the following
+topology:
+
+  +-----+      +--------+       +---------+
+  | SoC | ---> | USB PHY|  ---> | USB HUB | ---> USB 3.0
+  +-----+      +--------+       +---------+      and type-C ports 
+
+Both Kirin 960 and 970 SoCs have a Synapsys IP (DWC 3). 
+
+Both HiKey 960 and 970 cards use Richtek RT1711H Type-C Chip Driver
+as part of the USB PHY logic, but they use different USB HUBs:
+
+	- HiKey 960 use a Microchip USB5734 HUB
+	- HiKey 970 use a TI TUSB8041 HUB
+
+While I'm not sure how generic this driver can be, I'm thinking that
+maybe a future patch could rename it to 'generic-usb-hub' or 
+something similar - finding a good name is always the hardest 
+part :-)
+
+Thanks,
+Mauro
