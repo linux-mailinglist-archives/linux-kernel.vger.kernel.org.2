@@ -2,114 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF1A3FE8EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 07:53:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395A23FE8EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 07:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233331AbhIBFxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 01:53:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbhIBFxq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 01:53:46 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61D96C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 22:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=sgTKkkf0r5JkALe/VjT0WHHTHP9n5mBqeJ9Npmgcuv4=; b=MLlUF6k3yfZe7Seqrk0nmq1ebQ
-        7MKnmI74GYUYiJwDRbEvs+DOf+c8G3ju1YMiyS3Zb36jHnQTWweDjwdl8lP6s8pMeR6o6pPd/aUB4
-        IwlBDRUs1THpDhfzl0jWgd4Zt09bEwdOAwRkDwZmz6x9pvQFsvJ9JUzS4wcb664pSawFPttsq/aay
-        BbZIgiGvGr04mM8WI665QYkzqGjcHpJEma270Fk6tNUP662ky1B1B8YgNA+43US81kxFhzoNzOjDF
-        eReZrg725pdovNt9V1mm2JyuNeZAW/7yYkrPj1d+JGK4mmpImWhPPBDazFO7hpnMnTPpQENOxDoi/
-        gOeckJKw==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mLfeS-008agS-38; Thu, 02 Sep 2021 05:52:40 +0000
-Subject: Re: [PATCH] drm/ttm: provide default page protection for UML
-To:     Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>, dri-devel@lists.freedesktop.org,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-um@lists.infradead.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-References: <20210902020129.25952-1-rdunlap@infradead.org>
- <9faacbc8-3346-8033-5b4d-60543eae959e@cambridgegreys.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f978cae5-7275-6780-8a17-c6e61247bce7@infradead.org>
-Date:   Wed, 1 Sep 2021 22:52:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236791AbhIBFy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 01:54:57 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:12338 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231831AbhIBFyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 01:54:55 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630562037; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=mCYZzY8OT8rVEtmVK5dyJIyO9quIyexdFce4ZNsAP0U=;
+ b=DSs5gxazDHdgo8allDmzWO50a2ginGl88IH6vxX45R3r/RYf5P4YB/V8JhqYh74q3UIFcLUG
+ 4M2I2p/o7xOykp1Jm0N9Pieo2xlQck6TlCr/9687NZPXopI6fARsa76q8kIpiEc4TY+CM8kA
+ jaYv9RsVGZ0A59zlE7dzjCIiRFA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 613066eae0fcecca19a4f905 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 02 Sep 2021 05:53:46
+ GMT
+Sender: mdalam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C3C90C43460; Thu,  2 Sep 2021 05:53:45 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: mdalam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8A94DC4338F;
+        Thu,  2 Sep 2021 05:53:43 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <9faacbc8-3346-8033-5b4d-60543eae959e@cambridgegreys.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 02 Sep 2021 11:23:43 +0530
+From:   mdalam@codeaurora.org
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     mani@kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, sricharan@codeaurora.org,
+        stable@kernel.org
+Subject: Re: [PATCH V3] mtd: rawnand: qcom: Update code word value for raw
+ read
+In-Reply-To: <20210901163615.090c6f24@xps13>
+References: <1630493613-8158-1-git-send-email-mdalam@codeaurora.org>
+ <20210901163615.090c6f24@xps13>
+Message-ID: <b6473b7de57aa10682a5ca1651f6e620@codeaurora.org>
+X-Sender: mdalam@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/21 10:48 PM, Anton Ivanov wrote:
-> On 02/09/2021 03:01, Randy Dunlap wrote:
->> boot_cpu_data [struct cpuinfo_um (on UML)] does not have a struct
->> member named 'x86', so provide a default page protection mode
->> for CONFIG_UML.
->>
->> Mends this build error:
->> ../drivers/gpu/drm/ttm/ttm_module.c: In function ‘ttm_prot_from_caching’:
->> ../drivers/gpu/drm/ttm/ttm_module.c:59:24: error: ‘struct cpuinfo_um’ has no member named ‘x86’
->>    else if (boot_cpu_data.x86 > 3)
->>                          ^
->>
->> Fixes: 3bf3710e3718 ("drm/ttm: Add a generic TTM memcpy move for page-based iomem")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Thomas Hellström <thomas.hellstrom@linux.intel.com>
->> Cc: Christian König <christian.koenig@amd.com>
->> Cc: Huang Rui <ray.huang@amd.com>
->> Cc: dri-devel@lists.freedesktop.org
->> Cc: Jeff Dike <jdike@addtoit.com>
->> Cc: Richard Weinberger <richard@nod.at>
->> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
->> Cc: linux-um@lists.infradead.org
->> Cc: David Airlie <airlied@linux.ie>
->> Cc: Daniel Vetter <daniel@ffwll.ch>
+On 2021-09-01 20:06, Miquel Raynal wrote:
+> Md Sadre Alam <mdalam@codeaurora.org> wrote on Wed,  1 Sep 2021
+> 16:23:33 +0530:
+> 
+>> Fixes: 503ee5aa ("mtd: rawnand: qcom: update last code word register")
+>> Cc: stable@kernel.org
+>> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
 >> ---
->>   drivers/gpu/drm/ttm/ttm_module.c |    4 ++++
->>   1 file changed, 4 insertions(+)
->>
->> --- linux-next-20210901.orig/drivers/gpu/drm/ttm/ttm_module.c
->> +++ linux-next-20210901/drivers/gpu/drm/ttm/ttm_module.c
->> @@ -53,6 +53,9 @@ pgprot_t ttm_prot_from_caching(enum ttm_
->>       if (caching == ttm_cached)
->>           return tmp;
->> +#ifdef CONFIG_UML
->> +    tmp = pgprot_noncached(tmp);
->> +#else
->>   #if defined(__i386__) || defined(__x86_64__)
->>       if (caching == ttm_write_combined)
->>           tmp = pgprot_writecombine(tmp);
->> @@ -69,6 +72,7 @@ pgprot_t ttm_prot_from_caching(enum ttm_
->>   #if defined(__sparc__)
->>       tmp = pgprot_noncached(tmp);
->>   #endif
->> +#endif
->>       return tmp;
->>   }
+>> [V3]
+>>  * Added Fixes tag
+>>  * Removed change log from commit message.
+>> 
+>>     From QPIC V2 onwards there is a separate register to read
+>>     last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
+>> 
+>>     qcom_nandc_read_cw_raw() is used to read only one code word
+>>     at a time. If we will configure number of code words to 1 in
+>>     in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
+>>     its reading the last code word, since from QPIC V2 onwards
+>>     we are having separate register to read the last code word,
+>>     we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
+>>     register to fetch data from controller buffer to system
+>>     memory.
 > 
-> Patch looks OK.
+> Really?
 > 
-> I have a question though - why all of DRM is not !UML in config. Not like we can use them.
+> It's not your first contribution, you know what a changelog is and what
+> a commit message is, right? So please, keep the commit message
+> ("why" your change is needed) where it was and only put
+> the changelog (the differences between two versions) below the three
+> dashes '---'.
+> 
+   Sorry for misinterpreting your comments.
 
-I have no idea about that.
-Hopefully one of the (other) UML maintainers can answer you.
+   I have addressed your comment in patch V4
 
-thanks.
--- 
-~Randy
-
+>> 
+>>  drivers/mtd/nand/raw/qcom_nandc.c | 8 ++++++--
+>>  1 file changed, 6 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c 
+>> b/drivers/mtd/nand/raw/qcom_nandc.c
+>> index ef0bade..04e6f7b 100644
+>> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+>> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+>> @@ -1676,13 +1676,17 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, 
+>> struct nand_chip *chip,
+>>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>>  	int data_size1, data_size2, oob_size1, oob_size2;
+>>  	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
+>> +	int raw_cw = cw;
+>> 
+>>  	nand_read_page_op(chip, page, 0, NULL, 0);
+>>  	host->use_ecc = false;
+>> 
+>> +	if (nandc->props->qpic_v2)
+>> +		raw_cw = ecc->steps - 1;
+>> +
+>>  	clear_bam_transaction(nandc);
+>>  	set_address(host, host->cw_size * cw, page);
+>> -	update_rw_regs(host, 1, true, cw);
+>> +	update_rw_regs(host, 1, true, raw_cw);
+>>  	config_nand_page_read(chip);
+>> 
+>>  	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
+>> @@ -1711,7 +1715,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, 
+>> struct nand_chip *chip,
+>>  		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
+>>  	}
+>> 
+>> -	config_nand_cw_read(chip, false, cw);
+>> +	config_nand_cw_read(chip, false, raw_cw);
+>> 
+>>  	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
+>>  	reg_off += data_size1;
