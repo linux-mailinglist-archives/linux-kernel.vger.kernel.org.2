@@ -2,103 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E09333FEDBD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F2E3FEDBE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344423AbhIBM0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 08:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344074AbhIBM02 (ORCPT
+        id S1344465AbhIBM0e convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Sep 2021 08:26:34 -0400
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:35481 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344436AbhIBM0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 08:26:28 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22785C061575;
-        Thu,  2 Sep 2021 05:25:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=1wOKCrX3COV6DlxfudE8AnDiURX7M6vGBTgHMAhqiY4=; b=rqK6AEvPgoByLYFRodspB7Byw
-        7gqMzeAVrrtGevy7S/Pe4kpxFOG541wx2HwjnEnffJUbdF5hpGnPUE5ySMo1DbZcFAzPmnds7zmp+
-        Jj1zgwrIxm6M0IrdmtR1pc/NjF4oW1CvyFeGIDapO7P9JKM4zZouHP9S7Vdcxy+PY9MvtgiZ3DXk+
-        mFmcyTwXarm08r5htAsGboZCNkAZqOtGAinHX0bvrFOY06FxWdqIlPllA4Igcplk7tTNVpClxl26y
-        k6yQu2+qEuQvdgC0jKkB1O+Ngc3fVV9HBJzKmsm7WNRrb0nQBzJeEFDuEVjkJLHCrAEDEs2hy32+E
-        4bbcBfltw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48088)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mLlma-0001P2-4n; Thu, 02 Sep 2021 13:25:28 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mLlmZ-0007ov-0Y; Thu, 02 Sep 2021 13:25:27 +0100
-Date:   Thu, 2 Sep 2021 13:25:26 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [RFC PATCH net-next 2/3] net: dsa: destroy the phylink instance
- on any error in dsa_slave_phy_setup
-Message-ID: <20210902122526.GF22278@shell.armlinux.org.uk>
-References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
- <20210901225053.1205571-3-vladimir.oltean@nxp.com>
+        Thu, 2 Sep 2021 08:26:32 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 2ED24C0002;
+        Thu,  2 Sep 2021 12:25:32 +0000 (UTC)
+Date:   Thu, 2 Sep 2021 14:25:26 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     "Sa, Nuno" <Nuno.Sa@analog.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 15/16] iio: adc: max1027: Support software triggers
+Message-ID: <20210902142526.55fca207@xps13>
+In-Reply-To: <SJ0PR03MB63594E162F7246874CD1A72599C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
+References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
+        <20210818111139.330636-16-miquel.raynal@bootlin.com>
+        <SJ0PR03MB63594E162F7246874CD1A72599C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901225053.1205571-3-vladimir.oltean@nxp.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 01:50:52AM +0300, Vladimir Oltean wrote:
-> DSA supports connecting to a phy-handle, and has a fallback to a non-OF
-> based method of connecting to an internal PHY on the switch's own MDIO
-> bus, if no phy-handle and no fixed-link nodes were present.
-> 
-> The -ENODEV error code from the first attempt (phylink_of_phy_connect)
-> is what triggers the second attempt (phylink_connect_phy).
-> 
-> However, when the first attempt returns a different error code than
-> -ENODEV, this results in an unbalance of calls to phylink_create and
-> phylink_destroy by the time we exit the function. The phylink instance
-> has leaked.
-> 
-> There are many other error codes that can be returned by
-> phylink_of_phy_connect. For example, phylink_validate returns -EINVAL.
-> So this is a practical issue too.
-> 
-> Fixes: aab9c4067d23 ("net: dsa: Plug in PHYLINK support")
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
-> I know, I will send this bug fix to "net" too, this is provided just for
-> testing purposes, and for the completeness of the patch set.
+Hi Nuno,
 
-Probably should have been the first patch of the set. This looks
-absolutely correct to me. Please send for the net tree.
+"Sa, Nuno" <Nuno.Sa@analog.com> wrote on Fri, 20 Aug 2021 07:58:25
++0000:
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > -----Original Message-----
+> > From: Miquel Raynal <miquel.raynal@bootlin.com>
+> > Sent: Wednesday, August 18, 2021 1:12 PM
+> > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
+> > <lars@metafoo.de>
+> > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>; linux-
+> > iio@vger.kernel.org; linux-kernel@vger.kernel.org; Miquel Raynal
+> > <miquel.raynal@bootlin.com>
+> > Subject: [PATCH 15/16] iio: adc: max1027: Support software triggers
+> > 
+> > [External]
+> > 
+> > Now that max1027_trigger_handler() has been freed from handling
+> > hardware
+> > triggers EOC situations, we can use it for what it has been designed in
+> > the first place: trigger software originated conversions. In other
+> > words, when userspace initiates a conversion with a sysfs trigger or a
+> > hrtimer trigger, we must do all configuration steps, ie:
+> > 1- Configuring the trigger
+> > 2- Configuring the channels to scan
+> > 3- Starting the conversion (actually done automatically by step 2 in
+> >    this case)
+> > 4- Waiting for the conversion to end
+> > 5- Retrieving the data from the ADC
+> > 6- Push the data to the IIO core and notify it
+> > 
+> > Add the missing steps to this helper and drop the trigger verification
+> > hook otherwise software triggers would simply not be accepted at all.
+> > 
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > ---
+> >  drivers/iio/adc/max1027.c | 26 ++++++++++++++------------
+> >  1 file changed, 14 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
+> > index 8c5995ae59f2..bb437e43adaf 100644
+> > --- a/drivers/iio/adc/max1027.c
+> > +++ b/drivers/iio/adc/max1027.c
+> > @@ -413,17 +413,6 @@ static int max1027_debugfs_reg_access(struct
+> > iio_dev *indio_dev,
+> >  	return spi_write(st->spi, val, 1);
+> >  }
+> > 
+> > -static int max1027_validate_trigger(struct iio_dev *indio_dev,
+> > -				    struct iio_trigger *trig)
+> > -{
+> > -	struct max1027_state *st = iio_priv(indio_dev);
+> > -
+> > -	if (st->trig != trig)
+> > -		return -EINVAL;
+> > -
+> > -	return 0;
+> > -}
+> > -
+> >  static int max1027_set_cnvst_trigger_state(struct iio_trigger *trig,
+> > bool state)
+> >  {
+> >  	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
+> > @@ -512,7 +501,21 @@ static irqreturn_t max1027_trigger_handler(int
+> > irq, void *private)
+> > 
+> >  	pr_debug("%s(irq=%d, private=0x%p)\n", __func__, irq,
+> > private);
+> > 
+> > +	ret = max1027_configure_trigger(indio_dev);
+> > +	if (ret)
+> > +		goto out;
+> > +
+> > +	ret = max1027_configure_chans_to_scan(indio_dev);
+> > +	if (ret)
+> > +		goto out;
+> > +
+> > +	ret = max1027_wait_eoc(indio_dev);
+> > +	if (ret)
+> > +		goto out;
+> > +
+> >  	ret = max1027_read_scan(indio_dev);  
+> 
+> There's something that I'm not getting... How are we checking that
+> we have software triggers? This API is called only if the device
+> allocates it's own trigger which will happen if there's a spi IRQ.
+> 
+> I'm probably missing something as this series is fairly big but the way
+> I would do it is (in the probe):
+> 
+> - always call 'devm_iio_triggered_buffer_setup()' function and properly use
+> buffer ops [1] (for example, you can use 'validate_scan_mask()' to setup the
+> channels to read);  
+> - only allocate a trigger if an IRQ is present in which case, we assume HW 
+> triggering is supported.
 
-Thanks.
+I think these are the exact steps that are enforced in the next patch,
+I can squash them if you wish but I think it makes sense to have it in
+two steps.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Thanks,
+Miquèl
