@@ -2,95 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50283FEA8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 528A73FEA90
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244413AbhIBIWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 04:22:18 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:47660 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S243953AbhIBIWP (ORCPT
+        id S244387AbhIBIXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 04:23:51 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:34662 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233546AbhIBIXv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 04:22:15 -0400
-X-UUID: a3a56026d1054594bd0b82012ed08a9d-20210902
-X-UUID: a3a56026d1054594bd0b82012ed08a9d-20210902
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 590595087; Thu, 02 Sep 2021 16:21:14 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 2 Sep 2021 16:21:12 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 2 Sep 2021 16:21:12 +0800
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     <broonie@kernel.org>, <tiwai@suse.com>, <matthias.bgg@gmail.com>
-CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dan.carpenter@oracle.com>,
-        <bicycle.tsai@mediatek.com>
-Subject: [PATCH] ASoC: mediatek: common: handle NULL case in suspend/resume function
-Date:   Thu, 2 Sep 2021 16:21:11 +0800
-Message-ID: <20210902082111.9287-1-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Thu, 2 Sep 2021 04:23:51 -0400
+Received: by mail-vs1-f53.google.com with SMTP id x137so785212vsx.1;
+        Thu, 02 Sep 2021 01:22:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HNCpdSsGpy5YO2fKUf5jrX7dkYGtMSNaPXgN/Pc9hLg=;
+        b=Vsh1tBGfKJn9Vng2n2zSCmoJDySRn5/YA5eD9TUcqQeCRdvIam52AhK0pTw2mlisKR
+         BO0kFP079v7m0VsEIcpkNL5psI72av3i+fL8TmBeFbMfqDRml3lgBJRZNKV4LRNCMehT
+         e2iXp2AsVKAxutgxOM7du1/3LaQ6sqDuBvm31QbE7p8Amj8Ip4Q2sEKyfCLOqhbbcSsI
+         cCGTzdiO54FB3Kww7i37oxk+gxwAbcKO4nZ9gJLmm9pPGCiTvf1PyWp1SwGpPlPelIBw
+         Nnya/wgJE66Yqu9XGWF3wYd8OXjoX97BWs6XIeIxs6JkLrwp5IdMTyEzalSLN8pjXMgz
+         JRFw==
+X-Gm-Message-State: AOAM531dOmKu3MVrjVJCAM/dgMzf4d8DoadAQrovB5iNArucQvTlzzjp
+        dodIoZoJkiAkthT2GlRwkBR17AkeA69qjOFlx1o=
+X-Google-Smtp-Source: ABdhPJyNJSOdmU3np2Afm9GG+piP6Z5QWWRSIHEGOqDNKIIMn+kfSujuXQrMi+smK4QAXyICbviEls6eGdpJ4fgr8OY=
+X-Received: by 2002:a67:c789:: with SMTP id t9mr985119vsk.60.1630570972366;
+ Thu, 02 Sep 2021 01:22:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <20210901181740.3a0a69f2@canb.auug.org.au> <3ee0b878-b78c-2483-1a0b-7570bda0132b@infradead.org>
+ <299c7f0a7b1dede1e2f704a0133f4045e85641b5.camel@mediatek.com>
+In-Reply-To: <299c7f0a7b1dede1e2f704a0133f4045e85641b5.camel@mediatek.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 2 Sep 2021 10:22:40 +0200
+Message-ID: <CAMuHMdXVxNfQYwP7+iMq+CbuDx3wjHgG2xsr9jP4WwL4OLLL-Q@mail.gmail.com>
+Subject: Re: linux-next: Tree for Sep 1 [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko]
+To:     Trevor Wu <trevor.wu@mediatek.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Bicycle Tsai <bicycle.tsai@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When memory allocation for afe->reg_back_up fails, reg_back_up can't
-be used.
-Keep the suspend/resume flow but skip register backup when
-afe->reg_back_up is NULL, in case illegal memory access happens.
+Hi Trevor,
 
-Fixes: 283b612429a2 ("ASoC: mediatek: implement mediatek common structure")
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
- sound/soc/mediatek/common/mtk-afe-fe-dai.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+On Thu, Sep 2, 2021 at 4:37 AM Trevor Wu <trevor.wu@mediatek.com> wrote:
+> On Wed, 2021-09-01 at 13:55 -0700, Randy Dunlap wrote:
+> > On 9/1/21 1:17 AM, Stephen Rothwell wrote:
+> > > Please do not add any v5.16 related code to your linux-next
+> > > included
+> > > branches until after v5.15-rc1 has been released.
+> > >
+> > > Changes since 20210831:
+> > >
+> >
+> >
+> > on x86_64:
+> >
+> > ERROR: modpost: "clkdev_add" [sound/soc/mediatek/mt8195/snd-soc-
+> > mt8195-afe.ko] undefined!
+> > ERROR: modpost: "clkdev_drop" [sound/soc/mediatek/mt8195/snd-soc-
+> > mt8195-afe.ko] undefined!
+> > ERROR: modpost: "clk_unregister_gate" [sound/soc/mediatek/mt8195/snd-
+> > soc-mt8195-afe.ko] undefined!
+> > ERROR: modpost: "clk_register_gate" [sound/soc/mediatek/mt8195/snd-
+> > soc-mt8195-afe.ko] undefined!
+> >
+> > Full randconfig file is attached.
+> >
+>
+> Hi Randy,
+>
+> The problem is caused by the dependency declaration, because it's not a
+> driver for x86_64.
+> The dependency declaration has been added in the following patch.
+>
+> https://patchwork.kernel.org/project/alsa-devel/patch/7e628e359bde04ceb9ddd74a45931059b4a4623c.1630415860.git.geert+renesas@glider.be/
 
-diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.c b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-index baaa5881b1d4..e95c7c018e7d 100644
---- a/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-+++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
-@@ -334,9 +334,11 @@ int mtk_afe_suspend(struct snd_soc_component *component)
- 			devm_kcalloc(dev, afe->reg_back_up_list_num,
- 				     sizeof(unsigned int), GFP_KERNEL);
- 
--	for (i = 0; i < afe->reg_back_up_list_num; i++)
--		regmap_read(regmap, afe->reg_back_up_list[i],
--			    &afe->reg_back_up[i]);
-+	if (afe->reg_back_up) {
-+		for (i = 0; i < afe->reg_back_up_list_num; i++)
-+			regmap_read(regmap, afe->reg_back_up_list[i],
-+				    &afe->reg_back_up[i]);
-+	}
- 
- 	afe->suspended = true;
- 	afe->runtime_suspend(dev);
-@@ -356,12 +358,13 @@ int mtk_afe_resume(struct snd_soc_component *component)
- 
- 	afe->runtime_resume(dev);
- 
--	if (!afe->reg_back_up)
-+	if (!afe->reg_back_up) {
- 		dev_dbg(dev, "%s no reg_backup\n", __func__);
--
--	for (i = 0; i < afe->reg_back_up_list_num; i++)
--		mtk_regmap_write(regmap, afe->reg_back_up_list[i],
--				 afe->reg_back_up[i]);
-+	} else {
-+		for (i = 0; i < afe->reg_back_up_list_num; i++)
-+			mtk_regmap_write(regmap, afe->reg_back_up_list[i],
-+					 afe->reg_back_up[i]);
-+	}
- 
- 	afe->suspended = false;
- 	return 0;
+That is not sufficient, if COMPILE_TEST is enabled.
+
+Looks like it needs a dependency on COMMON_CLK, too.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.18.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
