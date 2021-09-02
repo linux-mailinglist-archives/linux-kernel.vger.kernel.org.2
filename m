@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD333FF3AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B66C23FF3B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233011AbhIBS7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 14:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54938 "EHLO
+        id S243525AbhIBTAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 15:00:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347245AbhIBS7Q (ORCPT
+        with ESMTP id S239024AbhIBTAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:59:16 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387DBC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 11:58:17 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id g14so5445423ljk.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 11:58:17 -0700 (PDT)
+        Thu, 2 Sep 2021 15:00:34 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ECB6C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 11:59:35 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id j15so2896112ila.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 11:59:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=nou0znqimsrLl6OB5c1aMp82GMEqusuNoyOJ20o6LFI=;
-        b=Ibpdc46zjQloZ+vX8Jc+8cZvxyZgkNzdSsEJA3RXMKA4Uv115klG8TP44ku0D70EYN
-         2ZdHNkPCogYuUgXzzStalGmdzhm6x4HMAJyz6jwygSEzV1uGAEnpH4rb6ZQRdRgWqyQl
-         K8bZBGqrT9kuG/VjjS1yasgD0iTr8JY35ybDg=
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Xsi+0cTgKaznOMOYa7ndIBDlIfhPFj246cgZs1bGknU=;
+        b=g74tZNTcjI6g5SvV2FnS3hsfdhAv3wxUzHslFQDDOAchPn9oQHwAkTfKoC5TTIUXHa
+         sOE2BjWyplSHj9taTWXWCuuqO3jzBDOkwbPNAu6BNXDYpMNxvc4XNAoSg2VYdd6yccQW
+         PryF4xOMnvoPI5FTlZvrH+Oho8EpC7kxlcRk9vtB7XrNpvI+xuWiCug0g7KErMQV/OMu
+         sksSq5tJuNvNrLy4TU83s7a2/FgKvhrl/4kw2GRUhQf5bP+GUVvTDyhoFHFfzl6w3Tmz
+         NJ12a++8jgiKobd7QJgRt6tHA3iuzeOPsLwwIaZ21qeY6DCBXz0UPvTKRCRm71p7+S/v
+         6uLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=nou0znqimsrLl6OB5c1aMp82GMEqusuNoyOJ20o6LFI=;
-        b=ph9/MTSTCwAhFABIvv7v2xFdnWlRLh1b4I5H9cjNxR4kKS3DapL1oYDigeeZEJvAMw
-         LS6yVqH628dtUYihBfEFYdihnvVEox4nPH0xKjsVwvHYwMlHpn3Bea3hqIeQb65Yk+No
-         UGMIKBgqpuBMaCcUbftKJ0UJWpaHdDB4rNwaOlooZ7WIXMbA/dlEXA0oySbDtgDjEWZF
-         8kE//gf0Ff4hMKgTb6axmHpwOgr0+njqzI/d9y2l0734T0+K7u3QmqK9wKNG0ePo3CtD
-         s7/jYyz/rU/AL/tEevkVSB//1zRkQAgsfWPKayvABgB9ev+He6eVtuHolyM1U5jhiCIj
-         JBfg==
-X-Gm-Message-State: AOAM53020nD4VGyvsDRlSRoS5cTliFEQhbcqvtWehOyltjAW6BhgtoMC
-        A0OyrQqx9oxeEwpweOkN2i/HhHOHRkv0wPoEb2M=
-X-Google-Smtp-Source: ABdhPJyVnczfEp1cln2GfahokxtTrP9kQDcDseCHQqL0snCOmH1CQAfBt0W+3NHAIlF8epc0ONI5yw==
-X-Received: by 2002:a2e:9ad9:: with SMTP id p25mr3637655ljj.439.1630609095300;
-        Thu, 02 Sep 2021 11:58:15 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id b17sm314780ljj.35.2021.09.02.11.58.14
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Xsi+0cTgKaznOMOYa7ndIBDlIfhPFj246cgZs1bGknU=;
+        b=hlkWTOVg1Ce5BRehmJXDVQHbvyCQ1cR5BaKna0IKCvjpoVFDjwiR6jAywbHzNMqCiI
+         RNrat71YH4G/T2Qe6pxi8GJ0OT1aviDuVARkrOBvg3nIXfeIbHzNuh2orPiLt90tgJUC
+         Mh53PtscA5rlzC7NFuL52qlJ5wT5enTXbhmxuud7lXdZJJU/NAu1MdJXLxGB1aBEK6wB
+         E9qUjRfCaGD018QWv7TA8I5WH9W54Q8SjL3KwyylgJAdD/+v+oZXCzzZpsRPOWqLlz+I
+         iWlHXdE8Yak0pqkc9ZWBCUuxaNTXLxniRAimP4fRbeVI+gJWM0OPmxD3tWICoBEAeUIx
+         3oyw==
+X-Gm-Message-State: AOAM533YeoZ4fdseR4oJms5IhW/dKJVx5F+yAj/SzurTwzCjFFWB+c8l
+        W2b19MYrUvPMEeDR5/2UZ9IUnuMG3aHTHg==
+X-Google-Smtp-Source: ABdhPJxtVDDqsMy6b72TGsV8ri2gqDOIuiOEylcLBNzndH8SXIshTYO7hqOtxZEuHk8bBGWBCq+IqQ==
+X-Received: by 2002:a92:7b0c:: with SMTP id w12mr3458035ilc.307.1630609174837;
+        Thu, 02 Sep 2021 11:59:34 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id b12sm1417094ios.0.2021.09.02.11.59.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 11:58:14 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id t19so6474780lfe.13
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 11:58:14 -0700 (PDT)
-X-Received: by 2002:a05:6512:230b:: with SMTP id o11mr3465517lfu.377.1630609094065;
- Thu, 02 Sep 2021 11:58:14 -0700 (PDT)
+        Thu, 02 Sep 2021 11:59:34 -0700 (PDT)
+Subject: Re: slub: BUG: Invalid wait context
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Christoph Lameter <cl@linux.com>,
+        Linux Memory Management List <linux-mm@kvack.org>
+References: <3b7661a1-dbde-ea54-f880-99777c95ae22@kernel.dk>
+ <YTEeTK83KNBmuJLC@casper.infradead.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <91af18d0-64cb-71ac-e9f4-4135fe02cb33@kernel.dk>
+Date:   Thu, 2 Sep 2021 12:59:33 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210831225935.GA26537@hsiangkao-HP-ZHAN-66-Pro-G1>
- <CAHk-=wi7gf_afYhx_PYCN-Sgghuw626dBNqxZ6aDQ-a+sg6wag@mail.gmail.com> <20210902182053.GB26537@hsiangkao-HP-ZHAN-66-Pro-G1>
-In-Reply-To: <20210902182053.GB26537@hsiangkao-HP-ZHAN-66-Pro-G1>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 2 Sep 2021 11:57:58 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgirqjdeuYX+PvL-09UUKtnBaRYTXQrRdjCYxGKirEpug@mail.gmail.com>
-Message-ID: <CAHk-=wgirqjdeuYX+PvL-09UUKtnBaRYTXQrRdjCYxGKirEpug@mail.gmail.com>
-Subject: Re: [GIT PULL] erofs updates for 5.15-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-erofs@lists.ozlabs.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Huang Jianan <huangjianan@oppo.com>,
-        Yue Hu <huyue2@yulong.com>, Miao Xie <miaoxie@huawei.com>,
-        Liu Bo <bo.liu@linux.alibaba.com>,
-        Peng Tao <tao.peng@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Liu Jiang <gerry@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YTEeTK83KNBmuJLC@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 11:21 AM Gao Xiang <xiang@kernel.org> wrote:
->
-> Yeah, thanks. That was my first time to merge another tree due to hard
-> dependency like this. I've gained some experience from this and will be
-> more confident on this if such things happen in the future. :)
+On 9/2/21 12:56 PM, Matthew Wilcox wrote:
+> On Thu, Sep 02, 2021 at 10:22:23AM -0600, Jens Axboe wrote:
+>> Hi,
+>>
+>> Booting current -git yields the below splat. I'm assuming this is
+>> related to the new RT stuff, where spin_lock() can sleep. This obviously
+>> won't fly off IPI.
+> 
+> You want to turn off PROVE_RAW_LOCK_NESTING for the moment.
 
-Well, being nervous about cross-tree merges is probably a good thing,
-and they *should* be fairly rare.
+Because?
 
-So don't get over-confident and cocky ;^)
+-- 
+Jens Axboe
 
-                  Linus
