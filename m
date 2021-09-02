@@ -2,109 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 588FC3FF0EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FC93FF0EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346132AbhIBQQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:16:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44550 "EHLO
+        id S1346156AbhIBQQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233599AbhIBQQW (ORCPT
+        with ESMTP id S233599AbhIBQQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:16:22 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B145C061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:15:24 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id g184so2490681pgc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:15:24 -0700 (PDT)
+        Thu, 2 Sep 2021 12:16:35 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E16C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:15:36 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id j12so4553973ljg.10
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:15:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9hsKCsvAc+NpyKxD6LkPgUN99rsUl4Mu6Z/Upfc+vYg=;
-        b=fSm9PxGOLu5qMyu+VGbGIhHJD+A0Uyzyb7tbkPtzhXuBdHHqrcbyTZr3pJiv55xTtA
-         xghzr1DngMbiT0AKuqFPivm9uA36tidlTAt1orchxQOYSbLQIzOij0VT3cJ1N6NoGiAc
-         Dnzk2wgptNKid5HkHDoM3hn775CKM8+3h1VsixoMlRPTCwGjZRXRFwwZjedCtht+khYZ
-         /38fGrDFrjxmFrceoL0HkLzx9JKVidIHkcVF+vB/07E7OnYhWXk2lhJp+rFE1LDv3Bw1
-         sJ/wfC5CURAsO3YS8XnbHTEI2hGFGDMzzwzL6bNkRWgPlBIHj7qzcA26bu7WDoel5YUb
-         RFwQ==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L2qC6irbQbtN+g0+v1wnhPSc9BwrkkXerk0d5qG4QOc=;
+        b=I8+ZexOjMnWdmPQaRlQA/OHfiqAkzLoeBoQZBqAq40UtxhDNdiJ0RzK/0Uk7xQVuk4
+         sUAXajs9EtiX7Jz+nIiPklFdc8mh1fzHxZDa5WojWgi6MI2mO69Z3TUoFaS+I6E8sdTA
+         bYbQ5KrcwEZ85BPCG4zUlNPUtWEdkRxxrbCKJeme9QefIOS0jB/XXM8kMLNTMBhKfpQt
+         bqK6Rrs6MNhKexRw4FhTE11SOxxfRbLr5r9h+oENapG2ABYbxPYgg9cn+FHruIbe86Zg
+         QHSHtahDjYLByXE7lDRlgDdUupspyqxXeu6APpOoUqKAM29g6hyBnCbm5cvIrRXduAy1
+         1E7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9hsKCsvAc+NpyKxD6LkPgUN99rsUl4Mu6Z/Upfc+vYg=;
-        b=Oi/2Kmc5ZJP59eQvXL1FEibNrL7KDR3Pkp42V/+Aw+l96fzPSEX8dhfA3ejcAWGNE2
-         hLUwsLpIPH70anOT+t/QSQAaIPaRn3l+JoajIkPIXgs3yaU+ShSpUGas7+She45evEXI
-         CxPYwxfmkoLtwh3OP+HnzVVDA98x4YplOJp5rD5rH6IY8klwZJlHsqpl4n1rBt1ndxVp
-         0QFeBx9ibftgVb2a8oko8w2tL25h/XqDhv2Cyxx2I62WCwp63LCB4dORjOPbgwrfg0Wl
-         Gk/4MppPV8VpVPQzVVFg0KL2c3WMze/vXOHrn7dP4msKVGbi19gtCzX6WL1FW1R/Xnys
-         zFqg==
-X-Gm-Message-State: AOAM533n5HYGMttGx1A3ZGH9muGd9J2eN5vQcMES618lT9qoxA3yCp0i
-        t8IWWhKkdXgbgoN78NYkNjpHYg==
-X-Google-Smtp-Source: ABdhPJyuWPgLWVgkJrTn8l+ao7PrF4vWzU62syPlrpdLHUAeVgPTArfKsqKMDXGEeS7YXLai10fklQ==
-X-Received: by 2002:a63:9d4c:: with SMTP id i73mr1479588pgd.216.1630599323729;
-        Thu, 02 Sep 2021 09:15:23 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id l127sm2920354pfl.99.2021.09.02.09.15.22
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L2qC6irbQbtN+g0+v1wnhPSc9BwrkkXerk0d5qG4QOc=;
+        b=FcnpwLcyYC0xlggNZUKdFQPwIqkXQ9lr4tnVC0fkoJTuG0Q272Uj60dYqEdd8yeHHN
+         etxXiAbkVfRSsJbqBV139pIPPdeP77mCnpVEowFZ6tTW24Tmy9yI/FzaZn5zh13WqjJh
+         4Yllcg05syX14Nf39n5Dm8vSzvh6XqhZmHESPjzguoC2XWds0ksUmJQoMVKLFSLqd/2K
+         Ktgzmq80mBTZTWSNVX1iBqekKks1vZlvK/nyJk9uXg3Y2BPLTVdAdiH0kOxAcp36MMAw
+         LN57ocTRyAVwKAhxPuGnb76ZvZZBTx4zYGEnKeNrL3NvNus8mn6hrw6ijTMSs54JwUiP
+         636g==
+X-Gm-Message-State: AOAM530ZPrcvkYNO6uOujgKBo/tToW+fIS3nFEXklzOVsMu1sJSAF1m3
+        ydIQVJDXRN7mpV8eeToL/UI=
+X-Google-Smtp-Source: ABdhPJzBuEQRUhVbd2nKi1QmDqdsN2U9cy82Wmv53cJKKdNhYQlOoIC2YmQLe1WZHnCYeLq5/JTzGA==
+X-Received: by 2002:a05:651c:10a3:: with SMTP id k3mr3216248ljn.471.1630599334984;
+        Thu, 02 Sep 2021 09:15:34 -0700 (PDT)
+Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id m7sm267811ljj.58.2021.09.02.09.15.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 09:15:22 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 16:15:19 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Tao Xu <tao3.xu@intel.com>, pbonzini@redhat.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, x86@kernel.org, kvm@vger.kernel.org,
+        Thu, 02 Sep 2021 09:15:34 -0700 (PDT)
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev
+Cc:     Kari Argillander <kari.argillander@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
-Message-ID: <YTD4l7L0CKMCQwd5@google.com>
-References: <20210525051204.1480610-1-tao3.xu@intel.com>
- <YQRkBI9RFf6lbifZ@google.com>
- <b0c90258-3f68-57a2-664a-e20a6d251e45@intel.com>
- <YQgTPakbT+kCwMLP@google.com>
- <080602dc-f998-ec13-ddf9-42902aa477de@intel.com>
+Subject: [PATCH v2 0/8] fs/ntfs3: Refactor header includes
+Date:   Thu,  2 Sep 2021 19:15:20 +0300
+Message-Id: <20210902161528.6262-1-kari.argillander@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <080602dc-f998-ec13-ddf9-42902aa477de@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 03, 2021, Xiaoyao Li wrote:
-> On 8/2/2021 11:46 PM, Sean Christopherson wrote:
-> > > > > @@ -5642,6 +5653,31 @@ static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
-> > > > >    	return 0;
-> > > > >    }
-> > > > > +static int handle_notify(struct kvm_vcpu *vcpu)
-> > > > > +{
-> > > > > +	unsigned long exit_qual = vmx_get_exit_qual(vcpu);
-> > > > > +
-> > > > > +	if (!(exit_qual & NOTIFY_VM_CONTEXT_INVALID)) {
-> > > > 
-> > > > What does CONTEXT_INVALID mean?  The ISE doesn't provide any information whatsoever.
-> > > 
-> > > It means whether the VM context is corrupted and not valid in the VMCS.
-> > 
-> > Well that's a bit terrifying.  Under what conditions can the VM context become
-> > corrupted?  E.g. if the context can be corrupted by an inopportune NOTIFY exit,
-> > then KVM needs to be ultra conservative as a false positive could be fatal to a
-> > guest.
-> > 
-> 
-> Short answer is no case will set the VM_CONTEXT_INVALID bit.
+Right now header includes are big mess with ntfs3 imo. We cannot example
+include ntfs3 headers without need of punch of includes to source file.
+This patch set try to address that. When this patch series is applied we
+can include any header file without need of include anything else. This
+does not mean source file should rely what header file includes. Instead
+it should include them by self also if it needs them.
 
-But something must set it, otherwise it wouldn't exist.  The condition(s) under
-which it can be set matters because it affects how KVM should respond.  E.g. if
-the guest can trigger VM_CONTEXT_INVALID at will, then we should probably treat
-it as a shutdown and reset the VMCS.  But if VM_CONTEXT_INVALID can occur if and
-only if there's a hardware/ucode issue, then we can do:
+When some include is added I have write why this is needed to commit
+message. Hopefully this will help when someone wants to correct them
+again. I have also just delete unnecessary headers from some .c files
+and not added what is needed. Usually deleted headers where there
+because ntfs_fs.h need them not file itself. When file was simple enough
+I added all necessary linux headers.
 
-	if (KVM_BUG_ON(exit_qual & NOTIFY_VM_CONTEXT_INVALID, vcpu->kvm))
-		return -EIO;
+I did not add linux/headers to all files yet. That is big job. This is
+good starting point. I did try to build every file itself so this will
+build like it should.
 
-Either way, to enable this by default we need some form of documentation that
-describes what conditions lead to VM_CONTEXT_INVALID.
+Please do not hesitate to tell if there is something wrong with this
+series or somethings could be done better.
 
-> VM_CONTEXT_INVALID is so fatal and IMHO it won't be set for any inopportune
-> NOTIFY exit.
+V2:
+	Add missing first patch
+	Rebase
+	Use base-commit with format-patch
+
+Kari Argillander (8):
+  fs/ntfs3. Add forward declarations for structs to debug.h
+  fs/ntfs3: Add missing header files to ntfs.h
+  fs/ntfs3: Add missing headers and forward declarations to ntfs_fs.h
+  fs/ntfs3: Add missing header and guards to lib/ headers
+  fs/ntfs3: Change right headers to bitfunc.c
+  fs/ntfs3: Change right headers to upcase.c
+  fs/ntfs3: Change right headers to lznt.c
+  fs/ntfs3: Remove unneeded header files from c files
+
+ fs/ntfs3/attrib.c                |  5 -----
+ fs/ntfs3/attrlist.c              |  3 ---
+ fs/ntfs3/bitfunc.c               |  7 +------
+ fs/ntfs3/bitmap.c                |  3 ---
+ fs/ntfs3/debug.h                 |  3 +++
+ fs/ntfs3/dir.c                   |  3 ---
+ fs/ntfs3/file.c                  |  1 -
+ fs/ntfs3/frecord.c               |  3 ---
+ fs/ntfs3/fslog.c                 |  4 ----
+ fs/ntfs3/fsntfs.c                |  1 -
+ fs/ntfs3/index.c                 |  1 -
+ fs/ntfs3/inode.c                 |  2 --
+ fs/ntfs3/lib/decompress_common.h |  5 +++++
+ fs/ntfs3/lib/lib.h               |  6 ++++++
+ fs/ntfs3/lznt.c                  | 10 +++++-----
+ fs/ntfs3/namei.c                 |  4 ----
+ fs/ntfs3/ntfs.h                  |  9 +++++++++
+ fs/ntfs3/ntfs_fs.h               | 31 +++++++++++++++++++++++++++++++
+ fs/ntfs3/record.c                |  3 ---
+ fs/ntfs3/run.c                   |  2 --
+ fs/ntfs3/super.c                 |  2 --
+ fs/ntfs3/upcase.c                |  8 ++------
+ fs/ntfs3/xattr.c                 |  3 ---
+ 23 files changed, 62 insertions(+), 57 deletions(-)
+
+
+base-commit: d3624466b56dd5b1886c1dff500525b544c19c83
+-- 
+2.25.1
+
