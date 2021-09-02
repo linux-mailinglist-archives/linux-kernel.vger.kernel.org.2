@@ -2,102 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528A73FEA90
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCBD3FEA98
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244387AbhIBIXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 04:23:51 -0400
-Received: from mail-vs1-f53.google.com ([209.85.217.53]:34662 "EHLO
-        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233546AbhIBIXv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 04:23:51 -0400
-Received: by mail-vs1-f53.google.com with SMTP id x137so785212vsx.1;
-        Thu, 02 Sep 2021 01:22:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HNCpdSsGpy5YO2fKUf5jrX7dkYGtMSNaPXgN/Pc9hLg=;
-        b=Vsh1tBGfKJn9Vng2n2zSCmoJDySRn5/YA5eD9TUcqQeCRdvIam52AhK0pTw2mlisKR
-         BO0kFP079v7m0VsEIcpkNL5psI72av3i+fL8TmBeFbMfqDRml3lgBJRZNKV4LRNCMehT
-         e2iXp2AsVKAxutgxOM7du1/3LaQ6sqDuBvm31QbE7p8Amj8Ip4Q2sEKyfCLOqhbbcSsI
-         cCGTzdiO54FB3Kww7i37oxk+gxwAbcKO4nZ9gJLmm9pPGCiTvf1PyWp1SwGpPlPelIBw
-         Nnya/wgJE66Yqu9XGWF3wYd8OXjoX97BWs6XIeIxs6JkLrwp5IdMTyEzalSLN8pjXMgz
-         JRFw==
-X-Gm-Message-State: AOAM531dOmKu3MVrjVJCAM/dgMzf4d8DoadAQrovB5iNArucQvTlzzjp
-        dodIoZoJkiAkthT2GlRwkBR17AkeA69qjOFlx1o=
-X-Google-Smtp-Source: ABdhPJyNJSOdmU3np2Afm9GG+piP6Z5QWWRSIHEGOqDNKIIMn+kfSujuXQrMi+smK4QAXyICbviEls6eGdpJ4fgr8OY=
-X-Received: by 2002:a67:c789:: with SMTP id t9mr985119vsk.60.1630570972366;
- Thu, 02 Sep 2021 01:22:52 -0700 (PDT)
+        id S244311AbhIBI0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 04:26:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243655AbhIBI0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 04:26:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8C1160F12;
+        Thu,  2 Sep 2021 08:25:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630571116;
+        bh=9+mDHSUkvjKf2yVlziOhRgyE+SsrmCW+FsNFa0wT210=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mtAfN/rZVxLB195SfCr0mJEsGPxO/RhjVLRAOiVWNIPdePHyRVfkJBiFRkjsLuStN
+         R63+iBm6Hlzf+YxVHQWGduCyQLEFO/IMCpxRkEqJTYRZO8g3AugHUJQHD6CV8nBrka
+         DjVynLq5zXwywLFFE6QDqSuwEPcmdsTxwcbYIfXc=
+Date:   Thu, 2 Sep 2021 10:25:13 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     rafael@kernel.org, patrice.chotard@foss.st.com, mchehab@kernel.org,
+        ryder.lee@mediatek.com, jianjun.wang@mediatek.com,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
+        bhelgaas@google.com, matthias.bgg@gmail.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-media@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2 1/3] driver core: platform: Add the helper function
+ devm_platform_get_and_ioremap_resource_byname()
+Message-ID: <YTCKaepfkrqb4ahN@kroah.com>
+References: <20210902063702.32066-1-caihuoqing@baidu.com>
+ <20210902063702.32066-2-caihuoqing@baidu.com>
+ <YTB0vegl2YFfaWzM@kroah.com>
+ <20210902080539.GA32174@LAPTOP-UKSR4ENP.internal.baidu.com>
 MIME-Version: 1.0
-References: <20210901181740.3a0a69f2@canb.auug.org.au> <3ee0b878-b78c-2483-1a0b-7570bda0132b@infradead.org>
- <299c7f0a7b1dede1e2f704a0133f4045e85641b5.camel@mediatek.com>
-In-Reply-To: <299c7f0a7b1dede1e2f704a0133f4045e85641b5.camel@mediatek.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 2 Sep 2021 10:22:40 +0200
-Message-ID: <CAMuHMdXVxNfQYwP7+iMq+CbuDx3wjHgG2xsr9jP4WwL4OLLL-Q@mail.gmail.com>
-Subject: Re: linux-next: Tree for Sep 1 [sound/soc/mediatek/mt8195/snd-soc-mt8195-afe.ko]
-To:     Trevor Wu <trevor.wu@mediatek.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Bicycle Tsai <bicycle.tsai@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902080539.GA32174@LAPTOP-UKSR4ENP.internal.baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Trevor,
+On Thu, Sep 02, 2021 at 04:05:39PM +0800, Cai Huoqing wrote:
+> On 02 Sep 21 08:52:45, Greg KH wrote:
+> > On Thu, Sep 02, 2021 at 02:37:00PM +0800, Cai Huoqing wrote:
+> > > Since provide the helper function devm_platform_ioremap_resource_byname()
+> > > which is wrap platform_get_resource_byname() and devm_ioremap_resource().
+> > > But sometimes, many drivers still need to use the resource variables
+> > > obtained by platform_get_resource(). In these cases, provide this helper
+> > > function devm_platform_get_and_ioremap_resource_byname().
+> > > 
+> > > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> > > ---
+> > > v1->v2: Resend this patch as part of a patch series that uses
+> > > 	the new function. 
+> > > 
+> > >  drivers/base/platform.c         | 30 ++++++++++++++++++++++++++----
+> > >  include/linux/platform_device.h |  3 +++
+> > >  2 files changed, 29 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+> > > index 652531f67135..34bb581338d9 100644
+> > > --- a/drivers/base/platform.c
+> > > +++ b/drivers/base/platform.c
+> > > @@ -124,6 +124,31 @@ void __iomem *devm_platform_ioremap_resource(struct platform_device *pdev,
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(devm_platform_ioremap_resource);
+> > >  
+> > > +/**
+> > > + * devm_platform_get_and_ioremap_resource_byname - call devm_ioremap_resource() for a
+> > > + *						   platform device and get resource
+> > > + *
+> > > + * @pdev: platform device to use both for memory resource lookup as well as
+> > > + *        resource management
+> > > + * @name: name of the resource
+> > > + * @res: optional output parameter to store a pointer to the obtained resource.
+> > > + *
+> > > + * Return: a pointer to the remapped memory or an ERR_PTR() encoded error code
+> > > + * on failure.
+> > > + */
+> > > +void __iomem *
+> > > +devm_platform_get_and_ioremap_resource_byname(struct platform_device *pdev,
+> > > +					      const char *name, struct resource **res)
+> > > +{
+> > > +	struct resource *r;
+> > > +
+> > > +	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, name);
+> > > +	if (res)
+> > > +		*res = r;
+> > 
+> > You forgot to check the return value of this call :(
+> devm_ioremap_resource wiil check it and print error message, here:
+> ./lib/devres.c:136:__devm_ioremap_resource(
+> 
+> 	if (!res || resource_type(res) != IORESOURCE_MEM) {
+> 		dev_err(dev, "invalid resource\n");
+> 		return IOMEM_ERR_PTR(-EINVAL);
 
-On Thu, Sep 2, 2021 at 4:37 AM Trevor Wu <trevor.wu@mediatek.com> wrote:
-> On Wed, 2021-09-01 at 13:55 -0700, Randy Dunlap wrote:
-> > On 9/1/21 1:17 AM, Stephen Rothwell wrote:
-> > > Please do not add any v5.16 related code to your linux-next
-> > > included
-> > > branches until after v5.15-rc1 has been released.
-> > >
-> > > Changes since 20210831:
-> > >
-> >
-> >
-> > on x86_64:
-> >
-> > ERROR: modpost: "clkdev_add" [sound/soc/mediatek/mt8195/snd-soc-
-> > mt8195-afe.ko] undefined!
-> > ERROR: modpost: "clkdev_drop" [sound/soc/mediatek/mt8195/snd-soc-
-> > mt8195-afe.ko] undefined!
-> > ERROR: modpost: "clk_unregister_gate" [sound/soc/mediatek/mt8195/snd-
-> > soc-mt8195-afe.ko] undefined!
-> > ERROR: modpost: "clk_register_gate" [sound/soc/mediatek/mt8195/snd-
-> > soc-mt8195-afe.ko] undefined!
-> >
-> > Full randconfig file is attached.
-> >
->
-> Hi Randy,
->
-> The problem is caused by the dependency declaration, because it's not a
-> driver for x86_64.
-> The dependency declaration has been added in the following patch.
->
-> https://patchwork.kernel.org/project/alsa-devel/patch/7e628e359bde04ceb9ddd74a45931059b4a4623c.1630415860.git.geert+renesas@glider.be/
+And then you move on and use the resource :(
 
-That is not sufficient, if COMPILE_TEST is enabled.
+Please properly test your code.
 
-Looks like it needs a dependency on COMMON_CLK, too.
+> > Which means you did not test this?  Why not?
+> > 
+> > But step back, _WHY_ is this needed at all?  How deep are we going to
+> > get with the "devm_platform_get_and_do_this_and_that_and_that" type
+> > functions here?
+>   the function name seems too long, how can I rename it:)
 
-Gr{oetje,eeting}s,
+You have not shown a requirement that this new function is needed at
+all.
 
-                        Geert
+Why are you making this change?  Why do you want to do this?  What is it
+helping out with?
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+thanks,
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+greg k-h
