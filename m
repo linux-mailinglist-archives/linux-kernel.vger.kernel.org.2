@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA9E3FEECF
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD9B3FEED5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345278AbhIBNjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:39:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234646AbhIBNjX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:39:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E007960FC4;
-        Thu,  2 Sep 2021 13:38:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630589904;
-        bh=l6uGBy344Ik/n8UBlJrjcnIquIgfHVdam3N42gR+sUI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SjYuVkEAVYAjQp+u9hSTMc3fC7P9udJYCb7RaLZvFIvUL5h5EW63rHf2Mtk/kjQp5
-         Kft841UbbviIMIIurDAJnWL2rVRiMQGSa/wPYmVk5icJeicJXicDqWDLUqOPLFLrN1
-         /FajbLW5FQbfUtKbfHI3psfOaL/61R7tYAGDWdfgh56Yzi1sEaD+2XYND4fiBpV2Nx
-         KX0kx7xQq8VJAzMBiSD7KHFfQsIN23m7mg5SgxDvgtH8Fg5TOZJgUlzSJ/Da727ZPK
-         HBFB6c6B0R7oxUwYUIW2CZYIzS7bLRbRvkecE9i9T5ieFmTeNjfw9N1U8EWMESeGVy
-         FEmOUWlKjTCHA==
-Date:   Thu, 2 Sep 2021 15:38:20 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, John Stultz <john.stultz@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/4] misc: hisi_hikey_usb: change the DT schema
-Message-ID: <20210902153820.5624b57f@coco.lan>
-In-Reply-To: <20210902151053.7ddfbe3a@coco.lan>
-References: <cover.1630581434.git.mchehab+huawei@kernel.org>
-        <d990e75f28c443c0c5a5fc857b87acc4be3f9464.1630581434.git.mchehab+huawei@kernel.org>
-        <YTC4LPDem9uKXyMd@kroah.com>
-        <20210902151053.7ddfbe3a@coco.lan>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S1345299AbhIBNkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345197AbhIBNkO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 09:40:14 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF747C061575;
+        Thu,  2 Sep 2021 06:39:15 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id v20-20020a4a2554000000b0028f8cc17378so548645ooe.0;
+        Thu, 02 Sep 2021 06:39:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3i9b/QDZb0cse/arJkVkj0b5E9JeYEobASX++MvsNrs=;
+        b=NfYAO8z9mtmm847ShzIy99zyzotuORd5O5hOaViSCS4pfEiM87XvbYr67wtREsZZQ/
+         OkJ/irNVWESUmnQXvAxZV9FR9ZSTpECRewMRz2LhQioy5Dxa9C3dDVspRT8aN595yDYc
+         ZVxGv0uq8/qD9BIdg7KQN2FzModAbyf0clX1uUwPmQ94Yf5BuZVMe5o3hXk+peBhtPO1
+         XxWiSd66X17EYcD2qctpzkmnSWMiFe7zlytAPbB+Bz65nRk3DWE5NrDsHPTgV9bcWJrH
+         7BddXBHw7dHINar0EU6Kqbw5rRjgybCOXtuX7ivD6d0jGTVSmKN+mtiKekgO2eoL3zlG
+         YDYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3i9b/QDZb0cse/arJkVkj0b5E9JeYEobASX++MvsNrs=;
+        b=savkCH86C+bO1HefQ4J/gitJOsqgX9J2KdtZEu2IpW10+QHwA7nIdmrgh3evbpNr/F
+         1LNUruv8uNvn7mGjGSZwiyu97iwELLlkQoII366zDqCVtqkDCol5S3LUCAYVnUYwgNJk
+         K1Cy1/usaBYWS2Q21aiWkF/S9aO7l8htQHkqr+ZIx+h0pwVF3P3ojkctX7ZMX4LAnOMn
+         bg662e1DjJ2Jjx3RdW0NarlQdHiDsbAWYvqZTZveEknFNdL16aArZObmloN2v/fGbErN
+         AkE2FrXUS2mngC85wpp8ON6r70kZbAPBR9a/QZ0aYtZ2v72ys57ZaOyPqdpXxCZtUCqG
+         9kRA==
+X-Gm-Message-State: AOAM5323LRlj1Pt1AB3DG9w5iTVA2p5G9y2obkSoq9feaIWCjjPvIP44
+        SDMrW6E/uWCxcSJWHjzIYq4=
+X-Google-Smtp-Source: ABdhPJw6UxVSqB/f6mIJ0rQpsJAWLniTlOizp9qJQDJ94lgl/iCffTkeQbomVaSHwrz0N7O+ZtgJRw==
+X-Received: by 2002:a05:6820:613:: with SMTP id e19mr2630962oow.67.1630589953913;
+        Thu, 02 Sep 2021 06:39:13 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n13sm339294otr.11.2021.09.02.06.39.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 06:39:13 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] watchdog: mtk: add disable_wdt_extrst support
+To:     Fengquan Chen <Fengquan.Chen@mediatek.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     tinghan.shen@mediatek.com, randy.wu@mediatek.com,
+        rex-bc.chen@mediatek.com, christine.zhu@mediatek.com,
+        joe.yang@mediatek.com, zhishuang.zhang@mediatek.com
+References: <1630569881-6032-1-git-send-email-Fengquan.Chen@mediatek.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <4a7c1fa7-cd56-54c0-7b3c-ed48ec0e886d@roeck-us.net>
+Date:   Thu, 2 Sep 2021 06:39:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1630569881-6032-1-git-send-email-Fengquan.Chen@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 2 Sep 2021 15:10:53 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
-
-> Em Thu, 2 Sep 2021 13:40:28 +0200
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+On 9/2/21 1:04 AM, Fengquan Chen wrote:
+> From: "fengquan.chen" <fengquan.chen@mediatek.com>
 > 
-> > On Thu, Sep 02, 2021 at 01:28:35PM +0200, Mauro Carvalho Chehab wrote:  
-> > > As there's no upstream DT bindings for this driver, let's
-> > > update its DT schema, while it is not too late.    
-> > 
-> > So this is for 5.15-final?  
+> In some cases, we may need watchdog just to trigger an
+> internal soc reset without sending any output signal.
 > 
-> It can either be for 5.15 or 5.16, as there aren't any compatible
-> under arch/ which uses the DT schema there. All patches adding
-> such compatible are on this series. So, whatever version this
-> is applied should be OK.
+> Provide a disable_wdt_extrst parameter for configuration.
+> We can disable or enable it just by configuring dts.
+> 
+> fengquan.chen (1):
+>    watchdog: mtk: add disable_wdt_extrst support
+> 
+>   drivers/watchdog/mtk_wdt.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
 
-On a separate note, despite having "hisi_" on this driver's name, there's
-nothing there that is really HiSilicon specific. What this driver does is
-to control an USB HUB integrated inside a DT-based board, doing those 
-functions:
+A single patch does not require an introductory e-mail.
+Also, if provided, it needed to be numbered (PATCH 0/1)
+to distinguish it from the actual patch.
 
-	- Power on/off the chip;
-	- reset the HUB;
-	- control its OTG switch;
-	- control power on/off for an USB type-C connector;
-	- set USB role as host or device.
-
-This is used on both HiKey 960 and HiKey 970 with the following
-topology:
-
-  +-----+      +--------+       +---------+
-  | SoC | ---> | USB PHY|  ---> | USB HUB | ---> USB 3.0
-  +-----+      +--------+       +---------+      and type-C ports 
-
-Both Kirin 960 and 970 SoCs have a Synapsys IP (DWC 3). 
-
-Both HiKey 960 and 970 cards use Richtek RT1711H Type-C Chip Driver
-as part of the USB PHY logic, but they use different USB HUBs:
-
-	- HiKey 960 use a Microchip USB5734 HUB
-	- HiKey 970 use a TI TUSB8041 HUB
-
-While I'm not sure how generic this driver can be, I'm thinking that
-maybe a future patch could rename it to 'generic-usb-hub' or 
-something similar - finding a good name is always the hardest 
-part :-)
-
-Thanks,
-Mauro
+Guenter
