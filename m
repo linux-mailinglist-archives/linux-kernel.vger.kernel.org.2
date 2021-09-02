@@ -2,102 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA193FF79F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 01:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB723FF7A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 01:06:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348535AbhIBXFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 19:05:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56024 "EHLO
+        id S1347958AbhIBXGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 19:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348515AbhIBXFu (ORCPT
+        with ESMTP id S1347912AbhIBXGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 19:05:50 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D75C061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 16:04:51 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id g192-20020a25dbc9000000b0059bd2958c8aso4592539ybf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 16:04:51 -0700 (PDT)
+        Thu, 2 Sep 2021 19:06:51 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF114C061575;
+        Thu,  2 Sep 2021 16:05:52 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id z18so6844927ybg.8;
+        Thu, 02 Sep 2021 16:05:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=fE4xWbnNUsaH2L2+9e5Jc7xWeW6lJkVzW9cJr5tZCTo=;
-        b=H+Pvky7XU9ApAtzwgpgQVBA1tHgUZtMeP5w3daltJpilyFci7Rzq5wpVDReU38JFzr
-         4YfB0wERKVKz4KGFlZPTfMGyn+JCX1VswHHkFPf8bN16ODi9e3hY0BevWI5Tz2QcTMug
-         +diSdJBgTG73ywUdQT4hqxzOnYeqhWWaJCdFxLzBXqYuMfowNu4XNAREsttUCS5K58Cd
-         LWpqkJfAwbIIOYOA0dUwhrTTyxy8qdK41/dzkGdKYrSSancrEiR4xCtKW2uNlnnn6C5C
-         CyjniDyeQaxbraSES6WCwQyI9mbjsUeNSaYLyopI1U383UCtHrmM1a18KMJ1dex7LDwT
-         0NgA==
+        bh=B86ESlgqkajdOaq6Bjknz3MFl+TpH2X5kP28d+2n8So=;
+        b=lYvOwRGs1vjxgzh2WiJKppW7pB8bP6jhUKVmxygCMpozFDZNEyAMVKo/i7mGirozQO
+         0TJ8iyTjDKmA9W7EpImHZvj43GWarqWpTo52VpHcC4fh/nNzj4RZcGT/Svl7LteP1YfR
+         B96yZ+UmqdzWapvpyoJg9Y8I0e8Xn2hlPvLTOQ5lE0WuuptYXKGU8nGNlydX7QDiIS9X
+         5xx60/JJf12hww9fvy/pteltfi0A5hcYSIJVjEYTq6kbRGJv+uKZShGdSJuqKTaa/g50
+         QzV9mhBiWZYQCh+R6sGkHqvPkIRx+Mx1IIKRm1lVz3TVNoCUxwzj/dGHBbFzvqO9nLDU
+         1Gkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=fE4xWbnNUsaH2L2+9e5Jc7xWeW6lJkVzW9cJr5tZCTo=;
-        b=OWN6cIWu1rLevScoJ47E0Ru36OIHHT+XqDXKYXkUPWNdR50xNdRMIXvcZG0e8rntdf
-         3DIsm5Gh3jxL3d7Y3WHzbj484cXUunPdFw6xlyI9WhxbSwIPOCbyLDdbdkJ8QSxbISlE
-         gdCtlOvgdZFlxgY1KPTVpLYkWj6atdYKRLpYslPxi8RgNSrP2cPp4vRegE6XUuy6qeAJ
-         04Bdj76ljWe4CQ4fAvga3wqB7lErTbup9DZIsTbUs4ra1Jh7LaTE7FCLTzUwtgXX+CgM
-         VlDdA3P1Vc3H5888OGkB1ggPbCD4k4/nfNIGW/kCoUtFRkM1F5hQiMALevkkFjd7bwvf
-         co8Q==
-X-Gm-Message-State: AOAM531pZP1lHz4QCpHlYnpQ/LpSe+DWJ9YaH0A+8WlKsFsvavjTMT2+
-        8N8YXytxIBbZoLj0vvbbxgnboHUwaU8D/YQ=
-X-Google-Smtp-Source: ABdhPJxWgcYcIBBK376uC3gnVCUb/S4Lj9Rk7QhgF79UpRu0Ye+Nb1O88qm7IOAAT/bpyFwsdRjCxBFBgy1vRQc=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7cb7:1ee7:33cb:da76])
- (user=saravanak job=sendgmr) by 2002:a25:1bc6:: with SMTP id
- b189mr1031877ybb.338.1630623890909; Thu, 02 Sep 2021 16:04:50 -0700 (PDT)
-Date:   Thu,  2 Sep 2021 16:04:41 -0700
-In-Reply-To: <20210902230442.1515531-1-saravanak@google.com>
-Message-Id: <20210902230442.1515531-3-saravanak@google.com>
-Mime-Version: 1.0
-References: <20210902230442.1515531-1-saravanak@google.com>
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH v2 2/2] drivers: bus: simple-pm-bus: Add support for probing
- simple bus only devices
-From:   Saravana Kannan <saravanak@google.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        kernel-team@android.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B86ESlgqkajdOaq6Bjknz3MFl+TpH2X5kP28d+2n8So=;
+        b=qfS8OV1gZSEE1SVDrYUO7ShDLTK7FgRibP+ygbQQC6Od4duFZRvbAzeQ3Js/qr2iuF
+         s2BxsQeY8CASx0DzI/p8+tTOd2UQOrYRs7PRFtpVhBCoUckQipolPIs8IBBgpTZOBE/K
+         YfIzZCRZS64QQRpKbVZCJcYM6if37kYR8wZP19dRajKGLmVHJVZCmz3Csb0SbJsA6uNf
+         1bXyWJN9sg5zYJH5J/iYDCg/5rWLpcTCUcvPuKO1qeqgaZ8cZZEqYl3tzTfVjstGT+LN
+         jKowy00CSIO3rDu0gEbETxXGGBGoFkjIM/aKsVRA+T93P9TAh4ly45f4RKFofALa48fm
+         xwTw==
+X-Gm-Message-State: AOAM530JvEn3nM/8+d8lFxrtGaB5qTKmH1asEkSds8jjP+Fjclmu4X2p
+        pyTehB2oh+trJuqsVEs4SeAvt2cK9tIUfp+Itac=
+X-Google-Smtp-Source: ABdhPJysHZaAXCn7ljb1ZgUTt5qFYEkM2Ce4iInBur0+W1hWTONnSQgktIMzZ3lApaaxC8PXZp/Q9ygciQm2yWFKHp4=
+X-Received: by 2002:a25:bb13:: with SMTP id z19mr1085813ybg.347.1630623952207;
+ Thu, 02 Sep 2021 16:05:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210902165706.2812867-1-songliubraving@fb.com>
+ <20210902165706.2812867-3-songliubraving@fb.com> <CAEf4BzZLSs3ejyVLPMORd_GPCYNE8Jz4M6=4wxzR576Vag-+-A@mail.gmail.com>
+ <F7A1D3BF-357A-46FB-92EA-938DB99D8193@fb.com>
+In-Reply-To: <F7A1D3BF-357A-46FB-92EA-938DB99D8193@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 2 Sep 2021 16:05:41 -0700
+Message-ID: <CAEf4BzbpibAeK-PDiu0TEgKXXuU4MbPdfaaBB057e7DS2G35-A@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 2/3] bpf: introduce helper bpf_get_branch_snapshot
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Kernel Team <Kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The OF platform code sets up simple bus only devices (i.e. devices that
-won't match with any other driver) to get probed by the simple-pm-bus to
-keep fw_devlink from blocking probe() or sync_state() [1] callbacks of
-other devices. There's no need to populate the child devices since the
-OF platform code would do that anyway, so return early for these simple
-bus only devices.
+On Thu, Sep 2, 2021 at 4:03 PM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On Sep 2, 2021, at 3:53 PM, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Thu, Sep 2, 2021 at 9:58 AM Song Liu <songliubraving@fb.com> wrote:
+> >>
+> >> Introduce bpf_get_branch_snapshot(), which allows tracing pogram to get
+> >> branch trace from hardware (e.g. Intel LBR). To use the feature, the
+> >> user need to create perf_event with proper branch_record filtering
+> >> on each cpu, and then calls bpf_get_branch_snapshot in the bpf function.
+> >> On Intel CPUs, VLBR event (raw event 0x1b00) can be use for this.
+> >>
+> >> Signed-off-by: Song Liu <songliubraving@fb.com>
+> >> ---
+> >> include/uapi/linux/bpf.h       | 22 ++++++++++++++++++++++
+> >> kernel/bpf/trampoline.c        |  3 ++-
+> >> kernel/trace/bpf_trace.c       | 33 +++++++++++++++++++++++++++++++++
+> >> tools/include/uapi/linux/bpf.h | 22 ++++++++++++++++++++++
+> >> 4 files changed, 79 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> >> index 791f31dd0abee..c986e6fad5bc0 100644
+> >> --- a/include/uapi/linux/bpf.h
+> >> +++ b/include/uapi/linux/bpf.h
+> >> @@ -4877,6 +4877,27 @@ union bpf_attr {
+> >>  *             Get the struct pt_regs associated with **task**.
+> >>  *     Return
+> >>  *             A pointer to struct pt_regs.
+> >> + *
+> >> + * long bpf_get_branch_snapshot(void *entries, u32 size, u64 flags)
+> >> + *     Description
+> >> + *             Get branch trace from hardware engines like Intel LBR. The
+> >> + *             branch trace is taken soon after the trigger point of the
+> >> + *             BPF program, so it may contain some entries after the
+> >
+> > This part is a leftover from previous design, so not relevant anymore?
+>
+> Hmm.. This is still relevant, but not very accurate. I guess we should
+> provide more information, like "For more information about branches before
+> the trigger point, this should be called early in the BPF program".
 
-[1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
-Signed-off-by: Saravana Kannan <saravanak@google.com>
-Tested-by: Saravana Kannan <saravanak@google.com>
----
- drivers/bus/simple-pm-bus.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+I read the part about "taken soon after the trigger point of BPF
+program" as a reference to previous implementation. So maybe let's
+clarify that because LBR is not frozen, from the time
+bpf_get_branch_snapshot() is called to when we actually capture LBRs
+we can waste few records due to internal kernel calls, so the user has
+to be aware of that.
 
-diff --git a/drivers/bus/simple-pm-bus.c b/drivers/bus/simple-pm-bus.c
-index 01a3d0cd08ed..91d52021b7f9 100644
---- a/drivers/bus/simple-pm-bus.c
-+++ b/drivers/bus/simple-pm-bus.c
-@@ -19,6 +19,13 @@ static int simple_pm_bus_probe(struct platform_device *pdev)
- 	const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
- 	struct device_node *np = pdev->dev.of_node;
- 
-+	/*
-+	 * These are transparent bus devices (not simple-pm-bus matches) that
-+	 * get populated automatically.  So, don't need to do anything more.
-+	 */
-+	if (pdev->driver_override)
-+		return 0;
-+
- 	dev_dbg(&pdev->dev, "%s\n", __func__);
- 
- 	pm_runtime_enable(&pdev->dev);
--- 
-2.33.0.153.gba50c8fa24-goog
-
+>
+> Song
+>
+>
+> >
+> >> + *             trigger point. The user need to filter these entries
+> >> + *             accordingly.
+> >> + *
+> >> + *             The data is stored as struct perf_branch_entry into output
+> >> + *             buffer *entries*. *size* is the size of *entries* in bytes.
+> >> + *             *flags* is reserved for now and must be zero.
+> >> + *
+> >> + *     Return
+> >> + *             On success, number of bytes written to *buf*. On error, a
+> >> + *             negative value.
+> >> + *
+> >> + *             **-EINVAL** if arguments invalid or **size** not a multiple
+> >> + *             of **sizeof**\ (**struct perf_branch_entry**\ ).
+> >> + *
+> >> + *             **-ENOENT** if architecture does not support branch records.
+> >
+> > [...]
+>
