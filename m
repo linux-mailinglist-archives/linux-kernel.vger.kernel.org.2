@@ -2,240 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 402173FEFAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 16:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2583FEFAF
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 16:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236020AbhIBOse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 10:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231767AbhIBOsb (ORCPT
+        id S1345446AbhIBOth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 10:49:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28622 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229941AbhIBOtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 10:48:31 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D11C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 07:47:32 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id x11so5063510ejv.0
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 07:47:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3iSqlQ/ZK7ej3EgME7wgA6neQcA0t8xpPoHGdJFmKws=;
-        b=KXkwS+++0r7fEjFg2TNH76VwQiYENXwpvlgnBbgDP4CHN8InzCTBkIcPRiYSQooGLq
-         url3jbr31iRcFtsfAQsFzQz8kqaIXyNOduJNo2z+Y+JGxMGVYWZb3K8BXCt0LnOfCDYv
-         3jY01JKZ1GMXAbydMif8nQA4JwV5pAP24wtSR4fBkep0/OS3Ef2MiSy5IITWACmNnWmZ
-         LLSt8y/4TIt6vsZXLLyd+YpwBGIZG43j5u0m834kr+oFr/TVE8UFQffxhlvkvWloY4E6
-         uY9zvEnVwlIaYxYUEPhUzPdzhC7FT+HQckY4ONE3g43FcbIdSZLsKTGrrh0vtwrrHoFb
-         R1kA==
+        Thu, 2 Sep 2021 10:49:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630594117;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0wVKNF0XQtjZ9RbZFV3p67mUIOM94HpjWZkNzTpPK1k=;
+        b=DUIB4zDYx07A5IJi1WB95AVnRFo25W2bWK8+9cb1Gd3kA+raxdWFo8eH9Xc5QX/QlZBOc9
+        Cuicp3rpL61KRYcelaBX58hy6PUv/efkekgc9TcrED+Ovf3Aiw3N+Pl4nCdKQJ9Tv0vJvJ
+        zWaSnTPkuStTf9kYX6sboz5CCBIFeGU=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-73-dFfEdno1ORK2MHtdF93ssA-1; Thu, 02 Sep 2021 10:48:36 -0400
+X-MC-Unique: dFfEdno1ORK2MHtdF93ssA-1
+Received: by mail-qt1-f197.google.com with SMTP id t2-20020ac87382000000b002a0c1c918c3so957995qtp.13
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 07:48:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3iSqlQ/ZK7ej3EgME7wgA6neQcA0t8xpPoHGdJFmKws=;
-        b=jp2dvanyWQwipzwanSAaZKu5r68bXYefg63NGE0hGViGeeEl192950TQZKg1VK2Svk
-         Thv6S98h/CVK5ZA5ks2AfOAKdAW74tMbMakpgJk/9UPZ7ZvW1QgimC8CcqVC/sc4je6O
-         /4ON/rUqPKhfeXbI1ROXwuZ1nSBEYk1HrqyDqVVYpi29yANG4qv+5wPtkDnqX3v1X8C5
-         BtB/kqRyQAAh/wjcxX45H0iX4uhAGi3sWU/a2h5e0SJQoBd1zUUDmjE2UO1XnPFRJVCl
-         GOS8zaItlDSXV64WtHg+sffoEkCxNj5eHd70RqTtz1pmVgkV7tMjJvo/gNE2fmJ73TMG
-         CPZA==
-X-Gm-Message-State: AOAM530Owan+sjuJZrwJdeZcY7YHCAESA6aZkZDnI6lUkK6pVQALVDhY
-        m1fLdxcFdEkG7nlqNChgncBq4jiZhSjEPCKPmqVuJg==
-X-Google-Smtp-Source: ABdhPJxl6e1pbmRDpPaHV3/ARZv+hnd5d3DHYn2gMiQk/sb1dX7govEf48du4nht8BaHJ4UIoXO53b9QxyIzZZyP0YI=
-X-Received: by 2002:a17:906:68c2:: with SMTP id y2mr4249459ejr.18.1630594050694;
- Thu, 02 Sep 2021 07:47:30 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210901122250.752620302@linuxfoundation.org>
-In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 2 Sep 2021 20:17:19 +0530
-Message-ID: <CA+G9fYvnv_U=smgN34uX2uox95+T_iLhTG_QZeO_Zn4d2twVbw@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/33] 4.19.206-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0wVKNF0XQtjZ9RbZFV3p67mUIOM94HpjWZkNzTpPK1k=;
+        b=hWwtYUv3r5Pn8OgGmuEg7j0R57Aw9eI/OzlEA6EM7FRZDN0rbg0sifPamZ4AndHt0R
+         LHoqBg0swM1GQsYFvRiGmLBSCZyGgDxNFC1Zib9cB1j5h7+IMtvY7UsXuhCQ/ZSIIMH+
+         BgUgoiCMpSirhBBznoNXw87n7y10FGWDICJ3cap8QDKkYwUDH1CM23fqibLmeTdRtbXk
+         DQDO23dddRsRx3MK8YiuaHnQDLAyUsYUbgAmEPzOrNRhGK5h6eijdvmVvVRfgCAvKt9e
+         3bzS7h+OUKj2gdHHiid4NAXaqORORFrM/PQNdnUEmi3/Ta6wSTEhXmjiOI+GxhSr7+Lz
+         r67g==
+X-Gm-Message-State: AOAM5311fsyY37WFwzZ6rkFft2DlUrsRzayh0ggIs5W3Mp6jTNRD9CMY
+        a57CK7j8WJBYggg+WtnRMbiqlmM0bPA6NaHwo3E0K5l53mrFT/wa576e0K9yCequMklu5wK/miE
+        cfeHOEPdB0co0lg240O/Rht+0
+X-Received: by 2002:a05:620a:4404:: with SMTP id v4mr3538352qkp.344.1630594115310;
+        Thu, 02 Sep 2021 07:48:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwxaosPn9uHdUrs1IrRUUqvUMsgR8b60qaNexWZOR8FDZJ8HYo9cMS23TOMY78uAbxFZwANGg==
+X-Received: by 2002:a05:620a:4404:: with SMTP id v4mr3538331qkp.344.1630594115067;
+        Thu, 02 Sep 2021 07:48:35 -0700 (PDT)
+Received: from t490s ([2607:fea8:56a3:500::ad7f])
+        by smtp.gmail.com with ESMTPSA id q7sm1565488qkm.68.2021.09.02.07.48.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 07:48:34 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 10:48:32 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Matthew Wilcox <willy@infradead.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Hugh Dickins <hughd@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Alistair Popple <apopple@nvidia.com>
+Subject: Re: [PATCH 4/5] mm: Introduce zap_details.zap_flags
+Message-ID: <YTDkQMLhIfIVRGoG@t490s>
+References: <20210901205622.6935-1-peterx@redhat.com>
+ <20210901205722.7328-1-peterx@redhat.com>
+ <5f3aa3fa-e877-02d1-8721-debbe688e7af@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <5f3aa3fa-e877-02d1-8721-debbe688e7af@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Sept 2021 at 18:00, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.206 release.
-> There are 33 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.206-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Thu, Sep 02, 2021 at 09:28:42AM +0200, David Hildenbrand wrote:
+> On 01.09.21 22:57, Peter Xu wrote:
+> > Instead of trying to introduce one variable for every new zap_details fields,
+> > let's introduce a flag so that it can start to encode true/false informations.
+> > 
+> > Let's start to use this flag first to clean up the only check_mapping variable.
+> > Firstly, the name "check_mapping" implies this is a "boolean", but actually it
+> > stores the mapping inside, just in a way that it won't be set if we don't want
+> > to check the mapping.
+> > 
+> > To make things clearer, introduce the 1st zap flag ZAP_FLAG_CHECK_MAPPING, so
+> > that we only check against the mapping if this bit set.  At the same time, we
+> > can rename check_mapping into zap_mapping and set it always.
+> > 
+> > Since at it, introduce another helper zap_check_mapping_skip() and use it in
+> > zap_pte_range() properly.
+> > 
+> > Some old comments have been removed in zap_pte_range() because they're
+> > duplicated, and since now we're with ZAP_FLAG_CHECK_MAPPING flag, it'll be very
+> > easy to grep this information by simply grepping the flag.
+> > 
+> > It'll also make life easier when we want to e.g. pass in zap_flags into the
+> > callers like unmap_mapping_pages() (instead of adding new booleans besides the
+> > even_cows parameter).
+> > 
+> > Signed-off-by: Peter Xu <peterx@redhat.com>
+> > ---
+> >   include/linux/mm.h | 19 ++++++++++++++++++-
+> >   mm/memory.c        | 34 ++++++++++------------------------
+> >   2 files changed, 28 insertions(+), 25 deletions(-)
+> > 
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > index 69259229f090..fcbc1c4f8e8e 100644
+> > --- a/include/linux/mm.h
+> > +++ b/include/linux/mm.h
+> > @@ -1716,14 +1716,31 @@ static inline bool can_do_mlock(void) { return false; }
+> >   extern int user_shm_lock(size_t, struct ucounts *);
+> >   extern void user_shm_unlock(size_t, struct ucounts *);
+> > +/* Whether to check page->mapping when zapping */
+> > +#define  ZAP_FLAG_CHECK_MAPPING             BIT(0)
+> 
+> So we want to go full way, like:
+> 
+> typedef int __bitwise zap_flags_t;
+> 
+> #define  ZAP_FLAG_CHECK_MAPPING		((__force zap_flags_t)BIT(0))
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Sure.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> 
+> > +
+> >   /*
+> >    * Parameter block passed down to zap_pte_range in exceptional cases.
+> >    */
+> >   struct zap_details {
+> > -	struct address_space *check_mapping;	/* Check page->mapping if set */
+> > +	struct address_space *zap_mapping;
+> >   	struct page *single_page;		/* Locked page to be unmapped */
+> > +	unsigned long zap_flags;
+> 
+> Why call it "zap_*" if everything in the structure is related to zapping?
+> IOW, simply "mapping", "flags" would be good enough.
 
-## Build
-* kernel: 4.19.206-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.19.y
-* git commit: fc1fd7aed81d18bc92d0e096033e11161cea98aa
-* git describe: v4.19.205-34-gfc1fd7aed81d
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.205-34-gfc1fd7aed81d
+Not sure if it's a good habit or bad - it's just for tagging system to be able
+to identify other "mapping" variables, or a simple grep with the name.  So I
+normally prefix fields with some special wording to avoid collisions.
 
-## No regressions (compared to v4.19.205-20-g0ec64a47cbb1)
+> 
+> >   };
+> > +/* Return true if skip zapping this page, false otherwise */
+> > +static inline bool
+> > +zap_skip_check_mapping(struct zap_details *details, struct page *page)
+> > +{
+> > +	if (!details || !page)
+> > +		return false;
+> > +
+> > +	if (!(details->zap_flags & ZAP_FLAG_CHECK_MAPPING))
+> > +		return false;
+> > +
+> > +	return details->zap_mapping != page_rmapping(page);
+> > +}
+> 
+> I'm confused, why isn't "!details->zap_mapping" vs. "details->zap_mapping"
+> sufficient? I can see that you may need flags for other purposes (next
+> patch), but why do we need it here?
+> 
+> Factoring it out into this helper is a nice cleanup, though. But I'd just
+> not introduce ZAP_FLAG_CHECK_MAPPING.
 
-## No fixes (compared to v4.19.205-20-g0ec64a47cbb1)
+Yes I think it's okay. I wanted to separate them as they're fundamentall two
+things to me.  Example: what if the mapping we want to check is NULL itself
+(remove private pages only; though it may not have a real user at least so
+far)?  In that case one variable won't be able to cover it.
 
-## Test result summary
-total: 80130, pass: 64266, fail: 784, skip: 13234, xfail: 1846
+But indeed Matthew raised similar comment, so it seems to be a common
+preference.  No strong opinion on my side, let me coordinate with it.
 
-## Build Summary
-* arm: 98 total, 98 passed, 0 failed
-* arm64: 34 total, 34 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 15 total, 15 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 41 total, 41 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 18 total, 18 passed, 0 failed
+Thanks for looking,
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-arm64
-* kselftest-arm64/arm64.btitest.bti_c_func
-* kselftest-arm64/arm64.btitest.bti_j_func
-* kselftest-arm64/arm64.btitest.bti_jc_func
-* kselftest-arm64/arm64.btitest.bti_none_func
-* kselftest-arm64/arm64.btitest.nohint_func
-* kselftest-arm64/arm64.btitest.paciasp_func
-* kselftest-arm64/arm64.nobtitest.bti_c_func
-* kselftest-arm64/arm64.nobtitest.bti_j_func
-* kselftest-arm64/arm64.nobtitest.bti_jc_func
-* kselftest-arm64/arm64.nobtitest.bti_none_func
-* kselftest-arm64/arm64.nobtitest.nohint_func
-* kselftest-arm64/arm64.nobtitest.paciasp_func
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
+-- 
+Peter Xu
 
---
-Linaro LKFT
-https://lkft.linaro.org
