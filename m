@@ -2,104 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 420313FF123
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F6B3FF127
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346312AbhIBQTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:19:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346300AbhIBQTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:19:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 778E46187D;
-        Thu,  2 Sep 2021 16:18:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630599521;
-        bh=JcYHOKNx0hNjqmpLEEHso3KVVidsGV0+VqdBVx4KJ+E=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=a6+vJTGRHe9Xk+46Babj4Gu37PjdCTzZYp0DfDtkOJqquwkr/5mOPt4qdYrECoU8t
-         49oSyyN+AzKd/DqIfJ7DlWYaJJrRlGox7+furvQdwPKa66x9Te8SlUFYGKH+SCgb7o
-         uNTQcaDM5ZWsyxuoR8pdw1g2F7At4e3p1XAQO145v1W5/+g6LTxWNEONuFXdbEpbkv
-         jv6ZNJrcDavta44h8cPv1I6sjItQ1f/mzsAKR/dnB/AJgvgq/lkReFAhaLWvTmiOsF
-         xdYsndBmLwUTtVzBXMQnoVNjY1SqfANX4zVIHMaeL8xtf97NFimFW2Tt36qW3MtCzT
-         j1JEI1UPDLqPQ==
-Received: by mail-ot1-f54.google.com with SMTP id i3-20020a056830210300b0051af5666070so3200908otc.4;
-        Thu, 02 Sep 2021 09:18:41 -0700 (PDT)
-X-Gm-Message-State: AOAM530NEJklET1K1auVD1gnvWx6mwsyR0aN/tJdaWxGQPNbQcIqf0ly
-        C9e5xQi85MTlqOc2lwuQ/Ve7b5hIZpexuWtOUKI=
-X-Google-Smtp-Source: ABdhPJxfaiUX2hrLyMECVCPFUe0KB68VWCzNVh8WiWCsq55R8cwzjxP/YB85hPhk+fGyzUWOXODcvPEpwiPMUcAX4EE=
-X-Received: by 2002:a05:6830:444:: with SMTP id d4mr3261443otc.108.1630599520694;
- Thu, 02 Sep 2021 09:18:40 -0700 (PDT)
+        id S233599AbhIBQUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:20:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45728 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235934AbhIBQUR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 12:20:17 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A76C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:19:18 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id w4so4550373ljh.13
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:19:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=iMvWLkdWUtkaR1dklSOOm8LWF6kDmId1zmm7zZNctbo=;
+        b=UqYwBgxkGgrjPUjuhbRaR+xLyGBDGqNcXTGQY2dH1sazdx9URXp5fCnNYrBqs5Yf7J
+         TvrKnb971ru+ib8HBTPlUc11Ft7o6IkhsByM2Jk+y8Ovf8G4HlaCr9CiPAmTrIPQfYbb
+         q5nIzlUcLfmsFEKimVxis1ZpI3WSJxF/9jqfY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=iMvWLkdWUtkaR1dklSOOm8LWF6kDmId1zmm7zZNctbo=;
+        b=nsQRIt4hf5NtKkcUinHx5+ZDYpJhzE9aHFGTx8al9nTxaLBh/aOtIRAb3bc1nADBqc
+         SbBn0+frXraQot/My8yiII/7Cs1D1+LjwatLJ+HRbpl73hhMoCBzBc7VKjq64J5Fv90F
+         GwZ620dyhGJ/y30uNS06FbRGRz/58Xwr3/vFlE1DfGx7cY/NFINpDv8gpG25Xi77Q7Q5
+         hwHkIhxZW90SDpeNnS3Tosz8PDMr7GYfDnlhkTwOgugRLw4lczi3Y6/B8j54xIV6PZYy
+         I2FW23EY3NBzD+pKyx/qYNfBWwum9XChIAVR/C1R87f5HRDH4c2nTtiBXlQjs+9KL7Ra
+         cWuQ==
+X-Gm-Message-State: AOAM531AmOjxgCUA2gmJcnwJxXJ3YjSyClr237CXwWtdu70IZuZezMAM
+        iFPWmYx7iI5MKnWzmMP7EnFKsJgtD/+3Fi3t
+X-Google-Smtp-Source: ABdhPJyVQCo2oS9uEPsvXk7GQwg/IrWQpuiBumnu17KfPGJfqMMLmnfkPCk4cCDH4bDwe6/y1kuheg==
+X-Received: by 2002:a2e:bb8f:: with SMTP id y15mr3288073lje.148.1630599556400;
+        Thu, 02 Sep 2021 09:19:16 -0700 (PDT)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id f17sm272456ljn.44.2021.09.02.09.19.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 09:19:15 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id x27so5509094lfu.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:19:15 -0700 (PDT)
+X-Received: by 2002:a05:6512:681:: with SMTP id t1mr3132726lfe.487.1630599555287;
+ Thu, 02 Sep 2021 09:19:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210902155429.3987201-1-keithp@keithp.com> <202109020904.976207C@keescook>
-In-Reply-To: <202109020904.976207C@keescook>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 2 Sep 2021 18:18:29 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGfQuEFOh79TZ089+9eP4S5svWgTMbZLugmD8Hq9b=fMQ@mail.gmail.com>
-Message-ID: <CAMj1kXGfQuEFOh79TZ089+9eP4S5svWgTMbZLugmD8Hq9b=fMQ@mail.gmail.com>
-Subject: Re: [PATCH 0/2]: ARM: Enable THREAD_INFO_IN_TASK
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Keith Packard <keithp@keithp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Jens Axboe <axboe@kernel.dk>, Jian Cai <jiancai@google.com>,
-        Joe Perches <joe@perches.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Maninder Singh <maninder1.s@samsung.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vaneet Narang <v.narang@samsung.com>,
-        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Keith Packard <keithpac@amazon.com>,
-        linux-hardening@vger.kernel.org
+References: <20210831225935.GA26537@hsiangkao-HP-ZHAN-66-Pro-G1>
+In-Reply-To: <20210831225935.GA26537@hsiangkao-HP-ZHAN-66-Pro-G1>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 2 Sep 2021 09:18:59 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi7gf_afYhx_PYCN-Sgghuw626dBNqxZ6aDQ-a+sg6wag@mail.gmail.com>
+Message-ID: <CAHk-=wi7gf_afYhx_PYCN-Sgghuw626dBNqxZ6aDQ-a+sg6wag@mail.gmail.com>
+Subject: Re: [GIT PULL] erofs updates for 5.15-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-erofs@lists.ozlabs.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Huang Jianan <huangjianan@oppo.com>,
+        Yue Hu <huyue2@yulong.com>, Miao Xie <miaoxie@huawei.com>,
+        Liu Bo <bo.liu@linux.alibaba.com>,
+        Peng Tao <tao.peng@linux.alibaba.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Liu Jiang <gerry@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Sept 2021 at 18:07, Kees Cook <keescook@chromium.org> wrote:
+On Tue, Aug 31, 2021 at 4:00 PM Gao Xiang <xiang@kernel.org> wrote:
 >
-> On Thu, Sep 02, 2021 at 08:54:26AM -0700, Keith Packard wrote:
-> > Placing thread_info in the kernel stack leaves it vulnerable to stack
-> > overflow attacks. This short series addresses that by using the
-> > existing THREAD_INFO_IN_TASK infrastructure.
->
-> Very cool! Thanks for working on this. If you want, you can refer to the
-> KSPP bug for this too:
-> https://github.com/KSPP/linux/issues/1
->
-> (Anyone want to do MIPS?)
->
+> All commits have been tested and have been in linux-next. Note that
+> in order to support iomap tail-packing inline, I had to merge iomap
+> core branch (I've created a merge commit with the reason) in advance
+> to resolve such functional dependency, which is now merged into
+> upstream. Hopefully I did the right thing...
 
-I take it this breaks the GCC plugin based per-task stack protector,
-given that it emits code to mask the stack pointer and apply an offset
-to the resulting value.
+It all looks fine to me. You have all the important parts: what you
+are merging, and _why_ you are merging it.
 
-It would be nice if we could replace this with something suitable for
-THREAD_INFO_IN_TASK, and if it is suitable enough, try and get the
-GCC/Clang folks to adopt it as well (which was never going to happen
-for the stack pointer mask/offset approach)
+So no complaints, and thanks for making it explicit in your pull
+request too so that I'm not taken by surprise.
 
-Where can I find these patches? I don't see them on linux-arm-kernel@
+         Linus
