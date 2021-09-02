@@ -2,110 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F803FF15B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BF93FF15F
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346236AbhIBQ2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:28:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234786AbhIBQ2p (ORCPT
+        id S1346280AbhIBQ3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:29:33 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:34537 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346312AbhIBQ3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:28:45 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EBF6C061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:27:47 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id f15so4977339ybg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:27:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eJLIiedISCJRyHw16WvJSkD85mHHNgMIgGyWz+lopEc=;
-        b=fM+/JeCwdbssBXpOkjmEZ3eIo9++9cKPpbcRN1wKaKgQ4I9DDDeOALD7CaTBisOPz9
-         C1FFKVwWxUb5uKAKlOHcOXhksa4rhh6l8dQ/UWlwEAmfJ9c2ym4Zzfcbxzq4/fo3wVOL
-         W01nxuHRtWPZKJqHXIk6mfSpWKoXky/+m2foBQ7x8FSyVwc4LUUd9pIPc2m+DEdTVuad
-         DfOTGBR6yJH8YE5iEj4/khKub/UXSmvkh7BHCEdbKIVRNgDJmG8qOHcG6Nr9UWyS6soz
-         Q9yS8Hys4HcWWTNi3lfeJVSUy6Cb1Yivd0UayQSJLw42Ru3IVlwOAmkn7PehtICiEM91
-         /KEg==
+        Thu, 2 Sep 2021 12:29:24 -0400
+Received: by mail-oi1-f174.google.com with SMTP id p2so3295690oif.1;
+        Thu, 02 Sep 2021 09:28:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eJLIiedISCJRyHw16WvJSkD85mHHNgMIgGyWz+lopEc=;
-        b=EQr7yJkv2KZQ7DHR7oxQfNEwMplJEk9h8vxFwlGFzY7319H+o0lQClJkHQBMRoY4LN
-         ZKTPoURYZBASKE4DhhWaaHtLT51ykLwt+IksB5lwkDupIvVQKocW9wmIUlO5JAcvprxT
-         c1qTx1r4bJU+FaxsQBIEIW24XsNzYYArcIaROb2ukrH9lGdyJypefcDh28FVfwl3aUZ1
-         Kzd+RUMWfnwxGX56INIyG10o+j6Hwr8WLkbQtKw1QnmGyNsWrR+ZmWEB5Y7nLVS+28NF
-         S9ptsffUNeB2FVvD+z7mwrV5ydlOTlV3PK4zKxhtFimAp5nqoqZWmpA+M+ZbgcHJL9Tf
-         PlfA==
-X-Gm-Message-State: AOAM533rGoUXuG2j+VPO5XIOk2JteEL0IVIyMQ8Re44ZRCwKfg8koMsI
-        dSHkUNI8lSMFbl48j7fC2iHrLm2nzY2xkwUu5ln+Qg==
-X-Google-Smtp-Source: ABdhPJxLXRFWyfyWl9ok1Aa6XveqWoo81KUXhljpBzB+4qFjXNrtY5Q8+BjSRLkRtw+s/CVzpVUYjS1INpOzcfunDRA=
-X-Received: by 2002:a25:d2c8:: with SMTP id j191mr5657920ybg.412.1630600065503;
- Thu, 02 Sep 2021 09:27:45 -0700 (PDT)
+        bh=yAfF6voZMV5HL2emobgman82UwdzTl9MjI3NYiAvvY8=;
+        b=CvSdputKjf5THPrzwpFEzM7yPK+xb2OENDZHJS3JFjnA8OvXjHsAPEp/LmPpUIMdto
+         xNGi39vhtMJzsYAe3qMY2YztYw2akklDxJrmHa64yaPegF8+eZu44+HkHcpXrJfnKBw8
+         nRkkP+TPD2YBC5NI0rgiJvBM1/QwWajnBvWiCejdrpQNSc7AafLJvurMzs+Urc25R7YX
+         thTj8rq4nH8hoAYXX9ZVoGB0w8cp/5mUXFyEmodBjbiMehh/DzK4ZCbag+7NyxJ0vDsO
+         +p6zornnbmWc0EFOO91Fx4RuIkbhP26kpH6zygXUzx08+8i9AfwxXb03b2pw7vWIIN6r
+         daeg==
+X-Gm-Message-State: AOAM533KKwMzhu7yH7mZnMwGGNSySpPFVH7X5WfuscK4ExJYmcrhI/Vy
+        KVtOpUKuvU1szL79Xh7v89Hi73aK5hm164Cs0lQ=
+X-Google-Smtp-Source: ABdhPJwg0lvNr/QwsNhFe4IobRTfilUwoaE+FI69nZyCe2YopZSoRjuvrS/SxUVf8ud4LCqA44b+ACTfkChQgkY6tt4=
+X-Received: by 2002:aca:afcd:: with SMTP id y196mr2831372oie.71.1630600104769;
+ Thu, 02 Sep 2021 09:28:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210902025528.1017391-1-saravanak@google.com>
- <CAGETcx9N34RyrdKDR8dQ7ECyz7ZXBx-Ft16t033NjTiU8p=Y0g@mail.gmail.com> <CAJZ5v0gt_1vKQXxSY6HoHRPR9O_e1f7VwcBnSjeMgCdCibrwgQ@mail.gmail.com>
-In-Reply-To: <CAJZ5v0gt_1vKQXxSY6HoHRPR9O_e1f7VwcBnSjeMgCdCibrwgQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 2 Sep 2021 09:27:09 -0700
-Message-ID: <CAGETcx_dvpFKZnz2w43h=ybp-8YF=OdpW0f2mK+jvDPURDFQJQ@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] Ulf reported an issue[1] with fw_devlink. This
- series tries to fix that issue.
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
+References: <20210901083442.210230-1-sean@geanix.com>
+In-Reply-To: <20210901083442.210230-1-sean@geanix.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 2 Sep 2021 18:28:14 +0200
+Message-ID: <CAJZ5v0j5dMDSDjhuXaZd=_J5JOP4Z09WUXfjWX_iCcT4RDisCg@mail.gmail.com>
+Subject: Re: [PATCH] PM / suspend: move userspace freeze before disk sync
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Richard Weinberger <richard@nod.at>,
+        Linux PM <linux-pm@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+        Len Brown <len.brown@intel.com>, linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 8:56 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+On Wed, Sep 1, 2021 at 10:35 AM Sean Nyekjaer <sean@geanix.com> wrote:
 >
-> On Thu, Sep 2, 2021 at 4:57 AM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > Oops, forgot to use a proper subject. Sorry.
->
-> Is this a replacement for the "Fix rtl8366rb issues with fw_devlink=on " series?
+> This fixes an issue where data remains unwritten before suspend.
 
-No. This is unrelated to that. This is the issue I'm trying to fix:
-https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+Well, it doesn't make the issue go away, it just hides it for you and
+it may very well expose it for someone else.
 
-This is kind of a replacement to, but the patch below might be needed
-in general (needs more thought):
-https://lore.kernel.org/lkml/CAGETcx9U2M5i1CAx605fG3Qwm1xwjH2uy4kY4vrAF7YSRSSg+w@mail.gmail.com/
+In particular, note that you can compile the kernel with
+CONFIG_SUSPEND_SKIP_SYNC set which makes it not sync at all during
+system-wide suspend and this is a valid case expected to work.  It
+looks like this case doesn't work for you.
 
--Saravana
+> UBI tried to write data, before the mtd device had been unsuspended.
+
+Well, that's the real problem and it can happen regardless of whether
+or not this patch is there.
+
+> Seen on an iMX6ULL board fitted with rawnand flash.
 >
+> Before:
+> PM: suspend entry (deep)
+> Filesystems sync: 0.088 seconds
+> Freezing user space processes ... (elapsed 0.000 seconds) done.
+> OOM killer disabled.
+> Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+> printk: Suspending console(s) (use no_console_suspend to debug)
+> PM: suspend devices took 0.030 seconds
+> Disabling non-boot CPUs ...
+> ubi0 error: ubi_io_write: error -16 while writing 4096 bytes to PEB 1762:94208, written 0 bytes
 >
-> > On Wed, Sep 1, 2021 at 7:55 PM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > Ulf, mind testing this?
-> > >
-> > > Thanks,
-> > > Saravana
-> > > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
-> > >
-> > > Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> > >
-> > > Saravana Kannan (2):
-> > >   driver core: Add support for FWNODE_FLAG_NEVER_PROBES
-> > >   of: platform: Mark bus devices nodes with FWNODE_FLAG_NEVER_PROBES
-> > >
-> > >  drivers/base/core.c    |  8 ++++++++
-> > >  drivers/of/platform.c  | 16 ++++++++++++++++
-> > >  include/linux/fwnode.h |  8 +++++---
-> > >  3 files changed, 29 insertions(+), 3 deletions(-)
-> > >
-> > > --
-> > > 2.33.0.259.gc128427fd7-goog
-> > >
+> After:
+> PM: suspend entry (deep)
+> Freezing user space processes ... (elapsed 0.001 seconds) done.
+> OOM killer disabled.
+> Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+> Filesystems sync: 0.060 seconds
+> printk: Suspending console(s) (use no_console_suspend to debug)
+> PM: suspend devices took 0.040 seconds
+> Disabling non-boot CPUs ...
+> PM: resume devices took 0.100 seconds
+>
+> Signed-off-by: Sean Nyekjaer <sean@geanix.com>
+> ---
+>
+> Some explanation/discussion here:
+> http://lists.infradead.org/pipermail/linux-mtd/2021-July/087390.html
+>
+>  kernel/power/suspend.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+> index 87331565e505..4ee3fcbb0e7a 100644
+> --- a/kernel/power/suspend.c
+> +++ b/kernel/power/suspend.c
+> @@ -562,6 +562,12 @@ static int enter_state(suspend_state_t state)
+>         if (state == PM_SUSPEND_TO_IDLE)
+>                 s2idle_begin();
+>
+> +       pm_pr_dbg("Preparing system for sleep (%s)\n", mem_sleep_labels[state]);
+> +       pm_suspend_clear_flags();
+> +       error = suspend_prepare(state);
+> +       if (error)
+> +               goto Unlock;
+> +
+>  #ifndef CONFIG_SUSPEND_SKIP_SYNC
+>         trace_suspend_resume(TPS("sync_filesystems"), 0, true);
+>         pr_info("Syncing filesystems ... ");
+> @@ -570,12 +576,6 @@ static int enter_state(suspend_state_t state)
+>         trace_suspend_resume(TPS("sync_filesystems"), 0, false);
+>  #endif
+>
+> -       pm_pr_dbg("Preparing system for sleep (%s)\n", mem_sleep_labels[state]);
+> -       pm_suspend_clear_flags();
+> -       error = suspend_prepare(state);
+> -       if (error)
+> -               goto Unlock;
+> -
+>         if (suspend_test(TEST_FREEZER))
+>                 goto Finish;
+>
+> --
+> 2.33.0
+>
