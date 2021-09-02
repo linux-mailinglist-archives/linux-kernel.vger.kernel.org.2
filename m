@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B072D3FE937
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 08:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B61033FE939
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 08:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239904AbhIBG0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 02:26:35 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9393 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237121AbhIBG0e (ORCPT
+        id S239001AbhIBG3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 02:29:45 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:24637 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230215AbhIBG3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 02:26:34 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H0W5q39J2z8xdS;
-        Thu,  2 Sep 2021 14:21:19 +0800 (CST)
-Received: from [10.174.178.75] (10.174.178.75) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Thu, 2 Sep 2021 14:25:34 +0800
-Subject: Re: [PATCH 3/6] mm/page_alloc.c: remove obsolete comment in
- free_pcppages_bulk()
-To:     Mel Gorman <mgorman@techsingularity.net>
-CC:     <akpm@linux-foundation.org>, <vbabka@suse.cz>,
-        <sfr@canb.auug.org.au>, <peterz@infradead.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20210830141051.64090-1-linmiaohe@huawei.com>
- <20210830141051.64090-4-linmiaohe@huawei.com>
- <20210831133830.GE4128@techsingularity.net>
- <884a4b72-95ab-0fca-6c74-d67535048736@huawei.com>
- <20210901151411.GH4128@techsingularity.net>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <3cff22e0-760b-1a11-6f28-f257317eba7e@huawei.com>
-Date:   Thu, 2 Sep 2021 14:25:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 2 Sep 2021 02:29:44 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0Umzy5X2_1630564123;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Umzy5X2_1630564123)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 02 Sep 2021 14:28:44 +0800
+Subject: Re: [PATCH 00/24] x86/entry/64: Convert a bunch of ASM entry code
+ into C code
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
+ <20210831204459.GM4353@worktop.programming.kicks-ass.net>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <b2a74b43-2b87-9f81-2e50-ea31cbd614c6@linux.alibaba.com>
+Date:   Thu, 2 Sep 2021 14:28:43 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210901151411.GH4128@techsingularity.net>
-Content-Type: text/plain; charset="iso-8859-15"
+In-Reply-To: <20210831204459.GM4353@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.75]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/1 23:14, Mel Gorman wrote:
-> On Wed, Sep 01, 2021 at 03:49:03PM +0800, Miaohe Lin wrote:
->> On 2021/8/31 21:38, Mel Gorman wrote:
->>> On Mon, Aug 30, 2021 at 10:10:48PM +0800, Miaohe Lin wrote:
->>>> It's also confusing now. Remove it.
->>>>
->>>
->>> Why is the whole comment obsolete?
->>>
->>> The second two paragraphs about "all pages pinned" and pages_scanned is
->>> obsolete and can go but the first paragraph is valid.
->>>
->>
->> I think the first paragraph is invalid due to the below statement:
->> "Assumes all pages on list are in same zone, and of same order."
->> There are NR_PCP_LISTS lists and PAGE_ALLOC_COSTLY_ORDER + 1 + NR_PCP_THP
->> orders in pcp. So I think it's obsolete.
->>
-> 
-> Ah.
-> 
->> Should I delete this statement in the first paragraph only?
->>
-> 
-> Remove ", and of same order"
 
-Will do this in v2. Thanks.
 
+On 2021/9/1 04:44, Peter Zijlstra wrote:
+> On Wed, Sep 01, 2021 at 01:50:01AM +0800, Lai Jiangshan wrote:
+>> From: Lai Jiangshan <laijs@linux.alibaba.com>
+>>
+>> Many ASM code in entry_64.S can be rewritten in C if they can be written
+>> to be non-instrumentable and are called in the right order regarding to
+>> whether CR3/gsbase is changed to kernel CR3/gsbase.
+>>
+>> The patchset covert some of them to C code.
+> 
+> Overall, very nice! There's a lot of details to verify, but I really
+> like where this ends up.
+> 
+> I'm not sure about moving traps.c, but whatever, that's simple stuff.
+> I'll try and put some more eyeballs on this later.
 > 
 
+Hello, Peter
+
+How is it going?
+
+Do I need to send a new version?
+How can I cooperate or participate in the details?
+Do you plan to move the other path of ASM code into C code?
+
+Thanks
+Lai
+
+PS:
+And I think [PATCH 12/24] ("x86/traps: Reconstruct pt_regs on task stack
+directly in fixup_bad_iret()") has nothing related to moving ASM to C
+is off topic to the patchset.  It can be dropped if no one needs it.
