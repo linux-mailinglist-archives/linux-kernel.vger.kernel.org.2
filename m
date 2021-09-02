@@ -2,141 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5535D3FEE41
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:00:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB8F3FEE48
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344924AbhIBNBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344837AbhIBNBI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:01:08 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539F5C061575;
-        Thu,  2 Sep 2021 06:00:10 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id g11so1397444qtk.5;
-        Thu, 02 Sep 2021 06:00:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:user-agent:in-reply-to:references
-         :message-id:mime-version:content-transfer-encoding;
-        bh=x+AdKYfLS9gT5WYJ+/3I2JYeGx2UYT4j4GN/VwqgiDA=;
-        b=o8414Dn50uOcxjeLrFnHQAKeFhImw3kIzv22tJEnODvDa4fPJD3olcX5TDLeLnLAhg
-         PQ1Ins/gsDK1SPGH9FqkuZ1JgDsmEvhF3k00pXitjTZFBFRWznaCWuGgeiNe9jFq+7wz
-         fBMQ1e4lVu7kWN5ONmYXJwKroZQQhuhX46yN6cGmJCWQ23k1r7UACscXIXspUnrD3hTi
-         GuRpAPksxUtCy1ba43dpphMiuKe21O2Ak5xceFmDfNnXLCrCV+IINpIrYqjek7nSDRtA
-         Np/ZZgnzmE8I5i1wHEU+5eD3bVFg5VsdJLyfg9G8NHPzMSaIFiRcZ2O0gI9VtOEKPUih
-         x4Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:user-agent:in-reply-to
-         :references:message-id:mime-version:content-transfer-encoding;
-        bh=x+AdKYfLS9gT5WYJ+/3I2JYeGx2UYT4j4GN/VwqgiDA=;
-        b=VL81kyCL7+trCKZRQteNK30NSqUIrcKukDo/tn2wKt3ikekoYuJO3igexFwyxTiVn0
-         TznhwoW/6+Q+J8ffgdd/EVVdcq+MLTUdQp8e4MI554vtvYxEAGDzxlpEL3lwvEch0Zv1
-         w37YHNAy80K3t+yEYCpidonnB/g+dPUp9iRxuBHRw+u+MMZhhENaONI0043ZohjqfYYt
-         En1CAM7FjcAWhKicFDEDAVBY22ieDhjkUYIa6SIxqhrtFyCMtM7B3wb1wEbYhctOglEg
-         TJ+FVAlM/PhA2OQen1fouziuQXKKVDAC8MaDA7OUk7V3WxAZi3GpINICXgHlRlR0ZHBK
-         UpUQ==
-X-Gm-Message-State: AOAM530bGUC5MRqR5R6W0vCFS04ZdHxAnKjxDKncQWqABrLELUEQiW6K
-        7MUX4tR/bOB6v1enZxfNFow=
-X-Google-Smtp-Source: ABdhPJykUoUEFCgvE/svMKUSpLP7SjXCDNgcB2TOqzY49Ef641MRjV+dLI3R/t8ZvyYvWwiIFO99OQ==
-X-Received: by 2002:ac8:7ca3:: with SMTP id z3mr2799229qtv.109.1630587609377;
-        Thu, 02 Sep 2021 06:00:09 -0700 (PDT)
-Received: from [127.0.0.1] ([179.97.37.151])
-        by smtp.gmail.com with ESMTPSA id t8sm977226qtn.37.2021.09.02.06.00.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 06:00:08 -0700 (PDT)
-Date:   Thu, 02 Sep 2021 10:00:03 -0300
-From:   Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-CC:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
-        mike.leach@linaro.org, suzuki.poulose@arm.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v2=5D_perf_build=3A_Report_fa?= =?US-ASCII?Q?ilure_for_testing_feature_libopencsd?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20210902124529.GH303522@leoy-ThinkPad-X240s>
-References: <20210902081800.550016-1-leo.yan@linaro.org> <YTDB/VuANx5c+5sk@kernel.org> <20210902124529.GH303522@leoy-ThinkPad-X240s>
-Message-ID: <BBAFF70C-3E2B-4AFC-8229-857ED5BA15CC@gmail.com>
+        id S1344481AbhIBNFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:05:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234054AbhIBNFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 09:05:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C1BA6103A;
+        Thu,  2 Sep 2021 13:04:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630587850;
+        bh=lAur5pEMYxaqCJf0nTMHvSdCTSt3rlwHW8WbUrhzaDc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IDdU7WC2b+uj4hbkE0V8+o84zEMvEwKRTgcHwVZZHNnFxXvoYqRJd56g29ZeelnCS
+         a5xW1rS5KmqtC/0eqURxzs9XQexutyrb1ywE6v+atHdEzpH4QIvC5AeujxOadUvGAt
+         pJZj62BkGe+ulku78tshX6dOvmqO80bZrATDkb5oig1wFF9m7tbNpJznkDPIWRkkJP
+         DGxAq1HW+k2ki4RCGZ36MP9uir3HV2tYheDNu3OzoumvQISeGjeHIgE9NYw5bcugsh
+         NDn+YLvgPkUoC3VgnIWJMc1ShxXWSHbOPrvCrijASR7pBEc5/fuVllf8KOGBfnuMf/
+         J0OdpeLpWEjMA==
+Date:   Thu, 2 Sep 2021 09:04:09 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com,
+        Alexey Gladkov <legion@kernel.org>
+Subject: Re: [PATCH 5.10 036/103] ucounts: Increase ucounts reference counter
+ before the security hook
+Message-ID: <YTDLyU2mdeoe5cVt@sashalap>
+References: <20210901122300.503008474@linuxfoundation.org>
+ <20210901122301.773759848@linuxfoundation.org>
+ <87v93k4bl6.fsf@disp2133>
+ <YS+s+XL0xXKGwh9a@kroah.com>
+ <875yvk1a31.fsf@disp2133>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <875yvk1a31.fsf@disp2133>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On September 2, 2021 9:45:29 AM GMT-03:00, Leo Yan <leo=2Eyan@linaro=2Eorg=
-> wrote:
->On Thu, Sep 02, 2021 at 09:22:21AM -0300, Arnaldo Carvalho de Melo wrote:
->> Em Thu, Sep 02, 2021 at 04:18:00PM +0800, Leo Yan escreveu:
->> > When build perf tool with passing option 'CORESIGHT=3D1' explicitly, =
-if
->> > the feature test fails for library libopencsd, the build doesn't
->> > complain the feature failure and continue to build the tool with
->> > disabling the CoreSight feature insteadly=2E
->> >=20
->> > This patch changes the building behaviour, when build perf tool with =
-the
->> > option 'CORESIGHT=3D1' and detect the failure for testing feature
->> > libopencsd, the build process will be aborted and it shows the compla=
-int
->> > info=2E
->>=20
->> Thanks, added some committer notes to show that it now works:
->>=20
->> commit 8fb36b1f54873870262810d3db10526559e1d6c2
->> Author: Leo Yan <leo=2Eyan@linaro=2Eorg>
->> Date:   Thu Sep 2 16:18:00 2021 +0800
->>=20
->>     perf build: Report failure for testing feature libopencsd
->>    =20
->>     When build perf tool with passing option 'CORESIGHT=3D1' explicitly=
-, if
->>     the feature test fails for library libopencsd, the build doesn't
->>     complain the feature failure and continue to build the tool with
->>     disabling the CoreSight feature insteadly=2E
->>    =20
->>     This patch changes the building behaviour, when build perf tool wit=
-h the
->>     option 'CORESIGHT=3D1' and detect the failure for testing feature
->>     libopencsd, the build process will be aborted and it shows the comp=
-laint
->>     info=2E
->>    =20
->>     Committer testing:
->>    =20
->>     First make sure there is no opencsd library installed:
->>    =20
->>       $ rpm -qa | grep -i csd
->>       $ sudo rm -rf `find /usr/local -name "*csd*"`
->>       $ find /usr/local -name "*csd*"
->>       $
->>    =20
->>     Then cleanup the perf build output directory:
->>    =20
->>       $ rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf ;
->>       $
->>    =20
->>     And try to build explicitely asking for coresight:
->>    =20
->>       $ make O=3D/tmp/build/perf CORESIGHT=3D1 O=3D/tmp/build/perf -C t=
-ools/perf install-bin
+On Wed, Sep 01, 2021 at 12:26:10PM -0500, Eric W. Biederman wrote:
+>Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
 >
->The build command contains duplicate 'O=3D/tmp/build/perf'=2E
+>> On Wed, Sep 01, 2021 at 09:25:25AM -0500, Eric W. Biederman wrote:
+>>> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+>>>
+>>> > From: Alexey Gladkov <legion@kernel.org>
+>>> >
+>>> > [ Upstream commit bbb6d0f3e1feb43d663af089c7dedb23be6a04fb ]
+>>> >
+>>> > We need to increment the ucounts reference counter befor security_prepare_creds()
+>>> > because this function may fail and abort_creds() will try to decrement
+>>> > this reference.
+>>>
+>>> Has the conversion of the rlimits to ucounts been backported?
+>>>
+>>> Semantically the code is an improvement but I don't know of any cases
+>>> where it makes enough of a real-world difference to make it worth
+>>> backporting the code.
+>>>
+>>> Certainly the ucount/rlimit conversions do not meet the historical
+>>> criteria for backports.  AKA simple obviously correct patches.
+>>>
+>>> The fact we have been applying fixes for the entire v5.14 stabilization
+>>> period is a testament to the code not quite being obviously correct.
+>>>
+>>> Without backports the code only affects v5.14 so I have not been
+>>> including a Cc stable on any of the commits.
+>>>
+>>> So color me very puzzled about what is going on here.
+>>
+>> Sasha picked this for some reason, but if you think it should be
+>> dropped, we can easily do so.
+>
+>My question is what is the reason Sasha picked this up?
+>
+>If this patch even applies to v5.10 the earlier patches have been
+>backported.  So we can't just drop this patch.  Either the earlier
+>backports need to be reverted, or we need to make certain all of the
+>patches are backported.
+>
+>I really am trying to understand what is going on and why.
 
-Oops, I'll fix it, thanks=2E
+I'll happily explain. The commit message is telling us that:
 
-- Arnaldo
+1. There is an issue uncovered by syzbot which this patch fixes:
 
+	"Reported-by: syzbot"
+
+2. The issue was introduced in 905ae01c4ae2 ("Add a reference to ucounts
+for each cred"):
+
+	"Fixes: 905ae01c4ae2"
+
+Since 905ae01c4ae2 exist in 5.10, and this patch seemed to fix an issue,
+I've queued it up.
+
+In general, if we're missing backports, backported something only
+partially and should revert it, or anything else that might cause an
+issue, we'd be more than happy to work with you to fix it up.
+
+All the patches we queue up get multiple rounds of emails and reviews,
+if there is a better way to solicit reviews so that we won't up in a
+place where you haven't noticed something going in earlier we'd be more
+than happy to improve that process too.
+
+-- 
+Thanks,
+Sasha
