@@ -2,128 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDD03FEAC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6EB3FEAC8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244361AbhIBIno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 04:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244516AbhIBInj (ORCPT
+        id S244634AbhIBIpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 04:45:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24010 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244582AbhIBIpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 04:43:39 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D110C061575;
-        Thu,  2 Sep 2021 01:42:41 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id l18so2109789lji.12;
-        Thu, 02 Sep 2021 01:42:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=I1GCpFqrQWxKucU/U8kvbQXzC/KZMeJhASpAkd3c1XY=;
-        b=CWh0uGll6zC5I3WADyO3hiRkmkkHjP6Oc8uQF3NXld/qqQGHOHlYYmgnmrGb98+ZsE
-         r0VZ/1cILVzZiOpgYvZ7hewaDV43+81ZgT+uy89KPJwaeWVilYXij3AZ7Q3JjH0yFpxg
-         JHTQscy0qDmoK2ooQaE/9xdATlahJ0fKwtQZTWfl1b4ijUVBBJ+TWA2fp6DCIyy6zzay
-         OhASbtiNu+K9tfW0pSQQE3DMSEEEzGAQAUldgczLUURrducbpXyjMrcxk3h34VQD66Kz
-         5TkA0V44x613AH72KvYxttM3rXG1KglgCuYfWnn8DawPIroN+d8YavzJyddDKURBV1Cw
-         VmHg==
+        Thu, 2 Sep 2021 04:45:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630572246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VWRgLyOnqoIayiNQjYpy0dsyFWdFNzRj4QcD6Wzn1iU=;
+        b=SWgJOV2inDYutHJ6n/1F8EHKD5U0UsN1wXXuWEFgG9nm7wPKgVbCiFGmoZcvtNMVxTXjAX
+        x1BO6zv/bPWcdLxwYSReBNpIOFiN+52H9Jo4NYidHI9dBMuv7/rUrlEoV4SJZHRLAZZpkL
+        r5jcaBy10jB7sR7tNNEquKSMdEjhfQM=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-563-N9CddFdiN7mzMvai27aM2Q-1; Thu, 02 Sep 2021 04:44:05 -0400
+X-MC-Unique: N9CddFdiN7mzMvai27aM2Q-1
+Received: by mail-wm1-f70.google.com with SMTP id u1-20020a05600c210100b002e74fc5af71so437678wml.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 01:44:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I1GCpFqrQWxKucU/U8kvbQXzC/KZMeJhASpAkd3c1XY=;
-        b=X03MnAeljfkBOYVqwJzqcUQdk6mMJ3f8saXWIdSLGdarf0tThRZqlrvkab612QW9+7
-         7ZBX9ttQmctKtsmry14Jw9DAke4gFMczMhD5K6HbOZDoJWh4UbIgo0x2fGpuF2sly9W8
-         YAwtGqtSBipbsacGBTgP/OjiLLrWVJHN5fyfis/KnBvr5RUOCYlOu4s9rM8CVHp2MLHQ
-         xPr1aDVatPP8c/N/oSM8gQXKZuZT+XAmmpMeoYldzJy8h1Jn7doLrsoab5wUsaQtT/9k
-         z787SvKfV5GDY3CQZr9kuRBJEPua79RvMt10W8ZkhoqDKWd8FNNLjDDEJBeTVavJs8gm
-         qOVQ==
-X-Gm-Message-State: AOAM533EzrKJtax8kMJxzdH8RG7mjEVqQkqstJvnaCuflh6UFaeDKhem
-        UKfq9ru7nADeav0v24OqNqcZ8WSEQdo=
-X-Google-Smtp-Source: ABdhPJx4oZjAD3wHpy6mhVYFMOjQ5IqN+y5KKpUHAxvyErW59LfBqfh7GGymysgFDGFoSGta1l9N2A==
-X-Received: by 2002:a2e:84ce:: with SMTP id q14mr1597518ljh.190.1630572159481;
-        Thu, 02 Sep 2021 01:42:39 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-26-37.dynamic.spd-mgts.ru. [46.138.26.37])
-        by smtp.googlemail.com with ESMTPSA id n25sm133809lfe.125.2021.09.02.01.42.37
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=VWRgLyOnqoIayiNQjYpy0dsyFWdFNzRj4QcD6Wzn1iU=;
+        b=eOAxc8SFCsCIEMFyHEMs6HD2RpiVTqNVbuLPP1fOOR4KJt1OXk359bm3WnZbjWmqQx
+         agOnxwrbWRrGeGbsgab46AzQ/wsgZLv9GMVPC/JhuCaRcTSR9dv1UINA2Y2lXaKayUV7
+         d5/JLyhNL0YegjmVBZmJWNXI134SC3hgsBdLwZxuiXXLMgNf0cUz5KilxQp4z5gpvxbg
+         IzxzX8Z8Jt04202Fhx3FW86ssycPwIBVwcD569oekeT6lDFeLUWg5fhksQAg1k6Imauk
+         AomkaNhzyRe5U2k1QnHXjyQV2IAwJg26k0ZFxzGEuTt5TLY0PNwadQc4VfFv579M+8UU
+         2GIg==
+X-Gm-Message-State: AOAM5335MQveJOCoTjhlUoYxJzAzjGOWKLe3XUYlBvafjKvHdtsgB9/B
+        vLD2NLNTDPyB+e1cnts6T3gMyYYKEAOTtqyeTk53IhEAmREhjrerWYqTooIl9B2ESf2DrvleDCB
+        vNRO2j7OLGXiOfTWpQzuoV0vl
+X-Received: by 2002:adf:c149:: with SMTP id w9mr2316282wre.126.1630572244473;
+        Thu, 02 Sep 2021 01:44:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzziPkwyia0D2Pb+mZpxXBmtVXs8bzUX9GXE24EybkhxUj0x0dWCmdrH8a50cPWIyUVXFUHxg==
+X-Received: by 2002:adf:c149:: with SMTP id w9mr2316253wre.126.1630572244157;
+        Thu, 02 Sep 2021 01:44:04 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c60bd.dip0.t-ipconnect.de. [91.12.96.189])
+        by smtp.gmail.com with ESMTPSA id b10sm1215199wrt.43.2021.09.02.01.44.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 01:42:38 -0700 (PDT)
-Subject: Re: [PATCH v10 4/8] PM: domains: Add dev_get_performance_state()
- callback
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Thu, 02 Sep 2021 01:44:03 -0700 (PDT)
+To:     Yu Zhang <yu.c.zhang@linux.intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-References: <20210831135450.26070-1-digetx@gmail.com>
- <20210831135450.26070-5-digetx@gmail.com>
- <CAPDyKFp4M30y9UB5Ss54ZfNjL_a6nqbka6Dq7xtGNzb2Mg8WrA@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <a705b35f-8ece-bf74-b7db-7c4ded19e43e@gmail.com>
-Date:   Thu, 2 Sep 2021 11:42:37 +0300
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>
+References: <20210824005248.200037-1-seanjc@google.com>
+ <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
+ <20210827023150.jotwvom7mlsawjh4@linux.intel.com>
+ <8f3630ff-bd6d-4d57-8c67-6637ea2c9560@www.fastmail.com>
+ <20210901102437.g5wrgezmrjqn3mvy@linux.intel.com>
+ <f37a61ba-b7ef-c789-5763-f7f237ae41cc@kernel.org>
+ <2b2740ec-fa89-e4c3-d175-824e439874a6@redhat.com>
+ <20210902083453.aeouc6fob53ydtc2@linux.intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest private
+ memory
+Message-ID: <823d9453-892e-508d-b806-1b18c9b9fc13@redhat.com>
+Date:   Thu, 2 Sep 2021 10:44:02 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFp4M30y9UB5Ss54ZfNjL_a6nqbka6Dq7xtGNzb2Mg8WrA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210902083453.aeouc6fob53ydtc2@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.09.2021 19:59, Ulf Hansson пишет:
->> +static int genpd_dev_initialize_performance_state(struct device *dev,
->> +                                                 struct device *base_dev,
->> +                                                 unsigned int index)
->> +{
->> +       struct generic_pm_domain *pd = dev_to_genpd(dev);
->> +       bool state_default = false, suspended = false;
->> +       int pstate, err;
->> +
->> +       pstate = genpd_dev_get_current_performance_state(dev, base_dev, index,
->> +                                                        &state_default,
->> +                                                        &suspended);
->> +       if (pstate <= 0)
->> +               return pstate;
->> +
->> +       /*
->> +        * If device is suspended, then performance state will be applied
->> +        * on RPM-resume. This prevents potential extra power consumption
->> +        * if device won't be resumed soon.
->> +        *
->> +        * If device is known to be active at the moment, then the performance
->> +        * state should be updated immediately to sync state with hardware.
->> +        */
->> +       if (suspended) {
->> +               dev_gpd_data(dev)->rpm_pstate = pstate;
->> +       } else {
->> +               err = dev_pm_genpd_set_performance_state(dev, pstate);
->> +               if (err) {
->> +                       dev_err(dev, "failed to set performance state for power-domain %s: %d\n",
->> +                               pd->name, err);
->> +                       return err;
->> +               }
->> +
->> +               if (state_default)
->> +                       dev_gpd_data(dev)->default_pstate = pstate;
->> +       }
->> +
->> +       return 0;
->> +}
-> As I kind of indicated in my previous reply on the earlier version, I
-> think the above code can be made a lot less complicated. Although,
-> perhaps I may be missing some points.
+On 02.09.21 10:34, Yu Zhang wrote:
+> On Wed, Sep 01, 2021 at 06:27:20PM +0200, David Hildenbrand wrote:
+>> On 01.09.21 18:07, Andy Lutomirski wrote:
+>>> On 9/1/21 3:24 AM, Yu Zhang wrote:
+>>>> On Tue, Aug 31, 2021 at 09:53:27PM -0700, Andy Lutomirski wrote:
+>>>>>
+>>>>>
+>>>>> On Thu, Aug 26, 2021, at 7:31 PM, Yu Zhang wrote:
+>>>>>> On Thu, Aug 26, 2021 at 12:15:48PM +0200, David Hildenbrand wrote:
+>>>>>
+>>>>>> Thanks a lot for this summary. A question about the requirement: do we or
+>>>>>> do we not have plan to support assigned device to the protected VM?
+>>>>>>
+>>>>>> If yes. The fd based solution may need change the VFIO interface as well(
+>>>>>> though the fake swap entry solution need mess with VFIO too). Because:
+>>>>>>
+>>>>>> 1> KVM uses VFIO when assigning devices into a VM.
+>>>>>>
+>>>>>> 2> Not knowing which GPA ranges may be used by the VM as DMA buffer, all
+>>>>>> guest pages will have to be mapped in host IOMMU page table to host pages,
+>>>>>> which are pinned during the whole life cycle fo the VM.
+>>>>>>
+>>>>>> 3> IOMMU mapping is done during VM creation time by VFIO and IOMMU driver,
+>>>>>> in vfio_dma_do_map().
+>>>>>>
+>>>>>> 4> However, vfio_dma_do_map() needs the HVA to perform a GUP to get the HPA
+>>>>>> and pin the page.
+>>>>>>
+>>>>>> But if we are using fd based solution, not every GPA can have a HVA, thus
+>>>>>> the current VFIO interface to map and pin the GPA(IOVA) wont work. And I
+>>>>>> doubt if VFIO can be modified to support this easily.
+>>>>>>
+>>>>>>
+>>>>>
+>>>>> Do you mean assigning a normal device to a protected VM or a hypothetical protected-MMIO device?
+>>>>>
+>>>>> If the former, it should work more or less like with a non-protected VM. mmap the VFIO device, set up a memslot, and use it.  I'm not sure whether anyone will actually do this, but it should be possible, at least in principle.  Maybe someone will want to assign a NIC to a TDX guest.  An NVMe device with the understanding that the guest can't trust it wouldn't be entirely crazy ether.
+>>>>>
+>>>>> If the latter, AFAIK there is no spec for how it would work even in principle. Presumably it wouldn't work quite like VFIO -- instead, the kernel could have a protection-virtual-io-fd mechanism, and that fd could be bound to a memslot in whatever way we settle on for binding secure memory to a memslot.
+>>>>>
+>>>>
+>>>> Thanks Andy. I was asking the first scenario.
+>>>>
+>>>> Well, I agree it is doable if someone really want some assigned
+>>>> device in TD guest. As Kevin mentioned in his reply, HPA can be
+>>>> generated, by extending VFIO with a new mapping protocol which
+>>>> uses fd+offset, instead of HVA.
+>>>
+>>> I'm confused.  I don't see why any new code is needed for this at all.
+>>> Every proposal I've seen for handling TDX memory continues to handle TDX
+>>> *shared* memory exactly like regular guest memory today.  The only
+>>> differences are that more hole punching will be needed, which will
+>>> require lightweight memslots (to have many of them), memslots with
+>>> holes, or mappings backing memslots with holes (which can be done with
+>>> munmap() on current kernels).
+>>>
+>>> So you can literally just mmap a VFIO device and expect it to work,
+>>> exactly like it does right now.  Whether the guest will be willing to
+>>> use the device will depend on the guest security policy (all kinds of
+>>> patches about that are flying around), but if the guest tries to use it,
+>>> it really should just work.
+>>
+>> ... but if you end up mapping private memory into IOMMU of the device and
+>> the device ends up accessing that memory, we're in the same position that
+>> the host might get capped, just like access from user space, no?
 > 
-> Anyway, I will post a couple patches, later this evening or tomorrow,
-> to show more exactly what I had in mind. Let's see if that can work
-> for you.
+> Well, according to the spec:
+> 
+>    - If the result of the translation results in a physical address with a TD
+>    private key ID, then the IOMMU will abort the transaction and report a VT-d
+>    DMA remapping failure.
+> 
+>    - If the GPA in the transaction that is input to the IOMMU is private (SHARED
+>    bit is 0), then the IOMMU may abort the transaction and report a VT-d DMA
+>    remapping failure.
+> 
+> So I guess mapping private GPAs in IOMMU is not that dangerous as mapping
+> into userspace. Though still wrong.
+> 
+>>
+>> Sure, you can map only the complete duplicate shared-memory region into the
+>> IOMMU of the device, that would work. Shame vfio mostly always pins all
+>> guest memory and you essentially cannot punch holes into the shared memory
+>> anymore -- resulting in the worst case in a duplicate memory consumption for
+>> your VM.
+>>
+>> So you'd actually want to map only the *currently* shared pieces into the
+>> IOMMU and update the mappings on demand. Having worked on something related,
+> 
+> Exactly. On demand mapping and page pinning for shared memory is necessary.
+> 
+>> I can only say that 64k individual mappings, and not being able to modify
+>> existing mappings except completely deleting them to replace with something
+>> new (!atomic), can be quite an issue for bigger VMs.
+> 
+> Do you mean atomicity in mapping/unmapping can hardly be guaranteed during
+> the shared <-> private transition? May I ask for elaboration? Thanks!
 
-It's not obvious what you're wanting to improve, I'm probably missing
-yours point. So indeed will be good to see the code sample, thanks.
+If we expect to really only have little shared memory, and expect a VM 
+always has no shared memory when booting up (I think this is the case), 
+I guess this could work.
+
+The issue is if the guest e.g., makes contiguous 2 MiB shared and later 
+wants to unshare individual pages/parts.
+
+You'll have to DMA map the 2 MiB in page granularity, otherwise you'll 
+have to DMA unmap 2 MiB and DMA remap all still-shared pieces. That is 
+not atomic and can be problematic if the device is accessing some of the 
+shared parts at that time.
+
+Consequently that means, that large shared regions can be problematic 
+when mapped, because we'll have to map in page granularity. We have 64k 
+such individual mappings in general.
+
+64k * 4KiB == 256 MiB
+
+Not sure if there would be use cases, e.g., with GPGPUs and similar, 
+where you'd want to share a lot of memory with a device ...
+
+But these are just my thoughts, maybe I am missing something important.
+
+-- 
+Thanks,
+
+David / dhildenb
+
