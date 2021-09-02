@@ -2,79 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D52B3FEB21
+	by mail.lfdr.de (Postfix) with ESMTP id A5F7D3FEB22
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245356AbhIBJWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 05:22:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244800AbhIBJV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 05:21:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2777960F6C;
-        Thu,  2 Sep 2021 09:20:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630574459;
-        bh=Q2uYr1StgndRxWJ5vI83t1KnU1e0/MBW/UEtfaBfT8w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OIP+QkNrbd8Sb9tSGQg/GS2C8xuDV0VPA2aZiKGuLQ/3mtyZoPB4hZBhW7ED/i81m
-         ty5/bxVjc0IJZXGurW4oqKTny0uvjIXZnIxRVZkeKruzbsoaAphl5fZ5PMs+bYanqn
-         XE0mq6DFZFCaKPCOdVlj8Zq2nlUqKMt0M461P0Zw=
-Date:   Thu, 2 Sep 2021 11:20:57 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        straube.linux@gmail.com, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        saurav.girepunje@hotmail.com
-Subject: Re: [PATCH] staging: r8188eu: os_dep: use kmemdup instead of kzalloc
- and memcpy
-Message-ID: <YTCXef5o9JHtQhuD@kroah.com>
-References: <YSp9z2/JmvHGhW5m@user>
+        id S245381AbhIBJW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 05:22:56 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:33287 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245139AbhIBJWx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 05:22:53 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Un.S-zH_1630574511;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Un.S-zH_1630574511)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 02 Sep 2021 17:21:51 +0800
+Subject: Re: [PATCH 02/24] x86/traps: Move arch/x86/kernel/traps.c to
+ arch/x86/entry/
+To:     Joerg Roedel <jroedel@suse.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Chester Lin <clin@suse.com>, Juergen Gross <jgross@suse.com>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
+ <20210831175025.27570-3-jiangshanlai@gmail.com> <YTCGov+vvAMvso7q@suse.de>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <1f327579-e62a-df65-0763-e88243829db3@linux.alibaba.com>
+Date:   Thu, 2 Sep 2021 17:21:51 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YSp9z2/JmvHGhW5m@user>
+In-Reply-To: <YTCGov+vvAMvso7q@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 11:47:51PM +0530, Saurav Girepunje wrote:
-> Fixes coccicheck warning:WARNING opportunity for kmemdup in ioctl_linux.c
-> 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> ---
->  drivers/staging/r8188eu/os_dep/ioctl_linux.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> index 81d4255d1785..495fadd2b8c8 100644
-> --- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> +++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> @@ -585,14 +585,12 @@ static int rtw_set_wpa_ie(struct adapter *padapter, char *pie, unsigned short ie
->  	}
-> 
->  	if (ielen) {
-> -		buf = kzalloc(ielen, GFP_KERNEL);
-> +		buf = kmemdup(pie, ielen, GFP_KERNEL);
->  		if (!buf) {
->  			ret =  -ENOMEM;
->  			goto exit;
->  		}
-> 
-> -		memcpy(buf, pie, ielen);
-> -
->  		/* dump */
->  		{
->  			int i;
-> --
-> 2.32.0
-> 
-> 
 
-This patch never showed up on lore.kernel.org for some reason.  Please
-resend and see if it was a mailing issue on your side...
 
-thanks,
+On 2021/9/2 16:09, Joerg Roedel wrote:
+> On Wed, Sep 01, 2021 at 01:50:03AM +0800, Lai Jiangshan wrote:
+>>   arch/x86/entry/Makefile            | 5 ++++-
+>>   arch/x86/{kernel => entry}/traps.c | 0
+>>   arch/x86/kernel/Makefile           | 5 +----
+>>   3 files changed, 5 insertions(+), 5 deletions(-)
+>>   rename arch/x86/{kernel => entry}/traps.c (100%)
+> 
+>  From looking over the patch-set I didn't spot the reason for putting the
+> entry C code into traps.c. Can you explain that please? Otherwise I'd
+> prefer to create a new file, like arch/x86/entry/entry64.c.
 
-greg k-h
+
+I agree, and I think Peter is handling it.
+
+Thanks
+Lai
