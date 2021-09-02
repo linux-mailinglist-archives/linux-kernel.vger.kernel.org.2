@@ -2,118 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6A13FF0C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C183FF0C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346064AbhIBQJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:09:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21304 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346047AbhIBQJt (ORCPT
+        id S1346045AbhIBQKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:10:24 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:36532 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234426AbhIBQKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:09:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630598930;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GSpEDr48SFMamWq8zs4iNuq1IKQ5SNS2nRQshqJ9RkY=;
-        b=AuxWUWPrZsJfL5KU9wa4EYGjvDCn+gcA2diEzL2v23DBWmNCE/nrx6er9CKr2hjaIL+6J+
-        XJH4+PrDnoy3a+AK7WOHDDmZFY3YlWdbeZehl/ZaRRvbNAfMKNpEYw1f1ubZlOek3dVOgs
-        xBscJU7jHMtakBczlwJptN+HpSSAqzU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-518-p8V3IUfjMrCKAJvZJcwcTw-1; Thu, 02 Sep 2021 12:08:49 -0400
-X-MC-Unique: p8V3IUfjMrCKAJvZJcwcTw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76666195D563;
-        Thu,  2 Sep 2021 16:08:47 +0000 (UTC)
-Received: from asgard.redhat.com (unknown [10.36.110.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8976419C46;
-        Thu,  2 Sep 2021 16:08:43 +0000 (UTC)
-Date:   Thu, 2 Sep 2021 18:08:40 +0200
-From:   Eugene Syromiatnikov <esyr@redhat.com>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Steve Grubb <sgrubb@redhat.com>, linux-audit@redhat.com,
-        strace development discussions <strace-devel@lists.strace.io>,
-        linux-api@vger.kernel.org, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org, ldv@strace.io
-Subject: Re: [PATCH 1/2] net: Remove net/ipx.h and uapi/linux/ipx.h header
- files
-Message-ID: <20210902160840.GA2220@asgard.redhat.com>
-References: <20210813120803.101-1-caihuoqing@baidu.com>
- <20210901160244.GA5957@asgard.redhat.com>
- <20210901165202.GA4518@asgard.redhat.com>
- <1797920.tdWV9SEqCh@x2>
- <20210902133529.GA32500@LAPTOP-UKSR4ENP.internal.baidu.com>
+        Thu, 2 Sep 2021 12:10:22 -0400
+Received: by mail-ot1-f43.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso3159745otv.3;
+        Thu, 02 Sep 2021 09:09:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H9s/CeztrdJ5mW7eXs2FCAq69cl4eT4riWgVkym3DBI=;
+        b=CLMjo0A8UQjvOhhCbMdg4QjTOlwTDqGrsf2xypGTJK0VNn2s3N4dn9x6zzp9FxEP3V
+         1CQBsZeGe12gz0RRBwmof/tkzpNF7vTy2Ebj+FGfaaFnfPm1Ri7EA+U2zvmIHPF7R4Re
+         OrMkut2lUZ2HoDS46x976cD28MDICcluhZdQ0sOLxT+up9OtdjFF/tJ2dH/iWfxBZ1bZ
+         nyuSY4HMoxtpf0Las6lzKEijU0XDJkwq9iwvc7X2y+7Uzu/w/Mlve3PGtV0bXTXWL3LS
+         iORz5Kr9+fc4T2SOvNE1GbR9+uwal0+NQE/sGA3vuYbzcS7mw5kwPAETrHpYyOsZhr8G
+         TKFA==
+X-Gm-Message-State: AOAM531GWSLFx5kFZfeFSdeqJRO2HR6crpHxAKXBK9tqQEdXXG5RR+hq
+        fO7/DuDLVOX+q73bg8YP82cRVSMdtg6ivXpzqu4=
+X-Google-Smtp-Source: ABdhPJzKMX1gorKDZvQ6+EZ0VUUlgn8z9GTqZRYd0mvVKwMjustuLbXhmjMBcAd0OgAzQuoTkwzcuKC+jiZkpimjCfU=
+X-Received: by 2002:a9d:7115:: with SMTP id n21mr3323619otj.321.1630598963788;
+ Thu, 02 Sep 2021 09:09:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902133529.GA32500@LAPTOP-UKSR4ENP.internal.baidu.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210829132243.82281-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210829132243.82281-1-andriy.shevchenko@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 2 Sep 2021 18:09:12 +0200
+Message-ID: <CAJZ5v0iXyW3EnsjXsRCGzwkP45jjOHmErMyGhm6HvTOVCawTZA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] Documentation: ACPI: Align the SSDT overlays file
+ with the code
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 09:35:29PM +0800, Cai Huoqing wrote:
-> On 01 Sep 21 13:36:54, Steve Grubb wrote:
-> > Hello,
-> > 
-> > Thanks for the heads up.
-> > 
-> > On Wednesday, September 1, 2021 12:52:02 PM EDT Eugene Syromiatnikov wrote:
-> > > Adding linux-audit, strace-devel, and linux-api to CC:.
-> > > 
-> > > On Wed, Sep 01, 2021 at 06:02:44PM +0200, Eugene Syromiatnikov wrote:
-> > > > On Fri, Aug 13, 2021 at 08:08:02PM +0800, Cai Huoqing wrote:
-> > > > > commit <47595e32869f> ("<MAINTAINERS: Mark some staging directories>")
-> > > > > indicated the ipx network layer as obsolete in Jan 2018,
-> > > > > updated in the MAINTAINERS file
-> > > > > 
-> > > > > now, after being exposed for 3 years to refactoring, so to
-> > > > > delete uapi/linux/ipx.h and net/ipx.h header files for good.
-> > > > > additionally, there is no module that depends on ipx.h except
-> > > > > a broken staging driver(r8188eu)
-> > > > > 
-> > > > > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> > > > 
-> > > > This removal breaks audit[1] and potentially breaks strace[2][3], at
-> > > > least.
-> > 
-> > I wouldn't say breaks so much as needs coordination with. :-)   If ipx is 
-> > being dropped in its entirety, I can just make that part of the code 
-> > conditional to the header existing.
-> > 
-> > -Steve
-> IPX is marked obsolete for serveral years. so remove it and the
-> dependency in linux tree.
-> I'm sorry to not thinking about linux-audit and strace.
-> Might you remove the dependency or make the part of the code.
-> Many thanks.
+On Sun, Aug 29, 2021 at 3:22 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> This updates the following:
+>
+> 1) The ASL code to follow latest ACPI requirements, i.e.
+>    - static buffer to be defined outside of the method
+>    - The _ADR and _HID shouldn't be together for the same device
+>
+> 2) EFI section relies on the additional kernel configuration option,
+>    i.e. CONFIG_EFI_CUSTOM_SSDT_OVERLAYS
+>
+> 3) Refer to ACPI machine language as AML (capitalized)
+>
+> 4) Miscellaneous amendments
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Unfortunately, that is not how UAPI works.  That change breaks building
-of the existing code;  one cannot change already released versions
-of either audit, strace, or any other userspace program that happens
-to unconditionally include <linux/ipx.h> without any fallback (like
-<netipx/ipx.h> provided by glibc).
+Applied, thanks!
 
-> 
-> -Cai
-> > 
-> > > > [1]
-> > > > https://github.com/linux-audit/audit-userspace/blob/ce58837d44b7d9fcb4e1
-> > > > 40c23f68e0c94d95ab6e/auparse/interpret.c#L48 [2]
-> > > > https://gitlab.com/strace/strace/-/blob/9fe63f42df8badd22fb7eef9c12fc07e
-> > > > d7106d6b/src/net.c#L34 [3]
-> > > > https://gitlab.com/strace/strace/-/blob/9fe63f42df8badd22fb7eef9c12fc07e
-> > > > d7106d6b/src/sockaddr.c#L30
-> > 
-> > 
-> > 
-> > 
-> 
-
+> ---
+>  .../admin-guide/acpi/ssdt-overlays.rst        | 49 ++++++++++---------
+>  1 file changed, 25 insertions(+), 24 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/acpi/ssdt-overlays.rst b/Documentation/admin-guide/acpi/ssdt-overlays.rst
+> index 5d7e25988085..b5fbf54dca19 100644
+> --- a/Documentation/admin-guide/acpi/ssdt-overlays.rst
+> +++ b/Documentation/admin-guide/acpi/ssdt-overlays.rst
+> @@ -30,22 +30,21 @@ following ASL code can be used::
+>          {
+>              Device (STAC)
+>              {
+> -                Name (_ADR, Zero)
+>                  Name (_HID, "BMA222E")
+> +                Name (RBUF, ResourceTemplate ()
+> +                {
+> +                    I2cSerialBus (0x0018, ControllerInitiated, 0x00061A80,
+> +                                AddressingMode7Bit, "\\_SB.I2C6", 0x00,
+> +                                ResourceConsumer, ,)
+> +                    GpioInt (Edge, ActiveHigh, Exclusive, PullDown, 0x0000,
+> +                            "\\_SB.GPO2", 0x00, ResourceConsumer, , )
+> +                    { // Pin list
+> +                        0
+> +                    }
+> +                })
+>
+>                  Method (_CRS, 0, Serialized)
+>                  {
+> -                    Name (RBUF, ResourceTemplate ()
+> -                    {
+> -                        I2cSerialBus (0x0018, ControllerInitiated, 0x00061A80,
+> -                                    AddressingMode7Bit, "\\_SB.I2C6", 0x00,
+> -                                    ResourceConsumer, ,)
+> -                        GpioInt (Edge, ActiveHigh, Exclusive, PullDown, 0x0000,
+> -                                "\\_SB.GPO2", 0x00, ResourceConsumer, , )
+> -                        { // Pin list
+> -                            0
+> -                        }
+> -                    })
+>                      Return (RBUF)
+>                  }
+>              }
+> @@ -75,7 +74,7 @@ This option allows loading of user defined SSDTs from initrd and it is useful
+>  when the system does not support EFI or when there is not enough EFI storage.
+>
+>  It works in a similar way with initrd based ACPI tables override/upgrade: SSDT
+> -aml code must be placed in the first, uncompressed, initrd under the
+> +AML code must be placed in the first, uncompressed, initrd under the
+>  "kernel/firmware/acpi" path. Multiple files can be used and this will translate
+>  in loading multiple tables. Only SSDT and OEM tables are allowed. See
+>  initrd_table_override.txt for more details.
+> @@ -103,12 +102,14 @@ This is the preferred method, when EFI is supported on the platform, because it
+>  allows a persistent, OS independent way of storing the user defined SSDTs. There
+>  is also work underway to implement EFI support for loading user defined SSDTs
+>  and using this method will make it easier to convert to the EFI loading
+> -mechanism when that will arrive.
+> +mechanism when that will arrive. To enable it, the
+> +CONFIG_EFI_CUSTOM_SSDT_OVERLAYS shoyld be chosen to y.
+>
+> -In order to load SSDTs from an EFI variable the efivar_ssdt kernel command line
+> -parameter can be used. The argument for the option is the variable name to
+> -use. If there are multiple variables with the same name but with different
+> -vendor GUIDs, all of them will be loaded.
+> +In order to load SSDTs from an EFI variable the ``"efivar_ssdt=..."`` kernel
+> +command line parameter can be used (the name has a limitation of 16 characters).
+> +The argument for the option is the variable name to use. If there are multiple
+> +variables with the same name but with different vendor GUIDs, all of them will
+> +be loaded.
+>
+>  In order to store the AML code in an EFI variable the efivarfs filesystem can be
+>  used. It is enabled and mounted by default in /sys/firmware/efi/efivars in all
+> @@ -127,7 +128,7 @@ variable with the content from a given file::
+>
+>      #!/bin/sh -e
+>
+> -    while ! [ -z "$1" ]; do
+> +    while [ -n "$1" ]; do
+>              case "$1" in
+>              "-f") filename="$2"; shift;;
+>              "-g") guid="$2"; shift;;
+> @@ -167,14 +168,14 @@ variable with the content from a given file::
+>  Loading ACPI SSDTs from configfs
+>  ================================
+>
+> -This option allows loading of user defined SSDTs from userspace via the configfs
+> +This option allows loading of user defined SSDTs from user space via the configfs
+>  interface. The CONFIG_ACPI_CONFIGFS option must be select and configfs must be
+>  mounted. In the following examples, we assume that configfs has been mounted in
+> -/config.
+> +/sys/kernel/config.
+>
+> -New tables can be loading by creating new directories in /config/acpi/table/ and
+> -writing the SSDT aml code in the aml attribute::
+> +New tables can be loading by creating new directories in /sys/kernel/config/acpi/table
+> +and writing the SSDT AML code in the aml attribute::
+>
+> -    cd /config/acpi/table
+> +    cd /sys/kernel/config/acpi/table
+>      mkdir my_ssdt
+>      cat ~/ssdt.aml > my_ssdt/aml
+> --
+> 2.33.0
+>
