@@ -2,118 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA29B3FE740
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 03:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3387C3FE742
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 03:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbhIBBpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 21:45:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhIBBpD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 21:45:03 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDAFC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 18:44:06 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id e131so675026ybb.7
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 18:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LQ2lr2yLn3EKI9aSELf6uISMHHDFFGiHQ8ZaoohuBFU=;
-        b=Ir67N0WUlXiP7R1B6nwCiLZ55eoTDqolx0g+dfi79MFBYlpzc+hr6MqhCvJtmjuCHN
-         sUXswRogS9ISAhpXx0mEUWif7Negwyhf0o6zSgN3X6r5NDlkU9nFVqaL29phfi00u02q
-         gWVhWRmk/WQONDpI1FAlloPpItRUUOp2IYZxtmfFBcEIqFWno/NJv24+HwUcc/ldiJdP
-         beKN++IlBfDVnEATmzB39h8zQPA2/4XuKJ2nTs9bCo2UDurI9wQX1yWqFKxz/XjxYAx1
-         GrHT+lRrY+tU4rQp29hnrn/j5xScm9mVVG9On15pCLgQ3a0AmBrJf3QT4ROzW/n99UUz
-         mmrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LQ2lr2yLn3EKI9aSELf6uISMHHDFFGiHQ8ZaoohuBFU=;
-        b=BJ9J+5NN78k+Qx0JQM56ru29CEgNDl+YGtnEk5fE9Ga7UHbOE86joGnT9y8X6ljVD7
-         CN6WgtFd7BDNNVtHZK9u/iLmCvZMpG+/X9aM3oJ7c4vPt5TevpBtuX9j9BBjhHV/0yjL
-         ns+ZGY1DeqWBHAK6EwyVNXU/52n/wuEvYDPcnc05zwy1OISiPdjXIZKYzOxOUZSHO0p1
-         wgkTcEan5CMhxt9zRY/VT7qz/5/JPKvhexY75uLLEAlYhio8lOnNmOqtLSdbhqA2vIKh
-         HVYWoFtWnRR5lBw52p5wK2JeOpI9QfLBV2jjiZDhPLQqtGNGosfmdhJh1nQm0uI9MmZj
-         vtXQ==
-X-Gm-Message-State: AOAM531vEP31VpY8+REqDXOvs31qKQUHZFDoalpNcHNAjmG8nasTj2mm
-        E4UjIo9o+BapnzT5RSR1k1b1YKe0dayYoNj6AWWazQ==
-X-Google-Smtp-Source: ABdhPJywYmEIfPKKMCtfaYKW4weTkTNt4BduRAE4fGLJK8Lm8UBonpwXxVu4c/dAa2RoOqTs0tWz3OY9jBVoU0HJPK0=
-X-Received: by 2002:a25:804:: with SMTP id 4mr1059364ybi.346.1630547045363;
- Wed, 01 Sep 2021 18:44:05 -0700 (PDT)
+        id S232868AbhIBBpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 21:45:09 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:50373 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232249AbhIBBpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 21:45:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630547048;
+        bh=NuRwbu7de8byElVZzBMKg3pNIEyi41fKQhrIZwjdqVk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uyHBypnb12dseI+aFeaWaE+vjczLuqQy5MeZhpdnt2ExpcTDdaeirxgGKMtWlanL4
+         T+/62rKzZbnLubrPd6lShqGvnIOhPelMtNEAUlIPo9v+9SvYiXx8t5P8o+2UIfAMu2
+         ZbIGKV7jR2lFwXZwkd6f60BT2s7zrBOGD8i9w8ft7On6EbrygtrBaWUzKUltKLCx7+
+         UnN0L6cSK6LVDMSwb2UAy3SstHZnvNLOA9kZpqyLp3tUdtr2creDIhDUd6xVibWy7R
+         oPU4/AF19W/qxwT9oOwn6Amg2x8xUetVRoAFcskyuPZw9TlzzArAJoMnGAh+ZhKPgw
+         BUeRO6BYPRQOQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H0Nxy1KFvz9sCD;
+        Thu,  2 Sep 2021 11:44:05 +1000 (AEST)
+Date:   Thu, 2 Sep 2021 11:44:05 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Mark Brown <broonie@kernel.org>, Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        John Stultz <john.stultz@linaro.org>
+Subject: Re: linux-next: manual merge of the drm tree with the qcom/for-next
+ tree
+Message-ID: <20210902114346.430e7ba2@elm.ozlabs.ibm.com>
+In-Reply-To: <20210726163814.6483-1-broonie@kernel.org>
+References: <20210726163814.6483-1-broonie@kernel.org>
 MIME-Version: 1.0
-References: <20210831224510.703253-1-saravanak@google.com> <CAPDyKFpQqKx2UDo4kc3eAxPfp47gOGbjtnm0fg1q+bshpb-vew@mail.gmail.com>
- <CAGETcx8Oc63WXy6VPNQ6uO1JhQpVFgcCYNhSJNbvDp1CD18KQg@mail.gmail.com>
- <CAPDyKFo7Y9NPm1UoKzsRNKZbvoqmCUCVg0UD8dwa5FLb1FOZkQ@mail.gmail.com> <CAGETcx9U2M5i1CAx605fG3Qwm1xwjH2uy4kY4vrAF7YSRSSg+w@mail.gmail.com>
-In-Reply-To: <CAGETcx9U2M5i1CAx605fG3Qwm1xwjH2uy4kY4vrAF7YSRSSg+w@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 1 Sep 2021 18:43:29 -0700
-Message-ID: <CAGETcx_EeiimxoXcN0Vw_sizeioDnBB8z4bh_3Qj4ac_tL7BRQ@mail.gmail.com>
-Subject: Re: [PATCH v1] driver core: fw_devlink: Don't create device links for
- devices not on a bus
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/Q5w3+hlLAetVcLJKtBO9Vme";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 5:16 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Wed, Sep 1, 2021 at 3:17 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> >
-> > On Wed, 1 Sept 2021 at 23:54, Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > On Wed, Sep 1, 2021 at 8:45 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > >
-> > > > On Wed, 1 Sept 2021 at 00:45, Saravana Kannan <saravanak@google.com> wrote:
-> > > > >
-> > > > > Devices that are not on a bus will never have a driver bound to it. So,
-> > > > > fw_devlink should not create device links for it as it can cause probe
-> > > > > issues[1] or sync_state() call back issues[2].
-> > > > >
-> > > > > [1] - https://lore.kernel.org/lkml/CAGETcx_xJCqOWtwZ9Ee2+0sPGNLM5=F=djtbdYENkAYZa0ynqQ@mail.gmail.com/
-> > > > > [2] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
-> > > >
-> > > > Unfortunately, this doesn't fix my problem in [2].
-> > > >
-> > > > When the "soctest" device is initialized, via of_platform_populate(),
-> > > > it will be attached to the platform bus, hence the check for the bus
-> > > > pointer that you suggest to add below, doesn't have an impact on my
-> > > > use case. I still get the below in the log:
-> > >
-> > > *face palm* Right. I forgot that. I just read "bus" and my mind went
-> > > to busses added as devices. It apparently also didn't help [1] which
-> > > is surprising to me. I'll dig into that separately. I'll look into
-> > > fixing this. The annoying part is that some devices have compatible
-> > > property that's both "simple-bus" and some other string that a driver
-> > > actually matches with.
-> >
-> > Yes, that is my view of the problem as well.
-> >
-> > So perhaps we should do a more fine grained check for when the
-> > "simple-bus" compatible is present in the node,
->
-> Exactly. Do you want to take a stab at this? There are too many things
-> I want to work on, so if you can do this one, that'd be nice.
+--Sig_/Q5w3+hlLAetVcLJKtBO9Vme
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Nevermind. I already did most of it and it needs a little bit more
-massaging. I'll send out a patch later.
+Hi all,
 
--Saravana
+On Mon, 26 Jul 2021 17:38:14 +0100 Mark Brown <broonie@kernel.org> wrote:
+>=20
+> Today's linux-next merge of the drm tree got a conflict in:
+>=20
+>   drivers/firmware/Makefile
+>=20
+> between commit:
+>=20
+>   b42000e4b874 ("firmware: qcom_scm: Allow qcom_scm driver to be loadable=
+ as a permenent module")
+>=20
+> from the qcom/for-next tree and commits:
+>=20
+>   8633ef82f101 ("drivers/firmware: consolidate EFI framebuffer setup for =
+all arches")
+>   d391c5827107 ("drivers/firmware: move x86 Generic System Framebuffers s=
+upport")
+>=20
+> from the drm tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
+> index 3c2af2e98def..5ced0673d94b 100644
+> --- a/drivers/firmware/Makefile
+> +++ b/drivers/firmware/Makefile
+> @@ -19,6 +19,8 @@ obj-$(CONFIG_RASPBERRYPI_FIRMWARE) +=3D raspberrypi.o
+>  obj-$(CONFIG_FW_CFG_SYSFS)	+=3D qemu_fw_cfg.o
+>  obj-$(CONFIG_QCOM_SCM)		+=3D qcom-scm.o
+>  qcom-scm-objs +=3D qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
+> +obj-$(CONFIG_SYSFB)		+=3D sysfb.o
+> +obj-$(CONFIG_SYSFB_SIMPLEFB)	+=3D sysfb_simplefb.o
+>  obj-$(CONFIG_TI_SCI_PROTOCOL)	+=3D ti_sci.o
+>  obj-$(CONFIG_TRUSTED_FOUNDATIONS) +=3D trusted_foundations.o
+>  obj-$(CONFIG_TURRIS_MOX_RWTM)	+=3D turris-mox-rwtm.o
 
->
-> > and then don't create
-> > a fw_devlink if we reach an ascendant with only this compatible?
->
-> And you can achieve that by setting this flag for that DT node:
-> fwnode->flags |= FWNODE_FLAG_NOT_DEVICE;
->
-> -Saravana
+This is now a conflict between the arm-soc tree and Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Q5w3+hlLAetVcLJKtBO9Vme
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEwLGUACgkQAVBC80lX
+0GxsNAf9HtMmr/YzsLeSPdGg3EE57M4qQCg9drEy1J/d2jc0kz4XT+n/frtOWJeh
+33CLNmuUsolbWf40TRAeBAf8dl+16LS82KSoNNqo1W1n0A5bk5glJKWp3vKsh8KJ
+ottOVtMGeZK2SF6Xk2VO0dV2J+yzU/I/tQYcbjrmVlpUkX8XInkf7vsX+N4m4lc1
+ZoiQzM5YE6ZdhbuMveMpFQYjqfDNDQbjX168WNqbhtPAsvdds+exbc3hlZ0A8pMq
+AVt3gb/uk5b1XrOGlnlOqEoRlimUKzbDQamOVRHLPRkkbPvNGVx/WR6t2eAAyMEj
+nvqf8fJfF32GHVUcrIbnIGPaLP6Z6g==
+=zodR
+-----END PGP SIGNATURE-----
+
+--Sig_/Q5w3+hlLAetVcLJKtBO9Vme--
