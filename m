@@ -2,211 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D093FEFD0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2F83FEFD4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345701AbhIBPFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 11:05:55 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:55994 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234984AbhIBPFw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 11:05:52 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 182DKGFJ025318;
-        Thu, 2 Sep 2021 17:04:36 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=selector1;
- bh=xFU7L59UQKbHgNzk21dP0eFG6dpb8/xpYj0dfSaG5Vc=;
- b=vGWNBZfXa7KRkBZBCzfjkPZpsB1MT0HW3nz1Brp4Vkf65DO4YIUv7Dy8togNGp8CQFKo
- fz4rCOqiaRcZ0UhwRG1/zkzmtWLgniYiSvqlQoHe74ohV4NSMne7sA8vPpg/d319CgpO
- 1CUIkVIch9C9AwfnUoy/swFhoHQlZ2tuwi/j0mv7VKOjBTxjFK3l40KpFz+NiBtaukw8
- AvM7w4ZVNqOkluvxn9ijBlyMWZi7jHpN4svbCX+hcLmXHgZgMhNFZjMAmqNRGqUdsffB
- n+G8e/Ij/4qXDX/Qs3XHKhbGt5W0AGP92Ao+NawHsxwzdR+i7nduNFCc4rAo4RuoXEph 6w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3attgdahjb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Sep 2021 17:04:36 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1286F10002A;
-        Thu,  2 Sep 2021 17:04:35 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node1.st.com [10.75.127.4])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E8B9E214D33;
-        Thu,  2 Sep 2021 17:04:34 +0200 (CEST)
-Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE1.st.com
- (10.75.127.4) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 2 Sep
- 2021 17:04:34 +0200
-Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
- SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
- 15.00.1497.015; Thu, 2 Sep 2021 17:04:34 +0200
-From:   Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-CC:     Sam Ravnborg <sam@ravnborg.org>, David Airlie <airlied@linux.ie>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
-        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
-        Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com>,
-        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>
-Subject: [PATCH] drm/panel: otm8009a: add a 60 fps mode
-Thread-Topic: [PATCH] drm/panel: otm8009a: add a 60 fps mode
-Thread-Index: AQHXoAvWQIlcPy1QlUOj2tqsnPmKrg==
-Date:   Thu, 2 Sep 2021 15:04:34 +0000
-Message-ID: <20210902150351.3779-1-raphael.gallais-pou@foss.st.com>
-Accept-Language: fr-FR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.75.127.48]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S1345714AbhIBPGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 11:06:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49772 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234984AbhIBPGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 11:06:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 635D26108B;
+        Thu,  2 Sep 2021 15:05:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630595150;
+        bh=jPC3kdz5JKgIhlrA2cm66wzQSrTW00eesyq/cJjIgP0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dVgab2GXk4tPJkxwWhPBtJp2/t1ZBgllgVkDNuC8ZmFKnr3vk++R+EqSX7TxVMv5Q
+         jtmI4RddhxcJY0vxhEHH07zyGoQOpMsKLrZtHs8cV1fmQBm3GzCj3WMouvH+hWpqMr
+         fTGDGj+Jp7elGG+wepOuwH4cjICE7ZzCZs0O0QAM=
+Date:   Thu, 2 Sep 2021 17:05:47 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     James Bottomley <jejb@linux.ibm.com>
+Cc:     Dov Murik <dovmurik@linux.ibm.com>, linux-efi@vger.kernel.org,
+        Borislav Petkov <bp@suse.de>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
+        Jim Cadden <jcadden@ibm.com>, linux-coco@lists.linux.dev,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Allow access to confidential computing secret area
+ in SEV guests
+Message-ID: <YTDoS5XycY3gO4MM@kroah.com>
+References: <20210809190157.279332-1-dovmurik@linux.ibm.com>
+ <YTDKUe8rXrr0Zika@kroah.com>
+ <e6fb1d54605690cc1877d7140fc9346c22268111.camel@linux.ibm.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-02_04,2021-09-02_03,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e6fb1d54605690cc1877d7140fc9346c22268111.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a 60 fps mode to the Orisetech OTM8009A panel.
-The 50 fps mode is left as preferred.
+On Thu, Sep 02, 2021 at 07:35:10AM -0700, James Bottomley wrote:
+> On Thu, 2021-09-02 at 14:57 +0200, Greg KH wrote:
+> [...]
+> > Wait, why are you using securityfs for this?
+> > 
+> > securityfs is for LSMs to use. 
+> 
+> No it isn't ... at least not exclusively; we use it for non LSM
+> security purposes as well, like for the TPM BIOS log and for IMA.  What
+> makes you think we should start restricting securityfs to LSMs only? 
+> That's not been the policy up to now.
 
-Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
----
- .../gpu/drm/panel/panel-orisetech-otm8009a.c  | 85 ++++++++++++-------
- 1 file changed, 56 insertions(+), 29 deletions(-)
+Well that was the original intent of the filesystem when it was created,
+but I guess it's really up to the LSM maintainers now what they want it
+for.
 
-diff --git a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c b/drivers/gpu=
-/drm/panel/panel-orisetech-otm8009a.c
-index f80b44a8a700..dfb43b1374e7 100644
---- a/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-+++ b/drivers/gpu/drm/panel/panel-orisetech-otm8009a.c
-@@ -60,6 +60,9 @@
- #define MCS_CMD2_ENA1	0xFF00	/* Enable Access Command2 "CMD2" */
- #define MCS_CMD2_ENA2	0xFF80	/* Enable Access Orise Command2 */
-=20
-+#define OTM8009A_HDISPLAY	480
-+#define OTM8009A_VDISPLAY	800
-+
- struct otm8009a {
- 	struct device *dev;
- 	struct drm_panel panel;
-@@ -70,19 +73,35 @@ struct otm8009a {
- 	bool enabled;
- };
-=20
--static const struct drm_display_mode default_mode =3D {
--	.clock =3D 29700,
--	.hdisplay =3D 480,
--	.hsync_start =3D 480 + 98,
--	.hsync_end =3D 480 + 98 + 32,
--	.htotal =3D 480 + 98 + 32 + 98,
--	.vdisplay =3D 800,
--	.vsync_start =3D 800 + 15,
--	.vsync_end =3D 800 + 15 + 10,
--	.vtotal =3D 800 + 15 + 10 + 14,
--	.flags =3D 0,
--	.width_mm =3D 52,
--	.height_mm =3D 86,
-+static const struct drm_display_mode modes[] =3D {
-+	{ /* 50 Hz, preferred */
-+		.clock =3D 29700,
-+		.hdisplay =3D 480,
-+		.hsync_start =3D 480 + 98,
-+		.hsync_end =3D 480 + 98 + 32,
-+		.htotal =3D 480 + 98 + 32 + 98,
-+		.vdisplay =3D 800,
-+		.vsync_start =3D 800 + 15,
-+		.vsync_end =3D 800 + 15 + 10,
-+		.vtotal =3D 800 + 15 + 10 + 14,
-+		.flags =3D DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-+		.width_mm =3D 52,
-+		.height_mm =3D 86,
-+	},
-+	{ /* 60 Hz */
-+		.clock =3D 33000,
-+		.hdisplay =3D 480,
-+		.hsync_start =3D 480 + 70,
-+		.hsync_end =3D 480 + 70 + 32,
-+		.htotal =3D 480 + 70 + 32 + 72,
-+		.vdisplay =3D 800,
-+		.vsync_start =3D 800 + 15,
-+		.vsync_end =3D 800 + 15 + 10,
-+		.vtotal =3D 800 + 15 + 10 + 16,
-+		.flags =3D DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-+		.width_mm =3D 52,
-+		.height_mm =3D 86,
-+	},
- };
-=20
- static inline struct otm8009a *panel_to_otm8009a(struct drm_panel *panel)
-@@ -208,12 +227,11 @@ static int otm8009a_init_sequence(struct otm8009a *ct=
-x)
- 	/* Default portrait 480x800 rgb24 */
- 	dcs_write_seq(ctx, MIPI_DCS_SET_ADDRESS_MODE, 0x00);
-=20
--	ret =3D mipi_dsi_dcs_set_column_address(dsi, 0,
--					      default_mode.hdisplay - 1);
-+	ret =3D mipi_dsi_dcs_set_column_address(dsi, 0, OTM8009A_HDISPLAY - 1);
- 	if (ret)
- 		return ret;
-=20
--	ret =3D mipi_dsi_dcs_set_page_address(dsi, 0, default_mode.vdisplay - 1);
-+	ret =3D mipi_dsi_dcs_set_page_address(dsi, 0, OTM8009A_VDISPLAY - 1);
- 	if (ret)
- 		return ret;
-=20
-@@ -337,24 +355,33 @@ static int otm8009a_get_modes(struct drm_panel *panel=
-,
- 			      struct drm_connector *connector)
- {
- 	struct drm_display_mode *mode;
--
--	mode =3D drm_mode_duplicate(connector->dev, &default_mode);
--	if (!mode) {
--		dev_err(panel->dev, "failed to add mode %ux%u@%u\n",
--			default_mode.hdisplay, default_mode.vdisplay,
--			drm_mode_vrefresh(&default_mode));
--		return -ENOMEM;
-+	unsigned int num_modes =3D ARRAY_SIZE(modes);
-+	unsigned int i;
-+
-+	for (i =3D 0; i < num_modes; i++) {
-+		mode =3D drm_mode_duplicate(connector->dev, &modes[i]);
-+		if (!mode) {
-+			dev_err(panel->dev, "failed to add mode %ux%u@%u\n",
-+				modes[i].hdisplay,
-+				modes[i].vdisplay,
-+				drm_mode_vrefresh(&modes[i]));
-+			return -ENOMEM;
-+		}
-+
-+		mode->type =3D DRM_MODE_TYPE_DRIVER;
-+
-+		/* Setting first mode as preferred */
-+		if (!i)
-+			mode->type |=3D  DRM_MODE_TYPE_PREFERRED;
-+
-+		drm_mode_set_name(mode);
-+		drm_mode_probed_add(connector, mode);
- 	}
-=20
--	drm_mode_set_name(mode);
--
--	mode->type =3D DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
--	drm_mode_probed_add(connector, mode);
--
- 	connector->display_info.width_mm =3D mode->width_mm;
- 	connector->display_info.height_mm =3D mode->height_mm;
-=20
--	return 1;
-+	return num_modes;
- }
-=20
- static const struct drm_panel_funcs otm8009a_drm_funcs =3D {
---=20
-2.17.1
+> >  If you want your own filesystem to play around with stuff like this,
+> > great, write your own, it's only 200 lines or less these days.  We
+> > used to do it all the time until people realized they should just use
+> > sysfs for driver stuff.
+> 
+> This is a security purpose (injected key retrieval), so securityfs
+> seems to be the best choice.  It's certainly possible to create a new
+> filesystem, but I really think things with a security purpose should
+> use securityfs so people know where to look for them.
+
+knowing where to look should not be an issue, as that should be
+documented in Documentation/ABI/ anyway, right?
+
+It's just the overlap / overreach of using an existing filesystem for
+things that don't seem to be LSM-related that feels odd to me.
+
+Why not just make a cocofs if those people want a filesystem interface?
+It's 200 lines or so these days, if not less, and that way you only
+mount what you actually need for the system.
+
+Why force this into securityfs if it doesn't have to be?
+
+thanks,
+
+greg k-h
