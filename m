@@ -2,131 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198283FED9D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719023FEDA0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344295AbhIBMQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 08:16:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343984AbhIBMQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 08:16:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A954A60F90;
-        Thu,  2 Sep 2021 12:15:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630584954;
-        bh=hr+t/bJ+QD4jlEcI9TsTp6H1aIJD4dtF+RqEdbB6Hrs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=Xcn+mpNutq0ztqFE9/Cl8RHOuDeLeYGfQIxYWM8uTCKRAnO9OgXIp/UtD3YBcAaYO
-         lrHqhjB2UHFKzm1grkYptjY250P7pYtuOlo9fX8QnAx+Hl6fdLEPyyHKxwIVa7pD6J
-         iLXQSXrMjBnOoGt0BIpDVkd8b9j1Z7EQY7H7ZwKzKLgczpFnHXacS28g624cq1QPfI
-         klu8+iKpyeCMe1Uiv8ZKQXgLZeCGLWtBwj4dtIfoG6zOUGbBIl04i7KoKajRwwiqaj
-         nQQ9Tt/CMCCMzcmJqq5IgRbF+QfI36ipK/MOMDLX65kothi8gWb4ZAnqiwE6Ts+CR6
-         Rq0Civj3ajWhQ==
-Message-ID: <41e9b099f6492c389b3ed3bbe107d61804a307e9.camel@kernel.org>
-Subject: Re: [PATCH v3 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Date:   Thu, 02 Sep 2021 15:15:51 +0300
-In-Reply-To: <20210901174705.3b1a943ef8c4bb09323c6d76@intel.com>
-References: <20210825235234.153013-1-jarkko@kernel.org>
-         <20210825235234.153013-2-jarkko@kernel.org>
-         <20210826141959.5f13ff3c9c560c23b58443b1@intel.com>
-         <54923ac01fc303e5105cadca06b7c5cbd322d815.camel@kernel.org>
-         <20210828000335.1d40dfff0f408b2d91467491@intel.com>
-         <04b90a702328712204430db604b2a92ddfe8f990.camel@kernel.org>
-         <20210901173322.78f94b694b4be6b1225bee98@intel.com>
-         <6a9fccdb6a458960e43a63afcce87cc62184adf9.camel@kernel.org>
-         <20210901174705.3b1a943ef8c4bb09323c6d76@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S1344316AbhIBMRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 08:17:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26507 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234142AbhIBMRS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 08:17:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630584979;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0KB5SyFwwSjd3I7RFdLEADuQgZugol7EKe1fCuJWPl0=;
+        b=DZR299q5fQz8LPzs6zZuZwTAlkSs58H9rGeFd1QGe1cGfZbJ9g/3+bWAgexPo9+Pd4TPbE
+        kAsqglWsRpqxR8Z8JKloDgn8HNgjzpHkV2OT3CRUXl+pcUXla3JNYut8iEH0ESGKk5P1Y1
+        jnewhODo7q35q+IY/SZBmMMZ1nFuqoo=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-587-XQPQ0pVVMgmrFpNlI9ENAw-1; Thu, 02 Sep 2021 08:16:18 -0400
+X-MC-Unique: XQPQ0pVVMgmrFpNlI9ENAw-1
+Received: by mail-wm1-f69.google.com with SMTP id y188-20020a1c7dc5000000b002e80e0b2f87so931018wmc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 05:16:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=0KB5SyFwwSjd3I7RFdLEADuQgZugol7EKe1fCuJWPl0=;
+        b=jZk3TqaOFaoKodLJhaSUtO+sY3t7wzXSniqdcFRKiiP+kxE2L/vl/GiFReUJaIkX+/
+         XEQkyX/9hrFh/9Phi1gHZZ1xwQy77a6bC2BvUbRVT9nVLNoq+i5ESgpqTnbwk+jYMUXE
+         /j7IKLwHdjI4FcqgBDmFMQwwuPL5Cx9DyN9OimOv26KAI46LBB7DQroBtMfTOSatnPyF
+         5mZXIYalKVMITUlUZ513uKvqHijOkZCwFUJcs8cgD49TmlqSYGjFAttNoeBxdOk0WkNO
+         iNynR1xaJpOg559xLVBtUKJTA4M61KKVZQAKAeF5iVZi5R0SEbApqxEHCp3BYLrs9ELU
+         Vw2Q==
+X-Gm-Message-State: AOAM530b46wTc7dJNa7H0ZlawBkza1uauExj83lPtnu44db6xT+7NM2h
+        ePrnrQfucuOmRS4Yk3m0WJvQHLHYCoDMxVJorkxXsOBvlj5ynDf8h2fAk6IuCEcaQgib214kYuW
+        RArkt1ZWLIvHzeLd8tCoqRDmj711a9kwjNchX7b2CjQpvoHZJWAc3lnVmlbsbWl7C05rDclZl
+X-Received: by 2002:a5d:6781:: with SMTP id v1mr3393720wru.249.1630584977473;
+        Thu, 02 Sep 2021 05:16:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyxLVdMLy9E2mqTLvOGLjmzD7yZiwY5dVGzMc0woHfMYLZKh3OehsTEMsYjvAj3cc5ucR6Ohg==
+X-Received: by 2002:a5d:6781:: with SMTP id v1mr3393681wru.249.1630584977132;
+        Thu, 02 Sep 2021 05:16:17 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c60bd.dip0.t-ipconnect.de. [91.12.96.189])
+        by smtp.gmail.com with ESMTPSA id k16sm1722414wrx.87.2021.09.02.05.16.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 05:16:16 -0700 (PDT)
+Subject: Re: [PATCH v2 5/5] mm/page_alloc.c: avoid allocating highmem pages
+ via alloc_pages_exact[_nid]
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
+Cc:     vbabka@suse.cz, sfr@canb.auug.org.au, peterz@infradead.org,
+        mgorman@techsingularity.net, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210902121242.41607-1-linmiaohe@huawei.com>
+ <20210902121242.41607-6-linmiaohe@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <1ef3dc5d-7eb9-90a5-afbf-f551afcf7d8b@redhat.com>
+Date:   Thu, 2 Sep 2021 14:16:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210902121242.41607-6-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-09-01 at 17:47 +1200, Kai Huang wrote:
-> On Wed, 01 Sep 2021 08:41:12 +0300 Jarkko Sakkinen wrote:
-> > On Wed, 2021-09-01 at 17:33 +1200, Kai Huang wrote:
-> > > On Wed, 01 Sep 2021 05:02:45 +0300 Jarkko Sakkinen wrote:
-> > > > On Sat, 2021-08-28 at 00:03 +1200, Kai Huang wrote:
-> > > > > > > > -/* The free page list lock protected variables prepend the=
- lock. */
-> > > > > > > > +/* The number of usable EPC pages in the system. */
-> > > > > > > > +unsigned long sgx_nr_all_pages;
-> > > > > > > > +
-> > > > > > > > +/* The number of free EPC pages in all nodes. */
-> > > > > > > >  static unsigned long sgx_nr_free_pages;
-> > > > > > > > =20
-> > > > > > > >  /* Nodes with one or more EPC sections. */
-> > > > > > > > @@ -656,6 +659,8 @@ static bool __init sgx_setup_epc_sectio=
-n(u64 phys_addr, u64 size,
-> > > > > > > >  		list_add_tail(&section->pages[i].list, &sgx_dirty_page_l=
-ist);
-> > > > > > > >  	}
-> > > > > > > > =20
-> > > > > > > > +	sgx_nr_all_pages +=3D nr_pages;
-> > > > > > > > +
-> > > > > > >=20
-> > > > > > > EPC sections can be freed again in sgx_init() after they are =
-successfully
-> > > > > > > initialized, when any further initialization fails (i.e. when=
- fails to create
-> > > > > > > ksgxd, or fails to register /dev/sgx_provision).  In which ca=
-se, I think
-> > > > > > > sgx_nr_all_pages should also be cleared.  But current sgx_ini=
-t() seems doesn't
-> > > > > > > reset it.  Do you need to fix that too?
-> > > > > >=20
-> > > > > > sgx_nr_all_pages tells just the total pages in the system, i.e.=
- it's a constant.
-> > > > > >=20
-> > > > > > Maybe a rename to "sgx_nr_total_pages" would be a good idea? Wo=
-uld match with
-> > > > > > the meminfo field better too.
-> > > > >=20
-> > > > > I don't have preference on name.  I just think if there's no actu=
-al user of
-> > > > > EPC (when both driver and KVM SGX cannot be enabled), it's pointl=
-ess to print
-> > > > > number of EPC pages.
-> > > >=20
-> > > > I'd presume that you refer to the code, which prints the number of =
-*bytes* in
-> > > > the system because code printing the number of pages does not exist=
- in this
-> > > > patch set.
-> > > >=20
-> > > > I have troubles the decipher your statement.
-> > > >=20
-> > > > You think that only if both the driver and KVM are *both* enabled, =
-only then
-> > > > it makes sense to have this information available for sysadmin?
-> > >=20
-> > > Only if at least one of them is enabled.
-> >=20
-> > OK, thank you, that does make sense.
-> >=20
-> > What would happen if neither is enabled is that SGX_MemTotal would
-> > state that there is zero bytes of EPC.=20
->=20
-> This is the problem I pointed out at the beginning, that (if I read code
-> correctly), it seems your current patch doesn't clear sgx_nr_all_pages wh=
-en
-> neither is enabled (in sgx_init() in sgx/main.c).
+On 02.09.21 14:12, Miaohe Lin wrote:
+> Don't use with __GFP_HIGHMEM because page_address() cannot represent
+> highmem pages without kmap(). Newly allocated pages would leak as
+> page_address() will return NULL for highmem pages here. But It works
+> now because the callers do not specify __GFP_HIGHMEM now.
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> ---
+>   mm/page_alloc.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 9c09dcb24149..e1d0e27d005a 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -5614,8 +5614,8 @@ void *alloc_pages_exact(size_t size, gfp_t gfp_mask)
+>   	unsigned int order = get_order(size);
+>   	unsigned long addr;
+>   
+> -	if (WARN_ON_ONCE(gfp_mask & __GFP_COMP))
+> -		gfp_mask &= ~__GFP_COMP;
+> +	if (WARN_ON_ONCE(gfp_mask & (__GFP_COMP | __GFP_HIGHMEM)))
+> +		gfp_mask &= ~(__GFP_COMP | __GFP_HIGHMEM);
+>   
+>   	addr = __get_free_pages(gfp_mask, order);
+>   	return make_alloc_exact(addr, order, size);
+> @@ -5639,8 +5639,8 @@ void * __meminit alloc_pages_exact_nid(int nid, size_t size, gfp_t gfp_mask)
+>   	unsigned int order = get_order(size);
+>   	struct page *p;
+>   
+> -	if (WARN_ON_ONCE(gfp_mask & __GFP_COMP))
+> -		gfp_mask &= ~__GFP_COMP;
+> +	if (WARN_ON_ONCE(gfp_mask & (__GFP_COMP | __GFP_HIGHMEM)))
+> +		gfp_mask &= ~(__GFP_COMP | __GFP_HIGHMEM);
+>   
+>   	p = alloc_pages_node(nid, gfp_mask, order);
+>   	if (!p)
+> 
 
-It's initialized to zero, so are you talking about fallback when something
-fails?
+Ideally we would convert this WARN_ON_ONCE() to pr_warn_once(), but I 
+guess this really never ever happens on a production system and would 
+get caught early while testing.
 
-/Jarkko
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Thanks,
+
+David / dhildenb
+
