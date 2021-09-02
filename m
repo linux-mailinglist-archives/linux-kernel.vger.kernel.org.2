@@ -2,81 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DBCD3FEDAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E2943FEDB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344382AbhIBMVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 08:21:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38090 "EHLO mail.kernel.org"
+        id S1344333AbhIBMXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 08:23:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234098AbhIBMVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 08:21:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBCC561059;
-        Thu,  2 Sep 2021 12:20:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630585217;
-        bh=LZ9MhyAeakx+WBlDA1bk+EZdatxvIkJ9vnWFtD5ZMq0=;
+        id S234098AbhIBMXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 08:23:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9018F6054E;
+        Thu,  2 Sep 2021 12:22:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630585345;
+        bh=LtO9so53QFcq+GSVqeOS9+q6OqRT7pG2sQXE1iTcrqo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SBIqggm2lH4F3hNBKyzJecCAoSwgxWoHzDxppC+f0tCQ57SomJAxGL/msQHNiUex1
-         EB8FvsQYm457YzVoXDsH9OV/a3c5vTBs9i4Xz+YB4FwybLOeNxTdGl8cyOB1cIE0sC
-         TAuZ1AASpx110h2EyCDNqNGWxN6STeJzQjZBjE5A=
-Date:   Thu, 2 Sep 2021 14:20:12 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc:     Nirmoy Das <nirmoy.das@amd.com>, rafael@kernel.org,
+        b=i+arjeBtP60Jc0aWJJ3X8l1UHnzxL6ArOqmFjNAFMJkA2xQHDAyurmji05dmCS0AX
+         ASrFCM88WJSxodnXXqw+ddL39T9QoJigLw9bzaWIRNlB7i2Pirod+wARCRJpLS5P4N
+         AeVxCMM1EKx1ewf9T8Vye/Gmza39Mg3b8VCu10W+jJ0zkG98iK0vIMMEj4REPVhg4O
+         27wIWarQJD2ZWL9Etr2pnkCBKT1Mz/JjmIcql9GVL7bPRVqKAy9XSbypJEDq7CsOwt
+         brn4AjNL6ruUIx2V8PdrY1ek9izEaa3/YTQnwO3NZ7xWiL0sJqWXfSqtYpHgZjIBwC
+         RizJuqgWYfreg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 5708F4007E; Thu,  2 Sep 2021 09:22:21 -0300 (-03)
+Date:   Thu, 2 Sep 2021 09:22:21 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
+        mike.leach@linaro.org, suzuki.poulose@arm.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] debugfs: use IS_ERR to check for error
-Message-ID: <YTDBfO/byKzGWV8G@kroah.com>
-References: <20210902102917.2233-1-nirmoy.das@amd.com>
- <YTCpuo00wM7jGSIc@kroah.com>
- <5ab7739d-15a4-2e84-0320-fee8d5df1e83@amd.com>
+Subject: Re: [PATCH v2] perf build: Report failure for testing feature
+ libopencsd
+Message-ID: <YTDB/VuANx5c+5sk@kernel.org>
+References: <20210902081800.550016-1-leo.yan@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5ab7739d-15a4-2e84-0320-fee8d5df1e83@amd.com>
+In-Reply-To: <20210902081800.550016-1-leo.yan@linaro.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 02:03:12PM +0200, Christian König wrote:
+Em Thu, Sep 02, 2021 at 04:18:00PM +0800, Leo Yan escreveu:
+> When build perf tool with passing option 'CORESIGHT=1' explicitly, if
+> the feature test fails for library libopencsd, the build doesn't
+> complain the feature failure and continue to build the tool with
+> disabling the CoreSight feature insteadly.
 > 
-> 
-> Am 02.09.21 um 12:38 schrieb Greg KH:
-> > On Thu, Sep 02, 2021 at 12:29:17PM +0200, Nirmoy Das wrote:
-> > > debugfs_create_file() returns encoded error so
-> > > use IS_ERR for checking return value.
-> > > 
-> > > References: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.freedesktop.org%2Fdrm%2Famd%2F-%2Fissues%2F1686&amp;data=04%7C01%7CChristian.Koenig%40amd.com%7C82691bea64d3491fe86008d96dfddc60%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637661759378883940%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=Xs4xnihnMzNvl%2BSEEpCcWkdvMaDw1Ofvekn%2Fnvz1mM8%3D&amp;reserved=0
-> > > Signed-off-by: Nirmoy Das <nirmoy.das@amd.com>
-> > > ---
-> > >   fs/debugfs/inode.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
-> > > index 8129a430d789..2f117c57160d 100644
-> > > --- a/fs/debugfs/inode.c
-> > > +++ b/fs/debugfs/inode.c
-> > > @@ -528,7 +528,7 @@ void debugfs_create_file_size(const char *name, umode_t mode,
-> > >   {
-> > >   	struct dentry *de = debugfs_create_file(name, mode, parent, data, fops);
-> > > -	if (de)
-> > > +	if (!IS_ERR(de))
-> > >   		d_inode(de)->i_size = file_size;
-> > >   }
-> > >   EXPORT_SYMBOL_GPL(debugfs_create_file_size);
-> > > -- 
-> > > 2.32.0
-> > > 
-> > Ah, good catch, I'll queue this up after 5.15-rc1 is out, thanks!
-> 
-> Thinking more about this if I'm not completely mistaken
-> debugfs_create_file() returns -ENODEV when debugfs is disabled and NULL on
-> any other error.
+> This patch changes the building behaviour, when build perf tool with the
+> option 'CORESIGHT=1' and detect the failure for testing feature
+> libopencsd, the build process will be aborted and it shows the complaint
+> info.
 
-How can this function be called if debugfs is not enabled in the system
-configuration?  This _is_ the debugfs core code.
+Thanks, added some committer notes to show that it now works:
 
-thanks,
+commit 8fb36b1f54873870262810d3db10526559e1d6c2
+Author: Leo Yan <leo.yan@linaro.org>
+Date:   Thu Sep 2 16:18:00 2021 +0800
 
-greg k-h
+    perf build: Report failure for testing feature libopencsd
+    
+    When build perf tool with passing option 'CORESIGHT=1' explicitly, if
+    the feature test fails for library libopencsd, the build doesn't
+    complain the feature failure and continue to build the tool with
+    disabling the CoreSight feature insteadly.
+    
+    This patch changes the building behaviour, when build perf tool with the
+    option 'CORESIGHT=1' and detect the failure for testing feature
+    libopencsd, the build process will be aborted and it shows the complaint
+    info.
+    
+    Committer testing:
+    
+    First make sure there is no opencsd library installed:
+    
+      $ rpm -qa | grep -i csd
+      $ sudo rm -rf `find /usr/local -name "*csd*"`
+      $ find /usr/local -name "*csd*"
+      $
+    
+    Then cleanup the perf build output directory:
+    
+      $ rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf ;
+      $
+    
+    And try to build explicitely asking for coresight:
+    
+      $ make O=/tmp/build/perf CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin
+      make: Entering directory '/var/home/acme/git/perf/tools/perf'
+        BUILD:   Doing 'make -j24' parallel build
+        HOSTCC  /tmp/build/perf/fixdep.o
+        HOSTLD  /tmp/build/perf/fixdep-in.o
+        LINK    /tmp/build/perf/fixdep
+      Makefile.config:493: *** Error: No libopencsd library found or the version is not up-to-date. Please install recent libopencsd to build with CORESIGHT=1.  Stop.
+      make[1]: *** [Makefile.perf:238: sub-make] Error 2
+      make: *** [Makefile:113: install-bin] Error 2
+      make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+      $
+    
+    Now install the opencsd library present in Fedora 34:
+    
+      $ sudo dnf install opencsd-devel
+      <SNIP>
+      Installed:
+        opencsd-1.0.0-1.fc34.x86_64 opencsd-devel-1.0.0-1.fc34.x86_64
+      Complete!
+      $
+    
+    Try again building with coresight:
+    
+      $ make O=/tmp/build/perf CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin
+      make: Entering directory '/var/home/acme/git/perf/tools/perf'
+        BUILD:   Doing 'make -j24' parallel build
+      Makefile.config:493: *** Error: No libopencsd library found or the version is not up-to-date. Please install recent libopencsd to build with CORESIGHT=1.  Stop.
+      make[1]: *** [Makefile.perf:238: sub-make] Error 2
+      make: *** [Makefile:113: install-bin] Error 2
+      make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+      $
+    
+    Since Fedora 34 is pretty recent, one assumes we need to get it from its
+    upstream git repository, use rpm to find where that is:
+    
+      $ rpm -q --qf "%{URL}\n" opencsd
+      https://github.com/Linaro/OpenCSD
+      $
+    
+    Go there, clone the repo, build it and install into /usr/local, then try
+    again:
+    
+      $ cd ~acme/git/perf
+      $ make O=/tmp/build/perf VF=1 CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin | grep -i opencsd
+      ...                    libopencsd: [ on  ]
+        PERF_VERSION = 5.14.g454719f67a3d
+      $ export LD_LIBRARY_PATH=/usr/local/lib
+      $ ldd ~/bin/perf | grep opencsd
+            libopencsd_c_api.so.1 => /usr/local/lib/libopencsd_c_api.so.1 (0x00007f28f78a4000)
+            libopencsd.so.1 => /usr/local/lib/libopencsd.so.1 (0x00007f28f6a2e000)
+      $
+    
+    Now it works.
+    
+    Requested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+    Signed-off-by: Leo Yan <leo.yan@linaro.org>
+    Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+    Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+    Cc: James Clark <james.clark@arm.com>
+    Cc: Jiri Olsa <jolsa@redhat.com>
+    Cc: Mark Rutland <mark.rutland@arm.com>
+    Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+    Cc: Mike Leach <mike.leach@linaro.org>
+    Cc: Namhyung Kim <namhyung@kernel.org>
+    Cc: Peter Zijlstra <peterz@infradead.org>
+    Cc: Suzuki Poulouse <suzuki.poulose@arm.com>
+    Cc: coresight@lists.linaro.org
+    Link: http://lore.kernel.org/lkml/20210902081800.550016-1-leo.yan@linaro.org
+    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index b051c0c312c5243a..b66cf128cbc76d07 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -489,6 +489,8 @@ ifdef CORESIGHT
+         CFLAGS += -DCS_RAW_PACKED
+       endif
+     endif
++  else
++    dummy := $(error Error: No libopencsd library found or the version is not up-to-date. Please install recent libopencsd to build with CORESIGHT=1)
+   endif
+ endif
+ 
