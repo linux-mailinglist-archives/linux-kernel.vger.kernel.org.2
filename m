@@ -2,164 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DC03FEE93
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035733FEE98
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:23:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344990AbhIBNWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:22:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26983 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1344959AbhIBNWR (ORCPT
+        id S1345049AbhIBNYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:24:14 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19004 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345038AbhIBNYK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:22:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630588878;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6tJf5xIvKDCnRwuvzEhUuuc4fd9eQkxx1PjNi93Vu3s=;
-        b=SnzWriVvL1J/4ZPJ06qeAlQl33FEpWh9jdCEPiw9zTq8pOJ7Y6W2+DQZAr/Uw+0tVj6GPH
-        m+Ll5hv+zguwNMRcQ7NjAK+z6iDs9LuIks9uLmWlcbN366y8VKl5zTZBgR9AgzcUnfGTcf
-        7k62Rd/2GOiRK8t40gG/ZtjYAWL30UM=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-600-HnkKsZhAOgmFocP9Dur1_w-1; Thu, 02 Sep 2021 09:21:17 -0400
-X-MC-Unique: HnkKsZhAOgmFocP9Dur1_w-1
-Received: by mail-qv1-f72.google.com with SMTP id ib9-20020a0562141c8900b003671c3a1243so1479135qvb.21
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 06:21:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6tJf5xIvKDCnRwuvzEhUuuc4fd9eQkxx1PjNi93Vu3s=;
-        b=UaBwWEKIwM14hAn4jkm0IQ8iM2by8lBzm1W6zPzZVhLuT5taH7tVXFWU66cCZXPEQI
-         OMv3t7COokBoTY5mFtGQAWdI7ccE1DO8yQaX1sctCYELkrlgUSHW88uteA0IjYyDbiXX
-         LYuPvnHdxYxP/vx4dbCL2b8Y6zJFgKPt3cIz9SKv8KQDZ0m0pyO3kncRsNavWBY0e0SD
-         WXhAtZUz/WKJkiFJXTQaYmxAPwEJMEQGeAbqb/VhSDXqxwDnhlrgPVnpa5zu3MVS9JN/
-         XQ3UtJSvfOZuwP3hZFE2+gHyaDeuYo2X7uHgoV47eiI6RJ2yxbkXG+Jg8B2eS4e2fDEL
-         ZOvQ==
-X-Gm-Message-State: AOAM533OzdppUKqcO/78ShZfzup3jYtRactHPHDEJv/ymqhzBqeLEM31
-        DWd6mg/8oTvOr26YCLq4DaWhRDja/KC49BHO3JQxJZbLNC/dFJi9AqN32GsPj2q6aY8zG75DwWw
-        tbqsHTABhw3n/swz/3WTUi+8M
-X-Received: by 2002:ad4:562c:: with SMTP id cb12mr1587969qvb.6.1630588877099;
-        Thu, 02 Sep 2021 06:21:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxG9JfvU8t2EsYROxxRPXPNKTs00M8PoYMUrrQVfghePFKxWKnhmt6JBf3fCTGn9rsZbouzrg==
-X-Received: by 2002:ad4:562c:: with SMTP id cb12mr1587947qvb.6.1630588876898;
-        Thu, 02 Sep 2021 06:21:16 -0700 (PDT)
-Received: from gator (nat-pool-brq-u.redhat.com. [213.175.37.12])
-        by smtp.gmail.com with ESMTPSA id g8sm1319814qkm.25.2021.09.02.06.21.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 06:21:16 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 15:21:12 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 01/12] KVM: arm64: selftests: Add MMIO readl/writel
- support
-Message-ID: <20210902132112.yyz7iiqims3nlmmi@gator>
-References: <20210901211412.4171835-1-rananta@google.com>
- <20210901211412.4171835-2-rananta@google.com>
+        Thu, 2 Sep 2021 09:24:10 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H0hN02rV2zbl2R;
+        Thu,  2 Sep 2021 21:19:12 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 2 Sep 2021 21:23:08 +0800
+Received: from [10.174.176.73] (10.174.176.73) by
+ dggema762-chm.china.huawei.com (10.1.198.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Thu, 2 Sep 2021 21:23:08 +0800
+Subject: Re: [PATCH v2 1/4] block, bfq: add support to track if root_group
+ have any pending requests
+To:     Paolo Valente <paolo.valente@linaro.org>
+CC:     <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20210806020826.1407257-1-yukuai3@huawei.com>
+ <20210806020826.1407257-2-yukuai3@huawei.com>
+ <2968B663-F855-4C41-AE9B-E33787DA6AF9@linaro.org>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <7ee856f6-ca13-67dc-d2db-d73ef31ffdd9@huawei.com>
+Date:   Thu, 2 Sep 2021 21:23:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901211412.4171835-2-rananta@google.com>
+In-Reply-To: <2968B663-F855-4C41-AE9B-E33787DA6AF9@linaro.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.73]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 09:14:01PM +0000, Raghavendra Rao Ananta wrote:
-> Define the readl() and writel() functions for the guests to
-> access (4-byte) the MMIO region.
+On 2021/08/27 1:00, Paolo Valente wrote:
 > 
-> The routines, and their dependents, are inspired from the kernel's
-> arch/arm64/include/asm/io.h and arch/arm64/include/asm/barrier.h.
 > 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> ---
->  .../selftests/kvm/include/aarch64/processor.h | 45 ++++++++++++++++++-
->  1 file changed, 44 insertions(+), 1 deletion(-)
+>> Il giorno 6 ago 2021, alle ore 04:08, Yu Kuai <yukuai3@huawei.com> ha scritto:
+>>
+>> Add a new member in bfq_data to track number of queues that are in
+>> root_group with any pending requests.
 > 
-> diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/tools/testing/selftests/kvm/include/aarch64/processor.h
-> index c0273aefa63d..3cbaf5c1e26b 100644
-> --- a/tools/testing/selftests/kvm/include/aarch64/processor.h
-> +++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
-> @@ -130,6 +130,49 @@ void vm_install_sync_handler(struct kvm_vm *vm,
->  	val;								  \
->  })
->  
-> -#define isb()	asm volatile("isb" : : : "memory")
-> +#define isb()		asm volatile("isb" : : : "memory")
-> +#define dsb(opt)	asm volatile("dsb " #opt : : : "memory")
-> +#define dmb(opt)	asm volatile("dmb " #opt : : : "memory")
-> +
-> +#define dma_wmb()	dmb(oshst)
-> +#define __iowmb()	dma_wmb()
-> +
-> +#define dma_rmb()	dmb(oshld)
-> +
-> +#define __iormb(v)							\
-> +({									\
-> +	unsigned long tmp;						\
-> +									\
-> +	dma_rmb();							\
-> +									\
-> +	/*								\
-> +	 * Courtesy of arch/arm64/include/asm/io.h:			\
-> +	 * Create a dummy control dependency from the IO read to any	\
-> +	 * later instructions. This ensures that a subsequent call	\
-> +	 * to udelay() will be ordered due to the ISB in __delay().	\
+> maybe modify the last part of the sentence as: ... and that have some pending request
+> 
+>> This will be used in next patch
+>> to optmize queue idle judgment when root_group doesn't have any
+>> pending requests.
+>>
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>> block/bfq-iosched.c |  8 +++++++-
+>> block/bfq-iosched.h | 13 +++++++++++--
+>> block/bfq-wf2q.c    | 37 ++++++++++++++++++++++++-------------
+>> 3 files changed, 42 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+>> index 727955918563..7c6b412f9a9c 100644
+>> --- a/block/bfq-iosched.c
+>> +++ b/block/bfq-iosched.c
+>> @@ -859,8 +859,14 @@ void __bfq_weights_tree_remove(struct bfq_data *bfqd,
+>> void bfq_weights_tree_remove(struct bfq_data *bfqd,
+>> 			     struct bfq_queue *bfqq)
+>> {
+>> -	struct bfq_entity *entity = bfqq->entity.parent;
+>> +	struct bfq_entity *entity = &bfqq->entity;
+>> +
+>> +	if (entity->in_groups_with_pending_reqs) {
+>> +		entity->in_groups_with_pending_reqs = false;
+>> +		bfqd->num_queues_with_pending_reqs_in_root--;
+> 
+> Here you cross the comment "The decrement of
+> num_groups_with_pending_reqs is not performed immediately upon ...".
+> 
+> Find a way to
+> - move that comment up, and to make it correct for this slightly
+>    different decrement
+> - leave a correct comment (probably shorter) in the original position
+> 
+>> +	}
+>>
+>> +	entity = entity->parent;
+>> 	for_each_entity(entity) {
+>> 		struct bfq_sched_data *sd = entity->my_sched_data;
+>>
+>> diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
+>> index 99c2a3cb081e..610769214f72 100644
+>> --- a/block/bfq-iosched.h
+>> +++ b/block/bfq-iosched.h
+>> @@ -195,7 +195,12 @@ struct bfq_entity {
+>> 	/* flag, set to request a weight, ioprio or ioprio_class change  */
+>> 	int prio_changed;
+>>
+>> -	/* flag, set if the entity is counted in groups_with_pending_reqs */
+>> +	/*
+>> +	 * If entity represents bfq_group, this flag will set
+> 
+> will be set?
+> 
+>> if the group is
+>> +	 * not root_group and have
+> 
+> has
+> 
+>> any pending requests; If entity represents
+> 
+> one more nit: use lowercase after semicolon
+> 
+>> +	 * bfq_queue, this flag will set
+> 
+> will be set
+> 
+>> if the queue is in root_group and have
+>> +	 * any pending requests.
+>> +	 */
+>> 	bool in_groups_with_pending_reqs;
+>>
+> 
+> The name of the above field follows from the fact that entity is
+> counted in groups_with_pending_reqs.  You change this fact, because,
+> in your patch, a queue is not counted in groups_with_pending_reqs.
+> But you leave the same name. This creates confusion.
+> 
+> 
+>> 	/* last child queue of entity created (for non-leaf entities) */
+>> @@ -539,7 +544,11 @@ struct bfq_data {
+>> 	 * with no request waiting for completion.
+>> 	 */
+>> 	unsigned int num_groups_with_pending_reqs;
+>> -
+>> +	/*
+>> +	 * number of queues that are in root_group with at least one request
+>> +	 * waiting for completion.
+> 
+> please link somehow this comment to the long comment that comes before it
+> 
+>> +	 */
+>> +	unsigned int num_queues_with_pending_reqs_in_root;
+> 
+> Why using two counters?  I mean, couldn't you simply count also the
+> root group in num_groups_with_pending_reqs?
 
-We don't have udelay or __delay yet, but I assume they're coming soon.
+Hi, Paolo
 
-> +	 */								\
-> +	asm volatile("eor	%0, %1, %1\n"				\
-> +		     "cbnz	%0, ."					\
-> +		     : "=r" (tmp) : "r" ((unsigned long)(v))		\
-> +		     : "memory");					\
-> +})
-> +
-> +static __always_inline void __raw_writel(u32 val, volatile void *addr)
-> +{
-> +	asm volatile("str %w0, [%1]" : : "rZ" (val), "r" (addr));
-> +}
-> +
-> +static __always_inline u32 __raw_readl(const volatile void *addr)
-> +{
-> +	u32 val;
-> +	asm volatile("ldr %w0, [%1]" : "=r" (val) : "r" (addr));
-> +	return val;
-> +}
-> +
-> +#define writel_relaxed(v,c)	((void)__raw_writel((__force u32)cpu_to_le32(v),(c)))
-> +#define readl_relaxed(c)	({ u32 __r = le32_to_cpu((__force __le32)__raw_readl(c)); __r; })
+Thanks for taking time reviewing these patches
 
-Might want to explicitly include linux/types.h for these __force symbols.
+I was doing this too complicated, while counting root group into
+num_groups_with_pending_reqs is much easier. I'll do this in next
+iteration.
 
-> +
-> +#define writel(v,c)		({ __iowmb(); writel_relaxed((v),(c));})
-> +#define readl(c)		({ u32 __v = readl_relaxed(c); __iormb(__v); __v; })
->  
->  #endif /* SELFTEST_KVM_PROCESSOR_H */
-> -- 
-> 2.33.0.153.gba50c8fa24-goog
-
-
-Reviewed-by: Andrew Jones <drjones@redhat.com>
-
-Thanks,
-drew
+Thanks
+Yu Kuai
 
 > 
-> _______________________________________________
-> kvmarm mailing list
-> kvmarm@lists.cs.columbia.edu
-> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
+>> 	/*
+>> 	 * Per-class (RT, BE, IDLE) number of bfq_queues containing
+>> 	 * requests (including the queue in service, even if it is
+>> diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
+>> index 7a462df71f68..188c8f907219 100644
+>> --- a/block/bfq-wf2q.c
+>> +++ b/block/bfq-wf2q.c
+>> @@ -946,6 +946,29 @@ static void bfq_update_fin_time_enqueue(struct bfq_entity *entity,
+>> 	bfq_active_insert(st, entity);
+>> }
+>>
+>> +static void bfq_update_groups_with_pending_reqs(struct bfq_entity *entity)
+>> +{
+>> +#ifdef CONFIG_BFQ_GROUP_IOSCHED
+>> +	struct bfq_queue *bfqq = bfq_entity_to_bfqq(entity);
+>> +
 > 
-
+> why do you introduce an extra variable bfqq, instead of doing as in
+> the original version of the code?  In addition, you remove the comment
+> /* bfq_group */
+> 
+> Thanks,
+> Paolo
+> 
+>> +	if (bfqq) {
+>> +		if (!entity->parent && !entity->in_groups_with_pending_reqs) {
+>> +			entity->in_groups_with_pending_reqs = true;
+>> +			bfqq->bfqd->num_queues_with_pending_reqs_in_root++;
+>> +		}
+>> +	} else {
+>> +		if (!entity->in_groups_with_pending_reqs) {
+>> +			struct bfq_group *bfqg =
+>> +				container_of(entity, struct bfq_group, entity);
+>> +			struct bfq_data *bfqd = bfqg->bfqd;
+>> +
+>> +			entity->in_groups_with_pending_reqs = true;
+>> +			bfqd->num_groups_with_pending_reqs++;
+>> +		}
+>> +	}
+>> +#endif
+>> +}
+>> +
+>> /**
+>>   * __bfq_activate_entity - handle activation of entity.
+>>   * @entity: the entity being activated.
+>> @@ -999,19 +1022,7 @@ static void __bfq_activate_entity(struct bfq_entity *entity,
+>> 		entity->on_st_or_in_serv = true;
+>> 	}
+>>
+>> -#ifdef CONFIG_BFQ_GROUP_IOSCHED
+>> -	if (!bfq_entity_to_bfqq(entity)) { /* bfq_group */
+>> -		struct bfq_group *bfqg =
+>> -			container_of(entity, struct bfq_group, entity);
+>> -		struct bfq_data *bfqd = bfqg->bfqd;
+>> -
+>> -		if (!entity->in_groups_with_pending_reqs) {
+>> -			entity->in_groups_with_pending_reqs = true;
+>> -			bfqd->num_groups_with_pending_reqs++;
+>> -		}
+>> -	}
+>> -#endif
+>> -
+>> +	bfq_update_groups_with_pending_reqs(entity);
+>> 	bfq_update_fin_time_enqueue(entity, st, backshifted);
+>> }
+>>
+>> -- 
+>> 2.31.1
+>>
+> 
+> .
+> 
