@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656A43FED4A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 296B03FED51
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245623AbhIBL5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 07:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344017AbhIBL5c (ORCPT
+        id S1343877AbhIBL7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 07:59:53 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:41038 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245693AbhIBL7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 07:57:32 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F890C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 04:56:33 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id w8so1651273pgf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 04:56:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=wXPEshFYPreebAoTX3ABJCbi6RIUZePUnpogyL8TPAk=;
-        b=RP6u4NYpyYK6LDkqa4Cm18mwbwBQO3c9MYcN6LoBlH2bQMPeKIV2TSGqZZ8iEFHuGA
-         jJmtWc6VH7d6by3BLhlJ6lbjRKQ9WR9G8XQUnUXMN16oqwW9gjQ9d9bPE7OTakxPy85d
-         e9xhtYAUTnz3Pucr6VIqfhiwDSdh4qTBMi7Bd52MUS1VZHOiRkvUsWI+FrheaDa1Xca8
-         jGe0xpqVRwRIHawiU3Z37fDrYWP6oAcEJN54/MI1FEK21MgF/0wbqD3onlKKJavpvVF0
-         C8womYlkLSetD6wee4nz1G2X8H+f6FG67FMRpOLW5UPojTldOQKIpb9tCOUKdT4N5GZo
-         4bnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=wXPEshFYPreebAoTX3ABJCbi6RIUZePUnpogyL8TPAk=;
-        b=MGVuTDhAsmgLjYg33k/vnycPs/k8FTNbkVa26xcB+t3lRmVRUS24ZmeAEYZj4MP/oz
-         Nwy8mUDiaUhI+5qfwe6eRc8qR0KZFeLXonseqoPKi7BJYdnouTLMsCyedolhq0TxTKf2
-         1Tbd0yt0fRRwqL5eg8ox9WNL7hCDgyoWKc3A/aXpLdi3RrRDr+Em55RgJrdIWbz9VV4J
-         fKcIMUwxEopKUg6pOXdw/yP25Nam75kxzVQi+QxsNqHjqsHCtVSvRp0TqmyQu+ZPGZIv
-         7C06+Ov3HfbjUOedvWAXfz9QkAWBBmFi6jDArVPiHKgazfiW5vfkvyzK7UFA3pWiQ2jo
-         duAA==
-X-Gm-Message-State: AOAM531D/viIXwQZ0yyz2xA/VujiEyg6gDfh1R7CfK/rA0nUZ3meG6FC
-        38iOdDQvIGHtWorwwreX8cL0MS8nsy6jr01qwgg=
-X-Google-Smtp-Source: ABdhPJyC0QFxKiTOgE9GH7Mbd7yFYdZxHEhJYOZ5dsdJ/afo3+HC1274XRHn9dvgFneJHLKHz9TGIsnduVZFYgE/1j0=
-X-Received: by 2002:a63:f30c:: with SMTP id l12mr2855549pgh.360.1630583792309;
- Thu, 02 Sep 2021 04:56:32 -0700 (PDT)
+        Thu, 2 Sep 2021 07:59:52 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0Un.jn1j_1630583931;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Un.jn1j_1630583931)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 02 Sep 2021 19:58:52 +0800
+Subject: Re: [PATCH 22/24] x86/entry: Implement and use do_paranoid_entry()
+ and paranoid_exit()
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Youquan Song <youquan.song@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+References: <20210831175025.27570-1-jiangshanlai@gmail.com>
+ <20210831175025.27570-23-jiangshanlai@gmail.com>
+ <YTCoenvIaHjLQmAC@hirez.programming.kicks-ass.net>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <44e08066-bbfb-222e-dffc-63e5b64f125f@linux.alibaba.com>
+Date:   Thu, 2 Sep 2021 19:58:51 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Received: by 2002:a17:90b:1b42:0:0:0:0 with HTTP; Thu, 2 Sep 2021 04:56:31
- -0700 (PDT)
-Reply-To: nnoelie64@gmail.com
-From:   Noelie Nikiema <telexdepartment19@gmail.com>
-Date:   Thu, 2 Sep 2021 04:56:31 -0700
-Message-ID: <CAOVp_5YCQ-pzxe8tURE9FEBTRHfzC0ehEAqmu+gibgO6wQu6HA@mail.gmail.com>
-Subject: Dear Beneficiary,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YTCoenvIaHjLQmAC@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
-2021 FUND RECOVERY COMPENSATION PAYMENT.
 
 
-I am a foreign delegate from the United Nations fund recovery
-committee office/ compensation directive office , your name and
-address has been selected lucky ones for the payment of
-US$1,550.000.00 compensations funds.
+On 2021/9/2 18:33, Peter Zijlstra wrote:
+> On Wed, Sep 01, 2021 at 01:50:23AM +0800, Lai Jiangshan wrote:
+> 
+>> +	call	do_paranoid_entry
+>>   	ret
+> 
+> That's normally spelled like:
+> 
+> 	jmp do_paranoid_entry
+> 
+> But the same comment as for error_entry but more; pretty much all that's
+> left in asm is things like:
+> 
+> 
+> 	call paranoid_entry;
+> 
+> 	# setup args
+> 	call \cfunc
+> 
+> 	call paranoid_exit
+> 
+> which seems like prime material to also pull into C to avoid the
+> back-and-forth thing. In fact, why can't you call paranoid_entry/exit
+> from \cfunc itself? The IDT macros should be able to help.
+> 
 
-On this faith full recommendations, I want you to know that during the
-last UN meetings held at Africa ,it was alarmed so much by the rest of
-the world in the meetings on the lost of funds by various foreigners
-to the scams artists operating in syndicates all over the world today,
-in other to retain the good image of the country, the president UN is
-now paying 50 victims of this operators US$1,550.000.00 each, Due to
-the corrupt and inefficient banking systems in Africa, the payments
-are to be wired via direct transfer, online banking transfer or ATM
-visa card,
-Your urgent response is needed for more directives.
-
-Thanks
-Dr. Noelie Nikiema
+Oh, #VC will need to switch stack.  I think we need ASM code to switch
+stack since the original stack need to be "free" for next #VC.
