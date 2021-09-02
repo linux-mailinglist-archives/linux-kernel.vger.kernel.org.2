@@ -2,172 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE69E3FEB2B
+	by mail.lfdr.de (Postfix) with ESMTP id 955133FEB2A
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245455AbhIBJ1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 05:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245456AbhIBJ1T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 05:27:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83717C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 02:26:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=JnunSlEJCIdP9P5c2OtXs84291lvtlHS2UqsTjDRA/w=; b=rmWPG8vxCsZeHaqWF4TMPPOVRD
-        qv4QQGU8EcWHGge1jClcrbKp10BEMs1DxkG7uQcTBAqWQMZYGtjcJ/MNiVj5x4VKW7gHTvSyueEZf
-        qwpHsAVZNhAVKEM30ZDauHUes4EOjhr311oPmY35PKjSCIwRXhVdONNZGntyV6i4kuXptruc+KmXk
-        MC6HgTSr62RJ7AfI2bAecUj75W748Bow5vBHDPGq1l2F5c4q9dmIVLZyX7kzaiNM+TydLyk93YJW9
-        jTm0HgfNolrp/EnFT6vs31QAUBFJQ2jW22Lq7tYDdtl8xO3dYk1bY6uecHQYFHJc/OvC2yt0CXCNm
-        SmP7n46Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mLiyQ-003KJN-79; Thu, 02 Sep 2021 09:25:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AEAEE3001C7;
-        Thu,  2 Sep 2021 11:25:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9535E209D9DBB; Thu,  2 Sep 2021 11:25:29 +0200 (CEST)
-Date:   Thu, 2 Sep 2021 11:25:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH 09/24] x86/traps: Add fence_swapgs_{user,kernel}_entry()
-Message-ID: <YTCYiUIGeluu8Bov@hirez.programming.kicks-ass.net>
-References: <20210831175025.27570-1-jiangshanlai@gmail.com>
- <20210831175025.27570-10-jiangshanlai@gmail.com>
+        id S245447AbhIBJ06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 05:26:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49470 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245416AbhIBJ0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 05:26:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 201AB61058;
+        Thu,  2 Sep 2021 09:25:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630574755;
+        bh=Yxy8KM/Ohu/+iS5kBagZcmeiZaFKnSW9/TTj7inv4ZU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fhaf3pWmgUnA6/2gPoyol3nOWFW9Zx2baVX1bw7KONGrfY5le3/P3g2TbzqVF9bFU
+         jxWQZZ83QxQ0lyK0EeZndMYhLnRl9FOzYvm5Zw1tvLlbdVCFkoh7FDKOqmGktH4xXB
+         x//lyqtDFvQp/2+4OZ7W0Lje4pW5X9z33xDNvoLY=
+Date:   Thu, 2 Sep 2021 11:25:53 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] staging: r8188eu: restricted __be16 degrades to
+ int
+Message-ID: <YTCYodihc/U/StOw@kroah.com>
+References: <cover.1630148641.git.aakashhemadri123@gmail.com>
+ <652e62b7f30d216bafc6ef390ed27c2c6864fe95.1630148641.git.aakashhemadri123@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210831175025.27570-10-jiangshanlai@gmail.com>
+In-Reply-To: <652e62b7f30d216bafc6ef390ed27c2c6864fe95.1630148641.git.aakashhemadri123@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 01:50:10AM +0800, Lai Jiangshan wrote:
+On Sat, Aug 28, 2021 at 04:40:44PM +0530, Aakash Hemadri wrote:
+> Fix sparse warning:
+> > rtw_br_ext.c:73:23: warning: restricted __be16 degrades to integer
+> 
+> Here tag->tag_len is be16, use be16_to_cpu()
+> 
+> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+> ---
+>  drivers/staging/r8188eu/core/rtw_br_ext.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+> index 62a672243696..aa56cd1a8490 100644
+> --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
+> +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+> @@ -70,7 +70,7 @@ static int __nat25_add_pppoe_tag(struct sk_buff *skb, struct pppoe_tag *tag)
+>  	struct pppoe_hdr *ph = (struct pppoe_hdr *)(skb->data + ETH_HLEN);
+>  	int data_len;
+>  
+> -	data_len = tag->tag_len + TAG_HDR_LEN;
+> +	data_len = be16_to_cpu(tag->tag_len) + TAG_HDR_LEN;
+>  	if (skb_tailroom(skb) < data_len) {
+>  		_DEBUG_ERR("skb_tailroom() failed in add SID tag!\n");
+>  		return -1;
+> -- 
+> 2.32.0
+> 
 
-> +/*
-> + * Mitigate Spectre v1 for conditional swapgs code paths.
-> + *
-> + * fence_swapgs_user_entry is used in the user entry swapgs code path, to
-> + * prevent a speculative swapgs when coming from kernel space.
-> + *
-> + * fence_swapgs_kernel_entry is used in the kernel entry non-swapgs code path,
-> + * to prevent the swapgs from getting speculatively skipped when coming from
-> + * user space.
-> + */
-> +static __always_inline void fence_swapgs_user_entry(void)
-> +{
-> +	alternative("", "lfence", X86_FEATURE_FENCE_SWAPGS_USER);
-> +}
-> +
-> +static __always_inline void fence_swapgs_kernel_entry(void)
-> +{
-> +	alternative("", "lfence", X86_FEATURE_FENCE_SWAPGS_KERNEL);
-> +}
+If this change happens, that means the existing driver does not work at
+all on little-endian machines today?  But that seems odd and wrong, are
+you sure this change is correct?
 
-I think slightly larger primitives might make more sense; that is
-include the swapgs in these function and drop the fence_ prefix.
+How did you test this?
 
-Something a bit like...
+thanks,
 
---- a/arch/x86/entry/traps.c
-+++ b/arch/x86/entry/traps.c
-@@ -853,20 +853,22 @@ static __always_inline void ist_restore_
- /*
-  * Mitigate Spectre v1 for conditional swapgs code paths.
-  *
-- * fence_swapgs_user_entry is used in the user entry swapgs code path, to
-- * prevent a speculative swapgs when coming from kernel space.
-+ * swapgs_user_entry is used in the user entry swapgs code path, to prevent a
-+ * speculative swapgs when coming from kernel space.
-  *
-- * fence_swapgs_kernel_entry is used in the kernel entry non-swapgs code path,
-- * to prevent the swapgs from getting speculatively skipped when coming from
-- * user space.
-+ * swapgs_kernel_entry is used in the kernel entry non-swapgs code path, to
-+ * prevent the swapgs from getting speculatively skipped when coming from user
-+ * space.
-  */
--static __always_inline void fence_swapgs_user_entry(void)
-+static __always_inline void swapgs_user_entry(void)
- {
-+	native_swapgs();
- 	alternative("", "lfence", X86_FEATURE_FENCE_SWAPGS_USER);
- }
- 
--static __always_inline void fence_swapgs_kernel_entry(void)
-+static __always_inline void swapgs_kernel_entry(void)
- {
-+	native_swapgs();
- 	alternative("", "lfence", X86_FEATURE_FENCE_SWAPGS_KERNEL);
- }
- 
-@@ -896,8 +898,7 @@ struct pt_regs *do_error_entry(struct pt
- 		 * We entered from user mode.
- 		 * Switch to kernel gsbase and CR3.
- 		 */
--		native_swapgs();
--		fence_swapgs_user_entry();
-+		swapgs_user_entry();
- 		switch_to_kernel_cr3();
- 
- 		/* Put pt_regs onto the task stack. */
-@@ -917,8 +918,7 @@ struct pt_regs *do_error_entry(struct pt
- 		 * We came from an IRET to user mode, so we have user
- 		 * gsbase and CR3.  Switch to kernel gsbase and CR3:
- 		 */
--		native_swapgs();
--		fence_swapgs_user_entry();
-+		swapgs_user_entry();
- 		switch_to_kernel_cr3();
- 
- 		/*
-@@ -936,8 +936,7 @@ struct pt_regs *do_error_entry(struct pt
- 	 * handler with kernel gsbase.
- 	 */
- 	if (eregs->ip == (unsigned long)asm_load_gs_index_gs_change) {
--		native_swapgs();
--		fence_swapgs_user_entry();
-+		swapgs_user_entry();
- 	} else {
- 		fence_swapgs_kernel_entry();
- 	}
-@@ -1017,14 +1016,12 @@ static __always_inline unsigned long ist
- 	if ((long)gsbase < 0)
- 		return 1;
- 
--	native_swapgs();
--
- 	/*
- 	 * The above ist_switch_to_kernel_cr3() doesn't do an unconditional
- 	 * CR3 write, even in the PTI case.  So do an lfence to prevent GS
- 	 * speculation, regardless of whether PTI is enabled.
- 	 */
--	fence_swapgs_kernel_entry();
-+	swapgs_kernel_entry();
- 
- 	/* SWAPGS required on exit */
- 	return 0;
-@@ -1089,7 +1086,7 @@ void paranoid_exit(struct ist_regs *ist)
- 	}
- 
- 	if (!ist->gsbase)
--		native_swapgs();
-+		swapgs_user_entry();
- }
- #endif
- 
+greg k-h
