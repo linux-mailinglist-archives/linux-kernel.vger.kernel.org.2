@@ -2,70 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 647A53FECB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562D13FECBA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237667AbhIBLND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 07:13:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhIBLNC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 07:13:02 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BF0EC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 04:12:04 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id y17so1343953pfl.13
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 04:12:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=ZA0ee3H6NTjo73+gDDJBCwdEPW3UnP/Ui/OFl5nkIzA=;
-        b=lx8QFSQXe6qJGEnOxfFeZbk/Z4kzuj9ce7yVfRL+ynCiysh3Bm+KfSZJjpCBkU6aSw
-         z4y3zaZuiwmRsHCMj18WFkMVJ8v5qkgSIhvZmagxaYOnX8iQj4LDJKlvSLBObIz4/RRm
-         7KB+4HyC7F1mfJabF3fBINabzXnKjXYaqmaxHdYCGUYbTsk/B6iemvhoaBdogQqbVvGd
-         yOKhc8fVu9l9fhN+SNowoYirzFIGvR19lZPUc/AXe59GysUnnC0xcWwHrOzWjiFu0nc+
-         PFpM7HKJ1m/USEv75Ic9zR6xTDUylhIZNmlK0D3a6m5d0hFu0uA+kgju+ODcvSlNrnjL
-         UoRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=ZA0ee3H6NTjo73+gDDJBCwdEPW3UnP/Ui/OFl5nkIzA=;
-        b=IHjFiWJaO28HYW3CNKA1dW6rQ5aoYbIf1kr0T4WrLZCYT23RXCv/Ku5YaOVm1xXGBQ
-         b2N2fT9/HwKsEtKPeB9mniYwIJu3ggK+nuVQQRlEDVT4dIIXg6A5cav/jaX2ck2UggMa
-         v5qFDQfJ95k8FVy/JARjQbEuOMVT46lmWWB/fZ2G5HurIkwyCSq3JOGrT98RfKFyvCvw
-         dHlwoc/UBkqNZx4duvTkNBU3FUS3K8VjvJ5Z0oYeSwLoYiShf9kyV8PBpfqhTZQBFgJF
-         78yB8oDzSTpRuK59pDuP08Pe3aqWviXFDDlhbmERWZQ26Qfr0UmwbjM/dcJkiXxanX22
-         30Lw==
-X-Gm-Message-State: AOAM533pmQoHULDtCsEWLrArJe2EamA2BzPVzOLoWc5283liJ8e/HUCd
-        mfJq8FOF+DscofwGfJTRNHUMstbeTW5CyagyyM4=
-X-Google-Smtp-Source: ABdhPJxLHScoQ1sjEJxuVt9KJMXd68ynE3HFwSNEwFnkH/QiXdU/J69m8WtaFgqZca//NE7Q4/W6pG8LKTsaRZc9pGs=
-X-Received: by 2002:a65:5c43:: with SMTP id v3mr2734150pgr.342.1630581123885;
- Thu, 02 Sep 2021 04:12:03 -0700 (PDT)
+        id S244308AbhIBLNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 07:13:30 -0400
+Received: from relay.sw.ru ([185.231.240.75]:39524 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230256AbhIBLN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 07:13:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:Subject
+        :From; bh=0wuwi6ZrUkLZon/1tg0YWMGItyLI6Mu6MrFFHtSexJg=; b=CfWrwTqOtBp3kW6xSLW
+        ZbtruvdcIXZEZaSqsGUBThUducWiw7pcTbSzWafgKt/LPT10hZFoDHhj7tz6SVl1qiQffdyHcOOE7
+        CTrLUx6HM18vryZbnzHUDzXP7qcYFH1BD1lm9lCJrF8rXZXN8whnhCs854pJgYg4GOsV6OoBlZI=;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mLkdp-000ZoL-8w; Thu, 02 Sep 2021 14:12:21 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH net-next v5] skb_expand_head() adjust skb->truesize
+ incorrectly
+To:     Christoph Paasch <christoph.paasch@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        kernel@openvz.org, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Julian Wiedmann <jwi@linux.ibm.com>
+References: <27f87dd8-f6e4-b2b0-2b3a-9378fddf147f@virtuozzo.com>
+Message-ID: <053307fc-cc3d-68f5-1994-fe447428b1f2@virtuozzo.com>
+Date:   Thu, 2 Sep 2021 14:12:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Sender: mrsaishagaddafi28@gmail.com
-Received: by 2002:a05:6a10:1683:0:0:0:0 with HTTP; Thu, 2 Sep 2021 04:12:03
- -0700 (PDT)
-From:   Aisha Al-Qaddafi <aishaqadffi56@gmail.com>
-Date:   Wed, 1 Sep 2021 23:12:03 -1200
-X-Google-Sender-Auth: 4PSj9yAg_iktXjbhHBq0KWItTh0
-Message-ID: <CANvBDQBpBLrKTftgthuUsMwSMoBjFDN1s0DhFQ8cy30ho2yxzw@mail.gmail.com>
-Subject: Hello dear friend.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <27f87dd8-f6e4-b2b0-2b3a-9378fddf147f@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Assalamu alaikum,
-I came across your e-mail contact prior to a private search while in
-need of a trusted person. My name is Mrs. Aisha Al-Qaddafi, a single
-Mother and a Widow with three Children. I am the only biological
-Daughter of the late Libyan President (Late Colonel Muammar
-Al-Qaddafi)I have a business Proposal for you worth $27.5 Million
-dollars and I need mutual respect, trust, honesty and transparency,
-adequate support and assistance, Hope to hear from you for further
-details.
-Warmest regards
-Mrs Aisha Al-Qaddafi
+Christoph Paasch reports [1] about incorrect skb->truesize
+after skb_expand_head() call in ip6_xmit.
+This may happen because of two reasons:
+- skb_set_owner_w() for newly cloned skb is called too early,
+before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
+- pskb_expand_head() does not adjust truesize in (skb->sk) case.
+In this case sk->sk_wmem_alloc should be adjusted too.
+
+[1] https://lkml.org/lkml/2021/8/20/1082
+
+Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
+Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+v5: fixed else condition, thanks to Eric
+    reworked update of expanded skb,
+    added corresponding comments
+v4: decided to use is_skb_wmem() after pskb_expand_head() call
+    fixed 'return (EXPRESSION);' in os_skb_wmem according to Eric Dumazet
+v3: removed __pskb_expand_head(),
+    added is_skb_wmem() helper for skb with wmem-compatible destructors
+    there are 2 ways to use it:
+     - before pskb_expand_head(), to create skb clones
+     - after successfull pskb_expand_head() to change owner on extended skb.
+v2: based on patch version from Eric Dumazet,
+    added __pskb_expand_head() function, which can be forced
+    to adjust skb->truesize and sk->sk_wmem_alloc.
+---
+ include/net/sock.h |  1 +
+ net/core/skbuff.c  | 63 ++++++++++++++++++++++++++++++++++++++++++++++--------
+ net/core/sock.c    |  8 +++++++
+ 3 files changed, 63 insertions(+), 9 deletions(-)
+
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 95b2577..173d58c 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -1695,6 +1695,7 @@ struct sk_buff *sock_wmalloc(struct sock *sk, unsigned long size, int force,
+ 			     gfp_t priority);
+ void __sock_wfree(struct sk_buff *skb);
+ void sock_wfree(struct sk_buff *skb);
++bool is_skb_wmem(const struct sk_buff *skb);
+ struct sk_buff *sock_omalloc(struct sock *sk, unsigned long size,
+ 			     gfp_t priority);
+ void skb_orphan_partial(struct sk_buff *skb);
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index f931176..29bb92e7 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -1804,28 +1804,73 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
+ struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
+ {
+ 	int delta = headroom - skb_headroom(skb);
++	int osize = skb_end_offset(skb);
++	struct sk_buff *oskb = NULL;
++	struct sock *sk = skb->sk;
+ 
+ 	if (WARN_ONCE(delta <= 0,
+ 		      "%s is expecting an increase in the headroom", __func__))
+ 		return skb;
+ 
+-	/* pskb_expand_head() might crash, if skb is shared */
++	delta = SKB_DATA_ALIGN(delta);
++	/* pskb_expand_head() might crash, if skb is shared.
++	 * Also we should clone skb if its destructor does
++	 * not adjust skb->truesize and sk->sk_wmem_alloc
++	 */
+ 	if (skb_shared(skb)) {
+ 		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
+ 
+-		if (likely(nskb)) {
+-			if (skb->sk)
+-				skb_set_owner_w(nskb, skb->sk);
+-			consume_skb(skb);
+-		} else {
++		if (unlikely(!nskb)) {
+ 			kfree_skb(skb);
++			return NULL;
+ 		}
++		oskb = skb;
+ 		skb = nskb;
+ 	}
+-	if (skb &&
+-	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
++	if (pskb_expand_head(skb, delta, 0, GFP_ATOMIC)) {
+ 		kfree_skb(skb);
+-		skb = NULL;
++		kfree_skb(oskb);
++		return NULL;
++	}
++	if (oskb) {
++		if (sk)
++			skb_set_owner_w(skb, sk);
++		consume_skb(oskb);
++	} else if (sk && skb->destructor != sock_edemux) {
++		bool ref, set_owner;
++
++		ref = false; set_owner = false;
++		delta = osize - skb_end_offset(skb);
++		/* skb_set_owner_w() calls current skb destructor.
++		 * It can decrease sk_wmem_alloc to 0 and release sk,
++		 * To prevnt it we increase sk_wmem_alloc earlier.
++		 * Another kind of destructors can release last sk_refcnt,
++		 * so it will be impossible to call sock_hold for !fullsock
++		 * Take extra sk_refcnt to prevent it.
++		 * Otherwise just increase truesize of expanded skb.
++		 */
++		refcount_add(delta, &sk->sk_wmem_alloc);
++		if (!is_skb_wmem(skb)) {
++			set_owner = true;
++			if (!sk_fullsock(sk) && IS_ENABLED(CONFIG_INET)) {
++				/* skb_set_owner_w can set sock_edemux */
++				ref = refcount_inc_not_zero(&sk->sk_refcnt);
++				if (!ref) {
++					set_owner = false;
++					WARN_ON(refcount_sub_and_test(delta, &sk->sk_wmem_alloc));
++				}
++			}
++		}
++		if (set_owner)
++			skb_set_owner_w(skb, sk);
++#ifdef CONFIG_INET
++		if (skb->destructor == sock_edemux) {
++			WARN_ON(refcount_sub_and_test(delta, &sk->sk_wmem_alloc));
++			if (ref)
++				WARN_ON(refcount_dec_and_test(&sk->sk_refcnt));
++		}
++#endif
++		skb->truesize += delta;
+ 	}
+ 	return skb;
+ }
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 950f1e7..6cbda43 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -2227,6 +2227,14 @@ void skb_set_owner_w(struct sk_buff *skb, struct sock *sk)
+ }
+ EXPORT_SYMBOL(skb_set_owner_w);
+ 
++bool is_skb_wmem(const struct sk_buff *skb)
++{
++	return skb->destructor == sock_wfree ||
++	       skb->destructor == __sock_wfree ||
++	       (IS_ENABLED(CONFIG_INET) && skb->destructor == tcp_wfree);
++}
++EXPORT_SYMBOL(is_skb_wmem);
++
+ static bool can_skb_orphan_partial(const struct sk_buff *skb)
+ {
+ #ifdef CONFIG_TLS_DEVICE
+-- 
+1.8.3.1
+
