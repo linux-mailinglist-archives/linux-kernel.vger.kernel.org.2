@@ -2,101 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D5F3FF533
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 750323FF537
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347145AbhIBU55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54230 "EHLO
+        id S1347299AbhIBU6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 16:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242413AbhIBU54 (ORCPT
+        with ESMTP id S1347198AbhIBU6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 16:57:56 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D292C061575;
-        Thu,  2 Sep 2021 13:56:57 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id x5so3210972ill.3;
-        Thu, 02 Sep 2021 13:56:57 -0700 (PDT)
+        Thu, 2 Sep 2021 16:58:13 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117CEC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 13:57:15 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id f129so3306748pgc.1
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 13:57:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=E1S+5jcQWtYE5x5qrFpgfYh9OaMNAx9YRcmdcbIaK6o=;
-        b=ChEuHje9Z9mTGPnt9v3KD+WXVDNxocrqhat7qwkCyKtXkS5EXxCbtVyjH7Sv2chiVx
-         M7rbQ1HftU4Ydq+ZrvmH6scvsgFryZn2S30Yy7bZWJoEQmDDQhvfI2F80ZhnEqFKrqPy
-         XSeFVKHEE6QFQQGwl5p6EIstrbIcof9ecDt8BDjRBdEwRT2e1mgarqMjCcAY5EgmcToh
-         edXrdheQ2WAZON0iKD5CGUDTw1DvkWg7y7SGFPbl6VBRBcsx8thDnAL9bKoEN8YI977s
-         1gidKOMrNOMO63X0NGAL6Jgf2EC3PLhrnHcgsRxpHMtzMxcdMdsNSCs7scfufrsAmBOb
-         ngSg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AKvoBglyKyX6FOVMBLB/URNeY80PWCKE3Lo+SAFXI3k=;
+        b=I0126LUhSD04CPCw4NfU0xi6Grfk2wjNYQRqWhZ2iOjuKglbP3AD/1E2rxglR4eqNc
+         DdX3w8JzqQQH3hNWFfvTPXXjh2+dFfbeO4FA6jCRnlTCTjMeF2NpPBumA3HEr0NrUdxf
+         S0DkZDKDTD3ejQMUECTQNJO8OHQhjM3R33UV68hmzRwCApTNPwt+XBesICvcgmKy+uO2
+         I3PyHC2gE0qNX6iNXg0+5XhUPuJSKAIiG5L700Ho3x/W/1j1mr0SY++iz+nLz2vYjnZ3
+         ytFh15AkqwWicUz1FlSAPt6vWCeIrjsSHPFXb6RYhApDX/a93eOR2oNaSdqJ9P+BFRHW
+         5TYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=E1S+5jcQWtYE5x5qrFpgfYh9OaMNAx9YRcmdcbIaK6o=;
-        b=FPhFJqFZXBafH1TH8E9WQGIEWqOKmWfuTlrJHUkX3wIeiG7ESiwcsMDvEIVINaWOxs
-         aiyDsgOBzQMza0tWB+Lb/hy4IVsAMVbQoJEaA9UhhLd0XZ+U50+TTOOCN+GJ5FarrBqV
-         fq9zMFeB0wOQiND0ls3+FrHVP0H2ZTr7CQvfgt2jYb09gcnzpg20zbBRc/TdKhbzxzrN
-         7xooDIu4ucg9Oeh++5kPgBO+Yo5dVSHCpjtgwvkNKZk2ABNDQPRxvh6xzcI9nhM/Qs42
-         7bm3PrGBOWiY1CaCFM4YlNzP0h6WAXT/um6ne1ouR/+GcqbFjT5AxO2193d+ph4gybSO
-         snRA==
-X-Gm-Message-State: AOAM533sQBEYVjmxQOy0SAMbgJNUKl6wF+Q7uuBKpQsP6mAWIsUCYPYd
-        rJ08J+fbi2YLQ13TbMSa97A=
-X-Google-Smtp-Source: ABdhPJxnzpCc8Kz1ZhInbesLw1eMGFRroGaGqN2turdSPsmyR5bFQdHxNOXyj0nhfJ/ntaxMCyr4tQ==
-X-Received: by 2002:a92:c70e:: with SMTP id a14mr60918ilp.299.1630616216688;
-        Thu, 02 Sep 2021 13:56:56 -0700 (PDT)
-Received: from localhost ([172.243.157.240])
-        by smtp.gmail.com with ESMTPSA id j6sm1601683iom.5.2021.09.02.13.56.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AKvoBglyKyX6FOVMBLB/URNeY80PWCKE3Lo+SAFXI3k=;
+        b=NJLl/JXhdMy+jDtSNNInnQYqyIRTU8admZsOTRWMuGABmQ3AU1Ac/KM/JWoozwl5C3
+         rxEo8pOoFOSTwmdQj21LI3rgOUerpB1I8Kvod5iWy5ASim8ytSv3tJpTYdegZdaEy0FP
+         jD3qxVLBKEfJC5MJ1WewoCpPfRC1VP+Vdx4vGbWRN1KFCMP8s3EPCsiXa57MnDlFVly6
+         6UPgAbQbKlL0s2d6BnqmcaMDRlwu7Ox1yUqGQuBPh6fnTtn2qrxvsHpGFmIbWAfwLsvF
+         5MGrQethz53uzG53F4QCELj2L3qlipBNUqJe7wxtShPqWVZCq8ncnCv84a5s6Gmz4rkJ
+         YtuQ==
+X-Gm-Message-State: AOAM530tZv64yHMTyleQvxeFV/ZLdBn5zyeBaorI2YdqPFyQnumFLSut
+        ncn5NrUEBwhZa03CDf8poCUVlw==
+X-Google-Smtp-Source: ABdhPJxzTD7xp5K/i9sHGH587GJ8tZkJXnLGOqiJwoNVv8Rls8D2cm5udFmcc86bB3yp/lT+Rd2yLA==
+X-Received: by 2002:a63:4917:: with SMTP id w23mr271248pga.344.1630616234252;
+        Thu, 02 Sep 2021 13:57:14 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id x16sm3647924pgc.49.2021.09.02.13.57.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 13:56:56 -0700 (PDT)
-Date:   Thu, 02 Sep 2021 13:56:47 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Song Liu <songliubraving@fb.com>, bpf@vger.kernel.org,
+        Thu, 02 Sep 2021 13:57:13 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 20:57:10 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
         linux-kernel@vger.kernel.org
-Cc:     acme@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        kjain@linux.ibm.com, kernel-team@fb.com,
-        Song Liu <songliubraving@fb.com>
-Message-ID: <61313a8fda896_2c56f208bb@john-XPS-13-9370.notmuch>
-In-Reply-To: <20210902165706.2812867-3-songliubraving@fb.com>
-References: <20210902165706.2812867-1-songliubraving@fb.com>
- <20210902165706.2812867-3-songliubraving@fb.com>
-Subject: RE: [PATCH v5 bpf-next 2/3] bpf: introduce helper
- bpf_get_branch_snapshot
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v4 3/8] KVM: x86: hyper-v: Avoid calling
+ kvm_make_vcpus_request_mask() with vcpu_mask==NULL
+Message-ID: <YTE6pk22mslvIDr6@google.com>
+References: <20210827092516.1027264-1-vkuznets@redhat.com>
+ <20210827092516.1027264-4-vkuznets@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210827092516.1027264-4-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Song Liu wrote:
-> Introduce bpf_get_branch_snapshot(), which allows tracing pogram to get
-> branch trace from hardware (e.g. Intel LBR). To use the feature, the
-> user need to create perf_event with proper branch_record filtering
-> on each cpu, and then calls bpf_get_branch_snapshot in the bpf function.
-> On Intel CPUs, VLBR event (raw event 0x1b00) can be use for this.
+On Fri, Aug 27, 2021, Vitaly Kuznetsov wrote:
+> In preparation to making kvm_make_vcpus_request_mask() use for_each_set_bit()
+> switch kvm_hv_flush_tlb() to calling kvm_make_all_cpus_request() for 'all cpus'
+> case.
 > 
-> Signed-off-by: Song Liu <songliubraving@fb.com>
+> Note: kvm_make_all_cpus_request() (unlike kvm_make_vcpus_request_mask())
+> currently dynamically allocates cpumask on each call and this is suboptimal.
+> Both kvm_make_all_cpus_request() and kvm_make_vcpus_request_mask() are
+> going to be switched to using pre-allocated per-cpu masks.
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 > ---
 
-[...]
-
->  
-> +BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
-> +{
-> +#ifndef CONFIG_X86
-> +	return -ENOENT;
-> +#else
-> +	static const u32 br_entry_size = sizeof(struct perf_branch_entry);
-> +	u32 entry_cnt = size / br_entry_size;
-> +
-> +	if (unlikely(flags))
-> +		return -EINVAL;
-> +
-> +	if (!buf || (size % br_entry_size != 0))
-> +		return -EINVAL;
-
-LGTM, but why fail if buffer is slightly larger than expected? I guess its a slightly
-buggy program that would do this, but not actually harmful right?
-
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+Reviewed-by: Sean Christopherson <seanjc@google.com>
