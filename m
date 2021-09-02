@@ -2,116 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5363FF18C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:36:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE653FF191
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346375AbhIBQhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231400AbhIBQhf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:37:35 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113BAC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:36:37 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id w8so2549572pgf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:36:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WoqzlkSq/fGvPkW8YSM9+7jUzqSLn8LthZIO2IYZaaI=;
-        b=EEt3jt+S/Vci4zOc2xXUi/q+4p+B26VNW1UEEVqkibBi6mK2FwOUk1MdFlVSEMLOrJ
-         d/Y1GQP1SHYBP3qaD29j6I/xwZ4Qk6GCSKQojlmJgH3IxGgE3RmB94Mq3pKkaiDkshak
-         M3wC0yRrjXekqCh34ATBmVCBiyibb4kkXb9l9mojlO6gZxz2/gW/J9VLrdiR8JNp22Mi
-         mlBrnft4AALtSAiy7BVK00Yxgom9yCxS/J/MXfpPmtlBmp5RC42QjjAEjsYWmM5Hapea
-         V070XUV1Hs3cEmbIeKHAHZY/z5MQcknVUpkcFz6y4FchLBtfjAGHkgRGrCo+n6SdxsTn
-         Y3KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WoqzlkSq/fGvPkW8YSM9+7jUzqSLn8LthZIO2IYZaaI=;
-        b=jlou8g2hjWRLO+x9Dd6fiKAOwQLXUrpGUsOlAjNA/4m+FPvNO/IMxn/aiEjhlQuR7Q
-         1rjOYVelDfLpmD9F1bladWfD8lQznfuoAblWy8LL4xqfRI4zEBTpLDsGMijlbK8rMKxO
-         yk7Cn7r1OwEoZRRpxwhB2vHTRp1IV7FDYFy3LCAyMQX/z2joorwp0ruhlBSD0FuaVAgZ
-         CEKn8GbF70M92yZwwU0QFMlcLEJuJb/3E2g2gML1NP5/nyUQ0UodsGM1ylAWTPsTbO9O
-         nOhxMC5UI7PToZ5VornxkmG4dedP09Hnr2T64k1bNJ4ofg1AlHMnLfshENjP4JUR/iQy
-         Xn4g==
-X-Gm-Message-State: AOAM530A3hcuU0rzBI/sXaWH1i1G7cPhK6gFwZeaseHRD2fIjqyoS90D
-        CifBUxp/pqbRsONCc51EXYtjeA==
-X-Google-Smtp-Source: ABdhPJxxFMkDLmuTdTkfD6jluqnpwjbDQr6laF4lzbyjb+BdXXTCdkepFXCmGefjgCwNI6xghcnuqA==
-X-Received: by 2002:a63:dc03:: with SMTP id s3mr4136239pgg.88.1630600596415;
-        Thu, 02 Sep 2021 09:36:36 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id p9sm3646853pgn.36.2021.09.02.09.36.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 09:36:35 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 16:36:32 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Tao Xu <tao3.xu@intel.com>, pbonzini@redhat.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, x86@kernel.org, kvm@vger.kernel.org,
+        id S1346393AbhIBQiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:38:14 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:53667 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242481AbhIBQiN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 12:38:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630600634; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=LMyjDk/cc/kRj8f/Uf84VKM4wJB8c8yU2wNT57VCuCU=; b=fjwpJ101OP4gWmay1gFLXQV/ug7TKff/7sjwxI3TH30Yf0mAjtwpH7lJVzto63qQIzxFk0/c
+ eiZOQE44aca2r5MMRjb+DuRQaSZ/wyLp97aRSDB8e9+myahohDUqsIoFyNWuCcFLHYGGaqau
+ QzIO6IA6nfwZMAZ4TXpsmU9Qc/g=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 6130fdb76fc2cf7ad9bed234 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 02 Sep 2021 16:37:11
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E6FD2C4360D; Thu,  2 Sep 2021 16:37:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tykki (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B80AAC4338F;
+        Thu,  2 Sep 2021 16:37:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org B80AAC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Benjamin Li <benl@squareup.com>
+Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>, stable@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, wcn36xx@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
-Message-ID: <YTD9kIIzAz34Ieeu@google.com>
-References: <20210525051204.1480610-1-tao3.xu@intel.com>
- <YQRkBI9RFf6lbifZ@google.com>
- <b0c90258-3f68-57a2-664a-e20a6d251e45@intel.com>
- <YQgTPakbT+kCwMLP@google.com>
- <080602dc-f998-ec13-ddf9-42902aa477de@intel.com>
- <YTD4l7L0CKMCQwd5@google.com>
+Subject: Re: [PATCH v2] wcn36xx: handle connection loss indication
+References: <20210901180606.11686-1-benl@squareup.com>
+Date:   Thu, 02 Sep 2021 19:37:03 +0300
+In-Reply-To: <20210901180606.11686-1-benl@squareup.com> (Benjamin Li's message
+        of "Wed, 1 Sep 2021 11:06:05 -0700")
+Message-ID: <8735qn2ats.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTD4l7L0CKMCQwd5@google.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021, Sean Christopherson wrote:
-> On Tue, Aug 03, 2021, Xiaoyao Li wrote:
-> > On 8/2/2021 11:46 PM, Sean Christopherson wrote:
-> > > > > > @@ -5642,6 +5653,31 @@ static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
-> > > > > >    	return 0;
-> > > > > >    }
-> > > > > > +static int handle_notify(struct kvm_vcpu *vcpu)
-> > > > > > +{
-> > > > > > +	unsigned long exit_qual = vmx_get_exit_qual(vcpu);
-> > > > > > +
-> > > > > > +	if (!(exit_qual & NOTIFY_VM_CONTEXT_INVALID)) {
-> > > > > 
-> > > > > What does CONTEXT_INVALID mean?  The ISE doesn't provide any information whatsoever.
-> > > > 
-> > > > It means whether the VM context is corrupted and not valid in the VMCS.
-> > > 
-> > > Well that's a bit terrifying.  Under what conditions can the VM context become
-> > > corrupted?  E.g. if the context can be corrupted by an inopportune NOTIFY exit,
-> > > then KVM needs to be ultra conservative as a false positive could be fatal to a
-> > > guest.
-> > > 
-> > 
-> > Short answer is no case will set the VM_CONTEXT_INVALID bit.
-> 
-> But something must set it, otherwise it wouldn't exist.  The condition(s) under
-> which it can be set matters because it affects how KVM should respond.  E.g. if
-> the guest can trigger VM_CONTEXT_INVALID at will, then we should probably treat
-> it as a shutdown and reset the VMCS.
+Benjamin Li <benl@squareup.com> writes:
 
-Oh, and "shutdown" would be relative to the VMCS, i.e. if L2 triggers a NOTIFY
-exit with VM_CONTEXT_INVALID then KVM shouldn't kill the entire VM.  The least
-awful option would probably be to synthesize a shutdown VM-Exit to L1.  That
-won't communicate to L1 that vmcs12 state is stale/bogus, but I don't see any way
-to handle that via an existing VM-Exit reason :-/
+> Firmware sends delete_sta_context_ind when it detects the AP has gone
+> away in STA mode. Right now the handler for that indication only handles
+> AP mode; fix it to also handle STA mode.
+>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Benjamin Li <benl@squareup.com>
+> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
 
-> But if VM_CONTEXT_INVALID can occur if and only if there's a hardware/ucode
-> issue, then we can do:
-> 
-> 	if (KVM_BUG_ON(exit_qual & NOTIFY_VM_CONTEXT_INVALID, vcpu->kvm))
-> 		return -EIO;
-> 
-> Either way, to enable this by default we need some form of documentation that
-> describes what conditions lead to VM_CONTEXT_INVALID.
+How well is this tested? I'm pondering should I queue this to v5.15 or
+v5.16, at the moment I'm leaning towards v5.16.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
