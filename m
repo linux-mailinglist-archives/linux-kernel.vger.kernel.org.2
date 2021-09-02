@@ -2,159 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E9F3FF6F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48EEB3FF700
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240899AbhIBWPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 18:15:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35224 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231684AbhIBWPF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 18:15:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B607160FA0;
-        Thu,  2 Sep 2021 22:14:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630620846;
-        bh=8yv/aTWXZ1bFs2b2YTiMap+cbrcYIgcA/mWm+A2evrA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=T9FtD/CFDgBXFIXE3kP+Kgyk4oQLmT4wuuBXZLzziPYa4gvtOBOqU6b91IouZNX4V
-         SA/lTA0nmtoI8YL7HSIcwgWxnQVI+SpgQcMu7bO4XXktI98xiGcJVX2B89+pwr/Pdo
-         AgOA3O6LltUM3Jw1qyK4e3eBYbj/S1qWPjSGPDqFj8tuX1q7UIgqgCRuwojzfVfeuK
-         LZQ+Pc5cbYLk1pHjE8ySifvt73B7d9ipZXpNl3po/ScTRkeWLxpc8Xs8NMo2zyxQhi
-         udlYoM2zE/U+FsKFiVNvj9jAwRakOrgNBYw9wc+jNhemPnq2o6qK7HJQlHntMTLf4c
-         a8UWuy51EZ55g==
-Message-ID: <752079ce7233280d2ca67d725a4d552d9e4bcdc6.camel@kernel.org>
-Subject: Re: [PATCH v3 2/2] x86/sgx: Add SGX_MemTotal to /proc/meminfo
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Date:   Fri, 03 Sep 2021 01:14:03 +0300
-In-Reply-To: <20210903095616.9806a6dd4938c021aa204b33@intel.com>
-References: <20210825235234.153013-1-jarkko@kernel.org>
-         <20210825235234.153013-2-jarkko@kernel.org>
-         <20210826141959.5f13ff3c9c560c23b58443b1@intel.com>
-         <54923ac01fc303e5105cadca06b7c5cbd322d815.camel@kernel.org>
-         <20210828000335.1d40dfff0f408b2d91467491@intel.com>
-         <04b90a702328712204430db604b2a92ddfe8f990.camel@kernel.org>
-         <20210901173322.78f94b694b4be6b1225bee98@intel.com>
-         <6a9fccdb6a458960e43a63afcce87cc62184adf9.camel@kernel.org>
-         <20210901174705.3b1a943ef8c4bb09323c6d76@intel.com>
-         <41e9b099f6492c389b3ed3bbe107d61804a307e9.camel@kernel.org>
-         <20210903095616.9806a6dd4938c021aa204b33@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S1347567AbhIBWSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 18:18:47 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:60880
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236148AbhIBWSq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 18:18:46 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id E69C43F231;
+        Thu,  2 Sep 2021 22:17:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630621065;
+        bh=rkLqk2H3cfzfe0pZb/HQsYkLLWbNkb74kYaENpGnHRs=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=QxLVZAJ7jNAVxsh60jcOMAf1wJ28usLdkpHLTN2vJSNmfbkoz3bYfscZEWRXdCBjl
+         yPTawrC59vBZtsPCJSYjNXRmPmjAwNmrhtv1sQ/67J3ioW5QvgoZ7qS8VPQHX/Szdr
+         JX0eHQaGXmSoq97rdJmwbwpr4o5sHCRQF2K4u9dDaq0HbLwMpHywfjvKDCUwkk1DE0
+         aXh5B7XZdDJH+cCqAd7mcHgr926MhbmlK87LpaiFooRfCy54VbZmBEN7R0qgaWaaaB
+         i1GoBpMTbHAeRsUnoD5DhO7+wZbRLOk4QwESbo5BodLA7NR2fjYB+wmWSCyLDN/MGx
+         PEfOPxsH4jcBw==
+From:   Colin King <colin.king@canonical.com>
+To:     Steffen Klassert <klassert@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: 3com: 3c59x: clean up inconsistent indenting
+Date:   Thu,  2 Sep 2021 23:17:45 +0100
+Message-Id: <20210902221745.56194-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-03 at 09:56 +1200, Kai Huang wrote:
-> On Thu, 02 Sep 2021 15:15:51 +0300 Jarkko Sakkinen wrote:
-> > On Wed, 2021-09-01 at 17:47 +1200, Kai Huang wrote:
-> > > On Wed, 01 Sep 2021 08:41:12 +0300 Jarkko Sakkinen wrote:
-> > > > On Wed, 2021-09-01 at 17:33 +1200, Kai Huang wrote:
-> > > > > On Wed, 01 Sep 2021 05:02:45 +0300 Jarkko Sakkinen wrote:
-> > > > > > On Sat, 2021-08-28 at 00:03 +1200, Kai Huang wrote:
-> > > > > > > > > > -/* The free page list lock protected variables prepend=
- the lock. */
-> > > > > > > > > > +/* The number of usable EPC pages in the system. */
-> > > > > > > > > > +unsigned long sgx_nr_all_pages;
-> > > > > > > > > > +
-> > > > > > > > > > +/* The number of free EPC pages in all nodes. */
-> > > > > > > > > >  static unsigned long sgx_nr_free_pages;
-> > > > > > > > > > =20
-> > > > > > > > > >  /* Nodes with one or more EPC sections. */
-> > > > > > > > > > @@ -656,6 +659,8 @@ static bool __init sgx_setup_epc_se=
-ction(u64 phys_addr, u64 size,
-> > > > > > > > > >  		list_add_tail(&section->pages[i].list, &sgx_dirty_pa=
-ge_list);
-> > > > > > > > > >  	}
-> > > > > > > > > > =20
-> > > > > > > > > > +	sgx_nr_all_pages +=3D nr_pages;
-> > > > > > > > > > +
-> > > > > > > > >=20
-> > > > > > > > > EPC sections can be freed again in sgx_init() after they =
-are successfully
-> > > > > > > > > initialized, when any further initialization fails (i.e. =
-when fails to create
-> > > > > > > > > ksgxd, or fails to register /dev/sgx_provision).  In whic=
-h case, I think
-> > > > > > > > > sgx_nr_all_pages should also be cleared.  But current sgx=
-_init() seems doesn't
-> > > > > > > > > reset it.  Do you need to fix that too?
-> > > > > > > >=20
-> > > > > > > > sgx_nr_all_pages tells just the total pages in the system, =
-i.e. it's a constant.
-> > > > > > > >=20
-> > > > > > > > Maybe a rename to "sgx_nr_total_pages" would be a good idea=
-? Would match with
-> > > > > > > > the meminfo field better too.
-> > > > > > >=20
-> > > > > > > I don't have preference on name.  I just think if there's no =
-actual user of
-> > > > > > > EPC (when both driver and KVM SGX cannot be enabled), it's po=
-intless to print
-> > > > > > > number of EPC pages.
-> > > > > >=20
-> > > > > > I'd presume that you refer to the code, which prints the number=
- of *bytes* in
-> > > > > > the system because code printing the number of pages does not e=
-xist in this
-> > > > > > patch set.
-> > > > > >=20
-> > > > > > I have troubles the decipher your statement.
-> > > > > >=20
-> > > > > > You think that only if both the driver and KVM are *both* enabl=
-ed, only then
-> > > > > > it makes sense to have this information available for sysadmin?
-> > > > >=20
-> > > > > Only if at least one of them is enabled.
-> > > >=20
-> > > > OK, thank you, that does make sense.
-> > > >=20
-> > > > What would happen if neither is enabled is that SGX_MemTotal would
-> > > > state that there is zero bytes of EPC.=20
-> > >=20
-> > > This is the problem I pointed out at the beginning, that (if I read c=
-ode
-> > > correctly), it seems your current patch doesn't clear sgx_nr_all_page=
-s when
-> > > neither is enabled (in sgx_init() in sgx/main.c).
-> >=20
-> > It's initialized to zero, so are you talking about fallback when someth=
-ing
-> > fails?
-> >=20
-> > /Jarkko
->=20
-> Yes, shouldn't you have something similar to below?
->=20
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
-n.c
-> index 63d3de02bbcc..270f6103b6c0 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -836,6 +836,7 @@ static int __init sgx_init(void)
->                 vfree(sgx_epc_sections[i].pages);
->                 memunmap(sgx_epc_sections[i].virt_addr);
->         }
-> +       sgx_nr_all_pages =3D 0;
-> =20
->         return ret;
->  }
+From: Colin Ian King <colin.king@canonical.com>
 
-Yeah, something along the lines. Thanks, this was really good
-remark. The fallback path is clearly broken.
+There is a statement that is not indented correctly, add in the
+missing tab.
 
-/Jarkko
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/3com/3c59x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/3com/3c59x.c b/drivers/net/ethernet/3com/3c59x.c
+index 17c16333a412..7b0ae9efc004 100644
+--- a/drivers/net/ethernet/3com/3c59x.c
++++ b/drivers/net/ethernet/3com/3c59x.c
+@@ -2786,7 +2786,7 @@ static void
+ dump_tx_ring(struct net_device *dev)
+ {
+ 	if (vortex_debug > 0) {
+-	struct vortex_private *vp = netdev_priv(dev);
++		struct vortex_private *vp = netdev_priv(dev);
+ 		void __iomem *ioaddr = vp->ioaddr;
+ 
+ 		if (vp->full_bus_master_tx) {
+-- 
+2.32.0
 
