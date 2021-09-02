@@ -2,60 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4EDC3FF49D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D053FF4A0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345082AbhIBUIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:08:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44984 "EHLO mail.kernel.org"
+        id S1345222AbhIBUIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 16:08:55 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:54068 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233953AbhIBUIR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 16:08:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0C4D61054;
-        Thu,  2 Sep 2021 20:07:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1630613238;
-        bh=tYscjmV/SE2cy2KDjyzy3g/X52Wea0qDq3fqBKNWuNQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fTN3VPWRc735zfdP8tmfBQ+IoD2+ouXDmfcS1GpRnSsLD6sPWlFA7fwRC9opsgP/l
-         MGJ7XqoniolqgL3JDviY0gMQ43Kb10rOnrLYEhQIyXrHjdXp40ga0iq1g+ZWsXXuqj
-         nuRUi37nOOmbbazpdZTPAbVuFHZmHRrGeIDEv+Z0=
-Date:   Thu, 2 Sep 2021 13:07:18 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>, Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] mm/vmstat: Protect per cpu variables with preempt
- disable on RT
-Message-Id: <20210902130718.2a3f03fc6cf87d190d7c9e34@linux-foundation.org>
-In-Reply-To: <20210831164546.t7b6ksblzhsmm6jr@linutronix.de>
-References: <20210805160019.1137-1-mgorman@techsingularity.net>
-        <20210805160019.1137-2-mgorman@techsingularity.net>
-        <20210831164546.t7b6ksblzhsmm6jr@linutronix.de>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231983AbhIBUIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 16:08:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=Gt3zeHnWw3U8+QneEn3jIF6T3ece/2vIGoTVWj+Z/e4=; b=detHc482lludQ9s41A/nqX3VNt
+        zu61vALLwts07jdQEu+29nehJFjAxlY6p5QubVguBLFc0zWASHzQAMvW3+CacL599NBR2cLDyzSfw
+        SGFTo4uzg6k2HuRynKf0zt5J7qI5ivqFxe2wBQ+J7dv86dB4Rq6aISKc4qScFDY7dD3U=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mLt01-0052vS-9S; Thu, 02 Sep 2021 22:07:49 +0200
+Date:   Thu, 2 Sep 2021 22:07:49 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [RFC PATCH net-next 0/3] Make the PHY library stop being so
+ greedy when binding the generic PHY driver
+Message-ID: <YTEvFR2WGQmG3h/C@lunn.ch>
+References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
+ <20210902121927.GE22278@shell.armlinux.org.uk>
+ <20210902123532.ruvuecxoig67yv5v@skbuf>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902123532.ruvuecxoig67yv5v@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Aug 2021 18:45:46 +0200 Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
+> The interrupt controller _has_ been set up. The trouble is that the
+> interrupt controller has the same OF node as the switch itself, and the
+> same OF node. Therefore, fw_devlink waits for the _entire_ switch to
+> finish probing, it doesn't have insight into the fact that the
+> dependency is just on the interrupt controller.
 
-> On 2021-08-05 17:00:19 [+0100], Mel Gorman wrote:
-> >  mm/vmstat.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 48 insertions(+)
-> 
-> The version in RT also covered the functions
->   __count_vm_event()
->   __count_vm_events()
-> 
-> in include/linux/vmstat.h. Were they dropped by mistake or on purpose? 
-> 
+That seems to be the problem. fw_devlink appears to think probe is an
+atomic operation. A device is not probed, or full probed. Where as the
+drivers are making use of it being non atomic.
 
-?
+Maybe fw_devlink needs the third state, probing. And when deciding if
+a device can be probed and depends on a device which is currently
+probing, it looks deeper, follows the phandle and see if the resource
+is actually available?
+
+	 Andrew
+
