@@ -2,75 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD53A3FF0AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 543DA3FF0B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346045AbhIBQBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:01:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
+        id S234426AbhIBQG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:06:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345984AbhIBQBl (ORCPT
+        with ESMTP id S229665AbhIBQGX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:01:41 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C7AC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:00:43 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id v1so1478762plo.10
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:00:43 -0700 (PDT)
+        Thu, 2 Sep 2021 12:06:23 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE310C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:05:24 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id h1so4498329ljl.9
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:05:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=7bksqvlJuwZZLTVUa7ZM8nLi12BV8MFhzZg9kE/y8oc=;
-        b=cegq78Ia0zomEPN7lo5RD/uizEjOa0e45fbRFyc0TN1pcIGRMZubuiEBuXfANDL/pq
-         YTSr1o4cJJOVPY12nKNWOrqj8cAYj56luDYdeoaTrDHMUUucyzyryRUbYFNl/khAOXqa
-         zYKulAEqCLl3Rf692/vCb/Frp92/gVSTYnam2c0234GMFpCuEUD3EqzjKqUka5pDexvs
-         vCpfoTvSGrLASUelQObVpV1NXWJgGe2TE067SvLHgLXwO0GGJC1BWVK+39SgfGLPgBVd
-         +vrYE1i98yt7/FhiqsJlud/PR0W4VlI8infK/kg8DUiJLwjx8WNpK5iojFSnRDBRHeEa
-         uqlQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F57f7dVpJfotG0ZNhC9Jf0r1S23wHXlht59pY76lP5Q=;
+        b=dn11zXMq7ooJ/wfmhg8E+OLuNJ5QEsMU7P/mm3M/yU8U6EmtmkLHvwPSHOyZJBA/tq
+         lzIg5qITAnC5ZlDTbPdqkUYQuPljtkB27eKVU7OqT/rTtxnTf46Q1mq0ts0hPKpZ9TW+
+         mlG98gvUPhvCnaKD3f02Jt+wVXhVi3Xzt8kek=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=7bksqvlJuwZZLTVUa7ZM8nLi12BV8MFhzZg9kE/y8oc=;
-        b=sEuISRgrTdsruwBd/EhIaEJiO1ixRcg3epRa1+4yIHmTEF2DwMXwZSW7GHJA4bAEKQ
-         xFRH6zy08xbj9Z/ku8/iv7VzBnVsTNeWT/e+1j3Q9vb2zuPwChhxVGLYf1HjRwx5eFZF
-         G+FQuJtbJencCKQ+EkKJI7YbghuzSUxyQSUHdepXulz8GGhnrsTJZPcO11TPA0VRZ+9l
-         rWyaiePyCdsXqyNVAKxHa1NuFIX7evQof5khK49RZ2evm8t4lcJVMadCBD3GnKSX6VpB
-         sfFIXzG4P5UO5L0/odtaVJJN0KoTuHReTlu1lZUjMPRPbakSsjyb9aB9pi2F3ilMiKCj
-         B7KQ==
-X-Gm-Message-State: AOAM533b6NB0ZrJg+wPKo0Y6H6lZa6+kmOIetGv41hRl7V/tfEGzeruK
-        Xn88Z1j3LPUw+auE0ryZP9kzD4gJQj2tmRDicJ0=
-X-Google-Smtp-Source: ABdhPJzNinvRCSIEGGwdv8S8QbYuOM2fLZxJnZuGeV90lFZu9XcNRnXFv+gDwZv5ASuGDhqXka3VnBMvtRqrY7JvkmM=
-X-Received: by 2002:a17:90a:191a:: with SMTP id 26mr4572194pjg.79.1630598442205;
- Thu, 02 Sep 2021 09:00:42 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F57f7dVpJfotG0ZNhC9Jf0r1S23wHXlht59pY76lP5Q=;
+        b=jfw6wvQjNW3KhwPjoRiSpf2g1EZGrj3UfB7ntYtPFGN/odG2KDeJPWRtesxpBjJ+uS
+         8ZPMr4CE5zolyzbk9THXc6QxNLuu7QpPl4tA6EowdO+nnouBmd+wETu9qunzydN67fHD
+         m+wkz1ibkLtwsc7IYN2JRaVcHwUQB9+8TbncmGlZlJ+lNP6eRb31my4wU+KVfkTrAKfi
+         dbFUEqQD1OmzRqurjKMzbBvUKxIRbI1KdgXIIKlitfh087Vr2HRuRPZfXE/HX79S2rpn
+         Kz0q+LKRvyBsgwKtFRuKacdEbuWfCD4GWUQsxaUtRI0cb/bWMK+Kw8osnMHvEqPEJneQ
+         V5bQ==
+X-Gm-Message-State: AOAM532r4Y8fz9mFC2EcD1fNXawMbc+jFPDUaXPXj5DxTkzYAal5WG7N
+        EBZl5zLoPpcmQfgYV0OtKRgNiQkWRKOOzC1e
+X-Google-Smtp-Source: ABdhPJyKyBFFVD5Rf46M8CcfGe8BeIpAioZf5k6MqfGxJ2q/PjoK+PCQumsV9rCxFIpNwKkALBv12w==
+X-Received: by 2002:a2e:9805:: with SMTP id a5mr3213554ljj.155.1630598722182;
+        Thu, 02 Sep 2021 09:05:22 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id i21sm238156lfc.92.2021.09.02.09.05.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 09:05:21 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id s10so5371006lfr.11
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:05:21 -0700 (PDT)
+X-Received: by 2002:a05:6512:230b:: with SMTP id o11mr2990046lfu.377.1630598720898;
+ Thu, 02 Sep 2021 09:05:20 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6a10:1acd:0:0:0:0 with HTTP; Thu, 2 Sep 2021 09:00:41
- -0700 (PDT)
-Reply-To: phillipknight903@gmail.com
-From:   Phillip Knight <doodonvivi@gmail.com>
-Date:   Thu, 2 Sep 2021 09:00:41 -0700
-Message-ID: <CAE0mfsdmxZrBfd33bDB2gvpmSbTmWjjqdbxJuLa_F+8Ckk7oOg@mail.gmail.com>
-Subject: =?UTF-8?B?TmfGsOG7nWkgY2hp4bq/biB0aOG6r25nIHRow6JuIG3hur9uLA==?=
-To:     undisclosed-recipients:;
+References: <fd7938d94008711d441551c06b25a033669a0618.1629732940.git.christophe.leroy@csgroup.eu>
+ <a94be61f008ab29c231b805e1a97e9dab35cb0cc.1629732940.git.christophe.leroy@csgroup.eu>
+ <YTB1F7o15FrxmmP1@infradead.org>
+In-Reply-To: <YTB1F7o15FrxmmP1@infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 2 Sep 2021 09:05:05 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjUN=Eu_FqY8sSU3yT+NUD+khQwhaD8FvfvgbhDYE-mqw@mail.gmail.com>
+Message-ID: <CAHk-=wjUN=Eu_FqY8sSU3yT+NUD+khQwhaD8FvfvgbhDYE-mqw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] signal: Add unsafe_copy_siginfo_to_user()
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LS0gDQpOZ8aw4budaSBjaGnhur9uIHRo4bqvbmcgdGjDom4gbeG6v24sIHTDtGkgdmnhur90IHRo
-xrAgbsOgeSDEkeG7gyB0aMO0bmcgYsOhbyBjaG8gYuG6oW4gYmnhur90DQp24buBIGNoaeG6v24g
-dGjhuq9uZyBn4bqnbiDEkcOieSBj4bunYSBi4bqhbiBi4bqxbmcgY8OhY2gNClTDoGkga2hv4bqj
-biBlbWFpbC4gQ2jDum5nIHTDtGkg4bufIMSRw6J5IMSR4buDIHRow7RuZyBiw6FvIGNobyBi4bqh
-biBy4bqxbmcgbmfGsOG7nWkgY2hp4bq/bg0KdGjhuq9uZyBUw6BpIGtob+G6o24gRW1haWwgY+G7
-p2EgYuG6oW4NCsSRw6MgxJHGsOG7o2MgY2jhu41uIGzDoCBuZ8aw4budaSBjaGnhur9uIHRo4bqv
-bmcgbsSDbSBuYXkgKE1vbG90dGVyeSAyMDIxKS4gQ8OhaSBuw6B5DQpuxINtIGLhuqFuIGtp4bq/
-bSDEkcaw4bujYyAxLDggdHJp4buHdSDEkcO0IGxhIHbhu5tpIHTGsCBjw6FjaCBsw6AgbeG7mXQg
-dHJvbmcgbmjhu69uZyBuZ8aw4budaQ0KY2hp4bq/biB0aOG6r25nIMSRxrDhu6NjIGNo4buNbg0K
-KFRo4bujIHPhu61hIHLEg25nIG7Eg20gMjAyMSkNCkxpw6puIGjhu4cgduG7m2kgTXIuIFBoaWxs
-aXAgS25pZ2h0LCB04bqhaSDEkeG7i2EgY2jhu4kgZW1haWwgbsOgeQ0KKHBoaWxsaXBrbmlnaHQ5
-MDNAZ21haWwuY29tKQ0KY2hvIHZp4buHYyB4w6FjIG5o4bqtbiBnaeG6o2kgdGjGsOG7n25nIGNo
-aeG6v24gdGjhuq9uZyBj4bunYSBi4bqhbi4NCsOUbmcuIFBoaWxsaXAgc+G6vSBjaG8gYuG6oW4g
-Ymnhur90IGzDoG0gdGjhur8gbsOgbyDEkeG7gyBjw7MgxJHGsOG7o2MgcXXhu7kgY2hp4bq/biB0
-aOG6r25nIGPhu6dhIGLhuqFuLg0KTeG7mXQgbOG6p24gbuG7r2EgeGluIGNow7pjIG3hu6tuZw0K
+On Wed, Sep 1, 2021 at 11:55 PM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> I'm a little worried about all these unsafe helper in powerpc and the
+> ever increasing scope of the unsafe sections.  Can you at least at
+> powerpc support to objtool to verify them?  objtool verifications has
+> helped to find quite a few bugs in unsafe sections on x86.
+
+.. yeah, objdump was particularly useful for the really subtle ones
+where there are random function calls due to things like KASAN etc.
+
+No human would ever have noticed "oh, we're walking the kernel stack
+with user mode accesses enabled because the compiler inserted magical
+debug code here". Objdump sees those things - assuming you teach it
+about that special user space access enable/disable sequence.
+
+            Linus
