@@ -2,96 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD3FC3FEA1F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C79DF3FEA23
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243180AbhIBHnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 03:43:24 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:9394 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233360AbhIBHnX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 03:43:23 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H0XpS0G41z8xfg;
-        Thu,  2 Sep 2021 15:38:08 +0800 (CST)
-Received: from dggpeml500018.china.huawei.com (7.185.36.186) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 2 Sep 2021 15:42:15 +0800
-Received: from [10.67.101.251] (10.67.101.251) by
- dggpeml500018.china.huawei.com (7.185.36.186) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 2 Sep 2021 15:42:15 +0800
-Subject: Re: [PATCH] kernel/sched: Fix sched_fork() access an invalid
- sched_task_group
-To:     Tejun Heo <tj@kernel.org>
-CC:     <peterz@infradead.org>, <juri.lelli@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <mingo@redhat.com>,
-        <vincent.guittot@linaro.org>
-References: <20210826112635.7404-1-zhangqiao22@huawei.com>
- <YSztujInfNNXkG5/@hirez.programming.kicks-ass.net>
- <YS0WF0sxr0ysb6Za@mtj.duckdns.org>
- <1f0cd867-9c6d-4e22-cadd-06af9f852f7a@huawei.com>
- <YS60T2bfLpxb6SUY@slm.duckdns.org>
- <128d52ab-b4ee-65f8-e0a3-2796ef43a98b@huawei.com>
- <YS+uEmQRmQqAbkmG@slm.duckdns.org>
-From:   Zhang Qiao <zhangqiao22@huawei.com>
-Message-ID: <3df62791-d123-db9b-ec9c-092c47a941cc@huawei.com>
-Date:   Thu, 2 Sep 2021 15:42:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S243458AbhIBHoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 03:44:13 -0400
+Received: from verein.lst.de ([213.95.11.211]:50306 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243361AbhIBHoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 03:44:09 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 51A986736F; Thu,  2 Sep 2021 09:43:08 +0200 (CEST)
+Date:   Thu, 2 Sep 2021 09:43:08 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     djwong@kernel.org, hch@lst.de, linux-xfs@vger.kernel.org,
+        dan.j.williams@intel.com, david@fromorbit.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nvdimm@lists.linux.dev, rgoldwyn@suse.de, viro@zeniv.linux.org.uk,
+        willy@infradead.org
+Subject: Re: [PATCH v8 6/7] xfs: support CoW in fsdax mode
+Message-ID: <20210902074308.GE13867@lst.de>
+References: <20210829122517.1648171-1-ruansy.fnst@fujitsu.com> <20210829122517.1648171-7-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-In-Reply-To: <YS+uEmQRmQqAbkmG@slm.duckdns.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.101.251]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500018.china.huawei.com (7.185.36.186)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210829122517.1648171-7-ruansy.fnst@fujitsu.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 29, 2021 at 08:25:16PM +0800, Shiyang Ruan wrote:
+> In fsdax mode, WRITE and ZERO on a shared extent need CoW performed.
+> After that, new allocated extents needs to be remapped to the file.  Add
+> an implementation of ->iomap_end() for dax write ops to do the remapping
+> work.
 
+Please split the new dax infrastructure from the XFS changes.
 
-在 2021/9/2 0:45, Tejun Heo 写道:
-> Hello,
-> 
-> On Wed, Sep 01, 2021 at 03:43:00PM +0800, Zhang Qiao wrote:
->> 在 2021/9/1 6:59, Tejun Heo 写道:
->>> On Tue, Aug 31, 2021 at 03:58:42PM +0800, Zhang Qiao wrote:
->>>>> I think this would allow cgroup migrations to take place before
->>>>> sched_post_fork() is run, which likely will break stuff. The right
->>
->> cgroup migrations? Do you mean child process set its cgroups at
->> cgroup_subsys->fork()?
-> 
-> As soon as cgroup_post_fork() is complete, userspace can try moving the
-> process to a different cgroup which can get confusing for sched_post_fork.
+>  static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
+> -			       int *iomap_errp, const struct iomap_ops *ops)
+> +		int *iomap_errp, const struct iomap_ops *ops)
+>  {
+>  	struct address_space *mapping = vmf->vma->vm_file->f_mapping;
+>  	XA_STATE(xas, &mapping->i_pages, vmf->pgoff);
+> @@ -1631,7 +1664,7 @@ static bool dax_fault_check_fallback(struct vm_fault *vmf, struct xa_state *xas,
+>  }
+>  
+>  static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
+> -			       const struct iomap_ops *ops)
+> +		const struct iomap_ops *ops)
 
-hello,tejun
+These looks like unrelated whitespace changes.
 
-I checked the code again.
-I don't quite understand what you said, if the child be moved between
-cgroup_post_fork() and sched_post_sched(), what problems might it cause?
-Does the child process will use the old sched_task_group at sched_post_fork()-->__set_task_cpu()?
-Or there are other problems, Can you talk in more detail?
+> -static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+> +loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+>  {
+>  	const struct iomap *iomap = &iter->iomap;
+>  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
+> @@ -918,6 +918,7 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+>  
+>  	return written;
+>  }
+> +EXPORT_SYMBOL_GPL(iomap_zero_iter);
 
-thanks!
+I don't see why this would have to be exported.
 
----
-Qiao Zhang
-> 
->>> Between cgroup_can_fork() and cgroup_post_fork(), the cgroup membership and
->>> thus sched_task_group can't change, so if the child sets it to the parent's
->>> inbetween, the sched_task_group can't go away.
->>
->> so the child just need to update its sched_task_group after cgroup_can_fork(),
->> then call sched_fork(), is it right?
-> 
-> Yeah, the bug here is that a field which is dependent on cgroup membership
-> is being read before the cgroup membership is fixated.
-> 
-> Thanks.
-> 
+> +	unsigned 		flags,
+> +	struct iomap 		*iomap)
+> +{
+> +	int			error = 0;
+> +	struct xfs_inode	*ip = XFS_I(inode);
+> +	bool			cow = xfs_is_cow_inode(ip);
+
+The cow variable is only used once, so I think we can drop it.
+
+> +	const struct iomap_iter *iter =
+> +				container_of(iomap, typeof(*iter), iomap);
+
+Please comment this as it is a little unusual.
+
+> +
+> +	if (cow) {
+> +		if (iter->processed <= 0)
+> +			xfs_reflink_cancel_cow_range(ip, pos, length, true);
+> +		else
+> +			error = xfs_reflink_end_cow(ip, pos, iter->processed);
+> +	}
+> +	return error ?: iter->processed;
+
+The ->iomap_end convention is to return 0 or a negative error code.
+Also i'd much prefer to just spell this out in a normal sequential way:
+
+	if (!xfs_is_cow_inode(ip))
+		return 0;
+
+	if (iter->processed <= 0) {
+		xfs_reflink_cancel_cow_range(ip, pos, length, true);
+		return 0;
+	}
+
+	return xfs_reflink_end_cow(ip, pos, iter->processed);
+
+> +static inline int
+> +xfs_iomap_zero_range(
+> +	struct xfs_inode	*ip,
+> +	loff_t			pos,
+> +	loff_t			len,
+> +	bool			*did_zero)
+> +{
+> +	struct inode		*inode = VFS_I(ip);
+> +
+> +	return IS_DAX(inode)
+> +			? dax_iomap_zero_range(inode, pos, len, did_zero,
+> +					       &xfs_dax_write_iomap_ops)
+> +			: iomap_zero_range(inode, pos, len, did_zero,
+> +					       &xfs_buffered_write_iomap_ops);
+> +}
+
+	if (IS_DAX(inode))
+		return dax_iomap_zero_range(inode, pos, len, did_zero,
+					    &xfs_dax_write_iomap_ops);
+	return iomap_zero_range(inode, pos, len, did_zero,
+				&xfs_buffered_write_iomap_ops);
+
+> +static inline int
+> +xfs_iomap_truncate_page(
+> +	struct xfs_inode	*ip,
+> +	loff_t			pos,
+> +	bool			*did_zero)
+> +{
+> +	struct inode		*inode = VFS_I(ip);
+> +
+> +	return IS_DAX(inode)
+> +			? dax_iomap_truncate_page(inode, pos, did_zero,
+> +					       &xfs_dax_write_iomap_ops)
+> +			: iomap_truncate_page(inode, pos, did_zero,
+> +					       &xfs_buffered_write_iomap_ops);
+> +}
+
+Same here.
