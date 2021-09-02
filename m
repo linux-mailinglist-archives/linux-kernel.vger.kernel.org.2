@@ -2,206 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D19B3FF188
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5363FF18C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346354AbhIBQgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49802 "EHLO
+        id S1346375AbhIBQhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:37:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346275AbhIBQgq (ORCPT
+        with ESMTP id S231400AbhIBQhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:36:46 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED243C0613C1
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:35:47 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id lc21so5782991ejc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:35:47 -0700 (PDT)
+        Thu, 2 Sep 2021 12:37:35 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 113BAC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:36:37 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id w8so2549572pgf.5
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:36:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZMTYvWDVLVaZmkl9P+pxPt5exqXKOmySVprAY9JOzrA=;
-        b=FRhLhl3bw24GlLtojoeGcWo42vivIwtkcFGpaE9Fx6fMXEpMzLbCJEgJ3iJnMIA/bC
-         Le73au67auR0Qb1LRBtdjDCTZmJ+rwUTqifxiK5D7s4ZhsacBa/B+LgyJgFjHO8qJEyp
-         +aa4TeQOiqSwGCq1nss7M2Q/8rQDVR39pxSIJ2s+Jas7J7Z4IvWxDelX8nol3yIAHu5P
-         k9xI1kVq2/CkEFl707st6AgRL61wM0ePxibt/2WHP1A4JdbSeKYWfHjCPcJCU8b6nLRY
-         Dp66vxWEcA+n9QPsCjF3cQLlUosoMyVb8brFtyUwXM1Wh5Xv4apkv/N2Ne2+66BuP5F9
-         FpTA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WoqzlkSq/fGvPkW8YSM9+7jUzqSLn8LthZIO2IYZaaI=;
+        b=EEt3jt+S/Vci4zOc2xXUi/q+4p+B26VNW1UEEVqkibBi6mK2FwOUk1MdFlVSEMLOrJ
+         d/Y1GQP1SHYBP3qaD29j6I/xwZ4Qk6GCSKQojlmJgH3IxGgE3RmB94Mq3pKkaiDkshak
+         M3wC0yRrjXekqCh34ATBmVCBiyibb4kkXb9l9mojlO6gZxz2/gW/J9VLrdiR8JNp22Mi
+         mlBrnft4AALtSAiy7BVK00Yxgom9yCxS/J/MXfpPmtlBmp5RC42QjjAEjsYWmM5Hapea
+         V070XUV1Hs3cEmbIeKHAHZY/z5MQcknVUpkcFz6y4FchLBtfjAGHkgRGrCo+n6SdxsTn
+         Y3KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZMTYvWDVLVaZmkl9P+pxPt5exqXKOmySVprAY9JOzrA=;
-        b=Nd93cwkLUwKgvQG/bkKa7PBylUaWsSVKkqRe7tlmspcbgKgyvl5Te0dwPsfs+LzqRV
-         jhyDXJhdkVk/wWvV5DccwBhViBJsUdtXkHuwqPVYkYT/WuTv0dmuxsxMVJ+S5fzk6zJ7
-         P4dk4VvN2CNXJyY45IyuDFht+rno4IzNsRB6h7IJRf/3Cl8Ga+3zkTlUNpaKhPV1nH8L
-         r5a1SSkHCIUaVX16P+ejho6AT7IfxOIx6QI4Nzdx617zKRpp4bg/K57sQgdToj90mQhc
-         LQN5vYm+JT4DGtT8jkviFZs0FUBMmDsVLcTDIfifj0um4vY4amJaQxz8kKmJXSG2ONL2
-         fUyA==
-X-Gm-Message-State: AOAM530hqclTIpSTF9fniGczO9SboaU/s5u1ELAYVwcvYVagJedzd5KM
-        D+u8jaeM5HztwrjJubVioJloa8OZGhrrwifHWo3T/Q==
-X-Google-Smtp-Source: ABdhPJxE0mffasb9PypQPGlvLgEtkeqtiLZEcquaeHPA0FZ3RKd/DhyZMjC/W6J+eVq2ZFFln+Y+/BKV5aOOnsoqE0s=
-X-Received: by 2002:a17:906:802:: with SMTP id e2mr4669869ejd.133.1630600546396;
- Thu, 02 Sep 2021 09:35:46 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WoqzlkSq/fGvPkW8YSM9+7jUzqSLn8LthZIO2IYZaaI=;
+        b=jlou8g2hjWRLO+x9Dd6fiKAOwQLXUrpGUsOlAjNA/4m+FPvNO/IMxn/aiEjhlQuR7Q
+         1rjOYVelDfLpmD9F1bladWfD8lQznfuoAblWy8LL4xqfRI4zEBTpLDsGMijlbK8rMKxO
+         yk7Cn7r1OwEoZRRpxwhB2vHTRp1IV7FDYFy3LCAyMQX/z2joorwp0ruhlBSD0FuaVAgZ
+         CEKn8GbF70M92yZwwU0QFMlcLEJuJb/3E2g2gML1NP5/nyUQ0UodsGM1ylAWTPsTbO9O
+         nOhxMC5UI7PToZ5VornxkmG4dedP09Hnr2T64k1bNJ4ofg1AlHMnLfshENjP4JUR/iQy
+         Xn4g==
+X-Gm-Message-State: AOAM530A3hcuU0rzBI/sXaWH1i1G7cPhK6gFwZeaseHRD2fIjqyoS90D
+        CifBUxp/pqbRsONCc51EXYtjeA==
+X-Google-Smtp-Source: ABdhPJxxFMkDLmuTdTkfD6jluqnpwjbDQr6laF4lzbyjb+BdXXTCdkepFXCmGefjgCwNI6xghcnuqA==
+X-Received: by 2002:a63:dc03:: with SMTP id s3mr4136239pgg.88.1630600596415;
+        Thu, 02 Sep 2021 09:36:36 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id p9sm3646853pgn.36.2021.09.02.09.36.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 09:36:35 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 16:36:32 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     Tao Xu <tao3.xu@intel.com>, pbonzini@redhat.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
+Message-ID: <YTD9kIIzAz34Ieeu@google.com>
+References: <20210525051204.1480610-1-tao3.xu@intel.com>
+ <YQRkBI9RFf6lbifZ@google.com>
+ <b0c90258-3f68-57a2-664a-e20a6d251e45@intel.com>
+ <YQgTPakbT+kCwMLP@google.com>
+ <080602dc-f998-ec13-ddf9-42902aa477de@intel.com>
+ <YTD4l7L0CKMCQwd5@google.com>
 MIME-Version: 1.0
-References: <20210901122248.051808371@linuxfoundation.org>
-In-Reply-To: <20210901122248.051808371@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 2 Sep 2021 22:05:34 +0530
-Message-ID: <CA+G9fYtuf0STPADH+Mv11arDJNYYH789i6pdRPcbrOCUZdNg7A@mail.gmail.com>
-Subject: Re: [PATCH 4.4 00/10] 4.4.283-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTD4l7L0CKMCQwd5@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Sept 2021 at 17:57, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.4.283 release.
-> There are 10 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.4.283-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+On Thu, Sep 02, 2021, Sean Christopherson wrote:
+> On Tue, Aug 03, 2021, Xiaoyao Li wrote:
+> > On 8/2/2021 11:46 PM, Sean Christopherson wrote:
+> > > > > > @@ -5642,6 +5653,31 @@ static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
+> > > > > >    	return 0;
+> > > > > >    }
+> > > > > > +static int handle_notify(struct kvm_vcpu *vcpu)
+> > > > > > +{
+> > > > > > +	unsigned long exit_qual = vmx_get_exit_qual(vcpu);
+> > > > > > +
+> > > > > > +	if (!(exit_qual & NOTIFY_VM_CONTEXT_INVALID)) {
+> > > > > 
+> > > > > What does CONTEXT_INVALID mean?  The ISE doesn't provide any information whatsoever.
+> > > > 
+> > > > It means whether the VM context is corrupted and not valid in the VMCS.
+> > > 
+> > > Well that's a bit terrifying.  Under what conditions can the VM context become
+> > > corrupted?  E.g. if the context can be corrupted by an inopportune NOTIFY exit,
+> > > then KVM needs to be ultra conservative as a false positive could be fatal to a
+> > > guest.
+> > > 
+> > 
+> > Short answer is no case will set the VM_CONTEXT_INVALID bit.
+> 
+> But something must set it, otherwise it wouldn't exist.  The condition(s) under
+> which it can be set matters because it affects how KVM should respond.  E.g. if
+> the guest can trigger VM_CONTEXT_INVALID at will, then we should probably treat
+> it as a shutdown and reset the VMCS.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Oh, and "shutdown" would be relative to the VMCS, i.e. if L2 triggers a NOTIFY
+exit with VM_CONTEXT_INVALID then KVM shouldn't kill the entire VM.  The least
+awful option would probably be to synthesize a shutdown VM-Exit to L1.  That
+won't communicate to L1 that vmcs12 state is stale/bogus, but I don't see any way
+to handle that via an existing VM-Exit reason :-/
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.4.283-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.4.y
-* git commit: d0f43d936dd1700f7b90bcf6ee0b333159a0feb3
-* git describe: v4.4.282-11-gd0f43d936dd1
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.y/build/v4.4.2=
-82-11-gd0f43d936dd1
-
-## No regressions (compared to v4.4.282-6-gdeced08a3ab0)
-
-## No fixes (compared to v4.4.282-6-gdeced08a3ab0)
-
-## Test result summary
-total: 53253, pass: 42320, fail: 257, skip: 9391, xfail: 1285
-
-## Build Summary
-* arm: 97 total, 97 passed, 0 failed
-* arm64: 30 total, 30 passed, 0 failed
-* i386: 14 total, 14 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 14 total, 14 passed, 0 failed
-
-## Test suites summary
-* fwts
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> But if VM_CONTEXT_INVALID can occur if and only if there's a hardware/ucode
+> issue, then we can do:
+> 
+> 	if (KVM_BUG_ON(exit_qual & NOTIFY_VM_CONTEXT_INVALID, vcpu->kvm))
+> 		return -EIO;
+> 
+> Either way, to enable this by default we need some form of documentation that
+> describes what conditions lead to VM_CONTEXT_INVALID.
