@@ -2,149 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3209E3FEAA7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985F63FEAB0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244443AbhIBIdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 04:33:11 -0400
-Received: from relay.sw.ru ([185.231.240.75]:49666 "EHLO relay.sw.ru"
+        id S233546AbhIBIgF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 04:36:05 -0400
+Received: from mga05.intel.com ([192.55.52.43]:35783 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243772AbhIBIdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 04:33:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=62yNtXAVsWniAwR6yGNwwYjxs676XySY+v+xUYXen5A=; b=EBbScHoXb2TSzfvaV
-        1pU3ncTE20uBKmts+wDKmKqfsoyjQ3NuRqHou4ZROvnVw2q8sNykJK+13p6st9GCSv8zr4GE8yWEO
-        bejNqnb4uFsNk4ObHk+++NnJKB4HnlDedD2BZn9QPJFaTrFBqYJEdI8Q+7MPaCXJusCJ5pOzvKkvU
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mLi8e-000YeG-G6; Thu, 02 Sep 2021 11:32:00 +0300
-Subject: Re: [PATCH net-next v4] skb_expand_head() adjust skb->truesize
- incorrectly
-From:   Vasily Averin <vvs@virtuozzo.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Christoph Paasch <christoph.paasch@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@openvz.org, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Julian Wiedmann <jwi@linux.ibm.com>
-References: <b653692b-1550-e17a-6c51-894832c56065@virtuozzo.com>
- <ee5b763a-c39d-80fd-3dd4-bca159b5f5ac@virtuozzo.com>
- <ce783b33-c81f-4760-1f9e-90b7d8c51fd7@gmail.com>
- <b7c2cb05-7307-f04e-530e-89fc466aa83f@virtuozzo.com>
- <ef7ccff8-700b-79c2-9a82-199b9ed3d95b@gmail.com>
- <67740366-7f1b-c953-dfe1-d2085297bdf3@gmail.com>
- <8a183782-f4b9-e12a-55d1-c4a3c4078369@virtuozzo.com>
- <2984f16b-7f20-e72d-1661-b942fdc4ff9b@virtuozzo.com>
-Message-ID: <27f87dd8-f6e4-b2b0-2b3a-9378fddf147f@virtuozzo.com>
-Date:   Thu, 2 Sep 2021 11:31:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S244387AbhIBIgD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 04:36:03 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="304596704"
+X-IronPort-AV: E=Sophos;i="5.84,371,1620716400"; 
+   d="scan'208";a="304596704"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 01:35:05 -0700
+X-IronPort-AV: E=Sophos;i="5.84,371,1620716400"; 
+   d="scan'208";a="499636365"
+Received: from liuj4-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.173.176])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 01:34:56 -0700
+Date:   Thu, 2 Sep 2021 16:34:53 +0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
+ private memory
+Message-ID: <20210902083453.aeouc6fob53ydtc2@linux.intel.com>
+References: <20210824005248.200037-1-seanjc@google.com>
+ <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
+ <20210827023150.jotwvom7mlsawjh4@linux.intel.com>
+ <8f3630ff-bd6d-4d57-8c67-6637ea2c9560@www.fastmail.com>
+ <20210901102437.g5wrgezmrjqn3mvy@linux.intel.com>
+ <f37a61ba-b7ef-c789-5763-f7f237ae41cc@kernel.org>
+ <2b2740ec-fa89-e4c3-d175-824e439874a6@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <2984f16b-7f20-e72d-1661-b942fdc4ff9b@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2b2740ec-fa89-e4c3-d175-824e439874a6@redhat.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/21 10:33 AM, Vasily Averin wrote:
-> On 9/2/21 10:13 AM, Vasily Averin wrote:
->> On 9/2/21 7:48 AM, Eric Dumazet wrote:
->>> On 9/1/21 9:32 PM, Eric Dumazet wrote:
->>>> I think you missed netem case, in particular
->>>> skb_orphan_partial() which I already pointed out.
->>>>
->>>> You can setup a stack of virtual devices (tunnels),
->>>> with a qdisc on them, before ip6_xmit() is finally called...
->>>>
->>>> Socket might have been closed already.
->>>>
->>>> To test your patch, you could force a skb_orphan_partial() at the beginning
->>>> of skb_expand_head() (extending code coverage)
->>>
->>> To clarify :
->>>
->>> It is ok to 'downgrade' an skb->destructor having a ref on sk->sk_wmem_alloc to
->>> something owning a ref on sk->refcnt.
->>>
->>> But the opposite operation (ref on sk->sk_refcnt -->  ref on sk->sk_wmem_alloc) is not safe.
->>
->> Could you please explain in more details, since I stil have a completely opposite point of view?
->>
->> Every sk referenced in skb have sk_wmem_alloc > 9 
->> It is assigned to 1 in sk_alloc and decremented right before last __sk_free(),
->> inside  both sk_free() sock_wfree() and __sock_wfree()
->>
->> So it is safe to adjust skb->sk->sk_wmem_alloc, 
->> because alive skb keeps reference to alive sk and last one keeps sk_wmem_alloc > 0
->>
->> So any destructor used sk->sk_refcnt will already have sk_wmem_alloc > 0, 
->> because last sock_put() calls sk_free().
->>
->> However now I'm not sure in reversed direction.
->> skb_set_owner_w() check !sk_fullsock(sk) and call sock_hold(sk);
->> If sk->sk_refcnt can be 0 here (i.e. after execution of old destructor inside skb_orphan) 
->> -- it can be trigger pointed problem:
->> "refcount_add() will trigger a warning (panic under KASAN)".
->>
->> Could you please explain where I'm wrong?
+On Wed, Sep 01, 2021 at 06:27:20PM +0200, David Hildenbrand wrote:
+> On 01.09.21 18:07, Andy Lutomirski wrote:
+> > On 9/1/21 3:24 AM, Yu Zhang wrote:
+> > > On Tue, Aug 31, 2021 at 09:53:27PM -0700, Andy Lutomirski wrote:
+> > > > 
+> > > > 
+> > > > On Thu, Aug 26, 2021, at 7:31 PM, Yu Zhang wrote:
+> > > > > On Thu, Aug 26, 2021 at 12:15:48PM +0200, David Hildenbrand wrote:
+> > > > 
+> > > > > Thanks a lot for this summary. A question about the requirement: do we or
+> > > > > do we not have plan to support assigned device to the protected VM?
+> > > > > 
+> > > > > If yes. The fd based solution may need change the VFIO interface as well(
+> > > > > though the fake swap entry solution need mess with VFIO too). Because:
+> > > > > 
+> > > > > 1> KVM uses VFIO when assigning devices into a VM.
+> > > > > 
+> > > > > 2> Not knowing which GPA ranges may be used by the VM as DMA buffer, all
+> > > > > guest pages will have to be mapped in host IOMMU page table to host pages,
+> > > > > which are pinned during the whole life cycle fo the VM.
+> > > > > 
+> > > > > 3> IOMMU mapping is done during VM creation time by VFIO and IOMMU driver,
+> > > > > in vfio_dma_do_map().
+> > > > > 
+> > > > > 4> However, vfio_dma_do_map() needs the HVA to perform a GUP to get the HPA
+> > > > > and pin the page.
+> > > > > 
+> > > > > But if we are using fd based solution, not every GPA can have a HVA, thus
+> > > > > the current VFIO interface to map and pin the GPA(IOVA) wont work. And I
+> > > > > doubt if VFIO can be modified to support this easily.
+> > > > > 
+> > > > > 
+> > > > 
+> > > > Do you mean assigning a normal device to a protected VM or a hypothetical protected-MMIO device?
+> > > > 
+> > > > If the former, it should work more or less like with a non-protected VM. mmap the VFIO device, set up a memslot, and use it.  I'm not sure whether anyone will actually do this, but it should be possible, at least in principle.  Maybe someone will want to assign a NIC to a TDX guest.  An NVMe device with the understanding that the guest can't trust it wouldn't be entirely crazy ether.
+> > > > 
+> > > > If the latter, AFAIK there is no spec for how it would work even in principle. Presumably it wouldn't work quite like VFIO -- instead, the kernel could have a protection-virtual-io-fd mechanism, and that fd could be bound to a memslot in whatever way we settle on for binding secure memory to a memslot.
+> > > > 
+> > > 
+> > > Thanks Andy. I was asking the first scenario.
+> > > 
+> > > Well, I agree it is doable if someone really want some assigned
+> > > device in TD guest. As Kevin mentioned in his reply, HPA can be
+> > > generated, by extending VFIO with a new mapping protocol which
+> > > uses fd+offset, instead of HVA.
+> > 
+> > I'm confused.  I don't see why any new code is needed for this at all.
+> > Every proposal I've seen for handling TDX memory continues to handle TDX
+> > *shared* memory exactly like regular guest memory today.  The only
+> > differences are that more hole punching will be needed, which will
+> > require lightweight memslots (to have many of them), memslots with
+> > holes, or mappings backing memslots with holes (which can be done with
+> > munmap() on current kernels).
+> > 
+> > So you can literally just mmap a VFIO device and expect it to work,
+> > exactly like it does right now.  Whether the guest will be willing to
+> > use the device will depend on the guest security policy (all kinds of
+> > patches about that are flying around), but if the guest tries to use it,
+> > it really should just work.
 > 
-> To clarify:
-> I'm agree it is unsafe  to call on alive skb:
+> ... but if you end up mapping private memory into IOMMU of the device and
+> the device ends up accessing that memory, we're in the same position that
+> the host might get capped, just like access from user space, no?
 
-I badly explained the problem in previous letter, let me repeat once again:
+Well, according to the spec:
 
-I'm told about this piece of code:
-+	} else if (sk && skb->destructor != sock_edemux) {
-+		delta = osize - skb_end_offset(skb);
-+		if (!is_skb_wmem(skb))
-+			skb_set_owner_w(skb, sk);
-+		skb->truesize += delta;
-+		if (sk_fullsock(sk))
-+			refcount_add(delta, &sk->sk_wmem_alloc);
- 	}
+  - If the result of the translation results in a physical address with a TD
+  private key ID, then the IOMMU will abort the transaction and report a VT-d
+  DMA remapping failure.
 
-it is called on alive expanded skb and it is incorrect because 2 reasons:
+  - If the GPA in the transaction that is input to the IOMMU is private (SHARED
+  bit is 0), then the IOMMU may abort the transaction and report a VT-d DMA
+  remapping failure.
 
-a) if old destructor use ref on sk->sk_wmem_alloc
-   It can decrease to 0 and release sk.
-b) if old descriptor use ref on sk->refcnt and !sk_fullsock(sk)
-    old decriptor can release last reference and release sk.
+So I guess mapping private GPAs in IOMMU is not that dangerous as mapping
+into userspace. Though still wrong.
 
-We can workaround release of sk by move of 
-refcount_add(delta, &sk->sk_wmem_alloc) before skb_set_owner_w()
+> 
+> Sure, you can map only the complete duplicate shared-memory region into the
+> IOMMU of the device, that would work. Shame vfio mostly always pins all
+> guest memory and you essentially cannot punch holes into the shared memory
+> anymore -- resulting in the worst case in a duplicate memory consumption for
+> your VM.
+> 
+> So you'd actually want to map only the *currently* shared pieces into the
+> IOMMU and update the mappings on demand. Having worked on something related,
 
-        } else if (sk && skb->destructor != sock_edemux) {
-                delta = osize - skb_end_offset(skb);
-                refcount_add(delta, &sk->sk_wmem_alloc);
-                if (!is_skb_wmem(skb))
-                        skb_set_owner_w(skb, sk);
-                skb->truesize += delta;
-#ifdef CONFIG_INET
-                if (!sk_fullsock(sk))
-                        refcount_dec(delta, &sk->sk_wmem_alloc);
-#endif
-        }
+Exactly. On demand mapping and page pinning for shared memory is necessary.
 
-However it it does not resolve b) completely
- 
-oid skb_set_owner_w(struct sk_buff *skb, struct sock *sk)
-{
-        skb_orphan(skb); <<< old destructor releases last sk->refcnt ...
-        skb->sk = sk;
-...
-        if (unlikely(!sk_fullsock(sk))) {
-                skb->destructor = sock_edemux;
-                sock_hold(sk);   <<<< ...and it trigger wrining/panic 
-                return;
-        }       
+> I can only say that 64k individual mappings, and not being able to modify
+> existing mappings except completely deleting them to replace with something
+> new (!atomic), can be quite an issue for bigger VMs.
 
-Thank you,
-	Vasily Averin
+Do you mean atomicity in mapping/unmapping can hardly be guaranteed during
+the shared <-> private transition? May I ask for elaboration? Thanks!
+
+B.R.
+Yu
