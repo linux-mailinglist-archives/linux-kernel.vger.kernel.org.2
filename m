@@ -2,149 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 000B23FF326
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB4D3FF328
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346952AbhIBSUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 14:20:38 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:33169 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233296AbhIBSUf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:20:35 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5AB1B5C01ED;
-        Thu,  2 Sep 2021 14:19:36 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute1.internal (MEProxy); Thu, 02 Sep 2021 14:19:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=rWeCfc9VwEpivgH3ElxeF4AP9Em0
-        hx7fi+pEfHiMVP4=; b=AuInL9tN1I1ovcXm4oG4VDeb5jtx8G5LKfAsBPLTi6Lf
-        dnZAs/tBmxQBlex49291A2gqYLEcepIl5T7llHDUrBvJkRRHWXY/SfqfFloLxwUM
-        fIWQ7LmoGv4Oc+uxNQH5TsXifPiY0sCO/gAzY3z6DSKJYEsExMZXbII69AoqY22l
-        Bm4dJHFQn+YRHScbkKXtHyqBVhE1P083J6RZhUYPNFyud+JSzRNV++MHS+iEk6ci
-        PoERh7wq7dUbh0ygvb39am+89kbKIdeFfolYAB6G/oh3vd6oYLY4aAM2PBRWZE0S
-        iMm1hfgO+/YQjr5E8Ih5NkA0H4Gza0XUDW5QzQizVw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=rWeCfc
-        9VwEpivgH3ElxeF4AP9Em0hx7fi+pEfHiMVP4=; b=G2ACLst9n6EmcBeuB8t9Cn
-        UBicpUedbICpaGir/glrW/F8YtEdsTQdUGbkupVVEgEt0yxShv1Zx/tW5wZK944B
-        IzbJZxfsh6km8yo1bOllE/K/D9CXaqHmRIoWOcwMybF7ZNwCJ4VbyKpPkQw32AwD
-        /mpI5FdyNtBjj8tlCMVR4SeT1+DnkjkWVWyhuVSWnbfRfHbtYhSlYcaLPzkVgEI9
-        0fm7ydZz79dAdthQ8FdjXtgz5r9JVZCM9SXVoDXdj7VzrfdMR/smQne6fQ6A9qRA
-        oEZXqavnx4GHO8CDDelMs03dJf7ZngDiWXGHoPDH8ZX56gyWWE2qSEIjkf5Xqofw
-        ==
-X-ME-Sender: <xms:thUxYVZuhxZYcoe_qdFU0FdyQ4gCxYPYbOaeeJlRqbKTPEYbZjrmUA>
-    <xme:thUxYcZaCdjbboWop334Ue9vAs-H740nzRJW12JLCekcEGHoQbH6l2fCasjsD1-42
-    zkeS9TE3tgzcLuj8d8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvhedguddvgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedfufhv
-    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
-    grthhtvghrnhepheejgfdttdefleefteejieefudeuheelkedtgedtjeehieetueelheeu
-    hfegheegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:thUxYX_icb1Yp-gID7QAuwGMOImvvcuh6gjHKsc6OX1BV5lXF3Ifxg>
-    <xmx:thUxYTr28i5ympL4m7VJYC9L6G7dTTPSozfvQEfsZ6b3izsU5zyvuw>
-    <xmx:thUxYQq3ZszLDwtsPx25SdK5ff4GnVjVRxdxzyQ2Vw8C8cH9Drpn4Q>
-    <xmx:uBUxYYIiN0F8L85rZKUf0uGrySzkqfGJkE9RfT4WvNi65pZzcH7qGg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 8810451C0060; Thu,  2 Sep 2021 14:19:34 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1126-g6962059b07-fm-20210901.001-g6962059b
-Mime-Version: 1.0
-Message-Id: <ac34e920-d1b4-4044-a8fe-5172d5ebfa9c@www.fastmail.com>
-In-Reply-To: <YS/sMckPUJRMYwYq@sunset>
-References: <20210828153642.19396-1-sven@svenpeter.dev>
- <20210828153642.19396-4-sven@svenpeter.dev> <YS6fasuqPURbmC6X@sunset>
- <c8bc7f77-3b46-4675-a642-76871fcec963@www.fastmail.com>
- <YS/sMckPUJRMYwYq@sunset>
-Date:   Thu, 02 Sep 2021 20:19:14 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Alyssa Rosenzweig" <alyssa@rosenzweig.io>
-Cc:     "Sven Peter" <iommu@lists.linux-foundation.org>,
-        "Joerg Roedel" <joro@8bytes.org>, "Will Deacon" <will@kernel.org>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        "Arnd Bergmann" <arnd@kernel.org>,
-        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
-        "Alexander Graf" <graf@amazon.com>,
-        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?Re:_[PATCH_v2_3/8]_iommu/dma:_Disable_get=5Fsgtable_for_granul?=
- =?UTF-8?Q?e_>_PAGE=5FSIZE?=
-Content-Type: text/plain
+        id S1346954AbhIBSUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 14:20:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46516 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346984AbhIBSUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 14:20:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E725D6109E;
+        Thu,  2 Sep 2021 18:19:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630606789;
+        bh=6PCP6x1TrAUpEBuJ8RnRPOpyp3DyHDAixWhFFpW21LY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dfDMw5mapObRoNPE2kNZW1TBYpaGkssa9TF2wSAsW3m7nqeGQDmKqbYAXTF1E3g2S
+         aIX2joikA/06bM3a6ICQtFTyMvPkn1qr85VWpq6Q0PNpMnIlESgw8cqO0EHz5KPl1m
+         JlmiV0KJbyMkJ57a00NM8deCtMOKWgAnqBexN/YerO6GeX/e2T7xcX6jl+y49Z6c/T
+         fIhUDzxFwgCaYXlnYw1ErMmfSXaDbLlldWLRI+UHR79SLOOo6pXX9HZMqEfHL265NI
+         SRXj8HAN/6ARvdkvWJ0j/1hoisoJk7MoGIaHGCY8VfDjHOHeeVQD52nAGURgieeVyK
+         nPKcYyCdIqNwg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 70AB44007E; Thu,  2 Sep 2021 15:19:45 -0300 (-03)
+Date:   Thu, 2 Sep 2021 15:19:45 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>,
+        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
+        mike.leach@linaro.org, suzuki.poulose@arm.com,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 9/9] perf cs-etm: Show a warning for an unknown magic
+ number
+Message-ID: <YTEVwVCWoS8cgqql@kernel.org>
+References: <20210806134109.1182235-1-james.clark@arm.com>
+ <20210806134109.1182235-10-james.clark@arm.com>
+ <20210824083615.GF204566@leoy-ThinkPad-X240s>
+ <YS+iOrcPTzQfmbqU@kernel.org>
+ <20210902174851.GB1078000@p14s>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902174851.GB1078000@p14s>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Wed, Sep 1, 2021, at 23:10, Alyssa Rosenzweig wrote:
-> > My biggest issue is that I do not understand how this function is supposed
-> > to be used correctly. It would work fine as-is if it only ever gets passed buffers
-> > allocated by the coherent API but there's not way to check or guarantee that.
-> > There may also be callers making assumptions that no longer hold when
-> > iovad->granule > PAGE_SIZE.
+Em Thu, Sep 02, 2021 at 11:48:51AM -0600, Mathieu Poirier escreveu:
+> Hi Arnaldo,
+> 
+> On Wed, Sep 01, 2021 at 12:54:34PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Aug 24, 2021 at 04:36:15PM +0800, Leo Yan escreveu:
+> > > On Fri, Aug 06, 2021 at 02:41:09PM +0100, James Clark wrote:
+> > > > Currently perf reports "Cannot allocate memory" which isn't very helpful
+> > > > for a potentially user facing issue. If we add a new magic number in
+> > > > the future, perf will be able to report unrecognised magic numbers.
+> > > > 
+> > > > Signed-off-by: James Clark <james.clark@arm.com>
+> > > 
+> > > Reviewed-by: Leo Yan <leo.yan@linaro.org>
 > > 
-> > Regarding your case: I'm not convinced the function is meant to be used there.
-> > If I understand it correctly, your code first allocates memory with dma_alloc_coherent
-> > (which possibly creates a sgt internally and then maps it with iommu_map_sg),
-> > then coerces that back into a sgt with dma_get_sgtable, and then maps that sgt to
-> > another iommu domain with dma_map_sg while assuming that the result will be contiguous
-> > in IOVA space. It'll work out because dma_alloc_coherent is the very thing
-> > meant to allocate pages that can be mapped into kernel and device VA space
-> > as a single contiguous block and because both of your IOMMUs are different
-> > instances of the same HW block. Anything allocated by dma_alloc_coherent for the
-> > first IOMMU will have the right shape that will allow it to be mapped as
-> > a single contiguous block for the second IOMMU.
-> > 
-> > What could be done in your case is to instead use the IOMMU API,
-> > allocate the pages yourself (while ensuring the sgt your create is made up
-> > of blocks with size and physaddr aligned to max(domain_a->granule, domain_b->granule))
-> > and then just use iommu_map_sg for both domains which actually comes with the
-> > guarantee that the result will be a single contiguous block in IOVA space and
-> > doesn't required the sgt roundtrip.
+> > Applies cleanly to my tree, test building it now, holler if there is
+> > something that prevents it from being merged.
 > 
-> In principle I agree. I am getting the sense this function can't be used
-> correctly in general, and yet is the function that's meant to be used.
-> If my interpretation of prior LKML discussion holds, the problems are
-> far deeper than my code or indeed page size problems...
-
-Right, which makes reasoning about this function and its behavior if the
-IOMMU pages size is unexpected very hard for me. I'm not opposed to just
-keeping this function as-is when there's a mismatch between PAGE_SIZE and
-the IOMMU page size (and it will probably work that way) but I'd like to
-be sure that won't introduce unexpected behavior. 
-
+> Have you already merged this? 
 > 
-> If the right way to handle this is with the IOMMU and IOVA APIs, I really wish
-> that dance were wrapped up in a safe helper function instead of open
-> coding it in every driver that does cross device sharing.
-> 
-> We might even call that helper... hmm... dma_map_sg.... *ducks*
-> 
+> If so than let it be.  Otherwise please hold off as I'd like to take a look,
+> something I intend on doing next week.
 
-There might be another way to do this correctly. I'm likely just a little
-bit biased because I've spent the past weeks wrapping my head around the
-IOMMU and DMA APIs and when all you have is a hammer everything looks like
-a nail.
+Ok, I can remove them from my local branch, but this may make this miss
+the v5.15 merge window, please advise.
 
-But dma_map_sg operates at the DMA API level and at that point the dma-ops
-for two different devices could be vastly different. 
-In the worst case one of them could be behind an IOMMU that can easily map
-non-contiguous pages while the other one is directly connected to the bus and
-can't even access >4G pages without swiotlb support.
-It's really only possible to guarantee that it will map N buffers to <= N
-DMA-addressable buffers (possibly by using an IOMMU or swiotlb internally) at
-that point.
-
-On the IOMMU API level you have much more information available about the actual
-hardware and can prepare the buffers in a way that makes both devices happy.
-That's why iommu_map_sgtable combined with iovad->granule aligned sgt entries
-can actually guarantee to map the entire list to a single contiguous IOVA block.
-
-
-Sven
+- Arnaldo
