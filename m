@@ -2,162 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E123FF175
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D283FF177
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343727AbhIBQdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:33:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34952 "EHLO mail.kernel.org"
+        id S1346354AbhIBQdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:33:15 -0400
+Received: from relay.sw.ru ([185.231.240.75]:47162 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345905AbhIBQdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:33:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5C406023F;
-        Thu,  2 Sep 2021 16:32:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630600321;
-        bh=B9mcUFqJNGZAURjFxYwd81UPlQdY2dl8ve7nusbvJp8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eIvtGjmucVVCDn0Og/6GBqZQgKZ0dZAC3GKI+qze5/utAM5fXeF/fSf01VNcQyViL
-         x5i9CS80x36maY4qAvas5xv9cl7hKuJ0isz/SNVRDu/jZiSfkzSmZ/wdCfzsn6SfbP
-         JOqGe5jeqkco3/aa+hgMCsmV6hX+LlNbzQT5EKwY=
-Date:   Thu, 2 Sep 2021 18:31:58 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     James Bottomley <jejb@linux.ibm.com>
-Cc:     Dov Murik <dovmurik@linux.ibm.com>, linux-efi@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Jim Cadden <jcadden@ibm.com>, linux-coco@lists.linux.dev,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Allow access to confidential computing secret area
- in SEV guests
-Message-ID: <YTD8fkAfjutR8G/o@kroah.com>
-References: <20210809190157.279332-1-dovmurik@linux.ibm.com>
- <YTDKUe8rXrr0Zika@kroah.com>
- <e6fb1d54605690cc1877d7140fc9346c22268111.camel@linux.ibm.com>
- <YTDoS5XycY3gO4MM@kroah.com>
- <6cb65cb3bd69ae69bde044f809525e478bdb8512.camel@linux.ibm.com>
- <YTD3U70FCkXzNMrF@kroah.com>
- <61212d923295203173b1a8c3c24b6dd19835c57e.camel@linux.ibm.com>
+        id S242481AbhIBQdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 12:33:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=9RCNEQgzOsFkVYRclOSep+JOIavBm+WQguvnh2YAla0=; b=KEWBK/wo3d5ml/d0a
+        ewRcDe+7sS0Q64aPlRSCZEuWcw5EbRM8P5PN5fyA748dzXGQTv/Ky1eXutWl3LacJvq36htCwUfvr
+        ynl9deeHphRE2+y/Pg8+kcZT7ZXGW9EcfEIriqhxLorxHSPz+g26qu6V7zjddR/5TfeDGraFi145k
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mLpdE-000bpY-GV; Thu, 02 Sep 2021 19:32:04 +0300
+Subject: Re: [PATCH net-next v5] skb_expand_head() adjust skb->truesize
+ incorrectly
+To:     Christoph Paasch <christoph.paasch@gmail.com>
+Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel@openvz.org,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Julian Wiedmann <jwi@linux.ibm.com>
+References: <27f87dd8-f6e4-b2b0-2b3a-9378fddf147f@virtuozzo.com>
+ <053307fc-cc3d-68f5-1994-fe447428b1f2@virtuozzo.com>
+ <CALMXkpbZ3R40XVTMOBF5Bhut9Yv_x=a682qg6gEsAMTT5TGhHQ@mail.gmail.com>
+From:   Vasily Averin <vvs@virtuozzo.com>
+Message-ID: <63f90028-df26-d212-3bd2-65168736ce06@virtuozzo.com>
+Date:   Thu, 2 Sep 2021 19:32:03 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <61212d923295203173b1a8c3c24b6dd19835c57e.camel@linux.ibm.com>
+In-Reply-To: <CALMXkpbZ3R40XVTMOBF5Bhut9Yv_x=a682qg6gEsAMTT5TGhHQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 09:19:13AM -0700, James Bottomley wrote:
-> On Thu, 2021-09-02 at 18:09 +0200, Greg KH wrote:
-> > On Thu, Sep 02, 2021 at 08:19:51AM -0700, James Bottomley wrote:
-> > > On Thu, 2021-09-02 at 17:05 +0200, Greg KH wrote:
-> > > > On Thu, Sep 02, 2021 at 07:35:10AM -0700, James Bottomley wrote:
-> > > > > On Thu, 2021-09-02 at 14:57 +0200, Greg KH wrote:
-> > > > > [...]
-> > > > > > Wait, why are you using securityfs for this?
-> > > > > > 
-> > > > > > securityfs is for LSMs to use. 
-> > > > > 
-> > > > > No it isn't ... at least not exclusively; we use it for non LSM
-> > > > > security purposes as well, like for the TPM BIOS log and for
-> > > > > IMA.  What makes you think we should start restricting
-> > > > > securityfs to LSMs only?  That's not been the policy up to now.
-> > > > 
-> > > > Well that was the original intent of the filesystem when it was
-> > > > created, but I guess it's really up to the LSM maintainers now
-> > > > what they want it for.
-> > > > 
-> > > > > >  If you want your own filesystem to play around with stuff
-> > > > > > like this, great, write your own, it's only 200 lines or less
-> > > > > > these days.  We used to do it all the time until people
-> > > > > > realized they should just use sysfs for driver stuff.
-> > > > > 
-> > > > > This is a security purpose (injected key retrieval), so
-> > > > > securityfs seems to be the best choice.  It's certainly
-> > > > > possible to create a new filesystem, but I really think things
-> > > > > with a security purpose should use securityfs so people know
-> > > > > where to look for them.
-> > > > 
-> > > > knowing where to look should not be an issue, as that should be
-> > > > documented in Documentation/ABI/ anyway, right?
-> > > > 
-> > > > It's just the overlap / overreach of using an existing filesystem
-> > > > for things that don't seem to be LSM-related that feels odd to
-> > > > me.
-> > > > 
-> > > > Why not just make a cocofs if those people want a filesystem
-> > > > interface?
-> > > > It's 200 lines or so these days, if not less, and that way you
-> > > > only mount what you actually need for the system.
-> > > 
-> > > Secrets transfer is actually broader than confidential computing,
-> > > although confidential computing is a first proposed use, so I think
-> > > cocofs would be too narrow.
-> > > 
-> > > > Why force this into securityfs if it doesn't have to be?
-> > > 
-> > > It's not being forced.  Secrets transfer is a security function in
-> > > the same way the bios log is.
-> > 
-> > Is the bios log in securityfs today?
+On 9/2/21 6:53 PM, Christoph Paasch wrote:
+> On Thu, Sep 2, 2021 at 4:12 AM Vasily Averin <vvs@virtuozzo.com> wrote:
+>>
+>> Christoph Paasch reports [1] about incorrect skb->truesize
+>> after skb_expand_head() call in ip6_xmit.
+>> This may happen because of two reasons:
+>> - skb_set_owner_w() for newly cloned skb is called too early,
+>> before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
+>> - pskb_expand_head() does not adjust truesize in (skb->sk) case.
+>> In this case sk->sk_wmem_alloc should be adjusted too.
+>>
+>> [1] https://lkml.org/lkml/2021/8/20/1082
+>>
+>> Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
+>> Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
+>> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+>> ---
+>> v5: fixed else condition, thanks to Eric
+>>     reworked update of expanded skb,
+>>     added corresponding comments
+>> v4: decided to use is_skb_wmem() after pskb_expand_head() call
+>>     fixed 'return (EXPRESSION);' in os_skb_wmem according to Eric Dumazet
+>> v3: removed __pskb_expand_head(),
+>>     added is_skb_wmem() helper for skb with wmem-compatible destructors
+>>     there are 2 ways to use it:
+>>      - before pskb_expand_head(), to create skb clones
+>>      - after successfull pskb_expand_head() to change owner on extended skb.
+>> v2: based on patch version from Eric Dumazet,
+>>     added __pskb_expand_head() function, which can be forced
+>>     to adjust skb->truesize and sk->sk_wmem_alloc.
+>> ---
+>>  include/net/sock.h |  1 +
+>>  net/core/skbuff.c  | 63 ++++++++++++++++++++++++++++++++++++++++++++++--------
+>>  net/core/sock.c    |  8 +++++++
+>>  3 files changed, 63 insertions(+), 9 deletions(-)
 > 
-> Yes. It's under /sys/kernel/security/tpm0/  All the ima policy control
-> and its log is under /sys/kernel/security/ima/  that's why I think
-> declaring securityfs as being for anything security related is already
-> our de facto (if not de jure) policy.
+> Still the same issues around refcount as I reported in my other email.
 > 
-> > Anyway, it's up to the securityfs maintainer (i.e. not me), but
-> > personally, I think this should be a separate filesystem as that
-> > would probably make things easier in the long run...
-> 
-> I know Al likes this business of loads of separate filesystems, but
-> personally I'm not in favour.  For every one you do, you not only have
-> to document it all,
+> Did you try running the syzkaller reproducer on your setup?
 
-Wait, why would you not have to document your new files no matter what?
-That should not be an issue either way.
+no, I do not have 
 
-> you also have to find a preferred mount point that
-> the distributions can agree on and also have them agree to enable the
-> mount for,
+>> +       } else if (sk && skb->destructor != sock_edemux) {
+>> +               bool ref, set_owner;
+>> +
+>> +               ref = false; set_owner = false;
+>> +               delta = osize - skb_end_offset(skb);
 
-You create that yourself, just like tracefs does, and set the standard
-right away, not an issue.
+error is here, should be instead
+delta = skb_end_offset(skb) - osize;
 
-> which often takes months of negotiation.
+>> +               /* skb_set_owner_w() calls current skb destructor.
+>> +                * It can decrease sk_wmem_alloc to 0 and release sk,
+>> +                * To prevnt it we increase sk_wmem_alloc earlier.
+>> +                * Another kind of destructors can release last sk_refcnt,
+>> +                * so it will be impossible to call sock_hold for !fullsock
+>> +                * Take extra sk_refcnt to prevent it.
+>> +                * Otherwise just increase truesize of expanded skb.
+>> +                */
+>> +               refcount_add(delta, &sk->sk_wmem_alloc);
+>> +               if (!is_skb_wmem(skb)) {
+>> +                       set_owner = true;
+>> +                       if (!sk_fullsock(sk) && IS_ENABLED(CONFIG_INET)) {
+>> +                               /* skb_set_owner_w can set sock_edemux */
+>> +                               ref = refcount_inc_not_zero(&sk->sk_refcnt);
+>> +                               if (!ref) {
+>> +                                       set_owner = false;
+>> +                                       WARN_ON(refcount_sub_and_test(delta, &sk->sk_wmem_alloc));
+>> +                               }
+>> +                       }
+>> +               }
+>> +               if (set_owner)
+>> +                       skb_set_owner_w(skb, sk);
+>> +#ifdef CONFIG_INET
+>> +               if (skb->destructor == sock_edemux) {
+>> +                       WARN_ON(refcount_sub_and_test(delta, &sk->sk_wmem_alloc));
+>> +                       if (ref)
+>> +                               WARN_ON(refcount_dec_and_test(&sk->sk_refcnt));
+>> +               }
+>> +#endif
+>> +               skb->truesize += delta;
+>>         }
+>>         return skb;
+>>  }
+>> diff --git a/net/core/sock.c b/net/core/sock.c
+>> index 950f1e7..6cbda43 100644
+>> --- a/net/core/sock.c
+>> +++ b/net/core/sock.c
+>> @@ -2227,6 +2227,14 @@ void skb_set_owner_w(struct sk_buff *skb, struct sock *sk)
+>>  }
+>>  EXPORT_SYMBOL(skb_set_owner_w);
+>>
+>> +bool is_skb_wmem(const struct sk_buff *skb)
+>> +{
+>> +       return skb->destructor == sock_wfree ||
+>> +              skb->destructor == __sock_wfree ||
+>> +              (IS_ENABLED(CONFIG_INET) && skb->destructor == tcp_wfree);
+>> +}
+>> +EXPORT_SYMBOL(is_skb_wmem);
+>> +
+>>  static bool can_skb_orphan_partial(const struct sk_buff *skb)
+>>  {
+>>  #ifdef CONFIG_TLS_DEVICE
+>> --
+>> 1.8.3.1
+>>
 
-Enabling it does take time, which is good because if they do not think
-it should be present because they do not want to use it, then it will
-not be, which means either they do not need your new feature, or you
-have not made it useful enough.
-
-So again, not an issue.
-And you can even mount it yourself from the kernel if you insist on it
-always being present.
-
-> Having fewer
-> filesystems grouped by common purpose which have agreed mount points
-> that distros actually mount seems a far easier approach to enablement.
-
-The issue is that random things gets added to those filesystems,
-exposing stuff that perhaps some systems do NOT want exposed to
-userspace.  Making it explicit as to what they have to mount to get
-access to that is a good thing because you have less of an "attack
-surface" and all of that.
-
-So again, this should not be an issue.  If coco stuff is so important
-that people need it, then having them have to add it to their init
-scripts just to mount the filesystem is not an issue as there are other
-userspace components of all of this mess that they had to install
-anyway.  Just make it part of the userspace tools that are going to be
-accessing these files because you have to get those onto the systems no
-matter what.
-
-greg k-h
