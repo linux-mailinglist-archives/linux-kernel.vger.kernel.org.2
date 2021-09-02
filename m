@@ -2,77 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955133FEB2A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA783FEB2D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245447AbhIBJ06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 05:26:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245416AbhIBJ0y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 05:26:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 201AB61058;
-        Thu,  2 Sep 2021 09:25:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630574755;
-        bh=Yxy8KM/Ohu/+iS5kBagZcmeiZaFKnSW9/TTj7inv4ZU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fhaf3pWmgUnA6/2gPoyol3nOWFW9Zx2baVX1bw7KONGrfY5le3/P3g2TbzqVF9bFU
-         jxWQZZ83QxQ0lyK0EeZndMYhLnRl9FOzYvm5Zw1tvLlbdVCFkoh7FDKOqmGktH4xXB
-         x//lyqtDFvQp/2+4OZ7W0Lje4pW5X9z33xDNvoLY=
-Date:   Thu, 2 Sep 2021 11:25:53 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Aakash Hemadri <aakashhemadri123@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] staging: r8188eu: restricted __be16 degrades to
- int
-Message-ID: <YTCYodihc/U/StOw@kroah.com>
-References: <cover.1630148641.git.aakashhemadri123@gmail.com>
- <652e62b7f30d216bafc6ef390ed27c2c6864fe95.1630148641.git.aakashhemadri123@gmail.com>
+        id S245505AbhIBJ1c convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Sep 2021 05:27:32 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:62203 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245489AbhIBJ1Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 05:27:25 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id E1E9740006;
+        Thu,  2 Sep 2021 09:26:25 +0000 (UTC)
+Date:   Thu, 2 Sep 2021 11:26:19 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     "Sa, Nuno" <Nuno.Sa@analog.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 12/16] iio: adc: max1027: Introduce an end of conversion
+ helper
+Message-ID: <20210902112619.248bca16@xps13>
+In-Reply-To: <SJ0PR03MB635976F76F5121FFF26E858B99C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
+References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
+        <20210818111139.330636-13-miquel.raynal@bootlin.com>
+        <SJ0PR03MB635976F76F5121FFF26E858B99C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <652e62b7f30d216bafc6ef390ed27c2c6864fe95.1630148641.git.aakashhemadri123@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Aug 28, 2021 at 04:40:44PM +0530, Aakash Hemadri wrote:
-> Fix sparse warning:
-> > rtw_br_ext.c:73:23: warning: restricted __be16 degrades to integer
-> 
-> Here tag->tag_len is be16, use be16_to_cpu()
-> 
-> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
-> ---
->  drivers/staging/r8188eu/core/rtw_br_ext.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
-> index 62a672243696..aa56cd1a8490 100644
-> --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
-> +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
-> @@ -70,7 +70,7 @@ static int __nat25_add_pppoe_tag(struct sk_buff *skb, struct pppoe_tag *tag)
->  	struct pppoe_hdr *ph = (struct pppoe_hdr *)(skb->data + ETH_HLEN);
->  	int data_len;
->  
-> -	data_len = tag->tag_len + TAG_HDR_LEN;
-> +	data_len = be16_to_cpu(tag->tag_len) + TAG_HDR_LEN;
->  	if (skb_tailroom(skb) < data_len) {
->  		_DEBUG_ERR("skb_tailroom() failed in add SID tag!\n");
->  		return -1;
-> -- 
-> 2.32.0
-> 
+Hi Nuno,
 
-If this change happens, that means the existing driver does not work at
-all on little-endian machines today?  But that seems odd and wrong, are
-you sure this change is correct?
+"Sa, Nuno" <Nuno.Sa@analog.com> wrote on Fri, 20 Aug 2021 07:28:17
++0000:
 
-How did you test this?
+> > -----Original Message-----
+> > From: Miquel Raynal <miquel.raynal@bootlin.com>
+> > Sent: Wednesday, August 18, 2021 1:12 PM
+> > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
+> > <lars@metafoo.de>
+> > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>; linux-
+> > iio@vger.kernel.org; linux-kernel@vger.kernel.org; Miquel Raynal
+> > <miquel.raynal@bootlin.com>
+> > Subject: [PATCH 12/16] iio: adc: max1027: Introduce an end of
+> > conversion helper
+> > 
+> > [External]
+> > 
+> > For now this helper only waits for the maximum duration of a
+> > conversion,
+> > but it will soon be improved to properly handle the end of conversion
+> > interrupt.
+> > 
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > ---
+> >  drivers/iio/adc/max1027.c | 23 +++++++++++++++++++++--
+> >  1 file changed, 21 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
+> > index afc3ce69f7ea..2d6485591761 100644
+> > --- a/drivers/iio/adc/max1027.c
+> > +++ b/drivers/iio/adc/max1027.c
+> > @@ -60,6 +60,9 @@
+> >  #define MAX1027_NAVG_32   (0x03 << 2)
+> >  #define MAX1027_AVG_EN    BIT(4)
+> > 
+> > +/* Device can achieve 300ksps so we assume a 3.33us conversion
+> > delay */
+> > +#define MAX1027_CONVERSION_UDELAY 4
+> > +
+> >  enum max1027_id {
+> >  	max1027,
+> >  	max1029,
+> > @@ -236,6 +239,20 @@ struct max1027_state {
+> >  	u8				reg ____cacheline_aligned;
+> >  };
+> > 
+> > +static DECLARE_WAIT_QUEUE_HEAD(max1027_queue);
+> > +
+> > +static int max1027_wait_eoc(struct iio_dev *indio_dev)
+> > +{
+> > +	unsigned int conversion_time =
+> > MAX1027_CONVERSION_UDELAY;
+> > +
+> > +	if (indio_dev->active_scan_mask)
+> > +		conversion_time *= hweight32(*indio_dev-  
+> > >active_scan_mask);  
+> > +
+> > +	usleep_range(conversion_time, conversion_time * 2);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  /* Scan from 0 to the highest requested channel */
+> >  static int max1027_configure_chans_to_scan(struct iio_dev
+> > *indio_dev)
+> >  {
+> > @@ -310,9 +327,11 @@ static int max1027_read_single_value(struct
+> > iio_dev *indio_dev,
+> >  	/*
+> >  	 * For an unknown reason, when we use the mode "10" (write
+> >  	 * conversion register), the interrupt doesn't occur every time.
+> > -	 * So we just wait 1 ms.
+> > +	 * So we just wait the maximum conversion time and deliver
+> > the value.
+> >  	 */
+> > -	mdelay(1);
+> > +	ret = max1027_wait_eoc(indio_dev);
+> > +	if (ret)
+> > +		return ret;  
+> 
+> I'm a bit confused here... Why are we looking at the active_scan_mask?
+> Aren't we preventing this for running concurrently with buffering?
 
-thanks,
+Sorry for the confusion, at this stage the "if (active_masks)" is
+useless, I moved it later in the series when we actually start to use
+this EOC helper for the buffered reads as well.
 
-greg k-h
+Thanks,
+Miquèl
