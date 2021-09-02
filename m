@@ -2,171 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F5B3FF772
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A41D3FF774
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347861AbhIBWz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 18:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347794AbhIBWzz (ORCPT
+        id S1347902AbhIBW5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 18:57:24 -0400
+Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:34106
+        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232684AbhIBW5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 18:55:55 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86051C061575;
-        Thu,  2 Sep 2021 15:54:56 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id a93so6855021ybi.1;
-        Thu, 02 Sep 2021 15:54:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y7PS2aPWeHT9cfVvWfufHLOFrcw7bSQtzjBuCbrMdNU=;
-        b=NMLz8N1DkJu5CZ2ElpmK0SWxqIvHCboX4MbCYt7y+eWk9IUcf+hs8A8IYp8kXv3xkr
-         +TMLm7I9jbjm0enUHh/y5UvEZvam7S8jfCCCBPZqswvRvMYkl/fGnMA095EwGRAAcIJ9
-         PWVyaoPcvhziZvnAHiQdWvk+8XJWH8j5RERJ5BBZjAecqeFMUt4c4pC+AeZAI0bUVgHi
-         /9+a9HM50iOoysg79f6bmtcJ0XXufsVbZtCgoTGsELKVLy+kf8Cwxxt34Fxk+bA8qAW/
-         D/nYygn2+yxIALJgjTHDOAQGIhsx361/sCy3hSrxZl5lOJyr4BI/8Oxz/wHfbVHEogcF
-         X+nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y7PS2aPWeHT9cfVvWfufHLOFrcw7bSQtzjBuCbrMdNU=;
-        b=LzOsojmnR2J3hozyC7EUjcQQvrmEjAw4ggbaqPG4C6Q7Mu5ldX9+Em+qOdHNeYh1Nc
-         QgOm0piEYdMJlnugkFArMOKSfVAfs9+CWR0AeSZHJqealvj8KdWEg0w7X8bstuDhmF0S
-         kPGNumlc8r9RZGwm+jUTQkQbwl5l+Co0gbvj7kypUjbeK5NAZ4eIB6etgP2CgDhi9nfv
-         Wtv7uhEiC9w4DBfZF8PeDy82zJxTk83A5tb0exAensP9P+yYKO4k2mqhxrlPn0jGk1xO
-         BAZbhsTqQ+ulKEOz6snC3L0ILmSMEGPax12J3td/ZUFHXi64pi8riWoAcAFar5JXfS7m
-         e4hQ==
-X-Gm-Message-State: AOAM531rjQDYW+KzqrvbGIp8yeif+A9fICUgVxd+fbeOYNcZ75P7oMji
-        rj1UldJP5AWvdN9alGlw+JwkfYRgOxH+qenpWcU=
-X-Google-Smtp-Source: ABdhPJyXdIp6z7DifLSIBycRmibhqJD40ZJEvr2Ion4azWS/KBMn2CfmFExoS8C28S1w8CSyf5gXlPrxwoJ9f2+d8z4=
-X-Received: by 2002:a25:bb13:: with SMTP id z19mr1024273ybg.347.1630623295817;
- Thu, 02 Sep 2021 15:54:55 -0700 (PDT)
+        Thu, 2 Sep 2021 18:57:23 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 7F08A3F355;
+        Thu,  2 Sep 2021 22:56:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630623383;
+        bh=LSEKeaSDQ1GT7tY9vov/U+ekVIymsacQFSJsNSyYZuU=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=UszIlSz4z3N74cHzsTz7PQ9Rnu2TwTQy1kW3+8I/a78Br5T1Yubv52jneNfePS99e
+         xtmbTejSoiT+DJHfYC3D7SQZIW5c8G0wQaG2fM3e/DAJhnGWF67JThm20kIU7OfDpN
+         plXDU6RP2xRT7JoDofmcQn1USDK3OdL1PZIl/eoL0TdOG92As2HbFEleOd8RY+Ug/8
+         ay/SxGNi81hQEe35NR7+QYnTh0nlNxClLq2zCEiidwiFWxGmCb5zqD9r7POJYBTvLk
+         rxmIZ0+nXWq5JxkulOnSh3k/mOxxZECs+QKPKbsNX6PbGP22Wbiqc2N2tDiRKfhGt/
+         miFoV0s3QOFtg==
+From:   Colin King <colin.king@canonical.com>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] skbuff: clean up inconsistent indenting
+Date:   Thu,  2 Sep 2021 23:56:23 +0100
+Message-Id: <20210902225623.58209-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-References: <20210902165706.2812867-1-songliubraving@fb.com>
-In-Reply-To: <20210902165706.2812867-1-songliubraving@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 2 Sep 2021 15:54:45 -0700
-Message-ID: <CAEf4Bzb-mbZp_iEd9-Z6euMk5eYjEFJwv1QpSQx_sqSQ37xcWw@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 0/3] bpf: introduce bpf_get_branch_snapshot
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Ziljstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 9:58 AM Song Liu <songliubraving@fb.com> wrote:
->
-> Changes v4 => v5
-> 1. Modify perf_snapshot_branch_stack_t to save some memcpy. (Andrii)
-> 2. Minor fixes in selftests. (Andrii)
->
-> Changes v3 => v4:
-> 1. Do not reshuffle intel_pmu_disable_all(). Use some inline to save LBR
->    entries. (Peter)
-> 2. Move static_call(perf_snapshot_branch_stack) to the helper. (Alexei)
-> 3. Add argument flags to bpf_get_branch_snapshot. (Andrii)
-> 4. Make MAX_BRANCH_SNAPSHOT an enum (Andrii). And rename it as
->    PERF_MAX_BRANCH_SNAPSHOT
-> 5. Make bpf_get_branch_snapshot similar to bpf_read_branch_records.
->    (Andrii)
-> 6. Move the test target function to bpf_testmod. Updated kallsyms_find_next
->    to work properly with modules. (Andrii)
->
-> Changes v2 => v3:
-> 1. Fix the use of static_call. (Peter)
-> 2. Limit the use to perfmon version >= 2. (Peter)
-> 3. Modify intel_pmu_snapshot_branch_stack() to use intel_pmu_disable_all
->    and intel_pmu_enable_all().
->
-> Changes v1 => v2:
-> 1. Rename the helper as bpf_get_branch_snapshot;
-> 2. Fix/simplify the use of static_call;
-> 3. Instead of percpu variables, let intel_pmu_snapshot_branch_stack output
->    branch records to an output argument of type perf_branch_snapshot.
->
-> Branch stack can be very useful in understanding software events. For
-> example, when a long function, e.g. sys_perf_event_open, returns an errno,
-> it is not obvious why the function failed. Branch stack could provide very
-> helpful information in this type of scenarios.
->
-> This set adds support to read branch stack with a new BPF helper
-> bpf_get_branch_trace(). Currently, this is only supported in Intel systems.
-> It is also possible to support the same feaure for PowerPC.
->
-> The hardware that records the branch stace is not stopped automatically on
-> software events. Therefore, it is necessary to stop it in software soon.
-> Otherwise, the hardware buffers/registers will be flushed. One of the key
-> design consideration in this set is to minimize the number of branch record
-> entries between the event triggers and the hardware recorder is stopped.
-> Based on this goal, current design is different from the discussions in
-> original RFC [1]:
->  1) Static call is used when supported, to save function pointer
->     dereference;
->  2) intel_pmu_lbr_disable_all is used instead of perf_pmu_disable(),
->     because the latter uses about 10 entries before stopping LBR.
->
-> With current code, on Intel CPU, LBR is stopped after 10 branch entries
-> after fexit triggers:
->
-> ID: 0 from intel_pmu_lbr_disable_all+58 to intel_pmu_lbr_disable_all+93
-> ID: 1 from intel_pmu_lbr_disable_all+54 to intel_pmu_lbr_disable_all+58
-> ID: 2 from intel_pmu_snapshot_branch_stack+88 to intel_pmu_lbr_disable_all+0
-> ID: 3 from bpf_get_branch_snapshot+77 to intel_pmu_snapshot_branch_stack+0
-> ID: 4 from __brk_limit+478052814 to bpf_get_branch_snapshot+0
-> ID: 5 from __brk_limit+478036039 to __brk_limit+478052760
-> ID: 6 from __bpf_prog_enter+34 to __brk_limit+478036027
-> ID: 7 from migrate_disable+60 to __bpf_prog_enter+9
-> ID: 8 from __bpf_prog_enter+4 to migrate_disable+0
-> ID: 9 from __brk_limit+478036022 to __bpf_prog_enter+0
-> ID: 10 from bpf_testmod_loop_test+22 to __brk_limit+478036003
-> ID: 11 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
-> ID: 12 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
-> ID: 13 from bpf_testmod_loop_test+20 to bpf_testmod_loop_test+13
-> ...
->
-> [1] https://lore.kernel.org/bpf/20210818012937.2522409-1-songliubraving@fb.com/
->
-> Song Liu (3):
->   perf: enable branch record for software events
->   bpf: introduce helper bpf_get_branch_snapshot
->   selftests/bpf: add test for bpf_get_branch_snapshot
->
+From: Colin Ian King <colin.king@canonical.com>
 
-Besides the BPF helper comment nit, looks good to me. For the series:
+There is a statement that is indented one character too deeply,
+clean this up.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ net/core/skbuff.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->  arch/x86/events/intel/core.c                  |  26 ++++-
->  arch/x86/events/intel/ds.c                    |   8 --
->  arch/x86/events/perf_event.h                  |  10 +-
->  include/linux/perf_event.h                    |  23 ++++
->  include/uapi/linux/bpf.h                      |  22 ++++
->  kernel/bpf/trampoline.c                       |   3 +-
->  kernel/events/core.c                          |   2 +
->  kernel/trace/bpf_trace.c                      |  33 ++++++
->  tools/include/uapi/linux/bpf.h                |  22 ++++
->  .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  19 +++-
->  .../selftests/bpf/prog_tests/core_reloc.c     |  14 +--
->  .../bpf/prog_tests/get_branch_snapshot.c      | 100 ++++++++++++++++++
->  .../selftests/bpf/prog_tests/module_attach.c  |  39 -------
->  .../selftests/bpf/progs/get_branch_snapshot.c |  40 +++++++
->  tools/testing/selftests/bpf/test_progs.c      |  39 +++++++
->  tools/testing/selftests/bpf/test_progs.h      |   2 +
->  tools/testing/selftests/bpf/trace_helpers.c   |  37 +++++++
->  tools/testing/selftests/bpf/trace_helpers.h   |   5 +
->  18 files changed, 378 insertions(+), 66 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/get_branch_snapshot.c
->  create mode 100644 tools/testing/selftests/bpf/progs/get_branch_snapshot.c
->
-> --
-> 2.30.2
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index f9311762cc47..2170bea2c7de 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -3884,7 +3884,7 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+ 		skb_push(nskb, -skb_network_offset(nskb) + offset);
+ 
+ 		skb_release_head_state(nskb);
+-		 __copy_skb_header(nskb, skb);
++		__copy_skb_header(nskb, skb);
+ 
+ 		skb_headers_offset_update(nskb, skb_headroom(nskb) - skb_headroom(skb));
+ 		skb_copy_from_linear_data_offset(skb, -tnl_hlen,
+-- 
+2.32.0
+
