@@ -2,212 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85DF73FF24D
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6413FF24B
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346606AbhIBR33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 13:29:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33856 "EHLO
+        id S1346585AbhIBR31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 13:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346499AbhIBR30 (ORCPT
+        with ESMTP id S1346507AbhIBR30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Sep 2021 13:29:26 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1837C061757
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B98EC061575
         for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 10:28:27 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id f129so2717703pgc.1
+Received: by mail-pj1-x1030.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso1958390pjh.5
         for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 10:28:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=tlkTv+QSdLj89BzEW2jIvlFhKPTJ8DlZMmZCRyVz7HU=;
-        b=FdhRZcEWHVic1uoYs4TxzGQx1jBnt1hu2TuteTVmM94eqGRGZmxlpH8weXG9NzPdm8
-         tYqEi+kWRTsI71W8XqcbUIp2yrmpQMlCGd14tG8xzhA6l316CJVtXXu6uT+nu/3DSrAO
-         SJy5ZJ56FflBwtg/FD5juUH50ILwZ0fTONMn2+aC+RyBePbxmsc8ACTBT9JvAzzxgpA2
-         pzO49NwrYqWUcPWHkqgqWAT8HzIaKxJ7MAu3uVGspflY2pkTPuQrxnxlunyiabvyVPiv
-         XPumM07kxeu2lg5IabzOiSzMFS2MKX73GQM1Hiz93FAtHXC3RILOo2Rbrhz6jRRynvc9
-         iavw==
+        bh=nN3k3dUPK3S2b7Nats+T83sdUWEKp5nCRR4lWMJTudE=;
+        b=nWNOAEMUfKKG10J5yFzKaL+d1LPZ/vaJ16maYdNimJPFb3bjF18zpQ6wc9etzDEy/d
+         9xQc4gI4VrrMkBORoD6/t3glawBRoqo69QvPVI651WrYAkLWyoR15rtRe/tHd5HDoLYI
+         OSjDefyQyWTDekFHdpDQkbZlFEI6sIdvQEBMQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=tlkTv+QSdLj89BzEW2jIvlFhKPTJ8DlZMmZCRyVz7HU=;
-        b=peKy+K8LXYWcLMwGllD/pVYGgor3jQG2HrjKMriMDjafTY/yZzqewnGh35TCFmGi4+
-         XFlVoP7CsJZaeQdV9+vzyeF+DoeTBzleOf6ayHRRUN1g85m5oHRPO/XyRK70KP/2V8IH
-         NjsUlJjDnGsfwoIMMdvtWMA4jSwfxTmWWeGtbL+6TR/DF1jtkkGAFpXvEEQPpSVTnX7T
-         tdzU8g+Mm2ljOh3lWObFEavOXoNmLaiqdizK1rJpmwa/XcELBEsyKlm8IQb+Rx6ezBzu
-         TjQGl2D7ulZ9qV1Mjz7cVeu9btWhOKrGozI1xlMU5xO6S+PBYs0b7OIQyJTCqKFVBV8b
-         NyXw==
-X-Gm-Message-State: AOAM530ypLPMY8cHkrvEXU3FuGgq82DU96p3wu4sHmjCifXv0I6Fm9zu
-        hNQkO5ceDkQrputGbvLzP6jp4Q==
-X-Google-Smtp-Source: ABdhPJz8r/7UkdfmCJP3knKikFIB42/rNdTHUUWLp90TllbLBlgVZbxCg0hV5rMB9wjHmZi6tgMQ8w==
-X-Received: by 2002:a63:b47:: with SMTP id a7mr4251871pgl.181.1630603707200;
-        Thu, 02 Sep 2021 10:28:27 -0700 (PDT)
-Received: from google.com (150.12.83.34.bc.googleusercontent.com. [34.83.12.150])
-        by smtp.gmail.com with ESMTPSA id e8sm3736647pgg.31.2021.09.02.10.28.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=nN3k3dUPK3S2b7Nats+T83sdUWEKp5nCRR4lWMJTudE=;
+        b=gdXlsfhhv4c1+ZioFAtFOL9qyDpdupmcLYKBhan+iGsugzdRsnYLQuf6N2t1R89anE
+         +MApqkoB0oRD6OjIGNstHyseP7SJ9ayyPf/kuJ4w4hpbsG3pKfg3omeM9fq4/bgetPb+
+         f2JeE7+zhOTMJWYnx0UnUBm7eKo2lghpHYCRmwuw9qS/S376+ZywqpWAOnvniJVSdftb
+         VNNIzFJKRV70uwdOnC36TTTzXmw5NTAoqPRGhR4hSaulU80nFVQ3NwvEm6WifaNrk9xd
+         5vdahjDjBQHldYUrcyIhtS9NDgT4wCZjNSD+BrTjFF8cJGjbG2Kw+8EyNbO7zsBFwWh7
+         3DIA==
+X-Gm-Message-State: AOAM532Fp3wrRRILKvONfJrfR6Kffd1c3p25Y4D16iBxc4TDbXGPZsEs
+        8+kQUxQMqp59TWZ9VBSwH7AQ2A==
+X-Google-Smtp-Source: ABdhPJwutjaCOHy2rhBSD4BacQLshzTVMU7A2qtTEc4S35wECtIDWPXF89OF/GlW+jFL6IjLlmpuBQ==
+X-Received: by 2002:a17:902:8c90:b0:12f:699b:27 with SMTP id t16-20020a1709028c9000b0012f699b0027mr3900196plo.28.1630603706621;
         Thu, 02 Sep 2021 10:28:26 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 10:28:23 -0700
-From:   Ricardo Koller <ricarkol@google.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v3 10/12] KVM: arm64: selftests: Add host support for vGIC
-Message-ID: <YTEJt2pC1cIcwvyD@google.com>
-References: <20210901211412.4171835-1-rananta@google.com>
- <20210901211412.4171835-11-rananta@google.com>
+Received: from localhost ([2620:15c:202:201:76ac:d178:a633:4fb5])
+        by smtp.gmail.com with UTF8SMTPSA id k8sm3108494pjg.23.2021.09.02.10.28.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 10:28:26 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 10:28:24 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, John Stultz <john.stultz@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>
+Subject: Re: [PATCH v3 2/4] misc: hisi_hikey_usb: change the DT schema
+Message-ID: <YTEJuK50e5PBBJfO@google.com>
+References: <cover.1630581434.git.mchehab+huawei@kernel.org>
+ <d990e75f28c443c0c5a5fc857b87acc4be3f9464.1630581434.git.mchehab+huawei@kernel.org>
+ <YTC4LPDem9uKXyMd@kroah.com>
+ <20210902151053.7ddfbe3a@coco.lan>
+ <20210902153820.5624b57f@coco.lan>
+ <YTDYFCH/DbK1SFVv@kroah.com>
+ <20210902163529.734b8e0e@coco.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210901211412.4171835-11-rananta@google.com>
+In-Reply-To: <20210902163529.734b8e0e@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 09:14:10PM +0000, Raghavendra Rao Ananta wrote:
-> Implement a simple library to do perform vGIC-v3
-> setup from a host of view. This includes creating
-> a vGIC device, setting up distributor and redistributor
-> attributes, and mapping the guest physical addresses.
+On Thu, Sep 02, 2021 at 04:35:29PM +0200, Mauro Carvalho Chehab wrote:
+> Em Thu, 2 Sep 2021 15:56:36 +0200
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
 > 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > On Thu, Sep 02, 2021 at 03:38:20PM +0200, Mauro Carvalho Chehab wrote:
+> > > Em Thu, 2 Sep 2021 15:10:53 +0200
+> > > Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+> > >   
+> > > > Em Thu, 2 Sep 2021 13:40:28 +0200
+> > > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+> > > >   
+> > > > > On Thu, Sep 02, 2021 at 01:28:35PM +0200, Mauro Carvalho Chehab wrote:    
+> > > > > > As there's no upstream DT bindings for this driver, let's
+> > > > > > update its DT schema, while it is not too late.      
+> > > > > 
+> > > > > So this is for 5.15-final?    
+> > > > 
+> > > > It can either be for 5.15 or 5.16, as there aren't any compatible
+> > > > under arch/ which uses the DT schema there. All patches adding
+> > > > such compatible are on this series. So, whatever version this
+> > > > is applied should be OK.  
+> > > 
+> > > On a separate note, despite having "hisi_" on this driver's name, there's
+> > > nothing there that is really HiSilicon specific. What this driver does is
+> > > to control an USB HUB integrated inside a DT-based board, doing those 
+> > > functions:
+> > > 
+> > > 	- Power on/off the chip;
+> > > 	- reset the HUB;
+> > > 	- control its OTG switch;
+> > > 	- control power on/off for an USB type-C connector;
+> > > 	- set USB role as host or device.
+> > > 
+> > > This is used on both HiKey 960 and HiKey 970 with the following
+> > > topology:
+> > > 
+> > >   +-----+      +--------+       +---------+
+> > >   | SoC | ---> | USB PHY|  ---> | USB HUB | ---> USB 3.0
+> > >   +-----+      +--------+       +---------+      and type-C ports 
+> > > 
+> > > Both Kirin 960 and 970 SoCs have a Synapsys IP (DWC 3). 
+> > > 
+> > > Both HiKey 960 and 970 cards use Richtek RT1711H Type-C Chip Driver
+> > > as part of the USB PHY logic, but they use different USB HUBs:
+> > > 
+> > > 	- HiKey 960 use a Microchip USB5734 HUB
+> > > 	- HiKey 970 use a TI TUSB8041 HUB
+> > > 
+> > > While I'm not sure how generic this driver can be, I'm thinking that
+> > > maybe a future patch could rename it to 'generic-usb-hub' or 
+> > > something similar - finding a good name is always the hardest 
+> > > part :-)  
+> > 
+> > Try looking at:
+> > 	https://lore.kernel.org/r/20210813195228.2003500-1-mka@chromium.org
+> > for another example of this.
 > 
-> ---
->  tools/testing/selftests/kvm/Makefile          |  2 +-
->  .../selftests/kvm/include/aarch64/vgic.h      | 14 ++++
->  .../testing/selftests/kvm/lib/aarch64/vgic.c  | 67 +++++++++++++++++++
->  3 files changed, 82 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/kvm/include/aarch64/vgic.h
->  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/vgic.c
+> (C/C Matthias here).
 > 
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index 5476a8ddef60..8342f65c1d96 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -35,7 +35,7 @@ endif
->  
->  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
->  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
-> -LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c
-> +LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c lib/aarch64/vgic.c
->  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
->  
->  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
-> diff --git a/tools/testing/selftests/kvm/include/aarch64/vgic.h b/tools/testing/selftests/kvm/include/aarch64/vgic.h
-> new file mode 100644
-> index 000000000000..45bbf238147a
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/include/aarch64/vgic.h
-> @@ -0,0 +1,14 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * ARM Generic Interrupt Controller (GIC) host specific defines
-> + */
-> +
-> +#ifndef SELFTEST_KVM_VGIC_H
-> +#define SELFTEST_KVM_VGIC_H
-> +
-> +#include <linux/kvm.h>
-> +
-> +int vgic_v3_setup(struct kvm_vm *vm, unsigned int nr_vcpus,
-> +		uint64_t gicd_base_gpa, uint64_t gicr_base_gpa, uint32_t slot);
-> +
-> +#endif /* SELFTEST_KVM_VGIC_H */
-> diff --git a/tools/testing/selftests/kvm/lib/aarch64/vgic.c b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
-> new file mode 100644
-> index 000000000000..a0e4b986d335
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
-> @@ -0,0 +1,67 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * ARM Generic Interrupt Controller (GIC) v3 host support
-> + */
-> +
-> +#include <linux/kvm.h>
-> +#include <linux/sizes.h>
-> +
-> +#include "kvm_util.h"
-> +
-> +#define VGIC_V3_GICD_SZ		(SZ_64K)
-> +#define VGIC_V3_GICR_SZ		(2 * SZ_64K)
-> +
-> +#define REDIST_REGION_ATTR_ADDR(count, base, flags, index) \
-> +	(((uint64_t)(count) << 52) | \
-> +	((uint64_t)((base) >> 16) << 16) | \
-> +	((uint64_t)(flags) << 12) | \
-> +	index)
-> +
-> +static void vgic_v3_map(struct kvm_vm *vm, uint64_t addr, unsigned int size)
-> +{
-> +	unsigned int n_pages = DIV_ROUND_UP(size, vm_get_page_size(vm));
-> +
-> +	virt_map(vm, addr, addr, n_pages);
-> +}
-> +
-> +/*
-> + * vGIC-v3 default host setup
-> + *
-> + * Input args:
-> + *	vm - KVM VM
-> + *	nr_vcpus - Number of vCPUs for this VM
-> + *	gicd_base_gpa - Guest Physical Address of the Distributor region
-> + *	gicr_base_gpa - Guest Physical Address of the Redistributor region
-> + *
-> + * Output args: None
-> + *
-> + * Return: GIC file-descriptor or negative error code upon failure
-> + *
-> + * The function creates a vGIC-v3 device and maps the distributor and
-> + * redistributor regions of the guest.
-> + */
-> +int vgic_v3_setup(struct kvm_vm *vm, unsigned int nr_vcpus,
-> +		uint64_t gicd_base_gpa, uint64_t gicr_base_gpa)
-> +{
-> +	uint64_t redist_attr;
-> +	int gic_fd;
-> +
-> +	TEST_ASSERT(nr_vcpus <= KVM_MAX_VCPUS,
-> +			"Invalid number of CPUs: %u\n", nr_vcpus);
-> +
-> +	gic_fd = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, false);
+> Interesting to know that someone else is also needing to add support
+> for USB chips.
 
-Nit: you can return early if gic_fd is bad.
+Yeah, there were several attempts over the years, but so far none of
+them landed upstream ...
 
-> +
-> +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-> +			KVM_VGIC_V3_ADDR_TYPE_DIST, &gicd_base_gpa, true);
-> +	vgic_v3_map(vm, gicd_base_gpa, VGIC_V3_GICD_SZ);
-
-vgic_v3_map() implies that it's doing something vgic specific, when it's
-just converting bytes to pages. What about something like the following?
-
-	virt_map(vm, addr, addr, VM_BYTES_TO_PAGES(vm, VGIC_V3_GICD_SZ));
-
-and you add a VM_BYTES_TO_PAGES macro to include/kvm_util.h? I think
-this macro can be useful to others.
-
-> +
-> +	redist_attr = REDIST_REGION_ATTR_ADDR(nr_vcpus, gicr_base_gpa, 0, 0);
-> +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-> +			KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &redist_attr, true);
-> +	vgic_v3_map(vm, gicr_base_gpa, VGIC_V3_GICR_SZ * nr_vcpus);
-> +
-> +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_CTRL,
-> +				KVM_DEV_ARM_VGIC_CTRL_INIT, NULL, true);
-> +
-> +	return gic_fd;
-> +}
-> -- 
-> 2.33.0.153.gba50c8fa24-goog
+> Yet, the approach took there won't work with HiKey 960/970, as
+> it needs to control not only the regulator, but it should also
+> work as as usb-role-switch. 
 > 
+> So, besides controlling the regulator, which seems to be basically what
+> the onboard_usb_hub_driver does, but it should also be able to:
+> 
+>  	- (optionally) reset the HUB;
+> 	- control its OTG switch;
+>  	- control power on/off for an USB type-C connector;
+>  	- set USB role as host or device.
+
+> Perhaps it would be possible to merge both approaches by modifying
+> hisi_hikey_usb in order to add the extra bits required by the boards that
+> Matthias is currently working, and requiring the GPIOs for OTG and
+> type-C connectors only if DT contains usb-role-switch.
+
+I'm not convinced that a hub driver should be in charge of role switching.
+I wonder if the hub part could remain separate, and the role switching be
+done by a dedicated driver that interacts with the hub driver through
+some interface. From the above list the hub driver could still be in charge
+of:
+
+- (optionally) reset the HUB;
+- control power on/off for an USB type-C connector;
+
+Maybe the hub driver could implement a reset controller to allow the role
+switching driver to switch it on and off (including type-C power).
+
+The role switch driver (a leaner version of hisi_hikey_usb) could model
+the mux and switch the hub on and off, without being concerned about all
+the details.
+
+I fear if we go the route of completely merging the two drivers it might
+end up in a hodgepodge of vaguely related things, and it would probably
+re-open the can of worms of the DT binding, which took a long time to
+settle, even with a more limited functionality.
