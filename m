@@ -2,219 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7703FED23
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D813FED27
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343520AbhIBLtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 07:49:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343532AbhIBLtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 07:49:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8EB36109E;
-        Thu,  2 Sep 2021 11:48:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630583296;
-        bh=e582PBmif018SVLywjcAVGGnhic2wKP2XhDSx5CX7I4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=O4qz3v91WH6Jr2r+DYSJe95gWswmP5atQ8LrwBzCgKhUO0bcOEj0wgO1phRt3Dqtw
-         Kpdhhxn6ysELWOFrb/y895h3shvkD4GG63zd8SwP/Lydvf9NZfVWDXGKy21jYXq6FT
-         HGg8ej70OLYfX5fflHh/yppAnYnkKygUpyC9/bFrE6XAOSGzhmh4mABF5swDEIsYQq
-         ojnAJ5Z7Qn+UNgndQUNasIihWPB1jYeb2mZvHgG4yDKrkx5Fe+goOSDwGd+ZBkPpQJ
-         gpaZ94qxNWbRFwlFFG6chE7Z69IqvxyDtPPSMLdtewnNjRIgH2rk2X0P49mRUPO2Tc
-         sD3PwBNMmURdA==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1mLlCY-0006mW-Rb; Thu, 02 Sep 2021 13:48:14 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] mfd: hi6421-spmi-pmic: cleanup drvdata
-Date:   Thu,  2 Sep 2021 13:48:11 +0200
-Message-Id: <6959a4b11cb840aaae8d144889bb7b4899c3b335.1630583284.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S245183AbhIBLvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 07:51:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234104AbhIBLvT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 07:51:19 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F46C061575;
+        Thu,  2 Sep 2021 04:50:21 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 79-20020a1c0452000000b002e6cf79e572so1221823wme.1;
+        Thu, 02 Sep 2021 04:50:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=W+dOKzd6UdN2swvIeOeNM3FcX5BgY72jEZS4lz+OjQs=;
+        b=SY+K/XSRATRvwaM8P1p26j93srE7PqAwXZfEoy7aRcHE233RP4pYq7i1UnFZVZ/AAS
+         6yP+12g6wAqkNwoIe7U0J9tSDmwJxQC7OUPY+Os6t5RMzXIKTWudfMbg/mHHQfN793rr
+         3KI53dEdVxQlw/Wv65DKT46R2+XN5dzObeczRM4dnRKnQtsv6u2H5EPJdA4dhRaemGh/
+         7yyys7jEaRc1I9LNTtqllOhAw6Po5BusUTk/C9Gy6b+9t9ADtUUSeuw9DkNBoALmJ8wY
+         vsEchIvRhKcxDlJkyHUCXGUrIoZIE41nDKPLhQ4hqbom0UVE+Z1F5sL7VMYP32Eg6mXg
+         +K8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W+dOKzd6UdN2swvIeOeNM3FcX5BgY72jEZS4lz+OjQs=;
+        b=ahu6mtmNWExhQfZr+jnN0kUIAXmaJmMxgrHspib0+5eIA3p+6S9xPdZqBbFVWcHkY4
+         ck+DhEtEHxWHsefLeyFiZ2Twridii5arUXNQoK5NNxQGxUVwlqALa8X8pCCZ85ru7LsD
+         KCcEt8DWtX+uwgNsHJClGQV3Y8iV4UwUAaow3UXUl4+oWF8vuqdWmVC/YSm/Yb4XeoNB
+         6EY7fruixHRKmlKxFz2jjuaR5xMsVWpEDVwz281ZeGzZEiOePR8jCD7YxxZFNsxDq2SD
+         4y5BAMXgE9fSF+emJ7eJRuU5wQqSdA7QHyGJH0CI+Sa9TBGpA+8QEQA2UVvvNnIiSroj
+         uvoQ==
+X-Gm-Message-State: AOAM530VIl7RQkpOjQCo4OEdgWXZOBFzc5ZR56QmGpgsiv9r1Bqs1NNe
+        Gd0val2PnW+OnodCxLIUuaU=
+X-Google-Smtp-Source: ABdhPJzrnXhdnCziXIY5rotMYIhHe7xtWapq2QOWpE0tIj0Syl67cC7cx/+c0dPkxk6Weyp4/iveKA==
+X-Received: by 2002:a1c:3945:: with SMTP id g66mr2794246wma.49.1630583419541;
+        Thu, 02 Sep 2021 04:50:19 -0700 (PDT)
+Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
+        by smtp.gmail.com with ESMTPSA id m12sm1623298wrq.29.2021.09.02.04.50.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 04:50:19 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 12:50:17 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/48] 5.4.144-rc1 review
+Message-ID: <YTC6eT+hrXfMv+Sq@debian>
+References: <20210901122253.388326997@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901122253.388326997@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are lots of fields at struct hi6421_spmi_pmic that aren't
-used. In a matter of fact, only regmap is needed.
+Hi Greg,
 
-So, drop the struct as a hole, and set just the regmap as
-the drvdata.
+On Wed, Sep 01, 2021 at 02:27:50PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.144 release.
+> There are 48 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
+> Anything received after that time might be too late.
 
-While here, add a missing dot at the Huawei's copyrights.
+Build test:
+mips (gcc version 11.1.1 20210816): 65 configs -> no new failure
+arm (gcc version 11.1.1 20210816): 107 configs -> no new failure
+arm64 (gcc version 11.1.1 20210816): 2 configs -> no failure
+x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
 
-Acked-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/mfd/hi6421-spmi-pmic.c           | 16 +++++----------
- drivers/misc/hi6421v600-irq.c            |  9 ++++-----
- drivers/regulator/hi6421v600-regulator.c | 10 +++++-----
- include/linux/mfd/hi6421-spmi-pmic.h     | 25 ------------------------
- 4 files changed, 14 insertions(+), 46 deletions(-)
- delete mode 100644 include/linux/mfd/hi6421-spmi-pmic.h
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
 
-diff --git a/drivers/mfd/hi6421-spmi-pmic.c b/drivers/mfd/hi6421-spmi-pmic.c
-index 4f136826681b..c9c0c3d7011f 100644
---- a/drivers/mfd/hi6421-spmi-pmic.c
-+++ b/drivers/mfd/hi6421-spmi-pmic.c
-@@ -8,7 +8,6 @@
-  */
- 
- #include <linux/mfd/core.h>
--#include <linux/mfd/hi6421-spmi-pmic.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
-@@ -30,19 +29,14 @@ static const struct regmap_config regmap_config = {
- static int hi6421_spmi_pmic_probe(struct spmi_device *sdev)
- {
- 	struct device *dev = &sdev->dev;
-+	struct regmap *regmap;
- 	int ret;
--	struct hi6421_spmi_pmic *ddata;
--	ddata = devm_kzalloc(dev, sizeof(*ddata), GFP_KERNEL);
--	if (!ddata)
--		return -ENOMEM;
- 
--	ddata->regmap = devm_regmap_init_spmi_ext(sdev, &regmap_config);
--	if (IS_ERR(ddata->regmap))
--		return PTR_ERR(ddata->regmap);
-+	regmap = devm_regmap_init_spmi_ext(sdev, &regmap_config);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
- 
--	ddata->dev = dev;
--
--	dev_set_drvdata(&sdev->dev, ddata);
-+	dev_set_drvdata(&sdev->dev, regmap);
- 
- 	ret = devm_mfd_add_devices(&sdev->dev, PLATFORM_DEVID_NONE,
- 				   hi6421v600_devs, ARRAY_SIZE(hi6421v600_devs),
-diff --git a/drivers/misc/hi6421v600-irq.c b/drivers/misc/hi6421v600-irq.c
-index 08535e97ff43..1c763796cf1f 100644
---- a/drivers/misc/hi6421v600-irq.c
-+++ b/drivers/misc/hi6421v600-irq.c
-@@ -10,7 +10,6 @@
- #include <linux/bitops.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
--#include <linux/mfd/hi6421-spmi-pmic.h>
- #include <linux/module.h>
- #include <linux/of_gpio.h>
- #include <linux/platform_device.h>
-@@ -220,7 +219,7 @@ static int hi6421v600_irq_probe(struct platform_device *pdev)
- 	struct platform_device *pmic_pdev;
- 	struct device *dev = &pdev->dev;
- 	struct hi6421v600_irq *priv;
--	struct hi6421_spmi_pmic *pmic;
-+	struct regmap *regmap;
- 	unsigned int virq;
- 	int i, ret;
- 
-@@ -229,8 +228,8 @@ static int hi6421v600_irq_probe(struct platform_device *pdev)
- 	 * which should first set drvdata. If this doesn't happen, hit
- 	 * a warn on and return.
- 	 */
--	pmic = dev_get_drvdata(pmic_dev);
--	if (WARN_ON(!pmic))
-+	regmap = dev_get_drvdata(pmic_dev);
-+	if (WARN_ON(!regmap))
- 		return -ENODEV;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-@@ -238,7 +237,7 @@ static int hi6421v600_irq_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	priv->dev = dev;
--	priv->regmap = pmic->regmap;
-+	priv->regmap = regmap;
- 
- 	spin_lock_init(&priv->lock);
- 
-diff --git a/drivers/regulator/hi6421v600-regulator.c b/drivers/regulator/hi6421v600-regulator.c
-index 662d87ae61cb..4671678f6b19 100644
---- a/drivers/regulator/hi6421v600-regulator.c
-+++ b/drivers/regulator/hi6421v600-regulator.c
-@@ -9,8 +9,8 @@
- // Guodong Xu <guodong.xu@linaro.org>
- 
- #include <linux/delay.h>
--#include <linux/mfd/hi6421-spmi-pmic.h>
- #include <linux/module.h>
-+#include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/regulator/driver.h>
-@@ -237,7 +237,7 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
- 	struct hi6421_spmi_reg_priv *priv;
- 	struct hi6421_spmi_reg_info *info;
- 	struct device *dev = &pdev->dev;
--	struct hi6421_spmi_pmic *pmic;
-+	struct regmap *regmap;
- 	struct regulator_dev *rdev;
- 	int i;
- 
-@@ -246,8 +246,8 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
- 	 * which should first set drvdata. If this doesn't happen, hit
- 	 * a warn on and return.
- 	 */
--	pmic = dev_get_drvdata(pmic_dev);
--	if (WARN_ON(!pmic))
-+	regmap = dev_get_drvdata(pmic_dev);
-+	if (WARN_ON(!regmap))
- 		return -ENODEV;
- 
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-@@ -261,7 +261,7 @@ static int hi6421_spmi_regulator_probe(struct platform_device *pdev)
- 
- 		config.dev = pdev->dev.parent;
- 		config.driver_data = priv;
--		config.regmap = pmic->regmap;
-+		config.regmap = regmap;
- 
- 		rdev = devm_regulator_register(dev, &info->desc, &config);
- 		if (IS_ERR(rdev)) {
-diff --git a/include/linux/mfd/hi6421-spmi-pmic.h b/include/linux/mfd/hi6421-spmi-pmic.h
-deleted file mode 100644
-index e5b8dbf828b6..000000000000
---- a/include/linux/mfd/hi6421-spmi-pmic.h
-+++ /dev/null
-@@ -1,25 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/*
-- * Header file for device driver Hi6421 PMIC
-- *
-- * Copyright (c) 2013 Linaro Ltd.
-- * Copyright (C) 2011 Hisilicon.
-- * Copyright (c) 2020-2021 Huawei Technologies Co., Ltd
-- *
-- * Guodong Xu <guodong.xu@linaro.org>
-- */
--
--#ifndef	__HISI_PMIC_H
--#define	__HISI_PMIC_H
--
--#include <linux/irqdomain.h>
--#include <linux/regmap.h>
--
--struct hi6421_spmi_pmic {
--	struct resource				*res;
--	struct device				*dev;
--	void __iomem				*regs;
--	struct regmap				*regmap;
--};
--
--#endif		/* __HISI_PMIC_H */
--- 
-2.31.1
+[1]. https://openqa.qa.codethink.co.uk/tests/81
+
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+--
+Regards
+Sudip
 
