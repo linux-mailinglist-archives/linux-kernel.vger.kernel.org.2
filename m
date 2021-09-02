@@ -2,265 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752CD3FF438
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFEA3FF43E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:34:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347401AbhIBTda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 15:33:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347257AbhIBTd3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 15:33:29 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A403C061575;
-        Thu,  2 Sep 2021 12:32:30 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id ew6so1869488qvb.5;
-        Thu, 02 Sep 2021 12:32:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aHE7zhQdsgMlH+QYp+lhq1R1P0X5X+hqgUKEq7BGKS4=;
-        b=ZY0/brsioDgMyqZX/2nrccZCzAy3jjpWaMHMsxHA/v9M8bZDqF/r7muWlirT+gp7hd
-         9AlSUBkDvObiuRydUBfnkCaJTuXyRTysPs9upUxcjfXxQQ1y6PKkntnn4rtLsH3fXh+W
-         jANNYJio0IiiDjRRNxBCLa7wuyxrfQGfEamZXNCHzKZ/4iju/DhvWMXlWAOn8gZOKM/0
-         iBF38O+35wDqKGP0Wy4YD7o+D60prPcrELMjaT5jZ90rgi/9oFbQLdjQQRYSzpnm0AE1
-         w57VqnWwYgP/LuxMn7eQfb9rN7uiIt36vJpz06KgbO1Cpecrk6GYo5NW7SsY7amrojv+
-         YgtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aHE7zhQdsgMlH+QYp+lhq1R1P0X5X+hqgUKEq7BGKS4=;
-        b=eMOaSx1Sd3VHGFC7CkCQ2+NYyOu+PJk59ClzCTYMIVPx9iWNKNHHeQoJNesKD2Pm8y
-         VtL3KRs2kclVwdlHanUqc442NukjeAlqe5E3mqtYutAgCoscP5y/6o7so8BdQjzrsCMc
-         JZnK0g8qemLbAokXl9sWLmkOazeGbJ/4V2KJBurJjRqpWE2LFQbo1+iivDBNJQ0n1piE
-         W53IwcNBMN+9ifRQkziILhYArYfv/jIWlXMGtnh+wBhslIJRDvnSVyc/IoLsYZHKBXTZ
-         v9nSKL0pzZcz6vuTyb7CDQxoiGtfJLqrBacO5VEYKzEWn3lgIfvKtR1OhNDG5wrwPPK2
-         rl2g==
-X-Gm-Message-State: AOAM5305p4pEMXXFnQJkk2XQlaQGOYKkUb+Gd6z2Av78riXNcE6+usLY
-        74W/BNJMWI0NuwUEU6bg57Y=
-X-Google-Smtp-Source: ABdhPJxJ0LoTmr9L/ypJePJEoM5Crj9PywoaJjjt/idCHx20b4lcg6f5IS4bwA+SGlhimA2gxIJ7Kg==
-X-Received: by 2002:a0c:c707:: with SMTP id w7mr4942176qvi.14.1630611148794;
-        Thu, 02 Sep 2021 12:32:28 -0700 (PDT)
-Received: from ?IPv6:2620:6e:6000:3100:dedd:4a4a:8e3e:2af5? ([2620:6e:6000:3100:dedd:4a4a:8e3e:2af5])
-        by smtp.gmail.com with ESMTPSA id 207sm2217988qkh.45.2021.09.02.12.32.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 12:32:28 -0700 (PDT)
-Subject: Re: [PATCH v6 1/6] Bluetooth: schedule SCO timeouts with delayed_work
-To:     Eric Dumazet <eric.dumazet@gmail.com>, marcel@holtmann.org,
-        johan.hedberg@gmail.com, luiz.dentz@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, sudipm.mukherjee@gmail.com
-Cc:     linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
-References: <20210810041410.142035-1-desmondcheongzx@gmail.com>
- <20210810041410.142035-2-desmondcheongzx@gmail.com>
- <0b33a7fe-4da0-058c-cff3-16bb5cfe8f45@gmail.com>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <bad67d05-366b-bebe-cbdb-6555386497de@gmail.com>
-Date:   Thu, 2 Sep 2021 15:32:27 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <0b33a7fe-4da0-058c-cff3-16bb5cfe8f45@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1347415AbhIBTfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 15:35:43 -0400
+Received: from mga07.intel.com ([134.134.136.100]:51133 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1347257AbhIBTfl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 15:35:41 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="282934200"
+X-IronPort-AV: E=Sophos;i="5.85,263,1624345200"; 
+   d="scan'208";a="282934200"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 12:34:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,263,1624345200"; 
+   d="scan'208";a="521312767"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga004.fm.intel.com with ESMTP; 02 Sep 2021 12:34:42 -0700
+Received: from shsmsx604.ccr.corp.intel.com (10.109.6.214) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Thu, 2 Sep 2021 12:34:41 -0700
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ SHSMSX604.ccr.corp.intel.com (10.109.6.214) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Fri, 3 Sep 2021 03:34:38 +0800
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.2242.010;
+ Thu, 2 Sep 2021 22:34:36 +0300
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     Barry Song <21cnbao@gmail.com>,
+        "Sang, Oliver" <oliver.sang@intel.com>
+CC:     lkp <lkp@intel.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Jonathan.Cameron@huawei.com" <Jonathan.Cameron@huawei.com>,
+        "bilbao@vt.edu" <bilbao@vt.edu>, Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        "luzmaximilian@gmail.com" <luzmaximilian@gmail.com>,
+        "mchehab+huawei@kernel.org" <mchehab+huawei@kernel.org>,
+        "schnelle@linux.ibm.com" <schnelle@linux.ibm.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>
+Subject: RE: [PCI/MSI] a4fc4cf388:
+ dmesg.genirq:Flags_mismatch_irq##(mei_me)vs.#(xhci_hcd)
+Thread-Topic: [PCI/MSI] a4fc4cf388:
+ dmesg.genirq:Flags_mismatch_irq##(mei_me)vs.#(xhci_hcd)
+Thread-Index: AQHXnginGRfCkYvOzEKHZKqjivRGPKuRJldQ
+Date:   Thu, 2 Sep 2021 19:34:35 +0000
+Message-ID: <8ab95f7f784448038d7777c45f1f2d55@intel.com>
+References: <20210825102636.52757-4-21cnbao@gmail.com>
+ <20210829145552.GA11556@xsang-OptiPlex-9020>
+ <CAGsJ_4yYwjuWsEeK3CvnOhc10mbBNYWXqxqp+mR5587R2FD3gQ@mail.gmail.com>
+ <CAGsJ_4zwRdR2QuoR0K0_J86w0=t=mFh=tAKRuP1+Tx8aLn4kKw@mail.gmail.com>
+In-Reply-To: <CAGsJ_4zwRdR2QuoR0K0_J86w0=t=mFh=tAKRuP1+Tx8aLn4kKw@mail.gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.184.70.1]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/9/21 3:17 pm, Eric Dumazet wrote:
-> 
-> 
-> On 8/9/21 9:14 PM, Desmond Cheong Zhi Xi wrote:
->> struct sock.sk_timer should be used as a sock cleanup timer. However,
->> SCO uses it to implement sock timeouts.
->>
->> This causes issues because struct sock.sk_timer's callback is run in
->> an IRQ context, and the timer callback function sco_sock_timeout takes
->> a spin lock on the socket. However, other functions such as
->> sco_conn_del and sco_conn_ready take the spin lock with interrupts
->> enabled.
->>
->> This inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} lock usage could
->> lead to deadlocks as reported by Syzbot [1]:
->>         CPU0
->>         ----
->>    lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
->>    <Interrupt>
->>      lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
->>
->> To fix this, we use delayed work to implement SCO sock timouts
->> instead. This allows us to avoid taking the spin lock on the socket in
->> an IRQ context, and corrects the misuse of struct sock.sk_timer.
->>
->> As a note, cancel_delayed_work is used instead of
->> cancel_delayed_work_sync in sco_sock_set_timer and
->> sco_sock_clear_timer to avoid a deadlock. In the future, the call to
->> bh_lock_sock inside sco_sock_timeout should be changed to lock_sock to
->> synchronize with other functions using lock_sock. However, since
->> sco_sock_set_timer and sco_sock_clear_timer are sometimes called under
->> the locked socket (in sco_connect and __sco_sock_close),
->> cancel_delayed_work_sync might cause them to sleep until an
->> sco_sock_timeout that has started finishes running. But
->> sco_sock_timeout would also sleep until it can grab the lock_sock.
->>
->> Using cancel_delayed_work is fine because sco_sock_timeout does not
->> change from run to run, hence there is no functional difference
->> between:
->> 1. waiting for a timeout to finish running before scheduling another
->> timeout
->> 2. scheduling another timeout while a timeout is running.
->>
->> Link: https://syzkaller.appspot.com/bug?id=9089d89de0502e120f234ca0fc8a703f7368b31e [1]
->> Reported-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
->> Tested-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
->> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
->> ---
->>   net/bluetooth/sco.c | 35 +++++++++++++++++++++++++++++------
->>   1 file changed, 29 insertions(+), 6 deletions(-)
->>
->> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
->> index ffa2a77a3e4c..62e638f971a9 100644
->> --- a/net/bluetooth/sco.c
->> +++ b/net/bluetooth/sco.c
->> @@ -48,6 +48,8 @@ struct sco_conn {
->>   	spinlock_t	lock;
->>   	struct sock	*sk;
->>   
->> +	struct delayed_work	timeout_work;
->> +
->>   	unsigned int    mtu;
->>   };
->>   
->> @@ -74,9 +76,20 @@ struct sco_pinfo {
->>   #define SCO_CONN_TIMEOUT	(HZ * 40)
->>   #define SCO_DISCONN_TIMEOUT	(HZ * 2)
->>   
->> -static void sco_sock_timeout(struct timer_list *t)
->> +static void sco_sock_timeout(struct work_struct *work)
->>   {
->> -	struct sock *sk = from_timer(sk, t, sk_timer);
->> +	struct sco_conn *conn = container_of(work, struct sco_conn,
->> +					     timeout_work.work);
->> +	struct sock *sk;
->> +
->> +	sco_conn_lock(conn);
->> +	sk = conn->sk;
->> +	if (sk)
->> +		sock_hold(sk);
-> 
-> syzbot complains here that sk refcount can be zero at this time.
-> 
-> refcount_t: addition on 0; use-after-free.
-> WARNING: CPU: 0 PID: 10451 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
-> Modules linked in:
-> CPU: 0 PID: 10451 Comm: kworker/0:8 Not tainted 5.14.0-rc7-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Workqueue: events sco_sock_timeout
-> RIP: 0010:refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
-> Code: 09 31 ff 89 de e8 d7 c9 9e fd 84 db 0f 85 36 ff ff ff e8 8a c3 9e fd 48 c7 c7 20 8f e3 89 c6 05 e8 7f 81 09 01 e8 f0 98 16 05 <0f> 0b e9 17 ff ff ff e8 6b c3 9e fd 0f b6 1d cd 7f 81 09 31 ff 89
-> RSP: 0018:ffffc9001766fce8 EFLAGS: 00010282
-> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> RDX: ffff88802cea3880 RSI: ffffffff815d87a5 RDI: fffff52002ecdf8f
-> RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000000
-> R10: ffffffff815d25de R11: 0000000000000000 R12: ffff88806d23ce08
-> R13: ffff8880712c8080 R14: ffff88802edf4500 R15: ffff8880b9c51240
-> FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f3748c20000 CR3: 0000000017644000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   __refcount_add include/linux/refcount.h:199 [inline]
->   __refcount_inc include/linux/refcount.h:250 [inline]
->   refcount_inc include/linux/refcount.h:267 [inline]
->   sock_hold include/net/sock.h:702 [inline]
->   sco_sock_timeout+0x216/0x290 net/bluetooth/sco.c:88
->   process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
->   worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
->   kthread+0x3e5/0x4d0 kernel/kthread.c:319
-> 
-> 
->> +	sco_conn_unlock(conn);
->> +
->> +	if (!sk)
->> +		return;
->>   
->>   	BT_DBG("sock %p state %d", sk, sk->sk_state);
->>   
->> @@ -91,14 +104,21 @@ static void sco_sock_timeout(struct timer_list *t)
->>   
->>   static void sco_sock_set_timer(struct sock *sk, long timeout)
->>   {
->> +	if (!sco_pi(sk)->conn)
->> +		return;
->> +
->>   	BT_DBG("sock %p state %d timeout %ld", sk, sk->sk_state, timeout);
->> -	sk_reset_timer(sk, &sk->sk_timer, jiffies + timeout);
->> +	cancel_delayed_work(&sco_pi(sk)->conn->timeout_work);
->> +	schedule_delayed_work(&sco_pi(sk)->conn->timeout_work, timeout);
-> 
->>   }
->>   
->>   static void sco_sock_clear_timer(struct sock *sk)
->>   {
->> +	if (!sco_pi(sk)->conn)
->> +		return;
->> +
->>   	BT_DBG("sock %p state %d", sk, sk->sk_state);
->> -	sk_stop_timer(sk, &sk->sk_timer);
->> +	cancel_delayed_work(&sco_pi(sk)->conn->timeout_work);
-> 
-> 
->>   }
->>   
->>   /* ---- SCO connections ---- */
->> @@ -179,6 +199,9 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
->>   		bh_unlock_sock(sk);
->>   		sco_sock_kill(sk);
->>   		sock_put(sk);
->> +
->> +		/* Ensure no more work items will run before freeing conn. */
-> 
-> Maybe you should have done this cancel_delayed_work_sync() before the prior sock_put(sk) ?
-> 
->> +		cancel_delayed_work_sync(&conn->timeout_work);
->>   	}
->>   
->>   	hcon->sco_data = NULL;
->> @@ -193,6 +216,8 @@ static void __sco_chan_add(struct sco_conn *conn, struct sock *sk,
->>   	sco_pi(sk)->conn = conn;
->>   	conn->sk = sk;
->>   
->> +	INIT_DELAYED_WORK(&conn->timeout_work, sco_sock_timeout);
->> +
->>   	if (parent)
->>   		bt_accept_enqueue(parent, sk, true);
->>   }
->> @@ -500,8 +525,6 @@ static struct sock *sco_sock_alloc(struct net *net, struct socket *sock,
->>   
->>   	sco_pi(sk)->setting = BT_VOICE_CVSD_16BIT;
->>   
->> -	timer_setup(&sk->sk_timer, sco_sock_timeout, 0);
->> -
->>   	bt_sock_link(&sco_sk_list, sk);
->>   	return sk;
->>   }
->>
-
-Hi Eric,
-
-This actually seems to be a pre-existing error in sco_sock_connect that 
-we now hit in sco_sock_timeout.
-
-Any thoughts on the following patch to address the problem?
-
-Link: 
-https://lore.kernel.org/lkml/20210831065601.101185-1-desmondcheongzx@gmail.com/
+PiBkbWVzZy5nZW5pcnE6RmxhZ3NfbWlzbWF0Y2hfaXJxIyMobWVpX21lKXZzLiMoeGhjaV9oY2Qp
+DQo+IA0KPiBPbiBUdWUsIEF1ZyAzMSwgMjAyMSBhdCAxOjIxIFBNIEJhcnJ5IFNvbmcgPDIxY25i
+YW9AZ21haWwuY29tPiB3cm90ZToNCj4gPg0KPiA+IE9uIE1vbiwgQXVnIDMwLCAyMDIxIGF0IDI6
+MzggQU0ga2VybmVsIHRlc3Qgcm9ib3QNCj4gPG9saXZlci5zYW5nQGludGVsLmNvbT4gd3JvdGU6
+DQo+ID4gPg0KPiA+ID4NCj4gPiA+DQo+ID4gPiBHcmVldGluZywNCj4gPiA+DQo+ID4gPiBGWUks
+IHdlIG5vdGljZWQgdGhlIGZvbGxvd2luZyBjb21taXQgKGJ1aWx0IHdpdGggZ2NjLTkpOg0KPiA+
+ID4NCj4gPiA+IGNvbW1pdDogYTRmYzRjZjM4ODMxOWVhOTU3ZmZiZGFiNTA3M2JkZDI2N2RlOTA4
+MiAoIltQQVRDSCB2MyAzLzNdDQo+ID4gPiBQQ0kvTVNJOiByZW1vdmUgbXNpX2F0dHJpYi5kZWZh
+dWx0X2lycSBpbiBtc2lfZGVzYyIpDQo+ID4gPiB1cmw6DQo+ID4gPiBodHRwczovL2dpdGh1Yi5j
+b20vMGRheS1jaS9saW51eC9jb21taXRzL0JhcnJ5LVNvbmcvUENJLU1TSS1DbGFyaWZ5LQ0KPiA+
+ID4gdGhlLUlSUS1zeXNmcy1BQkktZm9yLVBDSS1kZXZpY2VzLzIwMjEwODI1LTE4MzAxOA0KPiA+
+ID4gYmFzZToNCj4gPiA+IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwv
+Z2l0L3RvcnZhbGRzL2xpbnV4LmdpdA0KPiA+ID4gNmU3NjRiY2QxY2Y3MmEyODQ2YzBlNTNkMzk3
+NWEwOWIyNDJjMDRjOQ0KPiA+ID4NCj4gPiA+IGluIHRlc3RjYXNlOiBrZXJuZWwtc2VsZnRlc3Rz
+DQo+ID4gPiB2ZXJzaW9uOiBrZXJuZWwtc2VsZnRlc3RzLXg4Nl82NC1lYmFhNjAzYi0xXzIwMjEw
+ODI1DQo+ID4gPiB3aXRoIGZvbGxvd2luZyBwYXJhbWV0ZXJzOg0KPiA+ID4NCj4gPiA+ICAgICAg
+ICAgZ3JvdXA6IHBpZGZkDQo+ID4gPiAgICAgICAgIHVjb2RlOiAweGUyDQo+ID4gPg0KPiA+ID4g
+dGVzdC1kZXNjcmlwdGlvbjogVGhlIGtlcm5lbCBjb250YWlucyBhIHNldCBvZiAic2VsZiB0ZXN0
+cyIgdW5kZXIgdGhlDQo+IHRvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzLyBkaXJlY3RvcnkuIFRoZXNl
+IGFyZSBpbnRlbmRlZCB0byBiZSBzbWFsbCB1bml0IHRlc3RzDQo+IHRvIGV4ZXJjaXNlIGluZGl2
+aWR1YWwgY29kZSBwYXRocyBpbiB0aGUga2VybmVsLg0KPiA+ID4gdGVzdC11cmw6IGh0dHBzOi8v
+d3d3Lmtlcm5lbC5vcmcvZG9jL0RvY3VtZW50YXRpb24va3NlbGZ0ZXN0LnR4dA0KPiA+ID4NCj4g
+PiA+DQo+ID4gPiBvbiB0ZXN0IG1hY2hpbmU6IDQgdGhyZWFkcyBJbnRlbChSKSBDb3JlKFRNKSBp
+NS02NTAwIENQVSBAIDMuMjBHSHoNCj4gPiA+IHdpdGggMzJHIG1lbW9yeQ0KPiA+ID4NCj4gPiA+
+IGNhdXNlZCBiZWxvdyBjaGFuZ2VzIChwbGVhc2UgcmVmZXIgdG8gYXR0YWNoZWQgZG1lc2cva21z
+ZyBmb3IgZW50aXJlDQo+IGxvZy9iYWNrdHJhY2UpOg0KPiA+ID4NCj4gPiA+DQo+ID4gPg0KPiA+
+ID4gSWYgeW91IGZpeCB0aGUgaXNzdWUsIGtpbmRseSBhZGQgZm9sbG93aW5nIHRhZw0KPiA+ID4g
+UmVwb3J0ZWQtYnk6IGtlcm5lbCB0ZXN0IHJvYm90IDxvbGl2ZXIuc2FuZ0BpbnRlbC5jb20+DQo+
+ID4gPg0KPiA+ID4NCj4gPiA+DQo+ID4gPiBbICAxNzkuNjAyMDI4XVsgICBUMzRdIGdlbmlycTog
+RmxhZ3MgbWlzbWF0Y2ggaXJxIDE2LiAwMDAwMjAwMCAobWVpX21lKSB2cy4NCj4gMDAwMDAwMDAg
+KHhoY2lfaGNkKQ0KPiA+ID4gWyAgMTc5LjYxNDA3M11bICAgVDM0XSBDUFU6IDIgUElEOiAzNCBD
+b21tOiBrd29ya2VyL3U4OjIgTm90IHRhaW50ZWQNCj4gNS4xNC4wLXJjNy0wMDAxNC1nYTRmYzRj
+ZjM4ODMxICMxDQo+ID4gPiBbICAxNzkuNjIzMjI1XVsgICBUMzRdIEhhcmR3YXJlIG5hbWU6IERl
+bGwgSW5jLiBPcHRpUGxleCA3MDQwLzBZN1dZVCwNCj4gQklPUyAxLjguMSAxMi8wNS8yMDE3DQo+
+ID4gPiBbICAxNzkuNjMxNDMyXVsgICBUMzRdIFdvcmtxdWV1ZTogZXZlbnRzX3VuYm91bmQgYXN5
+bmNfcnVuX2VudHJ5X2ZuDQo+ID4gPiBbICAxNzkuNjM3NTQzXVsgICBUMzRdIENhbGwgVHJhY2U6
+DQo+ID4gPiBbICAxNzkuNjQwNzg5XVsgICBUMzRdICBkdW1wX3N0YWNrX2x2bCsweDQ1LzB4NTkN
+Cj4gPiA+IFsgIDE3OS42NDUyNTNdWyAgIFQzNF0gIF9fc2V0dXBfaXJxLmNvbGQrMHg1MC8weGQ0
+DQo+ID4gPiBbICAxNzkuNjQ5ODkzXVsgICBUMzRdICA/IG1laV9tZV9wZ19leGl0X3N5bmMrMHg0
+ODAvMHg0ODAgW21laV9tZV0NCj4gPiA+IFsgIDE3OS42NTU5MjNdWyAgIFQzNF0gIHJlcXVlc3Rf
+dGhyZWFkZWRfaXJxKzB4MTBjLzB4MTgwDQo+ID4gPiBbICAxNzkuNjYxMDczXVsgICBUMzRdICA/
+IG1laV9tZV9pcnFfcXVpY2tfaGFuZGxlcisweDI0MC8weDI0MA0KPiBbbWVpX21lXQ0KPiA+ID4g
+WyAgMTc5LjY2NzUyOF1bICAgVDM0XSAgbWVpX21lX3Byb2JlKzB4MTMxLzB4MzAwIFttZWlfbWVd
+DQo+ID4gPiBbICAxNzkuNjcyNzY3XVsgICBUMzRdICBsb2NhbF9wY2lfcHJvYmUrMHg0Mi8weDgw
+DQo+ID4gPiBbICAxNzkuNjc3MzEzXVsgICBUMzRdICBwY2lfZGV2aWNlX3Byb2JlKzB4MTA3LzB4
+MWMwDQo+ID4gPiBbICAxNzkuNjgyMTE4XVsgICBUMzRdICByZWFsbHlfcHJvYmUrMHhiNi8weDM4
+MA0KPiA+ID4gWyAgMTc5LjY4NzA5NF1bICAgVDM0XSAgX19kcml2ZXJfcHJvYmVfZGV2aWNlKzB4
+ZmUvMHgxODANCj4gPiA+IFsgIDE3OS42OTIyNDJdWyAgIFQzNF0gIGRyaXZlcl9wcm9iZV9kZXZp
+Y2UrMHgxZS8weGMwDQo+ID4gPiBbICAxNzkuNjk3MTMzXVsgICBUMzRdICBfX2RyaXZlcl9hdHRh
+Y2hfYXN5bmNfaGVscGVyKzB4MmIvMHg4MA0KPiA+ID4gWyAgMTc5LjcwMjgwMl1bICAgVDM0XSAg
+YXN5bmNfcnVuX2VudHJ5X2ZuKzB4MzAvMHgxNDANCj4gPiA+IFsgIDE3OS43MDc2OTNdWyAgIFQz
+NF0gIHByb2Nlc3Nfb25lX3dvcmsrMHgyNzQvMHg1YzANCj4gPiA+IFsgIDE3OS43MTI1MDNdWyAg
+IFQzNF0gIHdvcmtlcl90aHJlYWQrMHg1MC8weDNjMA0KPiA+ID4gWyAgMTc5LjcxNjk1OV1bICAg
+VDM0XSAgPyBwcm9jZXNzX29uZV93b3JrKzB4NWMwLzB4NWMwDQo+ID4gPiBbICAxNzkuNzIxOTM2
+XVsgICBUMzRdICBrdGhyZWFkKzB4MTRmLzB4MTgwDQo+ID4gPiBbICAxNzkuNzI1OTU4XVsgICBU
+MzRdICA/IHNldF9rdGhyZWFkX3N0cnVjdCsweDQwLzB4NDANCj4gPiA+IFsgIDE3OS43MzA5MzVd
+WyAgIFQzNF0gIHJldF9mcm9tX2ZvcmsrMHgyMi8weDMwDQo+ID4gPiBbICAxNzkuNzM1Njk5XVsg
+ICBUMzRdIG1laV9tZSAwMDAwOjAwOjE2LjA6IHJlcXVlc3RfdGhyZWFkZWRfaXJxIGZhaWx1cmUu
+DQo+IGlycSA9IDE2DQo+ID4gPiBbICAxNzkuNzQzMTI1XVsgICBUMzRdIG1laV9tZSAwMDAwOjAw
+OjE2LjA6IGluaXRpYWxpemF0aW9uIGZhaWxlZC4NCj4gPiA+IFsgIDE3OS43NDkzOTldWyAgIFQz
+NF0gbWVpX21lOiBwcm9iZSBvZiAwMDAwOjAwOjE2LjAgZmFpbGVkIHdpdGggZXJyb3IgLTE2DQo+
+ID4gPg0KPiA+ID4NCj4gPg0KPiA+IGl0IHNlZW1zIHRoZXJlIGlzIGEgZGlyZWN0IHJlZmVyZW5j
+ZSB0byBwZGV2LT5pcnEuDQo+ID4gSGkgT2xpdmVyLCB3b3VsZCB5b3UgdHJ5IGlmIHRoZSBiZWxv
+dyBwYXRjaCBjYW4gZml4IHRoZSBwcm9ibGVtOg0KPiANCj4gKyBUb21hcw0KPiANCj4gc29ycnku
+IGFmdGVyIHNlY29uZCBsb29raW5nLCBkcml2ZXJzL21pc2MvbWVpL3BjaS1tZS5jIGhhcyBtYW55
+IHBsYWNlcyB1c2luZw0KPiBwZGV2LT5pcnEgZGlyZWN0bHkuIFdlIHJlYWxseSBuZWVkIHRoaXMg
+ZHJpdmVyJ3MgbWFpbnRhaW5lcnMgdG8gYWRkcmVzcyB0aGUNCj4gcHJvYmxlbS4NCg0KV2lsbCBs
+b29rIGF0IHRoYXQuIA0KPiANCj4gT24gdGhlIG90aGVyIGhhbmQsICJzdHJ1Y3QgbWVpX21lX2h3
+ICpodyIgc2VlbXMgdG8gYmUgdG90YWxseSBub3QgdXNlZCBpbg0KPiB0aGlzIGRyaXZlciBleGNl
+cHQgaGVyZToNCj4gMTY0IHN0YXRpYyBpbnQgbWVpX21lX3Byb2JlKHN0cnVjdCBwY2lfZGV2ICpw
+ZGV2LCBjb25zdCBzdHJ1Y3QNCj4gcGNpX2RldmljZV9pZCAqZW50KQ0KPiAxNjUgew0KPiAxNjYg
+ICAgICAgICBjb25zdCBzdHJ1Y3QgbWVpX2NmZyAqY2ZnOw0KPiAxNjcgICAgICAgICBzdHJ1Y3Qg
+bWVpX2RldmljZSAqZGV2Ow0KPiAxNjggICAgICAgICBzdHJ1Y3QgbWVpX21lX2h3ICpodzsNCj4g
+MTY5ICAgICAgICAgdW5zaWduZWQgaW50IGlycWZsYWdzOw0KPiAxNzAgICAgICAgICBpbnQgZXJy
+Ow0KPiAuLi4uLg0KPiAyMTkgICAgICAgICBody0+aXJxID0gcGRldi0+aXJxOw0KPiAuLi4NCj4g
+DQo+IHRoaXMgbG9va3Mgd3JvbmcuIG1heWJlIHdlIGNhbiBsZXZlcmFnZSBody0+aXJxIGluIG90
+aGVyIHBsYWNlcyBzdWNoIGFzDQo+IHNodXRkb3duLCBzdXNwZW5kLCByZXN1bWUuDQoNCldlIG5l
+ZWQgdGhpcywgdXNhZ2Ugd2lsbCBmb2xsb3cuDQo+IA0KPiBUaGFua3MNCj4gYmFycnkNCj4gDQo+
+IA0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWlzYy9tZWkvcGNpLW1lLmMgYi9kcml2
+ZXJzL21pc2MvbWVpL3BjaS1tZS5jDQo+ID4gaW5kZXggYzMzOTNiMzgzZTU5Li5hNDVhMmQ0MjU3
+YTYgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9taXNjL21laS9wY2ktbWUuYw0KPiA+ICsrKyBi
+L2RyaXZlcnMvbWlzYy9tZWkvcGNpLW1lLmMNCj4gPiBAQCAtMjE2LDcgKzIxNiw3IEBAIHN0YXRp
+YyBpbnQgbWVpX21lX3Byb2JlKHN0cnVjdCBwY2lfZGV2ICpwZGV2LA0KPiA+IGNvbnN0IHN0cnVj
+dCBwY2lfZGV2aWNlX2lkICplbnQpDQo+ID4NCj4gPiAgICAgICAgIHBjaV9lbmFibGVfbXNpKHBk
+ZXYpOw0KPiA+DQo+ID4gLSAgICAgICBody0+aXJxID0gcGRldi0+aXJxOw0KPiA+ICsgICAgICAg
+aHctPmlycSA9IHBjaV9pcnFfdmVjdG9yKHBkZXYsIDApOw0KPiA+DQo+ID4gICAgICAgICAgLyog
+cmVxdWVzdCBhbmQgZW5hYmxlIGludGVycnVwdCAqLw0KPiA+ICAgICAgICAgaXJxZmxhZ3MgPSBw
+Y2lfZGV2X21zaV9lbmFibGVkKHBkZXYpID8gSVJRRl9PTkVTSE9UIDoNCj4gPiBJUlFGX1NIQVJF
+RDsNCj4gPg0KPiA+DQo+ID4gSSBkb24ndCBoYXZlIGFueSBoYXJkd2FyZSB0byB0ZXN0Lg0KDQoN
+CkhhcmQgdG8gYmVsaWV2ZSwgTUVJIGlzIG9uIGV2ZXJ5IEludGVsIGNsaWVudCBwbGF0Zm9ybSA6
+KQ0KDQo+ID4NCj4gPiA+DQo+ID4gPiBUbyByZXByb2R1Y2U6DQo+ID4gPg0KPiA+ID4gICAgICAg
+ICBnaXQgY2xvbmUgaHR0cHM6Ly9naXRodWIuY29tL2ludGVsL2xrcC10ZXN0cy5naXQNCj4gPiA+
+ICAgICAgICAgY2QgbGtwLXRlc3RzDQo+ID4gPiAgICAgICAgIGJpbi9sa3AgaW5zdGFsbCAgICAg
+ICAgICAgICAgICBqb2IueWFtbCAgIyBqb2IgZmlsZSBpcyBhdHRhY2hlZCBpbiB0aGlzIGVtYWls
+DQo+ID4gPiAgICAgICAgIGJpbi9sa3Agc3BsaXQtam9iIC0tY29tcGF0aWJsZSBqb2IueWFtbCAg
+IyBnZW5lcmF0ZSB0aGUgeWFtbCBmaWxlIGZvcg0KPiBsa3AgcnVuDQo+ID4gPiAgICAgICAgIGJp
+bi9sa3AgcnVuICAgICAgICAgICAgICAgICAgICBnZW5lcmF0ZWQteWFtbC1maWxlDQo+ID4gPg0K
+PiA+ID4NCj4gPiA+DQo+ID4gPiAtLS0NCj4gPiA+IDBEQVkvTEtQKyBUZXN0IEluZnJhc3RydWN0
+dXJlICAgICAgICAgICAgICAgICAgIE9wZW4gU291cmNlIFRlY2hub2xvZ3kgQ2VudGVyDQo+ID4g
+PiBodHRwczovL2xpc3RzLjAxLm9yZy9oeXBlcmtpdHR5L2xpc3QvbGtwQGxpc3RzLjAxLm9yZyAg
+ICAgICBJbnRlbCBDb3Jwb3JhdGlvbg0KPiA+ID4NCj4gPiA+IFRoYW5rcywNCj4gPiA+IE9saXZl
+ciBTYW5nDQo+ID4gPg0KPiA+DQo+ID4gVGhhbmtzDQo+ID4gYmFycnkNCg==
