@@ -2,96 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF113FF4A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0063FF4AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345296AbhIBUOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:14:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44148 "EHLO
+        id S1345402AbhIBUPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 16:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345536AbhIBUOW (ORCPT
+        with ESMTP id S232006AbhIBUP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 16:14:22 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0817C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 13:13:23 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id t42so2526985pfg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 13:13:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CLRB1fmY18sRspCB9D7hr3FKnvNokdnWWOzE6+3PPlQ=;
-        b=GmrNngoCk4V04BfxSA0bkXqg0TGLiQdCGNSwC670QeK+u8i3NrdmdCXYpRokKSweO0
-         yumzbdZ4MDej2pXYUcUHRH8wA2U3wnPuHLUDTNQ9KfNu0iSO2SXWLtKUn57y47gPML8M
-         bIGl+e5zYvRxG97IP6R/k1SssxWUy7yXAQT6Dt7JaXtT0cEswmF3TOQpgU6KD9jX5Thf
-         NohTcFr7AjYlqycsmzmtD5z/M7l+x2Z2FOalh1BpC2bt0erayx2Q9t3ydOYez7F06z/B
-         3sKhGwmWb/3jZ+YRbepbeZZoKYrBaw3uYVLvcFzA3287OXtcDYdZYU9UWDVTt2jEeSTy
-         agow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CLRB1fmY18sRspCB9D7hr3FKnvNokdnWWOzE6+3PPlQ=;
-        b=XGHL7V2gDLXmUBrIaC9cRGWaquEpo//EZ6W3uFzVZKge3SNDMBOUUWFuQC9Uh+fGKu
-         3eOR0oC9VnSTBDtLI8/nBlMMFgy8upjFBWvR4KaMHpymqpbXu+TdSTxT85HZzCYGpEBN
-         BC810Ap9ZqLU/3/ydyRX3kJ0GyseJal3/EzEAMfVLPYiZ/uzDaxKHHallXgYsFo+hffk
-         5/n5VWGSvpcmbVgMoBtjyal3klIRkl68/mulgY49KJm2Jx3MYCJyop+/qmMbjPO+Zq+s
-         KDjg5m0cz/hQQWeL07mvzHOCfC6EtPPP5OSuhWRevPgFRu+c8IwO3B8gGMBVAOFMomt0
-         WgEA==
-X-Gm-Message-State: AOAM531mZyBTXaNZ8a2iEmdWPGMGFw6d3ALI74TSuiAuqJ/mx5ZvabTF
-        uMmiJM/bNeY51Mysp+7kS4dUFg==
-X-Google-Smtp-Source: ABdhPJyEAVRd+rq9AbELMXl8dUzDNh8MEn8lpzeau0IqxK3acWf20Q1OkhetryKYRYWDmaHvBo1p+w==
-X-Received: by 2002:a63:f62:: with SMTP id 34mr100328pgp.159.1630613603007;
-        Thu, 02 Sep 2021 13:13:23 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id v20sm3663656pgi.39.2021.09.02.13.13.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 13:13:22 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 20:13:18 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] KVM: Drop unused kvm_dirty_gfn_harvested()
-Message-ID: <YTEwXjghbR3hnHLj@google.com>
-References: <20210901230506.13362-1-peterx@redhat.com>
- <87y28flyxj.fsf@vitty.brq.redhat.com>
- <YTD+eBj+9+mb9LVg@google.com>
- <87r1e7lycp.fsf@vitty.brq.redhat.com>
- <YTErzxipuwv7X0Qk@t490s>
+        Thu, 2 Sep 2021 16:15:29 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7F6C061575;
+        Thu,  2 Sep 2021 13:14:31 -0700 (PDT)
+Date:   Thu, 02 Sep 2021 20:14:28 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630613669;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8M5OQNfh6zIuqhmTJRFXBuA6eSxSmLe7bUbOqe0KhGk=;
+        b=Mv8WomProfj1Ikx1VhD6kwujiI0KhKA+wmR98+vDWx1QuzF/JA8iYrBV58BfHRKXudsjKP
+        U6UVzY0mMwwvGo++oWgAdiiZjyez9kX6LZzXJpQwp7CQAcIzpdRN8jQzv6WHIwXZD2DfTx
+        y9qTam3b0FLf4SzSUqHIarbtlpeS22okYkDUhfbITeggo6HdtRR2eSNxa10N11+bBHOUfg
+        SBbdvRLOgcnl3HtnMjMtXTGEeODPfyG4aN7+tVO4OGZsqqakFIp8Mzw10iz9+6TxV1qOkl
+        46Dl9T3XSkE7ym2QZe8AjK4F3G0dD36GhkwWbrs6nRpGVURf1jwQMfBODNiR5A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630613669;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8M5OQNfh6zIuqhmTJRFXBuA6eSxSmLe7bUbOqe0KhGk=;
+        b=6oBeH9jxbZ9oUWgb7+r+ure11B+aKwhLeL1NHspGDT3/XMhBFI1R8SBlwR1YaDbb9Ctv9R
+        3kUiDfGNhjrQhIBQ==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] futex: Avoid redundant task lookup
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210902094414.676104881@linutronix.de>
+References: <20210902094414.676104881@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTErzxipuwv7X0Qk@t490s>
+Message-ID: <163061366865.25758.11390998302035041038.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021, Peter Xu wrote:
-> On Thu, Sep 02, 2021 at 06:46:14PM +0200, Vitaly Kuznetsov wrote:
-> > Sean Christopherson <seanjc@google.com> writes:
-> > 
-> > > On Thu, Sep 02, 2021, Vitaly Kuznetsov wrote:
-> > >> Peter Xu <peterx@redhat.com> writes:
-> > >> 
-> > >> > Drop the unused function as reported by test bot.
-> > >> 
-> > >> Your subject line says "Drop unused kvm_dirty_gfn_harvested()" while in
-> > >> reallity you drop "kvm_dirty_gfn_invalid()".
-> > >
-> > > Heh, Peter already sent v2[*].  Though that's a good reminder that it's helpful
-> > > to reviewers to respond to your own patch if there's a fatal mistake and you're
-> > > going to immediately post a new version.  For tiny patches it's not a big deal,
-> > > but for larger patches it can avoid wasting reviewers' time.
-> > >
-> > 
-> > Indeed. It's also a good reminder for reviewers that inbox is best
-> > treated like a stack and not like a queue :-)
-> 
-> It should really be a queue, to be fair. :)
+The following commit has been merged into the locking/urgent branch of tip:
 
-Ya, a queue plus a deferred work queue for things that can't be handled in
-interrupt context ;-)
+Commit-ID:     340576590dac4bb58d532a8ad5bfa806d8ab473c
+Gitweb:        https://git.kernel.org/tip/340576590dac4bb58d532a8ad5bfa806d8ab473c
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Thu, 02 Sep 2021 11:48:51 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Thu, 02 Sep 2021 22:07:18 +02:00
+
+futex: Avoid redundant task lookup
+
+No need to do the full VPID based task lookup and validation of the top
+waiter when the user space futex was acquired on it's behalf during the
+requeue_pi operation. The task is known already and it cannot go away
+before requeue_pi_wake_futex() has been invoked.
+
+Split out the actual attach code from attach_pi_state_owner() and use that
+instead of the full blown variant.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20210902094414.676104881@linutronix.de
+
+
+---
+ kernel/futex.c | 67 +++++++++++++++++++++++++++----------------------
+ 1 file changed, 37 insertions(+), 30 deletions(-)
+
+diff --git a/kernel/futex.c b/kernel/futex.c
+index 82cd270..a316dce 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1263,6 +1263,36 @@ static int handle_exit_race(u32 __user *uaddr, u32 uval,
+ 	return -ESRCH;
+ }
+ 
++static void __attach_to_pi_owner(struct task_struct *p, union futex_key *key,
++				 struct futex_pi_state **ps)
++{
++	/*
++	 * No existing pi state. First waiter. [2]
++	 *
++	 * This creates pi_state, we have hb->lock held, this means nothing can
++	 * observe this state, wait_lock is irrelevant.
++	 */
++	struct futex_pi_state *pi_state = alloc_pi_state();
++
++	/*
++	 * Initialize the pi_mutex in locked state and make @p
++	 * the owner of it:
++	 */
++	rt_mutex_init_proxy_locked(&pi_state->pi_mutex, p);
++
++	/* Store the key for possible exit cleanups: */
++	pi_state->key = *key;
++
++	WARN_ON(!list_empty(&pi_state->list));
++	list_add(&pi_state->list, &p->pi_state_list);
++	/*
++	 * Assignment without holding pi_state->pi_mutex.wait_lock is safe
++	 * because there is no concurrency as the object is not published yet.
++	 */
++	pi_state->owner = p;
++
++	*ps = pi_state;
++}
+ /*
+  * Lookup the task for the TID provided from user space and attach to
+  * it after doing proper sanity checks.
+@@ -1272,7 +1302,6 @@ static int attach_to_pi_owner(u32 __user *uaddr, u32 uval, union futex_key *key,
+ 			      struct task_struct **exiting)
+ {
+ 	pid_t pid = uval & FUTEX_TID_MASK;
+-	struct futex_pi_state *pi_state;
+ 	struct task_struct *p;
+ 
+ 	/*
+@@ -1324,36 +1353,11 @@ static int attach_to_pi_owner(u32 __user *uaddr, u32 uval, union futex_key *key,
+ 		return ret;
+ 	}
+ 
+-	/*
+-	 * No existing pi state. First waiter. [2]
+-	 *
+-	 * This creates pi_state, we have hb->lock held, this means nothing can
+-	 * observe this state, wait_lock is irrelevant.
+-	 */
+-	pi_state = alloc_pi_state();
+-
+-	/*
+-	 * Initialize the pi_mutex in locked state and make @p
+-	 * the owner of it:
+-	 */
+-	rt_mutex_init_proxy_locked(&pi_state->pi_mutex, p);
+-
+-	/* Store the key for possible exit cleanups: */
+-	pi_state->key = *key;
+-
+-	WARN_ON(!list_empty(&pi_state->list));
+-	list_add(&pi_state->list, &p->pi_state_list);
+-	/*
+-	 * Assignment without holding pi_state->pi_mutex.wait_lock is safe
+-	 * because there is no concurrency as the object is not published yet.
+-	 */
+-	pi_state->owner = p;
++	__attach_to_pi_owner(p, key, ps);
+ 	raw_spin_unlock_irq(&p->pi_lock);
+ 
+ 	put_task_struct(p);
+ 
+-	*ps = pi_state;
+-
+ 	return 0;
+ }
+ 
+@@ -1464,11 +1468,14 @@ static int futex_lock_pi_atomic(u32 __user *uaddr, struct futex_hash_bucket *hb,
+ 		 * @task is guaranteed to be alive and it cannot be exiting
+ 		 * because it is either sleeping or waiting in
+ 		 * futex_requeue_pi_wakeup_sync().
++		 *
++		 * No need to do the full attach_to_pi_owner() exercise
++		 * because @task is known and valid.
+ 		 */
+ 		if (set_waiters) {
+-			 ret = attach_to_pi_owner(uaddr, newval, key, ps,
+-						  exiting);
+-			 WARN_ON(ret);
++			raw_spin_lock_irq(&task->pi_lock);
++			__attach_to_pi_owner(task, key, ps);
++			raw_spin_unlock_irq(&task->pi_lock);
+ 		}
+ 		return 1;
+ 	}
