@@ -2,141 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C03823FEA51
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 09:59:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0997E3FEA54
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 10:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbhIBIAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 04:00:48 -0400
-Received: from verein.lst.de ([213.95.11.211]:50414 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233362AbhIBIAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 04:00:44 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 4E9586736F; Thu,  2 Sep 2021 09:59:39 +0200 (CEST)
-Date:   Thu, 2 Sep 2021 09:59:39 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Tianyu Lan <ltykernel@gmail.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "pgonda@google.com" <pgonda@google.com>,
-        "martin.b.radev@gmail.com" <martin.b.radev@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
-        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
-        "saravanand@fb.com" <saravanand@fb.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>
-Subject: Re: [PATCH V4 00/13] x86/Hyper-V: Add Hyper-V Isolation VM support
-Message-ID: <20210902075939.GB14986@lst.de>
-References: <20210827172114.414281-1-ltykernel@gmail.com> <20210830120036.GA22005@lst.de> <MWHPR21MB15933503E7C324167CB4132CD7CC9@MWHPR21MB1593.namprd21.prod.outlook.com>
+        id S243708AbhIBIBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 04:01:04 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34678 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243607AbhIBIBD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 04:01:03 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B3953224A5;
+        Thu,  2 Sep 2021 08:00:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1630569604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wG5ludP/4gEC4SIqeHD4LJedSIA+YmEOtAhafiN+9Bc=;
+        b=ljz7RDfQQWWZGl2/9ptgiitKdg3yYD5U31/Vmt3t2TM19StScduna3l6L+5HLZDLcy1gwt
+        2hyIlqAR3MsZXf5JYdZ9Z5tlmipu1kVbr7ed6aYymiRDkJr3WZCAEnIZgg1ko92vdMui+x
+        a1+TBNnSCYge+Q0kZLuAJbrk75sIMfQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1630569604;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wG5ludP/4gEC4SIqeHD4LJedSIA+YmEOtAhafiN+9Bc=;
+        b=wall8DtTRhiFL3sM/yMG4YyVJjGyqY362o5tkQlIroCT3FR0bLID1USPceriXe54lIryct
+        go7i+GvcntJLvHAA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 96F6213A75;
+        Thu,  2 Sep 2021 08:00:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 2ZstJISEMGFDQgAAGKfGzw
+        (envelope-from <vbabka@suse.cz>); Thu, 02 Sep 2021 08:00:04 +0000
+Message-ID: <e6f6fb85-1d83-425b-9e36-b5784cc9e69a@suse.cz>
+Date:   Thu, 2 Sep 2021 10:00:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB15933503E7C324167CB4132CD7CC9@MWHPR21MB1593.namprd21.prod.outlook.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [RFC PATCH 2/2] lib, stackdepot: Add helper to print stack
+ entries.
+Content-Language: en-US
+To:     imran.f.khan@oracle.com, geert@linux-m68k.org,
+        akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Alexander Potapenko <glider@google.com>
+References: <20210901051914.971603-1-imran.f.khan@oracle.com>
+ <20210901051914.971603-3-imran.f.khan@oracle.com>
+ <f425e27a-8f4a-7687-589e-b726085c5c7a@suse.cz>
+ <9527f084-4d60-2a85-f4e3-8e16cf7aad08@oracle.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <9527f084-4d60-2a85-f4e3-8e16cf7aad08@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 05:16:19PM +0000, Michael Kelley wrote:
-> As a quick overview, I think there are four places where the
-> shared_gpa_boundary must be applied to adjust the guest physical
-> address that is used.  Each requires mapping a corresponding
-> virtual address range.  Here are the four places:
+On 9/2/21 02:11, imran.f.khan@oracle.com wrote:
+> Hi Vlastimil,
 > 
-> 1)  The so-called "monitor pages" that are a core communication
-> mechanism between the guest and Hyper-V.  These are two single
-> pages, and the mapping is handled by calling memremap() for
-> each of the two pages.  See Patch 7 of Tianyu's series.
+> On 1/9/21 7:07 pm, Vlastimil Babka wrote:
+>> On 9/1/21 07:19, Imran Khan wrote:
+>>> To print a stack entries, users of stackdepot, first
+>>> use stack_depot_fetch to get a list of stack entries
+>>> and then use stack_trace_print to print this list.
+>>> Provide a helper in stackdepot to print stack entries
+>>> based on stackdepot handle.
+>>>
+>>> Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
+>>> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+>>
+>> You should convert existing users together with the patch that introduces
+>> the helper. I think print_stack() in mm/kasan/report.c, and
+>> __dump_page_owner() could use this.
+>>
+> 
+> Okay. I have done this in v2 of the patch set. BTW I also see some users
+> (one place in page owner, rest all in some gpu drivers) of stack_depot_fetch
+> + stack_trace_snprintf. Could you please let me know if it would be okay to
+> add a helper corresponding to stack_trace_snprintf as well.
 
-Ah, interesting.
-
-> 3)  The network driver send and receive buffers.  vmap_phys_range()
-> should work here.
-
-Actually it won't.  The problem with these buffers is that they are
-physically non-contiguous allocations.  We really have two sensible
-options:
-
- 1) use vmap_pfn as in the current series.  But in that case I think
-    we should get rid of the other mapping created by vmalloc.  I
-    though a bit about finding a way to apply the offset in vmalloc
-    itself, but I think it would be too invasive to the normal fast
-    path.  So the other sub-option would be to allocate the pages
-    manually (maybe even using high order allocations to reduce TLB
-    pressure) and then remap them
- 2) do away with the contiguous kernel mapping entirely.  This means
-    the simple memcpy calls become loops over kmap_local_pfn.  As
-    I just found out for the send side that would be pretty easy,
-    but the receive side would be more work.  We'd also need to check
-    the performance implications.
-
-> 4) The swiotlb memory used for bounce buffers.  vmap_phys_range()
-> should work here as well.
-
-Or memremap if it works for 1.
-
-> Case #2 above does unusual mapping.  The ring buffer consists of a ring
-> buffer header page, followed by one or more pages that are the actual
-> ring buffer.  The pages making up the actual ring buffer are mapped
-> twice in succession.  For example, if the ring buffer has 4 pages
-> (one header page and three ring buffer pages), the contiguous
-> virtual mapping must cover these seven pages:  0, 1, 2, 3, 1, 2, 3.
-> The duplicate contiguous mapping allows the code that is reading
-> or writing the actual ring buffer to not be concerned about wrap-around
-> because writing off the end of the ring buffer is automatically
-> wrapped-around by the mapping.  The amount of data read or
-> written in one batch never exceeds the size of the ring buffer, and
-> after a batch is read or written, the read or write indices are adjusted
-> to put them back into the range of the first mapping of the actual
-> ring buffer pages.  So there's method to the madness, and the
-> technique works pretty well.  But this kind of mapping is not
-> amenable to using vmap_phys_range().
-
-Hmm.  Can you point me to where this is mapped?  Especially for the
-classic non-isolated case where no vmap/vmalloc mapping is involved
-at all?
+Yeah looks like that would make sense too, i915 even has this as
+__print_depot_stack(). Thanks.
