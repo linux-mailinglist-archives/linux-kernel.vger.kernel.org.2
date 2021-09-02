@@ -2,171 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574683FF5B5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A799F3FF5B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347444AbhIBVja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:39:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35914 "EHLO
+        id S1347494AbhIBVko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:40:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347069AbhIBVj3 (ORCPT
+        with ESMTP id S1347069AbhIBVkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:39:29 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A0CC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:38:30 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id d5so2314591pjx.2
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:38:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XAVKUYQj+y0aHlDsMuwQRtXtekPEP3GaQHKhvci9zCc=;
-        b=BsC8e7/IPAUVyOmLsfsZS4cNOu3rDeFoMkJRDJiBK7MKiWrwojy2RlVOQgGIDrYvBp
-         CXRJSOz3Vp+Q25sMBjo8CLxlirW/pCpSyqHFeeBPMjae/OOAZEP4L5Gt9IZyWoQwThex
-         PkWHCxxVM1tOvlHrYL0H99gZ9VQMW0oc962UzBSzlSV4ytUWh2IuxGvK+icru3LKLUsg
-         q3TOfXV8pvxK/8sRgvNayzmCf6dtoztdLpDvxaLn5OZwomu4BLlXblZrrZUvxCbcYZFH
-         sg7NXHERVcIalxYhndZP0Hiv9z40ZdhVP3eYA9SX/arRegAkUdC3xK8hjq2hGIjJUqxb
-         PtAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XAVKUYQj+y0aHlDsMuwQRtXtekPEP3GaQHKhvci9zCc=;
-        b=TWj38nqLJm1r5Kl8GMUPy4Vh5p7nSh4sAIe2GF1psCGWO7ETRiHwMmD3w07SPU2jTH
-         AamMWv6X3Riv7fJHLhxXVdRjMfN3DoTezPjNv8TMHmtEs79gpbypqb9GYK68JCxXfMcc
-         MeJXYg7LPu72HVKxPf/syQFXKcWiujV1eFGNFl+CUm5OA1kBIi1Al2mMfidoXT3m5ar6
-         rIirjkGVGUjHFmdf02Nj2TzutrZQxLYr/R2BGSOdXqb2nobiW+IRRQMOSuNAh6dLbxI7
-         3TuG/imGqoIKHkErPWoRmdY6IhNYk3h9LQbQ0FOZnPPpQz1xodOqQu+oSK6ShLgoGDK8
-         spcg==
-X-Gm-Message-State: AOAM532NSNX48vrzvWGrRESFCHT6csIn8XVk+ryCjN/C+iK6wObh+Evb
-        EozRVLXVRQHhG+klFCC/2CkhuA==
-X-Google-Smtp-Source: ABdhPJzeLRhYVtk7E31sohG+Cbp0WZ5nszCMPGF2I7t97uxYs/StEtFzGwnAM6MJTJZuf1ikMk3y5w==
-X-Received: by 2002:a17:90b:4a03:: with SMTP id kk3mr231648pjb.30.1630618710262;
-        Thu, 02 Sep 2021 14:38:30 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id b5sm3003604pjq.2.2021.09.02.14.38.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 14:38:29 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 21:38:26 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Avi Kivity <avi@redhat.com>, kvm@vger.kernel.org
-Subject: Re: [PATCH 1/7] KVM: X86: Fix missed remote tlb flush in
- rmap_write_protect()
-Message-ID: <YTFEUmrjcyI9V1z9@google.com>
-References: <20210824075524.3354-1-jiangshanlai@gmail.com>
- <20210824075524.3354-2-jiangshanlai@gmail.com>
+        Thu, 2 Sep 2021 17:40:43 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712F7C061575;
+        Thu,  2 Sep 2021 14:39:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=V1+vIKjg/39N9wEqABCFQYZvJXbwgTWmoMxbO0j5aDk=; b=CN3i3OWLNd1CWwwDit/hAwsGP
+        4cTjFplU/3UT0XEuH7nXlWiVvI3lF334gGhyLFPFGycKRTk0udNezn46YD02UsPcQW1Be89YE0bv5
+        BtUE8s44GNx7pQgjA9CqHR9WUttGFV12H5/KsHIcHFHAR+GBQzf7DSPJXohYqZQ91L+nINAH+VvGe
+        Ofelk+ncqgkEporAWT5xcpwgO6egn4qUBKVMI9WnAAAuv+19beLr3het2Mb8XlqVWcQZ96D0G9LZl
+        VeuWS+N2e4zAiWoKo2T2Zdxs0WlLvbWuHtbZf7vM+D9cEhikVMjHCUS6spWvLzZD73YVtWQGys1Yx
+        2eiAVnlOA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48114)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mLuQv-00024z-Uj; Thu, 02 Sep 2021 22:39:41 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mLuQu-0008Fl-QW; Thu, 02 Sep 2021 22:39:40 +0100
+Date:   Thu, 2 Sep 2021 22:39:40 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        netdev@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [RFC PATCH net-next 0/3] Make the PHY library stop being so
+ greedy when binding the generic PHY driver
+Message-ID: <20210902213940.GP22278@shell.armlinux.org.uk>
+References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
+ <20210902121927.GE22278@shell.armlinux.org.uk>
+ <20210902123532.ruvuecxoig67yv5v@skbuf>
+ <YTEvFR2WGQmG3h/C@lunn.ch>
+ <20210902203248.dy5b6ismgb55s5cd@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210824075524.3354-2-jiangshanlai@gmail.com>
+In-Reply-To: <20210902203248.dy5b6ismgb55s5cd@skbuf>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> 
-> When kvm->tlbs_dirty > 0, some rmaps might have been deleted
-> without flushing tlb remotely after kvm_sync_page().  If @gfn
-> was writable before and it's rmaps was deleted in kvm_sync_page(),
-> we need to flush tlb too even if __rmap_write_protect() doesn't
-> request it.
-> 
-> Fixes: 4731d4c7a077 ("KVM: MMU: out of sync shadow core")
+On Thu, Sep 02, 2021 at 11:32:48PM +0300, Vladimir Oltean wrote:
+> But these patches also solve DSA's issue with the circular dependency
+> between the switch and its internal PHYs, and nobody seems to have asked
+> the most important question: why?
 
-Should be
+Surely you specified that in your cover message and in the patch
+that actually fixes the problem, as one always should do.
 
-Fixes: a4ee1ca4a36e ("KVM: MMU: delay flush all tlbs on sync_page path")
-
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 4853c033e6ce..313918df1a10 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -1420,6 +1420,14 @@ bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
->  			rmap_head = gfn_to_rmap(gfn, i, slot);
->  			write_protected |= __rmap_write_protect(kvm, rmap_head, true);
->  		}
-> +		/*
-> +		 * When kvm->tlbs_dirty > 0, some rmaps might have been deleted
-> +		 * without flushing tlb remotely after kvm_sync_page().  If @gfn
-> +		 * was writable before and it's rmaps was deleted in kvm_sync_page(),
-> +		 * we need to flush tlb too.
-> +		 */
-> +		if (min_level == PG_LEVEL_4K && kvm->tlbs_dirty)
-> +			write_protected = true;
->  	}
->  
->  	if (is_tdp_mmu_enabled(kvm))
-> @@ -5733,6 +5741,14 @@ void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
->  		flush = slot_handle_level(kvm, memslot, slot_rmap_write_protect,
->  					  start_level, KVM_MAX_HUGEPAGE_LEVEL,
->  					  false);
-> +		/*
-> +		 * When kvm->tlbs_dirty > 0, some rmaps might have been deleted
-> +		 * without flushing tlb remotely after kvm_sync_page().  If @gfn
-> +		 * was writable before and it's rmaps was deleted in kvm_sync_page(),
-> +		 * we need to flush tlb too.
-> +		 */
-> +		if (start_level == PG_LEVEL_4K && kvm->tlbs_dirty)
-> +			flush = true;
->  		write_unlock(&kvm->mmu_lock);
->  	}
-
-My vote is to do a revert of a4ee1ca4a36e with slightly less awful batching, and
-then improve the batching even further if there's a noticeable loss of performance
-(or just tell people to stop using shadow paging :-D).  Zapping SPTEs but not
-flushing is just asking for these types of whack-a-mole bugs.
-
-E.g. instead of a straight revert, do this for sync_page():
-
-diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-index 50ade6450ace..1fca27a08c00 100644
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -1095,13 +1095,7 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
-                        return 0;
-
-                if (FNAME(prefetch_invalid_gpte)(vcpu, sp, &sp->spt[i], gpte)) {
--                       /*
--                        * Update spte before increasing tlbs_dirty to make
--                        * sure no tlb flush is lost after spte is zapped; see
--                        * the comments in kvm_flush_remote_tlbs().
--                        */
--                       smp_wmb();
--                       vcpu->kvm->tlbs_dirty++;
-+                       set_spte_ret |= SET_SPTE_NEED_REMOTE_TLB_FLUSH;
-                        continue;
-                }
-
-@@ -1116,12 +1110,7 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
-
-                if (gfn != sp->gfns[i]) {
-                        drop_spte(vcpu->kvm, &sp->spt[i]);
--                       /*
--                        * The same as above where we are doing
--                        * prefetch_invalid_gpte().
--                        */
--                       smp_wmb();
--                       vcpu->kvm->tlbs_dirty++;
-+                       set_spte_ret |= SET_SPTE_NEED_REMOTE_TLB_FLUSH;
-                        continue;
-                }
-
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
