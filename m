@@ -2,122 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3387C3FE742
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 03:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F783FE749
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 03:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232868AbhIBBpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 21:45:09 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:50373 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232249AbhIBBpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 21:45:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630547048;
-        bh=NuRwbu7de8byElVZzBMKg3pNIEyi41fKQhrIZwjdqVk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uyHBypnb12dseI+aFeaWaE+vjczLuqQy5MeZhpdnt2ExpcTDdaeirxgGKMtWlanL4
-         T+/62rKzZbnLubrPd6lShqGvnIOhPelMtNEAUlIPo9v+9SvYiXx8t5P8o+2UIfAMu2
-         ZbIGKV7jR2lFwXZwkd6f60BT2s7zrBOGD8i9w8ft7On6EbrygtrBaWUzKUltKLCx7+
-         UnN0L6cSK6LVDMSwb2UAy3SstHZnvNLOA9kZpqyLp3tUdtr2creDIhDUd6xVibWy7R
-         oPU4/AF19W/qxwT9oOwn6Amg2x8xUetVRoAFcskyuPZw9TlzzArAJoMnGAh+ZhKPgw
-         BUeRO6BYPRQOQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H0Nxy1KFvz9sCD;
-        Thu,  2 Sep 2021 11:44:05 +1000 (AEST)
-Date:   Thu, 2 Sep 2021 11:44:05 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Mark Brown <broonie@kernel.org>, Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        John Stultz <john.stultz@linaro.org>
-Subject: Re: linux-next: manual merge of the drm tree with the qcom/for-next
- tree
-Message-ID: <20210902114346.430e7ba2@elm.ozlabs.ibm.com>
-In-Reply-To: <20210726163814.6483-1-broonie@kernel.org>
-References: <20210726163814.6483-1-broonie@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Q5w3+hlLAetVcLJKtBO9Vme";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S231658AbhIBBwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 21:52:55 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:50934 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229910AbhIBBwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 21:52:54 -0400
+X-Greylist: delayed 332 seconds by postgrey-1.27 at vger.kernel.org; Wed, 01 Sep 2021 21:52:53 EDT
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-01 (Coremail) with SMTP id qwCowACXeHHXLDBhbQY2AQ--.58084S2;
+        Thu, 02 Sep 2021 09:46:02 +0800 (CST)
+From:   jiasheng <jiasheng@iscas.ac.cn>
+To:     linux-kernel@vger.kernel.org
+Cc:     jiasheng <jiasheng@iscas.ac.cn>
+Subject: [PATCH 9/9] x86/microcode/amd: Add __list_del_entry_valid() in front of __list_del() in free_cache()
+Date:   Thu,  2 Sep 2021 01:45:56 +0000
+Message-Id: <1630547156-3731187-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: qwCowACXeHHXLDBhbQY2AQ--.58084S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKw4DGFy3AF1fKF1UAr1rXrb_yoWkWFc_Xa
+        4kJw18Wr4xJF9IqrsrAw48WFy3Aw15tFnYqryIq345t345KF15Aa17tayYgry3WrWktFZ8
+        Zr98AF47GF1kWjkaLaAFLSUrUUUU0b8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbhkFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
+        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx
+        8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIF
+        xwCY1x0262kKe7AKxVWUtVW8ZwCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2IqxV
+        CFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18
+        MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr4
+        1lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l
+        IxAIcVCF04k26cxKx2IYs7xG6r4j6FyUMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4
+        A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUqfOwUUUUU=
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Q5w3+hlLAetVcLJKtBO9Vme
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+We have found that in the complied files __list_del()
+appear more than 100 times, and under at least 90% circumstances
+that __list_del_entry_valid() and __list_del() appear in pairs.
+For example, they appear together in the __list_del_entry()
+of the header file, 'include/linux/list.h'.
+But we have found that in the free_cache(), there is only
+__list_del() instead of the pair.
+Therefore, we consider that the __list_del_entry_valid()
+might be forgotten.
 
-Hi all,
+Signed-off-by: jiasheng <jiasheng@iscas.ac.cn>
+---
+ arch/x86/kernel/cpu/microcode/amd.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On Mon, 26 Jul 2021 17:38:14 +0100 Mark Brown <broonie@kernel.org> wrote:
->=20
-> Today's linux-next merge of the drm tree got a conflict in:
->=20
->   drivers/firmware/Makefile
->=20
-> between commit:
->=20
->   b42000e4b874 ("firmware: qcom_scm: Allow qcom_scm driver to be loadable=
- as a permenent module")
->=20
-> from the qcom/for-next tree and commits:
->=20
->   8633ef82f101 ("drivers/firmware: consolidate EFI framebuffer setup for =
-all arches")
->   d391c5827107 ("drivers/firmware: move x86 Generic System Framebuffers s=
-upport")
->=20
-> from the drm tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
-> diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
-> index 3c2af2e98def..5ced0673d94b 100644
-> --- a/drivers/firmware/Makefile
-> +++ b/drivers/firmware/Makefile
-> @@ -19,6 +19,8 @@ obj-$(CONFIG_RASPBERRYPI_FIRMWARE) +=3D raspberrypi.o
->  obj-$(CONFIG_FW_CFG_SYSFS)	+=3D qemu_fw_cfg.o
->  obj-$(CONFIG_QCOM_SCM)		+=3D qcom-scm.o
->  qcom-scm-objs +=3D qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
-> +obj-$(CONFIG_SYSFB)		+=3D sysfb.o
-> +obj-$(CONFIG_SYSFB_SIMPLEFB)	+=3D sysfb_simplefb.o
->  obj-$(CONFIG_TI_SCI_PROTOCOL)	+=3D ti_sci.o
->  obj-$(CONFIG_TRUSTED_FOUNDATIONS) +=3D trusted_foundations.o
->  obj-$(CONFIG_TURRIS_MOX_RWTM)	+=3D turris-mox-rwtm.o
+diff --git a/arch/x86/kernel/cpu/microcode/amd.c b/arch/x86/kernel/cpu/microcode/amd.c
+index 3d4a483..1987ee1 100644
+--- a/arch/x86/kernel/cpu/microcode/amd.c
++++ b/arch/x86/kernel/cpu/microcode/amd.c
+@@ -626,6 +626,8 @@ static void free_cache(void)
+ 	struct ucode_patch *p, *tmp;
+ 
+ 	list_for_each_entry_safe(p, tmp, &microcode_cache, plist) {
++		if (!__list_del_entry_valid(p->plist))
++			continue;
+ 		__list_del(p->plist.prev, p->plist.next);
+ 		kfree(p->data);
+ 		kfree(p);
+-- 
+2.7.4
 
-This is now a conflict between the arm-soc tree and Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Q5w3+hlLAetVcLJKtBO9Vme
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmEwLGUACgkQAVBC80lX
-0GxsNAf9HtMmr/YzsLeSPdGg3EE57M4qQCg9drEy1J/d2jc0kz4XT+n/frtOWJeh
-33CLNmuUsolbWf40TRAeBAf8dl+16LS82KSoNNqo1W1n0A5bk5glJKWp3vKsh8KJ
-ottOVtMGeZK2SF6Xk2VO0dV2J+yzU/I/tQYcbjrmVlpUkX8XInkf7vsX+N4m4lc1
-ZoiQzM5YE6ZdhbuMveMpFQYjqfDNDQbjX168WNqbhtPAsvdds+exbc3hlZ0A8pMq
-AVt3gb/uk5b1XrOGlnlOqEoRlimUKzbDQamOVRHLPRkkbPvNGVx/WR6t2eAAyMEj
-nvqf8fJfF32GHVUcrIbnIGPaLP6Z6g==
-=zodR
------END PGP SIGNATURE-----
-
---Sig_/Q5w3+hlLAetVcLJKtBO9Vme--
