@@ -2,70 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185EE3FF2FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4249C3FF309
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346831AbhIBSIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 14:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42922 "EHLO
+        id S1346911AbhIBSM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 14:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229939AbhIBSIG (ORCPT
+        with ESMTP id S1346898AbhIBSMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:08:06 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E618C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 11:07:08 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id x6so4326575wrv.13
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 11:07:08 -0700 (PDT)
+        Thu, 2 Sep 2021 14:12:54 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3ED3C061760;
+        Thu,  2 Sep 2021 11:11:55 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id n4so1710374plh.9;
+        Thu, 02 Sep 2021 11:11:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=VaeIxrk/6Nw2kjpBf6wZSjNPNqUx/LY9ZdDQ4jd7ONU=;
-        b=d0HbppynzoWSkMLT0QJoHJtopI9UfD0rweTavN9snfY60GRgPRXMdRGx6Si9Y9EgOa
-         gpvixKYnaiREsr1L8Qq5KqrkGkrdR0WMTrAxKLJLsfvM8cKbNaNsOPSe7Iu/W7Ns/VuR
-         XSC6fNyM94Mj6DTs//BjL9av/QqGHmj83Z0mDo0KXjHnJytOZQUNpYW6zuCDJRW7rCJf
-         2/vFjZwBhKan9Myz4sEFpl0wOs3m1+1d3RxX9cE1wM9Jqv4oS2/6yzykNqh2FUGQVHBA
-         WNN4iVNJfTQgEcULOxh5EGn684q3VEdSkxWjxaVa7YFm9hYaYRsPlIqog7EHCUy63Hlg
-         S5lQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=x8mcWyM7ld5BFaHR/hqJRtA5/ybLclhzA9CEtyCDlE0=;
+        b=pNBDSAhU+x6hiGldE98Yt4lF6DSsMuKbIuhIugukPr3PpPv6mPllgTE8KBy0446Rey
+         1J1CPpdt2V2SwQb09y85JVrYGoNMqp/spezwNPG53GyUOdCGt/k8Q4u+tMAoxR9hiqzI
+         LvFN64xuQB5boMo7pCNFUIVA0KahOfKmlfs9Fna+ccDypx17jhFONiIngPL1q1+LgL4s
+         EicE4hbOcesN6en43x4lx7hwVu4nPav+OtABJ6azrlYfl9N8jLVmLk7ejerfRw1QSlHH
+         a4tNeIHQkcZFKl9p/JXnklwGIHko4tO6ZNt2mWE1a0FTWSgUj1ynTnG5tVUCGkx4cjIf
+         bDsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=VaeIxrk/6Nw2kjpBf6wZSjNPNqUx/LY9ZdDQ4jd7ONU=;
-        b=pwUk/BoEVEEmRdES30D6TxXuwlHs5yKrluHtyH70RX/KQk//W2PNbnS1ZcE6OYiR2a
-         mThKj/acKY7gGFriPwdtO3mVH5zRuFAQFmYdv2wtXILDVO4gV1O0mx0a2Ci3VXT40dGr
-         1KlYZmshSyEXUqpb5jvx1d5qmtXyHshXG7QxiY6UrMWdQ749inS025BLkNOaWkZGDA7f
-         vstL2u45NgWiSmDU7IY2+eXIAC2WSSrMX83j7l/M5Qa4AwTYc8kB7Pgs8sLBhMO5f063
-         XNoRfySUuw7r+bVscjuuUoF+toLFbOy6EDw9BgK+jp/5FPix5744EzDHED30wZalyoc/
-         NGHw==
-X-Gm-Message-State: AOAM5313GzEtCV73pYQrQSdQvxUCfLn3ZRhTYWRWuWxhh/e5iDrJfxK5
-        DLkooRJOu2LOioK2uY8yhVh8zRZOb402Nq2Wgso=
-X-Google-Smtp-Source: ABdhPJzfdpCtrJ3B5z3WryxiSh8smxVxu3Mp25C3eDrTzYyIO3OiBqy3ZzHQiVGI9gE0aK67hsPy/NrBzFzQJRGD8BE=
-X-Received: by 2002:adf:f7ce:: with SMTP id a14mr5333010wrq.174.1630606026772;
- Thu, 02 Sep 2021 11:07:06 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=x8mcWyM7ld5BFaHR/hqJRtA5/ybLclhzA9CEtyCDlE0=;
+        b=gBLztpEAjOkMKxVd2vTnHjNQNMkeNJ2YKNRNaACFM3EvaVrsLKjVmkoA0CaMR1ogm/
+         RnCYSF/xhMfD6m/yL+gdsS72yq0aoN9/6P56ENBokmKS+69psymUYJaOjvT9Ay/+9Q9+
+         R+8wLdBLwZIhsxKHNZjfB67BIpglH30UZdhccOkh0NO8x9SFlC+0TA0uAMr0+tibM23v
+         HTwE3NNoO5wgZzBfapO0mGQxgkXgN31YJpOYZWvwNuqr1iO1dIyxKI/hQnAztE7qWh6N
+         F9dHpk1yFC0wS8Gch6pCpSFjJn7p0ycFZS39L/naZHA1HRICEF6hxA0dKJh1AXj9oyDc
+         pTbA==
+X-Gm-Message-State: AOAM530zOVG3xX3b0ySWTqNT9sUVuUXhx9uHtWbiMcM51oGG356yUTuF
+        2YW9qLJblkIiAJr4DdPoNb4=
+X-Google-Smtp-Source: ABdhPJzxrS/g/O3rgmVbFC64kd0LIoDxabN8omFxdIOqCQWpbb45DFSVKjGOmI9yV73K+KLQUwvt2g==
+X-Received: by 2002:a17:90b:3b82:: with SMTP id pc2mr5255527pjb.224.1630606314857;
+        Thu, 02 Sep 2021 11:11:54 -0700 (PDT)
+Received: from [10.69.44.239] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id h127sm2896583pfe.191.2021.09.02.11.11.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 11:11:54 -0700 (PDT)
+Subject: Re: [PATCH] scsi: lpfc: remove unneeded variable
+To:     cgel.zte@gmail.com, james.smart@broadcom.com
+Cc:     dick.kennedy@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chi Minghao <chi.minghao@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cm>
+References: <20210831114058.17817-1-lv.ruyi@zte.com.cn>
+From:   James Smart <jsmart2021@gmail.com>
+Message-ID: <4a9cee32-5585-a3e0-aff2-3d3989a1b13f@gmail.com>
+Date:   Thu, 2 Sep 2021 11:11:48 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Received: by 2002:a5d:684d:0:0:0:0:0 with HTTP; Thu, 2 Sep 2021 11:07:06 -0700 (PDT)
-Reply-To: abraaahammorrison@gmail.com
-From:   Abraham Morrison <sambchambers06@gmail.com>
-Date:   Thu, 2 Sep 2021 11:07:06 -0700
-Message-ID: <CA+RS1P2B9sWUjtBSmF7NG9AfstuWKhVyoaBq0Rdt4an0Of=BeQ@mail.gmail.com>
-Subject: Good day!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210831114058.17817-1-lv.ruyi@zte.com.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hej! Jeg er advokat. Abraham Morrison, jeg har vigtige oplysninger til
-dig. S=C3=A5 hvis du er interesseret, s=C3=A5 kontakt mig for flere detalje=
-r
-Tak skal du have.
-Advokat. Abraham Morrison.
-..........................
-Hello!, I am Barrister. Abraham Morrison, I have an important
-information for you. So if you are interested please get back to me
-for more details
-Thank you.
-Barrister. Abraham Morrison.
+On 8/31/2021 4:40 AM, cgel.zte@gmail.com wrote:
+> From: Chi Minghao <chi.minghao@zte.com.cn>
+> 
+> Fix the following coccicheck REVIEW:
+> ./drivers/scsi/lpfc/lpfc_scsi.c:1498:9-12 REVIEW Unneeded variable
+> 
+> Reported-by: Zeal Robot <zealci@zte.com.cm>
+> Signed-off-by: Chi Minghao <chi.minghao@zte.com.cn>
+> ---
+>   drivers/scsi/lpfc/lpfc_scsi.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+
+Looks Good - Thanks!
+
+Reviewed-by: James Smart <jsmart2021@gmail.com>
+
+-- james
