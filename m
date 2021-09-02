@@ -2,241 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574663FECDB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 713163FECDE
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245379AbhIBLWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 07:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33306 "EHLO
+        id S245564AbhIBLYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 07:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244843AbhIBLWb (ORCPT
+        with ESMTP id S233850AbhIBLYE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 07:22:31 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D540C061757;
-        Thu,  2 Sep 2021 04:21:33 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 8so1555916pga.7;
-        Thu, 02 Sep 2021 04:21:33 -0700 (PDT)
+        Thu, 2 Sep 2021 07:24:04 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506BCC061575;
+        Thu,  2 Sep 2021 04:23:06 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id x11so3577037ejv.0;
+        Thu, 02 Sep 2021 04:23:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uvXbklsYzxIxtTfrV32ffa9Nuwizcf2v49dwd36P0II=;
-        b=l3pHshNaH16SxCRdn9z7Xh25o4zr254bVE4gj2gcLe03eGaxqkakkGTJFxJqfTpw1V
-         mgl7jhuQxVjIwW/UeX7ktsAfn4KtTM1QiXhueAKmpi1umldFhOhm/opbthWUVENXfmXz
-         sByuEIse1tA9cQPTkGsfIdaE+UkFVQTBoS0K+F+XP4S1/PfM9AjDF1PXXeVM/2D0/+Wg
-         GFVcsUwXqGqAsvdSyylORw5dpuBcJnKleE7Htyj6/Iy7J3TtLZUSPSx2JgomTUK9XCbK
-         tkwtRAK0M+aqYoU4ijzQ2mRPYIgBubcVFek78cQ2L31j1R5JU4P5nO/87EvlyqPdofPx
-         bNug==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bA3KMNCP9BXiZxejsxnWqc0d9EYiWZElfEzOCuWentM=;
+        b=ABtUgCe9VKFRhX8EWEuH2OFMqROtWMQvOQKK0UYMjDs60tlzup0QSpQqijqN91szXe
+         W5xWVUqnB1tQuXsoxOndiic7p2rx0e7WDD8ozKE6Tz4/RwDv+jbqNyglAwpLOV2SINR1
+         mljpReBPxhzRUZ/Jy1LXaQiAsGjvjIZQ7gVUP+aQUjhfewmFKjFTu8psOFezcn81vlqh
+         9zZDdqC1ozCtDgpc6lwEJnR3BALk/ajnG5/iXsWB+mMnCX3qFPfdGLenYJaWBQNjZ5Cn
+         +0sTTajNZmLxC8oEvVQCXce5CtL6K7Fw/Dgd+7f4Lfz9jru+L2UZCHIyAhhOeMwF8cd1
+         452A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uvXbklsYzxIxtTfrV32ffa9Nuwizcf2v49dwd36P0II=;
-        b=WZbksE7b07f64CHLut5tSDP3DDRjRp+pMquyfQy+UYrd7OqldYY4IKA7ylQp618A6d
-         3IveHo6rrEFSl91VTl4v3UioEiInylDC3TWCgEh+2BdJRz/0or7754Wo5G7w9ac147ZB
-         X3sXpuVE5yym8MBYauOLmVpogSyivldv0PoEtrDyMPPdydpajvbu1XOou/mFQZw0NJS0
-         kW+6UO4sBMx6gNhiOT+ZSbFZJ5bIPqos12M1jRCs6o5/1wdD6qdBVIN69syBwaKMmlVq
-         6xQNTAIcRreM4BsGjllzMZFo9/TTiF6M7vZo3/qLiRksMsN61ioXh1aDLKC2LDkqGP+p
-         Gi8A==
-X-Gm-Message-State: AOAM533zE6OWbbn50yKRn0cL5IOQ601LbTCNmXE28ze4pFw0kpYCeLpF
-        MNij6O0DmWafLbPZY+XPc+8=
-X-Google-Smtp-Source: ABdhPJxldFu1U8M2V5yK1yTHMDs9K9anELSSV02bNY0qtLdwF/4+Etf8R4JVmeL3O1gUAcLcNnmdKQ==
-X-Received: by 2002:a63:5b08:: with SMTP id p8mr2815838pgb.28.1630581692705;
-        Thu, 02 Sep 2021 04:21:32 -0700 (PDT)
-Received: from ?IPv6:2404:f801:0:5:8000::50b? ([2404:f801:9000:1a:efea::50b])
-        by smtp.gmail.com with ESMTPSA id j6sm2394666pgq.0.2021.09.02.04.21.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 04:21:32 -0700 (PDT)
-Subject: Re: [PATCH V4 00/13] x86/Hyper-V: Add Hyper-V Isolation VM support
-To:     Christoph Hellwig <hch@lst.de>,
-        Michael Kelley <mikelley@microsoft.com>
-Cc:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "pgonda@google.com" <pgonda@google.com>,
-        "martin.b.radev@gmail.com" <martin.b.radev@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
-        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
-        "saravanand@fb.com" <saravanand@fb.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>
-References: <20210827172114.414281-1-ltykernel@gmail.com>
- <20210830120036.GA22005@lst.de>
- <MWHPR21MB15933503E7C324167CB4132CD7CC9@MWHPR21MB1593.namprd21.prod.outlook.com>
- <20210902075939.GB14986@lst.de>
-From:   Tianyu Lan <ltykernel@gmail.com>
-Message-ID: <dc124c3d-a316-d36e-3ae4-21674280f55d@gmail.com>
-Date:   Thu, 2 Sep 2021 19:21:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bA3KMNCP9BXiZxejsxnWqc0d9EYiWZElfEzOCuWentM=;
+        b=Z/WFqvijVqWIrXgXwuKBbLYcwDO9sxmy/DmvnIymijzzdaSIPIuq4zR1QJkMA2tgl3
+         uxFMeokpMbUuwoOk7mC4Rnvp7l65ECWfbD4EeG5i/XA/TgInqr6TpfqbIDeafuyZKHEj
+         gdwJROMeXQffF4YsRzDODoRGxCB41lLct/9phqgLUtjNxyj1HkSCOucQCEk6qoKcicUG
+         /Mj7viZ1t0ATwqrz3go6kY22w4LxROliz/wZkO22GvNThQ9aOMW7xN+bERE/h577Vn6Q
+         Somqdc0KRlVjix3/1aAmg+K+/XgOlosjBjjaMeIpv6TR5eTvXYIS9C+QTu0vXC9ndN8c
+         nkGQ==
+X-Gm-Message-State: AOAM530f4p9XFEhduQwPJtoKBgFdzVseVjpkfFy3643h1+UbvedNAyMG
+        gLj/JW0aOHyiISkpZgKvjrdc3hvs98wKoWnOgcM=
+X-Google-Smtp-Source: ABdhPJxQz6IhBsVj7dVlr3w4kxOx+GTP4wWqcVCqugA3BWC6SUSXKeqp0vfDHtD0Cx4AwYzwlO7WTarg2u5EZwsXwx4=
+X-Received: by 2002:a17:906:5950:: with SMTP id g16mr3245400ejr.135.1630581784830;
+ Thu, 02 Sep 2021 04:23:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210902075939.GB14986@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210714032340.504836-1-mudongliangabcd@gmail.com>
+ <CAD-N9QXWHeNvR06wyg3Pym8xUb27TsuFKKKG=tZ0-x5ZGCr-Hw@mail.gmail.com>
+ <CAD-N9QWj8w-xVAni2cGHyEei78iKEX_V0a00r0x3We7tfFGZjw@mail.gmail.com>
+ <YTCp6d1umr7AXRZW@kroah.com> <20210902125416.1ad73fad@coco.lan>
+ <CAD-N9QVZQo+YPjNwAUqg-kQ_fEwicLR=1am1E99h8oHi0aXocA@mail.gmail.com>
+ <CAD-N9QXPJz60jKfHg1Yh6tnzJRBFAwkmV+LUoSY+f7cZ_5kYww@mail.gmail.com> <2c3e496a-fdc7-020b-4234-58441e766f7d@xs4all.nl>
+In-Reply-To: <2c3e496a-fdc7-020b-4234-58441e766f7d@xs4all.nl>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Thu, 2 Sep 2021 19:22:38 +0800
+Message-ID: <CAD-N9QX7q3wTdTUC_b2fEn1txjEjdgmtx2eaX9ymxAp_vUfxiA@mail.gmail.com>
+Subject: Re: [PATCH] media: usb: fix memory leak in stk_camera_probe
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Pavel Skripkin <paskripkin@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 2, 2021 at 7:15 PM Hans Verkuil <hverkuil@xs4all.nl> wrote:
+>
+> On 02/09/2021 13:10, Dongliang Mu wrote:
+> > On Thu, Sep 2, 2021 at 6:59 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> >>
+> >> On Thu, Sep 2, 2021 at 6:54 PM Mauro Carvalho Chehab <mchehab@kernel.org> wrote:
+> >>>
+> >>> Em Thu, 2 Sep 2021 12:39:37 +0200
+> >>> Greg KH <gregkh@linuxfoundation.org> escreveu:
+> >>>
+> >>>> On Thu, Sep 02, 2021 at 06:23:36PM +0800, Dongliang Mu wrote:
+> >>>>> On Fri, Jul 23, 2021 at 6:11 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> >>>>>>
+> >>>>>> On Wed, Jul 14, 2021 at 11:23 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> >>>>>>>
+> >>>>>>> stk_camera_probe mistakenly execute usb_get_intf and increase the
+> >>>>>>> refcount of interface->dev.
+> >>>>>>>
+> >>>>>>> Fix this by removing the execution of usb_get_intf.
+> >>>>>>
+> >>>>>> Any idea about this patch?
+> >>>>>
+> >>>>> +cc Dan Carpenter, gregkh
+> >>>>>
+> >>>>> There is no reply in this thread in one month. Can someone give some
+> >>>>> feedback on this patch?
+> >>>>
+> >>>> This is the media developers domain, not much I can do here.
+> >>>
+> >>> There is a high volume of patches for the media subsystem. Anyway,
+> >>> as your patch is at our patchwork instance:
+> >>>
+> >>>         https://patchwork.linuxtv.org/project/linux-media/patch/20210714032340.504836-1-mudongliangabcd@gmail.com/
+> >>>
+> >>> It should be properly tracked, and likely handled after the end of
+> >>> the merge window.
+> >
+> > Hi Mauro,
+> >
+> > I found there is another fix [1] for the same memory leak from Pavel
+> > Skripkin (already cc-ed in this thread).
+> >
+> > [1] https://www.spinics.net/lists/stable/msg479628.html
+>
+> Ah, that's why I marked it as Obsoleted :-)
 
+Oh, I see. If that patch is already merged, please remark my patch as Obsoleted.
 
-On 9/2/2021 3:59 PM, Christoph Hellwig wrote:
-> On Tue, Aug 31, 2021 at 05:16:19PM +0000, Michael Kelley wrote:
->> As a quick overview, I think there are four places where the
->> shared_gpa_boundary must be applied to adjust the guest physical
->> address that is used.  Each requires mapping a corresponding
->> virtual address range.  Here are the four places:
->>
->> 1)  The so-called "monitor pages" that are a core communication
->> mechanism between the guest and Hyper-V.  These are two single
->> pages, and the mapping is handled by calling memremap() for
->> each of the two pages.  See Patch 7 of Tianyu's series.
-> 
-> Ah, interesting.
-> 
->> 3)  The network driver send and receive buffers.  vmap_phys_range()
->> should work here.
-> 
-> Actually it won't.  The problem with these buffers is that they are
-> physically non-contiguous allocations.  We really have two sensible
-> options:
-> 
->   1) use vmap_pfn as in the current series.  But in that case I think
->      we should get rid of the other mapping created by vmalloc.  I
->      though a bit about finding a way to apply the offset in vmalloc
->      itself, but I think it would be too invasive to the normal fast
->      path.  So the other sub-option would be to allocate the pages
->      manually (maybe even using high order allocations to reduce TLB
->      pressure) and then remap them
+Curiously, I did not get an email notification to mark my patch as
+Obsoleted before. Why?
 
-Agree. In such case, the map for memory below shared_gpa_boundary is not 
-necessary. allocate_pages() is limited by MAX_ORDER and needs to be 
-called repeatedly to get enough memory.
-
->   2) do away with the contiguous kernel mapping entirely.  This means
->      the simple memcpy calls become loops over kmap_local_pfn.  As
->      I just found out for the send side that would be pretty easy,
->      but the receive side would be more work.  We'd also need to check
->      the performance implications.
-
-kmap_local_pfn() requires pfn with backing struct page and this doesn't 
-work pfn above shared_gpa_boundary.
-> 
->> 4) The swiotlb memory used for bounce buffers.  vmap_phys_range()
->> should work here as well.
-> 
-> Or memremap if it works for 1.
-
-Now use vmap_pfn() and the hv map function is reused in the netvsc driver.
-
-> 
->> Case #2 above does unusual mapping.  The ring buffer consists of a ring
->> buffer header page, followed by one or more pages that are the actual
->> ring buffer.  The pages making up the actual ring buffer are mapped
->> twice in succession.  For example, if the ring buffer has 4 pages
->> (one header page and three ring buffer pages), the contiguous
->> virtual mapping must cover these seven pages:  0, 1, 2, 3, 1, 2, 3.
->> The duplicate contiguous mapping allows the code that is reading
->> or writing the actual ring buffer to not be concerned about wrap-around
->> because writing off the end of the ring buffer is automatically
->> wrapped-around by the mapping.  The amount of data read or
->> written in one batch never exceeds the size of the ring buffer, and
->> after a batch is read or written, the read or write indices are adjusted
->> to put them back into the range of the first mapping of the actual
->> ring buffer pages.  So there's method to the madness, and the
->> technique works pretty well.  But this kind of mapping is not
->> amenable to using vmap_phys_range().
-> 
-> Hmm.  Can you point me to where this is mapped?  Especially for the
-> classic non-isolated case where no vmap/vmalloc mapping is involved
-> at all?
-> 
-
-This is done via vmap() in the hv_ringbuffer_init()
-
-182/* Initialize the ring buffer. */
-183int hv_ringbuffer_init(struct hv_ring_buffer_info *ring_info,
-184                       struct page *pages, u32 page_cnt, u32 
-max_pkt_size)
-185{
-186        int i;
-187        struct page **pages_wraparound;
-188
-189        BUILD_BUG_ON((sizeof(struct hv_ring_buffer) != PAGE_SIZE));
-190
-191        /*
-192         * First page holds struct hv_ring_buffer, do wraparound 
-mapping for
-193         * the rest.
-194         */
-195        pages_wraparound = kcalloc(page_cnt * 2 - 1, sizeof(struct 
-page *),
-196                                   GFP_KERNEL);
-197        if (!pages_wraparound)
-198                return -ENOMEM;
-199
-/* prepare to wrap page array */
-200        pages_wraparound[0] = pages;
-201        for (i = 0; i < 2 * (page_cnt - 1); i++)
-202                pages_wraparound[i + 1] = &pages[i % (page_cnt - 1) + 1];
-203
-/* map */
-204        ring_info->ring_buffer = (struct hv_ring_buffer *)
-205                vmap(pages_wraparound, page_cnt * 2 - 1, VM_MAP, 
-PAGE_KERNEL);
-206
-207        kfree(pages_wraparound);
-208
-209
-210        if (!ring_info->ring_buffer)
-211                return -ENOMEM;
-212
-213        ring_info->ring_buffer->read_index =
-214                ring_info->ring_buffer->write_index = 0;
-
-
+>
+> Regards,
+>
+>         Hans
+>
+> >
+> >>>
+> >>>>>>> Reported-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> >>>>>>> Fixes: 0aa77f6c2954 ("[media] move the remaining USB drivers to drivers/media/usb")
+> >>>>>>> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> >>>
+> >>> If you're the author of the patch, it doesn't make much sense to
+> >>> add a "Reported-by:" tag there. We only use it in order to give
+> >>> someone's else credit to report an issue.
+> >>
+> >> I see. Someone told me this rule in another thread. I will update this
+> >> in the next version.
+> >>
+> >>>
+> >>> Thanks,
+> >>> Mauro
+>
