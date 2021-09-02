@@ -2,72 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F4B3FE732
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 03:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFDA3FE735
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 03:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235258AbhIBBfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 21:35:10 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:36391 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232666AbhIBBfJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 21:35:09 -0400
-Received: by mail-il1-f199.google.com with SMTP id s15-20020a056e02216f00b002276040aa1dso129397ilv.3
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 18:34:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=eCBaAjhiQ9w8mLGGTf4y2S5ooafVmimcQTh9DS+sy1I=;
-        b=LXWPL7WoJOBNt6Vf2hIwuNqT0nle7rwTRxttl7/QicXOPBwkBam1QmxcYsUvbpqoPu
-         QqK5Bx6gNlk/KoI9o9vHXH2fQKxAaci3MqHowbR2aCB29sVZUH1AuQZYsYkLYO5AtqfJ
-         XD25kq3nP/vTIFmb4oshsv3E7jILcoMcYgdscwFmgcpITakHvpeVY3vEA6wBSZam6s4z
-         HNei5sLc965Nkd55xaUyepTeNRRGto+UaJACdvsvGlQkEQB639HXZeXh2LNp5b/MEWs3
-         mwqesn8Yjf3HMK58wfnQYpyGePdGsNYEV+gs9GLw25ty4ukeVSzHAwfsFZvZBYuDM6ei
-         55vQ==
-X-Gm-Message-State: AOAM532hPskyEerCCKHaV9p75sayvODsPepFp8lCMxOD0xMLzPhoRKgS
-        3YlFEtZsJZEsr1Pvw9TS5zQ22rmSXlG86Xac/a4mdXMRkrwQ
-X-Google-Smtp-Source: ABdhPJy7YbQOhifggTgvwQ1ZQFRbtvh13nQVZvAK1NEPE5pzyvQ0i+/WLbSyJhTpVilAxNa9Vy7XmtqTqrokDGUVsBCjNxA6Uq17
+        id S229871AbhIBBhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 21:37:05 -0400
+Received: from mga06.intel.com ([134.134.136.31]:44648 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229454AbhIBBhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 21:37:00 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="279935094"
+X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
+   d="scan'208";a="279935094"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 18:36:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,370,1620716400"; 
+   d="scan'208";a="532561828"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 01 Sep 2021 18:35:58 -0700
+Date:   Thu, 2 Sep 2021 09:35:58 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Michal Koutn?? <mkoutny@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        andi.kleen@intel.com, kernel test robot <oliver.sang@intel.com>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>
+Subject: Re: [mm] 2d146aa3aa: vm-scalability.throughput -36.4% regression
+Message-ID: <20210902013558.GA97410@shbuild999.sh.intel.com>
+References: <20210816032855.GB72770@shbuild999.sh.intel.com>
+ <YRrbpRsvdDoom9iG@cmpxchg.org>
+ <20210817024500.GC72770@shbuild999.sh.intel.com>
+ <20210817164737.GA23342@blackbody.suse.cz>
+ <20210818023004.GA17956@shbuild999.sh.intel.com>
+ <YSzwWIeapkzNElwV@blackbook>
+ <20210831063036.GA46357@shbuild999.sh.intel.com>
+ <20210831092304.GA17119@blackbody.suse.cz>
+ <20210901045032.GA21937@shbuild999.sh.intel.com>
+ <877dg0wcrr.fsf@linux.intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5e:d60e:: with SMTP id w14mr638638iom.135.1630546451511;
- Wed, 01 Sep 2021 18:34:11 -0700 (PDT)
-Date:   Wed, 01 Sep 2021 18:34:11 -0700
-In-Reply-To: <000000000000b1c39505c99bd67c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000840d605caf92e8e@google.com>
-Subject: Re: [syzbot] INFO: task can't die in __lock_sock
-From:   syzbot <syzbot+7d51f807c81b190a127d@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, desmondcheongzx@gmail.com,
-        johan.hedberg@gmail.com, kuba@kernel.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, luiz.von.dentz@intel.com,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877dg0wcrr.fsf@linux.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Wed, Sep 01, 2021 at 08:12:24AM -0700, Andi Kleen wrote:
+> Feng Tang <feng.tang@intel.com> writes:
+> >
+> > Yes, the tests I did is no matter where the 128B padding is added, the
+> > performance can be restored and even improved.
+> 
+> I wonder if we can find some cold, rarely accessed, data to put into the
+> padding to not waste it. Perhaps some name strings? Or the destroy
+> support, which doesn't sound like its commonly used.
 
-commit b7ce436a5d798bc59e71797952566608a4b4626b
-Author: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Date:   Tue Aug 10 04:14:09 2021 +0000
+Yes, I tried to move 'destroy_work', 'destroy_rwork' and 'parent' over
+before the 'refcnt' together with some padding, it restored the performance
+to about 10~15% regression. (debug patch pasted below)
 
-    Bluetooth: switch to lock_sock in RFCOMM
+But I'm not sure if we should use it, before we can fully explain the
+regression.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16f90ffe300000
-start commit:   29ce8f970107 Merge git://git.kernel.org/pub/scm/linux/kern..
-git tree:       net-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15f90ffe300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11f90ffe300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d2f9d4c9ff8c5ae7
-dashboard link: https://syzkaller.appspot.com/bug?extid=7d51f807c81b190a127d
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1630a66d300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16d07c6d300000
+Thanks,
+Feng
 
-Reported-by: syzbot+7d51f807c81b190a127d@syzkaller.appspotmail.com
-Fixes: b7ce436a5d79 ("Bluetooth: switch to lock_sock in RFCOMM")
+commit a308d90b0d1973eb75551540a7aa849cabc8b8af
+Author: Feng Tang <feng.tang@intel.com>
+Date:   Sat Aug 14 16:18:43 2021 +0800
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+    move the member around
+    
+    Signed-off-by: Feng Tang <feng.tang@intel.com>
+
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index f9fb7f0..255f668 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -139,10 +139,21 @@ struct cgroup_subsys_state {
+ 	/* PI: the cgroup that this css is attached to */
+ 	struct cgroup *cgroup;
+ 
++	struct cgroup_subsys_state *parent;
++
+ 	/* PI: the cgroup subsystem that this css is attached to */
+ 	struct cgroup_subsys *ss;
+ 
+-	unsigned long pad[16];
++	/* percpu_ref killing and RCU release */
++	struct work_struct destroy_work;
++	struct rcu_work destroy_rwork;
++
++	unsigned long pad[2]; /* 128 bytes */
+ 
+ 	/* reference count - access via css_[try]get() and css_put() */
+ 	struct percpu_ref refcnt;
+@@ -176,6 +187,7 @@ struct cgroup_subsys_state {
+ 	 */
+ 	atomic_t online_cnt;
+ 
++	#if 0
+ 	/* percpu_ref killing and RCU release */
+ 	struct work_struct destroy_work;
+ 	struct rcu_work destroy_rwork;
+@@ -185,6 +197,7 @@ struct cgroup_subsys_state {
+ 	 * fields of the containing structure.
+ 	 */
+ 	struct cgroup_subsys_state *parent;
++	#endif
+ };
+ 
+ /*
+
+
+> -Andi
