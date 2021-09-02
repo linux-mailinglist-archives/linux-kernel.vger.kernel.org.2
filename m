@@ -2,201 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 997B33FE838
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 05:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7153FE770
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbhIBEAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 00:00:43 -0400
-Received: from relay.sw.ru ([185.231.240.75]:48800 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229447AbhIBEAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 00:00:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=upkI/3W7x0d0zZ6Re3NlTckFDILn9HoqyiQaDKPP9jc=; b=jfbIZJMptO5+4qIVO
-        cj8cagCILXH9CGVNjrG9snvxDBPHNyHDyuiQUikFLxpuqquxpvMfII3aDr8xbWhyY2LWEESnnZZbB
-        Oo3bt6rdfHTq/iHpCRYooK++TrJrAHPCJ4MyOP6PzZI//yDfCdbqLP9+BVJZzRmbkLPeFTgmb0VOk
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mLdsv-000Xd8-Nl; Thu, 02 Sep 2021 06:59:29 +0300
-Subject: Re: [PATCH net-next v4] skb_expand_head() adjust skb->truesize
- incorrectly
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Christoph Paasch <christoph.paasch@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-        kernel@openvz.org, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Julian Wiedmann <jwi@linux.ibm.com>
-References: <b653692b-1550-e17a-6c51-894832c56065@virtuozzo.com>
- <ee5b763a-c39d-80fd-3dd4-bca159b5f5ac@virtuozzo.com>
- <ce783b33-c81f-4760-1f9e-90b7d8c51fd7@gmail.com>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <b7c2cb05-7307-f04e-530e-89fc466aa83f@virtuozzo.com>
-Date:   Thu, 2 Sep 2021 06:59:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S232948AbhIBCKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 22:10:42 -0400
+Received: from mail-dm6nam11on2127.outbound.protection.outlook.com ([40.107.223.127]:62439
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232517AbhIBCKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 22:10:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FS49ErYsP+jqq0zlrsjohJEg7iFc+nHaIYr3cZOWLHn6ATNocW50VqkDAG9S175QbGlqx69xKvMeG7EG6LN0wmP2OPyk3lX62L33Wt+eDtJjWGDm4JTy2y/kEwT2mz0PcC9txPY7uuaGSlyBX43xvgZH6QQ7XzswPdEDpdSKK131bqsoUiMyWgQUllmQ8ZeGEoxc/a4iW/0PO/XfTBcLvW5wfALhJMUh6JyKvLUWf6QXY35QjLMUQVDLyYK1rbzTXzb0P50pr9FJUe/MMKmgrvlCygHL8wvIDz2pfuhOpjBnF+z/q1zTkI4Plqase/4kgkR9pMVd23PPt4654F5gRg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qrpuFmjL5FzZ2YOQmrFPRHu1YbgqBCZci4SrJE0dtY0=;
+ b=ZWaGF3SfRqc6UDx9Qex2bJk6Z+eCkVpRgpoqujkjrbYslo8H1yIeb+t9teQoBn4q1b8kJnzX9O22LJ/WjxP9XASVSwnn3fcxN3zevM4glh5W0WyVMu0vUeGHD7uu+nQxZiSWos915eFEhVZXohq+34//eYp72FTg4GRJZi3j+STo0P66+NsZ3OeU5ITK0IU91zTM5ev/I82evaTwDBydvlWBLIySVwQQaDMAoKcyOjSvrMxpx7vUkTuKU05Zl1IBDmynmCTgKootDLxHTqc5lvWvBufWartJO9fLKLT7M0eKwyxWHT8CJT56nfLYYtnAcvcBA7x6C5PW2mZt/SLFuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qrpuFmjL5FzZ2YOQmrFPRHu1YbgqBCZci4SrJE0dtY0=;
+ b=BxwP5a4JE1OYYHKxFAgsfJ7oe8qDwSQzg75XeRQ68j0wwudogKX13DQ6zOiH0CslbdwmiEjc8uTWUFXfjcfqRN4ugIMHS6A2QAgdh+eJTLDAuYtyX9dolLLfFBRiYqx5T9AOLwVGkN3mPhKhL3RYioPlZ9yF1JiDmqAcWIvjGDY=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from MWHPR0101MB3165.prod.exchangelabs.com (2603:10b6:301:2f::19) by
+ MW2PR0102MB3529.prod.exchangelabs.com (2603:10b6:302:2::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4457.23; Thu, 2 Sep 2021 02:09:40 +0000
+Received: from MWHPR0101MB3165.prod.exchangelabs.com
+ ([fe80::ed89:1b21:10f4:ed56]) by MWHPR0101MB3165.prod.exchangelabs.com
+ ([fe80::ed89:1b21:10f4:ed56%3]) with mapi id 15.20.4478.019; Thu, 2 Sep 2021
+ 02:09:39 +0000
+Date:   Thu, 2 Sep 2021 10:08:06 +0000
+From:   Huang Shijie <shijie@os.amperecomputing.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Shijie Huang <shijie@amperemail.onmicrosoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Frank Wang <zwang@amperecomputing.com>
+Subject: Re: Is it possible to implement the per-node page cache for
+ programs/libraries?
+Message-ID: <YTCihsPZL0HtO2lp@hsj>
+References: <a2f423cf-9413-6bc8-e4d8-92374fc0449e@amperemail.onmicrosoft.com>
+ <YS8HpUz9FUcFWt0V@zeniv-ca.linux.org.uk>
+ <CAHk-=wiwAC8L7UsRsd-sHNS8ZETbrTB0EELvYV1qMOUo86R7kg@mail.gmail.com>
+ <CAHk-=wjAPEs3HRGswJ-AE1R048j2MBsBtMfg3GOsaFykHoeKsg@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjAPEs3HRGswJ-AE1R048j2MBsBtMfg3GOsaFykHoeKsg@mail.gmail.com>
+X-ClientProxiedBy: CH0PR03CA0075.namprd03.prod.outlook.com
+ (2603:10b6:610:cc::20) To MWHPR0101MB3165.prod.exchangelabs.com
+ (2603:10b6:301:2f::19)
 MIME-Version: 1.0
-In-Reply-To: <ce783b33-c81f-4760-1f9e-90b7d8c51fd7@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from hsj (180.167.209.74) by CH0PR03CA0075.namprd03.prod.outlook.com (2603:10b6:610:cc::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.18 via Frontend Transport; Thu, 2 Sep 2021 02:09:36 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9c07b6aa-2003-40c4-09f3-08d96db6b870
+X-MS-TrafficTypeDiagnostic: MW2PR0102MB3529:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW2PR0102MB3529DF36B5E20447F0FEFFAEEDCE9@MW2PR0102MB3529.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jBwJzt199XW/Oci/bUZjCRG0aJyLB3KcxOFeTE+DZzWhuYl59Ls8plmSGQFKYeNHGwMbFlhHS5Sai/kT464ViLrWcfDzEp2brv8I+eWnKey01h/dcqfBdPyOVx4zLdc3bDgH7CjjR9LNnge0cG4l2J9i2P4Bp6ecBrGkZOFLrVM97tdEpx9FOBo/KvkfJf83j/NAE3cSSVG6Q1J+XX+cn7uJXODAFc5DuyJETfcWkTqsepFWJttiHrSvSXrlBbpb8JtmBhy70hljfZ+UbR7Hj7GRij5Zm0zY5X6S8rPHWLLrosqksixhqIXT6QrljdG/IT5ZVxA+1EDb2bYaCKrJGHSn17W4CcQjVVYIHprX2BEYkhG/OX+MmQlrwiqku3CnkUfbItlspD/puu1QRXUuRe70RULohCWKjG7FDy1I1YzWvWK6CU6LXHWP1paiw/OkfMG5Quf6sH2cf+zP1JZWCIz8CPwwC9KTT64mbNtiDqZJkLDquoLdPb0P+7DvOilvLMwgm454GZckXOIAurg9VIAfigjg2a+y5hww5wNf/zgDpdOGsHNebojtsLJwkQ3X1S3TF6UFBkT+v5JfyLXTEboDukzpIBrp4eJjgZPwH/lub+d2LMDxLcQJrnoV9U1NTkDfffQ/m5DyFH8Ebqy8FcYW8DGJQxq6/vPN65ofpMuwCzFZVrM9YOjzWvAcG94UqZ1R7buP2mnkvIIJSAtyvw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR0101MB3165.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(376002)(39850400004)(346002)(186003)(66476007)(6916009)(55016002)(6496006)(9576002)(956004)(66556008)(9686003)(316002)(107886003)(86362001)(5660300002)(83380400001)(53546011)(66946007)(2906002)(52116002)(38350700002)(8676002)(8936002)(38100700002)(4326008)(26005)(6666004)(54906003)(33716001)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?J79CUGleBRQHvTKdyw8T/WKONz/nohoCntvDcewvkQpbyNkFi3ivnVl66MRY?=
+ =?us-ascii?Q?I4f8OTBfoJuE5BsW+k4IWaeDR/4decCRbNTdGqDfjK/QP5lPDZDvWgnqUEUi?=
+ =?us-ascii?Q?jLmt4+DcdX4ygkRZ99GV8+y+HBJ4WlP5affoA8YauFLubdLkO4tIsO9wYH4S?=
+ =?us-ascii?Q?3DaPwXStKKJz/XZlPFmB8W8zrIUdROB+WJr+60v7iXiYFI4pJTvpKTnbS7jG?=
+ =?us-ascii?Q?2MrVFVHRc1+GvQMYYXpA+ezOlAA7DEmmpx+ov7pma4b/fQnAtNofQO1hkBJY?=
+ =?us-ascii?Q?khrtUheJ+6jiSZPMgIzfG7ZsDzml7BYUISciUPlcUcL8sT9KoSSd7IkarEXp?=
+ =?us-ascii?Q?27z1xLK0GB/evZhFmlpJoZnSISV/ppN474l3kEvhxUds1ez1eP08tNP4Lc+m?=
+ =?us-ascii?Q?6WqVGIgZBPp6CviA6x6N1WyyTA2G69R6DoqaXBAc1d0N7/d2dsWUGAsS45f0?=
+ =?us-ascii?Q?xviwWyygVqgrA7XEmcLbXi0hPLOH33YDtlvRID7U+Ytamt217qDpkrjnLLrA?=
+ =?us-ascii?Q?4SP6UsVG0IfmoJJuECB9Thx1W6TuoVf/NDelhBpPIPU2Bk8LVe0psSamGa8Z?=
+ =?us-ascii?Q?gmane+TkSaRh7eHrEvz/B5WSyPNMR0vUG2eHCtj9W32DLBfEHHcX4dNS2o9Z?=
+ =?us-ascii?Q?nihzDJTbzwM8gYufhJgXRM1nYDy5lyMMbXFKH0ewNd1w7LPogyxGHgIBOoKy?=
+ =?us-ascii?Q?AjDV3VjQ7zLPfMN+FX9Nq5R6HkA2jt5gBoeUilewSKdKsyQm0dxHhF19tdyL?=
+ =?us-ascii?Q?y4lKGUo1NerdJXV7hFRkRsK68n3EgLGF6WsDnpvkIP/+YOtRyVXYiLPWiMDC?=
+ =?us-ascii?Q?Hm1hf6f9pnYaMPQ3Si0tzaLqQ/kxINp0YMI7Ab4TfBp+invJJWAumLeT1YMx?=
+ =?us-ascii?Q?FpTGC1WKwiKsJaHrJtZLBrUH0GW3PNGJpdDO7+u+m+BEPzcGiIZBzQmYBB9A?=
+ =?us-ascii?Q?5SdGqt2M3vr+LiGmVYihZezA/YWUEOSfA5juF6qQ3kVi8iKDrlstBNK0d5uS?=
+ =?us-ascii?Q?1yD8BVZ6ZOG6MMuXbJx58oC6f0tXJOXRpsGo4LQ7vsScI69j34KX/qYzPZ4T?=
+ =?us-ascii?Q?vwPfs2X7at4Ge7RL4Phg84Z5XRIUBkegsk3dWFg+iXQDKYEwwfwzc9GhafvO?=
+ =?us-ascii?Q?Wb6xUtvJb6TgECD76kK5QNXX+JFlnd60zxkj+ICFk375JSp7nT7iWe6MmEK1?=
+ =?us-ascii?Q?KjVHTphS0NyMQEBFtf9mBMSAOIbk9ozo+7oWLwbFtHp3xCi4YX2jx5FGZhVz?=
+ =?us-ascii?Q?gORmRjcnA6eiU5c0J2iWGHl5Gex+IIOP5VsOLHH1T6F0zlC/Fzo+3opy6jsn?=
+ =?us-ascii?Q?11W99rQQ6nThzLf6HicAtuMb?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c07b6aa-2003-40c4-09f3-08d96db6b870
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR0101MB3165.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2021 02:09:39.7210
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2WTNBDnjHCCsvXzCOtzje06kZ0x4Tcsh1fIWZixvA6ktrJguI4yyY5tcV5TjEeP5actrOmXstd/0O43j7sr+xiY/XK5hSi3fmxa9XlnX2Tz8TlbIBLIrk7KYw0/BjLlZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR0102MB3529
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/21 10:17 PM, Eric Dumazet wrote:
+Hi Linus,
+On Wed, Sep 01, 2021 at 10:29:01AM -0700, Linus Torvalds wrote:
+> On Wed, Sep 1, 2021 at 10:24 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > But what you could do, if  you wanted to, would be to catch the
+> > situation where you have lots of expensive NUMA accesses either using
+> > our VM infrastructure or performance counters, and when the mapping is
+> > a MAP_PRIVATE you just do a COW fault on them.
+> >
+> > Sounds entirely doable, and has absolutely nothing to do with the page
+> > cache. It would literally just be an "over-eager COW fault triggered
+> > by NUMA access counters".
+Yes. You are right, we can use COW. :)
+
+Actually we have _TWO_ levels to do the optimization for NUMA remote-access:
+   1.) the page cache which is independent to process.
+   2.) the process address space(page table).
+
+   For 2.), we can use the over-eager COW:
+        2.1) I have finished a user patch for glibc which uses "over-eager COW" to do the text
+	   replication in NUMA.
+        2.2) Also a kernel patch uses the "over-eager COW" to do the replication for 
+           the programs itself in NUMA. (We may refine it to another topic..)
 > 
+> Note how it would work perfectly fine for anonymous mappings too. Just
+> to reinforce the point that this has nothing to do with any page cache
+> issues.
 > 
-> On 9/1/21 1:11 AM, Vasily Averin wrote:
->> Christoph Paasch reports [1] about incorrect skb->truesize
->> after skb_expand_head() call in ip6_xmit.
->> This may happen because of two reasons:
->> - skb_set_owner_w() for newly cloned skb is called too early,
->> before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
->> - pskb_expand_head() does not adjust truesize in (skb->sk) case.
->> In this case sk->sk_wmem_alloc should be adjusted too.
->>
->> [1] https://lkml.org/lkml/2021/8/20/1082
->>
->> Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
->> Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
->> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
->> ---
->> v4: decided to use is_skb_wmem() after pskb_expand_head() call
->>     fixed 'return (EXPRESSION);' in os_skb_wmem according to Eric Dumazet
->> v3: removed __pskb_expand_head(),
->>     added is_skb_wmem() helper for skb with wmem-compatible destructors
->>     there are 2 ways to use it:
->>      - before pskb_expand_head(), to create skb clones
->>      - after successfull pskb_expand_head() to change owner on extended skb.
->> v2: based on patch version from Eric Dumazet,
->>     added __pskb_expand_head() function, which can be forced
->>     to adjust skb->truesize and sk->sk_wmem_alloc.
->> ---
->>  include/net/sock.h |  1 +
->>  net/core/skbuff.c  | 35 ++++++++++++++++++++++++++---------
->>  net/core/sock.c    |  8 ++++++++
->>  3 files changed, 35 insertions(+), 9 deletions(-)
->>
->> diff --git a/include/net/sock.h b/include/net/sock.h
->> index 95b2577..173d58c 100644
->> --- a/include/net/sock.h
->> +++ b/include/net/sock.h
->> @@ -1695,6 +1695,7 @@ struct sk_buff *sock_wmalloc(struct sock *sk, unsigned long size, int force,
->>  			     gfp_t priority);
->>  void __sock_wfree(struct sk_buff *skb);
->>  void sock_wfree(struct sk_buff *skb);
->> +bool is_skb_wmem(const struct sk_buff *skb);
->>  struct sk_buff *sock_omalloc(struct sock *sk, unsigned long size,
->>  			     gfp_t priority);
->>  void skb_orphan_partial(struct sk_buff *skb);
->> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
->> index f931176..09991cb 100644
->> --- a/net/core/skbuff.c
->> +++ b/net/core/skbuff.c
->> @@ -1804,28 +1804,45 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
->>  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
->>  {
->>  	int delta = headroom - skb_headroom(skb);
->> +	int osize = skb_end_offset(skb);
->> +	struct sk_buff *oskb = NULL;
->> +	struct sock *sk = skb->sk;
->>  
->>  	if (WARN_ONCE(delta <= 0,
->>  		      "%s is expecting an increase in the headroom", __func__))
->>  		return skb;
->>  
->> -	/* pskb_expand_head() might crash, if skb is shared */
->> +	delta = SKB_DATA_ALIGN(delta);
->> +	/* pskb_expand_head() might crash, if skb is shared.
->> +	 * Also we should clone skb if its destructor does
->> +	 * not adjust skb->truesize and sk->sk_wmem_alloc
->> + 	 */
->>  	if (skb_shared(skb)) {
->>  		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
->>  
->> -		if (likely(nskb)) {
->> -			if (skb->sk)
->> -				skb_set_owner_w(nskb, skb->sk);
->> -			consume_skb(skb);
->> -		} else {
->> +		if (unlikely(!nskb)) {
->>  			kfree_skb(skb);
->> +			return NULL;
->>  		}
->> +		oskb = skb;
->>  		skb = nskb;
->>  	}
->> -	if (skb &&
->> -	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
->> +	if (pskb_expand_head(skb, delta, 0, GFP_ATOMIC)) {
->>  		kfree_skb(skb);
->> -		skb = NULL;
->> +		kfree_skb(oskb);
->> +		return NULL;
->> +	}
->> +	if (oskb) {
->> +		if (sk)
-> 
-> if (is_skb_wmem(oskb))
-> Again, it is not valid to call skb_set_owner_w(skb, sk) on all kind of sockets.
+> Of course, if you want to actually then *share* pages within a node
+> (rather than replicate them for each process), that gets more
+> exciting.
+Do we really need to change the page cache?
+          The 2.1) above may produces one-copy "shared libraries pages" for each process, such glibc.so.
+          Even in the same NUMA node 0, we may run two same processes. So it produces "two glibc.so" now.
+	  If We run 5 same processes in NUMA Node 0, it will produces "five glibs.so".
 
-I'm disagree.
+	  But if we have per-node page cache for the glibc.so, we can do it like this:
+	  (1) disable the "over-eager COW" in the process.
+	  (2) use the per-node page cache's pages to different processes in the _SAME_ NUMA node.
+	      So all the processes in the same NUMA node, can use only one same page.
+          (3) Processes in other NUMA nodes, use the pages belong to this node.
 
-In this particular case we have new skb with skb->sk = NULL,
-In this case skb_orphan() called inside skb_set_owner_w(() will do nothing,
-we just properly set destructor to sock_wfree and adjust sk->sk_wmem_alloc,
+	  By this way, we can save many pages, and provide more access speed in NUMA.
 
-It is 100% equivalent of code used with skb_realloc_headroom(),
-and there was no claims on this.
-Cristoph's reproducer do not use shared skb and to not check this path,
-so it cannot be the reason of troubles in his experiments.
-
-Old destructor (sock_edemux?) can be calleda bit later, for old skb, inside consume_skb().
-It can decrement last refcount and can trigger sk_free(). However in this case
-adjusted sk_wmem_alloc did not allow to free sk.
-
-So I'm sure it is safe.
-
->> +			skb_set_owner_w(skb, sk);
->> +		consume_skb(oskb);
->> +	} else if (sk) {
-> 
-> && (skb->destructor != sock_edemux)
-> (Because in this case , pskb_expand_head() already adjusted skb->truesize)
-
-Agree, thank you, my fault, I've missed it.
-I think it was the reason of the troubles in last Cristoph's experiment.
-
->> +		delta = osize - skb_end_offset(skb);
-> 
->> +		if (!is_skb_wmem(skb))
->> +			skb_set_owner_w(skb, sk);
-> 
-> This is dangerous, even if a socket is there, its sk->sk_wmem_alloc could be zero.
-> We can not add skb->truesize to a refcount_t that already reached 0 (sk_free())
-> 
-> If is_skb_wmem() is false, you probably should do nothing, and leave
-> current destructor as it is.
-
-I;m still not sure and think it is tricky too.
-I've found few destructors called sock_wfree inside, they require sk_wmem_alloc adjustement.
-sctp_wfree, unix_destruct_scm and tpacket_destruct_skb
-
-In the same time another ones do not use sk_wmem_alloc and I do not know how to detect proper ones.
-Potentially there are some 3rd party protocols out-of-tree, and I cannot list all of them here.
-
-However I think I can use the same trick as one described above:
-I can increase sk_wmem_alloc before skb_orphan(), so sk_free() called by old destuctor 
-cannot call __sk_free() and release sk.
-
-I hope this should work, 
-otherwise we'll need to clone skb for !is_skb_wmem(skb) before pskb_expand_head() call.
-
-Thank you,
-	Vasily Averin
+Thanks
+Huang Shijie
