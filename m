@@ -2,253 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E02B53FF403
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 228FC3FF405
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347336AbhIBTSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 15:18:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59454 "EHLO
+        id S1347340AbhIBTUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 15:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbhIBTSa (ORCPT
+        with ESMTP id S231161AbhIBTUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 15:18:30 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB76C061575;
-        Thu,  2 Sep 2021 12:17:31 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d17so1817920plr.12;
-        Thu, 02 Sep 2021 12:17:31 -0700 (PDT)
+        Thu, 2 Sep 2021 15:20:10 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1389C061575;
+        Thu,  2 Sep 2021 12:19:11 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id t12so6469619lfg.9;
+        Thu, 02 Sep 2021 12:19:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WwZz/1yizfSUY1BCoUTiuDMnkJ0H5apB/ZZA5EC5KSM=;
-        b=o/ZqE6YHmasXWqfGlNp/FtLj3nHiNnj7ZxgxkCJyiEUP4BAhVegOT3GE3K5zBLbEPo
-         xwO36povG6waHmMNDagfxeNc7UxlO5X/KhhekLnXgGF1pKrNZ0vGbAQuScTNaB0bABLW
-         RdMlhIZ7V9GkwIpDJ1bGuA0XmtXkr2TkJHJ1dgI1FJM+UALsC5UEA+3vc5GJDoZ9q/8n
-         2AoJQvrtrhs2/9uhnJ6L8Is6kBPKQRoG3RR4skmcgImeYLBBv53n1A87Z1rR3N0sXgsU
-         J4n/BJvvX4HB4po1amaTw+TRubXYlDQp4+XHrPY/NwnDkbLgA6Q+RoFQxRcEfoZZcF6K
-         kX1g==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to;
+        bh=mwjgJNjBniSzsEj1HaYyIhivOVPcoXtS3Ukd76mgzXM=;
+        b=UJ/cifzliT/oWNMZPkFUU3XsDePAuxE73UWHudc9FH5NUT6d4l6wS5NZJuFFNrX3SP
+         HI4dJExelUrVQTIGcSsYxUAD474xrph2KlPgB0hOsjSs9RPi8FDa00RUOS9gxrXuUNdf
+         4aDIqv83xJrBEOJpFfMzqZ/dAQjFu8lf0mQthHIgsZpDZN0pMd2F4s0lgPtmCpC2GxqO
+         uCaIoobGKdA55AtxojwRPCl+9UWiU7cpyZyEAUN0C+L23F67I11kK62VWZCTnNcSmGiG
+         moj5iUVNygs5LaL9Vs2RP3shmRi1/lWnt0xY83lt7e4r4YvK5h4p8AalhkytSxBJZIN/
+         HBjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WwZz/1yizfSUY1BCoUTiuDMnkJ0H5apB/ZZA5EC5KSM=;
-        b=GAyjztI2on2c3QLJC7Ww9ZR9jfOGyn2TpoVkA8KJr0TfnyaK/v5EyKBSqoGVgdzk9Q
-         sKV62ScrT45jM2sSdPCclOXDPbHGH7Q0Uzg63rvT9vhXlWnd9D3TJb7se3vAJnexNIcr
-         UAtRR7/Ddsx11YCSKPToXqhD/DnYtzXUvUHtrX7UD3bxivIxcHE3gA96miBSa6hiFtA5
-         DjNOoZrc5jilqShrqZFFhLRGBvua8kUPVopleO6yEwhkkCr/1rHLbn8s5jjoRY6cN04Y
-         0efy3SCmirWyz00MPGOHINnoQkLso01FRNGeptClgtmh1o6NJqlBKVapReMzxEw0E1LJ
-         /Kow==
-X-Gm-Message-State: AOAM530hf+G97ICYrsmQ/aaTd9Na4u23zoH6Y+eSx+K9LZocSf8YfNLL
-        5/ebVyJhwNRLIIEcIMWY6RkEwZ0v4ck=
-X-Google-Smtp-Source: ABdhPJyZO9QzHEGK390hD9YGFlClOSqChirFCFkE/aR96yCV6ig2OseyeT1bkFju/GC9J1I5BmHejQ==
-X-Received: by 2002:a17:902:f693:b0:134:924:1734 with SMTP id l19-20020a170902f69300b0013409241734mr4420205plg.8.1630610250935;
-        Thu, 02 Sep 2021 12:17:30 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id c4sm208554pji.51.2021.09.02.12.17.29
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to;
+        bh=mwjgJNjBniSzsEj1HaYyIhivOVPcoXtS3Ukd76mgzXM=;
+        b=IXvXWk+fYz+3g14HnKf80v4jP201qOyWKvu1slvig/VJ/cjD19ahxxF9YzKgZG0sdk
+         LhbrSP1HqeAIIUKNGcPTPzVWTqri4+5XR2+Rstz3CoTCCiaAtsXn0WkuUO9yW/NaAGvw
+         EyzwjdmR0hPOH28whXtcHOFp9qgxE9m9b22zDVeaCBPFjwWLa57u7FDWJrJ4PKQrquVF
+         /RGAh9taj4uTrckYe4npNtnMVNsuH8DNxi96JsQ6GaayPQYzeCeAakQi6tCqAVykuoZL
+         16QmNDUAMt/QRKUp+lJbEBwogimWdCVnZeWkRe16GlnBAsQqSq97IFcLJbpls+ac/vBR
+         mkRg==
+X-Gm-Message-State: AOAM531OCCKDA6jdPd7MIlETXzaaEtPwXrQwq8WNU0K2aPk2YAth1ke9
+        Z1kRuUenwUAJieGhBPP8pzU=
+X-Google-Smtp-Source: ABdhPJz0MTtHh1jRnq+j1veCepXejo99iYVaR+1nCmpRAzk8t4Z3+U1VhlorBFxQSgHYgYhmIHQ3Dw==
+X-Received: by 2002:a05:6512:2202:: with SMTP id h2mr3825293lfu.494.1630610349946;
+        Thu, 02 Sep 2021 12:19:09 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.67.70])
+        by smtp.gmail.com with UTF8SMTPSA id i5sm277256lfu.274.2021.09.02.12.19.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 12:17:30 -0700 (PDT)
-Subject: Re: [PATCH v6 1/6] Bluetooth: schedule SCO timeouts with delayed_work
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, sudipm.mukherjee@gmail.com
-Cc:     linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
-References: <20210810041410.142035-1-desmondcheongzx@gmail.com>
- <20210810041410.142035-2-desmondcheongzx@gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <0b33a7fe-4da0-058c-cff3-16bb5cfe8f45@gmail.com>
-Date:   Thu, 2 Sep 2021 12:17:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Thu, 02 Sep 2021 12:19:09 -0700 (PDT)
+Content-Type: multipart/mixed; boundary="------------ChaGsM0YHzmY0PHkqKKduqB2"
+Message-ID: <fd90b222-4394-946a-24f8-fe3943e840ab@gmail.com>
+Date:   Thu, 2 Sep 2021 22:19:08 +0300
 MIME-Version: 1.0
-In-Reply-To: <20210810041410.142035-2-desmondcheongzx@gmail.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [syzbot] KASAN: null-ptr-deref Write in __pm_runtime_resume
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     syzbot <syzbot+7d41312fe3f123a6f605@syzkaller.appspotmail.com>,
+        gregkh@linuxfoundation.org, len.brown@intel.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        pavel@ucw.cz, rjw@rjwysocki.net, syzkaller-bugs@googlegroups.com
+References: <00000000000002044305caf6fd02@google.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <00000000000002044305caf6fd02@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a multi-part message in MIME format.
+--------------ChaGsM0YHzmY0PHkqKKduqB2
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-On 8/9/21 9:14 PM, Desmond Cheong Zhi Xi wrote:
-> struct sock.sk_timer should be used as a sock cleanup timer. However,
-> SCO uses it to implement sock timeouts.
+On 9/2/21 01:57, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
 > 
-> This causes issues because struct sock.sk_timer's callback is run in
-> an IRQ context, and the timer callback function sco_sock_timeout takes
-> a spin lock on the socket. However, other functions such as
-> sco_conn_del and sco_conn_ready take the spin lock with interrupts
-> enabled.
+> HEAD commit:    835d31d319d9 Merge tag 'media/v5.15-1' of git://git.kernel..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1374b85d300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=9c32e23fada3a0e4
+> dashboard link: https://syzkaller.appspot.com/bug?extid=7d41312fe3f123a6f605
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16fde215300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11aa9149300000
 > 
-> This inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} lock usage could
-> lead to deadlocks as reported by Syzbot [1]:
->        CPU0
->        ----
->   lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
->   <Interrupt>
->     lock(slock-AF_BLUETOOTH-BTPROTO_SCO);
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+7d41312fe3f123a6f605@syzkaller.appspotmail.com
 > 
-> To fix this, we use delayed work to implement SCO sock timouts
-> instead. This allows us to avoid taking the spin lock on the socket in
-> an IRQ context, and corrects the misuse of struct sock.sk_timer.
+> Bluetooth: : Invalid header checksum
+> Bluetooth: : Invalid header checksum
+> ==================================================================
+> BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:101 [inline]
+> BUG: KASAN: null-ptr-deref in atomic_inc include/linux/atomic/atomic-instrumented.h:181 [inline]
+> BUG: KASAN: null-ptr-deref in __pm_runtime_resume+0x154/0x180 drivers/base/power/runtime.c:1105
+> Write of size 4 at addr 0000000000000388 by task kworker/u4:4/244
 > 
-> As a note, cancel_delayed_work is used instead of
-> cancel_delayed_work_sync in sco_sock_set_timer and
-> sco_sock_clear_timer to avoid a deadlock. In the future, the call to
-> bh_lock_sock inside sco_sock_timeout should be changed to lock_sock to
-> synchronize with other functions using lock_sock. However, since
-> sco_sock_set_timer and sco_sock_clear_timer are sometimes called under
-> the locked socket (in sco_connect and __sco_sock_close),
-> cancel_delayed_work_sync might cause them to sleep until an
-> sco_sock_timeout that has started finishes running. But
-> sco_sock_timeout would also sleep until it can grab the lock_sock.
-> 
-> Using cancel_delayed_work is fine because sco_sock_timeout does not
-> change from run to run, hence there is no functional difference
-> between:
-> 1. waiting for a timeout to finish running before scheduling another
-> timeout
-> 2. scheduling another timeout while a timeout is running.
-> 
-> Link: https://syzkaller.appspot.com/bug?id=9089d89de0502e120f234ca0fc8a703f7368b31e [1]
-> Reported-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
-> Tested-by: syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
-> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-> ---
->  net/bluetooth/sco.c | 35 +++++++++++++++++++++++++++++------
->  1 file changed, 29 insertions(+), 6 deletions(-)
-> 
-> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-> index ffa2a77a3e4c..62e638f971a9 100644
-> --- a/net/bluetooth/sco.c
-> +++ b/net/bluetooth/sco.c
-> @@ -48,6 +48,8 @@ struct sco_conn {
->  	spinlock_t	lock;
->  	struct sock	*sk;
->  
-> +	struct delayed_work	timeout_work;
-> +
->  	unsigned int    mtu;
->  };
->  
-> @@ -74,9 +76,20 @@ struct sco_pinfo {
->  #define SCO_CONN_TIMEOUT	(HZ * 40)
->  #define SCO_DISCONN_TIMEOUT	(HZ * 2)
->  
-> -static void sco_sock_timeout(struct timer_list *t)
-> +static void sco_sock_timeout(struct work_struct *work)
->  {
-> -	struct sock *sk = from_timer(sk, t, sk_timer);
-> +	struct sco_conn *conn = container_of(work, struct sco_conn,
-> +					     timeout_work.work);
-> +	struct sock *sk;
-> +
-> +	sco_conn_lock(conn);
-> +	sk = conn->sk;
-> +	if (sk)
-> +		sock_hold(sk);
-
-syzbot complains here that sk refcount can be zero at this time.
-
-refcount_t: addition on 0; use-after-free.
-WARNING: CPU: 0 PID: 10451 at lib/refcount.c:25 refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
-Modules linked in:
-CPU: 0 PID: 10451 Comm: kworker/0:8 Not tainted 5.14.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events sco_sock_timeout
-RIP: 0010:refcount_warn_saturate+0x169/0x1e0 lib/refcount.c:25
-Code: 09 31 ff 89 de e8 d7 c9 9e fd 84 db 0f 85 36 ff ff ff e8 8a c3 9e fd 48 c7 c7 20 8f e3 89 c6 05 e8 7f 81 09 01 e8 f0 98 16 05 <0f> 0b e9 17 ff ff ff e8 6b c3 9e fd 0f b6 1d cd 7f 81 09 31 ff 89
-RSP: 0018:ffffc9001766fce8 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88802cea3880 RSI: ffffffff815d87a5 RDI: fffff52002ecdf8f
-RBP: 0000000000000002 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815d25de R11: 0000000000000000 R12: ffff88806d23ce08
-R13: ffff8880712c8080 R14: ffff88802edf4500 R15: ffff8880b9c51240
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f3748c20000 CR3: 0000000017644000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __refcount_add include/linux/refcount.h:199 [inline]
- __refcount_inc include/linux/refcount.h:250 [inline]
- refcount_inc include/linux/refcount.h:267 [inline]
- sock_hold include/net/sock.h:702 [inline]
- sco_sock_timeout+0x216/0x290 net/bluetooth/sco.c:88
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
 
 
-> +	sco_conn_unlock(conn);
-> +
-> +	if (!sk)
-> +		return;
->  
->  	BT_DBG("sock %p state %d", sk, sk->sk_state);
->  
-> @@ -91,14 +104,21 @@ static void sco_sock_timeout(struct timer_list *t)
->  
->  static void sco_sock_set_timer(struct sock *sk, long timeout)
->  {
-> +	if (!sco_pi(sk)->conn)
-> +		return;
-> +
->  	BT_DBG("sock %p state %d timeout %ld", sk, sk->sk_state, timeout);
-> -	sk_reset_timer(sk, &sk->sk_timer, jiffies + timeout);
-> +	cancel_delayed_work(&sco_pi(sk)->conn->timeout_work);
-> +	schedule_delayed_work(&sco_pi(sk)->conn->timeout_work, timeout);
+Looks like missing if (hu->serdev)
 
->  }
->  
->  static void sco_sock_clear_timer(struct sock *sk)
->  {
-> +	if (!sco_pi(sk)->conn)
-> +		return;
-> +
->  	BT_DBG("sock %p state %d", sk, sk->sk_state);
-> -	sk_stop_timer(sk, &sk->sk_timer);
-> +	cancel_delayed_work(&sco_pi(sk)->conn->timeout_work);
+#syz test
+git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
 
->  }
->  
->  /* ---- SCO connections ---- */
-> @@ -179,6 +199,9 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
->  		bh_unlock_sock(sk);
->  		sco_sock_kill(sk);
->  		sock_put(sk);
-> +
-> +		/* Ensure no more work items will run before freeing conn. */
+With regards,
+Pavel Skripkin
+--------------ChaGsM0YHzmY0PHkqKKduqB2
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-Bluetooth-hci-fix-GPF-in-h5_recv.patch"
+Content-Disposition: attachment;
+ filename="0001-Bluetooth-hci-fix-GPF-in-h5_recv.patch"
+Content-Transfer-Encoding: base64
 
-Maybe you should have done this cancel_delayed_work_sync() before the prior sock_put(sk) ?
+RnJvbSBhMzBkZmE5M2ZjNmY3ZTJlY2M3NzU5YWM3NWM3NDJlNTEyYjUyN2YwIE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBQYXZlbCBTa3JpcGtpbiA8cGFza3JpcGtpbkBnbWFp
+bC5jb20+CkRhdGU6IFRodSwgMiBTZXAgMjAyMSAyMjoxNzowNSArMDMwMApTdWJqZWN0OiBb
+UEFUQ0hdIEJsdWV0b290aDogaGNpOiBmaXggR1BGIGluIGg1X3JlY3YKCi8qIC4uLiAqLwoK
+U2lnbmVkLW9mZi1ieTogUGF2ZWwgU2tyaXBraW4gPHBhc2tyaXBraW5AZ21haWwuY29tPgot
+LS0KIGRyaXZlcnMvYmx1ZXRvb3RoL2hjaV9oNS5jIHwgOCArKysrKy0tLQogMSBmaWxlIGNo
+YW5nZWQsIDUgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9k
+cml2ZXJzL2JsdWV0b290aC9oY2lfaDUuYyBiL2RyaXZlcnMvYmx1ZXRvb3RoL2hjaV9oNS5j
+CmluZGV4IDBjMGRlZGVjZTU5Yy4uZWIwMDk5YTIxMjg4IDEwMDY0NAotLS0gYS9kcml2ZXJz
+L2JsdWV0b290aC9oY2lfaDUuYworKysgYi9kcml2ZXJzL2JsdWV0b290aC9oY2lfaDUuYwpA
+QCAtNTg3LDkgKzU4NywxMSBAQCBzdGF0aWMgaW50IGg1X3JlY3Yoc3RydWN0IGhjaV91YXJ0
+ICpodSwgY29uc3Qgdm9pZCAqZGF0YSwgaW50IGNvdW50KQogCQljb3VudCAtPSBwcm9jZXNz
+ZWQ7CiAJfQogCi0JcG1fcnVudGltZV9nZXQoJmh1LT5zZXJkZXYtPmRldik7Ci0JcG1fcnVu
+dGltZV9tYXJrX2xhc3RfYnVzeSgmaHUtPnNlcmRldi0+ZGV2KTsKLQlwbV9ydW50aW1lX3B1
+dF9hdXRvc3VzcGVuZCgmaHUtPnNlcmRldi0+ZGV2KTsKKwlpZiAoaHUtPnNlcmRldikgewor
+CQlwbV9ydW50aW1lX2dldCgmaHUtPnNlcmRldi0+ZGV2KTsKKwkJcG1fcnVudGltZV9tYXJr
+X2xhc3RfYnVzeSgmaHUtPnNlcmRldi0+ZGV2KTsKKwkJcG1fcnVudGltZV9wdXRfYXV0b3N1
+c3BlbmQoJmh1LT5zZXJkZXYtPmRldik7CisJfQogCiAJcmV0dXJuIDA7CiB9Ci0tIAoyLjMz
+LjAKCg==
+--------------ChaGsM0YHzmY0PHkqKKduqB2--
 
-> +		cancel_delayed_work_sync(&conn->timeout_work);
->  	}
->  
->  	hcon->sco_data = NULL;
-> @@ -193,6 +216,8 @@ static void __sco_chan_add(struct sco_conn *conn, struct sock *sk,
->  	sco_pi(sk)->conn = conn;
->  	conn->sk = sk;
->  
-> +	INIT_DELAYED_WORK(&conn->timeout_work, sco_sock_timeout);
-> +
->  	if (parent)
->  		bt_accept_enqueue(parent, sk, true);
->  }
-> @@ -500,8 +525,6 @@ static struct sock *sco_sock_alloc(struct net *net, struct socket *sock,
->  
->  	sco_pi(sk)->setting = BT_VOICE_CVSD_16BIT;
->  
-> -	timer_setup(&sk->sk_timer, sco_sock_timeout, 0);
-> -
->  	bt_sock_link(&sco_sk_list, sk);
->  	return sk;
->  }
-> 
