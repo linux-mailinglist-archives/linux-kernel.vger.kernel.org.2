@@ -2,189 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726BD3FEFE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECD783FEFE3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345690AbhIBPLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 11:11:11 -0400
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:42431 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229941AbhIBPLJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 11:11:09 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id LoLqmkPwflQKhLoLrmKyDc; Thu, 02 Sep 2021 17:10:04 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1630595404; bh=DKNNXMu5a2O1nKdMpP6bZJC00pZoef+7fzmEKsSYSNo=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=CVZkwgkvlKLGFcPeXwiylGwyiomEi5o+qRAd8KfsTm55rrThX+oApbCnlCm83O6cc
-         RWC0AFe62VzNOH4mi5Pmxt4YkTyfWGJb7f0OhVD02YYYV+g9FGyvCh6DNg0p3KCw68
-         85XWxHdXw3zxIxtOq+20rFC49rRsdhP4Vbt0TgCyDl7KJ+VFm+7obr4uK4OEpwmAPA
-         iw4XGI9B7w0KuoGl/G4hXmYf7zSV/fgcQuhnWZkwudl3wJ8vDONqhaG7F6xNxUHYdz
-         k/Pbwnt/dNyj/9CSTCnw066T3jzQgw58o1DNd35NF1+TbGFQwsdE3kj3djDY6to1kw
-         gFUbPp8CIM19Q==
-Subject: Re: [RFC PATCH 1/2] media: Add AV1 uAPI
-To:     daniel.almeida@collabora.com, stevecho@google.com,
-        shawnku@google.com, tzungbi@google.com, mcasas@google.com,
-        nhebert@google.com, abodenha@google.com, randy.wu@mediatek.com,
-        yunfei.dong@mediatek.com, gustavo.padovan@collabora.com,
-        andrzej.pietrasiewicz@collabora.com, enric.balletbo@collabora.com,
-        ezequiel@collabora.com, nicolas.dufresne@collabora.com,
-        tomeu.vizoso@collabora.com, nick.milner@collabora.com,
-        xiaoyong.lu@mediatek.com, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-References: <20210810220552.298140-1-daniel.almeida@collabora.com>
- <20210810220552.298140-2-daniel.almeida@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <731ff6d4-ba1c-1918-e134-013786be473a@xs4all.nl>
-Date:   Thu, 2 Sep 2021 17:10:02 +0200
+        id S1345691AbhIBPLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 11:11:31 -0400
+Received: from mail-bn8nam11on2042.outbound.protection.outlook.com ([40.107.236.42]:12114
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229941AbhIBPLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 11:11:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BHOK7P9Zb26E5xhWHTwKH3lU7HUpRa04IbvOI7QZxporx5W9UAKTa4lEHX8wV4dF+kqTmLtN9mHbAKa+XqI6Ri6q7/EbRad807beUfi1dDLsydsTUUgWBRfFvaKzyd83GGJ3YCUHl8nNEeMc+1VHwBnn5YBzku+GRqGF1t69A7xwwGTqoHyM5q3dgxUM9KqXG/jPDr7lUVlqDAUFUeD8lv6KsBW9tvMmFf2C0P3UTWRpLCdGRj3j24r/LbYg1BKTKtPzX2cd4B05WjrO23o4n8w29u7gQpYiU0uKp3eAoarFFfW+DZHCFmUvwbaqYpAaMwYLpb5QueVFJNoAVLGXhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r2og0tSw/SOtZzCB71oHrVdXIBfuDscIa/o6xEVmKQw=;
+ b=KiGuA9uS2RagroXzxOjQzrS3tA9eIFgejEH2dFSMXZz+HQfbUuB8reEu5br68O9S6r24XjwVSKRoELi32C4uF4iGtva5RGE3sonFaElD9IwVSjXC3yXos0n0Y/ZMq6ETLiPLnXXsgZ5fxOZ4ps7ljiw/YmdIyhbYyZXRGQe8NOndGkJOPRpVlhS8sti4/xOl26A5PSaLN1b2xrnJCr2+29MD+D8haQeyihXwTfpsLouQMxTZ8rFVJ1LVScJkf8r8xsyE6HyGQFiHlh736eXV1VQRy+dIRKGBCAIC7Xm3/UEuSph9/1ALkkCENAqEk0m/oNWnM5Q3ryulBLKYrBPItQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r2og0tSw/SOtZzCB71oHrVdXIBfuDscIa/o6xEVmKQw=;
+ b=nOjjAd5wZVQo0F+vOZePtRWDrpPfwGps7+Zt7DBsKFdGAXtBXbW3DwmowaQ7IfHQGkgwekg97KRL/uxrVGqdqI5wEHJfvcDvG9+xvKkgZ2Qfvi+ZLI3Unp3c1b5OLX5IpM9Xs//6xpzBfl4DmradCza6XjkqKoaAp3g4geFm7vM=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by BL0PR12MB4689.namprd12.prod.outlook.com (2603:10b6:208:8f::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.20; Thu, 2 Sep
+ 2021 15:10:29 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4478.022; Thu, 2 Sep 2021
+ 15:10:29 +0000
+Subject: Re: [PATCH 1/1] debugfs: use IS_ERR to check for error
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Nirmoy Das <nirmoy.das@amd.com>, rafael@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210902102917.2233-1-nirmoy.das@amd.com>
+ <YTCpuo00wM7jGSIc@kroah.com> <5ab7739d-15a4-2e84-0320-fee8d5df1e83@amd.com>
+ <YTDBfO/byKzGWV8G@kroah.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <c918f1a5-7c88-bf47-14b6-b6e892695951@amd.com>
+Date:   Thu, 2 Sep 2021 17:10:24 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210810220552.298140-2-daniel.almeida@collabora.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YTDBfO/byKzGWV8G@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfLzwtZqd4rd6CeSTZcQNZg2rhjq4hrzNqKyd76Z1NzdSFYhE8deuEo/lvA019CR4soNxeNTOKTn2l/Smb2Bj/UY662bEXdWz3esfZMlfCrxxFb1wTCN4
- artldkEOFsqeqss5YOFZ/7+0U2L2rdPBB7y3yh91cGFy2aMQVdT+c5NdpwmjwGrjjtwQN02gj2pGIFMWEdaK5sgQtwBNXexs6XFNLDGqI/N9AggDxqvqz94d
- u/FdCKCNd+FHUk1CRaN2qLHTy/FDHNOSTuCELvS2HjMyeh8p/ULPFHGhaxqTsPK7OQstDtui6JQO2F340DEBD+4WwNK+ClFkRdbJsOSSFOrL1VTBLRaX/IOo
- 4eOCELKtmLwXA3dSif0CatEfwpmRrUP8caoEdvO85LimM9lxLjiXOXoA43uc7qkWd0TheaxjcaIgvjzXf8cI8/EuwXKTyoMWEIxUbsBJiTcscZRk5SLM/iv3
- Tn1hNkj3p/c+ilHbWc5seBX+c3QAfALLjagr9VuIsX/Qp/OD/XzrWCk6fHgQkPoB4SoncoxuEeE6ydxLuOfHIeY92nSruaFcfJJzX/FFfBhp1KMaHKJvcyBv
- /8qmfjvLpkrHTChaBhJ52Ula93uBjslNDcVorNb4A0zRvMJKUjHNbxmyBjIHjq+K0fqt20WZa7D3psTjAUdEegqdBgH/LL+KMicvrSY3bxC8xvqEllJVFwih
- 7Ebr2BEkkIFSJ/B8YvbfoZyAqZTQ+zdi8fo5ZLRVivbPlfVqby70lcvIOqLbj0ftngnq89O5t8rrllYUxXPQ+01uo6ZXC53x3caolYoDYsadd0toE1xjDQ7l
- aALxlDdEaDDkfv+Um7OQ8WcmvbB60neIS0gCPSWTI4Bl1plBNwc7tYK5OpNX22oGcmqAFGvTfpSSgNlJlj+JV3W8R+AW4ZVs0cBFlTkmDkwOk4MpsoxuYESi
- A5BxHhQPeK2yRNlU5anCGTYlxpaWkVz6i18Yk9aszqjXOQsSykHlpuaawGXP01CaKYtp3ZivNTD3JgSj/ohvwnjsxFg=
+X-ClientProxiedBy: PR3P250CA0021.EURP250.PROD.OUTLOOK.COM
+ (2603:10a6:102:57::26) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
+MIME-Version: 1.0
+Received: from [IPv6:2a02:908:1252:fb60:2def:7a94:6d1:1fd1] (2a02:908:1252:fb60:2def:7a94:6d1:1fd1) by PR3P250CA0021.EURP250.PROD.OUTLOOK.COM (2603:10a6:102:57::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend Transport; Thu, 2 Sep 2021 15:10:28 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2a4617b7-b063-4cdb-b6d3-08d96e23ccf9
+X-MS-TrafficTypeDiagnostic: BL0PR12MB4689:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB46893A758800B9CD6792B18283CE9@BL0PR12MB4689.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: y1sUSe7QcAZDkIsUzGgKMfNCKOoWGJXlW1FVqto+5D7HjxGVzaTnrERYO1SuWFhq0dGwyjYXV/Y9seGO+ZWJrbKrZbeT80LgYlIfosFRd18hu6KVyOBzFhX0/XnVcr8ygJhXv/UHF4WPcE1h4olMmyO7fvqVq06X4vWxT1/INclG74QG3WPr8k+fsX6W5IvaLbN2qeTtBGZ90GFkQ5ZtMrLnkEGg0sefg29r7FCI+dUS4wKhk9FqIEx/vKeQtuRDgc8LVDG6Zi5Ub4Rq6I9ALH4zIpbt4ZFr98175t9QS6+nrz9N0kqUgwMaGwkH4AD2TxJ3Nvamx/4CdvP64qSPCRKiokjQ12mmSq6i3yQT5dHUNgRrluZJERof99XhFm7UASXocgloTN8g7ofbv7g5HPu0CXNQzbAoeslSt1+D4UfKUoZuXjf+rkjQtnY8GkjwNRAy+xuAVXguryhjjcN/3A6km55BStTfQAmw7WLVVB/ZC4kFcEGPdBikMzi6jrf98DeZpA2AWCeXE9BQR3GQG+dt1WNh2dTP/Xl+Gt9vg9icjJxa98dTSCw+q8xPRPV1uL+hPM1jYnYC7vKepIdx6mN7TQQNYsTAQ4no+0DiGpL2vQSwk2mZlPXTw86MadpZynwFFkydevUPkUR57pBBDd1khxx2Rr0uMFgeBiICSXMVPE08MjrIxRybdmgWp0+DhReO9eURDczE870SIJzovvzZZ4TLBWN3I+/J6iZA+iE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(396003)(376002)(346002)(5660300002)(4326008)(86362001)(6666004)(6486002)(478600001)(66476007)(66946007)(316002)(66574015)(6916009)(31696002)(36756003)(2906002)(83380400001)(45080400002)(186003)(38100700002)(2616005)(66556008)(8936002)(31686004)(966005)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?T3lPc1Z1T0NuZ1JoQUMwbUxRZTNQcmxFdW1zQkUya0o1ZDM0NEFMQWlVampk?=
+ =?utf-8?B?UWxzL2s2UUl4QmFHTXhwNG0veXVBVGVnajVOQSt1Q0VNdzhmL2plOGJUT0dn?=
+ =?utf-8?B?VHZkdHUra1oyR2lCcC9FY0xKSy9VWElVM2JyaVAvQzl0YXdlK28rRkJVdVV2?=
+ =?utf-8?B?UzkreFdwZk92WDNjQUdxR0YyeW5Ya3h2MjFxb0wyc0NBekpkR2NFd0Vvb0RO?=
+ =?utf-8?B?S2RiSVBzcXpRaGlIa0dvODdTVGEyKzdxaXBjakdSYUxGN0FmNFE1amNCd083?=
+ =?utf-8?B?dWpkTHFrbWNlOVpsaVFna0pUaC9VakJSYU05TVFFQWtVR2p2Vi9QNVEvZFov?=
+ =?utf-8?B?Sk5Gb1JJU0ZMcDhCL0w3MzIzNzNTampWK1VoQ2dWY1lsOEtHQ0J3R0pIbklx?=
+ =?utf-8?B?V0VGTG9oN3pVNVVpU212aGtUVTN3bGNPZWJDUGNENld2OFJCM2MvZ1g4ZEtl?=
+ =?utf-8?B?L29VK3g3QU1SRGpFZHZRbitQd0dPRGFLbU1PZTJBMEx1N3NUYlkxVU1VenlU?=
+ =?utf-8?B?czAxdVBLZEkvc2ZNQzBmZ1NMNGZMNWdwejgvOElocHI3MFUwVU8vWTFmQVp3?=
+ =?utf-8?B?WHQ4RjhTdHFsUFBjWG4xNmVueXN0c0dmWFhIRnVvTUZsVlhOSHJyYnllcWc3?=
+ =?utf-8?B?OU1YeTRMYVppclFYNzAxcFpnaFlOUVVralFVa3pMdmkvcW5Zc3ppKytsNWE5?=
+ =?utf-8?B?SGM3NUpxaDg1UE1JSll2TUZpUTd5MmdKNEhOZDYyOE1lWTRJeVFtOXhyeDBO?=
+ =?utf-8?B?UVNCcnNrc1M1cCtMVXFRV29OMnNvdkFzNVFNMUR0WGRGeXBlWjg4NHMwWU5z?=
+ =?utf-8?B?dXlJU1A5M3RNZ3lZNC9Nc1RyR2FjTFdYRDdSbVMwVkJuUFNVV1hLSTBMSVlX?=
+ =?utf-8?B?NEs2bVFLa0ZQNVJrdlZYVnIwUHBKQmtmTy9BUm93dkliMW1sUDM1NkR1V1d3?=
+ =?utf-8?B?a2I4ek5PU2xBbzA0U3ROTnpBZm5odFFXQ1kzbFoxa2FybXdMV3JBTVZTUS9l?=
+ =?utf-8?B?N2ZuNnRhVGFxRng0UHdxVDVtcXlab1o1d1QzVTdLWEE5aUFSS3dFUG8wc0RW?=
+ =?utf-8?B?SG90amkwMXdUNFJYRUQ5aWFCK2xFc2h3VXhONDcyd1AvRWttUCt5aWxUN3cw?=
+ =?utf-8?B?WnVXVXR5REhnRjljR3dtK0NVWFFiUGdCR1JlMHdJd3dheU80ditvdlNjWFZR?=
+ =?utf-8?B?TytTVlQ3cEdrTFJIaHpaNVp3cEJmbVRCY3ZIdzFoQ2lJV0p0MnRyeGkvdWtG?=
+ =?utf-8?B?OVZHcldtU3NramY4elkrakxvbjBORmcxNWRHTWNhekZXMXlUYXBLRmxBNExU?=
+ =?utf-8?B?ZHBuWTFDcmN5d3RiT0F3SldNak9KY0RYNmhCeXNNRGRSMUk5enVZTFJlMTd1?=
+ =?utf-8?B?MmR6SkI3dlJYUUZIT1ZmajRrSEttUDhzQVFHcXlsWGhqRDN1bFVBVUU3eDdD?=
+ =?utf-8?B?NTlXN0xsdTJ3N1VoU3lxYXZjVm0zZUxCbXdBNkM5SFUrT3NRSUVUbUpWRHVn?=
+ =?utf-8?B?R1NXcjJTamlnL21Ra3N2Rkt6Tk9TTVFZOWtzNXdMUVhod2NzSkJOL2FIRVVF?=
+ =?utf-8?B?cVVkTFhlaUs1RitybUZ4eWkzZndyZks4Y3ZPR3NBTmpUWXZqTWFaVG1GMFpj?=
+ =?utf-8?B?NzhZa1FqMHlxZEtwUUVYWEY0RkdsM3R4VlpwNDNxNTN0Q2dvMkFIVFZaa1Vn?=
+ =?utf-8?B?dG1jZlNyZVltbVp6eWpocDd6NlJZQW40YXRRYWpXMTFSSWhSS21NeFBtOWM2?=
+ =?utf-8?B?M0lFUDBmWTFiYU9EZE50LzA0a2dvNzQ5TE1IdjRmb2hvcmNqamdkWTlJZTYv?=
+ =?utf-8?B?eGdzNVdQRHllbFhpK29FNkZ6MnFjeHFOejRsbU9LZ0VvUmltQnBOZW1tYi9h?=
+ =?utf-8?Q?JbO3V/UrBc7sm?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2a4617b7-b063-4cdb-b6d3-08d96e23ccf9
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2021 15:10:29.3762
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CAxyIYj5HDV7wOjAAKgXUaaO0PB9H9WlCW10dhVYxGhWJXayfv1k3/FKOL+gsPT9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4689
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel!
+Am 02.09.21 um 14:20 schrieb Greg KH:
+> On Thu, Sep 02, 2021 at 02:03:12PM +0200, Christian König wrote:
+>>
+>> Am 02.09.21 um 12:38 schrieb Greg KH:
+>>> On Thu, Sep 02, 2021 at 12:29:17PM +0200, Nirmoy Das wrote:
+>>>> debugfs_create_file() returns encoded error so
+>>>> use IS_ERR for checking return value.
+>>>>
+>>>> References: https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgitlab.freedesktop.org%2Fdrm%2Famd%2F-%2Fissues%2F1686&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Cffc1109aeb744082181b08d96e0c06db%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637661820207117289%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=6NDHX9sEhGF2jakVfUJ7Qurql6UAdNpFQZ6XvCjwz0E%3D&amp;reserved=0
+>>>> Signed-off-by: Nirmoy Das <nirmoy.das@amd.com>
+>>>> ---
+>>>>    fs/debugfs/inode.c | 2 +-
+>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
+>>>> index 8129a430d789..2f117c57160d 100644
+>>>> --- a/fs/debugfs/inode.c
+>>>> +++ b/fs/debugfs/inode.c
+>>>> @@ -528,7 +528,7 @@ void debugfs_create_file_size(const char *name, umode_t mode,
+>>>>    {
+>>>>    	struct dentry *de = debugfs_create_file(name, mode, parent, data, fops);
+>>>> -	if (de)
+>>>> +	if (!IS_ERR(de))
+>>>>    		d_inode(de)->i_size = file_size;
+>>>>    }
+>>>>    EXPORT_SYMBOL_GPL(debugfs_create_file_size);
+>>>> -- 
+>>>> 2.32.0
+>>>>
+>>> Ah, good catch, I'll queue this up after 5.15-rc1 is out, thanks!
+>> Thinking more about this if I'm not completely mistaken
+>> debugfs_create_file() returns -ENODEV when debugfs is disabled and NULL on
+>> any other error.
+> How can this function be called if debugfs is not enabled in the system
+> configuration?  This _is_ the debugfs core code.
 
-Two small comments below:
+Well, that's what I meant. The original code is correct and Nirmoy's 
+patch here is breaking it.
 
-On 11/08/2021 00:05, daniel.almeida@collabora.com wrote:
-> From: Daniel Almeida <daniel.almeida@collabora.com>
-> 
-> This patch adds the  AOMedia Video 1 (AV1) kernel uAPI.
-> 
-> This design is based on currently available AV1 API implementations and
-> aims to support the development of AV1 stateless video codecs
-> on Linux.
-> 
-> Signed-off-by: Daniel Almeida <daniel.almeida@collabora.com>
-> ---
->  .../userspace-api/media/v4l/biblio.rst        |   10 +
->  .../media/v4l/ext-ctrls-codec-stateless.rst   | 1268 +++++++++++++++++
->  .../media/v4l/pixfmt-compressed.rst           |   21 +
->  .../media/v4l/vidioc-g-ext-ctrls.rst          |   36 +
->  .../media/v4l/vidioc-queryctrl.rst            |   54 +
->  .../media/videodev2.h.rst.exceptions          |    9 +
->  drivers/media/v4l2-core/v4l2-ctrls-core.c     |  286 +++-
->  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   79 +
->  drivers/media/v4l2-core/v4l2-ioctl.c          |    1 +
->  include/media/v4l2-ctrls.h                    |   12 +
->  include/uapi/linux/v4l2-controls.h            |  796 +++++++++++
->  include/uapi/linux/videodev2.h                |   15 +
->  12 files changed, 2586 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/biblio.rst b/Documentation/userspace-api/media/v4l/biblio.rst
-> index 7b8e6738ff9e..7061144d10bb 100644
-> --- a/Documentation/userspace-api/media/v4l/biblio.rst
-> +++ b/Documentation/userspace-api/media/v4l/biblio.rst
-> @@ -417,3 +417,13 @@ VP8
->  :title:     RFC 6386: "VP8 Data Format and Decoding Guide"
->  
->  :author:    J. Bankoski et al.
-> +
-> +.. _av1:
-> +
-> +AV1
-> +===
-> +
-> +
-> +:title:     AV1 Bitstream & Decoding Process Specification
-> +
-> +:author:    Peter de Rivaz, Argon Design Ltd, Jack Haughton, Argon Design Ltd
+Nirmoys other patch is for a driver and there the function can indeed 
+return both error code and NULL.
 
-<snip>
+Thanks,
+Christian.
 
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> index 819a70a26e18..73ff5311b7ae 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> @@ -507,6 +507,60 @@ See also the examples in :ref:`control`.
->        - n/a
->        - A struct :c:type:`v4l2_ctrl_hevc_decode_params`, containing HEVC
->  	decoding parameters for stateless video decoders.
-> +    * - ``V4L2_CTRL_TYPE_AV1_SEQUENCE``
-> +      - n/a
-> +      - n/a
-> +      - n/a
-> +      - A struct :c:type:`v4l2_ctrl_av1_sequence`, containing AV1 Sequence OBU
-> +	decoding parameters for stateless video decoders.
-> +    * - ``V4L2_CTRL_TYPE_AV1_TILE_GROUP``
-> +      - n/a
-> +      - n/a
-> +      - n/a
-> +      - A struct :c:type:`v4l2_ctrl_av1_tile_group`, containing AV1 Tile Group
-> +	OBU decoding parameters for stateless video decoders.
-> +    * - ``V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY``
-> +      - n/a
-> +      - n/a
-> +      - n/a
-> +      - A struct :c:type:`v4l2_ctrl_av1_tile_group`, containing AV1 Tile Group
+>
+> thanks,
+>
+> greg k-h
 
-I guess this should be:
-
-Tile Group -> Tile Group Entry
-
-> +	OBU decoding parameters for stateless video decoders.
-> +    * - ``V4L2_CTRL_TYPE_AV1_TILE_LIST``
-> +      - n/a
-> +      - n/a
-> +      - n/a
-> +      - A struct :c:type:`v4l2_ctrl_av1_tile_list`, containing AV1 Tile List
-> +	OBU decoding parameters for stateless video decoders.
-> +    * - ``V4L2_CTRL_TYPE_AV1_TILE_LIST_ENTRY``
-> +      - n/a
-> +      - n/a
-> +      - n/a
-> +      - A struct :c:type:`v4l2_ctrl_av1_tile_list_entry`, containing AV1 Tile List
-
-Also missing 'Entry'
-
-> +	OBU decoding parameters for stateless video decoders.
-> +    * - ``V4L2_CTRL_TYPE_AV1_FRAME_HEADER``
-> +      - n/a
-> +      - n/a
-> +      - n/a
-> +      - A struct :c:type:`v4l2_ctrl_av1_frame_header`, containing AV1 Frame/Frame
-> +	Header OBU decoding parameters for stateless video decoders.
-> +    * - ``V4L2_CTRL_TYPE_AV1_PROFILE``
-> +      - n/a
-> +      - n/a
-> +      - n/a
-> +      - A enum :c:type:`v4l2_ctrl_av1_profile`, indicating what AV1 profiles
-> +	an AV1 stateless decoder might support.
-> +    * - ``V4L2_CTRL_TYPE_AV1_LEVEL``
-> +      - n/a
-> +      - n/a
-> +      - n/a
-> +      - A enum :c:type:`v4l2_ctrl_av1_level`, indicating what AV1 levels
-> +	an AV1 stateless decoder might support.
-> +    * - ``V4L2_CTRL_TYPE_AV1_OPERATING_MODE``
-> +      - n/a
-> +      - n/a
-> +      - n/a
-> +      - A enum :c:type:`v4l2_ctrl_av1_operating_mode`, indicating what AV1
-> +	operating modes an AV1 stateless decoder might support.
->  
->  .. raw:: latex
->  
-
-Regards,
-
-	Hans
