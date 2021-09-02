@@ -2,164 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB053FEF66
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 16:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF0F3FEF6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 16:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345496AbhIBOYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 10:24:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41034 "EHLO mail.kernel.org"
+        id S1345534AbhIBOZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 10:25:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234283AbhIBOYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 10:24:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1B78610A4;
-        Thu,  2 Sep 2021 14:23:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630592585;
-        bh=gLQagvTyM/uYTyJJBpw1JtLsPylt4qjtAxy+L1K9xM8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Eq3V3ly4Xlwvjc2Mh03GjlRHXLZFoRo/vteGkIYhg1vK7Vl/8D7OU5UP2Fzfq56sA
-         6BLOxW3LNDhFgMI3/JxTczTTX5EAkIJN/lY3GpVHvMxO1ZA3NaMKcfKtULyX//3l+H
-         xxF9Z36gNvdv1YyPP7Yudb6zYran9x9QcepLqAik=
-Date:   Thu, 2 Sep 2021 16:23:03 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Christian =?iso-8859-1?Q?L=F6hle?= <CLoehle@hyperstone.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] sd: sd_open: prevent device removal during sd_open
-Message-ID: <YTDeR1aYJsWoZZhY@kroah.com>
-References: <98bfca4cbaa24462994bcb533d365414@hyperstone.com>
+        id S1345318AbhIBOZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 10:25:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35B16610A4;
+        Thu,  2 Sep 2021 14:24:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630592682;
+        bh=8Q26juGy7jduIrtBN/cCky6QYZFj3PapNW4w/N2c58A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MfSV52wFAuVERyUEr7ffSXU2OWRVhIHVwUF/DBjm6//ZPMP2omLe9EgMjfeybJoY9
+         JxMBMKfrVfCJLRcXeO7r1Xq2jL/xRrCiEJZQQrBxLyIos/09gukp93iPF6GTtfpohX
+         ymSe81lXKn/90vujjv2rzeszJP5oWVuGgAlSHPn3oHRRVtKsvJgkm3LFjbyGQ8so19
+         ZtK6Mf9r4RPhM9GEV/QASooW1f5H+9z0Tzt4e7xptfrQuhRJL+GSqLkF6K5bvTjMwL
+         m9ZEgP84FfrMGNTA/pqJSPne8/oWRkNK4x7+BVGOjy/GBXUi8JxYQn95XlgOqA7iJ+
+         HwAGKsh2NwqQg==
+Received: by mail-ej1-f49.google.com with SMTP id bt14so4819282ejb.3;
+        Thu, 02 Sep 2021 07:24:42 -0700 (PDT)
+X-Gm-Message-State: AOAM530FRted8ehtHP8Yjx7V6L+OCpD29ZC2K7E/9CYmx/VHmW8chsqo
+        z6oVoDhs6YBADyvW2lE1h/Bflt6A6HXPeXIpkg==
+X-Google-Smtp-Source: ABdhPJz9Tk3bwAY6hO392hOhhtrO5ROiJlUdHl3FFlHcLzA/kgLn0bakgc+4FtEgu5wnu4BPjOGkeSqX0QjO50Xt+0A=
+X-Received: by 2002:a17:906:8cd:: with SMTP id o13mr4136037eje.341.1630592680828;
+ Thu, 02 Sep 2021 07:24:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <98bfca4cbaa24462994bcb533d365414@hyperstone.com>
+References: <20210902025528.1017391-1-saravanak@google.com> <20210902025528.1017391-3-saravanak@google.com>
+In-Reply-To: <20210902025528.1017391-3-saravanak@google.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 2 Sep 2021 09:24:29 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJOv7D5nHteGPDKC2+ns1caVNs-NFFJppLuK0OEB8dztQ@mail.gmail.com>
+Message-ID: <CAL_JsqJOv7D5nHteGPDKC2+ns1caVNs-NFFJppLuK0OEB8dztQ@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] of: platform: Mark bus devices nodes with FWNODE_FLAG_NEVER_PROBES
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Len Brown <lenb@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 01:57:13PM +0000, Christian Löhle wrote:
-> sd and parent devices must not be removed as sd_open checks for events
-> 
-> sd_need_revalidate and sd_revalidate_disk traverse the device path
-> to check for event changes. If during this, e.g. the scsi host is being
-> removed and its resources freed, this traversal crashes.
-> Locking with scan_mutex for just a scsi disk open may seem blunt, but there
-> does not seem to be a more granular option. Also opening /dev/sdX directly
-> happens rarely enough that this shouldn't cause any issues.
-> 
-> The issue occurred on an older kernel with the following trace:
-> stack segment: 0000 [#1] PREEMPT SMP PTI
-> CPU: 1 PID: 121457 Comm: python3 Not tainted 4.14.238hyLinux #1
-> Hardware name: ASUS All Series/H81M-D, BIOS 0601 02/20/2014
-> task: ffff888213dbb700 task.stack: ffffc90008c14000
-> RIP: 0010:kobject_get_path+0x2a/0xe0
-> ...
-> Call Trace:
-> kobject_uevent_env+0xe6/0x550
-> disk_check_events+0x101/0x160
-> disk_clear_events+0x75/0x100
-> check_disk_change+0x22/0x60
-> sd_open+0x70/0x170 [sd_mod]
-> __blkdev_get+0x3fd/0x4b0
-> ? get_empty_filp+0x57/0x1b0
-> blkdev_get+0x11b/0x330
-> ? bd_acquire+0xc0/0xc0
-> do_dentry_open+0x1ef/0x320
-> ? __inode_permission+0x85/0xc0
-> path_openat+0x5cb/0x1500
-> ? terminate_walk+0xeb/0x100
-> do_filp_open+0x9b/0x110
-> ? __check_object_size+0xb4/0x190
-> ? do_sys_open+0x1bd/0x250
-> do_sys_open+0x1bd/0x250
-> do_syscall_64+0x67/0x120
-> entry_SYSCALL_64_after_hwframe+0x41/0xa6
-> 
-> and this commit fixed that issue, as there has been no other such
-> synchronization in place since then, the issue should still be present in
-> recent kernels.
-> 
-> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+On Wed, Sep 1, 2021 at 9:55 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> We don't want fw_devlink creating device links for bus devices as
+> they'll never probe. So mark those device node with this flag.
+>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
 > ---
->  drivers/scsi/sd.c | 20 +++++++++++++++++---
->  1 file changed, 17 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-> index 610ebba0d66e..ad4da985a473 100644
-> --- a/drivers/scsi/sd.c
-> +++ b/drivers/scsi/sd.c
-> @@ -1436,6 +1436,16 @@ static int sd_open(struct block_device *bdev, fmode_t mode)
->  	if (!scsi_block_when_processing_errors(sdev))
->  		goto error_out;
->  
-> +	/*
-> +	 * Checking for changes to the device must not race with the device
-> +	 * or its parent host being removed, so lock until sd_open returns.
-> +	 */
-> +	mutex_lock(&sdev->host->scan_mutex);
-> +	if (sdev->sdev_state != SDEV_RUNNING) {
-> +		retval = -ERESTARTSYS;
-> +		goto unlock_scan_error_out;
-> +	}
-> +
->  	if (sd_need_revalidate(bdev, sdkp))
->  		sd_revalidate_disk(bdev->bd_disk);
->  
-> @@ -1444,7 +1454,7 @@ static int sd_open(struct block_device *bdev, fmode_t mode)
->  	 */
->  	retval = -ENOMEDIUM;
->  	if (sdev->removable && !sdkp->media_present && !(mode & FMODE_NDELAY))
-> -		goto error_out;
-> +		goto unlock_scan_error_out;
->  
->  	/*
->  	 * If the device has the write protect tab set, have the open fail
-> @@ -1452,7 +1462,7 @@ static int sd_open(struct block_device *bdev, fmode_t mode)
->  	 */
->  	retval = -EROFS;
->  	if (sdkp->write_prot && (mode & FMODE_WRITE))
-> -		goto error_out;
-> +		goto unlock_scan_error_out;
->  
->  	/*
->  	 * It is possible that the disk changing stuff resulted in
-> @@ -1462,15 +1472,19 @@ static int sd_open(struct block_device *bdev, fmode_t mode)
->  	 */
->  	retval = -ENXIO;
->  	if (!scsi_device_online(sdev))
-> -		goto error_out;
-> +		goto unlock_scan_error_out;
->  
->  	if ((atomic_inc_return(&sdkp->openers) == 1) && sdev->removable) {
->  		if (scsi_block_when_processing_errors(sdev))
->  			scsi_set_medium_removal(sdev, SCSI_REMOVAL_PREVENT);
->  	}
->  
-> +	mutex_unlock(&sdev->host->scan_mutex);
->  	return 0;
->  
-> +unlock_scan_error_out:
-> +	mutex_unlock(&sdev->host->scan_mutex);
-> +
->  error_out:
->  	scsi_disk_put(sdkp);
->  	return retval;	
-> -- 
-> 2.32.0=
-> Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-> Managing Directors: Dr. Jan Peter Berns.
-> Commercial register of local courts: Freiburg HRB381782
-> 
+>  drivers/of/platform.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+>
+> diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+> index 74afbb7a4f5e..42b3936d204a 100644
+> --- a/drivers/of/platform.c
+> +++ b/drivers/of/platform.c
+> @@ -392,6 +392,22 @@ static int of_platform_bus_create(struct device_node *bus,
+>         if (!dev || !of_match_node(matches, bus))
+>                 return 0;
+>
+> +       /*
+> +        * If the bus node has only one compatible string value and it has
+> +        * matched as a bus node, it's never going to get probed by a device
+> +        * driver. So flag it as such so that fw_devlink knows not to create
+> +        * device links with this device.
+> +        *
+> +        * This doesn't catch all devices that'll never probe, but this is good
+> +        * enough for now.
+> +        *
+> +        * This doesn't really work for PPC because of how it uses
+> +        * of_platform_bus_probe() to add normal devices. So ignore PPC cases.
+> +        */
+> +       if (!IS_ENABLED(CONFIG_PPC) &&
+> +           of_property_count_strings(bus, "compatible") == 1)
+> +               bus->fwnode.flags |= FWNODE_FLAG_NOT_DEVICE;
 
+This looks fragile relying on 1 compatible string, and the DT flags in
+this code have been fragile too. I'm pretty sure we have cases of
+simple-bus or simple-mfd that also have another compatible.
 
-<formletter>
+Couldn't we solve this with a simple driver? Make 'simple-pm-bus'
+driver work for other cases? BTW, this patch doesn't even work for
+simple-pm-bus. A driver for simple-bus may cause issues if there's a
+more specific driver to bind to as we don't handle that. It's simply
+whichever matches first.
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
-
-</formletter>
+Rob
