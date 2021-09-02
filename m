@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75823FED70
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:04:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E03E83FED72
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344154AbhIBMFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 08:05:09 -0400
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:41582 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344084AbhIBMFF (ORCPT
+        id S1344217AbhIBMFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 08:05:19 -0400
+Received: from mail-oo1-f54.google.com ([209.85.161.54]:46736 "EHLO
+        mail-oo1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344053AbhIBMFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 08:05:05 -0400
-Received: by mail-oi1-f181.google.com with SMTP id 6so2179330oiy.8;
-        Thu, 02 Sep 2021 05:04:06 -0700 (PDT)
+        Thu, 2 Sep 2021 08:05:06 -0400
+Received: by mail-oo1-f54.google.com with SMTP id z1-20020a4a2241000000b0028e8dfb83b4so438347ooe.13;
+        Thu, 02 Sep 2021 05:04:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=1BhybqLO/xSxTonTmG4+ysFiC+EsbInsMivl7h+IPwc=;
-        b=nho1VdkKJjEQmd/v+S/i7QPNFMaXptKMhpwWQsP8DWcQ0kaepjOhWYkswpvA0V0lbe
-         +HHmhgz+j/Q29Hc82XMthnqJq2upQ8n8Yq5Cr4l/UEvL0JPJyAWu3/Iwt1UPs5LotFrv
-         xfjx+RD5fPcqrE8ZKA8k19go6bdeviymhftnllHK2MUCE4fHh0EJ4798NJiTDwfQF5qE
-         grbcPHXI5ZXwSDszV2PBSVY+lXq2fYCdM9As3VsSV6NUjlkXXTn3XF5xmbL08l8U5E5W
-         J3jJHputQDNEMTo09ugIy0Pq2HLcBgPEqyh75xEAUADO0J6us7bn/jSk5CxXTkx6gO9X
-         eooQ==
-X-Gm-Message-State: AOAM533hDF3lW7/vIW/4XFRW1nzYYVLU8dNEJJVBQFTCcOGJUXpTG4hY
-        pE+NIcV2C2CpOtu2CLXFZQ==
-X-Google-Smtp-Source: ABdhPJyfKcFgOUXSmVvN4L+H7e8NArWiAR7hFp+ggaReieLCcYCZmbU/u2j43rfIJCSQEG7HchJk1Q==
-X-Received: by 2002:a54:4105:: with SMTP id l5mr1856524oic.76.1630584246444;
-        Thu, 02 Sep 2021 05:04:06 -0700 (PDT)
+        bh=qD/JwvmqRBtS1XdZshoHnEAUu284adMYEp3tjodfyAg=;
+        b=el7nXiuSnVs4aLA3aC3ZkBTOmYt+7k5ZSK8chO6g1XujwL2yRPUNZzXO3xjqnqAYQL
+         fTaHpA/zI2nyLGXTtTj4LK/gCpWuRpeuydoBRUt50Xo4alnYyftv9HfFWfhzNoWo0k8P
+         RQjzMyKCEHUptOd3eqUJyuNxYiuohvZHNi7vOP9JqDmTU4Q6QhkTBjRuUm2/Fht5c3Ss
+         qp+iMqZ0rGTVI1Bvnm/j5HYf4gji+IQRztc/a6p/6MKO/spC+KzlxPiAxQRg2PfThoYF
+         e0/S/sdJJkA18AlTo33yi2xhUK7IbZ9lGuf1CEcXYGUlIukqFjQIO+PC67m9JhQi8jOz
+         z+Hw==
+X-Gm-Message-State: AOAM533gW2VOcZFwf7IrS0tESHfCQgQIpzkI2gWHKIKfT4VOUSq4ialN
+        +koULtXBYCDOAKO5xhjIwA==
+X-Google-Smtp-Source: ABdhPJx7f7/UQ6LovDjZ3k53D0TtryTlyUn40DyyPDvW82pU9Syq5rwgwEEGeA8B9B9Vweocahgwlg==
+X-Received: by 2002:a4a:e3cf:: with SMTP id m15mr2270879oov.21.1630584248058;
+        Thu, 02 Sep 2021 05:04:08 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id w1sm301368ott.21.2021.09.02.05.04.05
+        by smtp.gmail.com with ESMTPSA id y7sm329001oov.36.2021.09.02.05.04.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 05:04:05 -0700 (PDT)
-Received: (nullmailer pid 685603 invoked by uid 1000);
+        Thu, 02 Sep 2021 05:04:07 -0700 (PDT)
+Received: (nullmailer pid 685599 invoked by uid 1000);
         Thu, 02 Sep 2021 12:03:59 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     alsa-devel@alsa-project.org, stephan@gerhold.net,
-        jbrunet@baylibre.com, devicetree@vger.kernel.org,
-        linux-tegra@vger.kernel.org, lgirdwood@gmail.com,
-        jonathanh@nvidia.com, broonie@kernel.org,
-        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
-        robh+dt@kernel.org
-In-Reply-To: <1630562033-13231-2-git-send-email-spujar@nvidia.com>
-References: <1630562033-13231-1-git-send-email-spujar@nvidia.com> <1630562033-13231-2-git-send-email-spujar@nvidia.com>
-Subject: Re: [PATCH v2 1/3] ASoC: Add json-schema documentation for sound-name-prefix
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Yu Chen <chenyu56@huawei.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mauro.chehab@huawei.com,
+        John Stultz <john.stultz@linaro.org>, linuxarm@huawei.com,
+        Rob Herring <robh+dt@kernel.org>
+In-Reply-To: <f81388b12162702b925bf1a7d97836982b5cd785.1630498020.git.mchehab+huawei@kernel.org>
+References: <cover.1630498020.git.mchehab+huawei@kernel.org> <f81388b12162702b925bf1a7d97836982b5cd785.1630498020.git.mchehab+huawei@kernel.org>
+Subject: Re: [PATCH v2 1/3] dt-bindings: misc: add schema for USB hub on Kirin devices
 Date:   Thu, 02 Sep 2021 07:03:59 -0500
-Message-Id: <1630584239.106707.685602.nullmailer@robh.at.kernel.org>
+Message-Id: <1630584239.088885.685598.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 02 Sep 2021 11:23:51 +0530, Sameer Pujar wrote:
-> The 'sound-name-prefix' is used to prepend suitable strings to a
-> component widgets or controls. This is helpful when there are
-> multiple instances of the same component. Add relevant json-schema
-> and is inspired from sound-name-prefix.txt documentation.
+On Wed, 01 Sep 2021 14:23:37 +0200, Mauro Carvalho Chehab wrote:
+> From: Yu Chen <chenyu56@huawei.com>
 > 
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
-> Cc: Jerome Brunet <jbrunet@baylibre.com>
-> Cc: Rob Herring <robh+dt@kernel.org>
+> This patch adds binding documentation to support USB HUB and
+> USB data role switch of HiSilicon HiKey960 and HiKey970 boards.
+> 
+> [mchehab: updated OF schema and added HiKey970 example]
+> Signed-off-by: Yu Chen <chenyu56@huawei.com>
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  .../devicetree/bindings/sound/name-prefix.yaml     | 35 ++++++++++++++++++++++
->  1 file changed, 35 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/name-prefix.yaml
+>  .../bindings/misc/hisilicon,hikey-usb.yaml    | 108 ++++++++++++++++++
+>  1 file changed, 108 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -74,14 +73,15 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/sound/name-prefix.example.dts:19.28-22.11: Warning (unit_address_vs_reg): /example-0/analog-amplifier@0: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/sound/name-prefix.example.dts:24.28-27.11: Warning (unit_address_vs_reg): /example-0/analog-amplifier@1: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/sound/name-prefix.example.dt.yaml:0:0: /example-0/analog-amplifier@0: failed to match any schema with compatible: ['simple-audio-amplifier']
-Documentation/devicetree/bindings/sound/name-prefix.example.dt.yaml:0:0: /example-0/analog-amplifier@1: failed to match any schema with compatible: ['simple-audio-amplifier']
+Error: Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.example.dts:41.23-24 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/misc/hisilicon,hikey-usb.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1419: dt_binding_check] Error 2
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1523479
+See https://patchwork.ozlabs.org/patch/1523123
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
