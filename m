@@ -2,108 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C43293FEFAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 16:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 402173FEFAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 16:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345650AbhIBOr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 10:47:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44702 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345450AbhIBOrZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 10:47:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A548860F56;
-        Thu,  2 Sep 2021 14:46:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630593987;
-        bh=LAjLVOuLv0GADfr79P6bjh2CHXkMV2kcfrQceNgLgGA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=qTaPzl2UzDiWc3uDLRhjDiwlZDv7imOhLc0wCpTT3WmFykB2Xsx8hv8cS6bfUofXM
-         0v/Mx1uahiNtoPMKy5az+unICvEMtyfSO1ENK+wBqynePZIL1O0jaKUoJlkLfji4gB
-         1E/CsVVdwJtfy/pY6V3C4Yh5R1LAoEJvc9/FcqwODusnGLX1/Uwba7XM0EI5fD0zCB
-         02gSxCl0FJAEBRvqRCS0qYjP816HfRHW3jt0MDop/SOnCZXBGqZMsWoKr+xtlry5LT
-         liN0eCRD4zunH1KENg2wBEtdJ1D/gEbzsy4xlaLn7ZqPeDyG9iL0uSfBRVS+rUjBac
-         Zm78O8uqoJILg==
-Date:   Thu, 2 Sep 2021 09:46:25 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Wang Xingang <wangxingang5@huawei.com>
-Cc:     robh@kernel.org, will@kernel.org, joro@8bytes.org,
-        robh+dt@kernel.org, gregkh@linuxfoundation.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, xieyingtai@huawei.com,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [PATCH v4] iommu/of: Fix pci_request_acs() before enumerating
- PCI devices
-Message-ID: <20210902144625.GA328403@bjorn-Precision-5520>
+        id S236020AbhIBOse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 10:48:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231767AbhIBOsb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 10:48:31 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D11C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 07:47:32 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id x11so5063510ejv.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 07:47:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3iSqlQ/ZK7ej3EgME7wgA6neQcA0t8xpPoHGdJFmKws=;
+        b=KXkwS+++0r7fEjFg2TNH76VwQiYENXwpvlgnBbgDP4CHN8InzCTBkIcPRiYSQooGLq
+         url3jbr31iRcFtsfAQsFzQz8kqaIXyNOduJNo2z+Y+JGxMGVYWZb3K8BXCt0LnOfCDYv
+         3jY01JKZ1GMXAbydMif8nQA4JwV5pAP24wtSR4fBkep0/OS3Ef2MiSy5IITWACmNnWmZ
+         LLSt8y/4TIt6vsZXLLyd+YpwBGIZG43j5u0m834kr+oFr/TVE8UFQffxhlvkvWloY4E6
+         uY9zvEnVwlIaYxYUEPhUzPdzhC7FT+HQckY4ONE3g43FcbIdSZLsKTGrrh0vtwrrHoFb
+         R1kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3iSqlQ/ZK7ej3EgME7wgA6neQcA0t8xpPoHGdJFmKws=;
+        b=jp2dvanyWQwipzwanSAaZKu5r68bXYefg63NGE0hGViGeeEl192950TQZKg1VK2Svk
+         Thv6S98h/CVK5ZA5ks2AfOAKdAW74tMbMakpgJk/9UPZ7ZvW1QgimC8CcqVC/sc4je6O
+         /4ON/rUqPKhfeXbI1ROXwuZ1nSBEYk1HrqyDqVVYpi29yANG4qv+5wPtkDnqX3v1X8C5
+         BtB/kqRyQAAh/wjcxX45H0iX4uhAGi3sWU/a2h5e0SJQoBd1zUUDmjE2UO1XnPFRJVCl
+         GOS8zaItlDSXV64WtHg+sffoEkCxNj5eHd70RqTtz1pmVgkV7tMjJvo/gNE2fmJ73TMG
+         CPZA==
+X-Gm-Message-State: AOAM530Owan+sjuJZrwJdeZcY7YHCAESA6aZkZDnI6lUkK6pVQALVDhY
+        m1fLdxcFdEkG7nlqNChgncBq4jiZhSjEPCKPmqVuJg==
+X-Google-Smtp-Source: ABdhPJxl6e1pbmRDpPaHV3/ARZv+hnd5d3DHYn2gMiQk/sb1dX7govEf48du4nht8BaHJ4UIoXO53b9QxyIzZZyP0YI=
+X-Received: by 2002:a17:906:68c2:: with SMTP id y2mr4249459ejr.18.1630594050694;
+ Thu, 02 Sep 2021 07:47:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210820195712.GA3342877@bjorn-Precision-5520>
+References: <20210901122250.752620302@linuxfoundation.org>
+In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 2 Sep 2021 20:17:19 +0530
+Message-ID: <CA+G9fYvnv_U=smgN34uX2uox95+T_iLhTG_QZeO_Zn4d2twVbw@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/33] 4.19.206-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Marek, Anders, Robin]
+On Wed, 1 Sept 2021 at 18:00, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.206 release.
+> There are 33 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.206-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On Fri, Aug 20, 2021 at 02:57:12PM -0500, Bjorn Helgaas wrote:
-> On Fri, May 21, 2021 at 03:03:24AM +0000, Wang Xingang wrote:
-> > From: Xingang Wang <wangxingang5@huawei.com>
-> > 
-> > When booting with devicetree, the pci_request_acs() is called after the
-> > enumeration and initialization of PCI devices, thus the ACS is not
-> > enabled. And ACS should be enabled when IOMMU is detected for the
-> > PCI host bridge, so add check for IOMMU before probe of PCI host and call
-> > pci_request_acs() to make sure ACS will be enabled when enumerating PCI
-> > devices.
-> > 
-> > Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
-> > configuring IOMMU linkage")
-> > Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
-> 
-> Applied to pci/virtualization for v5.15, thanks!
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-I dropped this for now, until the problems reported by Marek and
-Anders get sorted out.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> > ---
-> >  drivers/iommu/of_iommu.c | 1 -
-> >  drivers/pci/of.c         | 8 +++++++-
-> >  2 files changed, 7 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
-> > index a9d2df001149..54a14da242cc 100644
-> > --- a/drivers/iommu/of_iommu.c
-> > +++ b/drivers/iommu/of_iommu.c
-> > @@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
-> >  			.np = master_np,
-> >  		};
-> >  
-> > -		pci_request_acs();
-> >  		err = pci_for_each_dma_alias(to_pci_dev(dev),
-> >  					     of_pci_iommu_init, &info);
-> >  	} else {
-> > diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-> > index da5b414d585a..2313c3f848b0 100644
-> > --- a/drivers/pci/of.c
-> > +++ b/drivers/pci/of.c
-> > @@ -581,9 +581,15 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
-> >  
-> >  int devm_of_pci_bridge_init(struct device *dev, struct pci_host_bridge *bridge)
-> >  {
-> > -	if (!dev->of_node)
-> > +	struct device_node *node = dev->of_node;
-> > +
-> > +	if (!node)
-> >  		return 0;
-> >  
-> > +	/* Detect IOMMU and make sure ACS will be enabled */
-> > +	if (of_property_read_bool(node, "iommu-map"))
-> > +		pci_request_acs();
-> > +
-> >  	bridge->swizzle_irq = pci_common_swizzle;
-> >  	bridge->map_irq = of_irq_parse_and_map_pci;
-> >  
-> > -- 
-> > 2.19.1
-> > 
+## Build
+* kernel: 4.19.206-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-4.19.y
+* git commit: fc1fd7aed81d18bc92d0e096033e11161cea98aa
+* git describe: v4.19.205-34-gfc1fd7aed81d
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
+.205-34-gfc1fd7aed81d
+
+## No regressions (compared to v4.19.205-20-g0ec64a47cbb1)
+
+## No fixes (compared to v4.19.205-20-g0ec64a47cbb1)
+
+## Test result summary
+total: 80130, pass: 64266, fail: 784, skip: 13234, xfail: 1846
+
+## Build Summary
+* arm: 98 total, 98 passed, 0 failed
+* arm64: 34 total, 34 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 15 total, 15 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 41 total, 41 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 18 total, 18 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
