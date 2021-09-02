@@ -2,89 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC61A3FE78F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164633FE79D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242893AbhIBCVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 22:21:22 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:7771 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242772AbhIBCVV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 22:21:21 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1821xBgw068911;
-        Thu, 2 Sep 2021 09:59:11 +0800 (GMT-8)
-        (envelope-from chiawei_wang@aspeedtech.com)
-Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 2 Sep
- 2021 10:18:15 +0800
-From:   Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <lee.jones@linaro.org>, <osk@google.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>
-Subject: [PATCH v2 3/3] ARM: dts: aspeed: Add uart routing to device tree
-Date:   Thu, 2 Sep 2021 10:18:17 +0800
-Message-ID: <20210902021817.17506-5-chiawei_wang@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
-References: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
+        id S235811AbhIBCYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 22:24:39 -0400
+Received: from mga02.intel.com ([134.134.136.20]:24025 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243704AbhIBCYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 22:24:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10094"; a="206153851"
+X-IronPort-AV: E=Sophos;i="5.84,371,1620716400"; 
+   d="scan'208";a="206153851"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 19:23:26 -0700
+X-IronPort-AV: E=Sophos;i="5.84,371,1620716400"; 
+   d="scan'208";a="691080809"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.11.199]) ([10.209.11.199])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2021 19:23:25 -0700
+Subject: Re: [mm] 2d146aa3aa: vm-scalability.throughput -36.4% regression
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Michal Koutn?? <mkoutny@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        andi.kleen@intel.com, kernel test robot <oliver.sang@intel.com>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>
+References: <20210816032855.GB72770@shbuild999.sh.intel.com>
+ <YRrbpRsvdDoom9iG@cmpxchg.org>
+ <20210817024500.GC72770@shbuild999.sh.intel.com>
+ <20210817164737.GA23342@blackbody.suse.cz>
+ <20210818023004.GA17956@shbuild999.sh.intel.com> <YSzwWIeapkzNElwV@blackbook>
+ <20210831063036.GA46357@shbuild999.sh.intel.com>
+ <20210831092304.GA17119@blackbody.suse.cz>
+ <20210901045032.GA21937@shbuild999.sh.intel.com>
+ <877dg0wcrr.fsf@linux.intel.com>
+ <20210902013558.GA97410@shbuild999.sh.intel.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <e8d087a4-a286-3561-66ef-1e9cfb38605f@linux.intel.com>
+Date:   Wed, 1 Sep 2021 19:23:24 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.2.66]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1821xBgw068911
+In-Reply-To: <20210902013558.GA97410@shbuild999.sh.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add LPC uart routing to the device tree for Aspeed AST25xx/AST26xx SoCs.
 
-Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
----
- arch/arm/boot/dts/aspeed-g5.dtsi | 6 ++++++
- arch/arm/boot/dts/aspeed-g6.dtsi | 6 ++++++
- 2 files changed, 12 insertions(+)
+On 9/1/2021 6:35 PM, Feng Tang wrote:
+> On Wed, Sep 01, 2021 at 08:12:24AM -0700, Andi Kleen wrote:
+>> Feng Tang <feng.tang@intel.com> writes:
+>>> Yes, the tests I did is no matter where the 128B padding is added, the
+>>> performance can be restored and even improved.
+>> I wonder if we can find some cold, rarely accessed, data to put into the
+>> padding to not waste it. Perhaps some name strings? Or the destroy
+>> support, which doesn't sound like its commonly used.
+> Yes, I tried to move 'destroy_work', 'destroy_rwork' and 'parent' over
+> before the 'refcnt' together with some padding, it restored the performance
+> to about 10~15% regression. (debug patch pasted below)
+>
+> But I'm not sure if we should use it, before we can fully explain the
+> regression.
 
-diff --git a/arch/arm/boot/dts/aspeed-g5.dtsi b/arch/arm/boot/dts/aspeed-g5.dtsi
-index 329eaeef66fb..d3da5c948165 100644
---- a/arch/arm/boot/dts/aspeed-g5.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g5.dtsi
-@@ -492,6 +492,12 @@
- 					#reset-cells = <1>;
- 				};
- 
-+				uart_routing: uart-routing@98 {
-+					compatible = "aspeed,ast2500-uart-routing";
-+					reg = <0x98 0x8>;
-+					status = "disabled";
-+				};
-+
- 				lhc: lhc@a0 {
- 					compatible = "aspeed,ast2500-lhc";
- 					reg = <0xa0 0x24 0xc8 0x8>;
-diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-index f96607b7b4e2..c287d9dba118 100644
---- a/arch/arm/boot/dts/aspeed-g6.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-@@ -523,6 +523,12 @@
- 					#reset-cells = <1>;
- 				};
- 
-+				uart_routing: uart-routing@98 {
-+					compatible = "aspeed,ast2600-uart-routing";
-+					reg = <0x98 0x8>;
-+					status = "disabled";
-+				};
-+
- 				ibt: ibt@140 {
- 					compatible = "aspeed,ast2600-ibt-bmc";
- 					reg = <0x140 0x18>;
--- 
-2.17.1
+Narrowing it down to a single prefetcher seems good enough to me. The 
+behavior of the prefetchers is fairly complicated and hard to predict, 
+so I doubt you'll ever get a 100% step by step explanation.
+
+
+-Andi
+
 
