@@ -2,66 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABB13FEEE9
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE5E3FEEEB
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 15:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345265AbhIBNp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345255AbhIBNp4 (ORCPT
+        id S1345272AbhIBNrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:47:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38817 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232466AbhIBNrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:45:56 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FB2C061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 06:44:57 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id mf2so4487154ejb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 06:44:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=WCgF28ct4Cl5XxiLUUReZqZDk/KfxZD8XIMHdol3+tQ=;
-        b=XXGPrhQNE8dNJKYRoxA7d9aU3YZjTCqmgdZWS2si7LW6soT4X4NdbP74REuihTTmjD
-         uuSS/TxVSWHLlq0hywYd5p7+KXQLYMYgDZUiT3FhGtiG152mC75qIFbYbm3i5rJEaN7u
-         vkBJrLvElLpd1LD1rNBaXqOqEodVKFzTcsniZK8osgbn/uaJdM22oL6vnNX0Si5czzsu
-         tpCa5NcB2DhhK31qfgFnhZOnTnezNbQAHTW65HCnXoCfQKXX7BQOITYxmyMLFT5Int7C
-         dOlflxoffVT5hBtwLCaJMTkoaa6eJWVxpY9+3QPLOl2eTY4IJwFDQ0vtfC+q8dczlIvY
-         /9gg==
+        Thu, 2 Sep 2021 09:47:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630590369;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PcQKXY/cQKOdShIe+YVlSE7XvlfimtQWI3kVCVJqZrE=;
+        b=b1vzPZ9JXu6L4cVcxglXRIxWoBlHaNFzfNCD16uPWuJtdIGzE1muhCtqUpgQLo+uk7PxNL
+        qE4v6sP3bVJgP0lZAwNCONOyQ9/dyywl1crKQfpH6jvdVQctCmUbjr0U7l38y3j6BAHsfv
+        BX89nUKMUDI+DKq6nBs3w2R8QWDMKMk=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-319-RO3ZDOHIPi6eB6d5aRBl-A-1; Thu, 02 Sep 2021 09:46:08 -0400
+X-MC-Unique: RO3ZDOHIPi6eB6d5aRBl-A-1
+Received: by mail-qk1-f198.google.com with SMTP id x19-20020a05620a099300b003f64d79cbbaso1672623qkx.7
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 06:46:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=WCgF28ct4Cl5XxiLUUReZqZDk/KfxZD8XIMHdol3+tQ=;
-        b=aFmMe6Nbjs5Kp6vPfwaFUIev9Loj6L0YH5tuGTWqzLR7m5dEqeKRMhzZj4OiLRcEU7
-         s3DrCXGiqIl+Ed8nbhCzVXS8r2h+hSVKhPMEIvTdfUm6zjMOsQNDtr3wLQ+atQLwBeMX
-         NnyMz7rhpEuOiXdSmgN17e2V8DXgir2LCHwKA6Xlb4RrUuLLTBL+82OjFXsxIhWsNzuk
-         rNMJ5sX/SDrbFKc7X1Kre3TMwIFBr5+BSczBONGdrxdOHWycV5i9HVXWsr7HuaCPXPmW
-         RnY7FB2tLLn/BUwu+g4F/twOGVexJiefnhPYJFG4yBb407KNqNfnVz8fmgP//y50Rm+3
-         aJOQ==
-X-Gm-Message-State: AOAM533rLKGKO6qClzA73zUCyo/U8ArO7fvzZ1BQNwSccYREeirmJ53g
-        u0kBJlJRbnXFMg9B/qv/vwca81GhQzHW/x690sc=
-X-Google-Smtp-Source: ABdhPJyOiUTaFN5PgwWpWOsW1CJfqjnlKoAMEV9LEIPfcS2hsnNf/G+0/C7F4+4ZaVzC9BINhL6biqs9XTwujaPaxcE=
-X-Received: by 2002:a17:906:51d4:: with SMTP id v20mr3943687ejk.9.1630590296472;
- Thu, 02 Sep 2021 06:44:56 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PcQKXY/cQKOdShIe+YVlSE7XvlfimtQWI3kVCVJqZrE=;
+        b=T7fK6du47wl5te1SkkfLFYdZUP0GuhltKIwFoFyPby6Y9gP8UUy3IilvsWWOmrM+iA
+         4qLhyG0S1fJa1cAO9pH6FTMeSCcNTcGv6jBZSQpHZKLi3GREM5RIK1GW/Pzo1nkIjrP9
+         gEeE3gEzy4Nal+eyzj9GcYTSMiqtfoB5S4c/b/QhEl4JxXir9trwZzdmVa24oJ68vCQH
+         1ktWWRv4XlNMyBzY1hZlsx118HkA4dsJvG0n/aIlEXQK3f6Ik1a7sukZU2+Yop8jBAmc
+         DH7hEemXV6+dHu2iw5WVuu0Wrap481eTmTIQq6aeikrF7vzAEmp3ognQhJdYCv9l2Dgw
+         96nw==
+X-Gm-Message-State: AOAM533kox6i3KA/z3j3C+SzeTM0nAEej9N06jaqziL0SaIEMmZQz9fE
+        YFdzKa5exMARpKRIFaGXQqrlttxKxcUrJdO0ijZROAimvt9YBXo9Id18REEYXS45FXrDyxt7E7Q
+        vVIVOIUFAahz6nq7BnGevDRxP
+X-Received: by 2002:a0c:d804:: with SMTP id h4mr3371882qvj.37.1630590368155;
+        Thu, 02 Sep 2021 06:46:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx83mm+WcK2lvoIW0v47pEySyGsM3Sm0Io+mwVAic5avZpGftQiWmMPlQQwHQjgqGnarNFYXg==
+X-Received: by 2002:a0c:d804:: with SMTP id h4mr3371853qvj.37.1630590367962;
+        Thu, 02 Sep 2021 06:46:07 -0700 (PDT)
+Received: from gator (nat-pool-brq-u.redhat.com. [213.175.37.12])
+        by smtp.gmail.com with ESMTPSA id d20sm1413091qkl.13.2021.09.02.06.46.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 06:46:07 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 15:46:03 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 03/12] KVM: arm64: selftests: Add support for cpu_relax
+Message-ID: <20210902134603.zqdaqa4yfndi2dmc@gator>
+References: <20210901211412.4171835-1-rananta@google.com>
+ <20210901211412.4171835-4-rananta@google.com>
 MIME-Version: 1.0
-Received: by 2002:a17:906:3388:0:0:0:0 with HTTP; Thu, 2 Sep 2021 06:44:55
- -0700 (PDT)
-Reply-To: dinkarim06@gmail.com
-From:   Din Karim <katiehiggin24@gmail.com>
-Date:   Thu, 2 Sep 2021 14:44:55 +0100
-Message-ID: <CALfmd_xU2EF9FheAVDH3GHyjdfQh7aS5_bE1mS0+Ju2HSdtUdQ@mail.gmail.com>
-Subject: Hello.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901211412.4171835-4-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello dear,
+On Wed, Sep 01, 2021 at 09:14:03PM +0000, Raghavendra Rao Ananta wrote:
+> Implement the guest helper routine, cpu_relax(), to yield
+> the processor to other tasks.
+> 
+> The function was derived from
+> arch/arm64/include/asm/vdso/processor.h.
+> 
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  tools/testing/selftests/kvm/include/aarch64/processor.h | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
 
-I'm Barr Din Karim from the Republic of Ghana. Please, I wish to
-communicate with you.
+Reviewed-by: Andrew Jones <drjones@redhat.com>
 
-I wait for your response.
-
-Barr Din Karim(Esq)
