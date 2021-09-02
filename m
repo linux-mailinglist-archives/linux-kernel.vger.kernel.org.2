@@ -2,81 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352533FE781
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90393FE78C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:20:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234297AbhIBCSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 22:18:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232666AbhIBCSV (ORCPT
+        id S242394AbhIBCVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 22:21:18 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:27848 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233001AbhIBCVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 22:18:21 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EC79C061575
-        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 19:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=mequYaOSC8flI66LQgtrrKi6Dh4jUXB1i7lEFHYul5o=; b=dLOW0jSHug5ohyKzJC83Hc1+J3
-        5ZV4XGai8OxJqDtw9LwtoqW0XqUsB5MMmwk9K/FuheA9TqrWXrsY25xeE3qvuPc+asIPlhPfthQBP
-        EC2ErdwoTlDg+VR2MHnrzi3yBtqiMo3ux1vGjIMznPAADcjeB390zI/NJNSODWpNlHG3KxXsnFk1k
-        GmIDYccfXiCpZidr5Rs7NpbYyIvXnEDXIT5ShpHsdF8nytXiu3qcb10RvX9QsRO75kW2g/gXw7XjE
-        jzPQeJr+Zc44Q+jFO3VGJRBQ4xZ8qaBtye0waA+ektyM6XdxkpIsvHtbN440WM7FV571tUzcfm1Pi
-        2EBVUgXw==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mLcI6-008BRB-8f; Thu, 02 Sep 2021 02:17:22 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org
-Subject: [PATCH] drm/r128: fix build for UML
-Date:   Wed,  1 Sep 2021 19:17:21 -0700
-Message-Id: <20210902021721.27274-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Wed, 1 Sep 2021 22:21:16 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1821xAgu068909;
+        Thu, 2 Sep 2021 09:59:10 +0800 (GMT-8)
+        (envelope-from chiawei_wang@aspeedtech.com)
+Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 2 Sep
+ 2021 10:18:15 +0800
+From:   Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
+        <lee.jones@linaro.org>, <osk@google.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <openbmc@lists.ozlabs.org>
+Subject: [PATCH v2 0/3] arm: aspeed: Add UART routing support
+Date:   Thu, 2 Sep 2021 10:18:13 +0800
+Message-ID: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [192.168.2.66]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1821xAgu068909
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a build error on CONFIG_UML, which does not support (provide)
-wbinvd(). UML can use the generic mb() instead.
+Add UART routing driver and the device tree nodes.
 
-../drivers/gpu/drm/r128/ati_pcigart.c: In function ‘drm_ati_pcigart_init’:
-../drivers/gpu/drm/r128/ati_pcigart.c:218:2: error: implicit declaration of function ‘wbinvd’ [-Werror=implicit-function-declaration]
-  wbinvd();
-  ^~~~~~
+v2:
+ - Add dt-bindings
+ - Add ABI documents for the exported sysfs interface
+ - Revise driver implementation suggested by Joel
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2") # pre-git
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org
-Cc: Jeff Dike <jdike@addtoit.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Cc: linux-um@lists.infradead.org
----
- drivers/gpu/drm/r128/ati_pcigart.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Chia-Wei Wang (3):
+  dt-bindings: aspeed-lpc: Add UART routing compatible string
+  soc: aspeed: Add UART routing support
+  ARM: dts: aspeed: Add uart routing to device tree
 
---- linux-next-20210901.orig/drivers/gpu/drm/r128/ati_pcigart.c
-+++ linux-next-20210901/drivers/gpu/drm/r128/ati_pcigart.c
-@@ -214,7 +214,7 @@ int drm_ati_pcigart_init(struct drm_devi
- 	}
- 	ret = 0;
- 
--#if defined(__i386__) || defined(__x86_64__)
-+#if (defined(__i386__) || defined(__x86_64__)) && !defined(CONFIG_UML)
- 	wbinvd();
- #else
- 	mb();
+ .../testing/sysfs-driver-aspeed-uart-routing  |  15 +
+ .../devicetree/bindings/mfd/aspeed-lpc.txt    |  22 +
+ arch/arm/boot/dts/aspeed-g5.dtsi              |   6 +
+ arch/arm/boot/dts/aspeed-g6.dtsi              |   6 +
+ drivers/soc/aspeed/Kconfig                    |  10 +
+ drivers/soc/aspeed/Makefile                   |   9 +-
+ drivers/soc/aspeed/aspeed-uart-routing.c      | 601 ++++++++++++++++++
+ 7 files changed, 665 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-driver-aspeed-uart-routing
+ create mode 100644 drivers/soc/aspeed/aspeed-uart-routing.c
+
+-- 
+2.17.1
+
