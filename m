@@ -2,88 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFDD3FF551
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0249B3FF555
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238554AbhIBVHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
+        id S1346621AbhIBVIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:08:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346619AbhIBVHH (ORCPT
+        with ESMTP id S1344283AbhIBVIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:07:07 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A08C061760;
-        Thu,  2 Sep 2021 14:06:08 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id d5so2261839pjx.2;
-        Thu, 02 Sep 2021 14:06:08 -0700 (PDT)
+        Thu, 2 Sep 2021 17:08:12 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D45EC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 14:07:13 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id t12so7058980lfg.9
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 14:07:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YcUbkFpd1GGQUNeufnCep4XBgGZDKBrJJCE38qyZLp4=;
-        b=cjYLyVsMx77HHxDdRL5InTnI5FyMDQAOOSKYvNZ8cUsgaiTUbVm7/VMnxB2ksYVSU/
-         OV9tZBhvbHVGTOyPaSjOGarnc4M4MSqNf+TaRaxBYa9wt1QMINZVVKJoX4Y5Cx1qCd9F
-         It872d+WS8Sq1rE4HNp/HFwi1mcVgDJ7j0dRZuS8i10wGslBwk7yqzhHSwCitnjmFVf6
-         vI1fGZEvICifQJ71Bbde0db179yggx/D1RUptO8UNHNU83dA3d7qnHetYSV1N9e3ogfC
-         w2L5+Myqm1QgKTvLXskla+zSZa6kIKtZDlsWnKyMgXmwBcNHIsbAjdvrHU+n2b3wLfZM
-         VSMw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XguslLdPIXxVxFmZIelMYc4XAgNZi0tFqmUYgQxOp5M=;
+        b=GRl6nsj+q44z1Ha5UTrEb/YbOYWdRlaK0fubHiqDSnXS8sWWJcwTGWoDIW2UCbn6Zr
+         Cin4HyfAIjK1TVjdigRZ9ja7ecjITroQf2sZC4PC79Xaz+k+vtV6XvjQXxLLGFS3Tgvd
+         rZxyeNE+Shn/fy1exk3CDfTmR+G77EyuLt2WAGw8j5ATWWbDt8eRpAfxm4LgmHc7p2us
+         SdVcNLtNJiQPkMgU50e+CmDwIvKnHFdoc0jTOcrwRN3F83mIHv0PA+s/3GaM1tNx243Z
+         gMITCnX0rWgJVXu10k47y/pC6aRMKRjTFKL60xjdzuDoDoXohJ5vAGs0C1TJ9uxuED5z
+         b2tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YcUbkFpd1GGQUNeufnCep4XBgGZDKBrJJCE38qyZLp4=;
-        b=arUV0jMwfwg9dgQNJeCoIfUd9Jc4IMNdglOEWNxuxaQDOd7SYmJA3golWaWhXisKVl
-         /ZfeqH9GlOYn07GI7IBJ7U8ePOKORcER25KOjC0HfC6dxWoQYdnwPeeo2ceYmnqqpT9T
-         ytZb1ERlkM5frBgJb8ERL7s1Hquyqi73Jt7xO1QWx68vfkZ2/qunvCvqOaTx6aVtfnwo
-         PXEf287T38vZAgKYmiTnI2PvdWsa4ZGUD6mGzzHVbqfE+0JlW/qHJUSEEhEGmtQKnsjz
-         S6xLsxrYMQS3bQSw2FI0RYn+Ts5gT5plND4ZghGFkPTEKSOM5+j8Jznw6TdIHHTL8Iz6
-         rSXA==
-X-Gm-Message-State: AOAM530/d5vpxHxbk4IE/tIR4zF/QddHsbQOGt6yMv/PihnYAp2f+1Cu
-        2CSCihE7oMeTfFgObGgCCE8=
-X-Google-Smtp-Source: ABdhPJxs60Xc8WrcB2TZAoVjvUE0aFZVSF4iBMFVtH9pK4yHT66CZqLXnAIjk+Ave7tXWTLamkrEZA==
-X-Received: by 2002:a17:902:d2ca:b0:13a:8f:42ce with SMTP id n10-20020a170902d2ca00b0013a008f42cemr112120plc.58.1630616768490;
-        Thu, 02 Sep 2021 14:06:08 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id e16sm2934444pfc.214.2021.09.02.14.06.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 14:06:07 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        Matthew Hagan <mnhagan88@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh+dt@kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] ARM: dts: NSP: Fix MX65 MDIO mux warnings
-Date:   Thu,  2 Sep 2021 14:06:06 -0700
-Message-Id: <20210902210606.3103191-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210829223752.2748091-5-mnhagan88@gmail.com>
-References: <20210829223752.2748091-1-mnhagan88@gmail.com> <20210829223752.2748091-5-mnhagan88@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XguslLdPIXxVxFmZIelMYc4XAgNZi0tFqmUYgQxOp5M=;
+        b=GW7sf6wXcaPIBYA4f1I6p/Se7PeTea0N5fYdV7kXLpHWP//UyP9RKDcXCu4YhxT+4J
+         NmDQoz+EWILlLiuYB0jNrycui/CKz65j4+vPZt4KaHHWYrf7Pf3uI73YJbuOQZjKZP1O
+         InyWEIgyKjX4BJrQw5Xr86Kum6cePinsZi8wSF8eIxPSZrA4OkP6YvrOR6WRDUETgYZd
+         FnkQ7Ndf6eb4XXEv6TOFwqwIByvTDny7+LiP0d+W2lZUfOVzqSI7XMVbTrf7Mi05DKNA
+         bwuTgaEXFcoE+tdutKk93upcGSBBMACaUIf5iv03/dLiO2KUWCDSmEpwEbSJdOjB/qiM
+         J78Q==
+X-Gm-Message-State: AOAM531RSvAGX+fSeujWeVkcFgypNg2XijCugT0fPPVGBoZsw5rmBlSd
+        nSMtySTsNsylKJ+EoUkhH1Yb8tdp3gB7YTISxUKRrQ==
+X-Google-Smtp-Source: ABdhPJy8xnwpcjzdbh31Silho7ZsIAfWPr+R+NuwJ6UvcoeGh2m0fcJ/FCsJ2/qFTEX7zkqJV51h+rVv6z0QgWfOt/4=
+X-Received: by 2002:a05:6512:6c3:: with SMTP id u3mr80050lff.411.1630616831502;
+ Thu, 02 Sep 2021 14:07:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210901211412.4171835-1-rananta@google.com> <20210901211412.4171835-9-rananta@google.com>
+In-Reply-To: <20210901211412.4171835-9-rananta@google.com>
+From:   Oliver Upton <oupton@google.com>
+Date:   Thu, 2 Sep 2021 14:06:58 -0700
+Message-ID: <CAOQ_QsiYHkyDVUuUjFb5Zc=o4=yrmVEERNqt1aAY=4uy91mbgQ@mail.gmail.com>
+Subject: Re: [PATCH v3 08/12] KVM: arm64: selftests: Add light-weight spinlock support
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <Alexandru.Elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 29 Aug 2021 22:37:51 +0000, Matthew Hagan <mnhagan88@gmail.com> wrote:
-> The naming of this node is based upon that of the initial EA9500 dts[1].
-> However this does not conform with the mdio-mux format, yielding the
-> following message when running dtbs_check:
-> mdio-mii-mux: $nodename:0: 'mdio-mii-mux' does not match '^mdio-mux[\\-@]?'
-> 
-> Secondly, this node should be moved to within the axi node and given the
-> appropriate unit address. This also requires exposing the axi node via a
-> label in bcm-nsp.dtsi. This fixes the following warning:
-> Warning (unit_address_vs_reg): /mdio-mii-mux: node has a reg or ranges property, but no unit name
-> 
-> [1]https://patchwork.ozlabs.org/project/linux-imx/patch/20180618174159.86150-1-npcomplete13@gmail.com/#1941353
-> 
-> Signed-off-by: Matthew Hagan <mnhagan88@gmail.com>
+On Wed, Sep 1, 2021 at 2:14 PM Raghavendra Rao Ananta
+<rananta@google.com> wrote:
+>
+> Add a simpler version of spinlock support for ARM64 for
+> the guests to use.
+>
+> The implementation is loosely based on the spinlock
+> implementation in kvm-unit-tests.
+>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
 > ---
+>  tools/testing/selftests/kvm/Makefile          |  2 +-
+>  .../selftests/kvm/include/aarch64/spinlock.h  | 13 +++++++++
+>  .../selftests/kvm/lib/aarch64/spinlock.c      | 27 +++++++++++++++++++
+>  3 files changed, 41 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/kvm/include/aarch64/spinlock.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/spinlock.c
+>
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index 5d05801ab816..61f0d376af99 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -35,7 +35,7 @@ endif
+>
+>  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
+>  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
+> -LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S
+> +LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c
+>  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
+>
+>  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
+> diff --git a/tools/testing/selftests/kvm/include/aarch64/spinlock.h b/tools/testing/selftests/kvm/include/aarch64/spinlock.h
+> new file mode 100644
+> index 000000000000..cf0984106d14
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/include/aarch64/spinlock.h
+> @@ -0,0 +1,13 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef SELFTEST_KVM_ARM64_SPINLOCK_H
+> +#define SELFTEST_KVM_ARM64_SPINLOCK_H
+> +
+> +struct spinlock {
+> +       int v;
+> +};
+> +
+> +extern void spin_lock(struct spinlock *lock);
+> +extern void spin_unlock(struct spinlock *lock);
+> +
+> +#endif /* SELFTEST_KVM_ARM64_SPINLOCK_H */
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/spinlock.c b/tools/testing/selftests/kvm/lib/aarch64/spinlock.c
+> new file mode 100644
+> index 000000000000..6d66a3dac237
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/spinlock.c
+> @@ -0,0 +1,27 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * ARM64 Spinlock support
+> + */
+> +#include <stdint.h>
+> +
+> +#include "spinlock.h"
+> +
+> +void spin_lock(struct spinlock *lock)
+> +{
+> +       uint32_t val, res;
 
-Applied to https://github.com/Broadcom/stblinux/commits/devicetree/next, thanks!
---
-Florian
+nit: use 'int' to match the lock value type.
+
+> +
+> +       asm volatile(
+> +       "1:     ldaxr   %w0, [%2]\n"
+> +       "       cbnz    %w0, 1b\n"
+> +       "       mov     %w0, #1\n"
+> +       "       stxr    %w1, %w0, [%2]\n"
+> +       "       cbnz    %w1, 1b\n"
+> +       : "=&r" (val), "=&r" (res)
+> +       : "r" (&lock->v)
+> +       : "memory");
+> +}
+> +
+> +void spin_unlock(struct spinlock *lock)
+> +{
+> +       asm volatile("stlr wzr, [%0]\n" : : "r" (&lock->v) : "memory");
+> +}
+> --
+> 2.33.0.153.gba50c8fa24-goog
+>
+
+Otherwise, LGTM.
+
+Reviewed-by: Oliver Upton <oupton@google.com>
