@@ -2,101 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07FBA3FEBEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C723FEBED
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233714AbhIBKQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 06:16:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46302 "EHLO
+        id S233719AbhIBKRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 06:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231770AbhIBKQX (ORCPT
+        with ESMTP id S233445AbhIBKRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 06:16:23 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 045FFC061575;
-        Thu,  2 Sep 2021 03:15:25 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id w17so1026773qta.9;
-        Thu, 02 Sep 2021 03:15:24 -0700 (PDT)
+        Thu, 2 Sep 2021 06:17:37 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35863C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 03:16:39 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id j12so2536365ljg.10
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 03:16:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jY0hv8Hwv+CT3F31rfXY2gXxMi5rZPignVknHkWMmbc=;
-        b=W6BnvnkxBsv0zv5VlNH5tPNzy1TMc+MmUgNjHkvbhds2FgaADzlyMDJnF6qT++tUkg
-         xjQyrM03fM8Kk2fkbrGcNeypZ7rESkUYl71iMxPixTM3Ncv4FimKqz/AVubZYjOAm8TP
-         PTm4aQJNk5lsbHfIcGQMvBol4wmbzwqD6paEA7sSFbBQUgSDYafHcRrE5CuQRdaQhMp7
-         EHqrWd0SuK+dzK/VqquRZbxsep+9ZX/E7Ejk70MbjvzQv7ublsz9mVlx4cYSsz1sQQ1I
-         Apq3DEoudOvrai3Bxf7I2HRydQ6MtTVK+mktHJ6do7AZlE9kwzU8TwTWkRbSwEFeoqUB
-         +YAw==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z5j+z2knFswIqtccUbslQnxBqrHmJjvXWyROy1vaNLY=;
+        b=cA+CBG3rurJRoW2S1KmfZTf65dlOyf8SsSNkCCO6BQdGCDmdLJPksR/VAUxfUnJ23y
+         ++6fJoIM7ayNUzKvGXwaLW038dNT/co454H1IzpnT+gUq7o+gjbQIstb+IN5r9Cf92Af
+         14ygAfmtHrLlxJm4LssqXPSwRyM7nGYH4kfk9g6eYp+O/SNyCHvEdvJNn+Z9gikf3CAD
+         KixYaSbFzbYQkEsLP/cg1T/fPArKYwzbvIP0Yl03zlnOxVg3h8wDNfUrlYvb6V69C1I4
+         NEqyCr0/YrG6uTtKEKy/CLYfIA1ryjLGABq4m93uPWVU+L5MraOqQm0EkV6QfPxfEP1R
+         lUQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jY0hv8Hwv+CT3F31rfXY2gXxMi5rZPignVknHkWMmbc=;
-        b=VixxqYD12qDaeMbx0iMhAnXfZv4gPYo18YbC2VLh/Zo6D6sO/mV6zluPqzpF+eISEs
-         BXh76CqIvTAE8JnnYinTvmdHgy8zuneXgJBFhlfDemC2hkYOM4eIO0si2y2Vvyx47AB2
-         gdVEO3ikGwJK1acvb6rX4Z6Ai/bCmDSxE9kJEJl8w06Bs9LHalWNIDS5Kb1yToHxtR5A
-         +Ae+XzjbS/JdYFyHCMz7h+12qLz5r4//yF3RYXcCLj79aY3ekU8046P1TFVaFhA0AXl7
-         y2KqJ8l3Mr9Und+OS1M7r0/CLDgInQydcnN9RHJogcqIcJ2DZc74TqJnQaY1X/72b0Rh
-         q5aA==
-X-Gm-Message-State: AOAM532gfwkazhTLlkzWtJrGW2rDpgfwDtc34N5VkyF/h3hkgOr8bb1k
-        JtuYvDCHLDmv0PNN4a67fmU0tKgDlJWYjFO9izo=
-X-Google-Smtp-Source: ABdhPJyaC7CE9giiu/RlXTNJcKPnXQPD6Hgl274N4dVhoHYR3rwaY0HAtbTD/b1i+5NbQgo6m3HYdTdZ4hgvCz0C1vw=
-X-Received: by 2002:a05:622a:148e:: with SMTP id t14mr2191315qtx.356.1630577724181;
- Thu, 02 Sep 2021 03:15:24 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z5j+z2knFswIqtccUbslQnxBqrHmJjvXWyROy1vaNLY=;
+        b=ZGy/gBebyQuB5FPs4fbklD1h7FGAOG7AM/gJpBdku/4JsIaL1h7C3Ntc3zTeG1YyBr
+         JO6UnrrK3yyP0zHRKIxQK0968E99Hs+kJdL8v5cqzmzOhFimeIFZZzEKMFpGBEJACMm9
+         oGpB+SVONJuLD+P8vtdUtxsQCf9XG/HEHfWE0+OOMU1aXJlSFiLiVVbAgIeuRDwW/N4/
+         aH/dLduD3YQ3GNMJFHve8J/GE3IJB+2iWVgUsNa0guCBQNy2zvKyrUCGleAxCBTVdj77
+         eHFwi4dmpmFQHiI/LDMM/R0ZjHEk70KVkp8ex9M9FGnVzWCGKnvuczV/OrAEj9eusN+z
+         KO2w==
+X-Gm-Message-State: AOAM530C92BbLxPV/Bx/Drie6C2XKQFh+yxuZMEDwL7ydgbJQC9I7Y1O
+        +3BmIqVUmyqyByWrzlT0Q01eDw==
+X-Google-Smtp-Source: ABdhPJwheBZMFrP5A7mLjFTz3IjQwGKnLn0NLB5gWuxOzhoTx3dlXdGpSKZ+qEOUyAwHWWdJODGkCw==
+X-Received: by 2002:a2e:7603:: with SMTP id r3mr1878065ljc.98.1630577797471;
+        Thu, 02 Sep 2021 03:16:37 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id s4sm155897lfd.53.2021.09.02.03.16.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 03:16:36 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Dmitry Osipenko <digetx@gmail.com>, linux-pm@vger.kernel.org
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 0/3] PM: domains: Improvements for performance states in genpd
+Date:   Thu,  2 Sep 2021 12:16:31 +0200
+Message-Id: <20210902101634.827187-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210822161005.22467-1-sergio.paracuellos@gmail.com>
- <20210822161005.22467-4-sergio.paracuellos@gmail.com> <YSip4/kMNOG4uYC3@kroah.com>
- <CAMhs-H_0ytYCoBLj9GJDjHSPPHLC6_oBsm-V9s4FjhE7NY8TCw@mail.gmail.com> <YTCWR7oyLWgTDbQe@kroah.com>
-In-Reply-To: <YTCWR7oyLWgTDbQe@kroah.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Thu, 2 Sep 2021 12:15:12 +0200
-Message-ID: <CAMhs-H8U-crQHFVQj6j4Y5qs-S2NaW9trH8twKH8AwDR+AAYgg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] staging: mt7621-pci: set end limit for 'ioport_resource'
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linux-staging@lists.linux.dev, NeilBrown <neil@brown.name>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 11:15 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Sun, Aug 29, 2021 at 05:14:27PM +0200, Sergio Paracuellos wrote:
-> > On Fri, Aug 27, 2021 at 11:01 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Sun, Aug 22, 2021 at 06:10:05PM +0200, Sergio Paracuellos wrote:
-> > > > We have increase IO_SPACE_LIMIT for ralink platform to get PCI IO resources
-> > > > properly handled using PCI core APIs. To align those changes with driver
-> > > > code we have to set 'ioport_resource' end limit to IO_SPACE_LIMIT to avoid
-> > > > errors.
-> > > >
-> > > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > >
-> > > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >
-> > Thanks. Since I am planning to move 'mt7621-pci' from staging to
-> > 'drivers/pci/controller' and send v3 after the next merge window, I
-> > prefer this patch to go through the staging tree. For the other two I
-> > don't have any preference and it is ok for me to go through mips or
-> > pci trees. So, Bjorn and Thomas is up to you if you are ok with the
-> > changes.
->
-> Yes, I would need acks for the other patches in the series if this is to
-> come through the staging tree.
+This series intends to improve how genpd manages performance states votes while
+device are becoming attached/detached to it. More details are available in the
+commit messages for each patch.
 
-Yes, I know it. Let's wait for Thomas and Bjorn preference for those
-remaining two.
+Ulf Hansson (3):
+  PM: domains: Drop the performance state vote for a device at detach
+  PM: domains: Restructure some code in __genpd_dev_pm_attach()
+  PM: domains: Add a ->dev_get_performance_state() callback to genpd
 
-Best regards,
-    Sergio Paracuellos
->
-> thanks,
->
-> greg k-h
+ drivers/base/power/domain.c | 26 +++++++++++++++++---------
+ include/linux/pm_domain.h   |  3 ++-
+ 2 files changed, 19 insertions(+), 10 deletions(-)
+
+-- 
+2.25.1
+
