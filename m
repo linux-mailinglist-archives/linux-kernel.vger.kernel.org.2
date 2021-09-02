@@ -2,97 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D912B3FED2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81CC3FED31
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 13:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343551AbhIBLxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 07:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234069AbhIBLxO (ORCPT
+        id S1343826AbhIBLyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 07:54:09 -0400
+Received: from mail-vs1-f43.google.com ([209.85.217.43]:46038 "EHLO
+        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234069AbhIBLxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 07:53:14 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31146C061575;
-        Thu,  2 Sep 2021 04:52:16 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id t15so2457901wrg.7;
-        Thu, 02 Sep 2021 04:52:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=REU/zWX2TwsWxawKdowJSturRLawxrdcJa2xlpzDP3o=;
-        b=T4KW8fWe//wfjeDeS90FONrdpKo+3S0vJU0QAvnJF/Am/s3sHr7Ish4t9RjwG4ewFL
-         tn0bcMQfBNRYaWCgsIShd2MAKdXqW5Jbwv3Gab0X1jEw72SdhH8yE32UGdx+nVuz/TTy
-         7IxQxu3yZhuNVRH+q7yw0o1qNuIH2HX3d4lXixfzk1HuKSM+Rems48W6baBPf+kvVKnR
-         A6FDEx2JyHCGhSQZSbzBmGYmrCQ/7kbM5gCmW+8vcjt/iJzkzjqs84Zuzm3UpOFn3yRi
-         AXlsyGZ8Q0igK0g1kY4LVxG7nTB9rsiPCvlVLzFQN4nxmN6ZbwKRlCnpQRAOIpylftgM
-         brPQ==
+        Thu, 2 Sep 2021 07:53:55 -0400
+Received: by mail-vs1-f43.google.com with SMTP id a21so1175805vsp.12;
+        Thu, 02 Sep 2021 04:52:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=REU/zWX2TwsWxawKdowJSturRLawxrdcJa2xlpzDP3o=;
-        b=HUUmJeXkYpO9mMa5sbalryI3Z2PZ8rz7KJ5bCE+UXnn4lG5GwQBxQs+8EQd93mAd+x
-         C6l4I8Eiz1hR1iiBbaULNx2GsQkhviP7hA55g8lRrCZvDkUbKiZR0zzkhdRkmGEngKHw
-         21A47pHpuCDey0e3a6a1hHUP+BL4d4Cvg5NXi2ynXVcXh4WDoic2dSNMNGOxnLutneOQ
-         LEqrxnYWfFJfQTSKgW82i796hqEkC7Xg0WkSj2aKDl0Cr2phhnP8cgIf4bhIOz6oXM6V
-         MNIXO/Gipe7GFTqZOyWV2PZzo7MOAxCZEGyR5YtvC1YQPKjlEm6GZbDnYWdsnRmDreQx
-         ZwZQ==
-X-Gm-Message-State: AOAM53370IwkAZMxqtipwLK9/2+x8H2tD9gRSW/SvExABTMJg43cgwes
-        RYTWxGrSnOttflUkAIBVG2Y=
-X-Google-Smtp-Source: ABdhPJytIG1qFQAfI2jjv/w/FiVbhDrQ96A1WinKU4Cdey3syfW62d844bzvS5kKnfRFA6x3bjjrNA==
-X-Received: by 2002:adf:8064:: with SMTP id 91mr3222399wrk.252.1630583534802;
-        Thu, 02 Sep 2021 04:52:14 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id y6sm1889629wrm.54.2021.09.02.04.52.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 04:52:14 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 12:52:12 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/33] 4.19.206-rc1 review
-Message-ID: <YTC67Ofbc0PTKjhY@debian>
-References: <20210901122250.752620302@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s5u8fbmiYbgPdIpDQg3crMwUtNYfjRbmwSaVQsWY1oM=;
+        b=DgPTE6qca4P3EgOMcRcMBfv1nXesZ41smhsXyc5Dll49z+TV6XMaeleoTToBqjREIO
+         WOnoyq7e+2EIqJKVZ4EdWNHER7Z7xgue6PeW1e1PQJUC7ef3GbTsLGpaeKLwDSU8wy5k
+         iJY44jd5Q+SwT8XhxeupfAOA0Lz8OjNkCmJPQHQa41xFyD6Px+hGAP1ylG/4sG8+81v5
+         Ho8zD6EJjHXpEyKlxXdH5SDORTYa7pCNoxDzytwjs/tKwPmQkfD6oQ5iz/Wdq1bwDG/5
+         fvhE3CevuetDW4ckopIqmOKwtWuaYR+IxauQDRi2q9+PnGvKB4+hSb4Vaa8N4QaHx+aB
+         Gt/A==
+X-Gm-Message-State: AOAM532Y0l9t9nfUrvsUesF23FwmqRu4XR2CzV14sUg3uzi593gvzNuO
+        8kT7C0F3DGp279bBl9g4tUj6rqv44gaxRFobzwA=
+X-Google-Smtp-Source: ABdhPJzrCJB+pGoTiggeVf31kTRMhI2i9RZDg13fzg+0T5RSO5BvVbACLYeBbRKhNO23EIIRyzaD46D25wmDzeNZY9Q=
+X-Received: by 2002:a67:cb0a:: with SMTP id b10mr1535432vsl.9.1630583576886;
+ Thu, 02 Sep 2021 04:52:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901122250.752620302@linuxfoundation.org>
+References: <20210902114641.32370-1-caihuoqing@baidu.com>
+In-Reply-To: <20210902114641.32370-1-caihuoqing@baidu.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 2 Sep 2021 13:52:45 +0200
+Message-ID: <CAMuHMdXkcf1F5yLb6JWOA+R-SUtPBLkNZZiAbaYxhtQE7gY8Bg@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Add linux-renesas-soc mailing list to
+ renesas JPU
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Mikhail Ulyanov <mikhail.ulyanov@cogentembedded.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Thu, Sep 2, 2021 at 1:47 PM Cai Huoqing <caihuoqing@baidu.com> wrote:
+> 'linux-renesas-soc' is the mailing list for renesas SOC driver,
+> so add it to renesas JPU driver info.
+>
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 
-On Wed, Sep 01, 2021 at 02:27:49PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.206 release.
-> There are 33 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
-> Anything received after that time might be too late.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Build test:
-mips (gcc version 11.1.1 20210816): 63 configs -> no failure
-arm (gcc version 11.1.1 20210816): 116 configs -> no new failure
-arm64 (gcc version 11.1.1 20210816): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
+Gr{oetje,eeting}s,
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
+                        Geert
 
-[1]. https://openqa.qa.codethink.co.uk/tests/78
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
