@@ -2,123 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 117393FF222
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:14:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CBF3FF225
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346471AbhIBRPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 13:15:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234497AbhIBRPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 13:15:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C05761074;
-        Thu,  2 Sep 2021 17:14:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630602891;
-        bh=nHyqC71zNDZ60+fGD11mCVisc8kU7q2n+i+qp/g67Bw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k1RwT9uR0l8jtBz4UJcY5Ut34WGnR6BkBpXVAb5eyQc603aUSqfGqb52rs3FLPCZ0
-         +0aBdJYsQTVJFENiPOEYM9i6/j+zrbkcoc0Wm5CdsDBo8o8D+Ir5etqZJUEvzUg7yT
-         1uVjBrW2XltqrtBXTaYz9KYuxxqTsAmFR3VA1dCbX7cucbXw1NAhRM4nvJUitCEigC
-         DBEgHYqld/AmDd7p0tqQzm0TBiDhGnsZ8vlo3haQ+yWqbe8JJjP73KUYYsKsB7CTBl
-         3Z8+mgIrJPh4PZtgDxw84ialBl2FdkQsQ7OXJh7WzBpW5VePmJh6nXUx4EU+PmHGf9
-         9J4YXTQgxCzDw==
-Date:   Thu, 2 Sep 2021 20:14:44 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, vijayendra.suman@oracle.com,
-        mlombard@redhat.com, pjones@redhat.com,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] iscsi_ibft: Fix isa_bus_to_virt not working under ARM
-Message-ID: <YTEGhPnQkgOiOHf7@kernel.org>
-References: <20210902140313.1555053-1-konrad.wilk@oracle.com>
- <20210902140313.1555053-2-konrad.wilk@oracle.com>
+        id S1346512AbhIBRRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 13:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234534AbhIBRRe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 13:17:34 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98640C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 10:16:35 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id d16so4911570ljq.4
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 10:16:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yFMUfBmbSDNmL0+hEJjSMckWq+RWBRj7DJeWmAldrvU=;
+        b=HEjM3l8FT7i8s8RTsYSL9OPwwq7dJPL28z4Egg4c2fboPKc4808uvyuJoYMICE5pmO
+         0+g+S9AdEVa/wr8F04JeXsa7JKLL1+mKN3eXopoMdHwKKjq38D4IuC66Mp7u4LnE4E/t
+         ADQ53/+/iZb1B36anEatqClmIlmm6vR4ZV3i4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yFMUfBmbSDNmL0+hEJjSMckWq+RWBRj7DJeWmAldrvU=;
+        b=gWGxZXguMqhfOQH6ta0ez1hngC3FrYkLT61jAPOgz8wysGNmKhrgcuCbwF9guJy6fD
+         Vi8GorXkga1CQOtT593Wy2Gf1S7ndK1HK6qYWDuKmnm2kbBMmeUQt9d6HilTvnrzYq2I
+         KELd8ELO8qJzhHnSCmp2WOZpL1e6eZCn18AqNhQHZHp6MSOuzKZc4hfGFGhwI3bkrMUY
+         RNBbgWXjLc7cCATVmhLUbdwZn4b+L2gz37Xtt7ocnlZSW6ISuSab0icFwdNy7dUIWOVm
+         hci+q0YsM5mtRNxs8nOMu9e9l4y6GTYCys11jZNHXq0wclzAs1ISr9aWb1Dyb0SErPLr
+         gHIg==
+X-Gm-Message-State: AOAM532NWvULx/Jd8H/x4dRduaTdxdBwCTxrHJkiGuves/je5UgNode0
+        Ce5sdzwHZ2HIwrb0ZlOI5XihvFoei5qIa6DDY/w=
+X-Google-Smtp-Source: ABdhPJxw7SC9/ARY2TAkwVXtCat4CTYB39/XdMz71zoH5Sf9mub5OWYPbSka7EmDhAS/M+ZraQssaQ==
+X-Received: by 2002:a2e:960c:: with SMTP id v12mr3425093ljh.300.1630602993722;
+        Thu, 02 Sep 2021 10:16:33 -0700 (PDT)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id br13sm253987lfb.71.2021.09.02.10.16.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 10:16:30 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id s12so4972539ljg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 10:16:30 -0700 (PDT)
+X-Received: by 2002:a05:651c:1144:: with SMTP id h4mr3404930ljo.48.1630602990323;
+ Thu, 02 Sep 2021 10:16:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902140313.1555053-2-konrad.wilk@oracle.com>
+References: <20210831203727.3852294-1-kuba@kernel.org> <CAHk-=wjB_zBwZ+WR9LOpvgjvaQn=cqryoKigod8QnZs=iYGEhA@mail.gmail.com>
+ <20210901124131.0bc62578@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <4dfae09cd2ea3f5fe4b8fa5097d1e0cc8a34e848.camel@sipsolutions.net>
+ <635201a071bb6940ac9c1f381efef6abeed13f70.camel@intel.com> <CAP71bdV1eBm3f1qY0rfigK4VaW5icZ+hU0pw7g6fVM=hGbn7Xw@mail.gmail.com>
+In-Reply-To: <CAP71bdV1eBm3f1qY0rfigK4VaW5icZ+hU0pw7g6fVM=hGbn7Xw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 2 Sep 2021 10:16:14 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whog7gH+7TZ+QfB-U=mbqg4QkHB6eNad9DjPX0hgheydw@mail.gmail.com>
+Message-ID: <CAHk-=whog7gH+7TZ+QfB-U=mbqg4QkHB6eNad9DjPX0hgheydw@mail.gmail.com>
+Subject: Re: [GIT PULL] Networking for v5.15
+To:     Larry Finger <Larry.Finger@lwfinger.net>
+Cc:     "Coelho, Luciano" <luciano.coelho@intel.com>,
+        "johannes@sipsolutions.net" <johannes@sipsolutions.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "Korenblit, Miriam Rachel" <miriam.rachel.korenblit@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 02:03:13PM +0000, Konrad Rzeszutek Wilk wrote:
-> The isa_bus_to_virt is only needed under X86 and in fact the code
-> that sets the ibft_phys_addr is only compiled under X86.
-> 
-> As such lets just ifdef the code.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Vijayendra Suman <vijayendra.suman@oracle.com>
-> CC: Maurizio Lombardi <mlombard@redhat.com>
-> CC: Mike Rapoport <rppt@kernel.org>
-> Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> ---
->  drivers/firmware/iscsi_ibft.c | 22 +++++++++++++++++-----
->  1 file changed, 17 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/firmware/iscsi_ibft.c b/drivers/firmware/iscsi_ibft.c
-> index 612a59e213df..7cde1a7a3ab1 100644
-> --- a/drivers/firmware/iscsi_ibft.c
-> +++ b/drivers/firmware/iscsi_ibft.c
-> @@ -86,7 +86,7 @@ MODULE_VERSION(IBFT_ISCSI_VERSION);
->  
->  static struct acpi_table_ibft *ibft_addr;
->  
-> -#ifndef CONFIG_ISCSI_IBFT_FIND
-> +#ifdef CONFIG_ISCSI_IBFT_FIND
->  phys_addr_t ibft_phys_addr;
->  #endif
+On Thu, Sep 2, 2021 at 10:07 AM Larry Finger <Larry.Finger@lwfinger.net> wrote:
+>
+> I can confirm that Luca's patch fixes the problem on my system.
 
-I think this declaration should be removed after you added
-acpi_find_ibft_region().
+Yes. It's merged in my tree as commit 75ae663d053b ("iwlwifi: mvm: add
+rtnl_lock() in iwl_mvm_start_get_nvm()"), and I no longer see the
+complaints.
 
-Before your changes we had ibft_phys_addr defined in iscsi_ibft_find.c for
-CONFIG_ISCSI_IBFT_FIND=y and the declaration above was needed to avoid
-compilation error in ibft_init().
-
-With the only use of ibft_phys_addr hidden under #ifdef CONFIG_ISCSI_IBFT_FIND
-this declaration actually hides ibft_phys_addr defined in
-iscsi_ibft_find.c.
-
->  
-> @@ -851,7 +851,21 @@ static void __init acpi_find_ibft_region(void)
->  {
->  }
->  #endif
-> -
-> +#ifdef CONFIG_ISCSI_IBFT_FIND
-> +static int __init acpi_find_isa_region(void)
-> +{
-> +	if (ibft_phys_addr) {
-> +		ibft_addr = isa_bus_to_virt(ibft_phys_addr);
-> +		return 0;
-> +	}
-> +	return -ENODEV;
-> +}
-> +#else
-> +static int __init acpi_find_isa_region(void)
-> +{
-> +	return -ENODEV;
-> +}
-> +#endif
->  /*
->   * ibft_init() - creates sysfs tree entries for the iBFT data.
->   */
-> @@ -864,9 +878,7 @@ static int __init ibft_init(void)
->  	   is called before ACPI tables are parsed and it only does
->  	   legacy finding.
->  	*/
-> -	if (ibft_phys_addr)
-> -		ibft_addr = isa_bus_to_virt(ibft_phys_addr);
-> -	else
-> +	if (acpi_find_isa_region())
->  		acpi_find_ibft_region();
->  
->  	if (ibft_addr) {
-> -- 
-> 2.27.0
-> 
-
--- 
-Sincerely yours,
-Mike.
+           Linus
