@@ -2,75 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67BC53FF6B5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 487FB3FF6B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347932AbhIBV6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:58:38 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:60362
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243139AbhIBV6h (ORCPT
+        id S1347954AbhIBV7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347941AbhIBV7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:58:37 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 9E16C3F07E;
-        Thu,  2 Sep 2021 21:57:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630619857;
-        bh=RrGb14526Hzdi2/6F7zzMyJp4jDW7pX9lwkBYSkcqpM=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=coaFRyxoT+NWg1LTsanYt1sed4BgbKdeHv4iRV+tv1YdVLbj+1qp8qoLAVUFZXKfD
-         tA7nQjAsIvGYP01nwDOzhGMR4j9pRsxNpSSYn8yqfBbw5p4kccz6jweZEF8mDtvSrQ
-         hIbQtv2yaNnTK/odnQDg0Tqh4qah7EbhpRBFKxuAYgBuU3Rq70f3ckrvBd2Ehw90On
-         dBcBh+ymObVnS8XVihxM9isHp4RYDgIkffT/wg+0yLCqwRFivGjwQkosjHCEDmxBCF
-         wSXh7lCdcuKRJ9j2uPmSKWd3Q8g98UXvRE93lgBrPiznazVlJkKJ72/1F3wbedZOrr
-         sCQHRUzFgEWlw==
-From:   Colin King <colin.king@canonical.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/i915: clean up inconsistent indenting
-Date:   Thu,  2 Sep 2021 22:57:37 +0100
-Message-Id: <20210902215737.55570-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 2 Sep 2021 17:59:03 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8E3C061575;
+        Thu,  2 Sep 2021 14:58:03 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so4386835otf.6;
+        Thu, 02 Sep 2021 14:58:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7XIMCPXPfpjCMBn2EIysqMZE/uVHfPxf01Yk2stwj4A=;
+        b=Lvp5HsAxmKIUcNpW7y8NKtzSL/YKKHJRhVIcCVzHD7pgvMMHFiItNkUyPoPEoWKojB
+         zkxHS4pQWxujMoTq6YPAsoXkieZHrDWpAlA8Xgc/PljxTpFlwGVuvAmVv5XgBAAQ/y+P
+         4qshyOAIodKR6KYtZHO3xaUhyYi+XB7XEdVs/9QSAA10fhooreVSbC86yVCOeF+SmTPf
+         QeRWhAJm6YmRykmS91jJbifCdm4v2fpOlDi9kYLjN9p4RPDE+DV3mv1q5w4P5Yo/3mp0
+         ApNQK1AGKRQRbFjN5ac3VGgKZFjd5GSIgKiN6iaQy4mddK/i42KYHhXEIeoziAkYmM+/
+         PgJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=7XIMCPXPfpjCMBn2EIysqMZE/uVHfPxf01Yk2stwj4A=;
+        b=rGklBqT71Au9HT8iAvNfma73XGU2KZSAv2ojMDXtenLMhuohdna9SemgP4+4/ZGq0B
+         7TdzmyAZMXWdIfs1OjONodmKi/8RQJQ8nM+R+IlNjCmxdbBGQY6nL5+SLX6Nj1hKkKZE
+         wCoqAplphhcK6uX8DX8gVtAovkQE28MR7tS8J5U5IaqtK2L5QtriDEbUgoYLOY7zrLQy
+         ddOSN97AEr1FUncekmadBc4sckkc2HIUywbDrfjyc5sQR4hPOnrLOafT2bi6bYL8+7Tt
+         547g370SaQhPQlY8AsLcL8/3I2Rsn1ta0rThQD4qWEA2EKI4p0qM3wz/gUaqukxIuhVG
+         1Cmg==
+X-Gm-Message-State: AOAM532gB1N6PLFRL2GEqlvO6XeV63DalL3mHpWfwakaLYYrX863kDSf
+        Ep+YM0W6LpqUOhlO2+f1crshyjzSbYY=
+X-Google-Smtp-Source: ABdhPJy3RSO3mTXddODFvvZ6pJgA7GkkbzJDGwSC4d1jmMPuoFSbCy7Q2aISjA7pw9pkvhAxLacI/w==
+X-Received: by 2002:a05:6830:238e:: with SMTP id l14mr318839ots.354.1630619882721;
+        Thu, 02 Sep 2021 14:58:02 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r28sm620259oiw.45.2021.09.02.14.58.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 14:58:02 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 2 Sep 2021 14:58:00 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/103] 5.10.62-rc1 review
+Message-ID: <20210902215800.GH4158230@roeck-us.net>
+References: <20210901122300.503008474@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901122300.503008474@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, Sep 01, 2021 at 02:27:10PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.62 release.
+> There are 103 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 03 Sep 2021 12:22:41 +0000.
+> Anything received after that time might be too late.
+> 
 
-There is a statement that is indented one character too deeply,
-clean this up.
+Build results:
+	total: 159 pass: 159 fail: 0
+Qemu test results:
+	total: 471 pass: 471 fail: 0
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/i915/gt/intel_execlists_submission.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-diff --git a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
-index de5f9c86b9a4..aeb324b701ec 100644
---- a/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
-+++ b/drivers/gpu/drm/i915/gt/intel_execlists_submission.c
-@@ -2565,7 +2565,7 @@ __execlists_context_pre_pin(struct intel_context *ce,
- 	if (!__test_and_set_bit(CONTEXT_INIT_BIT, &ce->flags)) {
- 		lrc_init_state(ce, engine, *vaddr);
- 
--		 __i915_gem_object_flush_map(ce->state->obj, 0, engine->context_size);
-+		__i915_gem_object_flush_map(ce->state->obj, 0, engine->context_size);
- 	}
- 
- 	return 0;
--- 
-2.32.0
-
+Guenter
