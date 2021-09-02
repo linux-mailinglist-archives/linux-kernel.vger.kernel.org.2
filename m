@@ -2,91 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382A63FEBF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 862B93FEC03
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 12:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241743AbhIBKSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 06:18:05 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:59464 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241969AbhIBKSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 06:18:04 -0400
-Received: from zn.tnic (p200300ec2f0ed100d115725f57e7001c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:d100:d115:725f:57e7:1c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S243090AbhIBKTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 06:19:21 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58830 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243368AbhIBKTJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 06:19:09 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A90691EC0493;
-        Thu,  2 Sep 2021 12:17:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1630577820;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=BPSY5xM/hvA/ZvCV4qV68+I6GXupc3hyHNe5KJkXhYk=;
-        b=jPPSwb8jWeYGS7RkIlRwkdzj19NXq4ufBOzmnI4xMEpXSyPrb5FOlqfMzUovlIATbfiFjz
-        j8TIKoU3PFCi3VVWdYjPshEXnPoQEITxtaP+iZRcjHB5d9ycHMXdgopiZLXHZ5n5cFA5yc
-        FybTxkF4hHf6/SF9iNfEp89u2eMxmL8=
-Date:   Thu, 2 Sep 2021 12:17:36 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jiang Jiasheng <jiasheng@iscas.ac.cn>
-Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] bpf: Add env_type_is_resolved() in front of
- env_stack_push() in btf_resolve()
-Message-ID: <YTCkwJnIqzAqaJ5R@zn.tnic>
-References: <1630577097-644528-1-git-send-email-jiasheng@iscas.ac.cn>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A1A4B225D4;
+        Thu,  2 Sep 2021 10:18:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630577889; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o5wTXqNvuSJEwCeDL192rJBmN+9+D3ngDikxglpjpZ4=;
+        b=WlWETb8uX6gQQE+aJZkft+x4OWzC7Ka2YDRDnhqW9avPQ6g1UABlehUmtDua4fYkAouMgi
+        Yh6mS4ot3MbWgknmvRTYf5IC7xPzm5OKMCb8wK7YHiZs+vJsWt3GYjqnFqqViUTMuxtngS
+        xUxnj1Zur5aW02GMtQvqR6WQVhT5sWo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630577889;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o5wTXqNvuSJEwCeDL192rJBmN+9+D3ngDikxglpjpZ4=;
+        b=u9LCFdZjeyVY6ogWowGjOZf3Ps3MMJioDzIwEtNZGnu4ahoXy52InCdqyFfKJaO9lR0bNZ
+        8KBNjTgbzGwhnkBA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id A5CB413424;
+        Thu,  2 Sep 2021 10:18:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id XWkQJuCkMGF2ZAAAGKfGzw
+        (envelope-from <jroedel@suse.de>); Thu, 02 Sep 2021 10:18:08 +0000
+Date:   Thu, 2 Sep 2021 12:18:06 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     James Bottomley <jejb@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Sathyanarayanan Kuppuswamy 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
+ private memory
+Message-ID: <YTCk3hME4QyOPOD4@suse.de>
+References: <20210824005248.200037-1-seanjc@google.com>
+ <307d385a-a263-276f-28eb-4bc8dd287e32@redhat.com>
+ <YSlkzLblHfiiPyVM@google.com>
+ <61ea53ce-2ba7-70cc-950d-ca128bcb29c5@redhat.com>
+ <YS6lIg6kjNPI1EgF@google.com>
+ <f413cc20-66fc-cf1e-47ab-b8f099c89583@redhat.com>
+ <9ec3636a-6434-4c98-9d8d-addc82858c41@www.fastmail.com>
+ <bd22ef54224d15ee89130728c408f70da0516eaa.camel@linux.ibm.com>
+ <85b1dabf-f7be-490a-a856-28227a85ab3a@www.fastmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1630577097-644528-1-git-send-email-jiasheng@iscas.ac.cn>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <85b1dabf-f7be-490a-a856-28227a85ab3a@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 10:04:57AM +0000, Jiang Jiasheng wrote:
-> From: jiasheng <jiasheng@iscas.ac.cn>
-> 
-> We have found that in the complied files env_stack_push()
-> appear more than 10 times, and under at least 90% circumstances
-> that env_type_is_resolved() and env_stack_push() appear in pairs.
-> For example, they appear together in the btf_modifier_resolve()
-> of the file complie from 'kernel/bpf/btf.c'.
-> But we have found that in the btf_resolve(), there is only
-> env_stack_push() instead of the pair.
-> Therefore, we consider that the env_type_is_resolved()
-> might be forgotten.
-> 
-> Signed-off-by: jiasheng <jiasheng@iscas.ac.cn>
-> ---
->  kernel/bpf/btf.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index f982a9f0..454c249 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -4002,7 +4002,8 @@ static int btf_resolve(struct btf_verifier_env *env,
->  	int err = 0;
->  
->  	env->resolve_mode = RESOLVE_TBD;
-> -	env_stack_push(env, t, type_id);
-> +	if (env_type_is_resolved(env, type_id))
-> +		env_stack_push(env, t, type_id);
->  	while (!err && (v = env_stack_peak(env))) {
->  		env->log_type_id = v->type_id;
->  		err = btf_type_ops(v->t)->resolve(env, v);
-> -- 
+On Wed, Sep 01, 2021 at 10:08:33AM -0700, Andy Lutomirski wrote:
+> I asked David, and he said the PSP offers a swapping mechanism for
+> SEV-ES.  I haven’t read the details, but they should all be public.
 
-You still didn't read what I suggested, did you?
+Right, the details are here:
 
-Because there it also explains who to CC on patches. Like, for example,
-for this wrong patch you've CCed the wrong people.
+	https://www.amd.com/system/files/TechDocs/55766_SEV-KM_API_Specification.pdf
 
-Oh well, until you do, I'm deleting your mail.
+Namely section 6.25 and 6.26 which describe the SWAP_OUT and SWAP_IN
+commands.
 
-Good luck.
+Regards,
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+	Joerg
