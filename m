@@ -2,65 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F773FE77D
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F333FE780
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239572AbhIBCQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 22:16:15 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:55948 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240891AbhIBCQF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 22:16:05 -0400
-Received: by mail-io1-f71.google.com with SMTP id o128-20020a6bbe86000000b005bd06eaeca6so316968iof.22
-        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 19:15:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=0JUwZXH8tXwg/Y0mzczq64iCoCbtgnTNDv2GYMyLZD4=;
-        b=AEBf/vHWodjfmsQd+E6toLXFjuqleC+MkdNIFaMeyQ13hLfdLfaOSMShf4P782Ieq4
-         uKcWspSZwg8DixGtMdf0ILJ/SuuWS4iBMaObaRFZFW3LgOx4ytTk/0DVh/ABlIb8r6f5
-         8l/rvdLMQPihYQGH6C5Hj0zo72iU8h7gowVWpjQZgHs9KFAjHzSr4pwgmF8gAqyZlxiq
-         PCTA1sFhTuYgdapjBDCcSIJJ+5u9N75GE/gWB5R2NVTjTCauByQkunIb9USbWVW30abR
-         gFCPEcr9poavNtasgY57mFZQ51JGHETLxKcvZjuk8Qc6dSNcnUx0QmKeI4rH32WsTfr0
-         IeQA==
-X-Gm-Message-State: AOAM531AdaGiyp7JWBSHXl4NMCXyiNx4U4x/3h7IAwW8i+O+nFuTR4Un
-        APxCSEYXuVIyVo3fHHywoS25MuE1OjH9ZgFnkRzhmNOq2SsV
-X-Google-Smtp-Source: ABdhPJzvo2XBa5Xt8glOx7p+H6enrDvMxXqgaVoutT9Y28986VCjR6HokMFItWtv9YD2/QfiZ32Yg5pL0uuNQzqyuUXRiLagRd+N
-MIME-Version: 1.0
-X-Received: by 2002:a5d:9617:: with SMTP id w23mr739002iol.115.1630548907681;
- Wed, 01 Sep 2021 19:15:07 -0700 (PDT)
-Date:   Wed, 01 Sep 2021 19:15:07 -0700
-In-Reply-To: <983049ea-3023-8dbe-cbb4-51fb5661d2cb@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006e715f05caf9c044@google.com>
-Subject: Re: [syzbot] UBSAN: shift-out-of-bounds in xfrm_get_default
-From:   syzbot <syzbot+b2be9dd8ca6f6c73ee2d@syzkaller.appspotmail.com>
-To:     antony.antony@secunet.com, christian.langrock@secunet.com,
-        davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        paskripkin@gmail.com, steffen.klassert@secunet.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S233122AbhIBCSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 22:18:11 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:37760 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232666AbhIBCSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 1 Sep 2021 22:18:09 -0400
+Received: from localhost.localdomain (unknown [124.16.138.128])
+        by APP-01 (Coremail) with SMTP id qwCowAB3WHEKNDBhDMs2AQ--.59037S2;
+        Thu, 02 Sep 2021 10:16:43 +0800 (CST)
+From:   jiasheng <jiasheng@iscas.ac.cn>
+To:     linux-kernel@vger.kernel.org
+Cc:     jiasheng <jiasheng@iscas.ac.cn>
+Subject: [PATCH 10/10] seqlock: Add do_read_seqcount_retry() in front of seqcount_lockdep_reader_access() in read_seqbegin()
+Date:   Thu,  2 Sep 2021 02:16:40 +0000
+Message-Id: <1630549000-3731606-1-git-send-email-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: qwCowAB3WHEKNDBhDMs2AQ--.59037S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tFy5ArWDJFW8Xry5uFWDtwb_yoW8JF43pw
+        1kury8Kr4FkF1xuayDJ39FvFyrtwn7AF1DXrZav343ZF17tw4aq3yUur4ayF1UZw4IyF4j
+        qFW7WanxZFsrGFJanT9S1TB71UUUUj7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
+        1j6F4UJwAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v
+        4I1lc7CjxVAaw2AFwI0_Jw0_GFylc2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMxC20s
+        026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_
+        Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwI
+        xGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWx
+        JwCI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcV
+        C2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUj3CzJUUUUU==
+X-Originating-IP: [124.16.138.128]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+We have found that in the complied files seqcount_lockdep_reader_access()
+appear more than 20 times, and under at least 90% circumstances
+that do_read_seqcount_retry() and seqcount_lockdep_reader_access()
+appear in pairs.
+For example, they appear together in the irqfd_wakeup()
+of the file complie from 'virt/kvm/eventfd.c'.
+But we have found that in the read_seqbegin(), there is only
+seqcount_lockdep_reader_access() instead of the pair.
+Therefore, we consider that the do_read_seqcount_retry()
+might be forgotten.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Signed-off-by: jiasheng <jiasheng@iscas.ac.cn>
+---
+ include/linux/seqlock.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-Reported-and-tested-by: syzbot+b2be9dd8ca6f6c73ee2d@syzkaller.appspotmail.com
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index f61e34f..14169ce 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -837,8 +837,10 @@ typedef struct {
+  */
+ static inline unsigned read_seqbegin(const seqlock_t *sl)
+ {
+-	unsigned ret = read_seqcount_begin(&sl->seqcount);
+-
++	unsigned int ret;
++
++	if (read_seqcount_retry(&sl->seqcount, ret))
++		ret = read_seqcount_begin(&sl->seqcount);
+ 	kcsan_atomic_next(0);  /* non-raw usage, assume closing read_seqretry() */
+ 	kcsan_flat_atomic_begin();
+ 	return ret;
+-- 
+2.7.4
 
-Tested on:
-
-commit:         9e9fb765 Merge tag 'net-next-5.15' of git://git.kernel..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git master
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bd61edfef9fa14b1
-dashboard link: https://syzkaller.appspot.com/bug?extid=b2be9dd8ca6f6c73ee2d
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=12546ba9300000
-
-Note: testing is done by a robot and is best-effort only.
