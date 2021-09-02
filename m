@@ -2,135 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC7963FF33A
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:28:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 083A93FF33D
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 20:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346989AbhIBS3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 14:29:07 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:48052 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346971AbhIBS3F (ORCPT
+        id S1347005AbhIBS3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 14:29:37 -0400
+Received: from vmicros1.altlinux.org ([194.107.17.57]:54724 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346971AbhIBS3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 14:29:05 -0400
-Received: by mail-io1-f72.google.com with SMTP id f1-20020a5edf01000000b005b85593f933so2002775ioq.14
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 11:28:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=efhwk1n9DuG/RUbEblIFId1q49zGnCoR05RCbVNCapo=;
-        b=MnDO8aj4zxkvqLYSpHUcqTPqm+aEpGXQumoaSWR3l8zjFn9Mqk1acPNsPMe88i4Cp4
-         TGTWsuAYQGXN1gfIqwvMwZIc4T3RFRDB6+YmNQIqjBVq8srYWV09JDIgUcZGU7LtCF5o
-         z0g4N2MGhk1lMmDsYi73EOIRr2LKraCi2i/OZODbupG7+dcB+UV1mCyrke/RbAYXY9MY
-         yTf5xpE5Zy2jcpxGy0zf3UOCgd9KBj6PKhRfsBbwqmUaZweH0oAVJMvWrYg/gEuWbO1Y
-         gehTHqScDywepXDKZGj/2EIDN0NoV9Mm76mF1OnTE7MkQQgSxHaG6nBTN0JTCkLbzCdF
-         lNvA==
-X-Gm-Message-State: AOAM532rQ+Mjn2lRj/pPGAQrd1AuRZE8FIY3bBjMlMqTxpi8/yvSR7M5
-        OhPPlmeBpdUsFQ+fnPw32jbnMGsY+HVTZqgPSs/ZMe7i2gj0
-X-Google-Smtp-Source: ABdhPJz/k5cez3kpq7cXPTBYfQVfN29zN44Y5LdAv+pGbQ4AhgvwGlVRz6l7r1KYmSKcuMGyKTxE5ssP6RjFBa9MMGcYfs+/ZrSf
+        Thu, 2 Sep 2021 14:29:34 -0400
+Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id 363AC72C8F8;
+        Thu,  2 Sep 2021 21:28:33 +0300 (MSK)
+Received: by mua.local.altlinux.org (Postfix, from userid 508)
+        id 274F87CF76A; Thu,  2 Sep 2021 21:28:33 +0300 (MSK)
+Date:   Thu, 2 Sep 2021 21:28:33 +0300
+From:   "Dmitry V. Levin" <ldv@altlinux.org>
+To:     Eugene Syromiatnikov <esyr@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Antony Antony <antony.antony@secunet.com>,
+        Christian Langrock <christian.langrock@secunet.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH] include/uapi/linux/xfrm.h: Fix XFRM_MSG_MAPPING ABI
+ breakage
+Message-ID: <20210902182832.GB21258@altlinux.org>
+References: <20210901153407.GA20446@asgard.redhat.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:d20d:: with SMTP id y13mr3305657ily.294.1630607286919;
- Thu, 02 Sep 2021 11:28:06 -0700 (PDT)
-Date:   Thu, 02 Sep 2021 11:28:06 -0700
-In-Reply-To: <c2b300d4-9d52-9bab-813c-f11deedc434d@kernel.dk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001ae8cc05cb075852@google.com>
-Subject: Re: [syzbot] general protection fault in io_issue_sqe
-From:   syzbot <syzbot+de67aa0cf1053e405871@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, haoxu@linux.alibaba.com,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901153407.GA20446@asgard.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Sep 01, 2021 at 05:34:07PM +0200, Eugene Syromiatnikov wrote:
+> Commit 2d151d39073a ("xfrm: Add possibility to set the default to block
+> if we have no policy") broke ABI by changing the value of the XFRM_MSG_MAPPING
+> enum item.  Fix it by placing XFRM_MSG_SETDEFAULT/XFRM_MSG_GETDEFAULT
+> to the end of the enum, right before __XFRM_MSG_MAX.
+> 
+> Fixes: 2d151d39073a ("xfrm: Add possibility to set the default to block if we have no policy")
+> Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-general protection fault in io_ring_ctx_wait_and_kill
-
-general protection fault, probably for non-canonical address 0xdffffc0000000016: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x00000000000000b0-0x00000000000000b7]
-CPU: 0 PID: 10163 Comm: syz-executor.2 Not tainted 5.14.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_ring_ctx_wait_and_kill+0x24d/0x450 fs/io_uring.c:9180
-Code: ff 48 89 df e8 c4 fb ff ff e8 6f a8 94 ff 48 8b 04 24 48 8d b8 b0 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d3 01 00 00 48 8b 04 24 48 8b a8 b0 00 00 00 48
-RSP: 0018:ffffc9000a8b7a60 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff888046aa6000 RCX: 0000000000000000
-RDX: 0000000000000016 RSI: ffffffff81e10061 RDI: 00000000000000b0
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888046aa6643
-R10: ffffffff81e1004b R11: 0000000000000000 R12: ffff888046aa63f8
-R13: ffffc9000a8b7a90 R14: ffff8881453f4000 R15: ffff888046aa6040
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000561b3ede9400 CR3: 000000000b68e000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- io_uring_release+0x3e/0x50 fs/io_uring.c:9198
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:164
- exit_task_work include/linux/task_work.h:32 [inline]
- do_exit+0xbae/0x2a30 kernel/exit.c:825
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x47f/0x2160 kernel/signal.c:2808
- arch_do_signal_or_restart+0x2a9/0x1c40 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x17d/0x290 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: Unable to access opcode bytes at RIP 0x4665cf.
-RSP: 002b:00007faa595bc218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 000000000056c040 RCX: 00000000004665f9
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000056c040
-RBP: 000000000056c038 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c044
-R13: 00007fff98399dff R14: 00007faa595bc300 R15: 0000000000022000
-Modules linked in:
----[ end trace 641488e48828d1de ]---
-RIP: 0010:io_ring_ctx_wait_and_kill+0x24d/0x450 fs/io_uring.c:9180
-Code: ff 48 89 df e8 c4 fb ff ff e8 6f a8 94 ff 48 8b 04 24 48 8d b8 b0 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 d3 01 00 00 48 8b 04 24 48 8b a8 b0 00 00 00 48
-RSP: 0018:ffffc9000a8b7a60 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff888046aa6000 RCX: 0000000000000000
-RDX: 0000000000000016 RSI: ffffffff81e10061 RDI: 00000000000000b0
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffff888046aa6643
-R10: ffffffff81e1004b R11: 0000000000000000 R12: ffff888046aa63f8
-R13: ffffc9000a8b7a90 R14: ffff8881453f4000 R15: ffff888046aa6040
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000561b3ede9400 CR3: 000000003cbf0000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	48 89 df             	mov    %rbx,%rdi
-   3:	e8 c4 fb ff ff       	callq  0xfffffbcc
-   8:	e8 6f a8 94 ff       	callq  0xff94a87c
-   d:	48 8b 04 24          	mov    (%rsp),%rax
-  11:	48 8d b8 b0 00 00 00 	lea    0xb0(%rax),%rdi
-  18:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  1f:	fc ff df
-  22:	48 89 fa             	mov    %rdi,%rdx
-  25:	48 c1 ea 03          	shr    $0x3,%rdx
-* 29:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2d:	0f 85 d3 01 00 00    	jne    0x206
-  33:	48 8b 04 24          	mov    (%rsp),%rax
-  37:	48 8b a8 b0 00 00 00 	mov    0xb0(%rax),%rbp
-  3e:	48                   	rex.W
+References: https://lore.kernel.org/netdev/20210901151402.GA2557@altlinux.org/
+Reviewed-by: Dmitry V. Levin <ldv@altlinux.org>
 
 
-Tested on:
-
-commit:         f85aaf32 io_uring: trigger worker exit when ring is ex..
-git tree:       git://git.kernel.dk/linux-block for-5.15/io_uring
-console output: https://syzkaller.appspot.com/x/log.txt?x=12c280a3300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fa8e68781da309a
-dashboard link: https://syzkaller.appspot.com/bug?extid=de67aa0cf1053e405871
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-
+-- 
+ldv
