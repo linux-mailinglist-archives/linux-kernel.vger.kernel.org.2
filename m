@@ -2,77 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E433FEDBA
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E09333FEDBD
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344368AbhIBMZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 08:25:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47918 "EHLO
+        id S1344423AbhIBM0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 08:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234098AbhIBMZz (ORCPT
+        with ESMTP id S1344074AbhIBM02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 08:25:55 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C367EC061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 05:24:56 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        Thu, 2 Sep 2021 08:26:28 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22785C061575;
+        Thu,  2 Sep 2021 05:25:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=1wOKCrX3COV6DlxfudE8AnDiURX7M6vGBTgHMAhqiY4=; b=rqK6AEvPgoByLYFRodspB7Byw
+        7gqMzeAVrrtGevy7S/Pe4kpxFOG541wx2HwjnEnffJUbdF5hpGnPUE5ySMo1DbZcFAzPmnds7zmp+
+        Jj1zgwrIxm6M0IrdmtR1pc/NjF4oW1CvyFeGIDapO7P9JKM4zZouHP9S7Vdcxy+PY9MvtgiZ3DXk+
+        mFmcyTwXarm08r5htAsGboZCNkAZqOtGAinHX0bvrFOY06FxWdqIlPllA4Igcplk7tTNVpClxl26y
+        k6yQu2+qEuQvdgC0jKkB1O+Ngc3fVV9HBJzKmsm7WNRrb0nQBzJeEFDuEVjkJLHCrAEDEs2hy32+E
+        4bbcBfltw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48088)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mLlm2-0007FX-Ph; Thu, 02 Sep 2021 14:24:54 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mLlm2-0001GM-9y; Thu, 02 Sep 2021 14:24:54 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, stable@kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paulburton@kernel.org>
-Subject: [PATCH v2] MIPS: Malta: fix alignment of the devicetree buffer
-Date:   Thu,  2 Sep 2021 14:24:53 +0200
-Message-Id: <20210902122453.4805-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mLlma-0001P2-4n; Thu, 02 Sep 2021 13:25:28 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mLlmZ-0007ov-0Y; Thu, 02 Sep 2021 13:25:27 +0100
+Date:   Thu, 2 Sep 2021 13:25:26 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     netdev@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        Len Brown <lenb@kernel.org>
+Subject: Re: [RFC PATCH net-next 2/3] net: dsa: destroy the phylink instance
+ on any error in dsa_slave_phy_setup
+Message-ID: <20210902122526.GF22278@shell.armlinux.org.uk>
+References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
+ <20210901225053.1205571-3-vladimir.oltean@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901225053.1205571-3-vladimir.oltean@nxp.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting with following patch MIPS Malta is not able to boot:
-| commit 79edff12060fe7772af08607eff50c0e2486c5ba
-| Author: Rob Herring <robh@kernel.org>
-| scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9
+On Thu, Sep 02, 2021 at 01:50:52AM +0300, Vladimir Oltean wrote:
+> DSA supports connecting to a phy-handle, and has a fallback to a non-OF
+> based method of connecting to an internal PHY on the switch's own MDIO
+> bus, if no phy-handle and no fixed-link nodes were present.
+> 
+> The -ENODEV error code from the first attempt (phylink_of_phy_connect)
+> is what triggers the second attempt (phylink_connect_phy).
+> 
+> However, when the first attempt returns a different error code than
+> -ENODEV, this results in an unbalance of calls to phylink_create and
+> phylink_destroy by the time we exit the function. The phylink instance
+> has leaked.
+> 
+> There are many other error codes that can be returned by
+> phylink_of_phy_connect. For example, phylink_validate returns -EINVAL.
+> So this is a practical issue too.
+> 
+> Fixes: aab9c4067d23 ("net: dsa: Plug in PHYLINK support")
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> ---
+> I know, I will send this bug fix to "net" too, this is provided just for
+> testing purposes, and for the completeness of the patch set.
 
-The reason is the alignment test added to the fdt_ro_probe_(). To fix
-this issue, we need to make sure that fdt_buf is aligned.
+Probably should have been the first patch of the set. This looks
+absolutely correct to me. Please send for the net tree.
 
-Fixes: 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
-Cc: <stable@kernel.org> # v5.12+
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- arch/mips/mti-malta/malta-dtshim.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 
-diff --git a/arch/mips/mti-malta/malta-dtshim.c b/arch/mips/mti-malta/malta-dtshim.c
-index 0ddf03df6268..f451268f6c38 100644
---- a/arch/mips/mti-malta/malta-dtshim.c
-+++ b/arch/mips/mti-malta/malta-dtshim.c
-@@ -22,7 +22,7 @@
- #define  ROCIT_CONFIG_GEN1_MEMMAP_SHIFT	8
- #define  ROCIT_CONFIG_GEN1_MEMMAP_MASK	(0xf << 8)
- 
--static unsigned char fdt_buf[16 << 10] __initdata;
-+static unsigned char fdt_buf[16 << 10] __initdata __aligned(8);
- 
- /* determined physical memory size, not overridden by command line args	 */
- extern unsigned long physical_memsize;
+Thanks.
+
 -- 
-2.30.2
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
