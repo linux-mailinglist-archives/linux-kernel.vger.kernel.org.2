@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C983FEB3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C893FEB3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343504AbhIBJ3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 05:29:51 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:60990 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S245609AbhIBJ3s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 05:29:48 -0400
-X-UUID: 7cc0a72689114dacaceaa0d923355b0f-20210902
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=7BMKZ9QUqaKkuTBeVs3pjQYEnvqKsI6RkIvddChwTF0=;
-        b=IhIvjz1RArKyF8VAlT7K6H08pIKZ8z7NgBN7UAU8zDESRIr6PjY4Rd6YNilPffz8FLe4zb5cMtPVTmJkQtVwjLC/JJH7oQ3/qHX9OexEHm8VhdZvGSEJzwYOMQ6pj2yeVKlo4ZCagCYJpCg5An1YaT3TxyvyDwuvTAMKg6NELXs=;
-X-UUID: 7cc0a72689114dacaceaa0d923355b0f-20210902
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <chuanjia.liu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1876398628; Thu, 02 Sep 2021 17:28:45 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 2 Sep 2021 17:28:44 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
- Thu, 2 Sep 2021 17:28:44 +0800
-Received: from mhfsdcap04 (10.17.3.154) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 2 Sep 2021 17:28:43 +0800
-Message-ID: <93f44e07917e6e194fdf62bee98f7041e9f2d546.camel@mediatek.com>
-Subject: Re: [PATCH v12 3/6] PCI: mediatek: Add new method to get irq number
-From:   Chuanjia Liu <chuanjia.liu@mediatek.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <robh+dt@kernel.org>, <bhelgaas@google.com>,
-        <matthias.bgg@gmail.com>, <lorenzo.pieralisi@arm.com>,
-        <ryder.lee@mediatek.com>, <jianjun.wang@mediatek.com>,
-        <yong.wu@mediatek.com>, <linux-pci@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Date:   Thu, 2 Sep 2021 17:28:44 +0800
-In-Reply-To: <20210831183022.GA120514@bjorn-Precision-5520>
-References: <20210831183022.GA120514@bjorn-Precision-5520>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        id S245693AbhIBJ3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 05:29:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245516AbhIBJ3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 05:29:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C924461058;
+        Thu,  2 Sep 2021 09:28:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630574927;
+        bh=fUOx3RPY+JkEhnWQkrq5pibbynHmCRSVbkLIIy/K9nk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=03dDXfS3oONFchOlowgS9EjFgv0kxw9zCFvntxPSiLakgXv+eM0BI3RBDAjMRDLKT
+         zt4Gw8h8vBuQVQaZ/3aUXqijreQqKIe6bwTNCqkQi8mmvNdVq0LohrxZ7id0Q7ZVlP
+         tBSexhZHpAyxS1btCgGZ6PKqzUosBYBsWsmOfiQs=
+Date:   Thu, 2 Sep 2021 11:28:45 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Aakash Hemadri <aakashhemadri123@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/3] staging: r8188eu: incorrect type in assignment
+Message-ID: <YTCZTY1WsHhTBjUE@kroah.com>
+References: <cover.1630148641.git.aakashhemadri123@gmail.com>
+ <74c156553614f44a900e987f1185f3388dd740f6.1630148641.git.aakashhemadri123@gmail.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <74c156553614f44a900e987f1185f3388dd740f6.1630148641.git.aakashhemadri123@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTA4LTMxIGF0IDEzOjMwIC0wNTAwLCBCam9ybiBIZWxnYWFzIHdyb3RlOg0K
-PiBPbiBNb24sIEF1ZyAyMywgMjAyMSBhdCAxMToyNzo1N0FNICswODAwLCBDaHVhbmppYSBMaXUg
-d3JvdGU6DQo+ID4gVXNlIHBsYXRmb3JtX2dldF9pcnFfYnluYW1lKCkgdG8gZ2V0IHRoZSBpcnEg
-bnVtYmVyDQo+ID4gaWYgdGhlIHByb3BlcnR5IG9mICJpbnRlcnJ1cHQtbmFtZXMiIGlzIGRlZmlu
-ZWQuDQo+IA0KPiBGcm9tIHBhdGNoIDEvNiwgSSBoYXZlIHRoZSBpbXByZXNzaW9uIHRoYXQgdGhp
-cyBwYXRjaCBpcyBwYXJ0IG9mDQo+IGZpeGluZyBhbiBNU0kgaXNzdWUuICBJZiBzbywgdGhpcyBj
-b21taXQgbG9nIHNob3VsZCBtZW50aW9uIHRoYXQgYXMNCj4gd2VsbC4NCg0KSGkgLEJqb3JuDQpZ
-ZXPvvIxJIHdpbGwgY2hhbmdlIHRoZSBjb21taXQgbWVzc2FnZSBhcyBmb2xsb3cNCiANCkluIG9y
-ZGVyIHRvIHBhcnNlIHRoZSBuZXcgZHRzIGZvcm1hdCB0aGF0IGNvbmZvcm1zIHRvIHRoZSBoYXJk
-d2FyZQ0KZGVzaWduIGFuZCBmaXhlcyB0aGUgTVNJIGlzc3Vl77yMYWRkDQpwbGF0Zm9ybV9nZXRf
-aXJxX2J5bmFtZV9vcHRpb25hbCB0byBnZXQgdGhlIGlycSBudW1iZXIuDQogDQo+IA0KPiA+IFNp
-Z25lZC1vZmYtYnk6IENodWFuamlhIExpdSA8Y2h1YW5qaWEubGl1QG1lZGlhdGVrLmNvbT4NCj4g
-PiBBY2tlZC1ieTogUnlkZXIgTGVlIDxyeWRlci5sZWVAbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0K
-PiA+ICBkcml2ZXJzL3BjaS9jb250cm9sbGVyL3BjaWUtbWVkaWF0ZWsuYyB8IDYgKysrKystDQo+
-ID4gIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gPiAN
-Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvY29udHJvbGxlci9wY2llLW1lZGlhdGVrLmMN
-Cj4gPiBiL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvcGNpZS1tZWRpYXRlay5jDQo+ID4gaW5kZXgg
-NDI5NmQ5ZTA0MjQwLi4xOWUzNWFjNjJkNDMgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9wY2kv
-Y29udHJvbGxlci9wY2llLW1lZGlhdGVrLmMNCj4gPiArKysgYi9kcml2ZXJzL3BjaS9jb250cm9s
-bGVyL3BjaWUtbWVkaWF0ZWsuYw0KPiA+IEBAIC02NTQsNyArNjU0LDExIEBAIHN0YXRpYyBpbnQg
-bXRrX3BjaWVfc2V0dXBfaXJxKHN0cnVjdA0KPiA+IG10a19wY2llX3BvcnQgKnBvcnQsDQo+ID4g
-IAkJcmV0dXJuIGVycjsNCj4gPiAgCX0NCj4gPiAgDQo+ID4gLQlwb3J0LT5pcnEgPSBwbGF0Zm9y
-bV9nZXRfaXJxKHBkZXYsIHBvcnQtPnNsb3QpOw0KPiA+ICsJaWYgKG9mX2ZpbmRfcHJvcGVydHko
-ZGV2LT5vZl9ub2RlLCAiaW50ZXJydXB0LW5hbWVzIiwgTlVMTCkpDQo+ID4gKwkJcG9ydC0+aXJx
-ID0gcGxhdGZvcm1fZ2V0X2lycV9ieW5hbWUocGRldiwgInBjaWVfaXJxIik7DQo+ID4gKwllbHNl
-DQo+ID4gKwkJcG9ydC0+aXJxID0gcGxhdGZvcm1fZ2V0X2lycShwZGV2LCBwb3J0LT5zbG90KTsN
-Cj4gDQo+IFRoaXMgd291bGQgYmUgdGhlIG9ubHkgaW5zdGFuY2Ugb2YgdGhpcyBwYXR0ZXJuLCB3
-aGVyZSB3ZSBsb29rIGZvciBhDQo+IHByb3BlcnR5IGFuZCB1c2UgdGhlIHJlc3VsdCB0byBkZWNp
-ZGUgaG93IHRvIGxvb2sgZm9yIHRoZSBJUlEuDQo+IA0KPiBkd19wY2llX2hvc3RfaW5pdCgpIGRv
-ZXMgc29tZXRoaW5nIGxpa2UgdGhpczoNCj4gDQo+ICAgcG9ydC0+aXJxID0gcGxhdGZvcm1fZ2V0
-X2lycV9ieW5hbWVfb3B0aW9uYWwocGRldiwgInBjaWVfaXJxIik7DQo+ICAgaWYgKHBvcnQtPmly
-cSA8IDApIHsNCj4gICAgIHBvcnQtPmlycSA9IHBsYXRmb3JtX2dldF9pcnEocGRldiwgcG9ydC0+
-c2xvdCk7DQo+ICAgICBpZiAocG9ydC0+aXJxIDwgMCkNCj4gICAgICAgcmV0dXJuIHBvcnQtPmly
-cTsNCj4gICB9DQo+IA0KPiBXb3VsZCB0aGF0IHdvcmsgZm9yIHlvdT8gIElmIG5vdCwgdGhlIGNv
-bW1pdCBsb2cgc2hvdWxkIGV4cGxhaW4gd2h5DQo+IHlvdSBjYW4ndCB1c2UgdGhlIHN0YW5kYXJk
-IHBhdHRlcm4uDQo+IA0KPiBJZiB5b3UgZG8gdGhpbmdzIGRpZmZlcmVudGx5IHRoYW4gb3RoZXIg
-ZHJpdmVycywgaXQgbWFrZXMgdGhpbmdzDQo+IGhhcmRlciB0byByZXZpZXcgYW5kIHNsb3dzIHRo
-aW5ncyBkb3duLiAgSWYgeW91ICpoYXZlKiB0byBkbw0KPiBzb21ldGhpbmcNCj4gZGlmZmVyZW50
-bHkgYW5kIGl0IGFkZHMgcmVhbCB2YWx1ZSB0byBiZSBkaWZmZXJlbnQsIHRoYXQncyBmaW5lLiAg
-QnV0DQo+IHdlIHNob3VsZCBhdm9pZCB1bm5lY2Vzc2FyeSBkaWZmZXJlbmNlcy4NCg0KVGhhbmtz
-IGZvciB5b3VyIGFkdmljZe+8jGl0IGlzIHZlcnkgaGVscGZ1bCB0byBtZSwgSSB3aWxsIHVzZSBz
-dGFuZGFyZA0KcGF0dGVybiB0byBhdm9pZCB1bm5lY2Vzc2FyeSBkaWZmZXJlbmNlcw0KDQpUaGFu
-a3MgYWdhaW4hDQpDaHVhbmppYQ0KDQo+IA0KPiA+ICAJaWYgKHBvcnQtPmlycSA8IDApDQo+ID4g
-IAkJcmV0dXJuIHBvcnQtPmlycTsNCj4gPiAgDQo+ID4gLS0gDQo+ID4gMi4xOC4wDQo+ID4gDQo=
+On Sat, Aug 28, 2021 at 04:40:46PM +0530, Aakash Hemadri wrote:
+> Fix sparse warning:
+> > rtw_br_ext.c:516:57: warning: incorrect type in assignment
+>     (different base types)
+> > rtw_br_ext.c:516:57:    expected unsigned short
+> > rtw_br_ext.c:516:57:    got restricted __be16 [usertype]
+> 
+> *pMagic holds __be16 change it's type to __be16
 
+I do not understand this sentence, what are you trying to say?
+
+Remember, "it's" is short for "it is".
+
+> Signed-off-by: Aakash Hemadri <aakashhemadri123@gmail.com>
+> ---
+>  drivers/staging/r8188eu/core/rtw_br_ext.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/core/rtw_br_ext.c b/drivers/staging/r8188eu/core/rtw_br_ext.c
+> index 38f1bd591da9..bce73e8cbd52 100644
+> --- a/drivers/staging/r8188eu/core/rtw_br_ext.c
+> +++ b/drivers/staging/r8188eu/core/rtw_br_ext.c
+> @@ -474,7 +474,7 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+>  		/*                Handle PPPoE frame                 */
+>  		/*---------------------------------------------------*/
+>  		struct pppoe_hdr *ph = (struct pppoe_hdr *)(skb->data + ETH_HLEN);
+> -		unsigned short *pMagic;
+> +		__be16 *pMagic;
+>  
+>  		switch (method) {
+>  		case NAT25_CHECK:
+> @@ -512,7 +512,7 @@ int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method)
+>  						tag->tag_len = htons(MAGIC_CODE_LEN+RTL_RELAY_TAG_LEN+old_tag_len);
+>  
+>  						/*  insert the magic_code+client mac in relay tag */
+> -						pMagic = (unsigned short *)tag->tag_data;
+> +						pMagic = (__be16 *)tag->tag_data;
+
+Is this whole function ever actually called?
+
+Can someone run a ftrace on the driver to see if this function ever
+runs, and if not, remove it?
+
+thanks,
+
+greg k-h
