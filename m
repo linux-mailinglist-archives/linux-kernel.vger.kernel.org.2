@@ -2,152 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022FE3FF5BE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC533FF5C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 23:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347522AbhIBVmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 17:42:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347065AbhIBVmX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 17:42:23 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6734C061575;
-        Thu,  2 Sep 2021 14:41:24 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id q21so2051763plq.3;
-        Thu, 02 Sep 2021 14:41:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gKhofwX8eKC2JSzzcueboqtoVn6s6titp85hWLz+MiE=;
-        b=G773dK+zb9KFXL4NJcyHC2QEe0pQ9cj7+RuS5DYcXBZz3tmormwCFE1FYY98IMLQwe
-         HEO6OL4EzaTU0QhhMqjqcVPwnWc92CRJV4Sq9kecqycHsc+g+RI4T8jc71NXHQ7gd+A/
-         Ztp3aPFnZFBGTaPlwAounXVsZdaZs40Kp+3yGC1frnipHYZ0QBO41Ffd72BqCAuP1453
-         nlfPLy9vHTjXq/PuKQQRuTTXEzzfBN+2GPV75vHXU2k6cssxMM5ejUdGcoj41AM/ZbLd
-         qQ1K8AlNXmA5xWwNFvSsCd+fMl82ByXxurKhQTNHm6q0XyLNY0Ol9+eanw1EEnUDapSk
-         Uhdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gKhofwX8eKC2JSzzcueboqtoVn6s6titp85hWLz+MiE=;
-        b=EY6zKtbG+zXOBn4aAT6zZGCktF7MlhtO9XLwao+ZMB8OJ/N9SErOYcVt5W2cpnP4Vk
-         bFGtwIInbZ9gfF+LX+suO2xhAsVawS+H3ZLCHgh1eZARRiW+nyqmPeaBgvoFcS7KmbqV
-         KQp3/L66162AuXeYhQm7hXsxVaeuoQVoAaYOd6xe1X0BmBoNghL4NCtP85lrxXuYD7Yk
-         yOZQ3/VK5McYnOTsIiIg+E6sCLGCFLllOFUmn4hoGiquxAEn+gkPkR4VnEjXaUl+IFEd
-         RJPMLMlP1lsBwrb1/rEItW5uPOe8Givb4f33nSl9+ModekSB7TwXeX/7TidRYOwhBffb
-         rEEQ==
-X-Gm-Message-State: AOAM530cagNnqtpKNzd4pIxfc9iqhpRJKc4I0BgsB+8hGZtM4JXtvqzX
-        aq8K9PxR9nvrotDJgCHU0UY=
-X-Google-Smtp-Source: ABdhPJzzmNZElA2KFyxko6m3d3UVnrhycp3ie/k0k26k+VXUUDE4Hd35nD0F+eyazlnCiqG9F4Yd6Q==
-X-Received: by 2002:a17:90a:5511:: with SMTP id b17mr222194pji.222.1630618884160;
-        Thu, 02 Sep 2021 14:41:24 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id n185sm3497124pfn.171.2021.09.02.14.41.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 14:41:23 -0700 (PDT)
-Subject: Re: [PATCH v6 1/6] Bluetooth: schedule SCO timeouts with delayed_work
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>, marcel@holtmann.org,
-        johan.hedberg@gmail.com, luiz.dentz@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, sudipm.mukherjee@gmail.com
-Cc:     linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org,
-        gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
-References: <20210810041410.142035-1-desmondcheongzx@gmail.com>
- <20210810041410.142035-2-desmondcheongzx@gmail.com>
- <0b33a7fe-4da0-058c-cff3-16bb5cfe8f45@gmail.com>
- <bad67d05-366b-bebe-cbdb-6555386497de@gmail.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <94942257-927c-efbc-b3fd-44cc097ad71f@gmail.com>
-Date:   Thu, 2 Sep 2021 14:41:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S1347511AbhIBVnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 17:43:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346353AbhIBVnW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 17:43:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98136610A0;
+        Thu,  2 Sep 2021 21:42:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630618943;
+        bh=axhzknejbuamNYdNDZVUtZx1+IlNBh4oBushSCcCYB8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=il7glIKInsLOAhWpIWprslPcoCRLlhYewRFVAEqdZYCT+LMu4HrNv47xgNt142BM6
+         EC2CldWBlFXvrGLrzsA0g9FAlbsoCf9yHQYZD8sS2PBIpdEcaSQao5ThIVcrEpKE4r
+         ZJTu2ecEtNRghf1zZ8A7jh5i/eTQAw2+PxjQdekuJO6RoNIQPnX3XzkyyqkqTIKmag
+         u6pXi3/8Zck3OWgYrM2i9EE0Vul1q8I1W75LvJITF5rM7UaUSoPsTlf3+PFcgdPGd4
+         KA/r+skp4ERM1XZj+qVOmkyJXD8xZWfteqxUDTNoT7hVNA3DcedMR5VLfsBz026WmR
+         7RVqb0prwCqGg==
+Date:   Thu, 2 Sep 2021 23:42:18 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Matthias Kaehlcke <mka@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, Arnd Bergmann <arnd@arndb.de>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: Re: [PATCH v3 2/4] misc: hisi_hikey_usb: change the DT schema
+Message-ID: <20210902234218.5d04d1fa@coco.lan>
+In-Reply-To: <CALAqxLW_wwRFaWASsy6rFHir23MfFU3psq6pjavDeUF5hNS5OA@mail.gmail.com>
+References: <cover.1630581434.git.mchehab+huawei@kernel.org>
+        <d990e75f28c443c0c5a5fc857b87acc4be3f9464.1630581434.git.mchehab+huawei@kernel.org>
+        <YTC4LPDem9uKXyMd@kroah.com>
+        <20210902151053.7ddfbe3a@coco.lan>
+        <20210902153820.5624b57f@coco.lan>
+        <YTDYFCH/DbK1SFVv@kroah.com>
+        <20210902163529.734b8e0e@coco.lan>
+        <YTEJuK50e5PBBJfO@google.com>
+        <CALAqxLUxgRCUweDcE1WWV1gTsstZAvjUT6ZuTij5Mro8MHKi8Q@mail.gmail.com>
+        <YTEuA+Z3f50RVGgX@google.com>
+        <CALAqxLW_wwRFaWASsy6rFHir23MfFU3psq6pjavDeUF5hNS5OA@mail.gmail.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <bad67d05-366b-bebe-cbdb-6555386497de@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Thu, 2 Sep 2021 13:31:45 -0700
+John Stultz <john.stultz@linaro.org> escreveu:
 
-
-On 9/2/21 12:32 PM, Desmond Cheong Zhi Xi wrote:
+> On Thu, Sep 2, 2021 at 1:03 PM Matthias Kaehlcke <mka@chromium.org> wrote:
+> > On Thu, Sep 02, 2021 at 11:29:49AM -0700, John Stultz wrote:  
+> > > The current iteration (of which there have been many) of hikey hub
+> > > driver uses the role switch notification as its trigger. It's not
+> > > really controlling the role switching, just using that signal. That's
+> > > why the driver works as an intermediary/relay of the roleswitch
+> > > notification.  
+> >
+> > Apologies too, my terminology wasn't very clear, I had little exposure to
+> > OTG so far.
+> >
+> > The hisi_hikey_usb driver doesn't control the role of the USB controller,
+> > however it deals with platform specific role switching stuff, like muxing
+> > the USB PHY to the hub (host mode) or directly to the type-C port (device
+> > mode), or controlling the power of the type-C port.  
 > 
-> Hi Eric,
+> True, though the exact configuration of powering type-c port, the mux
+> and the hub power that we want to set depends on the role.
 > 
-> This actually seems to be a pre-existing error in sco_sock_connect that we now hit in sco_sock_timeout.
+> > > We had earlier efforts that had hacks to specific drivers as well as
+> > > attempts to add notifiers on role switches (but those were terribly
+> > > racy), so the intermediary/relay approach has been a great improvement
+> > > on reliability with little impact to other drivers.  
+> >
+> > I can see how raciness can be a problem. I'm not proprosing to use
+> > notifiers in the driver that deals with the hub, from the hub's
+> > perspective it is connected to a host port and it shouldn't have to care
+> > about OTG.
+> >
+> > But the 'hub driver' could expose a synchronous interface that allows the
+> > hisi_hikey_usb driver to power the hub on and off (or keep it in reset).
+> > That would maintain the relay approach, but without having a driver that
+> > tries to do too many things at once. For example the onboard_usb_hub driver
+> > has the option to power the hub down during suspend if no wakeup capable
+> > devices are connected downstream, I'm not convinced that this and the
+> > handling of the mux should be done by the same driver.  
 > 
-> Any thoughts on the following patch to address the problem?
+> I'm not sure I'm totally following your proposal, so apologies if I
+> have it wrong.
+> It seems you're suggesting to move just the hub power logic out of the
+> hisi hub driver, and utilize the onboard_usb_hub driver for that?
 > 
-> Link: https://lore.kernel.org/lkml/20210831065601.101185-1-desmondcheongzx@gmail.com/
+> I guess that could be done, but I also feel like it's really just the
+> regulator control, which is a pretty small part of the hisi hub driver
+> logic.
+> Additionally, if you look at the logic that handles the different
+> setting configurations needed for the different roles:
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/misc/hisi_hikey_usb.c#n97
+> 
+> You'll see the ordering of powering things on/off and switching the
+> mux is a bit subtle.
+> 
+> So while I guess we could call some onboard_usb_hub hook for the hub
+> power on/off calls (hub_power_ctrl() in the hisi driver), I'm not sure
+> that really is saving much logic wise, and splits the details across
+> an additional driver in an already somewhat complicated config.
+> 
+> Again, apologies if I'm being thick headed. :)
 
+I agree with John here: this driver itself is really simple. It has less 
+than 300 lines of code, as it just turns the regulator on/off, has one GPIO 
+for the reset pin of the HUB, and two other GPIOs to turn on/off Type-C
+power and to switch OTG phy. The actual OTG implementation is done at
+the DWC3 driver and the Type-C support is provided by the RT1711H driver.
 
-syzbot is still working on finding a repro, this is obviously not trivial,
-because this is a race window.
+Splitting its code on two separate drivers, being one just to replace
+the 20-30 lines of code that control the regulator sounds overkill
+and will require a glue between those drivers that will likely be 
+bigger than that. 
 
-I think this can happen even with a single SCO connection.
+So, I guess the best is to keep this as a separate platform-specific
+driver.
 
-This might be triggered more easily forcing a delay in sco_sock_timeout()
-
-diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-index 98a88158651281c9f75c4e0371044251e976e7ef..71ebe0243fab106c676c308724fe3a3f92a62cbd 100644
---- a/net/bluetooth/sco.c
-+++ b/net/bluetooth/sco.c
-@@ -84,8 +84,14 @@ static void sco_sock_timeout(struct work_struct *work)
- 
-        sco_conn_lock(conn);
-        sk = conn->sk;
--       if (sk)
-+       if (sk) {
-+               // lets pretend cpu has been busy (in interrupts) for 100ms
-+               int i;
-+               for (i=0;i<100000;i++)
-+                       udelay(1);
-+
-                sock_hold(sk);
-+       }
-        sco_conn_unlock(conn);
- 
-        if (!sk)
-
-
-Stack trace tells us that sco_sock_timeout() is running after last reference
-on socket has been released.
-
-__refcount_add include/linux/refcount.h:199 [inline]
- __refcount_inc include/linux/refcount.h:250 [inline]
- refcount_inc include/linux/refcount.h:267 [inline]
- sock_hold include/net/sock.h:702 [inline]
- sco_sock_timeout+0x216/0x290 net/bluetooth/sco.c:88
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-This is why I suggested to delay sock_put() to make sure this can not happen.
-
-diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-index 98a88158651281c9f75c4e0371044251e976e7ef..bd0222e3f05a6bcb40cffe8405c9dfff98d7afde 100644
---- a/net/bluetooth/sco.c
-+++ b/net/bluetooth/sco.c
-@@ -195,10 +195,11 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
-                sco_sock_clear_timer(sk);
-                sco_chan_del(sk, err);
-                release_sock(sk);
--               sock_put(sk);
- 
-                /* Ensure no more work items will run before freeing conn. */
-                cancel_delayed_work_sync(&conn->timeout_work);
-+
-+               sock_put(sk);
-        }
- 
-        hcon->sco_data = NULL;
+Thanks,
+Mauro
