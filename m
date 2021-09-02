@@ -2,107 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF68B3FF4C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:18:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8393FF4C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345935AbhIBUTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:19:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231559AbhIBUTE (ORCPT
+        id S234594AbhIBUTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 16:19:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57439 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231559AbhIBUTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 16:19:04 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1D4AC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 13:18:05 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id t19so6933270lfe.13
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 13:18:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kzEtkuBtgfdvovJGx2vNeyWTM6t8k4a79v7QJawW9b8=;
-        b=czGzwIMYk81Mo1UJ4KLBEMDUAJvz72+tHL59F2iqeJk960mlsaXhCo6R022M2B07In
-         duNGe9KfQKyTsvzzYDEE/6gpDpJScLS3A22Ghj96PHMr8rHTCQBBGbl41GBkkuIH0/bC
-         aIpH1wwpwOHtICD6ACln6eiZiMIz45skiZ40YUinZUOhCBApaFAZJOCiHd1r4WWJm/o1
-         7QsFY/sTTBnpybIyL0Xz0VGaPF9lVWBtEoOwLm+P8CNil6/2RGI8w24dBMv7qFwq3jAM
-         lz/+xaiQHFvLPsxv2B3l2NkKzpM66+Qt5K1VslIIIf23xOqBi9Y4kM+tJsi1OjA6+ES4
-         +RLg==
+        Thu, 2 Sep 2021 16:19:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630613903;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qa2t+mRnex8UWtPa+3EibP8DEZqC9c+ivTe+/7D5DBg=;
+        b=fWUhd+H0bo5jjAacZwjAv4vDCaDx+oVPtULr9TyvtCz9nPdXJI21N0QgSP8nhdWjygsprB
+        jW75MFdkj7c0psxlRzexiYpmWCmspW3m+uL2VQaJWFW8WLNh/yb6IZK6G4t1i4s4g3KW5l
+        RUb5/GHQllQYThpgegT0z9V+osgObUE=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-499-CPBeZTh7Opu31KAEmbSXVg-1; Thu, 02 Sep 2021 16:18:22 -0400
+X-MC-Unique: CPBeZTh7Opu31KAEmbSXVg-1
+Received: by mail-qt1-f199.google.com with SMTP id t2-20020ac87382000000b002a0c1c918c3so2349403qtp.13
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 13:18:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kzEtkuBtgfdvovJGx2vNeyWTM6t8k4a79v7QJawW9b8=;
-        b=oeJDurjsbmhVbQp/vXg4wxpOjXQJS1EEwPkEcxcdZrJWxRZPX7ePgInmwuC4LD57Lo
-         roUEN69DvEV+4Fqz7pVrJoUvMVabTormMxAQQd8GgvDLkjAqiYg2yFWjJ4+7rlixR2sY
-         MPoXozYtiewbT96Go8OJVg8spqKBWaK8LRoLuOR76B6H7/SGftgF6u4U0+LEargLhS5c
-         5rRjwUIc9YOI76KEShZ4sif52kglJ6TxAUt80rD595gOFDeHiBcDIkBxQYy1Xvyi66ys
-         JXTIulVzH6TfJb2+k8AsV1cF+Ajy5izTavJ9MefevMpM4lwK/AALFShDQskpXElkQ8Tz
-         MKTw==
-X-Gm-Message-State: AOAM5311lnluFnKitI2OS2OUuGghkC8a7KU3LKMi4++F8Zd3yhd4QYtK
-        n1Teijg84coJIXaEeq9zA+CRja8mzEynevLUH9fMew==
-X-Google-Smtp-Source: ABdhPJzwP18p+J/0zyaKhKGt7l6t2j60BMaCA6xIyB2Wj57888oDOG4H3w28g6Q09+bAJl5bJu0e7lkzr6X+zUIG2KE=
-X-Received: by 2002:ac2:43b6:: with SMTP id t22mr4052lfl.0.1630613883673; Thu,
- 02 Sep 2021 13:18:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qa2t+mRnex8UWtPa+3EibP8DEZqC9c+ivTe+/7D5DBg=;
+        b=BvfRpYu9LFNOGrHQNXYWsfP3FBas97kuOHfIVTU5MQ6xbzb+4c9P7sY7UNT0bIoXml
+         lehubhzcIb3VLrHv1tT9acDxrmNDd8grFQatcJRPFwqompAe8IxRB4oaGtSrK2HGvuky
+         vraQS2RJ+ho26G/CIox7sckthRADYiHRQzUnTElL6TDjB/aPfcEwoLan2wQpZzp6uXaM
+         AuRSv0OGrAl676UIWH4qkLGlKu3wH7vUz7xPEZR6QvpYnKdTLttvdZDDGSmBkbH7Scjs
+         vcIayssnqPZRkLeNLfiVEqjTXqiCxnE0zh26akVZKzUn4Jj/G5PCTM7o1Q7syfK3R6Vw
+         Ycsw==
+X-Gm-Message-State: AOAM533gCBW1jgGy+bSDyivCaeeldNqNVhrmSbmLS8Wl18t30UIjiYJ4
+        e6zHx0IlXpUSsyRJKJ/i3NVvgxD0KT8B8yFWywS6nERBCmwFXWGCdjdmY51qvo07Mm/sAh+v877
+        zEysu7Bij3ghYFHn1rOa3heBN
+X-Received: by 2002:a05:620a:9dc:: with SMTP id y28mr4818026qky.456.1630613901840;
+        Thu, 02 Sep 2021 13:18:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyxSSUlX72Wtt37bFhaHAG9fsAucLiqInaoLBA2qPxUGl8ambA+3CiEsyV5pXsHgu6akQvj9g==
+X-Received: by 2002:a05:620a:9dc:: with SMTP id y28mr4818012qky.456.1630613901634;
+        Thu, 02 Sep 2021 13:18:21 -0700 (PDT)
+Received: from t490s.redhat.com ([2607:fea8:56a3:500::ad7f])
+        by smtp.gmail.com with ESMTPSA id x29sm1677629qtv.74.2021.09.02.13.18.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 13:18:21 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jerome Glisse <jglisse@redhat.com>, peterx@redhat.com,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alistair Popple <apopple@nvidia.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: [PATCH v2 4/5] mm: Add zap_skip_check_mapping() helper
+Date:   Thu,  2 Sep 2021 16:18:19 -0400
+Message-Id: <20210902201819.53343-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210902201721.52796-1-peterx@redhat.com>
+References: <20210902201721.52796-1-peterx@redhat.com>
 MIME-Version: 1.0
-References: <20210901211412.4171835-1-rananta@google.com> <20210901211412.4171835-2-rananta@google.com>
- <YS/vTVPi7Iam+ZXX@google.com> <CAJHc60wx=ZN_5e9Co_s_GyFs4ytLxncbYr2-CzmTUh5DvvuuNQ@mail.gmail.com>
-In-Reply-To: <CAJHc60wx=ZN_5e9Co_s_GyFs4ytLxncbYr2-CzmTUh5DvvuuNQ@mail.gmail.com>
-From:   Oliver Upton <oupton@google.com>
-Date:   Thu, 2 Sep 2021 13:17:49 -0700
-Message-ID: <CAOQ_QsgQongwOuj2FCTB-iRsscMYV2myN5Czae2B_vmasMOvnA@mail.gmail.com>
-Subject: Re: [PATCH v3 01/12] KVM: arm64: selftests: Add MMIO readl/writel support
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <Alexandru.Elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Peter Shier <pshier@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 3:43 PM Raghavendra Rao Ananta
-<rananta@google.com> wrote:
->
-> On Wed, Sep 1, 2021 at 2:23 PM Oliver Upton <oupton@google.com> wrote:
-> >
-> > On Wed, Sep 01, 2021 at 09:14:01PM +0000, Raghavendra Rao Ananta wrote:
-> > > Define the readl() and writel() functions for the guests to
-> > > access (4-byte) the MMIO region.
-> > >
-> > > The routines, and their dependents, are inspired from the kernel's
-> > > arch/arm64/include/asm/io.h and arch/arm64/include/asm/barrier.h.
-> > >
-> > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > > ---
-> > >  .../selftests/kvm/include/aarch64/processor.h | 45 ++++++++++++++++++-
-> > >  1 file changed, 44 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/testing/selftests/kvm/include/aarch64/processor.h b/tools/testing/selftests/kvm/include/aarch64/processor.h
-> > > index c0273aefa63d..3cbaf5c1e26b 100644
-> > > --- a/tools/testing/selftests/kvm/include/aarch64/processor.h
-> > > +++ b/tools/testing/selftests/kvm/include/aarch64/processor.h
-> > > @@ -130,6 +130,49 @@ void vm_install_sync_handler(struct kvm_vm *vm,
-> > >       val;                                                              \
-> > >  })
-> > >
-> > > -#define isb()        asm volatile("isb" : : : "memory")
-> > > +#define isb()                asm volatile("isb" : : : "memory")
-> >
-> > Is this a stray diff?
-> >
-> Oh no, that's intentional. Just trying to align with others below.
+Use the helper for the checks.  Rename "check_mapping" into "zap_mapping"
+because "check_mapping" looks like a bool but in fact it stores the mapping
+itself.  When it's set, we check the mapping (it must be non-NULL).  When it's
+cleared we skip the check, which works like the old way.
 
-You are of course right, I read the diff wrong and didn't think it was
-correctly aligned.
+Move the duplicated comments to the helper too.
 
-Thanks,
-Oliver
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ include/linux/mm.h | 15 ++++++++++++++-
+ mm/memory.c        | 29 ++++++-----------------------
+ 2 files changed, 20 insertions(+), 24 deletions(-)
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 69259229f090..81e402a5fbc9 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1720,10 +1720,23 @@ extern void user_shm_unlock(size_t, struct ucounts *);
+  * Parameter block passed down to zap_pte_range in exceptional cases.
+  */
+ struct zap_details {
+-	struct address_space *check_mapping;	/* Check page->mapping if set */
++	struct address_space *zap_mapping;	/* Check page->mapping if set */
+ 	struct page *single_page;		/* Locked page to be unmapped */
+ };
+ 
++/*
++ * We set details->zap_mappings when we want to unmap shared but keep private
++ * pages. Return true if skip zapping this page, false otherwise.
++ */
++static inline bool
++zap_skip_check_mapping(struct zap_details *details, struct page *page)
++{
++	if (!details || !page)
++		return false;
++
++	return details->zap_mapping != page_rmapping(page);
++}
++
+ struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
+ 			     pte_t pte);
+ struct page *vm_normal_page_pmd(struct vm_area_struct *vma, unsigned long addr,
+diff --git a/mm/memory.c b/mm/memory.c
+index 6bba3b9fef7c..e5ee8399d270 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -1333,16 +1333,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 			struct page *page;
+ 
+ 			page = vm_normal_page(vma, addr, ptent);
+-			if (unlikely(details) && page) {
+-				/*
+-				 * unmap_shared_mapping_pages() wants to
+-				 * invalidate cache without truncating:
+-				 * unmap shared but keep private pages.
+-				 */
+-				if (details->check_mapping &&
+-				    details->check_mapping != page_rmapping(page))
+-					continue;
+-			}
++			if (unlikely(zap_skip_check_mapping(details, page)))
++				continue;
+ 			ptent = ptep_get_and_clear_full(mm, addr, pte,
+ 							tlb->fullmm);
+ 			tlb_remove_tlb_entry(tlb, pte, addr);
+@@ -1375,17 +1367,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+ 		    is_device_exclusive_entry(entry)) {
+ 			struct page *page = pfn_swap_entry_to_page(entry);
+ 
+-			if (unlikely(details && details->check_mapping)) {
+-				/*
+-				 * unmap_shared_mapping_pages() wants to
+-				 * invalidate cache without truncating:
+-				 * unmap shared but keep private pages.
+-				 */
+-				if (details->check_mapping !=
+-				    page_rmapping(page))
+-					continue;
+-			}
+-
++			if (unlikely(zap_skip_check_mapping(details, page)))
++				continue;
+ 			pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+ 			rss[mm_counter(page)]--;
+ 
+@@ -3368,7 +3351,7 @@ void unmap_mapping_page(struct page *page)
+ 	first_index = page->index;
+ 	last_index = page->index + thp_nr_pages(page) - 1;
+ 
+-	details.check_mapping = mapping;
++	details.zap_mapping = mapping;
+ 	details.single_page = page;
+ 
+ 	i_mmap_lock_write(mapping);
+@@ -3396,7 +3379,7 @@ void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
+ 	pgoff_t	first_index = start, last_index = start + nr - 1;
+ 	struct zap_details details = { };
+ 
+-	details.check_mapping = even_cows ? NULL : mapping;
++	details.zap_mapping = even_cows ? NULL : mapping;
+ 	if (last_index < first_index)
+ 		last_index = ULONG_MAX;
+ 
+-- 
+2.31.1
+
