@@ -2,159 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CAD3FF767
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13F653FF6EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239456AbhIBWuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 18:50:40 -0400
-Received: from mgw-01.mpynet.fi ([82.197.21.90]:50610 "EHLO mgw-01.mpynet.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232013AbhIBWui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 18:50:38 -0400
-X-Greylist: delayed 2354 seconds by postgrey-1.27 at vger.kernel.org; Thu, 02 Sep 2021 18:50:38 EDT
-Received: from pps.filterd (mgw-01.mpynet.fi [127.0.0.1])
-        by mgw-01.mpynet.fi (8.16.0.43/8.16.0.43) with SMTP id 182M9t3D000970;
-        Fri, 3 Sep 2021 01:09:55 +0300
-Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
-        by mgw-01.mpynet.fi with ESMTP id 3au6p6g0ps-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 01:09:55 +0300
-Received: from tuxera.com (77.86.224.47) by tuxera-exch.ad.tuxera.com
- (10.20.48.11) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Fri, 3 Sep
- 2021 01:09:54 +0300
-Date:   Fri, 3 Sep 2021 01:09:40 +0300
-From:   Szabolcs Szakacsits <szaka@tuxera.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Theodore Ts'o <tytso@mit.edu>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Leonidas P. Papadakos" <papadakospan@gmail.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        <zajec5@gmail.com>, "Darrick J. Wong" <djwong@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: NTFS testing (was: [GIT PULL] vboxsf fixes for 5.14-1
-In-Reply-To: <CAHk-=wiSwzrWOSN5UCrej3YcLRPmW5tViGSA5p2m-hiyKnQiMg@mail.gmail.com>
-Message-ID: <alpine.DEB.2.20.2109030047330.23375@tuxera.com>
-References: <4e8c0640-d781-877c-e6c5-ed5cc09443f6@gmail.com> <20210716114635.14797-1-papadakospan@gmail.com> <CAHk-=whfeq9gyPWK3yao6cCj7LKeU3vQEDGJ3rKDdcaPNVMQzQ@mail.gmail.com> <YQnHxIU+EAAxIjZA@mit.edu> <YQnU5m/ur+0D5MfJ@casper.infradead.org>
- <YQnZgq3gMKGI1Nig@mit.edu> <CAHk-=wiSwzrWOSN5UCrej3YcLRPmW5tViGSA5p2m-hiyKnQiMg@mail.gmail.com>
-User-Agent: Alpine 2.20 (DEB 67 2015-01-07)
+        id S237981AbhIBWLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 18:11:20 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:40016 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236148AbhIBWLR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 18:11:17 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210902221017euoutp0209c3c8904049e114953e31bb38f45438~hIM-bB99y1794317943euoutp02b
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 22:10:17 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210902221017euoutp0209c3c8904049e114953e31bb38f45438~hIM-bB99y1794317943euoutp02b
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1630620617;
+        bh=+cFvhzqtn0hctNTDhhm/VOiBMV5RGPNkUgUXiD3jIK0=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=o0FxlQXixmRpphhR0faJ2ZK1gFlt9GZeVw2Cwl4YIgEIoQVYTu7AZXUoPY/zZSv0+
+         iMvCNNln7a8US9tSzPZqXDDJ5e2sVmLNj/8dDMavfwK1ketN0814IQImT/dd+hirPQ
+         WtfOtayOfBkHTTFrqNoYg1NYlJH5B0FzvZfScaX8=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210902221016eucas1p146dd1b1577cef73d9ba4381e4bd14fa4~hIM_wvUet2964729647eucas1p1p;
+        Thu,  2 Sep 2021 22:10:16 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 8B.EE.45756.8CB41316; Thu,  2
+        Sep 2021 23:10:16 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210902221015eucas1p26fae8f6ba4c70087dc7b007a271dce4b~hIM9ditUN1154911549eucas1p26;
+        Thu,  2 Sep 2021 22:10:15 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210902221015eusmtrp20ae878e47dc423f33a52ecc70a1327aa~hIM9cpaEB1635516355eusmtrp2S;
+        Thu,  2 Sep 2021 22:10:15 +0000 (GMT)
+X-AuditID: cbfec7f2-7bdff7000002b2bc-8a-61314bc8b16f
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id EA.C7.20981.6CB41316; Thu,  2
+        Sep 2021 23:10:14 +0100 (BST)
+Received: from [192.168.0.14] (unknown [106.210.131.79]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210902221014eusmtip29eaf4ecb5d0517c13a0294299bd3d215~hIM8hETkp1495614956eusmtip2V;
+        Thu,  2 Sep 2021 22:10:14 +0000 (GMT)
+Subject: Re: [PATCH v3 00/16] eDP: Support probing eDP panels dynamically
+ instead of hardcoding
+To:     Douglas Anderson <dianders@chromium.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-tegra@vger.kernel.org,
+        =?UTF-8?Q?=c5=81ukasz_Stelmach?= <l.stelmach@samsung.com>
+From:   Andrzej Hajda <a.hajda@samsung.com>
+Message-ID: <b1b67791-69b7-a5c0-9e98-73bb82afaeaa@samsung.com>
+Date:   Fri, 3 Sep 2021 00:10:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-ClientProxiedBy: tuxera-exch.ad.tuxera.com (10.20.48.11) To
- tuxera-exch.ad.tuxera.com (10.20.48.11)
-X-Proofpoint-GUID: AIsDkyzYdnO5cmGg65dSmSNKEHORpGW8
-X-Proofpoint-ORIG-GUID: AIsDkyzYdnO5cmGg65dSmSNKEHORpGW8
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-02_04:2021-09-02,2021-09-02 signatures=0
-X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 bulkscore=0 malwarescore=0 phishscore=0
- spamscore=0 mlxlogscore=999 suspectscore=0 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2108310000
- definitions=main-2109020127
+In-Reply-To: <20210901201934.1084250-1-dianders@chromium.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrNKsWRmVeSWpSXmKPExsWy7djPc7onvA0TDbrmiFrMP3KO1eLssoNs
+        Fle+vmezuHloBaPFpsfXWC0m7j/LbtH1ayWzxeVdc9gsOjdtZbSYvaSfxWLry3dMFjPO72Oy
+        mLJvF1Diyyw2i7bOZawWrXuPsFus+AlU93PXPBYHIY/ZDRdZPHbOusvusWlVJ5vH/e7jTB6b
+        l9R7vNg8k9Fj47sdTB5Lpl1l8+jbsorR4/MmuQCuKC6blNSczLLUIn27BK6Ml5PusBY8FanY
+        NFusgfG8QBcjB4eEgInEyb3BXYxcHEICKxglbtxbzgzhfGGUWHvtMiOE85lRYk/jf7YuRk6w
+        jqMdi1ghEssZJY7PfAPV8pZRoufWMiaQKmGBRInZiyezgtgiAvMYJe48UAApYhZ4zSyx58sa
+        sASbgKbE3803wcbyCthJ/Hi3hRHkKBYBFYmjC6VBwqICkRJ/T+5ihSgRlDg58wkLiM0pYCtx
+        /tlisF3MAuISt57Mh7LlJba/nQN2kITAJU6JbR2tjBBnu0jsvbKSGcIWlnh1fAs7hC0j8X8n
+        RLOEQL3E/RUtUM0djBJbN+yEarCWuHPuFxvIccxAR6/fpQ8RdpT4cmkvKyQg+SRuvBWEuIFP
+        YtK26cwQYV6JjjYhiGpFiftnt0INFJdYeuEr2wRGpVlIPpuF5JtZSL6ZhbB3ASPLKkbx1NLi
+        3PTUYsO81HK94sTc4tK8dL3k/NxNjMD0ePrf8U87GOe++qh3iJGJg/EQowQHs5II7043g0Qh
+        3pTEyqrUovz4otKc1OJDjNIcLErivKtmr4kXEkhPLEnNTk0tSC2CyTJxcEo1MMknlZRt8Tu6
+        PtPnzeroLbr+7/ev2PJS3dnoxrL1Du/Pbd8YPPMmd+DSAOmPL0wdbs6wKzp4Tlb27829ace3
+        JmYVOFrwt11+du2bY8KxSTsOTwm/s/CDVtzl/xoiD1kWTd3sEr9GbH65lsNstr+yvy0nbrMp
+        Wusd8SP2mQETT+efGWaVk172OpU43+tcLstaY6+19ABfefM7zy+LFx7+YM/MLXNT9eKEX2KN
+        5mHL1V04fNatYo/O+GPT9or3U51nUuuqa6yvw3ImT9f40u6a9qrrGqdC2gsjd2FXi2Nupob+
+        Gl4Slbcmh188Lvp+nmHPRWmrU5W1bH9MHtRZJTTV1WdPsd6dLqqwgtFqI8uto0osxRmJhlrM
+        RcWJAOa1PYP+AwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLIsWRmVeSWpSXmKPExsVy+t/xe7rHvA0TDR7cs7GYf+Qcq8XZZQfZ
+        LK58fc9mcfPQCkaLTY+vsVpM3H+W3aLr10pmi8u75rBZdG7aymgxe0k/i8XWl++YLGac38dk
+        MWXfLqDEl1lsFm2dy1gtWvceYbdY8ROo7ueueSwOQh6zGy6yeOycdZfdY9OqTjaP+93HmTw2
+        L6n3eLF5JqPHxnc7mDyWTLvK5tG3ZRWjx+dNcgFcUXo2RfmlJakKGfnFJbZK0YYWRnqGlhZ6
+        RiaWeobG5rFWRqZK+nY2Kak5mWWpRfp2CXoZLyfdYS14KlKxabZYA+N5gS5GTg4JAROJox2L
+        WLsYuTiEBJYySrSd6WCHSIhL7J7/lhnCFpb4c62LDaLoNaPEu8O9rCAJYYFEidmLJ4PZIgLz
+        GCVOrHQHKWIWeM0ssezZLKBuDqAOG4kbW/VBatgENCX+br7JBmLzCthJ/Hi3hRGkhEVAReLo
+        QmmQsKhApETTia1QJYISJ2c+YQGxOQVsJc4/W8wEYjMLmEnM2/yQGcIWl7j1ZD5UXF5i+9s5
+        zBMYhWYhaZ+FpGUWkpZZSFoWMLKsYhRJLS3OTc8tNtIrTswtLs1L10vOz93ECEwH24793LKD
+        ceWrj3qHGJk4GA8xSnAwK4nw7nQzSBTiTUmsrEotyo8vKs1JLT7EaAr0zkRmKdHkfGBCyiuJ
+        NzQzMDU0MbM0MLU0M1YS5zU5siZeSCA9sSQ1OzW1ILUIpo+Jg1OqgUljjRjr7+UX+yw2LSxJ
+        3JMUtIItWOkDV26vliLf5ZXeKqEZM4U9nzHcC1cvFjpfscAmym5C9Z5JN6+eWOg1mePuVFtl
+        /ou/HzTPzY2vbS5hTelmOOp/VPOtx7bWeT/91P9t/6ByqIprwrGrPbpKlmpHjvx69TFpndfk
+        1I0fH99si3g2cUHS5lYhxojJ9Q8Ed+tIHXiltkAp3Dzfx+6vlqSrdotvyvLZ/YJp6WKXnp7Y
+        zbZerPLMCVvVj00tLPGJNrJCG9V26N6xyvj0O2Km/T/ric+bZrLdz1uvM43rsIlHF9uKjvKv
+        hTvnhLn98X5qwa8vfJ7J+1nL29ueG25cnR0wK7rgj2Pz3i7O6YaTniqxFGckGmoxFxUnAgCo
+        in5UkAMAAA==
+X-CMS-MailID: 20210902221015eucas1p26fae8f6ba4c70087dc7b007a271dce4b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210902221015eucas1p26fae8f6ba4c70087dc7b007a271dce4b
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210902221015eucas1p26fae8f6ba4c70087dc7b007a271dce4b
+References: <20210901201934.1084250-1-dianders@chromium.org>
+        <CGME20210902221015eucas1p26fae8f6ba4c70087dc7b007a271dce4b@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Tue, 3 Aug 2021, Linus Torvalds wrote:
-> On Tue, Aug 3, 2021 at 5:04 PM Theodore Ts'o <tytso@mit.edu> wrote:
-> >
-> > Whenver I've ever needed to access ntfs files, I've always used the
-> > ntfs-3g FUSE package.
+Removed most CC: SMTP server protested.
+
+On 01.09.2021 22:19, Douglas Anderson wrote:
+> The goal of this patch series is to move away from hardcoding exact
+> eDP panels in device tree files. As discussed in the various patches
+> in this series (I'm not repeating everything here), most eDP panels
+> are 99% probable and we can get that last 1% by allowing two "power
+> up" delays to be specified in the device tree file and then using the
+> panel ID (found in the EDID) to look up additional power sequencing
+> delays for the panel.
 > 
-> The user-space FUSE thing does indeed work reasonably well.
+> This patch series is the logical contiunation of a previous patch
+> series where I proposed solving this problem by adding a
+> board-specific compatible string [1]. In the discussion that followed
+> it sounded like people were open to something like the solution
+> proposed in this new series.
 > 
-> It performs horribly badly if you care about things like that, though.
+> In version 2 I got rid of the idea that we could have a "fallback"
+> compatible string that we'd use if we didn't recognize the ID in the
+> EDID. This simplifies the bindings a lot and the implementation
+> somewhat. As a result of not having a "fallback", though, I'm not
+> confident in transitioning any existing boards over to this since
+> we'll have to fallback to very conservative timings if we don't
+> recognize the ID from the EDID and I can't guarantee that I've seen
+> every panel that might have shipped on an existing product. The plan
+> is to use "edp-panel" only on new boards or new revisions of old
+> boards where we can guarantee that every EDID that ships out of the
+> factory has an ID in the table.
 > 
-> In fact, your own numbers kind of show that:
+> Version 3 of this series now splits out all eDP panels to their own
+> driver and adds the generic eDP panel support to this new driver. I
+> believe this is what Sam was looking for [2].
 > 
->   ntfs/default: 670 tests, 55 failures, 211 skipped, 34783 seconds
->   ntfs3/default: 664 tests, 67 failures, 206 skipped, 8106 seconds
+> [1] https://lore.kernel.org/r/YFKQaXOmOwYyeqvM@google.com/
+> [2] https://lore.kernel.org/r/YRTsFNTn%2FT8fLxyB@ravnborg.org/
 > 
-> and that's kind of the point of ntfs3.
+I like the idea - if something can be configured dynamically lets do it.
+But I have few questions:
+1. Have you read different real panels id's? In many cases (MIPI DSI, 
+LVDS with EDID) manufacturers often forgot to set proper id fields. I do 
+not know how EDID's ids are reliable in case of edp panels.
+2. You are working with edp panels - beside EDID they have DPCD which 
+contains things like IEEE_OUI and "Device Identification String", I 
+guess they could be also used for detecting panels, have you considered 
+it? I think DPCD Id should be assigned to EDP-Sink interface, and EDID 
+Id to the actual panel behind it. With this assumption one could 
+consider which timings should be property of which entity.
 
-In all fairness, the generic/405 test case completely distorted the overall 
-timing in favour of ntfs3. Neither driver was involved in that test case.
 
-Generic/405 test is mkfs against a 1 TB thin provision device which has 1 
-MB backing size. mkfs should return an error after it hits EIO. The test 
-case configuration was not correct for mkntfs on behalf of ntfs-3g because 
-it missed the --fast format option, so mkntfs tried to fill the 1 TB device 
-with zeros, apparently on Google Cloud Platform, for almost 8 hours. This 
-had absolutely nothing to do with ntfs-3g performance, it was a pure mkfs 
-test:
-
-	https://github.com/kdave/xfstests/blob/master/tests/generic/405
-
-Meanwhile the test case ran in 1 second on behalf of ntfs3 because its mkfs 
-was not found, so the test could not be run. (And the test case got 
-incorrectly categorized as success because it interpreted the "command not 
-found" error as a success.)
-
-If this mkntfs test case is ignored, as it should be, then ntfs-3g's 
-runtime was (34783 - 28396) = 6387 versus ntfs3's (8106 - 1) = 8105 
-seconds, i.e. the user space ntfs-3g was about 21% faster overall than the 
-kernel space ntfs3.
-
-Does this mean ntfs-3g is faster than ntfs3? Of course not. Fstests is not 
-a benchmark. What we know for sure is, the unknowingly configured, untuned 
-versions of the software gave different times for different workloads.
-
-File system performance is a fairly complex topic. Ntfs-3g always aimed for 
-stability, features, interoperability and portability, not for best 
-possible performance. There seems to be some misconceptions, 
-misinterpretations, inefficient configuration and mount options (e.g. 
-missing big_writes, kernel_cache, etc). Unfortunately we did our part too 
-to end up here. We will set better performance defaults in future releases.
-
-User space drivers can have major disadvantages for certain workloads 
-however how relevant are those for NTFS users? Most people use NTFS for 
-file transfers in which case ntfs-3g read and write speed is about 15-20% 
-less compared to ext4. For example in some quick tests ext4 read was 
-3.4 GB/s versus ntfs-3g 2.8 GB/s, and write was 1.3 GB/s versus 1.1 GB/s.
-
-Additionally there are still several technical solutions which could be 
-implemented to improve all kinds of user space driver performance 
-significantly.
-
-But again, we always prefer data integrity over performance. And NTFS can 
-be quite tricky with the ever changing on-disk corner cases. Does anybody 
-still remember when Windows 2000 changed the NTFS on-disk format which 
-massively started to trash users' data?
-
-Please don't get me wrong, I'm not saying this is the way to go (who would 
-be so crazy to write anything like that on the linux-kernel list?) I'm just 
-saying this is the way we chose and support. We welcome the recent interest 
-in NTFS after working on it for 20 years.
-
-------
-
-These are from Ted's logs which he shared earlier. It's much appreciated, 
-it was highly useful. Personally I also thought the very poor ntfs-3g 
-timing was due to bad configuration and/or mount options instead of an 
-irrelevant test case. (Btw, the driver configuration and mount options were 
-indeed not right, e.g. ACL, permission, etc related cases failed which 
-could have pass.)
-
-$ egrep ^generic/405 results-ntfs*/runtests.log
-results-ntfs/runtests.log:generic/405           [21:47:08] [05:40:24] 28396s
-results-ntfs3/runtests.log:generic/405          [12:12:09] [12:12:10] 1s
-
-$ cat results-ntfs/ntfs/results-default/generic/405.full
-[...]
-Cluster size has been automatically set to 4096 bytes.
-Initializing device with zeroes: 100% - Done.
-Creating NTFS volume structures.
-Failed to sync device /dev/mapper/thin-vol: Input/output error
-Syncing device. FAILED
-
-$ cat results-ntfs3/ntfs3/results-default/generic/405.full
-[...]
-mkfs: failed to execute mkfs.ntfs3: No such file or directory
-
-Best regards,
-
-	Szaka
+Regards
+Andrzej
