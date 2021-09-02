@@ -2,96 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770F63FF76A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5036F3FF76F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:54:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347760AbhIBWxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 18:53:25 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:34038
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232013AbhIBWxU (ORCPT
+        id S1348952AbhIBWz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 18:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348526AbhIBWyb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 18:53:20 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id F22A23F249;
-        Thu,  2 Sep 2021 22:52:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630623140;
-        bh=HFc1EgoJvcTCiU96mH1fKfidDkMXe510FYrg9SYSXGA=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=PFQEXEg1aR5NUtZ+fnWJT6eJ5xAu8XMoF0KU8VWpuPu4trHeG9p21maZ+IFByW507
-         znfVBlS4Z0SZgavdj/5cq674Rtq+/RkLqoqkVjfOIPrObRynSmla19yTQIwUBusBFf
-         jaXLUUM/H9bIfHjHttWmufrP0/m06aL6YkxJzmjqM1h5F4a5hZ4GsG2KBuEAcA4yG4
-         ShDj3damaVs98yTy0/gu51VTlWXFthZKVCN90cj6jLT7eDYzCV677rDi+kJ4QdQ7gf
-         2VftbJC2+siRwj33Kg1rjFZMzLN6fdnJFw+BrkVp5DHgxh+KZz74rzxPjyGtHfpLcQ
-         z3P0jwpk7dRYg==
-From:   Colin King <colin.king@canonical.com>
-To:     "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] xfs: clean up some inconsistent indenting
-Date:   Thu,  2 Sep 2021 23:52:19 +0100
-Message-Id: <20210902225219.57929-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 2 Sep 2021 18:54:31 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC40BC061575;
+        Thu,  2 Sep 2021 15:53:31 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id a93so6850136ybi.1;
+        Thu, 02 Sep 2021 15:53:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NkN5TNB/RrUPxS3oGH9hsOFgveMfRt3tup9G6sQBl4A=;
+        b=Fk+6Et1cXuf5QLiY1KbCB35TBJYRkkKpa4ZkIO8ftoR8YyqBQl6X7Zd9LOOT2p+sFm
+         mW6UF7TRboUjxGclc/JzDosCwJDd4Xlm+V6IDqDljBKEX+77V8CjIgCJD0p+chbO1FyQ
+         L95KX5CRjpJDKBjMu9aoIn6191daUsvECPtezqgg1C4EOqSADhpbkqf41SiTbPolICr4
+         7lSlwgi49RwGT+IxRfps3XhsiAcxilkOFr1X/bQl3CyIf7pxW7q8sxU5ptOCNe5RNksQ
+         GIIbO9kZmOQ/r9Uag9BX8i4ec5i6kqJhN2wis7mlQNXLJXjVBXheS3rdQg3wc6W6Ead7
+         P9NQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NkN5TNB/RrUPxS3oGH9hsOFgveMfRt3tup9G6sQBl4A=;
+        b=k3G/OCvEVcefXmooK/X6dVxz927+C1A2w0fIHznAeAc9FrrdjWDWRRy6MEgsvL3Con
+         EwSbbs2T+kG1pofNIgi95iYyVheSLilxg/yB+nQKh5RD4xrvi19qx+U1/bWHVB3E64yX
+         rXYk3lXpXDKW2l4Z+BR4jKMGAAxsXlNf3bcpriPjm5riKdgXjof4cm35IUS+gdzJICoq
+         KQ73RurN31AwmjTIMotXXJS+kW+21uS+L9ruG5tb/5YV4KVHWclmZLwWqY4dsuFQlvJf
+         TpTK5jZf08aw4WGVjeSkD9ADC0TQBAHp/YhcACiG07C3apHMl7XmrDpszZH6wL0jJQIa
+         vCkA==
+X-Gm-Message-State: AOAM531WnNLciuSwPP/aDHixXtklEP8f0svLMa9NcI/GQwO+cOL6TJPz
+        3vCbFWPCN0xiQANEpU03Hz/mXTl2oLDFNrz3hC8=
+X-Google-Smtp-Source: ABdhPJzbkJP3+kY3OlcOu1d13sx/NNf3F4qlhjY7sH5G+nHB6ztvepCnHffpAYOUYrKbvoxrJkGmT1yK+smFeT0o1hE=
+X-Received: by 2002:a25:4941:: with SMTP id w62mr1046684yba.230.1630623211143;
+ Thu, 02 Sep 2021 15:53:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210902165706.2812867-1-songliubraving@fb.com> <20210902165706.2812867-3-songliubraving@fb.com>
+In-Reply-To: <20210902165706.2812867-3-songliubraving@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 2 Sep 2021 15:53:20 -0700
+Message-ID: <CAEf4BzZLSs3ejyVLPMORd_GPCYNE8Jz4M6=4wxzR576Vag-+-A@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 2/3] bpf: introduce helper bpf_get_branch_snapshot
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Ziljstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Thu, Sep 2, 2021 at 9:58 AM Song Liu <songliubraving@fb.com> wrote:
+>
+> Introduce bpf_get_branch_snapshot(), which allows tracing pogram to get
+> branch trace from hardware (e.g. Intel LBR). To use the feature, the
+> user need to create perf_event with proper branch_record filtering
+> on each cpu, and then calls bpf_get_branch_snapshot in the bpf function.
+> On Intel CPUs, VLBR event (raw event 0x1b00) can be use for this.
+>
+> Signed-off-by: Song Liu <songliubraving@fb.com>
+> ---
+>  include/uapi/linux/bpf.h       | 22 ++++++++++++++++++++++
+>  kernel/bpf/trampoline.c        |  3 ++-
+>  kernel/trace/bpf_trace.c       | 33 +++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h | 22 ++++++++++++++++++++++
+>  4 files changed, 79 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 791f31dd0abee..c986e6fad5bc0 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -4877,6 +4877,27 @@ union bpf_attr {
+>   *             Get the struct pt_regs associated with **task**.
+>   *     Return
+>   *             A pointer to struct pt_regs.
+> + *
+> + * long bpf_get_branch_snapshot(void *entries, u32 size, u64 flags)
+> + *     Description
+> + *             Get branch trace from hardware engines like Intel LBR. The
+> + *             branch trace is taken soon after the trigger point of the
+> + *             BPF program, so it may contain some entries after the
 
-There are bunch of statements where the indentation is not correct,
-clean these up.
+This part is a leftover from previous design, so not relevant anymore?
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- fs/xfs/xfs_log.c | 29 ++++++++++++++---------------
- 1 file changed, 14 insertions(+), 15 deletions(-)
+> + *             trigger point. The user need to filter these entries
+> + *             accordingly.
+> + *
+> + *             The data is stored as struct perf_branch_entry into output
+> + *             buffer *entries*. *size* is the size of *entries* in bytes.
+> + *             *flags* is reserved for now and must be zero.
+> + *
+> + *     Return
+> + *             On success, number of bytes written to *buf*. On error, a
+> + *             negative value.
+> + *
+> + *             **-EINVAL** if arguments invalid or **size** not a multiple
+> + *             of **sizeof**\ (**struct perf_branch_entry**\ ).
+> + *
+> + *             **-ENOENT** if architecture does not support branch records.
 
-diff --git a/fs/xfs/xfs_log.c b/fs/xfs/xfs_log.c
-index f6cd2d4aa770..9afc58a1a9ee 100644
---- a/fs/xfs/xfs_log.c
-+++ b/fs/xfs/xfs_log.c
-@@ -3700,21 +3700,20 @@ xlog_verify_tail_lsn(
- 	xfs_lsn_t	tail_lsn = be64_to_cpu(iclog->ic_header.h_tail_lsn);
- 	int		blocks;
- 
--    if (CYCLE_LSN(tail_lsn) == log->l_prev_cycle) {
--	blocks =
--	    log->l_logBBsize - (log->l_prev_block - BLOCK_LSN(tail_lsn));
--	if (blocks < BTOBB(iclog->ic_offset)+BTOBB(log->l_iclog_hsize))
--		xfs_emerg(log->l_mp, "%s: ran out of log space", __func__);
--    } else {
--	ASSERT(CYCLE_LSN(tail_lsn)+1 == log->l_prev_cycle);
--
--	if (BLOCK_LSN(tail_lsn) == log->l_prev_block)
--		xfs_emerg(log->l_mp, "%s: tail wrapped", __func__);
--
--	blocks = BLOCK_LSN(tail_lsn) - log->l_prev_block;
--	if (blocks < BTOBB(iclog->ic_offset) + 1)
--		xfs_emerg(log->l_mp, "%s: ran out of log space", __func__);
--    }
-+	if (CYCLE_LSN(tail_lsn) == log->l_prev_cycle) {
-+		blocks = log->l_logBBsize - (log->l_prev_block - BLOCK_LSN(tail_lsn));
-+		if (blocks < BTOBB(iclog->ic_offset)+BTOBB(log->l_iclog_hsize))
-+			xfs_emerg(log->l_mp, "%s: ran out of log space", __func__);
-+	} else {
-+		ASSERT(CYCLE_LSN(tail_lsn)+1 == log->l_prev_cycle);
-+
-+		if (BLOCK_LSN(tail_lsn) == log->l_prev_block)
-+			xfs_emerg(log->l_mp, "%s: tail wrapped", __func__);
-+
-+		blocks = BLOCK_LSN(tail_lsn) - log->l_prev_block;
-+		if (blocks < BTOBB(iclog->ic_offset) + 1)
-+			xfs_emerg(log->l_mp, "%s: ran out of log space", __func__);
-+	}
- }
- 
- /*
--- 
-2.32.0
-
+[...]
