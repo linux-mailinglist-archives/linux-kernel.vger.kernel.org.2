@@ -2,167 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0B03FEB95
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BCC43FEBA0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 11:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343716AbhIBJuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 05:50:25 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42696 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245263AbhIBJtu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 05:49:50 -0400
-Message-ID: <20210902094414.676104881@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630576131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=098ABI2W5f/OLFge6G+Ew+8jnehp40BF5iRDK8McxKk=;
-        b=m5scqruCwzIHJZTvqLxRcm0VwXyeY56H/XTGaL5zoDixW4bsUQIk7EpQ6WTl/WsmKcKajh
-        PQk8DKL/aTXsr5AzotdiZ+/NFD9GGArB6LieokScZW8YnYhXp89Xra/euIpwZXlRZR4ccP
-        j1/0AL7Km51GSI7z0+TyUb9ODAFnuFT2+ZOZA3xmCia9DG0MqlyJKb3u+1DffPGj8Mbm7q
-        SHtt7a4J6ymZJ4105ECP11KKcrDqfldfZj+ULZIyye29ME4/6B14IgglJ8BI4/8Qr1JH8u
-        o85k+YmzxvY6mdXT2qv5EJiL/WgK2ho8PQ8qZxLE5o5WVW8ZTkOfgY6JYTlkNw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630576131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=098ABI2W5f/OLFge6G+Ew+8jnehp40BF5iRDK8McxKk=;
-        b=5fuzENxLQzYTSVNh3w5DAiHOFysDgZmYJ2PXZjV0Ql26ZKHaH6sV7KnZgblmvJaJdY9a9Q
-        mgiIs7ilPTXmFUAQ==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [patch 3/3] futex: Avoid redundant task lookup
-References: <20210902093755.087908334@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-Date:   Thu,  2 Sep 2021 11:48:51 +0200 (CEST)
+        id S245693AbhIBJ5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 05:57:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233157AbhIBJ5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 05:57:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5860560525;
+        Thu,  2 Sep 2021 09:56:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630576575;
+        bh=Z8WT93iMfPtGcY/7MRMgThZsMD/TOvlbUhTRN5F/47Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=D6nx9d14dorAF1Ocl3z8akTPeHaEQj9JyJyHjd9S/r+qHN9FTXH1BN/vtD36JZeI0
+         RZW205UVgX/RcfOP61931s611dmJvy7ZnMW2myA1huTvzn8OpBgccKzmYSJmFTz8Bz
+         m9nsuiO37oxEwPtJQDgkjT/a2vH0kn10YESL0mpb8ZU71hYh2nMSfquedxVoeRfABN
+         KzJZhU97h/NVsQETN9PCnXXeYmVC0m5GdXar40mD48jHUTcSncHj76TnohKmcYHQMy
+         v/EKrAeYqgDczAIHcHJ6OOE5XcSVgSGk21Ovsd/v5v+icPrHW9zyeh3lxQ9R831SUs
+         XTM355k1NuIYQ==
+From:   Roger Quadros <rogerq@kernel.org>
+To:     tony@atomide.com
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski@canonical.com,
+        miquel.raynal@bootlin.com, nm@ti.com, lokeshvutla@ti.com,
+        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Roger Quadros <rogerq@kernel.org>
+Subject: [PATCH v2 0/6] dt-bindings: memory-controllers: ti,gpmc: Convert to yaml
+Date:   Thu,  2 Sep 2021 12:56:03 +0300
+Message-Id: <20210902095609.16583-1-rogerq@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need to do the full VPID based task lookup and validation of the top
-waiter when the user space futex was acquired on it's behalf during the
-requeue_pi operation. The task is known already and it cannot go away
-before requeue_pi_wake_futex() has been invoked.
+Hi,
 
-Split out the actual attach code from attach_pi_state_owner() and use that
-instead of the full blown variant.
+This series converts ti,gpmc memory controller and ti,gpmc-nand and
+ti,gpmc-onenand MTD controller bindings to yaml.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- kernel/futex.c |   67 +++++++++++++++++++++++++++++++--------------------------
- 1 file changed, 37 insertions(+), 30 deletions(-)
+cheers,
+-roger
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1263,6 +1263,36 @@ static int handle_exit_race(u32 __user *
- 	return -ESRCH;
- }
- 
-+static void __attach_to_pi_owner(struct task_struct *p, union futex_key *key,
-+				 struct futex_pi_state **ps)
-+{
-+	/*
-+	 * No existing pi state. First waiter. [2]
-+	 *
-+	 * This creates pi_state, we have hb->lock held, this means nothing can
-+	 * observe this state, wait_lock is irrelevant.
-+	 */
-+	struct futex_pi_state *pi_state = alloc_pi_state();
-+
-+	/*
-+	 * Initialize the pi_mutex in locked state and make @p
-+	 * the owner of it:
-+	 */
-+	rt_mutex_init_proxy_locked(&pi_state->pi_mutex, p);
-+
-+	/* Store the key for possible exit cleanups: */
-+	pi_state->key = *key;
-+
-+	WARN_ON(!list_empty(&pi_state->list));
-+	list_add(&pi_state->list, &p->pi_state_list);
-+	/*
-+	 * Assignment without holding pi_state->pi_mutex.wait_lock is safe
-+	 * because there is no concurrency as the object is not published yet.
-+	 */
-+	pi_state->owner = p;
-+
-+	*ps = pi_state;
-+}
- /*
-  * Lookup the task for the TID provided from user space and attach to
-  * it after doing proper sanity checks.
-@@ -1272,7 +1302,6 @@ static int attach_to_pi_owner(u32 __user
- 			      struct task_struct **exiting)
- {
- 	pid_t pid = uval & FUTEX_TID_MASK;
--	struct futex_pi_state *pi_state;
- 	struct task_struct *p;
- 
- 	/*
-@@ -1324,36 +1353,11 @@ static int attach_to_pi_owner(u32 __user
- 		return ret;
- 	}
- 
--	/*
--	 * No existing pi state. First waiter. [2]
--	 *
--	 * This creates pi_state, we have hb->lock held, this means nothing can
--	 * observe this state, wait_lock is irrelevant.
--	 */
--	pi_state = alloc_pi_state();
--
--	/*
--	 * Initialize the pi_mutex in locked state and make @p
--	 * the owner of it:
--	 */
--	rt_mutex_init_proxy_locked(&pi_state->pi_mutex, p);
--
--	/* Store the key for possible exit cleanups: */
--	pi_state->key = *key;
--
--	WARN_ON(!list_empty(&pi_state->list));
--	list_add(&pi_state->list, &p->pi_state_list);
--	/*
--	 * Assignment without holding pi_state->pi_mutex.wait_lock is safe
--	 * because there is no concurrency as the object is not published yet.
--	 */
--	pi_state->owner = p;
-+	__attach_to_pi_owner(p, key, ps);
- 	raw_spin_unlock_irq(&p->pi_lock);
- 
- 	put_task_struct(p);
- 
--	*ps = pi_state;
--
- 	return 0;
- }
- 
-@@ -1464,11 +1468,14 @@ static int futex_lock_pi_atomic(u32 __us
- 		 * @task is guaranteed to be alive and it cannot be exiting
- 		 * because it is either sleeping or waiting in
- 		 * futex_requeue_pi_wakeup_sync().
-+		 *
-+		 * No need to do the full attach_to_pi_owner() exercise
-+		 * because @task is known and valid.
- 		 */
- 		if (set_waiters) {
--			 ret = attach_to_pi_owner(uaddr, newval, key, ps,
--						  exiting);
--			 WARN_ON(ret);
-+			raw_spin_lock_irq(&task->pi_lock);
-+			__attach_to_pi_owner(task, key, ps);
-+			raw_spin_unlock_irq(&task->pi_lock);
- 		}
- 		return 1;
- 	}
+Changelog:
+v2:
+- Fix all errors in dtbs_check and dt_bindings_check
+- remove references to gpmc-omap.txt
+- Convert ti,gpmc-nand and ti,gpmc-onenand bindings to yaml as well
+
+Roger Quadros (6):
+  ARM: dts: omap: Fixup GPMC child nodes
+  dt-bindings: memory-controllers: ti,gpmc: Convert to yaml
+  dt-bindings: mtd: ti,gpmc-nand: Convert to yaml
+  dt-bindings: mtd: ti,gpmc-onenand: Convert to yaml
+  dt-bindings: mtd: Remove gpmc-nor.txt
+  dt-bindings: net: Remove gpmc-eth.txt
+
+ .../bindings/memory-controllers/omap-gpmc.txt | 157 --------
+ .../bindings/memory-controllers/ti,gpmc.yaml  | 364 ++++++++++++++++++
+ .../devicetree/bindings/mtd/gpmc-nand.txt     | 147 -------
+ .../devicetree/bindings/mtd/gpmc-nor.txt      |  98 -----
+ .../devicetree/bindings/mtd/gpmc-onenand.txt  |  48 ---
+ .../devicetree/bindings/mtd/ti,gpmc-nand.yaml | 109 ++++++
+ .../bindings/mtd/ti,gpmc-onenand.yaml         |  71 ++++
+ .../devicetree/bindings/net/gpmc-eth.txt      |  97 -----
+ .../boot/dts/logicpd-som-lv-baseboard.dtsi    |   2 +-
+ .../boot/dts/logicpd-torpedo-37xx-devkit.dts  |   2 +-
+ .../boot/dts/logicpd-torpedo-baseboard.dtsi   |   2 +-
+ arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi     |  62 ++-
+ arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi     |  59 ++-
+ arch/arm/boot/dts/omap-zoom-common.dtsi       |  16 +-
+ arch/arm/boot/dts/omap2430-sdp.dts            |   6 +-
+ arch/arm/boot/dts/omap3-cm-t3x30.dtsi         |   6 +-
+ .../arm/boot/dts/omap3-devkit8000-common.dtsi |   4 +-
+ arch/arm/boot/dts/omap3-evm-37xx.dts          |   1 +
+ arch/arm/boot/dts/omap3-evm-common.dtsi       |   9 -
+ .../boot/dts/omap3-evm-processor-common.dtsi  |   5 +-
+ arch/arm/boot/dts/omap3-evm.dts               |   1 +
+ arch/arm/boot/dts/omap3-igep0020-common.dtsi  |   5 +-
+ arch/arm/boot/dts/omap3-ldp.dts               |   5 +-
+ arch/arm/boot/dts/omap3-n900.dts              |   2 +-
+ .../dts/omap3-overo-chestnut43-common.dtsi    |   6 +-
+ .../arm/boot/dts/omap3-overo-tobi-common.dtsi |   6 +-
+ .../boot/dts/omap3-overo-tobiduo-common.dtsi  |   8 +-
+ arch/arm/boot/dts/omap3-sb-t35.dtsi           |   4 +-
+ arch/arm/boot/dts/omap4-duovero-parlor.dts    |   6 +-
+ 29 files changed, 649 insertions(+), 659 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nand.txt
+ delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-nor.txt
+ delete mode 100644 Documentation/devicetree/bindings/mtd/gpmc-onenand.txt
+ create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-nand.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/ti,gpmc-onenand.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/gpmc-eth.txt
+
+-- 
+2.17.1
 
