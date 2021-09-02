@@ -2,145 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 022483FE8D7
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 07:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF2A3FE8DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 07:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhIBFoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 01:44:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231153AbhIBFoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 01:44:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C426A60238;
-        Thu,  2 Sep 2021 05:43:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630561394;
-        bh=hjHUyru37UsQhLCqhmVDxmrouYvn6mWq2Wkx5ZFD1lA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LXohJie3Iy3D7O32IvK39+KLuPXHlyeICS20tMns5LF8muNnCdiMWYdQvba9wW7AG
-         xJFzKxyXye2xwRvNxyI5RAxL43Yfk8A1kgd4ABdFT7Uqltu/51irNJS7IqraI7OIlh
-         A+C+jj9IoBkdVa59EhFAboJkK9/jsVzuXt0BWYys=
-Date:   Thu, 2 Sep 2021 07:43:10 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [RFC PATCH net-next 1/3] net: phy: don't bind genphy in
- phy_attach_direct if the specific driver defers probe
-Message-ID: <YTBkbvYYy2f/b3r2@kroah.com>
-References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
- <20210901225053.1205571-2-vladimir.oltean@nxp.com>
+        id S232125AbhIBFpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 01:45:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231831AbhIBFpi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 01:45:38 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BA5C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  1 Sep 2021 22:44:40 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id f2so1427176ljn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 01 Sep 2021 22:44:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=whtV4mfvH1NLVqepuQoF5mH+azqIMtCQpWr7A8sgds8=;
+        b=SflWTuRVnPnyoXhl1IDxe8Xhe1X3He0u1LQUl9xdq8VoKmatudBt38yCMfhCOyLRwA
+         27LAUAnu6ZZZ4MUxJHwqoZB3a8YbmECVSQErelN/6POW1UXw83HIV2YzOGR/r/MLFOvj
+         GDJSbRyjSFncm33xccJJZhE/f31DdMVTe4shtUqnf4Bt7gtHr4CAlG/tsZkFY6VYl6Py
+         JFyvYSgPape+UxjoOmFp74GDigJ6OwgmL+7JNNe2VCbuyS/Aw32KLbxA2+WcQhEayzV9
+         xgdkL+wzClFNIVhnogRI30f3Ro7K9aBoUz+WQ19y9cWXHfDe2gaaTuUE+ycmSGb5L8JZ
+         DdsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=whtV4mfvH1NLVqepuQoF5mH+azqIMtCQpWr7A8sgds8=;
+        b=t4f9c2xfOvFEvPuV0M/qHY9pxlRRtF/eLfcq2pULikhI9d4heEU0EpaVKwyhivXGev
+         KmafJ6DuLdMnqbke1ueLDhQ7HkHR1duphF9cUtKR6XaSrHX0NH2VGbeTHDA7h0bRqV1w
+         1VXTAR9C7pHJEQAgDr8sUBzsDdrPwfIADhh4Mqlb2aIIZ+5DjLco1zSkXZWwez/G5xzG
+         2M6MPGqiDpxXfAnlONreubmDXhrdhCwVI3SINw+8q1CTLszbumUW10iV5prYVbKXEHV1
+         9u00NnoP88fDqGQb+SXhNCFmYyOyQTJWyLK6O2yS0JUWSxSX7O/q2zCGQJ9D2gYKT7e0
+         3RSg==
+X-Gm-Message-State: AOAM530U8U8vsUB6IVZTbfN/QpvjClCkrQGCKBQHwyfR+7ET2eYt6XK6
+        NmZl69TitFVDsiBB4cjRBgYy1Pk0S25O2++8PS0=
+X-Google-Smtp-Source: ABdhPJyV/25oXu9weIAPEu81AwyV5yGPI5+pU6NMDGYNq7Am9/WGIHp7CTHevGSEs3uixH6nBSuOxQ==
+X-Received: by 2002:a2e:991a:: with SMTP id v26mr1103580lji.111.1630561478507;
+        Wed, 01 Sep 2021 22:44:38 -0700 (PDT)
+Received: from [10.0.0.115] (91-155-111-71.elisa-laajakaista.fi. [91.155.111.71])
+        by smtp.gmail.com with ESMTPSA id t12sm91315lfg.151.2021.09.01.22.44.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 Sep 2021 22:44:37 -0700 (PDT)
+Subject: Re: [PATCH] ASoC: ti: rename CONFIG_SND_SOC_DM365_VOICE_CODEC_MODULE
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        linux-kernel@vger.kernel.org
+References: <20210901164009.1546967-1-masahiroy@kernel.org>
+From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
+Message-ID: <2f5d4845-631c-525f-c624-c41bd71f5815@gmail.com>
+Date:   Thu, 2 Sep 2021 08:44:47 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901225053.1205571-2-vladimir.oltean@nxp.com>
+In-Reply-To: <20210901164009.1546967-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 01:50:51AM +0300, Vladimir Oltean wrote:
-> There are systems where the PHY driver might get its probe deferred due
-> to a missing supplier, like an interrupt-parent, gpio, clock or whatever.
+
+
+On 01/09/2021 19:40, Masahiro Yamada wrote:
+> Kconfig generates include/generated/autoconf.h to make CONFIG options
+> available to the pre-processor. Symbols with the value 'm' are suffixed
+> with '_MODULE'
 > 
-> If the phy_attach_direct call happens right in between probe attempts,
-> the PHY library is greedy and assumes that a specific driver will never
-> appear, so it just binds the generic PHY driver.
+> Here is a conflict; CONFIG_FOO=m results in '#define CONFIG_FOO_MODULE 1',
+> but CONFIG_FOO_MODULE=y also results in the same define.
 > 
-> In certain cases this is the wrong choice, because some PHYs simply need
-> the specific driver. The specific PHY driver was going to probe, given
-> enough time, but this doesn't seem to matter to phy_attach_direct.
+> Also, CONFIG options that end with '_MODULE' confuse the Kconfig/fixdep
+> interaction; fixdep always assumes CONFIG_FOO_MODULE comes from
+> CONFIG_FOO=m, so the dependency is not properly tracked for symbols
+> that end with '_MODULE'.
 > 
-> To solve this, make phy_attach_direct check whether a specific PHY
-> driver is pending or not, and if it is, just defer the probing of the
-> MAC that's connecting to us a bit more too.
+> For these reasons, CONFIG options that end with '_MODULE' should be
+> avoided in general. (I am planning on adding a check in Kconfig.)
 > 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> This is the only case in the current kernel.
+> 
+> The new option name was suggested by Péter Ujfalusi. [1]
+> 
+> [1] https://lore.kernel.org/all/d9e777dc-d274-92ee-4d77-711bfd553611@gmail.com/
+> 
+> Fixes: 147162f57515 ("ASoC: ti: fix SND_SOC_DM365_VOICE_CODEC dependencies")
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+
+Thank you,
+
+Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+
 > ---
->  drivers/base/dd.c            | 21 +++++++++++++++++++--
->  drivers/net/phy/phy_device.c |  8 ++++++++
->  include/linux/device.h       |  1 +
->  3 files changed, 28 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-> index 1c379d20812a..b22073b0acd2 100644
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -128,13 +128,30 @@ static void deferred_probe_work_func(struct work_struct *work)
->  }
->  static DECLARE_WORK(deferred_probe_work, deferred_probe_work_func);
+>  sound/soc/ti/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/ti/Kconfig b/sound/soc/ti/Kconfig
+> index 698d7bc84dcf..3260a30d3d54 100644
+> --- a/sound/soc/ti/Kconfig
+> +++ b/sound/soc/ti/Kconfig
+> @@ -211,7 +211,7 @@ config SND_SOC_DM365_VOICE_CODEC
+>  	  Say Y if you want to add support for SoC On-chip voice codec
+>  endchoice
 >  
-> +static bool __device_pending_probe(struct device *dev)
-> +{
-> +	return !list_empty(&dev->p->deferred_probe);
-> +}
-> +
-> +bool device_pending_probe(struct device *dev)
-> +{
-> +	bool pending;
-> +
-> +	mutex_lock(&deferred_probe_mutex);
-> +	pending = __device_pending_probe(dev);
-> +	mutex_unlock(&deferred_probe_mutex);
-> +
-> +	return pending;
-> +}
-> +EXPORT_SYMBOL_GPL(device_pending_probe);
-> +
->  void driver_deferred_probe_add(struct device *dev)
->  {
->  	if (!dev->can_match)
->  		return;
->  
->  	mutex_lock(&deferred_probe_mutex);
-> -	if (list_empty(&dev->p->deferred_probe)) {
-> +	if (!__device_pending_probe(dev)) {
->  		dev_dbg(dev, "Added to deferred list\n");
->  		list_add_tail(&dev->p->deferred_probe, &deferred_probe_pending_list);
->  	}
-> @@ -144,7 +161,7 @@ void driver_deferred_probe_add(struct device *dev)
->  void driver_deferred_probe_del(struct device *dev)
->  {
->  	mutex_lock(&deferred_probe_mutex);
-> -	if (!list_empty(&dev->p->deferred_probe)) {
-> +	if (__device_pending_probe(dev)) {
->  		dev_dbg(dev, "Removed from deferred list\n");
->  		list_del_init(&dev->p->deferred_probe);
->  		__device_set_deferred_probe_reason(dev, NULL);
-> diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-> index 52310df121de..2c22a32f0a1c 100644
-> --- a/drivers/net/phy/phy_device.c
-> +++ b/drivers/net/phy/phy_device.c
-> @@ -1386,8 +1386,16 @@ int phy_attach_direct(struct net_device *dev, struct phy_device *phydev,
->  
->  	/* Assume that if there is no driver, that it doesn't
->  	 * exist, and we should use the genphy driver.
-> +	 * The exception is during probing, when the PHY driver might have
-> +	 * attempted a probe but has requested deferral. Since there might be
-> +	 * MAC drivers which also attach to the PHY during probe time, try
-> +	 * harder to bind the specific PHY driver, and defer the MAC driver's
-> +	 * probing until then.
+> -config SND_SOC_DM365_VOICE_CODEC_MODULE
+> +config SND_SOC_DM365_SELECT_VOICE_CODECS
+>  	def_tristate y
+>  	depends on SND_SOC_DM365_VOICE_CODEC && SND_SOC
+>  	select MFD_DAVINCI_VOICECODEC
+> 
 
-Wait, no, this should not be a "special" thing, and why would the list
-of deferred probe show this?
-
-If a bus wants to have this type of "generic vs. specific" logic, then
-it needs to handle it in the bus logic itself as that does NOT fit into
-the normal driver model at all.  Don't try to get a "hint" of this by
-messing with the probe function list.
-
-thanks,
-
-greg k-h
+-- 
+Péter
