@@ -2,320 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B603FF2BD
+	by mail.lfdr.de (Postfix) with ESMTP id F01CC3FF2BF
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347189AbhIBRoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 13:44:12 -0400
-Received: from mail-bn8nam08on2085.outbound.protection.outlook.com ([40.107.100.85]:42204
-        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1346869AbhIBRn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 13:43:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IEl9TqQqvTWFb2px2D2vKTv9u4uMPZ8j/8eRmFdPmU4A7L9fPgeJezo7lpnN4ZyNHIOxFaM/0wQiXH9SE5DSoedXSQMWcNRmo+8KoPnAIt30r2ZHt0+wzES3oCO9cr9F0WSrqOcbOQgWGF6uxRfaseMuAvdrOTtpzrrj0C+/uPltQsNRiNroT4bJy2tjYlVYrHfjHIwuVgdcINTn1NmcIr+GD7JK3AwsQSijEsIbh9KB2HXgpiq/iMrpxBS/IrxwBPi0uYJAWVl7DwHsl2TC+0Ut97rqCJFDgE2r9He501KezEqpXhM/WvNzxxkVPqysJuNIwGX7bARaRmMqIdm6WA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=zB9IUhOPZQMuGXv6BnK08+UmD8gibSCkpP2k7UzbADo=;
- b=Zewbus+QDYa2iUj5aw28+agaAUF8ysjih++FRSatJtqWqrsaBLjHzUudv1ipgjE6W+lpxjghHwwFcJk/q/cwWnBdj2u/yH91L/J3Hbgh7a7jFwnB3SbACF+/OGgFGQTyanwEh59o2SRqoCI64uG7hKHykregcmeP19wq78IUX+YbBFmwzMIEhbnOX+zPOCu4JiwZkNvviZQgDma41UYiz2C/pTshd7UOkNgDc8uwPjByS+Sm9Gv2PhgHvgqUMNcKp5hKj9iA1cL9+CbdtzClw6pL9Jn1+QPKuxfBmYWxYHmbNaeEQuurqvCtHG97dDVSbMLm9OqPUoPdAT9YRBo4bQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zB9IUhOPZQMuGXv6BnK08+UmD8gibSCkpP2k7UzbADo=;
- b=Z5Z9XzCtXjHuDJDrgC3SjE5LculqSauMLR4+CG6yr6yRP9bllsmjkGUa+QVoJHP5NMa4SgDe5XYrqcja/cqhSgjduqzYefT0YKLHciW5pPBHU6zFhUVTZgmDkGrTwD03Qg11PFE+TKCwVSOhflE2v/ZfDg8nk0ko5wujc6P1MUc=
-Received: from MWHPR18CA0049.namprd18.prod.outlook.com (2603:10b6:300:39::11)
- by DM5PR12MB2582.namprd12.prod.outlook.com (2603:10b6:4:b5::37) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Thu, 2 Sep
- 2021 17:42:28 +0000
-Received: from CO1NAM11FT063.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:39:cafe::2d) by MWHPR18CA0049.outlook.office365.com
- (2603:10b6:300:39::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend
- Transport; Thu, 2 Sep 2021 17:42:28 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT063.mail.protection.outlook.com (10.13.175.37) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4478.19 via Frontend Transport; Thu, 2 Sep 2021 17:42:27 +0000
-Received: from milan-ETHANOL-X.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.12; Thu, 2 Sep
- 2021 12:42:23 -0500
-From:   Naveen Krishna Chatradhi <nchatrad@amd.com>
-To:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <x86@kernel.org>
-CC:     <linux@roeck-us.net>, <bp@alien8.de>, <yazen.ghannam@amd.com>,
-        <mingo@redhat.com>, <nathan.fontenot@amd.com>,
-        <lewis.carroll@amd.com>,
-        Naveen Krishna Chatradhi <nchatrad@amd.com>
-Subject: [PATCH 3/3] k10temp: Add power sensor for family 19h
-Date:   Thu, 2 Sep 2021 23:11:55 +0530
-Message-ID: <20210902174155.7365-3-nchatrad@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210902174155.7365-1-nchatrad@amd.com>
-References: <20210902174155.7365-1-nchatrad@amd.com>
+        id S1346689AbhIBRpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 13:45:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37531 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347294AbhIBRnu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 13:43:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630604568;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L6M/wgbQIeuI4dl1ecVvAF+kwe81RW4A+xW1u6uekdY=;
+        b=Yf0NUpMsx42XDX0CnBgaTyH7gY1RypJ9Hj13GG5uVFS9ZrjpBZznadpRYCHomQyYAvj416
+        DzRTagYSpa+C1icQOXSfK1PfIY4esmtReXYaX2bO9WecBpsTQm1RD+dlukxQWQuDmuBZGC
+        wk4TN0taZii7QSv3P0Hvr5BGuLZ8qsU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-22-89HTkiHiMRStRTpIX110kQ-1; Thu, 02 Sep 2021 13:42:47 -0400
+X-MC-Unique: 89HTkiHiMRStRTpIX110kQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 84553835DE0;
+        Thu,  2 Sep 2021 17:42:45 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.22.8.149])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EA7A05C232;
+        Thu,  2 Sep 2021 17:42:40 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 7CEFF220257; Thu,  2 Sep 2021 13:42:40 -0400 (EDT)
+Date:   Thu, 2 Sep 2021 13:42:40 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, virtio-fs@redhat.com,
+        dwalsh@redhat.com, dgilbert@redhat.com,
+        christian.brauner@ubuntu.com, casey.schaufler@intel.com,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
+        bfields@redhat.com, stephen.smalley.work@gmail.com,
+        agruenba@redhat.com, david@fromorbit.com
+Subject: Re: [PATCH v3 0/1] Relax restrictions on user.* xattr
+Message-ID: <YTENEAv6dw9QoYcY@redhat.com>
+References: <20210902152228.665959-1-vgoyal@redhat.com>
+ <79dcd300-a441-cdba-e523-324733f892ca@schaufler-ca.com>
+ <YTEEPZJ3kxWkcM9x@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fec8cdcf-2144-423e-b7bc-08d96e390853
-X-MS-TrafficTypeDiagnostic: DM5PR12MB2582:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB2582137849B7120014178F83E8CE9@DM5PR12MB2582.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VZX0/KOItjJnkOfUb0v20UakGvTDAerDzncJO2gkBo12P2sxAx1D0J688OxaIyxzfHIOaS3rqpMyUP0cgm4Cnfr9xdP03bJ1NdOVvZRfsIGERZqPOS5P8vwfAZP4XBfIjSxFOuQbLHDlJ9FbtaQrnkfmekMH9QWGY2DD8nl4eXFgZqcnuXfn8N575FSlun3gGBAAMCxm3BwF90cXhj4yXFkUGR+ejW4Th2rxtaVLl66AhACjfDqKeOyzZ5kQYivnoq//jWegjUL+UnlFNMpxco7D9ttyMNa/ernUzDcBKQhXCFRTGP503BFvZIS8AQyW4N94xBXm+8CyRhuquIoqgL3QzThBLWdN+G4r7uyJELLgkm+yITOOVsxrhzh+in47m4Ax3KLljioz757Nqt980l+pPGh1Z0UxT7bWSNBAL2Oj9Ps9bgU3wzi2xW7rdpzlGqfTBuL95gN/UP6lreOqR5jLo45XmXbuOQPOva1cZ0U7vnTS1IDbGkRz0wz5VH3srbVRRNcQ8vmbdE/TBDMx6ZmYCgQre1uvinzHHm5Amskb+UutppzrYYeigCjfqLKWleXTGP66lZ9H7urliaJ0ynoNBrQsqHthrDweEV3V66RbFxccpt0QYmVsgTgiLmXad9K/Dy1sipD59iDBb4EIS8nl408RYdP0MwV4+lgcYvEJPPgjthhF+DWFpP8VL4okQ+68mOYbpXrgsRyRUwf/CZ0/R619EjdEKm6RtBjkUaA=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39860400002)(396003)(36840700001)(46966006)(2906002)(36756003)(316002)(426003)(16526019)(186003)(26005)(1076003)(7696005)(336012)(81166007)(478600001)(83380400001)(70206006)(70586007)(54906003)(8936002)(4326008)(2616005)(6666004)(47076005)(5660300002)(110136005)(82310400003)(356005)(82740400003)(36860700001)(8676002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2021 17:42:27.9792
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fec8cdcf-2144-423e-b7bc-08d96e390853
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT063.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2582
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTEEPZJ3kxWkcM9x@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On newer Fam19h server line of AMD processors a new channel
-is created to report and manage socket power limits.
+On Thu, Sep 02, 2021 at 01:05:01PM -0400, Vivek Goyal wrote:
+> On Thu, Sep 02, 2021 at 08:43:50AM -0700, Casey Schaufler wrote:
+> > On 9/2/2021 8:22 AM, Vivek Goyal wrote:
+> > > Hi,
+> > >
+> > > This is V3 of the patch. Previous versions were posted here.
+> > >
+> > > v2:
+> > > https://lore.kernel.org/linux-fsdevel/20210708175738.360757-1-vgoyal@redhat.com/
+> > > v1:
+> > > https://lore.kernel.org/linux-fsdevel/20210625191229.1752531-1-vgoyal@redhat.co
+> > > +m/
+> > >
+> > > Changes since v2
+> > > ----------------
+> > > - Do not call inode_permission() for special files as file mode bits
+> > >   on these files represent permissions to read/write from/to device
+> > >   and not necessarily permission to read/write xattrs. In this case
+> > >   now user.* extended xattrs can be read/written on special files
+> > >   as long as caller is owner of file or has CAP_FOWNER.
+> > >  
+> > > - Fixed "man xattr". Will post a patch in same thread little later. (J.
+> > >   Bruce Fields)
+> > >
+> > > - Fixed xfstest 062. Changed it to run only on older kernels where
+> > >   user extended xattrs are not allowed on symlinks/special files. Added
+> > >   a new replacement test 648 which does exactly what 062. Just that
+> > >   it is supposed to run on newer kernels where user extended xattrs
+> > >   are allowed on symlinks and special files. Will post patch in 
+> > >   same thread (Ted Ts'o).
+> > >
+> > > Testing
+> > > -------
+> > > - Ran xfstest "./check -g auto" with and without patches and did not
+> > >   notice any new failures.
+> > >
+> > > - Tested setting "user.*" xattr with ext4/xfs/btrfs/overlay/nfs
+> > >   filesystems and it works.
+> > >  
+> > > Description
+> > > ===========
+> > >
+> > > Right now we don't allow setting user.* xattrs on symlinks and special
+> > > files at all. Initially I thought that real reason behind this
+> > > restriction is quota limitations but from last conversation it seemed
+> > > that real reason is that permission bits on symlink and special files
+> > > are special and different from regular files and directories, hence
+> > > this restriction is in place. (I tested with xfs user quota enabled and
+> > > quota restrictions kicked in on symlink).
+> > >
+> > > This version of patch allows reading/writing user.* xattr on symlink and
+> > > special files if caller is owner or priviliged (has CAP_FOWNER) w.r.t inode.
+> > 
+> > This part of your project makes perfect sense. There's no good
+> > security reason that you shouldn't set user.* xattrs on symlinks
+> > and/or special files.
+> > 
+> > However, your virtiofs use case is unreasonable.
+> 
+> Ok. So we can merge this patch irrespective of the fact whether virtiofs
+> should make use of this mechanism or not, right?
+> 
+> > 
+> > > Who wants to set user.* xattr on symlink/special files
+> > > -----------------------------------------------------
+> > > I have primarily two users at this point of time.
+> > >
+> > > - virtiofs daemon.
+> > >
+> > > - fuse-overlay. Giuseppe, seems to set user.* xattr attrs on unpriviliged
+> > >   fuse-overlay as well and he ran into similar issue. So fuse-overlay
+> > >   should benefit from this change as well.
+> > >
+> > > Why virtiofsd wants to set user.* xattr on symlink/special files
+> > > ----------------------------------------------------------------
+> > > In virtiofs, actual file server is virtiosd daemon running on host.
+> > > There we have a mode where xattrs can be remapped to something else.
+> > > For example security.selinux can be remapped to
+> > > user.virtiofsd.securit.selinux on the host.
+> > 
+> > As I have stated before, this introduces a breach in security.
+> > It allows an unprivileged process on the host to manipulate the
+> > security state of the guest. This is horribly wrong. It is not
+> > sufficient to claim that the breach requires misconfiguration
+> > to exploit. Don't do this.
+> 
+> So couple of things.
+> 
+> - Right now whole virtiofs model is relying on the fact that host
+>   unpriviliged users don't have access to shared directory. Otherwise
+>   guest process can simply drop a setuid root binary in shared directory
+>   and unpriviliged process can execute it and take over host system.
+> 
+>   So if virtiofs makes use of this mechanism, we are well with-in
+>   the existing constraints. If users don't follow the constraints,
+>   bad things can happen.
+> 
+> - I think Smalley provided a solution for your concern in other thread
+>   we discussed this issue.
+> 
+>   https://lore.kernel.org/selinux/CAEjxPJ4411vL3+Ab-J0yrRTmXoEf8pVR3x3CSRgPjfzwiUcDtw@mail.gmail.com/T/#mddea4cec7a68c3ee5e8826d650020361030209d6
+> 
+> 
+>   "So for example if the host policy says that only virtiofsd can set
+> attributes on those files, then the guest MAC labels along with all
+> the other attributes are protected against tampering by any other
+> process on the host."
+> 
+>  Apart from hiding the shared directory from unpriviliged processes,
+>  we could design selinux policy in such a way that only virtiofsd
+>  is allowed "setattr". That should make sure even in case of
+>  misconfiguration, unprivileged process is not able to change
+>  guest security xattrs stored in "user.virtiofs.security.selinux".
+> 
+>  I think that sounds like a very reasonable proposition.
+> 
+> > 
+> > > This remapping is useful when SELinux is enabled in guest and virtiofs
+> > > as being used as rootfs. Guest and host SELinux policy might not match
+> > > and host policy might deny security.selinux xattr setting by guest
+> > > onto host. Or host might have SELinux disabled and in that case to
+> > > be able to set security.selinux xattr, virtiofsd will need to have
+> > > CAP_SYS_ADMIN (which we are trying to avoid).
+> > 
+> > Adding this mapping to virtiofs provides the breach for any
+> > LSM using xattrs.
+> 
+> I think both the points above answer this as well.
+> 
+> > 
+> > >  Being able to remap
+> > > guest security.selinux (or other xattrs) on host to something else
+> > > is also better from security point of view.
+> > >
+> > > But when we try this, we noticed that SELinux relabeling in guest
+> > > is failing on some symlinks. When I debugged a little more, I
+> > > came to know that "user.*" xattrs are not allowed on symlinks
+> > > or special files.
+> > >
+> > > So if we allow owner (or CAP_FOWNER) to set user.* xattr, it will
+> > > allow virtiofs to arbitrarily remap guests's xattrs to something
+> > > else on host and that solves this SELinux issue nicely and provides
+> > > two SELinux policies (host and guest) to co-exist nicely without
+> > > interfering with each other.
+> > 
+> > virtiofs could use security.* or system.* xattrs instead of user.*
+> > xattrs. Don't use user.* xattrs.
+> 
+> So requirement is that every layer (host, guest and nested guest), will
+> have a separate security.selinux label and virtiofsd should be able
+> to retrieve/set any of the labels depending on access.
+> 
+> How do we achieve that with single security.selinux label per inode on host.
 
-This patch creates hwmon_power sensor to report current power,
-power cap and max power cap of the socket.
-While at it, update the k10temp documentation
+I guess we could think of using trusted.* but that requires CAP_SYS_ADMIN
+in init_user_ns. And we wanted to retain capability to run virtiofsd
+inside user namespace too. Also we wanted to give minimum required
+capabilities to virtiofsd to reduce the risk what if virtiofsd gets
+compromised. So amount of damage it can do to system is minimum.
 
-Tested-by: suma hegde <suma.hegde@amd.com>
-Signed-off-by: Naveen Krishna Chatradhi <nchatrad@amd.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
----
- Documentation/hwmon/k10temp.rst |  18 ++++++
- drivers/hwmon/k10temp.c         | 106 ++++++++++++++++++++++++++++++++
- 2 files changed, 124 insertions(+)
+So guest security.selinux xattr could potentially be mapped to.
 
-diff --git a/Documentation/hwmon/k10temp.rst b/Documentation/hwmon/k10temp.rst
-index 91b99adc6c48..d5a78a7b6ca5 100644
---- a/Documentation/hwmon/k10temp.rst
-+++ b/Documentation/hwmon/k10temp.rst
-@@ -132,3 +132,21 @@ On Family 17h and Family 18h CPUs, additional temperature sensors may report
- Core Complex Die (CCD) temperatures. Up to 8 such temperatures are reported
- as temp{3..10}_input, labeled Tccd{1..8}. Actual support depends on the CPU
- variant.
-+
-+On Family 19h server line of CPUs, additionally driver may report socket
-+current power consumption with power cap and power cap max. This requires the
-+HSMP support exported in the amd_nb module.
-+
-+The power1_cap can be set to any value, SMU FW will limit the maximum cap to
-+the value reported by power1_cap_max entry. The SMU FW may not take any action
-+if the power1_cap is set to a value lesser than the minimum socket consumption.
-+
-+The following attributes may be reported.
-+
-+================ ===== ========================================================
-+Name             Perm  Description
-+================ ===== ========================================================
-+power1_input     RO    Socket current Power consumed
-+power1_cap       RW    Socket Power limit can be set between 0 and power1_cap_max
-+power1_cap_max   RO    Maximum powerlimit calculated and reported by the SMU FW
-+================ ===== ========================================================
-diff --git a/drivers/hwmon/k10temp.c b/drivers/hwmon/k10temp.c
-index 3618a924e78e..b993fdd94979 100644
---- a/drivers/hwmon/k10temp.c
-+++ b/drivers/hwmon/k10temp.c
-@@ -105,6 +105,9 @@ struct k10temp_data {
- 	u32 show_temp;
- 	bool is_zen;
- 	u32 ccd_offset;
-+	bool show_power;
-+	char pwr_label[20];
-+	u32 power_cap_max;
- };
- 
- #define TCTL_BIT	0
-@@ -197,10 +200,14 @@ static int k10temp_read_labels(struct device *dev,
- 			       enum hwmon_sensor_types type,
- 			       u32 attr, int channel, const char **str)
- {
-+	struct k10temp_data *data = dev_get_drvdata(dev);
- 	switch (type) {
- 	case hwmon_temp:
- 		*str = k10temp_temp_label[channel];
- 		break;
-+	case hwmon_power:
-+		*str = data->pwr_label;
-+		break;
- 	default:
- 		return -EOPNOTSUPP;
- 	}
-@@ -254,12 +261,43 @@ static int k10temp_read_temp(struct device *dev, u32 attr, int channel,
- 	return 0;
- }
- 
-+static int k10temp_read_power(struct device *dev, u32 attr, int channel, long *val)
-+{
-+	struct k10temp_data *data = dev_get_drvdata(dev);
-+	struct hsmp_message msg = { 0 };
-+	int err;
-+
-+	switch (attr) {
-+	case hwmon_power_input:
-+		msg.msg_id = HSMP_GET_SOCKET_POWER;
-+		break;
-+	case hwmon_power_cap:
-+		msg.msg_id = HSMP_GET_SOCKET_POWER_LIMIT;
-+		break;
-+	case hwmon_power_cap_max:
-+		/* power_cap_max does not change dynamically, hence return the cached value */
-+		*val = data->power_cap_max * 1000;
-+		return 0;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+	msg.response_sz = 1;
-+	err = hsmp_send_message(amd_pci_dev_to_node_id(data->pdev), &msg);
-+	if (!err)
-+		/* power metric is reported in micro watts. hence multiply by 1000 */
-+		*val = msg.response[0] * 1000;
-+
-+	return err;
-+}
-+
- static int k10temp_read(struct device *dev, enum hwmon_sensor_types type,
- 			u32 attr, int channel, long *val)
- {
- 	switch (type) {
- 	case hwmon_temp:
- 		return k10temp_read_temp(dev, attr, channel, val);
-+	case hwmon_power:
-+		return k10temp_read_power(dev, attr, channel, val);
- 	default:
- 		return -EOPNOTSUPP;
- 	}
-@@ -308,12 +346,45 @@ static umode_t k10temp_is_visible(const void *_data,
- 			return 0;
- 		}
- 		break;
-+	case hwmon_power:
-+		switch (attr) {
-+		case hwmon_power_input:
-+		case hwmon_power_cap_max:
-+		case hwmon_power_label:
-+			/* Show power attributes only if show_power is available */
-+			if (data->show_power)
-+				break;
-+			return 0;
-+		case hwmon_power_cap:
-+			if (data->show_power)
-+				return 0644;
-+			return 0;
-+		default:
-+			return -EOPNOTSUPP;
-+		}
-+		break;
- 	default:
- 		return 0;
- 	}
- 	return 0444;
- }
- 
-+static int k10temp_write(struct device *dev, enum hwmon_sensor_types type,
-+			 u32 attr, int channel, long val)
-+{
-+	struct hsmp_message msg = { 0 };
-+	struct k10temp_data *data = dev_get_drvdata(dev);
-+
-+	if (type == hwmon_power && attr == hwmon_power_cap) {
-+		msg.response_sz = 1;
-+		msg.num_args	= 1;
-+		msg.msg_id	= HSMP_SET_SOCKET_POWER_LIMIT;
-+		msg.args[0]	= val / 1000;
-+		return hsmp_send_message(amd_pci_dev_to_node_id(data->pdev), &msg);
-+	}
-+	return -EOPNOTSUPP;
-+}
-+
- static bool has_erratum_319(struct pci_dev *pdev)
- {
- 	u32 pkg_type, reg_dram_cfg;
-@@ -362,6 +433,9 @@ static const struct hwmon_channel_info *k10temp_info[] = {
- 			   HWMON_T_INPUT | HWMON_T_LABEL,
- 			   HWMON_T_INPUT | HWMON_T_LABEL,
- 			   HWMON_T_INPUT | HWMON_T_LABEL),
-+	HWMON_CHANNEL_INFO(power,
-+			   HWMON_P_INPUT | HWMON_P_LABEL |
-+			   HWMON_P_CAP | HWMON_P_CAP_MAX),
- 	NULL
- };
- 
-@@ -369,6 +443,7 @@ static const struct hwmon_ops k10temp_hwmon_ops = {
- 	.is_visible = k10temp_is_visible,
- 	.read = k10temp_read,
- 	.read_string = k10temp_read_labels,
-+	.write = k10temp_write,
- };
- 
- static const struct hwmon_chip_info k10temp_chip_info = {
-@@ -390,6 +465,32 @@ static void k10temp_get_ccd_support(struct pci_dev *pdev,
- 	}
- }
- 
-+static int k10temp_get_max_power(struct k10temp_data *data)
-+{
-+	int err;
-+	struct hsmp_message msg = { 0 };
-+
-+	msg.msg_id = HSMP_GET_SOCKET_POWER_LIMIT_MAX;
-+	msg.response_sz = 1;
-+	err = hsmp_send_message(amd_pci_dev_to_node_id(data->pdev), &msg);
-+	if (!err)
-+		data->power_cap_max = msg.response[0];
-+	return err;
-+}
-+
-+static void check_power_support(struct k10temp_data *data)
-+{
-+	/* HSMP support is required to obtain power metrics */
-+	if (!amd_nb_has_feature(AMD_NB_HSMP))
-+		return;
-+
-+	if (k10temp_get_max_power(data))
-+		return;
-+
-+	sprintf(data->pwr_label, "socket%d_pwr", amd_pci_dev_to_node_id(data->pdev));
-+	data->show_power = true;
-+}
-+
- static int k10temp_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- {
- 	int unreliable = has_erratum_319(pdev);
-@@ -448,6 +549,11 @@ static int k10temp_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 
- 		switch (boot_cpu_data.x86_model) {
- 		case 0x0 ... 0x1:	/* Zen3 SP3/TR */
-+		case 0x30 ... 0x31:
-+			check_power_support(data);
-+			data->ccd_offset = 0x154;
-+			k10temp_get_ccd_support(pdev, data, 8);
-+			break;
- 		case 0x21:		/* Zen3 Ryzen Desktop */
- 		case 0x50 ... 0x5f:	/* Green Sardine */
- 			data->ccd_offset = 0x154;
--- 
-2.17.1
+trusted.virtiofs.security.selinux
+
+nested guest selinux xattrs could be mapped to.
+
+trusted.virtiofs.trusted.virtiofs.security.selinux
+
+And given reading/setting trusted.* requires CAP_SYS_ADMIN, that means
+unpriviliged processes can't change these security attributes of a
+file.
+
+And trade-off is that virtiofsd process needs to be given CAP_SYS_ADMIN.
+
+Frankly speaking, we are more concerned about the security of host
+system (as opposed to something changing in file for guest). So while
+using "trusted.*" is still an option, I would think that not running
+virtiofsd with CAP_SYS_ADMIN probably has its advantages too. On host
+if we can just hide the shared dir from unpriviliged processes then
+we get best of both the worlds. Unpriviliged processes can't change
+anything on the shared file at the same time, possible damage by
+virtiofsd is less if it gets compromised.
+
+Thanks
+Vivek
 
