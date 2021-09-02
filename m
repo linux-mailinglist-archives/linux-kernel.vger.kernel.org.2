@@ -2,131 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E63C3FE8FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 07:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552803FE901
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 07:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238732AbhIBF4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 01:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236858AbhIBF4p (ORCPT
+        id S239005AbhIBF5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 01:57:38 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:50534 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237077AbhIBF5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 01:56:45 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687CFC061575;
-        Wed,  1 Sep 2021 22:55:47 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso1145564otv.12;
-        Wed, 01 Sep 2021 22:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ZqDFUww5Sd5Bkqsvfw9cDIWu5UIF3ohb1b1raBg52Z8=;
-        b=ElnC0VZnQzg7oHz4JKXST89go8Ql3sqORcCHLbEt+xQj2+vg+Xu8v46C4fbqfDoDBT
-         33TipFjzhRt5ppdOL1gIac0L+STuVsDvFFatUlgjtxTVJtOULTxNprdqH8vh1Y3s5+Kf
-         1eP3qsl7ux2A+xVxlbqWBFE+d7X5wfj3OjaPvIb5IfbT7PndNsnTj9xSZ+87E5KOVdtK
-         RY9DmZMCZDXUuMr9uTU9mzd4wIxgoLP2kxfbU2l3Deeu50GVmqF3qq8MLhQSmbSZ5U0o
-         yn6Ec+GTHHbSiFRlAijC8b2uSnmUiIN0LG9QRxrDzGZ7KuR+XySWkI9ZR9rM+Xut+tC6
-         xlcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
-         :subject:content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ZqDFUww5Sd5Bkqsvfw9cDIWu5UIF3ohb1b1raBg52Z8=;
-        b=NGpHoxab1P+uSuVpeThEgSaKmaK8C6ThUuCdaPRuHqmWI7hoLBog4lQDuuFcNKA3ll
-         IdBgcjmU8qrmH9qEkuvoffkaOuy5KvUZZhF+ntMG8lJO966udPt15WFB65045Bc6Ekon
-         f5zxKzlOtRA6AXWrWu9jkWiEWStpgY8kXUmMlrm6i7sNRvOZQwYiIf64HOXxb7mAWanH
-         PeLcBOBhVvSvpK0D3NQqjgjLSfKcgKQ6Yre4n94SrHeNLax6mg6Le8u/3jdHDpOV3EbX
-         vakgHzm95Qft51+W5etjwk30rhNBZ6cVNPDU+Li5ytaQ/ypI4dhRmqcS5/8OZ7SmicMY
-         uDYA==
-X-Gm-Message-State: AOAM532myWY7Cyx8zjzMUUoYyMNvbWZ9IZizhfVRC/F1e/UERDcN72n0
-        gxxTmskB1NMkKh2lEqNrlZyvpPXKqrw=
-X-Google-Smtp-Source: ABdhPJz3SffN5dp3m/PuLhP2c3p9BU6SmEIO3spzk1HIqdBUjpKg71KPCdXzez/VEQBHktEJEpy+ig==
-X-Received: by 2002:a05:6830:4003:: with SMTP id h3mr1196031ots.56.1630562146783;
-        Wed, 01 Sep 2021 22:55:46 -0700 (PDT)
-Received: from ?IPV6:2603:8090:2005:39b3::1027? (2603-8090-2005-39b3-0000-0000-0000-1027.res6.spectrum.com. [2603:8090:2005:39b3::1027])
-        by smtp.gmail.com with UTF8SMTPSA id v11sm171244oto.22.2021.09.01.22.55.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Sep 2021 22:55:46 -0700 (PDT)
-Sender: Larry Finger <larry.finger@gmail.com>
-Message-ID: <bb2a4294-b0b3-e36f-8828-25fde646be2c@lwfinger.net>
-Date:   Thu, 2 Sep 2021 00:55:44 -0500
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.1
-Subject: Re: [GIT PULL] Networking for v5.15
-Content-Language: en-US
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        David Miller <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thu, 2 Sep 2021 01:57:35 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 1057C1C0BA1; Thu,  2 Sep 2021 07:56:36 +0200 (CEST)
+Date:   Thu, 2 Sep 2021 07:56:35 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     "Keller, Jacob E" <jacob.e.keller@intel.com>
+Cc:     Pavel Machek <pavel@denx.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-wireless@vger.kernel.org,
-        Miri Korenblit <miriam.rachel.korenblit@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>
-References: <20210831203727.3852294-1-kuba@kernel.org>
- <CAHk-=wjB_zBwZ+WR9LOpvgjvaQn=cqryoKigod8QnZs=iYGEhA@mail.gmail.com>
- <20210901124131.0bc62578@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-In-Reply-To: <20210901124131.0bc62578@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "Brelinski, TonyX" <tonyx.brelinski@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 5.10 026/103] ice: do not abort devlink info if board
+ identifier cant be found
+Message-ID: <20210902055635.GA17629@duo.ucw.cz>
+References: <20210901122300.503008474@linuxfoundation.org>
+ <20210901122301.400339475@linuxfoundation.org>
+ <20210901194236.GA8962@duo.ucw.cz>
+ <20210901201046.GC8962@duo.ucw.cz>
+ <8168c579-9ba7-2c31-42b3-9ad88760110a@intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
+Content-Disposition: inline
+In-Reply-To: <8168c579-9ba7-2c31-42b3-9ad88760110a@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/21 14:41, Jakub Kicinski wrote:
-> On Wed, 1 Sep 2021 12:00:57 -0700 Linus Torvalds wrote:
->> On Tue, Aug 31, 2021 at 1:37 PM Jakub Kicinski <kuba@kernel.org> wrote:
->>>
->>> No conflicts at the time of writing. There were conflicts with
->>> char-misc but I believe Greg dropped the commits in question.
->>
->> Hmm. I already merged this earlier, but didn't notice a new warning on
->> my desktop:
-> 
->>    RTNL: assertion failed at net/wireless/core.c (61)
->>    WARNING: CPU: 60 PID: 1720 at net/wireless/core.c:61
->> wiphy_idx_to_wiphy+0xbf/0xd0 [cfg80211]
->>    Call Trace:
->>     nl80211_common_reg_change_event+0xf9/0x1e0 [cfg80211]
->>     reg_process_self_managed_hint+0x23d/0x280 [cfg80211]
->>     regulatory_set_wiphy_regd_sync+0x3a/0x90 [cfg80211]
->>     iwl_mvm_init_mcc+0x170/0x190 [iwlmvm]
->>     iwl_op_mode_mvm_start+0x824/0xa60 [iwlmvm]
->>     iwl_opmode_register+0xd0/0x130 [iwlwifi]
->>     init_module+0x23/0x1000 [iwlmvm]
->>
->> They all seem to have that same issue, and it looks like the fix would
->> be to get the RTN lock in iwl_mvm_init_mcc(), but I didn't really look
->> into it very much.
->>
->> This is on my desktop, and I actually don't _use_ the wireless on this
->> machine. I assume it still works despite the warnings, but they should
->> get fixed.
->>
->> I *don't* see these warnings on my laptop where I actually use
->> wireless, but that one uses ath10k_pci, so it seems this is purely a
->> iwlwifi issue.
->>
->> I can't be the only one that sees this. Hmm?
-> 
-> Mm. Looking thru the recent commits there is a suspicious rtnl_unlock()
-> in commit eb09ae93dabf ("iwlwifi: mvm: load regdomain at INIT stage").
-> 
-> CC Miri, Johannes
-> 
 
-I did not get the bisection finished tonight, but commit eb09ae93dabf is not the 
-problem.
+--5mCyUwZo2JvN/JJP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-My bisection has identified commit 7a3f5b0de36 ("netfilter: add netfilter hooks 
-to SRv6 data plane") as bad, and commit 9055a2f59162 ("ixp4xx_eth: make ptp 
-support a platform driver") as good.
+Hi!
 
-Larry
+> >>> The devlink dev info command reports version information about the
+> >>> device and firmware running on the board. This includes the "board.id"
+> >>> field which is supposed to represent an identifier of the board desig=
+n.
+> >>> The ice driver uses the Product Board Assembly identifier for this.
+> >>>
+> >>> In some cases, the PBA is not present in the NVM. If this happens,
+> >>> devlink dev info will fail with an error. Instead, modify the
+> >>> ice_info_pba function to just exit without filling in the context
+> >>> buffer. This will cause the board.id field to be skipped. Log a dev_d=
+bg
+> >>> message in case someone wants to confirm why board.id is not showing =
+up
+> >>> for them.
+> >>
+> >> Will it cause field to be skipped? I believe buffer will not be
+> >> initialized which will result in some confusion...
+> >=20
+> > IOW I believe this is good idea.
+>=20
+> It's not necessary, but I agree its not obvious without the full
+> context. The caller of ice_info_pba memsets the buffer before calling
+> each info reporter. Its already a known semantics that leaving the
+> buffer alone will skip the entry.
+>=20
+> See the code below for what we do.
+>=20
+> >                 memset(ctx->buf, 0, sizeof(ctx->buf));
+> >=20
+> >                 err =3D ice_devlink_versions[i].getter(pf, ctx);
+> >                 if (err) {
+> >                         NL_SET_ERR_MSG_MOD(extack, "Unable to obtain ve=
+rsion info");
+> >                         goto out_free_ctx;
+> >                 }
+
+That memset is not present in 5.10 I was reviewing. I agree that
+backporting the memset to 5.10 is better then my patch.
+
+> We memset the buffer, call the getter, and if that doesn't modify the
+> buffer, we call the fallack, and then check again if its still empty.
+>=20
+> Because we memset each time, we don't need to assign *buf =3D 0.
+>=20
+> I guess its more clear that we're doing the correct thing here, but
+> these functions are build-for-purpose to use as pointers in this API and
+> aren't public, so I think it is fine to leave it as is.
+
+Yes, code is okay in mainline, but the memset is not present in
+5.10-stable.
+
+Best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--5mCyUwZo2JvN/JJP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYTBnkwAKCRAw5/Bqldv6
+8tEyAJ9PNrc5497CjlPnJuiOG+D4+LsLmACgpcGl1owPvR5qQtMEucZrXP90e0g=
+=8Mxd
+-----END PGP SIGNATURE-----
+
+--5mCyUwZo2JvN/JJP--
