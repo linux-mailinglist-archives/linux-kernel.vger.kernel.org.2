@@ -2,113 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C913FEE17
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AAC03FEDF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344875AbhIBMxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 08:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54258 "EHLO
+        id S1344618AbhIBMqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 08:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344801AbhIBMxE (ORCPT
+        with ESMTP id S1344561AbhIBMqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 08:53:04 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD7FC061757
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 05:52:06 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id k5-20020a05600c1c8500b002f76c42214bso1354968wms.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 05:52:06 -0700 (PDT)
+        Thu, 2 Sep 2021 08:46:34 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDAB0C061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 05:45:35 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id n4so1098145plh.9
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 05:45:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version;
-        bh=XUQYJFf0VLoed4JNR3bJk8DdGmygiKizVinf3zNZhJo=;
-        b=QTk5hM6cRX7Vag5fBHfIGeza7Gcb1CrOImwXRWX/tUo4pmpjLmUx9zGHyE/mC3pJPT
-         NwPl+3wafeOiVJQqeXPoo/qK3fM6Xdo83WhZEVjwLWn1EK++PdfKrpWF1feAG02UOamx
-         Qvxjnks2r6bbean2ZB3OiwA8WW7OKO0iO0O8MOIAuKLafEcdSNsFNIpKLCPrKrCvhfFL
-         HGcA7Dg/hEBxAdqHLwQkS5DofZuFFMxF70Ikc0MHAFnfd+aIKsRlHW32pk6cSmJoYUwB
-         eUoDkKJwfd0ychlZhdLxmRkOhCUNHYiebn2sBPtQbiE0KLqY21JHwDzfd9fjiCoO3P0G
-         MhUA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aLUCaxfHoqaYw4dc2BPnEWZ4Nj1yQ7MkEOLJcpw995o=;
+        b=pRDMNEmiII3b8vVMf6cC55QX+Rhpnv2tcvRa9eaLtVUbY+dipRcupJvD96OeOfBIcH
+         VEckmb5wWhnU/Gn7K4EKCJlmRxzhn4p++hfMqzbKYLlVJ8Yo0NTIPJqgXp/GvaY0nR/W
+         Pm24e76co7SMNlD/02EIWaT2uC1lrf1ZYbp4LJHT2MoRLfvmSTVVJTh4cD3g4whWmzMW
+         KrXPHbfsx9B2mJXtmUf2YxEJZkKEyUWE/WnNT5WeKNtiNxHqaX846sAxIabLhfvg6zT8
+         mGUsGlMcYJR9Yb4RQx5n2HMbdUoyp1bvTFle96hvwU3RrpPIKWuZGEWAxCQRTSU/3OpQ
+         bNHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version;
-        bh=XUQYJFf0VLoed4JNR3bJk8DdGmygiKizVinf3zNZhJo=;
-        b=LM5m/Jrkbxw1M6YE9Eb4mgjMqVtfY48i2KUKFy0Be2C0iHLhUOaZl0JNtt6xIDHQDR
-         VBVn6Ng/0bnfl/DWejlPxUlbj/Nmkf7eF51ZMDQC6j0eclmoJdxehSj/rE+gSVCZh06h
-         w5BmXnnKA1OrzT/RvmhGc1C7M08bL6eEtV1nEQFfjiOyJbzKL2SS2jqSlVlPi7NtvP5v
-         J0F60/r2Jtpm520eO4VRdm9qwhhEA7rO6VVArrfUM7h9cxCIb1li2ZHYX9SAZtK8QzCr
-         hIGY+vu9t690dKeYxsGrsveO7/iZ9cEYp6Vs60VhrKQD+uSX/yZ6Vf2s7bLmHokcZUXa
-         r3IQ==
-X-Gm-Message-State: AOAM531wJ86sHWo5QfpfyfWY+an66FTJBY4AWcwesg4XK0AFijxeBaV0
-        GIanWYoVcAZrBdW0DzzofMrovQ==
-X-Google-Smtp-Source: ABdhPJzPz9XOAIc35pFuBE/Q9Eg6RqNF24BiJ5nOV48yKD7O45stK/C7AYYFgjow2p8m9xr050S43A==
-X-Received: by 2002:a05:600c:259:: with SMTP id 25mr2997861wmj.82.1630587124128;
-        Thu, 02 Sep 2021 05:52:04 -0700 (PDT)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id n4sm2071215wro.81.2021.09.02.05.52.03
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aLUCaxfHoqaYw4dc2BPnEWZ4Nj1yQ7MkEOLJcpw995o=;
+        b=bDk42qZWolrOu+Cj+hibV1gIJNVYuPJ2q/gW6eYWhZwdhQ3+i6BbQ510y2zrRkLc5a
+         3coYtDYKBxmymSLQQLrq9A02k1tXOu9Ocop5S6kau8VtkceCBUmSl/mC8V4gFbUA1/hG
+         nKyEy1NS07bn8YC2OrTSCrrhAIR1jqOQeVV1kxkU+flhGhlpnLSQ6j5gVuLj4kMzXhws
+         dOXOCNjyySqGMwkoP8HAL7SNXbcNg+w9lf43tSYHs1iWPRwwWBTM4o6XJchai0z9Eafe
+         AI4MW4FhAapqZj2h9QhRWeDbPxHbVBwJ+OYgsPby6FwjlaU94HEENKNE+eEWkCHZc2JV
+         bCrA==
+X-Gm-Message-State: AOAM533OcNc8dlZnDk8ADWakIMqYufhVONxFHBZvaMyGIiUC13ZWQXhk
+        bMTCjdMuC1QdW1srr20wZOxB0w==
+X-Google-Smtp-Source: ABdhPJxvnnsb9uBsZrCGXpIlWksIuIjmbrcDWBBd8+sJmXUkAzCqvtsV38cL+n+ih00t9/6e4/C/JA==
+X-Received: by 2002:a17:902:724b:b0:131:ab33:1e4e with SMTP id c11-20020a170902724b00b00131ab331e4emr2779233pll.12.1630586735126;
+        Thu, 02 Sep 2021 05:45:35 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([213.173.35.225])
+        by smtp.gmail.com with ESMTPSA id s192sm2763072pgc.23.2021.09.02.05.45.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 05:52:03 -0700 (PDT)
-References: <1630562033-13231-1-git-send-email-spujar@nvidia.com>
-User-agent: mu4e 1.6.5; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org,
-        lgirdwood@gmail.com, robh+dt@kernel.org, thierry.reding@gmail.com
-Cc:     jonathanh@nvidia.com, stephan@gerhold.net,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] Convert name-prefix doc to json-schema
-Date:   Thu, 02 Sep 2021 14:44:12 +0200
-In-reply-to: <1630562033-13231-1-git-send-email-spujar@nvidia.com>
-Message-ID: <1jilzj5edo.fsf@starbuckisacylon.baylibre.com>
+        Thu, 02 Sep 2021 05:45:34 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 20:45:29 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
+        mike.leach@linaro.org, suzuki.poulose@arm.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] perf build: Report failure for testing feature
+ libopencsd
+Message-ID: <20210902124529.GH303522@leoy-ThinkPad-X240s>
+References: <20210902081800.550016-1-leo.yan@linaro.org>
+ <YTDB/VuANx5c+5sk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTDB/VuANx5c+5sk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 02, 2021 at 09:22:21AM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Thu, Sep 02, 2021 at 04:18:00PM +0800, Leo Yan escreveu:
+> > When build perf tool with passing option 'CORESIGHT=1' explicitly, if
+> > the feature test fails for library libopencsd, the build doesn't
+> > complain the feature failure and continue to build the tool with
+> > disabling the CoreSight feature insteadly.
+> > 
+> > This patch changes the building behaviour, when build perf tool with the
+> > option 'CORESIGHT=1' and detect the failure for testing feature
+> > libopencsd, the build process will be aborted and it shows the complaint
+> > info.
+> 
+> Thanks, added some committer notes to show that it now works:
+> 
+> commit 8fb36b1f54873870262810d3db10526559e1d6c2
+> Author: Leo Yan <leo.yan@linaro.org>
+> Date:   Thu Sep 2 16:18:00 2021 +0800
+> 
+>     perf build: Report failure for testing feature libopencsd
+>     
+>     When build perf tool with passing option 'CORESIGHT=1' explicitly, if
+>     the feature test fails for library libopencsd, the build doesn't
+>     complain the feature failure and continue to build the tool with
+>     disabling the CoreSight feature insteadly.
+>     
+>     This patch changes the building behaviour, when build perf tool with the
+>     option 'CORESIGHT=1' and detect the failure for testing feature
+>     libopencsd, the build process will be aborted and it shows the complaint
+>     info.
+>     
+>     Committer testing:
+>     
+>     First make sure there is no opencsd library installed:
+>     
+>       $ rpm -qa | grep -i csd
+>       $ sudo rm -rf `find /usr/local -name "*csd*"`
+>       $ find /usr/local -name "*csd*"
+>       $
+>     
+>     Then cleanup the perf build output directory:
+>     
+>       $ rm -rf /tmp/build/perf ; mkdir -p /tmp/build/perf ;
+>       $
+>     
+>     And try to build explicitely asking for coresight:
+>     
+>       $ make O=/tmp/build/perf CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin
 
-On Thu 02 Sep 2021 at 11:23, Sameer Pujar <spujar@nvidia.com> wrote:
+The build command contains duplicate 'O=/tmp/build/perf'.
 
-> Following are the changes:
->   - Add json-schema for 'sound-name-prefix' documentation under
->     'name-perfix.yaml'
->   - Use schema references wherever needed.
->   - Remove txt based doc
->
->
-> Changelog
-> =========
->
-> v1 -> v2
-> --------
->  * Provide top reference to name-prefix.yaml as suggested by Rob
->    for patch 2/3
->  * Dropped couple of unreachable email ids from Cc list in commit
->    message of patch 2/3
->  * No changes in remaining patches
->   
->
-> Sameer Pujar (3):
->   ASoC: Add json-schema documentation for sound-name-prefix
->   ASoC: Use schema reference for sound-name-prefix
->   ASoC: Remove name-prefix.txt
+>       make: Entering directory '/var/home/acme/git/perf/tools/perf'
+>         BUILD:   Doing 'make -j24' parallel build
+>         HOSTCC  /tmp/build/perf/fixdep.o
+>         HOSTLD  /tmp/build/perf/fixdep-in.o
+>         LINK    /tmp/build/perf/fixdep
+>       Makefile.config:493: *** Error: No libopencsd library found or the version is not up-to-date. Please install recent libopencsd to build with CORESIGHT=1.  Stop.
+>       make[1]: *** [Makefile.perf:238: sub-make] Error 2
+>       make: *** [Makefile:113: install-bin] Error 2
+>       make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+>       $
+>     
+>     Now install the opencsd library present in Fedora 34:
+>     
+>       $ sudo dnf install opencsd-devel
+>       <SNIP>
+>       Installed:
+>         opencsd-1.0.0-1.fc34.x86_64 opencsd-devel-1.0.0-1.fc34.x86_64
+>       Complete!
+>       $
+>     
+>     Try again building with coresight:
+>     
+>       $ make O=/tmp/build/perf CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin
+>       make: Entering directory '/var/home/acme/git/perf/tools/perf'
+>         BUILD:   Doing 'make -j24' parallel build
+>       Makefile.config:493: *** Error: No libopencsd library found or the version is not up-to-date. Please install recent libopencsd to build with CORESIGHT=1.  Stop.
+>       make[1]: *** [Makefile.perf:238: sub-make] Error 2
+>       make: *** [Makefile:113: install-bin] Error 2
+>       make: Leaving directory '/var/home/acme/git/perf/tools/perf'
+>       $
+>     
+>     Since Fedora 34 is pretty recent, one assumes we need to get it from its
+>     upstream git repository, use rpm to find where that is:
+>     
+>       $ rpm -q --qf "%{URL}\n" opencsd
+>       https://github.com/Linaro/OpenCSD
+>       $
+>     
+>     Go there, clone the repo, build it and install into /usr/local, then try
+>     again:
+>     
+>       $ cd ~acme/git/perf
+>       $ make O=/tmp/build/perf VF=1 CORESIGHT=1 O=/tmp/build/perf -C tools/perf install-bin | grep -i opencsd
+>       ...                    libopencsd: [ on  ]
+>         PERF_VERSION = 5.14.g454719f67a3d
+>       $ export LD_LIBRARY_PATH=/usr/local/lib
+>       $ ldd ~/bin/perf | grep opencsd
+>             libopencsd_c_api.so.1 => /usr/local/lib/libopencsd_c_api.so.1 (0x00007f28f78a4000)
+>             libopencsd.so.1 => /usr/local/lib/libopencsd.so.1 (0x00007f28f6a2e000)
+>       $
+>     
+>     Now it works.
 
-Thanks a lot for this Sameer.
-With the small update required by Rob's bot and the comment on patch #1
-taken care of, you may add:
+Good to know the very detailed steps.  Thanks a lot for writing up
+this!
 
-Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
-
->
->  .../devicetree/bindings/sound/name-prefix.txt      | 24 ---------------
->  .../devicetree/bindings/sound/name-prefix.yaml     | 35 ++++++++++++++++++++++
->  .../bindings/sound/nvidia,tegra186-dspk.yaml       |  9 ++----
->  .../bindings/sound/nvidia,tegra210-dmic.yaml       |  9 ++----
->  .../bindings/sound/nvidia,tegra210-i2s.yaml        |  9 ++----
->  .../devicetree/bindings/sound/nxp,tfa989x.yaml     |  9 ++----
->  Documentation/devicetree/bindings/sound/rt5659.txt |  2 +-
->  .../bindings/sound/simple-audio-mux.yaml           |  9 ++----
->  8 files changed, 51 insertions(+), 55 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/name-prefix.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/name-prefix.yaml
-
+Leo
