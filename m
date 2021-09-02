@@ -2,118 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EEF3FF46B
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 199203FF46E
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347444AbhIBT4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 15:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347466AbhIBT4D (ORCPT
+        id S232600AbhIBT4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 15:56:22 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:45572 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347480AbhIBT4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 15:56:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6757C061575;
-        Thu,  2 Sep 2021 12:55:04 -0700 (PDT)
-Date:   Thu, 02 Sep 2021 19:55:01 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630612502;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kj+R5Hc/mJpx5c4GPe8sRhx/5oEdRmPlnskcOw6UBJM=;
-        b=PxRrFUse9xmLNxVp+FeXMJg3TIVFXD0U+sqdcpRFoWlyRksBn+UVT8k1RivdTXgjg0wdWR
-        HzezIccfOANKflSbnotP0pRMYzCUZeK8jQb3kajlE6pMUIQwiv7rZ7+ujw9HX/NMphyaBo
-        pfy8ut7FaXE0Aq6N3A4fnCdEMq+wwiDmIk0BLR161n0KKC19MOYZ5Irp5j9ji02jbSM2Fg
-        7Hmlb1lNsSfVCWkF12nUO0fVq0YiepKZe4Am+m352DPwWDyU7YeJQGlsZD2u8Oe5f+7Dd1
-        kffCim9p/61HEA+BiPuFASAc8dC1eXgoiKc6/bPy2BFgIhY3W2DrGr32j3zxyQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630612502;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kj+R5Hc/mJpx5c4GPe8sRhx/5oEdRmPlnskcOw6UBJM=;
-        b=B4i7F8cb6q/AetovcHYaapGzx+fzg9LGmvjF8mtIsEknGult6AASmqlHTfk8x04ZytYlhQ
-        tLGM6eRvae39xrBQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] futex: Clarify comment for requeue_pi_wake_futex()
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210902094414.618613025@linutronix.de>
-References: <20210902094414.618613025@linutronix.de>
+        Thu, 2 Sep 2021 15:56:07 -0400
+Received: by mail-il1-f197.google.com with SMTP id o12-20020a92dacc000000b00224baf7b16fso1980946ilq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 12:55:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=38W35ScS07g6ekDXuVTNyXmTbkWYtJNx19lDEdhawfY=;
+        b=BX+Z23+9bfdqU4p0aNhkoA1+Z1ACfYhCeXEfnDa9V51W98PNTVIeXqBuGyNApfg4U2
+         1qSQ03EVqFYiQQh3X2yE1Cz+ntmX5/OoGhAXBrNGRObp0V289RO4/Oa27vzXJ1IeynYx
+         4nPxgiXkBYY5aAqi/DXEO126lUqzmB5LxLj3u/qB9NENd4kaNQJTEbVgYOqMcHpQp5Uj
+         HQzjQxqe6kk3Uh0WC+9Yir7usy1hE0BtARog7Hz+pLdCoetfF90GBuxvcCXVdIVXqTPq
+         0XsUxs+AuVXieZCrWrjT0VmH3HxVig25YUy0zxt1CvOkUiHCz+MGblG2qPbVAoMhVFaE
+         rNJA==
+X-Gm-Message-State: AOAM533V2YBQevdDaZoEMlDJoZM+VLzC9m2QKAdGWdqhBf0/UJrtbTBs
+        qpfUdjZ3UpZeu8ozeZdI4q/XsGx3l0uBRlFTa0Rv/1dVNMdJ
+X-Google-Smtp-Source: ABdhPJzytE1DAvctVUnDlDSxsxQkuv6mjTkK8YNP2Fqo8BqktTCdgGE2jCx+TvMt+GMhWoSWTQ7WiAXzTXUXufJ9wKX8egOJtPKT
 MIME-Version: 1.0
-Message-ID: <163061250102.25758.6045829655072760364.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a6b:8b54:: with SMTP id n81mr39022iod.5.1630612508190;
+ Thu, 02 Sep 2021 12:55:08 -0700 (PDT)
+Date:   Thu, 02 Sep 2021 12:55:08 -0700
+In-Reply-To: <fd90b222-4394-946a-24f8-fe3943e840ab@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000512e2405cb088fc1@google.com>
+Subject: Re: [syzbot] KASAN: null-ptr-deref Write in __pm_runtime_resume
+From:   syzbot <syzbot+7d41312fe3f123a6f605@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, len.brown@intel.com,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        paskripkin@gmail.com, pavel@ucw.cz, rjw@rjwysocki.net,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+Hello,
 
-Commit-ID:     c38ae90c7c3abd287caa979ad0ff63c9a43ba71d
-Gitweb:        https://git.kernel.org/tip/c38ae90c7c3abd287caa979ad0ff63c9a43ba71d
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 02 Sep 2021 11:48:50 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 02 Sep 2021 21:29:48 +02:00
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-futex: Clarify comment for requeue_pi_wake_futex()
+Reported-and-tested-by: syzbot+7d41312fe3f123a6f605@syzkaller.appspotmail.com
 
-It's slightly confusing.
+Tested on:
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210902094414.618613025@linutronix.de
+commit:         4a3bb420 Merge tag 'dma-mapping-5.15' of git://git.inf..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3e782839f57ad47e
+dashboard link: https://syzkaller.appspot.com/bug?extid=7d41312fe3f123a6f605
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=14b6fc2e300000
 
----
- kernel/futex.c | 26 ++++++++++++++++++++------
- 1 file changed, 20 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/futex.c b/kernel/futex.c
-index 04164d4..82cd270 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1954,12 +1954,26 @@ static inline int futex_requeue_pi_wakeup_sync(struct futex_q *q)
-  * @hb:		the hash_bucket of the requeue target futex
-  *
-  * During futex_requeue, with requeue_pi=1, it is possible to acquire the
-- * target futex if it is uncontended or via a lock steal.  Set the futex_q key
-- * to the requeue target futex so the waiter can detect the wakeup on the right
-- * futex, but remove it from the hb and NULL the rt_waiter so it can detect
-- * atomic lock acquisition.  Set the q->lock_ptr to the requeue target hb->lock
-- * to protect access to the pi_state to fixup the owner later.  Must be called
-- * with both q->lock_ptr and hb->lock held.
-+ * target futex if it is uncontended or via a lock steal.
-+ *
-+ * 1) Set @q::key to the requeue target futex key so the waiter can detect
-+ *    the wakeup on the right futex.
-+ *
-+ * 2) Dequeue @q from the hash bucket.
-+ *
-+ * 3) Set @q::rt_waiter to NULL so the woken up task can detect atomic lock
-+ *    acquisition.
-+ *
-+ * 4) Set the q->lock_ptr to the requeue target hb->lock for the case that
-+ *    the waiter has to fixup the pi state.
-+ *
-+ * 5) Complete the requeue state so the waiter can make progress. After
-+ *    this point the waiter task can return from the syscall immediately in
-+ *    case that the pi state does not have to be fixed up.
-+ *
-+ * 6) Wake the waiter task.
-+ *
-+ * Must be called with both q->lock_ptr and hb->lock held.
-  */
- static inline
- void requeue_pi_wake_futex(struct futex_q *q, union futex_key *key,
+Note: testing is done by a robot and is best-effort only.
