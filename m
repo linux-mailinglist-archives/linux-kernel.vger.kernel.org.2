@@ -2,70 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A41D3FF774
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C573FF778
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 00:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347902AbhIBW5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 18:57:24 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:34106
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232684AbhIBW5X (ORCPT
+        id S1347906AbhIBW6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 18:58:54 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:38897 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232013AbhIBW6x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 18:57:23 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 7F08A3F355;
-        Thu,  2 Sep 2021 22:56:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630623383;
-        bh=LSEKeaSDQ1GT7tY9vov/U+ekVIymsacQFSJsNSyYZuU=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=UszIlSz4z3N74cHzsTz7PQ9Rnu2TwTQy1kW3+8I/a78Br5T1Yubv52jneNfePS99e
-         xtmbTejSoiT+DJHfYC3D7SQZIW5c8G0wQaG2fM3e/DAJhnGWF67JThm20kIU7OfDpN
-         plXDU6RP2xRT7JoDofmcQn1USDK3OdL1PZIl/eoL0TdOG92As2HbFEleOd8RY+Ug/8
-         ay/SxGNi81hQEe35NR7+QYnTh0nlNxClLq2zCEiidwiFWxGmCb5zqD9r7POJYBTvLk
-         rxmIZ0+nXWq5JxkulOnSh3k/mOxxZECs+QKPKbsNX6PbGP22Wbiqc2N2tDiRKfhGt/
-         miFoV0s3QOFtg==
-From:   Colin King <colin.king@canonical.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] skbuff: clean up inconsistent indenting
-Date:   Thu,  2 Sep 2021 23:56:23 +0100
-Message-Id: <20210902225623.58209-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Thu, 2 Sep 2021 18:58:53 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.west.internal (Postfix) with ESMTP id B432F2B00053;
+        Thu,  2 Sep 2021 18:57:53 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Thu, 02 Sep 2021 18:57:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=qq4KILFhNX+2NAhG1FBp30Jzcd
+        dxrR8B8njvflWfJ6A=; b=KhShorhRUwKNfiawh29mCc5Sv+rnnfMFOqqAzye8/r
+        tv2aNK9UoS/Q48AtWMqbmyxt2GQJsqm0qKOdMrT3o0eh6n7DoBVPDg+gNj6V+BGk
+        tx9+MgUJbO3efNX+PCuABuuR6D/uQNaNim/14EN28dqpz4AQ4pZiMBa5BNV1vMlB
+        4rfn1/cXzlrY+4fQnaA6V/0NxgA/hACqFGv6WuZ0511bTldm2OIZgNeGXp+eAoQq
+        IQ9IMnfy97bVsGyDcdJ1agsLcX8dl+Bm9L92b7JmHeN1cy3r1ugc2UiIjxjQRZGj
+        UyydlLz24SlPVST3oO/76/t2XNRtDnIamyvKziXt+JAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=qq4KILFhNX+2NAhG1
+        FBp30JzcddxrR8B8njvflWfJ6A=; b=YfpSJUlsU3ac/rsKwHUdmgZnaBmcSumEf
+        dtP1E/xsAz3iapA8mYEE0HNqxAsEH2PlRmtDjNN51OGpr1ggrBHBTKeDXk8JwEd7
+        vDEmDzyPRqfQMe78ZZpg3R/n+GD1M8CYN8ZdWVwOR3OZlWWCMC5mZZl+9dkCZFzJ
+        rsTrde6b4LhJjCV4QF2Angai8gmdtf0Uut8XiMgftKunNvRv1QGiWh9L/lXJm570
+        OLort5l+sUXwXu12T8e0RxpmOaD1b7+o4M50AwcDBRsU8FUmnsqCL/V1DIk1VG6y
+        5oe3An2PJ1kJd/jPH/uF7bc+uNLTf+PVEwCs4ESXxjshevpDFVgEw==
+X-ME-Sender: <xms:71YxYR-73ia2Hwla52-EYzCtHeJQdoMC5g33vOSmL3f0E66EfPtsNw>
+    <xme:71YxYVuifVNyfZz1Ak6VjLSevtEwGqS7kM0k0GhMdkPZbjz1kf61ssw9Mm-tBSvo1
+    y71TtCv6Lzkkvdghw>
+X-ME-Received: <xmr:71YxYfA6oPnnIm1A9ZMHB-rF7Zt-RBnM61OWzILP6OYsQDNIEfqRYMK1OuBWPKfxc--GoaeurmLkomb4fJt-BXEDvCIkMhMWJCdNcb2kuYKGIzMSVdD47ZA-oW4oo2hazUe85g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddviedgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefurghmuhgvlhcu
+    jfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenucggtffrrg
+    htthgvrhhnpeeiteekhfehuddugfeltddufeejjeefgeevheekueffhffhjeekheeiffdt
+    vedtveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:71YxYVckUPhwQ5xAJwnCdzEzPnRFh2XCcKI1a5nEhKSBIPZRHXxc6A>
+    <xmx:71YxYWNnPengs6f9ne6TIukFYz3Qm2rdyPbDoPVWfUy_KXHJHCjxxw>
+    <xmx:71YxYXmTMiRMiUFPSinOmgjV0xZmnPVlD_UMKf1vq7AiCgRYd_kKMg>
+    <xmx:8VYxYXl2aAcVg8ONqX91NFi5mcFZBXRgcI0oMNbpGdCDH1B9jdJz7yjBkFA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 2 Sep 2021 18:57:51 -0400 (EDT)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     Icenowy Zheng <icenowy@aosc.io>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>
+Subject: [PATCH v3 0/3] Allwinner R329 and D1 watchdog support
+Date:   Thu,  2 Sep 2021 17:57:47 -0500
+Message-Id: <20210902225750.29313-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+This series adds bindings and driver support for the R329 and D1
+watchdogs. The R329 is fully backward-compatible, so no driver changes
+are needed for it.
 
-There is a statement that is indented one character too deeply,
-clean this up.
+v3 of this series adds two new compatibles, as I discovered that the
+immediate "soft reset" functionality was specific to the watchdog that
+is part of the same block as the sun4i timer, and is not available in
+the RISC-V or DSP watchdog instances.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- net/core/skbuff.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+My intention is to use the soft reset function as OpenSBI's system reset
+backend, so it needs to know which watchdog instance has that feature.
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index f9311762cc47..2170bea2c7de 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -3884,7 +3884,7 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
- 		skb_push(nskb, -skb_network_offset(nskb) + offset);
- 
- 		skb_release_head_state(nskb);
--		 __copy_skb_header(nskb, skb);
-+		__copy_skb_header(nskb, skb);
- 
- 		skb_headers_offset_update(nskb, skb_headroom(nskb) - skb_headroom(skb));
- 		skb_copy_from_linear_data_offset(skb, -tnl_hlen,
+Samuel Holland (3):
+  dt-bindings: watchdog: sunxi: Add compatibles for R329
+  dt-bindings: watchdog: sunxi: Add compatibles for D1
+  watchdog: sunxi_wdt: Add support for D1
+
+ .../watchdog/allwinner,sun4i-a10-wdt.yaml     | 48 ++++++++++++++++++-
+ drivers/watchdog/sunxi_wdt.c                  | 20 +++++++-
+ 2 files changed, 66 insertions(+), 2 deletions(-)
+
 -- 
-2.32.0
+2.31.1
 
