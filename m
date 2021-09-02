@@ -2,217 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB25F3FE650
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466EF3FE65A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 02:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240567AbhIBAON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 20:14:13 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:43432 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229898AbhIBAOM (ORCPT
+        id S242800AbhIBAQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 20:16:06 -0400
+Received: from mail-oln040093008003.outbound.protection.outlook.com ([40.93.8.3]:31608
+        "EHLO outbound.mail.eo.outlook.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229898AbhIBAQE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 20:14:12 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 181M8Xw1018863;
-        Thu, 2 Sep 2021 00:13:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=fd+4XEEw5K6HhzJCnfDtjrUWcfN2UmGB67FMb1S8HkA=;
- b=kVDyjkIe/j6OpseyWtdfo407b03HFF/Smy0KBH7nqXQazd/WLj+iWcJHefF4eJub/p1T
- Ufuh8kHzHs7FnTn+rQ8ZchGqxO/1FMJx+Kni92yCoX/MDiY8t4BrNyflUFcygkTUWdoC
- caS5amkW4fOEsuz3IkiXE/QVa4Q1OiVTpmTlQ/UiLJt0kFut+jv4rFmAFZwOAVl/wsyT
- p1yXBFNGtjUH/XTK8u1Bbm86mcN3QnKWTNiiBWAQHX4IX/ElGGehnkQNYQqSMMOYdyog
- Ydghu2qiyre03hZnejxObOYMN37/KFBVuBNvz619MQI7Ki/gimV5muSTf89+eF+L2EeS kw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=fd+4XEEw5K6HhzJCnfDtjrUWcfN2UmGB67FMb1S8HkA=;
- b=GX1zereBBaAuPer/QhdZjmzuzRzC3DUdOx/f2BhmL3Msmrc8YyalP2RT9V5272XRqs5n
- 02xZvYSs32FL93bfxoAFrXBcUNFMXrnm2vM8egvS4I1Efzn9nHG0/ogxOsDD1PNjpFvm
- no4zJJY8ltcC3QjrojRch5toaAFttbnK2789wjAL9H+g7jehqKEy97JQiJcg3grwN8H8
- gpbZ9aZpAKKAUzAsTsvqJRio3fvyn+bGmmCkdKWt+h+ssWkQ6xbch4ztfDxkyXiJ/zn9
- hD8hdRpUhc8p0bqs5O1DLSQSa29TIi0eEYWy1swKkYKrtAa+5ulsx+vDR4P0HIkG7fIJ MQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3atdvygwuw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Sep 2021 00:13:06 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18209nhu178454;
-        Thu, 2 Sep 2021 00:13:05 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-        by aserp3030.oracle.com with ESMTP id 3atdyw5ynr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 02 Sep 2021 00:13:05 +0000
+        Wed, 1 Sep 2021 20:16:04 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R1YU5KovVjwluk135g7hdahtwbJuELgojWK6VB+jvpHOsSa/B38kyLnt8h1Wq6iG9Mvse/TWL3SVwPgbqHhiLDHqi3rtLoJfyHx4L+E2LeKz2F2AvU60SQfsBp844duZw0F+OadTQlRlN0wL7UrtJdbis279i+l8T3kzI2kb2r5OrMcGzJ3FeUbEv/Pfa2TgVMHAS6PpsYQIzMFeYnhpI7oEjaNKmn/JEMikunQuoEAWdpSV4O1TYo94CWmNyjElS7Mil84jXzPZJsuqCOKg6S6nITFP8eDV+6Kzy8QAur8r/YqwQuOXnt4Ik6qmkwcJPtAqDFMCejSKbJ+ROElI9w==
+ b=h8BvVlJXCwbhMTEelowaN9kx+nSDBGru5s7InceIX2Po4KWVpJ9roHMd/HCgBjctY+yfPUfYaGNLdP0C7C3/k3ibkdI3yS8myRWQ9hSAdwm3RmSgF4ic3PwzTh+Ohfs+bJc0QJ3CJy2p/VsqBqit7kPKrafI+XuMeCOkvhEidSOTySuNX/5lq7eUVBuymJX//cN1tcVRrsuR/E7FrJDR7mrAww93YjW5uljePBfs9Yzw8nXxhffKaIH97oJ68UrXfRd20GiPMro2luozaSykmfstmHPOP+V/5hqh67T4Bxu/qVIxO3B3mOaE01uFDrbW4avWGix5Zu/9cYBxrFUmLg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=fd+4XEEw5K6HhzJCnfDtjrUWcfN2UmGB67FMb1S8HkA=;
- b=TptTjVh1kRaFdlR6CS+uuIGAxnptyKnW5gqBmWw7ojv6tlRFqNWkEX/FQIvj8iM0RGrWV8YFK92AcVXGRBg3A+FEthWxRFiPnwczS4y74mf8ymLG8PNYWrc3oCp7MTgQZdSfuJBiRWOrz/32H8n0sC8n9/j/LpSuQCafTEtj9msn2GeODGj/qxaHDjNkMHjGegfeFKZ7MDPjDsm32/wQEPgB2MnxEiJho7JobuEAbcA5zfTi7cw3/OdMe/ZJfdXSLbpLyY4+3rD0rcb99z/+AQcCX0x86U8Hv5DddHImpDOQCk4SfBARUxkWg6MbdRJCVJdcCRGCf9vW3mLiH+gmKQ==
+ bh=2wJZwyg52cCLIvGROM9MWlEN9cOqwTvnQY12hCyFx/M=;
+ b=PBg5e0gbR6i6m1kfUdBM0yttzgG6W3oki6YYMb+OpIhotgMUyPhbW/zmQqSfdenV5yHItttnIcqtZjyZtxHGNhRiM8A2XYeRSl/Cj92gJUdhaWkUgov87B+UkKqmp6oVPKIIEw6ETznyygch+fSUdwnIY4mkFFgzryPgGHDeC+5a2AVdLSONFKAkf+p7Gm+l/PVtc/MOanHkQRSKxFnRaQwT7PxVT8ZlM0PV5eca63f/J7m24zMpHzY9eptYV0Kivpl/xlbRRBI6Po8SGvg4uctJU8fSdJGIJ4njXkQaehViwJQPV9x6bYIHXnI8lEGRt1I4xEPkQKP/+90DvR7wnQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fd+4XEEw5K6HhzJCnfDtjrUWcfN2UmGB67FMb1S8HkA=;
- b=EuY/jHnceww95WjkPBfWXad8M8Z3Q/M1FRHD+x3kH23HzHN7wvw4Hnuna32ZIMDFGfNNyPj5ny3omWUbI0fyWIfwOZzsJKjL1XAon0qw+ZXCCmNpZZ6s2Pi96Ejf9n5+/1U2Hclbxu9vZLY15aI3Wf6N8ucN9DSWS42YK711jW4=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=oracle.com;
-Received: from CO1PR10MB4468.namprd10.prod.outlook.com (2603:10b6:303:6c::24)
- by MWHPR10MB1374.namprd10.prod.outlook.com (2603:10b6:300:24::15) with
+ bh=2wJZwyg52cCLIvGROM9MWlEN9cOqwTvnQY12hCyFx/M=;
+ b=aIfunch/uFPwfCEApTqxLCAAZxJPvXnaRb7Pj8i7HYwjQ8P8SbWpTRgpUiYkQLLmQVAKBJZ3ttPxukfts2EM+obZus2xdhUWv56/DaGyXjYJFT/fM0RvR7hCvbagI3R+8jullzbTd+QlKODpqdoy3y4R+/5uzJJAHAHD0vo+GI8=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MWHPR21MB0797.namprd21.prod.outlook.com (2603:10b6:300:11b::23) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Thu, 2 Sep
- 2021 00:13:03 +0000
-Received: from CO1PR10MB4468.namprd10.prod.outlook.com
- ([fe80::e1f7:a0f4:46c5:3df]) by CO1PR10MB4468.namprd10.prod.outlook.com
- ([fe80::e1f7:a0f4:46c5:3df%6]) with mapi id 15.20.4478.019; Thu, 2 Sep 2021
- 00:13:03 +0000
-Subject: Re: [RFC PATCH 1/2] lib, stackdepot: check stackdepot handle before
- accessing slabs.
-To:     Vlastimil Babka <vbabka@suse.cz>, geert@linux-m68k.org,
-        akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Alexander Potapenko <glider@google.com>
-References: <20210901051914.971603-1-imran.f.khan@oracle.com>
- <20210901051914.971603-2-imran.f.khan@oracle.com>
- <78d24243-9d92-43fd-92b5-17b88cc24314@suse.cz>
-From:   imran.f.khan@oracle.com
-Message-ID: <b91439ae-8827-6d03-47be-4fa236cfd1ce@oracle.com>
-Date:   Thu, 2 Sep 2021 10:12:58 +1000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
-In-Reply-To: <78d24243-9d92-43fd-92b5-17b88cc24314@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.1; Thu, 2 Sep
+ 2021 00:15:03 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::3c8b:6387:cd5:7d86]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::3c8b:6387:cd5:7d86%8]) with mapi id 15.20.4478.014; Thu, 2 Sep 2021
+ 00:15:03 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Tianyu Lan <ltykernel@gmail.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>, "hch@lst.de" <hch@lst.de>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "pgonda@google.com" <pgonda@google.com>,
+        "martin.b.radev@gmail.com" <martin.b.radev@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
+        "saravanand@fb.com" <saravanand@fb.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "ardb@kernel.org" <ardb@kernel.org>
+CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>
+Subject: RE: [PATCH V4 01/13] x86/hyperv: Initialize GHCB page in Isolation VM
+Thread-Topic: [PATCH V4 01/13] x86/hyperv: Initialize GHCB page in Isolation
+ VM
+Thread-Index: AQHXm2f8V9hgDb15oEeIZM6sY/3E8auH7dAA
+Date:   Thu, 2 Sep 2021 00:15:03 +0000
+Message-ID: <MWHPR21MB1593366997ACAFCC79EBC0B0D7CE9@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210827172114.414281-1-ltykernel@gmail.com>
+ <20210827172114.414281-2-ltykernel@gmail.com>
+In-Reply-To: <20210827172114.414281-2-ltykernel@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BYAPR08CA0051.namprd08.prod.outlook.com
- (2603:10b6:a03:117::28) To CO1PR10MB4468.namprd10.prod.outlook.com
- (2603:10b6:303:6c::24)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=11e436c2-915c-4d7c-84ac-3bd04a4dfdb3;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-08-27T22:24:34Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a93f77f8-5e8d-4146-86b8-08d96da6b5ec
+x-ms-traffictypediagnostic: MWHPR21MB0797:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <MWHPR21MB07976EFF864A059B6428E017D7CE9@MWHPR21MB0797.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: epIsuYLDpNuvDcYJI1k0v+H+bBdkVs7GflPwJ89C7scLQt3PA8qBjBhhCjLcJ3STPnN7wrJytjcvU4hl0MYDSA/M207W9ZMTZ37Wd6OugAl6aezKycuTmFk77kpY88OfUh09NeI0vZ4l6URGi1BH3jkOgO+sBcjXVlellQ8kYwwGTZgl6scPuWO8up0RHHvR4XObjCS7HjHaI42LIbnIFzqWLzxJXgHp8+oIix3fh+zOf65qNMd4iPQv2BVuuaBLCRWplWUr6H6vAJsDFInSEDqIyrmje5XPV1EtXzoD4nLSWfOU/9a2gtMZBFaMWlOl7UAN59dHTNCldAD3s3wEI9/wOLRjXaRJzoBwjuSFBNjl6RzLrbZ89J8F4nI1fw1zrMoMilaQVJ70R0JBJ3ZwpI5Ofnc9WCTeH5wWTQ6Sb+McqQLhvO5+cie/iUTFJD5dls2fMYR6e8/pYxNXIN6EMcUR2KVAg6ys9nRDPECW3zkcnpIqDVHkPioYmSY7FgpGUFN3fA4//FfoMO0FLRP+K7Ce7o48GQ8mGf09t+UBtngfnTv0eBbrJTOu+Sa0H/sM4I1zEIBewjnOW0yLv+eQ4zPILbVDpuUHDPmP6sX8KJNwCtY+VtTxvts+r5CeSerSZ4SqHQKDausoCx4hUmtY+NW/I839xu+E8yjEnKCrz7eHixQWz5DX0oYg0LQdZzN9/TRgoXgK78QrvIGhVO7kFhR6FAN4+CDioU83HC74qgE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(38070700005)(8936002)(316002)(8676002)(7696005)(71200400001)(5660300002)(52536014)(10290500003)(82960400001)(508600001)(8990500004)(82950400001)(7366002)(7406005)(66446008)(83380400001)(186003)(66476007)(66556008)(122000001)(76116006)(86362001)(921005)(33656002)(66946007)(9686003)(54906003)(55016002)(110136005)(64756008)(6506007)(4326008)(7416002)(38100700002)(26005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+SGvGo5LkyV3z+SW3AVjl3lmleGqyjpZ/boSbjjpuWW5SKx1ApAWYE1hlCTO?=
+ =?us-ascii?Q?M7dMdQq8LUMvGbrXI86PorsvIaGjOuHQgc8ceSyzq6p2IEw6aj9e7RoNsLzh?=
+ =?us-ascii?Q?+2RamO64+yd2hERjxFouOqyFd7ereJcl5HrAbIk/6CgQp6X3igVVNtA+OIXb?=
+ =?us-ascii?Q?/V8Jr8+Swayl2Zkek8ng1r0qv6bnyZ4e2yq6vGz3XJIDzVWJQnsPtXRZ4n3Y?=
+ =?us-ascii?Q?hToD/HPrFnHlMOK7KCeeuPruWaF4duxcruMBuYlSYsdvjiX/NYtevhjo4mPk?=
+ =?us-ascii?Q?Pp1BPdyc54XNnenMlC5Rcx4zBjW2lPehSKRIYjtSy3u8A2hT3i/fIZ+rLS1W?=
+ =?us-ascii?Q?skCK43EqJq9ZRA/0ayPuCPeUln685c3+YEU4DDVj/V2Awtfnlmw3Spy978Cl?=
+ =?us-ascii?Q?G4mqEOPp0hFGPKHcY7Ppkz/S6ZkUYqZzKGH9g0lIBlbQVZKSrnVXaT/xpxuM?=
+ =?us-ascii?Q?eO24L6OEKTYxWDhBCkaXqzRgVYLmMXdDCy0+JDoLdIEVBKvUUtzqX0pThptA?=
+ =?us-ascii?Q?pExZRrp8K19Sf2lPHyjS6LtJrHvGRL8qwNHNdxVJCqtyZGpkYERdxwHXNt0K?=
+ =?us-ascii?Q?dzF3dwCHdaOFdglJHBoihyelfe3V1o5d8A2lfM0GWICQOHEcZLQPqeOaOYFt?=
+ =?us-ascii?Q?n4rabWOuGaNTLALS5eIwgjX548KNnEOuoP+77UvnBS1uNcnijusVJEiGF09J?=
+ =?us-ascii?Q?JcgHidD1tXjJTsSNdnFGr+h8DtyEx7eop+uJtdq0dcoqM+UHqXBDG7wIygjG?=
+ =?us-ascii?Q?qzn6p4DT21ArJV8QRDEewJCEdMw6BCtIPj1BXXqIH7dQD62DjHU7VvmUrUhC?=
+ =?us-ascii?Q?JCSGgUn1pxSZDm+E1ydRtgM8UnQzzvSDJLMIyFx0YT3HM3huVz5TFRXqUmJ9?=
+ =?us-ascii?Q?UxGP7a1EUwoftA0kAEj2zLBcTjqblpcnT27wzhwEzMfkRpaqSg7GSF/64xvy?=
+ =?us-ascii?Q?4UB/j/0IBxnyPxY/hwJgVr4zpFAsIKyaYhE8SswCoPSQC1Va3yraTzHVJhJB?=
+ =?us-ascii?Q?GWhOODZX3rIKIUGD0IiXw0IQASfRTS/4+Us/SKfYFOnvhD5PqRIy95JkjsIG?=
+ =?us-ascii?Q?lDPpsidDnekVVuLsMKzaGYmmLSlqdUWCA9gRttqi8MJUyKf5pWY8dFxmGCqv?=
+ =?us-ascii?Q?2y5AmFXa1jJRXarV4vIoPvevlzJqmtbgToTktN+Y1CxX8F4Fvl3wtHsfmZB3?=
+ =?us-ascii?Q?A1ZWW4MKulOUpPCCsBOsVgROJuS9wvCloK1LZKwWqqMbqguRY5EDJ395PM2D?=
+ =?us-ascii?Q?A2bcYFF+ZlueEd2dVCTkguUibyFLiqHbMdXYdvk6Q32xl2Mn8EEvqlAioWsz?=
+ =?us-ascii?Q?H+rz7J+co1poMS4EpHmARJCo?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Received: from [10.191.132.27] (138.3.200.27) by BYAPR08CA0051.namprd08.prod.outlook.com (2603:10b6:a03:117::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.17 via Frontend Transport; Thu, 2 Sep 2021 00:13:01 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 432c3be2-feca-4300-6e52-08d96da66e69
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1374:
-X-Microsoft-Antispam-PRVS: <MWHPR10MB13748496E2B2B5DBD25CC595B0CE9@MWHPR10MB1374.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3Ykojf7DA7s3PlmQ2fFLkX2b6iKITA7UexjBXN9PlhD3bL2oAfoG12+q804cdNOUeCyFQ0iovJVhYPVchLw6yck/5wdg9hzqqDVtviSbNbGUmVG+uJqVPdaGk7klltybSjw4ZKbWe2S6DK1qBlDN6RxrlWEd3x0MiMz5ILxFTfGUr4m/sCuxLilflzaQlS1W2eRqCUdsYh4+8VHR6/n5sPMYj0K+MyAA1Cz+b6oQD/LEmtb0k9eHlKGVCNIqtEir4hTdtZ+kOMa1vwG3pfvmDiLJuhdxvx0B3rtVFhom6Q93iBzoJ3EuPCRqKRx00jQhqVKFvlcdmMUuo0CgtOvBFL8s3PZIE8aP5kWitAppGtmea6MvIS62RR2cjzjyE3zMy1+H1dBrjnVJ0ZdvG3Sp5u/mULGI46U3M/cEwh2E/ilMeiRQeaGDitlrpL0V/tlNmItIRJ6/W6oaOsadUa88BW3E+v9qMJeOKWEZJCJKGk0pk2lJRr5iIQLOBWT+PRs5gUGPXvUHkugnFmt3wG1S8qpzp3Xp4934fRPxGzUOaYmwXVPnocS74tB+lY4pOZF/lDMU3cRuhUJ5I/L9mcS51V3OGkwHAypyfn3JsZtYBn0w5KQB/bNQPrzm1BFoFFC+1rABlqYvnMZQrvUtPR4zbXxm2B91RzePIB6UtpswHlbZu//H3fnmpQq2QK9o3wfNXJ/YC3OvHGdjC0FXYf16Ow==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4468.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(136003)(366004)(346002)(396003)(2906002)(31696002)(478600001)(83380400001)(4326008)(86362001)(38100700002)(36756003)(16576012)(316002)(53546011)(31686004)(26005)(186003)(54906003)(2616005)(956004)(6666004)(8676002)(9686003)(66946007)(8936002)(6486002)(5660300002)(66476007)(66556008)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QlZZVzc1NHhhU1VhOGlZN0lDUVREYWs3V0ZUUDlpY1VNRG9KS0xOdzR4c0Yr?=
- =?utf-8?B?Q3ZGNW5CcTRUbm0zeVB5Uzg2S3UzZVZnMEtPcjIzVE5UZUpDRVdWTnJTZGs3?=
- =?utf-8?B?a2NIMktlQ3h3YlJkcnNyanZWdGJWNkNEclFzeFdjRG9HMitHNFhWVUtubnlJ?=
- =?utf-8?B?TlMwOUxLUGt4T2owN3paLzJwVkd1TVE4TU1XOWwyc0xHbnhtdWZ6ZXE5cVRN?=
- =?utf-8?B?eGV3ODB2MjBaSGh4cGZnQU9zOFd4b2lEVmFPa0ZUbG8rYzVXWk9Xa25JbDcr?=
- =?utf-8?B?Wnl6SnBLMXdWY05xVERlQ2hHOW05MjUrWEtBMDhiYkEyOU1ZZWdPRGdGQmRy?=
- =?utf-8?B?eXBLUmFXVTRwenJ0OExXQnhUQUloU1V4T2xTbXZOd0R0bE5OUk5vd0RtZ2VJ?=
- =?utf-8?B?NXorYzh1aUZ3N1NWSTFxYTZVZThjUmlJbTRFaG5oaG5vOWtEaWcxbGlSYlQr?=
- =?utf-8?B?bDU0dkxvaWRGSDVPeTVtSk9YNlY4OFRzeWVkVDVaRVlrSDFpemhRQ2h3Y1J5?=
- =?utf-8?B?eVVoNTFOUVdLYUUzaXliYVR3VEV6aU9BNE1XalVJWi9QVVdURmFEbnd6OUVi?=
- =?utf-8?B?djBENkcwdzRTTzRNZGxMbFk1SEppZjdFbDE5MURXc3p3SlZuZGNIUGNTT244?=
- =?utf-8?B?OStPME9zRGQyU003UG5Ra2pSdjlTV1d6aVdwN2pKcGVYblZaR3VsUm9ER1Bo?=
- =?utf-8?B?RWxwZ0hPUkhDVjFCU0U0L0VhaFlIMEZFS0xrSmMxd2U0dlhpOFovaDZBOXN3?=
- =?utf-8?B?MWpScHpzbFdPK1E1L3VRWno0QnRDZ2FJdEtwWGdWcnZ5MUZrUUVXR2cvREo0?=
- =?utf-8?B?dDlka3JsZ3c5VVgxL1hGTjBrSU95OHhnSDY3cUtZTW9WeTJJNkN0U2JrQTdG?=
- =?utf-8?B?SWhmVnl2ZVp6elhNaEMwanBrejMrMXBqZmpjTEpTa21MMExIVUEzdGMvbkdl?=
- =?utf-8?B?VlJwMlZxMlEycXFDRis2dEZ4VXFBNTgvVVpIcWpqSjVkUU5zTGtvMkpTeDJx?=
- =?utf-8?B?TTU5UkhpcU1GbXZaRXpORERJZU1BSTJiMlAybVlvbG5CWHg4a01uQ0w0WGIy?=
- =?utf-8?B?K3VZQjB4VDBISkFGZ1Q4WmpxOU9xTDZ5QWMxVWtnTkEvUVRhT3JEdm9EODRZ?=
- =?utf-8?B?eHV0eHE3a3I3enVVcjdIVHFZaXFPMWJvUTAvRVU3d1g5aVV2SW9xRzhNR2tL?=
- =?utf-8?B?QnhnazJaUnA3aHNvTlovdEVBcjJSeFdqMGQ2S2VzR09YamlCV1VhdFRUc1NM?=
- =?utf-8?B?MUtOa1NMZjdoNVBFaGtHYktuYnE0WXBnb2VXV21ZbnU0L2lNRWptYUs2SGU1?=
- =?utf-8?B?akZSMGVwS2hmWlRET2UyTFlPaC9GMlZxdGplVzkvUmdVRjNiTnpEcXl6QkNX?=
- =?utf-8?B?VjdaMmkyeUdPbVBkQTk1Y0MzdEIwWDYwbXF5T3ZzOXplZlpUdVR1ZHhBU3ds?=
- =?utf-8?B?dzhYblBXYTFXOUNzTVJydzVVZWwwcFhBL1M4bGFNQVhpcTA3d29qZXJmS3Jm?=
- =?utf-8?B?WWpBWUpHdXQvdGxHYlpjUFRtMkVQTDF6ZEpOYkNBK3RoeENmQnRZUTN6LzZB?=
- =?utf-8?B?elR4WDUwUlJ6Q0k2M2hmM3RWbk41cU9kQTNTOGEwT0EwUHArTllONHMrRE01?=
- =?utf-8?B?Vk5TVzcwZ2dVeUZQMFliYlZyRkQva1EyTlNCNW5yZ2p6dkRwK0dPYmphNXVN?=
- =?utf-8?B?M1VId2Q3T1Z1SlZnaDREY1kxRmxCVmt2NTVpbnZaZjRUeXRLR3FQc0dSeU1x?=
- =?utf-8?Q?L9sK/QeUyyCZOSKFa4688/vMJsMrvopAngiMTg2?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 432c3be2-feca-4300-6e52-08d96da66e69
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4468.namprd10.prod.outlook.com
+X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2021 00:13:03.5162
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a93f77f8-5e8d-4146-86b8-08d96da6b5ec
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Sep 2021 00:15:03.0983
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uRwr8hSpvT6KGY1lPxPxV198WSF3UInf1BcRV35lEyJFoDImPhXjkJm7oRx2JcTK0FbNzEKLWiuFWBjhCZZnfQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1374
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10094 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 spamscore=0 phishscore=0 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2108310000
- definitions=main-2109010143
-X-Proofpoint-GUID: LavQeh8784QsrLz32PuCZG2G-w6WseIv
-X-Proofpoint-ORIG-GUID: LavQeh8784QsrLz32PuCZG2G-w6WseIv
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: p8dISAuhX9IHX9/2j7Bsfwp5edDHyaJ+23+T2AH2eOY3r/aR7IqvRmfOlB8qS0BdABm/bMD8pSHZu6ldb6ZT/WmE/DgBmGyuWoge9svJhZM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0797
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Tianyu Lan <ltykernel@gmail.com> Sent: Friday, August 27, 2021 10:21 =
+AM
+>=20
+> Hyperv exposes GHCB page via SEV ES GHCB MSR for SNP guest
+> to communicate with hypervisor. Map GHCB page for all
+> cpus to read/write MSR register and submit hvcall request
+> via ghcb page.
+>=20
+> Signed-off-by: Tianyu Lan <Tianyu.Lan@microsoft.com>
+> ---
+> Chagne since v3:
+>         * Rename ghcb_base to hv_ghcb_pg and move it out of
+> 	  struct ms_hyperv_info.
+> 	* Allocate hv_ghcb_pg before cpuhp_setup_state() and leverage
+> 	  hv_cpu_init() to initialize ghcb page.
+> ---
+>  arch/x86/hyperv/hv_init.c       | 68 +++++++++++++++++++++++++++++----
+>  arch/x86/include/asm/mshyperv.h |  4 ++
+>  arch/x86/kernel/cpu/mshyperv.c  |  3 ++
+>  include/asm-generic/mshyperv.h  |  1 +
+>  4 files changed, 69 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+> index 708a2712a516..eba10ed4f73e 100644
+> --- a/arch/x86/hyperv/hv_init.c
+> +++ b/arch/x86/hyperv/hv_init.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/kexec.h>
+>  #include <linux/version.h>
+>  #include <linux/vmalloc.h>
+> +#include <linux/io.h>
+>  #include <linux/mm.h>
+>  #include <linux/hyperv.h>
+>  #include <linux/slab.h>
+> @@ -36,12 +37,42 @@ EXPORT_SYMBOL_GPL(hv_current_partition_id);
+>  void *hv_hypercall_pg;
+>  EXPORT_SYMBOL_GPL(hv_hypercall_pg);
+>=20
+> +void __percpu **hv_ghcb_pg;
+> +
+>  /* Storage to save the hypercall page temporarily for hibernation */
+>  static void *hv_hypercall_pg_saved;
+>=20
+>  struct hv_vp_assist_page **hv_vp_assist_page;
+>  EXPORT_SYMBOL_GPL(hv_vp_assist_page);
+>=20
+> +static int hyperv_init_ghcb(void)
+> +{
+> +	u64 ghcb_gpa;
+> +	void *ghcb_va;
+> +	void **ghcb_base;
+> +
+> +	if (!hv_isolation_type_snp())
+> +		return 0;
+> +
+> +	if (!hv_ghcb_pg)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * GHCB page is allocated by paravisor. The address
+> +	 * returned by MSR_AMD64_SEV_ES_GHCB is above shared
+> +	 * ghcb boundary and map it here.
 
+I'm not sure what the "shared ghcb boundary" is.  Did you
+mean "shared_gpa_boundary"?
 
-On 1/9/21 6:58 pm, Vlastimil Babka wrote:
-> +CC linux-mm, Alex
-> 
-> On 9/1/21 07:19, Imran Khan wrote:
->> stack_depot_save allocates slabs that will be used for storing
->> objects in future.If this slab allocation fails we may get to
->> a situation where space allocation for a new stack_record fails,
->> causing stack_depot_save to return 0 as handle.
->> If user of this handle ends up invoking stack_depot_fetch with
->> this handle value, current implementation of stack_depot_fetch
->> will end up using slab from wrong index.
->> To avoid this check handle value at the beginning.
->> Also issue a warning for nil handle values and when slab allocation
->> for stackdepot fails for the first time.
->>
->> Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
->> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> 
-> Agree but without the warnings please, especially the "stack depot handle is
-> absent" one. It's just something that can happen e.g. in GFP_NOWAIT contexts
-> and no need to spam dmesg.
-> 
+> +	 */
+> +	rdmsrl(MSR_AMD64_SEV_ES_GHCB, ghcb_gpa);
+> +	ghcb_va =3D memremap(ghcb_gpa, HV_HYP_PAGE_SIZE, MEMREMAP_WB);
+> +	if (!ghcb_va)
+> +		return -ENOMEM;
+> +
+> +	ghcb_base =3D (void **)this_cpu_ptr(hv_ghcb_pg);
+> +	*ghcb_base =3D ghcb_va;
+> +
+> +	return 0;
+> +}
+> +
+>  static int hv_cpu_init(unsigned int cpu)
+>  {
+>  	union hv_vp_assist_msr_contents msr =3D { 0 };
+> @@ -85,7 +116,7 @@ static int hv_cpu_init(unsigned int cpu)
+>  		}
+>  	}
+>=20
+> -	return 0;
+> +	return hyperv_init_ghcb();
+>  }
+>=20
+>  static void (*hv_reenlightenment_cb)(void);
+> @@ -177,6 +208,14 @@ static int hv_cpu_die(unsigned int cpu)
+>  {
+>  	struct hv_reenlightenment_control re_ctrl;
+>  	unsigned int new_cpu;
+> +	void **ghcb_va;
+> +
+> +	if (hv_ghcb_pg) {
+> +		ghcb_va =3D (void **)this_cpu_ptr(hv_ghcb_pg);
+> +		if (*ghcb_va)
+> +			memunmap(*ghcb_va);
+> +		*ghcb_va =3D NULL;
+> +	}
+>=20
+>  	hv_common_cpu_die(cpu);
+>=20
+> @@ -366,10 +405,16 @@ void __init hyperv_init(void)
+>  		goto common_free;
+>  	}
+>=20
+> +	if (hv_isolation_type_snp()) {
+> +		hv_ghcb_pg =3D alloc_percpu(void *);
+> +		if (!hv_ghcb_pg)
+> +			goto free_vp_assist_page;
+> +	}
+> +
+>  	cpuhp =3D cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "x86/hyperv_init:onlin=
+e",
+>  				  hv_cpu_init, hv_cpu_die);
+>  	if (cpuhp < 0)
+> -		goto free_vp_assist_page;
+> +		goto free_ghcb_page;
+>=20
+>  	/*
+>  	 * Setup the hypercall page and enable hypercalls.
+> @@ -383,10 +428,8 @@ void __init hyperv_init(void)
+>  			VMALLOC_END, GFP_KERNEL, PAGE_KERNEL_ROX,
+>  			VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
+>  			__builtin_return_address(0));
+> -	if (hv_hypercall_pg =3D=3D NULL) {
+> -		wrmsrl(HV_X64_MSR_GUEST_OS_ID, 0);
+> -		goto remove_cpuhp_state;
+> -	}
+> +	if (hv_hypercall_pg =3D=3D NULL)
+> +		goto clean_guest_os_id;
+>=20
+>  	rdmsrl(HV_X64_MSR_HYPERCALL, hypercall_msr.as_uint64);
+>  	hypercall_msr.enable =3D 1;
+> @@ -456,8 +499,11 @@ void __init hyperv_init(void)
+>  	hv_query_ext_cap(0);
+>  	return;
+>=20
+> -remove_cpuhp_state:
+> +clean_guest_os_id:
+> +	wrmsrl(HV_X64_MSR_GUEST_OS_ID, 0);
+>  	cpuhp_remove_state(cpuhp);
+> +free_ghcb_page:
+> +	free_percpu(hv_ghcb_pg);
+>  free_vp_assist_page:
+>  	kfree(hv_vp_assist_page);
+>  	hv_vp_assist_page =3D NULL;
+> @@ -559,3 +605,11 @@ bool hv_is_isolation_supported(void)
+>  {
+>  	return hv_get_isolation_type() !=3D HV_ISOLATION_TYPE_NONE;
+>  }
+> +
+> +DEFINE_STATIC_KEY_FALSE(isolation_type_snp);
+> +
+> +bool hv_isolation_type_snp(void)
+> +{
+> +	return static_branch_unlikely(&isolation_type_snp);
+> +}
+> +EXPORT_SYMBOL_GPL(hv_isolation_type_snp);
+> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyp=
+erv.h
+> index adccbc209169..37739a277ac6 100644
+> --- a/arch/x86/include/asm/mshyperv.h
+> +++ b/arch/x86/include/asm/mshyperv.h
+> @@ -11,6 +11,8 @@
+>  #include <asm/paravirt.h>
+>  #include <asm/mshyperv.h>
+>=20
+> +DECLARE_STATIC_KEY_FALSE(isolation_type_snp);
+> +
+>  typedef int (*hyperv_fill_flush_list_func)(
+>  		struct hv_guest_mapping_flush_list *flush,
+>  		void *data);
+> @@ -39,6 +41,8 @@ extern void *hv_hypercall_pg;
+>=20
+>  extern u64 hv_current_partition_id;
+>=20
+> +extern void __percpu **hv_ghcb_pg;
+> +
+>  int hv_call_deposit_pages(int node, u64 partition_id, u32 num_pages);
+>  int hv_call_add_logical_proc(int node, u32 lp_index, u32 acpi_id);
+>  int hv_call_create_vp(int node, u64 partition_id, u32 vp_index, u32 flag=
+s);
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyper=
+v.c
+> index 6b5835a087a3..20557a9d6e25 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -316,6 +316,9 @@ static void __init ms_hyperv_init_platform(void)
+>=20
+>  		pr_info("Hyper-V: Isolation Config: Group A 0x%x, Group B 0x%x\n",
+>  			ms_hyperv.isolation_config_a, ms_hyperv.isolation_config_b);
+> +
+> +		if (hv_get_isolation_type() =3D=3D HV_ISOLATION_TYPE_SNP)
+> +			static_branch_enable(&isolation_type_snp);
+>  	}
+>=20
+>  	if (hv_max_functions_eax >=3D HYPERV_CPUID_NESTED_FEATURES) {
+> diff --git a/include/asm-generic/mshyperv.h b/include/asm-generic/mshyper=
+v.h
+> index c1ab6a6e72b5..0924bbd8458e 100644
+> --- a/include/asm-generic/mshyperv.h
+> +++ b/include/asm-generic/mshyperv.h
+> @@ -237,6 +237,7 @@ bool hv_is_hyperv_initialized(void);
+>  bool hv_is_hibernation_supported(void);
+>  enum hv_isolation_type hv_get_isolation_type(void);
+>  bool hv_is_isolation_supported(void);
+> +bool hv_isolation_type_snp(void);
+>  void hyperv_cleanup(void);
+>  bool hv_query_ext_cap(u64 cap_query);
+>  #else /* CONFIG_HYPERV */
+> --
+> 2.25.1
 
-Okay. I have removed warnings in v2 of patch set.
-
->> ---
->>   lib/stackdepot.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/lib/stackdepot.c b/lib/stackdepot.c
->> index 0a2e417f83cb..1d42ef9ef766 100644
->> --- a/lib/stackdepot.c
->> +++ b/lib/stackdepot.c
->> @@ -232,6 +232,10 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
->>   	struct stack_record *stack;
->>   
->>   	*entries = NULL;
->> +	if (!handle) {
->> +		WARN(1, "stack depot handle is absent.\n");
->> +		return 0;
->> +	}
->>   	if (parts.slabindex > depot_index) {
->>   		WARN(1, "slab index %d out of bounds (%d) for stack id %08x\n",
->>   			parts.slabindex, depot_index, handle);
->> @@ -303,6 +307,8 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
->>   		page = alloc_pages(alloc_flags, STACK_ALLOC_ORDER);
->>   		if (page)
->>   			prealloc = page_address(page);
->> +		else
->> +			WARN_ONCE(1, "slab allocation for stack depot failed.\n");
->>   	}
->>   
->>   	raw_spin_lock_irqsave(&depot_lock, flags);
->>
-> 
-Thanks for reviewing this.
-
---Imran
