@@ -2,82 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 600A73FEDC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A94B3FEDC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344320AbhIBMay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 08:30:54 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:54322 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234094AbhIBMav (ORCPT
+        id S234098AbhIBMcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 08:32:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49639 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234094AbhIBMcM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 08:30:51 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A69C6225EB;
-        Thu,  2 Sep 2021 12:29:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1630585792; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Thu, 2 Sep 2021 08:32:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630585874;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=YTqZMysm+LJ+94OQTFSZh1X2ymjjfpUxWo7nIjwarjM=;
-        b=RJ+TjjZVQTKKJk2Z36M9Of44tCfRPAvLCY8WN62mV+oV/HL/8Y9aGvwEfxLORFJ4PsfXZx
-        pO5j6tiUGmRJAe5u3cCyEUWPW9vSaZa4lsleglN2SFH4WUfUT06LZntiINHTCgZ6Q9eBdW
-        w3A/VxM6Ci5ntkOVOMAW0OwAn22Mubk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1630585792;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YTqZMysm+LJ+94OQTFSZh1X2ymjjfpUxWo7nIjwarjM=;
-        b=kGN+vMCGABu5b5mMf+lNqdkdxSqr+QSEHMxdxEzVPP+/tQ3nQs2BThBnulrQDI7pfVuLbq
-        +J2oXMuuRO+ewRBA==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 34060132AB;
-        Thu,  2 Sep 2021 12:29:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id WRyvCsDDMGECBgAAGKfGzw
-        (envelope-from <jroedel@suse.de>); Thu, 02 Sep 2021 12:29:52 +0000
-Date:   Thu, 2 Sep 2021 14:29:50 +0200
-From:   Joerg Roedel <jroedel@suse.de>
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Youquan Song <youquan.song@intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH 22/24] x86/entry: Implement and use do_paranoid_entry()
- and paranoid_exit()
-Message-ID: <YTDDvnvslnjjok2H@suse.de>
-References: <20210831175025.27570-1-jiangshanlai@gmail.com>
- <20210831175025.27570-23-jiangshanlai@gmail.com>
- <YTCoenvIaHjLQmAC@hirez.programming.kicks-ass.net>
- <44e08066-bbfb-222e-dffc-63e5b64f125f@linux.alibaba.com>
+        bh=1bF0+pdPFV1oPqtHYhh2gb/KkOQLq0K7gX0PwtmmkGA=;
+        b=iGKkNJW1LysqKv0d01S2ie3jo4e9FI+rss9lrkG2wV89kYI980/O8mT5cA+O2iENiSPPTe
+        T+UHSjfzbEKMh5TBoC1JuxS9paSTV/JVfYT/fWH6rTYw3bAb35j3y2wNX6XTFOQBvKI+AP
+        JhsYP6gONzunUMONih4YkEeqYXKCzBI=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-455-BKvZI8PHMga7wwwDqJsRJQ-1; Thu, 02 Sep 2021 08:31:13 -0400
+X-MC-Unique: BKvZI8PHMga7wwwDqJsRJQ-1
+Received: by mail-wr1-f71.google.com with SMTP id d10-20020adffbca000000b00157bc86d94eso477678wrs.20
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 05:31:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1bF0+pdPFV1oPqtHYhh2gb/KkOQLq0K7gX0PwtmmkGA=;
+        b=lZj4qclYmVbHmqgE8rJB6GL4qlCi6y7axCoruvH8TkzyyytBSL5udM5dBVBlUhj9xn
+         Dk4Ei9ZjE/lVtSoj0lpaNi07/4W1S6EOLdu326G5vaT6IayTJY80L2xqJ4Md7woGicW0
+         fasi65OkrHTjVTsDwnXbo71oEfuhpjJVPg29fuF8TOS2eshd/MMmVpC4Yrip05R5MWrB
+         NUwav9j7hhAgmHzBUp4pew3u2E/3VQfNqnTwbxsxfjWntcx6xoAKNNB5Lyme9+uo/7+F
+         OvMp8+2rRbzyujszAnybFjBiJu1Qr7ATk6tGc8eiK/sEvQADj35fZdRkc65LruoCcQkg
+         JVyQ==
+X-Gm-Message-State: AOAM531L2vgMc2U5JbQ9slpIpPfv3jfNZofbjljPTe/g++PKoIDYP78Z
+        iTzPZsjj2PKV42QGUrxBYQ9C+UvdqoCPx2u/azCbROZ4sivJsHAdClnBkCrRL4t2xu9TDsrRi6y
+        fupxuCJxgBtabM6htNxZMK3pW
+X-Received: by 2002:a5d:6cc9:: with SMTP id c9mr3459267wrc.12.1630585872056;
+        Thu, 02 Sep 2021 05:31:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzw9OYDFsRzxtUxt8WzFVuzQqX9uKEjP7AudR21ZtDRAs5a3V/WpA+nMGwkaPm1bwnde7r7Lg==
+X-Received: by 2002:a5d:6cc9:: with SMTP id c9mr3459246wrc.12.1630585871881;
+        Thu, 02 Sep 2021 05:31:11 -0700 (PDT)
+Received: from gator (nat-pool-brq-t.redhat.com. [213.175.37.10])
+        by smtp.gmail.com with ESMTPSA id x21sm1539270wmi.15.2021.09.02.05.31.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 05:31:11 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 14:31:10 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Oliver Upton <oupton@google.com>
+Cc:     Raghavendra Rao Ananta <rananta@google.com>, kvm@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 02/12] KVM: arm64: selftests: Add write_sysreg_s and
+ read_sysreg_s
+Message-ID: <20210902123110.royrzw4dsykkrcjx@gator>
+References: <20210901211412.4171835-1-rananta@google.com>
+ <20210901211412.4171835-3-rananta@google.com>
+ <YS/wfBTnCJWn05Kn@google.com>
+ <YS/53N7LdJOgdzNu@google.com>
+ <CAJHc60xU3XvmkBHoB8ihyjy6k4RJ9dhqt31ytHDGjd5xsaJjFA@mail.gmail.com>
+ <YTAHYrQslkY12715@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <44e08066-bbfb-222e-dffc-63e5b64f125f@linux.alibaba.com>
+In-Reply-To: <YTAHYrQslkY12715@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 07:58:51PM +0800, Lai Jiangshan wrote:
-> Oh, #VC will need to switch stack.  I think we need ASM code to switch
-> stack since the original stack need to be "free" for next #VC.
+On Wed, Sep 01, 2021 at 11:06:10PM +0000, Oliver Upton wrote:
+> On Wed, Sep 01, 2021 at 03:48:40PM -0700, Raghavendra Rao Ananta wrote:
+> > On Wed, Sep 1, 2021 at 3:08 PM Oliver Upton <oupton@google.com> wrote:
+> > >
+> > > On Wed, Sep 01, 2021 at 09:28:28PM +0000, Oliver Upton wrote:
+> > > > On Wed, Sep 01, 2021 at 09:14:02PM +0000, Raghavendra Rao Ananta wrote:
+> > > > > For register names that are unsupported by the assembler or the ones
+> > > > > without architectural names, add the macros write_sysreg_s and
+> > > > > read_sysreg_s to support them.
+> > > > >
+> > > > > The functionality is derived from kvm-unit-tests and kernel's
+> > > > > arch/arm64/include/asm/sysreg.h.
+> > > > >
+> > > > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > > >
+> > > > Would it be possible to just include <asm/sysreg.h>? See
+> > > > tools/arch/arm64/include/asm/sysreg.h
+> > >
+> > > Geez, sorry for the noise. I mistakenly searched from the root of my
+> > > repository, not the tools/ directory.
+> > >
+> > No worries :)
+> > 
+> > > In any case, you could perhaps just drop the kernel header there just to
+> > > use the exact same source for kernel and selftest.
+> > >
+> > You mean just copy/paste the entire header? There's a lot of stuff in
+> > there which we
+> > don't need it (yet).
+> 
+> Right. It's mostly register definitions, which I don't think is too high
+> of an overhead. Don't know where others stand, but I would prefer a
+> header that is equivalent between kernel & selftests over a concise
+> header.
+>
 
-Right, #VC switches off its IST stack to make it free for subsequent
-#VCs. The switch mostly happens in C code already, see
-vc_switch_off_ist(), only the actual RSP update is still ASM.
+Until now we haven't needed the sys_reg(...) type of definitions for
+sysregs in selftests. In case we did, we defined the registers we
+needed for get/set_one_reg by their parts, e.g.
 
-Regards,
+ #define ID_AA64DFR0_EL1 3, 0,  0, 5, 0
 
-	Joerg
+allowing us to choose how we use them, ARM64_SYS_REG(...) vs.
+sys_reg(...).
+
+Bringing over sysreg.h is probably a good idea though. If we do, then
+I'd suggest we define a new macro that allows us to convert a SYS_*
+register definition from sysreg.h into an ARM64_SYS_REG definition
+for get/set_one_reg in order to avoid redundant definitions.
+
+Thanks,
+drew
+
