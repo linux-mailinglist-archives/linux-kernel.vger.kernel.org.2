@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2253FE791
+	by mail.lfdr.de (Postfix) with ESMTP id 10E443FE790
 	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 04:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242772AbhIBCVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 1 Sep 2021 22:21:37 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:21220 "EHLO
+        id S242997AbhIBCVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 1 Sep 2021 22:21:24 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:36423 "EHLO
         twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233001AbhIBCVf (ORCPT
+        with ESMTP id S233070AbhIBCVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 1 Sep 2021 22:21:35 -0400
+        Wed, 1 Sep 2021 22:21:22 -0400
 Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1821xBgu068911;
+        by twspam01.aspeedtech.com with ESMTP id 1821xBgv068911;
         Thu, 2 Sep 2021 09:59:11 +0800 (GMT-8)
         (envelope-from chiawei_wang@aspeedtech.com)
 Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
@@ -26,9 +26,9 @@ To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
         <openbmc@lists.ozlabs.org>
-Subject: [PATCH v2 2/3] soc: aspeed: Add LPC UART routing support
-Date:   Thu, 2 Sep 2021 10:18:15 +0800
-Message-ID: <20210902021817.17506-3-chiawei_wang@aspeedtech.com>
+Subject: [PATCH v2 2/3] soc: aspeed: Add UART routing support
+Date:   Thu, 2 Sep 2021 10:18:16 +0800
+Message-ID: <20210902021817.17506-4-chiawei_wang@aspeedtech.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
 References: <20210902021817.17506-1-chiawei_wang@aspeedtech.com>
@@ -38,17 +38,17 @@ X-Originating-IP: [192.168.2.66]
 X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
  (192.168.0.24)
 X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1821xBgu068911
+X-MAIL: twspam01.aspeedtech.com 1821xBgv068911
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add driver support for the LPC UART routing control. Users can perform
-runtime configuration of the RX muxes among the UART controllers and the
-UART IO pins.
+Add driver support for the UART routing control. Users can perform
+runtime configuration of the RX muxes among the UART controllers and
+the UART IO pins.
 
-A sysfs interface is also exported for the convenience of routing paths
-check and configuration.
+The sysfs interface is also exported for the convenience of routing paths
+check and update.
 
 Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
 ---
