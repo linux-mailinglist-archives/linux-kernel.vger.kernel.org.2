@@ -2,149 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8BF3FF001
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA883FF005
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 17:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345770AbhIBPVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 11:21:18 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:51184 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345698AbhIBPVO (ORCPT
+        id S1345736AbhIBPWD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 2 Sep 2021 11:22:03 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:52117 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239584AbhIBPWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 11:21:14 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 182F3fF0001892;
-        Thu, 2 Sep 2021 11:19:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=QbW4x9/Vy805LKx9h6xm30flkNXvZK4xKrhfq2rNVsM=;
- b=qDFtUTnOBAow20c+ML9I06QGddD08jvRtZAvSC152HkG2vxhVePGxTTQMz3r/8yZWsn7
- zVRfuHjo/IoToRA8mEtaoFa/zJave4+fktwcgLoaDxyq3dfD6gUYue6MmrhxntDXIscG
- zTKBoNo+7DV5tEptiNR0j2yLaTD6FF0nzgWCnVICLQYSc70NQhCTgPnoCdt7wWqsBuXh
- 5uSCiGwS7+6FSn3orWNg2HF9g4GEuPrI52zAnjgwOLoT39vASqoQotsYrq6cz1WxYLUF
- hY2RNfH9DIJ2DHz8WyFypNMISArR6a/YB/itw+f1KMsRDPvJO0zEC6HjvCROz4yah5Ww 5A== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3au0dy26kh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Sep 2021 11:19:57 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 182F3gAC002344;
-        Thu, 2 Sep 2021 11:19:57 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3au0dy26jn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Sep 2021 11:19:57 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 182FIj8W002983;
-        Thu, 2 Sep 2021 15:19:55 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma02wdc.us.ibm.com with ESMTP id 3atdxc6ck8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Sep 2021 15:19:55 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 182FJsfd34603420
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 2 Sep 2021 15:19:54 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2F9D778068;
-        Thu,  2 Sep 2021 15:19:54 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8E6D978078;
-        Thu,  2 Sep 2021 15:19:52 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.211.89.117])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  2 Sep 2021 15:19:52 +0000 (GMT)
-Message-ID: <6cb65cb3bd69ae69bde044f809525e478bdb8512.camel@linux.ibm.com>
-Subject: Re: [PATCH 0/3] Allow access to confidential computing secret area
- in SEV guests
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Dov Murik <dovmurik@linux.ibm.com>, linux-efi@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Jim Cadden <jcadden@ibm.com>, linux-coco@lists.linux.dev,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 02 Sep 2021 08:19:51 -0700
-In-Reply-To: <YTDoS5XycY3gO4MM@kroah.com>
-References: <20210809190157.279332-1-dovmurik@linux.ibm.com>
-         <YTDKUe8rXrr0Zika@kroah.com>
-         <e6fb1d54605690cc1877d7140fc9346c22268111.camel@linux.ibm.com>
-         <YTDoS5XycY3gO4MM@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Thu, 2 Sep 2021 11:22:02 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 4259C10000A;
+        Thu,  2 Sep 2021 15:21:01 +0000 (UTC)
+Date:   Thu, 2 Sep 2021 17:21:00 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-iio@vger.kernel.org, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 15/16] iio: adc: max1027: Support software triggers
+Message-ID: <20210902172100.3200b3b6@xps13>
+In-Reply-To: <20210830115046.3727ccc4@jic23-huawei>
+References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
+        <20210818111139.330636-16-miquel.raynal@bootlin.com>
+        <20210830115046.3727ccc4@jic23-huawei>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: X0BBfsUnrgBwFQKASWltwHcWwpPaUlmq
-X-Proofpoint-ORIG-GUID: av-NRex120oZ3yXsK5AxQ6f2yUdsz4KH
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-02_04:2021-09-02,2021-09-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 phishscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
- mlxscore=0 clxscore=1015 mlxlogscore=999 adultscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109020091
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-09-02 at 17:05 +0200, Greg KH wrote:
-> On Thu, Sep 02, 2021 at 07:35:10AM -0700, James Bottomley wrote:
-> > On Thu, 2021-09-02 at 14:57 +0200, Greg KH wrote:
-> > [...]
-> > > Wait, why are you using securityfs for this?
-> > > 
-> > > securityfs is for LSMs to use. 
+Hi Jonathan,
+
+Jonathan Cameron <jic23@kernel.org> wrote on Mon, 30 Aug 2021 11:50:46
++0100:
+
+> On Wed, 18 Aug 2021 13:11:38 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> 
+> > Now that max1027_trigger_handler() has been freed from handling hardware
+> > triggers EOC situations, we can use it for what it has been designed in
+> > the first place: trigger software originated conversions.  
+> 
+> As mentioned earlier, this is not how I'd normally expect this sort of
+> case to be handled. I'd be expecting the cnvst trigger to still be calling
+> this function and the function to do the relevant check to ensure it
+> knows the data is already available in that case.
+
+I tried to follow your advice and Nuno's regarding this, I hope the new
+version will match your expectations (new version coming soon).
+However if my changes do not match, I will probably need more guidance
+to understand in deep what you suggest.
+
+> > In other
+> > words, when userspace initiates a conversion with a sysfs trigger or a
+> > hrtimer trigger, we must do all configuration steps, ie:
+> > 1- Configuring the trigger
+> > 2- Configuring the channels to scan
+> > 3- Starting the conversion (actually done automatically by step 2 in
+> >    this case)
+> > 4- Waiting for the conversion to end
+> > 5- Retrieving the data from the ADC
+> > 6- Push the data to the IIO core and notify it
 > > 
-> > No it isn't ... at least not exclusively; we use it for non LSM
-> > security purposes as well, like for the TPM BIOS log and for
-> > IMA.  What makes you think we should start restricting securityfs
-> > to LSMs only?  That's not been the policy up to now.
-> 
-> Well that was the original intent of the filesystem when it was
-> created, but I guess it's really up to the LSM maintainers now what
-> they want it for.
-> 
-> > >  If you want your own filesystem to play around with stuff like
-> > > this, great, write your own, it's only 200 lines or less these
-> > > days.  We used to do it all the time until people realized they
-> > > should just use sysfs for driver stuff.
+> > Add the missing steps to this helper and drop the trigger verification
+> > hook otherwise software triggers would simply not be accepted at all.
 > > 
-> > This is a security purpose (injected key retrieval), so securityfs
-> > seems to be the best choice.  It's certainly possible to create a
-> > new filesystem, but I really think things with a security purpose
-> > should use securityfs so people know where to look for them.
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > ---
+> >  drivers/iio/adc/max1027.c | 26 ++++++++++++++------------
+> >  1 file changed, 14 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
+> > index 8c5995ae59f2..bb437e43adaf 100644
+> > --- a/drivers/iio/adc/max1027.c
+> > +++ b/drivers/iio/adc/max1027.c
+> > @@ -413,17 +413,6 @@ static int max1027_debugfs_reg_access(struct iio_dev *indio_dev,
+> >  	return spi_write(st->spi, val, 1);
+> >  }
+> >  
+> > -static int max1027_validate_trigger(struct iio_dev *indio_dev,
+> > -				    struct iio_trigger *trig)
+> > -{
+> > -	struct max1027_state *st = iio_priv(indio_dev);
+> > -
+> > -	if (st->trig != trig)
+> > -		return -EINVAL;
+> > -
+> > -	return 0;
+> > -}
+> > -
+> >  static int max1027_set_cnvst_trigger_state(struct iio_trigger *trig, bool state)
+> >  {
+> >  	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
+> > @@ -512,7 +501,21 @@ static irqreturn_t max1027_trigger_handler(int irq, void *private)
+> >  
+> >  	pr_debug("%s(irq=%d, private=0x%p)\n", __func__, irq, private);
+> >  
+> > +	ret = max1027_configure_trigger(indio_dev);  
 > 
-> knowing where to look should not be an issue, as that should be
-> documented in Documentation/ABI/ anyway, right?
+> I'd not expect to see this ever time.  The configuration shouldn't change
+> from one call of this function to the next.
+
+True, this is not needed.
+
+> > +	if (ret)
+> > +		goto out;
+> > +
+> > +	ret = max1027_configure_chans_to_scan(indio_dev);  
 > 
-> It's just the overlap / overreach of using an existing filesystem for
-> things that don't seem to be LSM-related that feels odd to me.
-> 
-> Why not just make a cocofs if those people want a filesystem
-> interface?
-> It's 200 lines or so these days, if not less, and that way you only
-> mount what you actually need for the system.
+> This should also not change unless it is also responsible for the 'go' signal.
+> If that's true then it is badly named.
 
-Secrets transfer is actually broader than confidential computing,
-although confidential computing is a first proposed use, so I think
-cocofs would be too narrow.
+It's responsible for the go signal, I renamed it "configure_and_start".
 
-> Why force this into securityfs if it doesn't have to be?
+However, just for my own understanding, when would I be supposed to
+configure the channels requested by the user otherwise?
 
-It's not being forced.  Secrets transfer is a security function in the
-same way the bios log is.
-
-James
-
-
+Thanks,
+Miquèl
