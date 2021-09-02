@@ -2,152 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CAC3FF3BE
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B1F93FF3C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 21:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347163AbhIBTES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 15:04:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347218AbhIBTEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 15:04:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F23DC610FB;
-        Thu,  2 Sep 2021 19:03:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630609393;
-        bh=qge/1wRptOM7qKmyeVs6L3b7+ZyQhTZtXGQZKA7Cg6A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Eh+I7fFVsSngU5/wMlBN8fHRhfJ/c/l8qMc6bhoXlSYRgT3jhYezpeFMm4XObvYZD
-         eBY7RQuow1bJ0lZ9WlJpBweJcoJ/9CkD+BMDRlu6MBbr47C3dzMAiplcOQHV5kTbj/
-         65/Giina+oK5mLj9F7IF3B495mt1hmvRhn0tJlZfM5l9n/9RsTy4xrhhJEXP06ic1O
-         xN6C4Q78wELlVHJog0kOVvE6yiDsCd2Cy3cOibmu3OqjNxifsxr7NBMhcKpHptTZCf
-         Ug9KXtGc7LTv9y8eXGrJvLEC8OrNLCUMxFXtN6T2evwKcdy75zche0RonQaAPUDOhX
-         iK/OJKmVtQ/ZA==
-Received: by mail-ej1-f45.google.com with SMTP id jg16so3618604ejc.1;
-        Thu, 02 Sep 2021 12:03:12 -0700 (PDT)
-X-Gm-Message-State: AOAM530yD4qqfTpA36GQEKbpsg+AYORXZj60pEFzaybub2fkseJ/JZG+
-        KvDM3r7lP2XmBl0XJBEC8NJ1W4+wsmutSyJktA==
-X-Google-Smtp-Source: ABdhPJw/U5UN1QoZlj+vN/kmaYOsUEshTeFwCb5cw1o8g+gkV2zt4YgSlmZ5IXTGPfZg5fFk+l3zW1htGkmNhm2b/wA=
-X-Received: by 2002:a17:906:25db:: with SMTP id n27mr5327532ejb.108.1630609391487;
- Thu, 02 Sep 2021 12:03:11 -0700 (PDT)
+        id S1347221AbhIBTFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 15:05:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233011AbhIBTFC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 15:05:02 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB2ABC061575;
+        Thu,  2 Sep 2021 12:04:03 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id k13so6571451lfv.2;
+        Thu, 02 Sep 2021 12:04:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NOyqDeyc/FwMKkG6ZTdjkTsk1ZboIqPE5R0kzD5kwqM=;
+        b=Wwead7MONGzVYiH+1uLhcRMd7BwybKn1cdhzq4Pl34GASkjRKqV67XAex8C+WPOTMm
+         zUdNdf1z0NpfpRlh15x2YkOocSs51EWV+GPxl1WU05lH9D+Diwxv109pRCOPWqEghrBx
+         Fv+jjYQYUF/f2QMbE0syyyrDNZgfh1gfM7EHhZbFnOzFWlR2E0+wwcB73yPvPqnTQ+2J
+         afAfOySZvRUBaKZDUs0M0v//Y2anWO38yaI829vAH6nlYI9c08aZLXRQpRYzKC31aflS
+         yUkKkdxDA4Pk1OY+pKaIkeDUXEz0Wk0xInmhYBwlUxhkXr3PGmOX0fFdEe0rIrnouB8Y
+         X09Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NOyqDeyc/FwMKkG6ZTdjkTsk1ZboIqPE5R0kzD5kwqM=;
+        b=KlsK0Gpc0MIDs3612YoLPh0Mfkll4KCKJrIoSl90klDLTr0tCbQiMKJy1j732kLbC9
+         /foPTJxW1epK6B1dH1FJIQ/abv+P+O/qOZotIZ0bStegLGzuoUY7Zjgt0AUtC3vTxoNf
+         1+aUiKHcLbaFr59bM5Vs1OviCyjxRLOyYfqiJVFnlGy1mTB3j4a+A1HYkS368Mex+CXi
+         K+yAj4dihkeIHoRR7+kLPt/B2yut8TkAaPum3pEVPuaS5SUDUfGFq6WspeXhtpQeCjyE
+         ro70mAf34o9tVWW445/F/GflYCGsp41zXnozXM6UqEbQFqainnRNrc9GM8W6+cmWZLBM
+         yhPA==
+X-Gm-Message-State: AOAM531e9Wea5icF21Ce1+vaO7t2JVcZnFR8rt+XzyppP82yo9LYrfwn
+        XTcl61vNJeVoNuiFRSnZ7Ls=
+X-Google-Smtp-Source: ABdhPJw/YbLepWf9qyfLzSGXAvN/DAATPR8KdpZEpodx0YkdPgPh8kveLkNywl+dFVQa2WVBHp7b+A==
+X-Received: by 2002:a05:6512:39c6:: with SMTP id k6mr2058369lfu.379.1630609442112;
+        Thu, 02 Sep 2021 12:04:02 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.67.70])
+        by smtp.gmail.com with ESMTPSA id f7sm336443ljp.90.2021.09.02.12.04.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 12:04:01 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+b2be9dd8ca6f6c73ee2d@syzkaller.appspotmail.com
+Subject: [PATCH] net: xfrm: fix shift-out-of-bounds in xfrm_get_default
+Date:   Thu,  2 Sep 2021 22:04:00 +0300
+Message-Id: <20210902190400.5257-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210902025528.1017391-1-saravanak@google.com>
- <20210902025528.1017391-3-saravanak@google.com> <CAL_JsqJOv7D5nHteGPDKC2+ns1caVNs-NFFJppLuK0OEB8dztQ@mail.gmail.com>
- <CAGETcx-rOakAX_apu2ecu6jWCwzO0RgMkwdfzyF+UaxQfVj4CA@mail.gmail.com>
-In-Reply-To: <CAGETcx-rOakAX_apu2ecu6jWCwzO0RgMkwdfzyF+UaxQfVj4CA@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 2 Sep 2021 14:02:58 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+A1T5+KK5xsVVtrMVeuMre3B6sAAroX+a3gQy6wY+r8A@mail.gmail.com>
-Message-ID: <CAL_Jsq+A1T5+KK5xsVVtrMVeuMre3B6sAAroX+a3gQy6wY+r8A@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] of: platform: Mark bus devices nodes with FWNODE_FLAG_NEVER_PROBES
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 11:57 AM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Thu, Sep 2, 2021 at 7:24 AM Rob Herring <robh+dt@kernel.org> wrote:
-> >
-> > On Wed, Sep 1, 2021 at 9:55 PM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > We don't want fw_devlink creating device links for bus devices as
-> > > they'll never probe. So mark those device node with this flag.
-> > >
-> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > ---
-> > >  drivers/of/platform.c | 16 ++++++++++++++++
-> > >  1 file changed, 16 insertions(+)
-> > >
-> > > diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-> > > index 74afbb7a4f5e..42b3936d204a 100644
-> > > --- a/drivers/of/platform.c
-> > > +++ b/drivers/of/platform.c
-> > > @@ -392,6 +392,22 @@ static int of_platform_bus_create(struct device_node *bus,
-> > >         if (!dev || !of_match_node(matches, bus))
-> > >                 return 0;
-> > >
-> > > +       /*
-> > > +        * If the bus node has only one compatible string value and it has
-> > > +        * matched as a bus node, it's never going to get probed by a device
-> > > +        * driver. So flag it as such so that fw_devlink knows not to create
-> > > +        * device links with this device.
-> > > +        *
-> > > +        * This doesn't catch all devices that'll never probe, but this is good
-> > > +        * enough for now.
-> > > +        *
-> > > +        * This doesn't really work for PPC because of how it uses
-> > > +        * of_platform_bus_probe() to add normal devices. So ignore PPC cases.
-> > > +        */
-> > > +       if (!IS_ENABLED(CONFIG_PPC) &&
-> > > +           of_property_count_strings(bus, "compatible") == 1)
-> > > +               bus->fwnode.flags |= FWNODE_FLAG_NOT_DEVICE;
-> >
-> > This looks fragile relying on 1 compatible string, and the DT flags in
-> > this code have been fragile too. I'm pretty sure we have cases of
-> > simple-bus or simple-mfd that also have another compatible.
-> >
-> > Couldn't we solve this with a simple driver?
->
-> Oh, I didn't think you'd like that. I'd lean towards that option too
-> if we can address some of the other concerns below.
->
-> > Make 'simple-pm-bus'
-> > driver work for other cases?
->
-> > BTW, this patch doesn't even work for
-> > simple-pm-bus.
->
-> How do you mean? Because simple-pm-bus already has a driver and
-> doesn't set "matches" param when it calls of_platform_populate() and
-> this flag won't be set. So at least for simple-pm-bus I don't see any
-> issue.
+Syzbot hit shift-out-of-bounds in xfrm_get_default. The problem was in
+missing validation check for user data.
 
-You're right.
+up->dirmask comes from user-space, so we need to check if this value
+is less than XFRM_USERPOLICY_DIRMASK_MAX to avoid shift-out-of-bounds bugs.
 
-> I was trying to reuse of_default_bus_match_table without explicitly
-> referring to it, but if it's confusing I can add a separate list of
-> compatible strings and use those here instead of using "matches".
+Fixes: 2d151d39073a ("xfrm: Add possibility to set the default to block if we have no policy")
+Reported-and-tested-by: syzbot+b2be9dd8ca6f6c73ee2d@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ net/xfrm/xfrm_user.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-What happens with a non-default table? I'm not sure we can assume the
-same behavior.
+diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
+index b7b986520dc7..e4cf48c71315 100644
+--- a/net/xfrm/xfrm_user.c
++++ b/net/xfrm/xfrm_user.c
+@@ -2005,6 +2005,11 @@ static int xfrm_get_default(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 		return -EMSGSIZE;
+ 	}
+ 
++	if (up->dirmask >= XFRM_USERPOLICY_DIRMASK_MAX) {
++		kfree_skb(r_skb);
++		return -EINVAL;
++	}
++
+ 	r_up = nlmsg_data(r_nlh);
+ 
+ 	r_up->action = ((net->xfrm.policy_default & (1 << up->dirmask)) >> up->dirmask);
+-- 
+2.33.0
 
-> > A driver for simple-bus may cause issues if there's a
-> > more specific driver to bind to as we don't handle that. It's simply
-> > whichever matches first.
->
-> Right, this is my worry. Especially for devices like this (there are
-> plenty of cases like this) which have a driver that probes them but
-> also lists simple-bus
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/arm-realview-pb11mp.dts?id=73f3af7b4611d77bdaea303fb639333eb28e37d7#n299
-
-Uhh, that one is certainly a leakage of wanting an soc_device in the
-hierarchy, not any real bus structure reflecting the h/w. I'm not a
-fan of the soc_device stuff and its optional nature. Everything is an
-SoC, so it should always be there? Or your device hierarchy should
-change when you decide to add a soc_device?
-
-> So as long as there's a compatible string that's not one of the
-> "transparent" busses, this driver shouldn't match. So, I don't think I
-> can get away from checking the compatible strings.
->
-> How about I check here to make sure all the "compatible" strings are
-> from an approved transparent bus list, and if it's true, I use
-> driver_override to force match it to a transparent bus driver? Would
-> you be okay with that?
-
-Can't we do that within a driver? We check this and fail probe if
-there's a more specific compatible.  Then another driver can match and
-probe.
-
-Rob
