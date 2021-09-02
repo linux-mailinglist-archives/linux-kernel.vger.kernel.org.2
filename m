@@ -2,172 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16A883FF2D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1383FF2D2
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234619AbhIBRs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 13:48:26 -0400
-Received: from mout.gmx.net ([212.227.15.15]:47985 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230120AbhIBRsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 13:48:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630604838;
-        bh=IFT3FOSMetx4EKHSM1iC+ZE//nfJHP+l89JUT8Pbp6k=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=kwC6dj0mzUXth49mXlvTfvCaWB2HoGWA6cEhpSyRbuhxcV4JuI7qvwz2SrhNnH1y5
-         t0p7Noobl0ZcGV9yymx/10fAa5etZPL7UG+UbgM6Wo+qTsWJO3KXdB3ney0oILIXsk
-         JOu0qGAmBp7vXSUMMfG0WGpiuruUecr/Zj28N7n0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530 ([92.116.158.38]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MysVs-1n91Hg0MhG-00vt7X; Thu, 02
- Sep 2021 19:47:18 +0200
-Date:   Thu, 2 Sep 2021 19:47:14 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Subject: [GIT PULL] parisc architecture updates for kernel v5.15-rc1
-Message-ID: <YTEOIq86QHceYCO9@ls3530>
+        id S1346587AbhIBRt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 13:49:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230120AbhIBRtz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 13:49:55 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 397FFC061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 10:48:55 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id s11so2753194pgr.11
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 10:48:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hNMj/GicbHDFoe73cuJ4lNnx/NF5xDyfqRaOX+0Ci3Q=;
+        b=YShTlSP5CUXu2We9BopCbUcCPNZXUdTFfKWhV4htP+zKgUKw6SQWmMmr5ZjeGdFHDV
+         7uX6cKtkMatsuhF8Ecl/WvB/A7iciMIXtay5u7BoeX9xnPSLAHF2p4KPtx4hX2vthj7Y
+         TcY5s2WT7NRCIDuluN2GZoemDddljML2ONQgcNBtOlxmpkBw7flChnRBANjCBeFd8rZt
+         9G7ebYuTa6D2TPziyfFuh4uRDZ8LkJK1PmW5S/gjUlfVAsHwXcZWpdKNC9whCUqer3S0
+         vC7xc/c9xRVt08Rjn0BWf9hsGwiQpgiKRfNof18GNBLv8lwjaJYFN6SaRMAGnZ1MM3Xh
+         IRng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hNMj/GicbHDFoe73cuJ4lNnx/NF5xDyfqRaOX+0Ci3Q=;
+        b=F2xHFrHU/cbLg4HWK5lSco+AHZW1fIZtGTYAdYb87rUOKGqODv5q9ICZTZHEwxTjoQ
+         3xkRe9YxfoxiAryy8u5os/X9atBbTahsegf6oO/TnOu9doFGJzE2OgTBjQ9/Nv3a7yKj
+         nLTG5uxVRXnpFZIB7ObMCW2QCsz2yfdkmjwY2cqYzKB2S1UjolCrZdyDRQq+V7AjYXgh
+         ycyCv7Y+GleHDYS+vJiTB/7QYPzbrXh9BVQNsBsSH0Krioln92K1RIiu/w09B9rG7VUb
+         Mve7Nl/+yDhu/JeI1SpiKTRgatL+OAuHfRPpIVZ5ZIsbcfoxNLQqqZWXlNU6TCmcCwYv
+         0ZZA==
+X-Gm-Message-State: AOAM533xf9MVoX7bfv+2uw5EXAGABekgHD7WdE1CPQNGoLQCTvRWylCw
+        w4XdXfri1VCr829/aZFZrFyj1Q==
+X-Google-Smtp-Source: ABdhPJxUFxkuiACE9bx35iXYuvJBCCP8PZUF5Ehxs+TdgCLps7x4MSNrX5ZkupyqJ2RSAO/KXxMp5Q==
+X-Received: by 2002:a05:6a00:26cb:b0:408:f3b8:bdad with SMTP id p11-20020a056a0026cb00b00408f3b8bdadmr4649004pfw.48.1630604934637;
+        Thu, 02 Sep 2021 10:48:54 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id b17sm3470956pgl.61.2021.09.02.10.48.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 10:48:53 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 11:48:51 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Leo Yan <leo.yan@linaro.org>, James Clark <james.clark@arm.com>,
+        coresight@lists.linaro.org, linux-perf-users@vger.kernel.org,
+        mike.leach@linaro.org, suzuki.poulose@arm.com,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 9/9] perf cs-etm: Show a warning for an unknown magic
+ number
+Message-ID: <20210902174851.GB1078000@p14s>
+References: <20210806134109.1182235-1-james.clark@arm.com>
+ <20210806134109.1182235-10-james.clark@arm.com>
+ <20210824083615.GF204566@leoy-ThinkPad-X240s>
+ <YS+iOrcPTzQfmbqU@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:LAKAwiWPw34e1ZGSNXNXoV9yif/Aqvd0Cmcnc00YJeztuV6o9vE
- 4nPDX2guswIvGKkeOHJ95S8lI+7TpYdXV+IQhOg5MbZBeEeuE66nPP0dH/HSFrmotEL4c6K
- sj7YIM6rC6yzCNe9VoueEck+51WkXi3pfnP9bcFr2M2lqBhoXWNNwbPhW7+XJzUzNTrs7Jj
- PaWk0ci7FFYDZPGrew3bA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0JwMoBC95pM=:lzEz8g9u97kXZqBDWW/ptY
- H3HAoZd6dIIFBqRBAQLXJOyxF4LmyOgs4oekQnro0e4p2eV3uuPDyqw3OPkeawQsu7hRLpxvE
- E5WKbt/o1qyUCR/HZyxhru2Yhsk5H3lnqrejRk4SXm4Hbrvr3C51rthhCPaGEGd5pf0OWCQYB
- AbwaeHgCzDeNsnx0oLxbce5xU30leZYDeB7YUVOQuvU0wIs22mPEWpT7o+cLkC3QkOFHBI+oJ
- Bm79fQOtkE/yspfA5s81qBWgb0tMqmBb8SVroLimFU1Ie9Vj+wirr3ggLxzERoQA1GEelbyhR
- QCMy21xY8x3t2d//CzoeBUMyVLu53X95F57W6CXLPiyHCrGKX97ZAyUN8EJICioVoBRdm5lhn
- x/OU61tLFcnf2Bz/8AwLmvXtrM3SMqf4dEwczwDmnNnnYkII0unO9NZZcVhLD7QFmFClyfGIE
- Na6lONWtTCiXnT0WefQnOi5gaS52JYAzu0AVxes0vKZujJYv+xpdTsD1nQ5CpESLvIAVtFPWs
- V5mB6jj4v+ACcOkU2WFsRzjtMRhRT2QaXRtibV7TL9YwV5scF+YcPYg9CgBXgFyqL6Ucnh7nu
- KkvyW/X+61reBvVUaODPK5caxAX+11V7oISj68ayAhW7Nm2Qv+zudhGpUXV/XtFAhOI3ZGM5k
- LqfA2jtYu+dsgXe68c3wF20xXACQ7JXS5kVJ18D8/1PfspbWfl08h2Ys4NgKrtbSD7KOVU3Bf
- iij9gJgM6LCEurW1U8XfDjBXWwQnut0M3HDlr2H+Q3U7w+oBGUmiubB2wN9c0KQjoW5D44AF6
- 4jI2sqCpVQk7eSsXRkPS8sCv50NLDdaf09p4gXRd8Nlp22lpv1ZfvHmrrNmUSP86I9HxX3SiS
- gX3+71zNFwI6A4jNCZIDe6NinA6x5/bxUkrsToxRsbxcE8HppimrMASaqGs5Z8Eyh2fElE1sn
- 3rh3phktFAuVtIIGst430zCIsibra3xNM17wggOsv+YAd8Yti7DKORWtRHD48p29m+gS+/+/0
- 3EYlqKtfTImjzmJmC2fXuvkO8hNS2PLB9UMn2IfxZ6RaB9XVVSLwxDBR84RHqgKgfqZGkmVZc
- FApcwV4GCt0ujwK6fyTZCvV41/ojln3Y6fx
+In-Reply-To: <YS+iOrcPTzQfmbqU@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Arnaldo,
 
-please pull the parisc architecture updates for kernel 5.15-rc1 from:
+On Wed, Sep 01, 2021 at 12:54:34PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Aug 24, 2021 at 04:36:15PM +0800, Leo Yan escreveu:
+> > On Fri, Aug 06, 2021 at 02:41:09PM +0100, James Clark wrote:
+> > > Currently perf reports "Cannot allocate memory" which isn't very helpful
+> > > for a potentially user facing issue. If we add a new magic number in
+> > > the future, perf will be able to report unrecognised magic numbers.
+> > > 
+> > > Signed-off-by: James Clark <james.clark@arm.com>
+> > 
+> > Reviewed-by: Leo Yan <leo.yan@linaro.org>
+> 
+> Applies cleanly to my tree, test building it now, holler if there is
+> something that prevents it from being merged.
 
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git t=
-ags/for-5.15/parisc
+Have you already merged this? 
 
-Changes in this patchset include:
-- Fix a kernel crash when a signal is delivered to bad userspace stack
-- Fix fall-through warnings in math-emu code
-- Increase size of gcc stack frame check
-- Switch coding from 'pci_' to 'dma_' API
-- Make struct parisc_driver::remove() return void
-- Some parisc related Makefile changes
-- Minor cleanups, e.g. change to octal permissions, fix macro collisions,
-  fix PMD_ORDER collision, replace spaces with tabs
+If so than let it be.  Otherwise please hold off as I'd like to take a look,
+something I intend on doing next week.
 
 Thanks,
-Helge
+Mathieu
 
-=2D---------------------------------------------------------------
-The following changes since commit 7d2a07b769330c34b4deabeed939325c77a7ec2=
-f:
-
-  Linux 5.14 (2021-08-29 15:04:50 -0700)
-
-are available in the Git repository at:
-
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git t=
-ags/for-5.15/parisc
-
-for you to fetch changes up to 6f1fce595b78b775d7fb585c15c2dc3a6994f96e:
-
-  parisc: math-emu: Fix fall-through warnings (2021-09-01 22:18:18 +0200)
-
-=2D---------------------------------------------------------------
-parisc architecture updates for kernel 5.15:
-
-- Fix a kernel crash when a signal is delivered to bad userspace stack
-- Fix fall-through warnings in math-emu code
-- Increase size of gcc stack frame check
-- Switch coding from 'pci_' to 'dma_' API
-- Make struct parisc_driver::remove() return void
-- Some parisc related Makefile changes
-- Minor cleanups, e.g. change to octal permissions, fix macro collisions,
-  fix PMD_ORDER collision, replace spaces with tabs
-
-=2D---------------------------------------------------------------
-Christophe JAILLET (2):
-      parisc: switch from 'pci_' to 'dma_' API
-      parisc/parport_gsc: switch from 'pci_' to 'dma_' API
-
-Helge Deller (2):
-      parisc: Increase size of gcc stack frame check
-      parisc: math-emu: Fix fall-through warnings
-
-Jinchao Wang (1):
-      parisc: Replace symbolic permissions with octal permissions
-
-Kees Cook (1):
-      parisc: math-emu: Avoid "fmt" macro collision
-
-Masahiro Yamada (3):
-      parisc: remove unused arch/parisc/boot/install.sh and its phony targ=
-et
-      parisc: move core-y in arch/parisc/Makefile to arch/parisc/Kbuild
-      parisc: Fix compile failure when building 64-bit kernel natively
-
-Matthew Wilcox (Oracle) (1):
-      parisc: Rename PMD_ORDER to PMD_TABLE_ORDER
-
-Mikulas Patocka (1):
-      parisc: fix crash with signals and alloca
-
-Shubhankar Kuranagatti (1):
-      parisc: ccio-dma.c: Added tab instead of spaces
-
-Uwe Kleine-K=F6nig (1):
-      parisc: Make struct parisc_driver::remove() return void
-
- Makefile                                 |  5 ++
- arch/parisc/Kbuild                       |  1 +
- arch/parisc/Makefile                     |  9 +--
- arch/parisc/boot/Makefile                |  4 --
- arch/parisc/boot/install.sh              | 65 ----------------------
- arch/parisc/include/asm/parisc-device.h  |  4 +-
- arch/parisc/include/asm/pgalloc.h        |  6 +-
- arch/parisc/include/asm/pgtable.h        |  4 +-
- arch/parisc/kernel/signal.c              |  6 ++
- arch/parisc/math-emu/decode_exc.c        |  4 +-
- arch/parisc/math-emu/fpudispatch.c       | 56 ++++++++++++++++++-
- arch/parisc/mm/init.c                    |  4 +-
- drivers/char/ipmi/ipmi_si.h              |  2 +-
- drivers/char/ipmi/ipmi_si_intf.c         |  6 +-
- drivers/char/ipmi/ipmi_si_parisc.c       |  4 +-
- drivers/char/ipmi/ipmi_si_platform.c     |  4 +-
- drivers/input/keyboard/hilkbd.c          |  4 +-
- drivers/input/serio/gscps2.c             |  3 +-
- drivers/net/ethernet/i825xx/lasi_82596.c |  3 +-
- drivers/parisc/ccio-dma.c                | 94 ++++++++++++++++-----------=
------
- drivers/parisc/led.c                     |  4 +-
- drivers/parport/parport_gsc.c            |  8 +--
- drivers/scsi/lasi700.c                   |  4 +-
- drivers/scsi/zalon.c                     |  4 +-
- drivers/tty/serial/mux.c                 |  3 +-
- lib/Kconfig.debug                        |  2 +-
- scripts/subarch.include                  |  2 +-
- sound/parisc/harmony.c                   |  3 +-
- 28 files changed, 147 insertions(+), 171 deletions(-)
- delete mode 100644 arch/parisc/boot/install.sh
+> - Arnaldo
+>  
+> > > ---
+> > >  tools/perf/util/cs-etm.c | 5 +++++
+> > >  1 file changed, 5 insertions(+)
+> > > 
+> > > diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
+> > > index 788ad5a099f6..5b276bdb96a6 100644
+> > > --- a/tools/perf/util/cs-etm.c
+> > > +++ b/tools/perf/util/cs-etm.c
+> > > @@ -2973,6 +2973,11 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+> > >  
+> > >  			/* ETE shares first part of metadata with ETMv4 */
+> > >  			trcidr_idx = CS_ETMV4_TRCTRACEIDR;
+> > > +		} else {
+> > > +			ui__error("CS ETM Trace: Unrecognised magic number %#"PRIx64". File could be from a newer version of perf.\n",
+> > > +				  ptr[i]);
+> > > +			err = -EINVAL;
+> > > +			goto err_free_metadata;
+> > >  		}
+> > >  
+> > >  		if (!metadata[j]) {
+> > > -- 
+> > > 2.28.0
+> > > 
+> 
+> -- 
+> 
+> - Arnaldo
