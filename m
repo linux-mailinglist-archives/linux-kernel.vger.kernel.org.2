@@ -2,174 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35D43FF12F
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9D43FF143
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 18:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346256AbhIBQVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 12:21:36 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59332 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1346029AbhIBQVf (ORCPT
+        id S1346218AbhIBQXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 12:23:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346137AbhIBQXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 12:21:35 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 182G3LbH129623;
-        Thu, 2 Sep 2021 12:19:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=87Sy2UVic7iNWomN6tkxoII7Iud6lqmX5CIzHTtPV1M=;
- b=bwi7370a+2vBMD2fXIDivxj1Fue7ECluu6vYl2mlYVczNdyEic6gteclCEeqOYSHObck
- PBsOpUQh98tuQFc1hKZEo7uuQ5b9TjW2NJpmnOQ7+ZluxmwcBhuTVOSU6DMZPv+ABjGD
- a0ibntlvPHLxAN9tQV8PPfzj0lnXElVCw9Hpprw+AEr0E0HDrEZd1mUy5UXxiOQpiibT
- f0BXPNsSrdxQfxnw5dJklbd8103l/YLUOmkv96Tkz3+9AHm4SwFxUWW955wJqVW/Xci7
- XFsWJbDntLeTNrT+M1xblo0aBmNfRCo5cbvfyh0zlc9ub3Wt0BfvFcNbicyiRRCy9jPy tg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3au1rd8mua-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Sep 2021 12:19:19 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 182G3QOW130004;
-        Thu, 2 Sep 2021 12:19:18 -0400
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3au1rd8mu4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Sep 2021 12:19:18 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 182GHpww014478;
-        Thu, 2 Sep 2021 16:19:17 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma03wdc.us.ibm.com with ESMTP id 3atdxufq6t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 02 Sep 2021 16:19:17 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 182GJGQe31588832
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 2 Sep 2021 16:19:16 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 67A4578060;
-        Thu,  2 Sep 2021 16:19:16 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B016A7805F;
-        Thu,  2 Sep 2021 16:19:14 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.211.89.117])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  2 Sep 2021 16:19:14 +0000 (GMT)
-Message-ID: <61212d923295203173b1a8c3c24b6dd19835c57e.camel@linux.ibm.com>
-Subject: Re: [PATCH 0/3] Allow access to confidential computing secret area
- in SEV guests
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Dov Murik <dovmurik@linux.ibm.com>, linux-efi@vger.kernel.org,
-        Borislav Petkov <bp@suse.de>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Jim Cadden <jcadden@ibm.com>, linux-coco@lists.linux.dev,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 02 Sep 2021 09:19:13 -0700
-In-Reply-To: <YTD3U70FCkXzNMrF@kroah.com>
-References: <20210809190157.279332-1-dovmurik@linux.ibm.com>
-         <YTDKUe8rXrr0Zika@kroah.com>
-         <e6fb1d54605690cc1877d7140fc9346c22268111.camel@linux.ibm.com>
-         <YTDoS5XycY3gO4MM@kroah.com>
-         <6cb65cb3bd69ae69bde044f809525e478bdb8512.camel@linux.ibm.com>
-         <YTD3U70FCkXzNMrF@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Thu, 2 Sep 2021 12:23:23 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22232C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 09:22:25 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id u7so2391274ilk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 09:22:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=TseH8xVhWOOp+bpzRkCyDdLN8bmoeYU2hdmJSnbKHa8=;
+        b=zI0aXj9S1Jl5AemUMQ/5UklCaEUxXZrxcQZL/OE2Fb6n1tcRr4W/VirWkdEriWHT5y
+         syWlzg6zQrN7P8Rk8ItLibZxRipyE8dufAvaM00oy/flcDFkbH2UrEmOQTm3Bf2OTF1V
+         I3AK1hcfeIITdZvcdpinuk4/ZlOE9HDlmx8UFuKqE67hZIXUzm2sa8Jz5OBxYJRyMVbl
+         98+BJwcblFusF1sZ+vcxI5akpsSYJJAnM+/38kCQOtGX+l+Qi9VMJQiCvjiPCVq4aQEH
+         +Kex/n/029LbMhIWbBBUXEtbD3doR1mOfZlLbz2pYqV3xsMmrEj6+BFUAjRhfpovcaRL
+         swcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=TseH8xVhWOOp+bpzRkCyDdLN8bmoeYU2hdmJSnbKHa8=;
+        b=ct7HFOdjBYd8Fnr1W6RgX65RzgBw/pkM215Gbw/pHhFQ1oNTc47rlgyAUZdPus8cvy
+         tRE3RTXYDMFiuYU/o70PyDx4gJVacCHVdifswvBAM1WdBCtuW+IQpm7kUMQUqaEqwtbM
+         0b4a+JS8GxzTJpyU+8QWPcg/QSjHwBux0wQm5JTMvpLAWgfJl8YhpnFLEN9jwbgJdkuW
+         L/MB0rLvgAhXNgeCjZGi2DfJglWurooSoX8kCFqpPEUguK3ijUeUu1wN1I4T+R8C+9Pp
+         sJ7hhsv2x7lu9JN2JgavoXyg8kdOdRyjtqQKzEwNP+WA97Bi3fTBEOK3o465PRpVH8s/
+         iwMw==
+X-Gm-Message-State: AOAM532J6Bg24QgUQOCmSXZ1L0qz8Xj05I7+YoD0L7usNUD/T1RM6Lvl
+        gLUi28lt91UfDiNMep1oOlc3CA==
+X-Google-Smtp-Source: ABdhPJzWn873+2HdlozMaD10vkYiARwcb2eP7Om4ChnTNblJ5rBBFeifA6/TLLOfzGOW2aRFjvSz0Q==
+X-Received: by 2002:a05:6e02:1905:: with SMTP id w5mr2892263ilu.165.1630599744535;
+        Thu, 02 Sep 2021 09:22:24 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id c5sm502785ilk.48.2021.09.02.09.22.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 09:22:24 -0700 (PDT)
+To:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Christoph Lameter <cl@linux.com>,
+        Linux Memory Management List <linux-mm@kvack.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: slub: BUG: Invalid wait context
+Message-ID: <3b7661a1-dbde-ea54-f880-99777c95ae22@kernel.dk>
+Date:   Thu, 2 Sep 2021 10:22:23 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: cvudAN3sqTWqQyDJ5vQ4TqceYxK7OTYF
-X-Proofpoint-ORIG-GUID: vnF0_qy6a1Qk9vcAQreBukm9fxIBZXDE
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-02_04:2021-09-02,2021-09-02 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 clxscore=1015 mlxscore=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 impostorscore=0 mlxlogscore=999
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109020094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-09-02 at 18:09 +0200, Greg KH wrote:
-> On Thu, Sep 02, 2021 at 08:19:51AM -0700, James Bottomley wrote:
-> > On Thu, 2021-09-02 at 17:05 +0200, Greg KH wrote:
-> > > On Thu, Sep 02, 2021 at 07:35:10AM -0700, James Bottomley wrote:
-> > > > On Thu, 2021-09-02 at 14:57 +0200, Greg KH wrote:
-> > > > [...]
-> > > > > Wait, why are you using securityfs for this?
-> > > > > 
-> > > > > securityfs is for LSMs to use. 
-> > > > 
-> > > > No it isn't ... at least not exclusively; we use it for non LSM
-> > > > security purposes as well, like for the TPM BIOS log and for
-> > > > IMA.  What makes you think we should start restricting
-> > > > securityfs to LSMs only?  That's not been the policy up to now.
-> > > 
-> > > Well that was the original intent of the filesystem when it was
-> > > created, but I guess it's really up to the LSM maintainers now
-> > > what they want it for.
-> > > 
-> > > > >  If you want your own filesystem to play around with stuff
-> > > > > like this, great, write your own, it's only 200 lines or less
-> > > > > these days.  We used to do it all the time until people
-> > > > > realized they should just use sysfs for driver stuff.
-> > > > 
-> > > > This is a security purpose (injected key retrieval), so
-> > > > securityfs seems to be the best choice.  It's certainly
-> > > > possible to create a new filesystem, but I really think things
-> > > > with a security purpose should use securityfs so people know
-> > > > where to look for them.
-> > > 
-> > > knowing where to look should not be an issue, as that should be
-> > > documented in Documentation/ABI/ anyway, right?
-> > > 
-> > > It's just the overlap / overreach of using an existing filesystem
-> > > for things that don't seem to be LSM-related that feels odd to
-> > > me.
-> > > 
-> > > Why not just make a cocofs if those people want a filesystem
-> > > interface?
-> > > It's 200 lines or so these days, if not less, and that way you
-> > > only mount what you actually need for the system.
-> > 
-> > Secrets transfer is actually broader than confidential computing,
-> > although confidential computing is a first proposed use, so I think
-> > cocofs would be too narrow.
-> > 
-> > > Why force this into securityfs if it doesn't have to be?
-> > 
-> > It's not being forced.  Secrets transfer is a security function in
-> > the same way the bios log is.
-> 
-> Is the bios log in securityfs today?
+Hi,
 
-Yes. It's under /sys/kernel/security/tpm0/  All the ima policy control
-and its log is under /sys/kernel/security/ima/  that's why I think
-declaring securityfs as being for anything security related is already
-our de facto (if not de jure) policy.
+Booting current -git yields the below splat. I'm assuming this is
+related to the new RT stuff, where spin_lock() can sleep. This obviously
+won't fly off IPI.
 
-> Anyway, it's up to the securityfs maintainer (i.e. not me), but
-> personally, I think this should be a separate filesystem as that
-> would probably make things easier in the long run...
+I'll leave the actual fix to others.
 
-I know Al likes this business of loads of separate filesystems, but
-personally I'm not in favour.  For every one you do, you not only have
-to document it all, you also have to find a preferred mount point that
-the distributions can agree on and also have them agree to enable the
-mount for, which often takes months of negotiation.  Having fewer
-filesystems grouped by common purpose which have agreed mount points
-that distros actually mount seems a far easier approach to enablement.
+[    1.430398] =============================
+[    1.430398] [ BUG: Invalid wait context ]
+[    1.430398] 5.14.0+ #11360 Not tainted
+[    1.430398] -----------------------------
+[    1.430533] swapper/0/0 is trying to lock:
+[    1.430743] ffff888100050918 (&n->list_lock){....}-{3:3}, at: deactivate_slab+0x213/0x540
+[    1.431171] other info that might help us debug this:
+[    1.431430] context-{2:2}
+[    1.431567] no locks held by swapper/0/0.
+[    1.431774] stack backtrace:
+[    1.431923] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.14.0+ #11360
+[    1.432246] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[    1.432826] Call Trace:
+[    1.432961]  <IRQ>
+[    1.433071]  dump_stack_lvl+0x45/0x59
+[    1.433273]  __lock_acquire.cold+0x21a/0x34d
+[    1.433504]  ? lock_chain_count+0x20/0x20
+[    1.433722]  ? lockdep_hardirqs_on_prepare+0x1f0/0x1f0
+[    1.433990]  ? __lock_acquire+0x86b/0x30b0
+[    1.434206]  lock_acquire+0x157/0x3e0
+[    1.434399]  ? deactivate_slab+0x213/0x540
+[    1.434615]  ? lock_release+0x410/0x410
+[    1.434815]  ? lockdep_hardirqs_on_prepare+0x1f0/0x1f0
+[    1.435081]  ? mark_held_locks+0x65/0x90
+[    1.435286]  ? lock_is_held_type+0x98/0x110
+[    1.435509]  ? lock_is_held_type+0x98/0x110
+[    1.435728]  _raw_spin_lock+0x2c/0x40
+[    1.435922]  ? deactivate_slab+0x213/0x540
+[    1.436136]  deactivate_slab+0x213/0x540
+[    1.436341]  ? sched_clock_tick+0x49/0x80
+[    1.436556]  ? lock_is_held_type+0x98/0x110
+[    1.436774]  flush_cpu_slab+0x34/0x50
+[    1.436966]  flush_smp_call_function_queue+0xf6/0x2c0
+[    1.437228]  ? slub_cpu_dead+0xe0/0xe0
+[    1.437426]  __sysvec_call_function_single+0x6b/0x280
+[    1.437691]  sysvec_call_function_single+0x65/0x90
+[    1.437940]  </IRQ>
+[    1.438053]  asm_sysvec_call_function_single+0xf/0x20
+[    1.438314] RIP: 0010:default_idle+0x10/0x20
+[    1.438539] Code: ff f0 80 63 02 df 5b 41 5c c3 0f ae f0 0f ae 3b 0f ae f0 eb 90 0f 1f 44 00 00 0f 1f 44 00 00 eb 07 0f 00 2d 92 5d 45 00 fb f4 <c3> cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 0f 1f 44 00 00 41
+[    1.439481] RSP: 0000:ffffffff82a07e60 EFLAGS: 00000206
+[    1.439605] RAX: 0000000000001811 RBX: ffffffff82a1f400 RCX: ffffffff81dbddc5
+[    1.439605] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff81dce145
+[    1.439605] RBP: 0000000000000000 R08: 0000000000000001 R09: ffff8881f7630b0b
+[    1.439605] R10: ffffed103eec6161 R11: 0000000000000000 R12: ffffffff8306c7b0
+[    1.439605] R13: 0000000000000000 R14: 0000000000000000 R15: 1ffffffff0540fd1
+[    1.439605]  ? rcu_eqs_enter.constprop.0+0xa5/0xc0
+[    1.439605]  ? default_idle_call+0x45/0xb0
+[    1.439605]  default_idle_call+0x7d/0xb0
+[    1.439605]  do_idle+0x31c/0x3d0
+[    1.439605]  ? lock_downgrade+0x390/0x390
+[    1.439605]  ? arch_cpu_idle_exit+0x40/0x40
+[    1.439605]  cpu_startup_entry+0x19/0x20
+[    1.439605]  start_kernel+0x38d/0x3ab
+[    1.439605]  secondary_startup_64_no_verify+0xb0/0xbb
 
-James
 
+-- 
+Jens Axboe
 
