@@ -2,146 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F513FEE37
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545383FEE3A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 14:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344861AbhIBNA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 09:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234247AbhIBNAZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:00:25 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE6C2C061575;
-        Thu,  2 Sep 2021 05:59:26 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a25so4149735ejv.6;
-        Thu, 02 Sep 2021 05:59:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vaGzIm5LsmBsaKouZzrmYUthPEgqDvMKDaRZQ7yEMO4=;
-        b=i9GHpXvLiZcopIrVEMMb6V3w5gInseFZpl/2spgZ2hqPhy7dLzowfGqBKXvzK1VsZ2
-         mloUwMvKQm7pnyWev0jOH7NgreEliw9+8cagJptnFASWj1jJUCVL1/qzO1rDwMKpyU61
-         EDkt8BasV8WFI8VDRuwEX4XT+uwmI0L2xSoV+kO0uRLXHnvCzOOXzvHq99pSTwULKZ01
-         6CZk0sYYiMcFrmnd0mDPnMb5KK5G+uY5+/3xcW2bLQLeS4meEEBvNKUzOi3/joTOgiwk
-         2ZXUVgcztcc7HmjMHsyAtlGwiXembwPAMuxXEZuWLutOC5hqInnP0bcDJqDouYdhBnaH
-         GINg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vaGzIm5LsmBsaKouZzrmYUthPEgqDvMKDaRZQ7yEMO4=;
-        b=YRtM/9mmjcCii/MtKTZcvwbO30chpAFUF3ePZNT+u6OBQ5yOVF4CWfc1ZNAYetsulo
-         +YXfcFr7cksMHITUnA5Q18abZuTykojgAcsKE1ENc+Ke0UOdmySj/zHz7a5CnRBW3rbn
-         Il1OOE4dWymyRJOKEkYgRy8WfgZBpw6K5rqeW7ZA2yjB074Dyqrm5PkItc6xMWPOmzVC
-         Orz4dc/rUYq3FqmhCzH9I+ecNXlzamdSZRXS4BvXKMAfWAUHs7n0wzXpDiX5dZFG5GZQ
-         /oxxCEgEldih+Cl06PwiQVGLTe3ykLx8mIJozNe/e2npBX+ZcE/rl90iQ8tNZ92ZtreI
-         Wg/Q==
-X-Gm-Message-State: AOAM532/WW4lo40n5XFQoIVuf2RVSjwkVtIz5gejH/ZRFzZ2EYwW/Dil
-        gjm4RaLdyCQNzemltcvrJAs=
-X-Google-Smtp-Source: ABdhPJxM/T+zJF6YHAwRyfCS/+2BquIGUhci/K8jHTpCgFJDBp07tvm67krYUYmNh6gtUIwskeazrg==
-X-Received: by 2002:a17:906:1d19:: with SMTP id n25mr3673483ejh.11.1630587565279;
-        Thu, 02 Sep 2021 05:59:25 -0700 (PDT)
-Received: from skbuf ([82.78.148.104])
-        by smtp.gmail.com with ESMTPSA id c25sm1079599ejm.9.2021.09.02.05.59.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 05:59:24 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 15:59:23 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [RFC PATCH net-next 0/3] Make the PHY library stop being so
- greedy when binding the generic PHY driver
-Message-ID: <20210902125923.v7fq26iiqydtgq7g@skbuf>
-References: <20210901225053.1205571-1-vladimir.oltean@nxp.com>
- <20210902121927.GE22278@shell.armlinux.org.uk>
- <20210902123532.ruvuecxoig67yv5v@skbuf>
+        id S1344867AbhIBNAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 09:00:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344892AbhIBNAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 09:00:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CA2B610E6;
+        Thu,  2 Sep 2021 12:59:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630587577;
+        bh=kvnpsl+vAp5F0vMNJjaVKsRfY+l5b5vVyeef5rRTjk8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V6RHHHiwxiAeyErGszL2Ra4YcwPeYHqG+7fpO88sfz0eN6pIrD0bg+n2A0Wdq9T/S
+         JIb24b1tkd4cplsfcwebbeGGjZk8DVs9NG9v5i+idgWd5RebFAIKKjY9jsz+b4n4Ed
+         dRs7WdnYocqUoBi03ynSEdvIqAeDfv9sMqDo4Lms=
+Date:   Thu, 2 Sep 2021 14:59:34 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dov Murik <dovmurik@linux.ibm.com>
+Cc:     linux-efi@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
+        Jim Cadden <jcadden@ibm.com>, linux-coco@lists.linux.dev,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] virt: Add sev_secret module to expose confidential
+ computing secrets
+Message-ID: <YTDKtr+W7wBTn/96@kroah.com>
+References: <20210809190157.279332-1-dovmurik@linux.ibm.com>
+ <20210809190157.279332-4-dovmurik@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210902123532.ruvuecxoig67yv5v@skbuf>
+In-Reply-To: <20210809190157.279332-4-dovmurik@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 03:35:32PM +0300, Vladimir Oltean wrote:
-> On Thu, Sep 02, 2021 at 01:19:27PM +0100, Russell King (Oracle) wrote:
-> > On Thu, Sep 02, 2021 at 01:50:50AM +0300, Vladimir Oltean wrote:
-> > > The central point of that discussion is that DSA seems "broken" for
-> > > expecting the PHY driver to probe immediately on PHYs belonging to the
-> > > internal MDIO buses of switches. A few suggestions were made about what
-> > > to do, but some were not satisfactory and some did not solve the problem.
-> > 
-> > I think you need to describe the mechanism here. Why wouldn't a PHY
-> > belonging to an internal MDIO bus of a switch not probe immediately?
-> > What resources may not be available?
+On Mon, Aug 09, 2021 at 07:01:57PM +0000, Dov Murik wrote:
+> The new sev_secret module exposes the confidential computing (coco)
+> secret area via securityfs interface.
 > 
-> As you point out below, the interrupt-controller is what is not available.
-> There is a mechanism called fw_devlink which infers links from one OF
-> node to another based on phandles. When you have an interrupt-parent,
-> that OF node becomes a supplier to you. Those OF node links are then
-> transferred to device links once the devices having those OF nodes are
-> created.
+> When the module is loaded (and securityfs is mounted, typically under
+> /sys/kernel/security), a "coco/sev_secret" directory is created in
+> securityfs.  In it, a file is created for each secret entry.  The name
+> of each such file is the GUID of the secret entry, and its content is
+> the secret data.
 > 
-> > If we have a DSA driver that tries to probe the PHYs before e.g. the
-> > interrupt controller inside the DSA switch has been configured, aren't
-> > we just making completely unnecessary problems for ourselves?
+> This allows applications running in a confidential computing setting to
+> read secrets provided by the guest owner via a secure secret injection
+> mechanism (such as AMD SEV's LAUNCH_SECRET command).
 > 
-> This is not what happens, if that were the case, of course I would fix
-> _that_ and not in this way.
+> Removing (unlinking) files in the "coco/sev_secret" directory will zero
+> out the secret in memory, and remove the filesystem entry.  If the
+> module is removed and loaded again, that secret will not appear in the
+> filesystem.
 > 
-> > Wouldn't it be saner to ensure that the interrupt controller has been
-> > setup and become available prior to attempting to setup anything that
-> > relies upon that interrupt controller?
+> Signed-off-by: Dov Murik <dovmurik@linux.ibm.com>
+> ---
+>  drivers/virt/Kconfig                      |   3 +
+>  drivers/virt/Makefile                     |   1 +
+>  drivers/virt/coco/sev_secret/Kconfig      |  11 +
+>  drivers/virt/coco/sev_secret/Makefile     |   2 +
+>  drivers/virt/coco/sev_secret/sev_secret.c | 313 ++++++++++++++++++++++
+>  5 files changed, 330 insertions(+)
+>  create mode 100644 drivers/virt/coco/sev_secret/Kconfig
+>  create mode 100644 drivers/virt/coco/sev_secret/Makefile
+>  create mode 100644 drivers/virt/coco/sev_secret/sev_secret.c
 > 
-> The interrupt controller _has_ been set up. The trouble is that the
-> interrupt controller has the same OF node as the switch itself, and the
-> same OF node. Therefore, fw_devlink waits for the _entire_ switch to
+> diff --git a/drivers/virt/Kconfig b/drivers/virt/Kconfig
+> index 8061e8ef449f..6f73672f593f 100644
+> --- a/drivers/virt/Kconfig
+> +++ b/drivers/virt/Kconfig
+> @@ -36,4 +36,7 @@ source "drivers/virt/vboxguest/Kconfig"
+>  source "drivers/virt/nitro_enclaves/Kconfig"
+>  
+>  source "drivers/virt/acrn/Kconfig"
+> +
+> +source "drivers/virt/coco/sev_secret/Kconfig"
+> +
+>  endif
+> diff --git a/drivers/virt/Makefile b/drivers/virt/Makefile
+> index 3e272ea60cd9..2a7d472478bd 100644
+> --- a/drivers/virt/Makefile
+> +++ b/drivers/virt/Makefile
+> @@ -8,3 +8,4 @@ obj-y				+= vboxguest/
+>  
+>  obj-$(CONFIG_NITRO_ENCLAVES)	+= nitro_enclaves/
+>  obj-$(CONFIG_ACRN_HSM)		+= acrn/
+> +obj-$(CONFIG_AMD_SEV_SECRET)	+= coco/sev_secret/
+> diff --git a/drivers/virt/coco/sev_secret/Kconfig b/drivers/virt/coco/sev_secret/Kconfig
+> new file mode 100644
+> index 000000000000..76cfb4f405e0
+> --- /dev/null
+> +++ b/drivers/virt/coco/sev_secret/Kconfig
+> @@ -0,0 +1,11 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +config AMD_SEV_SECRET
+> +	tristate "AMD SEV secret area securityfs support"
+> +	depends on AMD_MEM_ENCRYPT && EFI
+> +	select SECURITYFS
+> +	help
+> +	  This is a driver for accessing the AMD SEV secret area via
+> +	  securityfs.
+> +
+> +	  To compile this driver as a module, choose M here.
+> +	  The module will be called sev_secret.
+> diff --git a/drivers/virt/coco/sev_secret/Makefile b/drivers/virt/coco/sev_secret/Makefile
+> new file mode 100644
+> index 000000000000..dca0ed3f8f94
+> --- /dev/null
+> +++ b/drivers/virt/coco/sev_secret/Makefile
+> @@ -0,0 +1,2 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +obj-$(CONFIG_AMD_SEV_SECRET) += sev_secret.o
+> diff --git a/drivers/virt/coco/sev_secret/sev_secret.c b/drivers/virt/coco/sev_secret/sev_secret.c
+> new file mode 100644
+> index 000000000000..d9a60166b142
+> --- /dev/null
+> +++ b/drivers/virt/coco/sev_secret/sev_secret.c
+> @@ -0,0 +1,313 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * sev_secret module
+> + *
+> + * Copyright (C) 2021 IBM Corporation
+> + * Author: Dov Murik <dovmurik@linux.ibm.com>
+> + */
+> +
+> +/**
+> + * DOC: sev_secret: Allow reading confidential computing (coco) secret area via
+> + * securityfs interface.
+> + *
+> + * When the module is loaded (and securityfs is mounted, typically under
+> + * /sys/kernel/security), a "coco/sev_secret" directory is created in
+> + * securityfs.  In it, a file is created for each secret entry.  The name of
+> + * each such file is the GUID of the secret entry, and its content is the
+> + * secret data.
+> + */
+> +
+> +#include <linux/seq_file.h>
+> +#include <linux/fs.h>
+> +#include <linux/kernel.h>
+> +#include <linux/init.h>
+> +#include <linux/module.h>
+> +#include <linux/io.h>
+> +#include <linux/security.h>
+> +#include <linux/efi.h>
+> +
+> +#define SEV_SECRET_NUM_FILES 64
+> +
+> +#define EFI_SEVSECRET_TABLE_HEADER_GUID \
+> +	EFI_GUID(0x1e74f542, 0x71dd, 0x4d66, 0x96, 0x3e, 0xef, 0x42, 0x87, 0xff, 0x17, 0x3b)
+> +
+> +struct sev_secret {
+> +	struct dentry *coco_dir;
+> +	struct dentry *fs_dir;
+> +	struct dentry *fs_files[SEV_SECRET_NUM_FILES];
+> +	struct linux_efi_coco_secret_area *secret_area;
+> +};
+> +
+> +/*
+> + * Structure of the SEV secret area
+> + *
+> + * Offset   Length
+> + * (bytes)  (bytes)  Usage
+> + * -------  -------  -----
+> + *       0       16  Secret table header GUID (must be 1e74f542-71dd-4d66-963e-ef4287ff173b)
+> + *      16        4  Length of bytes of the entire secret area
+> + *
+> + *      20       16  First secret entry's GUID
+> + *      36        4  First secret entry's length in bytes (= 16 + 4 + x)
+> + *      40        x  First secret entry's data
+> + *
+> + *    40+x       16  Second secret entry's GUID
+> + *    56+x        4  Second secret entry's length in bytes (= 16 + 4 + y)
+> + *    60+x        y  Second secret entry's data
+> + *
+> + * (... and so on for additional entries)
 
-...and the same struct device, not "OF node" repeated twice, silly me.
+Why isn't all of this documented in Documentation/ABI/ which is needed
+for any new user/kernel api that you come up with like this.  We have to
+have it documented somewhere, otherwise how will you know how to use
+these files?
 
-> finish probing, it doesn't have insight into the fact that the
-> dependency is just on the interrupt controller.
-> 
-> > From what I see of Marvell switches, the internal PHYs only ever rely
-> > on internal resources of the switch they are embedded in.
-> > 
-> > External PHYs to the switch are a different matter - these can rely on
-> > external clocks, and in that scenario, it would make sense for a
-> > deferred probe to cause the entire switch to defer, since we don't
-> > have all the resources for the switch to be functional (and, because we
-> > want the PHYs to be present at switch probe time, not when we try to
-> > bring up the interface, I don't see there's much other choice.)
-> > 
-> > Trying to move that to interface-up time /will/ break userspace - for
-> > example, Debian's interfaces(8) bridge support will become unreliable,
-> > and probably a whole host of other userspace. It will cause regressions
-> > and instability to userspace. So that's a big no.
-> 
-> Why a big no? I expect there to be 2 call paths of phy_attach_direct:
-> - At probe time. Both the MAC driver and the PHY driver are probing.
->   This is what has this patch addresses. There is no issue to return
->   -EPROBE_DEFER at that time, since drivers connect to the PHY before
->   they register their netdev. So if connecting defers, there is no
->   netdev to unregister, and user space knows nothing of this.
-> - At .ndo_open time. This is where it maybe gets interesting, but not to
->   user space. If you open a netdev and it connects to the PHY then, I
->   wouldn't expect the PHY to be undergoing a probing process, all of
->   that should have been settled by then, should it not? Where it might
->   get interesting is with NFS root, and I admit I haven't tested that.
+thanks
+
+greg k-h
