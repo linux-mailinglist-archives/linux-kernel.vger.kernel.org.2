@@ -2,56 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 221F53FF52C
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:55:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208C23FF52A
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 22:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345442AbhIBU4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 16:56:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35304 "EHLO mail.kernel.org"
+        id S242415AbhIBU43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 16:56:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231770AbhIBU42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231186AbhIBU42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 2 Sep 2021 16:56:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id EE4D661054;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9E98260FC0;
         Thu,  2 Sep 2021 20:55:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630616130;
-        bh=FL6WX8B1Oxj9domd5qdIRAc3dG4IkXovTWt6/QvWHg4=;
+        s=k20201202; t=1630616129;
+        bh=ctEN46C7hU0k3XCjFxpy+myKCJa2ov5i1NnH7bGbI7g=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=EeI2FcfmIISJKB3YsGYEiGzci0TVG6yeokjQ6hY2PlF7ONujfcPBgPd4rxc2Xnx3v
-         SAzZI+mOgkvzHltRagDkX2J3ESex3rI99S600hqBlOYwxNvvag1AvoHa9rOuJu/pmo
-         zlYT7dfJi6l6kGaIddacWaLS3u1yRjQAyc+ZPmf1DfE9GVnriV3vPnU54Yq/y91M98
-         6qx/SQRuGg39uC5hGvSAgNzguYBbKTRhcOhsMoMcVQKHKwt01yK3Tfl5002W2Hm3Jn
-         gyy0+eq6L0w0GTPWBWEBjeXPVMJNURAiGORdCsY0WsXmVwwa1mFcAELOJWqS1ozADB
-         87Y/D0m2pSgDQ==
+        b=cYO/DK+HbUGZeBhyA3YWRqzV2mQZdMFwg9bffRqroTJ5uQkbEikxuwSpK4bcMB7rW
+         CGdIM/aoNrdAd9+B1Bi33xlxx8XVzVOEJWzi0AmzMuFhzguONi9orFoO4PAqOa5KAj
+         knVir3uUvJsO6DCoPY8dgVKpYDrVrB8Hyr8PxIVlodgnzIGHZFhwRrws1cKUem3Vj5
+         fVBRKsO0ogI65ZrvpL4CWdtjLW+dXvEipXCFm6u+EdlD6o+CgK7g+g7EBVZZontaPl
+         xUv9fmqHnYpkUrpMbDrOI6ScYnrUU+PArrCV9sl7PNhBmTeq4nxb929gBQi0Ns/u8D
+         oryHoB9yBww2w==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E838260A0C;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8D90760A0C;
         Thu,  2 Sep 2021 20:55:29 +0000 (UTC)
-Subject: Re: [GIT PULL] xen: branch for v5.15-rc1
+Subject: Re: [GIT PULL] VFIO update for v5.15-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210902072921.27763-1-jgross@suse.com>
-References: <20210902072921.27763-1-jgross@suse.com>
+In-Reply-To: <20210901130821.6c81da7e.alex.williamson@redhat.com>
+References: <20210901130821.6c81da7e.alex.williamson@redhat.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210902072921.27763-1-jgross@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.15-rc1-tag
-X-PR-Tracked-Commit-Id: 58e636039b512697554b579c2bb23774061877f5
+X-PR-Tracked-Message-Id: <20210901130821.6c81da7e.alex.williamson@redhat.com>
+X-PR-Tracked-Remote: git://github.com/awilliam/linux-vfio.git tags/vfio-v5.15-rc1
+X-PR-Tracked-Commit-Id: ea870730d83fc13a5fa2bd0e175176d7ac8a400a
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9ae5fceb9a20154d74586fe17d1096b981b23e34
-Message-Id: <163061612994.4397.10660862212967182115.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 89b6b8cd92c068cd1bdf877ec7fb1392568ef35d
+Message-Id: <163061612952.4397.4445309581412678319.pr-tracker-bot@kernel.org>
 Date:   Thu, 02 Sep 2021 20:55:29 +0000
-To:     Juergen Gross <jgross@suse.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Anthony Yznaga <anthony.yznaga@oracle.com>,
+        Cai Huoqing <caihuoqing@baidu.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu,  2 Sep 2021 09:29:21 +0200:
+The pull request you sent on Wed, 1 Sep 2021 13:08:21 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.15-rc1-tag
+> git://github.com/awilliam/linux-vfio.git tags/vfio-v5.15-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9ae5fceb9a20154d74586fe17d1096b981b23e34
+https://git.kernel.org/torvalds/c/89b6b8cd92c068cd1bdf877ec7fb1392568ef35d
 
 Thank you!
 
