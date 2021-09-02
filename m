@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA9D3FF210
-	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 221B93FF212
+	for <lists+linux-kernel@lfdr.de>; Thu,  2 Sep 2021 19:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346521AbhIBRHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 13:07:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55862 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346501AbhIBRHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 13:07:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B97C761054;
-        Thu,  2 Sep 2021 17:06:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630602405;
-        bh=Xbw/qWyyLJxlhUSuR+vFLrxCpyznW1udr6aBUz1rfCE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eCazicTNYhpyuHF2dJDD5tvBCUlimShv7UbTGim9yQNX+gt0rtTs8iLVuPAsLe9iO
-         Ih/PFau49JlXpW4mS4fPkiekPiNGaylUUUGDGARt3u8RAl3arenKWykUyfnMY91cb9
-         tfwe6/POuUv3dknb1TtPeo0DX8HT5fuXXElsRiAmb11SINyMgxTFmexbXfq8IWSgK1
-         hnRjqGQJEb1rhl+aSZTuPCUcY/4cGFJCKDxx9ajZwUY0MYAkc1FE+7a+bmVTs0iztB
-         nDDxfeSkes1Cu3UekKvP7NBJrtf8f3XJH2kkD6F3AmzhGQs+6lCgXkJWjOzDctLG5Z
-         TgrMJEwnaz8/g==
-Date:   Thu, 2 Sep 2021 18:06:13 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] regulator: core: resolve supply voltage deferral silently
-Message-ID: <20210902170613.GG11164@sirena.org.uk>
-References: <20210826124015.1.Iab79c6dd374ec48beac44be2fcddd165dd26476b@changeid>
- <20210901150840.GF5976@sirena.org.uk>
- <CA+ASDXMLBpF6bQLCoxkN-+CqjxOX-ujzYBTV1f=zU1J7fFNuDA@mail.gmail.com>
+        id S1346531AbhIBRIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 13:08:42 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:33244 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234491AbhIBRIl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 13:08:41 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 97D811FFC5;
+        Thu,  2 Sep 2021 17:07:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630602461; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K5OzWCuEKWEp4QtFVuqotTWTSM6aFfFFxPEZwHhYHy8=;
+        b=gV4g2tNA1ZlbHoUBTjb+nPpgiBqJ//WB125aRi/KHI9zzkooBDwZyFTc2WIvRnxAvDBVMi
+        I6EJ+HyY/i+bsYukLUTzLQIWMK+bnCsUmEJJuuAJ8F3eoVvFUOq6ggenyk4yRjVuv4sNPj
+        0vq5IrKcH7dt3hxaB1FgT03P4vRYWP8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630602461;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=K5OzWCuEKWEp4QtFVuqotTWTSM6aFfFFxPEZwHhYHy8=;
+        b=LJDRhhv5ijJoiHDsAXZq23SfEYfaq8ZGepXBE7wLayMG9EhTfn5/iMSBdT33nMUcAmULzG
+        N+5xiijKlB2RCKBg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 37E5513AE2;
+        Thu,  2 Sep 2021 17:07:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id B51bCt0EMWFVTwAAGKfGzw
+        (envelope-from <jdelvare@suse.de>); Thu, 02 Sep 2021 17:07:41 +0000
+Date:   Thu, 2 Sep 2021 19:07:39 +0200
+From:   Jean Delvare <jdelvare@suse.de>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Kai-Chuan Hsieh <kaichuan.hsieh@canonical.com>,
+        Erwan Velu <e.velu@criteo.com>
+Subject: Re: [PATCH regression fix] firmware/dmi: Move product_sku info to
+ the end of the modalias
+Message-ID: <20210902190739.686eb8b1@endymion>
+In-Reply-To: <20210831130508.14511-1-hdegoede@redhat.com>
+References: <20210831130508.14511-1-hdegoede@redhat.com>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/Zw+/jwnNHcBRYYu"
-Content-Disposition: inline
-In-Reply-To: <CA+ASDXMLBpF6bQLCoxkN-+CqjxOX-ujzYBTV1f=zU1J7fFNuDA@mail.gmail.com>
-X-Cookie: Famous last words:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Hans,
 
---/Zw+/jwnNHcBRYYu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Tue, 31 Aug 2021 15:05:08 +0200, Hans de Goede wrote:
+> Commit e26f023e01ef ("firmware/dmi: Include product_sku info to modalias")
+> added a new field to the modalias in the middle of the modalias, breaking
+> some existing udev/hwdb matches on the whole modalias without a wildcard
+> ('*') in between the pvr and rvn fields.
+> 
+> All modalias matches in e.g. :
+> https://github.com/systemd/systemd/blob/main/hwdb.d/60-sensor.hwdb
+> deliberately end in ':*' so that new fields can be added at *the end* of
+> the modalias, but adding a new field in the middle like this breaks things.
+> 
+> Move the new sku field to the end of the modalias to fix some hwdb
+> entries no longer matching.
 
-On Wed, Sep 01, 2021 at 01:06:28PM -0700, Brian Norris wrote:
-> On Wed, Sep 1, 2021 at 8:09 AM Mark Brown <broonie@kernel.org> wrote:
+Argh. Sorry for missing that, and thanks a lot for spotting it,
+reporting it and providing a fix. I never liked the modalias format as
+it makes matches clearly fragile. I really need to keep this in mind
+when touching it.
 
-> > This doesn't make sense to me.  Why are we getting as far as trying to
-> > read the voltage if we've been told to defer probe?  This suggests that
-> > we ought to be doing this earlier on.  I see that the logic is already
-> > there to handle a deferral being generated here but it looks off.
+Patch applied and pushed to linux-next. I'll send it to Linus for
+5.14.1 quickly too.
 
-> Take a look at the commit this "Fixes":
-
-> 21e39809fd7c ("regulator: vctrl: Avoid lockdep warning in enable/disable ops")
-
-That driver change is at most tangentially related to the code that's
-being updated, this is a prime example of just randomly shoving Fixes
-lines onto things :( .  It's perfectly fine to send patches without a
-Fixes line, adding them when they're not really related at best creates
-noise and at worst causes problems with backporting (especially given
-the whole pulling random commits into stable thing we have these days).
-
-> Frankly, I'm not sure if we're abusing regulator framework features
-> (particularly, around use of ->supply) in commit 21e39809fd7c, or if
-> this is just a lacking area in the framework. I'm interested in
-> whether you have thoughts on doing this Better(TM).
-
-That's definitely an abuse of the API, the hardware design is pretty
-much a gross hack anywhere as far as I remember.  As Chen-Yu says I'd
-only expect this to be possible in the case where the supply is in
-bypass mode and hasn't got its own parent.  In any case I can see why
-it's happening now...
-
---/Zw+/jwnNHcBRYYu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmExBIQACgkQJNaLcl1U
-h9AjJwf+NMa+muPsPs5NxLPOL+tGoNKy1FHjFGLSK6n1OF9MHdlfdKOyL+F08/8u
-kvLtvhBU8nR43RcP1e73FNJvJvo+neJfz3zx/xbHHIfyo6a299FYNGeoNwXrvLGF
-VKKDfnpaayngu0zbi+8Hqe57hezP07KFPesKGNx/awhIVR8fJwxQMf5pAAZxvJK1
-cBN1IpEvFPTDvyc+0aNtbdrOvcXE2R99/N7jBOaEn4rxwoJkwjRVZ6BDUI8+6wNn
-+5vz38C6hscEEzcvVGNRGr1EMakNb7vsglhhXATttLf6Jul8o+HkWlydn9Rd0O4g
-Pkfg9lGA39Qms/3JAJI5AfEwDcCIKA==
-=CynK
------END PGP SIGNATURE-----
-
---/Zw+/jwnNHcBRYYu--
+-- 
+Jean Delvare
+SUSE L3 Support
