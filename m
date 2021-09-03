@@ -2,99 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCD53FFDFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 12:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00BEE3FFE02
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 12:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349076AbhICKKW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 3 Sep 2021 06:10:22 -0400
-Received: from mail3.swissbit.com ([176.95.1.57]:34742 "EHLO
-        mail3.swissbit.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348987AbhICKKU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 06:10:20 -0400
-Received: from mail3.swissbit.com (localhost [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id 8EA27462120;
-        Fri,  3 Sep 2021 12:09:19 +0200 (CEST)
-Received: from mail3.swissbit.com (localhost [127.0.0.1])
-        by DDEI (Postfix) with ESMTP id 7E0A446211D;
-        Fri,  3 Sep 2021 12:09:19 +0200 (CEST)
-X-TM-AS-ERS: 10.149.2.84-127.5.254.253
-X-TM-AS-SMTP: 1.0 ZXguc3dpc3NiaXQuY29t Y2xvZWhsZUBoeXBlcnN0b25lLmNvbQ==
-X-DDEI-TLS-USAGE: Used
-Received: from ex.swissbit.com (SBDEEX02.sbitdom.lan [10.149.2.84])
-        by mail3.swissbit.com (Postfix) with ESMTPS;
-        Fri,  3 Sep 2021 12:09:19 +0200 (CEST)
-Received: from sbdeex02.sbitdom.lan (10.149.2.84) by sbdeex02.sbitdom.lan
- (10.149.2.84) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.15; Fri, 3 Sep 2021
- 12:09:19 +0200
-Received: from sbdeex02.sbitdom.lan ([fe80::e0eb:ade8:2d90:1f74]) by
- sbdeex02.sbitdom.lan ([fe80::e0eb:ade8:2d90:1f74%8]) with mapi id
- 15.02.0792.015; Fri, 3 Sep 2021 12:09:19 +0200
-From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
-To:     Christoph Hellwig <hch@infradead.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>
-Subject: AW: [PATCH] sd: sd_open: prevent device removal during sd_open
-Thread-Topic: [PATCH] sd: sd_open: prevent device removal during sd_open
-Thread-Index: AQHXoAHu4he04cmBqECW8DEEUakoBauRmZAAgAB7+j8=
-Date:   Fri, 3 Sep 2021 10:09:18 +0000
-Message-ID: <771b391322c142baa6c15db458b81e8d@hyperstone.com>
-References: <98bfca4cbaa24462994bcb533d365414@hyperstone.com>,<YTGmyp0kzhVsuk5K@infradead.org>
-In-Reply-To: <YTGmyp0kzhVsuk5K@infradead.org>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.154.1.4]
-Content-Type: text/plain;
-        charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S1349079AbhICKMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 06:12:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349006AbhICKMB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 06:12:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EFBE601FA;
+        Fri,  3 Sep 2021 10:11:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630663862;
+        bh=/7OPMHyqDFeQeZbGTvfWjtzxc9g2MvAMhh4CdXl7IZw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=X/cragPoCyyqr4DP9nR/mDCR8SaO0DAmpUrl2rnZ4XkgshsiA6KchJo61lm3f80gj
+         x3kuQ0n6w1fgcxTkKREQIoUub4eCGQ7N1Fk7nwFqETcCi5jg6vGawmq5JnG+8o88+s
+         0qLxU0hPDasKlOmvJg2DfxoGQfd83jEKUXjgv8JamxxJNefP7aHHJbmLLUN0awPA35
+         2kWRn6pRsyaoAi2cwshy4wwlBA3WDNSY0NkmUv5LLwK5262hs/D6/rsMT+SrxWODLr
+         Q97A5DhDgZdmQhxV+y/PUrDQ7JHtxwjXpx3lWnPZqDeV0QMivxwnseGYdXsOg/3zr+
+         SUdyjWfuN9xmw==
+Date:   Fri, 3 Sep 2021 12:10:57 +0200
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Ricardo Ribalda <ribalda@chromium.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org, Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [PATCH v10 13/21] media: uvcvideo: Use control names from
+ framework
+Message-ID: <20210903121057.7279d964@coco.lan>
+In-Reply-To: <20210618122923.385938-14-ribalda@chromium.org>
+References: <20210618122923.385938-1-ribalda@chromium.org>
+        <20210618122923.385938-14-ribalda@chromium.org>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-TMASE-Version: DDEI-5.1-8.6.1018-26384.007
-X-TMASE-Result: 10--5.980700-10.000000
-X-TMASE-MatchedRID: TMsvcu6/L5dbRbA/K/rHzPZvT2zYoYOwMDmYaN/e0lZgDDNFig+GrOVJ
-        pKzRFX/CiqKFBc8lvzajhXQGpGiFkXrSP9RtGZYo0wmR34xRQc/5qGeseGYAlIsYz77JTJ+IUAr
-        JnwHoG3R+keJMZ3NCNpBi242iWIRSePs/Cx1DJd15zXLXCu83xRfJTYLG2XFvK+euk6MYlDZvIa
-        Mtw0Pio4psmNGAE/yp1y6ttzFWrvdMi6dAAjypotMfKJ+BrWfHTJDl9FKHbrkrhioeAJKilQ6UK
-        9Ft+LyUNFHfw012zdN/JgN7Aw6tALVQu1GNZ+sisjvNV98mpPM03E8a2eQGboPHZ0sZfvcz0cm+
-        1kT6rGJlSUEmQtntakEkNtY/j9YoftwZ3X11IV0=
-X-TMASE-SNAP-Result: 1.821001.0001-0-1-12:0,22:0,33:0,34:0-0
-X-TMASE-INERTIA: 0-0;;;;
-X-TMASE-XGENCLOUD: e8dfb5c0-1be9-4ce3-b84b-f46cbe580018-0-0-200-0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On Thu, Sep 02, 2021 at 01:57:13PM +0000, Christian L?hle wrote:
->> sd and parent devices must not be removed as sd_open checks for events
->> 
->> sd_need_revalidate and sd_revalidate_disk traverse the device path
->> to check for event changes. If during this, e.g. the scsi host is being
->> removed and its resources freed, this traversal crashes.
->> Locking with scan_mutex for just a scsi disk open may seem blunt, but there
->> does not seem to be a more granular option. Also opening /dev/sdX directly
->> happens rarely enough that this shouldn't cause any issues.
->
-> Can you please root cause how the device could not be valid, as that
-> should not happen?
+Em Fri, 18 Jun 2021 14:29:15 +0200
+Ricardo Ribalda <ribalda@chromium.org> escreveu:
 
-The device is being removed physically, the driver e.g. uas calls
-scsi_remove_host while user-space opens the /dev/sdX.
+> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> index 9cdd30eff495..28ccaa8b9e42 100644
+> --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> @@ -40,7 +40,13 @@ static int uvc_ioctl_ctrl_map(struct uvc_video_chain *chain,
+>  		return -ENOMEM;
+>  
+>  	map->id = xmap->id;
+> -	memcpy(map->name, xmap->name, sizeof(map->name));
+> +	/* Non standard control id. */
+> +	if (v4l2_ctrl_get_name(map->id) == NULL) {
+> +		map->name = kmemdup(xmap->name, sizeof(xmap->name),
+> +				    GFP_KERNEL);
 
->>
->> The issue occurred on an older kernel with the following trace:
->> stack segment: 0000 [#1] PREEMPT SMP PTI
->> CPU: 1 PID: 121457 Comm: python3 Not tainted 4.14.238hyLinux #1
->
-> .. preferably with a current mainline kernel as things changed a lot
-> in this area.
+Where are you de-allocating it at driver removal/unbind?
 
-I will, but might take a while to get a setup to reproduce the issue.
-(The setup where this occurred actually powerfails the usb device repreatedly.)=
-Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-Managing Directors: Dr. Jan Peter Berns.
-Commercial register of local courts: Freiburg HRB381782
-
+Thanks,
+Mauro
