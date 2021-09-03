@@ -2,146 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D892400303
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3B66400305
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349946AbhICQO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 12:14:27 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12779 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349935AbhICQOU (ORCPT
+        id S1349948AbhICQPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 12:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349763AbhICQPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 12:14:20 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 183G3v7R055041;
-        Fri, 3 Sep 2021 12:13:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : references : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=1zL/52MMTZrZR0OrYn35IWORfBwfxoL7gxdgJoMivZY=;
- b=UpLT2B6oqrgyB8DSyjYijBqUVYZtmyxgN9Y4KU5VKWcrgq+HWHpxeE5paG3PBwOtGCV1
- Z5mcUFfcCrY00EZPS7vF19J/0tb0VjYucDJW3821NERl8Az44oZvHkKUsfeU7a8Gclo/
- DWcy8eOVtSw7aJ484Cz4c9sHIJjLbTfb/wXKdfDP246YrmlyhHPswC2OAVA+7bduZPuV
- I96SS7viMOe6Z2YTv1ChPIDK12HYg9bY27HjHoN6vOio9PkBKkH1q6UfrDEsPgCc4f1m
- MfDT2yzbgyzzQAVdXnWZKBTbzndXr0v7JsMaZUMwyOQ2c0h3jKy8djAGf/lbQ6mQMxHd Nw== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3audm46r8v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 12:13:18 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 183Fvj9w010177;
-        Fri, 3 Sep 2021 16:13:16 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06fra.de.ibm.com with ESMTP id 3au6q0aa7n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 16:13:16 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 183G97rP58458596
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Sep 2021 16:09:07 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3CAE211C05E;
-        Fri,  3 Sep 2021 16:13:14 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E3F5F11C052;
-        Fri,  3 Sep 2021 16:13:13 +0000 (GMT)
-Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  3 Sep 2021 16:13:13 +0000 (GMT)
-Received: from [9.206.212.242] (unknown [9.206.212.242])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 59F08600F5;
-        Sat,  4 Sep 2021 02:13:12 +1000 (AEST)
-Subject: Re: [ANNOUNCE] [CFP] linux.conf.au Online 2022 Kernel Miniconf
-From:   Andrew Donnellan <ajd@linux.ibm.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     lwn@lwn.net
-References: <e7e0d0c0-799f-28b7-2a2e-418afe809f24@linux.ibm.com>
-Message-ID: <1f527127-6884-765f-3029-6f70b0cb61bd@linux.ibm.com>
-Date:   Sat, 4 Sep 2021 02:13:11 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <e7e0d0c0-799f-28b7-2a2e-418afe809f24@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: yMOrZ-7-mmg8ifJjBi3pF_VUzcl9kLU9
-X-Proofpoint-GUID: yMOrZ-7-mmg8ifJjBi3pF_VUzcl9kLU9
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-03_07:2021-09-03,2021-09-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- adultscore=0 impostorscore=0 mlxlogscore=894 bulkscore=0
- priorityscore=1501 suspectscore=0 lowpriorityscore=0 mlxscore=0
- spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109030096
+        Fri, 3 Sep 2021 12:15:11 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11AD5C061757
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 09:14:11 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id e8-20020a05622a110800b0029ecbdc1b2aso5498744qty.12
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 09:14:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=M6ta55C5YrTiWpJmRXkscLbV8qDYp7HoT3jJ6wg8fKI=;
+        b=JMhBqnd8AJEbyTVh+/OD0W9I+YhqfjmIJiyFfl6RyNSqhBCGkFjYt2FvjsgRkwCdQF
+         D+H+YMexFArgRpval3MhGlLM11t50kFSok9v8VRevgc988OF/fM9C0yss5onTZDJGFn9
+         vWNgxVEF6qBMIYr5qamQcDSVsNRBZfVUrf6Hfe+8/Q007XoAjBoquGHFuQ0K287IuoRP
+         LtKf/HMh3+KN73qlCprG9FvVFca/yoDftSdfgV0upNRCSaPr7I8ya6q+EosR6D1XZ/4w
+         IpAOHtvAWPJ0Sl6U639yuArOSzzvdYZ86y7qfqo/h0TbjxfALNTtM6YzrSNUoIXvjRKz
+         VWEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=M6ta55C5YrTiWpJmRXkscLbV8qDYp7HoT3jJ6wg8fKI=;
+        b=e0/6m84QpUYa54KT+C4Z4V30z9k9NihzpUBD2kCfafQ7vhEuo6T+tkwo6IBTrUiCFn
+         NwYQeenwZdq14MaF2Y9rOOwOIi9llm3FmJ9GCpjjp92hJmudptzqFVOo6b+GdqCEcKgx
+         nqF55NNckJO5HwiAo4gWE08tK9NX4e5zHNQEggGlB+/gK/b4XykTwd2S8+bWwoGOqbyQ
+         geB3LGJSUWvzwHCU11cf8EFYCMNFJ5q6Uy2y9Y7go6Nuim9B1ULY+5sSrRuLIH44iVoS
+         bUbxcR8MWEwD0MS7M5BKVtqymMojZhSnusbTJrOU7M7tB8+hDkzKaQeRH9cTP+jaEqIR
+         7G1A==
+X-Gm-Message-State: AOAM530o8hLxHX4BsjJmKPf47UqvCOOGPh6DID5VE0PsYwsfD8aems5Y
+        cyxktNOSkcB6fNytVg6ci178EsBgFaJi0g==
+X-Google-Smtp-Source: ABdhPJyhy9kIgP9BQY4I4hoOAicE1VyjpnSlpawr29BJjQNMqgNZx01vITsQM5Xj+ykD8wQvDu+jmDzNSaklOw==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:4791:26fa:5a8a:1c2a])
+ (user=dlatypov job=sendgmr) by 2002:a05:6214:268e:: with SMTP id
+ gm14mr4477617qvb.51.1630685650225; Fri, 03 Sep 2021 09:14:10 -0700 (PDT)
+Date:   Fri,  3 Sep 2021 09:14:05 -0700
+Message-Id: <20210903161405.1861312-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
+Subject: [PATCH] kunit: tool: better handling of quasi-bool args (--json, --raw_output)
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com
+Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/8/21 1:19 am, Andrew Donnellan wrote:
-> LCA2022 Kernel Miniconf - Online - 2022-01-14
-> ---------------------------------------------
-> 
-> The linux.conf.au 2022 Kernel Miniconf Call for Proposals is now open. 
-> Start working on your talks!
-> 
-> Date: 2022-01-14
-> Location: The Internet (again)
-> Submissions close: 2021-09-05, 23:59 AoE/UTC-12
-> Submissions: https://linux.conf.au/proposals/submit/kernel-miniconf/
-> More info: https://lca-kernel.ozlabs.org/2022-cfp.html
+Problem:
 
-The CFP for both the Kernel Miniconf and the main linux.conf.au 
-conference has been extended to 2021-09-12, due to a shortage of 
-submissions.
+What does this do?
+$ kunit.py run --json
+Well, it runs all the tests and prints test results out as JSON.
 
-We have an audience consisting of not just kernel developers but also 
-downstream users, so we are interested in a wide range of topics - if 
-you or someone you know has something that might even possibly be 
-interesting to talk about, please submit!
+And next is
+$ kunit.py run my-test-suite --json
+This runs just `my-test-suite` and prints results out as JSON.
 
-If you have any questions please contact me.
+But what about?
+$ kunit.py run --json my-test-suite
+This runs all the tests and stores the json results in a "my-test-suite"
+file.
 
-> 
-> Significant changes from last year:
-> - All miniconf speakers are guaranteed a free ticket
-> - All talks will be 30 minutes long
-> - CFP is now being run at the same time as main conference CFP process: 
-> if your talk is of broader interest consider submitting to the main 
-> conference as well
-> 
-> ***************************************************************************
-> 
-> linux.conf.au 2022 will be held from 14-16 January 2022.
-> 
-> Due to the ongoing COVID-19-related restrictions on events and travel, 
-> LCA2022 will once again be held online. (Silver lining is you can speak 
-> or attend from wherever you are without flying here!)
-> 
-> The Kernel Miniconf is a single-day miniconf track, held on Friday 14 
-> January, about everything related to the kernel and low-level systems 
-> programming.
-> 
-> The Kernel Miniconf invites talks about up-and-coming kernel 
-> developments, the future direction of the kernel, and kernel development 
-> community and process matters. Past Kernel Miniconfs have covered topics 
-> such as memory management, RCU, scheduling, testing/CI and filesystems, 
-> as well as community and process topics such as licensing, developer 
-> workflows, safety critical processes, and so on.
-> 
-> We invite submissions on anything related to kernel and low-level 
-> systems programming. We welcome submissions from developers of all 
-> levels of experience, and from anyone connected with the kernel whether 
-> you are an upstream kernel developer, distro maintainer, academic 
-> researcher or a developer who works further downstream. The focus of the 
-> miniconf will primarily be on Linux, however non-Linux talks of 
-> sufficient interest to a primarily Linux audience will be considered.
-> 
+Why:
+--json, and now --raw_output are actually string flags. They just have a
+default value. --json in particular takes the name of an output file.
 
+It was intended that you'd do
+$ kunit.py run --json=my_output_file my-test-suite
+if you ever wanted to specify the value.
+
+Workaround:
+It doesn't seem like there's a way to make
+https://docs.python.org/3/library/argparse.html only accept arg values
+after a '='.
+
+I believe that `--json` should "just work" regardless of where it is.
+So this patch automatically rewrites a bare `--json` to `--json=stdout`.
+
+That makes the examples above work the same way.
+Add a regression test that can catch this for --raw_output.
+
+Fixes: 6a499c9c42d0 ("kunit: tool: make --raw_output support only showing kunit output")
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ tools/testing/kunit/kunit.py           | 24 ++++++++++++++++++++++--
+ tools/testing/kunit/kunit_tool_test.py |  8 ++++++++
+ 2 files changed, 30 insertions(+), 2 deletions(-)
+
+diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+index 5a931456e718..95d62020e4f2 100755
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -16,7 +16,7 @@ assert sys.version_info >= (3, 7), "Python version is too old"
+ 
+ from collections import namedtuple
+ from enum import Enum, auto
+-from typing import Iterable
++from typing import Iterable, Sequence
+ 
+ import kunit_config
+ import kunit_json
+@@ -186,6 +186,26 @@ def run_tests(linux: kunit_kernel.LinuxSourceTree,
+ 				exec_result.elapsed_time))
+ 	return parse_result
+ 
++# Problem:
++# $ kunit.py run --json
++# works as one would expect and prints the parsed test results as JSON.
++# $ kunit.py run --json suite_name
++# would *not* pass suite_name as the filter_glob and print as json.
++# argparse will consider it to be another way of writing
++# $ kunit.py run --json=suite_name
++# i.e. it would run all tests, and dump the json to a `suite_name` file.
++# So we hackily automatically rewrite --json => --json=stdout
++pseudo_bool_flag_defaults = {
++		'--json': 'stdout',
++		'--raw_output': 'kunit',
++}
++def massage_argv(argv: Sequence[str]) -> Sequence[str]:
++	def massage_arg(arg: str) -> str:
++		if arg not in pseudo_bool_flag_defaults:
++			return arg
++		return  f'{arg}={pseudo_bool_flag_defaults[arg]}'
++	return map(massage_arg, argv)
++
+ def add_common_opts(parser) -> None:
+ 	parser.add_argument('--build_dir',
+ 			    help='As in the make command, it specifies the build '
+@@ -303,7 +323,7 @@ def main(argv, linux=None):
+ 				  help='Specifies the file to read results from.',
+ 				  type=str, nargs='?', metavar='input_file')
+ 
+-	cli_args = parser.parse_args(argv)
++	cli_args = parser.parse_args(massage_argv(argv))
+ 
+ 	if get_kernel_root_path():
+ 		os.chdir(get_kernel_root_path())
+diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+index 619c4554cbff..1edcc8373b4e 100755
+--- a/tools/testing/kunit/kunit_tool_test.py
++++ b/tools/testing/kunit/kunit_tool_test.py
+@@ -408,6 +408,14 @@ class KUnitMainTest(unittest.TestCase):
+ 			self.assertNotEqual(call, mock.call(StrContains('Testing complete.')))
+ 			self.assertNotEqual(call, mock.call(StrContains(' 0 tests run')))
+ 
++	def test_run_raw_output_does_not_take_positional_args(self):
++		# --raw_output is a string flag, but we don't want it to consume
++		# any positional arguments, only ones after an '='
++		self.linux_source_mock.run_kernel = mock.Mock(return_value=[])
++		kunit.main(['run', '--raw_output', 'filter_glob'], self.linux_source_mock)
++		self.linux_source_mock.run_kernel.assert_called_once_with(
++			args=None, build_dir='.kunit', filter_glob='filter_glob', timeout=300)
++
+ 	def test_exec_timeout(self):
+ 		timeout = 3453
+ 		kunit.main(['exec', '--timeout', str(timeout)], self.linux_source_mock)
+
+base-commit: a9c9a6f741cdaa2fa9ba24a790db8d07295761e3
 -- 
-Andrew Donnellan              OzLabs, ADL Canberra
-ajd@linux.ibm.com             IBM Australia Limited
+2.33.0.153.gba50c8fa24-goog
+
