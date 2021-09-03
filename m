@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03273FFA11
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4A23FFA12
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235858AbhICGBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 02:01:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233634AbhICGBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 02:01:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A78CB6101A;
-        Fri,  3 Sep 2021 06:00:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630648819;
-        bh=YO/AiM79HonLmm0m9WZepx9WygmYVyAEAEiRgAz3af0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=AnzFBCIaSfTS/Sa9mFAfiUiamO1CGGePRyrDLeZPh1Q8WJTnXSB5uHEhyUMYZx4KI
-         V0Z7TAI5vJ8kJvgOwcV+gMqMW3DWk0nniYh4pRPN02YvHVvNqx/koKVC5V4//SEJIk
-         DYGmC+S0aWMRcnH2LtAUwpvmav55IcBsUOtqhFNYLvwGd1+5SECEUeImp125PxONQc
-         xB93bAuJbeb+LI+wmTablZ6d1gQf78qpyr5k8OxaP3mvy9UGUmVb1ivX04FOQFXQeP
-         8VZecuyeCV8N9Z+xrFbkM4JU4KyOOAk1u0q51pqKzIHYkm7n57SRvzmclMA7BP0JBJ
-         fdYruOdQVo40A==
-Message-ID: <23bd92e159dba35f74fc3d3a8186dfbb3ff84f66.camel@kernel.org>
-Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
- restore_fpregs_from_user()
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Fri, 03 Sep 2021 09:00:16 +0300
-In-Reply-To: <871r67cbp6.ffs@tglx>
-References: <20210830154702.247681585@linutronix.de>
-         <20210830162545.374070793@linutronix.de> <YS0ylo9nTHD9NiAp@zn.tnic>
-         <87zgsyg0eg.ffs@tglx> <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
-         <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
-         <87r1e8cxp5.ffs@tglx> <87o89ccmyu.ffs@tglx> <YS+upEmTfpZub3s9@google.com>
-         <84fd35193e293894c4e64704e18dc063995b62c0.camel@kernel.org>
-         <871r67cbp6.ffs@tglx>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S236202AbhICGBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 02:01:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233634AbhICGBx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 02:01:53 -0400
+Received: from mx.msync.work (mx.msync.work [IPv6:2a01:4f9:2b:2dc2::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73454C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 23:00:54 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CAB74D50B2;
+        Fri,  3 Sep 2021 06:00:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
+        t=1630648852; h=from:subject:date:message-id:to:cc:mime-version:
+         content-transfer-encoding; bh=/FU6CYAdNkhFeVmla6yx1cJ3ejiRmQG7xi91otEI1l8=;
+        b=anburVSYmkyUyu0mtnWZ+0aBkFium9wh/ZzBQ4MuXCAAhphHIy1D0vhC3ddw104KWIyRVN
+        n8FYGFTqBjYkripraGY/6cAwdh+HKVVvw/TWinDtwZGEUskhJrSkjgqxP173b+tzUoyLYf
+        6q8p3WHFSS1LoCWNRt7Uc0UuJnHUsokL2mVNEKcIR63bgyeL8SYo+mG8wnyPoN6Jye7Ubg
+        Y7vF6h4HWjzOk9WUsUdjlNiwW5ZNPQMbIhm04kQfn/XZwKpzj9/fGVlQUVNP3Q0MPggSs2
+        n11aVM7A/91In52V4uQcbwVVMqziENAazvDximtAXUBQAMtZdCgn2jRLwpt4gw==
+From:   Vyacheslav Bocharov <adeep@lexina.in>
+To:     Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Vyacheslav Bocharov <devel@lexina.in>
+Subject: [PATCH v2 0/3] arm64: meson-axg: meson-gxl: add support for JetHub D1/H1
+Date:   Fri,  3 Sep 2021 09:00:32 +0300
+Message-Id: <20210903060035.844758-1-adeep@lexina.in>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-09-02 at 16:08 +0200, Thomas Gleixner wrote:
-> On Thu, Sep 02 2021 at 16:08, Jarkko Sakkinen wrote:
-> > On Wed, 2021-09-01 at 16:47 +0000, Sean Christopherson wrote:
-> > > As for SGX consuming the trap number in general, it's correct.  For n=
-on-KVM usage,
-> > > it's nice to have but not strictly necessary.  Any fault except #PF o=
-n ENCLS is
-> > > guaranteed to be a kernel or hardware bug; SGX uses the trap number t=
-o WARN on a
-> > > !#PF exception, e.g. on #GP or #UD.  Not having the trap number would=
- mean losing
-> > > those sanity checks, which have been useful in the past.
-> >=20
-> > AFAIK, we do not consider #UD as a bug. Agree with the conclusion that =
-SGX
-> > should never #MC, I just did not get this part. #UD is something that i=
-s
-> > useful for SGX run-time.
->=20
-> I understood that storing the trap number is useful. I was just
-> questioning the #MC angle. I.e. pretending that the #MC caused by ENCLS
-> is recoverable.
+From: Vyacheslav Bocharov <devel@lexina.in>
 
-Absolutely not.=20
+Add support for new home automation devices.
 
-I mixed up #UD caused by CPU executing inside enclave and ENCLS causing
-#UD. Sorry about that.
+JetHome Jethub D1 (http://jethome.ru/jethub-d1) is a home automation controller with the following features:
+- DIN Rail Mounting
+- Amlogic A113X (ARM Cortex-A53) quad-core up to 1.5GHz
+- no video out
+- 512Mb/1GB LPDDR4
+- 8/16GB eMMC flash
+- 1 x USB 2.0
+- 1 x 10/100Mbps ethernet
+- WiFi / Bluetooth AMPAK AP6255 (Broadcom BCM43455) IEEE 802.11a/b/g/n/ac, Bluetooth 4.2.
+- TI CC2538 + CC2592 Zigbee Wireless Module with up to 20dBm output power and Zigbee 3.0 support.
+- 2 x gpio LEDS
+- GPIO user Button
+- 1 x 1-Wire
+- 2 x RS-485
+- 4 x dry contact digital GPIO inputs
+- 3 x relay GPIO outputs
+- DC source with a voltage of 9 to 56 V / Passive POE
 
-Because of KVM we have to catch #PF's, given that a new power cycle
-in the host resets the state of SGX protected memory in the guest.
+JetHome Jethub H1 (http://jethome.ru/jethub-h1) is a home automation controller with the following features:
+- square plastic case
+- Amlogic S905W (ARM Cortex-A53) quad-core up to 1.5GHz
+- no video out
+- 1GB LPDDR4
+- 8/16GB eMMC flash
+- 2 x USB 2.0
+- 1 x 10/100Mbps ethernet
+- WiFi / Bluetooth RTL8822CS IEEE 802.11a/b/g/n/ac, Bluetooth 5.0.
+- TI CC2538 + CC2592 Zigbee Wireless Module with up to 20dBm output power and Zigbee 3.0 support.
+- MicroSD 2.x/3.x/4.x DS/HS cards.      
+- 1 x gpio LED
+- ADC user Button
+- DC source 5V microUSB
 
->=20
-> Thanks,
->=20
->         tglx
+Changes from v1:
+- rearrange patches
+- add SPDX license and copyright header
+- remove attributes without bindings
+- small fixes with spaces
 
-/Jarkko
+Vyacheslav Bocharov (3):
+  dt-bindings: arm: amlogic: add bindings for JetHome Jethud D1/H1
+  arm64: dts: meson-gxl: add support for JetHub H1
+  arm64: dts: meson-axg: add support for JetHub D1
+
+ .../devicetree/bindings/arm/amlogic.yaml      |   2 +
+ arch/arm64/boot/dts/amlogic/Makefile          |   2 +
+ .../amlogic/meson-axg-jethome-jethub-j100.dts | 348 ++++++++++++++++++
+ .../meson-gxl-s905w-jethome-jethub-j80.dts    | 241 ++++++++++++
+ 4 files changed, 593 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-gxl-s905w-jethome-jethub-j80.dts
+
+-- 
+2.30.2
 
