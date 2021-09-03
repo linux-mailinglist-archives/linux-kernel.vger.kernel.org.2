@@ -2,74 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C0CB40079C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 23:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2224007A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 23:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348249AbhICVxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 17:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236059AbhICVxW (ORCPT
+        id S1349933AbhICV62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 17:58:28 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:52336 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344767AbhICV61 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 17:53:22 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26730C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 14:52:22 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id g18so550860wrc.11
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 14:52:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=KiU6nMkCZYJbqe8bSBt+kfTnczgB7P2IjW8/5H1bcPQ=;
-        b=Yd0e26scvdG4xG8i8OV+NKoWE+Ok72MZiQLdj9qHxeqVhIF6lRikOhDjgzzC/LALO9
-         DtvD99MMXu1JFJ3MwN6tmDl5d8MdoSW82rXRaKLtDCSaGEAE+LMOXs/j8Gkw24v9EnZa
-         BuBEKlDC/K3oGPdH2GNVfuhHIztQZYxl11UpRj/xqIpM4iKg+cZoWQAZ7DJPdYWc1oIy
-         /4GWBqxxz31drGsJlcjM71LEfXoYZ8Mo6Blo2gVWVV+5yggll2YGjo5zGvBx93AjwU5t
-         8dHDOqqqVGauhJlX+zVuEtirx1/vcg8t1SOsrlmLa66u58R2+euwlIUhvdKrT71HCOc8
-         8nIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=KiU6nMkCZYJbqe8bSBt+kfTnczgB7P2IjW8/5H1bcPQ=;
-        b=gaNtm3q3RKt9OgySaklklAxdDCMFzaQ9/d1D39wgFmRKPzglZlBwXJ+Ef3IQhErQoJ
-         +5HoyPQQ0gv9dXuiT8fP8qQCGkNFG83M8s18iCV5yIYCweHz2rjYnTAKpKdrTtVE1yLk
-         GyUvdmevm+9nUxRkJ8gAtCBcAiFbhQQMRcqUGBfInc8SV/MRuXdYF3+ajY26p9n9lThS
-         BMEeNRjLfZveDb+yJu5JxdJkwIYsR+U7DTVmz2KoP/dXGPM0MvckgUB08snedpxoyl2e
-         PRUfYLzZbo6W5E/Iik2bB66Laop/yjFMSbUnE5YjIoyPEJ8rHv6+3aFUs6tKygzWO1xR
-         c26g==
-X-Gm-Message-State: AOAM533BEinUxPFFX5F3Wky8poN3XWqMc/na4Hb7o7oxuR8jjszLl0q4
-        vkwVaAjWsYDJtkT4Cie0/79cA4ykbJU83iYrlT8=
-X-Google-Smtp-Source: ABdhPJzLr4SBfGHfPjlGXXa8yn1t2HDrRbRFcOyaIRxenjO2cyxDRciNDqUrgatlR4NSTLgRc653BTziU1E/4d5MnCY=
-X-Received: by 2002:adf:edcf:: with SMTP id v15mr1088659wro.61.1630705940703;
- Fri, 03 Sep 2021 14:52:20 -0700 (PDT)
+        Fri, 3 Sep 2021 17:58:27 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mMH9W-000tKw-R0; Fri, 03 Sep 2021 21:55:14 +0000
+Date:   Fri, 3 Sep 2021 21:55:14 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Palash Oswal <oswalpalash@gmail.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com
+Subject: Re: [PATCH v3 0/2] iter revert problems
+Message-ID: <YTKZwuUtJJDQb8F+@zeniv-ca.linux.org.uk>
+References: <cover.1629713020.git.asml.silence@gmail.com>
+ <65d27d2d-30f1-ccca-1755-fcf2add63c44@kernel.dk>
 MIME-Version: 1.0
-Sender: misssamiraibrahim@gmail.com
-Received: by 2002:a1c:29c4:0:0:0:0:0 with HTTP; Fri, 3 Sep 2021 14:52:20 -0700 (PDT)
-From:   "Mrs. Aisha Gaddafi" <mrsaishaalqaddafi40@gmail.com>
-Date:   Fri, 3 Sep 2021 23:52:20 +0200
-X-Google-Sender-Auth: x24WuZTe4W-gz-okJQBk4Xa_agc
-Message-ID: <CAD2KnJJQ5wSSbo6S97V9bxuJdWL8OETcTqi9SCYp4tyY39m0QQ@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <65d27d2d-30f1-ccca-1755-fcf2add63c44@kernel.dk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Fri, Sep 03, 2021 at 02:55:26PM -0600, Jens Axboe wrote:
+> On 8/23/21 4:18 AM, Pavel Begunkov wrote:
+> > iov_iter_revert() doesn't go well with iov_iter_truncate() in all
+> > cases, see 2/2 for the bug description. As mentioned there the current
+> > problems is because of generic_write_checks(), but there was also a
+> > similar case fixed in 5.12, which should have been triggerable by normal
+> > write(2)/read(2) and others.
+> > 
+> > It may be better to enforce reexpands as a long term solution, but for
+> > now this patchset is quickier and easier to backport.
+> > 
+> > v2: don't fail if it was justly fully reverted
+> > v3: use truncated size + reexapand based approach
+> 
+> Al, let's get this upstream. How do you want to handle it? I can take
+> it through the io_uring tree, or it can go through your tree. I really
+> don't care which route it takes, but we should get this upstream as
+> it solves a real problem.
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. My name is Aisha Gaddafi, a single Mother and
-a Widow with three Children. I am the only biological Daughter of the
-late Libyan President (Late Colonel Muammar Gaddafi).
-
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and I need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
-
-Best Regards
-Mrs Aisha Gaddafi
+Grabbed, will test and send a pull request...
