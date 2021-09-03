@@ -2,92 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1791A40029E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B854002A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349691AbhICPwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 11:52:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46648 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349664AbhICPv6 (ORCPT
+        id S1349748AbhICPxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 11:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235629AbhICPxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 11:51:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630684256;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MoQLQTqUY5yDM/Q0pchQHfi3iihhP0hcaHsviw39pb8=;
-        b=bIzPqff02uJU3F917ZBPWIXiba4iwjlsCmg++d8QAWeg62buxo3KqJC7QZmM2fH5m4/iXH
-        nUlID5rNBL4V/3NATYn2MIAAaNK7LUOjKsLredufjDzjnMC4QFCVFgak9sMkFA6Y8BB8w2
-        BX+PhEPf0HJCLWwLgPccmVPkuOLrP50=
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
- [209.85.166.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-227-1hAHdblXO16y9uykn9oNIQ-1; Fri, 03 Sep 2021 11:50:55 -0400
-X-MC-Unique: 1hAHdblXO16y9uykn9oNIQ-1
-Received: by mail-io1-f72.google.com with SMTP id f1-20020a5edf01000000b005b85593f933so4144966ioq.14
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 08:50:55 -0700 (PDT)
+        Fri, 3 Sep 2021 11:53:19 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D406C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 08:52:19 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id l10so12609314lfg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 08:52:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kr5rIfOe6Hwe2+y+jDes91fVUZ+f9S7J89384UtJgA8=;
+        b=N8R50bKnZffPltj2pL6sAt/boekXEIz4AQ9Z/o/XuD4vPBxfG3r/2QGNeC3Td8/XlQ
+         R0kZIgMPO8AoZ5aHXt7NM2HAmls86mjYLAHi42E+wudU8oKf8/JE6qalzvKuxXxORS9D
+         NAlDdP45oLxOK+MFKC/0wdIbO7rTVRb8fcucQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MoQLQTqUY5yDM/Q0pchQHfi3iihhP0hcaHsviw39pb8=;
-        b=M3PGP6YmpqHvyrzDvVeKRRV/j8H6sT0P+LRI1aaRiQQhkUDamKXq6b5XH3X7rR72AM
-         Cz2JMylOVuRd89FxRLzsh1TK5uFtsG4tIX9/pamqviJr9MljlgSb3259kQbQ0o4+wrzi
-         m8Ss+DxsD7Sx39xaRcdQVdMpmqrnuFUSmOIJRZMxncyhnEUwkzQYeG2VOVpYOnoaQNMD
-         8HygpDH7pyUYFdOKg1jSIHhamZBXZyvXIqLHj57mHONXjQJWQny6/A/xR5s/fEWG6x3s
-         XI+tgkkF7yTSsAwkfL4hh15cvoTMIf0ZartGdPANwn8URWvvrLHkLxondXjZXB/gNcDK
-         nqhw==
-X-Gm-Message-State: AOAM531cfTv4MovbT2RsCWqLltbFv4uf0it9y4I7zTchuqK5VdbsDT/C
-        F4vgr8AAwvQWwcq8cJeBJpWOQ32olABSm9KH4P+CNC6Q7Gswkgk7eItHtVJ0DLFNynr4+50Oaho
-        1G2mturVQRxSGxfqj4RH3CPaj05tCLGaA3wlZs8nt
-X-Received: by 2002:a92:1944:: with SMTP id e4mr3012471ilm.186.1630684254587;
-        Fri, 03 Sep 2021 08:50:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxA5hXocfG238Br3Kxfn76guZ5oIlMhSVgOX7QM7jB7Qbl9LikvJuc4o8e5u68QJjhURVNmZgDTJj9VHCBUSvY=
-X-Received: by 2002:a92:1944:: with SMTP id e4mr3012456ilm.186.1630684254354;
- Fri, 03 Sep 2021 08:50:54 -0700 (PDT)
+        bh=Kr5rIfOe6Hwe2+y+jDes91fVUZ+f9S7J89384UtJgA8=;
+        b=sg8C9V25fmhlgh5PI5SZ++W5KCo8JUdJw5CKGNbQhfBQX+rO1OLp3Ldsjg90w84+DE
+         aRvgEXtLVqjkOzgH6aJFIjUe1ngQ0ecoxnNAh1Wu4UuoOFDta/Wdu1C0bE+4hE0lBPOg
+         v9GEFlyLTVH9KRtijTs4s9A7T8tUY/s7yPy0u5Mlszlp2TE5KT3jORO6XWUtfXSil1io
+         wTNVxNyfL6AikJFS9QibqzfqvzTROIthMDCDhzm5As05MKGXCMjaYGGX3SRkcgyU0fh2
+         PG8rTemdR5LEcx/hqSb6+T+Lzm+c4FenGJniYjhFtORc/wQxvx2rNyC4QbmTH2ZR+ywT
+         SgQQ==
+X-Gm-Message-State: AOAM530EpALil6mnp/sofYs9anMS12AxU+qoJs47y67ZEcbxcfXIQ7NI
+        dvu9d7InwOcNV16Xax1KGlc+BSWNSNNO9ChS53o=
+X-Google-Smtp-Source: ABdhPJyVDcCLxufizkt9s76MangxkOFfzatuQ/IIQosvROTVvmqAXu5fBHjy3TbHu3PJWuzIfxx67w==
+X-Received: by 2002:ac2:4e62:: with SMTP id y2mr3366732lfs.9.1630684337333;
+        Fri, 03 Sep 2021 08:52:17 -0700 (PDT)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id c19sm625234ljn.75.2021.09.03.08.52.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 08:52:16 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id bq28so12590519lfb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 08:52:16 -0700 (PDT)
+X-Received: by 2002:a05:6512:3da5:: with SMTP id k37mr3415205lfv.655.1630684336092;
+ Fri, 03 Sep 2021 08:52:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210902152228.665959-1-vgoyal@redhat.com> <YTDyE9wVQQBxS77r@redhat.com>
- <CAHc6FU4ytU5eo4bmJcL6MW+qJZAtYTX0=wTZnv4myhDBv-qZHQ@mail.gmail.com>
- <CAHc6FU5quZWQtZ3fRfM_ZseUsweEbJA0aAkZvQEF5u9MJhrqdQ@mail.gmail.com>
- <CAPL3RVH9MDoDAdiZ-nm3a4BgmRyZJUc_PV_MpsEWiuh6QPi+pA@mail.gmail.com> <YTJCjGH0V5yzMnQB@redhat.com>
-In-Reply-To: <YTJCjGH0V5yzMnQB@redhat.com>
-From:   Bruce Fields <bfields@redhat.com>
-Date:   Fri, 3 Sep 2021 11:50:43 -0400
-Message-ID: <CAPL3RVFB67-AqZrjjfxueQF1Jw=LmKWzCk3Ur94EjUotYMw0AA@mail.gmail.com>
-Subject: Re: [PATCH 3/1] xfstests: generic/062: Do not run on newer kernels
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        fstests <fstests@vger.kernel.org>,
+References: <20210827164926.1726765-1-agruenba@redhat.com> <CAHk-=wiUtyoTWuzroNJQwQDM9GHRXvq4974VL=y8T_3tUxDbkA@mail.gmail.com>
+ <CAHc6FU7K0Ho=nH6fCK+Amc7zEg2G31v+gE3920ric3NE4MfH=A@mail.gmail.com>
+In-Reply-To: <CAHc6FU7K0Ho=nH6fCK+Amc7zEg2G31v+gE3920ric3NE4MfH=A@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 3 Sep 2021 08:52:00 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjUs8qy3hTEy-7QX4L=SyS85jF58eiT2Yq2YMUdTFAgvA@mail.gmail.com>
+Message-ID: <CAHk-=wjUs8qy3hTEy-7QX4L=SyS85jF58eiT2Yq2YMUdTFAgvA@mail.gmail.com>
+Subject: Re: [PATCH v7 00/19] gfs2: Fix mmap + page fault deadlocks
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
         linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, virtio-fs@redhat.com,
-        Daniel Walsh <dwalsh@redhat.com>,
-        David Gilbert <dgilbert@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Casey Schaufler <casey.schaufler@intel.com>,
-        LSM <linux-security-module@vger.kernel.org>,
-        selinux@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        stephen.smalley.work@gmail.com, Dave Chinner <david@fromorbit.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 11:43 AM Vivek Goyal <vgoyal@redhat.com> wrote:
-> On Fri, Sep 03, 2021 at 10:42:34AM -0400, Bruce Fields wrote:
-> > Well, we could also look at supporting trusted.* xattrs over NFS.  I
-> > don't know much about them, but it looks like it wouldn't be a lot of
-> > work to specify, especially now that we've already got user xattrs?
-> > We'd just write a new internet draft that refers to the existing
-> > user.* xattr draft for most of the details.
+On Wed, Sep 1, 2021 at 12:53 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
 >
-> Will be nice if we can support trusted.* xattrs on NFS.
+> So there's a minor merge conflict between Christoph's iomap_iter
+> conversion and this patch queue now, and I should probably clarify the
+> description of "iomap: Add done_before argument to iomap_dio_rw" that
+> Darrick ran into. Then there are the user copy issues that Al has
+> pointed out. Fixing those will create superficial conflicts with this
+> patch queue, but probably nothing serious.
+>
+> So how should I proceed: do you expect a v8 of this patch queue on top
+> of the current mainline?
 
-Maybe I should start a separate thread for that.  Who would need to be
-on it to be sure we get this right?
+So if you rebase for fixes, it's going to be a "next merge window" thing again.
 
---b.
+Personally, I'm ok with the series as is, and the conflict isn't an
+issue. So I'd take it as is, and then people can fix up niggling
+issues later.
 
+But if somebody screams loudly..
+
+             Linus
