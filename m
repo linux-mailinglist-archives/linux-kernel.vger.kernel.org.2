@@ -2,111 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F944000EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD724000F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242631AbhICOE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:04:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26013 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347375AbhICOEY (ORCPT
+        id S1348570AbhICOFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243643AbhICOFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:04:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630677803;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6tZE3LmZD6jqJSuh20CcZIArD1TpiWN9qz/c9VBYUjE=;
-        b=EO+xthW0qlR/rBUUGhl54UsHIGBixi3g2NETrx3ww8YO3BfmCNULfKZUmIJpsZ8Y2Avu0F
-        dVmHxNQ8e48xjzWh+Ngx6+e5nEe9HDbv2RZ35rh7ok32ZcD9mFny0vLTgLvg6x5JZZNVc4
-        x5oFuVZYMp7ww4t8Fehc/fd0iUEfKII=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-548-5OFmsZWGMrSBNghiINo2Dw-1; Fri, 03 Sep 2021 10:03:22 -0400
-X-MC-Unique: 5OFmsZWGMrSBNghiINo2Dw-1
-Received: by mail-ed1-f72.google.com with SMTP id b15-20020a05640202cf00b003cd5efcd633so2819150edx.9
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 07:03:22 -0700 (PDT)
+        Fri, 3 Sep 2021 10:05:35 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7298C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 07:04:35 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id m28so11991865lfj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 07:04:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=sSgMe6jO7xnpGx2tRPpBBTj9lsn9JwdSXq1ZWNG03/M=;
+        b=rvDoigY4cruxeRTZs+bhQzHXKT3VjFr4e/H7h+cD0NLeK/FeRpzslf5ZAmDeXOg7Mq
+         AshatvKefj52y10+jKbCXd/91DGeT8RiJPL1xj5Wtfpk33fHYOLkDwgu9pRI6lug61AV
+         fZ/L8xdAMXW3+klI27chBrjkdd1/vFbtbfmrqzINMqIDhe9wqUWC0Li5rAb8Rjbc2u7f
+         a9Wnvaw89HHUL9bniTze4k82ZG+qOLrk+KmNTLc7UZ55I5M2l9vZRsIL2VCtmf/hJiU+
+         FS8D0SDahwDWYwTKd0Co345S5WPe2mE6y8xwI7xKAGDjruPgiWsYxNwfggUSDJc7EeUd
+         jd8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6tZE3LmZD6jqJSuh20CcZIArD1TpiWN9qz/c9VBYUjE=;
-        b=K70+IsERqbK4VZ7fTQanuPuLjm549NDzqYus4G7LbZJ4ujHeFXrbeLeov66SRdakY4
-         RzItf/4xa5ike2jYYLzhjTJB7dUDb1YOsHUlkJ1414370KVi7llFpT543ZKIgRDQApNP
-         VVbTMD6DeL40AIejjjpx9mzfp2LxgULpSrBJT72SAJQEcmqAmE3Iu0LpIdmJZou8nSrU
-         4CLil5YA8jJl4cd9kmz4nLrmDEIt7zaPj+Xg180Y0Scdzoa+zukNZEqBZksyE2aYDNlK
-         VU4PFOi5uj8slPnH4IL8vOTaY/6iLfGy4K+UG4gNAAEGFWTXsUFycJ5v5Gyr5BC4OUzO
-         Du1w==
-X-Gm-Message-State: AOAM5331lFs37YTz4cb9e9ON5zjqScgBxVOzEK1+/LiXey+MNcQByjAD
-        sccCqqhDu1WSqg11XXH9mkX8J9s5dCrNfKJG8Ht1BJDxx7lU4fAspPu8jv1Q1PfM87RqhEpfvA6
-        0Psr5WTh5O0+gApnW+t/1T35A6oJDRCA14iNKN2OkgdUIscNmOXsM6IxMKOAhESbvxLFtIjcknR
-        c1
-X-Received: by 2002:a50:c88d:: with SMTP id d13mr1095285edh.392.1630677801504;
-        Fri, 03 Sep 2021 07:03:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxaCT7porsj2UGCGGzKrIMKLimH7h15q/Y8kNosd15RnIz+2gAay6cGCFAoOpdy7q73eWTSDA==
-X-Received: by 2002:a50:c88d:: with SMTP id d13mr1095259edh.392.1630677801279;
-        Fri, 03 Sep 2021 07:03:21 -0700 (PDT)
-Received: from x1.localdomain ([2a0e:5700:4:11:334c:7e36:8d57:40cb])
-        by smtp.gmail.com with ESMTPSA id bq4sm2832420ejb.43.2021.09.03.07.03.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 07:03:20 -0700 (PDT)
-Subject: Re: [PATCH v6] libata: Add ATA_HORKAGE_NO_NCQ_ON_ATI for Samsung 860
- and 870 SSD.
-To:     Jens Axboe <axboe@kernel.dk>, Kate Hsuan <hpa@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210903094411.58749-1-hpa@redhat.com>
- <d3488035-d269-2a63-f958-746f371cf490@kernel.dk>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <f1f0b799-6676-ae06-6a71-05dfeeab8512@redhat.com>
-Date:   Fri, 3 Sep 2021 16:03:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=sSgMe6jO7xnpGx2tRPpBBTj9lsn9JwdSXq1ZWNG03/M=;
+        b=Ac6nmaabC2sWPqTZkW2COpGnW452BM7qxvGxHPRXLYh19lPf0Sm+bPFkywf5dyZw4R
+         v7GeYBPUUPoheLolkIvVvo0E+SQlLHQbtgP3WfOIfJrUeatVmfQsy4099v/xvC9Zn7iw
+         kqYLPwmLrIG/LS16GmBMj0Pk7UjEV2c+Gce82dKMDYwlFAQyDwqEGivKyCLkTz2uRpS3
+         qKqtdfnGkSha5Z22kiUr0hsDceQPwN84U6ujeDzdb7vJ/zvXmpt+e6PtX3V6EosezBFz
+         3nZHtfeU7lr+zDpYzOGvKWxBJqixKu67G9Dfd5MjzTmlfhg6QfmaYYAmGfJBvlWOh4JR
+         uxrg==
+X-Gm-Message-State: AOAM530CqzfXl6wut1hkBeWuzwoWZQtkptiIChPHFAL7sTMCB2CKaPfZ
+        boELiOkifLl4VnkkkxSlpLhjif8AD1j6xedbMv1UZw==
+X-Google-Smtp-Source: ABdhPJwLX1bWYt8jcuZqjDpgjcYrm0IuHl4c8OMxpt1GGMcSijXKANRPJNpt4cJRX1gNjfc9oLeX0gjQzvqQxLFdz80=
+X-Received: by 2002:a19:ac42:: with SMTP id r2mr2840448lfc.167.1630677873121;
+ Fri, 03 Sep 2021 07:04:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d3488035-d269-2a63-f958-746f371cf490@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210902101634.827187-1-ulf.hansson@linaro.org>
+ <20210902101634.827187-2-ulf.hansson@linaro.org> <08335cd4-7dc8-3b8b-d63f-374585ffa373@gmail.com>
+ <CAPDyKFofrEj2LdqXh-L256b2Tcz=qYQgzTUBVuvx0rOR58SrVg@mail.gmail.com> <b597c805-e346-8c23-5014-cbb116e88075@gmail.com>
+In-Reply-To: <b597c805-e346-8c23-5014-cbb116e88075@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 3 Sep 2021 16:03:56 +0200
+Message-ID: <CAPDyKFrWofUKhbhvwTCjiFwJD8-Pzi8UMzU7ZjYLKm2j1HeeBg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] PM: domains: Drop the performance state vote for a
+ device at detach
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, 3 Sept 2021 at 11:58, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 03.09.2021 11:22, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > On Fri, 3 Sept 2021 at 08:01, Dmitry Osipenko <digetx@gmail.com> wrote:
+> >>
+> >> 02.09.2021 13:16, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >>> When a device is detached from its genpd, genpd loses track of the de=
+vice,
+> >>> including its performance state vote that may have been requested for=
+ it.
+> >>>
+> >>> Rather than relying on the consumer driver to drop the performance st=
+ate
+> >>> vote for its device, let's do it internally in genpd when the device =
+is
+> >>> getting detached. In this way, we makes sure that the aggregation of =
+the
+> >>> votes in genpd becomes correct.
+> >>
+> >> This is a dangerous behaviour in a case where performance state
+> >> represents voltage. If hardware is kept active on detachment, say it's
+> >> always-on, then it may be a disaster to drop the voltage for the activ=
+e
+> >> hardware.
+> >>
+> >> It's safe to drop performance state only if you assume that there is a
+> >> firmware behind kernel which has its own layer of performance manageme=
+nt
+> >> and it will prevent the disaster by saying 'nope, I'm not doing this'.
+> >>
+> >> The performance state should be persistent for a device and it should =
+be
+> >> controlled in a conjunction with runtime PM. If platform wants to drop
+> >> performance state to zero on detachment, then this behaviour should be
+> >> specific to that platform.
+> >
+> > I understand your concern, but at this point, genpd can't help to fix t=
+his.
+> >
+> > Genpd has no information about the device, unless it's attached to it.
+> > For now and for these always on HWs, we simply need to make sure the
+> > device stays attached, in one way or the other.
+>
+> This indeed requires to redesign GENPD to make it more coupled with a
+> device, but this is not a real problem for any of the current API users
+> AFAIK. Ideally the state should be persistent to make API more universal.
 
-On 9/3/21 2:35 PM, Jens Axboe wrote:
-> On 9/3/21 3:44 AM, Kate Hsuan wrote:
->> Many users are reporting that the Samsung 860 and 870 SSD are having
->> various issues when combined with AMD/ATI (vendor ID 0x1002)  SATA
->> controllers and only completely disabling NCQ helps to avoid these
->> issues.
->>
->> Always disabling NCQ for Samsung 860/870 SSDs regardless of the host
->> SATA adapter vendor will cause I/O performance degradation with well
->> behaved adapters. To limit the performance impact to ATI adapters,
->> introduce the ATA_HORKAGE_NO_NCQ_ON_ATI flag to force disable NCQ
->> only for these adapters.
->>
->> Also, two libata.force parameters (noncqati and ncqati) are introduced
->> to disable and enable the NCQ for the system which equipped with ATI
->> SATA adapter and Samsung 860 and 870 SSDs. The user can determine NCQ
->> function to be enabled or disabled according to the demand.
->>
->> After verifying the chipset from the user reports, the issue appears
->> on AMD/ATI SB7x0/SB8x0/SB9x0 SATA Controllers and does not appear on
->> recent AMD SATA adapters. The vendor ID of ATI should be 0x1002.
->> Therefore, ATA_HORKAGE_NO_NCQ_ON_AMD was modified to
->> ATA_HORKAGE_NO_NCQ_ON_ATI.
-> 
-> What's this patch against?
+Right. In fact this has been discussed in the past. In principle, the
+idea was to attach to genpd at device registration, rather than at
+driver probe.
 
-linux-block/for-next + my pre-cursor patch from here:
+Although, this is not very easy to implement - and it seems like the
+churns to do, have not been really worth it. At least so far.
 
-https://lore.kernel.org/linux-ide/20210823095220.30157-1-hdegoede@redhat.com/T/#u
+>
+> Since for today we assume that device should be suspended at the time of
+> the detachment (if the default OPP state isn't used), it may be better
+> to add a noisy warning message if pstate!=3D0, keeping the state untouche=
+d
+> if it's not zero.
 
-Regards,
+That would just be very silly in my opinion.
 
-Hans
+When the device is detached (suspended or not), it may cause it's PM
+domain to be powered off - and there is really nothing we can do about
+that from the genpd point of view.
 
+As stated, the only current short term solution is to avoid detaching
+the device. Anything else, would just be papering of the issue.
+
+Kind regards
+Uffe
