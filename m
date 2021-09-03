@@ -2,117 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A33393FF9B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 06:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F07F3FF9B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 06:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232663AbhICE4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 00:56:35 -0400
-Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:53882 "EHLO
-        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229561AbhICE4e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 00:56:34 -0400
-Received: from dread.disaster.area (pa49-195-182-146.pa.nsw.optusnet.com.au [49.195.182.146])
-        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id E598E1B70A0;
-        Fri,  3 Sep 2021 14:55:26 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1mM1EX-0085qb-Da; Fri, 03 Sep 2021 14:55:21 +1000
-Date:   Fri, 3 Sep 2021 14:55:21 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     fstests@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, virtio-fs@redhat.com,
-        dwalsh@redhat.com, dgilbert@redhat.com,
-        christian.brauner@ubuntu.com, casey.schaufler@intel.com,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
-        bfields@redhat.com, stephen.smalley.work@gmail.com,
-        agruenba@redhat.com, viro@zeniv.linux.org.uk
-Subject: Re: [PATCH 3/1] xfstests: generic/062: Do not run on newer kernels
-Message-ID: <20210903045521.GD1756565@dread.disaster.area>
-References: <20210902152228.665959-1-vgoyal@redhat.com>
- <YTDyE9wVQQBxS77r@redhat.com>
+        id S232556AbhICE6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 00:58:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58058 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229561AbhICE6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 00:58:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 860386056C;
+        Fri,  3 Sep 2021 04:57:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630645062;
+        bh=ZLHF8vO9gKFvQYRaXqkb0HNo6ljs1b1rqsAPAXPM0Cg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JVz91Q40+ihFgjtOQO+SeQsZjgtjwuuJgwSGQUQVhggXP5Z2iCEcTvy1Xk50To/JB
+         emnmJeLDtuLWN0FLZyDj5ubna2Qufde57yrtGJSDQZW+w6hUT7nh68ymC1Q0i0TBt5
+         nrnV+nR5eEP2HY0L50ts7cGOi72wRlrFDRPBtw5o=
+Date:   Fri, 3 Sep 2021 06:57:39 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com,
+        Alexey Gladkov <legion@kernel.org>
+Subject: Re: [PATCH 5.10 036/103] ucounts: Increase ucounts reference counter
+ before the security hook
+Message-ID: <YTGrQ2D1/tQR1pCh@kroah.com>
+References: <20210901122300.503008474@linuxfoundation.org>
+ <20210901122301.773759848@linuxfoundation.org>
+ <87v93k4bl6.fsf@disp2133>
+ <YS+s+XL0xXKGwh9a@kroah.com>
+ <875yvk1a31.fsf@disp2133>
+ <YTDLyU2mdeoe5cVt@sashalap>
+ <875yvizwb9.fsf@disp2133>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YTDyE9wVQQBxS77r@redhat.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0
-        a=QpfB3wCSrn/dqEBSktpwZQ==:117 a=QpfB3wCSrn/dqEBSktpwZQ==:17
-        a=kj9zAlcOel0A:10 a=7QKq2e-ADPsA:10 a=20KFwNOVAAAA:8 a=7-415B0cAAAA:8
-        a=-kbUXcvnShYF-Q782qsA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <875yvizwb9.fsf@disp2133>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 11:47:31AM -0400, Vivek Goyal wrote:
+On Thu, Sep 02, 2021 at 01:06:34PM -0500, Eric W. Biederman wrote:
+> Sasha Levin <sashal@kernel.org> writes:
 > 
-> xfstests: generic/062: Do not run on newer kernels
+> > On Wed, Sep 01, 2021 at 12:26:10PM -0500, Eric W. Biederman wrote:
+> >>Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+> >>
+> >>> On Wed, Sep 01, 2021 at 09:25:25AM -0500, Eric W. Biederman wrote:
+> >>>> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+> >>>>
+> >>>> > From: Alexey Gladkov <legion@kernel.org>
+> >>>> >
+> >>>> > [ Upstream commit bbb6d0f3e1feb43d663af089c7dedb23be6a04fb ]
+> >>>> >
+> >>>> > We need to increment the ucounts reference counter befor security_prepare_creds()
+> >>>> > because this function may fail and abort_creds() will try to decrement
+> >>>> > this reference.
+> >>>>
+> >>>> Has the conversion of the rlimits to ucounts been backported?
+> >>>>
+> >>>> Semantically the code is an improvement but I don't know of any cases
+> >>>> where it makes enough of a real-world difference to make it worth
+> >>>> backporting the code.
+> >>>>
+> >>>> Certainly the ucount/rlimit conversions do not meet the historical
+> >>>> criteria for backports.  AKA simple obviously correct patches.
+> >>>>
+> >>>> The fact we have been applying fixes for the entire v5.14 stabilization
+> >>>> period is a testament to the code not quite being obviously correct.
+> >>>>
+> >>>> Without backports the code only affects v5.14 so I have not been
+> >>>> including a Cc stable on any of the commits.
+> >>>>
+> >>>> So color me very puzzled about what is going on here.
+> >>>
+> >>> Sasha picked this for some reason, but if you think it should be
+> >>> dropped, we can easily do so.
+> >>
+> >>My question is what is the reason Sasha picked this up?
+> >>
+> >>If this patch even applies to v5.10 the earlier patches have been
+> >>backported.  So we can't just drop this patch.  Either the earlier
+> >>backports need to be reverted, or we need to make certain all of the
+> >>patches are backported.
+> >>
+> >>I really am trying to understand what is going on and why.
+> >
+> > I'll happily explain. The commit message is telling us that:
+> >
+> > 1. There is an issue uncovered by syzbot which this patch fixes:
+> >
+> > 	"Reported-by: syzbot"
+> >
+> > 2. The issue was introduced in 905ae01c4ae2 ("Add a reference to ucounts
+> > for each cred"):
+> >
+> > 	"Fixes: 905ae01c4ae2"
+> >
+> > Since 905ae01c4ae2 exist in 5.10, and this patch seemed to fix an issue,
+> > I've queued it up.
 > 
-> This test has been written with assumption that setting user.* xattrs will
-> fail on symlink and special files. When newer kernels support setting
-> user.* xattrs on symlink and special files, this test starts failing.
+> Which begs the question as Alex mentioned how did 905ae01c4ae2 get into
+> 5.10, as it was merged to Linus's tree in the merge window for 5.14.
 > 
-> Found it hard to change test in such a way that it works on both type of
-> kernels. Primary problem is 062.out file which hardcodes the output and
-> output will be different on old and new kernels.
+> > In general, if we're missing backports, backported something only
+> > partially and should revert it, or anything else that might cause an
+> > issue, we'd be more than happy to work with you to fix it up.
+> >
+> > All the patches we queue up get multiple rounds of emails and reviews,
+> > if there is a better way to solicit reviews so that we won't up in a
+> > place where you haven't noticed something going in earlier we'd be more
+> > than happy to improve that process too.
 > 
-> So instead, do not run this test if kernel is new and is expected to
-> exhibit new behavior. Next patch will create a new test and run that
-> test on new kernel.
+> I have the bad feeling that 905ae01c4ae2 was backported because it was a
+> prerequisite to something with a Fixes tag.
 > 
-> IOW, on old kernels run 062 and on new kernels run new test.
+> Fixes tags especially in this instance don't mean code needs to go to
+> stable Fixes tags mean that a bug was fixed.  Since I thought the code
+> only existed in Linus's tree, I haven't been adding Cc stable or even
+> thinking about earlier kernels with respect to this code.
 > 
-> This is a proposed patch. Will need to be fixed if corresponding
-> kernel changes are merged upstream.
+> I honestly can't keep up with the level of review needed for patches
+> targeting Linus's tree.  So I occasionally glance at patches destined
+> for the stable tree.
 > 
-> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
-> ---
->  tests/generic/062 |   20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
+> Most of the time it is something being backported without a stable tag,
+> but with a fixes tag, that is unnecessary but generally harmless so I
+> ignore it.
 > 
-> Index: xfstests-dev/tests/generic/062
-> ===================================================================
-> --- xfstests-dev.orig/tests/generic/062	2021-08-31 15:51:08.160307982 -0400
-> +++ xfstests-dev/tests/generic/062	2021-08-31 16:27:41.678307982 -0400
-> @@ -55,6 +55,26 @@ _require_attrs
->  _require_symlinks
->  _require_mknod
->  
-> +user_xattr_allowed()
-> +{
-> +	local kernel_version kernel_patchlevel
-> +
-> +	kernel_version=`uname -r | awk -F. '{print $1}'`
-> +	kernel_patchlevel=`uname -r | awk -F. '{print $2}'`
-> +
-> +	# Kernel version 5.14 onwards allow user xattr on symlink/special files.
-> +	[ $kernel_version -lt 5 ] && return 1
-> +	[ $kernel_patchlevel -lt 14 ] && return 1
-> +	return 0;
-> +}
+> In this instance it looks like a whole new feature that has had a rocky
+> history and a lot of time to stablize is somehow backported to 5.10 and
+> 5.13.  I think all of the known issues are addressed but I won't know
+> if all of the issues syzkaller can find are found for another couple of
+> weeks.
+> 
+> Because this code was not obviously correct, because this code did not
+> have a stable tag, because I am not even certain it is stable yet,
+> I am asking do you know how this code that feels to me like feature work
+> wound up being backported?  AKA why is 905ae01c4ae2 in 5.10 and 5.13.
 
-We don't do this because code changes get backported to random
-kernels and so the kernel release is not a reliable indicator of
-feature support.
+Looks like Sasha added it to the tree last week and it went out in the
+last set of releases.  Sasha, why was this added?  Let me see if it was
+a requirement of some other patch...
 
-Probing the functionality is the only way to reliably detect what a
-kernel supports. That's what we don in all the _requires*()
-functions, which is what this should all be wrapped in.
+thanks,
 
-> +# Kernel version 5.14 onwards allow user xattr on symlink/special files.
-> +# Do not run this test on newer kernels. Instead run the new test
-> +# which has been written with the assumption that user.* xattr
-> +# will succeed on symlink and special files.
-> +user_xattr_allowed && _notrun "Kernel allows user.* xattrs on symlinks and special files. Skipping this test. Run newer test instead."
-
-"run a newer test instead" is not a useful error message. Nor do you
-need "skipping this test" - that's exactly what "notrun" means.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+greg k-h
