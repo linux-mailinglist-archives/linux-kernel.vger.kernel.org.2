@@ -2,79 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133E24007D3
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 00:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B6A4007D7
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 00:18:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350144AbhICWR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 18:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235919AbhICWR6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 18:17:58 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD37C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 15:16:57 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id t2-20020a4ae9a2000000b0028c7144f106so118128ood.6
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 15:16:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=gyxxsdZLj8EDyZ8pMKsT8E9AIC0KIFdqfoCQ/9/VW7s=;
-        b=KzKWTzHJKM0GKba56YF5OciltCPo9hSKK8f5cpEKMtbsG9tWyvJJGHkeT6PSfXQ2TN
-         b1Ap77GzvCJpOaZ6+t7kiXTbDUsBwqHylC5VC7qzcLwLId5gKVHxIAUiiHWe+YGotf+q
-         TOt4BjbM9gaM0JxQ2MbNsexxH40Xp8tGP+7II=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=gyxxsdZLj8EDyZ8pMKsT8E9AIC0KIFdqfoCQ/9/VW7s=;
-        b=tAaM9HstF2QGfQovqTbN3uSgN7D6griX2FlYBjttlFzjcdYKfb/6Xjn+xNQxDdJtm+
-         hbpqQvo1Ye5m8641FFh1Fqm9U2PXFAY7l3BbJoFNUwgZCYel3yosx4/yO0ct8sHnRI3i
-         czOjbzwDmvRtbdtaMXZCjxy0S4WgZ/ob0CVsSUlv4Anzz2NSbpAzsc/5wMP3axSjaMeF
-         BFPmfvynmThT+Uq1X4YQpOFmphL/9YKxhD96IqWSuEdQUWxmPblSehLoat0nuzdbZe2O
-         qmGHaOrr6iRBfqkIkp9qPxFhMb9/QJe44qgATu76b0KmtCumZL06qYHTZG+1j++q/aNM
-         E1FQ==
-X-Gm-Message-State: AOAM530bvp0XF78I/ZGTrYX0vXOrXJkQcZNJJIMXBBNLG+hPJBXWEm2b
-        reMSfJ2zlcZ4js5GC7vBUh0ng48DdM9lKAT9KnGl6g==
-X-Google-Smtp-Source: ABdhPJxWPP+fblb2lSlYDuskdZ7Ww49r0yeIcSQUmfZQvLdpLnGscWBy3tt3mJcdzD7/hJtBMIyVBzoxRJdl9jX/D5A=
-X-Received: by 2002:a4a:a98c:: with SMTP id w12mr4727929oom.29.1630707417219;
- Fri, 03 Sep 2021 15:16:57 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 3 Sep 2021 18:16:56 -0400
+        id S1350399AbhICWSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 18:18:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234285AbhICWSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 18:18:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20E7D61056;
+        Fri,  3 Sep 2021 22:17:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630707452;
+        bh=X4y0f2yJvHJHj3wVFotoUayliSDgcX5Ub4uOXuNYiDs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Du+WrwD5eMYuCCEYYiFWHngZxZmpTA7kmKZtOb4LZ7FeGjI3pmz3Rr2EOh4hPcMW7
+         AdmEqGwe9KfyXPwtPYsQDEeTMnLEnI2y0wO/+utnk6HrWYUugDG1Xf7qu5xxAnR+Wd
+         aEPjA5RYD3I1cKkj+7nQ+nUgxuXkhM5vRkGHuAu8KHvvwG3ppXlsF++/hbBAZSG2cX
+         TP6HP/9KBvUEsOq00Ottgf9OIcJi22UQYt92TYo2jpPC67hXoTkQe+5g4mqumxS8lT
+         OHeru3PQ1+yDzfAlQFkZv5diCXpzTozy1zuUxp3oFJLxzrzmKunschhzdpLItLfcVR
+         rgIzoto6AXE6Q==
+Date:   Fri, 3 Sep 2021 15:17:31 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>, <kvm@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stsp2@yandex.ru>, <oxffffaa@gmail.com>
+Subject: Re: [PATCH net-next v5 0/6] virtio/vsock: introduce MSG_EOR flag
+ for SEQPACKET
+Message-ID: <20210903151731.427ce359@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210903123016.3272800-1-arseny.krasnov@kaspersky.com>
+References: <20210903123016.3272800-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-In-Reply-To: <20210903122212.v2.1.I9777d0036ecbb749a4fb9ebb892f94c6e3a51772@changeid>
-References: <20210903122212.v2.1.I9777d0036ecbb749a4fb9ebb892f94c6e3a51772@changeid>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Fri, 3 Sep 2021 18:16:56 -0400
-Message-ID: <CAE-0n50WDf21qkLpEynUJ4mQChLrK-2EhUaroE96spQ45JBqpA@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: sc7180-trogdor: Delete ADC config
- for unused thermistors
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Matthias Kaehlcke (2021-09-03 12:22:19)
-> The charger thermistor on Lazor, CoachZ rev1 and Pompom rev1+2 is
-> either the wrong part or not stuffed at all, the same is true for
-> the skin temperature thermistor on CoachZ rev1. The corresponding
-> thermal zones are already disabled for these devices, in addition
-> delete the ADC nodes of the thermistors.
->
-> For Lazor and CoachZ rev1 also disable the PM6150 ADC and thermal
-> monitor since none of the ADC channels is used.
->
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
+On Fri, 3 Sep 2021 15:30:13 +0300 Arseny Krasnov wrote:
+> 	This patchset implements support of MSG_EOR bit for SEQPACKET
+> AF_VSOCK sockets over virtio transport.
+> 	First we need to define 'messages' and 'records' like this:
+> Message is result of sending calls: 'write()', 'send()', 'sendmsg()'
+> etc. It has fixed maximum length, and it bounds are visible using
+> return from receive calls: 'read()', 'recv()', 'recvmsg()' etc.
+> Current implementation based on message definition above.
+> 	Record has unlimited length, it consists of multiple message,
+> and bounds of record are visible via MSG_EOR flag returned from
+> 'recvmsg()' call. Sender passes MSG_EOR to sending system call and
+> receiver will see MSG_EOR when corresponding message will be processed.
+> 	Idea of patchset comes from POSIX: it says that SEQPACKET
+> supports record boundaries which are visible for receiver using
+> MSG_EOR bit. So, it looks like MSG_EOR is enough thing for SEQPACKET
+> and we don't need to maintain boundaries of corresponding send -
+> receive system calls. But, for 'sendXXX()' and 'recXXX()' POSIX says,
+> that all these calls operates with messages, e.g. 'sendXXX()' sends
+> message, while 'recXXX()' reads messages and for SEQPACKET, 'recXXX()'
+> must read one entire message from socket, dropping all out of size
+> bytes. Thus, both message boundaries and MSG_EOR bit must be supported
+> to follow POSIX rules.
+> 	To support MSG_EOR new bit was added along with existing
+> 'VIRTIO_VSOCK_SEQ_EOR': 'VIRTIO_VSOCK_SEQ_EOM'(end-of-message) - now it
+> works in the same way as 'VIRTIO_VSOCK_SEQ_EOR'. But 'VIRTIO_VSOCK_SEQ_EOR'
+> is used to mark 'MSG_EOR' bit passed from userspace.
+> 	This patchset includes simple test for MSG_EOR.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Assuming you want this merged to net-next:
+
+
+# Form letter - net-next is closed
+
+We have already sent the networking pull request for 5.15 
+and therefore net-next is closed for new drivers, features, 
+code refactoring and optimizations. We are currently accepting 
+bug fixes only.
+
+Please repost when net-next reopens after 5.15-rc1 is cut.
+
+Look out for the announcement on the mailing list or check:
+http://vger.kernel.org/~davem/net-next.html
+
+RFC patches sent for review only are obviously welcome at any time.
