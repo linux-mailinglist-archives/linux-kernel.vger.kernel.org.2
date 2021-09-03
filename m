@@ -2,129 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D727A40004D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 15:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A52400068
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 15:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348482AbhICNOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 09:14:47 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:43532 "EHLO gloria.sntech.de"
+        id S235385AbhICNXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 09:23:22 -0400
+Received: from mga18.intel.com ([134.134.136.126]:44709 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235336AbhICNOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 09:14:46 -0400
-Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mM90r-0005M9-6l; Fri, 03 Sep 2021 15:13:45 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     linux-rockchip@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jacopo@jmondi.org
-Subject: Re: [PATCH 2/2] arm64: dts: rockchip: hook up camera on px30-evb
-Date:   Fri, 03 Sep 2021 15:13:44 +0200
-Message-ID: <2431927.xZuKtqe2JJ@diego>
-In-Reply-To: <20210830141318.66744-2-heiko@sntech.de>
-References: <20210830141318.66744-1-heiko@sntech.de> <20210830141318.66744-2-heiko@sntech.de>
+        id S234262AbhICNXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 09:23:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="206540026"
+X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
+   d="scan'208";a="206540026"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 06:22:21 -0700
+X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
+   d="scan'208";a="521691004"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 06:22:19 -0700
+Received: from andy by smile with local (Exim 4.95-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mM995-00HCzm-Qp;
+        Fri, 03 Sep 2021 16:22:15 +0300
+Date:   Fri, 3 Sep 2021 16:22:15 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, jic23@kernel.org, hdegoede@redhat.com,
+        wens@csie.org
+Subject: Re: [PATCH 2/5] iio: adc: intel_mrfld_adc: convert probe to full
+ device-managed
+Message-ID: <YTIhh7TkIo+mqIvA@smile.fi.intel.com>
+References: <20210903072917.45769-1-aardelean@deviqon.com>
+ <20210903072917.45769-3-aardelean@deviqon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903072917.45769-3-aardelean@deviqon.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Montag, 30. August 2021, 16:13:18 CEST schrieb Heiko Stuebner:
-> From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+On Fri, Sep 03, 2021 at 10:29:14AM +0300, Alexandru Ardelean wrote:
+> The only call in the remove hook is the iio_map_array_unregister() call.
+> Since we have a devm_iio_map_array_register() function now, we can use that
+> and remove the remove hook entirely.
+> The IIO device was registered with the devm_iio_device_register() prior to
+> this change.
+> 
+> Also, the platform_set_drvdata() can be removed now, since it was used only
+> in the remove hook.
 
-Note to self: missing patch description, make it something like:
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Enable the isp and csi phy on px30-evb and connect it to the board's
-ov5695 camera.
-
-
-> Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 > ---
->  arch/arm64/boot/dts/rockchip/px30-evb.dts | 52 +++++++++++++++++++++++
->  1 file changed, 52 insertions(+)
+>  drivers/iio/adc/intel_mrfld_adc.c | 24 ++----------------------
+>  1 file changed, 2 insertions(+), 22 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/rockchip/px30-evb.dts b/arch/arm64/boot/dts/rockchip/px30-evb.dts
-> index c1ce9c295e5b..848bc39cf86a 100644
-> --- a/arch/arm64/boot/dts/rockchip/px30-evb.dts
-> +++ b/arch/arm64/boot/dts/rockchip/px30-evb.dts
-> @@ -114,6 +114,10 @@ &cpu3 {
->  	cpu-supply = <&vdd_arm>;
->  };
+> diff --git a/drivers/iio/adc/intel_mrfld_adc.c b/drivers/iio/adc/intel_mrfld_adc.c
+> index 75394350eb4c..616de0c3a049 100644
+> --- a/drivers/iio/adc/intel_mrfld_adc.c
+> +++ b/drivers/iio/adc/intel_mrfld_adc.c
+> @@ -205,8 +205,6 @@ static int mrfld_adc_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		return ret;
 >  
-> +&csi_dphy {
-> +	status = "okay";
-> +};
-> +
->  &display_subsystem {
->  	status = "okay";
->  };
-> @@ -428,6 +432,36 @@ sensor@4c {
->  	};
->  };
+> -	platform_set_drvdata(pdev, indio_dev);
+> -
+>  	indio_dev->name = pdev->name;
 >  
-> +&i2c2 {
-> +	status = "okay";
-> +
-> +	clock-frequency = <100000>;
-> +
-> +	/* These are relatively safe rise/fall times; TODO: measure */
-> +	i2c-scl-falling-time-ns = <50>;
-> +	i2c-scl-rising-time-ns = <300>;
-> +
-> +	ov5695: ov5695@36 {
-> +		compatible = "ovti,ov5695";
-> +		reg = <0x36>;
-> +		avdd-supply = <&vcc2v8_dvp>;
-> +		clocks = <&cru SCLK_CIF_OUT>;
-> +		clock-names = "xvclk";
-> +		dvdd-supply = <&vcc1v5_dvp>;
-> +		dovdd-supply = <&vcc1v8_dvp>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&cif_clkout_m0>;
-> +		reset-gpios = <&gpio2 14 GPIO_ACTIVE_LOW>;
-> +
-> +		port {
-> +			ucam_out: endpoint {
-> +				remote-endpoint = <&mipi_in_ucam>;
-> +				data-lanes = <1 2>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
->  &i2s1_2ch {
->  	status = "okay";
->  };
-> @@ -443,6 +477,24 @@ &io_domains {
->  	vccio6-supply = <&vccio_flash>;
->  };
+>  	indio_dev->channels = mrfld_adc_channels;
+> @@ -214,28 +212,11 @@ static int mrfld_adc_probe(struct platform_device *pdev)
+>  	indio_dev->info = &mrfld_adc_iio_info;
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
 >  
-> +&isp {
-> +	status = "okay";
-> +
-> +	ports {
-> +		port@0 {
-> +			mipi_in_ucam: endpoint@0 {
-> +				reg = <0>;
-> +				data-lanes = <1 2>;
-> +				remote-endpoint = <&ucam_out>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&isp_mmu {
-> +	status = "okay";
-> +};
-> +
->  &pinctrl {
->  	headphone {
->  		hp_det: hp-det {
+> -	ret = iio_map_array_register(indio_dev, iio_maps);
+> +	ret = devm_iio_map_array_register(dev, indio_dev, iio_maps);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = devm_iio_device_register(dev, indio_dev);
+> -	if (ret < 0)
+> -		goto err_array_unregister;
+> -
+> -	return 0;
+> -
+> -err_array_unregister:
+> -	iio_map_array_unregister(indio_dev);
+> -	return ret;
+> -}
+> -
+> -static int mrfld_adc_remove(struct platform_device *pdev)
+> -{
+> -	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
+> -
+> -	iio_map_array_unregister(indio_dev);
+> -
+> -	return 0;
+> +	return devm_iio_device_register(dev, indio_dev);
+>  }
+>  
+>  static const struct platform_device_id mrfld_adc_id_table[] = {
+> @@ -249,7 +230,6 @@ static struct platform_driver mrfld_adc_driver = {
+>  		.name = "mrfld_bcove_adc",
+>  	},
+>  	.probe = mrfld_adc_probe,
+> -	.remove = mrfld_adc_remove,
+>  	.id_table = mrfld_adc_id_table,
+>  };
+>  module_platform_driver(mrfld_adc_driver);
+> -- 
+> 2.31.1
 > 
 
-
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
