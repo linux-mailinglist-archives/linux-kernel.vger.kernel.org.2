@@ -2,130 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956BB3FFB2F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FB813FFB31
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348045AbhICHi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 03:38:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348035AbhICHiZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 03:38:25 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F173AC061757
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 00:37:25 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id me10so10171555ejb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 00:37:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cRGvZSsdRmFgCiMKoqUCm1KoczOaDBpTmvjrEAznFXk=;
-        b=ZtgOuaGg9ld2PfKJa7EJwdFc7RVXoiDiH4rxAz6tIZ73a+uaFviS/V80qkBU5imk3q
-         wfilCq4Oq9oFaDubG8CpWMdr8qqeFRJO0h4pjB/t569WKttrJLkfB3IUhYkR3Gi6PzfA
-         oy9bkVNDrXB+M5Ckctjm/vwjMruXA7eiSVe6iscse9QUAizwboRHIACFoeG2x31vTbSi
-         gj9Iuj+Hm0dHKk2P3bFNQJhDYhrHcOq/PlZeViaSP8FAqqx/JCOcjK3aqA6D7waaVQds
-         uwVIKCVafTtFJGVYB/jmMrV42reAeYxRpen0BrcBnAdULJSAbR2sIzTr+8q1j0e/P0ap
-         R9EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cRGvZSsdRmFgCiMKoqUCm1KoczOaDBpTmvjrEAznFXk=;
-        b=Aw8e3tVUJoWUYmyc4z9yKe/JCGqF0picb0H4qsdZOlk+DU4ppIOi6k64ZJTJl7j24u
-         4y/NVL3jh+3FbjbsYlUhKQfhT2SicnnwvbH71/de1iR4WtmTZAYoKdixYx1+fFDv9z/P
-         ti/bmpgBAefwbhupcibwjqhnr2dYq27ISWJbSnolNqLdLjqGaYVuzaKrtUlPcPZ641L0
-         2VYFQLqn92th8orbSk13ITXfPeJSFxuoSdoEc3B6V11PRPd4FhOE3PAI6Mysk4qdI1ny
-         W0PkzDBHU5lHgeywc5vd8ewElo36e25tDJ22/2NLMj0UjPotUcw6msXg7vWufeEj17of
-         Ecvw==
-X-Gm-Message-State: AOAM53190e0aqpZ6CMhcVkn1vxOusMTPGOjR8Zyk3HB7Filncg/mbTEK
-        /Qa/pF4CgWBWNBA4jmUm7CcRQcUVXyCsmA==
-X-Google-Smtp-Source: ABdhPJyotfem2L+UTIbP3rA/k0FEc8E9GhMu6BgmV48BRHsNgcPZN/WaC8+4YmMcuKABb5NZon7uMA==
-X-Received: by 2002:a17:906:7fc4:: with SMTP id r4mr2660637ejs.75.1630654644357;
-        Fri, 03 Sep 2021 00:37:24 -0700 (PDT)
-Received: from neptune.. ([5.2.193.191])
-        by smtp.gmail.com with ESMTPSA id c19sm2211627ejs.116.2021.09.03.00.37.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 00:37:24 -0700 (PDT)
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Cc:     jic23@kernel.org, Alexandru Ardelean <aardelean@deviqon.com>
-Subject: [PATCH] iio: adc: ti-ads8344: convert probe to device-managed
-Date:   Fri,  3 Sep 2021 10:37:07 +0300
-Message-Id: <20210903073707.46892-1-aardelean@deviqon.com>
-X-Mailer: git-send-email 2.31.1
+        id S1347968AbhICHlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 03:41:47 -0400
+Received: from mga11.intel.com ([192.55.52.93]:7815 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234753AbhICHlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 03:41:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="216215452"
+X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
+   d="scan'208";a="216215452"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 00:40:47 -0700
+X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
+   d="scan'208";a="533772099"
+Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.90]) ([10.238.4.90])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 00:40:44 -0700
+Subject: Re: [xfs] bad77c375e: stress-ng.fallocate.ops_per_sec -10.0%
+ regression
+To:     kernel test robot <oliver.sang@intel.com>,
+        Dave Chinner <dchinner@redhat.com>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Chandan Babu R <chandanrlinux@gmail.com>,
+        Brian Foster <bfoster@redhat.com>,
+        Allison Henderson <allison.henderson@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com
+References: <20210902072704.GC8267@xsang-OptiPlex-9020>
+From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Message-ID: <36dc5f38-f8ec-591a-8efa-b3bd607ac06e@linux.intel.com>
+Date:   Fri, 3 Sep 2021 15:40:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <20210902072704.GC8267@xsang-OptiPlex-9020>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change converts the driver to register via devm_iio_device_register().
-The regulator disable is moved on a devm_add_action_or_reset() hook.
+Hi Dave,
 
-And the spi_set_drvdata() isn't required anymore.
-And finally, the ads8344_remove() can be removed as well.
+    Do you have time to look at this? Thanks.
 
-Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
----
- drivers/iio/adc/ti-ads8344.c | 27 ++++++++-------------------
- 1 file changed, 8 insertions(+), 19 deletions(-)
+On 9/2/2021 3:27 PM, kernel test robot wrote:
+> 
+> 
+> Greeting,
+> 
+> FYI, we noticed a -10.0% regression of stress-ng.fallocate.ops_per_sec due to commit:
+> 
+> 
+> commit: bad77c375e8de6c776c848e443f7dc2d0d909be5 ("xfs: CIL checkpoint flushes caches unconditionally")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> 
+> in testcase: stress-ng
+> on test machine: 96 threads 2 sockets Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 512G memory
+> with following parameters:
+> 
+> 	nr_threads: 10%
+> 	disk: 1HDD
+> 	testtime: 60s
+> 	fs: xfs
+> 	class: filesystem
+> 	test: fallocate
+> 	cpufreq_governor: performance
+> 	ucode: 0x5003006
+> 
+> 
+> In addition to that, the commit also has significant impact on the following tests:
+> 
+> 
+> 
+> If you fix the issue, kindly add following tag
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> 
+> 
+> Details are as below:
+> -------------------------------------------------------------------------------------------------->
+> 
+> 
+> To reproduce:
+> 
+>          git clone https://github.com/intel/lkp-tests.git
+>          cd lkp-tests
+>          bin/lkp install                job.yaml  # job file is attached in this email
+>          bin/lkp split-job --compatible job.yaml  # generate the yaml file for lkp run
+>          bin/lkp run                    generated-yaml-file
+> 
+> =========================================================================================
+> class/compiler/cpufreq_governor/disk/fs/kconfig/nr_threads/rootfs/tbox_group/test/testcase/testtime/ucode:
+>    filesystem/gcc-9/performance/1HDD/xfs/x86_64-rhel-8.3/10%/debian-10.4-x86_64-20200603.cgz/lkp-csl-2sp7/fallocate/stress-ng/60s/0x5003006
+> 
+> commit:
+>    0431d926b3 ("xfs: async blkdev cache flush")
+>    bad77c375e ("xfs: CIL checkpoint flushes caches unconditionally")
+> 
+> 0431d926b399d74f bad77c375e8de6c776c848e443f
+> ---------------- ---------------------------
+>           %stddev     %change         %stddev
+>               \          |                \
+>      618.67           -10.0%     556.67 ±  2%  stress-ng.fallocate.ops
+>       10.31           -10.0%       9.28 ±  2%  stress-ng.fallocate.ops_per_sec
+>      111618            -5.7%     105270        stress-ng.time.voluntary_context_switches
+>      502.67 ±  2%     +52.0%     763.83 ± 47%  interrupts.CPU44.CAL:Function_call_interrupts
+>        2.10 ±  2%     -25.1%       1.57        iostat.cpu.iowait
+>        2.16 ±  2%      -0.5        1.62        mpstat.cpu.all.iowait%
+>        0.09 ± 11%     +45.0%       0.14 ± 34%  perf-sched.sch_delay.avg.ms.worker_thread.kthread.ret_from_fork
+>      151.00 ± 19%     +20.2%     181.50 ±  7%  perf-sched.wait_and_delay.count.smpboot_thread_fn.kthread.ret_from_fork
+>        6749            +6.4%       7178        perf-stat.i.context-switches
+>        6640            +6.4%       7063        perf-stat.ps.context-switches
+>      353877            -1.4%     348924        proc-vmstat.pgfree
+>       39122           -15.1%      33221        proc-vmstat.pgpgout
+>        1225 ± 14%      -9.0%       1115        turbostat.Bzy_MHz
+>       86.82 ± 17%     -10.4%      77.83        turbostat.PkgWatt
+>      602.83           -15.1%     511.83        vmstat.io.bo
+>        6953            +6.1%       7376        vmstat.system.cs
+>        1.33 ±  6%      +0.4        1.70 ± 13%  perf-profile.calltrace.cycles-pp.perf_mux_hrtimer_handler.__hrtimer_run_queues.hrtimer_interrupt.__sysvec_apic_timer_interrupt.sysvec_apic_timer_interrupt
+>        0.08 ± 22%      +0.1        0.17 ± 23%  perf-profile.children.cycles-pp.wait_for_completion
+>        0.07 ± 17%      +0.1        0.19 ± 64%  perf-profile.children.cycles-pp.submit_bio
+>        0.07 ± 17%      +0.1        0.19 ± 64%  perf-profile.children.cycles-pp.submit_bio_noacct
+>        1.40 ±  8%      +0.3        1.74 ± 12%  perf-profile.children.cycles-pp.perf_mux_hrtimer_handler
+> 
+> 
+>                                                                                  
+>                           stress-ng.fallocate.ops_per_sec
+>                                                                                  
+>    12 +----------------------------------------------------------------------+
+>       |                                                                      |
+>    10 |.+.++.+.+.+  +.+.+.++.+.+.++.+.+.+.++.+.+.++.+.+.++.+.+.+.++.+.+.++.+.|
+>       | O        :  :                             O O   OO O O O OO          |
+>       |   OO O   :O :            O             O O    O                      |
+>     8 |-+      O :  : O O OO O O  O O O O OO O                               |
+>       |          : :                                                         |
+>     6 |-+        : :                                                         |
+>       |           ::                                                         |
+>     4 |-+         ::                                                         |
+>       |           ::                                                         |
+>       |           ::                                                         |
+>     2 |-+         :                                                          |
+>       |           :                                                          |
+>     0 +----------------------------------------------------------------------+
+>                                                                                  
+>                                                                                  
+> [*] bisect-good sample
+> [O] bisect-bad  sample
+> 
+> 
+> 
+> 
+> Disclaimer:
+> Results have been estimated based on internal Intel analysis and are provided
+> for informational purposes only. Any difference in system hardware or software
+> design or configuration may affect actual performance.
+> 
+> 
+> ---
+> 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
+> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
+> 
+> Thanks,
+> Oliver Sang
+> 
 
-diff --git a/drivers/iio/adc/ti-ads8344.c b/drivers/iio/adc/ti-ads8344.c
-index a345a30d74fa..c96d2a9ba924 100644
---- a/drivers/iio/adc/ti-ads8344.c
-+++ b/drivers/iio/adc/ti-ads8344.c
-@@ -133,6 +133,11 @@ static const struct iio_info ads8344_info = {
- 	.read_raw = ads8344_read_raw,
- };
- 
-+static void ads8344_reg_disable(void *data)
-+{
-+	regulator_disable(data);
-+}
-+
- static int ads8344_probe(struct spi_device *spi)
- {
- 	struct iio_dev *indio_dev;
-@@ -161,26 +166,11 @@ static int ads8344_probe(struct spi_device *spi)
- 	if (ret)
- 		return ret;
- 
--	spi_set_drvdata(spi, indio_dev);
--
--	ret = iio_device_register(indio_dev);
--	if (ret) {
--		regulator_disable(adc->reg);
-+	ret = devm_add_action_or_reset(&spi->dev, ads8344_reg_disable, adc->reg);
-+	if (ret)
- 		return ret;
--	}
--
--	return 0;
--}
--
--static int ads8344_remove(struct spi_device *spi)
--{
--	struct iio_dev *indio_dev = spi_get_drvdata(spi);
--	struct ads8344 *adc = iio_priv(indio_dev);
--
--	iio_device_unregister(indio_dev);
--	regulator_disable(adc->reg);
- 
--	return 0;
-+	return devm_iio_device_register(&spi->dev, indio_dev);
- }
- 
- static const struct of_device_id ads8344_of_match[] = {
-@@ -195,7 +185,6 @@ static struct spi_driver ads8344_driver = {
- 		.of_match_table = ads8344_of_match,
- 	},
- 	.probe = ads8344_probe,
--	.remove = ads8344_remove,
- };
- module_spi_driver(ads8344_driver);
- 
 -- 
-2.31.1
-
+Zhengjun Xing
