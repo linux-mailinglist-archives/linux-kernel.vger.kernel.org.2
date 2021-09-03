@@ -2,87 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2013FFC32
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9DF3FFC33
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348385AbhICIlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43258 "EHLO
+        id S234896AbhICIlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348336AbhICIlU (ORCPT
+        with ESMTP id S1348379AbhICIla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:41:20 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83826C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 01:40:20 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 10:40:01 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630658402;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cxI4ujBpNUJuVZeKZv/RoX2/2de6kE0FPj6oLtETCxA=;
-        b=enTX/h/7maWIfEc4W9u+WuDmGa9tTP/rb/UfD6iH+bfdH+U0VotFFPbPMIsKsIzI6/mEiX
-        E4ex54FYBwSmRvh01w61Laz5nEqLk0D/CdxfOgWat0XCjf/Rbd3li/TychQSBb0qdXGr+2
-        aOOZlLwUl+3ZoEspXZpj6pg9Dqs0H6A+ESvSpBI4RRR5aQYJfNELncuBWxREa3lHAB9MbZ
-        smsEiUadEluDJjWqPHfoGIK/YRGH+fIFA6ELyk5YIj23EJoK8glb+8ynDMAv2cVeFApCwX
-        8aU1la15we/dDoQ2rSFBzAQsmSzyCgtBBxyRHhNDhbBT9bFTnNHumVNQlhjR/A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630658402;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cxI4ujBpNUJuVZeKZv/RoX2/2de6kE0FPj6oLtETCxA=;
-        b=nLkAkdDWZMS9hVzZ/0jW+E4X77VhdVPzrheOaYC/X53gBi/k3Ibgh66+EEPRBUkKg9FDkG
-        YrafOUYzKul5kIDA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Waiman Long <llong@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v2] lockdep: Let lock_is_held_type() detect recursive read as
- read
-Message-ID: <20210903084001.lblecrvz4esl4mrr@linutronix.de>
-References: <20210901162255.u2vhecaxgjsjfdtc@linutronix.de>
- <9af2b074-9fcf-5aea-f37d-9b2482146489@redhat.com>
+        Fri, 3 Sep 2021 04:41:30 -0400
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B876CC061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 01:40:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=wBj6nos2hDwqH7CVknKIIQQxUxx9v/M+OP/YK2wBbOc=;
+        t=1630658430; x=1631868030; b=Fe49fPp27uhD/qX5pw0kfudx/2F/OEJfPPSUuESgK553FRr
+        jYUhdO1n89SDgZNK5FWOfZ0p1WZ87KMwFlgSlj3htepJlkQmyp7T2jCUAD+Dqb9YuvjgZ1g4M/G8o
+        WbKY+FLVXMmG0x1VmH711nrMmEepwiQ0SHNSK5+yZzt5rS0317dSD+277nyPk6gPg/yn0XZDy7iiR
+        szlo3Rfznm6UREmORbHYuv9ykaiqftspxXkZBubZbj0xPi909IU50AlIeZPt7NOMg8m0E/+GEZvS2
+        c4skFqTs4DEIjfrLgkWKlhGcAj0Dojd7FQFqe+iDkEGeDTfIzTcjNhZMNHtqGUuQ==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94.2)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1mM4kK-001zew-4n; Fri, 03 Sep 2021 10:40:24 +0200
+Message-ID: <30ab717a9ba1c2bb17e2a6948ff61d26c4430772.camel@sipsolutions.net>
+Subject: Re: [PATCH] um: don't use CONFIG_X86_{32,64} symbols on x86
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Fri, 03 Sep 2021 10:40:23 +0200
+In-Reply-To: <f177f8b287f14c93b04542d7ab4a8dfd@AcuMS.aculab.com>
+References: <20210902102750.1ddfef4c1915.Icb5c49998c55b87c8584d46894c01b114ae2e661@changeid>
+         <f177f8b287f14c93b04542d7ab4a8dfd@AcuMS.aculab.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <9af2b074-9fcf-5aea-f37d-9b2482146489@redhat.com>
+Content-Transfer-Encoding: 7bit
+X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-lock_is_held_type(, 1) detects acquired read locks. It only recognized
-locks acquired with lock_acquire_shared(). Read locks acquired with
-lock_acquire_shared_recursive() are not recognized because a `2' is
-stored as the read value.
+On Fri, 2021-09-03 at 08:27 +0000, David Laight wrote:
+> From: Johannes Berg
+> > Sent: 02 September 2021 09:28
+> > 
+> > The CONFIG_X86_32 and CONFIG_X86_64 symbols are used by
+> > both "real" x86 architecture builds and ARCH=um today.
+> > However, clearly most people and places in the code are
+> > treating it as the architecture Kconfig (technically
+> > that's just CONFIG_X86) and use it to indicate that the
+> > architecture is X86 in 32- or 64-bit flavour.
+> > 
+> > This has caused a fair amount of issues in the past,
+> > for example drivers not building because use x86 macros
+> > or similar under CONFIG_X86_{32,64} ifdef, and then we
+> > find build reports and add "!UML" to their Kconfig etc.
+> > 
+> > However, this is error-prone and a kind of whack-a-mole
+> > game, even with the build bots reporting things.
+> 
+> I suspect you've just changed the 'mole'.
 
-Rework the check to additionally recognise lock's read value one and two
-as a read held lock.
+Yeah, that thought occurred to me too.
 
-Fixes: e918188611f07 ("locking: More accurate annotations for read_lock()")
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
-v1=E2=80=A6v2:
-  - simplify the read check to !!read as suggested by Waiman Long.
 
- kernel/locking/lockdep.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> You've now got lots of lines like:
+> 
+> #if defined(CONFIG_X86_64) || defined(CONFIG_X86_64_UML)
+> 
+> Missing off the UML define is going to cause the 32bit code
+> to get compiled by mistake - which is likely to be more
+> confusing that the places where you need to do special 'stuff'
+> for UML
 
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -5366,7 +5366,7 @@ int __lock_is_held(const struct lockdep_
- 		struct held_lock *hlock =3D curr->held_locks + i;
-=20
- 		if (match_held_lock(hlock, lock)) {
--			if (read =3D=3D -1 || hlock->read =3D=3D read)
-+			if (read =3D=3D -1 || hlock->read =3D=3D !!read)
- 				return LOCK_STATE_HELD;
-=20
- 			return LOCK_STATE_NOT_HELD;
+I'm not sure I agree though.
+
+Yes, I agree that I have a number of lines. But looking through them, we
+have new ones:
+ - AFS, and it fundamentally wants to know the arch. If it misses one,
+   well, that can also happen with any other arch.
+ - XFS/falloc has arch-specific stuff again, and considers other
+   architectures too
+ - fs/ioctl.c is actually unnecessary since CONFIG_COMPAT doesn't exist
+   on UML
+ - same for blktrace
+ - BPF jit - not really sure about that one
+ - crypto Kconfig - but again already considers different architectures
+   there
+ - sound - ok that's a stupid one :)
+ - lzo - again stuff that already considers many architectures
+
+But on the other side removal we have
+ - sysctl
+ - netfilter
+ - security
+ - many fixes to driver Kconfig that you don't see here because they're
+   *missing* "depends on !UML" now
+
+
+So my gut feeling is that while we've indeed traded one mole for another
+in a sense, the somewhat surprising places (like sound and BPF) are much
+fewer, and most of the places that we now need it are places that are
+already considering different architectures.
+
+johannes
+
