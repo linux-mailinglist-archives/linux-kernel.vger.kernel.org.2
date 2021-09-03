@@ -2,141 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86E43FFC05
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FEE83FFC0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348349AbhICIcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:32:50 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46638 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234831AbhICIct (ORCPT
+        id S1348382AbhICIdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:33:37 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:36413 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348359AbhICId3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:32:49 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18383uBv145986;
-        Fri, 3 Sep 2021 04:31:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=Exm6y1FOu+ZBrK+yh3J6WZQaWOGuziL00C3jiRfFieI=;
- b=Zc5RAxNGHdVf02Wi1czvATyswyK3LyzNfG3uDLlFnSZ/GpBB3AXOIIeiUTuFUWPhx3qO
- UHd3vuSDI6AwH5VuTMk5PFhN8izJhiA1vfr0lO3aSgirFkwEwTuQAOBR7d1Lf/rReuN3
- ls02cdy0VRQ9LWJX3C69TX2cYZZhpUAyODoeqlO8hRACfrHlZMjQe3+yQ6iHTQ3QMJ28
- +lF9jYeYZfNoRGX+98YIur/RXBLCtCJ0DHoJh9sZnvj+uaRtZiSrjeEI8Erbd2h/9eYw
- J+F9cF8bE80J96R7LX6ZYwkfh1CMuVBxknleqYv7KIjG/2Q8vlbCy+geZzj+aIJ+qOBl Ag== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aubde6mex-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 04:31:45 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1838SAYg031431;
-        Fri, 3 Sep 2021 08:31:43 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 3au6q757ja-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 08:31:43 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1838Ve8d42991930
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Sep 2021 08:31:40 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3951BA4076;
-        Fri,  3 Sep 2021 08:31:40 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DF647A404D;
-        Fri,  3 Sep 2021 08:31:39 +0000 (GMT)
-Received: from sig-9-145-171-221.de.ibm.com (unknown [9.145.171.221])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  3 Sep 2021 08:31:39 +0000 (GMT)
-Message-ID: <dd9d9f056a8be2ea62e8497ca5f44707c5623600.camel@linux.ibm.com>
-Subject: Re: [GIT PULL 1/2] asm-generic: rework PCI I/O space access
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Arnd Bergmann <arnd@kernel.org>, John Garry <john.garry@huawei.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 03 Sep 2021 10:31:39 +0200
-In-Reply-To: <CAK8P3a3KTaa-AwCOjhaASMx63B3DUBZCZe6RKWk-=Qu7xr_ijQ@mail.gmail.com>
-References: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
-         <CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com>
-         <CAK8P3a1D5DzmNGsEPQomkyMCmMrtD6pQ11JRMh78vbY53edp-Q@mail.gmail.com>
-         <CAK8P3a0MNbx-iuzW_-=0ab6-TTZzwV-PT_6gAC1Gp5PgYyHcrA@mail.gmail.com>
-         <db043b76-880d-5fad-69cf-96abcd9cd34f@huawei.com>
-         <CAK8P3a3HHeP+Gw_k2P7Qtig0OmErf0HN30G22+qHic_uZTh11Q@mail.gmail.com>
-         <a74dfb1f-befd-92ce-4c30-233cb08e04d3@huawei.com>
-         <CAK8P3a3B4FCaPPHhzBdpkv0fsjE0jREwGFCdPeHEDHxxRBEjng@mail.gmail.com>
-         <5e8dfbd2-a6c0-6d02-53e9-1f29aebcc44e@huawei.com>
-         <CAK8P3a08Zcyx0J4_LGAfU_AtUyEK+XtQJxYBQ52VXfWu8-o8_w@mail.gmail.com>
-         <dd2d49ef-3154-3c87-67b9-c134567ba947@huawei.com>
-         <CAK8P3a3KTaa-AwCOjhaASMx63B3DUBZCZe6RKWk-=Qu7xr_ijQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: NvJMTKo50fBh6rkdhC0LTdUAKiWuDsEy
-X-Proofpoint-GUID: NvJMTKo50fBh6rkdhC0LTdUAKiWuDsEy
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 3 Sep 2021 04:33:29 -0400
+Received: by mail-io1-f72.google.com with SMTP id e187-20020a6bb5c4000000b005b5fe391cf9so3386552iof.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 01:32:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=/JH5aPNUVJvcpf6o/NsWRyN1IPA9uU7shy4Wx9UIhsI=;
+        b=hzMz11IYjuOVdr+1GNOnzlNl0y5sL6Mfg1/kr1eiFPrsCNO4DbDOgWh6fuG6RIexw2
+         URItC55vjyOgN/vHrq1eTlVlnncDW45UoP9r0iYxXgUv8lnC6n49tlJlYCN19aI1OAgE
+         jgSqra4c3StIwQmWIvGEyVoZ0KTC4isjytHASg6zH+YmRDoecWLKO7Gsh56HwIeYKA93
+         TmL/UbKlMjIR4aMnxcoOcJutwZ+3AZ2cQQ8jhI+mvvLDr6PWfig8JbwrRm9BkuzyFMKy
+         /fpSQ/yMgrto+JUbx91r4mi3PTyz7zT2alb0OKxUaY4Yk9Z4VmYLBqd9dmX0VktfS41P
+         2kbA==
+X-Gm-Message-State: AOAM531HlT4rVJ813YmdT/CyuaQnovO66FQW4oQ0OcPDXHayQHPUoIGl
+        0x6OE1FyQE6owfmvTjKsY8khffS+QXArsQ9uVlwt3NxjVE+M
+X-Google-Smtp-Source: ABdhPJyYfSU3LUTSUqLhK7u1MA/ll2e+NK2eaqRHuEww0sudcUf3lW6udbWG/loi17nxZ0Tc7ho3Dc+55csZwm2V+0fJ0rWnsFTQ
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-03_02:2021-09-03,2021-09-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 suspectscore=0
- mlxlogscore=999 spamscore=0 bulkscore=0 clxscore=1011 adultscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109030048
+X-Received: by 2002:a05:6638:25c3:: with SMTP id u3mr1728903jat.52.1630657949405;
+ Fri, 03 Sep 2021 01:32:29 -0700 (PDT)
+Date:   Fri, 03 Sep 2021 01:32:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d3188c05cb1323a0@google.com>
+Subject: [syzbot] INFO: task hung in __lru_add_drain_all
+From:   syzbot <syzbot+a9b681dcbc06eb2bca04@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, bp@alien8.de, frederic@kernel.org,
+        hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mark.rutland@arm.com, masahiroy@kernel.org,
+        mingo@redhat.com, netdev@vger.kernel.org, npiggin@gmail.com,
+        pbonzini@redhat.com, peterz@infradead.org,
+        rafael.j.wysocki@intel.com, rostedt@goodmis.org, seanjc@google.com,
+        sedat.dilek@gmail.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vitor@massaru.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, will@kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-08-10 at 13:33 +0200, Arnd Bergmann wrote:
-> On Tue, Aug 10, 2021 at 11:19 AM John Garry <john.garry@huawei.com> wrote:
-> > On 04/08/2021 09:52, Arnd Bergmann wrote:
-> > 
-> > This seems a reasonable approach. Do you have a plan for this work? Or
-> > still waiting for the green light?
-> 
-> I'm rather busy with other work at the moment, so no particular plans
-> for any time soon.
-> 
-> > I have noticed the kernel test robot reporting the following to me,
-> > which seems to be the same issue which was addressed in this series
-> > originally:
-> > 
-> > config: s390-randconfig-r032-20210802 (attached as .config)
-> > compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project
-> > 4f71f59bf3d9914188a11d0c41bedbb339d36ff5)
-> > ...
-> > All errors (new ones prefixed by >>):
-> > 
-> >     In file included from drivers/block/null_blk/main.c:12:
-> >     In file included from drivers/block/null_blk/null_blk.h:8:
-> >     In file included from include/linux/blkdev.h:25:
-> >     In file included from include/linux/scatterlist.h:9:
-> >     In file included from arch/s390/include/asm/io.h:75:
-> >     include/asm-generic/io.h:464:31: warning: performing pointer
-> > arithmetic on a null pointer has undefined behavior
-> > [-Wnull-pointer-arithmetic]
-> >             val = __raw_readb(PCI_IOBASE + addr);
-> > 
-> > So I imagine lots of people are seeing these.
-> 
-> Right, this is the original problem that Niklas was trying to solve.
-> 
-> If Niklas has time to get this fixed, I can probably find a way to work
-> with him on finishing up my proposed patch with the changes you
-> suggested.
-> 
->        Arnd
+Hello,
 
-Sorry for the late reply, this got lost in my inbox. I could spare some
-cycles on this but I'm not sure how I can help.
+syzbot found the following issue on:
 
-The series you sent after Linus' nacked the previous approach looks
-quite broad touching lots of areas I have little experience with. I'd
-be willing to test things and look over patches the best I can of
-course.
+HEAD commit:    c7d102232649 Merge tag 'net-5.14-rc4' of git://git.kernel...
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=131efc8a300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bfd78f4abd4edaa6
+dashboard link: https://syzkaller.appspot.com/bug?extid=a9b681dcbc06eb2bca04
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13e91804300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1508bb1e300000
 
-Thanks,
-Niklas
+The issue was bisected to:
 
+commit 997acaf6b4b59c6a9c259740312a69ea549cc684
+Author: Mark Rutland <mark.rutland@arm.com>
+Date:   Mon Jan 11 15:37:07 2021 +0000
+
+    lockdep: report broken irq restoration
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=102f551a300000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=122f551a300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=142f551a300000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a9b681dcbc06eb2bca04@syzkaller.appspotmail.com
+Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
+
+INFO: task khugepaged:1663 blocked for more than 143 seconds.
+      Not tainted 5.14.0-rc3-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:khugepaged      state:D stack:28464 pid: 1663 ppid:     2 flags:0x00004000
+Call Trace:
+ context_switch kernel/sched/core.c:4683 [inline]
+ __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
+ schedule+0xd3/0x270 kernel/sched/core.c:6019
+ schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1855
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x176/0x280 kernel/sched/completion.c:138
+ __flush_work+0x50e/0xad0 kernel/workqueue.c:3053
+ __lru_add_drain_all+0x3fd/0x760 mm/swap.c:842
+ khugepaged_do_scan mm/khugepaged.c:2214 [inline]
+ khugepaged+0x10f/0x5590 mm/khugepaged.c:2275
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/1647:
+ #0: ffffffff8b97ba40 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
+1 lock held by khugepaged/1663:
+ #0: ffffffff8ba5e948 (lock#6){+.+.}-{3:3}, at: __lru_add_drain_all+0x65/0x760 mm/swap.c:791
+1 lock held by in:imklog/8274:
+ #0: ffff88801b6b4ff0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:974
+3 locks held by kworker/1:4/8673:
+3 locks held by kworker/1:5/8674:
+2 locks held by syz-executor764/31172:
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 1647 Comm: khungtaskd Not tainted 5.14.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
+ watchdog+0xd0a/0xfc0 kernel/hung_task.c:295
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 19 Comm: ksoftirqd/1 Not tainted 5.14.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__find_rr_leaf+0x2d4/0xd20 net/ipv6/route.c:794
+Code: 08 0f 84 58 01 00 00 e8 aa 3d a0 f9 48 83 3c 24 00 74 43 e8 9e 3d a0 f9 48 8d bb 80 00 00 00 48 89 f8 48 c1 e8 03 0f b6 04 28 <84> c0 74 08 3c 03 0f 8e 49 08 00 00 44 8b a3 80 00 00 00 44 8b 74
+RSP: 0018:ffffc90000d97508 EFLAGS: 00000a06
+RAX: 0000000000000000 RBX: ffff88804f143400 RCX: 0000000000000100
+RDX: ffff888010a7d4c0 RSI: ffffffff87d55dc2 RDI: ffff88804f143480
+RBP: dffffc0000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff87d55d8a R11: 0000000000000000 R12: 0000000000000001
+R13: ffffc90000d977f0 R14: 0000000000000000 R15: ffff88804f142aa0
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200000c0 CR3: 000000001ff23000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ find_rr_leaf net/ipv6/route.c:846 [inline]
+ rt6_select net/ipv6/route.c:890 [inline]
+ fib6_table_lookup+0x649/0xa20 net/ipv6/route.c:2174
+ ip6_pol_route+0x1c5/0x11d0 net/ipv6/route.c:2210
+ pol_lookup_func include/net/ip6_fib.h:579 [inline]
+ fib6_rule_lookup+0x111/0x6f0 net/ipv6/fib6_rules.c:115
+ ip6_route_input_lookup net/ipv6/route.c:2280 [inline]
+ ip6_route_input+0x63c/0xb30 net/ipv6/route.c:2576
+ ip6_rcv_finish_core.constprop.0.isra.0+0x168/0x570 net/ipv6/ip6_input.c:63
+ ip6_rcv_finish net/ipv6/ip6_input.c:74 [inline]
+ NF_HOOK include/linux/netfilter.h:307 [inline]
+ NF_HOOK include/linux/netfilter.h:301 [inline]
+ ipv6_rcv+0x229/0x3c0 net/ipv6/ip6_input.c:297
+ __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5498
+ __netif_receive_skb+0x24/0x1b0 net/core/dev.c:5612
+ process_backlog+0x2a5/0x6c0 net/core/dev.c:6492
+ __napi_poll+0xaf/0x440 net/core/dev.c:7047
+ napi_poll net/core/dev.c:7114 [inline]
+ net_rx_action+0x801/0xb40 net/core/dev.c:7201
+ __do_softirq+0x29b/0x9c2 kernel/softirq.c:558
+ run_ksoftirqd kernel/softirq.c:920 [inline]
+ run_ksoftirqd+0x2d/0x60 kernel/softirq.c:912
+ smpboot_thread_fn+0x645/0x9c0 kernel/smpboot.c:164
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
