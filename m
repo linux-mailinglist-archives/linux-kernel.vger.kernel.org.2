@@ -2,111 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E20B4000FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D293B4000FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348925AbhICOG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:06:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235668AbhICOG4 (ORCPT
+        id S1349118AbhICOHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:07:52 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23060 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235668AbhICOHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:06:56 -0400
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8291BC061757
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 07:05:56 -0700 (PDT)
-Received: by mail-il1-x12f.google.com with SMTP id j15so5328662ila.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 07:05:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cgwrXJbGZw7LvqCtZ3SUKKuQrirCjvwKHoEkBgKAZaU=;
-        b=sXrYf6ZM3c1JtQU/3qv/sJb1LUKy8mMGlGmQeonO7HS0NJj0acwq/UI25oqmDf58n4
-         qqRtijFCHOMLwxe7o0aX434rsvKmUvLjOVufuM4CIU65JkY4dnAuVVh/yUuOFA53K7as
-         wrmNbmyXbO48oXrm76jzfnEZTD5R96EUUtddyr5whSb6BCPQErXw2ZiT+9UcHDVqQ3Ym
-         gl/7ldYNQ6tVd3gJ2X7QEyDRT6UoUVKtl7N/qvq4ceQZW+x+bHXnD0ql8A3oUwIK6DWQ
-         MoRMRl2q4s/hwXjdjwk8R7yNN+ok+ntw32Sc2qtIKJSktRPkhB4Ggoa2lK+HxkUEf5PR
-         fgKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cgwrXJbGZw7LvqCtZ3SUKKuQrirCjvwKHoEkBgKAZaU=;
-        b=dr7HLUutekQgIOvnxwCqa3AcYxMcmDrggv10x31T6YoeFv1zrTvFxtB3FKmd9ycWMH
-         JP3k5AWmQdxKosiwmcyVD8iTij5l1dr6f16pBbbmIU5cUDCnFIaP3xavmcyOt71fjGm3
-         Wt45Sf5Q1C4CKEF8pZMtACp3Z6VRNK9asOvmOSOpDWWYJK0aOU29KTQB48+nLEZeeBhG
-         2OxsX64Tbly+jCnxPs4w04B0DVXsqFLyGkceJ/Ui4UhlRCks0dhxttPWjhokuRHMNRbH
-         wTlEtHs7LDa5eMoKtBy8jRdF6FdKUcVoBSRp7lrhJwZnSObbLqko3JmDovzPehY0tvt2
-         c5AA==
-X-Gm-Message-State: AOAM531IzJxSqKPeRG2rb8TqSk9Lf9RGpY2kCfmxIEarpsT6bA8o9EsO
-        5mUIOypnuANRPqauBToJsr/aG3glkmgmpg==
-X-Google-Smtp-Source: ABdhPJwvWaYxLtiQdTjFxqxZ0hGQBViYTZVn6oVs+J+gayqWtyQsVVSB1BUnidGmWIMevchMp6TatQ==
-X-Received: by 2002:a05:6e02:1d06:: with SMTP id i6mr2758385ila.113.1630677955708;
-        Fri, 03 Sep 2021 07:05:55 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id o2sm2674640ilg.47.2021.09.03.07.05.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 07:05:55 -0700 (PDT)
-Subject: Re: [PATCH v6] libata: Add ATA_HORKAGE_NO_NCQ_ON_ATI for Samsung 860
- and 870 SSD.
-To:     Hans de Goede <hdegoede@redhat.com>, Kate Hsuan <hpa@redhat.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210903094411.58749-1-hpa@redhat.com>
- <d3488035-d269-2a63-f958-746f371cf490@kernel.dk>
- <f1f0b799-6676-ae06-6a71-05dfeeab8512@redhat.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <cb497516-a2f9-9ebf-a9c6-70aa3ce52940@kernel.dk>
-Date:   Fri, 3 Sep 2021 08:05:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 3 Sep 2021 10:07:51 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 183E3UbD181380;
+        Fri, 3 Sep 2021 10:06:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=c5dtoeuWVsQu+Kx8qJUPUNaZorSC3QCCcGga7tN4sMM=;
+ b=ScX/mNrpjpVGSx7jnWReoQPFcq12svD7XPCLBc9+6TcavrCpFAUGPoIUBGeID0O3nUQ8
+ aG2XqrMHeI1H6uH7Bz5TxvciGjxAU+sdozMlFUgeWFBXfLNgYtqng2x7evKyHE7CSCmn
+ 4qvRCZDSoMunMRURUbVVrLC0nPgqByu2VIOhDqKf/0qKkrztBc3ddgbIuEFNRIYG3qlI
+ 4OxZa+v6kbClDzirNILXgdEG0wTxsWg+s0bg0AmFLE/P/U/FtTlcIfoeB2MszbyFM8Eb
+ O6/4oYtU414B8YjaaKASZa+PwGVaLZEnJi4SjdP/5bMcv31V3PkLxnO5DfFZJ3o954ME 6w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3aujf14aj5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Sep 2021 10:06:25 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 183E58pp001197;
+        Fri, 3 Sep 2021 10:06:24 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3aujf14agu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Sep 2021 10:06:24 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 183DwGLW004761;
+        Fri, 3 Sep 2021 14:06:21 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 3au6q7h8bn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Sep 2021 14:06:21 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 183E2Ese61866466
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 3 Sep 2021 14:02:14 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DA6AA52050;
+        Fri,  3 Sep 2021 14:06:17 +0000 (GMT)
+Received: from osiris (unknown [9.145.159.114])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id CFE815206B;
+        Fri,  3 Sep 2021 14:06:16 +0000 (GMT)
+Date:   Fri, 3 Sep 2021 16:06:15 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, gregkh@linuxfoundation.org,
+        chaitanya.kulkarni@wdc.com, atulgopinathan@gmail.com, hare@suse.de,
+        maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org,
+        colin.king@canonical.com, shubhankarvk@gmail.com,
+        baijiaju1990@gmail.com, trix@redhat.com,
+        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hoeppner@linux.ibm.com, gor@linux.ibm.com,
+        borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
+        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 9/9] s390/block/xpram: add error handling support for
+ add_disk()
+Message-ID: <YTIr1w/qPvgioUfL@osiris>
+References: <20210902174105.2418771-1-mcgrof@kernel.org>
+ <20210902174105.2418771-10-mcgrof@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <f1f0b799-6676-ae06-6a71-05dfeeab8512@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902174105.2418771-10-mcgrof@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: cnjpHgTUs8-WIbHVAJtbBq5h0cPzkyvT
+X-Proofpoint-GUID: XAog2zEDSgH4nXCPv9bkGtJovoNDgwBR
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-03_05:2021-09-03,2021-09-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 phishscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 adultscore=0 clxscore=1011 suspectscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109030088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/21 8:03 AM, Hans de Goede wrote:
-> Hi,
+On Thu, Sep 02, 2021 at 10:41:05AM -0700, Luis Chamberlain wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
 > 
-> On 9/3/21 2:35 PM, Jens Axboe wrote:
->> On 9/3/21 3:44 AM, Kate Hsuan wrote:
->>> Many users are reporting that the Samsung 860 and 870 SSD are having
->>> various issues when combined with AMD/ATI (vendor ID 0x1002)  SATA
->>> controllers and only completely disabling NCQ helps to avoid these
->>> issues.
->>>
->>> Always disabling NCQ for Samsung 860/870 SSDs regardless of the host
->>> SATA adapter vendor will cause I/O performance degradation with well
->>> behaved adapters. To limit the performance impact to ATI adapters,
->>> introduce the ATA_HORKAGE_NO_NCQ_ON_ATI flag to force disable NCQ
->>> only for these adapters.
->>>
->>> Also, two libata.force parameters (noncqati and ncqati) are introduced
->>> to disable and enable the NCQ for the system which equipped with ATI
->>> SATA adapter and Samsung 860 and 870 SSDs. The user can determine NCQ
->>> function to be enabled or disabled according to the demand.
->>>
->>> After verifying the chipset from the user reports, the issue appears
->>> on AMD/ATI SB7x0/SB8x0/SB9x0 SATA Controllers and does not appear on
->>> recent AMD SATA adapters. The vendor ID of ATI should be 0x1002.
->>> Therefore, ATA_HORKAGE_NO_NCQ_ON_AMD was modified to
->>> ATA_HORKAGE_NO_NCQ_ON_ATI.
->>
->> What's this patch against?
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  drivers/s390/block/xpram.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> linux-block/for-next + my pre-cursor patch from here:
-> 
-> https://lore.kernel.org/linux-ide/20210823095220.30157-1-hdegoede@redhat.com/T/#u
+> diff --git a/drivers/s390/block/xpram.c b/drivers/s390/block/xpram.c
+> index ce98fab4d43c..ed3904b6a9c8 100644
+> --- a/drivers/s390/block/xpram.c
+> +++ b/drivers/s390/block/xpram.c
+> @@ -371,7 +371,9 @@ static int __init xpram_setup_blkdev(void)
+>  		disk->private_data = &xpram_devices[i];
+>  		sprintf(disk->disk_name, "slram%d", i);
+>  		set_capacity(disk, xpram_sizes[i] << 1);
+> -		add_disk(disk);
+> +		rc = add_disk(disk);
+> +		if (rc)
+> +			goto out;
 
-Still had to fixup a hunk, but it was trivial. In any case, I've applied
-both now, thanks!
+Hmm, this is a more or less dead device driver, and I'm wondering if
+we shouldn't remove it instead. But anyway, your patch is not correct:
 
--- 
-Jens Axboe
+- del_gendisk for all registered disks has to be called
+- unregister_blkdev(XPRAM_MAJOR, XPRAM_NAME) is missing as well
 
+That would be more or or less xpram_exit with parameter.
+
+You can send a new patch or I can provide a proper one, whatever you
+prefer.
