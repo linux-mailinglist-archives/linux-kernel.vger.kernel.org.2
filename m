@@ -2,193 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F48C3FF8AB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 03:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0702C3FF8AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 03:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346908AbhICBg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 21:36:58 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:21928 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239384AbhICBg5 (ORCPT
+        id S234672AbhICBkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 21:40:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48949 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232013AbhICBki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 21:36:57 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 182MsHvs023072;
-        Fri, 3 Sep 2021 01:35:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=corp-2021-07-09;
- bh=f3J5LxobCo+YW25BqZzFbA5/klPhPkRxscMUiUZJh+w=;
- b=Ykzl1yumRcAq3gtUUTKB85WYYSMxYepxEwmYcBGd7Swdx8ORNuKAt19tQE4pPGcKUfWg
- dHk44lzlR14fBC/z//GA+un70Oqxbkh61yeoZcGnLNZAkKRPbxNC4z4RQr9jWjzbjM1J
- qelnRDHoDghmRZ1tAjLPQNTosMEWmZbFNwaEr2Yg4VSxX5aYh7a4RBUmNnMPjWLHU9lj
- 9uOj3wOlS+nw6v/gJZG2ebI9sFp27l2gSxyIW5caUkvBJH2EB3Mp0cczFUlbDDi201NB
- qJzsbwoJWojAlm6V7T586g65gYUgHy2+JV59i49TUhBTbkDPTLScf9XaPElX/Ric9fzO rg== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=corp-2020-01-29;
- bh=f3J5LxobCo+YW25BqZzFbA5/klPhPkRxscMUiUZJh+w=;
- b=Sv6TOSshpYapQn6ITdvirErCF9rQkVoQPReeiXZnqtYDuzkWLRIDMWsWcQbCJzCgsgqF
- W7tZ7DCQiXdi2CjdSD1BnhMrW1OhAYvEuz7U52wWZq40TWaQaXmSwGjXb1p0IRgqI7mk
- bUuC2Dq2MdbjrDb/WCquPoro9LTSdlte1ITRyZPQCXYHDOInsjr4JA5oPrI+ciF+yIpV
- 3kGMIuEsYgK/M4M0BF6few7RQj3m7KLYfcUHvqYcAIY4X8DGWR4v2sefcjXr/nvkyR+F
- kNZ06jtoikZAS8L3JuJWkG0/jCkM6WPtlbr2D6FQ+iRMZiMMLqVOHjd578+odL5shHuT gw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3atdvymsmy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Sep 2021 01:35:35 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1831Twxe050568;
-        Fri, 3 Sep 2021 01:35:34 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2108.outbound.protection.outlook.com [104.47.70.108])
-        by userp3020.oracle.com with ESMTP id 3ate00tcd4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Sep 2021 01:35:33 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BLi0G1Hph8mwZS3QCkW2psJPVsyojt22hFtx1xhr5xyVjuxSZRhKOydBPdWAu8uAsUAJyoVOg83qcAig+hfHkgp3u+NM4/WO8crwg9PvmuRkcuLQ1qFks/MwN4UEPwxbLZSzdSM/J6IbXMPpafFnMaeQ9UoIK50afyz1kSkik42xm/l2+Bp2v/P8TX8VkQddChbqnGj+i/vR4XBDzsDpNb3u7p5iIb/UI+SLFMpW1BDjs9cQcAQRjBcJooxtapUJ9NJ9rMTfGkcedV0vyjtJNFv0Xyw5j+SPWS55svXbPtscGMs9uUdt1OebWfLK2iixTp+InjnU9oajGnr8SlI3OA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f3J5LxobCo+YW25BqZzFbA5/klPhPkRxscMUiUZJh+w=;
- b=WJfLJJGssyhe8TH9Z7JxCga1QRY3m8rvFZXqe3xDMPhPfIOkrir2j8XjOtQqLBgPiRR8754EbZauF5TRf+5LtWAlHO9BHzjDy+CL1C0++Jb7jNiIyrVwzuc/XzWeohw+Qg3BNxuLrCffd+wYn08lgXbYgEM+7cCjrTPSi9aOXoppNODcfNK0kwTu1l62IIdHFKGMzOrErOUd3RN9tJ7RzSb7FLgAX3A8sIbNyHc+XkO06Wew6fRDJZZxBl5KOd+nZH4U7q2ZML4r5nl37LDcPKIlrVfz791fbuYY+lco9o/U3ErVdgdwjro9EyDDBXTjVx2EU+edfSHhjgsVmq9woQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=f3J5LxobCo+YW25BqZzFbA5/klPhPkRxscMUiUZJh+w=;
- b=oTG+OPZy4opqPZcJiYqmSJaTOruTqrTJoA0y9VWAKEqhMho6jcwDHDPMchkI8FVH+AlAyJWLZS5JFT5xhZQsBIJ+5MhPCwmpCrRQ4kImNRGCMPNaaZH4p/fAvwlC/TqH0TT/s7LL3nDZOQZNjfB7shVk5wP98xZHJEjnxdG5xpo=
-Received: from DM6PR10MB4380.namprd10.prod.outlook.com (2603:10b6:5:223::19)
- by DM6PR10MB3258.namprd10.prod.outlook.com (2603:10b6:5:1a0::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Fri, 3 Sep
- 2021 01:35:32 +0000
-Received: from DM6PR10MB4380.namprd10.prod.outlook.com
- ([fe80::f4b1:d890:7745:30a3]) by DM6PR10MB4380.namprd10.prod.outlook.com
- ([fe80::f4b1:d890:7745:30a3%4]) with mapi id 15.20.4478.020; Fri, 3 Sep 2021
- 01:35:31 +0000
-From:   Liam Howlett <liam.howlett@oracle.com>
-To:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Steven Rostedt <rostedt@goodmis.org>,
-        Michel Lespinasse <walken.cr@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH] mmap_lock: Change trace and locking order
-Thread-Topic: [PATCH] mmap_lock: Change trace and locking order
-Thread-Index: AQHXoGP7cpc0Z7mp8UOLUJvtQyIsuw==
-Date:   Fri, 3 Sep 2021 01:35:31 +0000
-Message-ID: <20210903013521.1802774-1-Liam.Howlett@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: git-send-email 2.30.2
-authentication-results: kvack.org; dkim=none (message not signed)
- header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: aef53407-218d-4426-d13a-08d96e7b1e61
-x-ms-traffictypediagnostic: DM6PR10MB3258:
-x-microsoft-antispam-prvs: <DM6PR10MB3258F9B610AE096840DE14CAFDCF9@DM6PR10MB3258.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1443;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Y4Bc1iPwmZPCb9j6paj6nUb7Sq7sHbMPhu9yfptt/f65EgZwDzYR+rhbzGH8+OOkfearyoImMaOCnrHj8ATPv/J0a8rH5Tc7HSYT77sFlZd4dP+KMEsQZ4cql5s5RO4WrZUnjG1GkcIK/rrSiipKd1inFl+2SDJ8e0p8j5WjQB810WbtvMzfSlUUeajEAtOu8AMXOowpmNnVesPiSwe/hW9s9/7y3JXSehkma6TUV3Wd1JY3TVzhV+ShsO/TSxLERKcEc10uBcR7BNdZ2hF6H9/oinha6eNmewOsJICikglEvyU0MG2EWzdiqNh5lVNbAdtiU6vnvw3YWbTBsQ4ppG8ueH2FJAsuENvb5Y80O5rbXSh+XqVrI/MPKYZ1Y898B0pxhjDX4YmwOrPUobvYLcEetuSrlxBQw8kjEC+vdnB68aksaiiTp9dkTZcf12wlw66MisvumVAo+Qopv6sTcdFDUMpWC98CAOAZpNZsfMB1I+jsQaVyRLEL3fW6VoPmQ0Rfy0pIOuNeISfzGy+RkxJrCZb+Rs4ubO0+Bw7LZAmJG1R2DoOcpnli6asno2lcF9rqUxEohUVL7lbWtKbXMhdB4UOtONL3I0UQX11wg1+ay2B0ShsDNarH8qpzzUoN67udp4BScvwfSsFHL/b+cDxE2m7JlUkdHRYWx7sDOB2tLLEqotmloHyLIIR8x6BkM89KBIMSKosEMp9EmTkaoA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4380.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(38070700005)(71200400001)(66476007)(508600001)(66446008)(76116006)(66556008)(38100700002)(316002)(1076003)(4326008)(91956017)(2906002)(122000001)(66946007)(110136005)(83380400001)(6506007)(54906003)(64756008)(8936002)(44832011)(5660300002)(6512007)(86362001)(8676002)(26005)(2616005)(36756003)(186003)(6486002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?IDgT47/kABFxu9k34U5zGEex45uxw7Hx4DfdKUI/HSUmK/RokFqg1VTSex?=
- =?iso-8859-1?Q?Akj+vsoywFVPdVjgNNsNIIVwuZKr05DLeCo5zVYR/pbwCFHCQEP6ULxNK4?=
- =?iso-8859-1?Q?WbbOTagnENCWN8DtVWO4jhrq1LJGE9qqn2pXpsJDqTGImd/7yo2f3B0C7X?=
- =?iso-8859-1?Q?qv6AfcA/+XbO5AT9greSbDTZdCOBS2HZiChv1EsYQsSSTwGyiOQnUFyDbb?=
- =?iso-8859-1?Q?zc7XNi8ZOg5h0T0+yLlVNXzVbnk/rk4XTHDNPFbXrbAcYmSRkp5bSAjQc+?=
- =?iso-8859-1?Q?mf9KbKMhxFmVUvhuDbrn4zvE7A+n0qI/Eh7Au7o28aGGF9Oi4ceOrbMOZt?=
- =?iso-8859-1?Q?FGcIA5U2WQdR9rnXTvevcCfrHVj7aqPoDKX4nEEsJHW0eEGaa0qry72uLJ?=
- =?iso-8859-1?Q?6yT6OrctyDdpflgvpSLQE88WjC3pgv7O/4pTOcwcSez9zN2PTwBmTZdtx+?=
- =?iso-8859-1?Q?wKTOGzlyxVKLot43ZnFlqLIu957Ixt2q88AT79/Scsz1dPG1LbP+DSDs9U?=
- =?iso-8859-1?Q?+qH2aeW7NfaqO/tRASmINMWEvcizpBRaum3uM0nndqTRThSf82IbpuetZk?=
- =?iso-8859-1?Q?9g9ehjaB5Fm3stQJ9hJOiZj/qYowgv9xS311r7BZOA0FinXKNm561URDyT?=
- =?iso-8859-1?Q?pWH3R7t6yLoVm20lxqcKsK721aQ0h4LQWI3CnQLbWmhPUBFPRSTnj87i7a?=
- =?iso-8859-1?Q?ImMM9TJR9Ncatczo4dacmKQYbGdcTiLMHENfXDlMm5zN1Eghb8d7genBbf?=
- =?iso-8859-1?Q?ylJBBkclJTCMmnSgv9L1Ya7477QCfuGQ2BFk5H8gFLgxZoPkLZsbZ7LXkh?=
- =?iso-8859-1?Q?yLVvUk2Ysxs58CXUQHKC+IulM2ehrpWd0LBh7x5N4KN2wkHWeLhFd45yiH?=
- =?iso-8859-1?Q?1LZ5TMolL0HQGetmQuDqkBWaF9MHHGjbPNKaLR9aqbhBG/4ojeS3z+uu0N?=
- =?iso-8859-1?Q?Lk/Lq0quImhV6fRoepNJvFgUCRikvKiZEeqZT1v9/iygTaUzi3PvTIle2v?=
- =?iso-8859-1?Q?e1Fu1bjUUxTtUAz8Foom8GMW4CXSHmUvVkhwAOH9QZEe93KVYTN3rYfWwz?=
- =?iso-8859-1?Q?G/HTXYNZMBPZUfzhZvBBPvxgqhWiSlWWguyB7whQlz046wyVey/fWR8CUu?=
- =?iso-8859-1?Q?WO6Hgo582YfjGh0dq7E1nVQemNh26rv8DEu4mLucR1T2lEv6RtDdGqTcmL?=
- =?iso-8859-1?Q?bOMgPfNUb7vKRiUvBPl4SanIqejhQWD385chpmRuXxEv07eWkz6DB0dGZC?=
- =?iso-8859-1?Q?hMJfor+LzdoWqXix7aOU8siyjmvCiIJyfEvhdLCC5FaPePczU6Figl+LNC?=
- =?iso-8859-1?Q?sIQRDwQblVQ0GBoq2DjUKtX+WhJ6ZsHXLD9S3R+evgSSpbEsTGy0mQtXmJ?=
- =?iso-8859-1?Q?6PckyxE9M3?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 2 Sep 2021 21:40:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630633178;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W00JWM6LN9F7vwzH1kt4Gm8FUt1a8dgaBLhIJfS2rZ4=;
+        b=G1cpq081joW60lf5JIqa1QjGpDTLCNtm6orAUbYIhMGzwUM9dsFHj9WOXv2xaQYl8NnpRR
+        wafFUZZ3qHIZosnKCnLx51HEAw2r3aG2Av53GCq02QiLeaSwz81B2xTRs37sQxrw9R0h3T
+        arkoNIQIpMGXxRmxx3Rj/gjGFHcw2jY=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-171-PpUn_6MqMyiUKo0c1F51KA-1; Thu, 02 Sep 2021 21:39:37 -0400
+X-MC-Unique: PpUn_6MqMyiUKo0c1F51KA-1
+Received: by mail-qk1-f200.google.com with SMTP id h7-20020a37b707000000b003fa4d25d9d0so4825779qkf.17
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 18:39:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=W00JWM6LN9F7vwzH1kt4Gm8FUt1a8dgaBLhIJfS2rZ4=;
+        b=s2Hsmyv0NwLpq1axmtUxTlxWXGoq4JmqxJIqDZsA/UUjWgLGhlftmLSXCksbhorR7e
+         0nrqulyqUOLwzJ3+4TOtI1BYEtb4wCZ+Dv46vmIa3Y2iKuaXIGhYU20z/Sh/8N9JaQKw
+         ciWSLojwKvUmRo5bVGgAhg6aDoyq2sjQAq7MnUFTQo2p2KPFDZJwH2uFPcCaV6BJ3jzI
+         G+M3PPf1eWXKn36t6IS/GweqoH5+wpLf3IpevwaZGhjDr5A2oul3qI/gqXxZ128tTMwO
+         890aDr/t1b/Iw4ogTwLXLs2zLfJ+z1QBkSh/cy7H6o97bRZFydE/Q2ZY6YNIS84YiShE
+         6RPw==
+X-Gm-Message-State: AOAM5330O99lCHf1EeMKeia7xhM8Z6Ir/YWdpnCIzJB085NfgeUHncGk
+        ziOYETIosYIXYq9Z0nLYAMVjegcoppOZVpBtBhhcChiSQ40obkowhsiHkXuYHFvYe4cLMGzuuPh
+        202lkOddgQQwpIJ52r1ixkWRY
+X-Received: by 2002:a0c:8d0f:: with SMTP id r15mr1019991qvb.1.1630633175502;
+        Thu, 02 Sep 2021 18:39:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzv/7UQawEfBRbROuQEdhFsWgpMnvcwVEApFke+TCOv/QDPFLZuHkOyvez5rBrSXsAr9VdM+A==
+X-Received: by 2002:a0c:8d0f:: with SMTP id r15mr1019966qvb.1.1630633175180;
+        Thu, 02 Sep 2021 18:39:35 -0700 (PDT)
+Received: from t490s ([2607:fea8:56a3:500::ad7f])
+        by smtp.gmail.com with ESMTPSA id f28sm2859082qkk.10.2021.09.02.18.39.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 18:39:34 -0700 (PDT)
+Date:   Thu, 2 Sep 2021 21:39:32 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v2 4/5] mm: Add zap_skip_check_mapping() helper
+Message-ID: <YTF81ItjDYpHUe1J@t490s>
+References: <20210902201721.52796-1-peterx@redhat.com>
+ <20210902201819.53343-1-peterx@redhat.com>
+ <1771631.QAr93JHi05@nvdebian>
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4380.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aef53407-218d-4426-d13a-08d96e7b1e61
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Sep 2021 01:35:31.8051
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GoItoO2Pn3Ragx5Ue02tc3UI4WL0iiOjp1kStQ3v5P+AlmePf2bZCqCUgQX/qzVwHimT5O6EgWQ7f4Mbp7oRMQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB3258
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10095 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0
- mlxlogscore=999 mlxscore=0 suspectscore=0 spamscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109030007
-X-Proofpoint-GUID: 60sE4Ohk3tTiBKHx5keAl_lwsmpLytb7
-X-Proofpoint-ORIG-GUID: 60sE4Ohk3tTiBKHx5keAl_lwsmpLytb7
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1771631.QAr93JHi05@nvdebian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Print to the trace log before releasing the lock to avoid racing with
-other trace log printers of the same lock type.
+On Fri, Sep 03, 2021 at 10:58:53AM +1000, Alistair Popple wrote:
+> On Friday, 3 September 2021 6:18:19 AM AEST Peter Xu wrote:
+> > Use the helper for the checks.  Rename "check_mapping" into "zap_mapping"
+> > because "check_mapping" looks like a bool but in fact it stores the mapping
+> > itself.  When it's set, we check the mapping (it must be non-NULL).  When it's
+> > cleared we skip the check, which works like the old way.
+> >
+> > Move the duplicated comments to the helper too.
+> > 
+> > Signed-off-by: Peter Xu <peterx@redhat.com>
+> > ---
+> >  include/linux/mm.h | 15 ++++++++++++++-
+> >  mm/memory.c        | 29 ++++++-----------------------
+> >  2 files changed, 20 insertions(+), 24 deletions(-)
+> > 
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > index 69259229f090..81e402a5fbc9 100644
+> > --- a/include/linux/mm.h
+> > +++ b/include/linux/mm.h
+> > @@ -1720,10 +1720,23 @@ extern void user_shm_unlock(size_t, struct ucounts *);
+> >   * Parameter block passed down to zap_pte_range in exceptional cases.
+> >   */
+> >  struct zap_details {
+> > -	struct address_space *check_mapping;	/* Check page->mapping if set */
+> > +	struct address_space *zap_mapping;	/* Check page->mapping if set */
+> >  	struct page *single_page;		/* Locked page to be unmapped */
+> >  };
+> >  
+> > +/*
+> > + * We set details->zap_mappings when we want to unmap shared but keep private
+> > + * pages. Return true if skip zapping this page, false otherwise.
+> > + */
+> > +static inline bool
+> > +zap_skip_check_mapping(struct zap_details *details, struct page *page)
+> > +{
+> > +	if (!details || !page)
+> > +		return false;
+> > +
+> > +	return details->zap_mapping != page_rmapping(page);
+> 
+> Shouldn't this check still be
+> details->zap_mapping && details->zap_mapping != page_rmapping(page)?
+> 
+> Previously we wouldn't skip zapping pages if even_cows == true (ie.
+> details->check_mapping == NULL). With this change the check when
+> even_cows == true becomes NULL != page_rmapping(page). Doesn't this mean we
+> will now skip zapping any pages with a mapping when even_cows == true?
 
-Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- include/linux/mmap_lock.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Yes I think so.  Thanks for pointing that out, Alistair, I'll fix in v3.
 
-diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-index 0540f0156f58..5d2b343e39e7 100644
---- a/include/linux/mmap_lock.h
-+++ b/include/linux/mmap_lock.h
-@@ -101,14 +101,14 @@ static inline bool mmap_write_trylock(struct mm_struc=
-t *mm)
-=20
- static inline void mmap_write_unlock(struct mm_struct *mm)
- {
--	up_write(&mm->mmap_lock);
- 	__mmap_lock_trace_released(mm, true);
-+	up_write(&mm->mmap_lock);
- }
-=20
- static inline void mmap_write_downgrade(struct mm_struct *mm)
- {
--	downgrade_write(&mm->mmap_lock);
- 	__mmap_lock_trace_acquire_returned(mm, false, true);
-+	downgrade_write(&mm->mmap_lock);
- }
-=20
- static inline void mmap_read_lock(struct mm_struct *mm)
-@@ -140,8 +140,8 @@ static inline bool mmap_read_trylock(struct mm_struct *=
-mm)
-=20
- static inline void mmap_read_unlock(struct mm_struct *mm)
- {
--	up_read(&mm->mmap_lock);
- 	__mmap_lock_trace_released(mm, false);
-+	up_read(&mm->mmap_lock);
- }
-=20
- static inline bool mmap_read_trylock_non_owner(struct mm_struct *mm)
---=20
-2.30.2
+But frankly I really think we should simply have that flag I used to introduce.
+It'll make everything much clearer.
+
+-- 
+Peter Xu
+
