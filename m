@@ -2,98 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A28CF3FF996
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 06:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5A33FF992
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 06:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbhICEbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 00:31:01 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:4072 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232102AbhICEal (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 00:30:41 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 02 Sep 2021 21:29:40 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 02 Sep 2021 21:29:38 -0700
-X-QCInternal: smtphost
-Received: from rajpat-linux.qualcomm.com ([10.206.21.0])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 03 Sep 2021 09:59:24 +0530
-Received: by rajpat-linux.qualcomm.com (Postfix, from userid 2344945)
-        id 08B3B21242; Fri,  3 Sep 2021 09:59:23 +0530 (IST)
-From:   Rajesh Patil <rajpat@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, sboyd@kernel.org, mka@chromium.org,
-        dianders@chromium.org, Rajesh Patil <rajpat@codeaurora.org>
-Subject: [PATCH V7 7/7] arm64: dts: sc7280: Add aliases for I2C and SPI
-Date:   Fri,  3 Sep 2021 09:59:00 +0530
-Message-Id: <1630643340-10373-8-git-send-email-rajpat@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1630643340-10373-1-git-send-email-rajpat@codeaurora.org>
-References: <1630643340-10373-1-git-send-email-rajpat@codeaurora.org>
+        id S229561AbhICEau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 00:30:50 -0400
+Received: from verein.lst.de ([213.95.11.211]:53529 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232068AbhICEak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 00:30:40 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 4019668AFE; Fri,  3 Sep 2021 06:29:37 +0200 (CEST)
+Date:   Fri, 3 Sep 2021 06:29:37 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [GIT PULL] xfs: new code for 5.15
+Message-ID: <20210903042937.GA21466@lst.de>
+References: <20210831211847.GC9959@magnolia> <CAHk-=whyVPgkAfARB7gMjLEyu0kSxmb6qpqfuE_r6QstAzgHcA@mail.gmail.com> <87wnnybxkb.ffs@tglx>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wnnybxkb.ffs@tglx>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add aliases for i2c and spi for sc7280 soc.
+On Thu, Sep 02, 2021 at 09:13:24PM +0200, Thomas Gleixner wrote:
+> > I'm only throwing this out as a reaction to this - I'm not sure
+> > another interface would be good or worthwhile, but that "enum
+> > cpuhp_state" is ugly enough that I thought I'd rope in Thomas for CPU
+> > hotplug, and the percpu memory allocation people for comments.
+> 
+> It's not only about memory. 
+> 
+> > IOW, just _maybe_ we would want to have some kind of callback model
+> > for "percpu_alloc()" and it being explicitly about allocations
+> > becoming available or going away, rather than about CPU state.
+> 
+> The per cpu storage in XFS does not go away. It contains a llist head
+> and the queued work items need to be moved from the dead CPU to an alive
+> CPU and exposed to a work queue for processing. Similar to what we do
+> with timers, hrtimers and other stuff.
+> 
+> If there are callbacks which are doing pretty much the same thing, then
+> I'm all for a generic infrastructure for these.
 
-Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 8fe54bf..78e71d5 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -26,8 +26,40 @@
- 	chosen { };
- 
- 	aliases {
-+		i2c0 = &i2c0;
-+		i2c1 = &i2c1;
-+		i2c2 = &i2c2;
-+		i2c3 = &i2c3;
-+		i2c4 = &i2c4;
-+		i2c5 = &i2c5;
-+		i2c6 = &i2c6;
-+		i2c7 = &i2c7;
-+		i2c8 = &i2c8;
-+		i2c9 = &i2c9;
-+		i2c10 = &i2c10;
-+		i2c11 = &i2c11;
-+		i2c12 = &i2c12;
-+		i2c13 = &i2c13;
-+		i2c14 = &i2c14;
-+		i2c15 = &i2c15;
- 		mmc1 = &sdhc_1;
- 		mmc2 = &sdhc_2;
-+		spi0 = &spi0;
-+		spi1 = &spi1;
-+		spi2 = &spi2;
-+		spi3 = &spi3;
-+		spi4 = &spi4;
-+		spi5 = &spi5;
-+		spi6 = &spi6;
-+		spi7 = &spi7;
-+		spi8 = &spi8;
-+		spi9 = &spi9;
-+		spi10 = &spi10;
-+		spi11 = &spi11;
-+		spi12 = &spi12;
-+		spi13 = &spi13;
-+		spi14 = &spi14;
-+		spi15 = &spi15;
- 	};
- 
- 	clocks {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+In the block layer we've added a new per-cpu bio list, for which
+the dead callback literally does nothing but free some memory.
+For that case a simple callback would be neat, but I'm not sure how
+common that is.
