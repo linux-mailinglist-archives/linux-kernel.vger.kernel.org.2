@@ -2,200 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA234002EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 470A94002F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349918AbhICQHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 12:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349763AbhICQHf (ORCPT
+        id S1349867AbhICQIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 12:08:50 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:45926 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235671AbhICQIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 12:07:35 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBC0C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 09:06:35 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so4079307pjc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 09:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3M5JCpWMIxRT573fJHbEQokfdtRRM/NHsmTat7Cr0bM=;
-        b=quQSADvlfVhqQANdIB8SsWJFazjRHxKf2GAZUEVE9Br9WH5bg01jM2qDRM+6fgO9iN
-         VdkXV011qDTLMJgpSWokeULYuucdHmt4EBb1wogoqEM/qIU+f3XH02GkrA9aQnrMPKmx
-         rmdD3UgK+cD/5TRWC6kAsonuF91RBYRFG75k7L11o4UWUsYA2LQp5KjWw7TgaSnwNGMe
-         IykI4R/LCp5fOI+yl4AKVtYW33Z1zPaBAbKMD5uOxLT7ZdZci4yOA9oBCb/eUkWM0HB2
-         /NvhmBNjh+mbZrzxETvmf7DYwO4C9/XBn4Znzclcnb6hQW7P125YsM/9gqoiWqi6o8Hc
-         2iFQ==
+        Fri, 3 Sep 2021 12:08:49 -0400
+Received: by mail-ot1-f44.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso7084369otv.12;
+        Fri, 03 Sep 2021 09:07:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=3M5JCpWMIxRT573fJHbEQokfdtRRM/NHsmTat7Cr0bM=;
-        b=ZRyuUeGQ0sHp01KXmcBNemnFv9T2yyz95tJj9yK02hzrMc4w44vlKPlfr5P/mnH9ne
-         f6M7kiSb9MQ7RavBvviqMy3/Zj2lPtkQ1lOwNd5VPGXOl6EMhVeSoE0B/3djlLtJoyB7
-         ECyIs60lXN8gulXcG0TESTMUukxRsZpdY94zAbLhyam52Cu6tTknMy7TPDWxV8z3o51Q
-         2xc5Gx18M6D/My3SHS7sNTYwLN6BNhPCkRbAIFFQHDQyI9hJX6fRO17VxJfxXaWXL/B7
-         tAbOcCWC5/YiAVXINgE5llDaAgzws0MQL/w5OTpZZ+sqFdpczByFP9LCgqAPpjpPIIyT
-         A7xQ==
-X-Gm-Message-State: AOAM530PLrUH+nDliW7CF1piNmLPL34BTp9AWERaMUYPEf0ue6l/9i76
-        ca/3UEqhJ8p3LOo008xKeySWjA==
-X-Google-Smtp-Source: ABdhPJwAn8IA8F+C9i5ZuLQqulewjQST1VCWK+zBL2c0oG0Fv743R2XuNTlXnrTPYT1A+0koICWrHA==
-X-Received: by 2002:a17:90a:7d11:: with SMTP id g17mr1548686pjl.150.1630685194499;
-        Fri, 03 Sep 2021 09:06:34 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j9sm7038793pgl.1.2021.09.03.09.06.33
+        bh=X9EoctdCi61dxF0sN3RYUh7Sq1ZZ1hgqyk+aajCi77E=;
+        b=rJlp6zMF2xZNKzQ4xplCUEAAGPkGL6bXYfDKj6Kp7LaK+enFq2lj+MBL50E1FauSli
+         YT8hy+JHeRohL5zQBwzFCoh9dWP20y0bTqGWip9RPdj3T2HwirUoilRgZgdAO5JR9RQE
+         qYFnl4vRQrW5gzZ+GtRM3DQjLbRn9ArR2qxEaKYW2STz1Wv/WW2Lf9th1ev/q0fQg+YA
+         IFQx7jEKWul2MaM/WJFG3J/p7pzI+SQzaL/vDpVqNIGKBYtXnuM/xTCsCXC9ykbQIpC+
+         wEINTE401WdCILWjykbJDiVjPGy9O4NfVX+y7PJ0QjSdziu0RPhv5ejDwokS2bHMJihV
+         qd6Q==
+X-Gm-Message-State: AOAM531kuDbvY3b/ZvgLF6KQ1R5Cbu/GvJiOcgOtGKazkJi99zrhwXbn
+        k00PZGTGaLN6P2lYQSai8w==
+X-Google-Smtp-Source: ABdhPJx6fVy45NUm19V4s1kfkPU3oDPESzTSfZcum5Yriq84uuncy+0f+/TnPB6bRmWPuRaP4J69Ew==
+X-Received: by 2002:a9d:7006:: with SMTP id k6mr3874778otj.181.1630685268668;
+        Fri, 03 Sep 2021 09:07:48 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id e11sm1090605oiw.18.2021.09.03.09.07.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 09:06:33 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 16:06:30 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Lai Jiangshan <laijs@linux.alibaba.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Avi Kivity <avi@redhat.com>, kvm@vger.kernel.org
-Subject: Re: [PATCH 2/7] KVM: X86: Synchronize the shadow pagetable before
- link it
-Message-ID: <YTJIBr/lm5QU/Z3W@google.com>
-References: <20210824075524.3354-1-jiangshanlai@gmail.com>
- <20210824075524.3354-3-jiangshanlai@gmail.com>
- <YTFhCt87vzo4xDrc@google.com>
- <YTFkMvdGug3uS2e4@google.com>
- <c8cd9508-7516-0891-f507-4b869d7e4322@linux.alibaba.com>
+        Fri, 03 Sep 2021 09:07:47 -0700 (PDT)
+Received: (nullmailer pid 3026291 invoked by uid 1000);
+        Fri, 03 Sep 2021 16:07:46 -0000
+Date:   Fri, 3 Sep 2021 11:07:46 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     linux-kernel@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        linux-watchdog@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        devicetree@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 1/3] dt-bindings: watchdog: sunxi: Add compatibles for
+ R329
+Message-ID: <YTJIUocojn3h4R25@robh.at.kernel.org>
+References: <20210902225750.29313-1-samuel@sholland.org>
+ <20210902225750.29313-2-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c8cd9508-7516-0891-f507-4b869d7e4322@linux.alibaba.com>
+In-Reply-To: <20210902225750.29313-2-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021, Lai Jiangshan wrote:
+On Thu, 02 Sep 2021 17:57:48 -0500, Samuel Holland wrote:
+> On existing SoCs, the watchdog has a single clock input: HOSC (OSC24M)
+> divided by 750.  However, starting with R329, LOSC (OSC32k) is added as
+> an alternative clock source, with a bit to switch between them.
 > 
-> On 2021/9/3 07:54, Sean Christopherson wrote:
-> > 
-> >   trace_get_page:
-> > diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-> > index 50ade6450ace..5b13918a55c2 100644
-> > --- a/arch/x86/kvm/mmu/paging_tmpl.h
-> > +++ b/arch/x86/kvm/mmu/paging_tmpl.h
-> > @@ -704,6 +704,10 @@ static int FNAME(fetch)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
-> >   			access = gw->pt_access[it.level - 2];
-> >   			sp = kvm_mmu_get_page(vcpu, table_gfn, fault->addr,
-> >   					      it.level-1, false, access);
-> > +			if (sp->unsync_children) {
-> > +				kvm_make_all_cpus_request(KVM_REQ_MMU_SYNC, vcpu);
-> > +				return RET_PF_RETRY;
+> Since 24 MHz / 750 == 32 kHz, not 32.768 kHz, the hardware adjusts the
+> cycle counts to keep the timeouts independent of the clock source. This
+> keeps the programming interface backward-compatible.
 > 
-> Making KVM_REQ_MMU_SYNC be able remotely is good idea.
-> But if the sp is not linked, the @sp might not be synced even we
-> tried many times. So we should continue to link it.
-
-Hrm, yeah.  The sp has to be linked in at least one mmu, but it may not be linked
-in the current mmu, so KVM would have to sync all roots across all current and
-previous mmus in order to guarantee the target page is linked.  Eww.
-
-> But if we continue to link it, KVM_REQ_MMU_SYNC should be extended to
-> sync all roots (current root and prev_roots).  And maybe add a
-> KVM_REQ_MMU_SYNC_CURRENT for current root syncing.
+> Furthermore, the R329 has two watchdogs: one for use by the ARM CPUs
+> at 0x20000a0, and a second one for use by the DSPs at 0x7020400. The
+> first of these adds two more new registers, to allow software to
+> immediately assert the SoC reset signal. Add an additional "-reset"
+> suffix to signify the presence of this feature.
 > 
-> It is not going to be a simple.  I have a new way to sync pages
-> and also fix the problem,  but that include several non-fix patches.
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+> Changes v2 to v3:
+>  - Add else case
+>  - Add additional allwinner,sun50i-r329-wdt-reset compatible
+> Changes v1 to v2:
+>  - Switch clock-names from enum to const
+>  - Add descriptions to "clocks" items
 > 
-> We need to fix this problem in the simplest way.  In my patch
-> mmu_sync_children() has a @root argument.  I think we can disallow
-> releasing the lock when @root is false. Is it OK?
+>  .../watchdog/allwinner,sun4i-a10-wdt.yaml     | 42 ++++++++++++++++++-
+>  1 file changed, 41 insertions(+), 1 deletion(-)
+> 
 
-With a caveat, it should work.  I was exploring that option before the remote
-sync idea.
-
-The danger is inducing a stall in the host (RCU, etc...) if sp is an upper level
-entry, e.g. with 5-level paging it can even be a PML4.  My thought for that is to
-skip the yield if there are less than N unsync children remaining, and then bail
-out if the caller doesn't allow yielding.  If mmu_sync_children() fails, restart
-the guest and go through the entire page fault path.  Worst case scenario, it will
-take a "few" rounds for the vCPU to finally resolve the page fault.
-
-Regarding params, please use "can_yield" instead of "root" to match similar logic
-in the TDP MMU, and return an int instead of a bool.
-
-Thanks!
-
----
- arch/x86/kvm/mmu/mmu.c         | 18 ++++++++++++------
- arch/x86/kvm/mmu/paging_tmpl.h |  3 +++
- 2 files changed, 15 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 4853c033e6ce..5be990cdb2be 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2024,8 +2024,8 @@ static void mmu_pages_clear_parents(struct mmu_page_path *parents)
- 	} while (!sp->unsync_children);
- }
-
--static void mmu_sync_children(struct kvm_vcpu *vcpu,
--			      struct kvm_mmu_page *parent)
-+static int mmu_sync_children(struct kvm_vcpu *vcpu,
-+			     struct kvm_mmu_page *parent, bool can_yield)
- {
- 	int i;
- 	struct kvm_mmu_page *sp;
-@@ -2050,7 +2050,15 @@ static void mmu_sync_children(struct kvm_vcpu *vcpu,
- 			flush |= kvm_sync_page(vcpu, sp, &invalid_list);
- 			mmu_pages_clear_parents(&parents);
- 		}
--		if (need_resched() || rwlock_needbreak(&vcpu->kvm->mmu_lock)) {
-+		/*
-+		 * Don't yield if there are fewer than <N> unsync children
-+		 * remaining, just finish up and get out.
-+		 */
-+		if (parent->unsync_children > SOME_ARBITRARY_THRESHOLD &&
-+		    (need_resched() || rwlock_needbreak(&vcpu->kvm->mmu_lock))) {
-+			if (!can_yield)
-+				return -EINTR;
-+
- 			kvm_mmu_flush_or_zap(vcpu, &invalid_list, false, flush);
- 			cond_resched_rwlock_write(&vcpu->kvm->mmu_lock);
- 			flush = false;
-@@ -2058,6 +2066,7 @@ static void mmu_sync_children(struct kvm_vcpu *vcpu,
- 	}
-
- 	kvm_mmu_flush_or_zap(vcpu, &invalid_list, false, flush);
-+	return 0;
- }
-
- static void __clear_sp_write_flooding_count(struct kvm_mmu_page *sp)
-@@ -2143,9 +2152,6 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
- 			kvm_make_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu);
- 		}
-
--		if (sp->unsync_children)
--			kvm_make_request(KVM_REQ_MMU_SYNC, vcpu);
--
- 		__clear_sp_write_flooding_count(sp);
-
- trace_get_page:
-diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-index 50ade6450ace..2ff123ec0d64 100644
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -704,6 +704,9 @@ static int FNAME(fetch)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
- 			access = gw->pt_access[it.level - 2];
- 			sp = kvm_mmu_get_page(vcpu, table_gfn, fault->addr,
- 					      it.level-1, false, access);
-+			if (sp->unsync_children &&
-+			    mmu_sync_children(vcpu, sp, false))
-+				return RET_PF_RETRY;
- 		}
-
- 		/*
---
+Reviewed-by: Rob Herring <robh@kernel.org>
