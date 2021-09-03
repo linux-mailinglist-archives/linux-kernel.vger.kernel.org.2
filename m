@@ -2,299 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13E93FF90F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 05:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E653FF913
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 05:22:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343866AbhICDSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 23:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230499AbhICDSl (ORCPT
+        id S1344995AbhICDXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 23:23:12 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:9610 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230074AbhICDXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 23:18:41 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBD7C061575;
-        Thu,  2 Sep 2021 20:17:36 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id a10so4505989qka.12;
-        Thu, 02 Sep 2021 20:17:36 -0700 (PDT)
+        Thu, 2 Sep 2021 23:23:10 -0400
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 182MsF1f023057;
+        Fri, 3 Sep 2021 03:22:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2021-07-09;
+ bh=vDpz3l5PQaCJAVmRxpFwXYyMtB/ZfM0xaNLB2Ga3fNY=;
+ b=QWhxFvihx01GzRYWOwInPYFO+yklcx0qvmJWh6YPhBetMtAqGYhFSuAKNlYT9G1xSPVg
+ lcjLND/kkM2X55LjLZmWcTXwndT7xX84u5AvLJ19s2sAvZbrP0VNb5tv3w6vXhCG6CBc
+ 8DWskaUt/iiqsmgXzYPaVZxvdtbA5fw70OgDC5FDtonsd3Zrmv2ZGQ0ONxs2QcCkjWVR
+ cJEloUNt7mezcNr6Nv1OGFWjXuq14GetHwSlvY2T/EE3aLvyIrQQ5E5s3+llYQyIOsc5
+ 3u8Qx3kkbmZqQfQST7WEsz2IdrOQQvH5OHTMRr5zej2fX4NyabL1VlU/CVSKIqxO0cS1 ZA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=vDpz3l5PQaCJAVmRxpFwXYyMtB/ZfM0xaNLB2Ga3fNY=;
+ b=zpISq/16tgBAZhvL14dNUPnnERZyo32bz4w+ZNkshoEFS+d7YJDzB8eVDXifle87b6lY
+ +7e0Vi3NWihSxO7DkLB7pJftYbE2wwpw76HR1pLEwdizyMqNcjvlBAY91POtomu36uy/
+ sZFpyFKOPaNAckQzM21E9d7v+aXa8aw2LjBtWTk5SmvTMmelGoEHnPikxbIvyICz60/3
+ ooiR8t0whztIKa7L6QV36AIwzYukVBsWs27sHoPrS+jbur/VXrg6ueQBd4MIYMThH7DT
+ 53P18mqRgYrZUq8C1fMkMnFcTyrOtrWZNH9LG8S1oe70/g6lNAJnaTmgSzH/Rgp90XTa Eg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3atdvymyf1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Sep 2021 03:22:00 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1833AX5S103527;
+        Fri, 3 Sep 2021 03:21:58 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2174.outbound.protection.outlook.com [104.47.56.174])
+        by userp3030.oracle.com with ESMTP id 3ate06v5ds-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 03 Sep 2021 03:21:58 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mxuzT8zsdTNpoEwJhIDdNN/YijUIU+3SFV6f4L8GTRD5aeluveKlDSDQkk/xK0OG9wKh1zBTe/OrCZQf/Uuc12ViQysSS3ZE2fMlj4ozE+72/6NsT13/7trutNtJVPvsblVNoq64bAUOtzXLjQv6EESMOElLaYVKdiDDYburJaLT7zshS+RRMRXbRi4Or6Nm7uW35F/if1b3dxv0mdLutgg/bbK9DXgaJbsxjdjtq+HAbv4WU1Dm9XfhKfAYRBEqfgdMyyM+N6AyaEZoBc283TMAvHRCUPxDWGa+NXJbEBMMfqUd+p90oqaYXeec7n6Ued6sVMA4Ku6pfT5nqeg84A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=vDpz3l5PQaCJAVmRxpFwXYyMtB/ZfM0xaNLB2Ga3fNY=;
+ b=PZYrro6yAATVVGrqU9L6bfFsBLshH/EQoUBdXDtTCTZKqcHkWPUS07n5KxHNCwCbCd6PLUkwSpa1L+BLZqUy4uHeIyrNboMTQTDhlmRsl+MjkK7mZ6DgfTktavvJ7y5bYiRYalzEsq3ZgG9DpEYXYPPl1fQzkz89ghIX0iV7rDICIGo9MebuyTBcUivDsjgpiVmVRN7pQC+SAYRp6nEGFobhj+9ai/C/L0cWF5C/CbRljYdt/ga0kp35nM8MzgHDRXuKGteiNWXIM7q4bZY8n9RekXg3BHCchyzVaA+ghYhEx7PbJdMEQ3LzMuKgw6ogm2iGD0TvbePAKX2PHOoOag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aw1AMx/pPvGtbdn3PAzX0YhIxkagW/gAxNchSTLLbyk=;
-        b=jc+WgAo76n9czMhQ4T47b9oyIKI4vfBmJF1K7zGsFLf/SiOgnVLELs/za/OVkx0CJa
-         UhNqOz7u451Ui0/2Ow5PP9Ppo6YcV1BBUfQZaimfuXa0IPWDDACdA8UfIjzNeKgz+t/H
-         elGABYshUiUD+UT7DKA8VnuHjSMO1kgeaffyXt9BIq0IWABcUMAlh97PJLM2RakXsdjA
-         JznE7KjnVF1oomxXB+2CR8RSITBfmJF5e3SQhxKnmS69Bin8Jr4liPQ2boTbW6EdLuka
-         95JE+OX3zJWdWek3FXdGB43rPPKU7Okvl8wMDojz1zj3E86N7Qyj7RKUWxdvyCR29Wkv
-         WXFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aw1AMx/pPvGtbdn3PAzX0YhIxkagW/gAxNchSTLLbyk=;
-        b=K9fye0Ali1Fit+oruuEHxM2g4pSrzePHOg6cArTrdLLHDze31BlewBIHkWBxIJW6aS
-         LwkaIcQ/yts/TVamn1ZFVWFeB2Vbb1fmaKxd8EqW3wa99ZtiBG40mf+5imG/ivdwCmBP
-         zyL9gHs3efcbSEK22qvSIHW+NwsD3Iqvbf0Ms9LnPR653ToU+I2LdcwCPjvTaxCFQXX2
-         m1cg9cgqyQSM5ERZycNnnRG95KKZ3XWhjJZYwAdnuCk7QaDNEfxOIPWJ4CWsGCOPM8un
-         1Tixd6YRu67XsZOseqb/lGIwef+97s/hYfxL0erg5nT+lsesbHfuW+IpeNRq94CsVhDk
-         dFVw==
-X-Gm-Message-State: AOAM5308bLkdPiecpIjpJmfJ7F51vNrIsBXoO7OTPOJFN145FQfOm8MY
-        pIPhJ+93kPrAQcAXYnvvlGc=
-X-Google-Smtp-Source: ABdhPJxpFBQyuNMOoedOpMzfaYqR90ZTCRTiO7SOjujmD2/Tw5uZhkguYeg80XgR/e5G8NGUPkLBdw==
-X-Received: by 2002:a05:620a:1aa5:: with SMTP id bl37mr1424038qkb.84.1630639055204;
-        Thu, 02 Sep 2021 20:17:35 -0700 (PDT)
-Received: from [192.168.4.142] (pool-72-82-21-11.prvdri.fios.verizon.net. [72.82.21.11])
-        by smtp.gmail.com with ESMTPSA id o19sm2373692qtv.85.2021.09.02.20.17.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 20:17:34 -0700 (PDT)
-Subject: Re: [PATCH v6 1/6] Bluetooth: schedule SCO timeouts with delayed_work
-To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, sudipm.mukherjee@gmail.com,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        skhan@linuxfoundation.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+2f6d7c28bb4bf7e82060@syzkaller.appspotmail.com
-References: <20210810041410.142035-1-desmondcheongzx@gmail.com>
- <20210810041410.142035-2-desmondcheongzx@gmail.com>
- <0b33a7fe-4da0-058c-cff3-16bb5cfe8f45@gmail.com>
- <bad67d05-366b-bebe-cbdb-6555386497de@gmail.com>
- <94942257-927c-efbc-b3fd-44cc097ad71f@gmail.com>
- <fa269649-21eb-be76-e552-36a3aa4f3da4@gmail.com>
- <e54b3c01-6804-4f0d-3e4b-eba49f881039@gmail.com>
- <CABBYNZJaPFzU-oXcYkuob0zw16tNcVgoVx8N-_GvL8=nT0Kn3Q@mail.gmail.com>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <4aaa52c1-59dc-59ad-60c6-0fac9ecd5189@gmail.com>
-Date:   Thu, 2 Sep 2021 23:17:33 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vDpz3l5PQaCJAVmRxpFwXYyMtB/ZfM0xaNLB2Ga3fNY=;
+ b=Sfz4BRHppxx0ZvfiIk+9nxSNUWXKARjtG1X2Eb9abve3QKbP+waxxKp8sykqXIiiEh+LOJmpdX3CHQ84+31G5bTiuOYIKpjaQZ4Zwvyoy+D425eToUevGP3qxSBMmD34t3jMPOcw8Bpi6mndjAp7VPpcy5vrTkLEo6uZulWhP6k=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4536.namprd10.prod.outlook.com (2603:10b6:510:40::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.22; Fri, 3 Sep
+ 2021 03:21:55 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::c0ed:36a0:7bc8:f2dc]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::c0ed:36a0:7bc8:f2dc%7]) with mapi id 15.20.4478.020; Fri, 3 Sep 2021
+ 03:21:55 +0000
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Kate Hsuan <hpa@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tor Vic <torvic9@mailbox.org>, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5] libata: Add ATA_HORKAGE_NO_NCQ_ON_AMD for Samsung
+ 860 and 870 SSD.
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq14kb24e97.fsf@ca-mkp.ca.oracle.com>
+References: <20210901151643.13562-1-hpa@redhat.com>
+        <3e26e7a5-0d99-b993-d5ce-aa517e1bf1bb@redhat.com>
+        <yq1h7f24y6f.fsf@ca-mkp.ca.oracle.com>
+        <238d0841-0f03-928f-5441-89d5c9dcf9b9@redhat.com>
+        <cd75fa32-8c4d-664e-5adb-f2f325d3c58e@redhat.com>
+Date:   Thu, 02 Sep 2021 23:21:52 -0400
+In-Reply-To: <cd75fa32-8c4d-664e-5adb-f2f325d3c58e@redhat.com> (Hans de
+        Goede's message of "Thu, 2 Sep 2021 22:50:04 +0200")
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR03CA0154.namprd03.prod.outlook.com
+ (2603:10b6:a03:338::9) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-In-Reply-To: <CABBYNZJaPFzU-oXcYkuob0zw16tNcVgoVx8N-_GvL8=nT0Kn3Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR03CA0154.namprd03.prod.outlook.com (2603:10b6:a03:338::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend Transport; Fri, 3 Sep 2021 03:21:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4c959737-171a-4135-f5e7-08d96e89fada
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4536:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4536742ACF8DFC230FD39AB18ECF9@PH0PR10MB4536.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vOKh3SQTHObwVho7fmYGcPc/IIamdBT806m59e22bsRdkvJ1kxLGNQiogeEVzWlNI54gEIrshnNqoVU2LwpWtE3tnTNxXlmCDHERdMnu7AEhrzAr7aH6yZJUNW9I7UTnYtAyMCrRqt4TMOVSZ+cc+mimCFx25v01tAJQP51/10dcUqU+3Ha0SuXYjpvPVLheJHpr3QyhqOKBPd5hMb5Ou5+gr0puBqVnVaw4CIo75cokePXHi7jUJ1GdCqVX5nHyIn2/fM4t/fuIIOhXPyRY27iIvuBjixqZpMRMmHXl70AjzCwOFf1zC7xBCZGg+1kVDCXh9petDzPTVJpKHetUK6osPr7nVH2oJHZ1ArCTzK9cXB8aiaWDLGVxs503oko487TKjK8QmJsREHtRx+dkPMjnjG2dVaNsX0bKpWMS5fntF05tmX83Q34Z6DAQ+qf1dox1I1eN/0clyL/917RZLPN2yH+uFV2vV5GP7XeXWnXFxMro7eSCkRO8fM//bcBfTpRekZJyes8Vri99U7Pby7KTjoDxIA7e0JtC25lupo8eESWdA/CRQuEfBbj31WQrxk3/9bbfcP8UfFh5Sj9HI3PzeDkIVhtEvDiLY4LdyuKQXFNVBEkC6iX6dalE8TuEc3BPlqV3tErYamU2E1gLseAcyyLlxP6Y7z2RsJ8XFeeW8ygCl4Dshnu09k7jesRjzXzWQKyrCxPQjUFwASXmNw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(396003)(39860400002)(346002)(366004)(26005)(478600001)(38350700002)(5660300002)(956004)(66556008)(66476007)(38100700002)(55016002)(8676002)(66946007)(52116002)(8936002)(7696005)(4326008)(36916002)(186003)(2906002)(6916009)(54906003)(86362001)(83380400001)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?F2DH+MIcOCdIPWO67EXJOeTaxOeqd3y7w9SaTsiimhmPtDUVdWt86msHrmsw?=
+ =?us-ascii?Q?u0cpuI88H5827XuU/qeN38Nclowm8YkTzVlSvbTf/NHhbgHVPE1zNG3nqdPm?=
+ =?us-ascii?Q?ClV8s4Ci34un6zv2c72Z1wNT7FDLLgTqn6zyg+MESyUBkxduqmpeoTTdxwuh?=
+ =?us-ascii?Q?D31Y/EzE/DgfBKG425D2T4Ni1kgh3+DeCcApSyDHL5YR8WielDicz8zygVH6?=
+ =?us-ascii?Q?H8jGvUUzqkVAeTyJZ30BVrK+c42PD/qFuf9j/tODmpaWOfNJKlbs6Uu7e+Ub?=
+ =?us-ascii?Q?ywCl5e52Xcs0EGfich77ktCyoSpAJzoiyBQ8r0K+kiYRT4v0m8f3UmmsHGyD?=
+ =?us-ascii?Q?5h7NBZ9WqQi1wRW/85CpIoefqwQ3kW5fMvZCZzNqU+RR34C17+Uf+OGnhJVg?=
+ =?us-ascii?Q?9o94HiFI6VoqPXGO9tOxljMtQ54PvGpcet1RfsN1g8Nj1CcYYWcF96+OlwqF?=
+ =?us-ascii?Q?hp3DsYI/FDhZ3gpAzU3LObZQKbThg6/eoRCJeD+Dc1Z018ZAhSn8MPLI2uTT?=
+ =?us-ascii?Q?mzqUb+EzzEZ0P+j+lKCY8h88VJWFnQ6QgEaX/MurW56hNLBWRltu8us1VnfI?=
+ =?us-ascii?Q?WU3EqPC8tTVaHWGoo6rNjmZ0d/iC1s4qAEm+hN725m2NUkQB8LEym00R4sfa?=
+ =?us-ascii?Q?pc0GwaNcG5T818SeGJHCZUswjb+CKcrFOIcr657tl50xfNY+9aWTiVdOPhAD?=
+ =?us-ascii?Q?UtemEhXicc9b9f84+lX7TghSrVgKFzvdtyRYbBV/v0R6P4vFeqIbUd7z8aYL?=
+ =?us-ascii?Q?sHAKjBCvjhwLHSfWwRrExwhHZjDPD+pNrlaSk8PiQDoWNwHO/92xyuliX/h2?=
+ =?us-ascii?Q?7MtYBFt+HctG9jAlPTPhQxM9p3d2XkoM64o3knhrK5hNUi4APwdyd2Yyj4Q7?=
+ =?us-ascii?Q?xeAJVZLgteSsxwrUMlpPQ+tA/okPhTWJeqx09fYqdxPrSO2ymBM2chgFFu58?=
+ =?us-ascii?Q?88uXNoLjyt5twuo0lXTNE76zeLt8sas16UaGY2lv7VIf1nyooAA0CEjdNmYD?=
+ =?us-ascii?Q?qRy5Rc4PXaD9d9bnNamtaT3QxDikKnsBegK4sSvaiZeqJ4IXVmabPNTW8IOv?=
+ =?us-ascii?Q?hRMgW/cK4jTXV6lNki2gPFvfSJoP0cXAYY7oPS8vbSQEziKLshgJLN8cIEGG?=
+ =?us-ascii?Q?qpR5GsKiAcCdb1IZwmtGd7rws5tOwFlGwaUJ48lO0yg2HzAhIPMEImmaUwYV?=
+ =?us-ascii?Q?1UiwRIlMBxPdbtw99mU5RDdLlNgq3fU7z1zr5siiK5nrJ65F28fCl6mrC0SQ?=
+ =?us-ascii?Q?ZO+4ozvcCnclQqkJ1Dt4lz0rChPybgUMZSbPHbuKQplP87uB6t8WiUolkha9?=
+ =?us-ascii?Q?VYqnucWTsYG5HI38eNefvOiA?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c959737-171a-4135-f5e7-08d96e89fada
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2021 03:21:54.9766
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: S/PO83g3vPOWVJ5KvgrTfdaJFBQxrpnD9x4uQNn+5067CfyIh2PRiarzJaEIL+rCtNCCgICH2i9tE4TsCBXUdbVMxmocIas5OFN/xCMRFVQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4536
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10095 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2108310000
+ definitions=main-2109030018
+X-Proofpoint-GUID: raWx8D2buXa9zse8_Ojln-gm4n9Nkmd1
+X-Proofpoint-ORIG-GUID: raWx8D2buXa9zse8_Ojln-gm4n9Nkmd1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luiz,
 
-On 2/9/21 7:42 pm, Luiz Augusto von Dentz wrote:
-> Hi Desmond,
-> 
-> On Thu, Sep 2, 2021 at 4:05 PM Desmond Cheong Zhi Xi
-> <desmondcheongzx@gmail.com> wrote:
->>
->> On 2/9/21 6:53 pm, Desmond Cheong Zhi Xi wrote:
->>> On 2/9/21 5:41 pm, Eric Dumazet wrote:
->>>>
->>>>
->>>> On 9/2/21 12:32 PM, Desmond Cheong Zhi Xi wrote:
->>>>>
->>>>> Hi Eric,
->>>>>
->>>>> This actually seems to be a pre-existing error in sco_sock_connect
->>>>> that we now hit in sco_sock_timeout.
->>>>>
->>>>> Any thoughts on the following patch to address the problem?
->>>>>
->>>>> Link:
->>>>> https://lore.kernel.org/lkml/20210831065601.101185-1-desmondcheongzx@gmail.com/
->>>>>
->>>>
->>>>
->>>> syzbot is still working on finding a repro, this is obviously not
->>>> trivial,
->>>> because this is a race window.
->>>>
->>>> I think this can happen even with a single SCO connection.
->>>>
->>>> This might be triggered more easily forcing a delay in sco_sock_timeout()
->>>>
->>>> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
->>>> index
->>>> 98a88158651281c9f75c4e0371044251e976e7ef..71ebe0243fab106c676c308724fe3a3f92a62cbd
->>>> 100644
->>>> --- a/net/bluetooth/sco.c
->>>> +++ b/net/bluetooth/sco.c
->>>> @@ -84,8 +84,14 @@ static void sco_sock_timeout(struct work_struct *work)
->>>>           sco_conn_lock(conn);
->>>>           sk = conn->sk;
->>>> -       if (sk)
->>>> +       if (sk) {
->>>> +               // lets pretend cpu has been busy (in interrupts) for
->>>> 100ms
->>>> +               int i;
->>>> +               for (i=0;i<100000;i++)
->>>> +                       udelay(1);
->>>> +
->>>>                   sock_hold(sk);
->>>> +       }>          sco_conn_unlock(conn);
->>>>           if (!sk)
->>>>
->>>>
->>>> Stack trace tells us that sco_sock_timeout() is running after last
->>>> reference
->>>> on socket has been released.
->>>>
->>>> __refcount_add include/linux/refcount.h:199 [inline]
->>>>    __refcount_inc include/linux/refcount.h:250 [inline]
->>>>    refcount_inc include/linux/refcount.h:267 [inline]
->>>>    sock_hold include/net/sock.h:702 [inline]
->>>>    sco_sock_timeout+0x216/0x290 net/bluetooth/sco.c:88
->>>>    process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
->>>>    worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
->>>>    kthread+0x3e5/0x4d0 kernel/kthread.c:319
->>>>    ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
->>>>
->>>> This is why I suggested to delay sock_put() to make sure this can not
->>>> happen.
->>>>
->>>> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
->>>> index
->>>> 98a88158651281c9f75c4e0371044251e976e7ef..bd0222e3f05a6bcb40cffe8405c9dfff98d7afde
->>>> 100644
->>>> --- a/net/bluetooth/sco.c
->>>> +++ b/net/bluetooth/sco.c
->>>> @@ -195,10 +195,11 @@ static void sco_conn_del(struct hci_conn *hcon,
->>>> int err)
->>>>                   sco_sock_clear_timer(sk);
->>>>                   sco_chan_del(sk, err);
->>>>                   release_sock(sk);
->>>> -               sock_put(sk);
->>>>                   /* Ensure no more work items will run before freeing
->>>> conn. */
->>>>                   cancel_delayed_work_sync(&conn->timeout_work);
->>>> +
->>>> +               sock_put(sk);
->>>>           }
->>>>           hcon->sco_data = NULL;
->>>>
->>>
->>> I see where you're going with this, but once sco_chan_del returns, any
->>> instance of sco_sock_timeout that hasn't yet called sock_hold will
->>> simply return, because conn->sk is NULL. Adding a delay to the
->>> sco_conn_lock critical section in sco_sock_timeout would not affect this
->>> because sco_chan_del clears conn->sk while holding onto the lock.
->>>
->>> The main reason that cancel_delayed_work_sync is run there is to make
->>> sure that we don't have a UAF on the SCO connection itself after we free
->>> conn.
->>>
->>
->> Now that I think about this, the init and cleanup isn't quite right
->> either. The delayed work should be initialized when the connection is
->> allocated, and we should always cancel all work before freeing:
->>
->> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
->> index ea18e5b56343..bba5cdb4cb4a 100644
->> --- a/net/bluetooth/sco.c
->> +++ b/net/bluetooth/sco.c
->> @@ -133,6 +133,7 @@ static struct sco_conn *sco_conn_add(struct hci_conn *hcon)
->>                  return NULL;
->>
->>          spin_lock_init(&conn->lock);
->> +       INIT_DELAYED_WORK(&conn->timeout_work, sco_sock_timeout);
->>
->>          hcon->sco_data = conn;
->>          conn->hcon = hcon;
->> @@ -197,11 +198,11 @@ static void sco_conn_del(struct hci_conn *hcon, int err)
->>                  sco_chan_del(sk, err);
->>                  release_sock(sk);
->>                  sock_put(sk);
->> -
->> -               /* Ensure no more work items will run before freeing conn. */
->> -               cancel_delayed_work_sync(&conn->timeout_work);
->>          }
->>
->> +       /* Ensure no more work items will run before freeing conn. */
->> +       cancel_delayed_work_sync(&conn->timeout_work);
->> +
->>          hcon->sco_data = NULL;
->>          kfree(conn);
->>    }
->> @@ -214,8 +215,6 @@ static void __sco_chan_add(struct sco_conn *conn, struct sock *sk,
->>          sco_pi(sk)->conn = conn;
->>          conn->sk = sk;
->>
->> -       INIT_DELAYED_WORK(&conn->timeout_work, sco_sock_timeout);
->> -
->>          if (parent)
->>                  bt_accept_enqueue(parent, sk, true);
->>    }
-> 
-> I have come to something similar, do you care to send a proper patch
-> so we can get this merged.
-> 
+Hans,
 
-Sounds good. Just finished running some tests locally, I'll send out the 
-patches now.
+> I just realized that all newer Samsung models are non SATA...
+>
+> Still I cponsider it likely that some of the other vendors also
+> implement queued trim support and there are no reports of issues
+> with the other vendors' SSDs.
 
->>> For a single SCO connection with well-formed channel, I think there
->>> can't be a race. Here's the reasoning:
->>>
->>> - For the timeout to be scheduled, a socket must have a channel with a
->>> connection.
->>>
->>> - When a channel between a socket and connection is established, the
->>> socket transitions from BT_OPEN to BT_CONNECTED, BT_CONNECT, or
->>> BT_CONNECT2.
->>>
->>> - For a socket to be released, it has to be zapped. For sockets that
->>> have a state of BT_CONNECTED, BT_CONNECT, or BT_CONNECT2, they are
->>> zapped only when the channel is deleted.
->>>
->>> - If the channel is deleted (which is protected by sco_conn_lock), then
->>> conn->sk is NULL, and sco_sock_timeout simply exits. If we had entered
->>> the critical section in sco_sock_timeout before the channel was deleted,
->>> then we increased the reference count on the socket, so it won't be
->>> freed until sco_sock_timeout is done.
->>>
->>> Hence, sco_sock_timeout doesn't race with the release of a socket that
->>> has a well-formed channel with a connection.
->>>
->>> But if multiple connections are allocated and overwritten in
->>> sco_sock_connect, then none of the above assumptions hold because the
->>> SCO connection can't be cleaned up (i.e. conn->sk cannot be set to NULL)
->>> when the associated socket is released. This scenario happens in the
->>> syzbot reproducer for the crash here:
->>> https://syzkaller.appspot.com/bug?id=bcc246d137428d00ed14b476c2068579515fe2bc
->>>
->>>
->>> That aside, upon taking a closer look, I think there is indeed a race
->>> lurking in sco_conn_del, but it's not the one that syzbot is hitting.
->>> Our sock_hold simply comes too late, and by the time it's called we
->>> might have already have freed the socket.
->>>
->>> So probably something like this needs to happen:
->>>
->>> diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
->>> index fa25b07120c9..ea18e5b56343 100644
->>> --- a/net/bluetooth/sco.c
->>> +++ b/net/bluetooth/sco.c
->>> @@ -187,10 +187,11 @@ static void sco_conn_del(struct hci_conn *hcon,
->>> int err)
->>>        /* Kill socket */
->>>        sco_conn_lock(conn);
->>>        sk = conn->sk;
->>> +    if (sk)
->>> +        sock_hold(sk);
->>>        sco_conn_unlock(conn);
->>>
->>>        if (sk) {
->>> -        sock_hold(sk);
->>>            lock_sock(sk);
->>>            sco_sock_clear_timer(sk);
->>>            sco_chan_del(sk, err);
->>
-> 
-> 
+When I originally worked on this the only other drive that supported
+queued trim was a specific controller generation from Crucial/Micron.
 
+Since performance-sensitive workloads quickly moved to NVMe, I don't
+know if implementing queued trim has been very high on the SSD
+manufacturers' todo lists. FWIW, I just checked and none of the more
+recent SATA SSD drives I happen to have support queued trim.
+
+Purely anecdotal: I have a Samsung 863 which I believe is
+architecturally very similar to the 860. That drive clocked over 40K
+hours as my main git repo/build drive until it was retired last
+fall. And it ran a queued fstrim every night.
+
+Anyway. I am not against disabling queued trim for these drives. As far
+as I'm concerned it was a feature that didn't quite get enough industry
+momentum. It just irks me that we don't have a good understanding of why
+it works for some and not for others...
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
