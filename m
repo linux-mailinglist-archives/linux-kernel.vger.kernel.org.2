@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFECB3FFC41
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3481E3FFC3B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348399AbhICItH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:49:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234817AbhICItD (ORCPT
+        id S1348355AbhICIoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:44:39 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:51552 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1348276AbhICIoi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:49:03 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2764C061575;
-        Fri,  3 Sep 2021 01:48:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rRuSYLlOgO1jvya073Bh7Tpm8VI1vmVBgnv4q9HH8uo=; b=jhTR6SBpkVS6jms5GAwXgbKG5s
-        uuVmf8stn8TaZo6/Q6MKUq7TgbgUrZ/3h6EXaXbPsQnm/O9jog8R1vgjM1G7ObQmeeBXE/TXqZVeD
-        EcufrQD5ZEumO7Gt9Lg3LvalHSHI/y6SqOg8eBYVfQ5jwFuyJNk96DlqJkFrODeE4sQiuKAk/lWUO
-        QzZdwY2eEj2937mp2U5ro7N5vp/PePTEN6IWPBNff/fNALN1zvxw5iLBw5fISkic8LPddrohHaUHw
-        iryjCnRDK1bCHs7HaUKnsugiuF+JxVShxX/ytyZJe5f+Jp8QXLCuxDW9utLIFNsrF9kKbL6tn7Fvu
-        Mkurbs/Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mM4rc-000JaS-0a; Fri, 03 Sep 2021 08:47:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8CF6030024D;
-        Fri,  3 Sep 2021 10:47:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 702B828B658E9; Fri,  3 Sep 2021 10:47:55 +0200 (CEST)
-Date:   Fri, 3 Sep 2021 10:47:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com
-Subject: Re: [PATCH v5 bpf-next 2/3] bpf: introduce helper
- bpf_get_branch_snapshot
-Message-ID: <YTHhOy1gqr44C1bI@hirez.programming.kicks-ass.net>
-References: <20210902165706.2812867-1-songliubraving@fb.com>
- <20210902165706.2812867-3-songliubraving@fb.com>
+        Fri, 3 Sep 2021 04:44:38 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AjdWvWq8HLzLLjPo+zINuk+DkI+orL9Y04lQ7?=
+ =?us-ascii?q?vn2ZKCYlFvBw8vrCoB1173HJYUkqMk3I9ergBEDiewK4yXcW2/hzAV7KZmCP11?=
+ =?us-ascii?q?dAR7sSj7cKrQeBJwTOssZZ1YpFN5N1EcDMCzFB5vrS0U2VFMkBzbC8nJyVuQ?=
+ =?us-ascii?q?=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.85,264,1624291200"; 
+   d="scan'208";a="113950769"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 03 Sep 2021 16:43:37 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 19E184D0D497;
+        Fri,  3 Sep 2021 16:43:32 +0800 (CST)
+Received: from G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Fri, 3 Sep 2021 16:43:32 +0800
+Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
+ G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Fri, 3 Sep 2021 16:43:32 +0800
+Received: from localhost.localdomain (10.167.225.141) by
+ G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Fri, 3 Sep 2021 16:43:30 +0800
+From:   Li Zhijian <lizhijian@cn.fujitsu.com>
+To:     <leon@kernel.org>, <dledford@redhat.com>, <jgg@ziepe.ca>,
+        <linux-rdma@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Li Zhijian <lizhijian@cn.fujitsu.com>
+Subject: [PATCH] IB/mlx5: unify return value to ENOENT
+Date:   Fri, 3 Sep 2021 16:48:15 +0800
+Message-ID: <20210903084815.184320-1-lizhijian@cn.fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902165706.2812867-3-songliubraving@fb.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 19E184D0D497.AB791
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 09:57:05AM -0700, Song Liu wrote:
-> +BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
-> +{
-> +	static const u32 br_entry_size = sizeof(struct perf_branch_entry);
-> +	u32 entry_cnt = size / br_entry_size;
-> +
-> +	if (unlikely(flags))
-> +		return -EINVAL;
-> +
-> +	if (!buf || (size % br_entry_size != 0))
-> +		return -EINVAL;
-> +
-> +	entry_cnt = static_call(perf_snapshot_branch_stack)(buf, entry_cnt);
+Previously, ENOENT or EINVAL will be returned by ibv_advise_mr() although
+the errors all occur at get_prefetchable_mr().
 
-That's at least 2, possibly 3 branches just from the sanity checks, plus
-at least one from starting the BPF prog and one from calling this
-function, gets you at ~5 branch entries gone before you even do the
-snapshot thing.
+flags = IBV_ADVISE_MR_FLAG_FLUSH:
+mlx5_ib_advise_mr_prefetch()
+  -> mlx5_ib_prefetch_sg_list()
+      -> get_prefetchable_mr()
+  return -ENOENT;
 
-Less if you're in branch-stack mode.
+flags = 0:
+mlx5_ib_advise_mr_prefetch()
+  -> init_prefetch_work()
+     -> get_prefetchable_mr()
+  return -EINVAL;
 
-Can't the validator help with getting rid of the some of that?
+Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+---
+ drivers/infiniband/hw/mlx5/odp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I suppose you have to have this helper function because the JIT cannot
-emit static_call()... although in this case one could cheat and simply
-emit a call to static_call_query() and not bother with dynamic updates
-(because there aren't any).
+diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
+index d0d98e584ebc..52572e7ea6f6 100644
+--- a/drivers/infiniband/hw/mlx5/odp.c
++++ b/drivers/infiniband/hw/mlx5/odp.c
+@@ -1828,7 +1828,7 @@ int mlx5_ib_advise_mr_prefetch(struct ib_pd *pd,
+ 
+ 	if (!init_prefetch_work(pd, advice, pf_flags, work, sg_list, num_sge)) {
+ 		destroy_prefetch_work(work);
+-		return -EINVAL;
++		return -ENOENT;
+ 	}
+ 	queue_work(system_unbound_wq, &work->work);
+ 	return 0;
+-- 
+2.31.1
+
+
+
