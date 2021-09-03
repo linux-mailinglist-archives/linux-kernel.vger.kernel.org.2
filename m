@@ -2,169 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B644003AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:50:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E020A4003B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350151AbhICQvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 12:51:37 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:45964 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230187AbhICQvg (ORCPT
+        id S1349771AbhICQxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 12:53:21 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:44485 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230187AbhICQxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 12:51:36 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 183GnxQs010732;
-        Fri, 3 Sep 2021 09:50:36 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : mime-version; s=facebook;
- bh=KixfEx/zH3XbQoQ8GdRJxRRwvYPCGtZ2Nw6VyeJTkOk=;
- b=WkMMSYHcYllbz3toofdWb4ykDYQzWqPJzycddJ87cdVBXTvA7JwHH9uJp2i+7g/HJsBO
- zmHhtJbTMXhrnHGgDhY8+E3KppRFHFATsJXFYlTGeQ7x7RciilwynXqnga2RkF6N+TlA
- dI/GOL4SihL5fxbcqxjWCQZYQWvil1GbEkU= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3aukrhhj4k-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 03 Sep 2021 09:50:36 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Fri, 3 Sep 2021 09:50:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a2YF0eQYKRHWgzKjscAPPlXBQ+pZn2LEWEFAKaeHVsc7pRSCwTJWBbf/xJqZv97XCey//FiTdtlXCmiNWt8SkBgtE2jz6cjV+P+6AznN7tuYc5iAoUpWxiMoKaAH2NPJ81ZRhu/AWkWgN7ARrrNGmyiU9pX0QUuW09AhgMSDr8J8dvjUaSoWe6tJXxbMOBjm6H1jc+mS8nmsB8MHXgQNKV0aEQslM1kuIbuaQG4oEF/338xxx3a6CSUbAjdU1hVIF+F9Y420gmHDqLUzlxidM38E0NrnTkOEgke5SI0QDKlfBNfBjtF6RNhkFB94l5MP/9Hc80U/97cuAiKEyPeatg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=KixfEx/zH3XbQoQ8GdRJxRRwvYPCGtZ2Nw6VyeJTkOk=;
- b=IxHm/x9EgwLFfihV9PJTNVyyvp3/4thfbfiFelyw1FUDlZYCqbLdA+IdWJdBT9bpHLTEn1+mvmea0IyKv5JV6ulblgTpx8frOy2H8tLjrZlWeMZjQbSE1LwKq6/Pi1oJi/lcRepo8dF7XE59WXHrwvfNrhTI1+DNbHJSTw2FTjLWmAFLt8EKuz4+q1Y1JYp35ts68SWYwUuMbn+P7AvYlQtVP/56F5JySIpyR3o5UMbDesZhTBUac9IJMFnrblN0+haZh4eNN20xDggqVuEXg3TwsYO+3MErPqd9xXpQ3ionWxiYc26A4bKbZXnj4DGEKNxh0hb4FYnHcIEIo3miyw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by SA1PR15MB5077.namprd15.prod.outlook.com (2603:10b6:806:1dc::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Fri, 3 Sep
- 2021 16:50:34 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::7d66:9b36:b482:af0f]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::7d66:9b36:b482:af0f%7]) with mapi id 15.20.4478.022; Fri, 3 Sep 2021
- 16:50:34 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     bpf <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH v5 bpf-next 1/3] perf: enable branch record for software
- events
-Thread-Topic: [PATCH v5 bpf-next 1/3] perf: enable branch record for software
- events
-Thread-Index: AQHXoBueIwYxVW5RBEGe48w8ZsQtdKuR8+oAgACTfYA=
-Date:   Fri, 3 Sep 2021 16:50:34 +0000
-Message-ID: <D501C4AD-3778-431B-A710-3399BFE6EE56@fb.com>
-References: <20210902165706.2812867-1-songliubraving@fb.com>
- <20210902165706.2812867-2-songliubraving@fb.com>
- <YTHWoCcSgvfx24/N@hirez.programming.kicks-ass.net>
-In-Reply-To: <YTHWoCcSgvfx24/N@hirez.programming.kicks-ass.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.120.0.1.13)
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=fb.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4132171a-beae-4c84-09dd-08d96efaf2c0
-x-ms-traffictypediagnostic: SA1PR15MB5077:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA1PR15MB50771808A51EAE72648531FFB3CF9@SA1PR15MB5077.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: sD3tTHkGlf7Q7gitEbQE8q5QExqnxspkwk3ylimYEVGZEppRLH+jsmaAAwsroeYhJdp72OW4OnqmsDcD9JpIqvMXJwd9Rp05iysKPJB6HWDGPSJHRkn68LvnSutn3oHsz/rNvAnBGxRNg+2UYCHyaDh28HkNjwKtaHWYge6PMJeIFzdPs/QVJV/fKwZkcH8KZ3F8DB/laW2ZwO4EBO5A6+tPhsadrGQyJFNfUSqr0UfGs7w0CYZzAuEgukVupSC0T9oZTyO6yacWkwHU4k4OIIK0o65KdMBweXW/BKPEmigRp1wZpTjH7FmMoz4bQ/ym369y6D9s8q8rNrzOOzAI4P2sVJO6wQHFV03QN1+Wu0KErDALtql0+7cdACUE/T4pRibaP4xw+YPwWcTCziTKbHJwkyDo9nWf1Zk3LeNU5v4g+VDGfV2s6+hXmi42kv6mDwaQ8ZXWQSEjImRVd7LlLxmHCE/6pwsBsAHCq6ax2QcQ09WLg8SlZEM0uG6TPI+X5M+0R5TZsGu5L/lE2IFddL7qZ8KrIQmksHa/oKcPJEzxbG0KEUdyJolWQeQ5zGWgXI4gJOh3KTQlx4kBM6HSn8zJDqel25JXEx8M2TsOpsuOIOVbQQfN6B1Dc5U6QUTYZ+eXiR+aasmskUic5ECrk5M52lLKcpNHyY3sLNnRwUsD3nGB5EwesmOKUT7K1M+PVActqbESTtE8e526YnR5oJIJ95BdYs3B5gJBK6AQiQyyzgIo9oLbE3wlYsYrLY34
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(54906003)(508600001)(4744005)(4326008)(36756003)(2616005)(76116006)(6916009)(91956017)(66946007)(66556008)(64756008)(66446008)(66476007)(6486002)(6512007)(71200400001)(2906002)(86362001)(8936002)(6506007)(8676002)(186003)(38100700002)(33656002)(122000001)(316002)(5660300002)(53546011)(38070700005)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?XqTl9SsQGnp+7oDwFIskR4+GsmwsCMsslIwoUQB1fiAe9kmYfSADYGIrJoZp?=
- =?us-ascii?Q?0Nj9KXo6cW0pQicACz05R6rYtmqwSrbSdVGjX3Emy/J8lZ/6s++UOzYjfwOA?=
- =?us-ascii?Q?ypZn1qoUFn0Ix+u/11R79K1oQ5ZtUBZiL74P1TZpCa5h//iv0P0eInVfGo2w?=
- =?us-ascii?Q?gKKpJ+0SWh27wZ1/suFktA6PE6GQK7I4LqDFsbBiqLgPDf+h4kupzn4g6azD?=
- =?us-ascii?Q?DV/lceZVJ9w0ZJRYx7lpvyRJlMej0HFQMLnGCVXHLzsqMEXPuzN28/KAvaM+?=
- =?us-ascii?Q?1EgNvYCQ6UOd976vSpsP28F5cQ5mPLZm2eclu46lP2fI9FM+4nH+yGSAD/+d?=
- =?us-ascii?Q?CQbsNcsYWWEpoX+DKoYVMozkZAfhJO7/o1cL8/bv6dvrr1V2sc8F41tv+DTe?=
- =?us-ascii?Q?9S7qhsEVhZWx/nkcHh+C82VU92WEgj84QkA5Qn2640q0I534v+fHcwVkVMuL?=
- =?us-ascii?Q?n+P0lWDqTm+xHLulqu1YMTH90qzj68FW+Tp7638YIZ1s2tm5WLYR+OUyb7es?=
- =?us-ascii?Q?oUckYzozV+rwzLriX4Oj+FL/v8crFhzhcXI8+AXMSE8VzQnFQZ82kHmsN7D6?=
- =?us-ascii?Q?x3LTNOHnvZ2ilGv0M32lHK72K8GsnlViYv6UIxgcmBbys9sw/71ArR9jJ3QZ?=
- =?us-ascii?Q?IcQXJ2vAqoiOKfgTO9nlefgyXmFH5S8s4qlRh6d+KyEX3oG+9mGop1QrV2v2?=
- =?us-ascii?Q?r2q/YeUKvE+hpSsx16uitLeJZghupnjys4v9N6TPtNqVFKcd5eqYsOn1u8Fp?=
- =?us-ascii?Q?ifRlDjvy4U6qmU+fOixlBQwN+fAclnbudjDdwORsft1SoGc8HkUfaxPHNFou?=
- =?us-ascii?Q?XgmYIN/A0A3UKztmzgMZqfQs85+8u3W5rIOCKqxEtmV8MU6n2KpNYBZCuDTY?=
- =?us-ascii?Q?6J0UMDd/CdOUn45lkvOWxcgw8qrlwXU06XUsB/SaYvtfEDr2UXNJLQ65ojVr?=
- =?us-ascii?Q?/yywGf7nKAQHOrn4VjLaIncUEopLTv8ej+HJheTYtw1Z+qyTzOmcoJ8C0dtS?=
- =?us-ascii?Q?z/Os0G7hWjZHvk6jMcVnxLwjD5letyX1MkAQ4phkBhn74DIXrYYekoUL12K8?=
- =?us-ascii?Q?KC5yUwKBzuBfaSqH6+siUmurSkIafh09Rq6HRdBe/+dkCFQQ687UXfOYtvt8?=
- =?us-ascii?Q?KQxdVGR0MusCR1tuoA4k9BL6QSRTwpG5dVT4ZL9ujkq9Z32hRYCSGPNnX+i9?=
- =?us-ascii?Q?PdDIOm6ypUtvUl2LIlv4ACeYTwbmDlxtazDiRYyrDOB6XB6FiuM3JsFlZefh?=
- =?us-ascii?Q?L8/jVMIzvlljWPeAaHtH6OpsZ6Ya8WS/twnv+nikhgu85iKCEIyxLsYgQBpK?=
- =?us-ascii?Q?0kEGWudaYxttrtc3s3nY11E2L7QKBjy+1y1lob9Af206wk6xZegqdkJalfby?=
- =?us-ascii?Q?/L53Rb4=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <463E6A64A25C0E4DB52391F68DB2D734@namprd15.prod.outlook.com>
-MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4132171a-beae-4c84-09dd-08d96efaf2c0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Sep 2021 16:50:34.2091
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SGuvch/4fteNKyoGRR/ZFqP6xMcojZZtUSq6KVhNbRZoWMo10/E/Qc1i8Tq0IjgQKes/6ekcjIrtEDRKZRgZFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR15MB5077
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: bT1Ues_uiC-ulVB9i2Hwp3d7lQPGRg1k
-X-Proofpoint-ORIG-GUID: bT1Ues_uiC-ulVB9i2Hwp3d7lQPGRg1k
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-03_07:2021-09-03,2021-09-03 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
- impostorscore=0 clxscore=1015 mlxlogscore=999 priorityscore=1501
- lowpriorityscore=0 spamscore=0 bulkscore=0 adultscore=0 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109030099
-X-FB-Internal: deliver
+        Fri, 3 Sep 2021 12:53:18 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id E3E635C0159;
+        Fri,  3 Sep 2021 12:52:17 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute1.internal (MEProxy); Fri, 03 Sep 2021 12:52:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm2; bh=Sj8qfi5acETm3P7RSRk0CRVIAUU7
+        c7e1VWwIZayoXM4=; b=M1iEEUIQUrQ3xGCpyj1AD7Hq2iMJdjbZ5Sdpi/dM+1W8
+        I6nCo+9/PAOFPCYWU1fBahqBTCuXUk5GEl+pSKRaHrKVFMmoa+YxoTmlz+HuJfWZ
+        FgXi1WY7AtOhzuQIYsVd7j8RKDDSOgOu4Rgrn1eSCU4vUk17ZbYzm5D/yziyKIaR
+        kS8abxApohC+wLmbHtUWHTUPwqSOp1Aw0poiMLAyy2fbcCTysVUP+aYPoAoibe1O
+        B8i+ON1rKZtc959VZHtYe31s7eK/b4klEIiVAyfMThM0FM+SrTw4Oh0Xg4qqhEZW
+        ZGZqhHLYqKBumjxYydD3oiQAXcgAW6I4dYVJZ+W0cQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Sj8qfi
+        5acETm3P7RSRk0CRVIAUU7c7e1VWwIZayoXM4=; b=Qw9wzs0tFolmFiegUk9Xdi
+        vQa4lpQU7PrD2dMYHu4RVureKMekgf8Wp29c+exo2RKzL8cPlasUoNQETLkaHRY1
+        jKvDq9Xt/8gJDlHoKeM7YYQEod4uJh7WSPI+Zym4BlquarL3hXiMk2HLlqIqdARo
+        qpvseRFUByaXriEyukIjlC1TajaQnGKIhGtE8kl50i+vI+Rxhk5oAHuJIn1i8PJ+
+        ip5o2D19AhV1wNXptL6M6HSNoZBL3HR2AfjlQ+0DqIdPdsvn4xNj9cUQI1bEvwlA
+        WvQNiFk0mpRxQ3SgjbB1IBUosweGsch0fgOa0y6BTPAeDX2N00W81Bu+pqyoCh5g
+        ==
+X-ME-Sender: <xms:wFIyYYgVPf73lq5a8WShm-9rc9wLma8ISfB0NGXCjSVKXCT5E0ev1A>
+    <xme:wFIyYRB3sDJm5hcZckdLKlPP66T5oQB-zOXfmTDAsiUKAHLykveIL2BUcUuO6Y7SD
+    RDqUHM7QXqU6bWi_24>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedguddtgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedfufhv
+    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
+    grthhtvghrnhepheejgfdttdefleefteejieefudeuheelkedtgedtjeehieetueelheeu
+    hfegheegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:wFIyYQFqO7ruuuVM3hhv2glnQTZwOKf3uMZ4yCACeHVrwRHhpvSKgg>
+    <xmx:wFIyYZR0WIgOEKx1kZkHAtURBvK-4H1lg1ze4si-HKZ95ahnmW3xhg>
+    <xmx:wFIyYVxfGpPg-HS8fHFDgLDytByWFnmI73CK3TmWEpVhNnqrJpFwHw>
+    <xmx:wVIyYUzlZSUsdHRoKO4MCASWxJIX8v7izFKjEibuxFRgvKQ-ampqSg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 4842B51C0060; Fri,  3 Sep 2021 12:52:16 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1126-g6962059b07-fm-20210901.001-g6962059b
+Mime-Version: 1.0
+Message-Id: <16ffa27b-4769-469e-827c-129948a78a36@www.fastmail.com>
+In-Reply-To: <462494ab-121e-e4dd-3811-d744f0fffa66@arm.com>
+References: <20210828153642.19396-1-sven@svenpeter.dev>
+ <20210828153642.19396-4-sven@svenpeter.dev> <YS6fasuqPURbmC6X@sunset>
+ <c8bc7f77-3b46-4675-a642-76871fcec963@www.fastmail.com>
+ <YS/sMckPUJRMYwYq@sunset>
+ <ac34e920-d1b4-4044-a8fe-5172d5ebfa9c@www.fastmail.com>
+ <74621c69-ef68-c12a-3770-319cb7a0db73@arm.com>
+ <989af5a3-8c84-4796-adb6-af9426d68b76@www.fastmail.com>
+ <462494ab-121e-e4dd-3811-d744f0fffa66@arm.com>
+Date:   Fri, 03 Sep 2021 18:51:54 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Robin Murphy" <robin.murphy@arm.com>,
+        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>
+Cc:     "Sven Peter" <iommu@lists.linux-foundation.org>,
+        "Joerg Roedel" <joro@8bytes.org>, "Will Deacon" <will@kernel.org>,
+        "Arnd Bergmann" <arnd@kernel.org>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
+        "Alexander Graf" <graf@amazon.com>,
+        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[PATCH_v2_3/8]_iommu/dma:_Disable_get=5Fsgtable_for_granul?=
+ =?UTF-8?Q?e_>_PAGE=5FSIZE?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> On Sep 3, 2021, at 1:02 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+On Fri, Sep 3, 2021, at 17:45, Robin Murphy wrote:
+> On 2021-09-03 16:16, Sven Peter wrote:
+> > 
+> > 
+> > On Thu, Sep 2, 2021, at 21:42, Robin Murphy wrote:
+> >> On 2021-09-02 19:19, Sven Peter wrote:
+> >>>
+> >>>
+> >>> On Wed, Sep 1, 2021, at 23:10, Alyssa Rosenzweig wrote:
+> >>>>> My biggest issue is that I do not understand how this function is supposed
+> >>>>> to be used correctly. It would work fine as-is if it only ever gets passed buffers
+> >>>>> allocated by the coherent API but there's not way to check or guarantee that.
+> >>>>> There may also be callers making assumptions that no longer hold when
+> >>>>> iovad->granule > PAGE_SIZE.
+> >>>>>
+> >>>>> Regarding your case: I'm not convinced the function is meant to be used there.
+> >>>>> If I understand it correctly, your code first allocates memory with dma_alloc_coherent
+> >>>>> (which possibly creates a sgt internally and then maps it with iommu_map_sg),
+> >>>>> then coerces that back into a sgt with dma_get_sgtable, and then maps that sgt to
+> >>>>> another iommu domain with dma_map_sg while assuming that the result will be contiguous
+> >>>>> in IOVA space. It'll work out because dma_alloc_coherent is the very thing
+> >>>>> meant to allocate pages that can be mapped into kernel and device VA space
+> >>>>> as a single contiguous block and because both of your IOMMUs are different
+> >>>>> instances of the same HW block. Anything allocated by dma_alloc_coherent for the
+> >>>>> first IOMMU will have the right shape that will allow it to be mapped as
+> >>>>> a single contiguous block for the second IOMMU.
+> >>>>>
+> >>>>> What could be done in your case is to instead use the IOMMU API,
+> >>>>> allocate the pages yourself (while ensuring the sgt your create is made up
+> >>>>> of blocks with size and physaddr aligned to max(domain_a->granule, domain_b->granule))
+> >>>>> and then just use iommu_map_sg for both domains which actually comes with the
+> >>>>> guarantee that the result will be a single contiguous block in IOVA space and
+> >>>>> doesn't required the sgt roundtrip.
+> >>>>
+> >>>> In principle I agree. I am getting the sense this function can't be used
+> >>>> correctly in general, and yet is the function that's meant to be used.
+> >>>> If my interpretation of prior LKML discussion holds, the problems are
+> >>>> far deeper than my code or indeed page size problems...
+> >>>
+> >>> Right, which makes reasoning about this function and its behavior if the
+> >>> IOMMU pages size is unexpected very hard for me. I'm not opposed to just
+> >>> keeping this function as-is when there's a mismatch between PAGE_SIZE and
+> >>> the IOMMU page size (and it will probably work that way) but I'd like to
+> >>> be sure that won't introduce unexpected behavior.
+> >>>
+> >>>>
+> >>>> If the right way to handle this is with the IOMMU and IOVA APIs, I really wish
+> >>>> that dance were wrapped up in a safe helper function instead of open
+> >>>> coding it in every driver that does cross device sharing.
+> >>>>
+> >>>> We might even call that helper... hmm... dma_map_sg.... *ducks*
+> >>>>
+> >>>
+> >>> There might be another way to do this correctly. I'm likely just a little
+> >>> bit biased because I've spent the past weeks wrapping my head around the
+> >>> IOMMU and DMA APIs and when all you have is a hammer everything looks like
+> >>> a nail.
+> >>>
+> >>> But dma_map_sg operates at the DMA API level and at that point the dma-ops
+> >>> for two different devices could be vastly different.
+> >>> In the worst case one of them could be behind an IOMMU that can easily map
+> >>> non-contiguous pages while the other one is directly connected to the bus and
+> >>> can't even access >4G pages without swiotlb support.
+> >>> It's really only possible to guarantee that it will map N buffers to <= N
+> >>> DMA-addressable buffers (possibly by using an IOMMU or swiotlb internally) at
+> >>> that point.
+> >>>
+> >>> On the IOMMU API level you have much more information available about the actual
+> >>> hardware and can prepare the buffers in a way that makes both devices happy.
+> >>> That's why iommu_map_sgtable combined with iovad->granule aligned sgt entries
+> >>> can actually guarantee to map the entire list to a single contiguous IOVA block.
+> >>
+> >> Essentially there are two reasonable options, and doing pretend dma-buf
+> >> export/import between two devices effectively owned by the same driver
+> >> is neither of them. Handily, DRM happens to be exactly where all the
+> >> precedent is, too; unsurprisingly this is not a new concern.
+> >>
+> >> One is to go full IOMMU API, like rockchip or tegra, attaching the
+> >> relevant devices to your own unmanaged domain(s) and mapping pages
+> >> exactly where you choose. You still make dma_map/dma_unmap calls for the
+> >> sake of cache maintenance and other housekeeping on the underlying
+> >> memory, but you ignore the provided DMA addresses in favour of your own
+> >> IOVAs when it comes to programming the devices.
+> >>
+> >> The lazier option if you can rely on all relevant devices having equal
+> >> DMA and IOMMU capabilities is to follow exynos, and herd the devices
+> >> into a common default domain. Instead of allocating you own domain, you
+> >> grab the current domain for one device (which will be its default
+> >> domain) and manually attach the other devices to that. Then you forget
+> >> all about IOMMUs but make sure to do all your regular DMA API calls
+> >> using that first device, and the DMA addresses which come back should be
+> >> magically valid for the other devices too. It was a bit of a cheeky hack
+> >> TBH, but I'd still much prefer more of that over any usage of
+> >> get_sgtable outside of actual dma-buf...
+> >>
+> >> Note that where multiple IOMMU instances are involved, the latter
+> >> approach does depend on the IOMMU driver being able to support sharing a
+> >> single domain across them; I think that might sort-of-work for DART
+> >> already, but may need a little more attention.
+> > 
+> > It'll work for two streams inside the same DART but needs some
+> > attention for streams from two separate DARTs.
+> > 
+> > Then there's also this amazing "feature" that the display controller DART
+> > pagetable pointer register is read-only so that we have to reuse the memory
+> > Apple configured for first level table. That needs some changes anyway
+> > but might make adding multiple devices from different groups more complex.
 > 
-> On Thu, Sep 02, 2021 at 09:57:04AM -0700, Song Liu wrote:
->> +static int
->> +intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
->> +{
->> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
->> +
->> +	intel_pmu_disable_all();
->> +	intel_pmu_lbr_read();
->> +	cnt = min_t(unsigned int, cnt, x86_pmu.lbr_nr);
->> +
->> +	memcpy(entries, cpuc->lbr_entries, sizeof(struct perf_branch_entry) * cnt);
->> +	intel_pmu_enable_all(0);
->> +	return cnt;
->> +}
+> OK, I was thinking the dual-DART accommodation is already at least some 
+> of the way there, but I guess it's still tied to a single device's cfg. 
+
+Pretty much. I think "needing a little more attention" describes it pretty
+well :)
+
+
+> One upside to generalising further might be that the dual-DART case 
+> stops being particularly special :)
 > 
-> Would something like the below help get rid of that memcpy() ?
-> 
-> (compile tested only)
+> Not being able to physically share pagetables shouldn't be too big a 
+> deal, just a bit more work to sync iommu_map/iommu_unmap calls across 
+> all the relevant instances for the given domain.
 
-We can get rid of the memcpy. But we will need an extra "size" or "num_entries" 
-parameter for intel_pmu_lbr_read. I can add this change in the next version. 
+True, it's just a bit more bookkeeping in the end.
 
-Thanks,
-Song
 
+
+Sven
