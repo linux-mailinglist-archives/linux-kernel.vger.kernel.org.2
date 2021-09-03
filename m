@@ -2,128 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F913FF8BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 03:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B373FF8CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 04:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347201AbhICBxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 21:53:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347333AbhICBxN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 21:53:13 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31211C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 18:52:14 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id q39so5056851oiw.12
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 18:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fJ6dHpD3GNvelFyzfgcEEqTGVW548hBc/w/cwdZoxXo=;
-        b=o5wGgjqoy5Wypn47ILH2PfB1fPMzxONkyeKsNK/ucG6hBFF1UqOy3mQYhBu5n42jzT
-         bwsWPaj+bIf84sI/0LdRvyucZCbLAPJ+96yqtO1W0YNvaiNpAwg/pH3Srl/DqF1jBcbn
-         uNMFUesRjHUeT7odYJ6xVGTcAzOh/xH1fs1130ngy67zKgpCnSk8dFeRSwBHD1lfW3z2
-         xRBPCr8Vx8p8qnVyxzkNoqzInZU9IDrNH481FyEoC0OEDxqRZQdyA2hYYDSrf04WeLsY
-         pNA9mSfEpHAhcM89+gxWw1yzpz1lEHHY/G+dJN+oO6nS4KU+ji5vw0yuyRo3Slobm1Ak
-         weSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=fJ6dHpD3GNvelFyzfgcEEqTGVW548hBc/w/cwdZoxXo=;
-        b=aBKDd97kJSTyLevWraefmjPhLXWAx1s9RLizibJyPHd0UyoNeG2PV5HfxqKbhPHbwe
-         7h7pUZDFBpju/ZgAPT3NnTRf09oC4srXa460+xCbXATnjNF0FS4mPTrQGt7taWKov89u
-         v8widCM5+YtjhRlAYrxAxkJ2PUjfHn6JrnEdlZfvAjhoDyQkcthPRBGrYtiuxak4G3Fk
-         7NmzMQzug1t+j0yqoSFU+LyguRnAHelKy3XfZ5GzKrdgXIiuF54IIoHDcXeEtv0AbiZS
-         /s25jOdcBOeVz1ACetEy2tevIwrugbZkfbYy1QkFoPLrV1Aypox1vMIkGVgwpjhgqQC3
-         T7dw==
-X-Gm-Message-State: AOAM5321yXGHtBmImLxXDb6doaUZsoY7LEiOTgysNq7haVzWAWuI4cQn
-        gvu5Hk428n8Iai/sKimlU/LcsGlPEA==
-X-Google-Smtp-Source: ABdhPJzNeiL7f0eAEUR9xjNEuOWjCTsyhykW7lhmG1ZQ9+Ss7OYiuLg0+6E5hUwPc3JdgolBcrUOFQ==
-X-Received: by 2002:a05:6808:3a8:: with SMTP id n8mr4476992oie.10.1630633933476;
-        Thu, 02 Sep 2021 18:52:13 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.156.158])
-        by smtp.gmail.com with ESMTPSA id a23sm690696otp.44.2021.09.02.18.52.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 18:52:12 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:5c43:c5c8:4983:ece])
-        by serve.minyard.net (Postfix) with ESMTPSA id 6B17418000C;
-        Fri,  3 Sep 2021 01:52:11 +0000 (UTC)
-Date:   Thu, 2 Sep 2021 20:52:10 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     cminyard@mvista.com, Michal Hocko <mhocko@suse.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] oom_kill: oom_score_adj broken for processes with small
- memory usage
-Message-ID: <20210903015210.GF545073@minyard.net>
-Reply-To: minyard@acm.org
-References: <20210701125430.836308-1-minyard@acm.org>
- <YPEW3H+W/uiRYIfn@dhcp22.suse.cz>
- <20210716122547.GI3431@minyard.net>
- <20210902125501.c83101f27f1a02c58188e3f3@linux-foundation.org>
+        id S1345326AbhICCIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 22:08:24 -0400
+Received: from mga18.intel.com ([134.134.136.126]:31374 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232931AbhICCIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 22:08:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="206422289"
+X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
+   d="scan'208";a="206422289"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2021 19:07:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
+   d="scan'208";a="691781879"
+Received: from siang-ilbpg0.png.intel.com ([10.88.227.28])
+  by fmsmga005.fm.intel.com with ESMTP; 02 Sep 2021 19:07:18 -0700
+From:   Song Yoong Siang <yoong.siang.song@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>
+Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: [PATCH net 1/1] net: stmmac: Fix overall budget calculation for rxtx_napi
+Date:   Fri,  3 Sep 2021 10:00:26 +0800
+Message-Id: <20210903020026.1381962-1-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902125501.c83101f27f1a02c58188e3f3@linux-foundation.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 12:55:01PM -0700, Andrew Morton wrote:
-> On Fri, 16 Jul 2021 07:25:47 -0500 Corey Minyard <cminyard@mvista.com> wrote:
-> 
-> > On Fri, Jul 16, 2021 at 07:19:24AM +0200, Michal Hocko wrote:
-> > > On Thu 01-07-21 07:54:30, minyard@acm.org wrote:
-> > > > From: Corey Minyard <cminyard@mvista.com>
-> > > > 
-> > > > If you have a process with less than 1000 totalpages, the calculation:
-> > > > 
-> > > >   adj = (long)p->signal->oom_score_adj;
-> > > >   ...
-> > > >   adj *= totalpages / 1000;
-> > > > 
-> > > > will always result in adj being zero no matter what oom_score_adj is,
-> > > > which could result in the wrong process being picked for killing.
-> > > > 
-> > > > Fix by adding 1000 to totalpages before dividing.
-> > > 
-> > > Yes, this is a known limitation of the oom_score_adj and its scale.
-> > > Is this a practical problem to be solved though? I mean 0-1000 pages is
-> > > not really that much different from imprecision at a larger scale where
-> > > tasks are effectively considered equal.
-> > 
-> > Known limitation?  Is this documented?  I couldn't find anything that
-> > said "oom_score_adj doesn't work at all with programs with <1000 pages
-> > besides setting the value to -1000".
-> > 
-> > > 
-> > > I have to say I do not really like the proposed workaround. It doesn't
-> > > really solve the problem yet it adds another special case.
-> > 
-> > The problem is that if you have a small program, there is no way to
-> > set it's priority besides completely disablling the OOM killer for
-> > it.
-> > 
-> > I don't understand the special case comment.  How is this adding a
-> > special case?  This patch removes a special case.  Small programs
-> > working different than big programs is a special case.  Making them all
-> > work the same is removing an element of surprise from someone expecting
-> > things to work as documented.
-> > 
-> 
-> Can we please get this resolved one way or the other?
+tx_done is not used for napi_complete_done(). Thus, NAPI busy polling
+mechanism by gro_flush_timeout and napi_defer_hard_irqs will not able
+be triggered after a packet is transmitted when there is no receive
+packet.
 
-My goal in submitting this is to avoid someone having to go through what
-I went through.  I know it now, so it's not going to affect me again.
+Fix this by taking the maximum value between tx_done and rx_done as
+overall budget completed by the rxtx NAPI poll to ensure XDP Tx ZC
+operation is continuously polling for next Tx frame. This gives
+benefit of lower packet submission processing latency and jitter
+under XDP Tx ZC mode.
 
-We could document this, but to me it seems silly when something can just
-be made consistent to avoid having to document it.  I got no response to
-my questions above, so I don't know what to make of it.
+Performance of tx-only using xdp-sock on Intel ADL-S platform is
+the same with and without this patch.
 
-Thanks Andrew,
+root@intel-corei7-64:~# ./xdpsock -i enp0s30f4 -t -z -q 1 -n 10
+ sock0@enp0s30f4:1 txonly xdp-drv
+                   pps            pkts           10.00
+rx                 0              0
+tx                 511630         8659520
 
--corey
+ sock0@enp0s30f4:1 txonly xdp-drv
+                   pps            pkts           10.00
+rx                 0              0
+tx                 511625         13775808
+
+ sock0@enp0s30f4:1 txonly xdp-drv
+                   pps            pkts           10.00
+rx                 0              0
+tx                 511619         18892032
+
+Fixes: 132c32ee5bc0 ("net: stmmac: Add TX via XDP zero-copy socket")
+Cc: <stable@vger.kernel.org> # 5.13.x
+Co-developed-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Signed-off-by: Song Yoong Siang <yoong.siang.song@intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index ed0cd3920171..97238359e101 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -5347,7 +5347,7 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
+ 	struct stmmac_channel *ch =
+ 		container_of(napi, struct stmmac_channel, rxtx_napi);
+ 	struct stmmac_priv *priv = ch->priv_data;
+-	int rx_done, tx_done;
++	int rx_done, tx_done, rxtx_done;
+ 	u32 chan = ch->index;
+ 
+ 	priv->xstats.napi_poll++;
+@@ -5357,14 +5357,16 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
+ 
+ 	rx_done = stmmac_rx_zc(priv, budget, chan);
+ 
++	rxtx_done = max(tx_done, rx_done);
++
+ 	/* If either TX or RX work is not complete, return budget
+ 	 * and keep pooling
+ 	 */
+-	if (tx_done >= budget || rx_done >= budget)
++	if (rxtx_done >= budget)
+ 		return budget;
+ 
+ 	/* all work done, exit the polling mode */
+-	if (napi_complete_done(napi, rx_done)) {
++	if (napi_complete_done(napi, rxtx_done)) {
+ 		unsigned long flags;
+ 
+ 		spin_lock_irqsave(&ch->lock, flags);
+@@ -5375,7 +5377,7 @@ static int stmmac_napi_poll_rxtx(struct napi_struct *napi, int budget)
+ 		spin_unlock_irqrestore(&ch->lock, flags);
+ 	}
+ 
+-	return min(rx_done, budget - 1);
++	return min(rxtx_done, budget - 1);
+ }
+ 
+ /**
+-- 
+2.25.1
+
