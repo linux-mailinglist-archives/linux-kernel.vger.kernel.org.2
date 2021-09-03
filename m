@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC0140081F
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:13:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BC6400820
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:13:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350503AbhICXNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 19:13:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60604 "EHLO mail.kernel.org"
+        id S1350542AbhICXNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 19:13:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236080AbhICXNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1350482AbhICXNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Sep 2021 19:13:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B1BCA60F3A;
-        Fri,  3 Sep 2021 23:12:48 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1FE6560F42;
+        Fri,  3 Sep 2021 23:12:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630710768;
-        bh=UFyeh3V2XhfvvKUol9rNcZqF+wqyIvMn8hIhu7HETBA=;
+        s=k20201202; t=1630710769;
+        bh=VUZo0kQ9MMo2PABPQBirxjwOUue6H/uNOrpcxNadWDc=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=KP7hInFobwbRA1/RHJd8dUdGnLq3uC6+KfGzZUjc/a5KJ2UUaAWx1LehyxPZcItI/
-         mAbAzKk1Jrz4EvqmrUmsWuFv5fpsBnF4RKiSyIuW2KSftu/UPERe4kgYBywSO58vu9
-         fUmgsfWxh+WfpBP1cypR1CcnTs8a/GxsGWRnmIJ6/7N0c93uZ8ehY2OfhO9zAzk1Ze
-         +RhfXy5V4qDNxGqzTLaNxZcYkLCQuFLL8bOfFR2XmnTeDcKBdR3/AuxhN0ExZ4CWqq
-         85oHhpwQmztvb9Uwx7Bx3iBJ0BeCjAtfUBjUz03zHSLCxRLQMcwEKqbMDxdACAzWSz
-         qoK4mfm1uGLtg==
+        b=k01xvrWjf+uurnk5KvVILRMpmr6n5IPJqnm1AvKGGPCRLKKnFSIEn7fIijREbavXJ
+         gR7VWKV+jrY1gFtZJDqEE5BnF9JBZSEDNgKFbp4Y+Yuj2kb9PIvH3qp7BLJSPU6+U/
+         On335fjvfGMD2ncdRLAlcIWd3NOcX36VzP/KKsqPn+i8bNgOEX2vfBpWuYcfo76SQ7
+         pR1/GzbWffJ1qIX/zn7xKnrDamD8W5HDuZts4XiDb+kCI/rX7INNE3nTFe5vwAGx4B
+         3T7rRPwGSpfZjx7MInLSefXetNPKRnaHjYSH5QKo5EnUETD60/x7nGgjsJl1K89srT
+         GpfM/LmqPQHvQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9F10460A2F;
-        Fri,  3 Sep 2021 23:12:48 +0000 (UTC)
-Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 17C73609D9;
+        Fri,  3 Sep 2021 23:12:49 +0000 (UTC)
+Subject: Re: [GIT PULL] ibft (stable/for-linus-5.15-rc0) 
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com>
-References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com>
+In-Reply-To: <YTJ5jFf9iBC50pMs@localhost.localdomain>
+References: <YTJ5jFf9iBC50pMs@localhost.localdomain>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-v5.15
-X-PR-Tracked-Commit-Id: bc7cd2dd1f8e5889cc68b69984033ac5bef6ba61
+X-PR-Tracked-Message-Id: <YTJ5jFf9iBC50pMs@localhost.localdomain>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/konrad/ibft.git stable/for-linus-5.15-rc0
+X-PR-Tracked-Commit-Id: 8b7084b848cd9d7071ed9e253e1c600a25f72ddd
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b250e6d141ce4f0d0ada60e4b5db577050e5feb0
-Message-Id: <163071076858.25061.2397762855864330858.pr-tracker-bot@kernel.org>
-Date:   Fri, 03 Sep 2021 23:12:48 +0000
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: 4e71add02821bdd204dd29c35e66baecc9b6a235
+Message-Id: <163071076909.25061.17040520136727059494.pr-tracker-bot@kernel.org>
+Date:   Fri, 03 Sep 2021 23:12:49 +0000
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, mlombard@redhat.com, rppt@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 3 Sep 2021 08:30:57 +0900:
+The pull request you sent on Fri, 3 Sep 2021 15:37:48 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-v5.15
+> git://git.kernel.org/pub/scm/linux/kernel/git/konrad/ibft.git stable/for-linus-5.15-rc0
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b250e6d141ce4f0d0ada60e4b5db577050e5feb0
+https://git.kernel.org/torvalds/c/4e71add02821bdd204dd29c35e66baecc9b6a235
 
 Thank you!
 
