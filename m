@@ -2,109 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D68A3FFBBF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319843FFBB7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348255AbhICISy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:18:54 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4674 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348208AbhICISx (ORCPT
+        id S1348230AbhICIS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:18:28 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:33674 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348152AbhICIS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:18:53 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18383Vjd100391;
-        Fri, 3 Sep 2021 04:17:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=EFVcpm4UQneIaCZwZnSBxOJ/+HzC3h8TKoJEJi3ETSI=;
- b=MGSqvMgpFXEblg9c9CXPbECtXn/wV2ytKqQNTjkYQvHKb6pcVAwGZiMz4g9BbgrUYbgi
- 46lmZ7x+llhy31bfPqWoTk8Kux+qgFfDzaPhqQ5Q4e1uqWbhV9nC5vuOEo2Phqcv0EwR
- hcJgguCPrT55iqx8x899PV2fBn3zuzYbChqKtlo4XwyVqmi3fnhbQVQVGwf9ddEZERGZ
- WjJLdYZtiP/a3h22AJuBgKRPNZ7rqVr9IY3zQ2BATW9bGT14XLBwMq2+kn0b+GE6LCzI
- ksVovSxusoJAM3y94xehtTgqA4EJ0SQ/idoO0YZEAqKiIITokM/MubnlnapMMU65Ij9r Rg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3audm3us44-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 04:17:29 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18383mw7101882;
-        Fri, 3 Sep 2021 04:17:28 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3audm3us3p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 04:17:28 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18388Crg010014;
-        Fri, 3 Sep 2021 08:17:27 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 3au6q74vxc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 08:17:26 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1838HN0837093702
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Sep 2021 08:17:23 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2AC2652057;
-        Fri,  3 Sep 2021 08:17:23 +0000 (GMT)
-Received: from osiris (unknown [9.145.159.114])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 85EF952051;
-        Fri,  3 Sep 2021 08:17:22 +0000 (GMT)
-Date:   Fri, 3 Sep 2021 10:17:21 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arch@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 1/4] vmlinux.lds.h: Use regular *RODATA and
- *RO_AFTER_INIT_DATA suffixes
-Message-ID: <YTHaEYQz0O+MzpkE@osiris>
-References: <20210901233757.2571878-1-keescook@chromium.org>
- <20210901233757.2571878-2-keescook@chromium.org>
+        Fri, 3 Sep 2021 04:18:27 -0400
+Received: by mail-il1-f197.google.com with SMTP id h10-20020a056e020d4a00b00227fc2e6687so3047144ilj.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 01:17:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=6GjhL9Cm8vc8f/tANuKUYM4w6ZUCPAy6g6TMY88ThvQ=;
+        b=gBCKGtGJedKwgSkONvNEiepDSW8xq12U24JIN8covpe3pFA84FpLN3NRyoDQhAGLyO
+         pfsZiacsRuAg93C98UcCFm0NuIqde9D3q8mfk2HFganfcfjx5PLX4m3/AzlWZU6nbpzv
+         vs2mpOhnDqTbaF/ohuqChcW4WLjeuYXvY1fvfvt9EscIc06/hzJp5jIHD4h6gjNZjlvv
+         d1Huuu4dHbqsirUfqXm85hSIbLqUzpL/HB1GFFX4dS5IZFTaMblJbSw/c5J57CxsYyX2
+         rM47c+7A1z6KfU7gwrJfv71il5Vm/XRInMbJulVEJDBTIcgZusYRFID2WxifTGEW1Diy
+         4k9g==
+X-Gm-Message-State: AOAM532QRxZ03SAS1Wh9YSrC5zc2Oc+4WOEzrdkaOh7UYSL9rV8mCd8G
+        Htb5U36L+w159LFExlm6xtAc7sAbn9vX7FtTOP11tnlUYegW
+X-Google-Smtp-Source: ABdhPJzIzPBJwE2rMNBB25hu4d/eYDdOsTVz0mr9WyCdpNVDqcD5/SshTJsPL0mA28HIO+QQUPJ0jyxkul1JvvFnczSAqYis3y+D
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901233757.2571878-2-keescook@chromium.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: v1G7oJQepZwIeoo1eRVbS8zdzxgq0Ecm
-X-Proofpoint-GUID: EBwgNgUyLMucUzf3CMsYqy3jTnIpBptl
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-03_02:2021-09-03,2021-09-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
- adultscore=0 impostorscore=0 mlxlogscore=815 bulkscore=0
- priorityscore=1501 suspectscore=0 lowpriorityscore=0 mlxscore=0
- spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109030048
+X-Received: by 2002:a05:6e02:928:: with SMTP id o8mr1723893ilt.37.1630657047408;
+ Fri, 03 Sep 2021 01:17:27 -0700 (PDT)
+Date:   Fri, 03 Sep 2021 01:17:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000fb51f05cb12ee30@google.com>
+Subject: [syzbot] BUG: unable to handle kernel paging request in vm_area_dup
+From:   syzbot <syzbot+e561875a461cd966cd9d@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
+        daniel@iogearbox.net, ebiederm@xmission.com,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        peterz@infradead.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 04:37:54PM -0700, Kees Cook wrote:
-> Rename the various section macros that live in RODATA and
-> RO_AFTER_INIT_DATA. Just being called "DATA" implies they are expected
-> to be writable.
-> 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: linux-arch@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  arch/s390/kernel/vmlinux.lds.S    |  2 +-
->  include/asm-generic/vmlinux.lds.h | 12 ++++++------
->  2 files changed, 7 insertions(+), 7 deletions(-)
+Hello,
 
-For the s390 bit:
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+syzbot found the following issue on:
+
+HEAD commit:    3f5ad13cb012 Merge tag 'scsi-fixes' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15f9ca49300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=94074b5caf8665c7
+dashboard link: https://syzkaller.appspot.com/bug?extid=e561875a461cd966cd9d
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e561875a461cd966cd9d@syzkaller.appspotmail.com
+
+BUG: unable to handle page fault for address: 0000000000114588
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 157b8067 P4D 157b8067 PUD 34984067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 9155 Comm: syz-executor.5 Not tainted 5.14.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:freelist_dereference mm/slub.c:287 [inline]
+RIP: 0010:get_freepointer mm/slub.c:294 [inline]
+RIP: 0010:get_freepointer_safe mm/slub.c:308 [inline]
+RIP: 0010:slab_alloc_node mm/slub.c:2927 [inline]
+RIP: 0010:slab_alloc mm/slub.c:2967 [inline]
+RIP: 0010:kmem_cache_alloc+0x16d/0x4a0 mm/slub.c:2972
+Code: 39 f2 75 e7 48 8b 01 48 83 79 10 00 48 89 04 24 0f 84 75 02 00 00 48 85 c0 0f 84 6c 02 00 00 48 8b 7d 00 8b 4d 28 40 f6 c7 0f <48> 8b 1c 08 0f 85 76 02 00 00 48 8d 4a 08 65 48 0f c7 0f 0f 94 c0
+RSP: 0018:ffffc9000168f720 EFLAGS: 00010246
+RAX: 0000000000114528 RBX: 00000000000000c8 RCX: 0000000000000060
+RDX: 0000000000393661 RSI: 0000000000393661 RDI: 00000000000578d0
+RBP: ffff888140006a00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
+R13: ffffffff8143dbe8 R14: 0000000000000cc0 R15: 0000000000000cc0
+FS:  0000000001575400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000114588 CR3: 000000001839c000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ vm_area_dup+0x88/0x2b0 kernel/fork.c:357
+ dup_mmap kernel/fork.c:537 [inline]
+ dup_mm+0x543/0x1380 kernel/fork.c:1379
+ copy_mm kernel/fork.c:1431 [inline]
+ copy_process+0x71ec/0x74d0 kernel/fork.c:2119
+ kernel_clone+0xe7/0xac0 kernel/fork.c:2509
+ __do_sys_clone+0xc8/0x110 kernel/fork.c:2626
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x464beb
+Code: ed 0f 85 60 01 00 00 64 4c 8b 0c 25 10 00 00 00 45 31 c0 4d 8d 91 d0 02 00 00 31 d2 31 f6 bf 11 00 20 01 b8 38 00 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 89 00 00 00 41 89 c5 85 c0 0f 85 90 00 00
+RSP: 002b:0000000000a9fd50 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000464beb
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000001200011
+RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000001575400
+R10: 00000000015756d0 R11: 0000000000000246 R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000a9fe40
+Modules linked in:
+CR2: 0000000000114588
+---[ end trace 0b04bb8235cb5b3a ]---
+RIP: 0010:freelist_dereference mm/slub.c:287 [inline]
+RIP: 0010:get_freepointer mm/slub.c:294 [inline]
+RIP: 0010:get_freepointer_safe mm/slub.c:308 [inline]
+RIP: 0010:slab_alloc_node mm/slub.c:2927 [inline]
+RIP: 0010:slab_alloc mm/slub.c:2967 [inline]
+RIP: 0010:kmem_cache_alloc+0x16d/0x4a0 mm/slub.c:2972
+Code: 39 f2 75 e7 48 8b 01 48 83 79 10 00 48 89 04 24 0f 84 75 02 00 00 48 85 c0 0f 84 6c 02 00 00 48 8b 7d 00 8b 4d 28 40 f6 c7 0f <48> 8b 1c 08 0f 85 76 02 00 00 48 8d 4a 08 65 48 0f c7 0f 0f 94 c0
+RSP: 0018:ffffc9000168f720 EFLAGS: 00010246
+RAX: 0000000000114528 RBX: 00000000000000c8 RCX: 0000000000000060
+RDX: 0000000000393661 RSI: 0000000000393661 RDI: 00000000000578d0
+RBP: ffff888140006a00 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
+R13: ffffffff8143dbe8 R14: 0000000000000cc0 R15: 0000000000000cc0
+FS:  0000000001575400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7c3000b0b8 CR3: 000000001839c000 CR4: 00000000001526e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	39 f2                	cmp    %esi,%edx
+   2:	75 e7                	jne    0xffffffeb
+   4:	48 8b 01             	mov    (%rcx),%rax
+   7:	48 83 79 10 00       	cmpq   $0x0,0x10(%rcx)
+   c:	48 89 04 24          	mov    %rax,(%rsp)
+  10:	0f 84 75 02 00 00    	je     0x28b
+  16:	48 85 c0             	test   %rax,%rax
+  19:	0f 84 6c 02 00 00    	je     0x28b
+  1f:	48 8b 7d 00          	mov    0x0(%rbp),%rdi
+  23:	8b 4d 28             	mov    0x28(%rbp),%ecx
+  26:	40 f6 c7 0f          	test   $0xf,%dil
+* 2a:	48 8b 1c 08          	mov    (%rax,%rcx,1),%rbx <-- trapping instruction
+  2e:	0f 85 76 02 00 00    	jne    0x2aa
+  34:	48 8d 4a 08          	lea    0x8(%rdx),%rcx
+  38:	65 48 0f c7 0f       	cmpxchg16b %gs:(%rdi)
+  3d:	0f 94 c0             	sete   %al
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
