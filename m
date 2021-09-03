@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAE9C3FF997
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 06:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249D53FF99C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 06:39:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233678AbhICEbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 00:31:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:34952 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232624AbhICEbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 00:31:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F230D6E;
-        Thu,  2 Sep 2021 21:30:39 -0700 (PDT)
-Received: from [10.163.72.65] (unknown [10.163.72.65])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E205E3F5A1;
-        Thu,  2 Sep 2021 21:30:35 -0700 (PDT)
-Subject: Re: [FIX PATCH 1/2] mm/page_alloc: Print node fallback order
-To:     Bharata B Rao <bharata@amd.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     akpm@linux-foundation.org, kamezawa.hiroyu@jp.fujitsu.com,
-        lee.schermerhorn@hp.com, mgorman@suse.de,
-        Krupa.Ramakrishnan@amd.com, Sadagopan.Srinivasan@amd.com
-References: <20210830121603.1081-1-bharata@amd.com>
- <20210830121603.1081-2-bharata@amd.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <9c29181a-b188-ea61-9d86-0d8d0ca4ee04@arm.com>
-Date:   Fri, 3 Sep 2021 10:01:36 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232031AbhICEkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 00:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229561AbhICEkS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 00:40:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDC4C061575;
+        Thu,  2 Sep 2021 21:39:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OJvdQPrTeeSIW2aKxp3H75/EFGJNAh2MQGun3kF8gc0=; b=W8GXkwjGUGrcZ0YktI/byhySfl
+        Z/jry2yBMifvlxl8QXdmc5ZxMkmCBf+Wy5K0VlaE+Y3/MCNtf7XO0YM427IX3v106SfIUKXo9axJT
+        pSn8U7K6glCI4oxHqxGT5pmbDqy+atR2geCfAEwW956s1uu0Evh6ttbocHqN5/3mGJkfDe3qnAyCF
+        3tItNaKTVzk3rGFY/TtJrXCfmak8tMMv+faduqTXcbz4SmZHxgd55FIAWF1Vec6fp+0ANlwO064TV
+        OScCOndgwmf8H39+bZ4wVbJ3yxqBuGu7d0CjbsgiU3BkL/4wzfgzO8sK6kMyQA6bUXWG9tRzgG47F
+        cEeBGBzw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mM0yI-0047Vt-Ps; Fri, 03 Sep 2021 04:38:47 +0000
+Date:   Fri, 3 Sep 2021 05:38:34 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Christian L?hle <CLoehle@hyperstone.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] sd: sd_open: prevent device removal during sd_open
+Message-ID: <YTGmyp0kzhVsuk5K@infradead.org>
+References: <98bfca4cbaa24462994bcb533d365414@hyperstone.com>
 MIME-Version: 1.0
-In-Reply-To: <20210830121603.1081-2-bharata@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <98bfca4cbaa24462994bcb533d365414@hyperstone.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 8/30/21 5:46 PM, Bharata B Rao wrote:
-> Print information message about the allocation fallback order
-> for each NUMA node during boot.
+On Thu, Sep 02, 2021 at 01:57:13PM +0000, Christian L?hle wrote:
+> sd and parent devices must not be removed as sd_open checks for events
 > 
-> No functional changes here. This makes it easier to illustrate
-> the problem in the node fallback list generation, which the
-> next patch fixes.
-> 
-> Signed-off-by: Bharata B Rao <bharata@amd.com>
-> ---
->  mm/page_alloc.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index eeb3a9cb36bb..22f7ad6ec11c 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6277,6 +6277,10 @@ static void build_zonelists(pg_data_t *pgdat)
->  
->  	build_zonelists_in_node_order(pgdat, node_order, nr_nodes);
->  	build_thisnode_zonelists(pgdat);
-> +	pr_info("Fallback order for Node %d: ", local_node);
-> +	for (node = 0; node < nr_nodes; node++)
-> +		pr_cont("%d ", node_order[node]);
-> +	pr_cont("\n");
->  }
->  
->  #ifdef CONFIG_HAVE_MEMORYLESS_NODES
-> 
+> sd_need_revalidate and sd_revalidate_disk traverse the device path
+> to check for event changes. If during this, e.g. the scsi host is being
+> removed and its resources freed, this traversal crashes.
+> Locking with scan_mutex for just a scsi disk open may seem blunt, but there
+> does not seem to be a more granular option. Also opening /dev/sdX directly
+> happens rarely enough that this shouldn't cause any issues.
 
-Node allocation preference sequence for a given accessing node is an
-important information on large systems. This information during boot
-and (hotplug --> online sequence) will help the user.
+Can you please root cause how the device could not be valid, as that
+should not happen?
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>
+> The issue occurred on an older kernel with the following trace:
+> stack segment: 0000 [#1] PREEMPT SMP PTI
+> CPU: 1 PID: 121457 Comm: python3 Not tainted 4.14.238hyLinux #1
+
+.. preferably with a current mainline kernel as things changed a lot
+in this area.
