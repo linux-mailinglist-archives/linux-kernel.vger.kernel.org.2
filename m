@@ -2,83 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 731EE3FFFA5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAFB3FFFAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349023AbhICMR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 08:17:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235288AbhICMR4 (ORCPT
+        id S1348576AbhICMTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 08:19:01 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58522 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235119AbhICMTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 08:17:56 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A408C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 05:16:57 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id u7so4994753ilk.7
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 05:16:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=09TsPIb4fXxY2VJx6kdGXIqWorLQ2YYQZCBibzSAYxI=;
-        b=p1Sk/HqyZvS2/jQ16k+A7jzv5x5BnKiB/RxQegu2rH8Ld7j57FDdequtGt21jUW68/
-         cuXINnFJsylSpRWjnRELUe+nZ8ANYCoTSF1kOYtUdXYCn/C/znxsaqt7oK0qFNlDJNPE
-         XiaVaY4SvPTuk0/KwmryQz/hahFjlfh/RXsn0yLdvwn/r3RpWy6N2zyQ2fw4N7esGclw
-         m5JJzZ/G3um+Izf6Wert7LUbilXZpPx7nKemuYG9EvJI5Fbq3WVaOO+xA3kZxbC4x5fr
-         DRSL7v7NeMftcUxL1XqvKV0pCsOFaeiRdbORvzwe/uY2GxNkzTG9dpAjQVfoH3nKJ8B5
-         51dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=09TsPIb4fXxY2VJx6kdGXIqWorLQ2YYQZCBibzSAYxI=;
-        b=aBL5fULCEPB/h5nkhUUK3kmxYNXd/rnDQADlserM1ZXW2A2rwf33nMSHv4i5HdGQtI
-         xb6jjmaY4N7wWUzO/ipveAXPY26nro3CBmg11HAQMLeJ+BAq3emHJAg4LO/LFhuIvq6p
-         D6KTXY48sZzhyFYkb8e34lbm/gGcq6AECY3Cj10sOjmZmaiKT/4wmW98pMEGZT7wDhoB
-         6ARe5cjn/xDYQyxcm+QElOypMySnV0egG4mmqsmm+TsmcoUcVsSIpy9NSfY4T1z0elsc
-         cFDSjLOUnQ9Mfqo24zOl/727cF1YNsb7JcwKKEzN3dyeC5CmT0cGdlSPLsSln9fSqz64
-         7krA==
-X-Gm-Message-State: AOAM530bUtIZnIvU0WxO49zO4VZzGEZOaUtcNS58klt9oXrmJZls3gXC
-        cFocl5+1o9kfd1+IRS4w03lLTbz9o2sRyA==
-X-Google-Smtp-Source: ABdhPJzhrMWpgAMLYtf5fDP9/i+XboM6XjtDoWIc9/UebbNznBIVEADHycSo0YpoUxqaMuDE1qurIg==
-X-Received: by 2002:a05:6e02:524:: with SMTP id h4mr2321673ils.203.1630671416183;
-        Fri, 03 Sep 2021 05:16:56 -0700 (PDT)
-Received: from [192.168.1.116] ([66.219.217.159])
-        by smtp.gmail.com with ESMTPSA id z6sm2532738ilp.9.2021.09.03.05.16.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 05:16:55 -0700 (PDT)
-Subject: Re: [PATCH][next] io_uring: Fix a read of ununitialized pointer tctx
-To:     Colin King <colin.king@canonical.com>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210903113535.11257-1-colin.king@canonical.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <5e5e1bb9-c5d3-d668-8a61-f70538ef92df@kernel.dk>
-Date:   Fri, 3 Sep 2021 06:16:53 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 3 Sep 2021 08:19:00 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 88E6F203B7;
+        Fri,  3 Sep 2021 12:17:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630671479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=/XvyiQWkqGmCCmHBNihZZxMuMR1mKh/8eRaYXMw6HHg=;
+        b=1hll4FFBlSWbgMAcIA1+QOVtnIhERwPUObk4cNNsjV6V3jW3abm7yKfzIRylr0iDStAcrX
+        aRdyoGEgvll/J2/fQxN7vG4upM0ENINXZgGg5jU6BqP5IZ4bL7j6H+0X6Pbq8cpM38Ridk
+        a2EsiNEH3VYZajeWi6YXN8y4SF9Nq8A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630671479;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=/XvyiQWkqGmCCmHBNihZZxMuMR1mKh/8eRaYXMw6HHg=;
+        b=Qxr6DfJnRJBPvmYpR3oLROZ/vmaFbfn6R/I6xHJlA2/Yx6hZf5yvuq++BQu9d2OcuQ9YOo
+        7mergQcDzMLu4PBg==
+Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
+        by relay2.suse.de (Postfix) with ESMTP id 83567A3B97;
+        Fri,  3 Sep 2021 12:17:59 +0000 (UTC)
+Received: by adalid.arch.suse.de (Postfix, from userid 17828)
+        id 79124518DFA9; Fri,  3 Sep 2021 14:17:59 +0200 (CEST)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Daniel Wagner <dwagner@suse.de>
+Subject: [RFC v1] nvme-tcp: enable linger socket option on shutdown
+Date:   Fri,  3 Sep 2021 14:17:57 +0200
+Message-Id: <20210903121757.140357-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210903113535.11257-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/21 5:35 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> In the unlikely case where ctx->flags & IORING_SETUP_SQPOLL is true
-> and sqd is NULL the pointer tctx is not assigned a valid value and
-> can contain a garbage value when it is dereferenced. Fix this by
-> initializing it to NULL.
+When the no linger is set, the networking stack sends FIN followed by
+RST immediately when shutting down the socket. By enabling linger when
+shutting down we have a proper shutdown sequence on the wire.
 
-Doh - thanks, I folded this one in.
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+The current shutdown sequence on the wire is a bit harsh and
+doesn't let the remote host to react. I suppose we should
+introduce a short (how long?) linger pause when shutting down
+the connection. Thoughs?
 
+ drivers/nvme/host/tcp.c | 1 +
+ include/net/sock.h      | 1 +
+ net/core/sock.c         | 8 ++++++++
+ 3 files changed, 10 insertions(+)
+
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index e2ab12f3f51c..6c6dc465147a 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -1558,6 +1558,7 @@ static void nvme_tcp_restore_sock_calls(struct nvme_tcp_queue *queue)
+ 
+ static void __nvme_tcp_stop_queue(struct nvme_tcp_queue *queue)
+ {
++	sock_reset_linger(queue->sock->sk);
+ 	kernel_sock_shutdown(queue->sock, SHUT_RDWR);
+ 	nvme_tcp_restore_sock_calls(queue);
+ 	cancel_work_sync(&queue->io_work);
+diff --git a/include/net/sock.h b/include/net/sock.h
+index 66a9a90f9558..313a6c8ba51c 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -2777,6 +2777,7 @@ int sock_set_timestamping(struct sock *sk, int optname,
+ 
+ void sock_enable_timestamps(struct sock *sk);
+ void sock_no_linger(struct sock *sk);
++void sock_reset_linger(struct sock *sk);
+ void sock_set_keepalive(struct sock *sk);
+ void sock_set_priority(struct sock *sk, u32 priority);
+ void sock_set_rcvbuf(struct sock *sk, int val);
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 62627e868e03..23090a01e412 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -755,6 +755,14 @@ void sock_no_linger(struct sock *sk)
+ }
+ EXPORT_SYMBOL(sock_no_linger);
+ 
++void sock_reset_linger(struct sock *sk)
++{
++	lock_sock(sk);
++	sock_reset_flag(sk, SOCK_LINGER);
++	release_sock(sk);
++}
++EXPORT_SYMBOL_GPL(sock_reset_linger);
++
+ void sock_set_priority(struct sock *sk, u32 priority)
+ {
+ 	lock_sock(sk);
 -- 
-Jens Axboe
+2.29.2
 
