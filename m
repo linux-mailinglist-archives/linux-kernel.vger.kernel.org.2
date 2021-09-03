@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 488273FFC00
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE243FFBE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234700AbhICIc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348150AbhICIcZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:32:25 -0400
-X-Greylist: delayed 478 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 03 Sep 2021 01:31:24 PDT
-Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5B3C061760;
-        Fri,  3 Sep 2021 01:31:24 -0700 (PDT)
-Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id 40DB15C0222;
-        Fri,  3 Sep 2021 10:23:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1630657426;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fjLOEiXgMndi2Q7uZCMxj1Uu2i4mPZJaKSRzdIFBuTQ=;
-        b=T/cjSSjNuV1c5iAHsIX3UEBP41pp58INL2FhGpdroivJwC/W88r2CIGqkTVc5KHRp2gflq
-        fXGWBSJgRnR+n8v4eFDJcqT2GWdgSjge9OEX0+1cDnxr9zQF19kle6KCZxVtvArhFbOHJP
-        zevChd2TLYExLz8D8f/TXTpkdjYxTYI=
-MIME-Version: 1.0
-Date:   Fri, 03 Sep 2021 10:23:45 +0200
-From:   Stefan Agner <stefan@agner.ch>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Lucas Stach <dev@lynxeye.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: tegra: Make use of the helper function
- devm_platform_ioremap_resource()
-In-Reply-To: <20210901074230.9483-1-caihuoqing@baidu.com>
-References: <20210901074230.9483-1-caihuoqing@baidu.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <fb7aec944e72f91a9a33d7d37d0cbb44@agner.ch>
-X-Sender: stefan@agner.ch
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1348287AbhICIYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:24:54 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:49597 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348265AbhICIYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 04:24:53 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H19mm5Rvzz9sT9;
+        Fri,  3 Sep 2021 10:23:52 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ZBvMU4xRnA_L; Fri,  3 Sep 2021 10:23:52 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H19mm4Vpxz9sSn;
+        Fri,  3 Sep 2021 10:23:52 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7FF878B764;
+        Fri,  3 Sep 2021 10:23:52 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id csxmlrTjs1x2; Fri,  3 Sep 2021 10:23:52 +0200 (CEST)
+Received: from po18078vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 495848B8CD;
+        Fri,  3 Sep 2021 10:23:52 +0200 (CEST)
+Received: by po18078vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 137916BCC3; Fri,  3 Sep 2021 08:23:52 +0000 (UTC)
+Message-Id: <b2e52934e5a500f149e6d94db3cfa0569bc35081.1630657402.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/powermac: Remove stale declaration of pmac_md
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri,  3 Sep 2021 08:23:52 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-01 09:42, Cai Huoqing wrote:
-> Use the devm_platform_ioremap_resource() helper instead of
-> calling platform_get_resource() and devm_ioremap_resource()
-> separately
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+pmac_md doesn't exist anymore, remove stall declaration.
 
-Acked-by: Stefan Agner <stefan@agner.ch>
+Fixes: e8222502ee61 ("[PATCH] powerpc: Kill _machine and hard-coded platform numbers")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/platforms/powermac/setup.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-> ---
->  drivers/mtd/nand/raw/tegra_nand.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/tegra_nand.c
-> b/drivers/mtd/nand/raw/tegra_nand.c
-> index fbf67722a049..32431bbe69b8 100644
-> --- a/drivers/mtd/nand/raw/tegra_nand.c
-> +++ b/drivers/mtd/nand/raw/tegra_nand.c
-> @@ -1144,7 +1144,6 @@ static int tegra_nand_probe(struct platform_device *pdev)
->  {
->  	struct reset_control *rst;
->  	struct tegra_nand_controller *ctrl;
-> -	struct resource *res;
->  	int err = 0;
->  
->  	ctrl = devm_kzalloc(&pdev->dev, sizeof(*ctrl), GFP_KERNEL);
-> @@ -1155,8 +1154,7 @@ static int tegra_nand_probe(struct platform_device *pdev)
->  	nand_controller_init(&ctrl->controller);
->  	ctrl->controller.ops = &tegra_nand_controller_ops;
->  
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	ctrl->regs = devm_ioremap_resource(&pdev->dev, res);
-> +	ctrl->regs = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(ctrl->regs))
->  		return PTR_ERR(ctrl->regs);
+diff --git a/arch/powerpc/platforms/powermac/setup.c b/arch/powerpc/platforms/powermac/setup.c
+index 86aee3f2483f..13e8a8a9841c 100644
+--- a/arch/powerpc/platforms/powermac/setup.c
++++ b/arch/powerpc/platforms/powermac/setup.c
+@@ -79,8 +79,6 @@ int pmac_newworld;
+ 
+ static int current_root_goodness = -1;
+ 
+-extern struct machdep_calls pmac_md;
+-
+ #define DEFAULT_ROOT_DEVICE Root_SDA1	/* sda1 - slightly silly choice */
+ 
+ #ifdef CONFIG_PPC64
+-- 
+2.25.0
+
