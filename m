@@ -2,110 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CCD40080B
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1701840080F
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237396AbhICXFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 19:05:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230456AbhICXFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 19:05:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A00A6101A;
-        Fri,  3 Sep 2021 23:04:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630710292;
-        bh=kwXSNoztsapfek/7tY4BJ7A92I7Ax8v7jMAhfQGx4P8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=VBpNgYVxlYcqc92N5qpBQjPqicLgFFNDzKeL8/V8pFfLJKu8s83FKiWXT6LclHlco
-         VCSESOcdDqVwXfx4n3b2T6HAcn9VvuCMtSJLcwKcdot8Q4H+3oiAzOq33XWNvwkWDe
-         qMtKxj5PeCAifOrrzcELYmxY00v9D4vIMtPrImjxOD0IdmwZsx3MxUZdX24Pk3GFhU
-         gy11fK9vf2a3Stq5mbbYaXsLb1ZYbxUGKCMl2/7inye+n729JPtX2ebNR5TJYS2P9V
-         EJOdZD/0f850MQstl+wcK4qM0shthcyIXyhV6sEV6G9TuxhMi+YFWItjp1Gj/AFRDb
-         JgUnCwIlj0y9A==
-Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
-To:     Linus Torvalds <torvalds@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
-References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com>
- <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org>
-Date:   Fri, 3 Sep 2021 16:04:50 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S244774AbhICXJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 19:09:30 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:37853 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245035AbhICXJK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 19:09:10 -0400
+Received: by mail-io1-f72.google.com with SMTP id h3-20020a056602008300b005b7c0e23e11so390147iob.4
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 16:08:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=N5d093UwZv3h4qJ5IEJdxCx1t3C+wte7ngv0XxPDuyU=;
+        b=TcP7xEqyH4ae+7gPyX2nTttjIuYgiLU39OQv6NAj6gRTZB5I7FF+biShIDIpygAy5J
+         NJWFv+U6vPnU0g+EvtVT6gKLeHOQ+vUFnyUs6HuZfZ6r+e7Dp2rQI4Xof3stEZQfeNzF
+         lNInDYWFNWFcL/68eZeikJDipHZwHg28aabpWT6nFV8j1J2PBpYvFAzMq58VxIbPnS1a
+         kgTRT7pASNpJR8ehrXeiQL0McisC18bDFY6NwULLSGpm/n0KF2FxuPvw5osyuf2J4ygc
+         I7fZuNXuQuLX89WP/WBBmz/TSE5SB/rUUEyi1kTZAPEhlxfWvEAxMcBQlniZ3sSVsfsC
+         DCEg==
+X-Gm-Message-State: AOAM531QFKfj9Zs5wrVBUmAS02MgKd7fr4mENVhLs9dnh+EDwpCg5WRm
+        eoQBhmLqJT+lvsFtu6wtb5LmuiK+H4s92ZqNHwi/3jwZ23Tq
+X-Google-Smtp-Source: ABdhPJwc7eZ+XDxlXIWj9wtCGs/WMLS+ApAM+Q60oiBtj0cht9k5RDlrRhqVvFCAanCbKgrGN5gUcz90yu9AHhgymHP7ZUqHOJak
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:198d:: with SMTP id g13mr902366ilf.319.1630710487901;
+ Fri, 03 Sep 2021 16:08:07 -0700 (PDT)
+Date:   Fri, 03 Sep 2021 16:08:07 -0700
+In-Reply-To: <5a93ff90-98be-b5af-29e9-a2f8cca82458@kernel.dk>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005ceb2c05cb1f5fad@google.com>
+Subject: Re: [syzbot] BUG: unable to handle kernel NULL pointer dereference in kiocb_done
+From:   syzbot <syzbot+726f2ce6dbbf2ad8d133@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/2021 3:53 PM, Linus Torvalds wrote:> On Thu, Sep 2, 2021 at 4:31 
-PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->>
->> I fixed the warnings observed in the previous PR.
-> 
-> Ok, let's try it again.
-> 
->>   - Add <linux/stdarg.h> to the kernel source instead of borrowing
->>     <stdarg.h> from the compiler.
-> 
-> So I certainly agree with the reasoning, but this worries me a bit.
-> 
-> stdarg is truly intimately an internal compiler file, in ways that
-> stddef (to pick another example) isn't.
-> 
-> Yeah, yeah, offsetof() is "kind of compiler internal", and we end up
-> using __compiler_offsetof(), but in the absence of that we *can* just
-> do it by hand. So offsetof() really is one of those things where we
-> can just do our own version if some compiler is being difficult.
-> 
-> But va_start and friends absolutely *must* match the exact compiler version.
-> 
-> It does look like both gcc and clang have just standardized on using
-> __builtin_xyz for all the different stdarg things, and so I approve of
-> what that <linux/stdarg.h> ended up looking like.
-> 
-> But at the same time, it does make me go "ok, this is a big new
-> assumption that we've consciously avoided for a long time".
-> 
-> Nick is already on the cc here for other reasons, but let's add the
-> clang-built list and Nathan explicitly. Because this basically
-> codifies that
-> 
->      typedef __builtin_va_list va_list;
->      #define va_start(v, l)  __builtin_va_start(v, l)
->      #define va_end(v)       __builtin_va_end(v)
->      #define va_arg(v, T)    __builtin_va_arg(v, T)
->      #define va_copy(d, s)   __builtin_va_copy(d, s)
-> 
-> being the way all the supported compilers work.
-> 
-> Did people talk to any gcc maintainers too? We don't have the same
-> kind of "gcc kernel people" list or contacts. The above builtins have
-> been the case for a long long time for gcc, so I don't think it's
-> wrong or likely to change, but I think it would be a good thing to
-> just make compiler people aware of how we're now relying on that
-> explicitly.
+Hello,
 
-We set up the linux-toolchains mailing list after Plumbers 2020 to have 
-a common place that kernel developers can bring issues and discussion to 
-both clang and GCC folks. I am not sure who exactly from the GCC world 
-is subscribed but I have added it now to see.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-> (Side note: Linux using the compiler <stdarg.h> goes so far back that
-> it very much predates all those nice builtins. I still have memories
-> of <stdarg.h> being a collection of nasty per-architecture messes back
-> in the bad old days. So I'm actually happy we can do this now, but
-> there most definitely was a time when we really really had to use the
-> compiler-provided stdarg.h).
+Reported-and-tested-by: syzbot+726f2ce6dbbf2ad8d133@syzkaller.appspotmail.com
 
-Cheers,
-Nathan
+Tested on:
+
+commit:         31efe48e io_uring: fix possible poll event lost in mul..
+git tree:       git://git.kernel.dk/linux-block for-5.15/io_uring
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fa8e68781da309a
+dashboard link: https://syzkaller.appspot.com/bug?extid=726f2ce6dbbf2ad8d133
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+
+Note: testing is done by a robot and is best-effort only.
