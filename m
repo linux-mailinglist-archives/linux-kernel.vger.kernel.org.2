@@ -2,131 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672733FFCF3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A6C93FFCF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348755AbhICJVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 05:21:24 -0400
-Received: from mga07.intel.com ([134.134.136.100]:3320 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234912AbhICJVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 05:21:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="283079580"
-X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
-   d="scan'208";a="283079580"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 02:20:23 -0700
-X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
-   d="scan'208";a="467868530"
-Received: from pstarove-mobl4.ger.corp.intel.com (HELO [10.251.212.94]) ([10.251.212.94])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 02:20:20 -0700
-Subject: Re: [PATCH v3 1/2] ASoC: max98927: Handle reset gpio when probing i2c
-To:     Alejandro <atafalla@dnyon.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Rob Herring <robh+dt@kernel.org>
-References: <cover.1630632805.git.atafalla@dnyon.com>
- <04a18f4115539752429da55fb857834cea0944e5.1630632805.git.atafalla@dnyon.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
-Message-ID: <80973391-4579-e14b-6def-ed81f367a4a5@linux.intel.com>
-Date:   Fri, 3 Sep 2021 12:20:37 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1348765AbhICJWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 05:22:20 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:40233 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348762AbhICJWM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 05:22:12 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 837B832001FC;
+        Fri,  3 Sep 2021 05:21:12 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Fri, 03 Sep 2021 05:21:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=sAiRI9c4Qga0Ic/pFIIogIPRDm5
+        9Php5SKSojiIRi2M=; b=GTITGcZfwHPhKcJ0YbdWs+77drjMuX+GOGL/caWx0CQ
+        LB0rx8Qo49Jb6V7r3QtF+DQ1HGPLSvWwriYNZT6kSA/stV0+c5XPJ7yk6YlSiICf
+        LryluppuuYWbEEgfj2EVVLIMOV2U2XnGMZwz9Ux6JAqZyHYmlCkva5m49WnVmpwr
+        VB6o20E5zk11oyxgS4ylIglxqN+XhlRqxxjmi714oEqj2Z40tpuPva2zQOqYqxDj
+        GP8KyX0Dv96gptg7gANyGehoh1jvQKptRbOuH0t/xs4DErGgFfo8fW2sRZIcomcK
+        qnqgrJ0soGcLfr9QLrFycCfaQXpcE5PxUMvADqF/CiA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=sAiRI9
+        c4Qga0Ic/pFIIogIPRDm59Php5SKSojiIRi2M=; b=lq56pGPZ44bjRLjn9OsJk3
+        BZ1v41iIcfR//FNYxbI0Yw41yMTaJIlGok4nnJe+dQyph84JV1eioAsQEF2lYVvz
+        Q9j3ivCrhD31E3w9uHebBgbPwo18varz7sfXgIYSXMpAarIxqzN1itRHM1PhBOA3
+        2qiDwlL/4p1O6TO6cplD9k/PRw+2dKx0xKr8j/gpK38qO4rKuiZNlzgiN6e5DX6k
+        qSuZfeiWYy5FiMbq1jgs6Wam605LpmTnkh14GFNC5uqQlqFB0AljNit3x+0DIqyC
+        MwEXmGu7F2o2gPlU/foOFqM+4wGOVro7BR2Mx1/HKVKGx33mOVwjHrsUx+fDgmuw
+        ==
+X-ME-Sender: <xms:BekxYTVc3BWx58LfDSdLzbndC82PjPXEQ7wGzC88uyUh3QRave5MJw>
+    <xme:BekxYbn8fIihL6JJ4BQNU7DZlCg5GPlYgCPJsRYGS067mnGJ16JaGSYWCqnllTd4M
+    IzA5FMBfKGTDV4Le-0>
+X-ME-Received: <xmr:BekxYfYoMsjM5wOhZ_vstXhGYRjjUowgRoxSjo3VhlnWHkWGDxPGOrhge4DpBm-G2QLf0qX_RlYnBH3cStM7cQOKcYllMRXIXOmz>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedgudegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:BekxYeXg06lWWFaBCE7Cg7iEc7e0by7j6xyDWDs1Px6KWxdtZV-Y1Q>
+    <xmx:BekxYdlDpNDr2Qrp_p6J-prI3fX8ltM5H4kuVhhJc2cXPDSytACIRQ>
+    <xmx:BekxYbd12KVl904RzHUnnHM1Ftcp28eswHfnZtcaUhshXiQc627m9w>
+    <xmx:COkxYf46NUDz4BvaEzV5o6rjPFadN0zW5Qg6yjnbxRTnRVrHSaB3KA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 3 Sep 2021 05:21:09 -0400 (EDT)
+Date:   Fri, 3 Sep 2021 11:21:08 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Chen-Yu Tsai <wens@csie.org>,
+        =?utf-8?B?Q2zDqW1lbnQgQsWTc2No?= <u@pkh.me>,
+        Willy Liu <willy.liu@realtek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: sun50i: h5: NanoPI Neo 2: phy-mode rgmii-id
+Message-ID: <20210903092108.62oqmqveze7usrgk@gilmour>
+References: <20210830151645.18018-1-u@pkh.me>
+ <1746741.3t3T1tWQfl@kista>
+ <YS6WxHtJtNDaBxqz@lunn.ch>
+ <6939430.QNQgkB6KyE@kista>
 MIME-Version: 1.0
-In-Reply-To: <04a18f4115539752429da55fb857834cea0944e5.1630632805.git.atafalla@dnyon.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2mnkm2zv2dbvyw5v"
+Content-Disposition: inline
+In-Reply-To: <6939430.QNQgkB6KyE@kista>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--2mnkm2zv2dbvyw5v
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 03/09/2021 04:49, Alejandro wrote:
-> From: Alejandro Tafalla <atafalla@dnyon.com>
-> 
-> Drive the reset gpio if defined in the DTS node.
-> 
-> Signed-off-by: Alejandro Tafalla <atafalla@dnyon.com>
-> ---
->  sound/soc/codecs/max98927.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-> index 8b206ee77709..daf06b503433 100644
-> --- a/sound/soc/codecs/max98927.c
-> +++ b/sound/soc/codecs/max98927.c
-> @@ -868,6 +868,7 @@ static int max98927_i2c_probe(struct i2c_client *i2c,
->  	int ret = 0, value;
->  	int reg = 0;
->  	struct max98927_priv *max98927 = NULL;
-> +	struct gpio_desc *reset_gpio;
->  
->  	max98927 = devm_kzalloc(&i2c->dev,
->  		sizeof(*max98927), GFP_KERNEL);
-> @@ -898,6 +899,19 @@ static int max98927_i2c_probe(struct i2c_client *i2c,
->  		return ret;
->  	}
->  
-> +	reset_gpio
-> +		= devm_gpiod_get_optional(&i2c->dev, "reset", GPIOD_OUT_LOW);
+On Wed, Sep 01, 2021 at 05:31:32PM +0200, Jernej =C5=A0krabec wrote:
+> Dne torek, 31. avgust 2021 ob 22:53:24 CEST je Andrew Lunn napisal(a):
+> > > True, but then again, DT is a bit special, since it's not used only b=
+y=20
+> Linux.=20
+> > > It's shared at least with BSDs and U-Boot, which most likely have=20
+> independent=20
+> > > driver implementation. That's why it's good to have DT fixes referenc=
+ing DT=20
+> > > related commits. As you said, DT described HW wrong.
+> > >=20
+> > > Looking at past Allwinner related DT commits regarding this issue, we=
+ were=20
+> not=20
+> > > totally consistent. Most of them reference commit where emac node was=
+=20
+> > > introduced in DT. But I also found a couple of commits which indeed h=
+ave=20
+> fixes=20
+> > > tag for bbc4d71d6354.
+> >=20
+> > All true, and it is not a big deal if it does go back further. I don't
+> > care, we can let the Allwinner Maintainer decide. Ah, that is you :-)
+> >=20
+> > I just want to try to keep it simple for somebody who is contributing
+> > their first Linux kernel patch. If it is good enough, i say accept it,
+> > and we can do a bit more education on the second contribution.
+>=20
+> Maxime, Chen-Yu, thoughts?
+>=20
+> Since there are both approaches for fixes tag already in, I guess this is=
+ also=20
+> fine.
 
-If this is a 'reset' pin then it's ACTIVE state is when it places the
-device to _reset_.
-GPIOD_OUT_LOW == Deasserted state of the GPIO line.
+I agree with you, the fixes should point at the initial Device Tree
+issue. Our DT are used by other projects and even if in Linux it wasn't
+causing any issue before another commit showed up, it might affect those
+projects differently.
 
-If the reset pin should be pulled low for reset (GPIO_ACTIVE_LOW) and
-you want the device initially  in reset then you need GPIOD_OUT_HIGH,
-because:
-GPIOD_OUT_HIGH == Asserted state of the GPIO line.
+Maxime
 
-Same goes for the gpiod_set_value_cansleep():
-0 - deasserted
-1 = asserted
+--2mnkm2zv2dbvyw5v
+Content-Type: application/pgp-signature; name="signature.asc"
 
-and this all depends on how the gpio is defined in DT
-(GPIO_ACTIVE_LOW/HIGH), which depends on how the documentation refers to
-the pin...
+-----BEGIN PGP SIGNATURE-----
 
-reset pin:
-low to keep the device in reset, high to release it from reset:
-GPIO_ACTIVE_LOW
-gpiod_set_value_cansleep(0) to enable
-gpiod_set_value_cansleep(1) to disable
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYTHpBAAKCRDj7w1vZxhR
+xe77AQDS7w4amoRbxd9sNcrSODsRJ0/4gRAAoPBh7Z+Q+gDAmAEA1dXNXw9B74Bm
+jH0v9R+BTKJ7wCf+9NtwDGhFFLrbCQg=
+=qQ3P
+-----END PGP SIGNATURE-----
 
-
-enable pin:
-high to enable the part, low to disable
-GPIO_ACTIVE_HIGH
-gpiod_set_value_cansleep(1) to enable
-gpiod_set_value_cansleep(0) to disable
-
-In both cases
-electrical 0: reset/disable
-electrical 1: enable
-
-> +	if (IS_ERR(reset_gpio)) {
-> +		ret = PTR_ERR(reset_gpio);
-> +		return dev_err_probe(&i2c->dev, ret, "failed to request GPIO reset pin");
-> +	}
-> +
-> +	if (reset_gpio) {
-> +		usleep_range(8000, 10000);
-> +		gpiod_set_value_cansleep(reset_gpio, 1);
-> +		usleep_range(1000, 5000);
-> +	}
-> +
-
-You might want to put the device to reset on remove at minimum.
-
->  	/* Check Revision ID */
->  	ret = regmap_read(max98927->regmap,
->  		MAX98927_R01FF_REV_ID, &reg);
-> 
-
--- 
-Péter
+--2mnkm2zv2dbvyw5v--
