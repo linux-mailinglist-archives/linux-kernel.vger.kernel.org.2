@@ -2,130 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4416C40064C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B376D400650
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235944AbhICUEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 16:04:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23486 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235902AbhICUEF (ORCPT
+        id S236012AbhICUIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 16:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234379AbhICUIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 16:04:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630699385;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VKgG5Q4GJoZylhkC+igd3ORO7G/PVfFNNgAWNVRKHjA=;
-        b=Y+YZZt+yERSvzX8F4rfpsD2kDbMvBm1tevBsq7TdU+M+hsPJsIz5hHwkH03Mf2CTOdCQu/
-        yI9g3FpLkBlPzQPC6NCvvAjsFwLMMGWHxcXnN3xn8z4PDnlDOb3fgT1QtEi1irOiQCdTaG
-        cWy6L/vUEH1sd1k7GCsXH3XKNhqtHDE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-90-Z04qiz2xO4OZF6GCWMPM3A-1; Fri, 03 Sep 2021 16:03:04 -0400
-X-MC-Unique: Z04qiz2xO4OZF6GCWMPM3A-1
-Received: by mail-wr1-f72.google.com with SMTP id i16-20020adfded0000000b001572ebd528eso59598wrn.19
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 13:03:03 -0700 (PDT)
+        Fri, 3 Sep 2021 16:08:01 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D2F4C061575;
+        Fri,  3 Sep 2021 13:07:01 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so289112pjr.1;
+        Fri, 03 Sep 2021 13:07:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=7SKmff0zrrH1w49z5jJaIN6IY4jJPGhaALSgqxYy2W8=;
+        b=GhOo0mI6+aIftk1kdtC9L9hRp9VGV9ngkX8L7KZCmXvM8Ik0zwIRHShuiVEbJSWyBN
+         KGC9cYvWrT3iy6qsvsawu4mxxscqTQqKZ3ZYRnyFklJrIE5Q+ITQJpHA9yeOaUO/0/kM
+         qpEerGanmaieNCbxOevKQuCBU8fvJPnFgIar/Cy+g/R/Gx1llDx2+uqncS+s2M0cp3oA
+         3CWP+4KtI91RuxASC806HuzTU5jEBuBFX5IzXXvIYYrGYGwC7Uz25rykszb+dP06vxlX
+         yE5lhQHS/uWRt5MJ4z0JuhX4BEXDnHzn1sEB2sPhVvbvPD0a+sOudYo8Vo1hNOlyfoDM
+         d7Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=VKgG5Q4GJoZylhkC+igd3ORO7G/PVfFNNgAWNVRKHjA=;
-        b=sNxOsGziyNsoBR0kjebUmzktySHS7DLF9415ps05eBFBQu7uowJtpV5GkOFHqekftT
-         p3XUdGGnVT4bdzaLP+Oad1NZHNS9vPJyLBw4s9ZAbkFY5xFswE3ZEMuvcsFM3/zvAXl1
-         dnAVFvPVlTxMLfW+Ad3lICTl1PVtxJ1BJVeFn0vn2J9mB+wkP9d1xcosOrQlkrAhmjqc
-         AYqM7N59j7HoQdglp3aooUQzbGLXs+Kt+6/YQ1asU6eWoGcQBc7siiWdiqXOFhrIkpBr
-         jEtee5+LQ/i2mtoViXWLSa8jm0wGTkVF7hxvuzTCuFyonjgmXXYY8qN+pAxdhwsrsGR+
-         AQ7A==
-X-Gm-Message-State: AOAM530/JadCPOL+5ag3dp78JJeS6BlZbDQytMMwm+vfPQWCp9Qig/du
-        RHt7PrwM61BwV17S0pq+QqsAEuKyDTLx1ECACTjsZOcj8/TEyc6gbc5NqFc3VAE9WdkWTaBtXeU
-        Ja8fP7HpvaZPNoo61N7F7p/S7
-X-Received: by 2002:a7b:c5c7:: with SMTP id n7mr384494wmk.5.1630699382950;
-        Fri, 03 Sep 2021 13:03:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwQhSfAMAF02/q6C2QxnKU2WGgOJyKv6ePPQ4NAfk0+wU4lJfiNPUufyOzUU+d+fOt0TKO1cw==
-X-Received: by 2002:a7b:c5c7:: with SMTP id n7mr384477wmk.5.1630699382743;
-        Fri, 03 Sep 2021 13:03:02 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23e05.dip0.t-ipconnect.de. [79.242.62.5])
-        by smtp.gmail.com with ESMTPSA id b1sm188902wrh.85.2021.09.03.13.02.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 13:03:00 -0700 (PDT)
-Subject: Re: [PATCH v2 1/5] mm/shmem: Unconditionally set pte dirty in
- mfill_atomic_install_pte
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Axel Rasmussen <axelrasmussen@google.com>
-References: <20210902201721.52796-1-peterx@redhat.com>
- <20210902201721.52796-2-peterx@redhat.com>
- <2f1bfe82-9bb7-957c-2b32-2ccf8a48e70a@redhat.com> <YTJ+4PAzKf9Cqydk@t490s>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <05d64fe1-77f6-aa2a-6b79-e08f6b997ed9@redhat.com>
-Date:   Fri, 3 Sep 2021 22:02:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=7SKmff0zrrH1w49z5jJaIN6IY4jJPGhaALSgqxYy2W8=;
+        b=JpJNe8AsEvGF38FrJEhPu2bTEhdml4kgvsH8hfQDNAeSAk9gFz6VqH5hVeQDG91TNh
+         qfVFNCFtdAJANorQzYgQrGfwAJbArm0UkaGc3DUtirIrLSS+j8S2/0jBsptrUgLcjjNh
+         RX0RRnyrJX+c9m95d11Q5wbgicgp7G+w8FFODHNQCCOQRl/ZuE5O0mWqDsomQDMoQv24
+         QWAToTcBOManBOdzhR8Ffzo+CoKcpVLq+tRRZJEmepAEWoRRMAdkYVCTKqPLnK0VPai4
+         hd8508/FCFZS+0/YYMkWlogpRqItkLQHR1czYEnpZOzM7cixZNeza/1AezgqC40VZH5j
+         UjGw==
+X-Gm-Message-State: AOAM532dj1OGEufLhBff9DM1TOq+nPD98xGykm2USRU/lGfSUP0lCvxF
+        lsEXNM9SJvUOUq8sXwC/giM=
+X-Google-Smtp-Source: ABdhPJxdP3BhrYU5mYB8C0xEj7WZ7NjtPgFTcQBAfduPgBrOo1qOE0A6WfrTqKRyUWKWL0iDePFb4A==
+X-Received: by 2002:a17:902:7e4d:b0:13a:8f:42d4 with SMTP id a13-20020a1709027e4d00b0013a008f42d4mr535689pln.62.1630699620704;
+        Fri, 03 Sep 2021 13:07:00 -0700 (PDT)
+Received: from ip-172-31-53-182.us-west-2.compute.internal (ec2-44-242-40-232.us-west-2.compute.amazonaws.com. [44.242.40.232])
+        by smtp.gmail.com with ESMTPSA id b69sm209965pfb.64.2021.09.03.13.06.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 13:07:00 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 20:06:58 +0000
+From:   Alakesh Haloi <alakesh.haloi@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: staging: media: atomisp: fix return value
+Message-ID: <20210903200658.GA552296@ip-172-31-53-182.us-west-2.compute.internal>
 MIME-Version: 1.0
-In-Reply-To: <YTJ+4PAzKf9Cqydk@t490s>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.09.21 22:00, Peter Xu wrote:
-> On Fri, Sep 03, 2021 at 09:42:34AM +0200, David Hildenbrand wrote:
->> On 02.09.21 22:17, Peter Xu wrote:
->>> It was conditionally done previously, as there's one shmem special case that we
->>> use SetPageDirty() instead.  However that's not necessary and it should be
->>> easier and cleaner to do it unconditionally in mfill_atomic_install_pte().
->>>
->>> The most recent discussion about this is here, where Hugh explained the history
->>> of SetPageDirty() and why it's possible that it's not required at all:
->>>
->>> https://lore.kernel.org/lkml/alpine.LSU.2.11.2104121657050.1097@eggly.anvils/
->>>
->>> Currently mfill_atomic_install_pte() has three callers:
->>>
->>>           1. shmem_mfill_atomic_pte
->>>           2. mcopy_atomic_pte
->>>           3. mcontinue_atomic_pte
->>>
->>> After the change: case (1) should have its SetPageDirty replaced by the dirty
->>> bit on pte (so we unify them together, finally), case (2) should have no
->>> functional change at all as it has page_in_cache==false, case (3) may add a
->>> dirty bit to the pte.  However since case (3) is UFFDIO_CONTINUE for shmem,
->>> it's merely 100% sure the page is dirty after all, so should not make a real
->>> difference either.
->>
->> Would it be worth adding VM_BUG_ON() to make sure that "100%" is really the
->> case?
-> 
-> I won't be able to make it 100% sure (and that's where I put it "merely").  The
-> example discussed between Axel and me in the other thread could be an outlier
-> (when two processes, uffd target, and uffd minor resolver, map the region as
-> RO), it's just that neither do I think that's a great matter, nor do I think it
-> would be worth a BUG_ON(), not to mention we use BUG_ON so carefully.
+This fixes following error seen during module build
+error: control reaches end of non-void function [-Werror=return-type]
 
-Agreed then, if we really expect there are corner cases and that the 
-corner cases are fine!
+Signed-off-by: Alakesh Haloi <alakesh.haloi@gmail.com>
+---
+ .../media/atomisp/pci/hive_isp_css_common/host/input_system.c    | 1 +
+ 1 file changed, 1 insertion(+)
 
-(VM_BUG_ON() could have helped to catch these while testing)
-
+diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+index 8e085dda0c18..5d088d6fb01f 100644
+--- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
++++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+@@ -1646,6 +1646,7 @@ static input_system_err_t input_system_configure_channel_sensor(
+ 	default:
+ 		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+ 	}
++	return status;
+ }
+ 
+ // Test flags and set structure.
 -- 
-Thanks,
-
-David / dhildenb
+2.25.1
 
