@@ -2,105 +2,495 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CCFB40011C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3EA6400121
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238926AbhICOQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:16:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235544AbhICOQb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:16:31 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2078CC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 07:15:31 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id a1so5352962ilj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 07:15:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=J0l36O22rtSaNKlEh+9yr2ZLOnpE6/bHZrA7Wk9c5KY=;
-        b=AXgHJlhKbGd6PS6EETb9unE/owTREgOtkmB83MG4n86/6XXgKGjuMHCVygrAFy6upF
-         uBL5GcwltLLRaxn57DShS1b9+qjvX9UzL7VMmXuzCNppoHhzeSz80aL3bPi+RUoVj1t1
-         Tyamb9AWBpn5JRw1/RI3GutR8IqqBXWZTkvNz8a1rzh0GXPp4Xlx5BNc4do3juyYRxhI
-         8zRl2kwPY3Bc5K/C+nk/8qxgGuwe2ORwVL2yPwwgWga8QT///iasfzCia3KQEYLo3Kvi
-         4FpPqQKSva+ZMRAsPkAl5rcP5Z9Xv0hw9aFWBNbsIZYxtp7jxuxe4rroeNwsMi5Lg/Za
-         yTtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=J0l36O22rtSaNKlEh+9yr2ZLOnpE6/bHZrA7Wk9c5KY=;
-        b=KoMmOvOknjHHP3KpmaxHvdYrVMgv6pcswG1J3DmfqpEfWAqJKt7afLA7TpTA4SK593
-         NVuSZJxWTNApv3vgfpNqM+3uoFR/oCS41b7MSyDb9dJVPdHHAYeQl8kmUB/tDL0rupri
-         obRAfwyRBErvWNbpBUekcwHIRjIE2aUOzvcExe2Qj8VJZQktJVYEY2sn2pZChz4strk9
-         wlXcWJ5xa1KimfLZ8t36tzfTt3upBkcH6y6c0S1cDLNOHQQjOmLYHUM0f/+vU/Iu12kD
-         gFonzZBkwxe/GExx6CerO9hKBIOxdra0SqLCa9bHtyHXJHY2gp8m2abicRsOHr2DooiS
-         YJqg==
-X-Gm-Message-State: AOAM533LYS+jSIGMLO98cg1CXw/OZ1wXi+ivgeR2ClBOREWzMlca/qDV
-        HHY+Q3aLg7yyBgj2lylwl94brw==
-X-Google-Smtp-Source: ABdhPJzMDF7QnyHExczYeNG1QRodEtrt10krOLe2b0YUw+9VYMNP9Q8zn+le2Q0tkn6dGv9LAE/oaQ==
-X-Received: by 2002:a05:6e02:b48:: with SMTP id f8mr2880199ilu.25.1630678530507;
-        Fri, 03 Sep 2021 07:15:30 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id g13sm2715409ile.68.2021.09.03.07.15.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 07:15:30 -0700 (PDT)
-Subject: Re: Bug: d0e936adbd22 crashes at boot
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, inux-pm@vger.kernel.org
-References: <942f4041-e4e7-1b08-3301-008ab37ff5b8@kernel.dk>
- <c56cde110210bec6537fe69b495334c6c70c814e.camel@linux.intel.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <3ac87893-55ba-f2d4-bb1e-382868f12d4c@kernel.dk>
-Date:   Fri, 3 Sep 2021 08:15:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1349194AbhICOVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:21:10 -0400
+Received: from mga05.intel.com ([192.55.52.43]:57548 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232812AbhICOVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 10:21:08 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="304996074"
+X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
+   d="scan'208";a="304996074"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 07:20:09 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
+   d="scan'208";a="521710705"
+Received: from lkp-server01.sh.intel.com (HELO 2115029a3e5c) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 03 Sep 2021 07:20:07 -0700
+Received: from kbuild by 2115029a3e5c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mMA34-0000XC-VP; Fri, 03 Sep 2021 14:20:06 +0000
+Date:   Fri, 03 Sep 2021 22:19:04 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/urgent] BUILD SUCCESS WITH WARNING
+ 340576590dac4bb58d532a8ad5bfa806d8ab473c
+Message-ID: <61322ed8.9KjUhAGZIAit9egN%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <c56cde110210bec6537fe69b495334c6c70c814e.camel@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/21 8:13 AM, Srinivas Pandruvada wrote:
-> Hi Axboe,
-> 
-> Thanks for reporting.
-> On Fri, 2021-09-03 at 07:36 -0600, Jens Axboe wrote:
->> Hi,
->>
->> Booting Linus's tree causes a crash on my laptop, an x1 gen9. This was
->> a bit
->> difficult to pin down as it crashes before the display is up, but I
->> managed
->> to narrow it down to:
->>
->> commit d0e936adbd2250cb03f2e840c6651d18edc22ace
->> Author: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
->> Date:   Thu Aug 19 19:40:06 2021 -0700
->>
->>     cpufreq: intel_pstate: Process HWP Guaranteed change notification
->>
->> which crashes with a NULL pointer deref in notify_hwp_interrupt() ->
->> queue_delayed_work_on().
->>
->> Reverting this change makes the laptop boot fine again.
->>
-> Does this change fixes your issue?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/urgent
+branch HEAD: 340576590dac4bb58d532a8ad5bfa806d8ab473c  futex: Avoid redundant task lookup
 
-I would assume so, as it's crashing on cpudata == NULL :-)
+Warning reports:
 
-But why is it NULL? Happy to test patches, but the below doesn't look like
-a real fix and more of a work-around.
+https://lore.kernel.org/lkml/202109030619.m4Qsguzx-lkp@intel.com
 
--- 
-Jens Axboe
+Warning in current branch:
 
+kernel/futex.c:2016:18: warning: variable 'vpid' set but not used [-Wunused-but-set-variable]
+kernel/futex.c:2037:11: warning: variable 'vpid' set but not used [-Wunused-but-set-variable]
+kernel/futex.c:2037:18: warning: variable 'vpid' set but not used [-Wunused-but-set-variable]
+
+Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allnoconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- alpha-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- alpha-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- alpha-randconfig-r005-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- alpha-randconfig-r006-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arc-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arc-axs103_smp_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arc-buildonly-randconfig-r005-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arc-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arc-randconfig-r001-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arc-randconfig-r013-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arc-randconfig-r021-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arc-randconfig-r032-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arm-allmodconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arm-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arm-aspeed_g5_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arm-davinci_all_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arm-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arm-hisi_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arm-pcm027_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arm-randconfig-r005-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arm-tegra_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arm-versatile_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arm64-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arm64-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arm64-randconfig-r016-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- arm64-randconfig-r023-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- csky-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- csky-randconfig-r003-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- h8300-allmodconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- h8300-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- h8300-randconfig-r004-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- h8300-randconfig-r014-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- h8300-randconfig-r026-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- h8300-randconfig-r036-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- i386-alldefconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- i386-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- i386-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- i386-randconfig-c021-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- i386-randconfig-m021-20210902
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- i386-randconfig-m021-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- i386-randconfig-r022-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- i386-randconfig-s001-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- i386-randconfig-s002-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- ia64-allmodconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- ia64-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- ia64-buildonly-randconfig-r003-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- ia64-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- ia64-randconfig-r024-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- m68k-allmodconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- m68k-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- m68k-buildonly-randconfig-r006-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- m68k-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- m68k-mac_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- m68k-mvme147_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- m68k-randconfig-r004-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- m68k-randconfig-r014-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- m68k-randconfig-r021-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- microblaze-allmodconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- microblaze-buildonly-randconfig-r001-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- microblaze-randconfig-r004-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- microblaze-randconfig-r022-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- mips-allmodconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- mips-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- mips-buildonly-randconfig-r001-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- mips-capcella_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- mips-cobalt_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- mips-gcw0_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- mips-randconfig-r033-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- mips-rbtx49xx_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- mips-workpad_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- nds32-allnoconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- nds32-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- nds32-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- nds32-randconfig-r003-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- nds32-randconfig-r005-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- nds32-randconfig-r012-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- nds32-randconfig-r036-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- nios2-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- nios2-buildonly-randconfig-r005-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- nios2-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- nios2-randconfig-r023-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- nios2-randconfig-r031-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- nios2-randconfig-r034-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- nios2-randconfig-r036-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- openrisc-buildonly-randconfig-r004-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- openrisc-randconfig-r021-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- parisc-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- parisc-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- parisc-randconfig-r012-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- parisc-randconfig-r015-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc-acadia_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc-allmodconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc-allnoconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc-asp8347_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc-gamecube_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc-lite5200b_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc-mpc832x_rdb_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc-pmac32_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc-ppc40x_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc-randconfig-r011-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc-randconfig-r015-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc-sequoia_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc64-randconfig-c023-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc64-randconfig-r021-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- powerpc64-randconfig-r026-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- riscv-allmodconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- riscv-allnoconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- riscv-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- riscv-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- riscv-nommu_virt_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- riscv-randconfig-r025-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- riscv-randconfig-r042-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- riscv-rv32_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- s390-allmodconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- s390-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- s390-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- s390-randconfig-r023-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- s390-randconfig-r044-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- sh-allmodconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- sh-edosk7705_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- sparc-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- sparc-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- sparc-randconfig-r035-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- sparc64-randconfig-r005-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- sparc64-randconfig-r016-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- sparc64-randconfig-r034-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- um-i386_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- um-x86_64_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-allmodconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-kexec
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-randconfig-a001-20210902
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-randconfig-a002-20210902
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-randconfig-a003-20210902
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-randconfig-a004-20210902
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-randconfig-a005-20210902
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-randconfig-a006-20210902
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-randconfig-a011-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-randconfig-a012-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-randconfig-a013-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-randconfig-a014-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-randconfig-a015-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-randconfig-a016-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-randconfig-c022-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-randconfig-r025-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-rhel-8.3
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- x86_64-rhel-8.3-kselftests
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- xtensa-allyesconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- xtensa-buildonly-randconfig-r004-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- xtensa-iss_defconfig
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- xtensa-randconfig-r006-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+|-- xtensa-randconfig-r014-20210903
+|   `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+`-- xtensa-randconfig-r015-20210903
+    `-- kernel-futex.c:warning:variable-vpid-set-but-not-used
+
+elapsed time: 1087m
+
+configs tested: 114
+configs skipped: 3
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                        workpad_defconfig
+powerpc                    gamecube_defconfig
+powerpc                      acadia_defconfig
+arm                       versatile_defconfig
+sh                        sh7757lcr_defconfig
+sh                   secureedge5410_defconfig
+sh                   sh7770_generic_defconfig
+arm                            hisi_defconfig
+powerpc                      pmac32_defconfig
+mips                         cobalt_defconfig
+sh                        edosk7705_defconfig
+xtensa                          iss_defconfig
+sh                           sh2007_defconfig
+arm                     davinci_all_defconfig
+mips                           gcw0_defconfig
+sh                           se7724_defconfig
+arm                          pcm027_defconfig
+i386                             alldefconfig
+arm                       aspeed_g5_defconfig
+m68k                       m5275evb_defconfig
+mips                        bcm63xx_defconfig
+mips                       capcella_defconfig
+powerpc                     sequoia_defconfig
+mips                       rbtx49xx_defconfig
+m68k                            mac_defconfig
+arm                           tegra_defconfig
+sh                          rsk7201_defconfig
+powerpc                    adder875_defconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc                   lite5200b_defconfig
+powerpc                     asp8347_defconfig
+m68k                        mvme147_defconfig
+powerpc                      ppc40x_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210902
+x86_64               randconfig-a006-20210902
+x86_64               randconfig-a003-20210902
+x86_64               randconfig-a005-20210902
+x86_64               randconfig-a001-20210902
+x86_64               randconfig-a002-20210902
+x86_64               randconfig-a016-20210903
+x86_64               randconfig-a011-20210903
+x86_64               randconfig-a012-20210903
+x86_64               randconfig-a015-20210903
+x86_64               randconfig-a014-20210903
+x86_64               randconfig-a013-20210903
+riscv                randconfig-r042-20210903
+s390                 randconfig-r044-20210903
+arc                  randconfig-r043-20210903
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a004-20210903
+x86_64               randconfig-a006-20210903
+x86_64               randconfig-a003-20210903
+x86_64               randconfig-a005-20210903
+x86_64               randconfig-a001-20210903
+x86_64               randconfig-a002-20210903
+i386                 randconfig-a005-20210903
+i386                 randconfig-a004-20210903
+i386                 randconfig-a006-20210903
+i386                 randconfig-a002-20210903
+i386                 randconfig-a001-20210903
+i386                 randconfig-a003-20210903
+hexagon              randconfig-r045-20210903
+hexagon              randconfig-r041-20210903
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
