@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D4D40047C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B276B40047D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235747AbhICSFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 14:05:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46636 "EHLO mail.kernel.org"
+        id S1350348AbhICSF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 14:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229929AbhICSFx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 14:05:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B771760EBA;
-        Fri,  3 Sep 2021 18:04:52 +0000 (UTC)
+        id S229929AbhICSF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 14:05:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54E91610A1;
+        Fri,  3 Sep 2021 18:04:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630692293;
-        bh=1hAUx3R/bUDil8aAG0+n3xAXYLVRkV49z3VRYlAubGo=;
+        s=k20201202; t=1630692295;
+        bh=AYCTypw36ptHgabLcJlokFD5oklyEoCNON6TkiELR0c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RnGv8n/5NW4KOC551he3pdvHYM9wgwABqJhAralXwejVa5BJMjEKqIp3IuEAyJBRj
-         r0o7yQjcFGeEH4UJOHbmeoKZsJFuJnpivcPUA5DR0w4DjNf2oxdTcg6YU69W0Dz7no
-         6oNGaZzVo64R4MVPpAMMXdErQkjVnSj0B46KyVKO9fkMFoo55rhMROJQ+rzVWFpV/Q
-         Iwidt7aaqR3bdFnSRl6riALORxQn1SnC0Y44Ik6yhg2LEZ5fIcTHRfUUvqZ9GK4LGm
-         uS06UzgblqY6JDjAoi1sB/udZZ/nNqNLgnDLzm2ZJRz2nBd+1ijI55gacghrlEDSN0
-         2P7UeND5xu8Eg==
+        b=lk9RGXY9AVswYmZWtt1rE1/CavCQsvnNbMv2JGR71HazCSpK4RiR0+haWbqts9/D1
+         LO7x2ocAa8NFCqGVcy8WNXRs4q+vF4tB6DOzUhT7e1pPRKCnmdDhNo44WgYPyGowvA
+         md5bT1JflLrXWSLUOBJ1vGD/21QUtrd7Cc2hKdet7pTvzhT7Hu87DBjaIgFOk9YKU+
+         tslioRp3Kd/ws5LH/SvYxfcWmH2I5k6EMLDNz5YwHlVs0vn4bQelO8W5FKuKzCS/8j
+         ki7168sdJs86xPhj/sWdICaLo7VSDwqupNWXrNknBvJawC3UnXqufthq4KV6HeY73X
+         ybTNrX1qPjUZg==
 From:   Mark Brown <broonie@kernel.org>
 To:     Sugar Zhang <sugar.zhang@rock-chips.com>, heiko@sntech.de
 Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
         linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
         linux-arm-kernel@lists.infradead.org,
+        Liam Girdwood <lgirdwood@gmail.com>,
         Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v2] ASoC: rockchip: i2s: Fix concurrency between tx/rx
-Date:   Fri,  3 Sep 2021 19:04:18 +0100
-Message-Id: <163069197835.35101.5282344182422395715.b4-ty@kernel.org>
+Subject: Re: [PATCH v3] ASoC: rockchip: i2s: Fix concurrency between tx/rx
+Date:   Fri,  3 Sep 2021 19:04:19 +0100
+Message-Id: <163069197835.35101.4150427867250097515.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1630305525-65759-1-git-send-email-sugar.zhang@rock-chips.com>
-References: <1630305525-65759-1-git-send-email-sugar.zhang@rock-chips.com>
+In-Reply-To: <1630674434-650-1-git-send-email-sugar.zhang@rock-chips.com>
+References: <1630674434-650-1-git-send-email-sugar.zhang@rock-chips.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,7 +43,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 14:38:45 +0800, Sugar Zhang wrote:
+On Fri, 3 Sep 2021 21:07:14 +0800, Sugar Zhang wrote:
 > This patch adds lock to fix comcurrency between tx/rx
 > to fix 'rockchip-i2s ff070000.i2s; fail to clear'
 > 
