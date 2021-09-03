@@ -2,326 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2D73FFB3F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD7E3FFB41
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347439AbhICHok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 03:44:40 -0400
-Received: from mga01.intel.com ([192.55.52.88]:54329 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234804AbhICHoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 03:44:39 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="241639711"
-X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
-   d="scan'208";a="241639711"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 00:43:40 -0700
-X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
-   d="scan'208";a="533772890"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.90]) ([10.238.4.90])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 00:43:38 -0700
-Subject: Re: [xfs] 2bf1ec0ff0: stress-ng.mknod.ops_per_sec -45.4% regression
-To:     kernel test robot <oliver.sang@intel.com>,
-        Dave Chinner <dchinner@redhat.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com
-References: <20210804143800.GA21457@xsang-OptiPlex-9020>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <a149d14e-48e0-bad9-4283-e560f03a941f@linux.intel.com>
-Date:   Fri, 3 Sep 2021 15:43:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1347496AbhICHqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 03:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232319AbhICHqF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 03:46:05 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745D5C061575;
+        Fri,  3 Sep 2021 00:45:06 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id r13so3658272pff.7;
+        Fri, 03 Sep 2021 00:45:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=yGOCVEApc5uiEkEu3FJgjhpn9SMZGFsk3YICsg2bDAc=;
+        b=A67nIpejPhVNfqvdhHKrrHCPK5RPBGNCv0/AZ9xE5yls5rGjII91LPLVAW4iayT89L
+         hb8NSvJKt4ui3duZfKsRPwhIvP15FTsgPvKGZLv12tGE+sf2NwnJ9UvB8obYfdzImhYj
+         ozUhRenw+NlM3WOx8meFqEWru8TUfVyzzhD7oLA7SDBb7OsVWBW3VVldbnIv8Di9yiLD
+         0xWiS+Kuu7sCyp0veENVqDtyRw5yBH95y7VkCbXljmJ9NYgjXdq4lSQEfZNQzaIDMS88
+         VPeEt+YL9lvRX1IgXvl+NJVqwvuN2iV/EDinrE07ECC62AeNWRLvL3x/PPCeCWnNQjT7
+         vfew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=yGOCVEApc5uiEkEu3FJgjhpn9SMZGFsk3YICsg2bDAc=;
+        b=NMs7iD+Xu6pW+Dx3LMs+afF6SB9Rxksg8GXLNFyuM14OzRu/ueg1dZr8+ddVggGnH6
+         y6Sf92n99uPZpA64kWW0ioniWl80dUu0JtDRNlaL9oWAg94DS82v5ctqn6EYm4HQvXTc
+         h2mdu8og+1gKImg9RDKfQNs4s4nZQZDq8ueBZ5hHq8ppierYA4W2OHigslHk9wym+QD5
+         ZUIn7Ihv2KllnnyPOA2xqRyoJGf9qv68m7fQOzHKHW8pwUn0LhburKpVfHIDlbB2K2DV
+         bACvr4aMBsgh/ReSEW319M6h7JBD1+xew/p0z0zrHwSyOkSxvom6IeRjqSC3ajWzQkMA
+         L/hg==
+X-Gm-Message-State: AOAM5302A0Ai1Caq+m5J109c/IwyTpJO1GKWpi3B0UNQEN5ydTHk4PfI
+        LY+SbLuVHAMnuqmV+OATZBJLaKC0lJtcTs9PDw==
+X-Google-Smtp-Source: ABdhPJzNrjQozvpeZZaDe3NIlZu5o8UH+hN2VINqQ0a/iNJZUShXQWIQ0tVaIPLD/OBFakfLEOhkSDbYV00kn7xQnrc=
+X-Received: by 2002:a05:6a00:c81:b029:30e:21bf:4c15 with SMTP id
+ a1-20020a056a000c81b029030e21bf4c15mr2052074pfv.70.1630655105826; Fri, 03 Sep
+ 2021 00:45:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210804143800.GA21457@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Fri, 3 Sep 2021 15:44:54 +0800
+Message-ID: <CACkBjsYvt46E2WqeJwEuemUr7pST_uk3=wvEBmdtdiAPmG40vQ@mail.gmail.com>
+Subject: INFO: task hung in _destroy_id
+To:     dledford@redhat.com, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Cc:     leon@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+Hello,
 
-    Do you have time to look at this? Thanks.
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
-On 8/4/2021 10:38 PM, kernel test robot wrote:
-> 
-> 
-> Greeting,
-> 
-> FYI, we noticed a -45.4% regression of stress-ng.mknod.ops_per_sec due to commit:
-> 
-> 
-> commit: 2bf1ec0ff067ff8f692d261b29c713f3583f7e2a ("xfs: log forces imply data device cache flushes")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> 
-> in testcase: stress-ng
-> on test machine: 96 threads 2 sockets Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 512G memory
-> with following parameters:
-> 
-> 	nr_threads: 10%
-> 	disk: 1HDD
-> 	testtime: 60s
-> 	fs: xfs
-> 	class: filesystem
-> 	test: mknod
-> 	cpufreq_governor: performance
-> 	ucode: 0x5003006
-> 
-> 
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> 
-> 
-> Details are as below:
-> -------------------------------------------------------------------------------------------------->
-> 
-> 
-> To reproduce:
-> 
->          git clone https://github.com/intel/lkp-tests.git
->          cd lkp-tests
->          bin/lkp install                job.yaml  # job file is attached in this email
->          bin/lkp split-job --compatible job.yaml  # generate the yaml file for lkp run
->          bin/lkp run                    generated-yaml-file
-> 
-> =========================================================================================
-> class/compiler/cpufreq_governor/disk/fs/kconfig/nr_threads/rootfs/tbox_group/test/testcase/testtime/ucode:
->    filesystem/gcc-9/performance/1HDD/xfs/x86_64-rhel-8.3/10%/debian-10.4-x86_64-20200603.cgz/lkp-csl-2sp7/mknod/stress-ng/60s/0x5003006
-> 
-> commit:
->    45eddb4140 ("xfs: factor out forced iclog flushes")
->    2bf1ec0ff0 ("xfs: log forces imply data device cache flushes")
-> 
-> 45eddb414047c366 2bf1ec0ff067ff8f692d261b29c
-> ---------------- ---------------------------
->           %stddev     %change         %stddev
->               \          |                \
->       87135           -45.4%      47612        stress-ng.mknod.ops
->        1451           -45.4%     793.24        stress-ng.mknod.ops_per_sec
->       23.00 ±  7%     -51.4%      11.17 ± 12%  stress-ng.time.percent_of_cpu_this_job_got
->       13.80 ±  7%     -50.7%       6.80 ±  8%  stress-ng.time.system_time
->      211458 ±  2%     -62.4%      79605 ± 14%  stress-ng.time.voluntary_context_switches
->        0.30 ±  2%      -0.1        0.18        mpstat.cpu.all.sys%
->       13993 ±  2%     -38.1%       8659        softirqs.BLOCK
->       27747            -2.3%      27103        proc-vmstat.nr_slab_reclaimable
->       76223 ±  3%     -57.3%      32548 ±  5%  proc-vmstat.pgpgout
->        1170 ±  3%     -57.3%     500.17 ±  5%  vmstat.io.bo
->       10752           -47.7%       5624 ±  6%  vmstat.system.cs
->       32820           -34.5%      21499        slabinfo.kmalloc-rcl-64.active_objs
->      512.67           -34.6%     335.50        slabinfo.kmalloc-rcl-64.active_slabs
->       32836           -34.5%      21508        slabinfo.kmalloc-rcl-64.num_objs
->      512.67           -34.6%     335.50        slabinfo.kmalloc-rcl-64.num_slabs
->       24913 ±  2%     -42.8%      14251        interrupts.315:PCI-MSI.376832-edge.ahci[0000:00:17.0]
->       71844 ±  6%     -19.9%      57564 ±  3%  interrupts.CAL:Function_call_interrupts
->      206.50 ± 37%     -42.9%     118.00 ± 41%  interrupts.CPU1.NMI:Non-maskable_interrupts
->      206.50 ± 37%     -42.9%     118.00 ± 41%  interrupts.CPU1.PMI:Performance_monitoring_interrupts
->      173.17 ± 26%     -31.7%     118.33 ± 38%  interrupts.CPU2.NMI:Non-maskable_interrupts
->      173.17 ± 26%     -31.7%     118.33 ± 38%  interrupts.CPU2.PMI:Performance_monitoring_interrupts
->      189.83 ± 34%     -40.6%     112.83 ± 25%  interrupts.CPU49.NMI:Non-maskable_interrupts
->      189.83 ± 34%     -40.6%     112.83 ± 25%  interrupts.CPU49.PMI:Performance_monitoring_interrupts
->      181.67 ± 25%     -38.3%     112.17 ± 24%  interrupts.CPU50.NMI:Non-maskable_interrupts
->      181.67 ± 25%     -38.3%     112.17 ± 24%  interrupts.CPU50.PMI:Performance_monitoring_interrupts
->        1895 ± 16%     -32.8%       1274 ± 20%  interrupts.RES:Rescheduling_interrupts
->   3.127e+08 ±  5%     -12.2%  2.746e+08 ±  3%  perf-stat.i.branch-instructions
->       10683           -49.8%       5364 ±  6%  perf-stat.i.context-switches
->   3.866e+08 ±  4%     -14.2%  3.318e+08 ±  3%  perf-stat.i.dTLB-loads
->   1.949e+08 ±  3%     -14.7%  1.662e+08 ±  3%  perf-stat.i.dTLB-stores
->   1.538e+09 ±  5%     -12.4%  1.348e+09 ±  3%  perf-stat.i.instructions
->        9.31 ±  4%     -13.6%       8.04 ±  3%  perf-stat.i.metric.M/sec
->      127426 ± 14%     -32.6%      85864 ±  9%  perf-stat.i.node-load-misses
->   3.078e+08 ±  5%     -12.2%  2.702e+08 ±  3%  perf-stat.ps.branch-instructions
->       10512           -49.8%       5279 ±  6%  perf-stat.ps.context-switches
->   3.805e+08 ±  4%     -14.2%  3.265e+08 ±  3%  perf-stat.ps.dTLB-loads
->   1.918e+08 ±  3%     -14.7%  1.635e+08 ±  3%  perf-stat.ps.dTLB-stores
->   1.514e+09 ±  5%     -12.4%  1.327e+09 ±  3%  perf-stat.ps.instructions
->      125399 ± 14%     -32.6%      84480 ±  9%  perf-stat.ps.node-load-misses
->   9.563e+10 ±  6%     -12.3%  8.383e+10 ±  3%  perf-stat.total.instructions
->        8.31 ± 20%      -3.9        4.45 ± 25%  perf-profile.calltrace.cycles-pp.entry_SYSCALL_64_after_hwframe
->        8.30 ± 20%      -3.9        4.45 ± 25%  perf-profile.calltrace.cycles-pp.do_syscall_64.entry_SYSCALL_64_after_hwframe
->        2.35 ± 19%      -1.6        0.75 ± 25%  perf-profile.calltrace.cycles-pp.__x64_sys_sync.do_syscall_64.entry_SYSCALL_64_after_hwframe
->        2.35 ± 19%      -1.6        0.75 ± 25%  perf-profile.calltrace.cycles-pp.ksys_sync.__x64_sys_sync.do_syscall_64.entry_SYSCALL_64_after_hwframe
->        2.08 ± 19%      -1.6        0.50 ± 72%  perf-profile.calltrace.cycles-pp.iterate_supers.ksys_sync.__x64_sys_sync.do_syscall_64.entry_SYSCALL_64_after_hwframe
->        1.85 ± 25%      -0.7        1.14 ± 31%  perf-profile.calltrace.cycles-pp.do_mknodat.do_syscall_64.entry_SYSCALL_64_after_hwframe
->        1.04 ± 27%      -0.7        0.36 ±106%  perf-profile.calltrace.cycles-pp.xfs_inactive_ifree.xfs_inactive.xfs_fs_destroy_inode.destroy_inode.do_unlinkat
->        1.08 ± 27%      -0.6        0.46 ± 77%  perf-profile.calltrace.cycles-pp.destroy_inode.do_unlinkat.do_syscall_64.entry_SYSCALL_64_after_hwframe
->        1.05 ± 27%      -0.6        0.45 ± 77%  perf-profile.calltrace.cycles-pp.xfs_fs_destroy_inode.destroy_inode.do_unlinkat.do_syscall_64.entry_SYSCALL_64_after_hwframe
->        1.04 ± 27%      -0.6        0.44 ± 78%  perf-profile.calltrace.cycles-pp.xfs_inactive.xfs_fs_destroy_inode.destroy_inode.do_unlinkat.do_syscall_64
->        0.89 ± 17%      -0.3        0.58 ±  9%  perf-profile.calltrace.cycles-pp.worker_thread.kthread.ret_from_fork
->        1.21 ±  8%      +0.2        1.45 ±  7%  perf-profile.calltrace.cycles-pp.perf_mux_hrtimer_handler.__hrtimer_run_queues.hrtimer_interrupt.__sysvec_apic_timer_interrupt.sysvec_apic_timer_interrupt
->        8.13 ±  9%      +2.0       10.16 ±  6%  perf-profile.calltrace.cycles-pp.__hrtimer_run_queues.hrtimer_interrupt.__sysvec_apic_timer_interrupt.sysvec_apic_timer_interrupt.asm_sysvec_apic_timer_interrupt
->        2.35 ± 19%      -1.6        0.75 ± 25%  perf-profile.children.cycles-pp.__x64_sys_sync
->        2.35 ± 19%      -1.6        0.75 ± 25%  perf-profile.children.cycles-pp.ksys_sync
->        2.09 ± 19%      -1.4        0.65 ± 25%  perf-profile.children.cycles-pp.iterate_supers
->        2.25 ± 18%      -1.1        1.14 ± 26%  perf-profile.children.cycles-pp._raw_spin_lock
->        1.40 ± 25%      -1.1        0.31 ± 54%  perf-profile.children.cycles-pp.native_queued_spin_lock_slowpath
->        1.85 ± 25%      -0.7        1.14 ± 31%  perf-profile.children.cycles-pp.do_mknodat
->        1.08 ± 27%      -0.5        0.55 ± 43%  perf-profile.children.cycles-pp.destroy_inode
->        1.05 ± 27%      -0.5        0.54 ± 42%  perf-profile.children.cycles-pp.xfs_fs_destroy_inode
->        1.04 ± 27%      -0.5        0.54 ± 43%  perf-profile.children.cycles-pp.xfs_inactive
->        1.04 ± 27%      -0.5        0.53 ± 44%  perf-profile.children.cycles-pp.xfs_inactive_ifree
->        0.93 ± 21%      -0.5        0.44 ± 24%  perf-profile.children.cycles-pp.__schedule
->        0.49 ± 25%      -0.4        0.11 ± 76%  perf-profile.children.cycles-pp.pick_next_task_fair
->        1.05 ± 20%      -0.4        0.69 ± 13%  perf-profile.children.cycles-pp.find_busiest_group
->        0.66 ± 19%      -0.3        0.32 ± 30%  perf-profile.children.cycles-pp.schedule
->        1.00 ± 20%      -0.3        0.65 ± 13%  perf-profile.children.cycles-pp.update_sd_lb_stats
->        0.60 ± 20%      -0.3        0.29 ± 31%  perf-profile.children.cycles-pp.xfs_ifree
->        0.89 ± 17%      -0.3        0.58 ±  9%  perf-profile.children.cycles-pp.worker_thread
->        0.44 ± 26%      -0.3        0.16 ± 45%  perf-profile.children.cycles-pp.newidle_balance
->        0.49 ± 39%      -0.3        0.22 ± 35%  perf-profile.children.cycles-pp.xfs_fs_sync_fs
->        0.40 ± 49%      -0.2        0.17 ± 29%  perf-profile.children.cycles-pp.xfs_log_force
->        0.31 ± 29%      -0.2        0.11 ± 56%  perf-profile.children.cycles-pp.schedule_timeout
->        0.24 ± 60%      -0.2        0.06 ± 50%  perf-profile.children.cycles-pp.xfs_inobt_get_rec
->        0.38 ± 19%      -0.2        0.21 ± 30%  perf-profile.children.cycles-pp.xfs_btree_lookup
->        0.42 ± 14%      -0.2        0.26 ± 35%  perf-profile.children.cycles-pp.xfs_check_agi_freecount
->        0.30 ± 27%      -0.2        0.14 ± 37%  perf-profile.children.cycles-pp.xfs_btree_lookup_get_block
->        0.25 ± 30%      -0.1        0.10 ± 39%  perf-profile.children.cycles-pp.iterate_bdevs
->        0.33 ± 28%      -0.1        0.19 ± 20%  perf-profile.children.cycles-pp.try_to_wake_up
->        0.26 ± 31%      -0.1        0.13 ± 23%  perf-profile.children.cycles-pp.schedule_idle
->        0.16 ± 36%      -0.1        0.03 ±102%  perf-profile.children.cycles-pp.__down
->        0.16 ± 35%      -0.1        0.04 ± 73%  perf-profile.children.cycles-pp.xfs_buf_lock
->        0.16 ± 36%      -0.1        0.04 ± 73%  perf-profile.children.cycles-pp.down
->        0.21 ± 39%      -0.1        0.09 ± 52%  perf-profile.children.cycles-pp.xfs_iunlink_remove
->        0.19 ± 28%      -0.1        0.08 ± 43%  perf-profile.children.cycles-pp.xfs_buf_item_release
->        0.21 ± 33%      -0.1        0.10 ± 35%  perf-profile.children.cycles-pp.xfs_difree_inobt
->        0.14 ± 16%      -0.1        0.04 ±104%  perf-profile.children.cycles-pp._xfs_trans_bjoin
->        0.18 ± 30%      -0.1        0.08 ± 80%  perf-profile.children.cycles-pp.wait_for_completion
->        0.15 ± 27%      -0.1        0.06 ± 53%  perf-profile.children.cycles-pp.up
->        0.15 ± 33%      -0.1        0.06 ± 81%  perf-profile.children.cycles-pp.xfs_difree_finobt
->        0.15 ± 27%      -0.1        0.08 ± 19%  perf-profile.children.cycles-pp.xfs_trans_alloc
->        0.10 ± 29%      -0.1        0.04 ± 72%  perf-profile.children.cycles-pp.xfs_log_reserve
->        0.04 ± 77%      +0.1        0.10 ± 34%  perf-profile.children.cycles-pp.balance_fair
->        0.05 ± 79%      +0.1        0.15 ± 31%  perf-profile.children.cycles-pp.smpboot_thread_fn
->        0.58 ± 16%      +0.1        0.72 ± 11%  perf-profile.children.cycles-pp.update_rq_clock
->        1.24 ±  8%      +0.3        1.52 ±  4%  perf-profile.children.cycles-pp.perf_mux_hrtimer_handler
->        8.31 ±  9%      +2.1       10.40 ±  5%  perf-profile.children.cycles-pp.__hrtimer_run_queues
->        1.30 ± 18%      -1.0        0.30 ± 54%  perf-profile.self.cycles-pp.native_queued_spin_lock_slowpath
->        0.75 ± 21%      -0.3        0.44 ± 20%  perf-profile.self.cycles-pp.__percpu_counter_sum
->        0.43 ± 25%      -0.3        0.16 ± 45%  perf-profile.self.cycles-pp.down_read
->        0.72 ± 13%      -0.2        0.47 ± 12%  perf-profile.self.cycles-pp.update_sd_lb_stats
->        0.35 ± 15%      +0.1        0.43 ± 13%  perf-profile.self.cycles-pp.irqtime_account_irq
->        0.08 ± 60%      +0.1        0.16 ± 18%  perf-profile.self.cycles-pp.timerqueue_del
-> 
-> 
->                                                                                  
->                             stress-ng.time.system_time
->                                                                                  
->    20 +----------------------------------------------------------------------+
->       |            +                                                         |
->    18 |-+     +   ::                                       .+                |
->       |      : :  ::                   +..               .+  :               |
->    16 |-+    : : :  :                 :       +.    +   +    :     +         |
->       |:    +   ::  :                 :   +  :  +  : : :      :  .. +        |
->    14 |:+  +    +   :         .+.   .+     + :   + : : :      +.+    +.   .+.|
->       | +.+         :  +.+.+.+   +.+        +     +   +                +.+   |
->    12 |-+           :  :                                                     |
->       |              ::                                                      |
->    10 |-+            ::                                                      |
->       |              +                                                       |
->     8 |-+                    O   O   O      O   O       O O                  |
->       | O O     O    O     O   O       O      O   O O       O                |
->     6 +----------------------------------------------------------------------+
->                                                                                  
->                                                                                                                                                                  
->                     stress-ng.time.percent_of_cpu_this_job_got
->                                                                                  
->    35 +----------------------------------------------------------------------+
->       |                                                                      |
->       |       +    +                                        +                |
->    30 |-+     ::  ::                                       +:                |
->       |      : :  ::                   +..    +     +   +.+  :     +         |
->       |:     :  ::  :                 :      : +   : : :     :   .. :        |
->    25 |:+  .+   +   :                 :   +. :  +. : : :      :.+   :        |
->       | +.+         :  +.+.+.+.+.+.+.+      +     +   +       +      +.+.+.+.|
->    20 |-+           :  :                                                     |
->       |             : :                                                      |
->       |              ::                                                      |
->    15 |-+            :                                                       |
->       |              +       O   O   O      O   O       O O                  |
->       | O O O O O  O O O O O   O   O   O  O   O   O O       O                |
->    10 +----------------------------------------------------------------------+
->                                                                                  
->                                                                                                                                                                  
->                        stress-ng.time.voluntary_context_switches
->                                                                                  
->    260000 +------------------------------------------------------------------+
->    240000 |-+     +                                                          |
->           |      + :  +.                  +                 .+. .+.          |
->    220000 |++.+.+  : +  +.   .+.         + + +.+. .+.+   +.+   +   +. .+. .+.|
->    200000 |-+       +     +.+   +. .+. .+   +    +    + +            +   +   |
->           |                       +   +                +                     |
->    180000 |-+                                                                |
->    160000 |-+                                                                |
->    140000 |-+                                                                |
->           |                                                                  |
->    120000 |-+           O                                                    |
->    100000 |-O   O         O O                          O                     |
->           |       O   O                   O    O   O       O   O             |
->     80000 |-+ O               O O O   O O   OO   O   O   O   O               |
->     60000 +------------------------------------------------------------------+
->                                                                                  
->                                                                                                                                                                  
->                                   stress-ng.mknod.ops
->                                                                                  
->    95000 +-------------------------------------------------------------------+
->    90000 |-+    .+. .+.                                     .+. .+.          |
->          |.+.+.+   +   +.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+.+   +   +. .+.+.+.|
->    85000 |-+                                                         +       |
->    80000 |-+                                                                 |
->          |                                                                   |
->    75000 |-+                                                                 |
->    70000 |-+                                                                 |
->    65000 |-+                                                                 |
->          |                                                                   |
->    60000 |-+                                                                 |
->    55000 |-+                                                                 |
->          |                                                                   |
->    50000 |-O O O O O O O O O O O O O O O O O O O O O O O O O   O O           |
->    45000 +-------------------------------------------------------------------+
->                                                                                  
->                                                                                                                                                                  
->                              stress-ng.mknod.ops_per_sec
->                                                                                  
->    1600 +--------------------------------------------------------------------+
->         |      .+.                                          .+. .+           |
->    1500 |.+.+.+   +.+.+.+.+.+. .+.+.+.+.+..+.+.+.+.+.+.+.+.+   +  +   .+.+.+.|
->    1400 |-+                   +                                    +.+       |
->         |                                                                    |
->    1300 |-+                                                                  |
->    1200 |-+                                                                  |
->         |                                                                    |
->    1100 |-+                                                                  |
->    1000 |-+                                                                  |
->         |                                                                    |
->     900 |-+                                                                  |
->     800 |-+   O O   O O O     O O       O      O O     O O O     O           |
->         | O O     O       O O     O O O    O O     O O       O O             |
->     700 +--------------------------------------------------------------------+
->                                                                                  
->                                                                                  
-> [*] bisect-good sample
-> [O] bisect-bad  sample
-> 
-> 
-> 
-> Disclaimer:
-> Results have been estimated based on internal Intel analysis and are provided
-> for informational purposes only. Any difference in system hardware or software
-> design or configuration may affect actual performance.
-> 
-> 
-> ---
-> 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
-> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
-> 
-> Thanks,
-> Oliver Sang
-> 
+HEAD commit: 9e9fb7655ed58-Merge tag 'net-next-5.15'
+git tree: upstream
+console output:
+https://drive.google.com/file/d/19ZvzEBJnFYlQJIn-TklSjE9ZWsxoEF7X/view?usp=sharing
+kernel config: https://drive.google.com/file/d/1zgxbwaYkrM26KEmJ-5sUZX57gfXtRrwA/view?usp=sharing
 
--- 
-Zhengjun Xing
+Sorry, I don't have a reproducer for this crash, hope the symbolized
+report can help.
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Hao Sun <sunhao.th@gmail.com>
+
+INFO: task syz-executor:24041 blocked for more than 143 seconds.
+      Not tainted 5.14.0+ #12
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor    state:D stack:14376 pid:24041 ppid: 23568 flags:0x00000004
+Call Trace:
+ context_switch kernel/sched/core.c:4940 [inline]
+ __schedule+0x323/0xae0 kernel/sched/core.c:6287
+ schedule+0x36/0xe0 kernel/sched/core.c:6366
+ schedule_timeout+0x189/0x430 kernel/time/timer.c:1857
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0xb4/0x110 kernel/sched/completion.c:138
+ _destroy_id+0x1a9/0x2b0 drivers/infiniband/core/cma.c:1870
+ ucma_close_id+0x2e/0x40 drivers/infiniband/core/ucma.c:185
+ ucma_destroy_private_ctx+0x379/0x390 drivers/infiniband/core/ucma.c:576
+ ucma_close+0x8c/0xc0 drivers/infiniband/core/ucma.c:1797
+ __fput+0xdf/0x380 fs/file_table.c:280
+ task_work_run+0x86/0xd0 kernel/task_work.c:164
+ tracehook_notify_resume include/linux/tracehook.h:189 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:175 [inline]
+ exit_to_user_mode_prepare+0x271/0x280 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+ do_syscall_64+0x40/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x418cd7
+RSP: 002b:00007ffefd2964b0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000003 RCX: 0000000000418cd7
+RDX: 0000000000000000 RSI: ffffffff84232888 RDI: 0000000000000003
+RBP: 0000000000000004 R08: 000000000184cd11 R09: 0000000000000d11
+R10: 000000000184cd15 R11: 0000000000000293 R12: 000000000071f980
+R13: 00000000007903e0 R14: 00000000007903e8 R15: 0000000000284b14
+INFO: lockdep is turned off.
+NMI backtrace for cpu 1
+CPU: 1 PID: 1501 Comm: khungtaskd Not tainted 5.14.0+ #12
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x8d/0xcf lib/dump_stack.c:105
+ nmi_cpu_backtrace+0x100/0x120 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x129/0x190 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
+ watchdog+0x4e1/0x990 kernel/hung_task.c:295
+ kthread+0x178/0x1b0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Sending NMI from CPU 1 to CPUs 0:
+NMI backtrace for cpu 0
+CPU: 0 PID: 27236 Comm: syz-executor Not tainted 5.14.0+ #12
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:__sanitizer_cov_trace_pc+0x37/0x60 kernel/kcov.c:197
+Code: 65 48 8b 14 25 40 70 01 00 81 e1 00 01 00 00 a9 00 01 ff 00 74
+0e 85 c9 74 35 8b 82 34 15 00 00 85 c0 74 2b 8b 82 10 15 00 00 <83> f8
+02 75 20 48 8b 8a 18 15 00 00 8b 92 14 15 00 00 48 8b 01 48
+RSP: 0018:ffffc9000691f7f8 EFLAGS: 00000246
+RAX: 0000000000000002 RBX: ffff88803f344690 RCX: 0000000000000000
+RDX: ffff88804bf04480 RSI: ffffffff81742797 RDI: ffff88802c3e9620
+RBP: ffff88802c3e9620 R08: ffff88803f344690 R09: 0000000000000000
+R10: ffffc9000691f888 R11: 000000000004f358 R12: 0000000000000000
+R13: 0000000000000000 R14: ffffffff84868a80 R15: 0000000000001412
+FS:  00007f7b50cb0700(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7b50c85db8 CR3: 000000004bf2b000 CR4: 0000000000750ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ is_handle_aborted include/linux/jbd2.h:1700 [inline]
+ __ext4_handle_dirty_metadata+0xf7/0x290 fs/ext4/ext4_jbd2.c:331
+ ext4_do_update_inode fs/ext4/inode.c:5138 [inline]
+ ext4_mark_iloc_dirty+0x5e0/0x1010 fs/ext4/inode.c:5723
+ __ext4_mark_inode_dirty+0x122/0x3a0 fs/ext4/inode.c:5917
+ ext4_dirty_inode+0x5b/0x80 fs/ext4/inode.c:5946
+ __mark_inode_dirty+0x2dd/0x810 fs/fs-writeback.c:2398
+ mark_inode_dirty include/linux/fs.h:2447 [inline]
+ generic_write_end+0xf2/0x190 fs/buffer.c:2198
+ ext4_da_write_end+0x183/0x510 fs/ext4/inode.c:3110
+ generic_perform_write+0x11f/0x220 mm/filemap.c:3784
+ ext4_buffered_write_iter+0xd6/0x190 fs/ext4/file.c:269
+ ext4_file_write_iter+0x80/0x940 fs/ext4/file.c:680
+ call_write_iter include/linux/fs.h:2158 [inline]
+ do_iter_readv_writev+0x1e8/0x2b0 fs/read_write.c:729
+ do_iter_write+0xaf/0x250 fs/read_write.c:855
+ vfs_iter_write+0x38/0x60 fs/read_write.c:896
+ iter_file_splice_write+0x2d8/0x450 fs/splice.c:689
+ do_splice_from fs/splice.c:767 [inline]
+ direct_splice_actor+0x4a/0x80 fs/splice.c:936
+ splice_direct_to_actor+0x123/0x2d0 fs/splice.c:891
+ do_splice_direct+0xc3/0x110 fs/splice.c:979
+ do_sendfile+0x338/0x740 fs/read_write.c:1249
+ __do_sys_sendfile64 fs/read_write.c:1314 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1300 [inline]
+ __x64_sys_sendfile64+0xc7/0xe0 fs/read_write.c:1300
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x46a9a9
+Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f7b50cafc58 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 000000000078c0a0 RCX: 000000000046a9a9
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: 0000000000000004
+RBP: 00000000004e4042 R08: 0000000000000000 R09: 0000000000000000
+R10: 00008400fffffffb R11: 0000000000000246 R12: 000000000078c0a0
+R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffce4002c90
+----------------
+Code disassembly (best guess):
+   0: 65 48 8b 14 25 40 70 mov    %gs:0x17040,%rdx
+   7: 01 00
+   9: 81 e1 00 01 00 00    and    $0x100,%ecx
+   f: a9 00 01 ff 00        test   $0xff0100,%eax
+  14: 74 0e                je     0x24
+  16: 85 c9                test   %ecx,%ecx
+  18: 74 35                je     0x4f
+  1a: 8b 82 34 15 00 00    mov    0x1534(%rdx),%eax
+  20: 85 c0                test   %eax,%eax
+  22: 74 2b                je     0x4f
+  24: 8b 82 10 15 00 00    mov    0x1510(%rdx),%eax
+* 2a: 83 f8 02              cmp    $0x2,%eax <-- trapping instruction
+  2d: 75 20                jne    0x4f
+  2f: 48 8b 8a 18 15 00 00 mov    0x1518(%rdx),%rcx
+  36: 8b 92 14 15 00 00    mov    0x1514(%rdx),%edx
+  3c: 48 8b 01              mov    (%rcx),%rax
+  3f: 48                    rex.W
