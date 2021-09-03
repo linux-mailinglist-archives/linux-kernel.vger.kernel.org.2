@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7BD9400424
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75235400426
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350325AbhICR3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 13:29:45 -0400
-Received: from mga01.intel.com ([192.55.52.88]:33543 "EHLO mga01.intel.com"
+        id S1350357AbhICR36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 13:29:58 -0400
+Received: from mga01.intel.com ([192.55.52.88]:33544 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350264AbhICR3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1350271AbhICR3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Sep 2021 13:29:33 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="241760105"
+X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="241760109"
 X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
-   d="scan'208";a="241760105"
+   d="scan'208";a="241760109"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 10:28:32 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 10:28:33 -0700
 X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
-   d="scan'208";a="534222286"
+   d="scan'208";a="534222289"
 Received: from dlinsen-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.56.172])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 10:28:31 -0700
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 10:28:32 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -39,9 +39,9 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v6 10/11] x86/tdx: Don't write CSTAR MSR on Intel
-Date:   Fri,  3 Sep 2021 10:28:11 -0700
-Message-Id: <20210903172812.1097643-11-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v6 11/11] x86/tdx: Handle CPUID via #VE
+Date:   Fri,  3 Sep 2021 10:28:12 -0700
+Message-Id: <20210903172812.1097643-12-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
@@ -51,56 +51,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andi Kleen <ak@linux.intel.com>
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-On Intel CPUs writing the CSTAR MSR is not really needed. Syscalls
-from 32bit work using SYSENTER and 32bit SYSCALL is an illegal opcode.
-But the kernel did write it anyways even though it was ignored by
-the CPU. Inside a TDX guest this actually leads to a #VE which in
-turn will trigger ve_raise_fault() due to failed MSR write. Inside
-ve_raise_fault() before it recovers from this error, it prints an
-ugly message at boot. Since such warning message is pointless for
-CSTAR MSR write failure, add exception to skip CSTAR msr write on
-Intel CPUs.
+TDX has three classes of CPUID leaves: some CPUID leaves are always
+handled by the CPU, others are handled by the TDX module, and some
+others are handled by the VMM. Since the VMM cannot directly intercept
+the instruction these are reflected with a #VE exception to the guest,
+which then converts it into a hypercall to the VMM, or handled
+directly.
 
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
+The TDX module specification [1], sec 16.2 has a full list of CPUID
+leaves which are handled natively or by the TDX module. Only unknown
+CPUIDs are handled by the #VE method. In practice this typically only
+applies to the hypervisor-specific CPUIDs unknown to the native CPU.
+
+Therefore there is no risk of causing this in early CPUID code which
+runs before the #VE handler is set up because it will never access
+those exotic CPUID leaves.
+
+[1] - https://software.intel.com/content/dam/develop/external/us/en/documents/tdx-module-1.0-public-spec-v0.931.pdf
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
 
 Changes since v5:
  * Fixed commit log as per review comments.
+ * Removed WARN_ON() in tdx_handle_cpuid().
+ * Renamed "tdg" prefix with "tdx".
 
- arch/x86/kernel/cpu/common.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+Changes since v4:
+ * None
 
-diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index 64b805bd6a54..d936f0e4ec51 100644
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -1752,7 +1752,13 @@ void syscall_init(void)
- 	wrmsrl(MSR_LSTAR, (unsigned long)entry_SYSCALL_64);
+Changes since v3:
+ * None
+ arch/x86/kernel/tdx.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index 5c52dde4a5fd..c65c117aff5f 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -150,6 +150,21 @@ static int tdx_write_msr_safe(unsigned int msr, unsigned int low,
+ 	return ret ? -EIO : 0;
+ }
  
- #ifdef CONFIG_IA32_EMULATION
--	wrmsrl(MSR_CSTAR, (unsigned long)entry_SYSCALL_compat);
-+	/*
-+	 * CSTAR is not needed on Intel because it doesn't support
-+	 * 32bit SYSCALL, but only SYSENTER. On a TDX guest
-+	 * it leads to a #GP.
-+	 */
-+	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL)
-+		wrmsrl(MSR_CSTAR, (unsigned long)entry_SYSCALL_compat);
- 	/*
- 	 * This only works on Intel CPUs.
- 	 * On AMD CPUs these MSRs are 32-bit, CPU truncates MSR_IA32_SYSENTER_EIP.
-@@ -1764,7 +1770,8 @@ void syscall_init(void)
- 		    (unsigned long)(cpu_entry_stack(smp_processor_id()) + 1));
- 	wrmsrl_safe(MSR_IA32_SYSENTER_EIP, (u64)entry_SYSENTER_compat);
- #else
--	wrmsrl(MSR_CSTAR, (unsigned long)ignore_sysret);
-+	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL)
-+		wrmsrl(MSR_CSTAR, (unsigned long)ignore_sysret);
- 	wrmsrl_safe(MSR_IA32_SYSENTER_CS, (u64)GDT_ENTRY_INVALID_SEG);
- 	wrmsrl_safe(MSR_IA32_SYSENTER_ESP, 0ULL);
- 	wrmsrl_safe(MSR_IA32_SYSENTER_EIP, 0ULL);
++static u64 tdx_handle_cpuid(struct pt_regs *regs)
++{
++	struct tdx_hypercall_output out = {0};
++	u64 ret;
++
++	ret = _tdx_hypercall(EXIT_REASON_CPUID, regs->ax, regs->cx, 0, 0, &out);
++
++	regs->ax = out.r12;
++	regs->bx = out.r13;
++	regs->cx = out.r14;
++	regs->dx = out.r15;
++
++	return ret;
++}
++
+ unsigned long tdx_get_ve_info(struct ve_info *ve)
+ {
+ 	struct tdx_module_output out = {0};
+@@ -193,6 +208,9 @@ int tdx_handle_virtualization_exception(struct pt_regs *regs,
+ 	case EXIT_REASON_MSR_WRITE:
+ 		ret = tdx_write_msr_safe(regs->cx, regs->ax, regs->dx);
+ 		break;
++	case EXIT_REASON_CPUID:
++		ret = tdx_handle_cpuid(regs);
++		break;
+ 	default:
+ 		pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
+ 		return -EFAULT;
 -- 
 2.25.1
 
