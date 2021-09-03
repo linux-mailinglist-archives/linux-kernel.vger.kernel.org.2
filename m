@@ -2,192 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9377400191
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 763BF400193
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhICOzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:55:05 -0400
-Received: from mail-eopbgr150081.outbound.protection.outlook.com ([40.107.15.81]:11191
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1349539AbhICOzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:55:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=G6/pJMkHzmGb/mAa1Ve0zCBRmIcUmmToJ/PaatYvc02XmXsNfhN3tSDpXozUnPAH5E/Sie2eC8GdtsOvU/vG3a5ElKWVPLA1KQzDvZHiwb7EY0omd0Tg90OwF9XdEUSArWFMbQJh+j1wvo+L5+bojuhfRYqJs6jMVdpibVhM3iOinkJcSzzsCCZRH605kSqg4Zi2/t4VTK5kshztCHE6SoEMucd+VpjCD5/YsMMI2B5Q7258hDm/VOjEORXr2woIHBctUqKj8d7XxLdAGZQAoXvkd5dxhE0mBjmJkCj4D3foeAsaj4AQ3GMsmZhH0kdKVFD9Mwi+RHRBXeWku6EEhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=KmqZnWedP1AJSXsFtOa8M95+jajfkJOrqyR2j0dN1Gg=;
- b=aQUXdUdz4mwQ1MT0g1aoXsEMUNbCT5nFXRptfafpKWprDXr2arn+yYwB5XJxDdkZwZdhJ1CN5X0NP3pGkggrtqc64XEHxQCnRGEhRxVPPtg1kVDxyi9abibkorHgRrZL6k7UMNTg+XkUs9nIZzVH1U2ryVkfSOO6YgEBinpO9Nr261PRvbkghWhTdURdtmVvI+o2NfMhIIyxlwbdsXFkIB2VPJNqOJeZ2EgsuBPqAj0qaIRvjqmscElt4BtH0StF/dVFTZCxBwImBw6YL7/1aCfyA02QvsE/Py1+PZ4lZE/itefWonHXighM3TQ4yBjYph1PpF7X7sFUugfszMyA8g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KmqZnWedP1AJSXsFtOa8M95+jajfkJOrqyR2j0dN1Gg=;
- b=TU2IkxindeWmaBueZEe/s+l4uwc9NOKkSnZmU5e+D/Z9Al5FlXCcQGYY+iF401bgso+wrD5lwKbQRCVIn0hOMlyhgN+PspDyDDxy0wtKP96S1SRb31+tXpU6dlxkCjfFtbiT7beHW2lvZ1NN9JVGWMZXjEqE23HyhXdyC7BevHg=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
- by VI1PR0401MB2654.eurprd04.prod.outlook.com (2603:10a6:800:58::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.21; Fri, 3 Sep
- 2021 14:53:57 +0000
-Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::499b:ba92:db2e:3f28]) by VI1PR04MB5151.eurprd04.prod.outlook.com
- ([fe80::499b:ba92:db2e:3f28%7]) with mapi id 15.20.4457.026; Fri, 3 Sep 2021
- 14:53:57 +0000
-From:   Daniel Baluta <daniel.baluta@oss.nxp.com>
-To:     broonie@kernel.org, pierre-louis.bossart@linux.intel.com,
-        lgirdwood@gmail.com, robh+dt@kernel.org,
-        ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
-Cc:     devicetree@vger.kernel.org, shawnguo@kernel.org,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        peter.ujfalusi@linux.intel.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, s-anna@ti.com,
-        Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH v2 2/2] dt-bindings: dsp: fsl: Add DSP optional clocks documentation
-Date:   Fri,  3 Sep 2021 17:53:40 +0300
-Message-Id: <20210903145340.225511-3-daniel.baluta@oss.nxp.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210903145340.225511-1-daniel.baluta@oss.nxp.com>
-References: <20210903145340.225511-1-daniel.baluta@oss.nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: VI1PR07CA0200.eurprd07.prod.outlook.com
- (2603:10a6:802:3f::24) To VI1PR04MB5151.eurprd04.prod.outlook.com
- (2603:10a6:803:61::28)
+        id S1349560AbhICOzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:55:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349539AbhICOzw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 10:55:52 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05DE7C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 07:54:53 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id k17so3458601pls.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 07:54:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zcZ/sXt90893FBSCWdUgATs3aWLIfrYQ34PJYV2dZJc=;
+        b=hauAnT3zndI3mOqhhNntv1SZlGJfUoSGiJXr48EJkTsGxuROAGNeKRBN7Vb2V7eEer
+         /UN2xeYuXQDDHxZQ0JUUT4ZHQRe4aqyBFanYTS2BuVy6a8UzHLPryCKChqXxs2L6weoj
+         owtgkAJM/d7SSjG1+IJeAEqR/mpfuh9qPtbb73WtNmOJr4JZyXLf1LUy6tvMzhv6XmFR
+         61Mypj7E5M1yZ81tqTQtvHU+EzDhUeh13Z0Y1j/KbcTH6peXG2xnwFOEDyOfyiValpBQ
+         iCrpCsxc6JG8nUJUdpu+hG6qgGdh3/oG85ClCoXnqd0DRR9kGwGF98xpgGHxapMbqmKo
+         NEyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zcZ/sXt90893FBSCWdUgATs3aWLIfrYQ34PJYV2dZJc=;
+        b=JhD2XPh6vEjvuI1sbl+8hKmH7sr4e1ELs/wUzUSgoi2AoOTm5oQ+kSmWcreff3QPKz
+         H+vDtXk/ooXbGjQbjHQ6X76Oc4jBYQo9i/DMZLY2F4f+n47emy3p2kDSytALJ6sFn+2F
+         Z+ciHB2B9THLrLgsP0e5+poaxNa8jpZXRChF6kuq6Lyj+Dzke5wRwlJZ3rPePYvkfcHL
+         UA6VNsEDLhZlJh7soXCDTgoAGE/Ts6LolrRKs+rS675aEi4sSbF/7bIygM7oV/yq/jI5
+         0BY+KCt3emFHt53n4gnkKiTeuxGq+Ih8OWH9ClmBPSXvgDfmI79zx+ZRi22iuP5Q+6mI
+         EXRA==
+X-Gm-Message-State: AOAM532hiJ4hzyqoMfAXhd8sOg3gSBcFgjQjvVVtbLU1+AiEcLrJQaZH
+        bfvZbfHgdzpC52D1QXJUxvP7NA==
+X-Google-Smtp-Source: ABdhPJx6rBI/0INfExIO/0BvrWyU/n69Lb9NJdoHIhgBLJM4G9ggQFlFrp4zJdJ9j4y9AcG56IKTaQ==
+X-Received: by 2002:a17:902:9889:b0:12c:fd88:530b with SMTP id s9-20020a170902988900b0012cfd88530bmr3571237plp.33.1630680892323;
+        Fri, 03 Sep 2021 07:54:52 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id n10sm5553799pjp.3.2021.09.03.07.54.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 07:54:51 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 14:54:48 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 7/8] KVM: Pre-allocate cpumasks for
+ kvm_make_all_cpus_request_except()
+Message-ID: <YTI3OL9scNnhFpWA@google.com>
+References: <20210827092516.1027264-1-vkuznets@redhat.com>
+ <20210827092516.1027264-8-vkuznets@redhat.com>
+ <YTE9OsXABLzUitUd@google.com>
+ <87o89am8fn.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (2a02:2f08:5708:8600:fd8d:b9e7:97b5:dd4a) by VI1PR07CA0200.eurprd07.prod.outlook.com (2603:10a6:802:3f::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.4 via Frontend Transport; Fri, 3 Sep 2021 14:53:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8abee408-5033-4f3d-aa15-08d96eeaa7e3
-X-MS-TrafficTypeDiagnostic: VI1PR0401MB2654:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0401MB2654FA98D33B2A8BBB4880BDB8CF9@VI1PR0401MB2654.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1EwvMrtVhHdmZNdLZ4B5I6XfCApnMAfBFcp84iMPH0gMfGv9pe18u4j2l1uEOrC4t3qvQhvx0aUmlG80ebC7ygdOX0Kb0t8gkFhvhC1tXTRNjE5qNXTtQBG9LNOzy/Hni7AjPeucTH4zrwIU4exjR6AEhaazZyQSgfAZMcr++vjge6HZmJ9ES98wqbDufuCZFVUYs+tzfX8za7+ns1ZbrrZ88pM/rnRI+uER1TSpND9Kfx4kQSq8vCo9tJ0ac9Zm2aljL/Q16wXCtrOO0qt2kYogeYsq6CeuMQJ6Gi56/O4xZaBVi6xviSRBqrYr9yR5oD6rL5xpCQgivTbCZlAi3uxaWbyfa9SZoJnUoi4+eZaWny6xP2D0XN9U1yQvjvWEAGEb2L9hx7lQ5FweFbieSE0Uy8eKn/LcShqlnCgIP/AFTEthRXnGHQ4YGO4K5TCYV8Jbks6jJX/b8mUmKrwl60fAnMr4cn4mboq8pekodeczX0wD8rGWcZr/3u+ZecHSFob54tut3tEjEooA0Y6tx7BgKadw7n6NBZIXWCp+XvllFJrx8M2LVzT54tPdyXV+znSFd38MaYmudWE8/BFdI2gK+Chot4pk8RrQIsFz67IvlxUc83v9zY8EZcTINRuMSoqkoTHeHkLF0JuN04I3zQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5151.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(38100700002)(66946007)(44832011)(52116002)(6506007)(86362001)(8676002)(6666004)(5660300002)(316002)(2906002)(66556008)(4326008)(6512007)(6486002)(66476007)(508600001)(2616005)(1076003)(83380400001)(8936002)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8oFI3p623F6E+R0PaY+ugG0iPJwNUpJwHu39fJcgW/rMMfxfHPP2MyIpbhLM?=
- =?us-ascii?Q?3a9ua/HFLpq0b/6A+2bgTBj0/mRwry3YN2rEuHfjZJk5IJGGQvk99586VGQz?=
- =?us-ascii?Q?rotKw51xIugNPx709kI4VACtFY+liVw6piLEkoSozxDCcvvi8O4qQBvqXl2W?=
- =?us-ascii?Q?UXH4G33tRQh/FYlGvkxr0AMc+PApG79n1H/V3cU0mhmflk6jYaOBPDKkrt9N?=
- =?us-ascii?Q?HH6bCqOKl6zkdboZZq3yV46ARfefe3J0wGQ3LUMRGXkIyckFVhMD2+tr1vZp?=
- =?us-ascii?Q?05g+JljHnuXaAZqDGtvNJ0YgP7L8GrNGaVZv0KgwW8A+yGPr21ejyghk9/PK?=
- =?us-ascii?Q?wYzo1YzQ8kJQ1P88ZCPSpWeNf2Mwqm3JUJhMKRc2lyce+p437Gt9zlLMq0/w?=
- =?us-ascii?Q?6VgEgqsI0bkAYCHOQlOFr26UZb0LAYYjDLDJ53r1MfcmJg2c6cSdQuxmjosR?=
- =?us-ascii?Q?OhCA7SMZ33lsNKpr0Q6Sprpo62KUHgIuHUk++OEvLHH8dj4Gc2bT+LmKT6jk?=
- =?us-ascii?Q?vK07mtsG5RLJEnBxsRSaXN7b4/YyQ0fypXWq1NcbPxZcw6nNa7ni7g/ksbu7?=
- =?us-ascii?Q?FUWRjEcqnJ4qKZj9VOjaJs2YBIyRA8eUeiNenxnT89VvFYcpc1CnI9GmmYiy?=
- =?us-ascii?Q?V9T3vcMZz8NG4FfzyZme6oCgAxGHAHvBOAnIzzo9XtJp6fh/io2dlSgwxKWz?=
- =?us-ascii?Q?XOSlFCWAjIw3mBb3MRM6bHeHY/JlnX+8vEZPRLI4Bzq9if0kBGFOGj0HuqnL?=
- =?us-ascii?Q?hLPsYVbhkbf+ltsN6Iv131ZvvaDLtAk2s5a2QUjRskwp1ImfsXbM0oXqxuIm?=
- =?us-ascii?Q?KY2jRSOLd38pDU/hvWJRBY6OPAGO1DrPsybv0hnp0DN+qfufjoUDZ3h8v2Et?=
- =?us-ascii?Q?neKnQQaobtr8ahcr4x/bVgZCOttW0eAWcWiDyv0zo3ncDWPAsgrVcs/BYZj/?=
- =?us-ascii?Q?Gq7vGNbnbB7hIa3uIUWVyIZL292WAphfHb7N6agEUDND3pNtvC/PPcAZhOGd?=
- =?us-ascii?Q?wVksR0j/GeaRPMGRDnKfjXgTSiXoxF/iMbMlIodxcDxDgaWgO4f165z0JxZ1?=
- =?us-ascii?Q?/56G8/QT1QsdG06f8AbyFmJLECNjd4xgKeySqjQfFCLgv0QUb6nG38tiOrrx?=
- =?us-ascii?Q?SZMsKGANkYu90gqVINCez9CDWaaOu3ET9qllPbN/NzIM7ofF7dlX9YtdZJuH?=
- =?us-ascii?Q?/QEIYqh7EIXlT0gaXu6fDt0ugj7W9agm4px12yDTRBTzH+Mg38InoqDao5o2?=
- =?us-ascii?Q?9YYOKZz15xOg/eZnSYAFBmRTAOQnIz8YliDF4ZrSXaTsiGKzi/vRK3aZ/Bih?=
- =?us-ascii?Q?IJiKBqqua9pwgKuNy1XIa1yfhCuv7PCraAy1JqaC4zLmZy2ft4MtO5NnIFHx?=
- =?us-ascii?Q?Msdf81v3VYU42rplbUluEJf6R1bD?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8abee408-5033-4f3d-aa15-08d96eeaa7e3
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2021 14:53:56.9532
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YbDeJ9aPbWwd/frx9RPMbFQYa2GxfGhHi3OEVtbU4sFnxXBMfk9Iqz56iB1QdsRTMuAhRndGNYlDmHuGaeIh0w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2654
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o89am8fn.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Baluta <daniel.baluta@nxp.com>
+On Fri, Sep 03, 2021, Vitaly Kuznetsov wrote:
+> Sean Christopherson <seanjc@google.com> writes:
+> >> @@ -5581,9 +5583,15 @@ int kvm_init(void *opaque, unsigned vcpu_size, unsigned vcpu_align,
+> >>  		goto out_free_3;
+> >>  	}
+> >>  
+> >> +	for_each_possible_cpu(cpu) {
+> >> +		if (!alloc_cpumask_var_node(&per_cpu(cpu_kick_mask, cpu),
+> >> +					    GFP_KERNEL, cpu_to_node(cpu)))
+> >> +			goto out_free_4;
+> >
+> > 'r' needs to be explicitly set to -EFAULT, e.g. in the current code it's
+> > guaranteed to be 0 here.
+> 
+> Oops, yes. Any particular reason to avoid -ENOMEM? (hope not, will use
+> this in v5)
 
-DSP node on the Linux kernel side must also take care of enabling
-DAI/DMA related clocks.
-
-By design we choose to manage DAI/DMA clocks from the kernel side because of
-the architecture of some i.MX8 boards.
-
-Clocks are handled by a special M4 core which runs a special firmware
-called SCFW (System Controler firmware).
-
-This communicates with A cores running Linux via a special Messaging
-Unit and implements a custom API which is already implemented by the
-Linux kernel i.MX clocks implementation.
-
-Note that these clocks are optional. We can use the DSP without them.
-
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
- .../devicetree/bindings/dsp/fsl,dsp.yaml      | 33 +++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-index 7afc9f2be13a..1453668c0194 100644
---- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-+++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
-@@ -24,16 +24,49 @@ properties:
-     maxItems: 1
- 
-   clocks:
-+    minItems: 3
-     items:
-       - description: ipg clock
-       - description: ocram clock
-       - description: core clock
-+      - description: esai0 core clock for accessing registers
-+      - description: esai0 baud clock
-+      - description: esai0 system clock
-+      - description: esai0 spba clock required when ESAI is placed in slave mode
-+      - description: SAI1 bus clock
-+      - description: SAI1 master clock 0
-+      - description: SAI1 master clock 1
-+      - description: SAI1 master clock 2
-+      - description: SAI1 master clock 3
-+      - description: SAI3 bus clock
-+      - description: SAI3 master clock 0
-+      - description: SAI3 master clock 1
-+      - description: SAI3 master clock 2
-+      - description: SAI3 master clock 3
-+      - description: SDMA3 root clock used for accessing registers
-+
- 
-   clock-names:
-+    minItems: 3
-     items:
-       - const: ipg
-       - const: ocram
-       - const: core
-+      - const: esai0_core
-+      - const: esai0_extal
-+      - const: esai0_fsys
-+      - const: esai0_spba
-+      - const: sai1_bus
-+      - const: sai1_mclk0
-+      - const: sai1_mclk1
-+      - const: sai1_mclk2
-+      - const: sai1_mclk3
-+      - const: sai3_bus
-+      - const: sai3_mclk0
-+      - const: sai3_mclk1
-+      - const: sai3_mclk2
-+      - const: sai3_mclk3
-+      - const: smda3_root
- 
-   power-domains:
-     description:
--- 
-2.27.0
-
+Huh.  Yes, -ENOMEM.  I have no idea why I typed -EFAULT.
