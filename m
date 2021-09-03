@@ -2,99 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1583FFA15
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D7A3FFA14
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237359AbhICGCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 02:02:03 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:36574 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S236348AbhICGCA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S237138AbhICGCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 3 Sep 2021 02:02:00 -0400
-X-UUID: 45ec8858fcea4a23a0db6e31cc49a40a-20210903
-X-UUID: 45ec8858fcea4a23a0db6e31cc49a40a-20210903
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1630697288; Fri, 03 Sep 2021 14:00:51 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 3 Sep 2021 14:00:50 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 3 Sep 2021 14:00:50 +0800
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     <broonie@kernel.org>, <tiwai@suse.com>, <matthias.bgg@gmail.com>
-CC:     <trevor.wu@mediatek.com>, <alsa-devel@alsa-project.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ASoC: mt8195: correct the dts parsing logic about DPTX and HDMITX
-Date:   Fri, 3 Sep 2021 14:00:49 +0800
-Message-ID: <20210903060049.20764-1-trevor.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233634AbhICGB7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 02:01:59 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F337C061760;
+        Thu,  2 Sep 2021 23:00:59 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id i28so7877293ljm.7;
+        Thu, 02 Sep 2021 23:00:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SS3V2W7eXZoP72eB0dNOwnog6SXuQ/C6UHFp2+JfZGw=;
+        b=R9dDX2T14oDoEKx683zCy++Xv/CAPNNlfzWgOaJhaFiOcwdCpmNxJ5SELcoEYEAiFy
+         M9KKB4uXxOB2d7rrmmcTEWdfGN4Yu09YpEgg0YTMr1BTKrcmNoiFH91FoMpnLdz+z3li
+         68V9RLI2aaJjRI015cLpYjuPpSRePCbs9Wbm9z7iO96yBukOUnv2jUCsjh21qIBhN5eL
+         ucdgNuXFLM571qwPSTVw6TZDWAL1diXBnkqpMBQyNCkB1CQCDVlq449Y5zUiKlnRrrwd
+         w0sfS5Cj+xNK/y4anrGdLy7Kkbp8BWb7l43eQrEfV8TdFCmIcVXZHXDyExuazqjdYBtl
+         cwCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SS3V2W7eXZoP72eB0dNOwnog6SXuQ/C6UHFp2+JfZGw=;
+        b=RRb+2Z4W3yhOOPXRXjGqME9OCxeUAPio4FqFEzHtq9cyGKsW2dUMqRM+FBiqKikTQh
+         DXWbZXytLfBrR+OeEIEC8//rF/7FU+D0tqhqxNGhaV7PohdtMoY+nDXX9M4aFp8TqWq+
+         L5lFF7KkYVqfIPw7ENzHr2BlW7Mp7vJUjnqEAajphkzclaQN2f1Ug3QSnv8Pv4BxX7s9
+         CjEzQ14ZSfEqn2/vnH7exazl15QDkyfVHcEVt+R8NaB0LjGU1aM6FK9jfQKM0yaBqIXm
+         a1Xm9xBX3zGRyrU+9JSsBTKBusweac6DKZQYt+JTW7hyAvRJOb+5ODrpsNrpivlOIr8/
+         1QXQ==
+X-Gm-Message-State: AOAM532Z8h8EDkie/buZkN6fF/QvoR6xpmJQrjgnG0DoXlyxqcKsSeKz
+        033d9TNNYmL5xs8SmfGuU843UlnzXM8=
+X-Google-Smtp-Source: ABdhPJyJCkOBGaqkZOl8FXnvhO3LuowRf0vib98qqnnyYHT6qHeOk/hFrHs33I31k6easfCeqUMX8w==
+X-Received: by 2002:a05:651c:11c7:: with SMTP id z7mr1606998ljo.464.1630648857737;
+        Thu, 02 Sep 2021 23:00:57 -0700 (PDT)
+Received: from [192.168.2.145] (46-138-26-37.dynamic.spd-mgts.ru. [46.138.26.37])
+        by smtp.googlemail.com with ESMTPSA id u10sm397071lft.252.2021.09.02.23.00.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 23:00:57 -0700 (PDT)
+Subject: Re: [PATCH 3/3] PM: domains: Add a ->dev_get_performance_state()
+ callback to genpd
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-pm@vger.kernel.org
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210902101634.827187-1-ulf.hansson@linaro.org>
+ <20210902101634.827187-4-ulf.hansson@linaro.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <4e36e732-6ca3-1d00-e6dd-38bb8877577b@gmail.com>
+Date:   Fri, 3 Sep 2021 09:00:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20210902101634.827187-4-ulf.hansson@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the description in dt-bindings, phandle assignment of
-HDMI TX and DP TX are not required properties, but driver regards them
-as required properties.
-In real use case, it's expected that DP TX and HDMI TX are optional
-features, so correct the behavior in driver.
+02.09.2021 13:16, Ulf Hansson пишет:
+> Hardware may be preprogrammed to a specific performance state, which may
+> not be zero initially during boot. This may lead to that genpd's current
+> performance state becomes inconsistent with the state of the hardware. To
+> deal with this, the driver for a device that is being attached to its
+> genpd, need to request an initial performance state vote, which is
+> typically done by calling some of the OPP APIs while probing.
+> 
+> In some cases this would lead to boilerplate code in the drivers. Let's
+> make it possible to avoid this, by adding a new optional callback to genpd
+> and invoke it per device during the attach process. In this way, the genpd
+> provider driver can inform genpd about the initial performance state that
+> is needed for the device.
+> 
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>  drivers/base/power/domain.c | 8 +++++---
+>  include/linux/pm_domain.h   | 2 ++
+>  2 files changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
+> index 800adf831cae..1a6f3538af8d 100644
+> --- a/drivers/base/power/domain.c
+> +++ b/drivers/base/power/domain.c
+> @@ -2640,13 +2640,15 @@ static void genpd_dev_pm_sync(struct device *dev)
+>  	genpd_queue_power_off_work(pd);
+>  }
+>  
+> -static int genpd_get_default_performance_state(struct device *dev,
+> +static int genpd_get_default_performance_state(struct generic_pm_domain *genpd,
+> +					       struct device *dev,
+>  					       unsigned int index)
+>  {
+>  	int pstate = of_get_required_opp_performance_state(dev->of_node, index);
+>  
+>  	if (pstate == -ENODEV || pstate == -EOPNOTSUPP)
+> -		return 0;
+> +		pstate = genpd->dev_get_performance_state ?
+> +			 genpd->dev_get_performance_state(genpd, dev) : 0;
+>  
+>  	return pstate;
+>  }
+> @@ -2701,7 +2703,7 @@ static int __genpd_dev_pm_attach(struct device *dev, struct device *base_dev,
+>  	}
+>  
+>  	/* Set the default performance state */
+> -	pstate = genpd_get_default_performance_state(dev, index);
+> +	pstate = genpd_get_default_performance_state(pd, dev, index);
 
-Fixes: 40d605df0a7b ("ASoC: mediatek: mt8195: add machine driver with mt6359, rt1019 and rt5682")
-Signed-off-by: Trevor Wu <trevor.wu@mediatek.com>
----
- .../mt8195/mt8195-mt6359-rt1019-rt5682.c      | 22 +++++++++----------
- 1 file changed, 10 insertions(+), 12 deletions(-)
+If base device is suspended, then its performance state is zero.
 
-diff --git a/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c b/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
-index 5dc217f59bd6..c97ace7387b4 100644
---- a/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
-+++ b/sound/soc/mediatek/mt8195/mt8195-mt6359-rt1019-rt5682.c
-@@ -1018,13 +1018,12 @@ static int mt8195_mt6359_rt1019_rt5682_dev_probe(struct platform_device *pdev)
- 				of_parse_phandle(pdev->dev.of_node,
- 						 "mediatek,dptx-codec", 0);
- 			if (!dai_link->codecs->of_node) {
--				dev_err(&pdev->dev, "Property 'dptx-codec' missing or invalid\n");
--				return -EINVAL;
-+				dev_dbg(&pdev->dev, "No property 'dptx-codec'\n");
-+			} else {
-+				dai_link->codecs->name = NULL;
-+				dai_link->codecs->dai_name = "i2s-hifi";
-+				dai_link->init = mt8195_dptx_codec_init;
- 			}
--
--			dai_link->codecs->name = NULL;
--			dai_link->codecs->dai_name = "i2s-hifi";
--			dai_link->init = mt8195_dptx_codec_init;
- 		}
- 
- 		if (strcmp(dai_link->name, "ETDM3_OUT_BE") == 0) {
-@@ -1032,13 +1031,12 @@ static int mt8195_mt6359_rt1019_rt5682_dev_probe(struct platform_device *pdev)
- 				of_parse_phandle(pdev->dev.of_node,
- 						 "mediatek,hdmi-codec", 0);
- 			if (!dai_link->codecs->of_node) {
--				dev_err(&pdev->dev, "Property 'hdmi-codec' missing or invalid\n");
--				return -EINVAL;
-+				dev_dbg(&pdev->dev, "No property 'hdmi-codec'\n");
-+			} else {
-+				dai_link->codecs->name = NULL;
-+				dai_link->codecs->dai_name = "i2s-hifi";
-+				dai_link->init = mt8195_hdmi_codec_init;
- 			}
--
--			dai_link->codecs->name = NULL;
--			dai_link->codecs->dai_name = "i2s-hifi";
--			dai_link->init = mt8195_hdmi_codec_init;
- 		}
- 	}
- 
--- 
-2.18.0
+When device will be rpm-resumed, then its performance should be set to
+the default state.
 
+You're setting performance state of the wrong device, it should be the
+base device and not the virtual domain device.
+
+These all is handled properly by my patch [1]. Hence it's complicated
+for the reason.
+
+[1]
+https://patchwork.ozlabs.org/project/linux-tegra/patch/20210831135450.26070-5-digetx@gmail.com/
