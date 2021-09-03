@@ -2,247 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02004400566
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E33400567
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350433AbhICS6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 14:58:02 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:51594 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349372AbhICS6B (ORCPT
+        id S1350510AbhICS7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 14:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235938AbhICS7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 14:58:01 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 183IuuMK009100;
-        Fri, 3 Sep 2021 13:56:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1630695416;
-        bh=nf5AqUkVW9t9JU95IDdR1mQyrisWt+ppFpgZCF/soRU=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=HkQGLicOlhIuoS7Js9LH09I5Kx9GMGT4blh5kJS5Aty0z4enr5Szz4VwaUt9QlB1Z
-         id9nyRoN8rUW3I0HwJ8fw2beE1OWFIu1kEgI1E3RCUGmjUyGxtwWgxqmXKizIcirgt
-         GayHl42u+uWJTvu+RgfkFBwCN0ARaRx7kcSh+Uvw=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 183IuuPH106923
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 3 Sep 2021 13:56:56 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 3
- Sep 2021 13:56:56 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 3 Sep 2021 13:56:56 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 183IutvB017581;
-        Fri, 3 Sep 2021 13:56:56 -0500
-Date:   Sat, 4 Sep 2021 00:26:55 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Parshuram Thombare <pthombar@cadence.com>
-CC:     <broonie@kernel.org>, <lukas@wunner.de>, <robh+dt@kernel.org>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <jpawar@cadence.com>,
-        <mparab@cadence.com>, Konrad Kociolek <konrad@cadence.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v3 2/2] spi: cadence: add support for Cadence XSPI
- controller
-Message-ID: <20210903185653.7vrfn4qfzvuiaiq2@ti.com>
-References: <1630499755-18751-1-git-send-email-pthombar@cadence.com>
- <1630499858-20456-1-git-send-email-pthombar@cadence.com>
+        Fri, 3 Sep 2021 14:59:53 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C374C061575;
+        Fri,  3 Sep 2021 11:58:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=rhoMpaz0xowX46wxPAfe4wFu/SzLsMfcH3aSjenZa3I=; b=ZVlmlPOWj/yOVsOmuHvNvqRce
+        qg0ahkp8aX18oUCVZM5GK724VmaLBAb+9AfGFqdtFWaiFJ7gKpAbP5imaiVKX7vA9Bjhy6xCAbp2V
+        FygY5w4D5gO1z2qHd3iWAvJHqlZu1jHJv9HUyVPEh2f4KcsntIFhF14hYP8mdkw80sofT78HxDDMT
+        HmXik5mRk2CetFFZ4PyAjnsXVXQHhZ6Ly0wSjcCfsHJIxK7ROxi0lURjrdcq4dR2JL4WW045dnYyK
+        K7YKpMHdC4zNoufvZtqX7QAa5EI0o+Fv7hgUck3EBj9qap3JmxGUyIoDulygaXg08AVaUdrBhpHTL
+        3jIARJpYQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48180)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mMEOp-0003Rl-7F; Fri, 03 Sep 2021 19:58:51 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mMEOo-0000ja-TN; Fri, 03 Sep 2021 19:58:50 +0100
+Date:   Fri, 3 Sep 2021 19:58:50 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH net-next 0/3] Make the PHY library stop being so
+ greedy when binding the generic PHY driver
+Message-ID: <20210903185850.GY22278@shell.armlinux.org.uk>
+References: <20210902152342.vett7qfhvhiyejvo@skbuf>
+ <20210902163144.GH22278@shell.armlinux.org.uk>
+ <20210902171033.4byfnu3g25ptnghg@skbuf>
+ <20210902175043.GK22278@shell.armlinux.org.uk>
+ <20210902190507.shcdmfi3v55l2zuj@skbuf>
+ <20210902200301.GM22278@shell.armlinux.org.uk>
+ <20210902202124.o5lcnukdzjkbft7l@skbuf>
+ <20210902202905.GN22278@shell.armlinux.org.uk>
+ <20210903162253.5utsa45zy6h4v76t@skbuf>
+ <YTJZj/Js+nmDTG0y@lunn.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1630499858-20456-1-git-send-email-pthombar@cadence.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <YTJZj/Js+nmDTG0y@lunn.ch>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Tudor, Vignesh,
-
-On 01/09/21 02:37PM, Parshuram Thombare wrote:
-> This patch adds driver for Cadence's XSPI controller.
-> It supports 3 work modes.
-> 1. ACMD (auto command) work mode
->     ACMD name is because it uses auto command engine in the controller.
->     It further has 2 modes PIO and CDMA (command DMA).
->     The CDMA work mode is dedicated for high-performance application
->     where very low software overhead is required. In this mode the
->     Command Engine is programmed by the series of linked descriptors
->     stored in system memory. These descriptors provide commands to execute
->     and store status information for finished commands.
->     The PIO mode work mode is dedicated for single operation where
->     constructing a linked list of descriptors would require too
->     much effort.
-> 2. STIG (Software Triggered Instruction Generator) work mode
->     In STIG mode, controller sends low-level instructions to memory.
->     Each instruction is 128-bit width. There is special instruction
->     DataSequence which carries information about data phase.
->     Driver uses Slave DMA interface to transfer data as only this
->     interface can be used in STIG work mode.
-> 3. Direct work mode
->     This work mode allows sending data without invoking any command through
->     the slave interface.
-> Currently ACMD PIO mode is used for NOR flash read, program, erase
-> operations, all other operations are handled in STIG work mode.
-
-Thanks. The commit message is much nicer now!
-
+On Fri, Sep 03, 2021 at 07:21:19PM +0200, Andrew Lunn wrote:
+> Hi Russell
 > 
-> Signed-off-by: Konrad Kociolek <konrad@cadence.com>
-> Signed-off-by: Jayshri Pawar <jpawar@cadence.com>
-> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
-> ---
->  drivers/spi/Kconfig            |  11 +
->  drivers/spi/Makefile           |   1 +
->  drivers/spi/spi-cadence-xspi.c | 837 +++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 849 insertions(+)
->  create mode 100644 drivers/spi/spi-cadence-xspi.c
+> Do you have
 > 
-> diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-> index e71a4c5..874f7aa 100644
-> --- a/drivers/spi/Kconfig
-> +++ b/drivers/spi/Kconfig
-> @@ -228,6 +228,17 @@ config SPI_CADENCE_QUADSPI
->  	  device with a Cadence QSPI controller and want to access the
->  	  Flash as an MTD device.
->  
-> +config SPI_CADENCE_XSPI
-> +	tristate "Cadence XSPI controller"
-> +	depends on (OF || COMPILE_TEST) && HAS_IOMEM
+> auto brdsl
+> 
+> in your /etc/network/interfaces?
+> 
+> Looking at /lib/udev/bridge-network-interface it seems it will only do
+> hotplug of interfaces if auto is set on the bridge interface. Without
+> auto, it only does coldplug. So late appearing switch ports won't get
+> added.
 
-Depends on SPI_MEM as well.
+I think you're looking at this:
 
-> +	help
-> +	  Enable support for the Cadence XSPI Flash controller.
-> +
-> +	  Cadence XSPI is a specialized controller for connecting an SPI
-> +	  Flash over upto 8bit wide bus. Enable this option if you have a
-> +	  device with a Cadence XSPI controller and want to access the
-> +	  Flash as an MTD device.
-> +
->  config SPI_CLPS711X
->  	tristate "CLPS711X host SPI controller"
->  	depends on ARCH_CLPS711X || COMPILE_TEST
-> diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
-> index 13e54c4..93229a8 100644
-> --- a/drivers/spi/Makefile
-> +++ b/drivers/spi/Makefile
-> @@ -21,6 +21,7 @@ obj-$(CONFIG_SPI_AR934X)		+= spi-ar934x.o
->  obj-$(CONFIG_SPI_ARMADA_3700)		+= spi-armada-3700.o
->  obj-$(CONFIG_SPI_ATMEL)			+= spi-atmel.o
->  obj-$(CONFIG_SPI_ATMEL_QUADSPI)		+= atmel-quadspi.o
-> +obj-$(CONFIG_SPI_CADENCE_XSPI)		+= spi-cadence-xspi.o
->  obj-$(CONFIG_SPI_AT91_USART)		+= spi-at91-usart.o
->  obj-$(CONFIG_SPI_ATH79)			+= spi-ath79.o
->  obj-$(CONFIG_SPI_AU1550)		+= spi-au1550.o
-> diff --git a/drivers/spi/spi-cadence-xspi.c b/drivers/spi/spi-cadence-xspi.c
-> new file mode 100644
-> index 0000000..c2b33e2
-> --- /dev/null
-> +++ b/drivers/spi/spi-cadence-xspi.c
-> @@ -0,0 +1,837 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Cadence XSPI flash controller driver
-> + *
-> + * Copyright (C) 2020-21 Cadence
-> + *
-> + */
-> +#include <linux/completion.h>
-> +#include <linux/delay.h>
-> +#include <linux/err.h>
-> +#include <linux/errno.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +#include <linux/iopoll.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/mtd/spi-nor.h>
+[ "$BRIDGE_HOTPLUG" = "no" ] && exit 0
 
-Umm, this seems wrong to me. SPI MEM based drivers should generally not 
-need to know anything about the subsystem driving them. Why do you need 
-to include this?
+?
 
-More on this below.
+Just before that is:
 
-> +#include <linux/bitfield.h>
-> +#include <linux/limits.h>
-> +#include <linux/log2.h>
-> +
-[...]
-> +static int cdns_xspi_mem_op(struct cdns_xspi_dev *cdns_xspi,
-> +			    struct spi_mem *mem,
-> +			    const struct spi_mem_op *op)
-> +{
-> +	struct spi_driver *spidrv = to_spi_driver(mem->spi->dev.driver);
-> +	enum spi_mem_data_dir dir = op->data.dir;
-> +
-> +	if (cdns_xspi->cur_cs != mem->spi->chip_select)
-> +		cdns_xspi->cur_cs = mem->spi->chip_select;
-> +
-> +	if (!strstr(spidrv->driver.name, "nor") ||
+[ -f /etc/default/bridge-utils ] && . /etc/default/bridge-utils
 
-I commented on this last time around as well. This does not look right 
-at all. A SPI MEM based driver should *not* need to know anything about 
-the subsystem driving it. That is the entire point of the API.
+and /etc/default/bridge-utils sets BRIDGE_HOTPLUG, which is by
+default:
 
-The controller seems to be able to extract the read and write opcodes 
-from the SFDP on its own since you don't pass in that information to 
-cdns_xspi_nor_read(). It looks like it is tied very heavily to a NOR 
-flash, and I am not sure if it can really be used with a NAND flash, or 
-something else entirely.
+# Shoud we add the ports of a bridge to the bridge when they are
+# hotplugged?
+BRIDGE_HOTPLUG=no
 
-Which makes me wonder how we should handle controllers like these. I 
-don't think they fit in very well with the SPI MEM model, since they 
-can't execute arbitrary SPI MEM commands very well. At the same time we 
-are trying to get rid of mtd/spi-nor/controllers. Dunno...
-
-Mark, Tudor, Vignesh, any ideas?
-
-> +	    (!op->addr.buswidth && !op->addr.nbytes && !op->addr.val)) {
-> +		return cdns_xspi_send_stig_command(cdns_xspi, op,
-> +						   (dir != SPI_MEM_NO_DATA));
-> +	} else {
-> +		if (dir == SPI_MEM_DATA_IN)
-> +			return cdns_xspi_nor_read(cdns_xspi, op->addr.val,
-> +						  op->data.nbytes,
-> +						  op->data.buf.in);
-> +		else if (dir == SPI_MEM_DATA_OUT)
-> +			return cdns_xspi_nor_write(cdns_xspi, op->addr.val,
-> +						   op->data.nbytes,
-> +						   op->data.buf.out);
-> +		else
-> +			return cdns_xspi_nor_erase(cdns_xspi, op->addr.val);
-> +	}
-> +}
-> +
-> +static int cdns_xspi_mem_op_execute(struct spi_mem *mem,
-> +				    const struct spi_mem_op *op)
-> +{
-> +	struct cdns_xspi_dev *cdns_xspi =
-> +		spi_master_get_devdata(mem->spi->master);
-> +	int ret = 0;
-> +
-> +	ret = cdns_xspi_mem_op(cdns_xspi, mem, op);
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct spi_controller_mem_ops cadence_xspi_mem_ops = {
-> +	.exec_op = cdns_xspi_mem_op_execute,
-> +};
-> +
+and... none of this seems documented. Not in
+/usr/share/doc/bridge-utils/README.Debian and not in the
+bridge-utils-interfaces(5) man page. This is all a bit rubbish,
+really.
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
