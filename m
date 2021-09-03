@@ -2,312 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4FE3FFEA5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1703FFEAA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348513AbhICLGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 07:06:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36298 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348592AbhICLGU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 07:06:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630667119;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HKIY6ikHaYXPyQ8mc3z2vSwsDwCqgabZwLfvmGN6b8E=;
-        b=It1RMP5Oo96Cd88eLIHwgChvUqx6IK+aJoHA6SHx6qLz0kIgHObxQNjMoU7TxOWN8ENJuQ
-        n5qFcGdcU0LYKyqoxGkngtt0aAjj6w0baqWch0tduhjVE9IdfgYmiNzeDvczUicv2GYDxS
-        evpocg3VeXbslZjy2CD0LnJS5ISLPEo=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-503-YioA0TnDPwSyWL-bBGyRWw-1; Fri, 03 Sep 2021 07:05:18 -0400
-X-MC-Unique: YioA0TnDPwSyWL-bBGyRWw-1
-Received: by mail-ed1-f69.google.com with SMTP id ch11-20020a0564021bcb00b003c8021b61c4so520936edb.23
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 04:05:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HKIY6ikHaYXPyQ8mc3z2vSwsDwCqgabZwLfvmGN6b8E=;
-        b=j/fpmTa5Q/2hz2ggE/oePACMY39w5LxMfFkuOAZ/cueaqk/PbDskHFIkZ4mavr3gYw
-         JyqbjZd2gHtDMMVIk38o5MI8cNUq+Diyj/qI3RkZLWhK/oqeVY7lRK1/7y/qsH0hUQr/
-         dwdJ18ClTvUu/TlnJ7Cg5vYUM/O0kLrCJOvXL+4pQTmLt0FISGnqTUL+fHY6+VhQOnVc
-         9BI+z5FPbtlEln2RZcQm0NY6KVmX9H2yvVN9XDjNdN8j18+umIeqHYk6sk5xtVR6rCqd
-         IIiDsUtF1sV6YCtGuyuyqrxaeQxsjOQjwt+vjOmrStLawLB7sQWNp7jEO7kpXZ4tJdQn
-         iaQg==
-X-Gm-Message-State: AOAM532tXUhRMZDxlFAHY6KgvdX2FMb+kUQy181EegDozrY7TG1DKnzm
-        3DS1D34kBzOQ6vipnkOlNqhNFUYtKqeRysBfBPros+HPS5QLWNV/DVPiCgV8gj4REEggMK7bmPU
-        jqV9+UFZ7ZR9Efrqr1V3BT8iI
-X-Received: by 2002:aa7:c649:: with SMTP id z9mr3434772edr.304.1630667117262;
-        Fri, 03 Sep 2021 04:05:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz3MQKea1R8lQ0vwpT0Bk599an+E9Z7X4uNcjB0uA7SB1DzNkJn4bAYb6lg/3Nhge6byxQIRA==
-X-Received: by 2002:aa7:c649:: with SMTP id z9mr3434757edr.304.1630667117046;
-        Fri, 03 Sep 2021 04:05:17 -0700 (PDT)
-Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
-        by smtp.gmail.com with ESMTPSA id n2sm2842024edi.32.2021.09.03.04.05.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 04:05:16 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 13:05:14 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 12/12] KVM: arm64: selftests: arch_timer: Support vCPU
- migration
-Message-ID: <20210903110514.22x3txynin5hg46z@gator.home>
-References: <20210901211412.4171835-1-rananta@google.com>
- <20210901211412.4171835-13-rananta@google.com>
+        id S242903AbhICLIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 07:08:18 -0400
+Received: from mga11.intel.com ([192.55.52.93]:21661 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233284AbhICLIP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 07:08:15 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="216249714"
+X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
+   d="scan'208";a="216249714"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 04:07:14 -0700
+X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
+   d="scan'208";a="500314109"
+Received: from ojcasey-mobl.ger.corp.intel.com (HELO [10.213.195.251]) ([10.213.195.251])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 04:07:12 -0700
+Subject: Re: [Intel-gfx] [PATCH v7 3/8] i915/gvt: use
+ DEFINE_DYNAMIC_DEBUG_CATEGORIES to create "gvt:core:" etc categories
+To:     Jim Cromie <jim.cromie@gmail.com>, jbaron@akamai.com,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+References: <20210831202133.2165222-1-jim.cromie@gmail.com>
+ <20210831202133.2165222-4-jim.cromie@gmail.com>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+Message-ID: <9fe5e962-e65e-6844-269a-058cce944a89@linux.intel.com>
+Date:   Fri, 3 Sep 2021 12:07:10 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901211412.4171835-13-rananta@google.com>
+In-Reply-To: <20210831202133.2165222-4-jim.cromie@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 09:14:12PM +0000, Raghavendra Rao Ananta wrote:
-> Since the timer stack (hardware and KVM) is per-CPU, there
-> are potential chances for races to occur when the scheduler
-> decides to migrate a vCPU thread to a different physical CPU.
-> Hence, include an option to stress-test this part as well by
-> forcing the vCPUs to migrate across physical CPUs in the
-> system at a particular rate.
+
+On 31/08/2021 21:21, Jim Cromie wrote:
+> The gvt component of this driver has ~120 pr_debugs, in 9 categories
+> quite similar to those in DRM.  Following the interface model of
+> drm.debug, add a parameter to map bits to these categorizations.
 > 
-> Originally, the bug for the fix with commit 3134cc8beb69d0d
-> ("KVM: arm64: vgic: Resample HW pending state on deactivation")
-> was discovered using arch_timer test with vCPU migrations and
-> can be easily reproduced.
+> DEFINE_DYNAMIC_DEBUG_CATEGORIES(debug_gvt, __gvt_debug,
+> 	"dyndbg bitmap desc",
+> 	{ "gvt:cmd: ",  "command processing" },
+> 	{ "gvt:core: ", "core help" },
+> 	{ "gvt:dpy: ",  "display help" },
+> 	{ "gvt:el: ",   "help" },
+> 	{ "gvt:irq: ",  "help" },
+> 	{ "gvt:mm: ",   "help" },
+> 	{ "gvt:mmio: ", "help" },
+> 	{ "gvt:render: ", "help" },
+> 	{ "gvt:sched: " "help" });
 > 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> The actual patch has a few details different, cmd_help() macro emits
+> the initialization construct.
+> 
+> if CONFIG_DRM_USE_DYNAMIC_DEBUG, then -DDYNAMIC_DEBUG_MODULE is added
+> cflags, by gvt/Makefile.
+> 
+> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 > ---
->  .../selftests/kvm/aarch64/arch_timer.c        | 108 +++++++++++++++++-
->  1 file changed, 107 insertions(+), 1 deletion(-)
+> v5:
+> . static decl of vector of bit->class descriptors - Emil.V
+> . relocate gvt-makefile chunk from elsewhere
+> v7:
+> . move ccflags addition up to i915/Makefile from i915/gvt
+> ---
+>   drivers/gpu/drm/i915/Makefile      |  4 ++++
+>   drivers/gpu/drm/i915/i915_params.c | 35 ++++++++++++++++++++++++++++++
+
+Can this work if put under gvt/ or at least intel_gvt.h|c?
+
+>   2 files changed, 39 insertions(+)
 > 
-> diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> index 1383f33850e9..de246c7afab2 100644
-> --- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> +++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> @@ -14,6 +14,8 @@
->   *
->   * The test provides command-line options to configure the timer's
->   * period (-p), number of vCPUs (-n), and iterations per stage (-i).
-> + * To stress-test the timer stack even more, an option to migrate the
-> + * vCPUs across pCPUs (-m), at a particular rate, is also provided.
->   *
->   * Copyright (c) 2021, Google LLC.
->   */
-> @@ -24,6 +26,8 @@
->  #include <pthread.h>
->  #include <linux/kvm.h>
->  #include <linux/sizes.h>
-> +#include <linux/bitmap.h>
-> +#include <sys/sysinfo.h>
->  
->  #include "kvm_util.h"
->  #include "processor.h"
-> @@ -41,12 +45,14 @@ struct test_args {
->  	int nr_vcpus;
->  	int nr_iter;
->  	int timer_period_ms;
-> +	int migration_freq_ms;
->  };
->  
->  static struct test_args test_args = {
->  	.nr_vcpus = NR_VCPUS_DEF,
->  	.nr_iter = NR_TEST_ITERS_DEF,
->  	.timer_period_ms = TIMER_TEST_PERIOD_MS_DEF,
-> +	.migration_freq_ms = 0,		/* Turn off migrations by default */
+> diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
+> index 4f22cac1c49b..5a4e371a3ec2 100644
+> --- a/drivers/gpu/drm/i915/Makefile
+> +++ b/drivers/gpu/drm/i915/Makefile
+> @@ -30,6 +30,10 @@ CFLAGS_display/intel_fbdev.o = $(call cc-disable-warning, override-init)
+>   
+>   subdir-ccflags-y += -I$(srctree)/$(src)
+>   
+> +#ifdef CONFIG_DRM_USE_DYNAMIC_DEBUG
+> +ccflags-y += -DDYNAMIC_DEBUG_MODULE
+> +#endif
 
-I'd rather we enable good tests like these by default.
-
->  };
->  
->  #define msecs_to_usecs(msec)		((msec) * 1000LL)
-> @@ -81,6 +87,9 @@ struct test_vcpu {
->  static struct test_vcpu test_vcpu[KVM_MAX_VCPUS];
->  static struct test_vcpu_shared_data vcpu_shared_data[KVM_MAX_VCPUS];
->  
-> +static unsigned long *vcpu_done_map;
-> +static pthread_mutex_t vcpu_done_map_lock;
-> +
->  static void
->  guest_configure_timer_action(struct test_vcpu_shared_data *shared_data)
->  {
-> @@ -216,6 +225,11 @@ static void *test_vcpu_run(void *arg)
->  
->  	vcpu_run(vm, vcpuid);
->  
-> +	/* Currently, any exit from guest is an indication of completion */
-> +	pthread_mutex_lock(&vcpu_done_map_lock);
-> +	set_bit(vcpuid, vcpu_done_map);
-> +	pthread_mutex_unlock(&vcpu_done_map_lock);
-> +
->  	switch (get_ucall(vm, vcpuid, &uc)) {
->  	case UCALL_SYNC:
->  	case UCALL_DONE:
-> @@ -235,9 +249,73 @@ static void *test_vcpu_run(void *arg)
->  	return NULL;
->  }
->  
-> +static uint32_t test_get_pcpu(void)
-> +{
-> +	uint32_t pcpu;
-> +	unsigned int nproc_conf;
-> +	cpu_set_t online_cpuset;
-> +
-> +	nproc_conf = get_nprocs_conf();
-> +	sched_getaffinity(0, sizeof(cpu_set_t), &online_cpuset);
-> +
-> +	/* Randomly find an available pCPU to place a vCPU on */
-> +	do {
-> +		pcpu = rand() % nproc_conf;
-> +	} while (!CPU_ISSET(pcpu, &online_cpuset));
-> +
-> +	return pcpu;
-> +}
-> +static int test_migrate_vcpu(struct test_vcpu *vcpu)
-> +{
-> +	int ret;
-> +	cpu_set_t cpuset;
-> +	uint32_t new_pcpu = test_get_pcpu();
-> +
-> +	CPU_ZERO(&cpuset);
-> +	CPU_SET(new_pcpu, &cpuset);
-> +	ret = pthread_setaffinity_np(vcpu->pt_vcpu_run,
-> +					sizeof(cpuset), &cpuset);
-> +
-> +	/* Allow the error where the vCPU thread is already finished */
-> +	TEST_ASSERT(ret == 0 || ret == ESRCH,
-> +			"Failed to migrate the vCPU:%u to pCPU: %u; ret: %d\n",
-> +			vcpu->vcpuid, new_pcpu, ret);
-
-It'd be good to collect stats for the two cases so we know how many
-vcpus we actually migrated with a successful setaffinity and how many
-just completed too early. If our stats don't look good, then we can
-adjust our timeouts and frequencies.
+Ignores whether CONFIG_DRM_I915_GVT is enabled or not?
 
 > +
-> +	return ret;
-> +}
-> +static void *test_vcpu_migration(void *arg)
-> +{
-> +	unsigned int i, n_done;
-> +	bool vcpu_done;
+>   # Please keep these build lists sorted!
+>   
+>   # core driver code
+> diff --git a/drivers/gpu/drm/i915/i915_params.c b/drivers/gpu/drm/i915/i915_params.c
+> index e07f4cfea63a..e645e149485e 100644
+> --- a/drivers/gpu/drm/i915/i915_params.c
+> +++ b/drivers/gpu/drm/i915/i915_params.c
+> @@ -265,3 +265,38 @@ void i915_params_free(struct i915_params *params)
+>   	I915_PARAMS_FOR_EACH(FREE);
+>   #undef FREE
+>   }
 > +
-> +	do {
-> +		usleep(msecs_to_usecs(test_args.migration_freq_ms));
+> +#ifdef CONFIG_DRM_USE_DYNAMIC_DEBUG
+> +/* todo: needs DYNAMIC_DEBUG_MODULE in some cases */
 > +
-> +		for (n_done = 0, i = 0; i < test_args.nr_vcpus; i++) {
-> +			pthread_mutex_lock(&vcpu_done_map_lock);
-> +			vcpu_done = test_bit(i, vcpu_done_map);
-> +			pthread_mutex_unlock(&vcpu_done_map_lock);
+> +unsigned long __gvt_debug;
+> +EXPORT_SYMBOL(__gvt_debug);
 > +
-> +			if (vcpu_done) {
-> +				n_done++;
-> +				continue;
-> +			}
+> +#define _help(key)	"\t    \"" key "\"\t: help for " key "\n"
 > +
-> +			test_migrate_vcpu(&test_vcpu[i]);
-> +		}
-> +	} while (test_args.nr_vcpus != n_done);
+> +#define I915_GVT_CATEGORIES(name) \
+> +	" Enable debug output via /sys/module/i915/parameters/" #name	\
+> +	", where each bit enables a debug category.\n"			\
+> +	_help("gvt:cmd:")						\
+> +	_help("gvt:core:")						\
+> +	_help("gvt:dpy:")						\
+> +	_help("gvt:el:")						\
+> +	_help("gvt:irq:")						\
+> +	_help("gvt:mm:")						\
+> +	_help("gvt:mmio:")						\
+> +	_help("gvt:render:")						\
+> +	_help("gvt:sched:")
 > +
-> +	return NULL;
-> +}
+> +DEFINE_DYNAMIC_DEBUG_CATEGORIES(debug_gvt, __gvt_debug,
+> +				I915_GVT_CATEGORIES(debug_gvt),
+> +				_DD_cat_("gvt:cmd:"),
+> +				_DD_cat_("gvt:core:"),
+> +				_DD_cat_("gvt:dpy:"),
+> +				_DD_cat_("gvt:el:"),
+> +				_DD_cat_("gvt:irq:"),
+> +				_DD_cat_("gvt:mm:"),
+> +				_DD_cat_("gvt:mmio:"),
+> +				_DD_cat_("gvt:render:"),
+> +				_DD_cat_("gvt:sched:"));
 > +
->  static void test_run(struct kvm_vm *vm)
->  {
->  	int i, ret;
-> +	pthread_t pt_vcpu_migration;
-> +
-> +	pthread_mutex_init(&vcpu_done_map_lock, NULL);
-> +	vcpu_done_map = bitmap_alloc(test_args.nr_vcpus);
-> +	TEST_ASSERT(vcpu_done_map, "Failed to allocate vcpu done bitmap\n");
->  
->  	for (i = 0; i < test_args.nr_vcpus; i++) {
->  		ret = pthread_create(&test_vcpu[i].pt_vcpu_run, NULL,
-> @@ -245,8 +323,23 @@ static void test_run(struct kvm_vm *vm)
->  		TEST_ASSERT(!ret, "Failed to create vCPU-%d pthread\n", i);
->  	}
->  
-> +	/* Spawn a thread to control the vCPU migrations */
-> +	if (test_args.migration_freq_ms) {
-> +		srand(time(NULL));
-> +
-> +		ret = pthread_create(&pt_vcpu_migration, NULL,
-> +					test_vcpu_migration, NULL);
-> +		TEST_ASSERT(!ret, "Failed to create the migration pthread\n");
-> +	}
-> +
-> +
->  	for (i = 0; i < test_args.nr_vcpus; i++)
->  		pthread_join(test_vcpu[i].pt_vcpu_run, NULL);
-> +
-> +	if (test_args.migration_freq_ms)
-> +		pthread_join(pt_vcpu_migration, NULL);
-> +
-> +	bitmap_free(vcpu_done_map);
->  }
->  
->  static struct kvm_vm *test_vm_create(void)
-> @@ -286,6 +379,7 @@ static void test_print_help(char *name)
->  		NR_TEST_ITERS_DEF);
->  	pr_info("\t-p: Periodicity (in ms) of the guest timer (default: %u)\n",
->  		TIMER_TEST_PERIOD_MS_DEF);
-> +	pr_info("\t-m: Frequency (in ms) of vCPUs to migrate to different pCPU. 0 to turn off (default: 0)\n");
->  	pr_info("\t-h: print this help screen\n");
->  }
->  
-> @@ -293,7 +387,7 @@ static bool parse_args(int argc, char *argv[])
->  {
->  	int opt;
->  
-> -	while ((opt = getopt(argc, argv, "hn:i:p:")) != -1) {
-> +	while ((opt = getopt(argc, argv, "hn:i:p:m:")) != -1) {
->  		switch (opt) {
->  		case 'n':
->  			test_args.nr_vcpus = atoi(optarg);
-> @@ -320,6 +414,13 @@ static bool parse_args(int argc, char *argv[])
->  				goto err;
->  			}
->  			break;
-> +		case 'm':
-> +			test_args.migration_freq_ms = atoi(optarg);
-> +			if (test_args.migration_freq_ms < 0) {
-> +				pr_info("0 or positive value needed for -m\n");
-> +				goto err;
-> +			}
-> +			break;
->  		case 'h':
->  		default:
->  			goto err;
-> @@ -343,6 +444,11 @@ int main(int argc, char *argv[])
->  	if (!parse_args(argc, argv))
->  		exit(KSFT_SKIP);
->  
-> +	if (get_nprocs() < 2) {
+> +#endif
 
-if (test_args.migration_freq_ms && get_nprocs() < 2)
+So just the foundation - no actual use sites I mean? How would these be 
+used from the code?
 
-> +		print_skip("At least two physical CPUs needed for vCPU migration");
-> +		exit(KSFT_SKIP);
-> +	}
-> +
->  	vm = test_vm_create();
->  	test_run(vm);
->  	kvm_vm_free(vm);
-> -- 
-> 2.33.0.153.gba50c8fa24-goog
->
+Regards,
 
-Thanks,
-drew 
-
+Tvrtko
