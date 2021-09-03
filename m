@@ -2,92 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8DB3FF865
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 02:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1213FF869
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 02:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344741AbhICAkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 20:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233254AbhICAkL (ORCPT
+        id S1345668AbhICAlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 20:41:13 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:30496 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238860AbhICAlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 20:40:11 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9022CC061575;
-        Thu,  2 Sep 2021 17:39:12 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id l6so5544932edb.7;
-        Thu, 02 Sep 2021 17:39:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hqXY12iIL6ozApUhBW3EO4+5asrjOwnSa/Or7mP2HcU=;
-        b=NjusxJdmhVh592JKKa504zSajo1+dFWnY676Gx8h4HuJkkX2JAg/OjbbIzok2R7gBc
-         1fOKpS2La5OaczNAcjLNlEtgWgNI+18pmVprwXE9GIhhH6Tk19pSU8VjnHvyN+lGpS9i
-         3zUoueA20rm3RIuzLztYrb/9XSC6Ezt75vnWJ9OR2JdQNRb94dn/XvuJsZwKFFT+14sh
-         coXcF6Tx3KcO+JhJdrtCgBJP7Hl94KbuSToGjRDNQ/kef6h8YoeD9rSMvqHg2IDgV0SL
-         DV5JplIL1zykN7CrB6/qU6fAiLWBgFpoR9krON9a/vyGbQdaPolCuIehITrXoDZeO0un
-         VRrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hqXY12iIL6ozApUhBW3EO4+5asrjOwnSa/Or7mP2HcU=;
-        b=awECU+A5xQbTMmCNd8dSqg/qL7SM069j07cetuuHPfAa9XW4SkPif8aNmXPZh12XrL
-         eKcCoMSxDG51r4/enOPVGpbQKYrJ/nTXw1GkKJOrKzOdcSJAgvO76BLQRYG6/ulYHKWp
-         JSUK91iJQolJ5QL0oaDVjs/NGfAzJm2Lx+c4vNm0Tv+oxQbOTjBd5uf/Kw/GD82BLEYT
-         DDba1Cq2Fc7RNPqLHAISd5/CEsAboA/b4+UvjWEQcA4Hy/Y85pJp/Ut6QoD1n3Olsp3o
-         zmIdw1yheU0FMLhvtBUpFFs+Kex9NOtNujKbPmgmGUw5NNdOGuhltgd+9By45MD1Kq+X
-         V1oQ==
-X-Gm-Message-State: AOAM532OrXZ92Mq+THz/wafdqc/BIprGzFg7SCe0XzRAdnpLGNlushdu
-        Nf8hrQOexspsdOVL+z0MZOs+3DjVu47BRL3Ing==
-X-Google-Smtp-Source: ABdhPJzke42+EmkLysb6yj5EFKNvA62b/SDQndPMDtARHrLmDSJxDEeyr+KtwUxxe66iBuRSn9iMyYxfaZ0qIosvINU=
-X-Received: by 2002:a50:9b52:: with SMTP id a18mr1059118edj.165.1630629551053;
- Thu, 02 Sep 2021 17:39:11 -0700 (PDT)
+        Thu, 2 Sep 2021 20:41:11 -0400
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 1830dpfU020723;
+        Fri, 3 Sep 2021 09:39:51 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 1830dpfU020723
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1630629592;
+        bh=1Y6XFgB9/D7mjEiysoImroDcHiCWsyF8Liocy0ZJmiw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=l29+RcAmQyS/huREVYv7UUXZT0hnO9UqzEujgTND96AUt5CRF/JlgQi+Xsjvocrd1
+         N6xe77cP39v3f6RoWjEKH4kKSk973gCgM2eKAXIalYoyGR/08SzEn/mJp4DIrXF4yp
+         HpbpnICOoy9knu0z5JmiQuLwvBejcN7ED/s4hKhpDrf2i0l3duAdHHYelsIq58JKqF
+         xHIVYANXkwIZ3wgFvabcR3o9yiWysEV3qxqBW/RMRtshdoS+eHc/5dUqltJSDrcaQa
+         DbV0odkBPqvTflQBGE9tLBXTu0FkxgaxbZspIxZuuPYrjZbfQHgSxONj+YN2PtTCyq
+         2DxUAjLnWmIHw==
+X-Nifty-SrcIP: [209.85.215.178]
+Received: by mail-pg1-f178.google.com with SMTP id e7so3836973pgk.2;
+        Thu, 02 Sep 2021 17:39:51 -0700 (PDT)
+X-Gm-Message-State: AOAM533uGroDCCyUTEmU+kT+cRdSyzKhm+nUsMxRzuLMr885fVZXgGH5
+        YNW4SzdMsERsTLtewnoZsT2WloPc7kgE5plk/es=
+X-Google-Smtp-Source: ABdhPJwzGYK4C5mlWmXEBMlp5fYhPEu8sKt5Gfs99DD7/XU6ShATFMOMttNOuk1lZQhNUYUZGpV1RJS5uaqcmAdlGv0=
+X-Received: by 2002:a63:d40a:: with SMTP id a10mr1047510pgh.7.1630629590936;
+ Thu, 02 Sep 2021 17:39:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210824131850.62b29724@canb.auug.org.au> <CAL_JsqKooHHmePPxRXGfB3DNfceO1=cdwAP=Esp-HUWtcaWefg@mail.gmail.com>
- <20210903083419.6981f63b@canb.auug.org.au>
-In-Reply-To: <20210903083419.6981f63b@canb.auug.org.au>
-From:   Rob Herring <robherring2@gmail.com>
-Date:   Thu, 2 Sep 2021 19:38:59 -0500
-Message-ID: <CAL_JsqKPc=Twa=P02t7B9Er0L2SoH9jVdfvShW9HhUX=AG-n0w@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the devicetree tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>, SoC Team <soc@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210831074004.3195284-1-masahiroy@kernel.org>
+ <20210831074004.3195284-7-masahiroy@kernel.org> <202108311034.D4B1410@keescook>
+In-Reply-To: <202108311034.D4B1410@keescook>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 3 Sep 2021 09:39:14 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATkducKiw8==u4477JGfyb5vnvbp2gM2s9ndZ_8owXfeg@mail.gmail.com>
+Message-ID: <CAK7LNATkducKiw8==u4477JGfyb5vnvbp2gM2s9ndZ_8owXfeg@mail.gmail.com>
+Subject: Re: [PATCH v2 06/13] kbuild: reuse $(cmd_objtool) for cmd_cc_lto_link_modules
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 5:34 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Wed, Sep 1, 2021 at 2:35 AM Kees Cook <keescook@chromium.org> wrote:
 >
-> Hi Rob,
->
-> On Tue, 24 Aug 2021 07:35:37 -0500 Rob Herring <robherring2@gmail.com> wrote:
+> On Tue, Aug 31, 2021 at 04:39:57PM +0900, Masahiro Yamada wrote:
+> > For CONFIG_LTO_CLANG=y, the objtool processing is not possible at the
+> > compilation, hence postponed by the link time.
 > >
-> > On Mon, Aug 23, 2021 at 10:18 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > Hi all,
-> > >
-> > > After merging the devicetree tree, today's linux-next build (arm
-> > > multi_v7_defconfig) produced this warning:
-> > >
-> > > arch/arm/boot/dts/bcm2711-rpi-4-b.dts:220.10-231.4: Warning (pci_device_reg): /scb/pcie@7d500000/pci@1,0: PCI unit address format error, expected "0,0"
-> > > arch/arm/boot/dts/bcm2711-rpi-4-b.dts:220.10-231.4: Warning (pci_device_reg): /scb/pcie@7d500000/pci@1,0: PCI unit address format error, expected "0,0"
-> > >
-> > > Presumably exposed by commit
-> > >
-> > >   1ee7943c3343 ("kbuild: Enable dtc 'pci_device_reg' warning by default")
+> > Reuse $(cmd_objtool) for CONFIG_LTO_CLANG=y by defining objtool-enabled
+> > properly.
 > >
-> > Yep, that's expected. There's a couple on arm64 builds too.
+> > For CONFIG_LTO_CLANG=y:
+> >
+> >   objtool-enabled is off for %.o compilation
+> >   objtool-enabled is on  for %.lto link
+> >
+> > For CONFIG_LTO_CLANG=n:
+> >
+> >   objtool-enabled is on for %.o compilation
+> >       (but, it depends on OBJECT_FILE_NON_STANDARD)
+> >
+> > Set part-of-module := y for %.lto.o to avoid repeating --module.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> >
+> >  scripts/Makefile.build | 28 +++++++++++++++++-----------
+> >  1 file changed, 17 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+> > index 21b55f37a23f..afc906cd7256 100644
+> > --- a/scripts/Makefile.build
+> > +++ b/scripts/Makefile.build
+> > @@ -236,20 +236,26 @@ objtool_args =                                                          \
+> >       $(if $(CONFIG_X86_SMAP), --uaccess)                             \
+> >       $(if $(CONFIG_FTRACE_MCOUNT_USE_OBJTOOL), --mcount)
+> >
+> > -ifndef CONFIG_LTO_CLANG
+> > +cmd_objtool = $(if $(objtool-enabled), ; $(objtool) $(objtool_args) $@)
+> > +cmd_gen_objtooldep = $(if $(objtool-enabled), { echo ; echo '$@: $$(wildcard $(objtool))' ; } >> $(dot-target).cmd)
+> > +
+> > +endif # CONFIG_STACK_VALIDATION
+> > +
+> > +ifdef CONFIG_LTO_CLANG
+> > +
+> > +# Skip objtool for LLVM bitcode
+> > +$(obj)/%o: objtool-enabled :=
 >
-> These warnings are now in Linus' tree :-(
+> Is this intentionally "%o" instead of "%.o"?
 
-There's some pending patches for them now[1]. The SoC tree needs to
-pick them up.
+Good catch.
 
-Rob
+No, it is not intentional.
 
-[1] https://lore.kernel.org/all/20210831125843.1233488-1-nsaenzju@redhat.com/
+I will fix "%o" to "%.o"
+
+
+> (And it later overridden by the "%.lto.o" rule?
+
+No, opposite.
+
+While building %.lto.o, we want to set objtool-enabled.
+But, we want to cancel it for %.o
+
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
