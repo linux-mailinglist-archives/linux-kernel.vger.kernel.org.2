@@ -2,112 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 758B4400815
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 149EB400817
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350048AbhICXJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 19:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245035AbhICXJr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 19:09:47 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B590DC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 16:08:46 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id y6so1137395lje.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 16:08:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fMM5rdL0JhVNmGhHJi+I1yppNIa03WByKSu62LtOtt0=;
-        b=CpwnMpfWowJSDtmCfPKzmtvSNLMAt12Ouyc0fv5Coc6PY95tQ/JYWl/JnU3r/BhU2E
-         YruTGApYH9baqpuvzU0L6f8aNrk61+j3o89oPqKA5ablDzTLYfxXjErMcoWtf2K4HgfT
-         xgv744cFV4noWLIkBVVbibtT28Yyi48cf2Ybk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fMM5rdL0JhVNmGhHJi+I1yppNIa03WByKSu62LtOtt0=;
-        b=SLq0s2dLRAwj8lUG3DvDCAbd815oTum7R5Gl4to42kEAzQSwtuzYlUQYwsFC3vbbeA
-         93jEZ51u9dtQix8bmfU+c2/L7cwEc02+OTStUHezI+6Wn9a34diCth9DVLXrE6vB7Gr4
-         +z5+quntDWrETpalPInRXXv+nm9QXuZ2a5/JLWFTZH+lNWEJ/O93fw7g6GO+iINC1BtX
-         MC/c6cO/l66X3GJREzGJdUpLXJLLkIfblmnFe6T2TDRABrG3wn3q8UPsbKxinIMEySON
-         nsHBAdbYC8QZUswbKPGyGaCgjxXOSN0V3HxVF/BqSJdpjw1h8wdUPQU6Zgv4Z6glBuU7
-         M26g==
-X-Gm-Message-State: AOAM530pxUvmNGUcXCdwL/hfA/mnq0M4FtoqvRAOySBwsT/3UdvShE3R
-        POoZLhVafeZChcT1hdyfCAAzsW0KHpJ66Rwcf84=
-X-Google-Smtp-Source: ABdhPJz0AuovjbSWv7nROrxmGzG0LvuTTYaPbP8v8mjrFltSovq/KZbkcbhJ/8BTZrDd1FLSNt0tkA==
-X-Received: by 2002:a05:651c:225:: with SMTP id z5mr928585ljn.409.1630710524662;
-        Fri, 03 Sep 2021 16:08:44 -0700 (PDT)
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com. [209.85.208.182])
-        by smtp.gmail.com with ESMTPSA id l26sm74403lfh.247.2021.09.03.16.08.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 16:08:44 -0700 (PDT)
-Received: by mail-lj1-f182.google.com with SMTP id h1so1105836ljl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 16:08:44 -0700 (PDT)
-X-Received: by 2002:a2e:b53a:: with SMTP id z26mr870287ljm.95.1630710523848;
- Fri, 03 Sep 2021 16:08:43 -0700 (PDT)
+        id S1350341AbhICXKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 19:10:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S245035AbhICXKF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 19:10:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11F2C6108E;
+        Fri,  3 Sep 2021 23:09:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630710545;
+        bh=+EPWpGxs3T9Uo/rZCTHnQYWwEXZm+0EO0/1mha6nTa4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PsvUU0jeXmTMrj2xAYG7mEtck7BYfJ242ItmR/IqPmPiMvNgjMP1O5dNXTVD3+i7U
+         vfhz8jnigKIPx2Ihieu1jVh7u1WWGBx9GwHxcKOpv7xt9L7ywn/jNTBjwOCCMG4m5y
+         qoCSeaA9ohL4/SkBqF55sHlA5WZ5d/jRd8n78Pcj6YcDLJURwq6L9t30Dk6031Yqko
+         5f15bFYGYljOq4mnsKWLa7sV1u539MzNRTarBu/jtyAdCSrfOd97cZOlGhVk+8vmS7
+         gBw+cgUUVnhWlTTtv288B8n0LNwrISvtEtxgF21jGegWeHTNzTyHG40Shv/aY5GgWz
+         UDgSk8TrFsH/w==
+Received: by mail-ed1-f54.google.com with SMTP id l6so956598edb.7;
+        Fri, 03 Sep 2021 16:09:04 -0700 (PDT)
+X-Gm-Message-State: AOAM5330j7kQFgRA1xZ0LzmMsrTrzuC85dueIvD2pgM4CC/RZOiB++XU
+        SPjJIeax/M1Fd48htldXm5w+LazgCqOZu55LzA==
+X-Google-Smtp-Source: ABdhPJz4lEEmfpXjdeGrQR0fYR+vvvNDtbaIe409iJr4s/erwwA00YR7R74Biml7KDpYg2YDhsHicxPQb1hlrcxH+as=
+X-Received: by 2002:aa7:d3d1:: with SMTP id o17mr1353761edr.272.1630710543641;
+ Fri, 03 Sep 2021 16:09:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <acdf065c-256d-47b0-5c20-203ff4b213d6@gmail.com>
- <CAHk-=wiENdk_AXGRrmbbOYqq9zYptdv=vYszgG2ZzztDUTJwRA@mail.gmail.com> <CANn89iJ5Q-PeZ=+87DT-BY4EVhWZATtieid59W7Tq0bkCvRQbw@mail.gmail.com>
-In-Reply-To: <CANn89iJ5Q-PeZ=+87DT-BY4EVhWZATtieid59W7Tq0bkCvRQbw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 3 Sep 2021 16:08:27 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiwydQEhbZCkUhwbDZp_CdMJrOtRwTThA5bT5C7b+grnA@mail.gmail.com>
-Message-ID: <CAHk-=wiwydQEhbZCkUhwbDZp_CdMJrOtRwTThA5bT5C7b+grnA@mail.gmail.com>
-Subject: Re: dozens of sysbot reports
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210825144833.7757-1-jason-jh.lin@mediatek.com> <20210825144833.7757-4-jason-jh.lin@mediatek.com>
+In-Reply-To: <20210825144833.7757-4-jason-jh.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sat, 4 Sep 2021 07:08:52 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-p8m_rGgQ3=Q9WmuC19LJnT2gSTcJopkgYBpgj-h-T1Q@mail.gmail.com>
+Message-ID: <CAAOTY_-p8m_rGgQ3=Q9WmuC19LJnT2gSTcJopkgYBpgj-h-T1Q@mail.gmail.com>
+Subject: Re: [PATCH v9 03/14] dt-bindings: mediatek: display: split each block
+ to individual yaml
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Fabien Parent <fparent@baylibre.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, fshao@chromium.org,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Jitao shi <jitao.shi@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 4:00 PM Eric Dumazet <edumazet@google.com> wrote:
+Hi, Jason:
+
+jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=882=
+5=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=8810:48=E5=AF=AB=E9=81=93=EF=
+=BC=9A
 >
-> > IOW, it sounds like you can send some netlink message that causes
-> > insane hash size allocations. Shouldn't _that_ be fixed?
+> 1. Remove mediatek,dislpay.txt
+> 2. Split each display function block to individual yaml file.
 >
-> Probably, but as I said there are many different reports.
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> ---
+>  .../display/mediatek/mediatek,aal.yaml        |  75 ++++++
+>  .../display/mediatek/mediatek,ccorr.yaml      |  69 ++++++
+>  .../display/mediatek/mediatek,color.yaml      |  84 +++++++
+>  .../display/mediatek/mediatek,disp.txt        | 219 ------------------
+>  .../display/mediatek/mediatek,dither.yaml     |  70 ++++++
+>  .../display/mediatek/mediatek,gamma.yaml      |  71 ++++++
+>  .../display/mediatek/mediatek,merge.yaml      |  66 ++++++
+>  .../display/mediatek/mediatek,mutex.yaml      |  77 ++++++
+>  .../display/mediatek/mediatek,od.yaml         |  52 +++++
+>  .../display/mediatek/mediatek,ovl-2l.yaml     |  86 +++++++
+>  .../display/mediatek/mediatek,ovl.yaml        |  96 ++++++++
+>  .../display/mediatek/mediatek,rdma.yaml       | 110 +++++++++
+>  .../display/mediatek/mediatek,split.yaml      |  56 +++++
+>  .../display/mediatek/mediatek,ufoe.yaml       |  59 +++++
+>  .../display/mediatek/mediatek,wdma.yaml       |  86 +++++++
+>  15 files changed, 1057 insertions(+), 219 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,aal.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,ccorr.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,color.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,disp.txt
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,dither.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,gamma.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,merge.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,mutex.yaml
+
+Because mutex does not only control display function block, but also
+control mdp function block, so move mutex binding document to the same
+folder of mmsys.
+
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,od.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,ovl-2l.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,ovl.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,rdma.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,split.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,ufoe.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,wdma.yaml
 >
-> If there was only one or two, I would simply have sent a fix(es).
->
-> I will probably release these bugs, so that they can be spread among
-> interested parties.
 
-Sure.
+[snip]
 
-Let's keep the warning in place. We can remove it before the actual
-release if things don't get better, but it does look like it's
-actually finding places where people should have checked limits more,
-rather than apparently just relying on the allocation failing.
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+mutex.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,mu=
+tex.yaml
+> new file mode 100644
+> index 000000000000..939dff14d989
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,mutex.y=
+aml
+> @@ -0,0 +1,77 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/mediatek/mediatek,mutex.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: mediatek display mutex
+> +
+> +maintainers:
+> +  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> +  - Philipp Zabel <p.zabel@pengutronix.de>
+> +
+> +description: |
+> +  The mediatek display mutex is used to send the triggers signals called
+> +  Start Of Frame (SOF)/ Error Of Frame (EOF) to each sub-modules on the
 
-Because with enough memory, the allocations traditionally didn't fail
-- they just succeed with completely insane allocations and absolutely
-horrendous latencies (ie allocating and possibly clearing gigabytes
-and gigabytes of data).
+EOF is End of Frame.
 
-This other one:
+> +  display data path
 
->  WARNING: CPU: 1 PID: 26011 at mm/util.c:597 kvmalloc_node+0x111/0x120
-> mm/util.c:597
-> Modules linked in:
-> CPU: 1 PID: 26011 Comm: syz-executor.2 Not tainted 5.14.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine,
-> BIOS Google 01/01/2011
-> RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
-> Call Trace:
->  check_btf_line+0x1a9/0xad0 kernel/bpf/verifier.c:9925
+In some SoC, such as mt2701, MUTEX could be a hardware mutex which
+protect the shadow register. Please describe this because this is a
+main function and this is why it's called MUTEX.
 
-Yeah, that code should check "nr_linfo" a lot more than it seems to do.
-
-It had just added __GFP_NOWARN to hide the fact that it did crazy
-allocations and just wanted the craziest ones to fail silently.
-
-I think it should just limit itself to something sane.
-
-               Linus
+Regards,
+Chun-Kuang.
+.
+> +  MUTEX device node must be siblings to the central MMSYS_CONFIG node.
+> +  For a description of the MMSYS_CONFIG binding, see
+> +  Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml for=
+ details.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: mediatek,mt2701-disp-mutex
+> +      - items:
+> +          - const: mediatek,mt2712-disp-mutex
+> +      - items:
+> +          - const: mediatek,mt8167-disp-mutex
+> +      - items:
+> +          - const: mediatek,mt8173-disp-mutex
+> +      - items:
+> +          - const: mediatek,mt8183-disp-mutex
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    description: A phandle and PM domain specifier as defined by binding=
+s of
+> +      the power controller specified by phandle. See
+> +      Documentation/devicetree/bindings/power/power-domain.yaml for deta=
+ils.
+> +
+> +  clocks:
+> +    items:
+> +      - description: MUTEX Clock
+> +
+> +  mediatek,gce-events:
+> +    description:
+> +      The event id which is mapping to the specific hardware event signa=
+l to gce.
+> +      The event id is defined in the gce header
+> +      include/include/dt-bindings/gce/<chip>-gce.h of each chips.
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - power-domains
+> +  - clocks
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +
+> +    mutex: mutex@14020000 {
+> +        compatible =3D "mediatek,mt8173-disp-mutex";
+> +        reg =3D <0 0x14020000 0 0x1000>;
+> +        interrupts =3D <GIC_SPI 169 IRQ_TYPE_LEVEL_LOW>;
+> +        power-domains =3D <&spm MT8173_POWER_DOMAIN_MM>;
+> +        clocks =3D <&mmsys CLK_MM_MUTEX_32K>;
+> +        mediatek,gce-events =3D <CMDQ_EVENT_MUTEX0_STREAM_EOF>,
+> +                              <CMDQ_EVENT_MUTEX1_STREAM_EOF>;
+> +    };
