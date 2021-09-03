@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 573F83FFD38
+	by mail.lfdr.de (Postfix) with ESMTP id A488E3FFD39
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234868AbhICJfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 05:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55838 "EHLO
+        id S1348876AbhICJfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 05:35:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348833AbhICJfK (ORCPT
+        with ESMTP id S1348862AbhICJfL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 05:35:10 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA21C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 02:34:10 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id b6so7291402wrh.10
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 02:34:10 -0700 (PDT)
+        Fri, 3 Sep 2021 05:35:11 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AFFEC061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 02:34:11 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id g135so3069626wme.5
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 02:34:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZmPVtGRb/2K9tPmXsG6OA67ocmyG0ALUk/f00rb/dbE=;
-        b=hHVvOW+Rgy49QuZvis0BlK/GsrYJalZPMiwMQPTD9lrJXqg9Q00i1L1yfN730MVnrm
-         jozDq/2ArK/bErr+Aj7WpMMX8ropedd0uM4K2ji+NJetIjdWzU4ul4Ii3TmKhngnoKB5
-         ED1KVNLfzjpRSV2Rnsc9Goh7o3Jl7fGy5/ofNaf9FyCZPfTw+G3LFulZntmhNfAAagYg
-         Rzjt6zKZ9TYfoqM+a8H5fMrALjlmvZwB/lnLSBisQqvZWBvKzSJoAViSpejTOVkjzxij
-         sWSYABhSjoto/kzcxQ8W2XpJi7rKwWPnMinkUjzwIB387s4F0EWUXYntG9vcEgzXBqBu
-         sJ6A==
+        bh=77oSpBqVnXZcEa3ufaPVn6IK8mlByEe3VsywPZCuWPc=;
+        b=kKEVjbwWDcHikjtZr8OTK3HtekGLa/Zf/L8si0/GWufXsNCK8Zyg4u8326W54loQM1
+         zThD3yyGJSwf325qYOaXvnOyM7JRJIKGhQFzrdpYHLdYjBCVvOV6IDMuIGkoHqcwVwLQ
+         SDKo0iSSl1yRU8noz/Q+maxxmjqfyZIQqx55ZRGfmcus6s7I+HAhQFmh8Phbkug+wBAr
+         X50IOiy+i5GiKmAeHxuP4e19N5gZYhww4uFdpDhJ0k52z/yp6wuZgHsMvgzx/MHxcTQw
+         wasxIG2tRdI1g7i+hYJk0UhJkCLlvLQRyyYuy6OrURfzq2SG4S9Uv9sL6/HqTI9bbiZc
+         b8qQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZmPVtGRb/2K9tPmXsG6OA67ocmyG0ALUk/f00rb/dbE=;
-        b=Fk8QeBQwS1Tj/S82pQw0GAf9YBoQlQzqrQVhQwYmZ9OsVlZth4Jxxff97qw+kc3Z3D
-         QO7u4829/7cc0TgVQe6oWezRGYl6ipx2Pi5ccnu04rkjJuTbk7UgO0JxTV3qE6cPeVEO
-         Cviwgi6x4+gg/eBvb0kEYpaB6YptlZ5hQrbAQuxWTB+tRvFCz/tHjHqcx3/C3I2D1LmL
-         xo8oxH1VMqCa5mre9ExZCTI2LwKCQGykj2BXAFOyPN6KUd2B/QhvjlYcJmVGbWF4npbW
-         cbwXPoxZPgKGJohlWIyvPJ3M/nlUynWN17dC2xVKGnKRXU8mvDi0SVesks73JWjDw+Q+
-         Y0nQ==
-X-Gm-Message-State: AOAM5310E6ZgSlomaAib2SvazGa2d0A/dtdLmQesdpCglMg9qHZaQ1Xg
-        hmzeOmXAXH32GEpBau8qpCY=
-X-Google-Smtp-Source: ABdhPJwQiGlWcmsu/7vuL3/Y4mC+eo4GjuY8u2NjtjIQKxzGS+l1VqfQdo+9HHu5SOSm0m9qLcOjWg==
-X-Received: by 2002:a5d:410b:: with SMTP id l11mr2996224wrp.76.1630661648823;
-        Fri, 03 Sep 2021 02:34:08 -0700 (PDT)
+        bh=77oSpBqVnXZcEa3ufaPVn6IK8mlByEe3VsywPZCuWPc=;
+        b=mMFJqcw+2cEnrZEiWTjAAT2yPtFeBcn3RIRFFBEIxq0IMnlSPG0FlEpBHhru1y6tVG
+         TinPBnci7q8MiAt++0yT72mHNXVHYwSiPIclz8WqFZ9kVaL/gNtsyPbqwzD2t5f7m8eI
+         LQd/dAyaEIdAN94oFqkc5O1QoQMi9fOy0LPEGIMCcsTpxRau+zfuV+I8VGzj4jV9whnM
+         Vwa//aAEFWSTu1RHcIbSnEWPiiqY47bZmQWMTpLRvVfqRrpVfh6Lh1hn0K6lKLLzELSU
+         jl8/owR2ClqvPdwnlsqdLQ09OarG+Q87IcsBa0HLq3KDN9mYVayO8BM9fLUkAF4A3njr
+         9lXQ==
+X-Gm-Message-State: AOAM532nqkEBYcIYRtrfj0k4E7AyE/YthUwAKvRWgh05ynu4mVpqdS+y
+        HVT4PsFT7RJIABxWzXQV5iU=
+X-Google-Smtp-Source: ABdhPJyV0AMqXZI3LwIalFq3LNxZ5itycUpKecoZmpjTeTZjOlrA1OsxCXZq1gInoYf1tjM+RjnF8A==
+X-Received: by 2002:a05:600c:4999:: with SMTP id h25mr7354862wmp.175.1630661649807;
+        Fri, 03 Sep 2021 02:34:09 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::16fa])
-        by smtp.gmail.com with ESMTPSA id x11sm3853060wmk.21.2021.09.03.02.34.07
+        by smtp.gmail.com with ESMTPSA id x11sm3853060wmk.21.2021.09.03.02.34.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 02:34:08 -0700 (PDT)
+        Fri, 03 Sep 2021 02:34:09 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 1/6] staging: r8188eu: remove header file rtw_ioctl_rtl.h
-Date:   Fri,  3 Sep 2021 11:33:49 +0200
-Message-Id: <20210903093354.12645-2-straube.linux@gmail.com>
+Subject: [PATCH 2/6] staging: r8188eu: remove unused defines from mp_custom_oid.h
+Date:   Fri,  3 Sep 2021 11:33:50 +0200
+Message-Id: <20210903093354.12645-3-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210903093354.12645-1-straube.linux@gmail.com>
 References: <20210903093354.12645-1-straube.linux@gmail.com>
@@ -66,96 +66,331 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All functions declared in rtw_ioctl_rtl.h are not implemented.
-Remove rtw_ioctl_rtl.h and its includes.
+Remove unused defines from mp_custom_oid.h.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- .../staging/r8188eu/include/rtw_ioctl_rtl.h   | 63 -------------------
- .../staging/r8188eu/include/rtw_mp_ioctl.h    |  1 -
- 2 files changed, 64 deletions(-)
- delete mode 100644 drivers/staging/r8188eu/include/rtw_ioctl_rtl.h
+ .../staging/r8188eu/include/mp_custom_oid.h   | 270 +-----------------
+ 1 file changed, 1 insertion(+), 269 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/include/rtw_ioctl_rtl.h b/drivers/staging/r8188eu/include/rtw_ioctl_rtl.h
-deleted file mode 100644
-index 6d3d1ef923f6..000000000000
---- a/drivers/staging/r8188eu/include/rtw_ioctl_rtl.h
-+++ /dev/null
-@@ -1,63 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
--/* Copyright(c) 2007 - 2011 Realtek Corporation. */
+diff --git a/drivers/staging/r8188eu/include/mp_custom_oid.h b/drivers/staging/r8188eu/include/mp_custom_oid.h
+index 7bcb857c795d..aa1c09be1084 100644
+--- a/drivers/staging/r8188eu/include/mp_custom_oid.h
++++ b/drivers/staging/r8188eu/include/mp_custom_oid.h
+@@ -19,304 +19,38 @@
+ /*	80 (second byte of non zero Realtek unique identifier) */
+ /*	XX (the custom OID number - providing 255 possible custom oids) */
+ 
+-#define OID_RT_PRO_RESET_DUT				0xFF818000
+ #define OID_RT_PRO_SET_DATA_RATE			0xFF818001
+ #define OID_RT_PRO_START_TEST				0xFF818002
+ #define OID_RT_PRO_STOP_TEST				0xFF818003
+-#define OID_RT_PRO_SET_PREAMBLE				0xFF818004
+-#define OID_RT_PRO_SET_SCRAMBLER			0xFF818005
+-#define OID_RT_PRO_SET_FILTER_BB			0xFF818006
+-#define OID_RT_PRO_SET_MANUAL_DIVERSITY_BB		0xFF818007
+ #define OID_RT_PRO_SET_CHANNEL_DIRECT_CALL		0xFF818008
+-#define OID_RT_PRO_SET_SLEEP_MODE_DIRECT_CALL		0xFF818009
+-#define OID_RT_PRO_SET_WAKE_MODE_DIRECT_CALL		0xFF81800A
+ 
+-#define OID_RT_PRO_SET_TX_ANTENNA_BB			0xFF81800D
+ #define OID_RT_PRO_SET_ANTENNA_BB			0xFF81800E
+-#define OID_RT_PRO_SET_CR_SCRAMBLER			0xFF81800F
+-#define OID_RT_PRO_SET_CR_NEW_FILTER			0xFF818010
+ #define OID_RT_PRO_SET_TX_POWER_CONTROL			0xFF818011
+-#define OID_RT_PRO_SET_CR_TX_CONFIG			0xFF818012
+-#define OID_RT_PRO_GET_TX_POWER_CONTROL			0xFF818013
+-#define OID_RT_PRO_GET_CR_SIGNAL_QUALITY		0xFF818014
+-#define OID_RT_PRO_SET_CR_SETPOINT			0xFF818015
+-#define OID_RT_PRO_SET_INTEGRATOR			0xFF818016
+-#define OID_RT_PRO_SET_SIGNAL_QUALITY			0xFF818017
+-#define OID_RT_PRO_GET_INTEGRATOR			0xFF818018
+-#define OID_RT_PRO_GET_SIGNAL_QUALITY			0xFF818019
+-#define OID_RT_PRO_QUERY_EEPROM_TYPE			0xFF81801A
+-#define OID_RT_PRO_WRITE_MAC_ADDRESS			0xFF81801B
+-#define OID_RT_PRO_READ_MAC_ADDRESS			0xFF81801C
+-#define OID_RT_PRO_WRITE_CIS_DATA			0xFF81801D
+-#define OID_RT_PRO_READ_CIS_DATA			0xFF81801E
+-#define OID_RT_PRO_WRITE_POWER_CONTROL			0xFF81801F
+-#define OID_RT_PRO_READ_POWER_CONTROL			0xFF818020
+-#define OID_RT_PRO_WRITE_EEPROM				0xFF818021
+-#define OID_RT_PRO_READ_EEPROM				0xFF818022
+-#define OID_RT_PRO_RESET_TX_PACKET_SENT			0xFF818023
+-#define OID_RT_PRO_QUERY_TX_PACKET_SENT			0xFF818024
+-#define OID_RT_PRO_RESET_RX_PACKET_RECEIVED		0xFF818025
+-#define OID_RT_PRO_QUERY_RX_PACKET_RECEIVED		0xFF818026
+-#define OID_RT_PRO_QUERY_RX_PACKET_CRC32_ERROR		0xFF818027
+-#define OID_RT_PRO_QUERY_CURRENT_ADDRESS		0xFF818028
+-#define OID_RT_PRO_QUERY_PERMANENT_ADDRESS		0xFF818029
+-#define OID_RT_PRO_SET_PHILIPS_RF_PARAMETERS		0xFF81802A
+-#define OID_RT_PRO_RECEIVE_PACKET			0xFF81802C
+-/*  added by Owen on 04/08/03 for Cameo's request */
+-#define OID_RT_PRO_WRITE_EEPROM_BYTE			0xFF81802D
+-#define OID_RT_PRO_READ_EEPROM_BYTE			0xFF81802E
+-#define OID_RT_PRO_SET_MODULATION			0xFF81802F
+-/*  */
 -
--#ifndef _RTW_IOCTL_RTL_H_
--#define _RTW_IOCTL_RTL_H_
+-/* Sean */
+-#define OID_RT_DRIVER_OPTION				0xFF818080
+-#define OID_RT_RF_OFF					0xFF818081
+-#define OID_RT_AUTH_STATUS				0xFF818082
+ 
+-/*  */
+ #define OID_RT_PRO_SET_CONTINUOUS_TX			0xFF81800B
+ #define OID_RT_PRO_SET_SINGLE_CARRIER_TX		0xFF81800C
+ #define OID_RT_PRO_SET_CARRIER_SUPPRESSION_TX		0xFF81802B
+ #define OID_RT_PRO_SET_SINGLE_TONE_TX			0xFF818043
+-/*  */
 -
--#include "osdep_service.h"
--#include "drv_types.h"
+-/*  by Owen for RTL8185 Phy Status Report Utility */
+-#define OID_RT_UTILITY_false_ALARM_COUNTERS		0xFF818580
+-#define OID_RT_UTILITY_SELECT_DEBUG_MODE		0xFF818581
+-#define OID_RT_UTILITY_SELECT_SUBCARRIER_NUMBER		0xFF818582
+-#define OID_RT_UTILITY_GET_RSSI_STATUS			0xFF818583
+-#define OID_RT_UTILITY_GET_FRAME_DETECTION_STATUS	0xFF818584
+-#define OID_RT_UTILITY_GET_AGC_AND_FREQUENCY_OFFSET_ESTIMATION_STATUS	\
+-							0xFF818585
+-#define OID_RT_UTILITY_GET_CHANNEL_ESTIMATION_STATUS	0xFF818586
+-/*  */
 -
--/*  oid_rtl_seg_01_01 ************** */
--int oid_rt_get_signal_quality_hdl(struct oid_par_priv *poid_par_priv);/* 84 */
--int oid_rt_get_small_packet_crc_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_middle_packet_crc_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_large_packet_crc_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_tx_retry_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_rx_retry_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_rx_total_packet_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_tx_beacon_ok_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_tx_beacon_err_hdl(struct oid_par_priv *poid_par_priv);
+-/*  by Owen on 03/09/19-03/09/22 for RTL8185 */
+-#define OID_RT_WIRELESS_MODE				0xFF818500
+-#define OID_RT_SUPPORTED_RATES				0xFF818501
+-#define OID_RT_DESIRED_RATES				0xFF818502
+-#define OID_RT_WIRELESS_MODE_STARTING_ADHOC		0xFF818503
+-/*  */
 -
--int oid_rt_pro_set_fw_dig_state_hdl(struct oid_par_priv *poid_par_priv);/* 8a */
--int oid_rt_pro_set_fw_ra_state_hdl(struct oid_par_priv *poid_par_priv);	/* 8b */
+-#define OID_RT_GET_CONNECT_STATE			0xFF030001
+-#define OID_RT_RESCAN					0xFF030002
+-#define OID_RT_SET_KEY_LENGTH				0xFF030003
+-#define OID_RT_SET_DEFAULT_KEY_ID			0xFF030004
 -
--int oid_rt_get_rx_icv_err_hdl(struct oid_par_priv *poid_par_priv);/* 93 */
--int oid_rt_set_encryption_algorithm_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_preamble_mode_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_ap_ip_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_channelplan_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_set_channelplan_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_set_preamble_mode_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_set_bcn_intvl_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_dedicate_probe_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_total_tx_bytes_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_total_rx_bytes_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_current_tx_power_level_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_enc_key_mismatch_count_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_enc_key_match_count_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_channel_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_hardware_radio_off_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_key_mismatch_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_supported_wireless_mode_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_channel_list_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_scan_in_progress_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_forced_data_rate_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_wireless_mode_for_scan_list_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_get_bss_wireless_mode_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_scan_with_magic_packet_hdl(struct oid_par_priv *poid_par_priv);
+-#define OID_RT_SET_CHANNEL				0xFF010182
+-#define OID_RT_SET_SNIFFER_MODE				0xFF010183
+-#define OID_RT_GET_SIGNAL_QUALITY			0xFF010184
+-#define OID_RT_GET_SMALL_PACKET_CRC			0xFF010185
+-#define OID_RT_GET_MIDDLE_PACKET_CRC			0xFF010186
+-#define OID_RT_GET_LARGE_PACKET_CRC			0xFF010187
+-#define OID_RT_GET_TX_RETRY				0xFF010188
+-#define OID_RT_GET_RX_RETRY				0xFF010189
+-#define OID_RT_PRO_SET_FW_DIG_STATE			0xFF01018A/* S */
+-#define OID_RT_PRO_SET_FW_RA_STATE			0xFF01018B/* S */
 -
--/*   oid_rtl_seg_01_03 section start ************** */
--int oid_rt_ap_get_associated_station_list_hdl(struct oid_par_priv *priv);
--int oid_rt_ap_switch_into_ap_mode_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_ap_supported_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_ap_set_passphrase_hdl(struct oid_par_priv *poid_par_priv);
+-#define OID_RT_GET_RX_TOTAL_PACKET			0xFF010190
+-#define OID_RT_GET_TX_BEACON_OK				0xFF010191
+-#define OID_RT_GET_TX_BEACON_ERR			0xFF010192
+-#define OID_RT_GET_RX_ICV_ERR				0xFF010193
+-#define OID_RT_SET_ENCRYPTION_ALGORITHM			0xFF010194
+-#define OID_RT_SET_NO_AUTO_RESCAN			0xFF010195
+-#define OID_RT_GET_PREAMBLE_MODE			0xFF010196
+-#define OID_RT_GET_DRIVER_UP_DELTA_TIME			0xFF010197
+-#define OID_RT_GET_AP_IP				0xFF010198
+-#define OID_RT_GET_CHANNELPLAN				0xFF010199
+-#define OID_RT_SET_PREAMBLE_MODE			0xFF01019A
+-#define OID_RT_SET_BCN_INTVL				0xFF01019B
+-#define OID_RT_GET_RF_VENDER				0xFF01019C
+-#define OID_RT_DEDICATE_PROBE				0xFF01019D
+-#define OID_RT_PRO_RX_FILTER_PATTERN			0xFF01019E
+ 
+-#define OID_RT_GET_DCST_CURRENT_THRESHOLD		0xFF01019F
 -
--/*  oid_rtl_seg_01_11 */
--int oid_rt_pro_rf_write_registry_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_pro_rf_read_registry_hdl(struct oid_par_priv *poid_par_priv);
+-#define OID_RT_GET_CCA_ERR				0xFF0101A0
+-#define OID_RT_GET_CCA_UPGRADE_THRESHOLD		0xFF0101A1
+-#define OID_RT_GET_CCA_FALLBACK_THRESHOLD		0xFF0101A2
 -
--/*   oid_rtl_seg_03_00 section start ************** */
--int oid_rt_get_connect_state_hdl(struct oid_par_priv *poid_par_priv);
--int oid_rt_set_default_key_id_hdl(struct oid_par_priv *poid_par_priv);
+-#define OID_RT_GET_CCA_UPGRADE_EVALUATE_TIMES		0xFF0101A3
+-#define OID_RT_GET_CCA_FALLBACK_EVALUATE_TIMES		0xFF0101A4
 -
--#endif
-diff --git a/drivers/staging/r8188eu/include/rtw_mp_ioctl.h b/drivers/staging/r8188eu/include/rtw_mp_ioctl.h
-index cf99f39a582e..18730dc9f37f 100644
---- a/drivers/staging/r8188eu/include/rtw_mp_ioctl.h
-+++ b/drivers/staging/r8188eu/include/rtw_mp_ioctl.h
-@@ -7,7 +7,6 @@
- #include "drv_types.h"
- #include "mp_custom_oid.h"
- #include "rtw_ioctl.h"
--#include "rtw_ioctl_rtl.h"
- #include "rtw_efuse.h"
- #include "rtw_mp.h"
+-/*  by Owen on 03/31/03 for Cameo's request */
+-#define OID_RT_SET_RATE_ADAPTIVE			0xFF0101A5
+-/*  */
+-#define OID_RT_GET_DCST_EVALUATE_PERIOD			0xFF0101A5
+-#define OID_RT_GET_DCST_TIME_UNIT_INDEX			0xFF0101A6
+-#define OID_RT_GET_TOTAL_TX_BYTES			0xFF0101A7
+-#define OID_RT_GET_TOTAL_RX_BYTES			0xFF0101A8
+-#define OID_RT_CURRENT_TX_POWER_LEVEL			0xFF0101A9
+-#define OID_RT_GET_ENC_KEY_MISMATCH_COUNT		0xFF0101AA
+-#define OID_RT_GET_ENC_KEY_MATCH_COUNT			0xFF0101AB
+-#define OID_RT_GET_CHANNEL				0xFF0101AC
+-
+-#define OID_RT_SET_CHANNELPLAN				0xFF0101AD
+-#define OID_RT_GET_HARDWARE_RADIO_OFF			0xFF0101AE
+-#define OID_RT_CHANNELPLAN_BY_COUNTRY			0xFF0101AF
+-#define OID_RT_SCAN_AVAILABLE_BSSID			0xFF0101B0
+-#define OID_RT_GET_HARDWARE_VERSION			0xFF0101B1
+-#define OID_RT_GET_IS_ROAMING				0xFF0101B2
+-#define OID_RT_GET_IS_PRIVACY				0xFF0101B3
+-#define OID_RT_GET_KEY_MISMATCH				0xFF0101B4
+-#define OID_RT_SET_RSSI_ROAM_TRAFFIC_TH			0xFF0101B5
+-#define OID_RT_SET_RSSI_ROAM_SIGNAL_TH			0xFF0101B6
+-#define OID_RT_RESET_LOG				0xFF0101B7
+-#define OID_RT_GET_LOG					0xFF0101B8
+-#define OID_RT_SET_INDICATE_HIDDEN_AP			0xFF0101B9
+-#define OID_RT_GET_HEADER_FAIL				0xFF0101BA
+-#define OID_RT_SUPPORTED_WIRELESS_MODE			0xFF0101BB
+-#define OID_RT_GET_CHANNEL_LIST				0xFF0101BC
+-#define OID_RT_GET_SCAN_IN_PROGRESS			0xFF0101BD
+-#define OID_RT_GET_TX_INFO				0xFF0101BE
+-#define OID_RT_RF_READ_WRITE_OFFSET			0xFF0101BF
+-#define OID_RT_RF_READ_WRITE				0xFF0101C0
+-
+-/*  For Netgear request. 2005.01.13, by rcnjko. */
+-#define OID_RT_FORCED_DATA_RATE				0xFF0101C1
+-#define OID_RT_WIRELESS_MODE_FOR_SCAN_LIST		0xFF0101C2
+-/*  For Netgear request. 2005.02.17, by rcnjko. */
+-#define OID_RT_GET_BSS_WIRELESS_MODE			0xFF0101C3
+-/*  For AZ project. 2005.06.27, by rcnjko. */
+-#define OID_RT_SCAN_WITH_MAGIC_PACKET			0xFF0101C4
+-
+-/*  Vincent 8185MP */
+-#define OID_RT_PRO_RX_FILTER				0xFF0111C0
+-
+-#define OID_CE_USB_WRITE_REGISTRY			0xFF0111C1
+-#define OID_CE_USB_READ_REGISTRY			0xFF0111C2
+-
+-#define OID_RT_PRO_SET_INITIAL_GA			0xFF0111C3
+-#define OID_RT_PRO_SET_BB_RF_STANDBY_MODE		0xFF0111C4
+-#define OID_RT_PRO_SET_BB_RF_SHUTDOWN_MODE		0xFF0111C5
+-#define OID_RT_PRO_SET_TX_CHARGE_PUMP			0xFF0111C6
+-#define OID_RT_PRO_SET_RX_CHARGE_PUMP			0xFF0111C7
+ #define OID_RT_PRO_RF_WRITE_REGISTRY			0xFF0111C8
+ #define OID_RT_PRO_RF_READ_REGISTRY			0xFF0111C9
+-#define OID_RT_PRO_QUERY_RF_TYPE			0xFF0111CA
+ 
+-/*  AP OID */
+-#define OID_RT_AP_GET_ASSOCIATED_STATION_LIST		0xFF010300
+-#define OID_RT_AP_GET_CURRENT_TIME_STAMP		0xFF010301
+-#define OID_RT_AP_SWITCH_INTO_AP_MODE			0xFF010302
+-#define OID_RT_AP_SET_DTIM_PERIOD			0xFF010303
+-/*  Determine if driver supports AP mode. */
+-#define OID_RT_AP_SUPPORTED				0xFF010304
+-/*  Set WPA-PSK passphrase into authenticator. */
+-#define OID_RT_AP_SET_PASSPHRASE			0xFF010305
+-
+-/*  8187MP. 2004.09.06, by rcnjko. */
+-#define OID_RT_PRO8187_WI_POLL				0xFF818780
+ #define OID_RT_PRO_WRITE_BB_REG				0xFF818781
+ #define OID_RT_PRO_READ_BB_REG				0xFF818782
+-#define OID_RT_PRO_WRITE_RF_REG				0xFF818783
+-#define OID_RT_PRO_READ_RF_REG				0xFF818784
+-
+-/*  Meeting House. added by Annie, 2005-07-20. */
+-#define OID_RT_MH_VENDER_ID				0xFFEDC100
+-
+-/* 8711 MP OID added 20051230. */
+-#define OID_RT_PRO8711_JOIN_BSS				0xFF871100/* S */
+ 
+ #define OID_RT_PRO_READ_REGISTER			0xFF871101 /* Q */
+ #define OID_RT_PRO_WRITE_REGISTER			0xFF871102 /* S */
+ 
+-#define OID_RT_PRO_BURST_READ_REGISTER			0xFF871103 /* Q */
+-#define OID_RT_PRO_BURST_WRITE_REGISTER			0xFF871104 /* S */
+-
+-#define OID_RT_PRO_WRITE_TXCMD				0xFF871105 /* S */
+-
+-#define OID_RT_PRO_READ16_EEPROM			0xFF871106 /* Q */
+-#define OID_RT_PRO_WRITE16_EEPROM			0xFF871107 /* S */
+-
+-#define OID_RT_PRO_H2C_SET_COMMAND			0xFF871108 /* S */
+-#define OID_RT_PRO_H2C_QUERY_RESULT			0xFF871109 /* Q */
+-
+-#define OID_RT_PRO8711_WI_POLL				0xFF87110A /* Q */
+-#define OID_RT_PRO8711_PKT_LOSS				0xFF87110B /* Q */
+-#define OID_RT_RD_ATTRIB_MEM				0xFF87110C/* Q */
+-#define OID_RT_WR_ATTRIB_MEM				0xFF87110D/* S */
+-
+-/* Method 2 for H2C/C2H */
+-#define OID_RT_PRO_H2C_CMD_MODE				0xFF871110 /* S */
+-#define OID_RT_PRO_H2C_CMD_RSP_MODE			0xFF871111 /* Q */
+-#define OID_RT_PRO_H2C_CMD_EVENT_MODE			0xFF871112 /* S */
+-#define OID_RT_PRO_WAIT_C2H_EVENT			0xFF871113 /* Q */
+-#define OID_RT_PRO_RW_ACCESS_PROTOCOL_TEST		0xFF871114/* Q */
+-
+-#define OID_RT_PRO_SCSI_ACCESS_TEST			0xFF871115 /* Q, S */
+-
+-#define OID_RT_PRO_SCSI_TCPIPOFFLOAD_OUT		0xFF871116 /* S */
+-#define OID_RT_PRO_SCSI_TCPIPOFFLOAD_IN			0xFF871117 /* Q,S */
+-#define OID_RT_RRO_RX_PKT_VIA_IOCTRL			0xFF871118 /* Q */
+-#define OID_RT_RRO_RX_PKTARRAY_VIA_IOCTRL		0xFF871119 /* Q */
+-
+-#define OID_RT_RPO_SET_PWRMGT_TEST			0xFF87111A /* S */
+-#define OID_RT_PRO_QRY_PWRMGT_TEST			0XFF87111B /* Q */
+-#define OID_RT_RPO_ASYNC_RWIO_TEST			0xFF87111C /* S */
+-#define OID_RT_RPO_ASYNC_RWIO_POLL			0xFF87111D /* Q */
+-#define OID_RT_PRO_SET_RF_INTFS				0xFF87111E /* S */
+-#define OID_RT_POLL_RX_STATUS				0xFF87111F /* Q */
+-
+-#define OID_RT_PRO_CFG_DEBUG_MESSAGE			0xFF871120 /* Q,S */
+-#define OID_RT_PRO_SET_DATA_RATE_EX			0xFF871121/* S */
+-#define OID_RT_PRO_SET_BASIC_RATE			0xFF871122/* S */
+-#define OID_RT_PRO_READ_TSSI				0xFF871123/* S */
+-#define OID_RT_PRO_SET_POWER_TRACKING			0xFF871124/* S */
+-
+-#define OID_RT_PRO_QRY_PWRSTATE				0xFF871150 /* Q */
+-#define OID_RT_PRO_SET_PWRSTATE				0xFF871151 /* S */
++#define OID_RT_PRO_SET_POWER_TRACKING			0xFF871124 /* S */
+ 
+-/* Method 2 , using workitem */
+-#define OID_RT_SET_READ_REG				0xFF871181 /* S */
+-#define OID_RT_SET_WRITE_REG				0xFF871182 /* S */
+-#define OID_RT_SET_BURST_READ_REG			0xFF871183 /* S */
+-#define OID_RT_SET_BURST_WRITE_REG			0xFF871184 /* S */
+-#define OID_RT_SET_WRITE_TXCMD				0xFF871185 /* S */
+-#define OID_RT_SET_READ16_EEPROM			0xFF871186 /* S */
+-#define OID_RT_SET_WRITE16_EEPROM			0xFF871187 /* S */
+-#define OID_RT_QRY_POLL_WKITEM				0xFF871188 /* Q */
+-
+-/* For SDIO INTERFACE only */
+-#define OID_RT_PRO_SYNCPAGERW_SRAM			0xFF8711A0 /* Q, S */
+-#define OID_RT_PRO_871X_DRV_EXT				0xFF8711A1
+-
+-/* For USB INTERFACE only */
+-#define OID_RT_PRO_USB_VENDOR_REQ			0xFF8711B0 /* Q, S */
+-#define OID_RT_PRO_SCSI_AUTO_TEST			0xFF8711B1 /* S */
+-#define OID_RT_PRO_USB_MAC_AC_FIFO_WRITE		0xFF8711B2 /* S */
+-#define OID_RT_PRO_USB_MAC_RX_FIFO_READ			0xFF8711B3 /* Q */
+-#define OID_RT_PRO_USB_MAC_RX_FIFO_POLLING		0xFF8711B4 /* Q */
+-
+-#define OID_RT_PRO_H2C_SET_RATE_TABLE			0xFF8711FB /* S */
+-#define OID_RT_PRO_H2C_GET_RATE_TABLE			0xFF8711FC /* S */
+-#define OID_RT_PRO_H2C_C2H_LBK_TEST			0xFF8711FE
+-
+-#define OID_RT_PRO_ENCRYPTION_CTRL			0xFF871200 /* Q, S */
+-#define OID_RT_PRO_ADD_STA_INFO				0xFF871201 /* S */
+-#define OID_RT_PRO_DELE_STA_INFO			0xFF871202 /* S */
+-#define OID_RT_PRO_QUERY_DR_VARIABLE			0xFF871203 /* Q */
+-
+-#define OID_RT_PRO_RX_PACKET_TYPE			0xFF871204 /* Q, S */
+-
+-#define OID_RT_PRO_READ_EFUSE				0xFF871205 /* Q */
+-#define OID_RT_PRO_WRITE_EFUSE				0xFF871206 /* S */
+-#define OID_RT_PRO_RW_EFUSE_PGPKT			0xFF871207 /* Q, S */
+ #define OID_RT_GET_EFUSE_CURRENT_SIZE			0xFF871208 /* Q */
+ 
+ #define OID_RT_SET_BANDWIDTH				0xFF871209 /* S */
+-#define OID_RT_SET_CRYSTAL_CAP				0xFF87120A /* S */
+ 
+ #define OID_RT_SET_RX_PACKET_TYPE			0xFF87120B /* S */
+ 
+ #define OID_RT_GET_EFUSE_MAX_SIZE			0xFF87120C /* Q */
+ 
+-#define OID_RT_PRO_SET_TX_AGC_OFFSET			0xFF87120D /* S */
+-
+-#define OID_RT_PRO_SET_PKT_TEST_MODE			0xFF87120E /* S */
+-
+-#define OID_RT_PRO_FOR_EVM_TEST_SETTING			0xFF87120F /* S */
+-
+ #define OID_RT_PRO_GET_THERMAL_METER			0xFF871210 /* Q */
+ 
+ #define OID_RT_RESET_PHY_RX_PACKET_COUNT		0xFF871211 /* S */
+@@ -325,8 +59,6 @@
+ 
+ #define OID_RT_SET_POWER_DOWN				0xFF871214 /* S */
+ 
+-#define OID_RT_GET_POWER_MODE				0xFF871215 /* Q */
+-
+ #define OID_RT_PRO_EFUSE				0xFF871216 /* Q, S */
+ #define OID_RT_PRO_EFUSE_MAP				0xFF871217 /* Q, S */
  
 -- 
 2.33.0
