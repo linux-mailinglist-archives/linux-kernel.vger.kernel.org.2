@@ -2,235 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A6D4005C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB314005D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236622AbhICTXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 15:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235044AbhICTXr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 15:23:47 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAD9C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:22:46 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id n63so179247vsc.11
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:22:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MdMXgAi9xhJwsQRjrZfawPYCwx2RDb+dIjCSNtGUvMY=;
-        b=eRN7yapVLK9w0fTrKsOyuiL9ebnqz8i3ECnJpUPuFrJ3o34wrGJDXLLjvLGCusaaTF
-         svGKU/62fC5Zm2uqiy7Gq2ciKhqmOguTZ9FEkM5mo7jRj243b9S7FqxD2SVsj2Afxq+H
-         8mBXAdpz40WYkdoZvSMISp7sOv8pbaSUTfWJZ3an0fJEkPJK6gCxMzkeQE9xeZUYKMCD
-         QSk49iiJyshVJXVZTl89B/B+Th2Rq/jsW+uaN8kobzX39AqQ4uJxZMfCh3cVWJnAuKZN
-         L8O9SwyFxwcPYX+rs7/TjTl6PtxzSuSEHL24cKcIJeBWRPOO6m3840HNeZQ2vBSva3Wt
-         gvcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MdMXgAi9xhJwsQRjrZfawPYCwx2RDb+dIjCSNtGUvMY=;
-        b=RN7CLgsnWhSaQibsvJt1RRFZ1MCe8FLvxwA/FNvdAwSIemiKLXZv5oW4dbEsKH8ptU
-         BXY86TJDuIhRUmvEHhgt5VOFXgabOxEF+WkNcNO8cVuFi+zfB+fzh+s18ngB/LvHCIT3
-         b2DAhEyYyrFb40SBGTN0Sk3urK/aQriBwXg75w7KtMQB4VJ0oNgVj9auHSxjmHE/NHpx
-         j5nCKhiNgCPiNG7Hnld3vBsz61OHY1TPTbTa20713OHPswuBu4j8vVRMdtNcT/vJMiTi
-         TPRBO4oINELqR3xGacTJtl+kL7kuUhzeQ/P7REV4VQ7dsD47hqVGzsQGNdZNaGzGC4F+
-         MBoA==
-X-Gm-Message-State: AOAM530PyO63lTiz1Jp3sVHBQezEaVfpt3ljBdx4b7I9AiOFJCYx7HDz
-        tgd8cV79MDzlXny17ekPSHmmrteqAeP8NZoj2DyyRd9usjI=
-X-Google-Smtp-Source: ABdhPJyQhdlOGNgq/F67sNH2Ya6oqz77IfwN3oOH0tdgX3ely67VRTOYdk1XXyJBjQA9XVI9iCsDo6AHhdLYWYjHmdc=
-X-Received: by 2002:a67:401:: with SMTP id 1mr508836vse.48.1630696965751; Fri,
- 03 Sep 2021 12:22:45 -0700 (PDT)
+        id S239237AbhICTbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 15:31:38 -0400
+Received: from mga18.intel.com ([134.134.136.126]:9298 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239073AbhICTbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 15:31:36 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="206616584"
+X-IronPort-AV: E=Sophos;i="5.85,266,1624345200"; 
+   d="scan'208";a="206616584"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 12:30:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,266,1624345200"; 
+   d="scan'208";a="521833065"
+Received: from lkp-server01.sh.intel.com (HELO 2115029a3e5c) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 03 Sep 2021 12:30:35 -0700
+Received: from kbuild by 2115029a3e5c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mMEtW-0000lk-CX; Fri, 03 Sep 2021 19:30:34 +0000
+Date:   Sat, 04 Sep 2021 03:29:49 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ ee0f507188b804b76d45078abd4e967a40642009
+Message-ID: <613277ad.3IV0QIB2L95gkylC%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210831202133.2165222-1-jim.cromie@gmail.com>
- <20210831202133.2165222-4-jim.cromie@gmail.com> <9fe5e962-e65e-6844-269a-058cce944a89@linux.intel.com>
-In-Reply-To: <9fe5e962-e65e-6844-269a-058cce944a89@linux.intel.com>
-From:   jim.cromie@gmail.com
-Date:   Fri, 3 Sep 2021 13:22:19 -0600
-Message-ID: <CAJfuBxz+cZyyDSBrDR0+Rf7K9fqpmeAfcWb1x2MkwD0P9LuDcQ@mail.gmail.com>
-Subject: Re: [Intel-gfx] [PATCH v7 3/8] i915/gvt: use DEFINE_DYNAMIC_DEBUG_CATEGORIES
- to create "gvt:core:" etc categories
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Cc:     Jason Baron <jbaron@akamai.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 5:07 AM Tvrtko Ursulin
-<tvrtko.ursulin@linux.intel.com> wrote:
->
->
-> On 31/08/2021 21:21, Jim Cromie wrote:
-> > The gvt component of this driver has ~120 pr_debugs, in 9 categories
-> > quite similar to those in DRM.  Following the interface model of
-> > drm.debug, add a parameter to map bits to these categorizations.
-> >
-> > DEFINE_DYNAMIC_DEBUG_CATEGORIES(debug_gvt, __gvt_debug,
-> >       "dyndbg bitmap desc",
-> >       { "gvt:cmd: ",  "command processing" },
-> >       { "gvt:core: ", "core help" },
-> >       { "gvt:dpy: ",  "display help" },
-> >       { "gvt:el: ",   "help" },
-> >       { "gvt:irq: ",  "help" },
-> >       { "gvt:mm: ",   "help" },
-> >       { "gvt:mmio: ", "help" },
-> >       { "gvt:render: ", "help" },
-> >       { "gvt:sched: " "help" });
-> >
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: ee0f507188b804b76d45078abd4e967a40642009  Merge branch 'x86/urgent'
 
-BTW, Ive dropped the help field, its already handled, dont need to clutter.
+elapsed time: 1361m
 
+configs tested: 137
+configs skipped: 4
 
-> > The actual patch has a few details different, cmd_help() macro emits
-> > the initialization construct.
-> >
-> > if CONFIG_DRM_USE_DYNAMIC_DEBUG, then -DDYNAMIC_DEBUG_MODULE is added
-> > cflags, by gvt/Makefile.
-> >
-> > Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-> > ---
-> > v5:
-> > . static decl of vector of bit->class descriptors - Emil.V
-> > . relocate gvt-makefile chunk from elsewhere
-> > v7:
-> > . move ccflags addition up to i915/Makefile from i915/gvt
-> > ---
-> >   drivers/gpu/drm/i915/Makefile      |  4 ++++
-> >   drivers/gpu/drm/i915/i915_params.c | 35 ++++++++++++++++++++++++++++++
->
-> Can this work if put under gvt/ or at least intel_gvt.h|c?
->
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I thought it belonged here more, at least according to the name of the
-config.var
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210904
+mips                  maltasmvp_eva_defconfig
+mips                         cobalt_defconfig
+openrisc                    or1ksim_defconfig
+arm                        multi_v7_defconfig
+arm                         axm55xx_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                     rainier_defconfig
+mips                         tb0226_defconfig
+m68k                        m5272c3_defconfig
+mips                        bcm63xx_defconfig
+mips                        workpad_defconfig
+powerpc                    gamecube_defconfig
+powerpc                      acadia_defconfig
+arm                       versatile_defconfig
+sh                        sh7757lcr_defconfig
+sh                           se7206_defconfig
+microblaze                      mmu_defconfig
+arm                          collie_defconfig
+powerpc                 mpc836x_mds_defconfig
+arm                  colibri_pxa300_defconfig
+sh                          polaris_defconfig
+arm                       imx_v6_v7_defconfig
+mips                    maltaup_xpa_defconfig
+powerpc                     mpc83xx_defconfig
+arm                        clps711x_defconfig
+um                                  defconfig
+m68k                             allyesconfig
+i386                             alldefconfig
+arm                       aspeed_g5_defconfig
+m68k                       m5275evb_defconfig
+arm                    vt8500_v6_v7_defconfig
+arm                            lart_defconfig
+sh                         ecovec24_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                      makalu_defconfig
+powerpc                     tqm8541_defconfig
+openrisc                  or1klitex_defconfig
+powerpc                    adder875_defconfig
+arm                           omap1_defconfig
+arm                           spitz_defconfig
+arm                        spear3xx_defconfig
+mips                       capcella_defconfig
+powerpc                     sequoia_defconfig
+mips                       rbtx49xx_defconfig
+m68k                            mac_defconfig
+arm                           tegra_defconfig
+sh                          rsk7201_defconfig
+xtensa                generic_kc705_defconfig
+parisc                generic-32bit_defconfig
+arm                          exynos_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210902
+x86_64               randconfig-a006-20210902
+x86_64               randconfig-a003-20210902
+x86_64               randconfig-a005-20210902
+x86_64               randconfig-a001-20210902
+x86_64               randconfig-a002-20210902
+x86_64               randconfig-a016-20210903
+x86_64               randconfig-a011-20210903
+x86_64               randconfig-a012-20210903
+x86_64               randconfig-a015-20210903
+x86_64               randconfig-a014-20210903
+x86_64               randconfig-a013-20210903
+riscv                randconfig-r042-20210903
+s390                 randconfig-r044-20210903
+arc                  randconfig-r043-20210903
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                               rhel-8.3
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                                  kexec
 
-CONFIG_DRM_USE_DYNAMIC_DEBUG.
+clang tested configs:
+s390                 randconfig-c005-20210904
+mips                 randconfig-c004-20210904
+powerpc              randconfig-c003-20210904
+x86_64               randconfig-c007-20210904
+i386                 randconfig-c001-20210904
+arm                  randconfig-c002-20210904
+riscv                randconfig-c006-20210904
+x86_64               randconfig-a004-20210903
+x86_64               randconfig-a006-20210903
+x86_64               randconfig-a003-20210903
+x86_64               randconfig-a005-20210903
+x86_64               randconfig-a001-20210903
+x86_64               randconfig-a002-20210903
+i386                 randconfig-a005-20210903
+i386                 randconfig-a004-20210903
+i386                 randconfig-a006-20210903
+i386                 randconfig-a002-20210903
+i386                 randconfig-a001-20210903
+i386                 randconfig-a003-20210903
+hexagon              randconfig-r045-20210903
+hexagon              randconfig-r041-20210903
 
-I suppose its not a great name, its narrow purpose is to swap
-drm-debug api to use dyndbg.   drm-evrything already "uses"
-dyndbg if CONFIG_DYNAMIC_DEBUG=y, those gvt/pr_debugs in particular.
-
-Theres also CONFIG_DYNAMIC_DEBUG_CORE=y,
-which drm basically ignores currently.
-
-So with the name CONFIG_DRM_USE_DYNAMIC_DEBUG
-it seemed proper to arrange for that  to be true on DD-CORE=y builds,
-by adding -DDYNAMIC_DEBUG_MODULE
-
-Does that make some sense ?
-How to best resolve the frictions ?
-new CONFIG names ?
-
-> >   2 files changed, 39 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
-> > index 4f22cac1c49b..5a4e371a3ec2 100644
-> > --- a/drivers/gpu/drm/i915/Makefile
-> > +++ b/drivers/gpu/drm/i915/Makefile
-> > @@ -30,6 +30,10 @@ CFLAGS_display/intel_fbdev.o = $(call cc-disable-warning, override-init)
-> >
-> >   subdir-ccflags-y += -I$(srctree)/$(src)
-> >
-> > +#ifdef CONFIG_DRM_USE_DYNAMIC_DEBUG
-> > +ccflags-y += -DDYNAMIC_DEBUG_MODULE
-> > +#endif
->
-> Ignores whether CONFIG_DRM_I915_GVT is enabled or not?
->
-
-not intentionally.
-I think theres 2 things youre noting:
-
-1 - make frag into gvt/Makefile
-I had it there earlier, not sure why I moved it up.
-maybe some confusion on proper scope of the flag.
-
-
-2 - move new declaration code in i915-param.c inside the gvt ifdef
-
-Im good with that.
-I'll probably copy the ifdef wrapper down rather than move the decl up.
-ie:
-
-#if __and(IS_ENABLED(CONFIG_DRM_I915_GVT),
-  IS_ENABLED(CONFIG_DRM_USE_DYNAMIC_DEBUG))
-
-unsigned long __gvt_debug;
-EXPORT_SYMBOL(__gvt_debug);
-
-
-> > +
-> >   # Please keep these build lists sorted!
-> >
-> >   # core driver code
-> > diff --git a/drivers/gpu/drm/i915/i915_params.c b/drivers/gpu/drm/i915/i915_params.c
-> > index e07f4cfea63a..e645e149485e 100644
-> > --- a/drivers/gpu/drm/i915/i915_params.c
-> > +++ b/drivers/gpu/drm/i915/i915_params.c
-> > @@ -265,3 +265,38 @@ void i915_params_free(struct i915_params *params)
-> >       I915_PARAMS_FOR_EACH(FREE);
-> >   #undef FREE
-> >   }
-> > +
-> > +#ifdef CONFIG_DRM_USE_DYNAMIC_DEBUG
-> > +/* todo: needs DYNAMIC_DEBUG_MODULE in some cases */
-> > +
-> > +unsigned long __gvt_debug;
-> > +EXPORT_SYMBOL(__gvt_debug);
-> > +
-> > +#define _help(key)   "\t    \"" key "\"\t: help for " key "\n"
-> > +
-> > +#define I915_GVT_CATEGORIES(name) \
-> > +     " Enable debug output via /sys/module/i915/parameters/" #name   \
-> > +     ", where each bit enables a debug category.\n"                  \
-> > +     _help("gvt:cmd:")                                               \
-> > +     _help("gvt:core:")                                              \
-> > +     _help("gvt:dpy:")                                               \
-> > +     _help("gvt:el:")                                                \
-> > +     _help("gvt:irq:")                                               \
-> > +     _help("gvt:mm:")                                                \
-> > +     _help("gvt:mmio:")                                              \
-> > +     _help("gvt:render:")                                            \
-> > +     _help("gvt:sched:")
-> > +
-> > +DEFINE_DYNAMIC_DEBUG_CATEGORIES(debug_gvt, __gvt_debug,
-> > +                             I915_GVT_CATEGORIES(debug_gvt),
-> > +                             _DD_cat_("gvt:cmd:"),
-> > +                             _DD_cat_("gvt:core:"),
-> > +                             _DD_cat_("gvt:dpy:"),
-> > +                             _DD_cat_("gvt:el:"),
-> > +                             _DD_cat_("gvt:irq:"),
-> > +                             _DD_cat_("gvt:mm:"),
-> > +                             _DD_cat_("gvt:mmio:"),
-> > +                             _DD_cat_("gvt:render:"),
-> > +                             _DD_cat_("gvt:sched:"));
-> > +
-> > +#endif
->
-> So just the foundation - no actual use sites I mean? How would these be
-> used from the code?
->
-
-there are 120 pr_debug "users" :-)
-
-no users per se, but anyone using drm.debug
-/sys/module/drm/parameters/debug
-might use this too.
-its a bit easier than composing queries for >/proc/dyamic_debug/control
-
-
-
-
-> Regards,
->
-> Tvrtko
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
