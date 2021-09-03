@@ -2,102 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FEB40055D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22BC40055F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351314AbhICSzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 14:55:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350591AbhICSzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 14:55:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6EEA61051;
-        Fri,  3 Sep 2021 18:54:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630695270;
-        bh=k0qqhjIBTc+gyB6NzqxwhhFn9y/tnKZkCVBCXngFTi8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HRnrrB2Jph7uelGBkGR4cg8QVuct3/B8w1s6Z0i9VbiI/DtTVFnp+DrP1Xub+jM70
-         lmogrtDA/ZqdzzOc+e2aXU9GM0i/HCLA6VN2gnpIlzRLP1JMg9aDZ+aHd15ySB2lHH
-         fyPyxnLYOm+h1GW7euhDaleRRE9GTNOF1Nov7nbC60eUJHOn0bFAwH0OFQKNiJHiJX
-         mBM+xvs8AA8K3HtMs5yrVF5MNu/LlNNa+VD9UOWY+eGQPhDTsi5MEDW08a8uVTrD7V
-         tgQOmK41k0WgmvOpPT8nPUZaHHULhWTOKci1vhBpn9R7LZGpM0l4jgxNqd6kr3UWsL
-         WYOYmAKFZW7hw==
-Date:   Fri, 3 Sep 2021 11:54:30 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com
-Subject: Re: [PATCH v7 15/19] iomap: Support partial direct I/O on user copy
- failures
-Message-ID: <20210903185430.GE9892@magnolia>
-References: <20210827164926.1726765-1-agruenba@redhat.com>
- <20210827164926.1726765-16-agruenba@redhat.com>
+        id S1351329AbhICSzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 14:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351317AbhICSzi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 14:55:38 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 684C1C061575;
+        Fri,  3 Sep 2021 11:54:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=LDPyZjoZATgjIoK4fh0rqe2iVjJiFfhqid+X8wbi9L4=; b=SfWG3XvW1LPlQbkBl870Z0j8A
+        IG/Gez70wjcdq+LkJf2jIwvtR0aVsVbOrSGu7FwboY+36PZglh3xUC33RUtvKjzrmSjX6NkCGKJKx
+        oO2wg1rlJrPRwqaAkfNbYo3PZqrK7x+PnFqaSdkujHRTULW9O8pe0a+bvr2fhJeXtSXPoPTgorPVl
+        V42AVLnZU4jwfKehXl06v8wex1pf5UNwcoEASjWdGSnsCBIEEWDbecfP6ra5yjm9hXbGfDwa30ZBk
+        ZhzoScF8GmlPpXb38IPcyPdjKpoOG3NRk1KOVmBPHLJMcI2bXZPIBtEQcDFSK9cNjTqTmMGOX69IY
+        m5UKHFj1A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48178)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1mMEKi-0003R7-1C; Fri, 03 Sep 2021 19:54:36 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1mMEKg-0000jL-UN; Fri, 03 Sep 2021 19:54:34 +0100
+Date:   Fri, 3 Sep 2021 19:54:34 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH net-next 0/3] Make the PHY library stop being so
+ greedy when binding the generic PHY driver
+Message-ID: <20210903185434.GX22278@shell.armlinux.org.uk>
+References: <20210902132635.GG22278@shell.armlinux.org.uk>
+ <20210902152342.vett7qfhvhiyejvo@skbuf>
+ <20210902163144.GH22278@shell.armlinux.org.uk>
+ <20210902171033.4byfnu3g25ptnghg@skbuf>
+ <20210902175043.GK22278@shell.armlinux.org.uk>
+ <20210902190507.shcdmfi3v55l2zuj@skbuf>
+ <20210902200301.GM22278@shell.armlinux.org.uk>
+ <20210902202124.o5lcnukdzjkbft7l@skbuf>
+ <20210902202905.GN22278@shell.armlinux.org.uk>
+ <20210903162253.5utsa45zy6h4v76t@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210827164926.1726765-16-agruenba@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210903162253.5utsa45zy6h4v76t@skbuf>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 06:49:22PM +0200, Andreas Gruenbacher wrote:
-> In iomap_dio_rw, when iomap_apply returns an -EFAULT error and the
-> IOMAP_DIO_PARTIAL flag is set, complete the request synchronously and
-> return a partial result.  This allows the caller to deal with the page
-> fault and retry the remainder of the request.
+On Fri, Sep 03, 2021 at 07:22:53PM +0300, Vladimir Oltean wrote:
+> [ trimming the CC list, I'm sure most people don't care, if they do,
+>   they can watch the mailing list ]
 > 
-> Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
-
-Pretty straightforward.
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
-> ---
->  fs/iomap/direct-io.c  | 6 ++++++
->  include/linux/iomap.h | 7 +++++++
->  2 files changed, 13 insertions(+)
+> On Thu, Sep 02, 2021 at 09:29:05PM +0100, Russell King (Oracle) wrote:
+> > On Thu, Sep 02, 2021 at 11:21:24PM +0300, Vladimir Oltean wrote:
+> > > On Thu, Sep 02, 2021 at 09:03:01PM +0100, Russell King (Oracle) wrote:
+> > > > # systemctl list-dependencies networking.service
+> > > > networking.service
+> > > >   ├─ifupdown-pre.service
+> > > >   ├─system.slice
+> > > >   └─network.target
+> > > > # systemctl list-dependencies ifupdown-pre.service
+> > > > ifupdown-pre.service
+> > > >   ├─system.slice
+> > > >   └─systemd-udevd.service
+> > > > 
+> > > > Looking in the service files for a better idea:
+> > > > 
+> > > > networking.service:
+> > > > Requires=ifupdown-pre.service
+> > > > Wants=network.target
+> > > > After=local-fs.target network-pre.target apparmor.service systemd-sysctl.service systemd-modules-load.service ifupdown-pre.service
+> > > > Before=network.target shutdown.target network-online.target
+> > > > 
+> > > > ifupdown-pre.service:
+> > > > Wants=systemd-udevd.service
+> > > > After=systemd-udev-trigger.service
+> > > > Before=network.target
+> > > > 
+> > > > So, the dependency you mention is already present. As is a dependency
+> > > > on udev. The problem is udev does all the automatic module loading
+> > > > asynchronously and in a multithreaded way.
+> > > > 
+> > > > I don't think there's a way to make systemd wait for all module loads
+> > > > to complete.
+> > > 
+> > > So ifupdown-pre.service has a call to "udevadm settle". This "watches
+> > > the udev event queue, and exits if all current events are handled",
+> > > according to the man page. But which current events? ifupdown-pre.service
+> > > does not have the dependency on systemd-modules-load.service, just
+> > > networking.service does. So maybe ifupdown-pre.service does not wait for
+> > > DSA to finish initializing, then it tells networking.service that all is ok.
+> > 
+> > ifupdown-pre.service does have a call to udevadm settle, and that
+> > does get called from what I can tell.
+> > 
+> > systemd-modules-load.service is an entire red herring. The only
+> > module listed in the various modules-load.d directories is "tun"
+> > for openvpn (which isn't currently being used.)
+> > 
+> > As I've already told you (and you seem to have ignored), DSA gets
+> > loaded by udev, not by systemd-modules-load.service.
+> > systemd-modules-load.service is irrelevant to my situation.
+> > 
+> > I think there's a problem with "and exits if all current events are
+> > handled" - does that mean it's fired off a modprobe process which
+> > is in progress, or does that mean that the modprobe process has
+> > completed.
+> > 
+> > Given that we can see that ifup is being run while the DSA module is
+> > still in the middle of probing, the latter interpretation can not be
+> > true - unless systemd is ignoring the dependencies. Or just in
+> > general, systemd being systemd (I have very little faith in systemd
+> > behaving as it should.)
 > 
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index 8054f5d6c273..ba88fe51b77a 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -561,6 +561,12 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  		ret = iomap_apply(inode, pos, count, iomap_flags, ops, dio,
->  				iomap_dio_actor);
->  		if (ret <= 0) {
-> +			if (ret == -EFAULT && dio->size &&
-> +			    (dio_flags & IOMAP_DIO_PARTIAL)) {
-> +				wait_for_completion = true;
-> +				ret = 0;
-> +			}
-> +
->  			/* magic error code to fall back to buffered I/O */
->  			if (ret == -ENOTBLK) {
->  				wait_for_completion = true;
-> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
-> index 479c1da3e221..bcae4814b8e3 100644
-> --- a/include/linux/iomap.h
-> +++ b/include/linux/iomap.h
-> @@ -267,6 +267,13 @@ struct iomap_dio_ops {
->    */
->  #define IOMAP_DIO_OVERWRITE_ONLY	(1 << 1)
->  
-> +/*
-> + * When a page fault occurs, return a partial synchronous result and allow
-> + * the caller to retry the rest of the operation after dealing with the page
-> + * fault.
-> + */
-> +#define IOMAP_DIO_PARTIAL		(1 << 2)
-> +
->  ssize_t iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
->  		const struct iomap_ops *ops, const struct iomap_dio_ops *dops,
->  		unsigned int dio_flags);
-> -- 
-> 2.26.3
+> So I've set a fresh installation of Debian Buster on my Turris MOX,
+> which has 3 mv88e6xxx switches, and I've put the mv88e6xxx driver inside
+> the rootfs as a module to be loaded by udev based on modaliases just
+> like you've said.  Additionally, the PHY driver is also a module.
+> The kernel is built straight from the v5.13 tag, absolutely no changes.
 > 
+> Literally the only changes I've done to this system are:
+> 1. install bridge-utils
+> 2. create this file, it is sourced by /etc/network/interfaces:
+> root@debian:~# cat /etc/network/interfaces.d/bridge
+> auto br0
+> iface br0 inet manual
+>         bridge_ports lan1 lan2 lan3 lan4 lan5 lan6 lan7 lan8 lan9 lan10 lan11 lan12 lan13 lan14 lan15 lan16 lan17 lan18 lan19 lan20 lan21 lan22 lan23 lan24 sfp
+>         bridge_maxwait 0
+> 
+> I've rebooted the board about 10 times and it has never skipped
+> enslaving a port to the bridge.
+
+What do you do about the host CPU interface, which needs to be up
+before you can bring up any of the bridge ports?
+
+What does the useful "systemd-analyse plot" show? It seems a useful
+tool which I've only recently found to analyse what is going on at
+boot.
+
+I think I have an idea why it's happening here.
+
+eno1 is connected to the switch. Because eno1 needs to be up first,
+I did this:
+
+# eno1: Switch uplink
+auto eno1
+allow-hotplug eno1
+iface eno1 inet manual
+	# custom hack to disable IPv6 addresses on this interface.
+        ipv6-disable 1
+        up ip link set $IFACE up
+        up ifup --allow=$IFACE -a || :
+        down ifdown --allow=$IFACE -a || :
+        down ip link set $IFACE down
+
+with:
+
+allow-eno1 brdsl
+iface brdsl inet manual
+        bridge-ports lan2 lan3 lan4 lan5
+        bridge-maxwait 0
+        pre-up sleep 1
+        up ip li set $IFACE type bridge vlan_filtering 1
+
+The effect of that is the "allow-hotplug eno1" causes the systemd
+unit ifup@eno1 to be triggered as soon as eno1 appears - this is
+_before_ DSA has loaded. Once eno1 is up, that then triggers brdsl
+to be configured - but DSA is still probing at that point.
+
+I think removing the "allow-hotplug eno1" should move all that forward
+to being started by networking.service, rather than all being triggered
+by ifup@eno1. I haven't tested that yet though.
+
+Sadly, this behaviour is not documented in the interfaces(5) man page.
+
+Systemd is too complex, not well documented, it's interactions aren't
+documented, it's too easy to non-obviously misconfigure, and it's
+sometimes way too clever. In case it's not obvious - I absolutely hate
+systemd.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
