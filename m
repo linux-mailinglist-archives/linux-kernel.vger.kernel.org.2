@@ -2,130 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75235400426
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63AFA400429
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350357AbhICR36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 13:29:58 -0400
-Received: from mga01.intel.com ([192.55.52.88]:33544 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350271AbhICR3d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 13:29:33 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="241760109"
-X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
-   d="scan'208";a="241760109"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 10:28:33 -0700
-X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
-   d="scan'208";a="534222289"
-Received: from dlinsen-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.56.172])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 10:28:32 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6 11/11] x86/tdx: Handle CPUID via #VE
-Date:   Fri,  3 Sep 2021 10:28:12 -0700
-Message-Id: <20210903172812.1097643-12-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S1350350AbhICRa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 13:30:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350371AbhICRaR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 13:30:17 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77606C0613D9
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 10:29:12 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id g18so9201544wrc.11
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 10:29:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=oOqUrSuUCCTti4b89vsLrMyMjdmQmo0cHUZ19+DYd/0=;
+        b=gdWRYsKqN2u9iH3Y2VIVZHoCHsS8du8DViIOe3qsB8BikiDZ0PZB2lmKqRAhPEljWY
+         bsig0f6sUMsM8+ymKW34J6LE7esYlofcT4cZ6Q+FZ7nzmcQStZC/PK36ChYKehdEmLpy
+         fs2jYrEuGbSr7+m7ISaOKd6jZRlrs5aFwU/PVorqv9qinwKGJuV2GzyyNeSNenLnOMSR
+         GUNzFIM1bX9hvLQ04fkJOEEW5ph0FxA2/WuxTbHTiIyxqFAvwrhcStvN6Xcsjei1+9Gg
+         o1IbTWj/ajwjB+WdilZPuHykPCNfGaQDNrVJxJXX6qCEKn7Ab+/ye/HWK1ILJAYw0DIj
+         I2OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=oOqUrSuUCCTti4b89vsLrMyMjdmQmo0cHUZ19+DYd/0=;
+        b=F95dQJP/dU8mxAG7ewXbpdsFiJKxStlO0+ngnHG7Qy+Qvp+k6DnwGG0XwucRgz6uhm
+         xCafgaQfC+Xr/LIR/VeQ2n32kZpTUll0Hfk+tGg+qU6L5HOpsagSCuLDCeqCEQdwS5KV
+         OAiuIms5afgMD3n29QwoaGJl5GB11w9zlGSooz2kxBHFGAwplqtVW8lKGyWOIvI6Yfrd
+         6pqu5HfY4HGHOWpWtZkewONStwJeWmYRVSqDINZNinHvC0woDxQYw5yxv0WqJ1Ph7Uzr
+         0WbEN/8+D4XyQLB8qwXPuXSz9bxBZss6B5ZC/SXzQ2d4gQqBIJhXwlY9E306EcCsbqoa
+         PRfA==
+X-Gm-Message-State: AOAM531apdi5+MzezeD/si+C1WJre5IpSTro6/ZouVXDPxvNU/SWZ1wC
+        1/ohauX5bSKaxBjfsLbTCj9lTXhmK1qeH/NDCYw=
+X-Google-Smtp-Source: ABdhPJwcqUO274xXI8i7ysIcHUhWy9awaW2zvf2oTdkErLmDA9PvZT2RvuwT7LuzC2UTa5MCSTf8E4LLYxDZq5ngSdc=
+X-Received: by 2002:adf:9f05:: with SMTP id l5mr214974wrf.188.1630690150854;
+ Fri, 03 Sep 2021 10:29:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a5d:414a:0:0:0:0:0 with HTTP; Fri, 3 Sep 2021 10:29:10 -0700 (PDT)
+Reply-To: mrschantelhermans@gmail.com
+From:   Mrs Chantel Hermans <victoriaolunta@gmail.com>
+Date:   Fri, 3 Sep 2021 10:29:10 -0700
+Message-ID: <CAGwBwHVdR_ew63E8V5SqvDouLX3uwKpAfQFPpfmXxr2upFkMnQ@mail.gmail.com>
+Subject: ATTENTION
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-
-TDX has three classes of CPUID leaves: some CPUID leaves are always
-handled by the CPU, others are handled by the TDX module, and some
-others are handled by the VMM. Since the VMM cannot directly intercept
-the instruction these are reflected with a #VE exception to the guest,
-which then converts it into a hypercall to the VMM, or handled
-directly.
-
-The TDX module specification [1], sec 16.2 has a full list of CPUID
-leaves which are handled natively or by the TDX module. Only unknown
-CPUIDs are handled by the #VE method. In practice this typically only
-applies to the hypervisor-specific CPUIDs unknown to the native CPU.
-
-Therefore there is no risk of causing this in early CPUID code which
-runs before the #VE handler is set up because it will never access
-those exotic CPUID leaves.
-
-[1] - https://software.intel.com/content/dam/develop/external/us/en/documents/tdx-module-1.0-public-spec-v0.931.pdf
-
-Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
-
-Changes since v5:
- * Fixed commit log as per review comments.
- * Removed WARN_ON() in tdx_handle_cpuid().
- * Renamed "tdg" prefix with "tdx".
-
-Changes since v4:
- * None
-
-Changes since v3:
- * None
- arch/x86/kernel/tdx.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
-
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index 5c52dde4a5fd..c65c117aff5f 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -150,6 +150,21 @@ static int tdx_write_msr_safe(unsigned int msr, unsigned int low,
- 	return ret ? -EIO : 0;
- }
- 
-+static u64 tdx_handle_cpuid(struct pt_regs *regs)
-+{
-+	struct tdx_hypercall_output out = {0};
-+	u64 ret;
-+
-+	ret = _tdx_hypercall(EXIT_REASON_CPUID, regs->ax, regs->cx, 0, 0, &out);
-+
-+	regs->ax = out.r12;
-+	regs->bx = out.r13;
-+	regs->cx = out.r14;
-+	regs->dx = out.r15;
-+
-+	return ret;
-+}
-+
- unsigned long tdx_get_ve_info(struct ve_info *ve)
- {
- 	struct tdx_module_output out = {0};
-@@ -193,6 +208,9 @@ int tdx_handle_virtualization_exception(struct pt_regs *regs,
- 	case EXIT_REASON_MSR_WRITE:
- 		ret = tdx_write_msr_safe(regs->cx, regs->ax, regs->dx);
- 		break;
-+	case EXIT_REASON_CPUID:
-+		ret = tdx_handle_cpuid(regs);
-+		break;
- 	default:
- 		pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
- 		return -EFAULT;
 -- 
-2.25.1
 
+
+ATTENTION
+
+
+
+You have been compensated with the sum of 6.9 million dollars in this
+United Nation the payment will be issue into ATM Visa Card,
+
+
+
+and send to you from the Santander Bank of Spain we need your
+Address,Passport and your whatsapp number.
+
+
+
+THANKS
+
+*Mrs Chantel Hermans*
