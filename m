@@ -2,46 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C060F3FFC02
+	by mail.lfdr.de (Postfix) with ESMTP id 488273FFC00
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234781AbhICIc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41116 "EHLO
+        id S234700AbhICIc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348135AbhICIcZ (ORCPT
+        with ESMTP id S1348150AbhICIcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Sep 2021 04:32:25 -0400
+X-Greylist: delayed 478 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 03 Sep 2021 01:31:24 PDT
 Received: from mail.kmu-office.ch (mail.kmu-office.ch [IPv6:2a02:418:6a02::a2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B612C06179A
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 01:31:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5B3C061760;
+        Fri,  3 Sep 2021 01:31:24 -0700 (PDT)
 Received: from webmail.kmu-office.ch (unknown [IPv6:2a02:418:6a02::a3])
-        by mail.kmu-office.ch (Postfix) with ESMTPSA id 00DCC5C1FB7;
-        Fri,  3 Sep 2021 10:23:23 +0200 (CEST)
+        by mail.kmu-office.ch (Postfix) with ESMTPSA id 40DB15C0222;
+        Fri,  3 Sep 2021 10:23:46 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=agner.ch; s=dkim;
-        t=1630657403;
+        t=1630657426;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=649dDLEsTpY20f1ujpD4Ab5GxIseeAzBCbsCN967yd0=;
-        b=mD90OOChPsCYRklb3tv2eE3zeOCpGUJuCBEyZoaA69+HCnicdvw0D/XfIykaJsH3jR+rpx
-        Z3l/XhF+SIfc+qvE7IYiICPo0lV2CDB64S1Uyb9QXiNkLPoHo+qJXuT0rU6J9nCG5RGW5a
-        GALTdK7nKYlDJLtBytORL7Wptov1jzI=
+        bh=fjLOEiXgMndi2Q7uZCMxj1Uu2i4mPZJaKSRzdIFBuTQ=;
+        b=T/cjSSjNuV1c5iAHsIX3UEBP41pp58INL2FhGpdroivJwC/W88r2CIGqkTVc5KHRp2gflq
+        fXGWBSJgRnR+n8v4eFDJcqT2GWdgSjge9OEX0+1cDnxr9zQF19kle6KCZxVtvArhFbOHJP
+        zevChd2TLYExLz8D8f/TXTpkdjYxTYI=
 MIME-Version: 1.0
-Date:   Fri, 03 Sep 2021 10:23:22 +0200
+Date:   Fri, 03 Sep 2021 10:23:45 +0200
 From:   Stefan Agner <stefan@agner.ch>
 To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+Cc:     Lucas Stach <dev@lynxeye.de>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: vf610: Make use of the helper function
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: tegra: Make use of the helper function
  devm_platform_ioremap_resource()
-In-Reply-To: <20210901074245.9583-1-caihuoqing@baidu.com>
-References: <20210901074245.9583-1-caihuoqing@baidu.com>
+In-Reply-To: <20210901074230.9483-1-caihuoqing@baidu.com>
+References: <20210901074230.9483-1-caihuoqing@baidu.com>
 User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <26cdf34dbda1327f60da32b9c29130a6@agner.ch>
+Message-ID: <fb7aec944e72f91a9a33d7d37d0cbb44@agner.ch>
 X-Sender: stefan@agner.ch
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -59,28 +64,28 @@ On 2021-09-01 09:42, Cai Huoqing wrote:
 Acked-by: Stefan Agner <stefan@agner.ch>
 
 > ---
->  drivers/mtd/nand/raw/vf610_nfc.c | 4 +---
+>  drivers/mtd/nand/raw/tegra_nand.c | 4 +---
 >  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
-> index 40d70f991d89..a2b89b75073f 100644
-> --- a/drivers/mtd/nand/raw/vf610_nfc.c
-> +++ b/drivers/mtd/nand/raw/vf610_nfc.c
-> @@ -807,7 +807,6 @@ static const struct nand_controller_ops
-> vf610_nfc_controller_ops = {
->  static int vf610_nfc_probe(struct platform_device *pdev)
+> diff --git a/drivers/mtd/nand/raw/tegra_nand.c
+> b/drivers/mtd/nand/raw/tegra_nand.c
+> index fbf67722a049..32431bbe69b8 100644
+> --- a/drivers/mtd/nand/raw/tegra_nand.c
+> +++ b/drivers/mtd/nand/raw/tegra_nand.c
+> @@ -1144,7 +1144,6 @@ static int tegra_nand_probe(struct platform_device *pdev)
 >  {
->  	struct vf610_nfc *nfc;
+>  	struct reset_control *rst;
+>  	struct tegra_nand_controller *ctrl;
 > -	struct resource *res;
->  	struct mtd_info *mtd;
->  	struct nand_chip *chip;
->  	struct device_node *child;
-> @@ -831,8 +830,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
->  	if (irq <= 0)
->  		return -EINVAL;
+>  	int err = 0;
+>  
+>  	ctrl = devm_kzalloc(&pdev->dev, sizeof(*ctrl), GFP_KERNEL);
+> @@ -1155,8 +1154,7 @@ static int tegra_nand_probe(struct platform_device *pdev)
+>  	nand_controller_init(&ctrl->controller);
+>  	ctrl->controller.ops = &tegra_nand_controller_ops;
 >  
 > -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	nfc->regs = devm_ioremap_resource(nfc->dev, res);
-> +	nfc->regs = devm_platform_ioremap_resource(pdev, 0);
->  	if (IS_ERR(nfc->regs))
->  		return PTR_ERR(nfc->regs);
+> -	ctrl->regs = devm_ioremap_resource(&pdev->dev, res);
+> +	ctrl->regs = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(ctrl->regs))
+>  		return PTR_ERR(ctrl->regs);
