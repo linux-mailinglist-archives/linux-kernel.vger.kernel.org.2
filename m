@@ -2,143 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5B6400833
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30CD7400839
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350734AbhICXRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 19:17:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350727AbhICXRm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 19:17:42 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457C0C061575;
-        Fri,  3 Sep 2021 16:16:42 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id i21so1111375ejd.2;
-        Fri, 03 Sep 2021 16:16:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xnw6WzrVj6kVz7+rhXWWV0P1D+1rQjUWR64V6tXpcQc=;
-        b=LUy4S5O3JpUY6Tl+oGYBAq42NZWaI/sMarxUr2Acgv4qDjateQV1MESdAljoiBEN5x
-         voXVsB2Jjo6tEcDBWlh6PERG6UG72yEuWJph9IP19xZeNdhdRuAjZUE6R2i+AyXsTREX
-         38f9EpjowbY2D6zHtIxOGh14Z48HWkUiAdQPNRWxdosm4GeOKzpYtC5t7IgY/YcUs4aT
-         h+Esers0HD8QmxvAjnID+HmlKmJAFvCuj6HT2ETpWZ+NUgX39BcfYd6vxM6pimt0iugO
-         cTbBswjwVVKQUWJVwIOyQoJHQfnnMQhob8bnYYA4x8on413eq553u3Tv00w1k0JV6eel
-         arjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xnw6WzrVj6kVz7+rhXWWV0P1D+1rQjUWR64V6tXpcQc=;
-        b=Hf9rNWz3HmyYD8Y8+DRxcSxcyaLaKxT+eFxzHDdLV0NV+Ywfki7oBaUVoqcFcFBx3c
-         vTwD0kbIwGRsW25774vWBnZJlRPPDzE+eaBYff3iBt3tFXwQxRMSzAbY0V8H8jms9dX/
-         wXxE+QKlnyvPQP5ROrYldhgTADW+tjslf4ID/l9MFqex9jIcPJ9++6jyUSvaP66CYJeH
-         oiqLWfBGofS9ZrrxKtbK3oPIm7QWU9PT5DVJHOSiYSFyKxZtbrqYzg1V9gCuK1m7Kumd
-         9qcnQ+xRCbg/pjnmsNV7kJUwZeC8Wu4fEb+xG5snxz8WJ2toco+1ntv4GcecxtCT4ZCX
-         PJig==
-X-Gm-Message-State: AOAM532GAPc3eG+SJZRuU3H9731NXuGJSv58FA5fIE4NA5t5M8yfaQVz
-        KsO4btn4F/i/VX7eY98Au64=
-X-Google-Smtp-Source: ABdhPJxzM4YsGJ8U585f3WpC8RcJQjrrCZEpX0sY4ISI8TQzQaDLnqZogbWyNKtyY5x1UIrRhBzMcQ==
-X-Received: by 2002:a17:906:8399:: with SMTP id p25mr1324360ejx.449.1630711000888;
-        Fri, 03 Sep 2021 16:16:40 -0700 (PDT)
-Received: from localhost.localdomain (84-72-105-84.dclient.hispeed.ch. [84.72.105.84])
-        by smtp.gmail.com with ESMTPSA id r11sm214068ejy.71.2021.09.03.16.16.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 16:16:40 -0700 (PDT)
-From:   Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc:     Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 4/4] arm64: dts: rockchip: add analog audio on Quartz64
-Date:   Sat,  4 Sep 2021 01:15:36 +0200
-Message-Id: <20210903231536.225540-5-frattaroli.nicolas@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210903231536.225540-1-frattaroli.nicolas@gmail.com>
-References: <20210903231536.225540-1-frattaroli.nicolas@gmail.com>
+        id S1350722AbhICXXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 19:23:39 -0400
+Received: from dnyon.com ([82.223.165.189]:56426 "EHLO dnyon.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242236AbhICXXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 19:23:38 -0400
+Received: from dnyon.com (55.red-81-39-194.dynamicip.rima-tde.net [81.39.194.55])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dnyon.com (Postfix) with ESMTPSA id E27503FEB7;
+        Fri,  3 Sep 2021 23:22:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
+        t=1630711356; bh=tchsqUj+OfPK4wG9xezTZ/SvhX1irYZ1qa7IOGO6KLM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Mo89RMoN243CTz4Z3TSYPsPPR7+S9ZVK9v/JFPzAwQM1o0plDtLKp8OU7iYHaGCHH
+         WFYC6/GMynzNweAVzwbvbrbNgBlJcfAPnnGNljK8h6A6rROebEmrXWs9LywTmuETi8
+         J6qokAgPzwa+SOLlIbN9Qok1b/+y5/ClwBFQKP7xKlRKAmL8qbM3/jxyNaJ6XFtgy/
+         2QY65Pc6Dpzu3jNjKQkdFUlxjQf0dpNU/Lhcu2W3gOeY09inbkdvTiSj5CwDg0V4dm
+         HNHkrapIghO84BULOW9Hz+yfVbxCsICJFNx4cnXqC3O5RMrKlOscpGMFcJ4uelyczH
+         U++nWCwdyuVyw==
+From:   Alejandro Tafalla <atafalla@dnyon.com>
+To:     =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v3 1/2] ASoC: max98927: Handle reset gpio when probing i2c
+Date:   Sat, 04 Sep 2021 01:22:26 +0200
+Message-ID: <5503823.DvuYhMxLoT@alexpc>
+In-Reply-To: <80973391-4579-e14b-6def-ed81f367a4a5@linux.intel.com>
+References: <cover.1630632805.git.atafalla@dnyon.com> <04a18f4115539752429da55fb857834cea0944e5.1630632805.git.atafalla@dnyon.com> <80973391-4579-e14b-6def-ed81f367a4a5@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the Quartz64 Model A, the I2S1 TDM controller is connected
-to the rk817 codec in I2S mode. Enabling it and adding the
-necessary simple-sound-card and codec nodes allows for analog
-audio output on the PINE64 Quartz64 Model A SBC.
+On 3/9/21 11:20 P=E9ter Ujfalusi wrote:
+>=20
+> If this is a 'reset' pin then it's ACTIVE state is when it places the
+> device to _reset_.
+> GPIOD_OUT_LOW =3D=3D Deasserted state of the GPIO line.
+>=20
+> If the reset pin should be pulled low for reset (GPIO_ACTIVE_LOW) and
+> you want the device initially  in reset then you need GPIOD_OUT_HIGH,
+> because:
+> GPIOD_OUT_HIGH =3D=3D Asserted state of the GPIO line.
+>=20
+> Same goes for the gpiod_set_value_cansleep():
+> 0 - deasserted
+> 1 =3D asserted
+>=20
+> and this all depends on how the gpio is defined in DT
+> (GPIO_ACTIVE_LOW/HIGH), which depends on how the documentation refers to
+> the pin...
+>=20
+> reset pin:
+> low to keep the device in reset, high to release it from reset:
+> GPIO_ACTIVE_LOW
+> gpiod_set_value_cansleep(0) to enable
+> gpiod_set_value_cansleep(1) to disable
+>=20
+>=20
+> enable pin:
+> high to enable the part, low to disable
+> GPIO_ACTIVE_HIGH
+> gpiod_set_value_cansleep(1) to enable
+> gpiod_set_value_cansleep(0) to disable
+>=20
+> In both cases
+> electrical 0: reset/disable
+> electrical 1: enable
+I'll change it to be consistent in the next version. Thank you for the=20
+explanation.
+=20
+> > +	if (IS_ERR(reset_gpio)) {
+> > +		ret =3D PTR_ERR(reset_gpio);
+> > +		return dev_err_probe(&i2c->dev, ret, "failed to request=20
+GPIO reset
+> > pin"); +	}
+> > +
+> > +	if (reset_gpio) {
+> > +		usleep_range(8000, 10000);
+> > +		gpiod_set_value_cansleep(reset_gpio, 1);
+> > +		usleep_range(1000, 5000);
+> > +	}
+> > +
+>=20
+> You might want to put the device to reset on remove at minimum.
+Okay, thanks.
 
-Signed-off-by: Nicolas Frattaroli <frattaroli.nicolas@gmail.com>
----
- .../boot/dts/rockchip/rk3566-quartz64-a.dts   | 35 ++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+=2D-=20
+Alejandro Tafalla
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-index a244f7b87e38..3a87c0240b30 100644
---- a/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-quartz64-a.dts
-@@ -58,6 +58,20 @@ led-diy {
- 		};
- 	};
- 
-+	rk817-sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,name = "Analog RK817";
-+		simple-audio-card,mclk-fs = <256>;
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&i2s1_8ch>;
-+		};
-+		simple-audio-card,codec {
-+			sound-dai = <&rk817>;
-+		};
-+	};
-+
- 	vcc12v_dcin: vcc12v_dcin {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vcc12v_dcin";
-@@ -199,8 +213,13 @@ rk817: pmic@20 {
- 		interrupts = <RK_PA3 IRQ_TYPE_LEVEL_LOW>;
- 		clock-output-names = "rk808-clkout1", "rk808-clkout2";
- 
-+		#sound-dai-cells = <0>;
-+		clock-names = "mclk";
-+		clocks = <&cru I2S1_MCLKOUT_TX>;
-+		assigned-clocks = <&cru I2S1_MCLKOUT_TX>;
-+		assigned-clock-parents = <&cru CLK_I2S1_8CH_TX>;
- 		pinctrl-names = "default";
--		pinctrl-0 = <&pmic_int_l>;
-+		pinctrl-0 = <&pmic_int_l>, <&i2s1m0_mclk>;
- 		rockchip,system-power-controller;
- 		wakeup-source;
- 		#clock-cells = <1>;
-@@ -389,9 +408,23 @@ regulator-state-mem {
- 				};
- 			};
- 		};
-+
-+		rk817_codec: codec {
-+		};
-+
- 	};
- };
- 
-+&i2s1_8ch {
-+	status = "okay";
-+	rockchip,trcm-sync-tx-only;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&i2s1m0_sclktx
-+		     &i2s1m0_lrcktx
-+		     &i2s1m0_sdi0
-+		     &i2s1m0_sdo0>;
-+};
-+
- &mdio1 {
- 	rgmii_phy1: ethernet-phy@0 {
- 		compatible = "ethernet-phy-ieee802.3-c22";
--- 
-2.33.0
 
