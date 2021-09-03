@@ -2,171 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE70C4004BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3D34004C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235224AbhICSSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 14:18:31 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:56784 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231931AbhICSSa (ORCPT
+        id S235734AbhICSTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 14:19:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231931AbhICSTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 14:18:30 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 183IHQZD099054;
-        Fri, 3 Sep 2021 13:17:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1630693046;
-        bh=mgtbI7z2oZMDQrpBLW1Cw/cSN6DvX0dtcfuh1Bxyu/g=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=dfdRy9dBprHD+AQk0gKrSCBTIZQy7S8AdCpEf6N+61yjSrb14BXcnS3FCm9Nalld2
-         +CTOIsiQqgOm+5hn8rwjf2EkS+2g9PnkW9EISy5muj7+e920TLFcv5+X7urVIdGpHI
-         qOo9XL+K1yVQDzxnlDD2+PqrgirEk1or1iPLpdUU=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 183IHQpO055963
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 3 Sep 2021 13:17:26 -0500
-Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 3
- Sep 2021 13:17:26 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Fri, 3 Sep 2021 13:17:26 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 183IHPI8023084;
-        Fri, 3 Sep 2021 13:17:26 -0500
-Date:   Fri, 3 Sep 2021 23:47:24 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Parshuram Thombare <pthombar@cadence.com>
-CC:     <broonie@kernel.org>, <lukas@wunner.de>, <robh+dt@kernel.org>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <jpawar@cadence.com>,
-        <mparab@cadence.com>, Konrad Kociolek <konrad@cadence.com>
-Subject: Re: [PATCH v3 1/2] spi: cadence: add dt-bindings documentation for
- Cadence XSPI controller
-Message-ID: <20210903181722.ukarfanyew2b7yoz@ti.com>
-References: <1630499755-18751-1-git-send-email-pthombar@cadence.com>
- <1630499829-20059-1-git-send-email-pthombar@cadence.com>
+        Fri, 3 Sep 2021 14:19:03 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A2BC061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 11:18:03 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id q21so172408ljj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 11:18:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iIMKPB8xrPOdYW5+xiv+opBoM2BrTB5ajbOBWpHHX88=;
+        b=lggNLKE1qEAeMghLueW6o2pFaFiCzeh8Q+scXoiDXs1dTpbkuXX+6VLpRzSC4E7T0g
+         92xbnKIhqf1GCvhmDXyWLj5o7CwjMRnT1hnnuQsWsZLKKvzkydaW6vygjJKa5prDIdru
+         c83UJO3q3JPtlAoYdw+g6jLgtGLKcav71kptAUGwuD2x+acrDervNBe1j9ngTC2/0t9P
+         OaBgIGEfelsx5qn8UchjH/vHjkqo8FGaEH7ndjCCHH9JMWbEdhIjgq2N1FatWRWksLdK
+         eS6v+Nozqt+tOa5/fnEWKv5qR1auFhTLRyiAtPFnq0AE1UF/H06bmOvC2wJicGUzVcli
+         3Zvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iIMKPB8xrPOdYW5+xiv+opBoM2BrTB5ajbOBWpHHX88=;
+        b=KWBS4TYHh42tOj+DwqUU9p+cN2Poj0HZPxePZ01MqD9Ax8zEVub43eTj1watE1pWqe
+         kGpp9wFBBU/C4RRH3cxrA3bFeGqbNR6YTps+ZaCLcMG6gn7BdvWN4PvaPnlIr+IPYgbJ
+         LX1e8fkhoEiyrvPJjLs7LckXSntiGJwBIK77NxN+Q0BP0ysCfeP8CTnGm21WoIzVPxIY
+         YlSuqkXjMbuQup/X0MlKnniPwobmrQ9S8baOp/kKr/E8ifmEAVJWoMIl1c8UyvbC5zpZ
+         XOM+QSB00I2mX6bQEh0Il3bNliR3o+y2+nCf3xcC9PfNa+H75y72s5A43ER9E4fjwStC
+         bI8Q==
+X-Gm-Message-State: AOAM531qzGLxLqt7hDDPI+JR2wntTNH6o8od/H4Txoua5suSkJje0bWO
+        +vr7ptZIXsr+JRHuWE+IegaHPYiKoXValn77
+X-Google-Smtp-Source: ABdhPJw0f9f1EoPPij9K99CG+t/HAmm47ZwTEHOtHfVx/E/bpVNIJLAcySoiUHZI2ya9gsIZ9bMmlw==
+X-Received: by 2002:a05:651c:102d:: with SMTP id w13mr225761ljm.229.1630693080643;
+        Fri, 03 Sep 2021 11:18:00 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.67.70])
+        by smtp.gmail.com with ESMTPSA id o22sm15349lfr.32.2021.09.03.11.17.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 11:18:00 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        fmdefrancesco@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH 1/2] staging: r8188eu: fix memory leak in rtw_set_key
+Date:   Fri,  3 Sep 2021 21:17:52 +0300
+Message-Id: <ee783fbb71abb549505b84542223be7a7c905eea.1630692375.git.paskripkin@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1630499829-20059-1-git-send-email-pthombar@cadence.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/09/21 02:37PM, Parshuram Thombare wrote:
-> Add DT binding for Cadence's XSPI controller driver.
-> 
-> Signed-off-by: Konrad Kociolek <konrad@cadence.com>
-> Signed-off-by: Jayshri Pawar <jpawar@cadence.com>
-> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
-> ---
->  .../devicetree/bindings/spi/cdns,xspi.yaml         | 66 ++++++++++++++++++++++
->  1 file changed, 66 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/cdns,xspi.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/cdns,xspi.yaml b/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
-> new file mode 100644
-> index 0000000..e52d6fa
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
-> @@ -0,0 +1,66 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2020-21 Cadence
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/spi/cdns,xspi.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Cadence XSPI Controller
-> +
-> +maintainers:
-> +  - Parshuram Thombare <pthombar@cadence.com>
-> +
-> +description: |
-> +  The XSPI controller allows SPI protocol communication in
-> +  single, dual, quad or octal wire transmission modes for
-> +  read/write access to slaves such as SPI-NOR flash.
+Before returning with an error we should free allocated buffers, since
+they are not assigned to anywhere.
 
-This needs to be a "subclass" of the spi-controller.yaml binding.
+Fixes: 15865124feed ("staging: r8188eu: introduce new core dir for RTL8188eu driver")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/staging/r8188eu/core/rtw_mlme.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-allOf:
-  - $ref: spi-controller.yaml#
-
-> +
-> +properties:
-> +  compatible:
-> +    const: cdns,xspi-nor
-> +
-> +  reg:
-> +    items:
-> +      - description: address and length of the controller register set
-> +      - description: address and length of the Slave DMA data port
-> +      - description: address and length of the auxiliary registers
-> +
-> +  reg-names:
-> +    items:
-> +      - const: xspi-iobase
-> +      - const: xspi-sdmabase
-> +      - const: xspi-auxbase
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +    xspi: spi@a0010000 {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        compatible = "cdns,xspi-nor";
-> +        reg = <0x0 0xa0010000 0x0 0x10000>,
-> +              <0x0 0xb0000000 0x0 0x10000>,
-> +              <0x0 0xa0020000 0x0 0x10000>;
-> +        reg-names = "xspi-iobase", "xspi-sdmabase", "xspi-auxbase";
-> +        interrupts = <0 90 IRQ_TYPE_LEVEL_HIGH>;
-> +        interrupt-parent = <&gic>;
-> +        mt35xu512@0 {
-
-Node name should be flash@0.
-
-> +            compatible = "spi-nor", "micron,mt35xu512";
-
-These compatibles are arbitrary and undocumented. You probably just need 
-"jedec,spi-nor". If you need anything else, you need to justify why.
-
-Please run dt_binding_check, it should point this out. See [0].
-
-> +            spi-max-frequency = <75000000>;
-> +            reg = <0>;
-> +        };
-> +        mt35xu512@1 {
-> +            compatible = "spi-nor", "micron,mt35xu512";
-
-Same as above.
-
-> +            spi-max-frequency = <75000000>;
-> +            reg = <1>;
-> +        };
-> +    };
-> -- 
-> 2.7.4
-> 
-
-[0] https://www.kernel.org/doc/html/latest/devicetree/bindings/writing-schema.html#testing
-
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
+index 1115ff5d865a..bd991d7ed809 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme.c
+@@ -1722,6 +1722,8 @@ int rtw_set_key(struct adapter *adapter, struct security_priv *psecuritypriv, in
+ 		psetkeyparm->grpkey = 1;
+ 		break;
+ 	default:
++		kfree(psetkeyparm);
++		kfree(pcmd);
+ 		res = _FAIL;
+ 		goto exit;
+ 	}
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+2.33.0
+
