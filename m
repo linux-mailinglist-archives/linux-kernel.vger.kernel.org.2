@@ -2,189 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 820173FFE52
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 12:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA8A3FFE55
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 12:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347834AbhICKlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 06:41:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42746 "EHLO
+        id S1348074AbhICKlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 06:41:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235269AbhICKlW (ORCPT
+        with ESMTP id S1347977AbhICKln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 06:41:22 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0610C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 03:40:22 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id j17-20020a05600c1c1100b002e754875260so3247064wms.4
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 03:40:22 -0700 (PDT)
+        Fri, 3 Sep 2021 06:41:43 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D854C061575;
+        Fri,  3 Sep 2021 03:40:43 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id b10so7624814wru.0;
+        Fri, 03 Sep 2021 03:40:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gQwd8S30SMMSUoUfiujLV3m0uDIvIxN2gb+ceJ/Cjqc=;
-        b=hoIfoySMft4uXS5Emu+pqPpJ4ycBAvbSH05oi2TGL/pME7DAJrclBEuM41TOlIlDp3
-         kC0BlpbbkUAU4vOU4N797gU7Qq1joD17ZGLZZeVQjO/7NoXeHaE2tJDyzQqNrC7ZhC5W
-         gK5IJAzTWF4x1ajN7aPgpbAQD5sJdNf/ZefuAXWqPIHJu77Iu1npF+7UaxjGt26KtKr+
-         Tr/qGz04mpwlbFm8KZjB/fvu+ADWARhxSGOiHC3MwcI0bfyMYFOB4AKnWHi/b/Ystd3C
-         Ei7uG0Em8AWrYeAOupxp1IDXLcBIlcqMLmB2rpNqaZrP1ghZgUket6NCIgVEMN9mdrzd
-         DmfA==
+        d=gmail.com; s=20210112;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nRpUBKoD2Qc6noVZ4Y4NpGJIU0gjshS75iBQB9zMpy8=;
+        b=V9DGIMtPYt9W0EUZOwpvvbsDaz13dnCLH2rE+WwNlpWVsU4sQaUwc7zHHuyhls5T6v
+         6wtZXoLsekCvm79RfEd2jn8BPGRbrWWs5n09EluRcbcq2jGlj0jVZQ9fdf3y7KXCTFpE
+         RT43XKqCmoCabMJ0CIBUb45ogsZ5oyOCsxsz9UpxNuwKKPOhWfsQ/o+pkZlQw6GFguv7
+         7PHQssHoviWtVkcp3/MaVlYWk9nnXW33At7rQ+5B7hFWm3RBcPoBWbHc/kY59AH7NTOs
+         7FcJSWPPy3ikCrOMrFQqIY/8tURuT9sT/8fWXz05yDY1Tkg0Kj3ASwFWhWMEg17rW/hS
+         JVEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gQwd8S30SMMSUoUfiujLV3m0uDIvIxN2gb+ceJ/Cjqc=;
-        b=SYL0VfleOhtR4UJ9qpRLLMnjm5EWCubfvW2gnfYhzW2Y711LWcCHfkeqdnmD3wJhNN
-         Opwsj/0l3R1YPrrBySmqsJYtTeW8DXTi8nSjOkyVzHnFZ2yfI2N9MuPZK8W0g1EPf36j
-         NgHgxqj7hpH88+APwNU+/kCrLR5DXY0dj9+L1dAz3jsKqvuauiKMqC7Umrx91TD9XJpo
-         iMzJaJAMNBuKUxYWSfi4yVXakfojhf6z8ET/xw54WrA6K+VODsyOfAmcbdLeEU3MhbIX
-         lHIAFff25DXhLtJHH/mBoddiQkoo+eqLtCPf2rQd5du1MhgKRNjdulnJ+RHdOtQ2aOkv
-         HI7g==
-X-Gm-Message-State: AOAM532uQ0K42tCn0YWRyCw36QBN7v+Li1U8FhX6PfUQvVYXV9VHW8VA
-        gkjqZOC9S/+EpJKxdJv5PPb7wHvIIsH7q3TS5ZMk4g==
-X-Google-Smtp-Source: ABdhPJyyTSOea4UvObuNECW9zeYgA6pqjw7cAM6LYRDFNTT1e35OUfvPkO3D9m+EbH2nXHT7Jh7UdULa9shSAeYWdMI=
-X-Received: by 2002:a1c:1d87:: with SMTP id d129mr7753647wmd.185.1630665621006;
- Fri, 03 Sep 2021 03:40:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210830041729.237252-1-anup.patel@wdc.com> <20210830041729.237252-6-anup.patel@wdc.com>
- <YS7WTPRYJWnPu2ii@robh.at.kernel.org> <CAAhSdy1mttzt3_CnKc=xhpp5CKOEAasQVobTR-2L6Z26rstn+A@mail.gmail.com>
- <CAL_JsqLT3RgG0MHMWEs8BZPPtOUUcjRw27W+O4z=DNP9M=EKAw@mail.gmail.com>
-In-Reply-To: <CAL_JsqLT3RgG0MHMWEs8BZPPtOUUcjRw27W+O4z=DNP9M=EKAw@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Fri, 3 Sep 2021 16:10:09 +0530
-Message-ID: <CAAhSdy1NBNTQ5F=4MjjwLb4k_kGgB9j5iFxJ6qoGSCuGkn=66g@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 05/11] dt-bindings: interrupt-controller: Add
- ACLINT MSWI and SSWI bindings
-To:     Rob Herring <robh@kernel.org>
-Cc:     Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nRpUBKoD2Qc6noVZ4Y4NpGJIU0gjshS75iBQB9zMpy8=;
+        b=CZTyCdeB5Va5M+pnPLmVGcmT4Enow/fd91fIIBM+0QO1FALjVSisQDyw5infqg7+7m
+         ZN/IMKGQboA5kh8JEOJo+EH0oeiH37xX+UcJtcF05bcuEsj+GGxMLDmQpo91RyT0Mks6
+         ZRbCEEaff2vk8nZwYE1jHCFQX7Zh/kR2tuxW9D6rTCeZZEQ03fs2LC54BL2TlPzQXrzA
+         F878QTGtcZ90epMARglbes4dCBRzvxK+jRwETy5RbcxAJJwoEfprmkz5yDDVGltDxlsx
+         Ps8Bqce9bb7/UY6edQmHz9lOq3oiSP43g+YdZfa0UHaXHWKZ9/+GAnoIhVQcutKbBbxU
+         Ntxg==
+X-Gm-Message-State: AOAM532JJT+L70NZ45hLWKi160O9tth6EThwEDGAslP/VQ59NrYQCT2h
+        699V69yjCa7f3WqcEm7WmNg=
+X-Google-Smtp-Source: ABdhPJygMcEsTKYxWfkujXhXEo9X8ysv08YMDZ9nnstdTDNHuMVulrfsqK2tQgqJBloNocuiTbaPPQ==
+X-Received: by 2002:adf:eb8d:: with SMTP id t13mr3323097wrn.4.1630665641998;
+        Fri, 03 Sep 2021 03:40:41 -0700 (PDT)
+Received: from ziggy.stardust ([37.223.140.66])
+        by smtp.gmail.com with ESMTPSA id z9sm4413006wre.11.2021.09.03.03.40.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 03:40:41 -0700 (PDT)
+To:     Michael Kao <michael.kao@mediatek.com>, fan.chen@mediatek.com,
+        Zhang Rui <rui.zhang@intel.com>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>, Bin Meng <bmeng.cn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-pm@vger.kernel.org, srv_heupstream@mediatek.com
+Cc:     Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, hsinyi@chromium.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Tzung-Bi Shih <tzungbi@google.com>
+References: <20201223074944.2061-1-michael.kao@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Subject: Re: [PATCH] arm64: dts: mt8192: add thermal zones, cooling map and
+ trips
+Message-ID: <55bdd2fb-1379-4e98-0a78-a18bfb7d0fb8@gmail.com>
+Date:   Fri, 3 Sep 2021 12:40:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+MIME-Version: 1.0
+In-Reply-To: <20201223074944.2061-1-michael.kao@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 6:04 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Sep 1, 2021 at 6:56 AM Anup Patel <anup@brainfault.org> wrote:
-> >
-> > On Wed, Sep 1, 2021 at 6:54 AM Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > On Mon, Aug 30, 2021 at 09:47:23AM +0530, Anup Patel wrote:
-> > > > We add DT bindings documentation for the ACLINT MSWI and SSWI
-> > > > devices found on RISC-V SOCs.
-> > > >
-> > > > Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> > > > Reviewed-by: Bin Meng <bmeng.cn@gmail.com>
-> > > > ---
-> > > >  .../riscv,aclint-swi.yaml                     | 95 +++++++++++++++++++
-> > > >  1 file changed, 95 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml b/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..68563259ae24
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/interrupt-controller/riscv,aclint-swi.yaml
-> > > > @@ -0,0 +1,95 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/interrupt-controller/riscv,aclint-swi.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: RISC-V ACLINT Software Interrupt Devices
-> > > > +
-> > > > +maintainers:
-> > > > +  - Anup Patel <anup.patel@wdc.com>
-> > > > +
-> > > > +description:
-> > > > +  RISC-V SOCs include an implementation of the M-level software interrupt
-> > > > +  (MSWI) device and the S-level software interrupt (SSWI) device defined
-> > > > +  in the RISC-V Advanced Core Local Interruptor (ACLINT) specification.
-> > > > +
-> > > > +  The ACLINT MSWI and SSWI devices are documented in the RISC-V ACLINT
-> > > > +  specification located at
-> > > > +  https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc.
-> > > > +
-> > > > +  The ACLINT MSWI and SSWI devices directly connect to the M-level and
-> > > > +  S-level software interrupt lines of various HARTs (or CPUs) respectively
-> > > > +  so the RISC-V per-HART (or per-CPU) local interrupt controller is the
-> > > > +  parent interrupt controller for the ACLINT MSWI and SSWI devices.
-> > > > +
-> > > > +allOf:
-> > > > +  - $ref: /schemas/interrupt-controller.yaml#
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    oneOf:
-> > > > +      - items:
-> > > > +        - enum:
-> > > > +          - riscv,aclint-mswi
-> > > > +
-> > > > +      - items:
-> > > > +        - enum:
-> > > > +          - riscv,aclint-sswi
-> > >
-> > > All this can be just:
-> > >
-> > > enum:
-> > >   - riscv,aclint-mswi
-> > >   - riscv,aclint-sswi
-> > >
-> > > However...
-> > >
-> > > > +
-> > > > +    description:
-> > > > +      For ACLINT MSWI devices, it should be "riscv,aclint-mswi" OR
-> > > > +      "<vendor>,<chip>-aclint-mswi".
-> > > > +      For ACLINT SSWI devices, it should be "riscv,aclint-sswi" OR
-> > > > +      "<vendor>,<chip>-aclint-sswi".
-> > >
-> > > s/OR/AND/
-> > >
-> > > There must be a compatible for the implementation. Unless RiscV
-> > > implementations of specs are complete describing all clocks, power
-> > > domains, resets, etc. and are quirk free.
-> > >
-> > > But don't write free form constraints...
-> >
-> > It is possible that quite a few implementations (QEMU, FPGAs, and
-> > other simulators) will not require implementation specific compatible
-> > strings. Should we still mandate implementation specific compatible
-> > strings in DTS for such cases?
->
-> No, but the schema says you only have those cases. Are there not any
-> actual implementations?
 
-All existing RISC-V boards have SiFive CLINT and ACLINT is backward
-compatible with SiFive CLINT so we do have actual implementations.
 
-None of the existing RISC-V boards have special clocks, power domain,
-resets etc for these devices.
+On 23/12/2020 08:49, Michael Kao wrote:
+> Add thermal zone node to support mt8192 read temperature.
+> Thermal throttle will start at 68C and the
+> target temperature is 85C.
+> 
+> This patch depends on [1].
 
->
-> Minimally make "<vendor>,<chip>-aclint-mswi" into a schema pattern for
-> the first entry and perhaps a note to replace with actual strings when
-> there are some. It's ultimately up to the RiscV maintainers to require
-> SoC specific compatibles here. Allowing a generic one alone makes that
-> harder because the schema can't enforce it.
+Please provide this kind of information below the three dashes '---'. Otherwise
+this will end up in the commit message.
 
-Can we have a common compatible string for QEMU, FPGAs, etc ?
+> 
+> [1]https://patchwork.kernel.org/project/linux-mediatek/patch/20201221061018.18503-3-Yz.Wu@mediatek.com/
+> 
+> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8192.dtsi | 169 +++++++++++++++++++++++
+>  1 file changed, 169 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> index 4a0d941aec30..4020e40a092a 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> @@ -9,6 +9,7 @@
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/interrupt-controller/irq.h>
+>  #include <dt-bindings/pinctrl/mt8192-pinfunc.h>
+> +#include <dt-bindings/thermal/thermal.h>
+>  
+>  / {
+>  	compatible = "mediatek,mt8192";
+> @@ -42,6 +43,7 @@
+>  			clock-frequency = <1701000000>;
+>  			next-level-cache = <&l2_0>;
+>  			capacity-dmips-mhz = <530>;
+> +			#cooling-cells = <2>;
+>  		};
+>  
+>  		cpu1: cpu@100 {
+> @@ -52,6 +54,7 @@
+>  			clock-frequency = <1701000000>;
+>  			next-level-cache = <&l2_0>;
+>  			capacity-dmips-mhz = <530>;
+> +			#cooling-cells = <2>;
+>  		};
+>  
+>  		cpu2: cpu@200 {
+> @@ -62,6 +65,7 @@
+>  			clock-frequency = <1701000000>;
+>  			next-level-cache = <&l2_0>;
+>  			capacity-dmips-mhz = <530>;
+> +			#cooling-cells = <2>;
+>  		};
+>  
+>  		cpu3: cpu@300 {
+> @@ -72,6 +76,7 @@
+>  			clock-frequency = <1701000000>;
+>  			next-level-cache = <&l2_0>;
+>  			capacity-dmips-mhz = <530>;
+> +			#cooling-cells = <2>;
+>  		};
+>  
+>  		cpu4: cpu@400 {
+> @@ -82,6 +87,7 @@
+>  			clock-frequency = <2171000000>;
+>  			next-level-cache = <&l2_1>;
+>  			capacity-dmips-mhz = <1024>;
+> +			#cooling-cells = <2>;
+>  		};
+>  
+>  		cpu5: cpu@500 {
+> @@ -92,6 +98,7 @@
+>  			clock-frequency = <2171000000>;
+>  			next-level-cache = <&l2_1>;
+>  			capacity-dmips-mhz = <1024>;
+> +			#cooling-cells = <2>;
+>  		};
+>  
+>  		cpu6: cpu@600 {
+> @@ -102,6 +109,7 @@
+>  			clock-frequency = <2171000000>;
+>  			next-level-cache = <&l2_1>;
+>  			capacity-dmips-mhz = <1024>;
+> +			#cooling-cells = <2>;
+>  		};
+>  
+>  		cpu7: cpu@700 {
+> @@ -112,6 +120,7 @@
+>  			clock-frequency = <2171000000>;
+>  			next-level-cache = <&l2_1>;
+>  			capacity-dmips-mhz = <1024>;
+> +			#cooling-cells = <2>;
+>  		};
+>  
+>  		cpu-map {
+> @@ -178,6 +187,140 @@
+>  		method = "smc";
+>  	};
+>  
+> +	thermal-zones {
+> +		soc_max {
+> +			polling-delay = <1000>; /* milliseconds */
+> +			polling-delay-passive = <1000>; /* milliseconds */
+> +			thermal-sensors = <&lvts 0>;
+> +			sustainable-power = <1500>;
+> +
+> +			trips {
+> +				threshold: trip-point@0 {
+> +					temperature = <68000>;
+> +					hysteresis = <2000>;
+> +					type = "passive";
+> +				};
+> +
+> +				target: target@1 {
 
-For example,
-compatible = "riscv,generic-aclint-mswi", "riscv,aclint-mswi";
+Please review the node names.
+
+> +					temperature = <85000>;
+> +					hysteresis = <2000>;
+> +					type = "passive";
+> +				};
+> +
+> +				soc_max_crit: soc_max_crit@0 {
+> +					temperature = <115000>;
+> +					hysteresis = <2000>;
+> +					type = "critical";
+> +				};
+> +			};
+> +
+> +			cooling-maps {
+> +				map0 {
+> +					trip = <&target>;
+> +					cooling-device = <&cpu0
+> +						THERMAL_NO_LIMIT
+> +						THERMAL_NO_LIMIT>,
+> +							 <&cpu1
+> +						THERMAL_NO_LIMIT
+> +						THERMAL_NO_LIMIT>,
+> +							 <&cpu2
+> +						THERMAL_NO_LIMIT
+> +						THERMAL_NO_LIMIT>,
+> +							 <&cpu3
+> +						THERMAL_NO_LIMIT
+> +						THERMAL_NO_LIMIT>;
+> +					contribution = <3072>;
+
+By binding description value is in per-cent, 3072 does not make sense.
+
+> +				};
+> +				map1 {
+> +					trip = <&target>;
+> +					cooling-device = <&cpu4
+> +						THERMAL_NO_LIMIT
+> +						THERMAL_NO_LIMIT>,
+> +							 <&cpu5
+> +						THERMAL_NO_LIMIT
+> +						THERMAL_NO_LIMIT>,
+> +							 <&cpu6
+> +						THERMAL_NO_LIMIT
+> +						THERMAL_NO_LIMIT>,
+> +							 <&cpu7
+> +						THERMAL_NO_LIMIT
+> +						THERMAL_NO_LIMIT>;
+> +					contribution = <1024>;
+
+Same here.
+
+> +				};
+> +			};
+> +		};
+
+New line here.
+
+> +		cpu_big1 {
+> +			polling-delay = <0>; /* milliseconds */
+> +			polling-delay-passive = <0>; /* milliseconds */
+> +			thermal-sensors = <&lvts 1>;
+> +		};
+> +		cpu_big2 {
+> +			polling-delay = <0>; /* milliseconds */
+> +			polling-delay-passive = <0>; /* milliseconds */
+> +			thermal-sensors = <&lvts 2>;
+> +		};
+> +		cpu_big3 {
+> +			polling-delay = <0>; /* milliseconds */
+> +			polling-delay-passive = <0>; /* milliseconds */
+> +			thermal-sensors = <&lvts 3>;
+> +		};
+> +		cpu_big4 {
+> +			polling-delay = <0>; /* milliseconds */
+> +			polling-delay-passive = <0>; /* milliseconds */
+> +			thermal-sensors = <&lvts 4>;
+> +		};
+> +		cci1 {
+> +			polling-delay = <0>; /* milliseconds */
+> +			polling-delay-passive = <0>; /* milliseconds */
+> +			thermal-sensors = <&lvts 5>;
+> +		};
+> +		cci2 {
+> +			polling-delay = <0>; /* milliseconds */
+> +			polling-delay-passive = <0>; /* milliseconds */
+> +			thermal-sensors = <&lvts 6>;
+> +		};
+> +		cpu_little1 {
+> +			polling-delay = <0>; /* milliseconds */
+> +			polling-delay-passive = <0>; /* milliseconds */
+> +			thermal-sensors = <&lvts 7>;
+> +		};
+> +		cpu_little2 {
+> +			polling-delay = <0>; /* milliseconds */
+> +			polling-delay-passive = <0>; /* milliseconds */
+> +			thermal-sensors = <&lvts 8>;
+> +		};
+> +		apu {
+> +			polling-delay = <0>; /* milliseconds */
+> +			polling-delay-passive = <0>; /* milliseconds */
+> +			thermal-sensors = <&lvts 9>;
+> +		};
+> +		mlda {
+> +			polling-delay = <0>; /* milliseconds */
+> +			polling-delay-passive = <0>; /* milliseconds */
+> +			thermal-sensors = <&lvts 10>;
+> +		};
+> +		gpu1 {
+> +			polling-delay = <0>; /* milliseconds */
+> +			polling-delay-passive = <0>; /* milliseconds */
+> +			thermal-sensors = <&lvts 11>;
+> +		};
+> +		gpu2 {
+> +			polling-delay = <0>; /* milliseconds */
+> +			polling-delay-passive = <0>; /* milliseconds */
+> +			thermal-sensors = <&lvts 12>;
+> +		};
+> +		infra {
+> +			polling-delay = <0>; /* milliseconds */
+> +			polling-delay-passive = <0>; /* milliseconds */
+> +			thermal-sensors = <&lvts 13>;
+> +		};
+> +		camsys {
+> +			polling-delay = <0>; /* milliseconds */
+> +			polling-delay-passive = <0>; /* milliseconds */
+> +			thermal-sensors = <&lvts 14>;
+> +		};
+
+I think I'm missing something. We are creating a whole bunch of thermal zones,
+but no trip points neither cooling maps for them. What are the needed for?
+
+> +	};
+> +
+>  	timer: timer {
+>  		compatible = "arm,armv8-timer";
+>  		interrupt-parent = <&gic>;
+> @@ -224,6 +367,10 @@
+>  			compatible = "mediatek,mt8192-infracfg", "syscon";
+>  			reg = <0 0x10001000 0 0x1000>;
+>  			#clock-cells = <1>;
+> +			ti,reset-bits = <
+> +				0x120 0 0x124 0 0 0 (ASSERT_SET | DEASSERT_SET | STATUS_NONE)
+> +				0x730 12 0x734 12 0 0 (ASSERT_SET | DEASSERT_SET | STATUS_NONE)
+> +			>;
+
+How is that related to the commit message? Looks to me like a separate patch.
+
+>  		};
+>  
+>  		pericfg: syscon@10003000 {
+> @@ -318,6 +465,24 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		lvts: lvts@1100b000 {
+> +			compatible = "mediatek,mt6873-lvts";
+
+This driver is not upstream. Please provide a link to the submission of the
+latest version so that I can track progress.
 
 Regards,
-Anup
-
->
-> Rob
+Matthias
