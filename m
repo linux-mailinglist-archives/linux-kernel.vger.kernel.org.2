@@ -2,113 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2055D4007E0
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 00:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD674007DF
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 00:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237565AbhICWWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 18:22:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34496 "EHLO
+        id S237343AbhICWWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 18:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233620AbhICWWR (ORCPT
+        with ESMTP id S233033AbhICWWB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 18:22:17 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04AADC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 15:21:17 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id h1so977070ljl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 15:21:16 -0700 (PDT)
+        Fri, 3 Sep 2021 18:22:01 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B33C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 15:21:01 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id r13so585876pff.7
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 15:21:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V2hoWJQN2mzjm7RN9/wyMT5DuqBSo/d9GUmVSbz0TJw=;
-        b=Gc085IJlGgq95QEC60AuUrcwKvYlFA0D3Q9sv2Trn1ebudU66LqjDOYUXWMF6gr1sm
-         f8xRaQvwmRs7om4gUhY2vJg1RGYwkIaxmuvcRvolFIg3jtushEc4EYI/RB6CZHJNZNqM
-         jcqt/EJjawnGjgXzGIlHfPVqPxpR0J4DIIWLo=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=z6Ahe3HyFCsln3WxhiPzlBdzSMzmQy1MoB9r0kQJYjY=;
+        b=j+i4OnKQlx67qf6KsGGrXn+kDIVbopkXPqg29WuanGw7D+NxxpUfn+yNtPO3lEjAlq
+         IC+p3mgGgnWHwDwxvLzVWdG4G9j3wn6czhDnEmn2BCIcsFo5+Pljd/R4gG4PpcE5j/Lw
+         n3fNJJKD0jBLyuMESbHVez1HBAiBgQ+3l0nAc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V2hoWJQN2mzjm7RN9/wyMT5DuqBSo/d9GUmVSbz0TJw=;
-        b=lohTXqvqcWp2zrId9i2mHJ9sHUlTqSJ6Oi+bmc3lPOeqpCde11FbYqHkEYSNjF+vMb
-         wLvUHHtJPQ1KUNeAQHabwp8Se8VQ5qedGqkFBJKCfBi51Xjaseup0mj7xtqmdFA/5JT3
-         ATbkXHVJBTLS9pwn3dMRgpT1rt7TeRPTmI+rLkwE4Rh82bTkaSBKGkgZOmdwzozQ3Hzy
-         MoWo0FTFG9iqoxeecfOD1rsKS8M6+mSPkSRU5NsgxBUPTENB/XMipLb+3PRfcRz0WJ6C
-         FlJyk9ZvHeEBADRDsuUyPMhlajzWZRz6dYEbWm2Gj+uGZbyUpufvjfdzl95fyheTPucw
-         0D9w==
-X-Gm-Message-State: AOAM530uCKfeMDFzFkGaerPRJjfScLaBvLS5xuTZDe5im0WlBadWfc4K
-        hKnEPfMncKFvmNDRPsdHRjYNdcY90E6/nzAYEbs=
-X-Google-Smtp-Source: ABdhPJy9QeX1Gr5Rdt6h2IvwCI94MjehNUGzTxcLzaMt+AXvaz+PCMHoC8HicAZZr5XfWMJU7Unmxg==
-X-Received: by 2002:a2e:9852:: with SMTP id e18mr800702ljj.173.1630707674872;
-        Fri, 03 Sep 2021 15:21:14 -0700 (PDT)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id d21sm45768ljo.70.2021.09.03.15.21.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 15:21:14 -0700 (PDT)
-Received: by mail-lj1-f174.google.com with SMTP id m4so978924ljq.8
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 15:21:14 -0700 (PDT)
-X-Received: by 2002:a2e:8185:: with SMTP id e5mr785657ljg.31.1630707673799;
- Fri, 03 Sep 2021 15:21:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <acdf065c-256d-47b0-5c20-203ff4b213d6@gmail.com>
-In-Reply-To: <acdf065c-256d-47b0-5c20-203ff4b213d6@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=z6Ahe3HyFCsln3WxhiPzlBdzSMzmQy1MoB9r0kQJYjY=;
+        b=Tciwar1eZP/20d4DYvgoJZymSCqLUWkKw0AFeUZBQ5YyKjfPdmE9KAfCwMk67J9iy0
+         V5GRiJz/E0CO4MWiGn78TQlWbDVpEion/pUrJsm/WdhgK8kJD1N/ArJGFvtP4rJ2+mrO
+         IHiDV6UP8/5J3XK6FUT599ZS3nNJX86pjtN8giU2lFt+SmC7cS691t9TdM3ehKjXHks8
+         61o0C+0oOECwcMNX7orQTiFkSR9SmSl3aI/8MH+/xcKN1D4k8Q1Du8ZK8qnZIHbA+hqk
+         2Vf3jbJ/1UzUoDCMdrR8HUnRgYQM9nmohmVKKdvG3flvpPd/mwaUvCMhLu5G3MUwX66A
+         w84g==
+X-Gm-Message-State: AOAM532RMaFKcX/kfr2Q1e3wDSAxLD9krOiBXfyP1Mz7J8Goen/gwMtI
+        85kZxze5VrQBzfrezhKckPxkPw==
+X-Google-Smtp-Source: ABdhPJyWCdRDESu1+RloArQDnrUNo5Gz+AwhyFui33D17W9ipNom5uKCB8s4H5hAYBrPJBoGl295nA==
+X-Received: by 2002:a63:4610:: with SMTP id t16mr1059608pga.176.1630707660544;
+        Fri, 03 Sep 2021 15:21:00 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 11sm319586pfm.208.2021.09.03.15.20.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 15:20:59 -0700 (PDT)
 Date:   Fri, 3 Sep 2021 15:20:58 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiENdk_AXGRrmbbOYqq9zYptdv=vYszgG2ZzztDUTJwRA@mail.gmail.com>
-Message-ID: <CAHk-=wiENdk_AXGRrmbbOYqq9zYptdv=vYszgG2ZzztDUTJwRA@mail.gmail.com>
-Subject: Re: dozens of sysbot reports
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
+From:   Kees Cook <keescook@chromium.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     akpm@linux-foundation.org, ccross@google.com,
+        sumit.semwal@linaro.org, mhocko@suse.com, dave.hansen@intel.com,
+        willy@infradead.org, kirill.shutemov@linux.intel.com,
+        vbabka@suse.cz, hannes@cmpxchg.org, corbet@lwn.net,
+        viro@zeniv.linux.org.uk, rdunlap@infradead.org,
+        kaleshsingh@google.com, peterx@redhat.com, rppt@kernel.org,
+        peterz@infradead.org, catalin.marinas@arm.com,
+        vincenzo.frascino@arm.com, chinwen.chang@mediatek.com,
+        axelrasmussen@google.com, aarcange@redhat.com, jannh@google.com,
+        apopple@nvidia.com, jhubbard@nvidia.com, yuzhao@google.com,
+        will@kernel.org, fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        hughd@google.com, feng.tang@intel.com, jgg@ziepe.ca, guro@fb.com,
+        tglx@linutronix.de, krisman@collabora.com, chris.hyser@oracle.com,
+        pcc@google.com, ebiederm@xmission.com, axboe@kernel.dk,
+        legion@kernel.org, eb@emlix.com, gorcunov@gmail.com,
+        songmuchun@bytedance.com, viresh.kumar@linaro.org,
+        thomascedeno@google.com, sashal@kernel.org, cxfcosmos@gmail.com,
+        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm@kvack.org, kernel-team@android.com
+Subject: Re: [PATCH v9 3/3] mm: add anonymous vma name refcounting
+Message-ID: <202109031450.CDA7090A@keescook>
+References: <20210902231813.3597709-1-surenb@google.com>
+ <20210902231813.3597709-3-surenb@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902231813.3597709-3-surenb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 1:44 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
->
-> I have a pile of (still under triage) sysbot reports coming after one of your patch
->
-> Typical stack trace:
->
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 24889 at mm/util.c:597 kvmalloc_node+0x111/0x120 mm/util.c:597
-> Call Trace:
->  hash_ipport_create+0x3dd/0x1220 net/netfilter/ipset/ip_set_hash_gen.h:1524
->  ip_set_create+0x782/0x15a0 net/netfilter/ipset/ip_set_core.c:1100
->  nfnetlink_rcv_msg+0xbc9/0x13f0 net/netfilter/nfnetlink.c:296
-
-So the real question is mainly just whether those huge allocations
-actually make sense or not.
-
-If they truly are sensible, we can remove the warning. But it would be
-good to perhaps look at them more.
-
-Because no:
-
-> Do we want to fix all problematic callers, with ad-hoc patches like
-
-Not insane patches like this, no.
-
->  ip_set_alloc(size_t size)
->  {
-> +       if (size > INT_MAX)
-> +               return NULL;
->         return kvzalloc(size, GFP_KERNEL_ACCOUNT);
+On Thu, Sep 02, 2021 at 04:18:13PM -0700, Suren Baghdasaryan wrote:
+> While forking a process with high number (64K) of named anonymous vmas the
+> overhead caused by strdup() is noticeable. Experiments with ARM64 Android
+> device show up to 40% performance regression when forking a process with
+> 64k unpopulated anonymous vmas using the max name lengths vs the same
+> process with the same number of anonymous vmas having no name.
+> Introduce anon_vma_name refcounted structure to avoid the overhead of
+> copying vma names during fork() and when splitting named anonymous vmas.
+> When a vma is duplicated, instead of copying the name we increment the
+> refcount of this structure. Multiple vmas can point to the same
+> anon_vma_name as long as they increment the refcount. The name member of
+> anon_vma_name structure is assigned at structure allocation time and is
+> never changed. If vma name changes then the refcount of the original
+> structure is dropped, a new anon_vma_name structure is allocated
+> to hold the new name and the vma pointer is updated to point to the new
+> structure.
+> With this approach the fork() performance regressions is reduced 3-4x
+> times and with usecases using more reasonable number of VMAs (a few
+> thousand) the regressions is not measurable.
+> 
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> ---
+> previous version including cover letter with test results is at:
+> https://lore.kernel.org/linux-mm/20210827191858.2037087-1-surenb@google.com/
+> 
+> changes in v9
+> - Replaced kzalloc with kmalloc in anon_vma_name_alloc, per Rolf Eike Beer
+> 
+>  include/linux/mm_types.h |  9 ++++++++-
+>  mm/madvise.c             | 43 +++++++++++++++++++++++++++++++++-------
+>  2 files changed, 44 insertions(+), 8 deletions(-)
+> 
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 968a1d0463d8..7feb43daee6c 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -5,6 +5,7 @@
+>  #include <linux/mm_types_task.h>
+>  
+>  #include <linux/auxvec.h>
+> +#include <linux/kref.h>
+>  #include <linux/list.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/rbtree.h>
+> @@ -310,6 +311,12 @@ struct vm_userfaultfd_ctx {
+>  struct vm_userfaultfd_ctx {};
+>  #endif /* CONFIG_USERFAULTFD */
+>  
+> +struct anon_vma_name {
+> +	struct kref kref;
+> +	/* The name needs to be at the end because it is dynamically sized. */
+> +	char name[];
+> +};
+> +
+>  /*
+>   * This struct describes a virtual memory area. There is one of these
+>   * per VM-area/task. A VM area is any part of the process virtual memory
+> @@ -361,7 +368,7 @@ struct vm_area_struct {
+>  			unsigned long rb_subtree_last;
+>  		} shared;
+>  		/* Serialized by mmap_sem. */
+> -		char *anon_name;
+> +		struct anon_vma_name *anon_name;
+>  	};
+>  
+>  	/*
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index 0c6d0f64d432..adc53edd3fe7 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -63,6 +63,28 @@ static int madvise_need_mmap_write(int behavior)
+>  	}
 >  }
+>  
+> +static struct anon_vma_name *anon_vma_name_alloc(const char *name)
+> +{
+> +	struct anon_vma_name *anon_name;
+> +	size_t len = strlen(name);
+> +
+> +	/* Add 1 for NUL terminator at the end of the anon_name->name */
+> +	anon_name = kmalloc(sizeof(*anon_name) + len + 1, GFP_KERNEL);
+> +	if (anon_name) {
+> +		kref_init(&anon_name->kref);
+> +		strcpy(anon_name->name, name);
 
-But does that kind of size really make sense? I'm looking at the
-particular caller, is it *really* senseible to have a 4GB+ hash table
-size?
+Please don't use strcpy(), even though we know it's safe here. We're
+trying to remove it globally (or at least for non-constant buffers)[1].
+We can also use the struct_size() helper, along with memcpy():
 
-IOW, I don't think we want that warning to cause the above kinds of
-ad-hoc patches.
+	/* Add 1 for NUL terminator at the end of the anon_name->name */
+	size_t count = strlen(name) + 1;
 
-But I _do_ want that warning to make people go "is that allocation
-truly sensible"?
+	anon_name = kmalloc(struct_size(anon_name, name, count), GFP_KERNEL);
+	if (anon_name) {
+		kref_init(&anon_name->kref);
+		memcpy(anon_name->name, name, count);
+	}
 
-IOW, it sounds like you can send some netlink message that causes
-insane hash size allocations. Shouldn't _that_ be fixed?
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy
 
-                   Linus
+> +	}
+> +
+> +	return anon_name;
+> +}
+> +
+> +static void vma_anon_name_free(struct kref *kref)
+> +{
+> +	struct anon_vma_name *anon_name =
+> +			container_of(kref, struct anon_vma_name, kref);
+> +	kfree(anon_name);
+> +}
+> +
+>  static inline bool has_vma_anon_name(struct vm_area_struct *vma)
+>  {
+>  	return !vma->vm_file && vma->anon_name;
+> @@ -75,7 +97,7 @@ const char *vma_anon_name(struct vm_area_struct *vma)
+>  
+>  	mmap_assert_locked(vma->vm_mm);
+>  
+> -	return vma->anon_name;
+> +	return vma->anon_name->name;
+>  }
+>  
+>  void dup_vma_anon_name(struct vm_area_struct *orig_vma,
+> @@ -84,37 +106,44 @@ void dup_vma_anon_name(struct vm_area_struct *orig_vma,
+>  	if (!has_vma_anon_name(orig_vma))
+>  		return;
+>  
+> -	new_vma->anon_name = kstrdup(orig_vma->anon_name, GFP_KERNEL);
+> +	kref_get(&orig_vma->anon_name->kref);
+> +	new_vma->anon_name = orig_vma->anon_name;
+>  }
+>  
+>  void free_vma_anon_name(struct vm_area_struct *vma)
+>  {
+> +	struct anon_vma_name *anon_name;
+> +
+>  	if (!has_vma_anon_name(vma))
+>  		return;
+>  
+> -	kfree(vma->anon_name);
+> +	anon_name = vma->anon_name;
+>  	vma->anon_name = NULL;
+> +	kref_put(&anon_name->kref, vma_anon_name_free);
+>  }
+>  
+>  /* mmap_lock should be write-locked */
+>  static int replace_vma_anon_name(struct vm_area_struct *vma, const char *name)
+>  {
+> +	const char *anon_name;
+> +
+>  	if (!name) {
+>  		free_vma_anon_name(vma);
+>  		return 0;
+>  	}
+>  
+> -	if (vma->anon_name) {
+> +	anon_name = vma_anon_name(vma);
+> +	if (anon_name) {
+>  		/* Should never happen, to dup use dup_vma_anon_name() */
+> -		WARN_ON(vma->anon_name == name);
+> +		WARN_ON(anon_name == name);
+>  
+>  		/* Same name, nothing to do here */
+> -		if (!strcmp(name, vma->anon_name))
+> +		if (!strcmp(name, anon_name))
+>  			return 0;
+>  
+>  		free_vma_anon_name(vma);
+>  	}
+> -	vma->anon_name = kstrdup(name, GFP_KERNEL);
+> +	vma->anon_name = anon_vma_name_alloc(name);
+>  	if (!vma->anon_name)
+>  		return -ENOMEM;
+>  
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
+> 
+
+With the above tweak, please consider this:
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+Thanks for working on this!
+
+-- 
+Kees Cook
