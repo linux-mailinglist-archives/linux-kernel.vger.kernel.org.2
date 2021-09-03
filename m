@@ -2,187 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D46A3FFD71
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601603FFD73
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:50:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235038AbhICJtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 05:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234898AbhICJtp (ORCPT
+        id S235008AbhICJuu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 3 Sep 2021 05:50:50 -0400
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:55873 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234932AbhICJut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 05:49:45 -0400
-X-Greylist: delayed 456 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 03 Sep 2021 02:48:45 PDT
-Received: from lb2-smtp-cloud8.xs4all.net (lb2-smtp-cloud8.xs4all.net [IPv6:2001:888:0:108::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54656C061575;
-        Fri,  3 Sep 2021 02:48:45 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id M5oQmN7Ajy7WyM5oRmA06H; Fri, 03 Sep 2021 11:48:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1630662523; bh=SJ8hd1vkoE1lDR7Gui6NdVSUUgSzmWITome7gxPlUDU=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=j6p6FJi6YLNAQCdU6hfsWGUf3VqqCIrYZiKbDUYj5qegwetrBhX/nNKewE1O1TGTa
-         /tRsIIdCQsxDvkroD9J9avuXIkQjK5qzVUfuX53WBjhogMasACClK23P0E0uEk5f3+
-         bA2IEZlGtUaUX7Nr8tKkeFIdB8LARUVSuSHkyx+VJSUmQn6JwJkney2LOCCnVVJU+T
-         mvMJaypvY1mf6+yKfvfp1hosjcc3KTcc+ZTrgsrkXSytsamvq8GoHbnhSDzyCHEyZC
-         exZxNVlSPCX+atGtLUSqkaxsjidkwwyE6S8HjXwUSQVqrUmlqaLV/41ZF7Ky5AZW7B
-         iFfjQibG/1Srg==
-Subject: Re: [PATCH v7 5/5] media: platform: mtk-mdp3: Add Mediatek MDP3
- driver
-To:     Moudy Ho <moudy.ho@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     Maoguang Meng <maoguang.meng@mediatek.com>,
-        daoyuan huang <daoyuan.huang@mediatek.com>,
-        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Rob Landley <rob@landley.net>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org, drinkcat@chromium.org, acourbot@chromium.org,
-        pihsun@chromium.org, menghui.lin@mediatek.com,
-        sj.huang@mediatek.com, ben.lok@mediatek.com, randy.wu@mediatek.com,
-        srv_heupstream@mediatek.com, hsinyi@google.com
-References: <20210824100027.25989-1-moudy.ho@mediatek.com>
- <20210824100027.25989-6-moudy.ho@mediatek.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <6898a212-6ccf-b668-fc70-cc8fd4bb39f5@xs4all.nl>
-Date:   Fri, 3 Sep 2021 11:48:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 3 Sep 2021 05:50:49 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id EB8181C000C;
+        Fri,  3 Sep 2021 09:49:46 +0000 (UTC)
+Date:   Fri, 3 Sep 2021 11:49:46 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] mtd: Changes for 5.15
+Message-ID: <20210903114946.3f874e6e@xps13>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210824100027.25989-6-moudy.ho@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfJ4ioDmS4XtQHcugZwVkBni7FGMQiywW0gjM3kJxcDJjOQZ2L4kqAsGHSfISHRR/5AXECJ0HS3oAZm0u4YKkjd+0JKhwzM4XgPxJr35egUjDy2+LHGok
- Z9F2+O4SFhAob1iDfSzyZv3Rp0RKcTH6b00WEl3WVJWpE9oCTWb95ffxbtLNZYLkgDnqvht0HoMtOxpWI6nySJYzwKZQ+ivG/Cz5xe5Xa525f8T8QaO4/Ej9
- ol0fME5v6XF4BaPQZ8HEK+posxVZ5i1Fav7DGdW+or7cu0AzafNiWJpSVeru0l24kc/Gf6g8i8ZWUEpagGoL4rVmpqbVSPXFYaRKDLZJNa1wpUc0sj5Rmt9H
- bqscLv8O9cSh9uSTrgFxzQj2webhgMD1PjmkU2U1lveYIcxiC4fjEtoU/RGAfdvuePT4VfhG+m9Fm/7jI4CDUObSeO8KFUbTKMp0Tikw/HI6L5oyWTM9Vg3d
- fH8uZdy2E8ostYECZes7wsfSPs8BPS7GiPSQJL1XaBeDEURptiAQkRVzVZJeSNtGVQhngrWcAMAEAk2A9qCAxweLrKIsATU80hlWI3TGlsluIJ3xYW1xXiYX
- /bim1qkBOt0004Jspanj4fv/rxxOf42+H1Y0YtfH9MfMJtuPX2kMfe/ZkFW59xaaiDF7DsYt5EikKEzvlYrdqH441hMnJGOCFsEWhsNLKJYNnOC6Dhkextxt
- Uwt90RdZeU8+c3Ua/HYhOAkrX6aUwIc/blpywayEtAcGSA0mGowrVfOc8dr3dgaCb3ZmuJKp3qJDlvNXrdL+x9rvI26/MgcMmjbPcOkfgtM+uf9lZ13ngZiE
- b2lacG87jUILXuTWanJaMvl/duxSJQTlKMRvzQQ0pD/NLEnSNG7I1kMlQWsT72XfN4rwTH5XGDHA+IerYJQVf0z3K3Q0T4lTCezjDgUyeW00tK/djXYOrOY4
- XuTc3z+IPCG/U+qvgk/yx/zClC+qYora5WFp1pQPFvzYagbbpLGof9LWI1FaXnySR0S7g+kwx3an14wahxiL4ggb/fzv9UjKUvEFRPf2vj9RkCasQSS0d8S8
- t7t8sxFGu6J2IMAe2I4TJ7KOgz1PvCoWTEwnr3AtBhpsE/CbElNjFUDiggyqgoP7S/t9x3Oy3x2VIdFUOLShrWSmbufDEShsDRIbAzzSnOr5CTGpmM8d3hWz
- 1awnQY2/CLTiiVr4TCTVBA==
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/08/2021 12:00, Moudy Ho wrote:
-> This patch adds driver for Mediatek's Media Data Path ver.3 (MDP3).
-> It provides the following functions:
->   color transform, format conversion, resize, crop, rotate, flip
->   and additional image quality enhancement.
-> 
-> The MDP3 driver is mainly used for Google Chromebook products to
-> import the new architecture to set the HW settings as shown below:
->   User -> V4L2 framework
->     -> MDP3 driver -> SCP (setting calculations)
->       -> MDP3 driver -> CMDQ (GCE driver) -> HW
-> 
-> Each modules' related operation control is sited in mtk-mdp3-comp.c
-> Each modules' register table is defined in file with "mdp_reg_" prefix
-> GCE related API, operation control  sited in mtk-mdp3-cmdq.c
-> V4L2 m2m device functions are implemented in mtk-mdp3-m2m.c
-> Probe, power, suspend/resume, system level functions are defined in
-> mtk-mdp3-core.c
-> 
-> Signed-off-by: Ping-Hsun Wu <ping-hsun.wu@mediatek.com>
-> Signed-off-by: daoyuan huang <daoyuan.huang@mediatek.com>
-> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
-> ---
-> Depend on:
->    [1] https://patchwork.kernel.org/project/linux-mediatek/patch/20190906115513.159705-9-acourbot@chromium.org/
->    [2] https://patchwork.kernel.org/project/linux-mediatek/patch/20190906115513.159705-10-acourbot@chromium.org/
-> ---
->  drivers/media/platform/Kconfig                |   19 +
->  drivers/media/platform/Makefile               |    2 +
->  drivers/media/platform/mtk-mdp3/Makefile      |    6 +
->  .../media/platform/mtk-mdp3/mdp_reg_ccorr.h   |   19 +
->  drivers/media/platform/mtk-mdp3/mdp_reg_isp.h |   27 +
->  .../media/platform/mtk-mdp3/mdp_reg_rdma.h    |   65 +
->  drivers/media/platform/mtk-mdp3/mdp_reg_rsz.h |   39 +
->  .../media/platform/mtk-mdp3/mdp_reg_wdma.h    |   47 +
->  .../media/platform/mtk-mdp3/mdp_reg_wrot.h    |   55 +
->  drivers/media/platform/mtk-mdp3/mtk-img-ipi.h |  280 ++++
->  .../media/platform/mtk-mdp3/mtk-mdp3-cmdq.c   |  507 +++++++
->  .../media/platform/mtk-mdp3/mtk-mdp3-cmdq.h   |   46 +
->  .../media/platform/mtk-mdp3/mtk-mdp3-comp.c   | 1307 +++++++++++++++++
->  .../media/platform/mtk-mdp3/mtk-mdp3-comp.h   |  147 ++
->  .../media/platform/mtk-mdp3/mtk-mdp3-core.c   |  329 +++++
->  .../media/platform/mtk-mdp3/mtk-mdp3-core.h   |   75 +
->  .../media/platform/mtk-mdp3/mtk-mdp3-m2m.c    |  801 ++++++++++
->  .../media/platform/mtk-mdp3/mtk-mdp3-m2m.h    |   41 +
->  .../media/platform/mtk-mdp3/mtk-mdp3-regs.c   |  746 ++++++++++
->  .../media/platform/mtk-mdp3/mtk-mdp3-regs.h   |  372 +++++
->  .../media/platform/mtk-mdp3/mtk-mdp3-vpu.c    |  312 ++++
->  .../media/platform/mtk-mdp3/mtk-mdp3-vpu.h    |   78 +
->  22 files changed, 5320 insertions(+)
->  create mode 100644 drivers/media/platform/mtk-mdp3/Makefile
->  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_ccorr.h
->  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_isp.h
->  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_rdma.h
->  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_rsz.h
->  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_wdma.h
->  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_wrot.h
->  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-img-ipi.h
->  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.c
->  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.h
->  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.c
->  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.h
->  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-core.c
->  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-core.h
->  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-m2m.c
->  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-m2m.h
->  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-regs.c
->  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-regs.h
->  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-vpu.c
->  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-vpu.h
-> 
-> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-> index 157c924686e4..b7f331dbe1b5 100644
-> --- a/drivers/media/platform/Kconfig
-> +++ b/drivers/media/platform/Kconfig
-> @@ -299,6 +299,25 @@ config VIDEO_MEDIATEK_MDP
->  	    To compile this driver as a module, choose M here: the
->  	    module will be called mtk-mdp.
->  
-> +config VIDEO_MEDIATEK_MDP3
-> +	tristate "Mediatek MDP v3 driver"
-> +	depends on MTK_IOMMU
+Hello Linus,
 
-This should probably be:
+This is the MTD PR for 5.15.
 
-	depends on MTK_IOMMU || COMPILE_TEST
+Thanks,
+Miquèl
 
-> +	depends on VIDEO_DEV && VIDEO_V4L2
-> +	depends on ARCH_MEDIATEK || COMPILE_TEST
-> +	depends on HAS_DMA
-> +	select VIDEOBUF2_DMA_CONTIG
-> +	select V4L2_MEM2MEM_DEV
-> +	select VIDEO_MEDIATEK_VPU
-> +	select MTK_CMDQ
-> +	select MTK_SCP
-> +	default n
-> +	help
-> +	    It is a v4l2 driver and present in Mediatek MT8183 SoC.
-> +	    The driver supports for scaling and color space conversion.
-> +
-> +	    To compile this driver as a module, choose M here: the
-> +	    module will be called mtk-mdp3.
-> +
->  config VIDEO_MEDIATEK_VCODEC
->  	tristate "Mediatek Video Codec driver"
->  	depends on MTK_IOMMU || COMPILE_TEST
+The following changes since commit
+e73f0f0ee7541171d89f2e2491130c7771ba58d3:
 
-Regards,
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
 
-	Hans
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git
+  tags/mtd/for-5.15
+
+for you to fetch changes up to c1fe77e42440d2cad76055df6fb58caabf622d51:
+
+  Merge tag 'nand/for-5.15' into mtd/next (2021-09-03 00:04:16 +0200)
+
+----------------------------------------------------------------
+MTD changes:
+* blkdevs:
+  - Simplify the refcounting in blktrans_{open, release}
+  - Simplify blktrans_getgeo
+  - Remove blktrans_ref_mutex
+  - Simplify blktrans_dev_get
+  - Use lockdep_assert_held
+  - Don't hold del_mtd_blktrans_dev in blktrans_{open, release}
+* ftl:
+  - Don't cast away the type when calling add_mtd_blktrans_dev
+  - Don't cast away the type when calling add_mtd_blktrans_dev
+  - Use container_of() rather than cast
+  - Fix use-after-free
+  - Add discard support
+  - Allow use of MTD_RAM for testing purposes
+* concat:
+  - Check _read, _write callbacks existence before assignment
+  - Judge callback existence based on the master
+* maps:
+  - Maps: remove dead MTD map driver for PMC-Sierra MSP boards
+* mtdblock:
+  - Warn if added for a NAND device
+  - Add comment about UBI block devices
+  - Update old JFFS2 mention in Kconfig
+* partitions:
+  - Redboot: convert to YAML
+
+NAND core changes:
+* Repair Miquel Raynal's email address in MAINTAINERS
+* Fix a couple of spelling mistakes in Kconfig
+* bbt: Skip bad blocks when searching for the BBT in NAND
+* Remove never changed ret variable
+
+Raw NAND changes:
+* cafe: Fix a resource leak in the error handling path of
+'cafe_nand_probe()'
+* intel: Fix error handling in probe
+* omap: Fix kernel doc warning on 'calcuate' typo
+* gpmc: Fix the ECC bytes vs. OOB bytes equation
+
+SPI-NAND core changes:
+* Properly fill the OOB area.
+* Fix comment
+
+SPI-NAND drivers changes:
+* macronix: Add Quad support for serial NAND flash
+
+----------------------------------------------------------------
+Christoph Hellwig (8):
+      mtd_blkdevs: don't hold del_mtd_blktrans_dev in blktrans_{open,
+release} mtd_blkdevs: use lockdep_assert_held
+      mtd/ftl: don't cast away the type when calling
+add_mtd_blktrans_dev mtd/rfd_ftl: don't cast away the type when calling
+add_mtd_blktrans_dev mtd_blkdevs: simplify blktrans_dev_get
+      mtd_blkdevs: remove blktrans_ref_mutex
+      mtd_blkdevs: simplify blktrans_getgeo
+      mtd_blkdevs: simplify the refcounting in blktrans_{open, release}
+
+Christophe JAILLET (1):
+      mtd: rawnand: cafe: Fix a resource leak in the error handling
+path of 'cafe_nand_probe()'
+
+Colin Ian King (1):
+      mtd: rawnand: Fix a couple of spelling mistakes in Kconfig
+
+Corentin Labbe (1):
+      dt_bindings: mtd: partitions: redboot: convert to YAML
+
+Daniel Palmer (1):
+      mtd: spinand: core: Properly fill the OOB area.
+
+Evgeny Novikov (1):
+      mtd: rawnand: intel: Fix error handling in probe
+
+Ezequiel Garcia (3):
+      mtdblock: Update old JFFS2 mention in Kconfig
+      mtdblock: Add comment about UBI block devices
+      mtdblock: Warn if added for a NAND device
+
+Jaime Liao (1):
+      mtd: spinand: macronix: Add Quad support for serial NAND flash
+
+Jason Wang (1):
+      mtd: rawnand: remove never changed ret variable
+
+Lukas Bulwahn (2):
+      MAINTAINERS: repair Miquel Raynal's email address
+      mtd: maps: remove dead MTD map driver for PMC-Sierra MSP boards
+
+Miquel Raynal (3):
+      dt-bindings: mtd: gpmc: Fix the ECC bytes vs. OOB bytes equation
+      mtd: spinand: Fix comment
+      Merge tag 'nand/for-5.15' into mtd/next
+
+Sean Young (4):
+      mtd: rfd_ftl: allow use of MTD_RAM for testing purposes
+      mtd: rfd_ftl: add discard support
+      mtd: rfd_ftl: fix use-after-free
+      mtd: rfd_ftl: use container_of() rather than cast
+
+Stefan Riedmueller (1):
+      mtd: rawnand: nand_bbt: Skip bad blocks when searching for the
+BBT in NAND
+
+Vladimir Molokov (1):
+      mtd: rawnand: omap: Fix kernel doc warning on 'calcuate' typo
+
+Zhihao Cheng (2):
+      mtd: mtdconcat: Judge callback existence based on the master
+      mtd: mtdconcat: Check _read, _write callbacks existence before
+assignment
+
+ Documentation/devicetree/bindings/mtd/gpmc-nand.txt               |
+ 2 +- Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
+ |  27 ----
+ Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml |
+ 42 ++++++ MAINTAINERS
+      |   4 +- drivers/mtd/Kconfig
+          |  10 +- drivers/mtd/ftl.c
+              |   2 +- drivers/mtd/maps/Kconfig
+                  |  23 ---- drivers/mtd/maps/Makefile
+                        |   1 - drivers/mtd/maps/pmcmsp-flash.c
+                           | 227 -------------------------------
+ drivers/mtd/mtd_blkdevs.c                                         |
+ 60 +------- drivers/mtd/mtdblock.c
+        |   4 + drivers/mtd/mtdblock_ro.c
+           |   4 + drivers/mtd/mtdconcat.c
+              |  33 +++-- drivers/mtd/nand/raw/Kconfig
+                     |   4 +- drivers/mtd/nand/raw/cafe_nand.c
+                         |   4 +-
+ drivers/mtd/nand/raw/intel-nand-controller.c                      |
+ 27 ++-- drivers/mtd/nand/raw/meson_nand.c
+    |   4 +- drivers/mtd/nand/raw/nand_bbt.c
+        |  33 +++++ drivers/mtd/nand/raw/omap2.c
+               |   2 +- drivers/mtd/nand/spi/core.c
+                   |   4 +- drivers/mtd/nand/spi/macronix.c
+                       |  16 +-- drivers/mtd/rfd_ftl.c
+                            |  46 +++++-- 22 files changed, 198
+ insertions(+), 381 deletions(-) delete mode 100644
+ Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
+ create mode 100644
+ Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml
+ delete mode 100644 drivers/mtd/maps/pmcmsp-flash.c
