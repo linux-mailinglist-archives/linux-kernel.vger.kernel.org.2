@@ -2,55 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354A93FFCE7
+	by mail.lfdr.de (Postfix) with ESMTP id EE9CA3FFCE9
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348741AbhICJS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 05:18:29 -0400
-Received: from foss.arm.com ([217.140.110.172]:39362 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232257AbhICJS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 05:18:28 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A52D1FB;
-        Fri,  3 Sep 2021 02:17:28 -0700 (PDT)
-Received: from [10.57.92.220] (unknown [10.57.92.220])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 66A523F7D7;
-        Fri,  3 Sep 2021 02:17:26 -0700 (PDT)
-Subject: Re: [PATCH v2 8/9] perf cs-etm: Print the decoder name
-To:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
-        leo.yan@linaro.org, coresight@lists.linaro.org,
-        linux-perf-users@vger.kernel.org, mike.leach@linaro.org
-Cc:     acme@kernel.org, John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210806134109.1182235-1-james.clark@arm.com>
- <20210806134109.1182235-9-james.clark@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <de23e803-3840-501e-87a8-39eed7ba434b@arm.com>
-Date:   Fri, 3 Sep 2021 10:17:25 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S1348743AbhICJTA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 3 Sep 2021 05:19:00 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:33049 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348714AbhICJS7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 05:18:59 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id BC5AC20005;
+        Fri,  3 Sep 2021 09:17:56 +0000 (UTC)
+Date:   Fri, 3 Sep 2021 11:17:55 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Sean Nyekjaer <sean@geanix.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Richard Weinberger <richard@nod.at>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] PM / suspend: move userspace freeze before disk sync
+Message-ID: <20210903111755.0972850d@xps13>
+In-Reply-To: <20210903081751.3qq36nrksucqthss@skn-laptop>
+References: <20210901083442.210230-1-sean@geanix.com>
+        <CAJZ5v0j5dMDSDjhuXaZd=_J5JOP4Z09WUXfjWX_iCcT4RDisCg@mail.gmail.com>
+        <20210903081751.3qq36nrksucqthss@skn-laptop>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210806134109.1182235-9-james.clark@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/08/2021 14:41, James Clark wrote:
-> Use the real name of the decoder instead of hard-coding "ETM" to avoid
-> confusion when the trace is ETE. This also now distinguishes between
-> ETMv3 and ETMv4.
+Hi Sean,
+
+sean@geanix.com wrote on Fri, 3 Sep 2021 10:17:51 +0200:
+
+> On Thu, Sep 02, 2021 at 06:28:14PM +0200, Rafael J. Wysocki wrote:
+> > On Wed, Sep 1, 2021 at 10:35 AM Sean Nyekjaer <sean@geanix.com> wrote:  
+> > >
+> > > This fixes an issue where data remains unwritten before suspend.  
+> > 
+> > Well, it doesn't make the issue go away, it just hides it for you and
+> > it may very well expose it for someone else.  
 > 
-> Reviewed-by: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: James Clark <james.clark@arm.com>
+> OK
+> 
+> > 
+> > In particular, note that you can compile the kernel with
+> > CONFIG_SUSPEND_SKIP_SYNC set which makes it not sync at all during
+> > system-wide suspend and this is a valid case expected to work.  It
+> > looks like this case doesn't work for you.
+> >   
+> > > UBI tried to write data, before the mtd device had been unsuspended.  
+> > 
+> > Well, that's the real problem and it can happen regardless of whether
+> > or not this patch is there.  
+> 
+> How to fix it then?
+> We can't live with devices that bricks on unsuspend :/
 
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+We then need to focus on UBI/UBIFS implementation (Richard is currently
+off), maybe there is more logic than just a basic retry to implement.
 
+Thanks,
+Miquèl
