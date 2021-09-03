@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB2040085D
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7AD40085E
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350475AbhICXil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 19:38:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51284 "EHLO
+        id S1350733AbhICXnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 19:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbhICXij (ORCPT
+        with ESMTP id S234768AbhICXnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 19:38:39 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F90EC061575;
-        Fri,  3 Sep 2021 16:37:39 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id l9so649656vsb.8;
-        Fri, 03 Sep 2021 16:37:39 -0700 (PDT)
+        Fri, 3 Sep 2021 19:43:08 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69B2C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 16:42:07 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id 7so691454pfl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 16:42:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c5HXH0UEqvRFg7fiHvVooz4ZvcE8dS4x+eksgLrM1Hw=;
-        b=HPToHelTDdD9RGA7PhQY5Kk4vQtSrX2eLhAA5TD2hefxJ/fLZuNWzdZZtPrrDYt7TF
-         /nDmPenuq5cBQH9X1LrE4jrcQxw7sWuLs4CeNvQPWMd3QFZDhIQVCOM03ed4ECC9mamZ
-         hi+oMBFgWmhH5UyAylNWdAbGOhBwMG2gsUBzGE58RhfW5VtdAcxJLMO2P75jta4ZYYy2
-         jZ6UbxR/F01hI5sHQCuDYR9Cau7LYzWvbifPXfUWWfnLSwNMwclUPUXYH/8FPzB17/56
-         dmllTrs5NsoqJkVk5KkWnpV/17pjJVyPO6V11KknV1i6UO74hTVuhDpg+DHcwR+0uIbh
-         xyLg==
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=RbmyCxovg1DLvfcJ/FSqFRVxSV6Zui9nsoD/b3owWjc=;
+        b=gp3HM/UaZFcDgZFLttHcNoTPJ8WQGsp0TqMxEXvTviJj+kLkfmazp0t9rSp/tlfBil
+         LilpCq5EfyguTDLk9drAXfb0Ii+8McxJJMyaE+vrk/0V6w0OP3+pri3WKvXGYdj8eBIg
+         t/sCaCKq30+Pje1Pv0Gu/pQQXmkiwkq2+UggEfVKhHHPbYAZIXb6Ug69fzrGoHnW28WD
+         Qx81fh8ArLnKNw8Q9oZRLmjAPGOFGvN8TLvz8HzMp+VQa3bzEFaEwTzU7/xeuRFtPv9h
+         EEbJ0lqV5sWdb/rTkUqOnkpngiPpcCQ7ZmBVJ4UIp/B0t+n0TABSNlY+2+N8mUXAG2Ni
+         O7pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c5HXH0UEqvRFg7fiHvVooz4ZvcE8dS4x+eksgLrM1Hw=;
-        b=oz6oWMaQVtSNre2Pq2NQS+BVuSgCUgv31JCDcI9UEqebBbjTfdtA7s4HwZ57zpaw/n
-         NeU98pXs5k5GPK6Yt8PfZedupyLpfmAp4PbgPm9/gR95/qLCu1Y9Xs6aa7nEOKAiBD9+
-         CxD/7IWTUxPjNj++9Cxoum89sf2Po/tB5DHtWKjdFtklbKktP5sz9v92pleY7vx060aS
-         kWRYMMZdrRCO5xB+Uu//BWRNW5bGQqjZfqHbEZRXWYB3WSI0z4tfRPom+/ycEc9iSnEc
-         JvOQjtau9keynyGq2iIZyR2NPjDtgQtcD2EDsafqC9AJwqy3LVV6DJa0NcjIdR+pzMxI
-         E3wA==
-X-Gm-Message-State: AOAM530tK4WiW5kHG4CLBUfODeNTblzbrxGeJubW80wFPvo5DB8B61Sg
-        pkUXplpJyDcr2IpF0oMVipC2/tS+y1tEOGeWmCiKP7rT
-X-Google-Smtp-Source: ABdhPJwOY5zUBLI5T3CaX+ma5kogdwn2AWrK3PuyGyqNvv8Imxb+7s/BU65Gm1S7sCVGVIL3bvZD+a4T/Smy9ErDRsI=
-X-Received: by 2002:a67:2d08:: with SMTP id t8mr827077vst.10.1630712258221;
- Fri, 03 Sep 2021 16:37:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=RbmyCxovg1DLvfcJ/FSqFRVxSV6Zui9nsoD/b3owWjc=;
+        b=eapD0x8RhWaMcWNsZBopNhPQZ0bvJ5HxaKWfCeAQy+SkTTFrRLxNA4BMb3EQS9/TYB
+         TBBYbdqm+WgHNnTQc6K0pCOmwUgyarDQK26SippE5KIRpQNPMMJmqI7uENkN0gdidftI
+         It/tRGpC50jHKGOhZ204Xew9nlkFMBKoFRIHa7464DTS0k40jMGvpi0NqvGHa/hHrZXB
+         oF4aQl9LEGxKVbJsupXQ2iDR32vNeeXvXOusYEyAy7ml7Cr/wCp1aQ91eruiuygfISx3
+         EKUlFKDc5IzaP/igID14qE2yj6ZqyMUWDenG89j2dC3AEcHWgrfaev8nGYHwT+A6Po94
+         bSsQ==
+X-Gm-Message-State: AOAM53389wiTOMr2UhoM8xRezeIb+vhM+o7B+cDtVrmyWfAEIBuveAgs
+        LxIGUuqEhZMVpiy42FNO2xzlfWlpmTY=
+X-Google-Smtp-Source: ABdhPJwzvFqJO1HdxqofZWVyERIxJIv9nnL9AKDMjxH9L00pSAPQxNgPM5a4wmxZRjze/AeIO+UAFg==
+X-Received: by 2002:a63:6dc6:: with SMTP id i189mr1267977pgc.458.1630712527245;
+        Fri, 03 Sep 2021 16:42:07 -0700 (PDT)
+Received: from localhost (203-219-56-12.tpgi.com.au. [203.219.56.12])
+        by smtp.gmail.com with ESMTPSA id x189sm421549pfx.30.2021.09.03.16.42.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 16:42:06 -0700 (PDT)
+Date:   Sat, 04 Sep 2021 09:42:00 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: Is it possible to implement the per-node page cache for
+ programs/libraries?
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org,
+        Shijie Huang <shijie@amperemail.onmicrosoft.com>,
+        song.bao.hua@hisilicon.com, torvalds@linux-foundation.org,
+        viro@zeniv.linux.org.uk, Frank Wang <zwang@amperecomputing.com>
+References: <a2f423cf-9413-6bc8-e4d8-92374fc0449e@amperemail.onmicrosoft.com>
+        <YS7yjcqA6txFHd99@casper.infradead.org>
+        <1630552995.2mupnzoqzs.astroid@bobo.none>
+        <YTCktV3KF9PzIACU@casper.infradead.org>
+        <1630652670.aplcvu6g23.astroid@bobo.none>
+        <YTJxFgD0kKPs51dz@casper.infradead.org>
+In-Reply-To: <YTJxFgD0kKPs51dz@casper.infradead.org>
 MIME-Version: 1.0
-References: <20210903031306.78292-1-desmondcheongzx@gmail.com>
-In-Reply-To: <20210903031306.78292-1-desmondcheongzx@gmail.com>
-From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Date:   Fri, 3 Sep 2021 16:37:27 -0700
-Message-ID: <CABBYNZJnbDDqX=bEtRhn7URaOfoMVHR8JTavr+T8k0UYMLOhQg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Bluetooth: various SCO fixes
-To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <eric.dumazet@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <1630712371.zxj5zdhheu.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Desmond,
+Excerpts from Matthew Wilcox's message of September 4, 2021 5:01 am:
+> On Fri, Sep 03, 2021 at 05:10:31PM +1000, Nicholas Piggin wrote:
+>> Excerpts from Matthew Wilcox's message of September 2, 2021 8:17 pm:
+>> > On Thu, Sep 02, 2021 at 01:25:36PM +1000, Nicholas Piggin wrote:
+>> >> > I have been thinking about this a bit; one of our internal performa=
+nce
+>> >> > teams flagged the potential performance win to me a few months ago.
+>> >> > I don't have a concrete design for text replication yet; there have=
+ been
+>> >> > various attempts over the years, but none were particularly compell=
+ing.
+>> >>=20
+>> >> What was not compelling about it?
+>> >=20
+>> > It wasn't merged, so clearly it wasn't compelling enough?
+>>=20
+>> Ha ha. It sounded like you had some reasons you didn't find it=20
+>> particularly compelling :P
+>=20
+> I haven't studied it in detail, but it seems to me that your patch (from
+> 2007!) chooses whether to store pages or pcache_desc pointers in i_pages.
+> Was there a reason you chose to do it that way instead of having per-node
+> i_mapping pointers?
 
-On Thu, Sep 2, 2021 at 8:23 PM Desmond Cheong Zhi Xi
-<desmondcheongzx@gmail.com> wrote:
->
->
-> Hi,
->
-> This patch set contains some of the fixes for SCO following our
-> discussion on commit ba316be1b6a0 ("Bluetooth: schedule SCO timeouts
-> with delayed_work") [1].
->
-> I believe these patches should go in together with [2] to address the
-> UAF errors that have been reported by Syzbot following
-> commit ba316be1b6a0.
->
-> Link: https://lore.kernel.org/lkml/20210810041410.142035-2-desmondcheongzx@gmail.com/ [1]
-> Link: https://lore.kernel.org/lkml/20210831065601.101185-1-desmondcheongzx@gmail.com/ [2]
->
-> Best wishes,
-> Desmond
->
-> Desmond Cheong Zhi Xi (2):
->   Bluetooth: call sock_hold earlier in sco_conn_del
->   Bluetooth: fix init and cleanup of sco_conn.timeout_work
->
->  net/bluetooth/sco.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
->
-> --
-> 2.25.1
+What Linus said. The patch was obviously mechanism only and more=20
+heuristics would need to be done (in that case you could have per inode=20
+hints or whatever).
 
-Applied, thanks.
+> (And which way would you choose to do it now, given
+> the infrastructure we have now?)
 
--- 
-Luiz Augusto von Dentz
+I'm not aware of anything new that would change it fundamentally.
+
+Thanks,
+Nick
