@@ -2,200 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601603FFD73
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D163FFD77
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235008AbhICJuu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 3 Sep 2021 05:50:50 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:55873 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234932AbhICJut (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 05:50:49 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id EB8181C000C;
-        Fri,  3 Sep 2021 09:49:46 +0000 (UTC)
-Date:   Fri, 3 Sep 2021 11:49:46 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] mtd: Changes for 5.15
-Message-ID: <20210903114946.3f874e6e@xps13>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S235045AbhICJvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 05:51:20 -0400
+Received: from foss.arm.com ([217.140.110.172]:39970 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234932AbhICJvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 05:51:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 467E41FB;
+        Fri,  3 Sep 2021 02:50:16 -0700 (PDT)
+Received: from e122027.lan (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E97293F694;
+        Fri,  3 Sep 2021 02:50:14 -0700 (PDT)
+From:   Steven Price <steven.price@arm.com>
+To:     Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Steven Price <steven.price@arm.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm/panfrost: Calculate lock region size correctly
+Date:   Fri,  3 Sep 2021 10:49:57 +0100
+Message-Id: <20210903094957.74560-1-steven.price@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+It turns out that when locking a region, the region must be a naturally
+aligned power of 2. The upshot of this is that if the desired region
+crosses a 'large boundary' the region size must be increased
+significantly to ensure that the locked region completely covers the
+desired region. Previous calculations (including in kbase for the
+proprietary driver) failed to take this into account.
 
-This is the MTD PR for 5.15.
+Since it's known that the lock region must be naturally aligned we can
+compute the required size by looking at the highest bit position which
+changes between the start/end of the lock region (subtracting 1 from the
+end because the end address is exclusive). The start address is then
+aligned based on the size (this is technically unnecessary as the
+hardware will ignore these bits, but the spec advises to do this "to
+avoid confusion").
 
-Thanks,
-Miquèl
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+Signed-off-by: Steven Price <steven.price@arm.com>
+---
+ drivers/gpu/drm/panfrost/panfrost_mmu.c | 30 +++++++++++++++++++------
+ 1 file changed, 23 insertions(+), 7 deletions(-)
 
-The following changes since commit
-e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+index dfe5f1d29763..e2629b8d6a02 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+@@ -58,17 +58,33 @@ static int write_cmd(struct panfrost_device *pfdev, u32 as_nr, u32 cmd)
+ }
+ 
+ static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
+-			u64 iova, u64 size)
++			u64 region_start, u64 size)
+ {
+ 	u8 region_width;
+-	u64 region = iova & PAGE_MASK;
++	u64 region;
++	u64 region_end = region_start + size;
+ 
+-	/* The size is encoded as ceil(log2) minus(1), which may be calculated
+-	 * with fls. The size must be clamped to hardware bounds.
++	if (!size)
++		return;
++
++	/*
++	 * The locked region is a naturally aligned power of 2 block encoded as
++	 * log2 minus(1).
++	 * Calculate the desired start/end and look for the highest bit which
++	 * differs. The smallest naturally aligned block must include this bit
++	 * change, the desired region starts with this bit (and subsequent bits)
++	 * zeroed and ends with the bit (and subsequent bits) set to one.
+ 	 */
+-	size = max_t(u64, size, AS_LOCK_REGION_MIN_SIZE);
+-	region_width = fls64(size - 1) - 1;
+-	region |= region_width;
++	region_width = max(fls64(region_start ^ (region_end - 1)),
++			   const_ilog2(AS_LOCK_REGION_MIN_SIZE)) - 1;
++
++	/*
++	 * Mask off the low bits of region_start (which would be ignored by
++	 * the hardware anyway)
++	 */
++	region_start &= GENMASK_ULL(63, region_width);
++
++	region = region_width | region_start;
+ 
+ 	/* Lock the region that needs to be updated */
+ 	mmu_write(pfdev, AS_LOCKADDR_LO(as_nr), region & 0xFFFFFFFFUL);
+-- 
+2.30.2
 
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git
-  tags/mtd/for-5.15
-
-for you to fetch changes up to c1fe77e42440d2cad76055df6fb58caabf622d51:
-
-  Merge tag 'nand/for-5.15' into mtd/next (2021-09-03 00:04:16 +0200)
-
-----------------------------------------------------------------
-MTD changes:
-* blkdevs:
-  - Simplify the refcounting in blktrans_{open, release}
-  - Simplify blktrans_getgeo
-  - Remove blktrans_ref_mutex
-  - Simplify blktrans_dev_get
-  - Use lockdep_assert_held
-  - Don't hold del_mtd_blktrans_dev in blktrans_{open, release}
-* ftl:
-  - Don't cast away the type when calling add_mtd_blktrans_dev
-  - Don't cast away the type when calling add_mtd_blktrans_dev
-  - Use container_of() rather than cast
-  - Fix use-after-free
-  - Add discard support
-  - Allow use of MTD_RAM for testing purposes
-* concat:
-  - Check _read, _write callbacks existence before assignment
-  - Judge callback existence based on the master
-* maps:
-  - Maps: remove dead MTD map driver for PMC-Sierra MSP boards
-* mtdblock:
-  - Warn if added for a NAND device
-  - Add comment about UBI block devices
-  - Update old JFFS2 mention in Kconfig
-* partitions:
-  - Redboot: convert to YAML
-
-NAND core changes:
-* Repair Miquel Raynal's email address in MAINTAINERS
-* Fix a couple of spelling mistakes in Kconfig
-* bbt: Skip bad blocks when searching for the BBT in NAND
-* Remove never changed ret variable
-
-Raw NAND changes:
-* cafe: Fix a resource leak in the error handling path of
-'cafe_nand_probe()'
-* intel: Fix error handling in probe
-* omap: Fix kernel doc warning on 'calcuate' typo
-* gpmc: Fix the ECC bytes vs. OOB bytes equation
-
-SPI-NAND core changes:
-* Properly fill the OOB area.
-* Fix comment
-
-SPI-NAND drivers changes:
-* macronix: Add Quad support for serial NAND flash
-
-----------------------------------------------------------------
-Christoph Hellwig (8):
-      mtd_blkdevs: don't hold del_mtd_blktrans_dev in blktrans_{open,
-release} mtd_blkdevs: use lockdep_assert_held
-      mtd/ftl: don't cast away the type when calling
-add_mtd_blktrans_dev mtd/rfd_ftl: don't cast away the type when calling
-add_mtd_blktrans_dev mtd_blkdevs: simplify blktrans_dev_get
-      mtd_blkdevs: remove blktrans_ref_mutex
-      mtd_blkdevs: simplify blktrans_getgeo
-      mtd_blkdevs: simplify the refcounting in blktrans_{open, release}
-
-Christophe JAILLET (1):
-      mtd: rawnand: cafe: Fix a resource leak in the error handling
-path of 'cafe_nand_probe()'
-
-Colin Ian King (1):
-      mtd: rawnand: Fix a couple of spelling mistakes in Kconfig
-
-Corentin Labbe (1):
-      dt_bindings: mtd: partitions: redboot: convert to YAML
-
-Daniel Palmer (1):
-      mtd: spinand: core: Properly fill the OOB area.
-
-Evgeny Novikov (1):
-      mtd: rawnand: intel: Fix error handling in probe
-
-Ezequiel Garcia (3):
-      mtdblock: Update old JFFS2 mention in Kconfig
-      mtdblock: Add comment about UBI block devices
-      mtdblock: Warn if added for a NAND device
-
-Jaime Liao (1):
-      mtd: spinand: macronix: Add Quad support for serial NAND flash
-
-Jason Wang (1):
-      mtd: rawnand: remove never changed ret variable
-
-Lukas Bulwahn (2):
-      MAINTAINERS: repair Miquel Raynal's email address
-      mtd: maps: remove dead MTD map driver for PMC-Sierra MSP boards
-
-Miquel Raynal (3):
-      dt-bindings: mtd: gpmc: Fix the ECC bytes vs. OOB bytes equation
-      mtd: spinand: Fix comment
-      Merge tag 'nand/for-5.15' into mtd/next
-
-Sean Young (4):
-      mtd: rfd_ftl: allow use of MTD_RAM for testing purposes
-      mtd: rfd_ftl: add discard support
-      mtd: rfd_ftl: fix use-after-free
-      mtd: rfd_ftl: use container_of() rather than cast
-
-Stefan Riedmueller (1):
-      mtd: rawnand: nand_bbt: Skip bad blocks when searching for the
-BBT in NAND
-
-Vladimir Molokov (1):
-      mtd: rawnand: omap: Fix kernel doc warning on 'calcuate' typo
-
-Zhihao Cheng (2):
-      mtd: mtdconcat: Judge callback existence based on the master
-      mtd: mtdconcat: Check _read, _write callbacks existence before
-assignment
-
- Documentation/devicetree/bindings/mtd/gpmc-nand.txt               |
- 2 +- Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
- |  27 ----
- Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml |
- 42 ++++++ MAINTAINERS
-      |   4 +- drivers/mtd/Kconfig
-          |  10 +- drivers/mtd/ftl.c
-              |   2 +- drivers/mtd/maps/Kconfig
-                  |  23 ---- drivers/mtd/maps/Makefile
-                        |   1 - drivers/mtd/maps/pmcmsp-flash.c
-                           | 227 -------------------------------
- drivers/mtd/mtd_blkdevs.c                                         |
- 60 +------- drivers/mtd/mtdblock.c
-        |   4 + drivers/mtd/mtdblock_ro.c
-           |   4 + drivers/mtd/mtdconcat.c
-              |  33 +++-- drivers/mtd/nand/raw/Kconfig
-                     |   4 +- drivers/mtd/nand/raw/cafe_nand.c
-                         |   4 +-
- drivers/mtd/nand/raw/intel-nand-controller.c                      |
- 27 ++-- drivers/mtd/nand/raw/meson_nand.c
-    |   4 +- drivers/mtd/nand/raw/nand_bbt.c
-        |  33 +++++ drivers/mtd/nand/raw/omap2.c
-               |   2 +- drivers/mtd/nand/spi/core.c
-                   |   4 +- drivers/mtd/nand/spi/macronix.c
-                       |  16 +-- drivers/mtd/rfd_ftl.c
-                            |  46 +++++-- 22 files changed, 198
- insertions(+), 381 deletions(-) delete mode 100644
- Documentation/devicetree/bindings/mtd/partitions/redboot-fis.txt
- create mode 100644
- Documentation/devicetree/bindings/mtd/partitions/redboot-fis.yaml
- delete mode 100644 drivers/mtd/maps/pmcmsp-flash.c
