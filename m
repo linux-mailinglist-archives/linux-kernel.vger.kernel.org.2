@@ -2,94 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3D33FFC75
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19723FFC79
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:57:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348525AbhICI52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:57:28 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49324 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348524AbhICI50 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:57:26 -0400
-Date:   Fri, 03 Sep 2021 08:56:25 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630659386;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4zzbUu60L+uoU3jPBVr6mkR+KvkuFv2/ifguhktpj8A=;
-        b=VDzykxx4rj72nQ2f6Kp1QvPiVMtC7lhiK9f1GX9cySevd6Q8Aa8fiKh2vkxCFPJTFQc1ce
-        APxT2AbvK7AdwLKrbSB4A8e9TyG1IOr7FLHjM1Jwp2hJQmFeOH7fPFQRB/BYZ7keU7ZNM6
-        UtlHPGhUWa986m/gjb3cR7v3N+09A1vppFcmwx1C9Wb/ZEda9vclI9KfKew44ORofCW1eq
-        ZIFBUAfF5bE2iyjZKfgrJQbtMy7XFTTWxjlf8UcP0/QDiPIogS7dXdkqNYgufTgN55+ACn
-        QtrBKJKtuhgBx2W08kFHqu9lywVQGrCnovlmvqiF74WnlzvqXpqx+OyIgsPk6A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630659386;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4zzbUu60L+uoU3jPBVr6mkR+KvkuFv2/ifguhktpj8A=;
-        b=dW1PppzdS/v2Ml/1IU5pQg8to0ZNlfDEZDJbqpWCJW8/JTw7aEGffv3IhrBNQn/53WtUGi
-        PY9Rp4cOVenxruAg==
-From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-fixes] Documentation: Fix irq-domain.rst build warning
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
-In-Reply-To: <20210903085343.923036-1-maz@kernel.org>
-References: <20210903085343.923036-1-maz@kernel.org>
+        id S1348552AbhICI5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:57:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40744 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348461AbhICI5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 04:57:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1B3161051;
+        Fri,  3 Sep 2021 08:56:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630659392;
+        bh=SsjjbztlEwoQ2/FB20kOEWlK/4U11FZMfaPIS5UzwPA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HIACXt/YT6pWCqM1ZXgIK14DP/a+8b2wZJAtH533JTB7bHiNh5hQjPgWr4l844+Hp
+         fsqjfJdlFyq4d5jAQMavIFBifH1me5UlrWLbbRy3fBUFxN2leYC9fYTFblIYrARotV
+         Weq2nXrRWULvKRmXB2e4DIi5A9/LS26+/JVxSY+U=
+Date:   Fri, 3 Sep 2021 10:56:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] PM: base: power: don't try to use non-existing RTC
+ for storing data
+Message-ID: <YTHjPbklWVDVaBfK@kroah.com>
+References: <20210903084937.19392-1-jgross@suse.com>
+ <20210903084937.19392-2-jgross@suse.com>
 MIME-Version: 1.0
-Message-ID: <163065938533.25758.4368842802000552625.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903084937.19392-2-jgross@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-fixes branch of irqchip:
+On Fri, Sep 03, 2021 at 10:49:36AM +0200, Juergen Gross wrote:
+> In there is no legacy RTC device, don't try to use it for storing trace
+> data across suspend/resume.
+> 
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> ---
+>  drivers/base/power/trace.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/base/power/trace.c b/drivers/base/power/trace.c
+> index a97f33d0c59f..b7c80849455c 100644
+> --- a/drivers/base/power/trace.c
+> +++ b/drivers/base/power/trace.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/export.h>
+>  #include <linux/rtc.h>
+>  #include <linux/suspend.h>
+> +#include <linux/init.h>
+>  
+>  #include <linux/mc146818rtc.h>
+>  
+> @@ -165,6 +166,9 @@ void generate_pm_trace(const void *tracedata, unsigned int user)
+>  	const char *file = *(const char **)(tracedata + 2);
+>  	unsigned int user_hash_value, file_hash_value;
+>  
+> +	if (!x86_platform.legacy.rtc)
+> +		return 0;
 
-Commit-ID:     0ddc5e55e6f1da1286fb2646f4248bf7da31a601
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/0ddc5e55e6f1da1286fb2646f4248bf7da31a601
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Fri, 03 Sep 2021 09:29:07 +01:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Fri, 03 Sep 2021 09:54:15 +01:00
+Why does the driver core code here care about a platform/arch-specific
+thing at all?  Did you just break all other arches?
 
-Documentation: Fix irq-domain.rst build warning
+thanks,
 
-Correctly escape the * not to be used as emphasis. Also take this
-opportunity to clarify the fate of the rest of the legacy APIs.
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210903085343.923036-1-maz@kernel.org
----
- Documentation/core-api/irq/irq-domain.rst | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/core-api/irq/irq-domain.rst b/Documentation/core-api/irq/irq-domain.rst
-index 6979b4a..9c0e875 100644
---- a/Documentation/core-api/irq/irq-domain.rst
-+++ b/Documentation/core-api/irq/irq-domain.rst
-@@ -175,9 +175,10 @@ for IRQ numbers that are passed to struct device registrations.  In that
- case the Linux IRQ numbers cannot be dynamically assigned and the legacy
- mapping should be used.
- 
--As the name implies, the *_legacy() functions are deprecated and only
-+As the name implies, the \*_legacy() functions are deprecated and only
- exist to ease the support of ancient platforms. No new users should be
--added.
-+added. Same goes for the \*_simple() functions when their use results
-+in the legacy behaviour.
- 
- The legacy map assumes a contiguous range of IRQ numbers has already
- been allocated for the controller and that the IRQ number can be
+greg k-h
