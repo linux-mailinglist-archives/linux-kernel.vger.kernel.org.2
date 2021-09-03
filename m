@@ -2,80 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C1D3FFBF2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9FC43FFBFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348312AbhICI3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40408 "EHLO
+        id S1348328AbhICIbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348314AbhICI3N (ORCPT
+        with ESMTP id S1348229AbhICIbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:29:13 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B61A5C061760;
-        Fri,  3 Sep 2021 01:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=++jm6oY+bJJxusAX097iIXvKnGM0fjw8N41n/TI3ISY=; b=ils+FN/bFNcs+IBDKlS7DNCP2B
-        srlVriyw9vZaH9rLy2nFJVzSHspBEAWpe2fnOS4rTENRRQXMo+8pTpCk5Y47zVHQcd0GWqeD+wkN1
-        lMMJ6sJmcS7UIlHzZ3+LTqdAOsINinU6QMmhZxqlW+69vWGuCLrMskghcApastuTRlYhXkdwz6rOn
-        uO/uXt/JixCfNOeJEJZh/avEvp6q8faMW29OnbrLYC9h2ydadcU4UglVJTLk5b/dR+/Hfd2X1BOlb
-        fnZqFQ7qf2ZPgQ0/vbJWtj7YI+HO/MZrdDZ/gkK7S9LJc9vB7SZXfv1hKUTAkX9LY0EOM4mxMs63Q
-        /rj+GLHg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mM4YN-000JKU-HS; Fri, 03 Sep 2021 08:28:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6107630024D;
-        Fri,  3 Sep 2021 10:28:02 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5225D28B658E6; Fri,  3 Sep 2021 10:28:02 +0200 (CEST)
-Date:   Fri, 3 Sep 2021 10:28:02 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com
-Subject: Re: [PATCH v5 bpf-next 2/3] bpf: introduce helper
- bpf_get_branch_snapshot
-Message-ID: <YTHcki5RLZIIGqbk@hirez.programming.kicks-ass.net>
-References: <20210902165706.2812867-1-songliubraving@fb.com>
- <20210902165706.2812867-3-songliubraving@fb.com>
+        Fri, 3 Sep 2021 04:31:45 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF05C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 01:30:45 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id m2so2982803wmm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 01:30:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:date:in-reply-to
+         :message-id:mime-version;
+        bh=tSBoI24rmmAo/WWLDhLND6YxNYncWnjj1r5sALynAJ4=;
+        b=K4wGE5iP441yxWa+TAQZ1VZZMZnv6OfvJKWEzE+MCQj7K2oMTS8aHeDQgL7IlCV5+r
+         II5rICDjfU5wlQZmioHZXxoVszg5g1wTZIPmZf+V7KOVQKYfmuoowJ602eTn6HBmdjhR
+         40Z5W0mxAnYB/D/m3H3U18iiaEtRB1XAs6OsSrvD75MTsAFVEgpJuvIWB45lquL4eZPg
+         WHGJylo9CiP3ELxpw7rat1Y5lK4ARxd2H5aZyiP/QOH5s9LmA5oPmoO04VDfHoMMtTxu
+         mwZcDDhHJY/GZrwjRiCTfmJmArcJ97MVfnRwjnpryjB2B5p2fewYpM6VuJPJjmAlvb6U
+         L/FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+         :in-reply-to:message-id:mime-version;
+        bh=tSBoI24rmmAo/WWLDhLND6YxNYncWnjj1r5sALynAJ4=;
+        b=LoZ7oTtsVt2Zf3gJ/DqxEtALohjShM+geBvqo+EUww58dxKwa0rm0Krry52/USPhUe
+         0E8WG1U93gAF2ZcaWO98lc2IfxejqnhPoP0B51PX6gmsFmT+ePZAFbVI393gz9ObiqrX
+         BdtB908+pDeW4nYIW59N5hDrw5UwIS+EAlVicyiZECCxeHTyQf/sPi+tCH0wvceinO/Y
+         LYDjKQ7Y2pz3WB8pbDYYAvcFO8PE6cEJPGku7Mye6VBynEcX1hjcAMprgUHxXuH4cMMu
+         fCfKb8OnqGvZ0kdfAg4jo5HZQfpmQGrRiMuhpNMUbrgTdFxzIed0WBbQiFw9DtjDmOSb
+         VZ3g==
+X-Gm-Message-State: AOAM533Arrx16olhK3aG8c/DwW+3I0xWzU3ls6dl4TbKiK2eZp/TqIKW
+        JT+CxYYD0qHiI0g+lW60/gzvMw==
+X-Google-Smtp-Source: ABdhPJzIVzeO9objMjNkGGwltqZ/D3PN/vMifRhZaWUZqUx5iRpM6g1pt+vfuZhIf9TYGOJSBH5HPA==
+X-Received: by 2002:a05:600c:4ece:: with SMTP id g14mr2177689wmq.6.1630657843920;
+        Fri, 03 Sep 2021 01:30:43 -0700 (PDT)
+Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id r12sm4323542wrv.96.2021.09.03.01.30.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 01:30:43 -0700 (PDT)
+References: <1630562033-13231-1-git-send-email-spujar@nvidia.com>
+ <1630562033-13231-2-git-send-email-spujar@nvidia.com>
+ <1jpmtr5egi.fsf@starbuckisacylon.baylibre.com>
+ <YTElQBgwF6xBFH9l@robh.at.kernel.org>
+User-agent: mu4e 1.6.5; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org,
+        lgirdwood@gmail.com, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, stephan@gerhold.net,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] ASoC: Add json-schema documentation for
+ sound-name-prefix
+Date:   Fri, 03 Sep 2021 10:29:37 +0200
+In-reply-to: <YTElQBgwF6xBFH9l@robh.at.kernel.org>
+Message-ID: <1jk0jyt617.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902165706.2812867-3-songliubraving@fb.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 09:57:05AM -0700, Song Liu wrote:
-> +BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
-> +{
-> +#ifndef CONFIG_X86
-> +	return -ENOENT;
-> +#else
-> +	static const u32 br_entry_size = sizeof(struct perf_branch_entry);
-> +	u32 entry_cnt = size / br_entry_size;
-> +
-> +	if (unlikely(flags))
-> +		return -EINVAL;
-> +
-> +	if (!buf || (size % br_entry_size != 0))
-> +		return -EINVAL;
-> +
-> +	entry_cnt = static_call(perf_snapshot_branch_stack)(buf, entry_cnt);
-> +
-> +	if (!entry_cnt)
-> +		return -ENOENT;
-> +
-> +	return entry_cnt * br_entry_size;
-> +#endif
-> +}
 
-Do we really need that CONFIG_X86 thing? Seems rather bad practise.
+On Thu 02 Sep 2021 at 14:25, Rob Herring <robh@kernel.org> wrote:
+
+> On Thu, Sep 02, 2021 at 02:47:27PM +0200, Jerome Brunet wrote:
+>> 
+>> On Thu 02 Sep 2021 at 11:23, Sameer Pujar <spujar@nvidia.com> wrote:
+>> 
+>> > The 'sound-name-prefix' is used to prepend suitable strings to a
+>> > component widgets or controls. This is helpful when there are
+>> > multiple instances of the same component. Add relevant json-schema
+>> > and is inspired from sound-name-prefix.txt documentation.
+>> >
+>> > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+>> > Cc: Jerome Brunet <jbrunet@baylibre.com>
+>> > Cc: Rob Herring <robh+dt@kernel.org>
+>> > ---
+>> >  .../devicetree/bindings/sound/name-prefix.yaml     | 35 ++++++++++++++++++++++
+>> >  1 file changed, 35 insertions(+)
+>> >  create mode 100644 Documentation/devicetree/bindings/sound/name-prefix.yaml
+>> >
+>> > diff --git a/Documentation/devicetree/bindings/sound/name-prefix.yaml b/Documentation/devicetree/bindings/sound/name-prefix.yaml
+>> > new file mode 100644
+>> > index 00000000..b58cc9e
+>> > --- /dev/null
+>> > +++ b/Documentation/devicetree/bindings/sound/name-prefix.yaml
+>> > @@ -0,0 +1,35 @@
+>> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> > +%YAML 1.2
+>> > +---
+>> > +$id: http://devicetree.org/schemas/sound/name-prefix.yaml#
+>> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> > +
+>> > +title: Component sound name prefix
+>> > +
+>> > +maintainers:
+>> > +  - Jerome Brunet <jbrunet@baylibre.com>
+>> 
+>> Since this file is referenced using "AllOf", am I going to be listed as
+>> maintainer of all the drivers using the property below ? I'm not sure I
+>> want that ... :P
+>
+> No. That's not how it works. You're maintainer of files that list you as 
+> maintainer.
+
+Thanks for clarifying.
+You can ignore my comment then Sameer. 
+
+>
+>> Maybe it would be better to drop the above ?
+>> 
+>> > +
+>> > +properties:
+>> > +  sound-name-prefix:
+>> > +    $ref: /schemas/types.yaml#/definitions/string
+>> > +    description: |
+>> > +      Card implementing the routing property define the connection between
+>> > +      audio components as list of string pair. Component using the same
+>> > +      sink/source names may use this property to prepend the name of their
+>> > +      sinks/sources with the provided string.
+>> > +
+>> > +additionalProperties: true
+>> > +
+>> > +examples:
+>> > +  - |
+>> > +    analog-amplifier@0 {
+>> > +        compatible = "simple-audio-amplifier";
+>> > +        sound-name-prefix = "FRONT";
+>> > +    };
+>> > +
+>> > +    analog-amplifier@1 {
+>> > +        compatible = "simple-audio-amplifier";
+>> > +        sound-name-prefix = "BACK";
+>> > +    };
+>> > +
+>> > +...
+>> 
+>> 
+
