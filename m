@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9FF0400110
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7ECB400119
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349339AbhICOLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:11:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348889AbhICOLd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:11:33 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AF1C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 07:10:33 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 70D2F1F44ED9
-Subject: Re: [PATCH v3 6/7] soc: mediatek: mmsys: Add reset controller support
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "Nancy.Lin" <nancy.lin@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Eizan Miyamoto <eizan@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <20210825102632.601614-1-enric.balletbo@collabora.com>
- <20210825122613.v3.6.I15e2419141a69b2e5c7e700c34d92a69df47e04d@changeid>
- <ebbe37cb0188a7ea23608569ab083e65e0f95df6.camel@pengutronix.de>
- <CAAOTY__wg+dWi-4v4evyuWp1EVfj2bap3xtsHZdGET4Jf-MgEw@mail.gmail.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <fbca20f5-9e16-c302-0111-1d57f2a496b9@collabora.com>
-Date:   Fri, 3 Sep 2021 16:10:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S1349338AbhICOOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:14:23 -0400
+Received: from mga05.intel.com ([192.55.52.43]:56993 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349257AbhICOOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 10:14:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="304994689"
+X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
+   d="scan'208";a="304994689"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 07:13:22 -0700
+X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
+   d="scan'208";a="500376060"
+Received: from achiranj-mobl.gar.corp.intel.com ([10.213.105.90])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 07:13:19 -0700
+Message-ID: <c56cde110210bec6537fe69b495334c6c70c814e.camel@linux.intel.com>
+Subject: Re: Bug: d0e936adbd22 crashes at boot
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Jens Axboe <axboe@kernel.dk>, LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, inux-pm@vger.kernel.org
+Date:   Fri, 03 Sep 2021 07:13:16 -0700
+In-Reply-To: <942f4041-e4e7-1b08-3301-008ab37ff5b8@kernel.dk>
+References: <942f4041-e4e7-1b08-3301-008ab37ff5b8@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-In-Reply-To: <CAAOTY__wg+dWi-4v4evyuWp1EVfj2bap3xtsHZdGET4Jf-MgEw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nancy,
+Hi Axboe,
 
-(again in plain text, sorry for the noise)
-
-On 26/8/21 2:33, Chun-Kuang Hu wrote:
-> Philipp Zabel <p.zabel@pengutronix.de> 於 2021年8月25日 週三 下午6:46寫道：
->>
->> On Wed, 2021-08-25 at 12:26 +0200, Enric Balletbo i Serra wrote:
->>> Among other features the mmsys driver should implement a reset
->>> controller to be able to reset different bits from their space.
->>>
->>> Cc: Jitao Shi <jitao.shi@mediatek.com>
->>> Suggested-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
->>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->>> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
->>> ---
->>>
->>> (no changes since v1)
->>>
->>>  drivers/soc/mediatek/mtk-mmsys.c | 69 ++++++++++++++++++++++++++++++++
->>>  drivers/soc/mediatek/mtk-mmsys.h |  2 +
->>
->> Cc: Nancy - this patch clashes with [1], please coordinate.
->>
->> [1] https://lore.kernel.org/linux-arm-kernel/20210825100531.5653-11-nancy.lin@mediatek.com/
+Thanks for reporting.
+On Fri, 2021-09-03 at 07:36 -0600, Jens Axboe wrote:
+> Hi,
 > 
-> Enric's series is all reviewed or acked, so I think Nancy's series
-> should base on Enric's series.
+> Booting Linus's tree causes a crash on my laptop, an x1 gen9. This was
+> a bit
+> difficult to pin down as it crashes before the display is up, but I
+> managed
+> to narrow it down to:
 > 
+> commit d0e936adbd2250cb03f2e840c6651d18edc22ace
+> Author: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Date:   Thu Aug 19 19:40:06 2021 -0700
+> 
+>     cpufreq: intel_pstate: Process HWP Guaranteed change notification
+> 
+> which crashes with a NULL pointer deref in notify_hwp_interrupt() ->
+> queue_delayed_work_on().
+> 
+> Reverting this change makes the laptop boot fine again.
+> 
+Does this change fixes your issue?
 
-Is it fine with you to base you patches on top of this patchset?
+diff --git a/drivers/cpufreq/intel_pstate.c
+b/drivers/cpufreq/intel_pstate.c
+index b4ffe6c8a0d0..6a3c6f60ad12 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -1650,7 +1650,10 @@ void notify_hwp_interrupt(void)
+                return;
+ 
+        cpudata = all_cpu_data[this_cpu];
+-       schedule_delayed_work_on(this_cpu, &cpudata->hwp_notify_work,
+msecs_to_jiffies(10));
++       if (cpudata)
++               schedule_delayed_work_on(this_cpu, &cpudata-
+>hwp_notify_work, msecs_to_jiffies(10));
++       else
++               wrmsrl(MSR_HWP_STATUS, 0);
+ }
+ 
+ static void intel_pstate_enable_hwp_interrupt(struct cpudata *cpudata)
+
 
 Thanks,
-  Enric
+Srinivas
 
-
-> Regards,
-> Chun-Kuang.
-> 
->>
->> regards
->> Philipp
-> 
