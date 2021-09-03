@@ -2,246 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E634E3FFBCF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C3D3FFBE6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348319AbhICIVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:21:40 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:36565 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348254AbhICIV0 (ORCPT
+        id S1348267AbhICIYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:24:47 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2482 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348295AbhICIYq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:21:26 -0400
-Received: by mail-il1-f197.google.com with SMTP id s15-20020a056e02216f00b002276040aa1dso3045357ilv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 01:20:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0y1zQv+iil0clIoIPqXnW+gwh7pavjlHU6bypZMcgKc=;
-        b=eUkKpIN78TZtiO5Fu5iSURHNzM8sIourmCeZH4qiwwOu68OY4hBiaGd89UAr4fRGia
-         xbOD0p/dmZ87TRQK/vDaZQIEZAcJD4ES/RFKv0nwvc7+ypNWJhjrjQLaldNJP8ANaw1S
-         Jr5jEdkGiTSC9ErOOxNx08HoMe4/bQIUhUUa8YWSQ2PEQ7KYGBw3690byeOuo69guSvv
-         PzQZlhMfyJHXWl70zOKU9vM09R5AIz/yelqFkcTyZ4tj3xaM5vsc8mLFCCd8Eee5JZY2
-         yef5cz1Q4l1jyVyV5ccCIV+PPd2mBuzSDnU+E/e5p3NCNb+BkMRwgX+THccSRcDNnDtj
-         jf/Q==
-X-Gm-Message-State: AOAM531QzkNIQOg8zpL7lImenWj9E2zpwmnh8wd+N8cGmcjMhPRdMhzm
-        Rf7loke3SA84KZ+B/YR4fc2zFzCIAEQnQ9pCqqyli6aWKNB2
-X-Google-Smtp-Source: ABdhPJzH+erI+qRsXrwZtYUnmqhl2/NZ15wa42d9qHfaHBZAcZca0hMrAm1MNot1NoGo0F6KDmkIJ0vrMWpwZzrket286TtZmr8q
+        Fri, 3 Sep 2021 04:24:46 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18384kVk094606;
+        Fri, 3 Sep 2021 04:22:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=yvn3uRltpD6qua2hyp0D2c7Lx/IW7lVKvIh+1+hY8jc=;
+ b=sxqFHGBuVldPs6+5K/rqtVS9JHaQU11EacvwcMXWaBbncc1l8OOnAuO55qpy/Yz7lvG8
+ fHBGcdKnfMjUhSSKgEXpC9tfhTNXhCD4RL1rLoTx+ouZqYUheCwxI6sQQRKrEw+MIkfP
+ NvtrSkjS+pOzrkJLiM4WrfcV3fsDP5VKqrtC2E9soOQhjwnWHr03qec/WayDpr2td3x+
+ 3dJLfkNMsgjwswwo311zitvpYu/rAJHq1kjaBUQjEZ5HM8L/YTyT0zKUTr/71/uf3dON
+ n8LL5RnLa43g60fHv/kVumN2Z4k8oa5+mK/9XJPoCXZpMKfS4mcMm6AYJ7LnhFAdfrNc 2Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3auftc8fse-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Sep 2021 04:22:03 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18384pMm095198;
+        Fri, 3 Sep 2021 04:22:02 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3auftc8frg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Sep 2021 04:22:02 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18388C9c028085;
+        Fri, 3 Sep 2021 08:21:59 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma04fra.de.ibm.com with ESMTP id 3au6q74x6c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Sep 2021 08:21:59 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1838LtB930671224
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 3 Sep 2021 08:21:55 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 50DCEA4054;
+        Fri,  3 Sep 2021 08:21:55 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D5A24A405B;
+        Fri,  3 Sep 2021 08:21:53 +0000 (GMT)
+Received: from osiris (unknown [9.145.159.114])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri,  3 Sep 2021 08:21:53 +0000 (GMT)
+Date:   Fri, 3 Sep 2021 10:21:52 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Weizhao Ouyang <o451686892@gmail.com>
+Cc:     rostedt@goodmis.org, mingo@redhat.com, linux@armlinux.org.uk,
+        catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org,
+        monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com,
+        green.hu@gmail.com, deanbo422@gmail.com,
+        James.Bottomley@hansenpartnership.com, deller@gmx.de,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, gor@linux.ibm.com, borntraeger@de.ibm.com,
+        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
+        tglx@linutronix.de, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org
+Subject: Re: [PATCH] ftrace: Cleanup ftrace_dyn_arch_init()
+Message-ID: <YTHbIMVw2EhNpDwO@osiris>
+References: <20210903071817.1162938-1-o451686892@gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9681:: with SMTP id m1mr2106435ion.113.1630657227166;
- Fri, 03 Sep 2021 01:20:27 -0700 (PDT)
-Date:   Fri, 03 Sep 2021 01:20:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c69b0f05cb12f8bc@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in ovs_ct_exit (2)
-From:   syzbot <syzbot+5287ee27c6da3ab2d054@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, dev@openvswitch.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pshelar@ovn.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903071817.1162938-1-o451686892@gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: v7gSly151gMH4jiswwJLQJyae83ofpqz
+X-Proofpoint-ORIG-GUID: 5AAR1uAs7Bex_EJmpFQlQUops1ZiOFiF
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-03_02:2021-09-03,2021-09-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1011 adultscore=0 spamscore=0 bulkscore=0 phishscore=0
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=634 suspectscore=0
+ malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109030048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Sep 03, 2021 at 03:18:17PM +0800, Weizhao Ouyang wrote:
+> Most ARCHs use empty ftrace_dyn_arch_init(), introduce a weak common
+> ftrace_dyn_arch_init() to cleanup them.
+> 
+> Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
+> ---
+>  arch/arm/kernel/ftrace.c          | 5 -----
+>  arch/arm64/kernel/ftrace.c        | 5 -----
+>  arch/csky/kernel/ftrace.c         | 5 -----
+>  arch/ia64/kernel/ftrace.c         | 6 ------
+>  arch/microblaze/kernel/ftrace.c   | 5 -----
+>  arch/mips/include/asm/ftrace.h    | 2 ++
+>  arch/nds32/kernel/ftrace.c        | 5 -----
+>  arch/parisc/kernel/ftrace.c       | 5 -----
+>  arch/powerpc/include/asm/ftrace.h | 4 ++++
+>  arch/riscv/kernel/ftrace.c        | 5 -----
+>  arch/s390/kernel/ftrace.c         | 5 -----
+>  arch/sh/kernel/ftrace.c           | 5 -----
+>  arch/sparc/kernel/ftrace.c        | 5 -----
+>  arch/x86/kernel/ftrace.c          | 5 -----
+>  include/linux/ftrace.h            | 1 -
+>  kernel/trace/ftrace.c             | 5 +++++
+>  16 files changed, 11 insertions(+), 62 deletions(-)
 
-syzbot found the following issue on:
-
-HEAD commit:    0d55649d2ad7 net: phy: marvell10g: fix broken PHY interrup..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=1780d7ad300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=765eea9a273a8879
-dashboard link: https://syzkaller.appspot.com/bug?extid=5287ee27c6da3ab2d054
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5287ee27c6da3ab2d054@syzkaller.appspotmail.com
-
-netdevsim netdevsim0 netdevsim1 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim0 (unregistering): unset [0, 0] type 1 family 0 port 8472 - 0
-netdevsim netdevsim0 netdevsim0 (unregistering): unset [1, 0] type 2 family 0 port 6081 - 0
-==================================================================
-BUG: KASAN: use-after-free in ovs_ct_limit_exit net/openvswitch/conntrack.c:1909 [inline]
-BUG: KASAN: use-after-free in ovs_ct_exit+0x2df/0x4a0 net/openvswitch/conntrack.c:2303
-Read of size 8 at addr ffff888060b8aa00 by task kworker/u4:5/17848
-
-CPU: 0 PID: 17848 Comm: kworker/u4:5 Not tainted 5.14.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: netns cleanup_net
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- print_address_description.constprop.0.cold+0x6c/0x309 mm/kasan/report.c:233
- __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:436
- ovs_ct_limit_exit net/openvswitch/conntrack.c:1909 [inline]
- ovs_ct_exit+0x2df/0x4a0 net/openvswitch/conntrack.c:2303
- ovs_exit_net+0x19c/0xbc0 net/openvswitch/datapath.c:2536
- ops_exit_list+0xb0/0x160 net/core/net_namespace.c:175
- cleanup_net+0x4ea/0xb10 net/core/net_namespace.c:595
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-Allocated by task 30495:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- ____kasan_kmalloc mm/kasan/common.c:513 [inline]
- ____kasan_kmalloc mm/kasan/common.c:472 [inline]
- __kasan_kmalloc+0xa4/0xd0 mm/kasan/common.c:522
- kmalloc include/linux/slab.h:591 [inline]
- ovs_ct_limit_set_zone_limit net/openvswitch/conntrack.c:1972 [inline]
- ovs_ct_limit_cmd_set+0x3dd/0xc70 net/openvswitch/conntrack.c:2148
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:703 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:723
- sock_no_sendpage+0xf3/0x130 net/core/sock.c:2959
- kernel_sendpage.part.0+0x1a0/0x340 net/socket.c:3677
- kernel_sendpage net/socket.c:3674 [inline]
- sock_sendpage+0xe5/0x140 net/socket.c:1002
- pipe_to_sendpage+0x2ad/0x380 fs/splice.c:364
- splice_from_pipe_feed fs/splice.c:418 [inline]
- __splice_from_pipe+0x43e/0x8a0 fs/splice.c:562
- splice_from_pipe fs/splice.c:597 [inline]
- generic_splice_sendpage+0xd4/0x140 fs/splice.c:746
- do_splice_from fs/splice.c:767 [inline]
- direct_splice_actor+0x110/0x180 fs/splice.c:936
- splice_direct_to_actor+0x34b/0x8c0 fs/splice.c:891
- do_splice_direct+0x1b3/0x280 fs/splice.c:979
- do_sendfile+0x9f0/0x1120 fs/read_write.c:1260
- __do_sys_sendfile64 fs/read_write.c:1325 [inline]
- __se_sys_sendfile64 fs/read_write.c:1311 [inline]
- __x64_sys_sendfile64+0x1cc/0x210 fs/read_write.c:1311
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Freed by task 28572:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
- ____kasan_slab_free mm/kasan/common.c:366 [inline]
- ____kasan_slab_free mm/kasan/common.c:328 [inline]
- __kasan_slab_free+0xff/0x130 mm/kasan/common.c:374
- kasan_slab_free include/linux/kasan.h:230 [inline]
- slab_free_hook mm/slub.c:1628 [inline]
- slab_free_freelist_hook+0xe3/0x250 mm/slub.c:1653
- slab_free mm/slub.c:3213 [inline]
- kmem_cache_free_bulk mm/slub.c:3354 [inline]
- kmem_cache_free_bulk+0x3fa/0xa90 mm/slub.c:3341
- kfree_bulk include/linux/slab.h:448 [inline]
- kfree_rcu_work+0x4db/0x870 kernel/rcu/tree.c:3317
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-Last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe9/0x110 mm/kasan/generic.c:348
- kvfree_call_rcu+0x74/0x990 kernel/rcu/tree.c:3594
- ovs_ct_limit_exit net/openvswitch/conntrack.c:1911 [inline]
- ovs_ct_exit+0x21e/0x4a0 net/openvswitch/conntrack.c:2303
- ovs_exit_net+0x19c/0xbc0 net/openvswitch/datapath.c:2536
- ops_exit_list+0xb0/0x160 net/core/net_namespace.c:175
- cleanup_net+0x4ea/0xb10 net/core/net_namespace.c:595
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-The buggy address belongs to the object at ffff888060b8aa00
- which belongs to the cache kmalloc-64 of size 64
-The buggy address is located 0 bytes inside of
- 64-byte region [ffff888060b8aa00, ffff888060b8aa40)
-The buggy address belongs to the page:
-page:ffffea000182e280 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888060b8a200 pfn:0x60b8a
-flags: 0xfff00000000200(slab|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000000200 ffffea000059b548 ffffea00018ff7c8 ffff888010841640
-raw: ffff888060b8a200 000000000020001e 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12cc0(GFP_KERNEL|__GFP_NOWARN|__GFP_NORETRY), pid 28607, ts 1329213251572, free_ts 1329213232305
- prep_new_page mm/page_alloc.c:2436 [inline]
- get_page_from_freelist+0xa72/0x2f80 mm/page_alloc.c:4168
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5390
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2244
- alloc_slab_page mm/slub.c:1691 [inline]
- allocate_slab+0x32e/0x4b0 mm/slub.c:1831
- new_slab mm/slub.c:1894 [inline]
- new_slab_objects mm/slub.c:2640 [inline]
- ___slab_alloc+0x4ba/0x820 mm/slub.c:2803
- __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2843
- slab_alloc_node mm/slub.c:2925 [inline]
- kmem_cache_alloc_node_trace+0x18f/0x410 mm/slub.c:3009
- kmalloc_node include/linux/slab.h:609 [inline]
- kzalloc_node include/linux/slab.h:732 [inline]
- __get_vm_area_node.constprop.0+0xd3/0x380 mm/vmalloc.c:2382
- __vmalloc_node_range+0x12e/0x960 mm/vmalloc.c:2956
- __vmalloc_node mm/vmalloc.c:3015 [inline]
- vmalloc+0x67/0x80 mm/vmalloc.c:3048
- netlink_alloc_large_skb net/netlink/af_netlink.c:1191 [inline]
- netlink_sendmsg+0x5f0/0xdb0 net/netlink/af_netlink.c:1904
- sock_sendmsg_nosec net/socket.c:703 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:723
- sock_no_sendpage+0xf3/0x130 net/core/sock.c:2959
- kernel_sendpage.part.0+0x1a0/0x340 net/socket.c:3677
- kernel_sendpage net/socket.c:3674 [inline]
- sock_sendpage+0xe5/0x140 net/socket.c:1002
- pipe_to_sendpage+0x2ad/0x380 fs/splice.c:364
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1346 [inline]
- free_pcp_prepare+0x2c5/0x780 mm/page_alloc.c:1397
- free_unref_page_prepare mm/page_alloc.c:3332 [inline]
- free_unref_page+0x19/0x690 mm/page_alloc.c:3411
- __put_single_page mm/swap.c:98 [inline]
- __put_page+0xe3/0x3f0 mm/swap.c:129
- put_page include/linux/mm.h:1246 [inline]
- generic_pipe_buf_release+0x1d5/0x240 fs/pipe.c:209
- pipe_buf_release include/linux/pipe_fs_i.h:203 [inline]
- splice_from_pipe_feed fs/splice.c:431 [inline]
- __splice_from_pipe+0x56d/0x8a0 fs/splice.c:562
- splice_from_pipe fs/splice.c:597 [inline]
- generic_splice_sendpage+0xd4/0x140 fs/splice.c:746
- do_splice_from fs/splice.c:767 [inline]
- direct_splice_actor+0x110/0x180 fs/splice.c:936
- splice_direct_to_actor+0x34b/0x8c0 fs/splice.c:891
- do_splice_direct+0x1b3/0x280 fs/splice.c:979
- do_sendfile+0x9f0/0x1120 fs/read_write.c:1260
- __do_sys_sendfile64 fs/read_write.c:1325 [inline]
- __se_sys_sendfile64 fs/read_write.c:1311 [inline]
- __x64_sys_sendfile64+0x1cc/0x210 fs/read_write.c:1311
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Memory state around the buggy address:
- ffff888060b8a900: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
- ffff888060b8a980: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
->ffff888060b8aa00: fa fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
-                   ^
- ffff888060b8aa80: 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc fc
- ffff888060b8ab00: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For s390:
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
