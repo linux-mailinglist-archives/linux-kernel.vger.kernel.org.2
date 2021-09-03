@@ -2,196 +2,437 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF40A400590
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3AD400598
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:14:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350989AbhICTMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 15:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
+        id S1350533AbhICTPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 15:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350971AbhICTMk (ORCPT
+        with ESMTP id S244110AbhICTPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 15:12:40 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36C6C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:11:39 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id s10so219966lfr.11
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:11:39 -0700 (PDT)
+        Fri, 3 Sep 2021 15:15:15 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64168C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:14:15 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id f2so396071ljn.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:14:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:cc:references:in-reply-to:content-transfer-encoding;
-        bh=fH6jqwVBe0NEbZ73+S4/r93qnMDjNx6WeBjuJx+zyag=;
-        b=cMufVRiCIy1AD4HPiIrT972Gn1eMD03WDiJ8dto3CP0aYHdNW6G5Ruo4VmJDi1IuJB
-         /NMdSsq4Fis80Oj9e5EeD6m/pbQW9CYG9PzdpE98D2htbnqJWT6mStTJLrJfq1zeivo5
-         IAFPVbKNGDYMMndOaiW+Y9DN+IcKJZAT4mPrR/qx7MkRhYERUKmFtnU4sZd+ilklEzBi
-         z3HZnmkxDKu4rk+wD2aJcivnHt63WdCA/ZCf6Xfj5OHY6vL0GvUuhvEB/hYlm+Yw5caQ
-         5jJXIA3WTpShwsMWNgFXgyLz+vT1NcuHQ1XQ6zbAQm/NuFF5A4RSzgdXpAo+PHVeWF2i
-         /l9Q==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xLSw66OAAWw+ZBe/zEI2ozn92/Q+hqpgUOCe6P3aHvM=;
+        b=0Ol5wGaLmLCy/W95qtECqEstiHoEtM3Qbv3mrRTm5yb/9sY8R38YRQ3Hz3XjbrILSY
+         9LFoAd5ucSo2zocpjSSHq8CUzHgQU0oRUq8unZkZKWMLVX1Qh9bIMk4KZ2ZnBHT0rYct
+         pQEQsjKVDcQE6Hr7TnCy4EFJgunnhZhNGfOjhQ09L6392jkZ2nFbyXNPCBolTB2kNsuG
+         8fqmIl+wyI2WOONauP1omdNJtcgI7ar6JYvYpad5sYZAwgwniGwZ0U9MfPTcd0lE2GY+
+         f8UOFrrIgD/KW8pvFj6gkGMhLdbFIlpNEP5VmEuipL0b5F2pxDi1bPgLHaFCztaObH4r
+         FuxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:cc:references:in-reply-to
-         :content-transfer-encoding;
-        bh=fH6jqwVBe0NEbZ73+S4/r93qnMDjNx6WeBjuJx+zyag=;
-        b=Q11Bdp5eAGx0ESLtd+Jrc9xtZFlNZsPmHD2DC8UjS3V4L9xQ9XXgprkPwsGPwjyYd1
-         V2Tg2c3SLrSuZryn1eZAulULM59z7B3gSYoYkcwPlKVgLIb+hXPyD/Y3iN1ee8GULmro
-         J/fNdxpymdeK+B5j6QF9Om9xLovWkcZnkivGnSpLH6wTnBpJIXF0wbE6of/fdJWBscY2
-         ur7mNa1UKTqM9YWSNJ6VNvm4A7G94QiJ8GxNLOl0JRBNC/36B6n6ZkPGfvIA0vcXIwNK
-         Tqyvu3k76qAs2d0IRpXglvxGrAbshucjKtaDQIbHlzebbEYjCl35LaM2EySaHL6Q8QP1
-         qaVg==
-X-Gm-Message-State: AOAM533SvSIRpslhxQMlTwWFzhcZTb1yx8xZiClNmj8l+kC/cGoabP2U
-        DVPpJNjHecRrVzyGXa6DhEQ=
-X-Google-Smtp-Source: ABdhPJyM3/P23e7kTmk04TbWVNlw8on4L5YXxNGjSFmRf/9vy4ykChAAxogWqUEe4bNVyCXdBKRfRQ==
-X-Received: by 2002:a05:6512:1082:: with SMTP id j2mr291236lfg.83.1630696297820;
-        Fri, 03 Sep 2021 12:11:37 -0700 (PDT)
-Received: from [192.168.1.11] ([46.235.67.70])
-        by smtp.gmail.com with UTF8SMTPSA id s14sm5463ljh.38.2021.09.03.12.11.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 12:11:37 -0700 (PDT)
-Message-ID: <1b16a9d0-2d6b-8e12-fc9b-cfe664f623e9@gmail.com>
-Date:   Fri, 3 Sep 2021 22:11:34 +0300
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xLSw66OAAWw+ZBe/zEI2ozn92/Q+hqpgUOCe6P3aHvM=;
+        b=Dr1OJoGvl6RKLX6Zt7ksMYfR1ErgOTQrib0HaVy/yV9QMWwWWL/DKdL+56JD7KkHKd
+         2OO4UB/qPGV0Kb1ZWzi/uFT5ImYf23NJqXsLzlE3RGb6EGTwyCk8S5LKXXW7oS4BXuPB
+         GmAaClvBeCfj0EjeTGpeCgZOhdWcAlGTzzqksLkM10T3zROM7YmS8E3+NZX1gNtp1Uxm
+         /9bsRFQe29SXLYbFOw4//1bj//Z8Sc04w7WCvdzPp4jDJg+PsV4DBb6XfdbFDIGj/lcB
+         +oqqTzcLXY4CEv1bVeVSUpGZHNjirmnSMvumbiTmbHxKU9Z9GUId5HzcKn1bTMkIKey7
+         wt/A==
+X-Gm-Message-State: AOAM531fuQLm89UreGR9FrnwLqylNfXRm+Z2+S3513dKIUfup24hNnww
+        WzHjWGnhtt0yVWuenntxUxVvnQ==
+X-Google-Smtp-Source: ABdhPJy6QUnVLAYByBZjhO+2QHiuXyS/kQV5ZHDoZVhz2cOHas9ztvbOoLvD5566Am7BgnWK8oO1tA==
+X-Received: by 2002:a2e:2283:: with SMTP id i125mr366177lji.485.1630696453685;
+        Fri, 03 Sep 2021 12:14:13 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id b2sm27501lfi.283.2021.09.03.12.14.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 12:14:12 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 5AAEF102F10; Fri,  3 Sep 2021 22:14:14 +0300 (+03)
+Date:   Fri, 3 Sep 2021 22:14:14 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Varad Gautam <varad.gautam@suse.com>,
+        Dario Faggioli <dfaggioli@suse.com>, x86@kernel.org,
+        linux-mm@kvack.org, linux-coco@lists.linux.dev,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>
+Subject: Re: [RFC] KVM: mm: fd-based approach for supporting KVM guest
+ private memory
+Message-ID: <20210903191414.g7tfzsbzc7tpkx37@box.shutemov.name>
+References: <20210824005248.200037-1-seanjc@google.com>
+ <20210902184711.7v65p5lwhpr2pvk7@box.shutemov.name>
+ <YTE1GzPimvUB1FOF@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.1
-Subject: Re: [PATCH v5] staging: r8188eu: Remove _enter/_exit_critical_mutex()
-Content-Language: en-US
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Michael Straube <straube.linux@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Aakash Hemadri <aakashhemadri123@gmail.com>
-References: <20210828113656.6963-1-fmdefrancesco@gmail.com>
- <YTCaF5Ure2tjfbZB@kroah.com> <cd1e8e38-29e7-3565-fb16-baa6c320100d@gmail.com>
-In-Reply-To: <cd1e8e38-29e7-3565-fb16-baa6c320100d@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTE1GzPimvUB1FOF@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/21 18:09, Pavel Skripkin wrote:
-> On 9/2/21 12:32, Greg Kroah-Hartman wrote:
->> On Sat, Aug 28, 2021 at 01:36:56PM +0200, Fabio M. De Francesco wrote:
->>> Remove _enter_critical_mutex() and _exit_critical_mutex(). They are
->>> unnecessary wrappers, respectively to mutex_lock_interruptible() and
->>> to mutex_unlock(). They also have an odd interface that takes an unused
->>> argument named pirqL of type unsigned long.
->>> The original code enters the critical section if the mutex API is
->>> interrupted while waiting to acquire the lock; therefore it could lead
->>> to a race condition. Use mutex_lock() because it is uninterruptible and
->>> so avoid that above-mentioned potential race condition.
->>> 
->>> Tested-by: Pavel Skripkin <paskripkin@gmail.com>
->>> Reviewed-by: Pavel Skripkin <paskripkin@gmail.com>
->>> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
->>> ---
->>> 
->>> v5: Fix a typo in the subject line. Reported by Aakash Hemadri.
->>> 
->>> v4: Tested and reviewed by Pavel Skripkin. No changes to the code.
->>> 
->>> v3: Assume that the original authors don't expect that
->>> mutex_lock_interruptible() can be really interrupted and then lead to 
->>> a potential race condition. Furthermore, Greg Kroah-Hartman makes me
->>> notice that "[] one almost never needs interruptable locks in a driver".
->>> Therefore, replace the calls to mutex_lock_interruptible() with calls to
->>> mutex_lock() since the latter is uninterruptible and avoid race
->>> conditions without the necessity to handle -EINTR errors.
->> 
->> Based on a recent conversation on the linux-usb mailing list, perhaps I
->> was wrong:
->> 	https://lore.kernel.org/r/20210829015825.GA297712@rowland.harvard.edu
->> 
->> Can you check what happens with your change when you disconnect the
->> device and these code paths are being called?  That is when you do want
->> the lock interrupted.
->> 
->> Yes, the logic still seems wrong, but I don't want to see the code now
->> just lock up entirely with this change as it is a change in how things
->> work from today.
->> 
+On Thu, Sep 02, 2021 at 08:33:31PM +0000, Sean Christopherson wrote:
+> Would requiring the size to be '0' at F_SEAL_GUEST time solve that problem?
+
+I guess. Maybe we would need a WRITE_ONCE() on set. I donno. I will look
+closer into locking next.
+
+> FWIW, splitting a THP will also require a call into KVM to demote the huge page
+> to the equivalent small pages.
+
+But will it though? Even if the page got split we still don't allow
+migration so EPT can stay 2M. Or do I miss something?
+
+For truncate/punch I disallowed non-page aligned operations. I ignore
+failed split. Yes, we zero the truncated parts, but these parts are
+already removed from KVM, so it should be safe.
+
+> > We need to modify truncation/punch path to notify kvm that pages are about
+> > to be freed. I think we will register callback in the memfd on adding the
+> > fd to KVM memslot that going to be called for the notification. That means
+> > 1:1 between memfd and memslot. I guess it's okay.
 > 
-> Hi, Greg!
+> Hmm, 1:1 memfd to memslot will be problematic as that would prevent punching a
+> hole in KVM's memslots, e.g. to convert a subset to shared.  It would also
+> disallow backing guest memory with a single memfd that's split across two
+> memslots for <4gb and >4gb.
 > 
-> I've retested this patch with lockdep enabled and I actually hit a
-> deadlock. It's really my fault to forgot about lockdep while testing v4,
-> I am sorry about the situation.
+> But I don't think we need a 1:1 relationship.  To keep KVM sane, we can require
+> each private memslot to be wholly contained in a single memfd, I can't think of
+> any reason that would be problematic for userspace.
 > 
-> Actually, the disconnect here is not the problem, the problem was in
-> original code. Changing mutex_lock_interruptible to mutex_lock just
-> helped to discover it.
+> For the callbacks, I believe the rule should be 1:1 between memfd and KVM instance.
+> That would allow mapping multiple memslots to a single memfd so long as they're
+> all coming from the same KVM instance.
+
+Okay, I've added guest_owner field that I check on registering guest. I
+don't think we want to tie it directly to kvm, so I left it just void *.
+
 > 
+> > Migration going to always fail on F_SEAL_GUEST for now. Can be modified to
+> > use a callback in the future.
+> > 
+> > Swapout will also always fail on F_SEAL_GUEST. It seems trivial. Again, it
+> > can be a callback in the future.
+> > 
+> > For GPA->PFN translation KVM could use vm_ops->fault(). Semantically it is
+> > a good fit, but we don't have any VMAs around and ->mmap is forbidden for
+> > F_SEAL_GUEST.
+> > Other option is call shmem_getpage() directly, but it looks like a
+> > layering violation to me. And it's not available to modules :/
 > 
-> The log:
-> 
-> [  252.063305] WARNING: possible recursive locking detected
-> [  252.063642] 5.14.0+ #9 Tainted: G         C
-> [  252.063946] --------------------------------------------
-> [  252.064282] ip/335 is trying to acquire lock:
-> [  252.064560] ffff888009ebad28 (pmutex){+.+.}-{4:4}, at:
-> usbctrl_vendorreq+0xc5/0x4a0 [r8188eu]
-> [  252.065168]
-> [  252.065168] but task is already holding lock:
-> [  252.065536] ffffffffc021b3b8 (pmutex){+.+.}-{4:4}, at:
-> netdev_open+0x3a/0x5f [r8188eu]
-> [  252.066085]
-> [  252.066085] other info that might help us debug this:
-> [  252.066494]  Possible unsafe locking scenario:
-> [  252.066494]
-> [  252.066866]        CPU0
-> [  252.067025]        ----
-> [  252.067184]   lock(pmutex);
-> [  252.067367]   lock(pmutex);
-> [  252.067548]
-> [  252.067548]  *** DEADLOCK ***
-> [  252.067548]
-> [  252.067920]  May be due to missing lock nesting notation
-> [  252.067920]
-> [  252.068346] 2 locks held by ip/335:
-> [  252.068570]  #0: ffffffffbda94628 (rtnl_mutex){+.+.}-{4:4}, at:
-> rtnetlink_rcv_msg+0x1e0/0x660
-> [  252.069115]  #1: ffffffffc021b3b8 (pmutex){+.+.}-{4:4}, at:
-> netdev_open+0x3a/0x5f [r8188eu]
-> [  252.069690]
-> [  252.069690] stack backtrace:
-> [  252.069968] CPU: 1 PID: 335 Comm: ip Tainted: G         C
-> 5.14.0+ #9
-> [  252.071111] Call Trace:
-> [  252.071273]  dump_stack_lvl+0x45/0x59
-> [  252.071513]  __lock_acquire.cold+0x1fe/0x31b
-> [  252.072709]  lock_acquire+0x157/0x3c0
-> [  252.074445]  __mutex_lock+0xf6/0xc90
-> [  252.076294]  usbctrl_vendorreq+0xc5/0x4a0 [r8188eu]
-> [  252.076651]  usb_read8+0x68/0x8f [r8188eu]
-> [  252.076962]  ? usb_read16+0x8e/0x8e [r8188eu]
-> [  252.077287]  _rtw_read8+0x2d/0x32 [r8188eu]
-> [  252.077601]  HalPwrSeqCmdParsing+0x143/0x1de [r8188eu]
-> [  252.077979]  rtl8188eu_InitPowerOn+0x5a/0xe0 [r8188eu]
-> [  252.078352]  rtl8188eu_hal_init+0xe7/0x1008 [r8188eu]
-> [  252.078989]  rtw_hal_init+0x38/0xb5 [r8188eu]
-> [  252.079317]  _netdev_open+0x282/0x4db [r8188eu]
-> [  252.079653]  netdev_open+0x42/0x5f [r8188eu]
-> 
-> 
+> My idea for this was to have the memfd:KVM exchange callbacks, i.e. memfd would
+> have callbacks into KVM, but KVM would also have callbacks into memfd.  To avoid
+> circular refcounts, KVM would hold a reference to the memfd (since it's the
+> instigator) and KVM would be responsible for unregistering itself before freeing
+> it's reference to the memfd.
 
-Ok, sorry for noise. It's 100% false positive. Why?
+Okay I went this path. This callback exchange looks wierd to me, but I
+suppose it works.
 
-There is no pmutex in this driver. But! *All* mutexes are initialied via 
-private _rtw_mutex_init() API, which has a struct mutex *pmutex argument.
+Below is how I see it can look like. It only compile-tested and might be
+broken in many ways.
 
-So, driver registers all mutexes with the same name to lockdep map. Of 
-course, lockdep will complain about _any_ nested locking...
+I have not found a right abstaction for shmem_test_guest(). Maybe it has
+to be a new inode operation? I donno.
+For initial prototyping we can call it directly.
 
+Any comments?
 
-I will prepare a patch to fix this *completely wrong* approach...
-
-
-
-
-With regards,
-Pavel Skripkin
+diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
+index 8e775ce517bb..6f94fc46a3b1 100644
+--- a/include/linux/shmem_fs.h
++++ b/include/linux/shmem_fs.h
+@@ -10,6 +10,17 @@
+ #include <linux/xattr.h>
+ #include <linux/fs_parser.h>
+ 
++struct guest_ops {
++	void (*invalidate_page_range)(struct inode *inode,
++				      pgoff_t start, pgoff_t end);
++};
++
++struct guest_mem_ops {
++	unsigned long (*get_lock_pfn)(struct inode *inode, pgoff_t offset);
++	void (*put_unlock_pfn)(unsigned long pfn);
++
++};
++
+ /* inode in-kernel data */
+ 
+ struct shmem_inode_info {
+@@ -24,6 +35,8 @@ struct shmem_inode_info {
+ 	struct simple_xattrs	xattrs;		/* list of xattrs */
+ 	atomic_t		stop_eviction;	/* hold when working on inode */
+ 	struct inode		vfs_inode;
++	void			*guest_owner;
++	const struct guest_ops	*guest_ops;
+ };
+ 
+ struct shmem_sb_info {
+diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
+index 2f86b2ad6d7e..c79bc8572721 100644
+--- a/include/uapi/linux/fcntl.h
++++ b/include/uapi/linux/fcntl.h
+@@ -43,6 +43,7 @@
+ #define F_SEAL_GROW	0x0004	/* prevent file from growing */
+ #define F_SEAL_WRITE	0x0008	/* prevent writes */
+ #define F_SEAL_FUTURE_WRITE	0x0010  /* prevent future writes while mapped */
++#define F_SEAL_GUEST		0x0020
+ /* (1U << 31) is reserved for signed error codes */
+ 
+ /*
+diff --git a/mm/memfd.c b/mm/memfd.c
+index 081dd33e6a61..ccaa4edb21f7 100644
+--- a/mm/memfd.c
++++ b/mm/memfd.c
+@@ -134,7 +134,8 @@ static unsigned int *memfd_file_seals_ptr(struct file *file)
+ 		     F_SEAL_SHRINK | \
+ 		     F_SEAL_GROW | \
+ 		     F_SEAL_WRITE | \
+-		     F_SEAL_FUTURE_WRITE)
++		     F_SEAL_FUTURE_WRITE | \
++		     F_SEAL_GUEST)
+ 
+ static int memfd_add_seals(struct file *file, unsigned int seals)
+ {
+@@ -203,10 +204,27 @@ static int memfd_add_seals(struct file *file, unsigned int seals)
+ 		}
+ 	}
+ 
++	if (seals & F_SEAL_GUEST) {
++		i_mmap_lock_read(inode->i_mapping);
++
++		if (!RB_EMPTY_ROOT(&inode->i_mapping->i_mmap.rb_root)) {
++			error = -EBUSY;
++			goto unlock;
++		}
++
++		if (i_size_read(inode)) {
++			error = -EBUSY;
++			goto unlock;
++		}
++	}
++
+ 	*file_seals |= seals;
+ 	error = 0;
+ 
+ unlock:
++	if (seals & F_SEAL_GUEST)
++		i_mmap_unlock_read(inode->i_mapping);
++
+ 	inode_unlock(inode);
+ 	return error;
+ }
+diff --git a/mm/shmem.c b/mm/shmem.c
+index dacda7463d54..761cf4e2152e 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -883,6 +883,17 @@ static bool shmem_punch_compound(struct page *page, pgoff_t start, pgoff_t end)
+ 	return split_huge_page(page) >= 0;
+ }
+ 
++static void guest_invalidate_page(struct inode *inode,
++				  struct page *page, pgoff_t start, pgoff_t end)
++{
++	struct shmem_inode_info *info = SHMEM_I(inode);
++
++	start = max(start, page->index);
++	end = min(end, page->index + HPAGE_PMD_NR) - 1;
++
++	info->guest_ops->invalidate_page_range(inode, start, end);
++}
++
+ /*
+  * Remove range of pages and swap entries from page cache, and free them.
+  * If !unfalloc, truncate or punch hole; if unfalloc, undo failed fallocate.
+@@ -923,6 +934,8 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
+ 			}
+ 			index += thp_nr_pages(page) - 1;
+ 
++			guest_invalidate_page(inode, page, start, end);
++
+ 			if (!unfalloc || !PageUptodate(page))
+ 				truncate_inode_page(mapping, page);
+ 			unlock_page(page);
+@@ -999,6 +1012,9 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
+ 					index--;
+ 					break;
+ 				}
++
++				guest_invalidate_page(inode, page, start, end);
++
+ 				VM_BUG_ON_PAGE(PageWriteback(page), page);
+ 				if (shmem_punch_compound(page, start, end))
+ 					truncate_inode_page(mapping, page);
+@@ -1074,6 +1090,9 @@ static int shmem_setattr(struct user_namespace *mnt_userns,
+ 		    (newsize > oldsize && (info->seals & F_SEAL_GROW)))
+ 			return -EPERM;
+ 
++		if ((info->seals & F_SEAL_GUEST) && (newsize & ~PAGE_MASK))
++			return -EINVAL;
++
+ 		if (newsize != oldsize) {
+ 			error = shmem_reacct_size(SHMEM_I(inode)->flags,
+ 					oldsize, newsize);
+@@ -1348,6 +1367,8 @@ static int shmem_writepage(struct page *page, struct writeback_control *wbc)
+ 		goto redirty;
+ 	if (!total_swap_pages)
+ 		goto redirty;
++	if (info->seals & F_SEAL_GUEST)
++		goto redirty;
+ 
+ 	/*
+ 	 * Our capabilities prevent regular writeback or sync from ever calling
+@@ -2274,6 +2295,9 @@ static int shmem_mmap(struct file *file, struct vm_area_struct *vma)
+ 	if (ret)
+ 		return ret;
+ 
++	if (info->seals & F_SEAL_GUEST)
++		return -EPERM;
++
+ 	/* arm64 - allow memory tagging on RAM-based files */
+ 	vma->vm_flags |= VM_MTE_ALLOWED;
+ 
+@@ -2471,12 +2495,14 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
+ 	pgoff_t index = pos >> PAGE_SHIFT;
+ 
+ 	/* i_mutex is held by caller */
+-	if (unlikely(info->seals & (F_SEAL_GROW |
+-				   F_SEAL_WRITE | F_SEAL_FUTURE_WRITE))) {
++	if (unlikely(info->seals & (F_SEAL_GROW | F_SEAL_WRITE |
++				    F_SEAL_FUTURE_WRITE | F_SEAL_GUEST))) {
+ 		if (info->seals & (F_SEAL_WRITE | F_SEAL_FUTURE_WRITE))
+ 			return -EPERM;
+ 		if ((info->seals & F_SEAL_GROW) && pos + len > inode->i_size)
+ 			return -EPERM;
++		if (info->seals & F_SEAL_GUEST)
++			return -EPERM;
+ 	}
+ 
+ 	return shmem_getpage(inode, index, pagep, SGP_WRITE);
+@@ -2530,6 +2556,8 @@ static ssize_t shmem_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ 	ssize_t retval = 0;
+ 	loff_t *ppos = &iocb->ki_pos;
+ 
++	if (SHMEM_I(inode)->seals & F_SEAL_GUEST)
++		return -EPERM;
+ 	/*
+ 	 * Might this read be for a stacking filesystem?  Then when reading
+ 	 * holes of a sparse file, we actually need to allocate those pages,
+@@ -2675,6 +2703,12 @@ static long shmem_fallocate(struct file *file, int mode, loff_t offset,
+ 			goto out;
+ 		}
+ 
++		if ((info->seals & F_SEAL_GUEST) &&
++		    (offset & ~PAGE_MASK || len & ~PAGE_MASK)) {
++			error = -EINVAL;
++			goto out;
++		}
++
+ 		shmem_falloc.waitq = &shmem_falloc_waitq;
+ 		shmem_falloc.start = (u64)unmap_start >> PAGE_SHIFT;
+ 		shmem_falloc.next = (unmap_end + 1) >> PAGE_SHIFT;
+@@ -3761,6 +3795,20 @@ static void shmem_destroy_inodecache(void)
+ 	kmem_cache_destroy(shmem_inode_cachep);
+ }
+ 
++#ifdef CONFIG_MIGRATION
++int shmem_migrate_page(struct address_space *mapping,
++		struct page *newpage, struct page *page,
++		enum migrate_mode mode)
++{
++	struct inode *inode = mapping->host;
++	struct shmem_inode_info *info = SHMEM_I(inode);
++
++	if (info->seals & F_SEAL_GUEST)
++		return -ENOTSUPP;
++	return migrate_page(mapping, newpage, page, mode);
++}
++#endif
++
+ const struct address_space_operations shmem_aops = {
+ 	.writepage	= shmem_writepage,
+ 	.set_page_dirty	= __set_page_dirty_no_writeback,
+@@ -3769,12 +3817,57 @@ const struct address_space_operations shmem_aops = {
+ 	.write_end	= shmem_write_end,
+ #endif
+ #ifdef CONFIG_MIGRATION
+-	.migratepage	= migrate_page,
++	.migratepage	= shmem_migrate_page,
+ #endif
+ 	.error_remove_page = generic_error_remove_page,
+ };
+ EXPORT_SYMBOL(shmem_aops);
+ 
++static unsigned long shmem_get_lock_pfn(struct inode *inode, pgoff_t offset)
++{
++	struct page *page;
++	int ret;
++
++	ret = shmem_getpage(inode, offset, &page, SGP_WRITE);
++	if (ret)
++		return ret;
++
++	return page_to_pfn(page);
++}
++
++static void shmem_put_unlock_pfn(unsigned long pfn)
++{
++	struct page *page = pfn_to_page(pfn);
++
++	VM_BUG_ON_PAGE(!PageLocked(page), page);
++
++	set_page_dirty(page);
++	unlock_page(page);
++	put_page(page);
++}
++
++static const struct guest_mem_ops shmem_guest_ops = {
++	.get_lock_pfn = shmem_get_lock_pfn,
++	.put_unlock_pfn = shmem_put_unlock_pfn,
++};
++
++int shmem_register_guest(struct inode *inode, void *owner,
++			 const struct guest_ops *guest_ops,
++			 const struct guest_mem_ops **guest_mem_ops)
++{
++	struct shmem_inode_info *info = SHMEM_I(inode);
++
++	if (!owner)
++		return -EINVAL;
++
++	if (info->guest_owner && info->guest_owner != owner)
++		return -EPERM;
++
++	info->guest_ops = guest_ops;
++	*guest_mem_ops = &shmem_guest_ops;
++	return 0;
++}
++
+ static const struct file_operations shmem_file_operations = {
+ 	.mmap		= shmem_mmap,
+ 	.get_unmapped_area = shmem_get_unmapped_area,
+-- 
+ Kirill A. Shutemov
