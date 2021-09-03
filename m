@@ -2,130 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4EB3FFCD3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC073FFCD8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348706AbhICJPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 05:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51246 "EHLO
+        id S1348716AbhICJQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 05:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233277AbhICJPk (ORCPT
+        with ESMTP id S1348700AbhICJQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 05:15:40 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CF8C061575;
-        Fri,  3 Sep 2021 02:14:40 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id c5so2039713plz.2;
-        Fri, 03 Sep 2021 02:14:40 -0700 (PDT)
+        Fri, 3 Sep 2021 05:16:08 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2937BC061757
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 02:15:09 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id y34so10485612lfa.8
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 02:15:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=kb8Z5KH61dlFFT8cs85Ri7+/n7iNLKzAMoxXAmW2ceA=;
-        b=VS5jH6/vJozUZwnuawGnyMC48QMXnhiunRInAGDzbwL/WM0K4OHttgn8v1WCHsygYV
-         XtAU90YgcTIDbfWQpOteVNWViEFrEkjPcJJbHLsCiJAFOUNxLEK6hbYR9cNxExvnShpo
-         LyqlT+c3lp5cystcpuSx+j0P2kH/r09xPyCfn8NuA0A1cshCiFaVISLRV+ZhlfT3bTUP
-         PhxSKw5dKyHQXBpu3yLlhAYWERBo7a+fMAYKdQEVJADI+D33toqWqcNflbD1oxzKiRG8
-         L35MKyfOzPdC/cBx/XIsdgFwmgaenK14tAvoVkxX5Zhywm8m/dL90ZbZ+9rnlCfrSOYJ
-         TJuQ==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1WeDlp6zQ4PB7oT+RM0GT0Se5QIhGLH/vGupxdxPm3s=;
+        b=Xe0UuCzlWTrc6fezIMbTSNemVPzOv1Nn3DSDDhAjt2QUIDM9g02waQwg70Fsx2X/lc
+         wktlWQRT6ZouBUEutY2oh3mtZpFbqDA9tHw5Vjst1EycHWFIedZ2iQxYL/g+zkirKj/r
+         6PU9x6SnYhdv27IzboXqRjfDaMQYaIIlQQCwuV/SwBR0o46pb5rZKf3F1cCgFTzlJ8Jq
+         /oq5zfQX9CdeIP3tZqcbCB1D2cKGo8O1dZxeHmF+eWXTq2yTqYu7nATmqwVVXSWlWopf
+         pgTy0DflNyK7VzCGJZfiZJbOf1rIP5NBiMgaU7I6nFMTMQ1ovHwyq/K6W0EGdX/6QBIf
+         kHkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=kb8Z5KH61dlFFT8cs85Ri7+/n7iNLKzAMoxXAmW2ceA=;
-        b=iZ9VPsuIinKVpbO1zuTdkH5E6ijy/NU5Xqsk3waVgjFE3acjAsXWv7hFCYs4gfimjm
-         +i1edhD4DdqvhHDJS7g74mX04KtVzylmBn8D4EBfqIm3Gp4Dbb7tqkrYOSF8hydm/Fcz
-         WBdm5CU/0oDeTEQH5kBQwy9V4RkzXy0UUANcl/rvq3B+fUrMbcshc9n7pBji6C+AWb6T
-         xlX1tDKhzI8GWRugLfX948WP3jQxuPrrvgYKR6mOsp8kxcoYuG7uGwcgkhluQOjgqWYT
-         tNGJ2RrloS8DdTOEEslftfqeJ7zd5WhLBAowIH6JgmH9Wy9KZpqtgX0KGI6eS75ZcAJq
-         Aw5g==
-X-Gm-Message-State: AOAM533pT9ZpJ2UrGs9QLM7kxxtjGGy26MLFdq0tR7ygfSgrHsKjHdKI
-        cn9mmvqRZHnH+CLI5EE1Kd0=
-X-Google-Smtp-Source: ABdhPJz1EryyIfzYCwBsKI7WGd4sPcZ3VHNRIpfsK7XuoGifQUKu3AiOsDLxBMlWacWq67iuYF7Weg==
-X-Received: by 2002:a17:90a:6282:: with SMTP id d2mr8791405pjj.189.1630660479349;
-        Fri, 03 Sep 2021 02:14:39 -0700 (PDT)
-Received: from haswell-ubuntu20.lan ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id y1sm5766231pga.50.2021.09.03.02.14.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 02:14:38 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
-        Sean Wang <sean.wang@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@savoirfairelinux.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:MEDIATEK SWITCH DRIVER" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH 4.19.y] net: dsa: mt7530: disable learning on standalone ports
-Date:   Fri,  3 Sep 2021 17:14:30 +0800
-Message-Id: <20210903091430.2209627-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <YTBoDaYDJfBz3YzN@kroah.com>
-References: <20210824055509.1316124-1-dqfext@gmail.com> <YSUQV3jhfbhbf5Ct@sashalap> <CALW65ja3hYGmEqcWZzifP2-0WsJOnxcUXsey2ZH5vDbD0-nDeQ@mail.gmail.com> <YSi8Ky3GqBjnxbhC@kroah.com> <20210902053619.1824464-1-dqfext@gmail.com> <YTBoDaYDJfBz3YzN@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1WeDlp6zQ4PB7oT+RM0GT0Se5QIhGLH/vGupxdxPm3s=;
+        b=Tgy1to2aCnzyZucxhb00dTC35sTcjE6iVJC09Wgn8pKmQkHliiZUJ7uM85Pjb1g4uU
+         qu8PVFeGKTI4KYgMXRSFiJxI+47+zUg8JrrSzQxDMIScWNjatvnmfVM9hrNlKIvzSIAx
+         p84rRLUOwp29LaIkmK4MS8cS9pczvi0MmqJhTbGEE4UyfDarVvtpjREsEIe74dv3IKPX
+         TH6/uprB3XdMpw2lHH9bnsbGxiYtwx1GDrNod4Wg/IKiAHT8AZIqbOmrKKaqWo8JPcB0
+         LuIu0Wi9EOLqaLqHeoZEuMmSG3sgoXmOGs9S4iW8JoXW6+4IWUFXWznXPwLnaF5sMmhj
+         pwGw==
+X-Gm-Message-State: AOAM530tD4r8YdGs8eFfHmblpCMCJxOsZWuaESuY2D2DH7D0qHrTRYfh
+        g1f6cxYWqK5hpyDhs0P5FMlb8OcNqQYF/Jqwt5XImw==
+X-Google-Smtp-Source: ABdhPJzgGU7kz6Hdyn1Y7Zz6J4fJV76pN9mQU3e9Iv+tDEjK/87/x2JidiVlOuUXRt0KORSLexVehP5De0Qd/OSyzh8=
+X-Received: by 2002:a05:6512:e99:: with SMTP id bi25mr2027489lfb.486.1630660507399;
+ Fri, 03 Sep 2021 02:15:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20210902230442.1515531-1-saravanak@google.com> <20210902230442.1515531-3-saravanak@google.com>
+In-Reply-To: <20210902230442.1515531-3-saravanak@google.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 3 Sep 2021 11:14:31 +0200
+Message-ID: <CAPDyKFr7z6W3ghoAmTVKHaM8saycbhYyBcDXaTuT_Daz+djx2A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] drivers: bus: simple-pm-bus: Add support for
+ probing simple bus only devices
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 07:58:37AM +0200, Greg KH wrote:
-> On Thu, Sep 02, 2021 at 01:36:19PM +0800, DENG Qingfang wrote:
-> > On Fri, Aug 27, 2021 at 12:19:23PM +0200, Greg KH wrote:
-> > > On Tue, Aug 24, 2021 at 11:57:53PM +0800, DENG Qingfang wrote:
-> > > > Standalone ports should have address learning disabled, according to
-> > > > the documentation:
-> > > > https://www.kernel.org/doc/html/v5.14-rc7/networking/dsa/dsa.html#bridge-layer
-> > > > dsa_switch_ops on 5.10 or earlier does not have .port_bridge_flags
-> > > > function so it has to be done differently.
-> > > > 
-> > > > I've identified an issue related to this.
-> > > 
-> > > What issue is that?  Where was it reported?
-> > 
-> > See Florian's message here
-> > https://lore.kernel.org/stable/20210317003549.3964522-2-f.fainelli@gmail.com/
-> 
-> THat is just the patch changelog text, or is it unique to this
-> stable-only patch?  It is not obvious at all.
+On Fri, 3 Sept 2021 at 01:04, Saravana Kannan <saravanak@google.com> wrote:
+>
+> The OF platform code sets up simple bus only devices (i.e. devices that
+> won't match with any other driver) to get probed by the simple-pm-bus to
+> keep fw_devlink from blocking probe() or sync_state() [1] callbacks of
+> other devices. There's no need to populate the child devices since the
+> OF platform code would do that anyway, so return early for these simple
+> bus only devices.
 
-The issue is with all DSA drivers that do not disable address learning
-on standalone ports.
+This looks like a neat solution to our problem. Although, a few comments below.
 
-"With learning enabled we would end up with the switch having
-incorrectly learned the address of the CPU port which typically results
-in a complete break down of network connectivity until the address
-learned ages out and gets re-learned, from the correct port this time."
+>
+> [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Tested-by: Saravana Kannan <saravanak@google.com>
+> ---
+>  drivers/bus/simple-pm-bus.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/bus/simple-pm-bus.c b/drivers/bus/simple-pm-bus.c
+> index 01a3d0cd08ed..91d52021b7f9 100644
+> --- a/drivers/bus/simple-pm-bus.c
+> +++ b/drivers/bus/simple-pm-bus.c
+> @@ -19,6 +19,13 @@ static int simple_pm_bus_probe(struct platform_device *pdev)
+>         const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
+>         struct device_node *np = pdev->dev.of_node;
+>
+> +       /*
+> +        * These are transparent bus devices (not simple-pm-bus matches) that
+> +        * get populated automatically.  So, don't need to do anything more.
+> +        */
+> +       if (pdev->driver_override)
+> +               return 0;
 
-> 
-> > > > > 2. A partial backport of this patch?
-> > > > 
-> > > > The other part does not actually fix anything.
-> > > 
-> > > Then why is it not ok to just take the whole thing?
-> > > 
-> > > When backporting not-identical-patches, something almost always goes
-> > > wrong, so we prefer to take the original commit when ever possible.
-> > 
-> > Okay. MDB and tag ops can be backported as is, and broadcast/multicast
-> > flooding can be implemented in .port_egress_floods. 
-> 
-> So what are we supposed to do here?
+You need the same kind of check in simple_pm_bus_remove(), to avoid
+pm_runtime_disable(). At least for consistency.
 
-Function port_egress_floods is refactored to port_bridge_flags in commit
-a8b659e7ff75 ("net: dsa: act as passthrough for bridge port flags"). I can
-backport the mt7530_port_bridge_flags function as port_egress_floods.
+> +
+>         dev_dbg(&pdev->dev, "%s\n", __func__);
+>
+>         pm_runtime_enable(&pdev->dev);
+> --
+> 2.33.0.153.gba50c8fa24-goog
+>
 
-> 
-> totally confused,
-> 
-> greg k-h
+It also looks like we should flip the order of the patches in the
+series, to keep things bisectable.
+
+Kind regards
+Uffe
