@@ -2,216 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88460400289
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB9740028D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349714AbhICPsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 11:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235573AbhICPsH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 11:48:07 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E521FC061575;
-        Fri,  3 Sep 2021 08:47:06 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id A4BA01F40896
-Subject: Re: [PATCH v2] media: vivid: drop CONFIG_FB dependency
-To:     Michael Tretter <m.tretter@pengutronix.de>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-References: <8615e9e583173652894889afd492022683389621.1628177586.git.guillaume.tucker@collabora.com>
- <20210811100031.GB27204@pengutronix.de>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, kernel@pengutronix.de,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Message-ID: <f63dc030-72be-dc68-25c6-4a00aea31cdf@collabora.com>
-Date:   Fri, 3 Sep 2021 16:47:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210811100031.GB27204@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235630AbhICPt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 11:49:27 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:60267 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235573AbhICPtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 11:49:25 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H1Mdg4G7hz9sSf;
+        Fri,  3 Sep 2021 17:48:23 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id ujhQdbycgG0X; Fri,  3 Sep 2021 17:48:23 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H1Mdg30wHz9sSb;
+        Fri,  3 Sep 2021 17:48:23 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 398418B917;
+        Fri,  3 Sep 2021 17:48:23 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id qsHaNTvIM31N; Fri,  3 Sep 2021 17:48:23 +0200 (CEST)
+Received: from po18078vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C53C28B915;
+        Fri,  3 Sep 2021 17:48:22 +0200 (CEST)
+Received: by po18078vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 237E068A07; Fri,  3 Sep 2021 15:48:22 +0000 (UTC)
+Message-Id: <4e2370a9022495c49f3108fe34c5a2b2f4b28dfa.1630684009.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] audit: Fix build failure by renaming struct node to struct
+ audit_node
+To:     Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-audit@redhat.com
+Date:   Fri,  3 Sep 2021 15:48:22 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/08/2021 11:00, Michael Tretter wrote:
-> On Thu, 05 Aug 2021 16:36:31 +0100, Guillaume Tucker wrote:
->> Drop the vivid dependency on CONFIG_FB by compiling out parts of the
->> code that make use of the framebuffer API when not enabled.  This is
->> particularly useful as CONFIG_FB is not selected any more by
->> DRM_FBDEV_EMULATION.
-> 
-> I like this a lot.
+struct node defined in kernel/audit_tree.c conflicts with
+struct node defined in include/linux/node.h
 
-Thank you for your feedback.
+	  CC      kernel/audit_tree.o
+	kernel/audit_tree.c:33:9: error: redefinition of 'struct node'
+	   33 |  struct node {
+	      |         ^~~~
+	In file included from ./include/linux/cpu.h:17,
+                	 from ./include/linux/static_call.h:102,
+                	 from ./arch/powerpc/include/asm/machdep.h:10,
+                	 from ./arch/powerpc/include/asm/archrandom.h:7,
+                	 from ./include/linux/random.h:121,
+                	 from ./include/linux/net.h:18,
+                	 from ./include/linux/skbuff.h:26,
+                	 from kernel/audit.h:11,
+                	 from kernel/audit_tree.c:2:
+	./include/linux/node.h:84:8: note: originally defined here
+	   84 | struct node {
+	      |        ^~~~
+	make[2]: *** [kernel/audit_tree.o] Error 1
 
->> Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
->> Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
->> ---
->>
->> Notes:
->>     Changes in v2:
->>     * fix Makefile conditional for when CONFIG_FB=m
->>     * compile-out bit 16 (framebuffer) when no CONFIG_FB
->>
->>  drivers/media/test-drivers/vivid/Kconfig       | 5 +----
->>  drivers/media/test-drivers/vivid/Makefile      | 5 ++++-
->>  drivers/media/test-drivers/vivid/vivid-core.c  | 9 +++++++++
->>  drivers/media/test-drivers/vivid/vivid-ctrls.c | 4 ++++
->>  4 files changed, 18 insertions(+), 5 deletions(-)
->>
->> diff --git a/drivers/media/test-drivers/vivid/Kconfig b/drivers/media/test-drivers/vivid/Kconfig
->> index c3abde2986b2..06ad350f1903 100644
->> --- a/drivers/media/test-drivers/vivid/Kconfig
->> +++ b/drivers/media/test-drivers/vivid/Kconfig
->> @@ -1,13 +1,10 @@
->>  # SPDX-License-Identifier: GPL-2.0-only
->>  config VIDEO_VIVID
->>  	tristate "Virtual Video Test Driver"
->> -	depends on VIDEO_DEV && VIDEO_V4L2 && !SPARC32 && !SPARC64 && FB
->> +	depends on VIDEO_DEV && VIDEO_V4L2 && !SPARC32 && !SPARC64
->>  	depends on HAS_DMA
->>  	select FONT_SUPPORT
->>  	select FONT_8x16
->> -	select FB_CFB_FILLRECT
->> -	select FB_CFB_COPYAREA
->> -	select FB_CFB_IMAGEBLIT
->>  	select VIDEOBUF2_VMALLOC
->>  	select VIDEOBUF2_DMA_CONTIG
->>  	select VIDEO_V4L2_TPG
->> diff --git a/drivers/media/test-drivers/vivid/Makefile b/drivers/media/test-drivers/vivid/Makefile
->> index b12ad0152a3e..2ad634da7f88 100644
->> --- a/drivers/media/test-drivers/vivid/Makefile
->> +++ b/drivers/media/test-drivers/vivid/Makefile
->> @@ -3,10 +3,13 @@ vivid-objs := vivid-core.o vivid-ctrls.o vivid-vid-common.o vivid-vbi-gen.o \
->>  		vivid-vid-cap.o vivid-vid-out.o vivid-kthread-cap.o vivid-kthread-out.o \
->>  		vivid-radio-rx.o vivid-radio-tx.o vivid-radio-common.o \
->>  		vivid-rds-gen.o vivid-sdr-cap.o vivid-vbi-cap.o vivid-vbi-out.o \
->> -		vivid-osd.o vivid-meta-cap.o vivid-meta-out.o \
->> +		vivid-meta-cap.o vivid-meta-out.o \
->>  		vivid-kthread-touch.o vivid-touch-cap.o
->>  ifeq ($(CONFIG_VIDEO_VIVID_CEC),y)
->>    vivid-objs += vivid-cec.o
->>  endif
->> +ifneq ($(CONFIG_FB),)
->> +  vivid-objs += vivid-osd.o
-> 
-> vivid-osd depends on FB_CFB_FILLRECT, FB_CFB_COPYAREA, and FB_CFB_IMAGEBLIT,
-> which are not selected anymore, and linking fails if CONFIG_FB is enabled, but
-> the others are disabled.
+Rename it audit_node.
 
-I just sent a v3 which introduces a separate config to select
-those dependencies when enabling framebuffer support in vivid.
-In principle this should fix the linkage issue while still
-dropping the hard dependency on CONFIG_FB.  I've tried various
-combinations of built-in and module options for CONFIG_FB and
-CONFIG_VIDEO_VIVID and they all built fine, although that's not
-really comprehensive build testing so I'll keep an eye open for
-test bot results.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ kernel/audit_tree.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-Thanks,
-Guillaume
-
->> +endif
->>  
->>  obj-$(CONFIG_VIDEO_VIVID) += vivid.o
->> diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
->> index d2bd2653cf54..7675962b9e93 100644
->> --- a/drivers/media/test-drivers/vivid/vivid-core.c
->> +++ b/drivers/media/test-drivers/vivid/vivid-core.c
->> @@ -126,7 +126,9 @@ MODULE_PARM_DESC(node_types, " node types, default is 0xe1d3d. Bitmask with the
->>  			     "\t\t    bit 8: Video Output node\n"
->>  			     "\t\t    bit 10-11: VBI Output node: 0 = none, 1 = raw vbi, 2 = sliced vbi, 3 = both\n"
->>  			     "\t\t    bit 12: Radio Transmitter node\n"
->> +#if IS_ENABLED(CONFIG_FB)
->>  			     "\t\t    bit 16: Framebuffer for testing overlays\n"
->> +#endif
->>  			     "\t\t    bit 17: Metadata Capture node\n"
->>  			     "\t\t    bit 18: Metadata Output node\n"
->>  			     "\t\t    bit 19: Touch Capture node\n");
->> @@ -1021,9 +1023,11 @@ static int vivid_detect_feature_set(struct vivid_dev *dev, int inst,
->>  	/* do we have a modulator? */
->>  	*has_modulator = dev->has_radio_tx;
->>  
->> +#if IS_ENABLED(CONFIG_FB)
->>  	if (dev->has_vid_cap)
->>  		/* do we have a framebuffer for overlay testing? */
->>  		dev->has_fb = node_type & 0x10000;
->> +#endif
->>  
->>  	/* can we do crop/compose/scaling while capturing? */
->>  	if (no_error_inj && *ccs_cap == -1)
->> @@ -1355,6 +1359,7 @@ static int vivid_create_queues(struct vivid_dev *dev)
->>  			return ret;
->>  	}
->>  
->> +#if IS_ENABLED(CONFIG_FB)
->>  	if (dev->has_fb) {
->>  		/* Create framebuffer for testing capture/output overlay */
->>  		ret = vivid_fb_init(dev);
->> @@ -1363,6 +1368,8 @@ static int vivid_create_queues(struct vivid_dev *dev)
->>  		v4l2_info(&dev->v4l2_dev, "Framebuffer device registered as fb%d\n",
->>  			  dev->fb_info.node);
->>  	}
->> +#endif
->> +
->>  	return 0;
->>  }
->>  
->> @@ -2069,12 +2076,14 @@ static int vivid_remove(struct platform_device *pdev)
->>  				video_device_node_name(&dev->radio_tx_dev));
->>  			video_unregister_device(&dev->radio_tx_dev);
->>  		}
->> +#if IS_ENABLED(CONFIG_FB)
->>  		if (dev->has_fb) {
->>  			v4l2_info(&dev->v4l2_dev, "unregistering fb%d\n",
->>  				dev->fb_info.node);
->>  			unregister_framebuffer(&dev->fb_info);
->>  			vivid_fb_release_buffers(dev);
->>  		}
->> +#endif
->>  		if (dev->has_meta_cap) {
->>  			v4l2_info(&dev->v4l2_dev, "unregistering %s\n",
->>  				  video_device_node_name(&dev->meta_cap_dev));
->> diff --git a/drivers/media/test-drivers/vivid/vivid-ctrls.c b/drivers/media/test-drivers/vivid/vivid-ctrls.c
->> index 8dc50fe22972..081470a1d88a 100644
->> --- a/drivers/media/test-drivers/vivid/vivid-ctrls.c
->> +++ b/drivers/media/test-drivers/vivid/vivid-ctrls.c
->> @@ -305,6 +305,7 @@ static const struct v4l2_ctrl_config vivid_ctrl_ro_int32 = {
->>  
->>  /* Framebuffer Controls */
->>  
->> +#if IS_ENABLED(CONFIG_FB)
->>  static int vivid_fb_s_ctrl(struct v4l2_ctrl *ctrl)
->>  {
->>  	struct vivid_dev *dev = container_of(ctrl->handler,
->> @@ -328,6 +329,7 @@ static const struct v4l2_ctrl_config vivid_ctrl_clear_fb = {
->>  	.name = "Clear Framebuffer",
->>  	.type = V4L2_CTRL_TYPE_BUTTON,
->>  };
->> +#endif /* IS_ENABLED(CONFIG_FB) */
->>  
->>  
->>  /* Video User Controls */
->> @@ -1761,8 +1763,10 @@ int vivid_create_controls(struct vivid_dev *dev, bool show_ccs_cap,
->>  	    (dev->has_vbi_cap && dev->has_vbi_out))
->>  		v4l2_ctrl_new_custom(hdl_loop_cap, &vivid_ctrl_loop_video, NULL);
->>  
->> +#if IS_ENABLED(CONFIG_FB)
->>  	if (dev->has_fb)
->>  		v4l2_ctrl_new_custom(hdl_fb, &vivid_ctrl_clear_fb, NULL);
->> +#endif
->>  
->>  	if (dev->has_radio_rx) {
->>  		v4l2_ctrl_new_custom(hdl_radio_rx, &vivid_ctrl_radio_hw_seek_mode, NULL);
->> -- 
->> 2.20.1
->>
->>
+diff --git a/kernel/audit_tree.c b/kernel/audit_tree.c
+index b2be4e978ba3..d392cf4ec8e2 100644
+--- a/kernel/audit_tree.c
++++ b/kernel/audit_tree.c
+@@ -30,7 +30,7 @@ struct audit_chunk {
+ 	int count;
+ 	atomic_long_t refs;
+ 	struct rcu_head head;
+-	struct node {
++	struct audit_node {
+ 		struct list_head list;
+ 		struct audit_tree *owner;
+ 		unsigned index;		/* index; upper bit indicates 'will prune' */
+@@ -269,7 +269,7 @@ bool audit_tree_match(struct audit_chunk *chunk, struct audit_tree *tree)
+ 
+ /* tagging and untagging inodes with trees */
+ 
+-static struct audit_chunk *find_chunk(struct node *p)
++static struct audit_chunk *find_chunk(struct audit_node *p)
+ {
+ 	int index = p->index & ~(1U<<31);
+ 	p -= index;
+@@ -322,7 +322,7 @@ static void replace_chunk(struct audit_chunk *new, struct audit_chunk *old)
+ 	list_replace_rcu(&old->hash, &new->hash);
+ }
+ 
+-static void remove_chunk_node(struct audit_chunk *chunk, struct node *p)
++static void remove_chunk_node(struct audit_chunk *chunk, struct audit_node *p)
+ {
+ 	struct audit_tree *owner = p->owner;
+ 
+@@ -459,7 +459,7 @@ static int tag_chunk(struct inode *inode, struct audit_tree *tree)
+ {
+ 	struct fsnotify_mark *mark;
+ 	struct audit_chunk *chunk, *old;
+-	struct node *p;
++	struct audit_node *p;
+ 	int n;
+ 
+ 	mutex_lock(&audit_tree_group->mark_mutex);
+@@ -570,11 +570,11 @@ static void prune_tree_chunks(struct audit_tree *victim, bool tagged)
+ {
+ 	spin_lock(&hash_lock);
+ 	while (!list_empty(&victim->chunks)) {
+-		struct node *p;
++		struct audit_node *p;
+ 		struct audit_chunk *chunk;
+ 		struct fsnotify_mark *mark;
+ 
+-		p = list_first_entry(&victim->chunks, struct node, list);
++		p = list_first_entry(&victim->chunks, struct audit_node, list);
+ 		/* have we run out of marked? */
+ 		if (tagged && !(p->index & (1U<<31)))
+ 			break;
+@@ -616,7 +616,7 @@ static void trim_marked(struct audit_tree *tree)
+ 	}
+ 	/* reorder */
+ 	for (p = tree->chunks.next; p != &tree->chunks; p = q) {
+-		struct node *node = list_entry(p, struct node, list);
++		struct audit_node *node = list_entry(p, struct audit_node, list);
+ 		q = p->next;
+ 		if (node->index & (1U<<31)) {
+ 			list_del_init(p);
+@@ -684,7 +684,7 @@ void audit_trim_trees(void)
+ 		struct audit_tree *tree;
+ 		struct path path;
+ 		struct vfsmount *root_mnt;
+-		struct node *node;
++		struct audit_node *node;
+ 		int err;
+ 
+ 		tree = container_of(cursor.next, struct audit_tree, list);
+@@ -839,7 +839,7 @@ int audit_add_tree_rule(struct audit_krule *rule)
+ 	drop_collected_mounts(mnt);
+ 
+ 	if (!err) {
+-		struct node *node;
++		struct audit_node *node;
+ 		spin_lock(&hash_lock);
+ 		list_for_each_entry(node, &tree->chunks, list)
+ 			node->index &= ~(1U<<31);
+@@ -938,7 +938,7 @@ int audit_tag_tree(char *old, char *new)
+ 		mutex_unlock(&audit_filter_mutex);
+ 
+ 		if (!failed) {
+-			struct node *node;
++			struct audit_node *node;
+ 			spin_lock(&hash_lock);
+ 			list_for_each_entry(node, &tree->chunks, list)
+ 				node->index &= ~(1U<<31);
+-- 
+2.25.0
 
