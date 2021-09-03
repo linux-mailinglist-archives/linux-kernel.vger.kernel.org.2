@@ -2,201 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B4D4001C2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5502F4001C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349517AbhICPJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 11:09:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
+        id S236337AbhICPKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 11:10:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239566AbhICPJ2 (ORCPT
+        with ESMTP id S229789AbhICPKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 11:09:28 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34734C061575;
-        Fri,  3 Sep 2021 08:08:28 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id b64so6127130qkg.0;
-        Fri, 03 Sep 2021 08:08:28 -0700 (PDT)
+        Fri, 3 Sep 2021 11:10:14 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C7D8C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 08:09:14 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id c8so12376748lfi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 08:09:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=dfVAyRi3egcPmrpkkX6mL213sIGpEaRWvxdiTkq+xW8=;
-        b=EWcq229FL/ntUEq82qpPUWBWKHdqlgiM75aaopWI0EXKXMdaGvWC9k5+Djmpf9cuh4
-         b8Px+qCiOFbdSlTTv3bCUWjo/NV+fV2FfDhtVBTe+11Hyzzc0GtfIzt9fM6pWJdOsQTo
-         Hw091772P+VcEN0wpXd2QJDN5P2CBMbRXMqIqUPHoTTS4oCbdr33nxJebB3k0cLE1JVx
-         35kVoZO3fqZcIp7tDFWrd/ielCIlkFmjs/qNYQvB0vIZOGZG2GKfB2JH//Zfs1FulZVX
-         gOTOWaFGN1mnjDgUBankLRTMLHBaoKykGiP6F5yFw7iKyEEFMRF86tzacUtCHWKO2oZM
-         RWbw==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=cqU2PGqygwu99ZbSzOT9TyhyUY2249zso5423D4lseM=;
+        b=JatPzTL6lKTcgrasPi9n2LhNUb9YbfL9EY92QjDDjTfXDQT8a/L0p2yP4dX0xw3fdR
+         wd/9l3PjOH9k6ECIZUaPpVEJYYTLdkMSmCL2gyOo3lFeM8Y7gG0+fEXVnSt4UAK5jtKR
+         CwRQZPslXr/3+YqeULmtAM51kdld7tmYnGEavPKgMfaBtIScKHldITi5zN8X0DTUUrKh
+         x323pPnTgeh0zcbgNrXpj+GhFvXh+qL0KR2e/9LCpRJAf9RwKNFCZ+EI6vFEEJnKlsYu
+         D4567LW5K6fJU++lSHRTr3Q+8jTzbB65YGrliRJXRMxOA7rnopltlpGw7xcCTkpyp6qx
+         U0bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=dfVAyRi3egcPmrpkkX6mL213sIGpEaRWvxdiTkq+xW8=;
-        b=sn4I3exGBD8q3ec6r19GyxvO/DYghe4OBEERsdUgPGoZbcQjCSnZoPH0W8ElPrWPUN
-         SwNZlBRv22SrdqangNRNmk7vvOa0LCVWYThNyStC0wCFR+DxO7UgW7iahvnuyX6s1iTw
-         2ciMdRDN59Ux7sT2RYYJXDEDY7mmUfNosKrLUczPQZTG9iz/6GdFadhZWA6ONa7SJdoY
-         jkKoG3z90NvIFV+vWkKTMBf7njkLli+9Rv5Gucy2iQx7xdCqPPLSLQcsWlZIdk0gD6SB
-         O1Vq+L4if7upBjk7PAm4P87M5r8pDovMCpy/ZEPR7NUGsqNsKVd3JjpjZigMwfTlJ/Ov
-         898A==
-X-Gm-Message-State: AOAM532cDxzb+6noWwUqtI1AwOMnLgJhio91jNhBcxSFEDqpWDJhdrAp
-        dai/eoe+hnfRZfnYqxj814bKbbpC0+eFN4dm1gM=
-X-Google-Smtp-Source: ABdhPJxOxNoEKZDrnzr5I27hdDLrYAI3fzlDltFTJm77mMKSv9gWkp9I05ZDbo+9/cQzt6JSbVvTx3kldRbLUD+SG7w=
-X-Received: by 2002:a05:620a:2844:: with SMTP id h4mr3924402qkp.388.1630681707290;
- Fri, 03 Sep 2021 08:08:27 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=cqU2PGqygwu99ZbSzOT9TyhyUY2249zso5423D4lseM=;
+        b=dIcE3zh59iK+Uap7HuWZABZb3NT159K8V7fYXsCQ76SJLWtRIlgeuOlYze7E88pFht
+         WD6A6RigmXtSHgs0xczY7ES6h/OAslnxcTVLPFUEmmYI+QVmFkwtXZj1tRv6WGEmYCbR
+         bgf2H9ja95i2M4+f+34tn8XymzQO79LHGo/2wTBS1RsTn5m9jQ1xwvIGzGLJlf9dTtwh
+         FGIIwUyGYTGW9UN3xMU4u+ma5TcL/eMHmHpiFs++hATdkWypnV+OpTksXoq9WAfoaitl
+         AlP6dhCrH+hrTLdXxRHcW7PIELHYVijtzZaGmRg/dQ6I7pTdYq8c7ucrwSNEuQWKVq3b
+         skog==
+X-Gm-Message-State: AOAM533Vxv7/Jd/lgDWbsPn+wgnMOluM9w5BLzujUbJjmfd8thy739BZ
+        ngxahBwdfoo2s+pFHJJrLCo=
+X-Google-Smtp-Source: ABdhPJzS0YAvlPsopOi+A7Sezb4QTIRI17QorQk8+EuniZgIw/NNYJjAHtIr+SiXkvNb39CxV5O3QQ==
+X-Received: by 2002:a05:6512:3a88:: with SMTP id q8mr3211788lfu.228.1630681752555;
+        Fri, 03 Sep 2021 08:09:12 -0700 (PDT)
+Received: from [192.168.1.11] ([46.235.67.70])
+        by smtp.gmail.com with UTF8SMTPSA id k38sm532790lfv.128.2021.09.03.08.09.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 08:09:12 -0700 (PDT)
+Message-ID: <cd1e8e38-29e7-3565-fb16-baa6c320100d@gmail.com>
+Date:   Fri, 3 Sep 2021 18:09:09 +0300
 MIME-Version: 1.0
-References: <20210827164926.1726765-1-agruenba@redhat.com>
-In-Reply-To: <20210827164926.1726765-1-agruenba@redhat.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 3 Sep 2021 16:07:51 +0100
-Message-ID: <CAL3q7H709FSbHtinPRqe6XtZEvhmkSVBhFHUGMiVDW7Ngb3wrQ@mail.gmail.com>
-Subject: Re: [PATCH v7 00/19] gfs2: Fix mmap + page fault deadlocks
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>, cluster-devel@redhat.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [PATCH v5] staging: r8188eu: Remove _enter/_exit_critical_mutex()
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Michael Straube <straube.linux@gmail.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Aakash Hemadri <aakashhemadri123@gmail.com>
+References: <20210828113656.6963-1-fmdefrancesco@gmail.com>
+ <YTCaF5Ure2tjfbZB@kroah.com>
+From:   Pavel Skripkin <paskripkin@gmail.com>
+In-Reply-To: <YTCaF5Ure2tjfbZB@kroah.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 5:51 PM Andreas Gruenbacher <agruenba@redhat.com> w=
-rote:
->
-> Hi all,
->
-> here's another update on top of v5.14-rc7.  Changes:
->
->  * Some of the patch descriptions have been improved.
->
->  * Patch "gfs2: Eliminate ip->i_gh" has been moved further to the front.
->
-> At this point, I'm not aware of anything that still needs fixing,
+On 9/2/21 12:32, Greg Kroah-Hartman wrote:
+> On Sat, Aug 28, 2021 at 01:36:56PM +0200, Fabio M. De Francesco wrote:
+>> Remove _enter_critical_mutex() and _exit_critical_mutex(). They are
+>> unnecessary wrappers, respectively to mutex_lock_interruptible() and
+>> to mutex_unlock(). They also have an odd interface that takes an unused
+>> argument named pirqL of type unsigned long.
+>> The original code enters the critical section if the mutex API is
+>> interrupted while waiting to acquire the lock; therefore it could lead
+>> to a race condition. Use mutex_lock() because it is uninterruptible and
+>> so avoid that above-mentioned potential race condition.
+>> 
+>> Tested-by: Pavel Skripkin <paskripkin@gmail.com>
+>> Reviewed-by: Pavel Skripkin <paskripkin@gmail.com>
+>> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+>> ---
+>> 
+>> v5: Fix a typo in the subject line. Reported by Aakash Hemadri.
+>> 
+>> v4: Tested and reviewed by Pavel Skripkin. No changes to the code.
+>> 
+>> v3: Assume that the original authors don't expect that
+>> mutex_lock_interruptible() can be really interrupted and then lead to 
+>> a potential race condition. Furthermore, Greg Kroah-Hartman makes me
+>> notice that "[] one almost never needs interruptable locks in a driver".
+>> Therefore, replace the calls to mutex_lock_interruptible() with calls to
+>> mutex_lock() since the latter is uninterruptible and avoid race
+>> conditions without the necessity to handle -EINTR errors.
+> 
+> Based on a recent conversation on the linux-usb mailing list, perhaps I
+> was wrong:
+> 	https://lore.kernel.org/r/20210829015825.GA297712@rowland.harvard.edu
+> 
+> Can you check what happens with your change when you disconnect the
+> device and these code paths are being called?  That is when you do want
+> the lock interrupted.
+> 
+> Yes, the logic still seems wrong, but I don't want to see the code now
+> just lock up entirely with this change as it is a change in how things
+> work from today.
+> 
 
-Hi, thanks for doing this.
+Hi, Greg!
 
-In btrfs we also have a deadlock (after the conversion to use iomap
-for direct IO) triggered by your recent test case for fstests,
-generic/647 [1].
-Even though we can fix it in btrfs without touching iomap, iov_iter,
-etc, it would be too complex for such a rare and exotic case (a user
-passing a buffer for a direct IO read/write that is memory mapped to
-the same file range of the operation is very uncommon at least). But
-this patchset would make the fix much simpler and cleaner.
+I've retested this patch with lockdep enabled and I actually hit a 
+deadlock. It's really my fault to forgot about lockdep while testing v4, 
+I am sorry about the situation.
 
-One thing I noticed is that, for direct IO reads, despite setting the
-->nofault attribute of the iov_iter to true, we can still get page
-faults while in the iomap code.
-This happens when reading from holes and unwritten/prealloc extents,
-because iomap calls iov_iter_zero() and this seems to ignore the value
-of ->nofault.
-Is that intentional? I can get around it by surrounding the iomap call
-with pagefault_disable() / pagefault_enable(), but it seems odd to do
-so, given that iov_iter->nofault was set to true.
-
-[1] https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?id=3Dd3c=
-bdabffc4cb28850e97bc7bd8a7a1460db94e5
-
-Thanks.
-
->
->
-> The first two patches are independent of the core of this patch queue
-> and I've asked the respective maintainers to have a look, but I've not
-> heard back from them.  The first patch should just go into Al's tree;
-> it's a relatively straight-forward fix.  The second patch really needs
-> to be looked at; it might break things:
->
->   iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
->   powerpc/kvm: Fix kvm_use_magic_page
->
->
-> Al and Linus seem to have a disagreement about the error reporting
-> semantics that functions fault_in_{readable,writeable} and
-> fault_in_iov_iter_{readable,writeable} should have.  I've implemented
-> Linus's suggestion of returning the number of bytes not faulted in and I
-> think that being able to tell if "nothing", "something" or "everything"
-> could be faulted in does help, but I'll live with anything that allows
-> us to make progress.
->
->
-> The iomap changes should ideally be reviewed by Christoph; I've not
-> heard from him about those.
->
->
-> Thanks,
-> Andreas
->
-> Andreas Gruenbacher (16):
->   iov_iter: Fix iov_iter_get_pages{,_alloc} page fault return value
->   powerpc/kvm: Fix kvm_use_magic_page
->   gup: Turn fault_in_pages_{readable,writeable} into
->     fault_in_{readable,writeable}
->   iov_iter: Turn iov_iter_fault_in_readable into
->     fault_in_iov_iter_readable
->   iov_iter: Introduce fault_in_iov_iter_writeable
->   gfs2: Add wrapper for iomap_file_buffered_write
->   gfs2: Clean up function may_grant
->   gfs2: Move the inode glock locking to gfs2_file_buffered_write
->   gfs2: Eliminate ip->i_gh
->   gfs2: Fix mmap + page fault deadlocks for buffered I/O
->   iomap: Fix iomap_dio_rw return value for user copies
->   iomap: Support partial direct I/O on user copy failures
->   iomap: Add done_before argument to iomap_dio_rw
->   gup: Introduce FOLL_NOFAULT flag to disable page faults
->   iov_iter: Introduce nofault flag to disable page faults
->   gfs2: Fix mmap + page fault deadlocks for direct I/O
->
-> Bob Peterson (3):
->   gfs2: Eliminate vestigial HIF_FIRST
->   gfs2: Remove redundant check from gfs2_glock_dq
->   gfs2: Introduce flag for glock holder auto-demotion
->
->  arch/powerpc/kernel/kvm.c           |   3 +-
->  arch/powerpc/kernel/signal_32.c     |   4 +-
->  arch/powerpc/kernel/signal_64.c     |   2 +-
->  arch/x86/kernel/fpu/signal.c        |   7 +-
->  drivers/gpu/drm/armada/armada_gem.c |   7 +-
->  fs/btrfs/file.c                     |   7 +-
->  fs/btrfs/ioctl.c                    |   5 +-
->  fs/ext4/file.c                      |   5 +-
->  fs/f2fs/file.c                      |   2 +-
->  fs/fuse/file.c                      |   2 +-
->  fs/gfs2/bmap.c                      |  60 +----
->  fs/gfs2/file.c                      | 245 ++++++++++++++++++--
->  fs/gfs2/glock.c                     | 340 +++++++++++++++++++++-------
->  fs/gfs2/glock.h                     |  20 ++
->  fs/gfs2/incore.h                    |   5 +-
->  fs/iomap/buffered-io.c              |   2 +-
->  fs/iomap/direct-io.c                |  21 +-
->  fs/ntfs/file.c                      |   2 +-
->  fs/xfs/xfs_file.c                   |   6 +-
->  fs/zonefs/super.c                   |   4 +-
->  include/linux/iomap.h               |  11 +-
->  include/linux/mm.h                  |   3 +-
->  include/linux/pagemap.h             |  58 +----
->  include/linux/uio.h                 |   4 +-
->  lib/iov_iter.c                      | 103 +++++++--
->  mm/filemap.c                        |   4 +-
->  mm/gup.c                            | 139 +++++++++++-
->  27 files changed, 785 insertions(+), 286 deletions(-)
->
-> --
-> 2.26.3
->
+Actually, the disconnect here is not the problem, the problem was in 
+original code. Changing mutex_lock_interruptible to mutex_lock just 
+helped to discover it.
 
 
---=20
-Filipe David Manana,
+The log:
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+[  252.063305] WARNING: possible recursive locking detected
+[  252.063642] 5.14.0+ #9 Tainted: G         C
+[  252.063946] --------------------------------------------
+[  252.064282] ip/335 is trying to acquire lock:
+[  252.064560] ffff888009ebad28 (pmutex){+.+.}-{4:4}, at: 
+usbctrl_vendorreq+0xc5/0x4a0 [r8188eu]
+[  252.065168]
+[  252.065168] but task is already holding lock:
+[  252.065536] ffffffffc021b3b8 (pmutex){+.+.}-{4:4}, at: 
+netdev_open+0x3a/0x5f [r8188eu]
+[  252.066085]
+[  252.066085] other info that might help us debug this:
+[  252.066494]  Possible unsafe locking scenario:
+[  252.066494]
+[  252.066866]        CPU0
+[  252.067025]        ----
+[  252.067184]   lock(pmutex);
+[  252.067367]   lock(pmutex);
+[  252.067548]
+[  252.067548]  *** DEADLOCK ***
+[  252.067548]
+[  252.067920]  May be due to missing lock nesting notation
+[  252.067920]
+[  252.068346] 2 locks held by ip/335:
+[  252.068570]  #0: ffffffffbda94628 (rtnl_mutex){+.+.}-{4:4}, at: 
+rtnetlink_rcv_msg+0x1e0/0x660
+[  252.069115]  #1: ffffffffc021b3b8 (pmutex){+.+.}-{4:4}, at: 
+netdev_open+0x3a/0x5f [r8188eu]
+[  252.069690]
+[  252.069690] stack backtrace:
+[  252.069968] CPU: 1 PID: 335 Comm: ip Tainted: G         C 
+5.14.0+ #9
+[  252.071111] Call Trace:
+[  252.071273]  dump_stack_lvl+0x45/0x59
+[  252.071513]  __lock_acquire.cold+0x1fe/0x31b
+[  252.072709]  lock_acquire+0x157/0x3c0
+[  252.074445]  __mutex_lock+0xf6/0xc90
+[  252.076294]  usbctrl_vendorreq+0xc5/0x4a0 [r8188eu]
+[  252.076651]  usb_read8+0x68/0x8f [r8188eu]
+[  252.076962]  ? usb_read16+0x8e/0x8e [r8188eu]
+[  252.077287]  _rtw_read8+0x2d/0x32 [r8188eu]
+[  252.077601]  HalPwrSeqCmdParsing+0x143/0x1de [r8188eu]
+[  252.077979]  rtl8188eu_InitPowerOn+0x5a/0xe0 [r8188eu]
+[  252.078352]  rtl8188eu_hal_init+0xe7/0x1008 [r8188eu]
+[  252.078989]  rtw_hal_init+0x38/0xb5 [r8188eu]
+[  252.079317]  _netdev_open+0x282/0x4db [r8188eu]
+[  252.079653]  netdev_open+0x42/0x5f [r8188eu]
+
+
+The problem was here before, but it was race condition, rather than a 
+deadlock: netdev_open() locks the mutex, but internally calls usb_read8().
+
+With previous code mutex_lock_interruptible() just fails and execution 
+goes forward. It's not correct anyway... Fabio's patch helps to discover 
+design bug :)
+
+
+Again, I am so sorry for not enabling lockdep while testing this first 
+time...
+
+
+
+
+
+With regards,
+Pavel Skripkin
