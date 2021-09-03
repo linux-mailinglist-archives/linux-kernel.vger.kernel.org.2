@@ -2,121 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C3D3FFBE6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FF23FFBDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348267AbhICIYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:24:47 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2482 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348295AbhICIYq (ORCPT
+        id S1348356AbhICIYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348342AbhICIYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:24:46 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18384kVk094606;
-        Fri, 3 Sep 2021 04:22:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=yvn3uRltpD6qua2hyp0D2c7Lx/IW7lVKvIh+1+hY8jc=;
- b=sxqFHGBuVldPs6+5K/rqtVS9JHaQU11EacvwcMXWaBbncc1l8OOnAuO55qpy/Yz7lvG8
- fHBGcdKnfMjUhSSKgEXpC9tfhTNXhCD4RL1rLoTx+ouZqYUheCwxI6sQQRKrEw+MIkfP
- NvtrSkjS+pOzrkJLiM4WrfcV3fsDP5VKqrtC2E9soOQhjwnWHr03qec/WayDpr2td3x+
- 3dJLfkNMsgjwswwo311zitvpYu/rAJHq1kjaBUQjEZ5HM8L/YTyT0zKUTr/71/uf3dON
- n8LL5RnLa43g60fHv/kVumN2Z4k8oa5+mK/9XJPoCXZpMKfS4mcMm6AYJ7LnhFAdfrNc 2Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3auftc8fse-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 04:22:03 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18384pMm095198;
-        Fri, 3 Sep 2021 04:22:02 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3auftc8frg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 04:22:02 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18388C9c028085;
-        Fri, 3 Sep 2021 08:21:59 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04fra.de.ibm.com with ESMTP id 3au6q74x6c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 08:21:59 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1838LtB930671224
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Sep 2021 08:21:55 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 50DCEA4054;
-        Fri,  3 Sep 2021 08:21:55 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D5A24A405B;
-        Fri,  3 Sep 2021 08:21:53 +0000 (GMT)
-Received: from osiris (unknown [9.145.159.114])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri,  3 Sep 2021 08:21:53 +0000 (GMT)
-Date:   Fri, 3 Sep 2021 10:21:52 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Weizhao Ouyang <o451686892@gmail.com>
-Cc:     rostedt@goodmis.org, mingo@redhat.com, linux@armlinux.org.uk,
-        catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org,
-        monstr@monstr.eu, tsbogend@alpha.franken.de, nickhu@andestech.com,
-        green.hu@gmail.com, deanbo422@gmail.com,
-        James.Bottomley@hansenpartnership.com, deller@gmx.de,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, gor@linux.ibm.com, borntraeger@de.ibm.com,
-        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
-        tglx@linutronix.de, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org
-Subject: Re: [PATCH] ftrace: Cleanup ftrace_dyn_arch_init()
-Message-ID: <YTHbIMVw2EhNpDwO@osiris>
-References: <20210903071817.1162938-1-o451686892@gmail.com>
+        Fri, 3 Sep 2021 04:24:37 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C596C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 01:23:37 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id y34so10225910lfa.8
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 01:23:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=hAqGYrLjRZ3iykSbGor+qLd4AGyjB0PsrRt/XCzshnA=;
+        b=RZaRoRA3ZPlAb4WoHFUgzFl0jZaakLFCJbgMO1iW0KpQC7RBvcOtkhtq82E7RP7t++
+         P8kOVNYw/SmbJv8dFhkQZfu02OD1YkBj/vKCPW0cgi1M+JfRg/B4P+Il1TPVFSLPltWY
+         AhQLLV/HxRbnFtvLL4VF6cXFgAmcnIHUxCPZWozvoq5oPPKteQYr0RsoCOtygrFQS4qo
+         NcRqmYtR8q71ysadIIQgHiDPwPFwVd56tDpFAxjStSMw6PKD3yagR6+16X2kQ0F2r5nK
+         TDtGbzr3AnVHYlmL0OqxDDsphsznRC5HIdA8GKnpHOV/mVSgWewAd4ZF22rHzBbqicMq
+         mf9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=hAqGYrLjRZ3iykSbGor+qLd4AGyjB0PsrRt/XCzshnA=;
+        b=AB2IEvaYDk7Fu3Pa8OqRb4+uhjafYmWSkXtq66hwC892qkaGOQfJ21KOIZdSlLdhJp
+         Fq3zjqydWKThUM3T57UsFDfpjZcSspo3cuvYSO6BUCVzEbRWZy4IHpaWaiQZJ5YNuaag
+         sMG8Aw4S0ec48W69cvnjNtAT8FyPoQRWSJR4tITCuEo81kShTU5EKCnQCEFI/C3ZA46c
+         6t+Qc/WQ6+PPQbXUmiH9Sg1bayKH7L5p7HYlnDAM525yVgB3p4ViFYuOBLzxO2Z0IEo2
+         YHERwScZdxykkhUUJbLYJDdNqKpE+PLPBjWkuq1VEbKEG/0Ta8tP/KV+rTGQDpzaSNJv
+         LH/Q==
+X-Gm-Message-State: AOAM533NblUT8YpHTExeBjgv0mFGq/ywojRMoRKESErRfTmW+uY0ILK6
+        x1/3Lce7T/7VZ82GweC3DOehl1BDX5fHJ3CQx+bD1Q==
+X-Google-Smtp-Source: ABdhPJyRFy8znwwAG/S5c2HOe673r98QPD3crhekcHkJPEwDJj5xfL1g6mIr/hFt9tGetbXQOgRxN2Dzaw+vDXHHoIY=
+X-Received: by 2002:a19:655e:: with SMTP id c30mr1874417lfj.142.1630657415405;
+ Fri, 03 Sep 2021 01:23:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210903071817.1162938-1-o451686892@gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: v7gSly151gMH4jiswwJLQJyae83ofpqz
-X-Proofpoint-ORIG-GUID: 5AAR1uAs7Bex_EJmpFQlQUops1ZiOFiF
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-03_02:2021-09-03,2021-09-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1011 adultscore=0 spamscore=0 bulkscore=0 phishscore=0
- impostorscore=0 lowpriorityscore=0 mlxlogscore=634 suspectscore=0
- malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109030048
+References: <20210902101634.827187-1-ulf.hansson@linaro.org>
+ <20210902101634.827187-2-ulf.hansson@linaro.org> <08335cd4-7dc8-3b8b-d63f-374585ffa373@gmail.com>
+In-Reply-To: <08335cd4-7dc8-3b8b-d63f-374585ffa373@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 3 Sep 2021 10:22:59 +0200
+Message-ID: <CAPDyKFofrEj2LdqXh-L256b2Tcz=qYQgzTUBVuvx0rOR58SrVg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] PM: domains: Drop the performance state vote for a
+ device at detach
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 03:18:17PM +0800, Weizhao Ouyang wrote:
-> Most ARCHs use empty ftrace_dyn_arch_init(), introduce a weak common
-> ftrace_dyn_arch_init() to cleanup them.
-> 
-> Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
-> ---
->  arch/arm/kernel/ftrace.c          | 5 -----
->  arch/arm64/kernel/ftrace.c        | 5 -----
->  arch/csky/kernel/ftrace.c         | 5 -----
->  arch/ia64/kernel/ftrace.c         | 6 ------
->  arch/microblaze/kernel/ftrace.c   | 5 -----
->  arch/mips/include/asm/ftrace.h    | 2 ++
->  arch/nds32/kernel/ftrace.c        | 5 -----
->  arch/parisc/kernel/ftrace.c       | 5 -----
->  arch/powerpc/include/asm/ftrace.h | 4 ++++
->  arch/riscv/kernel/ftrace.c        | 5 -----
->  arch/s390/kernel/ftrace.c         | 5 -----
->  arch/sh/kernel/ftrace.c           | 5 -----
->  arch/sparc/kernel/ftrace.c        | 5 -----
->  arch/x86/kernel/ftrace.c          | 5 -----
->  include/linux/ftrace.h            | 1 -
->  kernel/trace/ftrace.c             | 5 +++++
->  16 files changed, 11 insertions(+), 62 deletions(-)
+On Fri, 3 Sept 2021 at 08:01, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> 02.09.2021 13:16, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > When a device is detached from its genpd, genpd loses track of the devi=
+ce,
+> > including its performance state vote that may have been requested for i=
+t.
+> >
+> > Rather than relying on the consumer driver to drop the performance stat=
+e
+> > vote for its device, let's do it internally in genpd when the device is
+> > getting detached. In this way, we makes sure that the aggregation of th=
+e
+> > votes in genpd becomes correct.
+>
+> This is a dangerous behaviour in a case where performance state
+> represents voltage. If hardware is kept active on detachment, say it's
+> always-on, then it may be a disaster to drop the voltage for the active
+> hardware.
+>
+> It's safe to drop performance state only if you assume that there is a
+> firmware behind kernel which has its own layer of performance management
+> and it will prevent the disaster by saying 'nope, I'm not doing this'.
+>
+> The performance state should be persistent for a device and it should be
+> controlled in a conjunction with runtime PM. If platform wants to drop
+> performance state to zero on detachment, then this behaviour should be
+> specific to that platform.
 
-For s390:
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+I understand your concern, but at this point, genpd can't help to fix this.
+
+Genpd has no information about the device, unless it's attached to it.
+For now and for these always on HWs, we simply need to make sure the
+device stays attached, in one way or the other.
+
+Kind regards
+Uffe
