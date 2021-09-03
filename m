@@ -2,147 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7C34001A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0483F4001A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349563AbhICPBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 11:01:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45420 "EHLO
+        id S1349568AbhICPCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 11:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349488AbhICPBf (ORCPT
+        with ESMTP id S1349566AbhICPCF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 11:01:35 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46937C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 08:00:35 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id r6so5463467ilt.13
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 08:00:35 -0700 (PDT)
+        Fri, 3 Sep 2021 11:02:05 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B324C061575;
+        Fri,  3 Sep 2021 08:01:05 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id u15-20020a05600c19cf00b002f6445b8f55so3805949wmq.0;
+        Fri, 03 Sep 2021 08:01:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=jfZB8OkBcB081S0FD25QcCEM0bi7QUTw/fueJBK6u9s=;
-        b=yL+oNzXd4MUz0/xLQGpCuc+BzqS+ueBGFvD3CGRREXLaw4+gGCh72XFoFiXNLLftQW
-         MndRazWQaNRu1MubbxbFmgzQjiVfH38fYT4wCNyapaf7PmO5p53xVqV7nctONfWLEOWD
-         nHB4/tbNzjXYyytiJr+/UXTpD2ctUsAiDgmsIYCUH2VGle9Gp78vi3OwCfs939eiUGBB
-         pKKKmGdyiAegLyqOLnwIUKG0oRXqr0InBhp4Cly9igwARfn/VXLOCi0zGttp3HkMWaUx
-         VuSFOYuuPOGl6RcmP7yyh1aeb6p68021H9fyQin8P0M+iVEJ+iT72QrnQkGY4h5QgXWQ
-         pdsw==
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PsMI7gL+pJyK2Fy7ieNnAa0j9CEtX/Te/MusU7XnP0Q=;
+        b=CiW/wStBwAnSfwQ3ZzUS1mhcZpGMg2thecIfQZlaoPvhHzyjrQIhl8KBB2QkqovtDZ
+         zd+OG2GHHe5MguX6ynAFz0FCWViy8wE6lhD94vWV71raepi1/EdUY6vSRy9vS2Jjt52s
+         F/FXFbR2GoazR8IDoILVuqq1qjyK6MCv/AjJkBeNSKmn5gbF99ujfxm94syvkUHhPGWX
+         FBLhjML7QnPedn3YPY6OQEDjhEKieA5AdMLOQnIKbCzoErlFkFtT5eAng52GmDe5h4WX
+         rZP55hufBNlPlFuDfGm6uyJTWrp+xAqL4rutd6rm4wzDIpMahCMo12rRErtPK3DP3d+b
+         BX9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jfZB8OkBcB081S0FD25QcCEM0bi7QUTw/fueJBK6u9s=;
-        b=FAb/JYUtKhcnbK2PqVxW3jwXeH2BJ72X4Ij4vhsZR1OhnyE5JGesWPIvqWmAgrUekt
-         +uk1gnzlD7GQ+mKaxJmFN3qpDxLd5Co9/vgjawVSFUPnDVzkwTZtKsydqjJK4YjWttXW
-         CFotvMygFlrTpGfO73OXejNmrKal+sLVsARuAf/5NDcYIRn9HUj/vXoe4ElOy2KarDSR
-         M9HYFAR2zCAgSkMsKJEeP1m0qz2ERkjtokekoPk+MNNq7XGkN9giejtvx/WObgBBNz15
-         Xd5y6oQADIxolAGyfN/66Ou8cjirpgocnUyAR4Z25kd62OaogCciHg/YLZozNFFePI9K
-         P6yQ==
-X-Gm-Message-State: AOAM5323k4XEjCXmraBVwpwQGWrnUJ2vkpgemV1zG12AYndkvcNTDGQu
-        omVfzcBYTClQZ3L71gvHhdlZFA==
-X-Google-Smtp-Source: ABdhPJznCE4y8jicDtqhI2aZI28qn0fp+MtSC/RUF33c/nbiU3sTUCjsHmQrIsQmH8NW9NqR8+9T/g==
-X-Received: by 2002:a92:cb04:: with SMTP id s4mr2881154ilo.130.1630681234607;
-        Fri, 03 Sep 2021 08:00:34 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id l15sm3003669iow.4.2021.09.03.08.00.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 08:00:34 -0700 (PDT)
-Subject: Re: Bug: d0e936adbd22 crashes at boot
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, inux-pm@vger.kernel.org
-References: <942f4041-e4e7-1b08-3301-008ab37ff5b8@kernel.dk>
- <c56cde110210bec6537fe69b495334c6c70c814e.camel@linux.intel.com>
- <3ac87893-55ba-f2d4-bb1e-382868f12d4c@kernel.dk>
- <7f115f0476618d34b24ddec772acbbd7c0c4a572.camel@linux.intel.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <767fe00f-bf31-1eb0-09cc-1be91c633bb4@kernel.dk>
-Date:   Fri, 3 Sep 2021 09:00:33 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PsMI7gL+pJyK2Fy7ieNnAa0j9CEtX/Te/MusU7XnP0Q=;
+        b=fqbmc8vI97RlSaAZGMCdFMT/ELZkothR8/rkVXMjl8m1ZdsCLjHjkz9PznXj3KMt3b
+         zQqxv3nNHfblcJnBl1Du9Wm+dEskyLkb+jqrLIiLwBEsL3ZgF7vf2CSBBR3Ow8dDqaDk
+         tyQ76i/6zZY5OOCq7/tr7a5A/XtOZnGYwod2SNvkQcopoVi+KZHGkuu8qhXYqyj90NWZ
+         /pDpOomJqHdC/0yJrhqtTeruqnMHZnW2bqFd8K9WC3mYjlPcF04RWgN5IvzSwLsP1SFl
+         R809mJReBSRrcYLF6zX2k3RGady4sX6hXpzCcktM6TTJpFK3iyKDgzSCjConML/N7qT+
+         xnHA==
+X-Gm-Message-State: AOAM532BVuSCnMgSkgo0myJF6cotgD4ltdHyzjb0Az/6MTHs8mNs9swj
+        d6zdDU1medfAd+oSQDuKilpNkSw/cXLZmu6afR8=
+X-Google-Smtp-Source: ABdhPJwq5LxbGRRTDY59rAzLY7dbuYJkXpaAFBEQt834jskgt6cC4b6dM02XFgqniOOGBkFe7PAeL2EnXkAGcbiSx64=
+X-Received: by 2002:a1c:3b05:: with SMTP id i5mr873059wma.136.1630681263727;
+ Fri, 03 Sep 2021 08:01:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7f115f0476618d34b24ddec772acbbd7c0c4a572.camel@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210902123216.787025-1-daniel.baluta@oss.nxp.com>
+ <20210902123216.787025-2-daniel.baluta@oss.nxp.com> <896baddd-5bd7-8f85-91c3-0a4498694d77@linux.intel.com>
+In-Reply-To: <896baddd-5bd7-8f85-91c3-0a4498694d77@linux.intel.com>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Fri, 3 Sep 2021 18:00:51 +0300
+Message-ID: <CAEnQRZDExjuj1eL4dRKXk-uyeKo3Mo24=CdmTnDz5EeAkYFDVw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: SOF: imx: Add code to manage DSP related clocks
+To:     =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        s-anna@ti.com, Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/21 8:38 AM, Srinivas Pandruvada wrote:
-> On Fri, 2021-09-03 at 08:15 -0600, Jens Axboe wrote:
->> On 9/3/21 8:13 AM, Srinivas Pandruvada wrote:
->>> Hi Axboe,
->>>
->>> Thanks for reporting.
->>> On Fri, 2021-09-03 at 07:36 -0600, Jens Axboe wrote:
->>>> Hi,
->>>>
->>>> Booting Linus's tree causes a crash on my laptop, an x1 gen9. This
->>>> was
->>>> a bit
->>>> difficult to pin down as it crashes before the display is up, but I
->>>> managed
->>>> to narrow it down to:
->>>>
->>>> commit d0e936adbd2250cb03f2e840c6651d18edc22ace
->>>> Author: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
->>>> Date:   Thu Aug 19 19:40:06 2021 -0700
->>>>
->>>>     cpufreq: intel_pstate: Process HWP Guaranteed change
->>>> notification
->>>>
->>>> which crashes with a NULL pointer deref in notify_hwp_interrupt() -
->>>>>
->>>> queue_delayed_work_on().
->>>>
->>>> Reverting this change makes the laptop boot fine again.
->>>>
->>> Does this change fixes your issue?
->>
->> I would assume so, as it's crashing on cpudata == NULL :-)
->>
->> But why is it NULL? Happy to test patches, but the below doesn't look
->> like
->> a real fix and more of a work-around.
-> 
-> This platform is sending an HWP interrupt on a CPU which we didn't yet
-> bring it up for pstate control. So somehow firmware decided to send
-> very early during boot, which previously we would have ignored it
-> 
-> Actually try this, with more prevention
+On Thu, Sep 2, 2021 at 11:02 PM P=C3=A9ter Ujfalusi
+<peter.ujfalusi@linux.intel.com> wrote:
+>
+> Hi Daniel,
+>
+> On 02/09/2021 15:32, Daniel Baluta wrote:
+> > From: Daniel Baluta <daniel.baluta@nxp.com>
+> >
+> > There are two types of clocks:
+> >       * DSP IP clocks
+> >       * DAI clocks
+> >
+> > This clocks are necessary in order to power up DSP and DAIs.
+> >
+> > We choose to enable DAI clocks here because of the way i.MX8/i.MX8X
+> > design handles resources (including clocks).
+> >
+> > All clocks are managed by a separate core (named SCU) which communicate=
+s
+> > with Linux managed ARM core via a well known API.
+> >
+> > We parse and enable the clocks in probe function and disable them in
+> > remove function.
+> >
+> > Future patches will introduce Power Management support so that we
+> > disable clocks while DSP is not used or system enters power save.
+>
+> Unfortunately this patch does not apply to next.
 
-I can give this a whirl.
+Yes, because my patch is based on SOF topic/sof-dev branch and this small p=
+atch
 
-> diff --git a/drivers/cpufreq/intel_pstate.c
-> b/drivers/cpufreq/intel_pstate.c
-> index b4ffe6c8a0d0..6ee88d7640ea 100644
-> --- a/drivers/cpufreq/intel_pstate.c
-> +++ b/drivers/cpufreq/intel_pstate.c
-> @@ -1645,12 +1645,24 @@ void notify_hwp_interrupt(void)
->         if (!hwp_active || !boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
->                 return;
->  
-> -       rdmsrl(MSR_HWP_STATUS, value);
-> +       rdmsrl_safe(MSR_HWP_STATUS, &value);
->         if (!(value & 0x01))
->                 return;
->  
-> +       /*
-> +        * After hwp_active is set and all_cpu_data is allocated, there
-> +        * is small window.
-> +        */
-> +       if (!all_cpu_data) {
-> +               wrmsrl_safe(MSR_HWP_STATUS, 0);
-> +               return;
-> +       }
+https://github.com/thesofproject/linux/commit/b56c58b5938a626fb08fcf1d5e38d=
+687b520ab89
 
-What synchronizes the all_cpu_data setup and the interrupt? Can the
-interrupt come in while it's still being setup?
+is not in linux-next.
 
--- 
-Jens Axboe
+I plan to stay on SOF branch and get the review tags so we can merge
+it in SOF tree.
+>
+> I might be a bit too cautius, but I would also add "&& COMMON_CLK" for
+> the COMPILE_TEST in Kconfig or select it from where it is appropriate?
 
+Maybe add a depends on COMMON_CLK for IMX hardware support? Altough,
+if CLK support
+is not selected clk API transforms itself into dummy wrappers.
+>
+> > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> > ---
+> >   sound/soc/sof/imx/imx-common.c | 77 +++++++++++++++++++++++++++++++++=
++
+> >   sound/soc/sof/imx/imx-common.h | 16 +++++++
+> >   sound/soc/sof/imx/imx8.c       | 32 ++++++++++++++
+> >   sound/soc/sof/imx/imx8m.c      | 33 +++++++++++++++
+> >   4 files changed, 158 insertions(+)
+> >
+> > diff --git a/sound/soc/sof/imx/imx8m.c b/sound/soc/sof/imx/imx8m.c
+> > index 30624fafc632..482c25ab15ce 100644
+> > --- a/sound/soc/sof/imx/imx8m.c
+> > +++ b/sound/soc/sof/imx/imx8m.c
+> > @@ -23,6 +23,20 @@
+> >   #define MBOX_OFFSET 0x800000
+> >   #define MBOX_SIZE   0x1000
+> >
+> > +#define IMX8M_DSP_CLK_NUM    3
+> > +static const char *imx8m_dsp_clks_names[IMX8M_DSP_CLK_NUM] =3D {
+>
+> static const char *imx8m_dsp_clks_names[]
+>
+> + ARRAY_SIZE(imx8m_dsp_clks_names) instead IMX8M_DSP_CLK_NUM ?
+
+Yes, this is a good idea. Already fixed in v2 I sent eariler.
