@@ -2,86 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93B5400146
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D00D40015A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349479AbhICObl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:31:41 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51014 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349462AbhICObk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:31:40 -0400
-Date:   Fri, 3 Sep 2021 16:30:38 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630679439;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iX9ibRou0XdEYZ+bGp1TcDhh7+TKZehHehODtNVHWHE=;
-        b=F/6rjyYXdOXlIILsD4o85OGpjuc5hNQoL22+Zi1UsbSiCNFKleOVV756U1HMGGlKDSYH7M
-        MWbdPMRxeziJVhyj1soakx2+OPVY2zxEUBpR/otrGXCgnMhd8u7i5IulLJb4lcYZtBCWFf
-        +hFw5W94nfphEQrSRuk8UiQAovxOSomv0TQJ3msZE76fbEpk5guKJJCxXLNk6/RglN6Fas
-        EDXGNJ5ssTs0RFLg7yYiHH5bGxQRLflM0EDxHvSVB4JTlcWDaJwIGBsGgJjwyFrMSOFyQ+
-        SUrLFOVM8HuvLbmak+r0ILtwT2ljZvst1QTfsV/D2DYJSl9VF3DgC62kscmpfg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630679439;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iX9ibRou0XdEYZ+bGp1TcDhh7+TKZehHehODtNVHWHE=;
-        b=dCSD7Ttc5dXbeT+sVJ58iMvLPGB78zgB7/JaAazaE+wSGtehRX00O3cUNjtPWNyMCYfLb0
-        l4VPfwSMHIANi5CQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] lockdep: Let lock_is_held_type() detect recursive read
- as read
-Message-ID: <20210903143038.mxjxbry2agyjvzsv@linutronix.de>
-References: <20210901162255.u2vhecaxgjsjfdtc@linutronix.de>
- <YS+twcAQ9uivowDS@boqun-archlinux>
- <20210903104557.rqss65jn4ozoptcj@linutronix.de>
- <YTIt6KIjz5gTbZif@boqun-archlinux>
+        id S1349412AbhICOjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:39:49 -0400
+Received: from mga03.intel.com ([134.134.136.65]:10629 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230332AbhICOjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 10:39:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="219497684"
+X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
+   d="scan'208";a="219497684"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 07:38:47 -0700
+X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
+   d="scan'208";a="477243645"
+Received: from achiranj-mobl.gar.corp.intel.com ([10.213.105.90])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 07:38:44 -0700
+Message-ID: <7f115f0476618d34b24ddec772acbbd7c0c4a572.camel@linux.intel.com>
+Subject: Re: Bug: d0e936adbd22 crashes at boot
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Jens Axboe <axboe@kernel.dk>, LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, inux-pm@vger.kernel.org
+Date:   Fri, 03 Sep 2021 07:38:41 -0700
+In-Reply-To: <3ac87893-55ba-f2d4-bb1e-382868f12d4c@kernel.dk>
+References: <942f4041-e4e7-1b08-3301-008ab37ff5b8@kernel.dk>
+         <c56cde110210bec6537fe69b495334c6c70c814e.camel@linux.intel.com>
+         <3ac87893-55ba-f2d4-bb1e-382868f12d4c@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YTIt6KIjz5gTbZif@boqun-archlinux>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-03 22:15:04 [+0800], Boqun Feng wrote:
-> But the rwlock in PREEMPT_RT is writer unfair, isn't it? As per:
->=20
-> 	https://lore.kernel.org/lkml/20210815211302.957920571@linutronix.de/
->=20
-> also in __rwbase_read_lock():
->=20
-> 	/*
-> 	 * Allow readers, as long as the writer has not completely
-> 	 * acquired the semaphore for write.
-> 	 */
-> 	if (atomic_read(&rwb->readers) !=3D WRITER_BIAS) {
-> 		atomic_inc(&rwb->readers);
-> 		raw_spin_unlock_irq(&rtm->wait_lock);
-> 		return 0;
-> 	}
->=20
-> that means the readers of rwlock in PREEMPT_RT are always recursive,
-> right? Am I missing something subtle?
+On Fri, 2021-09-03 at 08:15 -0600, Jens Axboe wrote:
+> On 9/3/21 8:13 AM, Srinivas Pandruvada wrote:
+> > Hi Axboe,
+> > 
+> > Thanks for reporting.
+> > On Fri, 2021-09-03 at 07:36 -0600, Jens Axboe wrote:
+> > > Hi,
+> > > 
+> > > Booting Linus's tree causes a crash on my laptop, an x1 gen9. This
+> > > was
+> > > a bit
+> > > difficult to pin down as it crashes before the display is up, but I
+> > > managed
+> > > to narrow it down to:
+> > > 
+> > > commit d0e936adbd2250cb03f2e840c6651d18edc22ace
+> > > Author: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> > > Date:   Thu Aug 19 19:40:06 2021 -0700
+> > > 
+> > >     cpufreq: intel_pstate: Process HWP Guaranteed change
+> > > notification
+> > > 
+> > > which crashes with a NULL pointer deref in notify_hwp_interrupt() -
+> > > >
+> > > queue_delayed_work_on().
+> > > 
+> > > Reverting this change makes the laptop boot fine again.
+> > > 
+> > Does this change fixes your issue?
+> 
+> I would assume so, as it's crashing on cpudata == NULL :-)
+> 
+> But why is it NULL? Happy to test patches, but the below doesn't look
+> like
+> a real fix and more of a work-around.
 
-huch. You are right. I take everything backt then. I do remember it
-differently but it has been like since this implementation has been
-introduced=E2=80=A6
+This platform is sending an HWP interrupt on a CPU which we didn't yet
+bring it up for pstate control. So somehow firmware decided to send
+very early during boot, which previously we would have ignored it
 
-> Regards,
-> Boqun
+Actually try this, with more prevention
 
-Sebastian
+diff --git a/drivers/cpufreq/intel_pstate.c
+b/drivers/cpufreq/intel_pstate.c
+index b4ffe6c8a0d0..6ee88d7640ea 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -1645,12 +1645,24 @@ void notify_hwp_interrupt(void)
+        if (!hwp_active || !boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
+                return;
+ 
+-       rdmsrl(MSR_HWP_STATUS, value);
++       rdmsrl_safe(MSR_HWP_STATUS, &value);
+        if (!(value & 0x01))
+                return;
+ 
++       /*
++        * After hwp_active is set and all_cpu_data is allocated, there
++        * is small window.
++        */
++       if (!all_cpu_data) {
++               wrmsrl_safe(MSR_HWP_STATUS, 0);
++               return;
++       }
++
+        cpudata = all_cpu_data[this_cpu];
+-       schedule_delayed_work_on(this_cpu, &cpudata->hwp_notify_work,
+msecs_to_jiffies(10));
++       if (cpudata)
++               schedule_delayed_work_on(this_cpu, &cpudata-
+>hwp_notify_work, msecs_to_jiffies(10));
++       else
++               wrmsrl_safe(MSR_HWP_STATUS, 0);
+ }
+ 
+
+
+> 
+
+
