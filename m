@@ -2,221 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985753FFDB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 12:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9723F3FFDC1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 12:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348989AbhICKBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 06:01:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26982 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348965AbhICKBg (ORCPT
+        id S1348984AbhICKDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 06:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232273AbhICKDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 06:01:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630663236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3igdTtHZJcoCoJpD7fojeApCBGls6BL/jvmH1WvOuDM=;
-        b=diVxGNX0UN8lnWsf9G9P0i0XL6AyU9SiawhPm4DzAk0a2R3aA0XuyXxyI3+gVu486ujqWa
-        PeHc0zWla8+B2wYzS9dI3pjlrQdCGT0iI0OSNgP59y1xxRGhyfFm0kfYLqqLpyjZ7eIuQ6
-        huFfKYm8qSDDKUL4WpEt/GqhfykJLeg=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-296-6Jn1l9m2PF2SDrATmvKTMA-1; Fri, 03 Sep 2021 06:00:35 -0400
-X-MC-Unique: 6Jn1l9m2PF2SDrATmvKTMA-1
-Received: by mail-ed1-f71.google.com with SMTP id j13-20020aa7ca4d000000b003c44c679d73so2517644edt.8
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 03:00:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3igdTtHZJcoCoJpD7fojeApCBGls6BL/jvmH1WvOuDM=;
-        b=b/ypj5FXPfFmo4I7L6Qj+r3VtgBRe5UovHAKMRGOzwxjYXnsMHAP2QXtlEA1b/4SVA
-         T+QJ5tLoxhZyNGClUx00q8YZb1+txlv7c6TL3/ilYa0Wp8zY7ZJerrm+cWDPVtRhrT2A
-         0YGiZqMBSy4e5TMn5pprZyWt82UPgnUJCEF5rMWI4SVDG9sL+4A9iKQboER4K93N9P6L
-         /vw8Pd+a60uO0n/Ab/80urWN6CU7Fh2wTJf4S//bsjupaK9SFBHtTek/HazgirFw+FHJ
-         T16ewoLkwO9ThCaR5QMHu8Z/jN5bFpubEsqHdffUtPWhsnw47lGjcm2DaxstazKsjq0u
-         q+ug==
-X-Gm-Message-State: AOAM530A5I7wFDG+YrTnxfJipniUUFA8sG55Ycmd1N7a1KmMBYN+tHw7
-        nCJtqvT3Gdr5s61UrMrIQZQiZGXQ3bsC9Aor4y12JHljpxHAS73QCXIaNRAA2I2uo3FFlFlMfQM
-        n5T+/egY5wjAQL21DASY2Du22
-X-Received: by 2002:a05:6402:158f:: with SMTP id c15mr3048049edv.253.1630663234130;
-        Fri, 03 Sep 2021 03:00:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxDFUlMIDXE+IsSeYUl/hyYHI/i3tITRvKEpzHkdvvPmhLT5T+fjuMEkkNmx9WOl1vnNskKow==
-X-Received: by 2002:a05:6402:158f:: with SMTP id c15mr3048026edv.253.1630663233899;
-        Fri, 03 Sep 2021 03:00:33 -0700 (PDT)
-Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
-        by smtp.gmail.com with ESMTPSA id i11sm2572030edu.97.2021.09.03.03.00.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 03:00:33 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 12:00:31 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 10/12] KVM: arm64: selftests: Add host support for vGIC
-Message-ID: <20210903100031.hptfzo5vqsgjteod@gator.home>
-References: <20210901211412.4171835-1-rananta@google.com>
- <20210901211412.4171835-11-rananta@google.com>
+        Fri, 3 Sep 2021 06:03:03 -0400
+Received: from lb1-smtp-cloud8.xs4all.net (lb1-smtp-cloud8.xs4all.net [IPv6:2001:888:0:108::1b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14895C061575;
+        Fri,  3 Sep 2021 03:02:02 -0700 (PDT)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id M61HmNBXEy7WyM61ImA25b; Fri, 03 Sep 2021 12:02:01 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1630663321; bh=SRflGCsppmO0173u0vbVLikNVn3Vp+4tX2mgI1k4N7E=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=id3YnJvIRyPcG6LArWNN7rTw+cZcnzGrS4gjeWgSGQGrf/7ziudlG98EP2SF5Lq7k
+         e244DLqs3UmKlibv21OtTtBrRMVecVo85UADhJPB3ILeN71B1hZFfYBc0fo08WaCOs
+         LS2xOk8dKeOK8RPYANf9/XNtGsQNfwVP8GhX5K9LAlEamRrTKddUSzwvOIlxDvLdiD
+         pvmteuGp2jZkfqjf6pGZGhJzBuay6L2agr1DxTOvgLRAan+DP2DD3BCaXfKL+eHuWv
+         CJcDLhjKuncvTkPvg9YA7icAQ/eCrxAEKyYnpxRRcWECS0yiz7zJMi9LB1DiDGLxVL
+         0dVlzyAZl+qDQ==
+Subject: Re: [PATCH v7 0/5] media: mediatek: support mdp3 on mt8183 platform
+To:     Moudy Ho <moudy.ho@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     Maoguang Meng <maoguang.meng@mediatek.com>,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Landley <rob@landley.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org, drinkcat@chromium.org, acourbot@chromium.org,
+        pihsun@chromium.org, menghui.lin@mediatek.com,
+        sj.huang@mediatek.com, ben.lok@mediatek.com, randy.wu@mediatek.com,
+        srv_heupstream@mediatek.com, hsinyi@google.com
+References: <20210824100027.25989-1-moudy.ho@mediatek.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <0a50c059-bb13-0823-778c-b631ed07d76f@xs4all.nl>
+Date:   Fri, 3 Sep 2021 12:01:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901211412.4171835-11-rananta@google.com>
+In-Reply-To: <20210824100027.25989-1-moudy.ho@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfEH56PgjyKgFIXfYvz2MnFTScei25eHA6qQX3KIqn3Bb9tJST1TRAX568YGBCzK27zfZdzUt3kcs9W1dYMiLRqetgYDe1zqQALJuNnXX8IAYXavEEbfC
+ IDBXrbb8vrJq4wRlmdr9ldDfD1ZuO2fTwP+wJX9fy81NZHYqVg6MoLD31RxsDcmsSOeuoNpS28O5hV3eByHbH3ao4zCiola8AptRPpzpll51bY6Ne3ckMSIi
+ ChGrit0OoR4gtA1C0oD4svCziKukr0AIX5w+Lb8LFeclLS6Pz06pi90M/y5Q6+sh+sNRIEWYnWevymqz3zL2zUUVT6+Hja1+V+/ChcQ++z6wXgFKjoQpnS5V
+ sRDKipBAYkLQL5edB0y2fNDKlsow4t4ginHthPg4fGXOKj3+2X5mh2+tZbf/c/OMcfXBulH+qykD0a0nUIHy4sdCyxIUjfabZZ7f+EQ0/biI6erxUyqvAcco
+ M4V0AlQgYB0++0vzPXruOz+0iAwTz8a7JmSbGVeisoK5I4xmn3A5kAKy/GD9P5PgfY0EskSPtnR2Q4fivI8mgheaUQvJSX9WnAeSg0YVES6/F8eZ4sACEHw4
+ PnuQmug2rbAt39u36RRlwy/MX8FdZksLdD7ZzufPX0ltNPcYH+f5FK6rTASq063+DTtZg3zM4cMxvBb9n1xeo1fnn+AdAeVcvMaAylDnl8VKoBYHpqbmxabv
+ 0CNL+1tlrIiBFAb40AOmQxV4EwH10lQgW5pAXSRKOjZv2pQCQhXDagQrt/Wh4vIYGc51q5PJfRl0JRsw/UQm/FPqV8cB4Nkg4rylEGeyOovi8J0PqCzRh8jj
+ wJ4VcHvqCd0ujGtMbugNaBOu3ebFDgD+8vBGoVGpwqQZ19soQmK9Tzf5OB94ouG1Vio7e9DnpjT8M+v1ArXx0/CQBQXXq7AU9puZ2ob6GWWQzRLdYV5g2+nJ
+ Crg82HPY/3a+sLEZ+TX1eMSFEGTdkKBjCy22cZc4c5io8ivH1EzFg3uaH0srOthd8lMF6xw8oQqC+DH/uGN51uFqsk1OZE8/PBHAUsYkWQRjaJq957HG/Hbt
+ 6SJ0yySEf2Tjgm9DajRYzBQXTya3D0qry0bPNLgs69hqGfxfa8nArMh+aYto7knDHymJITXwE6/3TXer56wruqX9zvi6QwjxQR+YWZyxqDXYWXfPQUZ/ONEQ
+ e8x+fsY5wrcbzK6xW3Gw2g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 09:14:10PM +0000, Raghavendra Rao Ananta wrote:
-> Implement a simple library to do perform vGIC-v3
+Hi Moudy,
 
-s/do//
+Can you provide the 'v4l2-compliance -s' output?
 
-> setup from a host of view.
-                   ^ point
+Make sure to compile v4l2-compliance from the latest code base:
+https://git.linuxtv.org/v4l-utils.git/
 
-> This includes creating
-> a vGIC device, setting up distributor and redistributor
-> attributes, and mapping the guest physical addresses.
+Compiling on x86_64 (so using COMPILE_TEST) fails:
+
+  LD      .tmp_vmlinux.kallsyms1
+ld: drivers/media/platform/mtk-mdp3/mtk-mdp3-core.o: in function `mdp_probe':
+mtk-mdp3-core.c:(.text+0x415): undefined reference to `mtk_mutex_mdp_get'
+ld: drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.o: in function `config_camin_subfrm':
+mtk-mdp3-comp.c:(.text+0x9b): undefined reference to `mtk_mmsys_mdp_camin_ctrl'
+ld: mtk-mdp3-comp.c:(.text+0xbc): undefined reference to `mtk_mmsys_mdp_camin_ctrl'
+ld: drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.o: in function `mdp_component_deinit':
+mtk-mdp3-comp.c:(.text+0x2707): undefined reference to `mtk_mutex_put'
+ld: drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.o: in function `init_isp.cold':
+mtk-mdp3-comp.c:(.text.unlikely+0x4f): undefined reference to `mtk_mmsys_mdp_isp_ctrl'
+ld: mtk-mdp3-comp.c:(.text.unlikely+0x7a): undefined reference to `mtk_mmsys_mdp_isp_ctrl'
+ld: drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.o: in function `mdp_auto_release_work':
+mtk-mdp3-cmdq.c:(.text+0x13): undefined reference to `mtk_mutex_unprepare'
+ld: drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.o: in function `mdp_path_subfrm_require':
+mtk-mdp3-cmdq.c:(.text+0x45e): undefined reference to `mtk_mutex_add_mdp_mod'
+ld: drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.o: in function `mdp_path_subfrm_run.isra.0':
+mtk-mdp3-cmdq.c:(.text+0x78b): undefined reference to `mtk_mutex_enable_by_cmdq'
+ld: drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.o: in function `mdp_path_config_subfrm':
+mtk-mdp3-cmdq.c:(.text+0xa0d): undefined reference to `mtk_mmsys_mdp_connect'
+ld: mtk-mdp3-cmdq.c:(.text+0xd08): undefined reference to `mtk_mmsys_mdp_disconnect'
+ld: drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.o: in function `mdp_cmdq_send':
+(.text+0x1358): undefined reference to `mtk_mutex_prepare'
+ld: drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.o: in function `mdp_handle_cmdq_callback.cold':
+mtk-mdp3-cmdq.c:(.text.unlikely+0x34): undefined reference to `mtk_mutex_unprepare'
+ld: drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.o: in function `mdp_cmdq_send.cold':
+mtk-mdp3-cmdq.c:(.text.unlikely+0xe3): undefined reference to `mtk_mutex_unprepare'
+make: *** [Makefile:1177: vmlinux] Error 1
+
+I also get compile warnings:
+
+drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.c: In function ‘mdp_sub_comps_create’:
+drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.c:1151:29: warning: implicit conversion from ‘enum mtk_mdp_comp_id’ to ‘enum mdp_comp_type’ [-Wenum-conversion]
+ 1151 |   enum mdp_comp_type type = MDP_COMP_NONE;
+      |                             ^~~~~~~~~~~~~
+drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.c: In function ‘mdp_component_init’:
+drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.c:1217:6: warning: unused variable ‘i’ [-Wunused-variable]
+ 1217 |  int i, ret;
+      |      ^
+drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.c: In function ‘mdp_cmdq_send’:
+drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.c:489:1: warning: the frame size of 1312 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+  489 | }
+      | ^
+
+Regards,
+
+	Hans
+
+On 24/08/2021 12:00, Moudy Ho wrote:
+> Changes since v6:
+> - Refactor GCE event to corresponding node.
+> - Fix dt_binding_check fail.
+> - Fix compilation errors.
 > 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> Changes since v5:
+> - Rebase on v5.14-rc6.
+> - Move MMSYS/Mutex settings to corresponding driver.
+> - Revise the software license description and copyright.
+> - Remove unnecessary enum. or definitions.
+> - Optimize platform/chip definition conditions.
+> - Use general printing functions instead of MDP3 private ones.
+> - Fix compile warning.
 > 
-> ---
->  tools/testing/selftests/kvm/Makefile          |  2 +-
->  .../selftests/kvm/include/aarch64/vgic.h      | 14 ++++
->  .../testing/selftests/kvm/lib/aarch64/vgic.c  | 67 +++++++++++++++++++
->  3 files changed, 82 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/kvm/include/aarch64/vgic.h
->  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/vgic.c
+> Changes since v4:
+> - Rebase on v5.13-rc1.
+> - Remove the CMDQ flush flow to match the CMDQ API change.
+> - Integrate four of MDP's direct-link subcomponents into MDP controller node
+>   from syscon node to avoid illegal clock usage.
+> - Rewrite dt-binding in a JSON compatible subset of YAML
+> - Fix a bit of macro argument precedence.
 > 
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index 5476a8ddef60..8342f65c1d96 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -35,7 +35,7 @@ endif
->  
->  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
->  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
-> -LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c
-> +LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c lib/aarch64/vgic.c
->  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
->  
->  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
-> diff --git a/tools/testing/selftests/kvm/include/aarch64/vgic.h b/tools/testing/selftests/kvm/include/aarch64/vgic.h
-> new file mode 100644
-> index 000000000000..45bbf238147a
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/include/aarch64/vgic.h
-> @@ -0,0 +1,14 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * ARM Generic Interrupt Controller (GIC) host specific defines
-> + */
-> +
-> +#ifndef SELFTEST_KVM_VGIC_H
-> +#define SELFTEST_KVM_VGIC_H
-> +
-> +#include <linux/kvm.h>
-> +
-> +int vgic_v3_setup(struct kvm_vm *vm, unsigned int nr_vcpus,
-> +		uint64_t gicd_base_gpa, uint64_t gicr_base_gpa, uint32_t slot);
-> +
-> +#endif /* SELFTEST_KVM_VGIC_H */
-> diff --git a/tools/testing/selftests/kvm/lib/aarch64/vgic.c b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
-> new file mode 100644
-> index 000000000000..a0e4b986d335
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
-> @@ -0,0 +1,67 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * ARM Generic Interrupt Controller (GIC) v3 host support
-> + */
-> +
-> +#include <linux/kvm.h>
-> +#include <linux/sizes.h>
-> +
-> +#include "kvm_util.h"
-> +
-> +#define VGIC_V3_GICD_SZ		(SZ_64K)
-> +#define VGIC_V3_GICR_SZ		(2 * SZ_64K)
-> +
-> +#define REDIST_REGION_ATTR_ADDR(count, base, flags, index) \
-> +	(((uint64_t)(count) << 52) | \
-> +	((uint64_t)((base) >> 16) << 16) | \
-> +	((uint64_t)(flags) << 12) | \
-> +	index)
-
-This could go in vgic.h allowing us to share it in aarch64/vgic_init.c,
-where we already have the same definition.
-
-> +
-> +static void vgic_v3_map(struct kvm_vm *vm, uint64_t addr, unsigned int size)
-> +{
-> +	unsigned int n_pages = DIV_ROUND_UP(size, vm_get_page_size(vm));
-> +
-> +	virt_map(vm, addr, addr, n_pages);
-> +}
-> +
-> +/*
-> + * vGIC-v3 default host setup
-> + *
-> + * Input args:
-> + *	vm - KVM VM
-> + *	nr_vcpus - Number of vCPUs for this VM
-> + *	gicd_base_gpa - Guest Physical Address of the Distributor region
-> + *	gicr_base_gpa - Guest Physical Address of the Redistributor region
-> + *
-> + * Output args: None
-> + *
-> + * Return: GIC file-descriptor or negative error code upon failure
-> + *
-> + * The function creates a vGIC-v3 device and maps the distributor and
-> + * redistributor regions of the guest.
-> + */
-> +int vgic_v3_setup(struct kvm_vm *vm, unsigned int nr_vcpus,
-> +		uint64_t gicd_base_gpa, uint64_t gicr_base_gpa)
-> +{
-> +	uint64_t redist_attr;
-> +	int gic_fd;
-> +
-> +	TEST_ASSERT(nr_vcpus <= KVM_MAX_VCPUS,
-> +			"Invalid number of CPUs: %u\n", nr_vcpus);
-
-TEST_ASSERT(!list_empty(&vm->vcpus), ...) to ensure we've created vcpus
-first. To be really paranoid we could even confirm the number of vcpus in
-the list matches nr_vcpus.
-
-> +
-> +	gic_fd = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, false);
-> +
-> +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-> +			KVM_VGIC_V3_ADDR_TYPE_DIST, &gicd_base_gpa, true);
-> +	vgic_v3_map(vm, gicd_base_gpa, VGIC_V3_GICD_SZ);
-> +
-> +	redist_attr = REDIST_REGION_ATTR_ADDR(nr_vcpus, gicr_base_gpa, 0, 0);
-> +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
-> +			KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &redist_attr, true);
-> +	vgic_v3_map(vm, gicr_base_gpa, VGIC_V3_GICR_SZ * nr_vcpus);
-> +
-> +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_CTRL,
-> +				KVM_DEV_ARM_VGIC_CTRL_INIT, NULL, true);
-> +
-> +	return gic_fd;
-> +}
-> -- 
-> 2.33.0.153.gba50c8fa24-goog
-
-Otherwise
-
-Reviewed-by: Andrew Jones <drjones@redhat.com>
-
-Thanks,
-drew
+> Changes since v3:
+> - Rebase on v5.9-rc1.
+> - modify code for review comment from Rob Herring, cancel multiple nodes using
+>   same register base situation.
+> - control IOMMU port through pm runtime get/put to DMA components' device.
+> - SCP(VPU) driver revision.
+> - stop queuing jobs(remove flush_workqueue()) after mdp_m2m_release().
+> - add computation of plane address with data_offset.
+> - fix scale ratio check issue.
+> - add default v4l2_format setting.
+> 
+> Changes since v2:
+> - modify code for review comment from Tomasz Figa & Alexandre Courbot
+> - review comment from Rob Herring will offer code revision in v4, due to
+>   it's related to device node modification, will need to modify code
+>   architecture
+> 
+> Changes since v1:
+> - modify code for CMDQ v3 API support
+> - EC ipi cmd migration
+> - fix compliance test fail item (m2m cmd with -f) due to there is two problem in runing all format(-f) cmd:
+> 1. out of memory before test complete
+>         Due to capture buffer mmap (refcount + 1) after reqbuf but seems
+>         no corresponding munmap called before device close.
+>         There are total 12XX items(formats) in format test and each format
+>         alloc 8 capture/output buffers.
+> 2. unceasingly captureBufs() (randomly)
+>         Seems the break statement didn't catch the count == 0 situation:
+>         In v4l2-test-buffers.cpp, function: captureBufs()
+>                         ...
+>                         count--;
+>                         if (!node->is_m2m && !count)
+>                                 break;
+>         Log is as attachment
+> 
+> I will paste the test result with problem part in another e-mail
+> 
+> Hi,
+> 
+> This is the first version of RFC patch for Media Data Path 3 (MDP3),
+> MDP3 is used for scaling and color format conversion.
+> support using GCE to write register in critical time limitation.
+> support V4L2 m2m device control.
+> 
+> Moudy Ho (5):
+>   soc: mediatek: mutex: add support for MDP
+>   soc: mediatek: mmsys: Add support for MDP
+>   dt-binding: mt8183: Add Mediatek MDP3 dt-bindings
+>   dts: arm64: mt8183: Add Mediatek MDP3 nodes
+>   media: platform: mtk-mdp3: Add Mediatek MDP3 driver
+> 
+>  .../bindings/media/mediatek,mdp3-ccorr.yaml   |   57 +
+>  .../bindings/media/mediatek,mdp3-rdma.yaml    |  207 +++
+>  .../bindings/media/mediatek,mdp3-rsz.yaml     |   65 +
+>  .../bindings/media/mediatek,mdp3-wdma.yaml    |   71 +
+>  .../bindings/media/mediatek,mdp3-wrot.yaml    |   71 +
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi      |  110 ++
+>  drivers/media/platform/Kconfig                |   19 +
+>  drivers/media/platform/Makefile               |    2 +
+>  drivers/media/platform/mtk-mdp3/Makefile      |    6 +
+>  .../media/platform/mtk-mdp3/mdp_reg_ccorr.h   |   19 +
+>  drivers/media/platform/mtk-mdp3/mdp_reg_isp.h |   27 +
+>  .../media/platform/mtk-mdp3/mdp_reg_rdma.h    |   65 +
+>  drivers/media/platform/mtk-mdp3/mdp_reg_rsz.h |   39 +
+>  .../media/platform/mtk-mdp3/mdp_reg_wdma.h    |   47 +
+>  .../media/platform/mtk-mdp3/mdp_reg_wrot.h    |   55 +
+>  drivers/media/platform/mtk-mdp3/mtk-img-ipi.h |  280 ++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-cmdq.c   |  507 +++++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-cmdq.h   |   46 +
+>  .../media/platform/mtk-mdp3/mtk-mdp3-comp.c   | 1307 +++++++++++++++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-comp.h   |  147 ++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-core.c   |  329 +++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-core.h   |   75 +
+>  .../media/platform/mtk-mdp3/mtk-mdp3-m2m.c    |  801 ++++++++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-m2m.h    |   41 +
+>  .../media/platform/mtk-mdp3/mtk-mdp3-regs.c   |  746 ++++++++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-regs.h   |  372 +++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-vpu.c    |  312 ++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-vpu.h    |   78 +
+>  drivers/soc/mediatek/mt8183-mmsys.h           |  235 +++
+>  drivers/soc/mediatek/mtk-mmsys.c              |  164 +++
+>  drivers/soc/mediatek/mtk-mmsys.h              |    9 +-
+>  drivers/soc/mediatek/mtk-mutex.c              |  106 +-
+>  include/linux/soc/mediatek/mtk-mmsys.h        |   81 +
+>  include/linux/soc/mediatek/mtk-mutex.h        |    8 +
+>  34 files changed, 6495 insertions(+), 9 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-ccorr.yaml
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-rdma.yaml
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-rsz.yaml
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-wdma.yaml
+>  create mode 100644 Documentation/devicetree/bindings/media/mediatek,mdp3-wrot.yaml
+>  create mode 100644 drivers/media/platform/mtk-mdp3/Makefile
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_ccorr.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_isp.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_rdma.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_rsz.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_wdma.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_wrot.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-img-ipi.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.c
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.c
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-core.c
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-core.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-m2m.c
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-m2m.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-regs.c
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-regs.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-vpu.c
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-vpu.h
+> 
 
