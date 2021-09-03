@@ -2,94 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EECE13FFFA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 731EE3FFFA5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349230AbhICMPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 08:15:17 -0400
-Received: from mout.gmx.net ([212.227.15.18]:52875 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348901AbhICMPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 08:15:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630671250;
-        bh=mpR8KpUr1hhIZsSmXsUPPutFytc2e6nbQIu32Yhy9YU=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=Z18HHp4dXJ/HMNRkXgQDJd+xZo0gXf0cHdPgtfAS8AKvtZaEV1LmCopeLWilX/d81
-         nLMruFL9Fh/sYP42WX92HSvPuYOPfNLG/Bf7H4QYZZBuE7zO1zxYjHgW9bvYgQI1WB
-         dxazdh18Rt5th6uIgc+0JcOH1Bo2eOtClhbNp7ho=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530 ([92.116.183.73]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M6lpM-1mKTee0FzS-008Kbn; Fri, 03
- Sep 2021 14:14:10 +0200
-Date:   Fri, 3 Sep 2021 14:14:04 +0200
-From:   Helge Deller <deller@gmx.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Subject: [GIT PULL] additional parisc architecture updates for kernel
- v5.15-rc1
-Message-ID: <YTIRjOdjUHGgG1eQ@ls3530>
+        id S1349023AbhICMR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 08:17:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235288AbhICMR4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 08:17:56 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A408C061757
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 05:16:57 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id u7so4994753ilk.7
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 05:16:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=09TsPIb4fXxY2VJx6kdGXIqWorLQ2YYQZCBibzSAYxI=;
+        b=p1Sk/HqyZvS2/jQ16k+A7jzv5x5BnKiB/RxQegu2rH8Ld7j57FDdequtGt21jUW68/
+         cuXINnFJsylSpRWjnRELUe+nZ8ANYCoTSF1kOYtUdXYCn/C/znxsaqt7oK0qFNlDJNPE
+         XiaVaY4SvPTuk0/KwmryQz/hahFjlfh/RXsn0yLdvwn/r3RpWy6N2zyQ2fw4N7esGclw
+         m5JJzZ/G3um+Izf6Wert7LUbilXZpPx7nKemuYG9EvJI5Fbq3WVaOO+xA3kZxbC4x5fr
+         DRSL7v7NeMftcUxL1XqvKV0pCsOFaeiRdbORvzwe/uY2GxNkzTG9dpAjQVfoH3nKJ8B5
+         51dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=09TsPIb4fXxY2VJx6kdGXIqWorLQ2YYQZCBibzSAYxI=;
+        b=aBL5fULCEPB/h5nkhUUK3kmxYNXd/rnDQADlserM1ZXW2A2rwf33nMSHv4i5HdGQtI
+         xb6jjmaY4N7wWUzO/ipveAXPY26nro3CBmg11HAQMLeJ+BAq3emHJAg4LO/LFhuIvq6p
+         D6KTXY48sZzhyFYkb8e34lbm/gGcq6AECY3Cj10sOjmZmaiKT/4wmW98pMEGZT7wDhoB
+         6ARe5cjn/xDYQyxcm+QElOypMySnV0egG4mmqsmm+TsmcoUcVsSIpy9NSfY4T1z0elsc
+         cFDSjLOUnQ9Mfqo24zOl/727cF1YNsb7JcwKKEzN3dyeC5CmT0cGdlSPLsSln9fSqz64
+         7krA==
+X-Gm-Message-State: AOAM530bUtIZnIvU0WxO49zO4VZzGEZOaUtcNS58klt9oXrmJZls3gXC
+        cFocl5+1o9kfd1+IRS4w03lLTbz9o2sRyA==
+X-Google-Smtp-Source: ABdhPJzhrMWpgAMLYtf5fDP9/i+XboM6XjtDoWIc9/UebbNznBIVEADHycSo0YpoUxqaMuDE1qurIg==
+X-Received: by 2002:a05:6e02:524:: with SMTP id h4mr2321673ils.203.1630671416183;
+        Fri, 03 Sep 2021 05:16:56 -0700 (PDT)
+Received: from [192.168.1.116] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id z6sm2532738ilp.9.2021.09.03.05.16.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 05:16:55 -0700 (PDT)
+Subject: Re: [PATCH][next] io_uring: Fix a read of ununitialized pointer tctx
+To:     Colin King <colin.king@canonical.com>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210903113535.11257-1-colin.king@canonical.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <5e5e1bb9-c5d3-d668-8a61-f70538ef92df@kernel.dk>
+Date:   Fri, 3 Sep 2021 06:16:53 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Provags-ID: V03:K1:zXX5/GScOzz/bBAjdSXa5NqTbxH/vjkRt9rUV2CFJmW/t4JL5WJ
- mr/4aLEfvt5XbkVd2QLWXoi0UsKMJ3//Ze+Y/AXU9Eb4JldiD6r3bgPUBxWCKCVn/1bRy6t
- WbujA9/1+aQuUK8KHxwpA/TxfaiuY9BzWW8fWpCiNYK+9kpUlMSTp2aQfQ8pE/pCxsBNNNO
- Xqj1P/R5Nb/kWhfLqPojg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ezN+hYuNnb8=:xI2gTv950MFnUwLvkubMWk
- DNJkOJHA+Wb6Mh9UJ7jpUWtlNXLrJrUkau55rwlOSdwI0WDOYuEHsYQFcvkxoOGtqf3cgVzpr
- bFV3IVtoathPfhprG5aQFiDOzbwm1Qvhyiwfoc2RYt6XYwbUDuW/U19F8EpmgUGomdErfvzKz
- 7sGnUxEFfcnBvKCXQGE+zyy9vqcftPwWCjTR2Ol9XDAOvNuYu0/aASTiNi2trMp5eUzwkJZKg
- o82pJoTrcbeK2qtyaa9RHYoTnMPuZzlhBHXnsx2NQL9GUmyyKR7gm9rz1mp9w2XnmesXGg7hs
- kMeZu7o6+qzu4ubFyzT1LPFWdf4quAtlts/gguDTf4SyLsTS3Aiev01iFmltcxPzwIWBCXz0t
- 89ymw/y2ARobdTEauaJ8Rwab5+USLRpw9QgkNoEHDefi1bMgZEGj6kRZ+3JGWHrlxWGAYHCai
- A88cesniSYrDYdUtWIt5yu99Mm9l0wzGjO5YjCbXs1NQGaBsvsVVLVRdeWk+yF5TzKcMAgTjv
- g5Qpr8/y07dKm5ajtHRZ6UBkNBnH1SghdO2aFJ4WX2ya/uUbHq5FiLIxD2HRfKsG14u7uM97P
- /PKY2JdgFzddPv6+kNcZwPaQ+s3StyjRM4il5Vz5QDgHxofQiBRvePoyu9MNRSPd8xDw8pns6
- A99ge5EeTT6Lxl47dyQIO4ANVMSvxE3NuEcog0s/W3yvli4cvS/8TTEaF7b0EmSrzHC4D53bp
- XeFHaHSO3MlGaxHplZzTZUraik9v48HU7etQBALu9FR8Yc1u7+hm8btocWJntvY6BcmCoaUHv
- YMqn7NTHJB2S6JtIVamfLxSRf09yB+NffPR6dGm775cBt+9f318QYE1k3tqdb718Qu76r5rOw
- Jff1yH8TjOCGfjRnhsGVfQ2XI+9rIWWqOzvjpoFGQTbwrYGhOf1IWOE9Vju4iF+U188/LECo6
- vppY77iUBpyf/gqnFkYWLLKTmtKoidRtoq4WLUZ024juHhNFHKPryf4E8iz63Nvl06vKYjXXt
- JfXReA3sq8g7Dgm+oCBjX3tG5LsEDUQ+XYO9BhVuk0gAoI6SgknpSfkDRdPfKU+58KASnbgk4
- nJagR50xCHR0cR9lYKYcrNgSVDpO2GtPrIE
+In-Reply-To: <20210903113535.11257-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 9/3/21 5:35 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> In the unlikely case where ctx->flags & IORING_SETUP_SQPOLL is true
+> and sqd is NULL the pointer tctx is not assigned a valid value and
+> can contain a garbage value when it is dereferenced. Fix this by
+> initializing it to NULL.
 
-please pull two more parisc architecture patches for kernel 5.15-rc1 from:
+Doh - thanks, I folded this one in.
 
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.15/parisc-2
+-- 
+Jens Axboe
 
-Fix an unaligned-access crash in the bootloader and drop asm/swab.h.
-
-Thanks,
-Helge
-
-----------------------------------------------------------------
-The following changes since commit 7ba88a2a09f47e2e4f3e34215677a1d78a9e6a73:
-
-  Merge tag 'platform-drivers-x86-v5.15-1' of git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86 (2021-09-02 13:49:39 -0700)
-
-are available in the Git repository at:
-
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.15-2
-
-for you to fetch changes up to c42813b71a06a2ff4a155aa87ac609feeab76cf3:
-
-  parisc: Fix unaligned-access crash in bootloader (2021-09-03 09:47:02 +0200)
-
-----------------------------------------------------------------
-Helge Deller (2):
-      parisc: Drop __arch_swab16(), arch_swab24(), _arch_swab32() and __arch_swab64() functions
-      parisc: Fix unaligned-access crash in bootloader
-
- arch/parisc/boot/compressed/misc.c  |  2 +-
- arch/parisc/include/uapi/asm/swab.h | 68 -------------------------------------
- 2 files changed, 1 insertion(+), 69 deletions(-)
- delete mode 100644 arch/parisc/include/uapi/asm/swab.h
