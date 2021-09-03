@@ -2,214 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E020A4003B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 619864003B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349771AbhICQxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 12:53:21 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:44485 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230187AbhICQxS (ORCPT
+        id S1349825AbhICQyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 12:54:47 -0400
+Received: from mail-oo1-f47.google.com ([209.85.161.47]:35445 "EHLO
+        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230187AbhICQyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 12:53:18 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id E3E635C0159;
-        Fri,  3 Sep 2021 12:52:17 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute1.internal (MEProxy); Fri, 03 Sep 2021 12:52:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=Sj8qfi5acETm3P7RSRk0CRVIAUU7
-        c7e1VWwIZayoXM4=; b=M1iEEUIQUrQ3xGCpyj1AD7Hq2iMJdjbZ5Sdpi/dM+1W8
-        I6nCo+9/PAOFPCYWU1fBahqBTCuXUk5GEl+pSKRaHrKVFMmoa+YxoTmlz+HuJfWZ
-        FgXi1WY7AtOhzuQIYsVd7j8RKDDSOgOu4Rgrn1eSCU4vUk17ZbYzm5D/yziyKIaR
-        kS8abxApohC+wLmbHtUWHTUPwqSOp1Aw0poiMLAyy2fbcCTysVUP+aYPoAoibe1O
-        B8i+ON1rKZtc959VZHtYe31s7eK/b4klEIiVAyfMThM0FM+SrTw4Oh0Xg4qqhEZW
-        ZGZqhHLYqKBumjxYydD3oiQAXcgAW6I4dYVJZ+W0cQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Sj8qfi
-        5acETm3P7RSRk0CRVIAUU7c7e1VWwIZayoXM4=; b=Qw9wzs0tFolmFiegUk9Xdi
-        vQa4lpQU7PrD2dMYHu4RVureKMekgf8Wp29c+exo2RKzL8cPlasUoNQETLkaHRY1
-        jKvDq9Xt/8gJDlHoKeM7YYQEod4uJh7WSPI+Zym4BlquarL3hXiMk2HLlqIqdARo
-        qpvseRFUByaXriEyukIjlC1TajaQnGKIhGtE8kl50i+vI+Rxhk5oAHuJIn1i8PJ+
-        ip5o2D19AhV1wNXptL6M6HSNoZBL3HR2AfjlQ+0DqIdPdsvn4xNj9cUQI1bEvwlA
-        WvQNiFk0mpRxQ3SgjbB1IBUosweGsch0fgOa0y6BTPAeDX2N00W81Bu+pqyoCh5g
-        ==
-X-ME-Sender: <xms:wFIyYYgVPf73lq5a8WShm-9rc9wLma8ISfB0NGXCjSVKXCT5E0ev1A>
-    <xme:wFIyYRB3sDJm5hcZckdLKlPP66T5oQB-zOXfmTDAsiUKAHLykveIL2BUcUuO6Y7SD
-    RDqUHM7QXqU6bWi_24>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedguddtgecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedfufhv
-    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
-    grthhtvghrnhepheejgfdttdefleefteejieefudeuheelkedtgedtjeehieetueelheeu
-    hfegheegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:wFIyYQFqO7ruuuVM3hhv2glnQTZwOKf3uMZ4yCACeHVrwRHhpvSKgg>
-    <xmx:wFIyYZR0WIgOEKx1kZkHAtURBvK-4H1lg1ze4si-HKZ95ahnmW3xhg>
-    <xmx:wFIyYVxfGpPg-HS8fHFDgLDytByWFnmI73CK3TmWEpVhNnqrJpFwHw>
-    <xmx:wVIyYUzlZSUsdHRoKO4MCASWxJIX8v7izFKjEibuxFRgvKQ-ampqSg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 4842B51C0060; Fri,  3 Sep 2021 12:52:16 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1126-g6962059b07-fm-20210901.001-g6962059b
-Mime-Version: 1.0
-Message-Id: <16ffa27b-4769-469e-827c-129948a78a36@www.fastmail.com>
-In-Reply-To: <462494ab-121e-e4dd-3811-d744f0fffa66@arm.com>
-References: <20210828153642.19396-1-sven@svenpeter.dev>
- <20210828153642.19396-4-sven@svenpeter.dev> <YS6fasuqPURbmC6X@sunset>
- <c8bc7f77-3b46-4675-a642-76871fcec963@www.fastmail.com>
- <YS/sMckPUJRMYwYq@sunset>
- <ac34e920-d1b4-4044-a8fe-5172d5ebfa9c@www.fastmail.com>
- <74621c69-ef68-c12a-3770-319cb7a0db73@arm.com>
- <989af5a3-8c84-4796-adb6-af9426d68b76@www.fastmail.com>
- <462494ab-121e-e4dd-3811-d744f0fffa66@arm.com>
-Date:   Fri, 03 Sep 2021 18:51:54 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Robin Murphy" <robin.murphy@arm.com>,
-        "Alyssa Rosenzweig" <alyssa@rosenzweig.io>
-Cc:     "Sven Peter" <iommu@lists.linux-foundation.org>,
-        "Joerg Roedel" <joro@8bytes.org>, "Will Deacon" <will@kernel.org>,
-        "Arnd Bergmann" <arnd@kernel.org>,
-        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
-        "Alexander Graf" <graf@amazon.com>,
-        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?Re:_[PATCH_v2_3/8]_iommu/dma:_Disable_get=5Fsgtable_for_granul?=
- =?UTF-8?Q?e_>_PAGE=5FSIZE?=
-Content-Type: text/plain
+        Fri, 3 Sep 2021 12:54:45 -0400
+Received: by mail-oo1-f47.google.com with SMTP id y3-20020a4ab403000000b00290e2a52c71so1697071oon.2;
+        Fri, 03 Sep 2021 09:53:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=enSj79vcN/Dm/uZSTTzwATzvAMHwNRMrauYA74ENvEY=;
+        b=P9E2USX8axZ6QB0k9Ee942kbDTQDd887nPsXwoieqrFQmfFFCbTbQkFYLmjoeQayCM
+         cBa2oXHN2M4yjtDf63MISggyAPpk1P1SUc30nix+mlVH39m+B4+duMGCBSazCeaKuU6M
+         yIFNaETLoFNGc6Lod/zilkFkBY62o6gWe7I7VzszAH0CQQFhCDJHUJp74tbZLXuEuvhi
+         R5aPBiec0s+J9upZHPixOiJ6TCN2MLPfQC/+ROO/SWLjZIOC9oltgQaRcWlpYWLovqFp
+         NSunCYHddsYouaAlGLSIBEQdiObMER4XY20wjzAVBCjJyf1MduyPetbKPdX+Ta2hKln5
+         fwWQ==
+X-Gm-Message-State: AOAM532E0Y3LswzT8uDMpVO1ES10WRu7cpTlD4+VJNLFj94ctU5RHa4H
+        0JmLTs8KLharZOlINoQ3Qw==
+X-Google-Smtp-Source: ABdhPJyRTE/hdWaUnfQdRbuMAMJswUwR6XT/DIJppmGP66ppiqdiMz1FHfSfkortQtFWdbOgrBbIUw==
+X-Received: by 2002:a05:6820:235:: with SMTP id j21mr3734079oob.75.1630688025383;
+        Fri, 03 Sep 2021 09:53:45 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id v186sm1148174oig.52.2021.09.03.09.53.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 09:53:44 -0700 (PDT)
+Received: (nullmailer pid 3085928 invoked by uid 1000);
+        Fri, 03 Sep 2021 16:53:43 -0000
+Date:   Fri, 3 Sep 2021 11:53:43 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Daniel Baluta <daniel.baluta@oss.nxp.com>
+Cc:     broonie@kernel.org, pierre-louis.bossart@linux.intel.com,
+        lgirdwood@gmail.com, ranjani.sridharan@linux.intel.com,
+        kai.vehmanen@linux.intel.com, devicetree@vger.kernel.org,
+        shawnguo@kernel.org, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, peter.ujfalusi@linux.intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        s-anna@ti.com, Daniel Baluta <daniel.baluta@nxp.com>
+Subject: Re: [PATCH v2 2/2] dt-bindings: dsp: fsl: Add DSP optional clocks
+ documentation
+Message-ID: <YTJTF5VMOyG2iZb0@robh.at.kernel.org>
+References: <20210903145340.225511-1-daniel.baluta@oss.nxp.com>
+ <20210903145340.225511-3-daniel.baluta@oss.nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903145340.225511-3-daniel.baluta@oss.nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Fri, Sep 3, 2021, at 17:45, Robin Murphy wrote:
-> On 2021-09-03 16:16, Sven Peter wrote:
-> > 
-> > 
-> > On Thu, Sep 2, 2021, at 21:42, Robin Murphy wrote:
-> >> On 2021-09-02 19:19, Sven Peter wrote:
-> >>>
-> >>>
-> >>> On Wed, Sep 1, 2021, at 23:10, Alyssa Rosenzweig wrote:
-> >>>>> My biggest issue is that I do not understand how this function is supposed
-> >>>>> to be used correctly. It would work fine as-is if it only ever gets passed buffers
-> >>>>> allocated by the coherent API but there's not way to check or guarantee that.
-> >>>>> There may also be callers making assumptions that no longer hold when
-> >>>>> iovad->granule > PAGE_SIZE.
-> >>>>>
-> >>>>> Regarding your case: I'm not convinced the function is meant to be used there.
-> >>>>> If I understand it correctly, your code first allocates memory with dma_alloc_coherent
-> >>>>> (which possibly creates a sgt internally and then maps it with iommu_map_sg),
-> >>>>> then coerces that back into a sgt with dma_get_sgtable, and then maps that sgt to
-> >>>>> another iommu domain with dma_map_sg while assuming that the result will be contiguous
-> >>>>> in IOVA space. It'll work out because dma_alloc_coherent is the very thing
-> >>>>> meant to allocate pages that can be mapped into kernel and device VA space
-> >>>>> as a single contiguous block and because both of your IOMMUs are different
-> >>>>> instances of the same HW block. Anything allocated by dma_alloc_coherent for the
-> >>>>> first IOMMU will have the right shape that will allow it to be mapped as
-> >>>>> a single contiguous block for the second IOMMU.
-> >>>>>
-> >>>>> What could be done in your case is to instead use the IOMMU API,
-> >>>>> allocate the pages yourself (while ensuring the sgt your create is made up
-> >>>>> of blocks with size and physaddr aligned to max(domain_a->granule, domain_b->granule))
-> >>>>> and then just use iommu_map_sg for both domains which actually comes with the
-> >>>>> guarantee that the result will be a single contiguous block in IOVA space and
-> >>>>> doesn't required the sgt roundtrip.
-> >>>>
-> >>>> In principle I agree. I am getting the sense this function can't be used
-> >>>> correctly in general, and yet is the function that's meant to be used.
-> >>>> If my interpretation of prior LKML discussion holds, the problems are
-> >>>> far deeper than my code or indeed page size problems...
-> >>>
-> >>> Right, which makes reasoning about this function and its behavior if the
-> >>> IOMMU pages size is unexpected very hard for me. I'm not opposed to just
-> >>> keeping this function as-is when there's a mismatch between PAGE_SIZE and
-> >>> the IOMMU page size (and it will probably work that way) but I'd like to
-> >>> be sure that won't introduce unexpected behavior.
-> >>>
-> >>>>
-> >>>> If the right way to handle this is with the IOMMU and IOVA APIs, I really wish
-> >>>> that dance were wrapped up in a safe helper function instead of open
-> >>>> coding it in every driver that does cross device sharing.
-> >>>>
-> >>>> We might even call that helper... hmm... dma_map_sg.... *ducks*
-> >>>>
-> >>>
-> >>> There might be another way to do this correctly. I'm likely just a little
-> >>> bit biased because I've spent the past weeks wrapping my head around the
-> >>> IOMMU and DMA APIs and when all you have is a hammer everything looks like
-> >>> a nail.
-> >>>
-> >>> But dma_map_sg operates at the DMA API level and at that point the dma-ops
-> >>> for two different devices could be vastly different.
-> >>> In the worst case one of them could be behind an IOMMU that can easily map
-> >>> non-contiguous pages while the other one is directly connected to the bus and
-> >>> can't even access >4G pages without swiotlb support.
-> >>> It's really only possible to guarantee that it will map N buffers to <= N
-> >>> DMA-addressable buffers (possibly by using an IOMMU or swiotlb internally) at
-> >>> that point.
-> >>>
-> >>> On the IOMMU API level you have much more information available about the actual
-> >>> hardware and can prepare the buffers in a way that makes both devices happy.
-> >>> That's why iommu_map_sgtable combined with iovad->granule aligned sgt entries
-> >>> can actually guarantee to map the entire list to a single contiguous IOVA block.
-> >>
-> >> Essentially there are two reasonable options, and doing pretend dma-buf
-> >> export/import between two devices effectively owned by the same driver
-> >> is neither of them. Handily, DRM happens to be exactly where all the
-> >> precedent is, too; unsurprisingly this is not a new concern.
-> >>
-> >> One is to go full IOMMU API, like rockchip or tegra, attaching the
-> >> relevant devices to your own unmanaged domain(s) and mapping pages
-> >> exactly where you choose. You still make dma_map/dma_unmap calls for the
-> >> sake of cache maintenance and other housekeeping on the underlying
-> >> memory, but you ignore the provided DMA addresses in favour of your own
-> >> IOVAs when it comes to programming the devices.
-> >>
-> >> The lazier option if you can rely on all relevant devices having equal
-> >> DMA and IOMMU capabilities is to follow exynos, and herd the devices
-> >> into a common default domain. Instead of allocating you own domain, you
-> >> grab the current domain for one device (which will be its default
-> >> domain) and manually attach the other devices to that. Then you forget
-> >> all about IOMMUs but make sure to do all your regular DMA API calls
-> >> using that first device, and the DMA addresses which come back should be
-> >> magically valid for the other devices too. It was a bit of a cheeky hack
-> >> TBH, but I'd still much prefer more of that over any usage of
-> >> get_sgtable outside of actual dma-buf...
-> >>
-> >> Note that where multiple IOMMU instances are involved, the latter
-> >> approach does depend on the IOMMU driver being able to support sharing a
-> >> single domain across them; I think that might sort-of-work for DART
-> >> already, but may need a little more attention.
-> > 
-> > It'll work for two streams inside the same DART but needs some
-> > attention for streams from two separate DARTs.
-> > 
-> > Then there's also this amazing "feature" that the display controller DART
-> > pagetable pointer register is read-only so that we have to reuse the memory
-> > Apple configured for first level table. That needs some changes anyway
-> > but might make adding multiple devices from different groups more complex.
+On Fri, Sep 03, 2021 at 05:53:40PM +0300, Daniel Baluta wrote:
+> From: Daniel Baluta <daniel.baluta@nxp.com>
 > 
-> OK, I was thinking the dual-DART accommodation is already at least some 
-> of the way there, but I guess it's still tied to a single device's cfg. 
-
-Pretty much. I think "needing a little more attention" describes it pretty
-well :)
-
-
-> One upside to generalising further might be that the dual-DART case 
-> stops being particularly special :)
+> DSP node on the Linux kernel side must also take care of enabling
+> DAI/DMA related clocks.
 > 
-> Not being able to physically share pagetables shouldn't be too big a 
-> deal, just a bit more work to sync iommu_map/iommu_unmap calls across 
-> all the relevant instances for the given domain.
+> By design we choose to manage DAI/DMA clocks from the kernel side because of
+> the architecture of some i.MX8 boards.
+> 
+> Clocks are handled by a special M4 core which runs a special firmware
+> called SCFW (System Controler firmware).
+> 
+> This communicates with A cores running Linux via a special Messaging
+> Unit and implements a custom API which is already implemented by the
+> Linux kernel i.MX clocks implementation.
+> 
+> Note that these clocks are optional. We can use the DSP without them.
+> 
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> ---
+>  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 33 +++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> index 7afc9f2be13a..1453668c0194 100644
+> --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> @@ -24,16 +24,49 @@ properties:
+>      maxItems: 1
+>  
+>    clocks:
+> +    minItems: 3
+>      items:
+>        - description: ipg clock
+>        - description: ocram clock
+>        - description: core clock
+> +      - description: esai0 core clock for accessing registers
+> +      - description: esai0 baud clock
+> +      - description: esai0 system clock
+> +      - description: esai0 spba clock required when ESAI is placed in slave mode
+> +      - description: SAI1 bus clock
+> +      - description: SAI1 master clock 0
+> +      - description: SAI1 master clock 1
+> +      - description: SAI1 master clock 2
+> +      - description: SAI1 master clock 3
+> +      - description: SAI3 bus clock
+> +      - description: SAI3 master clock 0
+> +      - description: SAI3 master clock 1
+> +      - description: SAI3 master clock 2
+> +      - description: SAI3 master clock 3
+> +      - description: SDMA3 root clock used for accessing registers
 
-True, it's just a bit more bookkeeping in the end.
+Sigh, I just rejected this kind of thing for the other i.MX8 DSP 
+binding[1].
 
+Add a reference to the h/w block and then get the clocks (and other 
+resources) from there.
 
+Rob
 
-Sven
+[1] https://lore.kernel.org/linux-devicetree/YTDq%2FkWFPLHUnHMN@robh.at.kernel.org/
