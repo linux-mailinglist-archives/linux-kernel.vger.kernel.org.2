@@ -2,144 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AC73FFC60
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F0E3FFC62
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:55:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348473AbhICIzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:55:06 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:50843 "EHLO pegase2.c-s.fr"
+        id S1348471AbhICIzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:55:39 -0400
+Received: from mga04.intel.com ([192.55.52.120]:19915 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234865AbhICIzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:55:04 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4H1BRb3THfz9sT9;
-        Fri,  3 Sep 2021 10:54:03 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id U9JmwoyaGwxb; Fri,  3 Sep 2021 10:54:03 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4H1BRY486Bz9sTF;
-        Fri,  3 Sep 2021 10:54:01 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6F4348B8D5;
-        Fri,  3 Sep 2021 10:54:01 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Mih_7c73FeuN; Fri,  3 Sep 2021 10:54:01 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 010A58B764;
-        Fri,  3 Sep 2021 10:54:00 +0200 (CEST)
-Subject: Re: [PATCH v2 5/5] powerpc/signal: Use unsafe_copy_siginfo_to_user()
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <fd7938d94008711d441551c06b25a033669a0618.1629732940.git.christophe.leroy@csgroup.eu>
- <7d391d915d2bd1c0f601f55f61f8dd4c70066229.1629732940.git.christophe.leroy@csgroup.eu>
- <87y28ex1ov.fsf@disp2133>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <08117c1e-7805-534f-42ca-54a885f272cd@csgroup.eu>
-Date:   Fri, 3 Sep 2021 10:53:49 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1348434AbhICIzi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 04:55:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="217511123"
+X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
+   d="scan'208";a="217511123"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 01:54:38 -0700
+X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
+   d="scan'208";a="543421460"
+Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314) ([10.237.222.51])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 01:54:36 -0700
+Date:   Fri, 3 Sep 2021 09:54:30 +0100
+From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Fiona Trahe <fiona.trahe@intel.com>,
+        Wojciech Ziemba <wojciech.ziemba@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: drivers/crypto/qat/qat_dh895xcc/adf_dh895xcc_hw_data.c:229:28:
+ warning: taking address of packed member 'csr_ops' of class or structure
+ 'adf_hw_device_data' may result in an unaligned pointer value
+Message-ID: <YTHixlBTl5/uVPtd@silpixa00400314>
+References: <202109031540.4K5y259V-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <87y28ex1ov.fsf@disp2133>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202109031540.4K5y259V-lkp@intel.com>
+Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 -
+ Collinstown Industrial Park, Leixlip, County Kildare - Ireland
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 03, 2021 at 03:26:45PM +0800, kernel test robot wrote:
+> >> drivers/crypto/qat/qat_dh895xcc/adf_dh895xcc_hw_data.c:229:28: warning: taking address of packed member 'csr_ops' of class or structure 'adf_hw_device_data' may result in an unaligned pointer value [-Waddress-of-packed-member]
+>            adf_gen2_init_hw_csr_ops(&hw_data->csr_ops);
+>                                      ^~~~~~~~~~~~~~~~
+>    3 warnings generated.
+I already sent a fix to resolve such warnings:
+https://patchwork.kernel.org/project/linux-crypto/patch/20210902083459.238983-1-giovanni.cabiddu@intel.com/
 
+Regards,
 
-Le 02/09/2021 à 20:38, Eric W. Biederman a écrit :
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> 
->> Use unsafe_copy_siginfo_to_user() in order to do the copy
->> within the user access block.
->>
->> On an mpc 8321 (book3s/32) the improvment is about 5% on a process
->> sending a signal to itself.
-> 
-> Nacked-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> 
-> copy_siginfo_to_user is not the same as copy_siginfo_to_user32.
-> 
-> As in this patch breaks 32bit userspace on powerpc.
-
-I don't understand your comment. As you can see below, copy_siginfo_to_user32() is used in the 
-compat case (ie 32 bit userspace on PPC64) and unsafe_copy_siginfo_to_user() is used on the 
-non-compat case (ie 32 bit userspace on PPC32).
-
-So what's the issue really ?
-
-> 
-> 
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>   arch/powerpc/kernel/signal_32.c | 13 ++++++-------
->>   arch/powerpc/kernel/signal_64.c |  5 +----
->>   2 files changed, 7 insertions(+), 11 deletions(-)
->>
->> diff --git a/arch/powerpc/kernel/signal_32.c b/arch/powerpc/kernel/signal_32.c
->> index ff101e2b3bab..f9e16d108bc8 100644
->> --- a/arch/powerpc/kernel/signal_32.c
->> +++ b/arch/powerpc/kernel/signal_32.c
->> @@ -710,12 +710,6 @@ static long restore_tm_user_regs(struct pt_regs *regs, struct mcontext __user *s
->>   }
->>   #endif
->>   
->> -#ifdef CONFIG_PPC64
->> -
->> -#define copy_siginfo_to_user	copy_siginfo_to_user32
->> -
->> -#endif /* CONFIG_PPC64 */
->> -
->>   /*
->>    * Set up a signal frame for a "real-time" signal handler
->>    * (one which gets siginfo).
->> @@ -779,14 +773,19 @@ int handle_rt_signal32(struct ksignal *ksig, sigset_t *oldset,
->>   		asm("dcbst %y0; sync; icbi %y0; sync" :: "Z" (mctx->mc_pad[0]));
->>   	}
->>   	unsafe_put_sigset_t(&frame->uc.uc_sigmask, oldset, failed);
->> +#ifndef CONFIG_COMPAT
->> +	unsafe_copy_siginfo_to_user(&frame->info, &ksig->info, failed);
->> +#endif
->>   
->>   	/* create a stack frame for the caller of the handler */
->>   	unsafe_put_user(regs->gpr[1], newsp, failed);
->>   
->>   	user_access_end();
->>   
->> -	if (copy_siginfo_to_user(&frame->info, &ksig->info))
->> +#ifdef CONFIG_COMPAT
->> +	if (copy_siginfo_to_user32(&frame->info, &ksig->info))
->>   		goto badframe;
->> +#endif
->>   
->>   	regs->link = tramp;
->>   
->> diff --git a/arch/powerpc/kernel/signal_64.c b/arch/powerpc/kernel/signal_64.c
->> index 2cca6c8febe1..82b73fbd937d 100644
->> --- a/arch/powerpc/kernel/signal_64.c
->> +++ b/arch/powerpc/kernel/signal_64.c
->> @@ -901,15 +901,12 @@ int handle_rt_signal64(struct ksignal *ksig, sigset_t *set,
->>   	}
->>   
->>   	unsafe_copy_to_user(&frame->uc.uc_sigmask, set, sizeof(*set), badframe_block);
->> +	unsafe_copy_siginfo_to_user(&frame->info, &ksig->info, badframe_block);
->>   	/* Allocate a dummy caller frame for the signal handler. */
->>   	unsafe_put_user(regs->gpr[1], newsp, badframe_block);
->>   
->>   	user_write_access_end();
->>   
->> -	/* Save the siginfo outside of the unsafe block. */
->> -	if (copy_siginfo_to_user(&frame->info, &ksig->info))
->> -		goto badframe;
->> -
->>   	/* Make sure signal handler doesn't get spurious FP exceptions */
->>   	tsk->thread.fp_state.fpscr = 0;
+-- 
+Giovanni
