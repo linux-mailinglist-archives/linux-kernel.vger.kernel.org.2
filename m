@@ -2,111 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB2D400589
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C1C40058D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350963AbhICTKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 15:10:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47252 "EHLO
+        id S1350983AbhICTKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 15:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350597AbhICTKB (ORCPT
+        with ESMTP id S1350972AbhICTKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 15:10:01 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648D1C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:09:00 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id r4so365682ybp.4
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:09:00 -0700 (PDT)
+        Fri, 3 Sep 2021 15:10:18 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9D3C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:09:17 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id s3so323778ljp.11
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:09:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m6kpIcQI2kaeiGN8nOW6gd72C2N5gwlYdeH/BXEk3Ws=;
-        b=PvIxT7UYlvbGZmDSRi18bm+CxUU48AfcXm9EVQwqw8l0pfPFhqZV2NwLMWThnRNQif
-         MO2cXjZ0xcgzs1LBL3ow0iJ5DfJt6Hmo+YYUCJRIK+z7X6DyaQq+UMQEF3EiLDBqlLh1
-         /rSntEhSdbFPMal5QBM4JBppsm4QaeDZtZ317wUdQYPmfC9c4ua58gXSCCV2mS2znkIi
-         +AW8NFIST00oSt6Ur25EKWop+672adF/gMnqM8+35S0g7ffpbz90FrGSuVX20Qh/Yefy
-         tDNwMV+r2BhlrUlwjXxUjuRYyEDaTxZK63MzR12bnURbIaR1CC3SPPhushnXtM/4npvj
-         kkAw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Jp+DzdKvplQFh1frqe9YEr4t0IdxJGv9l0U7vlDKxAE=;
+        b=keN39KZ0vWlLEi9OKwSw5hmoTYjcTN1CK1hkNb3IYonIbeR/xxBQuJVDFpLjlAkkI9
+         GPrlil9uV4fGOaNy9xCxE7EEwq8wfvYZ2gDdMjMLiqRZiy9zUdkm4IjuqTdHDf6PdvYi
+         1jrexSH0xQqQDwTqH3AAuIDKOUC9GPzLPFw1fWHWnxut47ou5bB3fe6BzUMcSM3VmjDM
+         S2H9z3mK8LXHMNuNO07bQtwuOj7zaGx1fzU/EIEj2kV1a8D7JTocKqVtaizRYDTPtUSn
+         M0Qpuq9vfw867cJV3haMXs1R3hv+VtLnHtXmKqQ5DqvfFkVkCp/DxEZH8t3Q2+V7FWah
+         LFIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m6kpIcQI2kaeiGN8nOW6gd72C2N5gwlYdeH/BXEk3Ws=;
-        b=Udian1c3Tq3TpO/eMW/7AlpVLwNSd9mZaXfO2PIjl++EMg0gJKwouBnefsehfCVwos
-         q6Puhl1DAVm5oxYt398no7Y7GMlfDVjZmW+QqBtugLeksoOcquFoNb5s+yg2Zj2c/YsX
-         jmMXwAkT4slgpDBvjRTmd43I4tNpe2sDU9+NWWmMMuttOU/t5E/0iua+UbLmqQNfmFrB
-         /uYAWOK3ZyBqT5x89BnpH1D3VcwZpYxL3Iw48+dN37sX8/ZhQX4lx7xgZjJ7FgOLcl97
-         1bjrAYUOfBkQuqZFrOdEnCnW9c9/SAW/hXjh/ZN3HP4+s40eiEkjRUE4keeTTDiCunru
-         6X9g==
-X-Gm-Message-State: AOAM532mMWAW5rUldSZgQn0eE5FEXkEFhmYtTENPXiQhyttAPZUZ2y0u
-        AlyebQsxwUmRxSH6RxyamhRyZbPY+N2pgnKL8RWWGw==
-X-Google-Smtp-Source: ABdhPJxVZXFvEDaU45VGsxRolnCRjbgaMa/2/abHvvKaPNlUXiJlihfRMjwfrHOKIXu70pEcFfzd668Yq6qeLZnvku0=
-X-Received: by 2002:a25:21c5:: with SMTP id h188mr697656ybh.23.1630696139325;
- Fri, 03 Sep 2021 12:08:59 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Jp+DzdKvplQFh1frqe9YEr4t0IdxJGv9l0U7vlDKxAE=;
+        b=Fbkh7FwDX7sJZTc87MAAOfDON7SyFq352L7NABMxqtd+ZaD72cYgME+X7sI4CPXtn9
+         wzu+x3OP9r2nrjwRY9y0fxJCu34K/UiR1VwVD7PETZMlOMf1Uc5WmhBNT2d1v5Trn2BN
+         aihNrmmlHYkN8L/a2HQBytSV27O3CoYwyIOaIWLhepJjMzyVQinzlNsvK1CUKfGXKlM0
+         dpD0j84C2DEKlvD62uWZ65ayAlsUZRYp6TP6ijaqHy9rGDXZbherOD6nWypT0NC40EVZ
+         3ZTOiKf3lSOwjZ+t48F+DfaMwcTSXjPXs5x6zPbpsi2pLSryKF3tQ0ETCo/Evk6Relst
+         HZvA==
+X-Gm-Message-State: AOAM533Zf27Bo8gbMoWPBCSXsLfbqu+TNgn7vyGMVdIQeLQVbUOttx11
+        ouU+raPuxE+ghpvKmx/d70/new==
+X-Google-Smtp-Source: ABdhPJwpyPlobUvxLpAOoI/kG3rwsrGzmOslLAl/atLkMKb+NfqT54jhzWC3SHZh7DgSrLiB6kX4xg==
+X-Received: by 2002:a2e:94ce:: with SMTP id r14mr361343ljh.259.1630696155921;
+        Fri, 03 Sep 2021 12:09:15 -0700 (PDT)
+Received: from [192.168.1.211] ([37.153.55.125])
+        by smtp.gmail.com with ESMTPSA id y35sm4060lje.127.2021.09.03.12.09.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 12:09:15 -0700 (PDT)
+Subject: Re: [PATCH v2] phy: qcom-qmp: add support for display port voltage
+ and pre-emphasis swing
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, vkoul@kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kishon@ti.com, p.zabel@pengutronix.de
+References: <1630098658-23149-1-git-send-email-khsieh@codeaurora.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <72483937-8ccb-331b-e1af-8f30f6cefc07@linaro.org>
+Date:   Fri, 3 Sep 2021 22:09:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210902230442.1515531-1-saravanak@google.com>
- <20210902230442.1515531-2-saravanak@google.com> <CAPDyKFpP6pSRSw8_OAW8+ZJNH+CwXtfWBNDcD182gQmzqW=O5g@mail.gmail.com>
- <CAMuHMdVgjxJwd=PbUSR+9mgxexr3O_O6j-3T24GzE08CqzDjjA@mail.gmail.com>
- <CAGETcx9W6FYCD62+QytwK5FThpz0EyKn0G6Ay2B5jKgiqkZT1g@mail.gmail.com> <CAMuHMdWNP1yn0ouJzgYpvQkdAHAA4_gf8z+iZWpbftvGN5a+qQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdWNP1yn0ouJzgYpvQkdAHAA4_gf8z+iZWpbftvGN5a+qQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 3 Sep 2021 12:08:23 -0700
-Message-ID: <CAGETcx8dZe4+E04soQw1XT2C82VmaYW48=cBmYOes07qkeqiww@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] of: platform: Make sure bus only devices get probed
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1630098658-23149-1-git-send-email-khsieh@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 12:06 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Saravana,
->
-> On Fri, Sep 3, 2021 at 7:09 PM Saravana Kannan <saravanak@google.com> wrote:
-> > On Fri, Sep 3, 2021 at 7:29 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Fri, Sep 3, 2021 at 11:19 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > On Fri, 3 Sept 2021 at 01:04, Saravana Kannan <saravanak@google.com> wrote:
-> > > > > fw_devlink could end up creating device links for bus only devices.
-> > > > > However, bus only devices don't get probed and can block probe() or
-> > > > > sync_state() [1] call backs of other devices. To avoid this, set up
-> > > > > these devices to get probed by the simple-pm-bus.
-> > > > >
-> > > > > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
-> > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > > Tested-by: Saravana Kannan <saravanak@google.com>
-> > > >
-> > > > Again, this looks like a nice solution to the problem.
-> > > >
-> > > > One question though. The Kconfig SIMPLE_PM_BUS, should probably be
-> > > > "default y" - or something along those lines to make sure fw_devlink
-> > > > works as expected.
-> > >
-> > > I would love for SIMPLE_PM_BUS to go away, and all of its functionality
-> > > to be usurped by the standard simple-bus handling.
-> >
-> > What if SIMPLE_PM_BUS *is* the standard simple-bus handling?
-> > Insert "I'm the captain now" meme.
->
-> No objections from my side.  In fact that's how I wanted it to be
-> from the beginning, but the DT people wanted a separate compatible
-> value (and a separate driver).  The only difference is the presence
-> of pm_runtime_*() calls.
->
-> > I think SIMPLE_PM_BUS config should just go away and we should compile
-> > the driver in if CONFIG_OF is selected.
->
-> I think there would be no need for a separate driver, if the standard
-> simple-bus handling would take care of it.
+On 28/08/2021 00:10, Kuogee Hsieh wrote:
+> Both voltage and pre-emphasis swing level are set during link training
+> negotiation between host and sink. There are totally four tables added.
+> A voltage swing table for both hbr and hbr1, a voltage table for both
+> hbr2 and hbr3, a pre-emphasis table for both hbr and hbr1 and a pre-emphasis
+> table for both hbr2 and hbr3. In addition, write 0x0a to TX_TX_POL_INV is
+> added to complete the sequence of configure dp phy base on HPG.
+> 
+> Chnages in v2:
+> -- revise commit test
+> -- add Fixes tag
+> -- replaced voltage_swing_cfg with voltage
+> -- replaced pre_emphasis_cfg with emphasis
+> -- delete drv_lvl_reg and emp_post_reg parameters from qcom_qmp_v4_phy_configure_dp_swing()
+> -- delete drv_lvl_reg and emp_post_reg parameters from qcom_qmp_phy_configure_dp_swing()
+> 
+> Fixes: aff188feb5e1 ("phy: qcom-qmp: add support for sm8250-usb3-dp phy")
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
+>   drivers/phy/qualcomm/phy-qcom-qmp.c | 117 ++++++++++++++++++++++++++----------
+>   1 file changed, 85 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> index 31036aa..021cbb0 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> @@ -3546,12 +3546,11 @@ static const u8 qmp_dp_v3_voltage_swing_hbr_rbr[4][4] = {
+>   	{ 0x1f, 0xff, 0xff, 0xff }
+>   };
+>   
+> -static int qcom_qmp_phy_configure_dp_swing(struct qmp_phy *qphy,
+> -		unsigned int drv_lvl_reg, unsigned int emp_post_reg)
+> +static int qcom_qmp_phy_configure_dp_swing(struct qmp_phy *qphy)
 
-I'm not sure about the history there. For now, I'm just extending this
-driver to take care of simple-bus too.
+As this becomes a v3-only function, could you please rename it to 
+qcom_qmp_v3_phy_configure_dp_swing()
 
--Saravana
+>   {
+>   	const struct phy_configure_opts_dp *dp_opts = &qphy->dp_opts;
+>   	unsigned int v_level = 0, p_level = 0;
+> -	u8 voltage_swing_cfg, pre_emphasis_cfg;
+> +	u8 voltage, emphasis;
+>   	int i;
+>   
+>   	for (i = 0; i < dp_opts->lanes; i++) {
+> @@ -3560,26 +3559,25 @@ static int qcom_qmp_phy_configure_dp_swing(struct qmp_phy *qphy,
+>   	}
+>   
+>   	if (dp_opts->link_rate <= 2700) {
+> -		voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr_rbr[v_level][p_level];
+> -		pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr_rbr[v_level][p_level];
+> +		voltage = qmp_dp_v3_voltage_swing_hbr_rbr[v_level][p_level];
+> +		emphasis = qmp_dp_v3_pre_emphasis_hbr_rbr[v_level][p_level];
+>   	} else {
+> -		voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr3_hbr2[v_level][p_level];
+> -		pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr3_hbr2[v_level][p_level];
+> +		voltage = qmp_dp_v3_voltage_swing_hbr3_hbr2[v_level][p_level];
+> +		emphasis = qmp_dp_v3_pre_emphasis_hbr3_hbr2[v_level][p_level];
+>   	}
+>   
+>   	/* TODO: Move check to config check */
+> -	if (voltage_swing_cfg == 0xFF && pre_emphasis_cfg == 0xFF)
+> +	if (voltage == 0xFF && emphasis == 0xFF)
+>   		return -EINVAL;
+>   
+>   	/* Enable MUX to use Cursor values from these registers */
+> -	voltage_swing_cfg |= DP_PHY_TXn_TX_DRV_LVL_MUX_EN;
+> -	pre_emphasis_cfg |= DP_PHY_TXn_TX_EMP_POST1_LVL_MUX_EN;
+> -
+> -	writel(voltage_swing_cfg, qphy->tx + drv_lvl_reg);
+> -	writel(pre_emphasis_cfg, qphy->tx + emp_post_reg);
+> -	writel(voltage_swing_cfg, qphy->tx2 + drv_lvl_reg);
+> -	writel(pre_emphasis_cfg, qphy->tx2 + emp_post_reg);
+> +	voltage |= DP_PHY_TXn_TX_DRV_LVL_MUX_EN;
+> +	emphasis |= DP_PHY_TXn_TX_EMP_POST1_LVL_MUX_EN;
+>   
+> +	writel(voltage, qphy->tx + QSERDES_V3_TX_TX_DRV_LVL);
+> +	writel(emphasis, qphy->tx + QSERDES_V3_TX_TX_EMP_POST1_LVL);
+> +	writel(voltage, qphy->tx2 + QSERDES_V3_TX_TX_DRV_LVL);
+> +	writel(emphasis, qphy->tx2 + QSERDES_V3_TX_TX_EMP_POST1_LVL);
+>   	return 0;
+>   }
+>   
+> @@ -3588,9 +3586,7 @@ static void qcom_qmp_v3_phy_configure_dp_tx(struct qmp_phy *qphy)
+>   	const struct phy_configure_opts_dp *dp_opts = &qphy->dp_opts;
+>   	u32 bias_en, drvr_en;
+>   
+> -	if (qcom_qmp_phy_configure_dp_swing(qphy,
+> -				QSERDES_V3_TX_TX_DRV_LVL,
+> -				QSERDES_V3_TX_TX_EMP_POST1_LVL) < 0)
+> +	if (qcom_qmp_phy_configure_dp_swing(qphy) < 0)
+>   		return;
+>   
+>   	if (dp_opts->lanes == 1) {
+> @@ -3728,6 +3724,71 @@ static int qcom_qmp_v3_dp_phy_calibrate(struct qmp_phy *qphy)
+>   	return 0;
+>   }
+>   
+> +/* The values in these tables are given without MUX_EN (0x20) bit set */
+> +static const u8 qmp_dp_v4_pre_emphasis_hbr3_hbr2[4][4] = {
+> +	{ 0x00, 0x0c, 0x15, 0x1b },
+> +	{ 0x02, 0x0e, 0x16, 0xff },
+> +	{ 0x02, 0x11, 0xff, 0xff },
+> +	{ 0x04, 0xff, 0xff, 0xff }
+> +};
+> +
+> +static const u8 qmp_dp_v4_voltage_swing_hbr3_hbr2[4][4] = {
+> +	{ 0x02, 0x12, 0x16, 0x1a },
+> +	{ 0x09, 0x19, 0x1f, 0xff },
+> +	{ 0x10, 0x1f, 0xff, 0xff },
+> +	{ 0x1f, 0xff, 0xff, 0xff }
+> +};
+> +
+> +static const u8 qmp_dp_v4_pre_emphasis_hbr_rbr[4][4] = {
+> +	{ 0x00, 0x0e, 0x15, 0x1b },
+> +	{ 0x00, 0x0e, 0x15, 0xff },
+> +	{ 0x00, 0x0e, 0xff, 0xff },
+> +	{ 0x04, 0xff, 0xff, 0xff }
+> +};
+> +
+> +static const u8 qmp_dp_v4_voltage_swing_hbr_rbr[4][4] = {
+> +	{ 0x08, 0x0f, 0x16, 0x1f },
+> +	{ 0x11, 0x1e, 0x1f, 0xff },
+> +	{ 0x16, 0x1f, 0xff, 0xff },
+> +	{ 0x1f, 0xff, 0xff, 0xff }
+> +};
+> +
+> +static int qcom_qmp_v4_phy_configure_dp_swing(struct qmp_phy *qphy)
+> +{
+> +	const struct phy_configure_opts_dp *dp_opts = &qphy->dp_opts;
+> +	unsigned int v_level = 0, p_level = 0;
+> +	u8 voltage, emphasis;
+> +	int i;
+> +
+> +	for (i = 0; i < dp_opts->lanes; i++) {
+> +		v_level = max(v_level, dp_opts->voltage[i]);
+> +		p_level = max(p_level, dp_opts->pre[i]);
+> +	}
+> +
+> +	if (dp_opts->link_rate <= 2700) {
+> +		voltage = qmp_dp_v4_voltage_swing_hbr_rbr[v_level][p_level];
+> +		emphasis = qmp_dp_v4_pre_emphasis_hbr_rbr[v_level][p_level];
+> +	} else {
+> +		voltage = qmp_dp_v4_voltage_swing_hbr3_hbr2[v_level][p_level];
+> +		emphasis = qmp_dp_v4_pre_emphasis_hbr3_hbr2[v_level][p_level];
+> +	}
+> +
+> +	/* TODO: Move check to config check */
+> +	if (voltage == 0xFF && emphasis == 0xFF)
+> +		return -EINVAL;
+> +
+> +	/* Enable MUX to use Cursor values from these registers */
+> +	voltage |= DP_PHY_TXn_TX_DRV_LVL_MUX_EN;
+> +	emphasis |= DP_PHY_TXn_TX_EMP_POST1_LVL_MUX_EN;
+> +
+> +	writel(voltage, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
+> +	writel(emphasis, qphy->tx + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+> +	writel(voltage, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
+> +	writel(emphasis, qphy->tx2 + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+> +
+> +	return 0;
+> +}
+> +
+>   static void qcom_qmp_v4_phy_dp_aux_init(struct qmp_phy *qphy)
+>   {
+>   	writel(DP_PHY_PD_CTL_PWRDN | DP_PHY_PD_CTL_PSR_PWRDN | DP_PHY_PD_CTL_AUX_PWRDN |
+> @@ -3757,16 +3818,7 @@ static void qcom_qmp_v4_phy_dp_aux_init(struct qmp_phy *qphy)
+>   
+>   static void qcom_qmp_v4_phy_configure_dp_tx(struct qmp_phy *qphy)
+>   {
+> -	/* Program default values before writing proper values */
+> -	writel(0x27, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
+> -	writel(0x27, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
+> -
+> -	writel(0x20, qphy->tx + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+> -	writel(0x20, qphy->tx2 + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+> -
+> -	qcom_qmp_phy_configure_dp_swing(qphy,
+> -			QSERDES_V4_TX_TX_DRV_LVL,
+> -			QSERDES_V4_TX_TX_EMP_POST1_LVL);
+> +	qcom_qmp_v4_phy_configure_dp_swing(qphy);
+>   }
+>   
+>   static int qcom_qmp_v4_phy_configure_dp_phy(struct qmp_phy *qphy)
+> @@ -3885,6 +3937,9 @@ static int qcom_qmp_v4_phy_configure_dp_phy(struct qmp_phy *qphy)
+>   	writel(drvr1_en, qphy->tx2 + QSERDES_V4_TX_HIGHZ_DRVR_EN);
+>   	writel(bias1_en, qphy->tx2 + QSERDES_V4_TX_TRANSCEIVER_BIAS_EN);
+>   
+> +	writel(0x0a, qphy->tx + QSERDES_V4_TX_TX_POL_INV);
+> +	writel(0x0a, qphy->tx2 + QSERDES_V4_TX_TX_POL_INV);
+> +
+>   	writel(0x18, qphy->pcs + QSERDES_DP_PHY_CFG);
+>   	udelay(2000);
+>   	writel(0x19, qphy->pcs + QSERDES_DP_PHY_CFG);
+> @@ -3896,11 +3951,9 @@ static int qcom_qmp_v4_phy_configure_dp_phy(struct qmp_phy *qphy)
+>   			10000))
+>   		return -ETIMEDOUT;
+>   
+> -	writel(0x0a, qphy->tx + QSERDES_V4_TX_TX_POL_INV);
+> -	writel(0x0a, qphy->tx2 + QSERDES_V4_TX_TX_POL_INV);
+>   
+> -	writel(0x27, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
+> -	writel(0x27, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
+> +	writel(0x22, qphy->tx + QSERDES_V4_TX_TX_DRV_LVL);
+> +	writel(0x22, qphy->tx2 + QSERDES_V4_TX_TX_DRV_LVL);
+>   
+>   	writel(0x20, qphy->tx + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+>   	writel(0x20, qphy->tx2 + QSERDES_V4_TX_TX_EMP_POST1_LVL);
+> 
+
+
+-- 
+With best wishes
+Dmitry
