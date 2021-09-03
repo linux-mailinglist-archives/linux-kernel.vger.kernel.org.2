@@ -2,204 +2,441 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 672ED3FF8D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 04:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1528B3FF8D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 04:26:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239498AbhICCWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 22:22:31 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:23588 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232931AbhICCW2 (ORCPT
+        id S245425AbhICC1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 22:27:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243538AbhICC13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 22:22:28 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 182MsRsD002824;
-        Fri, 3 Sep 2021 02:21:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=corp-2021-07-09;
- bh=XXXDGhtVNgyvHmad4nO9HJw4CBxDD4+M16LYAiSJlXk=;
- b=DvyugFecGVUVX7cfPZ5AmynZ+TSpyU0FS6lRZfYsU02fUpZZSi98wKqLqqPGscnZhIyX
- vMa48CBE8IFjPyvXvnSn8HGfWGIV+RTWVvQ85fuJ00h9WDXPr/FFbRnCN+VbSscbvraJ
- DC4r9NmYeTejE430uQALC3TTskR/v1JAw+p6L3B6Glr0XulszbHeqwjgnIaALBcV189+
- owS55FZ+jk+JHkEI0yIVjEhSBULMyiOCJKURO4Zy8DjK+MCHcRjfHoMjAr6QAk/LeXv3
- tsjfNXaMv3UpQaW2mAU92BuviE0nvesrz/bmcoRITJ8wuIe0WuSFcivl/UZ9esnT0k50 4Q== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=corp-2020-01-29;
- bh=XXXDGhtVNgyvHmad4nO9HJw4CBxDD4+M16LYAiSJlXk=;
- b=Cb5aEA+96uYWXIF6/PM0c579LTc5ezNVjV3tcQ/VNadGcsRwFMzDcJ17oyYGBlXdABzJ
- cl9n9TYHJwlzTIbHm3PXeZudnL5kawH1uGxfpJm57oLFNeLOoW4PbjCd6QcYG+6sEhWN
- MAwAvSi8njfiJx+J+XH631V4aYjcdRu5E5fnju1ZLh62ZzqCRNzfIlSBgTP40xzUXn1v
- R4PngvTdoaJcZTC7uuyen0PZVJfJgnQ3cQtPfBe2d/CwgmfgZ6M+mfVommicJVxBT5Mq
- MFZxJ0Jm1Q9QDlJZe11zvi6P7EAjei/t19zLr7909Oh2GWaZKufKR6kVCZuMpO/Nh1Gw BA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3atdw1cnke-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Sep 2021 02:21:09 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1832Bln2086144;
-        Fri, 3 Sep 2021 02:21:08 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2173.outbound.protection.outlook.com [104.47.59.173])
-        by aserp3020.oracle.com with ESMTP id 3atdywfqcx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Sep 2021 02:21:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JdDfmLmegac3xocrrnRqAisMbOMT5Nu8ZkXGPIRVckm937oMEoTeItCWhU++quKDU+uDIQatvemxIxntS7CIq66fhjhfVGMUnVuVMP736NMwUqwqUyON1yW2D5xpXT5TGj+pLFfGQf1/M0s+o1rF7BtY047GOj2nymsnqDl95T8y5ukKAwBclc/xsiB7HrirXqn/w91Npo7gqBJMVR7g2DuZnAeZlzZZ/Q3lRPiARHencjLiHErvE9Tm7XEm5RAMwxVCn4wtSdVppDN8AkOqpjH4lH9UcagW8wF6eC1M3XcNRdWv08yIhphoUi+erFaWHRIyeQoT6+HDJEQXebdB9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=XXXDGhtVNgyvHmad4nO9HJw4CBxDD4+M16LYAiSJlXk=;
- b=gNUcoARRrEf9GpXZEjnv4UUmbfTCSXF5Lq4iNPiPAvY1oHmetufgCqv7UOhjSVcqXriSODN1GwNv1U2FtDu+jZrelL1o1EQAD2/msreNJde6s4ZgYct9OnSSIqqWCrfZ16nV6qRHL3dfqwMQY59GHCkiZeuQsayo9NfNcKuEGtpZ846xc4uC68Oav52qWetg/mOViHGs6TphcrWbH7e5Jr1urr0LRFHyuY2TFNZQCVW7iRwV9ggZEW9g5fl7jk1X5DCupb5X+5LJN7zLESOVzgtgMjC4kMEFVjVN6xrROUaJEKZKi1hD9d3bEA+sk/G8cerzcFQPkoy7+PE5Qp6cPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Thu, 2 Sep 2021 22:27:29 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 237EAC061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 19:26:30 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id q3so5051263iot.3
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 19:26:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XXXDGhtVNgyvHmad4nO9HJw4CBxDD4+M16LYAiSJlXk=;
- b=CXsr2YkhBTDikKaACsXJ6TS7wGXrVHOkRCJv4OsHXxVs8yMPa0aACV9U5hI4PNFXjYcYl7bGgBCYmGeoBK6kQoaC6nNNBRsq/kBxFA8O4jcFolebtua2o5xtdeNpNxmid3dsNw4QJ9GJ0bQLsebML2GgeHzG84vc7/6siR9hr2Q=
-Received: from DM6PR10MB4380.namprd10.prod.outlook.com (2603:10b6:5:223::19)
- by DM6PR10MB3097.namprd10.prod.outlook.com (2603:10b6:5:1a9::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.20; Fri, 3 Sep
- 2021 02:21:05 +0000
-Received: from DM6PR10MB4380.namprd10.prod.outlook.com
- ([fe80::f4b1:d890:7745:30a3]) by DM6PR10MB4380.namprd10.prod.outlook.com
- ([fe80::f4b1:d890:7745:30a3%4]) with mapi id 15.20.4478.020; Fri, 3 Sep 2021
- 02:21:05 +0000
-From:   Liam Howlett <liam.howlett@oracle.com>
-To:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Steven Rostedt <rostedt@goodmis.org>,
-        Michel Lespinasse <walken.cr@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v2] mmap_lock: Change trace and locking order
-Thread-Topic: [PATCH v2] mmap_lock: Change trace and locking order
-Thread-Index: AQHXoGpZMTHOHeoOlEi9q/cbKaDHwg==
-Date:   Fri, 3 Sep 2021 02:21:05 +0000
-Message-ID: <20210903022041.1843024-1-Liam.Howlett@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: git-send-email 2.30.2
-authentication-results: kvack.org; dkim=none (message not signed)
- header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0d7c86d5-08d7-4052-054c-08d96e817bee
-x-ms-traffictypediagnostic: DM6PR10MB3097:
-x-microsoft-antispam-prvs: <DM6PR10MB3097BB51175B319D2AC89B79FDCF9@DM6PR10MB3097.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1443;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: kxgiUgqs6SRELkTMH6s0xH5ek4yZiJjX5kIcgMiMdl4SCtED90N0X2SJ25df/4c6Pq4gYcMNyqqubLyjnXKajPfTNLDbI9zF6b05TtudB7RAHZ9kNOTUqr26FgyQa+5V8phnFdAuJuWv2y6QB/d4Mx3HKz2hEETqh0tL7U3Og+TEdxQV44KDTkzNa/t1asCsQ8Mu/2fKx/p21fnnp6GBIBFRJXFkDaHG2He1wh0ZHo6IDa8aOcuUNeyIJFT1pa/eve1Cdqza22gC51d7tr09QdMfRHopQAVHNNhziOL07xYCLn6YVIiJn1f0d7ZwgF1iujk46YTceHTXxkc2TfvXnZxx02Gbzw8zifu1T+ggUgcc8EJK0PhNVAwvv4PVBPceRVuH5ZCP152yHRPifGZHPWIM/bulZ/7/rcL67QIEb0Cyawbg5Z1b7eqM/ALjaYFG0yFVdSk4kXfDHd9ZInJ3f7rxLW4B/X+Zx9y5/WQ01V3l+b3CB9eZMBZ7C2UpEfxjkUTKQFhsNXRU5fY2wenXlvMoVISoUB49Vlo+W/qp+jeDNfEvTg/viiVSxEzhIm0g1bm48JS+JjODM1ECMXlqhXHA6PT0fPydqBskVy5m/k0OmZlpgZwUWbUDrGLGvfjyFYgmnK7sYKfu5Lt3xgKjy3XndglpP1l2NoL+DFk4cNAhTwy6qgpDeGrRmYe+5EeXU1JvSrBk2GEP1hLwiPIU3g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4380.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(376002)(366004)(396003)(39860400002)(6486002)(83380400001)(478600001)(38070700005)(66946007)(2616005)(44832011)(5660300002)(2906002)(71200400001)(316002)(8936002)(54906003)(76116006)(110136005)(86362001)(91956017)(66476007)(1076003)(66556008)(6506007)(4326008)(6512007)(26005)(64756008)(36756003)(8676002)(186003)(38100700002)(66446008)(122000001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?NM0TUjSrowf5gfPBwzSL2BKeA0BToFp2xkrDBBseKpQ17OJ8Qot3t7QBn2?=
- =?iso-8859-1?Q?Sb8vuMzipM1/Tpk61C8qDA4RW3IYPqTu6NeKb9M7HemzRk8jufldZ/HvwM?=
- =?iso-8859-1?Q?jBcla6svoZ+NNECb5uluJfBfK3E38IlJapYLIBg23VfwyLjCDjU06wFVCI?=
- =?iso-8859-1?Q?BqF9wmJtNxFRKRVIX7Xd00PgC3XKhpulBvpm/331YjF7klfH0oPwoC6AfA?=
- =?iso-8859-1?Q?n8LZ1YURieXhN7fNlvLVuX1blTF6veAgVCcqAy6IE8mzON7XaoQ5Aq/bPm?=
- =?iso-8859-1?Q?/XRNZ+zi+AlO24eGAxQO2VVlkC8lbRLbydBOTc09yv/I3TuX7ie+1qm8KF?=
- =?iso-8859-1?Q?/zgLDVpNqOuWKjm0Wvwp5O0ohlQlrfhnqVj9jJEOXY2ao1kfCnpVn3UT+e?=
- =?iso-8859-1?Q?/gteUT8i28jQRJ1KKxyhaE+qI8AlTaBcv8YEXdKde7xnuyUhk59nWhGXl5?=
- =?iso-8859-1?Q?uoBvdSiewHJdRTsb59NuYLHueSKwMCVViwDEWQDrxm/hl3nnLh3UOYlouy?=
- =?iso-8859-1?Q?zIs7HB0dSbH5BiP+pKo/Pzck0zSQ+Ftj05cPwPF5FZpfKBPg72ndQ5lB3S?=
- =?iso-8859-1?Q?i+dQHP+KUT74QwBP1apFigECGoSVZCORKdIaIyo2PzphmenYkqZ1naBTk2?=
- =?iso-8859-1?Q?9h9apiK1IzVpgQKf2EYK6U94lGvnm/+y4iYxJ+zLKEm2FeMCOtf07P267i?=
- =?iso-8859-1?Q?7wVNcz0fiKdyE0oM528iN2lDEjDV8c16dhbwOG5XDPCkOiSB1gSiCMpb7j?=
- =?iso-8859-1?Q?jIdv8sDrhdkbicE5fUR9Rt5bBeICnw9CN+RLYrxF7s2PKZY/ViOkEVkqxS?=
- =?iso-8859-1?Q?d/A9EMOfAqvlfUL3BJqcjtU9dPKt7rrmEi/YToqdWNsTCGR7W/9vsnMDoI?=
- =?iso-8859-1?Q?j3ZYy+QgDY30t3bygjmqpL4JqA6ftB9ry56m0k5HHyy26ZxHheYfqSrkp3?=
- =?iso-8859-1?Q?tVxYXYdyI/d7om8YpaEtrXpkpGsWNuHb6ZM7lNVFmmc9xiJEDYsOCkooHv?=
- =?iso-8859-1?Q?aR1XFu6j+9JCwaaWWWaxRP8xXeplKlg6VihRZKA0hJD1L0cps5qp4sWyd6?=
- =?iso-8859-1?Q?AF5YGP5zlEXJkHrLsZQ5yDtWW5pnpimi3SeDtNXg62rleRltoqA+zscG5r?=
- =?iso-8859-1?Q?z9Dmopnb/cLdbVtRDXmL7sHvkF7tIqc7Rv1EPYPhVcs1UWNAkB8DI5o+Va?=
- =?iso-8859-1?Q?ZABKRGyhniIGE7hRCq6XZa1P3Q7w8Dnjm1xXNmKrXgn5k2f5F4eEcUlxUn?=
- =?iso-8859-1?Q?eND/LmLxssfnDuesB2tSnFhCD6AWploTdD6Y0q8kWdx+PoOKhQCZj5N0PJ?=
- =?iso-8859-1?Q?h3WlZ9Tgjoy2kSdqDnlksOru9nuA+tB59AyOzHGLczwEZDhETNrTPvYgFK?=
- =?iso-8859-1?Q?2afpWVC8iT?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cm1Hrj/LUjafR+ujc/Fc95A41KfboDSU4YGi9efGx4A=;
+        b=tBkurHPOXaa5Ti783a6Ra/dgHTLsrNtHJX9IiMxawnVPcoW5q2XmDvjyxyvpeqqWGg
+         T+4KBB6vZFUXHFsG5RaoDKWJu+86KV9f1zXJTTLAxEGfT7ltKLl7fscdrp3pKMWUWSny
+         B8IzrdizU+PIFHoF2YolrqKWBlwbsyopnksOLf6eGNq36HrtztP53A6FNtZBuRZ6j9Mi
+         /WU5s9fNnq/pEVdypVDFZA324wjAJclrBFfnS0vtY/sDuzT83SX7DFKSjxTajd/V18IG
+         GdprNBT1YIMarJq/q1H2JfE+oFuFKLM3E5uQRYifMKgO26duJWT/xrWG784tvwC9trwK
+         9UCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cm1Hrj/LUjafR+ujc/Fc95A41KfboDSU4YGi9efGx4A=;
+        b=X7CH/5/ql2Req7jwqAUuF5th/S5k1Plrmv4s+Cr5R8AcSwxoJV4gySADkrbtJ/wZyR
+         n8UG92R2IUErkpfUo3kXZgfnWeJffFS+fvB4MiyZTauZla2ovG/PaMHoaqF91oLW9X0A
+         8x1jed7Mu/2UcPAQ3lLh+JP9RMLL3amOgvU3J1OncE7rASkIvw8smyd8hn84p+2YZu8U
+         a5wmc2c/zxpsUwVYXDl4Qm9n57XnUV/Sr58Ohgn0wrraPUofrbUM3/Z7fUnl4YeS5qLk
+         tDLH7LZSfiuhhmeJ4T92KfYLMuVp4G9mQaR5n8/f6SjKeU1NDlB8L3XHrwmyLdt/Na7Q
+         Vv3A==
+X-Gm-Message-State: AOAM530H8LBXbDuwr1Mk7vc57LVlaqnuuwQMcLJAJMjCQwAPkzlgFfim
+        /k6fwzjr2hwiPI34S9TgwCdrsn/R1aabEuKLa+YDRQ==
+X-Google-Smtp-Source: ABdhPJxfced6g3mC83/tmC2nybZ5WpXfQHRSvlQeSn6+9zrZuvmUWE7ZDLVIqaZpB6Cdlyr/rQMYZg+U6XnQKlRnM/4=
+X-Received: by 2002:a05:6638:304a:: with SMTP id u10mr740401jak.62.1630635989314;
+ Thu, 02 Sep 2021 19:26:29 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4380.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0d7c86d5-08d7-4052-054c-08d96e817bee
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Sep 2021 02:21:05.7354
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 20RWdShhD7m2auz9L32IOHcy4QzwZ+UQwuPpjVpp0hU/scj7HTdXU+fJaQD2vxTYonn+OTA9m55DFGftHz2kMA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB3097
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10095 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
- suspectscore=0 phishscore=0 adultscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2108310000
- definitions=main-2109030012
-X-Proofpoint-GUID: gCXzSwf9o8s3gOIG2nFM684OCkbDd-gE
-X-Proofpoint-ORIG-GUID: gCXzSwf9o8s3gOIG2nFM684OCkbDd-gE
+References: <20210412190715.555883-1-dlatypov@google.com>
+In-Reply-To: <20210412190715.555883-1-dlatypov@google.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Thu, 2 Sep 2021 19:26:17 -0700
+Message-ID: <CAGS_qxrfTeW=TmrbAUoUw5AOMzq+YccV3hTL6TY9b5+3OryWyw@mail.gmail.com>
+Subject: Re: [PATCH v5] lib: add basic KUnit test for lib/math
+To:     andriy.shevchenko@linux.intel.com
+Cc:     brendanhiggins@google.com, davidgow@google.com,
+        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Print to the trace log before releasing the lock to avoid racing with
-other trace log printers of the same lock type.
+On Mon, Apr 12, 2021 at 12:07 PM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> Add basic test coverage for files that don't require any config options:
+> * part of math.h (what seem to be the most commonly used macros)
+> * gcd.c
+> * lcm.c
+> * int_sqrt.c
+> * reciprocal_div.c
+> (Ignored int_pow.c since it's a simple textbook algorithm.)
+>
+> These tests aren't particularly interesting, but they
+> * provide short and simple examples of parameterized tests
+> * provide a place to add tests for any new files in this dir
+> * are written so adding new test cases to cover edge cases should be easy
+>   * looking at code coverage, we hit all the branches in the .c files
 
-Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- include/linux/mmap_lock.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Bumping this thread to see what the status is.
 
-diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-index 0540f0156f58..b179f1e3541a 100644
---- a/include/linux/mmap_lock.h
-+++ b/include/linux/mmap_lock.h
-@@ -101,14 +101,14 @@ static inline bool mmap_write_trylock(struct mm_struc=
-t *mm)
-=20
- static inline void mmap_write_unlock(struct mm_struct *mm)
- {
--	up_write(&mm->mmap_lock);
- 	__mmap_lock_trace_released(mm, true);
-+	up_write(&mm->mmap_lock);
- }
-=20
- static inline void mmap_write_downgrade(struct mm_struct *mm)
- {
--	downgrade_write(&mm->mmap_lock);
- 	__mmap_lock_trace_acquire_returned(mm, false, true);
-+	downgrade_write(&mm->mmap_lock);
- }
-=20
- static inline void mmap_read_lock(struct mm_struct *mm)
-@@ -140,8 +140,8 @@ static inline bool mmap_read_trylock(struct mm_struct *=
-mm)
-=20
- static inline void mmap_read_unlock(struct mm_struct *mm)
- {
--	up_read(&mm->mmap_lock);
- 	__mmap_lock_trace_released(mm, false);
-+	up_read(&mm->mmap_lock);
- }
-=20
- static inline bool mmap_read_trylock_non_owner(struct mm_struct *mm)
-@@ -155,8 +155,8 @@ static inline bool mmap_read_trylock_non_owner(struct m=
-m_struct *mm)
-=20
- static inline void mmap_read_unlock_non_owner(struct mm_struct *mm)
- {
--	up_read_non_owner(&mm->mmap_lock);
- 	__mmap_lock_trace_released(mm, false);
-+	up_read_non_owner(&mm->mmap_lock);
- }
-=20
- static inline void mmap_assert_locked(struct mm_struct *mm)
---=20
-2.30.2
+I think it's useful to have tests spread across the kernel so there's
+"nearby" tests one can reference and/or copy-paste from.
+Now there's the lib/math/rational-test.c, there's less need here.
+
+But I think having tests for simpler functions is still nice to have.
+
+E.g. there's a performance trade-off documented in gcd.c
+If you'd want to run that test case to see if it still holds, you'd be
+able to run gcd() in a loop fairly easily with:
+
+$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/math lib-math.gcd_test
+
+(KUnit doesn't yet have support for timing tests or running tests
+multiple times, so you'd have to tweak the test code for that).
+
+Random fact:
+I'd noticed that after running some 1000s of internal integration
+tests , the gcd() function didn't actually get fully covered.
+Specifically, they never got to line 34, the for loop
+    23  unsigned long gcd(unsigned long a, unsigned long b)
+    24  {
+    25          unsigned long r = a | b;
+    26
+    27          if (!a || !b)
+    28                  return r;
+    29
+    30          b >>= __ffs(b);
+    31          if (b == 1)
+    32                  return r & -r;
+    33
+    34          for (;;) {
+Checking again now, a few months later, I see they now do hit that loop.
+But I guess until then, we'd only been calling gcd() with b=2^n.
+
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> ---
+> Changes since v4:
+> * add in test cases for some math.h macros (abs, round_up/round_down,
+>   div_round_down/closest)
+> * use parameterized testing less to keep things terser
+>
+> Changes since v3:
+> * fix `checkpatch.pl --strict` warnings
+> * add test cases for gcd(0,0) and lcm(0,0)
+> * minor: don't test both gcd(a,b) and gcd(b,a) when a == b
+>
+> Changes since v2: mv math_test.c => math_kunit.c
+>
+> Changes since v1:
+> * Rebase and rewrite to use the new parameterized testing support.
+> * misc: fix overflow in literal and inline int_sqrt format string.
+> * related: commit 1f0e943df68a ("Documentation: kunit: provide guidance
+> for testing many inputs") was merged explaining the patterns shown here.
+>   * there's an in-flight patch to update it for parameterized testing.
+>
+> v1: https://lore.kernel.org/lkml/20201019224556.3536790-1-dlatypov@google.com/
+> ---
+>  lib/math/Kconfig      |   5 +
+>  lib/math/Makefile     |   2 +
+>  lib/math/math_kunit.c | 264 ++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 271 insertions(+)
+>  create mode 100644 lib/math/math_kunit.c
+>
+> diff --git a/lib/math/Kconfig b/lib/math/Kconfig
+> index f19bc9734fa7..6ba8680439c1 100644
+> --- a/lib/math/Kconfig
+> +++ b/lib/math/Kconfig
+> @@ -15,3 +15,8 @@ config PRIME_NUMBERS
+>
+>  config RATIONAL
+>         bool
+> +
+> +config MATH_KUNIT_TEST
+> +       tristate "KUnit test for lib/math" if !KUNIT_ALL_TESTS
+> +       default KUNIT_ALL_TESTS
+> +       depends on KUNIT
+> diff --git a/lib/math/Makefile b/lib/math/Makefile
+> index be6909e943bd..30abb7a8d564 100644
+> --- a/lib/math/Makefile
+> +++ b/lib/math/Makefile
+> @@ -4,3 +4,5 @@ obj-y += div64.o gcd.o lcm.o int_pow.o int_sqrt.o reciprocal_div.o
+>  obj-$(CONFIG_CORDIC)           += cordic.o
+>  obj-$(CONFIG_PRIME_NUMBERS)    += prime_numbers.o
+>  obj-$(CONFIG_RATIONAL)         += rational.o
+> +
+> +obj-$(CONFIG_MATH_KUNIT_TEST)  += math_kunit.o
+> diff --git a/lib/math/math_kunit.c b/lib/math/math_kunit.c
+> new file mode 100644
+> index 000000000000..80a087a32884
+> --- /dev/null
+> +++ b/lib/math/math_kunit.c
+> @@ -0,0 +1,264 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Simple KUnit suite for math helper funcs that are always enabled.
+> + *
+> + * Copyright (C) 2020, Google LLC.
+> + * Author: Daniel Latypov <dlatypov@google.com>
+> + */
+> +
+> +#include <kunit/test.h>
+> +#include <linux/gcd.h>
+> +#include <linux/kernel.h>
+> +#include <linux/lcm.h>
+> +#include <linux/reciprocal_div.h>
+> +
+> +static void abs_test(struct kunit *test)
+> +{
+> +       KUNIT_EXPECT_EQ(test, abs('\0'), '\0');
+> +       KUNIT_EXPECT_EQ(test, abs('a'), 'a');
+> +       KUNIT_EXPECT_EQ(test, abs(-'a'), 'a');
+> +
+> +       /* The expression in the macro is actually promoted to an int. */
+> +       KUNIT_EXPECT_EQ(test, abs((short)0),  0);
+> +       KUNIT_EXPECT_EQ(test, abs((short)42),  42);
+> +       KUNIT_EXPECT_EQ(test, abs((short)-42),  42);
+> +
+> +       KUNIT_EXPECT_EQ(test, abs(0),  0);
+> +       KUNIT_EXPECT_EQ(test, abs(42),  42);
+> +       KUNIT_EXPECT_EQ(test, abs(-42),  42);
+> +
+> +       KUNIT_EXPECT_EQ(test, abs(0L), 0L);
+> +       KUNIT_EXPECT_EQ(test, abs(42L), 42L);
+> +       KUNIT_EXPECT_EQ(test, abs(-42L), 42L);
+> +
+> +       KUNIT_EXPECT_EQ(test, abs(0LL), 0LL);
+> +       KUNIT_EXPECT_EQ(test, abs(42LL), 42LL);
+> +       KUNIT_EXPECT_EQ(test, abs(-42LL), 42LL);
+> +
+> +       /* Unsigned types get casted to signed. */
+> +       KUNIT_EXPECT_EQ(test, abs(0ULL), 0LL);
+> +       KUNIT_EXPECT_EQ(test, abs(42ULL), 42LL);
+> +}
+> +
+> +static void int_sqrt_test(struct kunit *test)
+> +{
+> +       KUNIT_EXPECT_EQ(test, int_sqrt(0UL), 0UL);
+> +       KUNIT_EXPECT_EQ(test, int_sqrt(1UL), 1UL);
+> +       KUNIT_EXPECT_EQ(test, int_sqrt(4UL), 2UL);
+> +       KUNIT_EXPECT_EQ(test, int_sqrt(5UL), 2UL);
+> +       KUNIT_EXPECT_EQ(test, int_sqrt(8UL), 2UL);
+> +       KUNIT_EXPECT_EQ(test, int_sqrt(1UL << 30), 1UL << 15);
+> +}
+> +
+> +static void round_up_test(struct kunit *test)
+> +{
+> +       KUNIT_EXPECT_EQ(test, round_up(0, 1), 0);
+> +       KUNIT_EXPECT_EQ(test, round_up(1, 2), 2);
+> +       KUNIT_EXPECT_EQ(test, round_up(3, 2), 4);
+> +       KUNIT_EXPECT_EQ(test, round_up((1 << 30) - 1, 2), 1 << 30);
+> +       KUNIT_EXPECT_EQ(test, round_up((1 << 30) - 1, 1 << 29), 1 << 30);
+> +}
+> +
+> +static void round_down_test(struct kunit *test)
+> +{
+> +       KUNIT_EXPECT_EQ(test, round_down(0, 1), 0);
+> +       KUNIT_EXPECT_EQ(test, round_down(1, 2), 0);
+> +       KUNIT_EXPECT_EQ(test, round_down(3, 2), 2);
+> +       KUNIT_EXPECT_EQ(test, round_down((1 << 30) - 1, 2), (1 << 30) - 2);
+> +       KUNIT_EXPECT_EQ(test, round_down((1 << 30) - 1, 1 << 29), 1 << 29);
+> +}
+> +
+> +static void div_round_up_test(struct kunit *test)
+> +{
+> +       KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(0, 1), 0);
+> +       KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(20, 10), 2);
+> +       KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(21, 10), 3);
+> +       KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(21, 20), 2);
+> +       KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(21, 99), 1);
+> +}
+> +
+> +static void div_round_closest_test(struct kunit *test)
+> +{
+> +       KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(0, 1), 0);
+> +       KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(20, 10), 2);
+> +       KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(21, 10), 2);
+> +       KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(25, 10), 3);
+> +}
+> +
+> +/* Generic test case for unsigned long inputs. */
+> +struct test_case {
+> +       unsigned long a, b;
+> +       unsigned long result;
+> +};
+> +
+> +static struct test_case gcd_cases[] = {
+> +       {
+> +               .a = 0, .b = 0,
+> +               .result = 0,
+> +       },
+> +       {
+> +               .a = 0, .b = 1,
+> +               .result = 1,
+> +       },
+> +       {
+> +               .a = 2, .b = 2,
+> +               .result = 2,
+> +       },
+> +       {
+> +               .a = 2, .b = 4,
+> +               .result = 2,
+> +       },
+> +       {
+> +               .a = 3, .b = 5,
+> +               .result = 1,
+> +       },
+> +       {
+> +               .a = 3 * 9, .b = 3 * 5,
+> +               .result = 3,
+> +       },
+> +       {
+> +               .a = 3 * 5 * 7, .b = 3 * 5 * 11,
+> +               .result = 15,
+> +       },
+> +       {
+> +               .a = 1 << 21,
+> +               .b = (1 << 21) - 1,
+> +               .result = 1,
+> +       },
+> +};
+> +
+> +KUNIT_ARRAY_PARAM(gcd, gcd_cases, NULL);
+> +
+> +static void gcd_test(struct kunit *test)
+> +{
+> +       const char *message_fmt = "gcd(%lu, %lu)";
+> +       const struct test_case *test_param = test->param_value;
+> +
+> +       KUNIT_EXPECT_EQ_MSG(test, test_param->result,
+> +                           gcd(test_param->a, test_param->b),
+> +                           message_fmt, test_param->a,
+> +                           test_param->b);
+> +
+> +       if (test_param->a == test_param->b)
+> +               return;
+> +
+> +       /* gcd(a,b) == gcd(b,a) */
+> +       KUNIT_EXPECT_EQ_MSG(test, test_param->result,
+> +                           gcd(test_param->b, test_param->a),
+> +                           message_fmt, test_param->b,
+> +                           test_param->a);
+> +}
+> +
+> +static struct test_case lcm_cases[] = {
+> +       {
+> +               .a = 0, .b = 0,
+> +               .result = 0,
+> +       },
+> +       {
+> +               .a = 0, .b = 1,
+> +               .result = 0,
+> +       },
+> +       {
+> +               .a = 1, .b = 2,
+> +               .result = 2,
+> +       },
+> +       {
+> +               .a = 2, .b = 2,
+> +               .result = 2,
+> +       },
+> +       {
+> +               .a = 3 * 5, .b = 3 * 7,
+> +               .result = 3 * 5 * 7,
+> +       },
+> +};
+> +
+> +KUNIT_ARRAY_PARAM(lcm, lcm_cases, NULL);
+> +
+> +static void lcm_test(struct kunit *test)
+> +{
+> +       const char *message_fmt = "lcm(%lu, %lu)";
+> +       const struct test_case *test_param = test->param_value;
+> +
+> +       KUNIT_EXPECT_EQ_MSG(test, test_param->result,
+> +                           lcm(test_param->a, test_param->b),
+> +                           message_fmt, test_param->a,
+> +                           test_param->b);
+> +
+> +       if (test_param->a == test_param->b)
+> +               return;
+> +
+> +       /* lcm(a,b) == lcm(b,a) */
+> +       KUNIT_EXPECT_EQ_MSG(test, test_param->result,
+> +                           lcm(test_param->b, test_param->a),
+> +                           message_fmt, test_param->b,
+> +                           test_param->a);
+> +}
+> +
+> +struct u32_test_case {
+> +       u32 a, b;
+> +       u32 result;
+> +};
+> +
+> +static struct u32_test_case reciprocal_div_cases[] = {
+> +       {
+> +               .a = 0, .b = 1,
+> +               .result = 0,
+> +       },
+> +       {
+> +               .a = 42, .b = 20,
+> +               .result = 2,
+> +       },
+> +       {
+> +               .a = 42, .b = 9999,
+> +               .result = 0,
+> +       },
+> +       {
+> +               .a = (1 << 16), .b = (1 << 14),
+> +               .result = 1 << 2,
+> +       },
+> +};
+> +
+> +KUNIT_ARRAY_PARAM(reciprocal_div, reciprocal_div_cases, NULL);
+> +
+> +static void reciprocal_div_test(struct kunit *test)
+> +{
+> +       const struct u32_test_case *test_param = test->param_value;
+> +       struct reciprocal_value rv = reciprocal_value(test_param->b);
+> +
+> +       KUNIT_EXPECT_EQ_MSG(test, test_param->result,
+> +                           reciprocal_divide(test_param->a, rv),
+> +                           "reciprocal_divide(%u, %u)",
+> +                           test_param->a, test_param->b);
+> +}
+> +
+> +static void reciprocal_scale_test(struct kunit *test)
+> +{
+> +       KUNIT_EXPECT_EQ(test, reciprocal_scale(0u, 100), 0u);
+> +       KUNIT_EXPECT_EQ(test, reciprocal_scale(1u, 100), 0u);
+> +       KUNIT_EXPECT_EQ(test, reciprocal_scale(1u << 4, 1 << 28), 1u);
+> +       KUNIT_EXPECT_EQ(test, reciprocal_scale(1u << 16, 1 << 28), 1u << 12);
+> +       KUNIT_EXPECT_EQ(test, reciprocal_scale(~0u, 1 << 28), (1u << 28) - 1);
+> +}
+> +
+> +static struct kunit_case math_test_cases[] = {
+> +       KUNIT_CASE(abs_test),
+> +       KUNIT_CASE(int_sqrt_test),
+> +       KUNIT_CASE(round_up_test),
+> +       KUNIT_CASE(round_down_test),
+> +       KUNIT_CASE(div_round_up_test),
+> +       KUNIT_CASE(div_round_closest_test),
+> +       KUNIT_CASE_PARAM(gcd_test, gcd_gen_params),
+> +       KUNIT_CASE_PARAM(lcm_test, lcm_gen_params),
+> +       KUNIT_CASE_PARAM(reciprocal_div_test, reciprocal_div_gen_params),
+> +       KUNIT_CASE(reciprocal_scale_test),
+> +       {}
+> +};
+> +
+> +static struct kunit_suite math_test_suite = {
+> +       .name = "lib-math",
+> +       .test_cases = math_test_cases,
+> +};
+> +
+> +kunit_test_suites(&math_test_suite);
+> +
+> +MODULE_LICENSE("GPL v2");
+>
+> base-commit: 4fa56ad0d12e24df768c98bffe9039f915d1bc02
+> --
+> 2.31.1.295.g9ea45b61b8-goog
+>
