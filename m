@@ -2,168 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FAA53FFBEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F5913FFBEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348253AbhICI0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:26:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53256 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348171AbhICI0j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:26:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630657539;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=784omy9+f5Am5nR2Vqkl2J0I13vidMEZa3qsfoNTT4c=;
-        b=OoruEPaOqG+v63x8EC8z3lC03T5j2aFWlTDvLGYlbr4ex366xDZMXlubhUnYh5XyuQWffs
-        Y/wxjSpkPLREc5gTW5gI4+e91NQi5qUDJ+Fe41PP4POfhYd7NlX8jG38EWpxvXotUAhgZl
-        443VhpwTdii+vL+N+J7A28uGf9RdacI=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-197-hL5bNUS7MvehW4wyeZH6Vw-1; Fri, 03 Sep 2021 04:25:38 -0400
-X-MC-Unique: hL5bNUS7MvehW4wyeZH6Vw-1
-Received: by mail-ej1-f70.google.com with SMTP id v19-20020a170906b013b02905b2f1bbf8f3so2347795ejy.6
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 01:25:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=784omy9+f5Am5nR2Vqkl2J0I13vidMEZa3qsfoNTT4c=;
-        b=GLjNSHpOHwUupQ3f3dv8l2aOTaLTlHYFUzRHGS6GxoC71/nbYAX2roUcpY/OAcwI2i
-         C5Fv+ge/zipl98G7BC1SPfBRcjdHXUx9baNFrRd1vV30T92ihFplEtWoT0PFHqlbLRzp
-         iwXaUSgHSlKQmi2D5bmJrzsbVAXEXgPq5deiw6IIBN08MeA29iFfZrvUzz7RDo9NL//U
-         Oxvpzpw6/DjuTw1g0z15s2Tt9m4KGPEMxTXVLunw/c59WahjEsaz+9MmF97k6NhPIEWt
-         Rlst6lURR6qACwj0+3dFgwHwRAE1o6YY2EmNgbDKqTAo2nCBKGGTKVH1HDZoVljO6egZ
-         PNpA==
-X-Gm-Message-State: AOAM530Jxv36wlymDHiLTbxEySE1zP0kSYe8wWhfb4mH1LH2F5DnrmZR
-        5ndYygwB7TzcvDJG6MfzEkbV379XhXmhG5eYZJ7DFuVPp4wZCzgYD6FzVWYPI+w8eYCMGOnWsf2
-        cate53CQb0bWBd/p6OD8rJr+i
-X-Received: by 2002:a17:906:fcda:: with SMTP id qx26mr2880456ejb.121.1630657536933;
-        Fri, 03 Sep 2021 01:25:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzLYFAkqk2qzchrOeqo0XEuIjG+9suLbk+5wak6Qfy73DWOVulKVNgzSe4ifU3BL65WnsM8eg==
-X-Received: by 2002:a17:906:fcda:: with SMTP id qx26mr2880426ejb.121.1630657536690;
-        Fri, 03 Sep 2021 01:25:36 -0700 (PDT)
-Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
-        by smtp.gmail.com with ESMTPSA id o19sm2450076edr.18.2021.09.03.01.25.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 01:25:36 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 10:25:34 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 08/12] KVM: arm64: selftests: Add light-weight
- spinlock support
-Message-ID: <20210903082534.jz3r2defqnrt2ee6@gator.home>
-References: <20210901211412.4171835-1-rananta@google.com>
- <20210901211412.4171835-9-rananta@google.com>
+        id S1348224AbhICI2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:28:07 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:33296 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234810AbhICI2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 04:28:04 -0400
+Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
+        by mail.ispras.ru (Postfix) with ESMTPS id 324EC40D4004;
+        Fri,  3 Sep 2021 08:26:58 +0000 (UTC)
+From:   Evgeny Novikov <novikov@ispras.ru>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Evgeny Novikov <novikov@ispras.ru>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Ramuthevar Vadivel Murugan 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
+        Anton Vasilyev <vasilyev@ispras.ru>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+Subject: [PATCH] mtd: rawnand: intel: Fix potential buffer overflow in probe
+Date:   Fri,  3 Sep 2021 11:26:53 +0300
+Message-Id: <20210903082653.16441-1-novikov@ispras.ru>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901211412.4171835-9-rananta@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 09:14:08PM +0000, Raghavendra Rao Ananta wrote:
-> Add a simpler version of spinlock support for ARM64 for
-> the guests to use.
-> 
-> The implementation is loosely based on the spinlock
-> implementation in kvm-unit-tests.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> ---
->  tools/testing/selftests/kvm/Makefile          |  2 +-
->  .../selftests/kvm/include/aarch64/spinlock.h  | 13 +++++++++
->  .../selftests/kvm/lib/aarch64/spinlock.c      | 27 +++++++++++++++++++
->  3 files changed, 41 insertions(+), 1 deletion(-)
->  create mode 100644 tools/testing/selftests/kvm/include/aarch64/spinlock.h
->  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/spinlock.c
-> 
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index 5d05801ab816..61f0d376af99 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -35,7 +35,7 @@ endif
->  
->  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
->  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
-> -LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S
-> +LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c
->  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
->  
->  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
-> diff --git a/tools/testing/selftests/kvm/include/aarch64/spinlock.h b/tools/testing/selftests/kvm/include/aarch64/spinlock.h
-> new file mode 100644
-> index 000000000000..cf0984106d14
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/include/aarch64/spinlock.h
-> @@ -0,0 +1,13 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +#ifndef SELFTEST_KVM_ARM64_SPINLOCK_H
-> +#define SELFTEST_KVM_ARM64_SPINLOCK_H
-> +
-> +struct spinlock {
-> +	int v;
-> +};
-> +
-> +extern void spin_lock(struct spinlock *lock);
-> +extern void spin_unlock(struct spinlock *lock);
-> +
-> +#endif /* SELFTEST_KVM_ARM64_SPINLOCK_H */
-> diff --git a/tools/testing/selftests/kvm/lib/aarch64/spinlock.c b/tools/testing/selftests/kvm/lib/aarch64/spinlock.c
-> new file mode 100644
-> index 000000000000..6d66a3dac237
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/lib/aarch64/spinlock.c
-> @@ -0,0 +1,27 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * ARM64 Spinlock support
-> + */
-> +#include <stdint.h>
-> +
-> +#include "spinlock.h"
-> +
-> +void spin_lock(struct spinlock *lock)
-> +{
-> +	uint32_t val, res;
-> +
-> +	asm volatile(
-> +	"1:	ldaxr	%w0, [%2]\n"
-> +	"	cbnz	%w0, 1b\n"
-> +	"	mov	%w0, #1\n"
-> +	"	stxr	%w1, %w0, [%2]\n"
-> +	"	cbnz	%w1, 1b\n"
-> +	: "=&r" (val), "=&r" (res)
-> +	: "r" (&lock->v)
-> +	: "memory");
-> +}
-> +
-> +void spin_unlock(struct spinlock *lock)
-> +{
-> +	asm volatile("stlr wzr, [%0]\n"	: : "r" (&lock->v) : "memory");
-> +}
-> -- 
+ebu_nand_probe() read the value of u32 variable "cs" from the device
+firmware description and used it as the index for array ebu_host->cs
+that can contain MAX_CS (2) elements at most. That could result in
+a buffer overflow and various bad consequences later.
 
-Reviewed-by: Andrew Jones <drjones@redhat.com>
+Fix the potential buffer overflow by restricting values of "cs" with
+MAX_CS in probe.
 
-It makes sense that the explicit barriers in kvm-unit-tests weren't also
-inherited, because we already have the implicit barriers with these ld/st
-instruction variants. (I suppose we could improve the kvm-unit-tests
-implementation at some point.)
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Thanks,
-drew
+Fixes: 0b1039f016e8 ("mtd: rawnand: Add NAND controller support on Intel LGM SoC")
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
+Co-developed-by: Anton Vasilyev <vasilyev@ispras.ru>
+Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
+---
+ drivers/mtd/nand/raw/intel-nand-controller.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
+index 8b49fd56cf96..81678088fdca 100644
+--- a/drivers/mtd/nand/raw/intel-nand-controller.c
++++ b/drivers/mtd/nand/raw/intel-nand-controller.c
+@@ -609,6 +609,11 @@ static int ebu_nand_probe(struct platform_device *pdev)
+ 		dev_err(dev, "failed to get chip select: %d\n", ret);
+ 		return ret;
+ 	}
++	if (cs >= MAX_CS) {
++		dev_err(dev, "got invalid chip select: %d\n", cs);
++		return -EINVAL;
++	}
++
+ 	ebu_host->cs_num = cs;
+ 
+ 	resname = devm_kasprintf(dev, GFP_KERNEL, "nand_cs%d", cs);
+-- 
+2.26.2
 
