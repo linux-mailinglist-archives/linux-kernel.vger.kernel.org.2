@@ -2,110 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFAFB3FFFAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24C13FFFAF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348576AbhICMTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 08:19:01 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:58522 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235119AbhICMTA (ORCPT
+        id S236060AbhICMXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 08:23:51 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15383 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235264AbhICMXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 08:19:00 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 88E6F203B7;
-        Fri,  3 Sep 2021 12:17:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1630671479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=/XvyiQWkqGmCCmHBNihZZxMuMR1mKh/8eRaYXMw6HHg=;
-        b=1hll4FFBlSWbgMAcIA1+QOVtnIhERwPUObk4cNNsjV6V3jW3abm7yKfzIRylr0iDStAcrX
-        aRdyoGEgvll/J2/fQxN7vG4upM0ENINXZgGg5jU6BqP5IZ4bL7j6H+0X6Pbq8cpM38Ridk
-        a2EsiNEH3VYZajeWi6YXN8y4SF9Nq8A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1630671479;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=/XvyiQWkqGmCCmHBNihZZxMuMR1mKh/8eRaYXMw6HHg=;
-        b=Qxr6DfJnRJBPvmYpR3oLROZ/vmaFbfn6R/I6xHJlA2/Yx6hZf5yvuq++BQu9d2OcuQ9YOo
-        7mergQcDzMLu4PBg==
-Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 83567A3B97;
-        Fri,  3 Sep 2021 12:17:59 +0000 (UTC)
-Received: by adalid.arch.suse.de (Postfix, from userid 17828)
-        id 79124518DFA9; Fri,  3 Sep 2021 14:17:59 +0200 (CEST)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Daniel Wagner <dwagner@suse.de>
-Subject: [RFC v1] nvme-tcp: enable linger socket option on shutdown
-Date:   Fri,  3 Sep 2021 14:17:57 +0200
-Message-Id: <20210903121757.140357-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.29.2
+        Fri, 3 Sep 2021 08:23:50 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H1Gzp6SJqzbh1N;
+        Fri,  3 Sep 2021 20:18:46 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 3 Sep 2021 20:22:40 +0800
+Received: from thunder-town.china.huawei.com (10.174.178.242) by
+ dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Fri, 3 Sep 2021 20:22:39 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH] arm64: entry: Improve the performance of system calls
+Date:   Fri, 3 Sep 2021 20:19:50 +0800
+Message-ID: <20210903121950.2284-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.178.242]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the no linger is set, the networking stack sends FIN followed by
-RST immediately when shutting down the socket. By enabling linger when
-shutting down we have a proper shutdown sequence on the wire.
+Commit 582f95835a8f ("arm64: entry: convert el0_sync to C") converted lots
+of functions from assembly to C, this greatly improves readability. But
+el0_svc()/el0_svc_compat() is in response to system call requests from
+user mode and may be in the hot path.
 
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
+Although the SVC is in the first case of the switch statement in C, the
+compiler optimizes the switch statement as a whole, and does not give SVC
+a small boost.
+
+Use "likely()" to help SVC directly invoke its handler after a simple
+judgment to avoid entering the switch table lookup process.
+
+After:
+0000000000000ff0 <el0t_64_sync_handler>:
+     ff0:       d503245f        bti     c
+     ff4:       d503233f        paciasp
+     ff8:       a9bf7bfd        stp     x29, x30, [sp, #-16]!
+     ffc:       910003fd        mov     x29, sp
+    1000:       d5385201        mrs     x1, esr_el1
+    1004:       531a7c22        lsr     w2, w1, #26
+    1008:       f100545f        cmp     x2, #0x15
+    100c:       540000a1        b.ne    1020 <el0t_64_sync_handler+0x30>
+    1010:       97fffe14        bl      860 <el0_svc>
+    1014:       a8c17bfd        ldp     x29, x30, [sp], #16
+    1018:       d50323bf        autiasp
+    101c:       d65f03c0        ret
+    1020:       f100705f        cmp     x2, #0x1c
+
+Execute "./lat_syscall null" on my board (BogoMIPS : 200.00), it can save
+about 10ns.
+
+Before:
+Simple syscall: 0.2365 microseconds
+Simple syscall: 0.2354 microseconds
+Simple syscall: 0.2339 microseconds
+
+After:
+Simple syscall: 0.2255 microseconds
+Simple syscall: 0.2254 microseconds
+Simple syscall: 0.2256 microseconds
+
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
-The current shutdown sequence on the wire is a bit harsh and
-doesn't let the remote host to react. I suppose we should
-introduce a short (how long?) linger pause when shutting down
-the connection. Thoughs?
+ arch/arm64/kernel/entry-common.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
- drivers/nvme/host/tcp.c | 1 +
- include/net/sock.h      | 1 +
- net/core/sock.c         | 8 ++++++++
- 3 files changed, 10 insertions(+)
-
-diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
-index e2ab12f3f51c..6c6dc465147a 100644
---- a/drivers/nvme/host/tcp.c
-+++ b/drivers/nvme/host/tcp.c
-@@ -1558,6 +1558,7 @@ static void nvme_tcp_restore_sock_calls(struct nvme_tcp_queue *queue)
- 
- static void __nvme_tcp_stop_queue(struct nvme_tcp_queue *queue)
+diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+index 32f9796c4ffe77b..062eb5a895ec6f3 100644
+--- a/arch/arm64/kernel/entry-common.c
++++ b/arch/arm64/kernel/entry-common.c
+@@ -607,11 +607,14 @@ static void noinstr el0_fpac(struct pt_regs *regs, unsigned long esr)
+ asmlinkage void noinstr el0t_64_sync_handler(struct pt_regs *regs)
  {
-+	sock_reset_linger(queue->sock->sk);
- 	kernel_sock_shutdown(queue->sock, SHUT_RDWR);
- 	nvme_tcp_restore_sock_calls(queue);
- 	cancel_work_sync(&queue->io_work);
-diff --git a/include/net/sock.h b/include/net/sock.h
-index 66a9a90f9558..313a6c8ba51c 100644
---- a/include/net/sock.h
-+++ b/include/net/sock.h
-@@ -2777,6 +2777,7 @@ int sock_set_timestamping(struct sock *sk, int optname,
+ 	unsigned long esr = read_sysreg(esr_el1);
++	unsigned long ec = ESR_ELx_EC(esr);
  
- void sock_enable_timestamps(struct sock *sk);
- void sock_no_linger(struct sock *sk);
-+void sock_reset_linger(struct sock *sk);
- void sock_set_keepalive(struct sock *sk);
- void sock_set_priority(struct sock *sk, u32 priority);
- void sock_set_rcvbuf(struct sock *sk, int val);
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 62627e868e03..23090a01e412 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -755,6 +755,14 @@ void sock_no_linger(struct sock *sk)
- }
- EXPORT_SYMBOL(sock_no_linger);
- 
-+void sock_reset_linger(struct sock *sk)
-+{
-+	lock_sock(sk);
-+	sock_reset_flag(sk, SOCK_LINGER);
-+	release_sock(sk);
-+}
-+EXPORT_SYMBOL_GPL(sock_reset_linger);
+-	switch (ESR_ELx_EC(esr)) {
+-	case ESR_ELx_EC_SVC64:
++	if (likely(ec == ESR_ELx_EC_SVC64)) {
+ 		el0_svc(regs);
+-		break;
++		return;
++	}
 +
- void sock_set_priority(struct sock *sk, u32 priority)
++	switch (ec) {
+ 	case ESR_ELx_EC_DABT_LOW:
+ 		el0_da(regs, esr);
+ 		break;
+@@ -730,11 +733,14 @@ static void noinstr el0_svc_compat(struct pt_regs *regs)
+ asmlinkage void noinstr el0t_32_sync_handler(struct pt_regs *regs)
  {
- 	lock_sock(sk);
+ 	unsigned long esr = read_sysreg(esr_el1);
++	unsigned long ec = ESR_ELx_EC(esr);
+ 
+-	switch (ESR_ELx_EC(esr)) {
+-	case ESR_ELx_EC_SVC32:
++	if (likely(ec == ESR_ELx_EC_SVC32)) {
+ 		el0_svc_compat(regs);
+-		break;
++		return;
++	}
++
++	switch (ec) {
+ 	case ESR_ELx_EC_DABT_LOW:
+ 		el0_da(regs, esr);
+ 		break;
 -- 
-2.29.2
+2.25.1
 
