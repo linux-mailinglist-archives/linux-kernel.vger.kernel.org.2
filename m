@@ -2,94 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A32B4001EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3064001F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349596AbhICPVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 11:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349602AbhICPVa (ORCPT
+        id S1349660AbhICPWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 11:22:18 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:50105 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349655AbhICPWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 11:21:30 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455A3C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 08:20:29 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id r2so5826844pgl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 08:20:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4CSkZVwfR8F5r/YD5qn9dxPgh6dJZoCpG89KU+T6HLQ=;
-        b=ZukqF/2Eu4qstUi5OQuaN3Op8LbOP7aJASN8QpubjqGjsq3tlGkfCWdELg6bIjHhuY
-         /r7wj/mQdIaX5MX7DYG9i2q7Rb/BnEsUUG4g1nGDsowqoTLYlfzeoVD9OshAvBG+gUUq
-         LQy2ryuaeFKFf9jE9ZuY/VtJPMEjQAzAwtcTpXaxvLCK8V/YzWffqFZmmkeHBYv8OI2P
-         Kf/xqCW6KFfgj7Z3Uad9pe/TYAKouyMkbcKKxHsKE59sw3TBQHf8oIRriWOuBzPUknIK
-         BqUS/7eEHHxZDu3+wswLo6Xr/B4rUWxA0vmt1LXsS9E8nuRJQ7n9jiAa0huA5ZJq8DXo
-         8ieQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4CSkZVwfR8F5r/YD5qn9dxPgh6dJZoCpG89KU+T6HLQ=;
-        b=GlIDuvl4crB5PVQPg/j+Y9zL1wrG0viUVkaVknGU1NdToE5Pw6RToO0+FP705cYGgR
-         I5uDMYtTaqdorYUNg+55qIUdrVKasp9ygKYKRi56DnULrNn+ElazbLFSZGU5P6jJgz94
-         Odts67GicF2ibDHNW2YqmS51q82pekexgu0ZAZg5BlLcSvfd7lTftPW48UdgFR65PRSA
-         54kuoi4d/VOSTYBJ30Y+yyh8opT9Id1yZu66wli7zyaE/xTU8z+iPvJAJrLWbACltOF4
-         PkZQ1//KTQJ/grY75IEuPF70XzffFdi/KGNW3vhklWLq79Pb+3GBjxrbDDY2u+Dlu9YM
-         OS9A==
-X-Gm-Message-State: AOAM531/6ntJwx1aMS/yiYN6OSHYHF2anrcPK9kZGrtbq481HIZdO6io
-        cDvu8uVqOEwyf3vcWsJqRC4bDMMrkgJA5w==
-X-Google-Smtp-Source: ABdhPJxymG8cfCUFrFhuqdX1WRR1BbgxyBDR6IlE8cbopkBGiA6E3xFdMJ9GJsU8TC/8n68R/yFT0A==
-X-Received: by 2002:a63:78c5:: with SMTP id t188mr4027705pgc.386.1630682428457;
-        Fri, 03 Sep 2021 08:20:28 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id c15sm5881007pjr.22.2021.09.03.08.20.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 08:20:28 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 15:20:24 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jiang Jiasheng <jiasheng@iscas.ac.cn>
-Cc:     pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] KVM: SVM: Potentially kvfree the ptr points to error
- page
-Message-ID: <YTI9OPEStjZqp8Xa@google.com>
-References: <1630661986-816436-1-git-send-email-jiasheng@iscas.ac.cn>
+        Fri, 3 Sep 2021 11:22:15 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5653A580AA5;
+        Fri,  3 Sep 2021 11:21:15 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 03 Sep 2021 11:21:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        to:cc:references:from:subject:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=Y
+        0N7oM6dRDQR8Rmd/jesZW+rQHwZCpQ3qcTW6TwuJYs=; b=jPbVywF+6na90WQPo
+        qeKreZA40pfwqQygvLunDJbTNub1BiDqSbtwY0WNLj34gfncXZizSrlGIUYevdSG
+        gTIdmXmmD62EuN6uAR5EZaHzDOwLJ420w9D1vwVUYwwSZRk01hF/WhnpIZH5C8s3
+        r0KgF4yfA8rsiKQ7ctRGJ6UwwzkBkvJN8zuwZH+rv2GkbABr6NKQ9etp8M+UnTUl
+        YkfrjkDJpsZRcRi6SenR5GdE539P12xZv5UfCB4LOj3hj//AnzED4zVZ2MCQzZLt
+        xU4h0f+GzDH/FD1/4uFNcd0C41KjLLdZ8dgx9vxzSrsBSuj4yiC5TdbgswOauMDa
+        kyISw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=Y0N7oM6dRDQR8Rmd/jesZW+rQHwZCpQ3qcTW6TwuJ
+        Ys=; b=Bk6hzej+JtMyUT+mdvkAp7lojXdG0saAcMI+sUqDu/nfdXbCMJj6XGLKz
+        2uNxsYAFXt9qIpwmNVNyXgCCxQryjKXUxPmc0qAJK1Jepyu9cy4XJpKbjpBU+e/c
+        cNxUxgagRZN3Vymtku4IC879wDo7gEYQSNtse6uhgTtD4W/e0YuZFzjAimCEEr+J
+        fLHZr8QV0Cwp5H+Z8TqQyxIGV11f+Qc7laZJtKlUal6XzspVRvWvG7b7Iww+yRt1
+        lkQq1UGyNmq3DtWi89rdFfNMknSqcCX3d2rVg8APrhtJIM4jShHFwxNOAGD2vvWO
+        5aNwhrqlbwWOdHu8B1YZfT1bTuPGg==
+X-ME-Sender: <xms:aj0yYTASpcK6Z5JJgnhJiL43t56zvIG2ZFSzn35_0usk8Lj-pEUvbg>
+    <xme:aj0yYZj61donCp5HYD2FHQNa-ARcAmYLbFDdz7R_sWnJ5axMX9F5j28wULwskRsEL
+    24rl7Qf54leVjQ-5g>
+X-ME-Received: <xmr:aj0yYemawDcUOdQuZlpftXODzOvNK26V5Sb8ud6l0v7ILrndop8DeucCExP1GrJL9L113k_tj6DIQJduyNozg2w8JQOKx9qZ61mHVUk8-Gx2HohuwWAUByc-Gg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedgkeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefheenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepheejgefhudeffeetleeigefgheetveeiteeuffehhfffkeeuvdff
+    veffveetudefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:aj0yYVy33uk9Xri8RxyrHM5J6EpGm8ffk26KAT92SQiKeasXs0_5XQ>
+    <xmx:aj0yYYR-pLl2P3V9iHfOG_RBChXF_DPPL3jZA74WjH_iZDxck-SGsQ>
+    <xmx:aj0yYYYSS28xuysGQsnqbOyLouAQaJWTgYphrHiQaQGeHPIRjMN7yQ>
+    <xmx:az0yYR9nwNFVPx6DCtUsdokl6NQfq24biuHlvtIz1Q62xNN70GjPwA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 3 Sep 2021 11:21:13 -0400 (EDT)
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210901053951.60952-1-samuel@sholland.org>
+ <20210903145013.hn6dv7lfyvfys374@gilmour>
+From:   Samuel Holland <samuel@sholland.org>
+Subject: Re: [RFC PATCH 0/7] clk: sunxi-ng: Add a RTC CCU driver
+Message-ID: <4a187add-462b-dfe4-868a-fdab85258b8d@sholland.org>
+Date:   Fri, 3 Sep 2021 10:21:13 -0500
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1630661986-816436-1-git-send-email-jiasheng@iscas.ac.cn>
+In-Reply-To: <20210903145013.hn6dv7lfyvfys374@gilmour>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021, Jiang Jiasheng wrote:
-> Directly use the sev_unpin_memory() may cause kvfree()
-> free the error page, for region->pages may point to the error page.
+On 9/3/21 9:50 AM, Maxime Ripard wrote:
+> Hi,
 > 
-> Signed-off-by: Jiang Jiasheng <jiasheng@iscas.ac.cn>
-> ---
->  arch/x86/kvm/svm/sev.c | 2 ++
->  1 file changed, 2 insertions(+)
+> On Wed, Sep 01, 2021 at 12:39:44AM -0500, Samuel Holland wrote:
+>> This patch series adds a CCU driver for the RTC in the H616 and R329.
+>> The extra patches at the end of this series show how it would be
+>> explanded to additional hardware variants.
+>>
+>> The driver is intended to support the existing binding used for the H6,
+>> but also an updated binding which includes all RTC input clocks. I do
+>> not know how to best represent that binding -- that is a major reason
+>> why this series is an RFC.
+>>
+>> A future patch series could add functionality to the driver to manage
+>> IOSC calibration at boot and during suspend/resume.
+>>
+>> It may be possible to support all of these hardware variants in the
+>> existing RTC clock driver and avoid some duplicate code, but I'm
+>> concerned about the complexity there, without any of the CCU
+>> abstraction.
+>>
+>> This series is currently based on top of the other series I just sent
+>> (clk: sunxi-ng: Lifetime fixes and module support), but I can rebase it
+>> elsewhere.
 > 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index 8d36f0c..ee7d691 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1664,6 +1664,8 @@ find_enc_region(struct kvm *kvm, struct kvm_enc_region *range)
->  static void __unregister_enc_region_locked(struct kvm *kvm,
->  					   struct enc_region *region)
->  {
-> +	if (IS_ERR(region->pages))
-> +		return;
+> I'm generally ok with this, it makes sense to move it to sunxi-ng,
+> especially with that other series of yours.
+> 
+> My main concern about this is the split driver approach. We used to have
+> that before in the RTC too, but it was mostly due to the early clock
+> requirements. With your previous work, that requirement is not there
+> anymore and we can just register it as a device just like the other
+> clock providers.
 
-This is completely bogus, __unregister_enc_region_locked() is only called with
-@region coming directly from sev->regions_list, i.e. it would require KVM to put
-an error pointer on the list.  Aside from the fact that (a) KVM has the proper
-error checking and (b) regions are allocated via kzalloc(), which uses NULL and
-not ERR_PTR() to signal failure, it's impossible to add an error pointer to a
-list because error pointers are not mapped.
+That's a good point. Originally, I had this RTC CCU providing osc24M, so
+it did need to be an early provider. But with the current version, we
+could have the RTC platform driver call devm_sunxi_ccu_probe. That does
+seem cleaner.
+
+(Since it wasn't immediately obvious to me why this works: the only
+early provider remaining is the sun5i CCU, and it doesn't use the sun6i
+RTC driver.)
+
+> And since we can register all those clocks at device probe time, we
+> don't really need to split the driver in two (and especially in two
+> different places). The only obstacle to this after your previous series
+> is that we don't have of_sunxi_ccu_probe / devm_sunxi_ccu_probe
+> functions public, but that can easily be fixed by moving their
+> definition to include/linux/clk/sunxi-ng.h
+
+Where are you thinking the clock definitions would go? We don't export
+any of those structures (ccu_mux, ccu_common) or macros
+(SUNXI_CCU_GATE_DATA) in a public header either.
+
+Would you want to export those? That seems like a lot of churn. Or would
+we put the CCU descriptions in drivers/clk/sunxi-ng and export a
+function that the RTC driver can call? (Or some other idea?)
+
+Regards,
+Samuel
