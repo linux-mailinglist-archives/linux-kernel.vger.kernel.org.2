@@ -2,110 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4080C4003A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2F74003AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350145AbhICQsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 12:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350110AbhICQsN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 12:48:13 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A53C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 09:47:12 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id f2so10523792ljn.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 09:47:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3SbG8sX/0ZzQsMJDjp4NMB1XLP9fPSRfuxnRQ0qJ6ZQ=;
-        b=h96jPvB1VF8aXmsyKYTK3pyMfkjlr4jae/eMazr84KKEVE3WPPzLi2drfZe0sltNls
-         ezB2zs40eBbOBAXGEZgOIBC/h9TYpHxHyV9nqS09K3LiD89aE2JMppnmeBY2mrvEMKxc
-         vIH5g7LBEYPFVstKUTFJLfFel+honSYDWbJZaoE+GV+VdCFmQcIqwmyg0XxY3b8BMj2c
-         YS0SrgO4m0l7CqlY79p/FdLyjpU3CcIOGbV6VR/tfo2w/3mbglFhvWKq5g1HLR0GEGmw
-         Wt/1hfZqzflI3KNZZZ8AHcrEYVSJzdk/v6pPtL6LNUO0YHz8P2AvUL/46173JDZ2Qv6u
-         zvPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3SbG8sX/0ZzQsMJDjp4NMB1XLP9fPSRfuxnRQ0qJ6ZQ=;
-        b=koPKLhrIT1SwkgNZfpvW6BpG2+4kyYeG6GiP1176MDFnOb1K/BiJDzr+/nOUQxzcxd
-         jYk16DkkWZ5B430w8fLuDF1fPm/YaW9zh8rW+MGFYrmfrm6ukSt6n5ixYDQBXDlvq3WB
-         wvdYcuTXtmaUV7iozJyni2Bwjq1Lfg/leVYH36n7kMtnWhQIIZifMsduBxXpy2ioQXgk
-         4CEeeEqgXivbbhz7Rx9F8ivXhGh6P4Esfzd2+kmZlY7VxegBiLWzj/DKYNiVBD7eiDOg
-         datgfcXWxDdriNWc4rlQSvyoEwhyfQDsqXZDfdidNypTFNN6nG2jQAODp/wbiGxrkGMz
-         WerA==
-X-Gm-Message-State: AOAM533rjF4aLp4Um97JptDHSQON8Q6v4LmJTmE5f5e2Rep/Hn0ASdgt
-        WARtDxRTSa72rNf/NN/0FVHWnoJ0aMksh0A3n0ymYg==
-X-Google-Smtp-Source: ABdhPJwNAt83j9fd+RPScqWuwfEU2cw02u/Mf4m+X7BGCDeel+rBomwbplyiuXmf8qSWEvlZ/A+44IrmpEVPwQGr418=
-X-Received: by 2002:a2e:8e8f:: with SMTP id z15mr3538184ljk.121.1630687631028;
- Fri, 03 Sep 2021 09:47:11 -0700 (PDT)
+        id S1349523AbhICQvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 12:51:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230187AbhICQvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 12:51:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22AC1610CC;
+        Fri,  3 Sep 2021 16:50:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630687816;
+        bh=VUwk1/BRkK07J1ioCKDSItUtjzEDllPwvxeXiWvODuM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dwJwKmdCvhF/Q8vmmeGX4DXmAkl8UkrO2VtS41NAjl/78MnERee5kVma1Y8wG9sBI
+         VlVHMxalSH5V11BQOIybdlrjo5GdY49reXqPw/H7C+CSnO41Z0czvWWoqRRjWiQT1d
+         1eyc+6s/J8wrt5LvKcIDLFMyXckj2ujI7iHqM5OLCqITM5qYzVik9jeHbtEDruZZNS
+         r+V5I/bYvbMiRr56ybH5RBGMMVPjHJ+dVlEFOvsERVfImhy0vPvx8pretVS76Ys28V
+         E5k2zLI3ww5c7wYIjfckealVyQll+3JTdfPgqzJ2x6OWOYpPdMATjnEk8sV7ZYlbZt
+         uym379c0hYkgw==
+Received: by mail-ed1-f41.google.com with SMTP id l6so8774269edb.7;
+        Fri, 03 Sep 2021 09:50:16 -0700 (PDT)
+X-Gm-Message-State: AOAM533E5FiqMEVjTvzY/yWR6tW1mYuxWXWqR+pGJ37L9nZMFnmAqiY6
+        G0wXbDF4Q4kFuBPPtfU96tKpJG9/p+kAKYJ8sA==
+X-Google-Smtp-Source: ABdhPJywrfSsYbNB1uIR1Vw+ndK0QYexlxbEpDmF9RZVBhpllKYaMxxoicP3x8DZ7zdO1yMAihqIRSheQDViNxczMvc=
+X-Received: by 2002:a05:6402:40cf:: with SMTP id z15mr4926602edb.70.1630687814769;
+ Fri, 03 Sep 2021 09:50:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210902124913.2698760-1-geert@linux-m68k.org>
-In-Reply-To: <20210902124913.2698760-1-geert@linux-m68k.org>
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Fri, 3 Sep 2021 22:16:59 +0530
-Message-ID: <CAO_48GF3OL9+x-jdEXN9kYZaS2kBgAq0MNmGYfxKasPWcmJWaA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] dma-buf: Add missing dependencies on DMA_SHARED_BUFFER
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Hridya Valsaraju <hridya@google.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <1630661377-31244-1-git-send-email-shengjiu.wang@nxp.com>
+ <1630661377-31244-4-git-send-email-shengjiu.wang@nxp.com> <YTJQcIOU1mMxoIpF@robh.at.kernel.org>
+In-Reply-To: <YTJQcIOU1mMxoIpF@robh.at.kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 3 Sep 2021 11:50:03 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqL_5U0QB5d5VmgX3PMa9LNkyFa+RHWSAzeeTzq6xR=_nA@mail.gmail.com>
+Message-ID: <CAL_JsqL_5U0QB5d5VmgX3PMa9LNkyFa+RHWSAzeeTzq6xR=_nA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] dt-bindings: remoteproc: Add fsl,imx-dsp-rproc
+ binding document
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Geert,
+On Fri, Sep 3, 2021 at 11:42 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, 03 Sep 2021 17:29:36 +0800, Shengjiu Wang wrote:
+> > Define the compatible string and properties needed by imx_dsp_rproc
+> > driver.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> >  .../remoteproc/fsl,imx-dsp-rproc.yaml         | 131 ++++++++++++++++++
+> >  1 file changed, 131 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml
+> >
+>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-On Thu, 2 Sept 2021 at 18:19, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
->         Hi Sumit, Christian,
->
-> This patch series adds missing dependencies on DMA_SHARED_BUFFER to
-> various options of DMA-BUF, and drops a bogus select.
->
-> As drivers/dma-buf/Kconfig contains interleaved options that select or
-> depend on DMA_SHARED_BUFFER, they can't be wrapped inside a big
-> "if DMA_SHARED_BUFFER / endif" block.
-
-Thanks for catching these issues and the patch-set. LGTM!
-
-I'll apply them over.
->
-> Thanks!
->
-> Geert Uytterhoeven (3):
->   dma-buf: DMABUF_MOVE_NOTIFY should depend on DMA_SHARED_BUFFER
->   dma-buf: DMABUF_DEBUG should depend on DMA_SHARED_BUFFER
->   dma-buf: DMABUF_SYSFS_STATS should depend on DMA_SHARED_BUFFER
->
->  drivers/dma-buf/Kconfig | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> --
-> 2.25.1
->
-> Gr{oetje,eeting}s,
->
->                                                 Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                                             -- Linus Torvalds
-
-Best,
-Sumit.
+I take that back. What's the difference with this binding and
+Documentation/devicetree/bindings/dsp/fsl,dsp.yaml?
