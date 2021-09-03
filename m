@@ -2,93 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A576D4004F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1437A4004F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348188AbhICSjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 14:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39856 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbhICSjF (ORCPT
+        id S1347420AbhICSlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 14:41:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46189 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232927AbhICSlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 14:39:05 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41136C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 11:38:04 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id q21so71041plq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 11:38:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AwMjWECVF5DouWRg4DDCdzuDm8b1FUkL2lfLjigAdrw=;
-        b=yPp78YefA5OulhXKpgoj7VOFdGIMV4/hkTb7A7cYDExX5sMe0SIb9JkbU5kkQGNFqM
-         Mg6TWDXyH0psAuuj9rC/blDlean6r4rAZvJFcVsg2vNblmUQ7B6FcN6+CmJvcBXbD6hR
-         jQuMs6DQVKqMQoZ7R8b68PnqpPfWTimC9XLCS3XjH1aAFuGRghcl3XLNA/ox+qCk/OH8
-         GDMml/nqQyANCVkw1+3m0IfZ4opjWUp7GampTB4girBWalOk3FiBI4A9wLbxy96eoEjT
-         UCbxYj/7QdzJeTxBuCpebgB0CjRKtvIQEZkztGLX5zWqcyTuv+63lXWzU6UVt30o9BkG
-         ++dg==
+        Fri, 3 Sep 2021 14:41:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630694421;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aWtF9jf2Zkp/EIHUVbxUvuUljulDqbFLTLzbdRX5bvg=;
+        b=I8B31O8eeLnxKdukWOFfP+Zv0qyRjBODHk4R5Ia1y88Yazh2xMdANy2eHGmX78OeR7K7Q5
+        d8tE0kB9LH8oWfgdFQdc2rLqvOCWBA79K7GxLKMJMBtzS/a/RCSss+1DeWQTCVXhM54IMX
+        Dmq/3fR8Le4wzCFpXDfAQRfEM1Oweno=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-457-LMTl23UkNz2fj6q0sV54hw-1; Fri, 03 Sep 2021 14:40:19 -0400
+X-MC-Unique: LMTl23UkNz2fj6q0sV54hw-1
+Received: by mail-qk1-f198.google.com with SMTP id k9-20020a05620a138900b003d59b580010so6662308qki.18
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 11:40:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AwMjWECVF5DouWRg4DDCdzuDm8b1FUkL2lfLjigAdrw=;
-        b=j5qLRg1wUGFbU4MHuqsnmFvoPC5fzGfDQnatwW/ctj31gKX8dRCP7WgB/KWbjwWDYD
-         WK8MOPHfiQ7TkqGpjV0k0vOLLFNc09EFHqiWgT+6Lz2EZGvN4P6bJDG8i/38+OFRO+sD
-         GUlcqB4OswQ4zh1gqiVSS+aGXDxFwwmhDlNB6jlu0ln0gA1NEz9usUxichzMaYRCSD0K
-         0jL4o0OY+183MJ2kxXdRYnTrkoUfgojRkZMz1aG/U05YCIyoLRn07qwwAFt8t48pT5Yh
-         FJuPAPRmj+kldEUaT/s1iHGlZmZQFMWFMpff2KI0S+4CWzkcxyqx6omqt0U+p4PjDMrg
-         YNIQ==
-X-Gm-Message-State: AOAM532qolo41tTB6w57kJCK/RTEwEI5krI1ZyjGj+WEuCmO9RzpOAOi
-        wiI+MFjTHFaMPU9bcdglnSGSmS4Q6kUBBEg1EiHMKg==
-X-Google-Smtp-Source: ABdhPJyyj+KbMk2/1Jcy/3c5IkjNcQX5t+5qP+Gn0/3iNoyJbLgEOdEywfmmlMNyqFCeuS7aVFZovgcz/HSC0ZGSCsA=
-X-Received: by 2002:a17:90a:414c:: with SMTP id m12mr342815pjg.100.1630694284100;
- Fri, 03 Sep 2021 11:38:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <22d59432-1b8e-0125-96e9-51b041fe3536@kernel.dk>
- <20210827235623.1344-1-phil@philpotter.co.uk> <89679d81-7e9e-7cae-c335-b97d53fa68ab@kernel.dk>
-In-Reply-To: <89679d81-7e9e-7cae-c335-b97d53fa68ab@kernel.dk>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Fri, 3 Sep 2021 19:37:53 +0100
-Message-ID: <CAA=Fs0kVfjn7vDSq-v=aQcUuZwoST0ucYRir90GEC5cU=K9Hrw@mail.gmail.com>
-Subject: Re: Wanted: CDROM maintainer
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-scsi@vger.kernel.org
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=aWtF9jf2Zkp/EIHUVbxUvuUljulDqbFLTLzbdRX5bvg=;
+        b=O+83je0TEaon4B8RinS/tQb7K2SNHdacLwW8M4K17RW0LjQD098FfF5LnlpjI52505
+         xFs5cMSLcVNcCRUnLv813lB3mZC5vB5Gykhvbkqfh65L/1/pkDT8rtqbOX2cLzKnlGkS
+         MVdblXcPyYIEmsJ0u1mGFMZfG6KWSpothzW7SNB6Vgt/fkpxWSb8h/NjaJZdqIZ7xpyq
+         TZ2TY92zZfsZiTRKaOhyXU0Rc3kcbChTDYA/LnCfKT5Kx/uZG2N7tgCClPDk2Cd9d664
+         zE4KitqopDoIqSZWFl7V0um8bnhIoc80eCEgFT5nqerebAF0xaLIsdVaUQJfOqZ6Ce6C
+         ot0Q==
+X-Gm-Message-State: AOAM5325Q7ubgrOGK+ljFqRdEmagQlVZapU9FY0otrul3XnVQGEZEbpa
+        loCjXpypc5YvbMe0s8yx4EUfXu7zYKI6AZqfPbpKePVKmZAqIXpzXSas+JaVxAe6U8uhIzaNdEF
+        medvf7LeWA5GxKTyohBx95OYS
+X-Received: by 2002:a05:620a:2e4:: with SMTP id a4mr241537qko.288.1630694419449;
+        Fri, 03 Sep 2021 11:40:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwqVC1TcFhJm7LcUohfzVUt093xlPQkNtnzfm7+W7zSXklTGCQY6X98oT4Qb3UWtx1UAb1ngA==
+X-Received: by 2002:a05:620a:2e4:: with SMTP id a4mr241518qko.288.1630694419233;
+        Fri, 03 Sep 2021 11:40:19 -0700 (PDT)
+Received: from [192.168.8.104] (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id a189sm4443447qkf.114.2021.09.03.11.40.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 11:40:18 -0700 (PDT)
+Message-ID: <ca29cfea709f54f74899900068bddcd838d5ab2c.camel@redhat.com>
+Subject: Re: [PATCH] drm/msm: remove unneeded variable
+From:   Lyude Paul <lyude@redhat.com>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, cgel.zte@gmail.com,
+        robdclark@gmail.com
+Cc:     sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
+        airlied@redhat.com, laurent.pinchart@ideasonboard.com,
+        chi.minghao@zte.com.cn, treding@nvidia.com,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+Date:   Fri, 03 Sep 2021 14:40:17 -0400
+In-Reply-To: <52a6c92d-fe59-cdb8-23de-6fcda6ca2c68@linaro.org>
+References: <20210831115127.18236-1-chi.minghao@zte.com.cn>
+         <2d6784e3327cab7bfdc88ca1ef7c9c4c9cca113a.camel@redhat.com>
+         <52a6c92d-fe59-cdb8-23de-6fcda6ca2c68@linaro.org>
+Organization: Red Hat
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Sept 2021 at 15:09, Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 8/27/21 5:56 PM, Phillip Potter wrote:
-> > Dear Jens,
-> >
-> > Thought I'd reply publicly given the spirit of the mailing lists, hope this
-> > is OK.
-> >
-> > Whilst I haven't worked on this area of the kernel, I would certainly like
-> > to register my interest. Many thanks.
->
-> Why don't we give it a try, then? Here's what I propose:
->
-> 1) Send a patch that updates MAINTAINERS for the uniform cdrom driver to
->    yourself
->
-> 2) Just send pull requests for changes through me, so I can keep an eye
->    on it at least initially
->
-> I'll send in a patch to update the SCSI cdrom to just fall under SCSI,
-> probably just removing that entry as that should then happen by default.
->
-> --
-> Jens Axboe
->
+On Fri, 2021-09-03 at 21:31 +0300, Dmitry Baryshkov wrote:
+> On 02/09/2021 21:40, Lyude Paul wrote:
+> > Reviewed-by: Lyude Paul <lyude@redhat.com>
+> > 
+> > Do you need me to push this?
+> 
+> We'd pick this up through the msm tree.
 
-Dear Jens,
+ah-totally forgot msm had their own tree and didn't go through drm-misc-next.
+Thanks!
 
-Many thanks, sounds great - I'll send through a patch this evening as suggested.
+> 
+> > 
+> > On Tue, 2021-08-31 at 04:51 -0700, cgel.zte@gmail.com wrote:
+> > > From: Chi Minghao <chi.minghao@zte.com.cn>
+> > > 
+> > > Fix the following coccicheck REVIEW:
+> > > ./drivers/gpu/drm/msm/edp/edp_ctrl.c:1245:5-8 Unneeded variable
+> > > 
+> > > Reported-by: Zeal Robot <zealci@zte.com.cn>
+> > > Signed-off-by: Chi Minghao <chi.minghao@zte.com.cn>
+> > > ---
+> > >   drivers/gpu/drm/msm/edp/edp_ctrl.c | 4 +---
+> > >   1 file changed, 1 insertion(+), 3 deletions(-)
+> > > 
+> > > diff --git a/drivers/gpu/drm/msm/edp/edp_ctrl.c
+> > > b/drivers/gpu/drm/msm/edp/edp_ctrl.c
+> > > index 4fb397ee7c84..3610e26e62fa 100644
+> > > --- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
+> > > +++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
+> > > @@ -1242,8 +1242,6 @@ bool msm_edp_ctrl_panel_connected(struct edp_ctrl
+> > > *ctrl)
+> > >   int msm_edp_ctrl_get_panel_info(struct edp_ctrl *ctrl,
+> > >                  struct drm_connector *connector, struct edid **edid)
+> > >   {
+> > > -       int ret = 0;
+> > > -
+> > >          mutex_lock(&ctrl->dev_mutex);
+> > >   
+> > >          if (ctrl->edid) {
+> > > @@ -1278,7 +1276,7 @@ int msm_edp_ctrl_get_panel_info(struct edp_ctrl
+> > > *ctrl,
+> > >          }
+> > >   unlock_ret:
+> > >          mutex_unlock(&ctrl->dev_mutex);
+> > > -       return ret;
+> > > +       return 0;
+> > >   }
+> > >   
+> > >   int msm_edp_ctrl_timing_cfg(struct edp_ctrl *ctrl,
+> > 
+> 
+> 
 
-Regards,
-Phil
+-- 
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
+
