@@ -2,189 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5340C3FFAF9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D897F3FFB02
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347819AbhICHTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 03:19:37 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:23025 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347747AbhICHTe (ORCPT
+        id S1347857AbhICHUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 03:20:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234803AbhICHUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 03:19:34 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210903071834euoutp02884588c15cc9cd4605a76496f7213b75~hPrtFBESj1157011570euoutp028
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 07:18:34 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210903071834euoutp02884588c15cc9cd4605a76496f7213b75~hPrtFBESj1157011570euoutp028
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1630653514;
-        bh=jzfva8tySkoBOZr2tYVsxf46AbNPcgeN/pneM9rWZ7M=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=YHQT2KhGoOEH+ry4ouVkAW9b7mjzp7NHHnYMhKJyvj5aS8/1nWhoqnQhSZfstHmUh
-         eFn7KIm7X0znMMoIRkfT31nu3YD1oE5sHcrcxcfpe8Srv9F0M9+W7mw9s46lEEq6mS
-         UUU/r3hPJQoabiDe6YIfg1D7HgekIwgSNFR84GFo=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210903071833eucas1p176cb4b6def20e6660e2b3ce075ab5b68~hPrsTJmFf2482524825eucas1p1M;
-        Fri,  3 Sep 2021 07:18:33 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id BA.3B.42068.94CC1316; Fri,  3
-        Sep 2021 08:18:33 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210903071832eucas1p10a7b8a295e68df4d2735110c9ec09cf1~hPrr0SjpP2476624766eucas1p1c;
-        Fri,  3 Sep 2021 07:18:32 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210903071832eusmtrp1ee4a743996cc9c282753936e3c679c16~hPrryLsZp3052030520eusmtrp1y;
-        Fri,  3 Sep 2021 07:18:32 +0000 (GMT)
-X-AuditID: cbfec7f4-c89ff7000002a454-1c-6131cc49558e
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 23.36.20981.84CC1316; Fri,  3
-        Sep 2021 08:18:32 +0100 (BST)
-Received: from [192.168.0.14] (unknown [106.210.131.79]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210903071831eusmtip1b3a77e8d246906c962e97defe4b33642~hPrqixxyX3135731357eusmtip1I;
-        Fri,  3 Sep 2021 07:18:31 +0000 (GMT)
-Subject: Re: [PATCH v3 06/16] ARM: configs: Everyone who had PANEL_SIMPLE
- now gets PANEL_SIMPLE_EDP
-To:     Doug Anderson <dianders@chromium.org>,
-        Olof Johansson <olof@lixom.net>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DTML <devicetree@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>, linux-sunxi@lists.linux.dev,
-        "open list:TEGRA ARCHITECTURE SUPPORT" <linux-tegra@vger.kernel.org>
-From:   Andrzej Hajda <a.hajda@samsung.com>
-Message-ID: <5c3b3c1c-6fc2-123b-b1bc-c6e085996e01@samsung.com>
-Date:   Fri, 3 Sep 2021 09:18:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
-        Thunderbird/78.13.0
+        Fri, 3 Sep 2021 03:20:43 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AE6C061575;
+        Fri,  3 Sep 2021 00:19:44 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id n18so4701044pgm.12;
+        Fri, 03 Sep 2021 00:19:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=EtHM4v5k5O3KlwBMZhh8koyco/MnfcbrVJgA5dm1qn8=;
+        b=F9PFlCkm33EtYjpX+K573ijdvJANomBO1wtE8R0RzBOXMHpLk3mRk9nbOt2hSmpNUw
+         z8PJGz5mrdVrJRYQbnSWbRqAS8nVBYCBtl24Z0/kyBVb9ecFkYSnOBlawIqMYZNJY0B+
+         QY7Wdr0Vz7W8S4fgKhtG1sSIFsNVI5c+gpJOl5uAkErHTDU87J1aL+1nc9iMtVjKPXN2
+         PywU0bFjVO45nsHK84nG5KhqiXzFg2e1gi1YSlTAq+4thmdKQfpZCf2XB62g0MmzqTiU
+         SVv74oc5oD86H5yVeWPlKvk6jNf2+PaIcA1TR1wdTQariXp3kh3GI6SmL/i5qV1KM/53
+         70Bg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=EtHM4v5k5O3KlwBMZhh8koyco/MnfcbrVJgA5dm1qn8=;
+        b=rAF5yMikfZ6QpVrykClu/6WqDCAq2Ymxc/xbd/+LKxdFzMP9lXtE31WJ4v+QinA1o6
+         6jVDkHM3hQNd8TEDc60dMAnLgPkWkiqARyRJbq/AgKBiJmu/zeT692xOytlG1exdqcdF
+         ZdGBSP24vkF2qwN7NEUVyZcohJz64jgSzKgoAf6thxkLz196QbDEa/NOinFgSTL0bWLA
+         4D2B72uAJ4XJhh0xK6vjJBT7bl2yE6/pLnUrd1yiw74RCZr2l69Zv1lVSsp4nBtedU28
+         M/axY7CpeZlOXYxM3sBH+vWdIomQrWc3IOCEAWYj8weWexnEMMv4az22tbBJ0VVy8JUN
+         Xk+w==
+X-Gm-Message-State: AOAM5327Hqhh8Pxj0pxVXEwQFa6CW9cwXfH8QbecAF+ht59ulpq18dhb
+        be7C3z2bOoa5hYqWV8HxE/TCY1RZFWm3hVoIOq453wMY/1x54Ok=
+X-Google-Smtp-Source: ABdhPJwBJIRPqih+MTR2z3I0l3K1rAmRz8Kk/8qR523Uc9kTLyhPedhSny3S4QoRc9jylVwZZMyoeODiABxMMyX8r1s=
+X-Received: by 2002:a63:3d4a:: with SMTP id k71mr2395401pga.276.1630653583232;
+ Fri, 03 Sep 2021 00:19:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAD=FV=WPXAUyuAHb1jKx9F_aw+JGX4MWB3or=Eq5rXoKY=OQMw@mail.gmail.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SfUxTZxTG8957e9uiLdfixis2KmRuw20gSrKXbHHTkHG34ZQtYdNtYsVr
-        NVAkvaDsI4MxYcCsCk6FlggkfElMtNRC21mIXaUiX0qhTCapDsYYrjDKZ2Gdo1zM+O85z/md
-        9zkneQW4xEgGCY6lpDHKFFlyCOlHNLR4ul57tz1CtrVwXIBUna0Y8ha18FFb8xiBnjYU4qjM
-        2slDHdW3SNQzPU6i3wtcJKq7YCSQ1jWHoR//qcFQ/aCDhwqbO/ioYP4KjuymUhJpKs8SSP/n
-        GIaKu5oWuSYTifKn1CSyXDADVDGhJ1BufjUP3e2bJFGO2cpHtR49QB7TZeLt9bTdcR+nF+aL
-        AK3OUpG0Jus+QRsGKgFtniknaKN6gE/X1+WT9EPHTZJunHnEoy+3xtHOH2wYravMpEd0JYDu
-        uZPNo7VjBmxvwH6/Nw8zycdOMMrwHQf9jj445yRTTVRG71/D/CxQKioAQgGkIqHdkccvAH4C
-        CVUL4NCQe7mYAtBebCK4YhLAEvNV3rMRzeQwyTVqAKzy3MG4wgXgRPZpzEcFUAy0tdzj+/Ra
-        6j140fBkCcKpYiGsGO1fgkgqFHp1D0ifFlE7oK6oB/dpgnoBdo5MEz79HLUPeltNPI5ZA1tL
-        hpZ8IRUHf/5teInHqUDYP1SGcXojbHSV4r4wSJn94GyXAeP2joZ9zRcJTgfAUdsNPqelsO38
-        6WU/EzprTy0P5wGov27EucYb8GHn/OKmgsWEUHjNFM7ZO6H9tpvw2ZASw19ca7gdxLCo4RLO
-        2SKYlyvh6GDo7NAvPxgIq+5Nk+dAiHrFZeoV16hXXKP+P7ccEHUgkElnFXKG3ZbCnAxjZQo2
-        PUUelnhcUQ8Wf3fbv7YpA6gZnQizAEwALAAK8JC1IuM7W2US0WHZF18yyuMJyvRkhrWA9QIi
-        JFB06MbVBAkll6UxSQyTyiifdTGBMCgLi9M6viqWHtLMJp5flzDAard39wY/37Rqu/elt8Y3
-        bXZkfDjnhU+yK+sjRMFqdfxn9rqamLnvbkX5r3p/XfnH0RVNu1xXeg8oE6pybuvgtfaMlzNY
-        99n4Ld//dOJkmKq4YdO+usbuAKnpk7I0/QfA3R7lMfj3RkfyreW5sUWWkehLqqCbObtfmd4v
-        j9QiL5X07YvUpxv+Xv2He9AMPwprCu3TyPsrDD1RXbO7fz0QEzMzSxl5muHXqTPW6l1HrKvF
-        jw5u6371a1w1mFzmVsjlexThVRuv7zFlJjnZnZrUb/ptT7sTY3n10gWz/112w2axOPbxkdSc
-        z/cKpQvxZWcenyJEIQR7VBaxBVeysv8AlYUuhUwEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrDKsWRmVeSWpSXmKPExsVy+t/xu7oeZwwTDb49VLboPXeSyeLvpGPs
-        Fqf3v2Ox+L9tIrPF/CPnWC3OLjvIZnHl63s2i6ddb9ksVk3dyWKx8e0PJospf5YzWWx6fI3V
-        YuL+s+wWXb9WMltc3jWHzWL2kn4Wi60v3zFZzDi/D6hu3y42i84vs9gsDk3dy2ix8ONWFou2
-        zmWsFqeuf2azaN17hN1ixc+tjBY/d81jcZD2uHztIrPH71+TGD1mNfSyecxuuMjisePuEkaP
-        vd8WsHjsnHWX3WPTqk42jzvX9rB5bP/2gNVj3slAj/vdx5k8Ni+p93ixeSajx5UTTaweG9/t
-        YAoQjtKzKcovLUlVyMgvLrFVija0MNIztLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3S9DL
-        uDnhPlvBLoGKq2+esTcwzuHtYuTkkBAwkZj9+RlbFyMXh5DAUkaJ+X9/s0EkxCV2z3/LDGEL
-        S/y51gVV9JpR4u/CF0wgCWGBVIlrB5cygtgiAl4S03a8ZgIpYhaYxynxefojFoiOqUwSy1//
-        YQGpYhPQlPi7+SbYCl4BO4nNk66ArWARUJE49+IrWI2oQKRE04mtUDWCEidnPgGLcwoEShx+
-        9AysnlnATGLe5odQtrjErSfzmSBseYntb+cwT2AUmoWkfRaSlllIWmYhaVnAyLKKUSS1tDg3
-        PbfYSK84Mbe4NC9dLzk/dxMjMFltO/Zzyw7Gla8+6h1iZOJgPMQowcGsJMK7080gUYg3JbGy
-        KrUoP76oNCe1+BCjKdA/E5mlRJPzgekyryTe0MzA1NDEzNLA1NLMWEmc1+TImnghgfTEktTs
-        1NSC1CKYPiYOTqkGph1rbWbMmzXjSG2amHRz3sLLVyasclgV8HE2w44Hp/lOCMYKZ7lZmGou
-        XykuZy4oHnLxhAdT+aTOb/rZr5Y8vZTRktTQycCxIuxqQ4zCxIU6scq6GmoztimZNUn3/Xt6
-        w9tMtFLiQ/Ct3eXPQhw6T8Qa7IsOf6dl8e6envRB9ikn97ld7+ncv7XgsNebmoTKOm45SY7d
-        P4tKShnf7p+uv8T+FsOW+pUtZ4vuF8VI/c6/dSvElVk6+fB8EbEE9+bflwvk3rFFbL3mtMv/
-        VphE6IH7RQ93mNk6Tog3irVb2Rt/vu7uRY5Ja9sOhK5akbHm7Dqt04tccuZah7L4HNJSZ503
-        Y7vf+wNzkl/uvRXxX4mlOCPRUIu5qDgRAD32K4LfAwAA
-X-CMS-MailID: 20210903071832eucas1p10a7b8a295e68df4d2735110c9ec09cf1
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210903071832eucas1p10a7b8a295e68df4d2735110c9ec09cf1
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210903071832eucas1p10a7b8a295e68df4d2735110c9ec09cf1
-References: <20210901201934.1084250-1-dianders@chromium.org>
-        <20210901131531.v3.6.I02250cd7d4799661b068bcc65849a456ed411734@changeid>
-        <CAOesGMjp4pscuxciHZo7br-acgbkZSdRA_mUWNpcz0OfF7zOSA@mail.gmail.com>
-        <CAD=FV=WPXAUyuAHb1jKx9F_aw+JGX4MWB3or=Eq5rXoKY=OQMw@mail.gmail.com>
-        <CGME20210903071832eucas1p10a7b8a295e68df4d2735110c9ec09cf1@eucas1p1.samsung.com>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Fri, 3 Sep 2021 15:19:32 +0800
+Message-ID: <CACkBjsZh7DCs+N+R=0+mnNqFZW8ck5cSgV4MpGM6ySbfenUJ+g@mail.gmail.com>
+Subject: kernel BUG in block_invalidatepage
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.09.2021 01:10, Doug Anderson wrote:
-> Hi,
-> 
-> On Wed, Sep 1, 2021 at 2:12 PM Olof Johansson <olof@lixom.net> wrote:
->>
->> On Wed, Sep 1, 2021 at 1:20 PM Douglas Anderson <dianders@chromium.org> wrote:
->>>
->>> In the patch ("drm/panel-simple-edp: Split eDP panels out of
->>> panel-simple") we split the PANEL_SIMPLE driver in 2. By default let's
->>> give everyone who had the old driver enabled the new driver too. If
->>> folks want to opt-out of one or the other they always can later.
->>>
->>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
->>
->> Isn't this a case where the new option should just have had the old
->> option as the default value to avoid this kind of churn and possibly
->> broken platforms?
-> 
-> I'm happy to go either way. I guess I didn't do that originally
-> because logically there's not any reason to link the two drivers going
-> forward. Said another way, someone enabling the "simple panel" driver
-> for non-eDP panels wouldn't expect that the "simple panel" driver for
-> DP panels would also get enabled by default. They really have nothing
-> to do with one another. Enabling by default for something like this
-> also seems like it would lead to bloat. I could have sworn that
-> periodically people get yelled at for marking drivers on by default
-> when it doesn't make sense.
-> 
-> ...that being said, I'm happy to change the default as you suggest.
-> Just let me know.
+Hello,
 
-I guess this is just misunderstanding. Symbol names:
-	CONFIG_DRM_PANEL_SIMPLE=y
-	CONFIG_DRM_PANEL_SIMPLE_EDP=y
-suggests that CONFIG_DRM_PANEL_SIMPLE_EDP is an 'suboption' of 
-CONFIG_DRM_PANEL_SIMPLE, but these symbols are independent - old symbol 
-has been split into two independent new symbols.
-So Doug's approach seems correct to me. Maybe one could change names of 
-symbols to avoid confusion(?).
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
-One more thing, I suspect previous patch can break platforms with EDP 
-panels. Even if this patch fixes it, maybe it would be better to squash 
-these patches? Or add temporal solution to save bisecatability.
+HEAD commit: 7d2a07b76933 Linux 5.14
+git tree: upstream
+console output:
+https://drive.google.com/file/d/1Z-djyuwIRtlIKNHdLxoUnr8NqDu9zd9S/view?usp=sharing
+kernel config: https://drive.google.com/file/d/1XD9WYDViQLSXN7RGwH8AGGDvP9JvOghx/view?usp=sharing
 
-Regards
-Andrzej
+Sorry, I don't have a reproducer for this crash, hope the symbolized
+report can help.
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Hao Sun <sunhao.th@gmail.com>
 
-> 
-> -Doug
-> 
-
+------------[ cut here ]------------
+kernel BUG at fs/buffer.c:1510!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 8695 Comm: syz-executor Not tainted 5.14.0 #25
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.13.0-1ubuntu1.1 04/01/2014
+RIP: 0010:block_invalidatepage+0x54d/0x660 fs/buffer.c:1510
+Code: ff ff e8 c6 aa 9d ff b9 02 00 00 00 be 02 00 00 00 48 89 ef 48
+c7 c2 c0 5e 20 89 e8 7d 0e 49 07 e9 29 fe ff ff e8 a3 aa 9d ff <0f> 0b
+e8 9c aa 9d ff 0f 0b e8 95 aa 9d ff 48 83 eb 01 e9 83 fb ff
+RSP: 0018:ffffc90000a376f8 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff88810dd8b980
+RDX: 0000000000000000 RSI: ffff88810dd8b980 RDI: 0000000000000002
+RBP: 0000000000000000 R08: ffffffff81d74ddd R09: 0000000000001000
+R10: 0000000000000005 R11: fffff940000b0000 R12: ffffea0000580000
+R13: 0000000000000000 R14: 0000000000200000 R15: 0000000000200000
+FS:  0000000000000000(0000) GS:ffff888119f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffcb1d285b7 CR3: 0000000104f5d005 CR4: 0000000000770ee0
+PKRU: 55555554
+Call Trace:
+ do_invalidatepage mm/truncate.c:157 [inline]
+ truncate_cleanup_page+0x3e4/0x620 mm/truncate.c:176
+ truncate_inode_pages_range+0x26c/0x1960 mm/truncate.c:325
+ kill_bdev.isra.0+0x5f/0x80 fs/block_dev.c:86
+ blkdev_flush_mapping+0xdf/0x2e0 fs/block_dev.c:1243
+ blkdev_put_whole+0xe8/0x110 fs/block_dev.c:1277
+ blkdev_put+0x268/0x720 fs/block_dev.c:1576
+ blkdev_close+0x8c/0xb0 fs/block_dev.c:1586
+ __fput+0x288/0x920 fs/file_table.c:280
+ task_work_run+0xe0/0x1a0 kernel/task_work.c:164
+ exit_task_work include/linux/task_work.h:32 [inline]
+ do_exit+0xbe4/0x2e00 kernel/exit.c:825
+ do_group_exit+0x125/0x340 kernel/exit.c:922
+ get_signal+0x4d5/0x25a0 kernel/signal.c:2808
+ arch_do_signal_or_restart+0x2ed/0x1c40 arch/x86/kernel/signal.c:865
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0x192/0x2a0 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
+ do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4739cd
+Code: Unable to access opcode bytes at RIP 0x4739a3.
+RSP: 002b:00007f6c0fac6218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 000000000059c0a0 RCX: 00000000004739cd
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000059c0a8
+RBP: 000000000059c0a8 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
+R13: 00007ffcdd11bbff R14: 00007ffcdd11bda0 R15: 00007f6c0fac6300
+Modules linked in:
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+---[ end trace 4d1faf5c7a1da2c5 ]---
+RIP: 0010:block_invalidatepage+0x54d/0x660 fs/buffer.c:1510
+Code: ff ff e8 c6 aa 9d ff b9 02 00 00 00 be 02 00 00 00 48 89 ef 48
+c7 c2 c0 5e 20 89 e8 7d 0e 49 07 e9 29 fe ff ff e8 a3 aa 9d ff <0f> 0b
+e8 9c aa 9d ff 0f 0b e8 95 aa 9d ff 48 83 eb 01 e9 83 fb ff
+RSP: 0018:ffffc90000a376f8 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff88810dd8b980
+RDX: 0000000000000000 RSI: ffff88810dd8b980 RDI: 0000000000000002
+RBP: 0000000000000000 R08: ffffffff81d74ddd R09: 0000000000001000
+R10: 0000000000000005 R11: fffff940000b0000 R12: ffffea0000580000
+R13: 0000000000000000 R14: 0000000000200000 R15: 0000000000200000
+FS:  0000000000000000(0000) GS:ffff888119f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6945606000 CR3: 000000010abb2004 CR4: 0000000000770ee0
+PKRU: 55555554
