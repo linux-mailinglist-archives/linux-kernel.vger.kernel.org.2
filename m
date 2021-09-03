@@ -2,66 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA8DB4001E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B77BB4001E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349612AbhICPTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 11:19:34 -0400
-Received: from rosenzweig.io ([138.197.143.207]:45784 "EHLO rosenzweig.io"
+        id S1349619AbhICPUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 11:20:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47200 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349579AbhICPTa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 11:19:30 -0400
-From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
-To:     linux-doc@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>, Takashi Iwai <tiwai@suse.de>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
-        <nfraprado@protonmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>
-Subject: [PATCH] docs: kernel-hacking: Remove inappropriate text
-Date:   Fri,  3 Sep 2021 11:18:26 -0400
-Message-Id: <20210903151826.6300-1-alyssa@rosenzweig.io>
-X-Mailer: git-send-email 2.30.2
+        id S1349579AbhICPUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 11:20:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A61D610CC;
+        Fri,  3 Sep 2021 15:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630682358;
+        bh=8G+tliPfC8rLYs7/1T2ci0+LLiBWSR8H0X7JG/QzYpE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=aCdyvXI1ACl55zc4Rn+SQ5lST/UT+pwcavYtiotJDJqEkp/OyunApyBwNOPyKNebg
+         5jPc8snRshnRCybDInizByx2aVMzfKqlxdXYNgmj5yWr4NDb/n8cX2SKbRyKgjs9oU
+         U6Fxjbz4g4pYoW96rgxsbJIugXHe3bCggBgAjEsd9lMT/Z6qfqiTesQw2jnF93nIgO
+         Luqy7XJOqEybszrGHPDZAzkcYjzvBK1haiKO+mHWt7uXTd40YPcyBL7Rf8fwnZZi+w
+         NkvGhp0QCtDtWEA+l3UUoAbsmXi4/HZBFR1qLpPFip2SJ7aWMRNBN1xpXw/8/wqEAr
+         MA/kaeLKk6Z0Q==
+From:   Mark Brown <broonie@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        linux-spi@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+Subject: Re: [PATCH] spi: rockchip: handle zero length transfers without timing out
+Date:   Fri,  3 Sep 2021 16:18:43 +0100
+Message-Id: <163068228056.51069.15541338141615688512.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210827050357.165409-1-t.schramm@manjaro.org>
+References: <20210827050357.165409-1-t.schramm@manjaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove inappropriate sexual (and ableist) text from the locking
-documentation, aligning it with the kernel code-of-conduct. As the text
-was unrelated to locking, this change streamlines the document and
-improves readability.
+On Fri, 27 Aug 2021 07:03:57 +0200, Tobias Schramm wrote:
+> Previously zero length transfers submitted to the Rokchip SPI driver would
+> time out in the SPI layer. This happens because the SPI peripheral does
+> not trigger a transfer completion interrupt for zero length transfers.
+> 
+> Fix that by completing zero length transfers immediately at start of
+> transfer.
+> 
+> [...]
 
-Signed-off-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
----
- Documentation/kernel-hacking/locking.rst | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+Applied to
 
-diff --git a/Documentation/kernel-hacking/locking.rst b/Documentation/kernel-hacking/locking.rst
-index ed1284c6f078..3e1f71608f11 100644
---- a/Documentation/kernel-hacking/locking.rst
-+++ b/Documentation/kernel-hacking/locking.rst
-@@ -94,16 +94,10 @@ primitives, but I'll pretend they don't exist.
- Locking in the Linux Kernel
- ===========================
- 
--If I could give you one piece of advice: never sleep with anyone crazier
--than yourself. But if I had to give you advice on locking: **keep it
--simple**.
-+If I could give you one piece of advice on locking: **keep it simple**.
- 
- Be reluctant to introduce new locks.
- 
--Strangely enough, this last one is the exact reverse of my advice when
--you **have** slept with someone crazier than yourself. And you should
--think about getting a big dog.
--
- Two Main Types of Kernel Locks: Spinlocks and Mutexes
- -----------------------------------------------------
- 
--- 
-2.30.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
+Thanks!
+
+[1/1] spi: rockchip: handle zero length transfers without timing out
+      commit: 5457773ef99f25fcc4b238ac76b68e28273250f4
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
