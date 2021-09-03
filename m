@@ -2,67 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAD13FFEF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAE43FFF1C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349284AbhICLWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 07:22:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348629AbhICLWA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 07:22:00 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72F2C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 04:21:00 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id q70so9438973ybg.11
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 04:21:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
-         :subject:to;
-        bh=uuKPdEBJH6/bl2anSqQnFEwmoD2XBi3ISnDGwBJsVO8=;
-        b=eI+CMWsnrKHpUyD9xbeSESvizPgPN8D+V2gYJnXLbZVC31XoPYntxyJUYTRQMFNmoW
-         5VXCL0DENulc1Q6KiGvxQz2kM34v/z2A3qEldRB0qoNjrmmn378fjZJhG8nwQe0sAnfD
-         u8dEpEz3uAqbtfQGUqsoGLaSV2+5KrrNBRwSAPozJzSKh1qSeKPb1v4cBdqhQp8p+nTB
-         JZ7JZ5FuFAPHTyTv7a//YfDVcnkyp6jMRFhb9bMTEL4Ng++4ktKBIfpSOEVrRTGrBTdi
-         paG9Nqnnsrd/KI0pzwA5l3W2io1ISasVqn9qLp0+fdpIVv+ykYoZbkdkaXXLqudM8Cg5
-         mPRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
-         :from:date:message-id:subject:to;
-        bh=uuKPdEBJH6/bl2anSqQnFEwmoD2XBi3ISnDGwBJsVO8=;
-        b=UyMJHrc4BuzcBdkXwoXLtawcJ+zUB7OJfusixpjrpuO9jnExpYf5L2CXiEWBV0nmlL
-         jmE75Vu+X2s+thOkYNEW8mCsSNlXgOGk4fmIMOFrnLt+NjhddMfiWMKr65fz5W+3RCnq
-         R6E7ZLIkm+H8CtyuNvwM+StNSTfoOHScLOwZPIPZGV/5lbd9JrcgUY5Q+oB2V5M/z9Qm
-         arDZG8chouUjqQhThrfCdDeoSta0hrpJfJnwwIuL9A1RdxkzHfKfu2B45BKateUX0NNx
-         IAr7CBuKL8Sp33D6AiNJ9URgbdhPoW6KCCciek4I2OnGHlU0YzL2HQJK5KQLEf7RFLoc
-         HA9g==
-X-Gm-Message-State: AOAM530GAjHrMptu6uRy/cluAqSFM+issxjVQEwRX/Ta6Sryn0yFtqh0
-        F19aZfXvn5kgQwxdN+f5RZ+Aj3nQhBH1tS0CmVU=
-X-Google-Smtp-Source: ABdhPJzcrSfXwiPqcnDrigpiYazBuo8HJxoWXOvjuxCNvDX5U/MeUp3pheDhhHfxR0trSubsKprFTuIi4EZKhtdSEm8=
-X-Received: by 2002:a25:2155:: with SMTP id h82mr3972037ybh.177.1630668059930;
- Fri, 03 Sep 2021 04:20:59 -0700 (PDT)
+        id S1349243AbhICLZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 07:25:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348457AbhICLZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 07:25:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37A966108E;
+        Fri,  3 Sep 2021 11:24:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630668277;
+        bh=FldLdOOii3TaES/s3G6Az9sltzzQVKuDfUEUq49AxMQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GBM4aePsqZz3pwEdpWsZFuxd8z9DgQ+mbZt7aBK42sXdVLBMNAh5ag5aycTxZ78FB
+         uq156f9R+yW1OsEgNDl0a8nDrKRJQWVTnvos0K34299w2hifqP5dMh51w7Qzq/caue
+         ZIWH7iZ7VdVBlESuoEt+YV4ilUueoWCGz254CfGRwNx8XVtFo/FJkghTYEPG5K6LYW
+         MtddIYqn2kSs6G3dT5OWOpGbv2mCNS9R1M+4ok9TKhcnFfgGDMQXRL97OYI+Oquhpq
+         I4vsYoRBR4+O/GYXrS5oCJDzmXK0rAf3Ixcl6vIg3mhf622wcuLjCCCb2toG6sklIj
+         szhJfOaHgijIg==
+Date:   Fri, 3 Sep 2021 12:24:03 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Parshuram Raju Thombare <pthombar@cadence.com>
+Cc:     "lukas@wunner.de" <lukas@wunner.de>,
+        "p.yadav@ti.com" <p.yadav@ti.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jayshri Dajiram Pawar <jpawar@cadence.com>,
+        Milind Parab <mparab@cadence.com>,
+        Konrad Kociolek <konrad@cadence.com>
+Subject: Re: [PATCH v3 2/2] spi: cadence: add support for Cadence XSPI
+ controller
+Message-ID: <20210903112403.GF4932@sirena.org.uk>
+References: <1630499755-18751-1-git-send-email-pthombar@cadence.com>
+ <1630499858-20456-1-git-send-email-pthombar@cadence.com>
+ <20210902143947.GC11164@sirena.org.uk>
+ <CY4PR07MB27577F9A6DBF3F4985B014ACC1CF9@CY4PR07MB2757.namprd07.prod.outlook.com>
+ <20210903101837.GA4932@sirena.org.uk>
+ <CY4PR07MB27579742A452BC2E71D9A946C1CF9@CY4PR07MB2757.namprd07.prod.outlook.com>
 MIME-Version: 1.0
-Received: by 2002:a5b:645:0:0:0:0:0 with HTTP; Fri, 3 Sep 2021 04:20:58 -0700 (PDT)
-Reply-To: j8108477@gmail.com
-In-Reply-To: <CACVOnGEAvA1R93QjJL4ZnYGu6Ye3Poo+Qj4BroHHrXthU7ieOQ@mail.gmail.com>
-References: <CACVOnGEAvA1R93QjJL4ZnYGu6Ye3Poo+Qj4BroHHrXthU7ieOQ@mail.gmail.com>
-From:   MR NORAH JANE <alicejolie80@gmail.com>
-Date:   Fri, 3 Sep 2021 13:20:58 +0200
-Message-ID: <CACVOnGHO-E+JwB_4B73Ty13M1W7ojCwEJhsgde0aLfk0k1bZ0w@mail.gmail.com>
-Subject: Fwd:
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cpvLTH7QU4gwfq3S"
+Content-Disposition: inline
+In-Reply-To: <CY4PR07MB27579742A452BC2E71D9A946C1CF9@CY4PR07MB2757.namprd07.prod.outlook.com>
+X-Cookie: Darth Vader sleeps with a Teddywookie.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
----------- Forwarded message ----------
-From: MR NORAH JANE <alicejolie80@gmail.com>
-Date: Fri, 3 Sep 2021 13:20:30 +0200
-Subject:
-To: alicejolie80@gmail.com
 
-HI, DID YOU RECEIVE MY MAIL?
+--cpvLTH7QU4gwfq3S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Sep 03, 2021 at 10:47:50AM +0000, Parshuram Raju Thombare wrote:
+
+> Oh, ok.  That is done at power on reset by the controller in 2 ways.
+> 1. Using device discovery module, controller try to auto detect the valid=
+ protocol
+>     mode by trying to read SFDP signature in various modes.
+> 2. Particular protocol mode can be selected using bootstrap signals.
+
+> I think mode_bits need to include protocol mode which is auto detected or
+> set using bootstrap signals. I will make that change in next version.=20
+
+Yes, that sounds better.  I guess at least in the case of autodetection
+the mode can be overridden by software later, but that can always be
+added later if someone actually needs the feature.
+
+--cpvLTH7QU4gwfq3S
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEyBdMACgkQJNaLcl1U
+h9DuYQgAgSZTn04sUnbkUr72r8XjZjqJ1gGhXu7jKUXv6eu9XulkgnAncKPgNvmQ
+q8s7wmn6pG/TVNjw91m8DbjQm/FSrzCecyhAWS19kO/86ntl5Ugc2iHD19SXsIhd
+UqIGaPRsKhTZLa7AtrSm61GkAKU4CbFXZNsFgoD/fsvS7JU4c7vzHhcNP8MJy8cW
+5MxdC/qlbY2FapN+lNZfVmraTQeLWy8+XyDZ2LCZQKfNjQS1FWUwBJaH39KcDvsK
+mgshERQiC+LNAlGfkF35V5QE4ooT57HO5052xbV9noySZoHcGTwCxteXi1wuGYku
+PhKN5FMFmLCHDyXpqmxzzpQG1wHrwg==
+=6PJJ
+-----END PGP SIGNATURE-----
+
+--cpvLTH7QU4gwfq3S--
