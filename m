@@ -2,216 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C76243FFF51
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92273FFF56
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:42:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349312AbhICLlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 07:41:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234758AbhICLl2 (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 07:41:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C013A60EE3;
-        Fri,  3 Sep 2021 11:40:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630669229;
-        bh=0GxAcpJ1IV/AldhMsFNwb31fY3HVlcvl5EjEi4BO5wU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OGL/VpgZS7U971JVYneGisVWgts5MLsobCV8nYrUJYTpu9/uv0HY+5SsUxuRKNE3/
-         qKmD4j7siBCa79EpMMK+d0qa3u8liRKWLCc2ENr1xniHnOT7Oh08eY1HcKSfjrphnu
-         ogshKjyhcQhoEzJA+01Luxnr1RciB3no1CLrrFvHMyNvVb418Jdn/ujOBpe2PcgVmc
-         RKkqaCKln0p+PQnTMtWuQRJcSomuzfTgHOO9BzZ0J/mgQl+1HV3aLT7XepPtlcCE4q
-         Rkp0AcWOP4kzkLeZ0Hg1vUcrVKIjqxPB4LD0+tdxid7idpNy2q/A9zRfyH7Wmxd/i2
-         ZYKwLrm/3BUWA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id C6C594007E; Fri,  3 Sep 2021 08:40:25 -0300 (-03)
-Date:   Fri, 3 Sep 2021 08:40:25 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com, rickyman7@gmail.com,
-        john.garry@huawei.com
-Subject: Re: [PATCH v7 2/2] perf tests: Test for PMU alias
-Message-ID: <YTIJqRzIMznK2inr@kernel.org>
-References: <20210902065955.1299-1-yao.jin@linux.intel.com>
- <20210902065955.1299-3-yao.jin@linux.intel.com>
+        id S1349314AbhICLnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 07:43:08 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:41561 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348247AbhICLnH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 07:43:07 -0400
+Received: by mail-il1-f199.google.com with SMTP id l4-20020a92d8c40000b02902242b6ea4b3so3324734ilo.8
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 04:42:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=e+HyKsU19yRq9dTTGzaiihO1RDbY/pEio/YxB+y4wlQ=;
+        b=LUSdGUqHq/O7fGcY1ZhFPMwWnnIXBoxi3d2W5Xw/B+ugAfADsJJG9uj01rri5JozjL
+         hoe4orDnuSDippLbrHJAbRuH3b2H6RQtABz1wIzmFrHgAa0yyWq90OTDtlDpHWri+ja9
+         ervXb6WofVKThX92LGWIuj1gTCREOfIHpva8+yENIrpsZCqjS02VLerqAqNtpsy6rR1e
+         +GPm+DnOc9RPyHbMQ7iqri7QCebtTz+4+SL+kEN9OTw/ySgCMu40AtGBQ32atBmaZIWC
+         grvu1fBPQUqG74lYcx8X5Pb6vCZ2WJhn4uxDUXYN7J5AiICUF6tggFRKQ3V2L3t7vXfJ
+         LC3A==
+X-Gm-Message-State: AOAM532Brat1GNR4KnvSLRLWrIZHvwfR50nV+QYACqHCRqdAI23l7E8Z
+        35vVWMqY78npdHG2PH5mUHIqpWG8G+SCwouACrtMS1+ywOuu
+X-Google-Smtp-Source: ABdhPJyVGKWtZ/XNFnPfV1DJyHrVWvrUw1gcWV/6Ek254iAr3SZHr33nQjI3GFtlrzCzJ1/87getEFBZvKiyVflC5YPCMch6/ZSX
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902065955.1299-3-yao.jin@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+X-Received: by 2002:a02:93aa:: with SMTP id z39mr2241987jah.29.1630669327150;
+ Fri, 03 Sep 2021 04:42:07 -0700 (PDT)
+Date:   Fri, 03 Sep 2021 04:42:07 -0700
+In-Reply-To: <10b89a9f-443c-98d1-ca01-add5f6dd3355@nvidia.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fdb19d05cb15c938@google.com>
+Subject: Re: [syzbot] KASAN: slab-out-of-bounds Read in add_del_if
+From:   syzbot <syzbot+24b98616278c31afc800@syzkaller.appspotmail.com>
+To:     bridge@lists.linux-foundation.org, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, nikolay@nvidia.com, roopa@nvidia.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Sep 02, 2021 at 02:59:55PM +0800, Jin Yao escreveu:
-> A perf uncore PMU may have two PMU names, a real name and an alias
-> name. Add one test case to verify the real name and alias name having
-> the same effect.
-> 
-> Iterate the sysfs to get one event which has an alias and create
-> evlist by adding two evsels. Evsel1 is created by event and evsel2
-> is created by alias.
-> 
-> Test asserts:
-> evsel1->core.attr.type == evsel2->core.attr.type
-> evsel1->core.attr.config == evsel2->core.attr.config
+Hello,
 
-Thanks, applied.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-- Arnaldo
+Reported-and-tested-by: syzbot+24b98616278c31afc800@syzkaller.appspotmail.com
 
- 
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
-> ---
-> v7:
->  - No change.
-> 
-> v6:
->  - No change.
-> 
-> v5:
->  - No change.
-> 
-> v4:
->  - Rebase to perf/core.
-> 
-> v3:
->  - Use fgets to read alias string from sysfs.
->  - Resource cleanup.
-> 
-> v2:
->  - New in v2.
-> 
->  tools/perf/tests/parse-events.c | 92 +++++++++++++++++++++++++++++++++
->  1 file changed, 92 insertions(+)
-> 
-> diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
-> index 8d4866739255..fd3556cc9ad4 100644
-> --- a/tools/perf/tests/parse-events.c
-> +++ b/tools/perf/tests/parse-events.c
-> @@ -9,6 +9,7 @@
->  #include "pmu-hybrid.h"
->  #include <dirent.h>
->  #include <errno.h>
-> +#include "fncache.h"
->  #include <sys/types.h>
->  #include <sys/stat.h>
->  #include <unistd.h>
-> @@ -2194,9 +2195,91 @@ static int test_pmu_events(void)
->  	return ret;
->  }
->  
-> +static bool test_alias(char **event, char **alias)
-> +{
-> +	char path[PATH_MAX];
-> +	DIR *dir;
-> +	struct dirent *dent;
-> +	const char *sysfs = sysfs__mountpoint();
-> +	char buf[128];
-> +	FILE *file;
-> +
-> +	if (!sysfs)
-> +		return false;
-> +
-> +	snprintf(path, PATH_MAX, "%s/bus/event_source/devices/", sysfs);
-> +	dir = opendir(path);
-> +	if (!dir)
-> +		return false;
-> +
-> +	while ((dent = readdir(dir))) {
-> +		if (!strcmp(dent->d_name, ".") ||
-> +		    !strcmp(dent->d_name, ".."))
-> +			continue;
-> +
-> +		snprintf(path, PATH_MAX, "%s/bus/event_source/devices/%s/alias",
-> +			 sysfs, dent->d_name);
-> +
-> +		if (!file_available(path))
-> +			continue;
-> +
-> +		file = fopen(path, "r");
-> +		if (!file)
-> +			continue;
-> +
-> +		if (!fgets(buf, sizeof(buf), file)) {
-> +			fclose(file);
-> +			continue;
-> +		}
-> +
-> +		/* Remove the last '\n' */
-> +		buf[strlen(buf) - 1] = 0;
-> +
-> +		fclose(file);
-> +		*event = strdup(dent->d_name);
-> +		*alias = strdup(buf);
-> +		closedir(dir);
-> +
-> +		if (*event == NULL || *alias == NULL) {
-> +			free(*event);
-> +			free(*alias);
-> +			return false;
-> +		}
-> +
-> +		return true;
-> +	}
-> +
-> +	closedir(dir);
-> +	return false;
-> +}
-> +
-> +static int test__checkevent_pmu_events_alias(struct evlist *evlist)
-> +{
-> +	struct evsel *evsel1 = evlist__first(evlist);
-> +	struct evsel *evsel2 = evlist__last(evlist);
-> +
-> +	TEST_ASSERT_VAL("wrong type", evsel1->core.attr.type == evsel2->core.attr.type);
-> +	TEST_ASSERT_VAL("wrong config", evsel1->core.attr.config == evsel2->core.attr.config);
-> +	return 0;
-> +}
-> +
-> +static int test_pmu_events_alias(char *event, char *alias)
-> +{
-> +	struct evlist_test e = { .id = 0, };
-> +	char name[2 * NAME_MAX + 20];
-> +
-> +	snprintf(name, sizeof(name), "%s/event=1/,%s/event=1/",
-> +		 event, alias);
-> +
-> +	e.name  = name;
-> +	e.check = test__checkevent_pmu_events_alias;
-> +	return test_event(&e);
-> +}
-> +
->  int test__parse_events(struct test *test __maybe_unused, int subtest __maybe_unused)
->  {
->  	int ret1, ret2 = 0;
-> +	char *event, *alias;
->  
->  #define TEST_EVENTS(tests)				\
->  do {							\
-> @@ -2221,6 +2304,15 @@ do {							\
->  			return ret;
->  	}
->  
-> +	if (test_alias(&event, &alias)) {
-> +		int ret = test_pmu_events_alias(event, alias);
-> +
-> +		free(event);
-> +		free(alias);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
->  	ret1 = test_terms(test__terms, ARRAY_SIZE(test__terms));
->  	if (!ret2)
->  		ret2 = ret1;
-> -- 
-> 2.17.1
+Tested on:
 
--- 
+commit:         d15040a3 Merge branch 'bridge-ioctl-fixes'
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aba0c23f8230e048
+dashboard link: https://syzkaller.appspot.com/bug?extid=24b98616278c31afc800
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
-- Arnaldo
+Note: testing is done by a robot and is best-effort only.
