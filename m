@@ -2,149 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1895C400615
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D652B400617
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:49:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235986AbhICTtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 15:49:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52854 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231599AbhICTt3 (ORCPT
+        id S1349690AbhICTuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 15:50:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230421AbhICTuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 15:49:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630698508;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DW68GxV6Lb0qE4ekh0Ivx+87OsRzETRMBE0QJs6OocI=;
-        b=L060QxMNPEFMY3hqmNeLmRxpF1/0AJoikeGUi99ofOSc0voDXT1gLSajhuVNi1b1NUosPG
-        +RQyXaJJCTgRNcf8DksijuPT2Sk24vkxk2qdTsvx0S9udYuyqkbajNpjm8wMqRqtf9Ji57
-        IFuTYU/3nDgIoMDPJRoaAvdBXFP0+fM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-417-2HDgqUOzOZWN2NPx5sx4EA-1; Fri, 03 Sep 2021 15:48:27 -0400
-X-MC-Unique: 2HDgqUOzOZWN2NPx5sx4EA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E2058042D6;
-        Fri,  3 Sep 2021 19:48:25 +0000 (UTC)
-Received: from localhost (unknown [10.22.8.230])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A27675C1C5;
-        Fri,  3 Sep 2021 19:48:24 +0000 (UTC)
-Date:   Fri, 3 Sep 2021 15:48:24 -0400
-From:   Eduardo Habkost <ehabkost@redhat.com>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v2 2/6] x86/kvm: add boot parameter for adding vcpu-id
- bits
-Message-ID: <20210903194824.lfjzeaab6ct72pxn@habkost.net>
-References: <20210903130808.30142-1-jgross@suse.com>
- <20210903130808.30142-3-jgross@suse.com>
+        Fri, 3 Sep 2021 15:50:05 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F67C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:49:04 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id u1so168802plq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:49:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LgpxLjOF/QKA0B+p7tW54Ior4Pi9CIfJybRDtP2mPk8=;
+        b=G7/ki6Av2eCe4jeL/T9yynH+cqXZpSo9ccACyStofz6CNFAWHE5EcyRg535Kqxy0lO
+         uyY8297O5gC4f0HGtUkfgIXXCrRaMQgCBMW8UOlRWTuVBum6tVaF+W7/j1JCjEHqJWcD
+         jAVYkmioMEFLKQ7eaIamIVdxmRWGkJlz/Hq262rpUMB4WWiSYzw2cFOEKv5bnKkWvqwq
+         8MtIXfTGcj7SvQg27K1OlL6878t5RP6aXdQvlT4Z8yaYtNM/7/w+oOKzFvHQeX1R7+w/
+         MUhTODwGwBZKyxOr/YQPV7X1toTBMOoBK9a59NVH6qc/a6AGtPIeX2dMBM513ZuPzr9V
+         ChVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LgpxLjOF/QKA0B+p7tW54Ior4Pi9CIfJybRDtP2mPk8=;
+        b=YW8+Uzo0rz4MUbEswIHi8FUbPU2+HKp0CVq6HhdvtZHKPtFnwzAK4h4tSojwbHOk3Z
+         i5Leg3xgID8viG3rxNm4+inrZ8BgdtQej5hVDLdvlZ5GJTW6Va2rpuYdbNV6gJ6nCeo1
+         UpFvptrjoTRMQ11k0sgrKly68h8i2xAoMH3jHZXK4WGDfwvb4oRVq0uNYf9sd4k30Jhw
+         t/efY0yTqqlxAzK+0hxvkbVEyKeJ/08BoN0s0DZX04IdvH/nom5yvjf0yyWMCnnTac0z
+         2Eprg+ZNu19U8Ddl+mM+WJGq+D4iFog+GTLyzC3Bb9rmvfnq7kLLKiD8y3Q3OhY+fsJF
+         OIOg==
+X-Gm-Message-State: AOAM5323/yrEFYpMma50Ejd48OiOwV7SD3CIEl3abX+/k7f5LhrUB5lV
+        ym+aGdHtVuY6L9+6nuSGUuqeVHyy4LdRmAUW4mg=
+X-Google-Smtp-Source: ABdhPJwyj3RSpH6y/BfTPZ4qBH19siRogzTXnU/CR9U686smAlTzYozZ4hAh56Rec9T1JF6YSylaKda3fhlDoMzLEz8=
+X-Received: by 2002:a17:90a:4805:: with SMTP id a5mr502473pjh.139.1630698544332;
+ Fri, 03 Sep 2021 12:49:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210903130808.30142-3-jgross@suse.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210827171155.700434-1-yury.norov@gmail.com> <YSuNTVh17CxUNxtC@smile.fi.intel.com>
+ <20210903105607.35af6674@gandalf.local.home> <YTJGyk65rv/026+p@yury-ThinkPad>
+In-Reply-To: <YTJGyk65rv/026+p@yury-ThinkPad>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 3 Sep 2021 22:48:28 +0300
+Message-ID: <CAHp75VfHg8RqdjF+5AQwOFvJqomeXe9DAZwMEJVZhkKcrJuvzA@mail.gmail.com>
+Subject: Re: [PATCH] lib/vsprintf: add __putchar()
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 03:08:03PM +0200, Juergen Gross wrote:
-> Today the maximum vcpu-id of a kvm guest's vcpu on x86 systems is set
-> via a #define in a header file.
-> 
-> In order to support higher vcpu-ids without generally increasing the
-> memory consumption of guests on the host (some guest structures contain
-> arrays sized by KVM_MAX_VCPU_ID) add a boot parameter for adding some
-> bits to the vcpu-id. Additional bits are needed as the vcpu-id is
-> constructed via bit-wise concatenation of socket-id, core-id, etc.
-> As those ids maximum values are not always a power of 2, the vcpu-ids
-> are sparse.
-> 
-> The additional number of bits needed is basically the number of
-> topology levels with a non-power-of-2 maximum value, excluding the top
-> most level.
-> 
-> The default value of the new parameter will be to take the correct
-> setting from the host's topology.
+On Fri, Sep 3, 2021 at 7:02 PM Yury Norov <yury.norov@gmail.com> wrote:
+> On Fri, Sep 03, 2021 at 10:56:07AM -0400, Steven Rostedt wrote:
+> > On Sun, 29 Aug 2021 16:36:13 +0300
+> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Fri, Aug 27, 2021 at 10:11:55AM -0700, Yury Norov wrote:
 
-Having the default depend on the host topology makes the host
-behaviour unpredictable (which might be a problem when migrating
-VMs from another host with a different topology).  Can't we just
-default to 2?
+...
 
-> 
-> Calculating the maximum vcpu-id dynamically requires to allocate the
-> arrays using KVM_MAX_VCPU_ID as the size dynamically.
-> 
-> Signed-of-by: Juergen Gross <jgross@suse.com>
-> ---
-> V2:
-> - switch to specifying additional bits (based on comment by Vitaly
->   Kuznetsov)
-> 
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> ---
-[...]
->  #define KVM_MAX_VCPUS 288
->  #define KVM_SOFT_MAX_VCPUS 240
-> -#define KVM_MAX_VCPU_ID 1023
-> +#define KVM_MAX_VCPU_ID kvm_max_vcpu_id()
-[...]
-> +unsigned int kvm_max_vcpu_id(void)
-> +{
-> +	int n_bits = fls(KVM_MAX_VCPUS - 1);
-> +
-> +	if (vcpu_id_add_bits < -1 || vcpu_id_add_bits > (32 - n_bits)) {
-> +		pr_err("Invalid value of vcpu_id_add_bits=%d parameter!\n",
-> +		       vcpu_id_add_bits);
-> +		vcpu_id_add_bits = -1;
-> +	}
-> +
-> +	if (vcpu_id_add_bits >= 0) {
-> +		n_bits += vcpu_id_add_bits;
-> +	} else {
-> +		n_bits++;		/* One additional bit for core level. */
-> +		if (topology_max_die_per_package() > 1)
-> +			n_bits++;	/* One additional bit for die level. */
-> +	}
-> +
-> +	if (!n_bits)
-> +		n_bits = 1;
-> +
-> +	return (1U << n_bits) - 1;
+> > > > There are 26 occurrences of the code snippet like this in the file :
+> > > >   if (buf < end)
+> > > >           *buf = separator;
+> > > >   ++buf;
+> > > >
+> > > > This patch adds a helper function __putchar() to replace opencoding.
+> > > > It adds a lot to readability, and also saves 43 bytes of text on x86.
+> > >
+> > > Last time I tried similar it failed the compilation.
+> > >
+> > > Anyway, while you remove a lot of code I'm not sure it makes the code better
+> > > to read and understand. Also, we use the same idiom outside of this file.
+> > >
+> > > I would ask Rasmus' opinion on this.
+> > >
+> >
+> > I actually like the clean up, although I haven't reviewed the entire patch.
+>
+> Thanks.
+>
+> > If it is used outside this file, perhaps it should be in a header instead
+> > and those other locations should be updated accordingly.
+>
+> I used 'grep "buf < end"' to find spots for cleanup.
 
-The largest possible VCPU ID is not KVM_MAX_VCPU_ID,
-it's (KVM_MAX_VCPU_ID - 1).  This is enforced by
-kvm_vm_ioctl_create_vcpu().
+You need a "smart" grep, i.e. coccinelle for that.
 
-That would mean KVM_MAX_VCPU_ID should be (1 << n_bits) instead
-of ((1 << n_bits) - 1), wouldn't it?
+>  And except for
+> lib/vsprintf.c, there is a few random drivers inappropriate for this
+> cleanup. Andy, can you please share details?
 
-
-> +}
-> +EXPORT_SYMBOL_GPL(kvm_max_vcpu_id);
-> +
->  /*
->   * Restoring the host value for MSRs that are only consumed when running in
->   * usermode, e.g. SYSCALL MSRs and TSC_AUX, can be deferred until the CPU
-> -- 
-> 2.26.2
-> 
+https://elixir.bootlin.com/linux/latest/source/lib/string_helpers.c#L307
 
 -- 
-Eduardo
-
+With Best Regards,
+Andy Shevchenko
