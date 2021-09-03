@@ -2,68 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 249D53FF99C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 06:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DACF73FF99E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 06:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbhICEkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 00:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229561AbhICEkS (ORCPT
+        id S232221AbhICEkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 00:40:52 -0400
+Received: from mail-0201.mail-europe.com ([51.77.79.158]:37199 "EHLO
+        mail-0201.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229561AbhICEkv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 00:40:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDC4C061575;
-        Thu,  2 Sep 2021 21:39:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OJvdQPrTeeSIW2aKxp3H75/EFGJNAh2MQGun3kF8gc0=; b=W8GXkwjGUGrcZ0YktI/byhySfl
-        Z/jry2yBMifvlxl8QXdmc5ZxMkmCBf+Wy5K0VlaE+Y3/MCNtf7XO0YM427IX3v106SfIUKXo9axJT
-        pSn8U7K6glCI4oxHqxGT5pmbDqy+atR2geCfAEwW956s1uu0Evh6ttbocHqN5/3mGJkfDe3qnAyCF
-        3tItNaKTVzk3rGFY/TtJrXCfmak8tMMv+faduqTXcbz4SmZHxgd55FIAWF1Vec6fp+0ANlwO064TV
-        OScCOndgwmf8H39+bZ4wVbJ3yxqBuGu7d0CjbsgiU3BkL/4wzfgzO8sK6kMyQA6bUXWG9tRzgG47F
-        cEeBGBzw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mM0yI-0047Vt-Ps; Fri, 03 Sep 2021 04:38:47 +0000
-Date:   Fri, 3 Sep 2021 05:38:34 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Christian L?hle <CLoehle@hyperstone.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] sd: sd_open: prevent device removal during sd_open
-Message-ID: <YTGmyp0kzhVsuk5K@infradead.org>
-References: <98bfca4cbaa24462994bcb533d365414@hyperstone.com>
+        Fri, 3 Sep 2021 00:40:51 -0400
+Date:   Fri, 03 Sep 2021 04:39:44 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1630643988;
+        bh=truw8BJZrdELtT65gz6fieFBGdARQ7KGnKSO9u0dCtk=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=FVO1pxpUfZn0XqXggBQp4TokXkhMemIvcI9j1goMitgIoZrsY+KgqnIBW+2beYKcZ
+         Zg5iJ7QkDwXryf665O0LobrJZesYIG3SIGPPFM5TT3l3zcXr2XsT37V2RB1+1MHZ+o
+         jW0NMj2/akAVyiXR1pO94SShSNiXQq7Bb78cUn08=
+To:     "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>
+From:   Jari Ruusu <jariruusu@protonmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Reply-To: Jari Ruusu <jariruusu@protonmail.com>
+Subject: Announce loop-AES-v3.7v file/swap crypto package
+Message-ID: <PQplWSwNm79Lk3NFH1VY9N9KAzVUf5MPJ9JyTZ5FE-oqsUB7ZKQzBi4feLDgmWSZMLz8iEbt8JgdBaPfe8eyZ-mOy07SnR6Z1lYBo-llPKI=@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <98bfca4cbaa24462994bcb533d365414@hyperstone.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 01:57:13PM +0000, Christian L?hle wrote:
-> sd and parent devices must not be removed as sd_open checks for events
-> 
-> sd_need_revalidate and sd_revalidate_disk traverse the device path
-> to check for event changes. If during this, e.g. the scsi host is being
-> removed and its resources freed, this traversal crashes.
-> Locking with scan_mutex for just a scsi disk open may seem blunt, but there
-> does not seem to be a more granular option. Also opening /dev/sdX directly
-> happens rarely enough that this shouldn't cause any issues.
+loop-AES changes since previous release:
+- Worked around kernel interface changes on 5.14 kernels
 
-Can you please root cause how the device could not be valid, as that
-should not happen?
+bzip2 compressed tarball is here:
 
->
-> The issue occurred on an older kernel with the following trace:
-> stack segment: 0000 [#1] PREEMPT SMP PTI
-> CPU: 1 PID: 121457 Comm: python3 Not tainted 4.14.238hyLinux #1
+    http://loop-aes.sourceforge.net/loop-AES/loop-AES-v3.7v.tar.bz2
+    md5sum 7fcc61e4b37f62aff5f3bd53d87b6fbd
 
-.. preferably with a current mainline kernel as things changed a lot
-in this area.
+    http://loop-aes.sourceforge.net/loop-AES/loop-AES-v3.7v.tar.bz2.sign
+
+--
+Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
+80 8132 F189
+
