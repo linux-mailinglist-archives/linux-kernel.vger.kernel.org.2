@@ -2,107 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E33400567
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C20400569
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350510AbhICS7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 14:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235938AbhICS7x (ORCPT
+        id S1350557AbhICTAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 15:00:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32506 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350528AbhICTAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 14:59:53 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C374C061575;
-        Fri,  3 Sep 2021 11:58:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=rhoMpaz0xowX46wxPAfe4wFu/SzLsMfcH3aSjenZa3I=; b=ZVlmlPOWj/yOVsOmuHvNvqRce
-        qg0ahkp8aX18oUCVZM5GK724VmaLBAb+9AfGFqdtFWaiFJ7gKpAbP5imaiVKX7vA9Bjhy6xCAbp2V
-        FygY5w4D5gO1z2qHd3iWAvJHqlZu1jHJv9HUyVPEh2f4KcsntIFhF14hYP8mdkw80sofT78HxDDMT
-        HmXik5mRk2CetFFZ4PyAjnsXVXQHhZ6Ly0wSjcCfsHJIxK7ROxi0lURjrdcq4dR2JL4WW045dnYyK
-        K7YKpMHdC4zNoufvZtqX7QAa5EI0o+Fv7hgUck3EBj9qap3JmxGUyIoDulygaXg08AVaUdrBhpHTL
-        3jIARJpYQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:48180)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1mMEOp-0003Rl-7F; Fri, 03 Sep 2021 19:58:51 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1mMEOo-0000ja-TN; Fri, 03 Sep 2021 19:58:50 +0100
-Date:   Fri, 3 Sep 2021 19:58:50 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH net-next 0/3] Make the PHY library stop being so
- greedy when binding the generic PHY driver
-Message-ID: <20210903185850.GY22278@shell.armlinux.org.uk>
-References: <20210902152342.vett7qfhvhiyejvo@skbuf>
- <20210902163144.GH22278@shell.armlinux.org.uk>
- <20210902171033.4byfnu3g25ptnghg@skbuf>
- <20210902175043.GK22278@shell.armlinux.org.uk>
- <20210902190507.shcdmfi3v55l2zuj@skbuf>
- <20210902200301.GM22278@shell.armlinux.org.uk>
- <20210902202124.o5lcnukdzjkbft7l@skbuf>
- <20210902202905.GN22278@shell.armlinux.org.uk>
- <20210903162253.5utsa45zy6h4v76t@skbuf>
- <YTJZj/Js+nmDTG0y@lunn.ch>
+        Fri, 3 Sep 2021 15:00:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630695554;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ynYQb/sRGR4WOPcdYIbB5xWCjxsBkaL75JAU6CwQ/WM=;
+        b=NWCOldFBCBK49cIktS5zqIaBq6L8b9C6zrzgH33VnxpbRzfBZcFj1MZz3yV6yJUpDdm0xq
+        WXqRAK+L8dFd74a1eA9b+eWAigQKPyqpYb4QW0UNNIVp0v2Hp9u5AkVQ3wGb3YFpe/uzha
+        XBbqxnKKS5vW14fRXYMDct6+J2US+g8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-zgjSNWfvPeWDf-BjFxb9SQ-1; Fri, 03 Sep 2021 14:59:11 -0400
+X-MC-Unique: zgjSNWfvPeWDf-BjFxb9SQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5C41100670B;
+        Fri,  3 Sep 2021 18:59:10 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.3.128.14])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 05D915C1B4;
+        Fri,  3 Sep 2021 18:58:59 +0000 (UTC)
+Date:   Fri, 3 Sep 2021 14:58:57 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
+        linux-audit@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] audit: Fix build failure by renaming struct node to
+ struct audit_node
+Message-ID: <20210903185857.GI490529@madcap2.tricolour.ca>
+References: <4e2370a9022495c49f3108fe34c5a2b2f4b28dfa.1630684009.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YTJZj/Js+nmDTG0y@lunn.ch>
+In-Reply-To: <4e2370a9022495c49f3108fe34c5a2b2f4b28dfa.1630684009.git.christophe.leroy@csgroup.eu>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 07:21:19PM +0200, Andrew Lunn wrote:
-> Hi Russell
+On 2021-09-03 15:48, Christophe Leroy wrote:
+> struct node defined in kernel/audit_tree.c conflicts with
+> struct node defined in include/linux/node.h
+
+Why?  What changed to start triggering this error?  This code has been
+here for 15 years.  I am guessing changing the other one would affect
+more code?
+
+The patch itself looks fine to me.
+
+Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
+
+> 	  CC      kernel/audit_tree.o
+> 	kernel/audit_tree.c:33:9: error: redefinition of 'struct node'
+> 	   33 |  struct node {
+> 	      |         ^~~~
+> 	In file included from ./include/linux/cpu.h:17,
+>                 	 from ./include/linux/static_call.h:102,
+>                 	 from ./arch/powerpc/include/asm/machdep.h:10,
+>                 	 from ./arch/powerpc/include/asm/archrandom.h:7,
+>                 	 from ./include/linux/random.h:121,
+>                 	 from ./include/linux/net.h:18,
+>                 	 from ./include/linux/skbuff.h:26,
+>                 	 from kernel/audit.h:11,
+>                 	 from kernel/audit_tree.c:2:
+> 	./include/linux/node.h:84:8: note: originally defined here
+> 	   84 | struct node {
+> 	      |        ^~~~
+> 	make[2]: *** [kernel/audit_tree.o] Error 1
 > 
-> Do you have
+> Rename it audit_node.
 > 
-> auto brdsl
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  kernel/audit_tree.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
 > 
-> in your /etc/network/interfaces?
+> diff --git a/kernel/audit_tree.c b/kernel/audit_tree.c
+> index b2be4e978ba3..d392cf4ec8e2 100644
+> --- a/kernel/audit_tree.c
+> +++ b/kernel/audit_tree.c
+> @@ -30,7 +30,7 @@ struct audit_chunk {
+>  	int count;
+>  	atomic_long_t refs;
+>  	struct rcu_head head;
+> -	struct node {
+> +	struct audit_node {
+>  		struct list_head list;
+>  		struct audit_tree *owner;
+>  		unsigned index;		/* index; upper bit indicates 'will prune' */
+> @@ -269,7 +269,7 @@ bool audit_tree_match(struct audit_chunk *chunk, struct audit_tree *tree)
+>  
+>  /* tagging and untagging inodes with trees */
+>  
+> -static struct audit_chunk *find_chunk(struct node *p)
+> +static struct audit_chunk *find_chunk(struct audit_node *p)
+>  {
+>  	int index = p->index & ~(1U<<31);
+>  	p -= index;
+> @@ -322,7 +322,7 @@ static void replace_chunk(struct audit_chunk *new, struct audit_chunk *old)
+>  	list_replace_rcu(&old->hash, &new->hash);
+>  }
+>  
+> -static void remove_chunk_node(struct audit_chunk *chunk, struct node *p)
+> +static void remove_chunk_node(struct audit_chunk *chunk, struct audit_node *p)
+>  {
+>  	struct audit_tree *owner = p->owner;
+>  
+> @@ -459,7 +459,7 @@ static int tag_chunk(struct inode *inode, struct audit_tree *tree)
+>  {
+>  	struct fsnotify_mark *mark;
+>  	struct audit_chunk *chunk, *old;
+> -	struct node *p;
+> +	struct audit_node *p;
+>  	int n;
+>  
+>  	mutex_lock(&audit_tree_group->mark_mutex);
+> @@ -570,11 +570,11 @@ static void prune_tree_chunks(struct audit_tree *victim, bool tagged)
+>  {
+>  	spin_lock(&hash_lock);
+>  	while (!list_empty(&victim->chunks)) {
+> -		struct node *p;
+> +		struct audit_node *p;
+>  		struct audit_chunk *chunk;
+>  		struct fsnotify_mark *mark;
+>  
+> -		p = list_first_entry(&victim->chunks, struct node, list);
+> +		p = list_first_entry(&victim->chunks, struct audit_node, list);
+>  		/* have we run out of marked? */
+>  		if (tagged && !(p->index & (1U<<31)))
+>  			break;
+> @@ -616,7 +616,7 @@ static void trim_marked(struct audit_tree *tree)
+>  	}
+>  	/* reorder */
+>  	for (p = tree->chunks.next; p != &tree->chunks; p = q) {
+> -		struct node *node = list_entry(p, struct node, list);
+> +		struct audit_node *node = list_entry(p, struct audit_node, list);
+>  		q = p->next;
+>  		if (node->index & (1U<<31)) {
+>  			list_del_init(p);
+> @@ -684,7 +684,7 @@ void audit_trim_trees(void)
+>  		struct audit_tree *tree;
+>  		struct path path;
+>  		struct vfsmount *root_mnt;
+> -		struct node *node;
+> +		struct audit_node *node;
+>  		int err;
+>  
+>  		tree = container_of(cursor.next, struct audit_tree, list);
+> @@ -839,7 +839,7 @@ int audit_add_tree_rule(struct audit_krule *rule)
+>  	drop_collected_mounts(mnt);
+>  
+>  	if (!err) {
+> -		struct node *node;
+> +		struct audit_node *node;
+>  		spin_lock(&hash_lock);
+>  		list_for_each_entry(node, &tree->chunks, list)
+>  			node->index &= ~(1U<<31);
+> @@ -938,7 +938,7 @@ int audit_tag_tree(char *old, char *new)
+>  		mutex_unlock(&audit_filter_mutex);
+>  
+>  		if (!failed) {
+> -			struct node *node;
+> +			struct audit_node *node;
+>  			spin_lock(&hash_lock);
+>  			list_for_each_entry(node, &tree->chunks, list)
+>  				node->index &= ~(1U<<31);
+> -- 
+> 2.25.0
 > 
-> Looking at /lib/udev/bridge-network-interface it seems it will only do
-> hotplug of interfaces if auto is set on the bridge interface. Without
-> auto, it only does coldplug. So late appearing switch ports won't get
-> added.
+> --
+> Linux-audit mailing list
+> Linux-audit@redhat.com
+> https://listman.redhat.com/mailman/listinfo/linux-audit
+> 
 
-I think you're looking at this:
+- RGB
 
-[ "$BRIDGE_HOTPLUG" = "no" ] && exit 0
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
-?
-
-Just before that is:
-
-[ -f /etc/default/bridge-utils ] && . /etc/default/bridge-utils
-
-and /etc/default/bridge-utils sets BRIDGE_HOTPLUG, which is by
-default:
-
-# Shoud we add the ports of a bridge to the bridge when they are
-# hotplugged?
-BRIDGE_HOTPLUG=no
-
-and... none of this seems documented. Not in
-/usr/share/doc/bridge-utils/README.Debian and not in the
-bridge-utils-interfaces(5) man page. This is all a bit rubbish,
-really.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
