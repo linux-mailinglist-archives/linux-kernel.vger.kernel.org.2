@@ -2,114 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B373FFCC5
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4EB3FFCD3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348690AbhICJLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 05:11:45 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:39541 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242775AbhICJLo (ORCPT
+        id S1348706AbhICJPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 05:15:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233277AbhICJPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 05:11:44 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 5CD493200905;
-        Fri,  3 Sep 2021 05:10:44 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 03 Sep 2021 05:10:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=ox+I/Ry1v/j82vqbJpoMct9xYn8
-        vhfN0iM0y0R/9Wa4=; b=VPZfi/EnygXML/q/kpH7FBvJeu9/C5QPnKNHhEnomws
-        sjlGDFlegXG2TQBPfh3/NkFuZEejkaktEnLBvFyIR87u9TZfRwSaeRegOlpFceNl
-        32s6LfM0wCntk6l65wCuFaPC2pFDSyHwkDQfcSGxDxu926aIlEzW84UIh/SlTgFr
-        O1L1zBdEIYAdgdXSUH1jBtsVLUfIEvYUYWhouQ1l7FGPvGmc/1BMSVTtBP886Srq
-        oiGyPVcHldqDk00Jrer29EEnMjO+BoRm4wI4VQyE+NqCTf+a33T9mlbTt1TlS1Sq
-        DD8/+Rt0ANQh7dwqIOUm371VtIbTeuC/GimUqh7zvHA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ox+I/R
-        y1v/j82vqbJpoMct9xYn8vhfN0iM0y0R/9Wa4=; b=bvloNvgKdH/DDTrAB9De1r
-        wsZqy8CrKk8GNm/uTeL+27iyu48KHio0B6hJPz//np8BlZOElL1WhnLCpDk/ElWX
-        toWwilmaA4ZWeWZp1vv/lQFL9cQ2nI92zToc47r45I//VN3zMsppUY9cEdFIw7tE
-        snAJbIXsUKVJnva98ZQgE7qu0HzQC4CY6Zs6yGmXM9iEmNKd8S9ueVXZao5enLSq
-        wVtHmk3lxmI7n5t1ppKrUYE7LOh3U/PG9tZm+/deVZIHUCNPlezp/opg0gCgg4iz
-        w6ge/rJeWgazBjVkGpFBv7d4NhGOUHJANYyXPgDqnom/ehb7BHqSwJeaJFFF1iOA
-        ==
-X-ME-Sender: <xms:kuYxYUl_KGhbwWP-J-5LnK9wzo4Su2ZG5hknQWEGoOmQh-eASeYB6A>
-    <xme:kuYxYT3k26iSM-BsPd7YFnKKLeWdwnipOIOxYg--H_qLAYOJNub3-sefFpoqQNxFa
-    98V0ohjbpOOI7ONriM>
-X-ME-Received: <xmr:kuYxYSpUS7qGPQrm5MmYCIKpzffgVz7p8T4OhYfy3MO9kQzIXTz5Dj-dvz4Bn_CNLoGkZ3jNLf9j0VW_Bo3JvGhDPsp2fsn0e-hH>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedguddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:kuYxYQn-S0dh-ztN8x2oKEFnP-1n1lKz2uTzbut5CN1lSmL2aCSV3Q>
-    <xmx:kuYxYS0EJ9wWpOcRmqlWDB2RxYQUyWpNd21leJfnztL8SDfFi0gdvg>
-    <xmx:kuYxYXvRvyoRaN-EaFPSNyZx9Z5T42DYLnxHbJbTPNuhWDV1SUpusA>
-    <xmx:lOYxYbn3qtWt4Vq2Kyg0fgHeFk1imqyrjrbzRKGepwc7kc0HI9G4VA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 3 Sep 2021 05:10:42 -0400 (EDT)
-Date:   Fri, 3 Sep 2021 11:10:40 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/8] clk: sunxi-ng: Rename files to match Kconfig and
- drivers
-Message-ID: <20210903091040.2bngsvhem2ftzhaz@gilmour>
-References: <20210901050526.45673-1-samuel@sholland.org>
- <20210901050526.45673-5-samuel@sholland.org>
+        Fri, 3 Sep 2021 05:15:40 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CF8C061575;
+        Fri,  3 Sep 2021 02:14:40 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id c5so2039713plz.2;
+        Fri, 03 Sep 2021 02:14:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=kb8Z5KH61dlFFT8cs85Ri7+/n7iNLKzAMoxXAmW2ceA=;
+        b=VS5jH6/vJozUZwnuawGnyMC48QMXnhiunRInAGDzbwL/WM0K4OHttgn8v1WCHsygYV
+         XtAU90YgcTIDbfWQpOteVNWViEFrEkjPcJJbHLsCiJAFOUNxLEK6hbYR9cNxExvnShpo
+         LyqlT+c3lp5cystcpuSx+j0P2kH/r09xPyCfn8NuA0A1cshCiFaVISLRV+ZhlfT3bTUP
+         PhxSKw5dKyHQXBpu3yLlhAYWERBo7a+fMAYKdQEVJADI+D33toqWqcNflbD1oxzKiRG8
+         L35MKyfOzPdC/cBx/XIsdgFwmgaenK14tAvoVkxX5Zhywm8m/dL90ZbZ+9rnlCfrSOYJ
+         TJuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=kb8Z5KH61dlFFT8cs85Ri7+/n7iNLKzAMoxXAmW2ceA=;
+        b=iZ9VPsuIinKVpbO1zuTdkH5E6ijy/NU5Xqsk3waVgjFE3acjAsXWv7hFCYs4gfimjm
+         +i1edhD4DdqvhHDJS7g74mX04KtVzylmBn8D4EBfqIm3Gp4Dbb7tqkrYOSF8hydm/Fcz
+         WBdm5CU/0oDeTEQH5kBQwy9V4RkzXy0UUANcl/rvq3B+fUrMbcshc9n7pBji6C+AWb6T
+         xlX1tDKhzI8GWRugLfX948WP3jQxuPrrvgYKR6mOsp8kxcoYuG7uGwcgkhluQOjgqWYT
+         tNGJ2RrloS8DdTOEEslftfqeJ7zd5WhLBAowIH6JgmH9Wy9KZpqtgX0KGI6eS75ZcAJq
+         Aw5g==
+X-Gm-Message-State: AOAM533pT9ZpJ2UrGs9QLM7kxxtjGGy26MLFdq0tR7ygfSgrHsKjHdKI
+        cn9mmvqRZHnH+CLI5EE1Kd0=
+X-Google-Smtp-Source: ABdhPJz1EryyIfzYCwBsKI7WGd4sPcZ3VHNRIpfsK7XuoGifQUKu3AiOsDLxBMlWacWq67iuYF7Weg==
+X-Received: by 2002:a17:90a:6282:: with SMTP id d2mr8791405pjj.189.1630660479349;
+        Fri, 03 Sep 2021 02:14:39 -0700 (PDT)
+Received: from haswell-ubuntu20.lan ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id y1sm5766231pga.50.2021.09.03.02.14.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 02:14:38 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
+        Sean Wang <sean.wang@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@savoirfairelinux.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:MEDIATEK SWITCH DRIVER" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH 4.19.y] net: dsa: mt7530: disable learning on standalone ports
+Date:   Fri,  3 Sep 2021 17:14:30 +0800
+Message-Id: <20210903091430.2209627-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <YTBoDaYDJfBz3YzN@kroah.com>
+References: <20210824055509.1316124-1-dqfext@gmail.com> <YSUQV3jhfbhbf5Ct@sashalap> <CALW65ja3hYGmEqcWZzifP2-0WsJOnxcUXsey2ZH5vDbD0-nDeQ@mail.gmail.com> <YSi8Ky3GqBjnxbhC@kroah.com> <20210902053619.1824464-1-dqfext@gmail.com> <YTBoDaYDJfBz3YzN@kroah.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ejwkc5wmabu555zl"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210901050526.45673-5-samuel@sholland.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 02, 2021 at 07:58:37AM +0200, Greg KH wrote:
+> On Thu, Sep 02, 2021 at 01:36:19PM +0800, DENG Qingfang wrote:
+> > On Fri, Aug 27, 2021 at 12:19:23PM +0200, Greg KH wrote:
+> > > On Tue, Aug 24, 2021 at 11:57:53PM +0800, DENG Qingfang wrote:
+> > > > Standalone ports should have address learning disabled, according to
+> > > > the documentation:
+> > > > https://www.kernel.org/doc/html/v5.14-rc7/networking/dsa/dsa.html#bridge-layer
+> > > > dsa_switch_ops on 5.10 or earlier does not have .port_bridge_flags
+> > > > function so it has to be done differently.
+> > > > 
+> > > > I've identified an issue related to this.
+> > > 
+> > > What issue is that?  Where was it reported?
+> > 
+> > See Florian's message here
+> > https://lore.kernel.org/stable/20210317003549.3964522-2-f.fainelli@gmail.com/
+> 
+> THat is just the patch changelog text, or is it unique to this
+> stable-only patch?  It is not obvious at all.
 
---ejwkc5wmabu555zl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The issue is with all DSA drivers that do not disable address learning
+on standalone ports.
 
-Hi,
+"With learning enabled we would end up with the switch having
+incorrectly learned the address of the CPU port which typically results
+in a complete break down of network connectivity until the address
+learned ages out and gets re-learned, from the correct port this time."
 
-On Wed, Sep 01, 2021 at 12:05:22AM -0500, Samuel Holland wrote:
-> When the drivers are built as modules, the file name will become the
-> module name. Rename the files so everything matches: the Kconfig symbol,
-> the platform driver name (as seen in sysfs), and the module name.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> 
+> > > > > 2. A partial backport of this patch?
+> > > > 
+> > > > The other part does not actually fix anything.
+> > > 
+> > > Then why is it not ok to just take the whole thing?
+> > > 
+> > > When backporting not-identical-patches, something almost always goes
+> > > wrong, so we prefer to take the original commit when ever possible.
+> > 
+> > Okay. MDB and tag ops can be backported as is, and broadcast/multicast
+> > flooding can be implemented in .port_egress_floods. 
+> 
+> So what are we supposed to do here?
 
-I'm not a big fan of big renames like this, it makes merging and
-backporting patches harder in the long term.
+Function port_egress_floods is refactored to port_bridge_flags in commit
+a8b659e7ff75 ("net: dsa: act as passthrough for bridge port flags"). I can
+backport the mt7530_port_bridge_flags function as port_egress_floods.
 
-I assume you did this to make the module autoloading work? If so, using
-MODULE_ALIAS would be less intrusive
-
-Maxime
-
---ejwkc5wmabu555zl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYTHmkAAKCRDj7w1vZxhR
-xf4xAP90rWbPp24J+BEJxdB2On7UfpvhIiYfWFYBbYKAlJfsRQD7B8nA9clu2f1u
-JaR0qk9WskxjgGvi6R8jMVEelzBTsAg=
-=sai4
------END PGP SIGNATURE-----
-
---ejwkc5wmabu555zl--
+> 
+> totally confused,
+> 
+> greg k-h
