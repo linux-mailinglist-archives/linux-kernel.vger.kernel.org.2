@@ -2,211 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDD523FFF86
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C79B43FFF8F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349340AbhICMFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 08:05:14 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:37530 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235253AbhICMFM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 08:05:12 -0400
-Received: by mail-io1-f71.google.com with SMTP id h3-20020a056602008300b005b7c0e23e11so3687090iob.4
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 05:04:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=/fhLtTMWX+YkLat1Pf8WyLw6nCwFWCGtGLW4T/NoWzo=;
-        b=gYXfpoQUakOERmNg7HG/MQvvy8G5XUleBogj5NcS+jvQKJbNWHOnCAMnIzHZ+zGXQG
-         DFMh1WsDa8ZO+13UyBtEHsH8oW2T1oTPP5FHNUrKgl1NyUnt+ZR3TPb67zVcb+os8iWb
-         skc5hIUl+QEcrsjbGow6IhsVSE34bjkWZ+/jppYM2EI3OSVj42fZwAGzzRSWZMPFtp4Z
-         L4VIQCedWAl0B3yUPH0ePFX3l2vi7EJRFBnHrmGx4ZHLAR66m25PNauaAT896lqbHDAa
-         hHIde7XFSxTudolwio/zbyHXw5mqTKuHPs9xeOxx7Lx5A/XMmkxyvL4zx8dHC+ysvGgr
-         lydQ==
-X-Gm-Message-State: AOAM532ayrA9Al7VpY8N+a/33BD69Ly9NieDzufcQl3tME7Ar9qQDTNm
-        fpMndbP9XjwYtxRgd/YDTP6R8T4MCqr0TPhYPG0/WzZL/BW1
-X-Google-Smtp-Source: ABdhPJwRFeeFYeaGNc8dXyz155gF4Qsx41NEvam+wq1fj38Ro4spceicn61CBkiePl/6zKrCeuGUsK7EmPjL7soIdGqqFoPk+kRg
+        id S1349344AbhICMJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 08:09:15 -0400
+Received: from mail-dm6nam10on2080.outbound.protection.outlook.com ([40.107.93.80]:8960
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1348265AbhICMJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 08:09:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Iqt4MceP1730montdzBkxrZ5GOggPVva7O0Vwe2TLu/0au36Wdn4E3u4RtjbCS9OdUD/drMHfak1lQeX+jW3nujgf7FXqkmxoOBJmflMs5Ataiez5NfH3c035Jh8PMdN2+MvNp1NhCn2s1UvTbY4nvB4iRUEZ/ur3g96Iwp2L2HHYmy2YhfSs+BQNmTpDHCwsAmdSIZ73N8PQ5KurPLKcSzd0HMCzDpWovFV1EG+slL9kldaKppR/GojsG/O8A3YeSuQkullu4N++cZTW0issFR6qaRMuUafT/LPewg6jwhG0RWkuHpz9a+OfcPO1fe7SlDFqvz+d60t8HtyK+FFNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=bneLOLThWC+MYdJPDsERPwwBE/lRHAXqxiY8hlJoOOo=;
+ b=Y/H2LCcLWNfdr28fPzHeluIs1SwAnW42oov3HXiFwSaoKSOhbbGvlWBxNaLxJGMPZMb/Cz5IG+LfGdhDjJXCFxAh7YXMaDyCJzP2xywB7vfnVIyTiZ8GdVOklHEfQYJKfv14kGaDTDv6q0W30Y8rQIhqSDDncSEO9mxxmAa27ltaiCi7asmKTCna2gcS6WdGNssUg9ha6Gl2XforOY3Uk6iLPirCpYlllaRHqUwM+2hZJlU+/Bv1Sye4TZBSZsw8+wKvwItKizpcMsiRlyqT3f59dSlCn4JqtpsW2kDIdxcV147ag/B4XSOukKP6mJ93mRycguKF/htX/Sj/dwr2Rg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bneLOLThWC+MYdJPDsERPwwBE/lRHAXqxiY8hlJoOOo=;
+ b=5oIHjlVgrTWAz57FWeOCXqBxKRljjvIvc1WUKqGvi5lAInki/fqy4WhkSjyEqFxQOz+Trjf+d/qnMBk4T/cX6TAoigWDZOIZXFRY04FkP6rk+05LGXrgw4vwPyKroKlsPT/64gTvFMS491huu8fkjBcw0qgNqZf8BG4PvYVsZCk=
+Authentication-Results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SA0PR12MB4446.namprd12.prod.outlook.com (2603:10b6:806:71::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Fri, 3 Sep
+ 2021 12:08:09 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::78b7:7336:d363:9be3]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::78b7:7336:d363:9be3%6]) with mapi id 15.20.4478.021; Fri, 3 Sep 2021
+ 12:08:09 +0000
+Subject: Re: [PATCH Part1 v5 35/38] x86/sev: Register SNP guest request
+ platform device
+To:     Dov Murik <dovmurik@linux.ibm.com>, Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andi Kleen <ak@linux.intel.com>, tony.luck@intel.com,
+        marcorr@google.com, sathyanarayanan.kuppuswamy@linux.intel.com
+References: <20210820151933.22401-1-brijesh.singh@amd.com>
+ <20210820151933.22401-36-brijesh.singh@amd.com> <YTD+go747TIU6k9g@zn.tnic>
+ <5428d654-a24d-7d8b-489c-b666d72043c1@amd.com>
+ <287db163-aaac-4cc1-522f-380f97197b3d@linux.ibm.com>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <a42c782c-1de4-6c9f-4e97-cc4e1e48b358@amd.com>
+Date:   Fri, 3 Sep 2021 07:08:06 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
+In-Reply-To: <287db163-aaac-4cc1-522f-380f97197b3d@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: SN4PR0201CA0014.namprd02.prod.outlook.com
+ (2603:10b6:803:2b::24) To SN6PR12MB2718.namprd12.prod.outlook.com
+ (2603:10b6:805:6f::22)
 MIME-Version: 1.0
-X-Received: by 2002:a92:8742:: with SMTP id d2mr2365263ilm.58.1630670652761;
- Fri, 03 Sep 2021 05:04:12 -0700 (PDT)
-Date:   Fri, 03 Sep 2021 05:04:12 -0700
-In-Reply-To: <20210903111011.2811-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000000ed7b05cb161911@google.com>
-Subject: Re: [syzbot] INFO: task hung in __lru_add_drain_all
-From:   syzbot <syzbot+a9b681dcbc06eb2bca04@syzkaller.appspotmail.com>
-To:     eric.dumazet@gmail.com, hdanton@sina.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN4PR0201CA0014.namprd02.prod.outlook.com (2603:10b6:803:2b::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend Transport; Fri, 3 Sep 2021 12:08:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6588ae69-cfdf-4bb0-88c5-08d96ed37ecf
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4446:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4446BFF596381FC4AD925C4EE5CF9@SA0PR12MB4446.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IgRFo+R00yXFS88/J1lN9ciaw+1ulmuk59vFsc6gqEoMcQK+V97OM/sZrACm069uOKM6EzhFq7su3TWHhDD1ShACwMl/hJ24S2Lm4D9KSqG00VjO7xYtGT9bGN1+wYrlHBEtXUEZ1A9dF5ly3iIc7YpHGB/weXG0NQF+xpw09PGPM8hR8g8WTJWe4mdXsD0wT7PO9BsGmy9qB2OJHOJs0aoAi/vSC3JF7eZdoVLUIb3yXvBu3jgiiZ/FvI2s3d3gV9ib4FzyUCpW619Q7QrTC0dwD7Go29NIUUiAKcZiyQfcwUidK0yUJslecRzHRdpSlgZ5N9ut7TNfIURDe2IcRZBaoO0wmgGr1d9pLx6yYEDgdB0LNlLcdaBBucDj/T+IqQPmeoYdn68Thuk2ipGbE92QkiQggiQHtf5ZGSVP+oeD73z01AYEq9qUzaSk+eg2AbXMXl3TDk2bJxs9XHePABo/p7SG6QYBCpO/rSM9O0M7n4Y4k5C7gQhzTdNxx1EkVPaDO/6Hnh3R/Ieqm5Eb1qvCmwt4RLtlBbSOYs5JLSwsYCWZLQiB/tLewT0qKWVA6lTSeTRXW01v0dVWEqNvrBQACV0+plxzFOow4D2wmK6mV2WoWVOcgqm0xXkL3OvrQHWR3kzCcBxHmTqC3iigcS6w3+g5wO9uXfBggeFj/Tb5qRvk55cgUFU/xEEEcCyVEpFtvymqnjWR5NmDhbMycI2LjNu0NMwseC0yLFu3BJLoSskDMDBI7PbIzlDDGXPvRcgorAtrYshUgfFCR55yhQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(346002)(366004)(136003)(53546011)(44832011)(26005)(2906002)(5660300002)(52116002)(86362001)(956004)(7406005)(83380400001)(2616005)(6506007)(6486002)(8936002)(7416002)(66946007)(4744005)(4326008)(6512007)(54906003)(110136005)(186003)(8676002)(31696002)(316002)(66476007)(478600001)(31686004)(38350700002)(66556008)(36756003)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VElEM3p5ZDJZaGswMnUzWGJxajBtd0p3UTYvbGFJbXBlSHlPQVpaN0lhREx0?=
+ =?utf-8?B?eFBLMERPQkhhZGFqRjliQnIrd05MWUh6V2VzQWVzYnJGSFJFZzRhcHFVWWM1?=
+ =?utf-8?B?Y3dZZitMelNiQnNBMnZGYkxic1IyNDF4VDlrQnFvbzFESlZacUgxVG5OMHlQ?=
+ =?utf-8?B?RG1QeStFanBPVWhNYllqVjFTbnZGQ2xkUWgvRVpJN2pBbUxJb0F1dUh5YzBr?=
+ =?utf-8?B?SzJzaHZrNjZDeUdxSG4wb2N1ZG9tSDNJbWx5SFgxMm8wYUthdGZTeXhXRC9m?=
+ =?utf-8?B?Z1RmWWdnUy9XRzRxMmVPaUhLeDdtMGhzZThyTVJIU0JJdDUxUUFaUFhVd21h?=
+ =?utf-8?B?cnNoU0taMnhhQ3ZyQ3U2Q1Ntb3pxMEh4d3QwTTkzMUhaZDZ4WFdIb2dURkRx?=
+ =?utf-8?B?SldJbXBKWElQYjlWR00zbmhhVXQ3TDB4djZyUkl6MVRKbWNyN3U4bVhMWUZK?=
+ =?utf-8?B?aTBaS3R6MHFheDVBcTJGVHRrdS9rMXRrTy9UTE16QU00RlBBNUR3bjhHUGJX?=
+ =?utf-8?B?ajZqUythMXFlbWpUZkZRQlpSdTJMOE1kb3haWnp1Ulk5bWRNT2VWbWJLUDZP?=
+ =?utf-8?B?R0pHVzRmTW5aMytKWklEemZjSVRTR0J5L0JhQUlRak1FVFJoeGRKZlRyTlRv?=
+ =?utf-8?B?YzdGcTBJQ1hYTmd6U1o4bUYvSVRPUVVEdGZWMHdUNVh5cnN2MHluc3k0bmlF?=
+ =?utf-8?B?L0xLYUJqWDlvSGdNQzUxRERSQjBjQnhTZjlScVlPR295aE15K2hCeWF0UmZI?=
+ =?utf-8?B?S2tlV1lOdFdyQmlzbjlhd0RCamZQYit5a3hmNkdzVnlHUmlCQzhLVlZ4cExL?=
+ =?utf-8?B?czllY1hCNXFKZklUVVBsemd5YjFsT0xNTm92bkRWWE1obGVNb0FqRW0xSXZG?=
+ =?utf-8?B?Q1hQNElkVHFwMHZ0b2Z1U2ZsT2szZE5wL2lwVmFZbmlFSGsvRmdvZS92RXJN?=
+ =?utf-8?B?YzFIRklZU2gxWm13VFVhWmdLY2FPKzFoemZWaVR3REY4MnRDYXk4ZU9qblFu?=
+ =?utf-8?B?Mk9ySFd1YWZ4N2JUdER3aHZ0TWE2M0t3cXJNcTh5M1M5dDEwYStYcEM2OFNP?=
+ =?utf-8?B?UHhiaUFiRlRmN1ZFOGVSdlo2VnhTRzYxeWE2NnhZT2l0bmxBdkd1Z1BXWTdr?=
+ =?utf-8?B?bGM5ZVp4K1RGRjhFTlV6WVhsMFRBTFJBOXhudjdCaUFpUW8xN3pMK0hraHh6?=
+ =?utf-8?B?SU9zbFhnTmpHMUVzRlZiNGhKSUlHcmJrSFVkMFdDZEhoeVEzWjAxY0c0eEx3?=
+ =?utf-8?B?dXlabXhHWjRTNGN0UXAzZmtobVM4bUpqelY3RG5TT2RZQTBVYll1NjdDUWo1?=
+ =?utf-8?B?ZHlDV3E0U21hK1FxNlVhWUJjUjZ3UCtTSW1wQm1HUk9rVHJKRXB0TUEvaXlk?=
+ =?utf-8?B?V2poSSt3bm9nTS9QdUxBY2UrNFA4N1R6VUNzRjd2Z1NiM1VRa2VibllPT25v?=
+ =?utf-8?B?UEtuNko4dzVCWXZ3T0dFNFVERWNDWSttYVNOU005aU82Vjl5QlhObWwwTTMx?=
+ =?utf-8?B?UU0yT2Q5SFp1Q0tZdytmOEJJNkJRMWJ4RXNrYStuL0VBaklwYy9iM1BBbDAz?=
+ =?utf-8?B?VWY3WkdKM0l4bllHa1hPbXE2N3c2RGhUaGYvMVNWaVJ0Z21DemRxNkhzWFRL?=
+ =?utf-8?B?QmJQWkE5YUFlOEJ1c2R6ZlBFbXR2eFI4L290aDdiUWdCbStWMC8wamVPU2Nk?=
+ =?utf-8?B?VEozWTFsclRHcUxhWTgxUTgzc3d1Wml4bHlkTURXVFA2NU5EQWJEQngrMng2?=
+ =?utf-8?Q?fL3h1wbwkk7LO6I8NT9qrR/zvkxeLIqwXB7rTFM?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6588ae69-cfdf-4bb0-88c5-08d96ed37ecf
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2021 12:08:09.6799
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HsLLWfIuhX7BAoaozSkURIPI5H0rZPPpq4LTyCkldvKI8r3w47ONPFeBMLFO+g1wqGQSl99CTTESgNvu2hqOUQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4446
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-INFO: task hung in synchronize_rcu
+On 9/3/21 3:15 AM, Dov Murik wrote:
+>> Unfortunately, the secrets page does not contain a magic header or uuid
+>> which a guest can read to verify that the page is actually populated by
+>> the PSP. 
+> In the SNP FW ABI document section 8.14.2.5 there's a Table 61 titled
+> Secrets Page Format, which states that the first field in that page is a
+> u32 VERSION field which should equal 2h.
+>
+> While not as strict as GUID header, this can help detect early that the
+> content of the SNP secrets page is invalid.
 
-INFO: task kworker/u4:3:57 blocked for more than 143 seconds.
-      Not tainted 5.14.0-rc3-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:kworker/u4:3    state:D stack:26128 pid:   57 ppid:     2 flags:0x00004000
-Workqueue: events_unbound fsnotify_mark_destroy_workfn
-Call Trace:
- context_switch kernel/sched/core.c:4683 [inline]
- __schedule+0x93a/0x26f0 kernel/sched/core.c:5940
- schedule+0xd3/0x270 kernel/sched/core.c:6019
- schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1855
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x176/0x280 kernel/sched/completion.c:138
- __synchronize_srcu+0x1f4/0x290 kernel/rcu/srcutree.c:930
- fsnotify_mark_destroy_workfn+0xfd/0x340 fs/notify/mark.c:832
- process_one_work+0x98d/0x1630 kernel/workqueue.c:2276
- worker_thread+0x658/0x11f0 kernel/workqueue.c:2422
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+The description indicates that the field is a version number of the
+secrets page format; it will get bumped every time the spec steals the
+reserved bytes for something new. IMHO, we should not depend on the
+version number.
 
-Showing all locks held in the system:
-3 locks held by kworker/0:1/7:
-2 locks held by ksoftirqd/0/13:
-2 locks held by kworker/u4:3/57:
- #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:620 [inline]
- #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:617 [inline]
- #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
- #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x871/0x1630 kernel/workqueue.c:2247
- #1: ffffc90000f9fdb0 ((reaper_work).work){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1630 kernel/workqueue.c:2251
-2 locks held by kworker/u4:4/129:
- #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:620 [inline]
- #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:617 [inline]
- #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
- #0: ffff888010869138 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x871/0x1630 kernel/workqueue.c:2247
- #1: ffffc900013afdb0 (connector_reaper_work){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1630 kernel/workqueue.c:2251
-1 lock held by khungtaskd/1647:
- #0: ffffffff8b97ba40 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
-1 lock held by khugepaged/1662:
- #0: ffffffff8ba5e948 (lock#6){+.+.}-{3:3}, at: __lru_add_drain_all+0x65/0x760 mm/swap.c:791
-1 lock held by systemd-udevd/4873:
-1 lock held by in:imklog/8269:
- #0: ffff888011d9cd70 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:974
-3 locks held by kworker/1:7/10141:
- #0: ffff88802757d138 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff88802757d138 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:620 [inline]
- #0: ffff88802757d138 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff88802757d138 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:617 [inline]
- #0: ffff88802757d138 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:644 [inline]
- #0: ffff88802757d138 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work+0x871/0x1630 kernel/workqueue.c:2247
- #1: ffffc9000a747db0 ((work_completion)(&(&ifa->dad_work)->work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1630 kernel/workqueue.c:2251
- #2: ffffffff8d0cc6a8 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_dad_work+0xa3/0x1340 net/ipv6/addrconf.c:4031
-4 locks held by kworker/u4:7/16665:
-
-=============================================
-
-NMI backtrace for cpu 1
-CPU: 1 PID: 1647 Comm: khungtaskd Not tainted 5.14.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
- watchdog+0xd0a/0xfc0 kernel/hung_task.c:295
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Sending NMI from CPU 1 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 13 Comm: ksoftirqd/0 Not tainted 5.14.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:match_held_lock+0xe/0xc0 kernel/locking/lockdep.c:5077
-Code: 48 c7 c7 40 db 8b 89 e8 66 7a be ff e8 cd 1a cd ff 31 c0 5d c3 0f 1f 80 00 00 00 00 53 48 89 fb 48 83 ec 08 48 39 77 10 74 6a <66> f7 47 22 f0 ff 74 5a 48 8b 46 08 48 89 f7 48 85 c0 74 42 8b 15
-RSP: 0018:ffffc90000d27410 EFLAGS: 00000093
-RAX: 0000000000000005 RBX: ffff888010a68a18 RCX: 0000000000000001
-RDX: 0000000000000000 RSI: ffffffff8d0cc6a8 RDI: ffff888010a68a18
-RBP: ffffffff8d0cc6a8 R08: ffffc90000d276d8 R09: ffffc90000d276c8
-R10: ffffffff87d55c4a R11: 0000000000000000 R12: ffff888010a68000
-R13: ffff888010a689f0 R14: 00000000ffffffff R15: ffff888010a68a18
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000052f7b0 CR3: 000000001d209000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __lock_is_held kernel/locking/lockdep.c:5368 [inline]
- lock_is_held_type+0xa7/0x140 kernel/locking/lockdep.c:5668
- lock_is_held include/linux/lockdep.h:283 [inline]
- lockdep_rtnl_is_held+0x17/0x30 net/core/rtnetlink.c:137
- __in6_dev_get include/net/addrconf.h:313 [inline]
- ip6_ignore_linkdown include/net/addrconf.h:404 [inline]
- find_match.part.0+0x78/0xcc0 net/ipv6/route.c:737
- find_match net/ipv6/route.c:824 [inline]
- __find_rr_leaf+0x17f/0xd20 net/ipv6/route.c:825
- find_rr_leaf net/ipv6/route.c:846 [inline]
- rt6_select net/ipv6/route.c:890 [inline]
- fib6_table_lookup+0x649/0xa20 net/ipv6/route.c:2174
- ip6_pol_route+0x1c5/0x11d0 net/ipv6/route.c:2210
- pol_lookup_func include/net/ip6_fib.h:579 [inline]
- fib6_rule_lookup+0x111/0x6f0 net/ipv6/fib6_rules.c:115
- ip6_route_input_lookup net/ipv6/route.c:2280 [inline]
- ip6_route_input+0x63c/0xb30 net/ipv6/route.c:2576
- ip6_rcv_finish_core.constprop.0.isra.0+0x168/0x570 net/ipv6/ip6_input.c:63
- ip6_rcv_finish net/ipv6/ip6_input.c:74 [inline]
- NF_HOOK include/linux/netfilter.h:307 [inline]
- NF_HOOK include/linux/netfilter.h:301 [inline]
- ipv6_rcv+0x229/0x3c0 net/ipv6/ip6_input.c:297
- __netif_receive_skb_one_core+0x114/0x180 net/core/dev.c:5498
- __netif_receive_skb+0x24/0x1b0 net/core/dev.c:5612
- process_backlog+0x2a5/0x6c0 net/core/dev.c:6492
- __napi_poll+0xaf/0x440 net/core/dev.c:7047
- napi_poll net/core/dev.c:7114 [inline]
- net_rx_action+0x801/0xb40 net/core/dev.c:7201
- __do_softirq+0x292/0xa27 kernel/softirq.c:559
- run_ksoftirqd kernel/softirq.c:923 [inline]
- run_ksoftirqd+0x2d/0x60 kernel/softirq.c:915
- smpboot_thread_fn+0x645/0x9c0 kernel/smpboot.c:164
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-----------------
-Code disassembly (best guess):
-   0:	48 c7 c7 40 db 8b 89 	mov    $0xffffffff898bdb40,%rdi
-   7:	e8 66 7a be ff       	callq  0xffbe7a72
-   c:	e8 cd 1a cd ff       	callq  0xffcd1ade
-  11:	31 c0                	xor    %eax,%eax
-  13:	5d                   	pop    %rbp
-  14:	c3                   	retq
-  15:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
-  1c:	53                   	push   %rbx
-  1d:	48 89 fb             	mov    %rdi,%rbx
-  20:	48 83 ec 08          	sub    $0x8,%rsp
-  24:	48 39 77 10          	cmp    %rsi,0x10(%rdi)
-  28:	74 6a                	je     0x94
-* 2a:	66 f7 47 22 f0 ff    	testw  $0xfff0,0x22(%rdi) <-- trapping instruction
-  30:	74 5a                	je     0x8c
-  32:	48 8b 46 08          	mov    0x8(%rsi),%rax
-  36:	48 89 f7             	mov    %rsi,%rdi
-  39:	48 85 c0             	test   %rax,%rax
-  3c:	74 42                	je     0x80
-  3e:	8b                   	.byte 0x8b
-  3f:	15                   	.byte 0x15
-
-
-Tested on:
-
-commit:         c7d10223 Merge tag 'net-5.14-rc4' of git://git.kernel...
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=15c81b33300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bfd78f4abd4edaa6
-dashboard link: https://syzkaller.appspot.com/bug?extid=a9b681dcbc06eb2bca04
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=13983115300000
+thanks
 
