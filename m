@@ -2,130 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A8F3FF840
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 02:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32DEB3FF856
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 02:20:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347071AbhICAIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 20:08:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59198 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232339AbhICAIN (ORCPT
+        id S238860AbhICAVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 20:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232060AbhICAVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 20:08:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630627634;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GiE0Kz8hd97bsI4uOvNsYgRx7F57w/o68XEctyfGOoY=;
-        b=XqSVWEOzytw18hEw+l+l1htTbNFeun1YHLJqIs/s2YEsOi3CkMhnKcrRcI+6Wg298Jk6ew
-        tTVg3oEhSimcQcUWEJ26wTU2uj7MuO11pDsYHmxdu2zp5gidmctywEK45TGNH1cVpaN87M
-        yS4Z5jR8meb34ZO2GdqCnwNrNt9GlJY=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-452-U9ggwjMvNCaWKgcxGneMcg-1; Thu, 02 Sep 2021 20:07:10 -0400
-X-MC-Unique: U9ggwjMvNCaWKgcxGneMcg-1
-Received: by mail-qk1-f200.google.com with SMTP id 21-20020a370815000000b003d5a81a4d12so4703106qki.3
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 17:07:10 -0700 (PDT)
+        Thu, 2 Sep 2021 20:21:43 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7837C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 17:20:44 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id v20-20020a4a2554000000b0028f8cc17378so1093749ooe.0
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 17:20:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=KZY9HfqHiSoNHjeSLVuBihtvknh5wu9WNFSouW+rATM=;
+        b=D0qjoQiNwAYpcfOgVhGLLMbD7hbXN3XvkTH9FnUwI0Q428HD4YkA8c3/Zla5grl9fu
+         m/HDwft+OJzHFsdYOmCCIflhEYF9DGUQKAWkAhX6Md83y94zqL6lLdhu2sqv+fLOuepA
+         q2KyEhBDfmYqZSRaJwY+uEzIECx14ek5INU1o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GiE0Kz8hd97bsI4uOvNsYgRx7F57w/o68XEctyfGOoY=;
-        b=JKU6aqCmzJRVoelesN9gmt5xiZue9IHY+7FH6zbBmQ1hF0m9bnzOXK/t/meVc1FaDh
-         3Owg3nrLAamTn5T9qMVjPmvaCqZ0OtLRKWsXcm8D8xw7c6wcWaV1k6pXOEFuC4WuKVhm
-         lKw8iNSamoliwyL/KjvThqDyvtleKM6a/n+PuWlHjs+1HB/sVkQKRTD3PM0F2Vy+b64l
-         C4cDQK1gq8/iX8CmSa8CtvZ5lh71ZqNxH2htVpYp6PmRPrpY2kNUr4srPzOH+7xdlW8K
-         AN1q31CO8E+4pb3+EXThUUERCkaeiKnMMxZl1XuUIIh0XpchGItnuAvKI1VefqofDT2v
-         xh7A==
-X-Gm-Message-State: AOAM533nc1Sa4VrL7il/hKBWrk/d8HVD+0XjMzTdWPjQw4ab30zYDej6
-        o5iN6++XyVtTIKbZgSRttqHVdjgkGRoqT5KqzhEayNZ4VDTIPxrNqCxOucOGtz4eO24Ts4/T4h1
-        sKYR1QYH5sgibZyAVSRqBQ7AH
-X-Received: by 2002:a37:9f15:: with SMTP id i21mr781045qke.16.1630627629930;
-        Thu, 02 Sep 2021 17:07:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyIzJsi+jDauVfMiO/Sfeo7b8wmHVIB5ErT3tcjcqEj8KRLLTom0EzgN15/jsMCYalzq0uemA==
-X-Received: by 2002:a37:9f15:: with SMTP id i21mr781018qke.16.1630627629679;
-        Thu, 02 Sep 2021 17:07:09 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::d])
-        by smtp.gmail.com with ESMTPSA id t64sm2645065qkd.71.2021.09.02.17.07.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 17:07:09 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 17:07:06 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Babu Moger <babu.moger@amd.com>
-Cc:     bp@alien8.de, bsd@redhat.com, corbet@lwn.net, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, tglx@linutronix.de,
-        x86@kernel.org
-Subject: Re: [v6 1/1] x86/bugs: Implement mitigation for Predictive Store
-Message-ID: <20210903000706.fb43tzhjanyg64cx@treble>
-References: <20210812234440.tcssf2iqs435bgdo@treble>
- <20210902181637.244879-1-babu.moger@amd.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=KZY9HfqHiSoNHjeSLVuBihtvknh5wu9WNFSouW+rATM=;
+        b=rr4LBjbVfZX3DKFNoygeEGLKbRtD9QOllZK1ZK1SaegXpekay58FMjaeB6blCnWFIM
+         pSgSfeEZAVX0ipBw/jou/zG5ZlCzdSQOEnqwIJ0KHRBamWyzBbEL9QIiZHawWu4lGC2i
+         Z+KnbyedmsC7ibYMfUffILdkwX9ARsIX1hgP2BKGurc/IPYm6x6R4XzCZjPLwn5oIN1E
+         FC0qFBx8d9vLns+uT+X20eUoN2VzM69289PO2fYPMnnn3ADpPC4HOWllYzg7DdqgMwH0
+         ZsPCauUFj4SX6KIDIW5AZ7XAy9ufFxDIRy5vuxdHHmkiwTsiZh6x1miG46a56OfH8Gco
+         1eeA==
+X-Gm-Message-State: AOAM5328BMhiEadtgSk1DcizR8F886/y4/N/dl6a67jCTT9n86JaXX7s
+        tVrrMgElaeNxUJQ11zZDimsqw+RH1tb1rNmm/UGu6Q==
+X-Google-Smtp-Source: ABdhPJyoPheulxLZu0NElkoIkQ1VrzjxZsb0OAYE6ld1C+M37o2esEitl4dHPHp9WE5Yj6vxPUnnDaUDYMpe0PbZnIA=
+X-Received: by 2002:a4a:a98c:: with SMTP id w12mr658431oom.29.1630628444025;
+ Thu, 02 Sep 2021 17:20:44 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 2 Sep 2021 17:20:43 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210902181637.244879-1-babu.moger@amd.com>
+In-Reply-To: <20210902154711.1.I9777d0036ecbb749a4fb9ebb892f94c6e3a51772@changeid>
+References: <20210902154711.1.I9777d0036ecbb749a4fb9ebb892f94c6e3a51772@changeid>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 2 Sep 2021 17:20:43 -0700
+Message-ID: <CAE-0n51s1s6L7G1vxbC8PEZ=FBr9mSch81KUBO6fK_jfO8S_CQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180-trogdor: Delete ADC config for
+ unused thermistors
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 01:16:37PM -0500, Babu Moger wrote:
-> I dont have this thread in my mailbox. Replying via git send-email.
-> 
-> Josh,
->    I took care of all your comments except this one below.
-> 
-> >I'd also recommend an "auto" option:
->    >
->    >	{ "auto",	PREDICTIVE_STORE_FORWARD_CMD_AUTO },    /* Platform decides */
-> 
-> >   which would be the default.  For now it would function the same as
-> >"off", but would give room for tweaking defaults later.
-> 
-> There is no plan for tweaking this option in the near future.  I feel
-> adding 'auto' option now is probably overkill and confusing.
+Quoting Matthias Kaehlcke (2021-09-02 15:47:44)
+> The charger thermistor on Lazor, CoachZ rev1 and Pompom rev1+2 is
+> either the wrong part or not stuffed at all, the same is true for
+> the skin temperature thermistor on CoachZ rev1. The corresponding
+> thermal zones are already disabled for these devices, in addition
+> delete the ADC nodes of the thermistors.
+>
+> For Lazor and CoachZ rev1 also disable the PM6150 ADC thermal
+> monitor since there are no other temperatures to monitor.
+>
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
+>
+>  .../arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts | 12 ++++++++++++
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi   | 10 ++++++++++
+>  .../arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts |  8 ++++++++
+>  .../arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dts |  8 ++++++++
+>  4 files changed, 38 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts
+> index 21b516e0694a..edfcd47e1a00 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts
+> @@ -23,6 +23,18 @@ &charger_thermal {
+>         status = "disabled";
+>  };
+>
+> +&pm6150_adc {
+> +       /delete-node/ skin-temp-thermistor@4e;
+> +       /delete-node/ charger-thermistor@4f;
 
-But if the PSF disable interface is modeled after SSB disable (which I
-believe it needs to be) then it's only logical to mirror SSB's default
-"auto" option.
+Is there any other child node? I only see two, unless I missed
+something. In which case the whole node can be disabled?
 
-And, I actually think that calling it 'psf_disable=off' is *more*
-confusing than 'psf_disable=auto'.  Because in this case, 'off' doesn't
-actually mean "off".  It means
+> +};
+> +
+> +&pm6150_adc_tm {
+> +       status = "disabled";
+> +
+> +       /delete-node/ charger-thermistor@0;
+> +       /delete-node/ skin-temp-thermistor@1;
+> +};
+> +
+>  /*
+>   * CoachZ rev1 is stuffed with a 47k NTC as thermistor for skin temperature,
+>   * which currently is not supported by the PM6150 ADC driver. Disable the
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> index 00535aaa43c9..57f7b19f83b0 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> @@ -54,6 +54,16 @@ &panel {
+>         compatible = "boe,nv133fhm-n62";
+>  };
+>
+> +&pm6150_adc {
+> +       /delete-node/ charger-thermistor@4f;
 
-  "off, unless !ssb_disable=off, in which case implicitly mirror the SSB policy".
+Same question here.
 
-So maybe there shouldn't even be an 'psf_disable=off' option, because
-it's not possible to ensure that PSF doesn't get disabled by SSB
-disable.
+> +};
+> +
+> +&pm6150_adc_tm {
+> +       status = "disabled";
+> +
+> +       /delete-node/ charger-thermistor@0;
+> +};
+> +
+>  &trackpad {
+>         interrupts = <58 IRQ_TYPE_EDGE_FALLING>;
+>  };
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts
+> index e122a6b481ff..76a130bad60a 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts
+> @@ -26,6 +26,14 @@ &charger_thermal {
+>         status = "disabled";
+>  };
+>
+> +&pm6150_adc {
+> +       /delete-node/ charger-thermistor@4f;
 
-BTW, is the list of PSF-affected CPUs the same as the list of
-SSB-affected CPUs?  If there might be PSF CPUs which don't have SSB,
-then more logic will need to be added to ensure a sensible default.
+I see there's a 5v choke so this looks good as still enabled.
 
-On a related note, is there a realistic, non-hypothetical need to have
-separate policies and cmdline options for both SSB and PSF?  i.e. is
-there a real-world scenario where a user needs to disable PSF while
-leaving SSB enabled?
-
-Because trying to give them separate interfaces, when PSF disable is
-intertwined with SSB disable in hardware, is awkward and confusing.  And
-the idea of adding another double-negative interface (disable=off!),
-just because a vulnerability is considered to be a CPU "feature", isn't
-very appetizing.
-
-So instead of adding a new double-negative interface, which only *half*
-works due to the ssb_disable dependency, and which is guaranteed to
-further confuse users, and which not even be used in the real world
-except possibly by confused users...
-
-I'm wondering if we can just start out with the simplest possible
-approach: don't change any code and instead just document the fact that
-"spec_store_bypass_disable=" also affects PSF.
-
-Then, later on, if a real-world need is demonstrated, actual code could
-be added to support disabling PSF independently (but of course it would
-never be fully independent since PSF disable is forced by SSB disable).
-
--- 
-Josh
-
+> +};
+> +
+> +&pm6150_adc_tm {
+> +       /delete-node/ charger-thermistor@0;
+> +};
+> +
+>  &pp3300_hub {
+>         /* pp3300_l7c is used to power the USB hub */
+>         /delete-property/regulator-always-on;
