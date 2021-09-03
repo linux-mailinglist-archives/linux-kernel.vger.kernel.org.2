@@ -2,77 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19723FFC79
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A0E03FFC7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348552AbhICI5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:57:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40744 "EHLO mail.kernel.org"
+        id S1348523AbhICI6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:58:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:38840 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348461AbhICI5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:57:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1B3161051;
-        Fri,  3 Sep 2021 08:56:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630659392;
-        bh=SsjjbztlEwoQ2/FB20kOEWlK/4U11FZMfaPIS5UzwPA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HIACXt/YT6pWCqM1ZXgIK14DP/a+8b2wZJAtH533JTB7bHiNh5hQjPgWr4l844+Hp
-         fsqjfJdlFyq4d5jAQMavIFBifH1me5UlrWLbbRy3fBUFxN2leYC9fYTFblIYrARotV
-         Weq2nXrRWULvKRmXB2e4DIi5A9/LS26+/JVxSY+U=
-Date:   Fri, 3 Sep 2021 10:56:29 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     xen-devel@lists.xenproject.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] PM: base: power: don't try to use non-existing RTC
- for storing data
-Message-ID: <YTHjPbklWVDVaBfK@kroah.com>
-References: <20210903084937.19392-1-jgross@suse.com>
- <20210903084937.19392-2-jgross@suse.com>
+        id S1348499AbhICI6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 04:58:02 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 79BFBD6E;
+        Fri,  3 Sep 2021 01:57:02 -0700 (PDT)
+Received: from [10.57.92.220] (unknown [10.57.92.220])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 44A633F694;
+        Fri,  3 Sep 2021 01:57:00 -0700 (PDT)
+Subject: Re: [PATCH v2 3/9] perf cs-etm: Refactor out ETMv4 header saving
+To:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
+        leo.yan@linaro.org, coresight@lists.linaro.org,
+        linux-perf-users@vger.kernel.org, mike.leach@linaro.org
+Cc:     acme@kernel.org, John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210806134109.1182235-1-james.clark@arm.com>
+ <20210806134109.1182235-4-james.clark@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <b0e6b1d8-f9a7-676f-c739-314b91388565@arm.com>
+Date:   Fri, 3 Sep 2021 09:56:59 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210903084937.19392-2-jgross@suse.com>
+In-Reply-To: <20210806134109.1182235-4-james.clark@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 10:49:36AM +0200, Juergen Gross wrote:
-> In there is no legacy RTC device, don't try to use it for storing trace
-> data across suspend/resume.
+On 06/08/2021 14:41, James Clark wrote:
+> Extract a function for saving the ETMv4 header because this will be used
+> for ETE in a later commit.
 > 
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> ---
->  drivers/base/power/trace.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/drivers/base/power/trace.c b/drivers/base/power/trace.c
-> index a97f33d0c59f..b7c80849455c 100644
-> --- a/drivers/base/power/trace.c
-> +++ b/drivers/base/power/trace.c
-> @@ -13,6 +13,7 @@
->  #include <linux/export.h>
->  #include <linux/rtc.h>
->  #include <linux/suspend.h>
-> +#include <linux/init.h>
->  
->  #include <linux/mc146818rtc.h>
->  
-> @@ -165,6 +166,9 @@ void generate_pm_trace(const void *tracedata, unsigned int user)
->  	const char *file = *(const char **)(tracedata + 2);
->  	unsigned int user_hash_value, file_hash_value;
->  
-> +	if (!x86_platform.legacy.rtc)
-> +		return 0;
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-Why does the driver core code here care about a platform/arch-specific
-thing at all?  Did you just break all other arches?
+Acked-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-thanks,
-
-greg k-h
