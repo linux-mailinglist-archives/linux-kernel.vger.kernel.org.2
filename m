@@ -2,57 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E733FFA87
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FFB23FFA8D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235706AbhICGnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 02:43:40 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:41440 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232218AbhICGnj (ORCPT
+        id S1346653AbhICGrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 02:47:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232218AbhICGrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 02:43:39 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R421e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Un4Z0u7_1630651356;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0Un4Z0u7_1630651356)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 03 Sep 2021 14:42:37 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH -next] ethtool: Fix an error code in cxgb2.c
-Date:   Fri,  3 Sep 2021 14:42:33 +0800
-Message-Id: <1630651353-22077-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 3 Sep 2021 02:47:00 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD351C061575;
+        Thu,  2 Sep 2021 23:46:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630651558;
+        bh=Sv9AHa7x6bwTPNF8+oZryfYBqGW90VCGoqNa43VPZeI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ohpERJbyG0ZfNvmmxk/Uh52fR6b6R/WgYpEUTGe2/JqKUq+DJCxebf5vFeUKEsMaD
+         /56Su6Sai+x9rkMubgCNd9TBlIh/Oe11jDyO+YHvqk1f7Glu2Nk5dOcWQF5ODUh1wr
+         rN1Uul4df+2N79Arz9J1ixwip8Urk1n1t/S5K9LdAKkg7gv945DblL84xb/5reBI9T
+         CKocDwV//p/VIL6ZQRswUID712zwFuCvj4NB0isdIGr05Iguf34EY9K9gD5huOA6EN
+         x5uUmuHusN58BedoxLkPffII2bf4PrrDLylzHDysEUx7eBRyJRsuGwWCcpzN6CpYqC
+         ASecJH4w0mG2A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H17bp2YpLz9sRf;
+        Fri,  3 Sep 2021 16:45:58 +1000 (AEST)
+Date:   Fri, 3 Sep 2021 16:45:57 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Logan Gunthorpe <logang@deltatee.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the dma-mapping tree
+Message-ID: <20210903164557.24569a83@canb.auug.org.au>
+In-Reply-To: <20210813171134.4ad7d640@canb.auug.org.au>
+References: <20210813171134.4ad7d640@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/y1Rz00bqncefj6Hk_WxFmqd";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When adapter->registered_device_map is NULL, the value of err is
-uncertain, we set err to -EINVAL to avoid ambiguity.
+--Sig_/y1Rz00bqncefj6Hk_WxFmqd
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Clean up smatch warning:
-drivers/net/ethernet/chelsio/cxgb/cxgb2.c:1114 init_one() warn: missing
-error code 'err'
+Hi all,
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/net/ethernet/chelsio/cxgb/cxgb2.c | 1 +
- 1 file changed, 1 insertion(+)
+On Fri, 13 Aug 2021 17:11:34 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> After merging the dma-mapping tree, today's linux-next build (htmldocs)
+> produced this warning:
+>=20
+> kernel/dma/mapping.c:224: warning: Function parameter or member 'nents' n=
+ot described in 'dma_map_sg_attrs'
+>=20
+> Caused by commit
+>=20
+>   fffe3cc8c219 ("dma-mapping: allow map_sg() ops to return negative error=
+ codes")
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-index 73c0161..d246eee 100644
---- a/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-+++ b/drivers/net/ethernet/chelsio/cxgb/cxgb2.c
-@@ -1111,6 +1111,7 @@ static int init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (!adapter->registered_device_map) {
- 		pr_err("%s: could not register any net devices\n",
- 		       pci_name(pdev));
-+		err = -EINVAL;
- 		goto out_release_adapter_res;
- 	}
- 
--- 
-1.8.3.1
+I am still getting this warning.
 
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/y1Rz00bqncefj6Hk_WxFmqd
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmExxKUACgkQAVBC80lX
+0GyCrQgAmmZz/t+jTiUv5/W2dddv9hqw6pip6ZuBhmhcYlKo+71Bd9Qk72T1u7Nj
+nIoXpWojoFhp+0GYkN3FHAQ9lxZO3v+IXbipwr9O1iX+Sg+ohiIrJiiQUNg4rQqw
+WYcHNCfP6ifLZPpZYfxp3wCXZKSU1Jkus/hpm+4M3n1cTZ3Dr/X1y0/jA30ZolUu
+OUOXxqa8DAYUautc3tMsZg8ersavvWV9VNEhZweJRjmzgVC+G0D10X+sG4eX4RTJ
+QDQgILJIXi9RWf7W655n5L2KFtKQcLulPyXVR/pLOTpZxe3luIqsgdkEIfN37SNL
+KAaqekE16Hgg2rJYZDhFD8vrGId6hA==
+=KeY2
+-----END PGP SIGNATURE-----
+
+--Sig_/y1Rz00bqncefj6Hk_WxFmqd--
