@@ -2,135 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB503FFBEA
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAA53FFBEC
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:25:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348306AbhICIZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:25:57 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34024 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348265AbhICIZ4 (ORCPT
+        id S1348253AbhICI0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:26:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53256 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348171AbhICI0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:25:56 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18383RPf088144;
-        Fri, 3 Sep 2021 04:24:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=UcstyxnwlpgF+Ay1ob7lx18NvkC4MYru10qsDJHiJbs=;
- b=cWABf8Gfer47mlZ3ZAae0HBN2LEdp03ML5IMZz1rCkVJRF5OUGJnNwgwuIiIAJ41pDdf
- YLlF6Ou8QfmlPMyPqwxT6eQdcgqArbrrI7vn8ifwgocVH+NS3n67Da5Ss5sL1dFs7nB/
- tDrbw/oTUEvSz5T1kVKnxCIk0cR/6bmXQ5iwYWAq8yg75H+UXkeTrhSQ1B2r3xLGEnb5
- 6WX8yVZDhE4OgWinaTKnCjhEdNgcNBfn177mEqd64DRw5GGpkeHu77dk0Km13Q7yGpOy
- oyHQSMSK1WDeQ4uEaxd3de+A0G4dMCvK70HLLIfiX1c6fAvoHGpgUZ3jcy8DNdOHMK6+ mA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aud7yvcnx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 04:24:47 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18386LMv103061;
-        Fri, 3 Sep 2021 04:24:47 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aud7yvcnh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 04:24:47 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18388A6x026039;
-        Fri, 3 Sep 2021 08:24:45 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 3au6q754xp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 08:24:45 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1838Ofpp39584204
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Sep 2021 08:24:41 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9E99211C052;
-        Fri,  3 Sep 2021 08:24:41 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2BE3311C071;
-        Fri,  3 Sep 2021 08:24:41 +0000 (GMT)
-Received: from sig-9-145-171-221.de.ibm.com (unknown [9.145.171.221])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  3 Sep 2021 08:24:41 +0000 (GMT)
-Message-ID: <b4a5f322d035d75c97abf2aaa19d033adc68527d.camel@linux.ibm.com>
-Subject: Re: [PATCH] s390/io: Fix ioremap and iounmap undefinded issue for
- s390
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Chunyan Zhang <zhang.lyra@gmail.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     linux-s390@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Fri, 03 Sep 2021 10:24:40 +0200
-In-Reply-To: <20210903080316.2808017-1-zhang.lyra@gmail.com>
-References: <20210903075641.2807623-1-zhang.lyra@gmail.com>
-         <20210903080316.2808017-1-zhang.lyra@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 83mqzz2AmZE1E1ac8HXSteQ4nn3Fo0Gn
-X-Proofpoint-ORIG-GUID: ESRTZmQtjwF5NndeOsa7_mlEwKbKIUyS
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 3 Sep 2021 04:26:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630657539;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=784omy9+f5Am5nR2Vqkl2J0I13vidMEZa3qsfoNTT4c=;
+        b=OoruEPaOqG+v63x8EC8z3lC03T5j2aFWlTDvLGYlbr4ex366xDZMXlubhUnYh5XyuQWffs
+        Y/wxjSpkPLREc5gTW5gI4+e91NQi5qUDJ+Fe41PP4POfhYd7NlX8jG38EWpxvXotUAhgZl
+        443VhpwTdii+vL+N+J7A28uGf9RdacI=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-197-hL5bNUS7MvehW4wyeZH6Vw-1; Fri, 03 Sep 2021 04:25:38 -0400
+X-MC-Unique: hL5bNUS7MvehW4wyeZH6Vw-1
+Received: by mail-ej1-f70.google.com with SMTP id v19-20020a170906b013b02905b2f1bbf8f3so2347795ejy.6
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 01:25:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=784omy9+f5Am5nR2Vqkl2J0I13vidMEZa3qsfoNTT4c=;
+        b=GLjNSHpOHwUupQ3f3dv8l2aOTaLTlHYFUzRHGS6GxoC71/nbYAX2roUcpY/OAcwI2i
+         C5Fv+ge/zipl98G7BC1SPfBRcjdHXUx9baNFrRd1vV30T92ihFplEtWoT0PFHqlbLRzp
+         iwXaUSgHSlKQmi2D5bmJrzsbVAXEXgPq5deiw6IIBN08MeA29iFfZrvUzz7RDo9NL//U
+         Oxvpzpw6/DjuTw1g0z15s2Tt9m4KGPEMxTXVLunw/c59WahjEsaz+9MmF97k6NhPIEWt
+         Rlst6lURR6qACwj0+3dFgwHwRAE1o6YY2EmNgbDKqTAo2nCBKGGTKVH1HDZoVljO6egZ
+         PNpA==
+X-Gm-Message-State: AOAM530Jxv36wlymDHiLTbxEySE1zP0kSYe8wWhfb4mH1LH2F5DnrmZR
+        5ndYygwB7TzcvDJG6MfzEkbV379XhXmhG5eYZJ7DFuVPp4wZCzgYD6FzVWYPI+w8eYCMGOnWsf2
+        cate53CQb0bWBd/p6OD8rJr+i
+X-Received: by 2002:a17:906:fcda:: with SMTP id qx26mr2880456ejb.121.1630657536933;
+        Fri, 03 Sep 2021 01:25:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzLYFAkqk2qzchrOeqo0XEuIjG+9suLbk+5wak6Qfy73DWOVulKVNgzSe4ifU3BL65WnsM8eg==
+X-Received: by 2002:a17:906:fcda:: with SMTP id qx26mr2880426ejb.121.1630657536690;
+        Fri, 03 Sep 2021 01:25:36 -0700 (PDT)
+Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
+        by smtp.gmail.com with ESMTPSA id o19sm2450076edr.18.2021.09.03.01.25.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 01:25:36 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 10:25:34 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 08/12] KVM: arm64: selftests: Add light-weight
+ spinlock support
+Message-ID: <20210903082534.jz3r2defqnrt2ee6@gator.home>
+References: <20210901211412.4171835-1-rananta@google.com>
+ <20210901211412.4171835-9-rananta@google.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-03_02:2021-09-03,2021-09-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
- mlxscore=0 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
- impostorscore=0 priorityscore=1501 clxscore=1011 adultscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109030048
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901211412.4171835-9-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-03 at 16:03 +0800, Chunyan Zhang wrote:
-> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+On Wed, Sep 01, 2021 at 09:14:08PM +0000, Raghavendra Rao Ananta wrote:
+> Add a simpler version of spinlock support for ARM64 for
+> the guests to use.
 > 
-> There would not be ioremap and iounmap implementations if CONFIG_PCI is
-> not set for s390, so add default declarations of these two functions
-> for the case to avoid 'undefined reference' issue.
+> The implementation is loosely based on the spinlock
+> implementation in kvm-unit-tests.
 > 
-> Fixes: 71ba41c9b1d9 ("s390/pci: provide support for MIO instructions")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
 > ---
-> The issue was reported from https://lkml.org/lkml/2021/8/1/18
-
-Thanks for the patch but I'm a little skeptical about adding
-ioremap()/iounmap() stubs that don't do anything useful and on top ofn
-that would do so silently.
-
-In the above discussion you said that TIMER_OF should depend on
-HAS_IOMEM. In arch/s390/Kconfig HAS_IOMEM is set if and only if
-CONFIG_PCI is set so that sounds to me like it would prevent the
-undefined reference without the risk of someone trying to use io*map()
-without CONFIG_PCI.
-
-At the very least I think the functions should do a WARN_ONCE() but
-then we have the same situation as discussed below with Linus making it
-pretty clear that he prefers these cases to be compile time checked:
-
-https://lkml.org/lkml/2021/7/2/511
-
-
-> ---
->  arch/s390/include/asm/io.h | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
+>  tools/testing/selftests/kvm/Makefile          |  2 +-
+>  .../selftests/kvm/include/aarch64/spinlock.h  | 13 +++++++++
+>  .../selftests/kvm/lib/aarch64/spinlock.c      | 27 +++++++++++++++++++
+>  3 files changed, 41 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/kvm/include/aarch64/spinlock.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/spinlock.c
 > 
-> diff --git a/arch/s390/include/asm/io.h b/arch/s390/include/asm/io.h
-> index e3882b012bfa..9438370c6445 100644
-> --- a/arch/s390/include/asm/io.h
-> +++ b/arch/s390/include/asm/io.h
-> @@ -23,11 +23,8 @@ void unxlate_dev_mem_ptr(phys_addr_t phys, void *addr);
->  #define IO_SPACE_LIMIT 0
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index 5d05801ab816..61f0d376af99 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -35,7 +35,7 @@ endif
 >  
-> 
-.. snip ..
+>  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
+>  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
+> -LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S
+> +LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c
+>  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
+>  
+>  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
+> diff --git a/tools/testing/selftests/kvm/include/aarch64/spinlock.h b/tools/testing/selftests/kvm/include/aarch64/spinlock.h
+> new file mode 100644
+> index 000000000000..cf0984106d14
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/include/aarch64/spinlock.h
+> @@ -0,0 +1,13 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +
+> +#ifndef SELFTEST_KVM_ARM64_SPINLOCK_H
+> +#define SELFTEST_KVM_ARM64_SPINLOCK_H
+> +
+> +struct spinlock {
+> +	int v;
+> +};
+> +
+> +extern void spin_lock(struct spinlock *lock);
+> +extern void spin_unlock(struct spinlock *lock);
+> +
+> +#endif /* SELFTEST_KVM_ARM64_SPINLOCK_H */
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/spinlock.c b/tools/testing/selftests/kvm/lib/aarch64/spinlock.c
+> new file mode 100644
+> index 000000000000..6d66a3dac237
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/spinlock.c
+> @@ -0,0 +1,27 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * ARM64 Spinlock support
+> + */
+> +#include <stdint.h>
+> +
+> +#include "spinlock.h"
+> +
+> +void spin_lock(struct spinlock *lock)
+> +{
+> +	uint32_t val, res;
+> +
+> +	asm volatile(
+> +	"1:	ldaxr	%w0, [%2]\n"
+> +	"	cbnz	%w0, 1b\n"
+> +	"	mov	%w0, #1\n"
+> +	"	stxr	%w1, %w0, [%2]\n"
+> +	"	cbnz	%w1, 1b\n"
+> +	: "=&r" (val), "=&r" (res)
+> +	: "r" (&lock->v)
+> +	: "memory");
+> +}
+> +
+> +void spin_unlock(struct spinlock *lock)
+> +{
+> +	asm volatile("stlr wzr, [%0]\n"	: : "r" (&lock->v) : "memory");
+> +}
+> -- 
+
+Reviewed-by: Andrew Jones <drjones@redhat.com>
+
+It makes sense that the explicit barriers in kvm-unit-tests weren't also
+inherited, because we already have the implicit barriers with these ld/st
+instruction variants. (I suppose we could improve the kvm-unit-tests
+implementation at some point.)
+
+Thanks,
+drew
 
