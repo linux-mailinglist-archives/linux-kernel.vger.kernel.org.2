@@ -2,158 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B1B840028C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88460400289
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349724AbhICPsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 11:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56526 "EHLO
+        id S1349714AbhICPsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 11:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235573AbhICPsO (ORCPT
+        with ESMTP id S235573AbhICPsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 11:48:14 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BDB7C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 08:47:14 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id q70so10834623ybg.11
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 08:47:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tcsX+WQqGl9KNNQFgUorP3/DXavYbjwi6W8uES8Z6Yc=;
-        b=fh3aCGTgSa8/XdbS5LEG5NIXkO3KXwLBGTSz3uzN6DPy42JLMT4eRa3oKUdPc1rnha
-         +nrhtZj/7HLMwfltItRvqCqdA794UMNpaDTxEO50v/5edYG7PwLIRBRwhr5J+BLcS4kU
-         UCeQ1dBsEccaEsfiMltxByci6qP5et9koKMQiM/1pfqTiKclOuQpqI3on8ky+c+7a/zf
-         kNcP0c1uCMmrMEvKq6F/tWFNGfJeXJvQ/vBVNmYOvMCyPZJAlhMMtnGtlUrjvYmDCQQK
-         AQqoGGH3yY6kgyqApN2Odyj38lK1WckbyLOE1mY8Vqrk4TxhiA9CDIHKbg0SIdJ5bhgm
-         o4bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tcsX+WQqGl9KNNQFgUorP3/DXavYbjwi6W8uES8Z6Yc=;
-        b=Q0dZqhxlb626hyHTdgfcSaVukCvAV0J4rgev3wqAewF8kSkeRe97JgOSolxzsg2zz3
-         W3yI/c8uQ3soqTEHQ2O8P4ZSrUoTrk40QRWs7aVEPAIw8QWPSFH9NLQ0+6qnD+0A1xxp
-         CvyyhMnd3xbWb8CT/zsS9+kgBiSo8nnq91XEvpsE6erYDikCM/weAanPHPf98Aik/FlM
-         om+EGLgFC9JLKJAjpoOTP7mXrGKO1OCU0OPFdV5ebBYhZohV3hM86eaI+ZbJ6QHdMU+l
-         4F8jrF+dA+VnGpKru87QO3FtnZGhERz6kcqe7ix35X84xP5R/R3QCm9Sb3X+3TzApcOY
-         p4nA==
-X-Gm-Message-State: AOAM530PBGT8cEUL4wkI4UXOP5fE8jfHD25aEXas4H4eFjDC2joFQXoV
-        TWeHftysz3p6UOKvsYhWsxO1JMmTjISeqOnZpx2DrA==
-X-Google-Smtp-Source: ABdhPJxTLm1wDIXmjlPSCgNPzJsS++bAZ0JdreBU5JSJan5+c2yQQY68ByO+9PDYJ8gHLxXb0SfoaueztDJCOwWAt/0=
-X-Received: by 2002:a25:b9c8:: with SMTP id y8mr5789752ybj.487.1630684032948;
- Fri, 03 Sep 2021 08:47:12 -0700 (PDT)
+        Fri, 3 Sep 2021 11:48:07 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E521FC061575;
+        Fri,  3 Sep 2021 08:47:06 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id A4BA01F40896
+Subject: Re: [PATCH v2] media: vivid: drop CONFIG_FB dependency
+To:     Michael Tretter <m.tretter@pengutronix.de>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+References: <8615e9e583173652894889afd492022683389621.1628177586.git.guillaume.tucker@collabora.com>
+ <20210811100031.GB27204@pengutronix.de>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, kernel@pengutronix.de,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Message-ID: <f63dc030-72be-dc68-25c6-4a00aea31cdf@collabora.com>
+Date:   Fri, 3 Sep 2021 16:47:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210827191858.2037087-1-surenb@google.com> <20210827191858.2037087-3-surenb@google.com>
- <YS81abHD8KZMrX8D@dhcp22.suse.cz> <CAJuCfpHWCtqCcuZdyfc4-virtynOMv2f_iU=OJUB_6b2Xz+k9g@mail.gmail.com>
- <YTILrVHLMBky9YjP@dhcp22.suse.cz>
-In-Reply-To: <YTILrVHLMBky9YjP@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 3 Sep 2021 08:47:01 -0700
-Message-ID: <CAJuCfpHCo6c8CvLG6ZN0vO3uF1U5hLh6oYoPrTnQha_=yT7bHA@mail.gmail.com>
-Subject: Re: [PATCH v8 2/3] mm: add a field to store names for private
- anonymous memory
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Colin Cross <ccross@google.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        vincenzo.frascino@arm.com,
-        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
-        <chinwen.chang@mediatek.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>, apopple@nvidia.com,
-        John Hubbard <jhubbard@nvidia.com>,
-        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
-        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
-        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
-        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
-        Rolf Eike Beer <eb@emlix.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
-        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210811100031.GB27204@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 4:49 AM 'Michal Hocko' via kernel-team
-<kernel-team@android.com> wrote:
->
-> On Wed 01-09-21 08:42:29, Suren Baghdasaryan wrote:
-> > On Wed, Sep 1, 2021 at 1:10 AM 'Michal Hocko' via kernel-team
-> > <kernel-team@android.com> wrote:
-> > >
-> > > On Fri 27-08-21 12:18:57, Suren Baghdasaryan wrote:
-> > > [...]
-> > > > +static void replace_vma_anon_name(struct vm_area_struct *vma, const char *name)
-> > > > +{
-> > > > +     if (!name) {
-> > > > +             free_vma_anon_name(vma);
-> > > > +             return;
-> > > > +     }
-> > > > +
-> > > > +     if (vma->anon_name) {
-> > > > +             /* Should never happen, to dup use dup_vma_anon_name() */
-> > > > +             WARN_ON(vma->anon_name == name);
-> > >
-> > > What is the point of this warning?
-> >
-> > I wanted to make sure replace_vma_anon_name() is not used from inside
-> > vm_area_dup() or some similar place (does not exist today but maybe in
-> > the future) where "new" vma is a copy of "orig" vma and
-> > new->anon_name==orig->anon_name. If someone by mistake calls
-> > replace_vma_anon_name(new, orig->anon_name) and
-> > new->anon_name==orig->anon_name then they will keep pointing to the
-> > same name pointer, which breaks an assumption that ->anon_name
-> > pointers are not shared among vmas even if the string is the same.
-> > That would eventually lead to use-after-free error. After the next
-> > patch implementing refcounting, the similar situation would lead to
-> > both new and orig vma pointing to the same anon_vma_name structure
-> > without raising the refcount, which would also lead to use-after-free
-> > error. That's why the above comment asks to use dup_vma_anon_name() if
-> > this warning ever happens.
-> > I can remove the warning but I thought the problem is subtle enough to
-> > put some safeguards.
->
-> This to me sounds very much like a debugging code that shouldn't make it
-> to the final patch to be merged. I do see your point of an early
-> diagnostic but we are talking about an internal MM code and that is not
-> really designed to be robust against its own failures so I do not see
-> why this should be any special.
+On 11/08/2021 11:00, Michael Tretter wrote:
+> On Thu, 05 Aug 2021 16:36:31 +0100, Guillaume Tucker wrote:
+>> Drop the vivid dependency on CONFIG_FB by compiling out parts of the
+>> code that make use of the framebuffer API when not enabled.  This is
+>> particularly useful as CONFIG_FB is not selected any more by
+>> DRM_FBDEV_EMULATION.
+> 
+> I like this a lot.
 
-Fair enough. I posted v9 yesterday but will respin another version in
-a couple days. Will remove the warning then.
+Thank you for your feedback.
+
+>> Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+>> Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
+>> ---
+>>
+>> Notes:
+>>     Changes in v2:
+>>     * fix Makefile conditional for when CONFIG_FB=m
+>>     * compile-out bit 16 (framebuffer) when no CONFIG_FB
+>>
+>>  drivers/media/test-drivers/vivid/Kconfig       | 5 +----
+>>  drivers/media/test-drivers/vivid/Makefile      | 5 ++++-
+>>  drivers/media/test-drivers/vivid/vivid-core.c  | 9 +++++++++
+>>  drivers/media/test-drivers/vivid/vivid-ctrls.c | 4 ++++
+>>  4 files changed, 18 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/media/test-drivers/vivid/Kconfig b/drivers/media/test-drivers/vivid/Kconfig
+>> index c3abde2986b2..06ad350f1903 100644
+>> --- a/drivers/media/test-drivers/vivid/Kconfig
+>> +++ b/drivers/media/test-drivers/vivid/Kconfig
+>> @@ -1,13 +1,10 @@
+>>  # SPDX-License-Identifier: GPL-2.0-only
+>>  config VIDEO_VIVID
+>>  	tristate "Virtual Video Test Driver"
+>> -	depends on VIDEO_DEV && VIDEO_V4L2 && !SPARC32 && !SPARC64 && FB
+>> +	depends on VIDEO_DEV && VIDEO_V4L2 && !SPARC32 && !SPARC64
+>>  	depends on HAS_DMA
+>>  	select FONT_SUPPORT
+>>  	select FONT_8x16
+>> -	select FB_CFB_FILLRECT
+>> -	select FB_CFB_COPYAREA
+>> -	select FB_CFB_IMAGEBLIT
+>>  	select VIDEOBUF2_VMALLOC
+>>  	select VIDEOBUF2_DMA_CONTIG
+>>  	select VIDEO_V4L2_TPG
+>> diff --git a/drivers/media/test-drivers/vivid/Makefile b/drivers/media/test-drivers/vivid/Makefile
+>> index b12ad0152a3e..2ad634da7f88 100644
+>> --- a/drivers/media/test-drivers/vivid/Makefile
+>> +++ b/drivers/media/test-drivers/vivid/Makefile
+>> @@ -3,10 +3,13 @@ vivid-objs := vivid-core.o vivid-ctrls.o vivid-vid-common.o vivid-vbi-gen.o \
+>>  		vivid-vid-cap.o vivid-vid-out.o vivid-kthread-cap.o vivid-kthread-out.o \
+>>  		vivid-radio-rx.o vivid-radio-tx.o vivid-radio-common.o \
+>>  		vivid-rds-gen.o vivid-sdr-cap.o vivid-vbi-cap.o vivid-vbi-out.o \
+>> -		vivid-osd.o vivid-meta-cap.o vivid-meta-out.o \
+>> +		vivid-meta-cap.o vivid-meta-out.o \
+>>  		vivid-kthread-touch.o vivid-touch-cap.o
+>>  ifeq ($(CONFIG_VIDEO_VIVID_CEC),y)
+>>    vivid-objs += vivid-cec.o
+>>  endif
+>> +ifneq ($(CONFIG_FB),)
+>> +  vivid-objs += vivid-osd.o
+> 
+> vivid-osd depends on FB_CFB_FILLRECT, FB_CFB_COPYAREA, and FB_CFB_IMAGEBLIT,
+> which are not selected anymore, and linking fails if CONFIG_FB is enabled, but
+> the others are disabled.
+
+I just sent a v3 which introduces a separate config to select
+those dependencies when enabling framebuffer support in vivid.
+In principle this should fix the linkage issue while still
+dropping the hard dependency on CONFIG_FB.  I've tried various
+combinations of built-in and module options for CONFIG_FB and
+CONFIG_VIDEO_VIVID and they all built fine, although that's not
+really comprehensive build testing so I'll keep an eye open for
+test bot results.
+
 Thanks,
-Suren.
+Guillaume
 
-> --
-> Michal Hocko
-> SUSE Labs
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+>> +endif
+>>  
+>>  obj-$(CONFIG_VIDEO_VIVID) += vivid.o
+>> diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
+>> index d2bd2653cf54..7675962b9e93 100644
+>> --- a/drivers/media/test-drivers/vivid/vivid-core.c
+>> +++ b/drivers/media/test-drivers/vivid/vivid-core.c
+>> @@ -126,7 +126,9 @@ MODULE_PARM_DESC(node_types, " node types, default is 0xe1d3d. Bitmask with the
+>>  			     "\t\t    bit 8: Video Output node\n"
+>>  			     "\t\t    bit 10-11: VBI Output node: 0 = none, 1 = raw vbi, 2 = sliced vbi, 3 = both\n"
+>>  			     "\t\t    bit 12: Radio Transmitter node\n"
+>> +#if IS_ENABLED(CONFIG_FB)
+>>  			     "\t\t    bit 16: Framebuffer for testing overlays\n"
+>> +#endif
+>>  			     "\t\t    bit 17: Metadata Capture node\n"
+>>  			     "\t\t    bit 18: Metadata Output node\n"
+>>  			     "\t\t    bit 19: Touch Capture node\n");
+>> @@ -1021,9 +1023,11 @@ static int vivid_detect_feature_set(struct vivid_dev *dev, int inst,
+>>  	/* do we have a modulator? */
+>>  	*has_modulator = dev->has_radio_tx;
+>>  
+>> +#if IS_ENABLED(CONFIG_FB)
+>>  	if (dev->has_vid_cap)
+>>  		/* do we have a framebuffer for overlay testing? */
+>>  		dev->has_fb = node_type & 0x10000;
+>> +#endif
+>>  
+>>  	/* can we do crop/compose/scaling while capturing? */
+>>  	if (no_error_inj && *ccs_cap == -1)
+>> @@ -1355,6 +1359,7 @@ static int vivid_create_queues(struct vivid_dev *dev)
+>>  			return ret;
+>>  	}
+>>  
+>> +#if IS_ENABLED(CONFIG_FB)
+>>  	if (dev->has_fb) {
+>>  		/* Create framebuffer for testing capture/output overlay */
+>>  		ret = vivid_fb_init(dev);
+>> @@ -1363,6 +1368,8 @@ static int vivid_create_queues(struct vivid_dev *dev)
+>>  		v4l2_info(&dev->v4l2_dev, "Framebuffer device registered as fb%d\n",
+>>  			  dev->fb_info.node);
+>>  	}
+>> +#endif
+>> +
+>>  	return 0;
+>>  }
+>>  
+>> @@ -2069,12 +2076,14 @@ static int vivid_remove(struct platform_device *pdev)
+>>  				video_device_node_name(&dev->radio_tx_dev));
+>>  			video_unregister_device(&dev->radio_tx_dev);
+>>  		}
+>> +#if IS_ENABLED(CONFIG_FB)
+>>  		if (dev->has_fb) {
+>>  			v4l2_info(&dev->v4l2_dev, "unregistering fb%d\n",
+>>  				dev->fb_info.node);
+>>  			unregister_framebuffer(&dev->fb_info);
+>>  			vivid_fb_release_buffers(dev);
+>>  		}
+>> +#endif
+>>  		if (dev->has_meta_cap) {
+>>  			v4l2_info(&dev->v4l2_dev, "unregistering %s\n",
+>>  				  video_device_node_name(&dev->meta_cap_dev));
+>> diff --git a/drivers/media/test-drivers/vivid/vivid-ctrls.c b/drivers/media/test-drivers/vivid/vivid-ctrls.c
+>> index 8dc50fe22972..081470a1d88a 100644
+>> --- a/drivers/media/test-drivers/vivid/vivid-ctrls.c
+>> +++ b/drivers/media/test-drivers/vivid/vivid-ctrls.c
+>> @@ -305,6 +305,7 @@ static const struct v4l2_ctrl_config vivid_ctrl_ro_int32 = {
+>>  
+>>  /* Framebuffer Controls */
+>>  
+>> +#if IS_ENABLED(CONFIG_FB)
+>>  static int vivid_fb_s_ctrl(struct v4l2_ctrl *ctrl)
+>>  {
+>>  	struct vivid_dev *dev = container_of(ctrl->handler,
+>> @@ -328,6 +329,7 @@ static const struct v4l2_ctrl_config vivid_ctrl_clear_fb = {
+>>  	.name = "Clear Framebuffer",
+>>  	.type = V4L2_CTRL_TYPE_BUTTON,
+>>  };
+>> +#endif /* IS_ENABLED(CONFIG_FB) */
+>>  
+>>  
+>>  /* Video User Controls */
+>> @@ -1761,8 +1763,10 @@ int vivid_create_controls(struct vivid_dev *dev, bool show_ccs_cap,
+>>  	    (dev->has_vbi_cap && dev->has_vbi_out))
+>>  		v4l2_ctrl_new_custom(hdl_loop_cap, &vivid_ctrl_loop_video, NULL);
+>>  
+>> +#if IS_ENABLED(CONFIG_FB)
+>>  	if (dev->has_fb)
+>>  		v4l2_ctrl_new_custom(hdl_fb, &vivid_ctrl_clear_fb, NULL);
+>> +#endif
+>>  
+>>  	if (dev->has_radio_rx) {
+>>  		v4l2_ctrl_new_custom(hdl_radio_rx, &vivid_ctrl_radio_hw_seek_mode, NULL);
+>> -- 
+>> 2.20.1
+>>
+>>
+
