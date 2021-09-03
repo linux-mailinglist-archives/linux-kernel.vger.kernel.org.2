@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 459EC4006F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2693E400714
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350997AbhICUrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 16:47:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
+        id S1351041AbhICUtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 16:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350975AbhICUrC (ORCPT
+        with ESMTP id S1351052AbhICUtU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 16:47:02 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804A2C061764
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 13:46:01 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id z5so804032ybj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 13:46:01 -0700 (PDT)
+        Fri, 3 Sep 2021 16:49:20 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B84DC061757
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 13:48:19 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id a93so815834ybi.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 13:48:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kzulTbYinCcR11pDJdzRGn8oPiWnTihEe16/yeEf5xc=;
-        b=XWg1xQcEqy8AyCjf6nSYusGBje7hJ7ELSYUb1Eh3o2jLDF6NEu2FFcKBkxiD1AT51a
-         i5P2T6WRvpcaZxPoBhn406OR80qdDS2YWyxRbWMz+XPrcPd3Q/rQaD37LhAnws4hvRMn
-         xBPu/Fn11ukxdV2rbyRqDTs1JEML6qq47qgUN9nO1Vkazo+7XhOHfgtPnbLGz8OI779e
-         PRxyAwcqADABqmBQtJsxX7QeUz+WpcvLPXmaY4L0UML2LtG4AsAFNgVNYfr3Qi5QrN7S
-         yZTK7ecKeXjd8zdqNGMYTnsF7dPzyMiKeN5Zx3RTs0Zyh5opVidaNwKoz0v3xNn4V76g
-         gyuw==
+        bh=jdumqdU9gNUc/p8x91c5FNRB2/icYIsDIBk+jupJSu0=;
+        b=NWyK5pOQlXzw905KW8xs5oC0JiBsnohXgutz955HmXNdNbbfMyIIULufhAGSkJVOCY
+         zjGyPA8gstB36oX7lPvPYgm7xM4O4QG21trj1UJYpXc6FHml6UwLrs4EjobqpWmLg+cU
+         w1tqVEi2Ntgw8zF+WLhtAHZsQAnOwaLoK5xTqV+Rws3XvCDwcOp27DTmrbNAxFW86lB0
+         s+FS2z3eem+dKeJOt/6WN0RBU6uA/4lDov8saHgbQNT8fKZCrhmXLTDBHZ9vMFNs9Cxn
+         oW9g19Juw6ODzXfGomrWWXE8Ru2UBGKImLQ73dRVUwIJwhmWqTpMBBZ8gFQeNvYRstCZ
+         Rhqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kzulTbYinCcR11pDJdzRGn8oPiWnTihEe16/yeEf5xc=;
-        b=LNZar8i4jOPrHARrS0neRU82800/9ZRPG3lTXCfOXrrS4BBOkrOJzyhjOKfXwPg/es
-         vPpmKKffpaik4/iJ5hoj75wzA9vGBIFZ5X+KqfB9UKroD+vRBfCilFp0NqradVnt6ICi
-         3PCwLh34K4Ts0WAf9hz1Winp3uPu4KevG4XKdVAJONuBAcD1s6DhdfndS7o1FYn0G6cM
-         oztLfZuIHMNkQCZ+wSxWATipSZF4uMdj/9smo6W3rJ24Q0DG0oihkCd42niqbOUke1IR
-         lwXY/eSeINWMhf8IxLqXZLrj7DHafVYFJWlSfx6NCjM3p8/u/2pqOLkkFXFUNsU6aDHO
-         Cf6A==
-X-Gm-Message-State: AOAM533UUnOQjgX2YIABgI8bDrcse8kF1WC4csYLULU1PtjbvVCy1WDX
-        6aut7WljRp77Zv2znq/T4Lz+EuAmmxXAcJzNhU/LAQ==
-X-Google-Smtp-Source: ABdhPJxeHeESiJAghEHTj0gTD1ujj5k2ZYlYp8Q63ZKLIx+d+NM2zNaGNw3BjWA6VMD3pkCCSZs98ZEMNfOynzJl4cs=
-X-Received: by 2002:a25:af81:: with SMTP id g1mr1126405ybh.457.1630701960546;
- Fri, 03 Sep 2021 13:46:00 -0700 (PDT)
+        bh=jdumqdU9gNUc/p8x91c5FNRB2/icYIsDIBk+jupJSu0=;
+        b=n3h7GBhs6PURAbuEhBsit1XdXCR4V8BWaopdzovIGYw4gECfOdIZtv/Ov0O/Ogkyp8
+         J9MnZSLhx0rIELL/Zwv8uo5dZ2PqeigQZe6U4anzJxqVZg8XVP07vSgv2az9G3qe+62k
+         RTIcGm2o5O28gFA3lTepHmnaIfAbudcb2GeneVPPLzpdKhHWzYdB4JvaGcgHv5O3KAJX
+         Vew4GKUrEf7z6lfVlfbN6benF1M8uoPuIu3ASHzcrffJWIcVyvFSjqGQ8dmD89xeJ/+H
+         zZ5zCVrLuhtG0wnnV9FKAywovw4tL+wWA8cq1A3iU+kIY3pQtgGopVpidSKp7Q5hCY2p
+         Jnig==
+X-Gm-Message-State: AOAM533WlngqBbH1xyylz6ozbrwLn97/ZNS7zfLDN0VMEyUZ4p5j64tM
+        zfK9JTitwiNkEPM6qPEsSpGPXf7W9Y8rHO2lOYkFJQ==
+X-Google-Smtp-Source: ABdhPJyuepYTpoYmEXPzK6HgxRPVtcxlu73WiwhNSpb1n3TcEnYmF7orWnAI3JSDsNV/K05sXAkceQ9pKbT1jr72OGE=
+X-Received: by 2002:a25:2007:: with SMTP id g7mr1255987ybg.434.1630702098466;
+ Fri, 03 Sep 2021 13:48:18 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210901211412.4171835-1-rananta@google.com> <20210901211412.4171835-11-rananta@google.com>
- <20210903100031.hptfzo5vqsgjteod@gator.home>
-In-Reply-To: <20210903100031.hptfzo5vqsgjteod@gator.home>
+ <20210903105155.dgu2bi765ngp3pgi@gator.home>
+In-Reply-To: <20210903105155.dgu2bi765ngp3pgi@gator.home>
 From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Fri, 3 Sep 2021 13:45:47 -0700
-Message-ID: <CAJHc60wD1UA0U8ydEH1Xnc6ns8jxJ4CEaoK3zXaAjDQR2SR0AA@mail.gmail.com>
+Date:   Fri, 3 Sep 2021 13:48:05 -0700
+Message-ID: <CAJHc60yVDYUPCj2W6fhq6JkzxhPwCPON2M9vL44XNDTObRa1dA@mail.gmail.com>
 Subject: Re: [PATCH v3 10/12] KVM: arm64: selftests: Add host support for vGIC
 To:     Andrew Jones <drjones@redhat.com>
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
@@ -66,17 +66,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 3:00 AM Andrew Jones <drjones@redhat.com> wrote:
+On Fri, Sep 3, 2021 at 3:52 AM Andrew Jones <drjones@redhat.com> wrote:
 >
 > On Wed, Sep 01, 2021 at 09:14:10PM +0000, Raghavendra Rao Ananta wrote:
 > > Implement a simple library to do perform vGIC-v3
->
-> s/do//
->
-> > setup from a host of view.
->                    ^ point
->
-> > This includes creating
+> > setup from a host of view. This includes creating
 > > a vGIC device, setting up distributor and redistributor
 > > attributes, and mapping the guest physical addresses.
 > >
@@ -121,6 +115,11 @@ On Fri, Sep 3, 2021 at 3:00 AM Andrew Jones <drjones@redhat.com> wrote:
 > > +
 > > +int vgic_v3_setup(struct kvm_vm *vm, unsigned int nr_vcpus,
 > > +             uint64_t gicd_base_gpa, uint64_t gicr_base_gpa, uint32_t slot);
+>
+> Having seen 5 arguments used in the vgic_v3_setup call in the next patch I
+> came back here to refresh my memory on that parameter. 'slot' is the one I
+> forgot, but...
+>
 > > +
 > > +#endif /* SELFTEST_KVM_VGIC_H */
 > > diff --git a/tools/testing/selftests/kvm/lib/aarch64/vgic.c b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
@@ -147,12 +146,6 @@ On Fri, Sep 3, 2021 at 3:00 AM Andrew Jones <drjones@redhat.com> wrote:
 > > +     ((uint64_t)((base) >> 16) << 16) | \
 > > +     ((uint64_t)(flags) << 12) | \
 > > +     index)
->
-> This could go in vgic.h allowing us to share it in aarch64/vgic_init.c,
-> where we already have the same definition.
->
-Sure, I will move this.
-
 > > +
 > > +static void vgic_v3_map(struct kvm_vm *vm, uint64_t addr, unsigned int size)
 > > +{
@@ -179,21 +172,25 @@ Sure, I will move this.
 > > + */
 > > +int vgic_v3_setup(struct kvm_vm *vm, unsigned int nr_vcpus,
 > > +             uint64_t gicd_base_gpa, uint64_t gicr_base_gpa)
+>
+> ...looks like it was forgotten here too.
+>
+You are right. I had 'slot' to try other mechanisms, but I guess I
+forgot to clean it up.
+Thanks for catching this.
+
+Regards,
+Raghavendra
+
+> Thanks,
+> drew
+>
 > > +{
 > > +     uint64_t redist_attr;
 > > +     int gic_fd;
 > > +
 > > +     TEST_ASSERT(nr_vcpus <= KVM_MAX_VCPUS,
 > > +                     "Invalid number of CPUs: %u\n", nr_vcpus);
->
-> TEST_ASSERT(!list_empty(&vm->vcpus), ...) to ensure we've created vcpus
-> first. To be really paranoid we could even confirm the number of vcpus in
-> the list matches nr_vcpus.
->
-Great idea! I'll add these checks too.
-
-Regards
-Raghavendra
 > > +
 > > +     gic_fd = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, false);
 > > +
@@ -213,11 +210,10 @@ Raghavendra
 > > +}
 > > --
 > > 2.33.0.153.gba50c8fa24-goog
->
-> Otherwise
->
-> Reviewed-by: Andrew Jones <drjones@redhat.com>
->
-> Thanks,
-> drew
+> >
+> > _______________________________________________
+> > kvmarm mailing list
+> > kvmarm@lists.cs.columbia.edu
+> > https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
+> >
 >
