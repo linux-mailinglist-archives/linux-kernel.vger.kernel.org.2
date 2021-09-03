@@ -2,135 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1848640069F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8D3400690
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350594AbhICU3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 16:29:39 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:46831 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350469AbhICU3X (ORCPT
+        id S1350500AbhICUZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 16:25:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350464AbhICUZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 16:29:23 -0400
-Received: by mail-il1-f199.google.com with SMTP id w15-20020a056e021a6f00b0022b284d1de4so143597ilv.13
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 13:28:23 -0700 (PDT)
+        Fri, 3 Sep 2021 16:25:52 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB5C5C061757;
+        Fri,  3 Sep 2021 13:24:51 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id g18so315546wrc.11;
+        Fri, 03 Sep 2021 13:24:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TVVpgjo5Cfaza682w5KWsOpwl1uwq/nsCC8e82zI314=;
+        b=Rt8geQ7VCeNG5FbQLG/Jq3ZI2ZqvY7V9exoYMOKRRIjM2KDZhdKEHcPgMf+q0F32SY
+         HEzLYxPXZ5jXzKdW3iHEE0We7krPXLol/7nM2840OZt4WprWlzUpnJFDayFLt2E0grYV
+         0t1GlyOxsxWyhWBCp5CtzuxQMtFUvkr/dB3CyiEgXufg13gSP+h5umq7hPb5GJkD8+Vj
+         isowlzyY6TI9BNRMKLGN6sWZVtj/5EpGNK+M1KZBYPPNQFPSksXwYEpYKGY/SVQzyXoO
+         Jtb9M/GjLuUwgk4nWh/BZcKG5EvkZT7QXDMWWWQ7jNnIynlFAHoh+nd+6BMVyO3Yhxh2
+         0plw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=jGLhEUFplOoJ/qo+jFNjFkkgA39xQY0d5R4eHXBI6Is=;
-        b=RiO/EkaihJ/uzevvxZtYt80m/xUedPj3rCArxbmAdhJUMwOqeQrbVGOcEi1TS2rQRU
-         WqFgUSbChoH5pbPene7TEXXrOhhk8/4h2uI+eXD8osEF3LX+Hpb7mevbKziS+vF+Ft9Z
-         8H81/45EOFXy5wGV99HaUBEZHNp27h4BzFvQzzsH/hb4FhBSX5uxqLX7pmR9kKePrNW0
-         I7KKwT+raR9pMt2UQrh/n2mmu19zJd3rnF2IC/0+aWzCSFlFJ10x3dczm7lextGC8Alq
-         7e0Hv8+hw8h7CrxARXBqX2mXvJi6X3RgX37cCLDpTRbEWPAaxp6K/4jW1rLFaRWpjMon
-         6ezA==
-X-Gm-Message-State: AOAM530bTy/RDIYjtQ0jEyh0UoikVLwO43s+E2r6G5cTsC/k/MO5ZJNl
-        XHvPUBoHc5eoXR89W27bqIksnwflgc8RDeH7ma0t5OUoMZfn
-X-Google-Smtp-Source: ABdhPJwRR3R37SyRCc56Rr+B4b549z3ZvwSe44oL+ErPSk5IaOKhNUNeM1ougkw1Zkod3QP7QTDAUPf04VcYxJIiONxJBu3oCEbs
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TVVpgjo5Cfaza682w5KWsOpwl1uwq/nsCC8e82zI314=;
+        b=qoIgv7QRzIWlTkajTISO3C1lP+WzIlIRWwUHZyalLVv9QqLbAKqArmBpIUPaA9Xt1B
+         O4eyvx7zslAvPT+ojyBnQwFNgOpOtBzvpnfukcmQTprs/zI35Q+s2YlA4ryirzyYn2bs
+         mwUPiXZKX3QxiKx42tdDQejUXzASe70ANzRr+Hw6BfzpicTd6VNN6yEr+xmY2Qgz0wIG
+         Y6IOdRPdw3K850wvkdTdcBJPzFs2rK8sdwC88SV/o0HpZn45mgwFUJJcK/pChMMkTUEU
+         MUiFeUs/+RjTVTMMRX/Vx7fzXx2ORbdjlMciAuYlyrvHaS5v/Rf0voLmI6yDugCYymo9
+         2fjw==
+X-Gm-Message-State: AOAM532lySkzvTI3a3sVjYtEEruM9dp+Ugxx1tRjZpKcfAjo1k7d+3G7
+        9AYtKharc6Kx+DsmQLSbZdh9D3JbbsZvPwMswzv4v+L8
+X-Google-Smtp-Source: ABdhPJz2LkXMZvkKMZnpMYID0ppLFrezLyfGdDdSTKP3FE3h1lTjyVd7tUbeqw2d6AXKTgLzDhlA/m9dpTloDw2fsdw=
+X-Received: by 2002:a05:6000:178b:: with SMTP id e11mr800697wrg.151.1630700690229;
+ Fri, 03 Sep 2021 13:24:50 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5e:c903:: with SMTP id z3mr599354iol.61.1630700903132;
- Fri, 03 Sep 2021 13:28:23 -0700 (PDT)
-Date:   Fri, 03 Sep 2021 13:28:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000010f70d05cb1d2407@google.com>
-Subject: [syzbot] general protection fault in __io_arm_poll_handler
-From:   syzbot <syzbot+ba74b85fa15fd7a96437@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20210729183942.2839925-1-robdclark@gmail.com> <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
+ <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
+ <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org> <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+ <CALAqxLUkyXK2gqNMBbtJFfh01ZpcG46dZaM7Zq4jG3OngvFREg@mail.gmail.com>
+In-Reply-To: <CALAqxLUkyXK2gqNMBbtJFfh01ZpcG46dZaM7Zq4jG3OngvFREg@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Fri, 3 Sep 2021 13:29:09 -0700
+Message-ID: <CAF6AEGsACLcDuszcgmHHs04GghLPiRfei3tGo161yBXsg7Y-YA@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     Caleb Connolly <caleb.connolly@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Sep 3, 2021 at 12:39 PM John Stultz <john.stultz@linaro.org> wrote:
+>
+> On Thu, Jul 29, 2021 at 1:49 PM Rob Clark <robdclark@gmail.com> wrote:
+> > On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
+> > <caleb.connolly@linaro.org> wrote:
+> > > On 29/07/2021 21:24, Rob Clark wrote:
+> > > > On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
+> > > > <caleb.connolly@linaro.org> wrote:
+> > > >>
+> > > >> Hi Rob,
+> > > >>
+> > > >> I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above
+> > > >> the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more
+> > > >> aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
+> > > >
+> > > > *ohh*, yeah, ok, that would explain it
+> > > >
+> > > >> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable
+> > > >> at the higher frequencies.
+> > > >>
+> > > >> Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in
+> > > >> glxgear.
+> > > >>
+> > > >> I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run
+> > > >> at the voltage the hardware needs to be stable.
+> > > >>
+> > > >> Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have
+> > > >> CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
+> > > >>
+> > > >
+> > > > tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is already
+> > > > on CC and I added sboyd, maybe one of them knows better.
+> > > >
+> > > > In the short term, removing the higher problematic OPPs from dts might
+> > > > be a better option than this patch (which I'm dropping), since there
+> > > > is nothing stopping other workloads from hitting higher OPPs.
+> > > Oh yeah that sounds like a more sensible workaround than mine .
+> > > >
+> > > > I'm slightly curious why I didn't have problems at higher OPPs on my
+> > > > c630 laptop (sdm850)
+> > > Perhaps you won the sillicon lottery - iirc sdm850 is binned for higher clocks as is out of the factory.
+> > >
+> > > Would it be best to drop the OPPs for all devices? Or just those affected? I guess it's possible another c630 might
+> > > crash where yours doesn't?
+> >
+> > I've not heard any reports of similar issues from the handful of other
+> > folks with c630's on #aarch64-laptops.. but I can't really say if that
+> > is luck or not.
+> >
+> > Maybe just remove it for affected devices?  But I'll defer to Bjorn.
+>
+> Just as another datapoint, I was just marveling at how suddenly smooth
+> the UI was performing on db845c and Caleb pointed me at the "drm/msm:
+> Devfreq tuning" patch as the likely cause of the improvement, and
+> mid-discussion my board crashed into USB crash mode:
+> [  146.157696][    C0] adreno 5000000.gpu: CP | AHB bus error
+> [  146.163303][    C0] adreno 5000000.gpu: CP | AHB bus error
+> [  146.168837][    C0] adreno 5000000.gpu: RBBM | ATB bus overflow
+> [  146.174960][    C0] adreno 5000000.gpu: CP | HW fault | status=0x00000000
+> [  146.181917][    C0] adreno 5000000.gpu: CP | AHB bus error
+> [  146.187547][    C0] adreno 5000000.gpu: CP illegal instruction error
+> [  146.194009][    C0] adreno 5000000.gpu: CP | AHB bus error
+> [  146.308909][    T9] Internal error: synchronous external abort:
+> 96000010 [#1] PREEMPT SMP
+> [  146.317150][    T9] Modules linked in:
+> [  146.320941][    T9] CPU: 3 PID: 9 Comm: kworker/u16:1 Tainted: G
+>     W         5.14.0-mainline-06795-g42b258c2275c #24
+> [  146.331974][    T9] Hardware name: Thundercomm Dragonboar
+> Format: Log Type - Time(microsec) - Message - Optional Info
+> Log Type: B - Since Boot(Power On Reset),  D - Delta,  S - Statistic
+> S - QC_IMAGE_VERSION_STRING=BOOT.XF.2.0-00371-SDM845LZB-1
+> S - IMAGE_VARIANT_STRING=SDM845LA
+> S - OEM_IMAGE_VERSION_STRING=TSBJ-FA-PC-02170
+>
+> So Caleb sent me to this thread. :)
+>
+> I'm still trying to trip it again, but it does seem like db845c is
+> also seeing some stability issues with Linus' HEAD.
+>
 
-syzbot found the following issue on:
+Caleb's original pastebin seems to have expired (or at least require
+some sort of ubuntu login to access).. were the crashes he was seeing
+also 'AHB bus error'?
 
-HEAD commit:    a9c9a6f741cd Merge tag 'scsi-misc' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14e6c8cd300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c84ed2c3f57ace
-dashboard link: https://syzkaller.appspot.com/bug?extid=ba74b85fa15fd7a96437
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=137a45a3300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=105ba169300000
+If you have a reliable reproducer, I guess it would be worth seeing if
+increasing the min_freq (ie. to limit how far we jump the freq in one
+shot) "fixes" it?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ba74b85fa15fd7a96437@syzkaller.appspotmail.com
+I guess I could check downstream kgsl to see if they were doing
+something to increase freq in smaller increments.. I don't recall that
+they were but it has been a while since I dug thru that code.  And I
+suppose downstream it could also be done in their custom tz governor.
 
-general protection fault, probably for non-canonical address 0xdffffc0000000005: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000028-0x000000000000002f]
-CPU: 1 PID: 8812 Comm: iou-sqp-8804 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:vfs_poll include/linux/poll.h:88 [inline]
-RIP: 0010:__io_arm_poll_handler+0x2fa/0xb10 fs/io_uring.c:5476
-Code: 24 38 42 80 3c 20 00 74 08 48 89 ef e8 df 15 db ff 48 8b 6d 00 48 8d 5d 28 48 89 d8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c 08 00 74 08 48 89 df e8 b8 15 db ff 4c 8b 23 49 83 c4 48 4c
-RSP: 0018:ffffc90001e7f0a8 EFLAGS: 00010206
-RAX: 0000000000000005 RBX: 0000000000000028 RCX: dffffc0000000000
-RDX: 0000000000000010 RSI: 0000000000000000 RDI: ffffc90001e7f1f0
-RBP: 0000000000000000 R08: dffffc0000000000 R09: ffff88801252e820
-R10: ffffed10024a5d06 R11: 0000000000000000 R12: dffffc0000000000
-R13: 1ffff920003cfe3f R14: ffffc90001e7f1fc R15: ffffc90001e7f1f8
-FS:  00007f6951c24700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000049a01d CR3: 000000002b182000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- io_poll_add+0xf1/0x590 fs/io_uring.c:5751
- io_issue_sqe+0x192b/0x9280 fs/io_uring.c:6569
- __io_queue_sqe+0xe3/0x1000 fs/io_uring.c:6864
- tctx_task_work+0x2ad/0x560 fs/io_uring.c:2143
- task_work_run+0x146/0x1c0 kernel/task_work.c:164
- tracehook_notify_signal include/linux/tracehook.h:212 [inline]
- io_run_task_work+0x110/0x140 fs/io_uring.c:2403
- io_sq_thread+0xb5e/0x1220 fs/io_uring.c:7337
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-Modules linked in:
----[ end trace 65dffd9e454d7c44 ]---
-RIP: 0010:vfs_poll include/linux/poll.h:88 [inline]
-RIP: 0010:__io_arm_poll_handler+0x2fa/0xb10 fs/io_uring.c:5476
-Code: 24 38 42 80 3c 20 00 74 08 48 89 ef e8 df 15 db ff 48 8b 6d 00 48 8d 5d 28 48 89 d8 48 c1 e8 03 48 b9 00 00 00 00 00 fc ff df <80> 3c 08 00 74 08 48 89 df e8 b8 15 db ff 4c 8b 23 49 83 c4 48 4c
-RSP: 0018:ffffc90001e7f0a8 EFLAGS: 00010206
-RAX: 0000000000000005 RBX: 0000000000000028 RCX: dffffc0000000000
-RDX: 0000000000000010 RSI: 0000000000000000 RDI: ffffc90001e7f1f0
-RBP: 0000000000000000 R08: dffffc0000000000 R09: ffff88801252e820
-R10: ffffed10024a5d06 R11: 0000000000000000 R12: dffffc0000000000
-R13: 1ffff920003cfe3f R14: ffffc90001e7f1fc R15: ffffc90001e7f1f8
-FS:  00007f6951c24700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffd472d29c0 CR3: 000000002b182000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	24 38                	and    $0x38,%al
-   2:	42 80 3c 20 00       	cmpb   $0x0,(%rax,%r12,1)
-   7:	74 08                	je     0x11
-   9:	48 89 ef             	mov    %rbp,%rdi
-   c:	e8 df 15 db ff       	callq  0xffdb15f0
-  11:	48 8b 6d 00          	mov    0x0(%rbp),%rbp
-  15:	48 8d 5d 28          	lea    0x28(%rbp),%rbx
-  19:	48 89 d8             	mov    %rbx,%rax
-  1c:	48 c1 e8 03          	shr    $0x3,%rax
-  20:	48 b9 00 00 00 00 00 	movabs $0xdffffc0000000000,%rcx
-  27:	fc ff df
-* 2a:	80 3c 08 00          	cmpb   $0x0,(%rax,%rcx,1) <-- trapping instruction
-  2e:	74 08                	je     0x38
-  30:	48 89 df             	mov    %rbx,%rdi
-  33:	e8 b8 15 db ff       	callq  0xffdb15f0
-  38:	4c 8b 23             	mov    (%rbx),%r12
-  3b:	49 83 c4 48          	add    $0x48,%r12
-  3f:	4c                   	rex.WR
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+BR,
+-R
