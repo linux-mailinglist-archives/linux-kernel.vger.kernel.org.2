@@ -2,257 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4246A3FFACB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380473FFACF
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347520AbhICHCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 03:02:17 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:51644 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347087AbhICHCO (ORCPT
+        id S1347524AbhICHDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 03:03:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53910 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347087AbhICHDM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 03:02:14 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C98292000D;
-        Fri,  3 Sep 2021 07:01:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630652472; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Fri, 3 Sep 2021 03:03:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630652533;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=yalwCrNyiShCtjj21JfQ+dobjU/tHRKadJjhoJHAOwQ=;
-        b=WpmmBO+y9yfW3tqBHfgQA3W9zAa/3zwaRTg9iUjfW9t9paz6RAtSWpyWcQHoc8Aw+dnVl2
-        YE1bVrb3tv9uNl2QSXsFNqsmeFZt2nGDftwdaLcFFyQDKKLORjg528EDuSmcvqc2Z7vgC5
-        tQvP4/c6axsTsQjd8zD6Misl8ICSzRY=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 513E2136BF;
-        Fri,  3 Sep 2021 07:01:12 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id CBi8ETjIMWHKWwAAGKfGzw
-        (envelope-from <jgross@suse.com>); Fri, 03 Sep 2021 07:01:12 +0000
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-doc@vger.kernel.org, kvm@vger.kernel.org
-References: <20210701154105.23215-1-jgross@suse.com>
- <20210701154105.23215-7-jgross@suse.com>
- <87h7gx2lkt.fsf@vitty.brq.redhat.com>
- <1ddffb87-a6a2-eba3-3f34-cf606a2ecba2@suse.com>
- <878s292k75.fsf@vitty.brq.redhat.com>
- <62679c6a-2f23-c1d1-f54c-1872ec748965@suse.com>
- <8735sh2fr7.fsf@vitty.brq.redhat.com>
-From:   Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH 6/6] x86/kvm: add boot parameter for setting max number of
- vcpus per guest
-Message-ID: <bb4ebe24-1de5-82b8-001d-1c0f9f28861b@suse.com>
-Date:   Fri, 3 Sep 2021 09:01:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        bh=07FgH7wT67po2w8bQGIw93/1x6mvSaBB2yNe5PGszL8=;
+        b=KfzTMChXoFsHlKFnQ3QLnB0Z15byHWp29rk0HWfCkQtgDev6rd355pPGfguT9/V4CHN2Kf
+        /dJJKbXgvbB6gNA7glbJwbRRBLOsg3zc1l2dgw06z2/Hb9ExUs+r9RZP36J4kzooe+Uxjm
+        jmckaga8qT+E/upbjRNLA8hzvnwYpt4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-206-5IwTppg8MqCdmhQrBaTU7A-1; Fri, 03 Sep 2021 03:02:11 -0400
+X-MC-Unique: 5IwTppg8MqCdmhQrBaTU7A-1
+Received: by mail-wr1-f69.google.com with SMTP id 102-20020adf82ef000000b001576e345169so1258182wrc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 00:02:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=07FgH7wT67po2w8bQGIw93/1x6mvSaBB2yNe5PGszL8=;
+        b=KfU+2yuhPjwkPpgs53BmlzUno1T2WIiw9SF2qz7hwWEZ5ji4I44BM/EuGsijlhyqjy
+         9o0kHbQK+OTF9HIgVSypGcgScGdO/3K2ndSxzoHFEEvMSqhkz8qlkQ6kSvv8XSE9RDA2
+         yqzjPJEtIfE1dMNCXWtJIbrchKHyZ/NKKZZvpmSreOe4lUJdfEXIfvb997JYvLG39zqe
+         fQDOiWumwcdYx7Ug+f+3yO9HX7vLnWhU1sbPb+hrGWZpFAw63unhABk7dcElqAHTiYkV
+         rjnW5JO4p7JpAnYmDwrlkBq4hlmNnQj79smp3oY0huimDnLap3wH7GOqzO+9G7/8Ru8q
+         jbsw==
+X-Gm-Message-State: AOAM532UzRSb3CqJfJXpcxoFQPwWNosSVqG9HR9so1/Z3kftxpj7/rku
+        UHUY5D8Fe3sBjLpKDRMMGDXovAYJzmWr8qkLvjS/0F81ki1LlyLeD4D08gyIXmt9v1RH+Y4Wy0X
+        gO0gY0F5k441ux/OvOdZ/5VOS
+X-Received: by 2002:a5d:51c6:: with SMTP id n6mr2223510wrv.402.1630652530706;
+        Fri, 03 Sep 2021 00:02:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJydsWfnmMs9uEFqCpYm22oyb0W/h3tDknscsNUxRfbHoKaj/53aSdqrSr8X//PvyYQLUFL9pw==
+X-Received: by 2002:a5d:51c6:: with SMTP id n6mr2223485wrv.402.1630652530498;
+        Fri, 03 Sep 2021 00:02:10 -0700 (PDT)
+Received: from redhat.com ([2a03:c5c0:207f:7f47:ccd3:7600:6a2d:c5a])
+        by smtp.gmail.com with ESMTPSA id x9sm3336534wmi.30.2021.09.03.00.02.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 00:02:08 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 03:02:04 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Wang <jasowang@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        virtualization@lists.linux-foundation.org, linux-mm@kvack.org
+Subject: Re: [PATCH v4 3/3] virtio-mem: disallow mapping virtio-mem memory
+ via /dev/mem
+Message-ID: <20210903025630-mutt-send-email-mst@kernel.org>
+References: <20210902160919.25683-1-david@redhat.com>
+ <20210902160919.25683-4-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <8735sh2fr7.fsf@vitty.brq.redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="gCj3IbJEMvpHW8XTVyNSugAMzxOfv2zEk"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902160919.25683-4-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---gCj3IbJEMvpHW8XTVyNSugAMzxOfv2zEk
-Content-Type: multipart/mixed; boundary="GvcaP8GkYIMbygjk2yW19biht3REG7Obc";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Paolo Bonzini <pbonzini@redhat.com>,
- Sean Christopherson <seanjc@google.com>, Wanpeng Li <wanpengli@tencent.com>,
- Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
- linux-kernel@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
- kvm@vger.kernel.org
-Message-ID: <bb4ebe24-1de5-82b8-001d-1c0f9f28861b@suse.com>
-Subject: Re: [PATCH 6/6] x86/kvm: add boot parameter for setting max number of
- vcpus per guest
-References: <20210701154105.23215-1-jgross@suse.com>
- <20210701154105.23215-7-jgross@suse.com>
- <87h7gx2lkt.fsf@vitty.brq.redhat.com>
- <1ddffb87-a6a2-eba3-3f34-cf606a2ecba2@suse.com>
- <878s292k75.fsf@vitty.brq.redhat.com>
- <62679c6a-2f23-c1d1-f54c-1872ec748965@suse.com>
- <8735sh2fr7.fsf@vitty.brq.redhat.com>
-In-Reply-To: <8735sh2fr7.fsf@vitty.brq.redhat.com>
-
---GvcaP8GkYIMbygjk2yW19biht3REG7Obc
-Content-Type: multipart/mixed;
- boundary="------------CF9085161ADCB4335B0C165B"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------CF9085161ADCB4335B0C165B
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 14.07.21 15:21, Vitaly Kuznetsov wrote:
-> Juergen Gross <jgross@suse.com> writes:
->=20
->> On 14.07.21 13:45, Vitaly Kuznetsov wrote:
->>
->>> Personally, I'd vote for introducing a 'ratio' parameter then so
->>> generally users will only have to set 'kvm.max_vcpus'.
->>
->> Okay.
->>
->> Default '4' then? Or '2 ^ (topology_levels - 2)' (assuming a
->> topology_level of 3 on Intel: thread/core/socket and 4 on EPYC:
->> thread/core/package/socket).
->=20
-> I'd suggest we default to '4' for both Intel and AMD as we haven't give=
-n
-> up completely on cross-vendor VMs (running AMD VMs on Intel CPUs and
-> vice versa). It would be great to leave a comment where the number come=
-s
-> from of course.
->=20
-
-Thinking more about it I believe it would be better to make the
-parameter something like "additional vcpu-id bits" with a default of
-topology_levels - 2 (cross-vendor VMs are so special that I think the
-need to specify another value explicitly in this case is acceptable).
-
-Reasons are:
-
-- the ability to specify factor values not being a power of 2 is weird
-- just specifying the additional number of bits would lead to compatible
-   behavior (e.g. a max vcpu-id of 1023 with max_vcpus being 288 and the
-   default value of 1)
-- the max vcpu-id should (normally) be 2^n - 1
+On Thu, Sep 02, 2021 at 06:09:19PM +0200, David Hildenbrand wrote:
+> We don't want user space to be able to map virtio-mem device memory
+> directly (e.g., via /dev/mem) in order to have guarantees that in a sane
+> setup we'll never accidentially access unplugged memory within the
+> device-managed region of a virtio-mem device, just as required by the
+> virtio-spec.
+> 
+> As soon as the virtio-mem driver is loaded, the device region is visible
+> in /proc/iomem via the parent device region. From that point on user space
+> is aware of the device region and we want to disallow mapping anything
+> inside that region (where we will dynamically (un)plug memory) until
+> the driver has been unloaded cleanly and e.g., another driver might take
+> over.
+> 
+> By creating our parent IORESOURCE_SYSTEM_RAM resource with
+> IORESOURCE_EXCLUSIVE, we will disallow any /dev/mem access to our
+> device region until the driver was unloaded cleanly and removed the
+> parent region. This will work even though only some memory blocks are
+> actually currently added to Linux and appear as busy in the resource tree.
+> 
+> So access to the region from user space is only possible
+> a) if we don't load the virtio-mem driver.
+> b) after unloading the virtio-mem driver cleanly.
+> 
+> Don't build virtio-mem if access to /dev/mem cannot be restricticted --
+> if we have CONFIG_DEVMEM=y but CONFIG_STRICT_DEVMEM is not set.
+> 
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
 
-Juergen
+> ---
+>  drivers/virtio/Kconfig      | 1 +
+>  drivers/virtio/virtio_mem.c | 4 +++-
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/virtio/Kconfig b/drivers/virtio/Kconfig
+> index ce1b3f6ec325..ff80cd03f1d1 100644
+> --- a/drivers/virtio/Kconfig
+> +++ b/drivers/virtio/Kconfig
+> @@ -101,6 +101,7 @@ config VIRTIO_MEM
+>  	depends on MEMORY_HOTPLUG_SPARSE
+>  	depends on MEMORY_HOTREMOVE
+>  	depends on CONTIG_ALLOC
+> +	depends on !DEVMEM || STRICT_DEVMEM
+>  	help
+>  	 This driver provides access to virtio-mem paravirtualized memory
+>  	 devices, allowing to hotplug and hotunplug memory.
 
---------------CF9085161ADCB4335B0C165B
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+It would be nicer if there was a symbol in the MEMORY_ namespace
+we can depend on exported by mm and depending on !DEVMEM ||
+STRICT_DEVMEM.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+E.g.
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+config MEMORY_EXCLUSIVE
+        def_bool y
+        depends on !DEVMEM || STRICT_DEVMEM
 
---------------CF9085161ADCB4335B0C165B--
+and then in virtio
+	depends on MEMORY_EXCLUSIVE
 
---GvcaP8GkYIMbygjk2yW19biht3REG7Obc--
 
---gCj3IbJEMvpHW8XTVyNSugAMzxOfv2zEk
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+the virtio change itself is ok though:
 
------BEGIN PGP SIGNATURE-----
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmExyDcFAwAAAAAACgkQsN6d1ii/Ey9t
-3Qf/RAxsf3SKfMMMISWAfi1cq8UDoIdCQMaRA+0i7uYijw+U+zd1PklJwxiq5xxxrU9w8FiXb1a8
-Upq9Xf4oaMes0Ab+aXP6pecYDhbKvZC18m2pRRPRrFX6F03KH9jQPr/FZkuMVvxcTevtwlapAoDf
-wln7J3hLDkitPGr1xF+ed40fdcQL/f0qe/EnapN1fFObqNrQ+MEwNdlIu4su20FZNcTP9S2+Fy8B
-wvAfibTIe5+IXq3sXvYR9SZaeU9TjU4/PT7UEGhJrcPjKLVfOb842GOS9cmf6Y/Up88X4AOkvPfI
-19pNBbNZiVEy5bKggQfgP2Qp0UaynovBB67nfpKQ0w==
-=1QXQ
------END PGP SIGNATURE-----
+for merging through -mm.
 
---gCj3IbJEMvpHW8XTVyNSugAMzxOfv2zEk--
+> diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+> index b91bc810a87e..c2d93492cf0f 100644
+> --- a/drivers/virtio/virtio_mem.c
+> +++ b/drivers/virtio/virtio_mem.c
+> @@ -2523,8 +2523,10 @@ static int virtio_mem_create_resource(struct virtio_mem *vm)
+>  	if (!name)
+>  		return -ENOMEM;
+>  
+> +	/* Disallow mapping device memory via /dev/mem completely. */
+>  	vm->parent_resource = __request_mem_region(vm->addr, vm->region_size,
+> -						   name, IORESOURCE_SYSTEM_RAM);
+> +						   name, IORESOURCE_SYSTEM_RAM |
+> +						   IORESOURCE_EXCLUSIVE);
+>  	if (!vm->parent_resource) {
+>  		kfree(name);
+>  		dev_warn(&vm->vdev->dev, "could not reserve device region\n");
+> -- 
+> 2.31.1
+
