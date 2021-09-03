@@ -2,149 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB345400807
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CCD40080B
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239112AbhICXBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 19:01:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234663AbhICXBd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 19:01:33 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C270EC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 16:00:32 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id a93so1320229ybi.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 16:00:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VsvzwFNEnHsJ1uh4maplzk+1wE8dN+TE2VMxmxzZ8dE=;
-        b=PBU4sqqsgc91PcPcW74ICTqra+X+Cm9xwQ2IrcYvnj62aQUwZPOKGX2rbHaS/Q+/a9
-         B74FbvWF42ssnJGpDSm+1mRq6GhgZNDoQBS8Q4VikE+fKrezUEIbBI/z9HqMxo9LNDWj
-         8U316TRqIvkQ0tRPdF0AQFkWwcDaPK7ldE2zKfbN2AjJbkUNdMTVofPLIkpBT9TKtk9G
-         EzdqEI3EOa19Ly2sEnC/of46Gbexh3xoz+WF3iDhSxuf+fza0X3NGclxdYZbLlTKs5tm
-         f/ahvgIpH7ShIbSzn3JD4oWTBnvO+z56MNSYYRPGyfV5CNsW/zUZVQp/9x08FchffD1m
-         UE+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VsvzwFNEnHsJ1uh4maplzk+1wE8dN+TE2VMxmxzZ8dE=;
-        b=qHqR5hFlN+egtHQ4/0u9576MpgbivT2n0vXoa4mPHKjoY1tRpeC5xihXldOcl6/DQl
-         MyhG1GM0dZt+afujdMqo+EN+wMcK+Vh+ADE5IJFkBzEeiGjAIwGpYTvh7GCtIYIo3Rt8
-         IeKrU7B1lvWDRLuBVM/faewfJRAAymF84i/PeN5eh5/iKQu4DpvFNgvK3CnwJkS8sl4j
-         auGpPkQach4V0F7It+vpcMbj+jWL9IXgqk1DZanXfggT1oWnurpeGv1O3vE8jxGquA0T
-         mOH/n4GuOrUhDLuBxuyf/6uhohcydOeI+o/TlyoyOkMzZWIFuXiVFgzpnpDZM1/70f8j
-         zA7w==
-X-Gm-Message-State: AOAM531gpvG8CAd0hdLGAhpVAKuC89AhLLFBtKayzpR1lLRdDyiKsd05
-        +MHqQ1ceutUfGdFM0Edu0OxPOr050fl6MzBNOtaGN+drZJoJXQ==
-X-Google-Smtp-Source: ABdhPJyS6Ti+uIYGWdQNqPa38qjtj41Cw3Fi4NR7qHUNN5FNhg3Q8d88RM5DIy4pvt7sMeHfzdULwiJhybLvc5GsdOE=
-X-Received: by 2002:a25:ad02:: with SMTP id y2mr1904050ybi.78.1630710031602;
- Fri, 03 Sep 2021 16:00:31 -0700 (PDT)
+        id S237396AbhICXFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 19:05:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230456AbhICXFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 19:05:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A00A6101A;
+        Fri,  3 Sep 2021 23:04:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630710292;
+        bh=kwXSNoztsapfek/7tY4BJ7A92I7Ax8v7jMAhfQGx4P8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=VBpNgYVxlYcqc92N5qpBQjPqicLgFFNDzKeL8/V8pFfLJKu8s83FKiWXT6LclHlco
+         VCSESOcdDqVwXfx4n3b2T6HAcn9VvuCMtSJLcwKcdot8Q4H+3oiAzOq33XWNvwkWDe
+         qMtKxj5PeCAifOrrzcELYmxY00v9D4vIMtPrImjxOD0IdmwZsx3MxUZdX24Pk3GFhU
+         gy11fK9vf2a3Stq5mbbYaXsLb1ZYbxUGKCMl2/7inye+n729JPtX2ebNR5TJYS2P9V
+         EJOdZD/0f850MQstl+wcK4qM0shthcyIXyhV6sEV6G9TuxhMi+YFWItjp1Gj/AFRDb
+         JgUnCwIlj0y9A==
+Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
+To:     Linus Torvalds <torvalds@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
+References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com>
+ <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org>
+Date:   Fri, 3 Sep 2021 16:04:50 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <acdf065c-256d-47b0-5c20-203ff4b213d6@gmail.com> <CAHk-=wiENdk_AXGRrmbbOYqq9zYptdv=vYszgG2ZzztDUTJwRA@mail.gmail.com>
-In-Reply-To: <CAHk-=wiENdk_AXGRrmbbOYqq9zYptdv=vYszgG2ZzztDUTJwRA@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Fri, 3 Sep 2021 16:00:20 -0700
-Message-ID: <CANn89iJ5Q-PeZ=+87DT-BY4EVhWZATtieid59W7Tq0bkCvRQbw@mail.gmail.com>
-Subject: Re: dozens of sysbot reports
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Eric Dumazet <eric.dumazet@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 3:21 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Fri, Sep 3, 2021 at 1:44 PM Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> >
-> > I have a pile of (still under triage) sysbot reports coming after one of your patch
-> >
-> > Typical stack trace:
-> >
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 1 PID: 24889 at mm/util.c:597 kvmalloc_node+0x111/0x120 mm/util.c:597
-> > Call Trace:
-> >  hash_ipport_create+0x3dd/0x1220 net/netfilter/ipset/ip_set_hash_gen.h:1524
-> >  ip_set_create+0x782/0x15a0 net/netfilter/ipset/ip_set_core.c:1100
-> >  nfnetlink_rcv_msg+0xbc9/0x13f0 net/netfilter/nfnetlink.c:296
->
-> So the real question is mainly just whether those huge allocations
-> actually make sense or not.
->
-> If they truly are sensible, we can remove the warning. But it would be
-> good to perhaps look at them more.
->
-> Because no:
->
-> > Do we want to fix all problematic callers, with ad-hoc patches like
->
-> Not insane patches like this, no.
->
-> >  ip_set_alloc(size_t size)
-> >  {
-> > +       if (size > INT_MAX)
-> > +               return NULL;
-> >         return kvzalloc(size, GFP_KERNEL_ACCOUNT);
-> >  }
->
-> But does that kind of size really make sense? I'm looking at the
-> particular caller, is it *really* senseible to have a 4GB+ hash table
-> size?
->
-> IOW, I don't think we want that warning to cause the above kinds of
-> ad-hoc patches.
->
-> But I _do_ want that warning to make people go "is that allocation
-> truly sensible"?
->
-> IOW, it sounds like you can send some netlink message that causes
-> insane hash size allocations. Shouldn't _that_ be fixed?
->
+On 9/3/2021 3:53 PM, Linus Torvalds wrote:> On Thu, Sep 2, 2021 at 4:31 
+PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>>
+>> I fixed the warnings observed in the previous PR.
+> 
+> Ok, let's try it again.
+> 
+>>   - Add <linux/stdarg.h> to the kernel source instead of borrowing
+>>     <stdarg.h> from the compiler.
+> 
+> So I certainly agree with the reasoning, but this worries me a bit.
+> 
+> stdarg is truly intimately an internal compiler file, in ways that
+> stddef (to pick another example) isn't.
+> 
+> Yeah, yeah, offsetof() is "kind of compiler internal", and we end up
+> using __compiler_offsetof(), but in the absence of that we *can* just
+> do it by hand. So offsetof() really is one of those things where we
+> can just do our own version if some compiler is being difficult.
+> 
+> But va_start and friends absolutely *must* match the exact compiler version.
+> 
+> It does look like both gcc and clang have just standardized on using
+> __builtin_xyz for all the different stdarg things, and so I approve of
+> what that <linux/stdarg.h> ended up looking like.
+> 
+> But at the same time, it does make me go "ok, this is a big new
+> assumption that we've consciously avoided for a long time".
+> 
+> Nick is already on the cc here for other reasons, but let's add the
+> clang-built list and Nathan explicitly. Because this basically
+> codifies that
+> 
+>      typedef __builtin_va_list va_list;
+>      #define va_start(v, l)  __builtin_va_start(v, l)
+>      #define va_end(v)       __builtin_va_end(v)
+>      #define va_arg(v, T)    __builtin_va_arg(v, T)
+>      #define va_copy(d, s)   __builtin_va_copy(d, s)
+> 
+> being the way all the supported compilers work.
+> 
+> Did people talk to any gcc maintainers too? We don't have the same
+> kind of "gcc kernel people" list or contacts. The above builtins have
+> been the case for a long long time for gcc, so I don't think it's
+> wrong or likely to change, but I think it would be a good thing to
+> just make compiler people aware of how we're now relying on that
+> explicitly.
 
-Probably, but as I said there are many different reports.
+We set up the linux-toolchains mailing list after Plumbers 2020 to have 
+a common place that kernel developers can bring issues and discussion to 
+both clang and GCC folks. I am not sure who exactly from the GCC world 
+is subscribed but I have added it now to see.
 
-If there was only one or two, I would simply have sent a fix(es).
+> (Side note: Linux using the compiler <stdarg.h> goes so far back that
+> it very much predates all those nice builtins. I still have memories
+> of <stdarg.h> being a collection of nasty per-architecture messes back
+> in the bad old days. So I'm actually happy we can do this now, but
+> there most definitely was a time when we really really had to use the
+> compiler-provided stdarg.h).
 
-I will probably release these bugs, so that they can be spread among
-interested parties.
-
- WARNING: CPU: 1 PID: 26011 at mm/util.c:597 kvmalloc_node+0x111/0x120
-mm/util.c:597
-Modules linked in:
-CPU: 1 PID: 26011 Comm: syz-executor.2 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine,
-BIOS Google 01/01/2011
-RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
-Code: 01 00 00 00 4c 89 e7 e8 8d 12 0d 00 49 89 c5 e9 69 ff ff ff e8
-f0 21 d1 ff 41 89 ed 41 81 cd 00 20 01 00 eb 95 e8 df 21 d1 ff <0f> 0b
-e9 4c ff ff ff 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 c6
-RSP: 0018:ffffc90003a77720 EFLAGS: 00010216
-RAX: 0000000000000e48 RBX: ffffc90003a77e18 RCX: ffffc9000df6d000
-RDX: 0000000000040000 RSI: ffffffff81a4f621 RDI: 0000000000000003
-RBP: 0000000000002dc0 R08: 000000007fffffff R09: 00000000ffffffff
-R10: ffffffff81a4f5de R11: 0000000000000000 R12: 000000020008a100
-R13: 0000000000000000 R14: 00000000ffffffff R15: ffff88802032c000
-FS:  00007fbfc5618700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000540198 CR3: 000000006e529000 CR4: 0000000000350ee0
-Call Trace:
- kvmalloc include/linux/mm.h:806 [inline]
- kvmalloc_array include/linux/mm.h:824 [inline]
- kvcalloc include/linux/mm.h:829 [inline]
- check_btf_line+0x1a9/0xad0 kernel/bpf/verifier.c:9925
- check_btf_info kernel/bpf/verifier.c:10049 [inline]
- bpf_check+0x1636/0xbd20 kernel/bpf/verifier.c:13759
- bpf_prog_load+0xe57/0x21f0 kernel/bpf/syscall.c:2301
- __sys_bpf+0x67e/0x5df0 kernel/bpf/syscall.c:4587
- __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
- __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4689
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+Cheers,
+Nathan
