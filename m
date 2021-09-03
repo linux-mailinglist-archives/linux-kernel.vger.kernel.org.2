@@ -2,115 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB66740044C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69B740044F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhICRtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 13:49:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56630 "EHLO
+        id S1350029AbhICRuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 13:50:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349916AbhICRtp (ORCPT
+        with ESMTP id S1349916AbhICRuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 13:49:45 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C2CC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 10:48:44 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso62813pjh.5
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 10:48:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2RwvGxxkwgPp1kC7OUNpSHVKhmd69dXp1tT7aj4N4gg=;
-        b=FUaUag50ob2Eqb3yiH+FdjIbjocFosp5iaSENleFndT7apgR77KU3A5ioFl1HKxOZq
-         YKREVYFNT5Z+uQdr1cgUgo1uIneWdyQeQ97SzWdiy8N2t5ZBPf8T1SrEahe/5MvE4uFm
-         m2/bcenZ7FMb8p+865QmY2ETiregCBuNR3diuL0qKpuxl4/gu6+vhLDvWmTkk+0JNtJQ
-         IkibDjcOeHP8vJoB79rCSfPMT0jIO6SD/LcxGZx6Qb51dygHTo6V13QFodvOtc2a4zaB
-         0JHveZ6MJQCc583r7YLuZcIFNdRdRD44myJjng0ygqHIWFpK7NuE+UPejRljJ+XC+3Us
-         5raw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2RwvGxxkwgPp1kC7OUNpSHVKhmd69dXp1tT7aj4N4gg=;
-        b=hrm1GGdRMBX//GPUuryaGcxwGrGSi8RDq5O3bb4eJZmB7O2NRhxYiCGFnciVW2uH0w
-         /wH/DfmsWmZ1WuDk1ELITNlfhSLu6E+K4TwYgwuzZOK70kB7nhRw9T7GLx86QKk3D9aC
-         /Y3I6Y96nPSqdLzi+OourfvHfbaOZXSqRYQvnPWs9syNHHE2YlNM4aFBEhQ5y31TetrJ
-         12d/rIcm5Yr5OgCGxg4iDQv5Gs2yWD5AFwUMyoC/Rebhdca9rFMoY//JjOUOHwsdzSjD
-         AWBtwbViylv5A+MMZE5VvWVmwursd9WckK6ot2WS8KjmP16Y/EYIUX4TENZqhPjjpnyl
-         UCCw==
-X-Gm-Message-State: AOAM530hXgWNY4+6FKHSYcpjb6cOv9h/COfQnRXgqJh7u+PduNeOF4Al
-        m5OED/bmJu+OD9gKpfS6kAU=
-X-Google-Smtp-Source: ABdhPJydzohBvdITs+K1x4HKM7Kxmexw20vOxzGAKL4JzKbqnWDK5Er0TA1+iGiOyGWrEIN7un9/yw==
-X-Received: by 2002:a17:90a:8c8b:: with SMTP id b11mr90687pjo.14.1630691324349;
-        Fri, 03 Sep 2021 10:48:44 -0700 (PDT)
-Received: from user ([117.98.200.228])
-        by smtp.gmail.com with ESMTPSA id i5sm5746049pjk.47.2021.09.03.10.48.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 10:48:43 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 23:18:38 +0530
-From:   SAURAV GIREPUNJE <saurav.girepunje@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        straube.linux@gmail.com, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        saurav.girepunje@hotmail.com
-Subject: Re: [PATCH] staging: r8188eu: os_dep: use kmemdup instead of kzalloc
- and memcpy
-Message-ID: <YTJf9odBRwxHZTs8@user>
-References: <YSp9z2/JmvHGhW5m@user>
- <YTCXef5o9JHtQhuD@kroah.com>
+        Fri, 3 Sep 2021 13:50:01 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E6AC061575;
+        Fri,  3 Sep 2021 10:49:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OJ2pEw5jPPStfKuNWXFd6825jYJnL3pOyXkglFCIiQ4=; b=pwlxB4IL3DK1Eftvqa6FVK++Yc
+        coLVKGyAD06wolmKKZjYt/FJE7rS1cPtB/k5RwW+exKdv5MFxxXxlQ1AqhpCgJdWF078l3AweMU4F
+        y0uDq++WnpDSBj1MOqrVGcUifhMQWoGXObMhAxWVfhhLoEATtpz798h/V8t+cG461E1qMODC3iNvq
+        +j9u3ZE0VWiUru3vhJzP0Z8VUSvA+EKDEiv3jGqoeuXVn5jm8Gx602Ehzz9/zwQyICK+jUpbeM/1o
+        q6Bg2m0GvfDya+8BbKOsq4iFQmrvyds97Re89fhTPvIuzmKICNif99ecRvOtclR9Xyw6M3tD22wuX
+        6qJn/jnw==;
+Received: from mcgrof by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mMDJ9-00CVS0-My; Fri, 03 Sep 2021 17:48:55 +0000
+Date:   Fri, 3 Sep 2021 10:48:55 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     dingsenjie@163.com
+Cc:     jirislaby@kernel.org, mickflemm@gmail.com, kvalo@codeaurora.org,
+        davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dingsenjie <dingsenjie@yulong.com>
+Subject: Re: [PATCH] wireless: ath5k: Remove unnecessary label of
+ ath5k_beacon_update
+Message-ID: <YTJgB4MNNolkrLYS@bombadil.infradead.org>
+References: <20210903062316.11756-1-dingsenjie@163.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YTCXef5o9JHtQhuD@kroah.com>
+In-Reply-To: <20210903062316.11756-1-dingsenjie@163.com>
+Sender: Luis Chamberlain <mcgrof@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02 Sep 2021 11:20, Greg KH wrote:
-> On Sat, Aug 28, 2021 at 11:47:51PM +0530, Saurav Girepunje wrote:
-> > Fixes coccicheck warning:WARNING opportunity for kmemdup in ioctl_linux.c
-> >
-> > Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> > ---
-> >  drivers/staging/r8188eu/os_dep/ioctl_linux.c | 4 +---
-> >  1 file changed, 1 insertion(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> > index 81d4255d1785..495fadd2b8c8 100644
-> > --- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> > +++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-> > @@ -585,14 +585,12 @@ static int rtw_set_wpa_ie(struct adapter *padapter, char *pie, unsigned short ie
-> >  	}
-> >
-> >  	if (ielen) {
-> > -		buf = kzalloc(ielen, GFP_KERNEL);
-> > +		buf = kmemdup(pie, ielen, GFP_KERNEL);
-> >  		if (!buf) {
-> >  			ret =  -ENOMEM;
-> >  			goto exit;
-> >  		}
-> >
-> > -		memcpy(buf, pie, ielen);
-> > -
-> >  		/* dump */
-> >  		{
-> >  			int i;
-> > --
-> > 2.32.0
-> >
-> >
->
-> This patch never showed up on lore.kernel.org for some reason.  Please
-> resend and see if it was a mailing issue on your side...
->
-> thanks,
->
-> greg k-h
+On Fri, Sep 03, 2021 at 02:23:16PM +0800, dingsenjie@163.com wrote:
+> From: dingsenjie <dingsenjie@yulong.com>
+> 
+> The label just used as return, so we delete it and
+> use the return statement instead of the goto statement.
+> 
+> Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+> ---
+>  drivers/net/wireless/ath/ath5k/base.c | 13 ++++---------
+>  1 file changed, 4 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath5k/base.c b/drivers/net/wireless/ath/ath5k/base.c
+> index 4c6e57f..9739189 100644
+> --- a/drivers/net/wireless/ath/ath5k/base.c
+> +++ b/drivers/net/wireless/ath/ath5k/base.c
+> @@ -1896,23 +1896,18 @@ static int ath5k_remove_padding(struct sk_buff *skb)
+>  	struct ath5k_vif *avf;
+>  	struct sk_buff *skb;
 
+Just initialize ret = -EINVAL at the top, and you to get clear out a few
+braces which are not needed anymore. Anyway, this code is not reflected
+on linux-next, what codebase are you using? If the code change is just
+a cleanup it should remove more code than add, and a commmit log should
+reflect that clearly.
 
-Ok, I will resend this patch.
-
-Thanks,
-Saurav Girepunje
+  Luis
