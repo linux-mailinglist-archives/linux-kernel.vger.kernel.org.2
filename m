@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D34BF40014C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C93B5400146
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349500AbhICOcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:32:13 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:11016 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S245253AbhICOcK (ORCPT
+        id S1349479AbhICObl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:31:41 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51014 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349462AbhICObk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:32:10 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 183E6ICT026116;
-        Fri, 3 Sep 2021 10:30:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=K1dk/P2wTpVI0p3QS3od3mHTburBeWR5dUPZNm4udps=;
- b=j0I0w/iXGypIbDpx/9Wc7NKetsfLRypj6wFIqBJkCaIZgssBV0fHHzA3gt8HYyR/oWCM
- sMPBRS/SP0EYikutM+CLa2xxvB4dM+EI2yxw6+qt3L9x8q/NDvgFgE/B/9l/mQg/42dO
- fzmt/9lDlWjijJGNhKXys6/A8qVoD7qIBS247VhF5ycLZt5Awlxqhf2xfus7c8ENwWhk
- nIFYVZHgNV5wKBB1Koa+uj+hVLC/70npbU7CHAwqRaHSCz+HovzmXRP49QMbQjSQty/d
- KrV9LAdprASeGVVaLeXONQtlIO6T6PjmPRSwj1mGaNAdaWtbuQJ4/dJs5DzXZ7PEKsTU mQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aukatbgkh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 10:30:48 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 183E6fhJ028767;
-        Fri, 3 Sep 2021 10:30:48 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3aukatbghf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 10:30:48 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 183ECDI1003658;
-        Fri, 3 Sep 2021 14:30:45 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03fra.de.ibm.com with ESMTP id 3au6q7h7vs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 14:30:44 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 183EUf9J45679086
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Sep 2021 14:30:41 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3572EA4064;
-        Fri,  3 Sep 2021 14:30:41 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 22229A4072;
-        Fri,  3 Sep 2021 14:30:40 +0000 (GMT)
-Received: from osiris (unknown [9.145.159.114])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri,  3 Sep 2021 14:30:40 +0000 (GMT)
+        Fri, 3 Sep 2021 10:31:40 -0400
 Date:   Fri, 3 Sep 2021 16:30:38 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, gregkh@linuxfoundation.org,
-        chaitanya.kulkarni@wdc.com, atulgopinathan@gmail.com, hare@suse.de,
-        maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org,
-        colin.king@canonical.com, shubhankarvk@gmail.com,
-        baijiaju1990@gmail.com, trix@redhat.com,
-        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
-        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 8/9] s390/block/scm_blk: add error handling support for
- add_disk()
-Message-ID: <YTIxjn1X0ES8my2a@osiris>
-References: <20210902174105.2418771-1-mcgrof@kernel.org>
- <20210902174105.2418771-9-mcgrof@kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630679439;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iX9ibRou0XdEYZ+bGp1TcDhh7+TKZehHehODtNVHWHE=;
+        b=F/6rjyYXdOXlIILsD4o85OGpjuc5hNQoL22+Zi1UsbSiCNFKleOVV756U1HMGGlKDSYH7M
+        MWbdPMRxeziJVhyj1soakx2+OPVY2zxEUBpR/otrGXCgnMhd8u7i5IulLJb4lcYZtBCWFf
+        +hFw5W94nfphEQrSRuk8UiQAovxOSomv0TQJ3msZE76fbEpk5guKJJCxXLNk6/RglN6Fas
+        EDXGNJ5ssTs0RFLg7yYiHH5bGxQRLflM0EDxHvSVB4JTlcWDaJwIGBsGgJjwyFrMSOFyQ+
+        SUrLFOVM8HuvLbmak+r0ILtwT2ljZvst1QTfsV/D2DYJSl9VF3DgC62kscmpfg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630679439;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iX9ibRou0XdEYZ+bGp1TcDhh7+TKZehHehODtNVHWHE=;
+        b=dCSD7Ttc5dXbeT+sVJ58iMvLPGB78zgB7/JaAazaE+wSGtehRX00O3cUNjtPWNyMCYfLb0
+        l4VPfwSMHIANi5CQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] lockdep: Let lock_is_held_type() detect recursive read
+ as read
+Message-ID: <20210903143038.mxjxbry2agyjvzsv@linutronix.de>
+References: <20210901162255.u2vhecaxgjsjfdtc@linutronix.de>
+ <YS+twcAQ9uivowDS@boqun-archlinux>
+ <20210903104557.rqss65jn4ozoptcj@linutronix.de>
+ <YTIt6KIjz5gTbZif@boqun-archlinux>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210902174105.2418771-9-mcgrof@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: V2U5m9F_lW0BS0QMZW1f02Rb7B-NE_bq
-X-Proofpoint-ORIG-GUID: mLI1i5uQ2HrD42lfDNoMT2JI_B9gbecH
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-03_05:2021-09-03,2021-09-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- malwarescore=0 adultscore=0 priorityscore=1501 bulkscore=0 phishscore=0
- mlxscore=0 lowpriorityscore=0 clxscore=1015 impostorscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2108310000
- definitions=main-2109030088
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YTIt6KIjz5gTbZif@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 10:41:04AM -0700, Luis Chamberlain wrote:
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  drivers/s390/block/scm_blk.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+On 2021-09-03 22:15:04 [+0800], Boqun Feng wrote:
+> But the rwlock in PREEMPT_RT is writer unfair, isn't it? As per:
+>=20
+> 	https://lore.kernel.org/lkml/20210815211302.957920571@linutronix.de/
+>=20
+> also in __rwbase_read_lock():
+>=20
+> 	/*
+> 	 * Allow readers, as long as the writer has not completely
+> 	 * acquired the semaphore for write.
+> 	 */
+> 	if (atomic_read(&rwb->readers) !=3D WRITER_BIAS) {
+> 		atomic_inc(&rwb->readers);
+> 		raw_spin_unlock_irq(&rtm->wait_lock);
+> 		return 0;
+> 	}
+>=20
+> that means the readers of rwlock in PREEMPT_RT are always recursive,
+> right? Am I missing something subtle?
 
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+huch. You are right. I take everything backt then. I do remember it
+differently but it has been like since this implementation has been
+introduced=E2=80=A6
+
+> Regards,
+> Boqun
+
+Sebastian
