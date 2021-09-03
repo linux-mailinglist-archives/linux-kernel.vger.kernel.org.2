@@ -2,235 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA86340018A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981E2400188
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349476AbhICOxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:53:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43496 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233407AbhICOxQ (ORCPT
+        id S244765AbhICOwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:52:24 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:36255 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233407AbhICOwW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:53:16 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8D0C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 07:52:16 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id y18so7089557ioc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 07:52:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3udFRxofKZfXAVfj0Vy1bL0zZn5CBEQ0+qj9/ataYlc=;
-        b=QdozeIshGA7sxkdc/vcTuNDjWfebXr7Ir8rVLiuOelk9XRqXTCImRMf6zf1U5QBa57
-         a6SM0UsM9nLsHCHoMdnDSdw05/Vs78HxTxqI6zFLn2rU+2WNwV7C628ybB/CXnQowtkG
-         kyD0wGydATFcGqXqMAqdX3t3KgUgKnhKimrdOr86DNBz1k+agA1S4HqO0stgZRLn09vq
-         ayTvBEVobghURDLw9t+s+BE+reEciBHbw55G/1TSmBItz8+LVjg4pPmTzArDSBzQIl7i
-         8XmScioM7PwcWrhMA2TdsKkdvZ7wynv0wSsjTRAY62WNHHu1uuekSdlNBXXDPVj2JUb+
-         UV4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3udFRxofKZfXAVfj0Vy1bL0zZn5CBEQ0+qj9/ataYlc=;
-        b=UgxTKC9p87IdEmpK4WZdLUdnRU8IFrf5DegfIFBPDRkqLO0dTfnxnHFHHR2VgeHc/4
-         DDWhCASD1a+xjwp3gnjzRzQPenEFO8YNHRU70k8VmMTCl3O1xvpJNNJPgUobuDDck76F
-         abdkx43PX/9V7oIyS9eFT8V0zUvgbjPnD/QYdIkEiptQnsWktbtwRgYXSJ5vz7KV0kXn
-         PA3xUFFvNjr0L5odVIVncWEo7fqs9wX6K6x+My58Svji8n2kyDHxZZIVrgtNivMk8JY7
-         nS8ZsnFtZFo5n1l912AxDykdoQpHwvBEpg3tvf04oHgpjMku0O8pgqGvAHombSHp+PYX
-         t1YQ==
-X-Gm-Message-State: AOAM533BfcROjDIOTOSN5heCIkA5rYZRWOvx5tqvZOOf7KPqQ+tqdHrU
-        rQ13SVCrwRGZrP+8EDmodxp7TtmcRRRNNZNS
-X-Google-Smtp-Source: ABdhPJweV7aCvvTRLSu7V1VkaEYo6ab61z57EeSFq0bNlbPJMJGsYdDIdJm2ELrC3jPrsQHNjMgtOQ==
-X-Received: by 2002:a05:6638:cd:: with SMTP id w13mr3026234jao.42.1630680735548;
-        Fri, 03 Sep 2021 07:52:15 -0700 (PDT)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id i6sm2665858ilb.30.2021.09.03.07.52.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 07:52:15 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 3DE1E27C005C;
-        Fri,  3 Sep 2021 10:52:14 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 03 Sep 2021 10:52:14 -0400
-X-ME-Sender: <xms:nTYyYfEEexTj3DCDsB8mEucPm0tjXqgYPnFSzNRoE8tluSc8ZKZ9hQ>
-    <xme:nTYyYcW88xKWTDzGsfe-Aqm-llMh7vDJKafQiVDkMo1SR9t0ZXDkx3QHKUYpEiTmU
-    areehj16ao7bOUP9A>
-X-ME-Received: <xmr:nTYyYRK2XODtOq682YEHyZ2D31jaEshg542sUtvBiyCm_w1luTEV5dLHJOU>
+        Fri, 3 Sep 2021 10:52:22 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 45DC058057C;
+        Fri,  3 Sep 2021 10:51:22 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 03 Sep 2021 10:51:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=1XMPe8iSVpVx8Cy4Rs+Zsn6BV24
+        jRTi51ihDKEezAlg=; b=s54i0CSHC32QpU9LVaZenG7zxAeF9fqXlVzFb9rP/Jw
+        GBVq8zthPFBL+qP8IAZEll5DMA6m6lbyxJYj0fLB4FnSNHnVnw682GrKhGrDyDsP
+        C/1Ck/RmK6Wq/ARrEs0703xJc4ff2BH6gPP10Fgv2C2UrZfNuwoWmPjSAoj2bQ8T
+        dHlaL/pPD02IZKdaF4wdLqYdc+4ADearbtA7gEA5saBTsMWYzVlzNV7gdE75gD9X
+        AqpDMIaGl/iUB0zQwMII9rnVwycoSJEsl5xDYQF5biFkEKVYjUMLZjMO9aKwI4PM
+        ZZZMD0Hi8h7h6x7gHb4DWaILUHZSiJexAcADdPrNj2A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=1XMPe8
+        iSVpVx8Cy4Rs+Zsn6BV24jRTi51ihDKEezAlg=; b=q84fAIbt/P/TwRgtp63e8R
+        7uk0bMq3ghd85bk2sN5Dz7RNvqW0E+qVR2/9vQ+9bqE849sm8hK8gmsaQ5/jKbyV
+        yg5tU6GFTEYERyQXM4KAOaiiWRHnzxfE95GbyRjENF9AIzQX/PBcnotUP3ozA8Lp
+        joDhvZKZfBVTwCf/dggUW7EaR/iiWnSHdOpdo7p/V8JsxZTVMwxV7KT2M5JaYDED
+        VCvCrizRgmOHrVfPenpDj9dsKqIA5aHgrBLyePlF5kWyp9S0+GeCpP8PIUKsyePL
+        Cuthulsqb8JKdyfZtvYxfOGq4s0rQkxHQrvEqw2ZvTd/wymlIV0EbkCNk2/EHX7A
+        ==
+X-ME-Sender: <xms:aTYyYXGLK_pCNLtPjvW2oKWopAtdZUOLblJqc_A_8f36kKVVfeWaYQ>
+    <xme:aTYyYUUB9HXTRZqH_5raSIYEnDrPRmeCLMxjTNt17op9CV5YCpF3StETusi41lghJ
+    _xXkVu70Qu1rwvhXD8>
+X-ME-Received: <xmr:aTYyYZLgBGuTJMNEcOAAOOca-KTrKhQgM89Ka1gartveDZv-cHl6-V1mESq5djK8D8s2Cc7vfib6wJD9vrPN6UHP4qMSwj4FOgNe>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedgkedtucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
-    geejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
-    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
-    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
-    hmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:nTYyYdEdiYwnAG_kCVtEsE_4iw-qmX8MlfQZ06bxTw7529QnIV-FXA>
-    <xmx:nTYyYVU8G_67mQUIuzQcx98ZvyAFX4r4QNK3ukD02pqz4GkmfSGvLQ>
-    <xmx:nTYyYYOqD3-Xqgbp3ss5lh1de54JJtgWyG5yy1RbZhpDSAFDYRED8g>
-    <xmx:njYyYQNkQQTjwQf6JwRhhBXjJyILpOb4usDpNXqZq85PtFdkBgnvHopcxaw>
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    grgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:aTYyYVE2Uto-gQ7Q-uZ3fogrGlrI3OMskZ66nckIH72_6E7n80Fd8g>
+    <xmx:aTYyYdWqvV45M_m_e_srWttiUdlUX7nKlolnuqY7Ck2b3TFWdKWQSA>
+    <xmx:aTYyYQO3f3GIDBIGkFUAQ3arNIA7zQDh_GaHjfxjGkUeUF7R4jYOpg>
+    <xmx:ajYyYVSNFS15sbicpn_Z2xkpkhhI386TwXvOmcTHGbLd58ST1NsDmw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 3 Sep 2021 10:52:13 -0400 (EDT)
-Date:   Fri, 3 Sep 2021 22:50:58 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Mike Galbraith <efault@gmx.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] locking: rwbase: Take care of ordering guarantee for
- fastpath reader
-Message-ID: <YTI2UjKy+C7LeIf+@boqun-archlinux>
-References: <20210901150627.620830-1-boqun.feng@gmail.com>
- <YTC7sariSyBW48nh@hirez.programming.kicks-ass.net>
+ 3 Sep 2021 10:51:21 -0400 (EDT)
+Date:   Fri, 3 Sep 2021 16:51:20 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 6/7] [DO NOT MERGE] clk: sunxi-ng: Add support for H6
+Message-ID: <20210903145120.lfb3dkq66m7fpfcv@gilmour>
+References: <20210901053951.60952-1-samuel@sholland.org>
+ <20210901053951.60952-7-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="uovaxtoufzzanesn"
 Content-Disposition: inline
-In-Reply-To: <YTC7sariSyBW48nh@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210901053951.60952-7-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 01:55:29PM +0200, Peter Zijlstra wrote:
-[...]
-> >  	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
-> >  	rwbase_rtmutex_unlock(rtm);
-> >  }
-> > @@ -216,8 +229,14 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
-> >  	 */
-> >  	rwbase_set_and_save_current_state(state);
-> >  
-> > -	/* Block until all readers have left the critical section. */
-> > -	for (; atomic_read(&rwb->readers);) {
-> > +	/*
-> > +	 * Block until all readers have left the critical section.
-> > +	 *
-> > +	 * _acqurie() is needed in case that the reader side runs in the fast
-> > +	 * path, pairing with the atomic_dec_and_test() in rwbase_read_unlock(),
-> > +	 * provides ACQUIRE.
-> > +	 */
-> > +	for (; atomic_read_acquire(&rwb->readers);) {
-> >  		/* Optimized out for rwlocks */
-> >  		if (rwbase_signal_pending_state(state, current)) {
-> >  			__set_current_state(TASK_RUNNING);
-> 
-> I think we can restructure things to avoid this one, but yes. Suppose we
-> do:
-> 
-> 	readers = atomic_sub_return_relaxed(READER_BIAS, &rwb->readers);
-> 
-> 	/*
-> 	 * These two provide either an smp_mb() or an UNLOCK+LOCK
 
-By "UNLOCK+LOCK", you mean unlock(->pi_lock) + lock(->wait_lock), right?
-This may be unrelated, but in our memory model only unlock+lock pairs on
-the same lock provide TSO-like ordering ;-) IOW, unlock(->pi_lock) +
-lock(->wait_lock) on the same CPU doesn't order reads before and after.
-Consider the following litmus:
+--uovaxtoufzzanesn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Sep 01, 2021 at 12:39:50AM -0500, Samuel Holland wrote:
+> H6 has IOSC calibration and an ext-osc32k input.
+>=20
+> H6 has the osc32k mux and the rtc-32k mux, but no fanout mux.
+>=20
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> ---
+>  drivers/clk/sunxi-ng/sun50i-rtc-ccu.c | 49 +++++++++++++++++++++++++++
+>  drivers/rtc/rtc-sun6i.c               | 17 ----------
+>  2 files changed, 49 insertions(+), 17 deletions(-)
+>=20
+> diff --git a/drivers/clk/sunxi-ng/sun50i-rtc-ccu.c b/drivers/clk/sunxi-ng=
+/sun50i-rtc-ccu.c
+> index 1dfa05c2f0e9..9603dc0d3d7b 100644
+> --- a/drivers/clk/sunxi-ng/sun50i-rtc-ccu.c
+> +++ b/drivers/clk/sunxi-ng/sun50i-rtc-ccu.c
+> @@ -227,6 +227,16 @@ static SUNXI_CCU_MUX_DATA_WITH_GATE(osc32k_fanout_cl=
+k, "rtc-32k-fanout",
+>  static SUNXI_CCU_M_FW_WITH_GATE(rtc_spi_clk, "rtc-spi", "ahb",
+>  				0x310, 0, 5, BIT(31), 0);
+> =20
+> +static struct ccu_common *sun50i_h6_rtc_ccu_clks[] =3D {
+> +	&iosc_clk,
+> +	&iosc_32k_clk,
+> +	&ext_osc32k_gate_clk.common,
+> +	&osc32k_clk.common,
+> +	&osc24M_32k_clk.common,
+> +	&rtc_32k_mux_clk.common,
+> +	&osc32k_fanout_clk.common,
+> +};
+> +
+>  static struct ccu_common *sun50i_h616_rtc_ccu_clks[] =3D {
+>  	&iosc_clk,
+>  	&iosc_32k_clk,
+> @@ -246,6 +256,21 @@ static struct ccu_common *sun50i_r329_rtc_ccu_clks[]=
+ =3D {
+>  	&rtc_spi_clk.common,
+>  };
+> =20
+> +static struct clk_hw_onecell_data sun50i_h6_rtc_ccu_hw_clks =3D {
+> +	.num =3D CLK_NUMBER,
+> +	.hws =3D {
+> +		[CLK_OSC32K]		=3D &osc32k_clk.common.hw,
+> +		[CLK_OSC32K_FANOUT]	=3D &osc32k_fanout_clk.common.hw,
+> +		[CLK_IOSC]		=3D &iosc_clk.hw,
+> +
+> +		[CLK_IOSC_32K]		=3D &iosc_32k_clk.hw,
+> +		[CLK_EXT_OSC32K_GATE]	=3D &ext_osc32k_gate_clk.common.hw,
+> +		[CLK_OSC24M_32K]	=3D &osc24M_32k_clk.common.hw,
+> +		[CLK_RTC_32K]		=3D &rtc_32k_mux_clk.common.hw,
+> +		[CLK_RTC_SPI]		=3D NULL,
+> +	},
+> +};
+> +
+>  static struct clk_hw_onecell_data sun50i_h616_rtc_ccu_hw_clks =3D {
+>  	.num =3D CLK_NUMBER,
+>  	.hws =3D {
+> @@ -276,6 +301,13 @@ static struct clk_hw_onecell_data sun50i_r329_rtc_cc=
+u_hw_clks =3D {
+>  	},
+>  };
+> =20
+> +static const struct sunxi_ccu_desc sun50i_h6_rtc_ccu_desc =3D {
+> +	.ccu_clks	=3D sun50i_h6_rtc_ccu_clks,
+> +	.num_ccu_clks	=3D ARRAY_SIZE(sun50i_h6_rtc_ccu_clks),
+> +
+> +	.hw_clks	=3D &sun50i_h6_rtc_ccu_hw_clks,
+> +};
+> +
+>  static const struct sunxi_ccu_desc sun50i_h616_rtc_ccu_desc =3D {
+>  	.ccu_clks	=3D sun50i_h616_rtc_ccu_clks,
+>  	.num_ccu_clks	=3D ARRAY_SIZE(sun50i_h616_rtc_ccu_clks),
+> @@ -318,6 +350,23 @@ static void __init sunxi_rtc_ccu_init(struct device_=
+node *node,
+>  	of_sunxi_ccu_probe(node, reg, desc);
+>  }
+> =20
+> +static void __init sun50i_h6_rtc_ccu_setup(struct device_node *node)
+> +{
+> +	struct clk_init_data *init;
+> +
+> +	have_iosc_calib =3D 1;
+> +
+> +	/* Casting away the const from a pointer to a non-const anonymous objec=
+t... */
+> +	init =3D (struct clk_init_data *)osc32k_fanout_clk.common.hw.init;
+> +
+> +	/* Fanout only has one parent: osc32k. */
+> +	init->num_parents =3D 1;
+> +
+> +	sunxi_rtc_ccu_init(node, &sun50i_h6_rtc_ccu_desc);
+> +}
 
-	C unlock-lock
-	{
-	}
+Indeed, that's not great.
 
-	P0(spinlock_t *s, spinlock_t *p, int *x, int *y)
-	{
-		int r1;
-		int r2;
+Maybe we should just duplicate the sun50i_h6_rtc_ccu_desc (and
+osc32k_fanout_clk) to cover both cases?
 
-		spin_lock(s);
-		r1 = READ_ONCE(*x);
-		spin_unlock(s);
-		spin_lock(p);
-		r2 = READ_ONCE(*y);
-		spin_unlock(p);
-	}
+Maxime
 
-	P1(int *x, int *y)
-	{
-		WRITE_ONCE(*y, 1);
-		smp_wmb();
-		WRITE_ONCE(*x, 1);
-	}
+--uovaxtoufzzanesn
+Content-Type: application/pgp-signature; name="signature.asc"
 
-	exists (0:r1=1 /\ 0:r2=0)
+-----BEGIN PGP SIGNATURE-----
 
-herd result:
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYTI2aAAKCRDj7w1vZxhR
+xecbAP49H+UG4ucpEKF2f2+KbiVaGqfAk3QM8f3wrdf1wZDvggEA2UBSAM93M7QS
+KdumcYrBi5U57kkpIAChWZxuy29cRAg=
+=VzBj
+-----END PGP SIGNATURE-----
 
-	Test unlock-lock Allowed
-	States 4
-	0:r1=0; 0:r2=0;
-	0:r1=0; 0:r2=1;
-	0:r1=1; 0:r2=0;
-	0:r1=1; 0:r2=1;
-	Ok
-	Witnesses
-	Positive: 1 Negative: 3
-	Condition exists (0:r1=1 /\ 0:r2=0)
-	Observation unlock-lock Sometimes 1 3
-	Time unlock-lock 0.01
-	Hash=a8b772fd25f963f73a0d8e70e36ee255
-
-
-> 	 * ordering, either is strong enough to provide ACQUIRE order
-> 	 * for the above load of @readers.
-> 	 */
-> 	rwbase_set_and_save_current_state(state);
-> 	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
-> 
-> 	while (readers) {
-> 		...
-> 		readers = atomic_read(&rwb->readers);
-
-The above should be _acquire(), right? Pairs with the last reader
-exiting the critical section and dec ->readers to 0. If so, it
-undermines the necessity of the restructure?
-
-Regards,
-Boqun
-
-> 		if (readers)
-> 			rwbase_schedule();
-> 		...
-> 	}
-> 
-> 
-> > @@ -229,6 +248,9 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
-> >  		/*
-> >  		 * Schedule and wait for the readers to leave the critical
-> >  		 * section. The last reader leaving it wakes the waiter.
-> > +		 *
-> > +		 * _acquire() is not needed, because we can rely on the smp_mb()
-> > +		 * in set_current_state() to provide ACQUIRE.
-> >  		 */
-> >  		if (atomic_read(&rwb->readers) != 0)
-> >  			rwbase_schedule();
-> > @@ -253,7 +275,11 @@ static inline int rwbase_write_trylock(struct rwbase_rt *rwb)
-> >  	atomic_sub(READER_BIAS, &rwb->readers);
-> >  
-> >  	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
-> > -	if (!atomic_read(&rwb->readers)) {
-> > +	/*
-> > +	 * _acquire() is needed in case reader is in the fast path, pairing with
-> > +	 * rwbase_read_unlock(), provides ACQUIRE.
-> > +	 */
-> > +	if (!atomic_read_acquire(&rwb->readers)) {
-> 
-> Moo; the alternative is using dec_and_lock instead of dec_and_test, but
-> that's not going to be worth it.
-> 
-> >  		atomic_set(&rwb->readers, WRITER_BIAS);
-> >  		raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
-> >  		return 1;
-> > -- 
-> > 2.32.0
-> > 
+--uovaxtoufzzanesn--
