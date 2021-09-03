@@ -2,173 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB813FFB31
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CFA13FFB34
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347968AbhICHlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 03:41:47 -0400
-Received: from mga11.intel.com ([192.55.52.93]:7815 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234753AbhICHlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 03:41:46 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10095"; a="216215452"
-X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
-   d="scan'208";a="216215452"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 00:40:47 -0700
-X-IronPort-AV: E=Sophos;i="5.85,264,1624345200"; 
-   d="scan'208";a="533772099"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.4.90]) ([10.238.4.90])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 00:40:44 -0700
-Subject: Re: [xfs] bad77c375e: stress-ng.fallocate.ops_per_sec -10.0%
- regression
-To:     kernel test robot <oliver.sang@intel.com>,
-        Dave Chinner <dchinner@redhat.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Chandan Babu R <chandanrlinux@gmail.com>,
-        Brian Foster <bfoster@redhat.com>,
-        Allison Henderson <allison.henderson@oracle.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com
-References: <20210902072704.GC8267@xsang-OptiPlex-9020>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <36dc5f38-f8ec-591a-8efa-b3bd607ac06e@linux.intel.com>
-Date:   Fri, 3 Sep 2021 15:40:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1348047AbhICHmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 03:42:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32753 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1348034AbhICHl6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 03:41:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630654857;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=m2Gk1gYDhm7oWdNwheDfEhB69vSHBptODccZaywq6VI=;
+        b=AjyXQj+dRcH7GZ5nh2pbXcSs7LPC3jBun2A01qIsJ8R82MKbYqE5Xgb2d0f9IXBbd6T5Ro
+        yzp2U4xisYPtuAC0rS6erkWRVscKfB/Yf64AKJfFAc7njYMALIRb+959daMy4fuvWXr6i+
+        dW4L3zqSs98DtkiXsYmQ+X0c0HvRvk8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-397-ud5VH0UBPTqyN1SO3C0U8w-1; Fri, 03 Sep 2021 03:40:57 -0400
+X-MC-Unique: ud5VH0UBPTqyN1SO3C0U8w-1
+Received: by mail-wm1-f72.google.com with SMTP id a201-20020a1c7fd2000000b002e748bf0544so2306094wmd.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 00:40:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=m2Gk1gYDhm7oWdNwheDfEhB69vSHBptODccZaywq6VI=;
+        b=TbygKLc4ZUj8B9/QxzwYTZLZwbagy9h+iCuW1yQ1zsbufG9ZLo7Xv5w+lm5bRTOBQG
+         xbBZbXYsAjtnQlBwWX0w8CVRsBLChACgydeM9inyeJsEIdsIyUUzruWrtzCtqbPhUwFx
+         HsbWkCdU1KELJHxyPVcpZnNK2/oxMFiQu1yaKzLV9ozg9avW4Zf1C+SpuuBIythgeKhp
+         QeGEG7hQc0Wy25VZW4okAqp8Qor3WY4vdNRE83j3XDMStLb7NdPziiG4m+qrEtTqreLq
+         YBeXzOEN/aMk6qGIHjdzXOELCN+hKfKRxxl9ADwvAm7DAKTLLPfP2/vuNE6yTyDhZAQ5
+         2Fyw==
+X-Gm-Message-State: AOAM530/rF6WDZGGFt90Vczc347zbFh67oOnGqnmbjZD39+OG2qdkXy3
+        9SKmGQy1AUrX7FCgtE21dixeBtFysZCy7bwveiq5Beebj2+2hf3EzEBT7LX6dHQc1mZCSnaJ8mx
+        bG26JLARGvTwb2Ev7zB9sKKMq
+X-Received: by 2002:a5d:4a08:: with SMTP id m8mr2386329wrq.263.1630654855934;
+        Fri, 03 Sep 2021 00:40:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzBvBmc/wTAPRQ7Yv14HcqIk/YmtYTtuC3HB1QfbK/IRroOVGU4Pdtb7PhRFhAOb6trK6S1jA==
+X-Received: by 2002:a5d:4a08:: with SMTP id m8mr2386308wrq.263.1630654855762;
+        Fri, 03 Sep 2021 00:40:55 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id i5sm3220951wrc.86.2021.09.03.00.40.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 00:40:55 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-doc@vger.kernel.org, kvm@vger.kernel.org,
+        Eduardo Habkost <ehabkost@redhat.com>
+Subject: Re: [PATCH 6/6] x86/kvm: add boot parameter for setting max number
+ of vcpus per guest
+In-Reply-To: <bb4ebe24-1de5-82b8-001d-1c0f9f28861b@suse.com>
+References: <20210701154105.23215-1-jgross@suse.com>
+ <20210701154105.23215-7-jgross@suse.com>
+ <87h7gx2lkt.fsf@vitty.brq.redhat.com>
+ <1ddffb87-a6a2-eba3-3f34-cf606a2ecba2@suse.com>
+ <878s292k75.fsf@vitty.brq.redhat.com>
+ <62679c6a-2f23-c1d1-f54c-1872ec748965@suse.com>
+ <8735sh2fr7.fsf@vitty.brq.redhat.com>
+ <bb4ebe24-1de5-82b8-001d-1c0f9f28861b@suse.com>
+Date:   Fri, 03 Sep 2021 09:40:53 +0200
+Message-ID: <87lf4em7i2.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210902072704.GC8267@xsang-OptiPlex-9020>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+Juergen Gross <jgross@suse.com> writes:
 
-    Do you have time to look at this? Thanks.
+> On 14.07.21 15:21, Vitaly Kuznetsov wrote:
+>> Juergen Gross <jgross@suse.com> writes:
+>> 
+>>> On 14.07.21 13:45, Vitaly Kuznetsov wrote:
+>>>
+>>>> Personally, I'd vote for introducing a 'ratio' parameter then so
+>>>> generally users will only have to set 'kvm.max_vcpus'.
+>>>
+>>> Okay.
+>>>
+>>> Default '4' then? Or '2 ^ (topology_levels - 2)' (assuming a
+>>> topology_level of 3 on Intel: thread/core/socket and 4 on EPYC:
+>>> thread/core/package/socket).
+>> 
+>> I'd suggest we default to '4' for both Intel and AMD as we haven't given
+>> up completely on cross-vendor VMs (running AMD VMs on Intel CPUs and
+>> vice versa). It would be great to leave a comment where the number comes
+>> from of course.
+>> 
+>
+> Thinking more about it I believe it would be better to make the
+> parameter something like "additional vcpu-id bits" with a default of
+> topology_levels - 2 (cross-vendor VMs are so special that I think the
+> need to specify another value explicitly in this case is acceptable).
+>
+> Reasons are:
+>
+> - the ability to specify factor values not being a power of 2 is weird
+> - just specifying the additional number of bits would lead to compatible
+>    behavior (e.g. a max vcpu-id of 1023 with max_vcpus being 288 and the
+>    default value of 1)
+> - the max vcpu-id should (normally) be 2^n - 1
 
-On 9/2/2021 3:27 PM, kernel test robot wrote:
-> 
-> 
-> Greeting,
-> 
-> FYI, we noticed a -10.0% regression of stress-ng.fallocate.ops_per_sec due to commit:
-> 
-> 
-> commit: bad77c375e8de6c776c848e443f7dc2d0d909be5 ("xfs: CIL checkpoint flushes caches unconditionally")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
-> 
-> 
-> in testcase: stress-ng
-> on test machine: 96 threads 2 sockets Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 512G memory
-> with following parameters:
-> 
-> 	nr_threads: 10%
-> 	disk: 1HDD
-> 	testtime: 60s
-> 	fs: xfs
-> 	class: filesystem
-> 	test: fallocate
-> 	cpufreq_governor: performance
-> 	ucode: 0x5003006
-> 
-> 
-> In addition to that, the commit also has significant impact on the following tests:
-> 
-> 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> 
-> 
-> Details are as below:
-> -------------------------------------------------------------------------------------------------->
-> 
-> 
-> To reproduce:
-> 
->          git clone https://github.com/intel/lkp-tests.git
->          cd lkp-tests
->          bin/lkp install                job.yaml  # job file is attached in this email
->          bin/lkp split-job --compatible job.yaml  # generate the yaml file for lkp run
->          bin/lkp run                    generated-yaml-file
-> 
-> =========================================================================================
-> class/compiler/cpufreq_governor/disk/fs/kconfig/nr_threads/rootfs/tbox_group/test/testcase/testtime/ucode:
->    filesystem/gcc-9/performance/1HDD/xfs/x86_64-rhel-8.3/10%/debian-10.4-x86_64-20200603.cgz/lkp-csl-2sp7/fallocate/stress-ng/60s/0x5003006
-> 
-> commit:
->    0431d926b3 ("xfs: async blkdev cache flush")
->    bad77c375e ("xfs: CIL checkpoint flushes caches unconditionally")
-> 
-> 0431d926b399d74f bad77c375e8de6c776c848e443f
-> ---------------- ---------------------------
->           %stddev     %change         %stddev
->               \          |                \
->      618.67           -10.0%     556.67 ±  2%  stress-ng.fallocate.ops
->       10.31           -10.0%       9.28 ±  2%  stress-ng.fallocate.ops_per_sec
->      111618            -5.7%     105270        stress-ng.time.voluntary_context_switches
->      502.67 ±  2%     +52.0%     763.83 ± 47%  interrupts.CPU44.CAL:Function_call_interrupts
->        2.10 ±  2%     -25.1%       1.57        iostat.cpu.iowait
->        2.16 ±  2%      -0.5        1.62        mpstat.cpu.all.iowait%
->        0.09 ± 11%     +45.0%       0.14 ± 34%  perf-sched.sch_delay.avg.ms.worker_thread.kthread.ret_from_fork
->      151.00 ± 19%     +20.2%     181.50 ±  7%  perf-sched.wait_and_delay.count.smpboot_thread_fn.kthread.ret_from_fork
->        6749            +6.4%       7178        perf-stat.i.context-switches
->        6640            +6.4%       7063        perf-stat.ps.context-switches
->      353877            -1.4%     348924        proc-vmstat.pgfree
->       39122           -15.1%      33221        proc-vmstat.pgpgout
->        1225 ± 14%      -9.0%       1115        turbostat.Bzy_MHz
->       86.82 ± 17%     -10.4%      77.83        turbostat.PkgWatt
->      602.83           -15.1%     511.83        vmstat.io.bo
->        6953            +6.1%       7376        vmstat.system.cs
->        1.33 ±  6%      +0.4        1.70 ± 13%  perf-profile.calltrace.cycles-pp.perf_mux_hrtimer_handler.__hrtimer_run_queues.hrtimer_interrupt.__sysvec_apic_timer_interrupt.sysvec_apic_timer_interrupt
->        0.08 ± 22%      +0.1        0.17 ± 23%  perf-profile.children.cycles-pp.wait_for_completion
->        0.07 ± 17%      +0.1        0.19 ± 64%  perf-profile.children.cycles-pp.submit_bio
->        0.07 ± 17%      +0.1        0.19 ± 64%  perf-profile.children.cycles-pp.submit_bio_noacct
->        1.40 ±  8%      +0.3        1.74 ± 12%  perf-profile.children.cycles-pp.perf_mux_hrtimer_handler
-> 
-> 
->                                                                                  
->                           stress-ng.fallocate.ops_per_sec
->                                                                                  
->    12 +----------------------------------------------------------------------+
->       |                                                                      |
->    10 |.+.++.+.+.+  +.+.+.++.+.+.++.+.+.+.++.+.+.++.+.+.++.+.+.+.++.+.+.++.+.|
->       | O        :  :                             O O   OO O O O OO          |
->       |   OO O   :O :            O             O O    O                      |
->     8 |-+      O :  : O O OO O O  O O O O OO O                               |
->       |          : :                                                         |
->     6 |-+        : :                                                         |
->       |           ::                                                         |
->     4 |-+         ::                                                         |
->       |           ::                                                         |
->       |           ::                                                         |
->     2 |-+         :                                                          |
->       |           :                                                          |
->     0 +----------------------------------------------------------------------+
->                                                                                  
->                                                                                  
-> [*] bisect-good sample
-> [O] bisect-bad  sample
-> 
-> 
-> 
-> 
-> Disclaimer:
-> Results have been estimated based on internal Intel analysis and are provided
-> for informational purposes only. Any difference in system hardware or software
-> design or configuration may affect actual performance.
-> 
-> 
-> ---
-> 0DAY/LKP+ Test Infrastructure                   Open Source Technology Center
-> https://lists.01.org/hyperkitty/list/lkp@lists.01.org       Intel Corporation
-> 
-> Thanks,
-> Oliver Sang
-> 
+Sounds good to me! 
+
+Also, there's an ongoing work to raise the default KVM_MAX_VCPUS number
+by Eduardo (Cc):
+
+https://lore.kernel.org/kvm/20210831204535.1594297-1-ehabkost@redhat.com/
+
+It would be great if you could unify your efforts)
 
 -- 
-Zhengjun Xing
+Vitaly
+
