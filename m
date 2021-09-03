@@ -2,88 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA7C3FFF32
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 443243FFF33
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349277AbhICLaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 07:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54126 "EHLO
+        id S1349296AbhICLaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 07:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349210AbhICLaM (ORCPT
+        with ESMTP id S1349210AbhICLaT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 07:30:12 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66CFC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 04:29:12 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id r2so5224952pgl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 04:29:12 -0700 (PDT)
+        Fri, 3 Sep 2021 07:30:19 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FE8C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 04:29:18 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 2so4068678pfo.8
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 04:29:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id;
-        bh=rtm9O188bYJTXAJCaUyfIBjj0pjGNgOqheOvrJrI9tk=;
-        b=IxVNcxeVisw2b4Jb/ZmKzSRvIuinCHKFycphs5w+Aj6yJFRHAqGOFbrVCh+Y25VR+F
-         k0WQlnkKnpQhblp+fRYPgutaTbumeXUbQ1mZjsI+E0Np1DKhFRoyyMsqpVIM4DseDLDI
-         5KXVP8wTAWSRwrhC5Sl/fe/tgspUZ9dwYfKgVIelMwUIMR9cGj2smVDaIfIWVtsHsd/E
-         v2d7DmAQtyTHDuTqCjlTSoNjhMplLbdpQlPCm9jShvndnaxTtExlw86thhU3HX9XnaZU
-         lXvbI7LycEQJ2zFoQ8iVKCpvpWqf6nv5FdSEwZQHIk/EH5Ge+PHVqnWyPfPK66C3e0C9
-         SDpA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=0I//inV63qyurmrg1BffYLLfm9QEgShDl7nWQ+y21aU=;
+        b=q6Qiylu6AkvzHZrdLLE5WkEWLRhFg1l2ZYKx94DC4huDKmMtTT9hoPGxCu1SzV59au
+         BJajk83gMYYA19BQsVMxeFkVVU9/2HWdVPwIIIMYFsH34yhF1XwNFNK0xcEtrB+ENXWp
+         y19bIIiNYW5rApCpKjRWXuYiGuJBf7WOM5xObiMZwj7g1bmSidPhF4OwJzyY/Efq8iaq
+         gx2fm3RlvDOPRGTDXm9of7NDK2blUF8/qHz/L8TEJOU1xH4xQ2ai2hXh3JpgClwd23iY
+         JlIN5eEuZE5x3vQAjbPk6JFvhvAo5TNahqmZyu6mkx0ah5kVpjJj/Fti65QbjNv4evYA
+         qSIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=rtm9O188bYJTXAJCaUyfIBjj0pjGNgOqheOvrJrI9tk=;
-        b=Uc4/cvu1ys+x+W0TzCQAUZFx/vmqBbd9qWb89UfC58FdmkMQdMvx6LySREB/e8po+w
-         MkyOhmy2gWsH2ThHdQmJEKK0re8dr2c/+lNBreryjP2jFlcDlQ1mEfU92lquPyHAHzaq
-         CLkhDfiFzVPlIHDaOQ2GeDrwPDNoR8csNyj6CelVx5N0jpsXQZ0o5mcj1BCai/w8Hhr9
-         TYOA3nCemVKS+7/DYqpDSwbruXIdMVhf+IVGxwwwfxLjCZJeGokuEHXnA9HDIQuAs8w6
-         7R2D5J6hNt2uzyzYgoany2X6R/WBAz5UEHUbf7vvH1yLj/VOELvXDeEXm4OA0citryOc
-         l+7A==
-X-Gm-Message-State: AOAM530XEppJbia2jLbgYEUHqdphEp2+/7zTuAiBq42GeHwy3L7rP8BD
-        8bG9bWu5VpU/bl5muNpqLZaBxUup25F+1w==
-X-Google-Smtp-Source: ABdhPJx0m8mPv5pwCkiMchwE3AsSUnbwumrPyuOP/z9FSE452sLf3LTmYW0yS1ceMZjD/B1EjVObtQ==
-X-Received: by 2002:a63:1d5c:: with SMTP id d28mr3120432pgm.143.1630668552460;
-        Fri, 03 Sep 2021 04:29:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=0I//inV63qyurmrg1BffYLLfm9QEgShDl7nWQ+y21aU=;
+        b=YIPDEp9ySNyTWPOQsziyFw2sSZrUZE+ftWBQ8DZWLepjcatyRCaVhq7h8xpBIpve4w
+         9S5YdE9m9R+6Jn6dPMZghlQ6dMHrNUpZyinYQwvohboZ6gK5JBTaXQOKDnMye+zIIg9M
+         QY85acv0W7OM0xxOB8VHzlYWFxcBp6awj6eBzE2QcoOoWWfTQIbeJBQ28MNuWRaZXhPS
+         3SiaFRwU0JBQXh3zcK5PtkhSBHMiMeDUGFDbE2Ks79/dMzavZVIkjzcfc/g+JHPIWrz/
+         wYBaUC62WF3Y4tzhv422ocxQ4k3Q4lR55y7MFInxejXN653G/vU6W2GNzMvpt8Cbi7A5
+         hE2A==
+X-Gm-Message-State: AOAM533PGEMZ98oUHIW4NY6mCyuBTxzTF3QTLTH3yzCEGKTdWg9VSMPa
+        R5VGmlfQllaFPoeJBhPRkxnu9H5JyUXs1g==
+X-Google-Smtp-Source: ABdhPJxi4/iwwdHiOP818FoRPtwAzNOPXLk2Cg4hzZ8nnurJWUSpUrA2AC7B7FaW1bscCh88e/b/Tg==
+X-Received: by 2002:a63:7447:: with SMTP id e7mr3222816pgn.46.1630668558021;
+        Fri, 03 Sep 2021 04:29:18 -0700 (PDT)
 Received: from bj10045pcu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id j14sm5023847pjg.29.2021.09.03.04.29.09
+        by smtp.gmail.com with ESMTPSA id j14sm5023847pjg.29.2021.09.03.04.29.15
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 03 Sep 2021 04:29:12 -0700 (PDT)
+        Fri, 03 Sep 2021 04:29:17 -0700 (PDT)
 From:   Zhenguo Zhao <zhenguo6858@gmail.com>
 To:     nianfu.bai@unisoc.com, keescook@chromium.org, anton@enomsg.org,
         ccross@android.com, tony.luck@intel.com
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] pstore/zone: Remove redundant check for total size
-Date:   Fri,  3 Sep 2021 19:27:40 +0800
-Message-Id: <1630668462-24527-1-git-send-email-zhenguo6858@gmail.com>
+Subject: [PATCH 2/3] pstore: Add pstore back-end choice method in kconfig
+Date:   Fri,  3 Sep 2021 19:27:41 +0800
+Message-Id: <1630668462-24527-2-git-send-email-zhenguo6858@gmail.com>
 X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1630668462-24527-1-git-send-email-zhenguo6858@gmail.com>
+References: <1630668462-24527-1-git-send-email-zhenguo6858@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
 
-The macro check_size contains 4096 size check for total size.
+The pstore has one storage device for back-end,so it should be
+use choice method to config.
 
-check_size(total_size, 4096)
+When ramoops config,insmod pstore_blk.ko,it will print unexpected,the
+module will insmod failed.
+
+    if (backend && strcmp(backend, psi->name)) {
+        pr_warn("ignoring unexpected backend '%s'\n", psi->name);
+        return -EPERM;
+    }
 
 Signed-off-by: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
 ---
- fs/pstore/zone.c | 4 ----
- 1 file changed, 4 deletions(-)
+ fs/pstore/Kconfig | 57 ++++++++++++++++++++++++++++++-------------------------
+ 1 file changed, 31 insertions(+), 26 deletions(-)
 
-diff --git a/fs/pstore/zone.c b/fs/pstore/zone.c
-index 7c8f8fe..93a770c 100644
---- a/fs/pstore/zone.c
-+++ b/fs/pstore/zone.c
-@@ -1295,10 +1295,6 @@ int register_pstore_zone(struct pstore_zone_info *info)
- 	int err = -EINVAL;
- 	struct psz_context *cxt = &pstore_zone_cxt;
+diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
+index 8adabde..288ed3c 100644
+--- a/fs/pstore/Kconfig
++++ b/fs/pstore/Kconfig
+@@ -146,21 +146,40 @@ config PSTORE_FTRACE
  
--	if (info->total_size < 4096) {
--		pr_warn("total_size must be >= 4096\n");
--		return -EINVAL;
--	}
- 	if (info->total_size > SZ_128M) {
- 		pr_warn("capping size to 128MiB\n");
- 		info->total_size = SZ_128M;
+ 	  If unsure, say N.
+ 
+-config PSTORE_RAM
+-	tristate "Log panic/oops to a RAM buffer"
++choice
++	prompt "Choice pstore device"
+ 	depends on PSTORE
+-	depends on HAS_IOMEM
+-	select REED_SOLOMON
+-	select REED_SOLOMON_ENC8
+-	select REED_SOLOMON_DEC8
++	default PSTORE_RAM
+ 	help
+-	  This enables panic and oops messages to be logged to a circular
+-	  buffer in RAM where it can be read back at some later point.
+-
+-	  Note that for historical reasons, the module will be named
+-	  "ramoops.ko".
++	  This option chooses ram or blk to use pstore device.
++	config PSTORE_RAM
++		tristate "Log panic/oops to a RAM buffer"
++		depends on HAS_IOMEM
++		select REED_SOLOMON
++		select REED_SOLOMON_ENC8
++		select REED_SOLOMON_DEC8
++		help
++		  This enables panic and oops messages to be logged to a circular
++		  buffer in RAM where it can be read back at some later point.
++
++		  Note that for historical reasons, the module will be named
++		  "ramoops.ko".
++
++		  For more information, see Documentation/admin-guide/ramoops.rst.
++
++	config PSTORE_BLK
++		tristate "Log panic/oops to a block device"
++		depends on BLOCK
++		select PSTORE_ZONE
++		help
++		  This enables panic and oops message to be logged to a block dev
++		  where it can be read back at some later point.
++
++		  For more information, see Documentation/admin-guide/pstore-blk.rst
++
++		  If unsure, say N.
+ 
+-	  For more information, see Documentation/admin-guide/ramoops.rst.
++endchoice
+ 
+ config PSTORE_ZONE
+ 	tristate
+@@ -169,20 +188,6 @@ config PSTORE_ZONE
+ 	  The common layer for pstore/blk (and pstore/ram in the future)
+ 	  to manage storage in zones.
+ 
+-config PSTORE_BLK
+-	tristate "Log panic/oops to a block device"
+-	depends on PSTORE
+-	depends on BLOCK
+-	select PSTORE_ZONE
+-	default n
+-	help
+-	  This enables panic and oops message to be logged to a block dev
+-	  where it can be read back at some later point.
+-
+-	  For more information, see Documentation/admin-guide/pstore-blk.rst
+-
+-	  If unsure, say N.
+-
+ config PSTORE_BLK_BLKDEV
+ 	string "block device identifier"
+ 	depends on PSTORE_BLK
 -- 
 1.9.1
 
