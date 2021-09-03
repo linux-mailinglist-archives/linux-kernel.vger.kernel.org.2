@@ -2,89 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA873FFA58
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652513FFA5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345926AbhICGZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 02:25:37 -0400
-Received: from m12-16.163.com ([220.181.12.16]:33641 "EHLO m12-16.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230128AbhICGZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 02:25:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=gwsSz
-        w+Owsx9E4ND5+dICrWSiwl4/4CbypIPkR7vonI=; b=Ndzlx7LlgcBchTm16OBPA
-        D9z5qAA3g/mFnDrTiU5yV35+osDXdAbtU0u2Hgm3KvgrLzGBTtfdTOay9uSphwet
-        HHsiTgWCvuo1FuNJF0F0aVr4zhwwpeEfj9LEgOcCuFrv5gMyoirzL+6Mw+pJy3sG
-        GPDrwnGH1JHMbWcZ0shV4M=
-Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
-        by smtp12 (Coremail) with SMTP id EMCowABn+2yHvzFh91wlAg--.14S2;
-        Fri, 03 Sep 2021 14:24:19 +0800 (CST)
-From:   dingsenjie@163.com
-To:     jirislaby@kernel.org, mickflemm@gmail.com, mcgrof@kernel.org,
-        kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dingsenjie <dingsenjie@yulong.com>
-Subject: [PATCH] wireless: ath5k: Remove unnecessary label of ath5k_beacon_update
-Date:   Fri,  3 Sep 2021 14:23:16 +0800
-Message-Id: <20210903062316.11756-1-dingsenjie@163.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S1343773AbhICG2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 02:28:01 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:48570 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230128AbhICG2A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 02:28:00 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630650419;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Oj03gZFgBKlneXTLuFlpjosq+qsCnLlz6Tsf57RrU6U=;
+        b=UxCO301dAkvC1O6CEFSs9BDF/EHWaGq74xuu22aOSKeDxyiG15pXQ8UdzD+GMCWD7qI2fy
+        1okhBIFuVJXPh18K9KmQXoAZmndIa7mAif+MJIC0m77cZqFlZPWn0jCziqOparFdWWg8Ln
+        OTKZ0Nv0FbxBGulDLACNIMI0f4i6IYRnxCcFGnsSLdcYXxlfncPuartw/17m5N75tPNhQ3
+        vWxLcBKMUq8fVXX9LT31xa70mOlZz9Wf50c3274w7i87yNQG9bCqGZCFPeEn6k8HsBsNj5
+        9y7uRrO8AIlOopb20+7C6qICj3fvhfZWyMpqG4VZYpTx4vzk3bAzpG67V9Z+ag==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630650419;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Oj03gZFgBKlneXTLuFlpjosq+qsCnLlz6Tsf57RrU6U=;
+        b=w5/p55F8WBEP8YihYst5Fz3ycPHwF6J50NOGKBuCgwVsb5tcD0J8VxMchQOyY3ysNKvBlx
+        dcqIrcLg4xwxFrCg==
+To:     Dave Chinner <david@fromorbit.com>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [GIT PULL] xfs: new code for 5.15
+In-Reply-To: <20210902223545.GA1826899@dread.disaster.area>
+References: <20210831211847.GC9959@magnolia>
+ <CAHk-=whyVPgkAfARB7gMjLEyu0kSxmb6qpqfuE_r6QstAzgHcA@mail.gmail.com>
+ <20210902174311.GG9942@magnolia>
+ <20210902223545.GA1826899@dread.disaster.area>
+Date:   Fri, 03 Sep 2021 08:26:58 +0200
+Message-ID: <87a6kub2dp.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EMCowABn+2yHvzFh91wlAg--.14S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZFyfWr1rJryxJr4fCF1rZwb_yoWDuwc_ur
-        WI93Z7JF15GryYgrsrC3y3Z34IkFW8uF95G3WjqFW7KF13CrWkAr95Zr9rGw17uw4xAFnx
-        uFsrAFy3tw1jvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0D73DUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbiYxQDyFaEEMIYRAAAsg
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dingsenjie <dingsenjie@yulong.com>
+Dave,
 
-The label just used as return, so we delete it and
-use the return statement instead of the goto statement.
+On Fri, Sep 03 2021 at 08:35, Dave Chinner wrote:
+> On Thu, Sep 02, 2021 at 10:43:11AM -0700, Darrick J. Wong wrote:
+> The part I dislike most about it is that we have to modify a header
+> file that triggers full kernel rebuilds. Managing patch stacks and
+> branches where one of them modifies such a header file means quick,
+> XFS subsystem only kernel rebuilds are a rare thing...
 
-Signed-off-by: dingsenjie <dingsenjie@yulong.com>
----
- drivers/net/wireless/ath/ath5k/base.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+If you don't care about ordering, you can avoid touching the global
+header completely. The dynamic state ranges in PREPARE and ONLINE
+provide exactly what you want. It's documented.
 
-diff --git a/drivers/net/wireless/ath/ath5k/base.c b/drivers/net/wireless/ath/ath5k/base.c
-index 4c6e57f..9739189 100644
---- a/drivers/net/wireless/ath/ath5k/base.c
-+++ b/drivers/net/wireless/ath/ath5k/base.c
-@@ -1896,23 +1896,18 @@ static int ath5k_remove_padding(struct sk_buff *skb)
- 	struct ath5k_vif *avf;
- 	struct sk_buff *skb;
- 
--	if (WARN_ON(!vif)) {
--		ret = -EINVAL;
--		goto out;
--	}
-+	if (WARN_ON(!vif))
-+		return -EINVAL;
- 
- 	skb = ieee80211_beacon_get(hw, vif);
- 
--	if (!skb) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!skb)
-+		return -ENOMEM;
- 
- 	avf = (void *)vif->drv_priv;
- 	ath5k_txbuf_free_skb(ah, avf->bbuf);
- 	avf->bbuf->skb = skb;
- 	ret = ath5k_beacon_setup(ah, avf->bbuf);
--out:
- 	return ret;
- }
- 
--- 
-1.9.1
+> That said, I'm all for a better interface to the CPU hotplug
+> notifications. THe current interface is ... esoteric and to
 
+What's so esoteric about:
 
+       state = cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "xfs:prepare", func1, func2);
+       state = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "xfs:online", func3, func4);
+
+Only if you care about callback ordering vs. other subsystems, then adding
+the state in the global header is required. It's neither the end of the
+world, nor is it rocket science and requires expert knowledge to do so.
+
+> understand how to use it effectively requires becoming a CPU hotplug
+> expert.
+
+  https://www.kernel.org/doc/html/latest/core-api/cpu_hotplug.html
+
+If there is something missing in that documentation which makes you
+think you need to become a CPU hotplug expert, please let me know. I'm
+happy to expand that document.
+
+> There's something to be said for the simplicity of the old
+> register_cpu_notifier() interface we used to have...
+
+There is a lot to be said about it. The simplicity of it made people do
+the most hillarious things to deal with:
+
+  - Ordering issues including build order dependencies
+  - Asymetry between bringup and teardown
+  - The inability to test state transitions
+  - ....
+
+Back then when we converted the notifier mess 35 of ~140 hotplug
+notifiers (i.e. ~25%) contained bugs of all sorts. Quite some of them
+were caused by the well understood simplicity of the hotplug notifier
+mechanics. I'm surely not missing any of that.
+
+Thanks,
+
+        tglx
