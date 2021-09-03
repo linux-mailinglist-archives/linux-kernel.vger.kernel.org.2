@@ -2,77 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63AFA400429
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38F6400433
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350350AbhICRa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 13:30:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52142 "EHLO
+        id S1350257AbhICRid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 13:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350371AbhICRaR (ORCPT
+        with ESMTP id S1350131AbhICRib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 13:30:17 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77606C0613D9
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 10:29:12 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id g18so9201544wrc.11
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 10:29:12 -0700 (PDT)
+        Fri, 3 Sep 2021 13:38:31 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C78C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 10:37:31 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id y6so42115lje.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 10:37:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=oOqUrSuUCCTti4b89vsLrMyMjdmQmo0cHUZ19+DYd/0=;
-        b=gdWRYsKqN2u9iH3Y2VIVZHoCHsS8du8DViIOe3qsB8BikiDZ0PZB2lmKqRAhPEljWY
-         bsig0f6sUMsM8+ymKW34J6LE7esYlofcT4cZ6Q+FZ7nzmcQStZC/PK36ChYKehdEmLpy
-         fs2jYrEuGbSr7+m7ISaOKd6jZRlrs5aFwU/PVorqv9qinwKGJuV2GzyyNeSNenLnOMSR
-         GUNzFIM1bX9hvLQ04fkJOEEW5ph0FxA2/WuxTbHTiIyxqFAvwrhcStvN6Xcsjei1+9Gg
-         o1IbTWj/ajwjB+WdilZPuHykPCNfGaQDNrVJxJXX6qCEKn7Ab+/ye/HWK1ILJAYw0DIj
-         I2OQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CVoeDRCjbIrkbAE/9p73s/VaveAMWQIPwuXda/nZblk=;
+        b=Cq4nr560UV2fO3Qvu2QeNzaXnPfJkTEjZQ3fjQxM3QcTx9hUmVMzgwHCVahBBo11d0
+         DjHNHv0LVFfRU2T3WpuHQLMDX1i1z4tRxuV9RrybEsOD5MhCy/eVmQwuz8yozphGS1V2
+         6KQ/uV2NNNJ/+2NafSj1lnaMQPZFVYGYrfg+M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=oOqUrSuUCCTti4b89vsLrMyMjdmQmo0cHUZ19+DYd/0=;
-        b=F95dQJP/dU8mxAG7ewXbpdsFiJKxStlO0+ngnHG7Qy+Qvp+k6DnwGG0XwucRgz6uhm
-         xCafgaQfC+Xr/LIR/VeQ2n32kZpTUll0Hfk+tGg+qU6L5HOpsagSCuLDCeqCEQdwS5KV
-         OAiuIms5afgMD3n29QwoaGJl5GB11w9zlGSooz2kxBHFGAwplqtVW8lKGyWOIvI6Yfrd
-         6pqu5HfY4HGHOWpWtZkewONStwJeWmYRVSqDINZNinHvC0woDxQYw5yxv0WqJ1Ph7Uzr
-         0WbEN/8+D4XyQLB8qwXPuXSz9bxBZss6B5ZC/SXzQ2d4gQqBIJhXwlY9E306EcCsbqoa
-         PRfA==
-X-Gm-Message-State: AOAM531apdi5+MzezeD/si+C1WJre5IpSTro6/ZouVXDPxvNU/SWZ1wC
-        1/ohauX5bSKaxBjfsLbTCj9lTXhmK1qeH/NDCYw=
-X-Google-Smtp-Source: ABdhPJwcqUO274xXI8i7ysIcHUhWy9awaW2zvf2oTdkErLmDA9PvZT2RvuwT7LuzC2UTa5MCSTf8E4LLYxDZq5ngSdc=
-X-Received: by 2002:adf:9f05:: with SMTP id l5mr214974wrf.188.1630690150854;
- Fri, 03 Sep 2021 10:29:10 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CVoeDRCjbIrkbAE/9p73s/VaveAMWQIPwuXda/nZblk=;
+        b=hLju9Ah6Gx2bMbl4ptlrcBhq0C4aLNbRpxqRF5rh+UibZdjnJ3/qzRDaulGT86BNie
+         PwenWdnjYTYplI8UQ3ImKgfHaeoiZvvEBbjNm8Ixi3upE8g4IpAwNILZg7xlcfFFXq/0
+         4Xw8o63TAzFMcz0oxJfGPLDxpEq2aQchX6L8mMdHjoS/99eLhdiJHxWtlYA+XYX5j0df
+         w2Y3Ms16mYdTwP0/Ldd9Z2Hg202vlTKVXcpR7KVnNXSTTsWd0i0ke0HZmos3irlxWQ67
+         u3SKoY9VRT6F5TBHZCJusalrUKpVPKBQ+TxqvtRt9S1bTaeN5ME408QDzc+ISLIufkCn
+         FjrA==
+X-Gm-Message-State: AOAM533P13Rpkxcg2qFIA1ys7vBwNjGTFVmf4dce9PdJqX5je83Z31vw
+        bgiSdDziTCg/8WCsu21cUcKpE8chJ+H2qnHOFX4=
+X-Google-Smtp-Source: ABdhPJxdWGkRqAb92csDI4nfsM9mzx7Ss1L05YzcL7E5sBocxRi08oEzhEPDj4wqU4iBNvPFFkP6Xg==
+X-Received: by 2002:a05:651c:54e:: with SMTP id q14mr144276ljp.152.1630690648607;
+        Fri, 03 Sep 2021 10:37:28 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id u3sm614145lju.107.2021.09.03.10.37.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 10:37:27 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id bq28so13158337lfb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 10:37:27 -0700 (PDT)
+X-Received: by 2002:a05:6512:34c3:: with SMTP id w3mr59624lfr.173.1630690646762;
+ Fri, 03 Sep 2021 10:37:26 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a5d:414a:0:0:0:0:0 with HTTP; Fri, 3 Sep 2021 10:29:10 -0700 (PDT)
-Reply-To: mrschantelhermans@gmail.com
-From:   Mrs Chantel Hermans <victoriaolunta@gmail.com>
-Date:   Fri, 3 Sep 2021 10:29:10 -0700
-Message-ID: <CAGwBwHVdR_ew63E8V5SqvDouLX3uwKpAfQFPpfmXxr2upFkMnQ@mail.gmail.com>
-Subject: ATTENTION
-To:     undisclosed-recipients:;
+References: <YS/r5eaf/ps5ekie@localhost.localdomain> <CAHk-=wiYNEj8JRO3f4L9GG06Akwwr18mM4Co8nWeAH44a9y-aw@mail.gmail.com>
+ <bceb9212-8fb0-be6e-997f-82962f855081@arm.com> <CAHk-=wg35pAyCFC6_hhBTAGGUPprf=hwx5+Ey1tnqXzuaOLsRQ@mail.gmail.com>
+ <ab606dd7-87a7-25cd-8f0e-841638cc40e3@arm.com>
+In-Reply-To: <ab606dd7-87a7-25cd-8f0e-841638cc40e3@arm.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 3 Sep 2021 10:37:10 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiGs=YDah3mBfi5A0Vh7OMeLfk3yOw219nvRAeghLmHGg@mail.gmail.com>
+Message-ID: <CAHk-=wiGs=YDah3mBfi5A0Vh7OMeLfk3yOw219nvRAeghLmHGg@mail.gmail.com>
+Subject: Re: [GIT PULL] (swiotlb) stable/for-linus-5.15
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Claire Chang <tientzu@chromium.org>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Will Deacon <will@kernel.org>, pasic@linux.ibm.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
+On Fri, Sep 3, 2021 at 6:51 AM Robin Murphy <robin.murphy@arm.com> wrote:
+>
+> > "essentially"? "shouldn't be expected"? I'm not getting a lot of warm
+> > and fuzzies from that. I'd like to have something a bit more concrete.
+>
+> As above, upstream Kconfigs do prevent any possible overlap at the
+> moment (with "swiotlb: use depends on for DMA_RESTRICTED_POOL" fixing
+> the bug which inadvertently made SWIOTLB user-selectable).
 
+Ok. I've done the merge, I do hope that this code can be clarified at
+some point in the future.
 
-ATTENTION
-
-
-
-You have been compensated with the sum of 6.9 million dollars in this
-United Nation the payment will be issue into ATM Visa Card,
-
-
-
-and send to you from the Santander Bank of Spain we need your
-Address,Passport and your whatsapp number.
-
-
-
-THANKS
-
-*Mrs Chantel Hermans*
+             Linus
