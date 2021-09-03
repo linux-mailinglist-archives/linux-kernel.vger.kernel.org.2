@@ -2,175 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66553FFC74
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82FDA3FFC76
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348516AbhICI5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:57:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348499AbhICI5R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:57:17 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87E34C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 01:56:17 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id s3so8479414ljp.11
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 01:56:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Mvq8U6y/pu3nW+n6GX86moOVAEJ1Ykf9BPxJyUnZWYE=;
-        b=kIyPuQTR5iIFIGJ6vSVLz/xctn6SLPW/bAMTMQPQ6eIItWEJ2vGql2TCCdkkcVDA3+
-         5nwgzo6KAsF95m8mJy+sdAm1PLDOjJR8R+emqLaTha5uxBjrBCNUzIlSqu5YcsMCDSL2
-         Dhgida5IgaPX6kvoydyuvtQh1B89REDTEe3Svp+/U6i9KjOuIpVusP44QbOGjHrEedwd
-         1gGiZWI02OJPZz+R6nwxmHGIdRkfcsf8wmx8DylPPgOqMhocTDeqn8ScQQrR8/5ckfW+
-         kL8yC1xolfGUtySd7EJKulstMB4RLb6Ekybmr1Yz/mJJbZFtROeldycEyy4tKjGSSaCw
-         2ONw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Mvq8U6y/pu3nW+n6GX86moOVAEJ1Ykf9BPxJyUnZWYE=;
-        b=hwFbI59jQNsY0vK30mb4ZJ9A3XbyQH3dkOLribK1/YE1vq5mZCQv3BPtMA+j5zvrTn
-         cYEsUg40X76yEvgz1pAjYTUcHwQSCkkM0lpGPGcC2A3JaG1qF07cgjG4Gb6RaUvVy+SI
-         zyx0sIYR2vbrcwlN2lirabQSZXajnwUezKqKBRkCFRFSWP+5BH4gUaFM80eNiD9cNgmO
-         pSSJN51qD9zPOULY0rOwsOjieFeh9vGMXBtfpTcgXnoIXd5502Y5KE7OxpjRdt18r2MA
-         4DvgEufqU6/VNXjVxItIW6E0wCAbhju5yaWItcUvvadYiMVrRYU/JGUogUMgbXGC/waA
-         0i4w==
-X-Gm-Message-State: AOAM531VfUyUpUUJYygoVt66RZ3J9N13e+c4M5EgM4bGZSZHGEWO1L+s
-        K3qwmB1TOvNOv8qrugB+DwN06eg71V19gK0yx5yykxkveKhdiA==
-X-Google-Smtp-Source: ABdhPJya+YDjtPmVAJl7irytS5sbvq0GD6y/hAdjpHvMPwLBfpphbAtcY9DI9u+o0gqS9fbRojcv+b9g9JzljX+VdKk=
-X-Received: by 2002:a05:651c:83:: with SMTP id 3mr2109657ljq.341.1630659375777;
- Fri, 03 Sep 2021 01:56:15 -0700 (PDT)
+        id S1348545AbhICI5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:57:30 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:40695 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348461AbhICI51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 04:57:27 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4H1BVL6bMpz9sTr;
+        Fri,  3 Sep 2021 10:56:26 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id K3RKjrD-w8d1; Fri,  3 Sep 2021 10:56:26 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4H1BVL5L22z9sTN;
+        Fri,  3 Sep 2021 10:56:26 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 93B3B8B8D5;
+        Fri,  3 Sep 2021 10:56:26 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id DZQ-ShpYtKAd; Fri,  3 Sep 2021 10:56:26 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0DFFA8B764;
+        Fri,  3 Sep 2021 10:56:26 +0200 (CEST)
+Subject: Re: [PATCH v2 3/5] signal: Add unsafe_copy_siginfo_to_user()
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <fd7938d94008711d441551c06b25a033669a0618.1629732940.git.christophe.leroy@csgroup.eu>
+ <a94be61f008ab29c231b805e1a97e9dab35cb0cc.1629732940.git.christophe.leroy@csgroup.eu>
+ <87mtoux1hi.fsf@disp2133>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <2715792c-eb10-eeb8-3d49-24486abe953b@csgroup.eu>
+Date:   Fri, 3 Sep 2021 10:56:14 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210902101634.827187-1-ulf.hansson@linaro.org>
- <20210902101634.827187-4-ulf.hansson@linaro.org> <4e36e732-6ca3-1d00-e6dd-38bb8877577b@gmail.com>
-In-Reply-To: <4e36e732-6ca3-1d00-e6dd-38bb8877577b@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 3 Sep 2021 10:55:39 +0200
-Message-ID: <CAPDyKFr2oQnKOhKhWt_9VyBoe=HQ7Y0uZUMKTcZ05a7G9RaBYA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] PM: domains: Add a ->dev_get_performance_state()
- callback to genpd
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87mtoux1hi.fsf@disp2133>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Sept 2021 at 08:00, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 02.09.2021 13:16, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > Hardware may be preprogrammed to a specific performance state, which ma=
-y
-> > not be zero initially during boot. This may lead to that genpd's curren=
-t
-> > performance state becomes inconsistent with the state of the hardware. =
-To
-> > deal with this, the driver for a device that is being attached to its
-> > genpd, need to request an initial performance state vote, which is
-> > typically done by calling some of the OPP APIs while probing.
-> >
-> > In some cases this would lead to boilerplate code in the drivers. Let's
-> > make it possible to avoid this, by adding a new optional callback to ge=
-npd
-> > and invoke it per device during the attach process. In this way, the ge=
-npd
-> > provider driver can inform genpd about the initial performance state th=
-at
-> > is needed for the device.
-> >
-> > Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-> > ---
-> >  drivers/base/power/domain.c | 8 +++++---
-> >  include/linux/pm_domain.h   | 2 ++
-> >  2 files changed, 7 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> > index 800adf831cae..1a6f3538af8d 100644
-> > --- a/drivers/base/power/domain.c
-> > +++ b/drivers/base/power/domain.c
-> > @@ -2640,13 +2640,15 @@ static void genpd_dev_pm_sync(struct device *de=
-v)
-> >       genpd_queue_power_off_work(pd);
-> >  }
-> >
-> > -static int genpd_get_default_performance_state(struct device *dev,
-> > +static int genpd_get_default_performance_state(struct generic_pm_domai=
-n *genpd,
-> > +                                            struct device *dev,
-> >                                              unsigned int index)
-> >  {
-> >       int pstate =3D of_get_required_opp_performance_state(dev->of_node=
-, index);
-> >
-> >       if (pstate =3D=3D -ENODEV || pstate =3D=3D -EOPNOTSUPP)
-> > -             return 0;
-> > +             pstate =3D genpd->dev_get_performance_state ?
-> > +                      genpd->dev_get_performance_state(genpd, dev) : 0=
-;
-> >
-> >       return pstate;
-> >  }
-> > @@ -2701,7 +2703,7 @@ static int __genpd_dev_pm_attach(struct device *d=
-ev, struct device *base_dev,
-> >       }
-> >
-> >       /* Set the default performance state */
-> > -     pstate =3D genpd_get_default_performance_state(dev, index);
-> > +     pstate =3D genpd_get_default_performance_state(pd, dev, index);
->
-> If base device is suspended, then its performance state is zero.
->
-> When device will be rpm-resumed, then its performance should be set to
-> the default state.
->
-> You're setting performance state of the wrong device, it should be the
-> base device and not the virtual domain device.
 
-No I am not. :-) Let me elaborate.
 
-For the single PM domain case, 'dev' and 'base_dev' are pointing to
-the same device. So this works fine.
+Le 02/09/2021 à 20:43, Eric W. Biederman a écrit :
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> 
+>> In the same spirit as commit fb05121fd6a2 ("signal: Add
+>> unsafe_get_compat_sigset()"), implement an 'unsafe' version of
+>> copy_siginfo_to_user() in order to use it within user access blocks.
+>>
+>> For that, also add an 'unsafe' version of clear_user().
+> 
+> Looking at your use cases you need the 32bit compat version of this
+> as well.
+> 
+> The 32bit compat version is too complicated to become a macro, so I
+> don't think you can make this work correctly for the 32bit compat case.
 
-For the multiple PM domain case or when attaching goes via
-genpd_dev_pm_attach_by_id(), 'dev' is the virtual device registered in
-genpd_dev_pm_attach_by_id(). In this case, it's 'dev' that is becoming
-attached to genpd and not the 'base_dev'. Note also that, runtime PM
-has not been enabled for 'dev' yet at this point and 'dev' has been
-assigned the same OF node as 'base_dev", to allow OF parsing to work
-as is for it.
+When looking into patch 5/5 that you nacked, I think you missed the fact that we keep using 
+copy_siginfo_to_user32() as it for the 32 bit compat case.
 
-Moreover, to deal with runtime PM in the multiple PM domain case, the
-consumer driver should create a device link. Along the lines of this:
-device_link_add(base_dev, dev, DL_FLAG_PM_RUNTIME |
-DL_FLAG_STATELESS), thus assigning the virtual device ('dev') as the
-supplier for its consumer device ('base_dev').
-
->
-> These all is handled properly by my patch [1]. Hence it's complicated
-> for the reason.
-
-See above. It shouldn't have to be complicated. If it still is, there
-is something to fix for the multiple PM domain case.
-
->
-> [1]
-> https://patchwork.ozlabs.org/project/linux-tegra/patch/20210831135450.260=
-70-5-digetx@gmail.com/
-
-Kind regards
-Uffe
+> 
+> Probably-Not-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> 
+> Eric
+> 
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   include/linux/signal.h  | 15 +++++++++++++++
+>>   include/linux/uaccess.h |  1 +
+>>   kernel/signal.c         |  5 -----
+>>   3 files changed, 16 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/include/linux/signal.h b/include/linux/signal.h
+>> index 3454c7ff0778..659bd43daf10 100644
+>> --- a/include/linux/signal.h
+>> +++ b/include/linux/signal.h
+>> @@ -35,6 +35,21 @@ static inline void copy_siginfo_to_external(siginfo_t *to,
+>>   int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from);
+>>   int copy_siginfo_from_user(kernel_siginfo_t *to, const siginfo_t __user *from);
+>>   
+>> +static __always_inline char __user *si_expansion(const siginfo_t __user *info)
+>> +{
+>> +	return ((char __user *)info) + sizeof(struct kernel_siginfo);
+>> +}
+>> +
+>> +#define unsafe_copy_siginfo_to_user(to, from, label) do {		\
+>> +	siginfo_t __user *__ucs_to = to;				\
+>> +	const kernel_siginfo_t *__ucs_from = from;			\
+>> +	char __user *__ucs_expansion = si_expansion(__ucs_to);		\
+>> +									\
+>> +	unsafe_copy_to_user(__ucs_to, __ucs_from,			\
+>> +			    sizeof(struct kernel_siginfo), label);	\
+>> +	unsafe_clear_user(__ucs_expansion, SI_EXPANSION_SIZE, label);	\
+>> +} while (0)
+>> +
+>>   enum siginfo_layout {
+>>   	SIL_KILL,
+>>   	SIL_TIMER,
+>> diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
+>> index c05e903cef02..37073caac474 100644
+>> --- a/include/linux/uaccess.h
+>> +++ b/include/linux/uaccess.h
+>> @@ -398,6 +398,7 @@ long strnlen_user_nofault(const void __user *unsafe_addr, long count);
+>>   #define unsafe_put_user(x,p,e) unsafe_op_wrap(__put_user(x,p),e)
+>>   #define unsafe_copy_to_user(d,s,l,e) unsafe_op_wrap(__copy_to_user(d,s,l),e)
+>>   #define unsafe_copy_from_user(d,s,l,e) unsafe_op_wrap(__copy_from_user(d,s,l),e)
+>> +#define unsafe_clear_user(d, l, e) unsafe_op_wrap(__clear_user(d, l), e)
+>>   static inline unsigned long user_access_save(void) { return 0UL; }
+>>   static inline void user_access_restore(unsigned long flags) { }
+>>   #endif
+>> diff --git a/kernel/signal.c b/kernel/signal.c
+>> index a3229add4455..83b5971e4304 100644
+>> --- a/kernel/signal.c
+>> +++ b/kernel/signal.c
+>> @@ -3261,11 +3261,6 @@ enum siginfo_layout siginfo_layout(unsigned sig, int si_code)
+>>   	return layout;
+>>   }
+>>   
+>> -static inline char __user *si_expansion(const siginfo_t __user *info)
+>> -{
+>> -	return ((char __user *)info) + sizeof(struct kernel_siginfo);
+>> -}
+>> -
+>>   int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from)
+>>   {
+>>   	char __user *expansion = si_expansion(to);
