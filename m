@@ -2,141 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE9423FFE66
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 12:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDC023FFE68
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 12:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348252AbhICKw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 06:52:57 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47208 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235081AbhICKwz (ORCPT
+        id S1349155AbhICKxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 06:53:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57950 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235081AbhICKw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 06:52:55 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 183AYlgt065503;
-        Fri, 3 Sep 2021 06:51:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=2wI7/uC69HAKY2YS1ZHhwaV74lLPkFZeBaJdvdBPJGE=;
- b=sM8vjxwsXve4uBde7CuBR9f/cv7F6bcDD2dVHiyCf/vW2x/M+M4Dv1FB/ztQi+UAv2zC
- AGtUjzmRA4VSxFDVzmUHQp9urETmNyIlZH+uFx+3wHgDmS/sIdbUP9rPJ86Ju9LofdXl
- bNi/vh+AG47AM/vEwvMLOetQN9AUnwQQKYNoGjZbRlMYRsIPWMz7DkgCaFnjlub+9IZc
- fKINsPRGvuKsk8+RV58VcDW+CtAK4Ml5pIV3X4s79rF0iQYlr5eMyG1kiNpWZ9wY0HdK
- H6TYGuvfpVuHoRg/MGi6EW04utCCqsRPdHSYefgP7H8tktdzRO5HXsVCjejruQ7odDpe FQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3auj318a10-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 06:51:44 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 183AcGkX088394;
-        Fri, 3 Sep 2021 06:51:44 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3auj318a05-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 06:51:44 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 183AliJt028023;
-        Fri, 3 Sep 2021 10:51:42 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06fra.de.ibm.com with ESMTP id 3au6q06ts5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 10:51:42 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 183ApdgS54657362
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Sep 2021 10:51:39 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 031AB4C044;
-        Fri,  3 Sep 2021 10:51:39 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 92F594C088;
-        Fri,  3 Sep 2021 10:51:38 +0000 (GMT)
-Received: from osiris (unknown [9.145.159.114])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri,  3 Sep 2021 10:51:38 +0000 (GMT)
-Date:   Fri, 3 Sep 2021 12:51:37 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Chunyan Zhang <zhang.lyra@gmail.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] s390/io: Fix ioremap and iounmap undefinded issue for
- s390
-Message-ID: <YTH+OVMeZo4GlOlg@osiris>
-References: <20210903075641.2807623-1-zhang.lyra@gmail.com>
- <20210903080316.2808017-1-zhang.lyra@gmail.com>
- <b4a5f322d035d75c97abf2aaa19d033adc68527d.camel@linux.ibm.com>
- <CAAfSe-v0DbOS5p7nF0db4SdTrsy28gJNdW93ds4capVxuUO1xw@mail.gmail.com>
- <9e4780da8c899f2272923cc4fe72814891845226.camel@linux.ibm.com>
+        Fri, 3 Sep 2021 06:52:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630666319;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oHeIw9YVmcEgwNcQqJwIRj/uFxtFE2HXVzkecjvqdww=;
+        b=KAluWqWQS9ZeqaHTzID0jIGN3HqFu+gZUY998ZYOQuD8/sSBCEEs09f7ZaVOyCuwdVL9gi
+        iMnrQmvZTkz69qf+H4pqVvjxOx3pSh1SS/aku1vFIU8/BVqmkcIEqAfNBujTGjZ+2j6/KO
+        39nnC8BwhnNm6HpIANjfFS/vGJCwtj4=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-328-NAHDBvKTOh6nudSzTbcm9Q-1; Fri, 03 Sep 2021 06:51:58 -0400
+X-MC-Unique: NAHDBvKTOh6nudSzTbcm9Q-1
+Received: by mail-ed1-f72.google.com with SMTP id s25-20020a50d499000000b003c1a8573042so2561435edi.11
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 03:51:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oHeIw9YVmcEgwNcQqJwIRj/uFxtFE2HXVzkecjvqdww=;
+        b=om1FHY1ms+5rkdeK9pdvXma2Lw6pasu/vuaEEgUSE2N+TNPSqfu6wgTDXMqDcZGXUu
+         bAQwzVsG2J37Du8PNgCXb8GPlFtaBMDbpat3Hu5EuYtSrZ2nmn3lHVpFWBOLIFBy1Xd/
+         IfhHIaKgRXIMhL7NOiOiybRLIgmB80Nv+nU8r4LgyaIXTp5HnbUkvkzO0Qz7GBHFDtYZ
+         CEaY+hy7WAzpsgMECMettTXnroJkR7A4t0bNzuH0OdjYNKtW//HDiPZ+1BkT64gOI05C
+         6LXk3BMGvxiO/1rIaz0v1vd5I6knT71gkvfczKvTS8mFd0KlhdHr8+YFRUsK6u6I47pF
+         7ggQ==
+X-Gm-Message-State: AOAM530/VznBH4KXmLn1E4/RGklv7OgqYwmV9aNEjIHCB7eNPX3izWoi
+        x21QFyKBMRfx5gl/YQL6+omYig7+AAhRC3hrZ1DEtOEhEQ5M6HisxkwdI+e+oYVz2KTjUbQckHM
+        oUYHgJRul/O8pkhzXY419Ura0
+X-Received: by 2002:a50:954c:: with SMTP id v12mr3312817eda.313.1630666317337;
+        Fri, 03 Sep 2021 03:51:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxyAFfqVO/C7ouLWgxFNht3qcnYfHlmXAIA9oHUIyykzFXWNqs4vtSc2/TiLy4hFCGFZQX0Nw==
+X-Received: by 2002:a50:954c:: with SMTP id v12mr3312796eda.313.1630666317122;
+        Fri, 03 Sep 2021 03:51:57 -0700 (PDT)
+Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
+        by smtp.gmail.com with ESMTPSA id d3sm2560762ejw.18.2021.09.03.03.51.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 03:51:56 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 12:51:55 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 10/12] KVM: arm64: selftests: Add host support for vGIC
+Message-ID: <20210903105155.dgu2bi765ngp3pgi@gator.home>
+References: <20210901211412.4171835-1-rananta@google.com>
+ <20210901211412.4171835-11-rananta@google.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9e4780da8c899f2272923cc4fe72814891845226.camel@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: F4wZ4QMsQy6LAM7hJXEAEWFik1uASHKC
-X-Proofpoint-ORIG-GUID: 8dTVrKUX_J0MphIu3gMEMdRb7yUJS3OM
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-03_02:2021-09-03,2021-09-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- phishscore=0 priorityscore=1501 clxscore=1011 mlxlogscore=779
- suspectscore=0 lowpriorityscore=0 spamscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109030064
+In-Reply-To: <20210901211412.4171835-11-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 12:28:41PM +0200, Niklas Schnelle wrote:
-> On Fri, 2021-09-03 at 17:40 +0800, Chunyan Zhang wrote:
-> > On Fri, 3 Sept 2021 at 16:24, Niklas Schnelle <schnelle@linux.ibm.com> wrote:
-> > > On Fri, 2021-09-03 at 16:03 +0800, Chunyan Zhang wrote:
-> > > > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > > > 
-> > > > There would not be ioremap and iounmap implementations if CONFIG_PCI is
-> > > > not set for s390, so add default declarations of these two functions
-> > > > for the case to avoid 'undefined reference' issue.
-> > > > 
-> > > > Fixes: 71ba41c9b1d9 ("s390/pci: provide support for MIO instructions")
-> > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > > > ---
-> > > > The issue was reported from https://lkml.org/lkml/2021/8/1/18
-...
-> > Actually HAS_IOMEM is set as default on other architectures, but not
-> > for s390 which redefined it.
+On Wed, Sep 01, 2021 at 09:14:10PM +0000, Raghavendra Rao Ananta wrote:
+> Implement a simple library to do perform vGIC-v3
+> setup from a host of view. This includes creating
+> a vGIC device, setting up distributor and redistributor
+> attributes, and mapping the guest physical addresses.
 > 
-> Yes because most architectures always have IOMEM and io*map() functions
-> I believe. s390 is an exception here as the mainframe native
-> functionality all works without MMIO and you can run a fully functional
-> system including networking and block devices without any MMIO, PCI and
-> without ioremap()/iounmap().
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
 > 
-> > 
-> > > At the very least I think the functions should do a WARN_ONCE() but
-> > > then we have the same situation as discussed below with Linus making it
-> > > pretty clear that he prefers these cases to be compile time checked:
-> > 
-> > Ok, if I understand correctly, if io*map is not implemented for some
-> > case, there should be a *compile-time* error rather than adding a stub
-> > function to make this kind of errors disappeared.
-> > 
-> > Please correct me if I missed something.
+> ---
+>  tools/testing/selftests/kvm/Makefile          |  2 +-
+>  .../selftests/kvm/include/aarch64/vgic.h      | 14 ++++
+>  .../testing/selftests/kvm/lib/aarch64/vgic.c  | 67 +++++++++++++++++++
+>  3 files changed, 82 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/kvm/include/aarch64/vgic.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/vgic.c
 > 
-> Ideally not a compile time error but a compile time flag such as a
-> Kconfig option that would make sure that if HAS_IOMEM isn't set we
-> don't get drivers compiled which depend on working io*map(). After all
-> these drivers will surely not be functional.
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index 5476a8ddef60..8342f65c1d96 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -35,7 +35,7 @@ endif
+>  
+>  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
+>  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
+> -LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c
+> +LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c lib/aarch64/vgic.c
+>  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
+>  
+>  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
+> diff --git a/tools/testing/selftests/kvm/include/aarch64/vgic.h b/tools/testing/selftests/kvm/include/aarch64/vgic.h
+> new file mode 100644
+> index 000000000000..45bbf238147a
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/include/aarch64/vgic.h
+> @@ -0,0 +1,14 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * ARM Generic Interrupt Controller (GIC) host specific defines
+> + */
+> +
+> +#ifndef SELFTEST_KVM_VGIC_H
+> +#define SELFTEST_KVM_VGIC_H
+> +
+> +#include <linux/kvm.h>
+> +
+> +int vgic_v3_setup(struct kvm_vm *vm, unsigned int nr_vcpus,
+> +		uint64_t gicd_base_gpa, uint64_t gicr_base_gpa, uint32_t slot);
 
-Please note that Arnd Bergmann started to work on that:
-https://lkml.org/lkml/2021/7/5/286
+Having seen 5 arguments used in the vgic_v3_setup call in the next patch I
+came back here to refresh my memory on that parameter. 'slot' is the one I
+forgot, but...
 
-However, as far as I can tell, there is nothing like that in
-linux-next currently.
+> +
+> +#endif /* SELFTEST_KVM_VGIC_H */
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/vgic.c b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
+> new file mode 100644
+> index 000000000000..a0e4b986d335
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/vgic.c
+> @@ -0,0 +1,67 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * ARM Generic Interrupt Controller (GIC) v3 host support
+> + */
+> +
+> +#include <linux/kvm.h>
+> +#include <linux/sizes.h>
+> +
+> +#include "kvm_util.h"
+> +
+> +#define VGIC_V3_GICD_SZ		(SZ_64K)
+> +#define VGIC_V3_GICR_SZ		(2 * SZ_64K)
+> +
+> +#define REDIST_REGION_ATTR_ADDR(count, base, flags, index) \
+> +	(((uint64_t)(count) << 52) | \
+> +	((uint64_t)((base) >> 16) << 16) | \
+> +	((uint64_t)(flags) << 12) | \
+> +	index)
+> +
+> +static void vgic_v3_map(struct kvm_vm *vm, uint64_t addr, unsigned int size)
+> +{
+> +	unsigned int n_pages = DIV_ROUND_UP(size, vm_get_page_size(vm));
+> +
+> +	virt_map(vm, addr, addr, n_pages);
+> +}
+> +
+> +/*
+> + * vGIC-v3 default host setup
+> + *
+> + * Input args:
+> + *	vm - KVM VM
+> + *	nr_vcpus - Number of vCPUs for this VM
+> + *	gicd_base_gpa - Guest Physical Address of the Distributor region
+> + *	gicr_base_gpa - Guest Physical Address of the Redistributor region
+> + *
+> + * Output args: None
+> + *
+> + * Return: GIC file-descriptor or negative error code upon failure
+> + *
+> + * The function creates a vGIC-v3 device and maps the distributor and
+> + * redistributor regions of the guest.
+> + */
+> +int vgic_v3_setup(struct kvm_vm *vm, unsigned int nr_vcpus,
+> +		uint64_t gicd_base_gpa, uint64_t gicr_base_gpa)
 
-Arnd, are you still working on this?
+...looks like it was forgotten here too.
+
+Thanks,
+drew
+
+> +{
+> +	uint64_t redist_attr;
+> +	int gic_fd;
+> +
+> +	TEST_ASSERT(nr_vcpus <= KVM_MAX_VCPUS,
+> +			"Invalid number of CPUs: %u\n", nr_vcpus);
+> +
+> +	gic_fd = kvm_create_device(vm, KVM_DEV_TYPE_ARM_VGIC_V3, false);
+> +
+> +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
+> +			KVM_VGIC_V3_ADDR_TYPE_DIST, &gicd_base_gpa, true);
+> +	vgic_v3_map(vm, gicd_base_gpa, VGIC_V3_GICD_SZ);
+> +
+> +	redist_attr = REDIST_REGION_ATTR_ADDR(nr_vcpus, gicr_base_gpa, 0, 0);
+> +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_ADDR,
+> +			KVM_VGIC_V3_ADDR_TYPE_REDIST_REGION, &redist_attr, true);
+> +	vgic_v3_map(vm, gicr_base_gpa, VGIC_V3_GICR_SZ * nr_vcpus);
+> +
+> +	kvm_device_access(gic_fd, KVM_DEV_ARM_VGIC_GRP_CTRL,
+> +				KVM_DEV_ARM_VGIC_CTRL_INIT, NULL, true);
+> +
+> +	return gic_fd;
+> +}
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
+> 
+> _______________________________________________
+> kvmarm mailing list
+> kvmarm@lists.cs.columbia.edu
+> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
+> 
+
