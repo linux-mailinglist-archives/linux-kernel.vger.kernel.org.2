@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4773F400408
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF8240040E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:23:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244712AbhICRWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 13:22:55 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38762 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232937AbhICRWy (ORCPT
+        id S1350111AbhICRYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 13:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349819AbhICRX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 13:22:54 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 748131FDAD;
-        Fri,  3 Sep 2021 17:21:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1630689713; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hM3W/onCHq9iYy2Mbh8EsDHg51cZRbQTbohRjagfa8E=;
-        b=D5w1M6visvcKk5+KeC+zKI0bOs8AJAbzGqLai8ZtePXCav1sAG2ol+uuX4jJO42Qh9nmZl
-        nmpfnPhtQxeIXc6f9DxkNkY87famPBoHG12WPGkdq6zrO/ugbbRpzC8mkYV7h6S0lM9Pg9
-        7XgZq137r+rGboh9Zh3MfidawkPC5+A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1630689713;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hM3W/onCHq9iYy2Mbh8EsDHg51cZRbQTbohRjagfa8E=;
-        b=J890ILo3oNjnp4egKK280BxuwbsHrjYmN2/wrROno098NokNjXaivsw5vOyY3u8p6W+eZz
-        xAYxfzmWF53c3nAg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 642D1137E2;
-        Fri,  3 Sep 2021 17:21:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id gu0aGLFZMmEIcQAAGKfGzw
-        (envelope-from <bp@suse.de>); Fri, 03 Sep 2021 17:21:53 +0000
-Date:   Fri, 3 Sep 2021 19:22:25 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Miroslav Benes <mbenes@suse.cz>
-Subject: Re: vmlinux.o: warning: objtool: noist_exc_machine_check()+0x93:
- call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
-Message-ID: <YTJZzVrutm4yZAzi@zn.tnic>
-References: <202108221656.2tMcBD2a-lkp@intel.com>
+        Fri, 3 Sep 2021 13:23:59 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D85C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 10:22:59 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso24421pjh.5
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 10:22:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=V8XLfChI67FESwmGmsFsqJrUTudQEofQRGSRaywZdbM=;
+        b=EsfJ77ID2EdkHcKDWm+iAi4npWxw2yXczIj1qxaX7ibyOCLM4TtuumhIgVtyTe8jak
+         Sh9gAJ1LE1aP44u0ApdbeEAPjVxQzQggtGUGLm4dmVEp+ZlPAjrl0A5je+pOhsOTrMDZ
+         UGJND80bLkGejzFm6EAeLKuj9EvPqoCTlc+DE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V8XLfChI67FESwmGmsFsqJrUTudQEofQRGSRaywZdbM=;
+        b=T2sSW0JF6cyLZAmC7s7K9Nu0myYRZ/CQvSbQAClN2ZyHfm59fdaeiFAdNoR7qZlvhP
+         sQEiyXBdGCEUYHgFpO36obnY2JNF3Te6HG3mWqn0hEUQwAmZ8cwT9TXM7C81ycaQwrMP
+         kK8Ir73OnnrbhP8xKa1KYClHb3x9KJxXiZe3TGxfRF+V6iUHofX/wQ+F8pfxy4FINDKH
+         lYY/aNoSHq1WqI4IEcl5BuNz0wy3u7AuSZ/kePPp9Mb1I5U+OxLIqe8I6egXVOnS18Um
+         I+Lw1uPEcUCYY2OXTgwKN3PqKOgMqM/3/WuKi+p/HsejyrUXZE8Pc4V7ghmbpk3KdvI9
+         PIOQ==
+X-Gm-Message-State: AOAM5314rWp8z/5l1wW79Qj3Ena7IvQZ1+EGVZs8FY0qn5a1OaHJ43mK
+        40cOFwsWzMwfuYC33TUs1ofwtw==
+X-Google-Smtp-Source: ABdhPJwo9KZ/kOYSg7o2f2x4DvFDJnbuPtPxnSCdGNNyKR4PBHqLBIFgvWnZ61uo9pdnINSWB9A+4g==
+X-Received: by 2002:a17:90a:4481:: with SMTP id t1mr19889pjg.109.1630689779175;
+        Fri, 03 Sep 2021 10:22:59 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:80b3:9f00:3170:fd8b])
+        by smtp.gmail.com with UTF8SMTPSA id p11sm370053pjv.41.2021.09.03.10.22.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 10:22:58 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 10:22:57 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Rajesh Patil <rajpat@codeaurora.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, rnayak@codeaurora.org,
+        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, sboyd@kernel.org, dianders@chromium.org,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+Subject: Re: [PATCH V7 6/7] arm64: dts: sc7280: Add QUPv3 wrapper_1 nodes
+Message-ID: <YTJZ8YkjrCmyzNjG@google.com>
+References: <1630643340-10373-1-git-send-email-rajpat@codeaurora.org>
+ <1630643340-10373-7-git-send-email-rajpat@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <202108221656.2tMcBD2a-lkp@intel.com>
+In-Reply-To: <1630643340-10373-7-git-send-email-rajpat@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 22, 2021 at 04:54:06PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   9ff50bf2f2ff5fab01cac26d8eed21a89308e6ef
-> commit: bcb1b6ff39da7e8a6a986eb08126fba2b5e13c32 objtool: Correctly handle retpoline thunk calls
-> date:   5 months ago
-> config: x86_64-buildonly-randconfig-r003-20210822 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> reproduce (this is a W=1 build):
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bcb1b6ff39da7e8a6a986eb08126fba2b5e13c32
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout bcb1b6ff39da7e8a6a986eb08126fba2b5e13c32
->         # save the attached .config to linux build tree
->         mkdir build_dir
->         make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+On Fri, Sep 03, 2021 at 09:58:59AM +0530, Rajesh Patil wrote:
+> From: Roja Rani Yarubandi <rojay@codeaurora.org>
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> Add QUPv3 wrapper_1 DT nodes for SC7280 SoC.
 > 
-> All warnings (new ones prefixed by >>):
-> 
->    vmlinux.o: warning: objtool: mce_wrmsrl.constprop.0()+0x6b: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
->    vmlinux.o: warning: objtool: do_machine_check()+0xb14: call to queue_task_work() leaves .noinstr.text section
->    vmlinux.o: warning: objtool: exc_machine_check()+0xdb: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
-> >> vmlinux.o: warning: objtool: noist_exc_machine_check()+0x93: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
->    vmlinux.o: warning: objtool: __context_tracking_enter()+0x95: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
->    vmlinux.o: warning: objtool: __context_tracking_exit()+0x42: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
-> 
+> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 709 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 709 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 32d1354..8fe54bf 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
 
-https://lkml.kernel.org/r/YTHpmGmlo9N%2B1Rs7@hirez.programming.kicks-ass.net
+> +			qup_spi8_data_clk: qup-spi8-data-clk {
+> +				pins = "gpio32", "gpio33", "gpio34";
+> +				function = "qup10";
+> +			};
+> +
+> +			qup_spi8_cs: qup-spi8-cs {
+> +				pins = "gpio35";
+> +				function = "qup10";
+> +			};
 
--- 
-Regards/Gruss,
-    Boris.
+As for wrapper_0, I think we still want the nodes to configure the CS as GPIO.
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+If there are no other reasons to re-spin these could be added with a follow-up
+patch, so:
+
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
