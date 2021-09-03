@@ -2,130 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627F94006C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334244006CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238745AbhICUm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 16:42:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbhICUm1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 16:42:27 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029AAC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 13:41:27 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id n4so232694plh.9
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 13:41:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=dkiYCFVjwmJybf5JwViF3SzBrvupFdjsBCuydcFWyT8=;
-        b=vgK43H1zn6Xvy5dwhpNC/VIfid81C34dA7jP6x0dx4VWZVYxTAsw1irYJkp+WF/sK8
-         yq3JZRiFW3C+LGeziU41xfq1Cwd2PAI/npDO62tX1B2ptn9NEsMw9qO7HbWrddX6e8Ok
-         x/9FisOn8rKwPKPe3xmsAoJ2LCRe3KFJ1fV9Fuip3SpssZ5abF9FbNzzIl3QIbg688BI
-         CdQ3u6MOTnqIENG/Oe8AELp8NvkyNl4ZiFQVH9dyK3XzhDm+ljnZZmch0wQxspQAPxjz
-         dCqsNDUYxpqvh0/bG1Y6Y0P3r+wCyRmzGibchEAkUkTcZK3Ocw6G8vDz5SlEoeSZenBZ
-         YFHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dkiYCFVjwmJybf5JwViF3SzBrvupFdjsBCuydcFWyT8=;
-        b=SLCNW6PZRW5grpEVzdazWp3XaiFlhseDwZ6lKx2RWzdBoyMsdU6BEYChg/YS40Goyc
-         GZ5QEZM3bmKBGFPeP14yQsxxMCiwkbjH5/6itUVWpKCZmyYSwRhTTUwH8SqiIUnFrfv9
-         RJKVzwj53g2t9jf+tcaH6lz8Thb7bZYJ9mc1MA3HnnXoS+JV+V5cwQxSAlDYnABE96Lv
-         pjnc8/PPZe+ZGsFKxi67vQEpgfhRMDha+Bg89X+PCso6Ytn5f1XMqUJyDcAwzdKZB9bZ
-         hwCm9SopyWcDNZJyE+d87fxETasPB3tk6w7Ujzl6ivgu4wuofreTJDwlgQz4BvbsGE69
-         gBzA==
-X-Gm-Message-State: AOAM5305tnf9FLaJk3PMxHT256bYtF22Em+9BWiXYhTFxSUiosh81kjs
-        SKLompIaOXdZFJDxm6JRNCJzdA==
-X-Google-Smtp-Source: ABdhPJzOOBaBftmLG3TgPcPUZNEjVQbPQAW4pR5s9MLa9p52tQlyZwiCWH7JEtNWCFCR3DMPX5Aypg==
-X-Received: by 2002:a17:90b:116:: with SMTP id p22mr687216pjz.67.1630701686473;
-        Fri, 03 Sep 2021 13:41:26 -0700 (PDT)
-Received: from ?IPv6:2600:380:7567:4da9:ea68:953f:1224:2896? ([2600:380:7567:4da9:ea68:953f:1224:2896])
-        by smtp.gmail.com with ESMTPSA id b5sm247811pfr.26.2021.09.03.13.41.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 13:41:25 -0700 (PDT)
-Subject: Re: Bug: d0e936adbd22 crashes at boot
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, linux-pm@vger.kernel.org
-References: <942f4041-e4e7-1b08-3301-008ab37ff5b8@kernel.dk>
- <c56cde110210bec6537fe69b495334c6c70c814e.camel@linux.intel.com>
- <3ac87893-55ba-f2d4-bb1e-382868f12d4c@kernel.dk>
- <7f115f0476618d34b24ddec772acbbd7c0c4a572.camel@linux.intel.com>
- <767fe00f-bf31-1eb0-09cc-1be91c633bb4@kernel.dk>
- <d6bf08cbfd9f29ddb8cf29f522d68efc5c676624.camel@linux.intel.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <903f2e71-983f-39b8-dd0b-d697616ab63e@kernel.dk>
-Date:   Fri, 3 Sep 2021 14:41:23 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1350588AbhICUnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 16:43:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231956AbhICUm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 16:42:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F9C1610C8;
+        Fri,  3 Sep 2021 20:41:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630701719;
+        bh=Wi4e+rtFnSCYRrINEjT72owbghKosRCNwVHy//gFT3M=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WzcWQWatU/7zeimAvz3euKLVlFQWTE9aRLD6GSCbmWrqzUmUYR4yJFHTyx58wuKdI
+         /nbnBozTHN4n/rpuJMoZQerrtqhbvRBrRFkjfQ41gS9OXDi9AorFdZUTB1y1XY5xkg
+         tMjV+t1rQOQZpNk9CZnLZUhS/wSSBaQNHvKjRU8xTW+ipyBz53R3rm8S/dt+sJPCVU
+         X19SXVwyH1QNtJpzncNvX01uffdkgBcQy+VfLqWOcFbTzeH2NpcokSIOVFHdicsgT8
+         qFuapy6lJ55e6ztB3yx3Ix45pKnamMwB87+z7+foUkpTxZs1o4TAiEkLDtHSgMAMD+
+         zRUSggmYj8rUw==
+Received: by mail-ej1-f44.google.com with SMTP id u14so443547ejf.13;
+        Fri, 03 Sep 2021 13:41:58 -0700 (PDT)
+X-Gm-Message-State: AOAM532W6GiRO/QFuUaWTMX/MaOYkKcM0nA0DyGA7a0T2UusQBlN8Y5K
+        JrPFg2jsS82LSTO5zo+XKBnKIBlzXMxbZTPtHQ==
+X-Google-Smtp-Source: ABdhPJwSaEq05yRS1v2A6s7zZ7Exw81AHXpwn5eaCGBtKOYg4OZ6ZdebY3R09eIDMmr5pZOCZ9kUjk4JLMVBergzDR4=
+X-Received: by 2002:a17:906:1913:: with SMTP id a19mr759790eje.390.1630701717644;
+ Fri, 03 Sep 2021 13:41:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d6bf08cbfd9f29ddb8cf29f522d68efc5c676624.camel@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210902095609.16583-1-rogerq@kernel.org> <20210902095609.16583-3-rogerq@kernel.org>
+ <YTEsiJiLMRYon5s3@robh.at.kernel.org> <715fe0ee-a38c-c2ca-5e29-79fa0887bea0@kernel.org>
+In-Reply-To: <715fe0ee-a38c-c2ca-5e29-79fa0887bea0@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 3 Sep 2021 15:41:45 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+HTJhVGrjJ9EdbE0_rpMtpa=nbm7CyObHHEpocy-A3+A@mail.gmail.com>
+Message-ID: <CAL_Jsq+HTJhVGrjJ9EdbE0_rpMtpa=nbm7CyObHHEpocy-A3+A@mail.gmail.com>
+Subject: Re: [PATCH v2 2/6] dt-bindings: memory-controllers: ti,gpmc: Convert
+ to yaml
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
+        Nishanth Menon <nm@ti.com>, Lokesh Vutla <lokeshvutla@ti.com>,
+        devicetree@vger.kernel.org,
+        MTD Maling List <linux-mtd@lists.infradead.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/21 12:00 PM, Srinivas Pandruvada wrote:
-> Hi Axobe,
-> 
-> On Fri, 2021-09-03 at 09:00 -0600, Jens Axboe wrote:
->> On 9/3/21 8:38 AM, Srinivas Pandruvada wrote:
->>> On Fri, 2021-09-03 at 08:15 -0600, Jens Axboe wrote:
->>>> On 9/3/21 8:13 AM, Srinivas Pandruvada wrote:
->>>>> Hi Axboe,
->>>>>
->>>>> Thanks for reporting.
->>>>> On Fri, 2021-09-03 at 07:36 -0600, Jens Axboe wrote:
->>>>>> Hi,
->>>>>>
->>>>>> Booting Linus's tree causes a crash on my laptop, an x1 gen9.
->>>>>> This
->>>>>> was
->>>>>> a bit
->>>>>> difficult to pin down as it crashes before the display is up,
->>>>>> but I
->>>>>> managed
->>>>>> to narrow it down to:
->>>>>>
->>>>>> commit d0e936adbd2250cb03f2e840c6651d18edc22ace
->>>>>> Author: Srinivas Pandruvada < 
->>>>>> srinivas.pandruvada@linux.intel.com>
->>>>>> Date:   Thu Aug 19 19:40:06 2021 -0700
->>>>>>
->>>>>>     cpufreq: intel_pstate: Process HWP Guaranteed change
->>>>>> notification
->>>>>>
->>>>>> which crashes with a NULL pointer deref in
->>>>>> notify_hwp_interrupt() -
->>>>>>>
->>>>>> queue_delayed_work_on().
->>>>>>
->>>>>> Reverting this change makes the laptop boot fine again.
->>>>>>
->>>>> Does this change fixes your issue?
->>>>
->>>> I would assume so, as it's crashing on cpudata == NULL :-)
->>>>
->>>> But why is it NULL? Happy to test patches, but the below doesn't
->>>> look
->>>> like
->>>> a real fix and more of a work-around.
->>>
-> 
-> Please try the attached.
+On Fri, Sep 3, 2021 at 4:35 AM Roger Quadros <rogerq@kernel.org> wrote:
+>
+> Hi Rob,
+>
+> On 02/09/2021 22:56, Rob Herring wrote:
+> > On Thu, Sep 02, 2021 at 12:56:05PM +0300, Roger Quadros wrote:
+> >> Convert omap-gpmc.txt to ti,gpmc.yaml.
+> >>
+> >> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> >> ---
+> >>  .../bindings/memory-controllers/omap-gpmc.txt | 157 --------
+> >>  .../bindings/memory-controllers/ti,gpmc.yaml  | 364 ++++++++++++++++++
+> >>  .../devicetree/bindings/mtd/gpmc-nand.txt     |   2 +-
+> >>  .../devicetree/bindings/mtd/gpmc-nor.txt      |   4 +-
+> >>  .../devicetree/bindings/mtd/gpmc-onenand.txt  |   2 +-
+> >>  .../devicetree/bindings/net/gpmc-eth.txt      |   4 +-
+> >>  6 files changed, 370 insertions(+), 163 deletions(-)
+> >>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
+> >>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+> >
+> >> diff --git a/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+> >> new file mode 100644
+> >> index 000000000000..b7d43370a95d
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+> >> @@ -0,0 +1,364 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/memory-controllers/ti,gpmc.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: Texas Instruments GPMC Memory Controller device-tree bindings
+> >> +
+> >> +maintainers:
+> >> +  - Tony Lindgren <tony@atomide.com>
+> >> +  - Roger Quadros <rogerq@kernel.org>
+> >> +
+> >> +description:
+> >> +  The GPMC is a unified memory controller dedicated for interfacing
+> >> +  with external memory devices like
+> >> +  - Asynchronous SRAM-like memories and ASICs
+> >> +  - Asynchronous, synchronous, and page mode burst NOR flash
+> >> +  - NAND flash
+> >> +  - Pseudo-SRAM devices
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    items:
+> >> +      - enum:
+> >> +          - ti,omap2420-gpmc
+> >> +          - ti,omap2430-gpmc
+> >> +          - ti,omap3430-gpmc
+> >> +          - ti,omap4430-gpmc
+> >> +          - ti,am3352-gpmc
+> >> +
+> >> +  reg:
+> >> +    items:
+> >> +      - description:
+> >> +          Configuration registers for the controller.
+> >
+> > Just 'maxItems: 1' is sufficient.
+> >
+> >> +
+> >> +  interrupts: true
+> >
+> > Need to define how many.
+> >
+> >> +
+> >> +  clocks:
+> >> +    maxItems: 1
+> >> +    description: |
+> >> +      Functional clock. Used for bus timing calculations and
+> >> +      GPMC configuration.
+> >> +
+> >> +  clock-names:
+> >> +    items:
+> >> +      - const: fck
+> >> +
+> >> +  dmas:
+> >> +    items:
+> >> +      - description: DMA channel for GPMC NAND prefetch
+> >> +
+> >> +  dma-names:
+> >> +    items:
+> >> +      - const: rxtx
+> >> +
+> >> +  "#address-cells":
+> >> +    const: 2
+> >> +
+> >> +  "#size-cells":
+> >> +    const: 1
+> >> +
+> >> +  gpmc,num-cs:
+> >> +    description: maximum number of supported chip-select lines.
+> >> +    $ref: /schemas/types.yaml#/definitions/uint32
+> >> +
+> >> +  gpmc,num-waitpins:
+> >> +    description: maximum number of supported wait pins.
+> >> +    $ref: /schemas/types.yaml#/definitions/uint32
+> >> +
+> >> +  ranges:
+> >> +    minItems: 1
+> >> +    description: |
+> >> +      Must be set up to reflect the memory layout with four
+> >> +      integer values for each chip-select line in use,
+> >> +      <cs-number> 0 <physical address of mapping> <size>
+> >> +
+> >> +    items:
+> >> +      - description: NAND bank 0
+> >> +      - description: NOR/SRAM bank 0
+> >> +      - description: NOR/SRAM bank 1
+> >> +
+> >> +  '#interrupt-cells':
+> >> +    const: 2
+> >> +
+> >> +  interrupt-controller:
+> >> +    description: |
+> >> +      The GPMC driver implements and interrupt controller for
+> >> +      the NAND events "fifoevent" and "termcount" plus the
+> >> +      rising/falling edges on the GPMC_WAIT pins.
+> >> +      The interrupt number mapping is as follows
+> >> +      0 - NAND_fifoevent
+> >> +      1 - NAND_termcount
+> >> +      2 - GPMC_WAIT0 pin edge
+> >> +      3 - GPMC_WAIT1 pin edge, and so on.
+> >> +
+> >> +  '#gpio-cells':
+> >> +     const: 2
+> >> +
+> >> +  gpio-controller:
+> >> +    description: |
+> >> +      The GPMC driver implements a GPIO controller for the
+> >> +      GPMC WAIT pins that can be used as general purpose inputs.
+> >> +      0 maps to GPMC_WAIT0 pin.
+> >> +
+> >> +  ti,hwmods:
+> >> +    description:
+> >> +      Name of the HWMOD associated with GPMC. This is for legacy
+> >> +      omap2/3 platforms only.
+> >> +    $ref: /schemas/types.yaml#/definitions/string
+> >> +    deprecated: true
+> >> +
+> >> +  ti,no-idle-on-init:
+> >> +    description:
+> >> +      Prevent idling the module at init. This is for legacy omap2/3
+> >> +      platforms only.
+> >> +    type: boolean
+> >> +    deprecated: true
+> >> +
+> >> +patternProperties:
+> >> +#  "@[0-3],[a-f0-9]+$":>> +  "^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$":
+>
+> >
+> > Why the commented regex. There's no need for a full regex as we already
+> > do that elsewhere. You only need to define the unit-address format.
+>
+> This should be
+>   "@[0-7],[a-f0-9]+$":
+>
+> I added the full regex during debug but forgot to take it off.
+>
+> >
+> >> +    type: object
+> >> +    description: |
+> >> +      The child device node represents the device connected to the GPMC
+> >> +      bus. The device can be a NAND controller, SRAM device, NOR device
+> >> +      or an ASIC.
+> >> +
+> >> +    properties:
+> >> +      compatible:
+> >> +        description:
+> >> +          Compatible of attached device.
+> >
+> > Duh. Drop.
+> >
+> >> +
+> >> +      reg:
+> >> +        items:
+> >> +        - description: Register access space for the device
+> >
+> > A device with 2 register ranges isn't allowed?
+>
+> GPMC is actually a memory controller and we are describing the children here.
 
-I'll give it a test spin right now. Please do add a Reported-by tag,
-though. That's always prudent.
+Yes, I understand what it is.
 
--- 
-Jens Axboe
+> Each child has to have a register range.
 
+What you are saying here with the schema is there is only 1 register
+range allowed for the child node. You don't know how many a child
+device may have. That's a property of the child device. You just need
+'reg: true' here.
+
+Rob
