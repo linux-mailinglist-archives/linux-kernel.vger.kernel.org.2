@@ -2,217 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFCB4003D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E78154003D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350207AbhICRHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 13:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46984 "EHLO
+        id S1350215AbhICRIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 13:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhICRHm (ORCPT
+        with ESMTP id S235689AbhICRIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 13:07:42 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3683C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 10:06:41 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id lc21so13374942ejc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 10:06:41 -0700 (PDT)
+        Fri, 3 Sep 2021 13:08:30 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66752C061757
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 10:07:30 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id z5so11299475ybj.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 10:07:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=H1t6osnp17UN4qyfOO+wWdTwfcFIn3mD+387A+UK4UA=;
-        b=YW4g3QTqU3FmfK5f4YwQyqKkuY94DNRNVe8kM4bERcqVFOR3qUNuPgoasy2RfRUBwk
-         4b+3rAmQklYwqKiIaFpgj315aFyKcNiDGoqiAzQRo1p3iaP1R/Li9URT8ZE09Wlei5Vh
-         o1CqebiYKijcyxl5VedUGZup5uUXlnVAVB6dI5HqZmc4NUOoOzdWgL2Yilf+7zJNXB0f
-         UasTeHHJExXcWBSCpfFTUi4vUKPWwR/huzX6qmnTCh5wmIjiAr/f5OG349YKVEI9gJ2D
-         0A6w2IQiq8FBONI8N1qeJ/cmfRpomqhyjRGOqL00p2Gei6OD558qkAYDB72B8O7D1XkH
-         2e5w==
+        bh=OV40EXpTRGlRVM1HoPC5Gu3Cw4EBrvOw2+MtPkVXoMk=;
+        b=kzB7fYGbg7lHk+8igESN9SzbBkbtc9t4KWWVzqK8v1bE6TTVDWG0KGTBwRCYRJKsnk
+         qAQ7THYtMYifo7ZOtcsf3uLKKdFLDPT5+OO++Cdy6XTb4K8XlfPtoo+lMU/25pRAIH6l
+         gQ2FF2iYW9An55R7NxSyWAkViTp86Ab9dEpkDtDIQpE13zaFHp6wBxxmA+2AiX5Aa44P
+         w0qySPUoSpArySH3AfafHGmdNB/nAPyuh1OT/xTivtgq0hrbF1XchauwVCIz96m8W2SE
+         +iR6BpfDTQHhNeC5B6J+HjwkYZAk9HINaiTFR4FH72e5CnZsXwnb+ED8++Y9OmKB4iLB
+         vfGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=H1t6osnp17UN4qyfOO+wWdTwfcFIn3mD+387A+UK4UA=;
-        b=pVqPl3GDMu7eY6Cy0i3clwpK2IErzEvMLut0+YZRc5mlKGkf6sqZwWlNcceT7DXlj5
-         qh7lpIqTZugyDaVrqj9q1Zvrgf7vpb2PIXYG3t3s5x4o/ijh6cfO7+oJjxIU8nrNUriq
-         LntdKGUkocPMpEqpo9y2ifJyYAZj+ep7W9a1HhvnLBRtPjUtbRvMAobLDGe1o0DZ5G2L
-         +vGAGTmVI66SOoY9bakP8eGyeGnbIidU6rsvXJKdnsXoRAkdDkWPz6KfPc0EA0/1rKwC
-         stOyuGdB/IlLO/VEi9qAkhsoJGjoIg6TxdMZgv7NvEbvhVFv41Z8ZtkEE4RLxolSpDnh
-         V+nw==
-X-Gm-Message-State: AOAM530l5RcCZ1sK0zV/+GeuF9zjRnge45bk9c4nt6KNQiyvChYwFP5N
-        ciHE2EYG9MLRnCe5AsWUWqBsihiEVIKEnPRb2Jrc
-X-Google-Smtp-Source: ABdhPJydRFuTdE2vS9SzeYVtj/7m1goAej+xNOyNd/xF9NhKLQFJN9GHTdU2sNTa2pn9ZxH11nzMHG90U2xTWvdWieA=
-X-Received: by 2002:a17:906:abcd:: with SMTP id kq13mr5326863ejb.195.1630688800206;
- Fri, 03 Sep 2021 10:06:40 -0700 (PDT)
+        bh=OV40EXpTRGlRVM1HoPC5Gu3Cw4EBrvOw2+MtPkVXoMk=;
+        b=DHnghoUjqjhVVgjc5Lsr2juvIERTZYxDXSD4a75o3TJtnPSQbfz97BvzD4og5X7Fxp
+         3yQy7077rFoUUjfE2WQPTFyLkSPQlMnngA2pJ1fo6gjosKqjVkGGCjADvPzGme4DiHXH
+         SRhZWIf40ABfYqFhswcH5znJTpZQaWJ3ydw0sgVBnJn5jKu7c3tZT8O/lg8kKIk5fZZM
+         7Loj0SChQHJL/GEv6uBjTwRjwWFqhjuZGzlymg9J2/tivK6A32UbpXUJFp9tHDKnAnzs
+         5bJ2R64vfZ8SXpZFMcKvyIH4DB2pNnHWi1Mh0dmdkfGNyo56kG7ollczJYau2cEk0Fnp
+         00yQ==
+X-Gm-Message-State: AOAM533a/jNq4bprBG9VduP/O6LorgIA1Rb3xxAJtA4DZG7y8UaCzHu2
+        v/cz9dK7EAkOSnK4KaWMtCS43RFgwI5Hp8fUfyghoA==
+X-Google-Smtp-Source: ABdhPJw7D2SeKKJo7n4PeaYN1YXIepjqdR+w6aTnzKZaocQBhgW+SY0tCRPVRXXQ54cpML9/8SqzosEF3KUNZqtd1CM=
+X-Received: by 2002:a5b:783:: with SMTP id b3mr103810ybq.328.1630688849334;
+ Fri, 03 Sep 2021 10:07:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <4e2370a9022495c49f3108fe34c5a2b2f4b28dfa.1630684009.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <4e2370a9022495c49f3108fe34c5a2b2f4b28dfa.1630684009.git.christophe.leroy@csgroup.eu>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 3 Sep 2021 13:06:29 -0400
-Message-ID: <CAHC9VhS4Q8U6ZVPoSaVuDawMLS6VOtwZZVNMT1QeFAJUeQHj-Q@mail.gmail.com>
-Subject: Re: [PATCH] audit: Fix build failure by renaming struct node to
- struct audit_node
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Eric Paris <eparis@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-audit@redhat.com
+References: <20210902025528.1017391-1-saravanak@google.com>
+ <20210902025528.1017391-3-saravanak@google.com> <CAL_JsqJOv7D5nHteGPDKC2+ns1caVNs-NFFJppLuK0OEB8dztQ@mail.gmail.com>
+ <CAGETcx-rOakAX_apu2ecu6jWCwzO0RgMkwdfzyF+UaxQfVj4CA@mail.gmail.com>
+ <CAL_Jsq+A1T5+KK5xsVVtrMVeuMre3B6sAAroX+a3gQy6wY+r8A@mail.gmail.com>
+ <CAGETcx9wY66TsFX_1rFUO+toE-OpkAvWSdcNVK7M=LYwa6xbAw@mail.gmail.com>
+ <CAL_JsqJzt_duSkMm43dwpiGCmqW8PAQ1n6SeyiNkECP8CTcY=g@mail.gmail.com>
+ <CAGETcx-VkJXTXCwh_ctMg_-VDUb4WFxLLYt0ht8tv8yn+kCH6Q@mail.gmail.com> <CAL_JsqJ4auRZonAnR5CKGyKNs1pVfHK24+av0Ox9L_805v=n6w@mail.gmail.com>
+In-Reply-To: <CAL_JsqJ4auRZonAnR5CKGyKNs1pVfHK24+av0Ox9L_805v=n6w@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 3 Sep 2021 10:06:53 -0700
+Message-ID: <CAGETcx_UaXLOTwThWocN5ZeszXOj9YRXUFHveCEfY50m6L3f6A@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] of: platform: Mark bus devices nodes with FWNODE_FLAG_NEVER_PROBES
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Len Brown <lenb@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 11:48 AM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
+On Fri, Sep 3, 2021 at 7:58 AM Rob Herring <robh+dt@kernel.org> wrote:
 >
-> struct node defined in kernel/audit_tree.c conflicts with
-> struct node defined in include/linux/node.h
+> On Thu, Sep 2, 2021 at 8:16 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > On Thu, Sep 2, 2021 at 5:53 PM Rob Herring <robh+dt@kernel.org> wrote:
+> > >
+> > > On Thu, Sep 2, 2021 at 2:29 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > >
+> > > > On Thu, Sep 2, 2021 at 12:03 PM Rob Herring <robh+dt@kernel.org> wrote:
+> > > > >
+> > > > > On Thu, Sep 2, 2021 at 11:57 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > > > >
+> > > > > > On Thu, Sep 2, 2021 at 7:24 AM Rob Herring <robh+dt@kernel.org> wrote:
+> > > > > > >
+> > > > > > > On Wed, Sep 1, 2021 at 9:55 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > > > > > >
+> > > > > > > > We don't want fw_devlink creating device links for bus devices as
+> > > > > > > > they'll never probe. So mark those device node with this flag.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > > > > > ---
+> > > > > > > >  drivers/of/platform.c | 16 ++++++++++++++++
+> > > > > > > >  1 file changed, 16 insertions(+)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+> > > > > > > > index 74afbb7a4f5e..42b3936d204a 100644
+> > > > > > > > --- a/drivers/of/platform.c
+> > > > > > > > +++ b/drivers/of/platform.c
+> > > > > > > > @@ -392,6 +392,22 @@ static int of_platform_bus_create(struct device_node *bus,
+> > > > > > > >         if (!dev || !of_match_node(matches, bus))
+> > > > > > > >                 return 0;
+> > > > > > > >
+> > > > > > > > +       /*
+> > > > > > > > +        * If the bus node has only one compatible string value and it has
+> > > > > > > > +        * matched as a bus node, it's never going to get probed by a device
+> > > > > > > > +        * driver. So flag it as such so that fw_devlink knows not to create
+> > > > > > > > +        * device links with this device.
+> > > > > > > > +        *
+> > > > > > > > +        * This doesn't catch all devices that'll never probe, but this is good
+> > > > > > > > +        * enough for now.
+> > > > > > > > +        *
+> > > > > > > > +        * This doesn't really work for PPC because of how it uses
+> > > > > > > > +        * of_platform_bus_probe() to add normal devices. So ignore PPC cases.
+> > > > > > > > +        */
+> > > > > > > > +       if (!IS_ENABLED(CONFIG_PPC) &&
+> > > > > > > > +           of_property_count_strings(bus, "compatible") == 1)
+> > > > > > > > +               bus->fwnode.flags |= FWNODE_FLAG_NOT_DEVICE;
+> > > > > > >
+> > > > > > > This looks fragile relying on 1 compatible string, and the DT flags in
+> > > > > > > this code have been fragile too. I'm pretty sure we have cases of
+> > > > > > > simple-bus or simple-mfd that also have another compatible.
+> > > > > > >
+> > > > > > > Couldn't we solve this with a simple driver?
+> > > > > >
+> > > > > > Oh, I didn't think you'd like that. I'd lean towards that option too
+> > > > > > if we can address some of the other concerns below.
+> > > > > >
+> > > > > > > Make 'simple-pm-bus'
+> > > > > > > driver work for other cases?
+> > > > > >
+> > > > > > > BTW, this patch doesn't even work for
+> > > > > > > simple-pm-bus.
+> > > > > >
+> > > > > > How do you mean? Because simple-pm-bus already has a driver and
+> > > > > > doesn't set "matches" param when it calls of_platform_populate() and
+> > > > > > this flag won't be set. So at least for simple-pm-bus I don't see any
+> > > > > > issue.
+> > > > >
+> > > > > You're right.
+> > > > >
+> > > > > > I was trying to reuse of_default_bus_match_table without explicitly
+> > > > > > referring to it, but if it's confusing I can add a separate list of
+> > > > > > compatible strings and use those here instead of using "matches".
+> > > > >
+> > > > > What happens with a non-default table? I'm not sure we can assume the
+> > > > > same behavior.
+> > > > >
+> > > > > > > A driver for simple-bus may cause issues if there's a
+> > > > > > > more specific driver to bind to as we don't handle that. It's simply
+> > > > > > > whichever matches first.
+> > > > > >
+> > > > > > Right, this is my worry. Especially for devices like this (there are
+> > > > > > plenty of cases like this) which have a driver that probes them but
+> > > > > > also lists simple-bus
+> > > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/arm-realview-pb11mp.dts?id=73f3af7b4611d77bdaea303fb639333eb28e37d7#n299
+> > > > >
+> > > > > Uhh, that one is certainly a leakage of wanting an soc_device in the
+> > > > > hierarchy, not any real bus structure reflecting the h/w. I'm not a
+> > > > > fan of the soc_device stuff and its optional nature. Everything is an
+> > > > > SoC, so it should always be there? Or your device hierarchy should
+> > > > > change when you decide to add a soc_device?
+> > > > >
+> > > > > > So as long as there's a compatible string that's not one of the
+> > > > > > "transparent" busses, this driver shouldn't match. So, I don't think I
+> > > > > > can get away from checking the compatible strings.
+> > > > > >
+> > > > > > How about I check here to make sure all the "compatible" strings are
+> > > > > > from an approved transparent bus list, and if it's true, I use
+> > > > > > driver_override to force match it to a transparent bus driver? Would
+> > > > > > you be okay with that?
+> > > > >
+> > > > > Can't we do that within a driver? We check this and fail probe if
+> > > > > there's a more specific compatible.  Then another driver can match and
+> > > > > probe.
+> > > >
+> > > > I was thinking that initially, but if we fail a probe, the driver core
+> > > > will permanently give up (won't search further) or might end up
+> > > > retrying with the same driver and never get to the other driver. I'll
+> > > > send out a v2 with what I described above. It's not too bad and it
+> > > > will also allow us to handle the PPC cases (we'll just need to keep
+> > > > adding the simple-bus equivalent entries to a table).
+> > >
+> > > I wasn't sure, but I traced the calls and it looks like based on
+> > > __driver_attach() that if a driver fails probe another one matching
+> > > should get to probe:
+> >
+> > __driver_attach() is called over every device already in a bus. It's
+> > called only when a new driver is registered. So it makes sense that
+> > one ignores the error returned from probe(). You don't want to fail
+> > driver registration because one specific device needs to defer probe.
 >
->           CC      kernel/audit_tree.o
->         kernel/audit_tree.c:33:9: error: redefinition of 'struct node'
->            33 |  struct node {
->               |         ^~~~
->         In file included from ./include/linux/cpu.h:17,
->                          from ./include/linux/static_call.h:102,
->                          from ./arch/powerpc/include/asm/machdep.h:10,
->                          from ./arch/powerpc/include/asm/archrandom.h:7,
->                          from ./include/linux/random.h:121,
->                          from ./include/linux/net.h:18,
->                          from ./include/linux/skbuff.h:26,
->                          from kernel/audit.h:11,
->                          from kernel/audit_tree.c:2:
->         ./include/linux/node.h:84:8: note: originally defined here
->            84 | struct node {
->               |        ^~~~
->         make[2]: *** [kernel/audit_tree.o] Error 1
+> The behavior should be the same no matter whether the device or driver
+> is registered first.
 >
-> Rename it audit_node.
+> Deferred probe errors are handled differently AFAICT.
 >
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  kernel/audit_tree.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
+> >
+> > The comment is actually from __device_attach_driver()
+> >
+> > >
+> > >         /*
+> > >          * Ignore errors returned by ->probe so that the next driver can try
+> > >          * its luck.
+> > >          */
+> >
+> > I saw that comment too, but isn't the comment wrong/stale?
+>
+> I don't know...
+>
+> >
+> > bus_probe_device() -> device_initial_probe() -> __device_attach().
+> >
+> > In __device_attach() we have:
+> > ret = bus_for_each_drv(dev->bus, NULL, &data, __device_attach_driver);
+> >
+> > If you look at bus_for_each_drv()'s comment:
+> >  * ...... If @fn returns anything but 0, we break out
+> >  * and return it. If @start is not NULL, we use it as the head
+> >  * of the list.
+> >
+> > Inside __device_attach_driver() we see:
+> >         /*
+> >          * Ignore errors returned by ->probe so that the next driver can try
+> >          * its luck.
+> >          */
+> >         ret = driver_probe_device(drv, dev);
+> >         if (ret < 0)
+> >                 return ret;
+> >
+> > So if probe() returned an error, we'd return it right back out. And
+> > then bus_for_each_drv() will stop searching for more drivers that
+> > match.
+>
+> With the exception of deferred probe, probe errors are made positive
+> and then ignored.
 
-That's interesting, I wonder why we didn't see this prior?  Also as an
-aside, there are evidently a good handful of symbols named "node".  In
-fact I don't see this now in the audit/stable-5.15 or Linus' tree as
-of a right now, both using an allyesconfig:
+Oh I totally missed this!
 
-% git show-ref HEAD
-a9c9a6f741cdaa2fa9ba24a790db8d07295761e3 refs/remotes/linus/HEAD
-% touch kernel/audit_tree.c
-% make C=1 kernel/
- CALL    scripts/checksyscalls.sh
- CALL    scripts/atomic/check-atomics.sh
- DESCEND objtool
- CHK     kernel/kheaders_data.tar.xz
- CC      kernel/audit_tree.o
- CHECK   kernel/audit_tree.c
- AR      kernel/built-in.a
+>
+> > So I don't think one driver can give up after a match and have another
+> > driver give a device a shot.
+>
+> I think it just needs to be tried out...
 
-What tree and config are you using where you see this error?  Looking
-at your error, I'm guessing this is limited to ppc builds, and if I
-look at the arch/powerpc/include/asm/machdep.h file in Linus tree I
-don't see a static_call.h include so I'm guessing this is a -next tree
-for ppc?  Something else?
+Oh yeah, it would definitely work and would be a lot nicer. I'll rework this.
 
-Without knowing the context, is adding the static_call.h include in
-arch/powerpc/include/asm/machdep.h intentional or simply a bit of
-include file creep?
-
-> diff --git a/kernel/audit_tree.c b/kernel/audit_tree.c
-> index b2be4e978ba3..d392cf4ec8e2 100644
-> --- a/kernel/audit_tree.c
-> +++ b/kernel/audit_tree.c
-> @@ -30,7 +30,7 @@ struct audit_chunk {
->         int count;
->         atomic_long_t refs;
->         struct rcu_head head;
-> -       struct node {
-> +       struct audit_node {
->                 struct list_head list;
->                 struct audit_tree *owner;
->                 unsigned index;         /* index; upper bit indicates 'will prune' */
-> @@ -269,7 +269,7 @@ bool audit_tree_match(struct audit_chunk *chunk, struct audit_tree *tree)
->
->  /* tagging and untagging inodes with trees */
->
-> -static struct audit_chunk *find_chunk(struct node *p)
-> +static struct audit_chunk *find_chunk(struct audit_node *p)
->  {
->         int index = p->index & ~(1U<<31);
->         p -= index;
-> @@ -322,7 +322,7 @@ static void replace_chunk(struct audit_chunk *new, struct audit_chunk *old)
->         list_replace_rcu(&old->hash, &new->hash);
->  }
->
-> -static void remove_chunk_node(struct audit_chunk *chunk, struct node *p)
-> +static void remove_chunk_node(struct audit_chunk *chunk, struct audit_node *p)
->  {
->         struct audit_tree *owner = p->owner;
->
-> @@ -459,7 +459,7 @@ static int tag_chunk(struct inode *inode, struct audit_tree *tree)
->  {
->         struct fsnotify_mark *mark;
->         struct audit_chunk *chunk, *old;
-> -       struct node *p;
-> +       struct audit_node *p;
->         int n;
->
->         mutex_lock(&audit_tree_group->mark_mutex);
-> @@ -570,11 +570,11 @@ static void prune_tree_chunks(struct audit_tree *victim, bool tagged)
->  {
->         spin_lock(&hash_lock);
->         while (!list_empty(&victim->chunks)) {
-> -               struct node *p;
-> +               struct audit_node *p;
->                 struct audit_chunk *chunk;
->                 struct fsnotify_mark *mark;
->
-> -               p = list_first_entry(&victim->chunks, struct node, list);
-> +               p = list_first_entry(&victim->chunks, struct audit_node, list);
->                 /* have we run out of marked? */
->                 if (tagged && !(p->index & (1U<<31)))
->                         break;
-> @@ -616,7 +616,7 @@ static void trim_marked(struct audit_tree *tree)
->         }
->         /* reorder */
->         for (p = tree->chunks.next; p != &tree->chunks; p = q) {
-> -               struct node *node = list_entry(p, struct node, list);
-> +               struct audit_node *node = list_entry(p, struct audit_node, list);
->                 q = p->next;
->                 if (node->index & (1U<<31)) {
->                         list_del_init(p);
-> @@ -684,7 +684,7 @@ void audit_trim_trees(void)
->                 struct audit_tree *tree;
->                 struct path path;
->                 struct vfsmount *root_mnt;
-> -               struct node *node;
-> +               struct audit_node *node;
->                 int err;
->
->                 tree = container_of(cursor.next, struct audit_tree, list);
-> @@ -839,7 +839,7 @@ int audit_add_tree_rule(struct audit_krule *rule)
->         drop_collected_mounts(mnt);
->
->         if (!err) {
-> -               struct node *node;
-> +               struct audit_node *node;
->                 spin_lock(&hash_lock);
->                 list_for_each_entry(node, &tree->chunks, list)
->                         node->index &= ~(1U<<31);
-> @@ -938,7 +938,7 @@ int audit_tag_tree(char *old, char *new)
->                 mutex_unlock(&audit_filter_mutex);
->
->                 if (!failed) {
-> -                       struct node *node;
-> +                       struct audit_node *node;
->                         spin_lock(&hash_lock);
->                         list_for_each_entry(node, &tree->chunks, list)
->                                 node->index &= ~(1U<<31);
-> --
-> 2.25.0
->
-
-
--- 
-paul moore
-www.paul-moore.com
+-Saravana
