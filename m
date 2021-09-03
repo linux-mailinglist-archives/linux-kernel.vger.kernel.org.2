@@ -2,118 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3425440072D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063EC40072F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350462AbhICU6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 16:58:24 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:41207 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350361AbhICU6S (ORCPT
+        id S1350485AbhICU6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 16:58:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235926AbhICU62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 16:58:18 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 32EC55C00D0;
-        Fri,  3 Sep 2021 16:57:17 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Fri, 03 Sep 2021 16:57:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        to:cc:references:from:subject:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=P
-        OkR53bpiytg3PxhnG+iPG0KgVHiDmhYTOhrNM2TBK8=; b=or3Plv4161tY48aBE
-        Z3/6qfS4TluR1yI1v/xoq9Anj0tbUVUsRu3nMdsHaj7mjqKUIN0LGQ2zGpuSjCYC
-        bgarS3q0blM+oFzDj7TplibBFQxO4qmv/0h8KXdPBERxtOABaDqb9oSUHlDdI8KW
-        i3q5VjsCwPt583p28ddEwhvyGUj9kpKU/FR5AlFRQK4nqUB6sb7YcAlzJKGVqiOi
-        hIQnHB5DrfBCDJVWx2jS8sMRWOL2OY/NQZ19ijKFyviOflo0pf/+CDvVBihhLlqT
-        NtobzXMpu/DoQIZJUKT7ClREQB/GMsnMYYZioe3nuF9+HZodYfPPNyO1MbeV5HUV
-        JDQ6Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=POkR53bpiytg3PxhnG+iPG0KgVHiDmhYTOhrNM2TB
-        K8=; b=fILS8KHRP18Yb28LBzT0oNZ7zNryQiB3SyZISgp2opU8XaHUB6PyzUw8c
-        rwnscn+ZP5nNXCsdusldyoE83k/Bt23UaQOqy/y3APmvCSaP+2STukfBh3imrBqG
-        pxJtKDg23O78T/SdXxzvwVQn04qXToqUGFFhThiKYT6+ZJFiuNKTkQV05/po4qvs
-        yExmiexeuCBXG3Xd4/NcGRUSAXN6PaAJb8R0xz1BmGbEOwkUzQkTidKmVYRK27pk
-        eeR6ewcmOthLkboTQd9bd5pXJ4pl7ri1jnX5l+TsYMJnQKFIdWlOHfvUCi55poKI
-        q4fnqutak7fjOxP9OeFTDnK18hqCg==
-X-ME-Sender: <xms:LIwyYWRwN_vH5_D3BF79vTAk5VC1Yvi1JahpKI-gaqSZVVinvsssfg>
-    <xme:LIwyYbzOumHoAXT1ETk4wwiCIprKSqiwIXbA4Zd7estRecMRVBOBtqLsfWapxwpn_
-    msMPaLnXiN-M_61Nw>
-X-ME-Received: <xmr:LIwyYT1G9wZIh5OBZPkCzPuwvvCbIQ8-DaRCq1crJKBPdY_QfyRxOW-pVfsUluhM99vbL9ZICvgEQKdPJEVzIvcR1PRMjJOHBTFFOBNbT8aRvOLypgiXo-fPCg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedgudehfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefvfhfhuffkffgfgggjtgfgsehtkeertddtfeehnecuhfhrohhmpefurghm
-    uhgvlhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpeehjeeghfdufeefteelieeggfehteevieetueffhefhffekuedv
-    ffevffevtedufeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
-X-ME-Proxy: <xmx:LIwyYSAigwu7JRvcmRFlsK9Vg0XSwgFdGEeiNfzHgTSerYiiimrbHw>
-    <xmx:LIwyYfgLQikdsc-Q6-ZPkkYolWjrg_nlV_4l0xYfo-whUJrNOXfd4w>
-    <xmx:LIwyYeqEZoGFA19h7mYFeQAXPl3IlN0nXezAv24FWQjahGBAWWzexw>
-    <xmx:LYwyYfh_pWWwsTHUqzCijPmtWIJTYmmxJkLg6YHM1k73JPp12ii7cA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 3 Sep 2021 16:57:15 -0400 (EDT)
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20210901050526.45673-1-samuel@sholland.org>
- <20210901050526.45673-5-samuel@sholland.org>
- <20210903091040.2bngsvhem2ftzhaz@gilmour>
-From:   Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH 4/8] clk: sunxi-ng: Rename files to match Kconfig and
- drivers
-Message-ID: <1d269ff8-9219-cc0a-fda7-236bfd4b4510@sholland.org>
-Date:   Fri, 3 Sep 2021 15:57:14 -0500
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Fri, 3 Sep 2021 16:58:28 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADFEC061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 13:57:27 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id x19so459544pfu.4
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 13:57:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:references:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=sxwuAxrtYJDjTWSV7OCCFJWZjU0Ifgp/ql+JDp+Z75E=;
+        b=A578Fpol/RIHGMSTJHydtH7gUYnUCOgG/F7IruWJOGuZXz4hbwYoXRgqhuxfNwI1YL
+         ENTUX7tBHoikw4wQW+6RVzFsqOpPdpWe0XVX7+rvURsCHqdWpIZ1NtpKiThAnBRMwbtR
+         ijiXWLqJRghzTjxhDAhsHto+UjCY/wEBdRSW+A/sObq8DhS8nSZlSkSP+CUTJIdujMZg
+         kipS6FXRAJSPGIIPX4Qrewn2R0/1xik1Vb+s9zBvd7LZy2zblMfiJ1p+xvmSxPqBbQ3A
+         RrQVf2rzp0mQJZTkQPU8zikCJFz2w+xG0H2+ZO/MMTMVw/ANOZDcBcQkBUwnhPfTkJ4P
+         ifOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sxwuAxrtYJDjTWSV7OCCFJWZjU0Ifgp/ql+JDp+Z75E=;
+        b=kcNk9XYU7pOdYep+mmKheVJeLy53ERR7+VS7A6uxdim2PL+mzDse/aE4EE0or/hy14
+         bETtTllyDhSBAiobKISSwDoGCy5UIiorNAdxDEtAoazvp3wVhm6His3+T/YonE2HurX8
+         ctL5sDsBeUTuMfTjuDlYDG49hpEbE7jqbZAXVIQ8spnuE16KrFgdWIYkTY+m2FkXD6zO
+         NIj2chKAQw35R5bWcHuhSgr4qGMqP6BdOXI5+ci4BxfflpNTFOt5kUxMA/IizIk79OxR
+         mRu80M3WWphQ+XqTqHipZV+SinGWqdt3O7P/gd6z6S3PD0OR/nYGZdKTZTf2k/dHSj2j
+         SQrQ==
+X-Gm-Message-State: AOAM533k975TE+5PxkF+TCbIiKhDr0b5EY4/sMF8cADtrCakuUKi1HC0
+        VrLgLOqNy6uVx0c7IFDM2X/eoQ==
+X-Google-Smtp-Source: ABdhPJykLVv6cszHvpqvclZtdskHuEsGCPbZnEmzQKojtCl9mb5oGxxDNlMWc0DgEXKcs2kYuZstWw==
+X-Received: by 2002:a63:4c0e:: with SMTP id z14mr768854pga.427.1630702647104;
+        Fri, 03 Sep 2021 13:57:27 -0700 (PDT)
+Received: from ?IPv6:2600:380:7567:4da9:6143:c77c:a7ba:674d? ([2600:380:7567:4da9:6143:c77c:a7ba:674d])
+        by smtp.gmail.com with ESMTPSA id p2sm256672pgd.84.2021.09.03.13.57.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 13:57:26 -0700 (PDT)
+Subject: Re: Bug: d0e936adbd22 crashes at boot
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, linux-pm@vger.kernel.org
+References: <942f4041-e4e7-1b08-3301-008ab37ff5b8@kernel.dk>
+ <c56cde110210bec6537fe69b495334c6c70c814e.camel@linux.intel.com>
+ <3ac87893-55ba-f2d4-bb1e-382868f12d4c@kernel.dk>
+ <7f115f0476618d34b24ddec772acbbd7c0c4a572.camel@linux.intel.com>
+ <767fe00f-bf31-1eb0-09cc-1be91c633bb4@kernel.dk>
+ <d6bf08cbfd9f29ddb8cf29f522d68efc5c676624.camel@linux.intel.com>
+ <903f2e71-983f-39b8-dd0b-d697616ab63e@kernel.dk>
+Message-ID: <a6041178-e7d6-4ad9-b96a-91b4702d0305@kernel.dk>
+Date:   Fri, 3 Sep 2021 14:57:24 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210903091040.2bngsvhem2ftzhaz@gilmour>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <903f2e71-983f-39b8-dd0b-d697616ab63e@kernel.dk>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
-
-On 9/3/21 4:10 AM, Maxime Ripard wrote:
-> Hi,
-> 
-> On Wed, Sep 01, 2021 at 12:05:22AM -0500, Samuel Holland wrote:
->> When the drivers are built as modules, the file name will become the
->> module name. Rename the files so everything matches: the Kconfig symbol,
->> the platform driver name (as seen in sysfs), and the module name.
+On 9/3/21 2:41 PM, Jens Axboe wrote:
+> On 9/3/21 12:00 PM, Srinivas Pandruvada wrote:
+>> Hi Axobe,
 >>
->> Signed-off-by: Samuel Holland <samuel@sholland.org>
+>> On Fri, 2021-09-03 at 09:00 -0600, Jens Axboe wrote:
+>>> On 9/3/21 8:38 AM, Srinivas Pandruvada wrote:
+>>>> On Fri, 2021-09-03 at 08:15 -0600, Jens Axboe wrote:
+>>>>> On 9/3/21 8:13 AM, Srinivas Pandruvada wrote:
+>>>>>> Hi Axboe,
+>>>>>>
+>>>>>> Thanks for reporting.
+>>>>>> On Fri, 2021-09-03 at 07:36 -0600, Jens Axboe wrote:
+>>>>>>> Hi,
+>>>>>>>
+>>>>>>> Booting Linus's tree causes a crash on my laptop, an x1 gen9.
+>>>>>>> This
+>>>>>>> was
+>>>>>>> a bit
+>>>>>>> difficult to pin down as it crashes before the display is up,
+>>>>>>> but I
+>>>>>>> managed
+>>>>>>> to narrow it down to:
+>>>>>>>
+>>>>>>> commit d0e936adbd2250cb03f2e840c6651d18edc22ace
+>>>>>>> Author: Srinivas Pandruvada < 
+>>>>>>> srinivas.pandruvada@linux.intel.com>
+>>>>>>> Date:   Thu Aug 19 19:40:06 2021 -0700
+>>>>>>>
+>>>>>>>     cpufreq: intel_pstate: Process HWP Guaranteed change
+>>>>>>> notification
+>>>>>>>
+>>>>>>> which crashes with a NULL pointer deref in
+>>>>>>> notify_hwp_interrupt() -
+>>>>>>>>
+>>>>>>> queue_delayed_work_on().
+>>>>>>>
+>>>>>>> Reverting this change makes the laptop boot fine again.
+>>>>>>>
+>>>>>> Does this change fixes your issue?
+>>>>>
+>>>>> I would assume so, as it's crashing on cpudata == NULL :-)
+>>>>>
+>>>>> But why is it NULL? Happy to test patches, but the below doesn't
+>>>>> look
+>>>>> like
+>>>>> a real fix and more of a work-around.
+>>>>
+>>
+>> Please try the attached.
 > 
-> I'm not a big fan of big renames like this, it makes merging and
-> backporting patches harder in the long term.
+> I'll give it a test spin right now. Please do add a Reported-by tag,
+> though. That's always prudent.
 
-I can split this into two commits, first the .c files and then the .h
-files, so everything is a 100% rename, if that makes a difference.
+And you can add Tested-by as well, it works for me.
 
-> I assume you did this to make the module autoloading work? If so, using
-> MODULE_ALIAS would be less intrusive
+-- 
+Jens Axboe
 
-Autoloading should work anyway, since there is a module alias for the
-compatible string. This change is more about the principle of least
-surprise. The compatible is allwinner,sun50i-a64-ccu, the Kconfig symbol
-is SUN50I_A64_CCU, the driver name (in /sys/bus/platform/drivers) is
-sun50i_a64_ccu, but yet the module name is ccu-sun50i-a64???
-
-Once we allow building modules, the names are ABI, and this
-inconsistency will bother me until the end of time :)
-
-If there is a way to completely rename the module without renaming the
-files (not adding an alias), then that would be enough for me.
-
-Regards,
-Samuel
