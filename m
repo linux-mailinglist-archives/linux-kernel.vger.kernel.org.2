@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C35400422
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C676400425
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350287AbhICR3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 13:29:38 -0400
+        id S1350332AbhICR3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 13:29:47 -0400
 Received: from mga01.intel.com ([192.55.52.88]:33535 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350261AbhICR3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 13:29:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="241760088"
+        id S1350268AbhICR3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 13:29:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="241760095"
 X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
-   d="scan'208";a="241760088"
+   d="scan'208";a="241760095"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 10:28:30 -0700
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 10:28:31 -0700
 X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
-   d="scan'208";a="534222272"
+   d="scan'208";a="534222277"
 Received: from dlinsen-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.56.172])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 10:28:29 -0700
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 10:28:30 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -39,9 +39,9 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
         Sean Christopherson <seanjc@google.com>,
         Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v6 07/11] x86/tdx: Add HLT support for TDX guest
-Date:   Fri,  3 Sep 2021 10:28:08 -0700
-Message-Id: <20210903172812.1097643-8-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v6 08/11] x86/tdx: Wire up KVM hypercalls
+Date:   Fri,  3 Sep 2021 10:28:09 -0700
+Message-Id: <20210903172812.1097643-9-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
@@ -53,184 +53,203 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-Per Guest-Host-Communication Interface (GHCI) for Intel Trust
-Domain Extensions (Intel TDX) specification, sec 3.8,
-TDVMCALL[Instruction.HLT] provides HLT operation. Use it to implement
-halt() and safe_halt() paravirtualization calls.
+KVM hypercalls use the VMCALL or VMMCALL instructions. Although the ABI
+is similar, those instructions no longer function for TDX guests. Make
+vendor-specific TDVMCALLs instead of VMCALL. This enables TDX guests to
+run with KVM acting as the hypervisor. TDX guests running under other
+hypervisors will continue to use those hypervisors' hypercalls.
 
-The same TDX hypercall is used to handle #VE exception due to
-EXIT_REASON_HLT.
+Since KVM driver can be built as a kernel module, export
+tdx_kvm_hypercall*() to make the symbols visible to kvm.ko.
 
+Also, add asm/tdx.h to asm/asm-prototypes.h so that asm symbol's
+checksum can be generated in order to support CONFIG_MODVERSIONS with
+it and fix:
+
+WARNING: modpost: EXPORT symbol "__tdx_hypercall" [vmlinux] version \
+generation failed, symbol will not be versioned.
+
+[Isaku Yamahata: proposed KVM VENDOR string]
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
 Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
 
 Changes since v5:
- * Replaced sti with STI in commit log and comments.
- * Added comments for _tdx_hypercall() usage in _tdx_halt().
- * Added new helper function _tdx_halt() to contain common
-   code between tdx_halt() and tdx_safe_halt().
- * Renamed tdg_->tdx_.
- * Removed BUG_ON() and used WARN_ONCE() for HLT emulation
-   failure.
+ * Added more info about version generation failed error in commit
+   log.
+ * Fixed commit log as per review comments.
+ * Removed CONFIG_INTEL_TDX_GUEST_KVM and used
+   CONFIG_KVM_GUEST/CONFIG_INTEL_TDX_GUEST for TDX KVM hypercall
+   implementation.
+ * Used EXPORT_SYMBOL_GPL for __tdx_hypercall() export.
 
 Changes since v4:
- * Added exception for EXIT_REASON_HLT in __tdx_hypercall() to
-   enable interrupts using sti.
+ * No functional changes.
 
 Changes since v3:
- * None
+ * Fixed ASM sysmbol generation issue in tdcall.S by including tdx.h
+   in asm-prototypes.h
 
- arch/x86/kernel/tdcall.S | 30 +++++++++++++++++++
- arch/x86/kernel/tdx.c    | 65 ++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 93 insertions(+), 2 deletions(-)
+Changes since v1:
+ * Replaced is_tdx_guest() with prot_guest_has(PR_GUEST_TDX).
+ * Replaced tdx_kvm_hypercall{1-4} with single generic 
+   function tdx_kvm_hypercall().
+ * Removed __tdx_hypercall_vendor_kvm() and re-used __tdx_hypercall().
 
+ arch/x86/include/asm/asm-prototypes.h |  1 +
+ arch/x86/include/asm/kvm_para.h       | 22 +++++++++++++++++
+ arch/x86/include/asm/tdx.h            | 34 +++++++++++++++++++++++++--
+ arch/x86/kernel/tdcall.S              |  2 ++
+ 4 files changed, 57 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/include/asm/asm-prototypes.h b/arch/x86/include/asm/asm-prototypes.h
+index 4cb726c71ed8..404add7ee720 100644
+--- a/arch/x86/include/asm/asm-prototypes.h
++++ b/arch/x86/include/asm/asm-prototypes.h
+@@ -6,6 +6,7 @@
+ #include <asm/page.h>
+ #include <asm/checksum.h>
+ #include <asm/mce.h>
++#include <asm/tdx.h>
+ 
+ #include <asm-generic/asm-prototypes.h>
+ 
+diff --git a/arch/x86/include/asm/kvm_para.h b/arch/x86/include/asm/kvm_para.h
+index 69299878b200..bd0ab7c3ae25 100644
+--- a/arch/x86/include/asm/kvm_para.h
++++ b/arch/x86/include/asm/kvm_para.h
+@@ -4,7 +4,9 @@
+ 
+ #include <asm/processor.h>
+ #include <asm/alternative.h>
++#include <asm/tdx.h>
+ #include <linux/interrupt.h>
++#include <linux/protected_guest.h>
+ #include <uapi/asm/kvm_para.h>
+ 
+ #ifdef CONFIG_KVM_GUEST
+@@ -32,6 +34,10 @@ static inline bool kvm_check_and_clear_guest_paused(void)
+ static inline long kvm_hypercall0(unsigned int nr)
+ {
+ 	long ret;
++
++	if (prot_guest_has(PATTR_GUEST_TDX))
++		return tdx_kvm_hypercall(nr, 0, 0, 0, 0);
++
+ 	asm volatile(KVM_HYPERCALL
+ 		     : "=a"(ret)
+ 		     : "a"(nr)
+@@ -42,6 +48,10 @@ static inline long kvm_hypercall0(unsigned int nr)
+ static inline long kvm_hypercall1(unsigned int nr, unsigned long p1)
+ {
+ 	long ret;
++
++	if (prot_guest_has(PATTR_GUEST_TDX))
++		return tdx_kvm_hypercall(nr, p1, 0, 0, 0);
++
+ 	asm volatile(KVM_HYPERCALL
+ 		     : "=a"(ret)
+ 		     : "a"(nr), "b"(p1)
+@@ -53,6 +63,10 @@ static inline long kvm_hypercall2(unsigned int nr, unsigned long p1,
+ 				  unsigned long p2)
+ {
+ 	long ret;
++
++	if (prot_guest_has(PATTR_GUEST_TDX))
++		return tdx_kvm_hypercall(nr, p1, p2, 0, 0);
++
+ 	asm volatile(KVM_HYPERCALL
+ 		     : "=a"(ret)
+ 		     : "a"(nr), "b"(p1), "c"(p2)
+@@ -64,6 +78,10 @@ static inline long kvm_hypercall3(unsigned int nr, unsigned long p1,
+ 				  unsigned long p2, unsigned long p3)
+ {
+ 	long ret;
++
++	if (prot_guest_has(PATTR_GUEST_TDX))
++		return tdx_kvm_hypercall(nr, p1, p2, p3, 0);
++
+ 	asm volatile(KVM_HYPERCALL
+ 		     : "=a"(ret)
+ 		     : "a"(nr), "b"(p1), "c"(p2), "d"(p3)
+@@ -76,6 +94,10 @@ static inline long kvm_hypercall4(unsigned int nr, unsigned long p1,
+ 				  unsigned long p4)
+ {
+ 	long ret;
++
++	if (prot_guest_has(PATTR_GUEST_TDX))
++		return tdx_kvm_hypercall(nr, p1, p2, p3, p4);
++
+ 	asm volatile(KVM_HYPERCALL
+ 		     : "=a"(ret)
+ 		     : "a"(nr), "b"(p1), "c"(p2), "d"(p3), "S"(p4)
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index 8e7fda8cd662..403aaa6efb8b 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+@@ -6,8 +6,9 @@
+ #include <linux/cpufeature.h>
+ #include <linux/types.h>
+ 
+-#define TDX_CPUID_LEAF_ID	0x21
+-#define TDX_HYPERCALL_STANDARD  0
++#define TDX_CPUID_LEAF_ID			0x21
++#define TDX_HYPERCALL_STANDARD			0
++#define TDX_HYPERCALL_VENDOR_KVM		0x4d564b2e584454 /* TDX.KVM */
+ 
+ /*
+  * Used in __tdx_module_call() helper function to gather the
+@@ -76,4 +77,33 @@ static inline void tdx_early_init(void) { };
+ 
+ #endif /* CONFIG_INTEL_TDX_GUEST */
+ 
++#ifdef CONFIG_KVM_GUEST
++#ifdef CONFIG_INTEL_TDX_GUEST
++static inline long tdx_kvm_hypercall(unsigned int nr, unsigned long p1,
++				     unsigned long p2, unsigned long p3,
++				     unsigned long p4)
++{
++	struct tdx_hypercall_output out;
++	u64 err;
++
++	err = __tdx_hypercall(TDX_HYPERCALL_VENDOR_KVM, nr, p1, p2,
++			      p3, p4, &out);
++
++	/*
++	 * Non zero return value means buggy TDX module (which is fatal).
++	 * So use BUG_ON() to panic.
++	 */
++	BUG_ON(err);
++
++	return out.r10;
++}
++#else
++static inline long tdx_kvm_hypercall(unsigned int nr, unsigned long p1,
++				     unsigned long p2, unsigned long p3,
++				     unsigned long p4)
++{
++	return -ENODEV;
++}
++#endif /* CONFIG_INTEL_TDX_GUEST */
++#endif /* CONFIG_KVM_GUEST */
+ #endif /* _ASM_X86_TDX_H */
 diff --git a/arch/x86/kernel/tdcall.S b/arch/x86/kernel/tdcall.S
-index 2e70133bebf2..1b9649ec2e29 100644
+index 1b9649ec2e29..fa87f5e2cf29 100644
 --- a/arch/x86/kernel/tdcall.S
 +++ b/arch/x86/kernel/tdcall.S
-@@ -40,6 +40,9 @@
-  */
- #define tdcall .byte 0x66,0x0f,0x01,0xcc
+@@ -3,6 +3,7 @@
+ #include <asm/asm.h>
+ #include <asm/frame.h>
+ #include <asm/unwind_hints.h>
++#include <asm/export.h>
  
-+/* HLT TDVMCALL sub-function ID */
-+#define EXIT_REASON_HLT			12
-+
- /*
-  * __tdx_module_call()  - Helper function used by TDX guests to request
-  * services from the TDX module (does not include VMM services).
-@@ -240,6 +243,33 @@ SYM_FUNC_START(__tdx_hypercall)
+ #include <linux/linkage.h>
+ #include <linux/bits.h>
+@@ -310,3 +311,4 @@ skip_sti:
  
- 	movl $TDVMCALL_EXPOSE_REGS_MASK, %ecx
- 
-+	/*
-+	 * For the idle loop STI needs to be called directly before
-+	 * the TDCALL that enters idle (EXIT_REASON_HLT case). STI
-+	 * enables interrupts only one instruction later. If there
-+	 * are any instructions between the STI and the TDCALL for
-+	 * HLT then an interrupt could happen in that time, but the
-+	 * code would go back to sleep afterwards, which can cause
-+	 * longer delays.
-+	 *
-+	 * This leads to significant difference in network performance
-+	 * benchmarks. So add a special case for EXIT_REASON_HLT to
-+	 * trigger STI before TDCALL. But this change is not required
-+	 * for all HLT cases. So use R15 register value to identify the
-+	 * case which needs STI. So, if R11 is EXIT_REASON_HLT and R15
-+	 * is 1, then call STI before TDCALL instruction. Note that R15
-+	 * register is not required by TDCALL ABI when triggering the
-+	 * hypercall for EXIT_REASON_HLT case. So use it in software to
-+	 * select the STI case.
-+	 */
-+	cmpl $EXIT_REASON_HLT, %r11d
-+	jne skip_sti
-+	cmpl $1, %r15d
-+	jne skip_sti
-+	/* Set R15 register to 0, it is unused in EXIT_REASON_HLT case */
-+	xor %r15, %r15
-+	sti
-+skip_sti:
- 	tdcall
- 
- 	/* Restore output pointer to R9 */
-diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index 8d29ed07af1c..ec1008cc42d9 100644
---- a/arch/x86/kernel/tdx.c
-+++ b/arch/x86/kernel/tdx.c
-@@ -5,6 +5,7 @@
- #define pr_fmt(fmt)     "x86/tdx: " fmt
- 
- #include <asm/tdx.h>
-+#include <asm/vmx.h>
- 
- /* TDX Module call Leaf IDs */
- #define TDGETVEINFO			3
-@@ -44,6 +45,52 @@ static inline bool cpuid_has_tdx_guest(void)
- 	return !memcmp("IntelTDX    ", sig, 12);
- }
- 
-+static __cpuidle void _tdx_halt(const bool irq_disabled, const bool do_sti)
-+{
-+	u64 ret;
-+
-+	/*
-+	 * Emulate HLT operation via hypercall. More info about ABI
-+	 * can be found in TDX Guest-Host-Communication Interface
-+	 * (GHCI), sec 3.8.
-+	 *
-+	 * The VMM uses the "IRQ disabled" param to understand IRQ
-+	 * enabled status (RFLAGS.IF) of TD guest and determine
-+	 * whether or not it should schedule the halted vCPU if an
-+	 * IRQ becomes pending. E.g. if IRQs are disabled the VMM
-+	 * can keep the vCPU in virtual HLT, even if an IRQ is
-+	 * pending, without hanging/breaking the guest.
-+	 *
-+	 * do_sti parameter is used by __tdx_hypercall() to decide
-+	 * whether to call STI instruction before executing TDCALL
-+	 * instruction.
-+	 */
-+	ret = _tdx_hypercall(EXIT_REASON_HLT, irq_disabled, 0, 0, do_sti, NULL);
-+
-+	/*
-+	 * Use WARN_ONCE() to report the failure. Since tdx_*halt() calls
-+	 * are also used in pv_ops, #VE handler error handler cannot be
-+	 * used to report the failure.
-+	 */
-+	WARN_ONCE(ret, "HLT instruction emulation failed\n");
-+}
-+
-+static __cpuidle void tdx_halt(void)
-+{
-+	const bool irq_disabled = irqs_disabled();
-+	const bool do_sti = false;
-+
-+	_tdx_halt(irq_disabled, do_sti);
-+}
-+
-+static __cpuidle void tdx_safe_halt(void)
-+{
-+	const bool irq_disabled = false; /* since sti will be called */
-+	const bool do_sti = true;
-+
-+	_tdx_halt(irq_disabled, do_sti);
-+}
-+
- unsigned long tdx_get_ve_info(struct ve_info *ve)
- {
- 	struct tdx_module_output out = {0};
-@@ -70,8 +117,19 @@ unsigned long tdx_get_ve_info(struct ve_info *ve)
- int tdx_handle_virtualization_exception(struct pt_regs *regs,
- 					struct ve_info *ve)
- {
--	pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
--	return -EFAULT;
-+	switch (ve->exit_reason) {
-+	case EXIT_REASON_HLT:
-+		tdx_halt();
-+		break;
-+	default:
-+		pr_warn("Unexpected #VE: %lld\n", ve->exit_reason);
-+		return -EFAULT;
-+	}
-+
-+	/* After successful #VE handling, move the IP */
-+	regs->ip += ve->instr_len;
-+
-+	return 0;
- }
- 
- void __init tdx_early_init(void)
-@@ -81,5 +139,8 @@ void __init tdx_early_init(void)
- 
- 	setup_force_cpu_cap(X86_FEATURE_TDX_GUEST);
- 
-+	pv_ops.irq.safe_halt = tdx_safe_halt;
-+	pv_ops.irq.halt = tdx_halt;
-+
- 	pr_info("Guest initialized\n");
- }
+        retq
+ SYM_FUNC_END(__tdx_hypercall)
++EXPORT_SYMBOL_GPL(__tdx_hypercall);
 -- 
 2.25.1
 
