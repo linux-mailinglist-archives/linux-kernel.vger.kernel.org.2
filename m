@@ -2,194 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A96B640038A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5BE400395
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:40:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350104AbhICQjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 12:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40614 "EHLO
+        id S1350114AbhICQlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 12:41:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350013AbhICQjo (ORCPT
+        with ESMTP id S1350087AbhICQle (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 12:39:44 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D77C061764
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 09:38:44 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id bg1so3609704plb.13
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 09:38:44 -0700 (PDT)
+        Fri, 3 Sep 2021 12:41:34 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F145C061757
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 09:40:34 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso4253164pjq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 09:40:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=FfOt3SEZ0/w/EILHgIhc/sI685lMnBLBscfmUVoWBxM=;
-        b=U3zD7zTVZnXyaVHVcepE2ZnBhIVi+C+briI5/GPmfUYXdkLyFmxljAvwjJ2Y/T6FN7
-         JEKgVwTx7TIQEk8iONrflQBgQEuu9wPi6w1QPNdCALwa6JGDNl9ILIHqvd26pArQ3XuF
-         FBhHN4XJSFB6INWrh3p2QndF/YNVVDAe55YSQ=
+        bh=v5OTz7CnUkUM4eY5RTrhL/SW/NS0L0zb0w5yqF65JVM=;
+        b=TPqUlE4vsj+zKa7HaWHKFrNz4FHIDAn1VSWdoDtvPEYoXf8j3FIgsnR9twTb/N5pvj
+         hochQfiLmdYN9NkKeXN4J5YW4AwswTucve/tJoQVMtSdc6n+ApiJjtY9Stv1H5QKuwMl
+         DRyAt5+yL8yNcb2k/HwRTL2qQuQAJt12PxlkYk9V599GuhEM2h0sIpDsW5qn5UOVrr7a
+         JAUb+3M0HiCXbmMG42WsDG5DEAaRt09k0ej41GT+dO3gP0YGIBJysnKpAsZbif1xSX9m
+         6knaPBoT/qU9Z0sqi7JvzIcCHgFHwroV+8FKRN8opAhREhMw/zdgbmTFH+SDkWDIMqCR
+         YlXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=FfOt3SEZ0/w/EILHgIhc/sI685lMnBLBscfmUVoWBxM=;
-        b=fYdDxTxqrUkIUfUmhH0oJwJQ6GlCDnOTm37CZhYAikWoAXHvWA4N0vqrATqVMo+BSN
-         OW5naNOwGA3SxPmJ3e9Z4HejUGKqhPNJD/NCGmykr5UDVhE+bNyyFomVU6fa9crb2HkT
-         5vzD52RHcXSrkZBqxi2YFvIXJff4iWFGgnCKO1+9Fpyfge+2aHildY6p1Y/0MQTSib5u
-         dai6RvonF9kRk9E+paMOQYwR+bqv1OKvDtLay7XEAWE/cizR2Po7jfTQRUS5hYNYroHl
-         NQ2B9vFXZRYQza8mME5xKBVMm6HeXFPgC8muIzFosu7raUs6RMkC+7byp8///d5O7rbX
-         v2vw==
-X-Gm-Message-State: AOAM531QMzET6LRuUMdEMv5KsWviLfhMAeUnumbFMSdRtGYnQKlddzio
-        VzZp1dcLvl+e7fm7jwEnXTepdA==
-X-Google-Smtp-Source: ABdhPJy/x5blIx3Lk+xBJRMgzA9HJvA8GilrLG2XXL2QHa1y/6WGYsNlTmOkpxYQfB+u+t83J6O6NQ==
-X-Received: by 2002:a17:90b:2212:: with SMTP id kw18mr1653921pjb.59.1630687124160;
-        Fri, 03 Sep 2021 09:38:44 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s31sm5894049pfw.23.2021.09.03.09.38.43
+        bh=v5OTz7CnUkUM4eY5RTrhL/SW/NS0L0zb0w5yqF65JVM=;
+        b=oLR6DMrcNtnkvlktKchROcrCDX0A8LU6ofNAky9oRYdtn1DzLgmdAc34vlDcwWo0gb
+         ZcQiYk3LG2TT0fvJ9thi/C5YRR+2X3fVDqE4M1La+2Bm1dwA7v78um3aSP8OoNAweosU
+         xWGjl+3tEmacSfE7M1uqnN0BmyijPjjfKH8bz8eBwcvy8oloyrYfnAWCeBPjMYtcWPxy
+         5wRjHVcCySDuMc/RkpPqrbrMDVEDXTfTbX7Ymm1XHfoyTsLC8oTD/p58tWOy+5HuruOP
+         cRStfZXQ3QVJdEWeWsXNrzTPrVe4WwM18+7oZsPGXdOQ/Pi6r5u3Dds6SEbvSzl6Vhz0
+         J/HQ==
+X-Gm-Message-State: AOAM532ivF/o9UucOu7EMujbmI65cRL5QmQnk5hNoWeqcc7w5YL3UtAr
+        8qWWS2+cR1sw0SEjIJIV8frRYg==
+X-Google-Smtp-Source: ABdhPJxsfc197jHbkx9JBnIoZeZb7rt2Q3NxA6CZylwJ388qYtxJuIhXoOH46UfW/xmk11ye2Ag/Sg==
+X-Received: by 2002:a17:90a:55cb:: with SMTP id o11mr1730087pjm.244.1630687233610;
+        Fri, 03 Sep 2021 09:40:33 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id gd14sm5751960pjb.49.2021.09.03.09.40.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 09:38:43 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 09:38:42 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jessica Yu <jeyu@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arch@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 3/4] module: Use a list of strings for ro_after_init
- sections
-Message-ID: <202109030932.1358C4093@keescook>
-References: <20210901233757.2571878-1-keescook@chromium.org>
- <20210901233757.2571878-4-keescook@chromium.org>
- <20210903064951.to4dhiu7zua7s6dn@treble>
+        Fri, 03 Sep 2021 09:40:32 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 16:40:29 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lai Jiangshan <laijs@linux.alibaba.com>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Avi Kivity <avi@redhat.com>, kvm@vger.kernel.org
+Subject: Re: [PATCH 2/7] KVM: X86: Synchronize the shadow pagetable before
+ link it
+Message-ID: <YTJP/Ys8Fdxdm/Qk@google.com>
+References: <20210824075524.3354-1-jiangshanlai@gmail.com>
+ <20210824075524.3354-3-jiangshanlai@gmail.com>
+ <YTFhCt87vzo4xDrc@google.com>
+ <YTFkMvdGug3uS2e4@google.com>
+ <c8cd9508-7516-0891-f507-4b869d7e4322@linux.alibaba.com>
+ <YTJIBr/lm5QU/Z3W@google.com>
+ <7067bec0-8a15-1a18-481e-e2ea79575dcf@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210903064951.to4dhiu7zua7s6dn@treble>
+In-Reply-To: <7067bec0-8a15-1a18-481e-e2ea79575dcf@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 11:49:51PM -0700, Josh Poimboeuf wrote:
-> On Wed, Sep 01, 2021 at 04:37:56PM -0700, Kees Cook wrote:
-> > Instead of open-coding the section names, use a list for the sections that
-> > need to be marked read-only after init. Unfortunately, it seems we can't
-> > do normal section merging with scripts/module.lds.S as ld.bfd doesn't
-> > correctly update symbol tables. For more details, see commit 6a3193cdd5e5
-> > ("kbuild: lto: Merge module sections if and only if CONFIG_LTO_CLANG
-> > is enabled").
+On Sat, Sep 04, 2021, Lai Jiangshan wrote:
 > 
-> I'm missing what this has to do with section merging.  Can you connect
-> the dots here, i.e. what sections would we want to merge and how would
-> that help here?
-
-Right, sorry, if ld.bfd didn't have this issue, we could use section
-merging in the module.lds.S file the way we do in vmlinux.lds:
-
-#ifndef RO_AFTER_INIT_DATA
-#define RO_AFTER_INIT_DATA                                              \
-        . = ALIGN(8);                                                   \
-        __start_ro_after_init = .;                                      \
-        *(.data..ro_after_init)                                         \
-        JUMP_TABLE_DATA                                                 \
-        STATIC_CALL_DATA                                                \
-        __end_ro_after_init = .;
-#endif
-...
-        . = ALIGN((align));                                             \
-        .rodata           : AT(ADDR(.rodata) - LOAD_OFFSET) {           \
-                __start_rodata = .;                                     \
-                *(.rodata) *(.rodata.*)                                 \
-                SCHED_DATA                                              \
-                RO_AFTER_INIT_DATA      /* Read only after init */      \
-                . = ALIGN(8);                                           \
-                __start___tracepoints_ptrs = .;                         \
-                KEEP(*(__tracepoints_ptrs)) /* Tracepoints: pointer array */ \
-                __stop___tracepoints_ptrs = .;                          \
-                *(__tracepoints_strings)/* Tracepoints: strings */      \
-        }                                                               \
-
-Then jump_table and static_call sections could be collected into a
-new section, as the module loader would only need to look for that
-single name.
-
-> Instead of hard-coding section names in module.c, I'm wondering if we
-> can do something like the following to set SHF_RO_AFTER_INIT when first
-> creating the sections.  Completely untested...
+> On 2021/9/4 00:06, Sean Christopherson wrote:
 > 
+> > diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+> > index 50ade6450ace..2ff123ec0d64 100644
+> > --- a/arch/x86/kvm/mmu/paging_tmpl.h
+> > +++ b/arch/x86/kvm/mmu/paging_tmpl.h
+> > @@ -704,6 +704,9 @@ static int FNAME(fetch)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
+> >   			access = gw->pt_access[it.level - 2];
+> >   			sp = kvm_mmu_get_page(vcpu, table_gfn, fault->addr,
+> >   					      it.level-1, false, access);
+> > +			if (sp->unsync_children &&
+> > +			    mmu_sync_children(vcpu, sp, false))
+> > +				return RET_PF_RETRY;
 > 
-> diff --git a/arch/x86/include/asm/jump_label.h b/arch/x86/include/asm/jump_label.h
-> index 0449b125d27f..d4ff34c6199c 100644
-> --- a/arch/x86/include/asm/jump_label.h
-> +++ b/arch/x86/include/asm/jump_label.h
-> @@ -13,7 +13,7 @@
->  #include <linux/types.h>
->  
->  #define JUMP_TABLE_ENTRY				\
-> -	".pushsection __jump_table,  \"aw\" \n\t"	\
-> +	".pushsection __jump_table, \"0x00200003\" \n\t"\
->  	_ASM_ALIGN "\n\t"				\
->  	".long 1b - . \n\t"				\
->  	".long %l[l_yes] - . \n\t"			\
-> diff --git a/kernel/module.c b/kernel/module.c
-> index 40ec9a030eec..1dda33c9ae49 100644
-> --- a/kernel/module.c
-> +++ b/kernel/module.c
-> @@ -3549,15 +3549,6 @@ static struct module *layout_and_allocate(struct load_info *info, int flags)
->  	 * Note: ro_after_init sections also have SHF_{WRITE,ALLOC} set.
->  	 */
->  	ndx = find_sec(info, ".data..ro_after_init");
-> -	if (ndx)
-> -		info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
-> -	/*
-> -	 * Mark the __jump_table section as ro_after_init as well: these data
-> -	 * structures are never modified, with the exception of entries that
-> -	 * refer to code in the __init section, which are annotated as such
-> -	 * at module load time.
-> -	 */
-> -	ndx = find_sec(info, "__jump_table");
->  	if (ndx)
->  		info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
->  
-> diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-> index e5947fbb9e7a..b25ca38179ea 100644
-> --- a/tools/objtool/check.c
-> +++ b/tools/objtool/check.c
-> @@ -20,6 +20,9 @@
->  #include <linux/kernel.h>
->  #include <linux/static_call_types.h>
->  
-> +/* cribbed from include/uapi/linux/elf.h */
-> +#define SHF_RO_AFTER_INIT	0x00200000
-> +
->  struct alternative {
->  	struct list_head list;
->  	struct instruction *insn;
-> @@ -466,7 +469,8 @@ static int create_static_call_sections(struct objtool_file *file)
->  	list_for_each_entry(insn, &file->static_call_list, call_node)
->  		idx++;
->  
-> -	sec = elf_create_section(file->elf, ".static_call_sites", SHF_WRITE,
-> +	sec = elf_create_section(file->elf, ".static_call_sites",
-> +				 SHF_WRITE | SHF_RO_AFTER_INIT,
->  				 sizeof(struct static_call_site), idx);
->  	if (!sec)
->  		return -1;
+> It was like my first (unsent) fix.  Just return RET_PF_RETRY when break.
+> 
+> And then I thought that it'd be better to retry fetching directly rather than
+> retry guest when the conditions are still valid/unchanged to avoid all the
+> next guest page walking and GUP().  Although the code does not check all
+> conditions such as interrupt event pending. (we can add that too)
 
-Interesting! I got the impression from the module code that this wasn't
-possible since it'd be exposing an internal set of flags to the external
-linker, and would break the vmlinux section merging (since it _is_
-supposed to live in the .rodata section ultimately). The modules handle
-permissions slightly differently (i.e. more exact temporal), than the
-kernel though. (Most of the architecture's vmlinux logic starts with
-everything writable, and only does the read-only-ness after __init,
-though I think s390 does it "correctly" and as such has a separate area
-for the ro-after-init section.)
+But not in a bug fix that needs to go to stable branches.  
+ 
+> I think it is a good design to allow break mmu_lock when mmu is handling
+> heavy work.
 
--- 
-Kees Cook
+I don't disagree in principle, but I question the relevance/need.  I doubt this
+code is relevant to nested TDP performance as hypervisors generally don't do the
+type of PTE manipulations that would lead to linking an existing unsync sp.  And
+for legacy shadow paging, my preference would be to put it into maintenance-only
+mode as much as possible.  I'm not dead set against new features/functionality
+for shadow paging, but for something like dropping mmu_lock in the page fault path,
+IMO there needs to be performance numbers to justify such a change.
