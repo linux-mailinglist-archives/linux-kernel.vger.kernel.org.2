@@ -2,159 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829C8400414
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C00F400419
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244231AbhICRZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 13:25:50 -0400
-Received: from mail-bn8nam11on2132.outbound.protection.outlook.com ([40.107.236.132]:55777
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229831AbhICRZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 13:25:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YF7B+jbcg3xO/1eyGSO+zcIwBSuvTQ9Xd5fbqs65N7Tf5lqsQ0gBrUwqafGEZLcOQmqoO2E7PdTE4Bhr0zoh5+xdpKPLDD2lMqxkVR/4NRHZMO6EsLWKYfkDh9RjJdtyfl5qUFgpmwfaMxE5wsqnai0s0fy5B1guk28d5mFv2VuwUp/P7sqKJS8XqjuYxrublsjZoH44Ye3sV23F1ETBBUjyvzxnO1SgcCNSJ3yTvaNwKz9YqF39juQ3U9Tic7bkAIhTpihVHbi96CyXwQaCPrk0zI1FbiZiltfZPOk3DWRbmryyR105KnddIWFoJirVyLg3e5KxHMRRaXDD6UiAkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=+pgjjJTRD4LMkyPkOgHy+8FEkJ/JnSZ2oc6TXUHaPSc=;
- b=QFL4OYTqnegtwRiYNnQhaXKEYkyDYhKQPxhw8IpLTppD94LMyLJ7IiDS7MkiesvYU7bddmw3YKQ/vkGEUgqxm399Zi/46C1C7rOnO/6HJY16hRUa5oHWvVMdJ1Xi5dm85nHhL0EFdpao3N9DqoX7KGX4H1tUI4bFyN/BoQG6IA0/wNfquX8KpulZ4IAHZJIwevE6ZYV6jqX1rFveN3I3FgzPiiL0lZpG9kbd5BsKjDCHCTFAFvHlmIgsZGRf327RHE85+NBLDPuid3IREgcS8mZgD8XFdkJHycH9hGC6o/x8mOGmq3baBgHo5ZJl0KpQBmFZBBL0H3DOKVPWYAlrLg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+pgjjJTRD4LMkyPkOgHy+8FEkJ/JnSZ2oc6TXUHaPSc=;
- b=GkJTMqq3QcvulTtAespvM7uWBYn+v9/NKbVaXl+5tEEZLNqrHx+DuBMIk4oQwSCasHU4MToZvmenhE6B7dnDfrT/pyd8fGJIgZD41gqTLx5dYEpMBVJ4z2q/gXPUDzyenK2Qy/AqqhVESKJvyIbmNy7LhzDZJTykKxyBMV1Sdxvh7KXIArekYKr34/1wXgC92nIteIf1bOVqzfe6nI5/sjG+T4bDNveZPUZ0A47oqh1MNlDLTZNnH3ZYq+9YZ4Jo58CzFJJwX1PhFUoZMYq0dJTLwdsu9zfWYp014y8B8KfmO8ILxnRnXjlv4jsg9bfEc1zDB/X1IEJQGMQUWJczlQ==
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=cornelisnetworks.com;
-Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
- PH0PR01MB6732.prod.exchangelabs.com (2603:10b6:510:93::21) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4478.17; Fri, 3 Sep 2021 17:24:45 +0000
-Received: from PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::5c02:2146:2b1:f1eb]) by PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::5c02:2146:2b1:f1eb%7]) with mapi id 15.20.4478.022; Fri, 3 Sep 2021
- 17:24:45 +0000
-Subject: Re: [PATCH] IB/qib: Fix null pointer subtraction compiler warning
-To:     Jason Gunthorpe <jgg@nvidia.com>, linux-rdma@vger.kernel.org
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        kernel test robot <lkp@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        llvm@lists.linux.dev, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-References: <0-v1-43ae3c759177+65-qib_type_jgg@nvidia.com>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Message-ID: <fae8ef94-0684-bce5-ce3a-c25cfb5820df@cornelisnetworks.com>
-Date:   Fri, 3 Sep 2021 13:24:41 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
-In-Reply-To: <0-v1-43ae3c759177+65-qib_type_jgg@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1P222CA0007.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:208:2c7::12) To PH0PR01MB6439.prod.exchangelabs.com
- (2603:10b6:510:d::22)
+        id S1350170AbhICR2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 13:28:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232937AbhICR2O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 13:28:14 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFF3C061757
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 10:27:13 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id me10so13449220ejb.11
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 10:27:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bwENXuaqbcdQli6+7dsuRY9CBfbnku/pXemwHYmqk9M=;
+        b=qUg+s7iuYlMYK4h8yIp73irZRQGOPnhXc7Qy17hIWsGx7T1JxZFpA0Zx00P35M1cWI
+         xSnwWZuaQWxMXf/LHKNzDfA/ACAOY5ujZgWMbQ91LnzQ/p9aUcuEylqvNRU/Xhf8am5Q
+         qJzBP6dG7eSPpAOi/WZHxa+I7ojl8OiUI0hhjptqxuLDQzZ4oaD7oiqNfr+lCp1UJWwT
+         8n0cr2JmoBccw3GZtT7bWsNMIsrbnlzm8zr+8WZh6pAeylDzKmUnc95/ed3rq6MnlPDi
+         JJ5xh0k95WNo2RDHZ01TEEgazkWdRlBup/SctOzugvP5cTlj9yqftMn+wQ1XZVyBwQjD
+         KajA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bwENXuaqbcdQli6+7dsuRY9CBfbnku/pXemwHYmqk9M=;
+        b=MnxIDjo2ena85Sr/qaRLNMS+u5AYGuNyA2Ba1gCVXr0Ra6H1LFm7fIVTd+MVHCd8gG
+         OAD9JqdKHvy7ljeN2rTctC7CRW4Ql4pPNo8xX9YyPMamw91zNUmbxgbzvfhaKANPpPcN
+         PnxpYvFaFHRU0oGwg/3OuuV5IZyjgTWWdA8YVH8mtfnYWi6aaZ46vOEWygb1/XyjKRip
+         /DdxlQRUPUA51R8ANJy4LZMAIoTBLXgNYrbzFYxVp4KR5uAUkiZCECZEVkwy5Ux4P1s4
+         QfbGGmBgsOV4RuingAX/ujQnnrm2whn6U5LeeMgIrDrv3l0YQAJW+STlR1FokERhrLQO
+         tYAg==
+X-Gm-Message-State: AOAM530mYiA7lf2NuVXAjDXFhFdz5QpIDPYNjce/jUPwAi5hqXXQiD+x
+        Op+XIXnyucf492Au7s5VXQAqUVWnG7ZxyqB7+kE5
+X-Google-Smtp-Source: ABdhPJzUWGfT3TcAG0kDymkiG/yFfedV0cLPQ2pAPRl8q1JV8EyWgRLgVCmFOS9fs9h1imNJZUlL+YhQJu2bGatzEt4=
+X-Received: by 2002:a17:906:8cd:: with SMTP id o13mr5458543eje.341.1630690031596;
+ Fri, 03 Sep 2021 10:27:11 -0700 (PDT)
 MIME-Version: 1.0
-Received: from Denniss-MacBook-Pro.local (24.154.216.5) by BL1P222CA0007.NAMP222.PROD.OUTLOOK.COM (2603:10b6:208:2c7::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend Transport; Fri, 3 Sep 2021 17:24:43 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 595bbc75-6fa7-4e5a-fe30-08d96effb8f1
-X-MS-TrafficTypeDiagnostic: PH0PR01MB6732:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR01MB6732228337E98FE2031E5B8CF4CF9@PH0PR01MB6732.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:158;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rLKU0mvUQbuk7EpIumgGr1Zg+31N8Ootrr4INeBOD5Be/oKJC+IARss8fug269LA4TMu9RSAx25IZKO5uDVfajBm61fIFxy74+ZXTsG+b3ORmwRML5NBwsS6IdP/20aLeDEnr+OD7w3rSHdqF3YnN0EeGXYUlRT0gBuLluMxvXGxbq2THLkhgk6N+n4c55Ub80hPmm8cVwp7T1fxTzsao6m4tZ/5gtTlDON2ydM+gBdnFWO/OzHyminqX27eGuK1WAwZFXh9g8dmuxliIuy6cWxqtXpAtOZAYdVmsGYY6BRLOh7BoXcZSnGRwJ1bNR/jkLGONtuIe2AJucD5Qplvxd3Pkri0IEOlY0ffm9R9CZGPuR5s2pJUf2bWGqGxhWVC6lvYS5zTchddsUNAFL7/ccX4PElQNqDJCQ3OL9iDmOVrBxdPy1zXNsKfDTLeowc0dXdIsCYiD7m4pWIgUZnDiH5W5PHvBLREgWhcNi10pJNtFoOzfV8XfyaSPhkqZEGcrCrkmNNd9Qdbl2F/cEE74doARoV+HFpbHJx6HGkwMidQvbnXaV1J1WI/jCLkMveo0OEllHw8z0sZJU3ib0kMnwipn7KVtZd0ae6fmj0x+YRfLfNsyqFlaJyUYCqd/OcKkCY+FY3A5eb/EqJBjsorqde20MSyVTMpIyZXywV6pRRHdEvSSZIg+eSEJueLhj32ZqGKH6AIeWANj4zAciTsp/QC7kZSZCAQdRKXqJdZUoE/ZjhBMvbUvJDc4MGC/4AnuiJFv6lJzYL0kzc7YAIJBg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(366004)(39840400004)(376002)(31686004)(36756003)(478600001)(26005)(6512007)(31696002)(6486002)(66946007)(316002)(66556008)(44832011)(66476007)(5660300002)(52116002)(956004)(2616005)(4326008)(86362001)(38350700002)(53546011)(8936002)(2906002)(6506007)(38100700002)(186003)(83380400001)(54906003)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M3B0eGFWR0xqd1l4UVpkUUYwSlRLQzE2OEtIb3J1bjk2bXdBb3RMdGN5aE5r?=
- =?utf-8?B?ZGJSMFVlUHJVd3RWZmNwczArUGVhQVdhbWxpM3dyVklQUFN3TVRoN2ZqV25z?=
- =?utf-8?B?aUZTZjVXNlY3NVdac04vcXZrQ294UG45NkJyeGlHOG9CblJaczJzQzhJdWxD?=
- =?utf-8?B?bDkxK21TQlp3L05uYWhWcXlwVElpblpTLzFOMGFMVFdnc0dtNkcvVEtMQkpi?=
- =?utf-8?B?OUFpWTBGL1h0L3JoOWtadFFaRG8yUDFJT0ZYY0R5OWR1TXJraUtnTnU2bXVB?=
- =?utf-8?B?bGxaejVKcTIxMVAvMzY5ajFWRTlGajVjU09sZUlGdFI1VXYyTXVWVmlndnRm?=
- =?utf-8?B?cVVqd1FiRWJkQzY5c21ZVEY0YUhsVnhrM3Z3b0IrL05oc1Rnb1hGRE1XZE53?=
- =?utf-8?B?R0VMc2FGQzZxcHYrbzM4NDFiUmZvWm45L21teHA1V1BrM2pyWGllTE9TcCtO?=
- =?utf-8?B?L0t4OSt5Z2RZbnpsOUo4cEVjV1lsN0ZUMXJTMTNmcjY2cmd2YllWTWplQVps?=
- =?utf-8?B?cjA1T0FneUNGT1N5WUwwRjFiR21JZVh2cVJHS3VNNGtlWlZiM3VSdEUyUEtP?=
- =?utf-8?B?S3BVa0thV1NYZWZ3a1VOc2U4ajhDaWlaRHIrY1Jpc2RmQVg5OGxOcm5KSEF0?=
- =?utf-8?B?SnZVcTBqVzZPSGNaU2x6SkFsUVpDYjFlZUE1c043S1pNbTdQOHhmdVFxTFV3?=
- =?utf-8?B?NEN4RE04VnVMQlB3eG84ckJ4d3hRSkY5SS9Fa3hrV1pBS2pmUHBpUEhDeWt2?=
- =?utf-8?B?MGhibkdvSlZDOWNyQWY4NXA2UzBqRGRHY3djcktaRnZKNy9lelBOZkkzNEgv?=
- =?utf-8?B?QWk2RnRZN0RNRVZMM0pJNHFlVzVXeUZaTmlMcWFFQ3N2SmNmOVN1d3AwRDFG?=
- =?utf-8?B?bmJ1V3NadXdtOGJoK0xtMzZqSmFoR3NENjVlM3grMTYrSSsvSTl1bjdZMnI2?=
- =?utf-8?B?MTIvY0c4VEUxQ3BMdVlxWDJyaXBIQi9LWUk5UEVjRlRFYU9iZmNVeEdPUnR3?=
- =?utf-8?B?aUZ3M0JzVDF0dGtYTk45N0FuWkk4V2ZKdmZuVjFUN3FXT2JYd0hrc3BIZlhO?=
- =?utf-8?B?YnJQWVFHdUIxTzZyT3VIVVV1Z05na2hZYWRtZit3YmFYSE1MWHgyV3pCRlRP?=
- =?utf-8?B?ZzBCWnlNVnovTUFLUU1hK0ptL0tzU0I2eW5URTNZRjRFeVY3Tlc0bVZhZ005?=
- =?utf-8?B?S0g4MjVqempFSGlZUUJSVjFxazVxbDdsVTd2YVZSN2U1aVN3c1ZKK3BYZ3FY?=
- =?utf-8?B?OGw2dE9TYWNBc0M5REsyL1ZuZ2lqSVRXbkJlZ20xUXVJOHdycEdVQWJHNytF?=
- =?utf-8?B?cDluVy82Y0FGcTZqUjM4VHEwdGdaZXVWWjdMNnVIMlZkenBsWHA2YjlJd2V3?=
- =?utf-8?B?SHBRbk9nSTBybk1zNVF2MEZzTFUzeXBLL055aGhUaFBZYU96aERXWDhpcHB0?=
- =?utf-8?B?bUY1Q1BLVStBWjVhUGIwRkFzV0F5MkhpbXlXbzJaWUFRVDE2K01BT1BkSkg4?=
- =?utf-8?B?RFVxQUxJN2crbHo1MXQ2bmVqL0NjTHhGRmsybVRad3VOOUdHOUQ3ZlVPejE4?=
- =?utf-8?B?eXdvcEJhWi93VUtUcXhleWFib0VHUVlhLzduWVNhOUJWMXBLK2VFNVgxMXQw?=
- =?utf-8?B?YWJuei9SNkJiQ0h6YUg4djRWSzJKTHhlb1hzeHU2QWV6Skc5czZ5cjhkUFVW?=
- =?utf-8?B?elo0bHVESFovWXgrTEVnbUVMK2c2ZGE5MlhSdlBlcTJGY0JsUjlDb1R2OHlj?=
- =?utf-8?Q?9IhUWk3ZduZ0SzAcCRrOs5ibACr/EkKt9nXlIJl?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 595bbc75-6fa7-4e5a-fe30-08d96effb8f1
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2021 17:24:45.0667
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pkF8w4HthUWc5k1Glln9pmiQ4WCczBoXkEZ4at4IA3DcgTByHjJw05omaS9QqrCyaHXUUq0rJhHjT8FCcZt7rcKVc/D/76W8+xJRXTY3FOq4kbaNE+1yr6UCFlOaBCq1
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6732
+References: <20210831191845.7928-1-michael.weiss@aisec.fraunhofer.de> <20210831191845.7928-2-michael.weiss@aisec.fraunhofer.de>
+In-Reply-To: <20210831191845.7928-2-michael.weiss@aisec.fraunhofer.de>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 3 Sep 2021 13:27:00 -0400
+Message-ID: <CAHC9VhSa6mMAPocicaMNsWJr6eMsM7G6Ap6Ywoy8m89cCf=txg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] dm: introduce audit event module for device mapper
+To:     =?UTF-8?Q?Michael_Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        Song Liu <song@kernel.org>, Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Eric Paris <eparis@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-audit@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/21 9:07 AM, Jason Gunthorpe wrote:
->>> drivers/infiniband/hw/qib/qib_sysfs.c:411:1: warning: performing pointer subtraction with a null pointer has undefined behavior
-> +[-Wnull-pointer-subtraction]
->    QIB_DIAGC_ATTR(rc_resends);
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~
->    drivers/infiniband/hw/qib/qib_sysfs.c:408:51: note: expanded from macro 'QIB_DIAGC_ATTR'
->                    .counter = &((struct qib_ibport *)0)->rvp.n_##N - (u64 *)0,    \
-> 
-> Use offsetof and accomplish the type check using static_assert.
-> 
-> Fixes: 4a7aaf88c89f ("RDMA/qib: Use attributes for the port sysfs")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+On Tue, Aug 31, 2021 at 3:19 PM Michael Wei=C3=9F
+<michael.weiss@aisec.fraunhofer.de> wrote:
+>
+> To be able to send auditing events to user space, we introduce a
+> generic dm-audit module. It provides helper functions to emit audit
+> events through the kernel audit subsystem. We claim the
+> AUDIT_DM_CTRL type=3D1336 and AUDIT_DM_EVENT type=3D1337 out of the
+> audit event messages range in the corresponding userspace api in
+> 'include/uapi/linux/audit.h' for those events.
+>
+> AUDIT_DM_CTRL is used to provide information about creation and
+> destruction of device mapper targets which are triggered by user space
+> admin control actions.
+> AUDIT_DM_EVENT is used to provide information about actual errors
+> during operation of the mapped device, showing e.g. integrity
+> violations in audit log.
+>
+> Following commits to device mapper targets actually will make use of
+> this to emit those events in relevant cases.
+>
+> The audit logs look like this if executing the following simple test:
+>
+>  # dd if=3D/dev/zero of=3Dtest.img bs=3D1M count=3D1024
+>  # losetup -f test.img
+>  # integritysetup -vD format --integrity sha256 -t 32 /dev/loop0
+>  # integritysetup open -D /dev/loop0 --integrity sha256 integritytest
+>  # integritysetup status integritytest
+>  # integritysetup close integritytest
+>  # integritysetup open -D /dev/loop0 --integrity sha256 integritytest
+>  # integritysetup status integritytest
+>  # dd if=3D/dev/urandom of=3D/dev/loop0 bs=3D512 count=3D1 seek=3D100000
+>  # dd if=3D/dev/mapper/integritytest of=3D/dev/null
+>
+> -------------------------
+> audit.log from auditd
+>
+> type=3DUNKNOWN[1336] msg=3Daudit(1630425039.363:184): module=3Dintegrity
+> op=3Dctr ppid=3D3807 pid=3D3819 auid=3D1000 uid=3D0 gid=3D0 euid=3D0 suid=
+=3D0 fsuid=3D0
+> egid=3D0 sgid=3D0 fsgid=3D0 tty=3Dpts2 ses=3D3 comm=3D"integritysetup"
+> exe=3D"/sbin/integritysetup" subj=3D=3Dunconfined dev=3D254:3
+> error_msg=3D'success' res=3D1
+> type=3DUNKNOWN[1336] msg=3Daudit(1630425039.471:185): module=3Dintegrity
+> op=3Ddtr ppid=3D3807 pid=3D3819 auid=3D1000 uid=3D0 gid=3D0 euid=3D0 suid=
+=3D0 fsuid=3D0
+> egid=3D0 sgid=3D0 fsgid=3D0 tty=3Dpts2 ses=3D3 comm=3D"integritysetup"
+> exe=3D"/sbin/integritysetup" subj=3D=3Dunconfined dev=3D254:3
+> error_msg=3D'success' res=3D1
+> type=3DUNKNOWN[1336] msg=3Daudit(1630425039.611:186): module=3Dintegrity
+> op=3Dctr ppid=3D3807 pid=3D3819 auid=3D1000 uid=3D0 gid=3D0 euid=3D0 suid=
+=3D0 fsuid=3D0
+> egid=3D0 sgid=3D0 fsgid=3D0 tty=3Dpts2 ses=3D3 comm=3D"integritysetup"
+> exe=3D"/sbin/integritysetup" subj=3D=3Dunconfined dev=3D254:3
+> error_msg=3D'success' res=3D1
+> type=3DUNKNOWN[1336] msg=3Daudit(1630425054.475:187): module=3Dintegrity
+> op=3Ddtr ppid=3D3807 pid=3D3819 auid=3D1000 uid=3D0 gid=3D0 euid=3D0 suid=
+=3D0 fsuid=3D0
+> egid=3D0 sgid=3D0 fsgid=3D0 tty=3Dpts2 ses=3D3 comm=3D"integritysetup"
+> exe=3D"/sbin/integritysetup" subj=3D=3Dunconfined dev=3D254:3
+> error_msg=3D'success' res=3D1
+>
+> type=3DUNKNOWN[1336] msg=3Daudit(1630425073.171:191): module=3Dintegrity
+> op=3Dctr ppid=3D3807 pid=3D3883 auid=3D1000 uid=3D0 gid=3D0 euid=3D0 suid=
+=3D0 fsuid=3D0
+> egid=3D0 sgid=3D0 fsgid=3D0 tty=3Dpts2 ses=3D3 comm=3D"integritysetup"
+> exe=3D"/sbin/integritysetup" subj=3D=3Dunconfined dev=3D254:3
+> error_msg=3D'success' res=3D1
+>
+> type=3DUNKNOWN[1336] msg=3Daudit(1630425087.239:192): module=3Dintegrity
+> op=3Ddtr ppid=3D3807 pid=3D3902 auid=3D1000 uid=3D0 gid=3D0 euid=3D0 suid=
+=3D0 fsuid=3D0
+> egid=3D0 sgid=3D0 fsgid=3D0 tty=3Dpts2 ses=3D3 comm=3D"integritysetup"
+> exe=3D"/sbin/integritysetup" subj=3D=3Dunconfined dev=3D254:3
+> error_msg=3D'success' res=3D1
+>
+> type=3DUNKNOWN[1336] msg=3Daudit(1630425093.755:193): module=3Dintegrity
+> op=3Dctr ppid=3D3807 pid=3D3906 auid=3D1000 uid=3D0 gid=3D0 euid=3D0 suid=
+=3D0 fsuid=3D0
+> egid=3D0 sgid=3D0 fsgid=3D0 tty=3Dpts2 ses=3D3 comm=3D"integritysetup"
+> exe=3D"/sbin/integritysetup" subj=3D=3Dunconfined dev=3D254:3
+> error_msg=3D'success' res=3D1
+>
+> type=3DUNKNOWN[1337] msg=3Daudit(1630425112.119:194): module=3Dintegrity
+> op=3Dintegrity-checksum dev=3D254:3 sector 77480 res=3D0
+> type=3DUNKNOWN[1337] msg=3Daudit(1630425112.119:195): module=3Dintegrity
+> op=3Dintegrity-checksum dev=3D254:3 sector 77480 res=3D0
+> type=3DUNKNOWN[1337] msg=3Daudit(1630425112.119:196): module=3Dintegrity
+> op=3Dintegrity-checksum dev=3D254:3 sector 77480 res=3D0
+> type=3DUNKNOWN[1337] msg=3Daudit(1630425112.119:197): module=3Dintegrity
+> op=3Dintegrity-checksum dev=3D254:3 sector 77480 res=3D0
+> type=3DUNKNOWN[1337] msg=3Daudit(1630425112.119:198): module=3Dintegrity
+> op=3Dintegrity-checksum dev=3D254:3 sector 77480 res=3D0
+> type=3DUNKNOWN[1337] msg=3Daudit(1630425112.119:199): module=3Dintegrity
+> op=3Dintegrity-checksum dev=3D254:3 sector 77480 res=3D0
+> type=3DUNKNOWN[1337] msg=3Daudit(1630425112.119:200): module=3Dintegrity
+> op=3Dintegrity-checksum dev=3D254:3 sector 77480 res=3D0
+> type=3DUNKNOWN[1337] msg=3Daudit(1630425112.119:201): module=3Dintegrity
+> op=3Dintegrity-checksum dev=3D254:3 sector 77480 res=3D0
+> type=3DUNKNOWN[1337] msg=3Daudit(1630425112.119:202): module=3Dintegrity
+> op=3Dintegrity-checksum dev=3D254:3 sector 77480 res=3D0
+> type=3DUNKNOWN[1337] msg=3Daudit(1630425112.119:203): module=3Dintegrity
+> op=3Dintegrity-checksum dev=3D254:3 sector 77480 res=3D0
+>
+> Signed-off-by: Michael Wei=C3=9F <michael.weiss@aisec.fraunhofer.de>
 > ---
->  drivers/infiniband/hw/qib/qib_sysfs.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/hw/qib/qib_sysfs.c b/drivers/infiniband/hw/qib/qib_sysfs.c
-> index d57e49de6650be..452e2355d24eeb 100644
-> --- a/drivers/infiniband/hw/qib/qib_sysfs.c
-> +++ b/drivers/infiniband/hw/qib/qib_sysfs.c
-> @@ -403,9 +403,11 @@ static ssize_t diagc_attr_store(struct ib_device *ibdev, u32 port_num,
->  }
->  
->  #define QIB_DIAGC_ATTR(N)                                                      \
-> +	static_assert(&((struct qib_ibport *)0)->rvp.n_##N != (u64 *)NULL);    \
->  	static struct qib_diagc_attr qib_diagc_attr_##N = {                    \
->  		.attr = __ATTR(N, 0664, diagc_attr_show, diagc_attr_store),    \
-> -		.counter = &((struct qib_ibport *)0)->rvp.n_##N - (u64 *)0,    \
-> +		.counter =                                                     \
-> +			offsetof(struct qib_ibport, rvp.n_##N) / sizeof(u64)   \
->  	}
->  
->  QIB_DIAGC_ATTR(rc_resends);
-> 
-> base-commit: 6a217437f9f5482a3f6f2dc5fcd27cf0f62409ac
-> 
+>  drivers/md/Kconfig         | 10 +++++
+>  drivers/md/Makefile        |  4 ++
+>  drivers/md/dm-audit.c      | 79 ++++++++++++++++++++++++++++++++++++++
+>  drivers/md/dm-audit.h      | 62 ++++++++++++++++++++++++++++++
+>  include/uapi/linux/audit.h |  2 +
+>  5 files changed, 157 insertions(+)
+>  create mode 100644 drivers/md/dm-audit.c
+>  create mode 100644 drivers/md/dm-audit.h
+>
+> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+> index 0602e82a9516..48adbec12148 100644
+> --- a/drivers/md/Kconfig
+> +++ b/drivers/md/Kconfig
+> @@ -608,6 +608,7 @@ config DM_INTEGRITY
+>         select CRYPTO
+>         select CRYPTO_SKCIPHER
+>         select ASYNC_XOR
+> +       select DM_AUDIT if AUDIT
+>         help
+>           This device-mapper target emulates a block device that has
+>           additional per-sector tags that can be used for storing
+> @@ -640,4 +641,13 @@ config DM_ZONED
+>
+>           If unsure, say N.
+>
+> +config DM_AUDIT
+> +       bool "DM audit events"
+> +       depends on AUDIT
+> +       help
+> +         Generate audit events for device-mapper.
+> +
+> +         Enables audit logging of several security relevant events in th=
+e
+> +         particular device-mapper targets, especially the integrity targ=
+et.
+> +
+>  endif # MD
+> diff --git a/drivers/md/Makefile b/drivers/md/Makefile
+> index a74aaf8b1445..2f83d649500d 100644
+> --- a/drivers/md/Makefile
+> +++ b/drivers/md/Makefile
+> @@ -103,3 +103,7 @@ endif
+>  ifeq ($(CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG),y)
+>  dm-verity-objs                 +=3D dm-verity-verify-sig.o
+>  endif
+> +
+> +ifeq ($(CONFIG_DM_AUDIT),y)
+> +dm-mod-objs                    +=3D dm-audit.o
+> +endif
+> diff --git a/drivers/md/dm-audit.c b/drivers/md/dm-audit.c
+> new file mode 100644
+> index 000000000000..761ecfdcd49a
+> --- /dev/null
+> +++ b/drivers/md/dm-audit.c
+> @@ -0,0 +1,79 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Creating audit records for mapped devices.
+> + *
+> + * Copyright (C) 2021 Fraunhofer AISEC. All rights reserved.
+> + *
+> + * Authors: Michael Wei=C3=9F <michael.weiss@aisec.fraunhofer.de>
+> + */
+> +
+> +#include <linux/audit.h>
+> +#include <linux/module.h>
+> +#include <linux/device-mapper.h>
+> +#include <linux/bio.h>
+> +#include <linux/blkdev.h>
+> +
+> +#include "dm-audit.h"
+> +#include "dm-core.h"
+> +
+> +static struct audit_buffer *dm_audit_log_start(int audit_type,
+> +                                              const char *dm_msg_prefix,
+> +                                              const char *op)
+> +{
+> +       struct audit_buffer *ab;
+> +
+> +       if (audit_enabled =3D=3D AUDIT_OFF)
+> +               return NULL;
+> +
+> +       ab =3D audit_log_start(audit_context(), GFP_KERNEL, audit_type);
+> +       if (unlikely(!ab))
+> +               return NULL;
+> +
+> +       audit_log_format(ab, "module=3D%s op=3D%s", dm_msg_prefix, op);
+> +       return ab;
+> +}
+> +
+> +void dm_audit_log_ti(int audit_type, const char *dm_msg_prefix, const ch=
+ar *op,
+> +                    struct dm_target *ti, int result)
+> +{
+> +       struct audit_buffer *ab;
+> +       struct mapped_device *md =3D dm_table_get_md(ti->table);
+> +       int dev_major =3D dm_disk(md)->major;
+> +       int dev_minor =3D dm_disk(md)->first_minor;
+> +
+> +       ab =3D dm_audit_log_start(audit_type, dm_msg_prefix, op);
+> +       if (unlikely(!ab))
+> +               return;
+> +
+> +       switch (audit_type) {
+> +       case AUDIT_DM_CTRL:
+> +               audit_log_task_info(ab);
+> +               audit_log_format(ab, " dev=3D%d:%d error_msg=3D'%s'", dev=
+_major,
+> +                                dev_minor, !result ? ti->error : "succes=
+s");
+> +               break;
+> +       case AUDIT_DM_EVENT:
+> +               audit_log_format(ab, " dev=3D%d:%d sector=3D?", dev_major=
+,
+> +                                dev_minor);
+> +               break;
+> +       }
+> +       audit_log_format(ab, " res=3D%d", result);
+> +       audit_log_end(ab);
+> +}
+> +EXPORT_SYMBOL_GPL(dm_audit_log_ti);
 
-Looks fine.
+Just checking, but are you okay when the inevitable happens and
+someone passes an @audit_type that is not either AUDIT_CM_CTRL or
+AUDIT_DM_EVENT?  Right now that will succeed without error and give a
+rather short audit record.
 
-Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+> +void dm_audit_log_bio(const char *dm_msg_prefix, const char *op,
+> +                     struct bio *bio, sector_t sector, int result)
+> +{
+> +       struct audit_buffer *ab;
+> +       int dev_major =3D MAJOR(bio->bi_bdev->bd_dev);
+> +       int dev_minor =3D MINOR(bio->bi_bdev->bd_dev);
+> +
+> +       ab =3D dm_audit_log_start(AUDIT_DM_EVENT, dm_msg_prefix, op);
+> +       if (unlikely(!ab))
+> +               return;
+> +
+> +       audit_log_format(ab, " dev=3D%d:%d sector %llu res=3D%d",
+> +                        dev_major, dev_minor, sector, result);
+
+I think you forgot the "=3D" after "sector", e.g. "sector=3D%llu".
+
+> +       audit_log_end(ab);
+> +}
+> +EXPORT_SYMBOL_GPL(dm_audit_log_bio);
+
+--=20
+paul moore
+www.paul-moore.com
