@@ -2,124 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC373FFB60
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685A73FFB63
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348127AbhICHzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 03:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
+        id S1348140AbhICHzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 03:55:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348107AbhICHzP (ORCPT
+        with ESMTP id S1348135AbhICHzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 03:55:15 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E01C061575;
-        Fri,  3 Sep 2021 00:54:15 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id s29so3688427pfw.5;
-        Fri, 03 Sep 2021 00:54:15 -0700 (PDT)
+        Fri, 3 Sep 2021 03:55:50 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20046C061575;
+        Fri,  3 Sep 2021 00:54:51 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id a66so4976851qkc.1;
+        Fri, 03 Sep 2021 00:54:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=CMZ1yyi16oqxGNmWrTRmixFhuOGqIwUUrsc3+oEvQLQ=;
-        b=AeyDQY9c3UDEIOHYavQLmYnA94d4zpvooNUNsPC6+jzPddrZ/pS3k7b+8BRCFd6sEt
-         VZKFplcMfjmfbKoCt+rW/tQ27LEkQ+q+AGRPyRYbFPB7LB94D15KgYM3Ajov0MCONCg+
-         UpOXU7peWZsCcu9VzLgCseL9vXyUTd33VTXy1jS2Ty3YHr1/+pM1QZc7vK1nbYKur7HR
-         a9L/LMxtoUU76mw/YQaz5vLaV6edQ9Gh1O43T7fpWBVyAGImNH+X3oP+ahbln9IG7YoV
-         TbLdxqBUcPBCWqx/frvu5HEiLJzqC1DTY5ofwPFY5iK+NEJHwJQ9AzEz0QgHMA4qcwJi
-         ufeQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b5fuqcIdn5J86qWLEUURCKMJp4w9lu6BbCFdQDOMDsI=;
+        b=RmjQtbWU5lPM3BeSZtYcerCT37CdwZTY0xgGphLc+tTVNbE6blDKMqxdVuQrj45CwL
+         ZTDuQ3VBy9V2i5wS6mir8KQ6W4R2Sbl4AwVpaDaKbvwlASfq04XFnn7oJw3GXEhfUL8y
+         FnFYfhzEtdqJt17JObZArLQc38R5n+4g5UNSPI8WP4yldQt9+V5rMBkZBHDoSYyG7fxk
+         pUK97+FFF+HMObPJn+EDjixzMDkGmSQybmzwfSOQlOPFgHkEObJSWotw/JEw/WfeQoCE
+         dlhwIS0wIiWhGjmFqhM2jsRJOd7I+aAGW2/4yBJMm37ZOmuxsUaUTo0uibFNRA0HzYtM
+         r+qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=CMZ1yyi16oqxGNmWrTRmixFhuOGqIwUUrsc3+oEvQLQ=;
-        b=D0S1etV3IU/NMZpC+UL+y+K//wyVocvwqhGRtyGTkj5Vai0T8b9fvps3jcHt7gOwai
-         dxdOozb7Q+LMBhUUQX/n+K5KklGHSbIeO32FRG2dW58MS4NubV3+Rw0pCNfGz2ZTV/eZ
-         LvQSghTNM+Bm+GjEq9AzM72t3UsD8XhJZLaQH0KCeDXFJcCYl6VwibaNMGlKv/DZ0fWr
-         wrR7KGQIWQbaEaOsSl9ifcdgchLujCHdo6ipPnOAHmX3k+SYJ2Zu+sfVVWmHcvCrvO9P
-         KrUPSUPzL5qydofS/36q+YmE609VIiRDOGKrzxwUna+rT+wVVCKuetG+1ZKmJhyhxQhX
-         LaVA==
-X-Gm-Message-State: AOAM530qkU5SflJGJhKGWVatqOSw13at7mZuEUFoBficfqYsVe9C9Jy2
-        636YOgXBp6MNrNfwx9D1eh8Yely2VRZtLahQBQ==
-X-Google-Smtp-Source: ABdhPJyAqvm3zibS819NJDXGX6KUDZ6JLuFBr2kOplBsGryaQFcudKuOunst68KqG25+1XWL9bBBQeUuXt9MeD3u+jo=
-X-Received: by 2002:a05:6a00:c81:b029:30e:21bf:4c15 with SMTP id
- a1-20020a056a000c81b029030e21bf4c15mr2080205pfv.70.1630655655266; Fri, 03 Sep
- 2021 00:54:15 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b5fuqcIdn5J86qWLEUURCKMJp4w9lu6BbCFdQDOMDsI=;
+        b=s4Aeb5KPQPki9BoaAzze2RkoYci2YEu58OVxHZQaZ33S/X07+dg4ZgqSZPbGGLHhXg
+         loSGZMtQ3tbXp56kiwr/cAh1Uo/3qGyAr/wtlgal/hQxBpGfySQ5TzMkTAq2G1ds2M7m
+         e5Xn9hNxvSTj/hYf2jxKgh3873A88v3/f20mTnZg/0ZuAHyK0rQgJ7guyBBqDNwG3KrS
+         wPdFQ50B5KUZT6hQGM3BXwiKahd70bC+EHfSDs74Bw8gpih2imkhUkT2SI6nQ2+nWB8G
+         yjMrgtKaOakoY+7Mpc/x2YARHgQdj0sKfavO8N+w+SxRqR9x67+fTc93Nnb+noRnBPpV
+         VKrg==
+X-Gm-Message-State: AOAM531HM8HbNlX6P9ol1Jcpm0qpN2f2A2qoMUtGrHdCdeRNrEgXltPT
+        vhaSh3vZx1eEuZacNfArHUTfx5WnKPRgxJM+DE8=
+X-Google-Smtp-Source: ABdhPJxcIUKvKHIhhX1gJAUzH8+mLGFCf1ojqji/a5xyTvbjMfQmQjw71WPSfBZsbgqDF8EPawH0kw25DCzu8zy1LFM=
+X-Received: by 2002:a05:620a:1195:: with SMTP id b21mr2215857qkk.450.1630655690274;
+ Fri, 03 Sep 2021 00:54:50 -0700 (PDT)
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Fri, 3 Sep 2021 15:54:04 +0800
-Message-ID: <CACkBjsYG3O_irFOZqjq5dJVDwW8pSUR_p6oO4BUaabWcx-hQCQ@mail.gmail.com>
-Subject: WARNING in sk_stream_kill_queues
-To:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
+References: <1629876516-16513-1-git-send-email-shengjiu.wang@nxp.com> <YTDq/kWFPLHUnHMN@robh.at.kernel.org>
+In-Reply-To: <YTDq/kWFPLHUnHMN@robh.at.kernel.org>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Fri, 3 Sep 2021 15:54:39 +0800
+Message-ID: <CAA+D8AOPRQRPtafZ2yryP8pn7=Foaj6ctehpZ9S_c1YQ3kUL9Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: remoteproc: Add fsl,imx-dsp-rproc
+ binding document
+To:     Rob Herring <robh@kernel.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Ohad Ben Cohen <ohad@wizery.com>, bjorn.andersson@linaro.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-remoteproc@vger.kernel.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Rob
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+On Thu, Sep 2, 2021 at 11:17 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, Aug 25, 2021 at 03:28:35PM +0800, Shengjiu Wang wrote:
+> > Define the compatible string and properties needed by imx_dsp_rproc
+> > driver.
+> >
+> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > ---
+> > changes in v2:
+> > - add items for clock-names
+> > - change syscon to fsl,dsp-ctrl
+> >
+> >  .../remoteproc/fsl,imx-dsp-rproc.yaml         | 150 ++++++++++++++++++
+> >  1 file changed, 150 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml b/Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml
+> > new file mode 100644
+> > index 000000000000..edf6e4b8d7bb
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml
+> > @@ -0,0 +1,150 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/remoteproc/fsl,imx-dsp-rproc.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: i.MX DSP Remoteproc Devices
+> > +
+> > +maintainers:
+> > +  - Shengjiu Wang <shengjiu.wang@nxp.com>
+> > +
+> > +description:
+> > +  This binding provides support for DSP processors found on i.mX family of SoCs
+>
+> i.MX
 
-HEAD commit: 9e9fb7655ed58 Merge tag 'net-next-5.15'
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1AXEQDnn7SPgFAMjqbL03_24-X_8YHoAq/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1zgxbwaYkrM26KEmJ-5sUZX57gfXtRrwA/view?usp=sharing
-C reproducer: https://drive.google.com/file/d/1qa4FVNoO-EsJGuDMtGlTxtHW0li-vMSP/view?usp=sharing
-Syzlang reproducer:
-https://drive.google.com/file/d/1pL6atNID5ZGzH4GceqyBCOC5IjFfiaVN/view?usp=sharing
+I will update it.
 
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - fsl,imx8qxp-hifi4
+> > +      - fsl,imx8qm-hifi4
+> > +      - fsl,imx8mp-hifi4
+> > +      - fsl,imx8ulp-hifi4
+> > +
+> > +  clocks:
+> > +    description:
+> > +      Main functional clock for the remote processor
+> > +    minItems: 1
+> > +    maxItems: 32
+> > +
+> > +  clock-names:
+> > +    description: |
+> > +      List of clock names for the remote processor.
+> > +      dsp_clkx for clocks of dsp itself.
+> > +      per_clkx for clocks of peripherals used by dsp.
+>
+> I still don't like your random collection of clocks. What if you have
+> other resources besides clocks to manage? Pin mux, resets, power
+> domains, etc. It would be better if you describe the peripherals in DT
+> and then link to them here. But maybe the devices themselves aren't
+> visible?
 
- ------------[ cut here ]------------
-WARNING: CPU: 1 PID: 10229 at net/core/stream.c:207
-sk_stream_kill_queues+0x162/0x190 net/core/stream.c:207
-Modules linked in:
-CPU: 1 PID: 10229 Comm: syz-executor Not tainted 5.14.0+ #12
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-RIP: 0010:sk_stream_kill_queues+0x162/0x190 net/core/stream.c:207
-Code: 41 5c e9 21 3b ce fd e8 1c 3b ce fd 89 de 48 89 ef e8 62 68 fe
-ff e8 0d 3b ce fd 8b 95 68 02 00 00 85 d2 74 ca e8 fe 3a ce fd <0f> 0b
-e8 f7 3a ce fd 8b 85 20 02 00 00 85 c0 74 c3 e8 e8 3a ce fd
-RSP: 0018:ffffc900080b7c98 EFLAGS: 00010202
-RAX: 000000000002a750 RBX: 0000000000000180 RCX: ffffc90002c0d000
-RDX: 0000000000040000 RSI: ffffffff836939f2 RDI: ffff8881031f0b40
-RBP: ffff8881031f0b40 R08: 0000000000000000 R09: 0000000000000000
-R10: 000000000000000d R11: 000000000004f380 R12: ffff8881031f0c90
-R13: ffff8881031f0bc0 R14: ffff8881031f0cf0 R15: 0000000000000000
-FS:  00007f311adcb700(0000) GS:ffff88813dc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000732190 CR3: 000000010ab01000 CR4: 0000000000752ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-PKRU: 55555554
-Call Trace:
- inet_csk_destroy_sock+0x6f/0x1a0 net/ipv4/inet_connection_sock.c:1012
- __tcp_close+0x512/0x610 net/ipv4/tcp.c:2869
- tcp_close+0x29/0xa0 net/ipv4/tcp.c:2881
- inet_release+0x58/0xb0 net/ipv4/af_inet.c:431
- __sock_release+0x47/0xf0 net/socket.c:649
- sock_close+0x18/0x20 net/socket.c:1314
- __fput+0xdf/0x380 fs/file_table.c:280
- task_work_run+0x86/0xd0 kernel/task_work.c:164
- get_signal+0xde6/0x10b0 kernel/signal.c:2596
- arch_do_signal_or_restart+0xa9/0x860 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0xf2/0x280 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
- do_syscall_64+0x40/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x46a9a9
-Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f311adcac58 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
-RAX: 0000000000069340 RBX: 000000000078c0a0 RCX: 000000000046a9a9
-RDX: 0000000000088012 RSI: 0000000020000380 RDI: 0000000000000004
-RBP: 00000000004e4042 R08: 0000000000000000 R09: 0000000000000027
-R10: 000000000020c49a R11: 0000000000000246 R12: 000000000078c0a0
-R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffe75b47830
+Ok,  I will remove these per_clks in next version.
+Maybe it is better to handle them in firmware side.
+
+>
+> > +    minItems: 1
+> > +    maxItems: 26
+> > +    items:
+> > +      - const: dsp_clk1
+> > +      - const: dsp_clk2
+> > +      - const: dsp_clk3
+> > +      - const: dsp_clk4
+> > +      - const: dsp_clk5
+> > +      - const: dsp_clk6
+> > +      - const: dsp_clk7
+> > +      - const: dsp_clk8
+>
+> Surely you can name these by function? e.g. core, bus, axi, etc.
+
+Ok, I will update them in next version.
+
+Thanks for reviewing.
+
+Best regards
+Wang shengjiu
+
+>
+> > +      - const: per_clk1
+> > +      - const: per_clk2
+> > +      - const: per_clk3
+> > +      - const: per_clk4
+> > +      - const: per_clk5
+> > +      - const: per_clk6
+> > +      - const: per_clk7
+> > +      - const: per_clk8
+> > +      - const: per_clk9
+> > +      - const: per_clk10
+> > +      - const: per_clk11
+> > +      - const: per_clk12
+> > +      - const: per_clk13
+> > +      - const: per_clk14
+> > +      - const: per_clk15
+> > +      - const: per_clk16
+> > +      - const: per_clk17
+> > +      - const: per_clk18
+> > +
+> > +  fsl,dsp-ctrl:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle
+> > +    description:
+> > +      Phandle to syscon block which provide access for processor enablement
+> > +
+> > +  mbox-names:
+> > +    items:
+> > +      - const: tx
+> > +      - const: rx
+> > +      - const: rxdb
+> > +
+> > +  mboxes:
+> > +    description:
+> > +      This property is required only if the rpmsg/virtio functionality is used.
+> > +      List of <&phandle type channel> - 1 channel for TX, 1 channel for RX, 1 channel for RXDB.
+> > +      (see mailbox/fsl,mu.yaml)
+> > +    minItems: 1
+> > +    maxItems: 3
+> > +
+> > +  firmware-name:
+> > +    description: |
+> > +      Default name of the firmware to load to the remote processor.
+> > +
+> > +  memory-region:
+> > +    description:
+> > +      If present, a phandle for a reserved memory area that used for vdev buffer,
+> > +      resource table, vring region and others used by remote processor.
+> > +    minItems: 1
+> > +    maxItems: 32
+> > +
+> > +  reg:
+> > +    description: |
+> > +      Address space for any remoteproc memories present on the SoC.
+> > +
+> > +  power-domains:
+> > +    minItems: 1
+> > +    maxItems: 32
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - mboxes
+> > +  - mbox-names
+> > +  - clocks
+> > +  - clock-names
+> > +  - firmware-name
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/imx8mp-clock.h>
+> > +    dsp_reserved: dsp@92400000 {
+> > +      reg = <0x92400000 0x1000000>;
+> > +      no-map;
+> > +    };
+> > +    dsp_vdev0vring0: vdev0vring0@942f0000 {
+> > +      reg = <0x942f0000 0x8000>;
+> > +      no-map;
+> > +    };
+> > +    dsp_vdev0vring1: vdev0vring1@942f8000 {
+> > +      reg = <0x942f8000 0x8000>;
+> > +      no-map;
+> > +    };
+> > +    dsp_vdev0buffer: vdev0buffer@94300000 {
+> > +      compatible = "shared-dma-pool";
+> > +      reg = <0x94300000 0x100000>;
+> > +      no-map;
+> > +    };
+> > +
+> > +    dsp: dsp@3b6e8000 {
+> > +      compatible = "fsl,imx8mp-hifi4";
+> > +      reg = <0x3B6E8000 0x88000>;
+> > +      clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_OCRAMA_IPG>,
+> > +               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSP_ROOT>,
+> > +               <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_DSPDBG_ROOT>;
+> > +      clock-names = "dsp_clk1", "dsp_clk2", "dsp_clk3";
+> > +      firmware-name = "imx/dsp/hifi4.bin";
+> > +      power-domains = <&audiomix_pd>;
+> > +      mbox-names = "tx", "rx", "rxdb";
+> > +      mboxes = <&mu2 0 0>,
+> > +               <&mu2 1 0>,
+> > +               <&mu2 3 0>;
+> > +      memory-region = <&dsp_vdev0buffer>, <&dsp_vdev0vring0>,
+> > +                      <&dsp_vdev0vring1>, <&dsp_reserved>;
+> > +      fsl,dsp-ctrl = <&audio_blk_ctrl>;
+> > +    };
+> > --
+> > 2.17.1
+> >
+> >
