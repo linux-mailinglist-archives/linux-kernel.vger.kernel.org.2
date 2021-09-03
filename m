@@ -2,105 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CD7400839
+	by mail.lfdr.de (Postfix) with ESMTP id F15A640083B
 	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350722AbhICXXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 19:23:39 -0400
-Received: from dnyon.com ([82.223.165.189]:56426 "EHLO dnyon.com"
+        id S1350744AbhICXZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 19:25:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242236AbhICXXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 19:23:38 -0400
-Received: from dnyon.com (55.red-81-39-194.dynamicip.rima-tde.net [81.39.194.55])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dnyon.com (Postfix) with ESMTPSA id E27503FEB7;
-        Fri,  3 Sep 2021 23:22:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dnyon.com; s=mail;
-        t=1630711356; bh=tchsqUj+OfPK4wG9xezTZ/SvhX1irYZ1qa7IOGO6KLM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mo89RMoN243CTz4Z3TSYPsPPR7+S9ZVK9v/JFPzAwQM1o0plDtLKp8OU7iYHaGCHH
-         WFYC6/GMynzNweAVzwbvbrbNgBlJcfAPnnGNljK8h6A6rROebEmrXWs9LywTmuETi8
-         J6qokAgPzwa+SOLlIbN9Qok1b/+y5/ClwBFQKP7xKlRKAmL8qbM3/jxyNaJ6XFtgy/
-         2QY65Pc6Dpzu3jNjKQkdFUlxjQf0dpNU/Lhcu2W3gOeY09inbkdvTiSj5CwDg0V4dm
-         HNHkrapIghO84BULOW9Hz+yfVbxCsICJFNx4cnXqC3O5RMrKlOscpGMFcJ4uelyczH
-         U++nWCwdyuVyw==
-From:   Alejandro Tafalla <atafalla@dnyon.com>
-To:     =?ISO-8859-1?Q?P=E9ter?= Ujfalusi <peter.ujfalusi@linux.intel.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v3 1/2] ASoC: max98927: Handle reset gpio when probing i2c
-Date:   Sat, 04 Sep 2021 01:22:26 +0200
-Message-ID: <5503823.DvuYhMxLoT@alexpc>
-In-Reply-To: <80973391-4579-e14b-6def-ed81f367a4a5@linux.intel.com>
-References: <cover.1630632805.git.atafalla@dnyon.com> <04a18f4115539752429da55fb857834cea0944e5.1630632805.git.atafalla@dnyon.com> <80973391-4579-e14b-6def-ed81f367a4a5@linux.intel.com>
+        id S242236AbhICXZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 19:25:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17D4460FDC;
+        Fri,  3 Sep 2021 23:24:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630711442;
+        bh=ACCxEolEsBare+4plIWhMemWYTJcclcvIZOrthMVAZM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ie3jZOjuQEegdSKsBXeNP5mzCP/oy8RYbKJ5vBRRmJm+QfeUjlJSH3cddq8ab3rHo
+         kSmBI4RG6QnRyRXHSlMZM8LKOEsqwguAJVlVmDWW6bmJf+l9xQDcXhLbD/BHMJ83XJ
+         /8O76OQD9aTe5HEnuryBrnaihzGJK2YqtC8sLa/JWme4EnelJw2BLEotA6u8DazbtZ
+         VVC2JVoJWToAipnbGm4fhzvj9o31hI3EFZ02HUgVx18FaphDOUE1/HuhXgLdUAd1ID
+         4NGr2R3r6khQI7pCGjl8l3pip8BVD85J0Iz+8GyIPKZpnZ4FVO5ncUcy8z9/bKtRQW
+         muZk9jPiHkFXw==
+Date:   Fri, 3 Sep 2021 16:23:59 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Marco Elver <elver@google.com>, Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, qemu-s390x <qemu-s390x@nongnu.org>
+Subject: Re: [PATCH] s390/unwind: use current_frame_address() to unwind
+ current task
+Message-ID: <YTKuj0Bu0CJRKqU7@Ryzen-9-3900X.localdomain>
+References: <your-ad-here.call-01630505035-ext-2999@work.hours>
+ <patch.git-04dd26be3043.your-ad-here.call-01630504868-ext-6188@work.hours>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <patch.git-04dd26be3043.your-ad-here.call-01630504868-ext-6188@work.hours>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/9/21 11:20 P=E9ter Ujfalusi wrote:
->=20
-> If this is a 'reset' pin then it's ACTIVE state is when it places the
-> device to _reset_.
-> GPIOD_OUT_LOW =3D=3D Deasserted state of the GPIO line.
->=20
-> If the reset pin should be pulled low for reset (GPIO_ACTIVE_LOW) and
-> you want the device initially  in reset then you need GPIOD_OUT_HIGH,
-> because:
-> GPIOD_OUT_HIGH =3D=3D Asserted state of the GPIO line.
->=20
-> Same goes for the gpiod_set_value_cansleep():
-> 0 - deasserted
-> 1 =3D asserted
->=20
-> and this all depends on how the gpio is defined in DT
-> (GPIO_ACTIVE_LOW/HIGH), which depends on how the documentation refers to
-> the pin...
->=20
-> reset pin:
-> low to keep the device in reset, high to release it from reset:
-> GPIO_ACTIVE_LOW
-> gpiod_set_value_cansleep(0) to enable
-> gpiod_set_value_cansleep(1) to disable
->=20
->=20
-> enable pin:
-> high to enable the part, low to disable
-> GPIO_ACTIVE_HIGH
-> gpiod_set_value_cansleep(1) to enable
-> gpiod_set_value_cansleep(0) to disable
->=20
-> In both cases
-> electrical 0: reset/disable
-> electrical 1: enable
-I'll change it to be consistent in the next version. Thank you for the=20
-explanation.
-=20
-> > +	if (IS_ERR(reset_gpio)) {
-> > +		ret =3D PTR_ERR(reset_gpio);
-> > +		return dev_err_probe(&i2c->dev, ret, "failed to request=20
-GPIO reset
-> > pin"); +	}
-> > +
-> > +	if (reset_gpio) {
-> > +		usleep_range(8000, 10000);
-> > +		gpiod_set_value_cansleep(reset_gpio, 1);
-> > +		usleep_range(1000, 5000);
-> > +	}
-> > +
->=20
-> You might want to put the device to reset on remove at minimum.
-Okay, thanks.
+On Wed, Sep 01, 2021 at 04:05:59PM +0200, Vasily Gorbik wrote:
+> current_stack_pointer() simply returns current value of %r15. If
+> current_stack_pointer() caller allocates stack (which is the case in
+> unwind code) %r15 points to a stack frame allocated for callees, meaning
+> current_stack_pointer() caller (e.g. stack_trace_save) will end up in
+> the stacktrace. This is not expected by stack_trace_save*() callers and
+> causes problems.
+> 
+> current_frame_address() on the other hand returns function stack frame
+> address, which matches %r15 upon function invocation. Using it in
+> get_stack_pointer() makes it more aligned with x86 implementation
+> (according to BACKTRACE_SELF_TEST output) and meets stack_trace_save*()
+> caller's expectations, notably KCSAN.
+> 
+> Also make sure unwind_start is always inlined.
+> 
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
+> Suggested-by: Marco Elver <elver@google.com>
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 
-=2D-=20
-Alejandro Tafalla
+Sorry for the late response and I see that this has already been applied
+but I took this for a spin and all of the tests pass with clang-14 in
+QEMU. Thank you for the quick fix so that we can get this turned on in
+CI :)
 
+[   10.362073]     ok 1 - test_basic
+[   13.870386]     ok 2 - test_concurrent_races
+[   17.379643]     ok 3 - test_novalue_change
+[   17.393315]     ok 4 - test_novalue_change_exception
+[   17.409815]     ok 5 - test_unknown_origin
+[   20.914289]     ok 6 - test_write_write_assume_atomic
+[   20.982545]     ok 7 - test_write_write_struct
+[   21.106135]     ok 8 - test_write_write_struct_part
+[   24.622205]     ok 9 - test_read_atomic_write_atomic
+[   24.662048]     ok 10 - test_read_plain_atomic_write
+[   24.775291]     ok 11 - test_read_plain_atomic_rmw
+[   28.294457]     ok 12 - test_zero_size_access
+[   31.829529]     ok 13 - test_data_race
+[   31.867174]     ok 14 - test_assert_exclusive_writer
+[   31.929184]     ok 15 - test_assert_exclusive_access
+[   35.446281]     ok 16 - test_assert_exclusive_access_writer
+[   35.540228]     ok 17 - test_assert_exclusive_bits_change
+[   39.052271]     ok 18 - test_assert_exclusive_bits_nochange
+[   39.097020]     ok 19 - test_assert_exclusive_writer_scoped
+[   39.152914]     ok 20 - test_assert_exclusive_access_scoped
+[   42.675158]     ok 21 - test_jiffies_noreport
+[   46.192453]     ok 22 - test_seqlock_noreport
+[   49.712712]     ok 23 - test_atomic_builtins
+[   49.746428]     ok 24 - test_1bit_value_change
+[   49.753316] ok 1 - kcsan
 
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+
+> ---
+>  arch/s390/include/asm/stacktrace.h | 20 ++++++++++----------
+>  arch/s390/include/asm/unwind.h     |  8 ++++----
+>  2 files changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/s390/include/asm/stacktrace.h b/arch/s390/include/asm/stacktrace.h
+> index 3d8a4b94c620..22c41d7fd95c 100644
+> --- a/arch/s390/include/asm/stacktrace.h
+> +++ b/arch/s390/include/asm/stacktrace.h
+> @@ -34,16 +34,6 @@ static inline bool on_stack(struct stack_info *info,
+>  	return addr >= info->begin && addr + len <= info->end;
+>  }
+>  
+> -static __always_inline unsigned long get_stack_pointer(struct task_struct *task,
+> -						       struct pt_regs *regs)
+> -{
+> -	if (regs)
+> -		return (unsigned long) kernel_stack_pointer(regs);
+> -	if (task == current)
+> -		return current_stack_pointer();
+> -	return (unsigned long) task->thread.ksp;
+> -}
+> -
+>  /*
+>   * Stack layout of a C stack frame.
+>   */
+> @@ -74,6 +64,16 @@ struct stack_frame {
+>  	((unsigned long)__builtin_frame_address(0) -			\
+>  	 offsetof(struct stack_frame, back_chain))
+>  
+> +static __always_inline unsigned long get_stack_pointer(struct task_struct *task,
+> +						       struct pt_regs *regs)
+> +{
+> +	if (regs)
+> +		return (unsigned long) kernel_stack_pointer(regs);
+> +	if (task == current)
+> +		return current_frame_address();
+> +	return (unsigned long) task->thread.ksp;
+> +}
+> +
+>  /*
+>   * To keep this simple mark register 2-6 as being changed (volatile)
+>   * by the called function, even though register 6 is saved/nonvolatile.
+> diff --git a/arch/s390/include/asm/unwind.h b/arch/s390/include/asm/unwind.h
+> index de9006b0cfeb..5ebf534ef753 100644
+> --- a/arch/s390/include/asm/unwind.h
+> +++ b/arch/s390/include/asm/unwind.h
+> @@ -55,10 +55,10 @@ static inline bool unwind_error(struct unwind_state *state)
+>  	return state->error;
+>  }
+>  
+> -static inline void unwind_start(struct unwind_state *state,
+> -				struct task_struct *task,
+> -				struct pt_regs *regs,
+> -				unsigned long first_frame)
+> +static __always_inline void unwind_start(struct unwind_state *state,
+> +					 struct task_struct *task,
+> +					 struct pt_regs *regs,
+> +					 unsigned long first_frame)
+>  {
+>  	task = task ?: current;
+>  	first_frame = first_frame ?: get_stack_pointer(task, regs);
+> -- 
+> 2.25.4
