@@ -2,130 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 138443FFB6A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B09C3FFB6D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348066AbhICH6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 03:58:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33110 "EHLO
+        id S1348083AbhICIAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234772AbhICH6O (ORCPT
+        with ESMTP id S231332AbhICIAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 03:58:14 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C8F6C061575;
-        Fri,  3 Sep 2021 00:57:14 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id e7so4805907pgk.2;
-        Fri, 03 Sep 2021 00:57:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3EzTvK/9UwFvtjEDurK48O7RI8g22JgDw2/OSGI9Ff0=;
-        b=JYFfX3O5Uxz2kOe9S7N2hFwmwhv6Ug6z7tVtB2GTYcdhv5XkDIID9By4MJKXFR/nxF
-         WHMim5jjf6n85UFWs74FZ5oNH7pZMpSO8IoIz7+0bK6YCPAXYdmlSn9/TkPNWXN2LUCv
-         N8mB4yycrSrUbYbVWnSc327+nvZWfZjt03Q99/VdLUIeRrPuEQi1lQgtjHRwzJRXTgo6
-         cKhQZHXhYZI+k3eG9p84+5JMD6HX4A3V0+Ohs1h3leaG3Iohg/BA46O09stt5Z2LpxwD
-         91Xg52ZHlGSSqz6KP7NU+m5vpEFTkhxGaVdV7jWCKiAlKTDT4Ge0CD3apY4cuvgS4B72
-         lZUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=3EzTvK/9UwFvtjEDurK48O7RI8g22JgDw2/OSGI9Ff0=;
-        b=YQ8mI086A+RNkqdoRDpocr0fTflJcdQjJCZjBpDFLOrFdSpN6/YWRWJV2q5le5nHYU
-         QZ7poSO1wihOjPaJvMip8o+MymuBylovovJqUB0UuBOc26w7np3yORqkX44+g7JsVOPu
-         E3Qq979/bEpuni2M8W8TErO94jkDaCA1hReT5djOgR0NvaTMi/SJWOErjZ3y2U2EjaLE
-         daehIQYFyKQvYOXGIMeTKMpB8SqFP0jWL2LNBah6Py7yzJNhaci2Xr+ulvXwd5vIHLIL
-         ieDEPqNGN85oxp/mYc8O37XJoXgSBjgVRwt7xWBZfgpXLDReqmtUHxl1h5ExGN8odD2U
-         Jthg==
-X-Gm-Message-State: AOAM532i2ro3uAjPEoX2y/jo1UJBRS6g2n0n/8qdurscqq0ssHsZxNmn
-        A6eJcgmjt4lVK0MFksNU5CU=
-X-Google-Smtp-Source: ABdhPJy19YKLiwBiT4dKpxkBvd2ya/HSDRLeb56Yw187UcLXiO6He29foQYh9JBsAqlY6BCoe0mGoA==
-X-Received: by 2002:aa7:8097:0:b029:3cd:b205:cfe9 with SMTP id v23-20020aa780970000b02903cdb205cfe9mr2377877pff.1.1630655833936;
-        Fri, 03 Sep 2021 00:57:13 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id u8sm5420534pgc.69.2021.09.03.00.57.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 00:57:13 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Vasily Gorbik <gor@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Sebastian Ott <sebott@linux.ibm.com>,
-        Martin Schwidefsky <schwidefsky@de.ibm.com>
-Cc:     linux-s390@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] s390/io: Fix ioremap and iounmap undefinded issue for s390
-Date:   Fri,  3 Sep 2021 15:56:41 +0800
-Message-Id: <20210903075641.2807623-1-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 3 Sep 2021 04:00:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972CDC061575;
+        Fri,  3 Sep 2021 00:59:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=quE3z4xC195VtvSPtHx4IVlWpjfXNxo5cVGhrWgtGhA=; b=bLHr+KMkw/ZxeQLvQXrOallvZ2
+        RdnoqBQe9yzJOg0DzvIYPWKnmBQh7Gzafji0+3Axmze3gmsPP3gpg2Ef6urXBfSiv1VpjqqMs0V4g
+        QNh25dDfz6phJcDefu1NGDOixoKze1wHtATiGEabPTYxa2OrFXV1aYWw70xsiZ53rBwxqdg+O3eQO
+        LbQ6WrqMU0lUExdOfw2pKmeM/NHt/G09gdYDKNQyxDZpvIeZev1gYv5onXXdZnClkb54ILTErR+UF
+        SH6BF0Esp7GRCDGEibKBvSMaA8IsTLBRKFyW7xjmL41xeO49kaRcVUDkzoJ8kFGpH+Yt6mw4ndVWu
+        YvH68rxA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mM44R-004GLf-FA; Fri, 03 Sep 2021 07:57:27 +0000
+Date:   Fri, 3 Sep 2021 08:57:07 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [GIT PULL] first round of SCSI updates for the 5.14+ merge window
+Message-ID: <YTHVUxc5xZzr77er@infradead.org>
+References: <fc14fbbf0d7c27b7356bc6271ba2a5599d46af58.camel@HansenPartnership.com>
+ <CAHk-=wi99u+xj93-pLG0Na7SZmjvWg6n60Pq9Wt9PgO6=exdUA@mail.gmail.com>
+ <26c12f13870a2276f41aebfea6e467d576f70860.camel@HansenPartnership.com>
+ <YTGkLhfYWcvj4YRn@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTGkLhfYWcvj4YRn@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+On Fri, Sep 03, 2021 at 05:27:26AM +0100, Christoph Hellwig wrote:
+> On Thu, Sep 02, 2021 at 04:23:43PM -0700, James Bottomley wrote:
+> > > 
+> > > Just checking that was fine, and I notice how *many* places do that.
+> > > 
+> > > Should the blk_execute_rq() function even take that "struct gendisk
+> > > *bd_disk" argument at all?
+> 
+> No, it shouldn't.  rq->rq_disk should go away and use rq->q->disk
+> instead.  This has been on my TODO list, but didn't make the cut for
+> this merge window.
 
-There would not be ioremap and iounmap implementations if CONFIG_PCI is
-not set for s390, so add default declarations of these two functionsi
-for the case to avoid 'undefined reference' issue.
+Here is a quick draft of that:
 
-Fixes: 71ba41c9b1d9 ("s390/pci: provide support for MIO instructions")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
----
-The issue was reported from https://lkml.org/lkml/2021/8/1/18
----
- arch/s390/include/asm/io.h | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+http://git.infradead.org/users/hch/block.git/shortlog/refs/heads/block-remove-rq_disk
 
-diff --git a/arch/s390/include/asm/io.h b/arch/s390/include/asm/io.h
-index e3882b012bfa..9438370c6445 100644
---- a/arch/s390/include/asm/io.h
-+++ b/arch/s390/include/asm/io.h
-@@ -23,11 +23,8 @@ void unxlate_dev_mem_ptr(phys_addr_t phys, void *addr);
- #define IO_SPACE_LIMIT 0
- 
- void __iomem *ioremap_prot(phys_addr_t addr, size_t size, unsigned long prot);
--void __iomem *ioremap(phys_addr_t addr, size_t size);
- void __iomem *ioremap_wc(phys_addr_t addr, size_t size);
- void __iomem *ioremap_wt(phys_addr_t addr, size_t size);
--void iounmap(volatile void __iomem *addr);
--
- static inline void __iomem *ioport_map(unsigned long port, unsigned int nr)
- {
- 	return NULL;
-@@ -39,6 +36,9 @@ static inline void ioport_unmap(void __iomem *p)
- 
- #ifdef CONFIG_PCI
- 
-+void __iomem *ioremap(phys_addr_t addr, size_t size);
-+void iounmap(volatile void __iomem *addr);
-+
- /*
-  * s390 needs a private implementation of pci_iomap since ioremap with its
-  * offset parameter isn't sufficient. That's because BAR spaces are not
-@@ -70,6 +70,15 @@ static inline void ioport_unmap(void __iomem *p)
- #define __raw_writel	zpci_write_u32
- #define __raw_writeq	zpci_write_u64
- 
-+#else
-+static inline void __iomem *ioremap(unsigned long offset, unsigned long size)
-+{
-+	return (void __iomem *) offset;
-+}
-+
-+static inline void iounmap(void __iomem *addr)
-+{
-+}
- #endif /* CONFIG_PCI */
- 
- #include <asm-generic/io.h>
--- 
-2.25.1
 
