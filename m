@@ -2,357 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B4E3FFB85
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2FC3FFB7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348200AbhICIFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:05:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348165AbhICIE7 (ORCPT
+        id S1348182AbhICIFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:05:05 -0400
+Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:21392 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1348123AbhICIEi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:04:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC60AC061575;
-        Fri,  3 Sep 2021 01:03:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fCkb2r0eTx7M6SKEWAOZLjX5uTeQOJ1FoT+YRXBSZkA=; b=QViuH9gmnTkIya/4ywjmpaFuX8
-        WPx8E/MrSBUgLBOX4kqZd1OSPy7JWPgc+zsxMKRjZhzofHcMOjeM2qeXqQNCPfSbB+5sVFG4Sq0Se
-        8gGpV2SxDZ1mUnMMbkq3winBOFSrUMpAqpflimm8tz18wOCx0309hX5RTixfGEolzhbp+q85SrFwZ
-        rE3mvgjz5OQrflUpzf/m4XnNpivOdVPViFWS45ByI6Exw0XkFBaUAHAnYK8RIEGxyIWMO3k/JH/4E
-        wKN2LcYUWdhQNEyMyeMhXDq1y6CzhGwAsS/Gh7VWtQDim8ay1ggvJWtH3QCPBfoEeou4r5wJKHpZn
-        WWSN4lbA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mM49q-004Gan-Mw; Fri, 03 Sep 2021 08:02:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 06EA830018E;
-        Fri,  3 Sep 2021 10:02:40 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D7C3828B658E4; Fri,  3 Sep 2021 10:02:40 +0200 (CEST)
-Date:   Fri, 3 Sep 2021 10:02:40 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com
-Subject: Re: [PATCH v5 bpf-next 1/3] perf: enable branch record for software
- events
-Message-ID: <YTHWoCcSgvfx24/N@hirez.programming.kicks-ass.net>
-References: <20210902165706.2812867-1-songliubraving@fb.com>
- <20210902165706.2812867-2-songliubraving@fb.com>
+        Fri, 3 Sep 2021 04:04:38 -0400
+Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
+        by mx0b-0014ca01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18362gxa022119;
+        Fri, 3 Sep 2021 01:03:14 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=proofpoint;
+ bh=YJfW0hLeE+hlnAWgnkeM++DaS4quyJUVWb4cqXtqPZY=;
+ b=UtdUW4nwcLmw82JIOAzJFN1+qBQFZdBe7KZRl+Kir5sup9UF1OTGylTvI09qlLonU4dp
+ CaUw0t74FugQvU+AEvf1AEwQl0QWxUntSr4KDz3dYzTPJ4TuqUiBy2rUjFYMKya8Vv3/
+ IRTg0z9YYJnXxkedBJ3KsBA6YokunGjHDHgm4GThJCJE/+tlg/z6imD15mbkcUZIblJV
+ F/jZ9kgnn2PVKANMvrCEVNGsOL5rH7gZaX0z2dDzVBNrgWmrAacd6rCVW7JhL0vDzSsc
+ aLdfTUZ5B0sgHOPhGAPaZ1GtVpa992YyWHFmy0SVQBPJj/2qXqH5yZYeSSbh35TJhBDd EA== 
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2105.outbound.protection.outlook.com [104.47.55.105])
+        by mx0b-0014ca01.pphosted.com with ESMTP id 3aue3e0c2j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Sep 2021 01:03:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=J/eaIl+GrjMcyhR9BeRdR14OhCtzryqCwInfggGb0+8yl95dt2wlEsnJOb8Tuh5UdUipKMhkVZH01WDqNNrbQY24IZ28Djt5NL9Km9u3rLeMD/DEEHZ11Bh4jBvvKf7H4INiBoto28xzCm3ERcSGAmtCP8gVjsc1UXXEt1SaZarIk7fmcmvekgq0VROQevLEzhOslICOQJ/d4BPnJYZz+Xow0MSCdI/qZma45ZY1b/xYwhzHBqZCz05vbKnAKz0vff8HACKox82SWWE1XDcEJm7YIX5s9u7YQ4HKvoPIoxSr7rpXdRrVEV4rwtJG+qvCfoKiE1drPsdvrrvNB6rtiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YJfW0hLeE+hlnAWgnkeM++DaS4quyJUVWb4cqXtqPZY=;
+ b=NlRx9LCac+BVk8UtxUPLDPtsN0/hjO8r1XQKcqtsxw50h4Y61nhI8L0egFWgyd60LMtHW66ThPXbOpf7mTbCcGAKWodEgHS6Wcc1bDet3AZs+7hXM+6mbT8lNHgxgikSdb1jnp58cAEf64RenupLz2CbEzQ55bb/u3qUdYBVGO3UW2zLEZCGhW+Q4SMnhvnyK4sGvftCzf1vFOpkzxHX5V9wFN0EiwQJ7r5HkaZI+vT9tKgKaQW69aqGazzaTPyEZVE5sqkRluhVdY1QnoyxHK4Tr1EC7m0m7qeCCKbq/P+yFHwfvff0e4i5c8yQa/KgI6H2GYyGKEyjEhexttSXiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
+ dkim=pass header.d=cadence.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YJfW0hLeE+hlnAWgnkeM++DaS4quyJUVWb4cqXtqPZY=;
+ b=hgXjh3MrIdVSoxreMrrrZ6mbQAMMCGfbpL1edlH455pXb++3/kuEOZ+V38JSSFLCAu77L9mGmILEIERXzO1qutJywXeBMjC4P8J7aiHGxeuu7AZ1Ym7EP7zvyBmFc8XXvGlYSigClAIDaNgrtE118mN48pe7GXyPsYAQXpFK33s=
+Received: from CY4PR07MB2757.namprd07.prod.outlook.com (2603:10b6:903:22::20)
+ by CY4PR07MB2967.namprd07.prod.outlook.com (2603:10b6:903:2a::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Fri, 3 Sep
+ 2021 08:03:08 +0000
+Received: from CY4PR07MB2757.namprd07.prod.outlook.com
+ ([fe80::903b:e71d:a584:9c87]) by CY4PR07MB2757.namprd07.prod.outlook.com
+ ([fe80::903b:e71d:a584:9c87%3]) with mapi id 15.20.4478.021; Fri, 3 Sep 2021
+ 08:03:07 +0000
+From:   Parshuram Raju Thombare <pthombar@cadence.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "p.yadav@ti.com" <p.yadav@ti.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Konrad Kociolek <konrad@cadence.com>,
+        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        Jayshri Dajiram Pawar <jpawar@cadence.com>,
+        "lukas@wunner.de" <lukas@wunner.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Milind Parab <mparab@cadence.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 1/2] spi: cadence: add dt-bindings documentation for
+ Cadence XSPI controller
+Thread-Topic: [PATCH v3 1/2] spi: cadence: add dt-bindings documentation for
+ Cadence XSPI controller
+Thread-Index: AQHXny4YIjHh85hURU26SR02kFfey6uQpt2AgAFOVDA=
+Date:   Fri, 3 Sep 2021 08:03:07 +0000
+Message-ID: <CY4PR07MB275739F9422742D70D5715B9C1CF9@CY4PR07MB2757.namprd07.prod.outlook.com>
+References: <1630499755-18751-1-git-send-email-pthombar@cadence.com>
+ <1630499829-20059-1-git-send-email-pthombar@cadence.com>
+ <1630584239.096691.685600.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1630584239.096691.685600.nullmailer@robh.at.kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccHRob21iYXJcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy01YzM2M2EzNS0wYzhkLTExZWMtODYzZC0xMDY1MzBlZjIyZjVcYW1lLXRlc3RcNWMzNjNhMzctMGM4ZC0xMWVjLTg2M2QtMTA2NTMwZWYyMmY1Ym9keS50eHQiIHN6PSI3NTQiIHQ9IjEzMjc1MTI5NzgyODc1MjUzMiIgaD0iRmRDVEk0ZThFN2wrdzFoS3ZoWWlVZDBYOCtJPSIgaWQ9IiIgYmw9IjAiIGJvPSIxIi8+PC9tZXRhPg==
+x-dg-rorf: true
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=cadence.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 471ce371-9269-4bab-d67d-08d96eb143ca
+x-ms-traffictypediagnostic: CY4PR07MB2967:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR07MB29673BA3545696FC65E015A3C1CF9@CY4PR07MB2967.namprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sbUqhUNyg1pozhqW+lA89IPTtwPVw2spGlQoUhwnpx6P6usUba93Pf0I/v0gO3RnEfJPpjNkb3p6VgAWE+R98WPRcKNvgvP33ctetbM4+JTQ1ULtw4GVJaANFG21ngVhjklSDkqVBytvUSv02agIGLbYcOKoo1+ZG86VSyVXuMuYLr4UrTfhvV3BcFGBqsRuBylx3Mq0l7wP9djiBe1kx7vAwzTAi3gf+YBfiFtQbmJAy2pLFqUZ97XKX6Dc4JUACQW9gCXI7BGuyfP0zcmJznqH9/CniozGxDs1cMpGhffj8s3r6u9wQinhvdeqJsGf3mWkNAOVAiEe+X0BXivj/r59vxHwcW6MQOtih6UPqj3cTBE0qCM3ReJGoA3yCJ7jL2wa7ogRpgLt8rXD98mvU9vTQPD5ShOOfCwnqNNEX6XJ8MneZL+A3sQW2Ux9b1mZkRo9uDkLIv5MFrNzJ/FxQasq2vEap5UQjy3Sea5GaskRrtS5eBErI/UWgJxqjix3eVIrWL2+KsN91Bvru1m7cOWAZAu0I7fZTNlfX+IxDOwjCGWEpZxoA/gTn901i0YGAf19pCmaGRht30+7fbshk1rQBe7QLW89XyEaRzkY+nkAOdWB3Uw8KSSu2jxlY6N3TLy/aUwuePE4n1i53CoQD8l4XZVy4W1EvixHukTlju4vBUxp3/57yGqd0SS8PNg1D5/Ya/esNSQ5TPmZH6N+b98cMUY0uuHZfiKLFE0IhqxXk8WT6hSgywiMpVn39GUBn0GesEKU+BmHXV8TwenwzavoaAboTDtxAZCUNU9L3PT8YbWYzvm7BAMD451oqkzr
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR07MB2757.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(396003)(136003)(39860400002)(36092001)(122000001)(9686003)(4326008)(83380400001)(8676002)(6916009)(52536014)(55016002)(186003)(4744005)(7696005)(316002)(6506007)(26005)(2906002)(8936002)(54906003)(71200400001)(5660300002)(66946007)(86362001)(64756008)(66476007)(66556008)(76116006)(478600001)(38100700002)(33656002)(38070700005)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?DLdZlVP3aCcWh4ZV0NaCecSW+F3bQCJUT9xqKFC2YTttSmS3qGb3v2XfkYJE?=
+ =?us-ascii?Q?AV/tKhsmoVHMUJUnP4AVO2Bk+YhzB+IRIZkIAc4ZI8mI/onBs0G8Lg1Pwmgz?=
+ =?us-ascii?Q?XodLm7ZrSZ+oWcPjlZS4vRUe2H6titF7+ottdDn10FScmyAk8oynSzIdHfLV?=
+ =?us-ascii?Q?oJtZiAH2dj+i3evKnAqlxgLJaLovZCIiOYzKmCxhYSBXvx7AyzDDOVROShDv?=
+ =?us-ascii?Q?Wf+4LQUe4I1cjskp+aN/Ibe7P0YzsBzPlfhes6m7qrJLbcjN5NdB7ZYXwQeJ?=
+ =?us-ascii?Q?aPhJsNEb04yHTkpw8izll1DESEabKCNazF/uhuUIMUZHuehCfpn5uFb04OWt?=
+ =?us-ascii?Q?kvdMEEvNSuZf6UZQxprL5pcHBeuFzUUjMVndng0A6TFJ1i92ommg3xhbs2YH?=
+ =?us-ascii?Q?IRNIfMPikiB5iavfCZYNCYS3sWeKWpBRnhwgULp5OjqmmUjOae+Sot6uv1cF?=
+ =?us-ascii?Q?8u4Q/b09vYtxZOm+axgY7aqlyxo12DIxfBpbpHScPhnBn6mB/UR0ZNdDry4R?=
+ =?us-ascii?Q?LfD5Tf0W+km//gLwFUzYbvnFpgztUt1oeNEPhLOfG9pigUov8ojmB6aEzLRW?=
+ =?us-ascii?Q?2ep5UmSjUPg1OV47EDr3YdfS3RUxSrKdRYQCp1fScRsoYirSDLsGu2K8vl45?=
+ =?us-ascii?Q?P7LTbW98kOhgcXr2WPT05+kdcxjPFM/+Jv3iOksWas+WA+skyN1Z+CjJEZSW?=
+ =?us-ascii?Q?UnPTYPS33SV2gn9I6crf48b+h0YT24/rXF/3GfRcMpP8PBHDL8z9T7wfsV6x?=
+ =?us-ascii?Q?QY3PIIjPnK86+wc5bHfCBOr+fQP9JNwk6iyvT5B97zO/T+/PC1CPx/8bHGFG?=
+ =?us-ascii?Q?u0NLVOEkkkzOHSCbZmCl7pberLCNDCh46v4dlUPocGgYsBxV8hVMTi1dKnNh?=
+ =?us-ascii?Q?PpY7SW1SOOT1f6Nvo74u8oyxeuZPmv1hQJ1DMfKlbwQL1kzuSjdOhdZrMmwP?=
+ =?us-ascii?Q?3/Rrh97WALvKBlLAVZpRIvZ80nBr20/jzzbMGdl4bGYypNNgRBf2i8qRmwLY?=
+ =?us-ascii?Q?uSOlITz5EseaB3qfqy5a1Zk7+7nClDo+sdKHhl5vH7ZLpCBNZr2me+h8OCDG?=
+ =?us-ascii?Q?5pnV5BfDAF4eBul3ku/9deEgK4gWhNGcCH98jDn8hzCo6G4HXFvjoycTNErA?=
+ =?us-ascii?Q?yYYlJeZ8BIqL2VV0MwtaJ6vVScINNhTjaMucGMubjYQ9ugIDewpcXHlMSdWe?=
+ =?us-ascii?Q?TkWsBGHN2uvTEX185WsdmJRhMNR3bx0EwcRPsKTOJR04HNB4vRs3hZpk/wVZ?=
+ =?us-ascii?Q?Pd5spBcScq0EUlq0LsOfCA+xW3+1CViyNDfr5L4xLgawQJvBWkyNQbe/pyvz?=
+ =?us-ascii?Q?yUfjCjPW/hA2N0pzUjxxzSDA?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902165706.2812867-2-songliubraving@fb.com>
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR07MB2757.namprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 471ce371-9269-4bab-d67d-08d96eb143ca
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Sep 2021 08:03:07.3460
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yWKUGichtZsUPjjEyGF0oFMPDMZPPr54nOjbojIkBiK8L5O82/ARfNHufZNGcy3xHj3yMcFweOowa5nxRrSAqA624ykVmnAIV8Y+AmQBQ2Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR07MB2967
+X-Proofpoint-GUID: x6mRt_PpKHl2PSuqr3lB90Ezqtr25niR
+X-Proofpoint-ORIG-GUID: x6mRt_PpKHl2PSuqr3lB90Ezqtr25niR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-03_02,2021-09-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0
+ priorityscore=1501 mlxlogscore=870 mlxscore=0 malwarescore=0 adultscore=0
+ spamscore=0 suspectscore=0 impostorscore=0 bulkscore=0 clxscore=1011
+ phishscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2108310000 definitions=main-2109030048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 09:57:04AM -0700, Song Liu wrote:
-> +static int
-> +intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
-> +{
-> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-> +
-> +	intel_pmu_disable_all();
-> +	intel_pmu_lbr_read();
-> +	cnt = min_t(unsigned int, cnt, x86_pmu.lbr_nr);
-> +
-> +	memcpy(entries, cpuc->lbr_entries, sizeof(struct perf_branch_entry) * cnt);
-> +	intel_pmu_enable_all(0);
-> +	return cnt;
-> +}
+Hi Rob,
 
-Would something like the below help get rid of that memcpy() ?
+>See
+>https://urldefense.com/v3/__https://patchwork.ozlabs.org/patch/1523137__;!=
+!E
+>HscmS1ygiU1lA!V71KMbkd1YPERLm96tbPDX_W05cj0TCcttcwVXU9H3lDADvSBnc
+>5GbQunqxwGIA$
+>
+>This check can fail if there are any dependencies. The base for a patch
+>series is generally the most recent rc1.
+>
+>If you already ran 'make dt_binding_check' and didn't see the above
+>error(s), then make sure 'yamllint' is installed and dt-schema is up to
+>date:
+>
+>pip3 install dtschema --upgrade
+>
+>Please check and re-submit.
 
-(compile tested only)
+Thanks for your reply. I will fix this issue in next version of patchset.
 
----
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 7011e87be6d0..c508ba6099d2 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -2938,7 +2938,7 @@ static int intel_pmu_handle_irq(struct pt_regs *regs)
- 
- 	loops = 0;
- again:
--	intel_pmu_lbr_read();
-+	intel_pmu_lbr_read(&cpuc->lbr_stack);
- 	intel_pmu_ack_status(status);
- 	if (++loops > 100) {
- 		static bool warned;
-diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index 9e6d6eaeb4cb..0a5bacba86c2 100644
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -170,7 +170,7 @@ enum {
- 
- #define ARCH_LBR_CTL_MASK			0x7f000e
- 
--static void intel_pmu_lbr_filter(struct cpu_hw_events *cpuc);
-+static void intel_pmu_lbr_filter(struct cpu_hw_events *cpuc, struct perf_branch_stack *bs);
- 
- static __always_inline bool is_lbr_call_stack_bit_set(u64 config)
- {
-@@ -783,7 +783,7 @@ void intel_pmu_lbr_disable_all(void)
- 		__intel_pmu_lbr_disable();
- }
- 
--void intel_pmu_lbr_read_32(struct cpu_hw_events *cpuc)
-+void intel_pmu_lbr_read_32(struct cpu_hw_events *cpuc, struct perf_branch_stack *bs)
- {
- 	unsigned long mask = x86_pmu.lbr_nr - 1;
- 	u64 tos = intel_pmu_lbr_tos();
-@@ -801,18 +801,18 @@ void intel_pmu_lbr_read_32(struct cpu_hw_events *cpuc)
- 
- 		rdmsrl(x86_pmu.lbr_from + lbr_idx, msr_lastbranch.lbr);
- 
--		cpuc->lbr_entries[i].from	= msr_lastbranch.from;
--		cpuc->lbr_entries[i].to		= msr_lastbranch.to;
--		cpuc->lbr_entries[i].mispred	= 0;
--		cpuc->lbr_entries[i].predicted	= 0;
--		cpuc->lbr_entries[i].in_tx	= 0;
--		cpuc->lbr_entries[i].abort	= 0;
--		cpuc->lbr_entries[i].cycles	= 0;
--		cpuc->lbr_entries[i].type	= 0;
--		cpuc->lbr_entries[i].reserved	= 0;
-+		bs->entries[i].from	= msr_lastbranch.from;
-+		bs->entries[i].to	= msr_lastbranch.to;
-+		bs->entries[i].mispred	= 0;
-+		bs->entries[i].predicted= 0;
-+		bs->entries[i].in_tx	= 0;
-+		bs->entries[i].abort	= 0;
-+		bs->entries[i].cycles	= 0;
-+		bs->entries[i].type	= 0;
-+		bs->entries[i].reserved	= 0;
- 	}
--	cpuc->lbr_stack.nr = i;
--	cpuc->lbr_stack.hw_idx = tos;
-+	bs->nr = i;
-+	bs->hw_idx = tos;
- }
- 
- /*
-@@ -820,7 +820,7 @@ void intel_pmu_lbr_read_32(struct cpu_hw_events *cpuc)
-  * is the same as the linear address, allowing us to merge the LIP and EIP
-  * LBR formats.
-  */
--void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc)
-+void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc, struct perf_branch_stack *bs)
- {
- 	bool need_info = false, call_stack = false;
- 	unsigned long mask = x86_pmu.lbr_nr - 1;
-@@ -896,19 +896,19 @@ void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc)
- 		if (abort && x86_pmu.lbr_double_abort && out > 0)
- 			out--;
- 
--		cpuc->lbr_entries[out].from	 = from;
--		cpuc->lbr_entries[out].to	 = to;
--		cpuc->lbr_entries[out].mispred	 = mis;
--		cpuc->lbr_entries[out].predicted = pred;
--		cpuc->lbr_entries[out].in_tx	 = in_tx;
--		cpuc->lbr_entries[out].abort	 = abort;
--		cpuc->lbr_entries[out].cycles	 = cycles;
--		cpuc->lbr_entries[out].type	 = 0;
--		cpuc->lbr_entries[out].reserved	 = 0;
-+		bs->entries[out].from	 = from;
-+		bs->entries[out].to	 = to;
-+		bs->entries[out].mispred = mis;
-+		bs->entries[out].predicted = pred;
-+		bs->entries[out].in_tx	 = in_tx;
-+		bs->entries[out].abort	 = abort;
-+		bs->entries[out].cycles	 = cycles;
-+		bs->entries[out].type	 = 0;
-+		bs->entries[out].reserved = 0;
- 		out++;
- 	}
--	cpuc->lbr_stack.nr = out;
--	cpuc->lbr_stack.hw_idx = tos;
-+	bs->nr = out;
-+	bs->hw_idx = tos;
- }
- 
- static __always_inline int get_lbr_br_type(u64 info)
-@@ -945,7 +945,8 @@ static __always_inline u16 get_lbr_cycles(u64 info)
- }
- 
- static void intel_pmu_store_lbr(struct cpu_hw_events *cpuc,
--				struct lbr_entry *entries)
-+				struct lbr_entry *entries,
-+				struct perf_branch_stack *bs)
- {
- 	struct perf_branch_entry *e;
- 	struct lbr_entry *lbr;
-@@ -954,7 +955,7 @@ static void intel_pmu_store_lbr(struct cpu_hw_events *cpuc,
- 
- 	for (i = 0; i < x86_pmu.lbr_nr; i++) {
- 		lbr = entries ? &entries[i] : NULL;
--		e = &cpuc->lbr_entries[i];
-+		e = &bs->entries[i];
- 
- 		from = rdlbr_from(i, lbr);
- 		/*
-@@ -977,28 +978,28 @@ static void intel_pmu_store_lbr(struct cpu_hw_events *cpuc,
- 		e->reserved	= 0;
- 	}
- 
--	cpuc->lbr_stack.nr = i;
-+	bs->nr = i;
- }
- 
--static void intel_pmu_arch_lbr_read(struct cpu_hw_events *cpuc)
-+static void intel_pmu_arch_lbr_read(struct cpu_hw_events *cpuc, struct perf_branch_stack *bs)
- {
--	intel_pmu_store_lbr(cpuc, NULL);
-+	intel_pmu_store_lbr(cpuc, NULL, bs);
- }
- 
--static void intel_pmu_arch_lbr_read_xsave(struct cpu_hw_events *cpuc)
-+static void intel_pmu_arch_lbr_read_xsave(struct cpu_hw_events *cpuc, struct perf_branch_stack *bs)
- {
- 	struct x86_perf_task_context_arch_lbr_xsave *xsave = cpuc->lbr_xsave;
- 
- 	if (!xsave) {
--		intel_pmu_store_lbr(cpuc, NULL);
-+		intel_pmu_store_lbr(cpuc, NULL, bs);
- 		return;
- 	}
- 	xsaves(&xsave->xsave, XFEATURE_MASK_LBR);
- 
--	intel_pmu_store_lbr(cpuc, xsave->lbr.entries);
-+	intel_pmu_store_lbr(cpuc, xsave->lbr.entries, bs);
- }
- 
--void intel_pmu_lbr_read(void)
-+void intel_pmu_lbr_read(struct perf_branch_stack *bs)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 
-@@ -1012,9 +1013,8 @@ void intel_pmu_lbr_read(void)
- 	    cpuc->lbr_users == cpuc->lbr_pebs_users)
- 		return;
- 
--	x86_pmu.lbr_read(cpuc);
--
--	intel_pmu_lbr_filter(cpuc);
-+	x86_pmu.lbr_read(cpuc, bs);
-+	intel_pmu_lbr_filter(cpuc, bs);
- }
- 
- /*
-@@ -1402,7 +1402,7 @@ static const int arch_lbr_br_type_map[ARCH_LBR_BR_TYPE_MAP_MAX] = {
-  * in PERF_SAMPLE_BRANCH_STACK sample may vary.
-  */
- static void
--intel_pmu_lbr_filter(struct cpu_hw_events *cpuc)
-+intel_pmu_lbr_filter(struct cpu_hw_events *cpuc, struct perf_branch_stack *bs)
- {
- 	u64 from, to;
- 	int br_sel = cpuc->br_sel;
-@@ -1414,11 +1414,11 @@ intel_pmu_lbr_filter(struct cpu_hw_events *cpuc)
- 	    ((br_sel & X86_BR_TYPE_SAVE) != X86_BR_TYPE_SAVE))
- 		return;
- 
--	for (i = 0; i < cpuc->lbr_stack.nr; i++) {
-+	for (i = 0; i < bs->nr; i++) {
- 
--		from = cpuc->lbr_entries[i].from;
--		to = cpuc->lbr_entries[i].to;
--		type = cpuc->lbr_entries[i].type;
-+		from = bs->entries[i].from;
-+		to = bs->entries[i].to;
-+		type = bs->entries[i].type;
- 
- 		/*
- 		 * Parse the branch type recorded in LBR_x_INFO MSR.
-@@ -1430,9 +1430,9 @@ intel_pmu_lbr_filter(struct cpu_hw_events *cpuc)
- 			to_plm = kernel_ip(to) ? X86_BR_KERNEL : X86_BR_USER;
- 			type = arch_lbr_br_type_map[type] | to_plm;
- 		} else
--			type = branch_type(from, to, cpuc->lbr_entries[i].abort);
-+			type = branch_type(from, to, bs->entries[i].abort);
- 		if (type != X86_BR_NONE && (br_sel & X86_BR_ANYTX)) {
--			if (cpuc->lbr_entries[i].in_tx)
-+			if (bs->entries[i].in_tx)
- 				type |= X86_BR_IN_TX;
- 			else
- 				type |= X86_BR_NO_TX;
-@@ -1440,25 +1440,25 @@ intel_pmu_lbr_filter(struct cpu_hw_events *cpuc)
- 
- 		/* if type does not correspond, then discard */
- 		if (type == X86_BR_NONE || (br_sel & type) != type) {
--			cpuc->lbr_entries[i].from = 0;
-+			bs->entries[i].from = 0;
- 			compress = true;
- 		}
- 
- 		if ((br_sel & X86_BR_TYPE_SAVE) == X86_BR_TYPE_SAVE)
--			cpuc->lbr_entries[i].type = common_branch_type(type);
-+			bs->entries[i].type = common_branch_type(type);
- 	}
- 
- 	if (!compress)
- 		return;
- 
- 	/* remove all entries with from=0 */
--	for (i = 0; i < cpuc->lbr_stack.nr; ) {
--		if (!cpuc->lbr_entries[i].from) {
-+	for (i = 0; i < bs->nr; ) {
-+		if (!bs->entries[i].from) {
- 			j = i;
--			while (++j < cpuc->lbr_stack.nr)
--				cpuc->lbr_entries[j-1] = cpuc->lbr_entries[j];
--			cpuc->lbr_stack.nr--;
--			if (!cpuc->lbr_entries[i].from)
-+			while (++j < bs->nr)
-+				bs->entries[j-1] = bs->entries[j];
-+			bs->nr--;
-+			if (!bs->entries[i].from)
- 				continue;
- 		}
- 		i++;
-@@ -1476,8 +1476,8 @@ void intel_pmu_store_pebs_lbrs(struct lbr_entry *lbr)
- 	else
- 		cpuc->lbr_stack.hw_idx = intel_pmu_lbr_tos();
- 
--	intel_pmu_store_lbr(cpuc, lbr);
--	intel_pmu_lbr_filter(cpuc);
-+	intel_pmu_store_lbr(cpuc, lbr, &cpuc->lbr_stack);
-+	intel_pmu_lbr_filter(cpuc, &cpuc->lbr_stack);
- }
- 
- /*
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index e3ac05c97b5e..9700fb1f47c3 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -852,7 +852,7 @@ struct x86_pmu {
- 	unsigned int	lbr_br_type:1;
- 
- 	void		(*lbr_reset)(void);
--	void		(*lbr_read)(struct cpu_hw_events *cpuc);
-+	void		(*lbr_read)(struct cpu_hw_events *cpuc, struct perf_branch_stack *bs);
- 	void		(*lbr_save)(void *ctx);
- 	void		(*lbr_restore)(void *ctx);
- 
-@@ -1345,11 +1345,11 @@ void intel_pmu_lbr_enable_all(bool pmi);
- 
- void intel_pmu_lbr_disable_all(void);
- 
--void intel_pmu_lbr_read(void);
-+void intel_pmu_lbr_read(struct perf_branch_stack *bs);
- 
--void intel_pmu_lbr_read_32(struct cpu_hw_events *cpuc);
-+void intel_pmu_lbr_read_32(struct cpu_hw_events *cpuc, struct perf_branch_stack *bs);
- 
--void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc);
-+void intel_pmu_lbr_read_64(struct cpu_hw_events *cpuc, struct perf_branch_stack *bs);
- 
- void intel_pmu_lbr_save(void *ctx);
- 
+Regards,
+Parshuram Thombare
