@@ -2,69 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3AE3FFFF1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6B23FFFF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348125AbhICMqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 08:46:12 -0400
-Received: from mx449.baidu.com ([119.249.100.41]:57370 "EHLO mx419.baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234262AbhICMqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 08:46:11 -0400
-Received: from bjhw-sys-rpm015653cc5.bjhw.baidu.com (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
-        by mx419.baidu.com (Postfix) with ESMTP id 4E53218181B84;
-        Fri,  3 Sep 2021 20:45:08 +0800 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by bjhw-sys-rpm015653cc5.bjhw.baidu.com (Postfix) with ESMTP id 42594D9932;
-        Fri,  3 Sep 2021 20:45:08 +0800 (CST)
-From:   Li RongQing <lirongqing@baidu.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: Micro-optimize pvclock_clocksource_read
-Date:   Fri,  3 Sep 2021 20:45:08 +0800
-Message-Id: <1630673108-9121-1-git-send-email-lirongqing@baidu.com>
-X-Mailer: git-send-email 1.7.1
+        id S1348712AbhICMsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 08:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43532 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234262AbhICMsH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 08:48:07 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CDCC061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 05:47:07 -0700 (PDT)
+Received: from [2a02:fe0:c700:2:c857:b8a3:f154:bc3] (port=59442)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <Ywe_C@bit-rd.net>)
+        id 1mM8b2-0006co-8Q
+        for linux-kernel@vger.kernel.org; Fri, 03 Sep 2021 14:47:04 +0200
+To:     linux-kernel@vger.kernel.org
+From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C@bit-rd.net>
+Subject: Fair IT & Good DO
+Message-ID: <e68c174f-96c7-da15-ba3f-b75f3fc2b499@bit-rd.net>
+Date:   Fri, 3 Sep 2021 14:46:41 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compare the return of atomic64_cmpxchg with previous save for last,
-to reduce the number of while-loop iterations with atomic operations
-from two to one in the most common situation
+Bitcoin could be named Do (cursive) on *Nix.
 
-Original patch at:
-https://kvm.vger.kernel.narkive.com/WraXedaQ/patch-kvm-pvclock-clocksource-read-while-loop-optimization
+Dow Jones agree and much linguistics.
+Updated wwpage -  https://bit-rd.net/
 
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
----
- arch/x86/kernel/pvclock.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kernel/pvclock.c b/arch/x86/kernel/pvclock.c
-index eda37df..98d106f 100644
---- a/arch/x86/kernel/pvclock.c
-+++ b/arch/x86/kernel/pvclock.c
-@@ -67,8 +67,8 @@ u8 pvclock_read_flags(struct pvclock_vcpu_time_info *src)
- u64 pvclock_clocksource_read(struct pvclock_vcpu_time_info *src)
- {
- 	unsigned version;
-+	u64 last, save;
- 	u64 ret;
--	u64 last;
- 	u8 flags;
- 
- 	do {
-@@ -104,8 +104,9 @@ u64 pvclock_clocksource_read(struct pvclock_vcpu_time_info *src)
- 	do {
- 		if (ret < last)
- 			return last;
-+		save = last;
- 		last = atomic64_cmpxchg(&last_value, last, ret);
--	} while (unlikely(last != ret));
-+	} while (unlikely(last != save));
- 
- 	return ret;
- }
--- 
-1.7.1
-
+Serenity.
+Ywe Cærlyn
