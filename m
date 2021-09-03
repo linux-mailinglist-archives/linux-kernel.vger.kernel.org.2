@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 290523FFAA6
+	by mail.lfdr.de (Postfix) with ESMTP id BCD813FFAA8
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347394AbhICGvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 02:51:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347003AbhICGvg (ORCPT
+        id S1347423AbhICGvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 02:51:38 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:55948 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347344AbhICGvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 02:51:36 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0107C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 23:50:36 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id i24so709465pfo.12
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 23:50:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=axtens.net; s=google;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=0BQ9u2y+lw4VEtzEXjzN4NZ3IpjygaobSG94tsEQOB0=;
-        b=K/qIFLcWBPxAbl2ywxgXJE7YZyHmsP6nhL7IpT7DAAX6NFt6nPHyvf0YrSBgQfiylr
-         7dl2n5nhxJmv0oH+QIgd9rBVOpqcoFBfHG7tPeB5StXo6jj+Dn/V/zMVaEBVt8sNarj6
-         dzfcBJrm0i2gf7wSE3vYt5mIOIDVpUgHnh0s8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=0BQ9u2y+lw4VEtzEXjzN4NZ3IpjygaobSG94tsEQOB0=;
-        b=jmIRIe4mC6S3JQJ3uj6VrT3nW0rJ/YtDyeGjcv7Jk5lFGccSjSIJoL7La+SGkuEcln
-         LSZszVUe+tYWuudRPWW5ofsBlOOWYMMoFAD/Em6sea8hZP89VqOP9rdhq94bHZK5pOsp
-         EDrsWAGrtRUCfysQN5u2Lgy4LPdRDty2OadBHCXtp76ap69podzR+io9Gkw2tQ5TCBIm
-         Xy0iHd2GkUQvYaFlopCxChzmHtKILJa3qSzUFY3ZvNOe3K+yySyKL5kFtemwEvBy9bW+
-         TUqwBda6QdAiVAsPO7IO4mKuoWAm6pEW6tDWBNkfp+HRPsky9N3IrZ4aOaHjtEznLZRV
-         Nevw==
-X-Gm-Message-State: AOAM532VGXdHHy+1QWs0xwEM7/qs95IfEe0jYCcQqjFVYrLSVQbsj/JA
-        n7ancBbTPZ1AG4rrbgynBbsXAdFwg9Z0pA==
-X-Google-Smtp-Source: ABdhPJyp7NknuFpIcPAgK+njiE3tqC94g8/kN/2XtEpH0MA3stL+2JFabeSEdyw88uMsuVCmN0FLRA==
-X-Received: by 2002:a63:e64a:: with SMTP id p10mr2274483pgj.263.1630651836290;
-        Thu, 02 Sep 2021 23:50:36 -0700 (PDT)
-Received: from localhost ([2001:4479:e200:df00:ddd7:1b3:9327:fcf5])
-        by smtp.gmail.com with ESMTPSA id y3sm5045324pge.44.2021.09.02.23.50.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 23:50:35 -0700 (PDT)
-From:   Daniel Axtens <dja@axtens.net>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] powerpc/machdep: Remove stale functions from ppc_md structure
-In-Reply-To: <24d4ca0ada683c9436a5f812a7aeb0a1362afa2b.1630398606.git.christophe.leroy@csgroup.eu>
-References: <24d4ca0ada683c9436a5f812a7aeb0a1362afa2b.1630398606.git.christophe.leroy@csgroup.eu>
-Date:   Fri, 03 Sep 2021 16:50:32 +1000
-Message-ID: <87ilzi5f0n.fsf@linkitivity.dja.id.au>
+        Fri, 3 Sep 2021 02:51:37 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id BE5AE1C0B7F; Fri,  3 Sep 2021 08:50:36 +0200 (CEST)
+Date:   Fri, 3 Sep 2021 08:50:35 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Gerd Rausch <gerd.rausch@oracle.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.9 12/16] net/rds: dma_map_sg is entitled to merge
+ entries
+Message-ID: <20210903065035.GA11871@amd>
+References: <20210901122248.920548099@linuxfoundation.org>
+ <20210901122249.305212889@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
+Content-Disposition: inline
+In-Reply-To: <20210901122249.305212889@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
 
-> ppc_md.iommu_save() is not set anymore by any platform after
-> commit c40785ad305b ("powerpc/dart: Use a cachable DART").
-> So iommu_save() has become a nop and can be removed.
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I wonder if it makes sense to have an iommu_restore() without an
-iommu_save. Only dart_iommu.c defines an iommu_restore(), but I couldn't
-figure out if it was safe to remove and it seems like it still did
-something...
+Hi!
 
-> ppc_md.show_percpuinfo() is not set anymore by any platform after
-> commit 4350147a816b ("[PATCH] ppc64: SMU based macs cpufreq support").
->
-> Last users of ppc_md.rtc_read_val() and ppc_md.rtc_write_val() were
-> removed by commit 0f03a43b8f0f ("[POWERPC] Remove todc code from
-> ARCH=powerpc")
->
-> Last user of kgdb_map_scc() was removed by commit 17ce452f7ea3 ("kgdb,
-> powerpc: arch specific powerpc kgdb support").
->
-> ppc.machine_kexec_prepare() has not been used since
-> commit 8ee3e0d69623 ("powerpc: Remove the main legacy iSerie platform
-> code"). This allows the removal of machine_kexec_prepare() and the
-> rename of default_machine_kexec_prepare() into machine_kexec_prepare()
+> [ Upstream commit fb4b1373dcab086d0619c29310f0466a0b2ceb8a ]
+>=20
+> Function "dma_map_sg" is entitled to merge adjacent entries
+> and return a value smaller than what was passed as "nents".
+>=20
+> Subsequently "ib_map_mr_sg" needs to work with this value ("sg_dma_len")
+> rather than the original "nents" parameter ("sg_len").
+>=20
+> This old RDS bug was exposed and reliably causes kernel panics
+> (using RDMA operations "rds-stress -D") on x86_64 starting with:
+> commit c588072bba6b ("iommu/vt-d: Convert intel iommu driver to the iommu=
+ ops")
+>=20
+> Simply put: Linux 5.11 and later.
 
-I think you should also remove the prototype from
-arch/powerpc/include/asm/kexec.h
+I see this queued for 4.19 and 5.10 where "iommu/vt-d: Convert intel
+iommu driver to the iommu ops" is not present. It may be okay for
+older kernels, too, but I wanted to double-check.
 
-Apart from that:
-Reviewed-by: Daniel Axtens <dja@axtens.net>
+Best regards,
+								Pavel
 
-Kind regards,
-Daniel Axtens
+> +++ b/net/rds/ib_frmr.c
+> @@ -112,9 +112,9 @@ static int rds_ib_post_reg_frmr(struct rds_ib_mr *ibm=
+r)
+>  		cpu_relax();
+>  	}
+> =20
+> -	ret =3D ib_map_mr_sg_zbva(frmr->mr, ibmr->sg, ibmr->sg_len,
+> +	ret =3D ib_map_mr_sg_zbva(frmr->mr, ibmr->sg, ibmr->sg_dma_len,
+>  				&off, PAGE_SIZE);
+> -	if (unlikely(ret !=3D ibmr->sg_len))
+> +	if (unlikely(ret !=3D ibmr->sg_dma_len))
+>  		return ret < 0 ? ret : -EINVAL;
+> =20
+>  	/* Perform a WR for the fast_reg_mr. Each individual page
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--YiEDa0DAkWCtVeE4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmExxbsACgkQMOfwapXb+vIokACfWIp9qI4rPFIGtWVW2efztgjx
+5mgAn3I6yh7BljGER3XX9UJQgWCG3aKb
+=7bBt
+-----END PGP SIGNATURE-----
+
+--YiEDa0DAkWCtVeE4--
