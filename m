@@ -2,168 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533E44001E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A32B4001EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235532AbhICPVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 11:21:00 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:34864 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235515AbhICPU4 (ORCPT
+        id S1349596AbhICPVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 11:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349602AbhICPVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 11:20:56 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 097B11CC;
-        Fri,  3 Sep 2021 18:19:51 +0300 (MSK)
+        Fri, 3 Sep 2021 11:21:30 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 455A3C061757
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 08:20:29 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id r2so5826844pgl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 08:20:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1630682391;
-        bh=C7LWXvYDBulnF8t609DkfrxLr/asKLyhnDepGTY/Ot0=;
-        h=To:CC:From:Subject:Date;
-        b=iDbs8OQvp2LnUzBucwMyPHCufaJUX28lcdc6o3G1r4TyTuNun8YhltwmJp3lw/+Dj
-         14EH9+6xKGghOhEGNAKNfBFDWYQLE3lBfM4HbgYKUDeXFfnND5spv/UartP+hwR6vx
-         tFdTLT9YaAB4BKuhxj13SJUUK1c84Yt0ZsjQvqog=
-Received: from [192.168.211.96] (192.168.211.96) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 3 Sep 2021 18:19:50 +0300
-To:     <torvalds@linux-foundation.org>
-CC:     <ntfs3@lists.linux.dev>, <linux-fsdevel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Subject: [GIT PULL] ntfs3: new NTFS driver for 5.15
-Message-ID: <aa4aa155-b9b2-9099-b7a2-349d8d9d8fbd@paragon-software.com>
-Date:   Fri, 3 Sep 2021 18:19:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4CSkZVwfR8F5r/YD5qn9dxPgh6dJZoCpG89KU+T6HLQ=;
+        b=ZukqF/2Eu4qstUi5OQuaN3Op8LbOP7aJASN8QpubjqGjsq3tlGkfCWdELg6bIjHhuY
+         /r7wj/mQdIaX5MX7DYG9i2q7Rb/BnEsUUG4g1nGDsowqoTLYlfzeoVD9OshAvBG+gUUq
+         LQy2ryuaeFKFf9jE9ZuY/VtJPMEjQAzAwtcTpXaxvLCK8V/YzWffqFZmmkeHBYv8OI2P
+         Kf/xqCW6KFfgj7Z3Uad9pe/TYAKouyMkbcKKxHsKE59sw3TBQHf8oIRriWOuBzPUknIK
+         BqUS/7eEHHxZDu3+wswLo6Xr/B4rUWxA0vmt1LXsS9E8nuRJQ7n9jiAa0huA5ZJq8DXo
+         8ieQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4CSkZVwfR8F5r/YD5qn9dxPgh6dJZoCpG89KU+T6HLQ=;
+        b=GlIDuvl4crB5PVQPg/j+Y9zL1wrG0viUVkaVknGU1NdToE5Pw6RToO0+FP705cYGgR
+         I5uDMYtTaqdorYUNg+55qIUdrVKasp9ygKYKRi56DnULrNn+ElazbLFSZGU5P6jJgz94
+         Odts67GicF2ibDHNW2YqmS51q82pekexgu0ZAZg5BlLcSvfd7lTftPW48UdgFR65PRSA
+         54kuoi4d/VOSTYBJ30Y+yyh8opT9Id1yZu66wli7zyaE/xTU8z+iPvJAJrLWbACltOF4
+         PkZQ1//KTQJ/grY75IEuPF70XzffFdi/KGNW3vhklWLq79Pb+3GBjxrbDDY2u+Dlu9YM
+         OS9A==
+X-Gm-Message-State: AOAM531/6ntJwx1aMS/yiYN6OSHYHF2anrcPK9kZGrtbq481HIZdO6io
+        cDvu8uVqOEwyf3vcWsJqRC4bDMMrkgJA5w==
+X-Google-Smtp-Source: ABdhPJxymG8cfCUFrFhuqdX1WRR1BbgxyBDR6IlE8cbopkBGiA6E3xFdMJ9GJsU8TC/8n68R/yFT0A==
+X-Received: by 2002:a63:78c5:: with SMTP id t188mr4027705pgc.386.1630682428457;
+        Fri, 03 Sep 2021 08:20:28 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id c15sm5881007pjr.22.2021.09.03.08.20.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 08:20:28 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 15:20:24 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jiang Jiasheng <jiasheng@iscas.ac.cn>
+Cc:     pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] KVM: SVM: Potentially kvfree the ptr points to error
+ page
+Message-ID: <YTI9OPEStjZqp8Xa@google.com>
+References: <1630661986-816436-1-git-send-email-jiasheng@iscas.ac.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.211.96]
-X-ClientProxiedBy: vobn-exch-01.paragon-software.com (172.30.72.13) To
- vdlg-exch-02.paragon-software.com (172.30.1.105)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1630661986-816436-1-git-send-email-jiasheng@iscas.ac.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Sep 03, 2021, Jiang Jiasheng wrote:
+> Directly use the sev_unpin_memory() may cause kvfree()
+> free the error page, for region->pages may point to the error page.
+> 
+> Signed-off-by: Jiang Jiasheng <jiasheng@iscas.ac.cn>
+> ---
+>  arch/x86/kvm/svm/sev.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 8d36f0c..ee7d691 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1664,6 +1664,8 @@ find_enc_region(struct kvm *kvm, struct kvm_enc_region *range)
+>  static void __unregister_enc_region_locked(struct kvm *kvm,
+>  					   struct enc_region *region)
+>  {
+> +	if (IS_ERR(region->pages))
+> +		return;
 
-Please pull this branch containing ntfs3 code for 5.15.
-
-This is NTFS read-write driver. Current version works with 
-normal/compressed/sparse files and supports acl,
-NTFS journal replaying.
-
-Most of the code was in linux-next branch since Aug 13, but
-there are some patches, that were in linux-next branch only
-for a couple of days. Hopefully it is ok - no regression
-was detected in tests.
-
-Linus, sorry for messing up, but there was a back merge
-from Linux 5.14-rc5 to 5.14-rc7 with github web
-interface.
-
-There is build failure after merge of the overlayfs tree
-in linux-next [1].
-
-Regards,
-
-Konstantin
-
-[1]: https://lore.kernel.org/linux-next/20210819093910.55f96720@canb.auug.org.au/
-
-----------------------------------------------------------------
-
-The following changes since commit 36a21d51725af2ce0700c6ebcb6b9594aac658a6:
-
-  Linux 5.14-rc5 (Sun Aug 8 13:49:31 2021 -0700)
-
-are available in the Git repository at:
-
-  https://github.com/Paragon-Software-Group/linux-ntfs3.git master
-
-for you to fetch changes up to 2e3a51b59ea26544303e168de8a0479915f09aa3:
-
-  fs/ntfs3: Change how module init/info messages are displayed (Sun Aug 29 17:42:39 2021 +0300)
-
-----------------------------------------------------------------
-Konstantin Komarov (12)
-      fs/ntfs3: Restyle comments to better align with kernel-doc
-      fs/ntfs3: Rework file operations
-      fs/ntfs3: Add MAINTAINERS
-      fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile
-      fs/ntfs3: Add Kconfig, Makefile and doc
-      fs/ntfs3: Add NTFS journal
-      fs/ntfs3: Add compression
-      fs/ntfs3: Add attrib operations
-      fs/ntfs3: Add file operations and implementation
-      fs/ntfs3: Add bitmap
-      fs/ntfs3: Add initialization of super block
-      fs/ntfs3: Add headers and misc files
-
-Kari Argillander (13)
-      fs/ntfs3: Change how module init/info messages are displayed
-      fs/ntfs3: Remove GPL boilerplates from decompress lib files
-      fs/ntfs3: Remove unnecessary condition checking from ntfs_file_read_iter
-      fs/ntfs3: Fix integer overflow in ni_fiemap with fiemap_prep()
-      fs/ntfs3: Remove fat ioctl's from ntfs3 driver for now
-      fs/ntfs3: Restyle comments to better align with kernel-doc
-      fs/ntfs3: Use kcalloc/kmalloc_array over kzalloc/kmalloc
-      fs/ntfs3: Do not use driver own alloc wrappers
-      fs/ntfs3: Use kernel ALIGN macros over driver specific
-      fs/ntfs3: Restyle comment block in ni_parse_reparse()
-      fs/ntfs3: Fix one none utf8 char in source file
-      fs/ntfs3: Add ifndef + define to all header files
-      fs/ntfs3: Use linux/log2 is_power_of_2 function
-
-Dan Carpenter (5)
-      fs/ntfs3: Fix error handling in indx_insert_into_root()
-      fs/ntfs3: Potential NULL dereference in hdr_find_split()
-      fs/ntfs3: Fix error code in indx_add_allocate()
-      fs/ntfs3: fix an error code in ntfs_get_acl_ex()
-      fs/ntfs3: add checks for allocation failure
-
-Jiapeng Chong (1)
-      fs/ntfs3: Remove unused including <linux/version.h>
-
-Gustavo A. R. Silva (1)
-      fs/ntfs3: Fix fall-through warnings for Clang
-
-Nathan Chancellor (1)
-      fs/ntfs3: Remove unused variable cnt in ntfs_security_init()
-
-Colin Ian King (2)
-      fs/ntfs3: Fix integer overflow in multiplication
-      fs/ntfs3: Fix various spelling mistakes
-
- Documentation/filesystems/index.rst |   1 +
- Documentation/filesystems/ntfs3.rst | 106 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ntfs3/Kconfig                    |   46 +++
- fs/ntfs3/Makefile                   |   36 ++
- fs/ntfs3/attrib.c                   | 2093 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ntfs3/attrlist.c                 |  460 +++++++++++++++++++++
- fs/ntfs3/bitfunc.c                  |  134 +++++++
- fs/ntfs3/bitmap.c                   | 1493 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ntfs3/debug.h                    |   52 +++
- fs/ntfs3/dir.c                      |  599 ++++++++++++++++++++++++++++
- fs/ntfs3/file.c                     | 1251 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ntfs3/frecord.c                  | 3257 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ntfs3/fslog.c                    | 5217 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ntfs3/fsntfs.c                   | 2509 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ntfs3/index.c                    | 2650 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ntfs3/inode.c                    | 1957 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ntfs3/lib/decompress_common.c    |  319 +++++++++++++++
- fs/ntfs3/lib/decompress_common.h    |  338 ++++++++++++++++
- fs/ntfs3/lib/lib.h                  |   26 ++
- fs/ntfs3/lib/lzx_decompress.c       |  670 +++++++++++++++++++++++++++++++
- fs/ntfs3/lib/xpress_decompress.c    |  142 +++++++
- fs/ntfs3/lznt.c                     |  453 +++++++++++++++++++++
- fs/ntfs3/namei.c                    |  411 +++++++++++++++++++
- fs/ntfs3/ntfs.h                     | 1216 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ntfs3/ntfs_fs.h                  | 1111 +++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ntfs3/record.c                   |  605 ++++++++++++++++++++++++++++
- fs/ntfs3/run.c                      | 1113 +++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ntfs3/super.c                    | 1512 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/ntfs3/upcase.c                   |  108 +++++
- fs/ntfs3/xattr.c                    | 1119 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 30 files changed, 31004 insertions(+)
+This is completely bogus, __unregister_enc_region_locked() is only called with
+@region coming directly from sev->regions_list, i.e. it would require KVM to put
+an error pointer on the list.  Aside from the fact that (a) KVM has the proper
+error checking and (b) regions are allocated via kzalloc(), which uses NULL and
+not ERR_PTR() to signal failure, it's impossible to add an error pointer to a
+list because error pointers are not mapped.
