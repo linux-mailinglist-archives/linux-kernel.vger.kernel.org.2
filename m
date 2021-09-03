@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D04E3FFD3A
+	by mail.lfdr.de (Postfix) with ESMTP id 89B4F3FFD3B
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348883AbhICJfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 05:35:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55848 "EHLO
+        id S1348895AbhICJfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 05:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348857AbhICJfL (ORCPT
+        with ESMTP id S1348864AbhICJfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 05:35:11 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF94C061575
+        Fri, 3 Sep 2021 05:35:12 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8181C061575
         for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 02:34:12 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id g18so7293795wrc.11
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 02:34:11 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id m9so7325723wrb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 02:34:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nWnFUkWigf/R5l4257MEx+ITJVpSAzZHXNuW2f9UJjE=;
-        b=T/CMt57jPfAl9+I4JBaHsHapsIouKVbo+CwrONj1z9RdHb9+syjzLzRodBR7exOkBp
-         AL+vY2myuqio1+Pn8QA5JEQhsAifFIZx5rTXd3yXT7d/x307cQeVBpe7aZ8U+PFw7q36
-         akidkOTdbTIEVYODsAMmBcpEFukmZcA1QiV/xsHZmn1AAKpXIPbrtB6m8eW5cGnicfcO
-         WvYt8mduXtsOIsTDOnn++HzTqpmL8NYIGxoXOu9RdLcO+IR4nElzK/NRwvQyDZAKGuTJ
-         z/Pl29LbzNpOC+cnYwMTyL3d7imEIFv7PyU37Qg0AQhUHG4ZNuDoSidtr36mQcr3i6x+
-         6vaQ==
+        bh=oznwyLooQ2rhxtSqFdj86ZRnOv4fBG2J3jHuHaF1yHE=;
+        b=JoXcaDwhgnMRJEWj2g2has1eZ0yY4ltbJg6pxCKsVVuBwKcNCUGfosjNn2WWMsauY0
+         Nu4ihue8A4cZI6pLYwsOuspwKJUQNp9+JXWzUbRW4X9Olrpy618jNbm0v2rPhQgDIZg0
+         1S/fmKjnY2bhgJB8twzpX7aMZGsE6F6qQknJMs64KMRo5hwd+nVpXG/1mGuw63Qx8t3V
+         c0GB7H81OfZPdegjsLn/X3o5cPN3QhPsNtNxqOqT+MyS981VRPe8mRkn1SCwRqhJSGGc
+         TUolZvdXmV8KUbehSPsFJ4jt4a5ItvPMoa1q0p1J1WqGt+CJzmwvSnrdfsPXn0z5EF7B
+         7JIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nWnFUkWigf/R5l4257MEx+ITJVpSAzZHXNuW2f9UJjE=;
-        b=LJELGDNb+hLxgpf3QTyK0QT0SqjX95NuqqljlaNOzhpLHek1A8mBl8Mu8pmjjoKa7p
-         AbJp1APZZ+s9Am2hOZmTAWAO3ZZdAFZMhL21F6QOD51tNXkd2WV/N1KB/ITC0MfL6zIH
-         kR1YwrSN+Q7pfcFvm+ffav/vp1NomRXOW/GwlOYDhajFCmfWz5Dba639uFAXfX3ldddh
-         nANGo9OFFiY7AvMxY6ekVCNlWr+XpyVTbZ/XfzkjXZdIiIgd4syW3XwVor9L4rdirJm4
-         hAafPjGndewjRZNPVbGY8PfUvRXmQBCJmfyXGk8SIy0wufpinno/zm6fSjZFrynd95nc
-         vryA==
-X-Gm-Message-State: AOAM5339Lu3Ho3bFZIf3l286UuwYyKfcw7Yww6nK895kSb0gtVzXJI2+
-        3ZvBkWaztG9sF7XDnQSUsag=
-X-Google-Smtp-Source: ABdhPJwQZI3CDN3TxMei3yQ+d3GOz0ritWI9u/yQu8kRphixN7dizPsJBLuMmKaf2C67x6JdAdH/Nw==
-X-Received: by 2002:adf:b741:: with SMTP id n1mr2929121wre.120.1630661650700;
-        Fri, 03 Sep 2021 02:34:10 -0700 (PDT)
+        bh=oznwyLooQ2rhxtSqFdj86ZRnOv4fBG2J3jHuHaF1yHE=;
+        b=DHmiXeFuvhxpg0IwGy2KRDqzdQUCMthsnhmoKs5RC5geijIhpuNTAKeLwjqcdGDnOq
+         OKzEwZryQhfG1oqGxJG7p0iUycr3SOdaamm2OV/DBcgOlAxxLLWRd28wNxRLMXf+XASs
+         ib9W0RAu5l7teQtGB1GggPSnuO1Pd6gHUp4q6iwepMRQMTNMesmDUYt4ZkvSQA7vnLMU
+         f6WxAGtiCPFVMk3JpZQQOqEk2ZZaAIYw1K2Myyn/IbomZ8LGpAUBRpGQqlrbEL4pCbqK
+         kvLSbO9+XPESZotanZrZz7JNlAJOSKpn/CabAMqit8E/H/T2Io2P04CuMLIfapNV01vK
+         VqhA==
+X-Gm-Message-State: AOAM532miNbNMwWBOI0o6T2d4hqxioL4niBSdHueLmhqFz1cvafBu/eS
+        XcRzOK868yfuTpSoAa+EdIM=
+X-Google-Smtp-Source: ABdhPJx/+h8UZIFCxZiltfDZtgYQjnz6VeGEXE2xBJC2LwoUstv45cDQ6Ku0Mnsvv6luek7fadzOzg==
+X-Received: by 2002:adf:80c8:: with SMTP id 66mr2931481wrl.65.1630661651619;
+        Fri, 03 Sep 2021 02:34:11 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::16fa])
-        by smtp.gmail.com with ESMTPSA id x11sm3853060wmk.21.2021.09.03.02.34.09
+        by smtp.gmail.com with ESMTPSA id x11sm3853060wmk.21.2021.09.03.02.34.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 02:34:10 -0700 (PDT)
+        Fri, 03 Sep 2021 02:34:11 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 3/6] staging: r8188eu: remove unused enum from ieee80211.h.
-Date:   Fri,  3 Sep 2021 11:33:51 +0200
-Message-Id: <20210903093354.12645-4-straube.linux@gmail.com>
+Subject: [PATCH 4/6] staging: r8188eu: remove unused enum rt_eeprom_type
+Date:   Fri,  3 Sep 2021 11:33:52 +0200
+Message-Id: <20210903093354.12645-5-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210903093354.12645-1-straube.linux@gmail.com>
 References: <20210903093354.12645-1-straube.linux@gmail.com>
@@ -66,52 +66,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused enum from ieee80211.h.
+Remove unused enum rt_eeprom_type.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/include/ieee80211.h | 28 ---------------------
- 1 file changed, 28 deletions(-)
+ drivers/staging/r8188eu/include/hal_intf.h | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/include/ieee80211.h b/drivers/staging/r8188eu/include/ieee80211.h
-index bc5b030e9c40..ef0a7c20bd58 100644
---- a/drivers/staging/r8188eu/include/ieee80211.h
-+++ b/drivers/staging/r8188eu/include/ieee80211.h
-@@ -19,34 +19,6 @@
+diff --git a/drivers/staging/r8188eu/include/hal_intf.h b/drivers/staging/r8188eu/include/hal_intf.h
+index 954de3ab2613..bbdbbf9697b1 100644
+--- a/drivers/staging/r8188eu/include/hal_intf.h
++++ b/drivers/staging/r8188eu/include/hal_intf.h
+@@ -254,12 +254,6 @@ struct hal_ops {
+ 	c2h_id_filter c2h_id_filter_ccx;
+ };
  
- #define RTL_IOCTL_HOSTAPD (SIOCIWFIRSTPRIV + 28)
- 
--/* RTL871X_IOCTL_HOSTAPD ioctl() cmd: */
--enum {
--	RTL871X_HOSTAPD_FLUSH = 1,
--	RTL871X_HOSTAPD_ADD_STA = 2,
--	RTL871X_HOSTAPD_REMOVE_STA = 3,
--	RTL871X_HOSTAPD_GET_INFO_STA = 4,
--	/* REMOVED: PRISM2_HOSTAPD_RESET_TXEXC_STA = 5, */
--	RTL871X_HOSTAPD_GET_WPAIE_STA = 5,
--	RTL871X_SET_ENCRYPTION = 6,
--	RTL871X_GET_ENCRYPTION = 7,
--	RTL871X_HOSTAPD_SET_FLAGS_STA = 8,
--	RTL871X_HOSTAPD_GET_RID = 9,
--	RTL871X_HOSTAPD_SET_RID = 10,
--	RTL871X_HOSTAPD_SET_ASSOC_AP_ADDR = 11,
--	RTL871X_HOSTAPD_SET_GENERIC_ELEMENT = 12,
--	RTL871X_HOSTAPD_MLME = 13,
--	RTL871X_HOSTAPD_SCAN_REQ = 14,
--	RTL871X_HOSTAPD_STA_CLEAR_STATS = 15,
--	RTL871X_HOSTAPD_SET_BEACON = 16,
--	RTL871X_HOSTAPD_SET_WPS_BEACON = 17,
--	RTL871X_HOSTAPD_SET_WPS_PROBE_RESP = 18,
--	RTL871X_HOSTAPD_SET_WPS_ASSOC_RESP = 19,
--	RTL871X_HOSTAPD_SET_HIDDEN_SSID = 20,
--	RTL871X_HOSTAPD_SET_MACADDR_ACL = 21,
--	RTL871X_HOSTAPD_ACL_ADD_STA = 22,
--	RTL871X_HOSTAPD_ACL_REMOVE_STA = 23,
+-enum rt_eeprom_type {
+-	EEPROM_93C46,
+-	EEPROM_93C56,
+-	EEPROM_BOOT_EFUSE,
 -};
 -
- /* STA flags */
- #define WLAN_STA_AUTH BIT(0)
- #define WLAN_STA_ASSOC BIT(1)
+ #define RF_CHANGE_BY_INIT	0
+ #define RF_CHANGE_BY_IPS	BIT(28)
+ #define RF_CHANGE_BY_PS		BIT(29)
 -- 
 2.33.0
 
