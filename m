@@ -2,140 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D897F3FFB02
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBD33FFB04
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347857AbhICHUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 03:20:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234803AbhICHUn (ORCPT
+        id S1347887AbhICHVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 03:21:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:24701 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234803AbhICHVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 03:20:43 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20AE6C061575;
-        Fri,  3 Sep 2021 00:19:44 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id n18so4701044pgm.12;
-        Fri, 03 Sep 2021 00:19:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=EtHM4v5k5O3KlwBMZhh8koyco/MnfcbrVJgA5dm1qn8=;
-        b=F9PFlCkm33EtYjpX+K573ijdvJANomBO1wtE8R0RzBOXMHpLk3mRk9nbOt2hSmpNUw
-         z8PJGz5mrdVrJRYQbnSWbRqAS8nVBYCBtl24Z0/kyBVb9ecFkYSnOBlawIqMYZNJY0B+
-         QY7Wdr0Vz7W8S4fgKhtG1sSIFsNVI5c+gpJOl5uAkErHTDU87J1aL+1nc9iMtVjKPXN2
-         PywU0bFjVO45nsHK84nG5KhqiXzFg2e1gi1YSlTAq+4thmdKQfpZCf2XB62g0MmzqTiU
-         SVv74oc5oD86H5yVeWPlKvk6jNf2+PaIcA1TR1wdTQariXp3kh3GI6SmL/i5qV1KM/53
-         70Bg==
+        Fri, 3 Sep 2021 03:21:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630653648;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I8/c475Ts5fBIR2oCP1eGnpxl20tC/NN4uRiEu1Qkfg=;
+        b=TXN5WN3ApmR3hz0DTO/IE8Q66qkwGMbfk90ppwrySTltXPfpGaIs6KubH+lMwFKcuRg0Vp
+        pHT+/QsP35cRiq2rccjTPCTeZ5PyKbob+8oaGtMfgQ/NFPocAIXvLTxy4yeBQvluGT+/jR
+        u7kCqa8VXB7LUkSaWB5GVLda1HRGW3A=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-414-S6tRPtaOPGmvkjyjrZryIQ-1; Fri, 03 Sep 2021 03:20:47 -0400
+X-MC-Unique: S6tRPtaOPGmvkjyjrZryIQ-1
+Received: by mail-wm1-f69.google.com with SMTP id h1-20020a05600c350100b002e751bf6733so1635785wmq.8
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 00:20:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=EtHM4v5k5O3KlwBMZhh8koyco/MnfcbrVJgA5dm1qn8=;
-        b=rAF5yMikfZ6QpVrykClu/6WqDCAq2Ymxc/xbd/+LKxdFzMP9lXtE31WJ4v+QinA1o6
-         6jVDkHM3hQNd8TEDc60dMAnLgPkWkiqARyRJbq/AgKBiJmu/zeT692xOytlG1exdqcdF
-         ZdGBSP24vkF2qwN7NEUVyZcohJz64jgSzKgoAf6thxkLz196QbDEa/NOinFgSTL0bWLA
-         4D2B72uAJ4XJhh0xK6vjJBT7bl2yE6/pLnUrd1yiw74RCZr2l69Zv1lVSsp4nBtedU28
-         M/axY7CpeZlOXYxM3sBH+vWdIomQrWc3IOCEAWYj8weWexnEMMv4az22tbBJ0VVy8JUN
-         Xk+w==
-X-Gm-Message-State: AOAM5327Hqhh8Pxj0pxVXEwQFa6CW9cwXfH8QbecAF+ht59ulpq18dhb
-        be7C3z2bOoa5hYqWV8HxE/TCY1RZFWm3hVoIOq453wMY/1x54Ok=
-X-Google-Smtp-Source: ABdhPJwBJIRPqih+MTR2z3I0l3K1rAmRz8Kk/8qR523Uc9kTLyhPedhSny3S4QoRc9jylVwZZMyoeODiABxMMyX8r1s=
-X-Received: by 2002:a63:3d4a:: with SMTP id k71mr2395401pga.276.1630653583232;
- Fri, 03 Sep 2021 00:19:43 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=I8/c475Ts5fBIR2oCP1eGnpxl20tC/NN4uRiEu1Qkfg=;
+        b=J/JNl18ebRzg3qamRERbZPeI2oaWHxPjdeSjkwt/EYUuyYMXaTFxdG7cSY1x4crrMM
+         hA0AIsrcQaGkXvAVNvPX13fHAY4J73YhOo8RlnDNr9nQQotrs+PSpgRHTc4EBVPenrOJ
+         LepU4qc1LsCEBLnr+L6yOA7jBScyPotNpTjFrdEx9EpHHDvRpjXB4HIi7Tznt6AkADZU
+         u4MCz56ThrvvMGIvv/b6SRxsyRyGNCrQPF6vayIGWf6D8j2qR2y9EsdHw7ZH9wxehaHd
+         6SIseNFTTJRZxU8qBPNPUr33g6tOEMR1AL4ZmX5FoRufaMeTTidfyNMZkBdb9l9vC3yU
+         pVQw==
+X-Gm-Message-State: AOAM5323ROal250qwcuKKovfWE6NAI09qe3HSKdZH2JtJauqyzIZYool
+        zAWJu9RSwAroyrhYrCCYXzof+babMJWp2NBDmkqhx4oSsEugBQRvH9vNb0H9/X/Gxtt1FPJg/rC
+        IzuhXzE8x2ePtEiS7vcjAxOLZlqHXez0WS/q6CSwElGsBx4YVcmKzq2TZk4udYqS+Y2P3aBjXRP
+        x/
+X-Received: by 2002:a1c:4a:: with SMTP id 71mr6839683wma.87.1630653646231;
+        Fri, 03 Sep 2021 00:20:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyEofdzl+EnW4UZb0xe5+G5NBGxfT3AmBcnFgerxtF6/kNm2P4gaQxK/q7MERMN6QXk21cWBQ==
+X-Received: by 2002:a1c:4a:: with SMTP id 71mr6839646wma.87.1630653645931;
+        Fri, 03 Sep 2021 00:20:45 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id m30sm1613869wrb.3.2021.09.03.00.20.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 00:20:45 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 7/8] KVM: Pre-allocate cpumasks for
+ kvm_make_all_cpus_request_except()
+In-Reply-To: <YTE9OsXABLzUitUd@google.com>
+References: <20210827092516.1027264-1-vkuznets@redhat.com>
+ <20210827092516.1027264-8-vkuznets@redhat.com>
+ <YTE9OsXABLzUitUd@google.com>
+Date:   Fri, 03 Sep 2021 09:20:44 +0200
+Message-ID: <87o89am8fn.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Fri, 3 Sep 2021 15:19:32 +0800
-Message-ID: <CACkBjsZh7DCs+N+R=0+mnNqFZW8ck5cSgV4MpGM6ySbfenUJ+g@mail.gmail.com>
-Subject: kernel BUG in block_invalidatepage
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Sean Christopherson <seanjc@google.com> writes:
 
-When using Healer to fuzz the latest Linux kernel, the following crash
-was triggered.
+> On Fri, Aug 27, 2021, Vitaly Kuznetsov wrote:
+>> Allocating cpumask dynamically in zalloc_cpumask_var() is not ideal.
+>> Allocation is somewhat slow and can (in theory and when CPUMASK_OFFSTACK)
+>> fail. kvm_make_all_cpus_request_except() already disables preemption so
+>> we can use pre-allocated per-cpu cpumasks instead.
+>> 
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  virt/kvm/kvm_main.c | 29 +++++++++++++++++++++++------
+>>  1 file changed, 23 insertions(+), 6 deletions(-)
+>> 
+>> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+>> index 2e9927c4eb32..2f5fe4f54a51 100644
+>> --- a/virt/kvm/kvm_main.c
+>> +++ b/virt/kvm/kvm_main.c
+>> @@ -155,6 +155,8 @@ static void kvm_uevent_notify_change(unsigned int type, struct kvm *kvm);
+>>  static unsigned long long kvm_createvm_count;
+>>  static unsigned long long kvm_active_vms;
+>>  
+>> +static DEFINE_PER_CPU(cpumask_var_t, cpu_kick_mask);
+>> +
+>>  __weak void kvm_arch_mmu_notifier_invalidate_range(struct kvm *kvm,
+>>  						   unsigned long start, unsigned long end)
+>>  {
+>> @@ -323,14 +325,15 @@ bool kvm_make_all_cpus_request_except(struct kvm *kvm, unsigned int req,
+>>  				      struct kvm_vcpu *except)
+>>  {
+>>  	struct kvm_vcpu *vcpu;
+>> -	cpumask_var_t cpus;
+>> +	struct cpumask *cpus;
+>>  	bool called;
+>>  	int i, me;
+>>  
+>> -	zalloc_cpumask_var(&cpus, GFP_ATOMIC);
+>> -
+>>  	me = get_cpu();
+>>  
+>> +	cpus = this_cpu_cpumask_var_ptr(cpu_kick_mask);
+>> +	cpumask_clear(cpus);
+>> +
+>>  	kvm_for_each_vcpu(i, vcpu, kvm) {
+>>  		if (vcpu == except)
+>>  			continue;
+>> @@ -340,7 +343,6 @@ bool kvm_make_all_cpus_request_except(struct kvm *kvm, unsigned int req,
+>>  	called = kvm_kick_many_cpus(cpus, !!(req & KVM_REQUEST_WAIT));
+>>  	put_cpu();
+>>  
+>> -	free_cpumask_var(cpus);
+>>  	return called;
+>>  }
+>>  
+>> @@ -5581,9 +5583,15 @@ int kvm_init(void *opaque, unsigned vcpu_size, unsigned vcpu_align,
+>>  		goto out_free_3;
+>>  	}
+>>  
+>> +	for_each_possible_cpu(cpu) {
+>> +		if (!alloc_cpumask_var_node(&per_cpu(cpu_kick_mask, cpu),
+>> +					    GFP_KERNEL, cpu_to_node(cpu)))
+>> +			goto out_free_4;
+>
+> 'r' needs to be explicitly set to -EFAULT, e.g. in the current code it's
+> guaranteed to be 0 here.
 
-HEAD commit: 7d2a07b76933 Linux 5.14
-git tree: upstream
-console output:
-https://drive.google.com/file/d/1Z-djyuwIRtlIKNHdLxoUnr8NqDu9zd9S/view?usp=sharing
-kernel config: https://drive.google.com/file/d/1XD9WYDViQLSXN7RGwH8AGGDvP9JvOghx/view?usp=sharing
+Oops, yes. Any particular reason to avoid -ENOMEM? (hope not, will use
+this in v5)
 
-Sorry, I don't have a reproducer for this crash, hope the symbolized
-report can help.
-If you fix this issue, please add the following tag to the commit:
-Reported-by: Hao Sun <sunhao.th@gmail.com>
+>
+>> +	}
+>> +
+>>  	r = kvm_async_pf_init();
+>>  	if (r)
+>> -		goto out_free;
+>> +		goto out_free_5;
+>>  
+>>  	kvm_chardev_ops.owner = module;
+>>  	kvm_vm_fops.owner = module;
+>> @@ -5609,7 +5617,11 @@ int kvm_init(void *opaque, unsigned vcpu_size, unsigned vcpu_align,
+>>  
+>>  out_unreg:
+>>  	kvm_async_pf_deinit();
+>> -out_free:
+>> +out_free_5:
+>> +	for_each_possible_cpu(cpu) {
+>
+> Unnecessary braces.
+>
+>> +		free_cpumask_var(per_cpu(cpu_kick_mask, cpu));
+>> +	}
+>> +out_free_4:
+>>  	kmem_cache_destroy(kvm_vcpu_cache);
+>>  out_free_3:
+>>  	unregister_reboot_notifier(&kvm_reboot_notifier);
+>> @@ -5629,8 +5641,13 @@ EXPORT_SYMBOL_GPL(kvm_init);
+>>  
+>>  void kvm_exit(void)
+>>  {
+>> +	int cpu;
+>> +
+>>  	debugfs_remove_recursive(kvm_debugfs_dir);
+>>  	misc_deregister(&kvm_dev);
+>> +	for_each_possible_cpu(cpu) {
+>
+> Same here.
+>
+>> +		free_cpumask_var(per_cpu(cpu_kick_mask, cpu));
+>> +	}
+>>  	kmem_cache_destroy(kvm_vcpu_cache);
+>>  	kvm_async_pf_deinit();
+>>  	unregister_syscore_ops(&kvm_syscore_ops);
+>> -- 
+>> 2.31.1
+>> 
+>
 
-------------[ cut here ]------------
-kernel BUG at fs/buffer.c:1510!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8695 Comm: syz-executor Not tainted 5.14.0 #25
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-RIP: 0010:block_invalidatepage+0x54d/0x660 fs/buffer.c:1510
-Code: ff ff e8 c6 aa 9d ff b9 02 00 00 00 be 02 00 00 00 48 89 ef 48
-c7 c2 c0 5e 20 89 e8 7d 0e 49 07 e9 29 fe ff ff e8 a3 aa 9d ff <0f> 0b
-e8 9c aa 9d ff 0f 0b e8 95 aa 9d ff 48 83 eb 01 e9 83 fb ff
-RSP: 0018:ffffc90000a376f8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff88810dd8b980
-RDX: 0000000000000000 RSI: ffff88810dd8b980 RDI: 0000000000000002
-RBP: 0000000000000000 R08: ffffffff81d74ddd R09: 0000000000001000
-R10: 0000000000000005 R11: fffff940000b0000 R12: ffffea0000580000
-R13: 0000000000000000 R14: 0000000000200000 R15: 0000000000200000
-FS:  0000000000000000(0000) GS:ffff888119f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffcb1d285b7 CR3: 0000000104f5d005 CR4: 0000000000770ee0
-PKRU: 55555554
-Call Trace:
- do_invalidatepage mm/truncate.c:157 [inline]
- truncate_cleanup_page+0x3e4/0x620 mm/truncate.c:176
- truncate_inode_pages_range+0x26c/0x1960 mm/truncate.c:325
- kill_bdev.isra.0+0x5f/0x80 fs/block_dev.c:86
- blkdev_flush_mapping+0xdf/0x2e0 fs/block_dev.c:1243
- blkdev_put_whole+0xe8/0x110 fs/block_dev.c:1277
- blkdev_put+0x268/0x720 fs/block_dev.c:1576
- blkdev_close+0x8c/0xb0 fs/block_dev.c:1586
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xe0/0x1a0 kernel/task_work.c:164
- exit_task_work include/linux/task_work.h:32 [inline]
- do_exit+0xbe4/0x2e00 kernel/exit.c:825
- do_group_exit+0x125/0x340 kernel/exit.c:922
- get_signal+0x4d5/0x25a0 kernel/signal.c:2808
- arch_do_signal_or_restart+0x2ed/0x1c40 arch/x86/kernel/signal.c:865
- handle_signal_work kernel/entry/common.c:148 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
- exit_to_user_mode_prepare+0x192/0x2a0 kernel/entry/common.c:209
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
- do_syscall_64+0x42/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4739cd
-Code: Unable to access opcode bytes at RIP 0x4739a3.
-RSP: 002b:00007f6c0fac6218 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 000000000059c0a0 RCX: 00000000004739cd
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000059c0a8
-RBP: 000000000059c0a8 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c0ac
-R13: 00007ffcdd11bbff R14: 00007ffcdd11bda0 R15: 00007f6c0fac6300
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
----[ end trace 4d1faf5c7a1da2c5 ]---
-RIP: 0010:block_invalidatepage+0x54d/0x660 fs/buffer.c:1510
-Code: ff ff e8 c6 aa 9d ff b9 02 00 00 00 be 02 00 00 00 48 89 ef 48
-c7 c2 c0 5e 20 89 e8 7d 0e 49 07 e9 29 fe ff ff e8 a3 aa 9d ff <0f> 0b
-e8 9c aa 9d ff 0f 0b e8 95 aa 9d ff 48 83 eb 01 e9 83 fb ff
-RSP: 0018:ffffc90000a376f8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff88810dd8b980
-RDX: 0000000000000000 RSI: ffff88810dd8b980 RDI: 0000000000000002
-RBP: 0000000000000000 R08: ffffffff81d74ddd R09: 0000000000001000
-R10: 0000000000000005 R11: fffff940000b0000 R12: ffffea0000580000
-R13: 0000000000000000 R14: 0000000000200000 R15: 0000000000200000
-FS:  0000000000000000(0000) GS:ffff888119f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f6945606000 CR3: 000000010abb2004 CR4: 0000000000770ee0
-PKRU: 55555554
+-- 
+Vitaly
+
