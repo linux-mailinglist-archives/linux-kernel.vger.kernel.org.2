@@ -2,155 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC54B3FFAA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290523FFAA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347275AbhICGu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 02:50:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30971 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1347152AbhICGu5 (ORCPT
+        id S1347394AbhICGvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 02:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347003AbhICGvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 02:50:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630651797;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=paUDlp7iEJb3RmqcU7PhOx7PiOju1z7RQq4LXUKqpHE=;
-        b=hd/kv/4uoPDVVHCk7bg1W0K4fn8kcmAEAuAwvmmo8uuLL+BQwIik3W3RLhOPvguYYkCkRM
-        oyCJv9AUww4RwwHiceN3Sw3Fb3a44dkfiHFLlCU1ppvCHzUAUyTBMrmlG3ZOBbrWREiMgq
-        FRm4/8Pc6kmU7eXm1XL2DBvPMCjWVBQ=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-456-YYZ08vu5O-uD4X4UzEUO2Q-1; Fri, 03 Sep 2021 02:49:55 -0400
-X-MC-Unique: YYZ08vu5O-uD4X4UzEUO2Q-1
-Received: by mail-qt1-f200.google.com with SMTP id b24-20020ac86798000000b0029eaa8c35d6so4564180qtp.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 23:49:55 -0700 (PDT)
+        Fri, 3 Sep 2021 02:51:36 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0107C061575
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 23:50:36 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id i24so709465pfo.12
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 23:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=0BQ9u2y+lw4VEtzEXjzN4NZ3IpjygaobSG94tsEQOB0=;
+        b=K/qIFLcWBPxAbl2ywxgXJE7YZyHmsP6nhL7IpT7DAAX6NFt6nPHyvf0YrSBgQfiylr
+         7dl2n5nhxJmv0oH+QIgd9rBVOpqcoFBfHG7tPeB5StXo6jj+Dn/V/zMVaEBVt8sNarj6
+         dzfcBJrm0i2gf7wSE3vYt5mIOIDVpUgHnh0s8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=paUDlp7iEJb3RmqcU7PhOx7PiOju1z7RQq4LXUKqpHE=;
-        b=Tza4+9TZlvtrueGr4AqJkJg+Pi49QdQ1hUkIN5bnvvo9j0iQgRGIyFL/PJ/5ZLxc76
-         lU3awBBqvUT4WSiwuNVnOkZL2TDlKu7zTiRBgvDUk1i1HyiU3JkTAa89HvNGWfuEebT2
-         nQ78BTZjZDPNleDDgWv3zRlG8sKMb0u6bUqydTf1wXCLOCYXir5h+tKRWt/Y1/WTofTw
-         4XgddwvEoOMkPPo9Xv/p0QWu443KuUvzsD0zQUyXx1EgmEVHmrHcZVZRN5O4xn2nWPtl
-         jscVr9AuoBbn0imDoSmduLu73iBGTMAlthDjobgKTPCUzNYryfoUwYZx9WoD+L3kMHTt
-         dgJA==
-X-Gm-Message-State: AOAM5327YA3EmobeZxLsB3P8OM+0SznObo0OUq3m28ePv1tNbahaaOQI
-        vYJjgK8utkAOwEFIiwcG44IL5kUDWauYt39q9uXxJ+RtXcpEllzd86P/CIU2kRebWsHNCREX8Q/
-        y1jzVr0Yxx1LiGrqkN32d/yb2
-X-Received: by 2002:a0c:ab4e:: with SMTP id i14mr2154158qvb.28.1630651795053;
-        Thu, 02 Sep 2021 23:49:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJykW/paz3da/9QXzOhKwMVDERXVXg3CeWKjwGEs1zXPNM88Zu07JB2eia/5zQd1pdOOdeRrmg==
-X-Received: by 2002:a0c:ab4e:: with SMTP id i14mr2154141qvb.28.1630651794814;
-        Thu, 02 Sep 2021 23:49:54 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::d])
-        by smtp.gmail.com with ESMTPSA id b1sm2565223qtj.76.2021.09.02.23.49.52
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=0BQ9u2y+lw4VEtzEXjzN4NZ3IpjygaobSG94tsEQOB0=;
+        b=jmIRIe4mC6S3JQJ3uj6VrT3nW0rJ/YtDyeGjcv7Jk5lFGccSjSIJoL7La+SGkuEcln
+         LSZszVUe+tYWuudRPWW5ofsBlOOWYMMoFAD/Em6sea8hZP89VqOP9rdhq94bHZK5pOsp
+         EDrsWAGrtRUCfysQN5u2Lgy4LPdRDty2OadBHCXtp76ap69podzR+io9Gkw2tQ5TCBIm
+         Xy0iHd2GkUQvYaFlopCxChzmHtKILJa3qSzUFY3ZvNOe3K+yySyKL5kFtemwEvBy9bW+
+         TUqwBda6QdAiVAsPO7IO4mKuoWAm6pEW6tDWBNkfp+HRPsky9N3IrZ4aOaHjtEznLZRV
+         Nevw==
+X-Gm-Message-State: AOAM532VGXdHHy+1QWs0xwEM7/qs95IfEe0jYCcQqjFVYrLSVQbsj/JA
+        n7ancBbTPZ1AG4rrbgynBbsXAdFwg9Z0pA==
+X-Google-Smtp-Source: ABdhPJyp7NknuFpIcPAgK+njiE3tqC94g8/kN/2XtEpH0MA3stL+2JFabeSEdyw88uMsuVCmN0FLRA==
+X-Received: by 2002:a63:e64a:: with SMTP id p10mr2274483pgj.263.1630651836290;
+        Thu, 02 Sep 2021 23:50:36 -0700 (PDT)
+Received: from localhost ([2001:4479:e200:df00:ddd7:1b3:9327:fcf5])
+        by smtp.gmail.com with ESMTPSA id y3sm5045324pge.44.2021.09.02.23.50.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 23:49:54 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 23:49:51 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jessica Yu <jeyu@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arch@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 3/4] module: Use a list of strings for ro_after_init
- sections
-Message-ID: <20210903064951.to4dhiu7zua7s6dn@treble>
-References: <20210901233757.2571878-1-keescook@chromium.org>
- <20210901233757.2571878-4-keescook@chromium.org>
+        Thu, 02 Sep 2021 23:50:35 -0700 (PDT)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] powerpc/machdep: Remove stale functions from ppc_md structure
+In-Reply-To: <24d4ca0ada683c9436a5f812a7aeb0a1362afa2b.1630398606.git.christophe.leroy@csgroup.eu>
+References: <24d4ca0ada683c9436a5f812a7aeb0a1362afa2b.1630398606.git.christophe.leroy@csgroup.eu>
+Date:   Fri, 03 Sep 2021 16:50:32 +1000
+Message-ID: <87ilzi5f0n.fsf@linkitivity.dja.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210901233757.2571878-4-keescook@chromium.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 04:37:56PM -0700, Kees Cook wrote:
-> Instead of open-coding the section names, use a list for the sections that
-> need to be marked read-only after init. Unfortunately, it seems we can't
-> do normal section merging with scripts/module.lds.S as ld.bfd doesn't
-> correctly update symbol tables. For more details, see commit 6a3193cdd5e5
-> ("kbuild: lto: Merge module sections if and only if CONFIG_LTO_CLANG
-> is enabled").
+Hi Christophe,
 
-I'm missing what this has to do with section merging.  Can you connect
-the dots here, i.e. what sections would we want to merge and how would
-that help here?
+> ppc_md.iommu_save() is not set anymore by any platform after
+> commit c40785ad305b ("powerpc/dart: Use a cachable DART").
+> So iommu_save() has become a nop and can be removed.
 
-Instead of hard-coding section names in module.c, I'm wondering if we
-can do something like the following to set SHF_RO_AFTER_INIT when first
-creating the sections.  Completely untested...
+I wonder if it makes sense to have an iommu_restore() without an
+iommu_save. Only dart_iommu.c defines an iommu_restore(), but I couldn't
+figure out if it was safe to remove and it seems like it still did
+something...
 
+> ppc_md.show_percpuinfo() is not set anymore by any platform after
+> commit 4350147a816b ("[PATCH] ppc64: SMU based macs cpufreq support").
+>
+> Last users of ppc_md.rtc_read_val() and ppc_md.rtc_write_val() were
+> removed by commit 0f03a43b8f0f ("[POWERPC] Remove todc code from
+> ARCH=powerpc")
+>
+> Last user of kgdb_map_scc() was removed by commit 17ce452f7ea3 ("kgdb,
+> powerpc: arch specific powerpc kgdb support").
+>
+> ppc.machine_kexec_prepare() has not been used since
+> commit 8ee3e0d69623 ("powerpc: Remove the main legacy iSerie platform
+> code"). This allows the removal of machine_kexec_prepare() and the
+> rename of default_machine_kexec_prepare() into machine_kexec_prepare()
 
-diff --git a/arch/x86/include/asm/jump_label.h b/arch/x86/include/asm/jump_label.h
-index 0449b125d27f..d4ff34c6199c 100644
---- a/arch/x86/include/asm/jump_label.h
-+++ b/arch/x86/include/asm/jump_label.h
-@@ -13,7 +13,7 @@
- #include <linux/types.h>
- 
- #define JUMP_TABLE_ENTRY				\
--	".pushsection __jump_table,  \"aw\" \n\t"	\
-+	".pushsection __jump_table, \"0x00200003\" \n\t"\
- 	_ASM_ALIGN "\n\t"				\
- 	".long 1b - . \n\t"				\
- 	".long %l[l_yes] - . \n\t"			\
-diff --git a/kernel/module.c b/kernel/module.c
-index 40ec9a030eec..1dda33c9ae49 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -3549,15 +3549,6 @@ static struct module *layout_and_allocate(struct load_info *info, int flags)
- 	 * Note: ro_after_init sections also have SHF_{WRITE,ALLOC} set.
- 	 */
- 	ndx = find_sec(info, ".data..ro_after_init");
--	if (ndx)
--		info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
--	/*
--	 * Mark the __jump_table section as ro_after_init as well: these data
--	 * structures are never modified, with the exception of entries that
--	 * refer to code in the __init section, which are annotated as such
--	 * at module load time.
--	 */
--	ndx = find_sec(info, "__jump_table");
- 	if (ndx)
- 		info->sechdrs[ndx].sh_flags |= SHF_RO_AFTER_INIT;
- 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index e5947fbb9e7a..b25ca38179ea 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -20,6 +20,9 @@
- #include <linux/kernel.h>
- #include <linux/static_call_types.h>
- 
-+/* cribbed from include/uapi/linux/elf.h */
-+#define SHF_RO_AFTER_INIT	0x00200000
-+
- struct alternative {
- 	struct list_head list;
- 	struct instruction *insn;
-@@ -466,7 +469,8 @@ static int create_static_call_sections(struct objtool_file *file)
- 	list_for_each_entry(insn, &file->static_call_list, call_node)
- 		idx++;
- 
--	sec = elf_create_section(file->elf, ".static_call_sites", SHF_WRITE,
-+	sec = elf_create_section(file->elf, ".static_call_sites",
-+				 SHF_WRITE | SHF_RO_AFTER_INIT,
- 				 sizeof(struct static_call_site), idx);
- 	if (!sec)
- 		return -1;
+I think you should also remove the prototype from
+arch/powerpc/include/asm/kexec.h
 
+Apart from that:
+Reviewed-by: Daniel Axtens <dja@axtens.net>
+
+Kind regards,
+Daniel Axtens
