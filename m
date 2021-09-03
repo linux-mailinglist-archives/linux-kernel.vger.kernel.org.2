@@ -2,133 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B46140033F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE1B400343
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:27:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349984AbhICQ1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 12:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37556 "EHLO
+        id S1349991AbhICQ15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 12:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349968AbhICQ1g (ORCPT
+        with ESMTP id S1349970AbhICQ1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 12:27:36 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E34C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 09:26:36 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id d16so10396037ljq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 09:26:36 -0700 (PDT)
+        Fri, 3 Sep 2021 12:27:41 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA3DAC061757
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 09:26:41 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id r13so4660793pff.7
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 09:26:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PGwJPrU2ymA9P5fTXacx3Qx7nyhlT5Ql+hJVxARh6kE=;
-        b=K1rpsMJtFquFY0qt0aI/UI9kou+zwJyr90hh+Vza9DcECr82hORBsg2aFd3wZYBMyW
-         mxSJGjFZE1t/C6jfyYk7elauPxHWpv1yEHosEvvwTsPovx6P/GaYLx1qmSOFYXAnwgSc
-         ifABx5ircSoY9atjYL5bS6LS1nIcyTGaPGEEI=
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BYBpFSXUwEJhsCIyXdW0SZlpa2rC9yP3pgFymkdEWK8=;
+        b=lKWUYeQJp7pLg5MBv2HvNSr7jEOttJQyn/TOA+bjf+87fMIkq9hHnI88tqZGY+oPAs
+         0U2MDd6HfUAmTySAtO97+gUhHDNqsQV6eUcWtauRKsRmo3hGMeLMVNJ/1cWJYmA6O++z
+         X5KrIbEoBH02TmvsF38RRpx0m1GXysUOTHzlXQoBz0h6tAdOBTEVLb9LAsH70Pp6sDVN
+         +UAC07J/q5hDheQFEYZFMRQDcOqOQj9ljEISafVki+xHGhefNhqD1TDX5TIlcZe8fcPS
+         cTOnvxumcTitReEsVEn0fVv7GspNQTicIg78msMXhPoRxKNgwIqiwi0LI+jHU+rKQBxK
+         uivg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PGwJPrU2ymA9P5fTXacx3Qx7nyhlT5Ql+hJVxARh6kE=;
-        b=B7qcWWD7ZbGe+hEH0N/gVVtGLbSQXWpGtHgm48auPVjEYl6CfKHRM2orqsiAUXAYRl
-         xpAgiwQVnFGzGre/vwS0yk4xwyduFyKqc+t/aP3KNBv5mt7/nU96aHUix/R4lhMPqPnI
-         wFB0EZkifq9V3Yx1LAutWIKOO2+Ip9QhY/cy/9z09rEYgVO0uRxDgVwaPMZCMMEs4pFz
-         rMnd7aKjLIxdh9DYFBz0jV7b8yW78yNKmUZsF3RohZ8BhqrwYx/azCsWAPRYTlD+iBnz
-         tXWkbDnjHNeMFSubNjD9JkSBw0luUTw0362WvEtUL29feCvCvjHstFr9UESeM2v6OXe4
-         ERTg==
-X-Gm-Message-State: AOAM531OA6XEfd4vjnUIt82TnjWeYnW3v5pnbaB+dUNNO/Zue77nOkmq
-        ig0xaFxcLtWu7TogWZgzdgTuITFwdWWUr+V02iI=
-X-Google-Smtp-Source: ABdhPJzVVFfZuYG6Y6sPrJyebnpqhytDaI0OyIyF9zKEeGOlUoRzBgq41/ugAb+SSUvFNvEAOhFwCA==
-X-Received: by 2002:a2e:b8c7:: with SMTP id s7mr3618745ljp.105.1630686393655;
-        Fri, 03 Sep 2021 09:26:33 -0700 (PDT)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id h17sm620096ljg.131.2021.09.03.09.26.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 09:26:32 -0700 (PDT)
-Received: by mail-lj1-f178.google.com with SMTP id p15so10436477ljn.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 09:26:32 -0700 (PDT)
-X-Received: by 2002:a2e:8107:: with SMTP id d7mr3678393ljg.68.1630686392088;
- Fri, 03 Sep 2021 09:26:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BYBpFSXUwEJhsCIyXdW0SZlpa2rC9yP3pgFymkdEWK8=;
+        b=HxBcqAFw/VT0bVcogG2teUthWillnahxf0ADElY0by1wsqY9BI0vFtqYyXXE1KEuEL
+         su+q29xEP/QK0+HyS1FiGOmVss1V15BCsuf+6DHd9QnzADewvfUoUE/Rhqt3FHQMDtWf
+         0bxLLgnoYbp3JgelF/3bYDV82UVqgysUuNfGhuzcLoTaOCL/INj4yGzCvTslxuI1G+q8
+         hD/mgViE/4ui9DOAGUCLVz+X7iICm8Q2H2uBp042A/m68y6T+L22rRF2rjUCirxJf8pk
+         9zcaGdBiLlQrs7rshdV8xv/LHjOfKGI+uXLhlgjlSqj8Se2iGjTUe0Yco2CB69XuWz+v
+         bi8Q==
+X-Gm-Message-State: AOAM531cBAXWpeTNrd7UWW5J8/x7ALL4izaQWXUj0dwF+Q/oCYXEUmkY
+        s14Jl++u3zOrTvlxN63Dk1rbrg==
+X-Google-Smtp-Source: ABdhPJw/vPhyGDqcRlM0wPHZ9PBRcDG+lfKSj0uVaOgFAxb9F7s4ZZ0MtnUwG85mno4uCZmHxt7VXg==
+X-Received: by 2002:a63:91c3:: with SMTP id l186mr4342925pge.264.1630686401156;
+        Fri, 03 Sep 2021 09:26:41 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id q29sm7623467pgc.91.2021.09.03.09.26.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 09:26:40 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 16:26:36 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 8/8] KVM: Make kvm_make_vcpus_request_mask() use
+ pre-allocated cpu_kick_mask
+Message-ID: <YTJMvI1GE5Ux7eVE@google.com>
+References: <20210903075141.403071-1-vkuznets@redhat.com>
+ <20210903075141.403071-9-vkuznets@redhat.com>
 MIME-Version: 1.0
-References: <20210816194840.42769-1-david@redhat.com> <7c57a16b-8184-36a3-fcdc-5e751184827b@redhat.com>
-In-Reply-To: <7c57a16b-8184-36a3-fcdc-5e751184827b@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 3 Sep 2021 09:26:16 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whghWSYo498cKaK9VLwBKKW0uMynwPT3zpnEG73MfKqUA@mail.gmail.com>
-Message-ID: <CAHk-=whghWSYo498cKaK9VLwBKKW0uMynwPT3zpnEG73MfKqUA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/7] Remove in-tree usage of MAP_DENYWRITE
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-unionfs@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903075141.403071-9-vkuznets@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 2:45 AM David Hildenbrand <david@redhat.com> wrote:
->
-> So, how do we want to continue with this? Pick it up for v5.15? Have it
-> in -next for a while and eventually pick it up for v5.16?
+On Fri, Sep 03, 2021, Vitaly Kuznetsov wrote:
+> kvm_make_vcpus_request_mask() already disables preemption so just like
+> kvm_make_all_cpus_request_except() it can be switched to using
+> pre-allocated per-cpu cpumasks. This allows for improvements for both
+> users of the function: in Hyper-V emulation code 'tlb_flush' can now be
+> dropped from 'struct kvm_vcpu_hv' and kvm_make_scan_ioapic_request_mask()
+> gets rid of dynamic allocation.
+> 
+> cpumask_available() checks in kvm_make_vcpu_request() and
+> kvm_kick_many_cpus() can now be dropped as they checks for an impossible
+> condition: kvm_init() makes sure per-cpu masks are allocated.
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
 
-I'm ok with the series. If you have a git tree, do the normal pull
-request, and we can do it for 5.15 and see if anybody notices.
+Reviewed-by: Sean Christopherson <seanjc@google.com>
 
-As you say, any final removal of ETXTBSY should be a separate and
-later patch on top.
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index a4752dcc2a75..91c1e6c98b0f 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9224,14 +9224,8 @@ static void process_smi(struct kvm_vcpu *vcpu)
+>  void kvm_make_scan_ioapic_request_mask(struct kvm *kvm,
+>  				       unsigned long *vcpu_bitmap)
+>  {
+> -	cpumask_var_t cpus;
+> -
+> -	zalloc_cpumask_var(&cpus, GFP_ATOMIC);
+> -
+>  	kvm_make_vcpus_request_mask(kvm, KVM_REQ_SCAN_IOAPIC,
+> -				    vcpu_bitmap, cpus);
+> -
+> -	free_cpumask_var(cpus);
+> +				    vcpu_bitmap);
 
-            Linus
+Nit, this can all go on a single line.
+
+>  }
+>  
+>  void kvm_make_scan_ioapic_request(struct kvm *kvm)
