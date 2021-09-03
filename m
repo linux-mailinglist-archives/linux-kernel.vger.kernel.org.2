@@ -2,333 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48977400627
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FF540062B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349784AbhICTwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 15:52:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbhICTwK (ORCPT
+        id S1350023AbhICTwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 15:52:47 -0400
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:40746 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230421AbhICTwp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 15:52:10 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D21DC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:51:10 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id a15so100978iot.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:51:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language;
-        bh=T4M41o7R+NPHXHtGvgcTjKHXooQ85i1IRNZYaa19YyU=;
-        b=fP2Q5Z9q5+MaBs8o4Uwnp2O+qFhF+fi4FZ1D4dX4A081zPvW1FIQAOFC1fsuWOViQ6
-         W/ge91mqjYcOcLlFvOKJBvadQw1HDjOsMnz3kXhgtmhklj6BoLUP2H/jT/6tD91aD8C7
-         /hD78UfmAvBFWbYGzxYhEj7epaRgo42OntOBE=
+        Fri, 3 Sep 2021 15:52:45 -0400
+Received: by mail-oi1-f180.google.com with SMTP id h133so509490oib.7;
+        Fri, 03 Sep 2021 12:51:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language;
-        bh=T4M41o7R+NPHXHtGvgcTjKHXooQ85i1IRNZYaa19YyU=;
-        b=XV/grHjH3pzTWqD1V3btLTHwhmnnkQV5twsCVKPYK8pvPSDxbfIkYpGBpc13Uk0EWy
-         IxD/iDXxFIX+xfilqfaF3ujN4+7MLpryDJy7IVwv6oI3Cj3YZlLOybNWqeHwhMz8K9KC
-         hJKr8dlgx6PzDBS/RxiLhraC/76Pd/yk/BP/dntma3LAXqQ6/SYgCUaKuHSIngyOPN5z
-         f30cypGqZ2OxrIEmqDDhjqiJmg3IPC8S5KzR+DIFhsHMvF2WPl1DOAlq755ADtJu/Iv4
-         R8NHHeYba3LovhgJ1qZGw2Av2LIvNeq2vxqpt4UmfP3PkY1FdQCgnA2604nCD442ICam
-         AoJA==
-X-Gm-Message-State: AOAM531KeOhSVeunmhPAlqkcNzbP9E21rphP6qkOjeCcFzif62Guqn40
-        Kr1pvSQt/XVe6kJDlx/aLeVwXdiGGc+2CA==
-X-Google-Smtp-Source: ABdhPJwq1VJkG6OskkVR1lXqa4pDggBHxuQbNv7A99TsTjGtgwzLosHmCx9+pVUdcd7IojvrdvJ6Nw==
-X-Received: by 2002:a02:5286:: with SMTP id d128mr592035jab.147.1630698669645;
-        Fri, 03 Sep 2021 12:51:09 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id k21sm121554ioh.38.2021.09.03.12.51.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 12:51:09 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] Kselftest update for Linux 5.15-rc1
-Message-ID: <81223355-a515-b5c7-ed54-bb65482aec9f@linuxfoundation.org>
-Date:   Fri, 3 Sep 2021 13:51:08 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HW3SdKQwfNKyynFaaOauQH4RTjAPcHmQSvvL/lhub/M=;
+        b=Kjc/JZ8QvHLsiyF/oG0CMtc7M64BcdMLnActlVcKEedwYCnuxxL8Tq12NAbE9p0I0H
+         lnao4ym8j4cHxHArHQdHlc9E6TijpdvcN8puFAxMT2cfVzRmLV0Nsopu9xVguyJXNIuy
+         FJ702ov+A0FTbJw07e9KufGVL6uQsOq/InUrfPhLfP6WacOU5bfANblEP+AfpXnIwq1b
+         PiZoRV9+PKBoC7TySaxX9vvwc0JsEGTIPAwQWy0ufW08SQyJFuKWXOEWGTkPj0ERj2Vp
+         STFVxMEhyi7KcEi8tgbq/yH5N32DHX3sh+Yv+Joah7+PGhHHn0kww6RvIHjx8mMFUaKU
+         wsdA==
+X-Gm-Message-State: AOAM532e82D0BTtXi5YE4EFye/StjObeKsFYVtb/XE9PyzN1BpQ947Ac
+        fOweK4SjMKjP/cCYnjEVNg==
+X-Google-Smtp-Source: ABdhPJwILUGhUdMia4TlHx7SxzYuowAPhgJlfF8ag4vp6TxQOyabv+LVNkPu5cSgBBpiEmDW553Lfw==
+X-Received: by 2002:aca:efc2:: with SMTP id n185mr336418oih.142.1630698705329;
+        Fri, 03 Sep 2021 12:51:45 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id q5sm35649ooa.1.2021.09.03.12.51.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 12:51:44 -0700 (PDT)
+Received: (nullmailer pid 3348435 invoked by uid 1000);
+        Fri, 03 Sep 2021 19:51:43 -0000
+Date:   Fri, 3 Sep 2021 14:51:43 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Roan van Dijk <roan@protonic.nl>
+Cc:     david@protonic.nl, Jonathan Cameron <jic23@kernel.org>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH v1 1/3] dt-bindings: iio: chemical: sensirion,scd4x: Add
+ yaml description
+Message-ID: <YTJ8z2RpR0JUo2Yk@robh.at.kernel.org>
+References: <20210901105911.178646-1-roan@protonic.nl>
+ <20210901105911.178646-2-roan@protonic.nl>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------95FE26A3C2B138AEAEE2F5BC"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901105911.178646-2-roan@protonic.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------95FE26A3C2B138AEAEE2F5BC
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+On Wed, 01 Sep 2021 12:59:09 +0200, Roan van Dijk wrote:
+> Add documentation for the SCD4x carbon dioxide sensor from Sensirion.
+> 
+> Signed-off-by: Roan van Dijk <roan@protonic.nl>
+> ---
+>  .../iio/chemical/sensirion,scd4x.yaml         | 46 +++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd4x.yaml
+> 
 
-Hi Linus,
-
-Please pull the following Kselftest update for Linux 5.15-rc1.
-
-This Kselftest update for Linux 5.15-rc1 consists of fixes to build
-and test failures.
-
--- openat2 test failure for O_LARGEFILE flag on ARM64
--- x86 test build failures related to glibc 2.34 adding
-    support for variable sized MINSIGSTKSZ and SIGSTKSZ
--- removing obsolete configs in sync and cpufreq config files
--- minor spelling and duplicate header include cleanups
-
-diff is attached.
-
-thanks,
--- Shuah
-
-----------------------------------------------------------------
-
-The following changes since commit 2734d6c1b1a089fb593ef6a23d4b70903526fe0c:
-
-   Linux 5.14-rc2 (2021-07-18 14:13:49 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-next-5.15-rc1
-
-for you to fetch changes up to 67d6d80d90fb27b3cc7659f464fa3b87fd67bc14:
-
-   selftests/cpufreq: Rename DEBUG_PI_LIST to DEBUG_PLIST (2021-08-31 11:00:02 -0600)
-
-----------------------------------------------------------------
-linux-kselftest-next-5.15-rc1
-
-This Kselftest update for Linux 5.15-rc1 consists of fixes to build
-and test failures.
-
--- openat2 test failure for O_LARGEFILE flag on ARM64
--- x86 test build failures related to glibc 2.34 adding
-    support for variable sized MINSIGSTKSZ and SIGSTKSZ
--- removing obsolete configs in sync and cpufreq config files
--- minor spelling and duplicate header include cleanups
-
-----------------------------------------------------------------
-Baolin Wang (1):
-       selftests: openat2: Fix testing failure for O_LARGEFILE flag
-
-Changcheng Deng (1):
-       kselftest:sched: remove duplicate include in cs_prctl_test.c
-
-Colin Ian King (1):
-       selftests: safesetid: Fix spelling mistake "cant" -> "can't"
-
-Jun Miao (1):
-       selftests/x86: Fix error: variably modified 'altstack_data' at file scope
-
-Li Zhijian (2):
-       selftests/sync: Remove the deprecated config SYNC
-       selftests/cpufreq: Rename DEBUG_PI_LIST to DEBUG_PLIST
-
-  tools/testing/selftests/cpufreq/config             | 2 +-
-  tools/testing/selftests/openat2/openat2_test.c     | 4 ++++
-  tools/testing/selftests/safesetid/safesetid-test.c | 2 +-
-  tools/testing/selftests/sched/cs_prctl_test.c      | 2 --
-  tools/testing/selftests/sync/config                | 1 -
-  tools/testing/selftests/x86/mov_ss_trap.c          | 4 ++--
-  tools/testing/selftests/x86/sigreturn.c            | 7 +++----
-  tools/testing/selftests/x86/single_step_syscall.c  | 4 ++--
-  tools/testing/selftests/x86/syscall_arg_fault.c    | 7 +++----
-  9 files changed, 16 insertions(+), 17 deletions(-)
-----------------------------------------------------------------
-
---------------95FE26A3C2B138AEAEE2F5BC
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-kselftest-next-5.15-rc1.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="linux-kselftest-next-5.15-rc1.diff"
-
-diff --git a/tools/testing/selftests/cpufreq/config b/tools/testing/selftests/cpufreq/config
-index 27ff72ebd0f5..75e900793e8a 100644
---- a/tools/testing/selftests/cpufreq/config
-+++ b/tools/testing/selftests/cpufreq/config
-@@ -6,7 +6,7 @@ CONFIG_CPU_FREQ_GOV_ONDEMAND=y
- CONFIG_CPU_FREQ_GOV_CONSERVATIVE=y
- CONFIG_CPU_FREQ_GOV_SCHEDUTIL=y
- CONFIG_DEBUG_RT_MUTEXES=y
--CONFIG_DEBUG_PI_LIST=y
-+CONFIG_DEBUG_PLIST=y
- CONFIG_DEBUG_SPINLOCK=y
- CONFIG_DEBUG_MUTEXES=y
- CONFIG_DEBUG_LOCK_ALLOC=y
-diff --git a/tools/testing/selftests/openat2/openat2_test.c b/tools/testing/selftests/openat2/openat2_test.c
-index d7ec1e7da0d0..1bddbe934204 100644
---- a/tools/testing/selftests/openat2/openat2_test.c
-+++ b/tools/testing/selftests/openat2/openat2_test.c
-@@ -22,7 +22,11 @@
-  * XXX: This is wrong on {mips, parisc, powerpc, sparc}.
-  */
- #undef	O_LARGEFILE
-+#ifdef __aarch64__
-+#define	O_LARGEFILE 0x20000
-+#else
- #define	O_LARGEFILE 0x8000
-+#endif
- 
- struct open_how_ext {
- 	struct open_how inner;
-diff --git a/tools/testing/selftests/safesetid/safesetid-test.c b/tools/testing/selftests/safesetid/safesetid-test.c
-index 0c4d50644c13..4b809c93ba36 100644
---- a/tools/testing/selftests/safesetid/safesetid-test.c
-+++ b/tools/testing/selftests/safesetid/safesetid-test.c
-@@ -152,7 +152,7 @@ static void write_policies(void)
- 
- 	fd = open(add_whitelist_policy_file, O_WRONLY);
- 	if (fd < 0)
--		die("cant open add_whitelist_policy file\n");
-+		die("can't open add_whitelist_policy file\n");
- 	written = write(fd, policy_str, strlen(policy_str));
- 	if (written != strlen(policy_str)) {
- 		if (written >= 0) {
-diff --git a/tools/testing/selftests/sched/cs_prctl_test.c b/tools/testing/selftests/sched/cs_prctl_test.c
-index 63fe6521c56d..7db9cf822dc7 100644
---- a/tools/testing/selftests/sched/cs_prctl_test.c
-+++ b/tools/testing/selftests/sched/cs_prctl_test.c
-@@ -25,8 +25,6 @@
- #include <sys/types.h>
- #include <sched.h>
- #include <sys/prctl.h>
--#include <sys/types.h>
--#include <sys/wait.h>
- #include <unistd.h>
- #include <time.h>
- #include <stdio.h>
-diff --git a/tools/testing/selftests/sync/config b/tools/testing/selftests/sync/config
-index 1ab7e8130db2..47ff5afc3727 100644
---- a/tools/testing/selftests/sync/config
-+++ b/tools/testing/selftests/sync/config
-@@ -1,4 +1,3 @@
- CONFIG_STAGING=y
- CONFIG_ANDROID=y
--CONFIG_SYNC=y
- CONFIG_SW_SYNC=y
-diff --git a/tools/testing/selftests/x86/mov_ss_trap.c b/tools/testing/selftests/x86/mov_ss_trap.c
-index 6da0ac3f0135..cc3de6ff9fba 100644
---- a/tools/testing/selftests/x86/mov_ss_trap.c
-+++ b/tools/testing/selftests/x86/mov_ss_trap.c
-@@ -47,7 +47,6 @@
- unsigned short ss;
- extern unsigned char breakpoint_insn[];
- sigjmp_buf jmpbuf;
--static unsigned char altstack_data[SIGSTKSZ];
- 
- static void enable_watchpoint(void)
- {
-@@ -250,13 +249,14 @@ int main()
- 	if (sigsetjmp(jmpbuf, 1) == 0) {
- 		printf("[RUN]\tMOV SS; SYSENTER\n");
- 		stack_t stack = {
--			.ss_sp = altstack_data,
-+			.ss_sp = malloc(sizeof(char) * SIGSTKSZ),
- 			.ss_size = SIGSTKSZ,
- 		};
- 		if (sigaltstack(&stack, NULL) != 0)
- 			err(1, "sigaltstack");
- 		sethandler(SIGSEGV, handle_and_longjmp, SA_RESETHAND | SA_ONSTACK);
- 		nr = SYS_getpid;
-+		free(stack.ss_sp);
- 		/* Clear EBP first to make sure we segfault cleanly. */
- 		asm volatile ("xorl %%ebp, %%ebp; mov %[ss], %%ss; SYSENTER" : "+a" (nr)
- 			      : [ss] "m" (ss) : "flags", "rcx"
-diff --git a/tools/testing/selftests/x86/sigreturn.c b/tools/testing/selftests/x86/sigreturn.c
-index 57c4f67f16ef..5d7961a5f7f6 100644
---- a/tools/testing/selftests/x86/sigreturn.c
-+++ b/tools/testing/selftests/x86/sigreturn.c
-@@ -138,9 +138,6 @@ static unsigned short LDT3(int idx)
- 	return (idx << 3) | 7;
- }
- 
--/* Our sigaltstack scratch space. */
--static char altstack_data[SIGSTKSZ];
--
- static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
- 		       int flags)
- {
-@@ -771,7 +768,8 @@ int main()
- 	setup_ldt();
- 
- 	stack_t stack = {
--		.ss_sp = altstack_data,
-+		/* Our sigaltstack scratch space. */
-+		.ss_sp = malloc(sizeof(char) * SIGSTKSZ),
- 		.ss_size = SIGSTKSZ,
- 	};
- 	if (sigaltstack(&stack, NULL) != 0)
-@@ -872,5 +870,6 @@ int main()
- 	total_nerrs += test_nonstrict_ss();
- #endif
- 
-+	free(stack.ss_sp);
- 	return total_nerrs ? 1 : 0;
- }
-diff --git a/tools/testing/selftests/x86/single_step_syscall.c b/tools/testing/selftests/x86/single_step_syscall.c
-index 120ac741fe44..9a30f443e928 100644
---- a/tools/testing/selftests/x86/single_step_syscall.c
-+++ b/tools/testing/selftests/x86/single_step_syscall.c
-@@ -57,7 +57,6 @@ static void clearhandler(int sig)
- 
- static volatile sig_atomic_t sig_traps, sig_eflags;
- sigjmp_buf jmpbuf;
--static unsigned char altstack_data[SIGSTKSZ];
- 
- #ifdef __x86_64__
- # define REG_IP REG_RIP
-@@ -210,7 +209,7 @@ int main()
- 		unsigned long nr = SYS_getpid;
- 		printf("[RUN]\tSet TF and check SYSENTER\n");
- 		stack_t stack = {
--			.ss_sp = altstack_data,
-+			.ss_sp = malloc(sizeof(char) * SIGSTKSZ),
- 			.ss_size = SIGSTKSZ,
- 		};
- 		if (sigaltstack(&stack, NULL) != 0)
-@@ -219,6 +218,7 @@ int main()
- 			   SA_RESETHAND | SA_ONSTACK);
- 		sethandler(SIGILL, print_and_longjmp, SA_RESETHAND);
- 		set_eflags(get_eflags() | X86_EFLAGS_TF);
-+		free(stack.ss_sp);
- 		/* Clear EBP first to make sure we segfault cleanly. */
- 		asm volatile ("xorl %%ebp, %%ebp; SYSENTER" : "+a" (nr) :: "flags", "rcx"
- #ifdef __x86_64__
-diff --git a/tools/testing/selftests/x86/syscall_arg_fault.c b/tools/testing/selftests/x86/syscall_arg_fault.c
-index bff474b5efc6..461fa41a4d02 100644
---- a/tools/testing/selftests/x86/syscall_arg_fault.c
-+++ b/tools/testing/selftests/x86/syscall_arg_fault.c
-@@ -17,9 +17,6 @@
- 
- #include "helpers.h"
- 
--/* Our sigaltstack scratch space. */
--static unsigned char altstack_data[SIGSTKSZ];
--
- static void sethandler(int sig, void (*handler)(int, siginfo_t *, void *),
- 		       int flags)
- {
-@@ -104,7 +101,8 @@ static void sigill(int sig, siginfo_t *info, void *ctx_void)
- int main()
- {
- 	stack_t stack = {
--		.ss_sp = altstack_data,
-+		/* Our sigaltstack scratch space. */
-+		.ss_sp = malloc(sizeof(char) * SIGSTKSZ),
- 		.ss_size = SIGSTKSZ,
- 	};
- 	if (sigaltstack(&stack, NULL) != 0)
-@@ -233,5 +231,6 @@ int main()
- 	set_eflags(get_eflags() & ~X86_EFLAGS_TF);
- #endif
- 
-+	free(stack.ss_sp);
- 	return 0;
- }
-
---------------95FE26A3C2B138AEAEE2F5BC--
+Reviewed-by: Rob Herring <robh@kernel.org>
