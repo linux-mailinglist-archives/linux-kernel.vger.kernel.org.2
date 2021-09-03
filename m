@@ -2,106 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D163FFD77
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:50:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AF33FFD8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235045AbhICJvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 05:51:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:39970 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234932AbhICJvR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 05:51:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 467E41FB;
-        Fri,  3 Sep 2021 02:50:16 -0700 (PDT)
-Received: from e122027.lan (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E97293F694;
-        Fri,  3 Sep 2021 02:50:14 -0700 (PDT)
-From:   Steven Price <steven.price@arm.com>
-To:     Rob Herring <robh@kernel.org>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     Steven Price <steven.price@arm.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/panfrost: Calculate lock region size correctly
-Date:   Fri,  3 Sep 2021 10:49:57 +0100
-Message-Id: <20210903094957.74560-1-steven.price@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S1348975AbhICJzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 05:55:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348948AbhICJy7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 05:54:59 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23637C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 02:53:56 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0d5800e0c92975d32b0bec.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:5800:e0c9:2975:d32b:bec])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 416BE1EC059D;
+        Fri,  3 Sep 2021 11:53:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630662830;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=l2Az5Dey31zXva/yBZao+vifIvNusQrJfvr7LRYgTeA=;
+        b=crqwpJeEjwjJvAQD/n02HYstWIeCmVzf0E3ELdFjTDXDCkIsaL8SENqk6CM4xeBx0j8MIH
+        Uw9VehcTsp+WJF1FTSLMZPx+uyt2q9AF/O3Q+qcJAPPoaj1XaU+lGdeqBcYqoVsMfit5mj
+        gm58RUvxZY7juHxS6QlZWSRbMnhL+MI=
+Date:   Fri, 3 Sep 2021 11:54:29 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Borislav Petkov <bp@suse.de>, kernel test robot <lkp@intel.com>,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        x86-ml <x86@kernel.org>
+Subject: Re: vmlinux.o: warning: objtool: mce_wrmsrl.constprop.0()+0x6b: call
+ to __sanitizer_cov_trace_pc() leaves .noinstr.text section
+Message-ID: <YTHw1YWYNgPK5KfF@zn.tnic>
+References: <202108221334.TiXxFSTZ-lkp@intel.com>
+ <YTEncGj84Sj/IdDb@zn.tnic>
+ <YTHpmGmlo9N+1Rs7@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YTHpmGmlo9N+1Rs7@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It turns out that when locking a region, the region must be a naturally
-aligned power of 2. The upshot of this is that if the desired region
-crosses a 'large boundary' the region size must be increased
-significantly to ensure that the locked region completely covers the
-desired region. Previous calculations (including in kbase for the
-proprietary driver) failed to take this into account.
+On Fri, Sep 03, 2021 at 11:23:36AM +0200, Peter Zijlstra wrote:
+> So I was wondering why they'd show up in any case, since objtool is
+> supposed to NOP them, but then I remembered I still have this patch
+> pending:
+> 
+>   https://lore.kernel.org/r/20210624095147.818783799@infradead.org
+> 
+> Which I suspect will cure that for older GCC.
 
-Since it's known that the lock region must be naturally aligned we can
-compute the required size by looking at the highest bit position which
-changes between the start/end of the lock region (subtracting 1 from the
-end because the end address is exclusive). The start address is then
-aligned based on the size (this is technically unnecessary as the
-hardware will ignore these bits, but the spec advises to do this "to
-avoid confusion").
+Yah, works with gcc-10 here too.
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-Signed-off-by: Steven Price <steven.price@arm.com>
----
- drivers/gpu/drm/panfrost/panfrost_mmu.c | 30 +++++++++++++++++++------
- 1 file changed, 23 insertions(+), 7 deletions(-)
+Tested-by: Borislav Petkov <bp@suse.de>
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-index dfe5f1d29763..e2629b8d6a02 100644
---- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-@@ -58,17 +58,33 @@ static int write_cmd(struct panfrost_device *pfdev, u32 as_nr, u32 cmd)
- }
- 
- static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
--			u64 iova, u64 size)
-+			u64 region_start, u64 size)
- {
- 	u8 region_width;
--	u64 region = iova & PAGE_MASK;
-+	u64 region;
-+	u64 region_end = region_start + size;
- 
--	/* The size is encoded as ceil(log2) minus(1), which may be calculated
--	 * with fls. The size must be clamped to hardware bounds.
-+	if (!size)
-+		return;
-+
-+	/*
-+	 * The locked region is a naturally aligned power of 2 block encoded as
-+	 * log2 minus(1).
-+	 * Calculate the desired start/end and look for the highest bit which
-+	 * differs. The smallest naturally aligned block must include this bit
-+	 * change, the desired region starts with this bit (and subsequent bits)
-+	 * zeroed and ends with the bit (and subsequent bits) set to one.
- 	 */
--	size = max_t(u64, size, AS_LOCK_REGION_MIN_SIZE);
--	region_width = fls64(size - 1) - 1;
--	region |= region_width;
-+	region_width = max(fls64(region_start ^ (region_end - 1)),
-+			   const_ilog2(AS_LOCK_REGION_MIN_SIZE)) - 1;
-+
-+	/*
-+	 * Mask off the low bits of region_start (which would be ignored by
-+	 * the hardware anyway)
-+	 */
-+	region_start &= GENMASK_ULL(63, region_width);
-+
-+	region = region_width | region_start;
- 
- 	/* Lock the region that needs to be updated */
- 	mmu_write(pfdev, AS_LOCKADDR_LO(as_nr), region & 0xFFFFFFFFUL);
+Thx.
+
 -- 
-2.30.2
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
