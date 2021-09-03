@@ -2,392 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD613FFDCB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 12:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6533FFDCD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 12:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349019AbhICKEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 06:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348929AbhICKEf (ORCPT
+        id S1349032AbhICKEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 06:04:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56876 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349022AbhICKEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 06:04:35 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D347C061575;
-        Fri,  3 Sep 2021 03:03:35 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 12:03:31 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630663413;
+        Fri, 3 Sep 2021 06:04:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630663424;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=8odQuRIiNmimnCVq/uA6lVwCG7drjg1Ctrghf7N9w4s=;
-        b=u1sNFGkuN88aZrSguXUryDfGPhlQdkQvKtMMNwtlTMQZh+VgE9eHbP71VvN9Xk+h6Xy0NW
-        4Q8m1Q5onfxKnTDsK44UhjNzV0Ke9DAQ4RaPzTLkiZwhfr4ByNiAX7kfV+MSctumcaEnDZ
-        eWYAkl5iN7a0h2TrD/klNNS17/INHCPaBHQtn+Wg6KrSim3KP3JcaYU/7tvZCfv6C6Vurr
-        WHVBTQt7fgNsyFIGoRAQV4q+3B2L/NY9Jf/h6VVKA4ngsY9OZzvpIKOstRUhqRi/LlZqxk
-        dk2tTmQhfBUNDcg/Kyfvj+/J+W54hiJZwXTT5/u7RpuJR3IY529MOd96XA2u9A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630663413;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=8odQuRIiNmimnCVq/uA6lVwCG7drjg1Ctrghf7N9w4s=;
-        b=2qmDkkFlx7NtE9H3V4GJCyyHtibGfDoJQJ36siNcK9BtMewm93ippVVjUME6zLKMdACLu2
-        e8jYF4+GWWQLK2Cw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.14-rt17
-Message-ID: <20210903100331.zadkeppw7wnwa6md@linutronix.de>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FHBIwAtJeawbaj5WaFJbWcQby1bjIQOecOVaHbLUsBE=;
+        b=Il3TyqrsS9qP9QiJCDt/mdWFPytoB5mmzDqN4vBnxy9xtgyPXUX25qCubJpoGHLB1zVF6l
+        YT6Q8ik0IHcAC57ITe0m3vDdePtt09ZPQaFuneogk0rDxkxIeNh6HmikO7+/udV32mTFgi
+        PQbKGQyMUJVe6++bSQM9821P5PZCJP4=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-395-o4ZNqyq-ODatq0uosDvOCw-1; Fri, 03 Sep 2021 06:03:43 -0400
+X-MC-Unique: o4ZNqyq-ODatq0uosDvOCw-1
+Received: by mail-ed1-f70.google.com with SMTP id s25-20020a50d499000000b003c1a8573042so2506628edi.11
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 03:03:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FHBIwAtJeawbaj5WaFJbWcQby1bjIQOecOVaHbLUsBE=;
+        b=IIXeDL5GgMSaXcbBFOP0N9XSxE92E09ACaux/YIDA1BwfXH3BYb2T0ZrTGnKGw/a1e
+         MnbR8UcvKWMgLP/rHuDMHXzutFKIXrm+nrJYkp0KpxQGeJUu+xlTIfsgn/DRggZTsOBw
+         CUiXHIdNbf0Rk1ogIrW2/1OnaEmOCI0zUOs8xYspKzNy9VcIlY3PszSENFTWzwu4zbLN
+         aRcE6TgEhc0lpRwNBSgmUhddoY+fL8unrUPZIrOpNYGsBI70OyhZYBKC6dRkrj0my7Wq
+         ZwHTnv+PtBnt7lpqMVugvj1h1/EAXLfC1fFCbMGCnYmeRHyA0vgBdbn5q1L3SI4IdDJ8
+         4pFw==
+X-Gm-Message-State: AOAM533puzhUERR4az2jGj9rKNAhuqADJf9ayULY84SOoekPhom1cbH8
+        a8aMZff/750CHKx3MFnse3QyVRNUsIcPNspXKMEw2dgnba066e7yEaYBL3/KSNMh5SsXhv54zgi
+        YAxFpfXx6e0AXyUAzPVX4HMlXafhpPbbi8GU8ga+2XEEJ7U52oGD2J+j5gGd+9b85AZo8+MtEaq
+        GX
+X-Received: by 2002:a17:906:840d:: with SMTP id n13mr3312580ejx.53.1630663421671;
+        Fri, 03 Sep 2021 03:03:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxJmxWPaDg6d+8cLKYLngY2Wjj7nQpfN+bKeJmhatyO8dmhyEAFq49V3KrJa5ZcKNo1lO6eAQ==
+X-Received: by 2002:a17:906:840d:: with SMTP id n13mr3312548ejx.53.1630663421418;
+        Fri, 03 Sep 2021 03:03:41 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id c19sm2436939ejs.116.2021.09.03.03.03.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 03:03:41 -0700 (PDT)
+Subject: Re: [PATCH v6] libata: Add ATA_HORKAGE_NO_NCQ_ON_ATI for Samsung 860
+ and 870 SSD.
+To:     Kate Hsuan <hpa@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+        Damien Le Moal <damien.lemoal@wdc.com>
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210903094411.58749-1-hpa@redhat.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <7a784055-bd0f-b07d-37d8-4a96f08615f6@redhat.com>
+Date:   Fri, 3 Sep 2021 12:03:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210903094411.58749-1-hpa@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+Hi,
 
-I'm pleased to announce the v5.14-rt17 patch set. 
+On 9/3/21 11:44 AM, Kate Hsuan wrote:
+> Many users are reporting that the Samsung 860 and 870 SSD are having
+> various issues when combined with AMD/ATI (vendor ID 0x1002)  SATA
+> controllers and only completely disabling NCQ helps to avoid these
+> issues.
+> 
+> Always disabling NCQ for Samsung 860/870 SSDs regardless of the host
+> SATA adapter vendor will cause I/O performance degradation with well
+> behaved adapters. To limit the performance impact to ATI adapters,
+> introduce the ATA_HORKAGE_NO_NCQ_ON_ATI flag to force disable NCQ
+> only for these adapters.
+> 
+> Also, two libata.force parameters (noncqati and ncqati) are introduced
+> to disable and enable the NCQ for the system which equipped with ATI
+> SATA adapter and Samsung 860 and 870 SSDs. The user can determine NCQ
+> function to be enabled or disabled according to the demand.
+> 
+> After verifying the chipset from the user reports, the issue appears
+> on AMD/ATI SB7x0/SB8x0/SB9x0 SATA Controllers and does not appear on
+> recent AMD SATA adapters. The vendor ID of ATI should be 0x1002.
+> Therefore, ATA_HORKAGE_NO_NCQ_ON_AMD was modified to
+> ATA_HORKAGE_NO_NCQ_ON_ATI.
+> 
+> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=201693
+> Signed-off-by: Kate Hsuan <hpa@redhat.com>
 
-Changes since v5.14-rt16:
+Thanks, patch looks good to me:
 
-  - Teach lockdep to recognize read-locks on configurations without QRW
-    locks.
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
-  - Various futex patches addressing fallout reported by syzbot caused
-    by the locking rework. Patches by Thomas Gleixner.
+Regards,
 
-Known issues
-     - netconsole triggers WARN.
+Hans
 
-     - The "Memory controller" (CONFIG_MEMCG) has been disabled.
 
-     - A RCU and ARM64 warning has been fixed by Valentin Schneider. It is
-       still not clear if the RCU related change is correct.
+> ---
+> Changes in v6:
+> * The adapter vendor ID check was revised to PCI_VENDOR_ID_ATI.
+> * ATA_HORKAGE_NO_NCQ_ON_AMD was revised to ATA_HORKAGE_NO_NCQ_ON_ATI.
+> * Two libata.force parameters was modified to noncqati and ncqati.
+> 
+> Changes in v5:
+> * The libata.force parameters ncqamd and noncqamd are used to enable and
+>   disable the NCQ for the systems equiped with AMD SATA adapter and
+>   Samsung 860 and 870 SSDs.
+> * The character encoding of the patch comment was fixed.
+> 
+> Changes in v4:
+> * A function ata_dev_check_adapter() is added to check the vendor ID of
+>   the adapter.
+> * ATA_HORKAGE_NONCQ_ON_AMD was modified to ATA_HORKAGE_NO_NCQ_ON_AMD to
+>   align with the naming convention.
+> * Commit messages were improved according to reviewer comments.
+> 
+> Changes in v3:
+> * ATA_HORKAGE_NONCQ_ON_ASMEDIA_AMD_MARVELL was modified to
+>   ATA_HORKAGE_NONCQ_ON_AMD.
+> * Codes were fixed to completely disable NCQ on AMD controller.
+> 
+> ---
+>  drivers/ata/libata-core.c | 34 ++++++++++++++++++++++++++++++++--
+>  include/linux/libata.h    |  1 +
+>  2 files changed, 33 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
+> index 3eda3291952b..85e4e56c0681 100644
+> --- a/drivers/ata/libata-core.c
+> +++ b/drivers/ata/libata-core.c
+> @@ -2199,6 +2199,25 @@ static void ata_dev_config_ncq_prio(struct ata_device *dev)
+> 
+>  }
+> 
+> +static bool ata_dev_check_adapter(struct ata_device *dev,
+> +				  unsigned short vendor_id)
+> +{
+> +	struct pci_dev *pcidev = NULL;
+> +	struct device *parent_dev = NULL;
+> +
+> +	for (parent_dev = dev->tdev.parent; parent_dev != NULL;
+> +	     parent_dev = parent_dev->parent) {
+> +		if (dev_is_pci(parent_dev)) {
+> +			pcidev = to_pci_dev(parent_dev);
+> +			if (pcidev->vendor == vendor_id)
+> +				return true;
+> +			break;
+> +		}
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>  static int ata_dev_config_ncq(struct ata_device *dev,
+>  			       char *desc, size_t desc_sz)
+>  {
+> @@ -2217,6 +2236,13 @@ static int ata_dev_config_ncq(struct ata_device *dev,
+>  		snprintf(desc, desc_sz, "NCQ (not used)");
+>  		return 0;
+>  	}
+> +
+> +	if (dev->horkage & ATA_HORKAGE_NO_NCQ_ON_ATI &&
+> +	    ata_dev_check_adapter(dev, PCI_VENDOR_ID_ATI)) {
+> +		snprintf(desc, desc_sz, "NCQ (not used)");
+> +		return 0;
+> +	}
+> +
+>  	if (ap->flags & ATA_FLAG_NCQ) {
+>  		hdepth = min(ap->scsi_host->can_queue, ATA_MAX_QUEUE);
+>  		dev->flags |= ATA_DFLAG_NCQ;
+> @@ -3951,9 +3977,11 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
+>  	{ "Samsung SSD 850*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+>  						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+>  	{ "Samsung SSD 860*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+> -						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+> +						ATA_HORKAGE_ZERO_AFTER_TRIM |
+> +						ATA_HORKAGE_NO_NCQ_ON_ATI, },
+>  	{ "Samsung SSD 870*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+> -						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+> +						ATA_HORKAGE_ZERO_AFTER_TRIM |
+> +						ATA_HORKAGE_NO_NCQ_ON_ATI, },
+>  	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+>  						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+> 
+> @@ -6108,6 +6136,8 @@ static int __init ata_parse_force_one(char **cur,
+>  		{ "ncq",	.horkage_off	= ATA_HORKAGE_NONCQ },
+>  		{ "noncqtrim",	.horkage_on	= ATA_HORKAGE_NO_NCQ_TRIM },
+>  		{ "ncqtrim",	.horkage_off	= ATA_HORKAGE_NO_NCQ_TRIM },
+> +		{ "noncqati",	.horkage_on	= ATA_HORKAGE_NO_NCQ_ON_ATI },
+> +		{ "ncqati",	.horkage_off	= ATA_HORKAGE_NO_NCQ_ON_ATI },
+>  		{ "dump_id",	.horkage_on	= ATA_HORKAGE_DUMP_ID },
+>  		{ "pio0",	.xfer_mask	= 1 << (ATA_SHIFT_PIO + 0) },
+>  		{ "pio1",	.xfer_mask	= 1 << (ATA_SHIFT_PIO + 1) },
+> diff --git a/include/linux/libata.h b/include/linux/libata.h
+> index 3fcd24236793..cb95d3f3337d 100644
+> --- a/include/linux/libata.h
+> +++ b/include/linux/libata.h
+> @@ -422,6 +422,7 @@ enum {
+>  	ATA_HORKAGE_NOTRIM	= (1 << 24),	/* don't use TRIM */
+>  	ATA_HORKAGE_MAX_SEC_1024 = (1 << 25),	/* Limit max sects to 1024 */
+>  	ATA_HORKAGE_MAX_TRIM_128M = (1 << 26),	/* Limit max trim size to 128M */
+> +	ATA_HORKAGE_NO_NCQ_ON_ATI = (1 << 27),	/* Disable NCQ on ATI chipset */
+> 
+>  	 /* DMA mask for user DMA control: User visible values; DO NOT
+>  	    renumber */
+> --
+> 2.31.1
+> 
 
-     - Clark Williams reported issues in i915 (execlists_dequeue_irq())
-
-     - Valentin Schneider reported a few splats on ARM64, see
-          https://https://lkml.kernel.org/r/.kernel.org/lkml/20210810134127.1394269-1-valentin.schneider@arm.com/
-
-The delta patch against v5.14-rt16 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/incr/patch-5.14-rt16-rt17.patch.xz
-
-You can get this release via the git tree at:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.14-rt17
-
-The RT patch against v5.14 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patch-5.14-rt17.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.14/older/patches-5.14-rt17.tar.xz
-
-Sebastian
-
-diff --git a/kernel/futex.c b/kernel/futex.c
-index e7b4c6121da4e..a316dce74c3db 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1263,6 +1263,36 @@ static int handle_exit_race(u32 __user *uaddr, u32 uval,
- 	return -ESRCH;
- }
- 
-+static void __attach_to_pi_owner(struct task_struct *p, union futex_key *key,
-+				 struct futex_pi_state **ps)
-+{
-+	/*
-+	 * No existing pi state. First waiter. [2]
-+	 *
-+	 * This creates pi_state, we have hb->lock held, this means nothing can
-+	 * observe this state, wait_lock is irrelevant.
-+	 */
-+	struct futex_pi_state *pi_state = alloc_pi_state();
-+
-+	/*
-+	 * Initialize the pi_mutex in locked state and make @p
-+	 * the owner of it:
-+	 */
-+	rt_mutex_init_proxy_locked(&pi_state->pi_mutex, p);
-+
-+	/* Store the key for possible exit cleanups: */
-+	pi_state->key = *key;
-+
-+	WARN_ON(!list_empty(&pi_state->list));
-+	list_add(&pi_state->list, &p->pi_state_list);
-+	/*
-+	 * Assignment without holding pi_state->pi_mutex.wait_lock is safe
-+	 * because there is no concurrency as the object is not published yet.
-+	 */
-+	pi_state->owner = p;
-+
-+	*ps = pi_state;
-+}
- /*
-  * Lookup the task for the TID provided from user space and attach to
-  * it after doing proper sanity checks.
-@@ -1272,7 +1302,6 @@ static int attach_to_pi_owner(u32 __user *uaddr, u32 uval, union futex_key *key,
- 			      struct task_struct **exiting)
- {
- 	pid_t pid = uval & FUTEX_TID_MASK;
--	struct futex_pi_state *pi_state;
- 	struct task_struct *p;
- 
- 	/*
-@@ -1324,36 +1353,11 @@ static int attach_to_pi_owner(u32 __user *uaddr, u32 uval, union futex_key *key,
- 		return ret;
- 	}
- 
--	/*
--	 * No existing pi state. First waiter. [2]
--	 *
--	 * This creates pi_state, we have hb->lock held, this means nothing can
--	 * observe this state, wait_lock is irrelevant.
--	 */
--	pi_state = alloc_pi_state();
--
--	/*
--	 * Initialize the pi_mutex in locked state and make @p
--	 * the owner of it:
--	 */
--	rt_mutex_init_proxy_locked(&pi_state->pi_mutex, p);
--
--	/* Store the key for possible exit cleanups: */
--	pi_state->key = *key;
--
--	WARN_ON(!list_empty(&pi_state->list));
--	list_add(&pi_state->list, &p->pi_state_list);
--	/*
--	 * Assignment without holding pi_state->pi_mutex.wait_lock is safe
--	 * because there is no concurrency as the object is not published yet.
--	 */
--	pi_state->owner = p;
-+	__attach_to_pi_owner(p, key, ps);
- 	raw_spin_unlock_irq(&p->pi_lock);
- 
- 	put_task_struct(p);
- 
--	*ps = pi_state;
--
- 	return 0;
- }
- 
-@@ -1454,8 +1458,26 @@ static int futex_lock_pi_atomic(u32 __user *uaddr, struct futex_hash_bucket *hb,
- 			newval |= FUTEX_WAITERS;
- 
- 		ret = lock_pi_update_atomic(uaddr, uval, newval);
--		/* If the take over worked, return 1 */
--		return ret < 0 ? ret : 1;
-+		if (ret)
-+			return ret;
-+
-+		/*
-+		 * If the waiter bit was requested the caller also needs PI
-+		 * state attached to the new owner of the user space futex.
-+		 *
-+		 * @task is guaranteed to be alive and it cannot be exiting
-+		 * because it is either sleeping or waiting in
-+		 * futex_requeue_pi_wakeup_sync().
-+		 *
-+		 * No need to do the full attach_to_pi_owner() exercise
-+		 * because @task is known and valid.
-+		 */
-+		if (set_waiters) {
-+			raw_spin_lock_irq(&task->pi_lock);
-+			__attach_to_pi_owner(task, key, ps);
-+			raw_spin_unlock_irq(&task->pi_lock);
-+		}
-+		return 1;
- 	}
- 
- 	/*
-@@ -1939,12 +1961,26 @@ static inline int futex_requeue_pi_wakeup_sync(struct futex_q *q)
-  * @hb:		the hash_bucket of the requeue target futex
-  *
-  * During futex_requeue, with requeue_pi=1, it is possible to acquire the
-- * target futex if it is uncontended or via a lock steal.  Set the futex_q key
-- * to the requeue target futex so the waiter can detect the wakeup on the right
-- * futex, but remove it from the hb and NULL the rt_waiter so it can detect
-- * atomic lock acquisition.  Set the q->lock_ptr to the requeue target hb->lock
-- * to protect access to the pi_state to fixup the owner later.  Must be called
-- * with both q->lock_ptr and hb->lock held.
-+ * target futex if it is uncontended or via a lock steal.
-+ *
-+ * 1) Set @q::key to the requeue target futex key so the waiter can detect
-+ *    the wakeup on the right futex.
-+ *
-+ * 2) Dequeue @q from the hash bucket.
-+ *
-+ * 3) Set @q::rt_waiter to NULL so the woken up task can detect atomic lock
-+ *    acquisition.
-+ *
-+ * 4) Set the q->lock_ptr to the requeue target hb->lock for the case that
-+ *    the waiter has to fixup the pi state.
-+ *
-+ * 5) Complete the requeue state so the waiter can make progress. After
-+ *    this point the waiter task can return from the syscall immediately in
-+ *    case that the pi state does not have to be fixed up.
-+ *
-+ * 6) Wake the waiter task.
-+ *
-+ * Must be called with both q->lock_ptr and hb->lock held.
-  */
- static inline
- void requeue_pi_wake_futex(struct futex_q *q, union futex_key *key,
-@@ -2025,7 +2061,7 @@ futex_proxy_trylock_atomic(u32 __user *pifutex, struct futex_hash_bucket *hb1,
- 	 * and waiting on the 'waitqueue' futex which is always !PI.
- 	 */
- 	if (!top_waiter->rt_waiter || top_waiter->pi_state)
--		ret = -EINVAL;
-+		return -EINVAL;
- 
- 	/* Ensure we requeue to the expected futex. */
- 	if (!match_futex(top_waiter->requeue_pi_key, key2))
-@@ -2036,17 +2072,24 @@ futex_proxy_trylock_atomic(u32 __user *pifutex, struct futex_hash_bucket *hb1,
- 		return -EAGAIN;
- 
- 	/*
--	 * Try to take the lock for top_waiter.  Set the FUTEX_WAITERS bit in
--	 * the contended case or if set_waiters is 1.  The pi_state is returned
--	 * in ps in contended cases.
-+	 * Try to take the lock for top_waiter and set the FUTEX_WAITERS bit
-+	 * in the contended case or if @set_waiters is true.
-+	 *
-+	 * In the contended case PI state is attached to the lock owner. If
-+	 * the user space lock can be acquired then PI state is attached to
-+	 * the new owner (@top_waiter->task) when @set_waiters is true.
- 	 */
- 	vpid = task_pid_vnr(top_waiter->task);
- 	ret = futex_lock_pi_atomic(pifutex, hb2, key2, ps, top_waiter->task,
- 				   exiting, set_waiters);
- 	if (ret == 1) {
--		/* Dequeue, wake up and update top_waiter::requeue_state */
-+		/*
-+		 * Lock was acquired in user space and PI state was
-+		 * attached to @top_waiter->task. That means state is fully
-+		 * consistent and the waiter can return to user space
-+		 * immediately after the wakeup.
-+		 */
- 		requeue_pi_wake_futex(top_waiter, key2, hb2);
--		return vpid;
- 	} else if (ret < 0) {
- 		/* Rewind top_waiter::requeue_state */
- 		futex_requeue_pi_complete(top_waiter, ret);
-@@ -2208,19 +2251,26 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
- 						 &exiting, nr_requeue);
- 
- 		/*
--		 * At this point the top_waiter has either taken uaddr2 or is
--		 * waiting on it.  If the former, then the pi_state will not
--		 * exist yet, look it up one more time to ensure we have a
--		 * reference to it. If the lock was taken, @ret contains the
--		 * VPID of the top waiter task.
--		 * If the lock was not taken, we have pi_state and an initial
--		 * refcount on it. In case of an error we have nothing.
-+		 * At this point the top_waiter has either taken uaddr2 or
-+		 * is waiting on it. In both cases pi_state has been
-+		 * established and an initial refcount on it. In case of an
-+		 * error there's nothing.
- 		 *
- 		 * The top waiter's requeue_state is up to date:
- 		 *
--		 *  - If the lock was acquired atomically (ret > 0), then
-+		 *  - If the lock was acquired atomically (ret == 1), then
- 		 *    the state is Q_REQUEUE_PI_LOCKED.
- 		 *
-+		 *    The top waiter has been dequeued and woken up and can
-+		 *    return to user space immediately. The kernel/user
-+		 *    space state is consistent. In case that there must be
-+		 *    more waiters requeued the WAITERS bit in the user
-+		 *    space futex is set so the top waiter task has to go
-+		 *    into the syscall slowpath to unlock the futex. This
-+		 *    will block until this requeue operation has been
-+		 *    completed and the hash bucket locks have been
-+		 *    dropped.
-+		 *
- 		 *  - If the trylock failed with an error (ret < 0) then
- 		 *    the state is either Q_REQUEUE_PI_NONE, i.e. "nothing
- 		 *    happened", or Q_REQUEUE_PI_IGNORE when there was an
-@@ -2234,36 +2284,20 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
- 		 *    the same sanity checks for requeue_pi as the loop
- 		 *    below does.
- 		 */
--		if (ret > 0) {
--			WARN_ON(pi_state);
--			task_count++;
--			/*
--			 * If futex_proxy_trylock_atomic() acquired the
--			 * user space futex, then the user space value
--			 * @uaddr2 has been set to the @hb1's top waiter
--			 * task VPID. This task is guaranteed to be alive
--			 * and cannot be exiting because it is either
--			 * sleeping or blocked on @hb2 lock.
--			 *
--			 * The @uaddr2 futex cannot have waiters either as
--			 * otherwise futex_proxy_trylock_atomic() would not
--			 * have succeeded.
--			 *
--			 * In order to requeue waiters to @hb2, pi state is
--			 * required. Hand in the VPID value (@ret) and
--			 * allocate PI state with an initial refcount on
--			 * it.
--			 */
--			ret = attach_to_pi_owner(uaddr2, ret, &key2, &pi_state,
--						 &exiting);
--			WARN_ON(ret);
--		}
--
- 		switch (ret) {
- 		case 0:
- 			/* We hold a reference on the pi state. */
- 			break;
- 
-+		case 1:
-+			/*
-+			 * futex_proxy_trylock_atomic() acquired the user space
-+			 * futex. Adjust task_count.
-+			 */
-+			task_count++;
-+			ret = 0;
-+			break;
-+
- 		/*
- 		 * If the above failed, then pi_state is NULL and
- 		 * waiter::requeue_state is correct.
-@@ -2395,9 +2429,8 @@ static int futex_requeue(u32 __user *uaddr1, unsigned int flags,
- 	}
- 
- 	/*
--	 * We took an extra initial reference to the pi_state either in
--	 * futex_proxy_trylock_atomic() or in attach_to_pi_owner(). We need
--	 * to drop it here again.
-+	 * We took an extra initial reference to the pi_state in
-+	 * futex_proxy_trylock_atomic(). We need to drop it here again.
- 	 */
- 	put_pi_state(pi_state);
- 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index f15df3fd7c5a6..6f22ad3617c9a 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -5366,7 +5366,7 @@ int __lock_is_held(const struct lockdep_map *lock, int read)
- 		struct held_lock *hlock = curr->held_locks + i;
- 
- 		if (match_held_lock(hlock, lock)) {
--			if (read == -1 || hlock->read == read)
-+			if (read == -1 || hlock->read == !!read)
- 				return LOCK_STATE_HELD;
- 
- 			return LOCK_STATE_NOT_HELD;
-diff --git a/localversion-rt b/localversion-rt
-index 1199ebade17b4..1e584b47c987e 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt16
-+-rt17
