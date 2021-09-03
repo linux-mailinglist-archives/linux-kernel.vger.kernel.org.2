@@ -2,100 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810C23FFA67
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A534C3FFA6B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345548AbhICGcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 02:32:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26284 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345298AbhICGcQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 02:32:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630650676;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YC/rlauU/F6bmxF77VH11Mgk4hV/IwCNeLbfbf9xP5Q=;
-        b=TOQpwkyAxLvlzLXRWkCbVCeCE5dtwOipp3KfMhTsZZgmgHMxaieBsuxMJzqrnQfcsL6c0N
-        huctH7dsYXwGeLBp3QUFM3WJZL2yy5kmqNObe34UxLW044/QGVB8c3PH4JhLTG2UBkmogS
-        9cpVbrT35Gfo9TDhAaU5Ue5gIce+bdg=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-450-t6gqjXUNPEWe7RXwIgpZUw-1; Fri, 03 Sep 2021 02:31:15 -0400
-X-MC-Unique: t6gqjXUNPEWe7RXwIgpZUw-1
-Received: by mail-wm1-f69.google.com with SMTP id c4-20020a1c9a04000000b002e864b7edd1so1544923wme.6
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 23:31:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YC/rlauU/F6bmxF77VH11Mgk4hV/IwCNeLbfbf9xP5Q=;
-        b=rPAKsSt0nP5JT+UXV+Wnr9dFv6KFKznGiC5+fNMseOzaIT+/fi2DYE5g0Thh9Vsdkc
-         9Sd8k960mx+uR9Xs0/lEddgkw03ScTPtOFKjEXCxvvYoQkjW/AaA0y6uSD9m43EBCb0n
-         aY3zJf++69mwLUfc0zMvRZdJBDjpK7Vvu+te2OcWt1iqWy8wj43xbrk2j8rH5/qyIk5J
-         wfWd86DtyKtUr5vrWf7Id8+Q9FzbRauz63cUpgoUt+R9vTxCFZEjAXvL03SH2d9JPfZY
-         8qVEghRFdaNJ8j4Kd1jYxhkNAnIf9MebGoyRngr6uN7e0sHXRPfTT9a34IoGqBRn70/y
-         FGxg==
-X-Gm-Message-State: AOAM531NKAl84GUyHUG1YVO5aqlvde8pgSYGA/kOmw3VCWWP5D3ZOvA1
-        mGRHUiB99Lm0sisICaauDDQPZBhA2IKOtFsD/3C5rkMe/1w3QOkoqalKK98BUDP+F+5G8/4yD1M
-        jk22P4rsLHy+JA763BNxrmkWGu71bhpXTNuEPq6qa
-X-Received: by 2002:adf:d193:: with SMTP id v19mr2009427wrc.377.1630650674695;
-        Thu, 02 Sep 2021 23:31:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwyPFJw9ZP/m1ileU46mEBJVAfh6Zf+O3xQQjDX0TV+sCc5/OMAl/XmaZX2RmznLFq2omumgxC7UK2vm0m9SxM=
-X-Received: by 2002:adf:d193:: with SMTP id v19mr2009383wrc.377.1630650674468;
- Thu, 02 Sep 2021 23:31:14 -0700 (PDT)
+        id S1346503AbhICGcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 02:32:51 -0400
+Received: from mail-bn8nam11on2060.outbound.protection.outlook.com ([40.107.236.60]:26081
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235351AbhICGck (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 02:32:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nJCQvocxMfZgSqEUiimZ14AvA0YoABIewoGqj85/UFammDVDkNedIBk3edpYJLKt9lS754UOl8EWF2v9qPDxM+0Y4JoW6s7d4pzLqvfgWowf9WanVlrerJX3KbDesVoslkD+dRkOYtiIPhgS04z92cExXz1R3RR5pNlGRlKDnwEV8GMXhUP9lxnOonKcUQqSXITPRKN5NCYEiqp8oPkWxl0bGUEh2sMWrCLur7prAgsyHKDgqlTEwdCDipfo/UnXQLfppz1pn13rw/QyYXcl8y6Oh0Ab7af2/zU1OxbdGRqNfdw5/6eUxs5bfbdUmFSWRCR+x6QNpPAKIfJl8Sz2SQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=+lkZWMtoFBd3kMTrb83z2cjySlv6x4BTX3yOeofvqrg=;
+ b=Ta5oQyDOeHIabgjSgyiKe0zesjXj1JZ2+TeNZqS7XpqY8gWuXk4hBZOTyQoHWmLS0kG8pvJCIcGPEVmzSS5p0ww9syfAiCjgA7+WOGu7hsUvynNZWzxIZK+R/k5AZKiSbnXhp7nrSa6zMWk/Jmu8NgXitw+yNzlQWIE8RaVowEk2JN+SGQBJK2h5tzeAzKtmDSVgoPRZOtbzNdi7L6NLtHoeywaPOifrIoi7/34byV5g4gSYTUpPD302vEllaqRDYehwxWxIJYL0l8Ypft/UCkIPRSGzYZ97kAD3ldfjE7Yja6Dm2d/iAAKIA46AOxTNgbGG8jacnfuAPJk3oPmI3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+lkZWMtoFBd3kMTrb83z2cjySlv6x4BTX3yOeofvqrg=;
+ b=wBQpFEtMMLeOkMS4txKz5Q06Vm5Uzhmm50Y/OnARisHecAjtdnanJlNd44bwKPBNWzbSDZ/DImlGcq1vBI9ZQ8KGExpwmG0AVPiAlGN2tI2P1grLgLt3uf/FCaMoACt+x+pwRe6yCNJIkhie+z2t2yhJ+Eq46C0+6DUDI9sslV4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
+ by MN2PR12MB4550.namprd12.prod.outlook.com (2603:10b6:208:24e::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.17; Fri, 3 Sep
+ 2021 06:31:39 +0000
+Received: from MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
+ ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4478.022; Fri, 3 Sep 2021
+ 06:31:39 +0000
+Subject: Re: [PATCH][next] drm/amdgpu: sdma: clean up identation
+To:     Colin King <colin.king@canonical.com>,
+        Alex Deucher <alexander.deucher@amd.com>, Xinhui.Pan@amd.com,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210902215127.55330-1-colin.king@canonical.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Message-ID: <bb5105f8-2ec6-e494-8764-3dcc5fc0681b@amd.com>
+Date:   Fri, 3 Sep 2021 08:31:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <20210902215127.55330-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: AM0P190CA0023.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:208:190::33) To MN2PR12MB3775.namprd12.prod.outlook.com
+ (2603:10b6:208:159::19)
 MIME-Version: 1.0
-References: <20210902152228.665959-1-vgoyal@redhat.com> <YTDyE9wVQQBxS77r@redhat.com>
-In-Reply-To: <YTDyE9wVQQBxS77r@redhat.com>
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-Date:   Fri, 3 Sep 2021 08:31:03 +0200
-Message-ID: <CAHc6FU4ytU5eo4bmJcL6MW+qJZAtYTX0=wTZnv4myhDBv-qZHQ@mail.gmail.com>
-Subject: Re: [PATCH 3/1] xfstests: generic/062: Do not run on newer kernels
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, virtio-fs@redhat.com,
-        dwalsh@redhat.com, dgilbert@redhat.com,
-        christian.brauner@ubuntu.com, casey.schaufler@intel.com,
-        LSM <linux-security-module@vger.kernel.org>,
-        selinux@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Miklos Szeredi <miklos@szeredi.hu>, gscrivan@redhat.com,
-        "Fields, Bruce" <bfields@redhat.com>,
-        stephen.smalley.work@gmail.com, Dave Chinner <david@fromorbit.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Received: from [192.168.178.21] (91.14.161.181) by AM0P190CA0023.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:190::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend Transport; Fri, 3 Sep 2021 06:31:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a2beca05-0d84-4ac7-1fdd-08d96ea47c77
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4550:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB455067470E56037555BC440C83CF9@MN2PR12MB4550.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:785;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GAcX42yHudV7e8hBpUdryXc3SeJUJSjFm5yu553VfMSIURAB61OTz5pHMV1+G13pr8a/HHBwVtPXqdUCvfHlOk86aO9VoK2Rr5r+qj2Q2049BGiJqzXtaioCzlivNiBFa4385NaZbVEJRUpS5+iJGKaDcTvKTN8sIqp+tRj2C97LCuXbazvV/rSG+MNzXFUVfc5Uj4IslI0jblJTxyBjJcBhXZl9tQMPzfCGvNm9Pb6Kw+TrvnVpKzfaglRCaGmZfPyOoPKRzA53frMxO88MxNzqSRvFLM4X+I2sxXN4ohusNRkJdLXGHdyUJdL3boeCxQfoKYkeCeBrW7YNPRhTAzHGIciwuSY3GdlMbLFuQKk6hlxvwdiki6Dx8SldgLxdJb2ceoL1+VjcyrCyxSK7aF50CpD7lNsZ0cO1YwuZSuY6wu/hVWaqUN1sQAuyNE0WwYi+JdVCch+KDhFHYCYgE0yhVQD33DoMztJlRebjncBCum8+hL0Xmlo+ET//vZ0SSR3vMHefbeYXQuJMKn0oKiKBbcLyk2KPPguk1Y+eObstf47PXDQdhiz4YlS+cE0VnlXvQavFUPZdcrhI22gP0V3MX9q3qNUbj9SqJjJQzpXa/YQvdxZgTEZQc8AHdYCSOkJWdRqer5SM6BIKaahMysVSHyO31z8FKSugSNRwYvvfB3ZvB8vYlNBQa6TGzQo3PoDPTm84bq2Kj9c0alqXnoaCHe8sibp9aCTdhcroQFw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(376002)(136003)(39860400002)(316002)(478600001)(186003)(86362001)(8676002)(31696002)(26005)(66556008)(2906002)(110136005)(4326008)(83380400001)(38100700002)(36756003)(66476007)(6486002)(2616005)(6666004)(8936002)(5660300002)(31686004)(16576012)(66946007)(956004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?c3IyUFYwT2NDQk5ISlJ1V2N0aUZ5OTYvZVNnRjAwWU5kNUFPdGxHQ1BBR3pp?=
+ =?utf-8?B?YUt3ZkJOVGJJV0ZuVG5BVzRWVjNEMGgyNklvVlhDU21zRXpZeDZDVjlQQmtz?=
+ =?utf-8?B?OHNEVHBjYmJIZ05uRFdHSEF0V1ppNzVtcUFWdlhKMWl4eVRkU0YwV2Ixb0w1?=
+ =?utf-8?B?Ylg2bktqTUNWc2lDbGdsMHpUUXk3NThvQklteEVkRUpFUGZhdWowNjFpYm00?=
+ =?utf-8?B?eStmUXZHYUdIV2Rvc1FLU1VPSU5ma3Q4RU1IbkJESlF6M1BhYmNwSFozTDg5?=
+ =?utf-8?B?SGpHMDU3VEFzSGoxVXhwT2pyTlJuYWo3cGdMZTcvRVdZcldhV1BsYS9RSUR1?=
+ =?utf-8?B?cXFNaFJWdjJ5ZW1CNFJmU0poR09hT2RpaHZDSjUxdjk0YlBlSFdKeFE3RDRH?=
+ =?utf-8?B?THBMaEJnWUlWbWpNRXBhclRXSlVub2w1V0FVUDhwVTBxVnc1ZVVxeWhuekRU?=
+ =?utf-8?B?QUJjeDVrVkwzbnVYeGl2T1l4MFlJczM0b0N4eGs1dFBSZWx3ZzNIdGZ5U00r?=
+ =?utf-8?B?ZTNHNk1sL1EwVXdmVlpodTZobG5yTy9YOWtnWU9KcjgraCtsckhhZ29JdExL?=
+ =?utf-8?B?NUtqVWp0TGNtbnhVNlFwZ1FqQzg0aHdDbmVVRVpncXd4S0N2WnpUa2JTT2xl?=
+ =?utf-8?B?TExHM3diWSs0ZTZoTWQwUkxpeE9qTnNQSkNFNzhJRHV1UHE0NVB0WUN0VFNS?=
+ =?utf-8?B?MjlrL3d0dXlqK3V5SFhNUkFQbjFJM3Jmeis3VERycGx3Slh2VWxJdGVTY0pu?=
+ =?utf-8?B?NXJnVFhxeFZNanh4ZTl5ZTF6cEFYc2lMRVZtWjV5d2Y1MHRldUV4QTBIb3pD?=
+ =?utf-8?B?enRhRUtFQmhrZ1VEUXN3S3J6azk2YngzOStsd3BXak5mMmM1SDVlbVFIdTVr?=
+ =?utf-8?B?MndDeCtpQU1KZkVPdkxqN2pmaG9oK3VGZjU0bCtQampyM1ZrSm1LRlB1anJI?=
+ =?utf-8?B?NDdtSllxUWgxeldOVnNPM0U0WFg2aGNNU0RsbFJVZXJPVEpOWDhIMnV4Q2hD?=
+ =?utf-8?B?UkQrZGYrSnFod3VzdzBXM0w1TVlqY3Q5SGt4bXpGdldEL0gveVRZUWtVdjcx?=
+ =?utf-8?B?QWw4WHRQQk9MeEJZcEFERnI4OFRLWncyU1NpV2E5d0JScWJxVWRlb1ZSZW9Q?=
+ =?utf-8?B?eDFLbUQ2MWNDajM4bUFEMEpoYitucTU1dHFQb2pKV3VmUC92blhWU0lSMjlj?=
+ =?utf-8?B?ai9QaHBVakJNdDQwUmhqVzhqN0lwSndSUFBKT2twOFZUWmx1cXg1VTVvSXc0?=
+ =?utf-8?B?SCt3WGpmQ3hWZlRQQU5kWDNtRmFvLy9iQnZLNko3ZEEwdllGREcwaG91NUd4?=
+ =?utf-8?B?ZE42YmNVREpSYjQ5WVNrM1BQTHVERnRyMFR1TktFc1ZNN2J0a2FHNldSOFYw?=
+ =?utf-8?B?RytYNGduejFJSHVsSEFabktaaDAwUFhvVzloV3pwdXBZNm5Ic3RQSWw0aFo1?=
+ =?utf-8?B?aDRZcjUxUjhtdURvUmFCaUsrYWc0VjNYcmJMUHhlMW0rS1RtZHdnZHVubG9X?=
+ =?utf-8?B?eEt5d3JObEQ5ak1YZUt2ZUE0MlVld3llcEJKbnBWalpoVGVNZy9pckdnUVE5?=
+ =?utf-8?B?aVVRazNlamJ0b2l6Z1BaVzJqaEFhcEgvd2N3RE02N3Q5NkIzNW85VXoydFdR?=
+ =?utf-8?B?MkFVZlNuR2xyaTd4MUZDL3dvTkRTeXhScnM2UFRPUmVzME8xUmlaZlBaTHdv?=
+ =?utf-8?B?QlgzSzdlQXJpaCtaalFnc0V0YmxCSkRFeHdSY3h6Z0NpN2xKbjdkNnRnRHVV?=
+ =?utf-8?Q?dbNqovR4j4rQpPmrDZKy8BurYQ8BSJ4Rdhif23S?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2beca05-0d84-4ac7-1fdd-08d96ea47c77
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2021 06:31:39.3338
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 44PpZztBFGEHK4xtooMi4soPHG/M3SmOJQ0ZRC3+kcXPjwvosEheanktpTGjmSWV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4550
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 5:47 PM Vivek Goyal <vgoyal@redhat.com> wrote:
-> xfstests: generic/062: Do not run on newer kernels
+Am 02.09.21 um 23:51 schrieb Colin King:
+> From: Colin Ian King <colin.king@canonical.com>
 >
-> This test has been written with assumption that setting user.* xattrs will
-> fail on symlink and special files. When newer kernels support setting
-> user.* xattrs on symlink and special files, this test starts failing.
+> There is a statement that is indented incorrectly. Clean it up.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-It's actually a good thing that this test case triggers for the kernel
-change you're proposing; that change should never be merged. The
-user.* namespace is meant for data with the same access permissions as
-the file data, and it has been for many years. We may have
-applications that assume the existing behavior. In addition, this
-change would create backwards compatibility problems for things like
-backups.
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
-I'm not convinced that what you're actually proposing (mapping
-security.selinux to a different attribute name) actually makes sense,
-but that's a question for the selinux folks to decide. Mapping it to a
-user.* attribute is definitely wrong though. The modified behavior
-would affect anybody, not only users of selinux and/or virtiofs. If
-mapping attribute names is actually the right approach, then you need
-to look at trusted.* xattrs, which exist specifically for this kind of
-purpose. You've noted that trusted.* xattrs aren't supported over nfs.
-That's unfortunate, but not an acceptable excuse for messing up user.*
-xattrs.
-
-Thanks,
-Andreas
+> ---
+>   drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c b/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
+> index 779f5c911e11..e4a96e7e386d 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
+> @@ -375,10 +375,10 @@ static void sdma_v5_2_ring_emit_ib(struct amdgpu_ring *ring,
+>    */
+>   static void sdma_v5_2_ring_emit_mem_sync(struct amdgpu_ring *ring)
+>   {
+> -    uint32_t gcr_cntl =
+> -		    SDMA_GCR_GL2_INV | SDMA_GCR_GL2_WB | SDMA_GCR_GLM_INV |
+> -			SDMA_GCR_GL1_INV | SDMA_GCR_GLV_INV | SDMA_GCR_GLK_INV |
+> -			SDMA_GCR_GLI_INV(1);
+> +	uint32_t gcr_cntl = SDMA_GCR_GL2_INV | SDMA_GCR_GL2_WB |
+> +			    SDMA_GCR_GLM_INV | SDMA_GCR_GL1_INV |
+> +			    SDMA_GCR_GLV_INV | SDMA_GCR_GLK_INV |
+> +			    SDMA_GCR_GLI_INV(1);
+>   
+>   	/* flush entire cache L0/L1/L2, this can be optimized by performance requirement */
+>   	amdgpu_ring_write(ring, SDMA_PKT_HEADER_OP(SDMA_OP_GCR_REQ));
 
