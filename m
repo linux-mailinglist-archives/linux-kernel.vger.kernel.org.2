@@ -2,78 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C66384006AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED7824006BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350477AbhICUeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 16:34:23 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:36248 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236047AbhICUeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 16:34:22 -0400
-Received: from zn.tnic (p200300ec2f0d5800d6a7aa80667574a9.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:5800:d6a7:aa80:6675:74a9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A9BAB1EC05D1;
-        Fri,  3 Sep 2021 22:33:20 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1630701200;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=MAzqKX6VtyCSndmZDNFL0QMi196VzCUfmu+JJoWFdbw=;
-        b=qNaW6q+V7k91JL9JauzWHVNzWW7iJ3zAdxB2Ppu90Bk/biE9mqv/LvFP5m28U1EAH3GwgL
-        hS4Wq4g6QaSJB/GFxx8T10heAENvfC3UF0Z1mtivAUXtvOro5ydb91h8mUxRuMs4idmHpq
-        zBy0Vc0inieQN/Gywh/3xwIedXObLqA=
-Date:   Fri, 3 Sep 2021 22:33:55 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
-        VMware Inc <pv-drivers@vmware.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 01/11] x86/paravirt: Move halt paravirt calls under
- CONFIG_PARAVIRT
-Message-ID: <YTKGs/EaVBWhEbQW@zn.tnic>
-References: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210903172812.1097643-2-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YTJn0HOkMd0thT+3@zn.tnic>
- <256d0f5b-3a6d-0912-2edc-44b4a0889c73@linux.intel.com>
+        id S237135AbhICUjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 16:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231956AbhICUjd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 16:39:33 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E2BC061757
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 13:38:32 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id t1so233415pgv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 13:38:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=SXA74MGGnpMLJBlBLFB2fo0p77PdPKeB7j4vWOpFbgA=;
+        b=nw2VJup3MuIT3HYBDrxKERcfiBaDohh+oGekw2GnKIB3/5yL7SZsrrGJ+uxDCbsprl
+         yArFwNdaf5aDJuBQ/5yveze8lPGExml2Y3ATqAD4i4H4u/AXXFJMnxw4ecUWgXc4b9aS
+         k/YxZZW9iVXFN3LCyJutIc1C5PZKafRX/Oj1q6/d0cFSK0F5HvSdOrPg2b9EsSU+gr40
+         BzOavNjXQMy8QmLjzMG/9+EeKPOzm3IAWSdFWLY5aSCQec3tJcsJOgB+n8lizV4t+vNU
+         TUdREwSHFa7EXMo+dylFlSX8KumY2JrRowHRkTfH78sEY8jS89x1jd6cvOqqfR6TVTlo
+         If6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SXA74MGGnpMLJBlBLFB2fo0p77PdPKeB7j4vWOpFbgA=;
+        b=J7FHgJxJIygR112CzarYhT+z5NUBllj5tgInePoR4aAXOwpvKMnqcl0R72KYVF+Vz8
+         JG1I+fhcFwFBKrEtDdpXGdGc8whh9O42MnwC0FSUpsOlD03xMIchETM1mKjJpMjJYjBL
+         BaqxebWHp9BpE0xsu5sfSc6AgYqwh9alHIswFl7EyUkFBtTejo0yof+FrRr8WqZ2wGR5
+         1RBHB3K9UqfyQ8cMi74Pssaz5kbIYF6htvnrA64Vym9Zksz+pKyFD5CeustomIaqDWSD
+         xHn0FC+Z7/ykWbXlMLmhgZM1hse9/h/Ez+V1ZyPMkG7pf5UxH0lGfkcY+x4bi/dlui6E
+         AEuQ==
+X-Gm-Message-State: AOAM531awgGrkfsh08NJl/Bf7FZ2PtKunvwAta8LQ2vzpQy1y2ntO69y
+        J/Eu0nDV4naZF1tqT2fSdbLLhwn6qB/oVA==
+X-Google-Smtp-Source: ABdhPJweoVMMzL7tuqAQdffveXdXyK8C4wFxqZl/wW2SRRGmxbgZ8vmT7er7geuhYIAzmGP+N28/MA==
+X-Received: by 2002:a05:6a00:16d2:b029:300:200b:6572 with SMTP id l18-20020a056a0016d2b0290300200b6572mr703225pfc.62.1630701511522;
+        Fri, 03 Sep 2021 13:38:31 -0700 (PDT)
+Received: from ?IPv6:2600:380:7567:4da9:ea68:953f:1224:2896? ([2600:380:7567:4da9:ea68:953f:1224:2896])
+        by smtp.gmail.com with ESMTPSA id w17sm238691pfq.111.2021.09.03.13.38.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 13:38:31 -0700 (PDT)
+Subject: Re: [syzbot] BUG: unable to handle kernel NULL pointer dereference in
+ kiocb_done
+To:     syzbot <syzbot+726f2ce6dbbf2ad8d133@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000000d4da305cb1d2467@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <5a93ff90-98be-b5af-29e9-a2f8cca82458@kernel.dk>
+Date:   Fri, 3 Sep 2021 14:38:28 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <0000000000000d4da305cb1d2467@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <256d0f5b-3a6d-0912-2edc-44b4a0889c73@linux.intel.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 12:03:56PM -0700, Kuppuswamy, Sathyanarayanan wrote:
-> Is this new convention?
+On 9/3/21 2:28 PM, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    4ac6d90867a4 Merge tag 'docs-5.15' of git://git.lwn.net/li..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13a275f5300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3c3a5498e99259cf
+> dashboard link: https://syzkaller.appspot.com/bug?extid=726f2ce6dbbf2ad8d133
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=124a3b49300000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=142e610b300000
 
-No, not new:
-
-git grep -E "^#\s+define" *.h
-
-> #ifdefs used in this file does not follow this format.
-
-That's why we fix them so that they do.
+#syz test git://git.kernel.dk/linux-block for-5.15/io_uring
 
 -- 
-Regards/Gruss,
-    Boris.
+Jens Axboe
 
-https://people.kernel.org/tglx/notes-about-netiquette
