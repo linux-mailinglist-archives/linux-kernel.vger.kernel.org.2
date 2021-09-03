@@ -2,197 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0ED040011B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2B440011D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbhICOPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:15:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347350AbhICOPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:15:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EC6160EE3;
-        Fri,  3 Sep 2021 14:14:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630678442;
-        bh=PLSHoddjU3pnFtal4whhpNsynayjjXHlTiXXgaXgj6A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dxf00ShIVspBWwdyMrjpFKsSOOHhoxiuztHq8GlmneR79RPVZKHrLPhcffKrYgzVv
-         pnuM7QI7ADvyJgJyMB2senrslYDT/rWa0yHMoRSLQp6Xgx0HQc5pH1rXHxhGO09zzl
-         vr8YIphGCz4eCY5cdfOMmwIe5t4RwypOLCNaHqm8=
-Date:   Fri, 3 Sep 2021 16:14:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com,
-        Alexey Gladkov <legion@kernel.org>
-Subject: Re: [PATCH 5.10 036/103] ucounts: Increase ucounts reference counter
- before the security hook
-Message-ID: <YTItqH5NnIP3zduJ@kroah.com>
-References: <20210901122300.503008474@linuxfoundation.org>
- <20210901122301.773759848@linuxfoundation.org>
- <87v93k4bl6.fsf@disp2133>
- <YS+s+XL0xXKGwh9a@kroah.com>
- <875yvk1a31.fsf@disp2133>
- <YTDLyU2mdeoe5cVt@sashalap>
- <875yvizwb9.fsf@disp2133>
- <YTGrQ2D1/tQR1pCh@kroah.com>
- <YTGr2ZkgfTCIGVpr@kroah.com>
- <YTHFv5ocSt4W+JZs@kroah.com>
+        id S1348668AbhICORX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:17:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235437AbhICORW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 10:17:22 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCECC061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 07:16:22 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id h29so5361614ila.2
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 07:16:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BHBGodzqUQnBPvEI1YqR03qxQi9kX2bfYMigp+1FVYI=;
+        b=NI0ioB4QSRNtd06thpSelbY/Q/kgAGzKpzo368k60CWX+1kmlyufBG2OjNkjGHUll5
+         3Og41LIITW1OVnxoC12bDrsfSq/ZB8b7L6F3xCxUSh/7dSvPJNVp1zatb2JOuIj1zrLw
+         vG4sPYCE3Fg1wj1cOw71lGkl3Oz1qnIE/iPGtvIO0ebVjP+/nl85jtlWGA5QMxJBkSjw
+         t27I12W1WLFIPJkvfCntTyPOrwvopjChNUQz0mplov2Vh8vLEXK6y8CdEh5wSt94XEXc
+         MHGCTVw8Ep1mRalg/XGyFKKzcRkmAJF/UX3mYuyx8RTpBbEv1QfKVWQa3Y+AXIisVp4q
+         feNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BHBGodzqUQnBPvEI1YqR03qxQi9kX2bfYMigp+1FVYI=;
+        b=iy39kxZxVHHuzy5tkFPOBuvP/8HudWztvl3YcpBpPbw/9ghYJR9Kxe6FfjSYJaUcnD
+         6Nb3ceUp+ou89TZtFLw4ahyUJi7Pup+jXtKVw2z4W43mgUGFaVMtQZ1LnpBv8L8rH1mj
+         sTg+wjr2ZUZ1H9GyGxMbl1HOJuS4qPDiX1hRA1cEVpE7g/ZRkgwEraqD3xTntFmHB+K/
+         qWlmjR6ANp/I7lphZJPqyTsVbg662hfD+Yfb86ugho/ALFawwIX8aGzmWMufZu+SehK/
+         gdr+AyMp8lDUl5oKJ+m0ySdid/AyeaCvWmCnyjat59Zo/ERiV/VFcUtkG9rBVE9DWCN9
+         nxFw==
+X-Gm-Message-State: AOAM533EjmJ/T/nIYHXhDjXY/Gt5LGfRYa0e0Wxcb//vkG6pcfht3US0
+        xsmnuI86MOyko8GV1QxkPSk=
+X-Google-Smtp-Source: ABdhPJwYDFWa5jkVd73leBCAMaUhB7ueSpiXjHOF/N+PT0wbsrJDzUD7hanTB02uW8wvsyy+jriQpw==
+X-Received: by 2002:a05:6e02:1c08:: with SMTP id l8mr2744568ilh.134.1630678581968;
+        Fri, 03 Sep 2021 07:16:21 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id x13sm2860529ilq.18.2021.09.03.07.16.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 07:16:20 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id E93B027C0054;
+        Fri,  3 Sep 2021 10:16:19 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 03 Sep 2021 10:16:19 -0400
+X-ME-Sender: <xms:My4yYctxHEm-1VGPW7xZteVlrQQjfSd_0LT24AFZzBgKz5ZCqXYpjw>
+    <xme:My4yYZfxcuisqtzU7rvr3BRACplBRgHpaOid-bMn8tSkiSCxu6qpZC_Zlo5fvrfCQ
+    BaQQHSgdARgdI3hiw>
+X-ME-Received: <xmr:My4yYXzfkt6A8BkkIMktsNvgoPl81TOMwLsNB7eKrHeWv_bkeAAJ7cTKZvg84A>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedgjeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepveeijedthfeijeefudehhedvveegudegteehgffgtddvuedtveegtedvvdef
+    gedtnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhp
+    vghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrd
+    hfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:My4yYfP7hYwM50qJk5MSHdMzZQjpT87mDvB2pkJ0ERO_1iYsr6TfFA>
+    <xmx:My4yYc9csG8ylvmkaB3pH_t6KdXSVjT3dvh7zX2F_hRTCRjvdhBWPw>
+    <xmx:My4yYXUaNJOU3k0eD_tjwC5X6L8dDGLJIikPPgSUg2gRa5iraR8q-w>
+    <xmx:My4yYczfhSSycmxlCdyQSNGI7dp40wsU4CbL0voxmpLDREQy72KNuQ>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 3 Sep 2021 10:16:18 -0400 (EDT)
+Date:   Fri, 3 Sep 2021 22:15:04 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] lockdep: Let lock_is_held_type() detect recursive read
+ as read
+Message-ID: <YTIt6KIjz5gTbZif@boqun-archlinux>
+References: <20210901162255.u2vhecaxgjsjfdtc@linutronix.de>
+ <YS+twcAQ9uivowDS@boqun-archlinux>
+ <20210903104557.rqss65jn4ozoptcj@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YTHFv5ocSt4W+JZs@kroah.com>
+In-Reply-To: <20210903104557.rqss65jn4ozoptcj@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 08:50:39AM +0200, Greg Kroah-Hartman wrote:
-> On Fri, Sep 03, 2021 at 07:00:09AM +0200, Greg Kroah-Hartman wrote:
-> > On Fri, Sep 03, 2021 at 06:57:39AM +0200, Greg Kroah-Hartman wrote:
-> > > On Thu, Sep 02, 2021 at 01:06:34PM -0500, Eric W. Biederman wrote:
-> > > > Sasha Levin <sashal@kernel.org> writes:
-> > > > 
-> > > > > On Wed, Sep 01, 2021 at 12:26:10PM -0500, Eric W. Biederman wrote:
-> > > > >>Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> > > > >>
-> > > > >>> On Wed, Sep 01, 2021 at 09:25:25AM -0500, Eric W. Biederman wrote:
-> > > > >>>> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> > > > >>>>
-> > > > >>>> > From: Alexey Gladkov <legion@kernel.org>
-> > > > >>>> >
-> > > > >>>> > [ Upstream commit bbb6d0f3e1feb43d663af089c7dedb23be6a04fb ]
-> > > > >>>> >
-> > > > >>>> > We need to increment the ucounts reference counter befor security_prepare_creds()
-> > > > >>>> > because this function may fail and abort_creds() will try to decrement
-> > > > >>>> > this reference.
-> > > > >>>>
-> > > > >>>> Has the conversion of the rlimits to ucounts been backported?
-> > > > >>>>
-> > > > >>>> Semantically the code is an improvement but I don't know of any cases
-> > > > >>>> where it makes enough of a real-world difference to make it worth
-> > > > >>>> backporting the code.
-> > > > >>>>
-> > > > >>>> Certainly the ucount/rlimit conversions do not meet the historical
-> > > > >>>> criteria for backports.  AKA simple obviously correct patches.
-> > > > >>>>
-> > > > >>>> The fact we have been applying fixes for the entire v5.14 stabilization
-> > > > >>>> period is a testament to the code not quite being obviously correct.
-> > > > >>>>
-> > > > >>>> Without backports the code only affects v5.14 so I have not been
-> > > > >>>> including a Cc stable on any of the commits.
-> > > > >>>>
-> > > > >>>> So color me very puzzled about what is going on here.
-> > > > >>>
-> > > > >>> Sasha picked this for some reason, but if you think it should be
-> > > > >>> dropped, we can easily do so.
-> > > > >>
-> > > > >>My question is what is the reason Sasha picked this up?
-> > > > >>
-> > > > >>If this patch even applies to v5.10 the earlier patches have been
-> > > > >>backported.  So we can't just drop this patch.  Either the earlier
-> > > > >>backports need to be reverted, or we need to make certain all of the
-> > > > >>patches are backported.
-> > > > >>
-> > > > >>I really am trying to understand what is going on and why.
-> > > > >
-> > > > > I'll happily explain. The commit message is telling us that:
-> > > > >
-> > > > > 1. There is an issue uncovered by syzbot which this patch fixes:
-> > > > >
-> > > > > 	"Reported-by: syzbot"
-> > > > >
-> > > > > 2. The issue was introduced in 905ae01c4ae2 ("Add a reference to ucounts
-> > > > > for each cred"):
-> > > > >
-> > > > > 	"Fixes: 905ae01c4ae2"
-> > > > >
-> > > > > Since 905ae01c4ae2 exist in 5.10, and this patch seemed to fix an issue,
-> > > > > I've queued it up.
-> > > > 
-> > > > Which begs the question as Alex mentioned how did 905ae01c4ae2 get into
-> > > > 5.10, as it was merged to Linus's tree in the merge window for 5.14.
-> > > > 
-> > > > > In general, if we're missing backports, backported something only
-> > > > > partially and should revert it, or anything else that might cause an
-> > > > > issue, we'd be more than happy to work with you to fix it up.
-> > > > >
-> > > > > All the patches we queue up get multiple rounds of emails and reviews,
-> > > > > if there is a better way to solicit reviews so that we won't up in a
-> > > > > place where you haven't noticed something going in earlier we'd be more
-> > > > > than happy to improve that process too.
-> > > > 
-> > > > I have the bad feeling that 905ae01c4ae2 was backported because it was a
-> > > > prerequisite to something with a Fixes tag.
-> > > > 
-> > > > Fixes tags especially in this instance don't mean code needs to go to
-> > > > stable Fixes tags mean that a bug was fixed.  Since I thought the code
-> > > > only existed in Linus's tree, I haven't been adding Cc stable or even
-> > > > thinking about earlier kernels with respect to this code.
-> > > > 
-> > > > I honestly can't keep up with the level of review needed for patches
-> > > > targeting Linus's tree.  So I occasionally glance at patches destined
-> > > > for the stable tree.
-> > > > 
-> > > > Most of the time it is something being backported without a stable tag,
-> > > > but with a fixes tag, that is unnecessary but generally harmless so I
-> > > > ignore it.
-> > > > 
-> > > > In this instance it looks like a whole new feature that has had a rocky
-> > > > history and a lot of time to stablize is somehow backported to 5.10 and
-> > > > 5.13.  I think all of the known issues are addressed but I won't know
-> > > > if all of the issues syzkaller can find are found for another couple of
-> > > > weeks.
-> > > > 
-> > > > Because this code was not obviously correct, because this code did not
-> > > > have a stable tag, because I am not even certain it is stable yet,
-> > > > I am asking do you know how this code that feels to me like feature work
-> > > > wound up being backported?  AKA why is 905ae01c4ae2 in 5.10 and 5.13.
-> > > 
-> > > Looks like Sasha added it to the tree last week and it went out in the
-> > > last set of releases.  Sasha, why was this added?  Let me see if it was
-> > > a requirement of some other patch...
-> > 
-> > Sorry, no, that was this patch, let me get my coffee before I dig into
-> > this...
+On Fri, Sep 03, 2021 at 12:45:57PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2021-09-02 00:43:45 [+0800], Boqun Feng wrote:
+> > If a reader is recursive, then a pending writer doesn't block the
+> > recursive reader, otherwise, a pending write blocks the reader. IOW, a
+> > pending writer blocks non-recursive readers but not recursive readers.
 > 
-> Ok, it looks like the original patch came in through the AUTOSEL
-> process, and you were cc:ed on it back on July 4, 2021:
-> 	https://lore.kernel.org/r/20210704230804.1490078-2-sashal@kernel.org
+> Puh. So I would describe it as writer fair but maybe I'm not fluent in
+> locking. But you don't mean recursive reader as in 
 > 
-> In reading the changelog of the commit, and looking briefly at the
-> patch, I can see why it was selected as a candidate for backporting to
-> stable kernels (fixes reported problem from kernel test robot, fixes
-> reference counting logic, etc.)
+>    T1			T2
+>    read_lock(a);
+> 			write_lock(a);
+>    read_lock(a);
 > 
-> So given that it seemed like a normal candidate for a stable fix, and no
-> one complained, after one week, it was applied to the tree on July 11
-> (but Sasha's scripts did NOT email you about that for some reason,
-> hopefully he has fixed that by now).
+> which results in a deadlock (but T1 recursively acquired the `a' lock). 
 > 
-> Then on July 12, I added commit 5e6b8a50a7ce ("cred: add missing return
-> error code when set_cred_ucounts() failed") to the stable patch queue,
-> as it fixed a reported problem in the original commit, and you were
-> copied on that.
-> 
-> Then later that day, it was put out for review:
-> 	https://lore.kernel.org/r/20210712060854.324880966@linuxfoundation.org
-> and you were copied on that as well.
-> 
-> So you should have an email trail of when this patch was submitted for
-> inclusion, and then put out for review.  Do you not see them in your
-> email system?
-> 
-> 
-> I just tested a local build, and yes, it can easily be reverted (along
-> with a follow-on patch that was applied to resolve a problem with this
-> commit), and I will queue them up after this release happens, but for
-> now, I'll let this patch stay so that we do not break anyone.
+> However, PREEMPT_RT's locking implementation always blocks further
+> reader from entering locked section once a writer is pending so that
+> would then ask for something like this:
 > 
 
-All now reverted.
+But the rwlock in PREEMPT_RT is writer unfair, isn't it? As per:
 
-thanks,
+	https://lore.kernel.org/lkml/20210815211302.957920571@linutronix.de/
 
-greg k-h
+also in __rwbase_read_lock():
+
+	/*
+	 * Allow readers, as long as the writer has not completely
+	 * acquired the semaphore for write.
+	 */
+	if (atomic_read(&rwb->readers) != WRITER_BIAS) {
+		atomic_inc(&rwb->readers);
+		raw_spin_unlock_irq(&rtm->wait_lock);
+		return 0;
+	}
+
+that means the readers of rwlock in PREEMPT_RT are always recursive,
+right? Am I missing something subtle?
+
+Regards,
+Boqun
+
+> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -5572,16 +5572,19 @@ static bool lockdep_nmi(void)
+>  }
+>  
+>  /*
+> - * read_lock() is recursive if:
+> - * 1. We force lockdep think this way in selftests or
+> - * 2. The implementation is not queued read/write lock or
+> - * 3. The locker is at an in_interrupt() context.
+> + * read_lock() is recursive if the implementation allows readers to enter the
+> + * locked section even if a writer is pending. This is case if:
+> + * - We force lockdep think this way in selftests
+> + * - The implementation is queued read/write lock and the locker is in
+> + *   in_interrupt() context.
+> + * - Non queued read/write implementation allow it unconditionally.
+> + * - PREEMPT_RT's implementation never allows it.
+>   */
+>  bool read_lock_is_recursive(void)
+>  {
+>  	return force_read_lock_recursive ||
+> -	       !IS_ENABLED(CONFIG_QUEUED_RWLOCKS) ||
+> -	       in_interrupt();
+> +	       (IS_ENABLED(CONFIG_QUEUED_RWLOCKS) && in_interrupt()) ||
+> +	       !IS_ENABLED(CONFIG_PREEMPT_RT);
+>  }
+>  EXPORT_SYMBOL_GPL(read_lock_is_recursive);
+>  
+> Sebastian
