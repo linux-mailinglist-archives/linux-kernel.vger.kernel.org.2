@@ -2,320 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C311400799
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 23:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A376C40079B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 23:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349692AbhICVwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 17:52:44 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:19966 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349571AbhICVwh (ORCPT
+        id S238770AbhICVxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 17:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230425AbhICVxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 17:52:37 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 183IwwAZ017863;
-        Fri, 3 Sep 2021 21:51:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=nkqRa25wbZl2vC2dhgFFK2GqSE2+X5cBEdwWFnexsg4=;
- b=UOiduFMB56y97VI8WSwOk7v5DSddQxTmAGL7zru2yok4i+RFn2BZu4ESiPiNfl2U6/rs
- 8UNq9fIA3cv6p0xqc1uzW5C590KaOgZueIub5CJgIDQvF3Jo8GAtBY3jaeMdDqI9ZEm4
- a1tj/ky7OuKx0c8nqvbuTxcswsYujKS3DqU5t9m6XT44rfc104CxabloOoopoqRubBUC
- xWIk2CK4zK/CBc7iVmEiSELMmpfartHn8JYESvkdscFNW0RuVgpvlfK/GmpjS5Ahd5wv
- tTiAt3U6fweOoJWMWSdQfSO6NUIa5Z1wnaXL4fn88OGp0s7yq3UMqNBXT24QyaUvsVJP kA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=nkqRa25wbZl2vC2dhgFFK2GqSE2+X5cBEdwWFnexsg4=;
- b=ZbVrB2gEC2OxUXwcDY1OubG+oz2eJqOl18LVB5M1Gm52hzWhO+JBTScB8z6CWREnxRtM
- 8RePMzNqav442VDKujlKygT/LHK0Klg4ZZAXxItLsWxmOb9IIiAZ7s86b57unawBEDTm
- 5fPRUvgexp7YIUczvdHYjem+67rBkix+gSNX/hSyhTgR0sH+BUCupX98qfQiyKvzDY8J
- 5LYpR5PtEnONcCYTuUulnVeYpbM1ogXAIPLe7Mmb6LgEbQifzqtzD7Pg5jddETiWw66l
- 2iMstawsyN4fc9rs8CaPXhw7PT8okw0NNpGb6Yy7Cgg28qAdeyYGQVK1tQO/tGMtx8Qd Vw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3aufj7a5rp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Sep 2021 21:51:24 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 183Lo1Pb009938;
-        Fri, 3 Sep 2021 21:51:23 GMT
-Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2175.outbound.protection.outlook.com [104.47.73.175])
-        by userp3020.oracle.com with ESMTP id 3ate023xm8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 03 Sep 2021 21:51:23 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FNM5tI78I1qU9wPEvDgFis+k0nYGvzsaLahQWNJJm9cAX2sdxVmVW2w9GL323zgy5lFIikp2hyWehFdLBO3vWEm7iN61pJTAaVuR3HIM0/qWggXzE5VevM4UagmHiGgSzTOOPm6A4otjude6U1y4Fn4PzaulQDL41BQxyxlwAeQGg2KFy48nnHzn6rlQ3qSyyfeZHVbnYr+swyb8NK6ah8zHmIpA1qs1FkFiHebDggIKcJ9w4gtDYANYHFx5WuQ/rZEhHsOZS5wMRTRpCp9DKNAEMjPEloRzCwkRvbmPTB9awJFXajeiOgvD7TQFZeeu2V/EJGzbuzGW08U6W096Gg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=nkqRa25wbZl2vC2dhgFFK2GqSE2+X5cBEdwWFnexsg4=;
- b=oL9InCDpVR3SL8M7FYe++UDjmK78wPWKKlkEmeLi/hAPqX3ZhNHzQZsfvR4l/hO9+8BSLKr3OB9Ik1d6IVFi8+l8rO0weafG3tnkmS8Z0/f1m59z1Lw5owxfi8BPq4pJQTTh/tFpfErcH8Zgxu6SyUZroxBGm1jSslBdzz7T4Z46R+R7p4uLZauXHNtQzLSKt+cLWdljNwkPHU12ZvgDp09Wc3D9eZs4S2U19IN8ZmHj3AzS7uMomn2ffrhWEz8fAxwM68eaOk3RmMZtAXl18gNDVdfyt0AJa2nIqnQygVdeZtPgL+Lf5SMaXQDKkmSujOb0LJusX2csJ41uMum7EQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 3 Sep 2021 17:53:22 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DA0C061575;
+        Fri,  3 Sep 2021 14:52:22 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 192-20020a1c04c9000000b002f7a4ab0a49so373273wme.0;
+        Fri, 03 Sep 2021 14:52:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nkqRa25wbZl2vC2dhgFFK2GqSE2+X5cBEdwWFnexsg4=;
- b=JHgCkmBVwtEwg4W17LiA5i5AfoT6U9zhcFoooRV/d3P0KLYccn/ix7d4JgYxaGXo0zh7CchhfFHVDpCZAl+fLeJCGEnEm9ZTg9DhSg06H2tmA1ghuyJnpWcChixVjdwUYhp17ixYcijK+E5HyExFwC9pwl5Z8P71P5rjDFUmKmA=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from SA2PR10MB4665.namprd10.prod.outlook.com (2603:10b6:806:fb::17)
- by SA2PR10MB4793.namprd10.prod.outlook.com (2603:10b6:806:110::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.21; Fri, 3 Sep
- 2021 21:51:21 +0000
-Received: from SA2PR10MB4665.namprd10.prod.outlook.com
- ([fe80::c12a:cfad:520a:2c94]) by SA2PR10MB4665.namprd10.prod.outlook.com
- ([fe80::c12a:cfad:520a:2c94%3]) with mapi id 15.20.4478.022; Fri, 3 Sep 2021
- 21:51:21 +0000
-Subject: Re: [PATCH] JFS: fix memleak in jfs_mount
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org
-References: <20210818102612.864127-1-mudongliangabcd@gmail.com>
-From:   Dave Kleikamp <dave.kleikamp@oracle.com>
-Message-ID: <fc1dae76-eac1-e6f4-2ba6-f49e15ad0b46@oracle.com>
-Date:   Fri, 3 Sep 2021 16:51:18 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <20210818102612.864127-1-mudongliangabcd@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN4PR0801CA0013.namprd08.prod.outlook.com
- (2603:10b6:803:29::23) To SA2PR10MB4665.namprd10.prod.outlook.com
- (2603:10b6:806:fb::17)
+        d=gmail.com; s=20210112;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=4X569cMojqGCvJ6b5l8jpJFI25ifYXNTwbLVHX2EofM=;
+        b=VWyhegPkhwjy9vsmRQA7vARMix2jDpDWJuWPtP6pzjR79F+TWr2inKlvFLd3GAmIVt
+         vWVBcuRd4E+AaoJGcet+fwbY6r20LDvNu2i7wrBGAZrAjYmFF7QyNdAys6a7yF6PVyb+
+         kYhMSj/s+SpXOcQJnpv0oUis/ioqyug+TDT5FHFt87MZj2sxzFWz+z6cNhSiV8MvYSRm
+         +9KnBT/CpJZ1Ou3XT30s1GF1Ymj/rfZveaafkeAuir0uTkRKNu3I1nO2CzMRccggrJo5
+         jN37tTmUaqwqp8mitEq9ylMtVyKvLmuD7Dw3PLtVzmlBDjdojqUOSCKhqzAxPeOocCpc
+         U1vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=4X569cMojqGCvJ6b5l8jpJFI25ifYXNTwbLVHX2EofM=;
+        b=jeEnXqXC+R+XYPBn2eDqB8OOgyQpYKk2KjNQpGedhSiHOHypaeq7FyCZ7lF/+hhj2m
+         EJu1WQNhOZ//Sx2IvEC3qwcLnWFkYAjk67HSkpLuPToKVkt6emEMmW6nNCQl1OYBzR+y
+         ifDLXi7YqLB7YOn0ZegTaSlOO/HYIEUOoXNRjLyhmHCWRlIGDx6SB3Xy94EKaChUcV6F
+         d/osfUv9NM8v5apfV71cYzRtGBJT5nDLmE3oytSxWULSS6av61fK1ieyC4Ezqf6jWbUQ
+         TlosZaPYp95wBqxi4NkB0xzaj00sQKw/TbhdnbUkn3h91hMCM/RTePynojnLuJx1r6Gq
+         XmxQ==
+X-Gm-Message-State: AOAM533KO5n3jgksmR/E+KLENaE9Mmb0DlK7gA4Md6/62HFkHFsR5gpH
+        AiwDXCqO5IGpU2x2qk6DXqDToN3P0fnJGFMC
+X-Google-Smtp-Source: ABdhPJxWE1IXgzk2tIXdRbzsYwp2Bfj8DJqP5O8MwLtSDromiw2lGScrG2XMCPWNsFVbS+GyO6Zkng==
+X-Received: by 2002:a1c:202:: with SMTP id 2mr669946wmc.122.1630705940287;
+        Fri, 03 Sep 2021 14:52:20 -0700 (PDT)
+Received: from [192.168.1.15] ([151.29.107.216])
+        by smtp.gmail.com with ESMTPSA id c24sm409253wrb.57.2021.09.03.14.52.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 14:52:19 -0700 (PDT)
+Message-ID: <9506b14fe2965e4145c034715eb10e02f2137f7b.camel@gmail.com>
+Subject: Re: [RFC PATCH v1 25/37] perf evsel: move event open in
+ evsel__open_cpu to separate function
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Date:   Fri, 03 Sep 2021 23:52:18 +0200
+In-Reply-To: <YS6JBBW3d4pmcy/U@kernel.org>
+References: <cover.1629490974.git.rickyman7@gmail.com>
+         <74ac2eea14f45b2cbecffb509dd5f3cd523d4a9b.1629490974.git.rickyman7@gmail.com>
+         <YS6JBBW3d4pmcy/U@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.4 (3.40.4-1.fc34) 
 MIME-Version: 1.0
-Received: from [192.168.0.190] (68.201.65.98) by SN4PR0801CA0013.namprd08.prod.outlook.com (2603:10b6:803:29::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend Transport; Fri, 3 Sep 2021 21:51:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e0c8d097-66d2-4158-702b-08d96f24f74c
-X-MS-TrafficTypeDiagnostic: SA2PR10MB4793:
-X-Microsoft-Antispam-PRVS: <SA2PR10MB47936EA982F781B4C7AE12D487CF9@SA2PR10MB4793.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GMIOVrVLHdy07zOLAeMJAo1BdhRtlPLNaJoItGa6II7UE7nVHC54FXEo4NZ1gGTpH4+WcYTiEYCDNUXUKbm0FfZiTL/Eg95RROm6DAXXsyDViMCjdLaCtA9MCKTDYLSplJYvykvKH6uPnN0ZmqOLm8EBe5xmisypIsGkP98VHXVsckgAqrRwdg9kETyamDS2AoxtOhd8fmLJFnxGFCjgKBS5MgSJlRlSg/qwmw80UEUdQ4GLkrdP2FG0mgVhbZ8gxButaaTxjgfNMFppgEdsqbKWLWLmkfKNYKFfRpr8THUOXNgoT384cxJuqCf9UcnTa7Wzr4hh6RYki24s7dg9LrGToONZxxtuCv8wLT+/Rc8LBKvdCZrsPdshWLUwhKH9T1YACqt1O1wP7rpdf1UQZJWnnWUynwUH2vlHQIo4DQtR3Lqr9J42X9kbroDuA8XOKFbpI08viIWlYxN4oGOrzlNKqvq3MY3GmymhNLOdFF69ny+6JBDcNwudIqyGVhWEJHGE7/gPqP2xr26deOBb/NA3P5tGO8iwy0zV9D51nbKgAGOk6HSJ3gkQwg1KJJC0L2t2tuUVxcIIVt8eNYkdhg6gWjRalpV7B6Ej/G046R9m6AJ51F79x5CMfqzpGBIsku/whsmSS7x7LMNcC2V5Rrz9MSCniB5AwGakwQKp14I6ytzbJR0i7t0u/l6Ebm3wd+XnBZsIuXvqRhbUsvmSMcVT/4k4/UrUhKxRPaAyy7s=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR10MB4665.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(136003)(346002)(39860400002)(366004)(31696002)(44832011)(6486002)(2906002)(36756003)(66476007)(86362001)(8676002)(66556008)(26005)(53546011)(2616005)(6916009)(66946007)(5660300002)(16576012)(316002)(956004)(8936002)(4326008)(31686004)(38100700002)(186003)(83380400001)(478600001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z0dnUTg5VjF6c1BvNkcvWkFWaU5NQUpaS28vUHl6SUMxN0xTWEl4WFFZZmhl?=
- =?utf-8?B?eXhsNEpHZGRpL2N6dGJSSHZ4NzYxN09IakdoSzNGcS9VMGY0TGN0Z1RHSVlJ?=
- =?utf-8?B?akVBdGZVWk9RQzNpYmlMMWw5TzUwRXlFL3Iydld2b2ZjZ2I3V0VFT3YzTUQx?=
- =?utf-8?B?eEp5TkcwNno1TVlpOGRLTm8xWmZVR2VvZGJJU0hDN3lVQ1hCWTRLWGlDVS8r?=
- =?utf-8?B?NEtQSFNwSnI4TDdiQU14clBHeVBvZWdIZDlPL0hsMWdhaVRpTVExMmdXSUlH?=
- =?utf-8?B?T3Q5U0hvOWl4N1F1R3dMYURlSCsvL1JaS0drVDREU29PRlF2RGUySUtLSGZ4?=
- =?utf-8?B?RTZoS0FmYVp4clVVcWZxcjd2dU1HYzh1RVZSWmFtb0ptMndYNkJuSmx5elhE?=
- =?utf-8?B?Y1pQdWVPZDU3U004RDRIdU5PaGFOQlR3OEdpSTJ0NGFYVWdzaEN2VkdIcGJX?=
- =?utf-8?B?anN5cmlhL3JLU1dvWnc0TjBSYTlXdHowUkxZWVh0S3lCM2QySkg2UnArN0hM?=
- =?utf-8?B?S3oySjZRZ1JIbElmK09lUEd5c0Q1ajN5dkRucmRodFU4MjcrZzNJWjNzcEVw?=
- =?utf-8?B?QmJBRmlMbUhBS3RJYi9mVUxXdDJpOFBKejVpaDExRUdVUlFkZnpsOWFOWU1a?=
- =?utf-8?B?Qm5lNWk3WWxzcTRzOGdYRkVtR1ZORUFmcnA1eE9ZNE5US1JQb21ZcnlxN0pH?=
- =?utf-8?B?ZkxjOHlYZzA4aXFLRzIxUHdCUjMzam4waVp1QTVyTEhmV3FqKzlRRTlUQVRn?=
- =?utf-8?B?TFMwdjBEUVJ1blhTdGdvNDlUblM2aDNZVThlKzZ2WkNlamNWbFA0L3dEOXZI?=
- =?utf-8?B?Z21aQzlTV25LOE9ZN1JocFE4WVlOMm9ZVXRyUWlqSjRZMXV3aTdkWkxib3NG?=
- =?utf-8?B?WTNwd2gvMVJkaFdLaVlxbFBmMWFuWGNaSUo4ay94bTBiRW5LZHN6RFpORERP?=
- =?utf-8?B?MG12UnlxVGFlcldYbC81eFFZdXAyQUlFaTlEL3RTcktZMS9xbDhDWTRhZW9j?=
- =?utf-8?B?bTAxaWV5U2pGU2RaZnBSRktnVTZBS0RoaUF0dU9aK2t0SkxXK1ZXazlkRFp0?=
- =?utf-8?B?aDZaMUNLQWxXZFRNQ2hNYWp6ckJlaXI5UUg0ZFVoQ2RRTk9SYTIzcFdVdGdm?=
- =?utf-8?B?OWxaRjdyZFEwekRaeDFkVDhLZktZbkNBZHNZdmlsQVR6T3I2TjM2VXR5OXM2?=
- =?utf-8?B?WGE3cDhDU3Eyb3JjUkprVTBtQTZid2R4elE4OG9DUXo2aytpaVhtTHJXb3gw?=
- =?utf-8?B?cWVOUDFUZTRzYm1QMjNnanZ6T0I4cForZTdXU1hZaTk3bFgzUGZqR0xlM1NH?=
- =?utf-8?B?UWJvUVM5ODZ4dVMvRjlHU0VxZkZFSTUvWVh1TkhoSHV4NEtXbWRaVVVxWXd2?=
- =?utf-8?B?WFZIVHpmTU9EU0tzemZqNVViM01TcVdXYzEwV0lGcUhMMktOaTlwOGJqbU8x?=
- =?utf-8?B?NXZaT1ZTSmtkakZDN1RjVldBQ2RNYUNjQk1yWmIxOVFqTjdFU3c4WU1iTzFa?=
- =?utf-8?B?ZVpPUzRjY25DT2Faano3M1dpc1h1RThSc0R6NEMxYUt0ckg0OElYZC9BeGhO?=
- =?utf-8?B?aDhqQ2xzelpEdXllTkxaQ1N3TVQzcjg3QjRzS0VZb3E2ZjlnbzF2ZC9kWnNW?=
- =?utf-8?B?MVN1VEJtMDQyQ2FzR3dmOTNXU0MrUExVYkN0QTRvZUtxczNKWjJkc002MDNZ?=
- =?utf-8?B?KzNPNmp1UTVnUXh3V0trK2hEc0J2ZkRMaWJQd3Y1MHdOV05wdjBzdUprRGg4?=
- =?utf-8?Q?dxg3fSqJdsRWXBtBAeV8/ZchLhYLl6EdyIAALc+?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0c8d097-66d2-4158-702b-08d96f24f74c
-X-MS-Exchange-CrossTenant-AuthSource: SA2PR10MB4665.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2021 21:51:20.9537
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AfkDC0E6/m5z6bVqTiwl8Ckv6YU1cvhk12MbKNrWO9N7eUeyxdLYGREG9bitqLSBzwAk0DWcpJcus2i6Gs7wdruYnHkbUzpY4Pw2Ow0DjZM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR10MB4793
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10096 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0
- mlxlogscore=999 mlxscore=0 suspectscore=0 spamscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109030128
-X-Proofpoint-ORIG-GUID: D8P4Wt3L-Emq0kl_4d_o54pYJZ2hKHfk
-X-Proofpoint-GUID: D8P4Wt3L-Emq0kl_4d_o54pYJZ2hKHfk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for waiting. I have just a couple comments, but this looks good. 
-I appreciate the clean up.
+Hi Arnaldo,
 
-On 8/18/21 5:25 AM, Dongliang Mu wrote:
-> In jfs_mount, when diMount(ipaimap2) fails, it goes to errout35. However,
-> the following code does not free ipaimap2 allocated by diReadSpecial.
+thanks for your review and your suggestions, and also for the PRIu64 patch.
+
+On Tue, 2021-08-31 at 16:54 -0300, Arnaldo Carvalho de Melo wrote:
+> Em Sat, Aug 21, 2021 at 11:19:31AM +0200, Riccardo Mancini escreveu:
+> > This is the final patch splitting evsel__open_cpu.
+> > This patch moves the entire loop code to a separate function, to be
+> > reused for the multithreaded code.
 > 
-> Fix this by refactoring the error handling code of jfs_mount. To be
-> specific, modify the lable name and free ipaimap2 when the above error
-> ocurrs.
+> Are you going to use that 'enum perf_event_open_err' somewhere else?
+> I.e. is there a need to expose it in evsel.h?
+
+Yes, in the next patch (26/37). It's being used to expose a function that just
+does the perf_event_open calls for an evsel. It needs to return such structure
+to provide information about the error (which return code, at which thread).
+
 > 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
->   fs/jfs/jfs_mount.c | 53 +++++++++++++++++++---------------------------
->   1 file changed, 22 insertions(+), 31 deletions(-)
+> I'm stopping at this patch to give the ones I merged so far some
+> testing, will now push it to tmp.perf/core.
+
+I checked tmp.perf/core and it looks good to me.
+I also did some additional tests to check that fallback mechanisms where
+working:
+
+check missing pid being ignored (rerun until warning is shown)
+$ sudo ./perf bench internals evlist-open-close -i10 -u $UID
+
+check that weak group fallback is working
+$ sudo ./perf record -e '{cycles,cache-misses,cache-
+references,cpu_clk_unhalted.thread,cycles,cycles,cycles}:W' 
+
+check that precision_ip fallback is working:
+edited perf-sys.h to make sys_perf_event_open fail if precision_ip > 2
+$ sudo ./perf record -e '{cycles,cs}:P'
+
+
+I've also run perf-test on my machine and it's passing too.
+I'm encounteirng one fail on the "BPF filter" test (42), which is present also
+in perf/core, so it should not be related to this patch.
+
+Thanks,
+Riccardo
+
 > 
-> diff --git a/fs/jfs/jfs_mount.c b/fs/jfs/jfs_mount.c
-> index 5d7d7170c03c..638a4ecc4069 100644
-> --- a/fs/jfs/jfs_mount.c
-> +++ b/fs/jfs/jfs_mount.c
-> @@ -81,14 +81,14 @@ int jfs_mount(struct super_block *sb)
->   	 * (initialize mount inode from the superblock)
->   	 */
->   	if ((rc = chkSuper(sb))) {
-> -		goto errout20;
-> +		return rc;
-
-This may have been intentional, but it isn't mentioned in the patch header.
-
-If chkSuper fails, we will no longer call
-	jfs_err("Mount JFS Failure: %d", rc);
-
-I don't necessarily see this as a bad thing. In many cases, chkSuper 
-prints a more helpful message. In the case where it silently fails, it's 
-not even recognizing the superblock as a supported version of JFS and 
-this message isn't particularly helpful. In fact this jfs_err() 
-statement might be best deleted in its entirety.
-
->   	}
->   
->   	ipaimap = diReadSpecial(sb, AGGREGATE_I, 0);
->   	if (ipaimap == NULL) {
->   		jfs_err("jfs_mount: Failed to read AGGREGATE_I");
->   		rc = -EIO;
-> -		goto errout20;
-> +		goto out;
->   	}
->   	sbi->ipaimap = ipaimap;
->   
-> @@ -99,7 +99,7 @@ int jfs_mount(struct super_block *sb)
->   	 */
->   	if ((rc = diMount(ipaimap))) {
->   		jfs_err("jfs_mount: diMount(ipaimap) failed w/rc = %d", rc);
-> -		goto errout21;
-> +		goto err_ipaimap;
->   	}
->   
->   	/*
-> @@ -108,7 +108,7 @@ int jfs_mount(struct super_block *sb)
->   	ipbmap = diReadSpecial(sb, BMAP_I, 0);
->   	if (ipbmap == NULL) {
->   		rc = -EIO;
-> -		goto errout22;
-> +		goto err_umount_ipaimap;
->   	}
->   
->   	jfs_info("jfs_mount: ipbmap:0x%p", ipbmap);
-> @@ -120,7 +120,7 @@ int jfs_mount(struct super_block *sb)
->   	 */
->   	if ((rc = dbMount(ipbmap))) {
->   		jfs_err("jfs_mount: dbMount failed w/rc = %d", rc);
-> -		goto errout22;
-> +		goto err_ipbmap;
->   	}
->   
->   	/*
-> @@ -139,7 +139,7 @@ int jfs_mount(struct super_block *sb)
->   		if (!ipaimap2) {
->   			jfs_err("jfs_mount: Failed to read AGGREGATE_I");
->   			rc = -EIO;
-> -			goto errout35;
-> +			goto err_umount_ipbmap;
->   		}
->   		sbi->ipaimap2 = ipaimap2;
->   
-> @@ -151,7 +151,7 @@ int jfs_mount(struct super_block *sb)
->   		if ((rc = diMount(ipaimap2))) {
->   			jfs_err("jfs_mount: diMount(ipaimap2) failed, rc = %d",
->   				rc);
-> -			goto errout35;
-> +			goto err_ipaimap2;
->   		}
->   	} else
->   		/* Secondary aggregate inode table is not valid */
-> @@ -168,7 +168,7 @@ int jfs_mount(struct super_block *sb)
->   		jfs_err("jfs_mount: Failed to read FILESYSTEM_I");
->   		/* open fileset secondary inode allocation map */
->   		rc = -EIO;
-> -		goto errout40;
-> +		goto err_umount_ipaimap2;
->   	}
->   	jfs_info("jfs_mount: ipimap:0x%p", ipimap);
->   
-> @@ -178,41 +178,32 @@ int jfs_mount(struct super_block *sb)
->   	/* initialize fileset inode allocation map */
->   	if ((rc = diMount(ipimap))) {
->   		jfs_err("jfs_mount: diMount failed w/rc = %d", rc);
-> -		goto errout41;
-> +		goto err_ipimap;
->   	}
->   
-> -	goto out;
-> +	return rc;
->   
->   	/*
->   	 *	unwind on error
->   	 */
-> -      errout41:		/* close fileset inode allocation map inode */
-> +err_ipimap:
-> +	/* close fileset inode allocation map inode */
->   	diFreeSpecial(ipimap);
-> -
-> -      errout40:		/* fileset closed */
-> -
-> +err_umount_ipaimap2:
->   	/* close secondary aggregate inode allocation map */
-> -	if (ipaimap2) {
-> -		diUnmount(ipaimap2, 1);
-> -		diFreeSpecial(ipaimap2);
-> -	}
-> -
-> -      errout35:
-> -
-> -	/* close aggregate block allocation map */
-> +	if (ipaimap2) diUnmount(ipaimap2, 1);
-
-Coding style: this should be split between two lines:
-	if (ipaimap2)
-		diUnmount(ipaimap2, 1);
-
-> +err_ipaimap2:
-> +	/* close aggregate inodes */
-> +	if (ipaimap2) diFreeSpecial(ipaimap2);
-
-Same here.
-
-> +err_umount_ipbmap:	/* close aggregate block allocation map */
->   	dbUnmount(ipbmap, 1);
-> +err_ipbmap:		/* close aggregate inodes */
->   	diFreeSpecial(ipbmap);
-> -
-> -      errout22:		/* close aggregate inode allocation map */
-> -
-> +err_umount_ipaimap:	/* close aggregate inode allocation map */
->   	diUnmount(ipaimap, 1);
-> -
-> -      errout21:		/* close aggregate inodes */
-> +err_ipaimap:		/* close aggregate inodes */
->   	diFreeSpecial(ipaimap);
-> -      errout20:		/* aggregate closed */
-> -
-> -      out:
-> -
-> +out:
->   	if (rc)
->   		jfs_err("Mount JFS Failure: %d", rc);
->   
+> - Arnaldo
+>  
+> > Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+> > ---
+> >  tools/perf/util/evsel.c | 142 ++++++++++++++++++++++++----------------
+> >  tools/perf/util/evsel.h |  12 ++++
+> >  2 files changed, 99 insertions(+), 55 deletions(-)
+> > 
+> > diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
+> > index 2e95416b8320c6b9..e41f55a7a70ea630 100644
+> > --- a/tools/perf/util/evsel.c
+> > +++ b/tools/perf/util/evsel.c
+> > @@ -1945,6 +1945,82 @@ bool evsel__increase_rlimit(enum rlimit_action
+> > *set_rlimit)
+> >         return false;
+> >  }
+> >  
+> > +static struct perf_event_open_result perf_event_open(struct evsel *evsel,
+> > +                                       pid_t pid, int cpu, int thread,
+> > +                                       struct perf_cpu_map *cpus,
+> > +                                       struct perf_thread_map *threads)
+> > +{
+> > +       int fd, group_fd, rc;
+> > +       struct perf_event_open_result res;
+> > +
+> > +       if (!evsel->cgrp && !evsel->core.system_wide)
+> > +               pid = perf_thread_map__pid(threads, thread);
+> > +
+> > +       group_fd = get_group_fd(evsel, cpu, thread);
+> > +
+> > +       test_attr__ready();
+> > +
+> > +       pr_debug2_peo("sys_perf_event_open: pid %d  cpu %d  group_fd %d  flags
+> > %#lx",
+> > +                       pid, cpus->map[cpu], group_fd, evsel->open_flags);
+> > +
+> > +       fd = sys_perf_event_open(&evsel->core.attr, pid, cpus->map[cpu],
+> > +                               group_fd, evsel->open_flags);
+> > +
+> > +       FD(evsel, cpu, thread) = fd;
+> > +       res.fd = fd;
+> > +
+> > +       if (fd < 0) {
+> > +               rc = -errno;
+> > +
+> > +               pr_debug2_peo("\nsys_perf_event_open failed, error %d\n",
+> > +                               rc);
+> > +               res.rc = rc;
+> > +               res.err = PEO_FALLBACK;
+> > +               return res;
+> > +       }
+> > +
+> > +       bpf_counter__install_pe(evsel, cpu, fd);
+> > +
+> > +       if (unlikely(test_attr__enabled)) {
+> > +               test_attr__open(&evsel->core.attr, pid,
+> > +                       cpus->map[cpu], fd,
+> > +                       group_fd, evsel->open_flags);
+> > +       }
+> > +
+> > +       pr_debug2_peo(" = %d\n", fd);
+> > +
+> > +       if (evsel->bpf_fd >= 0) {
+> > +               int evt_fd = fd;
+> > +               int bpf_fd = evsel->bpf_fd;
+> > +
+> > +               rc = ioctl(evt_fd,
+> > +                               PERF_EVENT_IOC_SET_BPF,
+> > +                               bpf_fd);
+> > +               if (rc && errno != EEXIST) {
+> > +                       pr_err("failed to attach bpf fd %d: %s\n",
+> > +                               bpf_fd, strerror(errno));
+> > +                       res.rc = -EINVAL;
+> > +                       res.err = PEO_ERROR;
+> > +                       return res;
+> > +               }
+> > +       }
+> > +
+> > +       /*
+> > +        * If we succeeded but had to kill clockid, fail and
+> > +        * have evsel__open_strerror() print us a nice error.
+> > +        */
+> > +       if (perf_missing_features.clockid ||
+> > +               perf_missing_features.clockid_wrong) {
+> > +               res.rc = -EINVAL;
+> > +               res.err = PEO_ERROR;
+> > +               return res;
+> > +       }
+> > +
+> > +       res.rc = 0;
+> > +       res.err = PEO_SUCCESS;
+> > +       return res;
+> > +}
+> > +
+> >  static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
+> >                 struct perf_thread_map *threads,
+> >                 int start_cpu, int end_cpu)
+> > @@ -1952,6 +2028,7 @@ static int evsel__open_cpu(struct evsel *evsel, struct
+> > perf_cpu_map *cpus,
+> >         int cpu, thread, nthreads;
+> >         int pid = -1, err, old_errno;
+> >         enum rlimit_action set_rlimit = NO_CHANGE;
+> > +       struct perf_event_open_result peo_res;
+> >  
+> >         err = __evsel__prepare_open(evsel, cpus, threads);
+> >         if (err)
+> > @@ -1979,67 +2056,22 @@ static int evsel__open_cpu(struct evsel *evsel, struct
+> > perf_cpu_map *cpus,
+> >         for (cpu = start_cpu; cpu < end_cpu; cpu++) {
+> >  
+> >                 for (thread = 0; thread < nthreads; thread++) {
+> > -                       int fd, group_fd;
+> >  retry_open:
+> >                         if (thread >= nthreads)
+> >                                 break;
+> >  
+> > -                       if (!evsel->cgrp && !evsel->core.system_wide)
+> > -                               pid = perf_thread_map__pid(threads, thread);
+> > -
+> > -                       group_fd = get_group_fd(evsel, cpu, thread);
+> > -
+> > -                       test_attr__ready();
+> > -
+> > -                       pr_debug2_peo("sys_perf_event_open: pid %d  cpu %d 
+> > group_fd %d  flags %#lx",
+> > -                               pid, cpus->map[cpu], group_fd, evsel-
+> > >open_flags);
+> > +                       peo_res = perf_event_open(evsel, pid, cpu, thread,
+> > cpus,
+> > +                                               threads);
+> >  
+> > -                       fd = sys_perf_event_open(&evsel->core.attr, pid, cpus-
+> > >map[cpu],
+> > -                                               group_fd, evsel->open_flags);
+> > -
+> > -                       FD(evsel, cpu, thread) = fd;
+> > -
+> > -                       if (fd < 0) {
+> > -                               err = -errno;
+> > -
+> > -                               pr_debug2_peo("\nsys_perf_event_open failed,
+> > error %d\n",
+> > -                                         err);
+> > +                       err = peo_res.rc;
+> > +                       switch (peo_res.err) {
+> > +                       case PEO_SUCCESS:
+> > +                               set_rlimit = NO_CHANGE;
+> > +                               continue;
+> > +                       case PEO_FALLBACK:
+> >                                 goto try_fallback;
+> > -                       }
+> > -
+> > -                       bpf_counter__install_pe(evsel, cpu, fd);
+> > -
+> > -                       if (unlikely(test_attr__enabled)) {
+> > -                               test_attr__open(&evsel->core.attr, pid, cpus-
+> > >map[cpu],
+> > -                                               fd, group_fd, evsel-
+> > >open_flags);
+> > -                       }
+> > -
+> > -                       pr_debug2_peo(" = %d\n", fd);
+> > -
+> > -                       if (evsel->bpf_fd >= 0) {
+> > -                               int evt_fd = fd;
+> > -                               int bpf_fd = evsel->bpf_fd;
+> > -
+> > -                               err = ioctl(evt_fd,
+> > -                                           PERF_EVENT_IOC_SET_BPF,
+> > -                                           bpf_fd);
+> > -                               if (err && errno != EEXIST) {
+> > -                                       pr_err("failed to attach bpf fd %d:
+> > %s\n",
+> > -                                              bpf_fd, strerror(errno));
+> > -                                       err = -EINVAL;
+> > -                                       goto out_close;
+> > -                               }
+> > -                       }
+> > -
+> > -                       set_rlimit = NO_CHANGE;
+> > -
+> > -                       /*
+> > -                        * If we succeeded but had to kill clockid, fail and
+> > -                        * have evsel__open_strerror() print us a nice error.
+> > -                        */
+> > -                       if (perf_missing_features.clockid ||
+> > -                           perf_missing_features.clockid_wrong) {
+> > -                               err = -EINVAL;
+> > +                       default:
+> > +                       case PEO_ERROR:
+> >                                 goto out_close;
+> >                         }
+> >                 }
+> > diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
+> > index 0a245afab2d87d74..8c9827a93ac001a7 100644
+> > --- a/tools/perf/util/evsel.h
+> > +++ b/tools/perf/util/evsel.h
+> > @@ -282,6 +282,18 @@ int evsel__enable(struct evsel *evsel);
+> >  int evsel__disable(struct evsel *evsel);
+> >  int evsel__disable_cpu(struct evsel *evsel, int cpu);
+> >  
+> > +enum perf_event_open_err {
+> > +       PEO_SUCCESS,
+> > +       PEO_FALLBACK,
+> > +       PEO_ERROR
+> > +};
+> > +
+> > +struct perf_event_open_result {
+> > +       enum perf_event_open_err err;
+> > +       int rc;
+> > +       int fd;
+> > +};
+> > +
+> >  int evsel__open_per_cpu(struct evsel *evsel, struct perf_cpu_map *cpus, int
+> > cpu);
+> >  int evsel__open_per_thread(struct evsel *evsel, struct perf_thread_map
+> > *threads);
+> >  int evsel__open(struct evsel *evsel, struct perf_cpu_map *cpus,
+> > -- 
+> > 2.31.1
 > 
+
+
