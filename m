@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B626640076F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 23:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE13400774
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 23:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238471AbhICVaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 17:30:17 -0400
-Received: from mga11.intel.com ([192.55.52.93]:23148 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233315AbhICVaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 17:30:15 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="216376350"
-X-IronPort-AV: E=Sophos;i="5.85,266,1624345200"; 
-   d="scan'208";a="216376350"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 14:29:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,266,1624345200"; 
-   d="scan'208";a="534425920"
-Received: from ubuntu18.png.intel.com ([10.88.229.69])
-  by FMSMGA003.fm.intel.com with ESMTP; 03 Sep 2021 14:29:11 -0700
-From:   mahesh.r.vaidya@intel.com
-To:     broonie@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     mgross@linux.intel.com, kris.pan@intel.com, furong.zhou@intel.com,
-        mallikarjunappa.sangannavar@intel.com,
-        lakshmi.bai.raja.subramanian@intel.com
-Subject: [PATCH v1] spi: dw: Enable Autosuspend delay for SPI DesignWare
-Date:   Sat,  4 Sep 2021 05:27:58 +0800
-Message-Id: <20210903212758.22038-1-mahesh.r.vaidya@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S235923AbhICVdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 17:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232227AbhICVdP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 17:33:15 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70AC8C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 14:32:14 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id u9so514520wrg.8
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 14:32:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IvbjSHJKpubZVuxl2JEYL8Tazj9vB8n4DSRyGqZzzmk=;
+        b=oVjt7c13mTighzYdT00XJ9TY2ZUe1GY8xZA1Wi9q8Wg02LspVS9xXCBheGIhXJZFDY
+         tgJf/FNNefzC0TtfoZQsEQa/+nyFnfHpwYNV/aJ7lZOw6RoPWyuKUE+0A5yMN0a5kkHf
+         17wtshJiBlLaZ9iIvK7WINSuxZGFXi2Q9BACq1qvUBwAzBoVIFYVUosqyMZ+xefvD5kP
+         a7WT/AhEPRSzXrzTG8V0GqR1ZDi1f3mLxMc3I2IXYHApcL3KmGssRHLuuzkxKqxLO1WM
+         JVe4edPHHTGdWuOAQKjjJdlaZaquBlQSt6EiehVB4lquiBcjYZfMjmywYk9YUm83nbjR
+         oO4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IvbjSHJKpubZVuxl2JEYL8Tazj9vB8n4DSRyGqZzzmk=;
+        b=XEo8LAKrBZp0ZqLKSsz/zTkfSptJlkBzrbGqrdhxNa4hg+ewJEN6Kus5BunDKOVGfh
+         TwbtVZKJUCAPWHEoJh1gO4ZuIolbAwRUoFd2J1ugjajrppcdR8oHFlfqgUXp1Zvigy3i
+         rRdPWNEz75vYQTc/ueTSf7UXVtiODIVHhiY+AslqFrAvUuLcKL6Cg4SQtBTVD4tIzY2f
+         6J6NL/yuCs/LNtkLSCvG4K9/9PUusYTPfIsG5cGEFROAR23wWfDUVzkPEGebKnDHGfZk
+         MrYpt42TXPP2EaaE0M+/azWxc+T2tMPB2YwLnMBl+qD4DNqUoclarm6J4WiC5sYMlCfn
+         yuRA==
+X-Gm-Message-State: AOAM531F4H8js+GxT0YhWpV8Vk/m0mey2TSAt2kL3WlwgiydZkQBXnZq
+        CzhCkf0R4joI7la+LNueSZkDdZxNBCH9Ug==
+X-Google-Smtp-Source: ABdhPJwxw6shnn+w5t7STROZRObRYgijv+sPoTUMwIxUKMNlvzfa8ePug8a7k8kEqj3jGc2tWgRdmA==
+X-Received: by 2002:a5d:6cab:: with SMTP id a11mr1005441wra.287.1630704733070;
+        Fri, 03 Sep 2021 14:32:13 -0700 (PDT)
+Received: from localhost.localdomain (30.34.155.90.in-addr.arpa. [90.155.34.30])
+        by smtp.gmail.com with ESMTPSA id m1sm394506wmq.10.2021.09.03.14.32.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 14:32:12 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     axboe@kernel.dk
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] cdrom: update uniform CD-ROM maintainership in MAINTAINERS file
+Date:   Fri,  3 Sep 2021 22:30:11 +0100
+Message-Id: <20210903213011.1319-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mahesh R Vaidya <mahesh.r.vaidya@intel.com>
+Update maintainership for the uniform CD-ROM driver from Jens Axboe to
+Phillip Potter in MAINTAINERS file, to reflect the attempt to pass on
+maintainership of this driver to a different individual.
 
-Enable and set Autosuspend delay for SPI DesignWare driver.
-The number 1000 ms for the autosuspend delay was picked a bit
-arbitrarily, so if someone has measurements showing a better
-value we could easily change this.
-
-Signed-off-by: Mahesh R Vaidya <mahesh.r.vaidya@intel.com>
+Suggested-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
 ---
- drivers/spi/spi-dw-mmio.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
-index 3379720cfcb8..8b588ce9c16b 100644
---- a/drivers/spi/spi-dw-mmio.c
-+++ b/drivers/spi/spi-dw-mmio.c
-@@ -33,6 +33,8 @@ struct dw_spi_mmio {
- 	struct reset_control *rstc;
- };
-
-+#define SPI_DW_DEFAULT_AUTOSUSP_VAL		1000
-+
- #define MSCC_CPU_SYSTEM_CTRL_GENERAL_CTRL	0x24
- #define OCELOT_IF_SI_OWNER_OFFSET		4
- #define JAGUAR2_IF_SI_OWNER_OFFSET		6
-@@ -309,6 +311,10 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
- 			goto out;
- 	}
-
-+	/* Set initial autosuspend default delay value and enable */
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, SPI_DW_DEFAULT_AUTOSUSP_VAL);
-+	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
-
- 	ret = dw_spi_add_host(&pdev->dev, dws);
-@@ -319,6 +325,7 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
- 	return 0;
-
- out:
-+	pm_runtime_put_noidle(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 	clk_disable_unprepare(dwsmmio->pclk);
- out_clk:
---
-2.17.1
+diff --git a/MAINTAINERS b/MAINTAINERS
+index fa87db67a249..ccd518e15e0a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -19142,7 +19142,7 @@ W:	http://dotat.at/prog/unifdef
+ F:	scripts/unifdef.c
+ 
+ UNIFORM CDROM DRIVER
+-M:	Jens Axboe <axboe@kernel.dk>
++M:	Phillip Potter <phil@philpotter.co.uk>
+ S:	Maintained
+ W:	http://www.kernel.dk
+ F:	Documentation/cdrom/
+-- 
+2.31.1
 
