@@ -2,141 +2,676 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C360400481
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03A324004A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350363AbhICSG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 14:06:27 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:48376 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350160AbhICSGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 14:06:19 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630692319; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=aGdZtz9MTWWljqht2uCxkXmCJ8HbWsZNCst2R0IK2Cc=; b=ey1x015/xyRip/B2GN1ZXP01GyQrYwPokWuFjndD/y3PjB+rFWopRX2i0z00kYWxxHuN7TXv
- EC2FHy8q4rvFeZQHrNQI2GuS45WSO2xsbE/8bqFCqxe7lwxQD+O3Id99RedPubohDcAMm2se
- peTsLZx+OvGmi+lXXkCWdStIUnY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 613263d940d2129ac14742e7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 03 Sep 2021 18:05:13
- GMT
-Sender: jackp=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 06533C4360C; Fri,  3 Sep 2021 18:05:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from jackp-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1350381AbhICSKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 14:10:43 -0400
+Received: from relay04.th.seeweb.it ([5.144.164.165]:40483 "EHLO
+        relay04.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350377AbhICSKc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 14:10:32 -0400
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: jackp)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 42D33C4338F;
-        Fri,  3 Sep 2021 18:05:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 42D33C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Date:   Fri, 3 Sep 2021 11:05:07 -0700
-From:   Jack Pham <jackp@codeaurora.org>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-pm@vger.kernel.org, bleung@chromium.org,
-        heikki.krogerus@linux.intel.com, badhri@google.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sebastian Reichel <sre@kernel.org>
-Subject: Re: [RFC PATCH 1/3] usb: pd: Increase max PDO objects to 13
-Message-ID: <20210903180507.GB3515@jackp-linux.qualcomm.com>
-References: <20210902213500.3795948-1-pmalani@chromium.org>
- <20210902213500.3795948-2-pmalani@chromium.org>
- <20210903064701.GA3515@jackp-linux.qualcomm.com>
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id DDDCD1F51D;
+        Fri,  3 Sep 2021 20:09:25 +0200 (CEST)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        paul.bouchara@somainline.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH 1/7] arm64: dts: qcom: Introduce support for MSM8998 Sony Yoshino platform
+Date:   Fri,  3 Sep 2021 20:09:18 +0200
+Message-Id: <20210903180924.1006044-1-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210903064701.GA3515@jackp-linux.qualcomm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 11:47:01PM -0700, Jack Pham wrote:
-> Hi Prashant,
-> 
-> On Thu, Sep 02, 2021 at 02:34:58PM -0700, Prashant Malani wrote:
-> > Increase the max number of PDO objects to 13, to accommodate the extra
-> > PDOs added as a part of EPR (Extended Power Range) operation introduced
-> > in the USB PD Spec Rev 3.1, v 1.0. See Figure 6-54 for details.
-> > 
-> > Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> > ---
-> >  include/linux/usb/pd.h | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/usb/pd.h b/include/linux/usb/pd.h
-> > index 96b7ff66f074..7e8bdca1ce6e 100644
-> > --- a/include/linux/usb/pd.h
-> > +++ b/include/linux/usb/pd.h
-> > @@ -201,7 +201,13 @@ struct pd_message {
-> >  } __packed;
-> >  
-> >  /* PDO: Power Data Object */
-> > -#define PDO_MAX_OBJECTS		7
-> > +
-> > +/*
-> > + * The EPR (Extended Power Range) structure is a superset of the SPR (Standard Power Range)
-> > + * capabilities structure, so set the max number of PDOs to 13 instead of 7. On SPR-only systems,
-> > + * objects 8 through 13 will just be empty.
-> > + */
-> > +#define PDO_MAX_OBJECTS		13
-> 
-> Hmm this might break the recent change I made to UCSI in commit
-> 1f4642b72be7 ("usb: typec: ucsi: Retrieve all the PDOs instead of just
-> the first 4").
-> 
->  520 static void ucsi_get_src_pdos(struct ucsi_connector *con, int is_partner)
->  521 {
->  522         int ret;
->  523
->  524         /* UCSI max payload means only getting at most 4 PDOs at a time */
->  525         ret = ucsi_get_pdos(con, 1, con->src_pdos, 0, UCSI_MAX_PDOS);
->  526         if (ret < 0)
->  527                 return;
->  528
->  529         con->num_pdos = ret / sizeof(u32); /* number of bytes to 32-bit PDOs */
->  530         if (con->num_pdos < UCSI_MAX_PDOS)
->  531                 return;
->  532
->  533         /* get the remaining PDOs, if any */
->  534         ret = ucsi_get_pdos(con, 1, con->src_pdos, UCSI_MAX_PDOS,
->  535                             PDO_MAX_OBJECTS - UCSI_MAX_PDOS);
-> 				 ^^^^^^^^^^^^^^^
-> This routine calls the UCSI GET_PDOS command for up to 4 PDOs at a time
-> since that's the most the return payload can carry.  Currently this
-> assumes that we'd only need to request the PPM at most twice to retrieve
-> all the PDOs for up to a maximum of 7 (first request for 4 then again if
-> needed for the remaining 3).  I'm not sure if any existing UCSI FW would
-> be updatable to support more than 7 PDOs in the future, much less
-> support EPR.  In fact, current UCSI 1.2 spec [1] Table 4-34 mentions PDO
+This commit introduces support for the Sony Yoshino platform, using
+the MSM8998 SoC, including:
+- Sony Xperia XZ1 (codename Poplar),
+- Sony Xperia XZ1 Compact (codename Lilac),
+- Sony Xperia XZ Premium (codename Maple).
 
-Sorry, forgot the footnote with the link to the spec:
-[1] https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/usb-type-c-ucsi-spec.pdf
+All of the three aforementioned smartphones are sharing a 99%
+equal board configuration, with very small differences between
+each other, which is the reason for the introduction of a common
+msm8998-sony-xperia-yoshino DT.
 
-> offset valid values are 0-7 and anything else "shall not be used", so I
-> don't know how UCSI will eventually cope with EPR without a spec update.
-> 
-> So if this macro changes to 13 then this call would result in a call to
-> the UCSI GET_PDOS command passing num_pdos == 13-4 = 9 which would
-> probably result in an error from the PPM FW.  So we might need to retain
-> the maximum value of 7 PDOs at least for UCSI here.  Maybe that means
-> this UCSI driver needs to carry its own definition of
-> UCSI_MAX_TOTAL_PDOS=7 instead of using PDO_MAX_OBJECTS?
-> 
-> Jack
+This base configuration includes regulators and project-wide pin
+configurations and it's made to boot to a serial console.
+
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Reviewed-by: Marijn Suijten <marijn.suijten@somainline.org>
+---
+ arch/arm64/boot/dts/qcom/Makefile             |   3 +
+ .../msm8998-sony-xperia-yoshino-lilac.dts     |  19 +
+ .../msm8998-sony-xperia-yoshino-maple.dts     |  43 ++
+ .../msm8998-sony-xperia-yoshino-poplar.dts    |  24 +
+ .../dts/qcom/msm8998-sony-xperia-yoshino.dtsi | 481 ++++++++++++++++++
+ 5 files changed, 570 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino-lilac.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino-maple.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino-poplar.dts
+ create mode 100644 arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
+
+diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+index 70516508be56..8a0b558c3065 100644
+--- a/arch/arm64/boot/dts/qcom/Makefile
++++ b/arch/arm64/boot/dts/qcom/Makefile
+@@ -39,6 +39,9 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-lenovo-miix-630.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-mtp.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-oneplus-cheeseburger.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-oneplus-dumpling.dtb
++dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-sony-xperia-yoshino-lilac.dtb
++dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-sony-xperia-yoshino-maple.dtb
++dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-sony-xperia-yoshino-poplar.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-1000.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-4000.dtb
+ dtb-$(CONFIG_ARCH_QCOM)	+= qrb5165-rb5.dtb
+diff --git a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino-lilac.dts b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino-lilac.dts
+new file mode 100644
+index 000000000000..550de79e0151
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino-lilac.dts
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/*
++ * Copyright (c) 2021, AngeloGioacchino Del Regno
++ *                     <angelogioacchino.delregno@somainline.org>
++ */
++
++/dts-v1/;
++
++#include "msm8998-sony-xperia-yoshino.dtsi"
++
++/ {
++	model = "Sony Xperia XZ1 Compact";
++	compatible = "sony,xperia-lilac", "qcom,msm8998";
++};
++
++&vreg_l22a_2p85 {
++	regulator-min-microvolt = <2800000>;
++	regulator-max-microvolt = <2800000>;
++};
+diff --git a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino-maple.dts b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino-maple.dts
+new file mode 100644
+index 000000000000..35a6cdb55aec
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino-maple.dts
+@@ -0,0 +1,43 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/*
++ * Copyright (c) 2021, AngeloGioacchino Del Regno
++ *                     <angelogioacchino.delregno@somainline.org>
++ */
++
++/dts-v1/;
++
++#include "msm8998-sony-xperia-yoshino.dtsi"
++
++/ {
++	model = "Sony Xperia XZ Premium";
++	compatible = "sony,xperia-maple", "qcom,msm8998";
++
++	disp_dvdd_vreg: disp-dvdd-vreg {
++		compatible = "regulator-fixed";
++		regulator-name = "disp_dvdd_en";
++		regulator-min-microvolt = <1350000>;
++		regulator-max-microvolt = <1350000>;
++		startup-delay-us = <0>;
++		enable-active-high;
++		gpio = <&pmi8998_gpio 10 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&disp_dvdd_en>;
++	};
++};
++
++&pmi8998_gpio {
++	disp_dvdd_en: disp-dvdd-en-active {
++		pins = "gpio10";
++		function = "normal";
++		bias-disable;
++		drive-push-pull;
++		output-high;
++		power-source = <0>;
++		qcom,drive-strength = <1>;
++	};
++};
++
++&vreg_l22a_2p85 {
++	regulator-min-microvolt = <2704000>;
++	regulator-max-microvolt = <2704000>;
++};
+diff --git a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino-poplar.dts b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino-poplar.dts
+new file mode 100644
+index 000000000000..6255004b9a09
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino-poplar.dts
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/*
++ * Copyright (c) 2021, AngeloGioacchino Del Regno
++ *                     <angelogioacchino.delregno@somainline.org>
++ */
++
++/dts-v1/;
++
++#include "msm8998-sony-xperia-yoshino.dtsi"
++
++/ {
++	model = "Sony Xperia XZ1";
++	compatible = "sony,xperia-poplar", "qcom,msm8998";
++};
++
++&vreg_l18a_2p85 {
++	regulator-min-microvolt = <2850000>;
++	regulator-max-microvolt = <2850000>;
++};
++
++&vreg_l22a_2p85 {
++	regulator-min-microvolt = <2700000>;
++	regulator-max-microvolt = <2700000>;
++};
+diff --git a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
+new file mode 100644
+index 000000000000..b07cbc759807
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
+@@ -0,0 +1,481 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/*
++ * Copyright (c) 2021, AngeloGioacchino Del Regno
++ *                     <angelogioacchino.delregno@somainline.org>
++ * Copyright (c) 2021, Konrad Dybcio <konrad.dybcio@somainline.org>
++ */
++
++#include "msm8998.dtsi"
++#include "pm8005.dtsi"
++#include "pm8998.dtsi"
++#include "pmi8998.dtsi"
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/leds/common.h>
++#include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
++#include <dt-bindings/sound/qcom,q6afe.h>
++#include <dt-bindings/sound/qcom,q6asm.h>
++
++/ {
++	/* required for bootloader to select correct board */
++	qcom,msm-id = <0x124 0x20000>, <0x124 0x20001>; /* 8998v2, v2.1 */
++	qcom,board-id = <8 0>;
++
++	board_vbat: vbat-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "VBAT";
++
++		regulator-min-microvolt = <4000000>;
++		regulator-max-microvolt = <4000000>;
++		regulator-always-on;
++		regulator-boot-on;
++	};
++
++	vph_pwr: vph-pwr-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "vph_pwr";
++		regulator-always-on;
++		regulator-boot-on;
++	};
++
++	gpio_keys {
++		compatible = "gpio-keys";
++		input-name = "gpio-keys";
++		label = "Side buttons";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&vol_down_pin_a>, <&cam_focus_pin_a>,
++			    <&cam_snapshot_pin_a>;
++		vol-down {
++			label = "Volume Down";
++			gpios = <&pm8998_gpio 5 GPIO_ACTIVE_LOW>;
++			linux,input-type = <1>;
++			linux,code = <KEY_VOLUMEDOWN>;
++			gpio-key,wakeup;
++			debounce-interval = <15>;
++		};
++
++		camera-snapshot {
++			label = "Camera Snapshot";
++			gpios = <&pm8998_gpio 7 GPIO_ACTIVE_LOW>;
++			linux,input-type = <1>;
++			linux,code = <KEY_CAMERA>;
++			debounce-interval = <15>;
++		};
++
++		camera-focus {
++			label = "Camera Focus";
++			gpios = <&pm8998_gpio 8 GPIO_ACTIVE_LOW>;
++			linux,input-type = <1>;
++			linux,code = <KEY_CAMERA_FOCUS>;
++			debounce-interval = <15>;
++		};
++	};
++
++	gpio_hall_sensor {
++		compatible = "gpio-keys";
++		input-name = "hall-sensors";
++		label = "Hall sensors";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&hall_sensor0_default>;
++
++		hall_sensor0 {
++			label = "Cover Hall Sensor";
++			gpios = <&tlmm 124 GPIO_ACTIVE_LOW>;
++			linux,input-type = <EV_SW>;
++			linux,code = <SW_LID>;
++			gpio-key,wakeup;
++			debounce-interval = <30>;
++		};
++	};
++
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		hyp_mem: memory@85800000 {
++			reg = <0x0 0x85800000 0x0 0x3700000>;
++			no-map;
++		};
++
++		cont_splash_mem: cont-splash-region@9d400000 {
++			reg = <0x0 0x9d400000 0x0 0x2400000>;
++			no-map;
++		};
++
++		zap_shader_region: gpu@f6400000 {
++			compatible = "shared-dma-pool";
++			reg = <0x0 0xf6400000 0x0 0x2000>;
++			no-map;
++		};
++
++		adsp_region: memory@fe000000 {
++			reg = <0x0 0xfe000000 0x0 0x800000>;
++			no-map;
++		};
++
++		qseecom_region: memory@fe800000 {
++			reg = <0x0 0xfe800000 0x0 0x1400000>;
++			no-map;
++		};
++
++		ramoops@ffc00000 {
++			compatible = "ramoops";
++			reg = <0x0 0xffc00000 0x0 0x100000>;
++			record-size = <0x10000>;
++			console-size = <0x60000>;
++			ftrace-size = <0x10000>;
++			pmsg-size = <0x20000>;
++			ecc-size = <16>;
++		};
++	};
++};
++
++&blsp2_uart1 {
++	status = "okay";
++};
++
++&mmcc {
++	status = "ok";
++};
++
++&mmss_smmu {
++	status = "ok";
++};
++
++&pm8005_lsid1 {
++	pm8005-regulators {
++		compatible = "qcom,pm8005-regulators";
++
++		vdd_s1-supply = <&vph_pwr>;
++
++		/* VDD_GFX supply */
++		pm8005_s1: s1 {
++			regulator-min-microvolt = <524000>;
++			regulator-max-microvolt = <1088000>;
++			regulator-enable-ramp-delay = <500>;
++
++			regulator-always-on;
++		};
++	};
++};
++
++&pm8998_gpio {
++	vol_down_pin_a: vol-down-active {
++		pins = "gpio5";
++		function = PMIC_GPIO_FUNC_NORMAL;
++		bias-pull-up;
++		input-enable;
++		qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
++	};
++
++	cam_focus_pin_a: cam-focus-btn-active {
++		pins = "gpio7";
++		function = PMIC_GPIO_FUNC_NORMAL;
++		bias-pull-up;
++		input-enable;
++		qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
++	};
++
++	cam_snapshot_pin_a: cam-snapshot-btn-active {
++		pins = "gpio8";
++		function = PMIC_GPIO_FUNC_NORMAL;
++		bias-pull-up;
++		input-enable;
++		qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
++	};
++};
++
++&pm8998_pon {
++	resin {
++		compatible = "pm8941-resin";
++		interrupts = <GIC_SPI 0x8 1 IRQ_TYPE_EDGE_BOTH>;
++		debounce = <15625>;
++		bias-pull-up;
++		linux,code = <KEY_VOLUMEUP>;
++	};
++};
++
++&qusb2phy {
++	status = "okay";
++
++	vdda-pll-supply = <&vreg_l12a_1p8>;
++	vdda-phy-dpdm-supply = <&vreg_l24a_3p075>;
++};
++
++&rpm_requests {
++	pm8998-regulators {
++		compatible = "qcom,rpm-pm8998-regulators";
++
++		vdd_s1-supply = <&vph_pwr>;
++		vdd_s2-supply = <&vph_pwr>;
++		vdd_s3-supply = <&vph_pwr>;
++		vdd_s4-supply = <&vph_pwr>;
++		vdd_s5-supply = <&vph_pwr>;
++		vdd_s6-supply = <&vph_pwr>;
++		vdd_s7-supply = <&vph_pwr>;
++		vdd_s8-supply = <&vph_pwr>;
++		vdd_s9-supply = <&vph_pwr>;
++		vdd_s10-supply = <&vph_pwr>;
++		vdd_s11-supply = <&vph_pwr>;
++		vdd_s12-supply = <&vph_pwr>;
++		vdd_s13-supply = <&vph_pwr>;
++		vdd_l1_l27-supply = <&vreg_s7a_1p025>;
++		vdd_l2_l8_l17-supply = <&vreg_s3a_1p35>;
++		vdd_l3_l11-supply = <&vreg_s7a_1p025>;
++		vdd_l4_l5-supply = <&vreg_s7a_1p025>;
++		vdd_l6-supply = <&vreg_s5a_2p04>;
++		vdd_l7_l12_l14_l15-supply = <&vreg_s5a_2p04>;
++		vdd_l9-supply = <&vreg_bob>;
++		vdd_l10_l23_l25-supply = <&vreg_bob>;
++		vdd_l13_l19_l21-supply = <&vreg_bob>;
++		vdd_l16_l28-supply = <&vreg_bob>;
++		vdd_l18_l22-supply = <&vreg_bob>;
++		vdd_l20_l24-supply = <&vreg_bob>;
++		vdd_l26-supply = <&vreg_s3a_1p35>;
++		vdd_lvs1_lvs2-supply = <&vreg_s4a_1p8>;
++
++		vreg_s3a_1p35: s3 {
++			regulator-min-microvolt = <1352000>;
++			regulator-max-microvolt = <1352000>;
++		};
++		vreg_s4a_1p8: s4 {
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++			regulator-allow-set-load;
++			regulator-system-load = <100000>;
++		};
++		vreg_s5a_2p04: s5 {
++			regulator-min-microvolt = <1904000>;
++			regulator-max-microvolt = <2032000>;
++		};
++		vreg_s7a_1p025: s7 {
++			regulator-min-microvolt = <900000>;
++			regulator-max-microvolt = <1028000>;
++		};
++		vreg_l1a_0p875: l1 {
++			regulator-min-microvolt = <880000>;
++			regulator-max-microvolt = <880000>;
++			regulator-system-load = <73400>;
++			regulator-allow-set-load;
++		};
++		vreg_l2a_1p2: l2 {
++			regulator-min-microvolt = <1200000>;
++			regulator-max-microvolt = <1200000>;
++			regulator-system-load = <12560>;
++			regulator-allow-set-load;
++		};
++		vreg_l3a_1p0: l3 {
++			regulator-min-microvolt = <1000000>;
++			regulator-max-microvolt = <1000000>;
++		};
++		vreg_l5a_0p8: l5 {
++			regulator-min-microvolt = <800000>;
++			regulator-max-microvolt = <800000>;
++		};
++		vreg_l6a_1p8: l6 {
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++		};
++		vreg_l7a_1p8: l7 {
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++		};
++		vreg_l8a_1p2: l8 {
++			regulator-min-microvolt = <1200000>;
++			regulator-max-microvolt = <1200000>;
++		};
++		vreg_l9a_1p8: l9 {
++			regulator-min-microvolt = <1808000>;
++			regulator-max-microvolt = <2960000>;
++		};
++		vreg_l10a_1p8: l10 {
++			regulator-min-microvolt = <1808000>;
++			regulator-max-microvolt = <2960000>;
++		};
++		vreg_l11a_1p0: l11 {
++			regulator-min-microvolt = <1000000>;
++			regulator-max-microvolt = <1000000>;
++		};
++		vreg_l12a_1p8: l12 {
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++		};
++		vreg_l13a_2p95: l13 {
++			regulator-min-microvolt = <1808000>;
++			regulator-max-microvolt = <2960000>;
++			regulator-allow-set-load;
++		};
++		vreg_l14a_1p85: l14 {
++			regulator-min-microvolt = <1848000>;
++			regulator-max-microvolt = <1856000>;
++			regulator-system-load = <32000>;
++			regulator-allow-set-load;
++		};
++		vreg_l15a_1p8: l15 {
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;
++		};
++		vreg_l16a_2p7: l16 {
++			regulator-min-microvolt = <2704000>;
++			regulator-max-microvolt = <2704000>;
++		};
++		vreg_l17a_1p3: l17 {
++			regulator-min-microvolt = <1304000>;
++			regulator-max-microvolt = <1304000>;
++		};
++		vreg_l18a_2p85: l18 {};
++		vreg_l19a_2p7: l19 {
++			regulator-min-microvolt = <2696000>;
++			regulator-max-microvolt = <2704000>;
++		};
++		vreg_l20a_2p95: l20 {
++			regulator-min-microvolt = <2960000>;
++			regulator-max-microvolt = <2960000>;
++			regulator-allow-set-load;
++			regulator-system-load = <10000>;
++		};
++		vreg_l21a_2p95: l21 {
++			regulator-min-microvolt = <2960000>;
++			regulator-max-microvolt = <2960000>;
++			regulator-allow-set-load;
++			regulator-system-load = <800000>;
++		};
++		vreg_l22a_2p85: l22 { };
++		vreg_l23a_3p3: l23 {
++			regulator-min-microvolt = <3312000>;
++			regulator-max-microvolt = <3312000>;
++		};
++		vreg_l24a_3p075: l24 {
++			regulator-min-microvolt = <3088000>;
++			regulator-max-microvolt = <3088000>;
++		};
++		vreg_l25a_3p3: l25 {
++			regulator-min-microvolt = <3104000>;
++			regulator-max-microvolt = <3312000>;
++		};
++		vreg_l26a_1p2: l26 {
++			regulator-min-microvolt = <1200000>;
++			regulator-max-microvolt = <1200000>;
++			regulator-allow-set-load;
++		};
++		vreg_l28_3p0: l28 {
++			regulator-min-microvolt = <3000000>;
++			regulator-max-microvolt = <3000000>;
++		};
++		vreg_lvs1a_1p8: lvs1 { };
++		vreg_lvs2a_1p8: lvs2 { };
++
++	};
++
++	pmi8998-regulators {
++		compatible = "qcom,rpm-pmi8998-regulators";
++
++		vdd_bob-supply = <&vph_pwr>;
++
++		vreg_bob: bob {
++			regulator-min-microvolt = <3312000>;
++			regulator-max-microvolt = <3600000>;
++		};
++	};
++};
++
++&sdhc2 {
++	status = "okay";
++	cd-gpios = <&tlmm 95 GPIO_ACTIVE_HIGH>;
++
++	vmmc-supply = <&vreg_l21a_2p95>;
++	vqmmc-supply = <&vreg_l13a_2p95>;
++
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&sdc2_clk_on  &sdc2_cmd_on  &sdc2_data_on  &sdc2_cd_on>;
++	pinctrl-1 = <&sdc2_clk_off &sdc2_cmd_off &sdc2_data_off &sdc2_cd_off>;
++};
++
++&tlmm {
++	gpio-reserved-ranges = <0 4>, <81 4>;
++
++	mdp_vsync_n: mdp-vsync-n {
++		pins = "gpio10";
++		function = "mdp_vsync_a";
++		drive-strength = <2>;
++		bias-pull-down;
++	};
++
++	nfc_ven: nfc-ven {
++		pins = "gpio12";
++		function = "gpio";
++		bias-disable;
++		drive-strength = <2>;
++		output-low;
++	};
++
++	msm_mclk0_default: msm-mclk0-active {
++		pins = "gpio13";
++		function = "cam_mclk";
++		drive-strength = <2>;
++		bias-disable;
++	};
++
++	msm_mclk1_default: msm-mclk1-active {
++		pins = "gpio14";
++		function = "cam_mclk";
++		drive-strength = <2>;
++		bias-disable;
++	};
++
++	cci0_default: cci0-default {
++		pins = "gpio18", "gpio19";
++		function = "cci_i2c";
++		bias-disable;
++		drive-strength = <2>;
++	};
++
++	cci1_default: cci1-default {
++		pins = "gpio19", "gpio20";
++		function = "cci_i2c";
++		bias-disable;
++		drive-strength = <2>;
++	};
++
++	hall_sensor0_default: acc-cover-open {
++		pins = "gpio124";
++		function = "gpio";
++		bias-disable;
++		drive-strength = <2>;
++		input-enable;
++	};
++};
++
++/*
++ * WARNING:
++ * Disable UFS until card quirks are in to avoid unrecoverable hard-brick
++ * that would happen as soon as the UFS card gets probed as, without the
++ * required quirks, the bootloader will be erased right after card probe.
++ */
++&ufshc {
++	status = "disabled";
++};
++
++&ufsphy {
++	status = "disabled";
++};
++
++&usb3 {
++	status = "okay";
++};
++
++&usb3_dwc3 {
++	/* Force to peripheral until we have Type-C hooked up */
++	dr_mode = "peripheral";
++};
++
++&usb3phy {
++	status = "okay";
++
++	vdda-phy-supply = <&vreg_l1a_0p875>;
++	vdda-pll-supply = <&vreg_l2a_1p2>;
++};
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.32.0
+
