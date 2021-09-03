@@ -2,128 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E76C400249
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D3940020C
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349883AbhICP1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 11:27:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24380 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1349906AbhICP1f (ORCPT
+        id S1349730AbhICP0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 11:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349663AbhICP0R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 11:27:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630682794;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tEPNOxkaSwVynI5bC9ITnmbjNbhpuULp2AY9Cx1gq1w=;
-        b=YBviGS280fgksjac80ID9aM0xJw3pnrWMH9g+o66vewY1/svx+qf0d/toAANGEwG5FoTxn
-        W27ftYNpW4Vp/UPmTqfx0J2g+2p3mgthXjVrMxNPvTA3Ulf9PQBPuZHZlzzB4vKXAcKOTe
-        aLgUvQPHPDhWnMx32EzCUUJsu9wE6lU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-435-zok3IZI4OUubFL4NfRx2ng-1; Fri, 03 Sep 2021 11:26:34 -0400
-X-MC-Unique: zok3IZI4OUubFL4NfRx2ng-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2C75F1854E20;
-        Fri,  3 Sep 2021 15:26:32 +0000 (UTC)
-Received: from virtlab512.virt.lab.eng.bos.redhat.com (virtlab512.virt.lab.eng.bos.redhat.com [10.19.152.206])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 540656F7EA;
-        Fri,  3 Sep 2021 15:26:27 +0000 (UTC)
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        davem@davemloft.net, ajit.khaparde@broadcom.com,
-        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
-        huangguangbin2@huawei.com, huangdaode@huawei.com,
-        mtosatti@redhat.com, juri.lelli@redhat.com, frederic@kernel.org,
-        abelits@marvell.com, bhelgaas@google.com, rostedt@goodmis.org,
-        peterz@infradead.org
-Cc:     nilal@redhat.com, jesse.brandeburg@intel.com, robin.murphy@arm.com,
-        mingo@kernel.org, jbrandeb@kernel.org, akpm@linuxfoundation.org,
-        sfr@canb.auug.org.au, stephen@networkplumber.org,
-        rppt@linux.vnet.ibm.com, chris.friesen@windriver.com,
-        maz@kernel.org, nhorman@tuxdriver.com, pjwaskiewicz@gmail.com,
-        sassmann@redhat.com, thenzl@redhat.com, james.smart@broadcom.com,
-        dick.kennedy@broadcom.com, jkc@redhat.com, faisal.latif@intel.com,
-        shiraz.saleem@intel.com, tariqt@nvidia.com, ahleihel@redhat.com,
-        kheib@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
-        tatyana.e.nikolova@intel.com, mustafa.ismail@intel.com,
-        ahs3@redhat.com, leonro@nvidia.com,
-        chandrakanth.patil@broadcom.com, bjorn.andersson@linaro.org,
-        chunkuang.hu@kernel.org, yongqiang.niu@mediatek.com,
-        baolin.wang7@gmail.com, poros@redhat.com, minlei@redhat.com,
-        emilne@redhat.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
-        kabel@kernel.org, viresh.kumar@linaro.org, kuba@kernel.org,
-        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
-        shivasharan.srikanteshwara@broadcom.com,
-        sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com, tglx@linutronix.de,
-        ley.foon.tan@intel.com, jbrunet@baylibre.com,
-        johannes@sipsolutions.net, snelson@pensando.io,
-        lewis.hanly@microchip.com, benve@cisco.com, _govind@gmx.com,
-        jassisinghbrar@gmail.com
-Subject: [PATCH v6 14/14] net/mlx4: Use irq_update_affinity_hint
-Date:   Fri,  3 Sep 2021 11:24:30 -0400
-Message-Id: <20210903152430.244937-15-nitesh@redhat.com>
-In-Reply-To: <20210903152430.244937-1-nitesh@redhat.com>
-References: <20210903152430.244937-1-nitesh@redhat.com>
+        Fri, 3 Sep 2021 11:26:17 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4620FC061575;
+        Fri,  3 Sep 2021 08:25:17 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id B07A91F44F9C
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, Michael Tretter <m.tretter@pengutronix.de>
+Subject: [PATCH v3] media: vivid: drop FB dependency with new VIDEO_VIVID_FB
+Date:   Fri,  3 Sep 2021 16:24:37 +0100
+Message-Id: <f73a55a64521093e535efb5c0a64348f8c825005.1630682380.git.guillaume.tucker@collabora.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver uses irq_set_affinity_hint() to update the affinity_hint mask
-that is consumed by the userspace to distribute the interrupts. However,
-under the hood irq_set_affinity_hint() also applies the provided cpumask
-(if not NULL) as the affinity for the given interrupt which is an
-undocumented side effect.
+Drop the vivid dependency on CONFIG_FB by introducing a new
+CONFIG_VIDEO_VIVID_FB option which depends on CONFIG_FB instead and
+selects the generic CFB options when enabled.  Compile out parts of
+the code that make use of the framebuffer API when not enabled.  This
+is particularly useful as CONFIG_FB is not selected by
+CONFIG_DRM_FBDEV_EMULATION any more.
 
-To remove this side effect irq_set_affinity_hint() has been marked
-as deprecated and new interfaces have been introduced. Hence, replace the
-irq_set_affinity_hint() with the new interface irq_update_affinity_hint()
-that only updates the affinity_hint pointer.
-
-Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
 ---
- drivers/net/ethernet/mellanox/mlx4/eq.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/eq.c b/drivers/net/ethernet/mellanox/mlx4/eq.c
-index 9e48509ed3b2..414e390e6b48 100644
---- a/drivers/net/ethernet/mellanox/mlx4/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/eq.c
-@@ -244,9 +244,9 @@ static void mlx4_set_eq_affinity_hint(struct mlx4_priv *priv, int vec)
- 	    cpumask_empty(eq->affinity_mask))
- 		return;
+Notes:
+    Changes in v3:
+    * use CONFIG_VIDEO_VIVID_FB instead of CONFIG_FB
+    * select CFB options to fix linkage issue
+    
+    Changes in v2:
+    * fix Makefile conditional for when CONFIG_FB=m
+    * compile-out bit 16 (framebuffer) when no CONFIG_FB
+
+ drivers/media/test-drivers/vivid/Kconfig       | 16 ++++++++++++----
+ drivers/media/test-drivers/vivid/Makefile      |  5 ++++-
+ drivers/media/test-drivers/vivid/vivid-core.c  |  9 +++++++++
+ drivers/media/test-drivers/vivid/vivid-ctrls.c |  4 ++++
+ 4 files changed, 29 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/media/test-drivers/vivid/Kconfig b/drivers/media/test-drivers/vivid/Kconfig
+index c3abde2986b2..7cadaefea010 100644
+--- a/drivers/media/test-drivers/vivid/Kconfig
++++ b/drivers/media/test-drivers/vivid/Kconfig
+@@ -1,13 +1,10 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ config VIDEO_VIVID
+ 	tristate "Virtual Video Test Driver"
+-	depends on VIDEO_DEV && VIDEO_V4L2 && !SPARC32 && !SPARC64 && FB
++	depends on VIDEO_DEV && VIDEO_V4L2 && !SPARC32 && !SPARC64
+ 	depends on HAS_DMA
+ 	select FONT_SUPPORT
+ 	select FONT_8x16
+-	select FB_CFB_FILLRECT
+-	select FB_CFB_COPYAREA
+-	select FB_CFB_IMAGEBLIT
+ 	select VIDEOBUF2_VMALLOC
+ 	select VIDEOBUF2_DMA_CONTIG
+ 	select VIDEO_V4L2_TPG
+@@ -41,3 +38,14 @@ config VIDEO_VIVID_MAX_DEVS
+ 	help
+ 	  This allows you to specify the maximum number of devices supported
+ 	  by the vivid driver.
++
++config VIDEO_VIVID_FB
++	bool "Enable framebuffer for testing overlays"
++	depends on VIDEO_VIVID
++	depends on FB
++	select FB_CFB_FILLRECT
++	select FB_CFB_COPYAREA
++	select FB_CFB_IMAGEBLIT
++	default y
++	help
++	  Enable vivid framebuffer support for testing overlays.
+diff --git a/drivers/media/test-drivers/vivid/Makefile b/drivers/media/test-drivers/vivid/Makefile
+index b12ad0152a3e..b48bd13239f5 100644
+--- a/drivers/media/test-drivers/vivid/Makefile
++++ b/drivers/media/test-drivers/vivid/Makefile
+@@ -3,10 +3,13 @@ vivid-objs := vivid-core.o vivid-ctrls.o vivid-vid-common.o vivid-vbi-gen.o \
+ 		vivid-vid-cap.o vivid-vid-out.o vivid-kthread-cap.o vivid-kthread-out.o \
+ 		vivid-radio-rx.o vivid-radio-tx.o vivid-radio-common.o \
+ 		vivid-rds-gen.o vivid-sdr-cap.o vivid-vbi-cap.o vivid-vbi-out.o \
+-		vivid-osd.o vivid-meta-cap.o vivid-meta-out.o \
++		vivid-meta-cap.o vivid-meta-out.o \
+ 		vivid-kthread-touch.o vivid-touch-cap.o
+ ifeq ($(CONFIG_VIDEO_VIVID_CEC),y)
+   vivid-objs += vivid-cec.o
+ endif
++ifeq ($(CONFIG_VIDEO_VIVID_FB),y)
++  vivid-objs += vivid-osd.o
++endif
  
--	hint_err = irq_set_affinity_hint(eq->irq, eq->affinity_mask);
-+	hint_err = irq_update_affinity_hint(eq->irq, eq->affinity_mask);
- 	if (hint_err)
--		mlx4_warn(dev, "irq_set_affinity_hint failed, err %d\n", hint_err);
-+		mlx4_warn(dev, "irq_update_affinity_hint failed, err %d\n", hint_err);
+ obj-$(CONFIG_VIDEO_VIVID) += vivid.o
+diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
+index 87f27c7524ec..3e785c6ce5dd 100644
+--- a/drivers/media/test-drivers/vivid/vivid-core.c
++++ b/drivers/media/test-drivers/vivid/vivid-core.c
+@@ -126,7 +126,9 @@ MODULE_PARM_DESC(node_types, " node types, default is 0xe1d3d. Bitmask with the
+ 			     "\t\t    bit 8: Video Output node\n"
+ 			     "\t\t    bit 10-11: VBI Output node: 0 = none, 1 = raw vbi, 2 = sliced vbi, 3 = both\n"
+ 			     "\t\t    bit 12: Radio Transmitter node\n"
++#if IS_ENABLED(CONFIG_VIDEO_VIVID_FB)
+ 			     "\t\t    bit 16: Framebuffer for testing overlays\n"
++#endif
+ 			     "\t\t    bit 17: Metadata Capture node\n"
+ 			     "\t\t    bit 18: Metadata Output node\n"
+ 			     "\t\t    bit 19: Touch Capture node\n");
+@@ -1031,9 +1033,11 @@ static int vivid_detect_feature_set(struct vivid_dev *dev, int inst,
+ 	/* do we have a modulator? */
+ 	*has_modulator = dev->has_radio_tx;
+ 
++#if IS_ENABLED(CONFIG_VIDEO_VIVID_FB)
+ 	if (dev->has_vid_cap)
+ 		/* do we have a framebuffer for overlay testing? */
+ 		dev->has_fb = node_type & 0x10000;
++#endif
+ 
+ 	/* can we do crop/compose/scaling while capturing? */
+ 	if (no_error_inj && *ccs_cap == -1)
+@@ -1365,6 +1369,7 @@ static int vivid_create_queues(struct vivid_dev *dev)
+ 			return ret;
+ 	}
+ 
++#if IS_ENABLED(CONFIG_VIDEO_VIVID_FB)
+ 	if (dev->has_fb) {
+ 		/* Create framebuffer for testing capture/output overlay */
+ 		ret = vivid_fb_init(dev);
+@@ -1373,6 +1378,8 @@ static int vivid_create_queues(struct vivid_dev *dev)
+ 		v4l2_info(&dev->v4l2_dev, "Framebuffer device registered as fb%d\n",
+ 			  dev->fb_info.node);
+ 	}
++#endif
++
+ 	return 0;
  }
- #endif
  
-@@ -1123,9 +1123,7 @@ static void mlx4_free_irqs(struct mlx4_dev *dev)
- 	for (i = 0; i < dev->caps.num_comp_vectors + 1; ++i)
- 		if (eq_table->eq[i].have_irq) {
- 			free_cpumask_var(eq_table->eq[i].affinity_mask);
--#if defined(CONFIG_SMP)
--			irq_set_affinity_hint(eq_table->eq[i].irq, NULL);
--#endif
-+			irq_update_affinity_hint(eq_table->eq[i].irq, NULL);
- 			free_irq(eq_table->eq[i].irq, eq_table->eq + i);
- 			eq_table->eq[i].have_irq = 0;
+@@ -2079,12 +2086,14 @@ static int vivid_remove(struct platform_device *pdev)
+ 				video_device_node_name(&dev->radio_tx_dev));
+ 			video_unregister_device(&dev->radio_tx_dev);
  		}
++#if IS_ENABLED(CONFIG_VIDEO_VIVID_FB)
+ 		if (dev->has_fb) {
+ 			v4l2_info(&dev->v4l2_dev, "unregistering fb%d\n",
+ 				dev->fb_info.node);
+ 			unregister_framebuffer(&dev->fb_info);
+ 			vivid_fb_release_buffers(dev);
+ 		}
++#endif
+ 		if (dev->has_meta_cap) {
+ 			v4l2_info(&dev->v4l2_dev, "unregistering %s\n",
+ 				  video_device_node_name(&dev->meta_cap_dev));
+diff --git a/drivers/media/test-drivers/vivid/vivid-ctrls.c b/drivers/media/test-drivers/vivid/vivid-ctrls.c
+index 8dc50fe22972..6cfd4808b38c 100644
+--- a/drivers/media/test-drivers/vivid/vivid-ctrls.c
++++ b/drivers/media/test-drivers/vivid/vivid-ctrls.c
+@@ -305,6 +305,7 @@ static const struct v4l2_ctrl_config vivid_ctrl_ro_int32 = {
+ 
+ /* Framebuffer Controls */
+ 
++#if IS_ENABLED(CONFIG_VIDEO_VIVID_FB)
+ static int vivid_fb_s_ctrl(struct v4l2_ctrl *ctrl)
+ {
+ 	struct vivid_dev *dev = container_of(ctrl->handler,
+@@ -328,6 +329,7 @@ static const struct v4l2_ctrl_config vivid_ctrl_clear_fb = {
+ 	.name = "Clear Framebuffer",
+ 	.type = V4L2_CTRL_TYPE_BUTTON,
+ };
++#endif /* IS_ENABLED(CONFIG_VIDEO_VIVID_FB) */
+ 
+ 
+ /* Video User Controls */
+@@ -1761,8 +1763,10 @@ int vivid_create_controls(struct vivid_dev *dev, bool show_ccs_cap,
+ 	    (dev->has_vbi_cap && dev->has_vbi_out))
+ 		v4l2_ctrl_new_custom(hdl_loop_cap, &vivid_ctrl_loop_video, NULL);
+ 
++#if IS_ENABLED(CONFIG_VIDEO_VIVID_FB)
+ 	if (dev->has_fb)
+ 		v4l2_ctrl_new_custom(hdl_fb, &vivid_ctrl_clear_fb, NULL);
++#endif
+ 
+ 	if (dev->has_radio_rx) {
+ 		v4l2_ctrl_new_custom(hdl_radio_rx, &vivid_ctrl_radio_hw_seek_mode, NULL);
 -- 
-2.27.0
+2.20.1
 
