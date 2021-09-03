@@ -2,155 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2C54002B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E514002BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349801AbhICP5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 11:57:17 -0400
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:44809 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349788AbhICP5P (ORCPT
+        id S1349760AbhICP53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 11:57:29 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:60896
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349806AbhICP51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 11:57:15 -0400
-Received: by mail-ot1-f48.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so7034100otg.11;
-        Fri, 03 Sep 2021 08:56:15 -0700 (PDT)
+        Fri, 3 Sep 2021 11:57:27 -0400
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id BC35F40197
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 15:56:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630684586;
+        bh=npwnkinRUjbWFwTW3lB4R+la4/oRddSoWvIxhax/+MA=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=TIJX/gByvIoxJtkAuV0LMVyhlJhGlXhqrHbuJgdkOS7xDH7FlIIpJXkyxxN4RzAkI
+         JHt+rE5vkJDdtX2wxyNHKbCtAcRFPUHsu61qTb7TJCxtlSvxn0H7RGGr8T1RikvMw+
+         EhdUYahTBcP6Xup10vusra+jvn7pqWWugvNJRBEf8Xx/hWlUFsQGeGSHW5jO4yt90+
+         o603Ub8fPghlLnqYV4O2/X4v8SXq8uBspVKHnh0vvxeAtOqxbNdCZPdD6Evpf5EPmj
+         /hFn37YeqX7sihe7m2JwbZEnJz4Yfx4A553ePOMJc5mf3rHQJLd8D8nBYVsKiqd1GJ
+         sL9U+z2qlyO0A==
+Received: by mail-ej1-f69.google.com with SMTP id ne21-20020a1709077b95b029057eb61c6fdfso2909738ejc.22
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 08:56:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=Qw1bAMElDkYxGWDBqnwHtgJcwFZ+rm2etjwEK2p/4FE=;
-        b=lPaXPnnEOYzIdc/IfxBYDqiKsxMMMEZjLF3gsYkgX5gWJg4FIk6tbSDDd+wZQdaDml
-         4GEbMkjjP8wbnX3eZk1r+gVMno86Toyt2RHnQY9iTAh9M8xsuVB1Bqo30u9lamDuL8FI
-         m1SQvxB2PYCvD/iNjr9+Rsj9k8WOouD3S+cHDB1NPNwCxc3dS2XFnsyLPXzn9sJfsq7H
-         Rt0u+tsYV4ELQcG9UTR7lPiuGoQ6TYsWcW8vJtG9JGGamsihlWt83N7absCu9dFGUTGd
-         vlMQ6bfaG1znOPCoD24wo9kEQmT93g0m2rZ7oNsIOnoUVKkWRGGqRvd1hdGNtNZwz0gN
-         WAyg==
-X-Gm-Message-State: AOAM533u3Xom6OkrW3kiAggMX6TvcITxdRzsCn6/D7YSiWvggosrSyjj
-        R144bUHNIHVM9bbyKwQSTJC2BVMc5g==
-X-Google-Smtp-Source: ABdhPJyAMzmsbFER7typFkPmoLeoFJ2qnfJ2IG5LxBRRPRujgg0zeim5BgpDaIjgj5gWlPBji7nqUw==
-X-Received: by 2002:a9d:1c97:: with SMTP id l23mr3638349ota.230.1630684573465;
-        Fri, 03 Sep 2021 08:56:13 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id r31sm1043893otv.45.2021.09.03.08.56.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 08:56:12 -0700 (PDT)
-Received: (nullmailer pid 3010407 invoked by uid 1000);
-        Fri, 03 Sep 2021 15:56:11 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>, Icenowy Zheng <icenowy@aosc.io>,
-        linux-sunxi@lists.linux.dev
-In-Reply-To: <20210902234228.32223-1-samuel@sholland.org>
-References: <20210902234228.32223-1-samuel@sholland.org>
-Subject: Re: [PATCH 1/2] dt-bindings: leds: Add Allwinner R329/D1 LED controller
-Date:   Fri, 03 Sep 2021 10:56:11 -0500
-Message-Id: <1630684571.592582.3010406.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=npwnkinRUjbWFwTW3lB4R+la4/oRddSoWvIxhax/+MA=;
+        b=HeYIZbnes3I8osmT5e8shRzWGdvJfc3fYOy3Kd8Gn+d8FTeOM9Zaqjhx5oPcZG4WVb
+         4PIm73XB0BM2/cysQtNldbyxE8bL950toiMmZR1yvkgiD8h2iingZc9ogTTcx5Xtw+Vu
+         RvXRhdi4Rcm68Wg2bbfLjp9W30XXD+Wq/31EEKNGYg/ej0GcJLjNnZhRIQ/hq+L/R5L3
+         WeXJoWeOBgF3qrTwYUXLtkRzBCEahHeGfagbyCuEoNrYUBVa0x3qyUSZY++Dj5bZU3vc
+         MbQDk8pFMgpExnpKOu2UzY8qQDSXv9Xdf7cEq+xuFA0U/RllogWD7ZjU0wB7oraBGhgp
+         qhNA==
+X-Gm-Message-State: AOAM5307CInLBGxOBncdFgpjNTxekAVxQhn81XhAlLRrusxsVU9cNLvd
+        qIq8BjbX1YXSiq3SZ0JHoqCj6bwUXvxgSgEYXmyS1nVMK1wEq3mwolPduFumQrc2xufLla4vYr4
+        BRxxjkQORZCKP5jizmepmnGJVQ3bR1B2V3lzSLkfhRDQ/bRywf5kNVTZx4A==
+X-Received: by 2002:a17:906:1e97:: with SMTP id e23mr5028252ejj.336.1630684586267;
+        Fri, 03 Sep 2021 08:56:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz74Mit3ppBvU+YFh7C9xWkgrlXdy5fNGbXmeIn7QL4VgeMdAZe15wp7j4zrXyllTOm33QeNf6TvEsrYscZ7L8=
+X-Received: by 2002:a17:906:1e97:: with SMTP id e23mr5028212ejj.336.1630684585878;
+ Fri, 03 Sep 2021 08:56:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210827171452.217123-3-kai.heng.feng@canonical.com> <20210830180940.GA4209@bjorn-Precision-5520>
+In-Reply-To: <20210830180940.GA4209@bjorn-Precision-5520>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Fri, 3 Sep 2021 23:56:14 +0800
+Message-ID: <CAAd53p634-nxEYYDbc69JEVev=cFkqtdCJv5UjAFCDUqdNAk_A@mail.gmail.com>
+Subject: Re: [RFC] [PATCH net-next v4] [PATCH 2/2] r8169: Implement dynamic
+ ASPM mechanism
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        nic_swsd <nic_swsd@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Anthony Wong <anthony.wong@canonical.com>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 02 Sep 2021 18:42:27 -0500, Samuel Holland wrote:
-> The Allwinner R329 and D1 SoCs contain an LED controller designed to
-> drive a series of RGB LED pixels. It supports PIO and DMA transfers, and
-> has configurable timing and pixel format.
-> 
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  .../leds/allwinner,sun50i-r329-ledc.yaml      | 141 ++++++++++++++++++
->  1 file changed, 141 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.yaml
-> 
+On Tue, Aug 31, 2021 at 2:09 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Sat, Aug 28, 2021 at 01:14:52AM +0800, Kai-Heng Feng wrote:
+> > r8169 NICs on some platforms have abysmal speed when ASPM is enabled.
+> > Same issue can be observed with older vendor drivers.
+> >
+> > The issue is however solved by the latest vendor driver. There's a new
+> > mechanism, which disables r8169's internal ASPM when the NIC traffic has
+> > more than 10 packets, and vice versa. The possible reason for this is
+> > likely because the buffer on the chip is too small for its ASPM exit
+> > latency.
+>
+> This sounds like good speculation, but of course, it would be better
+> to have the supporting data.
+>
+> You say above that this problem affects r8169 on "some platforms."  I
+> infer that ASPM works fine on other platforms.  It would be extremely
+> interesting to have some data on both classes, e.g., "lspci -vv"
+> output for the entire system.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+lspci data collected from working and non-working system can be found here:
+https://bugzilla.kernel.org/show_bug.cgi?id=214307
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.yaml:83:3: [error] duplication of key "t1h-ns" in mapping (key-duplicates)
+>
+> If r8169 ASPM works well on some systems, we *should* be able to make
+> it work well on *all* systems, because the device can't tell what
+> system it's in.  All the device can see are the latencies for entry
+> and exit for link states.
 
-dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.example.dts'
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
-    return self.construct_document(node)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
-    for _dummy in generator:
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
-    value = self.construct_mapping(node)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
-    return BaseConstructor.construct_mapping(self, node, deep=deep)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
-    if self.check_mapping_key(node, key_node, mapping, key, value):
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
-    raise DuplicateKeyError(*args)
-ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
-  in "<unicode string>", line 17, column 3
-found duplicate key "t1h-ns" with value "{}" (original value: "{}")
-  in "<unicode string>", line 83, column 3
+That's definitely better if we can make r8169 ASPM work for all platforms.
 
-To suppress this check see:
-    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
+>
+> IIUC this patch makes the driver wake up every 1000ms.  If the NIC has
+> sent or received more than 10 packets in the last 1000ms, it disables
+> ASPM; otherwise it enables ASPM.
 
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.example.dts] Error 1
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-doc-validate", line 25, in check_doc
-    testtree = dtschema.load(filename, line_number=line_number)
-  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 623, in load
-    return yaml.load(f.read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
-    return self.construct_document(node)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
-    for _dummy in generator:
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
-    value = self.construct_mapping(node)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
-    return BaseConstructor.construct_mapping(self, node, deep=deep)
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
-    if self.check_mapping_key(node, key_node, mapping, key, value):
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
-    raise DuplicateKeyError(*args)
-ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
-  in "<unicode string>", line 17, column 3
-found duplicate key "t1h-ns" with value "{}" (original value: "{}")
-  in "<unicode string>", line 83, column 3
+Yes, that's correct.
 
-To suppress this check see:
-    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
+>
+> I asked these same questions earlier, but nothing changed, so I won't
+> raise them again if you don't think they're pertinent.  Some patch
+> splitting comments below.
 
+Sorry about that. The lspci data is attached.
 
-During handling of the above exception, another exception occurred:
+>
+> > Realtek confirmed that all their PCIe LAN NICs, r8106, r8168 and r8125
+> > use dynamic ASPM under Windows. So implement the same mechanism here to
+> > resolve the issue.
+> >
+> > Because ASPM control may not be granted by BIOS while ASPM is enabled,
+> > remove aspm_manageable and use pcie_aspm_capable() instead. If BIOS
+> > enables ASPM for the device, we want to enable dynamic ASPM on it.
+> >
+> > In addition, since PCIe ASPM can be switched via sysfs, enable/disable
+> > dynamic ASPM accordingly by checking pcie_aspm_enabled().
+> >
+> > Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> > ---
+> > v4:
+> >  - Squash two patches
+> >  - Remove aspm_manageable and use pcie_aspm_capable()
+> >    pcie_aspm_enabled() accordingly
+> >
+> > v3:
+> >  - Use msecs_to_jiffies() for delay time
+> >  - Use atomic_t instead of mutex for bh
+> >  - Mention the buffer size and ASPM exit latency in commit message
+> >
+> > v2:
+> >  - Use delayed_work instead of timer_list to avoid interrupt context
+> >  - Use mutex to serialize packet counter read/write
+> >  - Wording change
+> >  drivers/net/ethernet/realtek/r8169_main.c | 77 ++++++++++++++++++++---
+> >  1 file changed, 69 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+> > index 46a6ff9a782d7..97dba8f437b78 100644
+> > --- a/drivers/net/ethernet/realtek/r8169_main.c
+> > +++ b/drivers/net/ethernet/realtek/r8169_main.c
+> > @@ -623,7 +623,10 @@ struct rtl8169_private {
+> >       } wk;
+> >
+> >       unsigned supports_gmii:1;
+> > -     unsigned aspm_manageable:1;
+> > +     unsigned rtl_aspm_enabled:1;
+> > +     struct delayed_work aspm_toggle;
+> > +     atomic_t aspm_packet_count;
+> > +
+> >       dma_addr_t counters_phys_addr;
+> >       struct rtl8169_counters *counters;
+> >       struct rtl8169_tc_offsets tc_offset;
+> > @@ -698,6 +701,20 @@ static bool rtl_is_8168evl_up(struct rtl8169_private *tp)
+> >              tp->mac_version <= RTL_GIGA_MAC_VER_53;
+> >  }
+> >
+> > +static int rtl_supports_aspm(struct rtl8169_private *tp)
+> > +{
+> > +     switch (tp->mac_version) {
+> > +     case RTL_GIGA_MAC_VER_02 ... RTL_GIGA_MAC_VER_31:
+> > +     case RTL_GIGA_MAC_VER_37:
+> > +     case RTL_GIGA_MAC_VER_39:
+> > +     case RTL_GIGA_MAC_VER_43:
+> > +     case RTL_GIGA_MAC_VER_47:
+> > +             return 0;
+> > +     default:
+> > +             return 1;
+> > +     }
+>
+> This part looks like it should be a separate patch.  I would think
+> rtl_init_one() could call this once and set a bit in rtl8169_private.
+> Then rtl_hw_aspm_clkreq_enable() could just return without doing
+> anything if the bit is not set.
 
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-doc-validate", line 67, in <module>
-    ret = check_doc(f)
-  File "/usr/local/bin/dt-doc-validate", line 30, in check_doc
-    print(filename + ":", exc.path[-1], exc.message, file=sys.stderr)
-AttributeError: 'DuplicateKeyError' object has no attribute 'path'
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/leds/allwinner,sun50i-r329-ledc.yaml
+OK, will do in next version.
 
-doc reference errors (make refcheckdocs):
+>
+> > +}
+> > +
+> >  static bool rtl_supports_eee(struct rtl8169_private *tp)
+> >  {
+> >       return tp->mac_version >= RTL_GIGA_MAC_VER_34 &&
+> > @@ -2699,8 +2716,15 @@ static void rtl_enable_exit_l1(struct rtl8169_private *tp)
+> >
+> >  static void rtl_hw_aspm_clkreq_enable(struct rtl8169_private *tp, bool enable)
+> >  {
+> > +     struct pci_dev *pdev = tp->pci_dev;
+> > +
+> > +     if (!pcie_aspm_enabled(pdev) && enable)
+> > +             return;
+> > +
+> > +     tp->rtl_aspm_enabled = enable;
+> > +
+> >       /* Don't enable ASPM in the chip if OS can't control ASPM */
+> > -     if (enable && tp->aspm_manageable) {
+> > +     if (enable) {
+>
+> This part also looks like it should be a separate patch, since it is
+> strictly concerned with whether the OS can control ASPM and doesn't
+> seem related to dynamic ASPM.
 
-See https://patchwork.ozlabs.org/patch/1523964
+OK, will tackle this in next version.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+Kai-Heng
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+>
+> >               RTL_W8(tp, Config5, RTL_R8(tp, Config5) | ASPM_en);
+> >               RTL_W8(tp, Config2, RTL_R8(tp, Config2) | ClkReqEn);
+> >       } else {
+> > @@ -4440,6 +4464,7 @@ static void rtl_tx(struct net_device *dev, struct rtl8169_private *tp,
+> >
+> >       dirty_tx = tp->dirty_tx;
+> >
+> > +     atomic_add(tp->cur_tx - dirty_tx, &tp->aspm_packet_count);
+> >       while (READ_ONCE(tp->cur_tx) != dirty_tx) {
+> >               unsigned int entry = dirty_tx % NUM_TX_DESC;
+> >               u32 status;
+> > @@ -4584,6 +4609,8 @@ static int rtl_rx(struct net_device *dev, struct rtl8169_private *tp, int budget
+> >               rtl8169_mark_to_asic(desc);
+> >       }
+> >
+> > +     atomic_add(count, &tp->aspm_packet_count);
+> > +
+> >       return count;
+> >  }
+> >
+> > @@ -4691,8 +4718,39 @@ static int r8169_phy_connect(struct rtl8169_private *tp)
+> >       return 0;
+> >  }
+> >
+> > +#define ASPM_PACKET_THRESHOLD 10
+> > +#define ASPM_TOGGLE_INTERVAL 1000
+> > +
+> > +static void rtl8169_aspm_toggle(struct work_struct *work)
+> > +{
+> > +     struct rtl8169_private *tp = container_of(work, struct rtl8169_private,
+> > +                                               aspm_toggle.work);
+> > +     int packet_count;
+> > +     bool enable;
+> > +
+> > +     packet_count = atomic_xchg(&tp->aspm_packet_count, 0);
+> > +
+> > +     if (pcie_aspm_enabled(tp->pci_dev)) {
+> > +             enable = packet_count <= ASPM_PACKET_THRESHOLD;
+> > +
+> > +             if (tp->rtl_aspm_enabled != enable) {
+> > +                     rtl_unlock_config_regs(tp);
+> > +                     rtl_hw_aspm_clkreq_enable(tp, enable);
+> > +                     rtl_lock_config_regs(tp);
+> > +             }
+> > +     } else if (tp->rtl_aspm_enabled) {
+> > +             rtl_unlock_config_regs(tp);
+> > +             rtl_hw_aspm_clkreq_enable(tp, false);
+> > +             rtl_lock_config_regs(tp);
+> > +     }
+> > +
+> > +     schedule_delayed_work(&tp->aspm_toggle, msecs_to_jiffies(ASPM_TOGGLE_INTERVAL));
+> > +}
+> > +
+> >  static void rtl8169_down(struct rtl8169_private *tp)
+> >  {
+> > +     cancel_delayed_work_sync(&tp->aspm_toggle);
+> > +
+> >       /* Clear all task flags */
+> >       bitmap_zero(tp->wk.flags, RTL_FLAG_MAX);
+> >
+> > @@ -4719,6 +4777,11 @@ static void rtl8169_up(struct rtl8169_private *tp)
+> >       rtl_reset_work(tp);
+> >
+> >       phy_start(tp->phydev);
+> > +
+> > +     /* pcie_aspm_capable may change after system resume */
+> > +     if (pcie_aspm_support_enabled() && pcie_aspm_capable(tp->pci_dev) &&
+> > +         rtl_supports_aspm(tp))
+> > +             schedule_delayed_work(&tp->aspm_toggle, 0);
+> >  }
+> >
+> >  static int rtl8169_close(struct net_device *dev)
+> > @@ -5306,12 +5369,6 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >       if (rc)
+> >               return rc;
+> >
+> > -     /* Disable ASPM L1 as that cause random device stop working
+> > -      * problems as well as full system hangs for some PCIe devices users.
+> > -      */
+> > -     rc = pci_disable_link_state(pdev, PCIE_LINK_STATE_L1);
+> > -     tp->aspm_manageable = !rc;
+> > -
+> >       /* enable device (incl. PCI PM wakeup and hotplug setup) */
+> >       rc = pcim_enable_device(pdev);
+> >       if (rc < 0) {
+> > @@ -5378,6 +5435,10 @@ static int rtl_init_one(struct pci_dev *pdev, const struct pci_device_id *ent)
+> >
+> >       INIT_WORK(&tp->wk.work, rtl_task);
+> >
+> > +     INIT_DELAYED_WORK(&tp->aspm_toggle, rtl8169_aspm_toggle);
+> > +
+> > +     atomic_set(&tp->aspm_packet_count, 0);
+> > +
+> >       rtl_init_mac_address(tp);
+> >
+> >       dev->ethtool_ops = &rtl8169_ethtool_ops;
+> > --
+> > 2.32.0
+> >
