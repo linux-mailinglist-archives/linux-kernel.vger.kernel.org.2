@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EAB3FFA0F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 07:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A03273FFA11
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235929AbhICF6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 01:58:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25171 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233634AbhICF6B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 01:58:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630648621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bDvgsokZwzrcNUaLieJR18ZGVjKpNWnq/qMS3t3kGKI=;
-        b=BYW/psdTAmDXMGYl4RM2KFT5ZznNaxNxeNCrteeDEIhZnx28qdoBdUtVPRY4yYjzR5WuHR
-        dpWT0lRSB7FV6w5wsyNA9sIzSuPvcvD85N1cKhW4iFjSwdUrGrOpJ9Z3tn2TBxzbMz2zpu
-        22BLrpWKbuHKrC7GCpGvFYj24Ey0vMo=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-27-dZwVb6pJOZiFzLuBQGYpYQ-1; Fri, 03 Sep 2021 01:55:46 -0400
-X-MC-Unique: dZwVb6pJOZiFzLuBQGYpYQ-1
-Received: by mail-qk1-f200.google.com with SMTP id t18-20020a05620a0b1200b003f8729fdd04so5267219qkg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 22:55:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bDvgsokZwzrcNUaLieJR18ZGVjKpNWnq/qMS3t3kGKI=;
-        b=uPH9VEp4nPJHscLKZO+2GbcjFWhV+dm276WSaNe7f2nTcv+ISqB0X97plf06SEDOuS
-         YCA3VLPes4eCfF6HWxKG7YgHaQUY0qbQa4bsw5u2tNtyrA3kmY23Uz9avEEvISWhoLE+
-         uOPjVetBW4SZl0Jm5Q3/EilBQJRpbQmoMxusJMwjFGfhN0/bwu6x6jVqB9FjAfmnFJoR
-         9yVR6oFmsjoZFR3ko3lIn/Xun/9br1rnhU1Q7sugoM1cyyNLxLvKg785hwtLPkdc5qF3
-         i9sTB9Zqq8GSqHaqkJBKqF8H85SF+pSMrjljalasephWQcjlKQGkYvhRZ5pt27XhlwCm
-         2yfA==
-X-Gm-Message-State: AOAM533Do1OWP61xbtQ7fDMMDuQYvWdYnL4vC05Nch6ICS0Z6Qc/SPtF
-        IUgeHm4A9PEYjbgHShhAyPsq0CgRQ3MQxtwaHZDwcusYCuSn6R/JPkdPtKdpnhvFBanYrKxFT1/
-        9YdinLrRg8Qfi0aVXxHLwa8dh
-X-Received: by 2002:ad4:47cc:: with SMTP id p12mr1967392qvw.16.1630648545823;
-        Thu, 02 Sep 2021 22:55:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy2rfokB35RHoytkOenvkXEQNhy0zoJ+Ni5jGU5Fpr4Gqpd31z62no5fBtGg9o+rq+iUgaKgw==
-X-Received: by 2002:ad4:47cc:: with SMTP id p12mr1967372qvw.16.1630648545652;
-        Thu, 02 Sep 2021 22:55:45 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::d])
-        by smtp.gmail.com with ESMTPSA id x23sm3180733qkn.29.2021.09.02.22.55.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 22:55:45 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 22:55:41 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arch@vger.kernel.org, Jessica Yu <jeyu@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 2/4] vmlinux.lds.h: Split .static_call_sites from
- .static_call_tramp_key
-Message-ID: <20210903055541.b3dk5yqwkslklvsa@treble>
-References: <20210901233757.2571878-1-keescook@chromium.org>
- <20210901233757.2571878-3-keescook@chromium.org>
+        id S235858AbhICGBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 02:01:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233634AbhICGBS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 02:01:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A78CB6101A;
+        Fri,  3 Sep 2021 06:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630648819;
+        bh=YO/AiM79HonLmm0m9WZepx9WygmYVyAEAEiRgAz3af0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=AnzFBCIaSfTS/Sa9mFAfiUiamO1CGGePRyrDLeZPh1Q8WJTnXSB5uHEhyUMYZx4KI
+         V0Z7TAI5vJ8kJvgOwcV+gMqMW3DWk0nniYh4pRPN02YvHVvNqx/koKVC5V4//SEJIk
+         DYGmC+S0aWMRcnH2LtAUwpvmav55IcBsUOtqhFNYLvwGd1+5SECEUeImp125PxONQc
+         xB93bAuJbeb+LI+wmTablZ6d1gQf78qpyr5k8OxaP3mvy9UGUmVb1ivX04FOQFXQeP
+         8VZecuyeCV8N9Z+xrFbkM4JU4KyOOAk1u0q51pqKzIHYkm7n57SRvzmclMA7BP0JBJ
+         fdYruOdQVo40A==
+Message-ID: <23bd92e159dba35f74fc3d3a8186dfbb3ff84f66.camel@kernel.org>
+Subject: Re: [patch 01/10] x86/fpu/signal: Clarify exception handling in
+ restore_fpregs_from_user()
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Date:   Fri, 03 Sep 2021 09:00:16 +0300
+In-Reply-To: <871r67cbp6.ffs@tglx>
+References: <20210830154702.247681585@linutronix.de>
+         <20210830162545.374070793@linutronix.de> <YS0ylo9nTHD9NiAp@zn.tnic>
+         <87zgsyg0eg.ffs@tglx> <YS1HXyQu2mvMzbL/@zeniv-ca.linux.org.uk>
+         <CAHk-=wgbeNyFV3pKh+hvh-ZON3UqQfkCWnfLYAXXA9cX2iqsyg@mail.gmail.com>
+         <87r1e8cxp5.ffs@tglx> <87o89ccmyu.ffs@tglx> <YS+upEmTfpZub3s9@google.com>
+         <84fd35193e293894c4e64704e18dc063995b62c0.camel@kernel.org>
+         <871r67cbp6.ffs@tglx>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210901233757.2571878-3-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 04:37:55PM -0700, Kees Cook wrote:
-> These two sections are ro_after_init and .rodata respectively. While
-> they will ultimately become read-only, there's no reason to confuse
-> their macro names.
-> 
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Cc: linux-arch@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Thu, 2021-09-02 at 16:08 +0200, Thomas Gleixner wrote:
+> On Thu, Sep 02 2021 at 16:08, Jarkko Sakkinen wrote:
+> > On Wed, 2021-09-01 at 16:47 +0000, Sean Christopherson wrote:
+> > > As for SGX consuming the trap number in general, it's correct.  For n=
+on-KVM usage,
+> > > it's nice to have but not strictly necessary.  Any fault except #PF o=
+n ENCLS is
+> > > guaranteed to be a kernel or hardware bug; SGX uses the trap number t=
+o WARN on a
+> > > !#PF exception, e.g. on #GP or #UD.  Not having the trap number would=
+ mean losing
+> > > those sanity checks, which have been useful in the past.
+> >=20
+> > AFAIK, we do not consider #UD as a bug. Agree with the conclusion that =
+SGX
+> > should never #MC, I just did not get this part. #UD is something that i=
+s
+> > useful for SGX run-time.
+>=20
+> I understood that storing the trap number is useful. I was just
+> questioning the #MC angle. I.e. pretending that the #MC caused by ENCLS
+> is recoverable.
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Absolutely not.=20
 
--- 
-Josh
+I mixed up #UD caused by CPU executing inside enclave and ENCLS causing
+#UD. Sorry about that.
+
+Because of KVM we have to catch #PF's, given that a new power cycle
+in the host resets the state of SGX protected memory in the guest.
+
+>=20
+> Thanks,
+>=20
+>         tglx
+
+/Jarkko
 
