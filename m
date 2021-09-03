@@ -2,43 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6B23FFFF3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 377183FFFFC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348712AbhICMsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 08:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234262AbhICMsH (ORCPT
+        id S1348970AbhICMtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 08:49:47 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:52014 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234262AbhICMtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 08:48:07 -0400
-Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CDCC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 05:47:07 -0700 (PDT)
-Received: from [2a02:fe0:c700:2:c857:b8a3:f154:bc3] (port=59442)
-        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <Ywe_C@bit-rd.net>)
-        id 1mM8b2-0006co-8Q
-        for linux-kernel@vger.kernel.org; Fri, 03 Sep 2021 14:47:04 +0200
-To:     linux-kernel@vger.kernel.org
-From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C@bit-rd.net>
-Subject: Fair IT & Good DO
-Message-ID: <e68c174f-96c7-da15-ba3f-b75f3fc2b499@bit-rd.net>
-Date:   Fri, 3 Sep 2021 14:46:41 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 3 Sep 2021 08:49:46 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 183Cmc41032040
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 3 Sep 2021 08:48:39 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id A8CA615C33F9; Fri,  3 Sep 2021 08:48:38 -0400 (EDT)
+Date:   Fri, 3 Sep 2021 08:48:38 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ext2: do not sleep in ext2_error()
+Message-ID: <YTIZpijSZc+ykNUY@mit.edu>
+References: <20210903090538.GA7283@kili>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903090538.GA7283@kili>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bitcoin could be named Do (cursive) on *Nix.
+On Fri, Sep 03, 2021 at 12:05:38PM +0300, Dan Carpenter wrote:
+> No one expects error logging functions to sleep so sometimes they are
+> called with spinlocks held.  In this case the problematic call tree is:
+> 
+> ext2_statfs() <- disables preempt
+> -> ext2_count_free_inodes()
+>    -> ext2_get_group_desc()
+>       -> ext2_error()
+> 
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+> This is just from static analysis.  NOT TESTED!
+> 
+> Probably a safer fix would be to just call pr_err() instead of
+> ext2_error() in ext2_get_group_desc().  I can send that fix instead if
+> people want.
 
-Dow Jones agree and much linguistics.
-Updated wwpage -  https://bit-rd.net/
+Looking at both of the ext2_error() calls in ext2_get_group_desc(),
+those are really more in the way of assertions rather than warning of
+an on-disk corruption issue.  The second "group descriptor not loaded"
+should never happen, and the "block_group >= groups_count" should have
+been caught via an invalid block number or check by the caller (or an
+outright code bug in say ext2_statfs().
 
-Serenity.
-Ywe Cærlyn
+So I suspect both of those would be more usefule as a WARN() rather
+than a call to ext2_error(), since stack trace would actually provide
+more useful data to root causing the issue.  Jan, what do you think?
+
+     	    	    	 	 - Ted
+
+P.S.  The same analysis applies for ext4_get_group_desc(), BTW.  We
+don't take a lock in ext4_statfs() so trying to take a lock while
+sleeping is not an issue.
+
+For both ext2 and ext4, the caller is not supposed to holding spin
+locks when it calls ext[24]_error().  In cases where it is absolutely
+not avoidable, special measures are required --- see for example
+__ext4_grp_locked_error().
