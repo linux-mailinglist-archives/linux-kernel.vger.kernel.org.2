@@ -2,196 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693783FFE3B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 12:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E7F3FFE30
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 12:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349129AbhICKda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 06:33:30 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3725 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349004AbhICKd3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 06:33:29 -0400
-Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4H1Db40xLXz67W7D;
-        Fri,  3 Sep 2021 18:30:40 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Fri, 3 Sep 2021 12:32:16 +0200
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Fri, 3 Sep 2021 11:32:14 +0100
-From:   John Garry <john.garry@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <yanaijie@huawei.com>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH] scsi: libsas: co-locate exports with symbols
-Date:   Fri, 3 Sep 2021 18:27:32 +0800
-Message-ID: <1630664852-225115-1-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        id S1349093AbhICK3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 06:29:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349004AbhICK3L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 06:29:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0A9F60F42;
+        Fri,  3 Sep 2021 10:28:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630664891;
+        bh=ALG3HBZ9tMQQ6qp3LSaDocNel4wVrD8EJq5572zXA88=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U5uCWSMTuLZKnKr3JueXqz5npeRN/+ZOf3V533ybH4gOlXF1Y0jVY8wwL//GJ8PGZ
+         ngu5lPk7yfnl7JPeIji789+vVpbLNweKtHrzJdvHpe5aFdxgwVy9Z392lUjiN3JTY+
+         /zE8YTn08AkW0YgKvPHeCI5igSRlsoxv7Padu+5pTdQRdzaJ7+f3ZK8PFfNpla43TQ
+         3K6yO3zPfxX8fNQ186yYGmBvFsW1YwlmfPurwH3hsp9KyjR8GMtp7DLAaT/aq7XrBK
+         jVc+PL4ehUksCkuhNrI3icy0TGfATyMXcmGz62ZCtqnjM9NgBfajjWk0sdY3wPjli5
+         Hy6zeHzLFWgeQ==
+Date:   Fri, 3 Sep 2021 11:27:38 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Fabio Aiuto <fabioaiuto83@gmail.com>
+Subject: Re: [PATCH for-5.15 v3] ASoC: Intel: boards: Fix
+ CONFIG_SND_SOC_SDW_MOCKUP select
+Message-ID: <20210903102738.GB4932@sirena.org.uk>
+References: <20210802212409.3207648-1-nathan@kernel.org>
+ <20210902181217.2958966-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="SkvwRMAIpAhPCcCJ"
+Content-Disposition: inline
+In-Reply-To: <20210902181217.2958966-1-nathan@kernel.org>
+X-Cookie: Darth Vader sleeps with a Teddywookie.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is standard practice to co-locate export declarations with the symbol
-which is being exported. Or at least in the same file - see
-sas_phy_reset().
 
-Modify libsas to follow this practice consistently.
+--SkvwRMAIpAhPCcCJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: John Garry <john.garry@huawei.com>
+On Thu, Sep 02, 2021 at 11:12:18AM -0700, Nathan Chancellor wrote:
+> When CONFIG_SND_SOC_INTEL_SOUNDWIRE_SOF_MACH is enabled without
+> CONFIG_EXPERT, there is a Kconfig warning about unmet dependencies:
 
-diff --git a/drivers/scsi/libsas/sas_init.c b/drivers/scsi/libsas/sas_init.c
-index b4b0633f3904..63e987fec937 100644
---- a/drivers/scsi/libsas/sas_init.c
-+++ b/drivers/scsi/libsas/sas_init.c
-@@ -147,6 +147,7 @@ int sas_register_ha(struct sas_ha_struct *sas_ha)
- 
- 	return error;
- }
-+EXPORT_SYMBOL_GPL(sas_register_ha);
- 
- static void sas_disable_events(struct sas_ha_struct *sas_ha)
- {
-@@ -176,6 +177,7 @@ int sas_unregister_ha(struct sas_ha_struct *sas_ha)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(sas_unregister_ha);
- 
- static int sas_get_linkerrors(struct sas_phy *phy)
- {
-@@ -313,6 +315,7 @@ int sas_phy_reset(struct sas_phy *phy, int hard_reset)
- 	}
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(sas_phy_reset);
- 
- int sas_set_phy_speed(struct sas_phy *phy,
- 		      struct sas_phy_linkrates *rates)
-@@ -701,5 +704,3 @@ MODULE_LICENSE("GPL v2");
- module_init(sas_class_init);
- module_exit(sas_class_exit);
- 
--EXPORT_SYMBOL_GPL(sas_register_ha);
--EXPORT_SYMBOL_GPL(sas_unregister_ha);
-diff --git a/drivers/scsi/libsas/sas_scsi_host.c b/drivers/scsi/libsas/sas_scsi_host.c
-index ee44a0d7730b..44961cbf1060 100644
---- a/drivers/scsi/libsas/sas_scsi_host.c
-+++ b/drivers/scsi/libsas/sas_scsi_host.c
-@@ -201,6 +201,7 @@ int sas_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *cmd)
- 	cmd->scsi_done(cmd);
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(sas_queuecommand);
- 
- static void sas_eh_finish_cmd(struct scsi_cmnd *cmd)
- {
-@@ -511,6 +512,7 @@ int sas_eh_device_reset_handler(struct scsi_cmnd *cmd)
- 
- 	return FAILED;
- }
-+EXPORT_SYMBOL_GPL(sas_eh_device_reset_handler);
- 
- int sas_eh_target_reset_handler(struct scsi_cmnd *cmd)
- {
-@@ -532,6 +534,7 @@ int sas_eh_target_reset_handler(struct scsi_cmnd *cmd)
- 
- 	return FAILED;
- }
-+EXPORT_SYMBOL_GPL(sas_eh_target_reset_handler);
- 
- /* Try to reset a device */
- static int try_to_reset_cmd_device(struct scsi_cmnd *cmd)
-@@ -790,6 +793,7 @@ int sas_ioctl(struct scsi_device *sdev, unsigned int cmd, void __user *arg)
- 
- 	return -EINVAL;
- }
-+EXPORT_SYMBOL_GPL(sas_ioctl);
- 
- struct domain_device *sas_find_dev_by_rphy(struct sas_rphy *rphy)
- {
-@@ -832,6 +836,7 @@ int sas_target_alloc(struct scsi_target *starget)
- 	starget->hostdata = found_dev;
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(sas_target_alloc);
- 
- #define SAS_DEF_QD 256
- 
-@@ -860,6 +865,7 @@ int sas_slave_configure(struct scsi_device *scsi_dev)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(sas_slave_configure);
- 
- int sas_change_queue_depth(struct scsi_device *sdev, int depth)
- {
-@@ -872,6 +878,7 @@ int sas_change_queue_depth(struct scsi_device *sdev, int depth)
- 		depth = 1;
- 	return scsi_change_queue_depth(sdev, depth);
- }
-+EXPORT_SYMBOL_GPL(sas_change_queue_depth);
- 
- int sas_bios_param(struct scsi_device *scsi_dev,
- 			  struct block_device *bdev,
-@@ -884,6 +891,7 @@ int sas_bios_param(struct scsi_device *scsi_dev,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(sas_bios_param);
- 
- /*
-  * Tell an upper layer that it needs to initiate an abort for a given task.
-@@ -910,6 +918,7 @@ void sas_task_abort(struct sas_task *task)
- 	else
- 		blk_abort_request(sc->request);
- }
-+EXPORT_SYMBOL_GPL(sas_task_abort);
- 
- int sas_slave_alloc(struct scsi_device *sdev)
- {
-@@ -918,6 +927,7 @@ int sas_slave_alloc(struct scsi_device *sdev)
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(sas_slave_alloc);
- 
- void sas_target_destroy(struct scsi_target *starget)
- {
-@@ -929,6 +939,7 @@ void sas_target_destroy(struct scsi_target *starget)
- 	starget->hostdata = NULL;
- 	sas_put_device(found_dev);
- }
-+EXPORT_SYMBOL_GPL(sas_target_destroy);
- 
- #define SAS_STRING_ADDR_SIZE	16
- 
-@@ -956,15 +967,3 @@ int sas_request_addr(struct Scsi_Host *shost, u8 *addr)
- }
- EXPORT_SYMBOL_GPL(sas_request_addr);
- 
--EXPORT_SYMBOL_GPL(sas_queuecommand);
--EXPORT_SYMBOL_GPL(sas_target_alloc);
--EXPORT_SYMBOL_GPL(sas_slave_configure);
--EXPORT_SYMBOL_GPL(sas_change_queue_depth);
--EXPORT_SYMBOL_GPL(sas_bios_param);
--EXPORT_SYMBOL_GPL(sas_task_abort);
--EXPORT_SYMBOL_GPL(sas_phy_reset);
--EXPORT_SYMBOL_GPL(sas_eh_device_reset_handler);
--EXPORT_SYMBOL_GPL(sas_eh_target_reset_handler);
--EXPORT_SYMBOL_GPL(sas_slave_alloc);
--EXPORT_SYMBOL_GPL(sas_target_destroy);
--EXPORT_SYMBOL_GPL(sas_ioctl);
--- 
-2.26.2
+To repeat what I already said in this thread: the reason this will have
+got buried last time is that you sent the prior version in reply to an
+old thread.  This new version has also been sent in reply to an old
+thread which almost had the same effect.  Please stop doing that, and
+also please pay attention to feedback.
 
+Please don't send new patches in reply to old patches or serieses, this
+makes it harder for both people and tools to understand what is going
+on - it can bury things in mailboxes and make it difficult to keep track
+of what current patches are, both for the new patches and the old ones.
+
+--SkvwRMAIpAhPCcCJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEx+JkACgkQJNaLcl1U
+h9Darwf/dMsP3sJkQI3zmuNnqYAH3Su2md52c3Q8zXiu6wWBT0JpJknJxExFVYFU
+mpeCrDO3SsDPVkp+96ou9pIsEEtFY+cFb3bjI/jw3OLfM58bhuJHa9RmK6ysgGDy
+3MM5VbZ0qKNMVEHJxSZvvPTFIWTg8ka07H77y7wzhAmByKEnRxMcRHoz/rGkp9dA
+3Bv2o9gXcNTeIV+pi/f7rPvqPOhFmcgEtDfwVfG+xroYbVA6Qc9kmuOiq0tOgr1q
+2a0g4/zmlo+iGdA/O0+vXZpvH3a+pPKBW34td9d/J5BDZjn7SFevEcJiDGfinlOb
+4KJpG9My+1VJxwp/YXclvV8JER8sAQ==
+=KVUM
+-----END PGP SIGNATURE-----
+
+--SkvwRMAIpAhPCcCJ--
