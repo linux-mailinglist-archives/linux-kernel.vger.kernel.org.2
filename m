@@ -2,207 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EFDD4005EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 778C94005F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:40:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349865AbhICTju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 15:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54094 "EHLO
+        id S1349654AbhICTkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 15:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349852AbhICTjr (ORCPT
+        with ESMTP id S1348217AbhICTku (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 15:39:47 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96ACEC061764
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:38:47 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so250078pjr.1
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:38:47 -0700 (PDT)
+        Fri, 3 Sep 2021 15:40:50 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6144BC061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:39:50 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id h16so356792lfk.10
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:39:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qzhaz9XxDSm1ugGQAic1jSV4h3dO1CWRqJG/Wa1eKqo=;
-        b=Q4g8O/XPm2u0b/cy1Hw89zcNMj9oiX+bRd+8mJDYqYQ8LqTxTaTrNWdtwP4bLcnUkU
-         eMWjtXHzk5yzQKvQBZz1g+zzocaHQ9MQmA8qY4buy+vaNmp5diQC16nhwre2uxT+p8vV
-         JaPlc6nRsTMCMhGj/qmDvfSk+tKUB6VvKpq9Gv4jj25FmVwK/Bdzgw/LlzdZO6aAJQv5
-         f1EqIV23Wb6apk3n3WO4d0Tzr00atX0sfTt+1Q6zmCti6z/NPft5/mzAJJpR+1wmv7ml
-         Q385PdhiwJginqPZ/Re4d9EE91NU4GLKOycCnmXK4odaYvOj4A5XwF2/tqj8Hh6UoDX4
-         Ku8g==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q/mMqrwEsTCjyLsgA0ikvXEubjygmiehwCmD4JsY2Oo=;
+        b=e5KHOH74YJ5L0QdbPHJWvvNhRVg/kBYpih9FO9zzwTE3Q95WeI/s7HOBinP1qxUIZB
+         QAnJYNt+L1n3Q1Q6X0ppIwQErEr9+ku2/sUUsPrIL8ry1YUEYkbZczH1n2G4sgcJpwlC
+         OyvooXJFcMqYybUZPr/Tp0U4dLLYZJ0nsREnA1bJe/IEeffA+p15vQgG1GazeUiVB75u
+         YHQK2m7Wt4ruuuxdJAk19NWUzUsnHXlHpcoPvWYpqRNkWLUoWuQWlfznNOzPmXPgaFPx
+         CCvMEskqit7QrrcQ3bnSx3i95ugtRUclnRIOx4hxGieGT7BdAV0Hv/XNxCCNjH1LiGU7
+         g6ow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qzhaz9XxDSm1ugGQAic1jSV4h3dO1CWRqJG/Wa1eKqo=;
-        b=TcKR2vK3HTHPGy8LtY423lCA4iPIj0yiJB0KgfBx3YAYX4dD1ZFxTv6gJ64fPrhGxw
-         BByj/TEszaB4o8vyQ48CvRCXDqTlMpo1vTY7L66jaeiZL1pi/hJ/H/Ew2W07pKti2miK
-         MGF98O6S/DL3+i/KLkaf2dqwgNbN/8DLLECaY4R6pSZGxAj7xivNHt4qPdOL/+OGB0hK
-         BYSf2rPfxZG7fsQxi8PsfGVlTaZO23dXF969f7lDbRLLjE2nBiZeo/eqj7YzZOBB+w85
-         jh2SLgUcnRp3DtQ9OIckhRPaTsUc5i2SBlM45W7rHnPtMepiF5PJqI+nIN1IAcX1OUNv
-         NSNQ==
-X-Gm-Message-State: AOAM531PFkuLqT53oS8ntutD82Mpl1fLGmjm6HOdDPQdfwL+BH+3+PrC
-        angIpTM8F1fEJizNUySZSUgaQg==
-X-Google-Smtp-Source: ABdhPJxAbMzCuFmt0f4TsCM6x099HH8zwapkycmIw+PDBp1H5EAVUuuq+cobTGIsNH17Vprk8NCwxQ==
-X-Received: by 2002:a17:90b:4b4f:: with SMTP id mi15mr497532pjb.120.1630697926927;
-        Fri, 03 Sep 2021 12:38:46 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id q20sm180458pgu.31.2021.09.03.12.38.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 12:38:46 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 19:38:42 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Mingwei Zhang <mizhang@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        John Allen <john.allen@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alper Gun <alpergun@google.com>,
-        Borislav Petkov <bp@alien8.de>,
-        David Rienjes <rientjes@google.com>,
-        Marc Orr <marcorr@google.com>, Peter Gonda <pgonda@google.com>,
-        Vipin Sharma <vipinsh@google.com>
-Subject: Re: [PATCH v2 3/4] KVM: SVM: move sev_bind_asid to psp
-Message-ID: <YTJ5wjNShaHlDVAp@google.com>
-References: <20210818053908.1907051-1-mizhang@google.com>
- <20210818053908.1907051-4-mizhang@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q/mMqrwEsTCjyLsgA0ikvXEubjygmiehwCmD4JsY2Oo=;
+        b=tTDz6IMLyRShi4tF9/3ampsqiJEEbzes6MF62VPRwdHzpP/6lq9id5jd1rEZitcMDo
+         ssE6z1BNMVPQn4aLdwT5/rMirhVRwQ/bM87fLIzhuXxqY7yjrJfkAUe62hLyEpJLgVR9
+         rukcW5x8EsTZdEtZga+rX729CvlB580ZMj9OcM1UX7laZw8Qg7vPXnHCdPriQv+6H0Vk
+         NJgW46AvYNGjFLJc/P9lj3WBceFKlOKg+my4I/FdbIT0a3IdhYa2p1Xk/Kj1jhGB5WmC
+         oSuYQLIP4zaNDt8vP9Z7keG1xj7iSYzVxidLDIjiGBi19J8zF0JZT9yuF6WiNgZpb5nb
+         keog==
+X-Gm-Message-State: AOAM5325ykqKV4wwd0f5ryTvvPs3G0KR9L+2mxjDaZySi53F1YVcqZDt
+        MwiySsvUcMeVdMOdfGQqOCdOs7VUCf44HhrNVV+KIA==
+X-Google-Smtp-Source: ABdhPJwPSfd3cWkRvtg1v4fnIt3ikKAKPBDq7JAoqQpURwTDA2QPNnmpp0MqualUro8TR/v6pKApJ8aZS9sZIfFIKQ0=
+X-Received: by 2002:a05:6512:118e:: with SMTP id g14mr348609lfr.661.1630697988724;
+ Fri, 03 Sep 2021 12:39:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818053908.1907051-4-mizhang@google.com>
+References: <20210729183942.2839925-1-robdclark@gmail.com> <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
+ <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
+ <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org> <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+In-Reply-To: <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Fri, 3 Sep 2021 12:39:38 -0700
+Message-ID: <CALAqxLUkyXK2gqNMBbtJFfh01ZpcG46dZaM7Zq4jG3OngvFREg@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Caleb Connolly <caleb.connolly@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 18, 2021, Mingwei Zhang wrote:
-> @@ -336,11 +322,9 @@ static int sev_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
->  		goto e_free_session;
->  
->  	/* Bind ASID to this guest */
-> -	ret = sev_bind_asid(kvm, start.handle, error);
-> -	if (ret) {
-> -		sev_guest_decommission(start.handle, NULL);
-> +	ret = sev_guest_bind_asid(sev_get_asid(kvm), start.handle, error);
-> +	if (ret)
->  		goto e_free_session;
-> -	}
->  
->  	/* return handle to userspace */
->  	params.handle = start.handle;
+On Thu, Jul 29, 2021 at 1:49 PM Rob Clark <robdclark@gmail.com> wrote:
+> On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
+> <caleb.connolly@linaro.org> wrote:
+> > On 29/07/2021 21:24, Rob Clark wrote:
+> > > On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
+> > > <caleb.connolly@linaro.org> wrote:
+> > >>
+> > >> Hi Rob,
+> > >>
+> > >> I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above
+> > >> the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more
+> > >> aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
+> > >
+> > > *ohh*, yeah, ok, that would explain it
+> > >
+> > >> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable
+> > >> at the higher frequencies.
+> > >>
+> > >> Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in
+> > >> glxgear.
+> > >>
+> > >> I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run
+> > >> at the voltage the hardware needs to be stable.
+> > >>
+> > >> Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have
+> > >> CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
+> > >>
+> > >
+> > > tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is already
+> > > on CC and I added sboyd, maybe one of them knows better.
+> > >
+> > > In the short term, removing the higher problematic OPPs from dts might
+> > > be a better option than this patch (which I'm dropping), since there
+> > > is nothing stopping other workloads from hitting higher OPPs.
+> > Oh yeah that sounds like a more sensible workaround than mine .
+> > >
+> > > I'm slightly curious why I didn't have problems at higher OPPs on my
+> > > c630 laptop (sdm850)
+> > Perhaps you won the sillicon lottery - iirc sdm850 is binned for higher clocks as is out of the factory.
+> >
+> > Would it be best to drop the OPPs for all devices? Or just those affected? I guess it's possible another c630 might
+> > crash where yours doesn't?
+>
+> I've not heard any reports of similar issues from the handful of other
+> folks with c630's on #aarch64-laptops.. but I can't really say if that
+> is luck or not.
+>
+> Maybe just remove it for affected devices?  But I'll defer to Bjorn.
 
-...
+Just as another datapoint, I was just marveling at how suddenly smooth
+the UI was performing on db845c and Caleb pointed me at the "drm/msm:
+Devfreq tuning" patch as the likely cause of the improvement, and
+mid-discussion my board crashed into USB crash mode:
+[  146.157696][    C0] adreno 5000000.gpu: CP | AHB bus error
+[  146.163303][    C0] adreno 5000000.gpu: CP | AHB bus error
+[  146.168837][    C0] adreno 5000000.gpu: RBBM | ATB bus overflow
+[  146.174960][    C0] adreno 5000000.gpu: CP | HW fault | status=0x00000000
+[  146.181917][    C0] adreno 5000000.gpu: CP | AHB bus error
+[  146.187547][    C0] adreno 5000000.gpu: CP illegal instruction error
+[  146.194009][    C0] adreno 5000000.gpu: CP | AHB bus error
+[  146.308909][    T9] Internal error: synchronous external abort:
+96000010 [#1] PREEMPT SMP
+[  146.317150][    T9] Modules linked in:
+[  146.320941][    T9] CPU: 3 PID: 9 Comm: kworker/u16:1 Tainted: G
+    W         5.14.0-mainline-06795-g42b258c2275c #24
+[  146.331974][    T9] Hardware name: Thundercomm Dragonboar
+Format: Log Type - Time(microsec) - Message - Optional Info
+Log Type: B - Since Boot(Power On Reset),  D - Delta,  S - Statistic
+S - QC_IMAGE_VERSION_STRING=BOOT.XF.2.0-00371-SDM845LZB-1
+S - IMAGE_VARIANT_STRING=SDM845LA
+S - OEM_IMAGE_VERSION_STRING=TSBJ-FA-PC-02170
 
-> diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
-> index e2d49bedc0ef..325e79360d9e 100644
-> --- a/drivers/crypto/ccp/sev-dev.c
-> +++ b/drivers/crypto/ccp/sev-dev.c
-> @@ -903,6 +903,21 @@ int sev_guest_activate(struct sev_data_activate *data, int *error)
->  }
->  EXPORT_SYMBOL_GPL(sev_guest_activate);
->  
-> +int sev_guest_bind_asid(int asid, unsigned int handle, int *error)
-> +{
-> +	struct sev_data_activate activate;
-> +	int ret;
-> +
-> +	/* activate ASID on the given handle */
-> +	activate.handle = handle;
-> +	activate.asid   = asid;
-> +	ret = sev_guest_activate(&activate, error);
-> +	if (ret)
-> +		sev_guest_decommission(handle, NULL);
+So Caleb sent me to this thread. :)
 
-Hrm, undoing state like this is a bad API.  It assumes the caller is well-behaved,
-e.g. has already done something that requires decommissioning, and it surprises
-the caller, e.g. the KVM side (above) looks like it's missing error handling.
-Something like this would be cleaner overall:
+I'm still trying to trip it again, but it does seem like db845c is
+also seeing some stability issues with Linus' HEAD.
 
-	/* create memory encryption context */
-	ret = __sev_issue_cmd(argp->sev_fd, SEV_CMD_RECEIVE_START, &start,
-				error);
-	if (ret)
-		goto e_free_session;
-
-	/* Bind ASID to this guest */
-	ret = sev_guest_activate(sev_get_asid(kvm), start.handle, error);
-	if (ret)
-		goto e_decommision;
-
-	params.handle = start.handle;
-	if (copy_to_user((void __user *)(uintptr_t)argp->data,
-			 &params, sizeof(struct kvm_sev_receive_start))) {
-		ret = -EFAULT;
-		goto e_deactivate;
-	}
-
-    	sev->handle = start.handle;
-	sev->fd = argp->sev_fd;
-
-e_deactivate:
-	sev_guest_deactivate(sev_get_asid(kvm), start.handle, error);
-e_decommision:
-	sev_guest_decommission(start.handle, error);
-e_free_session:
-	kfree(session_data);
-e_free_pdh:
-	kfree(pdh_data);
-
-
-However, I don't know that that's a good level of abstraction, e.g. the struct
-details are abstracted from KVM but the exact sequencing is not, which is odd
-to say the least.
-
-Which is a good segue into my overarching complaint about the PSP API and what
-made me suggest this change in the first place.  IMO, the API exposed to KVM (and
-others) is too low level, e.g. KVM is practically making direct calls to the PSP
-via sev_issue_cmd_external_user().  Even the partially-abstracted helpers that
-take a "struct sev_data_*" are too low level, KVM really shouldn't need to know
-the hardware-defined structures for an off-CPU device.
-
-My intent with the suggestion was to start driving toward a mostly-abstracted API
-across the board, with an end goal of eliminating sev_issue_cmd_external_user()
-and moving all of the sev_data* structs out of psp-sev.h and into a private
-header.  However, I think we should all explicitly agree on the desired level of
-abstraction before shuffling code around.
-
-My personal preference is obviously to work towards an abstracted API.  And if
-we decide to go that route, I think we should be much more aggressive with respect
-to what is abstracted.   Many of the functions will be rather gross due to the
-sheer number of params, but I think the end result will be a net positive in terms
-of readability and separation of concerns.
-
-E.g. get KVM looking like this
-
-static int sev_receive_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
-{
-	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-	struct kvm_sev_receive_start params;
-	int ret;
-
-	if (!sev_guest(kvm))
-		return -ENOTTY;
-
-	/* Get parameter from the userspace */
-	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data,
-			sizeof(struct kvm_sev_receive_start)))
-		return -EFAULT;
-
-	ret = sev_guest_receive_start(argp->sev_fd, &arpg->error, sev->asid,
-				      &params.handle, params.policy,
-				      params.pdh_uaddr, params.pdh_len,
-				      params.session_uaddr, params.session_len);
-	if (ret)
-		return ret;
-
-	/* Copy params back to user even on failure, e.g. for error info. */
-	if (copy_to_user((void __user *)(uintptr_t)argp->data,
-			 &params, sizeof(struct kvm_sev_receive_start)))
-		return -EFAULT;
-
-    	sev->handle = params.handle;
-	sev->fd = argp->sev_fd;
-	return 0;
-}
+thanks
+-john
