@@ -2,81 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F7F3FF939
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 06:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A8B3FF93F
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 06:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbhICEDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 00:03:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231872AbhICEDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 00:03:48 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 58F3960E77;
-        Fri,  3 Sep 2021 04:02:48 +0000 (UTC)
-Date:   Fri, 3 Sep 2021 00:02:46 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jiang Jiasheng <jiasheng@iscas.ac.cn>
-Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] tracing: Add trace_trigger_soft_disabled() in front
- of trace_event_buffer_reserve() in trace_inject_entry()
-Message-ID: <20210903000246.425731d5@oasis.local.home>
-In-Reply-To: <1630639834-767471-1-git-send-email-jiasheng@iscas.ac.cn>
-References: <1630639834-767471-1-git-send-email-jiasheng@iscas.ac.cn>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231316AbhICEKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 00:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229621AbhICEKr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 00:10:47 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C57C061757
+        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 21:09:47 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id q21so7530641ljj.6
+        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 21:09:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=joW/G6DY+txuyPmVNEIlO2p6pd362DkeC8kCVshvDTc=;
+        b=ZIbvv2MoZCfOXe6LWEUxhC8fScArp+zt/1ot3m7EM6GACqj9dlCM7f5i4DhEqn8uYH
+         d74b3ix3sflk7mxX6JPQVLBF7rgk4eCJy+wgpyUBhPBMnDB49i8UHC6Gxp//bkLuZ6OW
+         8hfk1vHOiK1XmbwACEuRIqpduzex9euGg7Wkg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=joW/G6DY+txuyPmVNEIlO2p6pd362DkeC8kCVshvDTc=;
+        b=WDO/SXhmN66WiTQpvffqQJ5fKKaSYA2tClumCK7rGvrxrXAU7PYr17Er1iiOc3oseJ
+         yp8DoHmfvrA7k3DUooGrNj1Mm/hKEwWD463PF4dusTjPtl8XFUyyPFTiYx2fRmfjSXL2
+         P/ntLbnJuV9ZJfPkUXqP8vHQCChMf8R71lVpVzM8E8yyIszQvPg03ohZcUmzceV+6SBY
+         i2FD8QmAY8Bo8phN27t++zee7WvzwdrWM3NfkyGgHOVwrqJjekoGxnsh2riCOLymsqP0
+         MvFR811KSyi8VPuHc26hLsYEgpqMh80pK0Ro5b51xQ3zsxisloXl84HC5uI5aZIkwTBj
+         DCrA==
+X-Gm-Message-State: AOAM530aK24AHV3qzHpC6d0teyafAMZRTQBPcNy3cQKqSKGNAy6nZReu
+        JCiLu2adDUWu+Ypm2za7NWXyUCF41ESMIUno0vRUSw==
+X-Google-Smtp-Source: ABdhPJx4XKG0lvFDetGV90273eSD7bOwt7ysolxtpaJkRUK9uLWj4p8fL3g2ooVhI35FhJ7mJLx4mBVrJkVVhWz8scM=
+X-Received: by 2002:a2e:b16a:: with SMTP id a10mr1352765ljm.18.1630642185751;
+ Thu, 02 Sep 2021 21:09:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210901083215.25984-1-yunfei.dong@mediatek.com> <CAAEAJfDOt_GyDPojcj5P6Wou9HC2GC8YzRt2wYyqdrCOjfeOog@mail.gmail.com>
+In-Reply-To: <CAAEAJfDOt_GyDPojcj5P6Wou9HC2GC8YzRt2wYyqdrCOjfeOog@mail.gmail.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Fri, 3 Sep 2021 12:09:34 +0800
+Message-ID: <CAGXv+5Fr1gdeGFQnjjZ0JHf4sVanPb9QFqdYnrnmZ-ff8TrrdA@mail.gmail.com>
+Subject: Re: [PATCH v6, 00/15] Using component framework to support multi
+ hardware decode
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     Yunfei Dong <yunfei.dong@mediatek.com>,
+        Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Tomasz Figa <tfiga@google.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Irui Wang <irui.wang@mediatek.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  3 Sep 2021 03:30:34 +0000
-Jiang Jiasheng <jiasheng@iscas.ac.cn> wrote:
+On Fri, Sep 3, 2021 at 12:31 AM Ezequiel Garcia
+<ezequiel@vanguardiasur.com.ar> wrote:
+>
+> On Wed, 1 Sept 2021 at 05:32, Yunfei Dong <yunfei.dong@mediatek.com> wrote:
+> >
+> > This series adds support for multi hardware decode into mtk-vcodec, by first
+> > adding component framework to manage each hardware information: interrupt,
+> > clock, register bases and power. Secondly add core thread to deal with core
+> > hardware message, at the same time, add msg queue for different hardware
+> > share messages. Lastly, the architecture of different specs are not the same,
+> > using specs type to separate them.
+> >
+> > This series has been tested with both MT8183 and MT8173. Decoding was working
+> > for both chips.
+> >
+> > Patches 1~3 rewrite get register bases and power on/off interface.
+> >
+> > Patch 4 add component framework to support multi hardware.
+> >
+> > Patch 5 separate video encoder and decoder document
+> >
+> > Patches 6-15 add interfaces to support core hardware.
+> > ----
+> > This patch dependents on : "media: mtk-vcodec: support for MT8183 decoder"[1] and
+> > "Mediatek MT8192 clock support"[2].
+> >
+> > 1: Multi hardware decode is based on stateless decoder, MT8183 is the first time
+> > to add stateless decoder. Otherwise it will cause conflict. This patch will be
+> > accepted in 5.15[1].
+> >
+> > 2: The definition of decoder clocks are in mt8192-clk.h, this patch already in clk tree[2].
+> >
+> > [1]https://patchwork.linuxtv.org/project/linux-media/list/?series=5826
+> > [2]https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/commit/?h=clk-next&id=f35f1a23e0e12e3173e9e9dedbc150d139027189
+> > ----
+> > Changes compared with v5:
+> > -Add decoder hardware block diagram for patch 13/15
+> >
+>
+>
+> The discussion on v5 was still on-going, so sending this v6
+> is not helpful. The context for v5's discussion is now harder to find.
+>
+> Please avoid sending a new version without properly
+> discussing all the feedback, and without reaching consensus.
+> This is very important, please keep it in mind.
+>
+> Specifically, the feedback on v5 was NAK, with the request to avoid
+> using any async framework, and instead try to find a simpler solution.
+>
+> For instance, you can model things with a bus-like pattern,
+> which ties all the devices together, under a parent node.
+> This pattern is common in the kernel, the parent
+> node can use of_platform_populate or similar
+> (git grep of_platform_populate, you will see plenty of examples).
+>
+> You will still have to do some work to have the proper
+> regs resources, but this is doable. Each child is a device,
+> so it can have its own resources (clocks, interrupts, iommus).
 
-> Directly use trace_event_buffer_reserve() might be unsafe,
+AFAIK of_platform_populate doesn't guarantee the drivers actually
+probed (modules loaded late, missing modules, deferred probe, etc.),
+only that the devices are created, so you still need some sort of
+(async) mechanism to wait for the subdevices to be in operational
+state. Most of the examples using of_platform_populate are there
+to ensure that the parent device is operational before creating
+the sub-devices, not the other way around.
 
-How can it be unsafe?
 
-> as we can see from the trace_trigger_soft_disabled() of
-> 'include/linux/trace_events.h' that if the value of
-> file->flags is 256, the check in the trace_trigger_soft_disabled()
-> will be passed but actually shouldn't have.
-> Therefore, we suggest that trace_trigger_soft_disabled()
-> should be added in front of the trace_event_buffer_reserve()
-> in trace_inject_entry().
+ChenYu
 
-Do you understand what the trace_inject_entry() does?
 
-I'm not sure it makes sense to "soft disable" it.
-
-> 
-> Signed-off-by: Jiang Jiasheng <jiasheng@iscas.ac.cn>
-> ---
->  kernel/trace/trace_events_inject.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/kernel/trace/trace_events_inject.c b/kernel/trace/trace_events_inject.c
-> index c188045..6dfd3cd 100644
-> --- a/kernel/trace/trace_events_inject.c
-> +++ b/kernel/trace/trace_events_inject.c
-> @@ -21,6 +21,8 @@ trace_inject_entry(struct trace_event_file *file, void *rec, int len)
->  	void *entry;
->  
->  	rcu_read_lock_sched();
-> +	if (trace_trigger_soft_disabled(file))
-> +		return written;
-
-NACK!
-
-The above introduces a major bug. Bonus points if you can figure out
-what that is yourself.
-
--- Steve
-
->  	entry = trace_event_buffer_reserve(&fbuffer, file, len);
->  	if (entry) {
->  		memcpy(entry, rec, len);
-
+> You don't need any async framework.
+>
+>     vcodec_dec: vcodec_dec@16000000 {
+>         compatible = "mediatek,mt8192-vcodec-dec";
+>         reg = <something>;
+>         mediatek,scp = <&scp>;
+>         iommus = <&iommu0 M4U_PORT_L4_VDEC_MC_EXT>;
+>         dma-ranges = <0x1 0x0 0x0 0x40000000 0x0 0xfff00000>;
+>
+>         vcodec_lat@0x10000 {
+>             compatible = "mediatek,mtk-vcodec-lat";
+>             reg = <0x10000 0x800>;      /* VDEC_MISC */
+>             interrupts = <GIC_SPI 426 IRQ_TYPE_LEVEL_HIGH 0>;
+>             // etc
+>         };
+>
+>         vcodec_core@0x25000 {
+>            compatible = "mediatek,mtk-vcodec-core";
+>            reg = <0x25000 0x1000>;      /* VDEC_CORE_MISC */
+>            interrupts = <GIC_SPI 425 IRQ_TYPE_LEVEL_HIGH 0>;
+>            // etc
+>         };
+>     };
+>
+> Thanks,
+> Ezequiel
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
