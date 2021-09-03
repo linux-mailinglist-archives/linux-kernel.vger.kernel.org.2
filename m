@@ -2,110 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C264004B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE70C4004BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350411AbhICSPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 14:15:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50856 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349959AbhICSO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 14:14:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B4C160FDC;
-        Fri,  3 Sep 2021 18:13:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630692839;
-        bh=HV5QwvXd+G5X5BE1dhVVGio0bsaKoGZQ54JzrFuQYv0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lciq/IIhEguLoSiuOCa3XnH+5hiXq2Wu1ONakJhGocr7FJdzgxKE4kURLzk4xQ4VB
-         Y8/2+KZQSSO3t43Lp8CWIXOzwuPAEnzEp2vJVnsbgEi2aPjZVuwCd+3SZs2hPscwZa
-         XoXam/PdM0Bws8VmCfY0b8smn4vrsTBx72sfmECTcSE63UYe+gyPJmlF86RSY27gNs
-         JUvcpfmIrjM1PBLHsUOdJLZZUhdNMntp/mgpfmeIbB/OjxuPFfJox82Rk4p6LgLOsN
-         WSaPfB8bmkyKOiRk9tMp51gEu3vEPqTurOqCy2h4yWuvBCIdTJxEBp4HWECVcKIKQ4
-         MCQw79usdNxrg==
-Date:   Fri, 3 Sep 2021 19:13:26 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sameer Pujar <spujar@nvidia.com>
-Cc:     lgirdwood@gmail.com, robh+dt@kernel.org, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, catalin.marinas@arm.com, will@kernel.org,
-        perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
-        sharadg@nvidia.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 06/13] ASoC: tegra: Add Tegra210 based MVC driver
-Message-ID: <20210903181326.GP4932@sirena.org.uk>
-References: <1630056839-6562-1-git-send-email-spujar@nvidia.com>
- <1630056839-6562-7-git-send-email-spujar@nvidia.com>
+        id S235224AbhICSSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 14:18:31 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:56784 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231931AbhICSSa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 14:18:30 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 183IHQZD099054;
+        Fri, 3 Sep 2021 13:17:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1630693046;
+        bh=mgtbI7z2oZMDQrpBLW1Cw/cSN6DvX0dtcfuh1Bxyu/g=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=dfdRy9dBprHD+AQk0gKrSCBTIZQy7S8AdCpEf6N+61yjSrb14BXcnS3FCm9Nalld2
+         +CTOIsiQqgOm+5hn8rwjf2EkS+2g9PnkW9EISy5muj7+e920TLFcv5+X7urVIdGpHI
+         qOo9XL+K1yVQDzxnlDD2+PqrgirEk1or1iPLpdUU=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 183IHQpO055963
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 3 Sep 2021 13:17:26 -0500
+Received: from DFLE100.ent.ti.com (10.64.6.21) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 3
+ Sep 2021 13:17:26 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Fri, 3 Sep 2021 13:17:26 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 183IHPI8023084;
+        Fri, 3 Sep 2021 13:17:26 -0500
+Date:   Fri, 3 Sep 2021 23:47:24 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Parshuram Thombare <pthombar@cadence.com>
+CC:     <broonie@kernel.org>, <lukas@wunner.de>, <robh+dt@kernel.org>,
+        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <jpawar@cadence.com>,
+        <mparab@cadence.com>, Konrad Kociolek <konrad@cadence.com>
+Subject: Re: [PATCH v3 1/2] spi: cadence: add dt-bindings documentation for
+ Cadence XSPI controller
+Message-ID: <20210903181722.ukarfanyew2b7yoz@ti.com>
+References: <1630499755-18751-1-git-send-email-pthombar@cadence.com>
+ <1630499829-20059-1-git-send-email-pthombar@cadence.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NDuspjMMC1Ui5ypn"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <1630056839-6562-7-git-send-email-spujar@nvidia.com>
-X-Cookie: Darth Vader sleeps with a Teddywookie.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1630499829-20059-1-git-send-email-pthombar@cadence.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---NDuspjMMC1Ui5ypn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Aug 27, 2021 at 03:03:52PM +0530, Sameer Pujar wrote:
-> The Master Volume Control (MVC) provides gain or attenuation to a digital
-> signal path. It can be used in input or output signal path for per-stream
-> volume control or it can be used as master volume control. The MVC block
-> has one input and one output. The input digital stream can be mono or
-> multi-channel (up to 7.1 channels) stream. An independent mute control is
-> also included in the MVC block.
-
-Looks like it's also got a little bit of other DSP in there (a simple
-EQ?).  Not that it really matters.
-
-> +	if (reg == TEGRA210_MVC_CTRL) {
-> +		u32 val;
-> +		u8 mute_mask;
-
-> +	} else {
-> +		u8 chan = (reg - TEGRA210_MVC_TARGET_VOL) / REG_SIZE;
-> +		s32 val = mvc->volume[chan];
-
-It's not clear to me why we're using the same callbacks for the volume
-and mute settings - there's no shared code on the read path and only a
-tiny bit on the write path.
-
-> +	err |= regmap_update_bits(mvc->regmap, TEGRA210_MVC_SWITCH,
-> +			TEGRA210_MVC_VOLUME_SWITCH_MASK,
-> +			TEGRA210_MVC_VOLUME_SWITCH_TRIGGER);
+On 01/09/21 02:37PM, Parshuram Thombare wrote:
+> Add DT binding for Cadence's XSPI controller driver.
+> 
+> Signed-off-by: Konrad Kociolek <konrad@cadence.com>
+> Signed-off-by: Jayshri Pawar <jpawar@cadence.com>
+> Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
+> ---
+>  .../devicetree/bindings/spi/cdns,xspi.yaml         | 66 ++++++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/cdns,xspi.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/cdns,xspi.yaml b/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
+> new file mode 100644
+> index 0000000..e52d6fa
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/cdns,xspi.yaml
+> @@ -0,0 +1,66 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +# Copyright 2020-21 Cadence
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/spi/cdns,xspi.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 > +
-> +end:
-> +	pm_runtime_put(cmpnt->dev);
-> +	return err;
-> +}
+> +title: Cadence XSPI Controller
+> +
+> +maintainers:
+> +  - Parshuram Thombare <pthombar@cadence.com>
+> +
+> +description: |
+> +  The XSPI controller allows SPI protocol communication in
+> +  single, dual, quad or octal wire transmission modes for
+> +  read/write access to slaves such as SPI-NOR flash.
 
-_put() should return 0 if there's no change or 1 for a change.
+This needs to be a "subclass" of the spi-controller.yaml binding.
 
-> +	/* SW reset */
-> +	regmap_write(mvc->regmap, TEGRA210_MVC_SOFT_RESET, 1);
+allOf:
+  - $ref: spi-controller.yaml#
 
-What about all the cached values in the regmap, won't they get out of
-sync?  Especially things like volume and mute, it looks like the mute
-just gets written directly to the regmap and not otherwise saved.
+> +
+> +properties:
+> +  compatible:
+> +    const: cdns,xspi-nor
+> +
+> +  reg:
+> +    items:
+> +      - description: address and length of the controller register set
+> +      - description: address and length of the Slave DMA data port
+> +      - description: address and length of the auxiliary registers
+> +
+> +  reg-names:
+> +    items:
+> +      - const: xspi-iobase
+> +      - const: xspi-sdmabase
+> +      - const: xspi-auxbase
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    xspi: spi@a0010000 {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +        compatible = "cdns,xspi-nor";
+> +        reg = <0x0 0xa0010000 0x0 0x10000>,
+> +              <0x0 0xb0000000 0x0 0x10000>,
+> +              <0x0 0xa0020000 0x0 0x10000>;
+> +        reg-names = "xspi-iobase", "xspi-sdmabase", "xspi-auxbase";
+> +        interrupts = <0 90 IRQ_TYPE_LEVEL_HIGH>;
+> +        interrupt-parent = <&gic>;
+> +        mt35xu512@0 {
 
---NDuspjMMC1Ui5ypn
-Content-Type: application/pgp-signature; name="signature.asc"
+Node name should be flash@0.
 
------BEGIN PGP SIGNATURE-----
+> +            compatible = "spi-nor", "micron,mt35xu512";
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEyZcUACgkQJNaLcl1U
-h9AgMggAha/hIL9322l4CAz3Clg/xsZLabDdWCuHA9GA1Ze39XOrtPyBmwNyBOyj
-Re3PVvnBfeCzpGooqKXpTcdKaxiqBnF2ewOPcTLNrG3gnuAYR8X2NDbzFHd6rr3e
-frclpdZMOypNILokwrytDJG1ssscBTapV5KC3xjwQjqSAp2ckVRGgg+5SE++B1BV
-yrZuTVHJtmK3Sk78YYcYizgOndIGAOFHX48tLa81LaiSWUlePraGXtEXa8pzmSN0
-uJkPyzGdiTK4bLBJgC75bOMuy/oI2Q+nsG/K6+grY7VjcuZaS94qsjngFJCdgz4U
-U3mbKcLaeF8Ov8lIpr4tKJn0THvJdw==
-=uPdC
------END PGP SIGNATURE-----
+These compatibles are arbitrary and undocumented. You probably just need 
+"jedec,spi-nor". If you need anything else, you need to justify why.
 
---NDuspjMMC1Ui5ypn--
+Please run dt_binding_check, it should point this out. See [0].
+
+> +            spi-max-frequency = <75000000>;
+> +            reg = <0>;
+> +        };
+> +        mt35xu512@1 {
+> +            compatible = "spi-nor", "micron,mt35xu512";
+
+Same as above.
+
+> +            spi-max-frequency = <75000000>;
+> +            reg = <1>;
+> +        };
+> +    };
+> -- 
+> 2.7.4
+> 
+
+[0] https://www.kernel.org/doc/html/latest/devicetree/bindings/writing-schema.html#testing
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
