@@ -2,103 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C644004FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C20DB400500
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348737AbhICSlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 14:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232927AbhICSlq (ORCPT
+        id S1349336AbhICSmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 14:42:03 -0400
+Received: from mail-pf1-f174.google.com ([209.85.210.174]:36678 "EHLO
+        mail-pf1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235623AbhICSmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 14:41:46 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159BDC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 11:40:46 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso168476otv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 11:40:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to;
-        bh=g+/vVt6JhLLpX1/epBxESaopp8FQHhl77WcdHs+7WkE=;
-        b=S43gOar878bmf2S/ybLy8S+qmYwiuKKN1YQkjyxZG7PrBlEr3oytcmYjl8Zvz/gTwh
-         YbECImb7dEdGWbCX75zbh/ITV1FIttFEputYDhGJvuRSvPJT4vICkU9+05sCPwKXXcHa
-         DPSw9qv85JWv8adTg+5LDsvHRDpraHZeLUVZ0=
+        Fri, 3 Sep 2021 14:42:01 -0400
+Received: by mail-pf1-f174.google.com with SMTP id m26so199608pff.3;
+        Fri, 03 Sep 2021 11:41:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to;
-        bh=g+/vVt6JhLLpX1/epBxESaopp8FQHhl77WcdHs+7WkE=;
-        b=LUvlgdqs8soA6qTo4tx0mxfbgVjEOrGSAa4TNVzoyz7zuhgoCMOtJRUfEYyKBfd2El
-         OYsuQuyuSYUe/njxua5kTZcAItHB3ZFVv6cW4K7xDaslpIrlnXK7cQNHDHwGa3NiXDvW
-         znnenYpkqen2eRVEhn+aUG3Le3Di9DfYE8UW4NBwKq/Rhf0rI1zwWopzov//cmT/ma4A
-         Ey7ldOc0qifq3fzihDiOAhPI5irwe2V1qD40qFMa0pexy6n4sxRmHVkya05hknvvsVZs
-         +sWWMkFIcM79hfn2lN/TtwiI9oF1t55EPYKgTLJAf/HdTz+p0aKb1lwjK75pay0Es7j7
-         tXgA==
-X-Gm-Message-State: AOAM530xRPx5uziCQhnVR0GjWKxin6yUklixkffk1r4EiAGVdc7T8yO5
-        C17bK9gI0w2762/DjR7wtQFkFxLU/bqP9kOGU2HwC7DY2l4=
-X-Google-Smtp-Source: ABdhPJycPSV0nBgcq0hjBFC/o2cbbIgqzAp7Pb8hkvRUJrUsZwaG0a7ygKqi477f1CU9FYwgWjubKMEef81F9cz435c=
-X-Received: by 2002:a05:6830:719:: with SMTP id y25mr380633ots.77.1630694445434;
- Fri, 03 Sep 2021 11:40:45 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 3 Sep 2021 14:40:45 -0400
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9kPuIw929oCM1hqjF6X0SykrffHZeMAV4qwiEqQpqlM=;
+        b=BgjtggZTslnnwvdyD/SXLFxsloepagk62cv0/tzYi77T3haRXMH5Yagbmy0bRDBDjK
+         MxEzKXwZOwnX7VTk4laTRXNH5uYQ7u5AWecSD6GTfON0d19Kr+EC0jka7Cy/JkK8UmRw
+         ukzhfpfXqKp9lu7gfTiH0u0ekw4/2cVXtrSPsNT984XtDsOKhifg2eiybBZVu0ftVqqR
+         XtHk5DhBcLRml5Cr7wPyw/PHLHi5GVNdbpRF2ZT3QsQOmqx9ZxjvX5Sd8C7UW1i1QQdK
+         a5gbYddxEjOoV3fbYzfcF/USVCBbk6tPyr2u9jVBhChi4hOUrJL4JV8iPmd5bo8Knfrs
+         zpAA==
+X-Gm-Message-State: AOAM5306MnVj6nvmB5xkirtWth+gZSXdCXOFXIROhFbLGYvl1YOO1b3h
+        JWj3lY/C4eaQG8Qw2wi+jaWBIE5ZoeQ=
+X-Google-Smtp-Source: ABdhPJyz1h2DoGc/xJZP3bPKJyUeJuf87D1bJQ4ZAsjg4pOPDrls990UTw78VYyy+bxgODCmcNmpCg==
+X-Received: by 2002:aa7:8d46:0:b029:3cd:c2fd:fea5 with SMTP id s6-20020aa78d460000b02903cdc2fdfea5mr218631pfe.31.1630694460564;
+        Fri, 03 Sep 2021 11:41:00 -0700 (PDT)
+Received: from fedora ([104.192.206.22])
+        by smtp.gmail.com with ESMTPSA id c26sm109821pgl.10.2021.09.03.11.40.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 11:40:59 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 14:40:58 -0400
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Sandeen <sandeen@sandeen.net>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [GIT PULL] xfs: new code for 5.15
+Message-ID: <YTJsOoqaI3FiTkZD@fedora>
+References: <20210831211847.GC9959@magnolia>
+ <CAHk-=whyVPgkAfARB7gMjLEyu0kSxmb6qpqfuE_r6QstAzgHcA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210903100153.9137-1-srivasam@codeaurora.org>
-References: <20210903100153.9137-1-srivasam@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Fri, 3 Sep 2021 14:40:45 -0400
-Message-ID: <CAE-0n50=vL0MHHHkc22ahrqqD3DskFXZzFU8qjU8=EY1kZ+__Q@mail.gmail.com>
-Subject: Re: [PATCH] ASoC: qcom: lpass-platform: Reset irq clear reg post
- handling interrupts
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, alsa-devel@alsa-project.org,
-        bgoswami@codeaurora.org, bjorn.andersson@linaro.org,
-        broonie@kernel.org, devicetree@vger.kernel.org,
-        judyhsiao@chromium.org, lgirdwood@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        perex@perex.cz, plai@codeaurora.org, robh+dt@kernel.org,
-        rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org,
-        tiwai@suse.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whyVPgkAfARB7gMjLEyu0kSxmb6qpqfuE_r6QstAzgHcA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Srinivasa Rao Mandadapu (2021-09-03 03:01:53)
-> Update interrupt clear register with reset value after addressing
-> all interrupts. This is to fix playback or capture hanging issue in
-> simultaneous playback and capture usecase.
->
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
+Hello,
 
-Any Fixes tag?
+On Thu, Sep 02, 2021 at 08:47:42AM -0700, Linus Torvalds wrote:
+> On Tue, Aug 31, 2021 at 2:18 PM Darrick J. Wong <djwong@kernel.org> wrote:
+> >
+> > As for new features: we now batch inode inactivations in percpu
+> > background threads, which sharply decreases frontend thread wait time
+> > when performing file deletions and should improve overall directory tree
+> > deletion times.
+> 
+> So no complaints on this one, but I do have a reaction: we have a lot
+> of these random CPU hotplug events, and XFS now added another one.
+> 
+> I don't see that as a problem, but just the _randomness_ of these
+> callbacks makes me go "hmm". And that "enum cpuhp_state" thing isn't
+> exactly a thing of beauty, and just makes me think there's something
+> nasty going on.
+> 
+> For the new xfs usage, I really get the feeling that it's not that XFS
+> actually cares about the CPU states, but that this is literally tied
+> to just having percpu state allocated and active, and that maybe it
+> would be sensible to have something more specific to that kind of use.
+> 
+> We have other things that are very similar in nature - like the page
+> allocator percpu caches etc, which for very similar reasons want cpu
+> dead/online notification.
+> 
+> I'm only throwing this out as a reaction to this - I'm not sure
+> another interface would be good or worthwhile, but that "enum
+> cpuhp_state" is ugly enough that I thought I'd rope in Thomas for CPU
+> hotplug, and the percpu memory allocation people for comments.
+> 
+> IOW, just _maybe_ we would want to have some kind of callback model
+> for "percpu_alloc()" and it being explicitly about allocations
+> becoming available or going away, rather than about CPU state.
+> 
+> Comments?
+> 
 
->  sound/soc/qcom/lpass-platform.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-> index f9df76d37858..1a0a4b0b1a03 100644
-> --- a/sound/soc/qcom/lpass-platform.c
-> +++ b/sound/soc/qcom/lpass-platform.c
-> @@ -749,6 +749,12 @@ static irqreturn_t lpass_platform_lpaif_irq(int irq, void *data)
->                 }
->         }
->
-> +       rv = regmap_write(drvdata->lpaif_map, LPAIF_IRQCLEAR_REG(v, LPAIF_IRQ_PORT_HOST), 0x0);
-> +       if (rv) {
-> +               pr_err("error writing to irqstat reg: %d\n", rv);
-> +               return IRQ_NONE;
+I think there are 2 pieces here from percpu's side:
+A) Onlining and offlining state related to a percpu alloc.
+B) Freeing backing memory of an allocation wrt hot plug.
 
-I was thinking we should return IRQ_HANDLED still, but then I guess
-failing to clear the irq be treated as a spurious irq so that if we fail
-enough times we'll shut off the irq at the irqchip. Things are going bad
-if the write fails.
+An RFC was sent out for B) in [1] and you need A) for B).
+I can see percpu having a callback model for basic allocations that are
+independent, but for anything more complex, that subsystem would need to
+register with hotplug anyway. It appears percpu_counter already has hot
+plug support. percpu_refcount could be extended as well, but more
+complex initialization like the runqueues and slab related allocations
+would require work. In short, yes I think A) is doable/reasonable.
 
-> +       }
-> +
->         return IRQ_HANDLED;
->  }
->
+Freeing the backing memory for A) seems trickier. We would have to
+figure out a clean way to handle onlining/offlining racing with new
+percpu allocations (adding or removing pages for the corresponding cpu's
+chunk). To support A), init and onlining/offlining can be separate
+phases, but for B) init/freeing would have to be rolled into
+onlining/offlining.
+
+Without freeing, it's not incorrect for_each_online_cpu() to read a dead
+cpu's percpu values, but with freeing it does.
+
+I guess to summarize, A) seems like it might be a good idea with
+init/destruction happening at allocation/freeing times. I'm a little
+skeptical of B) in terms of complexity. If y'all think it's a good idea
+I can look into it again.
+
+[1] https://lore.kernel.org/lkml/20210601065147.53735-1-bharata@linux.ibm.com/
+
+Thanks,
+Dennis
+
+> > Lastly, with this release, two new features have graduated to supported
+> > status: inode btree counters (for faster mounts), and support for dates
+> > beyond Y2038.
+> 
+> Oh, I had thought Y2038 was already a non-issue for xfs. Silly me.
+> 
+>               Linus
