@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031A63FFEC0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 227DE3FFEB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347327AbhICLLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 07:11:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55000 "EHLO mail.kernel.org"
+        id S1348904AbhICLLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 07:11:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348679AbhICLLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1348672AbhICLLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Sep 2021 07:11:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B74D4610E7;
+Received: by mail.kernel.org (Postfix) with ESMTPS id ADDEE610E5;
         Fri,  3 Sep 2021 11:10:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1630667406;
-        bh=b6DmMxFQoRat6nGxgdS77F7cJDlwEUEPp+gDtbPf0uw=;
+        bh=ldQm8zVTHmrAm3Pi4juEvFQko80QHQ20RcWra5CgX+s=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ZYcJgG84S5W/URNHOmZFeBRgazNh5jx/LmCOzENB2ryitVyMSg5hO7H6/86vkrGFv
-         InhFKW2P6nIrYfNTqYcOr2QggmTMHd1Zq2MvmPgOYEYyV/ymTOJ7UfGSjj+90rjuiZ
-         Tit8lPi7Ew1azPTES/gnuWHyOqPenQFJIopG8UatTQYez8D4K7F8QXkPU1LlDeEfeb
-         7wHEcSs8RINHewPKGA6vsLDsyz1GnmPt5O2tFRNmo+1/dju1TJ+sTQcIHW0kTxiPrT
-         YLewAg5DQYRxUsPEinuFQ1pUHP11KFztIHlooNBR2ZvJIwBXPszVTgE2t975xDTjbT
-         wxKSNP5bxbCGw==
+        b=SPPXVVQ3ftWkqTMdSQRTc09epXM3jd9dE2n+YvwSW66zIQGAc0FnElBiXbQRlw3h5
+         m7u+N3kdPawP1flfjF87nqZ2o09aBw1LQw6//+Cfkp67nZt71ERa+4hhLJNgWjaM7Q
+         wchGFNmTkVx9S2d6JDyi2f79/uE1uZhb90cAcn1DURwpfOPdI6n5g/5Qs9Mu6+p1J7
+         YaBXHotDgCh2fliKTZW09F77PJC1NeaT/TIarSX4NL0cLHpRmJ32C1LIWs0vI19LY6
+         jVHg54GM1eIcd210ztYMQZN/xY3FV0AZAeHVpPe3003HNkh4u0Lt9jigyrK8pn9pO5
+         MtSpDi2onE97A==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B048460A49;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A593260A2F;
         Fri,  3 Sep 2021 11:10:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: 3com: 3c59x: clean up inconsistent indenting
+Subject: Re: [PATCH] skbuff: clean up inconsistent indenting
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163066740671.18620.507463871873218138.git-patchwork-notify@kernel.org>
+Message-Id: <163066740667.18620.16941532048366358544.git-patchwork-notify@kernel.org>
 Date:   Fri, 03 Sep 2021 11:10:06 +0000
-References: <20210902221745.56194-1-colin.king@canonical.com>
-In-Reply-To: <20210902221745.56194-1-colin.king@canonical.com>
+References: <20210902225623.58209-1-colin.king@canonical.com>
+In-Reply-To: <20210902225623.58209-1-colin.king@canonical.com>
 To:     Colin King <colin.king@canonical.com>
-Cc:     klassert@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,19 +46,19 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Thu,  2 Sep 2021 23:17:45 +0100 you wrote:
+On Thu,  2 Sep 2021 23:56:23 +0100 you wrote:
 > From: Colin Ian King <colin.king@canonical.com>
 > 
-> There is a statement that is not indented correctly, add in the
-> missing tab.
+> There is a statement that is indented one character too deeply,
+> clean this up.
 > 
 > Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - net: 3com: 3c59x: clean up inconsistent indenting
-    https://git.kernel.org/netdev/net/c/743238892156
+  - skbuff: clean up inconsistent indenting
+    https://git.kernel.org/netdev/net/c/c645fe9bf6ae
 
 You are awesome, thank you!
 --
