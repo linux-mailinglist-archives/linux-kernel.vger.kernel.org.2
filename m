@@ -2,56 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1FD3FFE89
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 12:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C45A3FFE85
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 12:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245633AbhICK6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 06:58:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
+        id S1348542AbhICK4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 06:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbhICK6f (ORCPT
+        with ESMTP id S1348440AbhICK4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 06:58:35 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3EEC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 03:57:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pH6lyDsQLhgwMRLaWAWREDHIGMEyG56GDfi7GMO4tkM=; b=R+d22mg7A8AZCCfbCSmQhdRSAz
-        bTpNJ84Bo4LuaADHlzUZuChvW7X6peHqeJZK64Ng1y1zh13tojjJakiGQhuWh5l51rWB+GWeJLO4X
-        fMb3Sw9Q+hq88cEJhZAa0znvoiJ9JFUV1gu1qPw6DQaOYZ22W9a2m/6BLCuJfDKlsjHYabGykiSAM
-        TAucwNgLoblRVqejNTzXAEozMjho5QTWTR8pwNt1s1RYQC19XHVamkZFnObK62O5UMLuX3TZEKLTn
-        bQVMP/J6iNJNBRomPkRC9e5zokLZ33WNNxo6ehF7CA6loMkxwt1m9rnELq4tDuCb8KZa0Qp35BRIX
-        E0pp7O4A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mM6qm-004NOh-Fv; Fri, 03 Sep 2021 10:56:17 +0000
-Date:   Fri, 3 Sep 2021 11:55:12 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Liam Howlett <liam.howlett@oracle.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Michel Lespinasse <walken.cr@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v2] mmap_lock: Change trace and locking order
-Message-ID: <YTH/EHbVT+OLv4O4@casper.infradead.org>
-References: <20210903022041.1843024-1-Liam.Howlett@oracle.com>
+        Fri, 3 Sep 2021 06:56:19 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D358C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 03:55:19 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 12:55:16 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630666518;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QvN6IMMsP49Bv/0k51LM4SGpirebIiS+8hkYgQxZAo0=;
+        b=a6B8zwmAGGj7Hv50J3mZS25k0xsB6m/R3A0jgyb2dKbn4PU67QvVK07bphlzHQBXirsnGc
+        Zg06V9AOo+CXTARgoXcsiyNCthglMnCO1oumN6IGWJnSqw3WEp0y/CCR0KW0bMQl0I5bRy
+        DSFhi2H/5v1EOqhVngYHLSY8DQrsAA4tcg9DUOTlJOgSos92UenPiIq1G5Sa5xdOOwNlQV
+        ojZAJGk3J77aF7kr3Fw6yazmcnA6qdYe2VYx/O4QAFPW3krc/ZRfB+KWZMgQLIJy3D7Maq
+        9CMn//K7vXYwGU7BHg3CWZpyuQ2A91df74nnWOaFzxLYzsLzoXbH8g6HcFX24Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630666518;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QvN6IMMsP49Bv/0k51LM4SGpirebIiS+8hkYgQxZAo0=;
+        b=cUfwObwvOi6ymRUtZylYFl4FOTmyK52l5i6dOlUDCcLnkWoXrRn+MBaaW2a3/oyRppuhfQ
+        FlreO8BHC05ZGBBA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Davidlohr Bueso <dave@stgolabs.net>
+Cc:     tglx@linutronix.de, peterz@infradead.org, mingo@kernel.org,
+        rostedt@goodmis.org, longman@redhat.com, boqun.feng@gmail.com,
+        linux-kernel@vger.kernel.org, Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH 2/2] locking/rwbase_rt: Lockless reader waking up a writer
+Message-ID: <20210903105516.tu33jhdhwzdwpb6g@linutronix.de>
+References: <20210901222825.6313-1-dave@stgolabs.net>
+ <20210901222825.6313-3-dave@stgolabs.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210903022041.1843024-1-Liam.Howlett@oracle.com>
+In-Reply-To: <20210901222825.6313-3-dave@stgolabs.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 02:21:05AM +0000, Liam Howlett wrote:
-> Print to the trace log before releasing the lock to avoid racing with
-> other trace log printers of the same lock type.
-> 
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-> Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+On 2021-09-01 15:28:25 [-0700], Davidlohr Bueso wrote:
+> diff --git a/kernel/locking/rwbase_rt.c b/kernel/locking/rwbase_rt.c
+> index 4ba15088e640..3444bc709973 100644
+> --- a/kernel/locking/rwbase_rt.c
+> +++ b/kernel/locking/rwbase_rt.c
+> @@ -141,6 +141,7 @@ static void __sched __rwbase_read_unlock(struct rwbase_rt *rwb,
+>  {
+>  	struct rt_mutex_base *rtm = &rwb->rtmutex;
+>  	struct task_struct *owner;
+> +	DEFINE_WAKE_Q(wake_q);
+>  
+>  	raw_spin_lock_irq(&rtm->wait_lock);
+>  	/*
+> @@ -151,9 +152,10 @@ static void __sched __rwbase_read_unlock(struct rwbase_rt *rwb,
+>  	 */
+>  	owner = rt_mutex_owner(rtm);
+>  	if (owner)
+> -		wake_up_state(owner, state);
+> +		wake_q_add(&wake_q, owner);
+>  
+>  	raw_spin_unlock_irq(&rtm->wait_lock);
+> +	wake_up_q_state(&wake_q, state);
+>  }
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+You keep the same wake_q in task_struct. Don't you miss states/wake ups
+if a task needs both wakes? one for TASK_NORMAL and one for
+TASK_UNINTERRUPTIBLE?
+Side note: This wake up happens in an-IRQ off region. So there no
+PI-boosting dance around as it would be the case with a sleeping lock.
+
+Sebastian
