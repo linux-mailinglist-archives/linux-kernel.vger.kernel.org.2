@@ -2,141 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FDA3FFC76
+	by mail.lfdr.de (Postfix) with ESMTP id 0B3D33FFC75
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348545AbhICI5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:57:30 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:40695 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348461AbhICI51 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:57:27 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4H1BVL6bMpz9sTr;
-        Fri,  3 Sep 2021 10:56:26 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id K3RKjrD-w8d1; Fri,  3 Sep 2021 10:56:26 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4H1BVL5L22z9sTN;
-        Fri,  3 Sep 2021 10:56:26 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 93B3B8B8D5;
-        Fri,  3 Sep 2021 10:56:26 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id DZQ-ShpYtKAd; Fri,  3 Sep 2021 10:56:26 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0DFFA8B764;
-        Fri,  3 Sep 2021 10:56:26 +0200 (CEST)
-Subject: Re: [PATCH v2 3/5] signal: Add unsafe_copy_siginfo_to_user()
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <fd7938d94008711d441551c06b25a033669a0618.1629732940.git.christophe.leroy@csgroup.eu>
- <a94be61f008ab29c231b805e1a97e9dab35cb0cc.1629732940.git.christophe.leroy@csgroup.eu>
- <87mtoux1hi.fsf@disp2133>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <2715792c-eb10-eeb8-3d49-24486abe953b@csgroup.eu>
-Date:   Fri, 3 Sep 2021 10:56:14 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1348525AbhICI52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:57:28 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:49324 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348524AbhICI50 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 04:57:26 -0400
+Date:   Fri, 03 Sep 2021 08:56:25 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630659386;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4zzbUu60L+uoU3jPBVr6mkR+KvkuFv2/ifguhktpj8A=;
+        b=VDzykxx4rj72nQ2f6Kp1QvPiVMtC7lhiK9f1GX9cySevd6Q8Aa8fiKh2vkxCFPJTFQc1ce
+        APxT2AbvK7AdwLKrbSB4A8e9TyG1IOr7FLHjM1Jwp2hJQmFeOH7fPFQRB/BYZ7keU7ZNM6
+        UtlHPGhUWa986m/gjb3cR7v3N+09A1vppFcmwx1C9Wb/ZEda9vclI9KfKew44ORofCW1eq
+        ZIFBUAfF5bE2iyjZKfgrJQbtMy7XFTTWxjlf8UcP0/QDiPIogS7dXdkqNYgufTgN55+ACn
+        QtrBKJKtuhgBx2W08kFHqu9lywVQGrCnovlmvqiF74WnlzvqXpqx+OyIgsPk6A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630659386;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4zzbUu60L+uoU3jPBVr6mkR+KvkuFv2/ifguhktpj8A=;
+        b=dW1PppzdS/v2Ml/1IU5pQg8to0ZNlfDEZDJbqpWCJW8/JTw7aEGffv3IhrBNQn/53WtUGi
+        PY9Rp4cOVenxruAg==
+From:   "irqchip-bot for Marc Zyngier" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-fixes] Documentation: Fix irq-domain.rst build warning
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Marc Zyngier <maz@kernel.org>, tglx@linutronix.de
+In-Reply-To: <20210903085343.923036-1-maz@kernel.org>
+References: <20210903085343.923036-1-maz@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <87mtoux1hi.fsf@disp2133>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Message-ID: <163065938533.25758.4368842802000552625.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the irq/irqchip-fixes branch of irqchip:
 
+Commit-ID:     0ddc5e55e6f1da1286fb2646f4248bf7da31a601
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/0ddc5e55e6f1da1286fb2646f4248bf7da31a601
+Author:        Marc Zyngier <maz@kernel.org>
+AuthorDate:    Fri, 03 Sep 2021 09:29:07 +01:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Fri, 03 Sep 2021 09:54:15 +01:00
 
-Le 02/09/2021 à 20:43, Eric W. Biederman a écrit :
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> 
->> In the same spirit as commit fb05121fd6a2 ("signal: Add
->> unsafe_get_compat_sigset()"), implement an 'unsafe' version of
->> copy_siginfo_to_user() in order to use it within user access blocks.
->>
->> For that, also add an 'unsafe' version of clear_user().
-> 
-> Looking at your use cases you need the 32bit compat version of this
-> as well.
-> 
-> The 32bit compat version is too complicated to become a macro, so I
-> don't think you can make this work correctly for the 32bit compat case.
+Documentation: Fix irq-domain.rst build warning
 
-When looking into patch 5/5 that you nacked, I think you missed the fact that we keep using 
-copy_siginfo_to_user32() as it for the 32 bit compat case.
+Correctly escape the * not to be used as emphasis. Also take this
+opportunity to clarify the fate of the rest of the legacy APIs.
 
-> 
-> Probably-Not-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> 
-> Eric
-> 
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>   include/linux/signal.h  | 15 +++++++++++++++
->>   include/linux/uaccess.h |  1 +
->>   kernel/signal.c         |  5 -----
->>   3 files changed, 16 insertions(+), 5 deletions(-)
->>
->> diff --git a/include/linux/signal.h b/include/linux/signal.h
->> index 3454c7ff0778..659bd43daf10 100644
->> --- a/include/linux/signal.h
->> +++ b/include/linux/signal.h
->> @@ -35,6 +35,21 @@ static inline void copy_siginfo_to_external(siginfo_t *to,
->>   int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from);
->>   int copy_siginfo_from_user(kernel_siginfo_t *to, const siginfo_t __user *from);
->>   
->> +static __always_inline char __user *si_expansion(const siginfo_t __user *info)
->> +{
->> +	return ((char __user *)info) + sizeof(struct kernel_siginfo);
->> +}
->> +
->> +#define unsafe_copy_siginfo_to_user(to, from, label) do {		\
->> +	siginfo_t __user *__ucs_to = to;				\
->> +	const kernel_siginfo_t *__ucs_from = from;			\
->> +	char __user *__ucs_expansion = si_expansion(__ucs_to);		\
->> +									\
->> +	unsafe_copy_to_user(__ucs_to, __ucs_from,			\
->> +			    sizeof(struct kernel_siginfo), label);	\
->> +	unsafe_clear_user(__ucs_expansion, SI_EXPANSION_SIZE, label);	\
->> +} while (0)
->> +
->>   enum siginfo_layout {
->>   	SIL_KILL,
->>   	SIL_TIMER,
->> diff --git a/include/linux/uaccess.h b/include/linux/uaccess.h
->> index c05e903cef02..37073caac474 100644
->> --- a/include/linux/uaccess.h
->> +++ b/include/linux/uaccess.h
->> @@ -398,6 +398,7 @@ long strnlen_user_nofault(const void __user *unsafe_addr, long count);
->>   #define unsafe_put_user(x,p,e) unsafe_op_wrap(__put_user(x,p),e)
->>   #define unsafe_copy_to_user(d,s,l,e) unsafe_op_wrap(__copy_to_user(d,s,l),e)
->>   #define unsafe_copy_from_user(d,s,l,e) unsafe_op_wrap(__copy_from_user(d,s,l),e)
->> +#define unsafe_clear_user(d, l, e) unsafe_op_wrap(__clear_user(d, l), e)
->>   static inline unsigned long user_access_save(void) { return 0UL; }
->>   static inline void user_access_restore(unsigned long flags) { }
->>   #endif
->> diff --git a/kernel/signal.c b/kernel/signal.c
->> index a3229add4455..83b5971e4304 100644
->> --- a/kernel/signal.c
->> +++ b/kernel/signal.c
->> @@ -3261,11 +3261,6 @@ enum siginfo_layout siginfo_layout(unsigned sig, int si_code)
->>   	return layout;
->>   }
->>   
->> -static inline char __user *si_expansion(const siginfo_t __user *info)
->> -{
->> -	return ((char __user *)info) + sizeof(struct kernel_siginfo);
->> -}
->> -
->>   int copy_siginfo_to_user(siginfo_t __user *to, const kernel_siginfo_t *from)
->>   {
->>   	char __user *expansion = si_expansion(to);
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210903085343.923036-1-maz@kernel.org
+---
+ Documentation/core-api/irq/irq-domain.rst | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/core-api/irq/irq-domain.rst b/Documentation/core-api/irq/irq-domain.rst
+index 6979b4a..9c0e875 100644
+--- a/Documentation/core-api/irq/irq-domain.rst
++++ b/Documentation/core-api/irq/irq-domain.rst
+@@ -175,9 +175,10 @@ for IRQ numbers that are passed to struct device registrations.  In that
+ case the Linux IRQ numbers cannot be dynamically assigned and the legacy
+ mapping should be used.
+ 
+-As the name implies, the *_legacy() functions are deprecated and only
++As the name implies, the \*_legacy() functions are deprecated and only
+ exist to ease the support of ancient platforms. No new users should be
+-added.
++added. Same goes for the \*_simple() functions when their use results
++in the legacy behaviour.
+ 
+ The legacy map assumes a contiguous range of IRQ numbers has already
+ been allocated for the controller and that the IRQ number can be
