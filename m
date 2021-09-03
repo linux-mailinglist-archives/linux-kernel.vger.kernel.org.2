@@ -2,138 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA708400183
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA86340018A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349248AbhICOvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:51:21 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:39497 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233218AbhICOvT (ORCPT
+        id S1349476AbhICOxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233407AbhICOxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:51:19 -0400
+        Fri, 3 Sep 2021 10:53:16 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8D0C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 07:52:16 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id y18so7089557ioc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 07:52:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3udFRxofKZfXAVfj0Vy1bL0zZn5CBEQ0+qj9/ataYlc=;
+        b=QdozeIshGA7sxkdc/vcTuNDjWfebXr7Ir8rVLiuOelk9XRqXTCImRMf6zf1U5QBa57
+         a6SM0UsM9nLsHCHoMdnDSdw05/Vs78HxTxqI6zFLn2rU+2WNwV7C628ybB/CXnQowtkG
+         kyD0wGydATFcGqXqMAqdX3t3KgUgKnhKimrdOr86DNBz1k+agA1S4HqO0stgZRLn09vq
+         ayTvBEVobghURDLw9t+s+BE+reEciBHbw55G/1TSmBItz8+LVjg4pPmTzArDSBzQIl7i
+         8XmScioM7PwcWrhMA2TdsKkdvZ7wynv0wSsjTRAY62WNHHu1uuekSdlNBXXDPVj2JUb+
+         UV4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3udFRxofKZfXAVfj0Vy1bL0zZn5CBEQ0+qj9/ataYlc=;
+        b=UgxTKC9p87IdEmpK4WZdLUdnRU8IFrf5DegfIFBPDRkqLO0dTfnxnHFHHR2VgeHc/4
+         DDWhCASD1a+xjwp3gnjzRzQPenEFO8YNHRU70k8VmMTCl3O1xvpJNNJPgUobuDDck76F
+         abdkx43PX/9V7oIyS9eFT8V0zUvgbjPnD/QYdIkEiptQnsWktbtwRgYXSJ5vz7KV0kXn
+         PA3xUFFvNjr0L5odVIVncWEo7fqs9wX6K6x+My58Svji8n2kyDHxZZIVrgtNivMk8JY7
+         nS8ZsnFtZFo5n1l912AxDykdoQpHwvBEpg3tvf04oHgpjMku0O8pgqGvAHombSHp+PYX
+         t1YQ==
+X-Gm-Message-State: AOAM533BfcROjDIOTOSN5heCIkA5rYZRWOvx5tqvZOOf7KPqQ+tqdHrU
+        rQ13SVCrwRGZrP+8EDmodxp7TtmcRRRNNZNS
+X-Google-Smtp-Source: ABdhPJweV7aCvvTRLSu7V1VkaEYo6ab61z57EeSFq0bNlbPJMJGsYdDIdJm2ELrC3jPrsQHNjMgtOQ==
+X-Received: by 2002:a05:6638:cd:: with SMTP id w13mr3026234jao.42.1630680735548;
+        Fri, 03 Sep 2021 07:52:15 -0700 (PDT)
+Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
+        by smtp.gmail.com with ESMTPSA id i6sm2665858ilb.30.2021.09.03.07.52.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 07:52:15 -0700 (PDT)
 Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id E71F2580ACC;
-        Fri,  3 Sep 2021 10:50:17 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Fri, 03 Sep 2021 10:50:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=1+UNQ4mZYAX+yX8v1shjgWGw45M
-        YrAYp1gT+fM1QCoA=; b=rbAtD4PN386W+BxKH5SsXETJ8QBRSvDEB/etHH6iVsH
-        rho+11BM8EWl2GPPyZK37ZBlo3ggqWddwcIVWNb8dIZ3yvDK8jqjqH4pZRbdZDfH
-        P6wWHVADgQfiJtfB7Pmd6DFMTViWHtzox3yGr3i+eKXAoFHDlYp0nRqgBOEOYrn+
-        DG7bBFY2Kes7PGLKh/amjbpYSdVJ3/Yr4yGglaTgQwBND1EA+Y8yKbglnelM4BRr
-        yRYl6hj51WOhUkT4CMBn2OSoi/yHXdcLNXzLTS8MnSxXY6Mrv4p7ZyuzWJ1wpmYu
-        AKo/vSy5CXf5mczam8ZDyXLpn9m34vBp6h1OM4z24Zw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=1+UNQ4
-        mZYAX+yX8v1shjgWGw45MYrAYp1gT+fM1QCoA=; b=slWUYSruonY0xKUWmiFC1E
-        SD5CqLQsNw2WabtJxTif87cYvsQ/t51pSazn2rgRlj7xOGQOMHVmUZ+NV3FQI5YQ
-        HMjTkG9LkuKo2+wZP+BifP5J4T+1KU7sLfLO2xHs+D7CedujIdeb+rHSyqnxiDD5
-        obAq9f+Q7UmnT0waXDCNWbgR0KgzgendP17NwrEO66nTMkrJOBbOxrWQq0bC9Tbg
-        O75IrnKe0KJCAuHk6HW2JyVKvO/qkpjplTUYoe35ydlSmu3CzXI7iSU8CAZL3YOn
-        tB6Tad7auHJEqBd2Bz+CIWhF7EwZAhVsUoTehhbDIZsaxLYrcwCabTlvZRsUjliw
-        ==
-X-ME-Sender: <xms:KDYyYaVKxtyb8hnZ0_lt7BZbvnYomSOefq7Si3XoMYpyTZbpz8dU4w>
-    <xme:KDYyYWkikFWUmpGZLs3cQlPw3mC6fhddeHby1twuVmEgsdkerzS1dq1UNfJi1x6x0
-    t51C6uggsj0mwqHwno>
-X-ME-Received: <xmr:KDYyYeZUdatPSKibpZM5xCukzFKPoru4w7nu8Iq15t3Sc7VClFMUp9A1dxcbMLNc2X5uofOnIh05aBaGe_B7erk5AhN_yO4BP67C>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedgjeelucetufdoteggodetrfdotf
+        by mailauth.nyi.internal (Postfix) with ESMTP id 3DE1E27C005C;
+        Fri,  3 Sep 2021 10:52:14 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 03 Sep 2021 10:52:14 -0400
+X-ME-Sender: <xms:nTYyYfEEexTj3DCDsB8mEucPm0tjXqgYPnFSzNRoE8tluSc8ZKZ9hQ>
+    <xme:nTYyYcW88xKWTDzGsfe-Aqm-llMh7vDJKafQiVDkMo1SR9t0ZXDkx3QHKUYpEiTmU
+    areehj16ao7bOUP9A>
+X-ME-Received: <xmr:nTYyYRK2XODtOq682YEHyZ2D31jaEshg542sUtvBiyCm_w1luTEV5dLHJOU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedgkedtucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:KDYyYRU2J2jDsxSAoyA_Sf2otmPC8gI7fEB9yNyR96HNkTur2iunDg>
-    <xmx:KDYyYUmp6OD92bU5qZ3jdyMquwx9C_2ztnEJKLi67fq30JMQiEQEQA>
-    <xmx:KDYyYWdGWqmHhFTgUR_DeV-fzE0BmxGXU-On6_mxlrTO_SLTZLkojQ>
-    <xmx:KTYyYRgG-j5j256aYGyC2WX_i5q14c2TtQgToGhC1O2VzwPubLSiBg>
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepvdelieegudfggeevjefhjeevueevieetjeeikedvgfejfeduheefhffggedv
+    geejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:nTYyYdEdiYwnAG_kCVtEsE_4iw-qmX8MlfQZ06bxTw7529QnIV-FXA>
+    <xmx:nTYyYVU8G_67mQUIuzQcx98ZvyAFX4r4QNK3ukD02pqz4GkmfSGvLQ>
+    <xmx:nTYyYYOqD3-Xqgbp3ss5lh1de54JJtgWyG5yy1RbZhpDSAFDYRED8g>
+    <xmx:njYyYQNkQQTjwQf6JwRhhBXjJyILpOb4usDpNXqZq85PtFdkBgnvHopcxaw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 3 Sep 2021 10:50:15 -0400 (EDT)
-Date:   Fri, 3 Sep 2021 16:50:13 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/7] clk: sunxi-ng: Add a RTC CCU driver
-Message-ID: <20210903145013.hn6dv7lfyvfys374@gilmour>
-References: <20210901053951.60952-1-samuel@sholland.org>
+ 3 Sep 2021 10:52:13 -0400 (EDT)
+Date:   Fri, 3 Sep 2021 22:50:58 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] locking: rwbase: Take care of ordering guarantee for
+ fastpath reader
+Message-ID: <YTI2UjKy+C7LeIf+@boqun-archlinux>
+References: <20210901150627.620830-1-boqun.feng@gmail.com>
+ <YTC7sariSyBW48nh@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="aqyjfro3lmncra3z"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210901053951.60952-1-samuel@sholland.org>
+In-Reply-To: <YTC7sariSyBW48nh@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 02, 2021 at 01:55:29PM +0200, Peter Zijlstra wrote:
+[...]
+> >  	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
+> >  	rwbase_rtmutex_unlock(rtm);
+> >  }
+> > @@ -216,8 +229,14 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
+> >  	 */
+> >  	rwbase_set_and_save_current_state(state);
+> >  
+> > -	/* Block until all readers have left the critical section. */
+> > -	for (; atomic_read(&rwb->readers);) {
+> > +	/*
+> > +	 * Block until all readers have left the critical section.
+> > +	 *
+> > +	 * _acqurie() is needed in case that the reader side runs in the fast
+> > +	 * path, pairing with the atomic_dec_and_test() in rwbase_read_unlock(),
+> > +	 * provides ACQUIRE.
+> > +	 */
+> > +	for (; atomic_read_acquire(&rwb->readers);) {
+> >  		/* Optimized out for rwlocks */
+> >  		if (rwbase_signal_pending_state(state, current)) {
+> >  			__set_current_state(TASK_RUNNING);
+> 
+> I think we can restructure things to avoid this one, but yes. Suppose we
+> do:
+> 
+> 	readers = atomic_sub_return_relaxed(READER_BIAS, &rwb->readers);
+> 
+> 	/*
+> 	 * These two provide either an smp_mb() or an UNLOCK+LOCK
 
---aqyjfro3lmncra3z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+By "UNLOCK+LOCK", you mean unlock(->pi_lock) + lock(->wait_lock), right?
+This may be unrelated, but in our memory model only unlock+lock pairs on
+the same lock provide TSO-like ordering ;-) IOW, unlock(->pi_lock) +
+lock(->wait_lock) on the same CPU doesn't order reads before and after.
+Consider the following litmus:
 
-Hi,
 
-On Wed, Sep 01, 2021 at 12:39:44AM -0500, Samuel Holland wrote:
-> This patch series adds a CCU driver for the RTC in the H616 and R329.
-> The extra patches at the end of this series show how it would be
-> explanded to additional hardware variants.
->=20
-> The driver is intended to support the existing binding used for the H6,
-> but also an updated binding which includes all RTC input clocks. I do
-> not know how to best represent that binding -- that is a major reason
-> why this series is an RFC.
->=20
-> A future patch series could add functionality to the driver to manage
-> IOSC calibration at boot and during suspend/resume.
->=20
-> It may be possible to support all of these hardware variants in the
-> existing RTC clock driver and avoid some duplicate code, but I'm
-> concerned about the complexity there, without any of the CCU
-> abstraction.
->=20
-> This series is currently based on top of the other series I just sent
-> (clk: sunxi-ng: Lifetime fixes and module support), but I can rebase it
-> elsewhere.
+	C unlock-lock
+	{
+	}
 
-I'm generally ok with this, it makes sense to move it to sunxi-ng,
-especially with that other series of yours.
+	P0(spinlock_t *s, spinlock_t *p, int *x, int *y)
+	{
+		int r1;
+		int r2;
 
-My main concern about this is the split driver approach. We used to have
-that before in the RTC too, but it was mostly due to the early clock
-requirements. With your previous work, that requirement is not there
-anymore and we can just register it as a device just like the other
-clock providers.
+		spin_lock(s);
+		r1 = READ_ONCE(*x);
+		spin_unlock(s);
+		spin_lock(p);
+		r2 = READ_ONCE(*y);
+		spin_unlock(p);
+	}
 
-And since we can register all those clocks at device probe time, we
-don't really need to split the driver in two (and especially in two
-different places). The only obstacle to this after your previous series
-is that we don't have of_sunxi_ccu_probe / devm_sunxi_ccu_probe
-functions public, but that can easily be fixed by moving their
-definition to include/linux/clk/sunxi-ng.h
+	P1(int *x, int *y)
+	{
+		WRITE_ONCE(*y, 1);
+		smp_wmb();
+		WRITE_ONCE(*x, 1);
+	}
 
-Maxime
+	exists (0:r1=1 /\ 0:r2=0)
 
---aqyjfro3lmncra3z
-Content-Type: application/pgp-signature; name="signature.asc"
+herd result:
 
------BEGIN PGP SIGNATURE-----
+	Test unlock-lock Allowed
+	States 4
+	0:r1=0; 0:r2=0;
+	0:r1=0; 0:r2=1;
+	0:r1=1; 0:r2=0;
+	0:r1=1; 0:r2=1;
+	Ok
+	Witnesses
+	Positive: 1 Negative: 3
+	Condition exists (0:r1=1 /\ 0:r2=0)
+	Observation unlock-lock Sometimes 1 3
+	Time unlock-lock 0.01
+	Hash=a8b772fd25f963f73a0d8e70e36ee255
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYTI2JQAKCRDj7w1vZxhR
-xULeAP9F874xM3NzdYuwFLC9z8BzcFNMMzlOjOqwTFV7P7pHxAD/Vzu6odW0IVrM
-Ulo17sA/rKg+2hzkHxw6WkxA9mXhNgs=
-=TM12
------END PGP SIGNATURE-----
 
---aqyjfro3lmncra3z--
+> 	 * ordering, either is strong enough to provide ACQUIRE order
+> 	 * for the above load of @readers.
+> 	 */
+> 	rwbase_set_and_save_current_state(state);
+> 	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+> 
+> 	while (readers) {
+> 		...
+> 		readers = atomic_read(&rwb->readers);
+
+The above should be _acquire(), right? Pairs with the last reader
+exiting the critical section and dec ->readers to 0. If so, it
+undermines the necessity of the restructure?
+
+Regards,
+Boqun
+
+> 		if (readers)
+> 			rwbase_schedule();
+> 		...
+> 	}
+> 
+> 
+> > @@ -229,6 +248,9 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
+> >  		/*
+> >  		 * Schedule and wait for the readers to leave the critical
+> >  		 * section. The last reader leaving it wakes the waiter.
+> > +		 *
+> > +		 * _acquire() is not needed, because we can rely on the smp_mb()
+> > +		 * in set_current_state() to provide ACQUIRE.
+> >  		 */
+> >  		if (atomic_read(&rwb->readers) != 0)
+> >  			rwbase_schedule();
+> > @@ -253,7 +275,11 @@ static inline int rwbase_write_trylock(struct rwbase_rt *rwb)
+> >  	atomic_sub(READER_BIAS, &rwb->readers);
+> >  
+> >  	raw_spin_lock_irqsave(&rtm->wait_lock, flags);
+> > -	if (!atomic_read(&rwb->readers)) {
+> > +	/*
+> > +	 * _acquire() is needed in case reader is in the fast path, pairing with
+> > +	 * rwbase_read_unlock(), provides ACQUIRE.
+> > +	 */
+> > +	if (!atomic_read_acquire(&rwb->readers)) {
+> 
+> Moo; the alternative is using dec_and_lock instead of dec_and_test, but
+> that's not going to be worth it.
+> 
+> >  		atomic_set(&rwb->readers, WRITER_BIAS);
+> >  		raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
+> >  		return 1;
+> > -- 
+> > 2.32.0
+> > 
