@@ -2,47 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319843FFBB7
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D43E53FFBBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348230AbhICIS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:18:28 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:33674 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348152AbhICIS1 (ORCPT
+        id S1348238AbhICISb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:18:31 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:39782 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348215AbhICIS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Sep 2021 04:18:27 -0400
-Received: by mail-il1-f197.google.com with SMTP id h10-20020a056e020d4a00b00227fc2e6687so3047144ilj.0
+Received: by mail-il1-f198.google.com with SMTP id y8-20020a92c748000000b00224811cb945so3029450ilp.6
         for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 01:17:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=6GjhL9Cm8vc8f/tANuKUYM4w6ZUCPAy6g6TMY88ThvQ=;
-        b=gBCKGtGJedKwgSkONvNEiepDSW8xq12U24JIN8covpe3pFA84FpLN3NRyoDQhAGLyO
-         pfsZiacsRuAg93C98UcCFm0NuIqde9D3q8mfk2HFganfcfjx5PLX4m3/AzlWZU6nbpzv
-         vs2mpOhnDqTbaF/ohuqChcW4WLjeuYXvY1fvfvt9EscIc06/hzJp5jIHD4h6gjNZjlvv
-         d1Huuu4dHbqsirUfqXm85hSIbLqUzpL/HB1GFFX4dS5IZFTaMblJbSw/c5J57CxsYyX2
-         rM47c+7A1z6KfU7gwrJfv71il5Vm/XRInMbJulVEJDBTIcgZusYRFID2WxifTGEW1Diy
-         4k9g==
-X-Gm-Message-State: AOAM532QRxZ03SAS1Wh9YSrC5zc2Oc+4WOEzrdkaOh7UYSL9rV8mCd8G
-        Htb5U36L+w159LFExlm6xtAc7sAbn9vX7FtTOP11tnlUYegW
-X-Google-Smtp-Source: ABdhPJzIzPBJwE2rMNBB25hu4d/eYDdOsTVz0mr9WyCdpNVDqcD5/SshTJsPL0mA28HIO+QQUPJ0jyxkul1JvvFnczSAqYis3y+D
+        bh=tfvtLiUT4IaCn9QAU0VwLMarYZMVolpROY2rWNmu4G0=;
+        b=hA91rVFwfUJfCr276RxLipbyXxZMesyTb6Zoq8/6WZX7km0lhu7L8CwsubCzYnt13A
+         uNIcfbHA/fP4SISly6BnGSuq0Btnoyuf7Ce7zIQkbHOjzKuvNicPLceCtELW2WVxRXyv
+         uRzllmd0dd8sUu1CGIy/MisLtBc8HVHXmuJyt7j5DOXos5oaBjf50v8eoMj9mSVwWEcO
+         5MZEgrUVrsygB9Xc2Ukn4VgBiW5O/skzW4TYA980RSJurCw4MRDHiZadRt98gfEii1Zd
+         BE2DzgLbudTs+ugPlKFzptrpT/TgffuIkSqTxGx0+D6OMcPYhN6wsXYHO5vYndFDs5lU
+         8TjA==
+X-Gm-Message-State: AOAM533PTJIkF5cOy3FiWkLF5XaIULxh+3gyPvIiSrR6v9yg/1gYVHJB
+        KxrO47vcpGL2G7sXxXyb43VT1qivgVTS97lyIvfoNI5bsmPp
+X-Google-Smtp-Source: ABdhPJzfz4gaPKUc7jyEWIObv1NCfiEng1vK8nMopIe/KDvv1fazo9sDXzFEtbVjPakjBTjUuTGWYYPaVdDDS6wFn3vVjeKgmy0Y
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:928:: with SMTP id o8mr1723893ilt.37.1630657047408;
+X-Received: by 2002:a05:6e02:805:: with SMTP id u5mr1658101ilm.223.1630657047580;
  Fri, 03 Sep 2021 01:17:27 -0700 (PDT)
 Date:   Fri, 03 Sep 2021 01:17:27 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000fb51f05cb12ee30@google.com>
-Subject: [syzbot] BUG: unable to handle kernel paging request in vm_area_dup
-From:   syzbot <syzbot+e561875a461cd966cd9d@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
-        daniel@iogearbox.net, ebiederm@xmission.com,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        peterz@infradead.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Message-ID: <0000000000001256e405cb12eed9@google.com>
+Subject: [syzbot] INFO: task can't die in mark_held_locks
+From:   syzbot <syzbot+fe9fdd59a80d52730e2a@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -52,101 +47,54 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    3f5ad13cb012 Merge tag 'scsi-fixes' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15f9ca49300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=94074b5caf8665c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=e561875a461cd966cd9d
+HEAD commit:    5e63226c7228 Add linux-next specific files for 20210827
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=11a143a9300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9c03a8fdabc6b3ae
+dashboard link: https://syzkaller.appspot.com/bug?extid=fe9fdd59a80d52730e2a
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e561875a461cd966cd9d@syzkaller.appspotmail.com
+Reported-by: syzbot+fe9fdd59a80d52730e2a@syzkaller.appspotmail.com
 
-BUG: unable to handle page fault for address: 0000000000114588
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 157b8067 P4D 157b8067 PUD 34984067 PMD 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 9155 Comm: syz-executor.5 Not tainted 5.14.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:freelist_dereference mm/slub.c:287 [inline]
-RIP: 0010:get_freepointer mm/slub.c:294 [inline]
-RIP: 0010:get_freepointer_safe mm/slub.c:308 [inline]
-RIP: 0010:slab_alloc_node mm/slub.c:2927 [inline]
-RIP: 0010:slab_alloc mm/slub.c:2967 [inline]
-RIP: 0010:kmem_cache_alloc+0x16d/0x4a0 mm/slub.c:2972
-Code: 39 f2 75 e7 48 8b 01 48 83 79 10 00 48 89 04 24 0f 84 75 02 00 00 48 85 c0 0f 84 6c 02 00 00 48 8b 7d 00 8b 4d 28 40 f6 c7 0f <48> 8b 1c 08 0f 85 76 02 00 00 48 8d 4a 08 65 48 0f c7 0f 0f 94 c0
-RSP: 0018:ffffc9000168f720 EFLAGS: 00010246
-RAX: 0000000000114528 RBX: 00000000000000c8 RCX: 0000000000000060
-RDX: 0000000000393661 RSI: 0000000000393661 RDI: 00000000000578d0
-RBP: ffff888140006a00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
-R13: ffffffff8143dbe8 R14: 0000000000000cc0 R15: 0000000000000cc0
-FS:  0000000001575400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000114588 CR3: 000000001839c000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+INFO: task syz-executor.1:6384 can't die for more than 143 seconds.
+task:syz-executor.1  state:R  running task     stack:27752 pid: 6384 ppid:  6576 flags:0x00004006
 Call Trace:
- vm_area_dup+0x88/0x2b0 kernel/fork.c:357
- dup_mmap kernel/fork.c:537 [inline]
- dup_mm+0x543/0x1380 kernel/fork.c:1379
- copy_mm kernel/fork.c:1431 [inline]
- copy_process+0x71ec/0x74d0 kernel/fork.c:2119
- kernel_clone+0xe7/0xac0 kernel/fork.c:2509
- __do_sys_clone+0xc8/0x110 kernel/fork.c:2626
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x464beb
-Code: ed 0f 85 60 01 00 00 64 4c 8b 0c 25 10 00 00 00 45 31 c0 4d 8d 91 d0 02 00 00 31 d2 31 f6 bf 11 00 20 01 b8 38 00 00 00 0f 05 <48> 3d 00 f0 ff ff 0f 87 89 00 00 00 41 89 c5 85 c0 0f 85 90 00 00
-RSP: 002b:0000000000a9fd50 EFLAGS: 00000246 ORIG_RAX: 0000000000000038
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000464beb
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000001200011
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000001575400
-R10: 00000000015756d0 R11: 0000000000000246 R12: 0000000000000001
-R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000a9fe40
-Modules linked in:
-CR2: 0000000000114588
----[ end trace 0b04bb8235cb5b3a ]---
-RIP: 0010:freelist_dereference mm/slub.c:287 [inline]
-RIP: 0010:get_freepointer mm/slub.c:294 [inline]
-RIP: 0010:get_freepointer_safe mm/slub.c:308 [inline]
-RIP: 0010:slab_alloc_node mm/slub.c:2927 [inline]
-RIP: 0010:slab_alloc mm/slub.c:2967 [inline]
-RIP: 0010:kmem_cache_alloc+0x16d/0x4a0 mm/slub.c:2972
-Code: 39 f2 75 e7 48 8b 01 48 83 79 10 00 48 89 04 24 0f 84 75 02 00 00 48 85 c0 0f 84 6c 02 00 00 48 8b 7d 00 8b 4d 28 40 f6 c7 0f <48> 8b 1c 08 0f 85 76 02 00 00 48 8d 4a 08 65 48 0f c7 0f 0f 94 c0
-RSP: 0018:ffffc9000168f720 EFLAGS: 00010246
-RAX: 0000000000114528 RBX: 00000000000000c8 RCX: 0000000000000060
-RDX: 0000000000393661 RSI: 0000000000393661 RDI: 00000000000578d0
-RBP: ffff888140006a00 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000000
-R13: ffffffff8143dbe8 R14: 0000000000000cc0 R15: 0000000000000cc0
-FS:  0000000001575400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f7c3000b0b8 CR3: 000000001839c000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	39 f2                	cmp    %esi,%edx
-   2:	75 e7                	jne    0xffffffeb
-   4:	48 8b 01             	mov    (%rcx),%rax
-   7:	48 83 79 10 00       	cmpq   $0x0,0x10(%rcx)
-   c:	48 89 04 24          	mov    %rax,(%rsp)
-  10:	0f 84 75 02 00 00    	je     0x28b
-  16:	48 85 c0             	test   %rax,%rax
-  19:	0f 84 6c 02 00 00    	je     0x28b
-  1f:	48 8b 7d 00          	mov    0x0(%rbp),%rdi
-  23:	8b 4d 28             	mov    0x28(%rbp),%ecx
-  26:	40 f6 c7 0f          	test   $0xf,%dil
-* 2a:	48 8b 1c 08          	mov    (%rax,%rcx,1),%rbx <-- trapping instruction
-  2e:	0f 85 76 02 00 00    	jne    0x2aa
-  34:	48 8d 4a 08          	lea    0x8(%rdx),%rcx
-  38:	65 48 0f c7 0f       	cmpxchg16b %gs:(%rdi)
-  3d:	0f 94 c0             	sete   %al
+ context_switch kernel/sched/core.c:4955 [inline]
+ __schedule+0x940/0x26f0 kernel/sched/core.c:6302
+ mark_held_locks+0x9f/0xe0 kernel/locking/lockdep.c:4194
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/26:
+ #0: ffffffff8b97fbe0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6446
+1 lock held by in:imklog/6244:
+ #0: ffff888024b2dc70 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:990
+3 locks held by kworker/1:5/8059:
+ #0: ffff8880b9d31a98 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested kernel/sched/core.c:474 [inline]
+ #0: ffff8880b9d31a98 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock kernel/sched/sched.h:1319 [inline]
+ #0: ffff8880b9d31a98 (&rq->__lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1622 [inline]
+ #0: ffff8880b9d31a98 (&rq->__lock){-.-.}-{2:2}, at: __schedule+0x236/0x26f0 kernel/sched/core.c:6216
+ #1: ffff8880b9d1f9c8 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x39d/0x480 kernel/sched/psi.c:880
+ #2: ffffffff902c2780 (&ssp->srcu_gp_mutex){+.+.}-{3:3}, at: srcu_advance_state kernel/rcu/srcutree.c:1177 [inline]
+ #2: ffffffff902c2780 (&ssp->srcu_gp_mutex){+.+.}-{3:3}, at: process_srcu+0x31/0xec0 kernel/rcu/srcutree.c:1325
+3 locks held by systemd-udevd/10966:
+ #0: ffff8880b9d31a98 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested kernel/sched/core.c:474 [inline]
+ #0: ffff8880b9d31a98 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock kernel/sched/sched.h:1319 [inline]
+ #0: ffff8880b9d31a98 (&rq->__lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1622 [inline]
+ #0: ffff8880b9d31a98 (&rq->__lock){-.-.}-{2:2}, at: __schedule+0x236/0x26f0 kernel/sched/core.c:6216
+ #1: ffff8880b9d1f9c8 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x39d/0x480 kernel/sched/psi.c:880
+ #2: ffffffff8c142c18 (tomoyo_ss){....}-{0:0}, at: tomoyo_path2_perm+0x20a/0x6b0 security/tomoyo/file.c:952
+1 lock held by systemd-udevd/10995:
+1 lock held by systemd-udevd/11008:
+ #0: ffff88807ee30460 (sb_writers#3){.+.+}-{0:0}, at: open_last_lookups fs/namei.c:3339 [inline]
+ #0: ffff88807ee30460 (sb_writers#3){.+.+}-{0:0}, at: path_openat+0x25c9/0x2740 fs/namei.c:3556
+4 locks held by kworker/u4:8/20266:
+1 lock held by syz-executor.1/6384:
+
+=============================================
+
 
 
 ---
