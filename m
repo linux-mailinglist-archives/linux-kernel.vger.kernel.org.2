@@ -2,181 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B073FFE9B
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:02:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B6B3FFEA0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348470AbhICLDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 07:03:24 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:49871 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348467AbhICLDQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 07:03:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630666936; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=KH+12GLEC44YL4JM6wENp19/gWL340T07kKx0In4XTA=;
- b=xHdJWVYNDHms4U7MgbEZVnP7cwmcInh2tcqprzm4KcOVgM4QcXlsX0A0vd0sR09G2qCOmcyS
- 0Fl0va8Cq+ldG2lChLVPoxxaYMn3PJtF0tDSDbW30NdizbqUfrrfoTdWU1QHXPqYpQc48fF7
- doyLqnKwGKK/gxwlC+5jAwzw1AU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 613200aa89cdb6206174d9be (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 03 Sep 2021 11:02:02
- GMT
-Sender: dikshita=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9BE95C43617; Fri,  3 Sep 2021 11:02:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: dikshita)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CBC9EC4338F;
-        Fri,  3 Sep 2021 11:02:01 +0000 (UTC)
+        id S232430AbhICLFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 07:05:16 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:43672 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235011AbhICLFI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 07:05:08 -0400
+Received: by mail-io1-f71.google.com with SMTP id x26-20020a6bd01a000000b005c23c703629so193874ioa.10
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 04:04:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=mACFfA/R4884V66P0DIgp0k6RK7+ec6mdLQHsLBqKxo=;
+        b=S+8pxo2dFSHvhzjxtGWicF6KGxzmQsj0WOCyQlmgKrI1N3/QN/2O+k1AXb1s1+LjFT
+         fePpSqk7/e3HAu0k6AWj4g5I39wgtrmT/+GktThypUpP+lINuaHNkXpz4iEYRMCrDnJp
+         9ke2iR+oaHJRVa7SA/4/rqUIoHh11CIfq0A4q9nTUYBAI8SjsgQlxz1u9nFnslxzsyAC
+         8hRXn10Iq0Nohgdl25pBMXhZJpTH4BB9BteW5eIAHhCpdhZ+5nn6YO+fCi26GrJfoDzc
+         eROhyfutc5omj0UF1AUpyxCJ64ybPDMtQA9d07Ff24OJymFfGo91dwWzpyitSlKZ2Dv+
+         Epbg==
+X-Gm-Message-State: AOAM532Y3wKfGwBeSh/RuKbB2E4I3s7KVWPVLcEfpQxve2UIkgvQj/go
+        EdZoO/ah8GVs0we4CjpnWP32MrtJPJ1mdrW+EpUEwbK8k87o
+X-Google-Smtp-Source: ABdhPJzeCi1CaBwy8MctIZAVAL60RcUkDZ9D2yjD/T4ucuOOvPZmd7BjteJLRMyBvK4lbxBrehqV19mXXoDv43GEHMrYJvMsyl4x
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 03 Sep 2021 16:32:01 +0530
-From:   dikshita@codeaurora.org
-To:     andy.gross@linaro.org, david.brown@linaro.org, robh+dt@kernel.org,
-        mark.rutland@arm.com, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, stanimir.varbanov@linaro.org
-Subject: Re: [PATCH v5] arm64: dts: qcom: sc7280: Add venus DT node
-In-Reply-To: <1628669090-15648-1-git-send-email-dikshita@codeaurora.org>
-References: <1628669090-15648-1-git-send-email-dikshita@codeaurora.org>
-Message-ID: <1a61344a33782c3b80f30e86efce2c95@codeaurora.org>
-X-Sender: dikshita@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Received: by 2002:a05:6e02:1b88:: with SMTP id h8mr2184451ili.237.1630667048687;
+ Fri, 03 Sep 2021 04:04:08 -0700 (PDT)
+Date:   Fri, 03 Sep 2021 04:04:08 -0700
+In-Reply-To: <20210903042820.2733-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002f1da805cb154204@google.com>
+Subject: Re: [syzbot] WARNING: refcount bug in qrtr_node_lookup
+From:   syzbot <syzbot+c613e88b3093ebf3686e@syzkaller.appspotmail.com>
+To:     bjorn.andersson@linaro.org, dan.carpenter@oracle.com,
+        eric.dumazet@gmail.com, hdanton@sina.com,
+        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
+        netdev@vger.kernel.org, paul@paul-moore.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello,
 
-A gentle reminder for review.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+UBSAN: object-size-mismatch in wg_xmit
 
-Thanks,
-Dikshita
+================================================================================
+UBSAN: object-size-mismatch in ./include/linux/skbuff.h:2048:28
+member access within address 0000000096a277f4 with insufficient space
+for an object of type 'struct sk_buff'
+CPU: 0 PID: 3568 Comm: kworker/0:5 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: ipv6_addrconf addrconf_dad_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x15e/0x1d3 lib/dump_stack.c:105
+ ubsan_epilogue lib/ubsan.c:151 [inline]
+ handle_object_size_mismatch lib/ubsan.c:232 [inline]
+ ubsan_type_mismatch_common+0x1de/0x390 lib/ubsan.c:245
+ __ubsan_handle_type_mismatch_v1+0x41/0x50 lib/ubsan.c:274
+ __skb_queue_before include/linux/skbuff.h:2048 [inline]
+ __skb_queue_tail include/linux/skbuff.h:2081 [inline]
+ wg_xmit+0x4da/0xa60 drivers/net/wireguard/device.c:182
+ __netdev_start_xmit include/linux/netdevice.h:4970 [inline]
+ netdev_start_xmit+0x7b/0x140 include/linux/netdevice.h:4984
+ xmit_one net/core/dev.c:3576 [inline]
+ dev_hard_start_xmit+0x182/0x2e0 net/core/dev.c:3592
+ __dev_queue_xmit+0x13b0/0x21a0 net/core/dev.c:4202
+ neigh_output include/net/neighbour.h:510 [inline]
+ ip6_finish_output2+0xc51/0x11b0 net/ipv6/ip6_output.c:126
+ dst_output include/net/dst.h:450 [inline]
+ NF_HOOK include/linux/netfilter.h:307 [inline]
+ ndisc_send_skb+0x835/0xcf0 net/ipv6/ndisc.c:508
+ addrconf_dad_completed+0x6c5/0xa70 net/ipv6/addrconf.c:4203
+ addrconf_dad_work+0xba5/0x1510 net/ipv6/addrconf.c:3970
+ process_one_work+0x4b5/0x8d0 kernel/workqueue.c:2297
+ worker_thread+0x686/0x9e0 kernel/workqueue.c:2444
+ kthread+0x3ca/0x3f0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+================================================================================
+================================================================================
+UBSAN: object-size-mismatch in ./include/linux/skbuff.h:1941:2
+member access within address 0000000096a277f4 with insufficient space
+for an object of type 'struct sk_buff'
+CPU: 0 PID: 3568 Comm: kworker/0:5 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: ipv6_addrconf addrconf_dad_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x15e/0x1d3 lib/dump_stack.c:105
+ ubsan_epilogue lib/ubsan.c:151 [inline]
+ handle_object_size_mismatch lib/ubsan.c:232 [inline]
+ ubsan_type_mismatch_common+0x1de/0x390 lib/ubsan.c:245
+ __ubsan_handle_type_mismatch_v1+0x41/0x50 lib/ubsan.c:274
+ __skb_insert include/linux/skbuff.h:1941 [inline]
+ __skb_queue_before include/linux/skbuff.h:2048 [inline]
+ __skb_queue_tail include/linux/skbuff.h:2081 [inline]
+ wg_xmit+0x53c/0xa60 drivers/net/wireguard/device.c:182
+ __netdev_start_xmit include/linux/netdevice.h:4970 [inline]
+ netdev_start_xmit+0x7b/0x140 include/linux/netdevice.h:4984
+ xmit_one net/core/dev.c:3576 [inline]
+ dev_hard_start_xmit+0x182/0x2e0 net/core/dev.c:3592
+ __dev_queue_xmit+0x13b0/0x21a0 net/core/dev.c:4202
+ neigh_output include/net/neighbour.h:510 [inline]
+ ip6_finish_output2+0xc51/0x11b0 net/ipv6/ip6_output.c:126
+ dst_output include/net/dst.h:450 [inline]
+ NF_HOOK include/linux/netfilter.h:307 [inline]
+ ndisc_send_skb+0x835/0xcf0 net/ipv6/ndisc.c:508
+ addrconf_dad_completed+0x6c5/0xa70 net/ipv6/addrconf.c:4203
+ addrconf_dad_work+0xba5/0x1510 net/ipv6/addrconf.c:3970
+ process_one_work+0x4b5/0x8d0 kernel/workqueue.c:2297
+ worker_thread+0x686/0x9e0 kernel/workqueue.c:2444
+ kthread+0x3ca/0x3f0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+================================================================================
+IPv6: ADDRCONF(NETDEV_CHANGE): macsec0: link becomes ready
+IPv6: ADDRCONF(NETDEV_CHANGE): macsec0: link becomes ready
+IPv6: ADDRCONF(NETDEV_CHANGE): batadv_slave_0: link becomes ready
+IPv6: ADDRCONF(NETDEV_CHANGE): veth0_to_batadv: link becomes ready
 
-On 2021-08-11 13:34, Dikshita Agarwal wrote:
-> Add DT entries for the sc7280 venus encoder/decoder.
-> 
-> Change since v4:
-> 	rebased on latest linux-next tree.
-> 
-> this patch depends on [1].
-> 
-> [1] 
-> https://patchwork.kernel.org/project/linux-arm-msm/list/?series=529463
-> 
-> Co-developed-by: Mansur Alisha Shaik <mansur@codeaurora.org>
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7280.dtsi | 75 
-> ++++++++++++++++++++++++++++++++++++
->  1 file changed, 75 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> index 3e96604..88de534 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-> @@ -73,6 +73,11 @@
->  			reg = <0x0 0x80b00000 0x0 0x100000>;
->  		};
-> 
-> +		video_mem: memory@8b200000 {
-> +			reg = <0x0 0x8b200000 0x0 0x500000>;
-> +			no-map;
-> +		};
-> +
->  		ipa_fw_mem: memory@8b700000 {
->  			reg = <0 0x8b700000 0 0x10000>;
->  			no-map;
-> @@ -1398,6 +1403,76 @@
->  			};
->  		};
-> 
-> +		venus: video-codec@aa00000 {
-> +			compatible = "qcom,sc7280-venus";
-> +			reg = <0 0x0aa00000 0 0xd0600>;
-> +			interrupts = <GIC_SPI 174 IRQ_TYPE_LEVEL_HIGH>;
-> +
-> +			clocks = <&videocc VIDEO_CC_MVSC_CORE_CLK>,
-> +				 <&videocc VIDEO_CC_MVSC_CTL_AXI_CLK>,
-> +				 <&videocc VIDEO_CC_VENUS_AHB_CLK>,
-> +				 <&videocc VIDEO_CC_MVS0_CORE_CLK>,
-> +				 <&videocc VIDEO_CC_MVS0_AXI_CLK>;
-> +			clock-names = "core", "bus", "iface",
-> +				      "vcodec_core", "vcodec_bus";
-> +
-> +			power-domains = <&videocc MVSC_GDSC>,
-> +					<&videocc MVS0_GDSC>,
-> +					<&rpmhpd SC7280_CX>;
-> +			power-domain-names = "venus", "vcodec0", "cx";
-> +			operating-points-v2 = <&venus_opp_table>;
-> +
-> +			interconnects = <&gem_noc MASTER_APPSS_PROC 0 &cnoc2 
-> SLAVE_VENUS_CFG 0>,
-> +					<&mmss_noc MASTER_VIDEO_P0 0 &mc_virt SLAVE_EBI1 0>;
-> +			interconnect-names = "cpu-cfg", "video-mem";
-> +
-> +			iommus = <&apps_smmu 0x2180 0x20>,
-> +				 <&apps_smmu 0x2184 0x20>;
-> +			memory-region = <&video_mem>;
-> +
-> +			video-decoder {
-> +				compatible = "venus-decoder";
-> +			};
-> +
-> +			video-encoder {
-> +				compatible = "venus-encoder";
-> +			};
-> +
-> +			video-firmware {
-> +				iommus = <&apps_smmu 0x21a2 0x0>;
-> +			};
-> +
-> +			venus_opp_table: venus-opp-table {
-> +				compatible = "operating-points-v2";
-> +
-> +				opp-133330000 {
-> +					opp-hz = /bits/ 64 <133330000>;
-> +					required-opps = <&rpmhpd_opp_low_svs>;
-> +				};
-> +
-> +				opp-240000000 {
-> +					opp-hz = /bits/ 64 <240000000>;
-> +					required-opps = <&rpmhpd_opp_svs>;
-> +				};
-> +
-> +				opp-335000000 {
-> +					opp-hz = /bits/ 64 <335000000>;
-> +					required-opps = <&rpmhpd_opp_svs_l1>;
-> +				};
-> +
-> +				opp-424000000 {
-> +					opp-hz = /bits/ 64 <424000000>;
-> +					required-opps = <&rpmhpd_opp_nom>;
-> +				};
-> +
-> +				opp-460000000 {
-> +					opp-hz = /bits/ 64 <460000000>;
-> +					required-opps = <&rpmhpd_opp_turbo>;
-> +				};
-> +			};
-> +
-> +		};
-> +
->  		videocc: clock-controller@aaf0000 {
->  			compatible = "qcom,sc7280-videocc";
->  			reg = <0 0xaaf0000 0 0x10000>;
+
+Tested on:
+
+commit:         a9c9a6f7 Merge tag 'scsi-misc' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=134c5b6d300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5f845e3d82a95a0e
+dashboard link: https://syzkaller.appspot.com/bug?extid=c613e88b3093ebf3686e
+compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=14673df5300000
+
