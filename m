@@ -2,88 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A50BF3FFFB3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C163FFFB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:26:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349271AbhICMZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 08:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38160 "EHLO
+        id S1349301AbhICM1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 08:27:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245400AbhICMZV (ORCPT
+        with ESMTP id S230005AbhICM1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 08:25:21 -0400
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35959C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 05:24:21 -0700 (PDT)
-Received: by mail-qv1-xf32.google.com with SMTP id 4so3013348qvp.3
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 05:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AjVVv2ndb2u5Bt4uUF9TlcBGvkr2yBKHs0BYvFEiwhM=;
-        b=gGIslmjuvjmkuQE+MEw2D09EW4vDOuMlNxsSM/ktZ1WBAGN0rCOgOC0WBF8Pk+FMaE
-         7i1joaB5gBAmJUqpqz9IMmHXWUaSQ+HttFLCkX4i/TTtxUI1WCJ+bIIbMTZoKG1P1PVP
-         rRp5XhWoUPlhKABNFH+Z1T5wARWdSGlN0tqqXO84rUiWuaMeUFfgB8WQxzx0Lng+HFEw
-         +hy0WhoOTknyTagvlH2TBDMgG5qEz2hTr3ob4IxVCA951tzGMvUJjg+muXTKr/02rEIS
-         1Ydj6mmRRXAbe5t23lTGLiPPIzkKfPXKKTl94e4F7ZES4BTQdhObBaI+dHC5c2Vz/ysO
-         15LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AjVVv2ndb2u5Bt4uUF9TlcBGvkr2yBKHs0BYvFEiwhM=;
-        b=ujTkB6oMpKLRwTB2rW3aCrrGuUBcXT1eoYnDkxBQRDAtUipdAf/HWRoH9mGej/ZBD4
-         6D8Q/uiQkLuKLqGUEBzWsxiu/TEBoznn6g+ckWcTwj1e4nUDIlWS8WT3xVzVtGRCLIbO
-         /WrEs+bTuEEAE/OfbwxJ5REmboWbGqjMHY2aZ6Nx8Cl5HkWeqiSgEmP19btkDyDvppSd
-         pi9L20BVMjPxMIdDkGi/6o0vMbGSKjtJggW4W8SW7U10fqzc7g1PlmmRAMqYfn4O+jtM
-         M7qghjRHRo+KHGl2L3jA5sSLUXEnEI9eo9Uwv/Dg5gH0WcPpBP3MjxWx1e3tAL3AaTti
-         84Dw==
-X-Gm-Message-State: AOAM530hqULnMJrXUENy2m530uOd0R3g1CzeyJSVX3Zh4Yz5Ce0E8LrO
-        DpDKTPYXQf43AOaxHptvgP4DEQ==
-X-Google-Smtp-Source: ABdhPJx0ZRB4N7U15Yq2f7MIxv4JxXW05wcJNeaYCXXvbjwj/xN2sCap7XlcXbOyT6yjd1yWliCKqA==
-X-Received: by 2002:a05:6214:21cc:: with SMTP id d12mr3132616qvh.22.1630671860349;
-        Fri, 03 Sep 2021 05:24:20 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id c15sm3703514qka.46.2021.09.03.05.24.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 05:24:19 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mM8F0-00Agea-T2; Fri, 03 Sep 2021 09:24:18 -0300
-Date:   Fri, 3 Sep 2021 09:24:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>, kvm@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] vfio/pci: add missing identifier name in argument
- of function prototype
-Message-ID: <20210903122418.GU1200268@ziepe.ca>
-References: <20210902212631.54260-1-colin.king@canonical.com>
+        Fri, 3 Sep 2021 08:27:47 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E64CC061575;
+        Fri,  3 Sep 2021 05:26:47 -0700 (PDT)
+Received: from [IPv6:2a01:e0a:4cb:a870:921c:7ea9:49a9:5125] (unknown [IPv6:2a01:e0a:4cb:a870:921c:7ea9:49a9:5125])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 348751F449D7;
+        Fri,  3 Sep 2021 13:26:44 +0100 (BST)
+Subject: Re: [PATCH V2 00/13] soc: imx: gpcv2: support i.MX8MM
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>, krzk@kernel.org,
+        agx@sigxcpu.org, Marek Vasut <marex@denx.de>,
+        andrew.smirnov@gmail.com, devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ping.bai@nxp.com, frieder.schrempf@kontron.de, aford173@gmail.com,
+        abel.vesa@nxp.com, Peng Fan <peng.fan@nxp.com>,
+        linux-media <linux-media@vger.kernel.org>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+References: <20210506010440.7016-1-peng.fan@oss.nxp.com>
+ <CAAEAJfDfjkHF164x2qRnZg3e5JRN0pHjxyAq+d5+-3JFYwEEOQ@mail.gmail.com>
+ <d19d35e8a90ece7124d06855b9f2b226b73c8f6e.camel@pengutronix.de>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <3558be1f-7c27-cad8-2802-cc2d27ee62eb@collabora.com>
+Date:   Fri, 3 Sep 2021 14:26:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902212631.54260-1-colin.king@canonical.com>
+In-Reply-To: <d19d35e8a90ece7124d06855b9f2b226b73c8f6e.camel@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 10:26:31PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The function prototype is missing an identifier name. Add one.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/vfio/pci/vfio_pci_core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 
-It seems fine, but is there a reason to just pick this one case and
-not clean the whole subsystem?
+Le 09/08/2021 à 10:15, Lucas Stach a écrit :
+> Hi Ezequiel,
+>
+> Am Mittwoch, dem 04.08.2021 um 11:30 -0300 schrieb Ezequiel Garcia:
+>> Hi Peng, Lucas,
+>>
+>> On Wed, 5 May 2021 at 21:32, Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
+>>> From: Peng Fan <peng.fan@nxp.com>
+>>>
+>>>
+>>> V2:
+>>>   - Add R-b/A-b tag
+>>>   - Merge V1 patch 13 to V2 patch 6
+>>>   - Drop V1 patch 15
+>>>   - Merge V1 patch 16 to V2 patch 5 and add comments in patch 5 to explain
+>>>   details
+>>>   - Add explaination in patch 8 for "why the resets are not defined"
+>>>
+>>> This patchset is a pick up Lucas's gpcv2 work for i.MX8MM and several
+>>> minor changes from me to make it could work with i.MX BLK-CTL driver.
+>>>
+>>> Thanks for Lucas's work and suggestion, Frieder Schrempf for collecting
+>>> all the patches, Jacky Bai on help debug issues.
+>>>
+>>> Lucas Stach (12):
+>>>    soc: imx: gpcv2: move to more ideomatic error handling in probe
+>>>    soc: imx: gpcv2: move domain mapping to domain driver probe
+>>>    soc: imx: gpcv2: switch to clk_bulk_* API
+>>>    soc: imx: gpcv2: split power up and power down sequence control
+>>>    soc: imx: gpcv2: wait for ADB400 handshake
+>>>    soc: imx: gpcv2: add runtime PM support for power-domains
+>>>    soc: imx: gpcv2: allow domains without power-sequence control
+>>>    dt-bindings: imx: gpcv2: add support for optional resets
+>>>    soc: imx: gpcv2: add support for optional resets
+>>>    dt-bindings: power: add defines for i.MX8MM power domains
+>>>    soc: imx: gpcv2: add support for i.MX8MM power domains
+>>>    soc: imx: gpcv2: Add support for missing i.MX8MM VPU/DISPMIX power
+>>>      domains
+>>>
+>> It's nice to see this finally moving forward!
+>>
+>> As you know, Hantro G2 support for i.MX8MQ (and i.MX8MP, i.MX8MM) is currently
+>> blocked, as you have requested:
+>>
+>> https://lore.kernel.org/driverdev-devel/5aa5700b862234895a7a6eb251ca3c80fdc1a6d3.camel@collabora.com/
+>>
+>> So, I think we really need to include i.MX8MP and i.MX8MQ on this series.
+>> It's been quite a while and we really need to have that. To be honest,
+>> I fear that
+>> if we merge this series as-is, MX8MP and MX8MP support will fall in
+>> the oblivion,
+>> and Hantro G2 VPU will remain unusable.
+>>
+>> We are planning to submit Hantro G2 VP9 support soon, and we've been testing
+>> on various platforms, but it will also be blocked by lack of power-domains.
+>>
+>> In the future, please Cc the linux-media mailing list, as well as
+>> Benjamin, Andrzej and myself, so we can follow this.
+> Please take a look at [1], which is the current state of this work. I
+> intend to add both i.MX8MQ and i.MX8MP support to the series now, as it
+> seems that there have been no big objections to my approach over the
+> last 2 weeks, where I was on vacation. ;)
 
-Eg i see a couple more cases in the headers
+Hi Lucas,
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+I have tried to implement the block control driver for imx8mq.
+I didn't manage to get it working.
+My implementation is here:
+https://gitlab.collabora.com/benjamin.gaignard/for-upstream/-/tree/IMX8MQ_BLK_CTRL
 
-Jason
+While you have the same in IMX8MM do you have also made changes in Hantro driver ?
+If it is that can you share these changes ? I have include mine in the above branch.
+
+Regards,
+Benjamin
+
+>
+> Regards,
+> Lucas
+>
+> [1]
+> https://lore.kernel.org/linux-arm-kernel/20210716232916.3572966-14-l.stach@pengutronix.de/T/#m43cbf6b8615b2a37ff2abb0346e7e7f6594976d1
+>
+>
