@@ -2,107 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B560400859
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBB2040085D
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350781AbhICXbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 19:31:50 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:47722
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244436AbhICXbt (ORCPT
+        id S1350475AbhICXil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 19:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230004AbhICXij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 19:31:49 -0400
-Received: from [192.168.192.153] (unknown [50.45.173.99])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id F10574019F;
-        Fri,  3 Sep 2021 23:30:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630711846;
-        bh=fSqoKAVb/v3yd5ZXv3SCjlXdU8zYK++3SwXEnF6fn20=;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-         In-Reply-To:Content-Type;
-        b=CatxpOv1jxLe27L85oUPSAbKK+LISLMaWnFnV2z479+ux2h6VWJ34z9EbxRrEn8Dd
-         gb4v0SWvCouewWv/KHH8I/GMPIMBie/6R/fd+0+mWMQmYgQgcgGHwIdRqM4wmA9ABB
-         sZXA0jW3/2PbOOq5FSMrlnwydp/43/qILtmEFuDED7eaT+/4appj9G1okDJHrfbNHi
-         RmP4Io2j4ZXeYgBxRjHDrjSlGrrPsT3jbV3Tz8NBYJJ7tJ0g/8IT5Afn/BrTs8MHby
-         LoPei/avjhbhblLlU/Ag6vxguvzd8IfS2C9xX8SaMnQEXLpyepFKugfQNeKigCNuRb
-         hbAogRnjTHCAQ==
-Subject: Re: [PATCH] apparmor: remove unused argument of aa_umount()
-To:     Austin Kim <austindh.kim@gmail.com>, jmorris@namei.org,
-        serge@hallyn.com
-Cc:     linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210831000912.GA4588@raspberrypi>
-From:   John Johansen <john.johansen@canonical.com>
-Organization: Canonical
-Message-ID: <4b68307a-26a8-c17b-bbf6-1fb9b88e7f9e@canonical.com>
-Date:   Fri, 3 Sep 2021 16:30:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 3 Sep 2021 19:38:39 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F90EC061575;
+        Fri,  3 Sep 2021 16:37:39 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id l9so649656vsb.8;
+        Fri, 03 Sep 2021 16:37:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c5HXH0UEqvRFg7fiHvVooz4ZvcE8dS4x+eksgLrM1Hw=;
+        b=HPToHelTDdD9RGA7PhQY5Kk4vQtSrX2eLhAA5TD2hefxJ/fLZuNWzdZZtPrrDYt7TF
+         /nDmPenuq5cBQH9X1LrE4jrcQxw7sWuLs4CeNvQPWMd3QFZDhIQVCOM03ed4ECC9mamZ
+         hi+oMBFgWmhH5UyAylNWdAbGOhBwMG2gsUBzGE58RhfW5VtdAcxJLMO2P75jta4ZYYy2
+         jZ6UbxR/F01hI5sHQCuDYR9Cau7LYzWvbifPXfUWWfnLSwNMwclUPUXYH/8FPzB17/56
+         dmllTrs5NsoqJkVk5KkWnpV/17pjJVyPO6V11KknV1i6UO74hTVuhDpg+DHcwR+0uIbh
+         xyLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c5HXH0UEqvRFg7fiHvVooz4ZvcE8dS4x+eksgLrM1Hw=;
+        b=oz6oWMaQVtSNre2Pq2NQS+BVuSgCUgv31JCDcI9UEqebBbjTfdtA7s4HwZ57zpaw/n
+         NeU98pXs5k5GPK6Yt8PfZedupyLpfmAp4PbgPm9/gR95/qLCu1Y9Xs6aa7nEOKAiBD9+
+         CxD/7IWTUxPjNj++9Cxoum89sf2Po/tB5DHtWKjdFtklbKktP5sz9v92pleY7vx060aS
+         kWRYMMZdrRCO5xB+Uu//BWRNW5bGQqjZfqHbEZRXWYB3WSI0z4tfRPom+/ycEc9iSnEc
+         JvOQjtau9keynyGq2iIZyR2NPjDtgQtcD2EDsafqC9AJwqy3LVV6DJa0NcjIdR+pzMxI
+         E3wA==
+X-Gm-Message-State: AOAM530tK4WiW5kHG4CLBUfODeNTblzbrxGeJubW80wFPvo5DB8B61Sg
+        pkUXplpJyDcr2IpF0oMVipC2/tS+y1tEOGeWmCiKP7rT
+X-Google-Smtp-Source: ABdhPJwOY5zUBLI5T3CaX+ma5kogdwn2AWrK3PuyGyqNvv8Imxb+7s/BU65Gm1S7sCVGVIL3bvZD+a4T/Smy9ErDRsI=
+X-Received: by 2002:a67:2d08:: with SMTP id t8mr827077vst.10.1630712258221;
+ Fri, 03 Sep 2021 16:37:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210831000912.GA4588@raspberrypi>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210903031306.78292-1-desmondcheongzx@gmail.com>
+In-Reply-To: <20210903031306.78292-1-desmondcheongzx@gmail.com>
+From:   Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Date:   Fri, 3 Sep 2021 16:37:27 -0700
+Message-ID: <CABBYNZJnbDDqX=bEtRhn7URaOfoMVHR8JTavr+T8k0UYMLOhQg@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Bluetooth: various SCO fixes
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Eric Dumazet <eric.dumazet@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/21 5:09 PM, Austin Kim wrote:
-> The 'flags' argument in aa_umount() is not used,
-> so it had better remove unused argument.
-> 
-> Signed-off-by: Austin Kim <austindh.kim@gmail.com>
+Hi Desmond,
 
-looks good, I'll pull this into my tree
+On Thu, Sep 2, 2021 at 8:23 PM Desmond Cheong Zhi Xi
+<desmondcheongzx@gmail.com> wrote:
+>
+>
+> Hi,
+>
+> This patch set contains some of the fixes for SCO following our
+> discussion on commit ba316be1b6a0 ("Bluetooth: schedule SCO timeouts
+> with delayed_work") [1].
+>
+> I believe these patches should go in together with [2] to address the
+> UAF errors that have been reported by Syzbot following
+> commit ba316be1b6a0.
+>
+> Link: https://lore.kernel.org/lkml/20210810041410.142035-2-desmondcheongzx@gmail.com/ [1]
+> Link: https://lore.kernel.org/lkml/20210831065601.101185-1-desmondcheongzx@gmail.com/ [2]
+>
+> Best wishes,
+> Desmond
+>
+> Desmond Cheong Zhi Xi (2):
+>   Bluetooth: call sock_hold earlier in sco_conn_del
+>   Bluetooth: fix init and cleanup of sco_conn.timeout_work
+>
+>  net/bluetooth/sco.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> --
+> 2.25.1
 
-Acked-by: John Johansen <john.johansen@canonical.com>
+Applied, thanks.
 
-> ---
->  security/apparmor/include/mount.h | 2 +-
->  security/apparmor/lsm.c           | 2 +-
->  security/apparmor/mount.c         | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/security/apparmor/include/mount.h b/security/apparmor/include/mount.h
-> index a710683b2496..9327456cda09 100644
-> --- a/security/apparmor/include/mount.h
-> +++ b/security/apparmor/include/mount.h
-> @@ -42,7 +42,7 @@ int aa_new_mount(struct aa_label *label, const char *dev_name,
->  		 const struct path *path, const char *type, unsigned long flags,
->  		 void *data);
->  
-> -int aa_umount(struct aa_label *label, struct vfsmount *mnt, int flags);
-> +int aa_umount(struct aa_label *label, struct vfsmount *mnt);
->  
->  int aa_pivotroot(struct aa_label *label, const struct path *old_path,
->  		 const struct path *new_path);
-> diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
-> Index 0834ba6a8a2e..58ba3f0605d2 100644
-> --- a/security/apparmor/lsm.c
-> +++ b/security/apparmor/lsm.c
-> @@ -574,7 +574,7 @@ static int apparmor_sb_umount(struct vfsmount *mnt, int flags)
->  
->  	label = __begin_current_label_crit_section();
->  	if (!unconfined(label))
-> -		error = aa_umount(label, mnt, flags);
-> +		error = aa_umount(label, mnt);
->  	__end_current_label_crit_section(label);
->  
->  	return error;
-> diff --git a/security/apparmor/mount.c b/security/apparmor/mount.c
-> index aa6fcfde3051..e33de97839ec 100644
-> --- a/security/apparmor/mount.c
-> +++ b/security/apparmor/mount.c
-> @@ -610,7 +610,7 @@ static int profile_umount(struct aa_profile *profile, const struct path *path,
->  			   AA_MAY_UMOUNT, &perms, info, error);
->  }
->  
-> -int aa_umount(struct aa_label *label, struct vfsmount *mnt, int flags)
-> +int aa_umount(struct aa_label *label, struct vfsmount *mnt)
->  {
->  	struct aa_profile *profile;
->  	char *buffer = NULL;
-> 
-
+-- 
+Luiz Augusto von Dentz
