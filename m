@@ -2,73 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674D84006A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9744006AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350632AbhICUbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 16:31:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350538AbhICUbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 16:31:50 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 225FF610A1;
-        Fri,  3 Sep 2021 20:30:49 +0000 (UTC)
-Date:   Fri, 3 Sep 2021 16:30:47 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Kalesh Singh <kaleshsingh@google.com>
-Cc:     surenb@google.com, hridya@google.com, gregkh@linuxfoundation.org,
-        john.reitan@arm.com, orjan.eide@arm.com, mark.underwood@arm.com,
-        gary.sweet@broadcom.com, stephen.mansfield@imgtec.com,
-        kernel-team@android.com, Ingo Molnar <mingo@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RESEND v2] tracing/gpu: Add imported size to gpu_mem_imported
- tracepoint
-Message-ID: <20210903163047.20e4f286@gandalf.local.home>
-In-Reply-To: <20210831170233.1409537-1-kaleshsingh@google.com>
-References: <20210831170233.1409537-1-kaleshsingh@google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1350600AbhICUeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 16:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236047AbhICUeY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 16:34:24 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA234C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 13:33:23 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id l18so619294lji.12
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 13:33:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vIdOCwskLhI0m4Y2FZRTnOUO+8ZEDMLcxJfUG+PYvsE=;
+        b=elj3tFd6Azm9vkuRGF+FrmR71fOH2ItuvYsMvpUWC4tTW+kE9P9mmsuv21eqppFMNT
+         OVOeJXFeNwUr1u4luok6uLL6cLGY45GR0Uo54NN8xZs0s2622ASNm0G2rjlW8mGOI5RB
+         bDAq4/XAt2wl3feYfbjdMrARbuXCN3pOs/p3pO5Ju2RIysueURvBes8LXn9z1ogrCv2i
+         7IuS/nyX5ebUC5BKHYXO1YTTkzTqehPTere1t8wl57nl6YAm0isSNrR+lhanyaUVzWaY
+         cOqSwCiSO3wvalKuTPcXQl4gcVjT9PqmNUgwG0gM0FcJ3t1sX4lW9bHNNuLrsFf2zjTQ
+         n+3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vIdOCwskLhI0m4Y2FZRTnOUO+8ZEDMLcxJfUG+PYvsE=;
+        b=VbZOE4rixaH1SinYjv6/9opI0yTgul6gKmQIoFmxkyFy+jt/qzk0bgBmJwlw+jhism
+         1Rr7m33PHCRrJXuKepq4n+h3pblcUOSjWrLBLSJww9xv80QzPo3Vjrt73lQ0Q7HC6QuP
+         Q+Ah1iIoDAM0nhvnGt/Nhmg2J4g21Pr7Uk+H1TMHFYmJiT+uAXhcN+kR+VJONh3QuI2+
+         1p9vMApu35nPcYj8uLhNYRJsnS6H3QyLNkziG5MY+Hemj2yAb+Y3XM2gQB7cYt2gCeuD
+         tDSZLoiufIGw2vSIzsKW1n5IbIdNlUg4/87w7e5mrjzWIaopaLhqxlPWYUBXJnfVPi8K
+         RSeg==
+X-Gm-Message-State: AOAM533xe49cSBAUpvilzmVIT1zH2xWDsvsoHLgELSsd3n1Pmf9qHkUk
+        NCTNM/vnQ7BRj/Rmd2YBK1a+oS4w3TX9iuqbUjF6OpSD14PYtA==
+X-Google-Smtp-Source: ABdhPJybDor+zVy/06ynl2HCn/3r7iQr2WBBZejKayn8CxV4gBUWz2lh/Sb6wJsZCF/ZDPOCHR/e5G1kkFqL5PlGXSk=
+X-Received: by 2002:a2e:6c09:: with SMTP id h9mr577564ljc.30.1630701202021;
+ Fri, 03 Sep 2021 13:33:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210902172404.3517626-1-daeho43@gmail.com> <9ab17089-accc-c3a3-a5dc-007fc4eeaa20@kernel.org>
+In-Reply-To: <9ab17089-accc-c3a3-a5dc-007fc4eeaa20@kernel.org>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Fri, 3 Sep 2021 13:33:11 -0700
+Message-ID: <CACOAw_yovM592K3-2fQzA6M29XqWu8s_2f+zXawKo-QpNSXq0w@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v4] f2fs: introduce fragment allocation mode
+ mount option
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Aug 2021 17:02:29 +0000
-Kalesh Singh <kaleshsingh@google.com> wrote:
+>         if (f2fs_need_seq_seg(sbi))
+>                 return 0;
+>
+> static inline bool f2fs_need_seq_seg(struct f2fs_sb_info *sbi)
+> {
+>         return F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_FIXED_BLK;
+> }
+>
 
-> The existing gpu_mem_total tracepoint provides GPU drivers a uniform way
-> to report the per-process and system-wide GPU memory usage. This
-> tracepoint reports a single total of the GPU private allocations and the
-> imported memory. [1]
-> 
-> To allow distinguishing GPU private vs imported memory, add an
-> imported_size field to the gpu_mem_total tracepoint. GPU drivers can use
-> this new field to report the per-process and global GPU-imported memory
-> in a uniform way.
-> 
-> User space tools can detect and handle the old vs new gpu_mem_total
-> format via the gpu_mem/gpu_mem_total/format file.
-> 
-> [1] https://lore.kernel.org/r/20200302234840.57188-1-zzyiwei@google.com/
-> 
-> Signed-off-by: Kalesh Singh <kaleshsingh@google.com>
-> ---
->  include/trace/events/gpu_mem.h | 17 +++++++++++------
->  1 file changed, 11 insertions(+), 6 deletions(-)
-> 
+Do you need this in select_policy(), either?
+Like,
+        if (f2fs_need_rand_seg(sbi))
+                p->offset = prandom_u32() % (MAIN_SECS(sbi) *
+sbi->segs_per_sec);
+        else if (f2fs_need_seq_seg(sbi))
+                p->offset = 0;
 
-This is that trace event that doesn't have any in tree callers, right? I
-thought there was going to be some soon.
+> One more concern... we'd better to save fragment_remained_hole as well
+> as fragment_remained_chunk,  otherwise, if fragment_chunk_size +
+> fragment_hole_size > 512, fragment hole will be truncated to 512 -
+> fragment_chunk_size due to we won't create hole with enough size as
+> seg->next_blkoff has crossed end of current segment.
+>
 
-For the updates to the tracing side (besides not having any users), it
-looks trivial to me.
+Sorry, I don't get it. You mean making fragment_remained_hole as a
+global variable?
+Maybe, we run into the same race condition issue you told before for
+fragment_remained_chunk.
+Could you clarify this more?
 
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-But this needs to be pulled in by one of the GPU maintainers.
-
--- Steve
+Thanks,
