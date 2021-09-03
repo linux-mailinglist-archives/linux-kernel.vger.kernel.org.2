@@ -2,99 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC5F3FF890
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 03:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 227233FF897
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 03:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346591AbhICBEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 21:04:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54386 "EHLO
+        id S1343838AbhICBKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 21:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346037AbhICBEv (ORCPT
+        with ESMTP id S233467AbhICBKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 21:04:51 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6824C061575;
-        Thu,  2 Sep 2021 18:03:52 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id c5so1395677plz.2;
-        Thu, 02 Sep 2021 18:03:52 -0700 (PDT)
+        Thu, 2 Sep 2021 21:10:33 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58E8C061575;
+        Thu,  2 Sep 2021 18:09:33 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id i21so8585240ejd.2;
+        Thu, 02 Sep 2021 18:09:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2DCudZZq4BCGyRqK9T3SXUuab3iD7BkjY5ekmbCqtp8=;
-        b=N/BJJfzm0XA6bDo9jAwneD19vi6/gLhyyTeUOxBPAtjTUp2pYUn/0pZzaurEnMlB58
-         dYPFDPWbPSzD89bdGYcoCYnJbAynPhuoHfAVIQGSOTrk/ahIEXceNmOuFYC49u+2RrLZ
-         +zLhHiZk5qNJ4Pq52SKeUWpKUaqgezTI3yMET3BohvUa7D1+SUN2HxokdDeB1M8PWsek
-         mHOnQsImY/ush+7YyJs7KPVmZttkfq8r4K/slr8IH8WrgA1YhY1pdFL7IdHuxQkgy4GJ
-         NWcwB5uUSnTIKDHH7VKhWxVla+0yM/pTWgKC3XHKff/fd2PeX3OtVpI4hNyUUXfMEDjn
-         FVBw==
+        bh=Gd2E/Pl/C0iRwR3hxdHVkR2H3jQVrFOHkTXAIcMx9So=;
+        b=hos4NkT51fiFcBY57hEeTVQaFRW4FOP4pR2h+DPAvgnPHi63S/YPrVoFvI5dKoCffc
+         OiicE1MLsCuDbBIlnwfHXn89PB4ZgVDWB0Rg5fotdwJibGx01HcPZ6kVIOmCsPkxkXeu
+         BmoYS7dB8vrLkAl1eNbZRyWZZYJVnJyhPfWJOUk8UbDJwwtpcuKcqNBrZlgHZ7c4AXvn
+         MMIpLat1dhDzQXl6EeaotT/f2AIuiCT6XtdAt5jPpr8NtrAuE+izPjW1pb9Rw5Sm5L7h
+         510AQ+D2qhiuhtIAMXynlpVXe1L1ELZiw2/cTDjEOQgEFEO+uQZdogABeCtDDfAcPBMN
+         4dMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2DCudZZq4BCGyRqK9T3SXUuab3iD7BkjY5ekmbCqtp8=;
-        b=gqe4MRcFvYCMFrtDuUpSwzldP+qFlmJhJ2yBAqOFJNkkgp+jeh9o0qiyjc36Nk4Gy3
-         HftTr9yZkN0rrOznwLLolkVRwu+g4WyPxA5acMkq4Ny56Zw2ooenMmC4e6qUK4qw3vEk
-         g4uoqEbplBRbAyy75qYYlxGgckYeY1jP6z5y3CzIwjv3MmsDfRncAoA2TK8wIOIR0ZSj
-         323/YrFWqP3IHCxxDQ7se6cE3iBb2avXgqi2LwncpvKf8SbFdnZNKUPlxlKUV11ALpPu
-         P9b83No0uHm/gMlOSKTJVYTY/7AfwOZQXYTrPoGVwiXvsSEeWS4zdMIuJovKzWp5HYYA
-         FWdQ==
-X-Gm-Message-State: AOAM533V8JHIzbR3LSQihjZnELiCF6NtG9CX0ucD+G4JlctZB7ApHa5s
-        BaBOG7zZy4RS5aq61ZWR5Nu98edxonBMTWkZf1c=
-X-Google-Smtp-Source: ABdhPJwWS86hdKpJy5bSjHeQ3JB0qgxXYnZTyR3aaMfvNH/4QvwkEV/JL6J3OPEy1dgscMlXgSiMufgqxGO4abDE9Ek=
-X-Received: by 2002:a17:90b:513:: with SMTP id r19mr983426pjz.93.1630631032093;
- Thu, 02 Sep 2021 18:03:52 -0700 (PDT)
+        bh=Gd2E/Pl/C0iRwR3hxdHVkR2H3jQVrFOHkTXAIcMx9So=;
+        b=YH25W4U7EFEL4iQiKvdT2P3/dFWwMLv7hZqeJmAmeWXfpWSMjq7se+WWVt6CQlkFLe
+         cw1gle9d1lmtLOoK7MxjgiF8DAIJMOqi+FUI4Dzqp1GVSTf1WQKPQ5s1Pgk3C7uqKNFh
+         edI11E9cgYpfr2+LPbrpvaYwNSC4frYEs62p8VLOfT6Ufque+uAYZtsYfqxC/TNCEeW3
+         2cHUmPxI6HN8BjaRYbbex4mHzDG7ecUu1KmOOqd27pd4BqgeiifVAf/dKktxHCmtKmln
+         SvN5eUApnOUalZq0wkAoYZtkJbUWpfmRKYrvC0lR0NFyYKNg0AbG/xOooZLhySzDWdGp
+         YG1g==
+X-Gm-Message-State: AOAM533B/oZJ7uFnSGUJi3uhsSLUbjvngyf0nZkjm0zQ0aYPyTroRR2A
+        tGHV0ku/QHM7TOKLB9NlpfQyhcv66G0Tqcm3yeI=
+X-Google-Smtp-Source: ABdhPJxQUW7pz+w3kHrnLXwXO9K7bT20swTyi0GJXxEfubexYEGopC9Wz2mqd2HHOynHT3ga/FjTxH0PVSC8LUbx1wo=
+X-Received: by 2002:a17:907:3393:: with SMTP id zj19mr1097188ejb.535.1630631372347;
+ Thu, 02 Sep 2021 18:09:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210902165706.2812867-1-songliubraving@fb.com> <20210902165706.2812867-3-songliubraving@fb.com>
-In-Reply-To: <20210902165706.2812867-3-songliubraving@fb.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Thu, 2 Sep 2021 18:03:41 -0700
-Message-ID: <CAADnVQKxwUtUJTNjwiU-hmtqjpaTZLXoFzKtK7SME=zLuRbdUg@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 2/3] bpf: introduce helper bpf_get_branch_snapshot
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, kjain@linux.ibm.com,
-        Kernel Team <kernel-team@fb.com>
+References: <20210902060213.1702544-1-mudongliangabcd@gmail.com> <CAMuHMdVPUMGZ7Sq2rBgr+US0H3ZF4WVkfPPnKQD1cMg5Wd0+-w@mail.gmail.com>
+In-Reply-To: <CAMuHMdVPUMGZ7Sq2rBgr+US0H3ZF4WVkfPPnKQD1cMg5Wd0+-w@mail.gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Fri, 3 Sep 2021 09:09:03 +0800
+Message-ID: <CAD-N9QVngAyEszUViVCaaCeC2Q-71qqdWC1yqXD3a5inGQCA6w@mail.gmail.com>
+Subject: Re: [PATCH 4.19] fbmem: add margin check to fb_check_caps()
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Sasha Levin <sashal@kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 9:58 AM Song Liu <songliubraving@fb.com> wrote:
+On Thu, Sep 2, 2021 at 9:15 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> +BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
-> +{
-> +#ifndef CONFIG_X86
-> +       return -ENOENT;
-> +#else
-> +       static const u32 br_entry_size = sizeof(struct perf_branch_entry);
-> +       u32 entry_cnt = size / br_entry_size;
-> +
-> +       if (unlikely(flags))
-> +               return -EINVAL;
-> +
-> +       if (!buf || (size % br_entry_size != 0))
-> +               return -EINVAL;
-> +
-> +       entry_cnt = static_call(perf_snapshot_branch_stack)(buf, entry_cnt);
+> Hi Dongliang,
+>
+> On Thu, Sep 2, 2021 at 8:04 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+> > [ Upstream commit a49145acfb975d921464b84fe00279f99827d816 ]
+>
+> Oops, looks like I missed when that one was submitted for review...
 
-Not taken branches will not be counted even with PERF_SAMPLE_BRANCH_ANY,
-right?
-Probably the first unlikely(flags) will be a fallthrough in asm.
-Maybe worth adding unlikely to 2nd condition as well to make
-sure that the compiler will generate default fallthrough code for it ?
-So both will not appear in lbr entries?
-Or maybe do:
-if (unlikely(!buf))
-   return -EINVAL;
-entry_cnt = static_call
-if (size % br_entry_size)
-   return -EINVAL;
+This patch cannot directly apply to old stable trees. Maybe that's the reason.
 
-The lbr trace will be collected anyway.
-If there are jmps in lbr due to earlier "if"s we can move them
-after static_call. Like if (unlikely(flags) can be done afterwards too.
+>
+> > A fb_ioctl() FBIOPUT_VSCREENINFO call with invalid xres setting
+> > or yres setting in struct fb_var_screeninfo will result in a
+> > KASAN: vmalloc-out-of-bounds failure in bitfill_aligned() as
+> > the margins are being cleared. The margins are cleared in
+> > chunks and if the xres setting or yres setting is a value of
+> > zero upto the chunk size, the failure will occur.
+> >
+> > Add a margin check to validate xres and yres settings.
+>
+> Shouldn't (the caller of) bitfill_aligned() be fixed instead?
+> Can this be triggered by e.g. using the mini_4x6 font?
 
-Bigger bang for the buck would be static-inline-ing migrate_disable, though.
+I am sorry. I don't know much detail about this subsystem. I just
+found syzkaller can still trigger this bug in linux-4.19.
+
+Combined with the bug information, I found this patch is not merged
+into the old kernel trees. So I send this patch rebased on linux-4.19.
+Also I have tested it on linux-4.14 and below.
+
+>
+> > Note that, this patch needs special handling to backport it to linux
+> > kernel 4.19, 4.14, 4.9, 4.4.
+> >
+> > Signed-off-by: George Kennedy <george.kennedy@oracle.com>
+> > Reported-by: syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com
+> > Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > Cc: Dhaval Giani <dhaval.giani@oracle.com>
+> > Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> > Link: https://patchwork.freedesktop.org/patch/msgid/1594149963-13801-1-git-send-email-george.kennedy@oracle.com
+> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > ---
+> >  drivers/video/fbdev/core/fbmem.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+> > index 84845275dbef..de04c097d67c 100644
+> > --- a/drivers/video/fbdev/core/fbmem.c
+> > +++ b/drivers/video/fbdev/core/fbmem.c
+> > @@ -991,6 +991,10 @@ fb_set_var(struct fb_info *info, struct fb_var_screeninfo *var)
+> >                         goto done;
+> >                 }
+> >
+> > +               /* bitfill_aligned() assumes that it's at least 8x8 */
+> > +               if (var->xres < 8 || var->yres < 8)
+> > +                       return -EINVAL;
+>
+> Are you sure there don't exist such small displays (e.g. OLED)?
+>
+> > +
+> >                 ret = info->fbops->fb_check_var(var, info);
+> >
+> >                 if (ret)
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
