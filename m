@@ -2,89 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 586053FF8A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 03:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF1C3FF8A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 03:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344508AbhICBWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 21:22:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230434AbhICBWV (ORCPT
+        id S1346639AbhICBTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 21:19:05 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:36200 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234035AbhICBTE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 21:22:21 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31C11C061575
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 18:21:22 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id r4so7304958ybp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 18:21:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FbnWfjPWbMqaUy77C85OvsHvKmk1fJxMRcsrhSEyptw=;
-        b=B/RiRqDWqn3gSMhdV8ILZNJvnvwgprEvlAiLRjyfK6EYIvNOdZANmN61654XhWynuh
-         o4SyIXauNA1Ic5YOr8t4SjpT/3AqqtvL2ffCfcNyPE2WJWObnumdg+GPyjNebwubBV+7
-         SOmzczK1xvtjcseWX+Ht2JhBygbwHotXVNC2jZICwZOBTQugQnTd7f7ThiTatxKmmIhk
-         ANjxGf4xvWLeNQ/LVM29UkrLY64e9tgrAVsL+v8b9hXS3MC1eRH/uHo9Cm8JWYQK8+7/
-         IaAyVbpCMlSBM8HUrC1vTClfdJ3OsK4E3gsFo2JP+gtDbX8ZWZg8w7nXrGhbtdfC6Pam
-         EDGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FbnWfjPWbMqaUy77C85OvsHvKmk1fJxMRcsrhSEyptw=;
-        b=UH3pyPvbeui1UEJDFDvt1vRmkUN8wt7VZfm+h3NeaZ42S9rwbS3K+s6yCLkMiLEhyH
-         Bzi5cCiedLLPiBcCRRz5eZVmkIhS3L1q5jZLalQL405QIs+jlMTT0RZv36I+QkV6jwPG
-         y46exB3N8uGUdXWaGMglSpwW9GVJlCyqBiTA3rGPiwdnNOmajX23msKUPdMbupK9p3+s
-         0Rne0SLYPsRBgvoIzUsWBBiRKXb6Q1uIF+XsDpCWsvY1bD8szZC8u5CK1prjv8lA2Fj7
-         m2GEGsDENC6T1iG+XkGFVjYdy8oANcYlb+R5t4pQk5+Gl6EZXFf6hQEdmslpc2M4KlPc
-         kcLw==
-X-Gm-Message-State: AOAM530MW/7Y7S1dKaaVcSrWOGlFLLGkWOHWvC6X0RuLaEznTfK9V/iU
-        o56CSeZvEZv7iZ6YlAZGI/LjwMy85bPJialSHYw/6A==
-X-Google-Smtp-Source: ABdhPJxoW+365yaXVacsVbgqdXRUGmiFd+AO+mo1bz+fKkwbsLg7I8giOS9V/G0liXBpEcPRio7MnYn9bce5+BqXZG8=
-X-Received: by 2002:a25:4254:: with SMTP id p81mr1549551yba.442.1630632080846;
- Thu, 02 Sep 2021 18:21:20 -0700 (PDT)
+        Thu, 2 Sep 2021 21:19:04 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ActeZza6ie09Y4z5rkAPXwPTXdLJyesId70hD?=
+ =?us-ascii?q?6qkRc20wTiX8ra2TdZsguyMc9wx6ZJhNo7G90cq7MBbhHPxOkOos1N6ZNWGIhI?=
+ =?us-ascii?q?LCFvAB0WKN+V3dMhy73utc+IMlSKJmFeD3ZGIQse/KpCW+DPYsqePqzJyV?=
+X-IronPort-AV: E=Sophos;i="5.85,263,1624291200"; 
+   d="scan'208";a="113929416"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 03 Sep 2021 09:18:03 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 483AE4D0D9D8;
+        Fri,  3 Sep 2021 09:17:58 +0800 (CST)
+Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Fri, 3 Sep 2021 09:17:47 +0800
+Received: from localhost.localdomain (10.167.225.141) by
+ G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Fri, 3 Sep 2021 09:17:47 +0800
+From:   Li Zhijian <lizhijian@cn.fujitsu.com>
+To:     <shuah@kernel.org>, <linux-gpio@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Li Zhijian <lizhijian@cn.fujitsu.com>,
+        Philip Li <philip.li@intel.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2] selftests/gpio: Fix gpio compiling error
+Date:   Fri, 3 Sep 2021 09:22:36 +0800
+Message-ID: <20210903012236.160858-1-lizhijian@cn.fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210820010403.946838-1-joshdon@google.com> <20210820010403.946838-2-joshdon@google.com>
- <20210902012206.cm6flytlp63c2h5v@oracle.com>
-In-Reply-To: <20210902012206.cm6flytlp63c2h5v@oracle.com>
-From:   Josh Don <joshdon@google.com>
-Date:   Thu, 2 Sep 2021 18:21:09 -0700
-Message-ID: <CABk29NuoNRu0SnEEqC8zhJROndCSRhfsE2xkhO98WP_wTTDuCA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] sched: cgroup SCHED_IDLE support
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Paul Turner <pjt@google.com>,
-        Oleg Rombakh <olegrom@google.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Steve Sistare <steven.sistare@oracle.com>,
-        Tejun Heo <tj@kernel.org>, Rik van Riel <riel@surriel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-yoursite-MailScanner-ID: 483AE4D0D9D8.AF33E
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 6:22 PM Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
->
-> On Thu, Aug 19, 2021 at 06:04:00PM -0700, Josh Don wrote:
-> > +static int se_is_idle(struct sched_entity *se)
-> > +{
-> > +     return 0;
-> > +}
->
-> I'm thinking !FAIR_GROUP_SCHED is a rare thing to behold?  So not a big
-> deal, but I think this wants to be
->
->         return task_has_idle_policy(task_of(se));
->
-> so buddies aren't set for SCHED_IDLE.
+[root@iaas-rpma gpio]# make
+gcc     gpio-mockup-cdev.c  -o /home/lizhijian/linux/tools/testing/selftests/gpio/gpio-mockup-cdev
+gpio-mockup-cdev.c: In function ‘request_line_v2’:
+gpio-mockup-cdev.c:24:30: error: storage size of ‘req’ isn’t known
+   24 |  struct gpio_v2_line_request req;
+      |                              ^~~
+gpio-mockup-cdev.c:32:14: error: ‘GPIO_V2_LINE_FLAG_OUTPUT’ undeclared (first use in this function); did you mean ‘GPIOLINE_FLAG_IS_OUT’?
+   32 |  if (flags & GPIO_V2_LINE_FLAG_OUTPUT) {
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~
 
-Good point. Peter has merged this one already, do you want to send a patch?
+gpio-mockup-cdev.c includes <linux/gpio.h> which could be provided by
+kernel-headers package, and where it's expected to declare
+GPIO_V2_LINE_FLAG_OUTPUT. However distros or developers will not always
+install the same kernel-header as we are compiling.
+
+So we can tell compiler to search headers from linux tree simply like others,
+such as sched.
+
+CC: Philip Li <philip.li@intel.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+
+---
+V2: add more details about the fix
+---
+ tools/testing/selftests/gpio/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/testing/selftests/gpio/Makefile b/tools/testing/selftests/gpio/Makefile
+index 39f2bbe8dd3d..42ea7d2aa844 100644
+--- a/tools/testing/selftests/gpio/Makefile
++++ b/tools/testing/selftests/gpio/Makefile
+@@ -3,5 +3,6 @@
+ TEST_PROGS := gpio-mockup.sh
+ TEST_FILES := gpio-mockup-sysfs.sh
+ TEST_GEN_PROGS_EXTENDED := gpio-mockup-cdev
++CFLAGS += -I../../../../usr/include
+ 
+ include ../lib.mk
+-- 
+2.31.1
+
+
+
