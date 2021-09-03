@@ -2,126 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 024DE40062F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:53:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3141440063D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350047AbhICTyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 15:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234588AbhICTyq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 15:54:46 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9263C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:53:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=s9zCYO7ivn9bU2YwE2qebeEwOr+P6P9//Z0Xkx78JGc=; b=O85JfQg3VssOC2PATbgi4EahTA
-        /v9SSF1wiD5OxR9p7UNlHHzlad+YmtNR4Px0IhcKiohXUQ7OGzrVNrXHGG+v5HLJBvL6/B8qlTPG0
-        D5AvHQDfsT7jaXZe0fx7brjYHoN2nwVFE5B8hh+sMO2qvjJfKCpvhsqoDOsgEVPBWQpMY8IsnuoIj
-        tniApLqBuuKQ/pcaNtbcEvVW2fPuVO4ljrzznoIZxmGFeJX8JGdtT5ioa82Q3coEk9Aw1uZQGuqgB
-        51E+qJeRFweWU46M3AKBkcECEStYef5xcB1LYoiSIeud8a4nQ0cEV+Il0Vmv7Ztxw1ywa+USz48XQ
-        FmMlhjAQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mMFFo-00CpGx-Vu; Fri, 03 Sep 2021 19:53:37 +0000
-Subject: Re: [PATCH v3] ASoC: atmel: ATMEL drivers don't need HAS_DMA
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Codrin.Ciubotariu@microchip.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, mirq-linux@rere.qmqm.pl,
-        Alexandre Belloni <alexandre.belloni@free-electrons.com>
-References: <20210707214752.3831-1-rdunlap@infradead.org>
- <fca8f952-2be0-5c57-d60d-5c4f025abc4d@microchip.com>
- <49495ab9-5039-f332-2895-1a79c034f58d@infradead.org>
- <CAMuHMdU=ODKZJ0OOsuCeJnTWuM3fP5DE7coSzB=fvAbxPQWDcg@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a94c9788-0415-ffe3-9dd4-e6ed8d7ee96a@infradead.org>
-Date:   Fri, 3 Sep 2021 12:53:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1350080AbhICT5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 15:57:05 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:55464 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234588AbhICT5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 15:57:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=HO9XoMvuwbHH8/CXHe0tF2X2C2TJeLj8UMZGt5fiCxU=; b=ubsVN9rx+OYAid+ONmg8UxSgx+
+        od95mDe1Wp1rdj5aEkMztftthexgBZBJaQFzRKMakMt4OhXq1t7OmT9tc54hynpZ3Izy/fkrsBc6Q
+        V7NwPIhoMLMklmG2yEywn0ebLn5AYOvY6Phl+L9peqpguB3g2x4tXn5GAVgMWgkt7+q8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mMFI9-005AsI-9E; Fri, 03 Sep 2021 21:56:01 +0200
+Date:   Fri, 3 Sep 2021 21:56:01 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Vladimir Oltean <olteanv@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH net-next 0/3] Make the PHY library stop being so
+ greedy when binding the generic PHY driver
+Message-ID: <YTJ90frD66C3mVga@lunn.ch>
+References: <20210902163144.GH22278@shell.armlinux.org.uk>
+ <20210902171033.4byfnu3g25ptnghg@skbuf>
+ <20210902175043.GK22278@shell.armlinux.org.uk>
+ <20210902190507.shcdmfi3v55l2zuj@skbuf>
+ <20210902200301.GM22278@shell.armlinux.org.uk>
+ <20210902202124.o5lcnukdzjkbft7l@skbuf>
+ <20210902202905.GN22278@shell.armlinux.org.uk>
+ <20210903162253.5utsa45zy6h4v76t@skbuf>
+ <YTJZj/Js+nmDTG0y@lunn.ch>
+ <20210903185850.GY22278@shell.armlinux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <CAMuHMdU=ODKZJ0OOsuCeJnTWuM3fP5DE7coSzB=fvAbxPQWDcg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903185850.GY22278@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/21 9:44 AM, Geert Uytterhoeven wrote:
-> Hi Randy,
+On Fri, Sep 03, 2021 at 07:58:50PM +0100, Russell King (Oracle) wrote:
+> On Fri, Sep 03, 2021 at 07:21:19PM +0200, Andrew Lunn wrote:
+> > Hi Russell
+> > 
+> > Do you have
+> > 
+> > auto brdsl
+> > 
+> > in your /etc/network/interfaces?
+> > 
+> > Looking at /lib/udev/bridge-network-interface it seems it will only do
+> > hotplug of interfaces if auto is set on the bridge interface. Without
+> > auto, it only does coldplug. So late appearing switch ports won't get
+> > added.
 > 
-> On Thu, Jul 8, 2021 at 6:51 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->> On 7/8/21 1:19 AM, Codrin.Ciubotariu@microchip.com wrote:
->>> On 08.07.2021 00:47, Randy Dunlap wrote:
->>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>>>
->>>> On a config (such as arch/sh/) which does not set HAS_DMA when MMU
->>>> is not set, several ATMEL ASoC drivers select symbols that cause
->>>> kconfig warnings. There is one "depends on HAS_DMA" which is no longer
->>>> needed. Dropping it eliminates the kconfig warnings and still builds
->>>> with no problems reported.
->>>>
->>>> Fix the following kconfig warnings:
->>>>
->>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
->>>>     Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
->>>>     Selected by [m]:
->>>>     - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
->>>>     - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
->>>>
->>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
->>>>     Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
->>>>     Selected by [m]:
->>>>     - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
->>>>
->>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
->>>>     Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
->>>>     Selected by [m]:
->>>>     - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
->>>>
->>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
->>>>     Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
->>>>     Selected by [m]:
->>>>     - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
->>>>     - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
->>>>
->>>> Fixes: 3951e4aae2ce ("ASoC: atmel-pcm: dma support based on pcm dmaengine")
->>>> Fixes: 18291410557f ("ASoC: atmel: enable SOC_SSC_PDC and SOC_SSC_DMA in Kconfig")
->>>> Fixes: 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
->>>
->>> I am not sure about these fixes tags. As Alexandre mentioned, it looks
->>> like the reason for HAS_DMA in the first place was the COMPILE_TEST with
->>> m32r arch. I dig a bit, and, if any, I think we should use:
->>> Fixes: eb17726b00b3 ("m32r: add simple dma")
->>> since this commit adds dummy DMA support for m32r and seems to fix the
->>> HAS_DMA dependency.
->>
->> Ah, I forgot to update the Fixes: tag(s).
->>
->> I won't disagree with your Fixes: suggestion (good digging) but
->> I would probably have used 8d7d11005e930:
->>    ASoC: atmel: fix build failure
->> which is the commit that added "depends on HAS_DMA".
+> I think you're looking at this:
 > 
-> M32r was not the only platform NO_DMA, so I guess the build would
-> have failed for the others, too (e.g. Sun-3).
+> [ "$BRIDGE_HOTPLUG" = "no" ] && exit 0
 > 
-> So the real fix was probably commit f29ab49b5388b2f8 ("dma-mapping:
-> Convert NO_DMA get_dma_ops() into a real dummy"), or one of the
-> related commits adding dummies to subsystems.
+> ?
 
-Hi Geert,
-Does this mean that some other actions are needed here?
-E.g. revert + a different kind of fix?
+No, i was meaning this bit:
 
-thanks.
--- 
-~Randy
+   for i in $(ifquery --list --allow auto); do
+        ports=$(ifquery $i | sed -n -e's/^bridge[_-]ports: //p')
 
+Inside this is the actual adding of the interface to the bridge:
+
+                                        brctl addif $i $port && ip link set dev $port up
+
+
+$ /sbin/ifquery --list --allow auto
+lo
+eth0
+br42
+
+I have various tap interfaces for VMs which get added to br42 when
+they appear.
+
+     Andrew
