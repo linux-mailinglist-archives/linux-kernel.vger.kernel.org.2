@@ -2,121 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 339703FFC50
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B52263FFC57
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348443AbhICIuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:50:44 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:43462 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348415AbhICIul (ORCPT
+        id S1348452AbhICIw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:52:29 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:35818 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234817AbhICIw1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:50:41 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Fri, 3 Sep 2021 04:52:27 -0400
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C9E082001B;
-        Fri,  3 Sep 2021 08:49:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630658980; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cDxNZDOT6mQUMNCs/5bHO5A+JEd2XgxBAJXhmBdSbbw=;
-        b=VbpC8r2iK1pOQ9eNi1TouFnvGAEG3Q2l//bLETrWhVa1Mvebnw9WTw+3fU42jh0vUotgsp
-        luWP3rWesmgxuuRQkhvF72sZKVDy7LzQ6MpzomsIjNTl9HKI+OUwVrQXGEPTWdiRmsnWai
-        o6EzteyS0M7u3UJpASPIGqLHXQUgGIo=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 71D981374A;
-        Fri,  3 Sep 2021 08:49:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id eKY/GqThMWFjdAAAGKfGzw
-        (envelope-from <jgross@suse.com>); Fri, 03 Sep 2021 08:49:40 +0000
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org
-Subject: [PATCH 2/2] xen: reset legacy rtc flag for PV domU
-Date:   Fri,  3 Sep 2021 10:49:37 +0200
-Message-Id: <20210903084937.19392-3-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210903084937.19392-1-jgross@suse.com>
-References: <20210903084937.19392-1-jgross@suse.com>
+        (Authenticated sender: bbrezillon)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id CF7021F44841;
+        Fri,  3 Sep 2021 09:51:25 +0100 (BST)
+Date:   Fri, 3 Sep 2021 10:51:22 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/panfrost: Calculate lock region size correctly
+Message-ID: <20210903105122.76471f98@collabora.com>
+In-Reply-To: <20210902140038.221437-1-steven.price@arm.com>
+References: <20210902140038.221437-1-steven.price@arm.com>
+Organization: Collabora
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A Xen PV guest doesn't have a legacy RTC device, so reset the legacy
-RTC flag. Otherwise the following WARN splat will occur at boot:
+On Thu,  2 Sep 2021 15:00:38 +0100
+Steven Price <steven.price@arm.com> wrote:
 
-[    1.333404] WARNING: CPU: 1 PID: 1 at /home/gross/linux/head/drivers/rtc/rtc-mc146818-lib.c:25 mc146818_get_time+0x1be/0x210
-[    1.333404] Modules linked in:
-[    1.333404] CPU: 1 PID: 1 Comm: swapper/0 Tainted: G        W         5.14.0-rc7-default+ #282
-[    1.333404] RIP: e030:mc146818_get_time+0x1be/0x210
-[    1.333404] Code: c0 64 01 c5 83 fd 45 89 6b 14 7f 06 83 c5 64 89 6b 14 41 83 ec 01 b8 02 00 00 00 44 89 63 10 5b 5d 41 5c 41 5d 41 5e 41 5f c3 <0f> 0b 48 c7 c7 30 0e ef 82 4c 89 e6 e8 71 2a 24 00 48 c7 c0 ff ff
-[    1.333404] RSP: e02b:ffffc90040093df8 EFLAGS: 00010002
-[    1.333404] RAX: 00000000000000ff RBX: ffffc90040093e34 RCX: 0000000000000000
-[    1.333404] RDX: 0000000000000001 RSI: 0000000000000000 RDI: 000000000000000d
-[    1.333404] RBP: ffffffff82ef0e30 R08: ffff888005013e60 R09: 0000000000000000
-[    1.333404] R10: ffffffff82373e9b R11: 0000000000033080 R12: 0000000000000200
-[    1.333404] R13: 0000000000000000 R14: 0000000000000002 R15: ffffffff82cdc6d4
-[    1.333404] FS:  0000000000000000(0000) GS:ffff88807d440000(0000) knlGS:0000000000000000
-[    1.333404] CS:  10000e030 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    1.333404] CR2: 0000000000000000 CR3: 000000000260a000 CR4: 0000000000050660
-[    1.333404] Call Trace:
-[    1.333404]  ? wakeup_sources_sysfs_init+0x30/0x30
-[    1.333404]  ? rdinit_setup+0x2b/0x2b
-[    1.333404]  early_resume_init+0x23/0xa4
-[    1.333404]  ? cn_proc_init+0x36/0x36
-[    1.333404]  do_one_initcall+0x3e/0x200
-[    1.333404]  kernel_init_freeable+0x232/0x28e
-[    1.333404]  ? rest_init+0xd0/0xd0
-[    1.333404]  kernel_init+0x16/0x120
-[    1.333404]  ret_from_fork+0x1f/0x30
+> It turns out that when locking a region, the region must be a naturally
+> aligned power of 2. The upshot of this is that if the desired region
+> crosses a 'large boundary' the region size must be increased
+> significantly to ensure that the locked region completely covers the
+> desired region. Previous calculations (including in kbase for the
+> proprietary driver) failed to take this into account.
+> 
+> Since it's known that the lock region must be naturally aligned we can
+> compute the required size by looking at the highest bit position which
+> changes between the start/end of the lock region (subtracting 1 from the
+> end because the end address is exclusive). The start address is then
+> aligned based on the size (this is technically unnecessary as the
+> hardware will ignore these bits, but the spec advises to do this "to
+> avoid confusion").
+> 
+> Signed-off-by: Steven Price <steven.price@arm.com>
+> ---
+> See previous discussion[1] for more details. This bug also existed in
+> the 'kbase' driver, so it's unlikely to actually hit very often.
+> 
+> This patch is based on drm-misc-next-fixes as it builds on top of
+> Alyssa's changes to lock_region.
+> 
+> [1] https://lore.kernel.org/dri-devel/6fe675c4-d22b-22da-ba3c-f6d33419b9ed@arm.com/
+> 
+>  drivers/gpu/drm/panfrost/panfrost_mmu.c | 33 +++++++++++++++++++------
+>  1 file changed, 26 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> index dfe5f1d29763..afec15bb3db5 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> @@ -58,17 +58,36 @@ static int write_cmd(struct panfrost_device *pfdev, u32 as_nr, u32 cmd)
+>  }
+>  
+>  static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
+> -			u64 iova, u64 size)
+> +			u64 region_start, u64 size)
+>  {
+>  	u8 region_width;
+> -	u64 region = iova & PAGE_MASK;
+> +	u64 region;
+> +	u64 region_size;
+> +	u64 region_end = region_start + size;
+>  
+> -	/* The size is encoded as ceil(log2) minus(1), which may be calculated
+> -	 * with fls. The size must be clamped to hardware bounds.
+> +	if (!size)
+> +		return;
+> +
+> +	/*
+> +	 * The locked region is a naturally aligned power of 2 block encoded as
+> +	 * log2 minus(1).
+> +	 * Calculate the desired start/end and look for the highest bit which
+> +	 * differs. The smallest naturally aligned block must include this bit
+> +	 * change the desired region starts with this bit (and subsequent bits)
+> +	 * zeroed and ends with the bit (and subsequent bits) set to one.
+> +	 *
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
- arch/x86/xen/enlighten_pv.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Nit: you can drop the empty comment line.
 
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 753f63734c13..349f780a1567 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -1214,6 +1214,11 @@ static void __init xen_dom0_set_legacy_features(void)
- 	x86_platform.legacy.rtc = 1;
- }
- 
-+static void __init xen_domu_set_legacy_features(void)
-+{
-+	x86_platform.legacy.rtc = 0;
-+}
-+
- /* First C function to be called on Xen boot */
- asmlinkage __visible void __init xen_start_kernel(void)
- {
-@@ -1359,6 +1364,8 @@ asmlinkage __visible void __init xen_start_kernel(void)
- 		add_preferred_console("xenboot", 0, NULL);
- 		if (pci_xen)
- 			x86_init.pci.arch_init = pci_xen_init;
-+		x86_platform.set_legacy_features =
-+				xen_domu_set_legacy_features;
- 	} else {
- 		const struct dom0_vga_console_info *info =
- 			(void *)((char *)xen_start_info +
--- 
-2.26.2
+>  	 */
+> -	size = max_t(u64, size, AS_LOCK_REGION_MIN_SIZE);
+> -	region_width = fls64(size - 1) - 1;
+> -	region |= region_width;
+> +	region_size = region_start ^ (region_end - 1);
+
+Hm, is region_size really encoding the size of the region to lock? I
+mean, the logic seems correct but I wonder if it wouldn't be better to
+drop the region_size variable and inline
+'region_start ^ (region_end - 1)' in the region_width calculation to
+avoid confusion.
+
+Looks good otherwise.
+
+Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+> +	region_width = max(fls64(region_size),
+> +			   const_ilog2(AS_LOCK_REGION_MIN_SIZE)) - 1;
+> +
+> +	/*
+> +	 * Mask off the low bits of region_start (which would be ignored by
+> +	 * the hardware anyway)
+> +	 */
+> +	region_start &= GENMASK_ULL(63, region_width);
+> +
+> +	region = region_width | region_start;
+>  
+>  	/* Lock the region that needs to be updated */
+>  	mmu_write(pfdev, AS_LOCKADDR_LO(as_nr), region & 0xFFFFFFFFUL);
 
