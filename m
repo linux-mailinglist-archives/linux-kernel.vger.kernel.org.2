@@ -2,72 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD770400571
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BFED400575
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350582AbhICTCz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 15:02:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239381AbhICTCy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 15:02:54 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012F1C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:01:54 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id r26so382098oij.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:01:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=SAzTnDcToUqmXsOS2Uqx6HjGpLJFdTeJaBGrr8ePieg=;
-        b=fSkxncCTXR86TbzQCb1xW3s3xdTOMGyzfpctNNQvoRpmZfwq31/TpHnE/hSrh4lTKc
-         u/GXxXKV+drF9Ekhf3KgE/0m/nVdmc3bhnB4f+1uGv/0b1bm6BzpYJQX4KVSDguVznhC
-         pJsvND2WcJlJQ6YF6Dh/K2w26+jRkJwihxwys=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=SAzTnDcToUqmXsOS2Uqx6HjGpLJFdTeJaBGrr8ePieg=;
-        b=XF7VrCmaeG1237nAhzLp6LESXUCg2F0KtzcUS/5zueqPnGrS/EH9RRSbl5HFDEs7lS
-         aMTXzSrO7PcF55laHkPhX36BuPKeSdX63VViNw+43qPh1MwCrOIquCZa+60OXZofe5aQ
-         ZC0hZTlZfUD9QL7SiXQwOZ16dO55HJT4B1OnXWq+mEWZsfEj43WPzlALxJzfki1sSV9h
-         uG0tTQkFZiOv8997Y0o29soeg29m/EKsJszVVI6pYDdfnA2RXVsMEL+mJtj8IiXZv17v
-         C7Tv7GadOiQVojFoNYubv2k3kovNOz6/+z4WxUD+/DkF2WD99O9vjeq9RSHgQmThbxhD
-         d5gg==
-X-Gm-Message-State: AOAM533Ykyk6em5sNFSSipG4l+0eDsjHUaPDcXhbdceCIM0ze8q/j2dk
-        I9pV+l82/BhWG3Z/6V8Pii4oEI3EKR+S79Z/6XtFgQ==
-X-Google-Smtp-Source: ABdhPJxnKzQ5AS2ZUhj+PB1HcygTeTEtePAdA7QZT6VkdQnPumBdxHtQCjSp+nbjz+D1bTV6KWEe4wqRrA61V8sjjoM=
-X-Received: by 2002:a05:6808:909:: with SMTP id w9mr244302oih.164.1630695713356;
- Fri, 03 Sep 2021 12:01:53 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 3 Sep 2021 15:01:52 -0400
+        id S1350606AbhICTFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 15:05:01 -0400
+Received: from mga06.intel.com ([134.134.136.31]:60244 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231300AbhICTE7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 15:04:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="280506307"
+X-IronPort-AV: E=Sophos;i="5.85,266,1624345200"; 
+   d="scan'208";a="280506307"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 12:03:59 -0700
+X-IronPort-AV: E=Sophos;i="5.85,266,1624345200"; 
+   d="scan'208";a="462502843"
+Received: from nadeshpa-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.213.188.116])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 12:03:58 -0700
+Subject: Re: [PATCH v6 01/11] x86/paravirt: Move halt paravirt calls under
+ CONFIG_PARAVIRT
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210903172812.1097643-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YTJn0HOkMd0thT+3@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <256d0f5b-3a6d-0912-2edc-44b4a0889c73@linux.intel.com>
+Date:   Fri, 3 Sep 2021 12:03:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <1630643340-10373-8-git-send-email-rajpat@codeaurora.org>
-References: <1630643340-10373-1-git-send-email-rajpat@codeaurora.org> <1630643340-10373-8-git-send-email-rajpat@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Fri, 3 Sep 2021 15:01:52 -0400
-Message-ID: <CAE-0n51c1TdO3tw6dDd9Ai=j_0rvc_H6uTm5nQ1RoibF8+PcPw@mail.gmail.com>
-Subject: Re: [PATCH V7 7/7] arm64: dts: sc7280: Add aliases for I2C and SPI
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rajesh Patil <rajpat@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, rnayak@codeaurora.org,
-        saiprakash.ranjan@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, mka@chromium.org, dianders@chromium.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YTJn0HOkMd0thT+3@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Rajesh Patil (2021-09-02 21:29:00)
-> Add aliases for i2c and spi for sc7280 soc.
->
-> Signed-off-by: Rajesh Patil <rajpat@codeaurora.org>
-> ---
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+
+On 9/3/21 11:22 AM, Borislav Petkov wrote:
+> On Fri, Sep 03, 2021 at 10:28:02AM -0700, Kuppuswamy Sathyanarayanan wrote:
+>> diff --git a/arch/x86/include/asm/irqflags.h b/arch/x86/include/asm/irqflags.h
+>> index c5ce9845c999..ddc77c95adc6 100644
+>> --- a/arch/x86/include/asm/irqflags.h
+>> +++ b/arch/x86/include/asm/irqflags.h
+>> @@ -59,27 +59,8 @@ static inline __cpuidle void native_halt(void)
+>>   
+>>   #endif
+>>   
+>> -#ifdef CONFIG_PARAVIRT_XXL
+>> -#include <asm/paravirt.h>
+>> -#else
+>> +#ifndef CONFIG_PARAVIRT
+>>   #ifndef __ASSEMBLY__
+>> -#include <linux/types.h>
+>> -
+>> -static __always_inline unsigned long arch_local_save_flags(void)
+>> -{
+>> -	return native_save_fl();
+>> -}
+>> -
+>> -static __always_inline void arch_local_irq_disable(void)
+>> -{
+>> -	native_irq_disable();
+>> -}
+>> -
+>> -static __always_inline void arch_local_irq_enable(void)
+>> -{
+>> -	native_irq_enable();
+>> -}
+>> -
+>>   /*
+>>    * Used in the idle loop; sti takes one instruction cycle
+>>    * to complete:
+>> @@ -97,6 +78,33 @@ static inline __cpuidle void halt(void)
+>>   {
+>>   	native_halt();
+>>   }
+>> +#endif /* __ASSEMBLY__ */
+>> +#endif /* CONFIG_PARAVIRT */
+>> +
+>> +#ifdef CONFIG_PARAVIRT
+>> +#ifndef __ASSEMBLY__
+>> +#include <asm/paravirt.h>
+>> +#endif /* __ASSEMBLY__ */
+>> +#endif /* CONFIG_PARAVIRT */
+> 
+> I think the way we write those is like this:
+> 
+> #ifdef CONFIG_PARAVIRT
+> 
+> # ifndef __ASSEMBLY__
+> # include <asm/paravirt.h>
+> # endif
+> 
+> #else /* ! CONFIG_PARAVIRT */
+> 
+> # ifndef __ASSEMBLY__
+> /*
+>   * Used in the idle loop; sti takes one instruction cycle
+>   * to complete:
+>   */
+> static inline __cpuidle void arch_safe_halt(void)
+> {
+> 	native_safe_halt();
+> }
+> 
+> /*
+>   * Used when interrupts are already enabled or to
+>   * shutdown the processor:
+>   */
+> static inline __cpuidle void halt(void)
+> {
+> 	native_halt();
+> }
+> # endif /* __ASSEMBLY__ */
+> 
+> #endif /* CONFIG_PARAVIRT */
+
+Yes, I can combine the #ifdef as you have mentioned. I can fix this
+in next version.
+
+> 
+> Note the empty space after the '#' of the inner ifdef to show that it is
+> an inner one.
+
+Is this new convention? #ifdefs used in this file does not follow this
+format.
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
