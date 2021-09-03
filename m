@@ -2,236 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448DF40019E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7C34001A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349539AbhICO74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:59:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349488AbhICO7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:59:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1A2F61056;
-        Fri,  3 Sep 2021 14:58:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630681134;
-        bh=z2uRNQz69xBL8uUWPBxwwZ7QJqE9ZEA/iXaX6H4y+UY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ey8NLLAgfpVpIfyi4xTG+Djq62tDNLOGexgzdXvhhiRcK5YT0ztW/q+/siwO2XqJL
-         6TCrnYRQkI+UKO4Tiye+nVbvZqxEK+w/1PLgOjGnrIXGIVStncXwXbwJQByBsgslfl
-         KUySJYdWC3sZn326zwGRoxsiYtbXjw7LTzKec2FuqAgFuEwPLzoq2DhBCyX4p6r0Be
-         jvGKpQztMJ05XxiRL3Et5dHpkFfE+asdkTpbbR4r6ihJilV5UJxxjhm7MYem77x8hM
-         atpj0JhJtk3GKnEgOafWJGRQaH3UmnWp3CjukZotywGGjb+TEi1knQbbAAV0ORswD3
-         ahrTrgT7VW+1w==
-Received: by mail-ej1-f47.google.com with SMTP id me10so12613175ejb.11;
-        Fri, 03 Sep 2021 07:58:54 -0700 (PDT)
-X-Gm-Message-State: AOAM530Ev9qG9AxZLTpSM4t3uuF4y5JkPjarmaRRHo4les/UB66NGYuo
-        shS+dp1LQ1sQHabMjm60QDIymsgMJMCPTZnanw==
-X-Google-Smtp-Source: ABdhPJx4h8QEqzMfrCpb+bUvqzs0SZjObk/x77kp9sCY4GHhjan0I+SMpiSdOCmkP64ZjbH0cwkiECN282QlkbAA2Vw=
-X-Received: by 2002:a17:906:7250:: with SMTP id n16mr4642476ejk.147.1630681133366;
- Fri, 03 Sep 2021 07:58:53 -0700 (PDT)
+        id S1349563AbhICPBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 11:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349488AbhICPBf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 11:01:35 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46937C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 08:00:35 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id r6so5463467ilt.13
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 08:00:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=jfZB8OkBcB081S0FD25QcCEM0bi7QUTw/fueJBK6u9s=;
+        b=yL+oNzXd4MUz0/xLQGpCuc+BzqS+ueBGFvD3CGRREXLaw4+gGCh72XFoFiXNLLftQW
+         MndRazWQaNRu1MubbxbFmgzQjiVfH38fYT4wCNyapaf7PmO5p53xVqV7nctONfWLEOWD
+         nHB4/tbNzjXYyytiJr+/UXTpD2ctUsAiDgmsIYCUH2VGle9Gp78vi3OwCfs939eiUGBB
+         pKKKmGdyiAegLyqOLnwIUKG0oRXqr0InBhp4Cly9igwARfn/VXLOCi0zGttp3HkMWaUx
+         VuSFOYuuPOGl6RcmP7yyh1aeb6p68021H9fyQin8P0M+iVEJ+iT72QrnQkGY4h5QgXWQ
+         pdsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jfZB8OkBcB081S0FD25QcCEM0bi7QUTw/fueJBK6u9s=;
+        b=FAb/JYUtKhcnbK2PqVxW3jwXeH2BJ72X4Ij4vhsZR1OhnyE5JGesWPIvqWmAgrUekt
+         +uk1gnzlD7GQ+mKaxJmFN3qpDxLd5Co9/vgjawVSFUPnDVzkwTZtKsydqjJK4YjWttXW
+         CFotvMygFlrTpGfO73OXejNmrKal+sLVsARuAf/5NDcYIRn9HUj/vXoe4ElOy2KarDSR
+         M9HYFAR2zCAgSkMsKJEeP1m0qz2ERkjtokekoPk+MNNq7XGkN9giejtvx/WObgBBNz15
+         Xd5y6oQADIxolAGyfN/66Ou8cjirpgocnUyAR4Z25kd62OaogCciHg/YLZozNFFePI9K
+         P6yQ==
+X-Gm-Message-State: AOAM5323k4XEjCXmraBVwpwQGWrnUJ2vkpgemV1zG12AYndkvcNTDGQu
+        omVfzcBYTClQZ3L71gvHhdlZFA==
+X-Google-Smtp-Source: ABdhPJznCE4y8jicDtqhI2aZI28qn0fp+MtSC/RUF33c/nbiU3sTUCjsHmQrIsQmH8NW9NqR8+9T/g==
+X-Received: by 2002:a92:cb04:: with SMTP id s4mr2881154ilo.130.1630681234607;
+        Fri, 03 Sep 2021 08:00:34 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id l15sm3003669iow.4.2021.09.03.08.00.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 08:00:34 -0700 (PDT)
+Subject: Re: Bug: d0e936adbd22 crashes at boot
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, inux-pm@vger.kernel.org
+References: <942f4041-e4e7-1b08-3301-008ab37ff5b8@kernel.dk>
+ <c56cde110210bec6537fe69b495334c6c70c814e.camel@linux.intel.com>
+ <3ac87893-55ba-f2d4-bb1e-382868f12d4c@kernel.dk>
+ <7f115f0476618d34b24ddec772acbbd7c0c4a572.camel@linux.intel.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <767fe00f-bf31-1eb0-09cc-1be91c633bb4@kernel.dk>
+Date:   Fri, 3 Sep 2021 09:00:33 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210902025528.1017391-1-saravanak@google.com>
- <20210902025528.1017391-3-saravanak@google.com> <CAL_JsqJOv7D5nHteGPDKC2+ns1caVNs-NFFJppLuK0OEB8dztQ@mail.gmail.com>
- <CAGETcx-rOakAX_apu2ecu6jWCwzO0RgMkwdfzyF+UaxQfVj4CA@mail.gmail.com>
- <CAL_Jsq+A1T5+KK5xsVVtrMVeuMre3B6sAAroX+a3gQy6wY+r8A@mail.gmail.com>
- <CAGETcx9wY66TsFX_1rFUO+toE-OpkAvWSdcNVK7M=LYwa6xbAw@mail.gmail.com>
- <CAL_JsqJzt_duSkMm43dwpiGCmqW8PAQ1n6SeyiNkECP8CTcY=g@mail.gmail.com> <CAGETcx-VkJXTXCwh_ctMg_-VDUb4WFxLLYt0ht8tv8yn+kCH6Q@mail.gmail.com>
-In-Reply-To: <CAGETcx-VkJXTXCwh_ctMg_-VDUb4WFxLLYt0ht8tv8yn+kCH6Q@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 3 Sep 2021 09:58:42 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJ4auRZonAnR5CKGyKNs1pVfHK24+av0Ox9L_805v=n6w@mail.gmail.com>
-Message-ID: <CAL_JsqJ4auRZonAnR5CKGyKNs1pVfHK24+av0Ox9L_805v=n6w@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] of: platform: Mark bus devices nodes with FWNODE_FLAG_NEVER_PROBES
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <7f115f0476618d34b24ddec772acbbd7c0c4a572.camel@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 8:16 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Thu, Sep 2, 2021 at 5:53 PM Rob Herring <robh+dt@kernel.org> wrote:
-> >
-> > On Thu, Sep 2, 2021 at 2:29 PM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > On Thu, Sep 2, 2021 at 12:03 PM Rob Herring <robh+dt@kernel.org> wrote:
-> > > >
-> > > > On Thu, Sep 2, 2021 at 11:57 AM Saravana Kannan <saravanak@google.com> wrote:
-> > > > >
-> > > > > On Thu, Sep 2, 2021 at 7:24 AM Rob Herring <robh+dt@kernel.org> wrote:
-> > > > > >
-> > > > > > On Wed, Sep 1, 2021 at 9:55 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > > > >
-> > > > > > > We don't want fw_devlink creating device links for bus devices as
-> > > > > > > they'll never probe. So mark those device node with this flag.
-> > > > > > >
-> > > > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > > > > ---
-> > > > > > >  drivers/of/platform.c | 16 ++++++++++++++++
-> > > > > > >  1 file changed, 16 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-> > > > > > > index 74afbb7a4f5e..42b3936d204a 100644
-> > > > > > > --- a/drivers/of/platform.c
-> > > > > > > +++ b/drivers/of/platform.c
-> > > > > > > @@ -392,6 +392,22 @@ static int of_platform_bus_create(struct device_node *bus,
-> > > > > > >         if (!dev || !of_match_node(matches, bus))
-> > > > > > >                 return 0;
-> > > > > > >
-> > > > > > > +       /*
-> > > > > > > +        * If the bus node has only one compatible string value and it has
-> > > > > > > +        * matched as a bus node, it's never going to get probed by a device
-> > > > > > > +        * driver. So flag it as such so that fw_devlink knows not to create
-> > > > > > > +        * device links with this device.
-> > > > > > > +        *
-> > > > > > > +        * This doesn't catch all devices that'll never probe, but this is good
-> > > > > > > +        * enough for now.
-> > > > > > > +        *
-> > > > > > > +        * This doesn't really work for PPC because of how it uses
-> > > > > > > +        * of_platform_bus_probe() to add normal devices. So ignore PPC cases.
-> > > > > > > +        */
-> > > > > > > +       if (!IS_ENABLED(CONFIG_PPC) &&
-> > > > > > > +           of_property_count_strings(bus, "compatible") == 1)
-> > > > > > > +               bus->fwnode.flags |= FWNODE_FLAG_NOT_DEVICE;
-> > > > > >
-> > > > > > This looks fragile relying on 1 compatible string, and the DT flags in
-> > > > > > this code have been fragile too. I'm pretty sure we have cases of
-> > > > > > simple-bus or simple-mfd that also have another compatible.
-> > > > > >
-> > > > > > Couldn't we solve this with a simple driver?
-> > > > >
-> > > > > Oh, I didn't think you'd like that. I'd lean towards that option too
-> > > > > if we can address some of the other concerns below.
-> > > > >
-> > > > > > Make 'simple-pm-bus'
-> > > > > > driver work for other cases?
-> > > > >
-> > > > > > BTW, this patch doesn't even work for
-> > > > > > simple-pm-bus.
-> > > > >
-> > > > > How do you mean? Because simple-pm-bus already has a driver and
-> > > > > doesn't set "matches" param when it calls of_platform_populate() and
-> > > > > this flag won't be set. So at least for simple-pm-bus I don't see any
-> > > > > issue.
-> > > >
-> > > > You're right.
-> > > >
-> > > > > I was trying to reuse of_default_bus_match_table without explicitly
-> > > > > referring to it, but if it's confusing I can add a separate list of
-> > > > > compatible strings and use those here instead of using "matches".
-> > > >
-> > > > What happens with a non-default table? I'm not sure we can assume the
-> > > > same behavior.
-> > > >
-> > > > > > A driver for simple-bus may cause issues if there's a
-> > > > > > more specific driver to bind to as we don't handle that. It's simply
-> > > > > > whichever matches first.
-> > > > >
-> > > > > Right, this is my worry. Especially for devices like this (there are
-> > > > > plenty of cases like this) which have a driver that probes them but
-> > > > > also lists simple-bus
-> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/arm-realview-pb11mp.dts?id=73f3af7b4611d77bdaea303fb639333eb28e37d7#n299
-> > > >
-> > > > Uhh, that one is certainly a leakage of wanting an soc_device in the
-> > > > hierarchy, not any real bus structure reflecting the h/w. I'm not a
-> > > > fan of the soc_device stuff and its optional nature. Everything is an
-> > > > SoC, so it should always be there? Or your device hierarchy should
-> > > > change when you decide to add a soc_device?
-> > > >
-> > > > > So as long as there's a compatible string that's not one of the
-> > > > > "transparent" busses, this driver shouldn't match. So, I don't think I
-> > > > > can get away from checking the compatible strings.
-> > > > >
-> > > > > How about I check here to make sure all the "compatible" strings are
-> > > > > from an approved transparent bus list, and if it's true, I use
-> > > > > driver_override to force match it to a transparent bus driver? Would
-> > > > > you be okay with that?
-> > > >
-> > > > Can't we do that within a driver? We check this and fail probe if
-> > > > there's a more specific compatible.  Then another driver can match and
-> > > > probe.
-> > >
-> > > I was thinking that initially, but if we fail a probe, the driver core
-> > > will permanently give up (won't search further) or might end up
-> > > retrying with the same driver and never get to the other driver. I'll
-> > > send out a v2 with what I described above. It's not too bad and it
-> > > will also allow us to handle the PPC cases (we'll just need to keep
-> > > adding the simple-bus equivalent entries to a table).
-> >
-> > I wasn't sure, but I traced the calls and it looks like based on
-> > __driver_attach() that if a driver fails probe another one matching
-> > should get to probe:
->
-> __driver_attach() is called over every device already in a bus. It's
-> called only when a new driver is registered. So it makes sense that
-> one ignores the error returned from probe(). You don't want to fail
-> driver registration because one specific device needs to defer probe.
+On 9/3/21 8:38 AM, Srinivas Pandruvada wrote:
+> On Fri, 2021-09-03 at 08:15 -0600, Jens Axboe wrote:
+>> On 9/3/21 8:13 AM, Srinivas Pandruvada wrote:
+>>> Hi Axboe,
+>>>
+>>> Thanks for reporting.
+>>> On Fri, 2021-09-03 at 07:36 -0600, Jens Axboe wrote:
+>>>> Hi,
+>>>>
+>>>> Booting Linus's tree causes a crash on my laptop, an x1 gen9. This
+>>>> was
+>>>> a bit
+>>>> difficult to pin down as it crashes before the display is up, but I
+>>>> managed
+>>>> to narrow it down to:
+>>>>
+>>>> commit d0e936adbd2250cb03f2e840c6651d18edc22ace
+>>>> Author: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+>>>> Date:   Thu Aug 19 19:40:06 2021 -0700
+>>>>
+>>>>     cpufreq: intel_pstate: Process HWP Guaranteed change
+>>>> notification
+>>>>
+>>>> which crashes with a NULL pointer deref in notify_hwp_interrupt() -
+>>>>>
+>>>> queue_delayed_work_on().
+>>>>
+>>>> Reverting this change makes the laptop boot fine again.
+>>>>
+>>> Does this change fixes your issue?
+>>
+>> I would assume so, as it's crashing on cpudata == NULL :-)
+>>
+>> But why is it NULL? Happy to test patches, but the below doesn't look
+>> like
+>> a real fix and more of a work-around.
+> 
+> This platform is sending an HWP interrupt on a CPU which we didn't yet
+> bring it up for pstate control. So somehow firmware decided to send
+> very early during boot, which previously we would have ignored it
+> 
+> Actually try this, with more prevention
 
-The behavior should be the same no matter whether the device or driver
-is registered first.
+I can give this a whirl.
 
-Deferred probe errors are handled differently AFAICT.
+> diff --git a/drivers/cpufreq/intel_pstate.c
+> b/drivers/cpufreq/intel_pstate.c
+> index b4ffe6c8a0d0..6ee88d7640ea 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -1645,12 +1645,24 @@ void notify_hwp_interrupt(void)
+>         if (!hwp_active || !boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
+>                 return;
+>  
+> -       rdmsrl(MSR_HWP_STATUS, value);
+> +       rdmsrl_safe(MSR_HWP_STATUS, &value);
+>         if (!(value & 0x01))
+>                 return;
+>  
+> +       /*
+> +        * After hwp_active is set and all_cpu_data is allocated, there
+> +        * is small window.
+> +        */
+> +       if (!all_cpu_data) {
+> +               wrmsrl_safe(MSR_HWP_STATUS, 0);
+> +               return;
+> +       }
 
->
-> The comment is actually from __device_attach_driver()
->
-> >
-> >         /*
-> >          * Ignore errors returned by ->probe so that the next driver can try
-> >          * its luck.
-> >          */
->
-> I saw that comment too, but isn't the comment wrong/stale?
+What synchronizes the all_cpu_data setup and the interrupt? Can the
+interrupt come in while it's still being setup?
 
-I don't know...
+-- 
+Jens Axboe
 
->
-> bus_probe_device() -> device_initial_probe() -> __device_attach().
->
-> In __device_attach() we have:
-> ret = bus_for_each_drv(dev->bus, NULL, &data, __device_attach_driver);
->
-> If you look at bus_for_each_drv()'s comment:
->  * ...... If @fn returns anything but 0, we break out
->  * and return it. If @start is not NULL, we use it as the head
->  * of the list.
->
-> Inside __device_attach_driver() we see:
->         /*
->          * Ignore errors returned by ->probe so that the next driver can try
->          * its luck.
->          */
->         ret = driver_probe_device(drv, dev);
->         if (ret < 0)
->                 return ret;
->
-> So if probe() returned an error, we'd return it right back out. And
-> then bus_for_each_drv() will stop searching for more drivers that
-> match.
-
-With the exception of deferred probe, probe errors are made positive
-and then ignored.
-
-> So I don't think one driver can give up after a match and have another
-> driver give a device a shot.
-
-I think it just needs to be tried out...
-
-I would like the above to work because it at least partially solves
-the problem of multiple drivers matching. It only works if the
-fallback driver knows there's a better match though which is this
-case. If we don't know then a better match would have to unbind the
-first driver and bind to the better match. I'm not sure that could
-ever work generically.
-
-Rob
