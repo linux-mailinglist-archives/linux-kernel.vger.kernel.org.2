@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443243FFF33
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9203FFF34
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349296AbhICLaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 07:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54148 "EHLO
+        id S1349306AbhICLaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 07:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349210AbhICLaT (ORCPT
+        with ESMTP id S1349210AbhICLaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 07:30:19 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FE8C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 04:29:18 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id 2so4068678pfo.8
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 04:29:18 -0700 (PDT)
+        Fri, 3 Sep 2021 07:30:23 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A09C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 04:29:23 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id s29so4080912pfw.5
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 04:29:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=0I//inV63qyurmrg1BffYLLfm9QEgShDl7nWQ+y21aU=;
-        b=q6Qiylu6AkvzHZrdLLE5WkEWLRhFg1l2ZYKx94DC4huDKmMtTT9hoPGxCu1SzV59au
-         BJajk83gMYYA19BQsVMxeFkVVU9/2HWdVPwIIIMYFsH34yhF1XwNFNK0xcEtrB+ENXWp
-         y19bIIiNYW5rApCpKjRWXuYiGuJBf7WOM5xObiMZwj7g1bmSidPhF4OwJzyY/Efq8iaq
-         gx2fm3RlvDOPRGTDXm9of7NDK2blUF8/qHz/L8TEJOU1xH4xQ2ai2hXh3JpgClwd23iY
-         JlIN5eEuZE5x3vQAjbPk6JFvhvAo5TNahqmZyu6mkx0ah5kVpjJj/Fti65QbjNv4evYA
-         qSIQ==
+        bh=N33O/jKwx1/k7vQIGoBJU3vb76C/gdsxbsKwqC4sYls=;
+        b=HRRm11PW2tSjb//jpKWX3u2mNCNcOlRKCzRXhk/TlquHduSiDOTEZIvKN2acn66rgA
+         fhYTJ4p8w1oVeB3VnV8hQTWLt5LAawMBC29eQsqEnt3MjhJdc1o/ZShH1j0BB9ZxgNrA
+         r2GK9VN2h3lbKMsDEbPL3v2DzRGhjfFOWlnHdgJnkrotKV4jxZlsQOOIY7+n6E8/gyUW
+         V/rB051ZLSTMDnZWUJklgXII2zJ3gDgb6hN54bfPPC5WvCSDdr7XLOJS0DgpIHmC5zGB
+         rTrq3Nzr+YDiPfjEZia/eET3LPd5MBJNYrwJNhSexNdUtWfS1ua65Gh0t3LDW3gRU3u7
+         E8OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=0I//inV63qyurmrg1BffYLLfm9QEgShDl7nWQ+y21aU=;
-        b=YIPDEp9ySNyTWPOQsziyFw2sSZrUZE+ftWBQ8DZWLepjcatyRCaVhq7h8xpBIpve4w
-         9S5YdE9m9R+6Jn6dPMZghlQ6dMHrNUpZyinYQwvohboZ6gK5JBTaXQOKDnMye+zIIg9M
-         QY85acv0W7OM0xxOB8VHzlYWFxcBp6awj6eBzE2QcoOoWWfTQIbeJBQ28MNuWRaZXhPS
-         3SiaFRwU0JBQXh3zcK5PtkhSBHMiMeDUGFDbE2Ks79/dMzavZVIkjzcfc/g+JHPIWrz/
-         wYBaUC62WF3Y4tzhv422ocxQ4k3Q4lR55y7MFInxejXN653G/vU6W2GNzMvpt8Cbi7A5
-         hE2A==
-X-Gm-Message-State: AOAM533PGEMZ98oUHIW4NY6mCyuBTxzTF3QTLTH3yzCEGKTdWg9VSMPa
-        R5VGmlfQllaFPoeJBhPRkxnu9H5JyUXs1g==
-X-Google-Smtp-Source: ABdhPJxi4/iwwdHiOP818FoRPtwAzNOPXLk2Cg4hzZ8nnurJWUSpUrA2AC7B7FaW1bscCh88e/b/Tg==
-X-Received: by 2002:a63:7447:: with SMTP id e7mr3222816pgn.46.1630668558021;
-        Fri, 03 Sep 2021 04:29:18 -0700 (PDT)
+        bh=N33O/jKwx1/k7vQIGoBJU3vb76C/gdsxbsKwqC4sYls=;
+        b=iRlFNrGY+cq1zjlfm2RZUevXCQVMFXUhzo+ww8jTFwSvqUAKz7hhJzfn2RsPHuDcGm
+         FJQZL52u85sxfNEyIYypdFjmTQ+9dYY78BmhmGmUwMuGZhkaddCegn/peeOJIPlqIr2B
+         5LjqZWQVtJSLMdZKloslCyCPkioiJ020HO2SITsokHkNEn878nkclStzvJpTsSzDgo2A
+         jdnR6Eqe9il0ykGjIb7q0TqBoByXM+wgJEPTDJqV3fyFLdhnJITd/a3gJFERcSsUVP09
+         2KM/d3gxk3MEXMU6wE3rs3Hs303gxZrpTub6sYx5LTDulLAVcDUpgKchFt7YSeiBfo+g
+         S+2w==
+X-Gm-Message-State: AOAM530Lo4gUIDCOZMttbbMAPDIdwUgI5+pXsJHGyUrSPxN2JGwRnMLm
+        AHptJFB1kfVu6Tvk+YSyXF4=
+X-Google-Smtp-Source: ABdhPJwN8aEf1rw4yFGnT4ZMpL8wQZqH7HU3xTQw+BKrmLbpsGel6laqznTEhE7TonsGfM+fjrzXhA==
+X-Received: by 2002:a63:6d89:: with SMTP id i131mr3183316pgc.235.1630668563539;
+        Fri, 03 Sep 2021 04:29:23 -0700 (PDT)
 Received: from bj10045pcu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id j14sm5023847pjg.29.2021.09.03.04.29.15
+        by smtp.gmail.com with ESMTPSA id j14sm5023847pjg.29.2021.09.03.04.29.20
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 03 Sep 2021 04:29:17 -0700 (PDT)
+        Fri, 03 Sep 2021 04:29:23 -0700 (PDT)
 From:   Zhenguo Zhao <zhenguo6858@gmail.com>
 To:     nianfu.bai@unisoc.com, keescook@chromium.org, anton@enomsg.org,
         ccross@android.com, tony.luck@intel.com
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] pstore: Add pstore back-end choice method in kconfig
-Date:   Fri,  3 Sep 2021 19:27:41 +0800
-Message-Id: <1630668462-24527-2-git-send-email-zhenguo6858@gmail.com>
+Subject: [PATCH 3/3] pstore: Modify kconfig to align text
+Date:   Fri,  3 Sep 2021 19:27:42 +0800
+Message-Id: <1630668462-24527-3-git-send-email-zhenguo6858@gmail.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1630668462-24527-1-git-send-email-zhenguo6858@gmail.com>
 References: <1630668462-24527-1-git-send-email-zhenguo6858@gmail.com>
@@ -63,100 +63,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
 
-The pstore has one storage device for back-end,so it should be
-use choice method to config.
-
-When ramoops config,insmod pstore_blk.ko,it will print unexpected,the
-module will insmod failed.
-
-    if (backend && strcmp(backend, psi->name)) {
-        pr_warn("ignoring unexpected backend '%s'\n", psi->name);
-        return -EPERM;
-    }
+Modify kconfig help for text consistency
 
 Signed-off-by: Zhenguo Zhao <Zhenguo.Zhao1@unisoc.com>
 ---
- fs/pstore/Kconfig | 57 ++++++++++++++++++++++++++++++-------------------------
- 1 file changed, 31 insertions(+), 26 deletions(-)
+ fs/pstore/Kconfig | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/fs/pstore/Kconfig b/fs/pstore/Kconfig
-index 8adabde..288ed3c 100644
+index 288ed3c..008ce38 100644
 --- a/fs/pstore/Kconfig
 +++ b/fs/pstore/Kconfig
-@@ -146,21 +146,40 @@ config PSTORE_FTRACE
- 
- 	  If unsure, say N.
- 
--config PSTORE_RAM
--	tristate "Log panic/oops to a RAM buffer"
-+choice
-+	prompt "Choice pstore device"
- 	depends on PSTORE
--	depends on HAS_IOMEM
--	select REED_SOLOMON
--	select REED_SOLOMON_ENC8
--	select REED_SOLOMON_DEC8
-+	default PSTORE_RAM
+@@ -4,15 +4,15 @@ config PSTORE
+ 	select CRYPTO if PSTORE_COMPRESS
+ 	default n
  	help
--	  This enables panic and oops messages to be logged to a circular
--	  buffer in RAM where it can be read back at some later point.
--
--	  Note that for historical reasons, the module will be named
--	  "ramoops.ko".
-+	  This option chooses ram or blk to use pstore device.
-+	config PSTORE_RAM
-+		tristate "Log panic/oops to a RAM buffer"
-+		depends on HAS_IOMEM
-+		select REED_SOLOMON
-+		select REED_SOLOMON_ENC8
-+		select REED_SOLOMON_DEC8
-+		help
-+		  This enables panic and oops messages to be logged to a circular
-+		  buffer in RAM where it can be read back at some later point.
-+
-+		  Note that for historical reasons, the module will be named
-+		  "ramoops.ko".
-+
-+		  For more information, see Documentation/admin-guide/ramoops.rst.
-+
-+	config PSTORE_BLK
-+		tristate "Log panic/oops to a block device"
-+		depends on BLOCK
-+		select PSTORE_ZONE
-+		help
-+		  This enables panic and oops message to be logged to a block dev
-+		  where it can be read back at some later point.
-+
-+		  For more information, see Documentation/admin-guide/pstore-blk.rst
-+
-+		  If unsure, say N.
+-	   This option enables generic access to platform level
+-	   persistent storage via "pstore" filesystem that can
+-	   be mounted as /dev/pstore.  Only useful if you have
+-	   a platform level driver that registers with pstore to
+-	   provide the data, so you probably should just go say "Y"
+-	   (or "M") to a platform specific persistent store driver
+-	   (e.g. ACPI_APEI on X86) which will select this for you.
+-	   If you don't have a platform persistent store driver,
+-	   say N.
++	  This option enables generic access to platform level
++	  persistent storage via "pstore" filesystem that can
++	  be mounted as /dev/pstore.  Only useful if you have
++	  a platform level driver that registers with pstore to
++	  provide the data, so you probably should just go say "Y"
++	  (or "M") to a platform specific persistent store driver
++	  (e.g. ACPI_APEI on X86) which will select this for you.
++	  If you don't have a platform persistent store driver,
++	  say N.
  
--	  For more information, see Documentation/admin-guide/ramoops.rst.
-+endchoice
- 
- config PSTORE_ZONE
- 	tristate
-@@ -169,20 +188,6 @@ config PSTORE_ZONE
- 	  The common layer for pstore/blk (and pstore/ram in the future)
- 	  to manage storage in zones.
- 
--config PSTORE_BLK
--	tristate "Log panic/oops to a block device"
--	depends on PSTORE
--	depends on BLOCK
--	select PSTORE_ZONE
--	default n
--	help
--	  This enables panic and oops message to be logged to a block dev
--	  where it can be read back at some later point.
--
--	  For more information, see Documentation/admin-guide/pstore-blk.rst
--
--	  If unsure, say N.
--
- config PSTORE_BLK_BLKDEV
- 	string "block device identifier"
- 	depends on PSTORE_BLK
+ config PSTORE_DEFAULT_KMSG_BYTES
+ 	int "Default kernel log storage space" if EXPERT
 -- 
 1.9.1
 
