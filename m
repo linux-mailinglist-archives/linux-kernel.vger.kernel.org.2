@@ -2,69 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B09C3FFB6D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1A03FFB75
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348083AbhICIAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:00:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231332AbhICIAR (ORCPT
+        id S1348094AbhICIBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:01:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31768 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347597AbhICIBI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:00:17 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972CDC061575;
-        Fri,  3 Sep 2021 00:59:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=quE3z4xC195VtvSPtHx4IVlWpjfXNxo5cVGhrWgtGhA=; b=bLHr+KMkw/ZxeQLvQXrOallvZ2
-        RdnoqBQe9yzJOg0DzvIYPWKnmBQh7Gzafji0+3Axmze3gmsPP3gpg2Ef6urXBfSiv1VpjqqMs0V4g
-        QNh25dDfz6phJcDefu1NGDOixoKze1wHtATiGEabPTYxa2OrFXV1aYWw70xsiZ53rBwxqdg+O3eQO
-        LbQ6WrqMU0lUExdOfw2pKmeM/NHt/G09gdYDKNQyxDZpvIeZev1gYv5onXXdZnClkb54ILTErR+UF
-        SH6BF0Esp7GRCDGEibKBvSMaA8IsTLBRKFyW7xjmL41xeO49kaRcVUDkzoJ8kFGpH+Yt6mw4ndVWu
-        YvH68rxA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mM44R-004GLf-FA; Fri, 03 Sep 2021 07:57:27 +0000
-Date:   Fri, 3 Sep 2021 08:57:07 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>
-Subject: Re: [GIT PULL] first round of SCSI updates for the 5.14+ merge window
-Message-ID: <YTHVUxc5xZzr77er@infradead.org>
-References: <fc14fbbf0d7c27b7356bc6271ba2a5599d46af58.camel@HansenPartnership.com>
- <CAHk-=wi99u+xj93-pLG0Na7SZmjvWg6n60Pq9Wt9PgO6=exdUA@mail.gmail.com>
- <26c12f13870a2276f41aebfea6e467d576f70860.camel@HansenPartnership.com>
- <YTGkLhfYWcvj4YRn@infradead.org>
+        Fri, 3 Sep 2021 04:01:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630656007;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=InxKCwkaY+BSOwQRBiaO8xW0lNamfxvr6pOVA9nU0nQ=;
+        b=QkyXCzTOlf3km0KSamF3vOkrQBloePaJmiH5hGsXDghVNG3CLjY0NXYuG7A7okxsxut9E4
+        jWLe4oJYWVjDvg9cLoRQlmTjZ0zdsiBcLQi+QaStkwS7GwWEG7rrf3XKPrQyS6r9VmUYKK
+        +bRez9rIJH+C3XJ61Jd2v8xLO/5d1fo=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-162-07I_3ZQTMea7N3hR2Sn81w-1; Fri, 03 Sep 2021 04:00:06 -0400
+X-MC-Unique: 07I_3ZQTMea7N3hR2Sn81w-1
+Received: by mail-ej1-f70.google.com with SMTP id ne21-20020a1709077b95b029057eb61c6fdfso2308710ejc.22
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 01:00:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=InxKCwkaY+BSOwQRBiaO8xW0lNamfxvr6pOVA9nU0nQ=;
+        b=uPnKZZ2QkPXsmLtB4269KJ7pZPALaiRps8BKVOlr8s3AzabpoEZ+oTZQUo9UuS5amn
+         hRN1R7XBQ9QS3vC1bnjZLqfbO2YVSBHFXGS5cxNb//oFbmtQgIkiSRiwGp1RQu8vV5pZ
+         IBKuZA749HGAoddQvG4cdp315xB5j6yjTeiR/mf04Coha+DU8q/PJBW0SsSCrD/AFytg
+         Nf5mZRPXlgrNS/FzMB+fiFfTsoI8JoRhlVzkeDg3yfFL8tB8d2eUGsfKRJng8oL8kxEx
+         k/6F3vMIE+VeqzQGE0j0jMu/a2r9zpYrIuSlw6/c9Rw2heKbQsvEepOmxexPEpiR+UXf
+         mJ6g==
+X-Gm-Message-State: AOAM532MzF4dFQvNEnkfe1LhwuJh8Npkdpepk9a21XWTY85MC4JItwia
+        DgRP4PvdR9+SUhuMxw3eVunZ+tjkpb+oFVWxsGgCsXLTS5cZ+vDotWMjYYsPIQgEujuzkpai6bY
+        RX1NEwOcJ//ERwkeaO0HgpIf+
+X-Received: by 2002:a17:906:4c8c:: with SMTP id q12mr2884989eju.254.1630656005575;
+        Fri, 03 Sep 2021 01:00:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy8fQU/ds5USfJd2Tckg+EXgt7GKbH1YbqcBJ6WAavCdiwLIBnSSmb8NLjjEqZaYwQzo4sQEQ==
+X-Received: by 2002:a17:906:4c8c:: with SMTP id q12mr2884963eju.254.1630656005317;
+        Fri, 03 Sep 2021 01:00:05 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id r16sm2554300edt.15.2021.09.03.01.00.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 01:00:04 -0700 (PDT)
+Subject: Re: [PATCH 3/5] iio: adc: axp288_adc: convert probe to full
+ device-managed
+To:     Alexandru Ardelean <aardelean@deviqon.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     jic23@kernel.org, wens@csie.org, andriy.shevchenko@linux.intel.com
+References: <20210903072917.45769-1-aardelean@deviqon.com>
+ <20210903072917.45769-4-aardelean@deviqon.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <1e26dd27-475c-7815-9a9d-240546fa9088@redhat.com>
+Date:   Fri, 3 Sep 2021 10:00:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTGkLhfYWcvj4YRn@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210903072917.45769-4-aardelean@deviqon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 05:27:26AM +0100, Christoph Hellwig wrote:
-> On Thu, Sep 02, 2021 at 04:23:43PM -0700, James Bottomley wrote:
-> > > 
-> > > Just checking that was fine, and I notice how *many* places do that.
-> > > 
-> > > Should the blk_execute_rq() function even take that "struct gendisk
-> > > *bd_disk" argument at all?
+Hi,
+
+On 9/3/21 9:29 AM, Alexandru Ardelean wrote:
+> This change converts the probe of this driver to use device-managed
+> functions only, which means that the remove hook can be removed.
+> The remove hook has only 2 calls to iio_device_unregister() and
+> iio_map_array_unregister(). Both these can now be done via devm register
+> functions, now that there's also a devm_iio_map_array_register() function.
 > 
-> No, it shouldn't.  rq->rq_disk should go away and use rq->q->disk
-> instead.  This has been on my TODO list, but didn't make the cut for
-> this merge window.
+> The platform_set_drvdata() can also be removed now.
+> 
+> This change also removes the error print for when the iio_device_register()
+> call fails. This isn't required now.
+> > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 
-Here is a quick draft of that:
+Thanks, patch looks good to me:
 
-http://git.infradead.org/users/hch/block.git/shortlog/refs/heads/block-remove-rq_disk
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
 
+Regards,
+
+Hans
+
+
+
+> ---
+>  drivers/iio/adc/axp288_adc.c | 28 ++++------------------------
+>  1 file changed, 4 insertions(+), 24 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/axp288_adc.c b/drivers/iio/adc/axp288_adc.c
+> index 5f5e8b39e4d2..a4b8be5b8f88 100644
+> --- a/drivers/iio/adc/axp288_adc.c
+> +++ b/drivers/iio/adc/axp288_adc.c
+> @@ -259,7 +259,7 @@ static int axp288_adc_probe(struct platform_device *pdev)
+>  	info->irq = platform_get_irq(pdev, 0);
+>  	if (info->irq < 0)
+>  		return info->irq;
+> -	platform_set_drvdata(pdev, indio_dev);
+> +
+>  	info->regmap = axp20x->regmap;
+>  	/*
+>  	 * Set ADC to enabled state at all time, including system suspend.
+> @@ -276,31 +276,12 @@ static int axp288_adc_probe(struct platform_device *pdev)
+>  	indio_dev->num_channels = ARRAY_SIZE(axp288_adc_channels);
+>  	indio_dev->info = &axp288_adc_iio_info;
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+> -	ret = iio_map_array_register(indio_dev, axp288_adc_default_maps);
+> +
+> +	ret = devm_iio_map_array_register(&pdev->dev, indio_dev, axp288_adc_default_maps);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	ret = iio_device_register(indio_dev);
+> -	if (ret < 0) {
+> -		dev_err(&pdev->dev, "unable to register iio device\n");
+> -		goto err_array_unregister;
+> -	}
+> -	return 0;
+> -
+> -err_array_unregister:
+> -	iio_map_array_unregister(indio_dev);
+> -
+> -	return ret;
+> -}
+> -
+> -static int axp288_adc_remove(struct platform_device *pdev)
+> -{
+> -	struct iio_dev *indio_dev = platform_get_drvdata(pdev);
+> -
+> -	iio_device_unregister(indio_dev);
+> -	iio_map_array_unregister(indio_dev);
+> -
+> -	return 0;
+> +	return devm_iio_device_register(&pdev->dev, indio_dev);
+>  }
+>  
+>  static const struct platform_device_id axp288_adc_id_table[] = {
+> @@ -310,7 +291,6 @@ static const struct platform_device_id axp288_adc_id_table[] = {
+>  
+>  static struct platform_driver axp288_adc_driver = {
+>  	.probe = axp288_adc_probe,
+> -	.remove = axp288_adc_remove,
+>  	.id_table = axp288_adc_id_table,
+>  	.driver = {
+>  		.name = "axp288_adc",
+> 
 
