@@ -2,123 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D293B4000FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1340E400102
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349118AbhICOHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:07:52 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23060 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235668AbhICOHv (ORCPT
+        id S240035AbhICOJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:09:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234108AbhICOJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:07:51 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 183E3UbD181380;
-        Fri, 3 Sep 2021 10:06:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=c5dtoeuWVsQu+Kx8qJUPUNaZorSC3QCCcGga7tN4sMM=;
- b=ScX/mNrpjpVGSx7jnWReoQPFcq12svD7XPCLBc9+6TcavrCpFAUGPoIUBGeID0O3nUQ8
- aG2XqrMHeI1H6uH7Bz5TxvciGjxAU+sdozMlFUgeWFBXfLNgYtqng2x7evKyHE7CSCmn
- 4qvRCZDSoMunMRURUbVVrLC0nPgqByu2VIOhDqKf/0qKkrztBc3ddgbIuEFNRIYG3qlI
- 4OxZa+v6kbClDzirNILXgdEG0wTxsWg+s0bg0AmFLE/P/U/FtTlcIfoeB2MszbyFM8Eb
- O6/4oYtU414B8YjaaKASZa+PwGVaLZEnJi4SjdP/5bMcv31V3PkLxnO5DfFZJ3o954ME 6w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aujf14aj5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 10:06:25 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 183E58pp001197;
-        Fri, 3 Sep 2021 10:06:24 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3aujf14agu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 10:06:24 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 183DwGLW004761;
-        Fri, 3 Sep 2021 14:06:21 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 3au6q7h8bn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Sep 2021 14:06:21 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 183E2Ese61866466
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Sep 2021 14:02:14 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA6AA52050;
-        Fri,  3 Sep 2021 14:06:17 +0000 (GMT)
-Received: from osiris (unknown [9.145.159.114])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id CFE815206B;
-        Fri,  3 Sep 2021 14:06:16 +0000 (GMT)
-Date:   Fri, 3 Sep 2021 16:06:15 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, gregkh@linuxfoundation.org,
-        chaitanya.kulkarni@wdc.com, atulgopinathan@gmail.com, hare@suse.de,
-        maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org,
-        colin.king@canonical.com, shubhankarvk@gmail.com,
-        baijiaju1990@gmail.com, trix@redhat.com,
-        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
-        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 9/9] s390/block/xpram: add error handling support for
- add_disk()
-Message-ID: <YTIr1w/qPvgioUfL@osiris>
-References: <20210902174105.2418771-1-mcgrof@kernel.org>
- <20210902174105.2418771-10-mcgrof@kernel.org>
+        Fri, 3 Sep 2021 10:09:14 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B4B0C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 07:08:14 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id lc21so12343332ejc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 07:08:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cdPH0RUrZjKAXah7cowHX5Y+IopONEnkhgKNCSY3VPw=;
+        b=Vf1l0IL5pe3MFxiQdNRXIyLZxAIBZiZdFrcYZ+LpU2j6vhQiUbAlXd4yfIpm9/1SZV
+         VY1GK9B71BNVjo49ax2WMFtEeTRLW8B8oo7rgRpy3VGigfjw3xO3lXqP0YJjrwOILgDD
+         TTrxgbeKlQGdbXYvykcCoNHtka7KLU+8jYrpz/98gHHt6gw3WSvrC8vA0B6pF98ixq6o
+         WuKf+ulUvi+z1mYpANjUZ/pK8/Nzdgoupppl11Vfug12v7Y3c3x3/HDYZrmK6uTqrZwr
+         1z/3orDN8UUCrN4wQY3fGV9CLl+hArzm6XKOrCAcExRm5aFg0kTGaQaLRQGUwcbo0GYO
+         bdkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cdPH0RUrZjKAXah7cowHX5Y+IopONEnkhgKNCSY3VPw=;
+        b=mHstzMrQtNYPVx0NjUXQp6HFlebGu4yTi9o6zhKGUJLkBcV4kTPvAk6jafUJGEkMvB
+         Atv6D9IKDgO8ZYN9x8G5s38cl1iQJIy4ot6hpFnAz1FQvDI1QGB1/Cq1CakShi33J5i+
+         vJihkGePS/yP6uFTNb2pXyIyhUcRE05HPymTFLrH9iXitHqIEFYTwYH0S1+SZke70qkQ
+         sDUkCUq+YAubeXRQ94+VNk0eNC2ca9RZuebpqG8zeJvyULvQH+fcQIckOYnL8dGt77QO
+         Rjv/4St6l+jdXD3i6GqCMDNM9AXDsLTOivclmQJ3AyTaqdfrcr+Yt1kg0wfQwOBmZv+q
+         JEng==
+X-Gm-Message-State: AOAM530pPv0JLcWeyHSYfBx7u+LhSzP0gF6AaNTKETGwzn5SUlMv7SEu
+        Xy61XsbFJCgc/xujR1d6t3aMVTBo8qQJWpkY+77G
+X-Google-Smtp-Source: ABdhPJwbSl4jRpGYOLS5AmybLrWXMIoT85h9FP8yaT+M2JBwaP3KkPlqliaddTmXQhWSJzuTbtqTa3Yxk7ZFssRzTlc=
+X-Received: by 2002:a17:906:6011:: with SMTP id o17mr4325477ejj.157.1630678092913;
+ Fri, 03 Sep 2021 07:08:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902174105.2418771-10-mcgrof@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: cnjpHgTUs8-WIbHVAJtbBq5h0cPzkyvT
-X-Proofpoint-GUID: XAog2zEDSgH4nXCPv9bkGtJovoNDgwBR
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-03_05:2021-09-03,2021-09-03 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 phishscore=0 spamscore=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 adultscore=0 clxscore=1011 suspectscore=0 impostorscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109030088
+References: <c6864908-d093-1705-76ce-94d6af85e092@linux.alibaba.com> <53f6b3fe-dde3-c35a-5ee1-ff480936b356@linux.alibaba.com>
+In-Reply-To: <53f6b3fe-dde3-c35a-5ee1-ff480936b356@linux.alibaba.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 3 Sep 2021 10:08:01 -0400
+Message-ID: <CAHC9VhSR8ETPaNVv6506z-wji9KCbRkrgzw0bC9uNtK7nSgzbQ@mail.gmail.com>
+Subject: Re: [PATCH] net: remove the unnecessary check in cipso_v4_doi_free
+To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 10:41:05AM -0700, Luis Chamberlain wrote:
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling.
-> 
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+On Thu, Sep 2, 2021 at 10:27 PM =E7=8E=8B=E8=B4=87 <yun.wang@linux.alibaba.=
+com> wrote:
+>
+> The commit 733c99ee8be9 ("net: fix NULL pointer reference in
+> cipso_v4_doi_free") was merged by a mistake, this patch try
+> to cleanup the mess.
+>
+> And we already have the commit e842cb60e8ac ("net: fix NULL
+> pointer reference in cipso_v4_doi_free") which fixed the root
+> cause of the issue mentioned in it's description.
+>
+> Suggested-by: Paul Moore <paul@paul-moore.com>
+> Signed-off-by: Michael Wang <yun.wang@linux.alibaba.com>
 > ---
->  drivers/s390/block/xpram.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/s390/block/xpram.c b/drivers/s390/block/xpram.c
-> index ce98fab4d43c..ed3904b6a9c8 100644
-> --- a/drivers/s390/block/xpram.c
-> +++ b/drivers/s390/block/xpram.c
-> @@ -371,7 +371,9 @@ static int __init xpram_setup_blkdev(void)
->  		disk->private_data = &xpram_devices[i];
->  		sprintf(disk->disk_name, "slram%d", i);
->  		set_capacity(disk, xpram_sizes[i] << 1);
-> -		add_disk(disk);
-> +		rc = add_disk(disk);
-> +		if (rc)
-> +			goto out;
+>  net/ipv4/cipso_ipv4.c | 18 ++++++++----------
+>  1 file changed, 8 insertions(+), 10 deletions(-)
 
-Hmm, this is a more or less dead device driver, and I'm wondering if
-we shouldn't remove it instead. But anyway, your patch is not correct:
+Verified that the v2 patch is in net/master so removing the v1 patch
+as this does is the right thing to do.  Thanks for sending this out.
 
-- del_gendisk for all registered disks has to be called
-- unregister_blkdev(XPRAM_MAJOR, XPRAM_NAME) is missing as well
+Acked-by: Paul Moore <paul@paul-moore.com>
 
-That would be more or or less xpram_exit with parameter.
+> diff --git a/net/ipv4/cipso_ipv4.c b/net/ipv4/cipso_ipv4.c
+> index 7fbd0b5..099259f 100644
+> --- a/net/ipv4/cipso_ipv4.c
+> +++ b/net/ipv4/cipso_ipv4.c
+> @@ -465,16 +465,14 @@ void cipso_v4_doi_free(struct cipso_v4_doi *doi_def=
+)
+>         if (!doi_def)
+>                 return;
+>
+> -       if (doi_def->map.std) {
+> -               switch (doi_def->type) {
+> -               case CIPSO_V4_MAP_TRANS:
+> -                       kfree(doi_def->map.std->lvl.cipso);
+> -                       kfree(doi_def->map.std->lvl.local);
+> -                       kfree(doi_def->map.std->cat.cipso);
+> -                       kfree(doi_def->map.std->cat.local);
+> -                       kfree(doi_def->map.std);
+> -                       break;
+> -               }
+> +       switch (doi_def->type) {
+> +       case CIPSO_V4_MAP_TRANS:
+> +               kfree(doi_def->map.std->lvl.cipso);
+> +               kfree(doi_def->map.std->lvl.local);
+> +               kfree(doi_def->map.std->cat.cipso);
+> +               kfree(doi_def->map.std->cat.local);
+> +               kfree(doi_def->map.std);
+> +               break;
+>         }
+>         kfree(doi_def);
+>  }
+> --
+> 1.8.3.1
+>
 
-You can send a new patch or I can provide a proper one, whatever you
-prefer.
+
+--=20
+paul moore
+www.paul-moore.com
