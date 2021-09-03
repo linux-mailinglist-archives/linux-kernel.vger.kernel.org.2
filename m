@@ -2,111 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403764003F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9D64003F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350248AbhICRL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 13:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
+        id S1350254AbhICRME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 13:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235425AbhICRL2 (ORCPT
+        with ESMTP id S244231AbhICRMD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 13:11:28 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB06C061575;
-        Fri,  3 Sep 2021 10:10:28 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id j195so3298241ybg.6;
-        Fri, 03 Sep 2021 10:10:28 -0700 (PDT)
+        Fri, 3 Sep 2021 13:12:03 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64596C061757
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 10:11:03 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id c206so11248858ybb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 10:11:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=google.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5MjMHuC+roNm7Spa73SgumLohK2Wfsd4VJdqj/W1924=;
-        b=VIZ3CL/+O3UuYMs8eVjmKMQ1O4PiKyZlLSGb+YS/eZDENI7Vh6DXz6ha6ZNMlari+x
-         y/ze7Ji0aApiBcNbJY+FOvDQFRAPGpEA63Q/F73ioEgJHanNl7ZZkUifaQ0x51wGSKNa
-         xR61VTmokLrpYELWjMX9M9rt+AJe7e7r2j9QWsk8YF/vHzb/nCQykFTLkMXoJ5yXvfLj
-         Db6eJKEVUPSVDKyxeiP+78gdEYSl9sVN15q4dyXA6gqwr//3poaJ7rjqYtgMs8f1ZkzV
-         kc8rAD8yj2AM1+lByqHnZQSYMsihCmdBaDIBOo/6V+30udlCZwibcUOj3rQov6DwD8Cx
-         fXxg==
+        bh=RSSitICnTkYgvRAGn0Mr0hVlFHSRUgJ2BvlCPOUBJV0=;
+        b=IWtyT/TCv8r/pfqYvN3L/qmmMftnIpFlaT3A0Hmysh+l7FaXuWAOdhHaciQ00gN0aM
+         sGEj6thBxRzs7oKWs8dJBELKfxNFA/agOBSsoui8ttE+a2PmEhRyCtCIEQgW9WMt0YlR
+         Vbd0t/7KfaC0vhKbAqlFaAUkJrVItYD+mXx2lm31+helUSEq5gp+EoRyLMi+Pves4Y94
+         Dg7zwZ20NBcUH6UtK3hS8CAnWeI4Kfo34tZdhgOdWSrBJeyn9L/65q+9R/52u2zsgh7S
+         6y5Mj7KDBcbLhy2zNihd0kbcQK6b3Wp/0IVAN3rnirdpBNELJEjqJWxhhqQue2HdW1z9
+         T+3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5MjMHuC+roNm7Spa73SgumLohK2Wfsd4VJdqj/W1924=;
-        b=oQbDipayy25PijDEONkDHx0tS2wMTgKDUZtzzNFKR3zroh5Apn18tADIYIC1aSAS/l
-         WfgkhFTtSCSxxh6XQKty9+YpN97aO2umIZK49lGxffS6qJYudcll5oLBl9pcRgjmQwVT
-         Jl+FK95m/WFyjy/RZdnn7RG365DvkFa2Y0VO4ReZbESPf9GMCNRWTP6W+r+jz4LELRGl
-         DO00rZDqvaeD85oRoACMdEC4pc62ja0gui7wKXodRXZFSrVHnVAVflLMueHPN11ekM7S
-         XDZF0l0+1/px/Cdw8rtbydjfkFD535blRbhbt8fKlR2+kiFCUfwCD0cvqaVD0gVCrO2D
-         FjRQ==
-X-Gm-Message-State: AOAM531n+HlZxMmrvUqiWpfHYSh+e+9u28smzbVYMifxkwg0rld9p1OO
-        Lpb0hlFdc/Di2h90xV55lZsG5Vz11p8RwNW75Cs=
-X-Google-Smtp-Source: ABdhPJxAwhbn6BupCHaSyKoQeKtU3NA6uno4HUm2g/J3uxG5aJ7h5UIVbOVsRd7X4ri/XV6ah82YYMmWuQOJREMDflo=
-X-Received: by 2002:a25:8c4:: with SMTP id 187mr67041ybi.369.1630689027611;
- Fri, 03 Sep 2021 10:10:27 -0700 (PDT)
+        bh=RSSitICnTkYgvRAGn0Mr0hVlFHSRUgJ2BvlCPOUBJV0=;
+        b=kpBt1qcOSEgZ37OUfIgoW6eZHUCzgmRJntpcdkte3Jh8+axw5VF0ep+wJJhsBrMrWT
+         MwBI3a3fgNcIh4RmPGb10Oq2WyhLBkmMvHP4qrnmn584hkY1qOFzCn0bRK9o8RiphwwD
+         5P8s7OB1kp9006b7NWVas9Apfr9ijsmSOOolgdjnkwrMDDL0pgNU81zuUch/sIkswAk4
+         Bm/IAhlMrJdOTtPqxmT8pVZffYt4jRlfADxYLec3p0YP47dvADUSaZDcTLj/UTVmqCtg
+         BOW5pmhoZXgvJqzoaP/krJQmmyX3AOaSuq1ltt84iz11GqZnde8j+w65LOHC0DJHTw4v
+         DFbA==
+X-Gm-Message-State: AOAM530uhhY/eSUn9u4KCgHMmN9zm1igq0j1THdF67+oGZMCwruROQsF
+        XBNe7OU18NDjNTb3/ImINKALb//7DVXb0yMjq0ltcw==
+X-Google-Smtp-Source: ABdhPJzGmV99Yficvf8951wooAlG/eHdCljFJIXkrb3PHMfOKZSAkOMme80hM9h98sQXZ4G2XeFE1JOhBXqK5VJEFzk=
+X-Received: by 2002:a25:b94:: with SMTP id 142mr7122ybl.508.1630689062450;
+ Fri, 03 Sep 2021 10:11:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210902165706.2812867-1-songliubraving@fb.com>
- <20210902165706.2812867-3-songliubraving@fb.com> <YTHhOy1gqr44C1bI@hirez.programming.kicks-ass.net>
-In-Reply-To: <YTHhOy1gqr44C1bI@hirez.programming.kicks-ass.net>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 3 Sep 2021 10:10:16 -0700
-Message-ID: <CAEf4BzZ0eq1iFh1oVwTZ7+bQkb=pJShgDWzUSAp41sk30iQunQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 2/3] bpf: introduce helper bpf_get_branch_snapshot
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Kernel Team <kernel-team@fb.com>
+References: <20210902230442.1515531-1-saravanak@google.com>
+ <20210902230442.1515531-3-saravanak@google.com> <CAPDyKFr7z6W3ghoAmTVKHaM8saycbhYyBcDXaTuT_Daz+djx2A@mail.gmail.com>
+In-Reply-To: <CAPDyKFr7z6W3ghoAmTVKHaM8saycbhYyBcDXaTuT_Daz+djx2A@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Fri, 3 Sep 2021 10:10:26 -0700
+Message-ID: <CAGETcx_SAy02LA_zkn1KhGEYq+fhPrWaLONMmneoy88YSKw1QQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] drivers: bus: simple-pm-bus: Add support for
+ probing simple bus only devices
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 1:49 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Fri, Sep 3, 2021 at 2:15 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
 >
-> On Thu, Sep 02, 2021 at 09:57:05AM -0700, Song Liu wrote:
-> > +BPF_CALL_3(bpf_get_branch_snapshot, void *, buf, u32, size, u64, flags)
-> > +{
-> > +     static const u32 br_entry_size = sizeof(struct perf_branch_entry);
-> > +     u32 entry_cnt = size / br_entry_size;
+> On Fri, 3 Sept 2021 at 01:04, Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > The OF platform code sets up simple bus only devices (i.e. devices that
+> > won't match with any other driver) to get probed by the simple-pm-bus to
+> > keep fw_devlink from blocking probe() or sync_state() [1] callbacks of
+> > other devices. There's no need to populate the child devices since the
+> > OF platform code would do that anyway, so return early for these simple
+> > bus only devices.
+>
+> This looks like a neat solution to our problem. Although, a few comments below.
+>
+> >
+> > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > Tested-by: Saravana Kannan <saravanak@google.com>
+> > ---
+> >  drivers/bus/simple-pm-bus.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> >
+> > diff --git a/drivers/bus/simple-pm-bus.c b/drivers/bus/simple-pm-bus.c
+> > index 01a3d0cd08ed..91d52021b7f9 100644
+> > --- a/drivers/bus/simple-pm-bus.c
+> > +++ b/drivers/bus/simple-pm-bus.c
+> > @@ -19,6 +19,13 @@ static int simple_pm_bus_probe(struct platform_device *pdev)
+> >         const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
+> >         struct device_node *np = pdev->dev.of_node;
+> >
+> > +       /*
+> > +        * These are transparent bus devices (not simple-pm-bus matches) that
+> > +        * get populated automatically.  So, don't need to do anything more.
+> > +        */
+> > +       if (pdev->driver_override)
+> > +               return 0;
+>
+> You need the same kind of check in simple_pm_bus_remove(), to avoid
+> pm_runtime_disable(). At least for consistency.
+
+Ack.
+
+>
 > > +
-> > +     if (unlikely(flags))
-> > +             return -EINVAL;
-> > +
-> > +     if (!buf || (size % br_entry_size != 0))
-
-I think buf can't be NULL, this should be enforced already by verifier
-due to ARG_PTR_TO_UNINIT_MEM, so we can drop that.
-
-> > +             return -EINVAL;
-> > +
-> > +     entry_cnt = static_call(perf_snapshot_branch_stack)(buf, entry_cnt);
+> >         dev_dbg(&pdev->dev, "%s\n", __func__);
+> >
+> >         pm_runtime_enable(&pdev->dev);
+> > --
+> > 2.33.0.153.gba50c8fa24-goog
+> >
 >
-> That's at least 2, possibly 3 branches just from the sanity checks, plus
-> at least one from starting the BPF prog and one from calling this
-> function, gets you at ~5 branch entries gone before you even do the
-> snapshot thing.
->
-> Less if you're in branch-stack mode.
->
-> Can't the validator help with getting rid of the some of that?
->
+> It also looks like we should flip the order of the patches in the
+> series, to keep things bisectable.
 
-Good points. I think we can drop !buf check completely. The flags and
-size checks can be moved after perf_snapshot_branch_stack call. In
-common cases those checks should always pass, but even if they don't
-we'll just capture the LBR anyways, but will return an error later,
-which seems totally acceptable.
+Sorry I didn't get this. I'm not causing any compilation issues. Why
+does this matter for bisecting?
 
-As Alexei mentioned, there is a whole non-inlined migrate_disable()
-call before this, which we should inline as well. It's good for
-performance, not just LBR.
-
-> I suppose you have to have this helper function because the JIT cannot
-> emit static_call()... although in this case one could cheat and simply
-> emit a call to static_call_query() and not bother with dynamic updates
-> (because there aren't any).
-
-If that's safe, let's do it.
+-Saravana
