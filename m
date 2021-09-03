@@ -2,154 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 778C94005F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:40:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1895C400615
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349654AbhICTkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 15:40:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348217AbhICTku (ORCPT
+        id S235986AbhICTtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 15:49:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52854 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231599AbhICTt3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 15:40:50 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6144BC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:39:50 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id h16so356792lfk.10
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:39:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q/mMqrwEsTCjyLsgA0ikvXEubjygmiehwCmD4JsY2Oo=;
-        b=e5KHOH74YJ5L0QdbPHJWvvNhRVg/kBYpih9FO9zzwTE3Q95WeI/s7HOBinP1qxUIZB
-         QAnJYNt+L1n3Q1Q6X0ppIwQErEr9+ku2/sUUsPrIL8ry1YUEYkbZczH1n2G4sgcJpwlC
-         OyvooXJFcMqYybUZPr/Tp0U4dLLYZJ0nsREnA1bJe/IEeffA+p15vQgG1GazeUiVB75u
-         YHQK2m7Wt4ruuuxdJAk19NWUzUsnHXlHpcoPvWYpqRNkWLUoWuQWlfznNOzPmXPgaFPx
-         CCvMEskqit7QrrcQ3bnSx3i95ugtRUclnRIOx4hxGieGT7BdAV0Hv/XNxCCNjH1LiGU7
-         g6ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q/mMqrwEsTCjyLsgA0ikvXEubjygmiehwCmD4JsY2Oo=;
-        b=tTDz6IMLyRShi4tF9/3ampsqiJEEbzes6MF62VPRwdHzpP/6lq9id5jd1rEZitcMDo
-         ssE6z1BNMVPQn4aLdwT5/rMirhVRwQ/bM87fLIzhuXxqY7yjrJfkAUe62hLyEpJLgVR9
-         rukcW5x8EsTZdEtZga+rX729CvlB580ZMj9OcM1UX7laZw8Qg7vPXnHCdPriQv+6H0Vk
-         NJgW46AvYNGjFLJc/P9lj3WBceFKlOKg+my4I/FdbIT0a3IdhYa2p1Xk/Kj1jhGB5WmC
-         oSuYQLIP4zaNDt8vP9Z7keG1xj7iSYzVxidLDIjiGBi19J8zF0JZT9yuF6WiNgZpb5nb
-         keog==
-X-Gm-Message-State: AOAM5325ykqKV4wwd0f5ryTvvPs3G0KR9L+2mxjDaZySi53F1YVcqZDt
-        MwiySsvUcMeVdMOdfGQqOCdOs7VUCf44HhrNVV+KIA==
-X-Google-Smtp-Source: ABdhPJwPSfd3cWkRvtg1v4fnIt3ikKAKPBDq7JAoqQpURwTDA2QPNnmpp0MqualUro8TR/v6pKApJ8aZS9sZIfFIKQ0=
-X-Received: by 2002:a05:6512:118e:: with SMTP id g14mr348609lfr.661.1630697988724;
- Fri, 03 Sep 2021 12:39:48 -0700 (PDT)
+        Fri, 3 Sep 2021 15:49:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630698508;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DW68GxV6Lb0qE4ekh0Ivx+87OsRzETRMBE0QJs6OocI=;
+        b=L060QxMNPEFMY3hqmNeLmRxpF1/0AJoikeGUi99ofOSc0voDXT1gLSajhuVNi1b1NUosPG
+        +RQyXaJJCTgRNcf8DksijuPT2Sk24vkxk2qdTsvx0S9udYuyqkbajNpjm8wMqRqtf9Ji57
+        IFuTYU/3nDgIoMDPJRoaAvdBXFP0+fM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-417-2HDgqUOzOZWN2NPx5sx4EA-1; Fri, 03 Sep 2021 15:48:27 -0400
+X-MC-Unique: 2HDgqUOzOZWN2NPx5sx4EA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E2058042D6;
+        Fri,  3 Sep 2021 19:48:25 +0000 (UTC)
+Received: from localhost (unknown [10.22.8.230])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A27675C1C5;
+        Fri,  3 Sep 2021 19:48:24 +0000 (UTC)
+Date:   Fri, 3 Sep 2021 15:48:24 -0400
+From:   Eduardo Habkost <ehabkost@redhat.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 2/6] x86/kvm: add boot parameter for adding vcpu-id
+ bits
+Message-ID: <20210903194824.lfjzeaab6ct72pxn@habkost.net>
+References: <20210903130808.30142-1-jgross@suse.com>
+ <20210903130808.30142-3-jgross@suse.com>
 MIME-Version: 1.0
-References: <20210729183942.2839925-1-robdclark@gmail.com> <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
- <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
- <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org> <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
-In-Reply-To: <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 3 Sep 2021 12:39:38 -0700
-Message-ID: <CALAqxLUkyXK2gqNMBbtJFfh01ZpcG46dZaM7Zq4jG3OngvFREg@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Caleb Connolly <caleb.connolly@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210903130808.30142-3-jgross@suse.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 1:49 PM Rob Clark <robdclark@gmail.com> wrote:
-> On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
-> <caleb.connolly@linaro.org> wrote:
-> > On 29/07/2021 21:24, Rob Clark wrote:
-> > > On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
-> > > <caleb.connolly@linaro.org> wrote:
-> > >>
-> > >> Hi Rob,
-> > >>
-> > >> I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above
-> > >> the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more
-> > >> aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
-> > >
-> > > *ohh*, yeah, ok, that would explain it
-> > >
-> > >> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable
-> > >> at the higher frequencies.
-> > >>
-> > >> Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in
-> > >> glxgear.
-> > >>
-> > >> I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run
-> > >> at the voltage the hardware needs to be stable.
-> > >>
-> > >> Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have
-> > >> CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
-> > >>
-> > >
-> > > tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is already
-> > > on CC and I added sboyd, maybe one of them knows better.
-> > >
-> > > In the short term, removing the higher problematic OPPs from dts might
-> > > be a better option than this patch (which I'm dropping), since there
-> > > is nothing stopping other workloads from hitting higher OPPs.
-> > Oh yeah that sounds like a more sensible workaround than mine .
-> > >
-> > > I'm slightly curious why I didn't have problems at higher OPPs on my
-> > > c630 laptop (sdm850)
-> > Perhaps you won the sillicon lottery - iirc sdm850 is binned for higher clocks as is out of the factory.
-> >
-> > Would it be best to drop the OPPs for all devices? Or just those affected? I guess it's possible another c630 might
-> > crash where yours doesn't?
->
-> I've not heard any reports of similar issues from the handful of other
-> folks with c630's on #aarch64-laptops.. but I can't really say if that
-> is luck or not.
->
-> Maybe just remove it for affected devices?  But I'll defer to Bjorn.
+On Fri, Sep 03, 2021 at 03:08:03PM +0200, Juergen Gross wrote:
+> Today the maximum vcpu-id of a kvm guest's vcpu on x86 systems is set
+> via a #define in a header file.
+> 
+> In order to support higher vcpu-ids without generally increasing the
+> memory consumption of guests on the host (some guest structures contain
+> arrays sized by KVM_MAX_VCPU_ID) add a boot parameter for adding some
+> bits to the vcpu-id. Additional bits are needed as the vcpu-id is
+> constructed via bit-wise concatenation of socket-id, core-id, etc.
+> As those ids maximum values are not always a power of 2, the vcpu-ids
+> are sparse.
+> 
+> The additional number of bits needed is basically the number of
+> topology levels with a non-power-of-2 maximum value, excluding the top
+> most level.
+> 
+> The default value of the new parameter will be to take the correct
+> setting from the host's topology.
 
-Just as another datapoint, I was just marveling at how suddenly smooth
-the UI was performing on db845c and Caleb pointed me at the "drm/msm:
-Devfreq tuning" patch as the likely cause of the improvement, and
-mid-discussion my board crashed into USB crash mode:
-[  146.157696][    C0] adreno 5000000.gpu: CP | AHB bus error
-[  146.163303][    C0] adreno 5000000.gpu: CP | AHB bus error
-[  146.168837][    C0] adreno 5000000.gpu: RBBM | ATB bus overflow
-[  146.174960][    C0] adreno 5000000.gpu: CP | HW fault | status=0x00000000
-[  146.181917][    C0] adreno 5000000.gpu: CP | AHB bus error
-[  146.187547][    C0] adreno 5000000.gpu: CP illegal instruction error
-[  146.194009][    C0] adreno 5000000.gpu: CP | AHB bus error
-[  146.308909][    T9] Internal error: synchronous external abort:
-96000010 [#1] PREEMPT SMP
-[  146.317150][    T9] Modules linked in:
-[  146.320941][    T9] CPU: 3 PID: 9 Comm: kworker/u16:1 Tainted: G
-    W         5.14.0-mainline-06795-g42b258c2275c #24
-[  146.331974][    T9] Hardware name: Thundercomm Dragonboar
-Format: Log Type - Time(microsec) - Message - Optional Info
-Log Type: B - Since Boot(Power On Reset),  D - Delta,  S - Statistic
-S - QC_IMAGE_VERSION_STRING=BOOT.XF.2.0-00371-SDM845LZB-1
-S - IMAGE_VARIANT_STRING=SDM845LA
-S - OEM_IMAGE_VERSION_STRING=TSBJ-FA-PC-02170
+Having the default depend on the host topology makes the host
+behaviour unpredictable (which might be a problem when migrating
+VMs from another host with a different topology).  Can't we just
+default to 2?
 
-So Caleb sent me to this thread. :)
+> 
+> Calculating the maximum vcpu-id dynamically requires to allocate the
+> arrays using KVM_MAX_VCPU_ID as the size dynamically.
+> 
+> Signed-of-by: Juergen Gross <jgross@suse.com>
+> ---
+> V2:
+> - switch to specifying additional bits (based on comment by Vitaly
+>   Kuznetsov)
+> 
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> ---
+[...]
+>  #define KVM_MAX_VCPUS 288
+>  #define KVM_SOFT_MAX_VCPUS 240
+> -#define KVM_MAX_VCPU_ID 1023
+> +#define KVM_MAX_VCPU_ID kvm_max_vcpu_id()
+[...]
+> +unsigned int kvm_max_vcpu_id(void)
+> +{
+> +	int n_bits = fls(KVM_MAX_VCPUS - 1);
+> +
+> +	if (vcpu_id_add_bits < -1 || vcpu_id_add_bits > (32 - n_bits)) {
+> +		pr_err("Invalid value of vcpu_id_add_bits=%d parameter!\n",
+> +		       vcpu_id_add_bits);
+> +		vcpu_id_add_bits = -1;
+> +	}
+> +
+> +	if (vcpu_id_add_bits >= 0) {
+> +		n_bits += vcpu_id_add_bits;
+> +	} else {
+> +		n_bits++;		/* One additional bit for core level. */
+> +		if (topology_max_die_per_package() > 1)
+> +			n_bits++;	/* One additional bit for die level. */
+> +	}
+> +
+> +	if (!n_bits)
+> +		n_bits = 1;
+> +
+> +	return (1U << n_bits) - 1;
 
-I'm still trying to trip it again, but it does seem like db845c is
-also seeing some stability issues with Linus' HEAD.
+The largest possible VCPU ID is not KVM_MAX_VCPU_ID,
+it's (KVM_MAX_VCPU_ID - 1).  This is enforced by
+kvm_vm_ioctl_create_vcpu().
 
-thanks
--john
+That would mean KVM_MAX_VCPU_ID should be (1 << n_bits) instead
+of ((1 << n_bits) - 1), wouldn't it?
+
+
+> +}
+> +EXPORT_SYMBOL_GPL(kvm_max_vcpu_id);
+> +
+>  /*
+>   * Restoring the host value for MSRs that are only consumed when running in
+>   * usermode, e.g. SYSCALL MSRs and TSC_AUX, can be deferred until the CPU
+> -- 
+> 2.26.2
+> 
+
+-- 
+Eduardo
+
