@@ -2,45 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B9140086A
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E82E400879
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350548AbhICXvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 19:51:32 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:49785 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233759AbhICXvb (ORCPT
+        id S1350697AbhICXwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 19:52:43 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:50688 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350650AbhICXwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 19:51:31 -0400
-Received: by mail-io1-f72.google.com with SMTP id k6-20020a6b3c060000b0290568c2302268so453470iob.16
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 16:50:30 -0700 (PDT)
+        Fri, 3 Sep 2021 19:52:30 -0400
+Received: by mail-io1-f69.google.com with SMTP id b202-20020a6bb2d3000000b005b7fb465c4aso456805iof.17
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 16:51:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=E4DKx2x3qEqa/La398s4sWrvTl4Rrvl7+M4z46YI5nw=;
-        b=fJ0emfsmXuMxKlVLOdKx9rhH/dcrmumFTNWzMJZtJnfrW5ubaKckgIa7x2BlcLnkMe
-         c8JvplFMrWoQcwfNqEUp9vk526vr/WmSsTp7LXO7mfpzXui5UHrZXagkpPxwCM9mh/QB
-         IplEr7L4rfregWq8rm4rfGS/gFtnE2JxgTHHn5lQckUBY1GaUH55ZOfzVUFpLtaTuNCx
-         dyLf9mA98BO+b8C2JWBSTnI+jmm53r3Kb4n4t0cggGvol5pyWJ0/FcMl44mDLV2AyUIO
-         mwrnMZd/jE115mbnHhbKu6sdT9u+jALHlXIIS/yil+Jw+L6sIr1BuhbZaIZbAxMja66n
-         xTZQ==
-X-Gm-Message-State: AOAM531I270eWGnW8WryQQ4ZM9uy6y4rGEgFsGQ2GRV8S+tlV0dZq3/7
-        hJcH4FQdFu67EdAY7B3z5b98b4N8u7H/ji1nWUOcz5HYnokR
-X-Google-Smtp-Source: ABdhPJzSeGhr37gFeiCKruL8NhBCmPy1C8w+hqnxOiKGXVriffaHMbUj5Y+WfrPbf599kIzjB1187p6UDgJKxMmCZe0mjYkUQVJE
+        bh=RZPnY1Txr2WZc9qQaiK6kuIvgJ77tDn0sABgbez76/w=;
+        b=QxiWBkOIZvkg3QFr4CdJhteEHxHjm1GOUFOlsh2dW2Zf6wsluRx+mZuDuQsDVkxNkD
+         yNMa5KnsHC8ZF3fd7HmMxS03egnxVsJx8+J9Na1ZQEjDJKSJAjveWO7N3ity/nsmfK+P
+         w0Fg7zubxrTz2bOqsHoNM+V9ONbCxvwU6U8TiXhyu6JnwQPIrhmccxK8wlQpZ7kvGpzc
+         jPJb4GTE5PXbObZAmCM9/vtFQ06zFSjLlwsvIvBIPkV3Jt2Y5TgtftsGuBowsHdK2p57
+         r531ZoNg1bYE+iNdK5+S/fG9kTXbuArBoZbbU1dqZbioCuXFs7tV+7sveeWDXM+kaR1s
+         6LLw==
+X-Gm-Message-State: AOAM5311yaYmSD5R86dPn0MYLCgVp8VEbrTUAMrXmwh8Op6FM0icxHbA
+        xYgthGlo8UL4ZQo7hwX3S0E34rM6VcdhZY6qr5sT8i8QvEGf
+X-Google-Smtp-Source: ABdhPJxv6ZH9rpxWUPGF3fn60wdJPCKsCK/9YYOetZIoq2AQlz8tt1WSwmo7z4L9afQpc4MdAFylOzA6Qr4nsuMI7BobIDP+hDKn
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:144:: with SMTP id j4mr1033579ilr.75.1630713030517;
- Fri, 03 Sep 2021 16:50:30 -0700 (PDT)
-Date:   Fri, 03 Sep 2021 16:50:30 -0700
+X-Received: by 2002:a05:6e02:1354:: with SMTP id k20mr1016098ilr.133.1630713089541;
+ Fri, 03 Sep 2021 16:51:29 -0700 (PDT)
+Date:   Fri, 03 Sep 2021 16:51:29 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ea2f2605cb1ff6f6@google.com>
-Subject: [syzbot] WARNING: kmalloc bug in hash_ip_create
-From:   syzbot <syzbot+3493b1873fb3ea827986@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000006ecc0805cb1ffa2d@google.com>
+Subject: [syzbot] WARNING: kmalloc bug in check_btf_line
+From:   syzbot <syzbot+3361d05142f53b068ca1@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        clang-built-linux@googlegroups.com, daniel@iogearbox.net,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        kafai@fb.com, kpsingh@kernel.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, nathan@kernel.org,
+        ndesaulniers@google.com, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -52,56 +54,54 @@ syzbot found the following issue on:
 
 HEAD commit:    a9c9a6f741cd Merge tag 'scsi-misc' of git://git.kernel.org..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13246f25300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=101320a5300000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=7860a0536ececf0c
-dashboard link: https://syzkaller.appspot.com/bug?extid=3493b1873fb3ea827986
+dashboard link: https://syzkaller.appspot.com/bug?extid=3361d05142f53b068ca1
 compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11602f35300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10e8fbf5300000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=121ce115300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=110adea3300000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3493b1873fb3ea827986@syzkaller.appspotmail.com
+Reported-by: syzbot+3361d05142f53b068ca1@syzkaller.appspotmail.com
 
 ------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8430 at mm/util.c:597 kvmalloc_node+0x111/0x120 mm/util.c:597
+WARNING: CPU: 1 PID: 8408 at mm/util.c:597 kvmalloc_node+0x111/0x120 mm/util.c:597
 Modules linked in:
-CPU: 1 PID: 8430 Comm: syz-executor792 Not tainted 5.14.0-syzkaller #0
+CPU: 0 PID: 8408 Comm: syz-executor725 Not tainted 5.14.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
 Code: 01 00 00 00 4c 89 e7 e8 8d 12 0d 00 49 89 c5 e9 69 ff ff ff e8 f0 21 d1 ff 41 89 ed 41 81 cd 00 20 01 00 eb 95 e8 df 21 d1 ff <0f> 0b e9 4c ff ff ff 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 c6
-RSP: 0018:ffffc9000108f280 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffc9000108f3a0 RCX: 0000000000000000
-RDX: ffff88801bfd5580 RSI: ffffffff81a4f621 RDI: 0000000000000003
-RBP: 0000000000400dc0 R08: 000000007fffffff R09: 00000000ffffffff
-R10: ffffffff81a4f5de R11: 000000000000001f R12: 0000000200000018
-R13: 0000000000000000 R14: 00000000ffffffff R15: ffff888028b41a00
-FS:  0000000002409300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+RSP: 0018:ffffc9000c6df720 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffc9000c6dfe18 RCX: 0000000000000000
+RDX: ffff88801ff68000 RSI: ffffffff81a4f621 RDI: 0000000000000003
+RBP: 0000000000002dc0 R08: 000000007fffffff R09: 00000000ffffffff
+R10: ffffffff81a4f5de R11: 0000000000000000 R12: 000000020008a100
+R13: 0000000000000000 R14: 00000000ffffffff R15: ffff888014594000
+FS:  0000000000ba0300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000006 CR3: 00000000127f1000 CR4: 0000000000350ee0
+CR2: 00007f63094ed6c0 CR3: 000000001ddbe000 CR4: 0000000000350ef0
 Call Trace:
- hash_ip_create+0x4bb/0x13d0 net/netfilter/ipset/ip_set_hash_gen.h:1524
- ip_set_create+0x782/0x15a0 net/netfilter/ipset/ip_set_core.c:1100
- nfnetlink_rcv_msg+0xbc9/0x13f0 net/netfilter/nfnetlink.c:296
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- nfnetlink_rcv+0x1ac/0x420 net/netfilter/nfnetlink.c:654
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
+ kvmalloc include/linux/mm.h:806 [inline]
+ kvmalloc_array include/linux/mm.h:824 [inline]
+ kvcalloc include/linux/mm.h:829 [inline]
+ check_btf_line+0x1a9/0xad0 kernel/bpf/verifier.c:9925
+ check_btf_info kernel/bpf/verifier.c:10049 [inline]
+ bpf_check+0x1636/0xbd20 kernel/bpf/verifier.c:13759
+ bpf_prog_load+0xe57/0x21f0 kernel/bpf/syscall.c:2301
+ __sys_bpf+0x67e/0x5df0 kernel/bpf/syscall.c:4587
+ __do_sys_bpf kernel/bpf/syscall.c:4691 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:4689 [inline]
+ __x64_sys_bpf+0x75/0xb0 kernel/bpf/syscall.c:4689
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43f029
+RIP: 0033:0x43f0a9
 Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd662e8c48 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f029
-RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000003
-RBP: 0000000000403010 R08: 0000000000000005 R09: 0000000000400488
-R10: 0000000000000001 R11: 0000000000000246 R12: 00000000004030a0
+RSP: 002b:00007ffc34347988 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f0a9
+RDX: 0000000000000078 RSI: 0000000020008a40 RDI: 0000000000000005
+RBP: 0000000000403090 R08: 00000000004ac018 R09: 0000000000400488
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000403120
 R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
 
 
