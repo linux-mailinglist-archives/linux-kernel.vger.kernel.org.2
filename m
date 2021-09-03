@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 573F54002DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9FF4002DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349786AbhICQFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 12:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbhICQFY (ORCPT
+        id S1349882AbhICQFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 12:05:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49211 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1349819AbhICQFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 12:05:24 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F8BC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 09:04:24 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id u21so4906149qtw.8
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 09:04:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=oFByfckPed0afqM3C5lA3YeO4bgypLoOuCHr02h2KGs=;
-        b=Y+80ODUmlFRTJ6E7M/b3i+RtBRcQMSS0W+KX55JJy/98Ozw73nOUpKIr2yHeZvq1sh
-         Bud1M8TtzedFk6zt4AyFMVOS60QC8yEZGqxCMvSkQkIxGYD2Py9joIwi8XZkPa5ubbgX
-         ZOKYAFmegEL5DU9kAKc61b6wiy4Itk+8gT1mxSKV3WGR208/qVoMIU9tx86MzUC0IA3Y
-         PwfyIJkDCiCbsHi0O1+ianhYfCJ6WZlxm1Ttk4qYHl7hE9sruWQgY9/uerlWkV2FZFYO
-         VtzGMh1/dCQ20SKxBc9EbWoyDREeKJJ5h0wP/zjv2JPMWbs+iQnbq3nlLLMLvevKtvm9
-         ptpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=oFByfckPed0afqM3C5lA3YeO4bgypLoOuCHr02h2KGs=;
-        b=UxfxQJN8mqPcOb/NgaFe62xAVyV+kDm8/Q5YfBef/nFjlRvdci6UVyf0m3t/lIGOok
-         voRKyfzroWFsHyuwBfBYY56A9pdKdYdc681B/aw/jC5LgD2xcavxGJvnwe/rhHXWRpHG
-         5fq+o/+4osxPr3krp6X2EgVH50X66OHfXiW3r3ZTnMu9/tJkUcKtP+N4/eYV72UAlMLs
-         a13oABMoy4rmwDvt+TTq4F0+Qy1oO2GrGjMFvwXoJNqXh3t+wolMGYOGmzWYz4DtPC5d
-         3H+CXOfIrPZUh0Plrk1IRkh/d/hAxM+JU18Qo+dDT7FT7idjP9x/J5XgqEVXR2QyatFz
-         N7oA==
-X-Gm-Message-State: AOAM533ZKZIiA2gmnj5pvasnJPKZeEJIcQbitZM/g/DM0+ag/4W22c4K
-        JSGx+CDkolnK4T+4TT78F86GTu9kdTYS6wC1iD+Hqg==
-X-Google-Smtp-Source: ABdhPJzmqbCkxAWqGWaVPB9odFokgqPNK1GvNBIdAJ7sdCEnbCAeahVsBhtLIzRerq5Wyw8YU3BIZpiturv5Rttr4/I=
-X-Received: by 2002:ac8:51cd:: with SMTP id d13mr4470222qtn.49.1630685063087;
- Fri, 03 Sep 2021 09:04:23 -0700 (PDT)
+        Fri, 3 Sep 2021 12:05:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630685043;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ElCv3KNatjZIL08Q3sItmtwzUZxx0adYt6QO0URmx6U=;
+        b=dkhCVeDoH47S36ZMeybMGWSLXgZ2Gf3EuYLSOqKSPS9YZA++Zao/dtW2CHcGibMTAohcYo
+        CimJjs654cZyuxljKNjuivFjx9yEsM4PmCrLWQ3OMAo1sMGlPsDjUjKvfPZ5+TMyXl44LO
+        S2+otex+C7gD6J5PIZVbzMXUHiZHIA4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-202-zuax0mlmOp2jXY4hSL0i8w-1; Fri, 03 Sep 2021 12:04:02 -0400
+X-MC-Unique: zuax0mlmOp2jXY4hSL0i8w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3AA6A180FD93;
+        Fri,  3 Sep 2021 16:04:01 +0000 (UTC)
+Received: from horse.redhat.com (unknown [10.22.8.130])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 827F9100EBC1;
+        Fri,  3 Sep 2021 16:03:57 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 2158A220257; Fri,  3 Sep 2021 12:03:57 -0400 (EDT)
+Date:   Fri, 3 Sep 2021 12:03:57 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Bruce Fields <bfields@redhat.com>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        fstests <fstests@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, virtio-fs@redhat.com,
+        Daniel Walsh <dwalsh@redhat.com>,
+        David Gilbert <dgilbert@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Casey Schaufler <casey.schaufler@intel.com>,
+        LSM <linux-security-module@vger.kernel.org>,
+        selinux@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        stephen.smalley.work@gmail.com, Dave Chinner <david@fromorbit.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH 3/1] xfstests: generic/062: Do not run on newer kernels
+Message-ID: <YTJHbaFGJOn4TNj8@redhat.com>
+References: <20210902152228.665959-1-vgoyal@redhat.com>
+ <YTDyE9wVQQBxS77r@redhat.com>
+ <CAHc6FU4ytU5eo4bmJcL6MW+qJZAtYTX0=wTZnv4myhDBv-qZHQ@mail.gmail.com>
+ <CAHc6FU5quZWQtZ3fRfM_ZseUsweEbJA0aAkZvQEF5u9MJhrqdQ@mail.gmail.com>
+ <CAPL3RVH9MDoDAdiZ-nm3a4BgmRyZJUc_PV_MpsEWiuh6QPi+pA@mail.gmail.com>
+ <YTJCjGH0V5yzMnQB@redhat.com>
+ <CAPL3RVFB67-AqZrjjfxueQF1Jw=LmKWzCk3Ur94EjUotYMw0AA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210902000154.1096484-1-imran.f.khan@oracle.com>
- <20210902000154.1096484-3-imran.f.khan@oracle.com> <85f4f073-0b5a-9052-0ba9-74d450608656@suse.cz>
-In-Reply-To: <85f4f073-0b5a-9052-0ba9-74d450608656@suse.cz>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 3 Sep 2021 18:03:46 +0200
-Message-ID: <CAG_fn=Wvt8ZNx6kS4sn5660AFkHoVVjvurz7jhE6aw3tzZY8+A@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/2] lib, stackdepot: Add helper to print stack entries.
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Imran Khan <imran.f.khan@oracle.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPL3RVFB67-AqZrjjfxueQF1Jw=LmKWzCk3Ur94EjUotYMw0AA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 9:55 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> On 9/2/21 02:01, Imran Khan wrote:
-> > To print a stack entries, users of stackdepot, first
-> > use stack_depot_fetch to get a list of stack entries
-> > and then use stack_trace_print to print this list.
-> > Provide a helper in stackdepot to print stack entries
-> > based on stackdepot handle.
-> > Also change above mentioned users to use this helper.
+On Fri, Sep 03, 2021 at 11:50:43AM -0400, Bruce Fields wrote:
+> On Fri, Sep 3, 2021 at 11:43 AM Vivek Goyal <vgoyal@redhat.com> wrote:
+> > On Fri, Sep 03, 2021 at 10:42:34AM -0400, Bruce Fields wrote:
+> > > Well, we could also look at supporting trusted.* xattrs over NFS.  I
+> > > don't know much about them, but it looks like it wouldn't be a lot of
+> > > work to specify, especially now that we've already got user xattrs?
+> > > We'd just write a new internet draft that refers to the existing
+> > > user.* xattr draft for most of the details.
 > >
-> > Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
-> > Suggested-by: Vlastimil Babka <vbabka@suse.cz>
->
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> > Will be nice if we can support trusted.* xattrs on NFS.
+> 
+> Maybe I should start a separate thread for that.  Who would need to be
+> on it to be sure we get this right?
 
-Reviewed-by: Alexander Potapenko <glider@google.com>
+I will like to be on cc list.
 
---=20
-Alexander Potapenko
-Software Engineer
+Vivek
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
-
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
