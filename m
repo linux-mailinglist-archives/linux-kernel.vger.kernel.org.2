@@ -2,302 +2,599 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9403FFD41
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B59973FFD47
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348914AbhICJg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 05:36:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348802AbhICJgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 05:36:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 454FC60F91;
-        Fri,  3 Sep 2021 09:35:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630661747;
-        bh=XlIxehrCdusGQkVYHgdMT653kTSKd9t89Vos6UvqlIo=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=LzVsxAfAmyKryyY+R9j5hUHR5WPJfZW47mxgP3oobDsXY2bzx5lVUJp/d9plZ59Gx
-         DG1pnwCS0Ni1PT5uP62AUzc/je3ZUnd/nyl9xdmtx8Rg//Gk0p1W6iDYP+HJGzfaww
-         whrDxzeiSQUnwxGUBtYO1bZjumIVXUDLb+DpmZV+XxsGMgjr+txnqXLmQcaxjPmzJ7
-         F0fKEjP3N2C/efdg1x1h1FuruSkXvRjk0K2Xr0aF2b5V9OrsNHvcVGumLFciNi+ig6
-         FYiZcm9/8MEogt1i4STwH50k/Be5Tlui+1EzTGiafZ3llPAzRmN5IEqowJWN///9eB
-         ne6lhD87COCBA==
-Subject: Re: [PATCH v2 2/6] dt-bindings: memory-controllers: ti,gpmc: Convert
- to yaml
-To:     Rob Herring <robh@kernel.org>
-Cc:     tony@atomide.com, krzysztof.kozlowski@canonical.com,
-        miquel.raynal@bootlin.com, nm@ti.com, lokeshvutla@ti.com,
-        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210902095609.16583-1-rogerq@kernel.org>
- <20210902095609.16583-3-rogerq@kernel.org>
- <YTEsiJiLMRYon5s3@robh.at.kernel.org>
-From:   Roger Quadros <rogerq@kernel.org>
-Message-ID: <715fe0ee-a38c-c2ca-5e29-79fa0887bea0@kernel.org>
-Date:   Fri, 3 Sep 2021 12:35:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1348873AbhICJiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 05:38:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53584 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244602AbhICJix (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 05:38:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630661872;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NHPlN1CMjF8oW7JA2HtyI/1Hb35tXEhAcNKlYoQQt7U=;
+        b=S3fmwqdC42SfRp9Fv8Xd2G22+H0w3w/5263U3Aa7i77X0z4mWdBDaNWXu7sOcAMxK6/doA
+        zbu13EeDgpN1OZtxZh8YYaLU9dzj8bHucUg7Phbywolrx14TrQ0RcfmGUYGnbVG2KUQvXZ
+        SvD2dJbJ2pTXpdyv/7BxUPhoy194muc=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-272-hpGx0utXO3WcTwTbVHnknA-1; Fri, 03 Sep 2021 05:37:52 -0400
+X-MC-Unique: hpGx0utXO3WcTwTbVHnknA-1
+Received: by mail-ej1-f72.google.com with SMTP id ga42-20020a1709070c2a00b005dc8c1cc3a1so2432903ejc.17
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 02:37:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NHPlN1CMjF8oW7JA2HtyI/1Hb35tXEhAcNKlYoQQt7U=;
+        b=D50vMgWL36vDhVtGwif5w7c3D0dgZ0Vh40E8s1cLz6jrXvBOF/L1An/X3e71pm+wyT
+         FXhlMfEWcPv9BI4YuunofTHFSqKZFH1m7eg+vxQqJEyOkmj47XLfssfbnuznnkGKPGky
+         sVj54qCAtlRVyBjnre8Bejcd6mc00y+zbRLJO2bEPel2BGwcIJfwoFMkS+smEg0bagYz
+         wlQnIiQ2ebbHr0D7Wk5x4xIBSp573YWkhTMnE9wIqrobxiYTVntnsIONiakvQQMkTt0c
+         yKOIgDJimozCatJaSWF7r9ymO8JqXPMgPD+fZWd0iHJ86iq7MIuVMP/uzP9ejWw1Q0ny
+         6miA==
+X-Gm-Message-State: AOAM532Kd7AzBXa8SCqwxldi5TQfo3yxTGjDG6beoqkX01Drav5by+gT
+        QLDC/n9pX2biALQ3Qrde2s6dCdbI9RD+XwtAwKMXNSg26jE0axeTWwXaZzWu10U0ACsEb3wTu0L
+        yI04t3cXRGwhwDCfppd4RIpeF
+X-Received: by 2002:a17:906:1f54:: with SMTP id d20mr3245873ejk.48.1630661870607;
+        Fri, 03 Sep 2021 02:37:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwFsIBgDJMz4qMT9V8O3mOUZHkMdemCxK+YhFlYbCNE35fGAmZa4taMQxBrf/WvZbPlZbSF3Q==
+X-Received: by 2002:a17:906:1f54:: with SMTP id d20mr3245850ejk.48.1630661870331;
+        Fri, 03 Sep 2021 02:37:50 -0700 (PDT)
+Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
+        by smtp.gmail.com with ESMTPSA id g10sm2468318ejj.44.2021.09.03.02.37.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 02:37:50 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 11:37:48 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 09/12] KVM: arm64: selftests: Add basic GICv3 support
+Message-ID: <20210903093748.a3cjstzk74vetxex@gator.home>
+References: <20210901211412.4171835-1-rananta@google.com>
+ <20210901211412.4171835-10-rananta@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YTEsiJiLMRYon5s3@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901211412.4171835-10-rananta@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 02/09/2021 22:56, Rob Herring wrote:
-> On Thu, Sep 02, 2021 at 12:56:05PM +0300, Roger Quadros wrote:
->> Convert omap-gpmc.txt to ti,gpmc.yaml.
->>
->> Signed-off-by: Roger Quadros <rogerq@kernel.org>
->> ---
->>  .../bindings/memory-controllers/omap-gpmc.txt | 157 --------
->>  .../bindings/memory-controllers/ti,gpmc.yaml  | 364 ++++++++++++++++++
->>  .../devicetree/bindings/mtd/gpmc-nand.txt     |   2 +-
->>  .../devicetree/bindings/mtd/gpmc-nor.txt      |   4 +-
->>  .../devicetree/bindings/mtd/gpmc-onenand.txt  |   2 +-
->>  .../devicetree/bindings/net/gpmc-eth.txt      |   4 +-
->>  6 files changed, 370 insertions(+), 163 deletions(-)
->>  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
+On Wed, Sep 01, 2021 at 09:14:09PM +0000, Raghavendra Rao Ananta wrote:
+> Add basic support for ARM Generic Interrupt Controller v3.
+> The support provides guests to setup interrupts.
 > 
->> diff --git a/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->> new file mode 100644
->> index 000000000000..b7d43370a95d
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->> @@ -0,0 +1,364 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/memory-controllers/ti,gpmc.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Texas Instruments GPMC Memory Controller device-tree bindings
->> +
->> +maintainers:
->> +  - Tony Lindgren <tony@atomide.com>
->> +  - Roger Quadros <rogerq@kernel.org>
->> +
->> +description:
->> +  The GPMC is a unified memory controller dedicated for interfacing
->> +  with external memory devices like
->> +  - Asynchronous SRAM-like memories and ASICs
->> +  - Asynchronous, synchronous, and page mode burst NOR flash
->> +  - NAND flash
->> +  - Pseudo-SRAM devices
->> +
->> +properties:
->> +  compatible:
->> +    items:
->> +      - enum:
->> +          - ti,omap2420-gpmc
->> +          - ti,omap2430-gpmc
->> +          - ti,omap3430-gpmc
->> +          - ti,omap4430-gpmc
->> +          - ti,am3352-gpmc
->> +
->> +  reg:
->> +    items:
->> +      - description:
->> +          Configuration registers for the controller.
+> The work is inspired from kvm-unit-tests and the kernel's
+> GIC driver (drivers/irqchip/irq-gic-v3.c).
 > 
-> Just 'maxItems: 1' is sufficient.
+> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> ---
+>  tools/testing/selftests/kvm/Makefile          |   2 +-
+>  .../selftests/kvm/include/aarch64/gic.h       |  21 ++
+>  tools/testing/selftests/kvm/lib/aarch64/gic.c |  93 +++++++
+>  .../selftests/kvm/lib/aarch64/gic_private.h   |  21 ++
+>  .../selftests/kvm/lib/aarch64/gic_v3.c        | 240 ++++++++++++++++++
+>  .../selftests/kvm/lib/aarch64/gic_v3.h        |  70 +++++
+>  6 files changed, 446 insertions(+), 1 deletion(-)
+>  create mode 100644 tools/testing/selftests/kvm/include/aarch64/gic.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic.c
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_private.h
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_v3.c
+>  create mode 100644 tools/testing/selftests/kvm/lib/aarch64/gic_v3.h
 > 
->> +
->> +  interrupts: true
-> 
-> Need to define how many.
-> 
->> +
->> +  clocks:
->> +    maxItems: 1
->> +    description: |
->> +      Functional clock. Used for bus timing calculations and
->> +      GPMC configuration.
->> +
->> +  clock-names:
->> +    items:
->> +      - const: fck
->> +
->> +  dmas:
->> +    items:
->> +      - description: DMA channel for GPMC NAND prefetch
->> +
->> +  dma-names:
->> +    items:
->> +      - const: rxtx
->> +
->> +  "#address-cells":
->> +    const: 2
->> +
->> +  "#size-cells":
->> +    const: 1
->> +
->> +  gpmc,num-cs:
->> +    description: maximum number of supported chip-select lines.
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +
->> +  gpmc,num-waitpins:
->> +    description: maximum number of supported wait pins.
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +
->> +  ranges:
->> +    minItems: 1
->> +    description: |
->> +      Must be set up to reflect the memory layout with four
->> +      integer values for each chip-select line in use,
->> +      <cs-number> 0 <physical address of mapping> <size>
->> +
->> +    items:
->> +      - description: NAND bank 0
->> +      - description: NOR/SRAM bank 0
->> +      - description: NOR/SRAM bank 1
->> +
->> +  '#interrupt-cells':
->> +    const: 2
->> +
->> +  interrupt-controller:
->> +    description: |
->> +      The GPMC driver implements and interrupt controller for
->> +      the NAND events "fifoevent" and "termcount" plus the
->> +      rising/falling edges on the GPMC_WAIT pins.
->> +      The interrupt number mapping is as follows
->> +      0 - NAND_fifoevent
->> +      1 - NAND_termcount
->> +      2 - GPMC_WAIT0 pin edge
->> +      3 - GPMC_WAIT1 pin edge, and so on.
->> +
->> +  '#gpio-cells':
->> +     const: 2
->> +
->> +  gpio-controller:
->> +    description: |
->> +      The GPMC driver implements a GPIO controller for the
->> +      GPMC WAIT pins that can be used as general purpose inputs.
->> +      0 maps to GPMC_WAIT0 pin.
->> +
->> +  ti,hwmods:
->> +    description:
->> +      Name of the HWMOD associated with GPMC. This is for legacy
->> +      omap2/3 platforms only.
->> +    $ref: /schemas/types.yaml#/definitions/string
->> +    deprecated: true
->> +
->> +  ti,no-idle-on-init:
->> +    description:
->> +      Prevent idling the module at init. This is for legacy omap2/3
->> +      platforms only.
->> +    type: boolean
->> +    deprecated: true
->> +
->> +patternProperties:
->> +#  "@[0-3],[a-f0-9]+$":>> +  "^[a-zA-Z][a-zA-Z0-9,+\\-._]{0,63}@[0-9a-fA-F]+(,[0-9a-fA-F]+)*$":
-
-> 
-> Why the commented regex. There's no need for a full regex as we already 
-> do that elsewhere. You only need to define the unit-address format.
-
-This should be
-  "@[0-7],[a-f0-9]+$":
-
-I added the full regex during debug but forgot to take it off.
-
-> 
->> +    type: object
->> +    description: |
->> +      The child device node represents the device connected to the GPMC
->> +      bus. The device can be a NAND controller, SRAM device, NOR device
->> +      or an ASIC.
->> +
->> +    properties:
->> +      compatible:
->> +        description:
->> +          Compatible of attached device.
-> 
-> Duh. Drop.
-> 
->> +
->> +      reg:
->> +        items:
->> +        - description: Register access space for the device
-> 
-> A device with 2 register ranges isn't allowed?
-
-GPMC is actually a memory controller and we are describing the children here.
-Each child has to have a register range.
-
-> 
->> +
->> +# GPMC Timing properties for child nodes. All are optional and default to 0.
->> +
->> +      gpmc,sync-clk-ps:
->> +        description: Minimum clock period for synchronous mode, in picoseconds
->> +        $ref: /schemas/types.yaml#/definitions/uint32
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index 61f0d376af99..5476a8ddef60 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -35,7 +35,7 @@ endif
 >  
->            default: 0
-> 
-> And elsewhere...
-> 
->> +
->> +# Chip-select signal timings (in nanoseconds) corresponding to GPMC_CONFIG2:
->> +      gpmc,cs-on-ns:
->> +        description: Assertion time
->> +        $ref: /schemas/types.yaml#/definitions/uint32
-> 
-> Blank line between DT properties.
-> 
-> Don't need a type ref with a standard unit suffix.
-> 
-> Is there a maximum value for all these?
-> 
+>  LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
+>  LIBKVM_x86_64 = lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
+> -LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c
+> +LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch64/handlers.S lib/aarch64/spinlock.c lib/aarch64/gic.c lib/aarch64/gic_v3.c
+>  LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
+>  
+>  TEST_GEN_PROGS_x86_64 = x86_64/cr4_cpuid_sync_test
+> diff --git a/tools/testing/selftests/kvm/include/aarch64/gic.h b/tools/testing/selftests/kvm/include/aarch64/gic.h
+> new file mode 100644
+> index 000000000000..85dd1e53048e
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/include/aarch64/gic.h
+> @@ -0,0 +1,21 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * ARM Generic Interrupt Controller (GIC) specific defines
+> + */
+> +
+> +#ifndef SELFTEST_KVM_GIC_H
+> +#define SELFTEST_KVM_GIC_H
+> +
+> +enum gic_type {
+> +	GIC_V3,
+> +	GIC_TYPE_MAX,
+> +};
+> +
+> +void gic_init(enum gic_type type, unsigned int nr_cpus,
+> +		void *dist_base, void *redist_base);
+> +void gic_irq_enable(unsigned int intid);
+> +void gic_irq_disable(unsigned int intid);
+> +unsigned int gic_get_and_ack_irq(void);
+> +void gic_set_eoi(unsigned int intid);
+> +
+> +#endif /* SELFTEST_KVM_GIC_H */
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/gic.c b/tools/testing/selftests/kvm/lib/aarch64/gic.c
+> new file mode 100644
+> index 000000000000..b0b67f5aeaa6
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/gic.c
+> @@ -0,0 +1,93 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * ARM Generic Interrupt Controller (GIC) support
+> + */
+> +
+> +#include <errno.h>
+> +#include <linux/bits.h>
+> +#include <linux/sizes.h>
+> +
+> +#include "kvm_util.h"
+> +
+> +#include <gic.h>
 
-There is a maximum value but it is not an absolute value in time unit (ns)
-as it depends on the GPMC functional clock rate which is platform specific.
+"gic.h"
 
-e.g. for gpmc,cs-on-ns
-	maximum: GPMC clock period * 15
+> +#include "gic_private.h"
+> +#include "processor.h"
+> +#include "spinlock.h"
+> +
+> +static const struct gic_common_ops *gic_common_ops;
+> +static struct spinlock gic_lock;
+> +
+> +static void gic_cpu_init(unsigned int cpu, void *redist_base)
+> +{
+> +	gic_common_ops->gic_cpu_init(cpu, redist_base);
+> +}
+> +
+> +static void
+> +gic_dist_init(enum gic_type type, unsigned int nr_cpus, void *dist_base)
+> +{
+> +	const struct gic_common_ops *gic_ops;
+> +
+> +	spin_lock(&gic_lock);
+> +
+> +	/* Distributor initialization is needed only once per VM */
+> +	if (gic_common_ops) {
+> +		spin_unlock(&gic_lock);
+> +		return;
+> +	}
+> +
+> +	if (type == GIC_V3)
+> +		gic_ops = &gicv3_ops;
+> +
+> +	gic_ops->gic_init(nr_cpus, dist_base);
+> +	gic_common_ops = gic_ops;
+> +
+> +	/* Make sure that the initialized data is visible to all the vCPUs */
+> +	dsb(sy);
+> +
+> +	spin_unlock(&gic_lock);
+> +}
+> +
+> +void gic_init(enum gic_type type, unsigned int nr_cpus,
+> +		void *dist_base, void *redist_base)
+> +{
+> +	uint32_t cpu = get_vcpuid();
+> +
+> +	GUEST_ASSERT(type < GIC_TYPE_MAX);
+> +	GUEST_ASSERT(dist_base);
+> +	GUEST_ASSERT(redist_base);
+> +	GUEST_ASSERT(nr_cpus);
+> +
+> +	gic_dist_init(type, nr_cpus, dist_base);
+> +	gic_cpu_init(cpu, redist_base);
+> +}
+> +
+> +void gic_irq_enable(unsigned int intid)
+> +{
+> +	GUEST_ASSERT(gic_common_ops);
+> +	gic_common_ops->gic_irq_enable(intid);
+> +}
+> +
+> +void gic_irq_disable(unsigned int intid)
+> +{
+> +	GUEST_ASSERT(gic_common_ops);
+> +	gic_common_ops->gic_irq_disable(intid);
+> +}
+> +
+> +unsigned int gic_get_and_ack_irq(void)
+> +{
+> +	uint64_t irqstat;
+> +	unsigned int intid;
+> +
+> +	GUEST_ASSERT(gic_common_ops);
+> +
+> +	irqstat = gic_common_ops->gic_read_iar();
+> +	intid = irqstat & GENMASK(23, 0);
+> +
+> +	return intid;
+> +}
+> +
+> +void gic_set_eoi(unsigned int intid)
+> +{
+> +	GUEST_ASSERT(gic_common_ops);
+> +	gic_common_ops->gic_write_eoir(intid);
+> +}
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/gic_private.h b/tools/testing/selftests/kvm/lib/aarch64/gic_private.h
+> new file mode 100644
+> index 000000000000..d81d739433dc
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/gic_private.h
+> @@ -0,0 +1,21 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * ARM Generic Interrupt Controller (GIC) private defines that's only
+> + * shared among the GIC library code.
+> + */
+> +
+> +#ifndef SELFTEST_KVM_GIC_PRIVATE_H
+> +#define SELFTEST_KVM_GIC_PRIVATE_H
+> +
+> +struct gic_common_ops {
+> +	void (*gic_init)(unsigned int nr_cpus, void *dist_base);
+> +	void (*gic_cpu_init)(unsigned int cpu, void *redist_base);
+> +	void (*gic_irq_enable)(unsigned int intid);
+> +	void (*gic_irq_disable)(unsigned int intid);
+> +	uint64_t (*gic_read_iar)(void);
+> +	void (*gic_write_eoir)(uint32_t irq);
+> +};
+> +
+> +extern const struct gic_common_ops gicv3_ops;
+> +
+> +#endif /* SELFTEST_KVM_GIC_PRIVATE_H */
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/gic_v3.c b/tools/testing/selftests/kvm/lib/aarch64/gic_v3.c
+> new file mode 100644
+> index 000000000000..4b635ca6a8cb
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/gic_v3.c
+> @@ -0,0 +1,240 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * ARM Generic Interrupt Controller (GIC) v3 support
+> + */
+> +
+> +#include <linux/sizes.h>
+> +
+> +#include "kvm_util.h"
+> +#include "processor.h"
+> +#include "delay.h"
+> +
+> +#include "gic_v3.h"
+> +#include "gic_private.h"
+> +
+> +struct gicv3_data {
+> +	void *dist_base;
+> +	void *redist_base[GICV3_MAX_CPUS];
+> +	unsigned int nr_cpus;
+> +	unsigned int nr_spis;
+> +};
+> +
+> +#define sgi_base_from_redist(redist_base) (redist_base + SZ_64K)
+> +
+> +enum gicv3_intid_range {
+> +	SGI_RANGE,
+> +	PPI_RANGE,
+> +	SPI_RANGE,
+> +	INVALID_RANGE,
+> +};
+> +
+> +static struct gicv3_data gicv3_data;
+> +
+> +static void gicv3_gicd_wait_for_rwp(void)
+> +{
+> +	unsigned int count = 100000; /* 1s */
+> +
+> +	while (readl(gicv3_data.dist_base + GICD_CTLR) & GICD_CTLR_RWP) {
+> +		GUEST_ASSERT(count--);
+> +		udelay(10);
+> +	}
+> +}
+> +
+> +static void gicv3_gicr_wait_for_rwp(void *redist_base)
+> +{
+> +	unsigned int count = 100000; /* 1s */
+> +
+> +	while (readl(redist_base + GICR_CTLR) & GICR_CTLR_RWP) {
+> +		GUEST_ASSERT(count--);
+> +		udelay(10);
+> +	}
+> +}
+> +
+> +static enum gicv3_intid_range get_intid_range(unsigned int intid)
+> +{
+> +	switch (intid) {
+> +	case 0 ... 15:
+> +		return SGI_RANGE;
+> +	case 16 ... 31:
+> +		return PPI_RANGE;
+> +	case 32 ... 1019:
+> +		return SPI_RANGE;
+> +	}
+> +
+> +	/* We should not be reaching here */
+> +	GUEST_ASSERT(0);
+> +
+> +	return INVALID_RANGE;
+> +}
+> +
+> +static uint64_t gicv3_read_iar(void)
+> +{
+> +	uint64_t irqstat = read_sysreg_s(SYS_ICC_IAR1_EL1);
+> +
+> +	dsb(sy);
+> +	return irqstat;
+> +}
+> +
+> +static void gicv3_write_eoir(uint32_t irq)
+> +{
+> +	write_sysreg_s(SYS_ICC_EOIR1_EL1, irq);
+> +	isb();
+> +}
+> +
+> +static void
+> +gicv3_config_irq(unsigned int intid, unsigned int offset)
+> +{
+> +	uint32_t cpu = get_vcpuid();
+> +	uint32_t mask = 1 << (intid % 32);
+> +	enum gicv3_intid_range intid_range = get_intid_range(intid);
+> +	void *reg;
+> +
+> +	/* We care about 'cpu' only for SGIs or PPIs */
+> +	if (intid_range == SGI_RANGE || intid_range == PPI_RANGE) {
+> +		GUEST_ASSERT(cpu < gicv3_data.nr_cpus);
+> +
+> +		reg = sgi_base_from_redist(gicv3_data.redist_base[cpu]) +
+> +			offset;
+> +		writel(mask, reg);
+> +		gicv3_gicr_wait_for_rwp(gicv3_data.redist_base[cpu]);
+> +	} else if (intid_range == SPI_RANGE) {
+> +		reg = gicv3_data.dist_base + offset + (intid / 32) * 4;
+> +		writel(mask, reg);
+> +		gicv3_gicd_wait_for_rwp();
+> +	} else {
+> +		GUEST_ASSERT(0);
+> +	}
+> +}
+> +
+> +static void gicv3_irq_enable(unsigned int intid)
+> +{
+> +	gicv3_config_irq(intid, GICD_ISENABLER);
+> +}
+> +
+> +static void gicv3_irq_disable(unsigned int intid)
+> +{
+> +	gicv3_config_irq(intid, GICD_ICENABLER);
+> +}
+> +
+> +static void gicv3_enable_redist(void *redist_base)
+> +{
+> +	uint32_t val = readl(redist_base + GICR_WAKER);
+> +	unsigned int count = 100000; /* 1s */
+> +
+> +	val &= ~GICR_WAKER_ProcessorSleep;
+> +	writel(val, redist_base + GICR_WAKER);
+> +
+> +	/* Wait until the processor is 'active' */
+> +	while (readl(redist_base + GICR_WAKER) & GICR_WAKER_ChildrenAsleep) {
+> +		GUEST_ASSERT(count--);
+> +		udelay(10);
+> +	}
+> +}
+> +
+> +static inline void *gicr_base_gpa_cpu(void *redist_base, uint32_t cpu)
+> +{
+> +	/* Align all the redistributors sequentially */
+> +	return redist_base + cpu * SZ_64K * 2;
+> +}
+> +
+> +static void gicv3_cpu_init(unsigned int cpu, void *redist_base)
+> +{
+> +	void *sgi_base;
+> +	unsigned int i;
+> +	void *redist_base_cpu;
+> +
+> +	GUEST_ASSERT(cpu < gicv3_data.nr_cpus);
+> +
+> +	redist_base_cpu = gicr_base_gpa_cpu(redist_base, cpu);
+> +	sgi_base = sgi_base_from_redist(redist_base_cpu);
+> +
+> +	gicv3_enable_redist(redist_base_cpu);
+> +
+> +	/*
+> +	 * Mark all the SGI and PPI interrupts as non-secure Group-1.
+> +	 * Also, deactivate and disable them.
+> +	 */
+> +	writel(~0, sgi_base + GICR_IGROUPR0);
+> +	writel(~0, sgi_base + GICR_ICACTIVER0);
+> +	writel(~0, sgi_base + GICR_ICENABLER0);
+> +
+> +	/* Set a default priority for all the SGIs and PPIs */
+> +	for (i = 0; i < 32; i += 4)
+> +		writel(GICD_INT_DEF_PRI_X4,
+> +				sgi_base + GICR_IPRIORITYR0 + i);
+> +
+> +	gicv3_gicr_wait_for_rwp(redist_base_cpu);
+> +
+> +	/* Enable the GIC system register (ICC_*) access */
+> +	write_sysreg_s(SYS_ICC_SRE_EL1,
+> +			read_sysreg_s(SYS_ICC_SRE_EL1) | ICC_SRE_EL1_SRE);
+> +
+> +	/* Set a default priority threshold */
+> +	write_sysreg_s(SYS_ICC_PMR_EL1, ICC_PMR_DEF_PRIO);
+> +
+> +	/* Enable non-secure Group-1 interrupts */
+> +	write_sysreg_s(SYS_ICC_GRPEN1_EL1, ICC_IGRPEN1_EL1_ENABLE);
+> +
+> +	gicv3_data.redist_base[cpu] = redist_base_cpu;
+> +}
+> +
+> +static void gicv3_dist_init(void)
+> +{
+> +	void *dist_base = gicv3_data.dist_base;
+> +	unsigned int i;
+> +
+> +	/* Disable the distributor until we set things up */
+> +	writel(0, dist_base + GICD_CTLR);
+> +	gicv3_gicd_wait_for_rwp();
+> +
+> +	/*
+> +	 * Mark all the SPI interrupts as non-secure Group-1.
+> +	 * Also, deactivate and disable them.
+> +	 */
+> +	for (i = 32; i < gicv3_data.nr_spis; i += 32) {
+> +		writel(~0, dist_base + GICD_IGROUPR + i / 8);
+> +		writel(~0, dist_base + GICD_ICACTIVER + i / 8);
+> +		writel(~0, dist_base + GICD_ICENABLER + i / 8);
+> +	}
+> +
+> +	/* Set a default priority for all the SPIs */
+> +	for (i = 32; i < gicv3_data.nr_spis; i += 4)
+> +		writel(GICD_INT_DEF_PRI_X4,
+> +				dist_base + GICD_IPRIORITYR + i);
+> +
+> +	/* Wait for the settings to sync-in */
+> +	gicv3_gicd_wait_for_rwp();
+> +
+> +	/* Finally, enable the distributor globally with ARE */
+> +	writel(GICD_CTLR_ARE_NS | GICD_CTLR_ENABLE_G1A |
+> +			GICD_CTLR_ENABLE_G1, dist_base + GICD_CTLR);
+> +	gicv3_gicd_wait_for_rwp();
+> +}
+> +
+> +static void gicv3_init(unsigned int nr_cpus, void *dist_base)
+> +{
+> +	GUEST_ASSERT(nr_cpus <= GICV3_MAX_CPUS);
+> +
+> +	gicv3_data.nr_cpus = nr_cpus;
+> +	gicv3_data.dist_base = dist_base;
+> +	gicv3_data.nr_spis = GICD_TYPER_SPIS(
+> +				readl(gicv3_data.dist_base + GICD_TYPER));
+> +	if (gicv3_data.nr_spis > 1020)
+> +		gicv3_data.nr_spis = 1020;
+> +
+> +	/*
+> +	 * Initialize only the distributor for now.
+> +	 * The redistributor and CPU interfaces are initialized
+> +	 * later for every PE.
+> +	 */
+> +	gicv3_dist_init();
+> +}
+> +
+> +const struct gic_common_ops gicv3_ops = {
+> +	.gic_init = gicv3_init,
+> +	.gic_cpu_init = gicv3_cpu_init,
+> +	.gic_irq_enable = gicv3_irq_enable,
+> +	.gic_irq_disable = gicv3_irq_disable,
+> +	.gic_read_iar = gicv3_read_iar,
+> +	.gic_write_eoir = gicv3_write_eoir,
+> +};
+> diff --git a/tools/testing/selftests/kvm/lib/aarch64/gic_v3.h b/tools/testing/selftests/kvm/lib/aarch64/gic_v3.h
+> new file mode 100644
+> index 000000000000..d41195e347b3
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/lib/aarch64/gic_v3.h
+> @@ -0,0 +1,70 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * ARM Generic Interrupt Controller (GIC) v3 specific defines
+> + */
+> +
+> +#ifndef SELFTEST_KVM_GICV3_H
+> +#define SELFTEST_KVM_GICV3_H
+> +
+> +#include "processor.h"
+> +
+> +/*
+> + * Distributor registers
+> + */
+> +#define GICD_CTLR			0x0000
+> +#define GICD_TYPER			0x0004
+> +#define GICD_IGROUPR			0x0080
+> +#define GICD_ISENABLER			0x0100
+> +#define GICD_ICENABLER			0x0180
+> +#define GICD_ICACTIVER			0x0380
+> +#define GICD_IPRIORITYR			0x0400
+> +
+> +/*
+> + * The assumption is that the guest runs in a non-secure mode.
+> + * The following bits of GICD_CTLR are defined accordingly.
+> + */
+> +#define GICD_CTLR_RWP			(1U << 31)
+> +#define GICD_CTLR_nASSGIreq		(1U << 8)
+> +#define GICD_CTLR_ARE_NS		(1U << 4)
+> +#define GICD_CTLR_ENABLE_G1A		(1U << 1)
+> +#define GICD_CTLR_ENABLE_G1		(1U << 0)
+> +
+> +#define GICD_TYPER_SPIS(typer)		((((typer) & 0x1f) + 1) * 32)
+> +#define GICD_INT_DEF_PRI_X4		0xa0a0a0a0
+> +
+> +/*
+> + * Redistributor registers
+> + */
+> +#define GICR_CTLR			0x000
+> +#define GICR_WAKER			0x014
+> +
+> +#define GICR_CTLR_RWP			(1U << 3)
+> +
+> +#define GICR_WAKER_ProcessorSleep	(1U << 1)
+> +#define GICR_WAKER_ChildrenAsleep	(1U << 2)
+> +
+> +/*
+> + * Redistributor registers, offsets from SGI base
+> + */
+> +#define GICR_IGROUPR0			GICD_IGROUPR
+> +#define GICR_ISENABLER0			GICD_ISENABLER
+> +#define GICR_ICENABLER0			GICD_ICENABLER
+> +#define GICR_ICACTIVER0			GICD_ICACTIVER
+> +#define GICR_IPRIORITYR0		GICD_IPRIORITYR
+> +
+> +/* CPU interface registers */
+> +#define SYS_ICC_PMR_EL1			sys_reg(3, 0, 4, 6, 0)
+> +#define SYS_ICC_IAR1_EL1		sys_reg(3, 0, 12, 12, 0)
+> +#define SYS_ICC_EOIR1_EL1		sys_reg(3, 0, 12, 12, 1)
+> +#define SYS_ICC_SRE_EL1			sys_reg(3, 0, 12, 12, 5)
+> +#define SYS_ICC_GRPEN1_EL1		sys_reg(3, 0, 12, 12, 7)
+> +
+> +#define ICC_PMR_DEF_PRIO		0xf0
+> +
+> +#define ICC_SRE_EL1_SRE			(1U << 0)
+> +
+> +#define ICC_IGRPEN1_EL1_ENABLE		(1U << 0)
+> +
+> +#define GICV3_MAX_CPUS			512
+> +
+> +#endif /* SELFTEST_KVM_GICV3_H */
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
+>
 
->> +      gpmc,cs-rd-off-ns:
->> +        description: Read deassertion time
->> +        $ref: /schemas/types.yaml#/definitions/uint32
->> +      gpmc,cs-wr-off-ns:
->> +        description: Write deassertion time
->> +        $ref: /schemas/types.yaml#/definitions/uint32
->> +
+Looks good to me. I also see some nice stuff to bring over to
+kvm-unit-tests in order to make some improvements there.
 
-<snip>
+Reviewed-by: Andrew Jones <drjones@redhat.com>
 
->>  
->> diff --git a/Documentation/devicetree/bindings/net/gpmc-eth.txt b/Documentation/devicetree/bindings/net/gpmc-eth.txt
->> index 32821066a85b..5e2f610455fa 100644
->> --- a/Documentation/devicetree/bindings/net/gpmc-eth.txt
->> +++ b/Documentation/devicetree/bindings/net/gpmc-eth.txt
->> @@ -9,7 +9,7 @@ the GPMC controller with an "ethernet" name.
->>  
->>  All timing relevant properties as well as generic GPMC child properties are
->>  explained in a separate documents. Please refer to
->> -Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->> +Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
->>  
->>  For the properties relevant to the ethernet controller connected to the GPMC
->>  refer to the binding documentation of the device. For example, the documentation
->> @@ -43,7 +43,7 @@ Required properties:
->>  
->>  Optional properties:
->>  - gpmc,XXX		Additional GPMC timings and settings parameters. See
->> -			Documentation/devicetree/bindings/memory-controllers/omap-gpmc.txt
->> +			Documentation/devicetree/bindings/memory-controllers/ti,gpmc.yaml
-> 
-> Perhaps delete this file first in the series so you don't have to 
-> update it.
-> 
+Thanks,
+drew
 
-Yes. Thanks for review :)
-
-cheers,
--roger
