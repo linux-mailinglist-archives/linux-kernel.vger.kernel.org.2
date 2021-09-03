@@ -2,81 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1191C3FFCBE
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9003FFCBF
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:09:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234476AbhICJKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 05:10:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47724 "EHLO mail.kernel.org"
+        id S244643AbhICJKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 05:10:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:39118 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231734AbhICJKA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 05:10:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 22EDB60FA0;
-        Fri,  3 Sep 2021 09:08:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630660140;
-        bh=DcjjJ2WAyz1ejKxh5caZx2UjPxskQXotN1KC+CVTphM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AXVe52q+2qENaWaDMiNqezmL4BsUWssD8bJgO6b/o7VEIMHLNCgzHRygULaFTLwRR
-         oGz0JvrwOuCyWgZZPRJsgjb88aE0JCr9iBHnqDnHyutHvuocaJmuo0+o0dzEvLEmh3
-         rgQwV9xE7s8/DBL80QGApRESQeCjgwrWCZXPWS2g=
-Date:   Fri, 3 Sep 2021 11:08:58 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Juergen Gross <jgross@suse.com>
-Cc:     xen-devel@lists.xenproject.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] PM: base: power: don't try to use non-existing RTC
- for storing data
-Message-ID: <YTHmKvYz5j8ZT9Jt@kroah.com>
-References: <20210903084937.19392-1-jgross@suse.com>
- <20210903084937.19392-2-jgross@suse.com>
- <YTHjPbklWVDVaBfK@kroah.com>
- <1b6a8f9c-2a5f-e97e-c89d-5983ceeb20e5@suse.com>
+        id S242812AbhICJKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 05:10:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 544021FB;
+        Fri,  3 Sep 2021 02:09:07 -0700 (PDT)
+Received: from [10.57.92.220] (unknown [10.57.92.220])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 17CDA3F694;
+        Fri,  3 Sep 2021 02:09:04 -0700 (PDT)
+Subject: Re: [PATCH v2 5/9] perf cs-etm: Fix typo
+To:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
+        leo.yan@linaro.org, coresight@lists.linaro.org,
+        linux-perf-users@vger.kernel.org, mike.leach@linaro.org
+Cc:     acme@kernel.org, John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210806134109.1182235-1-james.clark@arm.com>
+ <20210806134109.1182235-6-james.clark@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <5679e1e1-b5c4-b763-2fe7-7dd8b7ef1a9d@arm.com>
+Date:   Fri, 3 Sep 2021 10:09:03 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1b6a8f9c-2a5f-e97e-c89d-5983ceeb20e5@suse.com>
+In-Reply-To: <20210806134109.1182235-6-james.clark@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 11:01:58AM +0200, Juergen Gross wrote:
-> On 03.09.21 10:56, Greg Kroah-Hartman wrote:
-> > On Fri, Sep 03, 2021 at 10:49:36AM +0200, Juergen Gross wrote:
-> > > In there is no legacy RTC device, don't try to use it for storing trace
-> > > data across suspend/resume.
-> > > 
-> > > Cc: <stable@vger.kernel.org>
-> > > Signed-off-by: Juergen Gross <jgross@suse.com>
-> > > ---
-> > >   drivers/base/power/trace.c | 10 ++++++++++
-> > >   1 file changed, 10 insertions(+)
-> > > 
-> > > diff --git a/drivers/base/power/trace.c b/drivers/base/power/trace.c
-> > > index a97f33d0c59f..b7c80849455c 100644
-> > > --- a/drivers/base/power/trace.c
-> > > +++ b/drivers/base/power/trace.c
-> > > @@ -13,6 +13,7 @@
-> > >   #include <linux/export.h>
-> > >   #include <linux/rtc.h>
-> > >   #include <linux/suspend.h>
-> > > +#include <linux/init.h>
-> > >   #include <linux/mc146818rtc.h>
-> > > @@ -165,6 +166,9 @@ void generate_pm_trace(const void *tracedata, unsigned int user)
-> > >   	const char *file = *(const char **)(tracedata + 2);
-> > >   	unsigned int user_hash_value, file_hash_value;
-> > > +	if (!x86_platform.legacy.rtc)
-> > > +		return 0;
-> > 
-> > Why does the driver core code here care about a platform/arch-specific
-> > thing at all?  Did you just break all other arches?
+On 06/08/2021 14:41, James Clark wrote:
+> TRCIRD2 should be TRCIDR2
 > 
-> This file is only compiled for x86. It depends on CONFIG_PM_TRACE_RTC,
-> which has a "depends on X86" attribute.
+> Signed-off-by: James Clark <james.clark@arm.com>
 
-Odd, and not obvious at all :(
-
-Ok, I'll let Rafael review this...
+Acked-by: Suzuki K Poulose <suzuki.poulose@arm.com>
