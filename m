@@ -2,157 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFE63FFF9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EECE13FFFA0
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348318AbhICMPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 08:15:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46284 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235065AbhICMPI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 08:15:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630671248;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jKhxEryxOvV3BCEV05H9WKrbxCCVH7ys4JOnEtcYv0o=;
-        b=IUKcj/w9O7JrTrlZExiRSeS2LMVvO4+WZsfANZQNvADnxybQB6RQdwFZsQChsImCobjGz6
-        hVdLhpxuw5z40r4MOGcuPMNtXxOgKTYsIAR2KxZlCgZ8RGQ0uZHIXLM4FrJbWUCIMuSPZW
-        1eJb5QeANcVAUrWXHelRPWCVIJa3im4=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-313-DhlhvHZ8OyiK-7RLITNRvw-1; Fri, 03 Sep 2021 08:14:07 -0400
-X-MC-Unique: DhlhvHZ8OyiK-7RLITNRvw-1
-Received: by mail-ej1-f72.google.com with SMTP id ne21-20020a1709077b95b029057eb61c6fdfso2607107ejc.22
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 05:14:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jKhxEryxOvV3BCEV05H9WKrbxCCVH7ys4JOnEtcYv0o=;
-        b=hohr9QleR8jg9GrWgak0fe+YKAtXyPwwIuGaFWFWhNwsEzg3P8HfBvAHPpqASL7i27
-         JIbeeaz/ho90LIPvBYB78Bvrk2Ja71rFnee/1AKtIe6M2qB6IkhaaMPcYoLRsXoTpzyh
-         57qiiQaIMF4l29RtRl+70x5dTIr1uIhcRh+tx1mDmBuTRSHn0TJhzAnqO8BSYwZFOTPY
-         8rkEr+vsYCd7sHidZ5yLOs6jASbpHeVbXGhO5fPMy3EiUaU2TMLZqBJDWkvl5VfMF9w2
-         ++H/YxPnMt12eMpYa87KSIYsX0LuMkyNDJbee8Nb4PYKXmMIqqrRLqUUF8PlORCeQWeh
-         b24A==
-X-Gm-Message-State: AOAM531tf8EUzQmeQgewcgm9f818rCCSNT7ceV28ETdhUfqbp6cWNNfA
-        E92gJhl7tkZQXusldsF+26d8VWkBfZzoPRY+vhJy/NkT2wcFZcsPrEB74CIh/J/ikrLs24AIXkU
-        OLhBcueKd/wf+jSZYXGees273
-X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr3852026ejc.69.1630671246105;
-        Fri, 03 Sep 2021 05:14:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrZ9hQ5skCpK7Qi697152xoz1AkM543cXdpgGsazHd3sse474FPdYSbyN9lc3iS+HY2SJFkQ==
-X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr3852004ejc.69.1630671245896;
-        Fri, 03 Sep 2021 05:14:05 -0700 (PDT)
-Received: from steredhat (host-79-51-2-59.retail.telecomitalia.it. [79.51.2.59])
-        by smtp.gmail.com with ESMTPSA id g19sm2607768eje.121.2021.09.03.05.14.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 05:14:05 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 14:14:02 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v4 3/6] vhost/vsock: support MSG_EOR bit
- processing
-Message-ID: <20210903121402.vfdaxznxwepezacf@steredhat>
-References: <20210903061353.3187150-1-arseny.krasnov@kaspersky.com>
- <20210903061541.3187840-1-arseny.krasnov@kaspersky.com>
- <20210903065539.nb2hk4sszdtlqfmb@steredhat>
+        id S1349230AbhICMPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 08:15:17 -0400
+Received: from mout.gmx.net ([212.227.15.18]:52875 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348901AbhICMPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 08:15:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630671250;
+        bh=mpR8KpUr1hhIZsSmXsUPPutFytc2e6nbQIu32Yhy9YU=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=Z18HHp4dXJ/HMNRkXgQDJd+xZo0gXf0cHdPgtfAS8AKvtZaEV1LmCopeLWilX/d81
+         nLMruFL9Fh/sYP42WX92HSvPuYOPfNLG/Bf7H4QYZZBuE7zO1zxYjHgW9bvYgQI1WB
+         dxazdh18Rt5th6uIgc+0JcOH1Bo2eOtClhbNp7ho=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530 ([92.116.183.73]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M6lpM-1mKTee0FzS-008Kbn; Fri, 03
+ Sep 2021 14:14:10 +0200
+Date:   Fri, 3 Sep 2021 14:14:04 +0200
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] additional parisc architecture updates for kernel
+ v5.15-rc1
+Message-ID: <YTIRjOdjUHGgG1eQ@ls3530>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210903065539.nb2hk4sszdtlqfmb@steredhat>
+X-Provags-ID: V03:K1:zXX5/GScOzz/bBAjdSXa5NqTbxH/vjkRt9rUV2CFJmW/t4JL5WJ
+ mr/4aLEfvt5XbkVd2QLWXoi0UsKMJ3//Ze+Y/AXU9Eb4JldiD6r3bgPUBxWCKCVn/1bRy6t
+ WbujA9/1+aQuUK8KHxwpA/TxfaiuY9BzWW8fWpCiNYK+9kpUlMSTp2aQfQ8pE/pCxsBNNNO
+ Xqj1P/R5Nb/kWhfLqPojg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ezN+hYuNnb8=:xI2gTv950MFnUwLvkubMWk
+ DNJkOJHA+Wb6Mh9UJ7jpUWtlNXLrJrUkau55rwlOSdwI0WDOYuEHsYQFcvkxoOGtqf3cgVzpr
+ bFV3IVtoathPfhprG5aQFiDOzbwm1Qvhyiwfoc2RYt6XYwbUDuW/U19F8EpmgUGomdErfvzKz
+ 7sGnUxEFfcnBvKCXQGE+zyy9vqcftPwWCjTR2Ol9XDAOvNuYu0/aASTiNi2trMp5eUzwkJZKg
+ o82pJoTrcbeK2qtyaa9RHYoTnMPuZzlhBHXnsx2NQL9GUmyyKR7gm9rz1mp9w2XnmesXGg7hs
+ kMeZu7o6+qzu4ubFyzT1LPFWdf4quAtlts/gguDTf4SyLsTS3Aiev01iFmltcxPzwIWBCXz0t
+ 89ymw/y2ARobdTEauaJ8Rwab5+USLRpw9QgkNoEHDefi1bMgZEGj6kRZ+3JGWHrlxWGAYHCai
+ A88cesniSYrDYdUtWIt5yu99Mm9l0wzGjO5YjCbXs1NQGaBsvsVVLVRdeWk+yF5TzKcMAgTjv
+ g5Qpr8/y07dKm5ajtHRZ6UBkNBnH1SghdO2aFJ4WX2ya/uUbHq5FiLIxD2HRfKsG14u7uM97P
+ /PKY2JdgFzddPv6+kNcZwPaQ+s3StyjRM4il5Vz5QDgHxofQiBRvePoyu9MNRSPd8xDw8pns6
+ A99ge5EeTT6Lxl47dyQIO4ANVMSvxE3NuEcog0s/W3yvli4cvS/8TTEaF7b0EmSrzHC4D53bp
+ XeFHaHSO3MlGaxHplZzTZUraik9v48HU7etQBALu9FR8Yc1u7+hm8btocWJntvY6BcmCoaUHv
+ YMqn7NTHJB2S6JtIVamfLxSRf09yB+NffPR6dGm775cBt+9f318QYE1k3tqdb718Qu76r5rOw
+ Jff1yH8TjOCGfjRnhsGVfQ2XI+9rIWWqOzvjpoFGQTbwrYGhOf1IWOE9Vju4iF+U188/LECo6
+ vppY77iUBpyf/gqnFkYWLLKTmtKoidRtoq4WLUZ024juHhNFHKPryf4E8iz63Nvl06vKYjXXt
+ JfXReA3sq8g7Dgm+oCBjX3tG5LsEDUQ+XYO9BhVuk0gAoI6SgknpSfkDRdPfKU+58KASnbgk4
+ nJagR50xCHR0cR9lYKYcrNgSVDpO2GtPrIE
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 08:55:39AM +0200, Stefano Garzarella wrote:
->On Fri, Sep 03, 2021 at 09:15:38AM +0300, Arseny Krasnov wrote:
->>'MSG_EOR' handling has similar logic as 'MSG_EOM' - if bit present
->>in packet's header, reset it to 0. Then restore it back if packet
->>processing wasn't completed. Instead of bool variable for each
->>flag, bit mask variable was added: it has logical OR of 'MSG_EOR'
->>and 'MSG_EOM' if needed, to restore flags, this variable is ORed
->>with flags field of packet.
->>
->>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->>---
->>drivers/vhost/vsock.c | 22 +++++++++++++---------
->>1 file changed, 13 insertions(+), 9 deletions(-)
->>
->>diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
->>index feaf650affbe..93e8d635e18f 100644
->>--- a/drivers/vhost/vsock.c
->>+++ b/drivers/vhost/vsock.c
->>@@ -114,7 +114,7 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
->>		size_t nbytes;
->>		size_t iov_len, payload_len;
->>		int head;
->>-		bool restore_flag = false;
->>+		u32 flags_to_restore = 0;
->>
->>		spin_lock_bh(&vsock->send_pkt_list_lock);
->>		if (list_empty(&vsock->send_pkt_list)) {
->>@@ -179,15 +179,20 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
->>			 * created dynamically and are initialized with header
->>			 * of current packet(except length). But in case of
->>			 * SOCK_SEQPACKET, we also must clear message delimeter
->>-			 * bit(VIRTIO_VSOCK_SEQ_EOM). Otherwise, instead of one
->>-			 * packet with delimeter(which marks end of message),
->>-			 * there will be sequence of packets with delimeter
->>-			 * bit set. After initialized header will be copied to
->>-			 * rx buffer, this bit will be restored.
->>+			 * bit (VIRTIO_VSOCK_SEQ_EOM) and MSG_EOR bit
->>+			 * (VIRTIO_VSOCK_SEQ_EOR) if set. Otherwise,
->>+			 * there will be sequence of packets with these
->>+			 * bits set. After initialized header will be copied to
->>+			 * rx buffer, these required bits will be restored.
->>			 */
->>			if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOM) {
->>				pkt->hdr.flags &= ~cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
->>-				restore_flag = true;
->>+				flags_to_restore |= VIRTIO_VSOCK_SEQ_EOM;
->>+
->>+				if (le32_to_cpu(pkt->hdr.flags & VIRTIO_VSOCK_SEQ_EOR)) {
-                                                               ^
-Ooops, le32_to_cpu() should close before bitwise and operator.
-I missed this, but kernel test robot discovered :-)
+Hi Linus,
 
->>+					pkt->hdr.flags &= ~cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
->>+					flags_to_restore |= VIRTIO_VSOCK_SEQ_EOR;
->>+				}
->>			}
->>		}
->>
->>@@ -224,8 +229,7 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
->>		 * to send it with the next available buffer.
->>		 */
->>		if (pkt->off < pkt->len) {
->>-			if (restore_flag)
->>-				pkt->hdr.flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
->>+			pkt->hdr.flags |= cpu_to_le32(flags_to_restore);
->>
->>			/* We are queueing the same virtio_vsock_pkt to handle
->>			 * the remaining bytes, and we want to deliver it
->>-- 2.25.1
->>
->
->Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+please pull two more parisc architecture patches for kernel 5.15-rc1 from:
 
-NACK
+  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git tags/for-5.15/parisc-2
 
-Please resend fixing the issue.
+Fix an unaligned-access crash in the bootloader and drop asm/swab.h.
 
-Stefano
+Thanks,
+Helge
 
+----------------------------------------------------------------
+The following changes since commit 7ba88a2a09f47e2e4f3e34215677a1d78a9e6a73:
+
+  Merge tag 'platform-drivers-x86-v5.15-1' of git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86 (2021-09-02 13:49:39 -0700)
+
+are available in the Git repository at:
+
+  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.15-2
+
+for you to fetch changes up to c42813b71a06a2ff4a155aa87ac609feeab76cf3:
+
+  parisc: Fix unaligned-access crash in bootloader (2021-09-03 09:47:02 +0200)
+
+----------------------------------------------------------------
+Helge Deller (2):
+      parisc: Drop __arch_swab16(), arch_swab24(), _arch_swab32() and __arch_swab64() functions
+      parisc: Fix unaligned-access crash in bootloader
+
+ arch/parisc/boot/compressed/misc.c  |  2 +-
+ arch/parisc/include/uapi/asm/swab.h | 68 -------------------------------------
+ 2 files changed, 1 insertion(+), 69 deletions(-)
+ delete mode 100644 arch/parisc/include/uapi/asm/swab.h
