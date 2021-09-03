@@ -2,143 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4009C3FFD68
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D46A3FFD71
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348880AbhICJqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 05:46:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:23530 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348929AbhICJqH (ORCPT
+        id S235038AbhICJtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 05:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234898AbhICJtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 05:46:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630662307;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/vGWzQqDyFpKhyOh2wIj+Kx4GVFTcdYuhnpoMJMGvEA=;
-        b=HOaWSbxaoOijHJtzyyvY+jf0zlsY3B4I917IjTuiLRM2TgCzjyYxgRfYPaUAjmmYVxyN2t
-        SHrxkmUMa68gsbF05Pu5Wev5/6y0Sav5qdsEMts0p5OAlztJYRrSajm5VAQYBQy8sRk4ss
-        KSrJNiV8K3vbG9IrSrs5ylcwRgF43gY=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-h6sDA16PPVq-XQPtMRdu2g-1; Fri, 03 Sep 2021 05:45:06 -0400
-X-MC-Unique: h6sDA16PPVq-XQPtMRdu2g-1
-Received: by mail-wr1-f72.google.com with SMTP id r17-20020adfda510000b02901526f76d738so1400766wrl.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 02:45:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=/vGWzQqDyFpKhyOh2wIj+Kx4GVFTcdYuhnpoMJMGvEA=;
-        b=B+CSkh0MseckW9HyA9iU6CoB5my0aKX8fg5de5sBpKHpWtLSxci9t52PvLUTFgTYIO
-         50pSXytsQ64AmgG0uPhbivAIS7k1/xcLwPopUaogRj7wtTnwFZnLT4eMtvRVkEB0+FA8
-         aK/ljEAAnnoU4QlnFVLCsQ0FzXKpfndv2slxzu2u+CXafK00Afe/zYRnf6oXOodf5Vcd
-         1OEMQuqdhrUC5OpiX815+2+PBOdnqNFVyKSkAfvmJhwdNOgs1Qt74kmSrMQ6yaWIpzgv
-         ohp/oMNMrivoKdbF3XFCGkLoBJO/fgZWO13ezGMWEoqFl4onX3V1Y5C8g7Gb10K85Fd0
-         7b4w==
-X-Gm-Message-State: AOAM532LNrfEdy+ZS7wsBG+DcSnMMusHutlzGWRdhN2NyQ6yX+tWbPnL
-        6fpWMA1byQ/gFj4eOhjw/j4DRSGu/ermi6KteEUaUggCCzaiz9QHf3PHQH0i3j0K1MbpXAO5wXW
-        ftiuc6fygI3oFhTpUoxcF/IMl
-X-Received: by 2002:a5d:534c:: with SMTP id t12mr2933334wrv.219.1630662305220;
-        Fri, 03 Sep 2021 02:45:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwp4wZnhZMdzpuRGRjPbO89lNQeoyMiOxBHqBuOuGQAYy9XHQ2xW00EnKcwVfrZ6lqnhbC09Q==
-X-Received: by 2002:a5d:534c:: with SMTP id t12mr2933309wrv.219.1630662305062;
-        Fri, 03 Sep 2021 02:45:05 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23e05.dip0.t-ipconnect.de. [79.242.62.5])
-        by smtp.gmail.com with ESMTPSA id v21sm4449203wra.92.2021.09.03.02.45.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 02:45:03 -0700 (PDT)
-Subject: Re: [PATCH v2 0/7] Remove in-tree usage of MAP_DENYWRITE
-To:     linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        linux-unionfs@vger.kernel.org, linux-api@vger.kernel.org,
-        x86@kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-References: <20210816194840.42769-1-david@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <7c57a16b-8184-36a3-fcdc-5e751184827b@redhat.com>
-Date:   Fri, 3 Sep 2021 11:45:01 +0200
+        Fri, 3 Sep 2021 05:49:45 -0400
+X-Greylist: delayed 456 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 03 Sep 2021 02:48:45 PDT
+Received: from lb2-smtp-cloud8.xs4all.net (lb2-smtp-cloud8.xs4all.net [IPv6:2001:888:0:108::2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54656C061575;
+        Fri,  3 Sep 2021 02:48:45 -0700 (PDT)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id M5oQmN7Ajy7WyM5oRmA06H; Fri, 03 Sep 2021 11:48:43 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1630662523; bh=SJ8hd1vkoE1lDR7Gui6NdVSUUgSzmWITome7gxPlUDU=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=j6p6FJi6YLNAQCdU6hfsWGUf3VqqCIrYZiKbDUYj5qegwetrBhX/nNKewE1O1TGTa
+         /tRsIIdCQsxDvkroD9J9avuXIkQjK5qzVUfuX53WBjhogMasACClK23P0E0uEk5f3+
+         bA2IEZlGtUaUX7Nr8tKkeFIdB8LARUVSuSHkyx+VJSUmQn6JwJkney2LOCCnVVJU+T
+         mvMJaypvY1mf6+yKfvfp1hosjcc3KTcc+ZTrgsrkXSytsamvq8GoHbnhSDzyCHEyZC
+         exZxNVlSPCX+atGtLUSqkaxsjidkwwyE6S8HjXwUSQVqrUmlqaLV/41ZF7Ky5AZW7B
+         iFfjQibG/1Srg==
+Subject: Re: [PATCH v7 5/5] media: platform: mtk-mdp3: Add Mediatek MDP3
+ driver
+To:     Moudy Ho <moudy.ho@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     Maoguang Meng <maoguang.meng@mediatek.com>,
+        daoyuan huang <daoyuan.huang@mediatek.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Rob Landley <rob@landley.net>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tfiga@chromium.org, drinkcat@chromium.org, acourbot@chromium.org,
+        pihsun@chromium.org, menghui.lin@mediatek.com,
+        sj.huang@mediatek.com, ben.lok@mediatek.com, randy.wu@mediatek.com,
+        srv_heupstream@mediatek.com, hsinyi@google.com
+References: <20210824100027.25989-1-moudy.ho@mediatek.com>
+ <20210824100027.25989-6-moudy.ho@mediatek.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <6898a212-6ccf-b668-fc70-cc8fd4bb39f5@xs4all.nl>
+Date:   Fri, 3 Sep 2021 11:48:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210816194840.42769-1-david@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210824100027.25989-6-moudy.ho@mediatek.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfJ4ioDmS4XtQHcugZwVkBni7FGMQiywW0gjM3kJxcDJjOQZ2L4kqAsGHSfISHRR/5AXECJ0HS3oAZm0u4YKkjd+0JKhwzM4XgPxJr35egUjDy2+LHGok
+ Z9F2+O4SFhAob1iDfSzyZv3Rp0RKcTH6b00WEl3WVJWpE9oCTWb95ffxbtLNZYLkgDnqvht0HoMtOxpWI6nySJYzwKZQ+ivG/Cz5xe5Xa525f8T8QaO4/Ej9
+ ol0fME5v6XF4BaPQZ8HEK+posxVZ5i1Fav7DGdW+or7cu0AzafNiWJpSVeru0l24kc/Gf6g8i8ZWUEpagGoL4rVmpqbVSPXFYaRKDLZJNa1wpUc0sj5Rmt9H
+ bqscLv8O9cSh9uSTrgFxzQj2webhgMD1PjmkU2U1lveYIcxiC4fjEtoU/RGAfdvuePT4VfhG+m9Fm/7jI4CDUObSeO8KFUbTKMp0Tikw/HI6L5oyWTM9Vg3d
+ fH8uZdy2E8ostYECZes7wsfSPs8BPS7GiPSQJL1XaBeDEURptiAQkRVzVZJeSNtGVQhngrWcAMAEAk2A9qCAxweLrKIsATU80hlWI3TGlsluIJ3xYW1xXiYX
+ /bim1qkBOt0004Jspanj4fv/rxxOf42+H1Y0YtfH9MfMJtuPX2kMfe/ZkFW59xaaiDF7DsYt5EikKEzvlYrdqH441hMnJGOCFsEWhsNLKJYNnOC6Dhkextxt
+ Uwt90RdZeU8+c3Ua/HYhOAkrX6aUwIc/blpywayEtAcGSA0mGowrVfOc8dr3dgaCb3ZmuJKp3qJDlvNXrdL+x9rvI26/MgcMmjbPcOkfgtM+uf9lZ13ngZiE
+ b2lacG87jUILXuTWanJaMvl/duxSJQTlKMRvzQQ0pD/NLEnSNG7I1kMlQWsT72XfN4rwTH5XGDHA+IerYJQVf0z3K3Q0T4lTCezjDgUyeW00tK/djXYOrOY4
+ XuTc3z+IPCG/U+qvgk/yx/zClC+qYora5WFp1pQPFvzYagbbpLGof9LWI1FaXnySR0S7g+kwx3an14wahxiL4ggb/fzv9UjKUvEFRPf2vj9RkCasQSS0d8S8
+ t7t8sxFGu6J2IMAe2I4TJ7KOgz1PvCoWTEwnr3AtBhpsE/CbElNjFUDiggyqgoP7S/t9x3Oy3x2VIdFUOLShrWSmbufDEShsDRIbAzzSnOr5CTGpmM8d3hWz
+ 1awnQY2/CLTiiVr4TCTVBA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.08.21 21:48, David Hildenbrand wrote:
-> This series removes all in-tree usage of MAP_DENYWRITE from the kernel
-> and removes VM_DENYWRITE. We stopped supporting MAP_DENYWRITE for
-> user space applications a while ago because of the chance for DoS.
-> The last renaming user is binfmt binary loading during exec and
-> legacy library loading via uselib().
+On 24/08/2021 12:00, Moudy Ho wrote:
+> This patch adds driver for Mediatek's Media Data Path ver.3 (MDP3).
+> It provides the following functions:
+>   color transform, format conversion, resize, crop, rotate, flip
+>   and additional image quality enhancement.
 > 
+> The MDP3 driver is mainly used for Google Chromebook products to
+> import the new architecture to set the HW settings as shown below:
+>   User -> V4L2 framework
+>     -> MDP3 driver -> SCP (setting calculations)
+>       -> MDP3 driver -> CMDQ (GCE driver) -> HW
+> 
+> Each modules' related operation control is sited in mtk-mdp3-comp.c
+> Each modules' register table is defined in file with "mdp_reg_" prefix
+> GCE related API, operation control  sited in mtk-mdp3-cmdq.c
+> V4L2 m2m device functions are implemented in mtk-mdp3-m2m.c
+> Probe, power, suspend/resume, system level functions are defined in
+> mtk-mdp3-core.c
+> 
+> Signed-off-by: Ping-Hsun Wu <ping-hsun.wu@mediatek.com>
+> Signed-off-by: daoyuan huang <daoyuan.huang@mediatek.com>
+> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+> ---
+> Depend on:
+>    [1] https://patchwork.kernel.org/project/linux-mediatek/patch/20190906115513.159705-9-acourbot@chromium.org/
+>    [2] https://patchwork.kernel.org/project/linux-mediatek/patch/20190906115513.159705-10-acourbot@chromium.org/
+> ---
+>  drivers/media/platform/Kconfig                |   19 +
+>  drivers/media/platform/Makefile               |    2 +
+>  drivers/media/platform/mtk-mdp3/Makefile      |    6 +
+>  .../media/platform/mtk-mdp3/mdp_reg_ccorr.h   |   19 +
+>  drivers/media/platform/mtk-mdp3/mdp_reg_isp.h |   27 +
+>  .../media/platform/mtk-mdp3/mdp_reg_rdma.h    |   65 +
+>  drivers/media/platform/mtk-mdp3/mdp_reg_rsz.h |   39 +
+>  .../media/platform/mtk-mdp3/mdp_reg_wdma.h    |   47 +
+>  .../media/platform/mtk-mdp3/mdp_reg_wrot.h    |   55 +
+>  drivers/media/platform/mtk-mdp3/mtk-img-ipi.h |  280 ++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-cmdq.c   |  507 +++++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-cmdq.h   |   46 +
+>  .../media/platform/mtk-mdp3/mtk-mdp3-comp.c   | 1307 +++++++++++++++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-comp.h   |  147 ++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-core.c   |  329 +++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-core.h   |   75 +
+>  .../media/platform/mtk-mdp3/mtk-mdp3-m2m.c    |  801 ++++++++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-m2m.h    |   41 +
+>  .../media/platform/mtk-mdp3/mtk-mdp3-regs.c   |  746 ++++++++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-regs.h   |  372 +++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-vpu.c    |  312 ++++
+>  .../media/platform/mtk-mdp3/mtk-mdp3-vpu.h    |   78 +
+>  22 files changed, 5320 insertions(+)
+>  create mode 100644 drivers/media/platform/mtk-mdp3/Makefile
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_ccorr.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_isp.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_rdma.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_rsz.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_wdma.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mdp_reg_wrot.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-img-ipi.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.c
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-cmdq.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.c
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-comp.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-core.c
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-core.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-m2m.c
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-m2m.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-regs.c
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-regs.h
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-vpu.c
+>  create mode 100644 drivers/media/platform/mtk-mdp3/mtk-mdp3-vpu.h
+> 
+> diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
+> index 157c924686e4..b7f331dbe1b5 100644
+> --- a/drivers/media/platform/Kconfig
+> +++ b/drivers/media/platform/Kconfig
+> @@ -299,6 +299,25 @@ config VIDEO_MEDIATEK_MDP
+>  	    To compile this driver as a module, choose M here: the
+>  	    module will be called mtk-mdp.
+>  
+> +config VIDEO_MEDIATEK_MDP3
+> +	tristate "Mediatek MDP v3 driver"
+> +	depends on MTK_IOMMU
 
-So, how do we want to continue with this? Pick it up for v5.15? Have it 
-in -next for a while and eventually pick it up for v5.16?
+This should probably be:
 
-I think the "remove ETXTBSY completely" and "remove the sanity mapping 
-check" thingies should be done on top.
+	depends on MTK_IOMMU || COMPILE_TEST
 
--- 
-Thanks,
+> +	depends on VIDEO_DEV && VIDEO_V4L2
+> +	depends on ARCH_MEDIATEK || COMPILE_TEST
+> +	depends on HAS_DMA
+> +	select VIDEOBUF2_DMA_CONTIG
+> +	select V4L2_MEM2MEM_DEV
+> +	select VIDEO_MEDIATEK_VPU
+> +	select MTK_CMDQ
+> +	select MTK_SCP
+> +	default n
+> +	help
+> +	    It is a v4l2 driver and present in Mediatek MT8183 SoC.
+> +	    The driver supports for scaling and color space conversion.
+> +
+> +	    To compile this driver as a module, choose M here: the
+> +	    module will be called mtk-mdp3.
+> +
+>  config VIDEO_MEDIATEK_VCODEC
+>  	tristate "Mediatek Video Codec driver"
+>  	depends on MTK_IOMMU || COMPILE_TEST
 
-David / dhildenb
+Regards,
 
+	Hans
