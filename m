@@ -2,177 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97693FFA7E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4DB3FFA84
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346596AbhICGl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 02:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346092AbhICGl1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 02:41:27 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51673C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  2 Sep 2021 23:40:27 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so3194312pjr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 02 Sep 2021 23:40:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7rpO2W4kEFnv0e71WUzw+R/NVTjHf2UYr2L4kEk1y5g=;
-        b=AbHEEvGL8tNfj2fhiGQRcz53w2jVveYxpBCzcud9Jd8/eINmDROsZ6wB4KzD1a24gT
-         3GEyCfuB2Nbwh9qnbts+X/KTMkUrcP8FQ5+0El4K7E5h03A5U59YNaf5yeDL9+baNH0U
-         Eu5av+aPmgh0/d1A6JydSVU9BsLpE0c22NYuc7qeeQdKIfkognBFzgtFaUslLHfzzxPU
-         luKMdDKM6An2ocJ++zc9SVsYbINXAa+LQRXEPwHeLk5j8dvu6TLot9fWonbkS8Balv0m
-         Wmg5yMij31X545Rv48xattuq7YH0+41kk3PUffzxlE+S359SJBCdLczbbr5+8V4XYI9R
-         MBRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7rpO2W4kEFnv0e71WUzw+R/NVTjHf2UYr2L4kEk1y5g=;
-        b=qIMoeKkaEKf+bIeHUw1x0lq2XGeyEQpZ9W0Y1cN3rj3HAryVb4Ocz623Mlp6M+pSnE
-         jqjbCW/D2BKYrpHzJl95lhqrgofdpz5teLZJAQ/CfvyRKf+PJjhYRN5CATU35UhQKfLb
-         Z9ueIwofR3O9YUfgLNIKJmOLTWxgfSdnaVUx04MrBqchuXpJY6yeKK5mnUa5nxfredTO
-         FbMmK5awGQU2AuKINpxNQas9TSHdsgqVUHyOxHIt8zqSx3xLZg2vq/ZGw9lf2aoi7tzT
-         W0gQjl9f0b9Zh0GZ6mE94HAv00VCJtmeX33GcZhCdWrLAq6G0d/0Edx3ZB23QC+K34rT
-         IRdA==
-X-Gm-Message-State: AOAM533Q4ka884+BICWPsk2Fw6HGpwyc7XOFDEsMlM/PrXfWmKEGW4eo
-        KrHPsXiHhzA6TnChq676+Rl7uA==
-X-Google-Smtp-Source: ABdhPJyw7YY0ECbndiqPoDFZ3kAFlx3GQ5nxiDjs44OSTdyLDcPoV6VTOTORxLai/mQPOmzVB/cLnQ==
-X-Received: by 2002:a17:902:d2d0:b0:138:d2ac:42c with SMTP id n16-20020a170902d2d000b00138d2ac042cmr1667827plc.67.1630651226615;
-        Thu, 02 Sep 2021 23:40:26 -0700 (PDT)
-Received: from FVFX41FWHV2J.bytedance.net ([139.177.225.244])
-        by smtp.gmail.com with ESMTPSA id o2sm4862356pgu.76.2021.09.02.23.40.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 Sep 2021 23:40:25 -0700 (PDT)
-From:   Feng zhou <zhoufeng.zf@bytedance.com>
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        jeffrey.t.kirsher@intel.com, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        duanxiongchun@bytedance.com, songmuchun@bytedance.com,
-        zhouchengming@bytedance.com, chenying.kernel@bytedance.com,
-        zhengqi.arch@bytedance.com, wangdongdong.6@bytedance.com,
-        zhoufeng.zf@bytedance.com
-Subject: [PATCH v2] ixgbe: Fix NULL pointer dereference in ixgbe_xdp_setup
-Date:   Fri,  3 Sep 2021 14:40:13 +0800
-Message-Id: <20210903064013.9842-1-zhoufeng.zf@bytedance.com>
-X-Mailer: git-send-email 2.27.0
+        id S1346391AbhICGnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 02:43:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232218AbhICGnG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 02:43:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E66060F91;
+        Fri,  3 Sep 2021 06:42:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630651327;
+        bh=hKmqa7Vs9APJQ/9FaigC6kerO3ACZOY+NOsi/tv20Xg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IzC1DstgmX4ke/oK/LJ/XxA41KkndggA/GhJRSuAKhDNb48g+HODyGVl4rP26pnLe
+         uC65ieYl+KiGMn1KhPlfCNE7CsJkRm+jMZAqgzP5/2cepbfCpd8i52yeiwjrKuF4vM
+         QoXfF5DPQwqLsSMGi41sfLMXEeFaVUszmxIgNRY2ur4btARtcrAeDJ/DCUI3NurHyj
+         qze6F/cbR1HbLoECKcETLdeXZ+OgNrKxiQ9Pj760h6TV3WrQHQkdfzj9ZL/okSokh3
+         uPvzDYw4YH8W6b4qOWBfM70nBejDXRdg0MIkIMTqIagU+YW18+ebT1CBkUT4S6Y3Zz
+         LUR4Qm93fGXZA==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Cc:     Tony Luck <tony.luck@intel.com>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [PATCH] x86/sgx: Declare sgx_set_attribute() for !CONFIG_X86_SGX
+Date:   Fri,  3 Sep 2021 09:41:56 +0300
+Message-Id: <20210903064156.387979-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Feng Zhou <zhoufeng.zf@bytedance.com>
+Simplify sgx_set_attribute() usage by declaring a fallback
+implementation for it rather than requiring to have compilation
+flag checks in the call site. The fallback unconditionally returns
+-EINVAL.
 
-The ixgbe driver currently generates a NULL pointer dereference with
-some machine (online cpus < 63). This is due to the fact that the
-maximum value of num_xdp_queues is nr_cpu_ids. Code is in
-"ixgbe_set_rss_queues"".
+Refactor the call site in kvm_vm_ioctl_enable_cap() accordingly.
+The net result is the same: KVM_CAP_SGX_ATTRIBUTE causes -EINVAL
+when kernel is compiled without CONFIG_X86_SGX_KVM.
 
-Here's how the problem repeats itself:
-Some machine (online cpus < 63), And user set num_queues to 63 through
-ethtool. Code is in the "ixgbe_set_channels",
-adapter->ring_feature[RING_F_FDIR].limit = count;
-It becames 63.
-When user use xdp, "ixgbe_set_rss_queues" will set queues num.
-adapter->num_rx_queues = rss_i;
-adapter->num_tx_queues = rss_i;
-adapter->num_xdp_queues = ixgbe_xdp_queues(adapter);
-And rss_i's value is from
-f = &adapter->ring_feature[RING_F_FDIR];
-rss_i = f->indices = f->limit;
-So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
-for (i = 0; i < adapter->num_rx_queues; i++)
-	if (adapter->xdp_ring[i]->xsk_umem)
-lead to panic.
-Call trace:
-[exception RIP: ixgbe_xdp+368]
-RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
-RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
-RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
-RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
-R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
-R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
-ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
- 7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
- 8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
- 9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
-10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
-11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
-12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
-13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
-14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
-15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
-16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
-17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
-18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
-19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
-
-Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
-AF_XDP")
-Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 ---
-Updates since v1:
-- Fix "ixgbe_max_channels" callback so that it will not allow a setting of 
-queues to be higher than the num_online_cpus().
-more details can be seen from here:
-https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20210817075407.11961-1-zhoufeng.zf@bytedance.com/
-Thanks to Maciej Fijalkowski for your advice.
+ arch/x86/include/asm/sgx.h | 8 ++++++++
+ arch/x86/kvm/x86.c         | 2 --
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
- drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c | 2 +-
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c    | 8 ++++++--
- 2 files changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
-index 4ceaca0f6ce3..21321d164708 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
-@@ -3204,7 +3204,7 @@ static unsigned int ixgbe_max_channels(struct ixgbe_adapter *adapter)
- 		max_combined = ixgbe_max_rss_indices(adapter);
+diff --git a/arch/x86/include/asm/sgx.h b/arch/x86/include/asm/sgx.h
+index 05f3e21f01a7..31ee106c0f4b 100644
+--- a/arch/x86/include/asm/sgx.h
++++ b/arch/x86/include/asm/sgx.h
+@@ -372,7 +372,15 @@ int sgx_virt_einit(void __user *sigstruct, void __user *token,
+ 		   void __user *secs, u64 *lepubkeyhash, int *trapnr);
+ #endif
+ 
++#ifdef CONFIG_X86_SGX
+ int sgx_set_attribute(unsigned long *allowed_attributes,
+ 		      unsigned int attribute_fd);
++#else
++static inline int sgx_set_attribute(unsigned long *allowed_attributes,
++				    unsigned int attribute_fd)
++{
++	return -EINVAL;
++}
++#endif
+ 
+ #endif /* _ASM_X86_SGX_H */
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index e5d5c5ed7dd4..a6a27a8f41eb 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5633,7 +5633,6 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+ 			kvm->arch.bus_lock_detection_enabled = true;
+ 		r = 0;
+ 		break;
+-#ifdef CONFIG_X86_SGX_KVM
+ 	case KVM_CAP_SGX_ATTRIBUTE: {
+ 		unsigned long allowed_attributes = 0;
+ 
+@@ -5649,7 +5648,6 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+ 			r = -EINVAL;
+ 		break;
  	}
- 
--	return max_combined;
-+	return min_t(int, max_combined, num_online_cpus());
- }
- 
- static void ixgbe_get_channels(struct net_device *dev,
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 14aea40da50f..5db496cc5070 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -10112,6 +10112,7 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
- 	struct ixgbe_adapter *adapter = netdev_priv(dev);
- 	struct bpf_prog *old_prog;
- 	bool need_reset;
-+	int num_queues;
- 
- 	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
- 		return -EINVAL;
-@@ -10161,11 +10162,14 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
- 	/* Kick start the NAPI context if there is an AF_XDP socket open
- 	 * on that queue id. This so that receiving will start.
- 	 */
--	if (need_reset && prog)
--		for (i = 0; i < adapter->num_rx_queues; i++)
-+	if (need_reset && prog) {
-+		num_queues = min_t(int, adapter->num_rx_queues,
-+			adapter->num_xdp_queues);
-+		for (i = 0; i < num_queues; i++)
- 			if (adapter->xdp_ring[i]->xsk_pool)
- 				(void)ixgbe_xsk_wakeup(adapter->netdev, i,
- 						       XDP_WAKEUP_RX);
-+	}
- 
- 	return 0;
- }
+-#endif
+ 	case KVM_CAP_VM_COPY_ENC_CONTEXT_FROM:
+ 		r = -EINVAL;
+ 		if (kvm_x86_ops.vm_copy_enc_context_from)
 -- 
-2.11.0
+2.25.1
 
