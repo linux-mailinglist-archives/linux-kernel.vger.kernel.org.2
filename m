@@ -2,87 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7ECB400119
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0ED040011B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349338AbhICOOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:14:23 -0400
-Received: from mga05.intel.com ([192.55.52.43]:56993 "EHLO mga05.intel.com"
+        id S231164AbhICOPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:15:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349257AbhICOOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:14:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="304994689"
-X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
-   d="scan'208";a="304994689"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 07:13:22 -0700
-X-IronPort-AV: E=Sophos;i="5.85,265,1624345200"; 
-   d="scan'208";a="500376060"
-Received: from achiranj-mobl.gar.corp.intel.com ([10.213.105.90])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 07:13:19 -0700
-Message-ID: <c56cde110210bec6537fe69b495334c6c70c814e.camel@linux.intel.com>
-Subject: Re: Bug: d0e936adbd22 crashes at boot
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Jens Axboe <axboe@kernel.dk>, LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, inux-pm@vger.kernel.org
-Date:   Fri, 03 Sep 2021 07:13:16 -0700
-In-Reply-To: <942f4041-e4e7-1b08-3301-008ab37ff5b8@kernel.dk>
-References: <942f4041-e4e7-1b08-3301-008ab37ff5b8@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
+        id S1347350AbhICOPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 10:15:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EC6160EE3;
+        Fri,  3 Sep 2021 14:14:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630678442;
+        bh=PLSHoddjU3pnFtal4whhpNsynayjjXHlTiXXgaXgj6A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Dxf00ShIVspBWwdyMrjpFKsSOOHhoxiuztHq8GlmneR79RPVZKHrLPhcffKrYgzVv
+         pnuM7QI7ADvyJgJyMB2senrslYDT/rWa0yHMoRSLQp6Xgx0HQc5pH1rXHxhGO09zzl
+         vr8YIphGCz4eCY5cdfOMmwIe5t4RwypOLCNaHqm8=
+Date:   Fri, 3 Sep 2021 16:14:00 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org,
+        syzbot+01985d7909f9468f013c@syzkaller.appspotmail.com,
+        Alexey Gladkov <legion@kernel.org>
+Subject: Re: [PATCH 5.10 036/103] ucounts: Increase ucounts reference counter
+ before the security hook
+Message-ID: <YTItqH5NnIP3zduJ@kroah.com>
+References: <20210901122300.503008474@linuxfoundation.org>
+ <20210901122301.773759848@linuxfoundation.org>
+ <87v93k4bl6.fsf@disp2133>
+ <YS+s+XL0xXKGwh9a@kroah.com>
+ <875yvk1a31.fsf@disp2133>
+ <YTDLyU2mdeoe5cVt@sashalap>
+ <875yvizwb9.fsf@disp2133>
+ <YTGrQ2D1/tQR1pCh@kroah.com>
+ <YTGr2ZkgfTCIGVpr@kroah.com>
+ <YTHFv5ocSt4W+JZs@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTHFv5ocSt4W+JZs@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Axboe,
+On Fri, Sep 03, 2021 at 08:50:39AM +0200, Greg Kroah-Hartman wrote:
+> On Fri, Sep 03, 2021 at 07:00:09AM +0200, Greg Kroah-Hartman wrote:
+> > On Fri, Sep 03, 2021 at 06:57:39AM +0200, Greg Kroah-Hartman wrote:
+> > > On Thu, Sep 02, 2021 at 01:06:34PM -0500, Eric W. Biederman wrote:
+> > > > Sasha Levin <sashal@kernel.org> writes:
+> > > > 
+> > > > > On Wed, Sep 01, 2021 at 12:26:10PM -0500, Eric W. Biederman wrote:
+> > > > >>Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+> > > > >>
+> > > > >>> On Wed, Sep 01, 2021 at 09:25:25AM -0500, Eric W. Biederman wrote:
+> > > > >>>> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+> > > > >>>>
+> > > > >>>> > From: Alexey Gladkov <legion@kernel.org>
+> > > > >>>> >
+> > > > >>>> > [ Upstream commit bbb6d0f3e1feb43d663af089c7dedb23be6a04fb ]
+> > > > >>>> >
+> > > > >>>> > We need to increment the ucounts reference counter befor security_prepare_creds()
+> > > > >>>> > because this function may fail and abort_creds() will try to decrement
+> > > > >>>> > this reference.
+> > > > >>>>
+> > > > >>>> Has the conversion of the rlimits to ucounts been backported?
+> > > > >>>>
+> > > > >>>> Semantically the code is an improvement but I don't know of any cases
+> > > > >>>> where it makes enough of a real-world difference to make it worth
+> > > > >>>> backporting the code.
+> > > > >>>>
+> > > > >>>> Certainly the ucount/rlimit conversions do not meet the historical
+> > > > >>>> criteria for backports.  AKA simple obviously correct patches.
+> > > > >>>>
+> > > > >>>> The fact we have been applying fixes for the entire v5.14 stabilization
+> > > > >>>> period is a testament to the code not quite being obviously correct.
+> > > > >>>>
+> > > > >>>> Without backports the code only affects v5.14 so I have not been
+> > > > >>>> including a Cc stable on any of the commits.
+> > > > >>>>
+> > > > >>>> So color me very puzzled about what is going on here.
+> > > > >>>
+> > > > >>> Sasha picked this for some reason, but if you think it should be
+> > > > >>> dropped, we can easily do so.
+> > > > >>
+> > > > >>My question is what is the reason Sasha picked this up?
+> > > > >>
+> > > > >>If this patch even applies to v5.10 the earlier patches have been
+> > > > >>backported.  So we can't just drop this patch.  Either the earlier
+> > > > >>backports need to be reverted, or we need to make certain all of the
+> > > > >>patches are backported.
+> > > > >>
+> > > > >>I really am trying to understand what is going on and why.
+> > > > >
+> > > > > I'll happily explain. The commit message is telling us that:
+> > > > >
+> > > > > 1. There is an issue uncovered by syzbot which this patch fixes:
+> > > > >
+> > > > > 	"Reported-by: syzbot"
+> > > > >
+> > > > > 2. The issue was introduced in 905ae01c4ae2 ("Add a reference to ucounts
+> > > > > for each cred"):
+> > > > >
+> > > > > 	"Fixes: 905ae01c4ae2"
+> > > > >
+> > > > > Since 905ae01c4ae2 exist in 5.10, and this patch seemed to fix an issue,
+> > > > > I've queued it up.
+> > > > 
+> > > > Which begs the question as Alex mentioned how did 905ae01c4ae2 get into
+> > > > 5.10, as it was merged to Linus's tree in the merge window for 5.14.
+> > > > 
+> > > > > In general, if we're missing backports, backported something only
+> > > > > partially and should revert it, or anything else that might cause an
+> > > > > issue, we'd be more than happy to work with you to fix it up.
+> > > > >
+> > > > > All the patches we queue up get multiple rounds of emails and reviews,
+> > > > > if there is a better way to solicit reviews so that we won't up in a
+> > > > > place where you haven't noticed something going in earlier we'd be more
+> > > > > than happy to improve that process too.
+> > > > 
+> > > > I have the bad feeling that 905ae01c4ae2 was backported because it was a
+> > > > prerequisite to something with a Fixes tag.
+> > > > 
+> > > > Fixes tags especially in this instance don't mean code needs to go to
+> > > > stable Fixes tags mean that a bug was fixed.  Since I thought the code
+> > > > only existed in Linus's tree, I haven't been adding Cc stable or even
+> > > > thinking about earlier kernels with respect to this code.
+> > > > 
+> > > > I honestly can't keep up with the level of review needed for patches
+> > > > targeting Linus's tree.  So I occasionally glance at patches destined
+> > > > for the stable tree.
+> > > > 
+> > > > Most of the time it is something being backported without a stable tag,
+> > > > but with a fixes tag, that is unnecessary but generally harmless so I
+> > > > ignore it.
+> > > > 
+> > > > In this instance it looks like a whole new feature that has had a rocky
+> > > > history and a lot of time to stablize is somehow backported to 5.10 and
+> > > > 5.13.  I think all of the known issues are addressed but I won't know
+> > > > if all of the issues syzkaller can find are found for another couple of
+> > > > weeks.
+> > > > 
+> > > > Because this code was not obviously correct, because this code did not
+> > > > have a stable tag, because I am not even certain it is stable yet,
+> > > > I am asking do you know how this code that feels to me like feature work
+> > > > wound up being backported?  AKA why is 905ae01c4ae2 in 5.10 and 5.13.
+> > > 
+> > > Looks like Sasha added it to the tree last week and it went out in the
+> > > last set of releases.  Sasha, why was this added?  Let me see if it was
+> > > a requirement of some other patch...
+> > 
+> > Sorry, no, that was this patch, let me get my coffee before I dig into
+> > this...
+> 
+> Ok, it looks like the original patch came in through the AUTOSEL
+> process, and you were cc:ed on it back on July 4, 2021:
+> 	https://lore.kernel.org/r/20210704230804.1490078-2-sashal@kernel.org
+> 
+> In reading the changelog of the commit, and looking briefly at the
+> patch, I can see why it was selected as a candidate for backporting to
+> stable kernels (fixes reported problem from kernel test robot, fixes
+> reference counting logic, etc.)
+> 
+> So given that it seemed like a normal candidate for a stable fix, and no
+> one complained, after one week, it was applied to the tree on July 11
+> (but Sasha's scripts did NOT email you about that for some reason,
+> hopefully he has fixed that by now).
+> 
+> Then on July 12, I added commit 5e6b8a50a7ce ("cred: add missing return
+> error code when set_cred_ucounts() failed") to the stable patch queue,
+> as it fixed a reported problem in the original commit, and you were
+> copied on that.
+> 
+> Then later that day, it was put out for review:
+> 	https://lore.kernel.org/r/20210712060854.324880966@linuxfoundation.org
+> and you were copied on that as well.
+> 
+> So you should have an email trail of when this patch was submitted for
+> inclusion, and then put out for review.  Do you not see them in your
+> email system?
+> 
+> 
+> I just tested a local build, and yes, it can easily be reverted (along
+> with a follow-on patch that was applied to resolve a problem with this
+> commit), and I will queue them up after this release happens, but for
+> now, I'll let this patch stay so that we do not break anyone.
+> 
 
-Thanks for reporting.
-On Fri, 2021-09-03 at 07:36 -0600, Jens Axboe wrote:
-> Hi,
-> 
-> Booting Linus's tree causes a crash on my laptop, an x1 gen9. This was
-> a bit
-> difficult to pin down as it crashes before the display is up, but I
-> managed
-> to narrow it down to:
-> 
-> commit d0e936adbd2250cb03f2e840c6651d18edc22ace
-> Author: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> Date:   Thu Aug 19 19:40:06 2021 -0700
-> 
->     cpufreq: intel_pstate: Process HWP Guaranteed change notification
-> 
-> which crashes with a NULL pointer deref in notify_hwp_interrupt() ->
-> queue_delayed_work_on().
-> 
-> Reverting this change makes the laptop boot fine again.
-> 
-Does this change fixes your issue?
+All now reverted.
 
-diff --git a/drivers/cpufreq/intel_pstate.c
-b/drivers/cpufreq/intel_pstate.c
-index b4ffe6c8a0d0..6a3c6f60ad12 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -1650,7 +1650,10 @@ void notify_hwp_interrupt(void)
-                return;
- 
-        cpudata = all_cpu_data[this_cpu];
--       schedule_delayed_work_on(this_cpu, &cpudata->hwp_notify_work,
-msecs_to_jiffies(10));
-+       if (cpudata)
-+               schedule_delayed_work_on(this_cpu, &cpudata-
->hwp_notify_work, msecs_to_jiffies(10));
-+       else
-+               wrmsrl(MSR_HWP_STATUS, 0);
- }
- 
- static void intel_pstate_enable_hwp_interrupt(struct cpudata *cpudata)
+thanks,
 
-
-Thanks,
-Srinivas
-
+greg k-h
