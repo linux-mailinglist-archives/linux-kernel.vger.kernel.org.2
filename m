@@ -2,139 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B6B3FFEA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C7A3FFEA2
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 13:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232430AbhICLFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 07:05:16 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:43672 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235011AbhICLFI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 07:05:08 -0400
-Received: by mail-io1-f71.google.com with SMTP id x26-20020a6bd01a000000b005c23c703629so193874ioa.10
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 04:04:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=mACFfA/R4884V66P0DIgp0k6RK7+ec6mdLQHsLBqKxo=;
-        b=S+8pxo2dFSHvhzjxtGWicF6KGxzmQsj0WOCyQlmgKrI1N3/QN/2O+k1AXb1s1+LjFT
-         fePpSqk7/e3HAu0k6AWj4g5I39wgtrmT/+GktThypUpP+lINuaHNkXpz4iEYRMCrDnJp
-         9ke2iR+oaHJRVa7SA/4/rqUIoHh11CIfq0A4q9nTUYBAI8SjsgQlxz1u9nFnslxzsyAC
-         8hRXn10Iq0Nohgdl25pBMXhZJpTH4BB9BteW5eIAHhCpdhZ+5nn6YO+fCi26GrJfoDzc
-         eROhyfutc5omj0UF1AUpyxCJ64ybPDMtQA9d07Ff24OJymFfGo91dwWzpyitSlKZ2Dv+
-         Epbg==
-X-Gm-Message-State: AOAM532Y3wKfGwBeSh/RuKbB2E4I3s7KVWPVLcEfpQxve2UIkgvQj/go
-        EdZoO/ah8GVs0we4CjpnWP32MrtJPJ1mdrW+EpUEwbK8k87o
-X-Google-Smtp-Source: ABdhPJzeCi1CaBwy8MctIZAVAL60RcUkDZ9D2yjD/T4ucuOOvPZmd7BjteJLRMyBvK4lbxBrehqV19mXXoDv43GEHMrYJvMsyl4x
+        id S1348582AbhICLGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 07:06:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348487AbhICLGJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 07:06:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41F106101A;
+        Fri,  3 Sep 2021 11:05:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630667109;
+        bh=ZYJJfNfDBDoEd9auwZs1I3zRjMJaKASoHmWShb2DHD8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y6OjZ+ui3ulw9uaS74ytWqqRvhHTsFdgUizXzu8tn3dghLK6Dq4TP7yl+lNmFaaB4
+         +4w5u9+OFRLrg5pgz75abQjlmvRcpItiigCrNkTaCrZoxxVIjrxjhL3bsTwszO7zBM
+         +9DnMcRekOhFqiAF8fCnkRjNJn8DrjOEcvtcaF4U1L3ol3bBPTZQtuY4qtRAYxG4jt
+         W8XDYPbIS6l5r8eXnprF3lUqRHV2ltQ19H4M3E2+2Pnl9CKDn0qo6rReDQ9JWaDdDZ
+         tBtWTFrHo7ugboOkBK2r8aPCYDWw2SG/ae01MDSjZUw7WZjDFVNEle7Jtgzlsu+n06
+         2gy1fFp6dKxcg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id C59ED4007E; Fri,  3 Sep 2021 08:05:06 -0300 (-03)
+Date:   Fri, 3 Sep 2021 08:05:06 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     James Clark <james.clark@arm.com>, mathieu.poirier@linaro.org,
+        leo.yan@linaro.org, coresight@lists.linaro.org,
+        linux-perf-users@vger.kernel.org, mike.leach@linaro.org,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/9] perf cs-etm: Refactor initialisation of decoder
+ params.
+Message-ID: <YTIBYkU281/di+vD@kernel.org>
+References: <20210806134109.1182235-1-james.clark@arm.com>
+ <20210806134109.1182235-2-james.clark@arm.com>
+ <ca0f3d7c-2420-fcab-0c48-57225ed15b00@arm.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1b88:: with SMTP id h8mr2184451ili.237.1630667048687;
- Fri, 03 Sep 2021 04:04:08 -0700 (PDT)
-Date:   Fri, 03 Sep 2021 04:04:08 -0700
-In-Reply-To: <20210903042820.2733-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002f1da805cb154204@google.com>
-Subject: Re: [syzbot] WARNING: refcount bug in qrtr_node_lookup
-From:   syzbot <syzbot+c613e88b3093ebf3686e@syzkaller.appspotmail.com>
-To:     bjorn.andersson@linaro.org, dan.carpenter@oracle.com,
-        eric.dumazet@gmail.com, hdanton@sina.com,
-        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        netdev@vger.kernel.org, paul@paul-moore.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca0f3d7c-2420-fcab-0c48-57225ed15b00@arm.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Em Fri, Sep 03, 2021 at 09:52:14AM +0100, Suzuki K Poulose escreveu:
+> On 06/08/2021 14:41, James Clark wrote:
+> > The initialisation of the decoder params is duplicated between
+> > creation of the packet printer and packet decoder. Put them both
+> > into one function so that future changes only need to be made in one
+> > place.
+> > 
+> > Reviewed-by: Leo Yan <leo.yan@linaro.org>
+> > Signed-off-by: James Clark <james.clark@arm.com>
+> 
+> Acked-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-UBSAN: object-size-mismatch in wg_xmit
+Thanks, collected the Acked-by.
 
-================================================================================
-UBSAN: object-size-mismatch in ./include/linux/skbuff.h:2048:28
-member access within address 0000000096a277f4 with insufficient space
-for an object of type 'struct sk_buff'
-CPU: 0 PID: 3568 Comm: kworker/0:5 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: ipv6_addrconf addrconf_dad_work
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x15e/0x1d3 lib/dump_stack.c:105
- ubsan_epilogue lib/ubsan.c:151 [inline]
- handle_object_size_mismatch lib/ubsan.c:232 [inline]
- ubsan_type_mismatch_common+0x1de/0x390 lib/ubsan.c:245
- __ubsan_handle_type_mismatch_v1+0x41/0x50 lib/ubsan.c:274
- __skb_queue_before include/linux/skbuff.h:2048 [inline]
- __skb_queue_tail include/linux/skbuff.h:2081 [inline]
- wg_xmit+0x4da/0xa60 drivers/net/wireguard/device.c:182
- __netdev_start_xmit include/linux/netdevice.h:4970 [inline]
- netdev_start_xmit+0x7b/0x140 include/linux/netdevice.h:4984
- xmit_one net/core/dev.c:3576 [inline]
- dev_hard_start_xmit+0x182/0x2e0 net/core/dev.c:3592
- __dev_queue_xmit+0x13b0/0x21a0 net/core/dev.c:4202
- neigh_output include/net/neighbour.h:510 [inline]
- ip6_finish_output2+0xc51/0x11b0 net/ipv6/ip6_output.c:126
- dst_output include/net/dst.h:450 [inline]
- NF_HOOK include/linux/netfilter.h:307 [inline]
- ndisc_send_skb+0x835/0xcf0 net/ipv6/ndisc.c:508
- addrconf_dad_completed+0x6c5/0xa70 net/ipv6/addrconf.c:4203
- addrconf_dad_work+0xba5/0x1510 net/ipv6/addrconf.c:3970
- process_one_work+0x4b5/0x8d0 kernel/workqueue.c:2297
- worker_thread+0x686/0x9e0 kernel/workqueue.c:2444
- kthread+0x3ca/0x3f0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-================================================================================
-================================================================================
-UBSAN: object-size-mismatch in ./include/linux/skbuff.h:1941:2
-member access within address 0000000096a277f4 with insufficient space
-for an object of type 'struct sk_buff'
-CPU: 0 PID: 3568 Comm: kworker/0:5 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: ipv6_addrconf addrconf_dad_work
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x15e/0x1d3 lib/dump_stack.c:105
- ubsan_epilogue lib/ubsan.c:151 [inline]
- handle_object_size_mismatch lib/ubsan.c:232 [inline]
- ubsan_type_mismatch_common+0x1de/0x390 lib/ubsan.c:245
- __ubsan_handle_type_mismatch_v1+0x41/0x50 lib/ubsan.c:274
- __skb_insert include/linux/skbuff.h:1941 [inline]
- __skb_queue_before include/linux/skbuff.h:2048 [inline]
- __skb_queue_tail include/linux/skbuff.h:2081 [inline]
- wg_xmit+0x53c/0xa60 drivers/net/wireguard/device.c:182
- __netdev_start_xmit include/linux/netdevice.h:4970 [inline]
- netdev_start_xmit+0x7b/0x140 include/linux/netdevice.h:4984
- xmit_one net/core/dev.c:3576 [inline]
- dev_hard_start_xmit+0x182/0x2e0 net/core/dev.c:3592
- __dev_queue_xmit+0x13b0/0x21a0 net/core/dev.c:4202
- neigh_output include/net/neighbour.h:510 [inline]
- ip6_finish_output2+0xc51/0x11b0 net/ipv6/ip6_output.c:126
- dst_output include/net/dst.h:450 [inline]
- NF_HOOK include/linux/netfilter.h:307 [inline]
- ndisc_send_skb+0x835/0xcf0 net/ipv6/ndisc.c:508
- addrconf_dad_completed+0x6c5/0xa70 net/ipv6/addrconf.c:4203
- addrconf_dad_work+0xba5/0x1510 net/ipv6/addrconf.c:3970
- process_one_work+0x4b5/0x8d0 kernel/workqueue.c:2297
- worker_thread+0x686/0x9e0 kernel/workqueue.c:2444
- kthread+0x3ca/0x3f0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-================================================================================
-IPv6: ADDRCONF(NETDEV_CHANGE): macsec0: link becomes ready
-IPv6: ADDRCONF(NETDEV_CHANGE): macsec0: link becomes ready
-IPv6: ADDRCONF(NETDEV_CHANGE): batadv_slave_0: link becomes ready
-IPv6: ADDRCONF(NETDEV_CHANGE): veth0_to_batadv: link becomes ready
-
-
-Tested on:
-
-commit:         a9c9a6f7 Merge tag 'scsi-misc' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=134c5b6d300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5f845e3d82a95a0e
-dashboard link: https://syzkaller.appspot.com/bug?extid=c613e88b3093ebf3686e
-compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14673df5300000
-
+- Arnaldo
