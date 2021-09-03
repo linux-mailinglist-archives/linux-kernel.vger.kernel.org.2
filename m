@@ -2,120 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D803E400164
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ADE7400174
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348371AbhICOnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:43:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44185 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235422AbhICOnr (ORCPT
+        id S1349135AbhICOrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230332AbhICOrF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:43:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630680167;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EEFnIURrP2vwLaJ5HTfs71djy1e9bipR/GQhDMVx0Ic=;
-        b=bAVFNyI0pzLKjOzg9YZn5dAcZquxCmuGpAOOvvU82xAWDbIEc/XloCD6txfplO6ZlzHk1A
-        mf3MUDHV6FRvXTAOKDpL1RhjPKGHdWyLRWBSrVeV3aFfj267uiGySegfYJyfXqzo1Do/K0
-        7P8m424H/HTLE2Y9UdVKRcQAIB2Z7Tk=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-46-IOrMMNpCNyiK0-zEGhfWPg-1; Fri, 03 Sep 2021 10:42:46 -0400
-X-MC-Unique: IOrMMNpCNyiK0-zEGhfWPg-1
-Received: by mail-il1-f200.google.com with SMTP id h10-20020a056e020d4a00b00227fc2e6687so3659936ilj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 07:42:45 -0700 (PDT)
+        Fri, 3 Sep 2021 10:47:05 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D36CC061575;
+        Fri,  3 Sep 2021 07:46:05 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id s3so9946927ljp.11;
+        Fri, 03 Sep 2021 07:46:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iNqobfro7OKzCHlE+ueste6F4lAQYDNz3YZQNe0s7dU=;
+        b=FbgW7NwtvajiLnGoaMmhlDH5/uBbf1qmObSH5E/hHzIFvyikRu51F1trXnepspUoJT
+         yJb+hOYC81u7xYkr5eNzAZLLA+d4HPbjlfbNNESBDYuh3LfnihT8i/S/Y+eKIKDbhtf5
+         g+8hsfPQ4gdjGurrJAWTspoUIPw6hcid2lOjQrmG2GInWQShCaHzXk5au3RUCmm3Vhkn
+         nLzPCWHkqPkNZ7ynuGU6wD1Z5/aCfuMQqBCpHZoqVm/nCep7x6pcGU5pO9vjOhn0wqCk
+         h109089zTIRx6o9hh4CFKQTfgg+4C8DM2iBnUaa1laUKDZJW/v2ajkSyJyM99n8/AEKs
+         znGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EEFnIURrP2vwLaJ5HTfs71djy1e9bipR/GQhDMVx0Ic=;
-        b=c2pYkYWOA8pnEB45TL5rhghYQPeyD2ynvaqfbOjQ1o3YQmfIYIwrwvlJG/65jm80iF
-         tehpUZv8J3LXYzDsFakvFMquRDXCEScFfiuNbTFHR10liap1RARjLPOhot8AQHXZ+pKz
-         nOVthpOG6bqOtikxLjawg4LuaJip/R0nZXjny9ToySdMF037v2LS8Gt0eACPqkIUEqG2
-         oKftEZLlVbHuZnScG6urddBM9vhMzrCOWUo/6CyrK+gfMv8jx+UFbESC9Zz67ewMK7jo
-         Eir7E4vKF1tmrVFe8AEWmVfrgONlmVqyYor82Wh3y0TnjCrLaiONLXraHMxbyn8vEwUD
-         m1GA==
-X-Gm-Message-State: AOAM531N1zOffP/XnkLUbFHLzW22bEo56fbpX5MDrCRQZeWo/bOWs8hu
-        PUB6BLl/dA3O419P2W2YzHd7kg9lpYkv9Z4vQRqDHw8xIZ6mpx3BE0V2lLDPMvCDBA3TRwrwSSp
-        ovxefDZkPhqTIHnLH/NOEQV7LB/d8uzO18oTvWCjk
-X-Received: by 2002:a05:6e02:e53:: with SMTP id l19mr2910861ilk.108.1630680165299;
-        Fri, 03 Sep 2021 07:42:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw9AT6fUQTezOFBvhyEPkIypPYE9orVd8STwsCxlacI9c6iwGMMi7S2j+q9xU7COfmaPZaiMz+DVo3Ee2EyNoY=
-X-Received: by 2002:a05:6e02:e53:: with SMTP id l19mr2910849ilk.108.1630680165078;
- Fri, 03 Sep 2021 07:42:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iNqobfro7OKzCHlE+ueste6F4lAQYDNz3YZQNe0s7dU=;
+        b=J0SNoTA5Tk/u+3Un9P19hjclpQneQyKEBRD93Hohql80OBHdh/wjgzEfFPqJq/khs0
+         t8OjhfUJS17/jExioDb8f+Qg/0RwcX8gIXmJyUcqwqptuB51QnkNf20sbqsivnOq9Cu3
+         Tr1z0cT5g0AbMatp45JVicZiokl9jAyYmxgkzY4vkYxpbijhWYNQxSqW+H7cdZ3u1lzY
+         r3FCxlWZa+8huGgUYfu79YpWgMatlBgpZ8tnnIStITwtkHhWRFey/5OQGR58DdEo2yzf
+         Fdj0Al1+wX0y/rOjL8zqPabVu/IPw1dyrg5xZQ5zA8Zm1j9v7PFA3r8KZ+rjYIl1NIk3
+         MWdg==
+X-Gm-Message-State: AOAM530nyFx9OOqs/2x3h4uzG9D4SBcZKaEYscCkgm4hCrmsYrA5EDEO
+        etBJ42fFj4WkNdpceJXf+lpKAD9LgbeDcQ==
+X-Google-Smtp-Source: ABdhPJy9LfCNoBvM62pq4as9H3XZW5V4z2XdwFa4/LA49+UUyWD8Gc9+AHU04fT21rTFWQ1hQAQ3mA==
+X-Received: by 2002:a05:651c:54c:: with SMTP id q12mr3261368ljp.369.1630680363432;
+        Fri, 03 Sep 2021 07:46:03 -0700 (PDT)
+Received: from kari-VirtualBox (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
+        by smtp.gmail.com with ESMTPSA id f20sm644300ljc.81.2021.09.03.07.46.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 07:46:02 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 17:46:01 +0300
+From:   Kari Argillander <kari.argillander@gmail.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        ntfs3@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] fs/ntfs3: Remove redundant initialization of
+ variable err
+Message-ID: <20210903144601.jrqsjeaetxm3bcr3@kari-VirtualBox>
+References: <20210903132458.14342-1-colin.king@canonical.com>
 MIME-Version: 1.0
-References: <20210902152228.665959-1-vgoyal@redhat.com> <YTDyE9wVQQBxS77r@redhat.com>
- <CAHc6FU4ytU5eo4bmJcL6MW+qJZAtYTX0=wTZnv4myhDBv-qZHQ@mail.gmail.com> <CAHc6FU5quZWQtZ3fRfM_ZseUsweEbJA0aAkZvQEF5u9MJhrqdQ@mail.gmail.com>
-In-Reply-To: <CAHc6FU5quZWQtZ3fRfM_ZseUsweEbJA0aAkZvQEF5u9MJhrqdQ@mail.gmail.com>
-From:   Bruce Fields <bfields@redhat.com>
-Date:   Fri, 3 Sep 2021 10:42:34 -0400
-Message-ID: <CAPL3RVH9MDoDAdiZ-nm3a4BgmRyZJUc_PV_MpsEWiuh6QPi+pA@mail.gmail.com>
-Subject: Re: [PATCH 3/1] xfstests: generic/062: Do not run on newer kernels
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, fstests <fstests@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, virtio-fs@redhat.com,
-        Daniel Walsh <dwalsh@redhat.com>,
-        David Gilbert <dgilbert@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Casey Schaufler <casey.schaufler@intel.com>,
-        LSM <linux-security-module@vger.kernel.org>,
-        selinux@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        stephen.smalley.work@gmail.com, Dave Chinner <david@fromorbit.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903132458.14342-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Well, we could also look at supporting trusted.* xattrs over NFS.  I
-don't know much about them, but it looks like it wouldn't be a lot of
-work to specify, especially now that we've already got user xattrs?
-We'd just write a new internet draft that refers to the existing
-user.* xattr draft for most of the details.
+On Fri, Sep 03, 2021 at 02:24:58PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable err is being initialized with a value that is never read, it
+> is being updated later on. The assignment is redundant and can be removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
---b.
+Reviewed-by: Kari Argillander <kari.argillander@gmail.com>
 
-On Fri, Sep 3, 2021 at 2:56 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
->
-> On Fri, Sep 3, 2021 at 8:31 AM Andreas Gruenbacher <agruenba@redhat.com> wrote:
-> > On Thu, Sep 2, 2021 at 5:47 PM Vivek Goyal <vgoyal@redhat.com> wrote:
-> > > xfstests: generic/062: Do not run on newer kernels
-> > >
-> > > This test has been written with assumption that setting user.* xattrs will
-> > > fail on symlink and special files. When newer kernels support setting
-> > > user.* xattrs on symlink and special files, this test starts failing.
-> >
-> > It's actually a good thing that this test case triggers for the kernel
-> > change you're proposing; that change should never be merged. The
-> > user.* namespace is meant for data with the same access permissions as
-> > the file data, and it has been for many years. We may have
-> > applications that assume the existing behavior. In addition, this
-> > change would create backwards compatibility problems for things like
-> > backups.
-> >
-> > I'm not convinced that what you're actually proposing (mapping
-> > security.selinux to a different attribute name) actually makes sense,
-> > but that's a question for the selinux folks to decide. Mapping it to a
-> > user.* attribute is definitely wrong though. The modified behavior
-> > would affect anybody, not only users of selinux and/or virtiofs. If
-> > mapping attribute names is actually the right approach, then you need
-> > to look at trusted.* xattrs, which exist specifically for this kind of
-> > purpose. You've noted that trusted.* xattrs aren't supported over nfs.
-> > That's unfortunate, but not an acceptable excuse for messing up user.*
-> > xattrs.
->
-> Another possibility would be to make selinux use a different
-> security.* attribute for this nested selinux case. That way, the
-> "host" selinux would retain some control over the labels the "guest"
-> uses.
->
-> Thanks,
-> Andreas
->
+Please note Konstantin that you should not yet, put this to master. You
+can collect these already, but if ntfs3 get merged to 5.15 we will start
+start master again later. You could but these in example devel if you
+want.
 
+Then we also need branch just for bug fixes. Example this will have to
+go to 5.16 because it is not bug fix. Our master is our for-next branch
+so this will go there when time comes.
+
+> ---
+>  fs/ntfs3/index.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/ntfs3/index.c b/fs/ntfs3/index.c
+> index 0daca9adc54c..b1175542d854 100644
+> --- a/fs/ntfs3/index.c
+> +++ b/fs/ntfs3/index.c
+> @@ -1401,7 +1401,7 @@ int indx_find_raw(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  static int indx_create_allocate(struct ntfs_index *indx, struct ntfs_inode *ni,
+>  				CLST *vbn)
+>  {
+> -	int err = -ENOMEM;
+> +	int err;
+>  	struct ntfs_sb_info *sbi = ni->mi.sbi;
+>  	struct ATTRIB *bitmap;
+>  	struct ATTRIB *alloc;
+> -- 
+> 2.32.0
+> 
