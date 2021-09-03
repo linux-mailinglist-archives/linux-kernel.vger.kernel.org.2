@@ -2,87 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF3B4006C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627F94006C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347797AbhICUjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 16:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39646 "EHLO
+        id S238745AbhICUm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 16:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbhICUjo (ORCPT
+        with ESMTP id S231956AbhICUm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 16:39:44 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C067C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 13:38:44 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id 8so220302pga.7
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 13:38:44 -0700 (PDT)
+        Fri, 3 Sep 2021 16:42:27 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029AAC061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 13:41:27 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id n4so232694plh.9
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 13:41:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=O852osv+CkIRpznE2pAKwN7fpf+eNU4GSL2BaYJ+Biw=;
-        b=q7teKd3QUB9rL2WzVZQeTIIZXAUgTHS0F/pFTHuxSFmf1F0lfiGGIFvBAG9B9MPjE8
-         lhwq7ah+Ck1TdrmD21OAYnJSIuBUqlZbzF6N9ljkg2KM+ZFNH/Pm+CCxp7IHzRqSsjhu
-         xHBorM6GwOK8KCy2EF5f8DA9XocNnrh4I/VOO64i/BYps/y54CGMHR697dEBalYE+irc
-         W7HdBoLyUeNmLp0rZ8rBVlYMjTIWRhMey2eGW2wp9zEwR+x6GhnPJzn3S6rb7kkKxVOr
-         jlmnCK7yOBUaeciQzQIoE+P9ha7pHVZfyntC9jzq3g3KuVM33QvbvvHYT+xuxaG96rnW
-         y1lg==
+        bh=dkiYCFVjwmJybf5JwViF3SzBrvupFdjsBCuydcFWyT8=;
+        b=vgK43H1zn6Xvy5dwhpNC/VIfid81C34dA7jP6x0dx4VWZVYxTAsw1irYJkp+WF/sK8
+         yq3JZRiFW3C+LGeziU41xfq1Cwd2PAI/npDO62tX1B2ptn9NEsMw9qO7HbWrddX6e8Ok
+         x/9FisOn8rKwPKPe3xmsAoJ2LCRe3KFJ1fV9Fuip3SpssZ5abF9FbNzzIl3QIbg688BI
+         CdQ3u6MOTnqIENG/Oe8AELp8NvkyNl4ZiFQVH9dyK3XzhDm+ljnZZmch0wQxspQAPxjz
+         dCqsNDUYxpqvh0/bG1Y6Y0P3r+wCyRmzGibchEAkUkTcZK3Ocw6G8vDz5SlEoeSZenBZ
+         YFHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=O852osv+CkIRpznE2pAKwN7fpf+eNU4GSL2BaYJ+Biw=;
-        b=FfnydZQmYDKWyGsctG0NP0HLe7nzwbSdH79/8buFZJ1YKeckpWtvnEuOmWoNqDjtxX
-         VuL54E6f/y7wruEvudqWjOGQn76N+5TvgA47SXz/K1ntgMQk6RvQCe57QdVSq2Ja24/4
-         LgVd/A893mkQEzoaaRwXpIrdfeBotBKi6jipBsgmWU5HhUPpMykUG0O1QkGABKhe+8cu
-         g/c/2vDNBLK0IqOOZVcdauUi+TeY4xT7bYzthBZ6fjDbN8z2ofyPoj8rs89c9amwtr3g
-         kJD1XM/qF0SgcR4BneAts+ZaKFci2H6oniRuoubotJbr61PLjrvAGsxFwx9blB+YVdxB
-         za6Q==
-X-Gm-Message-State: AOAM533dhjDZeWOn4d68gqJI8HX8B1P9zwlwHfp7vnTc407cj6a8Vc5t
-        kaHkWEHUo4ipUnwtStY5HB0jQfRVtdzPrHFp
-X-Google-Smtp-Source: ABdhPJwiX6QjkoPpWMNIi5Pg8CSYOKKS5d7MUZVleDM0HlJbHkV0ApCQYIBTcI82fGDoyutTPgotQQ==
-X-Received: by 2002:a05:6a00:1789:b0:3f9:5ce1:9677 with SMTP id s9-20020a056a00178900b003f95ce19677mr651897pfg.50.1630701523970;
-        Fri, 03 Sep 2021 13:38:43 -0700 (PDT)
+        bh=dkiYCFVjwmJybf5JwViF3SzBrvupFdjsBCuydcFWyT8=;
+        b=SLCNW6PZRW5grpEVzdazWp3XaiFlhseDwZ6lKx2RWzdBoyMsdU6BEYChg/YS40Goyc
+         GZ5QEZM3bmKBGFPeP14yQsxxMCiwkbjH5/6itUVWpKCZmyYSwRhTTUwH8SqiIUnFrfv9
+         RJKVzwj53g2t9jf+tcaH6lz8Thb7bZYJ9mc1MA3HnnXoS+JV+V5cwQxSAlDYnABE96Lv
+         pjnc8/PPZe+ZGsFKxi67vQEpgfhRMDha+Bg89X+PCso6Ytn5f1XMqUJyDcAwzdKZB9bZ
+         hwCm9SopyWcDNZJyE+d87fxETasPB3tk6w7Ujzl6ivgu4wuofreTJDwlgQz4BvbsGE69
+         gBzA==
+X-Gm-Message-State: AOAM5305tnf9FLaJk3PMxHT256bYtF22Em+9BWiXYhTFxSUiosh81kjs
+        SKLompIaOXdZFJDxm6JRNCJzdA==
+X-Google-Smtp-Source: ABdhPJzOOBaBftmLG3TgPcPUZNEjVQbPQAW4pR5s9MLa9p52tQlyZwiCWH7JEtNWCFCR3DMPX5Aypg==
+X-Received: by 2002:a17:90b:116:: with SMTP id p22mr687216pjz.67.1630701686473;
+        Fri, 03 Sep 2021 13:41:26 -0700 (PDT)
 Received: from ?IPv6:2600:380:7567:4da9:ea68:953f:1224:2896? ([2600:380:7567:4da9:ea68:953f:1224:2896])
-        by smtp.gmail.com with ESMTPSA id d200sm232014pfd.127.2021.09.03.13.38.42
+        by smtp.gmail.com with ESMTPSA id b5sm247811pfr.26.2021.09.03.13.41.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 13:38:43 -0700 (PDT)
-Subject: Re: [syzbot] general protection fault in __io_arm_poll_handler
-To:     syzbot <syzbot+ba74b85fa15fd7a96437@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <00000000000010f70d05cb1d2407@google.com>
+        Fri, 03 Sep 2021 13:41:25 -0700 (PDT)
+Subject: Re: Bug: d0e936adbd22 crashes at boot
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, linux-pm@vger.kernel.org
+References: <942f4041-e4e7-1b08-3301-008ab37ff5b8@kernel.dk>
+ <c56cde110210bec6537fe69b495334c6c70c814e.camel@linux.intel.com>
+ <3ac87893-55ba-f2d4-bb1e-382868f12d4c@kernel.dk>
+ <7f115f0476618d34b24ddec772acbbd7c0c4a572.camel@linux.intel.com>
+ <767fe00f-bf31-1eb0-09cc-1be91c633bb4@kernel.dk>
+ <d6bf08cbfd9f29ddb8cf29f522d68efc5c676624.camel@linux.intel.com>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2b424f91-0382-d3ab-26c3-52cf03dab999@kernel.dk>
-Date:   Fri, 3 Sep 2021 14:38:41 -0600
+Message-ID: <903f2e71-983f-39b8-dd0b-d697616ab63e@kernel.dk>
+Date:   Fri, 3 Sep 2021 14:41:23 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <00000000000010f70d05cb1d2407@google.com>
+In-Reply-To: <d6bf08cbfd9f29ddb8cf29f522d68efc5c676624.camel@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/21 2:28 PM, syzbot wrote:
-> Hello,
+On 9/3/21 12:00 PM, Srinivas Pandruvada wrote:
+> Hi Axobe,
 > 
-> syzbot found the following issue on:
+> On Fri, 2021-09-03 at 09:00 -0600, Jens Axboe wrote:
+>> On 9/3/21 8:38 AM, Srinivas Pandruvada wrote:
+>>> On Fri, 2021-09-03 at 08:15 -0600, Jens Axboe wrote:
+>>>> On 9/3/21 8:13 AM, Srinivas Pandruvada wrote:
+>>>>> Hi Axboe,
+>>>>>
+>>>>> Thanks for reporting.
+>>>>> On Fri, 2021-09-03 at 07:36 -0600, Jens Axboe wrote:
+>>>>>> Hi,
+>>>>>>
+>>>>>> Booting Linus's tree causes a crash on my laptop, an x1 gen9.
+>>>>>> This
+>>>>>> was
+>>>>>> a bit
+>>>>>> difficult to pin down as it crashes before the display is up,
+>>>>>> but I
+>>>>>> managed
+>>>>>> to narrow it down to:
+>>>>>>
+>>>>>> commit d0e936adbd2250cb03f2e840c6651d18edc22ace
+>>>>>> Author: Srinivas Pandruvada < 
+>>>>>> srinivas.pandruvada@linux.intel.com>
+>>>>>> Date:   Thu Aug 19 19:40:06 2021 -0700
+>>>>>>
+>>>>>>     cpufreq: intel_pstate: Process HWP Guaranteed change
+>>>>>> notification
+>>>>>>
+>>>>>> which crashes with a NULL pointer deref in
+>>>>>> notify_hwp_interrupt() -
+>>>>>>>
+>>>>>> queue_delayed_work_on().
+>>>>>>
+>>>>>> Reverting this change makes the laptop boot fine again.
+>>>>>>
+>>>>> Does this change fixes your issue?
+>>>>
+>>>> I would assume so, as it's crashing on cpudata == NULL :-)
+>>>>
+>>>> But why is it NULL? Happy to test patches, but the below doesn't
+>>>> look
+>>>> like
+>>>> a real fix and more of a work-around.
+>>>
 > 
-> HEAD commit:    a9c9a6f741cd Merge tag 'scsi-misc' of git://git.kernel.org..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14e6c8cd300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c84ed2c3f57ace
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ba74b85fa15fd7a96437
-> compiler:       Debian clang version 11.0.1-2, GNU ld (GNU Binutils for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=137a45a3300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=105ba169300000
+> Please try the attached.
 
-#syz test git://git.kernel.dk/linux-block for-5.15/io_uring
+I'll give it a test spin right now. Please do add a Reported-by tag,
+though. That's always prudent.
 
 -- 
 Jens Axboe
