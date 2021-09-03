@@ -2,70 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76F83FFFCC
+	by mail.lfdr.de (Postfix) with ESMTP id 361AC3FFFCB
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349397AbhICMdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 08:33:36 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49251 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1349356AbhICMdd (ORCPT
+        id S1349390AbhICMde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 08:33:34 -0400
+Received: from mx13.kaspersky-labs.com ([91.103.66.164]:42728 "EHLO
+        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349351AbhICMdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Sep 2021 08:33:33 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 183CWLYD024847
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 3 Sep 2021 08:32:22 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id B198215C33F9; Fri,  3 Sep 2021 08:32:21 -0400 (EDT)
-Date:   Fri, 3 Sep 2021 08:32:21 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Cc:     Jan Kara <jack@suse.cz>, kernel test robot <oliver.sang@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com
-Subject: Re: [LKP] [ext4] 05c2c00f37: aim7.jobs-per-min -11.8% regression
-Message-ID: <YTIV1SozOGwT/DQw@mit.edu>
-References: <20210227120804.GB22871@xsang-OptiPlex-9020>
- <a8947cee-11f5-8d59-a3ff-1c516276592e@linux.intel.com>
- <20210520095119.GA18952@quack2.suse.cz>
- <e9f776c4-1ade-42a6-54c4-7fe3442e2392@linux.intel.com>
- <20210521092730.GE18952@quack2.suse.cz>
- <YKfi6Pv+qwduKxuT@mit.edu>
- <20210525092205.GA4112@quack2.suse.cz>
- <20210531165746.GA2610@quack2.suse.cz>
- <20210603161004.GL23647@quack2.suse.cz>
- <8ac28fce-0cfb-cc4d-1a3d-2f104ff46767@linux.intel.com>
+Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay13.kaspersky-labs.com (Postfix) with ESMTP id B0732521538;
+        Fri,  3 Sep 2021 15:32:31 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1630672351;
+        bh=w6b3hBfgKzuSLtlGwqX0lECy4nwzwgbD4r0bxYsd3g4=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=wrnsqzYrQY2z4MpMKZVH3gnDUIyR3KPYm/TnmiWZOr6JvN0bDP0iLlE4UXIOdmzvT
+         jrXKStiOzoUz/KWtOlYH+9Mo7AHRlG9Wy1EUADw8ivFaLTL0P/IlsQ6IyX/Z1lrbcr
+         4HqI3eG8EGlItmAAiQ2DLzZIT6ITg4Wo8Cj7/DEmNyyxzkgOkJS8pCA/BVQbPFN+i8
+         bbk8yHktMeKjtZ9sVLy46AmTqJ518kdOg1+HfslznFIjjhxMmmx/Z8GQMHiw6lwqGv
+         z1CK6JPrVu847cdx327kJFQzhhEkkqscKn/SM3gKnI73LDcJfWmraMqETAhZ5w1qnN
+         raIEg89hQPcMw==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id E630A521514;
+        Fri,  3 Sep 2021 15:32:30 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.68.128) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 3
+ Sep 2021 15:32:30 +0300
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <stsp2@yandex.ru>, <oxffffaa@gmail.com>
+Subject: [PATCH net-next v5 2/6] virtio/vsock: add 'VIRTIO_VSOCK_SEQ_EOR' bit.
+Date:   Fri, 3 Sep 2021 15:32:23 +0300
+Message-ID: <20210903123225.3273425-1-arseny.krasnov@kaspersky.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210903123016.3272800-1-arseny.krasnov@kaspersky.com>
+References: <20210903123016.3272800-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8ac28fce-0cfb-cc4d-1a3d-2f104ff46767@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.68.128]
+X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 09/03/2021 12:23:31
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 165956 [Sep 03 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 461 461 c95454ca24f64484bdf56c7842a96dd24416624e
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: arseniy-pc.avp.ru:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 09/03/2021 12:25:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 03.09.2021 6:49:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/09/03 11:02:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/09/03 06:49:00 #17152626
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 01:28:25PM +0800, Xing Zhengjun wrote:
-> Hi Jan,
-> 
->      Do you have time to look at this? I re-test it in v5.13 and v5.14, the
-> regression still existed. Thanks.
+This bit is used to handle POSIX MSG_EOR flag passed from
+userspace in 'send*()' system calls. It marks end of each
+record and is visible to receiver using 'recvmsg()' system
+call.
 
-> > So as we chatted on today's call probably the best option is to leave the
-> > code as is for now and instead work on moving away from orphan list
-> > altogether. I'll revive my patches to do that.
+Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+---
+ include/uapi/linux/virtio_vsock.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-The orphan_file feature has landed in for the 5.15 merge window.  When
-enabled, it provides multiple blocks to store the set of orphaned
-inodes, which provides parallelism for parallel truncate and unlink
-operations.
-
-It requires a development version of e2fsprogs to use, and so the
-zero-day bot won't be able to test it for a little while.
-
-Cheers,
-
-						- Ted
-
+diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
+index 8485b004a5f8..64738838bee5 100644
+--- a/include/uapi/linux/virtio_vsock.h
++++ b/include/uapi/linux/virtio_vsock.h
+@@ -98,6 +98,7 @@ enum virtio_vsock_shutdown {
+ /* VIRTIO_VSOCK_OP_RW flags values */
+ enum virtio_vsock_rw {
+ 	VIRTIO_VSOCK_SEQ_EOM = 1,
++	VIRTIO_VSOCK_SEQ_EOR = 2,
+ };
+ 
+ #endif /* _UAPI_LINUX_VIRTIO_VSOCK_H */
+-- 
+2.25.1
 
