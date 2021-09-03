@@ -2,134 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07EF73FFD2B
+	by mail.lfdr.de (Postfix) with ESMTP id 5093E3FFD2C
 	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 11:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348848AbhICJcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1348855AbhICJcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 05:32:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:39636 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1348834AbhICJcJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 3 Sep 2021 05:32:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:25460 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348796AbhICJcF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 05:32:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630661465;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=N5+N+U9+Ro03PZVc42PFsHKY2Zftj9SLOC7/mSkA8LA=;
-        b=ZewKSnNW3vxallX0UlbYw+cnbVgvyLPLHM4XCnOkrS3chzVcnmKIwv/J66PmRwsTAyjUv2
-        TvxA5Gijn17lfezTgkcnbmCnx4ifHKMLeRE+cpNswFLieGHYWstVW2FkSufV5BgDi7yQOQ
-        psQi9qDLTtwurL0qLQIXGmif73AzNVk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-13-7M01hx53OxSI-bvT6v_C0w-1; Fri, 03 Sep 2021 05:31:04 -0400
-X-MC-Unique: 7M01hx53OxSI-bvT6v_C0w-1
-Received: by mail-wm1-f69.google.com with SMTP id m16-20020a7bca50000000b002ee5287d4bfso1751320wml.7
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 02:31:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=N5+N+U9+Ro03PZVc42PFsHKY2Zftj9SLOC7/mSkA8LA=;
-        b=JtrnpBFcr44W9uHrdZ33ncGtgxqx+KikqqsN5AFsChtzyo7WstVBwgLrddTxEqcNUz
-         J7gCDHfz9U715gsDd5DMJg0z3azvCKHIMKqwLySYkbNNduMJwyXKws+36PcAU1w/niTh
-         xMtf+NXJs5sYbkcqQ3Vb9+tS4Xm14luj0MQHUtLN4v55LCmHm9cU+IT+93tcH3Uh0eA5
-         8+LQ5QKzPM1vPf4eNs6hb3fwon4/g2OTBSpiUnNEOnVsg7uA5oLNhSB/tEADStaq+Y3l
-         FsNN/0PJhojv5mBtKeUQ762Dwuf1movZ4m1/ZtL9qu2L7Bbo6/lIFmbZ3cwOaPVatACI
-         OBmQ==
-X-Gm-Message-State: AOAM530rNOW2CjuvCAePJ224PxyL9pcVfMZCKa/7SVaYrbq4sZ93Twdh
-        UVtLWEVgnBUy3OPUDl2JApieYIOOYyMQ/XdW/qDkw04vwRbEZKnwZGgG5Fph+ojq28I228kJ56f
-        6GC6f4weuaobDQNRL+Q/6lBMT
-X-Received: by 2002:adf:c54f:: with SMTP id s15mr2953082wrf.222.1630661462937;
-        Fri, 03 Sep 2021 02:31:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw5o7mCUSKHnT4zBk3DaC9uUSt8QVVTDjXAr1RDTVgACfhSL4WqgOPMh3i3zQ432rXMqQciww==
-X-Received: by 2002:adf:c54f:: with SMTP id s15mr2953059wrf.222.1630661462706;
-        Fri, 03 Sep 2021 02:31:02 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23e05.dip0.t-ipconnect.de. [79.242.62.5])
-        by smtp.gmail.com with ESMTPSA id n18sm3653838wmc.22.2021.09.03.02.31.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 02:31:02 -0700 (PDT)
-Subject: Re: [RFC][PATCH] mm/page_isolation: tracing: trace all
- test_pages_isolated failures
-To:     "George G. Davis" <george_davis@mentor.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        "George G. Davis" <davis.george@siemens.com>
-References: <20210823202823.13765-1-george_davis@mentor.com>
- <4f680b5a-9076-3ba4-caea-bdd6eafeb899@redhat.com>
- <20210902222152.GA25844@mam-gdavis-dt>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <8dca5a34-2c5c-bc49-b2ad-f3e5e0fdbba3@redhat.com>
-Date:   Fri, 3 Sep 2021 11:31:01 +0200
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D1E5B1FB;
+        Fri,  3 Sep 2021 02:31:09 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B18ED3F694;
+        Fri,  3 Sep 2021 02:31:08 -0700 (PDT)
+Subject: Re: [PATCH] drm/panfrost: Calculate lock region size correctly
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210902140038.221437-1-steven.price@arm.com>
+ <20210903105122.76471f98@collabora.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <3ba07c72-2ec8-1b2d-e089-3d8b0eb25d73@arm.com>
+Date:   Fri, 3 Sep 2021 10:31:07 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210902222152.GA25844@mam-gdavis-dt>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20210903105122.76471f98@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03.09.21 00:21, George G. Davis wrote:
-> On Tue, Aug 31, 2021 at 04:53:31PM +0200, David Hildenbrand wrote:
->> On 23.08.21 22:28, George G. Davis wrote:
->>> From: "George G. Davis" <davis.george@siemens.com>
->>>
->>> Some test_pages_isolated failure conditions don't include trace points.
->>> For debugging issues caused by "pinned" pages, make sure to trace all
->>> calls whether they succeed or fail. In this case, a failure case did not
->>> result in a trace point. So add the missing failure case in
->>> test_pages_isolated traces.
+On 03/09/2021 09:51, Boris Brezillon wrote:
+> On Thu,  2 Sep 2021 15:00:38 +0100
+> Steven Price <steven.price@arm.com> wrote:
+> 
+>> It turns out that when locking a region, the region must be a naturally
+>> aligned power of 2. The upshot of this is that if the desired region
+>> crosses a 'large boundary' the region size must be increased
+>> significantly to ensure that the locked region completely covers the
+>> desired region. Previous calculations (including in kbase for the
+>> proprietary driver) failed to take this into account.
 >>
->> In which setups did you actually run into these cases?
+>> Since it's known that the lock region must be naturally aligned we can
+>> compute the required size by looking at the highest bit position which
+>> changes between the start/end of the lock region (subtracting 1 from the
+>> end because the end address is exclusive). The start address is then
+>> aligned based on the size (this is technically unnecessary as the
+>> hardware will ignore these bits, but the spec advises to do this "to
+>> avoid confusion").
+>>
+>> Signed-off-by: Steven Price <steven.price@arm.com>
+>> ---
+>> See previous discussion[1] for more details. This bug also existed in
+>> the 'kbase' driver, so it's unlikely to actually hit very often.
+>>
+>> This patch is based on drm-misc-next-fixes as it builds on top of
+>> Alyssa's changes to lock_region.
+>>
+>> [1] https://lore.kernel.org/dri-devel/6fe675c4-d22b-22da-ba3c-f6d33419b9ed@arm.com/
+>>
+>>  drivers/gpu/drm/panfrost/panfrost_mmu.c | 33 +++++++++++++++++++------
+>>  1 file changed, 26 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+>> index dfe5f1d29763..afec15bb3db5 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+>> @@ -58,17 +58,36 @@ static int write_cmd(struct panfrost_device *pfdev, u32 as_nr, u32 cmd)
+>>  }
+>>  
+>>  static void lock_region(struct panfrost_device *pfdev, u32 as_nr,
+>> -			u64 iova, u64 size)
+>> +			u64 region_start, u64 size)
+>>  {
+>>  	u8 region_width;
+>> -	u64 region = iova & PAGE_MASK;
+>> +	u64 region;
+>> +	u64 region_size;
+>> +	u64 region_end = region_start + size;
+>>  
+>> -	/* The size is encoded as ceil(log2) minus(1), which may be calculated
+>> -	 * with fls. The size must be clamped to hardware bounds.
+>> +	if (!size)
+>> +		return;
+>> +
+>> +	/*
+>> +	 * The locked region is a naturally aligned power of 2 block encoded as
+>> +	 * log2 minus(1).
+>> +	 * Calculate the desired start/end and look for the highest bit which
+>> +	 * differs. The smallest naturally aligned block must include this bit
+>> +	 * change the desired region starts with this bit (and subsequent bits)
+>> +	 * zeroed and ends with the bit (and subsequent bits) set to one.
+>> +	 *
 > 
-> Good question!
+> Nit: you can drop the empty comment line.
+
+Whoops - I reordered this comment and didn't spot the blank line getting
+left.
+
+>>  	 */
+>> -	size = max_t(u64, size, AS_LOCK_REGION_MIN_SIZE);
+>> -	region_width = fls64(size - 1) - 1;
+>> -	region |= region_width;
+>> +	region_size = region_start ^ (region_end - 1);
 > 
-> Although I'm not 100% certain that this specific failure condition has
-> occurred in my recent testing, I'm able to reproduce cma_alloc -EBUSY
-> faiure conditions when testing latest/recent master on arm64 based
-> Renesas R-Car Starter Kit [1] using defconfig with
-> CONFIG_CMA_SIZE_MBYTES=384 while running the following test case:
+> Hm, is region_size really encoding the size of the region to lock? I
+> mean, the logic seems correct but I wonder if it wouldn't be better to
+> drop the region_size variable and inline
+> 'region_start ^ (region_end - 1)' in the region_width calculation to
+> avoid confusion.
 
-Okay, I think you are not hitting the path you touched in this patch, 
-because I assume it will never ever really trigger ...
+Yeah I wasn't happy about the variable name either, but I couldn't think
+of a better one. Inlining it into the following line nicely avoids the
+problem ;)
 
+> Looks good otherwise.
 > 
-> trace-cmd record -N 192.168.1.87:12345 -b 4096 -e cma -e page_isolation -e compaction -e migrate &
-> sleep 10
-> while true; do a=$(( ( RANDOM % 10000 ) + 1 )); echo $a > /sys/kernel/debug/cma/cma-reserved/alloc && (usleep $a; echo $a > /sys/kernel/debug/cma/cma-reserved/free); done &
-> while true; do b=$(( ( RANDOM % 10000 ) + 1 )); echo $b > /sys/kernel/debug/cma/cma-reserved/alloc && (usleep $b; echo $b > /sys/kernel/debug/cma/cma-reserved/free); done &
-> while true; do c=$(( ( RANDOM % 10000 ) + 1 )); echo $c > /sys/kernel/debug/cma/cma-reserved/alloc && (usleep $c; echo $c > /sys/kernel/debug/cma/cma-reserved/free); done &
-> while true; do d=$(( ( RANDOM % 10000 ) + 1 )); echo $d > /sys/kernel/debug/cma/cma-reserved/alloc && (usleep $d; echo $d > /sys/kernel/debug/cma/cma-reserved/free); done &
-> while true; do e=$(( ( RANDOM % 10000 ) + 1 )); echo $e > /sys/kernel/debug/cma/cma-reserved/alloc && (usleep $e; echo $e > /sys/kernel/debug/cma/cma-reserved/free); done &
-> /selftests/vm/transhuge-stress &
+> Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+
+Thanks, I'll post a v2 in case anyone else has other comments.
+
+Steve
+
+>> +	region_width = max(fls64(region_size),
+>> +			   const_ilog2(AS_LOCK_REGION_MIN_SIZE)) - 1;
+>> +
+>> +	/*
+>> +	 * Mask off the low bits of region_start (which would be ignored by
+>> +	 * the hardware anyway)
+>> +	 */
+>> +	region_start &= GENMASK_ULL(63, region_width);
+>> +
+>> +	region = region_width | region_start;
+>>  
+>>  	/* Lock the region that needs to be updated */
+>>  	mmu_write(pfdev, AS_LOCKADDR_LO(as_nr), region & 0xFFFFFFFFUL);
 > 
-> The cma_alloc -EBUSY failures are caused by THP compound pages allocated
-> from the CMA region where migration does not seem to work for compound
-> THP pages. The work around is to disable CONFIG_TRANSPARENT_HUGEPAGE
-> since it seems incompatible with the intended use of the CMA region.
-
-
-Oh, that sounds broken, THP should not block CMA allocation or page 
-migration for other purposes.
-
-a) Are these temporary or permanent allocation errors? If they are 
-permanent, they will also break memory unplug.
-
-b) Did you reproduce on other architectures as well?
-
-c) Did it use to work but is now broken? IOW, did you try bisecting?
-
--- 
-Thanks,
-
-David / dhildenb
 
