@@ -2,97 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1873F400105
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B549940010A
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239891AbhICOKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234108AbhICOJ7 (ORCPT
+        id S1349196AbhICOKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:10:24 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37946 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234108AbhICOKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:09:59 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB82FC061760
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 07:08:59 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id q3so8149656edt.5
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 07:08:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pLYrjeZgUDIctTaJL7OpU9VI62FrytQ5AqIStACCfm4=;
-        b=JCYi/P7OmIJld4751FVgpDj4P8gZPtf8wdoTI1uhkZqMS/P3Ma+HqKela7mJ1DYOSY
-         MCnv5p/GHzMcs+5kezvYFkb4RAmKVcDBpU5LqhPcq3Qk+N5gyHz0QO9ajw7/8gypIB0O
-         CxZhJpWIjEry+q5lYTaqaJN8a4kJbDs0OjyIL07sPC8c5vejJzGIrzJFW6dOqOvtQHWs
-         XzcuN+3NKmxnleEI1QZyVP+DDRLYWxBy0Tk8uUc++TitVzaLPslJ1vzN3XriSPR2u66b
-         VQEUOMKF/tGBz44/jMNY6LwKcFnKvC+wtaoP1skqpfdj/voSh+XKydxGHtOQzqScctWl
-         grYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pLYrjeZgUDIctTaJL7OpU9VI62FrytQ5AqIStACCfm4=;
-        b=DT658tKIeQpzk5g3WApax8eEYgtAlAJ/uYTgXBVbI4EnoacwOw94N16xtpbB/SCTk8
-         2ngov7uW8HRQeOhT9FFgD/Zv94ZqO9s5kLwByvkEq4njqCh394+VmAtvSsu6Khl3W117
-         NzhFjEaXNKFg6f/m0cUMPcMZWefFPQ4BCkniksK+3O5RQ77mcFoD3cXPeAoNC0qI0pDz
-         n14kVWnu5j4Svtu6VioHd3kkUbUG9wAVZGzRyia/dCOBZUekaJZsGyDm9nHENRFLnyDz
-         FCRsQVp3JcCaSlQl0VBAGirdoc2eVZEft6ejIGcOtZ3HhmOlws/xEC4juH+mV926hn9S
-         YHTg==
-X-Gm-Message-State: AOAM533kv+IfmDXYlg9/YEncbDB+pqKpcfaGHp7S9VPCfpyTRbZqwUTW
-        SiGtxHeyR+Wv8Hzs+cgrlPEDyImmIM3bDloi8rMh
-X-Google-Smtp-Source: ABdhPJya8KPhv1kK2mrGoJlmdaCp8dyfIIWwx8ijfMBGM672W2xyF8JhviV8KK2qx6bDAK4GbDpiQMZlJ0AtWLHlmvA=
-X-Received: by 2002:a05:6402:cab:: with SMTP id cn11mr4262241edb.293.1630678138060;
- Fri, 03 Sep 2021 07:08:58 -0700 (PDT)
+        Fri, 3 Sep 2021 10:10:20 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 183E4Dqt045274;
+        Fri, 3 Sep 2021 10:08:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=T8qKkacEAjls3JdMrwNoLe22cMzRDNeMuYrdEDMdqP8=;
+ b=DkIabwNvwqy+OxJKJf55xcy4NMbljWWEkLkqQOSmwt/nhbgqanVH7qFN1S5f7/eW9mXe
+ cVbTVYK3r/nCkH/nRjEhP69stV+20Cd+GzQ1AB+C7VrS+XASxCTRoNHBbZlXLGipS2WA
+ U4qizChZb+XpyxGVSSWNf3Ic9rLloxlMkdZbunwBEmllP8vDPUDvdBId7iYX0rJsVUe1
+ gJ+PmLWuIOaUHAgJPPJF0PVX/vyKqHkjYB4TaaTpvZvjaSfyViczyi2ABfMFGs1waaJP
+ v+mYj+EUrhFU/8eh3Ov/7P5Ekg8Gx6fhQi/oqf/z4YUYrObfIniVKWNVd7nh2l1qQing HQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3aumn090tr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Sep 2021 10:08:58 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 183E51pJ048250;
+        Fri, 3 Sep 2021 10:08:58 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3aumn090ry-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Sep 2021 10:08:58 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 183E8G53000659;
+        Fri, 3 Sep 2021 14:08:55 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 3au6q7h9bu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Sep 2021 14:08:54 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 183E8pcB56295814
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 3 Sep 2021 14:08:51 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3C862A405C;
+        Fri,  3 Sep 2021 14:08:51 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 22B4AA406B;
+        Fri,  3 Sep 2021 14:08:50 +0000 (GMT)
+Received: from osiris (unknown [9.145.159.114])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Fri,  3 Sep 2021 14:08:50 +0000 (GMT)
+Date:   Fri, 3 Sep 2021 16:08:48 +0200
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     axboe@kernel.dk, gregkh@linuxfoundation.org,
+        chaitanya.kulkarni@wdc.com, atulgopinathan@gmail.com, hare@suse.de,
+        maximlevitsky@gmail.com, oakad@yahoo.com, ulf.hansson@linaro.org,
+        colin.king@canonical.com, shubhankarvk@gmail.com,
+        baijiaju1990@gmail.com, trix@redhat.com,
+        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
+        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        sth@linux.ibm.com, hoeppner@linux.ibm.com, gor@linux.ibm.com,
+        borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
+        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Subject: Re: [PATCH 7/9] s390/block/dcssblk: add error handling support for
+ add_disk()
+Message-ID: <YTIscKy+jg5L/TMh@osiris>
+References: <20210902174105.2418771-1-mcgrof@kernel.org>
+ <20210902174105.2418771-8-mcgrof@kernel.org>
 MIME-Version: 1.0
-References: <c6864908-d093-1705-76ce-94d6af85e092@linux.alibaba.com>
- <18f0171e-0cc8-6ae6-d04a-a69a2a3c1a39@linux.alibaba.com> <7f239a0e-7a09-3dc0-43ce-27c19c7a309d@linux.alibaba.com>
- <4c000115-4069-5277-ce82-946f2fdb790a@linux.alibaba.com> <CAHC9VhRBhCfX45V701rbGsvmOPQ4Nyp7dX2GA6NL8FxnA9akXg@mail.gmail.com>
- <a53753dc-0cce-4f9a-cb97-fc790d30a234@linux.alibaba.com> <CAHC9VhR2c=HYdWmz-At0+7RexUBjQHktv3ypHmFU2jD5gDc2Cw@mail.gmail.com>
- <a732f080-1d72-d1ee-4eea-5266b5ad1447@linux.alibaba.com>
-In-Reply-To: <a732f080-1d72-d1ee-4eea-5266b5ad1447@linux.alibaba.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 3 Sep 2021 10:08:47 -0400
-Message-ID: <CAHC9VhStVwMMZ9ppLe+StNObBz91Y=55QqFFG+4wKcOahE8scA@mail.gmail.com>
-Subject: Re: [PATCH] Revert "net: fix NULL pointer reference in cipso_v4_doi_free"
-To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902174105.2418771-8-mcgrof@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: evTghnCKdw3wnpHWQfjb73FGFO4Flkw_
+X-Proofpoint-ORIG-GUID: S1BIuadY5tzMuVpbTN3TLJm7CsQHP5RV
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-03_05:2021-09-03,2021-09-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 impostorscore=0
+ priorityscore=1501 mlxlogscore=999 malwarescore=0 suspectscore=0
+ phishscore=0 clxscore=1015 adultscore=0 lowpriorityscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109030088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 10:31 PM =E7=8E=8B=E8=B4=87 <yun.wang@linux.alibaba.=
-com> wrote:
-> On 2021/9/3 =E4=B8=8A=E5=8D=8810:15, Paul Moore wrote:
-> [snip]
-> >> both v1 and v2 are there with the same description and both code modif=
-ication
-> >> are applied.
-> >>
-> >> We want revert v1 but not in a revert patch style, then do you suggest
-> >> send a normal patch to do the code revert?
-> >
-> > It sounds like DaveM wants you to create a normal (not a revert) patch
-> > that removes the v1 changes while leaving the v2 changes intact.  In
-> > the patch description you can mention that v1 was merged as a mistake
-> > and that v2 is the correct fix (provide commit IDs for each in your
-> > commit description using the usual 12-char hash snippet followed by
-> > the subject in parens-and-quotes).
->
-> Thanks for the kindly explain, I've sent:
->   [PATCH] net: remove the unnecessary check in cipso_v4_doi_free
->
-> Which actually revert the v1 and mentioned v2 fixed the root casue,
-> Would you please take a look see if that is helpful?
+On Thu, Sep 02, 2021 at 10:41:03AM -0700, Luis Chamberlain wrote:
+> We never checked for errors on add_disk() as this function
+> returned void. Now that this is fixed, use the shiny new
+> error handling.
+> 
+> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> ---
+>  drivers/s390/block/dcssblk.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/s390/block/dcssblk.c b/drivers/s390/block/dcssblk.c
+> index 5be3d1c39a78..b0fd5009a12e 100644
+> --- a/drivers/s390/block/dcssblk.c
+> +++ b/drivers/s390/block/dcssblk.c
+> @@ -696,7 +696,9 @@ dcssblk_add_store(struct device *dev, struct device_attribute *attr, const char
+>  	}
+>  
+>  	get_device(&dev_info->dev);
+> -	device_add_disk(&dev_info->dev, dev_info->gd, NULL);
+> +	rc = device_add_disk(&dev_info->dev, dev_info->gd, NULL);
+> +	if (rc)
+> +		goto put_dev;
 
-That looks correct to me, acked.  Thanks.
+This looks not correct to me. We seem to have now in case of an error:
 
---=20
-paul moore
-www.paul-moore.com
+- reference count imbalance (= memory leak)
+- dax cleanup is missing
