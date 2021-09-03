@@ -2,109 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7AD40085E
+	by mail.lfdr.de (Postfix) with ESMTP id D67EB40085F
 	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350733AbhICXnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 19:43:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234768AbhICXnI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 19:43:08 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69B2C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 16:42:07 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id 7so691454pfl.10
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 16:42:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=RbmyCxovg1DLvfcJ/FSqFRVxSV6Zui9nsoD/b3owWjc=;
-        b=gp3HM/UaZFcDgZFLttHcNoTPJ8WQGsp0TqMxEXvTviJj+kLkfmazp0t9rSp/tlfBil
-         LilpCq5EfyguTDLk9drAXfb0Ii+8McxJJMyaE+vrk/0V6w0OP3+pri3WKvXGYdj8eBIg
-         t/sCaCKq30+Pje1Pv0Gu/pQQXmkiwkq2+UggEfVKhHHPbYAZIXb6Ug69fzrGoHnW28WD
-         Qx81fh8ArLnKNw8Q9oZRLmjAPGOFGvN8TLvz8HzMp+VQa3bzEFaEwTzU7/xeuRFtPv9h
-         EEbJ0lqV5sWdb/rTkUqOnkpngiPpcCQ7ZmBVJ4UIp/B0t+n0TABSNlY+2+N8mUXAG2Ni
-         O7pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=RbmyCxovg1DLvfcJ/FSqFRVxSV6Zui9nsoD/b3owWjc=;
-        b=eapD0x8RhWaMcWNsZBopNhPQZ0bvJ5HxaKWfCeAQy+SkTTFrRLxNA4BMb3EQS9/TYB
-         TBBYbdqm+WgHNnTQc6K0pCOmwUgyarDQK26SippE5KIRpQNPMMJmqI7uENkN0gdidftI
-         It/tRGpC50jHKGOhZ204Xew9nlkFMBKoFRIHa7464DTS0k40jMGvpi0NqvGHa/hHrZXB
-         oF4aQl9LEGxKVbJsupXQ2iDR32vNeeXvXOusYEyAy7ml7Cr/wCp1aQ91eruiuygfISx3
-         EKUlFKDc5IzaP/igID14qE2yj6ZqyMUWDenG89j2dC3AEcHWgrfaev8nGYHwT+A6Po94
-         bSsQ==
-X-Gm-Message-State: AOAM53389wiTOMr2UhoM8xRezeIb+vhM+o7B+cDtVrmyWfAEIBuveAgs
-        LxIGUuqEhZMVpiy42FNO2xzlfWlpmTY=
-X-Google-Smtp-Source: ABdhPJwzvFqJO1HdxqofZWVyERIxJIv9nnL9AKDMjxH9L00pSAPQxNgPM5a4wmxZRjze/AeIO+UAFg==
-X-Received: by 2002:a63:6dc6:: with SMTP id i189mr1267977pgc.458.1630712527245;
-        Fri, 03 Sep 2021 16:42:07 -0700 (PDT)
-Received: from localhost (203-219-56-12.tpgi.com.au. [203.219.56.12])
-        by smtp.gmail.com with ESMTPSA id x189sm421549pfx.30.2021.09.03.16.42.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 16:42:06 -0700 (PDT)
-Date:   Sat, 04 Sep 2021 09:42:00 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: Is it possible to implement the per-node page cache for
- programs/libraries?
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org,
-        Shijie Huang <shijie@amperemail.onmicrosoft.com>,
-        song.bao.hua@hisilicon.com, torvalds@linux-foundation.org,
-        viro@zeniv.linux.org.uk, Frank Wang <zwang@amperecomputing.com>
-References: <a2f423cf-9413-6bc8-e4d8-92374fc0449e@amperemail.onmicrosoft.com>
-        <YS7yjcqA6txFHd99@casper.infradead.org>
-        <1630552995.2mupnzoqzs.astroid@bobo.none>
-        <YTCktV3KF9PzIACU@casper.infradead.org>
-        <1630652670.aplcvu6g23.astroid@bobo.none>
-        <YTJxFgD0kKPs51dz@casper.infradead.org>
-In-Reply-To: <YTJxFgD0kKPs51dz@casper.infradead.org>
+        id S1350784AbhICXnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 19:43:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350681AbhICXnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 19:43:19 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5F9D960F9C;
+        Fri,  3 Sep 2021 23:42:18 +0000 (UTC)
+Date:   Fri, 3 Sep 2021 19:42:16 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v2] trace: Add migrate-disabled counter to tracing
+ output.
+Message-ID: <20210903194216.1392b62e@gandalf.local.home>
+In-Reply-To: <20210810132625.ylssabmsrkygokuv@linutronix.de>
+References: <20210806164907.xtgvrb25eb4isxhd@linutronix.de>
+        <20210806135124.1279fc94@oasis.local.home>
+        <20210810132625.ylssabmsrkygokuv@linutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Message-Id: <1630712371.zxj5zdhheu.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Matthew Wilcox's message of September 4, 2021 5:01 am:
-> On Fri, Sep 03, 2021 at 05:10:31PM +1000, Nicholas Piggin wrote:
->> Excerpts from Matthew Wilcox's message of September 2, 2021 8:17 pm:
->> > On Thu, Sep 02, 2021 at 01:25:36PM +1000, Nicholas Piggin wrote:
->> >> > I have been thinking about this a bit; one of our internal performa=
-nce
->> >> > teams flagged the potential performance win to me a few months ago.
->> >> > I don't have a concrete design for text replication yet; there have=
- been
->> >> > various attempts over the years, but none were particularly compell=
-ing.
->> >>=20
->> >> What was not compelling about it?
->> >=20
->> > It wasn't merged, so clearly it wasn't compelling enough?
->>=20
->> Ha ha. It sounded like you had some reasons you didn't find it=20
->> particularly compelling :P
->=20
-> I haven't studied it in detail, but it seems to me that your patch (from
-> 2007!) chooses whether to store pages or pcache_desc pointers in i_pages.
-> Was there a reason you chose to do it that way instead of having per-node
-> i_mapping pointers?
+BTW,
 
-What Linus said. The patch was obviously mechanism only and more=20
-heuristics would need to be done (in that case you could have per inode=20
-hints or whatever).
+When doing a v2, always create a new thread. Never send it as a reply to
+the previous patch. The reason I missed this is because replies to previous
+patches do not end up in my internal patchwork. And I only look at that for
+patches. Not my INBOX.
 
-> (And which way would you choose to do it now, given
-> the infrastructure we have now?)
 
-I'm not aware of anything new that would change it fundamentally.
+On Tue, 10 Aug 2021 15:26:25 +0200
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
 
-Thanks,
-Nick
+> --- a/kernel/trace/trace_events.c
+> +++ b/kernel/trace/trace_events.c
+> @@ -181,7 +181,8 @@ static int trace_define_common_fields(void)
+>  
+>  	__common_field(unsigned short, type);
+>  	__common_field(unsigned char, flags);
+> -	__common_field(unsigned char, preempt_count);
+> +	/* XXX */
+> +	__common_field(unsigned char, preempt_mg_count);
+>  	__common_field(int, pid);
+>  
+>  	return ret;
+
+I'm going to have to nuke this hunk of the patch, and update all the other
+locations that have preempt_mg_count in it. Because I just tested it, and
+this breaks user space.
+
+ # trace-cmd record -e all sleep 1
+ # trace-cmd report -l
+
+   sleep-1903    2...ffffffff   743.721748: lock_release:         0xffffffffb1a2f428 trace_types_lock
+   sleep-1903    2...ffffffff   743.721749: lock_release:         0xffff89b981318430 sb_writers
+   sleep-1903    2d..ffffffff   743.721749: irq_disable:          caller=rcu_irq_enter_irqson+0x25 parent=0x0
+   sleep-1903    2d..ffffffff   743.721749: irq_enable:           caller=rcu_irq_enter_irqson+0x2f parent=0x0
+   sleep-1903    2...ffffffff   743.721750: preempt_disable:      caller=vfs_write+0x13a parent=vfs_write+0x13a
+   sleep-1903    2d..ffffffff   743.721750: irq_disable:          caller=rcu_irq_exit_irqson+0x25 parent=0x0
+   sleep-1903    2d..ffffffff   743.721750: irq_enable:           caller=rcu_irq_exit_irqson+0x2f parent=0x0
+   sleep-1903    2d..ffffffff   743.721750: irq_disable:          caller=rcu_irq_enter_irqson+0x25 parent=0x0
+   sleep-1903    2d..ffffffff   743.721750: irq_enable:           caller=rcu_irq_enter_irqson+0x2f parent=0x0
+   sleep-1903    2...ffffffff   743.721750: preempt_enable:       caller=vfs_write+0x15c parent=vfs_write+0x15c
+   sleep-1903    2d..ffffffff   743.721751: irq_disable:          caller=rcu_irq_exit_irqson+0x25 parent=0x0
+   sleep-1903    2d..ffffffff   743.721751: irq_enable:           caller=rcu_irq_exit_irqson+0x2f parent=0x0
+   sleep-1903    2...ffffffff   743.721751: lock_release:         0xffff89b8a144e4f0 &f->f_pos_lock
+   sleep-1903    2...ffffffff   743.721751: sys_exit:             NR 1 = 1
+   sleep-1903    2...ffffffff   743.721751: sys_exit_write:       0x1
+   sleep-1903    2d..ffffffff   743.721752: irq_disable:          caller=syscall_exit_to_user_mode+0xe parent=0x0
+   sleep-1903    2d..ffffffff   743.721752: irq_enable:           caller=syscall_exit_to_user_mode+0x1b parent=0x0
+
+Because to parse the preempt portion, libtraceevent searches for
+"common_preempt_count". When it's not found, -1 is used.
+
+As the migrate disable is an offset, we can at least filter that.
+
+And if and old libtraceevent is used, the preempt counts will be the
+combination of both, and although it may be a little confusing, at least,
+it can be figured out.
+
+I'm going to fold the below patch into this patch if that's OK with you?
+
+-- Steve
+
+diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
+index 5a679315fbed..0a0144580bbd 100644
+--- a/include/linux/trace_events.h
++++ b/include/linux/trace_events.h
+@@ -67,7 +67,7 @@ void trace_event_printf(struct trace_iterator *iter, const char *fmt, ...);
+ struct trace_entry {
+ 	unsigned short		type;
+ 	unsigned char		flags;
+-	unsigned char		preempt_mg_count;
++	unsigned char		preempt_count;
+ 	int			pid;
+ };
+ 
+@@ -156,7 +156,7 @@ static inline void tracing_generic_entry_update(struct trace_entry *entry,
+ 						unsigned short type,
+ 						unsigned int trace_ctx)
+ {
+-	entry->preempt_mg_count		= trace_ctx & 0xff;
++	entry->preempt_count		= trace_ctx & 0xff;
+ 	entry->pid			= current->pid;
+ 	entry->type			= type;
+ 	entry->flags =			trace_ctx >> 16;
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index d3715e2f6707..830b3b9940f4 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -181,8 +181,8 @@ static int trace_define_common_fields(void)
+ 
+ 	__common_field(unsigned short, type);
+ 	__common_field(unsigned char, flags);
+-	/* XXX */
+-	__common_field(unsigned char, preempt_mg_count);
++	/* Holds both preempt_count and migrate_disable */
++	__common_field(unsigned char, preempt_count);
+ 	__common_field(int, pid);
+ 
+ 	return ret;
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index def0d8de2df6..c2ca40e8595b 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -492,13 +492,13 @@ int trace_print_lat_fmt(struct trace_seq *s, struct trace_entry *entry)
+ 	trace_seq_printf(s, "%c%c%c",
+ 			 irqs_off, need_resched, hardsoft_irq);
+ 
+-	if (entry->preempt_mg_count & 0xf)
+-		trace_seq_printf(s, "%x", entry->preempt_mg_count & 0xf);
++	if (entry->preempt_count & 0xf)
++		trace_seq_printf(s, "%x", entry->preempt_count & 0xf);
+ 	else
+ 		trace_seq_putc(s, '.');
+ 
+-	if (entry->preempt_mg_count & 0xf0)
+-		trace_seq_printf(s, "%x", entry->preempt_mg_count >> 4);
++	if (entry->preempt_count & 0xf0)
++		trace_seq_printf(s, "%x", entry->preempt_count >> 4);
+ 	else
+ 		trace_seq_putc(s, '.');
+ 
+@@ -661,7 +661,7 @@ int trace_print_lat_context(struct trace_iterator *iter)
+ 		trace_seq_printf(
+ 			s, "%16s %7d %3d %d %08x %08lx ",
+ 			comm, entry->pid, iter->cpu, entry->flags,
+-			entry->preempt_mg_count & 0xf, iter->idx);
++			entry->preempt_count & 0xf, iter->idx);
+ 	} else {
+ 		lat_print_generic(s, entry, iter->cpu);
+ 	}
