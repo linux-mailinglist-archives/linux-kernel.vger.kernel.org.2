@@ -2,144 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F183FFA3E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6715C3FFA42
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 08:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346838AbhICGRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 02:17:37 -0400
-Received: from mx13.kaspersky-labs.com ([91.103.66.164]:26008 "EHLO
-        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346781AbhICGRf (ORCPT
+        id S1346988AbhICGRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 02:17:43 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:52692 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1346155AbhICGRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 02:17:35 -0400
-Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay13.kaspersky-labs.com (Postfix) with ESMTP id D3404521546;
-        Fri,  3 Sep 2021 09:16:29 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1630649789;
-        bh=zA66q/z+6uWww8VK3ZD3B6UBxpbsiv8++v4tgwOJAqM=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=0aYuIf9D0a57+EcBa6qjyOMFdoThyTn5H2mtQDlw+oLIINeWJWs/nZH+DhcuHDheW
-         gxY3TjaXadL4jQ3WO+Qkmx2WLBBYtlGL/lsRFIkwKFRXABkzDrzc/TglQKl9UXjyBq
-         qPybkjlOjJu4N2nXbemZo54CGCTQJqNJpfL75Tci0YTKz0QhFZ0kNt+PUErXuLXKdg
-         q2ysbu4tSmkrK4hinDAXsZSjQGgFf5jV6K6in5gMYxydExB2JT64+bos1j1i1/zI36
-         ptG0O+ko0+slDKs4I2G8kMZkMIIkM+4A4SCCbs5X21+iCE1kxSEmuadm0INr54Nybz
-         fZHOg0bC2CGuw==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 688B752153E;
-        Fri,  3 Sep 2021 09:16:29 +0300 (MSK)
-Received: from arseniy-pc.avp.ru (10.64.64.121) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Fri, 3
- Sep 2021 09:16:28 +0300
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <stsp2@yandex.ru>, <oxffffaa@gmail.com>
-Subject: [PATCH net-next v4 6/6] vsock_test: update message bounds test for MSG_EOR
-Date:   Fri, 3 Sep 2021 09:16:20 +0300
-Message-ID: <20210903061623.3188172-1-arseny.krasnov@kaspersky.com>
+        Fri, 3 Sep 2021 02:17:42 -0400
+X-UUID: 1fd4a2b860234363a3fd782005d3b018-20210903
+X-UUID: 1fd4a2b860234363a3fd782005d3b018-20210903
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <fengquan.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 111379343; Fri, 03 Sep 2021 14:16:38 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 3 Sep 2021 14:16:37 +0800
+Received: from localhost.localdomain (10.17.3.154) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 3 Sep 2021 14:16:37 +0800
+From:   Fengquan Chen <Fengquan.Chen@mediatek.com>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-watchdog@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <fengquan.chen@mediatek.com>, <tinghan.shen@mediatek.com>,
+        <randy.wu@mediatek.com>, <rex-bc.chen@mediatek.com>,
+        <christine.zhu@mediatek.com>, <joe.yang@mediatek.com>,
+        <zhishuang.zhang@mediatek.com>
+Subject: [v2,0/2] update mediatek wdt driver and dt-binding
+Date:   Fri, 3 Sep 2021 14:16:21 +0800
+Message-ID: <20210903061623.10715-1-Fengquan.Chen@mediatek.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210903061353.3187150-1-arseny.krasnov@kaspersky.com>
-References: <20210903061353.3187150-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.64.64.121]
-X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 09/03/2021 06:01:42
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 165946 [Sep 03 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 461 461 c95454ca24f64484bdf56c7842a96dd24416624e
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 09/03/2021 05:52:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 03.09.2021 4:06:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/09/03 04:45:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/09/03 02:56:00 #17151492
-X-KLMS-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set 'MSG_EOR' in one of message sent, check that 'MSG_EOR'
-is visible in corresponding message at receiver.
+1. add disable_wdt_extrst to support disable reset signal output
+2. update watchdog dt-binding
 
-Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
----
- tools/testing/vsock/vsock_test.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+fengquan.chen (2):
+  watchdog: mtk: add disable_wdt_extrst support
+  dt-bindings: watchdog: mtk-wdt: add disable_wdt_extrst support
 
-diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
-index 67766bfe176f..2a3638c0a008 100644
---- a/tools/testing/vsock/vsock_test.c
-+++ b/tools/testing/vsock/vsock_test.c
-@@ -282,6 +282,7 @@ static void test_stream_msg_peek_server(const struct test_opts *opts)
- }
- 
- #define MESSAGES_CNT 7
-+#define MSG_EOR_IDX (MESSAGES_CNT / 2)
- static void test_seqpacket_msg_bounds_client(const struct test_opts *opts)
- {
- 	int fd;
-@@ -294,7 +295,7 @@ static void test_seqpacket_msg_bounds_client(const struct test_opts *opts)
- 
- 	/* Send several messages, one with MSG_EOR flag */
- 	for (int i = 0; i < MESSAGES_CNT; i++)
--		send_byte(fd, 1, 0);
-+		send_byte(fd, 1, (i == MSG_EOR_IDX) ? MSG_EOR : 0);
- 
- 	control_writeln("SENDDONE");
- 	close(fd);
-@@ -324,6 +325,11 @@ static void test_seqpacket_msg_bounds_server(const struct test_opts *opts)
- 			perror("message bound violated");
- 			exit(EXIT_FAILURE);
- 		}
-+
-+		if ((i == MSG_EOR_IDX) ^ !!(msg.msg_flags & MSG_EOR)) {
-+			perror("MSG_EOR");
-+			exit(EXIT_FAILURE);
-+		}
- 	}
- 
- 	close(fd);
+ Documentation/devicetree/bindings/watchdog/mtk-wdt.txt | 2 ++
+ drivers/watchdog/mtk_wdt.c                             | 7 +++++++
+ 2 files changed, 9 insertions(+)
+
 -- 
 2.25.1
 
