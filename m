@@ -2,123 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9D64003F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:11:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03525400404
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350254AbhICRME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 13:12:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244231AbhICRMD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 13:12:03 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64596C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 10:11:03 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id c206so11248858ybb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 10:11:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RSSitICnTkYgvRAGn0Mr0hVlFHSRUgJ2BvlCPOUBJV0=;
-        b=IWtyT/TCv8r/pfqYvN3L/qmmMftnIpFlaT3A0Hmysh+l7FaXuWAOdhHaciQ00gN0aM
-         sGEj6thBxRzs7oKWs8dJBELKfxNFA/agOBSsoui8ttE+a2PmEhRyCtCIEQgW9WMt0YlR
-         Vbd0t/7KfaC0vhKbAqlFaAUkJrVItYD+mXx2lm31+helUSEq5gp+EoRyLMi+Pves4Y94
-         Dg7zwZ20NBcUH6UtK3hS8CAnWeI4Kfo34tZdhgOdWSrBJeyn9L/65q+9R/52u2zsgh7S
-         6y5Mj7KDBcbLhy2zNihd0kbcQK6b3Wp/0IVAN3rnirdpBNELJEjqJWxhhqQue2HdW1z9
-         T+3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RSSitICnTkYgvRAGn0Mr0hVlFHSRUgJ2BvlCPOUBJV0=;
-        b=kpBt1qcOSEgZ37OUfIgoW6eZHUCzgmRJntpcdkte3Jh8+axw5VF0ep+wJJhsBrMrWT
-         MwBI3a3fgNcIh4RmPGb10Oq2WyhLBkmMvHP4qrnmn584hkY1qOFzCn0bRK9o8RiphwwD
-         5P8s7OB1kp9006b7NWVas9Apfr9ijsmSOOolgdjnkwrMDDL0pgNU81zuUch/sIkswAk4
-         Bm/IAhlMrJdOTtPqxmT8pVZffYt4jRlfADxYLec3p0YP47dvADUSaZDcTLj/UTVmqCtg
-         BOW5pmhoZXgvJqzoaP/krJQmmyX3AOaSuq1ltt84iz11GqZnde8j+w65LOHC0DJHTw4v
-         DFbA==
-X-Gm-Message-State: AOAM530uhhY/eSUn9u4KCgHMmN9zm1igq0j1THdF67+oGZMCwruROQsF
-        XBNe7OU18NDjNTb3/ImINKALb//7DVXb0yMjq0ltcw==
-X-Google-Smtp-Source: ABdhPJzGmV99Yficvf8951wooAlG/eHdCljFJIXkrb3PHMfOKZSAkOMme80hM9h98sQXZ4G2XeFE1JOhBXqK5VJEFzk=
-X-Received: by 2002:a25:b94:: with SMTP id 142mr7122ybl.508.1630689062450;
- Fri, 03 Sep 2021 10:11:02 -0700 (PDT)
+        id S235815AbhICRWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 13:22:24 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:55300 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232937AbhICRWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 13:22:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=yXfaRWVvHoCmdJzLZVNuqDaV0Ec4KTad1XigEwbGnGY=; b=cA
+        HeJeE3AU4CZHkK4ITo0fPb4nKcouTJuSQuLCGCKwdnpgDOaSHIrEESj0J40KSgek0Ghz7P/2LO5vO
+        f7wr4qRbAaeLI2BiPGHtc9KjK2FfM0sBuAwcR//Z1GLK/LTIvpO0/CJM7InjKm4jf2zI1bME6Yel2
+        WwaZdJv/YLln5Cw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1mMCsR-0059kK-Gy; Fri, 03 Sep 2021 19:21:19 +0200
+Date:   Fri, 3 Sep 2021 19:21:19 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH net-next 0/3] Make the PHY library stop being so
+ greedy when binding the generic PHY driver
+Message-ID: <YTJZj/Js+nmDTG0y@lunn.ch>
+References: <20210902132635.GG22278@shell.armlinux.org.uk>
+ <20210902152342.vett7qfhvhiyejvo@skbuf>
+ <20210902163144.GH22278@shell.armlinux.org.uk>
+ <20210902171033.4byfnu3g25ptnghg@skbuf>
+ <20210902175043.GK22278@shell.armlinux.org.uk>
+ <20210902190507.shcdmfi3v55l2zuj@skbuf>
+ <20210902200301.GM22278@shell.armlinux.org.uk>
+ <20210902202124.o5lcnukdzjkbft7l@skbuf>
+ <20210902202905.GN22278@shell.armlinux.org.uk>
+ <20210903162253.5utsa45zy6h4v76t@skbuf>
 MIME-Version: 1.0
-References: <20210902230442.1515531-1-saravanak@google.com>
- <20210902230442.1515531-3-saravanak@google.com> <CAPDyKFr7z6W3ghoAmTVKHaM8saycbhYyBcDXaTuT_Daz+djx2A@mail.gmail.com>
-In-Reply-To: <CAPDyKFr7z6W3ghoAmTVKHaM8saycbhYyBcDXaTuT_Daz+djx2A@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 3 Sep 2021 10:10:26 -0700
-Message-ID: <CAGETcx_SAy02LA_zkn1KhGEYq+fhPrWaLONMmneoy88YSKw1QQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] drivers: bus: simple-pm-bus: Add support for
- probing simple bus only devices
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210903162253.5utsa45zy6h4v76t@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 2:15 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Fri, 3 Sept 2021 at 01:04, Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > The OF platform code sets up simple bus only devices (i.e. devices that
-> > won't match with any other driver) to get probed by the simple-pm-bus to
-> > keep fw_devlink from blocking probe() or sync_state() [1] callbacks of
-> > other devices. There's no need to populate the child devices since the
-> > OF platform code would do that anyway, so return early for these simple
-> > bus only devices.
->
-> This looks like a neat solution to our problem. Although, a few comments below.
->
-> >
-> > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > Tested-by: Saravana Kannan <saravanak@google.com>
-> > ---
-> >  drivers/bus/simple-pm-bus.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/drivers/bus/simple-pm-bus.c b/drivers/bus/simple-pm-bus.c
-> > index 01a3d0cd08ed..91d52021b7f9 100644
-> > --- a/drivers/bus/simple-pm-bus.c
-> > +++ b/drivers/bus/simple-pm-bus.c
-> > @@ -19,6 +19,13 @@ static int simple_pm_bus_probe(struct platform_device *pdev)
-> >         const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
-> >         struct device_node *np = pdev->dev.of_node;
-> >
-> > +       /*
-> > +        * These are transparent bus devices (not simple-pm-bus matches) that
-> > +        * get populated automatically.  So, don't need to do anything more.
-> > +        */
-> > +       if (pdev->driver_override)
-> > +               return 0;
->
-> You need the same kind of check in simple_pm_bus_remove(), to avoid
-> pm_runtime_disable(). At least for consistency.
+On Fri, Sep 03, 2021 at 07:22:53PM +0300, Vladimir Oltean wrote:
+> [ trimming the CC list, I'm sure most people don't care, if they do,
+>   they can watch the mailing list ]
+> 
+> On Thu, Sep 02, 2021 at 09:29:05PM +0100, Russell King (Oracle) wrote:
+> > On Thu, Sep 02, 2021 at 11:21:24PM +0300, Vladimir Oltean wrote:
+> > > On Thu, Sep 02, 2021 at 09:03:01PM +0100, Russell King (Oracle) wrote:
+> > > > # systemctl list-dependencies networking.service
+> > > > networking.service
+> > > >   ├─ifupdown-pre.service
+> > > >   ├─system.slice
+> > > >   └─network.target
+> > > > # systemctl list-dependencies ifupdown-pre.service
+> > > > ifupdown-pre.service
+> > > >   ├─system.slice
+> > > >   └─systemd-udevd.service
+> > > > 
+> > > > Looking in the service files for a better idea:
+> > > > 
+> > > > networking.service:
+> > > > Requires=ifupdown-pre.service
+> > > > Wants=network.target
+> > > > After=local-fs.target network-pre.target apparmor.service systemd-sysctl.service systemd-modules-load.service ifupdown-pre.service
+> > > > Before=network.target shutdown.target network-online.target
+> > > > 
+> > > > ifupdown-pre.service:
+> > > > Wants=systemd-udevd.service
+> > > > After=systemd-udev-trigger.service
+> > > > Before=network.target
+> > > > 
+> > > > So, the dependency you mention is already present. As is a dependency
+> > > > on udev. The problem is udev does all the automatic module loading
+> > > > asynchronously and in a multithreaded way.
+> > > > 
+> > > > I don't think there's a way to make systemd wait for all module loads
+> > > > to complete.
+> > > 
+> > > So ifupdown-pre.service has a call to "udevadm settle". This "watches
+> > > the udev event queue, and exits if all current events are handled",
+> > > according to the man page. But which current events? ifupdown-pre.service
+> > > does not have the dependency on systemd-modules-load.service, just
+> > > networking.service does. So maybe ifupdown-pre.service does not wait for
+> > > DSA to finish initializing, then it tells networking.service that all is ok.
+> > 
+> > ifupdown-pre.service does have a call to udevadm settle, and that
+> > does get called from what I can tell.
+> > 
+> > systemd-modules-load.service is an entire red herring. The only
+> > module listed in the various modules-load.d directories is "tun"
+> > for openvpn (which isn't currently being used.)
+> > 
+> > As I've already told you (and you seem to have ignored), DSA gets
+> > loaded by udev, not by systemd-modules-load.service.
+> > systemd-modules-load.service is irrelevant to my situation.
+> > 
+> > I think there's a problem with "and exits if all current events are
+> > handled" - does that mean it's fired off a modprobe process which
+> > is in progress, or does that mean that the modprobe process has
+> > completed.
+> > 
+> > Given that we can see that ifup is being run while the DSA module is
+> > still in the middle of probing, the latter interpretation can not be
+> > true - unless systemd is ignoring the dependencies. Or just in
+> > general, systemd being systemd (I have very little faith in systemd
+> > behaving as it should.)
+> 
+> So I've set a fresh installation of Debian Buster on my Turris MOX,
+> which has 3 mv88e6xxx switches, and I've put the mv88e6xxx driver inside
+> the rootfs as a module to be loaded by udev based on modaliases just
+> like you've said.  Additionally, the PHY driver is also a module.
+> The kernel is built straight from the v5.13 tag, absolutely no changes.
+> 
+> Literally the only changes I've done to this system are:
+> 1. install bridge-utils
+> 2. create this file, it is sourced by /etc/network/interfaces:
+> root@debian:~# cat /etc/network/interfaces.d/bridge
+> auto br0
+> iface br0 inet manual
+>         bridge_ports lan1 lan2 lan3 lan4 lan5 lan6 lan7 lan8 lan9 lan10 lan11 lan12 lan13 lan14 lan15 lan16 lan17 lan18 lan19 lan20 lan21 lan22 lan23 lan24 sfp
+>         bridge_maxwait 0
 
-Ack.
+Hi Russell
 
->
-> > +
-> >         dev_dbg(&pdev->dev, "%s\n", __func__);
-> >
-> >         pm_runtime_enable(&pdev->dev);
-> > --
-> > 2.33.0.153.gba50c8fa24-goog
-> >
->
-> It also looks like we should flip the order of the patches in the
-> series, to keep things bisectable.
+Do you have
 
-Sorry I didn't get this. I'm not causing any compilation issues. Why
-does this matter for bisecting?
+auto brdsl
 
--Saravana
+in your /etc/network/interfaces?
+
+Looking at /lib/udev/bridge-network-interface it seems it will only do
+hotplug of interfaces if auto is set on the bridge interface. Without
+auto, it only does coldplug. So late appearing switch ports won't get
+added.
+
+      Andrew
