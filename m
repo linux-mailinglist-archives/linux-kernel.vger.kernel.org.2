@@ -2,82 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BE84002C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2274002CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 18:01:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349831AbhICP76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 11:59:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235851AbhICP75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 11:59:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 14B516054E;
-        Fri,  3 Sep 2021 15:58:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630684737;
-        bh=Km412k9TxdN2OI2AHmk0Z+VNMot6URwk5SBYdwiMiPM=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=RTLMu/63cCk7wD5IBS+q01tUNz85Lil8FNk/E8kJq+kezRqUSIZ/nrYjOFrkYkhgP
-         3jpb7dji4lBW//qveGawND5PUruVOruiEwKGVJq10L2mGWP5x0rHBopQjoohuIfmRd
-         yZcq0nxcHKWJkxXrmirPx2PaKcqN4BNbWKLkdo7/nVcUmmWlPRUB/mJT29g2GhsXis
-         1vOJSevR/Qt4sr+yyeKU7rg8A3PA5df6UMmRlM9Aw9eA2QM3XJC4zudnrU+OsZBIXt
-         F/3fSNTPDFQU+Cc6CVwLAwbnEjIghCTa/oRcjedMPLM5sDM+GPPfm0/T8D5wSfjgwh
-         jw8q9ZK3oYH+w==
-Message-ID: <f7e6b2f444f34064e34d7bd680d2c863b9ce6a41.camel@kernel.org>
-Subject: Re: [PATCH] x86/sgx: Declare sgx_set_attribute() for !CONFIG_X86_SGX
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Tony Luck <tony.luck@intel.com>, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Date:   Fri, 03 Sep 2021 18:58:55 +0300
-In-Reply-To: <YTI/dTORBZEmGgux@google.com>
-References: <20210903064156.387979-1-jarkko@kernel.org>
-         <YTI/dTORBZEmGgux@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S1349834AbhICQCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 12:02:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235851AbhICQCS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 12:02:18 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 114B6C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 09:01:18 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id gf5so3424213qvb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 09:01:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=D+klCNTaIWLPsXOQSCcYBo0vzp9QlNQpU3YASo1c48o=;
+        b=XUpasbNhz9flFIHg2CAfg5ky8CYX1dHU0HCCXtQxtuzM7G2L0aRub1J0E0eIXbroUa
+         UlcF2SPWVauFbZgnsd95DYXIhJ8cXzU6zHAhkWEYzaeMvEDNbOxVUGf5F93ON1lnf7pU
+         k8Sl9xvf1zlqfuiQbdFPja+O4fq+3fkzglaQ6OuW33rnZ0lP7lmbCCL7MBZ7K3Pxx7YL
+         bzQyBwUYW3/H2OG/aXuFP8eg2tjfOEr4H8u0ljEsdJs8PeV+67v3oJoV7ztSeBBzA9UL
+         Dc7uTtVJZrtDWk3tU8KqhdnqCvNiQ7dA7VEpjEZUQrSg4P2DNelXDWVOZxO3FHgjmsGz
+         RJMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D+klCNTaIWLPsXOQSCcYBo0vzp9QlNQpU3YASo1c48o=;
+        b=ComgJ9KfAHQj0/+TsM75CPX6cynUkfWFsbDsJrlZGm32mz1VXOdscT/buJAwlntmQb
+         5CeYSG4a7b9mACN8vOKsXGfpv/l5pHRMIL28g3VRNop2bEIash64o0gj3+ORTOdiaBKr
+         uUZHBOgt9DBWyhEJneTTRu+/yy3tdOrfzIm3Ogobvgf9JH344SIzsOnYXFRzwjzgDd89
+         K5tVAbBWtyx+QYP+lJk5VCe94Z2YWPHsvaa5rGX4Bec5oUA0fjgiT3eZe19WXtqUSLcm
+         4fUfPjeVc9fjmrSKYVihwZ8QADLeT4fuVRzChzHcy16ihEAtyBuxEJMXLUWYc7EiwMcE
+         oECw==
+X-Gm-Message-State: AOAM530PAKQlYGogQnGneEU2CwCNe0nzncrqtNBZ1c5b/DjyU+tH/ogI
+        wPP6gMZOl8vdy7wAZamhdvNy81Dz7Bg=
+X-Google-Smtp-Source: ABdhPJwMmfBsr+9XDbHsQO0Ok2a8EnbmbJTxqLmBhFgYJBac4ir4amV5DMRI8d2ZnDVSz3cw7MEF+g==
+X-Received: by 2002:a0c:ab08:: with SMTP id h8mr4439332qvb.41.1630684877014;
+        Fri, 03 Sep 2021 09:01:17 -0700 (PDT)
+Received: from localhost ([12.22.141.131])
+        by smtp.gmail.com with ESMTPSA id n11sm4003904qkk.17.2021.09.03.09.01.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 09:01:16 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 09:01:14 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lib/vsprintf: add __putchar()
+Message-ID: <YTJGyk65rv/026+p@yury-ThinkPad>
+References: <20210827171155.700434-1-yury.norov@gmail.com>
+ <YSuNTVh17CxUNxtC@smile.fi.intel.com>
+ <20210903105607.35af6674@gandalf.local.home>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903105607.35af6674@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-03 at 15:29 +0000, Sean Christopherson wrote:
-> On Fri, Sep 03, 2021, Jarkko Sakkinen wrote:
-> > Simplify sgx_set_attribute() usage by declaring a fallback
-> > implementation for it rather than requiring to have compilation
-> > flag checks in the call site. The fallback unconditionally returns
-> > -EINVAL.
-> >=20
-> > Refactor the call site in kvm_vm_ioctl_enable_cap() accordingly.
-> > The net result is the same: KVM_CAP_SGX_ATTRIBUTE causes -EINVAL
-> > when kernel is compiled without CONFIG_X86_SGX_KVM.
->=20
-> Eh, it doesn't really simplify the usage.  If anything it makes it more c=
-onvoluted
-> because the capability check in kvm_vm_ioctl_check_extension() still need=
-s an
-> #ifdef, e.g. readers will wonder why the check is conditional but the usa=
-ge is not.
+On Fri, Sep 03, 2021 at 10:56:07AM -0400, Steven Rostedt wrote:
+> On Sun, 29 Aug 2021 16:36:13 +0300
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> 
+> > On Fri, Aug 27, 2021 at 10:11:55AM -0700, Yury Norov wrote:
+> > > There are 26 occurrences of the code snippet like this in the file :
+> > > 	if (buf < end)
+> > > 	        *buf = separator;
+> > > 	++buf;
+> > > 
+> > > This patch adds a helper function __putchar() to replace opencoding.
+> > > It adds a lot to readability, and also saves 43 bytes of text on x86.  
+> > 
+> > Last time I tried similar it failed the compilation.
+> > 
+> > Anyway, while you remove a lot of code I'm not sure it makes the code better
+> > to read and understand. Also, we use the same idiom outside of this file.
+> > 
+> > I would ask Rasmus' opinion on this.
+> > 
+> 
+> I actually like the clean up, although I haven't reviewed the entire patch.
 
-It does objectively a bit, since it's one ifdef less.
+Thanks.
+ 
+> If it is used outside this file, perhaps it should be in a header instead
+> and those other locations should be updated accordingly.
 
-This is fairly standard practice to do in kernel APIs, used in countless
-places, for instance in Tony's patch set to add MCE recovery for SGX. And
-it would be nice to share common pattern here how we define API now and
-futre.
+I used 'grep "buf < end"' to find spots for cleanup. And except for
+lib/vsprintf.c, there is a few random drivers inappropriate for this
+cleanup. Andy, can you please share details?
 
-I also remarked that declaration of "sgx_provisioning_allowed" is not flagg=
-ed,
-which is IMHO even more convolved because without SGX it is spare data.
+Steve, if you like it, are you OK if I resend this patch? I just found
+another spot in lib/vsprintf.c to rework.
 
-/Jarkko
-
+Thanks,
+Yury
