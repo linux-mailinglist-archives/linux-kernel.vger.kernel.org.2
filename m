@@ -2,124 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B11EC400555
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB58400559
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350811AbhICSwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 14:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
+        id S1351299AbhICSyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 14:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350603AbhICSww (ORCPT
+        with ESMTP id S1351186AbhICSyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 14:52:52 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012A9C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 11:51:52 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id y6so307063lje.2
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 11:51:51 -0700 (PDT)
+        Fri, 3 Sep 2021 14:54:41 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF69C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 11:53:41 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id n18so84609plp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 11:53:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CGgzXCdE/Vq7B9miSyLOddv3Rnpk5fkhdhUAv/F6bFU=;
-        b=j6uHwa3CYVqqxebmAZUpVozSQIY4vCnHYonuiFq2WdOpzYxZC4qv790QDk3DHG0O09
-         7Hfu72FNXkNpUQI2bYtiHlhXp9w9Wv0M0brfzW+v2ifGhnO8lb3zjUF9a+n5vbYyePR0
-         AVlxUwU/cJcTPe/aFsl+R2q5Nh19hTmNlUqV3d5mM1mrjv4fuLz68sd9LnDz+0BpTZOJ
-         0/P0abPEeCsZZEG3/Qm0KCtcmXdneV4B5JCjpPVnZWTHZ8PGhcDkxCAJGCMHc9ZwB1ey
-         te2M6vADtboCIrDx3C+2y9uEIYO4juBO+JmcibGxGmZmPJZSUebJJcI/trIXew0h/EzO
-         T0gw==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cYg95UwxTL2wMWqBMmt8+HU/FFQUMY2wtY0M2szhJz8=;
+        b=QIp/9/b95JTMk9GYZ/8RlI4mVoQv4y2yt6N+yut/ximLGMu+tuqgZ16WFcVWV1mqGq
+         fepqe7v2A20HFYssg1nO6q3PyQblDX7qDazWYNC3Pc4VhRasd1EvBTpM67pwafkmKzDG
+         8ZwaEw4euZAjKAjqzI5lRX4/sF1I7IIB4936jkCUQS49BrMluF7f8P0mevm9wlS7ku4e
+         hqgcayKLbLvuVb/IOKLhAUOVhyk+g8yH4rXzxJUWxtaXS1b9YKwwWvnEEsSVj+yGWCeM
+         /MQVfEbjm1zYGzx5w2DGXmIzOVBMQhysdwrnSbZKmhRZ5B1HpMAWs21lk0F51MSBhyYE
+         Z3Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CGgzXCdE/Vq7B9miSyLOddv3Rnpk5fkhdhUAv/F6bFU=;
-        b=kPajXWFAeOwK6xTzoHJ6/3lKOxzQyOs8r2pxNZcFQlCapZNsB8pPHFBFvmzKBBDprF
-         PHQIKO9yEGQ+fzZksKTh0pIQEmDTpx+3dfXA0tr/SupFODrHHVqTMuBB7glMr+n+pZZr
-         SnL5lCN1usFuQFnnGa6KGvx2yjcI46DnACgp+KYnOav47Fx22Sih0pJj84SWh0PY2u4I
-         eejBc0qBRoMrMQt8l5V4CLqOYGouznefeBMtu2va3ui2f7LlpqeQDzN4skCHcAoh2PTS
-         dcmFX0t/mDgjBeZUjYsNnjNel3iFck8p9SBIq2IB8J80ONWg7iNM5KELdSceT84hW080
-         Z63A==
-X-Gm-Message-State: AOAM532b+0P8sy95QoaOY6E/WxafM0LQDhMqk5ilm9JAojlmDUTaCTtp
-        8oiXG/+7ITt8ANB4Hkx72CtvfA==
-X-Google-Smtp-Source: ABdhPJyrp1FHP6A/jWM2UEHJjZAjv8wE5xkA68qW9HBXTbA6YbMhGtQ4qIeBH1MvoLAQijDEs8Gbcg==
-X-Received: by 2002:a2e:83d0:: with SMTP id s16mr322899ljh.328.1630695108904;
-        Fri, 03 Sep 2021 11:51:48 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id y1sm22335lfb.297.2021.09.03.11.51.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 11:51:48 -0700 (PDT)
-Subject: Re: [PATCH] drm/msm: remove unneeded variable
-To:     cgel.zte@gmail.com, robdclark@gmail.com
-Cc:     sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        lyude@redhat.com, airlied@redhat.com,
-        laurent.pinchart@ideasonboard.com, chi.minghao@zte.com.cn,
-        treding@nvidia.com, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Zeal Robot <zealci@zte.com.cn>,
-        Alexey Minnekhanov <alexeymin@postmarketos.org>,
-        Brian Masney <masneyb@onstation.org>
-References: <20210831115127.18236-1-chi.minghao@zte.com.cn>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <65f56c2b-591a-16c8-7f3a-41695b1147b3@linaro.org>
-Date:   Fri, 3 Sep 2021 21:51:47 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cYg95UwxTL2wMWqBMmt8+HU/FFQUMY2wtY0M2szhJz8=;
+        b=YU5slN4ELsT2BlghOmtfh2T5PYpNuiFupuLBjzHJj9ES07ES0AOnMfj4OmLc3UlCXF
+         ZS+N3gTAaTAfh8smLJGCc0ayat0+1zr+fVwY1sePjDyf5SXUpp5YGGJWTy1iktry2aLE
+         xty47DXOdFB5CpNBRPnwv3cN+s1EDmHJLtoDzPPLmpsFQhZ7lO7GS4VfBBVQjL7jXSnv
+         Opp42PfcjBmv8TSEgL38hTsfo57pOkUHaD9jlJTZjm24CnwFWEbJsq+sYyHF1okgIQvv
+         QeaFqhq3W8CjnUbgWrfR6HvCF725a4ZT4Da05SwbU2NaxAzBOu94ykx5k6yxvKfG/bry
+         PJuw==
+X-Gm-Message-State: AOAM530mDjHDePoocnawKE/6LNmYk/OQIlTEBTmIAzDTPuKzWkGtyqZZ
+        /q6j++V7DsvGSqpLAcn3pswJHo1arO11zHalwMmUMg==
+X-Google-Smtp-Source: ABdhPJzaqbi+WTtOyW8aEzKZGLrWRFG0rYEWODEzLKf/vG09PU01udkGwV0zaahhozokMiR2kCRYO8U8/ekTQehdJDk=
+X-Received: by 2002:a17:902:6b84:b029:ee:f966:1911 with SMTP id
+ p4-20020a1709026b84b02900eef9661911mr224187plk.69.1630695220952; Fri, 03 Sep
+ 2021 11:53:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210831115127.18236-1-chi.minghao@zte.com.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <YTJhwQstKPUYRwN+@user>
+In-Reply-To: <YTJhwQstKPUYRwN+@user>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Fri, 3 Sep 2021 19:53:29 +0100
+Message-ID: <CAA=Fs0mP7xqiS7+EX+J5MYH-AkEN_5SgtLrxAd669kXHG7Jk+A@mail.gmail.com>
+Subject: Re: [PATCH] staging: r8188eu: os_dep: use kmemdup instead of kzalloc
+ and memcpy
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Michael Straube <straube.linux@gmail.com>,
+        Martin Kaiser <martin@kaiser.cx>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        saurav.girepunje@hotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/08/2021 14:51, cgel.zte@gmail.com wrote:
-> From: Chi Minghao <chi.minghao@zte.com.cn>
-> 
-> Fix the following coccicheck REVIEW:
-> ./drivers/gpu/drm/msm/edp/edp_ctrl.c:1245:5-8 Unneeded variable
-> 
-> Reported-by: Zeal Robot <zealci@zte.com.cn>
-> Signed-off-by: Chi Minghao <chi.minghao@zte.com.cn>
-
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
-Glancing on msm/edp, as it was never supported by the in-kernel dts I 
-wonder: maybe we should drop it completely? If the need arises the 
-removal can be reverted anytime.
-
-Does anybody hacking 8084/8074/8974 support has eDP port access?
-
+On Fri, 3 Sept 2021 at 18:56, Saurav Girepunje
+<saurav.girepunje@gmail.com> wrote:
+>
+> Fixes coccicheck warning:WARNING opportunity for kmemdup in ioctl_linux.c
+>
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
 > ---
->   drivers/gpu/drm/msm/edp/edp_ctrl.c | 4 +---
->   1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/edp/edp_ctrl.c b/drivers/gpu/drm/msm/edp/edp_ctrl.c
-> index 4fb397ee7c84..3610e26e62fa 100644
-> --- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
-> +++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
-> @@ -1242,8 +1242,6 @@ bool msm_edp_ctrl_panel_connected(struct edp_ctrl *ctrl)
->   int msm_edp_ctrl_get_panel_info(struct edp_ctrl *ctrl,
->   		struct drm_connector *connector, struct edid **edid)
->   {
-> -	int ret = 0;
+>  drivers/staging/r8188eu/os_dep/ioctl_linux.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+> index 81d4255d1785..495fadd2b8c8 100644
+> --- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+> +++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+> @@ -585,14 +585,12 @@ static int rtw_set_wpa_ie(struct adapter *padapter, char *pie, unsigned short ie
+>         }
+>
+>         if (ielen) {
+> -               buf = kzalloc(ielen, GFP_KERNEL);
+> +               buf = kmemdup(pie, ielen, GFP_KERNEL);
+>                 if (!buf) {
+>                         ret =  -ENOMEM;
+>                         goto exit;
+>                 }
+>
+> -               memcpy(buf, pie, ielen);
 > -
->   	mutex_lock(&ctrl->dev_mutex);
->   
->   	if (ctrl->edid) {
-> @@ -1278,7 +1276,7 @@ int msm_edp_ctrl_get_panel_info(struct edp_ctrl *ctrl,
->   	}
->   unlock_ret:
->   	mutex_unlock(&ctrl->dev_mutex);
-> -	return ret;
-> +	return 0;
->   }
->   
->   int msm_edp_ctrl_timing_cfg(struct edp_ctrl *ctrl,
-> 
+>                 /* dump */
+>                 {
+>                         int i;
+> --
+> 2.32.0
+>
 
+Dear Saurav,
 
--- 
-With best wishes
-Dmitry
+Looks good, thanks:
+Acked-by: Phillip Potter <phil@philpotter.co.uk>
+
+Regards,
+Phil
