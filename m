@@ -2,198 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C20400569
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F135E40056E
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350557AbhICTAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 15:00:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32506 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1350528AbhICTAP (ORCPT
+        id S1350577AbhICTB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 15:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350562AbhICTB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 15:00:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630695554;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ynYQb/sRGR4WOPcdYIbB5xWCjxsBkaL75JAU6CwQ/WM=;
-        b=NWCOldFBCBK49cIktS5zqIaBq6L8b9C6zrzgH33VnxpbRzfBZcFj1MZz3yV6yJUpDdm0xq
-        WXqRAK+L8dFd74a1eA9b+eWAigQKPyqpYb4QW0UNNIVp0v2Hp9u5AkVQ3wGb3YFpe/uzha
-        XBbqxnKKS5vW14fRXYMDct6+J2US+g8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-342-zgjSNWfvPeWDf-BjFxb9SQ-1; Fri, 03 Sep 2021 14:59:11 -0400
-X-MC-Unique: zgjSNWfvPeWDf-BjFxb9SQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5C41100670B;
-        Fri,  3 Sep 2021 18:59:10 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.3.128.14])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 05D915C1B4;
-        Fri,  3 Sep 2021 18:58:59 +0000 (UTC)
-Date:   Fri, 3 Sep 2021 14:58:57 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>,
-        linux-audit@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] audit: Fix build failure by renaming struct node to
- struct audit_node
-Message-ID: <20210903185857.GI490529@madcap2.tricolour.ca>
-References: <4e2370a9022495c49f3108fe34c5a2b2f4b28dfa.1630684009.git.christophe.leroy@csgroup.eu>
+        Fri, 3 Sep 2021 15:01:56 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84D5C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:00:55 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id n18so6375058pgm.12
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:00:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/RAyYN7XSWdMXJkR/E7oV/FAskQ62li2eXUaN70sJiQ=;
+        b=LlSfdxokQTHak+lCCI/rYOtrG3FYCueY+bffw3RtBxX8x1AOgO1F0SSTERzIsZ3kmE
+         Fay2nHsEaXJpEDLLuBsP/1QftwcjzJZCWn3sfaX01bEOSD4c6n1x3wbwIl6w+IuIXu/F
+         SHHh2aE2gKbO966yYee7W5oKwJc2l4rMheo0M=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/RAyYN7XSWdMXJkR/E7oV/FAskQ62li2eXUaN70sJiQ=;
+        b=Z3M3VygfrVU6DiOKYjdvCdDtXxt3fjv+2jtNUKJHhwn63aMaQNrA1kC5PrYRBFJ4ad
+         kKmlfNAYohHiehoOQlDFrPMKs81K+eIN96vY+gDwuhD3yS8/MsitSUprYv1Uck5wqvFJ
+         Wv8UI0WtNhiGX6EZlFcr6cj46n9V740YJpPpZqJJyjgOy/M/Xn3RYiQHzoim3zSMiaPP
+         tgH9NFgbac4DWDQWhM1ZwIrG8h0xXDpzf1BwYAQnMgtw4B+n2asi/d+IHjc7NCTG2p1D
+         aVfA5gNTpI/AE0mxhpy+/ZLqRHEbNyGIhM+eiIY5EcHCdvOwmncv4rEBSTDNRxQJb/m+
+         OHWg==
+X-Gm-Message-State: AOAM533RAwb8UgMV1eSoLZzue31AHXEpW+o0acdaSNssa1dMrIOmpmpE
+        NVGIumcrwUt9GvrCOGbQQarGpA==
+X-Google-Smtp-Source: ABdhPJxTKBNFM52lTpurPfhlKUeZfeipurGeOuwOfFDVCXHJ8EDkoOeCLegHdP7fE/3OLWlLR7rPaw==
+X-Received: by 2002:a65:6287:: with SMTP id f7mr443437pgv.444.1630695655326;
+        Fri, 03 Sep 2021 12:00:55 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:80b3:9f00:3170:fd8b])
+        by smtp.gmail.com with UTF8SMTPSA id i5sm124517pgp.53.2021.09.03.12.00.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 12:00:54 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 12:00:53 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180-trogdor: Delete ADC config for
+ unused thermistors
+Message-ID: <YTJw5VwHFoCX4WJe@google.com>
+References: <20210902154711.1.I9777d0036ecbb749a4fb9ebb892f94c6e3a51772@changeid>
+ <CAE-0n51s1s6L7G1vxbC8PEZ=FBr9mSch81KUBO6fK_jfO8S_CQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <4e2370a9022495c49f3108fe34c5a2b2f4b28dfa.1630684009.git.christophe.leroy@csgroup.eu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <CAE-0n51s1s6L7G1vxbC8PEZ=FBr9mSch81KUBO6fK_jfO8S_CQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-03 15:48, Christophe Leroy wrote:
-> struct node defined in kernel/audit_tree.c conflicts with
-> struct node defined in include/linux/node.h
-
-Why?  What changed to start triggering this error?  This code has been
-here for 15 years.  I am guessing changing the other one would affect
-more code?
-
-The patch itself looks fine to me.
-
-Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
-
-> 	  CC      kernel/audit_tree.o
-> 	kernel/audit_tree.c:33:9: error: redefinition of 'struct node'
-> 	   33 |  struct node {
-> 	      |         ^~~~
-> 	In file included from ./include/linux/cpu.h:17,
->                 	 from ./include/linux/static_call.h:102,
->                 	 from ./arch/powerpc/include/asm/machdep.h:10,
->                 	 from ./arch/powerpc/include/asm/archrandom.h:7,
->                 	 from ./include/linux/random.h:121,
->                 	 from ./include/linux/net.h:18,
->                 	 from ./include/linux/skbuff.h:26,
->                 	 from kernel/audit.h:11,
->                 	 from kernel/audit_tree.c:2:
-> 	./include/linux/node.h:84:8: note: originally defined here
-> 	   84 | struct node {
-> 	      |        ^~~~
-> 	make[2]: *** [kernel/audit_tree.o] Error 1
+On Thu, Sep 02, 2021 at 05:20:43PM -0700, Stephen Boyd wrote:
+> Quoting Matthias Kaehlcke (2021-09-02 15:47:44)
+> > The charger thermistor on Lazor, CoachZ rev1 and Pompom rev1+2 is
+> > either the wrong part or not stuffed at all, the same is true for
+> > the skin temperature thermistor on CoachZ rev1. The corresponding
+> > thermal zones are already disabled for these devices, in addition
+> > delete the ADC nodes of the thermistors.
+> >
+> > For Lazor and CoachZ rev1 also disable the PM6150 ADC thermal
+> > monitor since there are no other temperatures to monitor.
+> >
+> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> > ---
+> >
+> >  .../arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts | 12 ++++++++++++
+> >  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi   | 10 ++++++++++
+> >  .../arm64/boot/dts/qcom/sc7180-trogdor-pompom-r1.dts |  8 ++++++++
+> >  .../arm64/boot/dts/qcom/sc7180-trogdor-pompom-r2.dts |  8 ++++++++
+> >  4 files changed, 38 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts
+> > index 21b516e0694a..edfcd47e1a00 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts
+> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz-r1.dts
+> > @@ -23,6 +23,18 @@ &charger_thermal {
+> >         status = "disabled";
+> >  };
+> >
+> > +&pm6150_adc {
+> > +       /delete-node/ skin-temp-thermistor@4e;
+> > +       /delete-node/ charger-thermistor@4f;
 > 
-> Rename it audit_node.
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->  kernel/audit_tree.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/kernel/audit_tree.c b/kernel/audit_tree.c
-> index b2be4e978ba3..d392cf4ec8e2 100644
-> --- a/kernel/audit_tree.c
-> +++ b/kernel/audit_tree.c
-> @@ -30,7 +30,7 @@ struct audit_chunk {
->  	int count;
->  	atomic_long_t refs;
->  	struct rcu_head head;
-> -	struct node {
-> +	struct audit_node {
->  		struct list_head list;
->  		struct audit_tree *owner;
->  		unsigned index;		/* index; upper bit indicates 'will prune' */
-> @@ -269,7 +269,7 @@ bool audit_tree_match(struct audit_chunk *chunk, struct audit_tree *tree)
->  
->  /* tagging and untagging inodes with trees */
->  
-> -static struct audit_chunk *find_chunk(struct node *p)
-> +static struct audit_chunk *find_chunk(struct audit_node *p)
->  {
->  	int index = p->index & ~(1U<<31);
->  	p -= index;
-> @@ -322,7 +322,7 @@ static void replace_chunk(struct audit_chunk *new, struct audit_chunk *old)
->  	list_replace_rcu(&old->hash, &new->hash);
->  }
->  
-> -static void remove_chunk_node(struct audit_chunk *chunk, struct node *p)
-> +static void remove_chunk_node(struct audit_chunk *chunk, struct audit_node *p)
->  {
->  	struct audit_tree *owner = p->owner;
->  
-> @@ -459,7 +459,7 @@ static int tag_chunk(struct inode *inode, struct audit_tree *tree)
->  {
->  	struct fsnotify_mark *mark;
->  	struct audit_chunk *chunk, *old;
-> -	struct node *p;
-> +	struct audit_node *p;
->  	int n;
->  
->  	mutex_lock(&audit_tree_group->mark_mutex);
-> @@ -570,11 +570,11 @@ static void prune_tree_chunks(struct audit_tree *victim, bool tagged)
->  {
->  	spin_lock(&hash_lock);
->  	while (!list_empty(&victim->chunks)) {
-> -		struct node *p;
-> +		struct audit_node *p;
->  		struct audit_chunk *chunk;
->  		struct fsnotify_mark *mark;
->  
-> -		p = list_first_entry(&victim->chunks, struct node, list);
-> +		p = list_first_entry(&victim->chunks, struct audit_node, list);
->  		/* have we run out of marked? */
->  		if (tagged && !(p->index & (1U<<31)))
->  			break;
-> @@ -616,7 +616,7 @@ static void trim_marked(struct audit_tree *tree)
->  	}
->  	/* reorder */
->  	for (p = tree->chunks.next; p != &tree->chunks; p = q) {
-> -		struct node *node = list_entry(p, struct node, list);
-> +		struct audit_node *node = list_entry(p, struct audit_node, list);
->  		q = p->next;
->  		if (node->index & (1U<<31)) {
->  			list_del_init(p);
-> @@ -684,7 +684,7 @@ void audit_trim_trees(void)
->  		struct audit_tree *tree;
->  		struct path path;
->  		struct vfsmount *root_mnt;
-> -		struct node *node;
-> +		struct audit_node *node;
->  		int err;
->  
->  		tree = container_of(cursor.next, struct audit_tree, list);
-> @@ -839,7 +839,7 @@ int audit_add_tree_rule(struct audit_krule *rule)
->  	drop_collected_mounts(mnt);
->  
->  	if (!err) {
-> -		struct node *node;
-> +		struct audit_node *node;
->  		spin_lock(&hash_lock);
->  		list_for_each_entry(node, &tree->chunks, list)
->  			node->index &= ~(1U<<31);
-> @@ -938,7 +938,7 @@ int audit_tag_tree(char *old, char *new)
->  		mutex_unlock(&audit_filter_mutex);
->  
->  		if (!failed) {
-> -			struct node *node;
-> +			struct audit_node *node;
->  			spin_lock(&hash_lock);
->  			list_for_each_entry(node, &tree->chunks, list)
->  				node->index &= ~(1U<<31);
-> -- 
-> 2.25.0
-> 
-> --
-> Linux-audit mailing list
-> Linux-audit@redhat.com
-> https://listman.redhat.com/mailman/listinfo/linux-audit
-> 
+> Is there any other child node? I only see two, unless I missed
+> something. In which case the whole node can be disabled?
 
-- RGB
+Right, the ADC itself can also be disabled in this case.
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+> 
+> > +};
+> > +
+> > +&pm6150_adc_tm {
+> > +       status = "disabled";
+> > +
+> > +       /delete-node/ charger-thermistor@0;
+> > +       /delete-node/ skin-temp-thermistor@1;
+> > +};
+> > +
+> >  /*
+> >   * CoachZ rev1 is stuffed with a 47k NTC as thermistor for skin temperature,
+> >   * which currently is not supported by the PM6150 ADC driver. Disable the
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> > index 00535aaa43c9..57f7b19f83b0 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor.dtsi
+> > @@ -54,6 +54,16 @@ &panel {
+> >         compatible = "boe,nv133fhm-n62";
+> >  };
+> >
+> > +&pm6150_adc {
+> > +       /delete-node/ charger-thermistor@4f;
+> 
+> Same question here.
 
+Yes, the ADC can be disabled here too.
