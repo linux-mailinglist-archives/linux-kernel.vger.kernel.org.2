@@ -2,108 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9294004D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F884004ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346764AbhICSZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 14:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236537AbhICSZI (ORCPT
+        id S1347917AbhICSdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 14:33:47 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:48934 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346181AbhICSdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 14:25:08 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87368C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 11:24:08 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id s3so164830ljp.11
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 11:24:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9rEOZFgWRRBzTrjc1sgzKvt3j7Y9HuVgaQyFS26IehY=;
-        b=qkHognoxURfD5dM1rhFf+ejqDj4AodnjjnIF1fbS7miJaIFBv2d/cjNFUxR8VJyJwW
-         lnzREYn5RxDERjhpg7YuKd9sehvjNbCoUvLo4jQhVDbY7p6ErcqHr8ECQ7M3xzi+D76A
-         LVuweIsCoAAdrnOsmRcRcWUWvZT6p2QZBVfUqKqKzEhZ6mnet9eMgu3x/BXf8LMk4fu0
-         wtJiRevjC5awf8fEkww+Jn96XQ1ssiYUYr8GSieEJMC4ejhv4XVPi05LNfX1/Lq1hjjI
-         aaRMmxpebkxUEWopvuZKq5LY/W/UtOYlhpg19nkeuAcTNTH9RQiLsvaJ4oPY3PDWvLNb
-         W+Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9rEOZFgWRRBzTrjc1sgzKvt3j7Y9HuVgaQyFS26IehY=;
-        b=dXCks3UTWe6GhlBh79FMKPKAVQMpdDgLl1J9oUqQRJrLsvDZdwGP3PWr4fWTvr+sIl
-         mFC2jwlAjchAsFW9BEkgPzteQmJIewmxo0q7L+P8FpzTL7T0SKTVY/rnY2e8ASaGMOI4
-         HirCnSHXTC6XvN2QDoWEhbpdy0N1JDril3BGM74jwielaIzA2CfEhEGeJSpf61pXPEnU
-         CLDah+qrQN+QJLFh5yCshRt10GbCqUHtUb377Hd0scMJXy4d3nulwTJFw47bo5+cdDaD
-         LDlmT3+sJ2+I/tVh3nK6epez1ALW3alpfaVPmmx63KlgURSMIeoe+yaAqPB5raW5nQ9U
-         /9Pg==
-X-Gm-Message-State: AOAM5318lP+Ii3elzjhWuQbWoGZjJb47vC9/6eK9sP00JfYrx4M6J4uN
-        1YZ17c6gvwMIqNgd1FFGoYP8cQ==
-X-Google-Smtp-Source: ABdhPJz6vIY3BKpngT9hBro3h/w+4cLaEvhEKm7lFcDxED6un/1W/8r+MNrcUUM3Mi0WXbnil6rxGw==
-X-Received: by 2002:a2e:94d0:: with SMTP id r16mr235236ljh.403.1630693444412;
-        Fri, 03 Sep 2021 11:24:04 -0700 (PDT)
-Received: from [192.168.1.211] ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id w18sm17659lfa.50.2021.09.03.11.24.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 11:24:04 -0700 (PDT)
-Subject: Re: [PATCH 1/3] drm/msm/dpu1: Add DMA2, DMA3 clock control to enum
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>, robdclark@gmail.com
-Cc:     sean@poorly.run, airlied@linux.ie, daniel@ffwll.ch,
-        abhinavk@codeaurora.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org, paul.bouchara@somainline.org,
-        devicetree@vger.kernel.org
-References: <20210901181138.1052653-1-angelogioacchino.delregno@somainline.org>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Message-ID: <2efd8a35-10af-473c-b6d4-81a757949c40@linaro.org>
-Date:   Fri, 3 Sep 2021 21:24:03 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Fri, 3 Sep 2021 14:33:46 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mMDso-000qie-AY; Fri, 03 Sep 2021 18:25:46 +0000
+Date:   Fri, 3 Sep 2021 18:25:46 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Paul Mackerras <paulus@ozlabs.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        cluster-devel <cluster-devel@redhat.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ocfs2-devel@oss.oracle.com, kvm-ppc@vger.kernel.org
+Subject: Re: [PATCH v7 00/19] gfs2: Fix mmap + page fault deadlocks
+Message-ID: <YTJoqq0fVB+xAB7w@zeniv-ca.linux.org.uk>
+References: <20210827164926.1726765-1-agruenba@redhat.com>
+ <CAHk-=wiUtyoTWuzroNJQwQDM9GHRXvq4974VL=y8T_3tUxDbkA@mail.gmail.com>
+ <CAHc6FU7K0Ho=nH6fCK+Amc7zEg2G31v+gE3920ric3NE4MfH=A@mail.gmail.com>
+ <CAHk-=wjUs8qy3hTEy-7QX4L=SyS85jF58eiT2Yq2YMUdTFAgvA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210901181138.1052653-1-angelogioacchino.delregno@somainline.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjUs8qy3hTEy-7QX4L=SyS85jF58eiT2Yq2YMUdTFAgvA@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/09/2021 21:11, AngeloGioacchino Del Regno wrote:
-> The enum dpu_clk_ctrl_type misses DPU_CLK_CTRL_DMA{2,3} even though
-> this driver does actually handle both, if present: add the two in
-> preparation for adding support for SoCs having them.
+On Fri, Sep 03, 2021 at 08:52:00AM -0700, Linus Torvalds wrote:
+> On Wed, Sep 1, 2021 at 12:53 PM Andreas Gruenbacher <agruenba@redhat.com> wrote:
+> >
+> > So there's a minor merge conflict between Christoph's iomap_iter
+> > conversion and this patch queue now, and I should probably clarify the
+> > description of "iomap: Add done_before argument to iomap_dio_rw" that
+> > Darrick ran into. Then there are the user copy issues that Al has
+> > pointed out. Fixing those will create superficial conflicts with this
+> > patch queue, but probably nothing serious.
+> >
+> > So how should I proceed: do you expect a v8 of this patch queue on top
+> > of the current mainline?
 > 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h | 2 ++
->   1 file changed, 2 insertions(+)
+> So if you rebase for fixes, it's going to be a "next merge window" thing again.
 > 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> index d2a945a27cfa..059e1402b7d0 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h
-> @@ -432,6 +432,8 @@ enum dpu_clk_ctrl_type {
->   	DPU_CLK_CTRL_RGB3,
->   	DPU_CLK_CTRL_DMA0,
->   	DPU_CLK_CTRL_DMA1,
-> +	DPU_CLK_CTRL_DMA2,
-> +	DPU_CLK_CTRL_DMA3,
->   	DPU_CLK_CTRL_CURSOR0,
->   	DPU_CLK_CTRL_CURSOR1,
->   	DPU_CLK_CTRL_INLINE_ROT0_SSPP,
+> Personally, I'm ok with the series as is, and the conflict isn't an
+> issue. So I'd take it as is, and then people can fix up niggling
+> issues later.
 > 
+> But if somebody screams loudly..
 
+FWIW, my objections regarding the calling conventions are still there.
 
--- 
-With best wishes
-Dmitry
+Out of 3 callers that do want more than "success/failure", one is gone
+(series by tglx) and one more is broken (regardless of the semantics,
+btrfs on arm64).  Which leaves 1 caller (fault-in for read in FPU
+handling on x86 sigreturn).  That caller turns out to be correct, but
+IMO there are fairly strong arguments in favour of *not* using the
+normal fault-in in that case.
+
+	"how many bytes can we fault in" is misleading, unless we really
+poke into every cacheline in the affected area.  Which might be a primitive
+worth having, but it's a lot heavier than needed by the majority of callers.
