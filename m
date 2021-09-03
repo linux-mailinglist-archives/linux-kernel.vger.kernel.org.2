@@ -2,150 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03525400404
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4773F400408
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:21:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235815AbhICRWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 13:22:24 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:55300 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232937AbhICRWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 13:22:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=yXfaRWVvHoCmdJzLZVNuqDaV0Ec4KTad1XigEwbGnGY=; b=cA
-        HeJeE3AU4CZHkK4ITo0fPb4nKcouTJuSQuLCGCKwdnpgDOaSHIrEESj0J40KSgek0Ghz7P/2LO5vO
-        f7wr4qRbAaeLI2BiPGHtc9KjK2FfM0sBuAwcR//Z1GLK/LTIvpO0/CJM7InjKm4jf2zI1bME6Yel2
-        WwaZdJv/YLln5Cw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1mMCsR-0059kK-Gy; Fri, 03 Sep 2021 19:21:19 +0200
-Date:   Fri, 3 Sep 2021 19:21:19 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH net-next 0/3] Make the PHY library stop being so
- greedy when binding the generic PHY driver
-Message-ID: <YTJZj/Js+nmDTG0y@lunn.ch>
-References: <20210902132635.GG22278@shell.armlinux.org.uk>
- <20210902152342.vett7qfhvhiyejvo@skbuf>
- <20210902163144.GH22278@shell.armlinux.org.uk>
- <20210902171033.4byfnu3g25ptnghg@skbuf>
- <20210902175043.GK22278@shell.armlinux.org.uk>
- <20210902190507.shcdmfi3v55l2zuj@skbuf>
- <20210902200301.GM22278@shell.armlinux.org.uk>
- <20210902202124.o5lcnukdzjkbft7l@skbuf>
- <20210902202905.GN22278@shell.armlinux.org.uk>
- <20210903162253.5utsa45zy6h4v76t@skbuf>
+        id S244712AbhICRWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 13:22:55 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:38762 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232937AbhICRWy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 13:22:54 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 748131FDAD;
+        Fri,  3 Sep 2021 17:21:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630689713; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hM3W/onCHq9iYy2Mbh8EsDHg51cZRbQTbohRjagfa8E=;
+        b=D5w1M6visvcKk5+KeC+zKI0bOs8AJAbzGqLai8ZtePXCav1sAG2ol+uuX4jJO42Qh9nmZl
+        nmpfnPhtQxeIXc6f9DxkNkY87famPBoHG12WPGkdq6zrO/ugbbRpzC8mkYV7h6S0lM9Pg9
+        7XgZq137r+rGboh9Zh3MfidawkPC5+A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630689713;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hM3W/onCHq9iYy2Mbh8EsDHg51cZRbQTbohRjagfa8E=;
+        b=J890ILo3oNjnp4egKK280BxuwbsHrjYmN2/wrROno098NokNjXaivsw5vOyY3u8p6W+eZz
+        xAYxfzmWF53c3nAg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 642D1137E2;
+        Fri,  3 Sep 2021 17:21:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id gu0aGLFZMmEIcQAAGKfGzw
+        (envelope-from <bp@suse.de>); Fri, 03 Sep 2021 17:21:53 +0000
+Date:   Fri, 3 Sep 2021 19:22:25 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>
+Subject: Re: vmlinux.o: warning: objtool: noist_exc_machine_check()+0x93:
+ call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
+Message-ID: <YTJZzVrutm4yZAzi@zn.tnic>
+References: <202108221656.2tMcBD2a-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210903162253.5utsa45zy6h4v76t@skbuf>
+In-Reply-To: <202108221656.2tMcBD2a-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 07:22:53PM +0300, Vladimir Oltean wrote:
-> [ trimming the CC list, I'm sure most people don't care, if they do,
->   they can watch the mailing list ]
+On Sun, Aug 22, 2021 at 04:54:06PM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   9ff50bf2f2ff5fab01cac26d8eed21a89308e6ef
+> commit: bcb1b6ff39da7e8a6a986eb08126fba2b5e13c32 objtool: Correctly handle retpoline thunk calls
+> date:   5 months ago
+> config: x86_64-buildonly-randconfig-r003-20210822 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bcb1b6ff39da7e8a6a986eb08126fba2b5e13c32
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout bcb1b6ff39da7e8a6a986eb08126fba2b5e13c32
+>         # save the attached .config to linux build tree
+>         mkdir build_dir
+>         make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
 > 
-> On Thu, Sep 02, 2021 at 09:29:05PM +0100, Russell King (Oracle) wrote:
-> > On Thu, Sep 02, 2021 at 11:21:24PM +0300, Vladimir Oltean wrote:
-> > > On Thu, Sep 02, 2021 at 09:03:01PM +0100, Russell King (Oracle) wrote:
-> > > > # systemctl list-dependencies networking.service
-> > > > networking.service
-> > > >   ├─ifupdown-pre.service
-> > > >   ├─system.slice
-> > > >   └─network.target
-> > > > # systemctl list-dependencies ifupdown-pre.service
-> > > > ifupdown-pre.service
-> > > >   ├─system.slice
-> > > >   └─systemd-udevd.service
-> > > > 
-> > > > Looking in the service files for a better idea:
-> > > > 
-> > > > networking.service:
-> > > > Requires=ifupdown-pre.service
-> > > > Wants=network.target
-> > > > After=local-fs.target network-pre.target apparmor.service systemd-sysctl.service systemd-modules-load.service ifupdown-pre.service
-> > > > Before=network.target shutdown.target network-online.target
-> > > > 
-> > > > ifupdown-pre.service:
-> > > > Wants=systemd-udevd.service
-> > > > After=systemd-udev-trigger.service
-> > > > Before=network.target
-> > > > 
-> > > > So, the dependency you mention is already present. As is a dependency
-> > > > on udev. The problem is udev does all the automatic module loading
-> > > > asynchronously and in a multithreaded way.
-> > > > 
-> > > > I don't think there's a way to make systemd wait for all module loads
-> > > > to complete.
-> > > 
-> > > So ifupdown-pre.service has a call to "udevadm settle". This "watches
-> > > the udev event queue, and exits if all current events are handled",
-> > > according to the man page. But which current events? ifupdown-pre.service
-> > > does not have the dependency on systemd-modules-load.service, just
-> > > networking.service does. So maybe ifupdown-pre.service does not wait for
-> > > DSA to finish initializing, then it tells networking.service that all is ok.
-> > 
-> > ifupdown-pre.service does have a call to udevadm settle, and that
-> > does get called from what I can tell.
-> > 
-> > systemd-modules-load.service is an entire red herring. The only
-> > module listed in the various modules-load.d directories is "tun"
-> > for openvpn (which isn't currently being used.)
-> > 
-> > As I've already told you (and you seem to have ignored), DSA gets
-> > loaded by udev, not by systemd-modules-load.service.
-> > systemd-modules-load.service is irrelevant to my situation.
-> > 
-> > I think there's a problem with "and exits if all current events are
-> > handled" - does that mean it's fired off a modprobe process which
-> > is in progress, or does that mean that the modprobe process has
-> > completed.
-> > 
-> > Given that we can see that ifup is being run while the DSA module is
-> > still in the middle of probing, the latter interpretation can not be
-> > true - unless systemd is ignoring the dependencies. Or just in
-> > general, systemd being systemd (I have very little faith in systemd
-> > behaving as it should.)
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> So I've set a fresh installation of Debian Buster on my Turris MOX,
-> which has 3 mv88e6xxx switches, and I've put the mv88e6xxx driver inside
-> the rootfs as a module to be loaded by udev based on modaliases just
-> like you've said.  Additionally, the PHY driver is also a module.
-> The kernel is built straight from the v5.13 tag, absolutely no changes.
+> All warnings (new ones prefixed by >>):
 > 
-> Literally the only changes I've done to this system are:
-> 1. install bridge-utils
-> 2. create this file, it is sourced by /etc/network/interfaces:
-> root@debian:~# cat /etc/network/interfaces.d/bridge
-> auto br0
-> iface br0 inet manual
->         bridge_ports lan1 lan2 lan3 lan4 lan5 lan6 lan7 lan8 lan9 lan10 lan11 lan12 lan13 lan14 lan15 lan16 lan17 lan18 lan19 lan20 lan21 lan22 lan23 lan24 sfp
->         bridge_maxwait 0
+>    vmlinux.o: warning: objtool: mce_wrmsrl.constprop.0()+0x6b: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
+>    vmlinux.o: warning: objtool: do_machine_check()+0xb14: call to queue_task_work() leaves .noinstr.text section
+>    vmlinux.o: warning: objtool: exc_machine_check()+0xdb: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
+> >> vmlinux.o: warning: objtool: noist_exc_machine_check()+0x93: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
+>    vmlinux.o: warning: objtool: __context_tracking_enter()+0x95: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
+>    vmlinux.o: warning: objtool: __context_tracking_exit()+0x42: call to __sanitizer_cov_trace_pc() leaves .noinstr.text section
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-Hi Russell
+https://lkml.kernel.org/r/YTHpmGmlo9N%2B1Rs7@hirez.programming.kicks-ass.net
 
-Do you have
+-- 
+Regards/Gruss,
+    Boris.
 
-auto brdsl
-
-in your /etc/network/interfaces?
-
-Looking at /lib/udev/bridge-network-interface it seems it will only do
-hotplug of interfaces if auto is set on the bridge interface. Without
-auto, it only does coldplug. So late appearing switch ports won't get
-added.
-
-      Andrew
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
