@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4E6B4005AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2221B4005AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351019AbhICTRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 15:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48882 "EHLO
+        id S1351013AbhICTRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 15:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349865AbhICTRG (ORCPT
+        with ESMTP id S1350718AbhICTRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 15:17:06 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BB6C0617AE
+        Fri, 3 Sep 2021 15:17:07 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7CC8C0613A4
         for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:15:58 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id u15so4146401wmj.1
+Received: by mail-wr1-x42b.google.com with SMTP id g18so103604wrc.11
         for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:15:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rNu7tGzS3a9nNAG4wYt+tSxCNINIYaiwOvt4CtHF4Gs=;
-        b=Xap9Jdp3nzLYXuzX32nrhw5vkzT1dDYR3MNIXg7pN55dkMpHOBgILXtjoi/0CpNJUT
-         63mcMP6L3e2KSvgdFo0ajFxR8H1fasMGux4Kl/9IeKCkNQPv0R2FLyFGx3OEaD9leGQf
-         uEAVanoTg6Dx0vBBZx4p+zx1769Z/Cujx4m6uPosPv+Z7FoF7zP0gBjRI24O2ZHernDX
-         1y4TAHtQwWRubWdxYKC3prXPHLCKqvyORE4MAYeZUikm10WRQNCRcaB/eSClVKGd7OeF
-         IZ2zDxMz8nW/UDk1lXjimKbEWxVHd1yRHmIgaV0qDyJwidxEM9s2Fi2znGaueMwoJG9Z
-         k/4A==
+        bh=Gr9hQrnF78LEYx+LDXr4fvT/Tvta0pcwUGzK/BOWFIg=;
+        b=T+Q0RgMJO8UULEuW885ISTy6azJWqTTXNJUMlI6tT+OesyjrZDyKpc9kkXIATHs8x7
+         sNzh7VW6jr32x1ARs3YNCaMoDsituRI3zBml5Rwqg8I17vChl9qxkeUXd/5clA7f7ehu
+         tBQERI1093KTYdeM6pqBSCApopXZ/YWCb211/nFXpUWh1jkFjA8f1grtLxh+oUzXggZN
+         +oYgMynN5FFr1X+sTYm+SFjcCBwVGTUPNLm0t8dCy1RfWaS/TRRk1kh3hT0ifD7A/rK6
+         eENcCzoF4BGz5Zw12TWecox4pGuroUUvbdgpZrkdK3Y+tfD7reQTJz0fJZ8EF1n+0Es8
+         C9GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rNu7tGzS3a9nNAG4wYt+tSxCNINIYaiwOvt4CtHF4Gs=;
-        b=r/PvvVSI6J29ee7r0v/Bhm6drCsv5pepTKigNMSKr8Vk8eDmLdKWJ3M8V2Zm73jZhD
-         8P3fCV52sKzsw/JjVi2SBsMBJR4RLFwxmBFSb1E65OJOOQtw3k6//oDznmOiCbWWbBWJ
-         jNB8KMJpVlSPIS1Lk59Rybh4FKyyEFjMYyq4iC1DRNLWSwkmtoOw3aTTm5oGIHBIBfUV
-         cc+I811bUZx+cxWds5MsefaWzzfljOAX07MS86bfI8oOUBR5Tf/wv2ETE79AUvT6cVv1
-         dLXdZOPbZQPeh9qyMcxoysmPDfXbx56MfYoeE7jo8sMKVvClfDPFTA7ZTIRp6jyi+5Bx
-         4y1g==
-X-Gm-Message-State: AOAM5300NWb4Z+wAMaPP+Jy42TChc33lCUKTrW+Q5rpxNcw0sjJ9iFtZ
-        HbfIISkLxXwIsUileLu6Uf4DSQ==
-X-Google-Smtp-Source: ABdhPJxPYLlcKPA8eUsd93XN+XvF6EEahu/0KHEr3E3wj111ZphQbGeXblq1MpJXfQlxXxyOT4tKeA==
-X-Received: by 2002:a1c:a50c:: with SMTP id o12mr273659wme.4.1630696556778;
-        Fri, 03 Sep 2021 12:15:56 -0700 (PDT)
+        bh=Gr9hQrnF78LEYx+LDXr4fvT/Tvta0pcwUGzK/BOWFIg=;
+        b=W+cJxbv4UGfQ4ELt/WOfH5DIJqSBTBCDeN4tTA7a3orbN+ZEQRWGIO9HQLz7W+zhZL
+         NQ4PvBCtlcyorHnAraRau8iOnjMarABQmITpRBEY0UP08/eBTMhasg6QmgRFUVKxXOW0
+         tgFbp/BTwt3JI2afef5eFkd2n5T7lCi5T66wGM4nFg3CQJP4ZpZ0PnzoTi04PmrQ0+DE
+         OEK+USdfkO0ESh9rDctGgQXhL6wRvxlLkfp16HCWU1Xpp7VWVnMyGiEWxSYjSnIbPCGy
+         vAchQFj1kvOkocjXqZ8gul2E20+54nuExppnfeKrDb0XI6VwC6mFVHMpFGsRCU/YtDhF
+         HG4A==
+X-Gm-Message-State: AOAM5332J0asCVCScL01GizpkWJufO90P99eLt1UDGOObPsxzWvAohnK
+        nna9MQ42BDp3m9X6DDH7dnP/NQ==
+X-Google-Smtp-Source: ABdhPJzJmJKPrg51iCvbVIWUE6FI2KsbOXbUadhXn8WZobGvo4C6Vv9r0+YGUea5nuHkpaLwGK4Y3Q==
+X-Received: by 2002:adf:9f0c:: with SMTP id l12mr654657wrf.42.1630696557425;
+        Fri, 03 Sep 2021 12:15:57 -0700 (PDT)
 Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
         by smtp.googlemail.com with ESMTPSA id a133sm253397wme.5.2021.09.03.12.15.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 12:15:56 -0700 (PDT)
+        Fri, 03 Sep 2021 12:15:57 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     gregkh@linuxfoundation.org, mchehab@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
         linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net,
         Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH 5/8] staging: media: zoran: videocode: remove procfs
-Date:   Fri,  3 Sep 2021 19:15:37 +0000
-Message-Id: <20210903191540.3052775-6-clabbe@baylibre.com>
+Subject: [PATCH 6/8] staging: media: zoran: fusion all modules
+Date:   Fri,  3 Sep 2021 19:15:38 +0000
+Message-Id: <20210903191540.3052775-7-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210903191540.3052775-1-clabbe@baylibre.com>
 References: <20210903191540.3052775-1-clabbe@baylibre.com>
@@ -65,92 +65,396 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now we have a debugfs, we can remove all PROCFS stuff.
-We keep videocodec_debugfs_show(), it will be used later
+The zoran driver is split in many modules, but this lead to some
+problems.
+One of them is that load order is incorrect when everything is built-in.
+
+Having more than one module is useless, so fusion all zoran modules in
+one.
 
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- drivers/staging/media/zoran/videocodec.c | 24 ++----------------------
- drivers/staging/media/zoran/videocodec.h |  5 +++++
- 2 files changed, 7 insertions(+), 22 deletions(-)
+ drivers/staging/media/zoran/Kconfig      | 14 +++----
+ drivers/staging/media/zoran/Makefile     |  8 ++--
+ drivers/staging/media/zoran/videocodec.c | 28 --------------
+ drivers/staging/media/zoran/zoran_card.c | 48 +++++++++++++++++++++---
+ drivers/staging/media/zoran/zr36016.c    | 11 +-----
+ drivers/staging/media/zoran/zr36016.h    |  2 +
+ drivers/staging/media/zoran/zr36050.c    | 12 +-----
+ drivers/staging/media/zoran/zr36050.h    |  2 +
+ drivers/staging/media/zoran/zr36060.c    | 11 +-----
+ drivers/staging/media/zoran/zr36060.h    |  2 +
+ 10 files changed, 66 insertions(+), 72 deletions(-)
 
+diff --git a/drivers/staging/media/zoran/Kconfig b/drivers/staging/media/zoran/Kconfig
+index 7d2d3c2431b1..8eacdc00b081 100644
+--- a/drivers/staging/media/zoran/Kconfig
++++ b/drivers/staging/media/zoran/Kconfig
+@@ -14,7 +14,7 @@ config VIDEO_ZORAN
+ 	  module will be called zr36067.
+ 
+ config VIDEO_ZORAN_DC30
+-	tristate "Pinnacle/Miro DC30(+) support"
++	bool "Pinnacle/Miro DC30(+) support"
+ 	depends on VIDEO_ZORAN
+ 	select VIDEO_ADV7175 if MEDIA_SUBDRV_AUTOSELECT
+ 	select VIDEO_VPX3220 if MEDIA_SUBDRV_AUTOSELECT
+@@ -24,7 +24,7 @@ config VIDEO_ZORAN_DC30
+ 	  zr36050 MJPEG codec and zr36016 VFE.
+ 
+ config VIDEO_ZORAN_ZR36060
+-	tristate "Zoran ZR36060"
++	bool "Zoran ZR36060"
+ 	depends on VIDEO_ZORAN
+ 	help
+ 	  Say Y to support Zoran boards based on 36060 chips.
+@@ -32,7 +32,7 @@ config VIDEO_ZORAN_ZR36060
+ 	  and 33 R10 and AverMedia 6 boards.
+ 
+ config VIDEO_ZORAN_BUZ
+-	tristate "Iomega Buz support"
++	bool "Iomega Buz support"
+ 	depends on VIDEO_ZORAN_ZR36060
+ 	select VIDEO_SAA711X if MEDIA_SUBDRV_AUTOSELECT
+ 	select VIDEO_SAA7185 if MEDIA_SUBDRV_AUTOSELECT
+@@ -40,7 +40,7 @@ config VIDEO_ZORAN_BUZ
+ 	  Support for the Iomega Buz MJPEG capture/playback card.
+ 
+ config VIDEO_ZORAN_DC10
+-	tristate "Pinnacle/Miro DC10(+) support"
++	bool "Pinnacle/Miro DC10(+) support"
+ 	depends on VIDEO_ZORAN_ZR36060
+ 	select VIDEO_SAA7110 if MEDIA_SUBDRV_AUTOSELECT
+ 	select VIDEO_ADV7175 if MEDIA_SUBDRV_AUTOSELECT
+@@ -49,7 +49,7 @@ config VIDEO_ZORAN_DC10
+ 	  card.
+ 
+ config VIDEO_ZORAN_LML33
+-	tristate "Linux Media Labs LML33 support"
++	bool "Linux Media Labs LML33 support"
+ 	depends on VIDEO_ZORAN_ZR36060
+ 	select VIDEO_BT819 if MEDIA_SUBDRV_AUTOSELECT
+ 	select VIDEO_BT856 if MEDIA_SUBDRV_AUTOSELECT
+@@ -58,7 +58,7 @@ config VIDEO_ZORAN_LML33
+ 	  card.
+ 
+ config VIDEO_ZORAN_LML33R10
+-	tristate "Linux Media Labs LML33R10 support"
++	bool "Linux Media Labs LML33R10 support"
+ 	depends on VIDEO_ZORAN_ZR36060
+ 	select VIDEO_SAA711X if MEDIA_SUBDRV_AUTOSELECT
+ 	select VIDEO_ADV7170 if MEDIA_SUBDRV_AUTOSELECT
+@@ -67,7 +67,7 @@ config VIDEO_ZORAN_LML33R10
+ 	  card.
+ 
+ config VIDEO_ZORAN_AVS6EYES
+-	tristate "AverMedia 6 Eyes support"
++	bool "AverMedia 6 Eyes support"
+ 	depends on VIDEO_ZORAN_ZR36060
+ 	select VIDEO_BT856 if MEDIA_SUBDRV_AUTOSELECT
+ 	select VIDEO_BT866 if MEDIA_SUBDRV_AUTOSELECT
+diff --git a/drivers/staging/media/zoran/Makefile b/drivers/staging/media/zoran/Makefile
+index 7023158e3892..9603bac0195c 100644
+--- a/drivers/staging/media/zoran/Makefile
++++ b/drivers/staging/media/zoran/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ zr36067-objs	:=	zoran_device.o \
+-			zoran_driver.o zoran_card.o
++			zoran_driver.o zoran_card.o videocodec.o
+ 
+-obj-$(CONFIG_VIDEO_ZORAN) += zr36067.o videocodec.o
+-obj-$(CONFIG_VIDEO_ZORAN_DC30) += zr36050.o zr36016.o
+-obj-$(CONFIG_VIDEO_ZORAN_ZR36060) += zr36060.o
++obj-$(CONFIG_VIDEO_ZORAN) += zr36067.o
++zr36067-$(CONFIG_VIDEO_ZORAN_DC30) += zr36050.o zr36016.o
++zr36067-$(CONFIG_VIDEO_ZORAN_ZR36060) += zr36060.o
 diff --git a/drivers/staging/media/zoran/videocodec.c b/drivers/staging/media/zoran/videocodec.c
-index 31019b5f377e..3d5a83a07e07 100644
+index 3d5a83a07e07..7350d7747516 100644
 --- a/drivers/staging/media/zoran/videocodec.c
 +++ b/drivers/staging/media/zoran/videocodec.c
-@@ -16,14 +16,6 @@
- #include <linux/types.h>
- #include <linux/slab.h>
+@@ -8,8 +8,6 @@
+  * (c) 2002 Wolfgang Scherr <scherr@net4you.at>
+  */
  
--// kernel config is here (procfs flag)
+-#define VIDEOCODEC_VERSION "v0.2"
 -
--#ifdef CONFIG_PROC_FS
--#include <linux/proc_fs.h>
--#include <linux/seq_file.h>
--#include <linux/uaccess.h>
--#endif
--
- #include "videocodec.h"
- 
- static int videocodec_debug;
-@@ -265,8 +257,8 @@ int videocodec_unregister(const struct videocodec *codec)
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/init.h>
+@@ -119,7 +117,6 @@ struct videocodec *videocodec_attach(struct videocodec_master *master)
+ 	kfree(codec);
+ 	return NULL;
  }
- EXPORT_SYMBOL(videocodec_unregister);
+-EXPORT_SYMBOL(videocodec_attach);
  
--#ifdef CONFIG_PROC_FS
--static int proc_videocodecs_show(struct seq_file *m, void *v)
-+#ifdef CONFIG_VIDEO_ZORAN_DEBUG
-+int videocodec_debugfs_show(struct seq_file *m)
+ int videocodec_detach(struct videocodec *codec)
  {
- 	struct codec_list *h = codeclist_top;
- 	struct attached_list *a;
-@@ -300,25 +292,13 @@ static int proc_videocodecs_show(struct seq_file *m, void *v)
- /* ===================== */
- static int __init videocodec_init(void)
+@@ -175,7 +172,6 @@ int videocodec_detach(struct videocodec *codec)
+ 	pr_err("%s: given codec not found!\n", __func__);
+ 	return -EINVAL;
+ }
+-EXPORT_SYMBOL(videocodec_detach);
+ 
+ int videocodec_register(const struct videocodec *codec)
  {
--#ifdef CONFIG_PROC_FS
--	static struct proc_dir_entry *videocodec_proc_entry;
--#endif
+@@ -208,7 +204,6 @@ int videocodec_register(const struct videocodec *codec)
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL(videocodec_register);
+ 
+ int videocodec_unregister(const struct videocodec *codec)
+ {
+@@ -255,7 +250,6 @@ int videocodec_unregister(const struct videocodec *codec)
+ 	pr_err("%s: given codec not found!\n", __func__);
+ 	return -EINVAL;
+ }
+-EXPORT_SYMBOL(videocodec_unregister);
+ 
+ #ifdef CONFIG_VIDEO_ZORAN_DEBUG
+ int videocodec_debugfs_show(struct seq_file *m)
+@@ -286,25 +280,3 @@ int videocodec_debugfs_show(struct seq_file *m)
+ 	return 0;
+ }
+ #endif
 -
- 	pr_info("Linux video codec intermediate layer: %s\n", VIDEOCODEC_VERSION);
+-/* ===================== */
+-/* hook in driver module */
+-/* ===================== */
+-static int __init videocodec_init(void)
+-{
+-	pr_info("Linux video codec intermediate layer: %s\n", VIDEOCODEC_VERSION);
+-
+-	return 0;
+-}
+-
+-static void __exit videocodec_exit(void)
+-{
+-}
+-
+-module_init(videocodec_init);
+-module_exit(videocodec_exit);
+-
+-MODULE_AUTHOR("Wolfgang Scherr <scherr@net4you.at>");
+-MODULE_DESCRIPTION("Intermediate API module for video codecs "
+-		   VIDEOCODEC_VERSION);
+-MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
+index 1ed8ed2f4f7f..7b2e1d1c4622 100644
+--- a/drivers/staging/media/zoran/zoran_card.c
++++ b/drivers/staging/media/zoran/zoran_card.c
+@@ -29,6 +29,9 @@
+ #include "zoran.h"
+ #include "zoran_card.h"
+ #include "zoran_device.h"
++#include "zr36016.h"
++#include "zr36050.h"
++#include "zr36060.h"
  
--#ifdef CONFIG_PROC_FS
--	videocodec_proc_entry = proc_create_single("videocodecs", 0, NULL, proc_videocodecs_show);
--	if (!videocodec_proc_entry)
--		pr_err("videocodec: can't init procfs.\n");
--#endif
+ extern const struct zoran_format zoran_formats[];
+ 
+@@ -266,6 +269,39 @@ static const char *codecid_to_modulename(u16 codecid)
+ 	return name;
+ }
+ 
++static int load_codec(struct zoran *zr, u16 codecid)
++{
++	switch (codecid) {
++	case CODEC_TYPE_ZR36060:
++#ifdef CONFIG_VIDEO_ZORAN_ZR36060
++		return zr36060_init_module();
++#else
++		pci_err(zr->pci_dev, "ZR36060 support is not enabled\n");
++		return -EINVAL;
++#endif
++		break;
++	case CODEC_TYPE_ZR36050:
++#ifdef CONFIG_VIDEO_ZORAN_DC30
++		return zr36050_init_module();
++#else
++		pci_err(zr->pci_dev, "ZR36050 support is not enabled\n");
++		return -EINVAL;
++#endif
++		break;
++	case CODEC_TYPE_ZR36016:
++#ifdef CONFIG_VIDEO_ZORAN_DC30
++		return zr36016_init_module();
++#else
++		pci_err(zr->pci_dev, "ZR36016 support is not enabled\n");
++		return -EINVAL;
++#endif
++		break;
++	}
++
++	pci_err(zr->pci_dev, "unknown codec id %x\n", codecid);
++	return -EINVAL;
++}
++
+ // struct tvnorm {
+ //      u16 wt, wa, h_start, h_sync_start, ht, ha, v_start;
+ // };
+@@ -1078,6 +1114,8 @@ static int zoran_debugfs_show(struct seq_file *seq, void *v)
+ 
+ 	seq_printf(seq, "Prepared %u\n", zr->prepared);
+ 	seq_printf(seq, "Queued %u\n", zr->queued);
++
++	videocodec_debugfs_show(seq);
  	return 0;
  }
  
- static void __exit videocodec_exit(void)
+@@ -1262,17 +1300,17 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	if (zr->card.video_codec) {
+ 		codec_name = codecid_to_modulename(zr->card.video_codec);
+ 		if (codec_name) {
+-			result = request_module(codec_name);
+-			if (result)
+-				pci_err(pdev, "failed to load modules %s: %d\n", codec_name, result);
++			result = load_codec(zr, zr->card.video_codec);
++			if (result < 0)
++				pci_err(pdev, "failed to load codec %s: %d\n", codec_name, result);
+ 		}
+ 	}
+ 	if (zr->card.video_vfe) {
+ 		vfe_name = codecid_to_modulename(zr->card.video_vfe);
+ 		if (vfe_name) {
+-			result = request_module(vfe_name);
++			result = load_codec(zr, zr->card.video_vfe);
+ 			if (result < 0)
+-				pci_err(pdev, "failed to load modules %s: %d\n", vfe_name, result);
++				pci_err(pdev, "failed to load codec %s: %d\n", vfe_name, result);
+ 		}
+ 	}
+ 
+diff --git a/drivers/staging/media/zoran/zr36016.c b/drivers/staging/media/zoran/zr36016.c
+index 50605460a44b..adf738b5a1d5 100644
+--- a/drivers/staging/media/zoran/zr36016.c
++++ b/drivers/staging/media/zoran/zr36016.c
+@@ -409,14 +409,14 @@ static const struct videocodec zr36016_codec = {
+    HOOK IN DRIVER AS KERNEL MODULE
+    ========================================================================= */
+ 
+-static int __init zr36016_init_module(void)
++int zr36016_init_module(void)
  {
--#ifdef CONFIG_PROC_FS
--	remove_proc_entry("videocodecs", NULL);
--#endif
+ 	//dprintk(1, "ZR36016 driver %s\n",ZR016_VERSION);
+ 	zr36016_codecs = 0;
+ 	return videocodec_register(&zr36016_codec);
  }
  
- module_init(videocodec_init);
-diff --git a/drivers/staging/media/zoran/videocodec.h b/drivers/staging/media/zoran/videocodec.h
-index 8a5003dda9f4..f2e17566795e 100644
---- a/drivers/staging/media/zoran/videocodec.h
-+++ b/drivers/staging/media/zoran/videocodec.h
-@@ -123,6 +123,7 @@ M                       zr36055[1] 0001 0000c001 00000000 (zr36050[1])
- #ifndef __LINUX_VIDEOCODEC_H
- #define __LINUX_VIDEOCODEC_H
+-static void __exit zr36016_cleanup_module(void)
++void zr36016_cleanup_module(void)
+ {
+ 	if (zr36016_codecs) {
+ 		dprintk(1,
+@@ -425,10 +425,3 @@ static void __exit zr36016_cleanup_module(void)
+ 	}
+ 	videocodec_unregister(&zr36016_codec);
+ }
+-
+-module_init(zr36016_init_module);
+-module_exit(zr36016_cleanup_module);
+-
+-MODULE_AUTHOR("Wolfgang Scherr <scherr@net4you.at>");
+-MODULE_DESCRIPTION("Driver module for ZR36016 video frontends");
+-MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/media/zoran/zr36016.h b/drivers/staging/media/zoran/zr36016.h
+index 1475f971cc24..04afba35669d 100644
+--- a/drivers/staging/media/zoran/zr36016.h
++++ b/drivers/staging/media/zoran/zr36016.h
+@@ -89,4 +89,6 @@ struct zr36016 {
+ #define ZR016_SIGN           0x02
+ #define ZR016_YMCS           0x01
  
-+#include <linux/debugfs.h>
- #include <linux/videodev2.h>
++int zr36016_init_module(void);
++void zr36016_cleanup_module(void);
+ #endif				/*fndef ZR36016_H */
+diff --git a/drivers/staging/media/zoran/zr36050.c b/drivers/staging/media/zoran/zr36050.c
+index 4dc7927fefc3..e36eff4a798c 100644
+--- a/drivers/staging/media/zoran/zr36050.c
++++ b/drivers/staging/media/zoran/zr36050.c
+@@ -817,14 +817,14 @@ static const struct videocodec zr36050_codec = {
+    HOOK IN DRIVER AS KERNEL MODULE
+    ========================================================================= */
  
- #define CODEC_DO_COMPRESSION 0
-@@ -305,4 +306,8 @@ extern int videocodec_unregister(const struct videocodec *);
+-static int __init zr36050_init_module(void)
++int zr36050_init_module(void)
+ {
+ 	//dprintk(1, "ZR36050 driver %s\n",ZR050_VERSION);
+ 	zr36050_codecs = 0;
+ 	return videocodec_register(&zr36050_codec);
+ }
  
- /* the other calls are directly done via the videocodec structure! */
+-static void __exit zr36050_cleanup_module(void)
++void zr36050_cleanup_module(void)
+ {
+ 	if (zr36050_codecs) {
+ 		dprintk(1,
+@@ -833,11 +833,3 @@ static void __exit zr36050_cleanup_module(void)
+ 	}
+ 	videocodec_unregister(&zr36050_codec);
+ }
+-
+-module_init(zr36050_init_module);
+-module_exit(zr36050_cleanup_module);
+-
+-MODULE_AUTHOR("Wolfgang Scherr <scherr@net4you.at>");
+-MODULE_DESCRIPTION("Driver module for ZR36050 jpeg processors "
+-		   ZR050_VERSION);
+-MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/media/zoran/zr36050.h b/drivers/staging/media/zoran/zr36050.h
+index 8f972d045b58..f9b58f4c77b9 100644
+--- a/drivers/staging/media/zoran/zr36050.h
++++ b/drivers/staging/media/zoran/zr36050.h
+@@ -160,4 +160,6 @@ struct zr36050 {
+ #define ZR050_U_COMPONENT         1
+ #define ZR050_V_COMPONENT         2
  
-+#ifdef CONFIG_VIDEO_ZORAN_DEBUG
-+int videocodec_debugfs_show(struct seq_file *m);
-+#endif
-+
- #endif				/*ifndef __LINUX_VIDEOCODEC_H */
++int zr36050_init_module(void);
++void zr36050_cleanup_module(void);
+ #endif				/*fndef ZR36050_H */
+diff --git a/drivers/staging/media/zoran/zr36060.c b/drivers/staging/media/zoran/zr36060.c
+index 7904d5b1f402..0a6a8c985137 100644
+--- a/drivers/staging/media/zoran/zr36060.c
++++ b/drivers/staging/media/zoran/zr36060.c
+@@ -846,13 +846,13 @@ static const struct videocodec zr36060_codec = {
+ 	// others are not used
+ };
+ 
+-static int __init zr36060_init_module(void)
++int zr36060_init_module(void)
+ {
+ 	zr36060_codecs = 0;
+ 	return videocodec_register(&zr36060_codec);
+ }
+ 
+-static void __exit zr36060_cleanup_module(void)
++void zr36060_cleanup_module(void)
+ {
+ 	if (zr36060_codecs) {
+ 		dprintk(1,
+@@ -863,10 +863,3 @@ static void __exit zr36060_cleanup_module(void)
+ 	/* however, we can't just stay alive */
+ 	videocodec_unregister(&zr36060_codec);
+ }
+-
+-module_init(zr36060_init_module);
+-module_exit(zr36060_cleanup_module);
+-
+-MODULE_AUTHOR("Laurent Pinchart <laurent.pinchart@skynet.be>");
+-MODULE_DESCRIPTION("Driver module for ZR36060 jpeg processors " ZR060_VERSION);
+-MODULE_LICENSE("GPL");
+diff --git a/drivers/staging/media/zoran/zr36060.h b/drivers/staging/media/zoran/zr36060.h
+index d2cdc26bf625..fbf5429534ac 100644
+--- a/drivers/staging/media/zoran/zr36060.h
++++ b/drivers/staging/media/zoran/zr36060.h
+@@ -198,4 +198,6 @@ struct zr36060 {
+ #define ZR060_SR_H_SCALE2		 BIT(0)
+ #define ZR060_SR_H_SCALE4		(2 << 0)
+ 
++int zr36060_init_module(void);
++void zr36060_cleanup_module(void);
+ #endif				/*fndef ZR36060_H */
 -- 
 2.32.0
 
