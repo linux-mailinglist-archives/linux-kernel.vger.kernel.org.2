@@ -2,74 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466A7400446
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23389400448
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 19:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349572AbhICRqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 13:46:40 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:42998 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhICRqi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 13:46:38 -0400
-Received: by mail-ot1-f44.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so7386563otk.9;
-        Fri, 03 Sep 2021 10:45:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9w3q69G1Vy9V32oJP3rKAD+3FAp+dB9LDW5+LFzDt3k=;
-        b=LfUm90IdAg4H+L5/hjwMMNaFBJYiTmMuAds2b9JFBf7GHzf2RmdhGhkc8l4tdQlKaB
-         zJzlN5l8wICJ65xS01Fi+2oi2w2vTurHJZ1eNyAAZMkWnJxQozokD14UTTjCHAikZxmz
-         YCZUtAVxOUxzNGJuFQOZW1Iw1sTkOAHZxry2/JUiIwpQnZqbUSpXvJD8ZuKgDCAIpxeg
-         LU0EDHZqGZkIlFHbxY98/RBq7l6GXgMKzP1K4zFNQFQnfOX7UhFqstAYbyQsvjb97ggn
-         vb3fveZTsh6JvJxRPGEmk25IZlLEbq1aB+ztA888LtuTHFtdPb0lnGqDZLITPqfRWm3y
-         vg7g==
-X-Gm-Message-State: AOAM531Cd8n7/WfPXt57q+pK5KqKk2MDWgaCqi4XS7qJkS0Vd6Kw58Gl
-        s/SVWtRr6rrXtGoj9stZqJN4gglNAQ==
-X-Google-Smtp-Source: ABdhPJyxKMiNv1GaaGO+swMY3OUKvOq/R6tpGq1nY9GWp4sitfmq8bXq2UPaZZoSPazdN9CALaxLjg==
-X-Received: by 2002:a9d:5a8e:: with SMTP id w14mr184879oth.65.1630691138465;
-        Fri, 03 Sep 2021 10:45:38 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id l3sm1084209otd.79.2021.09.03.10.45.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 10:45:38 -0700 (PDT)
-Received: (nullmailer pid 3156938 invoked by uid 1000);
-        Fri, 03 Sep 2021 17:45:37 -0000
-Date:   Fri, 3 Sep 2021 12:45:37 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     York Sun <york.sun@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        Li Yang <leoyang.li@nxp.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Borislav Petkov <bp@alien8.de>,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: memory: fsl: convert DDR controller to
- dtschema
-Message-ID: <YTJfQaOZUdz6LFpe@robh.at.kernel.org>
-References: <20210826113049.92962-1-krzysztof.kozlowski@canonical.com>
+        id S1349790AbhICRsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 13:48:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43896 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229789AbhICRsY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 13:48:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB5E4610F9;
+        Fri,  3 Sep 2021 17:47:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630691243;
+        bh=GHPzr9KnRPIHt8M4CiAcDe/rlIXPuUPBCeZTgZ5vpIQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=c3CYMEUbv15YTiTAMOAltio0RwKJ9DpXmmhtIvrga36APhG0IAGJItdZ1cEzzosDW
+         HqtMQZBKd2n857R7HUdbp9lnmAFDdIyDOuOSZTqvvtK3SozaG0A8EoSzYW1AshwgJk
+         s7oUKeQtqCEy7fxTmOFfUD4t2I1Kgcut6D7WjtA6ZAyMpODKLQX7yC/IHSkdfWftle
+         vSVC+Un7bVTgdsDfqDH0YctarxpA8THtIUF7LzKoXtcmnQBwqxzd6/GYLepexCPRpq
+         vRNpFqg8Ma4f+0yUJ0wXOFFa5OlHQ9sJOvokuIWmJnkUxAzT1S+SxcfYia+F8z9TmU
+         xxKnOg8TEOGuA==
+Received: by mail-oi1-f169.google.com with SMTP id w144so106866oie.13;
+        Fri, 03 Sep 2021 10:47:23 -0700 (PDT)
+X-Gm-Message-State: AOAM5329qerYbnEpHa0mHOEH3mWxK4xyhHMAArJoDBImI2woIAo2MYGp
+        AK0YnqqAgfrl3lTijLJPDr42v6ZxIwCLBbCbUyQ=
+X-Google-Smtp-Source: ABdhPJy6C2mSGLCYvOgLLumuIFftDtf2mI3ojWp06p8qQ2pdtqK0tyt/TnAtFrwSR5JrtP1FIXgulu5bxTnZi49tjwk=
+X-Received: by 2002:a54:418e:: with SMTP id 14mr29159oiy.174.1630691242892;
+ Fri, 03 Sep 2021 10:47:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210826113049.92962-1-krzysztof.kozlowski@canonical.com>
+References: <20210730134552.853350-1-bert@biot.com> <20210730134552.853350-5-bert@biot.com>
+ <CAK8P3a3OuJ3pMSdEA4Rt3aWvvuX2+_Bg5x7-kZ1++fvvJvgGxA@mail.gmail.com>
+ <CAMj1kXFK+HoouMMBbHxEgm-zQqKa6QMS6keeZmhpXTc4FCy8fQ@mail.gmail.com> <7d3e2c5b-931c-1f82-77a3-fc51268f1986@nbd.name>
+In-Reply-To: <7d3e2c5b-931c-1f82-77a3-fc51268f1986@nbd.name>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 3 Sep 2021 19:47:12 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHGfTSv+95NJF1BPS76M6-6FF9GQk24L2LLG9Epx4FpfA@mail.gmail.com>
+Message-ID: <CAMj1kXHGfTSv+95NJF1BPS76M6-6FF9GQk24L2LLG9Epx4FpfA@mail.gmail.com>
+Subject: Re: [PATCH 4/5] ARM: Add basic support for EcoNet EN7523 SoC
+To:     Felix Fietkau <nbd@nbd.name>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Bert Vermeulen <bert@biot.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        John Crispin <john@phrozen.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Mike Rapoport <rppt@kernel.org>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 26 Aug 2021 13:30:47 +0200, Krzysztof Kozlowski wrote:
-> Convert Freescale/NXP DDR memory controller bindings to DT schema format
-> using json-schema.
-> 
-> Previous bindings were not listing all compatibles, so scan through
-> devicetree sources and drivers to get these.
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  .../bindings/memory-controllers/fsl/ddr.txt   | 29 -------
->  .../memory-controllers/fsl/fsl,ddr.yaml       | 83 +++++++++++++++++++
->  2 files changed, 83 insertions(+), 29 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/ddr.txt
->  create mode 100644 Documentation/devicetree/bindings/memory-controllers/fsl/fsl,ddr.yaml
-> 
+On Fri, 3 Sept 2021 at 18:20, Felix Fietkau <nbd@nbd.name> wrote:
+>
+>
+> On 2021-08-01 18:44, Ard Biesheuvel wrote:
+> > On Fri, 30 Jul 2021 at 16:48, Arnd Bergmann <arnd@arndb.de> wrote:
+> >>
+> >> Why is this needed?
+> >>
+> >> Note also the comment directly above it exlaining
+> >> # Text offset. This list is sorted numerically by address in order to
+> >> # provide a means to avoid/resolve conflicts in multi-arch kernels.
+> >>
+> >
+> > Yes, please drop this - it is a horrible hack and it's already quite
+> > disappointing that we are stuck with it for the foreseeable future.
+> >
+> > So I assume the purpose of this is to protect the first 128k of DRAM
+> > to be protected from being overwritten by the decompressor?
+> >
+> > It would be best to move this reserved region elsewhere, but I can
+> > understand that this is no longer an option. So the alternatives are
+> > - omit this window from the /memory node, and rely on Geert's recent
+> > decompressor changes which make it discover the usable memory from the
+> > DT, or
+> > - better would be to use a /memreserve/ here (which you may already
+> > have?), and teach the newly added decompressor code to take those into
+> > account when choosing the target window for decompressing the kernel.
+> I looked into this issue myself and found that this approach has a
+> significant drawback: 2 MiB of RAM is permanently wasted for something
+> that only needs to be preserved during boot time.
+>
 
-Applied, thanks!
+How so? If that memory region carries your PSCI implementation, it
+should be preserved permanently. So at least the 512k are permanently
+reserved.
+
+> If the first 256 or 512 KiB of RAM are reserved in the decompressor, it
+> means that the first 2 MiB need to be reserved, because that's the
+> granularity for the kernel page mapping when the MMU is turned on.
+>
+
+Indeed.
+
+> If we reserve it, we also need to need to take it out of the physical
+> RAM address range, so there's no way to reclaim it later.
+>
+> On the other hand, with the simple textofs solution, I believe it gets
+> freed in a late initcall, making it usable.
+>
+> So what's the right approach to deal with this?
+>
+
+The right solution here is to fix your firmware/bootloader so that the
+PSCI reserved region is moved to the top of memory. Adding more
+TEXT_OFFSET hacks is really not the right approach here.
