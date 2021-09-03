@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CFE1400737
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 23:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EFE400740
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 23:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350352AbhICVBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 17:01:06 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:46434 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350205AbhICVBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 17:01:02 -0400
-Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1mMGI2-0007Iw-D3; Fri, 03 Sep 2021 22:59:58 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Miles Chen <miles.chen@mediatek.com>
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
-        Miles Chen <miles.chen@mediatek.com>
-Subject: Re: [PATCH] clk: rockchip: use module_platform_driver_probe
-Date:   Fri, 03 Sep 2021 22:59:57 +0200
-Message-ID: <1764446.vrLGdHa7mH@diego>
-In-Reply-To: <20210902075713.7563-1-miles.chen@mediatek.com>
-References: <20210902075713.7563-1-miles.chen@mediatek.com>
+        id S234878AbhICVHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 17:07:03 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:52922 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232927AbhICVHB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 17:07:01 -0400
+Date:   Fri, 03 Sep 2021 21:05:58 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630703159;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=EUnjBpEMZ7i4sY4cYTSFcAbg/ETtTZieay4ENTVaTas=;
+        b=MDr+WwdB6Fff+XNg9UzOEIrByFd3xWXI5REb84rL2G6+6ZuOs0KQNjXWQW3EjZdHGpJD/1
+        qnkOUSh/02ziSE3zKBCRpkZZAW44Q47ChauuJEc1BIbZOTmUXF6JOPMA6hJYeVmFPypE+9
+        Q41gdOP4wCWr81d6LXiztDES4hhi/t0NpA/7RJlAjUnXWbjtZPVlNCVkn8fVxqcaUOM0vp
+        C1tPh4ssiPrKsjhP6x6YyA+98TAFipEGzDhz0d8KFEJelNtiPKSFrU/+Gg8Nw7wvJ0fUxU
+        ukKYYmloiRkX5ZG7VOCuDKrDr7NZa0plQAHxcY8knqIMKIWsjUtJHg9bUl4Gfw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630703159;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=EUnjBpEMZ7i4sY4cYTSFcAbg/ETtTZieay4ENTVaTas=;
+        b=f/oXY2K6AZVKvI3AP1sZcjcTj7BphyPocCqTZrX/2QWxIrhYznilKXpC6ttD7NoUZTu4CX
+        5g0bwoBqIYEgQvAw==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] futex: Remove unused variable 'vpid' in
+ futex_proxy_trylock_atomic()
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Message-ID: <163070315821.25758.10852043423900886118.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, 2. September 2021, 09:57:13 CEST schrieb Miles Chen:
-> Replace builtin_platform_driver_probe with module_platform_driver_probe
-> because that rk3399 and rk3568 can be built as kernel modules.
-> 
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+The following commit has been merged into the locking/urgent branch of tip:
 
-on both rk3399 and rk3568:
-Tested-by: Heiko Stuebner <heiko@sntech.de>
+Commit-ID:     d66e3edee7af87fe212df611ab9846b987a5070f
+Gitweb:        https://git.kernel.org/tip/d66e3edee7af87fe212df611ab9846b987a5070f
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Fri, 03 Sep 2021 22:47:06 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Fri, 03 Sep 2021 23:00:22 +02:00
 
-and also
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+futex: Remove unused variable 'vpid' in futex_proxy_trylock_atomic()
 
+The recent bug fix left the variable 'vpid' and an assignment to it around,
+but the variable is otherwise unused.
 
-Heiko
+clang dose not complain even with W=1, but gcc exposed this.
 
-> ---
->  drivers/clk/rockchip/clk-rk3399.c | 2 +-
->  drivers/clk/rockchip/clk-rk3568.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clk/rockchip/clk-rk3399.c b/drivers/clk/rockchip/clk-rk3399.c
-> index 62a4f2543960..a5169156f1d2 100644
-> --- a/drivers/clk/rockchip/clk-rk3399.c
-> +++ b/drivers/clk/rockchip/clk-rk3399.c
-> @@ -1653,7 +1653,7 @@ static struct platform_driver clk_rk3399_driver = {
->  		.suppress_bind_attrs = true,
->  	},
->  };
-> -builtin_platform_driver_probe(clk_rk3399_driver, clk_rk3399_probe);
-> +module_platform_driver_probe(clk_rk3399_driver, clk_rk3399_probe);
->  
->  MODULE_DESCRIPTION("Rockchip RK3399 Clock Driver");
->  MODULE_LICENSE("GPL");
-> diff --git a/drivers/clk/rockchip/clk-rk3568.c b/drivers/clk/rockchip/clk-rk3568.c
-> index 75ca855e720d..939e7079c334 100644
-> --- a/drivers/clk/rockchip/clk-rk3568.c
-> +++ b/drivers/clk/rockchip/clk-rk3568.c
-> @@ -1719,7 +1719,7 @@ static struct platform_driver clk_rk3568_driver = {
->  		.suppress_bind_attrs = true,
->  	},
->  };
-> -builtin_platform_driver_probe(clk_rk3568_driver, clk_rk3568_probe);
-> +module_platform_driver_probe(clk_rk3568_driver, clk_rk3568_probe);
->  
->  MODULE_DESCRIPTION("Rockchip RK3568 Clock Driver");
->  MODULE_LICENSE("GPL");
-> 
+Fixes: 4f07ec0d76f2 ("futex: Prevent inconsistent state and exit race")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ kernel/futex.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-
-
-
+diff --git a/kernel/futex.c b/kernel/futex.c
+index a316dce..c15ad27 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -2034,7 +2034,7 @@ futex_proxy_trylock_atomic(u32 __user *pifutex, struct futex_hash_bucket *hb1,
+ {
+ 	struct futex_q *top_waiter = NULL;
+ 	u32 curval;
+-	int ret, vpid;
++	int ret;
+ 
+ 	if (get_futex_value_locked(&curval, pifutex))
+ 		return -EFAULT;
+@@ -2079,7 +2079,6 @@ futex_proxy_trylock_atomic(u32 __user *pifutex, struct futex_hash_bucket *hb1,
+ 	 * the user space lock can be acquired then PI state is attached to
+ 	 * the new owner (@top_waiter->task) when @set_waiters is true.
+ 	 */
+-	vpid = task_pid_vnr(top_waiter->task);
+ 	ret = futex_lock_pi_atomic(pifutex, hb2, key2, ps, top_waiter->task,
+ 				   exiting, set_waiters);
+ 	if (ret == 1) {
