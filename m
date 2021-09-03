@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C02D4005A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E434005A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 21:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350670AbhICTRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 15:17:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48834 "EHLO
+        id S1350729AbhICTRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 15:17:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350625AbhICTQ4 (ORCPT
+        with ESMTP id S1350643AbhICTQ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 15:16:56 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F769C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:15:56 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id j17-20020a05600c1c1100b002e754875260so197752wms.4
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:15:56 -0700 (PDT)
+        Fri, 3 Sep 2021 15:16:59 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 146FCC06179A
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 12:15:57 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id x6so96551wrv.13
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 12:15:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZX+m9eRP3G6qa3o26UuCwjfzdvb0rxacvbcUwg9LjVM=;
-        b=Ns2hVXrhoznNB3oQH1t3+j6ATt0VKG0o6PldIrMPznDbonpNc1JD3nxHMg2SOs8UB8
-         BEJjTrpy4wiOEyUr11OotV8A6rA4sifBneYuht28Gc5LpQI9C+bPdJBSE6ikH5bmDNGw
-         cqzxmpIGpbK7/VhLW70smCjFmbueWXY/fc7MfM+Yo1sG39GmR9+QMyasxlMaKklG5Fa9
-         YKT09M1sYE4rW2rJLeVh/AkKNItUQk636prFyQ7ozincLTr+iQbEo9cuWtfCqbFvC++B
-         trzuWRKuU4MdJ04uS0RxcaGjecHNZL6OGlx33M5+rYVeDG0ngluExiFl0ZClBTh/zNXG
-         0hMQ==
+        bh=UWYtJJBsa0LLLZRoFXWiICK8It/s64t7LfobsR7d4kA=;
+        b=rB986yscxcriQHyHhrHHPg6S1PvOrT/OtOk7NUbcuALTTlkDK70ocS7L5eUFN+fPYT
+         EdExfceHzEG1Tb5jYm4MfFYrUnySIt067kVl+XDYVkOhqW7g0qr/HhVXDIo8Lk8OkZUK
+         /Kn1vZufyjby6Dw3iG2RGRoCozXKBUXn0lcQrVrIe9TQdULaJNHoTPqfgdZnU1IUmWAj
+         AJM46Vc46LUESLpoIlhr8Kz8zKsiS5KEyrNKk6fnK7RzfjS8+xJFoecDu1KK49mJbdlA
+         8Uu1Jq5cShTkDS/4lJE4yZR6Ui5Ms2kwm1FAV0eXcXuOIL8wMqAVZWA3hDVKg/aUmCcZ
+         SjLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZX+m9eRP3G6qa3o26UuCwjfzdvb0rxacvbcUwg9LjVM=;
-        b=op9RFzbpIRd1ttkrQMohBVPBEeoqJOjmhZCOxv196o8wX2jPfDL4rJB90AkOVLFsEf
-         CHI99pLyXG8Gv5J2Cfvj0XUIK32HP7Hmo7TyyNxlQx4oS35eY3d9dP5Ukt+o4uN+WeWk
-         IU0CdiUx13NQr/0gyzd+I/1AU584HiSAyWHkgu4YZZqdhxNtA4yQHYiD7uV3NInuMDDE
-         Cpt3S6d8gXmCsEuTvizI6dUKRnrZEM9/+2Z/y4uNIENfeZL3PCNMh+I7WxINfKIS7RhH
-         46w8zS3v3EYVqyaCJEAH6xm03fnUKvfA+8uU1uu/PKSgnMDC4Pa4Ot6p7ytuYcEpqin7
-         +3mg==
-X-Gm-Message-State: AOAM530iktZWxdHQ30Wj4HlnPdwaDvOJuArVpNAybZ3XRZFP7jfJCwkr
-        3LPF9mgnovIlB0lUMrt3JP35xA==
-X-Google-Smtp-Source: ABdhPJxE0dUX5u4RNf/Wx18X+2EXKv90xIdKm7MsrBaO5GUKwN6yqejEQKaf0pkgyJ7eVksRjDUa2Q==
-X-Received: by 2002:a05:600c:acd:: with SMTP id c13mr327456wmr.28.1630696555125;
+        bh=UWYtJJBsa0LLLZRoFXWiICK8It/s64t7LfobsR7d4kA=;
+        b=NXxVMh7xPZjoAjspaKIzBmyu0b6Wpj5xHAtQHdX5dBSkQD+jYtomuYxUdrN584/psb
+         75qgWopxXkZ8uESZLWu+B650cgIsVtkB64nBTUix/fEpsl3FO3f2h8ZnJ08YzNH0lFTj
+         gKfM6t3ba9EpCkzou1SCPc9VAmYiWMgPr7VkYohzoyoh+mzCx5YL6IBRb8WrPCFS/w93
+         OMfmFuGq4ymkCNiHTFckFUdSlHKsxNSWVJ1WGMIkndC8NTVRrqXL0Kq6JDi0xcnNV8NR
+         Km0NkU+sD/lqWc9XWdklSffrxzEN94E5F/QaHAe1gKi19iVnGkrxPV2vkZIdtYVdqkXE
+         23nw==
+X-Gm-Message-State: AOAM5339eKjSvlhbM1Ke4R8TZQ9Y5BnA9NsWoj2yObSUCKsG5JQ9xIUk
+        mDml4VzeNGbkUiHe6mjn6CyXUQ==
+X-Google-Smtp-Source: ABdhPJwDRmmJwYZ+p6duGwUWbZ5Qfro1RZoo3m3FiRZuEr03QDGrxID0djV4Vdvbq0byvZJtpIEw/g==
+X-Received: by 2002:adf:cd0f:: with SMTP id w15mr618635wrm.346.1630696555673;
         Fri, 03 Sep 2021 12:15:55 -0700 (PDT)
 Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id a133sm253397wme.5.2021.09.03.12.15.54
+        by smtp.googlemail.com with ESMTPSA id a133sm253397wme.5.2021.09.03.12.15.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 12:15:54 -0700 (PDT)
+        Fri, 03 Sep 2021 12:15:55 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     gregkh@linuxfoundation.org, mchehab@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
         linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net,
         Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH 2/8] staging: media: zoran: use module_pci_driver
-Date:   Fri,  3 Sep 2021 19:15:34 +0000
-Message-Id: <20210903191540.3052775-3-clabbe@baylibre.com>
+Subject: [PATCH 3/8] staging: media: zoran: rename debug module parameter
+Date:   Fri,  3 Sep 2021 19:15:35 +0000
+Message-Id: <20210903191540.3052775-4-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210903191540.3052775-1-clabbe@baylibre.com>
 References: <20210903191540.3052775-1-clabbe@baylibre.com>
@@ -65,42 +65,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify code by using module_pci_driver()
+All zoran module will be merged, so to prevent conflict, the debug
+module parameter need to be renamed
 
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- drivers/staging/media/zoran/zoran_card.c | 21 +--------------------
- 1 file changed, 1 insertion(+), 20 deletions(-)
+ drivers/staging/media/zoran/videocodec.c |  8 ++++----
+ drivers/staging/media/zoran/zr36016.c    | 12 ++++++------
+ drivers/staging/media/zoran/zr36050.c    |  8 ++++----
+ drivers/staging/media/zoran/zr36060.c    |  9 ++++-----
+ 4 files changed, 18 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
-index 3bc0e64f1007..f1465fbf98af 100644
---- a/drivers/staging/media/zoran/zoran_card.c
-+++ b/drivers/staging/media/zoran/zoran_card.c
-@@ -1314,23 +1314,4 @@ static struct pci_driver zoran_driver = {
- 	.remove = zoran_remove,
- };
+diff --git a/drivers/staging/media/zoran/videocodec.c b/drivers/staging/media/zoran/videocodec.c
+index 28031d3fd757..31019b5f377e 100644
+--- a/drivers/staging/media/zoran/videocodec.c
++++ b/drivers/staging/media/zoran/videocodec.c
+@@ -26,13 +26,13 @@
  
--static int __init zoran_init(void)
--{
--	int res;
--
--	res = pci_register_driver(&zoran_driver);
--	if (res) {
--		pr_err("Unable to register ZR36057 driver\n");
--		return res;
--	}
--
--	return 0;
--}
--
--static void __exit zoran_exit(void)
--{
--	pci_unregister_driver(&zoran_driver);
--}
--
--module_init(zoran_init);
--module_exit(zoran_exit);
-+module_pci_driver(zoran_driver);
+ #include "videocodec.h"
+ 
+-static int debug;
+-module_param(debug, int, 0);
+-MODULE_PARM_DESC(debug, "Debug level (0-4)");
++static int videocodec_debug;
++module_param(videocodec_debug, int, 0);
++MODULE_PARM_DESC(videocodec_debug, "Debug level (0-4)");
+ 
+ #define dprintk(num, format, args...) \
+ 	do { \
+-		if (debug >= num) \
++		if (videocodec_debug >= num) \
+ 			printk(format, ##args); \
+ 	} while (0)
+ 
+diff --git a/drivers/staging/media/zoran/zr36016.c b/drivers/staging/media/zoran/zr36016.c
+index 9b350a885879..50605460a44b 100644
+--- a/drivers/staging/media/zoran/zr36016.c
++++ b/drivers/staging/media/zoran/zr36016.c
+@@ -22,14 +22,14 @@
+ /* amount of chips attached via this driver */
+ static int zr36016_codecs;
+ 
+-/* debugging is available via module parameter */
+-static int debug;
+-module_param(debug, int, 0);
+-MODULE_PARM_DESC(debug, "Debug level (0-4)");
++static int zr36016_debug;
++module_param(zr36016_debug, int, 0);
++MODULE_PARM_DESC(zr36016_debug, "Debug level (0-4)");
++
+ 
+ #define dprintk(num, format, args...) \
+ 	do { \
+-		if (debug >= num) \
++		if (zr36016_debug >= num) \
+ 			printk(format, ##args); \
+ 	} while (0)
+ 
+@@ -120,7 +120,7 @@ static u8 zr36016_read_version(struct zr36016 *ptr)
+ 
+ static int zr36016_basic_test(struct zr36016 *ptr)
+ {
+-	if (debug) {
++	if (zr36016_debug) {
+ 		int i;
+ 
+ 		zr36016_writei(ptr, ZR016I_PAX_LO, 0x55);
+diff --git a/drivers/staging/media/zoran/zr36050.c b/drivers/staging/media/zoran/zr36050.c
+index c62af27f2683..4dc7927fefc3 100644
+--- a/drivers/staging/media/zoran/zr36050.c
++++ b/drivers/staging/media/zoran/zr36050.c
+@@ -32,13 +32,13 @@
+ static int zr36050_codecs;
+ 
+ /* debugging is available via module parameter */
+-static int debug;
+-module_param(debug, int, 0);
+-MODULE_PARM_DESC(debug, "Debug level (0-4)");
++static int zr36050_debug;
++module_param(zr36050_debug, int, 0);
++MODULE_PARM_DESC(zr36050_debug, "Debug level (0-4)");
+ 
+ #define dprintk(num, format, args...) \
+ 	do { \
+-		if (debug >= num) \
++		if (zr36050_debug >= num) \
+ 			printk(format, ##args); \
+ 	} while (0)
+ 
+diff --git a/drivers/staging/media/zoran/zr36060.c b/drivers/staging/media/zoran/zr36060.c
+index 1c3af11b5f24..7904d5b1f402 100644
+--- a/drivers/staging/media/zoran/zr36060.c
++++ b/drivers/staging/media/zoran/zr36060.c
+@@ -34,14 +34,13 @@ static bool low_bitrate;
+ module_param(low_bitrate, bool, 0);
+ MODULE_PARM_DESC(low_bitrate, "Buz compatibility option, halves bitrate");
+ 
+-/* debugging is available via module parameter */
+-static int debug;
+-module_param(debug, int, 0);
+-MODULE_PARM_DESC(debug, "Debug level (0-4)");
++static int zr36060_debug;
++module_param(zr36060_debug, int, 0);
++MODULE_PARM_DESC(zr36060_debug, "Debug level (0-4)");
+ 
+ #define dprintk(num, format, args...) \
+ 	do { \
+-		if (debug >= num) \
++		if (zr36060_debug >= num) \
+ 			printk(format, ##args); \
+ 	} while (0)
+ 
 -- 
 2.32.0
 
