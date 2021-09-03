@@ -2,129 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96FEF400642
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2661400646
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350065AbhICUBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 16:01:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32788 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234588AbhICUBh (ORCPT
+        id S1350131AbhICUCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 16:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234588AbhICUB7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 16:01:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630699236;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=x9PgDg0VuadlLxntBrqQGmujU+0XAeFQSKsJZr0kO/w=;
-        b=KUuRLNkhFPMiIDgDl9Tpcr9sVhKUyzY6KxKp38Oy9ofj9xhVo65r60p1l2bW+K13rHonRk
-        t/OIoxoxeFiN1hm1hgWL3WcbEnxFaYpqwshYbqiwIloJejVhJGmGKcenq2LKuXJodfzuRm
-        6+yyx2M8+KS1G+1nAobhCw1SIUm2vyw=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-256-vg1s6dktMq2clVCGcWyIiw-1; Fri, 03 Sep 2021 16:00:35 -0400
-X-MC-Unique: vg1s6dktMq2clVCGcWyIiw-1
-Received: by mail-qv1-f70.google.com with SMTP id et12-20020a056214176c00b0037279a2ce4cso683982qvb.13
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 13:00:35 -0700 (PDT)
+        Fri, 3 Sep 2021 16:01:59 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2609DC061575;
+        Fri,  3 Sep 2021 13:00:59 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id g138so44390wmg.4;
+        Fri, 03 Sep 2021 13:00:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=N+/ijPrgySaj3wZhh50lF15QRZ6BcLbAW4B1pzs4L10=;
+        b=mF34oOB7kHuJItaHqpPVh7S/7YHJd9xsnNJkGR1z32qOI2BSPBwEICdpsp02y9Dd7u
+         Vs0Vg7EEC7SGmBvi32rs2f+jjlaQfoSGo+Y/a9mpVruuiK+SGKOd8i8Z4Wzz92+ymYDJ
+         Fjpnvhn/ygckCaYGzyOmQURnwSbu9Naax0Nh4z5FCrNgEMXq+nbRRSr2KdAhM/s4eJ6X
+         JpRvoBbEZPsPdMUJ6myvgWqLmZWnPSYHmMx1ggDOM77PCuOhE9TUNqM4TbJmfWiYvWLG
+         KHwyFOClQ/dBy67zNNvL1I1AKqx9+swMdMqEmBnAsIMcxT8eQJm5cHeMlwYrYzEVvv63
+         Lzlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x9PgDg0VuadlLxntBrqQGmujU+0XAeFQSKsJZr0kO/w=;
-        b=NVPniDaEBEnZKMp24pP3A731sZXuB5QS4qUmcXGnu4Kdr80Z5HOUIJ9v+pr301M9xL
-         2nkvnh9ZpY2aaVMV0e0NS54CGTvpdoMPEQ4gGk1ta2GgUIGgV+79OeIOv1NbRexEf0P/
-         TQK31icW1pc3s0ptFQm1ELHBIj4Nv0yuG24xVA+9Xt2T812JuR1bLOqoHQ/cCJNiMFpd
-         waL2MZX9Sxub432UYfsEMjJVGumX2m83T2Rz68ItJpNADGF3g2sUFDwMMVorT1VgRJz2
-         1s2pC/QLoYqWuGwiryHX9C0Ch27ZNDE0SM0fPywX8bfWC9uDAyS1bDQhDwR0P/gr2spN
-         xP4Q==
-X-Gm-Message-State: AOAM530car8EtNb0raSDVrrUSMcd7O0Y/qqzmtVtgC1auz9kUAlbG+jO
-        WBtQfBhYResRw++h5VZZ/CyXvvNaM0SvPDuDjrcatYWWc+0+y0X3luKIHue19kRbkdaUS3Wfv3n
-        klIuUIKMXg99or2nZMIxDNJiY
-X-Received: by 2002:ac8:51cd:: with SMTP id d13mr673239qtn.49.1630699235038;
-        Fri, 03 Sep 2021 13:00:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJye/lyjzu//z90V1ZPCWF2igim5y/x1oB909G3x2WTTet8of7sXkSA//xTu7Jgi3hdUtDTKGg==
-X-Received: by 2002:ac8:51cd:: with SMTP id d13mr673211qtn.49.1630699234768;
-        Fri, 03 Sep 2021 13:00:34 -0700 (PDT)
-Received: from t490s ([2607:fea8:56a3:500::ad7f])
-        by smtp.gmail.com with ESMTPSA id a189sm133760qkf.114.2021.09.03.13.00.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 13:00:34 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 16:00:32 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Axel Rasmussen <axelrasmussen@google.com>
-Subject: Re: [PATCH v2 1/5] mm/shmem: Unconditionally set pte dirty in
- mfill_atomic_install_pte
-Message-ID: <YTJ+4PAzKf9Cqydk@t490s>
-References: <20210902201721.52796-1-peterx@redhat.com>
- <20210902201721.52796-2-peterx@redhat.com>
- <2f1bfe82-9bb7-957c-2b32-2ccf8a48e70a@redhat.com>
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=N+/ijPrgySaj3wZhh50lF15QRZ6BcLbAW4B1pzs4L10=;
+        b=qc5ux1ZXhcEf/9l3yioxjzXJVVwZOFNt01jRJh6mfr/PsjDaIzgggIGKR8Owkzwaa0
+         FxAykFnMbTJuotHIBY4lyJA54uLDy9qdBiVPPKkJoRjLqVXjJFk5Oeil+lqPF2/WO55C
+         BHrAnJ3ODNE1zcu0yF/ZhivdGh0XS5DMvOUQUyGt+fc5mF17zgKHxbPrb1d2bI50JL7r
+         Yez5HgaB1I/fFeCC92XuDLlt2Oz5LQBdhi6lTBXfKOvGodXj0httYAaiUNbIheN509jM
+         6errb6ZakZuHxoBrg0if8WFqpkSFXMJ3Xk6WV5G018cegyCdmLOl8A73wo6fuBPs9CvE
+         voXw==
+X-Gm-Message-State: AOAM530y/nGwNPMCxnX2bum6mNkEkfTAXnQz98SEDzOq53kApxNo9zbq
+        Mz1E+wX7sA3Usp7ru/XJcu0=
+X-Google-Smtp-Source: ABdhPJwmXXC/wG3rOBNJk2+624jMqJOMYDAG2js8xC3SrubWDrP4mwTX6VlQErmpDitutk7AGn/BBg==
+X-Received: by 2002:a05:600c:2210:: with SMTP id z16mr447530wml.70.1630699257765;
+        Fri, 03 Sep 2021 13:00:57 -0700 (PDT)
+Received: from ?IPv6:2003:ea:8f08:4500:e013:89de:4503:1d89? (p200300ea8f084500e01389de45031d89.dip0.t-ipconnect.de. [2003:ea:8f08:4500:e013:89de:4503:1d89])
+        by smtp.googlemail.com with ESMTPSA id c14sm325119wme.6.2021.09.03.13.00.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 13:00:57 -0700 (PDT)
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     nic_swsd <nic_swsd@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Anthony Wong <anthony.wong@canonical.com>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+References: <20210827171452.217123-3-kai.heng.feng@canonical.com>
+ <20210830180940.GA4209@bjorn-Precision-5520>
+ <CAAd53p634-nxEYYDbc69JEVev=cFkqtdCJv5UjAFCDUqdNAk_A@mail.gmail.com>
+From:   Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [RFC] [PATCH net-next v4] [PATCH 2/2] r8169: Implement dynamic
+ ASPM mechanism
+Message-ID: <71aea1f6-749b-e379-70f4-653ac46e7f25@gmail.com>
+Date:   Fri, 3 Sep 2021 22:00:47 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <CAAd53p634-nxEYYDbc69JEVev=cFkqtdCJv5UjAFCDUqdNAk_A@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2f1bfe82-9bb7-957c-2b32-2ccf8a48e70a@redhat.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 09:42:34AM +0200, David Hildenbrand wrote:
-> On 02.09.21 22:17, Peter Xu wrote:
-> > It was conditionally done previously, as there's one shmem special case that we
-> > use SetPageDirty() instead.  However that's not necessary and it should be
-> > easier and cleaner to do it unconditionally in mfill_atomic_install_pte().
-> > 
-> > The most recent discussion about this is here, where Hugh explained the history
-> > of SetPageDirty() and why it's possible that it's not required at all:
-> > 
-> > https://lore.kernel.org/lkml/alpine.LSU.2.11.2104121657050.1097@eggly.anvils/
-> > 
-> > Currently mfill_atomic_install_pte() has three callers:
-> > 
-> >          1. shmem_mfill_atomic_pte
-> >          2. mcopy_atomic_pte
-> >          3. mcontinue_atomic_pte
-> > 
-> > After the change: case (1) should have its SetPageDirty replaced by the dirty
-> > bit on pte (so we unify them together, finally), case (2) should have no
-> > functional change at all as it has page_in_cache==false, case (3) may add a
-> > dirty bit to the pte.  However since case (3) is UFFDIO_CONTINUE for shmem,
-> > it's merely 100% sure the page is dirty after all, so should not make a real
-> > difference either.
+On 03.09.2021 17:56, Kai-Heng Feng wrote:
+> On Tue, Aug 31, 2021 at 2:09 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>>
+>> On Sat, Aug 28, 2021 at 01:14:52AM +0800, Kai-Heng Feng wrote:
+>>> r8169 NICs on some platforms have abysmal speed when ASPM is enabled.
+>>> Same issue can be observed with older vendor drivers.
+>>>
+>>> The issue is however solved by the latest vendor driver. There's a new
+>>> mechanism, which disables r8169's internal ASPM when the NIC traffic has
+>>> more than 10 packets, and vice versa. The possible reason for this is
+>>> likely because the buffer on the chip is too small for its ASPM exit
+>>> latency.
+>>
+>> This sounds like good speculation, but of course, it would be better
+>> to have the supporting data.
+>>
+>> You say above that this problem affects r8169 on "some platforms."  I
+>> infer that ASPM works fine on other platforms.  It would be extremely
+>> interesting to have some data on both classes, e.g., "lspci -vv"
+>> output for the entire system.
 > 
-> Would it be worth adding VM_BUG_ON() to make sure that "100%" is really the
-> case?
-
-I won't be able to make it 100% sure (and that's where I put it "merely").  The
-example discussed between Axel and me in the other thread could be an outlier
-(when two processes, uffd target, and uffd minor resolver, map the region as
-RO), it's just that neither do I think that's a great matter, nor do I think it
-would be worth a BUG_ON(), not to mention we use BUG_ON so carefully.
-
+> lspci data collected from working and non-working system can be found here:
+> https://bugzilla.kernel.org/show_bug.cgi?id=214307
 > 
-> > 
-> > This should make it much easier to follow on which case will set dirty for
-> > uffd, as we'll simply set it all now for all uffd related ioctls.  Meanwhile,
-> > no special handling of SetPageDirty() if there's no need.
+>>
+>> If r8169 ASPM works well on some systems, we *should* be able to make
+>> it work well on *all* systems, because the device can't tell what
+>> system it's in.  All the device can see are the latencies for entry
+>> and exit for link states.
 > 
-> To me this all sounds sane, but I'm certainly not an expert on that code, so
-> ...
+> That's definitely better if we can make r8169 ASPM work for all platforms.
+> 
+>>
+>> IIUC this patch makes the driver wake up every 1000ms.  If the NIC has
+>> sent or received more than 10 packets in the last 1000ms, it disables
+>> ASPM; otherwise it enables ASPM.
+> 
+> Yes, that's correct.
+> 
+>>
+>> I asked these same questions earlier, but nothing changed, so I won't
+>> raise them again if you don't think they're pertinent.  Some patch
+>> splitting comments below.
+> 
+> Sorry about that. The lspci data is attached.
+> 
 
-No problem.  I hope this patch didn't bring much headache to a lot of people.
-It's just that I do think this is the right thing to do so I will insist until
-someone says no to me.  Already appreciate a lot for all the comments and r-bs!
+Thanks for the additional details. I see that both systems have the L1
+sub-states active. Do you also face the issue if L1 is enabled but
+L1.2 and L1.2 are not? Setting the ASPM policy from powersupersave
+to powersave should be sufficient to disable them.
+I have a test system Asus PRIME H310I-PLUS, BIOS 2603 10/21/2019 with
+the same RTL8168h chip version. With L1 active and sub-states inactive
+everything is fine. With the sub-states activated I get few missed RX
+errors when running iperf3.
 
--- 
-Peter Xu
+One difference between your good and bad logs is the following.
+(My test system shows the same LTR value like your bad system.)
 
+Bad:
+	Capabilities: [170 v1] Latency Tolerance Reporting
+		Max snoop latency: 3145728ns
+		Max no snoop latency: 3145728ns
+
+Good:
+	Capabilities: [170 v1] Latency Tolerance Reporting
+		Max snoop latency: 1048576ns
+		Max no snoop latency: 1048576ns
+
+I have to admit that I'm not familiar with LTR and don't know whether
+this difference could contribute to the differing behavior.
