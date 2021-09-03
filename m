@@ -2,231 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE603FFB5C
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AC373FFB60
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 09:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348118AbhICHxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 03:53:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56293 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1348034AbhICHx1 (ORCPT
+        id S1348127AbhICHzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 03:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348107AbhICHzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 03:53:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630655547;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9j3oKiG5IgXoavVwKdsM4PDzRm77ulmaFH8VPcXYkD8=;
-        b=D2XgqLdwYpOUM66SgQ0FHk5aKtNFskTYygjECfoWDTP+dRVft6R+LFIoNS8IWpaJ8qkdKT
-        JCHXsngauuJZSH69x9O8TkmbXtT1nQMvpRP+9/MjoYknTunxcrtBQXCLmcEl4vHITsLQNf
-        HXHWOfPjiVGoOluOBjRjMNOQKGAB/hU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-520-XiHgvJyNOUu6ebZAARo0dA-1; Fri, 03 Sep 2021 03:52:26 -0400
-X-MC-Unique: XiHgvJyNOUu6ebZAARo0dA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D3F3A6D254;
-        Fri,  3 Sep 2021 07:52:11 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.194.111])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 36A0C10016F5;
-        Fri,  3 Sep 2021 07:52:09 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 8/8] KVM: Make kvm_make_vcpus_request_mask() use pre-allocated cpu_kick_mask
-Date:   Fri,  3 Sep 2021 09:51:41 +0200
-Message-Id: <20210903075141.403071-9-vkuznets@redhat.com>
-In-Reply-To: <20210903075141.403071-1-vkuznets@redhat.com>
-References: <20210903075141.403071-1-vkuznets@redhat.com>
+        Fri, 3 Sep 2021 03:55:15 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E01C061575;
+        Fri,  3 Sep 2021 00:54:15 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id s29so3688427pfw.5;
+        Fri, 03 Sep 2021 00:54:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=CMZ1yyi16oqxGNmWrTRmixFhuOGqIwUUrsc3+oEvQLQ=;
+        b=AeyDQY9c3UDEIOHYavQLmYnA94d4zpvooNUNsPC6+jzPddrZ/pS3k7b+8BRCFd6sEt
+         VZKFplcMfjmfbKoCt+rW/tQ27LEkQ+q+AGRPyRYbFPB7LB94D15KgYM3Ajov0MCONCg+
+         UpOXU7peWZsCcu9VzLgCseL9vXyUTd33VTXy1jS2Ty3YHr1/+pM1QZc7vK1nbYKur7HR
+         a9L/LMxtoUU76mw/YQaz5vLaV6edQ9Gh1O43T7fpWBVyAGImNH+X3oP+ahbln9IG7YoV
+         TbLdxqBUcPBCWqx/frvu5HEiLJzqC1DTY5ofwPFY5iK+NEJHwJQ9AzEz0QgHMA4qcwJi
+         ufeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=CMZ1yyi16oqxGNmWrTRmixFhuOGqIwUUrsc3+oEvQLQ=;
+        b=D0S1etV3IU/NMZpC+UL+y+K//wyVocvwqhGRtyGTkj5Vai0T8b9fvps3jcHt7gOwai
+         dxdOozb7Q+LMBhUUQX/n+K5KklGHSbIeO32FRG2dW58MS4NubV3+Rw0pCNfGz2ZTV/eZ
+         LvQSghTNM+Bm+GjEq9AzM72t3UsD8XhJZLaQH0KCeDXFJcCYl6VwibaNMGlKv/DZ0fWr
+         wrR7KGQIWQbaEaOsSl9ifcdgchLujCHdo6ipPnOAHmX3k+SYJ2Zu+sfVVWmHcvCrvO9P
+         KrUPSUPzL5qydofS/36q+YmE609VIiRDOGKrzxwUna+rT+wVVCKuetG+1ZKmJhyhxQhX
+         LaVA==
+X-Gm-Message-State: AOAM530qkU5SflJGJhKGWVatqOSw13at7mZuEUFoBficfqYsVe9C9Jy2
+        636YOgXBp6MNrNfwx9D1eh8Yely2VRZtLahQBQ==
+X-Google-Smtp-Source: ABdhPJyAqvm3zibS819NJDXGX6KUDZ6JLuFBr2kOplBsGryaQFcudKuOunst68KqG25+1XWL9bBBQeUuXt9MeD3u+jo=
+X-Received: by 2002:a05:6a00:c81:b029:30e:21bf:4c15 with SMTP id
+ a1-20020a056a000c81b029030e21bf4c15mr2080205pfv.70.1630655655266; Fri, 03 Sep
+ 2021 00:54:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Fri, 3 Sep 2021 15:54:04 +0800
+Message-ID: <CACkBjsYG3O_irFOZqjq5dJVDwW8pSUR_p6oO4BUaabWcx-hQCQ@mail.gmail.com>
+Subject: WARNING in sk_stream_kill_queues
+To:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kvm_make_vcpus_request_mask() already disables preemption so just like
-kvm_make_all_cpus_request_except() it can be switched to using
-pre-allocated per-cpu cpumasks. This allows for improvements for both
-users of the function: in Hyper-V emulation code 'tlb_flush' can now be
-dropped from 'struct kvm_vcpu_hv' and kvm_make_scan_ioapic_request_mask()
-gets rid of dynamic allocation.
+Hello,
 
-cpumask_available() checks in kvm_make_vcpu_request() and
-kvm_kick_many_cpus() can now be dropped as they checks for an impossible
-condition: kvm_init() makes sure per-cpu masks are allocated.
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- arch/x86/include/asm/kvm_host.h |  1 -
- arch/x86/kvm/hyperv.c           |  5 +----
- arch/x86/kvm/x86.c              |  8 +-------
- include/linux/kvm_host.h        |  2 +-
- virt/kvm/kvm_main.c             | 29 +++++++++--------------------
- 5 files changed, 12 insertions(+), 33 deletions(-)
+HEAD commit: 9e9fb7655ed58 Merge tag 'net-next-5.15'
+git tree: upstream
+console output:
+https://drive.google.com/file/d/1AXEQDnn7SPgFAMjqbL03_24-X_8YHoAq/view?usp=sharing
+kernel config: https://drive.google.com/file/d/1zgxbwaYkrM26KEmJ-5sUZX57gfXtRrwA/view?usp=sharing
+C reproducer: https://drive.google.com/file/d/1qa4FVNoO-EsJGuDMtGlTxtHW0li-vMSP/view?usp=sharing
+Syzlang reproducer:
+https://drive.google.com/file/d/1pL6atNID5ZGzH4GceqyBCOC5IjFfiaVN/view?usp=sharing
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 09b256db394a..846552fa2012 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -569,7 +569,6 @@ struct kvm_vcpu_hv {
- 	struct kvm_hyperv_exit exit;
- 	struct kvm_vcpu_hv_stimer stimer[HV_SYNIC_STIMER_COUNT];
- 	DECLARE_BITMAP(stimer_pending_bitmap, HV_SYNIC_STIMER_COUNT);
--	cpumask_t tlb_flush;
- 	bool enforce_cpuid;
- 	struct {
- 		u32 features_eax; /* HYPERV_CPUID_FEATURES.EAX */
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index 5704bfe53ee0..f76e7228f687 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -1755,7 +1755,6 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
- 	int i;
- 	gpa_t gpa;
- 	struct kvm *kvm = vcpu->kvm;
--	struct kvm_vcpu_hv *hv_vcpu = to_hv_vcpu(vcpu);
- 	struct hv_tlb_flush_ex flush_ex;
- 	struct hv_tlb_flush flush;
- 	u64 vp_bitmap[KVM_HV_MAX_SPARSE_VCPU_SET_BITS];
-@@ -1837,8 +1836,6 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
- 		}
- 	}
- 
--	cpumask_clear(&hv_vcpu->tlb_flush);
--
- 	/*
- 	 * vcpu->arch.cr3 may not be up-to-date for running vCPUs so we can't
- 	 * analyze it here, flush TLB regardless of the specified address space.
-@@ -1850,7 +1847,7 @@ static u64 kvm_hv_flush_tlb(struct kvm_vcpu *vcpu, struct kvm_hv_hcall *hc, bool
- 						    vp_bitmap, vcpu_bitmap);
- 
- 		kvm_make_vcpus_request_mask(kvm, KVM_REQ_TLB_FLUSH_GUEST,
--					    vcpu_mask, &hv_vcpu->tlb_flush);
-+					    vcpu_mask);
- 	}
- 
- ret_success:
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index a4752dcc2a75..91c1e6c98b0f 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9224,14 +9224,8 @@ static void process_smi(struct kvm_vcpu *vcpu)
- void kvm_make_scan_ioapic_request_mask(struct kvm *kvm,
- 				       unsigned long *vcpu_bitmap)
- {
--	cpumask_var_t cpus;
--
--	zalloc_cpumask_var(&cpus, GFP_ATOMIC);
--
- 	kvm_make_vcpus_request_mask(kvm, KVM_REQ_SCAN_IOAPIC,
--				    vcpu_bitmap, cpus);
--
--	free_cpumask_var(cpus);
-+				    vcpu_bitmap);
- }
- 
- void kvm_make_scan_ioapic_request(struct kvm *kvm)
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 2f149ed140f7..1ee85de0bf74 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -160,7 +160,7 @@ static inline bool is_error_page(struct page *page)
- #define KVM_ARCH_REQ(nr)           KVM_ARCH_REQ_FLAGS(nr, 0)
- 
- bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
--				 unsigned long *vcpu_bitmap, cpumask_var_t tmp);
-+				 unsigned long *vcpu_bitmap);
- bool kvm_make_all_cpus_request(struct kvm *kvm, unsigned int req);
- bool kvm_make_all_cpus_request_except(struct kvm *kvm, unsigned int req,
- 				      struct kvm_vcpu *except);
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index ddd091f05c18..12dbf3f062da 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -247,15 +247,8 @@ static void ack_flush(void *_completed)
- {
- }
- 
--static inline bool kvm_kick_many_cpus(cpumask_var_t tmp, bool wait)
-+static inline bool kvm_kick_many_cpus(struct cpumask *cpus, bool wait)
- {
--	const struct cpumask *cpus;
--
--	if (likely(cpumask_available(tmp)))
--		cpus = tmp;
--	else
--		cpus = cpu_online_mask;
--
- 	if (cpumask_empty(cpus))
- 		return false;
- 
-@@ -264,7 +257,7 @@ static inline bool kvm_kick_many_cpus(cpumask_var_t tmp, bool wait)
- }
- 
- static void kvm_make_vcpu_request(struct kvm *kvm, struct kvm_vcpu *vcpu,
--				  unsigned int req, cpumask_var_t tmp,
-+				  unsigned int req, struct cpumask *tmp,
- 				  int current_cpu)
- {
- 	int cpu;
-@@ -274,14 +267,6 @@ static void kvm_make_vcpu_request(struct kvm *kvm, struct kvm_vcpu *vcpu,
- 	if (!(req & KVM_REQUEST_NO_WAKEUP) && kvm_vcpu_wake_up(vcpu))
- 		return;
- 
--	/*
--	 * tmp can be "unavailable" if cpumasks are allocated off stack as
--	 * allocation of the mask is deliberately not fatal and is handled by
--	 * falling back to kicking all online CPUs.
--	 */
--	if (!cpumask_available(tmp))
--		return;
--
- 	/*
- 	 * Note, the vCPU could get migrated to a different pCPU at any point
- 	 * after kvm_request_needs_ipi(), which could result in sending an IPI
-@@ -300,22 +285,26 @@ static void kvm_make_vcpu_request(struct kvm *kvm, struct kvm_vcpu *vcpu,
- }
- 
- bool kvm_make_vcpus_request_mask(struct kvm *kvm, unsigned int req,
--				 unsigned long *vcpu_bitmap, cpumask_var_t tmp)
-+				 unsigned long *vcpu_bitmap)
- {
- 	struct kvm_vcpu *vcpu;
-+	struct cpumask *cpus;
- 	int i, me;
- 	bool called;
- 
- 	me = get_cpu();
- 
-+	cpus = this_cpu_cpumask_var_ptr(cpu_kick_mask);
-+	cpumask_clear(cpus);
-+
- 	for_each_set_bit(i, vcpu_bitmap, KVM_MAX_VCPUS) {
- 		vcpu = kvm_get_vcpu(kvm, i);
- 		if (!vcpu)
- 			continue;
--		kvm_make_vcpu_request(kvm, vcpu, req, tmp, me);
-+		kvm_make_vcpu_request(kvm, vcpu, req, cpus, me);
- 	}
- 
--	called = kvm_kick_many_cpus(tmp, !!(req & KVM_REQUEST_WAIT));
-+	called = kvm_kick_many_cpus(cpus, !!(req & KVM_REQUEST_WAIT));
- 	put_cpu();
- 
- 	return called;
--- 
-2.31.1
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Hao Sun <sunhao.th@gmail.com>
 
+ ------------[ cut here ]------------
+WARNING: CPU: 1 PID: 10229 at net/core/stream.c:207
+sk_stream_kill_queues+0x162/0x190 net/core/stream.c:207
+Modules linked in:
+CPU: 1 PID: 10229 Comm: syz-executor Not tainted 5.14.0+ #12
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:sk_stream_kill_queues+0x162/0x190 net/core/stream.c:207
+Code: 41 5c e9 21 3b ce fd e8 1c 3b ce fd 89 de 48 89 ef e8 62 68 fe
+ff e8 0d 3b ce fd 8b 95 68 02 00 00 85 d2 74 ca e8 fe 3a ce fd <0f> 0b
+e8 f7 3a ce fd 8b 85 20 02 00 00 85 c0 74 c3 e8 e8 3a ce fd
+RSP: 0018:ffffc900080b7c98 EFLAGS: 00010202
+RAX: 000000000002a750 RBX: 0000000000000180 RCX: ffffc90002c0d000
+RDX: 0000000000040000 RSI: ffffffff836939f2 RDI: ffff8881031f0b40
+RBP: ffff8881031f0b40 R08: 0000000000000000 R09: 0000000000000000
+R10: 000000000000000d R11: 000000000004f380 R12: ffff8881031f0c90
+R13: ffff8881031f0bc0 R14: ffff8881031f0cf0 R15: 0000000000000000
+FS:  00007f311adcb700(0000) GS:ffff88813dc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000732190 CR3: 000000010ab01000 CR4: 0000000000752ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ inet_csk_destroy_sock+0x6f/0x1a0 net/ipv4/inet_connection_sock.c:1012
+ __tcp_close+0x512/0x610 net/ipv4/tcp.c:2869
+ tcp_close+0x29/0xa0 net/ipv4/tcp.c:2881
+ inet_release+0x58/0xb0 net/ipv4/af_inet.c:431
+ __sock_release+0x47/0xf0 net/socket.c:649
+ sock_close+0x18/0x20 net/socket.c:1314
+ __fput+0xdf/0x380 fs/file_table.c:280
+ task_work_run+0x86/0xd0 kernel/task_work.c:164
+ get_signal+0xde6/0x10b0 kernel/signal.c:2596
+ arch_do_signal_or_restart+0xa9/0x860 arch/x86/kernel/signal.c:865
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0xf2/0x280 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+ do_syscall_64+0x40/0xb0 arch/x86/entry/common.c:86
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x46a9a9
+Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f311adcac58 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+RAX: 0000000000069340 RBX: 000000000078c0a0 RCX: 000000000046a9a9
+RDX: 0000000000088012 RSI: 0000000020000380 RDI: 0000000000000004
+RBP: 00000000004e4042 R08: 0000000000000000 R09: 0000000000000027
+R10: 000000000020c49a R11: 0000000000000246 R12: 000000000078c0a0
+R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffe75b47830
