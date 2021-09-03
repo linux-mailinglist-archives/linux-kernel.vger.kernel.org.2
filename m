@@ -2,145 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD724000F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4CF4000F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348570AbhICOFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:05:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60882 "EHLO
+        id S235362AbhICOGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243643AbhICOFf (ORCPT
+        with ESMTP id S235414AbhICOGF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:05:35 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7298C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 07:04:35 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id m28so11991865lfj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 07:04:35 -0700 (PDT)
+        Fri, 3 Sep 2021 10:06:05 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E07C061575;
+        Fri,  3 Sep 2021 07:05:05 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id c79so6981997oib.11;
+        Fri, 03 Sep 2021 07:05:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sSgMe6jO7xnpGx2tRPpBBTj9lsn9JwdSXq1ZWNG03/M=;
-        b=rvDoigY4cruxeRTZs+bhQzHXKT3VjFr4e/H7h+cD0NLeK/FeRpzslf5ZAmDeXOg7Mq
-         AshatvKefj52y10+jKbCXd/91DGeT8RiJPL1xj5Wtfpk33fHYOLkDwgu9pRI6lug61AV
-         fZ/L8xdAMXW3+klI27chBrjkdd1/vFbtbfmrqzINMqIDhe9wqUWC0Li5rAb8Rjbc2u7f
-         a9Wnvaw89HHUL9bniTze4k82ZG+qOLrk+KmNTLc7UZ55I5M2l9vZRsIL2VCtmf/hJiU+
-         FS8D0SDahwDWYwTKd0Co345S5WPe2mE6y8xwI7xKAGDjruPgiWsYxNwfggUSDJc7EeUd
-         jd8Q==
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=keqb0lLG5bXN4lNVT0FHbMoFuC2nxIHsD31TOnQa8pE=;
+        b=D/exd8GSx7b96axCyEL+kndKDPAoWoF2EW7JzlK3Kwaq5cV9LvGcjUVLzcL0Nbk3TL
+         Gf0mbr8DlQzVlErDpV+Jbv7NAY/w5hnIb+co+MmIALkL9p1v8X/Nai79r7lfzq/q9SEz
+         WW0U/cWl43Rwyu4zWx2eR1rLTz8DJDUyk2eqDEmwK1K7IfYvPl9JXYFPWDUE1z00i4Mq
+         JMIkIfbndXmnFX5U+Oml9LDbU0UUj4HFZ8uHdjxf1ABGJ1CEisK7huMqmwcClHLX3wFC
+         xr2cFtE6BKWJbQYxrDLm6frklIff40brosW1o33eoX21zG3pLRygcOtmhCw3RVqu/ZMX
+         JEKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sSgMe6jO7xnpGx2tRPpBBTj9lsn9JwdSXq1ZWNG03/M=;
-        b=Ac6nmaabC2sWPqTZkW2COpGnW452BM7qxvGxHPRXLYh19lPf0Sm+bPFkywf5dyZw4R
-         v7GeYBPUUPoheLolkIvVvo0E+SQlLHQbtgP3WfOIfJrUeatVmfQsy4099v/xvC9Zn7iw
-         kqYLPwmLrIG/LS16GmBMj0Pk7UjEV2c+Gce82dKMDYwlFAQyDwqEGivKyCLkTz2uRpS3
-         qKqtdfnGkSha5Z22kiUr0hsDceQPwN84U6ujeDzdb7vJ/zvXmpt+e6PtX3V6EosezBFz
-         3nZHtfeU7lr+zDpYzOGvKWxBJqixKu67G9Dfd5MjzTmlfhg6QfmaYYAmGfJBvlWOh4JR
-         uxrg==
-X-Gm-Message-State: AOAM530CqzfXl6wut1hkBeWuzwoWZQtkptiIChPHFAL7sTMCB2CKaPfZ
-        boELiOkifLl4VnkkkxSlpLhjif8AD1j6xedbMv1UZw==
-X-Google-Smtp-Source: ABdhPJwLX1bWYt8jcuZqjDpgjcYrm0IuHl4c8OMxpt1GGMcSijXKANRPJNpt4cJRX1gNjfc9oLeX0gjQzvqQxLFdz80=
-X-Received: by 2002:a19:ac42:: with SMTP id r2mr2840448lfc.167.1630677873121;
- Fri, 03 Sep 2021 07:04:33 -0700 (PDT)
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=keqb0lLG5bXN4lNVT0FHbMoFuC2nxIHsD31TOnQa8pE=;
+        b=Y3aYoXgU+4YpOO7B5sUKFEcb1wDY08DS1yl6Dav3PUwWBHxhR1NuUA24xv1sNAVOxZ
+         if1zcrSANnCX8WBvyQ5AxvejbBT/rTfXJqiHD29SneWbNnmZ5QiVDbqOY4x425ziEaON
+         FXx6A7zN0MCp8MuFZ7/UuD4hRXRiVBVaYjXGu/d5QGNA4EY9jh/c4TglviAiB4HyGopf
+         bD8U0uP5ZeYcCXgEDdxaouCWXbgd8RV+0zwEW4IZKdapgFSElCH2r6xRFhdwqPGau7K2
+         pkQ8JVlRzBgYObJU8pUhcKmplqS/G7lCL0WmodcotB90oruwrJ4lj+BvaoJMKoP7dYZO
+         Z3rw==
+X-Gm-Message-State: AOAM531QFiP/JB6AT7APRi/fQoaaftXGfAf+qYeXsbWvOeyP+i7rzjbM
+        /eAdyToSI+Osn1EKyU5/kXM=
+X-Google-Smtp-Source: ABdhPJx+IRaT9B0hadGHsVNpszS4tQ96KiHprfMCwOHX8K8ad0EU8MWknjv6YjI6IB5Pay70Mpr8CQ==
+X-Received: by 2002:aca:aa88:: with SMTP id t130mr2885592oie.3.1630677905257;
+        Fri, 03 Sep 2021 07:05:05 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f126sm1063872oob.9.2021.09.03.07.05.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 Sep 2021 07:05:04 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [v2,1/2] watchdog: mtk: add disable_wdt_extrst support
+To:     Fengquan Chen <Fengquan.Chen@mediatek.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     tinghan.shen@mediatek.com, randy.wu@mediatek.com,
+        rex-bc.chen@mediatek.com, christine.zhu@mediatek.com,
+        joe.yang@mediatek.com, zhishuang.zhang@mediatek.com
+References: <20210903061623.10715-1-Fengquan.Chen@mediatek.com>
+ <20210903061623.10715-2-Fengquan.Chen@mediatek.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <65cc931f-ba49-19b5-ce25-c49f7b984cec@roeck-us.net>
+Date:   Fri, 3 Sep 2021 07:05:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210902101634.827187-1-ulf.hansson@linaro.org>
- <20210902101634.827187-2-ulf.hansson@linaro.org> <08335cd4-7dc8-3b8b-d63f-374585ffa373@gmail.com>
- <CAPDyKFofrEj2LdqXh-L256b2Tcz=qYQgzTUBVuvx0rOR58SrVg@mail.gmail.com> <b597c805-e346-8c23-5014-cbb116e88075@gmail.com>
-In-Reply-To: <b597c805-e346-8c23-5014-cbb116e88075@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 3 Sep 2021 16:03:56 +0200
-Message-ID: <CAPDyKFrWofUKhbhvwTCjiFwJD8-Pzi8UMzU7ZjYLKm2j1HeeBg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] PM: domains: Drop the performance state vote for a
- device at detach
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210903061623.10715-2-Fengquan.Chen@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Sept 2021 at 11:58, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 03.09.2021 11:22, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Fri, 3 Sept 2021 at 08:01, Dmitry Osipenko <digetx@gmail.com> wrote:
-> >>
-> >> 02.09.2021 13:16, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>> When a device is detached from its genpd, genpd loses track of the de=
-vice,
-> >>> including its performance state vote that may have been requested for=
- it.
-> >>>
-> >>> Rather than relying on the consumer driver to drop the performance st=
-ate
-> >>> vote for its device, let's do it internally in genpd when the device =
-is
-> >>> getting detached. In this way, we makes sure that the aggregation of =
-the
-> >>> votes in genpd becomes correct.
-> >>
-> >> This is a dangerous behaviour in a case where performance state
-> >> represents voltage. If hardware is kept active on detachment, say it's
-> >> always-on, then it may be a disaster to drop the voltage for the activ=
-e
-> >> hardware.
-> >>
-> >> It's safe to drop performance state only if you assume that there is a
-> >> firmware behind kernel which has its own layer of performance manageme=
-nt
-> >> and it will prevent the disaster by saying 'nope, I'm not doing this'.
-> >>
-> >> The performance state should be persistent for a device and it should =
-be
-> >> controlled in a conjunction with runtime PM. If platform wants to drop
-> >> performance state to zero on detachment, then this behaviour should be
-> >> specific to that platform.
-> >
-> > I understand your concern, but at this point, genpd can't help to fix t=
-his.
-> >
-> > Genpd has no information about the device, unless it's attached to it.
-> > For now and for these always on HWs, we simply need to make sure the
-> > device stays attached, in one way or the other.
->
-> This indeed requires to redesign GENPD to make it more coupled with a
-> device, but this is not a real problem for any of the current API users
-> AFAIK. Ideally the state should be persistent to make API more universal.
+On 9/2/21 11:16 PM, Fengquan Chen wrote:
+> In some cases, we may need watchdog just to trigger an
+> internal soc reset without sending any output signal.
+> 
+> Provide a disable_wdt_extrst parameter for configuration.
+> We can disable or enable it just by configuring dts.
+> 
+> Signed-off-by: fengquan.chen <fengquan.chen@mediatek.com>
 
-Right. In fact this has been discussed in the past. In principle, the
-idea was to attach to genpd at device registration, rather than at
-driver probe.
+Nit: You should set up git such that it uses "Fengquan Chen", not
+"fengquan.chen".
 
-Although, this is not very easy to implement - and it seems like the
-churns to do, have not been really worth it. At least so far.
+Other than that, for my reference,
 
->
-> Since for today we assume that device should be suspended at the time of
-> the detachment (if the default OPP state isn't used), it may be better
-> to add a noisy warning message if pstate!=3D0, keeping the state untouche=
-d
-> if it's not zero.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-That would just be very silly in my opinion.
+We'll have to wait for dt property approval before we can apply the patch.
 
-When the device is detached (suspended or not), it may cause it's PM
-domain to be powered off - and there is really nothing we can do about
-that from the genpd point of view.
+Thanks,
+Guenter
 
-As stated, the only current short term solution is to avoid detaching
-the device. Anything else, would just be papering of the issue.
+> ---
+>   drivers/watchdog/mtk_wdt.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
+> index 97ca993bd009..276b6cb7d225 100644
+> --- a/drivers/watchdog/mtk_wdt.c
+> +++ b/drivers/watchdog/mtk_wdt.c
+> @@ -63,6 +63,7 @@ struct mtk_wdt_dev {
+>   	void __iomem *wdt_base;
+>   	spinlock_t lock; /* protects WDT_SWSYSRST reg */
+>   	struct reset_controller_dev rcdev;
+> +	bool disable_wdt_extrst;
+>   };
+>   
+>   struct mtk_wdt_data {
+> @@ -240,6 +241,8 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
+>   
+>   	reg = ioread32(wdt_base + WDT_MODE);
+>   	reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
+> +	if (mtk_wdt->disable_wdt_extrst)
+> +		reg &= ~WDT_MODE_EXRST_EN;
+>   	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
+>   	iowrite32(reg, wdt_base + WDT_MODE);
+>   
+> @@ -309,6 +312,10 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+>   		if (err)
+>   			return err;
+>   	}
+> +
+> +	mtk_wdt->disable_wdt_extrst =
+> +		of_property_read_bool(dev->of_node, "mediatek,disable-extrst");
+> +
+>   	return 0;
+>   }
+>   
+> 
 
-Kind regards
-Uffe
