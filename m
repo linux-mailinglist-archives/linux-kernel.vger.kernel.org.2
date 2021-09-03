@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B011B400821
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7004400828
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350553AbhICXNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 19:13:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60628 "EHLO mail.kernel.org"
+        id S1350688AbhICXOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 19:14:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350493AbhICXNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 19:13:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5B8656108E;
-        Fri,  3 Sep 2021 23:12:49 +0000 (UTC)
+        id S237375AbhICXOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 19:14:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C4C360F42;
+        Fri,  3 Sep 2021 23:13:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630710769;
-        bh=p6G1vkLrv2YaM8jldj5azhr+cqm9a1fWmWV0HXgENnY=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=V56VxafSmwC1bXHsBfW7/R7ruSCtPDmuVuTOGhPmqX8R8ktUE3WGdTaRSxoWfC8Xo
-         oqiAIytu3awvZYrroA+czynUQFCiNl6gESjpyH46kTs2LwPZifN8JehWVt/bGbVb+7
-         Yi0tAJieH26BAwixYU3OjhFUVJNWQsZsF3ydYY1830yPsZLm/NaKOjUQZqgsZndtfw
-         2t3qn66TsPTdrOemL4No+JtmNP36r7xyimNLVfsYT7ID83VWBvACuTg/ygSOLaibeB
-         N7u5KsGpWx7N4v2a+8x6Rry14cEwKyiMTvNREVJzBcKH6LBjcxhrziZETE7q6JhV//
-         gSJHCuJovSZSg==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5610960A2F;
-        Fri,  3 Sep 2021 23:12:49 +0000 (UTC)
-Subject: Re: [GIT PULL] Kselftest update for Linux 5.15-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <81223355-a515-b5c7-ed54-bb65482aec9f@linuxfoundation.org>
-References: <81223355-a515-b5c7-ed54-bb65482aec9f@linuxfoundation.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <81223355-a515-b5c7-ed54-bb65482aec9f@linuxfoundation.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-next-5.15-rc1
-X-PR-Tracked-Commit-Id: 67d6d80d90fb27b3cc7659f464fa3b87fd67bc14
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f1583cb1be35c23df60b1c39e3e7e6704d749d0b
-Message-Id: <163071076934.25061.14982335061011900842.pr-tracker-bot@kernel.org>
-Date:   Fri, 03 Sep 2021 23:12:49 +0000
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+        s=k20201202; t=1630710828;
+        bh=GtzvbBZVh8VhrLCDs7Nf11vkUCJ2w8o1BgaNpKdlSYE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rXUmLrizgPXJOIIYwN9FsSES4CmmtWohpLkj9usKJThylLVBrfjHezfaekCuKNvIs
+         CAQtDWT54FPfcbmnU0a6nnwmm1aplek8T38IAjRR10DHUbGE/0VIcP8lVJvhJMiiEs
+         APRI7PotWBYrcPUGWT01Av87e4oADjSBCsEDKg8VAFok0akWcKTHpbnXWFIvimcgxH
+         JZkXgS1/HsCxPUXz53xbU/rcydamOBJVYBhIhg2XsOyqF8JgptEOpHfmIQ/Firo0Z1
+         6fbWeAEVQWeLB2IDaPu1SajYjVg4yM/abbDBfxIkYtqxCWBDYYmFK+ZGhK/2CTNQKb
+         j3CqM6XszhVKw==
+Date:   Fri, 3 Sep 2021 16:13:47 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] skbuff: inline page_frag_alloc_align()
+Message-ID: <20210903161347.27211050@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210903024926.4221-1-yajun.deng@linux.dev>
+References: <20210903024926.4221-1-yajun.deng@linux.dev>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 3 Sep 2021 13:51:08 -0600:
+On Fri,  3 Sep 2021 10:49:26 +0800 Yajun Deng wrote:
+> The __alloc_frag_align() is short, and only called by __napi_alloc_...
+> and __netdev_alloc_frag_align(). so inline page_frag_alloc_align()
+> for reduce the overhead of calls.
+> 
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-next-5.15-rc1
+# Form letter - net-next is closed
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f1583cb1be35c23df60b1c39e3e7e6704d749d0b
+We have already sent the networking pull request for 5.15
+and therefore net-next is closed for new drivers, features,
+code refactoring and optimizations. We are currently accepting
+bug fixes only.
 
-Thank you!
+Please repost when net-next reopens after 5.15-rc1 is cut.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Look out for the announcement on the mailing list or check:
+http://vger.kernel.org/~davem/net-next.html
+
+RFC patches sent for review only are obviously welcome at any time.
