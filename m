@@ -2,115 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FC7A4004AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C264004B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:14:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350447AbhICSNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 14:13:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350403AbhICSNc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 14:13:32 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1EC9C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 11:12:31 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id h133so211413oib.7
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 11:12:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=EmxGvSFHzwGSo5pc2/hQyVW83mXoB+h7zPtCUkGNIwE=;
-        b=K9bKKR5p2Hj2dhQigCQ/Rvb66nsPCiDyB65R1H+Uc84IFdA9pH+Fj4/myNe5PdhG2x
-         WtYjgGbOGYPlmE3ASrCrurIbw5w9QLknsSyS3BcSfN4BvuLQm0LWnjbq0cQS/hf38Tqe
-         ZK/KbCE1Mq0CMe4+goX2oFt1VZ5xN4pIg580A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=EmxGvSFHzwGSo5pc2/hQyVW83mXoB+h7zPtCUkGNIwE=;
-        b=g7pkkFyJcrIN0V9j5j6S1lKCyOzSxPC7fnHTYS2axz0a+eSC3fi4f+JpnApR5YXeUT
-         hhvkM2nHK29VuxkO5uFSrHdJGe0mznn/rVy1x+uIT+Kj9+v843cDsCZuYfpJXCx2zQ3e
-         Ll4rstxKnHtXH5mZevQMiKh4IbVPRbssPdcKXtL9+0sQEc3lxnlfRHrXp6Xmqs56ml06
-         8geWKu1ggMBYczXNBQD7uc2Zn20bElkOeds6FQJuvsP0qljDJfNofEfJ0VKF6L6P0u62
-         g03P3ZQY0H8ZOY5bg1u5kKOXiNWwsa/sB0xbf+gk63KAuASm7H1lmRgc/wQRFO/HQfBE
-         iKXg==
-X-Gm-Message-State: AOAM531Gij/t0f1G9wKYYYnMoA0/FEASackgFqqLXWkgyNEEWvrrLgm6
-        00Xw9IF+4YEp7H+FdMto8eGs99yB2z1T/MSmuch+sg==
-X-Google-Smtp-Source: ABdhPJwF6W9Z4C+HCFQkMAT6oKcjVmRCjzrzU0QSEWMUFiOx8lt5Tj7tw21m1kfNNgGcgcNqMTNn1WdwOzXEDm98oh8=
-X-Received: by 2002:a54:4419:: with SMTP id k25mr125286oiw.32.1630692751276;
- Fri, 03 Sep 2021 11:12:31 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 3 Sep 2021 14:12:30 -0400
+        id S1350411AbhICSPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 14:15:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349959AbhICSO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 14:14:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B4C160FDC;
+        Fri,  3 Sep 2021 18:13:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630692839;
+        bh=HV5QwvXd+G5X5BE1dhVVGio0bsaKoGZQ54JzrFuQYv0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Lciq/IIhEguLoSiuOCa3XnH+5hiXq2Wu1ONakJhGocr7FJdzgxKE4kURLzk4xQ4VB
+         Y8/2+KZQSSO3t43Lp8CWIXOzwuPAEnzEp2vJVnsbgEi2aPjZVuwCd+3SZs2hPscwZa
+         XoXam/PdM0Bws8VmCfY0b8smn4vrsTBx72sfmECTcSE63UYe+gyPJmlF86RSY27gNs
+         JUvcpfmIrjM1PBLHsUOdJLZZUhdNMntp/mgpfmeIbB/OjxuPFfJox82Rk4p6LgLOsN
+         WSaPfB8bmkyKOiRk9tMp51gEu3vEPqTurOqCy2h4yWuvBCIdTJxEBp4HWECVcKIKQ4
+         MCQw79usdNxrg==
+Date:   Fri, 3 Sep 2021 19:13:26 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sameer Pujar <spujar@nvidia.com>
+Cc:     lgirdwood@gmail.com, robh+dt@kernel.org, thierry.reding@gmail.com,
+        jonathanh@nvidia.com, catalin.marinas@arm.com, will@kernel.org,
+        perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
+        sharadg@nvidia.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 06/13] ASoC: tegra: Add Tegra210 based MVC driver
+Message-ID: <20210903181326.GP4932@sirena.org.uk>
+References: <1630056839-6562-1-git-send-email-spujar@nvidia.com>
+ <1630056839-6562-7-git-send-email-spujar@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <1630574106-3394-3-git-send-email-skakit@codeaurora.org>
-References: <1630574106-3394-1-git-send-email-skakit@codeaurora.org> <1630574106-3394-3-git-send-email-skakit@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Fri, 3 Sep 2021 14:12:30 -0400
-Message-ID: <CAE-0n52VOzjexezuEe449vT_crB_zVkn5Bnrkh6-RcJfWGTQ9w@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] arm64: dts: sc7280: Add volume up support for sc7280-idp
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        satya priya <skakit@codeaurora.org>
-Cc:     David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="NDuspjMMC1Ui5ypn"
+Content-Disposition: inline
+In-Reply-To: <1630056839-6562-7-git-send-email-spujar@nvidia.com>
+X-Cookie: Darth Vader sleeps with a Teddywookie.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting satya priya (2021-09-02 02:15:06)
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> index 371a2a9..52bcbbc 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
-> @@ -199,6 +199,37 @@
->         modem-init;
->  };
->
-> +&soc {
 
-'s' comes after 'p' so this is in the wrong place.
+--NDuspjMMC1Ui5ypn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +       gpio_keys {
-> +               compatible = "gpio-keys";
-> +               label = "gpio-keys";
-> +
-> +               pinctrl-names = "default";
-> +               pinctrl-0 = <&key_vol_up_default>;
-> +
-> +               vol_up {
-> +                       label = "volume_up";
-> +                       gpios = <&pm7325_gpios 6 GPIO_ACTIVE_LOW>;
-> +                       linux,input-type = <1>;
-> +                       linux,code = <KEY_VOLUMEUP>;
-> +                       gpio-key,wakeup;
-> +                       debounce-interval = <15>;
-> +                       linux,can-disable;
-> +               };
-> +       };
-> +};
-> +
-> +&pm7325_gpios {
-> +       key_vol_up_default: key_vol_up_default {
+On Fri, Aug 27, 2021 at 03:03:52PM +0530, Sameer Pujar wrote:
+> The Master Volume Control (MVC) provides gain or attenuation to a digital
+> signal path. It can be used in input or output signal path for per-stream
+> volume control or it can be used as master volume control. The MVC block
+> has one input and one output. The input digital stream can be mono or
+> multi-channel (up to 7.1 channels) stream. An independent mute control is
+> also included in the MVC block.
 
-Please move this to the "PINCTRL - additions to nodes defined in
-sc7280.dtsi" section and then sort alphabetically on node naem.
+Looks like it's also got a little bit of other DSP in there (a simple
+EQ?).  Not that it really matters.
 
-> +               pins = "gpio6";
-> +               function = "normal";
-> +               input-enable;
-> +               bias-pull-up;
-> +               power-source = <0>;
-> +               qcom,drive-strength = <3>;
-> +       };
-> +};
+> +	if (reg == TEGRA210_MVC_CTRL) {
+> +		u32 val;
+> +		u8 mute_mask;
+
+> +	} else {
+> +		u8 chan = (reg - TEGRA210_MVC_TARGET_VOL) / REG_SIZE;
+> +		s32 val = mvc->volume[chan];
+
+It's not clear to me why we're using the same callbacks for the volume
+and mute settings - there's no shared code on the read path and only a
+tiny bit on the write path.
+
+> +	err |= regmap_update_bits(mvc->regmap, TEGRA210_MVC_SWITCH,
+> +			TEGRA210_MVC_VOLUME_SWITCH_MASK,
+> +			TEGRA210_MVC_VOLUME_SWITCH_TRIGGER);
 > +
->  &pmk8350_vadc {
->         pmk8350_die_temp {
->                 reg = <PMK8350_ADC7_DIE_TEMP>;
+> +end:
+> +	pm_runtime_put(cmpnt->dev);
+> +	return err;
+> +}
+
+_put() should return 0 if there's no change or 1 for a change.
+
+> +	/* SW reset */
+> +	regmap_write(mvc->regmap, TEGRA210_MVC_SOFT_RESET, 1);
+
+What about all the cached values in the regmap, won't they get out of
+sync?  Especially things like volume and mute, it looks like the mute
+just gets written directly to the regmap and not otherwise saved.
+
+--NDuspjMMC1Ui5ypn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmEyZcUACgkQJNaLcl1U
+h9AgMggAha/hIL9322l4CAz3Clg/xsZLabDdWCuHA9GA1Ze39XOrtPyBmwNyBOyj
+Re3PVvnBfeCzpGooqKXpTcdKaxiqBnF2ewOPcTLNrG3gnuAYR8X2NDbzFHd6rr3e
+frclpdZMOypNILokwrytDJG1ssscBTapV5KC3xjwQjqSAp2ckVRGgg+5SE++B1BV
+yrZuTVHJtmK3Sk78YYcYizgOndIGAOFHX48tLa81LaiSWUlePraGXtEXa8pzmSN0
+uJkPyzGdiTK4bLBJgC75bOMuy/oI2Q+nsG/K6+grY7VjcuZaS94qsjngFJCdgz4U
+U3mbKcLaeF8Ov8lIpr4tKJn0THvJdw==
+=uPdC
+-----END PGP SIGNATURE-----
+
+--NDuspjMMC1Ui5ypn--
