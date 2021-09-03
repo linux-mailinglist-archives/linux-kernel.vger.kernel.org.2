@@ -2,365 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D09C3FFFAB
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEFE63FFF9D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 14:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349266AbhICMTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 08:19:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349343AbhICMTT (ORCPT
+        id S1348318AbhICMPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 08:15:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46284 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235065AbhICMPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 08:19:19 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8965C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 05:18:19 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id z4so7954671wrr.6
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 05:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version;
-        bh=gJPMJG0eBq0LfThk7r5TKlTW6PuUo5YuJeYmkTHTj58=;
-        b=oEqxg/iOTlszZ3iRH5PVqRldvdbboM2dzQ7gKRqjzT18OPEIQEd/Q3qVBHwwT09D4b
-         e2JONtxnDUD48aWG92h/MCA7hYWGmA0oQxHkja0/YhORIsw9ZgNYkTPPbttA9PEVec+v
-         ZoAPSj95MZHHrjNKGJD2VSaU8JRn6St8W/sYO1ffqTk+3a0H1wBg3846gtHfFA3A4uTx
-         mqQRLhFDsVT07sSqFCuGb65lCAJQjVatPMEVBVTC/0yn3kJLOlCKqN6SrpsYDqfGk4xI
-         TBD+U+oGaDMYJoc/GnP7Pia5NINbJncLwDkDyH2gWzRuqJmyTf+WVtELkbhjzrmGD0nN
-         LGUQ==
+        Fri, 3 Sep 2021 08:15:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630671248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jKhxEryxOvV3BCEV05H9WKrbxCCVH7ys4JOnEtcYv0o=;
+        b=IUKcj/w9O7JrTrlZExiRSeS2LMVvO4+WZsfANZQNvADnxybQB6RQdwFZsQChsImCobjGz6
+        hVdLhpxuw5z40r4MOGcuPMNtXxOgKTYsIAR2KxZlCgZ8RGQ0uZHIXLM4FrJbWUCIMuSPZW
+        1eJb5QeANcVAUrWXHelRPWCVIJa3im4=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-313-DhlhvHZ8OyiK-7RLITNRvw-1; Fri, 03 Sep 2021 08:14:07 -0400
+X-MC-Unique: DhlhvHZ8OyiK-7RLITNRvw-1
+Received: by mail-ej1-f72.google.com with SMTP id ne21-20020a1709077b95b029057eb61c6fdfso2607107ejc.22
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 05:14:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version;
-        bh=gJPMJG0eBq0LfThk7r5TKlTW6PuUo5YuJeYmkTHTj58=;
-        b=ghGzsArsxrPdVW/CW92Z8cBKsy3h3Iw2nqyPqjukmO7QXwKxIda5l84tpPuCAFkelC
-         3hLyu/5qyisCfRZ8zbq9hG66kU7WQb6pGGIzLJfOuv0UhwxnO2e29EG+sy2ORgBInfNY
-         bSBth8a5zAwfaFJOtoM4N/tj6Ub6lt5RBDAJ8RkYbNb0MzCj2F65E/BGL/82IjsytVaZ
-         K3RZgASX167IhjORGvlzK8D+BYgWoVkNjzQ7FTpaDt/YDzzs8e/CAPOwNTyMyDLgQavw
-         qbvgRVT/7M/yXu7dtweNY2/N+re96AOdC5ZewcxYSD+XVhyrPxoO3/e82GOMg/k8a7IG
-         Ivgg==
-X-Gm-Message-State: AOAM530HlGmBbfw5fSWbi+vM+SX++zlDoblChAP+2CJk1+lHmM7GzrQb
-        S7piS9lpaM6P1GNiA0jwLN5+Nw==
-X-Google-Smtp-Source: ABdhPJznynnEiJhuoDghrhyxKtbMef3w05fOWOEBMejj8TtxEn25hiIKQsa69zQnrlukD30UeYpgDw==
-X-Received: by 2002:a5d:4d8c:: with SMTP id b12mr3703080wru.232.1630671498312;
-        Fri, 03 Sep 2021 05:18:18 -0700 (PDT)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id o18sm5481001wrg.23.2021.09.03.05.18.17
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jKhxEryxOvV3BCEV05H9WKrbxCCVH7ys4JOnEtcYv0o=;
+        b=hohr9QleR8jg9GrWgak0fe+YKAtXyPwwIuGaFWFWhNwsEzg3P8HfBvAHPpqASL7i27
+         JIbeeaz/ho90LIPvBYB78Bvrk2Ja71rFnee/1AKtIe6M2qB6IkhaaMPcYoLRsXoTpzyh
+         57qiiQaIMF4l29RtRl+70x5dTIr1uIhcRh+tx1mDmBuTRSHn0TJhzAnqO8BSYwZFOTPY
+         8rkEr+vsYCd7sHidZ5yLOs6jASbpHeVbXGhO5fPMy3EiUaU2TMLZqBJDWkvl5VfMF9w2
+         ++H/YxPnMt12eMpYa87KSIYsX0LuMkyNDJbee8Nb4PYKXmMIqqrRLqUUF8PlORCeQWeh
+         b24A==
+X-Gm-Message-State: AOAM531tf8EUzQmeQgewcgm9f818rCCSNT7ceV28ETdhUfqbp6cWNNfA
+        E92gJhl7tkZQXusldsF+26d8VWkBfZzoPRY+vhJy/NkT2wcFZcsPrEB74CIh/J/ikrLs24AIXkU
+        OLhBcueKd/wf+jSZYXGees273
+X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr3852026ejc.69.1630671246105;
+        Fri, 03 Sep 2021 05:14:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwrZ9hQ5skCpK7Qi697152xoz1AkM543cXdpgGsazHd3sse474FPdYSbyN9lc3iS+HY2SJFkQ==
+X-Received: by 2002:a17:907:7601:: with SMTP id jx1mr3852004ejc.69.1630671245896;
+        Fri, 03 Sep 2021 05:14:05 -0700 (PDT)
+Received: from steredhat (host-79-51-2-59.retail.telecomitalia.it. [79.51.2.59])
+        by smtp.gmail.com with ESMTPSA id g19sm2607768eje.121.2021.09.03.05.14.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 05:18:17 -0700 (PDT)
-References: <20210903060035.844758-1-adeep@lexina.in>
- <20210903060035.844758-3-adeep@lexina.in>
-User-agent: mu4e 1.6.5; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Vyacheslav Bocharov <adeep@lexina.in>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] arm64: dts: meson-gxl: add support for JetHub H1
-Date:   Fri, 03 Sep 2021 14:10:51 +0200
-In-reply-to: <20210903060035.844758-3-adeep@lexina.in>
-Message-ID: <1jfsulua2e.fsf@starbuckisacylon.baylibre.com>
+        Fri, 03 Sep 2021 05:14:05 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 14:14:02 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v4 3/6] vhost/vsock: support MSG_EOR bit
+ processing
+Message-ID: <20210903121402.vfdaxznxwepezacf@steredhat>
+References: <20210903061353.3187150-1-arseny.krasnov@kaspersky.com>
+ <20210903061541.3187840-1-arseny.krasnov@kaspersky.com>
+ <20210903065539.nb2hk4sszdtlqfmb@steredhat>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210903065539.nb2hk4sszdtlqfmb@steredhat>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 03, 2021 at 08:55:39AM +0200, Stefano Garzarella wrote:
+>On Fri, Sep 03, 2021 at 09:15:38AM +0300, Arseny Krasnov wrote:
+>>'MSG_EOR' handling has similar logic as 'MSG_EOM' - if bit present
+>>in packet's header, reset it to 0. Then restore it back if packet
+>>processing wasn't completed. Instead of bool variable for each
+>>flag, bit mask variable was added: it has logical OR of 'MSG_EOR'
+>>and 'MSG_EOM' if needed, to restore flags, this variable is ORed
+>>with flags field of packet.
+>>
+>>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>>---
+>>drivers/vhost/vsock.c | 22 +++++++++++++---------
+>>1 file changed, 13 insertions(+), 9 deletions(-)
+>>
+>>diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+>>index feaf650affbe..93e8d635e18f 100644
+>>--- a/drivers/vhost/vsock.c
+>>+++ b/drivers/vhost/vsock.c
+>>@@ -114,7 +114,7 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+>>		size_t nbytes;
+>>		size_t iov_len, payload_len;
+>>		int head;
+>>-		bool restore_flag = false;
+>>+		u32 flags_to_restore = 0;
+>>
+>>		spin_lock_bh(&vsock->send_pkt_list_lock);
+>>		if (list_empty(&vsock->send_pkt_list)) {
+>>@@ -179,15 +179,20 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+>>			 * created dynamically and are initialized with header
+>>			 * of current packet(except length). But in case of
+>>			 * SOCK_SEQPACKET, we also must clear message delimeter
+>>-			 * bit(VIRTIO_VSOCK_SEQ_EOM). Otherwise, instead of one
+>>-			 * packet with delimeter(which marks end of message),
+>>-			 * there will be sequence of packets with delimeter
+>>-			 * bit set. After initialized header will be copied to
+>>-			 * rx buffer, this bit will be restored.
+>>+			 * bit (VIRTIO_VSOCK_SEQ_EOM) and MSG_EOR bit
+>>+			 * (VIRTIO_VSOCK_SEQ_EOR) if set. Otherwise,
+>>+			 * there will be sequence of packets with these
+>>+			 * bits set. After initialized header will be copied to
+>>+			 * rx buffer, these required bits will be restored.
+>>			 */
+>>			if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOM) {
+>>				pkt->hdr.flags &= ~cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
+>>-				restore_flag = true;
+>>+				flags_to_restore |= VIRTIO_VSOCK_SEQ_EOM;
+>>+
+>>+				if (le32_to_cpu(pkt->hdr.flags & VIRTIO_VSOCK_SEQ_EOR)) {
+                                                               ^
+Ooops, le32_to_cpu() should close before bitwise and operator.
+I missed this, but kernel test robot discovered :-)
 
-On Fri 03 Sep 2021 at 09:00, Vyacheslav Bocharov <adeep@lexina.in> wrote:
-
-> JetHome Jethub H1 (http://jethome.ru/jethub-h1) is a home automation controller with the following features:
+>>+					pkt->hdr.flags &= ~cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
+>>+					flags_to_restore |= VIRTIO_VSOCK_SEQ_EOR;
+>>+				}
+>>			}
+>>		}
+>>
+>>@@ -224,8 +229,7 @@ vhost_transport_do_send_pkt(struct vhost_vsock *vsock,
+>>		 * to send it with the next available buffer.
+>>		 */
+>>		if (pkt->off < pkt->len) {
+>>-			if (restore_flag)
+>>-				pkt->hdr.flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
+>>+			pkt->hdr.flags |= cpu_to_le32(flags_to_restore);
+>>
+>>			/* We are queueing the same virtio_vsock_pkt to handle
+>>			 * the remaining bytes, and we want to deliver it
+>>-- 2.25.1
+>>
 >
-> - square plastic case
-> - Amlogic S905W (ARM Cortex-A53) quad-core up to 1.5GHz
-> - no video out
-> - 1GB LPDDR4
-> - 8/16GB eMMC flash
-> - 2 x USB 2.0
-> - 1 x 10/100Mbps ethernet
-> - WiFi / Bluetooth RTL8822CS IEEE 802.11a/b/g/n/ac, Bluetooth 5.0.
-> - TI CC2538 + CC2592 Zigbee Wireless Module with up to 20dBm output power and Zigbee 3.0 support.
-> - MicroSD 2.x/3.x/4.x DS/HS cards.
-> - 1 x gpio LED
-> - ADC user Button
-> - DC source 5V microUSB
->
-> Signed-off-by: Vyacheslav Bocharov <adeep@lexina.in>
-> ---
->  arch/arm64/boot/dts/amlogic/Makefile          |   1 +
->  .../meson-gxl-s905w-jethome-jethub-j80.dts    | 241 ++++++++++++++++++
->  2 files changed, 242 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/amlogic/meson-gxl-s905w-jethome-jethub-j80.dts
->
-> diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-> index faa0a79a34f5..2c3ce7c401a5 100644
-> --- a/arch/arm64/boot/dts/amlogic/Makefile
-> +++ b/arch/arm64/boot/dts/amlogic/Makefile
-> @@ -38,6 +38,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s805x-p241.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905w-p281.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905w-tx3-mini.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905d-libretech-pc.dtb
-> +dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905w-jethome-jethub-j80.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-gxm-khadas-vim2.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-gxm-mecool-kiii-pro.dtb
->  dtb-$(CONFIG_ARCH_MESON) += meson-gxm-minix-neo-u9h.dtb
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905w-jethome-jethub-j80.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905w-jethome-jethub-j80.dts
-> new file mode 100644
-> index 000000000000..d67a1bc50f7b
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905w-jethome-jethub-j80.dts
-> @@ -0,0 +1,241 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (c) 2021 Vyacheslav Bocharov <adeep@lexina.in>
-> + * Copyright (c) 2020 JetHome
-> + * Author: Aleksandr Kazantsev <ak@tvip.ru>
-> + * Author: Alexey Shevelkin <ash@tvip.ru>
-> + * Author: Vyacheslav Bocharov <adeep@lexina.in>
-> +*/
-> +
-> +/dts-v1/;
-> +
-> +#include "meson-gxl.dtsi"
-> +
-> +/ {
-> +	memory@0 {
-> +		device_type = "memory";
-> +		reg = <0x0 0x0 0x0 0x40000000>;
-> +	};
-> +
-> +	reserved-memory {
-> +		linux,cma {
-> +			size = <0x0 0x1000000>;
-> +		};
-> +	};
-> +
-> +	aliases {
-> +		serial0 = &uart_AO;   /* Console */
-> +		serial1 = &uart_A;    /* Bluetooth */
-> +		serial2 = &uart_AO_B; /* Wireless module 1 */
-> +		serial3 = &uart_C;    /* Wireless module 2 */
-> +		ethernet0 = &ethmac;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	vddio_ao18: regulator-vddio_ao18 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "VDDIO_AO18";
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +	};
-> +
-> +	vddio_boot: regulator-vddio_boot {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "VDDIO_BOOT";
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +	};
-> +
-> +	vddao_3v3: regulator-vddao_3v3 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "VDDAO_3V3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +	};
-> +
-> +	vcc_3v3: regulator-vcc_3v3 {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "VCC_3V3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +	};
-> +
-> +	emmc_pwrseq: emmc-pwrseq {
-> +		compatible = "mmc-pwrseq-emmc";
-> +		reset-gpios = <&gpio BOOT_9 GPIO_ACTIVE_LOW>;
-> +	};
-> +
-> +	wifi32k: wifi32k {
-> +		compatible = "pwm-clock";
-> +		#clock-cells = <0>;
-> +		clock-frequency = <32768>;
-> +		pwms = <&pwm_ef 0 30518 0>; /* PWM_E at 32.768KHz */
-> +	};
-> +
-> +	sdio_pwrseq: sdio-pwrseq {
-> +		compatible = "mmc-pwrseq-simple";
-> +		reset-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
-> +		clocks = <&wifi32k>;
-> +		clock-names = "ext_clock";
-> +	};
-> +};
-> +
-> +&efuse {
-> +	sn: sn@14 {
-> +		reg = <0x14 0x10>;
-> +	};
+>Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-already defined in meson-gx.dtsi
+NACK
 
-also, what about a new line between the nodes ?
+Please resend fixing the issue.
 
-> +	bt_mac: bt_mac@6 {
-> +		reg = <0x6 0x6>;
-> +	};
-> +	wifi_mac: wifi_mac@C {
-> +		reg = <0xc 0x6>;
-> +	};
-> +	serial: serial@32 {
-> +		reg = <0x32 0x20>;
-> +	};
-
-Isn't serial and sn the same thing ?
-
-> +};
-> +
-> +&eth_mac {
-> +	reg = <0x0 0x6>;
-> +};
-> +
-> +&bid {
-> +	reg = <0x12 0x20>;
-> +};
-> +
-> +
-
-Suggest running checkpatch
-
-> +&usb {
-> +	status = "okay";
-> +	dr_mode = "host";
-> +};
-> +
-> +&pwm_ef {
-> +	status = "okay";
-> +	pinctrl-0 = <&pwm_e_pins>;
-> +	pinctrl-names = "default";
-> +	clocks = <&clkc CLKID_FCLK_DIV4>;
-> +	clock-names = "clkin0";
-> +};
-> +
-> +&saradc {
-> +	status = "okay";
-> +	vref-supply = <&vddio_ao18>;
-> +};
-> +
-> +/* Wireless SDIO Module */
-> +&sd_emmc_a {
-> +	status = "okay";
-> +	pinctrl-0 = <&sdio_pins>;
-> +	pinctrl-1 = <&sdio_clk_gate_pins>;
-> +	pinctrl-names = "default", "clk-gate";
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +
-> +	bus-width = <4>;
-> +	cap-sd-highspeed;
-> +	max-frequency = <50000000>;
-> +
-> +	non-removable;
-> +	disable-wp;
-> +
-> +	/* WiFi firmware requires power to be kept while in suspend */
-> +	keep-power-in-suspend;
-> +
-> +	mmc-pwrseq = <&sdio_pwrseq>;
-> +
-> +	vmmc-supply = <&vddao_3v3>;
-> +	vqmmc-supply = <&vddio_boot>;
-> +};
-> +
-> +/* SD card */
-> +&sd_emmc_b {
-> +	status = "okay";
-> +	pinctrl-0 = <&sdcard_pins>;
-> +	pinctrl-1 = <&sdcard_clk_gate_pins>;
-> +	pinctrl-names = "default", "clk-gate";
-> +
-> +	bus-width = <4>;
-> +	cap-sd-highspeed;
-> +	max-frequency = <50000000>;
-> +	disable-wp;
-> +
-> +	cd-gpios = <&gpio CARD_6 GPIO_ACTIVE_LOW>;
-> +
-> +	vmmc-supply = <&vddao_3v3>;
-> +	vqmmc-supply = <&vddio_boot>;
-> +};
-> +
-> +/* eMMC */
-> +&sd_emmc_c {
-> +	status = "okay";
-> +	pinctrl-0 = <&emmc_pins>, <&emmc_ds_pins>;
-> +	pinctrl-1 = <&emmc_clk_gate_pins>;
-> +	pinctrl-names = "default", "clk-gate";
-> +
-> +	bus-width = <8>;
-> +	cap-mmc-highspeed;
-> +	max-frequency = <200000000>;
-> +	non-removable;
-> +	disable-wp;
-> +	mmc-ddr-1_8v;
-> +	mmc-hs200-1_8v;
-> +
-> +	mmc-pwrseq = <&emmc_pwrseq>;
-> +	vmmc-supply = <&vcc_3v3>;
-> +	vqmmc-supply = <&vddio_boot>;
-> +};
-> +
-> +/* Console UART */
-> +&uart_AO {
-> +	status = "okay";
-> +	pinctrl-0 = <&uart_ao_a_pins>;
-> +	pinctrl-names = "default";
-> +};
-> +
-> +/* S905W only has access to its internal PHY */
-> +&ethmac {
-> +	status = "okay";
-> +	phy-mode = "rmii";
-> +	phy-handle = <&internal_phy>;
-> +};
-> +
-> +&internal_phy {
-> +	status = "okay";
-> +	pinctrl-0 = <&eth_link_led_pins>, <&eth_act_led_pins>;
-> +	pinctrl-names = "default";
-> +};
-> +
-> +&uart_A {
-> +	status = "okay";
-> +	pinctrl-0 = <&uart_a_pins>, <&uart_a_cts_rts_pins>;
-> +	pinctrl-names = "default";
-> +	uart-has-rtscts;
-> +};
-> +
-> +&uart_C {
-> +	status = "okay";
-> +	pinctrl-0 = <&uart_c_pins>;
-> +	pinctrl-names = "default";
-> +};
-> +
-> +&uart_AO_B {
-> +	status = "okay";
-> +	pinctrl-0 = <&uart_ao_b_pins>, <&uart_ao_b_cts_rts_pins>;
-> +	pinctrl-names = "default";
-> +	uart-has-rtscts;
-> +};
-> +
-> +&i2c_B {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c_b_pins>;
-> +
-> +	pcf8563: pcf8563@51 {
-> +		compatible = "nxp,pcf8563";
-> +		reg = <0x51>;
-> +		status = "okay";
-> +	};
-> +};
+Stefano
 
