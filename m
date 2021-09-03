@@ -2,105 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4063FF86F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 02:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 228343FF871
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 02:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346209AbhICApM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 20:45:12 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:38215 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344741AbhICApL (ORCPT
+        id S1346521AbhICAp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 20:45:56 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:33446 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1345668AbhICApz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 20:45:11 -0400
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 1830htGS023940;
-        Fri, 3 Sep 2021 09:43:55 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 1830htGS023940
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1630629835;
-        bh=IPdE81XIeV5i00q1eMsUBaZKdBd5hLxdnRKkzqN7Mz0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SQGAuf9oAjDokTu78s3sDDrZzy6D30KMNslYh6Zd6Jmk+BY+NZkQhe/DM2skgcH6n
-         T+aQxYPxiFEEYwDNl07XJeSybiYAzKQ2UAOHRq9ErQpI3inK6CB1bmsxINGBxZV1lK
-         bvqd++hKyXiuii3lXOGzMGZNtUZ+gPM7X34pouVc1r58hQFkwi3UopsyF+WVA/0Xpc
-         CqnRLylPRJi2YBUhA8cWnG0bC0Gik7UTbIxoBZpY7+UTYZhaXHJ2hXCIfWIGupKzIP
-         3Y+tgE1/1wei+Dbhqr/sjaIDcOnPEhUK2wH20vwqYqy0wDSsRCxQBm3HN3f37ro1zC
-         b7ZZqUDH7lcEw==
-X-Nifty-SrcIP: [209.85.215.171]
-Received: by mail-pg1-f171.google.com with SMTP id n18so3819007pgm.12;
-        Thu, 02 Sep 2021 17:43:55 -0700 (PDT)
-X-Gm-Message-State: AOAM530QGX3/Mr6Vx8S93el/McfsYBPUAg20xK2VMt74h+LYfui8ipmS
-        vUG20talNmhbOQrWTLawbhj+74IsGswceKNc4Q0=
-X-Google-Smtp-Source: ABdhPJyf/tqbA+a3DPFaPcLPFUFDaKH/E5H4kJW6o4StoMnP/9Oevn8LljjrNvsidqlOE2cdspyZG6jv32UObdTH5/g=
-X-Received: by 2002:a63:a58:: with SMTP id z24mr1050153pgk.175.1630629834920;
- Thu, 02 Sep 2021 17:43:54 -0700 (PDT)
+        Thu, 2 Sep 2021 20:45:55 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Un301am_1630629893;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0Un301am_1630629893)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 03 Sep 2021 08:44:54 +0800
+Subject: Re: [PATCH 2/7] KVM: X86: Synchronize the shadow pagetable before
+ link it
+To:     Sean Christopherson <seanjc@google.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Avi Kivity <avi@redhat.com>, kvm@vger.kernel.org
+References: <20210824075524.3354-1-jiangshanlai@gmail.com>
+ <20210824075524.3354-3-jiangshanlai@gmail.com> <YTFhCt87vzo4xDrc@google.com>
+ <YTFkMvdGug3uS2e4@google.com>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <c8cd9508-7516-0891-f507-4b869d7e4322@linux.alibaba.com>
+Date:   Fri, 3 Sep 2021 08:44:53 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210831074004.3195284-1-masahiroy@kernel.org>
- <20210831074004.3195284-6-masahiroy@kernel.org> <202108311032.F503B07@keescook>
-In-Reply-To: <202108311032.F503B07@keescook>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 3 Sep 2021 09:43:18 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASvYHNqtadDJNm08-PcWAfYoJATMYFWRxhhYOmUv6sm3A@mail.gmail.com>
-Message-ID: <CAK7LNASvYHNqtadDJNm08-PcWAfYoJATMYFWRxhhYOmUv6sm3A@mail.gmail.com>
-Subject: Re: [PATCH v2 05/13] kbuild: detect objtool update without using .SECONDEXPANSION
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YTFkMvdGug3uS2e4@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 2:32 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Tue, Aug 31, 2021 at 04:39:56PM +0900, Masahiro Yamada wrote:
-> > Redo commit 8852c5524029 ("kbuild: Fix objtool dependency for
-> > 'OBJECT_FILES_NON_STANDARD_<obj> := n'") to add the objtool
-> > dependency in a cleaner way.
-> >
-> > Using .SECONDEXPANSION ends up with unreadable code due to escaped
-> > dollars. Also, it is not efficient because the second half of
-> > Makefile.build is parsed twice every time.
-> >
-> > Append the objtool dependency to the *.cmd files at the build time.
-> >
-> > This is what fixdep and gen_ksymdeps.sh already do. So, following the
-> > same pattern seems a natural solution.
-> >
-> > This allows us to drop $$(objtool_deps) entirely.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> Okay, so IIUC, this means objtool (and args) now ends up in the .cmd
-> file instead of in the Makefile dep rules? That seems reasonable.
 
 
-Yes.
+On 2021/9/3 07:54, Sean Christopherson wrote:
+> 
+>   trace_get_page:
+> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+> index 50ade6450ace..5b13918a55c2 100644
+> --- a/arch/x86/kvm/mmu/paging_tmpl.h
+> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
+> @@ -704,6 +704,10 @@ static int FNAME(fetch)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
+>   			access = gw->pt_access[it.level - 2];
+>   			sp = kvm_mmu_get_page(vcpu, table_gfn, fault->addr,
+>   					      it.level-1, false, access);
+> +			if (sp->unsync_children) {
+> +				kvm_make_all_cpus_request(KVM_REQ_MMU_SYNC, vcpu);
+> +				return RET_PF_RETRY;
 
-For example, after 'make defconfig all',
-you can see it at the bottom line of *.cmd files.
+Making KVM_REQ_MMU_SYNC be able remotely is good idea.
+But if the sp is not linked, the @sp might not be synced even we
+tried many times. So we should continue to link it.
 
+But if we continue to link it, KVM_REQ_MMU_SYNC should be extended to
+sync all roots (current root and prev_roots).  And maybe add a
+KVM_REQ_MMU_SYNC_CURRENT for current root syncing.
 
-$ tail -n 5  kernel/.smp.o.cmd
-kernel/smp.o: $(deps_kernel/smp.o)
+It is not going to be a simple.  I have a new way to sync pages
+and also fix the problem,  but that include several non-fix patches.
 
-$(deps_kernel/smp.o):
-
-kernel/smp.o: $(wildcard ./tools/objtool/objtool)
+We need to fix this problem in the simplest way.  In my patch
+mmu_sync_children() has a @root argument.  I think we can disallow
+releasing the lock when @root is false. Is it OK?
 
 
 
-
-
-> Reviewed-by: Kees Cook <keescook@chromium.org>
->
+> +			}
+>   		}
+> 
+>   		/*
 > --
-> Kees Cook
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+> 
