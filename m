@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9744006AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C66384006AC
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350600AbhICUeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 16:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236047AbhICUeY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 16:34:24 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA234C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 13:33:23 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id l18so619294lji.12
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 13:33:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vIdOCwskLhI0m4Y2FZRTnOUO+8ZEDMLcxJfUG+PYvsE=;
-        b=elj3tFd6Azm9vkuRGF+FrmR71fOH2ItuvYsMvpUWC4tTW+kE9P9mmsuv21eqppFMNT
-         OVOeJXFeNwUr1u4luok6uLL6cLGY45GR0Uo54NN8xZs0s2622ASNm0G2rjlW8mGOI5RB
-         bDAq4/XAt2wl3feYfbjdMrARbuXCN3pOs/p3pO5Ju2RIysueURvBes8LXn9z1ogrCv2i
-         7IuS/nyX5ebUC5BKHYXO1YTTkzTqehPTere1t8wl57nl6YAm0isSNrR+lhanyaUVzWaY
-         cOqSwCiSO3wvalKuTPcXQl4gcVjT9PqmNUgwG0gM0FcJ3t1sX4lW9bHNNuLrsFf2zjTQ
-         n+3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vIdOCwskLhI0m4Y2FZRTnOUO+8ZEDMLcxJfUG+PYvsE=;
-        b=VbZOE4rixaH1SinYjv6/9opI0yTgul6gKmQIoFmxkyFy+jt/qzk0bgBmJwlw+jhism
-         1Rr7m33PHCRrJXuKepq4n+h3pblcUOSjWrLBLSJww9xv80QzPo3Vjrt73lQ0Q7HC6QuP
-         Q+Ah1iIoDAM0nhvnGt/Nhmg2J4g21Pr7Uk+H1TMHFYmJiT+uAXhcN+kR+VJONh3QuI2+
-         1p9vMApu35nPcYj8uLhNYRJsnS6H3QyLNkziG5MY+Hemj2yAb+Y3XM2gQB7cYt2gCeuD
-         tDSZLoiufIGw2vSIzsKW1n5IbIdNlUg4/87w7e5mrjzWIaopaLhqxlPWYUBXJnfVPi8K
-         RSeg==
-X-Gm-Message-State: AOAM533xe49cSBAUpvilzmVIT1zH2xWDsvsoHLgELSsd3n1Pmf9qHkUk
-        NCTNM/vnQ7BRj/Rmd2YBK1a+oS4w3TX9iuqbUjF6OpSD14PYtA==
-X-Google-Smtp-Source: ABdhPJybDor+zVy/06ynl2HCn/3r7iQr2WBBZejKayn8CxV4gBUWz2lh/Sb6wJsZCF/ZDPOCHR/e5G1kkFqL5PlGXSk=
-X-Received: by 2002:a2e:6c09:: with SMTP id h9mr577564ljc.30.1630701202021;
- Fri, 03 Sep 2021 13:33:22 -0700 (PDT)
+        id S1350477AbhICUeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 16:34:23 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:36248 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236047AbhICUeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 16:34:22 -0400
+Received: from zn.tnic (p200300ec2f0d5800d6a7aa80667574a9.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:5800:d6a7:aa80:6675:74a9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A9BAB1EC05D1;
+        Fri,  3 Sep 2021 22:33:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630701200;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=MAzqKX6VtyCSndmZDNFL0QMi196VzCUfmu+JJoWFdbw=;
+        b=qNaW6q+V7k91JL9JauzWHVNzWW7iJ3zAdxB2Ppu90Bk/biE9mqv/LvFP5m28U1EAH3GwgL
+        hS4Wq4g6QaSJB/GFxx8T10heAENvfC3UF0Z1mtivAUXtvOro5ydb91h8mUxRuMs4idmHpq
+        zBy0Vc0inieQN/Gywh/3xwIedXObLqA=
+Date:   Fri, 3 Sep 2021 22:33:55 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 01/11] x86/paravirt: Move halt paravirt calls under
+ CONFIG_PARAVIRT
+Message-ID: <YTKGs/EaVBWhEbQW@zn.tnic>
+References: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210903172812.1097643-2-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YTJn0HOkMd0thT+3@zn.tnic>
+ <256d0f5b-3a6d-0912-2edc-44b4a0889c73@linux.intel.com>
 MIME-Version: 1.0
-References: <20210902172404.3517626-1-daeho43@gmail.com> <9ab17089-accc-c3a3-a5dc-007fc4eeaa20@kernel.org>
-In-Reply-To: <9ab17089-accc-c3a3-a5dc-007fc4eeaa20@kernel.org>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Fri, 3 Sep 2021 13:33:11 -0700
-Message-ID: <CACOAw_yovM592K3-2fQzA6M29XqWu8s_2f+zXawKo-QpNSXq0w@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v4] f2fs: introduce fragment allocation mode
- mount option
-To:     Chao Yu <chao@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <256d0f5b-3a6d-0912-2edc-44b4a0889c73@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->         if (f2fs_need_seq_seg(sbi))
->                 return 0;
->
-> static inline bool f2fs_need_seq_seg(struct f2fs_sb_info *sbi)
-> {
->         return F2FS_OPTION(sbi).fs_mode == FS_MODE_FRAGMENT_FIXED_BLK;
-> }
->
+On Fri, Sep 03, 2021 at 12:03:56PM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> Is this new convention?
 
-Do you need this in select_policy(), either?
-Like,
-        if (f2fs_need_rand_seg(sbi))
-                p->offset = prandom_u32() % (MAIN_SECS(sbi) *
-sbi->segs_per_sec);
-        else if (f2fs_need_seq_seg(sbi))
-                p->offset = 0;
+No, not new:
 
-> One more concern... we'd better to save fragment_remained_hole as well
-> as fragment_remained_chunk,  otherwise, if fragment_chunk_size +
-> fragment_hole_size > 512, fragment hole will be truncated to 512 -
-> fragment_chunk_size due to we won't create hole with enough size as
-> seg->next_blkoff has crossed end of current segment.
->
+git grep -E "^#\s+define" *.h
 
-Sorry, I don't get it. You mean making fragment_remained_hole as a
-global variable?
-Maybe, we run into the same race condition issue you told before for
-fragment_remained_chunk.
-Could you clarify this more?
+> #ifdefs used in this file does not follow this format.
 
-Thanks,
+That's why we fix them so that they do.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
