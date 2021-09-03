@@ -2,200 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A85D4001AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4F64001B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 17:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235454AbhICPHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 11:07:16 -0400
-Received: from mout.gmx.net ([212.227.17.21]:43751 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229997AbhICPHM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 11:07:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630681561;
-        bh=2NsobSJ0oyoOkDCO4kNPox42OsO4Nli7GYVADpwZFfk=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=KgB1oGa26/ftR5JtjgnCkm+LjSNjE91aGRPWcIb6t1XB5VbxTe/0HHCk1dylY+IhD
-         8DHPkRcgqvDIVMlzTPzOliBWGvdT5qyWcy6PpE8paNeNscd2vLNj9LcWiYGNVdiEcb
-         ypTdR3d8h/HQ+TSjwVDIsvtLo0TcbPChzCm4JtPA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1M1Ycl-1mO5di2BWl-0038Dr; Fri, 03 Sep 2021 17:06:01 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>, Joe Perches <joe@perches.com>
-Cc:     Len Baker <len.baker@gmx.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v6] EDAC/mc: Prefer strscpy or scnprintf over strcpy
-Date:   Fri,  3 Sep 2021 17:05:39 +0200
-Message-Id: <20210903150539.7282-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S235506AbhICPIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 11:08:21 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:41511 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229589AbhICPIT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 11:08:19 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 6BFCB580AC3;
+        Fri,  3 Sep 2021 11:07:19 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Fri, 03 Sep 2021 11:07:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=z
+        5mHCFNJVJQnwxyX2kp+n3o7aK16eTMxU+sV+5V4RFk=; b=NyZ5IZM4jWZVqGE/L
+        7qIdkLFQmRUJc09UK8U9+gykMm+Qk8Kg/3ri27BGEdoAO2r91LapiN403sqA3mUf
+        mUHMd2KAseQpBBP68hLlz9ObG9SzX4kScWqLl8+QvSeGT0B/eAxua6H4AJUvTz7w
+        7z4t7uPZL6l8smsm3oGFIufhRR9DqF15GfLH5UZk/0y39wMhcoR6+C0t1ONHNQ9Z
+        VXEyOON2wz1yev0zAwJTYxC0zoov11UOiFTka2wZblBUfDBFPrfj/X4fetcGFsZo
+        fZamwOZ8FaDItHeFW2YPB5LoK965FSF7eVQZZSq/9vib8rBtk/3zm4DGK5D/VhNC
+        2ZNCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=z5mHCFNJVJQnwxyX2kp+n3o7aK16eTMxU+sV+5V4R
+        Fk=; b=jHHOJzg5zlxvduOl6u57EdlTxDfil7hU4f4K/DbnGnHXBgvo9gNPaWAKd
+        IQRPx2vY11pDJBxugbk6QKP9vWW9pU35lljMpvTBCvRdNYOrNRZghjBNTJjjlQf3
+        rbDkosNty7b+d+35tijA/ToZr9gFM5R1tpmrMTDVlxQtn4mUHo/iVrHotKAgb5Bs
+        STgkcRopw2CSN4aKbWwwZPMXr4BmNxrAcBa0lp2QyIuGkkQPp2GOYi9feo6nLKKh
+        FmVtP4EOLAM7nag6kSxHSa2yAkr64W0K2zvO6DNFN+HD8gJAHS3mDw+2PxnC5VEM
+        gl25U/n2Akb5XSNW4PzreV0LRT4zA==
+X-ME-Sender: <xms:JjoyYXl8-sMdSABXTc0sB-aIfnl4rLRbz-WMeginmSGcnDeUsDVWEg>
+    <xme:JjoyYa3R_XLb2O7v3xTfBTelioQWUPnaWY9IcJM9gm77-bq_9eIjtA2sX8pqwIhII
+    WJilP3wpWw3yJb6lg>
+X-ME-Received: <xmr:JjoyYdoMUEkq_yMVpfDQOoJqqtyszwhSrz9zutcZ8-_pj7UAALdpLhS_57fymeKJ55ON6fvkGcaQzmnE_vMEv1TfP84Fit9KgRBhTdl2RAXrJbpZz5Qy9A6uxQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtgfesthejredttdefheenucfhrhhomhepufgrmhhu
+    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
+    ftrfgrthhtvghrnheptedtkeeivdegteefleeuudehffdthfekheeujeevhfdtvdffjeel
+    uefhuefhveeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepshgrmhhuvghlsehshhholhhlrghnugdrohhrgh
+X-ME-Proxy: <xmx:JjoyYfnAfEz28o-Tl_Ldg8LsByMgCWY_ZFhIzC-hpHZcH_HhLQHItw>
+    <xmx:JjoyYV2kTbZnwfPP3Q9K2iQdYAXWUraQk-4u_14Ro2QQZ0worY0F_A>
+    <xmx:JjoyYeslXQ3-1IKO10eP22UJvaX7M8JOrmnvrbcOpYDcAK9vZl_-uQ>
+    <xmx:JzoyYfwRGFPkanDkBGtvIQJG4Bj7F8y4a5DOePtbClvkEC-IdVAkag>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 3 Sep 2021 11:07:17 -0400 (EDT)
+Subject: Re: [RFC PATCH 6/7] [DO NOT MERGE] clk: sunxi-ng: Add support for H6
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210901053951.60952-1-samuel@sholland.org>
+ <20210901053951.60952-7-samuel@sholland.org>
+ <20210903145120.lfb3dkq66m7fpfcv@gilmour>
+From:   Samuel Holland <samuel@sholland.org>
+Message-ID: <8aaa98ef-39ce-6d2c-2b0f-7633aacefe0a@sholland.org>
+Date:   Fri, 3 Sep 2021 10:07:16 -0500
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1WWrz35yiVKX3AEpwLelo43wNkwyWS28+jV7tcAjnkGOVJRGex4
- 62kMobnU+zTr4NUJU2ElQKZSbknVD9xi/fiZzgHOPEn0yel6FeiNrZ0/rYf7Tqr15wECqqe
- saJNo9jDiqMX7ZTjwu2Gk76XKK9yCFifqrNUd7hHgSBKW/shQPYUUZhnwVeDiho6+DlLcTJ
- 4lx+zPpb5BPdw91l7pDug==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:IZ8oGDh5x9g=:U+bLOJMA3OId4qv5emQuZJ
- U3SDolIicL6kmud82MC2AcCCKEKfgtK6iwlCcbXPpLe8oRZG32aFPhUPF4i6+81O3fuWjqaYv
- AfCueHqlctbkBfoxJvZl4GFMHIczszAa6hzwS03rHmJzbOY7FU2CozUGVofdPegbWbPeZkrKl
- W2ZNOhpTEvj6nerJFSl7FkalWzKab6bgvItqGNZesS55bBax9SWf3yZiHGh++skpxzY9Yv71g
- 87OtKy3xdcTECktspsLeGVBeompS816qCi6TOeTYrLyeVsDdt4KEqkfFNrdVx7IXdwg16TGsa
- yGZCDzHtCaWTendBhow9Un3qUENtZboG9rQLXPnboFGBMoaFsnkgRM6i6vi8lgPlxQEpmsuyR
- nqo1h5k+lraAbmF1UuPV4I15e4yr61npqDc29+Fy4LMNt5cV1FHhWigLSc4vurAFcMTfNVcWc
- jA1uH9avsfU9hGU78MPK0vGSawZEkPxtBzUqzSCeFUCTjq5njHGT0xqrSWJ2hKtyiT4tObcEn
- 4NkuPxFPaiyYOgYah0WCYUCY0SM4MhK1u3SYRCincR313ICEX50GUyesA0Fdy+i+7audYHyXr
- geDDSsqHNNanXAB/0Tjz754Gm7qIXKhBigPCBY2rrLBPpXH8LGgfeQt2znXbXNB19K4oqaovA
- Y4rL0WGc5W/8HxFYDm7Cvz/T0RfOuZgPxp6UN+RTWfm/i3KBqwt9E5KVm52HQ1zLB/toHSyU6
- k0CXQUZ9KFErAqhPKiMrn9kqYoqIcYuVB+UsqC2M2IN7nCeP1bDfBHZDo99wjo7qUTbWvAiBZ
- laiYC8qNqPl1fkYY2f7pPqBFdOs0ZrKVd39FpSM7bUcY6n/fcyUsuRlyOc7sJP8IgsVEkMhEz
- N3JVMbvs2yqCERYMC+4dtbeg8ztQg82ZJlSS1N0N+04CKpEk+9xbkzbVc3+yKfSryQ8xqpUnR
- MHN+Pt0D49C2I7WOfw6uwy5Ng9X54JNOiIHRRrnPz/JmamP3qNM5QPlnVo8k++RpJKDa9AWhh
- lknR4drQhVLIDWSrBrm8/BrVqNXYGVmiKRDc4XRF99CR5e1690bgDRRXPBXf1FQLifyVLnKks
- 1tQk0TXeq5h+GgbwVgGaWqvDkw+RL38ckS2FBm/N4KrP+bKapASiM1YiQ==
+In-Reply-To: <20210903145120.lfb3dkq66m7fpfcv@gilmour>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strcpy() performs no bounds checking on the destination buffer. This
-could result in linear overflows beyond the end of the buffer, leading
-to all kinds of misbehaviors. The safe replacement is strscpy() [1].
+On 9/3/21 9:51 AM, Maxime Ripard wrote:
+> On Wed, Sep 01, 2021 at 12:39:50AM -0500, Samuel Holland wrote:
+>> H6 has IOSC calibration and an ext-osc32k input.
+>>
+>> H6 has the osc32k mux and the rtc-32k mux, but no fanout mux.
+>>
+>> Signed-off-by: Samuel Holland <samuel@sholland.org>
+>> ---
+>>  drivers/clk/sunxi-ng/sun50i-rtc-ccu.c | 49 +++++++++++++++++++++++++++
+>>  drivers/rtc/rtc-sun6i.c               | 17 ----------
+>>  2 files changed, 49 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/clk/sunxi-ng/sun50i-rtc-ccu.c b/drivers/clk/sunxi-ng/sun50i-rtc-ccu.c
+>> index 1dfa05c2f0e9..9603dc0d3d7b 100644
+>> --- a/drivers/clk/sunxi-ng/sun50i-rtc-ccu.c
+>> +++ b/drivers/clk/sunxi-ng/sun50i-rtc-ccu.c
+>> @@ -227,6 +227,16 @@ static SUNXI_CCU_MUX_DATA_WITH_GATE(osc32k_fanout_clk, "rtc-32k-fanout",
+>>  static SUNXI_CCU_M_FW_WITH_GATE(rtc_spi_clk, "rtc-spi", "ahb",
+>>  				0x310, 0, 5, BIT(31), 0);
+>>  
+>> +static struct ccu_common *sun50i_h6_rtc_ccu_clks[] = {
+>> +	&iosc_clk,
+>> +	&iosc_32k_clk,
+>> +	&ext_osc32k_gate_clk.common,
+>> +	&osc32k_clk.common,
+>> +	&osc24M_32k_clk.common,
+>> +	&rtc_32k_mux_clk.common,
+>> +	&osc32k_fanout_clk.common,
+>> +};
+>> +
+>>  static struct ccu_common *sun50i_h616_rtc_ccu_clks[] = {
+>>  	&iosc_clk,
+>>  	&iosc_32k_clk,
+>> @@ -246,6 +256,21 @@ static struct ccu_common *sun50i_r329_rtc_ccu_clks[] = {
+>>  	&rtc_spi_clk.common,
+>>  };
+>>  
+>> +static struct clk_hw_onecell_data sun50i_h6_rtc_ccu_hw_clks = {
+>> +	.num = CLK_NUMBER,
+>> +	.hws = {
+>> +		[CLK_OSC32K]		= &osc32k_clk.common.hw,
+>> +		[CLK_OSC32K_FANOUT]	= &osc32k_fanout_clk.common.hw,
+>> +		[CLK_IOSC]		= &iosc_clk.hw,
+>> +
+>> +		[CLK_IOSC_32K]		= &iosc_32k_clk.hw,
+>> +		[CLK_EXT_OSC32K_GATE]	= &ext_osc32k_gate_clk.common.hw,
+>> +		[CLK_OSC24M_32K]	= &osc24M_32k_clk.common.hw,
+>> +		[CLK_RTC_32K]		= &rtc_32k_mux_clk.common.hw,
+>> +		[CLK_RTC_SPI]		= NULL,
+>> +	},
+>> +};
+>> +
+>>  static struct clk_hw_onecell_data sun50i_h616_rtc_ccu_hw_clks = {
+>>  	.num = CLK_NUMBER,
+>>  	.hws = {
+>> @@ -276,6 +301,13 @@ static struct clk_hw_onecell_data sun50i_r329_rtc_ccu_hw_clks = {
+>>  	},
+>>  };
+>>  
+>> +static const struct sunxi_ccu_desc sun50i_h6_rtc_ccu_desc = {
+>> +	.ccu_clks	= sun50i_h6_rtc_ccu_clks,
+>> +	.num_ccu_clks	= ARRAY_SIZE(sun50i_h6_rtc_ccu_clks),
+>> +
+>> +	.hw_clks	= &sun50i_h6_rtc_ccu_hw_clks,
+>> +};
+>> +
+>>  static const struct sunxi_ccu_desc sun50i_h616_rtc_ccu_desc = {
+>>  	.ccu_clks	= sun50i_h616_rtc_ccu_clks,
+>>  	.num_ccu_clks	= ARRAY_SIZE(sun50i_h616_rtc_ccu_clks),
+>> @@ -318,6 +350,23 @@ static void __init sunxi_rtc_ccu_init(struct device_node *node,
+>>  	of_sunxi_ccu_probe(node, reg, desc);
+>>  }
+>>  
+>> +static void __init sun50i_h6_rtc_ccu_setup(struct device_node *node)
+>> +{
+>> +	struct clk_init_data *init;
+>> +
+>> +	have_iosc_calib = 1;
+>> +
+>> +	/* Casting away the const from a pointer to a non-const anonymous object... */
+>> +	init = (struct clk_init_data *)osc32k_fanout_clk.common.hw.init;
+>> +
+>> +	/* Fanout only has one parent: osc32k. */
+>> +	init->num_parents = 1;
+>> +
+>> +	sunxi_rtc_ccu_init(node, &sun50i_h6_rtc_ccu_desc);
+>> +}
+> 
+> Indeed, that's not great.
+> 
+> Maybe we should just duplicate the sun50i_h6_rtc_ccu_desc (and
+> osc32k_fanout_clk) to cover both cases?
 
-However, to simplify and clarify the code, to concatenate labels use
-the scnprintf() function. This way it is not necessary to check the
-return value of strscpy (-E2BIG if the parameter count is 0 or the src
-was truncated) since the scnprintf returns always the number of chars
-written into the buffer. This function returns always a nul-terminated
-string even if it needs to be truncated.
+Right, I could split osc32k_fanout_clk like with rtc_32k_fixed_clk and
+rtc_32k_mux_clk. Then H6 would use osc32k_fanout_fixed_clk.
 
-The main reason behind this patch is to remove all the strcpy() uses
-from the kernel with the purpose to clean up the proliferation of
-str*cpy() functions. Later on, the next step will be remove all the
-strcpy implementations [2].
-
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strcpy
-[2] https://github.com/KSPP/linux/issues/88
-
-Co-developed-by: Joe Perches <joe@perches.com>
-Signed-off-by: Joe Perches <joe@perches.com>
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
-Hi Joe,
-
-I have added the "Co-developed-by: Joe Perches" tag to give you credit,
-since all the code used in this patch relies heavily on your review
-code snippets.
-
-I hope there are no objections.
-
-Thanks,
-Len
-
-Changelog v1 -> v2
-- Use the strscpy() instead of scnprintf() to add labels and follow a
-  code pattern more similar to the current one (advance "p" and
-  decrement "left") (Robert Richter).
-
-Changelog v2 -> v3
-- Rename the "left" variable to "len" (Robert Richter).
-- Use strlen(p) instead of strlen(OTHER_LABEL) to decrement "len" and
-  increment "p" as otherwise "left" could underflow and p overflow
-  (Robert Richter).
-
-Changelog v3 -> v4
-- Change the commit subject (Joe Perches).
-- Fix broken logic (Robert Richter).
-- Rebase against v5.14-rc5.
-
-Changelog v4 -> v5
-- Change the commit subject.
-- Clarify why the change is being made by adding more info to the
-  commit message (Borislav Petkov).
-- Use scnprintf instead of strscpy (Joe Perches).
-- Rebase against v5.14-rc7.
-
-Changelog v5 -> v6
-- Rebase against v5.14.
-- Refactor the code to use a more common scnprintf mechanism (Joe
-  Perches).
-
-Previous versions:
-
-v1
-https://lore.kernel.org/linux-hardening/20210725162954.9861-1-len.baker@gm=
-x.com/
-
-v2
-https://lore.kernel.org/linux-hardening/20210801143558.12674-1-len.baker@g=
-mx.com/
-
-v3
-https://lore.kernel.org/linux-hardening/20210807155957.10069-1-len.baker@g=
-mx.com/
-
-v4
-https://lore.kernel.org/linux-hardening/20210814075527.5999-1-len.baker@gm=
-x.com/
-
-v5
-https://lore.kernel.org/linux-hardening/20210829161547.6069-1-len.baker@gm=
-x.com/
-
- drivers/edac/edac_mc.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/edac/edac_mc.c b/drivers/edac/edac_mc.c
-index f6d462d0be2d..97dff62970a5 100644
-=2D-- a/drivers/edac/edac_mc.c
-+++ b/drivers/edac/edac_mc.c
-@@ -1032,6 +1032,8 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
-_type type,
- 	int i, n_labels =3D 0;
- 	struct edac_raw_error_desc *e =3D &mci->error_desc;
- 	bool any_memory =3D true;
-+	const char *prefix =3D "";
-+	int n =3D 0;
-
- 	edac_dbg(3, "MC%d\n", mci->mc_idx);
-
-@@ -1113,12 +1115,9 @@ void edac_mc_handle_error(const enum hw_event_mc_er=
-r_type type,
- 			p =3D e->label;
- 			*p =3D '\0';
- 		} else {
--			if (p !=3D e->label) {
--				strcpy(p, OTHER_LABEL);
--				p +=3D strlen(OTHER_LABEL);
--			}
--			strcpy(p, dimm->label);
--			p +=3D strlen(p);
-+			n +=3D scnprintf(e->label + n, sizeof(e->label) - n,
-+				       "%s%s", prefix, dimm->label);
-+			prefix =3D OTHER_LABEL;
- 		}
-
- 		/*
-@@ -1140,9 +1139,9 @@ void edac_mc_handle_error(const enum hw_event_mc_err=
-_type type,
- 	}
-
- 	if (any_memory)
--		strcpy(e->label, "any memory");
-+		strscpy(e->label, "any memory", sizeof(e->label));
- 	else if (!*e->label)
--		strcpy(e->label, "unknown memory");
-+		strscpy(e->label, "unknown memory", sizeof(e->label));
-
- 	edac_inc_csrow(e, row, chan);
-
-=2D-
-2.25.1
-
+Regards,
+Samuel
