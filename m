@@ -2,149 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09D603FF904
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 05:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 071563FF917
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 05:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345449AbhICDJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 23:09:23 -0400
-Received: from mailgw01.mediatek.com ([60.244.123.138]:46274 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230499AbhICDJW (ORCPT
+        id S1346199AbhICDYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 23:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242941AbhICDY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 23:09:22 -0400
-X-UUID: bd5b64a7326e450b843e6845123182e6-20210903
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=I7eErvKCjKSoZMUT8uEkUsYqIR3doV0E2tnrfW34Oyc=;
-        b=t1/A0CMwFK6DR/affEE0ye5ClSnjIKHGU3OBDCvCPOyO6Od+E/xqbUNw/ziy6jRhv6U3JgQdb6P3rlYIqukW4kA2N3h101qXVVMfKpmIbk+LHu9cZJdrA4nBgIjLrZ5XPD4s0ZJzd5KdzZMwvE0+EcR13iNfDv0IZ8eCkAtNAB4=;
-X-UUID: bd5b64a7326e450b843e6845123182e6-20210903
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <yunfei.dong@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1779183396; Fri, 03 Sep 2021 11:08:18 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 3 Sep 2021 11:08:17 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.792.15; Fri, 3 Sep 2021 11:08:15 +0800
-Received: from mhfsdcap04 (10.17.3.154) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 3 Sep 2021 11:08:14 +0800
-Message-ID: <3b9463e88d88ce85205da08f8263252da7726ade.camel@mediatek.com>
-Subject: Re: [PATCH v6, 00/15] Using component framework to support multi
- hardware decode
-From:   "yunfei.dong@mediatek.com" <yunfei.dong@mediatek.com>
-To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-CC:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        "Tiffany Lin" <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomasz Figa <tfiga@google.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Irui Wang <irui.wang@mediatek.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Date:   Fri, 3 Sep 2021 11:08:13 +0800
-In-Reply-To: <CAAEAJfDOt_GyDPojcj5P6Wou9HC2GC8YzRt2wYyqdrCOjfeOog@mail.gmail.com>
-References: <20210901083215.25984-1-yunfei.dong@mediatek.com>
-         <CAAEAJfDOt_GyDPojcj5P6Wou9HC2GC8YzRt2wYyqdrCOjfeOog@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Thu, 2 Sep 2021 23:24:27 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BF9C061575;
+        Thu,  2 Sep 2021 20:23:28 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id p4so4541578qki.3;
+        Thu, 02 Sep 2021 20:23:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kmMaDf5XzzZWoGrkUvrMT55kPyBx22fLqCQ3l5BOly4=;
+        b=Gbry68x/s33GK0bheQ4NqIwVQxwD6g9YurY5CIGkicUcwOs2K8iMjfBV78fnJbKI2b
+         G4b5VNP1omLmgOqA2TwWQZIJ5BsNmjO8RgBd5/Qn7mZ88IRHxFpeQDBDq2j2dD1q2HQo
+         86/kDI5TCnVMiiDWTrXsgHQLfU9aIucV4hL5iAf6pzbB2DD03iXIKicNVYCFxXSQvr+V
+         bsgIBIVAXFY8aNmzDEGVPJsyFx30+wTNlaKiwA7CFxVbMR3WL6ENYlJyzbTZ9d8BgJEH
+         BAaFTtk/2/ZC1ZBnNe+pG2S2vH80378SMZjn3kSbPXEaO2ducbIr0XSFokzHcmGVFI3X
+         xFuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kmMaDf5XzzZWoGrkUvrMT55kPyBx22fLqCQ3l5BOly4=;
+        b=lSyAKt3dSwf3jX5H3m/IPbR1c+AIob5FhHxYznIcscxK617U3/+RS5OSRzZwYD+i8l
+         EQJ60KXVIxup0SBNq3X2Fu9jf12oXH17eZpduqKSvpZP2Bxcn0LQ5aDCZXpX0gPIWrA1
+         YMj2dJcQlt6Y5NbtcuQd885jRCUhcQ+B8uvOtyLhMDL1wYu/UkHTn/GSbCPeBY1IWnNn
+         Y0sxrK2DyBkO4R5LO0qevK3M6UnbwNaPRhhPNevp24lf4BhhbdEJ1AHpZjLbx4SHwX8T
+         OCgpXSCTEY9wF4WktkJCYxVJ+1geHnERYNOb45gy4/JXryEpMH3eBxAN+1G3cYJklBjL
+         j0Lg==
+X-Gm-Message-State: AOAM531IooyWgmFMlYz0rpzl0vPur0fFvs7y70emb5Jwh5EwyUzcp7eF
+        XhxCmKB9CJisG+OC7eQu698=
+X-Google-Smtp-Source: ABdhPJy5VR1jyOkWg+muVI8YHbH8vEGlrb1vrWc9VtYCwC/VHZSuc/dYGFUB5q/XvUhbCCDsF4fEEg==
+X-Received: by 2002:ae9:edd2:: with SMTP id c201mr1424754qkg.495.1630639407731;
+        Thu, 02 Sep 2021 20:23:27 -0700 (PDT)
+Received: from localhost.localdomain (pool-72-82-21-11.prvdri.fios.verizon.net. [72.82.21.11])
+        by smtp.gmail.com with ESMTPSA id v5sm2984729qkh.39.2021.09.02.20.23.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 20:23:27 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com, luiz.dentz@gmail.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, eric.dumazet@gmail.com
+Subject: [PATCH 0/2] Bluetooth: various SCO fixes
+Date:   Thu,  2 Sep 2021 23:13:04 -0400
+Message-Id: <20210903031306.78292-1-desmondcheongzx@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgRXplcXVpZWwsDQoNClRoYW5rcyBmb3IgeW91ciBzdWdnZXN0aW9uLg0KT24gVGh1LCAyMDIx
-LTA5LTAyIGF0IDEzOjMwIC0wMzAwLCBFemVxdWllbCBHYXJjaWEgd3JvdGU6DQo+IE9uIFdlZCwg
-MSBTZXB0IDIwMjEgYXQgMDU6MzIsIFl1bmZlaSBEb25nIDx5dW5mZWkuZG9uZ0BtZWRpYXRlay5j
-b20+DQo+IHdyb3RlOg0KPiA+IA0KPiA+IFRoaXMgc2VyaWVzIGFkZHMgc3VwcG9ydCBmb3IgbXVs
-dGkgaGFyZHdhcmUgZGVjb2RlIGludG8gbXRrLXZjb2RlYywgDQo+ID4gYnkgZmlyc3QNCj4gPiBh
-ZGRpbmcgY29tcG9uZW50IGZyYW1ld29yayB0byBtYW5hZ2UgZWFjaCBoYXJkd2FyZSBpbmZvcm1h
-dGlvbjoNCj4gPiBpbnRlcnJ1cHQsDQo+ID4gY2xvY2ssIHJlZ2lzdGVyIGJhc2VzIGFuZCBwb3dl
-ci4gU2Vjb25kbHkgYWRkIGNvcmUgdGhyZWFkIHRvIGRlYWwNCj4gPiB3aXRoIGNvcmUNCj4gPiBo
-YXJkd2FyZSBtZXNzYWdlLCBhdCB0aGUgc2FtZSB0aW1lLCBhZGQgbXNnIHF1ZXVlIGZvciBkaWZm
-ZXJlbnQNCj4gPiBoYXJkd2FyZQ0KPiA+IHNoYXJlIG1lc3NhZ2VzLiBMYXN0bHksIHRoZSBhcmNo
-aXRlY3R1cmUgb2YgZGlmZmVyZW50IHNwZWNzIGFyZSBub3QNCj4gPiB0aGUgc2FtZSwNCj4gPiB1
-c2luZyBzcGVjcyB0eXBlIHRvIHNlcGFyYXRlIHRoZW0uDQo+ID4gDQo+ID4gVGhpcyBzZXJpZXMg
-aGFzIGJlZW4gdGVzdGVkIHdpdGggYm90aCBNVDgxODMgYW5kIE1UODE3My4gRGVjb2RpbmcNCj4g
-PiB3YXMgd29ya2luZw0KPiA+IGZvciBib3RoIGNoaXBzLg0KPiA+IA0KPiA+IFBhdGNoZXMgMX4z
-IHJld3JpdGUgZ2V0IHJlZ2lzdGVyIGJhc2VzIGFuZCBwb3dlciBvbi9vZmYgaW50ZXJmYWNlLg0K
-PiA+IA0KPiA+IFBhdGNoIDQgYWRkIGNvbXBvbmVudCBmcmFtZXdvcmsgdG8gc3VwcG9ydCBtdWx0
-aSBoYXJkd2FyZS4NCj4gPiANCj4gPiBQYXRjaCA1IHNlcGFyYXRlIHZpZGVvIGVuY29kZXIgYW5k
-IGRlY29kZXIgZG9jdW1lbnQNCj4gPiANCj4gPiBQYXRjaGVzIDYtMTUgYWRkIGludGVyZmFjZXMg
-dG8gc3VwcG9ydCBjb3JlIGhhcmR3YXJlLg0KPiA+IC0tLS0NCj4gPiBUaGlzIHBhdGNoIGRlcGVu
-ZGVudHMgb24gOiAibWVkaWE6IG10ay12Y29kZWM6IHN1cHBvcnQgZm9yIE1UODE4Mw0KPiA+IGRl
-Y29kZXIiWzFdIGFuZA0KPiA+ICJNZWRpYXRlayBNVDgxOTIgY2xvY2sgc3VwcG9ydCJbMl0uDQo+
-ID4gDQo+ID4gMTogTXVsdGkgaGFyZHdhcmUgZGVjb2RlIGlzIGJhc2VkIG9uIHN0YXRlbGVzcyBk
-ZWNvZGVyLCBNVDgxODMgaXMNCj4gPiB0aGUgZmlyc3QgdGltZQ0KPiA+IHRvIGFkZCBzdGF0ZWxl
-c3MgZGVjb2Rlci4gT3RoZXJ3aXNlIGl0IHdpbGwgY2F1c2UgY29uZmxpY3QuIFRoaXMNCj4gPiBw
-YXRjaCB3aWxsIGJlDQo+ID4gYWNjZXB0ZWQgaW4gNS4xNVsxXS4NCj4gPiANCj4gPiAyOiBUaGUg
-ZGVmaW5pdGlvbiBvZiBkZWNvZGVyIGNsb2NrcyBhcmUgaW4gbXQ4MTkyLWNsay5oLCB0aGlzIHBh
-dGNoDQo+ID4gYWxyZWFkeSBpbiBjbGsgdHJlZVsyXS4NCj4gPiANCj4gPiBbMV0NCj4gPiBodHRw
-czovL3BhdGNod29yay5saW51eHR2Lm9yZy9wcm9qZWN0L2xpbnV4LW1lZGlhL2xpc3QvP3Nlcmll
-cz01ODI2DQo+ID4gWzJdDQo+ID4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4
-L2tlcm5lbC9naXQvY2xrL2xpbnV4LmdpdC9jb21taXQvP2g9Y2xrLW5leHQmaWQ9ZjM1ZjFhMjNl
-MGUxMmUzMTczZTllOWRlZGJjMTUwZDEzOTAyNzE4OQ0KPiA+IC0tLS0NCj4gPiBDaGFuZ2VzIGNv
-bXBhcmVkIHdpdGggdjU6DQo+ID4gLUFkZCBkZWNvZGVyIGhhcmR3YXJlIGJsb2NrIGRpYWdyYW0g
-Zm9yIHBhdGNoIDEzLzE1DQo+ID4gDQo+IA0KPiANCj4gVGhlIGRpc2N1c3Npb24gb24gdjUgd2Fz
-IHN0aWxsIG9uLWdvaW5nLCBzbyBzZW5kaW5nIHRoaXMgdjYNCj4gaXMgbm90IGhlbHBmdWwuIFRo
-ZSBjb250ZXh0IGZvciB2NSdzIGRpc2N1c3Npb24gaXMgbm93IGhhcmRlciB0bw0KPiBmaW5kLg0K
-PiANCg0KPiBQbGVhc2UgYXZvaWQgc2VuZGluZyBhIG5ldyB2ZXJzaW9uIHdpdGhvdXQgcHJvcGVy
-bHkNCj4gZGlzY3Vzc2luZyBhbGwgdGhlIGZlZWRiYWNrLCBhbmQgd2l0aG91dCByZWFjaGluZyBj
-b25zZW5zdXMuDQo+IFRoaXMgaXMgdmVyeSBpbXBvcnRhbnQsIHBsZWFzZSBrZWVwIGl0IGluIG1p
-bmQuDQo+IA0KVGhhbmtzIGZvciB5b3VyIHJlbWluZCwgSSB3aWxsIGtlZXAgdGhpcyBwYXRjaCB1
-bnRpbCBnZXQgdGhlIHNvbHV0aW9uLg0KDQo+IFNwZWNpZmljYWxseSwgdGhlIGZlZWRiYWNrIG9u
-IHY1IHdhcyBOQUssIHdpdGggdGhlIHJlcXVlc3QgdG8gYXZvaWQNCj4gdXNpbmcgYW55IGFzeW5j
-IGZyYW1ld29yaywgYW5kIGluc3RlYWQgdHJ5IHRvIGZpbmQgYSBzaW1wbGVyDQo+IHNvbHV0aW9u
-Lg0KPiANCj4gRm9yIGluc3RhbmNlLCB5b3UgY2FuIG1vZGVsIHRoaW5ncyB3aXRoIGEgYnVzLWxp
-a2UgcGF0dGVybiwNCj4gd2hpY2ggdGllcyBhbGwgdGhlIGRldmljZXMgdG9nZXRoZXIsIHVuZGVy
-IGEgcGFyZW50IG5vZGUuDQo+IFRoaXMgcGF0dGVybiBpcyBjb21tb24gaW4gdGhlIGtlcm5lbCwg
-dGhlIHBhcmVudA0KPiBub2RlIGNhbiB1c2Ugb2ZfcGxhdGZvcm1fcG9wdWxhdGUgb3Igc2ltaWxh
-cg0KPiAoZ2l0IGdyZXAgb2ZfcGxhdGZvcm1fcG9wdWxhdGUsIHlvdSB3aWxsIHNlZSBwbGVudHkg
-b2YgZXhhbXBsZXMpLg0KPiANCj4gWW91IHdpbGwgc3RpbGwgaGF2ZSB0byBkbyBzb21lIHdvcmsg
-dG8gaGF2ZSB0aGUgcHJvcGVyDQo+IHJlZ3MgcmVzb3VyY2VzLCBidXQgdGhpcyBpcyBkb2FibGUu
-IEVhY2ggY2hpbGQgaXMgYSBkZXZpY2UsDQo+IHNvIGl0IGNhbiBoYXZlIGl0cyBvd24gcmVzb3Vy
-Y2VzIChjbG9ja3MsIGludGVycnVwdHMsIGlvbW11cykuDQo+IA0KPiBZb3UgZG9uJ3QgbmVlZCBh
-bnkgYXN5bmMgZnJhbWV3b3JrLg0KPiANCklmIHB1dCB0aGUgbGF0IGFuZCBjb3JlIG5vZGUgaW4g
-dGhlIHBhcmVudCBub2RlLCBuZWVkIHRvIGNoZWNrIHRoZQ0KYmVsb3cgdGhpbmdzIGFmdGVyIGRp
-c2N1c3NlZCB3aXRoIGlvbW11IG93bmVyLg0KDQpJZiBwdXR0aW5nIHRoZSBpb21tdXMgcHJvcGVy
-dHkgaW4gdGhlIGNoaWxkIG5vZGUsIHRoZW4gaXMgdGhlIGNoaWxkDQpkZXZpY2UgYSBzdGFuZGFy
-ZCBwbGF0Zm9ybSBkZXZpY2U/DQoNClRoZSBpb21tdSByZWdpc3RlIGxpa2UgdGhpczogIA0KcmV0
-ID0gYnVzX3NldF9pb21tdSgmcGxhdGZvcm1fYnVzX3R5cGUsICZtdGtfaW9tbXVfb3BzKTsgDQpJ
-dCBleHBlY3QgdGhlIGNvbnN1bWVyIGlzIGEgc3RhbmRhcmQgcGxhdGZvcm0gZGV2aWNlLiBvdGhl
-cndpc2UgaXQNCmNvdWxkIG5vdCBlbnRlciB0byB0aGUgaW9tbXUgb2ZfeGxhdGUuKQ0KDQpUaGFu
-a3MNCll1bmZlaSBEb25nDQo+ICAgICB2Y29kZWNfZGVjOiB2Y29kZWNfZGVjQDE2MDAwMDAwIHsN
-Cj4gICAgICAgICBjb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5Mi12Y29kZWMtZGVjIjsNCj4g
-ICAgICAgICByZWcgPSA8c29tZXRoaW5nPjsNCj4gICAgICAgICBtZWRpYXRlayxzY3AgPSA8JnNj
-cD47DQo+ICAgICAgICAgaW9tbXVzID0gPCZpb21tdTAgTTRVX1BPUlRfTDRfVkRFQ19NQ19FWFQ+
-Ow0KPiAgICAgICAgIGRtYS1yYW5nZXMgPSA8MHgxIDB4MCAweDAgMHg0MDAwMDAwMCAweDAgMHhm
-ZmYwMDAwMD47DQo+IA0KPiAgICAgICAgIHZjb2RlY19sYXRAMHgxMDAwMCB7DQo+ICAgICAgICAg
-ICAgIGNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXRrLXZjb2RlYy1sYXQiOw0KPiAgICAgICAgICAg
-ICByZWcgPSA8MHgxMDAwMCAweDgwMD47ICAgICAgLyogVkRFQ19NSVNDICovDQo+ICAgICAgICAg
-ICAgIGludGVycnVwdHMgPSA8R0lDX1NQSSA0MjYgSVJRX1RZUEVfTEVWRUxfSElHSCAwPjsNCj4g
-ICAgICAgICAgICAgLy8gZXRjDQo+ICAgICAgICAgfTsNCj4gDQo+ICAgICAgICAgdmNvZGVjX2Nv
-cmVAMHgyNTAwMCB7DQo+ICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdGstdmNv
-ZGVjLWNvcmUiOw0KPiAgICAgICAgICAgIHJlZyA9IDwweDI1MDAwIDB4MTAwMD47ICAgICAgLyog
-VkRFQ19DT1JFX01JU0MgKi8NCj4gICAgICAgICAgICBpbnRlcnJ1cHRzID0gPEdJQ19TUEkgNDI1
-IElSUV9UWVBFX0xFVkVMX0hJR0ggMD47DQo+ICAgICAgICAgICAgLy8gZXRjDQo+ICAgICAgICAg
-fTsNCj4gICAgIH07DQo+IA0KPiBUaGFua3MsDQo+IEV6ZXF1aWVsDQo=
+
+Hi,
+
+This patch set contains some of the fixes for SCO following our
+discussion on commit ba316be1b6a0 ("Bluetooth: schedule SCO timeouts
+with delayed_work") [1].
+
+I believe these patches should go in together with [2] to address the
+UAF errors that have been reported by Syzbot following
+commit ba316be1b6a0.
+
+Link: https://lore.kernel.org/lkml/20210810041410.142035-2-desmondcheongzx@gmail.com/ [1]
+Link: https://lore.kernel.org/lkml/20210831065601.101185-1-desmondcheongzx@gmail.com/ [2]
+
+Best wishes,
+Desmond
+
+Desmond Cheong Zhi Xi (2):
+  Bluetooth: call sock_hold earlier in sco_conn_del
+  Bluetooth: fix init and cleanup of sco_conn.timeout_work
+
+ net/bluetooth/sco.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+-- 
+2.25.1
 
