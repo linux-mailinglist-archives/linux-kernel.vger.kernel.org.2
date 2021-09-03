@@ -2,92 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6C54004C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:18:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5952F4004C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 20:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345602AbhICSTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 14:19:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348321AbhICSTO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 14:19:14 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11586C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 11:18:14 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id j12so151301ljg.10
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 11:18:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=883xElBFencY5c0OGGg52rdLZq6bLCaxWzcjeMOL5Ig=;
-        b=QRMaoMuu+mn7nYV8gnSsQzl0222xnKTRPE0tqT2Z4lYny5RixvHQLav7A2IOYhPiVu
-         z9zjyFgpBH4MmrQTyXiJeg0DLDGTdOM0keZRvnUs+u406UAkyykG2QRezV0P5EjZwxkX
-         VLtrbFHE4BfhWrZllXz7ledx/m8IP8YnPBVbjPn9UlsSOyAeLoNGGN/K3Ardm/XPYOxd
-         QnfyLBaLH+QyCMKsYZuAmO9W7nTZ+MOm3g9j9boYblDt6B+M7CD27roOInJL6o+n5xoc
-         3/d8j/x4U/AczX7WaUjOS09O97F3OojOUoAIylXzDQ6OYwseEUDkYPjwFG0V/7HLxbVt
-         lrqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=883xElBFencY5c0OGGg52rdLZq6bLCaxWzcjeMOL5Ig=;
-        b=Cla7IbpYGk2jVgXbBCY7Ui7DZEMER/cmHj5Fv5SRWbU+s/bFrwsLrCTKTmcoBP7T5o
-         JgAtA3kJyak9jzL66g91P172XUUTQOAdo7jkyLq1eXWDF8A7p0H2kHxJVdJqqyNhygqd
-         asXbrP85aY4d/MSoor7tdVIM0UW4J7OIycBN4LWwNi4sipqjl+3dnBOtJqG12XSl2/Ah
-         h2lbVo26m2YDNLfPEm0ldun8L0yAKzsbbRSQmreAi+b9amMcFeDT/C1KZExE/zUw9q0p
-         paLeZN2bvs0c2MS8FSBMDT/RDDuzPqgAPvEMUuqKdbxn6C2JQqTmcI+c4y1ry+k1W4h+
-         HVmQ==
-X-Gm-Message-State: AOAM530z/g1syWC1nWsPtvTrQ1tECXub3sa2v4YBQPwziHkA4mAPey2Z
-        hOu6FCRtaLonY5uTjJFwMSw=
-X-Google-Smtp-Source: ABdhPJy9FMS8REW2mtVJBLxK/Eusely6MYf8zBy4dPK+0LWD28RMb76WayE95gFYfislhIl8ZAmVIw==
-X-Received: by 2002:a2e:5345:: with SMTP id t5mr247471ljd.20.1630693092357;
-        Fri, 03 Sep 2021 11:18:12 -0700 (PDT)
-Received: from localhost.localdomain ([46.235.67.70])
-        by smtp.gmail.com with ESMTPSA id d5sm15719lfv.14.2021.09.03.11.18.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 11:18:12 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, straube.linux@gmail.com,
-        fmdefrancesco@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH 2/2] staging: r8188eu: remove useless memset
-Date:   Fri,  3 Sep 2021 21:18:07 +0300
-Message-Id: <97a283ed5b97632033b0fc7c6aa0fbfc82f06da3.1630692375.git.paskripkin@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <ee783fbb71abb549505b84542223be7a7c905eea.1630692375.git.paskripkin@gmail.com>
-References: <ee783fbb71abb549505b84542223be7a7c905eea.1630692375.git.paskripkin@gmail.com>
+        id S235730AbhICSWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 14:22:35 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45188 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230330AbhICSWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 14:22:35 -0400
+Received: from zn.tnic (p200300ec2f0d58000d44f02d043b904a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:5800:d44:f02d:43b:904a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B24201EC0287;
+        Fri,  3 Sep 2021 20:21:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1630693293;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=hs5R959SOHm+FY2nHSnYB8p0QSZDrkCRkJApp51mQfY=;
+        b=sVl7qEq4MBIoEdWUGYfhXOReT71JBg8eR4VGKyDJsHFqzpuL0PqAtzkBeVh9sqgsQhYwsd
+        U/avLGOMLZlAjiUGGDSaTA1dsJYeg+/aV02O0Sir1Qd7JzHQ+jaVIM8m4HmhcJGgjE+ai1
+        ZwHWaC0SHGAci2vIEwkQz9cyo7zMeq8=
+Date:   Fri, 3 Sep 2021 20:22:08 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 01/11] x86/paravirt: Move halt paravirt calls under
+ CONFIG_PARAVIRT
+Message-ID: <YTJn0HOkMd0thT+3@zn.tnic>
+References: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210903172812.1097643-2-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210903172812.1097643-2-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-psetkeyparm is kzalloced buffer, there is no need in zeroing it one more
-time, since kzalloc had already set memory to 0.
+On Fri, Sep 03, 2021 at 10:28:02AM -0700, Kuppuswamy Sathyanarayanan wrote:
+> diff --git a/arch/x86/include/asm/irqflags.h b/arch/x86/include/asm/irqflags.h
+> index c5ce9845c999..ddc77c95adc6 100644
+> --- a/arch/x86/include/asm/irqflags.h
+> +++ b/arch/x86/include/asm/irqflags.h
+> @@ -59,27 +59,8 @@ static inline __cpuidle void native_halt(void)
+>  
+>  #endif
+>  
+> -#ifdef CONFIG_PARAVIRT_XXL
+> -#include <asm/paravirt.h>
+> -#else
+> +#ifndef CONFIG_PARAVIRT
+>  #ifndef __ASSEMBLY__
+> -#include <linux/types.h>
+> -
+> -static __always_inline unsigned long arch_local_save_flags(void)
+> -{
+> -	return native_save_fl();
+> -}
+> -
+> -static __always_inline void arch_local_irq_disable(void)
+> -{
+> -	native_irq_disable();
+> -}
+> -
+> -static __always_inline void arch_local_irq_enable(void)
+> -{
+> -	native_irq_enable();
+> -}
+> -
+>  /*
+>   * Used in the idle loop; sti takes one instruction cycle
+>   * to complete:
+> @@ -97,6 +78,33 @@ static inline __cpuidle void halt(void)
+>  {
+>  	native_halt();
+>  }
+> +#endif /* __ASSEMBLY__ */
+> +#endif /* CONFIG_PARAVIRT */
+> +
+> +#ifdef CONFIG_PARAVIRT
+> +#ifndef __ASSEMBLY__
+> +#include <asm/paravirt.h>
+> +#endif /* __ASSEMBLY__ */
+> +#endif /* CONFIG_PARAVIRT */
 
-Fixes: 15865124feed ("staging: r8188eu: introduce new core dir for RTL8188eu driver")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_mlme.c | 2 --
- 1 file changed, 2 deletions(-)
+I think the way we write those is like this:
 
-diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
-index bd991d7ed809..37578638bb76 100644
---- a/drivers/staging/r8188eu/core/rtw_mlme.c
-+++ b/drivers/staging/r8188eu/core/rtw_mlme.c
-@@ -1690,8 +1690,6 @@ int rtw_set_key(struct adapter *adapter, struct security_priv *psecuritypriv, in
- 		goto exit;
- 	}
- 
--	memset(psetkeyparm, 0, sizeof(struct setkey_parm));
--
- 	if (psecuritypriv->dot11AuthAlgrthm == dot11AuthAlgrthm_8021X)
- 		psetkeyparm->algorithm = (unsigned char)psecuritypriv->dot118021XGrpPrivacy;
- 	else
+#ifdef CONFIG_PARAVIRT
+
+# ifndef __ASSEMBLY__
+# include <asm/paravirt.h>
+# endif
+
+#else /* ! CONFIG_PARAVIRT */
+
+# ifndef __ASSEMBLY__
+/*
+ * Used in the idle loop; sti takes one instruction cycle
+ * to complete:
+ */
+static inline __cpuidle void arch_safe_halt(void)
+{
+	native_safe_halt();
+}
+
+/*
+ * Used when interrupts are already enabled or to
+ * shutdown the processor:
+ */
+static inline __cpuidle void halt(void)
+{
+	native_halt();
+}
+# endif /* __ASSEMBLY__ */
+
+#endif /* CONFIG_PARAVIRT */
+
+Note the empty space after the '#' of the inner ifdef to show that it is
+an inner one.
+
+Also, this header has clearly too many #if*def __ASSEMBLY__ things
+sprinkled around. Lemme see if I can get rid of them so that it is at
+least a bit readable.
+
 -- 
-2.33.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
