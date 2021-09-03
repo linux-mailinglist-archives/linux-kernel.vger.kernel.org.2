@@ -2,197 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981E2400188
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61CE240018D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244765AbhICOwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:52:24 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:36255 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233407AbhICOwW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:52:22 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 45DC058057C;
-        Fri,  3 Sep 2021 10:51:22 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Fri, 03 Sep 2021 10:51:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=1XMPe8iSVpVx8Cy4Rs+Zsn6BV24
-        jRTi51ihDKEezAlg=; b=s54i0CSHC32QpU9LVaZenG7zxAeF9fqXlVzFb9rP/Jw
-        GBVq8zthPFBL+qP8IAZEll5DMA6m6lbyxJYj0fLB4FnSNHnVnw682GrKhGrDyDsP
-        C/1Ck/RmK6Wq/ARrEs0703xJc4ff2BH6gPP10Fgv2C2UrZfNuwoWmPjSAoj2bQ8T
-        dHlaL/pPD02IZKdaF4wdLqYdc+4ADearbtA7gEA5saBTsMWYzVlzNV7gdE75gD9X
-        AqpDMIaGl/iUB0zQwMII9rnVwycoSJEsl5xDYQF5biFkEKVYjUMLZjMO9aKwI4PM
-        ZZZMD0Hi8h7h6x7gHb4DWaILUHZSiJexAcADdPrNj2A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=1XMPe8
-        iSVpVx8Cy4Rs+Zsn6BV24jRTi51ihDKEezAlg=; b=q84fAIbt/P/TwRgtp63e8R
-        7uk0bMq3ghd85bk2sN5Dz7RNvqW0E+qVR2/9vQ+9bqE849sm8hK8gmsaQ5/jKbyV
-        yg5tU6GFTEYERyQXM4KAOaiiWRHnzxfE95GbyRjENF9AIzQX/PBcnotUP3ozA8Lp
-        joDhvZKZfBVTwCf/dggUW7EaR/iiWnSHdOpdo7p/V8JsxZTVMwxV7KT2M5JaYDED
-        VCvCrizRgmOHrVfPenpDj9dsKqIA5aHgrBLyePlF5kWyp9S0+GeCpP8PIUKsyePL
-        Cuthulsqb8JKdyfZtvYxfOGq4s0rQkxHQrvEqw2ZvTd/wymlIV0EbkCNk2/EHX7A
-        ==
-X-ME-Sender: <xms:aTYyYXGLK_pCNLtPjvW2oKWopAtdZUOLblJqc_A_8f36kKVVfeWaYQ>
-    <xme:aTYyYUUB9HXTRZqH_5raSIYEnDrPRmeCLMxjTNt17op9CV5YCpF3StETusi41lghJ
-    _xXkVu70Qu1rwvhXD8>
-X-ME-Received: <xmr:aTYyYZLgBGuTJMNEcOAAOOca-KTrKhQgM89Ka1gartveDZv-cHl6-V1mESq5djK8D8s2Cc7vfib6wJD9vrPN6UHP4qMSwj4FOgNe>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedgkedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:aTYyYVE2Uto-gQ7Q-uZ3fogrGlrI3OMskZ66nckIH72_6E7n80Fd8g>
-    <xmx:aTYyYdWqvV45M_m_e_srWttiUdlUX7nKlolnuqY7Ck2b3TFWdKWQSA>
-    <xmx:aTYyYQO3f3GIDBIGkFUAQ3arNIA7zQDh_GaHjfxjGkUeUF7R4jYOpg>
-    <xmx:ajYyYVSNFS15sbicpn_Z2xkpkhhI386TwXvOmcTHGbLd58ST1NsDmw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 3 Sep 2021 10:51:21 -0400 (EDT)
-Date:   Fri, 3 Sep 2021 16:51:20 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 6/7] [DO NOT MERGE] clk: sunxi-ng: Add support for H6
-Message-ID: <20210903145120.lfb3dkq66m7fpfcv@gilmour>
-References: <20210901053951.60952-1-samuel@sholland.org>
- <20210901053951.60952-7-samuel@sholland.org>
+        id S1349537AbhICOy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 10:54:59 -0400
+Received: from mail-eopbgr150081.outbound.protection.outlook.com ([40.107.15.81]:11191
+        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1349058AbhICOy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 10:54:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AYjVdqFeeN0D1aNeO7NQ0hYvuXW8y3vAzpKGbdxy5df3iGMxpExGYQ+kbz7o90iD78v7V4neUuSYpBrpKecdXhl1ZqA82t1XNW9+vxyxm52lx/vulYoP28UMUDDniTgX4ibl8aj60MbeGy2gIzF283nDuMLzyzsMGlQZpgfzuXHAbaCwYuSBlID6zrh1MDb2ZzJeDfR4+dP7BOQ3Lgi4LGqP41mVS8OCBRydUQTmeYJCz0I5/zdjPA+QNiRME0FT9BRCC9ueydhbD5oRA3Aej9XfHsORbd15VyKOC8/5KbPbFe2w4LNPnFIwm92m+dVRg3QjcL+9+eZ9q8dFj5kKfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=0f/eM0GlHrnhSOZsZ7O3ATduEUuVK/z2HeHTpl9IJtg=;
+ b=DhZHG3uGUPPbVWspObnVm1XRhLIywK5C13RJjgnF9XADfTR5VuB9Wp1dvfjAZ+HYp0KOrxMlIrpqWvn/aDQvHBLMdOZqzaFxTqQaxtaqVeiGQgtQ+66q9SGTrDS/vJWVJaySvrdEV9htcXO7jqRsbpIkatstU8Wa3J642FeD9gzztSTUIQccrYGT6/Tljyo5DoOU43Up5UGRdy6v9QgOBghBmtp4bM3UCwIUw3uW+JFay9Jco8rJpl7D/VF2ydk8EgZNtgB29UJI4zfgmZa0J4GgqWeyBiEYxNAJeaLqW1WL9wXU/T7Qmgzwp+CEBuz7dOZWiv0SZVX+TKF2Kx6o2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0f/eM0GlHrnhSOZsZ7O3ATduEUuVK/z2HeHTpl9IJtg=;
+ b=FKuJH9RhVvVXKKwbg0Hs/Z4JChSFQsYOnZbQgNR+ncbzZRbyojswP/MR5kfgIJGDFvF35ETkyOTRTfMFqYWTYvXBmdQn6uy2VjM+kWxsvqeSAeSE+T4smtsvk2miX05GeNJ5KSHypY9iQU1tXa03EYz9g4KvClnsdiMd3SlEc0g=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR04MB5151.eurprd04.prod.outlook.com (2603:10a6:803:61::28)
+ by VI1PR0401MB2654.eurprd04.prod.outlook.com (2603:10a6:800:58::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.21; Fri, 3 Sep
+ 2021 14:53:54 +0000
+Received: from VI1PR04MB5151.eurprd04.prod.outlook.com
+ ([fe80::499b:ba92:db2e:3f28]) by VI1PR04MB5151.eurprd04.prod.outlook.com
+ ([fe80::499b:ba92:db2e:3f28%7]) with mapi id 15.20.4457.026; Fri, 3 Sep 2021
+ 14:53:54 +0000
+From:   Daniel Baluta <daniel.baluta@oss.nxp.com>
+To:     broonie@kernel.org, pierre-louis.bossart@linux.intel.com,
+        lgirdwood@gmail.com, robh+dt@kernel.org,
+        ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com
+Cc:     devicetree@vger.kernel.org, shawnguo@kernel.org,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        peter.ujfalusi@linux.intel.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, s-anna@ti.com,
+        Daniel Baluta <daniel.baluta@nxp.com>
+Subject: [PATCH v2 0/2] Add code to manage DSP related clocks
+Date:   Fri,  3 Sep 2021 17:53:38 +0300
+Message-Id: <20210903145340.225511-1-daniel.baluta@oss.nxp.com>
+X-Mailer: git-send-email 2.27.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: VI1PR07CA0200.eurprd07.prod.outlook.com
+ (2603:10a6:802:3f::24) To VI1PR04MB5151.eurprd04.prod.outlook.com
+ (2603:10a6:803:61::28)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="uovaxtoufzzanesn"
-Content-Disposition: inline
-In-Reply-To: <20210901053951.60952-7-samuel@sholland.org>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (2a02:2f08:5708:8600:fd8d:b9e7:97b5:dd4a) by VI1PR07CA0200.eurprd07.prod.outlook.com (2603:10a6:802:3f::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.4 via Frontend Transport; Fri, 3 Sep 2021 14:53:53 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 17477f74-f74f-4758-faac-08d96eeaa60b
+X-MS-TrafficTypeDiagnostic: VI1PR0401MB2654:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0401MB2654DB235A75232E2F3CDDEAB8CF9@VI1PR0401MB2654.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fuNroluqZJkW5IGmpuRNKiUeRuS4/HtzUViVA0CfPAFv2zVNdDomwHyw6LPgFEbedy7GepQsx63ha886K0Nn1sex5STDLDtEcNmLwroDwHu1IIEDxqSXZAnKHp2w/wS1mwItl9fsBCpFRxxNNELxq+pR/PRf77hi/Pp0Z0DOmL41tYyecNzhkBKKHWWAgnYHhQUixxJdJRmgxFgJ5MghUaTWccgvhmh2xXlH2Lc4IF8yY/c+sLsnO/k9RpqYo+IRPHeRDs+k0O0YpZelD3KTcOu2Ov4quBoBlFqjqLlMIybmjJdx0/FTf/YLW+pss+BXkIkiD0Z91k4V1OwoDBZV0tUWGXs6Rxo13VhWmmZRR3xAyNr6VHj7Z5u5lVDizg4j6D3Zx5RhZJVAcf+23KTz4ejhC149lKLkc5tnPi5KKqEZlM9gWABsWnlW/iv1SuEFPri+LFRvd0Ntyr6R8okpUpeTGu0iXrqaE0sAJFvZbhNCyT9uvhIkTglDNJx3dIaMWs6U1o2sDANlkcZ7t4EoU/ieEcYpAhUdButZ2uIrrVybRNpX6fkpLq7mvUXs8SK1BCYEVM9J4zjrCX4jfnooTNYBSIrvf76uVYqEYIku/XCB+ddBOmyR5BONkgNWAqGDSrS9TMAUXtugnX+Nr0YPVg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5151.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(186003)(38100700002)(66946007)(44832011)(52116002)(6506007)(86362001)(8676002)(6666004)(5660300002)(316002)(2906002)(66556008)(4326008)(6512007)(6486002)(66476007)(508600001)(2616005)(1076003)(83380400001)(8936002)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?O2DLZdHmEcKktAKlLYOIIBDHIhb1etlpTIySIJ7ZU9mFsjSNhKrA5y53UoK2?=
+ =?us-ascii?Q?mMclAo6ueoElIZ59xKK3uhX+9IMu6De54K3QqPllcM1U9ZEmhYE70rg/h6Qk?=
+ =?us-ascii?Q?sHDCTYdFT5tahbaY2lcNCjPLfRRbti2soXGRGf8BkkVLOuV4CR7USzDRNypH?=
+ =?us-ascii?Q?Sfa8ZA76TLNQvBNGEyZ1/io3OHg63tFenIFY7E4TUsKf0gbnUAlvpNvYHNLb?=
+ =?us-ascii?Q?JeQkWrksaheWrI6Kwj4xHoxw7Taed3zYpZ370RIxXwpFKy1KUIwAhjnVZDnz?=
+ =?us-ascii?Q?eufLEixPTw56YJ+ze4JGbQd7i2PIymifF/j30YuPOITPU+W5jvtszNenk+s2?=
+ =?us-ascii?Q?g+f1GDuC+jdHJ/hocs69blY/zsRS5NGa0LicFBQnLCTPCMoPrP+D7+d+aT8t?=
+ =?us-ascii?Q?6KabAyrUYQfn999MO0dee3RBJecpOhyLoMF3LAtEhlxg1QllzZ9eaA5WTo+g?=
+ =?us-ascii?Q?Lcc5ES+HCEBWShEbyMqsMGbibVnJAdgL0LZor796xjZ8DCryN0yrXO+519CR?=
+ =?us-ascii?Q?0c6o2oWHaa5oU+4dQE4KMwmBuu6UZQwe6DuUAwSW8YOcoLFBTVsRyS3IBZ8Y?=
+ =?us-ascii?Q?pT+4xneAw5llw0rTPwZKOhwqbSi46ZM36EzSaSMw84tMZuBaKnUjehOuP/t0?=
+ =?us-ascii?Q?oSx5q1uI/3+xzlIQpxmDq9Xh9iubhDX/KfAGWp/1M+d9PDfhMziOjerL0WB3?=
+ =?us-ascii?Q?3ZS6hKugX8QWbySdP08+zgSWStAZBYba+OPRI1DGyC2xwAC5qqqpFlKTwDRV?=
+ =?us-ascii?Q?qtjGRwmGL0mlRqJqwmjA95dvDSLw9sESGAols6i5Y2pc4jLfWrVG4h7eefcQ?=
+ =?us-ascii?Q?p5Yxk0jT1K7M7lrWOy6lIyhjdCK7PBzbEFRLmFpsNN6QrIU3wXtYOL2ghwu/?=
+ =?us-ascii?Q?nMGbw4FaPOj9x1PmzczN+QaL68kv5sFVnUVDxMEikVzJogNjtimOqAhuTyQm?=
+ =?us-ascii?Q?Z0WNr32t9FHUHirGUhkE65V+I4OAlAY4y/TY99hYbuSKW+t9xrYa4HXIyCyI?=
+ =?us-ascii?Q?+L7/yAoIgzzEg7K4IeYs+rJHVqOi4YwCWCOVbhPBpIwMn2NWHv/d6BsokslP?=
+ =?us-ascii?Q?R903VHoGGib5hi68VAHIJrA0SBYnHaTHntPWKYJsbN3NE6XfCJpDgOP7NfG1?=
+ =?us-ascii?Q?RjaGTDp+fCiXKOyk1YWKEysLSTmn9rNDAl4cbZfFUiz8gkwNllFUlq8J4vVY?=
+ =?us-ascii?Q?vJIdcZRGY+4pKEJsKc6vaVzytTbq1VJ5Oh3RDZIpPovrs1ACoobY6YsTdNdI?=
+ =?us-ascii?Q?64xMiWigUZRB6Rt1Q5Hbq1gngsUOnYFnyNKJZB502OC8HyLiFqKZckovDPFU?=
+ =?us-ascii?Q?hz8wPe/SCTgxXYGgLPiSOY6SfjAMtCU01DAxCYL19MiFB/pEykzQjGTQZKR9?=
+ =?us-ascii?Q?c9VNwNvs8AFoss+HoP/o4tS2pFin?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 17477f74-f74f-4758-faac-08d96eeaa60b
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5151.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2021 14:53:54.0049
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LyqCkz8DUqYf5EQW1spJb1dLQXDc9aWb5FSAqhZLO6oMR1K4sIFT2tiJXXw01TJK7DzpdQyH0HV2h6x3ugIHLw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2654
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Daniel Baluta <daniel.baluta@nxp.com>
 
---uovaxtoufzzanesn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This code is based on top of SOF topic/sof-dev branch and we want
+to have a review with ALSA and Device Tree communities then it will be merged
+to SOF tree and then merged into ALSA tree.
 
-On Wed, Sep 01, 2021 at 12:39:50AM -0500, Samuel Holland wrote:
-> H6 has IOSC calibration and an ext-osc32k input.
->=20
-> H6 has the osc32k mux and the rtc-32k mux, but no fanout mux.
->=20
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  drivers/clk/sunxi-ng/sun50i-rtc-ccu.c | 49 +++++++++++++++++++++++++++
->  drivers/rtc/rtc-sun6i.c               | 17 ----------
->  2 files changed, 49 insertions(+), 17 deletions(-)
->=20
-> diff --git a/drivers/clk/sunxi-ng/sun50i-rtc-ccu.c b/drivers/clk/sunxi-ng=
-/sun50i-rtc-ccu.c
-> index 1dfa05c2f0e9..9603dc0d3d7b 100644
-> --- a/drivers/clk/sunxi-ng/sun50i-rtc-ccu.c
-> +++ b/drivers/clk/sunxi-ng/sun50i-rtc-ccu.c
-> @@ -227,6 +227,16 @@ static SUNXI_CCU_MUX_DATA_WITH_GATE(osc32k_fanout_cl=
-k, "rtc-32k-fanout",
->  static SUNXI_CCU_M_FW_WITH_GATE(rtc_spi_clk, "rtc-spi", "ahb",
->  				0x310, 0, 5, BIT(31), 0);
-> =20
-> +static struct ccu_common *sun50i_h6_rtc_ccu_clks[] =3D {
-> +	&iosc_clk,
-> +	&iosc_32k_clk,
-> +	&ext_osc32k_gate_clk.common,
-> +	&osc32k_clk.common,
-> +	&osc24M_32k_clk.common,
-> +	&rtc_32k_mux_clk.common,
-> +	&osc32k_fanout_clk.common,
-> +};
-> +
->  static struct ccu_common *sun50i_h616_rtc_ccu_clks[] =3D {
->  	&iosc_clk,
->  	&iosc_32k_clk,
-> @@ -246,6 +256,21 @@ static struct ccu_common *sun50i_r329_rtc_ccu_clks[]=
- =3D {
->  	&rtc_spi_clk.common,
->  };
-> =20
-> +static struct clk_hw_onecell_data sun50i_h6_rtc_ccu_hw_clks =3D {
-> +	.num =3D CLK_NUMBER,
-> +	.hws =3D {
-> +		[CLK_OSC32K]		=3D &osc32k_clk.common.hw,
-> +		[CLK_OSC32K_FANOUT]	=3D &osc32k_fanout_clk.common.hw,
-> +		[CLK_IOSC]		=3D &iosc_clk.hw,
-> +
-> +		[CLK_IOSC_32K]		=3D &iosc_32k_clk.hw,
-> +		[CLK_EXT_OSC32K_GATE]	=3D &ext_osc32k_gate_clk.common.hw,
-> +		[CLK_OSC24M_32K]	=3D &osc24M_32k_clk.common.hw,
-> +		[CLK_RTC_32K]		=3D &rtc_32k_mux_clk.common.hw,
-> +		[CLK_RTC_SPI]		=3D NULL,
-> +	},
-> +};
-> +
->  static struct clk_hw_onecell_data sun50i_h616_rtc_ccu_hw_clks =3D {
->  	.num =3D CLK_NUMBER,
->  	.hws =3D {
-> @@ -276,6 +301,13 @@ static struct clk_hw_onecell_data sun50i_r329_rtc_cc=
-u_hw_clks =3D {
->  	},
->  };
-> =20
-> +static const struct sunxi_ccu_desc sun50i_h6_rtc_ccu_desc =3D {
-> +	.ccu_clks	=3D sun50i_h6_rtc_ccu_clks,
-> +	.num_ccu_clks	=3D ARRAY_SIZE(sun50i_h6_rtc_ccu_clks),
-> +
-> +	.hw_clks	=3D &sun50i_h6_rtc_ccu_hw_clks,
-> +};
-> +
->  static const struct sunxi_ccu_desc sun50i_h616_rtc_ccu_desc =3D {
->  	.ccu_clks	=3D sun50i_h616_rtc_ccu_clks,
->  	.num_ccu_clks	=3D ARRAY_SIZE(sun50i_h616_rtc_ccu_clks),
-> @@ -318,6 +350,23 @@ static void __init sunxi_rtc_ccu_init(struct device_=
-node *node,
->  	of_sunxi_ccu_probe(node, reg, desc);
->  }
-> =20
-> +static void __init sun50i_h6_rtc_ccu_setup(struct device_node *node)
-> +{
-> +	struct clk_init_data *init;
-> +
-> +	have_iosc_calib =3D 1;
-> +
-> +	/* Casting away the const from a pointer to a non-const anonymous objec=
-t... */
-> +	init =3D (struct clk_init_data *)osc32k_fanout_clk.common.hw.init;
-> +
-> +	/* Fanout only has one parent: osc32k. */
-> +	init->num_parents =3D 1;
-> +
-> +	sunxi_rtc_ccu_init(node, &sun50i_h6_rtc_ccu_desc);
-> +}
+DSP node on the Linux kernel side must also take care of enabling
+DAI/DMA related clocks.
 
-Indeed, that's not great.
+By design we choose to manage DAI/DMA clocks from the kernel side
+because of the architecture of some i.MX8 boards.
 
-Maybe we should just duplicate the sun50i_h6_rtc_ccu_desc (and
-osc32k_fanout_clk) to cover both cases?
+Clocks are handled by a special M4 core which runs a special
+firmware called SCFW (System Controler firmware).
 
-Maxime
+This communicates with A cores running Linux via a special Messaging
+Unit and implements a custom API which is already implemented by the
+Linux kernel i.MX clocks implementation.
 
---uovaxtoufzzanesn
-Content-Type: application/pgp-signature; name="signature.asc"
+Note that these clocks are optional. We can use the DSP without
+them.
 
------BEGIN PGP SIGNATURE-----
+Changes since v1:
+- used clk bulk API as suggested by mark
+Daniel Baluta (2):
+  ASoC: SOF: imx: Add code to manage DSP related clocks
+  dt-bindings: dsp: fsl: Add DSP optional clocks documentation
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYTI2aAAKCRDj7w1vZxhR
-xecbAP49H+UG4ucpEKF2f2+KbiVaGqfAk3QM8f3wrdf1wZDvggEA2UBSAM93M7QS
-KdumcYrBi5U57kkpIAChWZxuy29cRAg=
-=VzBj
------END PGP SIGNATURE-----
+ .../devicetree/bindings/dsp/fsl,dsp.yaml      | 33 ++++++++++++++
+ sound/soc/sof/imx/imx-common.c                | 44 +++++++++++++++++++
+ sound/soc/sof/imx/imx-common.h                | 13 ++++++
+ sound/soc/sof/imx/imx8.c                      | 37 ++++++++++++++++
+ sound/soc/sof/imx/imx8m.c                     | 34 ++++++++++++++
+ 5 files changed, 161 insertions(+)
 
---uovaxtoufzzanesn--
+-- 
+2.27.0
+
