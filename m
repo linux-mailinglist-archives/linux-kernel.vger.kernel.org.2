@@ -2,87 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E819400143
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA502400145
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 16:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232812AbhICOaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 10:30:22 -0400
-Received: from mail-vs1-f41.google.com ([209.85.217.41]:46982 "EHLO
-        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349458AbhICOaT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 10:30:19 -0400
-Received: by mail-vs1-f41.google.com with SMTP id s15so4489691vst.13;
-        Fri, 03 Sep 2021 07:29:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OH/yNneTW8ywoSU/FMn8PAE6gbwXxPiCtJG6BV80nas=;
-        b=m1yUU6HJsFy5DV3tfZev5Uo6XqRBb5Ns6My7+se/SqnsIzP5D4B1mVq67GMg9UtHHU
-         8rue3Q+fG7oaxkF4iFS0OpcABBhxA+eO20rZ441SSYQfFS2IpeUgujxAHhCMerq+36bQ
-         HzT8WmLZucJ9xl7csbxwrTEjkypDqNP9RbBZueXupi6axX1h5CgzjZV+Saxf1V+ORHKD
-         jOunddsYvGVATxhy0/QQ9Q7CN8oyIqNaqPhqrAJEXTvR01Gx3ABx7m/vrSgSAn2GJJir
-         6aVWxXaHDX26WAfEUFt8PaTBrfHnwYZEwj1Z2HHpC1AAn0NLU8RMk0cMZqsBAM2RI7oC
-         9NAQ==
-X-Gm-Message-State: AOAM5317G1u26BDjXG74XdNqohdgRO6XiSCqJHEmaxPmNAde4cHcwsrR
-        ZF9DdtcxYGK/hht0KXDkLka2z/eYzfpWqNv3vi8=
-X-Google-Smtp-Source: ABdhPJxsBMD7/twadRD30kYlp1FDjI2SD++y9JBHgqnwGoCvtFrt1Btu9MZ/e6T7FAU7oxPwAUF3GMMrJ/u+Uotz0GE=
-X-Received: by 2002:a67:dd85:: with SMTP id i5mr2873897vsk.41.1630679359064;
- Fri, 03 Sep 2021 07:29:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210902230442.1515531-1-saravanak@google.com>
- <20210902230442.1515531-2-saravanak@google.com> <CAPDyKFpP6pSRSw8_OAW8+ZJNH+CwXtfWBNDcD182gQmzqW=O5g@mail.gmail.com>
-In-Reply-To: <CAPDyKFpP6pSRSw8_OAW8+ZJNH+CwXtfWBNDcD182gQmzqW=O5g@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 3 Sep 2021 16:29:07 +0200
-Message-ID: <CAMuHMdVgjxJwd=PbUSR+9mgxexr3O_O6j-3T24GzE08CqzDjjA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] of: platform: Make sure bus only devices get probed
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1349453AbhICObd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 3 Sep 2021 10:31:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34442 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235668AbhICObc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 10:31:32 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 569D260295;
+        Fri,  3 Sep 2021 14:30:32 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mMAD8-008rfE-95; Fri, 03 Sep 2021 15:30:30 +0100
+Date:   Fri, 03 Sep 2021 15:30:29 +0100
+Message-ID: <8735qlwx2y.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, aik@ozlabs.ru,
+        aneesh.kumar@linux.ibm.com, anton@ozlabs.org,
+        bigeasy@linutronix.de, christophe.leroy@csgroup.eu, clg@kaod.org,
+        ego@linux.vnet.ibm.com, farosas@linux.ibm.com,
+        fthain@linux-m68k.org, hbathini@linux.ibm.com, jniethe5@gmail.com,
+        joel@jms.id.au, kjain@linux.ibm.com, ldufour@linux.ibm.com,
+        leobras.c@gmail.com, linkmauve@linkmauve.fr,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        lkp@intel.com, lukas.bulwahn@gmail.com, masahiroy@kernel.org,
+        maskray@google.com, msuchanek@suse.de, nathan@kernel.org,
+        npiggin@gmail.com, oss@buserror.net, parth@linux.ibm.com,
+        paul.gortmaker@windriver.com, psampat@linux.ibm.com,
+        rdunlap@infradead.org, srikar@linux.vnet.ibm.com,
+        sxwjean@gmail.com, wanjiabing@vivo.com, zhengyongjun3@huawei.com,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.15-1 tag
+In-Reply-To: <87pmtppypy.fsf@mpe.ellerman.id.au>
+References: <87pmtppypy.fsf@mpe.ellerman.id.au>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: mpe@ellerman.id.au, torvalds@linux-foundation.org, aik@ozlabs.ru, aneesh.kumar@linux.ibm.com, anton@ozlabs.org, bigeasy@linutronix.de, christophe.leroy@csgroup.eu, clg@kaod.org, ego@linux.vnet.ibm.com, farosas@linux.ibm.com, fthain@linux-m68k.org, hbathini@linux.ibm.com, jniethe5@gmail.com, joel@jms.id.au, kjain@linux.ibm.com, ldufour@linux.ibm.com, leobras.c@gmail.com, linkmauve@linkmauve.fr, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, lkp@intel.com, lukas.bulwahn@gmail.com, masahiroy@kernel.org, maskray@google.com, msuchanek@suse.de, nathan@kernel.org, npiggin@gmail.com, oss@buserror.net, parth@linux.ibm.com, paul.gortmaker@windriver.com, psampat@linux.ibm.com, rdunlap@infradead.org, srikar@linux.vnet.ibm.com, sxwjean@gmail.com, wanjiabing@vivo.com, zhengyongjun3@huawei.com, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ulf,
+Hi Michael,
 
-On Fri, Sep 3, 2021 at 11:19 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> On Fri, 3 Sept 2021 at 01:04, Saravana Kannan <saravanak@google.com> wrote:
-> > fw_devlink could end up creating device links for bus only devices.
-> > However, bus only devices don't get probed and can block probe() or
-> > sync_state() [1] call backs of other devices. To avoid this, set up
-> > these devices to get probed by the simple-pm-bus.
-> >
-> > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
-> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > Tested-by: Saravana Kannan <saravanak@google.com>
+On Fri, 03 Sep 2021 14:36:57 +0100,
+Michael Ellerman <mpe@ellerman.id.au> wrote:
 >
-> Again, this looks like a nice solution to the problem.
->
-> One question though. The Kconfig SIMPLE_PM_BUS, should probably be
-> "default y" - or something along those lines to make sure fw_devlink
-> works as expected.
+> Hi Linus,
+> 
+> Please pull powerpc updates for 5.15.
+> 
+> A bit of a small batch this time.
+> 
+> There was one conflict against my own fixes branch, and the resolution was a little bit
+> messy, so I just did a merge of fixes myself to resolve the conflict. I didn't think there
+> was any value in having you resolve a conflict between two of my own branches.
+> 
+> Notable out of area changes:
+>   scripts/mod/modpost.c		# 1e688dd2a3d6 powerpc/bug: Provide better flexibility to WARN_ON/__WARN_FLAGS() with asm goto
+>   kernel/irq/irqdomain.c	# 51be9e51a800 KVM: PPC: Book3S HV: XIVE: Fix mapping of passthrough interrupts
+> 
+> That second one generated a bit of discussion[1] with tglx and maz,
+> who asked if we could avoid adding the export of
+> irq_get_default_host(). Cédric replied explaining that we don't
+> really have good way to avoid it, but we never heard back from them,
+> so in the end I decided to merge it.
 
-I would love for SIMPLE_PM_BUS to go away, and all of its functionality
-to be usurped by the standard simple-bus handling.
+Apologies for this, I clearly have lost track of it.
 
-In the modern world, everything uses power management and Runtime
-PM, and the distinction between "simple-bus" and "simple-pm-bus"
-is purely artificial.
+It clearly isn't pretty, but it isn't a deal breaker either. In the
+end, it will be easier to address with the code being in the tree.
 
-Gr{oetje,eeting}s,
+Thanks,
 
-                        Geert
+	M.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Without deviation from the norm, progress is not possible.
