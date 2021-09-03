@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5298240072A
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3425440072D
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349686AbhICU4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 16:56:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238770AbhICU4a (ORCPT
+        id S1350462AbhICU6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 16:58:24 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:41207 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1350361AbhICU6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 16:56:30 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8BAC061760
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 13:55:29 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id n4so251218plh.9
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 13:55:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DJWNbah1vQRHs6Y2VZVGVoYhyj2trOxIMnnDdxrfdZw=;
-        b=wP2IGzJzEHtLk8pslL2GlBpdmdQTvmt68Jp6xUeK5Ofa+gxxYt3loubGwsLb7ZaDem
-         +uG9QHafPyZQcrGM6HUrOuoPcK70f6u+0tFJdr5uhrJFw0NeRTWqgZHqehDtO6bSnTOs
-         3067J+ZHXzj3CSe7E0+Xvt1LfzCc+yLfEZJZ0w6jJdp2SB63OsauNpVLaBIBfHIpuVYZ
-         X4FO7M8vjUQenUsB92CqRCZksqWm5Vpc7u4OL69M53vgwK22UB3wP6ozaxxBqYt9yuHH
-         TfFR/lHo7Wqa13q4D/i4Uu3AxkOCFVCP7fcpwCaFFBYor2vK4M1oDafdGtyGI7iA40ZH
-         /NCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DJWNbah1vQRHs6Y2VZVGVoYhyj2trOxIMnnDdxrfdZw=;
-        b=Uqx70hjtJS/DEiHN5dby3uvswp/hzEh53+F6FNdpJqkDSmQOpyidqzrdMA75gQqLwL
-         0JYKsqj1U1cl6oIfdn2z0N+sY3MWMbUTAkNRxeKuVqWX+wlrhQnyFZ/WDc0+RGEej8Vy
-         u+7bLYxIcTO4eDs67wH0E0UQxQTFLrnlfVmxvhQtM0uSWi5uK7PW540BNOb2CEby7we6
-         FxaH1VORkdPQld1ygLZhpU0sxAsUg1f0at71QN12QqI2hhM2bMOF/SZhHa/SuyjBX2eq
-         uXNsukGM6R3UHuaThaNBteUi/MHWeBsfFKtuC7kuz+feBhsYOxX9vY/bYS3wQ/mhFRFl
-         0bbw==
-X-Gm-Message-State: AOAM532v8rl6K8aAZ1idVHZnq3ZdnByVDu6CJhLFVmjIbbQ485mFPcgK
-        XlEieqIpiz/TmSe3gBbq1CepjQ==
-X-Google-Smtp-Source: ABdhPJxSKZZvEzoiBKtOJMsYAeeNgQzpmfzFds0q+qil8k3cdzIwypjxiJ67PupCJP3EAiFgdWnc4g==
-X-Received: by 2002:a17:90a:d596:: with SMTP id v22mr822204pju.51.1630702529188;
-        Fri, 03 Sep 2021 13:55:29 -0700 (PDT)
-Received: from ?IPv6:2600:380:7567:4da9:ea68:953f:1224:2896? ([2600:380:7567:4da9:ea68:953f:1224:2896])
-        by smtp.gmail.com with ESMTPSA id t9sm257946pfe.73.2021.09.03.13.55.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 13:55:28 -0700 (PDT)
-Subject: Re: [PATCH v3 0/2] iter revert problems
-To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Cc:     Palash Oswal <oswalpalash@gmail.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        syzbot+9671693590ef5aad8953@syzkaller.appspotmail.com
-References: <cover.1629713020.git.asml.silence@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <65d27d2d-30f1-ccca-1755-fcf2add63c44@kernel.dk>
-Date:   Fri, 3 Sep 2021 14:55:26 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 3 Sep 2021 16:58:18 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 32EC55C00D0;
+        Fri,  3 Sep 2021 16:57:17 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Fri, 03 Sep 2021 16:57:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        to:cc:references:from:subject:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=P
+        OkR53bpiytg3PxhnG+iPG0KgVHiDmhYTOhrNM2TBK8=; b=or3Plv4161tY48aBE
+        Z3/6qfS4TluR1yI1v/xoq9Anj0tbUVUsRu3nMdsHaj7mjqKUIN0LGQ2zGpuSjCYC
+        bgarS3q0blM+oFzDj7TplibBFQxO4qmv/0h8KXdPBERxtOABaDqb9oSUHlDdI8KW
+        i3q5VjsCwPt583p28ddEwhvyGUj9kpKU/FR5AlFRQK4nqUB6sb7YcAlzJKGVqiOi
+        hIQnHB5DrfBCDJVWx2jS8sMRWOL2OY/NQZ19ijKFyviOflo0pf/+CDvVBihhLlqT
+        NtobzXMpu/DoQIZJUKT7ClREQB/GMsnMYYZioe3nuF9+HZodYfPPNyO1MbeV5HUV
+        JDQ6Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=POkR53bpiytg3PxhnG+iPG0KgVHiDmhYTOhrNM2TB
+        K8=; b=fILS8KHRP18Yb28LBzT0oNZ7zNryQiB3SyZISgp2opU8XaHUB6PyzUw8c
+        rwnscn+ZP5nNXCsdusldyoE83k/Bt23UaQOqy/y3APmvCSaP+2STukfBh3imrBqG
+        pxJtKDg23O78T/SdXxzvwVQn04qXToqUGFFhThiKYT6+ZJFiuNKTkQV05/po4qvs
+        yExmiexeuCBXG3Xd4/NcGRUSAXN6PaAJb8R0xz1BmGbEOwkUzQkTidKmVYRK27pk
+        eeR6ewcmOthLkboTQd9bd5pXJ4pl7ri1jnX5l+TsYMJnQKFIdWlOHfvUCi55poKI
+        q4fnqutak7fjOxP9OeFTDnK18hqCg==
+X-ME-Sender: <xms:LIwyYWRwN_vH5_D3BF79vTAk5VC1Yvi1JahpKI-gaqSZVVinvsssfg>
+    <xme:LIwyYbzOumHoAXT1ETk4wwiCIprKSqiwIXbA4Zd7estRecMRVBOBtqLsfWapxwpn_
+    msMPaLnXiN-M_61Nw>
+X-ME-Received: <xmr:LIwyYT1G9wZIh5OBZPkCzPuwvvCbIQ8-DaRCq1crJKBPdY_QfyRxOW-pVfsUluhM99vbL9ZICvgEQKdPJEVzIvcR1PRMjJOHBTFFOBNbT8aRvOLypgiXo-fPCg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvjedgudehfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefvfhfhuffkffgfgggjtgfgsehtkeertddtfeehnecuhfhrohhmpefurghm
+    uhgvlhcujfholhhlrghnugcuoehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhgqeenuc
+    ggtffrrghtthgvrhhnpeehjeeghfdufeefteelieeggfehteevieetueffhefhffekuedv
+    ffevffevtedufeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdhorhhg
+X-ME-Proxy: <xmx:LIwyYSAigwu7JRvcmRFlsK9Vg0XSwgFdGEeiNfzHgTSerYiiimrbHw>
+    <xmx:LIwyYfgLQikdsc-Q6-ZPkkYolWjrg_nlV_4l0xYfo-whUJrNOXfd4w>
+    <xmx:LIwyYeqEZoGFA19h7mYFeQAXPl3IlN0nXezAv24FWQjahGBAWWzexw>
+    <xmx:LYwyYfh_pWWwsTHUqzCijPmtWIJTYmmxJkLg6YHM1k73JPp12ii7cA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 3 Sep 2021 16:57:15 -0400 (EDT)
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210901050526.45673-1-samuel@sholland.org>
+ <20210901050526.45673-5-samuel@sholland.org>
+ <20210903091040.2bngsvhem2ftzhaz@gilmour>
+From:   Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH 4/8] clk: sunxi-ng: Rename files to match Kconfig and
+ drivers
+Message-ID: <1d269ff8-9219-cc0a-fda7-236bfd4b4510@sholland.org>
+Date:   Fri, 3 Sep 2021 15:57:14 -0500
+User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <cover.1629713020.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210903091040.2bngsvhem2ftzhaz@gilmour>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/23/21 4:18 AM, Pavel Begunkov wrote:
-> iov_iter_revert() doesn't go well with iov_iter_truncate() in all
-> cases, see 2/2 for the bug description. As mentioned there the current
-> problems is because of generic_write_checks(), but there was also a
-> similar case fixed in 5.12, which should have been triggerable by normal
-> write(2)/read(2) and others.
+Hi Maxime,
+
+On 9/3/21 4:10 AM, Maxime Ripard wrote:
+> Hi,
 > 
-> It may be better to enforce reexpands as a long term solution, but for
-> now this patchset is quickier and easier to backport.
+> On Wed, Sep 01, 2021 at 12:05:22AM -0500, Samuel Holland wrote:
+>> When the drivers are built as modules, the file name will become the
+>> module name. Rename the files so everything matches: the Kconfig symbol,
+>> the platform driver name (as seen in sysfs), and the module name.
+>>
+>> Signed-off-by: Samuel Holland <samuel@sholland.org>
 > 
-> v2: don't fail if it was justly fully reverted
-> v3: use truncated size + reexapand based approach
+> I'm not a big fan of big renames like this, it makes merging and
+> backporting patches harder in the long term.
 
-Al, let's get this upstream. How do you want to handle it? I can take
-it through the io_uring tree, or it can go through your tree. I really
-don't care which route it takes, but we should get this upstream as
-it solves a real problem.
+I can split this into two commits, first the .c files and then the .h
+files, so everything is a 100% rename, if that makes a difference.
 
--- 
-Jens Axboe
+> I assume you did this to make the module autoloading work? If so, using
+> MODULE_ALIAS would be less intrusive
 
+Autoloading should work anyway, since there is a module alias for the
+compatible string. This change is more about the principle of least
+surprise. The compatible is allwinner,sun50i-a64-ccu, the Kconfig symbol
+is SUN50I_A64_CCU, the driver name (in /sys/bus/platform/drivers) is
+sun50i_a64_ccu, but yet the module name is ccu-sun50i-a64???
+
+Once we allow building modules, the names are ABI, and this
+inconsistency will bother me until the end of time :)
+
+If there is a way to completely rename the module without renaming the
+files (not adding an alias), then that would be enough for me.
+
+Regards,
+Samuel
