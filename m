@@ -2,150 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9FC43FFBFA
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A86E43FFC05
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348328AbhICIbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:31:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348229AbhICIbp (ORCPT
+        id S1348349AbhICIcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:32:50 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46638 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234831AbhICIct (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 04:32:49 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 18383uBv145986;
         Fri, 3 Sep 2021 04:31:45 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF05C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 01:30:45 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id m2so2982803wmm.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 01:30:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:date:in-reply-to
-         :message-id:mime-version;
-        bh=tSBoI24rmmAo/WWLDhLND6YxNYncWnjj1r5sALynAJ4=;
-        b=K4wGE5iP441yxWa+TAQZ1VZZMZnv6OfvJKWEzE+MCQj7K2oMTS8aHeDQgL7IlCV5+r
-         II5rICDjfU5wlQZmioHZXxoVszg5g1wTZIPmZf+V7KOVQKYfmuoowJ602eTn6HBmdjhR
-         40Z5W0mxAnYB/D/m3H3U18iiaEtRB1XAs6OsSrvD75MTsAFVEgpJuvIWB45lquL4eZPg
-         WHGJylo9CiP3ELxpw7rat1Y5lK4ARxd2H5aZyiP/QOH5s9LmA5oPmoO04VDfHoMMtTxu
-         mwZcDDhHJY/GZrwjRiCTfmJmArcJ97MVfnRwjnpryjB2B5p2fewYpM6VuJPJjmAlvb6U
-         L/FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
-         :in-reply-to:message-id:mime-version;
-        bh=tSBoI24rmmAo/WWLDhLND6YxNYncWnjj1r5sALynAJ4=;
-        b=LoZ7oTtsVt2Zf3gJ/DqxEtALohjShM+geBvqo+EUww58dxKwa0rm0Krry52/USPhUe
-         0E8WG1U93gAF2ZcaWO98lc2IfxejqnhPoP0B51PX6gmsFmT+ePZAFbVI393gz9ObiqrX
-         BdtB908+pDeW4nYIW59N5hDrw5UwIS+EAlVicyiZECCxeHTyQf/sPi+tCH0wvceinO/Y
-         LYDjKQ7Y2pz3WB8pbDYYAvcFO8PE6cEJPGku7Mye6VBynEcX1hjcAMprgUHxXuH4cMMu
-         fCfKb8OnqGvZ0kdfAg4jo5HZQfpmQGrRiMuhpNMUbrgTdFxzIed0WBbQiFw9DtjDmOSb
-         VZ3g==
-X-Gm-Message-State: AOAM533Arrx16olhK3aG8c/DwW+3I0xWzU3ls6dl4TbKiK2eZp/TqIKW
-        JT+CxYYD0qHiI0g+lW60/gzvMw==
-X-Google-Smtp-Source: ABdhPJzIVzeO9objMjNkGGwltqZ/D3PN/vMifRhZaWUZqUx5iRpM6g1pt+vfuZhIf9TYGOJSBH5HPA==
-X-Received: by 2002:a05:600c:4ece:: with SMTP id g14mr2177689wmq.6.1630657843920;
-        Fri, 03 Sep 2021 01:30:43 -0700 (PDT)
-Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.gmail.com with ESMTPSA id r12sm4323542wrv.96.2021.09.03.01.30.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 01:30:43 -0700 (PDT)
-References: <1630562033-13231-1-git-send-email-spujar@nvidia.com>
- <1630562033-13231-2-git-send-email-spujar@nvidia.com>
- <1jpmtr5egi.fsf@starbuckisacylon.baylibre.com>
- <YTElQBgwF6xBFH9l@robh.at.kernel.org>
-User-agent: mu4e 1.6.5; emacs 27.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Sameer Pujar <spujar@nvidia.com>, broonie@kernel.org,
-        lgirdwood@gmail.com, thierry.reding@gmail.com,
-        jonathanh@nvidia.com, stephan@gerhold.net,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] ASoC: Add json-schema documentation for
- sound-name-prefix
-Date:   Fri, 03 Sep 2021 10:29:37 +0200
-In-reply-to: <YTElQBgwF6xBFH9l@robh.at.kernel.org>
-Message-ID: <1jk0jyt617.fsf@starbuckisacylon.baylibre.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=Exm6y1FOu+ZBrK+yh3J6WZQaWOGuziL00C3jiRfFieI=;
+ b=Zc5RAxNGHdVf02Wi1czvATyswyK3LyzNfG3uDLlFnSZ/GpBB3AXOIIeiUTuFUWPhx3qO
+ UHd3vuSDI6AwH5VuTMk5PFhN8izJhiA1vfr0lO3aSgirFkwEwTuQAOBR7d1Lf/rReuN3
+ ls02cdy0VRQ9LWJX3C69TX2cYZZhpUAyODoeqlO8hRACfrHlZMjQe3+yQ6iHTQ3QMJ28
+ +lF9jYeYZfNoRGX+98YIur/RXBLCtCJ0DHoJh9sZnvj+uaRtZiSrjeEI8Erbd2h/9eYw
+ J+F9cF8bE80J96R7LX6ZYwkfh1CMuVBxknleqYv7KIjG/2Q8vlbCy+geZzj+aIJ+qOBl Ag== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3aubde6mex-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Sep 2021 04:31:45 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1838SAYg031431;
+        Fri, 3 Sep 2021 08:31:43 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 3au6q757ja-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 03 Sep 2021 08:31:43 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1838Ve8d42991930
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 3 Sep 2021 08:31:40 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3951BA4076;
+        Fri,  3 Sep 2021 08:31:40 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DF647A404D;
+        Fri,  3 Sep 2021 08:31:39 +0000 (GMT)
+Received: from sig-9-145-171-221.de.ibm.com (unknown [9.145.171.221])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  3 Sep 2021 08:31:39 +0000 (GMT)
+Message-ID: <dd9d9f056a8be2ea62e8497ca5f44707c5623600.camel@linux.ibm.com>
+Subject: Re: [GIT PULL 1/2] asm-generic: rework PCI I/O space access
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Arnd Bergmann <arnd@kernel.org>, John Garry <john.garry@huawei.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 03 Sep 2021 10:31:39 +0200
+In-Reply-To: <CAK8P3a3KTaa-AwCOjhaASMx63B3DUBZCZe6RKWk-=Qu7xr_ijQ@mail.gmail.com>
+References: <CAK8P3a2oZ-+qd3Nhpy9VVXCJB3DU5N-y-ta2JpP0t6NHh=GVXw@mail.gmail.com>
+         <CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com>
+         <CAK8P3a1D5DzmNGsEPQomkyMCmMrtD6pQ11JRMh78vbY53edp-Q@mail.gmail.com>
+         <CAK8P3a0MNbx-iuzW_-=0ab6-TTZzwV-PT_6gAC1Gp5PgYyHcrA@mail.gmail.com>
+         <db043b76-880d-5fad-69cf-96abcd9cd34f@huawei.com>
+         <CAK8P3a3HHeP+Gw_k2P7Qtig0OmErf0HN30G22+qHic_uZTh11Q@mail.gmail.com>
+         <a74dfb1f-befd-92ce-4c30-233cb08e04d3@huawei.com>
+         <CAK8P3a3B4FCaPPHhzBdpkv0fsjE0jREwGFCdPeHEDHxxRBEjng@mail.gmail.com>
+         <5e8dfbd2-a6c0-6d02-53e9-1f29aebcc44e@huawei.com>
+         <CAK8P3a08Zcyx0J4_LGAfU_AtUyEK+XtQJxYBQ52VXfWu8-o8_w@mail.gmail.com>
+         <dd2d49ef-3154-3c87-67b9-c134567ba947@huawei.com>
+         <CAK8P3a3KTaa-AwCOjhaASMx63B3DUBZCZe6RKWk-=Qu7xr_ijQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: NvJMTKo50fBh6rkdhC0LTdUAKiWuDsEy
+X-Proofpoint-GUID: NvJMTKo50fBh6rkdhC0LTdUAKiWuDsEy
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-03_02:2021-09-03,2021-09-03 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ priorityscore=1501 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ mlxlogscore=999 spamscore=0 bulkscore=0 clxscore=1011 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109030048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 2021-08-10 at 13:33 +0200, Arnd Bergmann wrote:
+> On Tue, Aug 10, 2021 at 11:19 AM John Garry <john.garry@huawei.com> wrote:
+> > On 04/08/2021 09:52, Arnd Bergmann wrote:
+> > 
+> > This seems a reasonable approach. Do you have a plan for this work? Or
+> > still waiting for the green light?
+> 
+> I'm rather busy with other work at the moment, so no particular plans
+> for any time soon.
+> 
+> > I have noticed the kernel test robot reporting the following to me,
+> > which seems to be the same issue which was addressed in this series
+> > originally:
+> > 
+> > config: s390-randconfig-r032-20210802 (attached as .config)
+> > compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project
+> > 4f71f59bf3d9914188a11d0c41bedbb339d36ff5)
+> > ...
+> > All errors (new ones prefixed by >>):
+> > 
+> >     In file included from drivers/block/null_blk/main.c:12:
+> >     In file included from drivers/block/null_blk/null_blk.h:8:
+> >     In file included from include/linux/blkdev.h:25:
+> >     In file included from include/linux/scatterlist.h:9:
+> >     In file included from arch/s390/include/asm/io.h:75:
+> >     include/asm-generic/io.h:464:31: warning: performing pointer
+> > arithmetic on a null pointer has undefined behavior
+> > [-Wnull-pointer-arithmetic]
+> >             val = __raw_readb(PCI_IOBASE + addr);
+> > 
+> > So I imagine lots of people are seeing these.
+> 
+> Right, this is the original problem that Niklas was trying to solve.
+> 
+> If Niklas has time to get this fixed, I can probably find a way to work
+> with him on finishing up my proposed patch with the changes you
+> suggested.
+> 
+>        Arnd
 
-On Thu 02 Sep 2021 at 14:25, Rob Herring <robh@kernel.org> wrote:
+Sorry for the late reply, this got lost in my inbox. I could spare some
+cycles on this but I'm not sure how I can help.
 
-> On Thu, Sep 02, 2021 at 02:47:27PM +0200, Jerome Brunet wrote:
->> 
->> On Thu 02 Sep 2021 at 11:23, Sameer Pujar <spujar@nvidia.com> wrote:
->> 
->> > The 'sound-name-prefix' is used to prepend suitable strings to a
->> > component widgets or controls. This is helpful when there are
->> > multiple instances of the same component. Add relevant json-schema
->> > and is inspired from sound-name-prefix.txt documentation.
->> >
->> > Signed-off-by: Sameer Pujar <spujar@nvidia.com>
->> > Cc: Jerome Brunet <jbrunet@baylibre.com>
->> > Cc: Rob Herring <robh+dt@kernel.org>
->> > ---
->> >  .../devicetree/bindings/sound/name-prefix.yaml     | 35 ++++++++++++++++++++++
->> >  1 file changed, 35 insertions(+)
->> >  create mode 100644 Documentation/devicetree/bindings/sound/name-prefix.yaml
->> >
->> > diff --git a/Documentation/devicetree/bindings/sound/name-prefix.yaml b/Documentation/devicetree/bindings/sound/name-prefix.yaml
->> > new file mode 100644
->> > index 00000000..b58cc9e
->> > --- /dev/null
->> > +++ b/Documentation/devicetree/bindings/sound/name-prefix.yaml
->> > @@ -0,0 +1,35 @@
->> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> > +%YAML 1.2
->> > +---
->> > +$id: http://devicetree.org/schemas/sound/name-prefix.yaml#
->> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> > +
->> > +title: Component sound name prefix
->> > +
->> > +maintainers:
->> > +  - Jerome Brunet <jbrunet@baylibre.com>
->> 
->> Since this file is referenced using "AllOf", am I going to be listed as
->> maintainer of all the drivers using the property below ? I'm not sure I
->> want that ... :P
->
-> No. That's not how it works. You're maintainer of files that list you as 
-> maintainer.
+The series you sent after Linus' nacked the previous approach looks
+quite broad touching lots of areas I have little experience with. I'd
+be willing to test things and look over patches the best I can of
+course.
 
-Thanks for clarifying.
-You can ignore my comment then Sameer. 
-
->
->> Maybe it would be better to drop the above ?
->> 
->> > +
->> > +properties:
->> > +  sound-name-prefix:
->> > +    $ref: /schemas/types.yaml#/definitions/string
->> > +    description: |
->> > +      Card implementing the routing property define the connection between
->> > +      audio components as list of string pair. Component using the same
->> > +      sink/source names may use this property to prepend the name of their
->> > +      sinks/sources with the provided string.
->> > +
->> > +additionalProperties: true
->> > +
->> > +examples:
->> > +  - |
->> > +    analog-amplifier@0 {
->> > +        compatible = "simple-audio-amplifier";
->> > +        sound-name-prefix = "FRONT";
->> > +    };
->> > +
->> > +    analog-amplifier@1 {
->> > +        compatible = "simple-audio-amplifier";
->> > +        sound-name-prefix = "BACK";
->> > +    };
->> > +
->> > +...
->> 
->> 
+Thanks,
+Niklas
 
