@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5913FFBEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F673FFBF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 10:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348224AbhICI2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 04:28:07 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:33296 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234810AbhICI2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 04:28:04 -0400
-Received: from hellwig.intra.ispras.ru (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPS id 324EC40D4004;
-        Fri,  3 Sep 2021 08:26:58 +0000 (UTC)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kirill Shilimanov <kirill.shilimanov@huawei.com>,
-        Anton Vasilyev <vasilyev@ispras.ru>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ldv-project@linuxtesting.org
-Subject: [PATCH] mtd: rawnand: intel: Fix potential buffer overflow in probe
-Date:   Fri,  3 Sep 2021 11:26:53 +0300
-Message-Id: <20210903082653.16441-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.26.2
+        id S1348329AbhICIaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 04:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348150AbhICIaX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 04:30:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD9BC061575;
+        Fri,  3 Sep 2021 01:29:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=63YjCZz8yI4FKXK+jv7rwHSVADBtiqi5HQcrAte2wY0=; b=ozlT/4knnZ1PqKs/7MNRFQJImq
+        fW+jGTYcx5EzCZpxPjfnL/+TDVNNcAGfYnHChmTZZkLV1iWRNy4eFOzktJ55sJc9rtZ7QPNtp1wdx
+        0o9yimgl5mP/ynzBxvQY2k23KNN8yLyUnxT+pYxUx87Q6W2klvDsw53pJTl6gU+g0WhQ3jHFoN2pc
+        TTNR+UQO7Kq+ZvPxKm608ugUqpDUt7VKxDeGESG99pbyULGIjimb8xyGM9B17dQN2KVM0r60e//pL
+        acklVuByNpC/Gfy0QuxSbMjRtUZueKyF3KEeDaxhj+9pjc9bvzCbt6F+nj7C7F9/zIlPPCJdToson
+        dveUY/bg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mM4XV-004HcU-Bx; Fri, 03 Sep 2021 08:27:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E42B130018E;
+        Fri,  3 Sep 2021 10:27:08 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CDBFC209D9D99; Fri,  3 Sep 2021 10:27:08 +0200 (CEST)
+Date:   Fri, 3 Sep 2021 10:27:08 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     bpf@vger.kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        mingo@redhat.com, kjain@linux.ibm.com, kernel-team@fb.com
+Subject: Re: [PATCH v5 bpf-next 1/3] perf: enable branch record for software
+ events
+Message-ID: <YTHcXDhYDFsw9GQX@hirez.programming.kicks-ass.net>
+References: <20210902165706.2812867-1-songliubraving@fb.com>
+ <20210902165706.2812867-2-songliubraving@fb.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902165706.2812867-2-songliubraving@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ebu_nand_probe() read the value of u32 variable "cs" from the device
-firmware description and used it as the index for array ebu_host->cs
-that can contain MAX_CS (2) elements at most. That could result in
-a buffer overflow and various bad consequences later.
+On Thu, Sep 02, 2021 at 09:57:04AM -0700, Song Liu wrote:
 
-Fix the potential buffer overflow by restricting values of "cs" with
-MAX_CS in probe.
+> +static int
+> +intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
+> +{
+> +	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> +
+> +	intel_pmu_disable_all();
+> +	intel_pmu_lbr_read();
+> +	cnt = min_t(unsigned int, cnt, x86_pmu.lbr_nr);
+> +
+> +	memcpy(entries, cpuc->lbr_entries, sizeof(struct perf_branch_entry) * cnt);
+> +	intel_pmu_enable_all(0);
+> +	return cnt;
+> +}
 
-Found by Linux Driver Verification project (linuxtesting.org).
+Given this disables the PMI from 'random' contexts, should we not add
+IRQ disabling around this to avoid really bad behaviour?
 
-Fixes: 0b1039f016e8 ("mtd: rawnand: Add NAND controller support on Intel LGM SoC")
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
-Co-developed-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Signed-off-by: Kirill Shilimanov <kirill.shilimanov@huawei.com>
-Co-developed-by: Anton Vasilyev <vasilyev@ispras.ru>
-Signed-off-by: Anton Vasilyev <vasilyev@ispras.ru>
----
- drivers/mtd/nand/raw/intel-nand-controller.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/mtd/nand/raw/intel-nand-controller.c b/drivers/mtd/nand/raw/intel-nand-controller.c
-index 8b49fd56cf96..81678088fdca 100644
---- a/drivers/mtd/nand/raw/intel-nand-controller.c
-+++ b/drivers/mtd/nand/raw/intel-nand-controller.c
-@@ -609,6 +609,11 @@ static int ebu_nand_probe(struct platform_device *pdev)
- 		dev_err(dev, "failed to get chip select: %d\n", ret);
- 		return ret;
- 	}
-+	if (cs >= MAX_CS) {
-+		dev_err(dev, "got invalid chip select: %d\n", cs);
-+		return -EINVAL;
-+	}
-+
- 	ebu_host->cs_num = cs;
- 
- 	resname = devm_kasprintf(dev, GFP_KERNEL, "nand_cs%d", cs);
--- 
-2.26.2
 
