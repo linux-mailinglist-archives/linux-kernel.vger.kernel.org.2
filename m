@@ -2,134 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 063EC40072F
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 22:57:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFE1400737
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 23:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350485AbhICU6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 16:58:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235926AbhICU62 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 16:58:28 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADFEC061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 13:57:27 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id x19so459544pfu.4
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 13:57:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=sxwuAxrtYJDjTWSV7OCCFJWZjU0Ifgp/ql+JDp+Z75E=;
-        b=A578Fpol/RIHGMSTJHydtH7gUYnUCOgG/F7IruWJOGuZXz4hbwYoXRgqhuxfNwI1YL
-         ENTUX7tBHoikw4wQW+6RVzFsqOpPdpWe0XVX7+rvURsCHqdWpIZ1NtpKiThAnBRMwbtR
-         ijiXWLqJRghzTjxhDAhsHto+UjCY/wEBdRSW+A/sObq8DhS8nSZlSkSP+CUTJIdujMZg
-         kipS6FXRAJSPGIIPX4Qrewn2R0/1xik1Vb+s9zBvd7LZy2zblMfiJ1p+xvmSxPqBbQ3A
-         RrQVf2rzp0mQJZTkQPU8zikCJFz2w+xG0H2+ZO/MMTMVw/ANOZDcBcQkBUwnhPfTkJ4P
-         ifOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sxwuAxrtYJDjTWSV7OCCFJWZjU0Ifgp/ql+JDp+Z75E=;
-        b=kcNk9XYU7pOdYep+mmKheVJeLy53ERR7+VS7A6uxdim2PL+mzDse/aE4EE0or/hy14
-         bETtTllyDhSBAiobKISSwDoGCy5UIiorNAdxDEtAoazvp3wVhm6His3+T/YonE2HurX8
-         ctL5sDsBeUTuMfTjuDlYDG49hpEbE7jqbZAXVIQ8spnuE16KrFgdWIYkTY+m2FkXD6zO
-         NIj2chKAQw35R5bWcHuhSgr4qGMqP6BdOXI5+ci4BxfflpNTFOt5kUxMA/IizIk79OxR
-         mRu80M3WWphQ+XqTqHipZV+SinGWqdt3O7P/gd6z6S3PD0OR/nYGZdKTZTf2k/dHSj2j
-         SQrQ==
-X-Gm-Message-State: AOAM533k975TE+5PxkF+TCbIiKhDr0b5EY4/sMF8cADtrCakuUKi1HC0
-        VrLgLOqNy6uVx0c7IFDM2X/eoQ==
-X-Google-Smtp-Source: ABdhPJykLVv6cszHvpqvclZtdskHuEsGCPbZnEmzQKojtCl9mb5oGxxDNlMWc0DgEXKcs2kYuZstWw==
-X-Received: by 2002:a63:4c0e:: with SMTP id z14mr768854pga.427.1630702647104;
-        Fri, 03 Sep 2021 13:57:27 -0700 (PDT)
-Received: from ?IPv6:2600:380:7567:4da9:6143:c77c:a7ba:674d? ([2600:380:7567:4da9:6143:c77c:a7ba:674d])
-        by smtp.gmail.com with ESMTPSA id p2sm256672pgd.84.2021.09.03.13.57.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 13:57:26 -0700 (PDT)
-Subject: Re: Bug: d0e936adbd22 crashes at boot
-From:   Jens Axboe <axboe@kernel.dk>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, linux-pm@vger.kernel.org
-References: <942f4041-e4e7-1b08-3301-008ab37ff5b8@kernel.dk>
- <c56cde110210bec6537fe69b495334c6c70c814e.camel@linux.intel.com>
- <3ac87893-55ba-f2d4-bb1e-382868f12d4c@kernel.dk>
- <7f115f0476618d34b24ddec772acbbd7c0c4a572.camel@linux.intel.com>
- <767fe00f-bf31-1eb0-09cc-1be91c633bb4@kernel.dk>
- <d6bf08cbfd9f29ddb8cf29f522d68efc5c676624.camel@linux.intel.com>
- <903f2e71-983f-39b8-dd0b-d697616ab63e@kernel.dk>
-Message-ID: <a6041178-e7d6-4ad9-b96a-91b4702d0305@kernel.dk>
-Date:   Fri, 3 Sep 2021 14:57:24 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1350352AbhICVBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 17:01:06 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:46434 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1350205AbhICVBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 17:01:02 -0400
+Received: from ip5f5a6e92.dynamic.kabel-deutschland.de ([95.90.110.146] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1mMGI2-0007Iw-D3; Fri, 03 Sep 2021 22:59:58 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Miles Chen <miles.chen@mediatek.com>
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
+        Miles Chen <miles.chen@mediatek.com>
+Subject: Re: [PATCH] clk: rockchip: use module_platform_driver_probe
+Date:   Fri, 03 Sep 2021 22:59:57 +0200
+Message-ID: <1764446.vrLGdHa7mH@diego>
+In-Reply-To: <20210902075713.7563-1-miles.chen@mediatek.com>
+References: <20210902075713.7563-1-miles.chen@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <903f2e71-983f-39b8-dd0b-d697616ab63e@kernel.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/21 2:41 PM, Jens Axboe wrote:
-> On 9/3/21 12:00 PM, Srinivas Pandruvada wrote:
->> Hi Axobe,
->>
->> On Fri, 2021-09-03 at 09:00 -0600, Jens Axboe wrote:
->>> On 9/3/21 8:38 AM, Srinivas Pandruvada wrote:
->>>> On Fri, 2021-09-03 at 08:15 -0600, Jens Axboe wrote:
->>>>> On 9/3/21 8:13 AM, Srinivas Pandruvada wrote:
->>>>>> Hi Axboe,
->>>>>>
->>>>>> Thanks for reporting.
->>>>>> On Fri, 2021-09-03 at 07:36 -0600, Jens Axboe wrote:
->>>>>>> Hi,
->>>>>>>
->>>>>>> Booting Linus's tree causes a crash on my laptop, an x1 gen9.
->>>>>>> This
->>>>>>> was
->>>>>>> a bit
->>>>>>> difficult to pin down as it crashes before the display is up,
->>>>>>> but I
->>>>>>> managed
->>>>>>> to narrow it down to:
->>>>>>>
->>>>>>> commit d0e936adbd2250cb03f2e840c6651d18edc22ace
->>>>>>> Author: Srinivas Pandruvada < 
->>>>>>> srinivas.pandruvada@linux.intel.com>
->>>>>>> Date:   Thu Aug 19 19:40:06 2021 -0700
->>>>>>>
->>>>>>>     cpufreq: intel_pstate: Process HWP Guaranteed change
->>>>>>> notification
->>>>>>>
->>>>>>> which crashes with a NULL pointer deref in
->>>>>>> notify_hwp_interrupt() -
->>>>>>>>
->>>>>>> queue_delayed_work_on().
->>>>>>>
->>>>>>> Reverting this change makes the laptop boot fine again.
->>>>>>>
->>>>>> Does this change fixes your issue?
->>>>>
->>>>> I would assume so, as it's crashing on cpudata == NULL :-)
->>>>>
->>>>> But why is it NULL? Happy to test patches, but the below doesn't
->>>>> look
->>>>> like
->>>>> a real fix and more of a work-around.
->>>>
->>
->> Please try the attached.
+Am Donnerstag, 2. September 2021, 09:57:13 CEST schrieb Miles Chen:
+> Replace builtin_platform_driver_probe with module_platform_driver_probe
+> because that rk3399 and rk3568 can be built as kernel modules.
 > 
-> I'll give it a test spin right now. Please do add a Reported-by tag,
-> though. That's always prudent.
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
 
-And you can add Tested-by as well, it works for me.
+on both rk3399 and rk3568:
+Tested-by: Heiko Stuebner <heiko@sntech.de>
 
--- 
-Jens Axboe
+and also
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+
+
+Heiko
+
+> ---
+>  drivers/clk/rockchip/clk-rk3399.c | 2 +-
+>  drivers/clk/rockchip/clk-rk3568.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/clk/rockchip/clk-rk3399.c b/drivers/clk/rockchip/clk-rk3399.c
+> index 62a4f2543960..a5169156f1d2 100644
+> --- a/drivers/clk/rockchip/clk-rk3399.c
+> +++ b/drivers/clk/rockchip/clk-rk3399.c
+> @@ -1653,7 +1653,7 @@ static struct platform_driver clk_rk3399_driver = {
+>  		.suppress_bind_attrs = true,
+>  	},
+>  };
+> -builtin_platform_driver_probe(clk_rk3399_driver, clk_rk3399_probe);
+> +module_platform_driver_probe(clk_rk3399_driver, clk_rk3399_probe);
+>  
+>  MODULE_DESCRIPTION("Rockchip RK3399 Clock Driver");
+>  MODULE_LICENSE("GPL");
+> diff --git a/drivers/clk/rockchip/clk-rk3568.c b/drivers/clk/rockchip/clk-rk3568.c
+> index 75ca855e720d..939e7079c334 100644
+> --- a/drivers/clk/rockchip/clk-rk3568.c
+> +++ b/drivers/clk/rockchip/clk-rk3568.c
+> @@ -1719,7 +1719,7 @@ static struct platform_driver clk_rk3568_driver = {
+>  		.suppress_bind_attrs = true,
+>  	},
+>  };
+> -builtin_platform_driver_probe(clk_rk3568_driver, clk_rk3568_probe);
+> +module_platform_driver_probe(clk_rk3568_driver, clk_rk3568_probe);
+>  
+>  MODULE_DESCRIPTION("Rockchip RK3568 Clock Driver");
+>  MODULE_LICENSE("GPL");
+> 
+
+
+
 
