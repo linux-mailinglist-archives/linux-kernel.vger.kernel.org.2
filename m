@@ -2,175 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9E193FF87E
-	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 02:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4673FF88B
+	for <lists+linux-kernel@lfdr.de>; Fri,  3 Sep 2021 02:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243831AbhICAy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 2 Sep 2021 20:54:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231161AbhICAyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 2 Sep 2021 20:54:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A7FB610A1;
-        Fri,  3 Sep 2021 00:53:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630630435;
-        bh=ESjKUQjilvoa8yjcHYk5EoAu/HqzJrgOoao4t51tuiw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nsSWW2fkARm1CWQfjsfE++kELQD2ttwaVF9egcUeuuj9jVYLq36tV0rz6t8wFYtRP
-         2juWr+f/e1Ssr1R2giu7AnqFFxuQjkLVhSKy+2CcrNpSRx9iHohbtsILxhfWGYmBWx
-         GcIvIJ4ww3t1ViFiHKBoRuJtyvt3v6UhiwYkWLByCDo/Rk5kmge/zDa7fOPn6fYso7
-         JoHLMD9B21ruCSO3aXpFVPWY2FNJS8EFTVtsxob8nAnMV9lUzH4N7UcO4Nl8dfdRqI
-         AyST0OPRZhX4XtC/jazwJi/QciXL4oWdNdxyvRmi7x8Qi+RIPIj23xPXbfyoYOT+wL
-         NriLUtk351bVw==
-Received: by mail-ej1-f53.google.com with SMTP id x11so8592405ejv.0;
-        Thu, 02 Sep 2021 17:53:55 -0700 (PDT)
-X-Gm-Message-State: AOAM531nvtHlTY+4UNopt7eUytx3Z10UnhkNpj0nirBY4LjZIlRuJOD4
-        EZ8LGNrFC2Dr13vCQ3YAuwgMsa2Ke9L/imruMw==
-X-Google-Smtp-Source: ABdhPJzgXCEgW8AMIrdDuiVErt8Lcc+lHdjEl4dO9chPIYkQnJOqKI0bLvrmBj8SJrt1vZKVVzTI79Sk1om36yhSsd4=
-X-Received: by 2002:a17:906:8cd:: with SMTP id o13mr1086206eje.341.1630630433827;
- Thu, 02 Sep 2021 17:53:53 -0700 (PDT)
+        id S1343838AbhICBAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 2 Sep 2021 21:00:00 -0400
+Received: from mail-dm6nam11on2043.outbound.protection.outlook.com ([40.107.223.43]:38048
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236198AbhICA77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 2 Sep 2021 20:59:59 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FXpPRT9ac3TDZtd9Q++cKs7g/JCtLWQdlpqLSH7XJIn4NTrMrQL0slh6oDQowBVqCAX/QdpZ7NS2vf1d7yf0/QxOMQALifVWFqEvKJ8fCSyHB8SfCtYioXDtbLRHRaZCy2HQU+poIXKmgYSTLu4PK3hJDkn0o46+rVLRIT7U2naxeMonzhH5ZjkQfzOqAZJMwneYPb+21DWf8YPFKZ+YUzh5vkK5bZWaopZ5qqaKGUQwyimSu/6f7BtgDncDoLFzS/5CDjmN2cR884Brct7VlBVUIKjVgp3JFJmM1lXkEWCz0qLQ+M9Ek/BDrYiyIKx3TuwQNJ/MTPPBDea0lXKtww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q859ypsA4Ty3+AenRtdihNYgi/baFcsoV8vlhriHhJs=;
+ b=f5kCG3NJ2VADA6RQr6x8e4TVxh9dtaC9z98+nZluP67Z1U2ptE65KE4bq+8W5Yjr5VCUv7sEbJbzXWoVdankQG/3ktTIh5N9tzsvrnzwQZ5k3jksIeVRfDgyMNmwVmVqsf6yRME6Dmb916D/NCn9q4x7WnoiqZo0BQjGVmyTKZ8hWpa0Npv+hR6QjPx6mfSp7hxVeJRZFWyPcDHMr5qQCvCZcjVL/zNfw0uFnBBWU/hn1mTUzrN5VlsuAJQdHoJYU8YM+yAuIvgHBZI8SRwBXY846mCvUG4Lb6OJZWk6A1D5oWl1B7oMy2dynWDgQJ4fXb9N1iSfv6vye8jUtGttmQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.35) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q859ypsA4Ty3+AenRtdihNYgi/baFcsoV8vlhriHhJs=;
+ b=ML/8wEdaQoGHc3EstKyQutPgoF2XgI93ZRWDZ8PeK7pAasXRJvuzKfqzZ49w18yNVjBIIfKvyH50LjCD8vsNLBPfysTKAwxSr9afENqRKmn16i+WVZAEugAWUHNTGwq7V1drkqfK1xZ+Lp1zjfb0wKFlXUarXage7rqIr6wytqxw5HkAftsUajByM3yO8hlhxr8kD5tUOe9i9BRKtKFwL2a1iLf+SczavSPEbjsKEMtA45J8NIF7PmdXgYn9QGmUhYuMEnjXw8g76cwxMyzMfLp4fINHC73Z8YzMiW1gDUgnRCYw0LSY+dbgLhW3W/aHhBl7pI0Ntzho1ED+m7OYMA==
+Received: from BN6PR13CA0008.namprd13.prod.outlook.com (2603:10b6:404:10a::18)
+ by DM6PR12MB4862.namprd12.prod.outlook.com (2603:10b6:5:1b7::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.24; Fri, 3 Sep
+ 2021 00:58:59 +0000
+Received: from BN8NAM11FT009.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:404:10a:cafe::1e) by BN6PR13CA0008.outlook.office365.com
+ (2603:10b6:404:10a::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.6 via Frontend
+ Transport; Fri, 3 Sep 2021 00:58:59 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
+ smtp.mailfrom=nvidia.com; google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.35; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.35) by
+ BN8NAM11FT009.mail.protection.outlook.com (10.13.176.65) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4478.19 via Frontend Transport; Fri, 3 Sep 2021 00:58:59 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 3 Sep
+ 2021 00:58:58 +0000
+Received: from nvdebian.localnet (172.20.187.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 3 Sep 2021
+ 00:58:55 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        Peter Xu <peterx@redhat.com>
+CC:     "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jerome Glisse <jglisse@redhat.com>, <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH v2 4/5] mm: Add zap_skip_check_mapping() helper
+Date:   Fri, 3 Sep 2021 10:58:53 +1000
+Message-ID: <1771631.QAr93JHi05@nvdebian>
+In-Reply-To: <20210902201819.53343-1-peterx@redhat.com>
+References: <20210902201721.52796-1-peterx@redhat.com> <20210902201819.53343-1-peterx@redhat.com>
 MIME-Version: 1.0
-References: <20210902025528.1017391-1-saravanak@google.com>
- <20210902025528.1017391-3-saravanak@google.com> <CAL_JsqJOv7D5nHteGPDKC2+ns1caVNs-NFFJppLuK0OEB8dztQ@mail.gmail.com>
- <CAGETcx-rOakAX_apu2ecu6jWCwzO0RgMkwdfzyF+UaxQfVj4CA@mail.gmail.com>
- <CAL_Jsq+A1T5+KK5xsVVtrMVeuMre3B6sAAroX+a3gQy6wY+r8A@mail.gmail.com> <CAGETcx9wY66TsFX_1rFUO+toE-OpkAvWSdcNVK7M=LYwa6xbAw@mail.gmail.com>
-In-Reply-To: <CAGETcx9wY66TsFX_1rFUO+toE-OpkAvWSdcNVK7M=LYwa6xbAw@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 2 Sep 2021 19:53:42 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJzt_duSkMm43dwpiGCmqW8PAQ1n6SeyiNkECP8CTcY=g@mail.gmail.com>
-Message-ID: <CAL_JsqJzt_duSkMm43dwpiGCmqW8PAQ1n6SeyiNkECP8CTcY=g@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] of: platform: Mark bus devices nodes with FWNODE_FLAG_NEVER_PROBES
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 81b042be-0ef9-425d-f588-08d96e760366
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4862:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4862F8D66D11A4D406F4E885DFCF9@DM6PR12MB4862.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: u6Eu8kxrrz82sC/23F5IccSgeNa7iR9qq2lP9ydI0UwWs5DqG9ulJ0pg0ovnEdr62MWTKv2Fia3CD2IAl+Ps/DH9eqNihIq+HnbEKk8NUdZyvI94lbnyGlFMq5orDa7exmj0kXK7RnrgHf2mHCArcLCayN+OD40dm4sMM1ZJc4bAvDTQ5ms6rk2oT6zn7D4rFrOQiuGgI0IKJ6P40WRTaLrrkjI6q0x2IsbopajEdodVHYHRGLdT5GpIohA9aPmT+kgmvLuPcV/ZDSAB31sCAgugXAvIpc1jy04e8lSHN3VnUp6hXBKV+pVfuCSTTr5VYmdZCjinWA3sAcScqDrs36Y2ssPVGfFODCIFkIRGzCihP7Q1lyLTHHOHU2qnvokbRx7cUF0V2U9Z6SqwLVjbn+a8Duo3CUw+xg7f/lLZEkCrpZP3FiM5/zJ28411VJCn3uYAIDrroJjU4cO+0RSOJfgkUGAoaqEv+3doigCQ+VaGHhbcvrE3C5qznITvY9KLZbVZpdgwHdaN9jiwTN1hQd1zxycVa9EyagXbfwA3HqvVmpn3N8DXfgDqNkpU1r3liPXvqXFCl7WS6xZz8C3A31dyG00JVMf9jD8TJCOdGG37Q31Q5JKfPSuVxuNckH4dEdraOls1f/EimVJgc2d6H5/eI2H/mflg+CTRg5HJADzFkXMf/mFcX445oQ8H4I2fTfzMcFTQy9kPk92NL/VAM+QwUA8U0xFo6X3jiyjSfchG/nB8BEv/3+xdpn7FINa9
+X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid02.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(346002)(136003)(46966006)(36840700001)(2906002)(316002)(33716001)(36860700001)(8676002)(9686003)(86362001)(336012)(5660300002)(356005)(47076005)(83380400001)(70586007)(70206006)(82310400003)(7416002)(9576002)(36906005)(16526019)(478600001)(8936002)(7636003)(26005)(110136005)(186003)(426003)(4326008)(82740400003)(54906003)(39026012)(2101003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2021 00:58:59.0274
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81b042be-0ef9-425d-f588-08d96e760366
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT009.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4862
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 2:29 PM Saravana Kannan <saravanak@google.com> wrote:
+On Friday, 3 September 2021 6:18:19 AM AEST Peter Xu wrote:
+> Use the helper for the checks.  Rename "check_mapping" into "zap_mapping"
+> because "check_mapping" looks like a bool but in fact it stores the mapping
+> itself.  When it's set, we check the mapping (it must be non-NULL).  When it's
+> cleared we skip the check, which works like the old way.
 >
-> On Thu, Sep 2, 2021 at 12:03 PM Rob Herring <robh+dt@kernel.org> wrote:
-> >
-> > On Thu, Sep 2, 2021 at 11:57 AM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > On Thu, Sep 2, 2021 at 7:24 AM Rob Herring <robh+dt@kernel.org> wrote:
-> > > >
-> > > > On Wed, Sep 1, 2021 at 9:55 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > >
-> > > > > We don't want fw_devlink creating device links for bus devices as
-> > > > > they'll never probe. So mark those device node with this flag.
-> > > > >
-> > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > > ---
-> > > > >  drivers/of/platform.c | 16 ++++++++++++++++
-> > > > >  1 file changed, 16 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/of/platform.c b/drivers/of/platform.c
-> > > > > index 74afbb7a4f5e..42b3936d204a 100644
-> > > > > --- a/drivers/of/platform.c
-> > > > > +++ b/drivers/of/platform.c
-> > > > > @@ -392,6 +392,22 @@ static int of_platform_bus_create(struct device_node *bus,
-> > > > >         if (!dev || !of_match_node(matches, bus))
-> > > > >                 return 0;
-> > > > >
-> > > > > +       /*
-> > > > > +        * If the bus node has only one compatible string value and it has
-> > > > > +        * matched as a bus node, it's never going to get probed by a device
-> > > > > +        * driver. So flag it as such so that fw_devlink knows not to create
-> > > > > +        * device links with this device.
-> > > > > +        *
-> > > > > +        * This doesn't catch all devices that'll never probe, but this is good
-> > > > > +        * enough for now.
-> > > > > +        *
-> > > > > +        * This doesn't really work for PPC because of how it uses
-> > > > > +        * of_platform_bus_probe() to add normal devices. So ignore PPC cases.
-> > > > > +        */
-> > > > > +       if (!IS_ENABLED(CONFIG_PPC) &&
-> > > > > +           of_property_count_strings(bus, "compatible") == 1)
-> > > > > +               bus->fwnode.flags |= FWNODE_FLAG_NOT_DEVICE;
-> > > >
-> > > > This looks fragile relying on 1 compatible string, and the DT flags in
-> > > > this code have been fragile too. I'm pretty sure we have cases of
-> > > > simple-bus or simple-mfd that also have another compatible.
-> > > >
-> > > > Couldn't we solve this with a simple driver?
-> > >
-> > > Oh, I didn't think you'd like that. I'd lean towards that option too
-> > > if we can address some of the other concerns below.
-> > >
-> > > > Make 'simple-pm-bus'
-> > > > driver work for other cases?
-> > >
-> > > > BTW, this patch doesn't even work for
-> > > > simple-pm-bus.
-> > >
-> > > How do you mean? Because simple-pm-bus already has a driver and
-> > > doesn't set "matches" param when it calls of_platform_populate() and
-> > > this flag won't be set. So at least for simple-pm-bus I don't see any
-> > > issue.
-> >
-> > You're right.
-> >
-> > > I was trying to reuse of_default_bus_match_table without explicitly
-> > > referring to it, but if it's confusing I can add a separate list of
-> > > compatible strings and use those here instead of using "matches".
-> >
-> > What happens with a non-default table? I'm not sure we can assume the
-> > same behavior.
-> >
-> > > > A driver for simple-bus may cause issues if there's a
-> > > > more specific driver to bind to as we don't handle that. It's simply
-> > > > whichever matches first.
-> > >
-> > > Right, this is my worry. Especially for devices like this (there are
-> > > plenty of cases like this) which have a driver that probes them but
-> > > also lists simple-bus
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/arm-realview-pb11mp.dts?id=73f3af7b4611d77bdaea303fb639333eb28e37d7#n299
-> >
-> > Uhh, that one is certainly a leakage of wanting an soc_device in the
-> > hierarchy, not any real bus structure reflecting the h/w. I'm not a
-> > fan of the soc_device stuff and its optional nature. Everything is an
-> > SoC, so it should always be there? Or your device hierarchy should
-> > change when you decide to add a soc_device?
-> >
-> > > So as long as there's a compatible string that's not one of the
-> > > "transparent" busses, this driver shouldn't match. So, I don't think I
-> > > can get away from checking the compatible strings.
-> > >
-> > > How about I check here to make sure all the "compatible" strings are
-> > > from an approved transparent bus list, and if it's true, I use
-> > > driver_override to force match it to a transparent bus driver? Would
-> > > you be okay with that?
-> >
-> > Can't we do that within a driver? We check this and fail probe if
-> > there's a more specific compatible.  Then another driver can match and
-> > probe.
+> Move the duplicated comments to the helper too.
+> 
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  include/linux/mm.h | 15 ++++++++++++++-
+>  mm/memory.c        | 29 ++++++-----------------------
+>  2 files changed, 20 insertions(+), 24 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 69259229f090..81e402a5fbc9 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1720,10 +1720,23 @@ extern void user_shm_unlock(size_t, struct ucounts *);
+>   * Parameter block passed down to zap_pte_range in exceptional cases.
+>   */
+>  struct zap_details {
+> -	struct address_space *check_mapping;	/* Check page->mapping if set */
+> +	struct address_space *zap_mapping;	/* Check page->mapping if set */
+>  	struct page *single_page;		/* Locked page to be unmapped */
+>  };
+>  
+> +/*
+> + * We set details->zap_mappings when we want to unmap shared but keep private
+> + * pages. Return true if skip zapping this page, false otherwise.
+> + */
+> +static inline bool
+> +zap_skip_check_mapping(struct zap_details *details, struct page *page)
+> +{
+> +	if (!details || !page)
+> +		return false;
+> +
+> +	return details->zap_mapping != page_rmapping(page);
+
+Shouldn't this check still be
+details->zap_mapping && details->zap_mapping != page_rmapping(page)?
+
+Previously we wouldn't skip zapping pages if even_cows == true (ie.
+details->check_mapping == NULL). With this change the check when
+even_cows == true becomes NULL != page_rmapping(page). Doesn't this mean we
+will now skip zapping any pages with a mapping when even_cows == true?
+
+> +}
+> +
+>  struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
+>  			     pte_t pte);
+>  struct page *vm_normal_page_pmd(struct vm_area_struct *vma, unsigned long addr,
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 6bba3b9fef7c..e5ee8399d270 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -1333,16 +1333,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>  			struct page *page;
+>  
+>  			page = vm_normal_page(vma, addr, ptent);
+> -			if (unlikely(details) && page) {
+> -				/*
+> -				 * unmap_shared_mapping_pages() wants to
+> -				 * invalidate cache without truncating:
+> -				 * unmap shared but keep private pages.
+> -				 */
+> -				if (details->check_mapping &&
+> -				    details->check_mapping != page_rmapping(page))
+> -					continue;
+> -			}
+> +			if (unlikely(zap_skip_check_mapping(details, page)))
+> +				continue;
 >
-> I was thinking that initially, but if we fail a probe, the driver core
-> will permanently give up (won't search further) or might end up
-> retrying with the same driver and never get to the other driver. I'll
-> send out a v2 with what I described above. It's not too bad and it
-> will also allow us to handle the PPC cases (we'll just need to keep
-> adding the simple-bus equivalent entries to a table).
+>  			ptent = ptep_get_and_clear_full(mm, addr, pte,
+>  							tlb->fullmm);
+>  			tlb_remove_tlb_entry(tlb, pte, addr);
+> @@ -1375,17 +1367,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>  		    is_device_exclusive_entry(entry)) {
+>  			struct page *page = pfn_swap_entry_to_page(entry);
+>  
+> -			if (unlikely(details && details->check_mapping)) {
+> -				/*
+> -				 * unmap_shared_mapping_pages() wants to
+> -				 * invalidate cache without truncating:
+> -				 * unmap shared but keep private pages.
+> -				 */
+> -				if (details->check_mapping !=
+> -				    page_rmapping(page))
+> -					continue;
+> -			}
+> -
+> +			if (unlikely(zap_skip_check_mapping(details, page)))
+> +				continue;
+>  			pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+>  			rss[mm_counter(page)]--;
+>  
+> @@ -3368,7 +3351,7 @@ void unmap_mapping_page(struct page *page)
+>  	first_index = page->index;
+>  	last_index = page->index + thp_nr_pages(page) - 1;
+>  
+> -	details.check_mapping = mapping;
+> +	details.zap_mapping = mapping;
+>  	details.single_page = page;
+>  
+>  	i_mmap_lock_write(mapping);
+> @@ -3396,7 +3379,7 @@ void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
+>  	pgoff_t	first_index = start, last_index = start + nr - 1;
+>  	struct zap_details details = { };
+>  
+> -	details.check_mapping = even_cows ? NULL : mapping;
+> +	details.zap_mapping = even_cows ? NULL : mapping;
+>  	if (last_index < first_index)
+>  		last_index = ULONG_MAX;
+>  
+> 
 
-I wasn't sure, but I traced the calls and it looks like based on
-__driver_attach() that if a driver fails probe another one matching
-should get to probe:
 
-        /*
-         * Ignore errors returned by ->probe so that the next driver can try
-         * its luck.
-         */
 
-The PPC case is about descending nodes without a compatible string.
 
-Rob
