@@ -2,83 +2,706 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B9B40096A
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 05:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB3B040097F
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 06:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350828AbhIDDJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 23:09:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236149AbhIDDJy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 23:09:54 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359B3C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 20:08:53 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id i28so1650368ljm.7
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 20:08:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AmpQXLuWcKRnRztqv+kSLcoJmxvozgSjiG4CeAGr8qQ=;
-        b=sfyJhFaBa4uK+SSBPhd/eF4k07Aj80nFBB7vCPNVKEkF9uKeOaHfBT7RuZvzIsUEzE
-         XXeqYxWvE3s42p5qi9NdG4KDTT8OHiMACpDikz5gC91tetB71HrRZVh77axBG3DBgEhg
-         GFr49SqsZ3BkzgGGDeQtcP51QjLSI8IgNHDAIephZQfl6mXuePEg22ubbJNSFel50LL4
-         edC0doDvokKv7XKD/+lRv1mi2pxsvkIBLPgGhsa6REF6IsHm0tLihImQtFz034KkCWg6
-         8GLxmbDkVWjNQnRV5xAoG3z/rroeejVTAkZzYBJinJq42doRyVPS6MRFhIRlO3SE/eyz
-         u45g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AmpQXLuWcKRnRztqv+kSLcoJmxvozgSjiG4CeAGr8qQ=;
-        b=FhxfoH8UM1Xm6OcKYH0kw0ZiVMysgE+wC7a1Xaf48TMhCxyo9iusXUs1r+6NCBl62j
-         mAKEnxxKbuVVkmzojD3z58ciAOh74swt1oOy0K0GunuamAhcZaW5aUC4NrZSdumiML6j
-         vfctr1viKOjQ3F25niesd4G8IPizMi2+yVMPw9Gvf2tzrtaV1F916+FXmsmvP/4rOm3b
-         vS4tOzZw0DLOrtPf0pW8Z8RiC1VaCD75bYRBpV01GVrT8t66Lko2kfjKEG/Rn9C0+WK3
-         GdcDpnH3JdF7CSfULyig8/YzOpn6YlYTZ2SneAvq05rOhUDXkyULczSkWMfJNA9xv6vI
-         HwKQ==
-X-Gm-Message-State: AOAM531nbXReN5cL/X5P8UjWakmPzr+aTjdJ6q9vbPVXOusnGkJa38JY
-        Sf660JVzaW4qg9+9WgcuFfzPo9yzz4FKy5764vAPkQ==
-X-Google-Smtp-Source: ABdhPJy1f9aCfN00mkLWWlEv02qU2z1Qmz1eKux9khCqVN3B7yC7uwAYv9QVlE+vC8I7tU4LQ+fa5cQTcLEpkD/5O5Y=
-X-Received: by 2002:a2e:a36c:: with SMTP id i12mr1417306ljn.427.1630724931420;
- Fri, 03 Sep 2021 20:08:51 -0700 (PDT)
+        id S236149AbhIDDTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 23:19:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231243AbhIDDTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 23:19:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4469160FDC;
+        Sat,  4 Sep 2021 03:18:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630725519;
+        bh=LiO0wK4Rhvy5YIW5SBCeWe6sex8TuFGtMXrvkj1F+ik=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=n16wrcocZ4PktwjPPOSwavgZ3e03MiAOhtxFx02dYMC3CLEE23tkQabVCoIgM3YKQ
+         n1E5TEw1nyESr6kuM7jaxTs2ELkBZEvzKLYPb5fA5ZNGfIixCdw0koiJzDpDWuNiKa
+         l63LjGRWB/EujJ0z/8RuZ/K/sTgV6dY3KQfLYS4CeVDoKluYu46QPWV0Ke7q31VGC3
+         adQQKrKF86R+3HFZ53MJX46J4gbidTPLV/PTwti+iRwh1fwR49IMZ0t8F+BLrVLmtz
+         gsbxpjmRlpTHbNzt0bF7xjiaWIlB+smXhTbA3rLg0h71bMs1AESDaclQqe8gKGSZId
+         C1+yIPmxUVKZg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 15C995C051B; Fri,  3 Sep 2021 20:18:39 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 20:18:39 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [rcu:dev.2021.08.25a] BUILD REGRESSION
+ 2ba1d046d9bc5b4496027d120e3ddcdfbb2fe9f4
+Message-ID: <20210904031839.GU4156@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <61329de6.swpKkFiW783zlzg0%lkp@intel.com>
 MIME-Version: 1.0
-References: <CANcMJZBOymZNNdFZqPypC7r+JFgDWKgiD6c125t3PnP1O309AA@mail.gmail.com>
- <20210902092500.GA11020@kili>
-In-Reply-To: <20210902092500.GA11020@kili>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Fri, 3 Sep 2021 20:08:40 -0700
-Message-ID: <CALAqxLUqSis_chO53K+RqvDVmE8z=p9FB8kG6DE9cVM=KQupOw@mail.gmail.com>
-Subject: Re: [GIT PULL] Networking for v5.15
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Miller <davem@davemloft.net>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Srini Kandagatla <srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <61329de6.swpKkFiW783zlzg0%lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 2:25 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> I'm sorry John,
->
-> Can you try this partial revert?  I'll resend with a commit message if
-> it works.
->
+On Sat, Sep 04, 2021 at 06:12:54AM +0800, kernel test robot wrote:
+> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.08.25a
+> branch HEAD: 2ba1d046d9bc5b4496027d120e3ddcdfbb2fe9f4  EXP softirq: More aggressively update tick
+
+This commit is obsolete.  Debugging is done, so it has been removed.
+
+							Thanx, Paul
+
+> Error/Warning reports:
+> 
+> https://lore.kernel.org/lkml/202109030618.7Na6ua2f-lkp@intel.com
+> https://lore.kernel.org/lkml/202109030640.6NuTjfs6-lkp@intel.com
+> https://lore.kernel.org/lkml/202109030655.LfhRW51M-lkp@intel.com
+> https://lore.kernel.org/lkml/202109030701.i87lX52g-lkp@intel.com
+> https://lore.kernel.org/lkml/202109030732.o6eTW2YJ-lkp@intel.com
+> https://lore.kernel.org/lkml/202109030841.7XDRMfwz-lkp@intel.com
+> 
+> Error/Warning in current branch:
+> 
+> kernel/time/hrtimer.c:1478:7: warning: no previous prototype for '__run_hrtimer_get_debug' [-Wmissing-prototypes]
+> kernel/time/hrtimer.c:1478:7: warning: no previous prototype for function '__run_hrtimer_get_debug' [-Wmissing-prototypes]
+> kernel/time/hrtimer.c:1483:7: warning: no previous prototype for '__run_hrtimer_get_debug' [-Wmissing-prototypes]
+> kernel/time/hrtimer.c:1483:7: warning: no previous prototype for function '__run_hrtimer_get_debug' [-Wmissing-prototypes]
+> kernel/time/hrtimer.c:1631:6: warning: no previous prototype for 'hrtimer_interrupt_get_debug' [-Wmissing-prototypes]
+> kernel/time/hrtimer.c:1631:6: warning: no previous prototype for function 'hrtimer_interrupt_get_debug' [-Wmissing-prototypes]
+> kernel/time/hrtimer.c:1645:6: warning: no previous prototype for 'hrtimer_interrupt_get_debug' [-Wmissing-prototypes]
+> kernel/time/hrtimer.c:1645:6: warning: no previous prototype for function 'hrtimer_interrupt_get_debug' [-Wmissing-prototypes]
+> kernel/time/tick-oneshot.c:22:7: warning: no previous prototype for function 'tick_program_event_get_debug' [-Wmissing-prototypes]
+> kernel/time/tick-oneshot.c:27:55: warning: integer overflow in expression of type 'long int' results in '-1857093632' [-Woverflow]
+> kernel/time/tick-oneshot.c:34:48: warning: integer overflow in expression of type 'long int' results in '-1857093632' [-Woverflow]
+> kernel/time/tick-oneshot.c:34:55: warning: integer overflow in expression of type 'long int' results in '-1857093632' [-Woverflow]
+> 
+> possible Error/Warning in current branch (please contact us if interested):
+> 
+> (.text+0x140): undefined reference to `hrtimer_interrupt_get_debug'
+> arm-linux-gnueabi-ld: cpu.c:(.text+0x1a0c): undefined reference to `__aeabi_uldivmod'
+> arm-linux-gnueabi-ld: cpu.c:(.text+0xca8): undefined reference to `__aeabi_uldivmod'
+> cpu.c:(.text+0x19ac): undefined reference to `__aeabi_uldivmod'
+> cpu.c:(.text+0xc60): undefined reference to `__aeabi_uldivmod'
+> hppa-linux-ld: (.text+0x148): undefined reference to `get_sysvec_apic_timer_interrupt_ns'
+> hppa-linux-ld: (.text+0x1b4): undefined reference to `tick_program_event_get_debug'
+> hppa-linux-ld: stop_machine.o:(.text+0x248): undefined reference to `get_sysvec_apic_timer_interrupt_ns'
+> ia64-linux-ld: stop_machine.c:(.text+0x2f2): undefined reference to `get_api_timer_irqs'
+> ia64-linux-ld: stop_machine.c:(.text+0x302): undefined reference to `get_sysvec_apic_timer_interrupt_ns'
+> ia64-linux-ld: stop_machine.c:(.text+0x382): undefined reference to `tick_program_event_get_debug'
+> ia64-linux-ld: stop_machine.c:(.text+0x6d2): undefined reference to `get_sysvec_apic_timer_interrupt_ns'
+> kernel/stop_machine.c:220: undefined reference to `hrtimer_interrupt_get_debug'
+> kernel/stop_machine.c:222: undefined reference to `hrtimer_interrupt_get_debug'
+> kernel/time/tick-oneshot.c:22:7: warning: no previous prototype for 'tick_program_event_get_debug' [-Wmissing-prototypes]
+> ld: kernel/stop_machine.c:223: undefined reference to `tick_program_event_get_debug'
+> riscv64-linux-ld: stop_machine.c:(.text+0x656): undefined reference to `get_sysvec_apic_timer_interrupt_ns'
+> riscv64-linux-ld: stop_machine.c:(.text+0x688): undefined reference to `tick_program_event_get_debug'
+> s390-linux-ld: stop_machine.c:(.text+0x152): undefined reference to `get_api_timer_irqs'
+> s390-linux-ld: stop_machine.c:(.text+0x192): undefined reference to `get_api_timer_irqs'
+> s390-linux-ld: stop_machine.c:(.text+0x2a0): undefined reference to `get_api_timer_irqs'
+> s390-linux-ld: stop_machine.c:(.text+0x8c): undefined reference to `get_api_timer_irqs'
+> s390-linux-ld: stop_machine.c:(.text+0xe6): undefined reference to `get_api_timer_irqs'
+> s390-linux-ld: stop_machine.c:(.text+0xea): undefined reference to `get_sysvec_apic_timer_interrupt_ns'
+> stop_machine.c:(.text+0x1070): undefined reference to `get_sysvec_apic_timer_interrupt_ns'
+> stop_machine.c:(.text+0x184): undefined reference to `get_sysvec_apic_timer_interrupt_ns'
+> stop_machine.c:(.text+0x214): undefined reference to `get_sysvec_apic_timer_interrupt_ns'
+> stop_machine.c:(.text+0x302): undefined reference to `hrtimer_interrupt_get_debug'
+> stop_machine.c:(.text+0x550): undefined reference to `get_sysvec_apic_timer_interrupt_ns'
+> stop_machine.c:(.text+0x598): undefined reference to `get_sysvec_apic_timer_interrupt_ns'
+> stop_machine.c:(.text+0x64c): undefined reference to `hrtimer_interrupt_get_debug'
+> stop_machine.c:(.text+0x7e): undefined reference to `get_sysvec_apic_timer_interrupt_ns'
+> stop_machine.c:(.text+0x88): undefined reference to `get_sysvec_apic_timer_interrupt_ns'
+> stop_machine.o:(.text+0x240): undefined reference to `hrtimer_interrupt_get_debug'
+> 
+> Error/Warning ids grouped by kconfigs:
+> 
+> gcc_recent_errors
+> |-- alpha-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- alpha-defconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- arc-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- arc-defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- arc-randconfig-r033-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- arc-randconfig-r043-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- arm-allmodconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   |-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |   |-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-tick_program_event_get_debug
+> |   `-- stop_machine.c:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |-- arm-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   |-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |   |-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-tick_program_event_get_debug
+> |   `-- stop_machine.c:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |-- arm-cns3420vb_defconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- arm-davinci_all_defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- arm-defconfig
+> |   |-- arm-linux-gnueabi-ld:cpu.c:(.text):undefined-reference-to-__aeabi_uldivmod
+> |   |-- cpu.c:(.text):undefined-reference-to-__aeabi_uldivmod
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   |-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |   |-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-tick_program_event_get_debug
+> |   `-- stop_machine.c:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |-- arm-nhk8815_defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   |-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-tick_program_event_get_debug
+> |-- arm-pcm027_defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- arm-s3c6400_defconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- arm-tegra_defconfig
+> |   |-- arm-linux-gnueabi-ld:cpu.c:(.text):undefined-reference-to-__aeabi_uldivmod
+> |   |-- cpu.c:(.text):undefined-reference-to-__aeabi_uldivmod
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- arm64-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   |-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-tick_program_event_get_debug
+> |   `-- stop_machine.c:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |-- arm64-defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   |-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-tick_program_event_get_debug
+> |   `-- stop_machine.c:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |-- arm64-randconfig-r016-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- arm64-randconfig-r024-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- stop_machine.c:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |-- csky-buildonly-randconfig-r004-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- csky-defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- h8300-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- h8300-randconfig-r014-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- h8300-randconfig-r036-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- i386-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- i386-defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- i386-randconfig-a011-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- i386-randconfig-a012-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- i386-randconfig-a013-20210903
+> |   |-- kernel-stop_machine.c:undefined-reference-to-hrtimer_interrupt_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- ld:kernel-stop_machine.c:undefined-reference-to-tick_program_event_get_debug
+> |-- i386-randconfig-a014-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- i386-randconfig-a015-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- i386-randconfig-a016-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- i386-randconfig-c021-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- i386-randconfig-m021-20210903
+> |   |-- kernel-stop_machine.c:undefined-reference-to-hrtimer_interrupt_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- i386-randconfig-s001-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- i386-randconfig-s002-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- i386-tinyconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- ia64-allmodconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- ia64-allyesconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- ia64-defconfig
+> |   |-- ia64-linux-ld:stop_machine.c:(.text):undefined-reference-to-get_api_timer_irqs
+> |   |-- ia64-linux-ld:stop_machine.c:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |   |-- ia64-linux-ld:stop_machine.c:(.text):undefined-reference-to-tick_program_event_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- stop_machine.c:(.text):undefined-reference-to-hrtimer_interrupt_get_debug
+> |-- ia64-randconfig-r025-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- ia64-randconfig-r032-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- ia64-randconfig-r034-20210903
+> |   |-- ia64-linux-ld:stop_machine.c:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- m68k-allmodconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- m68k-allyesconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- m68k-bvme6000_defconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- m68k-defconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- m68k-mac_defconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- m68k-randconfig-r021-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- m68k-randconfig-r036-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- microblaze-randconfig-r022-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- mips-allmodconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- mips-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- mips-capcella_defconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- mips-gcw0_defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- mips-randconfig-r033-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- mips-rbtx49xx_defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- nds32-allnoconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- nds32-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- nds32-defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- nds32-randconfig-r006-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- nds32-randconfig-r012-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- nds32-randconfig-r036-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- nios2-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- nios2-defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- nios2-randconfig-r011-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- nios2-randconfig-r023-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- nios2-randconfig-r032-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   |-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-tick_program_event_get_debug
+> |-- openrisc-randconfig-c024-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- openrisc-randconfig-r004-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- openrisc-randconfig-r013-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- parisc-allyesconfig
+> |   |-- hppa-linux-ld:stop_machine.o:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- stop_machine.o:(.text):undefined-reference-to-hrtimer_interrupt_get_debug
+> |-- parisc-defconfig
+> |   |-- (.text):undefined-reference-to-hrtimer_interrupt_get_debug
+> |   |-- hppa-linux-ld:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |   |-- hppa-linux-ld:(.text):undefined-reference-to-tick_program_event_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- parisc-randconfig-r015-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- parisc-randconfig-r031-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- powerpc-allmodconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-tick_program_event_get_debug
+> |-- powerpc-allnoconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- powerpc-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-tick_program_event_get_debug
+> |-- powerpc-mpc512x_defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- powerpc-randconfig-r015-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- powerpc-sequoia_defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- powerpc64-allnoconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- powerpc64-randconfig-m031-20210904
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- powerpc64-randconfig-s031-20210904
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-tick_program_event_get_debug
+> |-- powerpc64-randconfig-s032-20210904
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- riscv-alldefconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- riscv-allmodconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- riscv-allnoconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- riscv-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- riscv-defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- riscv-nommu_k210_defconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- riscv-nommu_virt_defconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- riscv-randconfig-r042-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- riscv64-linux-ld:stop_machine.c:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |   |-- riscv64-linux-ld:stop_machine.c:(.text):undefined-reference-to-tick_program_event_get_debug
+> |   `-- stop_machine.c:(.text):undefined-reference-to-hrtimer_interrupt_get_debug
+> |-- riscv-rv32_defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- s390-allmodconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   |-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-tick_program_event_get_debug
+> |   |-- s390-linux-ld:stop_machine.c:(.text):undefined-reference-to-get_api_timer_irqs
+> |   `-- stop_machine.c:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |-- s390-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   |-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-tick_program_event_get_debug
+> |   |-- s390-linux-ld:stop_machine.c:(.text):undefined-reference-to-get_api_timer_irqs
+> |   `-- stop_machine.c:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |-- s390-buildonly-randconfig-r001-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- s390-linux-ld:stop_machine.c:(.text):undefined-reference-to-get_api_timer_irqs
+> |-- s390-defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   |-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-tick_program_event_get_debug
+> |   |-- s390-linux-ld:stop_machine.c:(.text):undefined-reference-to-get_api_timer_irqs
+> |   `-- stop_machine.c:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |-- s390-randconfig-r011-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- s390-randconfig-r012-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- s390-linux-ld:stop_machine.c:(.text):undefined-reference-to-get_api_timer_irqs
+> |-- s390-randconfig-r044-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-tick_program_event_get_debug
+> |   |-- s390-linux-ld:stop_machine.c:(.text):undefined-reference-to-get_api_timer_irqs
+> |   `-- s390-linux-ld:stop_machine.c:(.text):undefined-reference-to-get_sysvec_apic_timer_interrupt_ns
+> |-- sh-allmodconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- sh-rsk7201_defconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- sparc-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- sparc-defconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- sparc-randconfig-r014-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- sparc-randconfig-r033-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- sparc-randconfig-r035-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- sparc-sparc32_defconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- sparc64-randconfig-r001-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- sparc64-randconfig-r034-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- sparc64-randconfig-r035-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- um-i386_defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- um-x86_64_defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- x86_64-allmodconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- x86_64-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- x86_64-defconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- x86_64-kexec
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- x86_64-randconfig-c022-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- x86_64-randconfig-c023-20210903
+> |   |-- kernel-stop_machine.c:undefined-reference-to-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- x86_64-rhel-8.3
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- x86_64-rhel-8.3-kselftests
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |-- xtensa-allnoconfig
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |-- xtensa-allyesconfig
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:integer-overflow-in-expression-of-type-long-int-results-in
+> |-- xtensa-randconfig-r014-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> `-- xtensa-randconfig-r015-20210903
+>     `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-__run_hrtimer_get_debug
+> 
+> clang_recent_errors
+> |-- arm-randconfig-r011-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |-- arm-randconfig-r013-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |-- arm64-randconfig-r032-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |-- hexagon-randconfig-r012-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> |-- hexagon-randconfig-r041-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> |-- hexagon-randconfig-r045-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |-- i386-randconfig-r002-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> |-- mips-randconfig-r016-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> |-- powerpc-randconfig-r005-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> |-- powerpc64-buildonly-randconfig-r003-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> |-- powerpc64-randconfig-r003-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> |-- powerpc64-randconfig-r031-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> |-- x86_64-buildonly-randconfig-r002-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> |-- x86_64-buildonly-randconfig-r006-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> |-- x86_64-randconfig-a001-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> |-- x86_64-randconfig-a002-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> |-- x86_64-randconfig-a003-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |-- x86_64-randconfig-a004-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> |-- x86_64-randconfig-a005-20210903
+> |   `-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |-- x86_64-randconfig-a006-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> |-- x86_64-randconfig-r033-20210903
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+> |   |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-hrtimer_interrupt_get_debug
+> |   `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> `-- x86_64-randconfig-r034-20210903
+>     |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-__run_hrtimer_get_debug
+>     |-- kernel-time-hrtimer.c:warning:no-previous-prototype-for-function-hrtimer_interrupt_get_debug
+>     `-- kernel-time-tick-oneshot.c:warning:no-previous-prototype-for-function-tick_program_event_get_debug
+> 
+> elapsed time: 1501m
+> 
+> configs tested: 84
+> configs skipped: 4
+> 
+> gcc tested configs:
+> arm                                 defconfig
+> arm64                            allyesconfig
+> arm64                               defconfig
+> arm                              allyesconfig
+> arm                              allmodconfig
+> arm                         s3c6400_defconfig
+> riscv                            alldefconfig
+> arm                       cns3420vb_defconfig
+> m68k                       bvme6000_defconfig
+> sparc                       sparc32_defconfig
+> powerpc                     mpc512x_defconfig
+> sh                   sh7724_generic_defconfig
+> arm                         nhk8815_defconfig
+> arm                     davinci_all_defconfig
+> mips                           gcw0_defconfig
+> sh                           se7724_defconfig
+> arm                          pcm027_defconfig
+> mips                       capcella_defconfig
+> powerpc                     sequoia_defconfig
+> mips                       rbtx49xx_defconfig
+> m68k                            mac_defconfig
+> arm                           tegra_defconfig
+> sh                          rsk7201_defconfig
+> x86_64                            allnoconfig
+> ia64                             allmodconfig
+> ia64                                defconfig
+> ia64                             allyesconfig
+> m68k                             allmodconfig
+> m68k                                defconfig
+> m68k                             allyesconfig
+> nios2                               defconfig
+> arc                              allyesconfig
+> nds32                             allnoconfig
+> nds32                               defconfig
+> nios2                            allyesconfig
+> csky                                defconfig
+> alpha                               defconfig
+> alpha                            allyesconfig
+> xtensa                           allyesconfig
+> h8300                            allyesconfig
+> arc                                 defconfig
+> sh                               allmodconfig
+> parisc                              defconfig
+> s390                             allyesconfig
+> s390                             allmodconfig
+> parisc                           allyesconfig
+> s390                                defconfig
+> i386                             allyesconfig
+> sparc                            allyesconfig
+> sparc                               defconfig
+> i386                                defconfig
+> mips                             allyesconfig
+> mips                             allmodconfig
+> powerpc                          allyesconfig
+> powerpc                          allmodconfig
+> powerpc                           allnoconfig
+> i386                 randconfig-a012-20210903
+> i386                 randconfig-a015-20210903
+> i386                 randconfig-a011-20210903
+> i386                 randconfig-a013-20210903
+> i386                 randconfig-a014-20210903
+> i386                 randconfig-a016-20210903
+> riscv                            allyesconfig
+> riscv                             allnoconfig
+> riscv                               defconfig
+> riscv                            allmodconfig
+> riscv                    nommu_k210_defconfig
+> riscv                    nommu_virt_defconfig
+> riscv                          rv32_defconfig
+> um                           x86_64_defconfig
+> um                             i386_defconfig
+> x86_64                           allyesconfig
+> x86_64                    rhel-8.3-kselftests
+> x86_64                              defconfig
+> x86_64                               rhel-8.3
+> x86_64                                  kexec
+> 
+> clang tested configs:
+> x86_64               randconfig-a004-20210903
+> x86_64               randconfig-a006-20210903
+> x86_64               randconfig-a003-20210903
+> x86_64               randconfig-a005-20210903
+> x86_64               randconfig-a001-20210903
+> x86_64               randconfig-a002-20210903
+> hexagon              randconfig-r045-20210903
+> hexagon              randconfig-r041-20210903
+> 
 > ---
->  net/qrtr/qrtr.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-As Srini already commented, this is working great, but I still just
-wanted to say thanks for the quick fix!
-
-Much appreciated!
--john
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
