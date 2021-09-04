@@ -2,116 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 970D5400BC2
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 17:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64711400BC4
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 17:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236770AbhIDPBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 11:01:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236758AbhIDPBO (ORCPT
+        id S236779AbhIDPBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 11:01:55 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:38888 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230039AbhIDPBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 11:01:14 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78258C061757
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 08:00:12 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id g138so1329607wmg.4
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 08:00:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=pq8QdcgdNxjJmg61r8dPGvWyeowRsap/Qds2NQHbQZA=;
-        b=ObGanXpy/qG9ZmJ8TQB4Rfph0tmhVaeYW1PNOH2SHKJlCRKGEnGR9IG1o/q+k6CS2Q
-         DcJFBorw1R0HVbv5WnEzU7ydMkkdvflpAJbYTdf/FA0TmKAmr9f8AJH+yDNFuzxNGDRV
-         YfluqfuvY8qO3SV6L3NXaODBKaZc/j5GrPb3h8hsMIx9C+eWG0BEzzT14B0CLYNaY3Zy
-         h1wFbl0ar6t4B6n8lhJvTnm4vs255aO64RMUz2dscNpa7UIPQrpq0nnURTMhb2e6xDM/
-         8GyfBBSlhyjNs4xJ3+BCFd+tGYRxZEUQcTk4lC63mD/WxsRG6Ax/M7LTEDS6kBGtWR92
-         1p8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=pq8QdcgdNxjJmg61r8dPGvWyeowRsap/Qds2NQHbQZA=;
-        b=im7UwAY5pWkXaSPlvEaTm7EXZNwPptwHV6pZLPgFjEaQj6Bp7/eG3s7ExYVnVp3Ueu
-         UAsd9GLUCjEl7zm//7TiqraqK8Cj7EL55oOrTiqVJMg+gVJIWc6lC19FDD8++WXUuLQy
-         pjUsfspGCnNd3YiSGH5mH4S5hTc1n1u/KTCV+Tgb3rIGwSjeBlBmZXU7MmoJlgRF6fg7
-         E4LEEut+uRxKXcH5VLlXpmZbpj81s/uru2GNsRGJBHwEe+xITaHJRMs5p2wKXf6f4Y5w
-         M95TSB2JOtvwP8g0ThB0cI7I8kpEpp6O2OFWv/heeUPObLSF7//po23SSgW5UjBMbECd
-         cBLQ==
-X-Gm-Message-State: AOAM532EMomo0G0JhBAm0wLlT++l8sArRBqd6uAPOhckpZAYmB1/MtHJ
-        4+hrsx80JHU7WYHbDX4jK6roCr8wxmXlfziRMPM=
-X-Google-Smtp-Source: ABdhPJyGp1JTkkg0XmlZcjk9dPHD3bfLw8Iz+sfy6ImMaUK0aVXV+Wjd0dmSXSPkYKVjtu78x6KrofOp9HGNTVtPPC4=
-X-Received: by 2002:a1c:158:: with SMTP id 85mr3490405wmb.187.1630767610128;
- Sat, 04 Sep 2021 08:00:10 -0700 (PDT)
-MIME-Version: 1.0
-Reply-To: bouchetb@yandex.com
-Sender: oluwa001@gmail.com
-Received: by 2002:a1c:4341:0:0:0:0:0 with HTTP; Sat, 4 Sep 2021 08:00:09 -0700 (PDT)
-From:   Dr Bryan Bouchet <drbryanbouchet52@gmail.com>
-Date:   Sat, 4 Sep 2021 16:00:09 +0100
-X-Google-Sender-Auth: Ha-kNOK8ySCU3_MQjzxHCayzle8
-Message-ID: <CAJjmsvrRgPXBRQY6iwzOSn=B6GSLsHU6EDQv-3n_8Nz99qVOoA@mail.gmail.com>
-Subject: PLEASE RESPOND VERY URGENTLY
-To:     undisclosed-recipients:;
+        Sat, 4 Sep 2021 11:01:54 -0400
+X-UUID: 56e0fa7b868d4402aa2d51213ca8313d-20210904
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=RyIAY0T/rYq+im92ZCaJuNgcDI6T0FxoLAPeoBZwg3U=;
+        b=U6PR2L8xM1YAxnhz0JVtId+gYJJbzY2jpp0NbchcRVISHGiwXMKY6TR2ytyCTZaGdcJgws2iU5RTgh9lsUnxJHX8hxuNc8prkJH6cPwxFA+Yud8m72G1yDqiRgqMVpmgXT4ctvieqDJqq/9RFCGOAuM+AHL3FSQ30dHYFWPhTY4=;
+X-UUID: 56e0fa7b868d4402aa2d51213ca8313d-20210904
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <miles.chen@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 943019367; Sat, 04 Sep 2021 23:00:49 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 4 Sep 2021 23:00:48 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 4 Sep 2021 23:00:48 +0800
+Message-ID: <42a32455186e5deb476cca74e64de18e8cc1a34c.camel@mediatek.com>
+Subject: Re: [PATCH] clk: rockchip: use module_platform_driver_probe
+From:   Miles Chen <miles.chen@mediatek.com>
+To:     Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+CC:     <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-rockchip@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
+Date:   Sat, 4 Sep 2021 23:00:48 +0800
+In-Reply-To: <1764446.vrLGdHa7mH@diego>
+References: <20210902075713.7563-1-miles.chen@mediatek.com>
+         <1764446.vrLGdHa7mH@diego>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+T24gRnJpLCAyMDIxLTA5LTAzIGF0IDIyOjU5ICswMjAwLCBIZWlrbyBTdMO8Ym5lciB3cm90ZToN
+Cj4gQW0gRG9ubmVyc3RhZywgMi4gU2VwdGVtYmVyIDIwMjEsIDA5OjU3OjEzIENFU1Qgc2Nocmll
+YiBNaWxlcyBDaGVuOg0KPiA+IFJlcGxhY2UgYnVpbHRpbl9wbGF0Zm9ybV9kcml2ZXJfcHJvYmUg
+d2l0aA0KPiA+IG1vZHVsZV9wbGF0Zm9ybV9kcml2ZXJfcHJvYmUNCj4gPiBiZWNhdXNlIHRoYXQg
+cmszMzk5IGFuZCByazM1NjggY2FuIGJlIGJ1aWx0IGFzIGtlcm5lbCBtb2R1bGVzLg0KPiA+IA0K
+PiA+IENjOiBTdGVwaGVuIEJveWQgPHNib3lkQGtlcm5lbC5vcmc+DQo+ID4gU2lnbmVkLW9mZi1i
+eTogTWlsZXMgQ2hlbiA8bWlsZXMuY2hlbkBtZWRpYXRlay5jb20+DQo+IA0KPiBvbiBib3RoIHJr
+MzM5OSBhbmQgcmszNTY4Og0KPiBUZXN0ZWQtYnk6IEhlaWtvIFN0dWVibmVyIDxoZWlrb0BzbnRl
+Y2guZGU+DQo+IA0KPiBhbmQgYWxzbw0KPiBSZXZpZXdlZC1ieTogSGVpa28gU3R1ZWJuZXIgPGhl
+aWtvQHNudGVjaC5kZT4NCj4gDQoNCnRoYW5rcyBmb3IgZG9pbmcgdGhlIHRlc3QuIEkgd2lsbCBh
+ZGQgeW91ciB0YWdzIGluIG15IG5leHQgcGF0Y2guDQo+IA0KPiBIZWlrbw0KPiANCj4gPiAtLS0N
+Cj4gPiAgZHJpdmVycy9jbGsvcm9ja2NoaXAvY2xrLXJrMzM5OS5jIHwgMiArLQ0KPiA+ICBkcml2
+ZXJzL2Nsay9yb2NrY2hpcC9jbGstcmszNTY4LmMgfCAyICstDQo+ID4gIDIgZmlsZXMgY2hhbmdl
+ZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL2Nsay9yb2NrY2hpcC9jbGstcmszMzk5LmMNCj4gPiBiL2RyaXZlcnMvY2xrL3Jv
+Y2tjaGlwL2Nsay1yazMzOTkuYw0KPiA+IGluZGV4IDYyYTRmMjU0Mzk2MC4uYTUxNjkxNTZmMWQy
+IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvY2xrL3JvY2tjaGlwL2Nsay1yazMzOTkuYw0KPiA+
+ICsrKyBiL2RyaXZlcnMvY2xrL3JvY2tjaGlwL2Nsay1yazMzOTkuYw0KPiA+IEBAIC0xNjUzLDcg
+KzE2NTMsNyBAQCBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlcg0KPiA+IGNsa19yazMzOTlf
+ZHJpdmVyID0gew0KPiA+ICAJCS5zdXBwcmVzc19iaW5kX2F0dHJzID0gdHJ1ZSwNCj4gPiAgCX0s
+DQo+ID4gIH07DQo+ID4gLWJ1aWx0aW5fcGxhdGZvcm1fZHJpdmVyX3Byb2JlKGNsa19yazMzOTlf
+ZHJpdmVyLA0KPiA+IGNsa19yazMzOTlfcHJvYmUpOw0KPiA+ICttb2R1bGVfcGxhdGZvcm1fZHJp
+dmVyX3Byb2JlKGNsa19yazMzOTlfZHJpdmVyLCBjbGtfcmszMzk5X3Byb2JlKTsNCj4gPiAgDQo+
+ID4gIE1PRFVMRV9ERVNDUklQVElPTigiUm9ja2NoaXAgUkszMzk5IENsb2NrIERyaXZlciIpOw0K
+PiA+ICBNT0RVTEVfTElDRU5TRSgiR1BMIik7DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2xr
+L3JvY2tjaGlwL2Nsay1yazM1NjguYw0KPiA+IGIvZHJpdmVycy9jbGsvcm9ja2NoaXAvY2xrLXJr
+MzU2OC5jDQo+ID4gaW5kZXggNzVjYTg1NWU3MjBkLi45MzllNzA3OWMzMzQgMTAwNjQ0DQo+ID4g
+LS0tIGEvZHJpdmVycy9jbGsvcm9ja2NoaXAvY2xrLXJrMzU2OC5jDQo+ID4gKysrIGIvZHJpdmVy
+cy9jbGsvcm9ja2NoaXAvY2xrLXJrMzU2OC5jDQo+ID4gQEAgLTE3MTksNyArMTcxOSw3IEBAIHN0
+YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyDQo+ID4gY2xrX3JrMzU2OF9kcml2ZXIgPSB7DQo+
+ID4gIAkJLnN1cHByZXNzX2JpbmRfYXR0cnMgPSB0cnVlLA0KPiA+ICAJfSwNCj4gPiAgfTsNCj4g
+PiAtYnVpbHRpbl9wbGF0Zm9ybV9kcml2ZXJfcHJvYmUoY2xrX3JrMzU2OF9kcml2ZXIsDQo+ID4g
+Y2xrX3JrMzU2OF9wcm9iZSk7DQo+ID4gK21vZHVsZV9wbGF0Zm9ybV9kcml2ZXJfcHJvYmUoY2xr
+X3JrMzU2OF9kcml2ZXIsIGNsa19yazM1NjhfcHJvYmUpOw0KPiA+ICANCj4gPiAgTU9EVUxFX0RF
+U0NSSVBUSU9OKCJSb2NrY2hpcCBSSzM1NjggQ2xvY2sgRHJpdmVyIik7DQo+ID4gIE1PRFVMRV9M
+SUNFTlNFKCJHUEwiKTsNCj4gPiANCj4gDQo+IA0KPiANCj4gDQo=
 
-With due respect, i have decided to contact you on a business
-transaction that will be beneficial to both of us. At the bank last
-account and auditing evaluation, my staffs came across an old account
-which was being maintained by a foreign client who we learn was among
-the deceased passengers of motor accident on November.2003, the
-deceased was unable to run this account since his death. The account
-has remained dormant without the knowledge of his family since it was
-put in a safe deposit account in the bank for future investment by the clie=
-nt.
-
-Since his demise, even the members of his family haven't applied for
-claims over this fund and it has been in the safe deposit account
-until i discovered that it cannot be claimed since our client is a
-foreign national and we are sure that he has no next of kin here to
-file claims over the money. As the director of the department, this
-discovery was brought to my office so as to decide what is to be done;
-I decided to seek ways through which to transfer this money out of the
-bank and out of the country too.
-
-The total amount in the account is (18.6 million) with my positions as
-a staff of this bank, i am handicapped because i cannot operate
-foreign accounts and cannot lay benefice claim over this money. The
-client was a foreign national and you will only be asked to act as his
-next of kin and i will supply you with all the necessary information
-and bank data to assist you in being able to transfer this money to
-any bank of your choice where this money could be transferred into.
-
-The total sum will be shared as follows: 50% for me, 50% for you, and
-expenses incidental occur during the transfer will be incur by both of
-us. The transfer is risk free on both sides hence you are going to
-follow my instruction till the fund transfer to your account. Since I
-work in this bank that is why you should be confident in the success
-of this transaction because you will be updated with information=E2=80=99s =
-as
-at when desired.
-
-I will wish you to keep this transaction secret and confidential as I
-am hoping to retire with my share of this money at the end of
-transaction which will be when this money is safety in your account. I
-will then come over to your country for sharing according to the
-previously agreed percentages. You might even have to advise me on
-possibilities of investment in your country or elsewhere of our
-choice. May god help you to help me to a restive retirement?
-
-(1) Your full name..............
-(2) Your age:................
-(3) Sex:.....................
-(4) Your telephone number:.................
-(5) Your occupation:.....................
-(6) Your country:.....................
-
-Yours sincerely,
-Dr Bryan Bouchet
