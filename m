@@ -2,90 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E320400CCD
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 21:13:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1AA400CD1
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 21:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237492AbhIDTOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 15:14:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59992 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236909AbhIDTOr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 15:14:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630782825;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WBSi8nTL2nbxE9L6Uzaa8E6icfUP8Id4bMZJ4LABMcs=;
-        b=DKiLLvoZXv1GnAtNiT/Uo2voIut80cRh+0gLCvC2nOAkKQXunaI0zdu7/YBuvLcTLmr5zO
-        NfCK5TerTZ6FWHi7BlnfuSb6ZKShzU1284hPTMD3ipgDEOSQ+oXCSJQ9TPgLkAQgOIWLqz
-        +t8MJgbWiVGnfqamr1XPbZqKmPjmdc0=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-194-9r1YOajCMPu01zfrVytBcw-1; Sat, 04 Sep 2021 15:13:43 -0400
-X-MC-Unique: 9r1YOajCMPu01zfrVytBcw-1
-Received: by mail-oo1-f70.google.com with SMTP id z23-20020a4ad597000000b0029174f63d3eso1643058oos.18
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 12:13:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WBSi8nTL2nbxE9L6Uzaa8E6icfUP8Id4bMZJ4LABMcs=;
-        b=P/7yjn9OEY18gFdk0Lj+lQU2nJMsi7rN2najHNMqpNtqaM4EVoeAMvvzZQeXi8DdOA
-         QU+tocmxIgb4lQnhWmsY3S0QXWana4QO9dAvcwMA+EzioQsskRWsuFp0qtYXX7M+/r59
-         MCEVpfq19C7HMo2vw93dVGLOIOulIjdUo4a/jJPEJ0te884uPVoJq6SGo501VsE2RUVf
-         6PCnrD57NlsPIg2IywKkfO++oesHO/NfrPW2bf0AsoEHqm1p4bVKUYfHjDtyK5tripzC
-         AC2XF/MCTD0eHGcwcM0yDQaWZdiEKtulGv7i3q5BCBlMQNmDKw52FO7rn7V6XnXoZ9lE
-         Z7ig==
-X-Gm-Message-State: AOAM531eflZsyzisIWgti4in8A8kgONppsYjyIT1Wn/d18UW+ewbQ+j6
-        uByG9y4meI0jIWAR8fbiEB61BTmxO46O57Oz0iMsRbCgyv1cGtsdHpOt87kB8toExI20hvPajrJ
-        nzMIpd5KJQC+0NDsIjTUyf7Ms
-X-Received: by 2002:a9d:720d:: with SMTP id u13mr4667151otj.14.1630782823070;
-        Sat, 04 Sep 2021 12:13:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyF5y2tVBMPpoLH4B70xM59WXmh/BXOSlAd/YoXQygqVdu/1nyQ3742hphAQN2uKBGNiPURcQ==
-X-Received: by 2002:a9d:720d:: with SMTP id u13mr4667132otj.14.1630782822839;
-        Sat, 04 Sep 2021 12:13:42 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id a11sm625630oiw.36.2021.09.04.12.13.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Sep 2021 12:13:42 -0700 (PDT)
-Date:   Sat, 4 Sep 2021 12:13:40 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>,
+        id S237478AbhIDTUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 15:20:52 -0400
+Received: from gate.crashing.org ([63.228.1.57]:33112 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232744AbhIDTUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 15:20:50 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 184JFW0f025749;
+        Sat, 4 Sep 2021 14:15:32 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 184JFVsP025744;
+        Sat, 4 Sep 2021 14:15:31 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Sat, 4 Sep 2021 14:15:31 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Linus Torvalds <torvalds@linuxfoundation.org>
+Cc:     Florian Weimer <fweimer@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 10/13] kbuild: rebuild modules when objtool is updated
- for CONFIG_LTO_CLANG
-Message-ID: <20210904191340.yuce2pnh4fahxfpf@treble>
-References: <20210831074004.3195284-1-masahiroy@kernel.org>
- <20210831074004.3195284-11-masahiroy@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
+Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
+Message-ID: <20210904191531.GS1583@gate.crashing.org>
+References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com> <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com> <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org> <878s0c4vng.fsf@oldenburg.str.redhat.com> <20210904131911.GP1583@gate.crashing.org> <871r644bd2.fsf@oldenburg.str.redhat.com> <CAHk-=wi+XKYN+3u=_fm=ExqpEaHdER0XuKxVauHYVCPKpKR97Q@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210831074004.3195284-11-masahiroy@kernel.org>
+In-Reply-To: <CAHk-=wi+XKYN+3u=_fm=ExqpEaHdER0XuKxVauHYVCPKpKR97Q@mail.gmail.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 04:40:01PM +0900, Masahiro Yamada wrote:
-> We rebuilt objects when objtool was updated, but only for non LTO
-> builds.
+On Sat, Sep 04, 2021 at 10:22:25AM -0700, Linus Torvalds wrote:
+> On Sat, Sep 4, 2021 at 8:19 AM Florian Weimer <fweimer@redhat.com> wrote:
+> > In any case, it would be nice to know what the real motivation is.
 > 
-> For CONFIG_LTO_CLANG, the objtool step is postponed by the link time,
-> and nothing happens even if objtool is updated.
-> 
-> Add the proper objtool dependency to the pre-modpost module link
-> for CONFIG_LTO_CLANG.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> I don't know about the original motivation, but the reason I like that
+> patch after-the-fact is that I've actually been in situations where I
+> test out self-built compilers without installing them.
 
-Nice!
+Then you probably know that that is quite hard to do correctly.  And
+installing the compiler (into a temporary dir that you can just blow
+away after you are done with it) is trivial (see for example
+<https://gcc.gnu.org/install/finalinstall.html> line 11 or so).
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Also, the standard headers are *part of* the compiler.  Including those
+(like <stdarg.h> here) that are required for freestanding
+implementations.
 
--- 
-Josh
+> Then it's convenient to have a completely standalone kernel tree.
 
+Yes, and you certainly do not want to mix in anything userspace,
+accidentally or not.  But these "freestanding" headers already have to
+make sure they do not do that, and they are used by many OSes and
+embedded-style things, so you can have some confidence that this
+actually works.
+
+And the C standard requires you to use these headers to use some
+features of the C language (variable arguments in this specific case).
+You can of course mimic whatever some implementation does and hope that
+will work on some other implementations, and on future versions of that
+first implementation as well.  But that is imo not a good idea, just
+using the standard headers (which are required, and are there on all
+implementations I have heard of, without bugs) is a much simpler idea,
+much more future-proof, much less maintenance.
+
+> Nobody cares about things like <stdatomic.h> They are completely
+> irrelevant for the kernel, exactly because we've always just done our
+> own, or used __builtin_xyz() for things.
+
+The Linux kernel needs (or wants) stronger primitives than provided
+there, yeah, so you could not even use it as the underlying
+implementation for the semantics the kernel wants (which it could do
+with <stdint.h> to implement u64 etc.)
+
+> <stdarg.h> is the only actual core header file that we have always
+> taken from the installed system headers - because historically it
+> really was required. Everything else we can just do ourselves.
+
+You also need <stdint.h> and <stddef.h>.  These are much simpler to
+implement of course, but see for example the c46bbf5d2def commit I
+mentioned before.  Some of these compiler headers might have been buggy
+(or non-existent) historically, but that is very long ago, you really
+can expect at least C99 to be there (and work correctly) nowadays :-)
+
+
+Segher
