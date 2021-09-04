@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B25C400BFF
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 18:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13062400C00
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 18:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237051AbhIDPzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 11:55:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41472 "EHLO mail.kernel.org"
+        id S237069AbhIDPzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 11:55:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237039AbhIDPzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 11:55:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F20860F56;
-        Sat,  4 Sep 2021 15:54:39 +0000 (UTC)
+        id S237039AbhIDPzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 11:55:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A0B560F91;
+        Sat,  4 Sep 2021 15:54:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630770880;
-        bh=dFP4F2MCVFcTXj1Gv7k1QTi8zTvPmHvCY0jx3Djs5f8=;
+        s=k20201202; t=1630770887;
+        bh=PH27WusL+aDFXxl8wFR61uAh4r429AC037WeHWMfjkQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lFYwcM3wzkPdefVLlM13/YW5AKb8psf5CprGxwrOgXJHXhvgeZifcmd/gKiObahmL
-         BmZ03C7Mw+7Aj952M0gRBzADKUKaZ0nBn6UVmaLVnsOzi965FvbX2cjUnaRzqkTvtS
-         M5hXKXLX8nw+0umWJ8KeukyRk1xAfbEHS8M5wh/9BdFxsFYK6xQSc+La4qVJsZdcvD
-         xIrM6EBWKS1JSan7c1nOKOMeF8zk9KcOTXOp05WmSEez7Zyl+bqJgJdMBznmnj4XB/
-         Mcz9cgEjBbN4aqrHcfITld3lFup7BCKxYvzmykBBUIAc1ob8cdSMAhS3SfmqBA006L
-         J4rWCBtffryHQ==
+        b=C/Kse6O68lgK2KKGdMGFHSRCt2Fxx1V81EzqACe7QxxTqllzsur0ziCFArmAsfGOR
+         hZRrEkvrLHoo01oFPiKEsAaiNrYEyDW2VHwIDJD4iqVXH75EJ9YcDuDBeGj00Dp492
+         59l/U7IWxnhRZwol0E4Jwvp7/LLgcy2GXUgTBvFOtTE5b96saat5old2mw2+xwukM8
+         nCHkmO1A5wsLsuejzySwM0e8wEggTWuDgdAOPDMnuQq+t0U/s0KDWXZDDIdzODPf2Q
+         YGyG1M0pzmr/emCUEICYWLbQlFTDdiK10QG1nREtT9mZ1XE5rrB16uAAGy8os55eVe
+         QQH88/Awun6wQ==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Julio Faracco <jcfaracco@gmail.com>, stable@vgar.kernel.org
-Subject: [PATCH v3 5/6] bootconfig: Fix missing return check of xbc_node_compose_key function
-Date:   Sun,  5 Sep 2021 00:54:38 +0900
-Message-Id: <163077087861.222577.12884543474750968146.stgit@devnote2>
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 6/6] tools/bootconfig: Show whole test command for each test case
+Date:   Sun,  5 Sep 2021 00:54:46 +0900
+Message-Id: <163077088607.222577.14786016266462495017.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <163077084169.222577.4459698040375322439.stgit@devnote2>
 References: <163077084169.222577.4459698040375322439.stgit@devnote2>
@@ -42,36 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julio Faracco <jcfaracco@gmail.com>
+Show whole test command instead of only the 3rd argument.
+This will clear to show what will be actually tested by
+each test case.
 
-The function `xbc_show_list should` handle the keys during the
-composition. Even the errors returned by the compose function. Instead
-of removing the `ret` variable, it should save the value and show the
-exact error. This missing variable is causing a compilation issue also.
-
-Fixes: e5efaeb8a8f5 ("bootconfig: Support mixing a value and subkeys under a key")
-Signed-off-by: Julio Faracco <jcfaracco@gmail.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: stable@vgar.kernel.org
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- tools/bootconfig/main.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/bootconfig/test-bootconfig.sh |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
-index f45fa992e01d..fd67496a947f 100644
---- a/tools/bootconfig/main.c
-+++ b/tools/bootconfig/main.c
-@@ -111,9 +111,11 @@ static void xbc_show_list(void)
- 	char key[XBC_KEYLEN_MAX];
- 	struct xbc_node *leaf;
- 	const char *val;
-+	int ret;
+diff --git a/tools/bootconfig/test-bootconfig.sh b/tools/bootconfig/test-bootconfig.sh
+index baed891d0ba4..f68e2e9eef8b 100755
+--- a/tools/bootconfig/test-bootconfig.sh
++++ b/tools/bootconfig/test-bootconfig.sh
+@@ -26,7 +26,7 @@ trap cleanup EXIT TERM
+ NO=1
  
- 	xbc_for_each_key_value(leaf, val) {
--		if (xbc_node_compose_key(leaf, key, XBC_KEYLEN_MAX) < 0) {
-+		ret = xbc_node_compose_key(leaf, key, XBC_KEYLEN_MAX);
-+		if (ret < 0) {
- 			fprintf(stderr, "Failed to compose key %d\n", ret);
- 			break;
- 		}
+ xpass() { # pass test command
+-  echo "test case $NO ($3)... "
++  echo "test case $NO ($*)... "
+   if ! ($@ && echo "\t\t[OK]"); then
+      echo "\t\t[NG]"; NG=$((NG + 1))
+   fi
+@@ -34,7 +34,7 @@ xpass() { # pass test command
+ }
+ 
+ xfail() { # fail test command
+-  echo "test case $NO ($3)... "
++  echo "test case $NO ($*)... "
+   if ! (! $@ && echo "\t\t[OK]"); then
+      echo "\t\t[NG]"; NG=$((NG + 1))
+   fi
 
