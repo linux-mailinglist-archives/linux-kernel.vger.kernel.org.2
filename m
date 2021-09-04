@@ -2,118 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFD4400CC7
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 21:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FBB400CCA
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 21:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232820AbhIDTHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 15:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232280AbhIDTHg (ORCPT
+        id S237394AbhIDTMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 15:12:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36854 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232424AbhIDTMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 15:07:36 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECC4C061575
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 12:06:34 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id u16so3512206wrn.5
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 12:06:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=AkQJf6wMVAtTiytE5TeAIUUT3cc5gz6qLO2GIm6ptGw=;
-        b=O0PgKcQr2woF9NHv4Et9+XdiVj5R2Y64r3D89ZvdKyutoRawi11SsLX2klAvP0SbHJ
-         2O2DRNADWSHibX6kuJXYZSj4ed9xHaHCFm/zMhKNJSWoIKH/7yxM8dKQcq7k2eoyS/eq
-         qrNMxJm2+PbUyj5d6obHBdlXng8MGAUbXjuzPBh8DS1n4knP83mMPQwjFPjLiS/fZbdm
-         5XGOqxkne4dQ6zB2WWcDoaoxK/P1dJ+jiBoACmMFV6Ku7HcEaJFXST+YwFmykOd9A0C1
-         pVLSFzd7SsBruxDn+xxO88+H7n9B6ea62uNcaj6pxQY0RMqt4shfGhm4OoNdEHdQrfBG
-         f/ig==
+        Sat, 4 Sep 2021 15:12:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630782696;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+vglIRiq2twF0gBLHp0cEuyzMuL4N3cukyGbV97IcVA=;
+        b=RfAGUl1Vxq3R+aopl+ESwzP6gREPTnkYmt4N3o0fAegGwml1wwmbNyLff+G/CNMdGZYZ6Z
+        jslGdG9XX39Q1gPhjA406a8mjVDXIMDfkQCzjuv9yyFNYB8EhajLQ2QZ90bOJ0Qq2nlEu+
+        /Ox+YBLvpHN1mz4t9mmET0xVHXgDdW8=
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
+ [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-493-bZ1G58n1PuyJ-HeR3qh3jg-1; Sat, 04 Sep 2021 15:11:35 -0400
+X-MC-Unique: bZ1G58n1PuyJ-HeR3qh3jg-1
+Received: by mail-oo1-f69.google.com with SMTP id i5-20020a4ad385000000b0028bd047a835so1649053oos.12
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 12:11:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=AkQJf6wMVAtTiytE5TeAIUUT3cc5gz6qLO2GIm6ptGw=;
-        b=f8Dup6MF5T0+WuLYX24YFe7Fq6EACZ4QJf2o3gCN4R2tSb6zKYfws3RlDQP/dwlDbm
-         nW8r9NIqBBXlQ5bTf00/yQXrNwTfl8ZfGU8xy/rEWLCX809yrh3v6li0CFSLRJ9hHh+C
-         f+JKxO7PVVZZzpMbuPMB9Ta4frxLCkfwG1gnLZrYP/ry3VYf6MccvXHV0ogL92b7GzF0
-         T9aipvT2Z4quG4Vyc9klqKkN2WMK5efveCa4eWfac8VaqcyjPZTcNjZqWzft4J130noK
-         M+6Ne9JwJdK6syBrertc4gVW3QUh3I1Hlttu4Q4COFw8O5459VV256/+m9zhzNUmGQCq
-         oRDA==
-X-Gm-Message-State: AOAM530S2yJX49YdGJdCnvKvr6+qigvqhJsg5D8gz/qnxr+ZMIN+xp6P
-        aRNr9svohki9TiJwS5DeNqv49KuSyCS5Xw==
-X-Google-Smtp-Source: ABdhPJwhzytBPmjBlvto52pArb22R0ONysceF7WL3lT+VNWte5TTl3E86ebHzPRfBDLAENYcIfW9Yw==
-X-Received: by 2002:a5d:410b:: with SMTP id l11mr5231684wrp.76.1630782392660;
-        Sat, 04 Sep 2021 12:06:32 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::8fe1? ([2a02:8108:96c0:3b88::8fe1])
-        by smtp.gmail.com with UTF8SMTPSA id k16sm2922659wrx.87.2021.09.04.12.06.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 04 Sep 2021 12:06:31 -0700 (PDT)
-Message-ID: <11231264-b315-9994-31c4-b1f2e463ebd7@gmail.com>
-Date:   Sat, 4 Sep 2021 21:06:30 +0200
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+vglIRiq2twF0gBLHp0cEuyzMuL4N3cukyGbV97IcVA=;
+        b=rqAe/2jY5Euss7D3FYCwaR4lCMaPxyW5D3fk8DfDMGU5ty5NRR5v5wM/8LGgCoy6oa
+         i66W3EvtzRvTuW83dxJ25LBYUVflwgKHANAlB6KMHaO4Vgc84YlD9kEbi7Hy1U4kDUf7
+         cZ4AEyvBUy7DW8YRT5snSyWU6ypNXxFC9B2xq0KS4Qju0ZmUUCoYIQ0wQ08Gyj5Vu58Z
+         wgVNuAhJrmz6aIZ3qdpH1VI5IOOMZiPow3AuJpBI7dHSzdI+I+qR0xa02cm6z75NYi9b
+         PXijzQ8a5VgJaoZoCg4Rh+WPQi6uCo1tuAiLx/uz63etd4/mVS35gazd1fvCgRDELUgF
+         73ng==
+X-Gm-Message-State: AOAM530lu7g4kgwM+xvbYd58SKzBgd9a2kmmGWZ0db0CLX+36hEyyhIL
+        0CD5aMZBw7omo9fMvvCc+xyxOqfS2npj/EfClfHdhZWyAP4Ol+1NufERcja1mVNk7eleSV68DzR
+        k4jVKPe//Nh/ue2jo7jmckbig
+X-Received: by 2002:aca:aa47:: with SMTP id t68mr3462250oie.25.1630782694597;
+        Sat, 04 Sep 2021 12:11:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxexRTc29ssbmqIdxMigB8JG8giqljBFapJRUIzV8QTTXgC9eG79OPAg7coHZwHcVf57cchcA==
+X-Received: by 2002:aca:aa47:: with SMTP id t68mr3462238oie.25.1630782694362;
+        Sat, 04 Sep 2021 12:11:34 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id c10sm680077ots.48.2021.09.04.12.11.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Sep 2021 12:11:33 -0700 (PDT)
+Date:   Sat, 4 Sep 2021 12:11:31 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 06/13] kbuild: reuse $(cmd_objtool) for
+ cmd_cc_lto_link_modules
+Message-ID: <20210904191131.mwbckb2dfxbvoez4@treble>
+References: <20210831074004.3195284-1-masahiroy@kernel.org>
+ <20210831074004.3195284-7-masahiroy@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.1
-Subject: Re: [PATCH 0/6] staging: r8188eu: remove some functions from hal_ops
-Content-Language: en-US
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Martin Kaiser <martin@kaiser.cx>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210904124033.14244-1-straube.linux@gmail.com>
- <CAA=Fs0ntWh8kanSBMA+jBLHAgVTAjH7SFJ8ROrmncZTkzSy-gQ@mail.gmail.com>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <CAA=Fs0ntWh8kanSBMA+jBLHAgVTAjH7SFJ8ROrmncZTkzSy-gQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210831074004.3195284-7-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/4/21 20:27, Phillip Potter wrote:
-> On Sat, 4 Sept 2021 at 13:40, Michael Straube <straube.linux@gmail.com> wrote:
->>
->> Getting rid of the hal layer is on the todo list. This series
->> removes some functions from hal_ops and make the driver call the
->> pointed functions directly.
->>
->> Tested with Inter-Tech DMG-02.
->>
->> Michael Straube (6):
->>    staging: r8188eu: remove intf_chip_configure from hal_ops
->>    staging: r8188eu: remove read_adapter_info from hal_ops
->>    staging: r8188eu: remove read_chip_version from hal_ops
->>    staging: r8188eu: remove wrapper around ReadChipVersion8188E()
->>    staging: r8188eu: remove GetHalODMVarHandler from hal_ops
->>    staging: r8188eu: remove init_default_value from hal_ops
->>
->>   drivers/staging/r8188eu/hal/hal_intf.c        | 33 -------------------
->>   .../staging/r8188eu/hal/rtl8188e_hal_init.c   | 16 +--------
->>   drivers/staging/r8188eu/hal/usb_halinit.c     | 10 ++----
->>   drivers/staging/r8188eu/include/hal_intf.h    | 22 +++----------
->>   .../staging/r8188eu/include/rtl8188e_hal.h    |  2 ++
->>   drivers/staging/r8188eu/os_dep/os_intfs.c     |  4 +--
->>   drivers/staging/r8188eu/os_dep/usb_intf.c     |  7 ++--
->>   7 files changed, 16 insertions(+), 78 deletions(-)
->>
->> --
->> 2.33.0
->>
+On Tue, Aug 31, 2021 at 04:39:57PM +0900, Masahiro Yamada wrote:
+> For CONFIG_LTO_CLANG=y, the objtool processing is not possible at the
+> compilation, hence postponed by the link time.
 > 
-> Dear Michael,
+> Reuse $(cmd_objtool) for CONFIG_LTO_CLANG=y by defining objtool-enabled
+> properly.
 > 
-> Looks good to me, built and tested here:
-> Acked-by: Phillip Potter <phil@philpotter.co.uk>
+> For CONFIG_LTO_CLANG=y:
 > 
-> Regards,
-> Phil
+>   objtool-enabled is off for %.o compilation
+>   objtool-enabled is on  for %.lto link
 > 
+> For CONFIG_LTO_CLANG=n:
+> 
+>   objtool-enabled is on for %.o compilation
+>       (but, it depends on OBJECT_FILE_NON_STANDARD)
+> 
+> Set part-of-module := y for %.lto.o to avoid repeating --module.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Thanks for your review and testing Phillip.
-Much appreciated.
+With Kees' suggested fix:
 
-Regards,
-Michael
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+
+-- 
+Josh
+
