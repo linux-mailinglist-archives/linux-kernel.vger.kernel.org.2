@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1EFE400CC4
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 21:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCFD4400CC7
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 21:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbhIDTFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 15:05:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23393 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230346AbhIDTFQ (ORCPT
+        id S232820AbhIDTHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 15:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232280AbhIDTHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 15:05:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630782254;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8iBLYJMftUwp7hXO2s0oIif0u5EZOHD9H+Oe1M0SPII=;
-        b=foEA2N3pYfb8V+eG7oBW0yFep4eRlYkohpbzJ8Q0mJBI2PbDXKuJSYCKw6vxTHTLeBETXw
-        nMFh8hx2U9KcipujzbRfUAbSUIScrrYAlkCfeexPpxnQnzRk6EnoThb5qKDcvEB9GZ/l4W
-        3zUXJ//ga2Bguq/S4aRlgoDNbYH+ZvU=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-323-UsaJXQkpMzmN88pRDFD6Cw-1; Sat, 04 Sep 2021 15:04:12 -0400
-X-MC-Unique: UsaJXQkpMzmN88pRDFD6Cw-1
-Received: by mail-ot1-f70.google.com with SMTP id t2-20020a9d7742000000b0051dd85217a3so1506520otl.11
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 12:04:12 -0700 (PDT)
+        Sat, 4 Sep 2021 15:07:36 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECC4C061575
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 12:06:34 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id u16so3512206wrn.5
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 12:06:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=AkQJf6wMVAtTiytE5TeAIUUT3cc5gz6qLO2GIm6ptGw=;
+        b=O0PgKcQr2woF9NHv4Et9+XdiVj5R2Y64r3D89ZvdKyutoRawi11SsLX2klAvP0SbHJ
+         2O2DRNADWSHibX6kuJXYZSj4ed9xHaHCFm/zMhKNJSWoIKH/7yxM8dKQcq7k2eoyS/eq
+         qrNMxJm2+PbUyj5d6obHBdlXng8MGAUbXjuzPBh8DS1n4knP83mMPQwjFPjLiS/fZbdm
+         5XGOqxkne4dQ6zB2WWcDoaoxK/P1dJ+jiBoACmMFV6Ku7HcEaJFXST+YwFmykOd9A0C1
+         pVLSFzd7SsBruxDn+xxO88+H7n9B6ea62uNcaj6pxQY0RMqt4shfGhm4OoNdEHdQrfBG
+         f/ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8iBLYJMftUwp7hXO2s0oIif0u5EZOHD9H+Oe1M0SPII=;
-        b=l8jHwqlY7A/QwxSfGG+tFQn7zvgiEc1fb0yL7BJOSSUqaJ/7cP3K1l9/0vZ52lqkR4
-         agY94dpzCF0MSk+uJ/8olVtZKGU2pqJ0d+IOy6ktYyj4tOv4XlO0tiIseIiqnivd77Zm
-         YJgGZXc8oAc9iMc4yrUepnomkCpeWq6gOqpEWyjYKnHYrbaPKvT7LEqBrM1WfN/t+lPl
-         fIzQsdJ59zDCENVJeoMniDz9zCzh6VBf+4DpI3iydMXMut6SjNoj6wU7mUWTpXhByG+m
-         tKf/djtbUfsp8NiH/OIEbvUhkm5k4ewhZN2k2dofj1GJ0j01zo4Rm37jrL4agoH8PJes
-         XYWw==
-X-Gm-Message-State: AOAM533kdBJEI4Z00nWn3wvdLsMBmxp+aSpNCsjAvYF8hDv1xyzEgRTG
-        XmytWSc7Uzl1uitrp7/ULuDNzdnzx6iuxF4dZm98CZsRCtBT4OYZtawFDAAY8aQe7jKrtAe1VoT
-        4QHYqG+r+Rvck3MBg/4ui+YwN
-X-Received: by 2002:a9d:4042:: with SMTP id o2mr4133433oti.332.1630782251642;
-        Sat, 04 Sep 2021 12:04:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyPB60KqDp75uk3gd5sXgmkng+nzBElGb2AZWYXj7JFmqsg7DcMcmTQT46CTWXzkJvtpOfoKQ==
-X-Received: by 2002:a9d:4042:: with SMTP id o2mr4133417oti.332.1630782251450;
-        Sat, 04 Sep 2021 12:04:11 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id l21sm663379oop.22.2021.09.04.12.04.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Sep 2021 12:04:11 -0700 (PDT)
-Date:   Sat, 4 Sep 2021 12:04:08 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 05/13] kbuild: detect objtool update without using
- .SECONDEXPANSION
-Message-ID: <20210904190408.gslbmm44a5rhknny@treble>
-References: <20210831074004.3195284-1-masahiroy@kernel.org>
- <20210831074004.3195284-6-masahiroy@kernel.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=AkQJf6wMVAtTiytE5TeAIUUT3cc5gz6qLO2GIm6ptGw=;
+        b=f8Dup6MF5T0+WuLYX24YFe7Fq6EACZ4QJf2o3gCN4R2tSb6zKYfws3RlDQP/dwlDbm
+         nW8r9NIqBBXlQ5bTf00/yQXrNwTfl8ZfGU8xy/rEWLCX809yrh3v6li0CFSLRJ9hHh+C
+         f+JKxO7PVVZZzpMbuPMB9Ta4frxLCkfwG1gnLZrYP/ry3VYf6MccvXHV0ogL92b7GzF0
+         T9aipvT2Z4quG4Vyc9klqKkN2WMK5efveCa4eWfac8VaqcyjPZTcNjZqWzft4J130noK
+         M+6Ne9JwJdK6syBrertc4gVW3QUh3I1Hlttu4Q4COFw8O5459VV256/+m9zhzNUmGQCq
+         oRDA==
+X-Gm-Message-State: AOAM530S2yJX49YdGJdCnvKvr6+qigvqhJsg5D8gz/qnxr+ZMIN+xp6P
+        aRNr9svohki9TiJwS5DeNqv49KuSyCS5Xw==
+X-Google-Smtp-Source: ABdhPJwhzytBPmjBlvto52pArb22R0ONysceF7WL3lT+VNWte5TTl3E86ebHzPRfBDLAENYcIfW9Yw==
+X-Received: by 2002:a5d:410b:: with SMTP id l11mr5231684wrp.76.1630782392660;
+        Sat, 04 Sep 2021 12:06:32 -0700 (PDT)
+Received: from ?IPV6:2a02:8108:96c0:3b88::8fe1? ([2a02:8108:96c0:3b88::8fe1])
+        by smtp.gmail.com with UTF8SMTPSA id k16sm2922659wrx.87.2021.09.04.12.06.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 04 Sep 2021 12:06:31 -0700 (PDT)
+Message-ID: <11231264-b315-9994-31c4-b1f2e463ebd7@gmail.com>
+Date:   Sat, 4 Sep 2021 21:06:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210831074004.3195284-6-masahiroy@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [PATCH 0/6] staging: r8188eu: remove some functions from hal_ops
+Content-Language: en-US
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Martin Kaiser <martin@kaiser.cx>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210904124033.14244-1-straube.linux@gmail.com>
+ <CAA=Fs0ntWh8kanSBMA+jBLHAgVTAjH7SFJ8ROrmncZTkzSy-gQ@mail.gmail.com>
+From:   Michael Straube <straube.linux@gmail.com>
+In-Reply-To: <CAA=Fs0ntWh8kanSBMA+jBLHAgVTAjH7SFJ8ROrmncZTkzSy-gQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 04:39:56PM +0900, Masahiro Yamada wrote:
-> Redo commit 8852c5524029 ("kbuild: Fix objtool dependency for
-> 'OBJECT_FILES_NON_STANDARD_<obj> := n'") to add the objtool
-> dependency in a cleaner way.
+On 9/4/21 20:27, Phillip Potter wrote:
+> On Sat, 4 Sept 2021 at 13:40, Michael Straube <straube.linux@gmail.com> wrote:
+>>
+>> Getting rid of the hal layer is on the todo list. This series
+>> removes some functions from hal_ops and make the driver call the
+>> pointed functions directly.
+>>
+>> Tested with Inter-Tech DMG-02.
+>>
+>> Michael Straube (6):
+>>    staging: r8188eu: remove intf_chip_configure from hal_ops
+>>    staging: r8188eu: remove read_adapter_info from hal_ops
+>>    staging: r8188eu: remove read_chip_version from hal_ops
+>>    staging: r8188eu: remove wrapper around ReadChipVersion8188E()
+>>    staging: r8188eu: remove GetHalODMVarHandler from hal_ops
+>>    staging: r8188eu: remove init_default_value from hal_ops
+>>
+>>   drivers/staging/r8188eu/hal/hal_intf.c        | 33 -------------------
+>>   .../staging/r8188eu/hal/rtl8188e_hal_init.c   | 16 +--------
+>>   drivers/staging/r8188eu/hal/usb_halinit.c     | 10 ++----
+>>   drivers/staging/r8188eu/include/hal_intf.h    | 22 +++----------
+>>   .../staging/r8188eu/include/rtl8188e_hal.h    |  2 ++
+>>   drivers/staging/r8188eu/os_dep/os_intfs.c     |  4 +--
+>>   drivers/staging/r8188eu/os_dep/usb_intf.c     |  7 ++--
+>>   7 files changed, 16 insertions(+), 78 deletions(-)
+>>
+>> --
+>> 2.33.0
+>>
 > 
-> Using .SECONDEXPANSION ends up with unreadable code due to escaped
-> dollars. Also, it is not efficient because the second half of
-> Makefile.build is parsed twice every time.
+> Dear Michael,
 > 
-> Append the objtool dependency to the *.cmd files at the build time.
+> Looks good to me, built and tested here:
+> Acked-by: Phillip Potter <phil@philpotter.co.uk>
 > 
-> This is what fixdep and gen_ksymdeps.sh already do. So, following the
-> same pattern seems a natural solution.
+> Regards,
+> Phil
 > 
-> This allows us to drop $$(objtool_deps) entirely.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Thanks for your review and testing Phillip.
+Much appreciated.
 
--- 
-Josh
-
+Regards,
+Michael
