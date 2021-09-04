@@ -2,73 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72491400A62
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 10:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FCD400A64
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 10:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbhIDIYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 04:24:14 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:39601 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233068AbhIDIYM (ORCPT
+        id S234633AbhIDIZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 04:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233631AbhIDIY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 04:24:12 -0400
-Received: by mail-io1-f72.google.com with SMTP id a17-20020a5d89d1000000b005c2233d0074so1089939iot.6
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 01:23:11 -0700 (PDT)
+        Sat, 4 Sep 2021 04:24:57 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39A4C061575;
+        Sat,  4 Sep 2021 01:23:56 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id q3so911327plx.4;
+        Sat, 04 Sep 2021 01:23:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=EdPM9OkvNtaA6JmcGv7qKKN0+VaFm3GfDoaj2YCcIDg=;
+        b=j5OTxawlS1akez9Dq295CULgeV4Bul2jYcQB7efxgLDT1BKJ2cS/7dclXPqGer3Odz
+         Uwk85+fxEGbLwRT7dj5ZCwTKEt5dFxRcmvK6lpjqlV6t1GLe8zW2bnrlojqPtMSdYbmN
+         NL8R7uAyHozMmYyOebHPED20mG2WALvQP52w9/CIaymApbf9lMWJoM1z+WiJu6lTOVlC
+         vzv4SYsqVubyOoftJiNuZMcbYFbTJM1RloYdnu+7j26eu3smcQ/fd7uEwdhDOTViVFfT
+         5A1bHDyKzcxdHMUIQgezxhbYqiKj89qFN+YFl5pR/knx+oD+sEOxNaV9mOinuv5OkFFE
+         4n6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=M3toUYP73wjtZjjuGZaluiFGnzByzbicamvbzl2GU/w=;
-        b=ShV2KSg42PcJW4v3wXdSv9+gmw0vieve0LtYnQ9fd+5/c/94dadFy1cVuYx0ShrEOi
-         kB5ugYwKEgZp4BMOVbVrEGb0gtyFq7sUKu0AC672bzsUvwMD+FgbQUhsrjAlu1ewXrk6
-         6a47tLW12HkjiH2hThRPR+xqIPs76Myb6zz0jO7IBVcnOSb6A/O5kWvCBkEYdX+8Z8Zf
-         kudJXGIHKwnUVI6cM2SC2SmGcE+cdR95BDa1pJEVja62fV9UTIyu99mFeEg8Mq50wDoZ
-         3TaIDdQn2MQKbGVqaNFdcHnPCgws2CPt2aqsoHyxDxRTeXJtKZBepQP8u0gdUT8AfB+Q
-         YhNw==
-X-Gm-Message-State: AOAM531RDhycJlm6PNqG3yrwbimdQGdmMjogv0EdwguzGlDjpjdWU33f
-        4KwsiAi1Rwc3BoRHYxRY+xQjimNiBGKZJrOPlShfSxZ4ohB4
-X-Google-Smtp-Source: ABdhPJz3nU0+9fHDM9jpojjeZT6ijTGdbtoJlUBtgSHEtb4+BB6TZlWcNDnkyxKIOI/Pw8b3cTxJ3iM9/EBYgvrmkdZYQKhrS7Y4
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=EdPM9OkvNtaA6JmcGv7qKKN0+VaFm3GfDoaj2YCcIDg=;
+        b=mzG97JGaHeNvRvmcBA9wN7qluTZMM9k4uAb2RXsGCYB9KfOnACBMcqfE5Sm3o8JWaV
+         RXqYcFyaAVbVKiHdRzz3rVDqiuwUw7IYRm7Fy0B/x9nHGzKvvEt196h2kB0LcRjiLJzC
+         Ul7Hzx7TBd0EFeYpe+hBlBPx1y65SFRi+/VofFBjFPumcYcsbmIcFL704lFICsUUqxRd
+         Di4Y1LjEmc43/0+tAEXxYH1xSGy+/B71ck80vvFAQt4G2a0zxv8DHVk682pdHMHEVmuh
+         uCkyoFkju/MWD//DaBqoEsh6NO9BriPMtetN8mfpwyeYYbBW5XbLstnQsqXRt89q/6/9
+         nSXg==
+X-Gm-Message-State: AOAM533YqKL2RWLco7NQb9jQoyEEl6uruDybc5JHuBw4fu26OKzSkcRk
+        IVmZj70IShvhm409UF34Lspo81hbPJ2/XeYS
+X-Google-Smtp-Source: ABdhPJzdRa7yBABS9qwaDrM5X8LcyvwnYQziq/YPZ29RwLEmiQ0BW2m1KfTx15CTAOTSV+rUwOhc8Q==
+X-Received: by 2002:a17:90b:188f:: with SMTP id mn15mr3143916pjb.154.1630743835956;
+        Sat, 04 Sep 2021 01:23:55 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:6006:a148:82a8:3271:93dc:763c])
+        by smtp.googlemail.com with ESMTPSA id o1sm1522099pjk.1.2021.09.04.01.23.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Sep 2021 01:23:55 -0700 (PDT)
+From:   Utkarsh Verma <utkarshverma294@gmail.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Utkarsh Verma <utkarshverma294@gmail.com>
+Subject: [PATCH v2] Documentation: checkpatch: Add SYMBOLIC_PERMS message
+Date:   Sat,  4 Sep 2021 13:53:30 +0530
+Message-Id: <20210904082330.14864-1-utkarshverma294@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <CAKXUXMyRKM9Ev_Yyyup-T=AZe2aYcN-ZneXsLmHtUC7as67zNQ@mail.gmail.com>
+References: <CAKXUXMyRKM9Ev_Yyyup-T=AZe2aYcN-ZneXsLmHtUC7as67zNQ@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:d282:: with SMTP id p2mr1977515ilp.259.1630743791386;
- Sat, 04 Sep 2021 01:23:11 -0700 (PDT)
-Date:   Sat, 04 Sep 2021 01:23:11 -0700
-In-Reply-To: <0000000000003166f105cb201ea6@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000067c79605cb2720bb@google.com>
-Subject: Re: [syzbot] WARNING: kmalloc bug in hash_netport_create
-From:   syzbot <syzbot+3f5904753c2388727c6c@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, coreteam@netfilter.org,
-        davem@davemloft.net, eric.dumazet@gmail.com, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        torvalds@linux-foundation.org, w@1wt.eu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+Add a new message type SYMBOLIC_PERMS under the 'Permissions'
+subsection. Octal permission bits are easier to read and understand
+instead of their symbolic macro names.
 
-commit 7661809d493b426e979f39ab512e3adf41fbcc69
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed Jul 14 16:45:49 2021 +0000
+Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+Acked-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ Documentation/dev-tools/checkpatch.rst | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-    mm: don't allow oversized kvmalloc() calls
+diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
+index f0956e9ea2d8..41037594ec24 100644
+--- a/Documentation/dev-tools/checkpatch.rst
++++ b/Documentation/dev-tools/checkpatch.rst
+@@ -957,6 +957,17 @@ Permissions
+     Permission bits should use 4 digit octal permissions (like 0700 or 0444).
+     Avoid using any other base like decimal.
+ 
++  **SYMBOLIC_PERMS**
++    Permission bits in the octal form are more readable and easier to
++    understand than their symbolic counterparts because many command-line
++    tools use this notation only. Experienced kernel developers have been using
++    this traditional Unix permission bits for decades and so they find it
++    easier to understand the octal notation than the symbolic macros.
++    For example, it is harder to read S_IWUSR|S_IRUGO than 0644, which
++    obscures the developer's intent rather than clarifying it.
++
++    See: https://lore.kernel.org/lkml/CA+55aFw5v23T-zvDZp-MmD_EYxF8WbafwwB59934FV7g21uMGQ@mail.gmail.com/
++
+ 
+ Spacing and Brackets
+ --------------------
+-- 
+2.25.1
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=113125f5300000
-start commit:   a9c9a6f741cd Merge tag 'scsi-misc' of git://git.kernel.org..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=133125f5300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=153125f5300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1ac29107aeb2a552
-dashboard link: https://syzkaller.appspot.com/bug?extid=3f5904753c2388727c6c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14581b33300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13579a69300000
-
-Reported-by: syzbot+3f5904753c2388727c6c@syzkaller.appspotmail.com
-Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
