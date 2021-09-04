@@ -2,117 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CFE400C30
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 19:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DD6400C33
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 19:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237122AbhIDQrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 12:47:39 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:36551 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237009AbhIDQrg (ORCPT
+        id S237081AbhIDRBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 13:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53342 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229899AbhIDRBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 12:47:36 -0400
-Received: by mail-io1-f70.google.com with SMTP id e187-20020a6bb5c4000000b005b5fe391cf9so1736243iof.3
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 09:46:35 -0700 (PDT)
+        Sat, 4 Sep 2021 13:01:10 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF41C061575
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 10:00:06 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id y6so3794691lje.2
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 10:00:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lnf5faxyLrEqjdcUUDuhtCXKtxh7WY/dd3BQVqLbWmI=;
+        b=VuzbLbYwY7mn/j5Q2BwBTMWzOa50i3Z7gG4gprzZ1fGq1km4YgA9t8MyPhdntFhTqe
+         CjY+PMylfPTyqmFmubrUZzDxB7TWYhIe7roENyj3+zK8gMUo022nVdcZY2uVcuaDMYEL
+         imNUIhOdDzPqMkuY3ROzj41fVyrbafUK4SqJc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=huiWn6OJf1Z8+HD+VinaZl059PYkj4x1r8j41/BduPQ=;
-        b=gQpnaYEBGnIhJDh4OcBaoOSkdK7kXwmarAu9/z2dIiZsaDIWDs/gtwzBgvgRV/cATW
-         Xk6OgTOUBy03yPjc73kNoglPOTLOXmoS2H8VI/Wt8UGElBp/ZbMGKznRhJgevf1K0fMj
-         M5gJ2WePjE1lM24dRHQhglZW74yuCEQln4PU1MjokBEmXxwEZJwXxge7/ljxhrTF7jKf
-         lAyl/M9JUoaOUa7yXB4JUVEAg/PhCTA44jSaPCS3FiTTTdIsuM6GHJu2Ke5suJA51F31
-         enQqq3ii2UrGaeCpePQsSRLMtmR1NaEMcL9SUJeXnQ638udvtZkFO3fcsF01aAjyxtm3
-         msdg==
-X-Gm-Message-State: AOAM530ZUtu5QPZdzJn4TL7Ddgvu0575DfMcR5ViqHKSaJ4AisJATol6
-        XKsc+XX0A91ltZ/vzX2usDZjU+75G3qdpxAWi1FggghtQvwT
-X-Google-Smtp-Source: ABdhPJyPhigVO5GV0BU/1v96Ow36EPc+LvIoS+8KBaRJKi9LdPSrCwI7fri9E836e9/mbKvq0ye8EOR0LQVxLDwSDEA2/kvJP6EY
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lnf5faxyLrEqjdcUUDuhtCXKtxh7WY/dd3BQVqLbWmI=;
+        b=jCysR9bpuLd1Im2BsYH89U71bcGFKp9w/0cOVlm/0VKH1UCC8QNReNsb/W2RiQY6BV
+         4GYmqz+9e+eNAGjAJpf6/Rmqo5XRiSeiSqhWgDLnC+WjnvyxKv06662WDzyPWvGKhJO1
+         1mCgZdXkaklh/RMw/D+LcIRYcFM66K/+wnu0tLRRhv/PsAJPmktPgIG2TwmZrdn/Cy2i
+         277rQB6PfWrkwW9uEObtNUWxAjQiqdx0Gu49TtXb+z+6t0DGvsZKDJvQhqvQRkHH09vR
+         np/wYRT5Nn9EvO7TT1PiAVnmzWvCJUjXlE6I2S64rUbHxcgTdJ8FZikYKmUU6x7bTvuC
+         2baQ==
+X-Gm-Message-State: AOAM533G02+Q7r51Fd4SmZ2KIwmfe3fXYy21vMKBsYP6KQn/SDCd8Dn7
+        vs493OzHplc8EVem9FR+muY32WUVMXvYzFuq
+X-Google-Smtp-Source: ABdhPJx7Oyqf0MyflzmL7eTJwyFm2pOi7QULa5hP1pOc5jGiwZr0HJCqlFwZpF6SD+f1gqky2f+tdQ==
+X-Received: by 2002:a2e:b4a5:: with SMTP id q5mr3344010ljm.11.1630774804336;
+        Sat, 04 Sep 2021 10:00:04 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id n3sm285838lft.63.2021.09.04.10.00.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 04 Sep 2021 10:00:03 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id f18so4675667lfk.12
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 10:00:03 -0700 (PDT)
+X-Received: by 2002:a05:6512:3d28:: with SMTP id d40mr3379362lfv.474.1630774803313;
+ Sat, 04 Sep 2021 10:00:03 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:c5aa:: with SMTP id r10mr3083929ilt.274.1630773994893;
- Sat, 04 Sep 2021 09:46:34 -0700 (PDT)
-Date:   Sat, 04 Sep 2021 09:46:34 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000acb87205cb2e283c@google.com>
-Subject: [syzbot] WARNING: kmalloc bug in hash_ipportnet_create
-From:   syzbot <syzbot+0e73f839b35d0973fb97@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com
+References: <YTOF8VYTYNFYpB7O@zeniv-ca.linux.org.uk>
+In-Reply-To: <YTOF8VYTYNFYpB7O@zeniv-ca.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 4 Sep 2021 09:59:47 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whho2pj4Au+rVpTGkoj7nJCEJwSfikLQVHDZ8kbKG7U1w@mail.gmail.com>
+Message-ID: <CAHk-=whho2pj4Au+rVpTGkoj7nJCEJwSfikLQVHDZ8kbKG7U1w@mail.gmail.com>
+Subject: Re: [possible bug] missed wakeup in do_sigtimedwait()?
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Sep 4, 2021 at 7:45 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> Looks like that __set_current_state() should've been done before dropping
+> the siglock.  Am I missing something subtle here?
 
-syzbot found the following issue on:
+I agree, that seems like a bug, and your fix seems the trivially correct thing.
 
-HEAD commit:    7cca308cfdc0 Merge tag 'powerpc-5.15-1' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1238fbbd300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8aa56a640db99eb1
-dashboard link: https://syzkaller.appspot.com/bug?extid=0e73f839b35d0973fb97
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10ef4e0b300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1302e115300000
+The bug goes back at least before ther bk history (in 2002).
+Presumably since the introduction of the system call.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0e73f839b35d0973fb97@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8442 at mm/util.c:597 kvmalloc_node+0x111/0x120 mm/util.c:597
-Modules linked in:
-CPU: 0 PID: 8442 Comm: syz-executor543 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
-Code: 01 00 00 00 4c 89 e7 e8 4d 17 0d 00 49 89 c5 e9 69 ff ff ff e8 30 3e d1 ff 41 89 ed 41 81 cd 00 20 01 00 eb 95 e8 1f 3e d1 ff <0f> 0b e9 4c ff ff ff 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 06
-RSP: 0018:ffffc900019f7288 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffc900019f73a0 RCX: 0000000000000000
-RDX: ffff888018236140 RSI: ffffffff81a41371 RDI: 0000000000000003
-RBP: 0000000000400dc0 R08: 000000007fffffff R09: 000000000000001c
-R10: ffffffff81a4132e R11: 000000000000001f R12: 0000000080000018
-R13: 0000000000000000 R14: 00000000ffffffff R15: ffff8880171e1000
-FS:  00000000020ae300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000246 CR3: 0000000013999000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- hash_ipportnet_create+0x3dd/0x1220 net/netfilter/ipset/ip_set_hash_gen.h:1524
- ip_set_create+0x782/0x15a0 net/netfilter/ipset/ip_set_core.c:1100
- nfnetlink_rcv_msg+0xbc9/0x13f0 net/netfilter/nfnetlink.c:296
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2504
- nfnetlink_rcv+0x1ac/0x420 net/netfilter/nfnetlink.c:654
- netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
- netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43f039
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe5f928db8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f039
-RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000003
-RBP: 0000000000403020 R08: 0000000000000005 R09: 0000000000400488
-R10: 0000000000000004 R11: 0000000000000246 R12: 00000000004030b0
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+         Linus
