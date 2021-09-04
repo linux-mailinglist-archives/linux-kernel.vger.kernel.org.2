@@ -2,168 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45BA400884
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 01:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7A340088A
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 02:05:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350752AbhICX5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 19:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350743AbhICX50 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 19:57:26 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D3AC061575;
-        Fri,  3 Sep 2021 16:56:25 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id u6so756790pfi.0;
-        Fri, 03 Sep 2021 16:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=YPeZoqb23xCBYIKyQQr8xebdjfODkky7kJR1l2zlHz8=;
-        b=PQpF709ZsJwQRNBwpUJr3Wu7g7q3BDQNuaQurhNEtSza1DMVxKV89ZSCxdsvd392Zl
-         Zhr3b/Fdyai3iC8FwcjGMUflwgp69dFztmO3/GMj57JlT2P5rEU2zaOJRO3ZT5GGkyxo
-         b0UI4u4VNBd+MCdwx4W6x7DzDAPCVvMiZx1Uw2c3eqUIhjrtA5BnqPGPccmKLdPJuLTa
-         /QHl52g8JPnSXcRRkxXY2R6tzAnlGgYqWZ6HtCxBSzW8uNODTxrjnExkS4A0Dbj7SFMS
-         ngHa4/LoMqIwn+rqL1BffmIEDYv7unXqd2teemefJE2cYm5wMgWyPNlZH/53rA2WpTS0
-         MYmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YPeZoqb23xCBYIKyQQr8xebdjfODkky7kJR1l2zlHz8=;
-        b=GdY19XVz8DvKWMectJTraynXrczTp7UvwhqJpKZ9Bohel5AMNIt6SkiNgoK9pijimc
-         nIbfcjSYQgJK5D+I5kn64m+iLo5Nromf55OIm0RzU39/HN/0qI2CgALXHbDTGLnjubcC
-         nFslZw1JskFo3LokeGruV8Q09+xWNwizqd4OdDVRy8GFf5PF7WtQ2gY6Sa96eSa7ePPX
-         RX2U6S2KXijNDsOuWF1IPCuiG1C6I67+h/Xpa1O389SzTtPVKamVaeO9/NgdsOCDsdqh
-         2ucZcxoImJq2GbdNu4pvSqrTQ0k1MQIiYdO833KLK997bl5rxJAdrs84lKkGtCPme2O0
-         3ntA==
-X-Gm-Message-State: AOAM530zzKGyZRnQ2OlYDAaS8aOe+Gl/+StTxWNfkVCMFdMkdjKicCEs
-        7QochO33Gd73GP4QNbaSFFY=
-X-Google-Smtp-Source: ABdhPJxfSWlSI9g6NUXJfM+y1MI8wZ+FjW71edjUsluzx2qDzsgSfq4gm9NzMtv7M/aCjd3XXgi2pg==
-X-Received: by 2002:a62:6143:0:b029:3c9:3117:c620 with SMTP id v64-20020a6261430000b02903c93117c620mr1313102pfb.30.1630713385266;
-        Fri, 03 Sep 2021 16:56:25 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id v26sm418459pfi.207.2021.09.03.16.56.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 03 Sep 2021 16:56:24 -0700 (PDT)
-Subject: Re: [syzbot] WARNING: kmalloc bug in nf_tables_newset
-To:     syzbot <syzbot+cd43695a64bcd21b8596@syzkaller.appspotmail.com>,
-        coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000ed8c0a05cb1ff6d8@google.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <4600da1f-bf35-049d-058a-78860d8c126a@gmail.com>
-Date:   Fri, 3 Sep 2021 16:56:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S1350541AbhIDABs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 20:01:48 -0400
+Received: from mga03.intel.com ([134.134.136.65]:49868 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236089AbhIDABq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 20:01:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="219604429"
+X-IronPort-AV: E=Sophos;i="5.85,266,1624345200"; 
+   d="scan'208";a="219604429"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 17:00:45 -0700
+X-IronPort-AV: E=Sophos;i="5.85,266,1624345200"; 
+   d="scan'208";a="603329180"
+Received: from spcollin-mobl.amr.corp.intel.com (HELO [10.209.74.169]) ([10.209.74.169])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2021 17:00:44 -0700
+Subject: Re: [PATCH v6 11/11] x86/tdx: Handle CPUID via #VE
+To:     Andi Kleen <ak@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Juergen Gross <jgross@suse.com>, Deep Shah <sdeep@vmware.com>,
+        VMware Inc <pv-drivers@vmware.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Peter H Anvin <hpa@zytor.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20210903172812.1097643-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210903172812.1097643-12-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <24d0fe72-78b4-6550-e5d8-dd511dcbfef3@intel.com>
+ <26e79e8f-ba96-9087-04dd-283eadd8c693@linux.intel.com>
+ <YTKzFJYy0CECENRX@google.com>
+ <f0d52056-1749-9d21-8da1-041266ade437@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <0be2590c-aad8-0d04-4f14-2081d9b66fbf@intel.com>
+Date:   Fri, 3 Sep 2021 17:00:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <000000000000ed8c0a05cb1ff6d8@google.com>
+In-Reply-To: <f0d52056-1749-9d21-8da1-041266ade437@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/3/21 4:54 PM, Andi Kleen wrote:
+> It means they are handled by the TDX module, but always have the same
+> contents as a native CPU would.
+> 
+> As opposed to leaves that are modified by the TDX module.
 
+Is that distinction important for this patch?
 
-On 9/3/21 4:50 PM, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    a9c9a6f741cd Merge tag 'scsi-misc' of git://git.kernel.org..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=119f0915300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=7860a0536ececf0c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=cd43695a64bcd21b8596
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13281b33300000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1077b4b9300000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+cd43695a64bcd21b8596@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 8421 at mm/util.c:597 kvmalloc_node+0x111/0x120 mm/util.c:597
-> Modules linked in:
-> CPU: 1 PID: 8421 Comm: syz-executor968 Not tainted 5.14.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
-> Code: 01 00 00 00 4c 89 e7 e8 8d 12 0d 00 49 89 c5 e9 69 ff ff ff e8 f0 21 d1 ff 41 89 ed 41 81 cd 00 20 01 00 eb 95 e8 df 21 d1 ff <0f> 0b e9 4c ff ff ff 0f 1f 84 00 00 00 00 00 55 48 89 fd 53 e8 c6
-> RSP: 0018:ffffc90006f2f330 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> RDX: ffff8880259c0000 RSI: ffffffff81a4f621 RDI: 0000000000000003
-> RBP: 0000000000000dc0 R08: 000000007fffffff R09: 00000000ffffffff
-> R10: ffffffff81a4f5de R11: 0000000000000000 R12: 0000000400000108
-> R13: 0000000000000000 R14: 00000000ffffffff R15: dffffc0000000000
-> FS:  0000000001785300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f6394785000 CR3: 000000001dd56000 CR4: 0000000000350ef0
-> Call Trace:
->  kvmalloc include/linux/mm.h:806 [inline]
->  kvzalloc include/linux/mm.h:814 [inline]
->  nf_tables_newset+0x1512/0x3340 net/netfilter/nf_tables_api.c:4341
->  nfnetlink_rcv_batch+0x1710/0x25f0 net/netfilter/nfnetlink.c:513
->  nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:634 [inline]
->  nfnetlink_rcv+0x3af/0x420 net/netfilter/nfnetlink.c:652
->  netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
->  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1340
->  netlink_sendmsg+0x86d/0xdb0 net/netlink/af_netlink.c:1929
->  sock_sendmsg_nosec net/socket.c:704 [inline]
->  sock_sendmsg+0xcf/0x120 net/socket.c:724
->  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
->  ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
->  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x43f189
-> Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffd36aa47e8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-> RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043f189
-> RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000003
-> RBP: 0000000000403170 R08: 0000000000000a00 R09: 0000000000400488
-> R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000403200
-> R13: 0000000000000000 R14: 00000000004ad018 R15: 0000000000400488
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
-> 
-
-As mentioned to Linus earlier, this bug comes after recent patch
-
-commit 7661809d493b426e979f39ab512e3adf41fbcc69
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed Jul 14 09:45:49 2021 -0700
-
-    mm: don't allow oversized kvmalloc() calls
-    
-    'kvmalloc()' is a convenience function for people who want to do a
-    kmalloc() but fall back on vmalloc() if there aren't enough physically
-    contiguous pages, or if the allocation is larger than what kmalloc()
-    supports.
-    
-    However, let's make sure it doesn't get _too_ easy to do crazy things
-    with it.  In particular, don't allow big allocations that could be due
-    to integer overflow or underflow.  So make sure the allocation size fits
-    in an 'int', to protect against trivial integer conversion issues.
-    
-    Acked-by: Willy Tarreau <w@1wt.eu>
-    Cc: Kees Cook <keescook@chromium.org>
-    Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-
+Or, should we stick to the two-class taxonomy (#VE-inducing and not)
+that I suggested in my replacement changelog?
