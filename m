@@ -2,125 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D56400B36
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A85400B3A
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236076AbhIDLve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 07:51:34 -0400
-Received: from mout.gmx.net ([212.227.15.15]:54833 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234695AbhIDLvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 07:51:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630756195;
-        bh=v23ee+m+JJjtewkqOV9p0pm3JlwVl9WxkFvaAGuX1Ok=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=aFui8fkZ7Z58f+hoFtAARRQYR9O68rtrzMTniksFo0yE+lIEfO8ModCfBVi3mXR5i
-         EiOQClEbqBjrK4Gn5fkW3frJ1W1wJ28rxOIoMIaAkazaBm4BVzWTUpmsjw9B6B7DvV
-         +BTYZq34iQwbt2CERbZuU6dSHBuhNNARphYOxqDg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MNKhs-1mbF5F0Vek-00OpPE; Sat, 04 Sep 2021 13:49:55 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Kees Cook <keescook@chromium.org>, ath11k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ath11k: Replace one-element array with flexible-array member
-Date:   Sat,  4 Sep 2021 13:49:37 +0200
-Message-Id: <20210904114937.6644-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S236316AbhIDL63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 07:58:29 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:33621 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234198AbhIDL62 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 07:58:28 -0400
+Received: by mail-io1-f72.google.com with SMTP id g2-20020a6b7602000000b005be59530196so1407301iom.0
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 04:57:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=mVw9JDyATIuAC54DQacSwmFjeXq6JmM1c62KNszdhhc=;
+        b=HzkGZLZ7Zi4HVfl0LnQqSJa3t2Eh/jTy5M/mQ8GG80wH7Kdkn91VRGEa/uq91m/OPo
+         ZNiuPHJfI5NjtlOyoALjHcJcH5zMV7OGAbDiWUbEA24HU8lz+wakLjfmW2jLiqlSUrc1
+         +N/Mp/IIQLGxbG15/ZEBmAJZPLOzP9Nt8tWuJ1H9JOG0BFoO8AbvF+DnSnZxuX4d3TxT
+         +H21Wfdoey7YcbYe9Z3f1KXnWb0NJcp3Fk9X9UBbLeOjUv/ja2nvMHGU8bQ3/94CRCB5
+         Y8AYOxiYLDzc/EKJ5TDlOX694ZeutGj203P74Ffg1LSdAdJon4pOsrS6QOn7AkCZCd4w
+         iXDA==
+X-Gm-Message-State: AOAM531TCnUzvzIo2LgH86iZ2IIEOmCgl1/mQNkm08z3CTi32nHDtaUl
+        +Jqvo8Yz37O6mzJi3Hqgw3tXcqS/reA+q3qOcSyUEuiMcWV2
+X-Google-Smtp-Source: ABdhPJz6RuNG1Aqat8FM5q2Ld6AcaL4UoZAwc1G9Kmn8MYDoHcv1bfhN3C52rU9sTipTBS2jK429kyYCo/A9L6U9e+rEHmPZmIaN
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:80dhGiw6SsS128pziswnDI1u80tDjGhkmv0etse23Btp6AiuXMU
- erX4Fha1+Rio79fF8pR8DDJ243friSWaqCt5kJWcTfJS8wa/JbBXL4tgdUSUZYaPB9y7t0X
- 9ZEW64C2K3McSXftObLTHx2lBttv0XJ/hCJFeLcUY4zh87JmoJAlgu26uWiTJbTQJy6b4hi
- SILt2HJn0e/o9Q3rmEX8w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hwJ/wysCuJA=:gLwWR3WSAne682ae3N83h7
- 50mzDgEeO35RizI+pFCaDClySune61eyNXfXjLGv6+ZINVl5WeMkJTnPUt+6yi6iloIqsY1Bo
- 3oEgJpt+dDyr33uMSv10s3FwMTuBd+b3R+KBHY2fFqSVHuI6DKRQICn+TrH+k/U5ftBNaaHhb
- sju5YC9m1VdKaetngY17T8nk28xhEZCAYKpsYvYNuVoLYu4b8Y122XoJq2NCNbhJlHKFtWTUQ
- 6wlAv7cn+wobzXEc1s4XmWZNF5dMwSmrSv5wYpBP/jlCUvh/wV1NcwYpWPz+UhZWdkuZpVMEN
- Jd7AF4eu4eXPmLexUxlWjZfuw7mwsxoWiyWT8+0mZT5RFufCGtdJV2MS1gAgK7/vtScsB3fBo
- +CBPGDQxKx046dbIJYdy81lWeSDDdn9HGLCeSvZdNrFtIlNYwYQkCKOWgsvbxOUYMm8z9+ZWs
- 1/ghu6bCKaR9DSMjZ1Y4/en4DCsoOS6o2ExUB5DCL6ZTCizzqsPCZuBk+Jn2toPzILlSJiujM
- 3qI4SwhsxWgjMaOQl8sWt//D9QYjh7ILxAljt7JMEfuDmsQd37zETumtwPmq9MqADN1JnPQCf
- PEJ7+Epmtn9Q8NuHDceo3VwcbtG1BPh4CfQkyt9R2e6JweyG69DslwhMhFiP1OG8OFKsLAjoq
- Ll5CkkmUvYz2eQy/0Ir/ZQg8BMAXp4K+ODHOsTYq3Q/dmz7bMYRZlHVasI5iWQwegyhLRgA4J
- 0qI0Z/Ppfx3xXsBJnnJBn8q50MP30dlVQ6APQm8uvH52NUZ7wqGebKiKPEecS18MFHIlLO8mC
- xqJL1by3fzzt8VWO8+6pTSN99WU4chbNeaS3+8ntlhIoOcEu2VK0Xg9xOzNGCu/69ZG2zNlss
- W5gftl2UUdcsuZv10FcUv2tiNEcB58aL5bHPNyUAbzPuexYpcxrVUj+5m5Yb8dLzbCDuY68TD
- R7xEjJB3zUAyDJ77S4e3lrUoOWJQQu41sVXPm1Pu0JuKGbr06Pk5rh1I8edO/OnbcYSyPSSMe
- VzUVBm+roYpznFZXx6FxTnuataFDQOcwfoWxNbh2Q/3YfR5E4xVGCAzmb0e3ZwmPa9Fy6oIBc
- spnMijX1mfCTHO9cQgrpNdhlNAB4gtHtDXSthY1/3jqmx+N4q4T9CiZTw==
+X-Received: by 2002:a05:6638:2728:: with SMTP id m40mr3000968jav.141.1630756646669;
+ Sat, 04 Sep 2021 04:57:26 -0700 (PDT)
+Date:   Sat, 04 Sep 2021 04:57:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a3cf8605cb2a1ec0@google.com>
+Subject: [syzbot] upstream test error: KASAN: invalid-access Read in __entry_tramp_text_end
+From:   syzbot <syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a regular need in the kernel to provide a way to declare having
-a dynamically sized set of trailing elements in a structure. Kernel code
-should always use "flexible array members"[1] for these cases. The older
-style of one-element or zero-length arrays should no longer be used[2].
+Hello,
 
-Also, refactor the code a bit to make use of the struct_size() helper in
-kzalloc().
+syzbot found the following issue on:
 
-[1] https://en.wikipedia.org/wiki/Flexible_array_member
-[2] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#zero-len=
-gth-and-one-element-arrays
+HEAD commit:    f1583cb1be35 Merge tag 'linux-kselftest-next-5.15-rc1' of ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16354043300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5fe535c85e8d7384
+dashboard link: https://syzkaller.appspot.com/bug?extid=488ddf8087564d6de6e2
+compiler:       aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+userspace arch: arm64
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
- drivers/net/wireless/ath/ath11k/reg.c | 7 ++-----
- drivers/net/wireless/ath/ath11k/wmi.h | 2 +-
- 2 files changed, 3 insertions(+), 6 deletions(-)
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com
 
-diff --git a/drivers/net/wireless/ath/ath11k/reg.c b/drivers/net/wireless/=
-ath/ath11k/reg.c
-index e1a1df169034..c83d265185f1 100644
-=2D-- a/drivers/net/wireless/ath/ath11k/reg.c
-+++ b/drivers/net/wireless/ath/ath11k/reg.c
-@@ -97,7 +97,6 @@ int ath11k_reg_update_chan_list(struct ath11k *ar)
- 	struct channel_param *ch;
- 	enum nl80211_band band;
- 	int num_channels =3D 0;
--	int params_len;
- 	int i, ret;
+==================================================================
+BUG: KASAN: invalid-access in __entry_tramp_text_end+0xdfc/0x3000
+Read at addr f4ff000002a361a0 by task kdevtmpfs/22
+Pointer tag: [f4], memory tag: [fe]
 
- 	bands =3D hw->wiphy->bands;
-@@ -117,10 +116,8 @@ int ath11k_reg_update_chan_list(struct ath11k *ar)
- 	if (WARN_ON(!num_channels))
- 		return -EINVAL;
+CPU: 1 PID: 22 Comm: kdevtmpfs Not tainted 5.14.0-syzkaller-09284-gf1583cb1be35 #0
+Hardware name: linux,dummy-virt (DT)
+Call trace:
+ dump_backtrace+0x0/0x1ac arch/arm64/kernel/stacktrace.c:76
+ show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:215
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x68/0x84 lib/dump_stack.c:105
+ print_address_description+0x7c/0x2b4 mm/kasan/report.c:256
+ __kasan_report mm/kasan/report.c:442 [inline]
+ kasan_report+0x134/0x380 mm/kasan/report.c:459
+ __do_kernel_fault+0x128/0x1bc arch/arm64/mm/fault.c:317
+ do_bad_area arch/arm64/mm/fault.c:466 [inline]
+ do_tag_check_fault+0x74/0x90 arch/arm64/mm/fault.c:737
+ do_mem_abort+0x44/0xb4 arch/arm64/mm/fault.c:813
+ el1_abort+0x40/0x60 arch/arm64/kernel/entry-common.c:357
+ el1h_64_sync_handler+0xb0/0xd0 arch/arm64/kernel/entry-common.c:408
+ el1h_64_sync+0x78/0x7c arch/arm64/kernel/entry.S:567
+ __entry_tramp_text_end+0xdfc/0x3000
+ d_lookup+0x44/0x70 fs/dcache.c:2370
+ lookup_dcache+0x24/0x84 fs/namei.c:1520
+ __lookup_hash+0x24/0xd0 fs/namei.c:1543
+ kern_path_locked+0x90/0x10c fs/namei.c:2567
+ handle_remove+0x38/0x284 drivers/base/devtmpfs.c:312
+ handle drivers/base/devtmpfs.c:382 [inline]
+ devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+ devtmpfsd+0x8c/0xd0 drivers/base/devtmpfs.c:437
+ kthread+0x150/0x15c kernel/kthread.c:319
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:756
 
--	params_len =3D sizeof(struct scan_chan_list_params) +
--			num_channels * sizeof(struct channel_param);
--	params =3D kzalloc(params_len, GFP_KERNEL);
--
-+	params =3D kzalloc(struct_size(params, ch_param, num_channels),
-+			 GFP_KERNEL);
- 	if (!params)
- 		return -ENOMEM;
+Allocated by task 22:
+ kasan_save_stack+0x28/0x60 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:434 [inline]
+ __kasan_slab_alloc+0xb0/0x110 mm/kasan/common.c:467
+ kasan_slab_alloc include/linux/kasan.h:254 [inline]
+ slab_post_alloc_hook mm/slab.h:519 [inline]
+ slab_alloc_node mm/slub.c:2959 [inline]
+ slab_alloc mm/slub.c:2967 [inline]
+ kmem_cache_alloc+0x1cc/0x340 mm/slub.c:2972
+ getname_kernel+0x30/0x150 fs/namei.c:226
+ kern_path_locked+0x2c/0x10c fs/namei.c:2558
+ handle_remove+0x38/0x284 drivers/base/devtmpfs.c:312
+ handle drivers/base/devtmpfs.c:382 [inline]
+ devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+ devtmpfsd+0x8c/0xd0 drivers/base/devtmpfs.c:437
+ kthread+0x150/0x15c kernel/kthread.c:319
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:756
 
-diff --git a/drivers/net/wireless/ath/ath11k/wmi.h b/drivers/net/wireless/=
-ath/ath11k/wmi.h
-index d35c47e0b19d..d9c83726f65d 100644
-=2D-- a/drivers/net/wireless/ath/ath11k/wmi.h
-+++ b/drivers/net/wireless/ath/ath11k/wmi.h
-@@ -3608,7 +3608,7 @@ struct wmi_stop_scan_cmd {
- struct scan_chan_list_params {
- 	u32 pdev_id;
- 	u16 nallchans;
--	struct channel_param ch_param[1];
-+	struct channel_param ch_param[];
- };
+Freed by task 22:
+ kasan_save_stack+0x28/0x60 mm/kasan/common.c:38
+ kasan_set_track+0x28/0x3c mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/tags.c:36
+ ____kasan_slab_free.constprop.0+0x178/0x1e0 mm/kasan/common.c:366
+ __kasan_slab_free+0x10/0x1c mm/kasan/common.c:374
+ kasan_slab_free include/linux/kasan.h:230 [inline]
+ slab_free_hook mm/slub.c:1628 [inline]
+ slab_free_freelist_hook+0xc4/0x20c mm/slub.c:1653
+ slab_free mm/slub.c:3213 [inline]
+ kmem_cache_free+0x9c/0x420 mm/slub.c:3229
+ putname.part.0+0x68/0x7c fs/namei.c:270
+ putname include/linux/err.h:41 [inline]
+ filename_parentat fs/namei.c:2547 [inline]
+ kern_path_locked+0x64/0x10c fs/namei.c:2558
+ handle_remove+0x38/0x284 drivers/base/devtmpfs.c:312
+ handle drivers/base/devtmpfs.c:382 [inline]
+ devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
+ devtmpfsd+0x8c/0xd0 drivers/base/devtmpfs.c:437
+ kthread+0x150/0x15c kernel/kthread.c:319
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:756
 
- struct wmi_scan_chan_list_cmd {
-=2D-
-2.25.1
+The buggy address belongs to the object at ffff000002a36180
+ which belongs to the cache names_cache of size 4096
+The buggy address is located 32 bytes inside of
+ 4096-byte region [ffff000002a36180, ffff000002a37180)
+The buggy address belongs to the page:
+page:00000000a105b3ae refcount:1 mapcount:0 mapping:0000000000000000 index:0xf3ff000002a34100 pfn:0x42a30
+head:00000000a105b3ae order:3 compound_mapcount:0 compound_pincount:0
+flags: 0x1ffc00000010200(slab|head|node=0|zone=0|lastcpupid=0x7ff|kasantag=0x0)
+raw: 01ffc00000010200 0000000000000000 dead000000000122 faff000002837700
+raw: f3ff000002a34100 0000000080070003 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
 
+Memory state around the buggy address:
+ ffff000002a35f00: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
+ ffff000002a36000: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
+>ffff000002a36100: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
+                                                 ^
+ ffff000002a36200: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
+ ffff000002a36300: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
