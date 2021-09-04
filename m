@@ -2,61 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6C8400B2E
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1311F400B31
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235234AbhIDLhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 07:37:35 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:36694 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229832AbhIDLhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 07:37:34 -0400
-Received: from zn.tnic (p200300ec2f1bee0072f9cf00d8ebb3d8.dip0.t-ipconnect.de [IPv6:2003:ec:2f1b:ee00:72f9:cf00:d8eb:b3d8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EE21A1EC05E9;
-        Sat,  4 Sep 2021 13:36:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1630755392;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=bNz2wO5A10EBoDUwbw7sbTcYANL0Xzq9LCPwpzZpHNw=;
-        b=W5Zq+r+m6/GFifoxZCo4ZkmG2c0mX/ffe2Ey6XHiAcci1nxZgyKfM5pcnFR0zEXV2uNaAe
-        7Kg27wPmIm5i7kHvTjn7eoJEU4p5R1UGMEVgdHRaX2WyKcoF92cOq4w6qucUFN41A1VvAn
-        /um2yHxk6sl7xtwlD/C4vqxF5eN4ooc=
-Date:   Sat, 4 Sep 2021 13:36:26 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Joe Perches <joe@perches.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6] EDAC/mc: Prefer strscpy or scnprintf over strcpy
-Message-ID: <YTNaOsF3cRpL7065@zn.tnic>
-References: <20210903150539.7282-1-len.baker@gmx.com>
- <3a035a3ec4571a622ce640e042f9a119@perches.com>
- <20210904094451.GA2998@titan>
+        id S236366AbhIDLik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 07:38:40 -0400
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:56261 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236285AbhIDLii (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 07:38:38 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d31 with ME
+        id pndZ250093riaq203ndZ3n; Sat, 04 Sep 2021 13:37:35 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 04 Sep 2021 13:37:35 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, james.quinlan@broadcom.com
+Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] remoteproc: Fix a memory leak in an error handling path in 'rproc_handle_vdev()'
+Date:   Sat,  4 Sep 2021 13:37:32 +0200
+Message-Id: <e6d0dad6620da4fdf847faa903f79b735d35f262.1630755377.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210904094451.GA2998@titan>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 04, 2021 at 01:23:03PM +0200, Len Baker wrote:
-> I can remove the macro and add a comment with some explanation.
+If 'copy_dma_range_map() fails, the memory allocated for 'rvdev' will leak.
+Move the 'copy_dma_range_map()' call after the device registration so
+that 'rproc_rvdev_release()' can be called to free some resources.
 
-No, please leave the macro.
+Also, branch to the error handling path if 'copy_dma_range_map()' instead
+of a direct return to avoid some other leaks.
 
+Fixes: e0d072782c73 ("dma-mapping: introduce DMA range map, supplanting dma_pfn_offset")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Compile tested only.
+Review with care. I don't like to move code around because of possible
+side-effect.
+---
+ drivers/remoteproc/remoteproc_core.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+index 502b6604b757..775df165eb45 100644
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -556,9 +556,6 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
+ 	/* Initialise vdev subdevice */
+ 	snprintf(name, sizeof(name), "vdev%dbuffer", rvdev->index);
+ 	rvdev->dev.parent = &rproc->dev;
+-	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
+-	if (ret)
+-		return ret;
+ 	rvdev->dev.release = rproc_rvdev_release;
+ 	dev_set_name(&rvdev->dev, "%s#%s", dev_name(rvdev->dev.parent), name);
+ 	dev_set_drvdata(&rvdev->dev, rvdev);
+@@ -568,6 +565,11 @@ static int rproc_handle_vdev(struct rproc *rproc, void *ptr,
+ 		put_device(&rvdev->dev);
+ 		return ret;
+ 	}
++
++	ret = copy_dma_range_map(&rvdev->dev, rproc->dev.parent);
++	if (ret)
++		goto free_rvdev;
++
+ 	/* Make device dma capable by inheriting from parent's capabilities */
+ 	set_dma_ops(&rvdev->dev, get_dma_ops(rproc->dev.parent));
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.30.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
