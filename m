@@ -2,126 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13CE8400C44
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 19:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E440400C48
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 19:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237236AbhIDRYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 13:24:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33295 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237110AbhIDRYm (ORCPT
+        id S237213AbhIDRfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 13:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237170AbhIDRff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 13:24:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630776219;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e0Wbz3oMbJb5cgHuRwL4iP+mYlNNOJ7Kny5wVEZ3hak=;
-        b=FfgdQBzy1O/m5HqGNGxl5NaPTJJqCuTedzKNMlKTBpUllsyxpa0h1DMGbE8yuHentXy7u0
-        X4L9hl/jzWa8KdwyAS9vzmkFLHN+ZKkPf/VK50LfBCzh7kdtZlixP8FEVbPbLZDkvigvF0
-        KNSlPJpEZMiMStA1Qc9/b5xlVEO1iUI=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-40-geTUSWzhNt6MBhynIypAxQ-1; Sat, 04 Sep 2021 13:23:38 -0400
-X-MC-Unique: geTUSWzhNt6MBhynIypAxQ-1
-Received: by mail-qk1-f199.google.com with SMTP id c27-20020a05620a165b00b003d3817c7c23so3696469qko.16
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 10:23:38 -0700 (PDT)
+        Sat, 4 Sep 2021 13:35:35 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1454C061757
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 10:34:33 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id d16so3885404ljq.4
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 10:34:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X1/lHCDC58EpZAP3lSL5HIsZ7t+vVs/gedrU1qbfjC0=;
+        b=g5E0A7pKVAwqmS28GONd127aSSuVA2rRCo0KFjrdmCpo6rlWVPKyBE1s+a1I99PChg
+         pjdcRsvnYRVw/J0kgR4KTYtC7JHVyybTqboHqN+10p/hmcbHYK/1Q7FFPkYWSLmMWBLR
+         6+tIcgDsIrGGM3fiRmY2IlkJv2zcOqPBLJ1BM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=e0Wbz3oMbJb5cgHuRwL4iP+mYlNNOJ7Kny5wVEZ3hak=;
-        b=KYf74ZL9ZAxDZQEY2CinGgO/OIZrnrHn839LXZJp9afG2GoHt+lz/wiYsml+viTU81
-         mHNiUaTpgoDVJy10R7Tx4rWSxFBP5lbjelwsvdY9aR6T+g/7c6w6Dm9wbHujGo0uemFh
-         FRya2ghR3IhgXxJ2MmCy18rCy8SHbkAUlUAKeZH+Xf6wl+3S341twzSPg6gUM8fXx7+7
-         2hBoeVL1T8W+bst8vdmBUA2cjCp4B/lBzkZXd4QwDsOm2JmYJQOVlm0yfcToCbhNOYp6
-         CD4DYQfLQaR6Z22TsHJvoAfZdPfpZU9UjBiBQKo9GeYxjBVwf3fiZmWmEtvtiAjnZ8mz
-         vwMA==
-X-Gm-Message-State: AOAM533NnvHd+4VjCTwSmE6yMtVFyeKDEJbgk9O7+amepWPwfe03ue7R
-        nZ9aVG0cy7mb3P3zNDLJo7RwEF1MBpbFw4zKBv3DAZegZ7wxj5EcZG40XjYHSEi5XwQ8isyisB+
-        4j50vpFSaQt9+CuPAc6+DQAHu
-X-Received: by 2002:a05:620a:1aa5:: with SMTP id bl37mr4032270qkb.84.1630776218335;
-        Sat, 04 Sep 2021 10:23:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzbsiEoEf0I4fM3MvaSmXQlxjru1r+ru6sFAFyPegl7cJi6/5JsBilMY7jxQQJoQv3I77N7aw==
-X-Received: by 2002:a05:620a:1aa5:: with SMTP id bl37mr4032257qkb.84.1630776218123;
-        Sat, 04 Sep 2021 10:23:38 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id z21sm1893712qts.27.2021.09.04.10.23.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Sep 2021 10:23:37 -0700 (PDT)
-Date:   Sat, 4 Sep 2021 10:23:34 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     "Moger, Babu" <bmoger@amd.com>
-Cc:     Babu Moger <babu.moger@amd.com>, bp@alien8.de, bsd@redhat.com,
-        corbet@lwn.net, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, tglx@linutronix.de, x86@kernel.org
-Subject: Re: [v6 1/1] x86/bugs: Implement mitigation for Predictive Store
-Message-ID: <20210904172334.lfjyqi4qfzvbxef7@treble>
-References: <20210812234440.tcssf2iqs435bgdo@treble>
- <20210902181637.244879-1-babu.moger@amd.com>
- <20210903000706.fb43tzhjanyg64cx@treble>
- <dca004cf-bacc-1a1f-56d6-c06e8bec167a@amd.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X1/lHCDC58EpZAP3lSL5HIsZ7t+vVs/gedrU1qbfjC0=;
+        b=cnMrPtepFga0Ovj1dA1y2CdHv2rtxdoE6DqLijpxxhTymwXaNRWyY/KsbuhBYY8REo
+         vGkZWpDYobeE/Pr3PV7v8oi7an5t2bJyd57GMg1Z2Qv7dSc45axZttg52AACzXr7ldmV
+         C9vtjOUfj/7eU6lXFiglWpln5CBoBxd3EQIV+NGZJsgdsOvCZ+tRuipG/2HNyD/i5lZ+
+         J/Iv39/1+YLblU82OFOgbrYQMbH7mMupSVjZEW1moLTd9VE02hgA1SbEZBCt+N38IhEL
+         pS+VQg7FlfZXyBAW78HJ6JHfkEu0+ojEjM1vJGVsFnXdrXexjcvHeEKRtJXWlHXltbMI
+         I5ww==
+X-Gm-Message-State: AOAM5315XGzFKS2vZjGYBXwZHvY1TS1hN9VdF9XZ1S9Q4XHR+0x+jSoK
+        VBliGFwzqoeTqq6rIQLJR9jHAp3lKw910BWf
+X-Google-Smtp-Source: ABdhPJy2U4wWjxVF54rcdjD1B85UXOTQhbrB1x4BXNiODMX7ej0wvQo4n8v6TJ+e2C+uJXYE3C5vYA==
+X-Received: by 2002:a2e:8e62:: with SMTP id t2mr3746731ljk.477.1630776871589;
+        Sat, 04 Sep 2021 10:34:31 -0700 (PDT)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id s2sm307761ljj.83.2021.09.04.10.34.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 04 Sep 2021 10:34:30 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id x27so4836813lfu.5
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 10:34:30 -0700 (PDT)
+X-Received: by 2002:a05:6512:3987:: with SMTP id j7mr3646341lfu.280.1630776870597;
+ Sat, 04 Sep 2021 10:34:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <dca004cf-bacc-1a1f-56d6-c06e8bec167a@amd.com>
+References: <aa4aa155-b9b2-9099-b7a2-349d8d9d8fbd@paragon-software.com>
+In-Reply-To: <aa4aa155-b9b2-9099-b7a2-349d8d9d8fbd@paragon-software.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 4 Sep 2021 10:34:14 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whFAkqwGSNXqeN4KfNwXeCzp9-uoy69_mLExEydTajvGw@mail.gmail.com>
+Message-ID: <CAHk-=whFAkqwGSNXqeN4KfNwXeCzp9-uoy69_mLExEydTajvGw@mail.gmail.com>
+Subject: Re: [GIT PULL] ntfs3: new NTFS driver for 5.15
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 07:52:43PM -0500, Moger, Babu wrote:
-> > BTW, is the list of PSF-affected CPUs the same as the list of
-> > SSB-affected CPUs?  If there might be PSF CPUs which don't have SSB,
-> > then more logic will need to be added to ensure a sensible default.
-> I can't think of a scenario where it is not same on a system.
+On Fri, Sep 3, 2021 at 8:19 AM Konstantin Komarov
+<almaz.alexandrovich@paragon-software.com> wrote:
+>
+>   https://github.com/Paragon-Software-Group/linux-ntfs3.git master
 
-To clarify, I'm asking about CPU capabilities.  Are there any AMD CPUs
-with the PSF feature, which don't have SSB?
+Oh, I didn't notice this until now, as I was lining up to actually pull this.
 
-> > On a related note, is there a realistic, non-hypothetical need to have
-> > separate policies and cmdline options for both SSB and PSF?  i.e. is
-> > there a real-world scenario where a user needs to disable PSF while
-> > leaving SSB enabled?
-> 
-> https://www.amd.com/system/files/documents/security-analysis-predictive-store-forwarding.pdf <https://www.amd.com/system/files/documents/security-analysis-predictive-store-forwarding.pdf>
-> There are some examples in the document. Probably it is too soon to tell if
-> those are real real-world scenarios as this feature is very new.
+I probably forgot to say this originally:
 
-I didn't see any actual examples.  Are you referring to this sentence?
+For github accounts (or really, anything but kernel.org where I can
+just trust the account management), I really want the pull request to
+be a signed tag, not just a plain branch.
 
-  "PSFD may be desirable for software which is concerned with the
-   speculative behavior of PSF but desires a smaller performance impact
-   than setting SSBD."
+In a perfect world, it would be a PGP signature that I can trace
+directly to you through the chain of trust, but I've never actually
+required that.
 
-> > Because trying to give them separate interfaces, when PSF disable is
-> > intertwined with SSB disable in hardware, is awkward and confusing.  And
-> > the idea of adding another double-negative interface (disable=off!),
-> > just because a vulnerability is considered to be a CPU "feature", isn't
-> > very appetizing.
-> > 
-> > So instead of adding a new double-negative interface, which only *half*
-> > works due to the ssb_disable dependency, and which is guaranteed to
-> > further confuse users, and which not even be used in the real world
-> > except possibly by confused users...
-> > 
-> > I'm wondering if we can just start out with the simplest possible
-> > approach: don't change any code and instead just document the fact that
-> > "spec_store_bypass_disable=" also affects PSF.
-> > 
-> > Then, later on, if a real-world need is demonstrated, actual code could
-> > be added to support disabling PSF independently (but of course it would
-> > never be fully independent since PSF disable is forced by SSB disable).
-> 
-> Do you mean for now keep only 'on' and  'auto' and remove "off"?
+So while I prefer to see a full chain of trust, I realize that isn't
+always easy to set up, and so at least I want to see an "identity"
+that stays constant so that I can see that pulls come from the same
+consistent source that controls that key.
 
-No, since PSF can already be mitigated with SSBD today, I'm suggesting
-that all code be removed from the patch and instead just update the
-documentation.
+(We've also had situations where the chain of trust just didn't exist
+_yet_, but then later on it can be established as a developer ends up
+becoming more integral in the community)
 
--- 
-Josh
+Signed tags are easy to use - the hardest part is having any pgp key
+setup at all, then git makes using the keys trivial with "git tag -s
+.."
 
+              Linus
