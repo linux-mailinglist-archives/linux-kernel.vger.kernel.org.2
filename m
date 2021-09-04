@@ -2,133 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DCB400952
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 04:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC4A400955
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 04:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350816AbhIDC2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 22:28:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32896 "EHLO
+        id S1350746AbhIDCcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 22:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231389AbhIDC2z (ORCPT
+        with ESMTP id S234937AbhIDCcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 22:28:55 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638F7C061575;
-        Fri,  3 Sep 2021 19:27:54 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so749827pjx.5;
-        Fri, 03 Sep 2021 19:27:54 -0700 (PDT)
+        Fri, 3 Sep 2021 22:32:22 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC799C061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 19:31:21 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id c17so860612pgc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 19:31:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=I0YxCvUghet9DhkiuBhmPHLgPAw3XzzyXfrXY1VG23c=;
-        b=oni0LfF7wnSgMcsYp+GqcVd8hC4djLUJXjwH+/Jk9+BKPNa6I9jQdtqSx2d9YDBSEl
-         rIDtvRVOpVhSYIRAmrBmWFrUQ75jVh969uKlzH2N9By6yOqHrnp+NUHEEFS4h/ZX+kWJ
-         J4c9Us85LJNFvQlUwpsbDGFmwUJCwd5nqqzzIC3r1KvIOvKScEj+WBczPnj99D2DJX0g
-         FuhOgEliUZcFpedW2qvDNqC7+HqgS5khWLXBSibB05xlPqh3DkOXp736ZjN4QH8VXI6W
-         PxVKc5mpxOgZ7DgI6hmh0LA6f2g2vIVahmW2eJLrDZ0CuMGesYrs8YilDKviiXfFae5r
-         oB/A==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OyXn9whqgoBPI+82Ub9Acbq8v9c7Sx+Dk/WDUp7VoDs=;
+        b=fA+bgyEZn/RACKE+b07YTN+d0MxIb0VABaY4rEP/etKiVJ9ivQMNdMr47CifJ+6xt3
+         UIJKC2UuSffSt5SKsR6LAMZQ8Pw6UE0IFxrY/r2MIjSLPe3KhExABb3yHtYwUqDCQ0N0
+         o+2mMZRwLUKdEmRe9DIcDBPzs6hpzlzuG/4X1gxzrbeoyJS7xz/gU6Cl9+1Erd5yaFrZ
+         sXl9q5Thz88a2+3Q3vmB3P2ebk0qArtzOhWASx0rdWhsHS17OwkcmgKqqRF+UCLGVs5m
+         Epf3Hylx/lE3Qe9yk6UOEOIRoOJE0EoGHIsZpjH7PB4cJU5BLWDdc+um4y/b0wrDQJQF
+         fTKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=I0YxCvUghet9DhkiuBhmPHLgPAw3XzzyXfrXY1VG23c=;
-        b=CGPWpn6D9cl78LcEVC+sKfQ1/evHmQkMwFtexK3mLcF7jyntApeeJq+0/NrWXsCKg9
-         OKz3AwnIIc03Gui5aVjuUGMNppSIOZ6oSAWknmpDyJ04ZCbzUuPrVkPMjhyDOXNnhZ3J
-         094ygPSS5HfwcGrn8snQMeojtTZN6YGpIQFS3OvyrdDi+6FIhCE1prpMEbGQhdS6SPrQ
-         yytslXsrykDfwzaZVeadhOi5BUH7V+yNeOF5jdTw8Y6B6cugIs75nJ9c1Wq4h78x4kdS
-         p1i+oBJ4AlUPleDqCj0jM5ZJERp9D4DksSm3mcQDATkxn073hYNtCHl6AVXlZcLm5/8X
-         mqZQ==
-X-Gm-Message-State: AOAM530j0dPzsGkTF02sCe5FnU3EBJXqJ02TYiwPgG61n6WDt9qodZyb
-        b7oCJKYpkKEkKILsyit2tNa+g+rtWDZeAlSkpnyk1rLr3vwwK/vt
-X-Google-Smtp-Source: ABdhPJxqa28GSmTg20NdRJcEvtdeBCqNvYfDe4D1JiXScdYQVWc2bJCXCyUs4MHSF9p33xGn1jxM8AwB3HlN45GaY0Q=
-X-Received: by 2002:a17:90b:3b4d:: with SMTP id ot13mr1974778pjb.67.1630722473874;
- Fri, 03 Sep 2021 19:27:53 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OyXn9whqgoBPI+82Ub9Acbq8v9c7Sx+Dk/WDUp7VoDs=;
+        b=iExxufKIVhPJtyE0C/uX28EY0hUP4/wu4RJfsqsRlGZkWmbWnUi1bIYQzv0rX8uxFK
+         phRHSclK9Y1Y5nmwTVWFzf8x1ELDFbpyHmHrfE2CZVKrj45SvpTZQJQjzlxo64YjYL/i
+         XG74lMfZD+5JYMzy1lei0ohXewuvUH663QFXlcMpxafzoYnr5cV70oGK0jaPp0a+kjuc
+         uEqHdCdgaVGcCU+vJ65p5a8pgSCQWFRx9Weo8ZDeiyGpOp9fHKMCk+s/cNFoSLiYvVvD
+         0/zXUfw7ncOARWwOzZarAcFmfDNoFC8cGkvrSkYPodWFEPf0NZBAMIcZ6EkedKbd9Zvo
+         eY8Q==
+X-Gm-Message-State: AOAM530pN2932uloUCrbqSahPVDcUNbf8aulcqH/+523uz3OGg+C8EEA
+        edy/W4zF3wynUrnnPvBBornLhiYoypSV6QAwp6g=
+X-Google-Smtp-Source: ABdhPJz+YZM973P2EOVFVwPN03rsfV4bZgWNFBlEKnp5ptr8wgE76WeECaEKGKnrqEyblMHcUvPMpg==
+X-Received: by 2002:a05:6a00:244f:b0:404:fa55:c1a with SMTP id d15-20020a056a00244f00b00404fa550c1amr6022233pfj.42.1630722681294;
+        Fri, 03 Sep 2021 19:31:21 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([213.173.35.225])
+        by smtp.gmail.com with ESMTPSA id z24sm582561pfj.88.2021.09.03.19.31.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 19:31:20 -0700 (PDT)
+Date:   Sat, 4 Sep 2021 10:31:16 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] coresight: cpu-debug: control default behavior via
+ Kconfig
+Message-ID: <20210904023116.GK303522@leoy-ThinkPad-X240s>
+References: <20210903182839.1.I20856983f2841b78936134dcf9cdf6ecafe632b9@changeid>
 MIME-Version: 1.0
-References: <20210831000912.GA4588@raspberrypi> <4b68307a-26a8-c17b-bbf6-1fb9b88e7f9e@canonical.com>
-In-Reply-To: <4b68307a-26a8-c17b-bbf6-1fb9b88e7f9e@canonical.com>
-From:   Austin Kim <austindh.kim@gmail.com>
-Date:   Sat, 4 Sep 2021 11:27:44 +0900
-Message-ID: <CADLLry61wZLKeqLc=wzPV1rMe86dLDud96WXOB-r8wFKC6XPzw@mail.gmail.com>
-Subject: Re: [PATCH] apparmor: remove unused argument of aa_umount()
-To:     John Johansen <john.johansen@canonical.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903182839.1.I20856983f2841b78936134dcf9cdf6ecafe632b9@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=EB=85=84 9=EC=9B=94 4=EC=9D=BC (=ED=86=A0) =EC=98=A4=EC=A0=84 8:30, Jo=
-hn Johansen <john.johansen@canonical.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
-=B1:
->
-> On 8/30/21 5:09 PM, Austin Kim wrote:
-> > The 'flags' argument in aa_umount() is not used,
-> > so it had better remove unused argument.
-> >
-> > Signed-off-by: Austin Kim <austindh.kim@gmail.com>
->
-> looks good, I'll pull this into my tree
+On Fri, Sep 03, 2021 at 06:28:54PM -0700, Brian Norris wrote:
+> Debugfs is nice and so are module parameters, but
+>  * debugfs doesn't take effect early (e.g., if drivers are locking up
+>    before user space gets anywhere)
+>  * module parameters either add a lot to the kernel command line, or
+>    else take effect late as well (if you build =m and configure in
+>    /etc/modprobe.d/)
+> 
+> So in the same spirit as these
+>   CONFIG_PANIC_ON_OOPS (also available via cmdline or modparam)
+>   CONFIG_INTEL_IOMMU_DEFAULT_ON (also available via cmdline)
+> add a new Kconfig option.
+> 
+> Module parameters and debugfs can still override.
+> 
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
 
-Great, thanks!
+Thanks for the patch, looks good to me:
 
->
-> Acked-by: John Johansen <john.johansen@canonical.com>
->
-> > ---
-> >  security/apparmor/include/mount.h | 2 +-
-> >  security/apparmor/lsm.c           | 2 +-
-> >  security/apparmor/mount.c         | 2 +-
-> >  3 files changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/security/apparmor/include/mount.h b/security/apparmor/incl=
-ude/mount.h
-> > index a710683b2496..9327456cda09 100644
-> > --- a/security/apparmor/include/mount.h
-> > +++ b/security/apparmor/include/mount.h
-> > @@ -42,7 +42,7 @@ int aa_new_mount(struct aa_label *label, const char *=
-dev_name,
-> >                const struct path *path, const char *type, unsigned long=
- flags,
-> >                void *data);
-> >
-> > -int aa_umount(struct aa_label *label, struct vfsmount *mnt, int flags)=
-;
-> > +int aa_umount(struct aa_label *label, struct vfsmount *mnt);
-> >
-> >  int aa_pivotroot(struct aa_label *label, const struct path *old_path,
-> >                const struct path *new_path);
-> > diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
-> > Index 0834ba6a8a2e..58ba3f0605d2 100644
-> > --- a/security/apparmor/lsm.c
-> > +++ b/security/apparmor/lsm.c
-> > @@ -574,7 +574,7 @@ static int apparmor_sb_umount(struct vfsmount *mnt,=
- int flags)
-> >
-> >       label =3D __begin_current_label_crit_section();
-> >       if (!unconfined(label))
-> > -             error =3D aa_umount(label, mnt, flags);
-> > +             error =3D aa_umount(label, mnt);
-> >       __end_current_label_crit_section(label);
-> >
-> >       return error;
-> > diff --git a/security/apparmor/mount.c b/security/apparmor/mount.c
-> > index aa6fcfde3051..e33de97839ec 100644
-> > --- a/security/apparmor/mount.c
-> > +++ b/security/apparmor/mount.c
-> > @@ -610,7 +610,7 @@ static int profile_umount(struct aa_profile *profil=
-e, const struct path *path,
-> >                          AA_MAY_UMOUNT, &perms, info, error);
-> >  }
-> >
-> > -int aa_umount(struct aa_label *label, struct vfsmount *mnt, int flags)
-> > +int aa_umount(struct aa_label *label, struct vfsmount *mnt)
-> >  {
-> >       struct aa_profile *profile;
-> >       char *buffer =3D NULL;
-> >
->
+Reviewed-by: Leo Yan <leo.yan@linaro.org>
+
+> ---
+> 
+>  drivers/hwtracing/coresight/Kconfig               | 13 +++++++++++++
+>  drivers/hwtracing/coresight/coresight-cpu-debug.c |  2 +-
+>  2 files changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+> index f026e5c0e777..8b638eb3cb7d 100644
+> --- a/drivers/hwtracing/coresight/Kconfig
+> +++ b/drivers/hwtracing/coresight/Kconfig
+> @@ -150,6 +150,19 @@ config CORESIGHT_CPU_DEBUG
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called coresight-cpu-debug.
+>  
+> +config CORESIGHT_CPU_DEBUG_DEFAULT_ON
+> +	bool "Enable CoreSight CPU Debug by default
+> +	depends on CORESIGHT_CPU_DEBUG
+> +	help
+> +	  Say Y here to enable the CoreSight Debug panic-debug by default. This
+> +	  can also be enabled via debugfs, but this ensures the debug feature
+> +	  is enabled as early as possible.
+> +
+> +	  Has the same effect as setting coresight_cpu_debug.enable=1 on the
+> +	  kernel command line.
+> +
+> +	  Say N if unsure.
+> +
+>  config CORESIGHT_CTI
+>  	tristate "CoreSight Cross Trigger Interface (CTI) driver"
+>  	depends on ARM || ARM64
+> diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> index 00de46565bc4..8845ec4b4402 100644
+> --- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> +++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> @@ -105,7 +105,7 @@ static DEFINE_PER_CPU(struct debug_drvdata *, debug_drvdata);
+>  static int debug_count;
+>  static struct dentry *debug_debugfs_dir;
+>  
+> -static bool debug_enable;
+> +static bool debug_enable = IS_ENABLED(CONFIG_CORESIGHT_CPU_DEBUG_DEFAULT_ON);
+>  module_param_named(enable, debug_enable, bool, 0600);
+>  MODULE_PARM_DESC(enable, "Control to enable coresight CPU debug functionality");
+>  
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
+> 
