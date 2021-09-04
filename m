@@ -2,191 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6231B400BAE
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 16:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DCE5400BB0
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 16:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236586AbhIDOlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 10:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231987AbhIDOlM (ORCPT
+        id S236632AbhIDOqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 10:46:11 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:40442 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236587AbhIDOqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 10:41:12 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA71AC061575
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 07:40:10 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id bg1so1265272plb.13
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 07:40:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rT9D3cD6AK/U9ynMxv4dnPjLHMnSzhI3eW+DvMhMYv4=;
-        b=bA7994xBs5m1ZQvCLablElQZ97mYGS2txQ6t1KugHdJ9bOTKQn/g1ykQb6kf+VW1kj
-         x53d9bgkmnic8+HM/3c01odPUM/1NaKqTuMfBesS5QBLCQov39J4DsNKc4fDhIo5uKGu
-         QmkVEDxUwaKxGfTW9JqRWsG1vFwPPcYyrSs1A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rT9D3cD6AK/U9ynMxv4dnPjLHMnSzhI3eW+DvMhMYv4=;
-        b=laTtmNKMc5KkwznslAywqoBUSoO2J7IzOadJe5jXfDeDkHfZpq44iQzT7A8sfty9m8
-         yRz+79O3SU9K+lzpqU7jLMcBoZ7K2GQXc6n3OS2MQDZy1UL04U9BI58kWkNSCS8mLabe
-         uZronpIObYJh87Z3xRkOLQhgLZzsd8SeoOgr/JE2QTeMNCJOeQylsCd/1srj19kEoOgF
-         kqEovHAJiWXx0KOI/ETQ3iQYIGfn9bj2vFMuBT4k8HobFlt42R5a7/IVzlrTeEBjli7/
-         jD0On8xuibWgU9kqhmptyc15DTBsEQ0CJPKITfi3txeTb+QAEJ8cOgS4pwTal6/TF+Ev
-         YgQQ==
-X-Gm-Message-State: AOAM531fVOzm9qR+0zFyUk1jYGUXCrunu70zN0K5GXXzT15CbkQgG0Se
-        pSrCLYnGbJvL2FxiItsQOWKosQ==
-X-Google-Smtp-Source: ABdhPJzl0DwgZA0hvjnFBnC+PnasBoLTB/Zs++xSopyABJPyxYKDWg4SZhDJeJK8DjDAcojzCdCxpQ==
-X-Received: by 2002:a17:902:a50f:b029:11a:b033:e158 with SMTP id s15-20020a170902a50fb029011ab033e158mr3561213plq.26.1630766410054;
-        Sat, 04 Sep 2021 07:40:10 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u6sm2949081pgr.3.2021.09.04.07.40.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Sep 2021 07:40:09 -0700 (PDT)
-Date:   Sat, 4 Sep 2021 07:40:08 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jessica Yu <jeyu@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arch@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH 3/4] module: Use a list of strings for ro_after_init
- sections
-Message-ID: <202109040739.F973371BD@keescook>
-References: <20210901233757.2571878-1-keescook@chromium.org>
- <20210901233757.2571878-4-keescook@chromium.org>
- <20210903064951.to4dhiu7zua7s6dn@treble>
- <202109030932.1358C4093@keescook>
- <20210904040903.tgkkoo2x76zpuj62@treble>
+        Sat, 4 Sep 2021 10:46:09 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mMWsj-0014LY-1W; Sat, 04 Sep 2021 14:42:57 +0000
+Date:   Sat, 4 Sep 2021 14:42:57 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [possible bug] missed wakeup in do_sigtimedwait()?
+Message-ID: <YTOF8VYTYNFYpB7O@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210904040903.tgkkoo2x76zpuj62@treble>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 09:09:03PM -0700, Josh Poimboeuf wrote:
-> On Fri, Sep 03, 2021 at 09:38:42AM -0700, Kees Cook wrote:
-> > On Thu, Sep 02, 2021 at 11:49:51PM -0700, Josh Poimboeuf wrote:
-> > > On Wed, Sep 01, 2021 at 04:37:56PM -0700, Kees Cook wrote:
-> > > > Instead of open-coding the section names, use a list for the sections that
-> > > > need to be marked read-only after init. Unfortunately, it seems we can't
-> > > > do normal section merging with scripts/module.lds.S as ld.bfd doesn't
-> > > > correctly update symbol tables. For more details, see commit 6a3193cdd5e5
-> > > > ("kbuild: lto: Merge module sections if and only if CONFIG_LTO_CLANG
-> > > > is enabled").
-> > > 
-> > > I'm missing what this has to do with section merging.  Can you connect
-> > > the dots here, i.e. what sections would we want to merge and how would
-> > > that help here?
-> > 
-> > Right, sorry, if ld.bfd didn't have this issue, we could use section
-> > merging in the module.lds.S file the way we do in vmlinux.lds:
-> > 
-> > #ifndef RO_AFTER_INIT_DATA
-> > #define RO_AFTER_INIT_DATA                                              \
-> >         . = ALIGN(8);                                                   \
-> >         __start_ro_after_init = .;                                      \
-> >         *(.data..ro_after_init)                                         \
-> >         JUMP_TABLE_DATA                                                 \
-> >         STATIC_CALL_DATA                                                \
-> >         __end_ro_after_init = .;
-> > #endif
-> > ...
-> >         . = ALIGN((align));                                             \
-> >         .rodata           : AT(ADDR(.rodata) - LOAD_OFFSET) {           \
-> >                 __start_rodata = .;                                     \
-> >                 *(.rodata) *(.rodata.*)                                 \
-> >                 SCHED_DATA                                              \
-> >                 RO_AFTER_INIT_DATA      /* Read only after init */      \
-> >                 . = ALIGN(8);                                           \
-> >                 __start___tracepoints_ptrs = .;                         \
-> >                 KEEP(*(__tracepoints_ptrs)) /* Tracepoints: pointer array */ \
-> >                 __stop___tracepoints_ptrs = .;                          \
-> >                 *(__tracepoints_strings)/* Tracepoints: strings */      \
-> >         }                                                               \
-> > 
-> > Then jump_table and static_call sections could be collected into a
-> > new section, as the module loader would only need to look for that
-> > single name.
-> 
-> Hm, that could be a really nice way to converge things for vmlinux and
-> module linking.
+do_sigtimedwait():
+        spin_lock_irq(&tsk->sighand->siglock);
+        sig = dequeue_signal(tsk, &mask, info);
+nope, nothing posted yet
+        if (!sig && timeout) {
+                /*
+                 * None ready, temporarily unblock those we're interested
+                 * while we are sleeping in so that we'll be awakened when
+                 * they arrive. Unblocking is always fine, we can avoid
+                 * set_current_blocked().
+                 */
+                tsk->real_blocked = tsk->blocked;
+                sigandsets(&tsk->blocked, &tsk->blocked, &mask);
+                recalc_sigpending();
+                spin_unlock_irq(&tsk->sighand->siglock);
+... and now somebody sends us a signal.  signal_wake_up() does nothing,
+since we are still in TASK_RUNNING at that point
 
-Agreed! I had really wanted to do more of this, but was stumped by the
-weird symbol behavior.
+                __set_current_state(TASK_INTERRUPTIBLE);
+                ret = freezable_schedule_hrtimeout_range(to, tsk->timer_slack_ns,
+                                                         HRTIMER_MODE_REL);
+... and we go to sleep for the duration of timeout or until the next
+signal to arrive.
 
-> After some digging, 6a3193cdd5e5 isn't necessarily a linker bug.  It may
-> be some kind of undefined behavior when the section address isn't
-> specified.  If you just explicitly set the section address to zero then
-> the "bug" goes away.
+                spin_lock_irq(&tsk->sighand->siglock);
+                __set_task_blocked(tsk, &tsk->real_blocked);
+                sigemptyset(&tsk->real_blocked);
+                sig = dequeue_signal(tsk, &mask, info);
+... now we finally dequeue the sucker that had been pending through the
+entire timeout period.
 
-Well that's a nice find! I'll play more with this to see if I can make a
-cleaner solution.
+        }
+        spin_unlock_irq(&tsk->sighand->siglock);
 
-Thanks!
-
--Kees
-
-> 
-> diff --git a/scripts/module.lds.S b/scripts/module.lds.S
-> index 04c5685c25cf..80b09b7d405c 100644
-> --- a/scripts/module.lds.S
-> +++ b/scripts/module.lds.S
-> @@ -30,23 +30,22 @@ SECTIONS {
->  
->  	__patchable_function_entries : { *(__patchable_function_entries) }
->  
-> -#ifdef CONFIG_LTO_CLANG
->  	/*
->  	 * With CONFIG_LTO_CLANG, LLD always enables -fdata-sections and
->  	 * -ffunction-sections, which increases the size of the final module.
->  	 * Merge the split sections in the final binary.
->  	 */
-> -	.bss : {
-> +	.bss 0 : {
->  		*(.bss .bss.[0-9a-zA-Z_]*)
->  		*(.bss..L*)
->  	}
->  
-> -	.data : {
-> +	.data 0 : {
->  		*(.data .data.[0-9a-zA-Z_]*)
->  		*(.data..L*)
->  	}
->  
-> -	.rodata : {
-> +	.rodata 0 : {
->  		*(.rodata .rodata.[0-9a-zA-Z_]*)
->  		*(.rodata..L*)
->  	}
-> @@ -55,11 +54,10 @@ SECTIONS {
->  	 * With CONFIG_CFI_CLANG, we assume __cfi_check is at the beginning
->  	 * of the .text section, and is aligned to PAGE_SIZE.
->  	 */
-> -	.text : ALIGN_CFI {
-> +	.text 0 : ALIGN_CFI {
->  		*(.text.__cfi_check)
->  		*(.text .text.[0-9a-zA-Z_]* .text..L.cfi*)
->  	}
-> -#endif
->  }
->  
->  /* bring in arch-specific sections */
-> 
-
--- 
-Kees Cook
+Looks like that __set_current_state() should've been done before dropping
+the siglock.  Am I missing something subtle here?  It's not a terribly
+wide window, but it's not impossible to hit e.g. on KVM and it does look
+like a missed wakeup problem...  For that matter, spin_unlock_irq() might
+run irq handlers, so it's not impossible to hit on the real hardware either.
