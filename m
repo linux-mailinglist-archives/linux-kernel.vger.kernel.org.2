@@ -2,80 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D76D400A59
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 10:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11155400A5B
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 10:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350847AbhIDIEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 04:04:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51037 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234128AbhIDICm (ORCPT
+        id S234096AbhIDIKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 04:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233709AbhIDIKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 04:02:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630742474;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dbDmMaToSJQ6dPIHh+SXBa8mY/4mUayITASUyPnbVTQ=;
-        b=VZ+3n8nVB40aTSZGaQ2hsOQWmh6rwJfs0ccU95+4h6rUYgijh9WtJuZpMrBsnnSTaf7Vyb
-        PeaLdDtigUAxn4TXJ5GNBXuoejqRjuDxaDIkzl0Oq7AtYzbqgUejCwCyIhtyLl0ZTxaJGU
-        EI3l9omKDZBXTCsncGR1AV0zNHl1C+4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-467-NdC7YETuM32Sga8gJDFeqQ-1; Sat, 04 Sep 2021 04:01:13 -0400
-X-MC-Unique: NdC7YETuM32Sga8gJDFeqQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E270B10054F6;
-        Sat,  4 Sep 2021 08:01:11 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.194.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9F9815D6A1;
-        Sat,  4 Sep 2021 08:01:09 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
-Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
-References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com>
-        <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com>
-        <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org>
-Date:   Sat, 04 Sep 2021 10:01:07 +0200
-In-Reply-To: <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org> (Nathan
-        Chancellor's message of "Fri, 3 Sep 2021 16:04:50 -0700")
-Message-ID: <878s0c4vng.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Sat, 4 Sep 2021 04:10:25 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B09C061575;
+        Sat,  4 Sep 2021 01:09:24 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id i24so1318610pfo.12;
+        Sat, 04 Sep 2021 01:09:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FM13umhiUZ5Y1cUzG3acpmqo6yaDvf6xGiDzXDodIV4=;
+        b=D0uiAgyFHTZSJ4/mZMzCUe+Jr2nKhjSLljLCR+masb9b9IJGho5k7blEZ1czjm5rdu
+         nCNNYHTB8l3Pl47jvWNNjjAY/e+j660nE25+7fcj9vOAg191PVM7eiMAWx5jdXd5U8FJ
+         Qu3B8SBmkuezbXMEijcA3FoWGXOGJ+6tqEaRwHS/B9QEpdc2OvAu72ORHNHUyRpPfBaY
+         lGUJ5441GZRBape+BPLrCjTyKCccIAoGqKfc8jl3NQiCxPk/sMXq5KkV/aSvtVLF+8nI
+         sCBRWe7mKtFAcS7uW7faPNazuW9lYnqig0m/MRU/P36SnSQ5cV6hPRRZ0aYGJHuKnrzO
+         FJug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FM13umhiUZ5Y1cUzG3acpmqo6yaDvf6xGiDzXDodIV4=;
+        b=qGddrnrrsi5E9pMKi28HWYXfWYoBfsOrR3jUCLA1ESbvEvMu4okyoVLs67ji6KUd4Z
+         Ovy/+R/oJzePdcX52RVDkRCdshSaQ+ImtJKfXCahuJr4Cpco098DVeKNrZFf98uabRL1
+         XnPb8t128yNu0JXTk1KPfDkGeGLL33aq3l8VLV6sGNywyjYN11kjB9eX4GhDiFwPv07o
+         JoZ9Xugr8VpqmlEkyJIdYREYt1q9usLkPqc0nSwh+/G6vI3dmvFWNO2/w8pCqVoI0Hw3
+         J4KIAypSTEAV8HZsAXvZAgAXWVwxULlbeNF5wIqEZ3898lQ3bDfpyzc72fgZuUZ06nid
+         /xOQ==
+X-Gm-Message-State: AOAM531CwBLCYgLyBYdsCRcWiMrj7neS9gWdW8G/DYpkBuTydlFRN+Ck
+        VRvLJT7zbxHeTiPyPxqMT0QElcMIHOFnqw==
+X-Google-Smtp-Source: ABdhPJyWZDgzCINK92xB/oRyNQ1gtNbqN/d0OGjoJcpsnAW/olWibQZxe3s8v9+NLAWK4kHylgXOCA==
+X-Received: by 2002:a62:a203:0:b0:3ea:eeb7:fdd with SMTP id m3-20020a62a203000000b003eaeeb70fddmr2558895pff.59.1630742963493;
+        Sat, 04 Sep 2021 01:09:23 -0700 (PDT)
+Received: from localhost.localdomain ([2401:4900:1c26:4b2d:32ce:9155:7c42:8667])
+        by smtp.gmail.com with ESMTPSA id v8sm1445652pjh.24.2021.09.04.01.09.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Sep 2021 01:09:22 -0700 (PDT)
+From:   Srivathsa Dara <srivathsa729.8@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Srivathsa Dara <srivathsa729.8@gmail.com>
+Subject: [PATCH] staging: fbtft: fbtft-core: fix 'trailing statements should be on next line' coding style error
+Date:   Sat,  4 Sep 2021 13:39:16 +0530
+Message-Id: <20210904080916.15476-1-srivathsa729.8@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Nathan Chancellor:
+Fix coding style error 'trailing statements should be on next line'
 
-> We set up the linux-toolchains mailing list after Plumbers 2020 to
-> have a common place that kernel developers can bring issues and
-> discussion to both clang and GCC folks. I am not sure who exactly from
-> the GCC world is subscribed but I have added it now to see.
+Signed-off-by: Srivathsa Dara <srivathsa729.8@gmail.com>
+---
+ drivers/staging/fbtft/fbtft-core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Someone said that they =E2=80=9Cagree with the reasoning=E2=80=9D, but the =
-original
-patch does not provide one.  It looks like it's about preventing the use
-of compiler-supplied header files, but even that doesn't really answer
-the question: why?
-
-Especially since some parts of the kernel actually need some of those
-header files.
-
-Thanks,
-Florian
+diff --git a/drivers/staging/fbtft/fbtft-core.c b/drivers/staging/fbtft/fbtft-core.c
+index ed992ca605eb..65de1c02e7dc 100644
+--- a/drivers/staging/fbtft/fbtft-core.c
++++ b/drivers/staging/fbtft/fbtft-core.c
+@@ -1038,7 +1038,8 @@ int fbtft_init_display(struct fbtft_par *par)
+ 			i++;
+ 
+ 			/* make debug message */
+-			for (j = 0; par->init_sequence[i + 1 + j] >= 0; j++);
++			for (j = 0; par->init_sequence[i + 1 + j] >= 0; j++)
++				;
+ 
+ 			fbtft_par_dbg(DEBUG_INIT_DISPLAY, par,
+ 				      "init: write(0x%02X) %*ph\n",
+-- 
+2.25.1
 
