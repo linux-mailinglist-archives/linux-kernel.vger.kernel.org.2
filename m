@@ -2,114 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE415400AC0
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF03400AC3
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351057AbhIDKH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 06:07:28 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:45431 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351016AbhIDKH0 (ORCPT
+        id S1350923AbhIDKOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 06:14:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234482AbhIDKOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 06:07:26 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 295335804A3;
-        Sat,  4 Sep 2021 06:06:24 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Sat, 04 Sep 2021 06:06:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=ZtKpVg177OTzh0Ohhb3bXC9Gfrs
-        WEgSOsLMzs3dNp0E=; b=EXHCOXivVlVVx7Yblbq4QwmWeaFjiHDbOufzUXQl360
-        R+/mxC2PPuRFusDB0CZTA9CAI2DDtTMSBUxmhdi3JbNAn93EIuK41NDAaz0BX+1o
-        MdMvNhrupBmQP37cQNA6RQARDN0N4FIjMGY0gzqLwia6/VFMXm0GrA/0bO5FhrC+
-        p6FIWa/k/aZFwnf1b7cVIoB4wX26ETkjd/kV+68ftrs+upE69ijV8MSD/tcLQXRw
-        Y+K/Z069k0gw+Mc8+6KiXPE9CxY08jC19iBGXnRwFKaTXqJ8K0yw9oZbSRmWVIXx
-        5B7wf7ajhx52S6NDpW5njZ8qBsDmWy+tkMe8i0t0VhQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ZtKpVg
-        177OTzh0Ohhb3bXC9GfrsWEgSOsLMzs3dNp0E=; b=TmiKGB6YYLXLuZmfr57NqH
-        6AmQAw0/LpFf4ughNQ+oSEh8M3fkdJEQW1Z0eiaU9A6gCM7BCoDcdZlgEhCD5VP2
-        4E+Tp54sWtkR6eK7ja4VHvQ9QmfUsfyKWVfPfl6Mfds/g00FWnsm7a6UltFWcsZf
-        ep+c1u60iUMqwvQF3IVNA4LSbi7Bv2Cp01RPPjNtQwIYohPJfMYycn0Qsr0aaRAZ
-        gdVuRP3vnc0syTBsRDgdAujZ1Yxl0QaOtjExZ3vmjYHd8/iUaxApWhlYhBeuo/ia
-        r93eWdx4u+SfQ8WJDqRva5ETcUptsAzay11CJmk4SPsjRHICmonNKe1PRcl76zUA
-        ==
-X-ME-Sender: <xms:H0UzYZpljogFzy7H8rH3FaXZG55gslWsbaoWDWCGVzvztAjqj0gUTA>
-    <xme:H0UzYbq615H4mcBqX7g8u16kYvO2Du0PEBWzRngd7PLiE-p2_IdlIXfmLDYiV_cqc
-    CYUcsQR3JVbVw>
-X-ME-Received: <xmr:H0UzYWP1dVGG7LlUjIKwAbvaoPzat_DqQ5Ulogksz6CiQ36-vxR-R_c8A5NYx_hACPEzGxKzbb9B1s_mN6F4wITYsIrtFXPS>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddruddvledgvdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
-    drtghomh
-X-ME-Proxy: <xmx:H0UzYU7Z1__apsSNOJC4k9tGQOfgdLu_TS1veWL-PbkRQOpd17VU2A>
-    <xmx:H0UzYY5eTxCdRW7CO0mh-JLT5I71vPrMecs-6_KBItLlc2VAmOJbew>
-    <xmx:H0UzYchyjRDzPeHnTIyGC0ILuFv9SQgMhfiJo30CSOt4cK_8Flfb1Q>
-    <xmx:IEUzYXR9QnP-Ds5EoGMaz3rh09ggsL0y5Yj6G-eQ_FpRvo3Ajf2GmQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 4 Sep 2021 06:06:22 -0400 (EDT)
-Date:   Sat, 4 Sep 2021 12:06:21 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        straube.linux@gmail.com, martin@kaiser.cx,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        saurav.girepunje@hotmail.com
-Subject: Re: [PATCH] staging: r8188eu: os_dep: simplifiy the rtw_resume
- function
-Message-ID: <YTNFHd6o0f9rAMO2@kroah.com>
-References: <YTM+wayCk2n2CrVP@user>
+        Sat, 4 Sep 2021 06:14:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A67DC061575
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 03:13:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OB5HdZvx/nOS2cjp67kQaOB5vNQ3TrwUlY3m7+JM1Qc=; b=mOStzBo+5IeEd5K3eqHi+ZOFAO
+        Q56Dg3nnIXmpgAhKWiKjUo89lCK6ArGEO+xdPsE1yntt/19UgNcEBw1FY/V4DuX26cCaJAfEn4LJs
+        8LHIlfubaeDL948FdwCVihKTDf1IdQW7Bu0idzy+P0kbhOHOjtK12c8HwzrIqu3L+FxfFpqwkjbuM
+        SMYFdgwoG2ioBbo+8JyaRWKB/HasoqneG2Cx7eAJmHOgad95219cA7xOaXiRl6TfeRUvdwJGdz2ma
+        TszZ1WAJrNKU48138K8Y0/N799JwPRf3yH7D5v8uFhStTnMpgZD2kqH4a7TkCLvpXG1/WcduMHJf5
+        p4mG0LGg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mMSer-005E9e-Jw; Sat, 04 Sep 2021 10:12:25 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A811B986283; Sat,  4 Sep 2021 12:12:19 +0200 (CEST)
+Date:   Sat, 4 Sep 2021 12:12:19 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mike Galbraith <efault@gmx.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] locking: rwbase: Take care of ordering guarantee for
+ fastpath reader
+Message-ID: <20210904101219.GA4323@worktop.programming.kicks-ass.net>
+References: <20210901150627.620830-1-boqun.feng@gmail.com>
+ <YTC7sariSyBW48nh@hirez.programming.kicks-ass.net>
+ <YTI2UjKy+C7LeIf+@boqun-archlinux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YTM+wayCk2n2CrVP@user>
+In-Reply-To: <YTI2UjKy+C7LeIf+@boqun-archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 04, 2021 at 03:09:13PM +0530, Saurav Girepunje wrote:
-> Remove unused variable ret and pwrpriv.
-> Remove the condition with no effect (if == else) in usb_intf.c
-> file.
+On Fri, Sep 03, 2021 at 10:50:58PM +0800, Boqun Feng wrote:
+> On Thu, Sep 02, 2021 at 01:55:29PM +0200, Peter Zijlstra wrote:
+> [...]
+> > >  	raw_spin_unlock_irqrestore(&rtm->wait_lock, flags);
+> > >  	rwbase_rtmutex_unlock(rtm);
+> > >  }
+> > > @@ -216,8 +229,14 @@ static int __sched rwbase_write_lock(struct rwbase_rt *rwb,
+> > >  	 */
+> > >  	rwbase_set_and_save_current_state(state);
+> > >  
+> > > -	/* Block until all readers have left the critical section. */
+> > > -	for (; atomic_read(&rwb->readers);) {
+> > > +	/*
+> > > +	 * Block until all readers have left the critical section.
+> > > +	 *
+> > > +	 * _acqurie() is needed in case that the reader side runs in the fast
+> > > +	 * path, pairing with the atomic_dec_and_test() in rwbase_read_unlock(),
+> > > +	 * provides ACQUIRE.
+> > > +	 */
+> > > +	for (; atomic_read_acquire(&rwb->readers);) {
+> > >  		/* Optimized out for rwlocks */
+> > >  		if (rwbase_signal_pending_state(state, current)) {
+> > >  			__set_current_state(TASK_RUNNING);
+> > 
+> > I think we can restructure things to avoid this one, but yes. Suppose we
+> > do:
+> > 
+> > 	readers = atomic_sub_return_relaxed(READER_BIAS, &rwb->readers);
+> > 
+> > 	/*
+> > 	 * These two provide either an smp_mb() or an UNLOCK+LOCK
 > 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> ---
->  drivers/staging/r8188eu/os_dep/usb_intf.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> index bb85ab77fd26..673cd3001183 100644
-> --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-> +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> @@ -493,14 +493,8 @@ static int rtw_resume(struct usb_interface *pusb_intf)
->  {
->  	struct dvobj_priv *dvobj = usb_get_intfdata(pusb_intf);
->  	struct adapter *padapter = dvobj->if1;
-> -	struct pwrctrl_priv *pwrpriv = &padapter->pwrctrlpriv;
-> -	int ret = 0;
-> 
-> -	if (pwrpriv->bInternalAutoSuspend)
-> -		ret = rtw_resume_process(padapter);
-> -	else
-> -		ret = rtw_resume_process(padapter);
-> -	return ret;
-> +	return rtw_resume_process(padapter);
->  }
-> 
->  int rtw_resume_process(struct adapter *padapter)
+> By "UNLOCK+LOCK", you mean unlock(->pi_lock) + lock(->wait_lock), right?
+> This may be unrelated, but in our memory model only unlock+lock pairs on
+> the same lock provide TSO-like ordering ;-) IOW, unlock(->pi_lock) +
+> lock(->wait_lock) on the same CPU doesn't order reads before and after.
 
-Why not just delete the rtw_resume_process() declaration line and make
-the rtw_resume() function be the whole thing, as rtw_resume_process() is
-never called anywhere else.  That would be even more lines of code
-removed and simplified here.
+Hurpm.. what actual hardware does that? PPC uses LWSYNC for
+ACQUIRE/RELEASE, and ARM64 has RCsc RELEASE+ACQUIRE ordering.
 
-thanks,
-
-greg k-h
+Both should provide RC-TSO (or stronger) for UNLOCK-A + LOCK-B.
