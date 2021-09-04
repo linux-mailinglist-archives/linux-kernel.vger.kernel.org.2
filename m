@@ -2,136 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC4A400955
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 04:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C24400958
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 04:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350746AbhIDCcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 22:32:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
+        id S1350806AbhIDCjR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 22:39:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234937AbhIDCcW (ORCPT
+        with ESMTP id S234937AbhIDCjQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 22:32:22 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC799C061575
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 19:31:21 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id c17so860612pgc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 19:31:21 -0700 (PDT)
+        Fri, 3 Sep 2021 22:39:16 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C26CC061575
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 19:38:15 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id q21so611187plq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 19:38:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OyXn9whqgoBPI+82Ub9Acbq8v9c7Sx+Dk/WDUp7VoDs=;
-        b=fA+bgyEZn/RACKE+b07YTN+d0MxIb0VABaY4rEP/etKiVJ9ivQMNdMr47CifJ+6xt3
-         UIJKC2UuSffSt5SKsR6LAMZQ8Pw6UE0IFxrY/r2MIjSLPe3KhExABb3yHtYwUqDCQ0N0
-         o+2mMZRwLUKdEmRe9DIcDBPzs6hpzlzuG/4X1gxzrbeoyJS7xz/gU6Cl9+1Erd5yaFrZ
-         sXl9q5Thz88a2+3Q3vmB3P2ebk0qArtzOhWASx0rdWhsHS17OwkcmgKqqRF+UCLGVs5m
-         Epf3Hylx/lE3Qe9yk6UOEOIRoOJE0EoGHIsZpjH7PB4cJU5BLWDdc+um4y/b0wrDQJQF
-         fTKw==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3JPTdUwvyk1gA7gUvlVpOs/m2+cd0OzoZLCglRS429w=;
+        b=EeDsTRAjbWKMy7c9STNLw837RR1O8FVXGJJ7fhmgcsMGU0q6dRrP/KY+FvlZwy4sSf
+         4o64rhxRDWmsXShIHq92PaIHNCeBBNpInGATmmg+pYkM64LsRz9kXLhZ5WEHV+2DOSgY
+         Lkf7Xkrl3FpJbrJ+Ob6dj8IfVsGvuXKuTy21kv4YJjJo+Qk9F9UenWVTNne1R+HR5KV6
+         s7PYctM8lAcUGx+I7uHNp5IjTsilBE8k2NGRY2k224FpM5hvtNLCm7G6LA+VFfOiRss3
+         EW3Y6TUu4DkToWXciDmiaIyAw+hfk/VpKgOHn2vpJ9TQWW6dfy9fhKk0HcBzwXkxwYWP
+         ayMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OyXn9whqgoBPI+82Ub9Acbq8v9c7Sx+Dk/WDUp7VoDs=;
-        b=iExxufKIVhPJtyE0C/uX28EY0hUP4/wu4RJfsqsRlGZkWmbWnUi1bIYQzv0rX8uxFK
-         phRHSclK9Y1Y5nmwTVWFzf8x1ELDFbpyHmHrfE2CZVKrj45SvpTZQJQjzlxo64YjYL/i
-         XG74lMfZD+5JYMzy1lei0ohXewuvUH663QFXlcMpxafzoYnr5cV70oGK0jaPp0a+kjuc
-         uEqHdCdgaVGcCU+vJ65p5a8pgSCQWFRx9Weo8ZDeiyGpOp9fHKMCk+s/cNFoSLiYvVvD
-         0/zXUfw7ncOARWwOzZarAcFmfDNoFC8cGkvrSkYPodWFEPf0NZBAMIcZ6EkedKbd9Zvo
-         eY8Q==
-X-Gm-Message-State: AOAM530pN2932uloUCrbqSahPVDcUNbf8aulcqH/+523uz3OGg+C8EEA
-        edy/W4zF3wynUrnnPvBBornLhiYoypSV6QAwp6g=
-X-Google-Smtp-Source: ABdhPJz+YZM973P2EOVFVwPN03rsfV4bZgWNFBlEKnp5ptr8wgE76WeECaEKGKnrqEyblMHcUvPMpg==
-X-Received: by 2002:a05:6a00:244f:b0:404:fa55:c1a with SMTP id d15-20020a056a00244f00b00404fa550c1amr6022233pfj.42.1630722681294;
-        Fri, 03 Sep 2021 19:31:21 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([213.173.35.225])
-        by smtp.gmail.com with ESMTPSA id z24sm582561pfj.88.2021.09.03.19.31.18
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3JPTdUwvyk1gA7gUvlVpOs/m2+cd0OzoZLCglRS429w=;
+        b=ATNBztFxkAZdRm9clnsHqr+tlowBKKacwH3HtFIUHedsnjzAFs1S9UAUOBN27lQsqR
+         jwevP2sQRlel0GKIWKmyyLV/mYuOvR1DlhwY+Ms7KMVcJhCwcmTw+QeFtX3UFjvpZmY/
+         xVzzBj0Tu2zzAtJuI3mvkPpdBxRpwQSzTt8B1u8zs99VdBYzTWvGoKVm7iJzhZo7BpeD
+         ENqVGp3MISsR1V7rkWBu2BngPx23/rQsZTziyKije2PVy+6bn0Kz873zlucdi9kO58js
+         UXpTjsOc71oktbDVJ7NYnQzb0xb9wFxqhFHg1tcQQDBarOJIUj7Sq8kjfZev+Sbm2Bdo
+         fVrw==
+X-Gm-Message-State: AOAM532k5HBT1BbHAwHcEMPJ3M8WRvVyvlE4yYuyfg5pTt5BZqrHKipn
+        8N8qTvE7cusCHBAmRNqoIus=
+X-Google-Smtp-Source: ABdhPJzDBorMIDhxDqeSwnExGfafnpKI/eBSHxvQXTU+mBUkjwGScnrGMDx4FvSg+FxQnzICi+Jq9Q==
+X-Received: by 2002:a17:90a:aa14:: with SMTP id k20mr2006370pjq.88.1630723093603;
+        Fri, 03 Sep 2021 19:38:13 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.104])
+        by smtp.gmail.com with ESMTPSA id g2sm600455pfr.35.2021.09.03.19.38.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 19:31:20 -0700 (PDT)
-Date:   Sat, 4 Sep 2021 10:31:16 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] coresight: cpu-debug: control default behavior via
- Kconfig
-Message-ID: <20210904023116.GK303522@leoy-ThinkPad-X240s>
-References: <20210903182839.1.I20856983f2841b78936134dcf9cdf6ecafe632b9@changeid>
+        Fri, 03 Sep 2021 19:38:13 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Dave Kleikamp <shaggy@kernel.org>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] JFS: fix memleak in jfs_mount
+Date:   Sat,  4 Sep 2021 10:37:41 +0800
+Message-Id: <20210904023800.1813036-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210903182839.1.I20856983f2841b78936134dcf9cdf6ecafe632b9@changeid>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 06:28:54PM -0700, Brian Norris wrote:
-> Debugfs is nice and so are module parameters, but
->  * debugfs doesn't take effect early (e.g., if drivers are locking up
->    before user space gets anywhere)
->  * module parameters either add a lot to the kernel command line, or
->    else take effect late as well (if you build =m and configure in
->    /etc/modprobe.d/)
-> 
-> So in the same spirit as these
->   CONFIG_PANIC_ON_OOPS (also available via cmdline or modparam)
->   CONFIG_INTEL_IOMMU_DEFAULT_ON (also available via cmdline)
-> add a new Kconfig option.
-> 
-> Module parameters and debugfs can still override.
-> 
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
+In jfs_mount, when diMount(ipaimap2) fails, it goes to errout35. However,
+the following code does not free ipaimap2 allocated by diReadSpecial.
 
-Thanks for the patch, looks good to me:
+Fix this by refactoring the error handling code of jfs_mount. To be
+specific, modify the lable name and free ipaimap2 when the above error
+ocurrs.
 
-Reviewed-by: Leo Yan <leo.yan@linaro.org>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+---
+v1->v2: change "return rc" to "goto out"; fix one coding style
+ fs/jfs/jfs_mount.c | 51 ++++++++++++++++++++--------------------------
+ 1 file changed, 22 insertions(+), 29 deletions(-)
 
-> ---
-> 
->  drivers/hwtracing/coresight/Kconfig               | 13 +++++++++++++
->  drivers/hwtracing/coresight/coresight-cpu-debug.c |  2 +-
->  2 files changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
-> index f026e5c0e777..8b638eb3cb7d 100644
-> --- a/drivers/hwtracing/coresight/Kconfig
-> +++ b/drivers/hwtracing/coresight/Kconfig
-> @@ -150,6 +150,19 @@ config CORESIGHT_CPU_DEBUG
->  	  To compile this driver as a module, choose M here: the
->  	  module will be called coresight-cpu-debug.
->  
-> +config CORESIGHT_CPU_DEBUG_DEFAULT_ON
-> +	bool "Enable CoreSight CPU Debug by default
-> +	depends on CORESIGHT_CPU_DEBUG
-> +	help
-> +	  Say Y here to enable the CoreSight Debug panic-debug by default. This
-> +	  can also be enabled via debugfs, but this ensures the debug feature
-> +	  is enabled as early as possible.
-> +
-> +	  Has the same effect as setting coresight_cpu_debug.enable=1 on the
-> +	  kernel command line.
-> +
-> +	  Say N if unsure.
-> +
->  config CORESIGHT_CTI
->  	tristate "CoreSight Cross Trigger Interface (CTI) driver"
->  	depends on ARM || ARM64
-> diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-> index 00de46565bc4..8845ec4b4402 100644
-> --- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
-> +++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-> @@ -105,7 +105,7 @@ static DEFINE_PER_CPU(struct debug_drvdata *, debug_drvdata);
->  static int debug_count;
->  static struct dentry *debug_debugfs_dir;
->  
-> -static bool debug_enable;
-> +static bool debug_enable = IS_ENABLED(CONFIG_CORESIGHT_CPU_DEBUG_DEFAULT_ON);
->  module_param_named(enable, debug_enable, bool, 0600);
->  MODULE_PARM_DESC(enable, "Control to enable coresight CPU debug functionality");
->  
-> -- 
-> 2.33.0.153.gba50c8fa24-goog
-> 
+diff --git a/fs/jfs/jfs_mount.c b/fs/jfs/jfs_mount.c
+index 5d7d7170c03c..aa4ff7bcaff2 100644
+--- a/fs/jfs/jfs_mount.c
++++ b/fs/jfs/jfs_mount.c
+@@ -81,14 +81,14 @@ int jfs_mount(struct super_block *sb)
+ 	 * (initialize mount inode from the superblock)
+ 	 */
+ 	if ((rc = chkSuper(sb))) {
+-		goto errout20;
++		goto out;
+ 	}
+ 
+ 	ipaimap = diReadSpecial(sb, AGGREGATE_I, 0);
+ 	if (ipaimap == NULL) {
+ 		jfs_err("jfs_mount: Failed to read AGGREGATE_I");
+ 		rc = -EIO;
+-		goto errout20;
++		goto out;
+ 	}
+ 	sbi->ipaimap = ipaimap;
+ 
+@@ -99,7 +99,7 @@ int jfs_mount(struct super_block *sb)
+ 	 */
+ 	if ((rc = diMount(ipaimap))) {
+ 		jfs_err("jfs_mount: diMount(ipaimap) failed w/rc = %d", rc);
+-		goto errout21;
++		goto err_ipaimap;
+ 	}
+ 
+ 	/*
+@@ -108,7 +108,7 @@ int jfs_mount(struct super_block *sb)
+ 	ipbmap = diReadSpecial(sb, BMAP_I, 0);
+ 	if (ipbmap == NULL) {
+ 		rc = -EIO;
+-		goto errout22;
++		goto err_umount_ipaimap;
+ 	}
+ 
+ 	jfs_info("jfs_mount: ipbmap:0x%p", ipbmap);
+@@ -120,7 +120,7 @@ int jfs_mount(struct super_block *sb)
+ 	 */
+ 	if ((rc = dbMount(ipbmap))) {
+ 		jfs_err("jfs_mount: dbMount failed w/rc = %d", rc);
+-		goto errout22;
++		goto err_ipbmap;
+ 	}
+ 
+ 	/*
+@@ -139,7 +139,7 @@ int jfs_mount(struct super_block *sb)
+ 		if (!ipaimap2) {
+ 			jfs_err("jfs_mount: Failed to read AGGREGATE_I");
+ 			rc = -EIO;
+-			goto errout35;
++			goto err_umount_ipbmap;
+ 		}
+ 		sbi->ipaimap2 = ipaimap2;
+ 
+@@ -151,7 +151,7 @@ int jfs_mount(struct super_block *sb)
+ 		if ((rc = diMount(ipaimap2))) {
+ 			jfs_err("jfs_mount: diMount(ipaimap2) failed, rc = %d",
+ 				rc);
+-			goto errout35;
++			goto err_ipaimap2;
+ 		}
+ 	} else
+ 		/* Secondary aggregate inode table is not valid */
+@@ -168,7 +168,7 @@ int jfs_mount(struct super_block *sb)
+ 		jfs_err("jfs_mount: Failed to read FILESYSTEM_I");
+ 		/* open fileset secondary inode allocation map */
+ 		rc = -EIO;
+-		goto errout40;
++		goto err_umount_ipaimap2;
+ 	}
+ 	jfs_info("jfs_mount: ipimap:0x%p", ipimap);
+ 
+@@ -178,41 +178,34 @@ int jfs_mount(struct super_block *sb)
+ 	/* initialize fileset inode allocation map */
+ 	if ((rc = diMount(ipimap))) {
+ 		jfs_err("jfs_mount: diMount failed w/rc = %d", rc);
+-		goto errout41;
++		goto err_ipimap;
+ 	}
+ 
+-	goto out;
++	return rc;
+ 
+ 	/*
+ 	 *	unwind on error
+ 	 */
+-      errout41:		/* close fileset inode allocation map inode */
++err_ipimap:
++	/* close fileset inode allocation map inode */
+ 	diFreeSpecial(ipimap);
+-
+-      errout40:		/* fileset closed */
+-
++err_umount_ipaimap2:
+ 	/* close secondary aggregate inode allocation map */
+-	if (ipaimap2) {
++	if (ipaimap2)
+ 		diUnmount(ipaimap2, 1);
++err_ipaimap2:
++	/* close aggregate inodes */
++	if (ipaimap2)
+ 		diFreeSpecial(ipaimap2);
+-	}
+-
+-      errout35:
+-
+-	/* close aggregate block allocation map */
++err_umount_ipbmap:	/* close aggregate block allocation map */
+ 	dbUnmount(ipbmap, 1);
++err_ipbmap:		/* close aggregate inodes */
+ 	diFreeSpecial(ipbmap);
+-
+-      errout22:		/* close aggregate inode allocation map */
+-
++err_umount_ipaimap:	/* close aggregate inode allocation map */
+ 	diUnmount(ipaimap, 1);
+-
+-      errout21:		/* close aggregate inodes */
++err_ipaimap:		/* close aggregate inodes */
+ 	diFreeSpecial(ipaimap);
+-      errout20:		/* aggregate closed */
+-
+-      out:
+-
++out:
+ 	if (rc)
+ 		jfs_err("Mount JFS Failure: %d", rc);
+ 
+-- 
+2.25.1
+
