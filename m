@@ -2,111 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93123400A1E
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 08:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF4D400A33
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 09:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350859AbhIDGdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 02:33:54 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:15384 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236308AbhIDGdx (ORCPT
+        id S236207AbhIDGvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 02:51:52 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37762 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229994AbhIDGvv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 02:33:53 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H1l9b5Rbtzbgqx;
-        Sat,  4 Sep 2021 14:28:51 +0800 (CST)
-Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 4 Sep 2021 14:32:49 +0800
-Received: from huawei.com (10.175.124.27) by dggpemm500004.china.huawei.com
- (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 4 Sep 2021
- 14:32:48 +0800
-From:   Laibin Qiu <qiulaibin@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>, <hare@suse.de>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <qiulaibin@huawei.com>
-Subject: [PATCH -next] [SCSI] Fix NULL pointer dereference in handling for passthrough commands
-Date:   Sat, 4 Sep 2021 14:45:34 +0800
-Message-ID: <20210904064534.1919476-1-qiulaibin@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        Sat, 4 Sep 2021 02:51:51 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1846dYaO111932;
+        Sat, 4 Sep 2021 02:50:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=HSFFzgYL/AzQXQIr3bE3zekv9HRm4Owh9F2sCAuKP6o=;
+ b=WnvODbQImP8BQjX1TY+Rzp9BtOOEVj1V8jKhf+f9wdCn0cZd32spbQjkhnW4BVyYzkzg
+ q9gAhQO/gyL8yeJBzFMYib831ATdjOBw7Vu7HSqynQv9rh5P9DA0KDspbSCKuM8n7FEK
+ oEUPF8/7d8TzTuatCJlr/eYeAuN8BNB/Ql4JtJO1MWs6o8L50anWJQ5oi+hw8zfCUU23
+ ZH0BcfqfRTBu0fZahTMyGQLxd0+YjfafDdZBl251Rv6d/Q7yhgAInYO3Iju9bpctnpzv
+ 69laqamk1i7ebRBdU157V0k6CqV5u0jNfqOIIluu/mC1h02fLxuBjq8IFS0lp6OfRXkW ew== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3av1tvsqnh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 04 Sep 2021 02:50:10 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1846o9UL145637;
+        Sat, 4 Sep 2021 02:50:09 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3av1tvsqmx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 04 Sep 2021 02:50:09 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1846Vrpp025926;
+        Sat, 4 Sep 2021 06:50:07 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06fra.de.ibm.com with ESMTP id 3av02hhecc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 04 Sep 2021 06:50:07 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1846jwK053084554
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 4 Sep 2021 06:45:58 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5C5014C05E;
+        Sat,  4 Sep 2021 06:50:03 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F00A64C040;
+        Sat,  4 Sep 2021 06:49:54 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.43.55.112])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sat,  4 Sep 2021 06:49:54 +0000 (GMT)
+From:   Kajol Jain <kjain@linux.ibm.com>
+To:     mpe@ellerman.id.au, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, jolsa@kernel.org,
+        namhyung@kernel.org, linux-perf-users@vger.kernel.org,
+        ak@linux.intel.com
+Cc:     maddy@linux.ibm.com, atrajeev@linux.vnet.ibm.com,
+        kjain@linux.ibm.com, rnsastry@linux.ibm.com,
+        yao.jin@linux.intel.com, ast@kernel.org, daniel@iogearbox.net,
+        songliubraving@fb.com, kan.liang@linux.intel.com,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        paulus@samba.org
+Subject: [PATCH 1/3] perf: Add macros to specify onchip L2/L3 accesses
+Date:   Sat,  4 Sep 2021 12:19:30 +0530
+Message-Id: <20210904064932.307610-1-kjain@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500004.china.huawei.com (7.185.36.219)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: L6NsZ3BWVeszSLtJ59a0Zd1PCgBqs-WZ
+X-Proofpoint-ORIG-GUID: 6QXnz4B6sKpuGnC80-emFXhP8oY3eGB_
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-04_02:2021-09-03,2021-09-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ mlxlogscore=999 mlxscore=0 phishscore=0 adultscore=0 clxscore=1011
+ lowpriorityscore=0 spamscore=0 priorityscore=1501 impostorscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109040044
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In passthrough path. If the command size for ioctl request from userspace
-is 0. The original process will get cmd_len from cmd->cmnd, but It has
-not been assigned at this time. So it will trigger a NULL pointer BUG.
+Add couple of new macros to represent onchip L2 and onchip L3 accesses.
 
-------------[ cut here ]------------
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-PF: supervisor read access in kernel mode
-PF: error_code(0x0000) - not-present page
-RIP: 0010:scsi_queue_rq+0xcb2/0x12b0
-Call Trace:
-blk_mq_dispatch_rq_list+0x541/0xe90
-__blk_mq_sched_dispatch_requests+0x1fe/0x2b0
-blk_mq_sched_dispatch_requests+0xbf/0x130
-__blk_mq_run_hw_queue+0x15b/0x230
-__blk_mq_delay_run_hw_queue+0x18f/0x320
-blk_mq_run_hw_queue+0x252/0x280
-blk_mq_sched_insert_request+0x228/0x260
-blk_execute_rq+0x111/0x160
-sg_io+0x51a/0x740
-scsi_cmd_ioctl+0x533/0x910
-scsi_cmd_blk_ioctl+0xa1/0xb0
-cdrom_ioctl+0x3f/0x2510
-sr_block_ioctl+0x142/0x180
-blkdev_ioctl+0x398/0x450
-block_ioctl+0x6d/0x80
-__se_sys_ioctl+0xd1/0x140
-__x64_sys_ioctl+0x3f/0x50
-do_syscall_64+0x37/0x50
-entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-We can trigger front BUG by ioctl blow.
-------------[ cut here ]------------
-
-sg_io_hdr_t *addr;
-
-addr = malloc(sizeof(sg_io_hdr_t));
-memset(addr, 0, sizeof(sg_io_hdr_t));
-addr->interface_id = 'S';
-
-fd = open(/dev/sr0, O_RDONLY); // open a CD_ROM dev
-
-ioctl(fd, SG_IO, addr); // all zero sg_io_hdr_t will trigger this bug
-
-Fixes: 2ceda20f0a99a ("scsi: core: Move command size detection out of
-the fast path")
-Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
+Signed-off-by: Kajol Jain <kjain@linux.ibm.com>
 ---
- drivers/scsi/scsi_lib.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/uapi/linux/perf_event.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index 572673873ddf..53b47a9103d3 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -1174,9 +1174,9 @@ static blk_status_t scsi_setup_scsi_cmnd(struct scsi_device *sdev,
- 	}
- 
- 	cmd->cmd_len = scsi_req(req)->cmd_len;
-+	cmd->cmnd = scsi_req(req)->cmd;
- 	if (cmd->cmd_len == 0)
- 		cmd->cmd_len = scsi_command_size(cmd->cmnd);
--	cmd->cmnd = scsi_req(req)->cmd;
- 	cmd->transfersize = blk_rq_bytes(req);
- 	cmd->allowed = scsi_req(req)->retries;
- 	return BLK_STS_OK;
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index f92880a15645..030b3e990ac3 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -1265,7 +1265,9 @@ union perf_mem_data_src {
+ #define PERF_MEM_LVLNUM_L2	0x02 /* L2 */
+ #define PERF_MEM_LVLNUM_L3	0x03 /* L3 */
+ #define PERF_MEM_LVLNUM_L4	0x04 /* L4 */
+-/* 5-0xa available */
++#define PERF_MEM_LVLNUM_OC_L2	0x05 /* On Chip L2 */
++#define PERF_MEM_LVLNUM_OC_L3	0x06 /* On Chip L3 */
++/* 7-0xa available */
+ #define PERF_MEM_LVLNUM_ANY_CACHE 0x0b /* Any cache */
+ #define PERF_MEM_LVLNUM_LFB	0x0c /* LFB */
+ #define PERF_MEM_LVLNUM_RAM	0x0d /* RAM */
 -- 
-2.22.0
+2.26.2
 
