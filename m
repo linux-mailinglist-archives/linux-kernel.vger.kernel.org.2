@@ -2,141 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C4C400A52
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 09:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D76D400A59
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 10:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233963AbhIDH4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 03:56:35 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:33772 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233340AbhIDH4d (ORCPT
+        id S1350847AbhIDIEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 04:04:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51037 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234128AbhIDICm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 03:56:33 -0400
-Received: by mail-io1-f71.google.com with SMTP id g2-20020a6b7602000000b005be59530196so1091174iom.0
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 00:55:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=Fnlcdjve0qVJTFGXW0budG2MUFIzNniVDA3qsZRMbiU=;
-        b=Fz4g7PEUlxDbQOC6n5J3IYt5iF+ianmwEOH6qHbJnBmbS4t8Td0LaLhxEuPcX5Y9zs
-         CG4AZwMKCvEVfAdoXDNT08TUZAI84yqed/Z0kNot453VI1c3EPk3z9fuQtyzjjDmbfPD
-         7pAaDKFSiE8vnyvBOr1/SmfSPOr/ZYnYJ9cHYKin36zmWbyoZdEOjY2Xw8VIC5ksebr1
-         Hu3DLmCLK+fTaWYdSIxjCxne0A/GvNIALfWXaoDiSQ+VH5cxnOThf1pAXLAS/YPTKPme
-         09YzMyidVjPNUo3IAj4QDybZsCbLvW1OcJg6054UKapQu6CfgU1Ra9fMzjnqWJsLzqrV
-         A8AQ==
-X-Gm-Message-State: AOAM530Dnc0ltIhLeEF7+RYY7OdsuRka2gVIfJV3QMb5tldBnWj+/eMl
-        SSb1uXTsIUuPsiNm9duwqIg+N/+EFyydu8XYAFWvXFTWsezx
-X-Google-Smtp-Source: ABdhPJzJ3c+eEtz/Pv4/JLvY2AQBZnpxixIGH4faWYvTZ9eySYMMapGgooc1ocdYk4Uclm5dvst90X/ZeTm0Q3x75gcDydNxSpcD
+        Sat, 4 Sep 2021 04:02:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630742474;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dbDmMaToSJQ6dPIHh+SXBa8mY/4mUayITASUyPnbVTQ=;
+        b=VZ+3n8nVB40aTSZGaQ2hsOQWmh6rwJfs0ccU95+4h6rUYgijh9WtJuZpMrBsnnSTaf7Vyb
+        PeaLdDtigUAxn4TXJ5GNBXuoejqRjuDxaDIkzl0Oq7AtYzbqgUejCwCyIhtyLl0ZTxaJGU
+        EI3l9omKDZBXTCsncGR1AV0zNHl1C+4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-467-NdC7YETuM32Sga8gJDFeqQ-1; Sat, 04 Sep 2021 04:01:13 -0400
+X-MC-Unique: NdC7YETuM32Sga8gJDFeqQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E270B10054F6;
+        Sat,  4 Sep 2021 08:01:11 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.39.194.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9F9815D6A1;
+        Sat,  4 Sep 2021 08:01:09 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
+Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
+References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com>
+        <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com>
+        <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org>
+Date:   Sat, 04 Sep 2021 10:01:07 +0200
+In-Reply-To: <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org> (Nathan
+        Chancellor's message of "Fri, 3 Sep 2021 16:04:50 -0700")
+Message-ID: <878s0c4vng.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-X-Received: by 2002:a02:ca0b:: with SMTP id i11mr2396950jak.84.1630742131775;
- Sat, 04 Sep 2021 00:55:31 -0700 (PDT)
-Date:   Sat, 04 Sep 2021 00:55:31 -0700
-In-Reply-To: <000000000000a9b79905c04e25a0@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007c1cd805cb26bd7a@google.com>
-Subject: Re: [syzbot] INFO: rcu detected stall in tx
-From:   syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>
-To:     Guido.Kiener@rohde-schwarz.com, Qiang.Zhang@windriver.com,
-        Thinh.Nguyen@synopsys.com, bp@alien8.de, dpenkler@gmail.com,
-        dvyukov@google.com, dwmw@amazon.co.uk, fgheet255t@gmail.com,
-        fweisbec@gmail.com, gregkh@linuxfoundation.org,
-        guido.kiener@rohde-schwarz.com, hpa@zytor.com,
-        john.stultz@linaro.org, lee.jones@linaro.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        luto@kernel.org, mathias.nyman@intel.com,
-        mathias.nyman@linux.intel.com, mingo@kernel.org, mingo@redhat.com,
-        qiang.zhang@windriver.com, sboyd@kernel.org,
-        stable-commits@vger.kernel.org, stable@vger.kernel.org,
-        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, tonymarislogistics@yandex.com, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+* Nathan Chancellor:
 
-HEAD commit:    7cca308cfdc0 Merge tag 'powerpc-5.15-1' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10535915300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9c582b69de20dde2
-dashboard link: https://syzkaller.appspot.com/bug?extid=e2eae5639e7203360018
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e2e533300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1294ff33300000
+> We set up the linux-toolchains mailing list after Plumbers 2020 to
+> have a common place that kernel developers can bring issues and
+> discussion to both clang and GCC folks. I am not sure who exactly from
+> the GCC world is subscribed but I have added it now to see.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com
+Someone said that they =E2=80=9Cagree with the reasoning=E2=80=9D, but the =
+original
+patch does not provide one.  It looks like it's about preventing the use
+of compiler-supplied header files, but even that doesn't really answer
+the question: why?
 
-rcu: INFO: rcu_preempt self-detected stall on CPU
-rcu: 	1-....: (288 ticks this GP) idle=bdd/1/0x4000000000000000 softirq=20305/20305 fqs=5241 
-	(t=10500 jiffies g=18249 q=67)
-NMI backtrace for cpu 1
-CPU: 1 PID: 3254 Comm: aoe_tx0 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
- nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
- trigger_single_cpu_backtrace include/linux/nmi.h:164 [inline]
- rcu_dump_cpu_stacks+0x25e/0x3f0 kernel/rcu/tree_stall.h:343
- print_cpu_stall kernel/rcu/tree_stall.h:627 [inline]
- check_cpu_stall kernel/rcu/tree_stall.h:711 [inline]
- rcu_pending kernel/rcu/tree.c:3880 [inline]
- rcu_sched_clock_irq.cold+0x9d/0x746 kernel/rcu/tree.c:2599
- update_process_times+0x16d/0x200 kernel/time/timer.c:1785
- tick_sched_handle+0x9b/0x180 kernel/time/tick-sched.c:226
- tick_sched_timer+0x1b0/0x2d0 kernel/time/tick-sched.c:1421
- __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
- __hrtimer_run_queues+0x1c0/0xe50 kernel/time/hrtimer.c:1749
- hrtimer_interrupt+0x31c/0x790 kernel/time/hrtimer.c:1811
- local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1086 [inline]
- __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1103
- sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1097
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-RIP: 0010:__sanitizer_cov_trace_pc+0x5c/0x60 kernel/kcov.c:207
-Code: 82 18 15 00 00 83 f8 02 75 20 48 8b 8a 20 15 00 00 8b 92 1c 15 00 00 48 8b 01 48 83 c0 01 48 39 c2 76 07 48 89 34 c1 48 89 01 <c3> 0f 1f 00 41 55 41 54 49 89 fc 55 48 bd eb 83 b5 80 46 86 c8 61
-RSP: 0018:ffffc90002ccfad8 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: ffff8880206e3900 RSI: ffffffff874e536f RDI: 0000000000000003
-RBP: ffff88807df1b340 R08: 0000000000000000 R09: 0000000000000001
-R10: ffffffff874e5366 R11: 0000000000000000 R12: ffff88807df1b000
-R13: dffffc0000000000 R14: ffff8880709ff490 R15: ffff88807df1b338
- __list_del_entry include/linux/list.h:132 [inline]
- list_move_tail include/linux/list.h:227 [inline]
- fq_codel_dequeue+0x7cf/0x1f50 net/sched/sch_fq_codel.c:299
- dequeue_skb net/sched/sch_generic.c:292 [inline]
- qdisc_restart net/sched/sch_generic.c:397 [inline]
- __qdisc_run+0x1ae/0x1700 net/sched/sch_generic.c:415
- __dev_xmit_skb net/core/dev.c:3861 [inline]
- __dev_queue_xmit+0x1f6e/0x3710 net/core/dev.c:4170
- tx+0x68/0xb0 drivers/block/aoe/aoenet.c:63
- kthread+0x1e7/0x3b0 drivers/block/aoe/aoecmd.c:1230
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	18 15 00 00 83 f8    	sbb    %dl,-0x77d0000(%rip)        # 0xf8830006
-   6:	02 75 20             	add    0x20(%rbp),%dh
-   9:	48 8b 8a 20 15 00 00 	mov    0x1520(%rdx),%rcx
-  10:	8b 92 1c 15 00 00    	mov    0x151c(%rdx),%edx
-  16:	48 8b 01             	mov    (%rcx),%rax
-  19:	48 83 c0 01          	add    $0x1,%rax
-  1d:	48 39 c2             	cmp    %rax,%rdx
-  20:	76 07                	jbe    0x29
-  22:	48 89 34 c1          	mov    %rsi,(%rcx,%rax,8)
-  26:	48 89 01             	mov    %rax,(%rcx)
-* 29:	c3                   	retq <-- trapping instruction
-  2a:	0f 1f 00             	nopl   (%rax)
-  2d:	41 55                	push   %r13
-  2f:	41 54                	push   %r12
-  31:	49 89 fc             	mov    %rdi,%r12
-  34:	55                   	push   %rbp
-  35:	48 bd eb 83 b5 80 46 	movabs $0x61c8864680b583eb,%rbp
-  3c:	86 c8 61
+Especially since some parts of the kernel actually need some of those
+header files.
+
+Thanks,
+Florian
 
