@@ -2,363 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1500400B8A
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 15:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 182CF400B93
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 16:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236228AbhIDNyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 09:54:53 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:47782 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232306AbhIDNyw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 09:54:52 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 3.0.0)
- id 30a6f13132b31d28; Sat, 4 Sep 2021 15:53:49 +0200
-Received: from kreacher.localnet (89-77-51-84.dynamic.chello.pl [89.77.51.84])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        id S234822AbhIDOEd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 4 Sep 2021 10:04:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229765AbhIDOEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 10:04:30 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 05E4266A3B0;
-        Sat,  4 Sep 2021 15:53:48 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     Linux ACPI <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH 2/2] cpufreq: intel_pstate: hybrid: Rework HWP calibration
-Date:   Sat, 04 Sep 2021 15:53:39 +0200
-Message-ID: <2226916.ElGaqSPkdT@kreacher>
-In-Reply-To: <11837325.O9o76ZdvQC@kreacher>
-References: <11837325.O9o76ZdvQC@kreacher>
+        by mail.kernel.org (Postfix) with ESMTPSA id C102E6056B;
+        Sat,  4 Sep 2021 14:03:22 +0000 (UTC)
+Date:   Sat, 4 Sep 2021 15:06:45 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     "Sa, Nuno" <Nuno.Sa@analog.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
+ samples
+Message-ID: <20210904150645.640d2810@jic23-huawei>
+In-Reply-To: <20210901101209.31703187@xps13>
+References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
+        <20210818111139.330636-4-miquel.raynal@bootlin.com>
+        <SJ0PR03MB6359415E120CFD3EFAF417F599C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
+        <20210830110756.733d5201@jic23-huawei>
+        <MW4PR03MB6363FE3BAF40A383D244ADC399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
+        <20210830152956.58331a8d@jic23-huawei>
+        <MW4PR03MB6363BC976F039550906B6ED399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
+        <20210901101209.31703187@xps13>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.77.51.84
-X-CLIENT-HOSTNAME: 89-77-51-84.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddruddvledgjeduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdejjedrhedurdekgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrjeejrdehuddrkeegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomhdprhgtphhtthhopehruhhi
- rdiihhgrnhhgsehinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Wed, 1 Sep 2021 10:12:09 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-The current HWP calibration for hybrid processors in intel_pstate is
-fragile, because it depends too much on the information provided by
-the platform firmware via CPPC which may not be reliable enough.  It
-also need not be so complicated.
+> Hello,
+> 
+> "Sa, Nuno" <Nuno.Sa@analog.com> wrote on Mon, 30 Aug 2021 15:02:26
+> +0000:
+> 
+> > > -----Original Message-----
+> > > From: Jonathan Cameron <jic23@kernel.org>
+> > > Sent: Monday, August 30, 2021 4:30 PM
+> > > To: Sa, Nuno <Nuno.Sa@analog.com>
+> > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Lars-Peter Clausen
+> > > <lars@metafoo.de>; Thomas Petazzoni
+> > > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org; linux-
+> > > kernel@vger.kernel.org
+> > > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
+> > > samples
+> > > 
+> > > [External]
+> > > 
+> > > On Mon, 30 Aug 2021 10:49:50 +0000
+> > > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+> > >     
+> > > > > -----Original Message-----
+> > > > > From: Jonathan Cameron <jic23@kernel.org>
+> > > > > Sent: Monday, August 30, 2021 12:08 PM
+> > > > > To: Sa, Nuno <Nuno.Sa@analog.com>
+> > > > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Lars-Peter    
+> > > Clausen    
+> > > > > <lars@metafoo.de>; Thomas Petazzoni
+> > > > > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org;    
+> > > linux-    
+> > > > > kernel@vger.kernel.org
+> > > > > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the    
+> > > requested    
+> > > > > samples
+> > > > >
+> > > > > [External]
+> > > > >
+> > > > > On Fri, 20 Aug 2021 07:10:48 +0000
+> > > > > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+> > > > >    
+> > > > > > > -----Original Message-----
+> > > > > > > From: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > > > > > Sent: Wednesday, August 18, 2021 1:11 PM
+> > > > > > > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
+> > > > > > > <lars@metafoo.de>
+> > > > > > > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>; linux-
+> > > > > > > iio@vger.kernel.org; linux-kernel@vger.kernel.org; Miquel    
+> > > Raynal    
+> > > > > > > <miquel.raynal@bootlin.com>
+> > > > > > > Subject: [PATCH 03/16] iio: adc: max1027: Push only the    
+> > > requested    
+> > > > > > > samples
+> > > > > > >
+> > > > > > > [External]
+> > > > > > >
+> > > > > > > When a triggered scan occurs, the identity of the desired    
+> > > channels    
+> > > > > is    
+> > > > > > > known in indio_dev->active_scan_mask. Instead of reading and
+> > > > > > > pushing to
+> > > > > > > the IIO buffers all channels each time, scan the minimum    
+> > > amount    
+> > > > > of    
+> > > > > > > channels (0 to maximum requested chan, to be exact) and only
+> > > > > > > provide the
+> > > > > > > samples requested by the user.
+> > > > > > >
+> > > > > > > For example, if the user wants channels 1, 4 and 5, all channels    
+> > > > > from    
+> > > > > > > 0 to 5 will be scanned but only the desired channels will be    
+> > > pushed    
+> > > > > to    
+> > > > > > > the IIO buffers.
+> > > > > > >
+> > > > > > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > > > > > ---
+> > > > > > >  drivers/iio/adc/max1027.c | 25 +++++++++++++++++++++----
+> > > > > > >  1 file changed, 21 insertions(+), 4 deletions(-)
+> > > > > > >
+> > > > > > > diff --git a/drivers/iio/adc/max1027.c    
+> > > b/drivers/iio/adc/max1027.c    
+> > > > > > > index b753658bb41e..8ab660f596b5 100644
+> > > > > > > --- a/drivers/iio/adc/max1027.c
+> > > > > > > +++ b/drivers/iio/adc/max1027.c
+> > > > > > > @@ -360,6 +360,9 @@ static int    
+> > > max1027_set_trigger_state(struct    
+> > > > > > > iio_trigger *trig, bool state)
+> > > > > > >  	struct max1027_state *st = iio_priv(indio_dev);
+> > > > > > >  	int ret;
+> > > > > > >
+> > > > > > > +	if (bitmap_empty(indio_dev->active_scan_mask,    
+> > > indio_dev-    
+> > > > > > > >masklength))    
+> > > > > > > +		return -EINVAL;
+> > > > > > > +    
+> > > > > >
+> > > > > > I'm not sure this can actually happen. If you try to enable the    
+> > > buffer    
+> > > > > > with no scan element, it should give you an error before you    
+> > > reach    
+> > > > > > this point...
+> > > > > >    
+> > > > > > >  	if (state) {
+> > > > > > >  		/* Start acquisition on cnvst */
+> > > > > > >  		st->reg = MAX1027_SETUP_REG |
+> > > > > > > MAX1027_CKS_MODE0 |
+> > > > > > > @@ -368,9 +371,12 @@ static int    
+> > > max1027_set_trigger_state(struct    
+> > > > > > > iio_trigger *trig, bool state)
+> > > > > > >  		if (ret < 0)
+> > > > > > >  			return ret;
+> > > > > > >
+> > > > > > > -		/* Scan from 0 to max */
+> > > > > > > -		st->reg = MAX1027_CONV_REG |    
+> > > MAX1027_CHAN(0) |    
+> > > > > > > -			  MAX1027_SCAN_N_M |    
+> > > MAX1027_TEMP;    
+> > > > > > > +		/*
+> > > > > > > +		 * Scan from 0 to the highest requested    
+> > > channel. The    
+> > > > > > > temperature
+> > > > > > > +		 * could be avoided but it simplifies a bit the    
+> > > logic.    
+> > > > > > > +		 */
+> > > > > > > +		st->reg = MAX1027_CONV_REG |
+> > > > > > > MAX1027_SCAN_0_N | MAX1027_TEMP;
+> > > > > > > +		st->reg |= MAX1027_CHAN(fls(*indio_dev-    
+> > > > > > > >active_scan_mask) - 2);    
+> > > > > > >  		ret = spi_write(st->spi, &st->reg, 1);
+> > > > > > >  		if (ret < 0)
+> > > > > > >  			return ret;
+> > > > > > > @@ -391,11 +397,22 @@ static irqreturn_t
+> > > > > > > max1027_trigger_handler(int irq, void *private)
+> > > > > > >  	struct iio_poll_func *pf = private;
+> > > > > > >  	struct iio_dev *indio_dev = pf->indio_dev;
+> > > > > > >  	struct max1027_state *st = iio_priv(indio_dev);
+> > > > > > > +	unsigned int scanned_chans = fls(*indio_dev-    
+> > > > > > > >active_scan_mask);    
+> > > > > > > +	u16 *buf = st->buffer;    
+> > > > > >
+> > > > > > I think sparse will complain here. buffer is a __be16 restricted
+> > > > > > type so you should not mix those...    
+> > > > > > > +	unsigned int bit;
+> > > > > > >
+> > > > > > >  	pr_debug("%s(irq=%d, private=0x%p)\n", __func__,    
+> > > irq,    
+> > > > > > >    
+> > > > >    
+> > > private);in/20210818_miquel_raynal_bring_software_triggers_support    
+> > > > > _to_max1027_like_adcs.mbx    
+> > > > > > >
+> > > > > > >  	/* fill buffer with all channel */
+> > > > > > > -	spi_read(st->spi, st->buffer, indio_dev->masklength *    
+> > > 2);    
+> > > > > > > +	spi_read(st->spi, st->buffer, scanned_chans * 2);
+> > > > > > > +
+> > > > > > > +	/* Only keep the channels selected by the user */
+> > > > > > > +	for_each_set_bit(bit, indio_dev->active_scan_mask,
+> > > > > > > +			 indio_dev->masklength) {
+> > > > > > > +		if (buf[0] != st->buffer[bit])
+> > > > > > > +			buf[0] = st->buffer[bit];    
+> > > > > >
+> > > > > > Since we are here, when looking into the driver, I realized
+> > > > > > that st->buffer is not DMA safe. In IIO, we kind of want to    
+> > > enforce    
+> > > > > > that all buffers that are passed to spi/i2c buses are safe... Maybe
+> > > > > > this is something you can include in your series.    
+> > > > >
+> > > > > Why is it not?  st->buffer is result of a devm_kmalloc_array() call    
+> > > and    
+> > > > > that should provide a DMA safe buffer as I understand it.
+> > > > >    
+> > > >
+> > > > That's a good question. I'm not sure how I came to that conclusion    
+> > > which    
+> > > > is clearly wrong. Though I think the buffer might share the line with    
+> > > the    
+> > > > mutex...    
+> > > Pointer shares a line.  The buffer it points to doesn't as allocated
+> > > by separate heap allocation.
+> > >     
+> > 
+> > Ups, sure :facepalm:  
+> 
+> My understanding [1] was that devm_ allocations were generally not
+> suitable for DMA and should not be used for this particular purpose
+> because of the extra 16 bytes allocated for storing the devm magic
+> somewhere, which shifts the entire buffer and prevents it to always be
+> aligned on a cache line. I will propose a patch to switch to
+> kmalloc_array() instead.
+> 
+> [1] https://linux-arm-kernel.infradead.narkive.com/vyJqy0RQ/question-devm-kmalloc-for-dma
 
-In order to improve that mechanism and make it more resistant to
-platform firmware issues, make it only use the CPPC nominal_perf
-values to compute the HWP-to-frequency scaling factors for all
-CPUs and possibly use the HWP_CAP highest_perf values to recompute
-them if the ones derived from the CPPC nominal_perf values alone
-appear to be too high.
+That shouldn't actually matter because here we don't care about
+it being aligned on a cacheline - but we do care about it being
+aligned so that nothing else we might touch is in the same cacheline.
+Note the thread you link talks about this.
 
-Namely, fetch CPC.nominal_perf for all CPUs present in the system,
-find the minimum one and use it as a reference for computing all of
-the CPUs' scaling factors (using the observation that for the CPUs
-having the minimum CPC.nominal_perf the HWP range of available
-performance levels should be the same as the range of available
-"legacy" P-states and so the HWP-to-frequency scaling factor for
-them should be the same as the corresponding scaling factor used
-for representing the P-state values in kHz).
+If we were possibly doing additional devm_ managed allocations
+whilst DMA was active then it might be a problem, but
+I'm fairly sure we aren't doing that here.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Tested-by: Zhang Rui <rui.zhang@intel.com>
----
- drivers/cpufreq/intel_pstate.c |  185 +++++++++++++++--------------------------
- 1 file changed, 71 insertions(+), 114 deletions(-)
+Not there might be a bus controller that has stricter alignment
+requirements - whether we need to be careful of those isn't
+particularly clear to me.  There are lots of places in IIO
+where we cachealign a set of buffers, but for example the
+rx is after the tx buffers and isn't aligned as would be
+required. As such I'm fairly sure it's not a problem.
 
-Index: linux-pm/drivers/cpufreq/intel_pstate.c
-===================================================================
---- linux-pm.orig/drivers/cpufreq/intel_pstate.c
-+++ linux-pm/drivers/cpufreq/intel_pstate.c
-@@ -271,6 +271,7 @@ static struct cpudata **all_cpu_data;
-  * @get_min:		Callback to get minimum P state
-  * @get_turbo:		Callback to get turbo P state
-  * @get_scaling:	Callback to get frequency scaling factor
-+ * @get_cpu_scaling:	Get frequency scaling factor for a given cpu
-  * @get_aperf_mperf_shift: Callback to get the APERF vs MPERF frequency difference
-  * @get_val:		Callback to convert P state to actual MSR write value
-  * @get_vid:		Callback to get VID data for Atom platforms
-@@ -284,6 +285,7 @@ struct pstate_funcs {
- 	int (*get_min)(void);
- 	int (*get_turbo)(void);
- 	int (*get_scaling)(void);
-+	int (*get_cpu_scaling)(int cpu);
- 	int (*get_aperf_mperf_shift)(void);
- 	u64 (*get_val)(struct cpudata*, int pstate);
- 	void (*get_vid)(struct cpudata *);
-@@ -387,6 +389,15 @@ static int intel_pstate_get_cppc_guarant
- 	return cppc_perf.nominal_perf;
- }
- 
-+static u32 intel_pstate_cppc_nominal(int cpu)
-+{
-+	u64 nominal_perf;
-+
-+	if (cppc_get_nominal_perf(cpu, &nominal_perf))
-+		return 0;
-+
-+	return nominal_perf;
-+}
- #else /* CONFIG_ACPI_CPPC_LIB */
- static inline void intel_pstate_set_itmt_prio(int cpu)
- {
-@@ -473,20 +484,6 @@ static void intel_pstate_exit_perf_limit
- 
- 	acpi_processor_unregister_performance(policy->cpu);
- }
--
--static bool intel_pstate_cppc_perf_valid(u32 perf, struct cppc_perf_caps *caps)
--{
--	return perf && perf <= caps->highest_perf && perf >= caps->lowest_perf;
--}
--
--static bool intel_pstate_cppc_perf_caps(struct cpudata *cpu,
--					struct cppc_perf_caps *caps)
--{
--	if (cppc_get_perf_caps(cpu->cpu, caps))
--		return false;
--
--	return caps->highest_perf && caps->lowest_perf <= caps->highest_perf;
--}
- #else /* CONFIG_ACPI */
- static inline void intel_pstate_init_acpi_perf_limits(struct cpufreq_policy *policy)
- {
-@@ -509,15 +506,8 @@ static inline int intel_pstate_get_cppc_
- }
- #endif /* CONFIG_ACPI_CPPC_LIB */
- 
--static void intel_pstate_hybrid_hwp_perf_ctl_parity(struct cpudata *cpu)
--{
--	pr_debug("CPU%d: Using PERF_CTL scaling for HWP\n", cpu->cpu);
--
--	cpu->pstate.scaling = cpu->pstate.perf_ctl_scaling;
--}
--
- /**
-- * intel_pstate_hybrid_hwp_calibrate - Calibrate HWP performance levels.
-+ * intel_pstate_hybrid_hwp_adjust - Calibrate HWP performance levels.
-  * @cpu: Target CPU.
-  *
-  * On hybrid processors, HWP may expose more performance levels than there are
-@@ -525,115 +515,46 @@ static void intel_pstate_hybrid_hwp_perf
-  * scaling factor between HWP performance levels and CPU frequency will be less
-  * than the scaling factor between P-state values and CPU frequency.
-  *
-- * In that case, the scaling factor between HWP performance levels and CPU
-- * frequency needs to be determined which can be done with the help of the
-- * observation that certain HWP performance levels should correspond to certain
-- * P-states, like for example the HWP highest performance should correspond
-- * to the maximum turbo P-state of the CPU.
-+ * In that case, adjust the CPU parameters used in computations accordingly.
-  */
--static void intel_pstate_hybrid_hwp_calibrate(struct cpudata *cpu)
-+static void intel_pstate_hybrid_hwp_adjust(struct cpudata *cpu)
- {
- 	int perf_ctl_max_phys = cpu->pstate.max_pstate_physical;
- 	int perf_ctl_scaling = cpu->pstate.perf_ctl_scaling;
- 	int perf_ctl_turbo = pstate_funcs.get_turbo();
- 	int turbo_freq = perf_ctl_turbo * perf_ctl_scaling;
--	int perf_ctl_max = pstate_funcs.get_max();
--	int max_freq = perf_ctl_max * perf_ctl_scaling;
--	int scaling = INT_MAX;
--	int freq;
-+	int scaling = cpu->pstate.scaling;
- 
- 	pr_debug("CPU%d: perf_ctl_max_phys = %d\n", cpu->cpu, perf_ctl_max_phys);
--	pr_debug("CPU%d: perf_ctl_max = %d\n", cpu->cpu, perf_ctl_max);
-+	pr_debug("CPU%d: perf_ctl_max = %d\n", cpu->cpu, pstate_funcs.get_max());
- 	pr_debug("CPU%d: perf_ctl_turbo = %d\n", cpu->cpu, perf_ctl_turbo);
- 	pr_debug("CPU%d: perf_ctl_scaling = %d\n", cpu->cpu, perf_ctl_scaling);
--
- 	pr_debug("CPU%d: HWP_CAP guaranteed = %d\n", cpu->cpu, cpu->pstate.max_pstate);
- 	pr_debug("CPU%d: HWP_CAP highest = %d\n", cpu->cpu, cpu->pstate.turbo_pstate);
--
--#ifdef CONFIG_ACPI
--	if (IS_ENABLED(CONFIG_ACPI_CPPC_LIB)) {
--		struct cppc_perf_caps caps;
--
--		if (intel_pstate_cppc_perf_caps(cpu, &caps)) {
--			if (intel_pstate_cppc_perf_valid(caps.nominal_perf, &caps)) {
--				pr_debug("CPU%d: Using CPPC nominal\n", cpu->cpu);
--
--				/*
--				 * If the CPPC nominal performance is valid, it
--				 * can be assumed to correspond to cpu_khz.
--				 */
--				if (caps.nominal_perf == perf_ctl_max_phys) {
--					intel_pstate_hybrid_hwp_perf_ctl_parity(cpu);
--					return;
--				}
--				scaling = DIV_ROUND_UP(cpu_khz, caps.nominal_perf);
--			} else if (intel_pstate_cppc_perf_valid(caps.guaranteed_perf, &caps)) {
--				pr_debug("CPU%d: Using CPPC guaranteed\n", cpu->cpu);
--
--				/*
--				 * If the CPPC guaranteed performance is valid,
--				 * it can be assumed to correspond to max_freq.
--				 */
--				if (caps.guaranteed_perf == perf_ctl_max) {
--					intel_pstate_hybrid_hwp_perf_ctl_parity(cpu);
--					return;
--				}
--				scaling = DIV_ROUND_UP(max_freq, caps.guaranteed_perf);
--			}
--		}
--	}
--#endif
--	/*
--	 * If using the CPPC data to compute the HWP-to-frequency scaling factor
--	 * doesn't work, use the HWP_CAP gauranteed perf for this purpose with
--	 * the assumption that it corresponds to max_freq.
--	 */
--	if (scaling > perf_ctl_scaling) {
--		pr_debug("CPU%d: Using HWP_CAP guaranteed\n", cpu->cpu);
--
--		if (cpu->pstate.max_pstate == perf_ctl_max) {
--			intel_pstate_hybrid_hwp_perf_ctl_parity(cpu);
--			return;
--		}
--		scaling = DIV_ROUND_UP(max_freq, cpu->pstate.max_pstate);
--		if (scaling > perf_ctl_scaling) {
--			/*
--			 * This should not happen, because it would mean that
--			 * the number of HWP perf levels was less than the
--			 * number of P-states, so use the PERF_CTL scaling in
--			 * that case.
--			 */
--			pr_debug("CPU%d: scaling (%d) out of range\n", cpu->cpu,
--				scaling);
--
--			intel_pstate_hybrid_hwp_perf_ctl_parity(cpu);
--			return;
--		}
--	}
-+	pr_debug("CPU%d: HWP-to-frequency scaling factor: %d\n", cpu->cpu, scaling);
- 
- 	/*
--	 * If the product of the HWP performance scaling factor obtained above
--	 * and the HWP_CAP highest performance is greater than the maximum turbo
--	 * frequency corresponding to the pstate_funcs.get_turbo() return value,
--	 * the scaling factor is too high, so recompute it so that the HWP_CAP
--	 * highest performance corresponds to the maximum turbo frequency.
-+	 * If the product of the HWP performance scaling factor and the HWP_CAP
-+	 * highest performance is greater than the maximum turbo frequency
-+	 * corresponding to the pstate_funcs.get_turbo() return value, the
-+	 * scaling factor is too high, so recompute it to make the HWP_CAP
-+	 * highest performance correspond to the maximum turbo frequency.
- 	 */
- 	if (turbo_freq < cpu->pstate.turbo_pstate * scaling) {
--		pr_debug("CPU%d: scaling too high (%d)\n", cpu->cpu, scaling);
--
- 		cpu->pstate.turbo_freq = turbo_freq;
- 		scaling = DIV_ROUND_UP(turbo_freq, cpu->pstate.turbo_pstate);
--	}
-+		cpu->pstate.scaling = scaling;
- 
--	cpu->pstate.scaling = scaling;
--
--	pr_debug("CPU%d: HWP-to-frequency scaling factor: %d\n", cpu->cpu, scaling);
-+		pr_debug("CPU%d: refined HWP-to-frequency scaling factor: %d\n",
-+			 cpu->cpu, scaling);
-+	}
- 
- 	cpu->pstate.max_freq = rounddown(cpu->pstate.max_pstate * scaling,
- 					 perf_ctl_scaling);
- 
--	freq = perf_ctl_max_phys * perf_ctl_scaling;
--	cpu->pstate.max_pstate_physical = DIV_ROUND_UP(freq, scaling);
-+	cpu->pstate.max_pstate_physical =
-+			DIV_ROUND_UP(perf_ctl_max_phys * perf_ctl_scaling,
-+				     scaling);
- 
- 	cpu->pstate.min_freq = cpu->pstate.min_pstate * perf_ctl_scaling;
- 	/*
-@@ -1900,6 +1821,38 @@ static int knl_get_turbo_pstate(void)
- 	return ret;
- }
- 
-+#ifdef CONFIG_ACPI_CPPC_LIB
-+static u32 hybrid_ref_perf;
-+
-+static int hybrid_get_cpu_scaling(int cpu)
-+{
-+	return DIV_ROUND_UP(core_get_scaling() * hybrid_ref_perf,
-+			    intel_pstate_cppc_nominal(cpu));
-+}
-+
-+static void intel_pstate_cppc_set_cpu_scaling(void)
-+{
-+	u32 min_nominal_perf = U32_MAX;
-+	int cpu;
-+
-+	for_each_present_cpu(cpu) {
-+		u32 nominal_perf = intel_pstate_cppc_nominal(cpu);
-+
-+		if (nominal_perf && nominal_perf < min_nominal_perf)
-+			min_nominal_perf = nominal_perf;
-+	}
-+
-+	if (min_nominal_perf < U32_MAX) {
-+		hybrid_ref_perf = min_nominal_perf;
-+		pstate_funcs.get_cpu_scaling = hybrid_get_cpu_scaling;
-+	}
-+}
-+#else
-+static inline void intel_pstate_cppc_set_cpu_scaling(void)
-+{
-+}
-+#endif /* CONFIG_ACPI_CPPC_LIB */
-+
- static void intel_pstate_set_pstate(struct cpudata *cpu, int pstate)
- {
- 	trace_cpu_frequency(pstate * cpu->pstate.scaling, cpu->cpu);
-@@ -1928,10 +1881,8 @@ static void intel_pstate_max_within_limi
- 
- static void intel_pstate_get_cpu_pstates(struct cpudata *cpu)
- {
--	bool hybrid_cpu = boot_cpu_has(X86_FEATURE_HYBRID_CPU);
- 	int perf_ctl_max_phys = pstate_funcs.get_max_physical();
--	int perf_ctl_scaling = hybrid_cpu ? cpu_khz / perf_ctl_max_phys :
--					    pstate_funcs.get_scaling();
-+	int perf_ctl_scaling = pstate_funcs.get_scaling();
- 
- 	cpu->pstate.min_pstate = pstate_funcs.get_min();
- 	cpu->pstate.max_pstate_physical = perf_ctl_max_phys;
-@@ -1940,10 +1891,13 @@ static void intel_pstate_get_cpu_pstates
- 	if (hwp_active && !hwp_mode_bdw) {
- 		__intel_pstate_get_hwp_cap(cpu);
- 
--		if (hybrid_cpu)
--			intel_pstate_hybrid_hwp_calibrate(cpu);
--		else
-+		if (pstate_funcs.get_cpu_scaling) {
-+			cpu->pstate.scaling = pstate_funcs.get_cpu_scaling(cpu->cpu);
-+			if (cpu->pstate.scaling != perf_ctl_scaling)
-+				intel_pstate_hybrid_hwp_adjust(cpu);
-+		} else {
- 			cpu->pstate.scaling = perf_ctl_scaling;
-+		}
- 	} else {
- 		cpu->pstate.scaling = perf_ctl_scaling;
- 		cpu->pstate.max_pstate = pstate_funcs.get_max();
-@@ -3315,6 +3269,9 @@ static int __init intel_pstate_init(void
- 			if (!default_driver)
- 				default_driver = &intel_pstate;
- 
-+			if (boot_cpu_has(X86_FEATURE_HYBRID_CPU))
-+				intel_pstate_cppc_set_cpu_scaling();
-+
- 			goto hwp_cpu_matched;
- 		}
- 	} else {
+Jonathan
 
 
+> 
+> Thanks,
+> Miquèl
 
