@@ -2,126 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC85F400AA7
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6D6D400AB3
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:27:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351141AbhIDJmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 05:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234971AbhIDJmD (ORCPT
+        id S235932AbhIDKBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 06:01:23 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:58321 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233318AbhIDKBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 05:42:03 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D960C061575
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 02:41:02 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id v123so1444339pfb.11
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 02:41:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2CvcJSiEN9MNXuAzxJzwyEfnTU0mKkfe0+AjDJ9kifY=;
-        b=PSAR8amj8SgeZssZ3i6aMhFnhx1d4yc7BYIy+eXaxcMCN1aRoV2VqqXOM2pmH1LvRh
-         suidGUSlvYdrWD6WtmksppAQQejgzqMFdNY+FvjO2wKBY14MmY1LOB888gf890VzaV2I
-         nTP5g2G8jyoBaDxBGJRLcDQ98Vvq67nwdzFCIbge+CWR77ynC61LFys+8KVF4qlIBI/U
-         3osF4Ki1nBsfaUgPkJ7opkfRy4sw6+tt2mY5fFzIoT4i/ZCfU51LENFPBxUD7MkJG+C8
-         W2A8sc/jgNGKU16m2bGUqCtY95b23dyuP4WZomR7tlXbXhUpd+fsXmuYtrmciKNqFgzN
-         n1GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2CvcJSiEN9MNXuAzxJzwyEfnTU0mKkfe0+AjDJ9kifY=;
-        b=TendqE8SIpPDHej45IpLhYvaPWln5Hw680WjfTY4DLArRJx2rZYaKXX5yW36RQAzk9
-         i3t91YjGX+N0+XHLWxcz4GfL4V74Y24j/SL1emuV+/kXC+otXVBeLNbHJ20XQnqERhVG
-         lVmNewbiL0RjF/ummR6IVeRBTDsbSdgQjeCX0nAnX6acCGM7LYWF+3qSNSf2OWET6ru8
-         xn771Xp/aJBEZekJBrgq2xeb02eh8eenzaNRfop7DuS5GBnxlT93/AZLdCH0BqH/p4E+
-         ofAv46UArejR1FpjJVvaZQVT8owwKFLDsbBisL2V9TPngmjHeRNiIZWgu2skOgx2VWtH
-         DwZw==
-X-Gm-Message-State: AOAM531OehqRaRmhNN3nUWBGS3kLiXSf3B4fl6+/OZcx6CFhgj4V1H0g
-        TIAgNmodydJ1OtgVplJvlP0uIMn5GfRIhg0d
-X-Google-Smtp-Source: ABdhPJxq2rms+uXKvb4icD3P3JOkrs3NOtHPFvW/WtVyj4BtTwAnf8MfiVqQ6s96O3u9y/XiLBUpcg==
-X-Received: by 2002:a63:ef58:: with SMTP id c24mr2902397pgk.299.1630748461514;
-        Sat, 04 Sep 2021 02:41:01 -0700 (PDT)
-Received: from [192.168.1.6] ([117.98.200.228])
-        by smtp.gmail.com with ESMTPSA id d15sm1797118pfh.34.2021.09.04.02.40.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 04 Sep 2021 02:41:00 -0700 (PDT)
-Cc:     saurav.girepunje@hotmail.com,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Michael Straube <straube.linux@gmail.com>,
-        Martin Kaiser <martin@kaiser.cx>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] staging: r8188eu: os_dep: use kmemdup instead of kzalloc
- and memcpy
-To:     Phillip Potter <phil@philpotter.co.uk>
-References: <YTJhwQstKPUYRwN+@user>
- <CAA=Fs0mP7xqiS7+EX+J5MYH-AkEN_5SgtLrxAd669kXHG7Jk+A@mail.gmail.com>
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-Message-ID: <52642929-cec1-d03b-03f1-130a54c0c289@gmail.com>
-Date:   Sat, 4 Sep 2021 15:10:57 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Sat, 4 Sep 2021 06:01:07 -0400
+Received: from weisslap.aisec.fraunhofer.de ([178.27.102.95]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1MpCz1-1ml86h26BD-00ql6S; Sat, 04 Sep 2021 11:59:52 +0200
+From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
+To:     Paul Moore <paul@paul-moore.com>,
+        Casey Schaufler <casey@schaufler-ca.com>
+Cc:     =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>,
+        Song Liu <song@kernel.org>, Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Eric Paris <eparis@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-audit@redhat.com
+Subject: [PATCH v4 0/3] dm: audit event logging
+Date:   Sat,  4 Sep 2021 11:59:27 +0200
+Message-Id: <20210904095934.5033-1-michael.weiss@aisec.fraunhofer.de>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <CAA=Fs0mP7xqiS7+EX+J5MYH-AkEN_5SgtLrxAd669kXHG7Jk+A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:dvMNFghMudCwae8r1WJmn/zZSZcP1zgZE2HVyVW2CBtvdZTAB1b
+ n05Puw4rPFXFHEgUNjWc8ckEw4V9+Nb5L6kdOqcdap4XyQApbLjeDkEVq+RFY8vCxNrd8P+
+ xVo9Uto+uZiWvzs5eftmtzWnMthr+Iji0fCKvi/aIRGL73u4DL4t/TBeh86McwPWKYeViCP
+ dgauP2C1gmoDX7yT+ZavA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:V5M9YcIkkKM=:HENhpUOiEHPZCtljLT5kOT
+ RgJgvb9cb8FL4ybygtEAOViolhLjEfiFbfkn7UhyRVBqNzLR4jiGzT6t2Zk+ouMXTCabpce4d
+ XBPz3gvjIhZ7oLhL9mgayE/S0uFvwehS9o32MMgU+Qqq+fz3E+jnUr1IDwXM0aniHOzB5kZyj
+ QRxh1qXpueWer0chEyZNTqaBOLdZ448Vplxwby38W98idLrc/MDiwzz/T5bnO12hiA6d/PF7I
+ S8Of7Vw4RN3vPL3qGyskDi5WU1IxV7vlwLIU+WlpT2eamvgXbSdJcfu2ENakWjF7L4gmtSgjC
+ OcAY7mQpzrdlHydxzFuzQ2G76HLNr/nBAvXnFbGLDqKDXzG03hgplHhBAY5aT+pJGjzfVLZvT
+ d2fln4K/9g8Gzsj5sZUJxMhxes+XtU+ldkNGy9vG3EVFTyPNbTI2BTXvsshmsmsyhUOmX+he5
+ xuITu4h4HmqO1tLLWWseypU4qbK3WxqalRLrkE/+HTdAEPQqkmq1eYPczIwU0RgEXngmKHLk6
+ AIUJGWh5Rboll6gq0XrAMDik+ohGoEslzxbgPhKNVnPIiI/V75E1jGm6PPY7v9ZQ3e19P64Zd
+ Lzsoc4jaI4a0FOqi5JcMKtEPxqzGR2D/mDnx+MDWHq2OIliu7wRcwKv8uC9V3eOj97vROQqQJ
+ GtJudo4lGegwbqTivnilPsBfjzp9mJmiBAb5n4htz3VjJs+vEA9hhdjh+cteK1z0wfhYr7efc
+ EBlSGPrvakaMtndcbCYI2Iriv3FWYHdwtfmzOQXnET9A5s59QnbBkFHffCY=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+dm integrity and also stacked dm crypt devices track integrity
+violations internally. Thus, integrity violations could be polled
+from user space, e.g., by 'integritysetup status'.
 
+From an auditing perspective, we only could see that there were
+a number of integrity violations, but not when and where the
+violation exactly was taking place. The current error log to
+the kernel ring buffer, contains those information, time stamp and
+sector on device. However, for auditing the audit subsystem provides
+a separate logging mechanism which meets certain criteria for secure
+audit logging.
 
-On 04/09/21 12:23 am, Phillip Potter wrote:
-> On Fri, 3 Sept 2021 at 18:56, Saurav Girepunje
-> <saurav.girepunje@gmail.com> wrote:
->>
->> Fixes coccicheck warning:WARNING opportunity for kmemdup in ioctl_linux.c
->>
->> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
->> ---
->>   drivers/staging/r8188eu/os_dep/ioctl_linux.c | 4 +---
->>   1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
->> index 81d4255d1785..495fadd2b8c8 100644
->> --- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
->> +++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
->> @@ -585,14 +585,12 @@ static int rtw_set_wpa_ie(struct adapter *padapter, char *pie, unsigned short ie
->>          }
->>
->>          if (ielen) {
->> -               buf = kzalloc(ielen, GFP_KERNEL);
->> +               buf = kmemdup(pie, ielen, GFP_KERNEL);
->>                  if (!buf) {
->>                          ret =  -ENOMEM;
->>                          goto exit;
->>                  }
->>
->> -               memcpy(buf, pie, ielen);
->> -
->>                  /* dump */
->>                  {
->>                          int i;
->> --
->> 2.32.0
->>
-> 
-> Dear Saurav,
-> 
-> Looks good, thanks:
-> Acked-by: Phillip Potter <phil@philpotter.co.uk>
-> 
-> Regards,
-> Phil
-> 
+With this small series we make use of the kernel audit framework
+and extend the dm driver to log audit events in case of such
+integrity violations. Further, we also log construction and
+destruction of the device mappings.
 
-Thanks for review Phil
+We focus on dm-integrity and stacked dm-crypt devices for now.
+However, the helper functions to log audit messages should be
+applicable to dm-verity too.
 
-Regards,
-Saurav Girepunje
+The first patch introduce generic audit wrapper functions.
+The second patch makes use of the audit wrapper functions in the
+dm-integrity.c.
+The third patch uses the wrapper functions in dm-crypt.c.
+
+The audit logs look like this if executing the following simple test:
+
+# dd if=/dev/zero of=test.img bs=1M count=1024
+# losetup -f test.img
+# integritysetup -vD format --integrity sha256 -t 32 /dev/loop0
+# integritysetup open -D /dev/loop0 --integrity sha256 integritytest
+# integritysetup status integritytest
+# integritysetup close integritytest
+# integritysetup open -D /dev/loop0 --integrity sha256 integritytest
+# integritysetup status integritytest
+# dd if=/dev/urandom of=/dev/loop0 bs=512 count=1 seek=100000
+# dd if=/dev/mapper/integritytest of=/dev/null
+
+-------------------------
+audit.log from auditd
+
+type=UNKNOWN[1336] msg=audit(1630425039.363:184): module=integrity
+op=ctr ppid=3807 pid=3819 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0
+egid=0 sgid=0 fsgid=0 tty=pts2 ses=3 comm="integritysetup"
+exe="/sbin/integritysetup" subj==unconfined dev=254:3
+error_msg='success' res=1
+type=UNKNOWN[1336] msg=audit(1630425039.471:185): module=integrity
+op=dtr ppid=3807 pid=3819 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0
+egid=0 sgid=0 fsgid=0 tty=pts2 ses=3 comm="integritysetup"
+exe="/sbin/integritysetup" subj==unconfined dev=254:3
+error_msg='success' res=1
+type=UNKNOWN[1336] msg=audit(1630425039.611:186): module=integrity
+op=ctr ppid=3807 pid=3819 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0
+egid=0 sgid=0 fsgid=0 tty=pts2 ses=3 comm="integritysetup"
+exe="/sbin/integritysetup" subj==unconfined dev=254:3
+error_msg='success' res=1
+type=UNKNOWN[1336] msg=audit(1630425054.475:187): module=integrity
+op=dtr ppid=3807 pid=3819 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0
+egid=0 sgid=0 fsgid=0 tty=pts2 ses=3 comm="integritysetup"
+exe="/sbin/integritysetup" subj==unconfined dev=254:3
+error_msg='success' res=1
+
+type=UNKNOWN[1336] msg=audit(1630425073.171:191): module=integrity
+op=ctr ppid=3807 pid=3883 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0
+egid=0 sgid=0 fsgid=0 tty=pts2 ses=3 comm="integritysetup"
+exe="/sbin/integritysetup" subj==unconfined dev=254:3
+error_msg='success' res=1
+
+type=UNKNOWN[1336] msg=audit(1630425087.239:192): module=integrity
+op=dtr ppid=3807 pid=3902 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0
+egid=0 sgid=0 fsgid=0 tty=pts2 ses=3 comm="integritysetup"
+exe="/sbin/integritysetup" subj==unconfined dev=254:3
+error_msg='success' res=1
+
+type=UNKNOWN[1336] msg=audit(1630425093.755:193): module=integrity
+op=ctr ppid=3807 pid=3906 auid=1000 uid=0 gid=0 euid=0 suid=0 fsuid=0
+egid=0 sgid=0 fsgid=0 tty=pts2 ses=3 comm="integritysetup"
+exe="/sbin/integritysetup" subj==unconfined dev=254:3
+error_msg='success' res=1
+
+type=UNKNOWN[1337] msg=audit(1630425112.119:194): module=integrity
+op=integrity-checksum dev=254:3 sector=77480 res=0
+type=UNKNOWN[1337] msg=audit(1630425112.119:195): module=integrity
+op=integrity-checksum dev=254:3 sector=77480 res=0
+type=UNKNOWN[1337] msg=audit(1630425112.119:196): module=integrity
+op=integrity-checksum dev=254:3 sector=77480 res=0
+type=UNKNOWN[1337] msg=audit(1630425112.119:197): module=integrity
+op=integrity-checksum dev=254:3 sector=77480 res=0
+type=UNKNOWN[1337] msg=audit(1630425112.119:198): module=integrity
+op=integrity-checksum dev=254:3 sector=77480 res=0
+type=UNKNOWN[1337] msg=audit(1630425112.119:199): module=integrity
+op=integrity-checksum dev=254:3 sector=77480 res=0
+type=UNKNOWN[1337] msg=audit(1630425112.119:200): module=integrity
+op=integrity-checksum dev=254:3 sector=77480 res=0
+type=UNKNOWN[1337] msg=audit(1630425112.119:201): module=integrity
+op=integrity-checksum dev=254:3 sector=77480 res=0
+type=UNKNOWN[1337] msg=audit(1630425112.119:202): module=integrity
+op=integrity-checksum dev=254:3 sector=77480 res=0
+type=UNKNOWN[1337] msg=audit(1630425112.119:203): module=integrity
+op=integrity-checksum dev=254:3 sector=77480 res=0
+
+v4 Changes:
+- Added comments on intended use of wrapper functions in dm-audit.h
+- dm_audit_log_bio(): Fixed missing '=' as spotted by Paul
+- dm_audit_log_ti(): Handle wrong audit_type as suggested by Paul
+
+v3 Changes:
+- Use of two audit event types AUDIT_DM_EVENT und AUDIT_DM_CTRL
+- Additionaly use audit_log_task_info in case of AUDIT_DM_CTRL messages
+- Provide consistent fields per message type as suggested by Paul
+- Added sample events to commit message of [1/3] as suggested by Paul
+- Rebased on v5.14
+
+v2 Changes:
+- Fixed compile errors if CONFIG_DM_AUDIT is not set
+- Fixed formatting and typos as suggested by Casey
+
+Michael Weiß (3):
+  dm: introduce audit event module for device mapper
+  dm integrity: log audit events for dm-integrity target
+  dm crypt: log aead integrity violations to audit subsystem
+
+ drivers/md/Kconfig         | 10 +++++
+ drivers/md/Makefile        |  4 ++
+ drivers/md/dm-audit.c      | 84 ++++++++++++++++++++++++++++++++++++++
+ drivers/md/dm-audit.h      | 66 ++++++++++++++++++++++++++++++
+ drivers/md/dm-crypt.c      | 22 ++++++++--
+ drivers/md/dm-integrity.c  | 25 ++++++++++--
+ include/uapi/linux/audit.h |  2 +
+ 7 files changed, 205 insertions(+), 8 deletions(-)
+ create mode 100644 drivers/md/dm-audit.c
+ create mode 100644 drivers/md/dm-audit.h
+
+-- 
+2.20.1
+
