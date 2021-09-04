@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64711400BC4
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 17:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE142400BC7
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 17:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236779AbhIDPBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 11:01:55 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:38888 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230039AbhIDPBy (ORCPT
+        id S233473AbhIDPFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 11:05:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230039AbhIDPFy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 11:01:54 -0400
-X-UUID: 56e0fa7b868d4402aa2d51213ca8313d-20210904
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=RyIAY0T/rYq+im92ZCaJuNgcDI6T0FxoLAPeoBZwg3U=;
-        b=U6PR2L8xM1YAxnhz0JVtId+gYJJbzY2jpp0NbchcRVISHGiwXMKY6TR2ytyCTZaGdcJgws2iU5RTgh9lsUnxJHX8hxuNc8prkJH6cPwxFA+Yud8m72G1yDqiRgqMVpmgXT4ctvieqDJqq/9RFCGOAuM+AHL3FSQ30dHYFWPhTY4=;
-X-UUID: 56e0fa7b868d4402aa2d51213ca8313d-20210904
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <miles.chen@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 943019367; Sat, 04 Sep 2021 23:00:49 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 4 Sep 2021 23:00:48 +0800
-Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 4 Sep 2021 23:00:48 +0800
-Message-ID: <42a32455186e5deb476cca74e64de18e8cc1a34c.camel@mediatek.com>
-Subject: Re: [PATCH] clk: rockchip: use module_platform_driver_probe
-From:   Miles Chen <miles.chen@mediatek.com>
-To:     Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-CC:     <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
-Date:   Sat, 4 Sep 2021 23:00:48 +0800
-In-Reply-To: <1764446.vrLGdHa7mH@diego>
-References: <20210902075713.7563-1-miles.chen@mediatek.com>
-         <1764446.vrLGdHa7mH@diego>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Sat, 4 Sep 2021 11:05:54 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E68C061575
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 08:04:53 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id i21so4072434ejd.2
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 08:04:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P7GqOoj/G1bVSV52xZTKKhDlmKWWb1exvuS27GdN4bo=;
+        b=c4B2Tsxa4gkb2PFRWZ6FRPEDtDh7uMSENgvMOJ3Wp4joLiSb6A3qTHhpPZXb5ry4Ir
+         FSfqMtE0cJQ3haCj2Wh69QlXIoWCVlJuqU+0oByjcg37QiGkEoe1+cDr1uoUAXJryLSL
+         /7oYVg9Iof8znH8vZZT255mzsXvbXLyMLrbyGG1kdW2YXkkxdwPqJMHA5Dwz5n8yfkN9
+         WJvrTW+3k75N+cgN3WjoKq+DLuhDLtdPJE2Fy5zClQqmaKVv23pXEIQ/7XhWF8n4wfmq
+         YQsnJL8uCRot+EPq6+6RZKP9iR+jsdwHlzw+RLfRgRWFYJZK15TP3E7XLq1vU3Qe/ELN
+         yR8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P7GqOoj/G1bVSV52xZTKKhDlmKWWb1exvuS27GdN4bo=;
+        b=QQ4gotPDq9BQzW+rQI8IVPuxFvR5716xHmx9HECS437iFL70DR5OzAhy7mywiMNCMW
+         FCo7tUFEJJglQVg2PeAYLiU8ovsbWntzVjL+2b8prSEsLSsw+kLbezPZfhri11iBLdBn
+         oMbpo8R4ZFOp/uPgPP0S6WEVlk3Kw9eArFbHii7Xeb7J2OHdq+RdW00q/NGOvpc9FfQ0
+         ciTY8gpqdHGr1Wp5inUs78ALH1UV3ZhOVqKN1Kvx5Tn2jLZeoGUzFgIJE9UobBzgRGGO
+         uNFADZfe2PrcbtVDwI/sO2MgkTVdqZYxxel1m3SMnuovZXeAW3TOi4JYe33Ki1T2Lsbb
+         wRwA==
+X-Gm-Message-State: AOAM5305YxruNiArY+4ObKvx33VS8R1NHzrtXxbZ0iJ2GEDg3h79Up05
+        ylts/Ig/1Twk/baV0mFMQLE=
+X-Google-Smtp-Source: ABdhPJzvv1M5hI8rf8nKLDFn1iJAeDH1TomuaOn7/UecbFVI2PglWj7ac8rOGUJzIJD4Eh+mQ3SajQ==
+X-Received: by 2002:a17:907:7752:: with SMTP id kx18mr4654691ejc.276.1630767891632;
+        Sat, 04 Sep 2021 08:04:51 -0700 (PDT)
+Received: from localhost.localdomain (host-79-23-101-208.retail.telecomitalia.it. [79.23.101.208])
+        by smtp.gmail.com with ESMTPSA id da16sm1463452edb.28.2021.09.04.08.04.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Sep 2021 08:04:51 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH 0/3] staging: r8188eu: Shorten and simplify calls chain 
+Date:   Sat,  4 Sep 2021 17:04:44 +0200
+Message-Id: <20210904150447.14659-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTA5LTAzIGF0IDIyOjU5ICswMjAwLCBIZWlrbyBTdMO8Ym5lciB3cm90ZToN
-Cj4gQW0gRG9ubmVyc3RhZywgMi4gU2VwdGVtYmVyIDIwMjEsIDA5OjU3OjEzIENFU1Qgc2Nocmll
-YiBNaWxlcyBDaGVuOg0KPiA+IFJlcGxhY2UgYnVpbHRpbl9wbGF0Zm9ybV9kcml2ZXJfcHJvYmUg
-d2l0aA0KPiA+IG1vZHVsZV9wbGF0Zm9ybV9kcml2ZXJfcHJvYmUNCj4gPiBiZWNhdXNlIHRoYXQg
-cmszMzk5IGFuZCByazM1NjggY2FuIGJlIGJ1aWx0IGFzIGtlcm5lbCBtb2R1bGVzLg0KPiA+IA0K
-PiA+IENjOiBTdGVwaGVuIEJveWQgPHNib3lkQGtlcm5lbC5vcmc+DQo+ID4gU2lnbmVkLW9mZi1i
-eTogTWlsZXMgQ2hlbiA8bWlsZXMuY2hlbkBtZWRpYXRlay5jb20+DQo+IA0KPiBvbiBib3RoIHJr
-MzM5OSBhbmQgcmszNTY4Og0KPiBUZXN0ZWQtYnk6IEhlaWtvIFN0dWVibmVyIDxoZWlrb0BzbnRl
-Y2guZGU+DQo+IA0KPiBhbmQgYWxzbw0KPiBSZXZpZXdlZC1ieTogSGVpa28gU3R1ZWJuZXIgPGhl
-aWtvQHNudGVjaC5kZT4NCj4gDQoNCnRoYW5rcyBmb3IgZG9pbmcgdGhlIHRlc3QuIEkgd2lsbCBh
-ZGQgeW91ciB0YWdzIGluIG15IG5leHQgcGF0Y2guDQo+IA0KPiBIZWlrbw0KPiANCj4gPiAtLS0N
-Cj4gPiAgZHJpdmVycy9jbGsvcm9ja2NoaXAvY2xrLXJrMzM5OS5jIHwgMiArLQ0KPiA+ICBkcml2
-ZXJzL2Nsay9yb2NrY2hpcC9jbGstcmszNTY4LmMgfCAyICstDQo+ID4gIDIgZmlsZXMgY2hhbmdl
-ZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL2Nsay9yb2NrY2hpcC9jbGstcmszMzk5LmMNCj4gPiBiL2RyaXZlcnMvY2xrL3Jv
-Y2tjaGlwL2Nsay1yazMzOTkuYw0KPiA+IGluZGV4IDYyYTRmMjU0Mzk2MC4uYTUxNjkxNTZmMWQy
-IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvY2xrL3JvY2tjaGlwL2Nsay1yazMzOTkuYw0KPiA+
-ICsrKyBiL2RyaXZlcnMvY2xrL3JvY2tjaGlwL2Nsay1yazMzOTkuYw0KPiA+IEBAIC0xNjUzLDcg
-KzE2NTMsNyBAQCBzdGF0aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlcg0KPiA+IGNsa19yazMzOTlf
-ZHJpdmVyID0gew0KPiA+ICAJCS5zdXBwcmVzc19iaW5kX2F0dHJzID0gdHJ1ZSwNCj4gPiAgCX0s
-DQo+ID4gIH07DQo+ID4gLWJ1aWx0aW5fcGxhdGZvcm1fZHJpdmVyX3Byb2JlKGNsa19yazMzOTlf
-ZHJpdmVyLA0KPiA+IGNsa19yazMzOTlfcHJvYmUpOw0KPiA+ICttb2R1bGVfcGxhdGZvcm1fZHJp
-dmVyX3Byb2JlKGNsa19yazMzOTlfZHJpdmVyLCBjbGtfcmszMzk5X3Byb2JlKTsNCj4gPiAgDQo+
-ID4gIE1PRFVMRV9ERVNDUklQVElPTigiUm9ja2NoaXAgUkszMzk5IENsb2NrIERyaXZlciIpOw0K
-PiA+ICBNT0RVTEVfTElDRU5TRSgiR1BMIik7DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2xr
-L3JvY2tjaGlwL2Nsay1yazM1NjguYw0KPiA+IGIvZHJpdmVycy9jbGsvcm9ja2NoaXAvY2xrLXJr
-MzU2OC5jDQo+ID4gaW5kZXggNzVjYTg1NWU3MjBkLi45MzllNzA3OWMzMzQgMTAwNjQ0DQo+ID4g
-LS0tIGEvZHJpdmVycy9jbGsvcm9ja2NoaXAvY2xrLXJrMzU2OC5jDQo+ID4gKysrIGIvZHJpdmVy
-cy9jbGsvcm9ja2NoaXAvY2xrLXJrMzU2OC5jDQo+ID4gQEAgLTE3MTksNyArMTcxOSw3IEBAIHN0
-YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyDQo+ID4gY2xrX3JrMzU2OF9kcml2ZXIgPSB7DQo+
-ID4gIAkJLnN1cHByZXNzX2JpbmRfYXR0cnMgPSB0cnVlLA0KPiA+ICAJfSwNCj4gPiAgfTsNCj4g
-PiAtYnVpbHRpbl9wbGF0Zm9ybV9kcml2ZXJfcHJvYmUoY2xrX3JrMzU2OF9kcml2ZXIsDQo+ID4g
-Y2xrX3JrMzU2OF9wcm9iZSk7DQo+ID4gK21vZHVsZV9wbGF0Zm9ybV9kcml2ZXJfcHJvYmUoY2xr
-X3JrMzU2OF9kcml2ZXIsIGNsa19yazM1NjhfcHJvYmUpOw0KPiA+ICANCj4gPiAgTU9EVUxFX0RF
-U0NSSVBUSU9OKCJSb2NrY2hpcCBSSzM1NjggQ2xvY2sgRHJpdmVyIik7DQo+ID4gIE1PRFVMRV9M
-SUNFTlNFKCJHUEwiKTsNCj4gPiANCj4gDQo+IA0KPiANCj4gDQo=
+io_ops abstraction is useless in this driver, since there is only one ops
+registration. Without io_ops we can get rid of indirect calls mess and
+shorten the calls chain.
+
+Shorten the calls chain of rtw_read8/16/32() down to the actual reads.
+For this purpose unify the three usb_read8/16/32 into the new
+usb_read(); make the latter parameterizable with 'size'; embed most of
+the code of usbctrl_vendorreq() into usb_read() and use in it the new
+usb_control_msg_recv() API of USB Core.
+
+Shorten the calls chain of rtw_write8/16/32() down to the actual writes.
+For this purpose unify the four usb_write8/16/32/N() into the new
+usb_write(); make the latter parameterizable with 'size'; embed most of
+the code of usbctrl_vendorreq() into usb_write() and use in it the new
+usb_control_msg_send() API of USB Core.
+
+The code with the modifications was thoroughly tested by Pavel Skripkin 
+using a TP-Link TL-WN722N v2 / v3 [Realtek RTL8188EUS]
+
+Fabio M. De Francesco (2):
+  staging: r8188eu: Shorten calls chain of rtw_read8/16/32()
+  staging: r8188eu: Shorten calls chain of rtw_write8/16/32/N()
+
+Pavel Skripkin (1):
+  staging: r8188eu: remove _io_ops structure
+
+ drivers/staging/r8188eu/core/rtw_io.c         | 241 +-----------------
+ drivers/staging/r8188eu/hal/usb_halinit.c     |   6 +-
+ drivers/staging/r8188eu/hal/usb_ops_linux.c   | 232 ++++++++++-------
+ drivers/staging/r8188eu/include/rtw_io.h      |  76 +-----
+ drivers/staging/r8188eu/include/usb_ops.h     |   2 -
+ .../staging/r8188eu/include/usb_ops_linux.h   |   8 -
+ drivers/staging/r8188eu/os_dep/usb_intf.c     |   2 +-
+ .../staging/r8188eu/os_dep/usb_ops_linux.c    |  40 +--
+ 8 files changed, 169 insertions(+), 438 deletions(-)
+
+-- 
+2.33.0
 
