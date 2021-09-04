@@ -2,95 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 142B6400946
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 04:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2279240094F
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 04:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241754AbhIDCOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 22:14:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236120AbhIDCOL (ORCPT
+        id S1350748AbhIDC1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 22:27:17 -0400
+Received: from mail-io1-f70.google.com ([209.85.166.70]:46787 "EHLO
+        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231389AbhIDC1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 22:14:11 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A65AAC061757;
-        Fri,  3 Sep 2021 19:13:10 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id me10so1554590ejb.11;
-        Fri, 03 Sep 2021 19:13:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/Yxd3tLdwA6axcDY2mcJ1N4bmyKI/tSiwpamDgl6Gsc=;
-        b=EBm3Mrc/KHMZzBUaktxLe3RwEFcfcqbQXJoOhiNiRA0R5Ftc5cBYA20B5uGudCdyOE
-         MMllLDqbdQ1KoH68wR2TNLupwk6jw+2sENeTJilRhQlRgIWKGJMb1ofj6nPnvWrAzypV
-         htVAAR9Lb2aCod2V/wac4AUCwrh6ZiP2ehumiiaiMLl58zIOgFLhgKWyiXv7GEXiK4Gi
-         H1qa/pywLXm6hPa6DL8M3agUYaEyEnlEwvpIua6QaxuKBd2K8uq9vuHTx1Io0FYoDcS2
-         SsRRQF043fbg5oj8BaC4i15UPLni8mq8a5A2zg6rKChe0aJ/X5Y5Gui+/VYl7nE23Oin
-         Wi/g==
+        Fri, 3 Sep 2021 22:27:16 -0400
+Received: by mail-io1-f70.google.com with SMTP id s6-20020a5ec646000000b005b7f88ffdd3so655819ioo.13
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 19:26:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/Yxd3tLdwA6axcDY2mcJ1N4bmyKI/tSiwpamDgl6Gsc=;
-        b=F90ovZrqWIIOJng5Uea7YyOiVHoTi2rRpp5LqLZxplnQUi6X4aRR2wa33HjxJDaJFf
-         O/q9eFTCgMvzct9B8CEjul93U/TNlQPrc7P20lFASdPVOaY5tWHZZFB39geObhoL0QWN
-         HJZSgnOZlA6bOhEA6Db1Zc9QqVDuNObiIiYBHR5FI5WiBVQTmycpYyZdgJBwdT6HM5nK
-         4/10W/cTcANRD6Edg9Dw0AkAyg0vTSvb2l+JTtVRzrRc1/2KJRzVy7t+/BSuv/9YFgcY
-         t6Iu/ZUAlUdaLuVdqtvLYjku3youuPreY/3cDqSNwqFZaiiUbwLX2tlYMAoo84TFNIj7
-         xDQQ==
-X-Gm-Message-State: AOAM533//i4c5XpQAaqB3KOHt5bYIAlsrw3w1fplYg9R/6+OieAkjNUv
-        GTPYxJEpx1eZ45dNWJFFnrJ//wQNz36yOfa2Hmo=
-X-Google-Smtp-Source: ABdhPJz0X1b/YbEKKNLhcxMoCb87/9e/3f184cZJ+kqFRfrYc6dzaThaCuwn/x3Ad+qCblXYaajtCxLMzXHzs0wYopg=
-X-Received: by 2002:a17:906:ce24:: with SMTP id sd4mr1981555ejb.329.1630721589217;
- Fri, 03 Sep 2021 19:13:09 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=eZuDXPMQCsAYrQ9Tqc+DegqAnhivS7bjb8voUZo9NDI=;
+        b=LgTtHL4fGM28net0HrxtOO0mZq0CCziefPliOlj6mM/pGiq4oAdSL8lrZrCfyKiKhf
+         iIhL4gwfEfk+BL9Zm1BX9E3BMwwjDlBKQZuEhWbTLQ1OKkaB0ylBbsaA5OMoYCxQcUf3
+         jjBm1HZk6sZQt/UR8L1vugO/5Q4OCIo1ZS8SjXD+kzhCPw8trN59k1ZdSqynwWumJOoK
+         RnDl86XXqgN3GxbaWk9AmmypzclqLUpv1V36oXFqQMSTueHC8km42sGuvUAaQC5/awTl
+         XJZbuabQxemY3kWZVZIdCeB3WbTIjOj7Ak47PDzy3pacJ3Xx5D06nwoNNi65yCeriO8q
+         imDg==
+X-Gm-Message-State: AOAM531Vdk3CqUVV2GKI3QHrgGPSANO3hS8FEPU1w6T3Wjw5GjgiXfCs
+        LwmdZ2wt5DXxzlCwuJYRGwHTYp/nB/xzXoAOvcH3AQNQjpXk
+X-Google-Smtp-Source: ABdhPJwewjvm4JSqsA/w2Lhr227sbplEvma+hNb4kWxNzENoVCqdMTAKUQf1cKXS8WETD8l2pcLOGdttictZeII6tUyyJovs74/b
 MIME-Version: 1.0
-References: <20210902061048.1703559-1-mudongliangabcd@gmail.com> <YTIpXrJmJTasAGJU@kroah.com>
-In-Reply-To: <YTIpXrJmJTasAGJU@kroah.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Sat, 4 Sep 2021 10:12:43 +0800
-Message-ID: <CAD-N9QU4KBs=XwjPpqSM1T3i9r0Fsd+s64O6gbD0Cf5KFFf-ZQ@mail.gmail.com>
-Subject: Re: [PATCH 4.19] fbmem: add margin check to fb_check_caps()
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        George Kennedy <george.kennedy@oracle.com>,
-        syzbot+e5fd3e65515b48c02a30@syzkaller.appspotmail.com,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Sasha Levin <sashal@kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a5d:9e0f:: with SMTP id h15mr1405728ioh.133.1630722375092;
+ Fri, 03 Sep 2021 19:26:15 -0700 (PDT)
+Date:   Fri, 03 Sep 2021 19:26:15 -0700
+In-Reply-To: <20210904005650.2914-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e50e4705cb222399@google.com>
+Subject: Re: [syzbot] INFO: task hung in __lru_add_drain_all
+From:   syzbot <syzbot+a9b681dcbc06eb2bca04@syzkaller.appspotmail.com>
+To:     eric.dumazet@gmail.com, hdanton@sina.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 9:55 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Sep 02, 2021 at 02:10:48PM +0800, Dongliang Mu wrote:
-> > [ Upstream commit a49145acfb975d921464b84fe00279f99827d816 ]
-> >
-> > A fb_ioctl() FBIOPUT_VSCREENINFO call with invalid xres setting
-> > or yres setting in struct fb_var_screeninfo will result in a
-> > KASAN: vmalloc-out-of-bounds failure in bitfill_aligned() as
-> > the margins are being cleared. The margins are cleared in
-> > chunks and if the xres setting or yres setting is a value of
-> > zero upto the chunk size, the failure will occur.
-> >
-> > Add a margin check to validate xres and yres settings.
-> >
-> > Note that, this patch needs special handling to backport it to linux
-> > kernel 4.19, 4.14, 4.9, 4.4.
->
-> Looks like this is already in the 4.4.283, 4.9.282, 4.14.246, and
-> 4.19.206 kernel releases.  Can you check them to verify that it matches
-> your backport as well?
+Hello,
 
-Yes, I have seen them in these releases and they are fine to me.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+INFO: task hung in __lru_add_drain_all
 
->
-> thanks,
->
-> greg k-h
+INFO: task khugepaged:1665 blocked for more than 143 seconds.
+      Not tainted 5.14.0-syzkaller #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:khugepaged      state:D stack:24384 pid: 1665 ppid:     2 flags:0x00004000
+Call Trace:
+ context_switch kernel/sched/core.c:4940 [inline]
+ __schedule+0x940/0x26f0 kernel/sched/core.c:6287
+ schedule+0xd3/0x270 kernel/sched/core.c:6366
+ schedule_timeout+0x1db/0x2a0 kernel/time/timer.c:1857
+ do_wait_for_common kernel/sched/completion.c:85 [inline]
+ __wait_for_common kernel/sched/completion.c:106 [inline]
+ wait_for_common kernel/sched/completion.c:117 [inline]
+ wait_for_completion+0x176/0x280 kernel/sched/completion.c:138
+ __flush_work+0x56e/0xb10 kernel/workqueue.c:3083
+ __lru_add_drain_all+0x3fd/0x760 mm/swap.c:820
+ khugepaged_do_scan mm/khugepaged.c:2214 [inline]
+ khugepaged+0x10f/0x5630 mm/khugepaged.c:2275
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+INFO: lockdep is turned off.
+NMI backtrace for cpu 0
+CPU: 0 PID: 1658 Comm: khungtaskd Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:210 [inline]
+ watchdog+0xc1d/0xf50 kernel/hung_task.c:295
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 10 Comm: kworker/u4:1 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: phy12 ieee80211_iface_work
+RIP: 0010:cmp_bss.part.0+0x1b6/0x860 net/wireless/scan.c:1320
+Code: 45 31 c0 49 8d 75 1d 31 c9 e8 96 b7 ff ff 49 8d 7e 18 48 89 fa 48 89 c3 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 0f b6 04 02 <84> c0 74 08 3c 03 0f 8e bc 05 00 00 41 8b 56 18 45 31 c9 45 31 c0
+RSP: 0018:ffffc90000cf6d00 EFLAGS: 00000a06
+RAX: 0000000000000000 RBX: ffff88805f1b8e1d RCX: 0000000000000000
+RDX: 1ffff1100c345993 RSI: ffffffff88697263 RDI: ffff888061a2cc98
+RBP: ffff88801e32c468 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff88697224 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88805f1b8e00 R14: ffff888061a2cc80 R15: fffff5200019edea
+FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000052f7b0 CR3: 0000000034b9b000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ cmp_bss net/wireless/scan.c:1505 [inline]
+ rb_find_bss+0x17d/0x200 net/wireless/scan.c:1505
+ cfg80211_bss_update+0xc6/0x2070 net/wireless/scan.c:1704
+ cfg80211_inform_single_bss_frame_data+0x6e8/0xee0 net/wireless/scan.c:2411
+ cfg80211_inform_bss_frame_data+0xa7/0xb10 net/wireless/scan.c:2444
+ ieee80211_bss_info_update+0x376/0xb60 net/mac80211/scan.c:190
+ ieee80211_rx_bss_info net/mac80211/ibss.c:1119 [inline]
+ ieee80211_rx_mgmt_probe_beacon+0xcce/0x17c0 net/mac80211/ibss.c:1608
+ ieee80211_ibss_rx_queued_mgmt+0xd37/0x1610 net/mac80211/ibss.c:1635
+ ieee80211_iface_process_skb net/mac80211/iface.c:1439 [inline]
+ ieee80211_iface_work+0xa65/0xd00 net/mac80211/iface.c:1493
+ process_one_work+0x9bf/0x16b0 kernel/workqueue.c:2297
+ worker_thread+0x658/0x11f0 kernel/workqueue.c:2444
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+----------------
+Code disassembly (best guess):
+   0:	45 31 c0             	xor    %r8d,%r8d
+   3:	49 8d 75 1d          	lea    0x1d(%r13),%rsi
+   7:	31 c9                	xor    %ecx,%ecx
+   9:	e8 96 b7 ff ff       	callq  0xffffb7a4
+   e:	49 8d 7e 18          	lea    0x18(%r14),%rdi
+  12:	48 89 fa             	mov    %rdi,%rdx
+  15:	48 89 c3             	mov    %rax,%rbx
+  18:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  1f:	fc ff df
+  22:	48 c1 ea 03          	shr    $0x3,%rdx
+  26:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax
+* 2a:	84 c0                	test   %al,%al <-- trapping instruction
+  2c:	74 08                	je     0x36
+  2e:	3c 03                	cmp    $0x3,%al
+  30:	0f 8e bc 05 00 00    	jle    0x5f2
+  36:	41 8b 56 18          	mov    0x18(%r14),%edx
+  3a:	45 31 c9             	xor    %r9d,%r9d
+  3d:	45 31 c0             	xor    %r8d,%r8d
+
+
+Tested on:
+
+commit:         f1583cb1 Merge tag 'linux-kselftest-next-5.15-rc1' of ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13a4f735300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9c582b69de20dde2
+dashboard link: https://syzkaller.appspot.com/bug?extid=a9b681dcbc06eb2bca04
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+
