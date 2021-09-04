@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6149C400C3A
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 19:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A64400C3E
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 19:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237163AbhIDRNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 13:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56030 "EHLO
+        id S237185AbhIDRPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 13:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhIDRNa (ORCPT
+        with ESMTP id S229899AbhIDRPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 13:13:30 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18EBC061575
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 10:12:28 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id x27so4768793lfu.5
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 10:12:28 -0700 (PDT)
+        Sat, 4 Sep 2021 13:15:43 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093AEC061575;
+        Sat,  4 Sep 2021 10:14:42 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d18so323300pll.11;
+        Sat, 04 Sep 2021 10:14:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zqrO14T0pKbUG+FmsgnUcUfGbeFob3eqLQ85Va5kmqk=;
-        b=XY3nqgBYHLsJv0nJJNOzNYFr6o39fLeHQUlIyaxdGcj+ytYTEywwCgGFGUgWA8dqgi
-         f/RE770n2NQr3TuVxMTfnMl1wfJTREqHXbAnvL6LMmw/Jeb6+6EtPi40+SPjL3M+Lbh4
-         58pSSUN+hfX5ihok2Aq10yyW56VMKHDHtD8ZY=
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iFc6/hsrcBHXb0L6ENJYv7woB6l1av4WfvfyQSymWlM=;
+        b=jky7Ry8ivE9o6QWdwB1WK/aihvoL83REe8Mk2P0puUGzsm8hUL0GX8nQCtnhKl3u16
+         QaY6+KS74yJ5BpIxxOFZybvIaMpJtPIFDyf59rByCTz8JCIh5jCKbseIN5uT1bqIriJa
+         aLDVHWRfRaXJIxR6FkX2g9eYcKgFDiH12Bss7ZVuU3C/u+75EAsOyiL9kGvPgz/U6F6n
+         8oayQTKtSbTCOlk/icx1rNa1n7FBungGfbxhPnALw0ul39GW2nZ6WIuBXKBQbj9C8cJh
+         Divr4v4Ugq2vqdocke99xb9cAli9E8Sl4l8SayTtNINQSQBc/QwUahm1kM9YOVqDWARS
+         0dEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zqrO14T0pKbUG+FmsgnUcUfGbeFob3eqLQ85Va5kmqk=;
-        b=NRV6US2w2CvR7154sbTBhRRSw5p82tTkqFHrnpy7akR9XUXhfikYoTZjckPc2bLVV8
-         KGGiVjiIdP5k3oNH6gS2A50YUDHA+q+SwArObLVHqMIUB4Rk5TFWQIGP2b0oxeUeDQ1L
-         cqWqKnyCFbttCGNXiSNcSjXh4ixmaot5FYUf+cYf32UEFb4loJkcpLTs9qBtYYMaNmkh
-         +7ZzSV8JyiGmUPtSxbNNfI0tYp2tYedDt2Rb0pDcJ5w8jWHlmZ+N1nBfy4mGWqvEKXEG
-         SWM2IFGxf9y4e0iky89dYxpLu0iupdkigDupnJSY+A4xXqyjyLNZtAnyZsnFuhauHI1i
-         wt3Q==
-X-Gm-Message-State: AOAM530Ez2QC4tf0825QCjy2YK/YaKvDULyqeuGSL8FlxBstupnE+saL
-        0Z0mGg/2iPFhp0GS6LcP8By7GZ5JySY9JSNf
-X-Google-Smtp-Source: ABdhPJwpFMusnHTPcwSpvScqb9lSu3C1hZOVwiGTZ4E5HLcxeWDDSFh7BrqgcQOerA9Lf9/ryAlqeQ==
-X-Received: by 2002:a05:6512:964:: with SMTP id v4mr3509245lft.91.1630775546997;
-        Sat, 04 Sep 2021 10:12:26 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id e19sm300912ljl.47.2021.09.04.10.12.25
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iFc6/hsrcBHXb0L6ENJYv7woB6l1av4WfvfyQSymWlM=;
+        b=KWiGI483X2JB9WDx7BP2cCLoRNlub1EgCBj9lZE/TN/BLjA4kBJKxNV3ooPOF/oE4W
+         RJVvByyiBRjmovJtrEOaf0wtOYi5kLLqZqdM54U4R2Ijcqo1mgxQTg9sf7Q+iaSA7gRy
+         lJsJPNCeI/15H3SDeuviGqrficio+0Gu5eaw3sS/NgQRWrxzWBtFdSZXD11FaNOu8XZa
+         fyszzDgekbenhBMGuNAS4K/EA/SFOIg6x3vP7M9Vzws0T6+tAOmjtuyYeM2rDQ+8/sKZ
+         lM1gSQDSORF5mmVePqH41zWGQMKWIdhHBx9lCD+POD+FYvCt3WHSo1BHxR15TGWlS3Tg
+         A1fA==
+X-Gm-Message-State: AOAM5310gkmzdwmf595dPBULKPgeoE/qJVSK3l5kyXSOttH6sbFcSen/
+        SYGdTnn1EJo8qSQIQHE18q3Or36nRCg=
+X-Google-Smtp-Source: ABdhPJymygyiq7j9tW7D09/DkHoxzOpZaa8Yvxh+VHwoC8YXHLHhvnWy8b+lIvtja23Ly+wY/1kEZg==
+X-Received: by 2002:a17:90a:194a:: with SMTP id 10mr5152123pjh.176.1630775681377;
+        Sat, 04 Sep 2021 10:14:41 -0700 (PDT)
+Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
+        by smtp.gmail.com with ESMTPSA id i11sm2882977pfd.37.2021.09.04.10.14.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 04 Sep 2021 10:12:26 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id f2so3834217ljn.1
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 10:12:25 -0700 (PDT)
-X-Received: by 2002:a2e:96c7:: with SMTP id d7mr3561133ljj.191.1630775545660;
- Sat, 04 Sep 2021 10:12:25 -0700 (PDT)
+        Sat, 04 Sep 2021 10:14:40 -0700 (PDT)
+Subject: Re: WARNING in sk_stream_kill_queues
+To:     Vasily Averin <vvs@virtuozzo.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Hao Sun <sunhao.th@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <CACkBjsYG3O_irFOZqjq5dJVDwW8pSUR_p6oO4BUaabWcx-hQCQ@mail.gmail.com>
+ <c84b07f8-ab0e-9e0c-c5d7-7d44e4d6f3e5@gmail.com>
+ <9a35a6f2-9373-6561-341c-8933b537122e@virtuozzo.com>
+ <71e8b315-3f3a-85ae-fede-914269a15272@virtuozzo.com>
+From:   Eric Dumazet <eric.dumazet@gmail.com>
+Message-ID: <606daddf-6ca5-6789-b571-6178100432be@gmail.com>
+Date:   Sat, 4 Sep 2021 10:14:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <YTOF8VYTYNFYpB7O@zeniv-ca.linux.org.uk> <CAHk-=whho2pj4Au+rVpTGkoj7nJCEJwSfikLQVHDZ8kbKG7U1w@mail.gmail.com>
-In-Reply-To: <CAHk-=whho2pj4Au+rVpTGkoj7nJCEJwSfikLQVHDZ8kbKG7U1w@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 4 Sep 2021 10:12:09 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whx9iKutjLY6iRBHg2TTzSDXgrZ0-Uj5sUqhyQZZQ_yRQ@mail.gmail.com>
-Message-ID: <CAHk-=whx9iKutjLY6iRBHg2TTzSDXgrZ0-Uj5sUqhyQZZQ_yRQ@mail.gmail.com>
-Subject: Re: [possible bug] missed wakeup in do_sigtimedwait()?
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <71e8b315-3f3a-85ae-fede-914269a15272@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 4, 2021 at 9:59 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+
+
+On 9/4/21 7:48 AM, Vasily Averin wrote:
+
+> Eric,
+> this problem is not related to my patches.
+> I've reproduced the problem locally on orignal kernel with original config,
+> then I've applied last version of my patch -- but it did not help, issue was reproduced again,
+> then I've reverted all my patches, see lest below -- and reproduced the problem once again
+> 
+> Thank you,
+> 	Vasily Averin
+> 
+> b8a0bb68ac30 (HEAD -> net-next-5.15) Revert "ipv6: allocate enough headroom in ip6_finish_output2()"
+> 1bc2de674a1b Revert "ipv6: ip6_finish_output2: set sk into newly allocated nskb"
+> 780e2f7d9b93 Revert "skbuff: introduce skb_expand_head()"
+> 782eaeed9de7 Revert "ipv6: use skb_expand_head in ip6_finish_output2"
+> 639e9842fc1f Revert "ipv6: use skb_expand_head in ip6_xmit"
+> 3b16ee164bcd Revert "ipv4: use skb_expand_head in ip_finish_output2"
+> ab48caf0e632 Revert "vrf: use skb_expand_head in vrf_finish_output"
+> 4da67a72ceef Revert "ax25: use skb_expand_head"
+> 9b113a8a62f0 Revert "bpf: use skb_expand_head in bpf_out_neigh_v4/6"
+> fc4ab503ce8f Revert "vrf: fix NULL dereference in vrf_finish_output()"
 >
-> I agree, that seems like a bug, and your fix seems the trivially correct thing.
 
-Oh, never mind.  Signals are special.
+OK, thanks for checking.
 
-Why?
+The repro on my host does not trigger the issue, I can not really investigate/bisect.
 
-Because TASK_INTERRUPTIBLE is special, and schedule() will check for
-"am I trying to sleep while a signal is pending" and will never
-actually sleep.
-
-So you can't have missed wakeups from signals, because this sequence
-is perfectly ok, by design:
-
- - signal comes in and is pending
-
- - we set TASK_INTERRUPTIBLE
-
- - we are thinking about something *entirely* different, like looking
-at a pipe being emty
-
- - we schedule()
-
-and the pending signal will just mean that we never go to sleep.
-
-It's designed that way exactly so that people who have interruptible
-sleeps don't need to think about signals at all - they can concentrate
-on doing their own thing, and then do the "signal_pending()" check at
-any point without caring.
-
-This has always been true, I had just swapped out that logic from memory.
-
-             Linus
