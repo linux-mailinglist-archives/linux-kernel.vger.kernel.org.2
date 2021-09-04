@@ -2,106 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0124F400AA8
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC85F400AA7
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351152AbhIDJmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 05:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42222 "EHLO
+        id S1351141AbhIDJmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 05:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234971AbhIDJmH (ORCPT
+        with ESMTP id S234971AbhIDJmD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 05:42:07 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF3EC061575
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 02:41:05 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id z18so3117669ybg.8
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 02:41:05 -0700 (PDT)
+        Sat, 4 Sep 2021 05:42:03 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D960C061575
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 02:41:02 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id v123so1444339pfb.11
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 02:41:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B95LSNh4DxANXXI32CweDKSCOVhWFK+5AxEuGEObjTo=;
-        b=I8bYMiYxp52sImFm8KTy5Q3CtcxU/gRVW3iRfJnOrpJ/0CJ47Rb426ypeQJSX7Lzoj
-         /wA/gQEjfwP0TVNrtxjtmUQhhRbwxcNWmzl4peW87JQ/sFASGLcRW5jfCewE0GYXN4DL
-         oeIz3Gn0mwVG5YKRQ41eLWBdFm0BmEZAcGWmYQitP83PYpJ3xy05FsE88duQeD8VmFyZ
-         KR3OdoXF183GUzMk1Ajt0EepoWpY47yqRKw+9FC6WFHJP1sLlfeGbigXqSlsrCFQ9h5v
-         tIUZ/gjHfWwd1XSQIF6/VdANd5o0p8PyYyZN5nT3l3sUkXNZOd0MyEIpoL3AEnb394qd
-         gyQw==
+        h=cc:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2CvcJSiEN9MNXuAzxJzwyEfnTU0mKkfe0+AjDJ9kifY=;
+        b=PSAR8amj8SgeZssZ3i6aMhFnhx1d4yc7BYIy+eXaxcMCN1aRoV2VqqXOM2pmH1LvRh
+         suidGUSlvYdrWD6WtmksppAQQejgzqMFdNY+FvjO2wKBY14MmY1LOB888gf890VzaV2I
+         nTP5g2G8jyoBaDxBGJRLcDQ98Vvq67nwdzFCIbge+CWR77ynC61LFys+8KVF4qlIBI/U
+         3osF4Ki1nBsfaUgPkJ7opkfRy4sw6+tt2mY5fFzIoT4i/ZCfU51LENFPBxUD7MkJG+C8
+         W2A8sc/jgNGKU16m2bGUqCtY95b23dyuP4WZomR7tlXbXhUpd+fsXmuYtrmciKNqFgzN
+         n1GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B95LSNh4DxANXXI32CweDKSCOVhWFK+5AxEuGEObjTo=;
-        b=O4KaDDW7bbgiO4rPcqsOQ3hKE8EpKguumrKTiaTOVZQ2cAQUuo407MHoyiLcePb0vQ
-         8vzyPIqr3Xv5kmGDwj6sN70k9Q8P1EnwIGRTrKyFeSPurbsIs+LbUplEdeAvmeMQniIj
-         EkqNHl5SXXXNVvSRUEy4QsRmjp+5jWw/rW9QiuZGnHjhYawWkkspwtNMHsWbqZ987gkO
-         KPZNkeR5ThS1TZBHRo8prx2Q6zrD0hfM0cOI6jehIruRFzHE12rqPNrnB6Ol98F/pd49
-         bS/myS9G94bQf7txmDXFCZ8Hurq1WGgOmvBxev2E5oi48JE0OhhQqKO2YLLTsiukCxHx
-         nOkg==
-X-Gm-Message-State: AOAM533AuBuqeAU4MTRAMhCQCWhT5jgkTgwMUkdbdI2ouIQMvqtCqDHT
-        KZ2ET8GrxS8YfYWHPf6OurXaN+HbVs7uDhbuqfBnOiyD
-X-Google-Smtp-Source: ABdhPJyL+jc3gZ+32uRvD6od+WdDpuc5qSGezU16V5La0Q9GEf4VAGj1CONuqVc67Qx+CKjP29adentsxn38xpfxPEI=
-X-Received: by 2002:a25:5444:: with SMTP id i65mr4189456ybb.277.1630748464907;
- Sat, 04 Sep 2021 02:41:04 -0700 (PDT)
+        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2CvcJSiEN9MNXuAzxJzwyEfnTU0mKkfe0+AjDJ9kifY=;
+        b=TendqE8SIpPDHej45IpLhYvaPWln5Hw680WjfTY4DLArRJx2rZYaKXX5yW36RQAzk9
+         i3t91YjGX+N0+XHLWxcz4GfL4V74Y24j/SL1emuV+/kXC+otXVBeLNbHJ20XQnqERhVG
+         lVmNewbiL0RjF/ummR6IVeRBTDsbSdgQjeCX0nAnX6acCGM7LYWF+3qSNSf2OWET6ru8
+         xn771Xp/aJBEZekJBrgq2xeb02eh8eenzaNRfop7DuS5GBnxlT93/AZLdCH0BqH/p4E+
+         ofAv46UArejR1FpjJVvaZQVT8owwKFLDsbBisL2V9TPngmjHeRNiIZWgu2skOgx2VWtH
+         DwZw==
+X-Gm-Message-State: AOAM531OehqRaRmhNN3nUWBGS3kLiXSf3B4fl6+/OZcx6CFhgj4V1H0g
+        TIAgNmodydJ1OtgVplJvlP0uIMn5GfRIhg0d
+X-Google-Smtp-Source: ABdhPJxq2rms+uXKvb4icD3P3JOkrs3NOtHPFvW/WtVyj4BtTwAnf8MfiVqQ6s96O3u9y/XiLBUpcg==
+X-Received: by 2002:a63:ef58:: with SMTP id c24mr2902397pgk.299.1630748461514;
+        Sat, 04 Sep 2021 02:41:01 -0700 (PDT)
+Received: from [192.168.1.6] ([117.98.200.228])
+        by smtp.gmail.com with ESMTPSA id d15sm1797118pfh.34.2021.09.04.02.40.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 04 Sep 2021 02:41:00 -0700 (PDT)
+Cc:     saurav.girepunje@hotmail.com,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Michael Straube <straube.linux@gmail.com>,
+        Martin Kaiser <martin@kaiser.cx>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] staging: r8188eu: os_dep: use kmemdup instead of kzalloc
+ and memcpy
+To:     Phillip Potter <phil@philpotter.co.uk>
+References: <YTJhwQstKPUYRwN+@user>
+ <CAA=Fs0mP7xqiS7+EX+J5MYH-AkEN_5SgtLrxAd669kXHG7Jk+A@mail.gmail.com>
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+Message-ID: <52642929-cec1-d03b-03f1-130a54c0c289@gmail.com>
+Date:   Sat, 4 Sep 2021 15:10:57 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <CADVatmPB9-oKd=ypvj25UYysVo6EZhQ6bCM7EvztQBMyiZfAyw@mail.gmail.com>
- <20210903160302.yh42vpkuob45dbpb@gilmour> <CADVatmMqT1yq3YHBzt4-VsL8uVHUULmy2gpaH27rAqimao2i_A@mail.gmail.com>
- <20210904091050.g5axxctgelciihjn@gilmour>
-In-Reply-To: <20210904091050.g5axxctgelciihjn@gilmour>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Sat, 4 Sep 2021 10:40:29 +0100
-Message-ID: <CADVatmN+9euG5Fegor1+kaSPewbW8vRwBgnxmr5SsK3mOE6FEg@mail.gmail.com>
-Subject: Re: Regression with mainline kernel on rpi4
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Emma Anholt <emma@anholt.net>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAA=Fs0mP7xqiS7+EX+J5MYH-AkEN_5SgtLrxAd669kXHG7Jk+A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
-
-On Sat, Sep 4, 2021 at 10:10 AM Maxime Ripard <maxime@cerno.tech> wrote:
->
-> On Fri, Sep 03, 2021 at 09:09:50PM +0100, Sudip Mukherjee wrote:
-> > Hi Maxime,
-> >
-> > On Fri, Sep 3, 2021 at 5:03 PM Maxime Ripard <maxime@cerno.tech> wrote:
-> > >
-> > > Hi Sudip,
-> > >
-> > > On Thu, Sep 02, 2021 at 10:08:19AM +0100, Sudip Mukherjee wrote:
-> > > > Hi All,
-> > > >
-> > >
-> >
-> > <snip>
-> >
-> > >
-> > > >
-> > > > You can see the complete dmesg at
-> > > > https://openqa.qa.codethink.co.uk/tests/76#step/dmesg/8
-> > >
-> > > What test were you running?
-> >
-> > Nothing particular, its just a boot test that we do every night after
-> > pulling from torvalds/linux.git
->
-> What are you booting to then?
-
-I am not sure I understood the question.
-Its an Ubuntu image. The desktop environment is gnome. And as
-mentioned earlier, we use the HEAD of linus tree every night to boot
-the rpi4 and test that we can login via desktop environment and that
-there is no regression in dmesg.
 
 
--- 
-Regards
-Sudip
+On 04/09/21 12:23 am, Phillip Potter wrote:
+> On Fri, 3 Sept 2021 at 18:56, Saurav Girepunje
+> <saurav.girepunje@gmail.com> wrote:
+>>
+>> Fixes coccicheck warning:WARNING opportunity for kmemdup in ioctl_linux.c
+>>
+>> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+>> ---
+>>   drivers/staging/r8188eu/os_dep/ioctl_linux.c | 4 +---
+>>   1 file changed, 1 insertion(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+>> index 81d4255d1785..495fadd2b8c8 100644
+>> --- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+>> +++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
+>> @@ -585,14 +585,12 @@ static int rtw_set_wpa_ie(struct adapter *padapter, char *pie, unsigned short ie
+>>          }
+>>
+>>          if (ielen) {
+>> -               buf = kzalloc(ielen, GFP_KERNEL);
+>> +               buf = kmemdup(pie, ielen, GFP_KERNEL);
+>>                  if (!buf) {
+>>                          ret =  -ENOMEM;
+>>                          goto exit;
+>>                  }
+>>
+>> -               memcpy(buf, pie, ielen);
+>> -
+>>                  /* dump */
+>>                  {
+>>                          int i;
+>> --
+>> 2.32.0
+>>
+> 
+> Dear Saurav,
+> 
+> Looks good, thanks:
+> Acked-by: Phillip Potter <phil@philpotter.co.uk>
+> 
+> Regards,
+> Phil
+> 
+
+Thanks for review Phil
+
+Regards,
+Saurav Girepunje
