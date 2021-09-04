@@ -2,80 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174DB400CAD
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 20:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67610400CAF
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 20:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237373AbhIDSpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 14:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234085AbhIDSpX (ORCPT
+        id S237405AbhIDSqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 14:46:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43126 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237380AbhIDSqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 14:45:23 -0400
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B5EAC061575
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 11:44:21 -0700 (PDT)
-Received: by mail-vk1-xa2e.google.com with SMTP id g34so842659vkd.11
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 11:44:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=9FCW6g5zB5F6uZTMJ8sDO6YWFUFBv4q++8NoxT2qhK8=;
-        b=YfciJGkelCXAHbdZ88Az7+47qpRp6ISlpI/xoCMm5cz4qyHT9C4XDqovSIjRpLpqLh
-         cmrAF55ncQvzpCVhY2Dk1NFDK/TUwad7uzbWxxpqtKUNaOiCkUcD9NSQUGSdS8tINaoI
-         RXkHKawgwM+IkO4qsbKOVLkRCWEwdZY/FJSRlQRpTAtGc7byZhwE9/5Ca2qUt/2dZOzR
-         RSKajebaJTbdsi/ZyTfYVmhu0R1cFsW4eAojZIMNYIzR+8Q/sELJVftirPOgbUthONFO
-         FeCCJiYgF7O+f/0RWvDtrKuyAOSlL9NHw/ha5ZnESMpwxoSCrNbBBLyYn8Bs99+yUvhQ
-         z0Vg==
+        Sat, 4 Sep 2021 14:46:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630781135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XjthgrevUBZJ832z2lXXWto4HUwNpTuWMITMN6nK1VY=;
+        b=FWhaJpqGbsXhHeZ9AMdkgee07Tf6CFLxWJPd6j8XdxOKAFoeDL3DG9tkTfsxLpREEtYlNN
+        B4TQrclNA3uU35wM5o/DLRm/V7SM0ztswlpT+cpVkyoW8dhv2K0r4AcZcjATkqXtgmKt3+
+        Y85DYrL+Ja4LAfJ1AJenAZgB4c++i9o=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-453-Vqa7qsqqM0WFxsPR47m3dA-1; Sat, 04 Sep 2021 14:45:34 -0400
+X-MC-Unique: Vqa7qsqqM0WFxsPR47m3dA-1
+Received: by mail-ot1-f70.google.com with SMTP id w35-20020a056830412300b0051bae474534so1460175ott.21
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 11:45:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=9FCW6g5zB5F6uZTMJ8sDO6YWFUFBv4q++8NoxT2qhK8=;
-        b=IRY12qWIvw8fnSGWDMIn/yS0NiyheVdZIQUClkGnZoDr4E+BlqoR3fPsEIJQECT0/M
-         1hRqdenuLEnbtpYwyccXBQBckAA4lFXWaOcA689E3SpfWG4e0zwrhoNR0hLykSAB0Bf5
-         EO1NcbTKOksoZbadUTDteE5fX7P1YGl4cQ1B+GoRGVUKC+y2ip2xtlm2+Dhl9Ji6/8+g
-         zm4CR0U82r9TosA4IYfAemc9pZzJb81z03BpVsJeMQ5iZwH1QRUmXR+iUWFQHf/YVHvn
-         cesGAUTbb6WERl0+e+RNLX8D5C4qIKXJdO67qp1e0LKc9HaIB0SVQRZYBpDWK3cx2jHw
-         RTjA==
-X-Gm-Message-State: AOAM530K+LnsRcVcn7R7zxAzWaU2kRd6VODTAHFb/ukwU3zNBUdm2pZH
-        NG6mUa74zGRQZyBAcGBoZm6jHXWLDd80Udl5FcE=
-X-Google-Smtp-Source: ABdhPJy8u3HDEM6aA30/IbE/+zL7waYN9Wbn0biNyo638kQ2sljxtxYFyf34gAwXO73fkmcUntJwrBTupplAwsMyE8E=
-X-Received: by 2002:a1f:d247:: with SMTP id j68mr2303680vkg.7.1630781059820;
- Sat, 04 Sep 2021 11:44:19 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XjthgrevUBZJ832z2lXXWto4HUwNpTuWMITMN6nK1VY=;
+        b=aMhiTnijMrl20XPA1u5jLhjkgRo55UBHETX1SsgVV4W6uKtfg+Rnklo0LsAsQoIBZZ
+         7Z2gQW8afHfn/9uQ4HRhGeld8AR+GlfeyZIgwhEZAhmjeic9EZ268crfxJO0lTpN4Sic
+         gTbuFky9wR/bwa5fm1bm1bHXl/6bj5gEEQWhCltagUSRd3x43WbSToMDKH7vb8+4MjQf
+         4mxqzh1WmrR9NNFUHT1bXI2Z8aL6txDkKoyjAiiR6qvM5Bcqh3N8B4HhSK6FS9/cdVIk
+         V2i5ZiPpF4s70vRivQXpnO/jHVoWrlM+71A5+SSfPMrD9+Cd6F4yGprTqGQ1Qtn2BGIm
+         2ilw==
+X-Gm-Message-State: AOAM533uShsBN06qOPxNTws/EqEvip+7TBDH7Las+yQ4n3MHVnHuZley
+        Jj9Ni8W0uB0ZqmbIsaDv9OYyNy/WaAt16p3C3i3uDvJKhVHmXdBUW/c2/0AyDaKU8CqLMbgQLvp
+        xDfPlacqhtiQplROy0wymIE8x
+X-Received: by 2002:a9d:7f07:: with SMTP id j7mr4457117otq.84.1630781133858;
+        Sat, 04 Sep 2021 11:45:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwd+0Ndb1obwV/jkLARxO2aOSiCZgjjZqUYWuMzun/6W9DJNXLkpCgI9oURFGhqzgg3dVG8bw==
+X-Received: by 2002:a9d:7f07:: with SMTP id j7mr4457104otq.84.1630781133660;
+        Sat, 04 Sep 2021 11:45:33 -0700 (PDT)
+Received: from treble ([2600:1700:6e32:6c00::15])
+        by smtp.gmail.com with ESMTPSA id c3sm598416oiy.30.2021.09.04.11.45.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Sep 2021 11:45:33 -0700 (PDT)
+Date:   Sat, 4 Sep 2021 11:45:30 -0700
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 03/13] kbuild: store the objtool command in *.cmd files
+Message-ID: <20210904184530.k6nwfesugx2su2hy@treble>
+References: <20210831074004.3195284-1-masahiroy@kernel.org>
+ <20210831074004.3195284-4-masahiroy@kernel.org>
+ <20210904180434.qkdbs27i5f2vtoxv@treble>
 MIME-Version: 1.0
-Received: by 2002:a67:cb08:0:0:0:0:0 with HTTP; Sat, 4 Sep 2021 11:44:19 -0700 (PDT)
-Reply-To: mrsaishag45@gmail.com
-From:   Mrs Aisha Al-Qaddafi <faridafarah924@gmail.com>
-Date:   Sat, 4 Sep 2021 11:44:19 -0700
-Message-ID: <CAJAEg+vHa1vh-kNA_bNq8-He94NnytZYfvHQ-Q4tjGkP5fAk_A@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210904180434.qkdbs27i5f2vtoxv@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Sat, Sep 04, 2021 at 11:04:37AM -0700, Josh Poimboeuf wrote:
+> On Tue, Aug 31, 2021 at 04:39:54PM +0900, Masahiro Yamada wrote:
+> > objtool_dep includes include/config/{ORC_UNWINDER,STACK_VALIDATION}
+> > so that all the objects are rebuilt when any of CONFIG_ORC_UNWINDER
+> > and CONFIG_STACK_VALIDATION is toggled.
+> > 
+> > As you can see in 'objtool_args', there are more CONFIG options
+> > that affect the objtool command line.
+> > 
+> > Adding more and more include/config/* is ugly and unmaintainable.
+> > 
+> > Another issue is that non-standard objects are needlessly rebuilt.
+> > Objects specified as OBJECT_FILES_NON_STANDARD is not processed by
+> > objtool, but they are rebuilt anyway when CONFIG_ORC_UNWINDER or
+> > CONFIG_STACK_VALIDATION is toggled. This is not a big deal, but
+> > better to fix.
+> > 
+> > A cleaner and more precise fix is to include the objtool command in
+> > *.cmd files so any command change is naturally detected by if_change.
+> 
+> Nice improvement, thanks!
+> 
+> s/CONFIG_ORC_UNWINDER/CONFIG_UNWINDER_ORC/g
+> 
+> And yes, this means the original ORC unwinder dependency didn't
+> work:
+> 
+> > -objtool_dep = $(objtool_obj)					\
+> > -	      $(wildcard include/config/ORC_UNWINDER		\
+> > -			 include/config/STACK_VALIDATION)
 
-I came across your e-mail contact prior a private search while in need
-of your assistance. My name is Aisha Gaddafi a single
+With the typos fixed, and this dependency bug mentioned in the commit
+log:
 
-Mother and a Widow with three Children. I am the only biological
-Daughter of late Libyan President (Late Colonel Muammar
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
 
-Gaddafi).
+-- 
+Josh
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a
-
-trusted investment Manager/Partner because of my current refugee
-status, however, I am interested in you for investment
-
-project assistance in your country, may be from there, we can build
-business relationship in the nearest future.
-
-I am willing to negotiate investment/business profit sharing ratio
-with you base on the future investment earning profits.
-Best Regards
-Mrs Aisha Al-Qaddafi
