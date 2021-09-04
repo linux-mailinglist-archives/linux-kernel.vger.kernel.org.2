@@ -2,94 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1EB400A09
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 08:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F3FD400A0C
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 08:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233605AbhIDGWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 02:22:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229994AbhIDGWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 02:22:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF05060FDC;
-        Sat,  4 Sep 2021 06:21:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630736502;
-        bh=AnObMOhI4wFcczydNxDTVYOB0X2pxVjwqd3pFHcghCk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ZKdmQKuz5ANdkbGym+cgNjRWrKRCAGtMYk892GPyhT/0r5T/MEAEWNLce/xMeP6Pr
-         Q1fVujQuA3eWhiQ+59OUuZHXmvzovZ2slihgtuBTlRckg0s08ghhJ5pIR3FfMy2o6A
-         vqhmA9bMeNqTFqOsp7M/tjZ1IKIMIIMzigkGPQ5Q=
-Date:   Sat, 4 Sep 2021 08:21:39 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
-Subject: [GIT PULL] More USB changes for 5.15-rc1
-Message-ID: <YTMQc8Cqjr29gelw@kroah.com>
+        id S235026AbhIDGXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 02:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229994AbhIDGXJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 02:23:09 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C62FC061575;
+        Fri,  3 Sep 2021 23:22:08 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id n4so789846plh.9;
+        Fri, 03 Sep 2021 23:22:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MFtTjA6Me4v1EtwNQS0lXGHS3dDY/uqJ4MgL2eljH48=;
+        b=HKTtEgntHKc8fUKUfuzEsdDhdpV7qmlpHlNiYX0A1pqipagEVSNkGIqNQ2y6mj/QwB
+         HgVOt1rtGx/S5MPo2EJ+I+/R4+4pribV+sRrJ4kXNqQDW2LFE1EyIzBBuB/OaFCoortV
+         l/Osg+jE9xlojSzhonhanRAdLgAEhrA62Qa+WPQ87lVsRhRwZYnwSQZIc22lkruE8XEQ
+         72ZfoNSN2qeaSQnLDhhl0amYYpF+wPFDR01/2U/Jl36dGXpLleW27NGdhxhHMcPdWb6d
+         Fpg89akppquPgZO7T22o62bBuOEHTAOpZBaPW1IBfh0qusJBCvUlQ9oYnIou8ZxtvZmt
+         GHvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MFtTjA6Me4v1EtwNQS0lXGHS3dDY/uqJ4MgL2eljH48=;
+        b=C5504WCLTTjXv0QMuL8ZK68EIzjM+4iH76KRSUmzAo9mRSHMVSpLMrbOCId1GGG1Bl
+         4iJaxV/Q9dQTQVnwqrX3Ts86oji9Q7KGbnDOz+iOLEoYX+75mVbegzqpx+QrgGoKWBr0
+         821UlEqaGYy16OWgiHdekCsmwM8dKKUBbid3ZtBOtvMQL3WaalHSoLIe82fvi5bAIEm9
+         Z/TMz4Q6RsqGdGtBn4u9+j1x3dHbpiQHunECVQBkZWzawj1lYE56fjLGQ+ZI+R8EICLv
+         lAWp8wpeycZMkvOCFTRM29ZPHSFDZSwRrJYpQobXGmheUPjSJ0ul0GygepN5wzh67o+e
+         G29Q==
+X-Gm-Message-State: AOAM532MPCxD25c5Hv6Duha72VFxrw0D46QqzcWq+qKc5DnyQlTkzzXl
+        dm0Y73FHkYNqvy5K2ydHagnwFowIV8o=
+X-Google-Smtp-Source: ABdhPJy+IZNPdqThOmjNh73zbmQsz9xGJcjqRqUZpYS7ltr9Gom2rEyypN11uP1Rk23Em669CSC4QQ==
+X-Received: by 2002:a17:902:c246:b0:136:c582:ebd with SMTP id 6-20020a170902c24600b00136c5820ebdmr2012973plg.61.1630736527870;
+        Fri, 03 Sep 2021 23:22:07 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:44a5:4d4e:ed46:daa])
+        by smtp.gmail.com with ESMTPSA id j17sm1209072pfn.148.2021.09.03.23.22.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 23:22:06 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 23:22:04 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     linux-input@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: Fix spelling mistake in Kconfig "Modul" ->
+ "Module"
+Message-ID: <YTMQjL1i0FMtVCii@google.com>
+References: <20210704095702.37567-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210704095702.37567-1-colin.king@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 835d31d319d9c8c4eb6cac074643360ba0ecab10:
+On Sun, Jul 04, 2021 at 10:57:02AM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> There is a spelling mistake in the Kconfig text. Fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-  Merge tag 'media/v5.15-1' of git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media (2021-09-01 10:34:52 -0700)
+Applied, thank you.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.15-rc1-2
-
-for you to fetch changes up to 1b4f3dfb4792f03b139edf10124fcbeb44e608e6:
-
-  Merge tag 'usb-serial-5.15-rc1' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-next (2021-09-01 20:11:41 +0200)
-
-----------------------------------------------------------------
-More USB changes for 5.15-rc1
-
-Here are some straggler USB-serial changes for 5.15-rc1.
-
-These were not included in the first pull request as they came in "late"
-from Johan and I had missed them in my pull request earlier this week.
-
-Nothing big in here, just some USB to serial driver updates and fixes.
-All of these were in linux-next before I pulled them into my tree, and
-have been in linux-next all this week from my tree with no reported
-problems.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Greg Kroah-Hartman (2):
-      Merge tag 'usb-serial-5.15-rc1-2' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-next
-      Merge tag 'usb-serial-5.15-rc1' of https://git.kernel.org/pub/scm/linux/kernel/git/johan/usb-serial into usb-next
-
-Johan Hovold (7):
-      USB: serial: io_edgeport: drop unused descriptor helper
-      USB: serial: cp210x: fix control-characters error handling
-      USB: serial: cp210x: fix flow-control error handling
-      USB: serial: cp210x: clean up control-request timeout
-      USB: serial: cp210x: clean up set-chars request
-      USB: serial: cp210x: clean up type detection
-      USB: serial: cp210x: determine fw version for CP2105 and CP2108
-
-Robert Marko (1):
-      USB: serial: pl2303: fix GL type detection
-
-Utkarsh Verma (1):
-      USB: serial: replace symbolic permissions by octal permissions
-
- drivers/usb/serial/cp210x.c      | 77 +++++++++++++++++-----------------------
- drivers/usb/serial/cypress_m8.c  |  6 ++--
- drivers/usb/serial/ftdi_sio.c    |  2 +-
- drivers/usb/serial/garmin_gps.c  |  2 +-
- drivers/usb/serial/io_edgeport.c | 33 -----------------
- drivers/usb/serial/io_ti.c       |  4 +--
- drivers/usb/serial/ipaq.c        |  4 +--
- drivers/usb/serial/iuu_phoenix.c | 10 +++---
- drivers/usb/serial/pl2303.c      |  1 +
- drivers/usb/serial/sierra.c      |  2 +-
- 10 files changed, 48 insertions(+), 93 deletions(-)
+-- 
+Dmitry
