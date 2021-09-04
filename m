@@ -2,104 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79EE7400C78
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 20:04:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5908400C79
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 20:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237265AbhIDSFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 14:05:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35913 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232946AbhIDSFl (ORCPT
+        id S237297AbhIDSKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 14:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232946AbhIDSKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 14:05:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630778679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cz9Ku9KOf6mZgZXN1NhnjRDs1hLQrX4dFP4M4XexeGM=;
-        b=K2JgeCxuGAHtertYo0NJGA4S/3H7XiNeboSKAU2M9gc/+lbcYSvROSSWZ+drCqoqGBhZDR
-        aVHiizZXQc6HYxKidR+3nLnhsczQN+kcxzeV1mRJf+Rcb4X5vKmtys2Jf8cILYYC1omCvx
-        id5ilFrJF3OsjcRmHHBe/pGkCYRhG3Q=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-DrJ8W38VOvGx27Hg2ReVWg-1; Sat, 04 Sep 2021 14:04:38 -0400
-X-MC-Unique: DrJ8W38VOvGx27Hg2ReVWg-1
-Received: by mail-oo1-f71.google.com with SMTP id t1-20020a4ad0a1000000b0028bbf04eae9so1564813oor.10
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 11:04:38 -0700 (PDT)
+        Sat, 4 Sep 2021 14:10:20 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633E7C061575
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 11:09:18 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id y6so3972634lje.2
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 11:09:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d9cCKBvhWQzJ1D49VIyTebPGrZpxmsDI6MMA6+ICjqw=;
+        b=HJK+uwndSZDYMHUzAH2y1VYzz3qQkff8CaYRr5jvVhT2+rmi0k+i0J+wr5bTW0pCiz
+         sPI+5NNf1wFJW96mj0g6PLOostmhaZo4meoyhQw7fIIveBocpxXBQU4fJ1dr69eLoWac
+         XydqvnVnJB2yWg7x8Gy8VphD1A+JJ5CU0SoZg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cz9Ku9KOf6mZgZXN1NhnjRDs1hLQrX4dFP4M4XexeGM=;
-        b=Ek6kcnuIKj5dZEP7Y+SPPK6Pyh+5ggy7Jv/iV2v+wMPlQ9cIFrCIV/GcqqZIKfK+Kw
-         gR2oUEPwBH8n/R5nnwORhckPi9r9WNt4Q1PtFf9oKund/eTJEP5QW49Qd14RIBnTMEPF
-         9YRvitcP/YRAahI3cyUwqV6fszCBlaEZ/zXQrCnDTdsxw4Yo4Z2IhpB8FYPiMJGNFAJn
-         baSuu4uIe+tXry9h2wbtehjcWZd6zYYc2s0ciYdpOviHcNmNdGpswfYgKE8f/avMYGUI
-         vmjZDOIc6KHbU6i50t8mlY8lAULNvW7imUj/Aj4eVu6wZJCHQMLBQMRUF6HXRgbVMd3a
-         qyRA==
-X-Gm-Message-State: AOAM531pxijWmmrJDOIZVQaqRy+WAV8pzTCHiKXd+jFZFHy4Dj7NZ4GL
-        vumGINl8dVFQavLJrwxmJqwY0/aBUsFOOPfmle1Ybf1i5wLBrH3vZw899WU3Nh4cNQczWICwFHY
-        ZWEzuT6jelu8U5929RwEzW0Wl
-X-Received: by 2002:a05:6808:bc2:: with SMTP id o2mr3449037oik.73.1630778677893;
-        Sat, 04 Sep 2021 11:04:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxbMykEdwn1S/PtlTn9+yNv6kBsjxqNdyp/i5WxcXA84q+inbL+YCZ7Bae/m99bNG4eGCNt0A==
-X-Received: by 2002:a05:6808:bc2:: with SMTP id o2mr3449020oik.73.1630778677623;
-        Sat, 04 Sep 2021 11:04:37 -0700 (PDT)
-Received: from treble ([2600:1700:6e32:6c00::15])
-        by smtp.gmail.com with ESMTPSA id v11sm650179oto.22.2021.09.04.11.04.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Sep 2021 11:04:37 -0700 (PDT)
-Date:   Sat, 4 Sep 2021 11:04:34 -0700
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 03/13] kbuild: store the objtool command in *.cmd files
-Message-ID: <20210904180434.qkdbs27i5f2vtoxv@treble>
-References: <20210831074004.3195284-1-masahiroy@kernel.org>
- <20210831074004.3195284-4-masahiroy@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d9cCKBvhWQzJ1D49VIyTebPGrZpxmsDI6MMA6+ICjqw=;
+        b=Daqv95XzblIgbGSmoZxcxOzvWFZ4a/3G08lQD+cBKK9fVp1m2NuyVx+cme04ww6HDn
+         mdw6VzFBMh1uXcTqCmVrgKaCdhuiF1dZLK4QI51fvDQb0knTEw/2cniUQGqGiF4XJGKz
+         5rxLepgzhlUmHMO6HV4oBZo5B0PJmt5dBrFDb4TZOhEJ8C5w2w2k4X9dDANg0mFCSNow
+         zYFxe/Hr6um4UitDI4DsrCfP74xwLrPswj60eaKx9qTgQzozJDPVQNrEUUhVdHxUwtYq
+         JOHz29gTnwjo+edTa7rgydtQdl3MNDHD/etrnV92gf2pza+ywP5W/NAWV9ps1rIXQl1C
+         rKsA==
+X-Gm-Message-State: AOAM533eTPeZ/fb9dVmYpeaNqS6BkDf3Eu0YbiTvCPXmCvX8N/3vUvjI
+        LGzfVfG2hOxg1ZrLeETaxzlHjbMHgvh2tGfJ
+X-Google-Smtp-Source: ABdhPJyj+4MEB/N3Inmm4bSM5CxvUFISRJ7s253OYPV7aRdYISPqxwf+Xd/JoOzrWYUS/upR/EAHPA==
+X-Received: by 2002:a2e:9a04:: with SMTP id o4mr3544452lji.296.1630778956478;
+        Sat, 04 Sep 2021 11:09:16 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id d18sm313855ljq.110.2021.09.04.11.09.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 04 Sep 2021 11:09:14 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id p38so5020735lfa.0
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 11:09:14 -0700 (PDT)
+X-Received: by 2002:a05:6512:3987:: with SMTP id j7mr3726453lfu.280.1630778954535;
+ Sat, 04 Sep 2021 11:09:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210831074004.3195284-4-masahiroy@kernel.org>
+References: <aa4aa155-b9b2-9099-b7a2-349d8d9d8fbd@paragon-software.com> <CAHk-=whFAkqwGSNXqeN4KfNwXeCzp9-uoy69_mLExEydTajvGw@mail.gmail.com>
+In-Reply-To: <CAHk-=whFAkqwGSNXqeN4KfNwXeCzp9-uoy69_mLExEydTajvGw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 4 Sep 2021 11:08:58 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjbtip559HcMG9VQLGPmkurh5Kc50y5BceL8Q8=aL0H3Q@mail.gmail.com>
+Message-ID: <CAHk-=wjbtip559HcMG9VQLGPmkurh5Kc50y5BceL8Q8=aL0H3Q@mail.gmail.com>
+Subject: Re: [GIT PULL] ntfs3: new NTFS driver for 5.15
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     ntfs3@lists.linux.dev,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 04:39:54PM +0900, Masahiro Yamada wrote:
-> objtool_dep includes include/config/{ORC_UNWINDER,STACK_VALIDATION}
-> so that all the objects are rebuilt when any of CONFIG_ORC_UNWINDER
-> and CONFIG_STACK_VALIDATION is toggled.
-> 
-> As you can see in 'objtool_args', there are more CONFIG options
-> that affect the objtool command line.
-> 
-> Adding more and more include/config/* is ugly and unmaintainable.
-> 
-> Another issue is that non-standard objects are needlessly rebuilt.
-> Objects specified as OBJECT_FILES_NON_STANDARD is not processed by
-> objtool, but they are rebuilt anyway when CONFIG_ORC_UNWINDER or
-> CONFIG_STACK_VALIDATION is toggled. This is not a big deal, but
-> better to fix.
-> 
-> A cleaner and more precise fix is to include the objtool command in
-> *.cmd files so any command change is naturally detected by if_change.
+On Sat, Sep 4, 2021 at 10:34 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> For github accounts (or really, anything but kernel.org where I can
+> just trust the account management), I really want the pull request to
+> be a signed tag, not just a plain branch.
 
-Nice improvement, thanks!
+Ok, to expedite this all and not cause any further pointless churn and
+jumping through hoops, I'll let it slide this time, but I'll ask that
+you sort out your pgp key for the future and use signed tags.
 
-s/CONFIG_ORC_UNWINDER/CONFIG_UNWINDER_ORC/g
+Also, I notice that you have a github merge commit in there.
 
-And yes, this means the original ORC unwinder dependency didn't
-work:
+That's another of those things that I *really* don't want to see -
+github creates absolutely useless garbage merges, and you should never
+ever use the github interfaces to merge anything.
 
-> -objtool_dep = $(objtool_obj)					\
-> -	      $(wildcard include/config/ORC_UNWINDER		\
-> -			 include/config/STACK_VALIDATION)
+This is the complete commit message of that merge:
 
+    Merge branch 'torvalds:master' into master
 
--- 
-Josh
+Yeah, that's not an acceptable message. Not to mention that it has a
+bogus "github.com" committer etc.
 
+github is a perfectly fine hosting site, and it does a number of other
+things well too, but merges is not one of those things.
+
+Linux kernel merges need to be done *properly*. That means proper
+commit messages with information about what is being merged and *why*
+you merge something. But it also means proper authorship and committer
+information etc. All of which github entirely screws up.
+
+We had this same issue with the ksmbd pull request, and my response is
+the same: the initial pull often has a few oddities and I'll accept
+them now, but for continued development you need to do things
+properly. That means doing merges from the command line, not using the
+entirely broken github web interface.
+
+(Sadly, it looks like that ksmbd discussion was not on any mailing
+lists, so I can't link to it).
+
+                    Linus
