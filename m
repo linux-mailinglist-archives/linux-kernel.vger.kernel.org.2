@@ -2,163 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A85400B3A
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F72400B44
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 14:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236316AbhIDL63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 07:58:29 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:33621 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234198AbhIDL62 (ORCPT
+        id S236362AbhIDMBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 08:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234198AbhIDMA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 07:58:28 -0400
-Received: by mail-io1-f72.google.com with SMTP id g2-20020a6b7602000000b005be59530196so1407301iom.0
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 04:57:26 -0700 (PDT)
+        Sat, 4 Sep 2021 08:00:59 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24AF6C061575;
+        Sat,  4 Sep 2021 04:59:58 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id w19-20020a17090aaf9300b00191e6d10a19so1376742pjq.1;
+        Sat, 04 Sep 2021 04:59:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=cSlbZmXpuYD8xFeqZ0DwF8X1WWOBci0BBC9riaxZUYA=;
+        b=V/PDsqjvnlJBrJ+JE89/2f5evnVWxc43lhab6iUxot8bmYz+k40WJyKDXQ4ADGSfpn
+         SP/aotyqNyc9kL2HYOrc9BpAmWTCKz8FSnqj1J0FsqZA5wkQ4FRt4kFsFVPOvt5Yb+sr
+         JmDzj4fa2KlG+O109gOcKvbkkoLWQBV0YL/i5AEuut3omZNT3FWgfwM2Oo14pv2N9o1L
+         kxMZLAkfy3GNBL2rPG08tKEF8IIomALvwgQjBC5qOE8Ag9YrjJxA3FstQiTkUf7ltZPL
+         8nv83RBDTNJCHU0CzhxrnbeL1pQOZRn+l3h1XXCV6RjYe52sAPWYc2fgymiBKkDrXJSZ
+         VFyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=mVw9JDyATIuAC54DQacSwmFjeXq6JmM1c62KNszdhhc=;
-        b=HzkGZLZ7Zi4HVfl0LnQqSJa3t2Eh/jTy5M/mQ8GG80wH7Kdkn91VRGEa/uq91m/OPo
-         ZNiuPHJfI5NjtlOyoALjHcJcH5zMV7OGAbDiWUbEA24HU8lz+wakLjfmW2jLiqlSUrc1
-         +N/Mp/IIQLGxbG15/ZEBmAJZPLOzP9Nt8tWuJ1H9JOG0BFoO8AbvF+DnSnZxuX4d3TxT
-         +H21Wfdoey7YcbYe9Z3f1KXnWb0NJcp3Fk9X9UBbLeOjUv/ja2nvMHGU8bQ3/94CRCB5
-         Y8AYOxiYLDzc/EKJ5TDlOX694ZeutGj203P74Ffg1LSdAdJon4pOsrS6QOn7AkCZCd4w
-         iXDA==
-X-Gm-Message-State: AOAM531TCnUzvzIo2LgH86iZ2IIEOmCgl1/mQNkm08z3CTi32nHDtaUl
-        +Jqvo8Yz37O6mzJi3Hqgw3tXcqS/reA+q3qOcSyUEuiMcWV2
-X-Google-Smtp-Source: ABdhPJz6RuNG1Aqat8FM5q2Ld6AcaL4UoZAwc1G9Kmn8MYDoHcv1bfhN3C52rU9sTipTBS2jK429kyYCo/A9L6U9e+rEHmPZmIaN
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=cSlbZmXpuYD8xFeqZ0DwF8X1WWOBci0BBC9riaxZUYA=;
+        b=F+iijATiqeW8liBaaIKLyWElO7Dtws0AdqIhUJ0zJXF8nOgxFn5icJ80VoimXbZnbc
+         cAd0MoGefQsMDVAXir1XoYKy2Ah17EixdKgf12dgusqgptKU7aABlZA3guagjoJW67us
+         p0w3i9McyJUbs7RRreeUsEjoPHeIk7nTxwhXJSwfuSfrU0yG7RjodZ8tv9+f6+gaslA6
+         G1M/hJ6ja07f+iuKauIDW7eVECWagyBQrLJ3lt+Ajxz3Nva/wm+Cehhj5y0F49N9IvDf
+         WxW4STMFtrBBVg0CQ48OBZPeDBoo0nJH7bC5GxYElSAOOqjiou0tSWeJPbxIdVTvNWhT
+         VV2g==
+X-Gm-Message-State: AOAM532P5As07dr75Vdmx+VLVVC9khmlEdh6HNerv4LEod2PpZUEIyiE
+        r1m6ocsz5uAoRXCswsIUAusj9AYNixodkGzQ
+X-Google-Smtp-Source: ABdhPJwgObY05FTJzW20N4IfqsEwUWKxifFXB24KxwFfOt7JwTfAmgET7xmnoFJ+rG39t5ClYQmC5w==
+X-Received: by 2002:a17:90b:4c4f:: with SMTP id np15mr3954617pjb.30.1630756797323;
+        Sat, 04 Sep 2021 04:59:57 -0700 (PDT)
+Received: from owniadeMacBook-Pro.local ([103.97.201.4])
+        by smtp.gmail.com with ESMTPSA id z11sm2306331pfr.157.2021.09.04.04.59.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 04 Sep 2021 04:59:56 -0700 (PDT)
+Subject: Re: [PATCH] ftrace: Cleanup ftrace_dyn_arch_init()
+To:     rostedt@goodmis.org, mingo@redhat.com
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        guoren@kernel.org, monstr@monstr.eu, tsbogend@alpha.franken.de,
+        nickhu@andestech.com, green.hu@gmail.com, deanbo422@gmail.com,
+        James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
+        borntraeger@de.ibm.com, ysato@users.sourceforge.jp,
+        dalias@libc.org, davem@davemloft.net, tglx@linutronix.de,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org
+References: <20210903071817.1162938-1-o451686892@gmail.com>
+From:   Weizhao Ouyang <o451686892@gmail.com>
+Message-ID: <609ef9ee-079a-8d46-4ebe-ef8ab3e1e7ab@gmail.com>
+Date:   Sat, 4 Sep 2021 19:59:48 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2728:: with SMTP id m40mr3000968jav.141.1630756646669;
- Sat, 04 Sep 2021 04:57:26 -0700 (PDT)
-Date:   Sat, 04 Sep 2021 04:57:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a3cf8605cb2a1ec0@google.com>
-Subject: [syzbot] upstream test error: KASAN: invalid-access Read in __entry_tramp_text_end
-From:   syzbot <syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210903071817.1162938-1-o451686892@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+On 2021/9/3 15:18, Weizhao Ouyang wrote:
+> Most ARCHs use empty ftrace_dyn_arch_init(), introduce a weak common
+> ftrace_dyn_arch_init() to cleanup them.
+>
+> Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
+> ---
+>  arch/arm/kernel/ftrace.c          | 5 -----
+>  arch/arm64/kernel/ftrace.c        | 5 -----
+>  arch/csky/kernel/ftrace.c         | 5 -----
+>  arch/ia64/kernel/ftrace.c         | 6 ------
+>  arch/microblaze/kernel/ftrace.c   | 5 -----
+>  arch/mips/include/asm/ftrace.h    | 2 ++
+>  arch/nds32/kernel/ftrace.c        | 5 -----
+>  arch/parisc/kernel/ftrace.c       | 5 -----
+>  arch/powerpc/include/asm/ftrace.h | 4 ++++
+>  arch/riscv/kernel/ftrace.c        | 5 -----
+>  arch/s390/kernel/ftrace.c         | 5 -----
+>  arch/sh/kernel/ftrace.c           | 5 -----
+>  arch/sparc/kernel/ftrace.c        | 5 -----
+>  arch/x86/kernel/ftrace.c          | 5 -----
+>  include/linux/ftrace.h            | 1 -
+>  kernel/trace/ftrace.c             | 5 +++++
+>  16 files changed, 11 insertions(+), 62 deletions(-)
+>
+> diff --git a/arch/arm/kernel/ftrace.c b/arch/arm/kernel/ftrace.c
+> index 3c83b5d29697..a006585e1c09 100644
+> --- a/arch/arm/kernel/ftrace.c
+> +++ b/arch/arm/kernel/ftrace.c
+> @@ -193,11 +193,6 @@ int ftrace_make_nop(struct module *mod,
+>  
+>  	return ret;
+>  }
+> -
+> -int __init ftrace_dyn_arch_init(void)
+> -{
+> -	return 0;
+> -}
+>  #endif /* CONFIG_DYNAMIC_FTRACE */
+>  
+>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+> diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
+> index 7f467bd9db7a..fc62dfe73f93 100644
+> --- a/arch/arm64/kernel/ftrace.c
+> +++ b/arch/arm64/kernel/ftrace.c
+> @@ -236,11 +236,6 @@ void arch_ftrace_update_code(int command)
+>  	command |= FTRACE_MAY_SLEEP;
+>  	ftrace_modify_all_code(command);
+>  }
+> -
+> -int __init ftrace_dyn_arch_init(void)
+> -{
+> -	return 0;
+> -}
+>  #endif /* CONFIG_DYNAMIC_FTRACE */
+>  
+>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+> diff --git a/arch/csky/kernel/ftrace.c b/arch/csky/kernel/ftrace.c
+> index b4a7ec1517ff..50bfcf129078 100644
+> --- a/arch/csky/kernel/ftrace.c
+> +++ b/arch/csky/kernel/ftrace.c
+> @@ -133,11 +133,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
+>  				(unsigned long)func, true, true);
+>  	return ret;
+>  }
+> -
+> -int __init ftrace_dyn_arch_init(void)
+> -{
+> -	return 0;
+> -}
+>  #endif /* CONFIG_DYNAMIC_FTRACE */
+>  
+>  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+> diff --git a/arch/ia64/kernel/ftrace.c b/arch/ia64/kernel/ftrace.c
+> index b2ab2d58fb30..d6360fd404ab 100644
+> --- a/arch/ia64/kernel/ftrace.c
+> +++ b/arch/ia64/kernel/ftrace.c
+> @@ -194,9 +194,3 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
+>  	flush_icache_range(addr, addr + 16);
+>  	return 0;
+>  }
+> -
+> -/* run from kstop_machine */
+> -int __init ftrace_dyn_arch_init(void)
+> -{
+> -	return 0;
+> -}
+> diff --git a/arch/microblaze/kernel/ftrace.c b/arch/microblaze/kernel/ftrace.c
+> index 224eea40e1ee..188749d62709 100644
+> --- a/arch/microblaze/kernel/ftrace.c
+> +++ b/arch/microblaze/kernel/ftrace.c
+> @@ -163,11 +163,6 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
+>  	return ret;
+>  }
+>  
+> -int __init ftrace_dyn_arch_init(void)
+> -{
+> -	return 0;
+> -}
+> -
+>  int ftrace_update_ftrace_func(ftrace_func_t func)
+>  {
+>  	unsigned long ip = (unsigned long)(&ftrace_call);
+> diff --git a/arch/mips/include/asm/ftrace.h b/arch/mips/include/asm/ftrace.h
+> index b463f2aa5a61..ed013e767390 100644
+> --- a/arch/mips/include/asm/ftrace.h
+> +++ b/arch/mips/include/asm/ftrace.h
+> @@ -76,6 +76,8 @@ do {						\
+>  
+>  
+>  #ifdef CONFIG_DYNAMIC_FTRACE
+> +int __init ftrace_dyn_arch_init(void);
+> +
+>  static inline unsigned long ftrace_call_adjust(unsigned long addr)
+>  {
+>  	return addr;
+> diff --git a/arch/nds32/kernel/ftrace.c b/arch/nds32/kernel/ftrace.c
+> index 0e23e3a8df6b..f0ef4842d191 100644
+> --- a/arch/nds32/kernel/ftrace.c
+> +++ b/arch/nds32/kernel/ftrace.c
+> @@ -84,11 +84,6 @@ void _ftrace_caller(unsigned long parent_ip)
+>  	/* restore all state needed by the compiler epilogue */
+>  }
+>  
+> -int __init ftrace_dyn_arch_init(void)
+> -{
+> -	return 0;
+> -}
+> -
+>  static unsigned long gen_sethi_insn(unsigned long addr)
+>  {
+>  	unsigned long opcode = 0x46000000;
+> diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+> index 0a1e75af5382..01581f715737 100644
+> --- a/arch/parisc/kernel/ftrace.c
+> +++ b/arch/parisc/kernel/ftrace.c
+> @@ -94,11 +94,6 @@ int ftrace_disable_ftrace_graph_caller(void)
+>  #endif
+>  
+>  #ifdef CONFIG_DYNAMIC_FTRACE
+> -
+> -int __init ftrace_dyn_arch_init(void)
+> -{
+> -	return 0;
+> -}
+>  int ftrace_update_ftrace_func(ftrace_func_t func)
+>  {
+>  	return 0;
+> diff --git a/arch/powerpc/include/asm/ftrace.h b/arch/powerpc/include/asm/ftrace.h
+> index debe8c4f7062..4db83cf4283f 100644
+> --- a/arch/powerpc/include/asm/ftrace.h
+> +++ b/arch/powerpc/include/asm/ftrace.h
+> @@ -61,6 +61,10 @@ struct dyn_arch_ftrace {
+>  };
+>  #endif /* __ASSEMBLY__ */
+>  
+> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+> +int __init ftrace_dyn_arch_init(void);
+> +#endif
+> +
 
-HEAD commit:    f1583cb1be35 Merge tag 'linux-kselftest-next-5.15-rc1' of ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16354043300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5fe535c85e8d7384
-dashboard link: https://syzkaller.appspot.com/bug?extid=488ddf8087564d6de6e2
-compiler:       aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-userspace arch: arm64
+Sorry there is a mistake CONFIG, I will send a v2 patch later.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+488ddf8087564d6de6e2@syzkaller.appspotmail.com
+>  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+>  #define ARCH_SUPPORTS_FTRACE_OPS 1
+>  #endif
+> diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
+> index 7f1e5203de88..4716f4cdc038 100644
+> --- a/arch/riscv/kernel/ftrace.c
+> +++ b/arch/riscv/kernel/ftrace.c
+> @@ -154,11 +154,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
+>  
+>  	return ret;
+>  }
+> -
+> -int __init ftrace_dyn_arch_init(void)
+> -{
+> -	return 0;
+> -}
+>  #endif
+>  
+>  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+> diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
+> index 0a464d328467..3fd80397ff52 100644
+> --- a/arch/s390/kernel/ftrace.c
+> +++ b/arch/s390/kernel/ftrace.c
+> @@ -262,11 +262,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
+>  	return 0;
+>  }
+>  
+> -int __init ftrace_dyn_arch_init(void)
+> -{
+> -	return 0;
+> -}
+> -
+>  void arch_ftrace_update_code(int command)
+>  {
+>  	if (ftrace_shared_hotpatch_trampoline(NULL))
+> diff --git a/arch/sh/kernel/ftrace.c b/arch/sh/kernel/ftrace.c
+> index 295c43315bbe..930001bb8c6a 100644
+> --- a/arch/sh/kernel/ftrace.c
+> +++ b/arch/sh/kernel/ftrace.c
+> @@ -252,11 +252,6 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
+>  
+>  	return ftrace_modify_code(rec->ip, old, new);
+>  }
+> -
+> -int __init ftrace_dyn_arch_init(void)
+> -{
+> -	return 0;
+> -}
+>  #endif /* CONFIG_DYNAMIC_FTRACE */
+>  
+>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+> diff --git a/arch/sparc/kernel/ftrace.c b/arch/sparc/kernel/ftrace.c
+> index 684b84ce397f..eaead3da8e03 100644
+> --- a/arch/sparc/kernel/ftrace.c
+> +++ b/arch/sparc/kernel/ftrace.c
+> @@ -82,11 +82,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
+>  	new = ftrace_call_replace(ip, (unsigned long)func);
+>  	return ftrace_modify_code(ip, old, new);
+>  }
+> -
+> -int __init ftrace_dyn_arch_init(void)
+> -{
+> -	return 0;
+> -}
+>  #endif
+>  
+>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+> diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+> index 1b3ce3b4a2a2..23d221a9a3cd 100644
+> --- a/arch/x86/kernel/ftrace.c
+> +++ b/arch/x86/kernel/ftrace.c
+> @@ -252,11 +252,6 @@ void arch_ftrace_update_code(int command)
+>  	ftrace_modify_all_code(command);
+>  }
+>  
+> -int __init ftrace_dyn_arch_init(void)
+> -{
+> -	return 0;
+> -}
+> -
+>  /* Currently only x86_64 supports dynamic trampolines */
+>  #ifdef CONFIG_X86_64
+>  
+> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> index 832e65f06754..f1eca123d89d 100644
+> --- a/include/linux/ftrace.h
+> +++ b/include/linux/ftrace.h
+> @@ -573,7 +573,6 @@ ftrace_set_early_filter(struct ftrace_ops *ops, char *buf, int enable);
+>  
+>  /* defined in arch */
+>  extern int ftrace_ip_converted(unsigned long ip);
+> -extern int ftrace_dyn_arch_init(void);
+>  extern void ftrace_replace_code(int enable);
+>  extern int ftrace_update_ftrace_func(ftrace_func_t func);
+>  extern void ftrace_caller(void);
+> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+> index 7efbc8aaf7f6..4c090323198d 100644
+> --- a/kernel/trace/ftrace.c
+> +++ b/kernel/trace/ftrace.c
+> @@ -6846,6 +6846,11 @@ void __init ftrace_free_init_mem(void)
+>  	ftrace_free_mem(NULL, start, end);
+>  }
+>  
+> +int __init __weak ftrace_dyn_arch_init(void)
+> +{
+> +	return 0;
+> +}
+> +
+>  void __init ftrace_init(void)
+>  {
+>  	extern unsigned long __start_mcount_loc[];
 
-==================================================================
-BUG: KASAN: invalid-access in __entry_tramp_text_end+0xdfc/0x3000
-Read at addr f4ff000002a361a0 by task kdevtmpfs/22
-Pointer tag: [f4], memory tag: [fe]
-
-CPU: 1 PID: 22 Comm: kdevtmpfs Not tainted 5.14.0-syzkaller-09284-gf1583cb1be35 #0
-Hardware name: linux,dummy-virt (DT)
-Call trace:
- dump_backtrace+0x0/0x1ac arch/arm64/kernel/stacktrace.c:76
- show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:215
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x68/0x84 lib/dump_stack.c:105
- print_address_description+0x7c/0x2b4 mm/kasan/report.c:256
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report+0x134/0x380 mm/kasan/report.c:459
- __do_kernel_fault+0x128/0x1bc arch/arm64/mm/fault.c:317
- do_bad_area arch/arm64/mm/fault.c:466 [inline]
- do_tag_check_fault+0x74/0x90 arch/arm64/mm/fault.c:737
- do_mem_abort+0x44/0xb4 arch/arm64/mm/fault.c:813
- el1_abort+0x40/0x60 arch/arm64/kernel/entry-common.c:357
- el1h_64_sync_handler+0xb0/0xd0 arch/arm64/kernel/entry-common.c:408
- el1h_64_sync+0x78/0x7c arch/arm64/kernel/entry.S:567
- __entry_tramp_text_end+0xdfc/0x3000
- d_lookup+0x44/0x70 fs/dcache.c:2370
- lookup_dcache+0x24/0x84 fs/namei.c:1520
- __lookup_hash+0x24/0xd0 fs/namei.c:1543
- kern_path_locked+0x90/0x10c fs/namei.c:2567
- handle_remove+0x38/0x284 drivers/base/devtmpfs.c:312
- handle drivers/base/devtmpfs.c:382 [inline]
- devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
- devtmpfsd+0x8c/0xd0 drivers/base/devtmpfs.c:437
- kthread+0x150/0x15c kernel/kthread.c:319
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:756
-
-Allocated by task 22:
- kasan_save_stack+0x28/0x60 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- __kasan_slab_alloc+0xb0/0x110 mm/kasan/common.c:467
- kasan_slab_alloc include/linux/kasan.h:254 [inline]
- slab_post_alloc_hook mm/slab.h:519 [inline]
- slab_alloc_node mm/slub.c:2959 [inline]
- slab_alloc mm/slub.c:2967 [inline]
- kmem_cache_alloc+0x1cc/0x340 mm/slub.c:2972
- getname_kernel+0x30/0x150 fs/namei.c:226
- kern_path_locked+0x2c/0x10c fs/namei.c:2558
- handle_remove+0x38/0x284 drivers/base/devtmpfs.c:312
- handle drivers/base/devtmpfs.c:382 [inline]
- devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
- devtmpfsd+0x8c/0xd0 drivers/base/devtmpfs.c:437
- kthread+0x150/0x15c kernel/kthread.c:319
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:756
-
-Freed by task 22:
- kasan_save_stack+0x28/0x60 mm/kasan/common.c:38
- kasan_set_track+0x28/0x3c mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/tags.c:36
- ____kasan_slab_free.constprop.0+0x178/0x1e0 mm/kasan/common.c:366
- __kasan_slab_free+0x10/0x1c mm/kasan/common.c:374
- kasan_slab_free include/linux/kasan.h:230 [inline]
- slab_free_hook mm/slub.c:1628 [inline]
- slab_free_freelist_hook+0xc4/0x20c mm/slub.c:1653
- slab_free mm/slub.c:3213 [inline]
- kmem_cache_free+0x9c/0x420 mm/slub.c:3229
- putname.part.0+0x68/0x7c fs/namei.c:270
- putname include/linux/err.h:41 [inline]
- filename_parentat fs/namei.c:2547 [inline]
- kern_path_locked+0x64/0x10c fs/namei.c:2558
- handle_remove+0x38/0x284 drivers/base/devtmpfs.c:312
- handle drivers/base/devtmpfs.c:382 [inline]
- devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
- devtmpfsd+0x8c/0xd0 drivers/base/devtmpfs.c:437
- kthread+0x150/0x15c kernel/kthread.c:319
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:756
-
-The buggy address belongs to the object at ffff000002a36180
- which belongs to the cache names_cache of size 4096
-The buggy address is located 32 bytes inside of
- 4096-byte region [ffff000002a36180, ffff000002a37180)
-The buggy address belongs to the page:
-page:00000000a105b3ae refcount:1 mapcount:0 mapping:0000000000000000 index:0xf3ff000002a34100 pfn:0x42a30
-head:00000000a105b3ae order:3 compound_mapcount:0 compound_pincount:0
-flags: 0x1ffc00000010200(slab|head|node=0|zone=0|lastcpupid=0x7ff|kasantag=0x0)
-raw: 01ffc00000010200 0000000000000000 dead000000000122 faff000002837700
-raw: f3ff000002a34100 0000000080070003 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff000002a35f00: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
- ffff000002a36000: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
->ffff000002a36100: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-                                                 ^
- ffff000002a36200: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
- ffff000002a36300: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks.
