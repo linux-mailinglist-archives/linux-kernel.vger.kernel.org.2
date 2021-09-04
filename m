@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE78400AF2
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E03400AFB
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351354AbhIDKwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 06:52:47 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:41878 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235621AbhIDKvP (ORCPT
+        id S1351436AbhIDKxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 06:53:08 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59902 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351138AbhIDKvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 4 Sep 2021 06:51:15 -0400
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E113320048;
-        Sat,  4 Sep 2021 10:50:12 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 176812269F;
+        Sat,  4 Sep 2021 10:50:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630752612; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1630752613; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oxcPbBzPCQgU+uBxjGU3z+1m86UNQhrPnhaw3+3WQVs=;
-        b=YEicRP8FWRu89Ds49FJSO2Q/U1s9fXcVzebgy5vo/XD2Z4PuEsJEqWS7N23hb2yRotJ3mu
-        yOIfGLPir+JDNcUag6OlIjiEXvLmQQ7ecg/nOGLZUBQiaSDl+BCFIEgBC5njjDsnC7HGdC
-        MDFVA6JoCh8M7bBXvgPCam0JbVkvLBM=
+        bh=QXXtQUpt+s21y+aXf3Lfke9xhArxmbVP1MBx9NrA+G4=;
+        b=EJWqLj8c0M0IC2tME6FdUCWusxOL4ynR7llUMhYbugE9zdlNzdt9l5LvNx8X7zkgdPiVRs
+        ouLoLvpZsiVWbhvrkZYnY4IKoyI5CnV6CMF/VvYW2PV7DkKHHTND7yGv+2CF2RLYWPiT7X
+        kNlnYaPEKVeLQh8atpD8PxiFFBenAOI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630752612;
+        s=susede2_ed25519; t=1630752613;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oxcPbBzPCQgU+uBxjGU3z+1m86UNQhrPnhaw3+3WQVs=;
-        b=5Wf/u8pEtzJKS2w8kuFE/iZhvg5zhpdIWdSkIWSMsG7RFGNg+ZfuwiGLkm49vT2Hz4FZWi
-        qP/Kwv9pO8Sa0zCQ==
+        bh=QXXtQUpt+s21y+aXf3Lfke9xhArxmbVP1MBx9NrA+G4=;
+        b=DC3qiUe3uRkEwh4Mb6bdlX+FrTAlhpqZ5GYNBFGZMg2qQQqVS9N9rkE/OtMjFZAS816nRy
+        tEGHp7nfZw3bmACg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BA9BA1348A;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E3BAD13A2C;
         Sat,  4 Sep 2021 10:50:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id oIsBLWRPM2HoUQAAMHmgww
+        id +IzzNmRPM2HoUQAAMHmgww
         (envelope-from <vbabka@suse.cz>); Sat, 04 Sep 2021 10:50:12 +0000
 From:   Vlastimil Babka <vbabka@suse.cz>
 To:     linux-mm@kvack.org, Christoph Lameter <cl@linux.com>,
@@ -57,89 +57,79 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Mel Gorman <mgorman@techsingularity.net>,
         Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v6 20/33] mm, slub: call deactivate_slab() without disabling irqs
-Date:   Sat,  4 Sep 2021 12:49:50 +0200
-Message-Id: <20210904105003.11688-21-vbabka@suse.cz>
+Subject: [PATCH v6 21/33] mm, slub: move irq control into unfreeze_partials()
+Date:   Sat,  4 Sep 2021 12:49:51 +0200
+Message-Id: <20210904105003.11688-22-vbabka@suse.cz>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210904105003.11688-1-vbabka@suse.cz>
 References: <20210904105003.11688-1-vbabka@suse.cz>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1988; h=from:subject; bh=IqPKvbtKPB28IqQYKvtPPfxPfR0/j0o7jqdB9gktbf0=; b=owEBbQGS/pANAwAIAeAhynPxiakQAcsmYgBhM084A0IrVxqUi/T2Tt3uE2aAXqGkNAiZJnnCyi04 zk5VpSOJATMEAAEIAB0WIQSNS5MBqTXjGL5IXszgIcpz8YmpEAUCYTNPOAAKCRDgIcpz8YmpEMcFB/ 9W2hTCTffZBzGoVZIgWuJR+tOGvhJbiAQrCZYLjtIHgXoF2S9LjfOaz/deESoORgJAfYlrc7K/8ciE R4zRPTDroc+NaZV9CjB2pbnKscBQXzBzMejNEETXNI+jJMKao/JJSRZCTJIlb6vuStsit9CkUFsvZj E129Nsfql9wTP5+5GfMcDDPmQEkIE9kBaCqb3zw9y/VWo5u8f7m4LqfC045xZ7M7fngtk8QqJWzxSP lghgusjdSAaIKOtLXA749RtsIdVDtKf/SBWhI+Nzj/w/SXErcH7pHq/8yYkAdIoDs1QbZp11EUFXkK dgVVVBwLB7k8xJ0l2ytwna20GLxSsI
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2032; h=from:subject; bh=KkFM/bBAlZPKKs90R9QA+BXAm0w82nhYdh6z2WNGHns=; b=owEBbQGS/pANAwAIAeAhynPxiakQAcsmYgBhM08790U8BrvrgoyAYQSbpj8zCYtLbEiWDjoZ/Uif r2IaOp2JATMEAAEIAB0WIQSNS5MBqTXjGL5IXszgIcpz8YmpEAUCYTNPOwAKCRDgIcpz8YmpEK18B/ 9PlC/xFu4tBBEX4KV/RM/FO7ZsUoXJe4tEJkDBWs2Du9N8kTgVCBeodPqqUZ1Q9wKPobVDUdoS/kQl /yxJqUKFHx+g7buJKuyBrki0dh8WtI9hfMXKlyPgJn8w4zqJiFr0pv1oNgYV7tn/XQxiTr1LNMYUh1 ZLKxedf6EgtgtG+nt9J8+VF9nORfyCgs4nP6wBHFe/uSHgQttuWFnSMYAgKf/60TpZZtcmUawPkyvK klouB+7v8rtcRwHFubNyNoLISHq3ojwOG7L2J7ZFYB+YSNm+BUUZN+ylcIWZDm09G7ti0Pg2gTcJ65 9azNw7915a2SEZnuoJ8aUkEFcooqSY
 X-Developer-Key: i=vbabka@suse.cz; a=openpgp; fpr=A940D434992C2E8E99103D50224FA7E7CC82A664
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function is now safe to be called with irqs enabled, so move the calls
-outside of irq disabled sections.
-
-When called from ___slab_alloc() -> flush_slab() we have irqs disabled, so to
-reenable them before deactivate_slab() we need to open-code flush_slab() in
-___slab_alloc() and reenable irqs after modifying the kmem_cache_cpu fields.
-But that means a IRQ handler meanwhile might have assigned a new page to
-kmem_cache_cpu.page so we have to retry the whole check.
-
-The remaining callers of flush_slab() are the IPI handler which has disabled
-irqs anyway, and slub_cpu_dead() which will be dealt with in the following
-patch.
+unfreeze_partials() can be optimized so that it doesn't need irqs disabled for
+the whole time. As the first step, move irq control into the function and
+remove it from the put_cpu_partial() caller.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
+ mm/slub.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index 6deb4080ef54..cb12a077c61c 100644
+index cb12a077c61c..1c4bd45d66a1 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -2779,8 +2779,8 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 	freelist = c->freelist;
- 	c->page = NULL;
- 	c->freelist = NULL;
--	deactivate_slab(s, page, freelist);
- 	local_irq_restore(flags);
-+	deactivate_slab(s, page, freelist);
- 
- new_slab:
- 
-@@ -2848,18 +2848,32 @@ static void *___slab_alloc(struct kmem_cache *s, gfp_t gfpflags, int node,
- 		 */
- 		goto return_single;
- 
-+retry_load_page:
+@@ -2350,9 +2350,8 @@ static void deactivate_slab(struct kmem_cache *s, struct page *page,
+ /*
+  * Unfreeze all the cpu partial slabs.
+  *
+- * This function must be called with interrupts disabled
+- * for the cpu using c (or some other guarantee must be there
+- * to guarantee no concurrent accesses).
++ * This function must be called with preemption or migration
++ * disabled with c local to the cpu.
+  */
+ static void unfreeze_partials(struct kmem_cache *s,
+ 		struct kmem_cache_cpu *c)
+@@ -2360,6 +2359,9 @@ static void unfreeze_partials(struct kmem_cache *s,
+ #ifdef CONFIG_SLUB_CPU_PARTIAL
+ 	struct kmem_cache_node *n = NULL, *n2 = NULL;
+ 	struct page *page, *discard_page = NULL;
++	unsigned long flags;
 +
- 	local_irq_save(flags);
--	if (unlikely(c->page))
--		flush_slab(s, c);
-+	if (unlikely(c->page)) {
-+		void *flush_freelist = c->freelist;
-+		struct page *flush_page = c->page;
-+
-+		c->page = NULL;
-+		c->freelist = NULL;
-+		c->tid = next_tid(c->tid);
-+
-+		local_irq_restore(flags);
-+
-+		deactivate_slab(s, flush_page, flush_freelist);
-+
-+		stat(s, CPUSLAB_FLUSH);
-+
-+		goto retry_load_page;
-+	}
- 	c->page = page;
++	local_irq_save(flags);
  
- 	goto load_freelist;
- 
- return_single:
- 
--	local_irq_save(flags);
- 	deactivate_slab(s, page, get_freepointer(s, freelist));
--	local_irq_restore(flags);
- 	return freelist;
+ 	while ((page = slub_percpu_partial(c))) {
+ 		struct page new;
+@@ -2412,6 +2414,8 @@ static void unfreeze_partials(struct kmem_cache *s,
+ 		discard_slab(s, page);
+ 		stat(s, FREE_SLAB);
+ 	}
++
++	local_irq_restore(flags);
+ #endif	/* CONFIG_SLUB_CPU_PARTIAL */
  }
  
+@@ -2439,14 +2443,11 @@ static void put_cpu_partial(struct kmem_cache *s, struct page *page, int drain)
+ 			pobjects = oldpage->pobjects;
+ 			pages = oldpage->pages;
+ 			if (drain && pobjects > slub_cpu_partial(s)) {
+-				unsigned long flags;
+ 				/*
+ 				 * partial array is full. Move the existing
+ 				 * set to the per node partial list.
+ 				 */
+-				local_irq_save(flags);
+ 				unfreeze_partials(s, this_cpu_ptr(s->cpu_slab));
+-				local_irq_restore(flags);
+ 				oldpage = NULL;
+ 				pobjects = 0;
+ 				pages = 0;
 -- 
 2.33.0
 
