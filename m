@@ -2,125 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A70C400C17
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 18:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD0F400C2B
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 19:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236962AbhIDQZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 12:25:13 -0400
-Received: from gate.crashing.org ([63.228.1.57]:34630 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236679AbhIDQZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 12:25:11 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 184GJurq016488;
-        Sat, 4 Sep 2021 11:19:56 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 184GJtXD016483;
-        Sat, 4 Sep 2021 11:19:55 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Sat, 4 Sep 2021 11:19:55 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
-Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
-Message-ID: <20210904161955.GR1583@gate.crashing.org>
-References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com> <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com> <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org> <878s0c4vng.fsf@oldenburg.str.redhat.com> <20210904131911.GP1583@gate.crashing.org> <871r644bd2.fsf@oldenburg.str.redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871r644bd2.fsf@oldenburg.str.redhat.com>
-User-Agent: Mutt/1.4.2.3i
+        id S236956AbhIDQoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 12:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229899AbhIDQod (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 12:44:33 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E58AC061575;
+        Sat,  4 Sep 2021 09:43:32 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id s10so4629921lfr.11;
+        Sat, 04 Sep 2021 09:43:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wh1mYqXbigd70L6uyNc1nuoAq3q+tfDVrUyZbdPnbZg=;
+        b=iXLM08nMa44bOzPVU5aaFVmqvZKrs+Ybnrz+NmNg88DHQv5tvS8yqQWkjL80Wqry1T
+         ExBK71a+BdNdvsuJVFKy9eiahchEbwVZ4jrJxzuyxjjqOZwtW57wdrF1YEzTAli4ouNU
+         OVDw1gYu+lRFtE8FF0msbNC6OdV9SwrDM1zF1Iy6fiCD6jsnMr7saeojM17d3QdPPWML
+         ucxLHdZvULFpx/qqiBhryZ96yZNkS2CYPZVKXnIIhNxA3uj+cNXlbRaZEJIUYmY+9kPG
+         TMXNq+W5dKR4BeXQ3wEs+1Ix/WRRjN54hXoKEJ8A4w6vI1GR5R+QJd3wFhP8jgmHAvDp
+         B96A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wh1mYqXbigd70L6uyNc1nuoAq3q+tfDVrUyZbdPnbZg=;
+        b=QbAAUV2pqlZqSpxTWIl5CnY7O1pOoBmOgfzVi1PGZYvfqFNnqnMhsjmDV3NizRBFwX
+         zcMMxID3xpoNCNDjho2+FPP8exiu76a2ePUZVoNNP9wWvrvMnPTqvlus8oKXwukG2yv+
+         mPMaGtqebD94Tvp5MrI2uPk0VodCV/xS/A/PoZrT7uRhDqcU7+nctCqXLK/p/jn0Jb/k
+         0AjcxI1fgP+Gm/ODRefLwKt+wC4HhoBX24EVuJR7TNlHA/jZdnjZt2wPvDMtK31gN/oJ
+         TiLjRE0tMkVtSq8tsbPrgEyU2k6OyGr1ZQLcMBEMvlXsw1AHi87IpIgxp3MsBFOpymgD
+         36ww==
+X-Gm-Message-State: AOAM53278I/I0qXH7im7z3Zta6rDiuzjMGryI+RsihgnecS0U7q/1DFX
+        1FKoDTpDd39k0CrbUreTM5q5uK8Qy5qerK6He+w=
+X-Google-Smtp-Source: ABdhPJwZ+0KMEOizcDmymxx6a0MZNPjAp4tyydXooOiL8jAkWr0KSCGNISjKPFpo3S+RDol2iLdbQioP35eJnUnErmQ=
+X-Received: by 2002:a05:6512:108d:: with SMTP id j13mr3483211lfg.113.1630773810406;
+ Sat, 04 Sep 2021 09:43:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210904152946.32042-1-miles.chen@mediatek.com>
+In-Reply-To: <20210904152946.32042-1-miles.chen@mediatek.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Sat, 4 Sep 2021 13:43:18 -0300
+Message-ID: <CAOMZO5AE4uGXk47uhWKLch8RDmUrvvw0zDPM+wxgz4uWJD6eGA@mail.gmail.com>
+Subject: Re: [PATCH v2] clk: imx: use module_platform_driver
+To:     Miles Chen <miles.chen@mediatek.com>
+Cc:     Abel Vesa <abel.vesa@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 04, 2021 at 05:19:21PM +0200, Florian Weimer wrote:
-> * Segher Boessenkool:
-> 
-> > Let me quote the original mail (I had to dig it out of the archives as
-> > well, no nice threading, too lazy, sorry):
-> 
-> It still doesn't say why.  I did see a reference to fleeting reference
-> to <stdatomic.h> and <float.h>.
+Hi Miles,
 
-Yeah...  I dug out the actual patch from linux-kbuild:
+On Sat, Sep 4, 2021 at 12:29 PM Miles Chen <miles.chen@mediatek.com> wrote:
+>
+> Replace builtin_platform_driver_probe with module_platform_driver_probe
+> because CONFIG_CLK_IMX8QXP can be set to =m (kernel module).
+>
+> Fixes: c2cccb6d0b33 ("clk: imx: add imx8qxp clk driver")
+> Fixes: 1e3121bfe51a ("clk: imx: add imx8qxp lpcg driver")
 
-https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git/commit/?h=kbuild-v5.15&id=c0891ac15f0428ffa81b2e818d416bdf3cb74ab6
+The correct Fixes tag would be:
 
-The reasoning in there is completely wrong.  <stdarg.h> is not a
-"userspace header".  Instead, it is a standard header, required for some
-functionality in C.
+Fixes: e0d0d4d86c766 ("clk: imx8qxp: Support building i.MX8QXP clock
+driver as module")
 
-It also says
-"GPL 2 version of <stdarg.h> can be extracted from
-http://archive.debian.org/debian/pool/main/g/gcc-4.2/gcc-4.2_4.2.4.orig.tar.gz"
-which seems to suggest you cannot use stuff from GPLv3-licensed GCC.
-This is just wrong.  The header in question says
-
-"""
-Under Section 7 of GPL version 3, you are granted additional
-permissions described in the GCC Runtime Library Exception, version
-3.1, as published by the Free Software Foundation.
-"""
-
-And <https://gcc.gnu.org/git/?p=gcc.git;a=blob;f=COPYING.RUNTIME>
-reads in part
-
-"""
- 1. Grant of Additional Permission.
-
-  You have permission to propagate a work of Target Code formed by
-  combining the Runtime Library with Independent Modules, even if such
-  propagation would otherwise violate the terms of GPLv3, provided that
-  all Target Code was generated by Eligible Compilation Processes. You
-  may then convey such a combination under terms of your choice,
-  consistent with the licensing of the Independent Modules.
-"""
-
-which says that if you compile with GCC, then it is perfectly fine if it
-uses the standard C headers, it does not make your work GPL-licenced.
-
-> After all, <stdatomic.h> is exactly like <stdarg.h> in that it's
-> possible to use its functionality even without the header file.  The
-> __atomic builtins are even documented in the GCC manual (unlike
-> <stdatomic.h>), which is why some programmers prefer them over the
-> standard interface.  And then there's the _Atomic keyword itself, whose
-> use can easily result in calls to libatomic functions, too.  So blocking
-> <stdatomic.h> makes little sense to me.
-> 
-> I don't know enough about softfloat if blocking the inclusion of
-> <float.h> is worth it.
-
-Blocking the use of <float.h> is pretty useless: it is possible to do
-millions of things in the kernel source that are frowned upon, or
-actively bad, or anything in between or more extreme.  That is what code
-review is for.  If it would be a common mistake (it is not afaik) you
-can warn for it from checkpatch.pl or something.
-
-The patch is just re-implementing part of the standard GCC <stdarg.h>,
-so that it will only work with recent GCC (and maybe clang as well if it
-implements the GCC internal interfaces correctly (i.e. compatibly) here,
-and the same for other compilers).  Almost all of the <stdarg.h> GCC
-itself uses is the same, but it also is compatible to the various C
-standards if this header is included indirectly.  That is all just some
-ifdeffery anyway, so doesn't influence compilation times noticeably, and
-all that.
-
-   - * -
-
-So as far as I can see the motivation behind the patch is a) a
-misunderstanding of what standard C headers are, are for, etc.; and b)
-a misunderstanding of the GPL and the GCC runtime exception to it.  The
-patch makes things worse than they were.  If on the contrary Linux would
-use *more* standard compiler headers, say <stddef.h>, then insidious
-bugs like that fixed by c46bbf5d2def would be prevented.
-
-
-Segher
+Thanks
