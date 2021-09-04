@@ -2,179 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D71C400A9F
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2440400AA4
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350933AbhIDJiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 05:38:03 -0400
-Received: from mga01.intel.com ([192.55.52.88]:32659 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234915AbhIDJiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 05:38:02 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10096"; a="241895200"
-X-IronPort-AV: E=Sophos;i="5.85,267,1624345200"; 
-   d="scan'208";a="241895200"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2021 02:36:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,267,1624345200"; 
-   d="scan'208";a="692795349"
-Received: from lkp-server01.sh.intel.com (HELO 2115029a3e5c) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 04 Sep 2021 02:36:55 -0700
-Received: from kbuild by 2115029a3e5c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mMS6Z-0001O3-5e; Sat, 04 Sep 2021 09:36:55 +0000
-Date:   Sat, 04 Sep 2021 17:36:50 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/urgent] BUILD SUCCESS
- d66e3edee7af87fe212df611ab9846b987a5070f
-Message-ID: <61333e32.vvUoD1nhmOfb7Gxo%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1351124AbhIDJkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 05:40:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351065AbhIDJkU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 05:40:20 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2893C061575
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 02:39:19 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so1233384pjt.0
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 02:39:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=plYva5hHszvERh5e5dbtWwplKYm4ip7TSv2p3MOtQOE=;
+        b=WekawAkPIMwH9SiTHXg0fIPfJ5AA+4tzFsWmBBqY1GowcQCgEi3/pP9JbmAlfrudkj
+         MHzJfaBpDPD5zZ+t8YpfTsopDfg3SoNvUGwo9fBAlokQC3VhsUPmkkxw3KbENR0NEGdV
+         U2FyyVDfVLZlKt+ZMCWWbFT43nr94yDfbqM23lGY+emAUZXAdPTnrzAU/zhIflBltgYd
+         kF/YwkKiSCLtKgrmwUU5qMSDhT/SUztOxzUUU+1dLjBtIY5OR57vnrAIdflQVSSPm/nC
+         ucLvtsC0+SHMOzjwsCNHyMJPm9I1asW89f6eS4PhV4v6PL1Vpf4mlu/qDnV1/KxtYaj6
+         LIYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=plYva5hHszvERh5e5dbtWwplKYm4ip7TSv2p3MOtQOE=;
+        b=WQvvqFIYKdkx9A51IO6INi2J71f3vXfptLNmMGSfyZVHTTj+lbnlM9DSx1u5hBFf6F
+         dF8jQVtQkz3vvDVd6SsTvS0Yxl7cTtGGLtsKRBjygXi2LBk0OczQfGxIzfXiqBB6U6uQ
+         lAfHcCBMTzGmtRyNaH5ehZOjk18R82tUWxNZvYTbwdtTygWePTM1/6JavYNqjHopdTF9
+         ANhziCB5QMIbCDvwF0Au9X4HW9vdYzVGWXfCOnOWUOggSH/foifeVgiJ+BGP3X7S93VY
+         EgK/mn0MPQGzEmgcPEKKk9x/lVoOS0x7wTIqxhIHK8G4773gXoljBhT1+EXCt9k9tRXy
+         ydGA==
+X-Gm-Message-State: AOAM533E9NipXGRSirqyq5eCuObx3JqU4sDXiO0Au2MydnI+nS9eUQ6t
+        dVPm50jWa642fdR8ywZMGCI=
+X-Google-Smtp-Source: ABdhPJzuW5wxNK9ghnYeDDYhnYgqDuo8ge2Jk/t+M6m5fh4W6grNKjdqI40IpAoPkGEpq3ixlvSfmA==
+X-Received: by 2002:a17:90b:1d02:: with SMTP id on2mr3468540pjb.204.1630748359223;
+        Sat, 04 Sep 2021 02:39:19 -0700 (PDT)
+Received: from user ([117.98.200.228])
+        by smtp.gmail.com with ESMTPSA id j17sm1890612pfn.148.2021.09.04.02.39.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Sep 2021 02:39:18 -0700 (PDT)
+Date:   Sat, 4 Sep 2021 15:09:13 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        straube.linux@gmail.com, martin@kaiser.cx,
+        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: r8188eu: os_dep: simplifiy the rtw_resume function
+Message-ID: <YTM+wayCk2n2CrVP@user>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/urgent
-branch HEAD: d66e3edee7af87fe212df611ab9846b987a5070f  futex: Remove unused variable 'vpid' in futex_proxy_trylock_atomic()
+Remove unused variable ret and pwrpriv.
+Remove the condition with no effect (if == else) in usb_intf.c
+file.
 
-elapsed time: 725m
-
-configs tested: 119
-configs skipped: 4
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210904
-sh                           se7343_defconfig
-um                               alldefconfig
-powerpc                     kilauea_defconfig
-mips                        workpad_defconfig
-sh                   sh7770_generic_defconfig
-arm                         s5pv210_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                  colibri_pxa270_defconfig
-arm                          simpad_defconfig
-h8300                     edosk2674_defconfig
-powerpc                      pasemi_defconfig
-s390                             allmodconfig
-powerpc                     mpc83xx_defconfig
-powerpc                      makalu_defconfig
-arm                        clps711x_defconfig
-um                                  defconfig
-m68k                             allyesconfig
-mips                         rt305x_defconfig
-mips                        maltaup_defconfig
-arm                           viper_defconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                      pxa255-idp_defconfig
-ia64                         bigsur_defconfig
-nds32                            alldefconfig
-powerpc                          g5_defconfig
-arm                         lubbock_defconfig
-h8300                    h8300h-sim_defconfig
-openrisc                 simple_smp_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                            lart_defconfig
-sh                         ecovec24_defconfig
-sh                   rts7751r2dplus_defconfig
-sh                          rsk7264_defconfig
-powerpc                     tqm5200_defconfig
-mips                    maltaup_xpa_defconfig
-xtensa                       common_defconfig
-arm                  randconfig-c002-20210904
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210904
-x86_64               randconfig-a004-20210904
-x86_64               randconfig-a003-20210904
-x86_64               randconfig-a005-20210904
-x86_64               randconfig-a001-20210904
-x86_64               randconfig-a002-20210904
-i386                 randconfig-a005-20210904
-i386                 randconfig-a004-20210904
-i386                 randconfig-a006-20210904
-i386                 randconfig-a002-20210904
-i386                 randconfig-a003-20210904
-i386                 randconfig-a001-20210904
-arc                  randconfig-r043-20210904
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-s390                 randconfig-c005-20210904
-mips                 randconfig-c004-20210904
-powerpc              randconfig-c003-20210904
-x86_64               randconfig-c007-20210904
-i386                 randconfig-c001-20210904
-arm                  randconfig-c002-20210904
-riscv                randconfig-c006-20210904
-x86_64               randconfig-a011-20210904
-x86_64               randconfig-a016-20210904
-x86_64               randconfig-a012-20210904
-x86_64               randconfig-a015-20210904
-x86_64               randconfig-a014-20210904
-x86_64               randconfig-a013-20210904
-i386                 randconfig-a012-20210904
-i386                 randconfig-a015-20210904
-i386                 randconfig-a011-20210904
-i386                 randconfig-a013-20210904
-i386                 randconfig-a014-20210904
-i386                 randconfig-a016-20210904
-
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/staging/r8188eu/os_dep/usb_intf.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
+index bb85ab77fd26..673cd3001183 100644
+--- a/drivers/staging/r8188eu/os_dep/usb_intf.c
++++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
+@@ -493,14 +493,8 @@ static int rtw_resume(struct usb_interface *pusb_intf)
+ {
+ 	struct dvobj_priv *dvobj = usb_get_intfdata(pusb_intf);
+ 	struct adapter *padapter = dvobj->if1;
+-	struct pwrctrl_priv *pwrpriv = &padapter->pwrctrlpriv;
+-	int ret = 0;
+
+-	if (pwrpriv->bInternalAutoSuspend)
+-		ret = rtw_resume_process(padapter);
+-	else
+-		ret = rtw_resume_process(padapter);
+-	return ret;
++	return rtw_resume_process(padapter);
+ }
+
+ int rtw_resume_process(struct adapter *padapter)
+--
+2.32.0
+
