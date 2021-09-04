@@ -2,115 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C035400A4C
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 09:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C4C400A52
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 09:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233895AbhIDHsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 03:48:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233340AbhIDHsB (ORCPT
+        id S233963AbhIDH4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 03:56:35 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:33772 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233340AbhIDH4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 03:48:01 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452BDC061575;
-        Sat,  4 Sep 2021 00:47:00 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id f15so2820625ybg.3;
-        Sat, 04 Sep 2021 00:47:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O7pFDoTDG83sXYm3yFYU/ALPWpomicRzzImF0sKpKW0=;
-        b=ccMUmEJZTMqvMiO4qDEJz9UIC9A7ZaCIp9jDhsXqJ5Ev75Fxx6tmimIki1gyPQUPXS
-         WUq6vqhnlpebDLPREpSmGpTghCvaQ7I1t01NqKoILpqjhefYji3+KrmbyFtUkdfSEFMJ
-         UNwklfNd5oZpXUbNtuS3Oq+g4hQudXjwXg1XEFeEAUaktgjFZB/kPlvDx7egLukEmhkQ
-         KlsFkF03WrbLns7SWJ2p3vqZWsqreGnTfotAuElmmYxanXxACNPJgkmZ16+Syj62X9W+
-         SAM5JaMcIrLBK/eVLU/0qgK95SGuyD2xbVFiDFCL54EJplm833L1/itj17ZCvI0BT/b6
-         8S9A==
+        Sat, 4 Sep 2021 03:56:33 -0400
+Received: by mail-io1-f71.google.com with SMTP id g2-20020a6b7602000000b005be59530196so1091174iom.0
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 00:55:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O7pFDoTDG83sXYm3yFYU/ALPWpomicRzzImF0sKpKW0=;
-        b=VnOHcGZYGk4w3DggqIXVkchi2r0nDq0eBsww9d7S/50zP0SztsS94VAP2UesXlFlcU
-         im2kq4CqT/8AO0NrfyRfWxB2exH8Xz+OizOYPJ06NxRQ9+W6j9uIsN53rgacEWVUoZCL
-         fq/leZ57rqa6kENjbAQVGB64sSEApZqS/0cuPz/Pf65KcRNjzyH9zIqaIH/dUmDfzHPA
-         qOAMyz88/7G5txxMqoBIqs7M7apeczbPWULTVWFszgMhLP+PpOR6lYybIW1tL0L1PFgC
-         7+YIH0hm7Xiu/29oYTKfMWi3xUQqFNwOJJ/cTR2IHTTdLl3aZ3rF+bMtM7HuYfcwY0x6
-         Uozw==
-X-Gm-Message-State: AOAM532vhwO6zAwXZoHaTO5OOCxi0+NdV+N+2MQpC85rmRmiR2VvOasj
-        +/ggPNjel/fJQBSlQ/p3t5tWWyYPvcdNCoXKXVHgUlmw/Zw=
-X-Google-Smtp-Source: ABdhPJzKd12zJEaEmP4vMVbx87FxdriXYFR5EUre4fMKtstyxhr3RpJv2J0y5Wq4kmgxZlQsWGBvNl+pB3Rcq1FgLww=
-X-Received: by 2002:a25:7ec4:: with SMTP id z187mr3949441ybc.35.1630741619439;
- Sat, 04 Sep 2021 00:46:59 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Fnlcdjve0qVJTFGXW0budG2MUFIzNniVDA3qsZRMbiU=;
+        b=Fz4g7PEUlxDbQOC6n5J3IYt5iF+ianmwEOH6qHbJnBmbS4t8Td0LaLhxEuPcX5Y9zs
+         CG4AZwMKCvEVfAdoXDNT08TUZAI84yqed/Z0kNot453VI1c3EPk3z9fuQtyzjjDmbfPD
+         7pAaDKFSiE8vnyvBOr1/SmfSPOr/ZYnYJ9cHYKin36zmWbyoZdEOjY2Xw8VIC5ksebr1
+         Hu3DLmCLK+fTaWYdSIxjCxne0A/GvNIALfWXaoDiSQ+VH5cxnOThf1pAXLAS/YPTKPme
+         09YzMyidVjPNUo3IAj4QDybZsCbLvW1OcJg6054UKapQu6CfgU1Ra9fMzjnqWJsLzqrV
+         A8AQ==
+X-Gm-Message-State: AOAM530Dnc0ltIhLeEF7+RYY7OdsuRka2gVIfJV3QMb5tldBnWj+/eMl
+        SSb1uXTsIUuPsiNm9duwqIg+N/+EFyydu8XYAFWvXFTWsezx
+X-Google-Smtp-Source: ABdhPJzJ3c+eEtz/Pv4/JLvY2AQBZnpxixIGH4faWYvTZ9eySYMMapGgooc1ocdYk4Uclm5dvst90X/ZeTm0Q3x75gcDydNxSpcD
 MIME-Version: 1.0
-References: <20210904072951.12556-1-utkarshverma294@gmail.com>
-In-Reply-To: <20210904072951.12556-1-utkarshverma294@gmail.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Sat, 4 Sep 2021 09:46:48 +0200
-Message-ID: <CAKXUXMyRKM9Ev_Yyyup-T=AZe2aYcN-ZneXsLmHtUC7as67zNQ@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: checkpatch: Add SYMBOLIC_PERMS message
-To:     Utkarsh Verma <utkarshverma294@gmail.com>
-Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a02:ca0b:: with SMTP id i11mr2396950jak.84.1630742131775;
+ Sat, 04 Sep 2021 00:55:31 -0700 (PDT)
+Date:   Sat, 04 Sep 2021 00:55:31 -0700
+In-Reply-To: <000000000000a9b79905c04e25a0@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007c1cd805cb26bd7a@google.com>
+Subject: Re: [syzbot] INFO: rcu detected stall in tx
+From:   syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>
+To:     Guido.Kiener@rohde-schwarz.com, Qiang.Zhang@windriver.com,
+        Thinh.Nguyen@synopsys.com, bp@alien8.de, dpenkler@gmail.com,
+        dvyukov@google.com, dwmw@amazon.co.uk, fgheet255t@gmail.com,
+        fweisbec@gmail.com, gregkh@linuxfoundation.org,
+        guido.kiener@rohde-schwarz.com, hpa@zytor.com,
+        john.stultz@linaro.org, lee.jones@linaro.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        luto@kernel.org, mathias.nyman@intel.com,
+        mathias.nyman@linux.intel.com, mingo@kernel.org, mingo@redhat.com,
+        qiang.zhang@windriver.com, sboyd@kernel.org,
+        stable-commits@vger.kernel.org, stable@vger.kernel.org,
+        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, tonymarislogistics@yandex.com, x86@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 4, 2021 at 9:30 AM Utkarsh Verma <utkarshverma294@gmail.com> wrote:
->
-> Add a new message type SYMBOLIC_PERMS under the 'Permissions'
-> subsection. Octal permission bits are easier to read and understand
-> instead of their symbolic macro names.
->
-> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
-> ---
->  Documentation/dev-tools/checkpatch.rst | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->
-> diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-> index f0956e9ea2d8..01105e9c89de 100644
-> --- a/Documentation/dev-tools/checkpatch.rst
-> +++ b/Documentation/dev-tools/checkpatch.rst
-> @@ -957,6 +957,17 @@ Permissions
->      Permission bits should use 4 digit octal permissions (like 0700 or 0444).
->      Avoid using any other base like decimal.
->
-> +  **SYMBOLIC_PERMS**
-> +    Permission bits in the octal form are more readable and easier to
-> +    understand than their symbolic counterparts because many command-line
-> +    tools use this notation only. Experienced kernel developers have been using
-> +    this traditional Unix permission bits for decades and so they find it
-> +    easier to understand the octal notation than the symbolic macros.
-> +    Also, it is harder to read S_IWUSR|S_IRUGO than 0644, which obscures the
-> +    developer's intent rather than clarifying it.
+syzbot has found a reproducer for the following issue on:
 
-Just a quick stylistic nit:
+HEAD commit:    7cca308cfdc0 Merge tag 'powerpc-5.15-1' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10535915300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9c582b69de20dde2
+dashboard link: https://syzkaller.appspot.com/bug?extid=e2eae5639e7203360018
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10e2e533300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1294ff33300000
 
-s/Also, it is harder to read /For example, it is harder to read/
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com
 
-Other than that:
+rcu: INFO: rcu_preempt self-detected stall on CPU
+rcu: 	1-....: (288 ticks this GP) idle=bdd/1/0x4000000000000000 softirq=20305/20305 fqs=5241 
+	(t=10500 jiffies g=18249 q=67)
+NMI backtrace for cpu 1
+CPU: 1 PID: 3254 Comm: aoe_tx0 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:105
+ nmi_cpu_backtrace.cold+0x47/0x144 lib/nmi_backtrace.c:105
+ nmi_trigger_cpumask_backtrace+0x1ae/0x220 lib/nmi_backtrace.c:62
+ trigger_single_cpu_backtrace include/linux/nmi.h:164 [inline]
+ rcu_dump_cpu_stacks+0x25e/0x3f0 kernel/rcu/tree_stall.h:343
+ print_cpu_stall kernel/rcu/tree_stall.h:627 [inline]
+ check_cpu_stall kernel/rcu/tree_stall.h:711 [inline]
+ rcu_pending kernel/rcu/tree.c:3880 [inline]
+ rcu_sched_clock_irq.cold+0x9d/0x746 kernel/rcu/tree.c:2599
+ update_process_times+0x16d/0x200 kernel/time/timer.c:1785
+ tick_sched_handle+0x9b/0x180 kernel/time/tick-sched.c:226
+ tick_sched_timer+0x1b0/0x2d0 kernel/time/tick-sched.c:1421
+ __run_hrtimer kernel/time/hrtimer.c:1685 [inline]
+ __hrtimer_run_queues+0x1c0/0xe50 kernel/time/hrtimer.c:1749
+ hrtimer_interrupt+0x31c/0x790 kernel/time/hrtimer.c:1811
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1086 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1103
+ sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1097
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:__sanitizer_cov_trace_pc+0x5c/0x60 kernel/kcov.c:207
+Code: 82 18 15 00 00 83 f8 02 75 20 48 8b 8a 20 15 00 00 8b 92 1c 15 00 00 48 8b 01 48 83 c0 01 48 39 c2 76 07 48 89 34 c1 48 89 01 <c3> 0f 1f 00 41 55 41 54 49 89 fc 55 48 bd eb 83 b5 80 46 86 c8 61
+RSP: 0018:ffffc90002ccfad8 EFLAGS: 00000293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: ffff8880206e3900 RSI: ffffffff874e536f RDI: 0000000000000003
+RBP: ffff88807df1b340 R08: 0000000000000000 R09: 0000000000000001
+R10: ffffffff874e5366 R11: 0000000000000000 R12: ffff88807df1b000
+R13: dffffc0000000000 R14: ffff8880709ff490 R15: ffff88807df1b338
+ __list_del_entry include/linux/list.h:132 [inline]
+ list_move_tail include/linux/list.h:227 [inline]
+ fq_codel_dequeue+0x7cf/0x1f50 net/sched/sch_fq_codel.c:299
+ dequeue_skb net/sched/sch_generic.c:292 [inline]
+ qdisc_restart net/sched/sch_generic.c:397 [inline]
+ __qdisc_run+0x1ae/0x1700 net/sched/sch_generic.c:415
+ __dev_xmit_skb net/core/dev.c:3861 [inline]
+ __dev_queue_xmit+0x1f6e/0x3710 net/core/dev.c:4170
+ tx+0x68/0xb0 drivers/block/aoe/aoenet.c:63
+ kthread+0x1e7/0x3b0 drivers/block/aoe/aoecmd.c:1230
+ kthread+0x3e5/0x4d0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	18 15 00 00 83 f8    	sbb    %dl,-0x77d0000(%rip)        # 0xf8830006
+   6:	02 75 20             	add    0x20(%rbp),%dh
+   9:	48 8b 8a 20 15 00 00 	mov    0x1520(%rdx),%rcx
+  10:	8b 92 1c 15 00 00    	mov    0x151c(%rdx),%edx
+  16:	48 8b 01             	mov    (%rcx),%rax
+  19:	48 83 c0 01          	add    $0x1,%rax
+  1d:	48 39 c2             	cmp    %rax,%rdx
+  20:	76 07                	jbe    0x29
+  22:	48 89 34 c1          	mov    %rsi,(%rcx,%rax,8)
+  26:	48 89 01             	mov    %rax,(%rcx)
+* 29:	c3                   	retq <-- trapping instruction
+  2a:	0f 1f 00             	nopl   (%rax)
+  2d:	41 55                	push   %r13
+  2f:	41 54                	push   %r12
+  31:	49 89 fc             	mov    %rdi,%r12
+  34:	55                   	push   %rbp
+  35:	48 bd eb 83 b5 80 46 	movabs $0x61c8864680b583eb,%rbp
+  3c:	86 c8 61
 
-Acked-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-
-Feel free to send a quick v2 for my nitpicking, and apply the tags
-from this email.
-
-Lukas
-
-> +
-> +    See: https://lore.kernel.org/lkml/CA+55aFw5v23T-zvDZp-MmD_EYxF8WbafwwB59934FV7g21uMGQ@mail.gmail.com/
-> +
->
->  Spacing and Brackets
->  --------------------
-> --
-> 2.25.1
->
