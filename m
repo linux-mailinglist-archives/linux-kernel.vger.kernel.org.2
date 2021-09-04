@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972D0400A4A
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 09:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C035400A4C
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 09:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbhIDHn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 03:43:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44598 "EHLO
+        id S233895AbhIDHsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 03:48:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233631AbhIDHn0 (ORCPT
+        with ESMTP id S233340AbhIDHsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 03:43:26 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D987C061575;
-        Sat,  4 Sep 2021 00:42:25 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id r2so1286487pgl.10;
-        Sat, 04 Sep 2021 00:42:25 -0700 (PDT)
+        Sat, 4 Sep 2021 03:48:01 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452BDC061575;
+        Sat,  4 Sep 2021 00:47:00 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id f15so2820625ybg.3;
+        Sat, 04 Sep 2021 00:47:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CFW88EsdFTG/uHl515vVt1AHdJMDeY6+hJs8Jtyin+k=;
-        b=h0rAajVHXZVfMraBKEkp7jd5xK2sm5axB9cC8kfhDEkUfObXKC3hIOCXD8wErwnLxu
-         IRDd86yhnyGB8tjsqYouJBa/FkknDCDyFy8qXgJ9ywRrZj038tsxbJcnrLosRppiQpw7
-         4sz4r/ev6GCS2s9M6Ul3GPh9FM5YkbIUD4kJixuR2bu0klWGwp0fIxRAIor04z1yE5Xh
-         mH2UFdUcjSjXiexj9ihoGDIeyqZnNxfEmUPIPnItDQuzgfdRZxeJL2jZhY6H+5ypy9gc
-         084yBTPpEKjdpAgA5RihyX6t0aFChOY4XDpJEWHhNeiww1GMWZc/hVUg0qXl5euTisXZ
-         MQjA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O7pFDoTDG83sXYm3yFYU/ALPWpomicRzzImF0sKpKW0=;
+        b=ccMUmEJZTMqvMiO4qDEJz9UIC9A7ZaCIp9jDhsXqJ5Ev75Fxx6tmimIki1gyPQUPXS
+         WUq6vqhnlpebDLPREpSmGpTghCvaQ7I1t01NqKoILpqjhefYji3+KrmbyFtUkdfSEFMJ
+         UNwklfNd5oZpXUbNtuS3Oq+g4hQudXjwXg1XEFeEAUaktgjFZB/kPlvDx7egLukEmhkQ
+         KlsFkF03WrbLns7SWJ2p3vqZWsqreGnTfotAuElmmYxanXxACNPJgkmZ16+Syj62X9W+
+         SAM5JaMcIrLBK/eVLU/0qgK95SGuyD2xbVFiDFCL54EJplm833L1/itj17ZCvI0BT/b6
+         8S9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CFW88EsdFTG/uHl515vVt1AHdJMDeY6+hJs8Jtyin+k=;
-        b=nbMhBLk9CNPRvWmT9/6DKQ2mPsCW3VrfviaXb+rMjeFg3EzvYKsaOk7tI5Ew6RSL5u
-         wUAYIub3y42/NNyynTuBSesfVGN+ePlp2SpuCKZNQ4p9ofoIazhRHPICJa81b8Ygm5aB
-         egYBzZTDvpdb/bkQu7W+c2FP2pe4CtVvYiNKMxvvQO7zEL0V7z2i3i/GIuvvLd9ibFJ3
-         stus+cLE4XLsg5rHyVa/avhWCI7cm7lVWCgLpuuVwnXYTZJSZjtl41N6e1Nar4PaHlzK
-         XU8HHb71i5drRlKLpJ4rGNnO7Pj6aY2vq5JLQwJloj5HHEqnJKZ4wbjOzr8J/r2k3NFi
-         ZPug==
-X-Gm-Message-State: AOAM533MA7PhbOPTU2VvHkXk18JgUrwGEbKCbp3gTc2hRXeBANNLpALo
-        iU6wcRCBcBlp3Tok194vCZcu1s3F6LDR7xBO
-X-Google-Smtp-Source: ABdhPJxE0le/McowG26nZDxVfwSuDbelctC3UxDqotMp9K08qYiMV9gW7u6PTqZK2kFUC3p6q9CMsA==
-X-Received: by 2002:a62:7d84:0:b029:3b8:49bb:4c3f with SMTP id y126-20020a627d840000b02903b849bb4c3fmr6861178pfc.49.1630741344353;
-        Sat, 04 Sep 2021 00:42:24 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:6006:a148:82a8:3271:93dc:763c])
-        by smtp.googlemail.com with ESMTPSA id x19sm1477046pfa.104.2021.09.04.00.42.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Sep 2021 00:42:24 -0700 (PDT)
-From:   Utkarsh Verma <utkarshverma294@gmail.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Utkarsh Verma <utkarshverma294@gmail.com>
-Subject: [PATCH] Documentation: checkpatch: Add TRAILING_SEMICOLON message
-Date:   Sat,  4 Sep 2021 13:12:01 +0530
-Message-Id: <20210904074201.13532-1-utkarshverma294@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O7pFDoTDG83sXYm3yFYU/ALPWpomicRzzImF0sKpKW0=;
+        b=VnOHcGZYGk4w3DggqIXVkchi2r0nDq0eBsww9d7S/50zP0SztsS94VAP2UesXlFlcU
+         im2kq4CqT/8AO0NrfyRfWxB2exH8Xz+OizOYPJ06NxRQ9+W6j9uIsN53rgacEWVUoZCL
+         fq/leZ57rqa6kENjbAQVGB64sSEApZqS/0cuPz/Pf65KcRNjzyH9zIqaIH/dUmDfzHPA
+         qOAMyz88/7G5txxMqoBIqs7M7apeczbPWULTVWFszgMhLP+PpOR6lYybIW1tL0L1PFgC
+         7+YIH0hm7Xiu/29oYTKfMWi3xUQqFNwOJJ/cTR2IHTTdLl3aZ3rF+bMtM7HuYfcwY0x6
+         Uozw==
+X-Gm-Message-State: AOAM532vhwO6zAwXZoHaTO5OOCxi0+NdV+N+2MQpC85rmRmiR2VvOasj
+        +/ggPNjel/fJQBSlQ/p3t5tWWyYPvcdNCoXKXVHgUlmw/Zw=
+X-Google-Smtp-Source: ABdhPJzKd12zJEaEmP4vMVbx87FxdriXYFR5EUre4fMKtstyxhr3RpJv2J0y5Wq4kmgxZlQsWGBvNl+pB3Rcq1FgLww=
+X-Received: by 2002:a25:7ec4:: with SMTP id z187mr3949441ybc.35.1630741619439;
+ Sat, 04 Sep 2021 00:46:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210904072951.12556-1-utkarshverma294@gmail.com>
+In-Reply-To: <20210904072951.12556-1-utkarshverma294@gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Sat, 4 Sep 2021 09:46:48 +0200
+Message-ID: <CAKXUXMyRKM9Ev_Yyyup-T=AZe2aYcN-ZneXsLmHtUC7as67zNQ@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: checkpatch: Add SYMBOLIC_PERMS message
+To:     Utkarsh Verma <utkarshverma294@gmail.com>
+Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new message type TRAILING_SEMICOLON for the macro definitions
-that conclude with a semicolon.
+On Sat, Sep 4, 2021 at 9:30 AM Utkarsh Verma <utkarshverma294@gmail.com> wrote:
+>
+> Add a new message type SYMBOLIC_PERMS under the 'Permissions'
+> subsection. Octal permission bits are easier to read and understand
+> instead of their symbolic macro names.
+>
+> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
+> ---
+>  Documentation/dev-tools/checkpatch.rst | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
+> index f0956e9ea2d8..01105e9c89de 100644
+> --- a/Documentation/dev-tools/checkpatch.rst
+> +++ b/Documentation/dev-tools/checkpatch.rst
+> @@ -957,6 +957,17 @@ Permissions
+>      Permission bits should use 4 digit octal permissions (like 0700 or 0444).
+>      Avoid using any other base like decimal.
+>
+> +  **SYMBOLIC_PERMS**
+> +    Permission bits in the octal form are more readable and easier to
+> +    understand than their symbolic counterparts because many command-line
+> +    tools use this notation only. Experienced kernel developers have been using
+> +    this traditional Unix permission bits for decades and so they find it
+> +    easier to understand the octal notation than the symbolic macros.
+> +    Also, it is harder to read S_IWUSR|S_IRUGO than 0644, which obscures the
+> +    developer's intent rather than clarifying it.
 
-Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
----
- Documentation/dev-tools/checkpatch.rst | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+Just a quick stylistic nit:
 
-diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-index f0956e9ea2d8..30eda8f4a8bd 100644
---- a/Documentation/dev-tools/checkpatch.rst
-+++ b/Documentation/dev-tools/checkpatch.rst
-@@ -845,6 +845,27 @@ Macros, Attributes and Symbols
-     Use the `fallthrough;` pseudo keyword instead of
-     `/* fallthrough */` like comments.
- 
-+  **TRAILING_SEMICOLON**
-+    Macro definition should not end with a semicolon. The macro
-+    invocation style should be consistent with function calls.
-+    This can prevent any unexpected code paths::
-+
-+      #define MAC do_something;
-+
-+    If this macro is used within a if else statement, like::
-+
-+      if (some_condition)
-+              MAC;
-+
-+      else
-+              do_something;
-+
-+    Then there would be a compilation error, because when the macro is
-+    expanded there are two trailing semicolons, so the else branch gets
-+    orphaned.
-+
-+    See: https://lore.kernel.org/lkml/1399671106.2912.21.camel@joe-AO725/
-+
-   **WEAK_DECLARATION**
-     Using weak declarations like __attribute__((weak)) or __weak
-     can have unintended link defects.  Avoid using them.
--- 
-2.25.1
+s/Also, it is harder to read /For example, it is harder to read/
 
+Other than that:
+
+Acked-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+
+Feel free to send a quick v2 for my nitpicking, and apply the tags
+from this email.
+
+Lukas
+
+> +
+> +    See: https://lore.kernel.org/lkml/CA+55aFw5v23T-zvDZp-MmD_EYxF8WbafwwB59934FV7g21uMGQ@mail.gmail.com/
+> +
+>
+>  Spacing and Brackets
+>  --------------------
+> --
+> 2.25.1
+>
