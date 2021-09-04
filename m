@@ -2,120 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C96B0400AD4
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50585400AD9
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236002AbhIDKhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 06:37:23 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:44567 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234482AbhIDKhU (ORCPT
+        id S1351026AbhIDKmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 06:42:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234482AbhIDKmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 06:37:20 -0400
-Received: by mail-io1-f72.google.com with SMTP id d15-20020a0566022befb02905b2e9040807so1251773ioy.11
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 03:36:19 -0700 (PDT)
+        Sat, 4 Sep 2021 06:42:00 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D692C061575;
+        Sat,  4 Sep 2021 03:40:58 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id jg16so3204247ejc.1;
+        Sat, 04 Sep 2021 03:40:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7+4MmuaT7rzL8mD6S0mX3jwc0NJwjLstDiX92Mhzqd4=;
+        b=PmmreLIE6KPwSpV+eJRLKMgW3Z30UIoOJXn2XWGN5zOeZCiFFCbe72Se9ehgrpy4QD
+         NSUwp6ElCXnxyH3HMiP/c7mvFVBX0VxpM+vAZ6tzeeNkIYoa9IZZ/6Oa9bkdQcsx16zA
+         c3mq2QFsv+7/sMkbzVjO4BjRpMFFTTbjpdXp2iHK5z628+Mtl8+rVvWvWcoEE/qcJLz7
+         3k424wbk3KYmigidxMfjdlkW1VCzH1CQmEiX3kY44zePy+dMwzYrLWU2Lcly/QHNUfvN
+         OayFV6GeBgs9vriO3vIkYddgKANYIoBqD9OawdPifLI/DOQHSp7UbVhE81giyoFbYeJg
+         0NEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=7NNx7gIj5TeGbj1VLxo80F+YlIqMfeRu8CH+i2zoe3o=;
-        b=YpcPRHExqfrn3Re2OTRtCk+bYizV8bJ+SadkeWgN6JbNT6tidviIRks5W+A3ptF2Wj
-         MxTeyRCnQ6p4yUiOYwppeTHLxTCz5pBvMS7CvenztSCJqQvkunCW9CRlnx4ynXzDbuG/
-         XqeFpOQV8eG/fL1ggbm8yxa3n/uPg9/+r1H8UTPDvlmJEr++GtAqJan3oD0Y9Y/0ZicF
-         vLCLrxiyJnBIg3ukZac7Prl7ECL76+n5Gr6fJ7r0Rh2aEqzVk6lzFIgyRQHXlA4tv9yF
-         MhL5pqhdW7bWUNARnYnAZn89IJJjvsFX8rcXSwZ4OWzx/WtC/8i/o55F/YUAm1aUMDYn
-         Z7jQ==
-X-Gm-Message-State: AOAM533zU9DgJrkJubSDMkFV1N4WtTjSs3WX3+lyFQZsS+m9SwBhOTkN
-        62p1gvTSWu0rK8+WkST89om0hpCUzsTCGNJ6f3wzgDf8MMSa
-X-Google-Smtp-Source: ABdhPJx18cUggfgE9h6mJCtKYu+31TMBGhDgjfBfFsyicoywJKpTD0qpEmMoypsPy7eo2izMzwKlVjjwf233NShkX98vomBmGAxy
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7+4MmuaT7rzL8mD6S0mX3jwc0NJwjLstDiX92Mhzqd4=;
+        b=qwt9IeSIX1mElQnaF2dBfkBgh4XphnPtbEQ3gyOvzabpf1jzFQoockp/TVIFmxudRg
+         z2dypKv14h16u7HAu/y9UHDehiqa3YAJCJraJukZbEJBM5esocMorQzM039rRcWbPvIJ
+         b/+0uCZS/WqYdsgoqmgQq3/colOrrYVXwO/rwM8D7fYWBXNtXtBO+4jRIV+YsppMGpJ3
+         iSMiyseGwRo5kZFgSFBaOhXU70o6TAbs26TfVHG6dzkfScOmLAC0wIrnWtvjrVRY+5vf
+         iR8yTvJq7yvKHuCK3xTjxUG1dtAd5uZxJCJus/9jyg3r4X4njvZPGzQyg8yBDw/ZS4Mz
+         2bKg==
+X-Gm-Message-State: AOAM5318wrTQyDFuUsJTqiXQ5n+ckGbM/COoOb2khWVQ3u5hgM7N66J0
+        PM1w/bWpRHe0zI7v6QD3thZIhXCHCoeh5kU2Tyk=
+X-Google-Smtp-Source: ABdhPJyahrFLnFDakX63r0MkI/mkLOknN1ylIObQIHUEgYibjw/8s8A3iMEGFYePNa0Jnxfh9cvJkqyWF9X/VTnTZBM=
+X-Received: by 2002:a17:906:9388:: with SMTP id l8mr3621379ejx.307.1630752056967;
+ Sat, 04 Sep 2021 03:40:56 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:3f01:: with SMTP id m1mr2227137ila.105.1630751779370;
- Sat, 04 Sep 2021 03:36:19 -0700 (PDT)
-Date:   Sat, 04 Sep 2021 03:36:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000086bfbc05cb28fc72@google.com>
-Subject: [syzbot] INFO: task can't die in asm_sysvec_apic_timer_interrupt (2)
-From:   syzbot <syzbot+ac4f41effb32ce6491c0@syzkaller.appspotmail.com>
-To:     bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        krisman@collabora.com, linux-kernel@vger.kernel.org,
-        luto@kernel.org, mingo@redhat.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, x86@kernel.org
+References: <1629417219-74853-1-git-send-email-wang.yong12@zte.com.cn>
+ <YR+Rc9HC6OqlEq4I@dhcp22.suse.cz> <CAOH5QeCfwF0hX3XpoThEtwnddtOFEU9Jtp0Hoj+Q37D4Q6HC0Q@mail.gmail.com>
+ <YR/NRJEhPKRQ1r22@dhcp22.suse.cz> <CAOH5QeDUUqrMnuws6cnBDU_oub4cK6KsHeX39p7Eikr4Bcjcnw@mail.gmail.com>
+ <YSzh31BasoxUQXAu@dhcp22.suse.cz>
+In-Reply-To: <YSzh31BasoxUQXAu@dhcp22.suse.cz>
+From:   yong w <yongw.pur@gmail.com>
+Date:   Sat, 4 Sep 2021 18:41:00 +0800
+Message-ID: <CAOH5QeBrxpddmTL40ryajjCJZ4WHJsaubYKBvaeikikn1JmJ9Q@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: Add configuration to control whether vmpressure
+ notifier is enabled
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, alexs@kernel.org,
+        Wei Yang <richard.weiyang@gmail.com>, Hui Su <sh_def@163.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        wang.yong12@zte.com.cn, Cgroups <cgroups@vger.kernel.org>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, yang.yang29@zte.com.cn
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Michal Hocko <mhocko@suse.com> =E4=BA=8E2021=E5=B9=B48=E6=9C=8830=E6=97=A5=
+=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=889:49=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Sun 22-08-21 17:46:08, yong w wrote:
+> > > All those reasons should be a part of the changelog.
+> > >....
+> > > I am not sure these are sufficient justifications but that is somethi=
+ng
+> > > to discuss. And hence it should be a part of the changelog.
+> > >
+> > OK, These reasons will be added to the patch notesin later versions.
+> >
+> > > > 3. In the case where the user does not need vmpressure,  vmpressure
+> > > > calculation is additional overhead.
+> > >
+> > > You should quantify that and argue why that overhead cannot be furthe=
+r
+> > > reduced without config/boot time knobs.
+> > >
+> > The test results of the previously used PFT tool may not be obvious.
+> > Is there a better way to quantify it?
+>
+> This is a question for you to answer I am afraid. You want to add a
+> configuration option and (as explained) that is not free of cost from
+> the maintenance POV. There must a very good reason to do that.
+Sorry for the late reply.The previous email mentions some reasons.
+and several tools were used to test, but the data did not meet the expectat=
+ions.
+I'll try other test methods later.
 
-syzbot found the following issue on:
+> > > > In some special scenes with tight memory, vmpressure will be execut=
+ed
+> > > > frequently.we use "likely" and "inline"
+> > > > to improve the performance of the kernel, why not reduce some
+> > > > unnecessary calculations?
+> > >
+> > > I am all for improving the code. Is it possible to do it by other mea=
+ns?
+> > > E.g. reduce a potential overhead when there no events registered?
+> > Yes, the method you mentioned may be feasible, but it does not conflict
+> > with this patch.
+>
+> It is not in conflict but runtime overhead reduction without more burden
+> on the configurability is usually a preferred approach.
+I agree with you.I had an idea that we use global variables to identify whe=
+ther
+there is event registration,however, global variables need to be
+protected with locks.
+I feel that there is little room for optimization in the code.
 
-HEAD commit:    93717cde744f Add linux-next specific files for 20210830
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15ef5ba9300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c643ef5289990dd1
-dashboard link: https://syzkaller.appspot.com/bug?extid=ac4f41effb32ce6491c0
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17bde2f5300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15d11625300000
-
-Bisection is inconclusive: the first bad commit could be any of:
-
-0ee50b47532a namei: change filename_parentat() calling conventions
-584d3226d665 namei: make do_mkdirat() take struct filename
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=129f0125300000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ac4f41effb32ce6491c0@syzkaller.appspotmail.com
-
-INFO: task syz-executor702:6954 can't die for more than 143 seconds.
-task:syz-executor702 state:R  running task     stack:24344 pid: 6954 ppid:  6540 flags:0x00004006
-Call Trace:
- context_switch kernel/sched/core.c:4955 [inline]
- __schedule+0x940/0x26f0 kernel/sched/core.c:6302
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
-RIP: 0000:0xffffc900034bf728
-RSP: 34bf748:0000000000000000 EFLAGS: 00000046 ORIG_RAX: ffffffff89400c02
-==================================================================
-BUG: KASAN: stack-out-of-bounds in __show_regs.cold+0x2b/0x481 arch/x86/kernel/process_64.c:81
-Read of size 8 at addr ffffc900034bf6c0 by task khungtaskd/27
-
-CPU: 1 PID: 27 Comm: khungtaskd Not tainted 5.14.0-next-20210830-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0xf/0x309 mm/kasan/report.c:256
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
- __show_regs.cold+0x2b/0x481 arch/x86/kernel/process_64.c:81
- show_trace_log_lvl+0x25b/0x2ba arch/x86/kernel/dumpstack.c:298
- sched_show_task kernel/sched/core.c:8560 [inline]
- sched_show_task+0x433/0x5b0 kernel/sched/core.c:8534
- check_killed_task kernel/hung_task.c:184 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:242 [inline]
- watchdog.cold+0x74/0x1de kernel/hung_task.c:339
- kthread+0x3e5/0x4d0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-
-
-Memory state around the buggy address:
- ffffc900034bf580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffc900034bf600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffffc900034bf680: 00 00 00 f1 f1 f1 f1 00 00 f3 f3 00 00 00 00 00
-                                           ^
- ffffc900034bf700: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffc900034bf780: 00 00 00 00 00 00 00 00 f1 f1 f1 f1 00 00 00 f2
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Thanks.
