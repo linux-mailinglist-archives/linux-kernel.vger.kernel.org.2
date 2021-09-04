@@ -2,93 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4363400BE1
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 17:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DDF400BE5
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 17:27:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236812AbhIDPUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 11:20:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45286 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236797AbhIDPUd (ORCPT
+        id S236819AbhIDP2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 11:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231715AbhIDP2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 11:20:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630768771;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zvDeup5okN2+a9recacvzIyRt8oQsyaj87C3UrFckM0=;
-        b=aCX9K6luu9eqsiplCHNWOLXh0hXNL2smLL+Zc+K1RFFUz8lITMbAY7u/4rIAoMKm+1coVc
-        ya52CAirO5/I49DQE4nINeiARMLhYQcA0LTcyI/mhzxRVsOuO38Jd3FZpxteT7KGizrln3
-        mLMOndYj4ZOvyR7HuzJpnUZuzWeKESQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-523-B4_Nd3ZlP523hyVUeBxjYg-1; Sat, 04 Sep 2021 11:19:27 -0400
-X-MC-Unique: B4_Nd3ZlP523hyVUeBxjYg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E763E8145E5;
-        Sat,  4 Sep 2021 15:19:25 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.194.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 28C55189C4;
-        Sat,  4 Sep 2021 15:19:22 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
-Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
-References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com>
-        <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com>
-        <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org>
-        <878s0c4vng.fsf@oldenburg.str.redhat.com>
-        <20210904131911.GP1583@gate.crashing.org>
-Date:   Sat, 04 Sep 2021 17:19:21 +0200
-In-Reply-To: <20210904131911.GP1583@gate.crashing.org> (Segher Boessenkool's
-        message of "Sat, 4 Sep 2021 08:19:11 -0500")
-Message-ID: <871r644bd2.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Sat, 4 Sep 2021 11:28:05 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E870C061575;
+        Sat,  4 Sep 2021 08:27:03 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id v2so3042524oie.6;
+        Sat, 04 Sep 2021 08:27:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QaGnlGfIhoAmUkdSbEJuTC6CWayt42RuLqvUUBshBGc=;
+        b=fi7TsHZcfMQ1N8Dr5DeuHNSp8Iy61+LbXQChH3YM4FCmMlD/sWoQdzAj5Y9Kro4WhT
+         n+ltpJU30ZIG1+22qq8UwWT3/EiVmWjuWiY2xoMyPvQqDGRYhl4FTcfLz9V4Ke7vx1R3
+         ppmfYyjlH8e+f1E+djOCOWOZfvrUJeAlhOiUZHBdRb+iQ6dOIWKx1C0hMU5Mn+2IwOOQ
+         JpNcQ73w3QhyVG3NfQpJ8qOBmA9UDvY05317PFUevrggBlxZoAwHxJagsARIkirepWqp
+         EE+PN4wKRTOlyza3Iu62H2V3CQpnDotKPRwPuCrRKU+c1s9rPE3ccO9aSVjzYApFqNOn
+         E1ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=QaGnlGfIhoAmUkdSbEJuTC6CWayt42RuLqvUUBshBGc=;
+        b=HfFeHNqcu900nLnCgIRW1XypfRnudP/zbabKVPc8OPOYXHGKbqEddDqHD9JVP+Dmfg
+         PoS38waWHoUsPYHxp534mgYfyDmxe3qhzRIofV2swDM4OcD2ooh3oQ4qp3WFwZK7PfFh
+         bO5zvH9BfehWo6JfrAf6bdWVmFyeDI+6UE/+P0+qbkTL+70vUQJ2pQUJKmH98pectSIO
+         Nun72Bppaj5335o5iyPfKZPgGZbs1I4RFPO8Eux72luMuJ402OfNCqYQvD67IgqhQzTV
+         FCDFyuQXxR766giUOna2Op+lHkbuQwVBoPjZMzwB9LcmTT0dBOJY5KCOk7vuZA5IrG1I
+         tSXw==
+X-Gm-Message-State: AOAM532Kz+ncqvkOJJQmFPyFehVqApJdKlJ+AtcwM581uOkyMlXB3zdu
+        vOWOh2brZ1AtoJnu8X2f2WA=
+X-Google-Smtp-Source: ABdhPJxULJRG63A5/XIqpdpOOj6iMRToCu5sYJdK9vbdZvewjuU0aSkFeh2pbs/p6eWqwv3wXKtwDg==
+X-Received: by 2002:a05:6808:1449:: with SMTP id x9mr2948372oiv.14.1630769222698;
+        Sat, 04 Sep 2021 08:27:02 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g8sm560322otk.34.2021.09.04.08.27.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Sep 2021 08:27:02 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 4 Sep 2021 08:27:00 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] watchdog: add new parameter to start the watchdog on
+ module insertion
+Message-ID: <20210904152700.GA3638986@roeck-us.net>
+References: <20210413102030.3204571-1-f.suligoi@asem.it>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210413102030.3204571-1-f.suligoi@asem.it>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Segher Boessenkool:
+On Tue, Apr 13, 2021 at 12:20:30PM +0200, Flavio Suligoi wrote:
+> The new parameter "start_enabled" starts the watchdog at the same time
+> of the module insertion.
+> This feature is very useful in embedded systems, to avoid cases where
+> the system hangs before reaching userspace.
+> 
+> This feature can be enabled in the kernel config, so it can be also
+> used when the watchdog driver is build as "built-in".
+> 
+> This parameter involves the "core" section of the watchdog driver;
+> in this way it is common for all the watchdog hardware implementations.
+> 
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> ---
+> 
+> v2: - check WDOG_HW_RUNNING before starting watchdog;
+>     - remove useless comments in commit text, watchdog-parameters.rst and
+>       Kconfig;
+> v1: - first version;
+> 
+>  Documentation/watchdog/watchdog-parameters.rst |  3 +++
+>  drivers/watchdog/Kconfig                       |  9 +++++++++
+>  drivers/watchdog/watchdog_core.c               | 12 ++++++++++++
+>  3 files changed, 24 insertions(+)
+> 
+> diff --git a/Documentation/watchdog/watchdog-parameters.rst b/Documentation/watchdog/watchdog-parameters.rst
+> index 223c99361a30..7780d0c1fb4a 100644
+> --- a/Documentation/watchdog/watchdog-parameters.rst
+> +++ b/Documentation/watchdog/watchdog-parameters.rst
+> @@ -21,6 +21,9 @@ watchdog core:
+>  	timeout. Setting this to a non-zero value can be useful to ensure that
+>  	either userspace comes up properly, or the board gets reset and allows
+>  	fallback logic in the bootloader to try something else.
+> +    start_enabled:
+> +	Watchdog is started on module insertion. This option can be also
+> +	selected by kernel config (default=kernel config parameter).
+>  
+>  -------------------------------------------------
+>  
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 0470dc15c085..1c480f4c7f94 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -47,6 +47,15 @@ config WATCHDOG_NOWAYOUT
+>  	  get killed. If you say Y here, the watchdog cannot be stopped once
+>  	  it has been started.
+>  
+> +config WATCHDOG_START_ENABLED
+> +	bool "Start watchdog on module insertion"
+> +	help
+> +	  Say Y if you want to start the watchdog at the same time when the
+> +	  driver is loaded.
+> +	  This feature is very useful in embedded systems, to avoid cases where
+> +	  the system could hang before reaching userspace.
+> +	  This parameter applies to all watchdog drivers.
+> +
+>  config WATCHDOG_HANDLE_BOOT_ENABLED
+>  	bool "Update boot-enabled watchdog until userspace takes over"
+>  	default y
+> diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
+> index 5df0a22e2cb4..8a1e2e9331ee 100644
+> --- a/drivers/watchdog/watchdog_core.c
+> +++ b/drivers/watchdog/watchdog_core.c
+> @@ -43,6 +43,11 @@ static int stop_on_reboot = -1;
+>  module_param(stop_on_reboot, int, 0444);
+>  MODULE_PARM_DESC(stop_on_reboot, "Stop watchdogs on reboot (0=keep watching, 1=stop)");
+>  
+> +static bool start_enabled = IS_ENABLED(CONFIG_WATCHDOG_START_ENABLED);
+> +module_param(start_enabled, bool, 0444);
+> +MODULE_PARM_DESC(start_enabled, "Start watchdog on module insertion (default="
+> +	__MODULE_STRING(IS_ENABLED(CONFIG_WATCHDOG_START_ENABLED)) ")");
+> +
+>  /*
+>   * Deferred Registration infrastructure.
+>   *
+> @@ -224,6 +229,13 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+>  	 * corrupted in a later stage then we expect a kernel panic!
+>  	 */
+>  
+> +	/* If required, start the watchdog immediately */
+> +	if (start_enabled && !watchdog_hw_running(wdd)) {
+> +		set_bit(WDOG_HW_RUNNING, &wdd->status);
+> +		wdd->ops->start(wdd);
 
-> Let me quote the original mail (I had to dig it out of the archives as
-> well, no nice threading, too lazy, sorry):
+The start function returns an error, which needs to be checked.
 
-It still doesn't say why.  I did see a reference to fleeting reference
-to <stdatomic.h> and <float.h>.
+Guenter
 
-My conjecture is that the real reason is avoid atomic emulation
-(softatomic?)  and softfloat code.  It's not related to <stdarg.h> at
-all: this header is replaced so that GCC's include subdirectory can be
-dropped from the include search path.  What I don't know if this is to
-avoid obscure linker failures related to libatomic/softfloat (obviously
-not great) or run-time failures (worse).
-
-In any case, it would be nice to know what the real motivation is.
-
-After all, <stdatomic.h> is exactly like <stdarg.h> in that it's
-possible to use its functionality even without the header file.  The
-__atomic builtins are even documented in the GCC manual (unlike
-<stdatomic.h>), which is why some programmers prefer them over the
-standard interface.  And then there's the _Atomic keyword itself, whose
-use can easily result in calls to libatomic functions, too.  So blocking
-<stdatomic.h> makes little sense to me.
-
-I don't know enough about softfloat if blocking the inclusion of
-<float.h> is worth it.
-
-Thanks,
-Florian
-
+> +		pr_info("Watchdog enabled\n");
+> +	}
+> +
+>  	/* Use alias for watchdog id if possible */
+>  	if (wdd->parent) {
+>  		ret = of_alias_get_id(wdd->parent->of_node, "watchdog");
