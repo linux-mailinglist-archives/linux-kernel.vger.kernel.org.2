@@ -2,134 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD4B6400AB6
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5372D400AAC
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 13:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351092AbhIDKBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 06:01:36 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:59119 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235794AbhIDKBN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 06:01:13 -0400
-Received: from weisslap.aisec.fraunhofer.de ([178.27.102.95]) by
- mrelayeu.kundenserver.de (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis)
- id 1MPrXf-1mYmI73emh-00MsL2; Sat, 04 Sep 2021 12:00:00 +0200
-From:   =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-To:     Paul Moore <paul@paul-moore.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Cc:     =?UTF-8?q?Michael=20Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>,
-        Song Liu <song@kernel.org>, Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Eric Paris <eparis@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-audit@redhat.com
-Subject: [PATCH v4 3/3] dm crypt: log aead integrity violations to audit subsystem
-Date:   Sat,  4 Sep 2021 11:59:30 +0200
-Message-Id: <20210904095934.5033-4-michael.weiss@aisec.fraunhofer.de>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210904095934.5033-1-michael.weiss@aisec.fraunhofer.de>
-References: <20210904095934.5033-1-michael.weiss@aisec.fraunhofer.de>
+        id S235298AbhIDKBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 06:01:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234618AbhIDKBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 06:01:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B202561056;
+        Sat,  4 Sep 2021 10:00:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630749605;
+        bh=ylmsh0vL4rvwx9sSRgSyqQInuxwwEAUGh3DY5WRrZz0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=fv6PYBOZ09EBpaMtwC1DVgSLa8wnYcyOfc0MsaFxA1bs5eS0YSkOrtqZwmCYdtXwH
+         a35pxxCegq+s/ba6w+T2p36fkWmpF9h1cbd2kIPgp81V9DxJ3MLA3I/tf+2tA9QXlc
+         0HvOeYFAJ9HZeCOwQnDu6PcV04olvwgt+1js1oe68R53Gut5HxX5GvYil9eMS4lXRT
+         VR7NtX2qOAMdnA6dh1EEE9608McOE/RF9z62VsotGEIO9GPYCrZIUPwN4RnGfmLk0D
+         VjoEBuVaAj+VW3iTRT5XM+I9dpj5hT3nEbUI/F7CaC1vk0WqF1RDsi27iVQ3HSj460
+         2CbNbwNISU9rg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A516460986;
+        Sat,  4 Sep 2021 10:00:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:m7H31RjTq/RWlxT0KJCzKnzsf7xGhGsSA9GOUbq9dzTVKL/B/7E
- jiH4G8fgCUfwOS9K75NuJ55TlCa9LC0plVPCbW1MrUVzDN6X94zAy6Lzu5Oq9/N4YSxFWyE
- WGCJPiibYXhNJZ1n5NlSWdjZ46F2jK/lBj3h+ijX+CdmeR4d1Y00s8aImbzta1eL1JxNatA
- 7rDkahC9w0SDGMCfK5Wjw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ierr4Vfsyso=:EhRe4ISPaUlcG6i3McEf7O
- qngGcL7ENkdo2/WQ7yStDQDdzMMDQl34lGyu4YUbnrOSu53lnObo/SgijGvp5/zh0tI9PH9TE
- jJk/H10YFhOqyAiy2TcT2M8gqZtc5eYIo45eD4dHCQWIdt0bTKVu01+gTnmzKa4KfmVxfN+Xe
- SacYQ7OH9zr8+93UHOBk2eP82Lmw1ihvfdnxMDF/gBzp+ugt2SEAGHzW9nUbu7CTaWWYIXHIc
- OJyoZrpmdXJ7HaWwIyD6bRYMJmNJGh1Hpw1N5/x18yk/x+rSOAnd5rrKzRrSy4hnAaTAxAfsz
- b3TIew59B/K349tgeWrfts4VgbA/lKK5JsBXK3+Zgv/fA2NF/EMInAD5ozOxpl+9KbMb3lPqZ
- zTylnxWwmpFj3txgIP6VnduHOLjlpTtth2GrbT33RuEHAPJCbgQePTMdFxQDSyuau4/fmDEI7
- t5FxMAOei85VlXWniT/kKwOev7cIF07tVH39u6tiqrYn8tGl9YWg3ZEXtUX1K1m+D5Z1t3NbL
- ZVdslYRirn2bcZnaC9wCKbV8+ON63p8NtnBSijtsw0lFWL5F8C59quFSRIw+czmPlGCacvW52
- r/RjS6gwrhkYp1PFuSMm880r/wG8rFGJe9HKiFz+FG/uQWDElr7B4Z7oMZPsh02xcjdiBB5ek
- HAtxoiGx77qEuphxkHeSK/abudZmVjGunKe6V+yKsjBXwiVMttjD0PAhL0KU87JmEG62woU1S
- YFt91GbTHEcRUTNCUtlUC5V+JFm394orRBxe0Sq7598j7x0RexSsfqK/PIY=
+Subject: Re: [PATCH] qlcnic: Remove redundant unlock in qlcnic_pinit_from_rom
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163074960567.20299.3371264143272818975.git-patchwork-notify@kernel.org>
+Date:   Sat, 04 Sep 2021 10:00:05 +0000
+References: <20210903073543.16797-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20210903073543.16797-1-dinghao.liu@zju.edu.cn>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, shshaikh@marvell.com, manishc@marvell.com,
+        GR-Linux-NIC-Dev@marvell.com, davem@davemloft.net, kuba@kernel.org,
+        sony.chacko@qlogic.com, anirban.chakraborty@qlogic.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since dm-crypt target can be stacked on dm-integrity targets to
-provide authenticated encryption, integrity violations are recognized
-here during aead computation. We use the dm-audit submodule to
-signal those events to user space, too.
+Hello:
 
-The construction and destruction of crypt device mappings are also
-logged as audit events.
+This patch was applied to netdev/net.git (refs/heads/master):
 
-Signed-off-by: Michael Weiß <michael.weiss@aisec.fraunhofer.de>
----
- drivers/md/dm-crypt.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+On Fri,  3 Sep 2021 15:35:43 +0800 you wrote:
+> Previous commit 68233c583ab4 removes the qlcnic_rom_lock()
+> in qlcnic_pinit_from_rom(), but remains its corresponding
+> unlock function, which is odd. I'm not very sure whether the
+> lock is missing, or the unlock is redundant. This bug is
+> suggested by a static analysis tool, please advise.
+> 
+> Fixes: 68233c583ab4 ("qlcnic: updated reset sequence")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> 
+> [...]
 
-diff --git a/drivers/md/dm-crypt.c b/drivers/md/dm-crypt.c
-index 50f4cbd600d5..5e02002345fa 100644
---- a/drivers/md/dm-crypt.c
-+++ b/drivers/md/dm-crypt.c
-@@ -41,6 +41,8 @@
- 
- #include <linux/device-mapper.h>
- 
-+#include "dm-audit.h"
-+
- #define DM_MSG_PREFIX "crypt"
- 
- /*
-@@ -1362,8 +1364,12 @@ static int crypt_convert_block_aead(struct crypt_config *cc,
- 
- 	if (r == -EBADMSG) {
- 		char b[BDEVNAME_SIZE];
--		DMERR_LIMIT("%s: INTEGRITY AEAD ERROR, sector %llu", bio_devname(ctx->bio_in, b),
--			    (unsigned long long)le64_to_cpu(*sector));
-+		sector_t s = le64_to_cpu(*sector);
-+
-+		DMERR_LIMIT("%s: INTEGRITY AEAD ERROR, sector %llu",
-+			    bio_devname(ctx->bio_in, b), s);
-+		dm_audit_log_bio(DM_MSG_PREFIX, "integrity-aead",
-+				 ctx->bio_in, s, 0);
- 	}
- 
- 	if (!r && cc->iv_gen_ops && cc->iv_gen_ops->post)
-@@ -2173,8 +2179,12 @@ static void kcryptd_async_done(struct crypto_async_request *async_req,
- 
- 	if (error == -EBADMSG) {
- 		char b[BDEVNAME_SIZE];
--		DMERR_LIMIT("%s: INTEGRITY AEAD ERROR, sector %llu", bio_devname(ctx->bio_in, b),
--			    (unsigned long long)le64_to_cpu(*org_sector_of_dmreq(cc, dmreq)));
-+		sector_t s = le64_to_cpu(*org_sector_of_dmreq(cc, dmreq));
-+
-+		DMERR_LIMIT("%s: INTEGRITY AEAD ERROR, sector %llu",
-+			    bio_devname(ctx->bio_in, b), s);
-+		dm_audit_log_bio(DM_MSG_PREFIX, "integrity-aead",
-+				 ctx->bio_in, s, 0);
- 		io->error = BLK_STS_PROTECTION;
- 	} else if (error < 0)
- 		io->error = BLK_STS_IOERR;
-@@ -2729,6 +2739,8 @@ static void crypt_dtr(struct dm_target *ti)
- 	dm_crypt_clients_n--;
- 	crypt_calculate_pages_per_client();
- 	spin_unlock(&dm_crypt_clients_lock);
-+
-+	dm_audit_log_dtr(DM_MSG_PREFIX, ti, 1);
- }
- 
- static int crypt_ctr_ivmode(struct dm_target *ti, const char *ivmode)
-@@ -3357,9 +3369,11 @@ static int crypt_ctr(struct dm_target *ti, unsigned int argc, char **argv)
- 	ti->num_flush_bios = 1;
- 	ti->limit_swap_bios = true;
- 
-+	dm_audit_log_ctr(DM_MSG_PREFIX, ti, 1);
- 	return 0;
- 
- bad:
-+	dm_audit_log_ctr(DM_MSG_PREFIX, ti, 0);
- 	crypt_dtr(ti);
- 	return ret;
- }
--- 
-2.20.1
+Here is the summary with links:
+  - qlcnic: Remove redundant unlock in qlcnic_pinit_from_rom
+    https://git.kernel.org/netdev/net/c/9ddbc2a00d7f
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
