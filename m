@@ -2,271 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B050400BCA
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 17:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4170400BD3
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 17:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236912AbhIDPGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 11:06:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56654 "EHLO
+        id S236736AbhIDPLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 11:11:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236868AbhIDPGB (ORCPT
+        with ESMTP id S230514AbhIDPLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 11:06:01 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE9FC061575
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 08:04:59 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id eb14so3016966edb.8
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 08:04:59 -0700 (PDT)
+        Sat, 4 Sep 2021 11:11:51 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA9CC061575;
+        Sat,  4 Sep 2021 08:10:49 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id bi4so2979328oib.9;
+        Sat, 04 Sep 2021 08:10:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MA2iPb7Y7XSM8PaYgGm1gxG6SO7HX4tBE977rEk5mU4=;
-        b=PQeQ3jlfLdfJ/pWGFoHYQk8bg554iN+bYY+xJ+pwiaA0pS42M35TGWF3bhuM2Cdhey
-         dTYq03zcSVI6V49lJjmFEoevxKzCCNQmKFhu1ARELQTpOidix32uxnGBZtZ5PgeF9hr9
-         8rMblJHlBfYT17TQs9l4n3XHpyVcnhsw+e6+6NxCTPR6ZjeqvDUE92kt0XXSY5rTlsUz
-         zhbwxvly7wA0Vov4gOWt0P06jHnXboqagWqMLGwYWHh856RPt4Qazw48GHFxI53DaLOP
-         9LLkBjcwRsj9b2bwlBkDT/g1IRQptyIp+x11dOs4nk73lbMDEzfBS+sPnVZ4ccsq6eqi
-         vV+A==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=doZgp/4GdYI5KrgtOO8Mhfj8uXjudg+UojLzeQONPag=;
+        b=hs8KbKS09fmOjnS0IvZRdFSSOggZgf2u8XqBqIDlXCrIzopt+NG9m3qItApsi+YpQu
+         uAeuIAow5/3NS1joSNZqrBCNAaZJnjdNSsMwXYWGlMMJin8bNTi4eGFsTZkNM8K7c3W8
+         GD7sZEE7o6CK78JAyP/9dfizknnalAsfWsLuHL5gpxB0kf9MgHjeeO3dD7jJ7siq/IAz
+         UIosaXcSF7XffVJ8IdPdioF4GqkEwgpTOK13u9oVJAVmpeP3QWWV3GV1Hyzim05wyv4b
+         M1RftE0TuztehTVLi5vC69Y4NEZ3b9+OVNoA1z9NbmOu2xNEXIcZ497peUwt/kfDt6Z0
+         14Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MA2iPb7Y7XSM8PaYgGm1gxG6SO7HX4tBE977rEk5mU4=;
-        b=PmQ5tzzeJcWPAHqgFkjuOsmStWK7tIw/Xl1FslgmoS7Rob2R+lgG3DzWAMPisBg1+M
-         Vq13nJcKPKHOGvhYq0aWYWSkEu98lPjVPxpMuPrUsUUKWL64yz1/YHJbiLbXsdWC1ig1
-         xnQgtqFojb6/eLP/Hxib8raisP0ke+zXEsIbRH2MWmCVJP4+acvfYStvf+TTV3s4ZxXx
-         4zmNP3kui4du5pZYGHoNc6fTPzaG8CNxGk5tyViGGpnapY8ET+n66bc8VS5nS7A/X3rk
-         n+CmxJ6WotNZKbgH/LBDy+v6hyss/pDbQ2YJkz7u6Q5vrJIRhyF/gwIgnlM5EbsIC0xj
-         aJAw==
-X-Gm-Message-State: AOAM532MR6d0OoiOShv5P7NR0Jqopc37tSdkXtXBQvJOv18NTr6A5cP2
-        LRQY5rg48FfsZsWbA0UP+XNTV5W4kKc=
-X-Google-Smtp-Source: ABdhPJwEWdJ+Khy5jVxEYeLVjWZAA7ZbonZdm8RKgeMdo1M1iGP4xB/jaK5OrhSzPRFs/CN6OS4EFQ==
-X-Received: by 2002:a50:fe17:: with SMTP id f23mr4594874edt.390.1630767897878;
-        Sat, 04 Sep 2021 08:04:57 -0700 (PDT)
-Received: from localhost.localdomain (host-79-23-101-208.retail.telecomitalia.it. [79.23.101.208])
-        by smtp.gmail.com with ESMTPSA id da16sm1463452edb.28.2021.09.04.08.04.56
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=doZgp/4GdYI5KrgtOO8Mhfj8uXjudg+UojLzeQONPag=;
+        b=TgD5t5ZyR5lzPKkoVMueRnoFIt8HhCjFE97tLxEC9VVd+pRVXBbch08vX4ec6xr2/0
+         6shuPhf4xF98iNZpG0z9ChJRSwrsS9HmqPsSBrOuEkrrlAr0zJhM9pey16boZwsyp1kN
+         JLuu0blCHLec1XAHsY0zba6aatAL2xwUmzNEh7RfGJHrlcgV2hn9KmQcWPnUH7m1KskM
+         zgpKhy9nBA3LrxJ9RvwtKGXckUXLozdJiwBckfIV8wOO9N68nsdf2FQzpLiAs4k5u8VK
+         MvwL/rYmtZDlsTfSI2V3JHDik1832M5uliy9ZiIUIAqWCzfxCiHKU6BYIrpCKKyvlvHc
+         VHCQ==
+X-Gm-Message-State: AOAM530dZbnOPDLQuCIgRzsifcj963zeaAMIAQpyk4Mm1IQfH5pLWn7r
+        vK5IIEsHWDbYQ8M24OQz19c=
+X-Google-Smtp-Source: ABdhPJy/LIrmgjHhH8kelR8GQJnGsChhzF5JNVEnnEFY3K8/fdnDRL9lgeYCpzljr12oFblZ+6CJAQ==
+X-Received: by 2002:aca:31c1:: with SMTP id x184mr2901352oix.8.1630768248760;
+        Sat, 04 Sep 2021 08:10:48 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a11sm535692oiw.36.2021.09.04.08.10.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Sep 2021 08:04:57 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH 3/3] staging: r8188eu: Shorten calls chain of rtw_write8/16/32/N()
-Date:   Sat,  4 Sep 2021 17:04:47 +0200
-Message-Id: <20210904150447.14659-4-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210904150447.14659-1-fmdefrancesco@gmail.com>
-References: <20210904150447.14659-1-fmdefrancesco@gmail.com>
+        Sat, 04 Sep 2021 08:10:48 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 4 Sep 2021 08:10:47 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Icenowy Zheng <icenowy@aosc.io>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] dt-bindings: watchdog: sunxi: Add compatibles for
+ R329
+Message-ID: <20210904151047.GA3638393@roeck-us.net>
+References: <20210902225750.29313-1-samuel@sholland.org>
+ <20210902225750.29313-2-samuel@sholland.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210902225750.29313-2-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shorten the calls chain of rtw_write8/16/32() down to the actual writes.
-For this purpose unify the four usb_write8/16/32/N() into the new
-usb_write(); make the latter parameterizable with 'size'; embed most of
-the code of usbctrl_vendorreq() into usb_write() and use in it the new
-usb_control_msg_send() API of USB Core.
+On Thu, Sep 02, 2021 at 05:57:48PM -0500, Samuel Holland wrote:
+> On existing SoCs, the watchdog has a single clock input: HOSC (OSC24M)
+> divided by 750.  However, starting with R329, LOSC (OSC32k) is added as
+> an alternative clock source, with a bit to switch between them.
+> 
+> Since 24 MHz / 750 == 32 kHz, not 32.768 kHz, the hardware adjusts the
+> cycle counts to keep the timeouts independent of the clock source. This
+> keeps the programming interface backward-compatible.
+> 
+> Furthermore, the R329 has two watchdogs: one for use by the ARM CPUs
+> at 0x20000a0, and a second one for use by the DSPs at 0x7020400. The
+> first of these adds two more new registers, to allow software to
+> immediately assert the SoC reset signal. Add an additional "-reset"
+> suffix to signify the presence of this feature.
+> 
+> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> Acked-by: Maxime Ripard <maxime@cerno.tech>
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Co-developed-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
- drivers/staging/r8188eu/hal/usb_ops_linux.c | 102 ++++++++------------
- 1 file changed, 39 insertions(+), 63 deletions(-)
+Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-index f9c4fd5a2c53..8584baca9b8e 100644
---- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
-+++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
-@@ -8,76 +8,51 @@
- #include "../include/recv_osdep.h"
- #include "../include/rtl8188e_hal.h"
- 
--static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata, u16 len, u8 requesttype)
-+static int usb_read(struct intf_hdl *intfhdl, u32 addr, void *data, u8 size)
- {
--	struct adapter	*adapt = pintfhdl->padapter;
--	struct dvobj_priv  *dvobjpriv = adapter_to_dvobj(adapt);
-+	u16 value = (u16)(addr & 0x0000ffff);
-+	struct adapter *adapt = intfhdl->padapter;
-+	struct dvobj_priv *dvobjpriv = adapter_to_dvobj(adapt);
- 	struct usb_device *udev = dvobjpriv->pusbdev;
--	unsigned int pipe;
--	int status = 0;
--	u8 *pIo_buf;
-+	int status;
-+	u8 *io_buf;
- 	int vendorreq_times = 0;
- 
--	if ((adapt->bSurpriseRemoved) || (adapt->pwrctrlpriv.pnp_bstop_trx)) {
-+	if (adapt->bSurpriseRemoved || adapt->pwrctrlpriv.pnp_bstop_trx) {
- 		status = -EPERM;
- 		goto exit;
- 	}
- 
--	if (len > MAX_VENDOR_REQ_CMD_SIZE) {
--		DBG_88E("[%s] Buffer len error ,vendor request failed\n", __func__);
--		status = -EINVAL;
--		goto exit;
--	}
--
--	_enter_critical_mutex(&dvobjpriv->usb_vendor_req_mutex, NULL);
-+	mutex_lock(&dvobjpriv->usb_vendor_req_mutex);
- 
- 	/*  Acquire IO memory for vendorreq */
--	pIo_buf = dvobjpriv->usb_vendor_req_buf;
-+	io_buf = dvobjpriv->usb_vendor_req_buf;
- 
--	if (!pIo_buf) {
--		DBG_88E("[%s] pIo_buf == NULL\n", __func__);
-+	if (!io_buf) {
-+		DBG_88E("[%s] io_buf == NULL\n", __func__);
- 		status = -ENOMEM;
- 		goto release_mutex;
- 	}
- 
--	if (requesttype == REALTEK_USB_VENQT_READ)
--		pipe = usb_rcvctrlpipe(udev, 0);/* read_in */
--	else
--		pipe = usb_sndctrlpipe(udev, 0);/* write_out */
--
- 	while (++vendorreq_times <= MAX_USBCTRL_VENDORREQ_TIMES) {
--		if (requesttype == REALTEK_USB_VENQT_READ)
--			memset(pIo_buf, 0, len);
--		else
--			memcpy(pIo_buf, pdata, len);
--
--		status = usb_control_msg(udev, pipe, REALTEK_USB_VENQT_CMD_REQ,
--					 requesttype, value, REALTEK_USB_VENQT_CMD_IDX,
--					 pIo_buf, len, RTW_USB_CONTROL_MSG_TIMEOUT);
--
--		if (status == len) {   /*  Success this control transfer. */
-+		status = usb_control_msg_recv(udev, 0, REALTEK_USB_VENQT_CMD_REQ,
-+					      REALTEK_USB_VENQT_READ, value,
-+					      REALTEK_USB_VENQT_CMD_IDX, io_buf,
-+					      size, RTW_USB_CONTROL_MSG_TIMEOUT,
-+					      GFP_KERNEL);
-+		if (!status) {   /*  Success this control transfer. */
- 			rtw_reset_continual_urb_error(dvobjpriv);
--			if (requesttype == REALTEK_USB_VENQT_READ)
--				memcpy(pdata, pIo_buf,  len);
-+			memcpy(data, io_buf, size);
- 		} else { /*  error cases */
--			DBG_88E("reg 0x%x, usb %s %u fail, status:%d value=0x%x, vendorreq_times:%d\n",
--				value, (requesttype == REALTEK_USB_VENQT_READ) ? "read" : "write",
--				len, status, *(u32 *)pdata, vendorreq_times);
--
--			if (status < 0) {
--				if (status == (-ESHUTDOWN) || status == -ENODEV) {
--					adapt->bSurpriseRemoved = true;
--				} else {
--					struct hal_data_8188e	*haldata = GET_HAL_DATA(adapt);
--					haldata->srestpriv.wifi_error_status = USB_VEN_REQ_CMD_FAIL;
--				}
--			} else { /*  status != len && status >= 0 */
--				if (status > 0) {
--					if (requesttype == REALTEK_USB_VENQT_READ) {
--						/*  For Control read transfer, we have to copy the read data from pIo_buf to pdata. */
--						memcpy(pdata, pIo_buf,  len);
--					}
--				}
-+			DBG_88E("reg 0x%x, usb %s %u fail, status:%d vendorreq_times:%d\n",
-+				value, "read", size, status, vendorreq_times);
-+
-+			if (status == (-ESHUTDOWN) || status == -ENODEV) {
-+				adapt->bSurpriseRemoved = true;
-+			} else {
-+				struct hal_data_8188e *haldata = GET_HAL_DATA(adapt);
-+
-+				haldata->srestpriv.wifi_error_status = USB_VEN_REQ_CMD_FAIL;
- 			}
- 
- 			if (rtw_inc_and_chk_continual_urb_error(dvobjpriv)) {
-@@ -87,17 +62,18 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
- 
- 		}
- 
--		/*  firmware download is checksumed, don't retry */
--		if ((value >= FW_8188E_START_ADDRESS && value <= FW_8188E_END_ADDRESS) || status == len)
-+		/*  firmware download is checksummed, don't retry */
-+		if ((value >= FW_8188E_START_ADDRESS && value <= FW_8188E_END_ADDRESS) || !status)
- 			break;
- 	}
-+
- release_mutex:
--	_exit_critical_mutex(&dvobjpriv->usb_vendor_req_mutex, NULL);
-+	mutex_unlock(&dvobjpriv->usb_vendor_req_mutex);
- exit:
- 	return status;
- }
- 
--static int usb_read(struct intf_hdl *intfhdl, u32 addr, void *data, u8 size)
-+static int usb_write(struct intf_hdl *intfhdl, u32 addr, void *data, u8 size)
- {
- 	u16 value = (u16)(addr & 0x0000ffff);
- 	struct adapter *adapt = intfhdl->padapter;
-@@ -123,15 +99,15 @@ static int usb_read(struct intf_hdl *intfhdl, u32 addr, void *data, u8 size)
- 		goto release_mutex;
- 	}
- 
-+	memcpy(io_buf, data, size);
- 	while (++vendorreq_times <= MAX_USBCTRL_VENDORREQ_TIMES) {
--		status = usb_control_msg_recv(udev, 0, REALTEK_USB_VENQT_CMD_REQ,
--					      REALTEK_USB_VENQT_READ, value,
-+		status = usb_control_msg_send(udev, 0, REALTEK_USB_VENQT_CMD_REQ,
-+					      REALTEK_USB_VENQT_SEND, value,
- 					      REALTEK_USB_VENQT_CMD_IDX, io_buf,
- 					      size, RTW_USB_CONTROL_MSG_TIMEOUT,
- 					      GFP_KERNEL);
- 		if (!status) {   /*  Success this control transfer. */
- 			rtw_reset_continual_urb_error(dvobjpriv);
--			memcpy(data, io_buf, size);
- 		} else { /*  error cases */
- 			DBG_88E("reg 0x%x, usb %s %u fail, status:%d vendorreq_times:%d\n",
- 				value, "read", size, status, vendorreq_times);
-@@ -204,7 +180,7 @@ int rtw_write8(struct adapter *adapter, u32 addr, u8 val)
- 	u16 wvalue = (u16)(addr & 0x0000ffff);
- 	int ret;
- 
--	ret = usbctrl_vendorreq(pintfhdl, wvalue, &val, 1, REALTEK_USB_VENQT_WRITE);
-+	ret = usb_write(pintfhdl, wvalue, &val, 1);
- 
- 	return RTW_STATUS_CODE(ret);
- }
-@@ -217,7 +193,7 @@ int rtw_write16(struct adapter *adapter, u32 addr, u16 val)
- 	__le32 data = cpu_to_le32(val & 0x0000ffff);
- 	int ret;
- 
--	ret = usbctrl_vendorreq(pintfhdl, wvalue, &data, 2, REALTEK_USB_VENQT_WRITE);
-+	ret = usb_write(pintfhdl, wvalue, &data, 2);
- 
- 	return RTW_STATUS_CODE(ret);
- }
-@@ -230,7 +206,7 @@ int rtw_write32(struct adapter *adapter, u32 addr, u32 val)
- 	__le32 data = cpu_to_le32(val);
- 	int ret;
- 
--	ret = usbctrl_vendorreq(pintfhdl, wvalue, &data, 4, REALTEK_USB_VENQT_WRITE);
-+	ret = usb_write(pintfhdl, wvalue, &data, 4);
- 
- 	return RTW_STATUS_CODE(ret);
- }
-@@ -247,7 +223,7 @@ int rtw_writeN(struct adapter *adapter, u32 addr, u32 length, u8 *pdata)
- 		return -EINVAL;
- 
- 	memcpy(buf, pdata, length);
--	ret = usbctrl_vendorreq(pintfhdl, wvalue, buf, (length & 0xffff), REALTEK_USB_VENQT_WRITE);
-+	ret = usb_write(pintfhdl, wvalue, buf, (length & 0xffff));
- 
- 	return RTW_STATUS_CODE(ret);
- }
--- 
-2.33.0
-
+> ---
+> Changes v2 to v3:
+>  - Add else case
+>  - Add additional allwinner,sun50i-r329-wdt-reset compatible
+> Changes v1 to v2:
+>  - Switch clock-names from enum to const
+>  - Add descriptions to "clocks" items
+> 
+>  .../watchdog/allwinner,sun4i-a10-wdt.yaml     | 42 ++++++++++++++++++-
+>  1 file changed, 41 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
+> index 9aa3c313c49f..877f47759814 100644
+> --- a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
+> +++ b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
+> @@ -24,6 +24,8 @@ properties:
+>                - allwinner,sun50i-a100-wdt
+>                - allwinner,sun50i-h6-wdt
+>                - allwinner,sun50i-h616-wdt
+> +              - allwinner,sun50i-r329-wdt
+> +              - allwinner,sun50i-r329-wdt-reset
+>            - const: allwinner,sun6i-a31-wdt
+>        - items:
+>            - const: allwinner,suniv-f1c100s-wdt
+> @@ -33,7 +35,18 @@ properties:
+>      maxItems: 1
+>  
+>    clocks:
+> -    maxItems: 1
+> +    minItems: 1
+> +    maxItems: 2
+> +    items:
+> +      - description: High-frequency oscillator input, divided internally
+> +      - description: Low-frequency oscillator input, only found on some variants
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    maxItems: 2
+> +    items:
+> +      - const: hosc
+> +      - const: losc
+>  
+>    interrupts:
+>      maxItems: 1
+> @@ -44,6 +57,33 @@ required:
+>    - clocks
+>    - interrupts
+>  
+> +if:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        enum:
+> +          - allwinner,sun50i-r329-wdt
+> +          - allwinner,sun50i-r329-wdt-reset
+> +
+> +then:
+> +  properties:
+> +    clocks:
+> +      minItems: 2
+> +
+> +    clock-names:
+> +      minItems: 2
+> +
+> +  required:
+> +    - clock-names
+> +
+> +else:
+> +  properties:
+> +    clocks:
+> +      maxItems: 1
+> +
+> +    clock-names:
+> +      maxItems: 1
+> +
+>  unevaluatedProperties: false
+>  
+>  examples:
