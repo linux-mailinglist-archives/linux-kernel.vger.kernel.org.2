@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC89400A37
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 09:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D4A400A39
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 09:12:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350902AbhIDGzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 02:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34224 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233068AbhIDGzr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 02:55:47 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075F3C061575;
-        Fri,  3 Sep 2021 23:54:47 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id z24-20020a17090acb1800b0018e87a24300so1051105pjt.0;
-        Fri, 03 Sep 2021 23:54:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0t2QJrjw4Lw/OGtiF8954HkIrjujVf75m31WabHpThg=;
-        b=gSFaEDHcDfDucFW7WmmyPeYRW6Pk6tJBSmwu7Xj831pIwAtCQGBUlgxQe6t1g4QBHg
-         ieA/cYNmbnR7xpkkN7zaCubFjIrAkBE8Z1Z8eQt3FrMJSRHG9Fy4Tg4Gt5twCQEkOQGY
-         lJwNUAO0+yjKBKL5VRsXT7mqMEqA3xGHz5HL1GeAM3piFqBphtql49vWHzKeo+HSPOQR
-         0hImHq2QndGBVWdjd9SfCode7ZVIl7hiLkw1ZwTXJxYOXLHwMJVgJSx2p+SdIA6PT6FC
-         06Qm/OaqEQ0vcw2AKmClTQE4/YlHkhIAmLv7+R01ux9xqfP6AvnFGrfLKwL4LDCN/jyn
-         E4aQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0t2QJrjw4Lw/OGtiF8954HkIrjujVf75m31WabHpThg=;
-        b=CamKXN4Bx1sRSKWIPSwQM2XZnesDWJ/50SzLVV9GsTImviKJ+/qd5mEX1ydaFylW7f
-         ca2KpafiGLCr5uZA7wiu/kl3Nnju/nAxfR+pU9S8rNQNYFVP+WMFcY84gIiYhm9/zQSI
-         nifmHAem8Dai7w81tBXH6mqYI4v8CKmESD/py2ZTE+Yo2oKMmn+d2GhRSgVcsJjawLZI
-         8MzZPFuPOCM4Mu9hSzhk1OV/oT7lw11Z7HFpBqkfGQ14QLI07rpf1Sc5wsp8Yf3Khfix
-         rFXsmuM4SDOF0DJrkBfkPR6HlumWBEjmCJUHjprWzRjvaIBFwP0Ox8vfEJmPDK9oP48t
-         otnQ==
-X-Gm-Message-State: AOAM531BAhGyBmRwJTZdpc1DQke1Cvd09+sTeh9VOxq3ggfKxQaw2sye
-        1jJ4p5g5dLoMw1RjhiCWWsY=
-X-Google-Smtp-Source: ABdhPJzk+yE+5VUo1cuX3PeyTNnixCd8UAWsCWzhAQTYHy9PTbGdIgw9WcVNAUETyzP1qxbHFExTnA==
-X-Received: by 2002:a17:90a:f8e:: with SMTP id 14mr2762173pjz.85.1630738486432;
-        Fri, 03 Sep 2021 23:54:46 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:44a5:4d4e:ed46:daa])
-        by smtp.gmail.com with ESMTPSA id z7sm1206197pjr.42.2021.09.03.23.54.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 23:54:45 -0700 (PDT)
-Date:   Fri, 3 Sep 2021 23:54:43 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     mateng <ayowoe@163.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mateng <mateng@yulong.com>
-Subject: Re: [PATCH] input/serio:unneeded variable:delay
-Message-ID: <YTMYM6s+PZA/r1mw@google.com>
-References: <20210323070250.1306-1-ayowoe@163.com>
+        id S236286AbhIDHBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 03:01:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229994AbhIDHBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 03:01:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBB2B60F22;
+        Sat,  4 Sep 2021 07:00:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630738848;
+        bh=JWHgFlJay6hn929l3kdfasud5yj7kPB4NU/hGrLmm2E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rReBveCxjFV2UwyVBjq5O26tDrsz2OrRdJSotTPMUOKoUz1MhcfYqymR11VYmJ82b
+         O0VfuafiwBmrfCG44Yys7run/29xG6f4mbIIccWc70Xj1VI01aR0x8p5cSmeOFGb7/
+         9FBS+gj9NO/ujP0Z6F+os9+TcaOPW662F+JUntyM=
+Date:   Sat, 4 Sep 2021 09:00:45 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     srivathsa <srivathsa729.8@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Fix ERROR: trailing statements should be on next line
+Message-ID: <YTMZndMjTmN1RK8S@kroah.com>
+References: <20210904063127.11142-1-srivathsa729.8@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210323070250.1306-1-ayowoe@163.com>
+In-Reply-To: <20210904063127.11142-1-srivathsa729.8@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 03:02:50PM +0800, mateng wrote:
-> From: mateng <mateng@yulong.com>
-> 
-> delete unneeded variable 'delay'
-
-Sorry, but this is bogus.
-
-> 
-> Signed-off-by: mateng <mateng@yulong.com>
+On Sat, Sep 04, 2021 at 12:01:27PM +0530, srivathsa wrote:
+> Signed-off-by: Srivathsa Dara <srivathsa729.8@gmail.com>
 > ---
->  drivers/input/serio/i8042.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  drivers/staging/fbtft/fbtft-core.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
-> index abae23a..145bda1 100644
-> --- a/drivers/input/serio/i8042.c
-> +++ b/drivers/input/serio/i8042.c
-> @@ -1126,7 +1126,6 @@ static void i8042_controller_reset(bool s2r_wants_reset)
+> diff --git a/drivers/staging/fbtft/fbtft-core.c b/drivers/staging/fbtft/fbtft-core.c
+> index ed992ca605eb..65de1c02e7dc 100644
+> --- a/drivers/staging/fbtft/fbtft-core.c
+> +++ b/drivers/staging/fbtft/fbtft-core.c
+> @@ -1038,7 +1038,8 @@ int fbtft_init_display(struct fbtft_par *par)
+>  			i++;
 >  
->  static long i8042_panic_blink(int state)
->  {
-> -	long delay = 0;
->  	char led;
+>  			/* make debug message */
+> -			for (j = 0; par->init_sequence[i + 1 + j] >= 0; j++);
+> +			for (j = 0; par->init_sequence[i + 1 + j] >= 0; j++)
+> +				;
 >  
->  	led = (state) ? 0x01 | 0x04 : 0;
-> @@ -1142,7 +1141,7 @@ static long i8042_panic_blink(int state)
->  	dbg("%02x -> i8042 (panic blink)\n", led);
->  	i8042_write_data(led);
->  	DELAY;
-> -	return delay;
-> +	return 0;
->  }
->  
->  #undef DELAY
+>  			fbtft_par_dbg(DEBUG_INIT_DISPLAY, par,
+>  				      "init: write(0x%02X) %*ph\n",
 > -- 
-> 1.9.1
+> 2.25.1
+> 
 > 
 
--- 
-Dmitry
+Hi,
+
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
+
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what is needed in order to
+  properly describe the change.
+
+- You did not write a descriptive Subject: for the patch, allowing Greg,
+  and everyone else, to know what this patch is all about.  Please read
+  the section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what a proper Subject: line should
+  look like.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
