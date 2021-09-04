@@ -2,121 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB38400BD7
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 17:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7C36400BDD
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 17:17:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236778AbhIDPMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 11:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230514AbhIDPMw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 11:12:52 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF052C061575;
-        Sat,  4 Sep 2021 08:11:50 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so2691156otk.9;
-        Sat, 04 Sep 2021 08:11:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LsO7ChoiOUbdf0evlicIaWpHPtdos4bfdl0lagLpQi8=;
-        b=jFFKC+7ydZD0CmfMIj9jryBDPrD8OC331sUesCkXUkA1hiHFuoUDPSZCWrdSgH/rZU
-         8aoUKIifcstigpw1jhVmmxSFYcmoCPfj4jZZYLU7XucmnjLrqbEkoP2Ccck4ZIj4fClT
-         ijK8rCYC19MRu8SIkQz6DWzcWxCFBBnwks0Lw/Ay8bJobzmkcTctKt5+LuqPhIe2ifH6
-         /DDiFOud/V64LuiUxMbpVKRZUNl25/Wmd3HkOuS1Yj39XdpOchbKI84cvkwArXGXgmdJ
-         l+LbKuVYyDAs5jt8dWUUjsAsaZh2Y+QsKhU1oXww4KaNRMVp/LTLB2o94uMVkumDZu2n
-         GKiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=LsO7ChoiOUbdf0evlicIaWpHPtdos4bfdl0lagLpQi8=;
-        b=VIV8arscADU/1gDeino65Aw2Y6YgqwTUOeR9ZLPWDfMMlEXe0LxbpMuHqNOiV4aiWd
-         TQ4mgPOfQtd8/sodfp7L0KqPjJhAEy3EMLJ3jfHA6dQYPIsvjHJPDSftMVNbN1LLFDV3
-         OrIoDjifb+Gf+exh33KyXQ4qWBoywQdO2lh6tI594LodGRtXrB/IGZvBzmTpnK97DC+n
-         iQeE21MufROvgcA2TXTsSSKYdrHeJueFkgZ0C0mjot1vkUx1XG03GVimUOE1Cl0eFZTC
-         oR+7o8/VZRdeylWVKVwehlP+nfzBp0cqjGHD/Rqrrek9lo1bhU145u/qF0UxQ6YtZwR5
-         5D8A==
-X-Gm-Message-State: AOAM532mJ8SfZX8FHxRvnqhg62938fsHZNH/XhQz6/iVxkylvvAtT6ky
-        rraPLsKRxYMBMb+hcUeSw34eVGEZoNw=
-X-Google-Smtp-Source: ABdhPJxq2ImOOCGgziVvhGxFIqJeuPTlcWvwwDubYXJAg+nxscgQK8iGkKUPLvx+DnC+FlKQC4Qw8Q==
-X-Received: by 2002:a9d:4b86:: with SMTP id k6mr3725632otf.338.1630768310180;
-        Sat, 04 Sep 2021 08:11:50 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c75sm531751oob.47.2021.09.04.08.11.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Sep 2021 08:11:49 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 4 Sep 2021 08:11:48 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Icenowy Zheng <icenowy@aosc.io>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] dt-bindings: watchdog: sunxi: Add compatibles for
- D1
-Message-ID: <20210904151148.GA3638506@roeck-us.net>
-References: <20210902225750.29313-1-samuel@sholland.org>
- <20210902225750.29313-3-samuel@sholland.org>
+        id S236758AbhIDPRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 11:17:53 -0400
+Received: from mout.gmx.net ([212.227.15.18]:43507 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230514AbhIDPRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 11:17:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630768607;
+        bh=4ANx2vQH7iUfBjxYEEyIv5InnOcmLlsv7CD1nz2q4jY=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=M2cVjhoh45xX65ta5m4cPtHvdxIPNrpAw1F0G0T1K8Bkjrsb1r737tvEy/imRgV9V
+         R6XY+xNsY6tXNuBrjGwznpZEzzcH0OBexs8PNzLRILuYsXXU7jqJSOjAqwCrbD1v//
+         2q38xp61Cit8nzz/J/uLO6o6up8N1npRmQodOFn4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MEm2D-1mAl2S1mZ9-00GLJd; Sat, 04 Sep 2021 17:16:47 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        linux-pm@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] cpufreq: powernow: Prefer kcalloc over open coded arithmetic
+Date:   Sat,  4 Sep 2021 17:16:28 +0200
+Message-Id: <20210904151628.6618-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902225750.29313-3-samuel@sholland.org>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Fz00f2zl30lePk2hUfI0+vrZgaY3Bl3Wi4wOgZXuYJcsYXGB9a/
+ 1HzQ7AE+uqZMFjtXiuz2uMNtCDKrspCycA1Nrp7Ov+I1k9mtyYnwE9uj6itUvA9IiDWVtgs
+ bjTIqlJk9vDugJ0j9CWus9+Z4u0/te2pNQ0egxgxQ8irvntBuCSAigmw4NB01DVaDFxTHrT
+ UWcbj/wFyHXSf6uSpKjLw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qTf5c/4A6Rs=:xfdaGwvgcm9LZ29ZKYCxNt
+ 6S/WTVipfUO/io6x8Tq29NiZpqNd+/6lhkfV0+xqa001fNV3Xl6A8iq3If/kGmBLigatlqEc+
+ z9NVFjzq9SMhK4v+/gqG8OhTf1LJs2+WSKUzze9T3nofcR1269nhNc0AXZgtn8sYQOMGjblRP
+ cEbiXHr0sAMsamAGcy34/Fu3KI6J9brHdi3irt1fQQ21onQOSfi1urB/x080B3nVgl+KR/NGE
+ 5A/G0hg2aHFfi+DB/6v64GkDTHiaaGyWFDyv2+xU76wnlisuGUB7DCOUgIMEyO0Ic0r+gPJek
+ 7yTIg1vWGwMlkCHOpIksljYTQuefmgqGzAXNrcpYccLPZhqQ6m40ntq12VCd1S3dtKpWJlbL5
+ 0U9r6LGqoFlH4qTanV42DVi2BB57P6CrdHgWtPCBtycz08NE0Eld7vSq3cVrZcfAN3hZGXHt9
+ WFmAzaGupy7Ea1KxF8br2C38UcK1oh6lcufd5M9WMADGavj1ZUQnsv/BpF1ayvf3ktBKqHCRf
+ h9YiAK6e21BhOAUk71pjoBgc14wEhkYst1JonYfkC/7puEHmIcTSdg1iTbv750crQEftt6DHl
+ 43ELQjQ2GJ+q47t46zGamiM+PIVV9oiHSQwqt8hKFM2q42bpMVztI9cHorgpLq4VCsoR7sFjc
+ UKO5reKsD8vYXr836IKc3xDJQTIHsWFCZKNpU/A9bE1PImGqMVAjsJ3AhRB2fPj5Atd2M7oEJ
+ aLmXTKlpLT5kVM79jxHyF5WH3w50CjPRFoG1WtSXJ13RzQrCK6a44Pk8tr2mDUkipnlEpnwu6
+ o6/vE25vsHkbrf29ilNPstZaNA+VBZQ+gK7rDBUEMJPAmVGIiIs19ZsIxySrf8BhgS9jmxTCh
+ zgrkLQ6Xfs4vaFXHs9XxABrDk/fCaiqvS6/ZCceRWYpwjGYv8SoAAlwluRW9gphnNbd8igZ1p
+ lu8ComueqEsShBXy2M3hXMRV+2V69mYVR2Ukccac6Twp/9DU/Oydi3L9fyc9LGyNCInk4LNZW
+ OKnxiHIl0qre4lwAKriSZg5XcrCqiQfVz23RwbutbSU3MtRW1CGJHbb+pZ6NaW+M0NPIUYiO6
+ o5OGeD8vq/w/42ppotMsmCjofADggVaPlEsqj9rPrsDJHgexkyd5LXuAg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 05:57:49PM -0500, Samuel Holland wrote:
-> D1 keeps the same register layout and clock sources as the R329, but it
-> adds a key field which must be set to update the watchdog's "CFG" and
-> "MODE" registers. Therefore it is not backward-compatible.
-> 
-> Similarly to the R329, the D1 has three watchdog instances, and only one
-> of them has the "soft reset" registers. So that instance needs an extra
-> compatible string.
-> 
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> Acked-by: Maxime Ripard <maxime@cerno.tech>
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-Acked-by: Guenter Roeck <linux@roeck-us.net>
+So, use the purpose specific kcalloc() function instead of the argument
+size * count in the kzalloc() function.
 
-> ---
-> Changes v2 to v3:
->  - Add additional allwinner,sun20i-d1-wdt-reset compatible
-> Changes v1 to v2:
->  - None
-> 
->  .../bindings/watchdog/allwinner,sun4i-a10-wdt.yaml          | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
-> index 877f47759814..44cad9427ae6 100644
-> --- a/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
-> +++ b/Documentation/devicetree/bindings/watchdog/allwinner,sun4i-a10-wdt.yaml
-> @@ -30,6 +30,10 @@ properties:
->        - items:
->            - const: allwinner,suniv-f1c100s-wdt
->            - const: allwinner,sun4i-a10-wdt
-> +      - const: allwinner,sun20i-d1-wdt
-> +      - items:
-> +          - const: allwinner,sun20i-d1-wdt-reset
-> +          - const: allwinner,sun20i-d1-wdt
->  
->    reg:
->      maxItems: 1
-> @@ -62,6 +66,8 @@ if:
->      compatible:
->        contains:
->          enum:
-> +          - allwinner,sun20i-d1-wdt
-> +          - allwinner,sun20i-d1-wdt-reset
->            - allwinner,sun50i-r329-wdt
->            - allwinner,sun50i-r329-wdt-reset
->  
+[1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-cod=
+ed-arithmetic-in-allocator-arguments
+
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/cpufreq/powernow-k7.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/cpufreq/powernow-k7.c b/drivers/cpufreq/powernow-k7.c
+index 5d515fc34836..a9d2c7bae235 100644
+=2D-- a/drivers/cpufreq/powernow-k7.c
++++ b/drivers/cpufreq/powernow-k7.c
+@@ -174,8 +174,8 @@ static int get_ranges(unsigned char *pst)
+ 	unsigned int speed;
+ 	u8 fid, vid;
+
+-	powernow_table =3D kzalloc((sizeof(*powernow_table) *
+-				(number_scales + 1)), GFP_KERNEL);
++	powernow_table =3D kcalloc(number_scales + 1, sizeof(*powernow_table),
++				 GFP_KERNEL);
+ 	if (!powernow_table)
+ 		return -ENOMEM;
+
+=2D-
+2.25.1
+
