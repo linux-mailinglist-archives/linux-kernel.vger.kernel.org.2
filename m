@@ -2,105 +2,811 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489E0400D11
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 23:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9725B400D14
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 23:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233006AbhIDV3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 17:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        id S235835AbhIDV3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 17:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhIDV3u (ORCPT
+        with ESMTP id S234174AbhIDV3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 17:29:50 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48795C061575
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 14:28:48 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id n11so3859975edv.11
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 14:28:48 -0700 (PDT)
+        Sat, 4 Sep 2021 17:29:53 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BC4C061575
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 14:28:50 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id r7so3874073edd.6
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 14:28:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UIj4kd16/zrsNXzE8q2OMx4c2eCEJ9nBcH+2bqe0QjM=;
-        b=mQrchdQcqYhfsiwNvlqbFpaN+ZAsFxabIGsbkAN9H2RpMnbY6mtLBeWKGusnpoZnSV
-         bwzN7yb2sVD2CsuhTAfroADDAU6ROpX102gyubSUtoMI0AyMbBM12B29bmMSR2LzcDic
-         kBoz+TlMY3CU1rSra12Ne5w8oR7diAV3YLU29E/Ax2mJemV532L6YgHuKrdsf4h3C3go
-         SfuN4G336neapwDpxz45vceI71X0JoLcryn1xMDVE4fPCqwq1pMEI6treRIFDwijUopV
-         GU0b+c1TQ7woWdDuM1ZcD5jDsDKj6eJdWLcaA0lX7d41s5v/wKsGOxl5xNJNE8wrgwmT
-         BCkA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NjvI28tk37o+bczmtMDjK/8SZa9efXs7KHgftOz9w30=;
+        b=Lm1OEbA4qYVwGnPZx5v2/i4Dwtbo3sIcXX4xocvUv1Ud8e72E6PvJriQMyrsXczFbm
+         Aspat0JVtW91588bqaP8BupeL1VBipeX0r3dZrVzPklufDJ7Larp/Unv0hPjHcV/0nui
+         nSeZwAUnA/CZ2zKiARkI7eW7ui505ruuVLLLF+XzFHv7pL0atDMQhdXxkEtZ+x0Y8i0z
+         Rz4sTd9qgWFEu3tkPg7LrALZMfuinxQJ0RNHSNWnYypRgy8pZj0iZuTS2k1IucAGTzdX
+         9ifH+9Gde08BjdGNiIALIyfWLuZKB0HjZtxSAiYO5++ylWSUoLcunVDfn9rY+p391gnA
+         RzrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UIj4kd16/zrsNXzE8q2OMx4c2eCEJ9nBcH+2bqe0QjM=;
-        b=X2pHsxjKSE9d1Al8HUDwh3Vjr420LjOtxUwEMLN5d4F45skyQ6RFevJpPvKmMDNI4C
-         j+wlEphKA10c6FMoQCl+wWTA8JcKuZARGJsAB3NHoWDy4n9IstpR5VC039qgv3Et1MBA
-         f7X0DdJCrHCbDdJ/9QaY165qEF72SAk8ozGGQ7SCVgbY4gYYTVfe8QnfivjAjxt508BA
-         fRiBVYlC4duWz7wOtZHcQPs4NdJKJsSWJJtPTf5ypoZxpi3KYoWUR0Ff4fPQo+nLEfF1
-         vi8HKDA0a7MTtF2rx4cXIKdbssi2ksQB7EO6MG0I9gWBcEN02Djuwf4l5GADkzRqWtZM
-         vnMQ==
-X-Gm-Message-State: AOAM5317pjQ0MdpJG/ofasKlTvhcThR1FGwgyRg6jLPXQtjzPdzV9bBG
-        G2xwi/KGsuCVJ//VhlynSjk=
-X-Google-Smtp-Source: ABdhPJyy/9D1M5+/ZkZGzijGwmSPnQpQfixYDLZf0fZrsxU+d8ziwv/mchGa0hJofvgHDtMGTrQ+Pg==
-X-Received: by 2002:a05:6402:1d25:: with SMTP id dh5mr5741429edb.91.1630790926708;
-        Sat, 04 Sep 2021 14:28:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NjvI28tk37o+bczmtMDjK/8SZa9efXs7KHgftOz9w30=;
+        b=HJgrv2/2SXGrdoLH+f/2CqTG9E1qHVQfr8gFVKcoMfGuHLhHomlOljeFFvVGV+0nO5
+         dz7kfNYOaInPT7+6AOBlyVwhZ/uhbx+DRAftC/onknjlVjJvEA3J1skjkCAI/mwfXUiU
+         Z5GC6GkCp5goWGgsDAmfLjKoT9zW/Oz/8V7UBV/sAPKbiE7WN2v+8U1TuUkVplTmjhmN
+         qOFqW043cW/oKbyWZVa4gt4chi1mmE8cf3yin0H5KfzoXXvJY9BEimiH/Da0ujyg2bzV
+         sLPQZ1o4wrQl/ONz1iVsBDIDM+kMSbdsl5AYYkBmUMtGs1qa1ga/HNg1HnTxjzOm84Oo
+         jUDg==
+X-Gm-Message-State: AOAM531va3RodMif2aPGgEoO0RByutSR/BWMKhzY44CKrus22kZieD9S
+        wrHtXj/I+F2wMlhDwD7Vd0E=
+X-Google-Smtp-Source: ABdhPJwzqNJY8nKJ+i6Um6fLZE7Fym4JkeKmbsSCTZfxBUVatnfeRcvS6VlBkKGW9JrSNUzU8CYkag==
+X-Received: by 2002:aa7:c311:: with SMTP id l17mr5796942edq.320.1630790929221;
+        Sat, 04 Sep 2021 14:28:49 -0700 (PDT)
 Received: from localhost.localdomain (host-79-23-101-208.retail.telecomitalia.it. [79.23.101.208])
-        by smtp.gmail.com with ESMTPSA id n13sm1866699edq.91.2021.09.04.14.28.45
+        by smtp.gmail.com with ESMTPSA id n13sm1866699edq.91.2021.09.04.14.28.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Sep 2021 14:28:46 -0700 (PDT)
+        Sat, 04 Sep 2021 14:28:48 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Larry Finger <Larry.Finger@lwfinger.net>,
         Phillip Potter <phil@philpotter.co.uk>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Pavel Skripkin <paskripkin@gmail.com>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v2 0/3] staging: r8188eu: Shorten and simplify calls chain
-Date:   Sat,  4 Sep 2021 23:27:16 +0200
-Message-Id: <20210904212719.11426-1-fmdefrancesco@gmail.com>
+Cc:     "Fabio M . De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH v2 1/3] staging: r8188eu: remove _io_ops structure
+Date:   Sat,  4 Sep 2021 23:27:17 +0200
+Message-Id: <20210904212719.11426-2-fmdefrancesco@gmail.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210904212719.11426-1-fmdefrancesco@gmail.com>
+References: <20210904212719.11426-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Pavel Skripkin <paskripkin@gmail.com>
+
 io_ops abstraction is useless in this driver, since there is only one ops
 registration. Without io_ops we can get rid of indirect calls mess and
 shorten the calls chain.
 
-Shorten the calls chain of rtw_read8/16/32() down to the actual reads.
-For this purpose unify the three usb_read8/16/32 into the new
-usb_read(); make the latter parameterizable with 'size'; embed most of
-the code of usbctrl_vendorreq() into usb_read() and use in it the new
-usb_control_msg_recv() API of USB Core.
+Co-developed-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
 
-Shorten the calls chain of rtw_write8/16/32() down to the actual writes.
-For this purpose unify the four usb_write8/16/32/N() into the new
-usb_write(); make the latter parameterizable with 'size'; embed most of
-the code of usbctrl_vendorreq() into usb_write() and use in it the new
-usb_control_msg_send() API of USB Core.
+v1->v2: No changes.
 
-The code with the modifications was thoroughly tested by Pavel Skripkin 
-using a TP-Link TL-WN722N v2 / v3 [Realtek RTL8188EUS]
-
-Fabio M. De Francesco (2):
-  staging: r8188eu: Shorten calls chain of rtw_read8/16/32()
-  staging: r8188eu: Shorten calls chain of rtw_write8/16/32/N()
-
-Pavel Skripkin (1):
-  staging: r8188eu: remove _io_ops structure
-
- drivers/staging/r8188eu/core/rtw_io.c         | 241 +----------------
+ drivers/staging/r8188eu/core/rtw_io.c         | 241 +-----------------
  drivers/staging/r8188eu/hal/usb_halinit.c     |   6 +-
- drivers/staging/r8188eu/hal/usb_ops_linux.c   | 242 +++++++++++-------
+ drivers/staging/r8188eu/hal/usb_ops_linux.c   |  70 ++---
  drivers/staging/r8188eu/include/rtw_io.h      |  76 +-----
  drivers/staging/r8188eu/include/usb_ops.h     |   2 -
  .../staging/r8188eu/include/usb_ops_linux.h   |   8 -
  drivers/staging/r8188eu/os_dep/usb_intf.c     |   2 +-
  .../staging/r8188eu/os_dep/usb_ops_linux.c    |  40 +--
- 8 files changed, 174 insertions(+), 443 deletions(-)
+ 8 files changed, 68 insertions(+), 377 deletions(-)
 
+diff --git a/drivers/staging/r8188eu/core/rtw_io.c b/drivers/staging/r8188eu/core/rtw_io.c
+index cde0205816b1..2d5cc080bf1d 100644
+--- a/drivers/staging/r8188eu/core/rtw_io.c
++++ b/drivers/staging/r8188eu/core/rtw_io.c
+@@ -34,224 +34,6 @@ jackson@realtek.com.tw
+ #define rtw_cpu_to_le16(val)		cpu_to_le16(val)
+ #define rtw_cpu_to_le32(val)		cpu_to_le32(val)
+ 
+-u8 _rtw_read8(struct adapter *adapter, u32 addr)
+-{
+-	u8 r_val;
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl *pintfhdl = &pio_priv->intf;
+-	u8 (*_read8)(struct intf_hdl *pintfhdl, u32 addr);
+-
+-
+-	_read8 = pintfhdl->io_ops._read8;
+-	r_val = _read8(pintfhdl, addr);
+-
+-	return r_val;
+-}
+-
+-u16 _rtw_read16(struct adapter *adapter, u32 addr)
+-{
+-	u16 r_val;
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+-	u16 (*_read16)(struct intf_hdl *pintfhdl, u32 addr);
+-
+-	_read16 = pintfhdl->io_ops._read16;
+-
+-	r_val = _read16(pintfhdl, addr);
+-
+-	return r_val;
+-}
+-
+-u32 _rtw_read32(struct adapter *adapter, u32 addr)
+-{
+-	u32 r_val;
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+-	u32	(*_read32)(struct intf_hdl *pintfhdl, u32 addr);
+-
+-	_read32 = pintfhdl->io_ops._read32;
+-
+-	r_val = _read32(pintfhdl, addr);
+-
+-	return r_val;
+-}
+-
+-int _rtw_write8(struct adapter *adapter, u32 addr, u8 val)
+-{
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+-	int (*_write8)(struct intf_hdl *pintfhdl, u32 addr, u8 val);
+-	int ret;
+-
+-	_write8 = pintfhdl->io_ops._write8;
+-
+-	ret = _write8(pintfhdl, addr, val);
+-
+-
+-	return RTW_STATUS_CODE(ret);
+-}
+-
+-int _rtw_write16(struct adapter *adapter, u32 addr, u16 val)
+-{
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+-	int (*_write16)(struct intf_hdl *pintfhdl, u32 addr, u16 val);
+-	int ret;
+-
+-	_write16 = pintfhdl->io_ops._write16;
+-
+-	ret = _write16(pintfhdl, addr, val);
+-
+-
+-	return RTW_STATUS_CODE(ret);
+-}
+-int _rtw_write32(struct adapter *adapter, u32 addr, u32 val)
+-{
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+-	int (*_write32)(struct intf_hdl *pintfhdl, u32 addr, u32 val);
+-	int ret;
+-
+-	_write32 = pintfhdl->io_ops._write32;
+-
+-	ret = _write32(pintfhdl, addr, val);
+-
+-
+-	return RTW_STATUS_CODE(ret);
+-}
+-
+-int _rtw_writeN(struct adapter *adapter, u32 addr, u32 length, u8 *pdata)
+-{
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl *pintfhdl = (struct intf_hdl *)(&pio_priv->intf);
+-	int (*_writeN)(struct intf_hdl *pintfhdl, u32 addr, u32 length, u8 *pdata);
+-	int ret;
+-
+-	_writeN = pintfhdl->io_ops._writeN;
+-
+-	ret = _writeN(pintfhdl, addr, length, pdata);
+-
+-
+-	return RTW_STATUS_CODE(ret);
+-}
+-int _rtw_write8_async(struct adapter *adapter, u32 addr, u8 val)
+-{
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+-	int (*_write8_async)(struct intf_hdl *pintfhdl, u32 addr, u8 val);
+-	int ret;
+-
+-	_write8_async = pintfhdl->io_ops._write8_async;
+-
+-	ret = _write8_async(pintfhdl, addr, val);
+-
+-
+-	return RTW_STATUS_CODE(ret);
+-}
+-
+-int _rtw_write16_async(struct adapter *adapter, u32 addr, u16 val)
+-{
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+-	int (*_write16_async)(struct intf_hdl *pintfhdl, u32 addr, u16 val);
+-	int ret;
+-
+-	_write16_async = pintfhdl->io_ops._write16_async;
+-	ret = _write16_async(pintfhdl, addr, val);
+-
+-	return RTW_STATUS_CODE(ret);
+-}
+-
+-int _rtw_write32_async(struct adapter *adapter, u32 addr, u32 val)
+-{
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+-	int (*_write32_async)(struct intf_hdl *pintfhdl, u32 addr, u32 val);
+-	int ret;
+-
+-	_write32_async = pintfhdl->io_ops._write32_async;
+-	ret = _write32_async(pintfhdl, addr, val);
+-
+-	return RTW_STATUS_CODE(ret);
+-}
+-
+-void _rtw_read_mem(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem)
+-{
+-	void (*_read_mem)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pmem);
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+-
+-
+-	if (adapter->bDriverStopped || adapter->bSurpriseRemoved)
+-	     return;
+-	_read_mem = pintfhdl->io_ops._read_mem;
+-	_read_mem(pintfhdl, addr, cnt, pmem);
+-
+-}
+-
+-void _rtw_write_mem(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem)
+-{
+-	void (*_write_mem)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pmem);
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+-
+-
+-
+-	_write_mem = pintfhdl->io_ops._write_mem;
+-
+-	_write_mem(pintfhdl, addr, cnt, pmem);
+-
+-
+-}
+-
+-void _rtw_read_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem)
+-{
+-	u32 (*_read_port)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pmem);
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+-
+-
+-
+-	if (adapter->bDriverStopped || adapter->bSurpriseRemoved)
+-	     return;
+-
+-	_read_port = pintfhdl->io_ops._read_port;
+-
+-	_read_port(pintfhdl, addr, cnt, pmem);
+-
+-
+-}
+-
+-void _rtw_read_port_cancel(struct adapter *adapter)
+-{
+-	void (*_read_port_cancel)(struct intf_hdl *pintfhdl);
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct intf_hdl *pintfhdl = &pio_priv->intf;
+-
+-	_read_port_cancel = pintfhdl->io_ops._read_port_cancel;
+-
+-	if (_read_port_cancel)
+-		_read_port_cancel(pintfhdl);
+-}
+-
+-u32 _rtw_write_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem)
+-{
+-	u32 (*_write_port)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pmem);
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct	intf_hdl		*pintfhdl = &pio_priv->intf;
+-	u32 ret = _SUCCESS;
+-
+-
+-
+-	_write_port = pintfhdl->io_ops._write_port;
+-
+-	ret = _write_port(pintfhdl, addr, cnt, pmem);
+-
+-
+-
+-	return ret;
+-}
+-
+ u32 _rtw_write_port_and_wait(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem, int timeout_ms)
+ {
+ 	int ret = _SUCCESS;
+@@ -261,7 +43,7 @@ u32 _rtw_write_port_and_wait(struct adapter *adapter, u32 addr, u32 cnt, u8 *pme
+ 	rtw_sctx_init(&sctx, timeout_ms);
+ 	pxmitbuf->sctx = &sctx;
+ 
+-	ret = _rtw_write_port(adapter, addr, cnt, pmem);
++	ret = rtw_write_port(adapter, addr, cnt, pmem);
+ 
+ 	if (ret == _SUCCESS)
+ 		ret = rtw_sctx_wait(&sctx);
+@@ -269,31 +51,12 @@ u32 _rtw_write_port_and_wait(struct adapter *adapter, u32 addr, u32 cnt, u8 *pme
+ 	return ret;
+ }
+ 
+-void _rtw_write_port_cancel(struct adapter *adapter)
+-{
+-	void (*_write_port_cancel)(struct intf_hdl *pintfhdl);
+-	struct io_priv *pio_priv = &adapter->iopriv;
+-	struct intf_hdl *pintfhdl = &pio_priv->intf;
+-
+-	_write_port_cancel = pintfhdl->io_ops._write_port_cancel;
+-
+-	if (_write_port_cancel)
+-		_write_port_cancel(pintfhdl);
+-}
+-
+-int rtw_init_io_priv(struct adapter *padapter, void (*set_intf_ops)(struct _io_ops *pops))
++void rtw_init_io_priv(struct adapter *padapter)
+ {
+ 	struct io_priv	*piopriv = &padapter->iopriv;
+ 	struct intf_hdl *pintf = &piopriv->intf;
+ 
+-	if (!set_intf_ops)
+-		return _FAIL;
+-
+ 	piopriv->padapter = padapter;
+ 	pintf->padapter = padapter;
+ 	pintf->pintf_dev = adapter_to_dvobj(padapter);
+-
+-	set_intf_ops(&pintf->io_ops);
+-
+-	return _SUCCESS;
+ }
+diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
+index 147c51255878..33147cbc55bb 100644
+--- a/drivers/staging/r8188eu/hal/usb_halinit.c
++++ b/drivers/staging/r8188eu/hal/usb_halinit.c
+@@ -1052,11 +1052,7 @@ static unsigned int rtl8188eu_inirp_init(struct adapter *Adapter)
+ 	u8 i;
+ 	struct recv_buf *precvbuf;
+ 	uint	status;
+-	struct intf_hdl *pintfhdl = &Adapter->iopriv.intf;
+ 	struct recv_priv *precvpriv = &Adapter->recvpriv;
+-	u32 (*_read_port)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *pmem);
+-
+-	_read_port = pintfhdl->io_ops._read_port;
+ 
+ 	status = _SUCCESS;
+ 
+@@ -1065,7 +1061,7 @@ static unsigned int rtl8188eu_inirp_init(struct adapter *Adapter)
+ 	/* issue Rx irp to receive data */
+ 	precvbuf = (struct recv_buf *)precvpriv->precv_buf;
+ 	for (i = 0; i < NR_RECVBUFF; i++) {
+-		if (!_read_port(pintfhdl, precvpriv->ff_hwaddr, 0, (unsigned char *)precvbuf)) {
++		if (!rtw_read_port(Adapter, precvpriv->ff_hwaddr, 0, (unsigned char *)precvbuf)) {
+ 			status = _FAIL;
+ 			goto exit;
+ 		}
+diff --git a/drivers/staging/r8188eu/hal/usb_ops_linux.c b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+index 0cf69033c529..a87b0d2e87d0 100644
+--- a/drivers/staging/r8188eu/hal/usb_ops_linux.c
++++ b/drivers/staging/r8188eu/hal/usb_ops_linux.c
+@@ -97,8 +97,10 @@ static int usbctrl_vendorreq(struct intf_hdl *pintfhdl, u16 value, void *pdata,
+ 	return status;
+ }
+ 
+-static u8 usb_read8(struct intf_hdl *pintfhdl, u32 addr)
++u8 rtw_read8(struct adapter *adapter, u32 addr)
+ {
++	struct io_priv *pio_priv = &adapter->iopriv;
++	struct intf_hdl *pintfhdl = &pio_priv->intf;
+ 	u16 wvalue = (u16)(addr & 0x0000ffff);
+ 	u8 data;
+ 
+@@ -107,8 +109,10 @@ static u8 usb_read8(struct intf_hdl *pintfhdl, u32 addr)
+ 	return data;
+ }
+ 
+-static u16 usb_read16(struct intf_hdl *pintfhdl, u32 addr)
++u16 rtw_read16(struct adapter *adapter, u32 addr)
+ {
++	struct io_priv *pio_priv = &adapter->iopriv;
++	struct intf_hdl *pintfhdl = &pio_priv->intf;
+ 	u16 wvalue = (u16)(addr & 0x0000ffff);
+ 	__le32 data;
+ 
+@@ -117,8 +121,10 @@ static u16 usb_read16(struct intf_hdl *pintfhdl, u32 addr)
+ 	return (u16)(le32_to_cpu(data) & 0xffff);
+ }
+ 
+-static u32 usb_read32(struct intf_hdl *pintfhdl, u32 addr)
++u32 rtw_read32(struct adapter *adapter, u32 addr)
+ {
++	struct io_priv *pio_priv = &adapter->iopriv;
++	struct intf_hdl *pintfhdl = &pio_priv->intf;
+ 	u16 wvalue = (u16)(addr & 0x0000ffff);
+ 	__le32 data;
+ 
+@@ -127,40 +133,59 @@ static u32 usb_read32(struct intf_hdl *pintfhdl, u32 addr)
+ 	return le32_to_cpu(data);
+ }
+ 
+-static int usb_write8(struct intf_hdl *pintfhdl, u32 addr, u8 val)
++int rtw_write8(struct adapter *adapter, u32 addr, u8 val)
+ {
++	struct io_priv *pio_priv = &adapter->iopriv;
++	struct intf_hdl *pintfhdl = &pio_priv->intf;
+ 	u16 wvalue = (u16)(addr & 0x0000ffff);
++	int ret;
+ 
+-	return usbctrl_vendorreq(pintfhdl, wvalue, &val, 1, REALTEK_USB_VENQT_WRITE);
++	ret = usbctrl_vendorreq(pintfhdl, wvalue, &val, 1, REALTEK_USB_VENQT_WRITE);
++
++	return RTW_STATUS_CODE(ret);
+ }
+ 
+-static int usb_write16(struct intf_hdl *pintfhdl, u32 addr, u16 val)
++int rtw_write16(struct adapter *adapter, u32 addr, u16 val)
+ {
++	struct io_priv *pio_priv = &adapter->iopriv;
++	struct intf_hdl *pintfhdl = &pio_priv->intf;
+ 	u16 wvalue = (u16)(addr & 0x0000ffff);
+ 	__le32 data = cpu_to_le32(val & 0x0000ffff);
++	int ret;
++
++	ret = usbctrl_vendorreq(pintfhdl, wvalue, &data, 2, REALTEK_USB_VENQT_WRITE);
+ 
+-	return usbctrl_vendorreq(pintfhdl, wvalue, &data, 2, REALTEK_USB_VENQT_WRITE);
++	return RTW_STATUS_CODE(ret);
+ }
+ 
+-static int usb_write32(struct intf_hdl *pintfhdl, u32 addr, u32 val)
++int rtw_write32(struct adapter *adapter, u32 addr, u32 val)
+ {
++	struct io_priv *pio_priv = &adapter->iopriv;
++	struct intf_hdl *pintfhdl = &pio_priv->intf;
+ 	u16 wvalue = (u16)(addr & 0x0000ffff);
+ 	__le32 data = cpu_to_le32(val);
++	int ret;
+ 
+-	return usbctrl_vendorreq(pintfhdl, wvalue, &data, 4, REALTEK_USB_VENQT_WRITE);
++	ret = usbctrl_vendorreq(pintfhdl, wvalue, &data, 4, REALTEK_USB_VENQT_WRITE);
++
++	return RTW_STATUS_CODE(ret);
+ }
+ 
+-static int usb_writeN(struct intf_hdl *pintfhdl, u32 addr, u32 length, u8 *pdata)
++int rtw_writeN(struct adapter *adapter, u32 addr, u32 length, u8 *pdata)
+ {
++	struct io_priv *pio_priv = &adapter->iopriv;
++	struct intf_hdl *pintfhdl = &pio_priv->intf;
+ 	u16 wvalue = (u16)(addr & 0x0000ffff);
+ 	u8 buf[VENDOR_CMD_MAX_DATA_LEN] = {0};
++	int ret;
+ 
+ 	if (length > VENDOR_CMD_MAX_DATA_LEN)
+ 		return -EINVAL;
+ 
+ 	memcpy(buf, pdata, length);
++	ret = usbctrl_vendorreq(pintfhdl, wvalue, buf, (length & 0xffff), REALTEK_USB_VENQT_WRITE);
+ 
+-	return usbctrl_vendorreq(pintfhdl, wvalue, buf, (length & 0xffff), REALTEK_USB_VENQT_WRITE);
++	return RTW_STATUS_CODE(ret);
+ }
+ 
+ static void interrupt_handler_8188eu(struct adapter *adapt, u16 pkt_len, u8 *pbuf)
+@@ -431,11 +456,10 @@ static void usb_read_port_complete(struct urb *purb, struct pt_regs *regs)
+ 	}
+ }
+ 
+-static u32 usb_read_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *rmem)
++u32 rtw_read_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *rmem)
+ {
+ 	struct urb *purb = NULL;
+ 	struct recv_buf	*precvbuf = (struct recv_buf *)rmem;
+-	struct adapter		*adapter = pintfhdl->padapter;
+ 	struct dvobj_priv	*pdvobj = adapter_to_dvobj(adapter);
+ 	struct recv_priv	*precvpriv = &adapter->recvpriv;
+ 	struct usb_device	*pusbd = pdvobj->pusbdev;
+@@ -534,26 +558,6 @@ void rtl8188eu_xmit_tasklet(unsigned long priv)
+ 	}
+ }
+ 
+-void rtl8188eu_set_intf_ops(struct _io_ops	*pops)
+-{
+-
+-	memset((u8 *)pops, 0, sizeof(struct _io_ops));
+-	pops->_read8 = &usb_read8;
+-	pops->_read16 = &usb_read16;
+-	pops->_read32 = &usb_read32;
+-	pops->_read_mem = &usb_read_mem;
+-	pops->_read_port = &usb_read_port;
+-	pops->_write8 = &usb_write8;
+-	pops->_write16 = &usb_write16;
+-	pops->_write32 = &usb_write32;
+-	pops->_writeN = &usb_writeN;
+-	pops->_write_mem = &usb_write_mem;
+-	pops->_write_port = &usb_write_port;
+-	pops->_read_port_cancel = &usb_read_port_cancel;
+-	pops->_write_port_cancel = &usb_write_port_cancel;
+-
+-}
+-
+ void rtl8188eu_set_hw_type(struct adapter *adapt)
+ {
+ 	adapt->chip_type = RTL8188E;
+diff --git a/drivers/staging/r8188eu/include/rtw_io.h b/drivers/staging/r8188eu/include/rtw_io.h
+index 4b41c7b03972..9722b76533dc 100644
+--- a/drivers/staging/r8188eu/include/rtw_io.h
++++ b/drivers/staging/r8188eu/include/rtw_io.h
+@@ -84,30 +84,6 @@ struct intf_priv;
+ struct intf_hdl;
+ struct io_queue;
+ 
+-struct _io_ops {
+-	u8 (*_read8)(struct intf_hdl *pintfhdl, u32 addr);
+-	u16 (*_read16)(struct intf_hdl *pintfhdl, u32 addr);
+-	u32 (*_read32)(struct intf_hdl *pintfhdl, u32 addr);
+-	int (*_write8)(struct intf_hdl *pintfhdl, u32 addr, u8 val);
+-	int (*_write16)(struct intf_hdl *pintfhdl, u32 addr, u16 val);
+-	int (*_write32)(struct intf_hdl *pintfhdl, u32 addr, u32 val);
+-	int (*_writeN)(struct intf_hdl *pintfhdl, u32 addr, u32 length,
+-		       u8 *pdata);
+-	int (*_write8_async)(struct intf_hdl *pintfhdl, u32 addr, u8 val);
+-	int (*_write16_async)(struct intf_hdl *pintfhdl, u32 addr, u16 val);
+-	int (*_write32_async)(struct intf_hdl *pintfhdl, u32 addr, u32 val);
+-	void (*_read_mem)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt,
+-			  u8 *pmem);
+-	void (*_write_mem)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt,
+-			   u8 *pmem);
+-	u32 (*_read_port)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt,
+-			  u8 *pmem);
+-	u32 (*_write_port)(struct intf_hdl *pintfhdl, u32 addr, u32 cnt,
+-			   u8 *pmem);
+-	void (*_read_port_cancel)(struct intf_hdl *pintfhdl);
+-	void (*_write_port_cancel)(struct intf_hdl *pintfhdl);
+-};
+-
+ struct io_req {
+ 	struct list_head list;
+ 	u32	addr;
+@@ -125,7 +101,6 @@ struct io_req {
+ struct	intf_hdl {
+ 	struct adapter *padapter;
+ 	struct dvobj_priv *pintf_dev;
+-	struct _io_ops	io_ops;
+ };
+ 
+ struct reg_protocol_rd {
+@@ -245,58 +220,34 @@ void unregister_intf_hdl(struct intf_hdl *pintfhdl);
+ void _rtw_attrib_read(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
+ void _rtw_attrib_write(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
+ 
+-u8 _rtw_read8(struct adapter *adapter, u32 addr);
+-u16 _rtw_read16(struct adapter *adapter, u32 addr);
+-u32 _rtw_read32(struct adapter *adapter, u32 addr);
+-void _rtw_read_mem(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
+-void _rtw_read_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
+-void _rtw_read_port_cancel(struct adapter *adapter);
++u8 rtw_read8(struct adapter *adapter, u32 addr);
++u16 rtw_read16(struct adapter *adapter, u32 addr);
++u32 rtw_read32(struct adapter *adapter, u32 addr);
++u32 rtw_read_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
++void rtw_read_port_cancel(struct adapter *adapter);
+ 
+-int _rtw_write8(struct adapter *adapter, u32 addr, u8 val);
+-int _rtw_write16(struct adapter *adapter, u32 addr, u16 val);
+-int _rtw_write32(struct adapter *adapter, u32 addr, u32 val);
+-int _rtw_writeN(struct adapter *adapter, u32 addr, u32 length, u8 *pdata);
++int rtw_write8(struct adapter *adapter, u32 addr, u8 val);
++int rtw_write16(struct adapter *adapter, u32 addr, u16 val);
++int rtw_write32(struct adapter *adapter, u32 addr, u32 val);
++int rtw_writeN(struct adapter *adapter, u32 addr, u32 length, u8 *pdata);
+ 
+ int _rtw_write8_async(struct adapter *adapter, u32 addr, u8 val);
+ int _rtw_write16_async(struct adapter *adapter, u32 addr, u16 val);
+ int _rtw_write32_async(struct adapter *adapter, u32 addr, u32 val);
+ 
+-void _rtw_write_mem(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
+-u32 _rtw_write_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
++u32 rtw_write_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
+ u32 _rtw_write_port_and_wait(struct adapter *adapter, u32 addr, u32 cnt,
+ 			     u8 *pmem, int timeout_ms);
+-void _rtw_write_port_cancel(struct adapter *adapter);
+-
+-#define rtw_read8(adapter, addr) _rtw_read8((adapter), (addr))
+-#define rtw_read16(adapter, addr) _rtw_read16((adapter), (addr))
+-#define rtw_read32(adapter, addr) _rtw_read32((adapter), (addr))
+-#define rtw_read_mem(adapter, addr, cnt, mem)				\
+-	_rtw_read_mem((adapter), (addr), (cnt), (mem))
+-#define rtw_read_port(adapter, addr, cnt, mem)				\
+-	_rtw_read_port((adapter), (addr), (cnt), (mem))
+-#define rtw_read_port_cancel(adapter) _rtw_read_port_cancel((adapter))
+-
+-#define  rtw_write8(adapter, addr, val)					\
+-	_rtw_write8((adapter), (addr), (val))
+-#define  rtw_write16(adapter, addr, val)				\
+-	_rtw_write16((adapter), (addr), (val))
+-#define  rtw_write32(adapter, addr, val)				\
+-	_rtw_write32((adapter), (addr), (val))
+-#define  rtw_writeN(adapter, addr, length, data)			\
+-	_rtw_writeN((adapter), (addr), (length), (data))
++void rtw_write_port_cancel(struct adapter *adapter);
++
+ #define rtw_write8_async(adapter, addr, val)				\
+ 	_rtw_write8_async((adapter), (addr), (val))
+ #define rtw_write16_async(adapter, addr, val)				\
+ 	_rtw_write16_async((adapter), (addr), (val))
+ #define rtw_write32_async(adapter, addr, val)				\
+ 	_rtw_write32_async((adapter), (addr), (val))
+-#define rtw_write_mem(adapter, addr, cnt, mem)				\
+-	_rtw_write_mem((adapter), (addr), (cnt), (mem))
+-#define rtw_write_port(adapter, addr, cnt, mem)				\
+-	_rtw_write_port((adapter), (addr), (cnt), (mem))
+ #define rtw_write_port_and_wait(adapter, addr, cnt, mem, timeout_ms)	\
+ 	_rtw_write_port_and_wait((adapter), (addr), (cnt), (mem), (timeout_ms))
+-#define rtw_write_port_cancel(adapter) _rtw_write_port_cancel((adapter))
+ 
+ void rtw_write_scsi(struct adapter *adapter, u32 cnt, u8 *pmem);
+ 
+@@ -340,8 +291,7 @@ void async_write32(struct adapter *adapter, u32 addr, u32 val,
+ void async_write_mem(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
+ void async_write_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *pmem);
+ 
+-int rtw_init_io_priv(struct adapter *padapter,
+-		     void (*set_intf_ops)(struct _io_ops *pops));
++void rtw_init_io_priv(struct adapter *padapter);
+ 
+ uint alloc_io_queue(struct adapter *adapter);
+ void free_io_queue(struct adapter *adapter);
+diff --git a/drivers/staging/r8188eu/include/usb_ops.h b/drivers/staging/r8188eu/include/usb_ops.h
+index c53cc54b6b87..1939b781b097 100644
+--- a/drivers/staging/r8188eu/include/usb_ops.h
++++ b/drivers/staging/r8188eu/include/usb_ops.h
+@@ -21,8 +21,6 @@
+ 
+ void rtl8188eu_set_hw_type(struct adapter *padapter);
+ #define hal_set_hw_type rtl8188eu_set_hw_type
+-void rtl8188eu_set_intf_ops(struct _io_ops *pops);
+-#define usb_set_intf_ops rtl8188eu_set_intf_ops
+ 
+ /*
+  * Increase and check if the continual_urb_error of this @param dvobjprivei
+diff --git a/drivers/staging/r8188eu/include/usb_ops_linux.h b/drivers/staging/r8188eu/include/usb_ops_linux.h
+index c357a3b1560e..641f059ffaf7 100644
+--- a/drivers/staging/r8188eu/include/usb_ops_linux.h
++++ b/drivers/staging/r8188eu/include/usb_ops_linux.h
+@@ -28,12 +28,4 @@
+ 
+ unsigned int ffaddr2pipehdl(struct dvobj_priv *pdvobj, u32 addr);
+ 
+-void usb_read_mem(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *rmem);
+-void usb_write_mem(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem);
+-
+-void usb_read_port_cancel(struct intf_hdl *pintfhdl);
+-
+-u32 usb_write_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem);
+-void usb_write_port_cancel(struct intf_hdl *pintfhdl);
+-
+ #endif
+diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
+index bb85ab77fd26..78c91b14e637 100644
+--- a/drivers/staging/r8188eu/os_dep/usb_intf.c
++++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
+@@ -596,7 +596,7 @@ static struct adapter *rtw_usb_if1_init(struct dvobj_priv *dvobj,
+ 	padapter->intf_stop = &usb_intf_stop;
+ 
+ 	/* step init_io_priv */
+-	rtw_init_io_priv(padapter, usb_set_intf_ops);
++	rtw_init_io_priv(padapter);
+ 
+ 	/* step read_chip_version */
+ 	rtw_hal_read_chip_version(padapter);
+diff --git a/drivers/staging/r8188eu/os_dep/usb_ops_linux.c b/drivers/staging/r8188eu/os_dep/usb_ops_linux.c
+index 62dd4a131534..f1440a837b97 100644
+--- a/drivers/staging/r8188eu/os_dep/usb_ops_linux.c
++++ b/drivers/staging/r8188eu/os_dep/usb_ops_linux.c
+@@ -31,24 +31,14 @@ struct zero_bulkout_context {
+ 	void *padapter;
+ };
+ 
+-void usb_read_mem(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *rmem)
+-{
+-}
+-
+-void usb_write_mem(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem)
+-{
+-}
+-
+-void usb_read_port_cancel(struct intf_hdl *pintfhdl)
++void rtw_read_port_cancel(struct adapter *adapter)
+ {
+ 	int i;
+-	struct recv_buf *precvbuf;
+-	struct adapter	*padapter = pintfhdl->padapter;
+-	precvbuf = (struct recv_buf *)padapter->recvpriv.precv_buf;
++	struct recv_buf *precvbuf = (struct recv_buf *) adapter->recvpriv.precv_buf;
+ 
+ 	DBG_88E("%s\n", __func__);
+ 
+-	padapter->bReadPortCancel = true;
++	adapter->bReadPortCancel = true;
+ 
+ 	for (i = 0; i < NR_RECVBUFF; i++) {
+ 		precvbuf->reuse = true;
+@@ -134,22 +124,21 @@ static void usb_write_port_complete(struct urb *purb, struct pt_regs *regs)
+ 
+ }
+ 
+-u32 usb_write_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem)
++u32 rtw_write_port(struct adapter *adapter, u32 addr, u32 cnt, u8 *wmem)
+ {
+ 	unsigned long irqL;
+ 	unsigned int pipe;
+ 	int status;
+ 	u32 ret = _FAIL;
+ 	struct urb *purb = NULL;
+-	struct adapter *padapter = (struct adapter *)pintfhdl->padapter;
+-	struct dvobj_priv	*pdvobj = adapter_to_dvobj(padapter);
+-	struct xmit_priv	*pxmitpriv = &padapter->xmitpriv;
++	struct dvobj_priv	*pdvobj = adapter_to_dvobj(adapter);
++	struct xmit_priv	*pxmitpriv = &adapter->xmitpriv;
+ 	struct xmit_buf *pxmitbuf = (struct xmit_buf *)wmem;
+ 	struct xmit_frame *pxmitframe = (struct xmit_frame *)pxmitbuf->priv_data;
+ 	struct usb_device *pusbd = pdvobj->pusbdev;
+ 
+-	if ((padapter->bDriverStopped) || (padapter->bSurpriseRemoved) ||
+-	    (padapter->pwrctrlpriv.pnp_bstop_trx)) {
++	if ((adapter->bDriverStopped) || (adapter->bSurpriseRemoved) ||
++	    (adapter->pwrctrlpriv.pnp_bstop_trx)) {
+ 		rtw_sctx_done_err(&pxmitbuf->sctx, RTW_SCTX_DONE_TX_DENY);
+ 		goto exit;
+ 	}
+@@ -196,7 +185,7 @@ u32 usb_write_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem)
+ 
+ 	status = usb_submit_urb(purb, GFP_ATOMIC);
+ 	if (!status) {
+-		struct hal_data_8188e	*haldata = GET_HAL_DATA(padapter);
++		struct hal_data_8188e	*haldata = GET_HAL_DATA(adapter);
+ 
+ 		haldata->srestpriv.last_tx_time = jiffies;
+ 	} else {
+@@ -205,7 +194,7 @@ u32 usb_write_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem)
+ 
+ 		switch (status) {
+ 		case -ENODEV:
+-			padapter->bDriverStopped = true;
++			adapter->bDriverStopped = true;
+ 			break;
+ 		default:
+ 			break;
+@@ -224,15 +213,14 @@ u32 usb_write_port(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem)
+ 	return ret;
+ }
+ 
+-void usb_write_port_cancel(struct intf_hdl *pintfhdl)
++void rtw_write_port_cancel(struct adapter *adapter)
+ {
+ 	int i, j;
+-	struct adapter	*padapter = pintfhdl->padapter;
+-	struct xmit_buf *pxmitbuf = (struct xmit_buf *)padapter->xmitpriv.pxmitbuf;
++	struct xmit_buf *pxmitbuf = (struct xmit_buf *) adapter->xmitpriv.pxmitbuf;
+ 
+ 	DBG_88E("%s\n", __func__);
+ 
+-	padapter->bWritePortCancel = true;
++	adapter->bWritePortCancel = true;
+ 
+ 	for (i = 0; i < NR_XMITBUFF; i++) {
+ 		for (j = 0; j < 8; j++) {
+@@ -242,7 +230,7 @@ void usb_write_port_cancel(struct intf_hdl *pintfhdl)
+ 		pxmitbuf++;
+ 	}
+ 
+-	pxmitbuf = (struct xmit_buf *)padapter->xmitpriv.pxmit_extbuf;
++	pxmitbuf = (struct xmit_buf *) adapter->xmitpriv.pxmit_extbuf;
+ 	for (i = 0; i < NR_XMIT_EXTBUFF; i++) {
+ 		for (j = 0; j < 8; j++) {
+ 			if (pxmitbuf->pxmit_urb[j])
 -- 
 2.33.0
 
