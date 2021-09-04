@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A64400C3E
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 19:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F65400C41
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 19:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237185AbhIDRPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 13:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
+        id S237191AbhIDRXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 13:23:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhIDRPn (ORCPT
+        with ESMTP id S237110AbhIDRXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 13:15:43 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093AEC061575;
-        Sat,  4 Sep 2021 10:14:42 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d18so323300pll.11;
-        Sat, 04 Sep 2021 10:14:42 -0700 (PDT)
+        Sat, 4 Sep 2021 13:23:47 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB071C0613C1
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 10:22:45 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id m4so3842415ljq.8
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 10:22:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iFc6/hsrcBHXb0L6ENJYv7woB6l1av4WfvfyQSymWlM=;
-        b=jky7Ry8ivE9o6QWdwB1WK/aihvoL83REe8Mk2P0puUGzsm8hUL0GX8nQCtnhKl3u16
-         QaY6+KS74yJ5BpIxxOFZybvIaMpJtPIFDyf59rByCTz8JCIh5jCKbseIN5uT1bqIriJa
-         aLDVHWRfRaXJIxR6FkX2g9eYcKgFDiH12Bss7ZVuU3C/u+75EAsOyiL9kGvPgz/U6F6n
-         8oayQTKtSbTCOlk/icx1rNa1n7FBungGfbxhPnALw0ul39GW2nZ6WIuBXKBQbj9C8cJh
-         Divr4v4Ugq2vqdocke99xb9cAli9E8Sl4l8SayTtNINQSQBc/QwUahm1kM9YOVqDWARS
-         0dEA==
+        d=linuxfoundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=98jOqbKpX72E4sPthsn4i3f66mKPjIJDIcd25lirePI=;
+        b=eG78AXkrvMPYFu6Gt5/vrTdbimFDR9TXxplLlMw1nHmpyJUrQcTh/9wCJeHztK4N/O
+         YH6b6mzsWGz7vhhhzfSL8IebU3Rub4K0pwZno/LNvT//BotGevQQBUiOT3pV0qZM6otl
+         SWBcPAB7k8Xg5RezMwEmNMsTPJcn+HxEyK5cw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iFc6/hsrcBHXb0L6ENJYv7woB6l1av4WfvfyQSymWlM=;
-        b=KWiGI483X2JB9WDx7BP2cCLoRNlub1EgCBj9lZE/TN/BLjA4kBJKxNV3ooPOF/oE4W
-         RJVvByyiBRjmovJtrEOaf0wtOYi5kLLqZqdM54U4R2Ijcqo1mgxQTg9sf7Q+iaSA7gRy
-         lJsJPNCeI/15H3SDeuviGqrficio+0Gu5eaw3sS/NgQRWrxzWBtFdSZXD11FaNOu8XZa
-         fyszzDgekbenhBMGuNAS4K/EA/SFOIg6x3vP7M9Vzws0T6+tAOmjtuyYeM2rDQ+8/sKZ
-         lM1gSQDSORF5mmVePqH41zWGQMKWIdhHBx9lCD+POD+FYvCt3WHSo1BHxR15TGWlS3Tg
-         A1fA==
-X-Gm-Message-State: AOAM5310gkmzdwmf595dPBULKPgeoE/qJVSK3l5kyXSOttH6sbFcSen/
-        SYGdTnn1EJo8qSQIQHE18q3Or36nRCg=
-X-Google-Smtp-Source: ABdhPJymygyiq7j9tW7D09/DkHoxzOpZaa8Yvxh+VHwoC8YXHLHhvnWy8b+lIvtja23Ly+wY/1kEZg==
-X-Received: by 2002:a17:90a:194a:: with SMTP id 10mr5152123pjh.176.1630775681377;
-        Sat, 04 Sep 2021 10:14:41 -0700 (PDT)
-Received: from [192.168.86.235] (c-73-241-150-58.hsd1.ca.comcast.net. [73.241.150.58])
-        by smtp.gmail.com with ESMTPSA id i11sm2882977pfd.37.2021.09.04.10.14.40
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=98jOqbKpX72E4sPthsn4i3f66mKPjIJDIcd25lirePI=;
+        b=D/cgKMgJKkUrFsaLjdf7dDWfahmZM7wMIx+uTUwAd6qLeiczmeC6+NKSmRQ0fUu/Pn
+         bR4ypjfW1gZDBgRFx4jTBckEflXpLrfdNS5RW4kvrBuvqxIpoVa0+CHVpYrp1L7ybqcL
+         iPGp7fPE2sHsqJ1NRH1A5eit4Z6XnBU3l2hqpyheWI9km4hLdmpLKfvAwP20PhYHJI+U
+         TaBSRud2h7Tai5acUa87yinl5NtT5tGJUA1uTtGdJ9ZYiMVCCIhUsimXOruq8lqQagyB
+         hS/3mQOibWfERP4kpxD/o9DzuZmg3Z2QKVEOHCMs9ZsBPgaVrBOvPCKJb41Xip2SfGii
+         Qz7w==
+X-Gm-Message-State: AOAM530Cyzz7D9OaASYBuZkRV9Zf9NyNdEVfPeyRSvks6PjUYnVdHlPs
+        h7hyjexoqElCNGzi8SPuEN8CXD0kKuGoZ8ZM
+X-Google-Smtp-Source: ABdhPJw4Pxco5zUbueUv71/VXG7aJmQxSWCXO+fZM48nLgOUGnBd0h3FKeqb/nkc7JdhPTCF66JHPA==
+X-Received: by 2002:a05:651c:2006:: with SMTP id s6mr3558342ljo.171.1630776163492;
+        Sat, 04 Sep 2021 10:22:43 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id 23sm289203lfp.47.2021.09.04.10.22.41
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 04 Sep 2021 10:14:40 -0700 (PDT)
-Subject: Re: WARNING in sk_stream_kill_queues
-To:     Vasily Averin <vvs@virtuozzo.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Hao Sun <sunhao.th@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <CACkBjsYG3O_irFOZqjq5dJVDwW8pSUR_p6oO4BUaabWcx-hQCQ@mail.gmail.com>
- <c84b07f8-ab0e-9e0c-c5d7-7d44e4d6f3e5@gmail.com>
- <9a35a6f2-9373-6561-341c-8933b537122e@virtuozzo.com>
- <71e8b315-3f3a-85ae-fede-914269a15272@virtuozzo.com>
-From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <606daddf-6ca5-6789-b571-6178100432be@gmail.com>
-Date:   Sat, 4 Sep 2021 10:14:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Sat, 04 Sep 2021 10:22:42 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id i28so3839182ljm.7
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 10:22:41 -0700 (PDT)
+X-Received: by 2002:a2e:a363:: with SMTP id i3mr3513230ljn.56.1630776161685;
+ Sat, 04 Sep 2021 10:22:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <71e8b315-3f3a-85ae-fede-914269a15272@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com>
+ <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com>
+ <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org> <878s0c4vng.fsf@oldenburg.str.redhat.com>
+ <20210904131911.GP1583@gate.crashing.org> <871r644bd2.fsf@oldenburg.str.redhat.com>
+In-Reply-To: <871r644bd2.fsf@oldenburg.str.redhat.com>
+From:   Linus Torvalds <torvalds@linuxfoundation.org>
+Date:   Sat, 4 Sep 2021 10:22:25 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi+XKYN+3u=_fm=ExqpEaHdER0XuKxVauHYVCPKpKR97Q@mail.gmail.com>
+Message-ID: <CAHk-=wi+XKYN+3u=_fm=ExqpEaHdER0XuKxVauHYVCPKpKR97Q@mail.gmail.com>
+Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Segher Boessenkool <segher@kernel.crashing.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/4/21 7:48 AM, Vasily Averin wrote:
-
-> Eric,
-> this problem is not related to my patches.
-> I've reproduced the problem locally on orignal kernel with original config,
-> then I've applied last version of my patch -- but it did not help, issue was reproduced again,
-> then I've reverted all my patches, see lest below -- and reproduced the problem once again
-> 
-> Thank you,
-> 	Vasily Averin
-> 
-> b8a0bb68ac30 (HEAD -> net-next-5.15) Revert "ipv6: allocate enough headroom in ip6_finish_output2()"
-> 1bc2de674a1b Revert "ipv6: ip6_finish_output2: set sk into newly allocated nskb"
-> 780e2f7d9b93 Revert "skbuff: introduce skb_expand_head()"
-> 782eaeed9de7 Revert "ipv6: use skb_expand_head in ip6_finish_output2"
-> 639e9842fc1f Revert "ipv6: use skb_expand_head in ip6_xmit"
-> 3b16ee164bcd Revert "ipv4: use skb_expand_head in ip_finish_output2"
-> ab48caf0e632 Revert "vrf: use skb_expand_head in vrf_finish_output"
-> 4da67a72ceef Revert "ax25: use skb_expand_head"
-> 9b113a8a62f0 Revert "bpf: use skb_expand_head in bpf_out_neigh_v4/6"
-> fc4ab503ce8f Revert "vrf: fix NULL dereference in vrf_finish_output()"
+On Sat, Sep 4, 2021 at 8:19 AM Florian Weimer <fweimer@redhat.com> wrote:
 >
+> In any case, it would be nice to know what the real motivation is.
 
-OK, thanks for checking.
+I don't know about the original motivation, but the reason I like that
+patch after-the-fact is that I've actually been in situations where I
+test out self-built compilers without installing them.
 
-The repro on my host does not trigger the issue, I can not really investigate/bisect.
+Then it's convenient to have a completely standalone kernel tree.
 
+Nobody cares about things like <stdatomic.h> They are completely
+irrelevant for the kernel, exactly because we've always just done our
+own, or used __builtin_xyz() for things.
+
+<stdarg.h> is the only actual core header file that we have always
+taken from the installed system headers - because historically it
+really was required. Everything else we can just do ourselves.
+
+                 Linus
