@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBD5400CBF
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 21:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42192400CC0
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 21:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237494AbhIDTBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 15:01:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42044 "EHLO mail.kernel.org"
+        id S237615AbhIDTB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 15:01:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234432AbhIDTBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 15:01:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 12A5360F4C;
-        Sat,  4 Sep 2021 19:00:49 +0000 (UTC)
+        id S237498AbhIDTBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 15:01:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3720360F4C;
+        Sat,  4 Sep 2021 19:00:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630782049;
-        bh=wX9j9tMKB/jQvhCxHoNQ0xqUeNjFr5myRg7/UMXA3rQ=;
+        s=k20201202; t=1630782053;
+        bh=4CLYOVf27HgI3udSKJqInt4iAK1gJXz2phwQaoJk8XI=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=HPbSe17RcVt5BMkLoWfbpfbH879fCVFtpIukWhJr41rMoZAbr5LgmE7K+abw5Lb70
-         0JBnYqCL7z/5PfEmrSbmYnbnn3C3vQJCMICcXmodxkaRgVsPfZ9SJsxRzys8tDB0v7
-         ligp3+Wltbluqn5zXxyl3FvrmZkDkJqAzFgdeFrMOSnqXSvllscOaYDo8Z80p1woNp
-         vjI4wlh2c3Nw2Q2M1QAuhdv6Aridf/tsa3pd380nSdRs8ormkli0ZWUHOg4UdDJ/1E
-         9l4EErKJ6KMWws8+ezPcRB/jYek+fS2AxxS0+9JQF79YiogV/4jqKsVD/5t0eTyOEq
-         Y99BBvzYLbALw==
+        b=R0CfTW1e50Q7e89xLf1r4hCQ7mS9CyXLkCzK/qfkU0pma+Y+258hnjIExbPYhz4rg
+         szqGY3Yqv+FTvRdUkXMWocePS3V/HKvgyYfaY9Nh4daiMWOeKbUAX9bs9obCn2t5IB
+         cRRdovqlgp7hFLv4j6sb6sZG56Nd3Sim9TUrYypARPdTyEN9SIu0jDA7CS9IDdZkFH
+         mdFtM6b+nwFzuwIR+ydUsy8Qg210ftFCsAjeMh660k4Tz2KOscZMQCn64BXDuEprgg
+         ZYD6acdhBt2nmp4MpobYcf7SIEU2Y9HwQ7HEcaM0hy7Baz4bxL1Y16xJRhZJFZLDg8
+         c+ZPrG4amJQfw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0CB8E60A17;
-        Sat,  4 Sep 2021 19:00:49 +0000 (UTC)
-Subject: Re: [GIT PULL] Please Pull NFS Client Updates for Linux 5.15
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2FA1560A3E;
+        Sat,  4 Sep 2021 19:00:53 +0000 (UTC)
+Subject: Re: [f2fs-dev] [GIT PULL] f2fs update for 5.15-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAFX2JfkOaSFppXPn+o=nwyzFZLWxyHX4_rFEBeJx=fA_G7_6ZA@mail.gmail.com>
-References: <CAFX2JfkOaSFppXPn+o=nwyzFZLWxyHX4_rFEBeJx=fA_G7_6ZA@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-nfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAFX2JfkOaSFppXPn+o=nwyzFZLWxyHX4_rFEBeJx=fA_G7_6ZA@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.linux-nfs.org/projects/anna/linux-nfs.git tags/nfs-for-5.15-1
-X-PR-Tracked-Commit-Id: 8cfb9015280d49f9d92d5b0f88cedf5f0856c0fd
+In-Reply-To: <YTLLgFTaal2+EC1c@google.com>
+References: <YTLLgFTaal2+EC1c@google.com>
+X-PR-Tracked-List-Id: <linux-f2fs-devel.lists.sourceforge.net>
+X-PR-Tracked-Message-Id: <YTLLgFTaal2+EC1c@google.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-5.15-rc1
+X-PR-Tracked-Commit-Id: 9605f75cf36e0bcc0f4ada07b5be712d30107607
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0961f0c00e69672a8e4a2e591355567dbda44389
-Message-Id: <163078204904.10287.2699315668847840662.pr-tracker-bot@kernel.org>
-Date:   Sat, 04 Sep 2021 19:00:49 +0000
-To:     Anna Schumaker <schumaker.anna@gmail.com>
+X-PR-Merge-Commit-Id: 6abaa83c7352b31450d7e8c173f674324c16b02b
+Message-Id: <163078205318.10287.7643558945708241474.pr-tracker-bot@kernel.org>
+Date:   Sat, 04 Sep 2021 19:00:53 +0000
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux F2FS Dev Mailing List 
+        <linux-f2fs-devel@lists.sourceforge.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 2 Sep 2021 17:22:47 -0400:
+The pull request you sent on Fri, 3 Sep 2021 18:27:28 -0700:
 
-> git://git.linux-nfs.org/projects/anna/linux-nfs.git tags/nfs-for-5.15-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-5.15-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0961f0c00e69672a8e4a2e591355567dbda44389
+https://git.kernel.org/torvalds/c/6abaa83c7352b31450d7e8c173f674324c16b02b
 
 Thank you!
 
