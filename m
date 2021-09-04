@@ -2,92 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75EA400A32
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 09:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93123400A1E
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 08:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235373AbhIDGqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 02:46:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231984AbhIDGqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 02:46:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C19AF600AA;
-        Sat,  4 Sep 2021 06:45:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630737908;
-        bh=MVOIlssJq/adoFt1cVqsv0+pamI8JoDpoucmm2TnnT8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Ov4Hln9BpfKu0DjBJI3KZqVqJJNzWRI0yJIK37hm/aBrNMiJmsy0ImSH8jnst4IDW
-         7ank/wzMZ8keOv+hFx/QH7uh200t43fUUVA/1lZQFL82zEJZb+frtukVPTsy4ar9y9
-         3kVhWWim0ug1ewDrty4aAdTW0HQmsGJUmPxMnOJKx2u2gznG/rCxaNWgQeuf0gZj3d
-         /7VTXWoSylVtg5H4ef5ckVvakvW2mo6mLekI6jMs7mzmfTqKOtGIzg/2dVDnHvMOgX
-         diBu8DiXcVTFGCOYYI3EPinoJ+qqMt3oNOFg7hlcFcDvsg6FY1OO4C6UAZJHW3hE3v
-         sHRsiRyrnWbXg==
-Subject: Re: [f2fs-dev] [PATCH v4] f2fs: introduce fragment allocation mode
- mount option
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-References: <20210902172404.3517626-1-daeho43@gmail.com>
- <9ab17089-accc-c3a3-a5dc-007fc4eeaa20@kernel.org>
- <CACOAw_yovM592K3-2fQzA6M29XqWu8s_2f+zXawKo-QpNSXq0w@mail.gmail.com>
- <8f8e4695-4062-60c4-0f91-2a1f6a5b0a11@kernel.org>
- <CACOAw_yBYZzUVGV-A7K57zqrcAaZv7nFSk9mSj9AC6jTTeU7Vw@mail.gmail.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <f64cb941-2bb7-eed2-732d-c9537f46f67c@kernel.org>
-Date:   Sat, 4 Sep 2021 14:45:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1350859AbhIDGdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 02:33:54 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:15384 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236308AbhIDGdx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 02:33:53 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4H1l9b5Rbtzbgqx;
+        Sat,  4 Sep 2021 14:28:51 +0800 (CST)
+Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 4 Sep 2021 14:32:49 +0800
+Received: from huawei.com (10.175.124.27) by dggpemm500004.china.huawei.com
+ (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Sat, 4 Sep 2021
+ 14:32:48 +0800
+From:   Laibin Qiu <qiulaibin@huawei.com>
+To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>, <hare@suse.de>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <qiulaibin@huawei.com>
+Subject: [PATCH -next] [SCSI] Fix NULL pointer dereference in handling for passthrough commands
+Date:   Sat, 4 Sep 2021 14:45:34 +0800
+Message-ID: <20210904064534.1919476-1-qiulaibin@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-In-Reply-To: <CACOAw_yBYZzUVGV-A7K57zqrcAaZv7nFSk9mSj9AC6jTTeU7Vw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.124.27]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500004.china.huawei.com (7.185.36.219)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/4 12:40, Daeho Jeong wrote:
->> As a per curseg field.
->>
->>> Maybe, we run into the same race condition issue you told before for
->>> fragment_remained_chunk.
->>> Could you clarify this more?
->>
->> e.g.
->>
->> F2FS_OPTION(sbi).fs_mode = FS_MODE_FRAGMENT_FIXED_BLK
->> fragment_chunk_size = 384
->> fragment_hole_size = 384
->>
->> When creating hole:
->>
->> - f2fs_allocate_data_block
->>    - __refresh_next_blkoff
->>      chunk locates in [0, 383] of current segment
->>      seg->next_blkoff = 384
->>      sbi->fragment_remained_chunk = 0
->>      then we will reset sbi->fragment_remained_chunk to 384
->>      and move seg->next_blkoff forward to 768 (384 + 384)
->>    - __has_curseg_space() returns false
->>    - allocate_segment() allocates new current segment
->>
->> So, for such case that hole may cross two segments, hole size may be truncated
->> to left size of previous segment.
-> 
-> First, sbi->fragment_remained_chunk should be seg->fragment_remained_chunk.
+In passthrough path. If the command size for ioctl request from userspace
+is 0. The original process will get cmd_len from cmd->cmnd, but It has
+not been assigned at this time. So it will trigger a NULL pointer BUG.
 
-Oh, correct.
+------------[ cut here ]------------
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+PF: supervisor read access in kernel mode
+PF: error_code(0x0000) - not-present page
+RIP: 0010:scsi_queue_rq+0xcb2/0x12b0
+Call Trace:
+blk_mq_dispatch_rq_list+0x541/0xe90
+__blk_mq_sched_dispatch_requests+0x1fe/0x2b0
+blk_mq_sched_dispatch_requests+0xbf/0x130
+__blk_mq_run_hw_queue+0x15b/0x230
+__blk_mq_delay_run_hw_queue+0x18f/0x320
+blk_mq_run_hw_queue+0x252/0x280
+blk_mq_sched_insert_request+0x228/0x260
+blk_execute_rq+0x111/0x160
+sg_io+0x51a/0x740
+scsi_cmd_ioctl+0x533/0x910
+scsi_cmd_blk_ioctl+0xa1/0xb0
+cdrom_ioctl+0x3f/0x2510
+sr_block_ioctl+0x142/0x180
+blkdev_ioctl+0x398/0x450
+block_ioctl+0x6d/0x80
+__se_sys_ioctl+0xd1/0x140
+__x64_sys_ioctl+0x3f/0x50
+do_syscall_64+0x37/0x50
+entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-> I understand what you mean, so you mean we need to take the leftover
-> "hole" size over to the next segment?
-> In the example, the leftover hole size will be (384 - (512-384)). Do
-> you want to take this over to the next segment?
+We can trigger front BUG by ioctl blow.
+------------[ cut here ]------------
 
-Yes, the left 256 block-sized hole should be created before next chunk
-in next opened segment.
+sg_io_hdr_t *addr;
 
-Thanks,
+addr = malloc(sizeof(sg_io_hdr_t));
+memset(addr, 0, sizeof(sg_io_hdr_t));
+addr->interface_id = 'S';
 
-> 
+fd = open(/dev/sr0, O_RDONLY); // open a CD_ROM dev
+
+ioctl(fd, SG_IO, addr); // all zero sg_io_hdr_t will trigger this bug
+
+Fixes: 2ceda20f0a99a ("scsi: core: Move command size detection out of
+the fast path")
+Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
+---
+ drivers/scsi/scsi_lib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+index 572673873ddf..53b47a9103d3 100644
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -1174,9 +1174,9 @@ static blk_status_t scsi_setup_scsi_cmnd(struct scsi_device *sdev,
+ 	}
+ 
+ 	cmd->cmd_len = scsi_req(req)->cmd_len;
++	cmd->cmnd = scsi_req(req)->cmd;
+ 	if (cmd->cmd_len == 0)
+ 		cmd->cmd_len = scsi_command_size(cmd->cmnd);
+-	cmd->cmnd = scsi_req(req)->cmd;
+ 	cmd->transfersize = blk_rq_bytes(req);
+ 	cmd->allowed = scsi_req(req)->retries;
+ 	return BLK_STS_OK;
+-- 
+2.22.0
+
