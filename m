@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72370400A47
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 09:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972D0400A4A
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 09:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234922AbhIDHh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 03:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        id S233802AbhIDHn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 03:43:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233690AbhIDHhy (ORCPT
+        with ESMTP id S233631AbhIDHn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 03:37:54 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E616BC061575;
-        Sat,  4 Sep 2021 00:36:53 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id n13-20020a17090a4e0d00b0017946980d8dso965751pjh.5;
-        Sat, 04 Sep 2021 00:36:53 -0700 (PDT)
+        Sat, 4 Sep 2021 03:43:26 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D987C061575;
+        Sat,  4 Sep 2021 00:42:25 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id r2so1286487pgl.10;
+        Sat, 04 Sep 2021 00:42:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5VOBwO0t8QC3/busodJEkbjeLNfNwavGj/xcb/50tPE=;
-        b=HzpwPF9amWlZDtjG7PeY0Uo5IDxUhJhvHmXHnuvyOKr/pV3gFxigFoMVYMVcklgaAf
-         PrZqMpccOavqLruEqdqP9G2j4L+pfAr3FNlM0gGAfE9gykii7yadnlLpfDQ/3c0rl6D7
-         ENA6EWEnq4ZoPgk5VZ6xWPiZdKFjVGpNjNB5ACrHJgtLJH/XifW2cOOIfZTd8wMoWMLR
-         VEdz2Mi0r/lDV5tZIC28MeEiy8uyvazq+Tfibz+36wDbPiXzZQqWwD9352YQNak0vh0v
-         HuvvuqDjrGKRQj7Osoux+a7mMORFG0zIXmtZrC0QSjSCgzXi8Azd35cT7jVOd8OJtOVN
-         OIQA==
+        bh=CFW88EsdFTG/uHl515vVt1AHdJMDeY6+hJs8Jtyin+k=;
+        b=h0rAajVHXZVfMraBKEkp7jd5xK2sm5axB9cC8kfhDEkUfObXKC3hIOCXD8wErwnLxu
+         IRDd86yhnyGB8tjsqYouJBa/FkknDCDyFy8qXgJ9ywRrZj038tsxbJcnrLosRppiQpw7
+         4sz4r/ev6GCS2s9M6Ul3GPh9FM5YkbIUD4kJixuR2bu0klWGwp0fIxRAIor04z1yE5Xh
+         mH2UFdUcjSjXiexj9ihoGDIeyqZnNxfEmUPIPnItDQuzgfdRZxeJL2jZhY6H+5ypy9gc
+         084yBTPpEKjdpAgA5RihyX6t0aFChOY4XDpJEWHhNeiww1GMWZc/hVUg0qXl5euTisXZ
+         MQjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=5VOBwO0t8QC3/busodJEkbjeLNfNwavGj/xcb/50tPE=;
-        b=GKlwh3f6icv8A7MoOQK0GRDKjOH1DqTbUHlNJTIVzcDfxbRf+BRID9+R+Fr9Ogs0L6
-         rbVq2ivK4WH/37UrDuUbKBGWyugoIqbO3UfxOv2rcloKLl8DBOOTjAZXdRCS7sD5yBhL
-         iCsIXEOPyZVngk9b03E94/wpmW+buuTwUNBaVl1Ev+HFtiAC64V7VkR2IA2FI8AvP52/
-         NRTlKREmXl9xqLSj2N0bQkb+Df2YjqJGeAqnJaKffN7rWFYCl0KRhphkkMWQ68IS18jM
-         eYyEO1RQbDrZD55F7c0EOONDWO8YNrsFjdHNaUUDYncq1clbxdKOGanxavGv3CkwYTps
-         dhCg==
-X-Gm-Message-State: AOAM532hqtaKEPfjeSRItYjpHW7GBJZlMZu1yMV5sUIJM4AR7QMsrquL
-        UKMeBBZVVyL3t14kRhWAgvk=
-X-Google-Smtp-Source: ABdhPJybKqrnXjJwi9WgCZmTF5ov1tESIOiScEfwfEfXuF7Aid3UvIImFjy0F41VK9E4vajsm6LXLA==
-X-Received: by 2002:a17:902:c410:b0:138:b4be:289b with SMTP id k16-20020a170902c41000b00138b4be289bmr2374253plk.13.1630741013166;
-        Sat, 04 Sep 2021 00:36:53 -0700 (PDT)
+        bh=CFW88EsdFTG/uHl515vVt1AHdJMDeY6+hJs8Jtyin+k=;
+        b=nbMhBLk9CNPRvWmT9/6DKQ2mPsCW3VrfviaXb+rMjeFg3EzvYKsaOk7tI5Ew6RSL5u
+         wUAYIub3y42/NNyynTuBSesfVGN+ePlp2SpuCKZNQ4p9ofoIazhRHPICJa81b8Ygm5aB
+         egYBzZTDvpdb/bkQu7W+c2FP2pe4CtVvYiNKMxvvQO7zEL0V7z2i3i/GIuvvLd9ibFJ3
+         stus+cLE4XLsg5rHyVa/avhWCI7cm7lVWCgLpuuVwnXYTZJSZjtl41N6e1Nar4PaHlzK
+         XU8HHb71i5drRlKLpJ4rGNnO7Pj6aY2vq5JLQwJloj5HHEqnJKZ4wbjOzr8J/r2k3NFi
+         ZPug==
+X-Gm-Message-State: AOAM533MA7PhbOPTU2VvHkXk18JgUrwGEbKCbp3gTc2hRXeBANNLpALo
+        iU6wcRCBcBlp3Tok194vCZcu1s3F6LDR7xBO
+X-Google-Smtp-Source: ABdhPJxE0le/McowG26nZDxVfwSuDbelctC3UxDqotMp9K08qYiMV9gW7u6PTqZK2kFUC3p6q9CMsA==
+X-Received: by 2002:a62:7d84:0:b029:3b8:49bb:4c3f with SMTP id y126-20020a627d840000b02903b849bb4c3fmr6861178pfc.49.1630741344353;
+        Sat, 04 Sep 2021 00:42:24 -0700 (PDT)
 Received: from localhost.localdomain ([2405:201:6006:a148:82a8:3271:93dc:763c])
-        by smtp.googlemail.com with ESMTPSA id w2sm1320490pjq.5.2021.09.04.00.36.49
+        by smtp.googlemail.com with ESMTPSA id x19sm1477046pfa.104.2021.09.04.00.42.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Sep 2021 00:36:52 -0700 (PDT)
+        Sat, 04 Sep 2021 00:42:24 -0700 (PDT)
 From:   Utkarsh Verma <utkarshverma294@gmail.com>
 To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
 Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
@@ -55,9 +55,9 @@ Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
         Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Utkarsh Verma <utkarshverma294@gmail.com>
-Subject: [PATCH] Documentation: checkpatch: Add SPLIT_STRING message
-Date:   Sat,  4 Sep 2021 13:06:21 +0530
-Message-Id: <20210904073621.12987-1-utkarshverma294@gmail.com>
+Subject: [PATCH] Documentation: checkpatch: Add TRAILING_SEMICOLON message
+Date:   Sat,  4 Sep 2021 13:12:01 +0530
+Message-Id: <20210904074201.13532-1-utkarshverma294@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -65,33 +65,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new message type SPLIT_STRING under the 'Indentation and Line
-Breaks' subsection. Checkpatch documentation for the splitting of
-quoted strings that appear in userspace, across multiple lines.
+Add a new message type TRAILING_SEMICOLON for the macro definitions
+that conclude with a semicolon.
 
 Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 Signed-off-by: Utkarsh Verma <utkarshverma294@gmail.com>
 ---
- Documentation/dev-tools/checkpatch.rst | 6 ++++++
- 1 file changed, 6 insertions(+)
+ Documentation/dev-tools/checkpatch.rst | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
 diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-index f0956e9ea2d8..b7a1288e96a9 100644
+index f0956e9ea2d8..30eda8f4a8bd 100644
 --- a/Documentation/dev-tools/checkpatch.rst
 +++ b/Documentation/dev-tools/checkpatch.rst
-@@ -710,6 +710,12 @@ Indentation and Line Breaks
+@@ -845,6 +845,27 @@ Macros, Attributes and Symbols
+     Use the `fallthrough;` pseudo keyword instead of
+     `/* fallthrough */` like comments.
  
-     See: https://www.kernel.org/doc/html/latest/process/coding-style.html#breaking-long-lines-and-strings
- 
-+  **SPLIT_STRING**
-+    Quoted strings that appear as messages in userspace and can be
-+    grepped, should not be split across multiple lines.
++  **TRAILING_SEMICOLON**
++    Macro definition should not end with a semicolon. The macro
++    invocation style should be consistent with function calls.
++    This can prevent any unexpected code paths::
 +
-+    See: https://lore.kernel.org/lkml/20120203052727.GA15035@leaf/
++      #define MAC do_something;
 +
-   **TRAILING_STATEMENTS**
-     Trailing statements (for example after any conditional) should be
-     on the next line.
++    If this macro is used within a if else statement, like::
++
++      if (some_condition)
++              MAC;
++
++      else
++              do_something;
++
++    Then there would be a compilation error, because when the macro is
++    expanded there are two trailing semicolons, so the else branch gets
++    orphaned.
++
++    See: https://lore.kernel.org/lkml/1399671106.2912.21.camel@joe-AO725/
++
+   **WEAK_DECLARATION**
+     Using weak declarations like __attribute__((weak)) or __weak
+     can have unintended link defects.  Avoid using them.
 -- 
 2.25.1
 
