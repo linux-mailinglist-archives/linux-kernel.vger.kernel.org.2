@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E038C400A19
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 08:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF342400A1C
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 08:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244622AbhIDGcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 02:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237310AbhIDGcn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 02:32:43 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F14C0C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 23:31:41 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id 62-20020a3706410000b02903d2cdd9acf0so2531824qkg.21
-        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 23:31:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=+o8lcE147TTjVxsKTa6G2L6zU349yGMo2SAJF1LwOi0=;
-        b=qH/OZDkvYZfga23y64jj08J9Vgb2VW7b6fDaUX20i7Wl/IXCPDzz4OzjnWjeHAzWwg
-         V4WfnN4lo/ErpGi6usOYOQIFO/DXRx9LMdRiozkx0DQNVN2uLnfoMdxkCS7ZqRnKKjuc
-         yh5e8z35btp12V3zo+BK3/keuXSZoH5vOfEKVnTHBWZnKPiPsABRrPigl6GQtWBGaHUe
-         iq0wo8RK5s44Ve2vVgEsdwyVROmBwv6Y4UwzWRDlBAvg+kHm+CR2vrWZcePW0OaeoYVs
-         zo6B0xbMM/FKqoaOud5ckBhO/9RBuuSW6K8AhjQWTCVi0I9hrFMcdKNvwsrGWYvNGIz9
-         AXog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=+o8lcE147TTjVxsKTa6G2L6zU349yGMo2SAJF1LwOi0=;
-        b=SioafMaZoSOtRvEkiefJnw/6E7PaiOCk0WfMy6wXOO/062RCxOGEX5LbhJU71dlBrG
-         RN311is99plHnEPHQV2t/w9RRcLf1GzrNGx4Z+/+CdviGqh+4qFM0bkTrHyZEFQzRJfX
-         jnLukToXBSDicklFHSsDftEMgSK/QeZIgQwRO/7NnlO/FiitJZKnUqm12jYwnGT54ZtG
-         DyPM3Io0n1y7OBqp856peONCRB7HCZt5vJ/G8yjGh3FrUgLSwmkFFuxe7iic0eVtpXCZ
-         /rSl4n/rGX6ZdTzW51MrmDB1A2SvM0tdb9BL9BLeC0p2bDXYXqUnNLeM2NtVL+7bDYK6
-         fGzw==
-X-Gm-Message-State: AOAM531cGRNmefxtVIX8ujK/IohiO5JfaG/eVL27ueRgjo38zK1yDP5+
-        VuLaQDvNxoOxAMKnJ6Awuerb2sYFoA==
-X-Google-Smtp-Source: ABdhPJx3JAkJKFk35x4wA1PCS/BR77OIg5xIE5M72ryr6/R+Tt5x3rotEsdI1fFY8gIgRS6oqIntD3iP6w==
-X-Received: from decot.svl.corp.google.com ([2620:15c:2c5:11:1c8c:da2:27b9:bdb0])
- (user=decot job=sendgmr) by 2002:a05:6214:2b4:: with SMTP id
- m20mr2682221qvv.35.1630737101086; Fri, 03 Sep 2021 23:31:41 -0700 (PDT)
-Date:   Fri,  3 Sep 2021 23:31:29 -0700
-Message-Id: <20210904063129.3969050-1-decot+git@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH v1 1/1] bonding: complain about missing route only once for
- A/B ARP probes
-From:   David Decotigny <decot+git@google.com>
-To:     Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        id S1350837AbhIDGdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 02:33:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237120AbhIDGdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 02:33:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86B086054E;
+        Sat,  4 Sep 2021 06:32:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630737132;
+        bh=ZPixSAawQQqPuj5uTZ0OeL9TEp8tDj5LW5EOE0Smepc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d/MIbhKDeLeoLRvVQQfgo9+2BdYnw8uaZ2zrYxmKYhibNiR8YwL9k1hUtLOrhSwx5
+         bXqqacppUMaTthPvrFxtBiLNj1Rb4sN0lA7ZcS+KOqvfc7rtX50JFHHkNWZast4wF9
+         Jrr9smC8vjzWfotZEC1Wid5NuxHXwKthyFA0BQGg=
+Date:   Sat, 4 Sep 2021 08:32:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jiazi Li <jqqlijiazi@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jiazi Li <lijiazi@xiaomi.com>,
         linux-kernel@vger.kernel.org
-Cc:     maheshb@google.com, David Decotigny <ddecotig@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] char: misc: init list head only when needed
+Message-ID: <YTMS6cIGLwqxA0t9@kroah.com>
+References: <853e8529c18c4a71c36b49f9598961fbc3f39682.1628921932.git.lijiazi@xiaomi.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <853e8529c18c4a71c36b49f9598961fbc3f39682.1628921932.git.lijiazi@xiaomi.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Decotigny <ddecotig@google.com>
+On Mon, Aug 16, 2021 at 06:12:32PM +0800, Jiazi Li wrote:
+> If a module successfully registers a misc device.
+> Then, due to some bugs, use same address register misc device
+> again, init list head will corrupt misc_list, resulting in oops
+> when using misc_list.
 
-On configs where there is no confirgured direct route to the target of
-the ARP probes, these probes are still sent and may be replied to
-properly, so no need to repeatedly complain about the missing route.
+Then fix those bugs that try to register the misc device more than once?
 
+Does that happen in any in-kernel drivers or is this just a failure of
+external drivers that are not submitted to the kernel tree?
 
-Signed-off-by: David Decotigny <ddecotig@google.com>
----
- drivers/net/bonding/bond_main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> In this scenario, do not init list head, if registration is
+> successful, init list head is also not required.
+> 
+> Signed-off-by: Jiazi Li <lijiazi@xiaomi.com>
+> ---
+>  drivers/char/misc.c | 19 ++++++++++++++-----
+>  1 file changed, 14 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/char/misc.c b/drivers/char/misc.c
+> index ca5141e..2451640 100644
+> --- a/drivers/char/misc.c
+> +++ b/drivers/char/misc.c
+> @@ -176,7 +176,6 @@ int misc_register(struct miscdevice *misc)
+>  	int err = 0;
+>  	bool is_dynamic = (misc->minor == MISC_DYNAMIC_MINOR);
+>  
+> -	INIT_LIST_HEAD(&misc->list);
+>  
+>  	mutex_lock(&misc_mtx);
+>  
+> @@ -185,7 +184,7 @@ int misc_register(struct miscdevice *misc)
+>  
+>  		if (i >= DYNAMIC_MINORS) {
+>  			err = -EBUSY;
+> -			goto out;
+> +			goto err2;
+>  		}
+>  		misc->minor = DYNAMIC_MINORS - i - 1;
+>  		set_bit(i, misc_minors);
+> @@ -195,7 +194,13 @@ int misc_register(struct miscdevice *misc)
+>  		list_for_each_entry(c, &misc_list, list) {
+>  			if (c->minor == misc->minor) {
+>  				err = -EBUSY;
+> -				goto out;
+> +				/*
+> +				 * if module use same address double register,
+> +				 * init list will corrupt misc_list
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index b0966e733926..3858da3d3ea7 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -2910,9 +2910,9 @@ static void bond_arp_send_all(struct bonding *bond, struct slave *slave)
- 			 * probe to generate any traffic (arp_validate=0)
- 			 */
- 			if (bond->params.arp_validate)
--				net_warn_ratelimited("%s: no route to arp_ip_target %pI4 and arp_validate is set\n",
--						     bond->dev->name,
--						     &targets[i]);
-+				pr_warn_once("%s: no route to arp_ip_target %pI4 and arp_validate is set\n",
-+					     bond->dev->name,
-+					     &targets[i]);
- 			bond_arp_send(slave, ARPOP_REQUEST, targets[i],
- 				      0, tags);
- 			continue;
--- 
-2.33.0.153.gba50c8fa24-goog
+I do not understand the text here at all, sorry.
 
+thanks,
+
+greg k-h
