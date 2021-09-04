@@ -2,129 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10119400968
+	by mail.lfdr.de (Postfix) with ESMTP id D2B9B40096A
 	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 05:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235059AbhIDDHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 23:07:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231243AbhIDDH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 23:07:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86B75600EF;
-        Sat,  4 Sep 2021 03:06:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630724788;
-        bh=bf45uTGNybJZynZ0RzcJn0qt6WIrwA62SQcCpztjVco=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=BBA14g3K8DT6djOS+Ljvnzu8d3eBEEg7azMEbvGJbLqOBe8VKUrYJdkg4hcVh5Nwy
-         Syj992eOSgQR7CsHeDl1v1sU1w0DffD32pmM+8TiiakuuDPvKv9POFHnYUi3i+U7gb
-         cFzihK0RTgKAm4EQDeSoDQCtFhDiBgvrwBBHNmIpQPvwYEG5YlS2VVU4tR+0P7ptue
-         HHZ1K2vx+RbA1DT7auTYvzMMaHQ0BrusSlR7RWVzTKB2zX1w99fZnJOWahzxE0Ox7S
-         jzxtZPpMaeCXOsRvRHAVAnd0xhSCHNLgr3tgT6+4S57yXgxCdH1ODKigHEkb1f4Ioz
-         Kx7/mmDi+IPBA==
-Subject: Re: [PATCH v2] f2fs: avoid attaching SB_ACTIVE flag during mount
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Zhang Yi <yi.zhang@huawei.com>,
-        Jan Kara <jack@suse.cz>
-References: <20210901080621.110319-1-chao@kernel.org>
- <YTK7JDnpc6+LNqsl@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <8756a722-3363-9033-4a5f-047e28af645c@kernel.org>
-Date:   Sat, 4 Sep 2021 11:06:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1350828AbhIDDJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 23:09:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236149AbhIDDJy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 23:09:54 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359B3C061757
+        for <linux-kernel@vger.kernel.org>; Fri,  3 Sep 2021 20:08:53 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id i28so1650368ljm.7
+        for <linux-kernel@vger.kernel.org>; Fri, 03 Sep 2021 20:08:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AmpQXLuWcKRnRztqv+kSLcoJmxvozgSjiG4CeAGr8qQ=;
+        b=sfyJhFaBa4uK+SSBPhd/eF4k07Aj80nFBB7vCPNVKEkF9uKeOaHfBT7RuZvzIsUEzE
+         XXeqYxWvE3s42p5qi9NdG4KDTT8OHiMACpDikz5gC91tetB71HrRZVh77axBG3DBgEhg
+         GFr49SqsZ3BkzgGGDeQtcP51QjLSI8IgNHDAIephZQfl6mXuePEg22ubbJNSFel50LL4
+         edC0doDvokKv7XKD/+lRv1mi2pxsvkIBLPgGhsa6REF6IsHm0tLihImQtFz034KkCWg6
+         8GLxmbDkVWjNQnRV5xAoG3z/rroeejVTAkZzYBJinJq42doRyVPS6MRFhIRlO3SE/eyz
+         u45g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AmpQXLuWcKRnRztqv+kSLcoJmxvozgSjiG4CeAGr8qQ=;
+        b=FhxfoH8UM1Xm6OcKYH0kw0ZiVMysgE+wC7a1Xaf48TMhCxyo9iusXUs1r+6NCBl62j
+         mAKEnxxKbuVVkmzojD3z58ciAOh74swt1oOy0K0GunuamAhcZaW5aUC4NrZSdumiML6j
+         vfctr1viKOjQ3F25niesd4G8IPizMi2+yVMPw9Gvf2tzrtaV1F916+FXmsmvP/4rOm3b
+         vS4tOzZw0DLOrtPf0pW8Z8RiC1VaCD75bYRBpV01GVrT8t66Lko2kfjKEG/Rn9C0+WK3
+         GdcDpnH3JdF7CSfULyig8/YzOpn6YlYTZ2SneAvq05rOhUDXkyULczSkWMfJNA9xv6vI
+         HwKQ==
+X-Gm-Message-State: AOAM531nbXReN5cL/X5P8UjWakmPzr+aTjdJ6q9vbPVXOusnGkJa38JY
+        Sf660JVzaW4qg9+9WgcuFfzPo9yzz4FKy5764vAPkQ==
+X-Google-Smtp-Source: ABdhPJy1f9aCfN00mkLWWlEv02qU2z1Qmz1eKux9khCqVN3B7yC7uwAYv9QVlE+vC8I7tU4LQ+fa5cQTcLEpkD/5O5Y=
+X-Received: by 2002:a2e:a36c:: with SMTP id i12mr1417306ljn.427.1630724931420;
+ Fri, 03 Sep 2021 20:08:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YTK7JDnpc6+LNqsl@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CANcMJZBOymZNNdFZqPypC7r+JFgDWKgiD6c125t3PnP1O309AA@mail.gmail.com>
+ <20210902092500.GA11020@kili>
+In-Reply-To: <20210902092500.GA11020@kili>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Fri, 3 Sep 2021 20:08:40 -0700
+Message-ID: <CALAqxLUqSis_chO53K+RqvDVmE8z=p9FB8kG6DE9cVM=KQupOw@mail.gmail.com>
+Subject: Re: [GIT PULL] Networking for v5.15
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        David Miller <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Srini Kandagatla <srinivas.kandagatla@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/4 8:17, Jaegeuk Kim wrote:
-> I remember this gave a regression before?
+On Thu, Sep 2, 2021 at 2:25 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> I'm sorry John,
+>
+> Can you try this partial revert?  I'll resend with a commit message if
+> it works.
+>
+> ---
+>  net/qrtr/qrtr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-I have removed changes which bothers checkpoint disabling path, how
-about testing this in dev-test branch for a while?
+As Srini already commented, this is working great, but I still just
+wanted to say thanks for the quick fix!
 
-BTW, any plan to porting checkpoint disabling testcases from android
-into xfstest suit?
-
-Thanks,
-
-> 
-> On 09/01, Chao Yu wrote:
->> Quoted from [1]
->>
->> "I do remember that I've added this code back then because otherwise
->> orphan cleanup was losing updates to quota files. But you're right
->> that now I don't see how that could be happening and it would be nice
->> if we could get rid of this hack"
->>
->> [1] https://lore.kernel.org/linux-ext4/99cce8ca-e4a0-7301-840f-2ace67c551f3@huawei.com/T/#m04990cfbc4f44592421736b504afcc346b2a7c00
->>
->> Related fix in ext4 by
->> commit 72ffb49a7b62 ("ext4: do not set SB_ACTIVE in ext4_orphan_cleanup()").
->>
->> f2fs has the same hack implementation in
->> - f2fs_recover_orphan_inodes()
->> - f2fs_recover_fsync_data()
->>
->> Let's get rid of this hack as well in f2fs.
->>
->> Cc: Zhang Yi <yi.zhang@huawei.com>
->> Cc: Jan Kara <jack@suse.cz>
->> Acked-by: Jan Kara <jack@suse.cz>
->> Signed-off-by: Chao Yu <chao@kernel.org>
->> ---
->> v2:
->> - don't bother checkpoint disabling path
->>   fs/f2fs/checkpoint.c | 3 ---
->>   fs/f2fs/recovery.c   | 8 ++------
->>   2 files changed, 2 insertions(+), 9 deletions(-)
->>
->> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
->> index 83e9bc0f91ff..7d8803a4cbc2 100644
->> --- a/fs/f2fs/checkpoint.c
->> +++ b/fs/f2fs/checkpoint.c
->> @@ -705,9 +705,6 @@ int f2fs_recover_orphan_inodes(struct f2fs_sb_info *sbi)
->>   	}
->>   
->>   #ifdef CONFIG_QUOTA
->> -	/* Needed for iput() to work correctly and not trash data */
->> -	sbi->sb->s_flags |= SB_ACTIVE;
->> -
->>   	/*
->>   	 * Turn on quotas which were not enabled for read-only mounts if
->>   	 * filesystem has quota feature, so that they are updated correctly.
->> diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
->> index 04655511d7f5..706ddb3c95c0 100644
->> --- a/fs/f2fs/recovery.c
->> +++ b/fs/f2fs/recovery.c
->> @@ -787,8 +787,6 @@ int f2fs_recover_fsync_data(struct f2fs_sb_info *sbi, bool check_only)
->>   	}
->>   
->>   #ifdef CONFIG_QUOTA
->> -	/* Needed for iput() to work correctly and not trash data */
->> -	sbi->sb->s_flags |= SB_ACTIVE;
->>   	/* Turn on quotas so that they are updated correctly */
->>   	quota_enabled = f2fs_enable_quota_files(sbi, s_flags & SB_RDONLY);
->>   #endif
->> @@ -816,10 +814,8 @@ int f2fs_recover_fsync_data(struct f2fs_sb_info *sbi, bool check_only)
->>   	err = recover_data(sbi, &inode_list, &tmp_inode_list, &dir_list);
->>   	if (!err)
->>   		f2fs_bug_on(sbi, !list_empty(&inode_list));
->> -	else {
->> -		/* restore s_flags to let iput() trash data */
->> -		sbi->sb->s_flags = s_flags;
->> -	}
->> +	else
->> +		f2fs_bug_on(sbi, sbi->sb->s_flags & SB_ACTIVE);
->>   skip:
->>   	fix_curseg_write_pointer = !check_only || list_empty(&inode_list);
->>   
->> -- 
->> 2.32.0
+Much appreciated!
+-john
