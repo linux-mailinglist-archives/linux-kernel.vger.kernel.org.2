@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED32400BA4
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 16:28:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC646400BA3
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 16:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236698AbhIDO3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 10:29:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48556 "EHLO
+        id S236677AbhIDO3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 10:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236645AbhIDO3W (ORCPT
+        with ESMTP id S236649AbhIDO3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 4 Sep 2021 10:29:22 -0400
 Received: from mx.msync.work (mx.msync.work [IPv6:2a01:4f9:2b:2dc2::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9049C061757;
-        Sat,  4 Sep 2021 07:28:20 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 928B8D848B;
-        Sat,  4 Sep 2021 14:28:17 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B4AC061575
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 07:28:20 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id A804DD848C;
+        Sat,  4 Sep 2021 14:28:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
-        t=1630765697; h=from:subject:date:message-id:to:cc:mime-version:
+        t=1630765698; h=from:subject:date:message-id:to:cc:mime-version:
          content-transfer-encoding:in-reply-to:references;
-        bh=riBzg7yfs/WKceqbRh7CnMdVZOOQ2QoEgRJlHcvkjSY=;
-        b=STjNJ980Zt0BD9BMPVq/jIdiDqrhlOwfyqEWpmy5fnsY2Y5GQBX8ND/uGuDZJ50ImGVY6/
-        wPE5270bngJRE2IoJ+TlINB24zIuPwH9T5eLyOiCrbkUoMd6hIFIhJ9nt+4B868BQFAvJ6
-        hTO8IL4S7adLAcCcZ+u7wWuwliKmN3/F64YBT5Qfd26iAkkna1B2mVC90W6ZUkoc59/wjm
-        lWMfQasopzrX5bHRAmBamgN8wivxliD38HiQgagQOy2ft4qOURxUxsmwp9OPwB80nH1pbu
-        o49bT/0B/+H2vBV9kRZgnlqpNQqJV46lUN+juzWEMwXmaEzrjrLxBufIcHyyqw==
+        bh=KPPHiIoxzCzktvuuaU8qQ/isvK/G6txEFDrvxz2jjDA=;
+        b=O0SPQ4Hwp3sJ3wyIv/6xwhSAUswgdDr69LjWDvTkwEQWpY0gL0seN6X3NjwqU9SYvVr2WS
+        BjJG/rX2JWhbZb5TG1l4vMtojii8x5x7dYrZsLLWkdeHbN9iAo1DxWyK35tUyTjL9Qlxmo
+        hoj+PFRzQevxs0hHSfFW9gmV2fGJDYKXttkupdC1Dt4EHq8mLbkLl4vAgEAGUphg4TSGoL
+        xtXRHNu0W+FXI31CXzCcCsRbc7VuKquOUfgAIULNuEbSHLTR2xuAimyoBpt8wk46Hqq6Ky
+        TKhsh86u0wYp8fDJrfnow5v3ZyFUp3XM3z80SGzcGxlxtsXx/v6slcbNr/KWOw==
 From:   Vyacheslav Bocharov <adeep@lexina.in>
 To:     Neil Armstrong <narmstrong@baylibre.com>,
         Kevin Hilman <khilman@baylibre.com>
 Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: [PATCH v3 2/4] dt-bindings: vendor-prefixes: add jethome prefix
-Date:   Sat,  4 Sep 2021 17:27:43 +0300
-Message-Id: <20210904142745.183875-3-adeep@lexina.in>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 3/4] arm64: dts: meson-gxl: add support for JetHub H1
+Date:   Sat,  4 Sep 2021 17:27:44 +0300
+Message-Id: <20210904142745.183875-4-adeep@lexina.in>
 In-Reply-To: <20210904142745.183875-1-adeep@lexina.in>
 References: <20210904142745.183875-1-adeep@lexina.in>
 MIME-Version: 1.0
@@ -44,27 +43,290 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-JetHome is trademark of IP Sokolov P.A., manufacturer of home automation
-devices.
+JetHome Jethub H1 (http://jethome.ru/jethub-h1) is a home automation
+controller with the following features:
+
+- square plastic case
+- Amlogic S905W (ARM Cortex-A53) quad-core up to 1.5GHz
+- no video out
+- 1GB LPDDR4
+- 8/16GB eMMC flash
+- 2 x USB 2.0
+- 1 x 10/100Mbps ethernet
+- WiFi / Bluetooth RTL8822CS IEEE 802.11a/b/g/n/ac, Bluetooth 5.0.
+- TI CC2538 + CC2592 Zigbee Wireless Module with up to 20dBm output power
+  and Zigbee 3.0 support.
+- MicroSD 2.x/3.x/4.x DS/HS cards.
+- 1 x gpio LED
+- ADC user Button
+- DC source 5V microUSB
 
 Signed-off-by: Vyacheslav Bocharov <adeep@lexina.in>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/boot/dts/amlogic/Makefile          |   1 +
+ .../meson-gxl-s905w-jethome-jethub-j80.dts    | 241 ++++++++++++++++++
+ 2 files changed, 241 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-gxl-s905w-jethome-jethub-j80.dts
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index a867f7102c35..c52f0d3261bb 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -577,6 +577,8 @@ patternProperties:
-     description: JEDEC Solid State Technology Association
-   "^jesurun,.*":
-     description: Shenzhen Jesurun Electronics Business Dept.
-+  "^jethome,.*":
-+    description: JetHome (IP Sokolov P.A.)
-   "^jianda,.*":
-     description: Jiandangjing Technology Co., Ltd.
-   "^kam,.*":
+diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
+index faa0a79a34f5..2c3ce7c401a5 100644
+--- a/arch/arm64/boot/dts/amlogic/Makefile
++++ b/arch/arm64/boot/dts/amlogic/Makefile
+@@ -38,6 +38,7 @@ dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s805x-p241.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905w-p281.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905w-tx3-mini.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905d-libretech-pc.dtb
++dtb-$(CONFIG_ARCH_MESON) += meson-gxl-s905w-jethome-jethub-j80.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-gxm-khadas-vim2.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-gxm-mecool-kiii-pro.dtb
+ dtb-$(CONFIG_ARCH_MESON) += meson-gxm-minix-neo-u9h.dtb
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905w-jethome-jethub-j80.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905w-jethome-jethub-j80.dts
+new file mode 100644
+index 000000000000..cccf483bd9e4
+--- /dev/null
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905w-jethome-jethub-j80.dts
+@@ -0,0 +1,241 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2021 Vyacheslav Bocharov <adeep@lexina.in>
++ * Copyright (c) 2020 JetHome
++ * Author: Aleksandr Kazantsev <ak@tvip.ru>
++ * Author: Alexey Shevelkin <ash@tvip.ru>
++ * Author: Vyacheslav Bocharov <adeep@lexina.in>
++ */
++
++/dts-v1/;
++
++#include "meson-gxl.dtsi"
++
++/ {
++	compatible = "jethome,jethub-j80", "amlogic,s905w", "amlogic,meson-gxl";
++	model = "JetHome JetHub J80";
++	memory@0 {
++		device_type = "memory";
++		reg = <0x0 0x0 0x0 0x40000000>;
++	};
++
++	reserved-memory {
++		linux,cma {
++			size = <0x0 0x1000000>;
++		};
++	};
++
++	aliases {
++		serial0 = &uart_AO;   /* Console */
++		serial1 = &uart_A;    /* Bluetooth */
++		serial2 = &uart_AO_B; /* Wireless module 1 */
++		serial3 = &uart_C;    /* Wireless module 2 */
++		ethernet0 = &ethmac;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	vddio_ao18: regulator-vddio_ao18 {
++		compatible = "regulator-fixed";
++		regulator-name = "VDDIO_AO18";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++	};
++
++	vddio_boot: regulator-vddio_boot {
++		compatible = "regulator-fixed";
++		regulator-name = "VDDIO_BOOT";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++	};
++
++	vddao_3v3: regulator-vddao_3v3 {
++		compatible = "regulator-fixed";
++		regulator-name = "VDDAO_3V3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++	};
++
++	vcc_3v3: regulator-vcc_3v3 {
++		compatible = "regulator-fixed";
++		regulator-name = "VCC_3V3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++	};
++
++	emmc_pwrseq: emmc-pwrseq {
++		compatible = "mmc-pwrseq-emmc";
++		reset-gpios = <&gpio BOOT_9 GPIO_ACTIVE_LOW>;
++	};
++
++	wifi32k: wifi32k {
++		compatible = "pwm-clock";
++		#clock-cells = <0>;
++		clock-frequency = <32768>;
++		pwms = <&pwm_ef 0 30518 0>; /* PWM_E at 32.768KHz */
++	};
++
++	sdio_pwrseq: sdio-pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
++		clocks = <&wifi32k>;
++		clock-names = "ext_clock";
++	};
++};
++
++&efuse {
++	bt_mac: bt_mac@6 {
++		reg = <0x6 0x6>;
++	};
++
++	wifi_mac: wifi_mac@C {
++		reg = <0xc 0x6>;
++	};
++};
++
++&sn {
++	reg = <0x32 0x20>;
++};
++
++&eth_mac {
++	reg = <0x0 0x6>;
++};
++
++&bid {
++	reg = <0x12 0x20>;
++};
++
++&usb {
++	status = "okay";
++	dr_mode = "host";
++};
++
++&pwm_ef {
++	status = "okay";
++	pinctrl-0 = <&pwm_e_pins>;
++	pinctrl-names = "default";
++	clocks = <&clkc CLKID_FCLK_DIV4>;
++	clock-names = "clkin0";
++};
++
++&saradc {
++	status = "okay";
++	vref-supply = <&vddio_ao18>;
++};
++
++/* Wireless SDIO Module */
++&sd_emmc_a {
++	status = "okay";
++	pinctrl-0 = <&sdio_pins>;
++	pinctrl-1 = <&sdio_clk_gate_pins>;
++	pinctrl-names = "default", "clk-gate";
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	bus-width = <4>;
++	cap-sd-highspeed;
++	max-frequency = <50000000>;
++
++	non-removable;
++	disable-wp;
++
++	/* WiFi firmware requires power to be kept while in suspend */
++	keep-power-in-suspend;
++
++	mmc-pwrseq = <&sdio_pwrseq>;
++
++	vmmc-supply = <&vddao_3v3>;
++	vqmmc-supply = <&vddio_boot>;
++};
++
++/* SD card */
++&sd_emmc_b {
++	status = "okay";
++	pinctrl-0 = <&sdcard_pins>;
++	pinctrl-1 = <&sdcard_clk_gate_pins>;
++	pinctrl-names = "default", "clk-gate";
++
++	bus-width = <4>;
++	cap-sd-highspeed;
++	max-frequency = <50000000>;
++	disable-wp;
++
++	cd-gpios = <&gpio CARD_6 GPIO_ACTIVE_LOW>;
++
++	vmmc-supply = <&vddao_3v3>;
++	vqmmc-supply = <&vddio_boot>;
++};
++
++/* eMMC */
++&sd_emmc_c {
++	status = "okay";
++	pinctrl-0 = <&emmc_pins>, <&emmc_ds_pins>;
++	pinctrl-1 = <&emmc_clk_gate_pins>;
++	pinctrl-names = "default", "clk-gate";
++
++	bus-width = <8>;
++	cap-mmc-highspeed;
++	max-frequency = <200000000>;
++	non-removable;
++	disable-wp;
++	mmc-ddr-1_8v;
++	mmc-hs200-1_8v;
++
++	mmc-pwrseq = <&emmc_pwrseq>;
++	vmmc-supply = <&vcc_3v3>;
++	vqmmc-supply = <&vddio_boot>;
++};
++
++/* Console UART */
++&uart_AO {
++	status = "okay";
++	pinctrl-0 = <&uart_ao_a_pins>;
++	pinctrl-names = "default";
++};
++
++/* S905W only has access to its internal PHY */
++&ethmac {
++	status = "okay";
++	phy-mode = "rmii";
++	phy-handle = <&internal_phy>;
++};
++
++&internal_phy {
++	status = "okay";
++	pinctrl-0 = <&eth_link_led_pins>, <&eth_act_led_pins>;
++	pinctrl-names = "default";
++};
++
++&uart_A {
++	status = "okay";
++	pinctrl-0 = <&uart_a_pins>, <&uart_a_cts_rts_pins>;
++	pinctrl-names = "default";
++	uart-has-rtscts;
++};
++
++&uart_C {
++	status = "okay";
++	pinctrl-0 = <&uart_c_pins>;
++	pinctrl-names = "default";
++};
++
++&uart_AO_B {
++	status = "okay";
++	pinctrl-0 = <&uart_ao_b_pins>, <&uart_ao_b_cts_rts_pins>;
++	pinctrl-names = "default";
++	uart-has-rtscts;
++};
++
++&i2c_B {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c_b_pins>;
++
++	pcf8563: pcf8563@51 {
++		compatible = "nxp,pcf8563";
++		reg = <0x51>;
++		status = "okay";
++	};
++};
 -- 
 2.30.2
 
