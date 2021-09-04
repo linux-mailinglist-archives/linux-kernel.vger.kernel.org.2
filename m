@@ -2,197 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 374864008D5
+	by mail.lfdr.de (Postfix) with ESMTP id EE4F64008D7
 	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 03:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350663AbhIDAlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 3 Sep 2021 20:41:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241254AbhIDAlC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 3 Sep 2021 20:41:02 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EE0C061575;
-        Fri,  3 Sep 2021 17:40:01 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id v1so494910plo.10;
-        Fri, 03 Sep 2021 17:40:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FI6R42Oo7MX5/xkTwAAMjl52Mc/0wUr0Fx+yPEL+Ji4=;
-        b=P9p3I1iFOOqZHomjJ9vNMefUT3hZPzD+F1bNrOIYlplXPkvXNDcsEoyzTJIVAmJ35Y
-         0rkjEw3jIJ562VBGidsZBdYFLb+XXXwWHfP4361rOcoFkfXJlccu6Oa3StlZZpt8UB3p
-         RMeJs65RYXCbGcJ9FCY+9HyR8PojZBDka55C1UZ9rYWMF3GUYyXqiBqOFxjLDEwwr1Pt
-         s85jHd6VurdxdjV9hbU5CoLvTBeJI79gIHfkKkC9t7c8rptQ4B/9hqjUJgLc0CkQ7nQY
-         IYyLlGH5GENe7taBtOG5A0IXy2YH8nbyCN6a+STlteI8sxyU1mv5PnWuHxgGuCtiClCx
-         gtgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FI6R42Oo7MX5/xkTwAAMjl52Mc/0wUr0Fx+yPEL+Ji4=;
-        b=W3YZh9KB2GsQ4JIwhnvEM8sk2q0m8q5Nb0qLPGERgq9AjvlnDa6IZ5mwzoC2MqiZIb
-         569Tn9FsFPsRyzg+kCgpHtqqEqtACalmhXhWlR7CrsZMUglx+WHNKUxjGCVLhMubY93K
-         21uox2fDFTxnk83VnQvgeRd22IE3uhe9W7WcZ/BkwfWQ8O7vxGI4QUzfIVINUHZ6akDx
-         G4o8bay4C/luP22UwuyeApaftMP+18RjbrqEt/mji4XYqL9MGREvKLgNQIrshFshsa0k
-         q/7TwWy8iRwQXTk6tZUBg0NyYIw70556lx2zFJwvD7sMX9ahS2Cwqg+GpvLaTwdL7r69
-         rSjw==
-X-Gm-Message-State: AOAM5310s9QwG9vghGi3HIBuJ8n2OFh8aBUbp5NxeV6+9GfUOKrJB4Bo
-        QY2vBty12mok/eGYRNGhEGPASU04VHIjN5Ma
-X-Google-Smtp-Source: ABdhPJzz1rwyz2vh+Ezx9pYFTMx4kmC/xaZ4SlrqqT6MjtyqC6xvt8h0O3Dz2Zp+MEjlpU0HVoMEtw==
-X-Received: by 2002:a17:90b:33c6:: with SMTP id lk6mr1588157pjb.203.1630716000885;
-        Fri, 03 Sep 2021 17:40:00 -0700 (PDT)
-Received: from skynet-linux.local ([136.185.149.81])
-        by smtp.googlemail.com with ESMTPSA id o2sm487823pgu.76.2021.09.03.17.39.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Sep 2021 17:40:00 -0700 (PDT)
-From:   Sireesh Kodali <sireeshkodali1@gmail.com>
-To:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Vladimir Lypak <vladimir.lypak@gmail.com>,
-        Sireesh Kodali <sireeshkodali1@gmail.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        James Willcox <jwillcox@squareup.com>,
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 3/3] drm/msm/mdp5: Add configuration for MDP v1.16
-Date:   Sat,  4 Sep 2021 06:09:17 +0530
-Message-Id: <20210904003919.36575-1-sireeshkodali1@gmail.com>
+        id S1350732AbhIDAnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 3 Sep 2021 20:43:31 -0400
+Received: from mail-bn1nam07on2041.outbound.protection.outlook.com ([40.107.212.41]:51496
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241254AbhIDAna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 3 Sep 2021 20:43:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ILQOrY5cMue+xUytpsQ8e78tXr7Y4iqOravX18/NmsFfgvIIN7rpagYpxHO1Y+x2y64LPSJ/0iUG1GTC1FuX1BiPZMpcUGhwDLJRxzB6woBpyYDzrRKxsZ90TMGfUHlaQZXqlMpkq+Pncd2D7h/REh0L/3kg3AxQWVS88sU4eYmNKobDzXW+Yi9cMXQRy9lcZGmUGeRNzWT+XhRV3PUcQGk7caa5oCvlQj84qGZOrik42J2c8R76s2LBOrOix8GUUfsSQKebYWb1ETD9iCWST+deZCxv2ypoYsRvpp8qvhZN6ZMkNyOhtfM4Gop2LriWrbVmVtVq/ofAK/UmwYJSbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=qIC8K2bSxX+KxEWcUl+HhIrMSIUejaJm7ZH7n+OLY4M=;
+ b=ZIYjTu43/yPTclCa1lcPp02vDPiVbmWwfyT7G2KDcuMVVqUqB5LpIcToJVvupj+An7KSSf7iEDThwmX7G9gVjeT5vnmbmJ3Q5QkZlBMdSnoFOR2JmgoMd10d3tGHfv5+vl/Z0nzCvLodYNEeMXwG6AZdWk8XnfBNIDk9jDtuEWzoZ3/AbDKNUC1sHCM2UX3Mh8JSOpJS6z8fVJA/Gl4ZFUwYvu16G/njVJDUkzFY1ki0QxNczSd5tiNuJp8vuWYuwPaRfainUpmf5s+kjHxyZAWGemSbZysUwCkspMEF+R8XkmDmGH4fuGXRgGVKtcGiLSEbvqdH6pRYsgsH7QQEjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.35) smtp.rcpttodomain=linux.ibm.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qIC8K2bSxX+KxEWcUl+HhIrMSIUejaJm7ZH7n+OLY4M=;
+ b=fzkDV72poGoqETU5B+8QbvStAZneFczfJ0rV84f4w81TuzhlDwizt2iGGk20etiF2mWv+M7mevvRRh8pSOIRgvxR+6VNwZc814LIrSRE19XNHJBwpYS/R89RxSR8kz+NrrU8Rb/Rq+e4x6SauZwfxn7IS2EhARsTgkFG6NTQfaTzFXb9qUelNNJ5zA3jXGiVkQYtZh8xy+e8xrUZBgO5mSwHv7va7zG58nX31Owu28OPymnuXFppy79E69IJejPX7I6W14NEaDkQYtXK05kJipQxAE0kz9t4esngZLMVdTXXYazUoOHYPamuonPbhGlCCHfF3P7RxdUxQ9tusyhhdQ==
+Received: from BN9PR03CA0900.namprd03.prod.outlook.com (2603:10b6:408:13c::35)
+ by BN8PR12MB3364.namprd12.prod.outlook.com (2603:10b6:408:40::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.21; Sat, 4 Sep
+ 2021 00:42:27 +0000
+Received: from BN8NAM11FT029.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:13c:cafe::58) by BN9PR03CA0900.outlook.office365.com
+ (2603:10b6:408:13c::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.21 via Frontend
+ Transport; Sat, 4 Sep 2021 00:42:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
+ smtp.mailfrom=nvidia.com; linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.35; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.35) by
+ BN8NAM11FT029.mail.protection.outlook.com (10.13.177.68) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4478.19 via Frontend Transport; Sat, 4 Sep 2021 00:42:27 +0000
+Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Sat, 4 Sep
+ 2021 00:42:26 +0000
+Received: from sandstorm.attlocal.net (172.20.187.5) by mail.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Fri, 3 Sep 2021 17:42:26 -0700
+From:   John Hubbard <jhubbard@nvidia.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Miaohe Lin" <linmiaohe@huawei.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        "Jan Kara" <jack@suse.cz>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCH] mm/gup: further simplify __gup_device_huge()
+Date:   Fri, 3 Sep 2021 17:42:24 -0700
+Message-ID: <20210904004224.86391-1-jhubbard@nvidia.com>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210903170844.35694-1-sireeshkodali1@gmail.com>
-References: <20210903170844.35694-1-sireeshkodali1@gmail.com>
 MIME-Version: 1.0
+X-NVConfidentiality: public
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d09d61d3-81eb-496c-d313-08d96f3cde8f
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3364:
+X-Microsoft-Antispam-PRVS: <BN8PR12MB3364ED5C55C3CA112A37AD77A8D09@BN8PR12MB3364.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:249;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: USp2r4crTdT20/AIzkeNtXpMVhWhpbNlqYdZZA61IzMS/Oy//28t2Bd/86+XYQV9kkDnyqarXKn6rC1NfwrlMO8pCfFlGqnonBw/TPxTGPcInV9IvHS5+QJUN3cA75Znn+Matyw66yqFIUMD7+PtEk27qyWvSZZgYB0+NHn2+WKWJPlU39dp1H3+/Su9Kuv1nRyQ34ZFRGv3pfa0du5Ny6GYqhiMVeftlJmRqIr8Vs6fHEGaywSfVRjHNMKSDTTXp00bg2WUOmNHJG1HvcovTLQ76xbScJ/wM/uekIHbBblyGzYP2lCYW8vIIsX/c2wTKEcb5YS3inb6TZ2AXtH38y4+0oGDYb+PoDF+64e3VrojwNF6C5q99xkWVW4prU9X53ed51FY718x5eN0HM1gEntZ4tNc/TarqTwH1OMp639ubbxNJ87si3r94SMnT2BC/uEQIin49U4FK/CGavrd4m75wHZ6BHvvO7zKB4uy08ps+ZWuzukcNn4d4xYbMRI+R/NjC4sDvizIANlOGmt6cog9aLBITu/imKkUfwFtc9yy471+MBW88bVH1G52t39Lr+iJOLc4rDoOvoeJyj4Cf5jhs2bo5p8x/CIXT//6wCTlNKjVil3dcu4m7HealmWaoGsg7bjv89J2Lzg8buNVpifttFFsHlVfYto2LtX/ivvMOaq5uLtI773e4BhkqPRM6CR9IZtTce6XPTVLPp8wl0As9ElFg6Ehqbgs1x7shn+aG2DdGljoyVRBWRG6lx9SLM0vhiB3/JhddS7CSaB5YPT18RE1Bmm66hHwdRBGhzg=
+X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid04.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(396003)(39860400002)(346002)(136003)(36840700001)(46966006)(36756003)(1076003)(7636003)(2616005)(8936002)(5660300002)(54906003)(83380400001)(316002)(336012)(966005)(4326008)(356005)(8676002)(426003)(36906005)(47076005)(6916009)(82740400003)(86362001)(186003)(70586007)(70206006)(2906002)(26005)(36860700001)(478600001)(82310400003)(14583001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Sep 2021 00:42:27.0617
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d09d61d3-81eb-496c-d313-08d96f3cde8f
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT029.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3364
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Lypak <vladimir.lypak@gmail.com>
+commit 6401c4eb57f9 ("mm: gup: fix potential pgmap refcnt leak in
+__gup_device_huge()") simplified the return paths, but didn't go quite
+far enough, as discussed in [1].
 
-MDP version v1.16 is almost identical to v1.15 with most significant
-difference being presence of second DSI interface. MDP v1.16 is found on
-SoCs such as MSM8x53, SDM450, SDM632 (All with Adreno 506).
+Remove the "ret" variable entirely, because there is enough information
+already available to provide the return value.
 
-Signed-off-by: Vladimir Lypak <vladimir.lypak@gmail.com>
-Signed-off-by: Sireesh Kodali <sireeshkodali1@gmail.com>
+[1] https://lore.kernel.org/r/CAHk-=wgQTRX=5SkCmS+zfmpqubGHGJvXX_HgnPG8JSpHKHBMeg@mail.gmail.com
+
+Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 ---
- drivers/gpu/drm/msm/disp/mdp5/mdp5_cfg.c | 89 ++++++++++++++++++++++++
- 1 file changed, 89 insertions(+)
+ mm/gup.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_cfg.c b/drivers/gpu/drm/msm/disp/mdp5/mdp5_cfg.c
-index 9741544ffc35..0d28c8ff4009 100644
---- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_cfg.c
-+++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_cfg.c
-@@ -752,6 +752,94 @@ const struct mdp5_cfg_hw msm8x76_config = {
- 	.max_clk = 360000000,
- };
+diff --git a/mm/gup.c b/mm/gup.c
+index 9935a4480710..6e62f1518c1f 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -2241,7 +2241,6 @@ static int __gup_device_huge(unsigned long pfn, unsigned long addr,
+ {
+ 	int nr_start = *nr;
+ 	struct dev_pagemap *pgmap = NULL;
+-	int ret = 1;
  
-+static const struct mdp5_cfg_hw msm8x53_config = {
-+	.name = "msm8x53",
-+	.mdp = {
-+		.count = 1,
-+		.caps = MDP_CAP_CDM |
-+			MDP_CAP_SRC_SPLIT,
-+	},
-+	.ctl = {
-+		.count = 3,
-+		.base = { 0x01000, 0x01200, 0x01400 },
-+		.flush_hw_mask = 0xffffffff,
-+	},
-+	.pipe_vig = {
-+		.count = 1,
-+		.base = { 0x04000 },
-+		.caps = MDP_PIPE_CAP_HFLIP	|
-+			MDP_PIPE_CAP_VFLIP	|
-+			MDP_PIPE_CAP_SCALE	|
-+			MDP_PIPE_CAP_CSC	|
-+			MDP_PIPE_CAP_DECIMATION	|
-+			MDP_PIPE_CAP_SW_PIX_EXT	|
-+			0,
-+	},
-+	.pipe_rgb = {
-+		.count = 2,
-+		.base = { 0x14000, 0x16000 },
-+		.caps = MDP_PIPE_CAP_HFLIP	|
-+			MDP_PIPE_CAP_VFLIP	|
-+			MDP_PIPE_CAP_DECIMATION	|
-+			MDP_PIPE_CAP_SW_PIX_EXT	|
-+			0,
-+	},
-+	.pipe_dma = {
-+		.count = 1,
-+		.base = { 0x24000 },
-+		.caps = MDP_PIPE_CAP_HFLIP	|
-+			MDP_PIPE_CAP_VFLIP	|
-+			MDP_PIPE_CAP_SW_PIX_EXT	|
-+			0,
-+	},
-+	.pipe_cursor = {
-+		.count = 1,
-+		.base = { 0x34000 },
-+		.caps = MDP_PIPE_CAP_HFLIP	|
-+			MDP_PIPE_CAP_VFLIP	|
-+			MDP_PIPE_CAP_SW_PIX_EXT	|
-+			MDP_PIPE_CAP_CURSOR	|
-+			0,
-+	},
-+
-+	.lm = {
-+		.count = 3,
-+		.base = { 0x44000, 0x45000 },
-+		.instances = {
-+				{ .id = 0, .pp = 0, .dspp = 0,
-+				  .caps = MDP_LM_CAP_DISPLAY |
-+					  MDP_LM_CAP_PAIR },
-+				{ .id = 1, .pp = 1, .dspp = -1,
-+				  .caps = MDP_LM_CAP_DISPLAY },
-+			     },
-+		.nb_stages = 5,
-+		.max_width = 2048,
-+		.max_height = 0xFFFF,
-+	},
-+	.dspp = {
-+		.count = 1,
-+		.base = { 0x54000 },
-+
-+	},
-+	.pp = {
-+		.count = 2,
-+		.base = { 0x70000, 0x70800 },
-+	},
-+	.cdm = {
-+		.count = 1,
-+		.base = { 0x79200 },
-+	},
-+	.intf = {
-+		.base = { 0x6a000, 0x6a800, 0x6b000 },
-+		.connect = {
-+			[0] = INTF_DISABLED,
-+			[1] = INTF_DSI,
-+			[2] = INTF_DSI,
-+		},
-+	},
-+	.max_clk = 400000000,
-+};
-+
- static const struct mdp5_cfg_hw msm8917_config = {
- 	.name = "msm8917",
- 	.mdp = {
-@@ -1151,6 +1239,7 @@ static const struct mdp5_cfg_handler cfg_handlers_v1[] = {
- 	{ .revision = 7, .config = { .hw = &msm8x96_config } },
- 	{ .revision = 11, .config = { .hw = &msm8x76_config } },
- 	{ .revision = 15, .config = { .hw = &msm8917_config } },
-+	{ .revision = 16, .config = { .hw = &msm8x53_config } },
- };
+ 	do {
+ 		struct page *page = pfn_to_page(pfn);
+@@ -2249,14 +2248,12 @@ static int __gup_device_huge(unsigned long pfn, unsigned long addr,
+ 		pgmap = get_dev_pagemap(pfn, pgmap);
+ 		if (unlikely(!pgmap)) {
+ 			undo_dev_pagemap(nr, nr_start, flags, pages);
+-			ret = 0;
+ 			break;
+ 		}
+ 		SetPageReferenced(page);
+ 		pages[*nr] = page;
+ 		if (unlikely(!try_grab_page(page, flags))) {
+ 			undo_dev_pagemap(nr, nr_start, flags, pages);
+-			ret = 0;
+ 			break;
+ 		}
+ 		(*nr)++;
+@@ -2264,7 +2261,7 @@ static int __gup_device_huge(unsigned long pfn, unsigned long addr,
+ 	} while (addr += PAGE_SIZE, addr != end);
  
- static const struct mdp5_cfg_handler cfg_handlers_v3[] = {
+ 	put_dev_pagemap(pgmap);
+-	return ret;
++	return addr == end;
+ }
+ 
+ static int __gup_device_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
 -- 
 2.33.0
 
