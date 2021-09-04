@@ -2,71 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9962B400B78
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 15:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D08AC400B7E
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 15:33:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236831AbhIDNUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 09:20:24 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:51827 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236646AbhIDNTQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 09:19:16 -0400
-Received: by mail-il1-f199.google.com with SMTP id r5-20020a92d985000000b002246fb2807cso1221414iln.18
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 06:18:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=DTcitzNwwwfDLGiph5ugAcsPhJeXuriZRhOl1FDOjE4=;
-        b=F19yVFQIdIcZalcjHj7bGAwWpjN2jIy2Z1IS3fo//PyxLnsJpMRypXIX1oFhGEV6F4
-         VhUxyTsy4Ca9mF7ZrzRqCkxPREihJqzYwIVwVQLyeIVE6eXIV8ToITHqiz34/tC1jbYu
-         dgQsbuJAADYAG9bPcgFwvmeQAr21kUnr2T2xcBMM68YQnPprdeviX3rZg66qzWp5029F
-         6C1ruE01wmdcFES8xHe029KAziywAMA0FciLN0AF/mYpfUJM9zujPqJlDu2B8xH6xEy2
-         mWv+vS2Lf4++gShDmSRrSLyr95U3DsVns0s30Uu7H9jt2RrnLSjbTWB7IV/5047yktnR
-         NtQg==
-X-Gm-Message-State: AOAM533RVVzPvU4qaPBZnpGauej2s1Q0rTLbPedt43HutJVzzRK+Dffk
-        I12ioMBy1fCU/+C0RdfKfBhzE+iDWOHxBFtMQReJTBa3x7IE
-X-Google-Smtp-Source: ABdhPJzzAYnXS6olwz1ENWgZc/oP4zhdHKTMsi9FQ/GneXxD1w35pB5VnWastbwjB53pyB+tq6s4U7H/8D++e7bR3Kd0e2tkGr8k
-MIME-Version: 1.0
-X-Received: by 2002:a92:c848:: with SMTP id b8mr2569244ilq.54.1630761494367;
- Sat, 04 Sep 2021 06:18:14 -0700 (PDT)
-Date:   Sat, 04 Sep 2021 06:18:14 -0700
-In-Reply-To: <00000000000010f70d05cb1d2407@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000095d18505cb2b3fd5@google.com>
-Subject: Re: [syzbot] general protection fault in __io_arm_poll_handler
-From:   syzbot <syzbot+ba74b85fa15fd7a96437@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, dhowells@redhat.com,
-        dvyukov@google.com, gregkh@linuxfoundation.org,
-        io-uring@vger.kernel.org, jlayton@redhat.com,
-        linux-cachefs@redhat.com, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S235612AbhIDNYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 09:24:40 -0400
+Received: from gate.crashing.org ([63.228.1.57]:51486 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233703AbhIDNYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 09:24:36 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 184DJCVJ031110;
+        Sat, 4 Sep 2021 08:19:12 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 184DJBeH031102;
+        Sat, 4 Sep 2021 08:19:11 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Sat, 4 Sep 2021 08:19:11 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
+Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
+Message-ID: <20210904131911.GP1583@gate.crashing.org>
+References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com> <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com> <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org> <878s0c4vng.fsf@oldenburg.str.redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <878s0c4vng.fsf@oldenburg.str.redhat.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Sat, Sep 04, 2021 at 10:01:07AM +0200, Florian Weimer wrote:
+> * Nathan Chancellor:
+> > We set up the linux-toolchains mailing list after Plumbers 2020 to
+> > have a common place that kernel developers can bring issues and
+> > discussion to both clang and GCC folks. I am not sure who exactly from
+> > the GCC world is subscribed but I have added it now to see.
+> 
+> Someone said that they “agree with the reasoning”, but the original
+> patch does not provide one.  It looks like it's about preventing the use
+> of compiler-supplied header files, but even that doesn't really answer
+> the question: why?
+> 
+> Especially since some parts of the kernel actually need some of those
+> header files.
 
-commit 884a76881fc5f5c9c04de1b640bed2c340929842
-Author: David Howells <dhowells@redhat.com>
-Date:   Mon Feb 10 10:00:22 2020 +0000
+Let me quote the original mail (I had to dig it out of the archives as
+well, no nice threading, too lazy, sorry):
 
-    fscache: Procfile to display cookies
+> On Thu, Sep 2, 2021 at 4:31 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > I fixed the warnings observed in the previous PR.
+> 
+> Ok, let's try it again.
+> 
+> >  - Add <linux/stdarg.h> to the kernel source instead of borrowing
+> >    <stdarg.h> from the compiler.
+> 
+> So I certainly agree with the reasoning, but this worries me a bit.
+> 
+> stdarg is truly intimately an internal compiler file, in ways that
+> stddef (to pick another example) isn't.
+> 
+> Yeah, yeah, offsetof() is "kind of compiler internal", and we end up
+> using __compiler_offsetof(), but in the absence of that we *can* just
+> do it by hand. So offsetof() really is one of those things where we
+> can just do our own version if some compiler is being difficult.
+> 
+> But va_start and friends absolutely *must* match the exact compiler version.
+> 
+> It does look like both gcc and clang have just standardized on using
+> __builtin_xyz for all the different stdarg things, and so I approve of
+> what that <linux/stdarg.h> ended up looking like.
+> 
+> But at the same time, it does make me go "ok, this is a big new
+> assumption that we've consciously avoided for a long time".
+> 
+> Nick is already on the cc here for other reasons, but let's add the
+> clang-built list and Nathan explicitly. Because this basically
+> codifies that
+> 
+>     typedef __builtin_va_list va_list;
+>     #define va_start(v, l)  __builtin_va_start(v, l)
+>     #define va_end(v)       __builtin_va_end(v)
+>     #define va_arg(v, T)    __builtin_va_arg(v, T)
+>     #define va_copy(d, s)   __builtin_va_copy(d, s)
+> 
+> being the way all the supported compilers work.
+> 
+> Did people talk to any gcc maintainers too? We don't have the same
+> kind of "gcc kernel people" list or contacts. The above builtins have
+> been the case for a long long time for gcc, so I don't think it's
+> wrong or likely to change, but I think it would be a good thing to
+> just make compiler people aware of how we're now relying on that
+> explicitly.
+> 
+> (Side note: Linux using the compiler <stdarg.h> goes so far back that
+> it very much predates all those nice builtins. I still have memories
+> of <stdarg.h> being a collection of nasty per-architecture messes back
+> in the bad old days. So I'm actually happy we can do this now, but
+> there most definitely was a time when we really really had to use the
+> compiler-provided stdarg.h).
+> 
+>                 Linus
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=114e665d300000
-start commit:   a9c9a6f741cd Merge tag 'scsi-misc' of git://git.kernel.org..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=134e665d300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=154e665d300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c84ed2c3f57ace
-dashboard link: https://syzkaller.appspot.com/bug?extid=ba74b85fa15fd7a96437
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=137a45a3300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=105ba169300000
+<stdarg.h> is a header that any C implementation is required to provide
+to give some certain functionality (one type and four macros, in this
+case, mentioned above).  No implementation is allowed to put anything in
+those headers that can conflict with anything in user code or in some
+implementation's internals, and I haven't heard of any implementation
+breaking in that way for decades, there is absolutely no reason not to
+use <stdarg.h>.
 
-Reported-by: syzbot+ba74b85fa15fd7a96437@syzkaller.appspotmail.com
-Fixes: 884a76881fc5 ("fscache: Procfile to display cookies")
+It is one of the few headers required from freestanding implementations
+even (and <stddef.h> is another for that matter: the full list is
+<float.h>, <iso646.h>, <limits.h>, <stdalign.h>, <stdarg.h>,
+<stdbool.h>, <stddef.h>, <stdint.h>, and <stdnoreturn.h>).
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+I recommend using this.  It is what it is for.  It works in all
+compilers.  Not using it is not writing in C.
+
+
+Segher
