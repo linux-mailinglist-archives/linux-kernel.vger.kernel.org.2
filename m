@@ -2,143 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABC4C400BB5
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 16:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BF9400BB7
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 16:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236701AbhIDOta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 10:49:30 -0400
-Received: from relay.sw.ru ([185.231.240.75]:52562 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234792AbhIDOt3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 10:49:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=tXIHNQoEOkIAybC/J4mKwOIRiIwvVjP5yN4twwIB1v4=; b=C3JzPZ/yP/oFRxBx/
-        rRUpfsfaDJy3eZiwxS/hYRf2XPPl5aaAzVVEpdGNUaKMVSBHx2x0kHiAAV3D6mILYdYWoFjxwqxfQ
-        PbueUNV9Wy9c9QrWEBClSzMN8MO2DtUZvCbG2hoHA2lCU3kH5uv4MT7CCUShmjXUU+UJMVEm9udV4
-        =;
-Received: from [10.93.0.56]
-        by relay.sw.ru with esmtp (Exim 4.94.2)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1mMWy0-000n07-Kv; Sat, 04 Sep 2021 17:48:24 +0300
-Subject: Re: WARNING in sk_stream_kill_queues
-From:   Vasily Averin <vvs@virtuozzo.com>
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Hao Sun <sunhao.th@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <CACkBjsYG3O_irFOZqjq5dJVDwW8pSUR_p6oO4BUaabWcx-hQCQ@mail.gmail.com>
- <c84b07f8-ab0e-9e0c-c5d7-7d44e4d6f3e5@gmail.com>
- <9a35a6f2-9373-6561-341c-8933b537122e@virtuozzo.com>
-Message-ID: <71e8b315-3f3a-85ae-fede-914269a15272@virtuozzo.com>
-Date:   Sat, 4 Sep 2021 17:48:23 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S236645AbhIDOwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 10:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230039AbhIDOwM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 10:52:12 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9CAC061575;
+        Sat,  4 Sep 2021 07:51:10 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id q26so1997970wrc.7;
+        Sat, 04 Sep 2021 07:51:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QuAjwG4QD/tyhAwpENnTdRM0gpwUf3SSs1urtonm/5o=;
+        b=hqsCaXRi5oajodRiLPHYun8CWVH9oX5HsGLIzwG5boH9DFx0dHCAMG8GRdzpQJCJ9N
+         LN7EBHaMgOJwJQIj3vcDYpLC3cd5UdsyVPbss1RwMrHtbm4Ee0bqATEn5ieoxpKqBuDW
+         aHulBhJ7AngFtiFDlsY5bIu7oKh+cwyUTcA7lzlNluAgL4KdXdToSPyZQNpufoFrjidV
+         MzfLFmd5MWZP/cAuuBuQMFbW/4Cut0DWrq0/BSc8gbMFGwEKY2kXbe9aEC3wlgX7wGHA
+         hVkkhTcqYCT5GpY0FhjPQvzQiSGSayHiuOzHqrOBfRdELfBkxyOo+ho9YM76cdM6hEOg
+         CODA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QuAjwG4QD/tyhAwpENnTdRM0gpwUf3SSs1urtonm/5o=;
+        b=rUFyvsKTDp+vwLDA9dqvCcWqJQQzxh0ri9iZ6722HcwrEuzwwA18HMDJQPdMRpTNc6
+         HD8jM9aNI+coHyhxq+aNQo73HTJksQsdYhqeHfQFqYMDoXKd8Rbl8Ko7CrLKYGdxXEpX
+         9gnvboV6uFshQeKMgh3/3YEcf0ORgutkpnENExCjDcgEE09SdQOSuRMYkU6U94SAEmKs
+         go66fiNaaGsZ+4/ecnkTfRsQVmajoCxZNVb4JpD2FR6rAoATW36B+R4z4Vwt4H1YXGpU
+         +r902QaTAGNo0y1NRaAXSmtsfpt+xmIaG60w1YoYOBpYtBdbvjJ9tTTeLbI1wwoMjY0q
+         MIYQ==
+X-Gm-Message-State: AOAM533pSzy7ze+BNH0IKccd9kf1ivfx7sqFur48jf2Rgl+ejhDVM5VV
+        BLSZu4qB6PiRU0WP8vNDwqP6JFqo7NhM/Y6YShY=
+X-Google-Smtp-Source: ABdhPJyW2q+CbgV9QbnLTyhMWnPi5rIdh11b+hIJQvDopYZ6pkVm5dd8/GgD2piV3vD8tChZ6JIo088AsyNvTtRg83o=
+X-Received: by 2002:adf:d193:: with SMTP id v19mr4279370wrc.377.1630767068862;
+ Sat, 04 Sep 2021 07:51:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <9a35a6f2-9373-6561-341c-8933b537122e@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210903145340.225511-1-daniel.baluta@oss.nxp.com>
+ <20210903145340.225511-3-daniel.baluta@oss.nxp.com> <YTJTF5VMOyG2iZb0@robh.at.kernel.org>
+In-Reply-To: <YTJTF5VMOyG2iZb0@robh.at.kernel.org>
+From:   Daniel Baluta <daniel.baluta@gmail.com>
+Date:   Sat, 4 Sep 2021 17:50:56 +0300
+Message-ID: <CAEnQRZC-GN9iEPk6-A_oKPHcCYj8_WeQC0TT_NpK_QntkmAqiQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] dt-bindings: dsp: fsl: Add DSP optional clocks documentation
+To:     Rob Herring <robh@kernel.org>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        s-anna@ti.com, Daniel Baluta <daniel.baluta@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/21 9:10 PM, Vasily Averin wrote:
-> On 9/3/21 7:56 PM, Eric Dumazet wrote:
->> On 9/3/21 12:54 AM, Hao Sun wrote:
->>> Hello,
->>>
->>> When using Healer to fuzz the latest Linux kernel, the following crash
->>> was triggered.
->>>
->>> HEAD commit: 9e9fb7655ed58 Merge tag 'net-next-5.15'
->>> git tree: upstream
->>> console output:
->>> https://drive.google.com/file/d/1AXEQDnn7SPgFAMjqbL03_24-X_8YHoAq/view?usp=sharing
->>> kernel config: https://drive.google.com/file/d/1zgxbwaYkrM26KEmJ-5sUZX57gfXtRrwA/view?usp=sharing
->>> C reproducer: https://drive.google.com/file/d/1qa4FVNoO-EsJGuDMtGlTxtHW0li-vMSP/view?usp=sharing
->>> Syzlang reproducer:
->>> https://drive.google.com/file/d/1pL6atNID5ZGzH4GceqyBCOC5IjFfiaVN/view?usp=sharing
-> 
->>> If you fix this issue, please add the following tag to the commit:
->>> Reported-by: Hao Sun <sunhao.th@gmail.com>
->>
->> This is probably a dup, causes skb_expand_head() changes,
->> CC  Vasily Averin <vvs@virtuozzo.com> is currently working on a fix.
-> 
-> Thank you for this report and especially for C reproducer!
+On Fri, Sep 3, 2021 at 8:11 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Fri, Sep 03, 2021 at 05:53:40PM +0300, Daniel Baluta wrote:
+> > From: Daniel Baluta <daniel.baluta@nxp.com>
+> >
+> > DSP node on the Linux kernel side must also take care of enabling
+> > DAI/DMA related clocks.
+> >
+> > By design we choose to manage DAI/DMA clocks from the kernel side because of
+> > the architecture of some i.MX8 boards.
+> >
+> > Clocks are handled by a special M4 core which runs a special firmware
+> > called SCFW (System Controler firmware).
+> >
+> > This communicates with A cores running Linux via a special Messaging
+> > Unit and implements a custom API which is already implemented by the
+> > Linux kernel i.MX clocks implementation.
+> >
+> > Note that these clocks are optional. We can use the DSP without them.
+> >
+> > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> > ---
+> >  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 33 +++++++++++++++++++
+> >  1 file changed, 33 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > index 7afc9f2be13a..1453668c0194 100644
+> > --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > @@ -24,16 +24,49 @@ properties:
+> >      maxItems: 1
+> >
+> >    clocks:
+> > +    minItems: 3
+> >      items:
+> >        - description: ipg clock
+> >        - description: ocram clock
+> >        - description: core clock
+> > +      - description: esai0 core clock for accessing registers
+> > +      - description: esai0 baud clock
+> > +      - description: esai0 system clock
+> > +      - description: esai0 spba clock required when ESAI is placed in slave mode
+> > +      - description: SAI1 bus clock
+> > +      - description: SAI1 master clock 0
+> > +      - description: SAI1 master clock 1
+> > +      - description: SAI1 master clock 2
+> > +      - description: SAI1 master clock 3
+> > +      - description: SAI3 bus clock
+> > +      - description: SAI3 master clock 0
+> > +      - description: SAI3 master clock 1
+> > +      - description: SAI3 master clock 2
+> > +      - description: SAI3 master clock 3
+> > +      - description: SDMA3 root clock used for accessing registers
+>
+> Sigh, I just rejected this kind of thing for the other i.MX8 DSP
+> binding[1].
+>
+> Add a reference to the h/w block and then get the clocks (and other
+> resources) from there.
 
-Eric,
-this problem is not related to my patches.
-I've reproduced the problem locally on orignal kernel with original config,
-then I've applied last version of my patch -- but it did not help, issue was reproduced again,
-then I've reverted all my patches, see lest below -- and reproduced the problem once again
+The H/W block is controlled by the DSP firmware. So, we don't want
+to use the Linux kernel driver (thus the H/W block device tree node).
 
-Thank you,
-	Vasily Averin
+The only thing that we cannot control from the DSP firmware are the clocks
+hence we handle them in the DSP node.
 
-b8a0bb68ac30 (HEAD -> net-next-5.15) Revert "ipv6: allocate enough headroom in ip6_finish_output2()"
-1bc2de674a1b Revert "ipv6: ip6_finish_output2: set sk into newly allocated nskb"
-780e2f7d9b93 Revert "skbuff: introduce skb_expand_head()"
-782eaeed9de7 Revert "ipv6: use skb_expand_head in ip6_finish_output2"
-639e9842fc1f Revert "ipv6: use skb_expand_head in ip6_xmit"
-3b16ee164bcd Revert "ipv4: use skb_expand_head in ip_finish_output2"
-ab48caf0e632 Revert "vrf: use skb_expand_head in vrf_finish_output"
-4da67a72ceef Revert "ax25: use skb_expand_head"
-9b113a8a62f0 Revert "bpf: use skb_expand_head in bpf_out_neigh_v4/6"
-fc4ab503ce8f Revert "vrf: fix NULL dereference in vrf_finish_output()"
+We moved the DAI clocks under the DSP node as I think you suggested here:
 
->>>  ------------[ cut here ]------------
->>> WARNING: CPU: 1 PID: 10229 at net/core/stream.c:207
->>> sk_stream_kill_queues+0x162/0x190 net/core/stream.c:207
->>> Modules linked in:
->>> CPU: 1 PID: 10229 Comm: syz-executor Not tainted 5.14.0+ #12
->>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
->>> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
->>> RIP: 0010:sk_stream_kill_queues+0x162/0x190 net/core/stream.c:207
->>> Code: 41 5c e9 21 3b ce fd e8 1c 3b ce fd 89 de 48 89 ef e8 62 68 fe
->>> ff e8 0d 3b ce fd 8b 95 68 02 00 00 85 d2 74 ca e8 fe 3a ce fd <0f> 0b
->>> e8 f7 3a ce fd 8b 85 20 02 00 00 85 c0 74 c3 e8 e8 3a ce fd
->>> RSP: 0018:ffffc900080b7c98 EFLAGS: 00010202
->>> RAX: 000000000002a750 RBX: 0000000000000180 RCX: ffffc90002c0d000
->>> RDX: 0000000000040000 RSI: ffffffff836939f2 RDI: ffff8881031f0b40
->>> RBP: ffff8881031f0b40 R08: 0000000000000000 R09: 0000000000000000
->>> R10: 000000000000000d R11: 000000000004f380 R12: ffff8881031f0c90
->>> R13: ffff8881031f0bc0 R14: ffff8881031f0cf0 R15: 0000000000000000
->>> FS:  00007f311adcb700(0000) GS:ffff88813dc00000(0000) knlGS:0000000000000000
->>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>> CR2: 0000000000732190 CR3: 000000010ab01000 CR4: 0000000000752ee0
->>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>> PKRU: 55555554
->>> Call Trace:
->>>  inet_csk_destroy_sock+0x6f/0x1a0 net/ipv4/inet_connection_sock.c:1012
->>>  __tcp_close+0x512/0x610 net/ipv4/tcp.c:2869
->>>  tcp_close+0x29/0xa0 net/ipv4/tcp.c:2881
->>>  inet_release+0x58/0xb0 net/ipv4/af_inet.c:431
->>>  __sock_release+0x47/0xf0 net/socket.c:649
->>>  sock_close+0x18/0x20 net/socket.c:1314
->>>  __fput+0xdf/0x380 fs/file_table.c:280
->>>  task_work_run+0x86/0xd0 kernel/task_work.c:164
->>>  get_signal+0xde6/0x10b0 kernel/signal.c:2596
->>>  arch_do_signal_or_restart+0xa9/0x860 arch/x86/kernel/signal.c:865
->>>  handle_signal_work kernel/entry/common.c:148 [inline]
->>>  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
->>>  exit_to_user_mode_prepare+0xf2/0x280 kernel/entry/common.c:209
->>>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
->>>  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
->>>  do_syscall_64+0x40/0xb0 arch/x86/entry/common.c:86
->>>  entry_SYSCALL_64_after_hwframe+0x44/0xae
->>> RIP: 0033:0x46a9a9
->>> Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
->>> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
->>> 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
->>> RSP: 002b:00007f311adcac58 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
->>> RAX: 0000000000069340 RBX: 000000000078c0a0 RCX: 000000000046a9a9
->>> RDX: 0000000000088012 RSI: 0000000020000380 RDI: 0000000000000004
->>> RBP: 00000000004e4042 R08: 0000000000000000 R09: 0000000000000027
->>> R10: 000000000020c49a R11: 0000000000000246 R12: 000000000078c0a0
->>> R13: 0000000000000000 R14: 000000000078c0a0 R15: 00007ffe75b47830
->>>
-> 
-
+https://www.lkml.org/lkml/2020/3/12/969
