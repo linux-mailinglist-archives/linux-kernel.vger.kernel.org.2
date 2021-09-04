@@ -2,120 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 847B7400CF1
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 22:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7936C400CF6
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 22:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232891AbhIDUms (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 16:42:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44784 "EHLO
+        id S233991AbhIDUtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 16:49:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbhIDUmr (ORCPT
+        with ESMTP id S229888AbhIDUtR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 16:42:47 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880A4C061575
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 13:41:45 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id i21so5157211ejd.2
-        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 13:41:45 -0700 (PDT)
+        Sat, 4 Sep 2021 16:49:17 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88210C061575
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 13:48:15 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id z2so5417861lft.1
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 13:48:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lFrmrzYdi4W9e05rZQyIefjI/ECSxbcxYQllGrHvMCg=;
-        b=B0Z6m3EEkmYaeB0NxXr0zIH17/0/9gVvynrZc4f+uYbPozTISUs3B1mPr7AwYYAQr8
-         Q3jBlroT+bOU+6l4FcfgYkd98mmA6FLmJ4TtHL5Q3rDX7bc9Rtrdd9Ud3td7ng8Eg6bk
-         ZLc0EAOQoEWqhEodV+9A3Kclx79CkCVz3KUTsZW7kAF5OLY/NmaD9L3YSACuz2P1Nhll
-         bwVvWUekDrsHG28XHdG9aFzA1OCGAQcGphVcSSiToXI5QWYui/tUe+Wkg3UM2kMXK7ad
-         p//z9SKxYx99GHV8HUwJ2H8rKsD/nDqWmNWz1X+7PLXEmsi7iwv1t3d5yb+5UtKaS7Ng
-         Lezw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=zHHc5Ft3Ok6Z3pRnyZ85tV26jItKpe9ZasjrvP2F9MQ=;
+        b=fLS/Wwf8Pg9aIz7w9/dZITjC1PCxmO/MKANDa1mRx1+Fwm3hX1ZJ8O3+Omdy4oKpCz
+         8waa+KCSeiDwz5XSqEyiN9FxWNMJ+3+n5mWTGVJK6lvg8LJ+JONBA5I8Pmo8Pcmdu0Ak
+         M9Qkp9DUbKWuiYEqSg2ZNPMzpiFcDyRRUWRS4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lFrmrzYdi4W9e05rZQyIefjI/ECSxbcxYQllGrHvMCg=;
-        b=hyxQhJSa19DClBsLIWJpUt38sVZFIHrQXxSj+K0loBJDvsWAEJMscb9KKZ/XFqBV/C
-         ImyazfszlsMS2JduQikVjAiV84sU8ESce3L94aiOcHA7u3wbSuDfTg4IWuAflrpf6fSz
-         p7m5Cb7njMCeVLxh01gFogDgf9jvjy8XvVqCaEnknNv4+liA03xi6npQTkRia1wo4CxS
-         T/PbZdMBnv0LmCEIFUduYHSn5nsfwPchRMGQg3cdtBj+nZV+piIW3Q6ouG26UeZoMDTd
-         OqNGiju/FMVJrBkkgUagz8PNHG1FKes9hZrioVCr/dkbV5zeAkVYoeeOHi047zdcwFuV
-         wHEg==
-X-Gm-Message-State: AOAM532bWwCBD5329PhsW+Kjzj+mKCAZf0fJFEnOH15ybYV2NVFJTrj6
-        cmOI17B1rBXPWqX5C4hUNyo=
-X-Google-Smtp-Source: ABdhPJxiSqnDZgkoMQ1RWDgSU3bxKLT9uacc3Q13nxfYCAaGFQxz88qrVNX+8deihPMXKkFfeHoA4w==
-X-Received: by 2002:a17:906:3fc1:: with SMTP id k1mr5824741ejj.44.1630788103998;
-        Sat, 04 Sep 2021 13:41:43 -0700 (PDT)
-Received: from localhost.localdomain (host-79-23-101-208.retail.telecomitalia.it. [79.23.101.208])
-        by smtp.gmail.com with ESMTPSA id n2sm1854806edi.32.2021.09.04.13.41.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Sep 2021 13:41:43 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Larry Finger <Larry.Finger@lwfinger.net>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org
-Subject: Re: [PATCH 3/3] staging: r8188eu: Shorten calls chain of rtw_write8/16/32/N()
-Date:   Sat, 04 Sep 2021 22:41:41 +0200
-Message-ID: <2791328.7pjKATJfGa@localhost.localdomain>
-In-Reply-To: <202109050113.Uyg2SCTW-lkp@intel.com>
-References: <20210904150447.14659-4-fmdefrancesco@gmail.com> <202109050113.Uyg2SCTW-lkp@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zHHc5Ft3Ok6Z3pRnyZ85tV26jItKpe9ZasjrvP2F9MQ=;
+        b=czzwDIxQdnvR1outt29M5l3WtpEgOdpTJPp3jluJy7L476dS84/wh6VAx1lSIBK0O5
+         R/3+tayDbGo6MAUbdHka+0BCv9A1qjDJAufb5bNygxoc8u2lLlkas0yVSCrmqpU8LyQC
+         3yuKUtVEG9hPobvBW04BmielWJhYCm1lDo5ku0EsSym3iQnc62jqElg4Bcunu+7B6nU/
+         vTsSXhv5WD95jC2KOA/Kv+0+6qIMCayckp3N6lMUjLW1GhmivIhX65NvFCDX08hBhAHM
+         QW+vBZYuEL+TsZWfGQp46J08bnACe4JEz1TA4MXFKPoUtYYRfXysOvXYz95Op/DBdILO
+         ZPPg==
+X-Gm-Message-State: AOAM533etIP4gZQhEQWToGwopAfdJHGT0aF5KdwphFFXeLFhRfhBpZpf
+        iU/Qpbu0UYR0i2Y/i0ygOT3uUIQ6zLsKkJbH
+X-Google-Smtp-Source: ABdhPJyzf4A06ckt0HBCOPFndqS4FvdZMOFHY/R7wKvE/7ANOL5ze3MqQBnHmTdbOOqPlh1RhfMSdA==
+X-Received: by 2002:a05:6512:1289:: with SMTP id u9mr4033872lfs.296.1630788492725;
+        Sat, 04 Sep 2021 13:48:12 -0700 (PDT)
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com. [209.85.208.171])
+        by smtp.gmail.com with ESMTPSA id bu1sm325704lfb.306.2021.09.04.13.48.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 04 Sep 2021 13:48:12 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id y6so4352934lje.2
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 13:48:11 -0700 (PDT)
+X-Received: by 2002:a05:651c:158f:: with SMTP id h15mr4190618ljq.249.1630788491026;
+ Sat, 04 Sep 2021 13:48:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="ISO-8859-1"
+References: <202109022012.756B6B5B79@keescook>
+In-Reply-To: <202109022012.756B6B5B79@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 4 Sep 2021 13:47:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiPOXS2f90Ykk3V76sJLx0wMVywke8pc=88r1trmDuhmw@mail.gmail.com>
+Message-ID: <CAHk-=wiPOXS2f90Ykk3V76sJLx0wMVywke8pc=88r1trmDuhmw@mail.gmail.com>
+Subject: Re: [GIT PULL] overflow updates for v5.15-rc1
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithp@keithp.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, September 4, 2021 7:09:58 PM CEST kernel test robot wrote:
-> Hi "Fabio,
-> 
-> Thank you for the patch! Yet something to improve:
-> 
-> [auto build test ERROR on staging/staging-testing]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Fabio-M-De-Francesco/
-staging-r8188eu-Shorten-and-simplify-calls-chain/20210904-231010
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git 
-fde4862d1ac7100028da4371d92454fec6cf3f4f
+On Thu, Sep 2, 2021 at 8:22 PM Kees Cook <keescook@chromium.org> wrote:
 >
-> [...]
->
-> All errors (new ones prefixed by >>):
-> 
->    drivers/staging/r8188eu/hal/usb_ops_linux.c: In function 'usb_write':
-> >> drivers/staging/r8188eu/hal/usb_ops_linux.c:105:47: error: 
-'REALTEK_USB_VENQT_SEND' undeclared (first use in this function); did you 
-mean 'REALTEK_USB_VENQT_READ'?
->      105 |                                               
-REALTEK_USB_VENQT_SEND, value,
->          |                                               
-^~~~~~~~~~~~~~~~~~~~~~
->
-Hello to all,
+> Please pull these overflow updates for v5.15-rc1.
 
-I apologize for this easily avoidable mistake. I'm about to post the v2 
-series.
+I pulled and then immediately unpulled again.
 
-However, I write this message to affirm that Pavel's tests on this patch are 
-still valid and confirmed because his copy *has* the right parameter that is 
-REALTEK_USB_VENQT_WRITE.
+You can't add new warnings without fixing them, and this adds some
+HORRENDOUSLY ugly new warnings that would most definitely hide other
+warnings.
 
-It's all my fault. Pavel warned me that during the review and test he noticed 
-that I had written REALTEK_USB_VENQT_READ and obviously my build was 
-successful because it was a symbol known to the compiler.
+It doesn't matter one whit if the new warnings are from some
+test-file, they are not acceptable for a build.
 
-Pavel successfully changed his local copy and I (independently) changed mine 
-without thinking about rebuilding. I was absolutely certain it was the 
-expected parameter (perhaps the function name - usb_control_msg_send () - 
-played a part in leading me to this stupid mistake).
+Make any tests separate from a real kernel build, because if "make
+allmodconfig" results in hundreds of lines of warning crud, it's
+useless garbage.
 
-In summary, first I want to apologize for the noise, secondly I want to 
-apologize to Pavel who is co-author and tester of this 3/3 of our series.
+             Linus
 
-Regards,
+---
 
-Fabio
+warning: unsafe memchr() usage lacked '__read_overflow' warning in
+lib/test_fortify/read_overflow-memchr.c
+lib/test_fortify/test_fortify.h: In function =E2=80=98do_fortify_tests=E2=
+=80=99:
+lib/test_fortify/read_overflow-memchr.c:3:9: error: statement with no
+effect [-Werror=3Dunused-value]
+    3 |         memchr(small, 0x7A, sizeof(small) + 1)
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/test_fortify/test_fortify.h:34:9: note: in expansion of macro =E2=80=98=
+TEST=E2=80=99
+   34 |         TEST;
+      |         ^~~~
+In file included from ./include/linux/string.h:253,
+                 from ./include/linux/bitmap.h:10,
+                 from ./include/linux/cpumask.h:12,
+                 from ./arch/x86/include/asm/cpumask.h:5,
+                 from ./arch/x86/include/asm/msr.h:11,
+.. lots of noise ..
 
-
-
+In function =E2=80=98strncpy=E2=80=99,
+    inlined from =E2=80=98do_fortify_tests=E2=80=99 at lib/test_fortify/tes=
+t_fortify.h:34:2:
+./include/linux/fortify-string.h:56:17: error: call to
+=E2=80=98__write_overflow=E2=80=99 declared with attribute error: detected =
+write
+beyond size of object (1st parameter)
+   56 |                 __write_overflow();
+      |                 ^~~~~~~~~~~~~~~~~~
+warning: unsafe strncpy() usage lacked '__write_overflow' warning in
+lib/test_fortify/write_overflow-strncpy.c
+In file included from ./include/linux/string.h:253,
+                 from ./include/linux/bitmap.h:10,
+                 from ./include/linux/cpumask.h:12,
+                 from ./arch/x86/include/asm/cpumask.h:5,
+                 from ./arch/x86/include/asm/msr.h:11,
+                 from ./arch/x86/include/asm/processor.h:22,
+                 from ./arch/x86/include/asm/cpufeature.h:5,
+                 from ./arch/x86/include/asm/thread_info.h:53,
+                 from ./include/linux/thread_info.h:60,
+                 from ./arch/x86/include/asm/preempt.h:7,
+                 from ./include/linux/preempt.h:78,
+                 from ./include/linux/spinlock.h:55,
+                 from ./include/linux/mmzone.h:8,
+                 from ./include/linux/gfp.h:6,
+                 from ./include/linux/slab.h:15,
+                 from lib/test_fortify/test_fortify.h:4,
+                 from lib/test_fortify/write_overflow-strncpy.c:5:
