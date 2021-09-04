@@ -2,98 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C36400BDD
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 17:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4363400BE1
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 17:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236758AbhIDPRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 11:17:53 -0400
-Received: from mout.gmx.net ([212.227.15.18]:43507 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230514AbhIDPRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 11:17:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1630768607;
-        bh=4ANx2vQH7iUfBjxYEEyIv5InnOcmLlsv7CD1nz2q4jY=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=M2cVjhoh45xX65ta5m4cPtHvdxIPNrpAw1F0G0T1K8Bkjrsb1r737tvEy/imRgV9V
-         R6XY+xNsY6tXNuBrjGwznpZEzzcH0OBexs8PNzLRILuYsXXU7jqJSOjAqwCrbD1v//
-         2q38xp61Cit8nzz/J/uLO6o6up8N1npRmQodOFn4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MEm2D-1mAl2S1mZ9-00GLJd; Sat, 04 Sep 2021 17:16:47 +0200
-From:   Len Baker <len.baker@gmx.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
-        linux-pm@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] cpufreq: powernow: Prefer kcalloc over open coded arithmetic
-Date:   Sat,  4 Sep 2021 17:16:28 +0200
-Message-Id: <20210904151628.6618-1-len.baker@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S236812AbhIDPUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 11:20:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45286 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236797AbhIDPUd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 11:20:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630768771;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zvDeup5okN2+a9recacvzIyRt8oQsyaj87C3UrFckM0=;
+        b=aCX9K6luu9eqsiplCHNWOLXh0hXNL2smLL+Zc+K1RFFUz8lITMbAY7u/4rIAoMKm+1coVc
+        ya52CAirO5/I49DQE4nINeiARMLhYQcA0LTcyI/mhzxRVsOuO38Jd3FZpxteT7KGizrln3
+        mLMOndYj4ZOvyR7HuzJpnUZuzWeKESQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-523-B4_Nd3ZlP523hyVUeBxjYg-1; Sat, 04 Sep 2021 11:19:27 -0400
+X-MC-Unique: B4_Nd3ZlP523hyVUeBxjYg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E763E8145E5;
+        Sat,  4 Sep 2021 15:19:25 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.39.194.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 28C55189C4;
+        Sat,  4 Sep 2021 15:19:22 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
+Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
+References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com>
+        <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com>
+        <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org>
+        <878s0c4vng.fsf@oldenburg.str.redhat.com>
+        <20210904131911.GP1583@gate.crashing.org>
+Date:   Sat, 04 Sep 2021 17:19:21 +0200
+In-Reply-To: <20210904131911.GP1583@gate.crashing.org> (Segher Boessenkool's
+        message of "Sat, 4 Sep 2021 08:19:11 -0500")
+Message-ID: <871r644bd2.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Fz00f2zl30lePk2hUfI0+vrZgaY3Bl3Wi4wOgZXuYJcsYXGB9a/
- 1HzQ7AE+uqZMFjtXiuz2uMNtCDKrspCycA1Nrp7Ov+I1k9mtyYnwE9uj6itUvA9IiDWVtgs
- bjTIqlJk9vDugJ0j9CWus9+Z4u0/te2pNQ0egxgxQ8irvntBuCSAigmw4NB01DVaDFxTHrT
- UWcbj/wFyHXSf6uSpKjLw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qTf5c/4A6Rs=:xfdaGwvgcm9LZ29ZKYCxNt
- 6S/WTVipfUO/io6x8Tq29NiZpqNd+/6lhkfV0+xqa001fNV3Xl6A8iq3If/kGmBLigatlqEc+
- z9NVFjzq9SMhK4v+/gqG8OhTf1LJs2+WSKUzze9T3nofcR1269nhNc0AXZgtn8sYQOMGjblRP
- cEbiXHr0sAMsamAGcy34/Fu3KI6J9brHdi3irt1fQQ21onQOSfi1urB/x080B3nVgl+KR/NGE
- 5A/G0hg2aHFfi+DB/6v64GkDTHiaaGyWFDyv2+xU76wnlisuGUB7DCOUgIMEyO0Ic0r+gPJek
- 7yTIg1vWGwMlkCHOpIksljYTQuefmgqGzAXNrcpYccLPZhqQ6m40ntq12VCd1S3dtKpWJlbL5
- 0U9r6LGqoFlH4qTanV42DVi2BB57P6CrdHgWtPCBtycz08NE0Eld7vSq3cVrZcfAN3hZGXHt9
- WFmAzaGupy7Ea1KxF8br2C38UcK1oh6lcufd5M9WMADGavj1ZUQnsv/BpF1ayvf3ktBKqHCRf
- h9YiAK6e21BhOAUk71pjoBgc14wEhkYst1JonYfkC/7puEHmIcTSdg1iTbv750crQEftt6DHl
- 43ELQjQ2GJ+q47t46zGamiM+PIVV9oiHSQwqt8hKFM2q42bpMVztI9cHorgpLq4VCsoR7sFjc
- UKO5reKsD8vYXr836IKc3xDJQTIHsWFCZKNpU/A9bE1PImGqMVAjsJ3AhRB2fPj5Atd2M7oEJ
- aLmXTKlpLT5kVM79jxHyF5WH3w50CjPRFoG1WtSXJ13RzQrCK6a44Pk8tr2mDUkipnlEpnwu6
- o6/vE25vsHkbrf29ilNPstZaNA+VBZQ+gK7rDBUEMJPAmVGIiIs19ZsIxySrf8BhgS9jmxTCh
- zgrkLQ6Xfs4vaFXHs9XxABrDk/fCaiqvS6/ZCceRWYpwjGYv8SoAAlwluRW9gphnNbd8igZ1p
- lu8ComueqEsShBXy2M3hXMRV+2V69mYVR2Ukccac6Twp/9DU/Oydi3L9fyc9LGyNCInk4LNZW
- OKnxiHIl0qre4lwAKriSZg5XcrCqiQfVz23RwbutbSU3MtRW1CGJHbb+pZ6NaW+M0NPIUYiO6
- o5OGeD8vq/w/42ppotMsmCjofADggVaPlEsqj9rPrsDJHgexkyd5LXuAg==
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As noted in the "Deprecated Interfaces, Language Features, Attributes,
-and Conventions" documentation [1], size calculations (especially
-multiplication) should not be performed in memory allocator (or similar)
-function arguments due to the risk of them overflowing. This could lead
-to values wrapping around and a smaller allocation being made than the
-caller was expecting. Using those allocations could lead to linear
-overflows of heap memory and other misbehaviors.
+* Segher Boessenkool:
 
-So, use the purpose specific kcalloc() function instead of the argument
-size * count in the kzalloc() function.
+> Let me quote the original mail (I had to dig it out of the archives as
+> well, no nice threading, too lazy, sorry):
 
-[1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-cod=
-ed-arithmetic-in-allocator-arguments
+It still doesn't say why.  I did see a reference to fleeting reference
+to <stdatomic.h> and <float.h>.
 
-Signed-off-by: Len Baker <len.baker@gmx.com>
-=2D--
- drivers/cpufreq/powernow-k7.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+My conjecture is that the real reason is avoid atomic emulation
+(softatomic?)  and softfloat code.  It's not related to <stdarg.h> at
+all: this header is replaced so that GCC's include subdirectory can be
+dropped from the include search path.  What I don't know if this is to
+avoid obscure linker failures related to libatomic/softfloat (obviously
+not great) or run-time failures (worse).
 
-diff --git a/drivers/cpufreq/powernow-k7.c b/drivers/cpufreq/powernow-k7.c
-index 5d515fc34836..a9d2c7bae235 100644
-=2D-- a/drivers/cpufreq/powernow-k7.c
-+++ b/drivers/cpufreq/powernow-k7.c
-@@ -174,8 +174,8 @@ static int get_ranges(unsigned char *pst)
- 	unsigned int speed;
- 	u8 fid, vid;
+In any case, it would be nice to know what the real motivation is.
 
--	powernow_table =3D kzalloc((sizeof(*powernow_table) *
--				(number_scales + 1)), GFP_KERNEL);
-+	powernow_table =3D kcalloc(number_scales + 1, sizeof(*powernow_table),
-+				 GFP_KERNEL);
- 	if (!powernow_table)
- 		return -ENOMEM;
+After all, <stdatomic.h> is exactly like <stdarg.h> in that it's
+possible to use its functionality even without the header file.  The
+__atomic builtins are even documented in the GCC manual (unlike
+<stdatomic.h>), which is why some programmers prefer them over the
+standard interface.  And then there's the _Atomic keyword itself, whose
+use can easily result in calls to libatomic functions, too.  So blocking
+<stdatomic.h> makes little sense to me.
 
-=2D-
-2.25.1
+I don't know enough about softfloat if blocking the inclusion of
+<float.h> is worth it.
+
+Thanks,
+Florian
 
