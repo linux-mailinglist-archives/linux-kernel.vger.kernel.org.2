@@ -2,198 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C2F4009FE
-	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 08:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3755400A01
+	for <lists+linux-kernel@lfdr.de>; Sat,  4 Sep 2021 08:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234506AbhIDGKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 02:10:25 -0400
-Received: from home.keithp.com ([63.227.221.253]:36028 "EHLO elaine.keithp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232700AbhIDGKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 02:10:17 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by elaine.keithp.com (Postfix) with ESMTP id ADD2C3F30823;
-        Fri,  3 Sep 2021 23:08:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=keithp.com; s=mail;
-        t=1630735729; bh=r0xjnWX8kE9bb/74dzYlSkCXEjBA3QT3WBW2iIime7A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pqt0z1tTN3RLmjPMQ5LHxjjAOdPSkz3USC0JCSyxVLg+2M3oOmkdjlhQluRSQPScG
-         s/fmocrSKNlql2MlaTQhVYscrst/H2R0PPKFhaaayAqxXPh5BzzZ4Azorl6AwBQTkH
-         dNm3IwfN5cjwt4mSittOfURqyjbhJmIkCu95rcC1Qr4mX8aFConRJblXLtidZi87Mf
-         /reDINIS0nq9jQmBmLtWDnNgf2R08rvYQQauB2qit530t0ytISzs9FVyDHKWwsJmTn
-         uRRBNoRyb5zWyF/QvMcNjVoPexAEAbyFtPPQ/l1biB2Gqf+nbfAmRxRQp2nZQf+r7T
-         EEoY1BTWegqPw==
-X-Virus-Scanned: Debian amavisd-new at keithp.com
-Received: from elaine.keithp.com ([127.0.0.1])
-        by localhost (elaine.keithp.com [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id 2EHHIQER57nx; Fri,  3 Sep 2021 23:08:49 -0700 (PDT)
-Received: from keithp.com (168-103-156-98.tukw.qwest.net [168.103.156.98])
-        by elaine.keithp.com (Postfix) with ESMTPSA id 83D483F30825;
-        Fri,  3 Sep 2021 23:08:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=keithp.com; s=mail;
-        t=1630735728; bh=r0xjnWX8kE9bb/74dzYlSkCXEjBA3QT3WBW2iIime7A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GORCUsDp4XKT5V6v7owTa9dWXyGtLChRZ6ObQkydLY7xVt4SLludDB4sUBy9598CH
-         XnZEvWUBgmptcGCc8R8oZKCWCi5WukDASW4OEhg2wtX/6yO1zMb+PxMVsW83ExQSNL
-         k6tfrWrRlrjM8F8UpafdwONfrJdT/CmcoNjlLtbw4z9P1DeAqFAPcuJrkxh801NhnN
-         iNXo23wB9cAUksIstJd67ftSDkJYT0ZKMdb3na/oRs58ezwJh6KCSsqDX9NOZUS3nb
-         05/oR6KBQtPzAkXrom5jSQcVklqEQM8uq0WY/rbfbFskMCPBvPVF24fHpniy3iCJmG
-         R0QJdU6zPT4+g==
-Received: by keithp.com (Postfix, from userid 1000)
-        id 7FA051E6013D; Fri,  3 Sep 2021 23:09:10 -0700 (PDT)
-From:   Keith Packard <keithp@keithp.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Abbott Liu <liuwenliang@huawei.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Jens Axboe <axboe@kernel.dk>, Jian Cai <jiancai@google.com>,
-        Joe Perches <joe@perches.com>,
-        Kees Cook <keescook@chromium.org>,
-        Keith Packard <keithp@keithp.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Rob Herring <robh@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Keith Packard <keithpac@amazon.com>
-Subject: [PATCH 3/3] ARM: Add per-cpu variable cpu_number (v7 only)
-Date:   Fri,  3 Sep 2021 23:09:08 -0700
-Message-Id: <20210904060908.1310204-4-keithp@keithp.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210904060908.1310204-1-keithp@keithp.com>
-References: <20210902155429.3987201-1-keithp@keithp.com>
- <20210904060908.1310204-1-keithp@keithp.com>
+        id S231844AbhIDGSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 02:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229994AbhIDGSJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 02:18:09 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10CDDC061575;
+        Fri,  3 Sep 2021 23:17:09 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id j1so931553pjv.3;
+        Fri, 03 Sep 2021 23:17:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tithbOm7YscXy/gZn9AVeTZ2bG9k6omF0DRVUunXSRI=;
+        b=HImas5uSnrZK8YnQ7y6zFKUraqZVxNcjGaCjkEK7LVL2OXlWOIr6ekwdUNW0Y/skEg
+         DGTk+bmiCLrTZ+CzgIdGS7nEnKoAKD7LLpbWM2+0C9TZ6V3f9G+MM0vKDmjxm3MKvgS/
+         QU3Ocv/5K1xOuJFwV5clQMLWhFCu1OVb6U7yuXXMQXbgJZ7540+AJIldnS7aMKcFkmxz
+         QSmuF+XTzSKMxhe8TIAmAarg44ErhlYhTNH0+XQC/qjmpcSda9T42v+Ns9dkQ1wy9ZHr
+         vQZNsyPYQNCgWKJcXBfONSP8zODniQGdBuuuPJHmpOg9wCi/zuDF3Sx4a4bno5Tke3ME
+         f0gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tithbOm7YscXy/gZn9AVeTZ2bG9k6omF0DRVUunXSRI=;
+        b=Pa9wAkOJs6k0MJfFsVbGEp53nA0SQ5evMJ6eLZwj/VyJzD9zv0uWkP+BnlVTLv+dVU
+         ECvy+IV0MOEnKMrkg5th26dnH7P/Uc2OFLmkOUwUZk7RaOoBvPVmWMTbKRb94yliOgDh
+         cZgW1TIht0UJ3IWY1ABBPebr2EpX0p5iM6tIVpZH8jliqwpdc1apGjV3Z+XYCLysrWBk
+         PQtxRSnIGSL2gE8SICV/2fszILNviXKpha+3LW0rJcNPPJG20bxdsb23Q/D6UAM+uIAc
+         QBmMRgiSAOLryGZ4mgCW/FAFZfYACVuSHNiUX5OjbH5EPlYpyRfK+bAnN4rkZA/dN9Zp
+         aejg==
+X-Gm-Message-State: AOAM533PdZjE92BOguFBS2fnnLtXfrXwixC8Ng8y8Dlf54ukxKFAuynz
+        GGBDt71v4NtlnUyfFllWYtE=
+X-Google-Smtp-Source: ABdhPJzhnytFijAFcNN9xytNcnT0QdJNHgyIOj3LMBvvl2GqjTogehRTgK1N6azG4TPZpDY3WdH4Tg==
+X-Received: by 2002:a17:902:d892:b0:138:abfd:ec7d with SMTP id b18-20020a170902d89200b00138abfdec7dmr2172244plz.15.1630736228430;
+        Fri, 03 Sep 2021 23:17:08 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:44a5:4d4e:ed46:daa])
+        by smtp.gmail.com with ESMTPSA id k12sm1048847pjg.6.2021.09.03.23.17.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Sep 2021 23:17:07 -0700 (PDT)
+Date:   Fri, 3 Sep 2021 23:17:04 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Rogerio Pimentel <rpimentel.silva@gmail.com>
+Cc:     hansemro@outlook.com, marex@denx.de, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Input: ili210x - Set the device name according to the
+ device model
+Message-ID: <YTMPYJK44lujITCk@google.com>
+References: <20210903165448.26545-1-rpimentel.silva@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903165448.26545-1-rpimentel.silva@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Holds the cpu value for each cpu to make accessing this variable more
-efficient than fetching the current task struct and pulling the cpu
-value from there.
+Hi Rogerio,
 
-This code is only enabled when THREAD_INFO_IN_TASK is selected, which
-is currently only enabled for v7 hardware.
+On Fri, Sep 03, 2021 at 01:54:48PM -0300, Rogerio Pimentel wrote:
+> Adding the device model into the device name is useful when
+> applications need to set different parameters according to the
+> touchscreen being used, e.g. X11 calibration points.
 
-Signed-off-by: Keith Packard <keithpac@amazon.com>
----
- arch/arm/Makefile          |  8 --------
- arch/arm/include/asm/smp.h | 17 +++--------------
- arch/arm/kernel/smp.c      | 16 ++++++++++++++++
- 3 files changed, 19 insertions(+), 22 deletions(-)
+Typically model would go into input->id.product and optionally
+input->id.version.
 
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 71a2ba4549d3..415c3514573a 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -284,14 +284,6 @@ stack_protector_prepare: prepare0
- 	$(eval GCC_PLUGINS_CFLAGS += $(SSP_PLUGIN_CFLAGS))
- endif
- 
--ifdef CONFIG_SMP
--prepare: task_cpu_prepare
--
--PHONY += task_cpu_prepare
--task_cpu_prepare: prepare0
--	$(eval KBUILD_CFLAGS += -D_TSK_CPU=$(shell awk '{if ($$2 == "TSK_CPU") print $$3;}' include/generated/asm-offsets.h))
--endif
--
- all:	$(notdir $(KBUILD_IMAGE))
- 
- 
-diff --git a/arch/arm/include/asm/smp.h b/arch/arm/include/asm/smp.h
-index 1c38d1fde641..67d21233bdfe 100644
---- a/arch/arm/include/asm/smp.h
-+++ b/arch/arm/include/asm/smp.h
-@@ -16,21 +16,10 @@
- #endif
- 
- #ifdef CONFIG_THREAD_INFO_IN_TASK
--/*
-- * This is particularly ugly: it appears we can't actually get the definition
-- * of task_struct here, but we need access to the CPU this task is running on.
-- * Instead of using task_struct we're using TSK_CPU which is extracted from
-- * asm-offsets.h by kbuild to get the current processor ID.
-- *
-- * This also needs to be safeguarded when building asm-offsets.s because at
-- * that time TSK_CPU is not defined yet.
-- */
--#ifndef _TSK_CPU
--#define raw_smp_processor_id()		(0)
--#else
--#define raw_smp_processor_id()		(*(unsigned int *)((void *)current + _TSK_CPU))
--#endif
-+#define raw_smp_processor_id() this_cpu_read(cpu_number)
-+#define __smp_processor_id() __this_cpu_read(cpu_number)
- 
-+DECLARE_PER_CPU_READ_MOSTLY(unsigned int, cpu_number);
- #else
- #define raw_smp_processor_id() (current_thread_info()->cpu)
- #endif
-diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-index be0ede16dbb1..a33397618f1e 100644
---- a/arch/arm/kernel/smp.c
-+++ b/arch/arm/kernel/smp.c
-@@ -56,6 +56,8 @@ DEFINE_PER_CPU(struct task_struct *, current_task) ____cacheline_aligned =
- 	&init_task;
- EXPORT_PER_CPU_SYMBOL(current_task);
- 
-+DEFINE_PER_CPU_READ_MOSTLY(unsigned int, cpu_number);
-+EXPORT_PER_CPU_SYMBOL(cpu_number);
- #endif
- 
- /*
-@@ -510,6 +512,9 @@ void __init smp_prepare_boot_cpu(void)
- void __init smp_prepare_cpus(unsigned int max_cpus)
- {
- 	unsigned int ncores = num_possible_cpus();
-+#ifdef CONFIG_THREAD_INFO_IN_TASK
-+	unsigned int cpu;
-+#endif
- 
- 	init_cpu_topology();
- 
-@@ -521,6 +526,17 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
- 	if (max_cpus > ncores)
- 		max_cpus = ncores;
- 
-+#ifdef CONFIG_THREAD_INFO_IN_TASK
-+	/*
-+	 * Initialize the cpu_number value for each cpu before we
-+	 * start it. This ensures that the value is valid during cpu
-+	 * initialization, even before the idle task_struct cpu member
-+	 * is set
-+	 */
-+	for_each_possible_cpu(cpu)
-+		per_cpu(cpu_number, cpu) = cpu;
-+#endif
-+
- 	if (ncores > 1 && max_cpus) {
- 		/*
- 		 * Initialise the present map, which describes the set of CPUs
+> 
+> Signed-off-by: Rogerio Pimentel <rpimentel.silva@gmail.com>
+> ---
+> 
+> Changes since v1: Get the device ID from touchscreen controller
+> instead of driver's device list.
+> 
+>  drivers/input/touchscreen/ili210x.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/input/touchscreen/ili210x.c b/drivers/input/touchscreen/ili210x.c
+> index 199cf3daec10..7a897a03ed70 100644
+> --- a/drivers/input/touchscreen/ili210x.c
+> +++ b/drivers/input/touchscreen/ili210x.c
+> @@ -19,10 +19,14 @@
+>  #define ILI251X_DATA_SIZE1	31
+>  #define ILI251X_DATA_SIZE2	20
+>  
+> +#define ILI_NAME_LEN		27
+> +#define ILITEK_TS_NAME "Ilitek ILI%x%x Touchscreen"
+> +
+>  /* Touchscreen commands */
+>  #define REG_TOUCHDATA		0x10
+>  #define REG_PANEL_INFO		0x20
+>  #define REG_CALIBRATE		0xcc
+> +#define REG_TS_MODEL		0x61
+>  
+>  struct ili2xxx_chip {
+>  	int (*read_reg)(struct i2c_client *client, u8 reg,
+> @@ -384,6 +388,8 @@ static int ili210x_i2c_probe(struct i2c_client *client,
+>  	struct input_dev *input;
+>  	int error;
+>  	unsigned int max_xy;
+> +	unsigned char buf[2];
+> +	char *model_name;
+>  
+>  	dev_dbg(dev, "Probing for ILI210X I2C Touschreen driver");
+>  
+> @@ -430,7 +436,10 @@ static int ili210x_i2c_probe(struct i2c_client *client,
+>  	i2c_set_clientdata(client, priv);
+>  
+>  	/* Setup input device */
+> -	input->name = "ILI210x Touchscreen";
+> +	input->name = ILITEK_TS_NAME;
+> +	model_name = (char *)input->name;
+
+Umm, no. Smashing RO data is not nice.
+
+> +	priv->chip->read_reg(priv->client, REG_TS_MODEL, buf, 2);
+> +	snprintf(model_name, ILI_NAME_LEN, input->name, buf[1], buf[0]);
+>  	input->id.bustype = BUS_I2C;
+>  
+>  	/* Multi touch */
+> -- 
+> 2.17.1
+> 
+
+Thanks.
+
 -- 
-2.33.0
-
+Dmitry
