@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A167D400E90
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 09:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99756400E94
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 09:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236481AbhIEHYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 03:24:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236152AbhIEHYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 03:24:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBB5F60F4A;
-        Sun,  5 Sep 2021 07:23:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630826620;
-        bh=Bl5XjlnUT7ec37WklJ+pflfpCbR6md7qSYkSRa9o8jA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BXlXQaXhmiIky1Oq2A9b/ufFM2/vf1hpEf5fSuIQrVz/qGyvryVOsUIlA/ckyZI0j
-         2oeP3sspHJK24YJqm3hbylunwXta6kk4bdCd70Q045pulWAp6g1mYgaeYbJTl2fw9p
-         ABgXECNtVmGb4NJjD3K1fWnf7Qs/hUjj0Jn6aWAENGxaz43zgo0bbx3MtVjEorrITa
-         ob9ESVjWcVl41aEDWPMGzGi7Qn6WiLIcNAZFf/MUxCgs+W6FsuMoVGVE+ecsAxOuAk
-         NvXnCAluF+D5JBCabbR+rv4kPSjMvTC1IaVV98l8E3B3fvEpU+RGrPDBqdPdncaU0G
-         b87lPdbZEhvEA==
-Date:   Sun, 5 Sep 2021 10:23:36 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Yongxin Liu <yongxin.liu@windriver.com>
-Cc:     david.m.ertman@intel.com, shiraz.saleem@intel.com,
-        anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, davem@davemloft.net,
-        jesse.brandeburg@intel.com, intel-wired-lan@lists.osuosl.org,
-        kuba@kernel.org
-Subject: Re: [PATCH net] ice: check whether AUX devices/drivers are supported
- in ice_rebuild
-Message-ID: <YTRweH4JMbzUtxLf@unreal>
-References: <20210903012500.39407-1-yongxin.liu@windriver.com>
+        id S231717AbhIEHdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 03:33:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhIEHdD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 03:33:03 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5B9C061575
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 00:32:01 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id bq28so7072545lfb.7
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 00:32:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6+3B9t1RtmIpk1Y5k8Qbj0wAkB7hCJyM5IWL4YBz3pM=;
+        b=M7mWvfJu3PN2CkhJ6l99lKh2jT5UCjKLpD19cNQRicDq+l5fuoD2Y5pDYJXtt8cLsV
+         VjjK3CufZBQPwKmAooIsXyiY2EFimnmSBGHeGiK91ujehIWVje1aCD9BEG+l9KfV11f6
+         AwFUX8wgUyvaidD20pHde3s6YR8HzjJdlcBYPR/onWm0CQHP8YAGKaJJde9dt8JzKT3O
+         Bi+rJqH8wS8soqdRpn+fFfCt0SXA0D1IhEy0tV0oPfoxS2Fyg/WZNmbMDMVzNu4wZfH4
+         sZayMnCUsmDMES8fdgZJlPKE2+C1ARItRr2sCka7lIZ1sL8Ze2r9hSqQpWlNrVhtEE79
+         i0tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6+3B9t1RtmIpk1Y5k8Qbj0wAkB7hCJyM5IWL4YBz3pM=;
+        b=c4pViImys8b0fbilK7EcwlTEfL29i4YXcEvXk5yu5q4HTGlO4mSvOKQXP28BraoerY
+         YbdkZMckVoDqQaQOjIQbWyTwbhTUt8e8kjalHgiPxhSyaoLTvSCXZTY9U45m/K/iHQ2m
+         Lpfz5AO3rme6PevYXyiY6Nl7xiKU0jEIwwKnCvPo8FT44X4bewt5ykdHWgHWHYjkznoB
+         x6xxXH8xc8MBQJor/lpm8rFpgmj0wRlcwuzK8y2waI0E28LVOCGhpGrf2ECw61yzmf1m
+         wROvxOl3Yde6zNS7LE2MCzrDNT1KGZtcxCgU5MEZEBHabmR1iSDbGldAaX4wGHL/b1Xr
+         p6VQ==
+X-Gm-Message-State: AOAM532YjOKHWsb5bWKv8BniyEuTWxZzlOTsycCA30us85uNWz6xcSIR
+        uu++sBy2jqmWE1r6e4TWXSII7WUk28pZ6YA=
+X-Google-Smtp-Source: ABdhPJwwsYfjs5dsX2S9wiB3t4MmCvPa7Iqez1JOroMoVlo9atEIQAJk5nCDNTQCp+S74NlHCaEarA==
+X-Received: by 2002:a05:6512:686:: with SMTP id t6mr5356574lfe.49.1630827118879;
+        Sun, 05 Sep 2021 00:31:58 -0700 (PDT)
+Received: from ripxoarch.localdomain (h-158-174-82-95.A357.priv.bahnhof.se. [158.174.82.95])
+        by smtp.gmail.com with ESMTPSA id n25sm545379ljj.42.2021.09.05.00.31.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 00:31:58 -0700 (PDT)
+From:   "Philip K. Gisslow" <ripxorip@gmail.com>
+Cc:     trivial@kernel.org, "Philip K. Gisslow" <ripxorip@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Matthias Maennich <maennich@google.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        Rustam Kovhaev <rkovhaev@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scripts/tags.sh: Fix obsolete parameter for ctags
+Date:   Sun,  5 Sep 2021 09:31:32 +0200
+Message-Id: <20210905073133.21910-1-ripxorip@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210903012500.39407-1-yongxin.liu@windriver.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 09:25:00AM +0800, Yongxin Liu wrote:
-> In ice_rebuild(), check whether AUX devices/drivers are supported or not
-> before calling ice_plug_aux_dev().
-> 
-> Fix the following call trace, if RDMA functionality is not available.
-> 
->   auxiliary ice.roce.0: adding auxiliary device failed!: -17
->   sysfs: cannot create duplicate filename '/bus/auxiliary/devices/ice.roce.0'
->   Workqueue: ice ice_service_task [ice]
->   Call Trace:
->    dump_stack_lvl+0x38/0x49
->    dump_stack+0x10/0x12
->    sysfs_warn_dup+0x5b/0x70
->    sysfs_do_create_link_sd.isra.2+0xc8/0xd0
->    sysfs_create_link+0x25/0x40
->    bus_add_device+0x6d/0x110
->    device_add+0x49d/0x940
->    ? _printk+0x52/0x6e
->    ? _printk+0x52/0x6e
->    __auxiliary_device_add+0x60/0xc0
->    ice_plug_aux_dev+0xd3/0xf0 [ice]
->    ice_rebuild+0x27d/0x510 [ice]
->    ice_do_reset+0x51/0xe0 [ice]
->    ice_service_task+0x108/0xe70 [ice]
->    ? __switch_to+0x13b/0x510
->    process_one_work+0x1de/0x420
->    ? apply_wqattrs_cleanup+0xc0/0xc0
->    worker_thread+0x34/0x400
->    ? apply_wqattrs_cleanup+0xc0/0xc0
->    kthread+0x14d/0x180
->    ? set_kthread_struct+0x40/0x40
->    ret_from_fork+0x1f/0x30
-> 
-> Fixes: f9f5301e7e2d ("ice: Register auxiliary device to provide RDMA")
-> Signed-off-by: Yongxin Liu <yongxin.liu@windriver.com>
-> ---
->  drivers/net/ethernet/intel/ice/ice_main.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-> index 0d6c143f6653..98cc708e9517 100644
-> --- a/drivers/net/ethernet/intel/ice/ice_main.c
-> +++ b/drivers/net/ethernet/intel/ice/ice_main.c
-> @@ -6466,7 +6466,9 @@ static void ice_rebuild(struct ice_pf *pf, enum ice_reset_req reset_type)
->  	/* if we get here, reset flow is successful */
->  	clear_bit(ICE_RESET_FAILED, pf->state);
->  
-> -	ice_plug_aux_dev(pf);
-> +	if (ice_is_aux_ena(pf))
-> +		ice_plug_aux_dev(pf);
-> +
+Distros such as Fedora and Arch are using the maintained
+universal-ctags implementation. This version has replaced
+the obsolete --extra flag with --extras.
 
-The change is ok, but it hints that auxiliary bus is used horribly wrong
-in this driver. In proper implementation, which should rely on driver/core,
-every subdriver like ice.eth, ice.roce e.t.c is supposed to be retriggered
-by the code and shouldn't  ave "if (ice_is_aux_ena(pf))" checks.
+Signed-off-by: Philip K. Gisslow <ripxorip@gmail.com>
+---
+ scripts/tags.sh | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Thanks
+diff --git a/scripts/tags.sh b/scripts/tags.sh
+index db8ba411860a..b24bfaec6290 100755
+--- a/scripts/tags.sh
++++ b/scripts/tags.sh
+@@ -247,6 +247,10 @@ setup_regex()
+ 
+ exuberant()
+ {
++	CTAGS_EXTRA="extra"
++	if $1 --version 2>&1 | grep -iq universal; then
++	    CTAGS_EXTRA="extras"
++	fi
+ 	setup_regex exuberant asm c
+ 	all_target_sources | xargs $1 -a                        \
+ 	-I __initdata,__exitdata,__initconst,__ro_after_init	\
+@@ -261,7 +265,7 @@ exuberant()
+ 	-I EXPORT_SYMBOL,EXPORT_SYMBOL_GPL,ACPI_EXPORT_SYMBOL   \
+ 	-I DEFINE_TRACE,EXPORT_TRACEPOINT_SYMBOL,EXPORT_TRACEPOINT_SYMBOL_GPL \
+ 	-I static,const						\
+-	--extra=+fq --c-kinds=+px --fields=+iaS --langmap=c:+.h \
++	--$CTAGS_EXTRA=+fq --c-kinds=+px --fields=+iaS --langmap=c:+.h \
+ 	"${regex[@]}"
+ 
+ 	setup_regex exuberant kconfig
+-- 
+2.33.0
 
->  	return;
->  
->  err_vsi_rebuild:
-> -- 
-> 2.14.5
-> 
