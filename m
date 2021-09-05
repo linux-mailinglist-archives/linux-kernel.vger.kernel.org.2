@@ -2,120 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7C940120F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 01:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30526401213
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 01:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234277AbhIEXUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 19:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232745AbhIEXUw (ORCPT
+        id S232059AbhIEXWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 19:22:14 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:45695 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234726AbhIEXWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 19:20:52 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B3AC061575;
-        Sun,  5 Sep 2021 16:19:48 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id u1so2834660plq.5;
-        Sun, 05 Sep 2021 16:19:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7BZXdqPIIbX0lmfQ4SwtNY8oiLwmuMvBZoqm565+qZM=;
-        b=MJSm/ehKryiK4KHSbaVd1Bq9pjHb6JwWb4gkXn/IJsRe6yPqfykinE6UE8Koi4DMvf
-         BTz8DtzdBUophSXgxJqKXEL9HiHjM8W25/w4Cv9gznDkiw7d3+So26uM6pvsHgOPr49o
-         j8MrSVf1rAUTWtIH0Ot2cwQcYVxu3pPtDr8jASbgL/cQHsC731RX7adz1bxJCRcqxwjd
-         Kzbug6y3/2StJO5YRBbBIsvpMwTjN6K3ykHkICuV+E2+gZZR9z1AiIIkE9/aBxkT2f80
-         xJjXOlaHmoqCiTI8PZpoEVjcHvXnCOp03q3+sh+EQ8X1T7+wGTtZLh4nCg5vMOtNnZ3a
-         9llw==
+        Sun, 5 Sep 2021 19:22:13 -0400
+Received: by mail-il1-f197.google.com with SMTP id o12-20020a92dacc000000b00224baf7b16fso2982594ilq.12
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 16:21:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7BZXdqPIIbX0lmfQ4SwtNY8oiLwmuMvBZoqm565+qZM=;
-        b=SAlKL2kJLXebt7DiVn9I/ogrggrPO9rA7CLcsy1INYHMmPP8rviHL55iNBeEE5YSy1
-         l+CNIRnNPQl4Yywamj3KZV9FAYD5gztRnmTT1o5qp7fx+HJ1+3T2fJVVCwzhG2DlCAmx
-         xFM7bEA5axXI7e6Rw2izC+heT4XLSM5NL/vPFS7UTL6MDLTdaD5ru5BPrws3M88myEhZ
-         FJtk93g6/8BYuWtF54J9lRrznhXECGQdbL9uTwq93AIU1sJc9PxOnrJd9VBwv7n1Qbrg
-         qI+iOGV4f/4VQpDoC4vmxhewYgP7Kjv8QzdUJ2A8wz83a43etiGlJZiILhBeWLVcIlf4
-         4JaQ==
-X-Gm-Message-State: AOAM531ubdNS3rpe6aHu43OgQUubC4p04FJrmSkyjppMnDoyLgYCNAlO
-        ZDDRZu9xchjsDbSq/zPd/92moUYtBZsSn8kD7f4=
-X-Google-Smtp-Source: ABdhPJxsH5A5v5b+7DWL2nI/OixOXfS7188Aze7SkaMeitjT4fO59ORtgY3F3G5cd+2rqSKYKy3vOXeftTmUTQke1D0=
-X-Received: by 2002:a17:90b:1085:: with SMTP id gj5mr10789472pjb.66.1630883988225;
- Sun, 05 Sep 2021 16:19:48 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=t6KGl5qGZOKwjA8wYNjhxOdRHpEUEUmyOHtgq+CbC7c=;
+        b=alBVk7xLLWm0/wk/Fb4wNAFPTIknLjl3Ybitnc+Gt8XwY1swJdo93M5tHpDIXHP87d
+         Yw8dD7fVPY78tNJvmlGT+5SK6+WFrTCauo2FVdJp6NUy/FkAUKomGVI7YqUEoCFjFn61
+         Uh7kBF2MJaHBtRxZEw9wZ+vOiSesqhh+FLdpzodccpalxDK8YVy5Yx/T1+MFFQQgL2RM
+         y4DvVz8Jlwe6/drpoMobRpBdn4wkHUXv5lFYjy69fv03Tjuvs7h+OkZQKNs7k4KVFJLL
+         JFngIa9CZ0P1BJNJadzIMu64rUEM9rFbCqvcz0g6v/aolc4rXZbRuhYEpbJf3UwcI61T
+         2Udw==
+X-Gm-Message-State: AOAM530Z5FXNe9pMuRMlaD/Yfuh5p0H4sULzwjpM7D4XxcwpLlCjrO7w
+        EVgAp259M2X6ru816GsMBcoNbHzrlcO0r9glTi1jyLZUP1u2
+X-Google-Smtp-Source: ABdhPJwd3TYEWNuMTgpkZAvirmsn+/SrAn8Wwh9OqmKijRfViKorf/rzRe7Kmqs3U6G0U4D5VgDmmChYa9ZQ83uEoiOkJtAR2DKB
 MIME-Version: 1.0
-References: <20210824034929.GA13415@raspberrypi>
-In-Reply-To: <20210824034929.GA13415@raspberrypi>
-From:   Austin Kim <austindh.kim@gmail.com>
-Date:   Mon, 6 Sep 2021 08:19:38 +0900
-Message-ID: <CADLLry4tZjHKpJq7cQ3Rmhc_OOvHK+Wmss=8x_8KA-aHP++oLw@mail.gmail.com>
-Subject: Re: [PATCH] ext4: remove an unused variable warning with CONFIG_QUOTA=n
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca
-Cc:     linux-ext4@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?6rmA64+Z7ZiE?= <austin.kim@lge.com>
+X-Received: by 2002:a05:6602:38e:: with SMTP id f14mr7782287iov.62.1630884069876;
+ Sun, 05 Sep 2021 16:21:09 -0700 (PDT)
+Date:   Sun, 05 Sep 2021 16:21:09 -0700
+In-Reply-To: <000000000000ea2f2605cb1ff6f6@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a7a8de05cb47c9b2@google.com>
+Subject: Re: [syzbot] WARNING: kmalloc bug in hash_ip_create
+From:   syzbot <syzbot+3493b1873fb3ea827986@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, chaitanya.kulkarni@wdc.com,
+        coreteam@netfilter.org, davem@davemloft.net,
+        eric.dumazet@gmail.com, fw@strlen.de, hch@lst.de,
+        ira.weiny@intel.com, johan.hedberg@gmail.com, kadlec@netfilter.org,
+        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, martin.petersen@oracle.com,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=EB=85=84 8=EC=9B=94 24=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 12:49, =
-Austin Kim <austindh.kim@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> The 'enable_quota' variable is only used in an CONFIG_QUOTA.
-> With CONFIG_QUOTA=3Dn, compiler causes a harmless warning:
->
-> fs/ext4/super.c: In function =E2=80=98ext4_remount=E2=80=99:
-> fs/ext4/super.c:5840:6: warning: variable =E2=80=98enable_quota=E2=80=99 =
-set but not used
->   [-Wunused-but-set-variable]
->   int enable_quota =3D 0;
->               ^~~~~
->
-> Move 'enable_quota' into the same #ifdef CONFIG_QUOTA block
-> to remove an unused variable warning.
->
-> Signed-off-by: Austin Kim <austindh.kim@gmail.com>
-> ---
->  fs/ext4/super.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 6b03e4281f6f..6adb570f4b31 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -5845,10 +5845,10 @@ static int ext4_remount(struct super_block *sb, i=
-nt *flags, char *data)
->         struct ext4_sb_info *sbi =3D EXT4_SB(sb);
->         unsigned long old_sb_flags, vfs_flags;
->         struct ext4_mount_options old_opts;
-> -       int enable_quota =3D 0;
->         ext4_group_t g;
->         int err =3D 0;
->  #ifdef CONFIG_QUOTA
-> +       int enable_quota =3D 0;
->         int i, j;
->         char *to_free[EXT4_MAXQUOTAS];
->  #endif
-> @@ -6053,7 +6053,9 @@ static int ext4_remount(struct super_block *sb, int=
- *flags, char *data)
->                                         err =3D -EROFS;
->                                         goto restore_opts;
->                                 }
-> +#ifdef CONFIG_QUOTA
->                         enable_quota =3D 1;
-> +#endif
->                 }
->         }
->
-> --
-> 2.20.1
->
+syzbot has bisected this issue to:
 
-If you are available, would you please review this patch?
-It will not take long.
+commit e6e7471706dc42cbe0e01278540c0730138d43e5
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Tue Jul 27 05:56:34 2021 +0000
 
-BR,
-Austin Kim
+    bvec: add a bvec_kmap_local helper
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17468471300000
+start commit:   a9c9a6f741cd Merge tag 'scsi-misc' of git://git.kernel.org..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=14c68471300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10c68471300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7860a0536ececf0c
+dashboard link: https://syzkaller.appspot.com/bug?extid=3493b1873fb3ea827986
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11602f35300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10e8fbf5300000
+
+Reported-by: syzbot+3493b1873fb3ea827986@syzkaller.appspotmail.com
+Fixes: e6e7471706dc ("bvec: add a bvec_kmap_local helper")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
