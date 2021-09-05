@@ -2,147 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 001314011F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 00:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10224011FD
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 00:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbhIEWcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 18:32:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43420 "EHLO
+        id S232617AbhIEWlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 18:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231806AbhIEWcs (ORCPT
+        with ESMTP id S229510AbhIEWlR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 18:32:48 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B04C061757
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 15:31:44 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id lc21so9587781ejc.7
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 15:31:44 -0700 (PDT)
+        Sun, 5 Sep 2021 18:41:17 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5842CC061757
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 15:40:13 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id q3so6841992edt.5
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 15:40:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=usp.br; s=usp-google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=IQBzpOrkgt1sL5aFZ4ypTx/31uYXv7KGinPeuizSygY=;
-        b=JxcOyyugTRMkxVBO9psg4Jzl3NliBERfPC1KPUtxtZkV9yMGsKON1zg7daaZKoSnlp
-         3M+WO+08tTsi5kpjhAbjAVW+rQIr2QyP3BcLvrOYPR4HeJ02GIT9sZDY3oXYTqs1s6Y6
-         98sT2r5k7pctQ9krCefkpm6VNMSLbyigftwjGs21SS/hsExc7VePwvSrdDDqa1A4zUaW
-         N0sQwlXVB0LHsq6+JGPZuEgcZMR9VQDjtvAuq4DTUy6oV1iF+m/t+alXGyxRF489mFQh
-         WjjUo1+tK5raRH4TUjCQZzw0SEfeCkSCjsDn8El2UAAwcjlVyPJrbo6nPEES2Y0a2uFz
-         9Azw==
+         :cc;
+        bh=BoHJHDDUQvDuxt5VzrZQ7aDSXlW3dvl3n4+BEi9wJZM=;
+        b=hmwVZv0IehSDHdKr/5gEMvaA4SxOUAKSho+Jh+NgZ1YtJJgB87/nqAiVmkq66RdbcM
+         m+ku3jJOCWZwOt2J5SoOy3JSSPHsPHq/HNv3OST+Lj4JPBXdJbI5bWnRVPkzOHJ/bgyL
+         hDAAmJUDK7Yf/504RbkVBTMeqTlIYtS5Axr6ED6mLvfljtZRZRHq8umoerOAbOYfvHvo
+         7SK0Ll3OUpn2XZdNw35HWbMzVovHYKntMZKX4Am3V5qDrrBvCQrmM20NtEc7zgpd8+pX
+         6CCKzma4s/8LIWTRLRNTjmG0ylRPBY8z5WgYsZzuIZ0MSe31xdzN2Y6fxwEfSybJiBgY
+         krOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=IQBzpOrkgt1sL5aFZ4ypTx/31uYXv7KGinPeuizSygY=;
-        b=XRQunI/xCSvPl5xEiTebboOwG/Syv5Pe0sgefL9kh5n6vLnYorl2x8rC5VIV/KfpmD
-         5K5jgYh4Jhv0ylTFpAC5XVHb0CknC7oB5KEagteHmrb6Sg3xw93dY77ezDfTw7EbH2/H
-         3b9ywP4nU+0uPfTJEe58a0wYq428b8nBg2Rva7oCpDvkhmd+hr6ECVvfQ8718NthRp9Z
-         JrmMR7WxyppWA0ieccVbj0FFpbnLQCqPF+5HeNvrHPlGTHbzMqXEjAxeIf52Wx315thf
-         1DJ3lyf/wUj2L9iFeOYx/ylI6mO+i4t4cJ31ZkSCDY5m7LJyJUiI336RLf5TpQsCEShE
-         Lcsw==
-X-Gm-Message-State: AOAM533JLFPt4AGnhEtUNE5pGwsCSsl5VGbRVqKw0NO9Eu9JwHkVt80C
-        bljfj3zKGWzTZrhempmeF8gD+E7E7F7taUeS9h6EaA==
-X-Google-Smtp-Source: ABdhPJz9SSYRr/gjgg62TZKE74JqYdhBC0T2ckfqD385iZBfk0LXoaPi8NW+0cJehqzqO68EknrpN4ceDjS/IdHWygY=
-X-Received: by 2002:a17:906:c7d0:: with SMTP id dc16mr10628308ejb.555.1630881103283;
- Sun, 05 Sep 2021 15:31:43 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=BoHJHDDUQvDuxt5VzrZQ7aDSXlW3dvl3n4+BEi9wJZM=;
+        b=sJHh3HamqVHwibwpyx0xhOwviuJag6VInkqgRCntRAMih9FKEARXBnqfyXQKbsLhNi
+         HkJKlgP5DSSTM46YuhY8jGaDhTPkgISBANRbQ4IJ4FPWsldjObfGu2nArYnYlCeCUvzr
+         tEVBFfFYJkeqFDTICrLj026XhuyB3CBT8/IoyNf2DH/U8YC/MPOEPnNaUtpwZX3TDrtD
+         +ypqEN9QXS16ByS7S/9/tPAkZ0KJVdPNTO8lbf3HCgkav12HVp+oyEsvIop6/J+5vd9G
+         duOgq1KbMrJzcVrhEaz94iPpi0TRLMBPEZd8DAsHmsL5kBFFuC53wc+pNhnWC7YsmN0/
+         K+pg==
+X-Gm-Message-State: AOAM5306R3svNCxfc/8Tei4Fwd3+ExZHZRqrG+/IRLvnu/XvAEH+b0W+
+        21iGjLv75G7stdM48LxFyXVQiSA+SnfDVQUqz555ug==
+X-Google-Smtp-Source: ABdhPJxaX8EKh1++EIPdXEy9vz+JqwIHdkgVBY0k1neyuVfIClkmj6c97zfxXYhjxFQKVzDWdG2PNPtf63cT4sN/knE=
+X-Received: by 2002:aa7:de92:: with SMTP id j18mr10392290edv.141.1630881611812;
+ Sun, 05 Sep 2021 15:40:11 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210826012626.1163705-1-isabellabdoamaral@usp.br>
- <20210826012626.1163705-2-isabellabdoamaral@usp.br> <CABVgOS==dbwMyFcP5ZMhMWGSNTXgsCw1gm2DnoCCnhA0SRhpzw@mail.gmail.com>
-In-Reply-To: <CABVgOS==dbwMyFcP5ZMhMWGSNTXgsCw1gm2DnoCCnhA0SRhpzw@mail.gmail.com>
+ <20210826012626.1163705-3-isabellabdoamaral@usp.br> <CANpmjNPdP4OZGE3is4twths1fejCjZeEKAweVpgdqBUc=e59ww@mail.gmail.com>
+In-Reply-To: <CANpmjNPdP4OZGE3is4twths1fejCjZeEKAweVpgdqBUc=e59ww@mail.gmail.com>
 From:   Isabella B do Amaral <isabellabdoamaral@usp.br>
-Date:   Sun, 5 Sep 2021 19:31:31 -0300
-Message-ID: <CAAniXFT_C0kZ64uJWYwXsFR3KDyqmXdZH=vrWqmOvaioW7yLvw@mail.gmail.com>
-Subject: Re: [PATCH 1/6] hash.h: remove unused define directive
-To:     David Gow <davidgow@google.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Enzo Ferreira <ferreiraenzoa@gmail.com>,
+Date:   Sun, 5 Sep 2021 19:40:00 -0300
+Message-ID: <CAAniXFSQck-pyHiyPWca0JW+vKPsP59W6X5Q2Fq_Yr-rKxn92w@mail.gmail.com>
+Subject: Re: [PATCH 2/6] test_hash.c: move common definitions to top of file
+To:     Marco Elver <elver@google.com>
+Cc:     geert@linux-m68k.org, Enzo Ferreira <ferreiraenzoa@gmail.com>,
         =?UTF-8?Q?Augusto_Dur=C3=A3es_Camargo?= 
         <augusto.duraes33@gmail.com>,
         Brendan Higgins <brendanhiggins@google.com>,
         Daniel Latypov <dlatypov@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        ~lkcamp/patches@lists.sr.ht, rodrigosiqueiramelo@gmail.com
+        David Gow <davidgow@google.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kunit-dev@googlegroups.com, ~lkcamp/patches@lists.sr.ht,
+        rodrigosiqueiramelo@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, David,
+Hello, Marco,
 
-On Thu, Aug 26, 2021 at 1:01 AM David Gow <davidgow@google.com> wrote:
+On Thu, Aug 26, 2021 at 11:36 AM Marco Elver <elver@google.com> wrote:
 >
-> On Thu, Aug 26, 2021 at 9:26 AM Isabella Basso <isabellabdoamaral@usp.br>=
- wrote:
-> >
-> > The HAVE_ARCH_HASH_32 (single underscore) define hasn't been used for
-> > any known supported architectures that have their own hash function
-> > implementation (i.e. m68k, Microblaze, H8/300, pa-risc) since George's
-> > patch [1], which introduced it.
-> >
-> > The supported 32-bit architectures from the list above have only been
-> > making use of the (more general) HAVE_ARCH__HASH_32 define, which only
-> > lacks the right shift operator, that wasn't targeted for optimizations
-> > so far.
-> >
-> > [1] https://lore.kernel.org/lkml/20160525073311.5600.qmail@ns.scienceho=
-rizons.net/
-> >
-> > Co-developed-by: Augusto Dur=C3=A3es Camargo <augusto.duraes33@gmail.co=
-m>
-> > Signed-off-by: Augusto Dur=C3=A3es Camargo <augusto.duraes33@gmail.com>
-> > Co-developed-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
-> > Signed-off-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
+> On Thu, 26 Aug 2021 at 03:26, 'Isabella Basso' via KUnit Development
+> <kunit-dev@googlegroups.com> wrote:
+> > Keep function signatures minimal by making common definitions static.
+> > This does not change any behavior.
+>
+> This seems like an odd change; if I read it right it's changing the
+> out-param passed to test_int_hash() to simply be static globals.
+>
+> For one, it makes the code harder to read because now test_int_hash()
+> is no longer "pure" (no global side-effects ... modulo printfs), and
+> what was previously an out-param, is now a global.
+>
+> Unfortunately this is poor style and likely to lead to hard-to-debug
+> problems. One such problem is if suddenly you have multiple threads
+> involved. While this is just a test and unlikely to be a problem, I
+> would recommend not introducing global state carelessly.
+
+I see. My peers at LKCamp and I talked over the thread-safety problems for a
+while but we concluded it wasn't a big deal (precisely because this is a test).
+Though being stylistically poor seems a huge heads up, so I'm really thankful
+for your thorough explanation(, and review)! Noted! :)
+
+> An alternative common idiom, where a set of variables are always
+> passed around to other functions, is to introduce a struct and pass a
+> pointer to it along.
+>
 > > Signed-off-by: Isabella Basso <isabellabdoamaral@usp.br>
 > > ---
+> >  lib/test_hash.c | 13 ++++++++-----
+> >  1 file changed, 8 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/lib/test_hash.c b/lib/test_hash.c
+> > index d4b0cfdb0377..8bcc645a7294 100644
+> > --- a/lib/test_hash.c
+> > +++ b/lib/test_hash.c
+> > @@ -23,6 +23,11 @@
+> >  #include <linux/stringhash.h>
+> >  #include <linux/printk.h>
+> >
+> > +#define SIZE 256 /* Run time is cubic in SIZE */
+> > +
+> > +static u32 string_or; /* stores or-ed string output */
+> > +static u32 hash_or[2][33] = { { 0, } }; /* stores or-ed hash output */
 >
-> I'm not familiar with the hash functions here, so take this with the
-> appropriate heap of salt, but it took me a little while to understand
-> exactly what this is doing.
+> These now use up memory for as long as this module is loaded, vs.
+> before where it would only use up stack space. (For a test that's not
+> a problem, but in non-test code it might.)
 >
-> As I understand it:
-> - There are separate __hash_32() and hash_32() functions.
-> - Both of these have generic implementations, which can optionally be
-> overridden by an architecture-specific optimised version.
-> - There aren't any architectures which provide an optimised hash_32()
-> implementation.
-> - This patch therefore removes support for architecture-specific
-> hash_32() implementations, and leaves only the generic implementation.
-> - This generic implementation of hash_32() itself relies on
-> __hash_32(), which may still be optimised.
+> >  /* 32-bit XORSHIFT generator.  Seed must not be zero. */
+> >  static u32 __init __attribute_const__
+> >  xorshift(u32 seed)
+> > @@ -66,7 +71,7 @@ fill_buf(char *buf, size_t len, u32 seed)
+> >   * recompile and re-test the module without rebooting.
+> >   */
+> >  static bool __init
+> > -test_int_hash(unsigned long long h64, u32 hash_or[2][33])
+> > +test_int_hash(unsigned long long h64)
+> >  {
+> >         int k;
+> >         u32 h0 = (u32)h64, h1, h2;
+> > @@ -123,17 +128,15 @@ test_int_hash(unsigned long long h64, u32 hash_or[2][33])
+> >         return true;
+> >  }
+> >
+> > -#define SIZE 256       /* Run time is cubic in SIZE */
+> > -
+> >  static int __init
+> >  test_hash_init(void)
+> >  {
+> >         char buf[SIZE+1];
+> > -       u32 string_or = 0, hash_or[2][33] = { { 0, } };
+> >         unsigned tests = 0;
+> >         unsigned long long h64 = 0;
+> >         int i, j;
+> >
+> > +       string_or = 0;
 >
-> Could the commit description be updated to make this a bit clearer?
-
-Sure, that makes perfect sense! Thank you very much for the feedback! Writi=
-ng
-those descriptions was quite a challenge for me, as I wasn't perfectly sure=
- of
-what the appropriate reasoning should be for the message. I'm also glad I w=
-as
-able to get a grasp similar to yours. :)
-
-> While we are getting rid of the HAVE_ARCH_HASH_32 #define, that seems
-> to be a side-effect/implementation detail of removing support for
-> architecture-specific hash_32() implementations...
+> That's another problem with changes like this; now the compiler has no
+> chance to warn you in case the variable is not initialized correctly.
 >
-> The other wild, out-there option would be to remove __hash_32()
-> entirely and make everything use hash_32(), which then could have
-> architecture-specific implementations. A quick grep reveals that
-> there's only one use of __hash_32() outside of the hashing code itself
-> (in fs/namei.c). This would be much more consistent with what
-> hash_64() does, but also would be significantly more work, and
-> potentially could have some implication (full_name_hash() performance
-> maybe?) which I'm not aware of. So it's possibly not worth it.
-
-I do agree with you that it seems a bit over the top, as I'm also really no=
-t
-aware of the performance implications of such a change (and that seemed to =
-be
-what motivated most of the patch series that introduced the __hash_32() to
-fs/namei.c), so I'd rather not mess with fs/namei.c based on consistency
-reasons alone.
+> Also, I don't see string_or used anywhere else. Why make it global?
+> If a later change would require that, it should say so in the commit
+> message. But my guess is you can avoid all that by bundling everything
+> up in a struct.
+>
+> >         fill_buf(buf, SIZE, 1);
+> >
+> >         /* Test every possible non-empty substring in the buffer. */
+> > @@ -161,7 +164,7 @@ test_hash_init(void)
+> >
+> >                         string_or |= h0;
+> >                         h64 = h64 << 32 | h0;   /* For use with hash_64 */
+> > -                       if (!test_int_hash(h64, hash_or))
+> > +                       if (!test_int_hash(h64))
+> >                                 return -EINVAL;
+> >                         tests++;
+> >                 } /* i */
+> > --
+> > 2.33.0
 
 Thanks,
 --
