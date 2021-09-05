@@ -2,105 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2995E400FB5
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 14:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3EBC400FB9
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 14:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237987AbhIEMxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 08:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbhIEMxM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 08:53:12 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA691C061575;
-        Sun,  5 Sep 2021 05:52:08 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id y34so7857740lfa.8;
-        Sun, 05 Sep 2021 05:52:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=K/x6K2UeMsD17ixUPAmN0fw2uDHH066qaNdivULg6dk=;
-        b=KZpaZxcCSLQ6pU8vgl6kDWFMtdGHaIU2m1vNy7neseUhjPql73SNgfe+z83tYYycd8
-         jTVl/acsftUBLIYn4Y1mXjaO9Gj7odgrnq0V7B2PZsRIm1msEYbtTkb1DTMJL6C9aNUf
-         yCllo1QeFBy3yxM82pc2Ak+w9gpsr+JNcMDd06zxjJ6gcs5wC/CHs4Ih57HYvnEpMCzq
-         cmOQ7ykX2+Cs7XabS+iTBnwsl9cbNWLkp5CRBxP4BA27UmCVPkB6OHr/hKB4M7m95xAx
-         yR0/e2G46WmzlZWBhTILwcoU5t9kEgSLlUJNaaw/tbq7aroC9lszMBUhklDaUSm/EvnQ
-         qfEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=K/x6K2UeMsD17ixUPAmN0fw2uDHH066qaNdivULg6dk=;
-        b=hyG5m1ccMu2nEgWX+EwtOiTFpFo+YHoGDOctfkc4+3DoCHKZIfsVDLb9m89dLqB7ED
-         Wl/iv1jIMiiqq8sR5jVUJB4FBLb9RqoSCOopaDqMkFeJIeuojk1aZOXMYp1kdPQXN9zI
-         DmdTl8MiIjaqtBN/NwJ+qhsC6IngMqMDkf+v1wmcV1uHKBP3fFssGrLQZ36nUkL+om2k
-         O6+RfcPoaal8kUCTBufASnNqq73dDHVEESlNeUGtcYkGyGQK3iq5LQ6Tkr2hVCx6pQJM
-         QyDBWpNKlchsgK/XSAAsc9QE1mcO36CzfNE9EaW2mRmm2FnA0TVnoVa4VpYM6UD9PT59
-         /HpQ==
-X-Gm-Message-State: AOAM532NGIIW+ULCMHGbX3s+pns4AJMFsqNtuc2x4CVaMgP96xcyEbZS
-        73SeklMxcsf+DrXbcn7ypSs=
-X-Google-Smtp-Source: ABdhPJxcqBUVkB6J0f+xiYxAXavSXCu6Twpx1JTV92FXJzoEWO5aKWZPI118B7oIzA0umaA62wmq2w==
-X-Received: by 2002:ac2:5c41:: with SMTP id s1mr6100369lfp.187.1630846327253;
-        Sun, 05 Sep 2021 05:52:07 -0700 (PDT)
-Received: from mobilestation ([95.79.127.110])
-        by smtp.gmail.com with ESMTPSA id bu25sm479431lfb.103.2021.09.05.05.52.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Sep 2021 05:52:06 -0700 (PDT)
-Date:   Sun, 5 Sep 2021 15:52:04 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     nandhini.srikandan@intel.com
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        broonie@kernel.org, robh+dt@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        mgross@linux.intel.com, kris.pan@intel.com,
-        kenchappa.demakkanavar@intel.com, furong.zhou@intel.com,
-        mallikarjunappa.sangannavar@intel.com, mahesh.r.vaidya@intel.com,
-        rashmi.a@intel.com
-Subject: Re: [PATCH v2 1/2] dt-bindings: spi: Add bindings for Intel Thunder
- Bay SoC
-Message-ID: <20210905125204.cyhz3vfa5brymlez@mobilestation>
-References: <20210824085856.12714-1-nandhini.srikandan@intel.com>
- <20210824085856.12714-2-nandhini.srikandan@intel.com>
+        id S237995AbhIEMzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 08:55:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231370AbhIEMzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 08:55:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 734C960F45;
+        Sun,  5 Sep 2021 12:54:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630846443;
+        bh=ruSh1z2qEZxoZPV6/YxEJiqcX9nKjn3W941R1BHEJP4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rlE3czGFQd04BjSleaGyCPPROfHKgJEj2HwFaH9vtcyKEmouQCDGDDZ/oDhPMOWjA
+         YJBKvl0gPrgimxvKs6a5lBDGZ6OVJRl/IGFz8pCTTC5Xh843NORP4xpM4HJtH7Qqdx
+         gOBGe4MzU9AxjSoK3/GjotEH3cDJ1wp6JSgantNDDp66jS/SEsLNI0T56kAPCLZ1IM
+         p4UlVy9mnSaS1outL7eJkQ3jIEfYcAvU9gKYGffbAGKmizX1PIgsWw8oKFOHfzhhus
+         6s1BwmYqgGlwWgxWKIWroMBtD4NUPE0WqWRndOTFkBAz4L6r4W+dMVb8GhPx5T0qAJ
+         RDQjFGMJsAtmQ==
+Date:   Sun, 5 Sep 2021 08:54:02 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.13 13/14] net: fix NULL pointer reference in
+ cipso_v4_doi_free
+Message-ID: <YTS96ql9DzxpYpnl@sashalap>
+References: <20210830115942.1017300-1-sashal@kernel.org>
+ <20210830115942.1017300-13-sashal@kernel.org>
+ <CAD-N9QUXXjEMtdDniuqcNSAtaOhKtHE=hLMchtCJgbvxQXdABQ@mail.gmail.com>
+ <CAHC9VhTjFMw111-fyZsFaCSnN3b-TuQjqXcc1zVu2QTTekTohw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210824085856.12714-2-nandhini.srikandan@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHC9VhTjFMw111-fyZsFaCSnN3b-TuQjqXcc1zVu2QTTekTohw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Nandhini
+On Mon, Aug 30, 2021 at 10:20:22AM -0400, Paul Moore wrote:
+>On Mon, Aug 30, 2021 at 8:42 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
+>>
+>> On Mon, Aug 30, 2021 at 8:01 PM Sasha Levin <sashal@kernel.org> wrote:
+>> >
+>> > From: 王贇 <yun.wang@linux.alibaba.com>
+>> >
+>> > [ Upstream commit 733c99ee8be9a1410287cdbb943887365e83b2d6 ]
+>> >
+>>
+>> Hi Sasha,
+>>
+>> Michael Wang has sent a v2 patch [1] for this bug and it is merged
+>> into netdev/net-next.git. However, the v1 patch is already in the
+>> upstream tree.
+>>
+>> How do you guys handle such a issue?
+>>
+>> [1] https://lkml.org/lkml/2021/8/30/229
+>
+>Ugh.  Michael can you please work with netdev to fix this in the
+>upstream, and hopefully -stable, kernels?  My guess is you will need
+>to rebase your v2 patch on top of the v1 patch (basically what exists
+>in upstream) and send that back out.
 
-On Tue, Aug 24, 2021 at 04:58:55PM +0800, nandhini.srikandan@intel.com wrote:
-> From: Nandhini Srikandan <nandhini.srikandan@intel.com>
-> 
-> Add documentation for SPI controller in Intel Thunder Bay SoC.
-> 
-> Signed-off-by: Nandhini Srikandan <nandhini.srikandan@intel.com>
-> ---
->  Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+I'm just going to drop this one for now (it never made it in). If there
+is a follow-up you do want us to queue please let us know :)
 
-Acked-by: Serge Semin <fancer.lancer@gmail.com>
-
--Sergey
-
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-> index ca91201a9926..88532bf8ba85 100644
-> --- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-> +++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-> @@ -61,6 +61,8 @@ properties:
->            - const: snps,dw-apb-ssi
->        - description: Intel Keem Bay SPI Controller
->          const: intel,keembay-ssi
-> +      - description: Intel Thunder Bay SPI Controller
-> +        const: intel,thunderbay-ssi
->        - description: Baikal-T1 SPI Controller
->          const: baikal,bt1-ssi
->        - description: Baikal-T1 System Boot SPI Controller
-> -- 
-> 2.17.1
-> 
+-- 
+Thanks,
+Sasha
