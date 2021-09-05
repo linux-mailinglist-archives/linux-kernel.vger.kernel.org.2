@@ -2,96 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B5940112B
+	by mail.lfdr.de (Postfix) with ESMTP id 6D34A40112C
 	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 20:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233548AbhIESXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 14:23:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44796 "EHLO
+        id S236664AbhIESYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 14:24:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbhIESXN (ORCPT
+        with ESMTP id S229865AbhIESYX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 14:23:13 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D499C061575
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 11:22:10 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id g14so7318458ljk.5
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 11:22:10 -0700 (PDT)
+        Sun, 5 Sep 2021 14:24:23 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2565C061575
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 11:23:19 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id r7so6174676edd.6
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 11:23:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LuzVizyAuYqHM0AliftUFw5ek+vQ04sENoGLph3J4G8=;
-        b=AIFCfiSSpGgY7MUaHEa3Qj4MKzCJxCu0f6raW0F39EQvOva5pXNOooqwk5WLrYzBfM
-         NuO+/AshqrQSL9zlmUOYTsetjWA2F16etVq3ZYxSdEu7BRnbZxAH0vF2j9gSHIJrzVz9
-         ZkOeBSiFuWw/3g0HD+rnzcW/qkb65bbSttM54=
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=KiU6nMkCZYJbqe8bSBt+kfTnczgB7P2IjW8/5H1bcPQ=;
+        b=CNDkHNiP8/tpuiJ86xwCAehbOOdEbyvIG0QC2/kdH+Z8/Db90R7+N5INB9dOR5bKxq
+         rzZ+PjH26VD94aFK9h6JDT5HgcMGoN9t6YFVMgQ+SUwdqD/YHfPQd0d6NPKDbBZAnO5Q
+         CaeNo6qRaSQEpzggnsPCzsJ/Y241HUYIjc8xzHRdwkq7XBUPXYeMVA+ISPsiPaXXJ90Y
+         2NQ1CTMEgqUhxt9w77q2/4j5Mj9KZVxA8GKzc5q8IU1YNlM4O1uxaeHUOUfCZIoJALzH
+         lcSLgWF40NCP09nn/sR7jKQBE+UDfc2jp7KUJJ6Ghi8H1CZZ431KQqZHno01fEZXgeMM
+         X/sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LuzVizyAuYqHM0AliftUFw5ek+vQ04sENoGLph3J4G8=;
-        b=LVNH8xVpu8iT1efEfQF1tOuP1m2NRbplY+i98zOsjj3ncH91euJPYsqwgcp4MX2Lxl
-         w06GtZ0uAhZxF6UK88ZxabekjQR5L/Oe6/6EjuXv1Xw1KtBkjT5l57+XLBVhSA+9AF6k
-         LR24HnGm8XQqLkGnMf7Ly/jFPDEDCwvdqVGapvVVjyg1bGfi4N7TY0jaxI76W3ShQhXk
-         xfabAhKCVt/hVB8hiZ/AguZrwSm97nvaJojDoW7vzPBMq9vAycuHm6SZsrVBq8ZeGr5a
-         1+AVjH221QXERdGelFRizTd3ROx8qEEGz/kbuPOpGUEurKtNffPvqTfzbO1J64oXAEBw
-         dNyw==
-X-Gm-Message-State: AOAM533pFe+iPO2q4Dg+sdU4spMb4uAP+tFqOyUteoKBkMU980ixs4aO
-        qWluA3DIfudH/HTADGH+RAIp8aqQFeKDbv/ef84=
-X-Google-Smtp-Source: ABdhPJxSF3QqO294LjKKknZ+WVw4guIdiYindh7KgIMd2YQ2ZdelXDnb4BGh22caM7+hnENewFWFHQ==
-X-Received: by 2002:a2e:a225:: with SMTP id i5mr7622399ljm.64.1630866126950;
-        Sun, 05 Sep 2021 11:22:06 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id k11sm567820lfg.300.2021.09.05.11.22.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Sep 2021 11:22:06 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id d16so7341927ljq.4
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 11:22:05 -0700 (PDT)
-X-Received: by 2002:a2e:96c7:: with SMTP id d7mr7555806ljj.191.1630866125415;
- Sun, 05 Sep 2021 11:22:05 -0700 (PDT)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=KiU6nMkCZYJbqe8bSBt+kfTnczgB7P2IjW8/5H1bcPQ=;
+        b=AqH5rpQWo3LEWF1QLHrIaR6p2NeniZ4i/zdtEXTw+9SsTx/Vcr2ICignrIuLufSTP+
+         3MZCsBk5N1BgNxrBhYxnJY3Tqom7uzLYxVR+vfOs78/KakbCF2RUpT1+PFJnCGq4PgGx
+         RYV5jnPZ5H0Cwc9p1WGu+UPUooTFRehV7goGRVqyoPPAJuzGJE+nYTnNA9SftzUchnPE
+         SJrHN4NcrkOYMAMdJUpFpKNTOGK8O2Oqix5jIJdwnR44kaOhhMTUSAWO+vETV5iqiW2j
+         RmxVQE/5666N193YcWSDru8jC+OuH2Fv+LIr3Wov2KBBx0XSYngym6sQc/wjiwKg4NH/
+         NDWw==
+X-Gm-Message-State: AOAM5305TWmobRfibFXFc/kE8E5rvyiMyQ48I0yqF49+zvSfFxMhf3s9
+        CDMl9RthsU2am6Jr5ikttoYQOGpVK6qN24odT94=
+X-Google-Smtp-Source: ABdhPJxVArZ2SoTFtZLT1X21O6cbpB18YdRd9hHojeV0h3ImOLJdt2jvPCJ1p2qsAMCZazf9dhWoFehb4oH1DTxUAIs=
+X-Received: by 2002:a05:6402:1cb4:: with SMTP id cz20mr9787136edb.0.1630866198543;
+ Sun, 05 Sep 2021 11:23:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <202109022012.756B6B5B79@keescook> <CAHk-=wiPOXS2f90Ykk3V76sJLx0wMVywke8pc=88r1trmDuhmw@mail.gmail.com>
- <45312958-B844-4B4C-9808-8205866675A1@chromium.org> <CAHk-=widUkzjVMW99L6OZpJc1wDnZbBbnOOzgXOMypOPoV6mjg@mail.gmail.com>
-In-Reply-To: <CAHk-=widUkzjVMW99L6OZpJc1wDnZbBbnOOzgXOMypOPoV6mjg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 5 Sep 2021 11:21:49 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj4EG=kCOaqyPEq5VXa97kyUHsBpBn3DWwE91qcnDytOQ@mail.gmail.com>
-Message-ID: <CAHk-=wj4EG=kCOaqyPEq5VXa97kyUHsBpBn3DWwE91qcnDytOQ@mail.gmail.com>
-Subject: Re: [GIT PULL] overflow updates for v5.15-rc1
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Vetter <daniel@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithp@keithp.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-hardening@vger.kernel.org
+Sender: kaborekaboreisa@gmail.com
+Received: by 2002:a17:906:338f:0:0:0:0 with HTTP; Sun, 5 Sep 2021 11:23:16
+ -0700 (PDT)
+From:   "Mrs. Aisha Gaddafi" <mrsaishaalqaddafi40@gmail.com>
+Date:   Sun, 5 Sep 2021 20:23:16 +0200
+X-Google-Sender-Auth: N5uzMlq6OdS7bL55bFUsharSDng
+Message-ID: <CAGpzTQj1X4Y4Hs3CXr+HTHEkv2OK=AcG6TufaxFBzFFxJNO2Lg@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 5, 2021 at 10:36 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Sadly, I don't think linux-next checks for warnings.
->
-> I really want to enable -Werror at some point, but every time I think
-> I should, I just end up worrying about another random new compiler (or
-> a random old one).
->
-> We do have -Werror in various configurations (and in some sub-trees).
+Dear Friend,
 
-Whatever. I'll just make a new config option, make it 'default y', and
-it will be on for anybody doing allmodconfig builds etc.
+I came across your e-mail contact prior to a private search while in
+need of your assistance. My name is Aisha Gaddafi, a single Mother and
+a Widow with three Children. I am the only biological Daughter of the
+late Libyan President (Late Colonel Muammar Gaddafi).
 
-And if people have new compilers, or odd configurations that still
-cause warnings, they can turn it off, but hopefully this will make
-compiler warnings in linux-next (or any other automated builds) cause
-a lot more noise.
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and I need a trusted
+investment Manager/Partner because of my current refugee status,
+however, I am interested in you for investment project assistance in
+your country, may be from there, we can build business relationship in
+the nearest future.
 
-              Linus
+Best Regards
+Mrs Aisha Gaddafi
