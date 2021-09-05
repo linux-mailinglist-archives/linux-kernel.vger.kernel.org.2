@@ -2,104 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D84B8400E9F
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 09:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BCC400EA0
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 09:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234942AbhIEH44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 03:56:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbhIEH4z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 03:56:55 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944E7C061575
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 00:55:52 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id i3so2259638wmq.3
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 00:55:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=Y+rK5DuvhxVwRtS3sArMrVdmfKfsYPeSxUMrQtQ8RKA=;
-        b=NymRjouTjiSsvoj8n3DXDlAaIXMF2oTGhpHn3rqi0OyG5Qn3VV49D/xgLppDJptArq
-         8B20HykJFHhSMB5mASLU6vAHqjdl17E+RoTWuLeZMKAXnXU4WgkMjc7fFqHYsMrgyyO1
-         fp9N1dJiz3h/nooRjW6Q7MXQYI/5xeE6thWE3i4P32YpNZ5fPycYQFf7t4IM0V2lPNHT
-         SEfV4g7zxZZzes6MXQd5aHszwftB+oeHQxTEwyvzClIZZ5qFnWZwMtMWvzLSLogqHub2
-         S+G80+1DWf/QCt6MnVuGzbawm/H7A2jPbpVE/WNVEjP2l2+RJ+EtCRddK+2dYJa4sxmn
-         36NA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Y+rK5DuvhxVwRtS3sArMrVdmfKfsYPeSxUMrQtQ8RKA=;
-        b=R/v6TlzMFLowWJuqlnap780vughc9oQLgcv3W2snzpgDKmgateC1AviPsQXKGuuRhb
-         H2TZI/RRnfrlCXYXM4CzUsfwxakFIy0KnC2AV8lp0UpnwLhwDDoCo8NKgQ2KDpiYmcsS
-         5eDOQVS7nossBTsSWKzNGN3gJ5oz0HXBme8vpfVPo9wznEjltXH8YVZrB4RExkb2GHFe
-         GYR9OGwM0jbNVVaY4dO/jXVMaTWcBqJmAHcFw/DUrPstD/9+DKKZfAri+s7fmWVRzXIM
-         vKTLPv8H8CmP0XpWF7Qp+o2o9QhsWsHvIjK7OklIh82I9VeLh2c/WhBgUuAQPMHhmJpi
-         QEpw==
-X-Gm-Message-State: AOAM531XIh6h9dF5MIl8MAfw6Gw2uImSYwS4rryDQcVe5EH6b9wLMznQ
-        eBvb+2eHd5cBql6UA2IWNoU=
-X-Google-Smtp-Source: ABdhPJznRZcl0pp+K61vAQgAo3gWm12zlOxRHyvKbX2S7y3CaGR2xyy+Ao484odxRlyojDvfbzcZzQ==
-X-Received: by 2002:a05:600c:1990:: with SMTP id t16mr6065013wmq.45.1630828551120;
-        Sun, 05 Sep 2021 00:55:51 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::dc38? ([2a02:8108:96c0:3b88::dc38])
-        by smtp.gmail.com with UTF8SMTPSA id l26sm3923669wmi.13.2021.09.05.00.55.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Sep 2021 00:55:50 -0700 (PDT)
-Message-ID: <41f6eb79-c943-c8b4-78d9-cc10e8ffa7ea@gmail.com>
-Date:   Sun, 5 Sep 2021 09:55:49 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.1
-Subject: Re: [PATCH] staging: r8188eu: core: remove condition never execute
-Content-Language: en-US
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>,
-        Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-References: <YTNrjG1y05ByN54+@user>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <YTNrjG1y05ByN54+@user>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        id S235818AbhIEH6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 03:58:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59796 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231239AbhIEH6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 03:58:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3444F60EE1;
+        Sun,  5 Sep 2021 07:57:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630828662;
+        bh=W3xcCkndsu9LZ9q+jY/ntg77e+br2nanRDdnooBmmLA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=h0tvopfAiDHKnDcH+4QW90p8DaBe6vH9j9UGa3MFN7xyImYh3P1LTZtJBOPTtRdyQ
+         6euUZwa9PWCWlslSal64RRtKwZuWDmkDpf3wk0UFk7d91jSDFZv/bWwASQbPyOTZwR
+         T4zxj8IQd6+gJu/vrnBgPBXlGDzD4Bh70f3zBlGV/b1ww3so5tZN5Hf1xLA7j2g8JA
+         /gndGNBz9OhuMbCUSlhOt+8pCYt1DK/IFkZaRvx7hEsStnOV/xT0bD5ltUJ71DeUst
+         N8mkriGbU3TYZ9qMz3vFuMCiL2i/Vkm+LfZnd2jYFSvFq8+aknFm52iZw/41YTvzeE
+         kZjh7B+Qd8dxw==
+Date:   Sun, 5 Sep 2021 16:57:38 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Marios Pomonis <pomonis@google.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Kristen C Accardi <kristen.c.accardi@intel.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ivan Babrou <ivan@cloudflare.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-hardening@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH] x86/unwind/orc: Handle kretprobes_trampoline
+Message-Id: <20210905165738.7e40d6e2cba3dd0724f85f3a@kernel.org>
+In-Reply-To: <20210904175511.oijbn4f2tzghwk7l@treble>
+References: <20210903021326.206548-1-keescook@chromium.org>
+        <20210904175511.oijbn4f2tzghwk7l@treble>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/4/21 14:50, Saurav Girepunje wrote:
-> Remove condition which never get execute.
-> as pattrib->mdata is always zero before if condition check.
+On Sat, 4 Sep 2021 10:55:11 -0700
+Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+
+> On Thu, Sep 02, 2021 at 07:13:26PM -0700, Kees Cook wrote:
+> > From: Marios Pomonis <pomonis@google.com>
+> > 
+> > Fix a bug in the ORC unwinder when kretprobes has replaced a return
+> > address with the address of `kretprobes_trampoline'. ORC mistakenly
+> > assumes that the address in the stack is a return address and decrements
+> > it by 1 in order to find the proper depth of the next frame.
+> > 
+> > This issue was discovered while testing the FG-KASLR series[0][1] and
+> > running the live patching test[2] that was originally failing[3].
+> > 
+> > [0] https://lore.kernel.org/kernel-hardening/20200923173905.11219-1-kristen@linux.intel.com/
+> > [1] https://github.com/KSPP/linux/issues/132
+> > [2] https://github.com/lpechacek/qa_test_klp
+> > [3] https://lore.kernel.org/lkml/alpine.LSU.2.21.2009251450260.13615@pobox.suse.cz/
+> > 
+> > Fixes: ee9f8fce9964 ("x86/unwind: Add the ORC unwinder")
+> > Signed-off-by: Marios Pomonis <pomonis@google.com>
+> > Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+> > Cc: Alexander Lobakin <alexandr.lobakin@intel.com>
+> > Cc: Kristen C Accardi <kristen.c.accardi@intel.com>
+> > Cc: Sami Tolvanen <samitolvanen@google.com>
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
 > 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> ---
->   drivers/staging/r8188eu/core/rtw_mlme_ext.c | 3 ---
->   1 file changed, 3 deletions(-)
+> I suspect this is fixed by:
 > 
-> diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> index 4178b3c1ff57..f314f55997bf 100644
-> --- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> +++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-> @@ -5669,9 +5669,6 @@ static int _issue_qos_nulldata(struct adapter *padapter, unsigned char *da, u16
->   	else if ((pmlmeinfo->state & 0x03) == WIFI_FW_STATION_STATE)
->   		SetToDs(fctrl);
+>   https://lkml.kernel.org/r/162756755600.301564.4957591913842010341.stgit@devnote2
+
+I think this can be a bit different issue. As far as I ran my test code
+(same one in the above cover mail) with this fix, the stacktrace wasn't
+fixed.
+
+ffffffff812b7c80  r  vfs_read+0x0    [FTRACE]
+ffffffff813b4cc0  r  full_proxy_read+0x0    [FTRACE]
+# tracer: nop
+#
+# entries-in-buffer/entries-written: 3/3   #P:8
+#
+#                                _-----=> irqs-off
+#                               / _----=> need-resched
+#                              | / _---=> hardirq/softirq
+#                              || / _--=> preempt-depth
+#                              ||| /     delay
+#           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+#              | |         |   ||||      |         |
+             cat-138     [002] ...1     9.488727: r_full_proxy_read_0: (vfs_read+0x99/0x190 <- full_proxy_read)
+             cat-138     [002] ...1     9.488732: <stack trace>
+ => kretprobe_trace_func+0x209/0x300
+ => kretprobe_dispatcher+0x9d/0xb0
+ => __kretprobe_trampoline_handler+0xc5/0x160
+ => trampoline_handler+0x44/0x60
+ => kretprobe_trampoline+0x25/0x50
+             cat-138     [002] ...1     9.488733: r_vfs_read_0: (ksys_read+0x68/0xe0 <- vfs_read)
+
+Kees, can you also try to test with my series?
+It should be able to be checked out with;
+
+git clone git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git -b kprobes/kretprobe-stackfix-v10
+
+Thank you,
 > 
-> -	if (pattrib->mdata)
-> -		SetMData(fctrl);
-> -
->   	qc = (unsigned short *)(pframe + pattrib->hdrlen - 2);
 > 
->   	SetPriority(qc, tid);
-> --
-> 2.32.0
+> > ---
+> >  arch/x86/kernel/unwind_orc.c | 12 +++++++++++-
+> >  1 file changed, 11 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/kernel/unwind_orc.c b/arch/x86/kernel/unwind_orc.c
+> > index a1202536fc57..8c5038b3b707 100644
+> > --- a/arch/x86/kernel/unwind_orc.c
+> > +++ b/arch/x86/kernel/unwind_orc.c
+> > @@ -7,6 +7,7 @@
+> >  #include <asm/unwind.h>
+> >  #include <asm/orc_types.h>
+> >  #include <asm/orc_lookup.h>
+> > +#include <asm/kprobes.h>
+> >  
+> >  #define orc_warn(fmt, ...) \
+> >  	printk_deferred_once(KERN_WARNING "WARNING: " fmt, ##__VA_ARGS__)
+> > @@ -414,6 +415,15 @@ static bool get_reg(struct unwind_state *state, unsigned int reg_off,
+> >  	return false;
+> >  }
+> >  
+> > +static bool is_kretprobe_trampoline(unsigned long ip)
+> > +{
+> > +#ifdef	CONFIG_KRETPROBES
+> > +	if (ip == (unsigned long)&kretprobe_trampoline)
+> > +		return true;
+> > +#endif
+> > +	return false;
+> > +}
+> > +
+> >  bool unwind_next_frame(struct unwind_state *state)
+> >  {
+> >  	unsigned long ip_p, sp, tmp, orig_ip = state->ip, prev_sp = state->sp;
+> > @@ -540,7 +550,7 @@ bool unwind_next_frame(struct unwind_state *state)
+> >  		state->sp = sp;
+> >  		state->regs = NULL;
+> >  		state->prev_regs = NULL;
+> > -		state->signal = false;
+> > +		state->signal = is_kretprobe_trampoline(state->ip);
+> >  		break;
+> >  
+> >  	case UNWIND_HINT_TYPE_REGS:
+> > -- 
+> > 2.30.2
+> > 
+> 
+> -- 
+> Josh
 > 
 
-Looks good to me.
 
-Acked-by: Michael Straube <straube.linux@gmail.com>
-
-Thanks,
-Michael
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
