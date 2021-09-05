@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2125E4011CA
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2D94011CB
 	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 23:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238328AbhIEV0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 17:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
+        id S238408AbhIEV0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 17:26:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238316AbhIEVZz (ORCPT
+        with ESMTP id S238343AbhIEVZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 17:25:55 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88577C0613CF
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 14:24:51 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id b10so6863134wru.0
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 14:24:51 -0700 (PDT)
+        Sun, 5 Sep 2021 17:25:59 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 310F4C0617A8
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 14:24:55 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id b6so6790311wrh.10
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 14:24:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=F1e0hbv3ZsiJNNAHKyqEnrPS9MqX6cUig82FuR1+yU4=;
-        b=wVGZAh4ytWMN/R/wB6lATwcSZgUDP8NwEYQyuIHXnQXXF4mGYHBthshCs0RCobdwtF
-         i0bPxTtRbONrs85UFIYny393EZRpCEDxNspp3Ic7TcBlRz9xmDJByXi5CpcVL7alE39u
-         NjzZaZ9AMafDLj9U0+XeGIJdjxQ5koq47chWwA9CZBzQPU9po8ik129DrMVqaRco76d7
-         hGAq95+PCjOyFJDGb5e9BhLdd+S9/ZBUN9AXsxRWb5KkB5kedUs/9QMSCLEmksHe5fPL
-         2cYx7YBQGmm+Sqz3MItdKjRYJ9LcDN+FKXMP9XUDtDUefIIVNY+UY/UzTToKU2Z/UEHl
-         d+FA==
+        bh=U3Ro53yz8uw6vk4h4zC5lI6ueqo991M4PwceXdZ+bXY=;
+        b=vQ8N7ru7WahMrJRdMS90zF/LDCNk/RYQV9OofxORJyliNuh5Gh6yaPmND+PUS0T0bK
+         UP8514godi00eChnDkrSAUjxHUMderXcNW0jBsBfsDSR86clxCPxPB0O5NmvLjnp5BVf
+         MIGFuabyVniHnpIPdxCh5O4r3SfvTNvPA+LPKOz10jDLcJJenMxqPIDm7dxaStXwCAE9
+         sIZK5dK9KPL68594iLPsh7PDYzOUWXcatIxXvbWPPGAJkgOlcf3HzCB3v546IY2pxwpN
+         k25em+rs9WQEOGy/szRbjWiAerQC9Y2InEpKalEySYG/DSov2i9j+Xkw2XPtrzR5qibR
+         2yhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=F1e0hbv3ZsiJNNAHKyqEnrPS9MqX6cUig82FuR1+yU4=;
-        b=MYrSPokTu6+w7cC6gjlWQ/XpJh/riKwt3OVQd3u7C3bo2kto8S9b6fjO49/mIlw1xR
-         BcHCFJfq7sAFtNOV8mz9V+QrI7bbHj3Hqzrte9ciRtUnU8aFlKm81tfw7vBo70Y4yDua
-         vOLpESmZUrrGwlhmw1SNInUb9fe/GVnMXzzdo+c46AXGfAtbQBvIC/Q4/JdoQz6dK1au
-         tgyldB1QD7m3X3ZnzVX2/AKfJ91VKub/xiglMm+5i6QZW/ZdK9kM9QHsIoUdf2a3F0BA
-         YN8hS4R4WOsvlVYO77H/lubNIpMHSqiobEPr9mYfyYYXrSX000CYn2CvfTnxPn3X+jge
-         OImA==
-X-Gm-Message-State: AOAM531yC616AVzABF6pwBKWNc9RPIJ23uymE/3rVKzsGmWD8ydY8kiP
-        HbNZFOhm/snXbGsO+6LUxfutS9LWOcmmCLTwgj4gRA==
-X-Google-Smtp-Source: ABdhPJzZ8iRqYHJstJBoyH7sckuZt82cSSeCX+52p0ngldq9SUEOXAYxUMBGzcCj0RPX02xBkR3mXtNJE06Jo1I1G1k=
-X-Received: by 2002:adf:e449:: with SMTP id t9mr9880840wrm.135.1630877090158;
- Sun, 05 Sep 2021 14:24:50 -0700 (PDT)
+        bh=U3Ro53yz8uw6vk4h4zC5lI6ueqo991M4PwceXdZ+bXY=;
+        b=OwJZIlULDRcFdTno2j+X24hjt4zFdqNwi0Ia8I08+Xi6/gECMTOERFDbb4W6xiYQJO
+         5Gdp7ht9JhPPpG0SkWNGLqPBCHTJqeSxqDL1zuy/ysG/wCf8X4p6rnVV0oSiayqC1aeT
+         qQtMH/+hGIikWexgznA8jRjpX8dvJfg3LkUHpUbo79Ffs6gzNaA4gFKW9L3D4ReApvXi
+         cb3XzliFdOnxqZAL1SM7k/pZrsjntLOQxWADemeQjA6P7j/3cVjvpsIopwX/voXOvXKO
+         c2B5QQhDVUS0G2iY2WPw2k3tluw/8ADkVkBFWiZTQzZBT4aduZ7Jl/fttPoQra4FYbWX
+         USDg==
+X-Gm-Message-State: AOAM531Shja83iMnACcFYhCeG7wtihY4mSS0CUkS1FqLbn34a8QURnwI
+        FJbVx2XG5+Qt5ZyN6947vd/oFGWO1zCiXqmp7KR5BQ==
+X-Google-Smtp-Source: ABdhPJyJEJvlxVUrEiEYvPim72MfF6HcVKkJK+/ZbECHn7x8no3FMAchzagrpcHRErlr4pLxjvDOSsBw2laSTnMlU2I=
+X-Received: by 2002:a05:6000:160c:: with SMTP id u12mr9848692wrb.128.1630877093840;
+ Sun, 05 Sep 2021 14:24:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210806134109.1182235-1-james.clark@arm.com> <20210806134109.1182235-8-james.clark@arm.com>
- <4da533c0-8da6-00d4-1849-e210e163d326@arm.com> <YTIEKG6Qv6YQwiw3@kernel.org>
-In-Reply-To: <YTIEKG6Qv6YQwiw3@kernel.org>
+References: <20210806134109.1182235-1-james.clark@arm.com> <20210806134109.1182235-9-james.clark@arm.com>
+ <de23e803-3840-501e-87a8-39eed7ba434b@arm.com> <YTIElk3Zv3VNJU+q@kernel.org> <YTIMhNAAtm/s2gjV@kernel.org>
+In-Reply-To: <YTIMhNAAtm/s2gjV@kernel.org>
 From:   Mike Leach <mike.leach@linaro.org>
-Date:   Sun, 5 Sep 2021 22:24:39 +0100
-Message-ID: <CAJ9a7VhF2xPC70GG_66Q-jduYuit3YUBVUKLE=gNp2JXj_9jVg@mail.gmail.com>
-Subject: Re: [PATCH v2 7/9] perf cs-etm: Create ETE decoder
+Date:   Sun, 5 Sep 2021 22:24:43 +0100
+Message-ID: <CAJ9a7Vg_hNPugGBNnZCQ=eewqcoxjH=sCr0_wMW4yaCfJYyEXQ@mail.gmail.com>
+Subject: Re: [PATCH v2 8/9] perf cs-etm: Print the decoder name
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
         James Clark <james.clark@arm.com>,
@@ -75,33 +75,24 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Reviewed-by: Mike Leach <mike.leach@linaro.org>
 
 
-On Fri, 3 Sept 2021 at 12:16, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+On Fri, 3 Sept 2021 at 12:52, Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 >
-> Em Fri, Sep 03, 2021 at 10:15:07AM +0100, Suzuki K Poulose escreveu:
-> > On 06/08/2021 14:41, James Clark wrote:
-> > > If the magic number indicates ETE instantiate a OCSD_BUILTIN_DCD_ETE
-> > > decoder instead of OCSD_BUILTIN_DCD_ETMV4I. ETE is the new trace feature
-> > > for Armv9.
+> Em Fri, Sep 03, 2021 at 08:18:46AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Fri, Sep 03, 2021 at 10:17:25AM +0100, Suzuki K Poulose escreveu:
+> > > On 06/08/2021 14:41, James Clark wrote:
+> > > > Use the real name of the decoder instead of hard-coding "ETM" to avoid
+> > > > confusion when the trace is ETE. This also now distinguishes between
+> > > > ETMv3 and ETMv4.
+> > > >
+> > > > Reviewed-by: Leo Yan <leo.yan@linaro.org>
+> > > > Signed-off-by: James Clark <james.clark@arm.com>
 > > >
-> > > Testing performed
-> > > =================
-> > >
-> > > * Old files with v0 and v1 headers for ETMv4 still open correctly
-> > > * New files with new magic number open on new versions of perf
-> > > * New files with new magic number fail to open on old versions of perf
-> > > * Decoding with the ETE decoder results in the same output as the ETMv4
-> > >    decoder as long as there are no new ETE packet types
-> > >
-> > > Signed-off-by: James Clark <james.clark@arm.com>
+> > > Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 > >
-> > Changes look good to me with my limited knowledge about the decoder
-> > facing code.
-> >
-> > FWIW,
-> >
-> > Acked-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > Thanks, collected the Reviewed-by.
 >
-> Thanks, collected the Acked-by.
+> Everything is in my tmp.perf/core branch now, pending test build in my
+> containers.
 >
 > - Arnaldo
 
