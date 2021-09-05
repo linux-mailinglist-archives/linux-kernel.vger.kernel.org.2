@@ -2,67 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06CC401151
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 21:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5659401156
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 21:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238104AbhIETIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 15:08:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37252 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238071AbhIETIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 15:08:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 63FC760F5E;
-        Sun,  5 Sep 2021 19:07:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630868839;
-        bh=El+5GyrIl4PkiwWm9Z7IcUITtOnGYfdrLInGmRe72FE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=FtB6yX2WY5WK63cljLx8uZ3uMG1m4a+bCgJrwEenuG+GDnnK2njWY4JW/0pptxOU6
-         OsEEzUVbPVDf9o0OW9w5/oJwys4YgqjPsFaMi8OwUTa+fWPI2f8ufvlVDAEkPaQpYe
-         RBrE+5R6Ow3tEPM9ZJrdPUTEsRyw0/PHGeDi7N0e+dpCiHqIEQA4q5AiNZuq0W4Ae3
-         gIOGagcBZerRKGP7gc8qAznTJa0iKTRWQHUr8URvCp5Pzn9S6Znbdx9U/YHf9Y4js2
-         tWW8uWT0UaAHOlYimFSBbmaK1AxVQ9jW1ozVpQSrPN0lUslG/E2QYXAQMGXsXKVkVd
-         KDOidtwXWYkgA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5CE3460A48;
-        Sun,  5 Sep 2021 19:07:19 +0000 (UTC)
-Subject: Re: [GIT PULL] tracing: Changes for 5.15
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210903115014.28dc0da6@gandalf.local.home>
-References: <20210903115014.28dc0da6@gandalf.local.home>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210903115014.28dc0da6@gandalf.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.15
-X-PR-Tracked-Commit-Id: 4420f5b1be7b117330526f3eabd13d840f510b15
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 58ca24158758f1784400d32743373d7d6227d018
-Message-Id: <163086883937.6256.15918643550524606687.pr-tracker-bot@kernel.org>
-Date:   Sun, 05 Sep 2021 19:07:19 +0000
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
+        id S238427AbhIETJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 15:09:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26009 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238410AbhIETI7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 15:08:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630868873;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GBTVYvl6r/DGTmkrkWcHeYmKn9Wnjnzo76ZSWSpnbek=;
+        b=PeqfpFtOcgYLHpImbilspXx7NNcD9AFdc1+vbYZSW8XLdVNXxdpUyIBE6a8Jd//2ySrAW3
+        A3Rarm2+FChvFF82fOeq1qd0qcEaGVFxiA7bu3YZinBh2cKjqLW0qR2oAdLuSd4aERoPN5
+        DrpsC4lYjcWWoLLXHz6HAA10siuMJ7o=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-555-xLSwL4ISOv6esLdIVLc1CQ-1; Sun, 05 Sep 2021 15:07:52 -0400
+X-MC-Unique: xLSwL4ISOv6esLdIVLc1CQ-1
+Received: by mail-wm1-f70.google.com with SMTP id r4-20020a1c4404000000b002e728beb9fbso2878198wma.9
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 12:07:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=GBTVYvl6r/DGTmkrkWcHeYmKn9Wnjnzo76ZSWSpnbek=;
+        b=DrVRiE3J7ON3K7uABfRL7nuaH1mPEB4X0O4CiAlKgJM7wn2EI1Z2wzeSWQ3mWcVnsc
+         9HlPmUqgZxTp5IXxTDDszBZ2Mvo+FuLfXpePLf+OTrLCaU0gH5nSJAzTCZw2YCEkCZR/
+         oc/vtM/aNwre7MceXYMl5vtJR+m0tJt0DaO14y1rKZ+HOpY6v0f+SMk1+WBCkzdMHIMa
+         4gQcMmKGp4ORAnidM9QCGld2sqDmpUpk4HIQP00T1ebDBHSp41FrdvZl/Syw07ZNgDun
+         z8L50Svz7HYj6sHkri8Cdt+ihgEhOiNnHQ6UC0tM3SoH204o1C8XGjRCdh+KT42bRIFT
+         y3Jw==
+X-Gm-Message-State: AOAM530ZL/nGntMC+vE5b888JAakAx4ooohPn5rlf2LZJbiE9j64AbO4
+        3biC14HK3nwjdLqrI1CWzzKEsOJepqE2I9zzooeHpUmxtG0PJRYTn3ZGl9sxTH/gh2r/Brg2gTW
+        ERXm6rJ2/RI65JJXbk/a/NKYQ
+X-Received: by 2002:adf:916f:: with SMTP id j102mr9428575wrj.422.1630868871731;
+        Sun, 05 Sep 2021 12:07:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwJKpXpbX8Zx9j1c0iF75tnA3gLF7m6WMhftI7dZFfieFpkJUATagtI6L+4VC8O/dknnYxpxg==
+X-Received: by 2002:adf:916f:: with SMTP id j102mr9428550wrj.422.1630868871507;
+        Sun, 05 Sep 2021 12:07:51 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6f04.dip0.t-ipconnect.de. [91.12.111.4])
+        by smtp.gmail.com with ESMTPSA id i20sm5300193wml.37.2021.09.05.12.07.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Sep 2021 12:07:51 -0700 (PDT)
+Subject: Re: [PATCH v2 1/7] binfmt: don't use MAP_DENYWRITE when loading
+ shared libraries via uselib()
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Huang Shijie <shijie@os.amperecomputing.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Tzvetomir Stoyanov (VMware)" <tz.stoyanov@gmail.com>,
-        zhaoxiao <zhaoxiao@uniontech.com>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-unionfs@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+References: <20210816194840.42769-1-david@redhat.com>
+ <20210816194840.42769-2-david@redhat.com>
+ <20210905153229.GA3019909@roeck-us.net>
+ <CAHk-=whO-dnNxz5H8yfnGsNxrDHu-TVQq-X-VwhoDyWu3Lgnyg@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <77b36c45-773b-3cb8-fa18-45f0914c3090@redhat.com>
+Date:   Sun, 5 Sep 2021 21:07:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <CAHk-=whO-dnNxz5H8yfnGsNxrDHu-TVQq-X-VwhoDyWu3Lgnyg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 3 Sep 2021 11:50:14 -0400:
+On 05.09.21 19:17, Linus Torvalds wrote:
+> On Sun, Sep 5, 2021 at 8:32 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>>
+>> Guess someone didn't care compile testing their code. This is now in
+>> mainline.
+> 
+> To be fair, a.out is disabled pretty much on all relevant platforms these days.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.15
+Yes, and it seems like it was disabled in all configs I used. (I did not 
+compile all-yes configs; usually my stuff goes via -mm where it will end 
+up in -next for a while ... this one was special)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/58ca24158758f1784400d32743373d7d6227d018
+> 
+> Only alpha and m68k left, I think.
+> 
+> I applied the obvious patch from Geert.
 
-Thank you!
+Thanks Linus!
+
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks,
+
+David / dhildenb
+
