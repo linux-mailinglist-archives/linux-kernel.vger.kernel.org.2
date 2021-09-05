@@ -2,128 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391BD40105A
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 16:44:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81903401062
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 16:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235523AbhIEOpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 10:45:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55682 "EHLO mail.kernel.org"
+        id S236536AbhIEOtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 10:49:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232764AbhIEOpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 10:45:23 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3BBA60E8B;
-        Sun,  5 Sep 2021 14:44:14 +0000 (UTC)
-Date:   Sun, 5 Sep 2021 15:47:36 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     <lars@metafoo.de>, <pmeerw@pmeerw.net>, <robh+dt@kernel.org>,
-        <joel@jms.id.au>, <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <BMC-SW@aspeedtech.com>
-Subject: Re: [v5 11/15] iio: adc: aspeed: Fix the calculate error of clock.
-Message-ID: <20210905154737.6c41bae0@jic23-huawei>
-In-Reply-To: <20210831071458.2334-12-billy_tsai@aspeedtech.com>
-References: <20210831071458.2334-1-billy_tsai@aspeedtech.com>
-        <20210831071458.2334-12-billy_tsai@aspeedtech.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S229566AbhIEOtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 10:49:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E839E60F5E;
+        Sun,  5 Sep 2021 14:48:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630853286;
+        bh=Ml6h4k7pc7nhRrmhLJIKHEX5HhqaFagSdme0GwtDJWM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S3FwZ5JGx5uDlYlbF26JN9f2eJdulDA8fw1YIntCNoFowXdZ20MDmF+t7ETAPSc7P
+         uDgkzU29g0S89ZgF7jcumMIP17S9dGnyLROmstyfXAkSgtwcZXgFYL/yJUtrKGnGU/
+         fv8giwbl7IrxDQA7+C1h+6WhFy808Mwzx9oeJBbk=
+Date:   Sun, 5 Sep 2021 16:48:03 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        straube.linux@gmail.com, martin@kaiser.cx, nathan@kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        saurav.girepunje@hotmail.com
+Subject: Re: [PATCH v2] staging: r8188eu: os_dep: simplifiy the rtw_resume
+ function
+Message-ID: <YTTYo2BSG/JTuijx@kroah.com>
+References: <YTNjNLcNvPfD9+5Z@user>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTNjNLcNvPfD9+5Z@user>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Aug 2021 15:14:54 +0800
-Billy Tsai <billy_tsai@aspeedtech.com> wrote:
-
-> The ADC clock formula is
-> ast2400/2500:
-> ADC clock period = PCLK * 2 * (ADC0C[31:17] + 1) * (ADC0C[9:0] + 1)
-> ast2600:
-> ADC clock period = PCLK * 2 * (ADC0C[15:0] + 1)
-> They all have one fixed divided 2 and the legacy driver didn't handle it.
-> This patch register the fixed factory clock device as the parent of ADC
-> clock scaler to fix this issue.
+On Sat, Sep 04, 2021 at 05:44:44PM +0530, Saurav Girepunje wrote:
+> Remove unused variable ret and pwrpriv.
+> Remove the condition with no effect (if == else) in usb_intf.c
+> file.
+> Remove rtw_resume_process() and move whole thing to rtw_resume().
 > 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
 > ---
->  drivers/iio/adc/aspeed_adc.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
 > 
-> diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-> index 40b7ba58c1dc..349377b9fac0 100644
-> --- a/drivers/iio/adc/aspeed_adc.c
-> +++ b/drivers/iio/adc/aspeed_adc.c
-> @@ -4,6 +4,12 @@
->   *
->   * Copyright (C) 2017 Google, Inc.
->   * Copyright (C) 2021 Aspeed Technology Inc.
-> + *
-> + * ADC clock formula:
-> + * Ast2400/Ast2500:
-> + * clock period = period of PCLK * 2 * (ADC0C[31:17] + 1) * (ADC0C[9:0] + 1)
-> + * Ast2600:
-> + * clock period = period of PCLK * 2 * (ADC0C[15:0] + 1)
->   */
->  
->  #include <linux/clk.h>
-> @@ -85,6 +91,7 @@ struct aspeed_adc_data {
->  	struct regulator	*regulator;
->  	void __iomem		*base;
->  	spinlock_t		clk_lock;
-> +	struct clk_hw		*fixed_div_clk;
->  	struct clk_hw		*clk_prescaler;
->  	struct clk_hw		*clk_scaler;
->  	struct reset_control	*rst;
-> @@ -204,6 +211,13 @@ static void aspeed_adc_unregister_divider(void *data)
->  	clk_hw_unregister_divider(clk);
->  }
->  
-> +static void aspeed_adc_unregister_fixed_divider(void *data)
-> +{
-> +	struct clk_hw *clk = data;
-> +
-> +	clk_hw_unregister_fixed_factor(clk);
-> +}
-> +
->  static void aspeed_adc_reset_assert(void *data)
+> ChangeLog V2:
+> - Remove rtw_resume_process() and move whole thing to rtw_resume().
+> ---
+>  drivers/staging/r8188eu/include/usb_osintf.h |  2 --
+>  drivers/staging/r8188eu/os_dep/usb_intf.c    | 12 ------------
+>  2 files changed, 14 deletions(-)
+> 
+> diff --git a/drivers/staging/r8188eu/include/usb_osintf.h b/drivers/staging/r8188eu/include/usb_osintf.h
+> index d1a1f739309c..34229b1cb081 100644
+> --- a/drivers/staging/r8188eu/include/usb_osintf.h
+> +++ b/drivers/staging/r8188eu/include/usb_osintf.h
+> @@ -24,6 +24,4 @@ void *scdb_findEntry(struct adapter *priv, unsigned char *macAddr,
+>  void nat25_db_expire(struct adapter *priv);
+>  int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method);
+> 
+> -int rtw_resume_process(struct adapter *padapter);
+> -
+>  #endif
+> diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
+> index bb85ab77fd26..77b03e7631b7 100644
+> --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
+> +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
+> @@ -493,18 +493,6 @@ static int rtw_resume(struct usb_interface *pusb_intf)
 >  {
->  	struct reset_control *rst = data;
-> @@ -328,6 +342,19 @@ static int aspeed_adc_probe(struct platform_device *pdev)
->  	spin_lock_init(&data->clk_lock);
->  	snprintf(clk_parent_name, ARRAY_SIZE(clk_parent_name), "%s",
->  		 of_clk_get_parent_name(pdev->dev.of_node, 0));
-> +	snprintf(clk_name, ARRAY_SIZE(clk_name), "%s-fixed-div",
-> +		 data->model_data->model_name);
-> +	data->fixed_div_clk = clk_hw_register_fixed_factor(
-> +		&pdev->dev, clk_name, clk_parent_name, 0, 1, 2);
+>  	struct dvobj_priv *dvobj = usb_get_intfdata(pusb_intf);
+>  	struct adapter *padapter = dvobj->if1;
+> -	struct pwrctrl_priv *pwrpriv = &padapter->pwrctrlpriv;
+> -	int ret = 0;
+> -
+> -	if (pwrpriv->bInternalAutoSuspend)
+> -		ret = rtw_resume_process(padapter);
+> -	else
+> -		ret = rtw_resume_process(padapter);
+> -	return ret;
+> -}
+> -
+> -int rtw_resume_process(struct adapter *padapter)
+> -{
+>  	struct net_device *pnetdev;
+>  	struct pwrctrl_priv *pwrpriv = NULL;
+>  	int ret = -1;
 
-Obvious follow on from Philipp's review - there is a devm_ version of
-this as well which you can use rather than rolling a custom version.
-As a side note, I'm fairly sure you could refactor all those devm_clk_hw
-functions to use devm_add_action_or_reset() internally and simplify that
-code nicely.
+You can also remove the test for padapter being NULL in this function,
+as you just proved it could never be null otherwise the above function
+you removed would have crashed, right?  You should do that all at once
+so we remember why that test was removed.
 
-A recent series did the same for all the similar functions in IIO.
+thanks,
 
-
-
-> +	if (IS_ERR(data->fixed_div_clk))
-> +		return PTR_ERR(data->fixed_div_clk);
-> +
-> +	ret = devm_add_action_or_reset(data->dev,
-> +				       aspeed_adc_unregister_fixed_divider,
-> +				       data->clk_prescaler);
-> +	if (ret)
-> +		return ret;
-> +	snprintf(clk_parent_name, ARRAY_SIZE(clk_parent_name), clk_name);
->  
->  	if (data->model_data->need_prescaler) {
->  		snprintf(clk_name, ARRAY_SIZE(clk_name), "%s-prescaler",
-
+greg k-h
