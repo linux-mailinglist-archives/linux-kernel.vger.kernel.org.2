@@ -2,61 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F984010F1
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 18:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7787E4010F6
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 18:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238075AbhIEQzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 12:55:02 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:41472 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231804AbhIEQzB (ORCPT
+        id S238105AbhIEQ73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 12:59:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231804AbhIEQ72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 12:55:01 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mMvFw-001XlV-Bq; Sun, 05 Sep 2021 16:44:32 +0000
-Date:   Sun, 5 Sep 2021 16:44:32 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Xie Yongji <xieyongji@bytedance.com>, jasowang@redhat.com,
-        stefanha@redhat.com, sgarzare@redhat.com, parav@nvidia.com,
-        hch@infradead.org, christian.brauner@canonical.com,
-        rdunlap@infradead.org, willy@infradead.org, axboe@kernel.dk,
-        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
-        dan.carpenter@oracle.com, joro@8bytes.org,
-        gregkh@linuxfoundation.org, zhe.he@windriver.com,
-        xiaodong.liu@intel.com, joe@perches.com, robin.murphy@arm.com,
-        will@kernel.org, john.garry@huawei.com, songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v13 03/13] file: Export receive_fd() to modules
-Message-ID: <YTTz8PAcRSXMAdJ+@zeniv-ca.linux.org.uk>
-References: <20210831103634.33-1-xieyongji@bytedance.com>
- <20210831103634.33-4-xieyongji@bytedance.com>
- <20210905115642-mutt-send-email-mst@kernel.org>
+        Sun, 5 Sep 2021 12:59:28 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5540C061575;
+        Sun,  5 Sep 2021 09:58:24 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id t19so8370862ejr.8;
+        Sun, 05 Sep 2021 09:58:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kZ3/8isN7aB5wQkkG7Kcq2wcJN33Wyg4fWu0p0VvB7I=;
+        b=JlSC2leaYdOQpkN3ZHceJCTOYRVYSZ6mWBNriXHhfp7ykXw/LD8+p7cQLU44xXJ2Z7
+         RK0Tk+ndRhkqU3VRcd6k5F+igc885IPnEmo8DXRZk2VDd2VsS682oroDS84bx8WKqdPb
+         cUwPjU3ghyzpxCONyCPG0YstXozDv5HFAbvjCwqdRQZ8ZuxYCV1p4LTL3+QLfgIvNDBP
+         koAYRzgvoHI9dULpyilXqCBtCvX/yuYf0xS8Or+ifK69/mXC+hEH0ds9961t42rZUFKx
+         qHBl1OCzYAwR8azYOb8xwqs5qxf4/Rctx5P1G99fS+uahwurmdj1zisZ5vReXExOnGcU
+         HDcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kZ3/8isN7aB5wQkkG7Kcq2wcJN33Wyg4fWu0p0VvB7I=;
+        b=W+Jophq+IKpVQKNveyh9LPyXXMvGmM8DV9SFSpZjS8K8j3AinHgOCu9NWdmNVSXmBK
+         UkfrzvUW2xu8DBPp0ysAtx1pU/r/hB+O5zF3Z9wG801q17XeaUapvs0YnR8MaR54nZve
+         kMZbDfT4lh+qnCuYKlaEHuxIOgCYODutsjFmWNgY6ZwnyF2DCkSZw1Ujpf8z4PZ8aBVd
+         T8Vfs3Wsf7gYSLXCVr01eJieY8fFsZjVPf1jGTdg7H8LzATJo5LJFONdpOy9t/qwm00e
+         1y20mL8ra6+iU1NP1tKNp7L4vGoOUBMZmaNRn1SbBJO2dQmdQkSvxlKmDwhp/QU4iqMF
+         0gfQ==
+X-Gm-Message-State: AOAM530wJWh+dHkZ5dIouFpbvDFmZUKHilV+mUNzYxbpUWKo5zoORwUw
+        I0WfNnB76kIpgy/j2f8TgMOjMd9NC0E5sw==
+X-Google-Smtp-Source: ABdhPJywPHMKWuiiH9GLjB/zOTnT72qVIApNdSCjEmloLJ+NHnP8/Sq5QdSbJ2sf5S/EuR0i/87Hgw==
+X-Received: by 2002:a17:906:3148:: with SMTP id e8mr9421310eje.240.1630861103212;
+        Sun, 05 Sep 2021 09:58:23 -0700 (PDT)
+Received: from fedora.. (dh207-97-6.xnet.hr. [88.207.97.6])
+        by smtp.googlemail.com with ESMTPSA id t1sm3122920edq.31.2021.09.05.09.58.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 09:58:22 -0700 (PDT)
+From:   Robert Marko <robimarko@gmail.com>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robimarko@gmail.com>
+Subject: [PATCH] arm64: dts: qcom: ipq8074: add SPMI bus
+Date:   Sun,  5 Sep 2021 18:58:16 +0200
+Message-Id: <20210905165816.655275-1-robimarko@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210905115642-mutt-send-email-mst@kernel.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 05, 2021 at 11:57:22AM -0400, Michael S. Tsirkin wrote:
-> On Tue, Aug 31, 2021 at 06:36:24PM +0800, Xie Yongji wrote:
-> > Export receive_fd() so that some modules can use
-> > it to pass file descriptor between processes without
-> > missing any security stuffs.
-> > 
-> > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> > Acked-by: Jason Wang <jasowang@redhat.com>
-> 
-> This needs some acks from fs devels.
-> Viro?
+IPQ8074 uses SPMI for communication with the PMIC, so
+since its already supported add the DT node for it.
 
-*shrug*
+Signed-off-by: Robert Marko <robimarko@gmail.com>
+---
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-I still think that having random ioctls messing with descriptor table
-is a bad idea, and I'm not thrilled with the way it's currently
-factored, but we can change that later.
+diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+index ab124dc7538c..dafbde4ba5d5 100644
+--- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+@@ -321,6 +321,25 @@ tcsr_mutex_regs: syscon@1905000 {
+ 			reg = <0x01905000 0x8000>;
+ 		};
+ 
++		spmi_bus: spmi@200f000 {
++			compatible = "qcom,spmi-pmic-arb";
++			reg = <0x0200f000 0x001000>,
++			      <0x02400000 0x800000>,
++			      <0x02c00000 0x800000>,
++			      <0x03800000 0x200000>,
++			      <0x0200a000 0x000700>;
++			reg-names = "core", "chnls", "obsrvr", "intr", "cnfg";
++			interrupts = <GIC_SPI 190 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "periph_irq";
++			qcom,ee = <0>;
++			qcom,channel = <0>;
++			#address-cells = <2>;
++			#size-cells = <0>;
++			interrupt-controller;
++			#interrupt-cells = <4>;
++			cell-index = <0>;
++		};
++
+ 		sdhc_1: sdhci@7824900 {
+ 			compatible = "qcom,sdhci-msm-v4";
+ 			reg = <0x7824900 0x500>, <0x7824000 0x800>;
+-- 
+2.31.1
+
