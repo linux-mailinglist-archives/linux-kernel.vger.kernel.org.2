@@ -2,75 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D34A40112C
+	by mail.lfdr.de (Postfix) with ESMTP id EBDD240112D
 	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 20:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236664AbhIESYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 14:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45056 "EHLO
+        id S237398AbhIEScx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 14:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbhIESYX (ORCPT
+        with ESMTP id S233532AbhIEScu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 14:24:23 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2565C061575
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 11:23:19 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id r7so6174676edd.6
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 11:23:19 -0700 (PDT)
+        Sun, 5 Sep 2021 14:32:50 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2510BC061757
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 11:31:47 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id v123so3824139pfb.11
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 11:31:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=KiU6nMkCZYJbqe8bSBt+kfTnczgB7P2IjW8/5H1bcPQ=;
-        b=CNDkHNiP8/tpuiJ86xwCAehbOOdEbyvIG0QC2/kdH+Z8/Db90R7+N5INB9dOR5bKxq
-         rzZ+PjH26VD94aFK9h6JDT5HgcMGoN9t6YFVMgQ+SUwdqD/YHfPQd0d6NPKDbBZAnO5Q
-         CaeNo6qRaSQEpzggnsPCzsJ/Y241HUYIjc8xzHRdwkq7XBUPXYeMVA+ISPsiPaXXJ90Y
-         2NQ1CTMEgqUhxt9w77q2/4j5Mj9KZVxA8GKzc5q8IU1YNlM4O1uxaeHUOUfCZIoJALzH
-         lcSLgWF40NCP09nn/sR7jKQBE+UDfc2jp7KUJJ6Ghi8H1CZZ431KQqZHno01fEZXgeMM
-         X/sw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=jXU5smY1OqzWWvbSsjogwB3pDuhKcKHeqTGvWM/hR/0=;
+        b=QeiGCOmJ6d5RZxjDOv4RLDUUEiefTmixYvtHKRRGMDASqT53zV9EKXBcwE/+nUTPla
+         b7AFuEpCSDUgug8wwoMTk+qzPeuwEGtzQm0SbrXkpDgQal/nBAxdzBgf357AES12LJxr
+         PJ78HGn1YJuOpqqKYmPQf3a4tLYY4qhwA9pc0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=KiU6nMkCZYJbqe8bSBt+kfTnczgB7P2IjW8/5H1bcPQ=;
-        b=AqH5rpQWo3LEWF1QLHrIaR6p2NeniZ4i/zdtEXTw+9SsTx/Vcr2ICignrIuLufSTP+
-         3MZCsBk5N1BgNxrBhYxnJY3Tqom7uzLYxVR+vfOs78/KakbCF2RUpT1+PFJnCGq4PgGx
-         RYV5jnPZ5H0Cwc9p1WGu+UPUooTFRehV7goGRVqyoPPAJuzGJE+nYTnNA9SftzUchnPE
-         SJrHN4NcrkOYMAMdJUpFpKNTOGK8O2Oqix5jIJdwnR44kaOhhMTUSAWO+vETV5iqiW2j
-         RmxVQE/5666N193YcWSDru8jC+OuH2Fv+LIr3Wov2KBBx0XSYngym6sQc/wjiwKg4NH/
-         NDWw==
-X-Gm-Message-State: AOAM5305TWmobRfibFXFc/kE8E5rvyiMyQ48I0yqF49+zvSfFxMhf3s9
-        CDMl9RthsU2am6Jr5ikttoYQOGpVK6qN24odT94=
-X-Google-Smtp-Source: ABdhPJxVArZ2SoTFtZLT1X21O6cbpB18YdRd9hHojeV0h3ImOLJdt2jvPCJ1p2qsAMCZazf9dhWoFehb4oH1DTxUAIs=
-X-Received: by 2002:a05:6402:1cb4:: with SMTP id cz20mr9787136edb.0.1630866198543;
- Sun, 05 Sep 2021 11:23:18 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=jXU5smY1OqzWWvbSsjogwB3pDuhKcKHeqTGvWM/hR/0=;
+        b=lxEP1jwv81U3m82YnYz5DlbjF8lAjNaCjsE1vx1373RWlNr5gWNOQMWi/2vhoyyDDd
+         J6p1FGGqsGHGndBdGr31mifiU2T1TDXPrFLmJOZf2qp4shnzqrFNDFRLxZrKxCF4/29G
+         0vAjzBJxlg0V8P4U22OUdA+iY9Ge4Ircd/cSggPYXgCtHFO3M4TWQz/vJeLt4uE+yN4h
+         jzyJkp6WoOzXxkYP3S9rt7ZpvKCPe7gcuYaF7DpmK0BKCSpGLvRVutao35rGRPP7CXcR
+         Erq28MQ3S+gQMoDFhM+5z2A8y6Cp2bjBobRoPZj/cXiHH5hs6WJJUZ3LXDM4M9YQqsTi
+         l6Dw==
+X-Gm-Message-State: AOAM532ZjYqlhMCFwrk8r1iBEH3J1FwOL4HPH8C+ghSkS7KIqKwJAVHn
+        um82ASRQu8YLrTwWjTacyAn8sIbxRceoEw==
+X-Google-Smtp-Source: ABdhPJz1qrurDqokxjLX3jEl+qGbItIuFod9R+1hVI9oZbiPM8Hfp1qUnT0UABFv5eqs7/fhgD8XuQ==
+X-Received: by 2002:aa7:94bb:0:b0:40a:6478:d637 with SMTP id a27-20020aa794bb000000b0040a6478d637mr8371506pfl.1.1630866706552;
+        Sun, 05 Sep 2021 11:31:46 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o14sm6247256pgl.85.2021.09.05.11.31.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 11:31:45 -0700 (PDT)
+Date:   Sun, 5 Sep 2021 11:31:44 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithp@keithp.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [GIT PULL] overflow updates for v5.15-rc1
+Message-ID: <202109051123.11E4E31@keescook>
+References: <202109022012.756B6B5B79@keescook>
+ <CAHk-=wiPOXS2f90Ykk3V76sJLx0wMVywke8pc=88r1trmDuhmw@mail.gmail.com>
+ <45312958-B844-4B4C-9808-8205866675A1@chromium.org>
+ <CAHk-=widUkzjVMW99L6OZpJc1wDnZbBbnOOzgXOMypOPoV6mjg@mail.gmail.com>
 MIME-Version: 1.0
-Sender: kaborekaboreisa@gmail.com
-Received: by 2002:a17:906:338f:0:0:0:0 with HTTP; Sun, 5 Sep 2021 11:23:16
- -0700 (PDT)
-From:   "Mrs. Aisha Gaddafi" <mrsaishaalqaddafi40@gmail.com>
-Date:   Sun, 5 Sep 2021 20:23:16 +0200
-X-Google-Sender-Auth: N5uzMlq6OdS7bL55bFUsharSDng
-Message-ID: <CAGpzTQj1X4Y4Hs3CXr+HTHEkv2OK=AcG6TufaxFBzFFxJNO2Lg@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=widUkzjVMW99L6OZpJc1wDnZbBbnOOzgXOMypOPoV6mjg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+On Sun, Sep 05, 2021 at 10:36:22AM -0700, Linus Torvalds wrote:
+> On Sun, Sep 5, 2021 at 12:38 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > Yeech. Yeah, no, that was not expected at all. I even did test merge builds against your latest tree before sending the Pull Request. This has been in -next for weeks, too.
+> 
+> Sadly, I don't think linux-next checks for warnings.
 
-I came across your e-mail contact prior to a private search while in
-need of your assistance. My name is Aisha Gaddafi, a single Mother and
-a Widow with three Children. I am the only biological Daughter of the
-late Libyan President (Late Colonel Muammar Gaddafi).
+Oh, I thought I'd gotten such reports from sfr before, but certainly the
+0day bot and others have yelled loudly about new warnings (from earlier
+iterations of this series in -next).
 
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and I need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
+> I really want to enable -Werror at some point, but every time I think
+> I should, I just end up worrying about another random new compiler (or
+> a random old one).
+> 
+> We do have -Werror in various configurations (and in some sub-trees).
 
-Best Regards
-Mrs Aisha Gaddafi
+Yup, I think ppc and drm?
+
+> > What was the build environment?
+> 
+> This is actually just bog-standard gcc-11.2 from F34, and an allmodconfig build.
+
+Ah, fun. Yeah, I'm behind on versions, it seems. Default gcc version on
+latest stable Ubuntu release is 10.3. I will go retest on the devel
+release.
+
+> > Seeing an unexpected "-Wunused-value" in your output makes me think I've got a compiler version blind-spot, with some different default flags.)
+> 
+> There were lots of other ones too, I just pasted a small subset. Thne
+> full error log was 400+ lines. Most of those lines are just because of
+> the very verbose warnings.
+> 
+> Three errors due to "-Werror=unused-value", but 17 each of variations on
+> 
+>     error: call to ‘__read_overflow’ declared with attribute error:
+> detected read beyond size of object (1st parameter)
+> 
+> and
+> 
+>     warning: unsafe xyz() usage lacked '__read_overflow' warning
+> 
+> warnings.
+> 
+> Full 400+ lines (25kB) of errors/warnings messages attached in case
+> you care about the whole thing and can't easily reproduce.
+
+Yeah, the tests are designed to freak out if it gets an unexpected
+warning (since it's trying to check for _expected_ warnings), but
+regardless, they were not at all supposed to be spewing like this
+immediately! :P
+
+Sorry for the noise; I will get it cleaned up and re-sent.
+
+-Kees
+
+-- 
+Kees Cook
