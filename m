@@ -2,129 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E9940113C
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 20:51:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 937E5401142
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 21:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236214AbhIESwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 14:52:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51082 "EHLO
+        id S232070AbhIETBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 15:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbhIESwU (ORCPT
+        with ESMTP id S229865AbhIETBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 14:52:20 -0400
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51EB6C061575
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 11:51:16 -0700 (PDT)
-Received: by mail-vk1-xa2c.google.com with SMTP id t13so1507258vkm.4
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 11:51:16 -0700 (PDT)
+        Sun, 5 Sep 2021 15:01:37 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B1BC061575
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 12:00:33 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id ot2-20020a17090b3b4200b0019127f8ed87so2476735pjb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 12:00:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=OFhp5qOgHpAi603N0nela2D85qEGVdFHkGLbavWDR6w=;
-        b=Tn4yoeJXDQw2MDPyO5z0Pll4WYHKB9sTqXQ5s5dsFJ7CMLurgNRWfNQs9ez5KxmwEd
-         hcm2va+WW9xNJy8ae/POty5VIqq8ZnM/LT7PlN34iSXsh25CUw0OPD+lKiHTn2J/0yPz
-         gqUpy3kXEWZ81n+1JepzH3iovBITzmo0gaMtd2/WbJ9NobKx8kiUP+NRsmXVCJImKc+F
-         WX+L1w9/JbAo+Al/KBJY4UK//84VPYNV4aI+ZjrH8YXbjMhTzToW6DvQDyA3hNyF1eWL
-         rU0SgrQ2F9EtULcTk8TLE9YENUH7RKI6/XpGk861gYAFO/SdLmAn1UvwsTeG4t/cRPTF
-         3Cng==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=JRVcS/e3uTa82chQ+txpdCU0rg1KC4KMdsr476tU/+I=;
+        b=o2WCrP+2j2Fjd0Hmil68XB8u07nFOSg9O8QyWhCqLC5m+n3wbXQZ3TBDtZ5zXaP/Pq
+         5+Nt1OWZ8aWEiERhaL8c9c1ApT7xHdLN6hiEQc15OBO+DXT5qdG8zRkfGzEeIzKVm+/5
+         cYcCMXnpHw5f22rXuU6+8jfN+j0uvrOkuI3bR+6zfTOIEhDtsJ5lxFTFqQSWaoios0fB
+         doQ16KGswVr4yBy8CuV6nD6H/nm4BNOnmAGTJb28Bd1Zyp9vydN/LLbtKxl7VUOpHfwC
+         N76hGt/BFIhHw5GXusKDWIRro/nPTiS0erVuc9vY1m2nooM6rbwJjjW9fBeaA5gTs3Fv
+         aG8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=OFhp5qOgHpAi603N0nela2D85qEGVdFHkGLbavWDR6w=;
-        b=HPdk/bnQeGuZoW0hZiP4gwQYFrlyfkwHjWmoW/F4+4ESF3mVhvI03jz5FneeCQgoW7
-         2y49zFRXr4Aq6sA2PL4R3rsTFr7sYULGQ6L4he7bFBrHK3yMhIjROn5JVmyYe3SK7Lji
-         aA7USbvx8OF0+560ad2EzsCYik+R3r5RmzjQTMA66ys071Q/GjvyedkigveVTEY0GZm5
-         lXeRhj/GrnyZxB9zC2mug8v0VkhvjnXjdXuKuy56o6PTBSd/7iG1qySlT3kHUSzKzYR9
-         iho1q2hBsBRlu0uIOdmWNlp86NDQ7oKEWLnxBUTrRZnVdn+w8nFA/FexbqhzJToTw5p3
-         xRXg==
-X-Gm-Message-State: AOAM530q9QmHI7UDoiyuYL8HprKeaZLJzsmzxNU6Li1657x2+dd4Vq6T
-        GuUyEhnzu9MY0sQj4URoi6mnOjoKjj9InqvwhnzqR8D6X8Y=
-X-Google-Smtp-Source: ABdhPJwe5mYz8Qo5C8x6jThg2xR12TyzrY7uSlQtxgco4MVzuWlwZ2fvpqc12r6MAaX62HtYq+ZcTG81lVmZXibfAFg=
-X-Received: by 2002:a1f:9e85:: with SMTP id h127mr1010337vke.22.1630867875366;
- Sun, 05 Sep 2021 11:51:15 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=JRVcS/e3uTa82chQ+txpdCU0rg1KC4KMdsr476tU/+I=;
+        b=FdicYqn4rAjzyS8lYPgNvdqHtL09rO6Y0rBIaQ6NxC28zkY925n3ol3cRU64cK9AGc
+         3EfCcS6Ezqi2Ou9xOQgMLo7z9s8RyYtypDDOEq8RRKIT0CxdGEwk5QOiN276BM7Np1gT
+         ufUDXRe4lIZveRkJEJnvPVRxlH816cp07pLdmPrWVZW/r2jpGv1KlRF6xWHoC+tYiCmy
+         DII5bQXgmkGGuElZG1HY2c89y+ig3XrW4lUu/qVpn8sVfGKQ5XMtsaUePxzIDnLi69wD
+         KZlE3yao2sQyW1yLIMAa1Zk1K7LmEifg9uTucFe32VfcUGbS//hPfc6REjGKY+9vfAsu
+         tFjA==
+X-Gm-Message-State: AOAM5325n2invlJv8C5YzUEnqQbeQAK94XMfMy0uX2B4GzA/UcAOYn/u
+        za/DyRfrvBlygOQXfl39CcyXZ9gWT9TDUw==
+X-Google-Smtp-Source: ABdhPJxvKv8G0Wci9Bw55r4IbV73DLNKY4Mz7aJJ6OOv2kPsg11QrCVVB6PLmTCahu5+tQihsGEAXA==
+X-Received: by 2002:a17:90a:890f:: with SMTP id u15mr10142676pjn.149.1630868433149;
+        Sun, 05 Sep 2021 12:00:33 -0700 (PDT)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id v7sm5126057pjg.34.2021.09.05.12.00.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Sep 2021 12:00:32 -0700 (PDT)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Phillip Potter <phil@philpotter.co.uk>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [GIT PULL] CDROM maintainer update
+Message-ID: <d5bb414c-e0e1-ff06-ab4d-f96f706be4b2@kernel.dk>
+Date:   Sun, 5 Sep 2021 13:00:31 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210831202133.2165222-1-jim.cromie@gmail.com> <20210831202133.2165222-7-jim.cromie@gmail.com>
-In-Reply-To: <20210831202133.2165222-7-jim.cromie@gmail.com>
-From:   jim.cromie@gmail.com
-Date:   Sun, 5 Sep 2021 12:50:48 -0600
-Message-ID: <CAJfuBxwqdy888_v7a6U5BYPZxDkQAB4SLPdFyEv+MW98ByNuQg@mail.gmail.com>
-Subject: Re: [PATCH v7 6/8] drm_print: instrument drm_debug_enabled
-To:     Jason Baron <jbaron@akamai.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 2:21 PM Jim Cromie <jim.cromie@gmail.com> wrote:
->
-> Duplicate drm_debug_enabled() code into both "basic" and "dyndbg"
-> ifdef branches.  Then add a pr_debug("todo: ...") into the "dyndbg"
-> branch.
->
-> Then convert the "dyndbg" branch's code to a macro, so that its
-> pr_debug() get its callsite info from the invoking function, instead
-> of from drm_debug_enabled() itself.
->
-> This gives us unique callsite info for the 8 remaining users of
-> drm_debug_enabled(), and lets us enable them individually to see how
-> much logging traffic they generate.  The oft-visited callsites can
-> then be reviewed for runtime cost and possible optimizations.
->
-> Heres what we get:
->
-> bash-5.1# modprobe drm
-> dyndbg: 384 debug prints in module drm
-> bash-5.1# grep todo: /proc/dynamic_debug/control
-> drivers/gpu/drm/drm_edid.c:1843 [drm]connector_bad_edid =_ "todo: maybe avoid via dyndbg\012"
-> drivers/gpu/drm/drm_print.c:309 [drm]___drm_dbg =p "todo: maybe avoid via dyndbg\012"
-> drivers/gpu/drm/drm_print.c:286 [drm]__drm_dev_dbg =p "todo: maybe avoid via dyndbg\012"
-> drivers/gpu/drm/drm_vblank.c:1491 [drm]drm_vblank_restore =_ "todo: maybe avoid via dyndbg\012"
-> drivers/gpu/drm/drm_vblank.c:787 [drm]drm_crtc_vblank_helper_get_vblank_timestamp_internal =_ "todo: maybe avoid via dyndbg\012"
-> drivers/gpu/drm/drm_vblank.c:410 [drm]drm_crtc_accurate_vblank_count =_ "todo: maybe avoid via dyndbg\012"
-> drivers/gpu/drm/drm_atomic_uapi.c:1457 [drm]drm_mode_atomic_ioctl =_ "todo: maybe avoid via dyndbg\012"
-> drivers/gpu/drm/drm_edid_load.c:178 [drm]edid_load =_ "todo: maybe avoid via dyndbg\012"
->
-> At quick glance, edid won't qualify, drm_print might, drm_vblank is
-> strongest chance, maybe atomic-ioctl too.
->
-> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
-> ---
+Hi Linus,
 
-heres 120 seconds of enabled todos, from this patch
+It's been about 22 years since I originally started maintaining the
+CDROM code, and I just haven't been able to even get reviews done in a
+timely fashion the last handful of years. Time to pass it on, and
+Phillip has volunteered take over these duties. I'll be helping as
+needed for the foreseeable future.
 
-[jimc@frodo wk-next]$ journalctl -b0 | grep todo | grep 'frodo kernel'
-[jimc@frodo wk-next]$ sudo su -c 'echo format ^todo: +pfml >
-/proc/dynamic_debug/control;  sleep 120; echo format ^todo: -p >
-/proc/dynamic_debug/control'
-[sudo] password for jimc:
-[jimc@frodo wk-next]$ journalctl -b0 | grep todo | grep 'frodo kernel'
- > todo-120-log
-[jimc@frodo wk-next]$ wc todo-120-log
-  228  2516 24066 todo-120-log
-
-so overall thats not too much work, not so many bitchecks as to be
-worth avoiding.
-
-I think I'll try hitting it with my new igt-tools hammer, see what breaks :-)
+Please pull!
 
 
-[jimc@frodo wk-next]$ hsto todo-120-log
-120 :  drm:drm_crtc_vblank_helper_get_vblank_timestamp_internal:787:
-todo: maybe avoid via dyndbg
-40 :  i915:process_csb:1904: todo: maybe avoid via dyndbg
-20 :  drm:drm_vblank_restore:1491: todo: maybe avoid via dyndbg
-20 :  drm:drm_crtc_accurate_vblank_count:410: todo: maybe avoid via dyndbg
-20 :  i915:skl_print_wm_changes:6068: todo: maybe avoid via dyndbg
-2 :  dyndbg: applied: func="" file="" module="" format="^todo:" lineno=0-0
-2 :  dyndbg: parsed: func="" file="" module="" format="^todo:" lineno=0-0
-1 :  dyndbg: split into words: "format" "^todo:" "-p"
-1 :  dyndbg: split into words: "format" "^todo:" "+pfml"
-1 :  dyndbg: query 0: "format ^todo: -p" mod:*
-1 :  dyndbg: query 0: "format ^todo: +pfml" mod:*
+The following changes since commit f1583cb1be35c23df60b1c39e3e7e6704d749d0b:
+
+  Merge tag 'linux-kselftest-next-5.15-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest (2021-09-03 15:55:41 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.dk/linux-block.git tags/misc-5.15-2021-09-05
+
+for you to fetch changes up to 55d1308bdff7341b778e5cf36220616a0dd6ab8f:
+
+  cdrom: update uniform CD-ROM maintainership in MAINTAINERS file (2021-09-04 11:47:41 -0600)
+
+----------------------------------------------------------------
+misc-5.15-2021-09-05
+
+----------------------------------------------------------------
+Phillip Potter (1):
+      cdrom: update uniform CD-ROM maintainership in MAINTAINERS file
+
+ MAINTAINERS | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+-- 
+Jens Axboe
+
