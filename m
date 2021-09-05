@@ -2,180 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2CA401030
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 16:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF77940103C
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 16:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233508AbhIEO2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 10:28:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51728 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229566AbhIEO2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 10:28:40 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C6C760F3A;
-        Sun,  5 Sep 2021 14:27:31 +0000 (UTC)
-Date:   Sun, 5 Sep 2021 15:30:54 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     <lars@metafoo.de>, <pmeerw@pmeerw.net>, <robh+dt@kernel.org>,
-        <joel@jms.id.au>, <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <BMC-SW@aspeedtech.com>
-Subject: Re: [v5 03/15] iio: adc: aspeed: completes the bitfield declare.
-Message-ID: <20210905153054.56159999@jic23-huawei>
-In-Reply-To: <20210831071458.2334-4-billy_tsai@aspeedtech.com>
-References: <20210831071458.2334-1-billy_tsai@aspeedtech.com>
-        <20210831071458.2334-4-billy_tsai@aspeedtech.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S234381AbhIEOcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 10:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229566AbhIEOcJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 10:32:09 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DFDDC061757
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 07:31:06 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id j13so5665128edv.13
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 07:31:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=7/1jDOGzfp3PXRcY9mA9mIPbXo8eoYQIufcyNrSrdxM=;
+        b=ysj6gmVcqNHadgXS9+bDPwQsbxGxVvOIR/E3NWp852m68iBMAwhSXd6/07o+6DMJsr
+         k/DirnKmIctct/dhSj0twwPKBli9JeeYmVrj2/Mk2Ofq3CAdniV5ae5/0qnSjgf2wkBo
+         daX+WtqPeBMJtXhF/7jezOqmmRlTt3GmPO7OrZV4zlRK0JhF6BOxJSNexqT2eYkOaG/3
+         424dfGfyKbBB5BkXMHhB/7g8OAV9gVN4b0O87tF8TzoHzy2yH/EEDqxS+iP0vRM0GOLv
+         eqFjRtXTuuo44PGn8M2KWjqkNkgN89PWGai9S2WsFUBybPbZAZHCQm3/5Qbtcsa805gr
+         ZoAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=7/1jDOGzfp3PXRcY9mA9mIPbXo8eoYQIufcyNrSrdxM=;
+        b=GOGW0cUeB6muk8elJK8GYjwSOsYNR1//RxXtnU9SDcv+lRxk4vHl/gw1t2mDRbq4o8
+         qU09Spjh7Cladbi7iutdybOgjYW7KUzvQkz1FvStivRcul8WyXyGQUzwAduiAIeHskj2
+         v9zqWkFnA2RUJYRpXceVz6X9sNRlK6xYtmF2czijMnXxuoRfJz1T4i5ERnjlNXEc7VKj
+         iaK4Ugpux9+lhE3V67JfFiDqyLHfHIWg1IeTvG2LbVQHKDVEQAfAL35NtZsBUDWrXYH8
+         xn+q1FgunB8/KDeuy+b0nAD+wx4ceHwFrf5fbFOUCobU/SmAwJV6CJX6wn2HQLS+C7kj
+         DndA==
+X-Gm-Message-State: AOAM530/zkUqVfzQyZtLVM786tMQy24ydjOGqhAOzgKxk3exYVjDFEx1
+        BZSxapF96poh4NgToBe9ZmrU8E8Huk3/+uEOPmpB2g==
+X-Google-Smtp-Source: ABdhPJxLkulszZ+5R2hFoQFt48ejGYp+MiYE+Yd64kvqwhDDt0F7dgJCJoOQl5S+PU2dcz0yxakLb94XV64LLw5bpuQ=
+X-Received: by 2002:aa7:d3c7:: with SMTP id o7mr8971267edr.288.1630852265055;
+ Sun, 05 Sep 2021 07:31:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sun, 5 Sep 2021 20:00:54 +0530
+Message-ID: <CA+G9fYsNttv1A+iWdaaabZCfbo+miw9LDTzOjrSuuEoKOqVvDA@mail.gmail.com>
+Subject: proc-pid-vm.c:214:19: warning: 'str_vsyscall' defined but not used
+To:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, lkft-triage@lists.linaro.org,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Aug 2021 15:14:46 +0800
-Billy Tsai <billy_tsai@aspeedtech.com> wrote:
+Following build warnings noticed while building stable-rc Linux 5.14.1-rc1
+with gcc-11 for arm64 architecture.
 
-> This patch completes the declare of ADC register bitfields and uses the
-> same prefix ASPEED_ADC_* for these bitfields. In addition, tidy up space
-> alignment of the codes.
-> 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-LGTM
+aarch64-linux-gnu-gcc -Wall -O2 -Wno-unused-function -D_GNU_SOURCE
+proc-pid-vm.c  -o kselftest/proc/proc-pid-vm
+proc-pid-vm.c:214:19: warning: 'str_vsyscall' defined but not used
+[-Wunused-const-variable=]
+  214 | static const char str_vsyscall[] =
+      |                   ^~~~~~~~~~~~
+proc-pid-vm.c:212:13: warning: 'g_vsyscall' defined but not used
+[-Wunused-variable]
+  212 | static bool g_vsyscall = false;
+      |             ^~~~~~~~~~
 
-Applied to the togreg branch of iio.git.
 
-Note this won't be going out as non rebasing for a while yet (given mid merge window)
-so if anyone else has time to look at this that would be much appreciated!
+Build config:
+https://builds.tuxbuild.com/1xXcUtI2INra8KaHjOXXQMOyAD0/config
 
-Jonathan
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> ---
->  drivers/iio/adc/aspeed_adc.c | 64 ++++++++++++++++++++++++++----------
->  1 file changed, 47 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-> index 34ec0c28b2df..f055fe7b2c40 100644
-> --- a/drivers/iio/adc/aspeed_adc.c
-> +++ b/drivers/iio/adc/aspeed_adc.c
-> @@ -3,6 +3,7 @@
->   * Aspeed AST2400/2500 ADC
->   *
->   * Copyright (C) 2017 Google, Inc.
-> + * Copyright (C) 2021 Aspeed Technology Inc.
->   */
->  
->  #include <linux/clk.h>
-> @@ -16,6 +17,7 @@
->  #include <linux/reset.h>
->  #include <linux/spinlock.h>
->  #include <linux/types.h>
-> +#include <linux/bitfield.h>
->  
->  #include <linux/iio/iio.h>
->  #include <linux/iio/driver.h>
-> @@ -28,15 +30,39 @@
->  #define ASPEED_REG_INTERRUPT_CONTROL	0x04
->  #define ASPEED_REG_VGA_DETECT_CONTROL	0x08
->  #define ASPEED_REG_CLOCK_CONTROL	0x0C
-> -#define ASPEED_REG_MAX			0xC0
-> -
-> -#define ASPEED_OPERATION_MODE_POWER_DOWN	(0x0 << 1)
-> -#define ASPEED_OPERATION_MODE_STANDBY		(0x1 << 1)
-> -#define ASPEED_OPERATION_MODE_NORMAL		(0x7 << 1)
-> -
-> -#define ASPEED_ENGINE_ENABLE		BIT(0)
-> -
-> -#define ASPEED_ADC_CTRL_INIT_RDY	BIT(8)
-> +#define ASPEED_REG_COMPENSATION_TRIM	0xC4
-> +/*
-> + * The register offset between 0xC8~0xCC can be read and won't affect the
-> + * hardware logic in each version of ADC.
-> + */
-> +#define ASPEED_REG_MAX			0xD0
-> +
-> +#define ASPEED_ADC_ENGINE_ENABLE		BIT(0)
-> +#define ASPEED_ADC_OP_MODE			GENMASK(3, 1)
-> +#define ASPEED_ADC_OP_MODE_PWR_DOWN		0
-> +#define ASPEED_ADC_OP_MODE_STANDBY		1
-> +#define ASPEED_ADC_OP_MODE_NORMAL		7
-> +#define ASPEED_ADC_CTRL_COMPENSATION		BIT(4)
-> +#define ASPEED_ADC_AUTO_COMPENSATION		BIT(5)
-> +/*
-> + * Bit 6 determines not only the reference voltage range but also the dividing
-> + * circuit for battery sensing.
-> + */
-> +#define ASPEED_ADC_REF_VOLTAGE			GENMASK(7, 6)
-> +#define ASPEED_ADC_REF_VOLTAGE_2500mV		0
-> +#define ASPEED_ADC_REF_VOLTAGE_1200mV		1
-> +#define ASPEED_ADC_REF_VOLTAGE_EXT_HIGH		2
-> +#define ASPEED_ADC_REF_VOLTAGE_EXT_LOW		3
-> +#define ASPEED_ADC_BAT_SENSING_DIV		BIT(6)
-> +#define ASPEED_ADC_BAT_SENSING_DIV_2_3		0
-> +#define ASPEED_ADC_BAT_SENSING_DIV_1_3		1
-> +#define ASPEED_ADC_CTRL_INIT_RDY		BIT(8)
-> +#define ASPEED_ADC_CH7_MODE			BIT(12)
-> +#define ASPEED_ADC_CH7_NORMAL			0
-> +#define ASPEED_ADC_CH7_BAT			1
-> +#define ASPEED_ADC_BAT_SENSING_ENABLE		BIT(13)
-> +#define ASPEED_ADC_CTRL_CHANNEL			GENMASK(31, 16)
-> +#define ASPEED_ADC_CTRL_CHANNEL_ENABLE(ch)	FIELD_PREP(ASPEED_ADC_CTRL_CHANNEL, BIT(ch))
->  
->  #define ASPEED_ADC_INIT_POLLING_TIME	500
->  #define ASPEED_ADC_INIT_TIMEOUT		500000
-> @@ -227,7 +253,9 @@ static int aspeed_adc_probe(struct platform_device *pdev)
->  
->  	if (model_data->wait_init_sequence) {
->  		/* Enable engine in normal mode. */
-> -		writel(ASPEED_OPERATION_MODE_NORMAL | ASPEED_ENGINE_ENABLE,
-> +		writel(FIELD_PREP(ASPEED_ADC_OP_MODE,
-> +				  ASPEED_ADC_OP_MODE_NORMAL) |
-> +			       ASPEED_ADC_ENGINE_ENABLE,
->  		       data->base + ASPEED_REG_ENGINE_CONTROL);
->  
->  		/* Wait for initial sequence complete. */
-> @@ -246,10 +274,12 @@ static int aspeed_adc_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto clk_enable_error;
->  
-> -	adc_engine_control_reg_val = GENMASK(31, 16) |
-> -		ASPEED_OPERATION_MODE_NORMAL | ASPEED_ENGINE_ENABLE;
-> +	adc_engine_control_reg_val =
-> +		ASPEED_ADC_CTRL_CHANNEL |
-> +		FIELD_PREP(ASPEED_ADC_OP_MODE, ASPEED_ADC_OP_MODE_NORMAL) |
-> +		ASPEED_ADC_ENGINE_ENABLE;
->  	writel(adc_engine_control_reg_val,
-> -		data->base + ASPEED_REG_ENGINE_CONTROL);
-> +	       data->base + ASPEED_REG_ENGINE_CONTROL);
->  
->  	model_data = of_device_get_match_data(&pdev->dev);
->  	indio_dev->name = model_data->model_name;
-> @@ -265,8 +295,8 @@ static int aspeed_adc_probe(struct platform_device *pdev)
->  	return 0;
->  
->  iio_register_error:
-> -	writel(ASPEED_OPERATION_MODE_POWER_DOWN,
-> -		data->base + ASPEED_REG_ENGINE_CONTROL);
-> +	writel(FIELD_PREP(ASPEED_ADC_OP_MODE, ASPEED_ADC_OP_MODE_PWR_DOWN),
-> +	       data->base + ASPEED_REG_ENGINE_CONTROL);
->  	clk_disable_unprepare(data->clk_scaler->clk);
->  clk_enable_error:
->  poll_timeout_error:
-> @@ -284,8 +314,8 @@ static int aspeed_adc_remove(struct platform_device *pdev)
->  	struct aspeed_adc_data *data = iio_priv(indio_dev);
->  
->  	iio_device_unregister(indio_dev);
-> -	writel(ASPEED_OPERATION_MODE_POWER_DOWN,
-> -		data->base + ASPEED_REG_ENGINE_CONTROL);
-> +	writel(FIELD_PREP(ASPEED_ADC_OP_MODE, ASPEED_ADC_OP_MODE_PWR_DOWN),
-> +	       data->base + ASPEED_REG_ENGINE_CONTROL);
->  	clk_disable_unprepare(data->clk_scaler->clk);
->  	reset_control_assert(data->rst);
->  	clk_hw_unregister_divider(data->clk_scaler);
+meta data:
+-----------
+    git_describe: v5.14-rc6-389-g95dc72bb9c03,
+    git_repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc,
+    git_sha: 95dc72bb9c032093e79e628a98c927b3db73a6c3,
+    git_short_log: 95dc72bb9c03 (\Linux 5.14.1-rc1\),
+    kconfig: [
+        defconfig,
+        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/lkft.config,
+        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/lkft-crypto.config,
+        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/distro-overrides.config,
+        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/systemd.config,
+        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/virtio.config,
+        CONFIG_ARM64_MODULE_PLTS=y
+    ],
+    kernel_version: 5.14.1-rc1,
+    target_arch: arm64,
+    targets: [
+        dtbs,
+        dtbs-legacy,
+        headers,
+        kernel,
+        kselftest,
+        kselftest-merge,
+        modules
+    ],
+    toolchain: gcc-11,
 
+steps to reproduce:
+https://builds.tuxbuild.com/1xXcUtI2INra8KaHjOXXQMOyAD0/tuxmake_reproducer.sh
+
+--
+Linaro LKFT
+https://lkft.linaro.org
