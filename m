@@ -2,81 +2,417 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EBC400FB9
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 14:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46147400FBB
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 14:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237995AbhIEMzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 08:55:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231370AbhIEMzH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 08:55:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 734C960F45;
-        Sun,  5 Sep 2021 12:54:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630846443;
-        bh=ruSh1z2qEZxoZPV6/YxEJiqcX9nKjn3W941R1BHEJP4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rlE3czGFQd04BjSleaGyCPPROfHKgJEj2HwFaH9vtcyKEmouQCDGDDZ/oDhPMOWjA
-         YJBKvl0gPrgimxvKs6a5lBDGZ6OVJRl/IGFz8pCTTC5Xh843NORP4xpM4HJtH7Qqdx
-         gOBGe4MzU9AxjSoK3/GjotEH3cDJ1wp6JSgantNDDp66jS/SEsLNI0T56kAPCLZ1IM
-         p4UlVy9mnSaS1outL7eJkQ3jIEfYcAvU9gKYGffbAGKmizX1PIgsWw8oKFOHfzhhus
-         6s1BwmYqgGlwWgxWKIWroMBtD4NUPE0WqWRndOTFkBAz4L6r4W+dMVb8GhPx5T0qAJ
-         RDQjFGMJsAtmQ==
-Date:   Sun, 5 Sep 2021 08:54:02 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.13 13/14] net: fix NULL pointer reference in
- cipso_v4_doi_free
-Message-ID: <YTS96ql9DzxpYpnl@sashalap>
-References: <20210830115942.1017300-1-sashal@kernel.org>
- <20210830115942.1017300-13-sashal@kernel.org>
- <CAD-N9QUXXjEMtdDniuqcNSAtaOhKtHE=hLMchtCJgbvxQXdABQ@mail.gmail.com>
- <CAHC9VhTjFMw111-fyZsFaCSnN3b-TuQjqXcc1zVu2QTTekTohw@mail.gmail.com>
+        id S237990AbhIENAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 09:00:33 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:43717 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231628AbhIENAc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 09:00:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630846768; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=41o0tind7XKdI5TMoc1mL2xbFBqxaRBhujKXKiV3kZk=; b=nMGppS1PXX+lgAUcJYK0U/CyEXVGTHJJN7hjlSuldVsb3kY6LoX0jtIPqjfuovkFkzjn10BC
+ AL5/gOc2SiwlRLS1QiYbf9fcmWqff2YQ1uHZ34M+p1WXGIdfXCCHwHC61sqhsMYhpHYE7XE+
+ H5ZQKWjW7fOsyOpVIcCjxfk2PHs=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6134bf304d644b7d1cdcb5b8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 05 Sep 2021 12:59:28
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 1899BC43617; Sun,  5 Sep 2021 12:59:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.7 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.29.130] (unknown [49.36.87.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 080CCC4338F;
+        Sun,  5 Sep 2021 12:59:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 080CCC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH v8 2/5] soc: qcom: Add SoC sleep stats driver
+To:     Stephen Boyd <swboyd@chromium.org>, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, mka@chromium.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
+        rnayak@codeaurora.org, lsrao@codeaurora.org,
+        Mahesh Sivasubramanian <msivasub@codeaurora.org>,
+        Lina Iyer <ilina@codeaurora.org>
+References: <1621596371-26482-1-git-send-email-mkshah@codeaurora.org>
+ <1621596371-26482-3-git-send-email-mkshah@codeaurora.org>
+ <CAE-0n50pLe-1CbjH9nRgcAuT=EfLEKctoJUrm+FnZVkrCr5+LQ@mail.gmail.com>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <51c57d03-af1d-c152-8ff2-ccca223b94b0@codeaurora.org>
+Date:   Sun, 5 Sep 2021 18:29:18 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <CAE-0n50pLe-1CbjH9nRgcAuT=EfLEKctoJUrm+FnZVkrCr5+LQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHC9VhTjFMw111-fyZsFaCSnN3b-TuQjqXcc1zVu2QTTekTohw@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 10:20:22AM -0400, Paul Moore wrote:
->On Mon, Aug 30, 2021 at 8:42 AM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->>
->> On Mon, Aug 30, 2021 at 8:01 PM Sasha Levin <sashal@kernel.org> wrote:
->> >
->> > From: 王贇 <yun.wang@linux.alibaba.com>
->> >
->> > [ Upstream commit 733c99ee8be9a1410287cdbb943887365e83b2d6 ]
->> >
->>
->> Hi Sasha,
->>
->> Michael Wang has sent a v2 patch [1] for this bug and it is merged
->> into netdev/net-next.git. However, the v1 patch is already in the
->> upstream tree.
->>
->> How do you guys handle such a issue?
->>
->> [1] https://lkml.org/lkml/2021/8/30/229
->
->Ugh.  Michael can you please work with netdev to fix this in the
->upstream, and hopefully -stable, kernels?  My guess is you will need
->to rebase your v2 patch on top of the v1 patch (basically what exists
->in upstream) and send that back out.
+Hi,
 
-I'm just going to drop this one for now (it never made it in). If there
-is a follow-up you do want us to queue please let us know :)
+On 5/27/2021 5:15 AM, Stephen Boyd wrote:
+> Quoting Maulik Shah (2021-05-21 04:26:08)
+>> diff --git a/drivers/soc/qcom/soc_sleep_stats.c b/drivers/soc/qcom/soc_sleep_stats.c
+>> new file mode 100644
+>> index 0000000..a8396f9
+>> --- /dev/null
+>> +++ b/drivers/soc/qcom/soc_sleep_stats.c
+>> @@ -0,0 +1,255 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/*
+>> + * Copyright (c) 2011-2021, The Linux Foundation. All rights reserved.
+>> + */
+>> +
+>> +#include <linux/debugfs.h>
+>> +#include <linux/device.h>
+>> +#include <linux/io.h>
+>> +#include <linux/module.h>
+>> +#include <linux/of.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/seq_file.h>
+>> +
+>> +#include <linux/soc/qcom/smem.h>
+>> +#include <clocksource/arm_arch_timer.h>
+>> +
+>> +#define STAT_TYPE_OFFSET       0x0
+>> +#define COUNT_OFFSET           0x4
+>> +#define LAST_ENTERED_AT_OFFSET 0x8
+>> +#define LAST_EXITED_AT_OFFSET  0x10
+>> +#define ACCUMULATED_OFFSET     0x18
+>> +#define CLIENT_VOTES_OFFSET    0x1c
+>> +
+>> +struct subsystem_data {
+>> +       const char *name;
+>> +       u32 smem_item;
+>> +       u32 pid;
+>> +};
+>> +
+>> +static const struct subsystem_data subsystems[] = {
+>> +       { "modem", 605, 1 },
+>> +       { "wpss", 605, 13 },
+>> +       { "adsp", 606, 2 },
+>> +       { "cdsp", 607, 5 },
+>> +       { "slpi", 608, 3 },
+>> +       { "gpu", 609, 0 },
+>> +       { "display", 610, 0 },
+>> +       { "adsp_island", 613, 2 },
+>> +       { "slpi_island", 613, 3 },
+>> +};
+>> +
+>> +struct stats_config {
+>> +       size_t offset_addr;
+>> +       size_t num_records;
+>> +       bool appended_stats_avail;
+>> +};
+>> +
+>> +struct stats_data {
+>> +       bool appended_stats_avail;
+>> +       void __iomem *base;
+>> +};
+>> +
+>> +struct sleep_stats {
+>> +       u32 stat_type;
+>> +       u32 count;
+>> +       u64 last_entered_at;
+>> +       u64 last_exited_at;
+>> +       u64 accumulated;
+> Is this coming from memory directly? So we need a bunch of __le32 and
+> __le64 markings and then the endian swaps?
+Its stored in AOP (RPMH)/ RPM msgram for SoC sleep stats and individual 
+subsystem stats stored in SMEM.
+>
+>> +};
+>> +
+>> +struct appended_stats {
+>> +       u32 client_votes;
+>> +       u32 reserved[3];
+> This one too? It's stored in smem?
+Its only stored in RPM msgram. RPMH and SMEM do not have it.
+>
+>> +};
+>> +
+>> +static void qcom_print_stats(struct seq_file *s, const struct sleep_stats *stat)
+>> +{
+>> +       u64 accumulated = stat->accumulated;
+>> +       /*
+>> +        * If a subsystem is in sleep when reading the sleep stats adjust
+>> +        * the accumulated sleep duration to show actual sleep time.
+>> +        */
+>> +       if (stat->last_entered_at > stat->last_exited_at)
+>> +               accumulated += arch_timer_read_counter() - stat->last_entered_at;
+> Doesn't this read the virtual count? Which could be very different than
+> the physical count that the subsystems see and then write into smem? I
+> suppose we need some sort of "physical count" reading API to match up
+> the timestamps that are there but that is sort of hard given that the
+> physical count isn't always intended to be read by the kernel. Maybe we
+> should split off an MMIO architected timer to be used by this code that
+> uses the same clocksource that the other subsystems are using?
+The timer used is same across all subsystems. Beside it try to give more 
+accurate information by modifying
+total sleep length if subsytem is staying in sleep.
+>
+>> +
+>> +       seq_printf(s, "Count: %u\n", stat->count);
+>> +       seq_printf(s, "Last Entered At: %llu\n", stat->last_entered_at);
+>> +       seq_printf(s, "Last Exited At: %llu\n", stat->last_exited_at);
+>> +       seq_printf(s, "Accumulated Duration: %llu\n", accumulated);
+>> +}
+>> +
+>> +static int qcom_subsystem_sleep_stats_show(struct seq_file *s, void *unused)
+>> +{
+>> +       struct subsystem_data *subsystem = s->private;
+>> +       struct sleep_stats *stat;
+>> +
+>> +       /* Items are allocated lazily, so lookup pointer each time */
+>> +       stat = qcom_smem_get(subsystem->pid, subsystem->smem_item, NULL);
+>> +       if (IS_ERR(stat))
+>> +               return PTR_ERR(stat);
+> Can this return EPROBE_DEFER to userspace? That would be pretty weird.
+> Maybe we should convert the return value to -EIO regardless of the error.
+Ok. Updated in v9 to return -EIO.
+>
+>> +
+>> +       qcom_print_stats(s, stat);
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +static int qcom_soc_sleep_stats_show(struct seq_file *s, void *unused)
+>> +{
+>> +       struct stats_data *d = s->private;
+>> +       void __iomem *reg = d->base;
+>> +       struct sleep_stats stat;
+>> +
+>> +       memcpy_fromio(&stat, reg, sizeof(stat));
+>> +       qcom_print_stats(s, &stat);
+>> +
+>> +       if (d->appended_stats_avail) {
+>> +               struct appended_stats votes;
+>> +
+>> +               memcpy_fromio(&votes, reg + CLIENT_VOTES_OFFSET, sizeof(votes));
+>> +               seq_printf(s, "Client Votes: %#x\n", votes.client_votes);
+>> +       }
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +DEFINE_SHOW_ATTRIBUTE(qcom_soc_sleep_stats);
+>> +DEFINE_SHOW_ATTRIBUTE(qcom_subsystem_sleep_stats);
+>> +
+>> +static void qcom_create_soc_sleep_stat_files(struct dentry *root, void __iomem *reg,
+>> +                                            struct stats_data *d, u32 num_records)
+>> +{
+>> +       char stat_type[sizeof(u32) + 1] = {0};
+>> +       u32 offset = 0, type;
+>> +       int i, j;
+>> +
+>> +       for (i = 0; i < num_records; i++) {
+>> +               d[i].base = reg + offset;
+>> +
+>> +               /*
+>> +                * Read the low power mode name and create debugfs file for it.
+> What do we do if there are two same named low power modes? Maybe they
+> should be directories instead with pretty name and values inside of
+> them.
+
+This is agreed between AOP and Linux kernel so we would not have two or 
+more same named low power modes.
+
+This applies to many things like the structure defination which also be 
+agreed and AOP/subsytems populates same
+
+structure in MSGRAM / SMEM respectively which kernel can read in same 
+format.
+
+>
+>> +                * The names read could be of below,
+>> +                * (may change depending on low power mode supported).
+>> +                * For rpmh-sleep-stats: "aosd", "cxsd" and "ddr".
+>> +                * For rpm-sleep-stats: "vmin" and "vlow".
+>> +                */
+>> +               type = readl(d[i].base);
+>> +               for (j = 0; j < sizeof(u32); j++) {
+>> +                       stat_type[j] = type & 0xff;
+>> +                       type = type >> 8;
+>> +               }
+>> +               strim(stat_type);
+>> +               debugfs_create_file(stat_type, 0400, root, &d[i],
+>> +                                   &qcom_soc_sleep_stats_fops);
+>> +
+>> +               offset += sizeof(struct sleep_stats);
+>> +               if (d[i].appended_stats_avail)
+>> +                       offset += sizeof(struct appended_stats);
+>> +       }
+>> +}
+>> +
+>> +static void qcom_create_subsystem_stat_files(struct dentry *root)
+>> +{
+>> +       struct sleep_stats *stat;
+> const? The pointer isn't used though so is this even relevant?
+Changed to const.
+>
+>> +       int i;
+>> +
+>> +       for (i = 0; i < ARRAY_SIZE(subsystems); i++) {
+>> +               stat = qcom_smem_get(subsystems[i].pid, subsystems[i].smem_item, NULL);
+>> +               if (IS_ERR(stat))
+>> +                       continue;
+>> +
+>> +               debugfs_create_file(subsystems[i].name, 0400, root, (void *)&subsystems[i],
+> Do we need to cast to void pointer? Is it unused? If it's unused then
+> pass NULL?
+It is used. It needs cast too since subsystems array is already a const, 
+without cast will compiler will complain discarding const.
+>
+>> +                                   &qcom_subsystem_sleep_stats_fops);
+>> +       }
+>> +}
+>> +
+>> +static int qcom_soc_sleep_stats_probe(struct platform_device *pdev)
+>> +{
+>> +       struct resource *res;
+>> +       void __iomem *reg;
+>> +       void __iomem *offset_addr;
+>> +       phys_addr_t stats_base;
+>> +       resource_size_t stats_size;
+>> +       struct dentry *root;
+>> +       const struct stats_config *config;
+>> +       struct stats_data *d;
+>> +       int i;
+>> +
+>> +       config = device_get_match_data(&pdev->dev);
+>> +       if (!config)
+>> +               return -ENODEV;
+>> +
+>> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +       if (!res)
+>> +               return PTR_ERR(res);
+>> +
+>> +       offset_addr = ioremap(res->start + config->offset_addr, sizeof(u32));
+> Why can't we devm_platform_get_and_ioremap_resource()?
+Ok, updated in v9.
+>
+>> +       if (IS_ERR(offset_addr))
+>> +               return PTR_ERR(offset_addr);
+>> +
+>> +       stats_base = res->start | readl_relaxed(offset_addr);
+>> +       stats_size = resource_size(res);
+>> +       iounmap(offset_addr);
+> Oh because of unmap? Can we add a resource for stats_base/size to the
+> system? I'd really like to see what address that is at.
+Ok it was developed like this since AOP can populate the stat at 
+different address and it gives this address when reading the value at 
+offset.
+> I think it is
+> actually within the same region of this "pointer" that is assigned in
+> DT, but I honestly don't know why we wouldn't just hardcode the address
+> in DT to begin with instead of doing this map, find the real address,
+> and then map that. Is this really changing that often?
+
+yes its in the same region. it generally don't change for single target 
+but prone to change for other targets.
+
+I have hardcoded that address it self in DT to start with and removed 
+the offset part from driver.
+
+>   Probably it
+> changes a few times during development but then it settles down and we
+> can just hardcode it in DT? At least please make a resource and reserve
+> it so we know that the region isn't being used by other kernel drivers.
+>
+>> +
+>> +       reg = devm_ioremap(&pdev->dev, stats_base, stats_size);
+>> +       if (!reg)
+>> +               return -ENOMEM;
+>> +
+>> +       d = devm_kcalloc(&pdev->dev, config->num_records,
+>> +                        sizeof(*d), GFP_KERNEL);
+>> +       if (!d)
+>> +               return -ENOMEM;
+>> +
+>> +       for (i = 0; i < config->num_records; i++)
+>> +               d[i].appended_stats_avail = config->appended_stats_avail;
+>> +
+>> +       root = debugfs_create_dir("qcom_sleep_stats", NULL);
+>> +
+>> +       qcom_create_subsystem_stat_files(root);
+>> +       qcom_create_soc_sleep_stat_files(root, reg, d, config->num_records);
+>> +
+>> +       platform_set_drvdata(pdev, root);
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +static int qcom_soc_sleep_stats_remove(struct platform_device *pdev)
+>> +{
+>> +       struct dentry *root = platform_get_drvdata(pdev);
+>> +
+>> +       debugfs_remove_recursive(root);
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +static const struct stats_config rpm_data = {
+>> +       .offset_addr = 0x14,
+>> +       .num_records = 2,
+>> +       .appended_stats_avail = true,
+>> +};
+>> +
+>> +static const struct stats_config rpmh_data = {
+>> +       .offset_addr = 0x4,
+>> +       .num_records = 3,
+>> +       .appended_stats_avail = false,
+>> +};
+>> +
+>> +static const struct of_device_id qcom_soc_sleep_stats_table[] = {
+>> +       { .compatible = "qcom,rpm-sleep-stats", .data = &rpm_data },
+>> +       { .compatible = "qcom,rpmh-sleep-stats", .data = &rpmh_data },
+>> +       { }
+>> +};
+>> +
+>> +static struct platform_driver soc_sleep_stats_driver = {
+> A driver seems pretty heavyweight for a thing that sticks stuff into
+> debugfs. It's not "driving" anything.
+
+Removed the driver from the end.
+
+Thanks,
+Maulik
+
+>
+>> +       .probe = qcom_soc_sleep_stats_probe,
+>> +       .remove = qcom_soc_sleep_stats_remove,
+>> +       .driver = {
+>> +               .name = "soc_sleep_stats",
+>> +               .of_match_table = qcom_soc_sleep_stats_table,
+>> +       },
+>> +};
+>> +module_platform_driver(soc_sleep_stats_driver);
+>> +
+>> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. (QTI) SoC Sleep Stats driver");
+>> +MODULE_LICENSE("GPL v2");
+>> +MODULE_SOFTDEP("pre: smem");
 
 -- 
-Thanks,
-Sasha
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+
