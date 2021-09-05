@@ -2,76 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0B9400E62
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 08:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECDF400E64
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 08:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234857AbhIEFwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 01:52:10 -0400
-Received: from smtprelay0202.hostedemail.com ([216.40.44.202]:41606 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231835AbhIEFwH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 01:52:07 -0400
-Received: from omf13.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 3B95F18029120;
-        Sun,  5 Sep 2021 05:51:03 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id 4C9211124F6;
-        Sun,  5 Sep 2021 05:51:02 +0000 (UTC)
-Message-ID: <bef77537a67749df31fc7cb5549744ff7b76f6de.camel@perches.com>
-Subject: Re: False positive EXPORT_SYMBOL warning with NS variants
-From:   Joe Perches <joe@perches.com>
-To:     Ian Pilcher <arequipeno@gmail.com>,
-        Andy Whitcroft <apw@canonical.com>
-Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Sat, 04 Sep 2021 22:51:01 -0700
-In-Reply-To: <d63da2a8-1624-21a8-f8ca-f7477c20e56b@gmail.com>
-References: <d63da2a8-1624-21a8-f8ca-f7477c20e56b@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.0-1 
+        id S233580AbhIEGNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 02:13:05 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:62548 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230339AbhIEGNE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 02:13:04 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630822322; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=ECiXLk/29oWzHj/i402TCaubZLema0VXpywFNl85Os4=;
+ b=Z4VDdJERNWzsslvWw78jl7cJ1JHn63a2GzN744wQDgFW/4DLW5cLEqRGrKi23ZUfHvFEY3yw
+ w+exvHFPjFrOUBS5O7oNtIVN53Uy0sV5m4qNrZ7CCtsCusSKzYNdR+sQkYKOMKwLSYM53njq
+ tPP7vjUL50Dz/8KbvJYFZ5X03kM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 61345f8f1567234b8c99f676 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 05 Sep 2021 06:11:27
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8B6F9C43618; Sun,  5 Sep 2021 06:11:26 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0EE14C4338F;
+        Sun,  5 Sep 2021 06:11:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 0EE14C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-X-Stat-Signature: 6z4p4ncebhtatfckqumese6s5hzf9wgh
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 4C9211124F6
-X-Spam-Status: No, score=6.61
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+/UJs1hLVSao1Xv6OwxuW4dmpYsesQkxk=
-X-HE-Tag: 1630821062-600752
+Subject: Re: [PATCH] iwlwifi: pnvm: Fix a memory leak in
+ 'iwl_pnvm_get_from_fs()'
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <1b5d80f54c1dbf85710fd285243932943b498fe7.1630614969.git.christophe.jaillet@wanadoo.fr>
+References: <1b5d80f54c1dbf85710fd285243932943b498fe7.1630614969.git.christophe.jaillet@wanadoo.fr>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     luciano.coelho@intel.com, davem@davemloft.net, kuba@kernel.org,
+        johannes.berg@intel.com, pierre-louis.bossart@linux.intel.com,
+        drorx.moshe@intel.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210905061126.8B6F9C43618@smtp.codeaurora.org>
+Date:   Sun,  5 Sep 2021 06:11:26 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-03 at 11:01 -0500, Ian Pilcher wrote:
-> $ cat foo.c
-> // SPDX-License-Identifier: GPL-2.0-only
-> void (*foo)(void);
-> EXPORT_SYMBOL_NS(foo, FOO);
-> 
-> $ scripts/checkpatch.pl -f foo.c
-> WARNING: EXPORT_SYMBOL(foo); should immediately follow its function/variable
-> #3: FILE: foo.c:3:
-> +EXPORT_SYMBOL_NS(foo, FOO);
-> 
-> The non-NS EXPORT_SYMBOL variants don't trigger this warning.
-> 
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
 
-Try this:
----
- scripts/checkpatch.pl | 1 +
- 1 file changed, 1 insertion(+)
+> A firmware is requested but never released in this function. This leads to
+> a memory leak in the normal execution path.
+> 
+> Add the missing 'release_firmware()' call.
+> Also introduce a temp variable (new_len) in order to keep the value of
+> 'pnvm->size' after the firmware has been released.
+> 
+> Fixes: cdda18fbbefa ("iwlwifi: pnvm: move file loading code to a separate function")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Acked-by: Luca Coelho <luca@coelho.fi>
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 88cb294dc4472..91798b07c6cb5 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -4449,6 +4449,7 @@ sub process {
- 			#   XXX(foo);
- 			#   EXPORT_SYMBOL(something_foo);
- 			my $name = $1;
-+			$name =~ s/^\s*($Ident).*/$1/;
- 			if ($stat =~ /^(?:.\s*}\s*\n)?.([A-Z_]+)\s*\(\s*($Ident)/ &&
- 			    $name =~ /^${Ident}_$2/) {
- #print "FOO C name<$name>\n";
+Patch applied to wireless-drivers.git, thanks.
+
+45010c080e6e iwlwifi: pnvm: Fix a memory leak in 'iwl_pnvm_get_from_fs()'
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/1b5d80f54c1dbf85710fd285243932943b498fe7.1630614969.git.christophe.jaillet@wanadoo.fr/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
