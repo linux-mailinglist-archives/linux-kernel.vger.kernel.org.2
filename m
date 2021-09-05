@@ -2,75 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1579401175
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 22:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBC6401177
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 22:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238130AbhIEUFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 16:05:19 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:33441 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231468AbhIEUFK (ORCPT
+        id S232241AbhIEUTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 16:19:25 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:49722 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230217AbhIEUTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 16:05:10 -0400
-Received: by mail-io1-f72.google.com with SMTP id g2-20020a6b7602000000b005be59530196so3741213iom.0
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 13:04:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=u7MTmHe0EZ9aA9LzZAxZXm6GQj3ww9LG3NsEE4FMIzE=;
-        b=VHFvdTP3wu7IAFh78tjZU2I8PKImRM/VzbtnnHTXtIr1hXq0vA+PNVsBdwEoI5NfgH
-         oo7dhSN3wt+c03hlM4/FnJTNvkL6SGkvyDO7Ilgk7+AcASfpKpV9g68C8lg4Djh5Bkwd
-         D89LUT0eFhsS5nJ90g5NEmTPUfonUlLDp/Xx3xyy+Sy56rFUUCDt9RAqq3T2TejNQV8w
-         j8GHpta2pWAh4THdxNAPE3jWF4exCJC2u+fvBVh1o4UfRJfSFVBlPmOMCRKbKjbD+WDL
-         92C8ZNdVIOdE8PKybN0DiUkfxvorrZVjjYwLaA2T1IyzGmIxIDLQRKKl74MbRmkpKrBi
-         fMRA==
-X-Gm-Message-State: AOAM532yPABEqJLjQ2EA/aMDRBIiYeQ52Ugx0gPciDJrhXxhQt/sHgL7
-        HS2X6lzfMUGGRwwAsiWtl+5QZ/rarBjjNrJCoL4bl3dFA/BZ
-X-Google-Smtp-Source: ABdhPJw8uxsAVTc7y/O2Nho+1GgIvGWLtmslQzKpOBn86Tsfrhp/WIPdMKxCklB4s2cNvBUTeZJMFKunrHzUglETpZQX+qZo7Qz/
+        Sun, 5 Sep 2021 16:19:24 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52]:41328)
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mMyao-000bcQ-UZ; Sun, 05 Sep 2021 14:18:19 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95]:37964 helo=email.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1mMyan-00HJu6-Hl; Sun, 05 Sep 2021 14:18:18 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>, <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@ZenIV.linux.org.uk>
+Date:   Sun, 05 Sep 2021 15:17:37 -0500
+Message-ID: <87a6kqvkta.fsf@disp2133>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:7b4b:: with SMTP id m11mr7043393iop.165.1630872246693;
- Sun, 05 Sep 2021 13:04:06 -0700 (PDT)
-Date:   Sun, 05 Sep 2021 13:04:06 -0700
-In-Reply-To: <0000000000002c756105cb201ef1@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f032a605cb450801@google.com>
-Subject: Re: [syzbot] WARNING: kmalloc bug in bpf_check
-From:   syzbot <syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
-        daniel@iogearbox.net, davem@davemloft.net, eric.dumazet@gmail.com,
-        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, nathan@kernel.org, ndesaulniers@google.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
-        w@1wt.eu, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-XM-SPF: eid=1mMyan-00HJu6-Hl;;;mid=<87a6kqvkta.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19lJt2dFJFtDFCcFNdVwdQw0t6P91V24wI=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 442 ms - load_scoreonly_sql: 0.10 (0.0%),
+        signal_user_changed: 14 (3.1%), b_tie_ro: 12 (2.6%), parse: 1.50
+        (0.3%), extract_message_metadata: 20 (4.4%), get_uri_detail_list: 3.1
+        (0.7%), tests_pri_-1000: 20 (4.6%), tests_pri_-950: 1.83 (0.4%),
+        tests_pri_-900: 1.42 (0.3%), tests_pri_-90: 92 (20.9%), check_bayes:
+        90 (20.4%), b_tokenize: 9 (2.1%), b_tok_get_all: 8 (1.9%),
+        b_comp_prob: 3.0 (0.7%), b_tok_touch_all: 66 (14.9%), b_finish: 1.14
+        (0.3%), tests_pri_0: 269 (60.9%), check_dkim_signature: 0.78 (0.2%),
+        check_dkim_adsp: 3.7 (0.8%), poll_dns_idle: 1.17 (0.3%), tests_pri_10:
+        4.4 (1.0%), tests_pri_500: 13 (2.9%), rewrite_mail: 0.00 (0.0%)
+Subject: [PATCH] signal: Remove the bogus sigkill_pending in ptrace_stop
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
 
-commit 7661809d493b426e979f39ab512e3adf41fbcc69
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed Jul 14 16:45:49 2021 +0000
+The existence of sigkill_pending is a little silly as it is
+functionally a duplicate of fatal_signal_pending that is used in
+exactly one place.
 
-    mm: don't allow oversized kvmalloc() calls
+Checking for pending fatal signals and returning early in ptrace_stop
+is actively harmful.  It casues the ptrace_stop called by
+ptrace_signal to return early before setting current->exit_code.
+Later when ptrace_signal reads the signal number from
+current->exit_code is undefined, making it unpredictable what will
+happen.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13136b83300000
-start commit:   a9c9a6f741cd Merge tag 'scsi-misc' of git://git.kernel.org..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10936b83300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17136b83300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c84ed2c3f57ace
-dashboard link: https://syzkaller.appspot.com/bug?extid=f3e749d4c662818ae439
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e4cdf5300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ef3b33300000
+Instead rely on the fact that schedule will not sleep if there is a
+pending signal that can awaken a task.
 
-Reported-by: syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com
-Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
+Removing the explict sigkill_pending test fixes fixes ptrace_signal
+when ptrace_stop does not stop because current->exit_code is always
+set to to signr.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Cc: stable@vger.kernel.org
+Fixes: 3d749b9e676b ("ptrace: simplify ptrace_stop()->sigkill_pending() path")
+Fixes: 1a669c2f16d4 ("Add arch_ptrace_stop")
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+
+Linus if you would like this as a pull request or after the merge window
+closes please let me know.  This change just fixes a very old and nasty
+piece of confusion in the code and is trivially correct so I thought you
+might appreciate it directly.
+
+ kernel/signal.c | 18 ++++--------------
+ 1 file changed, 4 insertions(+), 14 deletions(-)
+
+diff --git a/kernel/signal.c b/kernel/signal.c
+index a3229add4455..b024447b3ff3 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2122,15 +2122,6 @@ static inline bool may_ptrace_stop(void)
+ 	return true;
+ }
+ 
+-/*
+- * Return non-zero if there is a SIGKILL that should be waking us up.
+- * Called with the siglock held.
+- */
+-static bool sigkill_pending(struct task_struct *tsk)
+-{
+-	return sigismember(&tsk->pending.signal, SIGKILL) ||
+-	       sigismember(&tsk->signal->shared_pending.signal, SIGKILL);
+-}
+ 
+ /*
+  * This must be called with current->sighand->siglock held.
+@@ -2157,17 +2148,16 @@ static void ptrace_stop(int exit_code, int why, int clear_code, kernel_siginfo_t
+ 		 * calling arch_ptrace_stop, so we must release it now.
+ 		 * To preserve proper semantics, we must do this before
+ 		 * any signal bookkeeping like checking group_stop_count.
+-		 * Meanwhile, a SIGKILL could come in before we retake the
+-		 * siglock.  That must prevent us from sleeping in TASK_TRACED.
+-		 * So after regaining the lock, we must check for SIGKILL.
+ 		 */
+ 		spin_unlock_irq(&current->sighand->siglock);
+ 		arch_ptrace_stop(exit_code, info);
+ 		spin_lock_irq(&current->sighand->siglock);
+-		if (sigkill_pending(current))
+-			return;
+ 	}
+ 
++	/*
++	 * schedule() will not sleep if there is a pending signal that
++	 * can awaken the task.
++	 */
+ 	set_special_state(TASK_TRACED);
+ 
+ 	/*
+-- 
+2.20.1
+
