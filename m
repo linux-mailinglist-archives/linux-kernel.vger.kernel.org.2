@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD5A400FDB
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 15:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1077D400FDC
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 15:15:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237827AbhIENN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 09:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33678 "EHLO
+        id S237882AbhIENOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 09:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229759AbhIENNz (ORCPT
+        with ESMTP id S237863AbhIENOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 09:13:55 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC67C061575
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 06:12:52 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id i24so3404839pfo.12
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 06:12:52 -0700 (PDT)
+        Sun, 5 Sep 2021 09:14:00 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD60C061575
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 06:12:57 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id j2so2338038pll.1
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 06:12:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rNDitdpFQYqRsx0NDA3UD5VzmjF/KpbCascgW18kvig=;
-        b=gMn8AVq4zKDEv2qIUktb9zStZXvW2NtVJoW9uMns6QIUjAu+rMmezD7NX0LQAw8bMK
-         yXX+LqNiDYxuJcJ1jLU2fBAqjSdBUpaUnG0IKpcQQyRyqK8BA2FtUZaSUkg8R5h7cIMq
-         WXiJdsxrO5bCaARO35sHATTBzY47ErgcYb49VIaT4FKfqUJMQV0orPe8Fm+nrLCg6wGl
-         T5aYLNvChfPme9U7pZArO+xROFXuSNzG/JKKXNG9K5r22IYwDTwID2M29b9b9k4y2TZv
-         D1/l2k6hZzXNR1lDWtUuGdKFErsv8CRVUATF2IEVOGaOkSb61dOs2J913tPl0+yJksr8
-         yQ4g==
+        bh=BEM00qsPpIRL3lpy7qXqtObj3G0WQJvL4ysVAmwesIc=;
+        b=kWZTvvlVS3+U03pD1Mty00yMJgFcyoC4I8DvlHrcLPvBEOLp7rLVzWjGk+2/4TzZ9+
+         RT87zXTYkK7uQO84gz3LbH+rYlYnUB18E7UovxkrOAbxDNlyVB5nGLQPGz791c2/Z6gj
+         Oo7IDba8LJVc4mn4MHSPhhaT1krJOIDxEAEppux64KlJwMGYeB+EMgwXACe0jNqMZ61d
+         Cb0Co0fhhBEUZ2HvjlbwrbAaiX75MXlVD5oHIdQ0g6rNRYhFRrjwuSYOzRQRwFXg2pcy
+         6vj888DV4VOs28abRL1IM00tsRr0K1hAO0IYYL4J5y9b2/4ogdeXatMd2PoDdCy8jRyY
+         cNKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rNDitdpFQYqRsx0NDA3UD5VzmjF/KpbCascgW18kvig=;
-        b=M1t4x2UCtocEDyK9hXEVlEDpIfppua76NGdmhHi+z2CXYbKP/dbT4bI3q3SPHPjgTF
-         NbsdGuHgNsa1p489OKvwKyWvszEw6cU1gk+Lz6SSZCwLxhKF1yLfJYSxTQFMqpPoMZuk
-         SSMUY/YUio9JJwxa9g25AX0NVlz9l/XUj+LsTvF1RjGBI+ajVKMxw+xkb8I48HeRF9rN
-         OrPnnGuxoCMYVmb9uIbuUDy/ICVm4AxmQKqosZ+1UN++gQ406SYhLxJ/qPA905MrKURU
-         fuLLnq2MzV8S/AgB7mzXqpzOORgY3vB/NMuZrbYriaxvieJFCHYQ5TtbEF5+lnSPRAVK
-         T5eQ==
-X-Gm-Message-State: AOAM532wDcDmuZdIuI+l4syg83Hegi1lpwJ44fUPfaa9lJ/35+SivK6F
-        pIM6kqNgh3DyxrtgmdSADGX1QA==
-X-Google-Smtp-Source: ABdhPJyGoj06EAOX1zYXZ26Y72c2cYa/YUXqCbNIE4wsRBlEHdp8h2AHHA16zkisciOIJvvBwR+Kww==
-X-Received: by 2002:a05:6a00:170d:b0:3f3:bcdb:4883 with SMTP id h13-20020a056a00170d00b003f3bcdb4883mr7592412pfc.68.1630847572273;
-        Sun, 05 Sep 2021 06:12:52 -0700 (PDT)
+        bh=BEM00qsPpIRL3lpy7qXqtObj3G0WQJvL4ysVAmwesIc=;
+        b=AZOWSQjFK62wSoHmwVi6yQffqs2sRr3B8CBsAxUMnAhUUg5ORvJi2tIejwOKg1ROGI
+         9VyNyAN9aUAO0n+hTdOy4Exm76S5A/V07XzpFOvKoRu1vR4EgiJipbAEOmnbaMl34K7F
+         tNevZczX8JRs4aC6mNt33XM/mZL5Bafgie9o1inNY3yV4emYWbto0qIYCZhtzpQDztB/
+         1edraTqrBtAdy/WoOmR9yUEfaeh+1oL/onAotORdfDSmmveOZVRruU5Izkesd6yVtZl5
+         0CltXYgDb/ws8dGulo4hqW0ERW3HJU3zi1+aEzvxRd7BEn6dPIH0X+kQQnVbIf/UGK4b
+         ElDQ==
+X-Gm-Message-State: AOAM532IEfF3G4Kpuzm0Ezy60nNwXr5Et/+eBm2Dtkjr6C65XUsIe7LY
+        32l5YD0U5aEpY/CpXwQd9TOHMoFD+PiOSv6q7/E=
+X-Google-Smtp-Source: ABdhPJwi8Vr/uRQdkhGN/jlvlisDkKGr3m1G7XRUkaNVdBfQL+6oytqammXV2p2YLE5I1ZpBY/ryjQ==
+X-Received: by 2002:a17:903:41ce:b0:13a:21a7:1304 with SMTP id u14-20020a17090341ce00b0013a21a71304mr354750ple.65.1630847576575;
+        Sun, 05 Sep 2021 06:12:56 -0700 (PDT)
 Received: from localhost ([204.124.181.224])
-        by smtp.gmail.com with ESMTPSA id g6sm4876530pfb.143.2021.09.05.06.12.51
+        by smtp.gmail.com with ESMTPSA id x9sm4697035pjf.52.2021.09.05.06.12.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Sep 2021 06:12:51 -0700 (PDT)
+        Sun, 05 Sep 2021 06:12:56 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
@@ -57,9 +57,9 @@ To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
         coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 1/2] coresight: tmc-etr: Use perf_output_handle::head for AUX ring buffer
-Date:   Sun,  5 Sep 2021 21:12:36 +0800
-Message-Id: <20210905131237.1035322-2-leo.yan@linaro.org>
+Subject: [PATCH v3 2/2] coresight: Update comments for removing cs_etm_find_snapshot()
+Date:   Sun,  5 Sep 2021 21:12:37 +0800
+Message-Id: <20210905131237.1035322-3-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210905131237.1035322-1-leo.yan@linaro.org>
 References: <20210905131237.1035322-1-leo.yan@linaro.org>
@@ -69,81 +69,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When enable the Arm CoreSight PMU event, the context for AUX ring buffer
-is prepared in the structure perf_output_handle, and its field "head"
-points the head of the AUX ring buffer and it is updated after filling
-AUX trace data into buffer.
+Commit 2f01c200d440 ("perf cs-etm: Remove callback cs_etm_find_snapshot()")
+has removed the function cs_etm_find_snapshot() from the perf tool in the
+user space, now CoreSight trace directly uses the perf common function
+__auxtrace_mmap__read() to calcualte the head and size for AUX trace data
+in snapshot mode.
 
-Current code uses an extra field etr_perf_buffer::head to maintain the
-header for the AUX ring buffer which is not necessary; alternatively,
-it's better to directly use perf_output_handle::head.
-
-This patch removes the field etr_perf_buffer::head and directly uses
-perf_output_handle::head for the head of AUX ring buffer.
+Updates the comments in drivers to reflect the changes.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 ---
- drivers/hwtracing/coresight/coresight-tmc-etr.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/hwtracing/coresight/coresight-etb10.c   | 2 +-
+ drivers/hwtracing/coresight/coresight-tmc-etf.c | 2 +-
+ drivers/hwtracing/coresight/coresight-tmc-etr.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-index a049b525a274..d23c7690f29a 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-@@ -32,7 +32,6 @@ struct etr_flat_buf {
-  * @etr_buf		- Actual buffer used by the ETR
-  * @pid			- The PID this etr_perf_buffer belongs to.
-  * @snaphost		- Perf session mode
-- * @head		- handle->head at the beginning of the session.
-  * @nr_pages		- Number of pages in the ring buffer.
-  * @pages		- Array of Pages in the ring buffer.
-  */
-@@ -41,7 +40,6 @@ struct etr_perf_buffer {
- 	struct etr_buf		*etr_buf;
- 	pid_t			pid;
- 	bool			snapshot;
--	unsigned long		head;
- 	int			nr_pages;
- 	void			**pages;
- };
-@@ -1455,16 +1453,16 @@ static void tmc_free_etr_buffer(void *config)
-  * buffer to the perf ring buffer.
-  */
- static void tmc_etr_sync_perf_buffer(struct etr_perf_buffer *etr_perf,
-+				     unsigned long head,
- 				     unsigned long src_offset,
- 				     unsigned long to_copy)
- {
- 	long bytes;
- 	long pg_idx, pg_offset;
--	unsigned long head = etr_perf->head;
- 	char **dst_pages, *src_buf;
- 	struct etr_buf *etr_buf = etr_perf->etr_buf;
- 
--	head = etr_perf->head;
-+	head = PERF_IDX2OFF(head, etr_perf);
- 	pg_idx = head >> PAGE_SHIFT;
- 	pg_offset = head & (PAGE_SIZE - 1);
- 	dst_pages = (char **)etr_perf->pages;
-@@ -1571,7 +1569,7 @@ tmc_update_etr_buffer(struct coresight_device *csdev,
- 	/* Insert barrier packets at the beginning, if there was an overflow */
- 	if (lost)
- 		tmc_etr_buf_insert_barrier_packet(etr_buf, offset);
--	tmc_etr_sync_perf_buffer(etr_perf, offset, size);
-+	tmc_etr_sync_perf_buffer(etr_perf, handle->head, offset, size);
+diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
+index f775cbee12b8..1cdb627d6c38 100644
+--- a/drivers/hwtracing/coresight/coresight-etb10.c
++++ b/drivers/hwtracing/coresight/coresight-etb10.c
+@@ -557,7 +557,7 @@ static unsigned long etb_update_buffer(struct coresight_device *csdev,
  
  	/*
  	 * In snapshot mode we simply increment the head by the number of byte
-@@ -1623,8 +1621,6 @@ static int tmc_enable_etr_sink_perf(struct coresight_device *csdev, void *data)
- 		goto unlock_out;
- 	}
+-	 * that were written.  User space function  cs_etm_find_snapshot() will
++	 * that were written.  User space function __auxtrace_mmap__read() will
+ 	 * figure out how many bytes to get from the AUX buffer based on the
+ 	 * position of the head.
+ 	 */
+diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
+index cd0fb7bfba68..a895931a2766 100644
+--- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
++++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
+@@ -546,7 +546,7 @@ static unsigned long tmc_update_etf_buffer(struct coresight_device *csdev,
  
--	etr_perf->head = PERF_IDX2OFF(handle->head, etr_perf);
--
  	/*
- 	 * No HW configuration is needed if the sink is already in
- 	 * use for this session.
+ 	 * In snapshot mode we simply increment the head by the number of byte
+-	 * that were written.  User space function  cs_etm_find_snapshot() will
++	 * that were written.  User space function __auxtrace_mmap__read() will
+ 	 * figure out how many bytes to get from the AUX buffer based on the
+ 	 * position of the head.
+ 	 */
+diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+index d23c7690f29a..941abb70b827 100644
+--- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
++++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+@@ -1573,7 +1573,7 @@ tmc_update_etr_buffer(struct coresight_device *csdev,
+ 
+ 	/*
+ 	 * In snapshot mode we simply increment the head by the number of byte
+-	 * that were written.  User space function  cs_etm_find_snapshot() will
++	 * that were written.  User space function __auxtrace_mmap__read() will
+ 	 * figure out how many bytes to get from the AUX buffer based on the
+ 	 * position of the head.
+ 	 */
 -- 
 2.25.1
 
