@@ -2,154 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E04401134
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 20:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E9940113C
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 20:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbhIESrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 14:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49954 "EHLO
+        id S236214AbhIESwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 14:52:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234445AbhIESrH (ORCPT
+        with ESMTP id S229865AbhIESwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 14:47:07 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6866EC061575
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 11:46:04 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d17so2603755plr.12
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 11:46:04 -0700 (PDT)
+        Sun, 5 Sep 2021 14:52:20 -0400
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51EB6C061575
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 11:51:16 -0700 (PDT)
+Received: by mail-vk1-xa2c.google.com with SMTP id t13so1507258vkm.4
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 11:51:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=A0AxMO/6mnm7mS5tH8sAepDPtEJ/6RXbzlmGEKvemFk=;
-        b=pUe/G4l2M97MzDY/AvQlXjKYHrV+zgLd2iD/nheKBAJwy7DsLqnmVdDCASNJz/nbjE
-         pZN9iNMNILTPqIpPU8fKAsAwUm7104hYcgbmwgnFL9T4bFB7Fy+Cr9+JpJ6P1T7gcnAA
-         FFtu1bSlmPG5yz5/2TLq8QqUSyAnNWuoeUNOMORF+RxCJXQA0j1LzacXaJDraH8HbpLg
-         TF6dOXKG2SIY/IpQNnVRz4ak2CkCJ+h4w4AAnQ1Bu+hkh6ZrhdJSXEaednmRkeEvdB+s
-         Lfvv5nDaJoY5e2mUz/6q8now37T05H4FNivL/aFF+AMXX1UVhZtwKqg0y1Ns6cO78GSH
-         +Byg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=OFhp5qOgHpAi603N0nela2D85qEGVdFHkGLbavWDR6w=;
+        b=Tn4yoeJXDQw2MDPyO5z0Pll4WYHKB9sTqXQ5s5dsFJ7CMLurgNRWfNQs9ez5KxmwEd
+         hcm2va+WW9xNJy8ae/POty5VIqq8ZnM/LT7PlN34iSXsh25CUw0OPD+lKiHTn2J/0yPz
+         gqUpy3kXEWZ81n+1JepzH3iovBITzmo0gaMtd2/WbJ9NobKx8kiUP+NRsmXVCJImKc+F
+         WX+L1w9/JbAo+Al/KBJY4UK//84VPYNV4aI+ZjrH8YXbjMhTzToW6DvQDyA3hNyF1eWL
+         rU0SgrQ2F9EtULcTk8TLE9YENUH7RKI6/XpGk861gYAFO/SdLmAn1UvwsTeG4t/cRPTF
+         3Cng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=A0AxMO/6mnm7mS5tH8sAepDPtEJ/6RXbzlmGEKvemFk=;
-        b=T/jjY9U1XXHbrb90OuaON1G4kQDufRzR933MEthQqvTpi7XamlzN/+iHp4V56W7Pxy
-         KpZVu3tkBj8O8vLv9h5NpgVXoaLDJ71q7Bu3ekKi6Q5MweqbcGPlOR/xPjLnDByty4WV
-         D4h5OqXkdxj0o4EGftW8xmLc6EKjN3E5rgOUHAa2rA60Ns33k6wS8jw7w/MIMu1pvggr
-         2PguB8chIQXbg+Nfb4RlCAsWSKPDr8TjGv8BQYxV5KdkwGnX97z6DTm0Kt4awQRM+4jc
-         +KU59Qph/mMfO1/ZzqgXnigXP5eM4Nq4a/+kYcBkUHysitw/sA/RhYXBJXCdFL97wpkU
-         NJaQ==
-X-Gm-Message-State: AOAM532Ej8MBwIzrOdw6gXDFp7tQL05NHat0eCaD1NcPeSxXMft29I8m
-        MgLwQxfnGJ/PR9UHeILLgwo=
-X-Google-Smtp-Source: ABdhPJydT3MHzK+39z8my7P2lPiqSumjTIndk0xWZx3a5mdR/UDaskAgbHLflL5vb/OPOI24cbwB8A==
-X-Received: by 2002:a17:90a:7345:: with SMTP id j5mr10225819pjs.48.1630867563685;
-        Sun, 05 Sep 2021 11:46:03 -0700 (PDT)
-Received: from user ([117.98.200.228])
-        by smtp.gmail.com with ESMTPSA id c24sm6388677pgj.63.2021.09.05.11.46.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Sep 2021 11:46:03 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 00:15:57 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org, fmdefrancesco@gmail.com,
-        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] staging: rtl8712: Move similar execution in to a function.
-Message-ID: <YTUQZdPiYFscIsvU@user>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=OFhp5qOgHpAi603N0nela2D85qEGVdFHkGLbavWDR6w=;
+        b=HPdk/bnQeGuZoW0hZiP4gwQYFrlyfkwHjWmoW/F4+4ESF3mVhvI03jz5FneeCQgoW7
+         2y49zFRXr4Aq6sA2PL4R3rsTFr7sYULGQ6L4he7bFBrHK3yMhIjROn5JVmyYe3SK7Lji
+         aA7USbvx8OF0+560ad2EzsCYik+R3r5RmzjQTMA66ys071Q/GjvyedkigveVTEY0GZm5
+         lXeRhj/GrnyZxB9zC2mug8v0VkhvjnXjdXuKuy56o6PTBSd/7iG1qySlT3kHUSzKzYR9
+         iho1q2hBsBRlu0uIOdmWNlp86NDQ7oKEWLnxBUTrRZnVdn+w8nFA/FexbqhzJToTw5p3
+         xRXg==
+X-Gm-Message-State: AOAM530q9QmHI7UDoiyuYL8HprKeaZLJzsmzxNU6Li1657x2+dd4Vq6T
+        GuUyEhnzu9MY0sQj4URoi6mnOjoKjj9InqvwhnzqR8D6X8Y=
+X-Google-Smtp-Source: ABdhPJwe5mYz8Qo5C8x6jThg2xR12TyzrY7uSlQtxgco4MVzuWlwZ2fvpqc12r6MAaX62HtYq+ZcTG81lVmZXibfAFg=
+X-Received: by 2002:a1f:9e85:: with SMTP id h127mr1010337vke.22.1630867875366;
+ Sun, 05 Sep 2021 11:51:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210831202133.2165222-1-jim.cromie@gmail.com> <20210831202133.2165222-7-jim.cromie@gmail.com>
+In-Reply-To: <20210831202133.2165222-7-jim.cromie@gmail.com>
+From:   jim.cromie@gmail.com
+Date:   Sun, 5 Sep 2021 12:50:48 -0600
+Message-ID: <CAJfuBxwqdy888_v7a6U5BYPZxDkQAB4SLPdFyEv+MW98ByNuQg@mail.gmail.com>
+Subject: Re: [PATCH v7 6/8] drm_print: instrument drm_debug_enabled
+To:     Jason Baron <jbaron@akamai.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        intel-gvt-dev@lists.freedesktop.org,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the common execution for read_macreg_hdl, write_macreg_hdl,
-write_bbreg_hdl and write_rfreg_hdl in to a new function
-common_read_write_hdl.
+On Tue, Aug 31, 2021 at 2:21 PM Jim Cromie <jim.cromie@gmail.com> wrote:
+>
+> Duplicate drm_debug_enabled() code into both "basic" and "dyndbg"
+> ifdef branches.  Then add a pr_debug("todo: ...") into the "dyndbg"
+> branch.
+>
+> Then convert the "dyndbg" branch's code to a macro, so that its
+> pr_debug() get its callsite info from the invoking function, instead
+> of from drm_debug_enabled() itself.
+>
+> This gives us unique callsite info for the 8 remaining users of
+> drm_debug_enabled(), and lets us enable them individually to see how
+> much logging traffic they generate.  The oft-visited callsites can
+> then be reviewed for runtime cost and possible optimizations.
+>
+> Heres what we get:
+>
+> bash-5.1# modprobe drm
+> dyndbg: 384 debug prints in module drm
+> bash-5.1# grep todo: /proc/dynamic_debug/control
+> drivers/gpu/drm/drm_edid.c:1843 [drm]connector_bad_edid =_ "todo: maybe avoid via dyndbg\012"
+> drivers/gpu/drm/drm_print.c:309 [drm]___drm_dbg =p "todo: maybe avoid via dyndbg\012"
+> drivers/gpu/drm/drm_print.c:286 [drm]__drm_dev_dbg =p "todo: maybe avoid via dyndbg\012"
+> drivers/gpu/drm/drm_vblank.c:1491 [drm]drm_vblank_restore =_ "todo: maybe avoid via dyndbg\012"
+> drivers/gpu/drm/drm_vblank.c:787 [drm]drm_crtc_vblank_helper_get_vblank_timestamp_internal =_ "todo: maybe avoid via dyndbg\012"
+> drivers/gpu/drm/drm_vblank.c:410 [drm]drm_crtc_accurate_vblank_count =_ "todo: maybe avoid via dyndbg\012"
+> drivers/gpu/drm/drm_atomic_uapi.c:1457 [drm]drm_mode_atomic_ioctl =_ "todo: maybe avoid via dyndbg\012"
+> drivers/gpu/drm/drm_edid_load.c:178 [drm]edid_load =_ "todo: maybe avoid via dyndbg\012"
+>
+> At quick glance, edid won't qualify, drm_print might, drm_vblank is
+> strongest chance, maybe atomic-ioctl too.
+>
+> Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
+> ---
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- drivers/staging/rtl8712/rtl8712_cmd.c | 41 +++++++--------------------
- 1 file changed, 11 insertions(+), 30 deletions(-)
+heres 120 seconds of enabled todos, from this patch
 
-diff --git a/drivers/staging/rtl8712/rtl8712_cmd.c b/drivers/staging/rtl8712/rtl8712_cmd.c
-index e9294e1ed06e..9bc0588be04b 100644
---- a/drivers/staging/rtl8712/rtl8712_cmd.c
-+++ b/drivers/staging/rtl8712/rtl8712_cmd.c
-@@ -117,9 +117,9 @@ static void r871x_internal_cmd_hdl(struct _adapter *padapter, u8 *pbuf)
- 	kfree(pdrvcmd->pbuf);
- }
+[jimc@frodo wk-next]$ journalctl -b0 | grep todo | grep 'frodo kernel'
+[jimc@frodo wk-next]$ sudo su -c 'echo format ^todo: +pfml >
+/proc/dynamic_debug/control;  sleep 120; echo format ^todo: -p >
+/proc/dynamic_debug/control'
+[sudo] password for jimc:
+[jimc@frodo wk-next]$ journalctl -b0 | grep todo | grep 'frodo kernel'
+ > todo-120-log
+[jimc@frodo wk-next]$ wc todo-120-log
+  228  2516 24066 todo-120-log
 
--static u8 read_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
-+static u8 common_read_write_hdl(struct _adapter *padapter, u8 *pbuf)
- {
--	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj	*pcmd);
-+	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj *pcmd);
- 	struct cmd_obj *pcmd  = (struct cmd_obj *)pbuf;
+so overall thats not too much work, not so many bitchecks as to be
+worth avoiding.
 
- 	/*  invoke cmd->callback function */
-@@ -129,20 +129,17 @@ static u8 read_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
- 	else
- 		pcmd_callback(padapter, pcmd);
- 	return H2C_SUCCESS;
-+
- }
+I think I'll try hitting it with my new igt-tools hammer, see what breaks :-)
 
--static u8 write_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
-+static u8 read_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
- {
--	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj	*pcmd);
--	struct cmd_obj *pcmd  = (struct cmd_obj *)pbuf;
-+	return common_read_write_hdl(padapter, pbuf);
-+}
 
--	/*  invoke cmd->callback function */
--	pcmd_callback = cmd_callback[pcmd->cmdcode].callback;
--	if (!pcmd_callback)
--		r8712_free_cmd_obj(pcmd);
--	else
--		pcmd_callback(padapter, pcmd);
--	return H2C_SUCCESS;
-+static u8 write_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
-+{
-+	return common_read_write_hdl(padapter, pbuf);
- }
-
- static u8 read_bbreg_hdl(struct _adapter *padapter, u8 *pbuf)
-@@ -155,15 +152,7 @@ static u8 read_bbreg_hdl(struct _adapter *padapter, u8 *pbuf)
-
- static u8 write_bbreg_hdl(struct _adapter *padapter, u8 *pbuf)
- {
--	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj *pcmd);
--	struct cmd_obj *pcmd  = (struct cmd_obj *)pbuf;
--
--	pcmd_callback = cmd_callback[pcmd->cmdcode].callback;
--	if (!pcmd_callback)
--		r8712_free_cmd_obj(pcmd);
--	else
--		pcmd_callback(padapter, pcmd);
--	return H2C_SUCCESS;
-+	return common_read_write_hdl(padapter, pbuf);
- }
-
- static u8 read_rfreg_hdl(struct _adapter *padapter, u8 *pbuf)
-@@ -184,15 +173,7 @@ static u8 read_rfreg_hdl(struct _adapter *padapter, u8 *pbuf)
-
- static u8 write_rfreg_hdl(struct _adapter *padapter, u8 *pbuf)
- {
--	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj *pcmd);
--	struct cmd_obj *pcmd  = (struct cmd_obj *)pbuf;
--
--	pcmd_callback = cmd_callback[pcmd->cmdcode].callback;
--	if (!pcmd_callback)
--		r8712_free_cmd_obj(pcmd);
--	else
--		pcmd_callback(padapter, pcmd);
--	return H2C_SUCCESS;
-+	return common_read_write_hdl(padapter, pbuf);
- }
-
- static u8 sys_suspend_hdl(struct _adapter *padapter, u8 *pbuf)
---
-2.32.0
-
+[jimc@frodo wk-next]$ hsto todo-120-log
+120 :  drm:drm_crtc_vblank_helper_get_vblank_timestamp_internal:787:
+todo: maybe avoid via dyndbg
+40 :  i915:process_csb:1904: todo: maybe avoid via dyndbg
+20 :  drm:drm_vblank_restore:1491: todo: maybe avoid via dyndbg
+20 :  drm:drm_crtc_accurate_vblank_count:410: todo: maybe avoid via dyndbg
+20 :  i915:skl_print_wm_changes:6068: todo: maybe avoid via dyndbg
+2 :  dyndbg: applied: func="" file="" module="" format="^todo:" lineno=0-0
+2 :  dyndbg: parsed: func="" file="" module="" format="^todo:" lineno=0-0
+1 :  dyndbg: split into words: "format" "^todo:" "-p"
+1 :  dyndbg: split into words: "format" "^todo:" "+pfml"
+1 :  dyndbg: query 0: "format ^todo: -p" mod:*
+1 :  dyndbg: query 0: "format ^todo: +pfml" mod:*
