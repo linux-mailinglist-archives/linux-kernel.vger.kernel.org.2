@@ -2,132 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946BE401087
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 17:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DA640108D
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 17:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235852AbhIEPU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 11:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232764AbhIEPU1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 11:20:27 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD581C061575;
-        Sun,  5 Sep 2021 08:19:23 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id l18so6795524lji.12;
-        Sun, 05 Sep 2021 08:19:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4q769ttMr72WDXmPnXR8+wSwY2ZYZkFr5o8TURYWeMk=;
-        b=jDPHkoG2sZv1ra0Hfdz7nuwbfLrrVlNSSeoqLTGAHfFtQelH5sDkS8NnZVUrqM2oAZ
-         a0kAPAsSfMDOFYcL+X3RCmiDQbmy18aysZEVvdyuiAJSBYSENsAe33i/LX3oR6g+kRkg
-         9YxrMY6Ju/B+RY6Jz1UdGz2nwLFuOHheCa2uc2e0RE2q4ReWaNHYd+I1HqIY9IV3Al57
-         UmsZC6PEbvCZj43sjnKDMcu15M9y7QNOTdvbqpg5MCyJEf5P3lJDQ8bPyMDbnmmO26/X
-         wcvlfUDKfaKTc/Przd+flwPjF/z6NB6cEEEBS1P8qw1XB1fiX/HSohmaNkRDh5gjTrbS
-         GXcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4q769ttMr72WDXmPnXR8+wSwY2ZYZkFr5o8TURYWeMk=;
-        b=k3uKiyg9f1H19POY6f1p/VfAsfV0bUl9LC1mseQ0IpVAGPF9dd6sXLCpjPGZdMN624
-         /evDEhwZo64eF05uBBbv5dTJXH+3zJITL/8VIX+1fPI/zB599OK3D0VeLuYbOfHjQk1g
-         ZJhmU22zSmIXn0YrRW4rOJdjkrmgJqeJXPxv6BVA2y7iZCPRgdKPyckcVSnjkD1dHXt3
-         MBOjl23zm8yTlc5qrrh1uDboR35js36k/FpObQREUu/uC2jINaGlIha+j0lBHvwEbfWS
-         W0Hf9Zd7UsxWSam/zV3wbtZQ5TvarBOcEmy8Dgxb7Ucv6qnJMKY2DmkWOxevzoeD4c7P
-         919g==
-X-Gm-Message-State: AOAM531KCX0nuyxq/nIy6LZsWFaYtN+OXpGdnk/+BEOd5lPSXdZl7chm
-        h3LRwRYjH72RTfP040SRJ1s=
-X-Google-Smtp-Source: ABdhPJx0zFAmBYZmPFGcyEGHSPJuJaTYTT/7Py8bqorlNEraTIeptEr1EyxWjszRfsWNijA9eJGQIA==
-X-Received: by 2002:a05:651c:1190:: with SMTP id w16mr7015249ljo.327.1630855161981;
-        Sun, 05 Sep 2021 08:19:21 -0700 (PDT)
-Received: from mobilestation ([95.79.127.110])
-        by smtp.gmail.com with ESMTPSA id c19sm680045ljn.75.2021.09.05.08.19.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Sep 2021 08:19:21 -0700 (PDT)
-Date:   Sun, 5 Sep 2021 18:19:19 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     mahesh.r.vaidya@intel.com
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        broonie@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mgross@linux.intel.com,
-        kris.pan@intel.com, furong.zhou@intel.com,
-        mallikarjunappa.sangannavar@intel.com,
-        lakshmi.bai.raja.subramanian@intel.com
-Subject: Re: [PATCH v1] spi: dw: Enable Autosuspend delay for SPI DesignWare
-Message-ID: <20210905151919.znaftqnzsuqd4n5f@mobilestation>
-References: <20210903212758.22038-1-mahesh.r.vaidya@intel.com>
+        id S237306AbhIEP0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 11:26:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235518AbhIEP0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 11:26:16 -0400
+Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C8CDF60F12;
+        Sun,  5 Sep 2021 15:25:12 +0000 (UTC)
+Date:   Sun, 5 Sep 2021 11:25:10 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [for-next][PATCH] tracing: Add migrate-disabled counter to tracing
+ output
+Message-ID: <20210905112510.17ed0b27@rorschach.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210903212758.22038-1-mahesh.r.vaidya@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 04, 2021 at 05:27:58AM +0800, mahesh.r.vaidya@intel.com wrote:
-> From: Mahesh R Vaidya <mahesh.r.vaidya@intel.com>
-> 
-> Enable and set Autosuspend delay for SPI DesignWare driver.
-> The number 1000 ms for the autosuspend delay was picked a bit
-> arbitrarily, so if someone has measurements showing a better
-> value we could easily change this.
-> 
-> Signed-off-by: Mahesh R Vaidya <mahesh.r.vaidya@intel.com>
-> ---
->  drivers/spi/spi-dw-mmio.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
-> index 3379720cfcb8..8b588ce9c16b 100644
-> --- a/drivers/spi/spi-dw-mmio.c
-> +++ b/drivers/spi/spi-dw-mmio.c
-> @@ -33,6 +33,8 @@ struct dw_spi_mmio {
->  	struct reset_control *rstc;
->  };
-> 
-> +#define SPI_DW_DEFAULT_AUTOSUSP_VAL		1000
-> +
->  #define MSCC_CPU_SYSTEM_CTRL_GENERAL_CTRL	0x24
->  #define OCELOT_IF_SI_OWNER_OFFSET		4
->  #define JAGUAR2_IF_SI_OWNER_OFFSET		6
-> @@ -309,6 +311,10 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
->  			goto out;
->  	}
-> 
+Thomas Gleixner <tglx@linutronix.de>
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+for-next
 
-> +	/* Set initial autosuspend default delay value and enable */
-> +	pm_runtime_set_autosuspend_delay(&pdev->dev, SPI_DW_DEFAULT_AUTOSUSP_VAL);
-> +	pm_runtime_use_autosuspend(&pdev->dev);
-> +	pm_runtime_set_active(&pdev->dev);
+Head SHA1: 54357f0c9149c871e5e4b83ad385a6f2ad3a749f
 
-Seems reasonable, but doesn't it need to be reverted in the remove
-callback? Like it's done in the spi-imx.c driver for instance by
-calling the pm_runtime_dont_use_autosuspend() method.
 
->  	pm_runtime_enable(&pdev->dev);
-> 
->  	ret = dw_spi_add_host(&pdev->dev, dws);
-> @@ -319,6 +325,7 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
->  	return 0;
-> 
->  out:
+Thomas Gleixner (1):
+      tracing: Add migrate-disabled counter to tracing output.
 
-> +	pm_runtime_put_noidle(&pdev->dev);
+----
+ kernel/trace/trace.c        | 26 +++++++++++++++++++-------
+ kernel/trace/trace_events.c |  1 +
+ kernel/trace/trace_output.c | 11 ++++++++---
+ 3 files changed, 28 insertions(+), 10 deletions(-)
+---------------------------
+commit 54357f0c9149c871e5e4b83ad385a6f2ad3a749f
+Author: Thomas Gleixner <tglx@linutronix.de>
+Date:   Tue Aug 10 15:26:25 2021 +0200
 
-This doesn't seem like related to the subject, thus needs to be
-submitted as a separate patch with fixes tag if it fixes some another
-problem. Additionally it isn't balanced with the pm_runtime_get*()
-method invocation. Am I missing something?
+    tracing: Add migrate-disabled counter to tracing output.
+    
+    migrate_disable() forbids task migration to another CPU. It is available
+    since v5.11 and has already users such as highmem or BPF. It is useful
+    to observe this task state in tracing which already has other states
+    like the preemption counter.
+    
+    Instead of adding the migrate disable counter as a new entry to struct
+    trace_entry, which would extend the whole struct by four bytes, it is
+    squashed into the preempt-disable counter. The lower four bits represent
+    the preemption counter, the upper four bits represent the migrate
+    disable counter. Both counter shouldn't exceed 15 but if they do, there
+    is a safety net which caps the value at 15.
+    
+    Add the migrate-disable counter to the trace entry so it shows up in the
+    trace. Due to the users mentioned above, it is already possible to
+    observe it:
+    
+    |  bash-1108    [000] ...21    73.950578: rss_stat: mm_id=2213312838 curr=0 type=MM_ANONPAGES size=8192B
+    |  bash-1108    [000] d..31    73.951222: irq_disable: caller=flush_tlb_mm_range+0x115/0x130 parent=ptep_clear_flush+0x42/0x50
+    |  bash-1108    [000] d..31    73.951222: tlb_flush: pages:1 reason:local mm shootdown (3)
+    
+    The last value is the migrate-disable counter.
+    
+    Things that popped up:
+    - trace_print_lat_context() does not print the migrate counter. Not sure
+      if it should. It is used in "verbose" mode and uses 8 digits and I'm
+      not sure ther is something processing the value.
+    
+    - trace_define_common_fields() now defines a different variable. This
+      probably breaks things. No ide what to do in order to preserve the old
+      behaviour. Since this is used as a filter it should be split somehow
+      to be able to match both nibbles here.
+    
+    Link: https://lkml.kernel.org/r/20210810132625.ylssabmsrkygokuv@linutronix.de
+    
+    Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+    [bigeasy: patch description.]
+    Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+    [ SDR: Removed change to common_preempt_count field name ]
+    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
--Sergey
-
->  	pm_runtime_disable(&pdev->dev);
->  	clk_disable_unprepare(dwsmmio->pclk);
->  out_clk:
-> --
-> 2.17.1
-> 
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 489924cde4f8..b554e18924f8 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2603,6 +2603,15 @@ enum print_line_t trace_handle_return(struct trace_seq *s)
+ }
+ EXPORT_SYMBOL_GPL(trace_handle_return);
+ 
++static unsigned short migration_disable_value(void)
++{
++#if defined(CONFIG_SMP)
++	return current->migration_disabled;
++#else
++	return 0;
++#endif
++}
++
+ unsigned int tracing_gen_ctx_irq_test(unsigned int irqs_status)
+ {
+ 	unsigned int trace_flags = irqs_status;
+@@ -2621,7 +2630,8 @@ unsigned int tracing_gen_ctx_irq_test(unsigned int irqs_status)
+ 		trace_flags |= TRACE_FLAG_NEED_RESCHED;
+ 	if (test_preempt_need_resched())
+ 		trace_flags |= TRACE_FLAG_PREEMPT_RESCHED;
+-	return (trace_flags << 16) | (pc & 0xff);
++	return (trace_flags << 16) | (min_t(unsigned int, pc & 0xff, 0xf)) |
++		(min_t(unsigned int, migration_disable_value(), 0xf)) << 4;
+ }
+ 
+ struct ring_buffer_event *
+@@ -4189,9 +4199,10 @@ static void print_lat_help_header(struct seq_file *m)
+ 		    "#                  | / _----=> need-resched    \n"
+ 		    "#                  || / _---=> hardirq/softirq \n"
+ 		    "#                  ||| / _--=> preempt-depth   \n"
+-		    "#                  |||| /     delay            \n"
+-		    "#  cmd     pid     ||||| time  |   caller      \n"
+-		    "#     \\   /        |||||  \\    |   /         \n");
++		    "#                  |||| / _-=> migrate-disable \n"
++		    "#                  ||||| /     delay           \n"
++		    "#  cmd     pid     |||||| time  |   caller     \n"
++		    "#     \\   /        ||||||  \\    |    /       \n");
+ }
+ 
+ static void print_event_info(struct array_buffer *buf, struct seq_file *m)
+@@ -4229,9 +4240,10 @@ static void print_func_help_header_irq(struct array_buffer *buf, struct seq_file
+ 	seq_printf(m, "#                            %.*s / _----=> need-resched\n", prec, space);
+ 	seq_printf(m, "#                            %.*s| / _---=> hardirq/softirq\n", prec, space);
+ 	seq_printf(m, "#                            %.*s|| / _--=> preempt-depth\n", prec, space);
+-	seq_printf(m, "#                            %.*s||| /     delay\n", prec, space);
+-	seq_printf(m, "#           TASK-PID  %.*s CPU#  ||||   TIMESTAMP  FUNCTION\n", prec, "     TGID   ");
+-	seq_printf(m, "#              | |    %.*s   |   ||||      |         |\n", prec, "       |    ");
++	seq_printf(m, "#                            %.*s||| / _-=> migrate-disable\n", prec, space);
++	seq_printf(m, "#                            %.*s|||| /     delay\n", prec, space);
++	seq_printf(m, "#           TASK-PID  %.*s CPU#  |||||  TIMESTAMP  FUNCTION\n", prec, "     TGID   ");
++	seq_printf(m, "#              | |    %.*s   |   |||||     |         |\n", prec, "       |    ");
+ }
+ 
+ void
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index 1349b6de5eeb..830b3b9940f4 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -181,6 +181,7 @@ static int trace_define_common_fields(void)
+ 
+ 	__common_field(unsigned short, type);
+ 	__common_field(unsigned char, flags);
++	/* Holds both preempt_count and migrate_disable */
+ 	__common_field(unsigned char, preempt_count);
+ 	__common_field(int, pid);
+ 
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index a0bf446bb034..c2ca40e8595b 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -492,8 +492,13 @@ int trace_print_lat_fmt(struct trace_seq *s, struct trace_entry *entry)
+ 	trace_seq_printf(s, "%c%c%c",
+ 			 irqs_off, need_resched, hardsoft_irq);
+ 
+-	if (entry->preempt_count)
+-		trace_seq_printf(s, "%x", entry->preempt_count);
++	if (entry->preempt_count & 0xf)
++		trace_seq_printf(s, "%x", entry->preempt_count & 0xf);
++	else
++		trace_seq_putc(s, '.');
++
++	if (entry->preempt_count & 0xf0)
++		trace_seq_printf(s, "%x", entry->preempt_count >> 4);
+ 	else
+ 		trace_seq_putc(s, '.');
+ 
+@@ -656,7 +661,7 @@ int trace_print_lat_context(struct trace_iterator *iter)
+ 		trace_seq_printf(
+ 			s, "%16s %7d %3d %d %08x %08lx ",
+ 			comm, entry->pid, iter->cpu, entry->flags,
+-			entry->preempt_count, iter->idx);
++			entry->preempt_count & 0xf, iter->idx);
+ 	} else {
+ 		lat_print_generic(s, entry, iter->cpu);
+ 	}
