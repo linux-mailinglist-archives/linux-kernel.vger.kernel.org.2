@@ -2,155 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C4CC401202
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 00:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F6E7401206
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 00:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234439AbhIEWu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 18:50:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47376 "EHLO
+        id S235167AbhIEWzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 18:55:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232059AbhIEWu6 (ORCPT
+        with ESMTP id S230085AbhIEWzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 18:50:58 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2040FC061575;
-        Sun,  5 Sep 2021 15:49:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630882190;
-        bh=HLOvfxbxXb3FxOxIKAdv2pX48rGLlxxWXoan08jxYrk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mWbRs4HRr712F0C2s+k/WTMgK658bCW8tcgbonJZ+jC2oHdZl+7lfZt8aXraFaLOY
-         hFIKDnHr+/Nx2I5VvyUdN0eXnj//ODGigFrXNSQKC9+24Ioaz8OKIPy69UtlaRe1qi
-         tdlui6OXf/D6FrFe0cULQJak/eMK9gNUF1x2+jFiGRrdsbWsCFlrvsOO6iDATeD5HI
-         4/d5xHkLv4nzwVe53rkibusLfVj5f+4RAuMUVQJ2DBTngLj62zVe5ctlH9YCSa556Y
-         N2rhKLflytg6VA70QnSA4uL0kNoKRsDIOWw/eNZe9dT+xBI3d/eb7+GR85NfLlB0jU
-         vHJ8/X1wY5rFg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H2mv0623Kz9sRN;
-        Mon,  6 Sep 2021 08:49:48 +1000 (AEST)
-Date:   Mon, 6 Sep 2021 08:49:47 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Dave Airlie <airlied@linux.ie>
-Cc:     DRI <dri-devel@lists.freedesktop.org>,
-        John Harrison <John.C.Harrison@intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the drm tree
-Message-ID: <20210906084947.4f65761d@canb.auug.org.au>
-In-Reply-To: <20210902075038.7461d3c8@canb.auug.org.au>
-References: <20210820123348.6535a87e@canb.auug.org.au>
-        <CAK7LNASv-F1Y7kpaDF+_=TW0Jzvpo1uuNL1B5jUmCCRqv-45bA@mail.gmail.com>
-        <20210902075038.7461d3c8@canb.auug.org.au>
+        Sun, 5 Sep 2021 18:55:15 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C761C061757
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 15:54:11 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id bt14so9695774ejb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 15:54:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=usp.br; s=usp-google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9sRsr7rlJU7xPFVBenjaWwyJN2JUHQZAp/JvZzzHDgo=;
+        b=oxen/Ncc+XPzSdHn7g/ZaAWOYcqBcAE1YVh7hGJIwzXZ5SHkRloGz2yCSl9GGnzBfE
+         ekEBE1uenPz7At89363Tiba5Bu6GORTqYDGHKtWgRl690oRg81iKci2a+AvCf4S5jprZ
+         8icquHSeGTV7WeutXjOOkptYjEdSyVH1fN3LDH7KlImsQQ0trtQhbDSWzT4wAxSsL1bE
+         LtfEeqa1mOnd9dX3you53xZIFzBJ420rO0nWC6tD3PGVAF8EP6rC91RxrK7K+olc1+J2
+         3uH4yiB2hxpTzGUXqa/kUqeXLILLoCiDZuHWI60tMv6TxaRxxQKk5RbmtXtuiEO41qRl
+         +Qlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9sRsr7rlJU7xPFVBenjaWwyJN2JUHQZAp/JvZzzHDgo=;
+        b=ZTEQP+J1Oa7i+9q8u3ns+xk96AyVm6ufigsHszygVa5ta0y9w0s2pyWXaYgVMUYA6l
+         iyq3VKo+TfVFUtW2V71hNYvcD0CodQl1n4mv1LM3S0+KcDXx9DkiyE12vOto8ZRJTdNf
+         J+KTWdqkSWDgrHIY6yGjc0ppS+DSoIHZiZXH8uuIp7+F283PIDVTiRRzBnoDw4oxYSA2
+         MPg3F9CKCGijCkq6C6bs5y402MmYKKHYvKrWBn8Mjj1Mlj0FCwHJzlC+TjAKJuhl+Q0h
+         Qi3nG+vxxzX1m1aHZo9Afe5KNPRMrJEPPFeNUBqMYqJs9jCBqYMVio0pogmo1PK8okQ2
+         j2Xw==
+X-Gm-Message-State: AOAM5302W4sc7MM/B+utk/RkwGmqouMJjLU6/PdUMfKjcM+Ac/lbCf0i
+        /uoW4jetiPQgJC9Vijtg3HsSCX9Jtc2LOXv31kb23A==
+X-Google-Smtp-Source: ABdhPJygIi2bgU/gVGQd2H9OtrX6AvuGAUexHuFgmGjPeO3vWLQqayFXjayCpEoNn4XVC+jigllVjemC93gV8L8vvq8=
+X-Received: by 2002:a17:906:498b:: with SMTP id p11mr10478413eju.295.1630882449650;
+ Sun, 05 Sep 2021 15:54:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rHCDOd8YXWXEesWyDS.Uvao";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210826012626.1163705-1-isabellabdoamaral@usp.br>
+ <20210826012626.1163705-4-isabellabdoamaral@usp.br> <CABVgOSkhN-DPYnhuTG1hGU-2aP0MEaKjz+0=Sr_VNKUhpgz79g@mail.gmail.com>
+In-Reply-To: <CABVgOSkhN-DPYnhuTG1hGU-2aP0MEaKjz+0=Sr_VNKUhpgz79g@mail.gmail.com>
+From:   Isabella B do Amaral <isabellabdoamaral@usp.br>
+Date:   Sun, 5 Sep 2021 19:53:56 -0300
+Message-ID: <CAAniXFQBZUFrRV6c_g9L_yqFMYyvz4DDyof5cOtPc8kWMR+jiw@mail.gmail.com>
+Subject: Re: [PATCH 3/6] test_hash.c: split test_int_hash into arch-specific functions
+To:     David Gow <davidgow@google.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Enzo Ferreira <ferreiraenzoa@gmail.com>,
+        =?UTF-8?Q?Augusto_Dur=C3=A3es_Camargo?= 
+        <augusto.duraes33@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        ~lkcamp/patches@lists.sr.ht, rodrigosiqueiramelo@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/rHCDOd8YXWXEesWyDS.Uvao
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi, David,
 
-Hi all,
-
-On Thu, 2 Sep 2021 07:50:38 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
+On Thu, Aug 26, 2021 at 1:21 AM David Gow <davidgow@google.com> wrote:
 >
-> On Fri, 20 Aug 2021 15:23:34 +0900 Masahiro Yamada <masahiroy@kernel.org>=
- wrote:
+> On Thu, Aug 26, 2021 at 9:26 AM Isabella Basso <isabellabdoamaral@usp.br> wrote:
 > >
-> > On Fri, Aug 20, 2021 at 11:33 AM Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote: =20
-> > >
- > > After merging the drm tree, today's linux-next build (x86_64 allmodcon=
-fig)
-> > > failed like this:
-> > >
-> > > In file included from drivers/gpu/drm/i915/i915_debugfs.c:39:
-> > > drivers/gpu/drm/i915/gt/intel_gt_requests.h:9:10: fatal error: stddef=
-.h: No such file or directory
-> > >     9 | #include <stddef.h>
-> > >       |          ^~~~~~~~~~
-> > >
-> > > Caused by commit
-> > >
-> > >   564f963eabd1 ("isystem: delete global -isystem compile option")
-> > >
-> > > from the kbuild tree interacting with commit
-> > >
-> > >   b97060a99b01 ("drm/i915/guc: Update intel_gt_wait_for_idle to work =
-with GuC")
-> > >
-> > > I have applied the following patch for today.   =20
-> >=20
-> >=20
-> > Thanks.
-> >=20
-> > This fix-up does not depend on my kbuild tree in any way.
-> >=20
-> > So, the drm maintainer can apply it to his tree.
-> >=20
-> > Perhaps with
-> >=20
-> > Fixes: b97060a99b01 ("drm/i915/guc: Update intel_gt_wait_for_idle to
-> > work with GuC") =20
->=20
-> OK, so that didn't happen so I will now apply the merge fix up to the
-> merge of the kbuild tree.
->=20
-> > > From: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > Date: Fri, 20 Aug 2021 12:24:19 +1000
-> > > Subject: [PATCH] drm/i915: use linux/stddef.h due to "isystem: trim/f=
-ixup stdarg.h and other headers"
-> > >
-> > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > ---
-> > >  drivers/gpu/drm/i915/gt/intel_gt_requests.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/i915/gt/intel_gt_requests.h b/drivers/gp=
-u/drm/i915/gt/intel_gt_requests.h
-> > > index 51dbe0e3294e..d2969f68dd64 100644
-> > > --- a/drivers/gpu/drm/i915/gt/intel_gt_requests.h
-> > > +++ b/drivers/gpu/drm/i915/gt/intel_gt_requests.h
-> > > @@ -6,7 +6,7 @@
-> > >  #ifndef INTEL_GT_REQUESTS_H
-> > >  #define INTEL_GT_REQUESTS_H
-> > >
-> > > -#include <stddef.h>
-> > > +#include <linux/stddef.h>
-> > >
-> > >  struct intel_engine_cs;
-> > >  struct intel_gt;
-> > > --
-> > > 2.32.0 =20
+> > Split the The test_int_hash function to keep its mainloop separate from
+> > arch-specific chunks, which are only compiled as needed. This aims at
+> > improving readability.
+> >
+> > Signed-off-by: Isabella Basso <isabellabdoamaral@usp.br>
+> > ---
+>
+> I like this, but have a note below. It _may_ be worth combining some
+> of these test refactoring patches with the KUnit port patch:
+> definitely a matter of taste rather than something I think is
+> necessary, but I personally think they're related enough they could go
+> together if you wanted.
 
-Ping?  I am still applying this ...
---=20
-Cheers,
-Stephen Rothwell
+I'm not really comfortable with such big diffs, to be honest, but I'll keep
+this in mind!
 
---Sig_/rHCDOd8YXWXEesWyDS.Uvao
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> >  lib/test_hash.c | 84 +++++++++++++++++++++++++++++++------------------
+> >  1 file changed, 54 insertions(+), 30 deletions(-)
+> >
+> > diff --git a/lib/test_hash.c b/lib/test_hash.c
+> > index 8bcc645a7294..ed75c768c231 100644
+> > --- a/lib/test_hash.c
+> > +++ b/lib/test_hash.c
+> > @@ -61,6 +61,45 @@ fill_buf(char *buf, size_t len, u32 seed)
+> >         }
+> >  }
+> >
+> > +#ifdef HAVE_ARCH__HASH_32
+> > +static bool __init
+> > +test_int_hash32(u32 *h0, u32 *h1, u32 *h2)
+>
+> I'm unsure about this name. Having test_int_hash32() test only
+> __hash_32(), where test_int_hash64() tests hash_64() feels a little
+> bit inconsistent. Maybe this is somewhere we should have the extra
+> underscore like in HAVE_ARCH__HASH_32.
+>
+> I get that because the architecture-specific hash_32() is removed
+> earlier, there's no need for an extra function to test how that
+> compares against a generic function, so there's no conflict here, but
+> it did confuse me briefly.
 
------BEGIN PGP SIGNATURE-----
+I see your point. This actually hadn't occurred to me. Now I'm thinking
+test_int__hash_32() (and, by extension, test_int_hash_64()) should make for a
+clearer naming convention.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE1SYwACgkQAVBC80lX
-0GzocQf9Hbk/NCe1tCE6SDfj4l3Ue+K5BC4hYy77bXbpcfYpogjX92A7hXTm5oSG
-pAb9m334jBa671mGuI6YzZU+GQOAqmksUdcxa/BsBQWkYZr3OtyPXIsXJK3ZIE/v
-xQAANw9HPHpwELE5MigM0fdTgbj6w5EDlrPgRvm3rbEMdx8fBXbILyoQJXGs6DQ+
-Zhj905OdWHXmqe3cnzJ9O7zmO4v2hdhIsLkSklB7PN9xN/x6nMC4pEwELWZJPaAe
-/3Z1Nf3DxnQpO50n+vQV2TrTbawE/TaA3K0QLiUlx5l/l1ggXJE1Zvw351yYarGU
-b4Gc8NIaI2kfbFwIpsKNCShHvYwQtg==
-=CKFT
------END PGP SIGNATURE-----
+> The other option is, as mentioned in the earlier patch, to keep the
+> architecture-specific hash_32() (and _maybe_ get rid of __hash_32()
+> entirely), in which case this name would be perfect for testing that.
+>
+> > +{
+> > +       hash_or[1][0] |= *h2 = __hash_32_generic(h0);
+> > +#if HAVE_ARCH__HASH_32 == 1
+> > +       if (*h1 != *h2) {
+> > +               pr_err("__hash_32(%#x) = %#x != __hash_32_generic() = %#x",
+> > +                      *h0, *h1, *h2);
+> > +               return false;
+> > +       }
+> > +#endif
+> > +       return true;
+> > +}
+> > +#endif
+> > +
+> > +#ifdef HAVE_ARCH_HASH_64
+> > +static bool __init
+> > +test_int_hash64(unsigned long long h64, u32 *h0, u32 *h1, u32 *h2, u32 const *m, int k)
+> > +{
+> > +       *h2 = hash_64_generic(*h64, *k);
+> > +#if HAVE_ARCH_HASH_64 == 1
+> > +       if (*h1 != *h2) {
+> > +               pr_err("hash_64(%#llx, %d) = %#x != hash_64_generic() = %#x",
+> > +                      *h64, *k, *h1, *h2);
+> > +               return false;
+> > +       }
+> > +#else
+> > +       if (*h2 > *m) {
+> > +               pr_err("hash_64_generic(%#llx, %d) = %#x > %#x",
+> > +                      *h64, *k, *h1, *m);
+> > +               return false;
+> > +       }
+> > +#endif
+> > +       return true;
+> > +
+> > +}
+> > +#endif
+> > +
+> >  /*
+> >   * Test the various integer hash functions.  h64 (or its low-order bits)
+> >   * is the integer to hash.  hash_or accumulates the OR of the hash values,
+> > @@ -74,19 +113,17 @@ static bool __init
+> >  test_int_hash(unsigned long long h64)
+> >  {
+> >         int k;
+> > -       u32 h0 = (u32)h64, h1, h2;
+> > +       u32 h0 = (u32)h64, h1;
+> > +
+> > +#if defined HAVE_ARCH__HASH_32 || defined HAVE_ARCH_HASH_64
+> > +       u32 h2;
+> > +#endif
+> >
+> >         /* Test __hash32 */
+> >         hash_or[0][0] |= h1 = __hash_32(h0);
+> >  #ifdef HAVE_ARCH__HASH_32
+> > -       hash_or[1][0] |= h2 = __hash_32_generic(h0);
+> > -#if HAVE_ARCH__HASH_32 == 1
+> > -       if (h1 != h2) {
+> > -               pr_err("__hash_32(%#x) = %#x != __hash_32_generic() = %#x",
+> > -                       h0, h1, h2);
+> > +       if (!test_int_hash32(&h0, &h1, &h2))
+> >                 return false;
+> > -       }
+> > -#endif
+> >  #endif
+> >
+> >         /* Test k = 1..32 bits */
+> > @@ -107,24 +144,11 @@ test_int_hash(unsigned long long h64)
+> >                         return false;
+> >                 }
+> >  #ifdef HAVE_ARCH_HASH_64
+> > -               h2 = hash_64_generic(h64, k);
+> > -#if HAVE_ARCH_HASH_64 == 1
+> > -               if (h1 != h2) {
+> > -                       pr_err("hash_64(%#llx, %d) = %#x != hash_64_generic() "
+> > -                               "= %#x", h64, k, h1, h2);
+> > +               if (!test_int_hash64(&h64, &h0, &h1, &h2, &m, &k))
+> >                         return false;
+> > -               }
+> > -#else
+> > -               if (h2 > m) {
+> > -                       pr_err("hash_64_generic(%#llx, %d) = %#x > %#x",
+> > -                               h64, k, h1, m);
+> > -                       return false;
+> > -               }
+> > -#endif
+> >  #endif
+> >         }
+> >
+> > -       (void)h2;       /* Suppress unused variable warning */
+> >         return true;
+> >  }
+> >
+> > @@ -150,15 +174,15 @@ test_hash_init(void)
+> >                         /* Check that hashlen_string gets the length right */
+> >                         if (hashlen_len(hashlen) != j-i) {
+> >                                 pr_err("hashlen_string(%d..%d) returned length"
+> > -                                       " %u, expected %d",
+> > -                                       i, j, hashlen_len(hashlen), j-i);
+> > +                                      " %u, expected %d",
+> > +                                      i, j, hashlen_len(hashlen), j-i);
+>
+> These whitespace changes probably aren't necessary.
 
---Sig_/rHCDOd8YXWXEesWyDS.Uvao--
+Oops, that's my bad. Really unintended changes, thanks for the heads up!
+
+> >                                 return -EINVAL;
+> >                         }
+> >                         /* Check that the hashes match */
+> >                         if (hashlen_hash(hashlen) != h0) {
+> >                                 pr_err("hashlen_string(%d..%d) = %08x != "
+> > -                                       "full_name_hash() = %08x",
+> > -                                       i, j, hashlen_hash(hashlen), h0);
+> > +                                      "full_name_hash() = %08x",
+> > +                                      i, j, hashlen_hash(hashlen), h0);
+>
+> These whitespace changes probably aren't necessary.
+>
+> >                                 return -EINVAL;
+> >                         }
+> >
+> > @@ -178,14 +202,14 @@ test_hash_init(void)
+> >         }
+> >         if (~hash_or[0][0]) {
+> >                 pr_err("OR of all __hash_32 results = %#x != %#x",
+> > -                       hash_or[0][0], -1u);
+> > +                      hash_or[0][0], -1u);
+>
+> This whitespace change probably isn't necessary.
+>
+> >                 return -EINVAL;
+> >         }
+> >  #ifdef HAVE_ARCH__HASH_32
+> >  #if HAVE_ARCH__HASH_32 != 1    /* Test is pointless if results match */
+> >         if (~hash_or[1][0]) {
+> >                 pr_err("OR of all __hash_32_generic results = %#x != %#x",
+> > -                       hash_or[1][0], -1u);
+> > +                      hash_or[1][0], -1u);
+>
+> You get the idea...
+>
+> >                 return -EINVAL;
+> >         }
+> >  #endif
+> > @@ -197,12 +221,12 @@ test_hash_init(void)
+> >
+> >                 if (hash_or[0][i] != m) {
+> >                         pr_err("OR of all hash_32(%d) results = %#x "
+> > -                               "(%#x expected)", i, hash_or[0][i], m);
+> > +                              "(%#x expected)", i, hash_or[0][i], m);
+> >                         return -EINVAL;
+> >                 }
+> >                 if (hash_or[1][i] != m) {
+> >                         pr_err("OR of all hash_64(%d) results = %#x "
+> > -                               "(%#x expected)", i, hash_or[1][i], m);
+> > +                              "(%#x expected)", i, hash_or[1][i], m);
+> >                         return -EINVAL;
+> >                 }
+> >         }
+> > --
+> > 2.33.0
+
+Thanks,
+--
+Isabella Basso
