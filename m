@@ -2,1163 +2,589 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2056401218
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 01:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2EC40121C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 01:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234789AbhIEX3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 19:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55640 "EHLO
+        id S237918AbhIEXdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 19:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbhIEX3I (ORCPT
+        with ESMTP id S229666AbhIEXdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 19:29:08 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDDCC061575;
-        Sun,  5 Sep 2021 16:28:04 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630884481;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mwEzgqvTABhy3dSK782j3nHbnc/d1QQ1Tt5FtA+Ybbk=;
-        b=qidPdo26BGKz+jE4/7LJy1fou6QsP6Os6Jll/wAVABYWQthZ+rfpWIiPSX3LfEWSRwKvAH
-        sEL6PCQHieiLOZCS2K8OF7M0NWk9ZMht0LLH1Hw9ubl6MTmBfpzbYDNHqhCFHRBc0uwAyx
-        dk/o4UgCmNhYQhqCR2Ok/FqoaCNtWCGVFdIxLajdUXqqZ/hVFvw8tlpHzk3U/e5w/1wcjP
-        0UPTeBSGly5T3C4oaLL+599WC7pkUKv6wLp/tg+1KOFhSFrz7CFNVVEep/w5a53bXvez4C
-        N5UEwhHZz935ffZHONG46zecwttCcxZ2z7HTmXxPuX3SaJ19cWKUnv1GiNL4Ug==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630884481;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mwEzgqvTABhy3dSK782j3nHbnc/d1QQ1Tt5FtA+Ybbk=;
-        b=i4spk046dXXJGZI5qVxbYNtt3Vu7A1M1cxYzTnXtG4NmyDbw6HYYcmMEGNWmG9hL82mOev
-        z0sD5++v54t0uqAg==
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Sandeen <sandeen@sandeen.net>,
-        Christoph Hellwig <hch@lst.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [GIT PULL] xfs: new code for 5.15
-In-Reply-To: <20210905002105.GC1826899@dread.disaster.area>
-References: <20210831211847.GC9959@magnolia>
- <CAHk-=whyVPgkAfARB7gMjLEyu0kSxmb6qpqfuE_r6QstAzgHcA@mail.gmail.com>
- <20210902174311.GG9942@magnolia>
- <20210902223545.GA1826899@dread.disaster.area> <87a6kub2dp.ffs@tglx>
- <20210905002105.GC1826899@dread.disaster.area>
-Date:   Mon, 06 Sep 2021 01:28:00 +0200
-Message-ID: <87mtoqa9hb.ffs@tglx>
+        Sun, 5 Sep 2021 19:33:23 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932DAC061575
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 16:32:19 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id bt14so9830388ejb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 16:32:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=usp.br; s=usp-google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=tLEFFP94LhWhwE7Nkb+m9l054y1H9G/eLduL2Q/oSCo=;
+        b=xNTNhyzAm5rAiE97FUpbcS/vK74R8uYXvGX+oVU6GevMIO2ik1Kz+Iiz/IluR6/7ZG
+         DoqNHFCBxKEXi6dd3TNUqtQ1dJQsni/5IpnebvISVu5YMjCapWSZoF6AwPiz/6d+Xg1U
+         XXsQQs5INT8p4o0N0I56BAS6L9iia9BPlpfxynyw6Ng2bl/I/hTtoSXg7jtjFOQnt3lB
+         9BZx1FaiPGqxoeP6wVwVgBUwQ4HTw+lsq6zlYvka7fW/gJu1h8AADtooeGPaaxfgq8Tx
+         8CtEOKumcnviOzpdQaDBRWO+cxskKrDjW+sv9v58XttsENxdq9TRnI8TAH8ORQA5ExDA
+         lf0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tLEFFP94LhWhwE7Nkb+m9l054y1H9G/eLduL2Q/oSCo=;
+        b=M2Z4c4YKD86cTAevKA4a/nbpJdCKEBXKAsm3rSy/la88wBYHhQTgsVb9TFfhDYKAFU
+         sFWCNyQQEea4y100NjKIDdl7XjymmXq52WLy+4mcyv0R+mF+hpphAbWhRSY1J3E3DX5Z
+         878Ukr35jrM9Z8DPukHA1k6hf7tdzU3yBOvS+C41OAbLBBgsU4YZVEEWx8iFnGcf5JkP
+         Qc4AuXOl8caCOIdQhQq9L6eNLJ2Y3UJ665TBy5bt10yT6cyQyPDJ/sEZuYBA4Un2Eaaa
+         wjkdBqpgpHNZHgJSOM0oRjZQD+qttwm5XTLQ0PWJKxKZyJT6eRnVJlg44oCKuIqHwhn2
+         JgHw==
+X-Gm-Message-State: AOAM533nRgJ9il99cE9SksmvSe2AMB7hfreM+CTNvjZbnhOjXCAk/agt
+        5mrYYM+NqrCYQILnl1rOZTgU7BZxKVHW5SrC8o5G8w==
+X-Google-Smtp-Source: ABdhPJyqWaCH5iMZtxiMbQZj6s32a99bEwElZzotKQtN1gGF7XgX+YqrTF7M767vfKuR8rwfsy+msGill+iEK4c+sl8=
+X-Received: by 2002:a17:906:c205:: with SMTP id d5mr10740646ejz.74.1630884737848;
+ Sun, 05 Sep 2021 16:32:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20210826012626.1163705-1-isabellabdoamaral@usp.br>
+ <20210826012626.1163705-7-isabellabdoamaral@usp.br> <CABVgOSkHkN8Rx+JKN3W89oECAYuoiyVndvhGcOQswDbo9RXQ8w@mail.gmail.com>
+In-Reply-To: <CABVgOSkHkN8Rx+JKN3W89oECAYuoiyVndvhGcOQswDbo9RXQ8w@mail.gmail.com>
+From:   Isabella B do Amaral <isabellabdoamaral@usp.br>
+Date:   Sun, 5 Sep 2021 20:32:06 -0300
+Message-ID: <CAAniXFQ=ROiYm1GxEW2jks0M1B0y8ZgsugksW37eMRwT67bG2Q@mail.gmail.com>
+Subject: Re: [PATCH 6/6] test_hash.c: refactor into kunit
+To:     David Gow <davidgow@google.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Enzo Ferreira <ferreiraenzoa@gmail.com>,
+        =?UTF-8?Q?Augusto_Dur=C3=A3es_Camargo?= 
+        <augusto.duraes33@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        ~lkcamp/patches@lists.sr.ht, rodrigosiqueiramelo@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dave,
+Hi, David,
 
-On Sun, Sep 05 2021 at 10:21, Dave Chinner wrote:
-> On Fri, Sep 03, 2021 at 08:26:58AM +0200, Thomas Gleixner wrote:
->> On Fri, Sep 03 2021 at 08:35, Dave Chinner wrote:
->> > On Thu, Sep 02, 2021 at 10:43:11AM -0700, Darrick J. Wong wrote:
->> > The part I dislike most about it is that we have to modify a header
->> > file that triggers full kernel rebuilds. Managing patch stacks and
->> > branches where one of them modifies such a header file means quick,
->> > XFS subsystem only kernel rebuilds are a rare thing...
->>=20
->> If you don't care about ordering, you can avoid touching the global
->> header completely. The dynamic state ranges in PREPARE and ONLINE
->> provide exactly what you want. It's documented.
+On Thu, Aug 26, 2021 at 1:26 AM David Gow <davidgow@google.com> wrote:
 >
-> Ordering? When and why would I care about ordering?
-
-Quite some hotplug related functionality cares about ordering of the
-callbacks vs. other subsytems or core functionality:
-
- - workqueue startup/shutdown has to be at a well defined place
-
- - the PERF core online callback needs to be invoked before the
-   various PERF drivers callbacks. On teardown the ordering is obviously
-   reverse: Notify drivers before code.
-
- - low level startup/teardowm code has very strict ordering requirements
-
- - ....
-
-If you don't have ordering requirements and you just want to be notified
-then you don't have to think about that at all. Set up a dynamic state
-and be done with it.
-
-> il_last_pushed_lsn
-
-I assume that I'm not supposed to figure out how that is related to the
-topic we are discussing. :)
-
->> > That said, I'm all for a better interface to the CPU hotplug
->> > notifications. THe current interface is ... esoteric and to
->>=20
->> What's so esoteric about:
->>=20
->>        state =3D cpuhp_setup_state(CPUHP_BP_PREPARE_DYN, "xfs:prepare", =
-func1, func2);
->>        state =3D cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "xfs:online", fu=
-nc3, func4);
+> On Thu, Aug 26, 2021 at 9:26 AM Isabella Basso <isabellabdoamaral@usp.br>=
+ wrote:
+> >
+> > Use KUnit framework to make tests more easily integrable with CIs. Even
+> > though these tests are not yet properly written as unit tests this
+> > change should help in debugging.
 >
-> I don't want -online- notifications.  I only want _offline_
-> notifications and according to the documentation,
-> CPUHP_AP_ONLINE_DYN get called on both online and offline state
-> changes.
-
-So if you want only offline notification then you simply hand in NULL
-for the bringup callback.
-
-        state =3D cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "xfs:offline", NUL=
-L, func4);
-
-> Don't you see the cognitive dissonance that contradictory "use
-> online for offline" API naming like this causes.
-
-It's so amazing hard to understand that offline is the reverse operation
-of online, right?
-
-> It easily scores negative points on the Rusty's API scale....
-
-I'm surely impressed by the APIs which Rusty constructed.
-
-The CPU hotplug notifier register/unregister API was surely trivial and
-intuitive, but the rest was a horror show if you had to do something
-more complex than 'let me know that the CPU is dead'.
-
-Rusty admitted himself that the original CPU hotplug design was a
-steaming pile of s... including the 'so simple' API. See below.
-
-> Also, having to understand what the multiple callbacks
-> just for different operations is a bit of a WTF. What's the actual
-> difference between the "online" and "prepare down" callbacks?
-> For online notifications, the prepare down op is documented as the
-> online hotplug error handling function that undoes the online
-> callback.
+> Thanks -- I think KUnit is a good fit for these tests. I've tested the
+> series, and it works well for me (but again, I'm no expert on the
+> hashing code).
 >
-> But if we are registering an -offline notification-, their use isn't
-> actually documented. Is it the same, or is it inverted? I have to go
-> read the code...
+> I've left a few comments below, but there's nothing major which seems
+> to actually break the test, so this series is nevertheless:
+>
+> Tested-by: David Gow <davidgow@google.com>
 
-The documentation sucks. I told you that I'm happy to update it. See
-patch below.
+Thanks a lot for this! Really appreciate it. :)
 
-> Indeed, that's the core difference between that old API and the
-> current API - the current API requires registering a notifier per
-> state transition, but that registers the notifier for both CPU up
-> and down transitions.
+> >
+> > Also drop module support and remove kernel messages (i.e. through
+> > pr_info) as KUnit handles all debugging output.
+>
+> To clarify, are you actually dropping support for building this as a
+> module, or just letting KUnit handle it for you? Ideally, this will
+> still work as a module, even if it also works as a built-in test.
+> (Given that the Kconfig entry still is 'tristate', I assume this is the c=
+ase.)
 
-That registers a callback for startup and teardown and either one can be
-NULL if not required.
+This, actually, wasn't 100% clear to me at the time of writing this commit,=
+ so
+I apologize for the uninformed diff/message. Again, thanks for the heads up=
+!
 
-> The problem with the new API is that the requirement for symmetry in
-> some subsystems has bled into the API, and so now all the subsystems
-> that *don't need/want symmetry* have to juggle some undocumented
-> esoteric combination of state definitions and callbacks to get the
-> behaviour they require.
+> >
+> > Co-developed-by: Augusto Dur=C3=A3es Camargo <augusto.duraes33@gmail.co=
+m>
+> > Signed-off-by: Augusto Dur=C3=A3es Camargo <augusto.duraes33@gmail.com>
+> > Co-developed-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
+> > Signed-off-by: Enzo Ferreira <ferreiraenzoa@gmail.com>
+> > Signed-off-by: Isabella Basso <isabellabdoamaral@usp.br>
+> > ---
+> >  lib/Kconfig.debug |  28 ++++---
+> >  lib/Makefile      |   2 +-
+> >  lib/test_hash.c   | 197 ++++++++++++++--------------------------------
+> >  3 files changed, 79 insertions(+), 148 deletions(-)
+> >
+> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > index 5e5894d98c50..adefb03a7e16 100644
+> > --- a/lib/Kconfig.debug
+> > +++ b/lib/Kconfig.debug
+> > @@ -2221,15 +2221,6 @@ config TEST_RHASHTABLE
+> >
+> >           If unsure, say N.
+> >
+> > -config TEST_HASH
+> > -       tristate "Perform selftest on hash functions"
+> > -       help
+> > -         Enable this option to test the kernel's integer (<linux/hash.=
+h>), and
+> > -         string (<linux/stringhash.h>) hash functions on boot (or modu=
+le load).
+> > -
+> > -         This is intended to help people writing architecture-specific
+> > -         optimized versions.  If unsure, say N.
+> > -
+> >  config TEST_SIPHASH
+> >         tristate "Perform selftest on siphash functions"
+> >         help
+> > @@ -2378,6 +2369,25 @@ config BITFIELD_KUNIT
+> >
+> >           If unsure, say N.
+> >
+> > +config HASH_KUNIT_TEST
+> > +       tristate "KUnit Test for integer hash functions" if !KUNIT_ALL_=
+TESTS
+> > +       depends on KUNIT
+> > +       default KUNIT_ALL_TESTS
+> > +       help
+> > +         Enable this option to test the kernel's string (<linux/string=
+hash.h>), and
+> > +         integer (<linux/hash.h>) hash functions on boot.
+> > +
+> > +         KUnit tests run during boot and output the results to the deb=
+ug log
+> > +         in TAP format (https://testanything.org/). Only useful for ke=
+rnel devs
+> > +         running the KUnit test harness, and not intended for inclusio=
+n into a
+> > +         production build.
+> > +
+> > +         For more information on KUnit and unit tests in general pleas=
+e refer
+> > +         to the KUnit documentation in Documentation/dev-tools/kunit/.
+> > +
+> > +         This is intended to help people writing architecture-specific
+> > +         optimized versions. If unsure, say N.
+> > +
+> >  config RESOURCE_KUNIT_TEST
+> >         tristate "KUnit test for resource API"
+> >         depends on KUNIT
+> > diff --git a/lib/Makefile b/lib/Makefile
+> > index c2e81d0eb31c..0bc336d9d036 100644
+> > --- a/lib/Makefile
+> > +++ b/lib/Makefile
+> > @@ -62,7 +62,7 @@ obj-$(CONFIG_TEST_BITOPS) +=3D test_bitops.o
+> >  CFLAGS_test_bitops.o +=3D -Werror
+> >  obj-$(CONFIG_TEST_SYSCTL) +=3D test_sysctl.o
+> >  obj-$(CONFIG_TEST_SIPHASH) +=3D test_siphash.o
+> > -obj-$(CONFIG_TEST_HASH) +=3D test_hash.o
+> > +obj-$(CONFIG_HASH_KUNIT_TEST) +=3D test_hash.o
+> >  obj-$(CONFIG_TEST_IDA) +=3D test_ida.o
+> >  obj-$(CONFIG_KASAN_KUNIT_TEST) +=3D test_kasan.o
+> >  CFLAGS_test_kasan.o +=3D -fno-builtin
+> > diff --git a/lib/test_hash.c b/lib/test_hash.c
+> > index c168823b0963..84590bbf47dc 100644
+> > --- a/lib/test_hash.c
+> > +++ b/lib/test_hash.c
+> > @@ -14,14 +14,10 @@
+> >   * and hash_64().
+> >   */
+> >
+> > -#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt "\n"
+> > -
+> > -#include <linux/compiler.h>
+> >  #include <linux/types.h>
+> > -#include <linux/module.h>
+> >  #include <linux/hash.h>
+> >  #include <linux/stringhash.h>
+> > -#include <linux/printk.h>
+> > +#include <kunit/test.h>
+> >
+> >  #define SIZE 256 /* Run time is cubic in SIZE */
+> >
+> > @@ -29,7 +25,7 @@ static u32 string_or; /* stores or-ed string output *=
+/
+> >  static u32 hash_or[2][33] =3D { { 0, } }; /* stores or-ed hash output =
+*/
+> >
+> >  /* 32-bit XORSHIFT generator.  Seed must not be zero. */
+> > -static u32 __init __attribute_const__
+> > +static u32 __attribute_const__
+> >  xorshift(u32 seed)
+> >  {
+> >         seed ^=3D seed << 13;
+> > @@ -39,7 +35,7 @@ xorshift(u32 seed)
+> >  }
+> >
+> >  /* Given a non-zero x, returns a non-zero byte. */
+> > -static u8 __init __attribute_const__
+> > +static u8 __attribute_const__
+> >  mod255(u32 x)
+> >  {
+> >         x =3D (x & 0xffff) + (x >> 16);   /* 1 <=3D x <=3D 0x1fffe */
+> > @@ -50,8 +46,7 @@ mod255(u32 x)
+> >  }
+> >
+> >  /* Fill the buffer with non-zero bytes. */
+> > -static void __init
+> > -fill_buf(char *buf, size_t len, u32 seed)
+> > +static void fill_buf(char *buf, size_t len, u32 seed)
+> >  {
+> >         size_t i;
+> >
+> > @@ -62,41 +57,31 @@ fill_buf(char *buf, size_t len, u32 seed)
+> >  }
+> >
+> >  #ifdef HAVE_ARCH__HASH_32
+> > -static bool __init
+> > -test_int_hash32(u32 *h0, u32 *h1, u32 *h2)
+> > +static bool test_int_hash32(struct kunit *test, u32 *h0, u32 *h1, u32 =
+*h2)
+> >  {
+> >         hash_or[1][0] |=3D *h2 =3D __hash_32_generic(h0);
+> >  #if HAVE_ARCH__HASH_32 =3D=3D 1
+> > -       if (*h1 !=3D *h2) {
+> > -               pr_err("__hash_32(%#x) =3D %#x !=3D __hash_32_generic()=
+ =3D %#x",
+> > -                      *h0, *h1, *h2);
+> > -               return false;
+> > -       }
+> > +       KUNIT_ASSERT_EQ_MSG(test, *h1, *h2,
+> > +                           "__hash_32(%#x) =3D %#x !=3D __hash_32_gene=
+ric() =3D %#x",
+> > +                           *h0, *h1, *h2);
+>
+> Should this (and others) be EXPECTations rather than ASSERTions? I
+> imagine we'd want to continue the test even if this doesn't match.
+>
+> (I know that the existing function returns early here, but I'd argue
+> that __hash_32() and __hash_32_generic() producing different results
+> is a separate issue than the final ORed result turning out
+> differently, and we shouldn't change the latter by exiting out early
+> from the former.
 
-What kind of esoteric things do you need? Can you explain the
-requirements and why do you think it's hard to solve?
+I was also a bit troubled by this question, as each operation performed is
+sequential and they all conspire for later test use. Would love to hear Spe=
+lvin
+on this matter but I'm equally as pleased by your guidance. :)
 
-Your handwaving here is more than counterproductive.
+> Equally, there's probably an argument for splitting
+> out the __hash_32() vs __hash_32_generic() tests completely from the
+> _or tests, but that would be more work.)
+>
+> >  #endif
+> > -       return true;
+> >  }
+> >  #endif
+> >
+> >  #ifdef HAVE_ARCH_HASH_64
+> > -static bool __init
+> > -test_int_hash64(unsigned long long h64, u32 *h0, u32 *h1, u32 *h2, u32=
+ const *m, int k)
+> > +static bool test_int_hash64(struct kunit *test, unsigned long long h64=
+, u32 *h0, u32 *h1,
+> > +               u32 *h2, u32 const *m, int k)
+> >  {
+> >         *h2 =3D hash_64_generic(*h64, *k);
+> >  #if HAVE_ARCH_HASH_64 =3D=3D 1
+> > -       if (*h1 !=3D *h2) {
+> > -               pr_err("hash_64(%#llx, %d) =3D %#x !=3D hash_64_generic=
+() =3D %#x",
+> > -                      *h64, *k, *h1, *h2);
+> > -               return false;
+> > -       }
+> > +       KUNIT_ASSERT_EQ_MSG(test, *h1, *h2,
+> > +                           "hash_64(%#llx, %d) =3D %#x !=3D hash_64_ge=
+neric() =3D %#x",
+> > +                           *h64, *k, *h1, *h2);
+> >  #else
+> > -       if (*h2 > *m) {
+> > -               pr_err("hash_64_generic(%#llx, %d) =3D %#x > %#x",
+> > -                      *h64, *k, *h1, *m);
+> > -               return false;
+> > -       }
+> > +       KUNIT_ASSERT_LE_MSG(test, *h1, *h2,
+> > +                           "hash_64_generic(%#llx, %d) =3D %#x > %#x",
+> > +                           *h64, *k, *h1, *m);
+> >  #endif
+> > -       return true;
+> > -
+> >  }
+> >  #endif
+> >
+> > @@ -109,8 +94,7 @@ test_int_hash64(unsigned long long h64, u32 *h0, u32=
+ *h1, u32 *h2, u32 const *m,
+> >   * inline, the code being tested is actually in the module, and you ca=
+n
+> >   * recompile and re-test the module without rebooting.
+> >   */
+> > -static bool __init
+> > -test_int_hash(unsigned long long h64)
+> > +static void test_int_hash(struct kunit *test, unsigned long long h64)
+> >  {
+> >         int k;
+> >         u32 h0 =3D (u32)h64, h1;
+> > @@ -122,7 +106,7 @@ test_int_hash(unsigned long long h64)
+> >         /* Test __hash32 */
+> >         hash_or[0][0] |=3D h1 =3D __hash_32(h0);
+> >  #ifdef HAVE_ARCH__HASH_32
+> > -       if (!test_int_hash32(&h0, &h1, &h2))
+> > +       if (!test_int_hash32(test, &h0, &h1, &h2))
+> >                 return false;
+> >  #endif
+> >
+> > @@ -132,27 +116,22 @@ test_int_hash(unsigned long long h64)
+> >
+> >                 /* Test hash_32 */
+> >                 hash_or[0][k] |=3D h1 =3D hash_32(h0, k);
+> > -               if (h1 > m) {
+> > -                       pr_err("hash_32(%#x, %d) =3D %#x > %#x", h0, k,=
+ h1, m);
+> > -                       return false;
+> > -               }
+> > +               KUNIT_ASSERT_LE_MSG(test, h1, m,
+> > +                                   "hash_32(%#x, %d) =3D %#x > %#x",
+> > +                                   h0, k, h1, m);
+> >
+> >                 /* Test hash_64 */
+> >                 hash_or[1][k] |=3D h1 =3D hash_64(h64, k);
+> > -               if (h1 > m) {
+> > -                       pr_err("hash_64(%#llx, %d) =3D %#x > %#x", h64,=
+ k, h1, m);
+> > -                       return false;
+> > -               }
+> > +               KUNIT_ASSERT_LE_MSG(test, h1, m,
+> > +                                   "hash_64(%#llx, %d) =3D %#x > %#x",
+> > +                                   h64, k, h1, m);
+> >  #ifdef HAVE_ARCH_HASH_64
+> > -               if (!test_int_hash64(&h64, &h0, &h1, &h2, &m, &k))
+> > -                       return false;
+> > +               test_int_hash64(test, &h64, &h0, &h1, &h2, &m, &k);
+> >  #endif
+> >         }
+> > -
+> > -       return true;
+> >  }
+> >
+> > -static int __init test_string_or(void)
+> > +static void test_string_or(struct kunit *test)
+> >  {
+> >         char buf[SIZE+1];
+> >         int i, j;
+> > @@ -173,19 +152,14 @@ static int __init test_string_or(void)
+> >         } /* j */
+> >
+> >         /* The OR of all the hash values should cover all the bits */
+> > -       if (~string_or) {
+> > -               pr_err("OR of all string hash results =3D %#x !=3D %#x"=
+,
+> > -                      string_or, -1u);
+> > -               return -EINVAL;
+> > -       }
+> > -
+> > -       return 0;
+> > +       KUNIT_ASSERT_FALSE_MSG(test, ~string_or,
+> > +                             "OR of all string hash results =3D %#x !=
+=3D %#x",
+> > +                             string_or, -1u);
+> >  }
+> >
+> > -static int __init test_hash_or(void)
+> > +static void test_hash_or(struct kunit *test)
+> >  {
+> >         char buf[SIZE+1];
+> > -       unsigned tests =3D 0;
+> >         unsigned long long h64 =3D 0;
+> >         int i, j;
+> >
+> > @@ -201,39 +175,27 @@ static int __init test_hash_or(void)
+> >                         u32 h0 =3D full_name_hash(buf+i, buf+i, j-i);
+> >
+> >                         /* Check that hashlen_string gets the length ri=
+ght */
+> > -                       if (hashlen_len(hashlen) !=3D j-i) {
+> > -                               pr_err("hashlen_string(%d..%d) returned=
+ length"
+> > -                                      " %u, expected %d",
+> > -                                      i, j, hashlen_len(hashlen), j-i)=
+;
+> > -                               return -EINVAL;
+> > -                       }
+> > +                       KUNIT_ASSERT_EQ_MSG(test, hashlen_len(hashlen),=
+ j-i,
+> > +                                           "hashlen_string(%d..%d) ret=
+urned length %u, expected %d",
+> > +                                           i, j, hashlen_len(hashlen),=
+ j-i);
+> >                         /* Check that the hashes match */
+> > -                       if (hashlen_hash(hashlen) !=3D h0) {
+> > -                               pr_err("hashlen_string(%d..%d) =3D %08x=
+ !=3D "
+> > -                                      "full_name_hash() =3D %08x",
+> > -                                      i, j, hashlen_hash(hashlen), h0)=
+;
+> > -                               return -EINVAL;
+> > -                       }
+> > +                       KUNIT_ASSERT_EQ_MSG(test, hashlen_hash(hashlen)=
+, h0,
+> > +                                           "hashlen_string(%d..%d) =3D=
+ %08x !=3D full_name_hash() =3D %08x",
+> > +                                           i, j, hashlen_hash(hashlen)=
+, h0);
+> >
+> >                         h64 =3D h64 << 32 | h0;   /* For use with hash_=
+64 */
+> > -                       if (!test_int_hash(h64))
+> > -                               return -EINVAL;
+> > -                       tests++;
+> > +                       test_int_hash(test, h64);
+> >                 } /* i */
+> >         } /* j */
+> >
+> > -       if (~hash_or[0][0]) {
+> > -               pr_err("OR of all __hash_32 results =3D %#x !=3D %#x",
+> > -                      hash_or[0][0], -1u);
+> > -               return -EINVAL;
+> > -       }
+> > +       KUNIT_ASSERT_FALSE_MSG(test, ~hash_or[0][0],
+> > +                              "OR of all __hash_32 results =3D %#x !=
+=3D %#x",
+> > +                              hash_or[0][0], -1u);
+> >  #ifdef HAVE_ARCH__HASH_32
+> >  #if HAVE_ARCH__HASH_32 !=3D 1    /* Test is pointless if results match=
+ */
+> > -       if (~hash_or[1][0]) {
+> > -               pr_err("OR of all __hash_32_generic results =3D %#x !=
+=3D %#x",
+> > -                      hash_or[1][0], -1u);
+> > -               return -EINVAL;
+> > -       }
+> > +       KUNIT_ASSERT_FALSE_MSG(test, ~hash_or[1][0],
+> > +                              "OR of all __hash_32_generic results =3D=
+ %#x !=3D %#x",
+> > +                              hash_or[1][0], -1u);
+> >  #endif
+> >  #endif
+> >
+> > @@ -241,65 +203,24 @@ static int __init test_hash_or(void)
+> >         for (i =3D 1; i <=3D 32; i++) {
+> >                 u32 const m =3D ((u32)2 << (i-1)) - 1;    /* Low i bits=
+ set */
+> >
+> > -               if (hash_or[0][i] !=3D m) {
+> > -                       pr_err("OR of all hash_32(%d) results =3D %#x "
+> > -                              "(%#x expected)", i, hash_or[0][i], m);
+> > -                       return -EINVAL;
+> > -               }
+> > -               if (hash_or[1][i] !=3D m) {
+> > -                       pr_err("OR of all hash_64(%d) results =3D %#x "
+> > -                              "(%#x expected)", i, hash_or[1][i], m);
+> > -                       return -EINVAL;
+> > -               }
+> > +               KUNIT_ASSERT_EQ_MSG(test, hash_or[0][i], m,
+> > +                                   "OR of all hash_32(%d) results =3D =
+%#x (%#x expected)",
+> > +                                   i, hash_or[0][i], m);
+> > +               KUNIT_ASSERT_EQ_MSG(test, hash_or[1][i], m,
+> > +                                   "OR of all hash_64(%d) results =3D =
+%#x (%#x expected)",
+> > +                                   i, hash_or[1][i], m);
+> >         }
+> > -
+> > -       pr_notice("%u tests passed.", tests);
+> > -
+> > -       return 0;
+> >  }
+> >
+> > -static void __init notice_skipped_tests(void)
+> > -{
+> > -       /* Issue notices about skipped tests. */
+> > -#ifdef HAVE_ARCH__HASH_32
+> > -#if HAVE_ARCH__HASH_32 !=3D 1
+> > -       pr_info("__hash_32() is arch-specific; not compared to generic.=
+");
+> > -#endif
+> > -#else
+> > -       pr_info("__hash_32() has no arch implementation to test.");
+> > -#endif
+> > -#ifdef HAVE_ARCH_HASH_64
+> > -#if HAVE_ARCH_HASH_64 !=3D 1
+> > -       pr_info("hash_64() is arch-specific; not compared to generic.")=
+;
+> > -#endif
+> > -#else
+> > -       pr_info("hash_64() has no arch implementation to test.");
+> > -#endif
+> > -}
+> > -
+> > -static int __init
+> > -test_hash_init(void)
+> > -{
+> > -       int ret;
+> > -
+> > -       ret =3D test_string_or();
+> > -       if (ret < 0)
+> > -               return ret;
+> > -
+> > -       ret =3D test_hash_or();
+> > -       if (ret < 0)
+> > -               return ret;
+> > -
+> > -       notice_skipped_tests();
+> > -
+> > -       return ret;
+> > -}
+> > -
+> > -static void __exit test_hash_exit(void)
+> > -{
+> > -}
+> > +static struct kunit_case hash_test_cases[] =3D {
+> > +       KUNIT_CASE(test_string_or),
+> > +       KUNIT_CASE(test_hash_or),
+>
+> Ideally, these could be split up further into separate __hash_32(),
+> hash_32(), and hash_64() tests. Maybe even with separate tests for
+> architecture-specific versus generic implementations as mentioned
+> above, if that made sense. It'd require enough reworking of the tests
+> and expected results though, that I wouldn't necessarily want to force
+> such a significant change at the same time as this more
+> straightforward port to KUnit.
 
-> And that, AFAICT, means that those callbacks can't handle failures in
-> hotplug processing properly.
+I agree such changes would be quite interesting and would be willing to
+continue working on this if I had some more knowledge of the hash functions=
+. As
+of now, I'm really not sure how I'd rework those tests, unfortunately. :/
 
-Why so?
-
-Here is an example for online:
-
-        [state 1]->startup()    -> success
-        [state 2]->startup()    -> success
-        [state 3]               -> skipped because startup is NULL=20
-        [state 4]->startup()    -> fail
-        [state 3]->teardown()
-        [state 2]               -> skipped because teardown is NULL
-        [state 1]->teardown()
-
-If state 2 does not provide a teardown callback then there is nothing to
-teardown obviously. Same for state 3 on startup.
-
-What does not work correctly in the error case?
-
-It does not matter at all whether the transition from state 3 to state 0
-happens due to a CPU offline operation or because the online operation
-got aborted at state 4. It's exactly the same thing. It's that simple,
-really.
-
-If you think that you need a 'bringup failed' notification for the
-subsystem which set up state 4 or a 'bringup failed' notification for
-the subsystem which registered state 2 then you are really doing
-something fundamentally wrong.
-
-I know that the 'oh so simple and well designed' original notifier sent
-these 'failed' notifications, but they were sent for the completely
-wrong reasons and were part of the overall problem.
-
-I'm obviously failing to understand how a 'simple' single callback
-interface which forces the user to handle a gazillion of obscure events
-is so much superiour than a straight forward linear state machine,
-
-> So rather than having a nice, simple "one callback per event" API,
-> we've got this convoluted thing that behaves according to a
-> combination of state definition and callback defintions. Then the
-> API is duplicated into "_nocall()" variants (not documented!)
-> because many subsystems do not want hotplug callbacks run on
-> setup/teardown of hotplug events.
-
-About 70% of the state setups are utilizing the callback invocations
-which means we don't have to have hundreds duplicated and probably
-differently buggy code to do that manually all over the place.
-
-That's a clear maintenance and code correctness win and that definitely
-justifies an extra inline variant for those usage sites which don't
-need/want those invocations for hopefully well thought out reasons.
-
-> The old hotplug notification *implementation* had problems, but the
-> *API* was not the cause of those bugs.
-
-The state transitions, i.e. the @reason (event) argument to the
-callbacks were definitely part of the API and that was where the main
-problem came from.
-
-At the end we had _seventeen_ different reasons (events) because people
-added new ones over and over to duct tape the issues of the existing
-pile. What the hell is simple about that?
-
-Most of these reasons and their possible transition schemes were
-undocumented and not understandable at all. That and the assbackwards
-failure handling turned that thing into an unmaintainable and unfixable
-nightmare.
-
-The fact that 25% of all notifier callbacks were buggy speaks for
-itself. Not to talk about the locking issues which got papered over by
-the fact that the hotplug locking was hidden from lockdep, the absurd
-assumptions about invocation context and the workarounds to handle
-callback invocations correctly when registering or unregistering a
-notifier.
-
-The charm of this "simple" API ended right there at the register /
-unregister function invocation level. Nice for the occasional user with
-simple requirements and a nightmare for those people who had to debug
-the fallout of this simplicity.
-
-Keep it simple is surely a good engineering principle, but if the
-simplicity is restricted to the least important part of the problem then
-it turns into a nightmare.
-
-> In contrast, the current API appears to make it impossible to
-> implement notifiers for certain use cases correctly, and that's
-> directly where my statement that "you need to be a cpuhp expert to use
-> this" comes from....
-
-Just for the record:
-
- - When we converted all notifiers over there was not a single instance
-   which could not be handled straight forward and in the vast majority
-   of the cases the code got simpler, smaller and easier to understand.
-
- - After the initial conversion more than hundred state setups were
-   added without a single complaint about the so complex API and no one
-   showed up as hotplug expert since then.
-
- - The number of obscure and hard to debug CPU hotplug bugs has gone
-   close to zero since then. The obvious programming bugs in the core,
-   the callbacks and API usage are just the usual programming errors
-   which are not specific to CPU hotplug at all.
-
-I'm sorry that this change which turned CPU hotplug into a reliable,
-testable and instrumentable mechanism causes so much trouble for you. I
-hope it's just the lack of coherent documentation which made you
-unhappy.
-
-If the updated documentation does not answer your questions, please let
-me know and please provide a coherent explanation of the problem you are
-trying to solve. Either I can give you an hint or I can identify further
-issues in the documentation.
-
-If it turns out that there are functional shortcomings then I'm of
-course all ears as well.
-
-If you need a conveniance API to install multiple states at once to
-regain the "simple API" feeling, please let me know - I surely have some
-ideas.
+> > +       {}
+> > +};
+> >
+> > -module_init(test_hash_init);   /* Does everything */
+> > -module_exit(test_hash_exit);   /* Does nothing */
+> > +static struct kunit_suite hash_test_suite =3D {
+> > +       .name =3D "hash_tests",
+>
+> It might be worth just naming this "hash", as the fact that it's a
+> KUnit suite already tells us it contains tests.
+>
+> > +       .test_cases =3D hash_test_cases,
+> > +};
+> >
+> > -MODULE_LICENSE("GPL");
+>
+> It's probably worth keeping this in as it's still GPLed, and can be
+> built as a module.
+>
+> > +kunit_test_suite(hash_test_suite);
+>
+>
+> > --
+> > 2.33.0
 
 Thanks,
-
-        tglx
----
---- a/Documentation/core-api/cpu_hotplug.rst
-+++ b/Documentation/core-api/cpu_hotplug.rst
-@@ -156,95 +156,479 @@ hotplug states will be invoked, starting
- * Once all services are migrated, kernel calls an arch specific routine
-   ``__cpu_disable()`` to perform arch specific cleanup.
-=20
--Using the hotplug API
-----------------------
--It is possible to receive notifications once a CPU is offline or onlined. =
-This
--might be important to certain drivers which need to perform some kind of s=
-etup
--or clean up functions based on the number of available CPUs: ::
--
--  #include <linux/cpuhotplug.h>
--
--  ret =3D cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "X/Y:online",
--                          Y_online, Y_prepare_down);
--
--*X* is the subsystem and *Y* the particular driver. The *Y_online* callback
--will be invoked during registration on all online CPUs. If an error
--occurs during the online callback the *Y_prepare_down* callback will be
--invoked on all CPUs on which the online callback was previously invoked.
--After registration completed, the *Y_online* callback will be invoked
--once a CPU is brought online and *Y_prepare_down* will be invoked when a
--CPU is shutdown. All resources which were previously allocated in
--*Y_online* should be released in *Y_prepare_down*.
--The return value *ret* is negative if an error occurred during the
--registration process. Otherwise a positive value is returned which
--contains the allocated hotplug for dynamically allocated states
--(*CPUHP_AP_ONLINE_DYN*). It will return zero for predefined states.
--
--The callback can be remove by invoking ``cpuhp_remove_state()``. In case o=
-f a
--dynamically allocated state (*CPUHP_AP_ONLINE_DYN*) use the returned state.
--During the removal of a hotplug state the teardown callback will be invoke=
-d.
--
--Multiple instances
--~~~~~~~~~~~~~~~~~~
--If a driver has multiple instances and each instance needs to perform the
--callback independently then it is likely that a ''multi-state'' should be =
-used.
--First a multi-state state needs to be registered: ::
--
--  ret =3D cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN, "X/Y:online,
--                                Y_online, Y_prepare_down);
--  Y_hp_online =3D ret;
--
--The ``cpuhp_setup_state_multi()`` behaves similar to ``cpuhp_setup_state()=
-``
--except it prepares the callbacks for a multi state and does not invoke
--the callbacks. This is a one time setup.
--Once a new instance is allocated, you need to register this new instance: =
-::
--
--  ret =3D cpuhp_state_add_instance(Y_hp_online, &d->node);
--
--This function will add this instance to your previously allocated
--*Y_hp_online* state and invoke the previously registered callback
--(*Y_online*) on all online CPUs. The *node* element is a ``struct
--hlist_node`` member of your per-instance data structure.
--
--On removal of the instance: ::
--  cpuhp_state_remove_instance(Y_hp_online, &d->node)
--
--should be invoked which will invoke the teardown callback on all online
--CPUs.
--
--Manual setup
--~~~~~~~~~~~~
--Usually it is handy to invoke setup and teardown callbacks on registration=
- or
--removal of a state because usually the operation needs to performed once a=
- CPU
--goes online (offline) and during initial setup (shutdown) of the driver. H=
-owever
--each registration and removal function is also available with a ``_nocalls=
-``
--suffix which does not invoke the provided callbacks if the invocation of t=
-he
--callbacks is not desired. During the manual setup (or teardown) the functi=
-ons
--``cpus_read_lock()`` and ``cpus_read_unlock()`` should be used to inhibit =
-CPU
--hotplug operations.
--
--
--The ordering of the events
----------------------------
--The hotplug states are defined in ``include/linux/cpuhotplug.h``:
--
--* The states *CPUHP_OFFLINE* =E2=80=A6 *CPUHP_AP_OFFLINE* are invoked befo=
-re the
--  CPU is up.
--* The states *CPUHP_AP_OFFLINE* =E2=80=A6 *CPUHP_AP_ONLINE* are invoked
--  just the after the CPU has been brought up. The interrupts are off and
--  the scheduler is not yet active on this CPU. Starting with *CPUHP_AP_OFF=
-LINE*
--  the callbacks are invoked on the target CPU.
--* The states between *CPUHP_AP_ONLINE_DYN* and *CPUHP_AP_ONLINE_DYN_END* a=
-re
--  reserved for the dynamic allocation.
--* The states are invoked in the reverse order on CPU shutdown starting with
--  *CPUHP_ONLINE* and stopping at *CPUHP_OFFLINE*. Here the callbacks are
--  invoked on the CPU that will be shutdown until *CPUHP_AP_OFFLINE*.
--
--A dynamically allocated state via *CPUHP_AP_ONLINE_DYN* is often enough.
--However if an earlier invocation during the bring up or shutdown is requir=
-ed
--then an explicit state should be acquired. An explicit state might also be
--required if the hotplug event requires specific ordering in respect to
--another hotplug event.
-+
-+The CPU hotplug API
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+CPU hotplug state machine
-+-------------------------
-+
-+CPU hotplug uses a trivial state machine with a linear state space from
-+CPUHP_OFFLINE to CPUHP_ONLINE. Each state has a startup and a teardown
-+callback.
-+
-+When a CPU is onlined, the startup callbacks are invoked sequentially until
-+the state CPUHP_ONLINE is reached. They can also be invoked when the
-+callbacks of a state are set up or an instance is added to a multi-instance
-+state.
-+
-+When a CPU is offlined the teardown callbacks are invoked in the reverse
-+order sequenctially until the state CPUHP_OFFLINE is reached. They can also
-+be invoked when the callbacks of a state are removed or an instance is
-+removed from a multi-instance state.
-+
-+If a usage site requires only a callback in one direction of the hotplug
-+operations (CPU online or CPU offline) then the other not required callback
-+can be set to NULL when the state is set up.
-+
-+The state space is divided into three sections:
-+
-+* The PREPARE section
-+
-+  The PREPARE section covers the state space from CPUHP_OFFLINE to CPUHP_B=
-RINGUP_CPU
-+
-+  The startup callbacks in this section are invoked before the CPU is
-+  started during a CPU online operation. The teardown callbacks are invoked
-+  after the CPU has become dysfunctional during a CPU offline operation.
-+
-+  The callbacks are invoked on a control CPU as they can't obviously run on
-+  the hotplugged CPU which is either not yet started or has become
-+  dysfunctional already.
-+
-+  The startup callbacks are used to setup resources which are required to
-+  bring a CPU successfully online. The teardown callbacks are used to free
-+  resources or to move pending work to an online CPU after the hotplugged
-+  CPU became dysfunctional.
-+
-+  The startup callbacks are allowed to fail. If a callback fails, the CPU
-+  online operation is aborted and the CPU is brought down to the previous
-+  state (usually CPUHP_OFFLINE) again.
-+
-+  The teardown callbacks in this section are not allowed to fail.
-+
-+* The STARTING section
-+
-+  The STARTING section covers the state space between CPUHP_BRINGUP_CPU + 1
-+  and CPUHP_AP_ONLINE
-+
-+  The startup callbacks in this section are invoked on the hotplugged CPU
-+  with interrupts disabled during a CPU online operation in the early CPU
-+  setup code. The teardown callbacks are invoked with interrupts disabled
-+  on the hotplugged CPU during a CPU offline operation shortly before the
-+  CPU is completely shut down.
-+
-+  The callbacks in this section are not allowed to fail.
-+
-+  The callbacks are used for low level hardware initialization/shutdown and
-+  for core subsystems.
-+
-+* The ONLINE section
-+
-+  The ONLINE section covers the state space between CPUHP_AP_ONLINE + 1 and
-+  CPUHP_ONLINE.
-+
-+  The startup callbacks in this section are invoked on the hotplugged CPU
-+  during a CPU online operation. The teardown callbacks are invoked on the
-+  hotplugged CPU during a CPU offline operation.
-+
-+  The callbacks are invoked in the context of the per CPU hotplug thread,
-+  which is pinned on the hotplugged CPU. The callbacks are invoked with
-+  interrupts and preemption enabled.
-+
-+  The callbacks are allowed to fail. When a callback fails the hotplug
-+  operation is aborted and the CPU is brought back to the previous state.
-+
-+CPU online/offline operations
-+-----------------------------
-+
-+A successful online operation looks like this: ::
-+
-+  [CPUHP_OFFLINE]
-+  [CPUHP_OFFLINE + 1]->startup()       -> success
-+  [CPUHP_OFFLINE + 2]->startup()       -> success
-+  [CPUHP_OFFLINE + 3]                  -> skipped because startup =3D=3D N=
-ULL
-+  ...
-+  [CPUHP_BRINGUP_CPU]->startup()       -> success
-+  =3D=3D=3D End of PREPARE section
-+  [CPUHP_BRINGUP_CPU + 1]->startup()   -> success
-+  ...
-+  [CPUHP_AP_ONLINE]->startup()         -> success
-+  =3D=3D=3D End of STARTUP section
-+  [CPUHP_AP_ONLINE + 1]->startup()     -> success
-+  ...
-+  [CPUHP_ONLINE - 1]->startup()        -> success
-+  [CPUHP_ONLINE]
-+
-+A successful offline operation looks like this: ::
-+
-+  [CPUHP_ONLINE]
-+  [CPUHP_ONLINE - 1]->teardown()       -> success
-+  ...
-+  [CPUHP_AP_ONLINE + 1]->teardown()    -> success
-+  =3D=3D=3D Start of STARTUP section
-+  [CPUHP_AP_ONLINE]->teardown()        -> success
-+  ...
-+  [CPUHP_BRINGUP_ONLINE - 1]->teardown()
-+  ...
-+  =3D=3D=3D Start of PREPARE section
-+  [CPUHP_BRINGUP_CPU]->teardown()
-+  [CPUHP_OFFLINE + 3]->teardown()
-+  [CPUHP_OFFLINE + 2]                  -> skipped because teardown =3D=3D =
-NULL
-+  [CPUHP_OFFLINE + 1]->teardown()
-+  [CPUHP_OFFLINE]
-+
-+A failed online operation looks like this: ::
-+
-+  [CPUHP_OFFLINE]
-+  [CPUHP_OFFLINE + 1]->startup()       -> success
-+  [CPUHP_OFFLINE + 2]->startup()       -> success
-+  [CPUHP_OFFLINE + 3]                  -> skipped because startup =3D=3D N=
-ULL
-+  ...
-+  [CPUHP_BRINGUP_CPU]->startup()       -> success
-+  =3D=3D=3D End of PREPARE section
-+  [CPUHP_BRINGUP_CPU + 1]->startup()   -> success
-+  ...
-+  [CPUHP_AP_ONLINE]->startup()         -> success
-+  =3D=3D=3D End of STARTUP section
-+  [CPUHP_AP_ONLINE + 1]->startup()     -> success
-+  ---
-+  [CPUHP_AP_ONLINE + N]->startup()     -> fail
-+  [CPUHP_AP_ONLINE + (N - 1)]->teardown()
-+  ...
-+  [CPUHP_AP_ONLINE + 1]->teardown()
-+  =3D=3D=3D Start of STARTUP section
-+  [CPUHP_AP_ONLINE]->teardown()
-+  ...
-+  [CPUHP_BRINGUP_ONLINE - 1]->teardown()
-+  ...
-+  =3D=3D=3D Start of PREPARE section
-+  [CPUHP_BRINGUP_CPU]->teardown()
-+  [CPUHP_OFFLINE + 3]->teardown()
-+  [CPUHP_OFFLINE + 2]                  -> skipped because teardown =3D=3D =
-NULL
-+  [CPUHP_OFFLINE + 1]->teardown()
-+  [CPUHP_OFFLINE]
-+
-+A failed offline operation looks like this: ::
-+
-+  [CPUHP_ONLINE]
-+  [CPUHP_ONLINE - 1]->teardown()       -> success
-+  ...
-+  [CPUHP_ONLINE - N]->teardown()       -> fail
-+  [CPUHP_ONLINE - (N - 1)]->startup()
-+  ...
-+  [CPUHP_ONLINE - 1]->startup()
-+  [CPUHP_ONLINE]
-+
-+Recursive failures cannot be handled sensibly. Look at the following
-+example of a recursive fail due to a failed offline operation: ::
-+
-+  [CPUHP_ONLINE]
-+  [CPUHP_ONLINE - 1]->teardown()       -> success
-+  ...
-+  [CPUHP_ONLINE - N]->teardown()       -> fail
-+  [CPUHP_ONLINE - (N - 1)]->startup()  -> success
-+  [CPUHP_ONLINE - (N - 2)]->startup()  -> fail
-+
-+The CPU hotplug state machine stops right here and does not try to go back
-+down again because that would likely result in an endless loop: ::
-+
-+  [CPUHP_ONLINE - (N - 1)]->teardown() -> success
-+  [CPUHP_ONLINE - N]->teardown()       -> fail
-+  [CPUHP_ONLINE - (N - 1)]->startup()  -> success
-+  [CPUHP_ONLINE - (N - 2)]->startup()  -> fail
-+  [CPUHP_ONLINE - (N - 1)]->teardown() -> success
-+  [CPUHP_ONLINE - N]->teardown()       -> fail
-+
-+Lather, rinse and repeat. In this case the CPU left in state: ::
-+
-+  [CPUHP_ONLINE - (N - 1)]
-+
-+which at least lets the system make progress and gives the user a chance to
-+debug or even resolve the situation.
-+
-+Allocating a state
-+------------------
-+
-+There are two ways to allocate a CPU hotplug state:
-+
-+* Static allocation
-+
-+  Static allocation has to be used when the subsystem or driver has
-+  ordering requirements versus other CPU hotplug states. E.g. the PERF core
-+  startup callback has to be invoked before the PERF driver startup
-+  callbacks during a CPU online operation. During a CPU offline operation
-+  the driver teardown callbacks have to be invoked before the core teardown
-+  callback. The statically allocated states are described by constants in
-+  the cpuhp_state enum which can be found in include/linux/cpuhotplug.h.
-+
-+  Insert the state into the enum at the proper place so the ordering
-+  requirements are fulfilled. The state constant has to be used for state
-+  setup and removal.
-+
-+  Static allocation is also required when the state callbacks are not set
-+  up at runtime and are part of the initializer of the CPU hotplug state
-+  array in kernel/cpu.c.
-+
-+* Dynamic allocation
-+
-+  When there are no ordering requirements for the state callbacks then
-+  dynamic allocation is the preferred method. The state number is allocated
-+  by the setup function and returned to the caller on success.
-+
-+  Only the PREPARE and ONLINE sections provide a dynamic allocation
-+  range. The STARTING section does not as most of the callbacks in that
-+  section have explicit ordering requirements.
-+
-+Setup of a CPU hotplug state
-+----------------------------
-+
-+The core code provides the following functions to setup a state:
-+
-+* cpuhp_setup_state(state, name, startup, teardown)
-+* cpuhp_setup_state_nocalls(state, name, startup, teardown)
-+* cpuhp_setup_state_cpuslocked(state, name, startup, teardown)
-+* cpuhp_setup_state_nocalls_cpuslocked(state, name, startup, teardown)
-+
-+For cases where a driver or a subsystem has multiple instances and the same
-+CPU hotplug state callbacks need to be invoked for each instance, the CPU
-+hotplug core provides multi-instance support. The advantage over driver
-+specific instance lists is that the instance related functions are fully
-+serialized against CPU hotplug operations and provide the automatic
-+invocations of the state callbacks on add and removal. To set up such a
-+multi-instance state the following function is available:
-+
-+* cpuhp_setup_state_multi(state, name, startup, teardown)
-+
-+The @state argument is either a statically allocated state or one of the
-+constants for dynamically allocated states - CPUHP_PREPARE_DYN,
-+CPUHP_ONLINE_DYN - depending on the state section (PREPARE, ONLINE) for
-+which a dynamic state should be allocated.
-+
-+The @name argument is used for sysfs output and for instrumentation. The
-+naming convention is "subsys:mode" or "subsys/driver:mode",
-+e.g. "perf:mode" or "perf/x86:mode". The common mode names:
-+
-+=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+prepare  For states in the PREPAREsection
-+
-+dead     For states in the PREPARE section which do not provide
-+         a startup callback
-+
-+starting For states in the STARTING section
-+
-+dying    For states in the STARTING section which do not provide
-+         a startup callback
-+
-+online   For states in the ONLINE section
-+
-+offline  For states in the ONLINE section which do not provide
-+         a startup callback
-+=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+As the @name argument is only used for sysfs and instrumentation other mode
-+descriptors can be used as well if they describe the nature of the state
-+better than the common ones.
-+
-+Examples for @name arguments: "perf/online", "perf/x86:prepare",
-+"RCU/tree:dying", "sched/waitempty"
-+
-+The @startup argument is a function pointer to the callback which should be
-+invoked during a CPU online operation. If the usage site does not require a
-+startup callback set the pointer to NULL.
-+
-+The @teardown argument is a function pointer to the callback which should
-+be invoked during a CPU offline operation. If the usage site does not
-+require a teardown callback set the pointer to NULL.
-+
-+The functions differ in the way how the installed callbacks are treated:
-+
-+  * cpuhp_setup_state_nocalls(), cpuhp_setup_state_nocalls_cpuslocked()
-+    and cpuhp_setup_state_multi() only install the callbacks
-+
-+  * cpuhp_setup_state() and cpuhp_setup_state_cpuslocked() install the
-+    callbacks and invoke the @startup callback (if not NULL) for all online
-+    CPUs which have currently a state greater than the newly installed
-+    state. Depending on the state section the callback is either invoked on
-+    the current CPU (PREPARE section) or on each online CPU (ONLINE
-+    section) in the context of the CPU's hotplug thread.
-+
-+    If a callback fails for CPU N then the teardown callback for CPU
-+    0 .. N-1 is invoked to rollback the operation. The state setup fails,
-+    the callbacks for the state are not installed and in case of dynamic
-+    allocation the allocated state is freed.
-+
-+The state setup and the callback invocations are serialized against CPU
-+hotplug operations. If the setup function has to be called from a CPU
-+hotplug read locked region, then the _cpuslocked() variants have to be
-+used. These functions cannot be used from within CPU hotplug callbacks.
-+
-+The function return values:
-+  =3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-+  0        Statically allocated state was successfully set up
-+
-+  >0       Dynamically allocated state was successfully set up.
-+
-+           The returned number is the state number which was allocated. If
-+           the state callbacks have to be removed later, e.g. module
-+           removal, then this number has to be saved by the caller and used
-+           as @state argument for the state remove function. For
-+           multi-instance states the dynamically allocated state number is
-+           also required as @state argument for the instance add/remove
-+           operations.
-+
-+  <0	   Operation failed
-+  =3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-+
-+Removal of a CPU hotplug state
-+------------------------------
-+
-+To remove a previously set up state, the following functions are provided:
-+
-+* cpuhp_remove_state(state)
-+* cpuhp_remove_state_nocalls(state)
-+* cpuhp_remove_state_nocalls_cpuslocked(state)
-+* cpuhp_remove_multi_state(state)
-+
-+The @state argument is either a statically allocated state or the state
-+number which was allocated in the dynamic range by cpuhp_setup_state*(). If
-+the state is in the dynamic range, then the state number is freed and
-+available for dynamic allocation again.
-+
-+The functions differ in the way how the installed callbacks are treated:
-+
-+  * cpuhp_remove_state_nocalls(), cpuhp_remove_state_nocalls_cpuslocked()
-+    and cpuhp_remove_multi_state() only remove the callbacks.
-+
-+  * cpuhp_remove_state() removes the callbacks and invokes the teardown
-+    callback (if not NULL) for all online CPUs which have currently a state
-+    greater than the removed state. Depending on the state section the
-+    callback is either invoked on the current CPU (PREPARE section) or on
-+    each online CPU (ONLINE section) in the context of the CPU's hotplug
-+    thread.
-+
-+    In order to complete the removal, the teardown callback should not fai=
-l.
-+
-+The state removal and the callback invocations are serialized against CPU
-+hotplug operations. If the remove function has to be called from a CPU
-+hotplug read locked region, then the _cpuslocked() variants have to be
-+used. These functions cannot be used from within CPU hotplug callbacks.
-+
-+If a multi-instance state is removed then the caller has to remove all
-+instances first.
-+
-+Multi-Instance state instance management
-+----------------------------------------
-+
-+Once the multi-instance state is set up, instances can be added to the
-+state:
-+
-+  * cpuhp_state_add_instance(state, node)
-+  * cpuhp_state_add_instance_nocalls(state, node)
-+
-+The @state argument is either a statically allocated state or the state
-+number which was allocated in the dynamic range by cpuhp_setup_state_multi=
-().
-+
-+The @node argument is a pointer to a hlist_node which is embedded in the
-+instance's data structure. The pointer is handed to the multi-instance
-+state callbacks and can be used by the callback to retrieve the instance
-+via container_of().
-+
-+The functions differ in the way how the installed callbacks are treated:
-+
-+  * cpuhp_state_add_instance_nocalls() and only adds the instance to the
-+    multi-instance state's node list.
-+
-+  * cpuhp_state_add_instance() adds the instance and invokes the startup
-+    callback (if not NULL) associated with @state for all online CPUs which
-+    have currently a state greater than @state. The callback is only
-+    invoked for the to be added instance. Depending on the state section
-+    the callback is either invoked on the current CPU (PREPARE section) or
-+    on each online CPU (ONLINE section) in the context of the CPU's hotplug
-+    thread.
-+
-+    If a callback fails for CPU N then the teardown callback for CPU
-+    0 .. N-1 is invoked to rollback the operation, the function fails and
-+    the instance is not added to the node list of the multi-instance state.
-+
-+To remove an instance from the state's node list these functions are
-+available:
-+
-+  * cpuhp_state_remove_instance(state, node)
-+  * cpuhp_state_remove_instance_nocalls(state, node)
-+
-+The arguments are the same as for the the cpuhp_state_add_instance*()
-+variants above.
-+
-+The functions differ in the way how the installed callbacks are treated:
-+
-+  * cpuhp_state_remove_instance_nocalls() only removes the instance from t=
-he
-+    state's node list.
-+
-+  * cpuhp_state_remove_instance() removes the instance and invokes the
-+    teardown callback (if not NULL) associated with @state for all online
-+    CPUs which have currently a state greater than @state.  The callback is
-+    only invoked for the to be removed instance.  Depending on the state
-+    section the callback is either invoked on the current CPU (PREPARE
-+    section) or on each online CPU (ONLINE section) in the context of the
-+    CPU's hotplug thread.
-+
-+    In order to complete the removal, the teardown callback should not fai=
-l.
-+
-+The node list add/remove operations and the callback invocations are
-+serialized against CPU hotplug operations. These functions cannot be used
-+from within CPU hotplug callbacks and CPU hotplug read locked regions.
-+
-+Examples
-+--------
-+
-+Setup and teardown a statically allocated state in the STARTING section for
-+notifications on online and offline operations: ::
-+
-+   ret =3D cpuhp_setup_state(CPUHP_SUBSYS_STARTING, "subsys:starting", sub=
-sys_cpu_starting, subsys_cpu_dying);
-+   if (ret < 0)
-+        return ret;
-+   ....
-+   cpuhp_remove_state(CPUHP_SUBSYS_STARTING);
-+
-+Setup and teardown a dynamically allocated state in the ONLINE section
-+for notifications on offline operations: ::
-+
-+   state =3D cpuhp_setup_state(CPUHP_ONLINE_DYN, "subsys:offline", NULL, s=
-ubsys_cpu_offline);
-+   if (state < 0)
-+       return state;
-+   ....
-+   cpuhp_remove_state(state);
-+
-+Setup and teardown a dynamically allocated state in the ONLINE section
-+for notifications on online operations without invoking the callbacks: ::
-+
-+   state =3D cpuhp_setup_state_nocalls(CPUHP_ONLINE_DYN, "subsys:online", =
-subsys_cpi_online, NULL);
-+   if (state < 0)
-+       return state;
-+   ....
-+   cpuhp_remove_state_nocalls(state);
-+
-+Setup, use and teardown a dynamically allocated multi-instance state in the
-+ONLINE section for notifications on online and offline operation: ::
-+
-+   state =3D cpuhp_setup_state_multi(CPUHP_ONLINE_DYN, "subsys:online", su=
-bsys_cpu_online, subsys_cpu_offline);
-+   if (state < 0)
-+       return state;
-+   ....
-+   ret =3D cpuhp_state_add_instance(state, &inst1->node);
-+   if (ret)
-+        return ret;
-+   ....
-+   ret =3D cpuhp_state_add_instance(state, &inst2->node);
-+   if (ret)
-+        return ret;
-+   ....
-+   cpuhp_remove_instance(state, &inst1->node);
-+   ....
-+   cpuhp_remove_instance(state, &inst2->node);
-+   ....
-+   remove_multi_state(state);
-+
-=20
- Testing of hotplug states
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -22,8 +22,42 @@
-  *              AP_ACTIVE			AP_ACTIVE
-  */
-=20
-+/*
-+ * CPU hotplug states. The state machine invokes the installed state
-+ * startup callbacks sequentially from CPUHP_OFFLINE + 1 to CPUHP_ONLINE
-+ * during a CPU online operation. During a CPU offline operation the
-+ * installed teardown callbacks are invoked in the reverse order from
-+ * CPU_ONLINE - 1 down to CPUHP_OFFLINE.
-+ *
-+ * The state space has three sections: PREPARE, STARTING and ONLINE.
-+ *
-+ * PREPARE: The callbacks are invoked on a control CPU before the
-+ * hotplugged CPU is started up or after the hotplugged CPU has died.
-+ *
-+ * STARTING: The callbacks are invoked on the hotplugged CPU from the low =
-level
-+ * hotplug startup/teardown code with interrupts disabled.
-+ *
-+ * ONLINE: The callbacks are invoked on the hotplugged CPU from the per CPU
-+ * hotplug thread with interrupts and preemption enabled.
-+ *
-+ * Adding explicit states to this enum is only necessary when:
-+ *
-+ * 1) The state is within the STARTING section
-+ *
-+ * 2) The state has ordering constraints vs. other states in the
-+ *    same section.
-+ *
-+ * If neither #1 nor #2 apply, please use the dynamic state space when
-+ * setting up a state by using CPUHP_PREPARE_DYN or CPUHP_PREPARE_ONLINE
-+ * for the @state argument of the setup function.
-+ *
-+ * See Documentation/core-api/cpu_hotplug.rst for further information and
-+ * examples.
-+ */
- enum cpuhp_state {
- 	CPUHP_INVALID =3D -1,
-+
-+	/* PREPARE section invoked on a control CPU */
- 	CPUHP_OFFLINE =3D 0,
- 	CPUHP_CREATE_THREADS,
- 	CPUHP_PERF_PREPARE,
-@@ -93,6 +127,11 @@ enum cpuhp_state {
- 	CPUHP_BP_PREPARE_DYN,
- 	CPUHP_BP_PREPARE_DYN_END		=3D CPUHP_BP_PREPARE_DYN + 20,
- 	CPUHP_BRINGUP_CPU,
-+
-+	/*
-+	 * STARTING section invoked on the hotplugged CPU in low level
-+	 * bringup and teardown code.
-+	 */
- 	CPUHP_AP_IDLE_DEAD,
- 	CPUHP_AP_OFFLINE,
- 	CPUHP_AP_SCHED_STARTING,
-@@ -153,6 +192,8 @@ enum cpuhp_state {
- 	CPUHP_AP_ARM_CACHE_B15_RAC_DYING,
- 	CPUHP_AP_ONLINE,
- 	CPUHP_TEARDOWN_CPU,
-+
-+	/* Online section invoked on the hotplugged CPU from the hotplug thread */
- 	CPUHP_AP_ONLINE_IDLE,
- 	CPUHP_AP_SCHED_WAIT_EMPTY,
- 	CPUHP_AP_SMPBOOT_THREADS,
-@@ -214,14 +255,15 @@ int __cpuhp_setup_state_cpuslocked(enum
- 				   int (*teardown)(unsigned int cpu),
- 				   bool multi_instance);
- /**
-- * cpuhp_setup_state - Setup hotplug state callbacks with calling the call=
-backs
-+ * cpuhp_setup_state - Setup hotplug state callbacks with calling the star=
-tup
-+ *                     callback
-  * @state:	The state for which the calls are installed
-  * @name:	Name of the callback (will be used in debug output)
-- * @startup:	startup callback function
-- * @teardown:	teardown callback function
-+ * @startup:	startup callback function or NULL if not required
-+ * @teardown:	teardown callback function or NULL if not required
-  *
-  * Installs the callback functions and invokes the startup callback on
-- * the present cpus which have already reached the @state.
-+ * the online cpus which have already reached the @state.
-  */
- static inline int cpuhp_setup_state(enum cpuhp_state state,
- 				    const char *name,
-@@ -231,6 +273,18 @@ static inline int cpuhp_setup_state(enum
- 	return __cpuhp_setup_state(state, name, true, startup, teardown, false);
- }
-=20
-+/**
-+ * cpuhp_setup_state_cpuslocked - Setup hotplug state callbacks with calli=
-ng
-+ *				  startup callback from a cpus_read_lock()
-+ *				  held region
-+ * @state:	The state for which the calls are installed
-+ * @name:	Name of the callback (will be used in debug output)
-+ * @startup:	startup callback function or NULL if not required
-+ * @teardown:	teardown callback function or NULL if not required
-+ *
-+ * Same as cpuhp_setup_state() except that it must be invoked from within a
-+ * cpus_read_lock() held region.
-+ */
- static inline int cpuhp_setup_state_cpuslocked(enum cpuhp_state state,
- 					       const char *name,
- 					       int (*startup)(unsigned int cpu),
-@@ -242,14 +296,14 @@ static inline int cpuhp_setup_state_cpus
-=20
- /**
-  * cpuhp_setup_state_nocalls - Setup hotplug state callbacks without calli=
-ng the
-- *			       callbacks
-+ *			       startup callback
-  * @state:	The state for which the calls are installed
-  * @name:	Name of the callback.
-- * @startup:	startup callback function
-- * @teardown:	teardown callback function
-+ * @startup:	startup callback function or NULL if not required
-+ * @teardown:	teardown callback function or NULL if not required
-  *
-- * Same as @cpuhp_setup_state except that no calls are executed are invoked
-- * during installation of this callback. NOP if SMP=3Dn or HOTPLUG_CPU=3Dn.
-+ * Same as cpuhp_setup_state() except that the startup callback is not
-+ * invoked during installation. NOP if SMP=3Dn or HOTPLUG_CPU=3Dn.
-  */
- static inline int cpuhp_setup_state_nocalls(enum cpuhp_state state,
- 					    const char *name,
-@@ -260,6 +314,19 @@ static inline int cpuhp_setup_state_noca
- 				   false);
- }
-=20
-+/**
-+ * cpuhp_setup_state_nocalls_cpuslocked - Setup hotplug state callbacks wi=
-thout
-+ *					  invoking the @bringup callback from
-+ *					  a cpus_read_lock() held region
-+ *			       callbacks
-+ * @state:	The state for which the calls are installed
-+ * @name:	Name of the callback.
-+ * @startup:	startup callback function or NULL if not required
-+ * @teardown:	teardown callback function or NULL if not required
-+ *
-+ * Same as cpuhp_setup_state_nocalls() except that it must be invoked from
-+ * within a cpus_read_lock() held region.
-+ */
- static inline int cpuhp_setup_state_nocalls_cpuslocked(enum cpuhp_state st=
-ate,
- 						     const char *name,
- 						     int (*startup)(unsigned int cpu),
-@@ -273,13 +340,13 @@ static inline int cpuhp_setup_state_noca
-  * cpuhp_setup_state_multi - Add callbacks for multi state
-  * @state:	The state for which the calls are installed
-  * @name:	Name of the callback.
-- * @startup:	startup callback function
-- * @teardown:	teardown callback function
-+ * @startup:	startup callback function or NULL if not required
-+ * @teardown:	teardown callback function or NULL if not required
-  *
-  * Sets the internal multi_instance flag and prepares a state to work as a=
- multi
-  * instance callback. No callbacks are invoked at this point. The callback=
-s are
-  * invoked once an instance for this state are registered via
-- * @cpuhp_state_add_instance or @cpuhp_state_add_instance_nocalls.
-+ * cpuhp_state_add_instance() or cpuhp_state_add_instance_nocalls()
-  */
- static inline int cpuhp_setup_state_multi(enum cpuhp_state state,
- 					  const char *name,
-@@ -305,8 +372,8 @@ int __cpuhp_state_add_instance_cpuslocke
-  * @node:	The node for this individual state.
-  *
-  * Installs the instance for the @state and invokes the startup callback on
-- * the present cpus which have already reached the @state. The @state must=
- have
-- * been earlier marked as multi-instance by @cpuhp_setup_state_multi.
-+ * the online cpus which have already reached the @state. The @state must =
-have
-+ * been earlier marked as multi-instance by cpuhp_setup_state_multi().
-  */
- static inline int cpuhp_state_add_instance(enum cpuhp_state state,
- 					   struct hlist_node *node)
-@@ -321,7 +388,8 @@ static inline int cpuhp_state_add_instan
-  * @node:	The node for this individual state.
-  *
-  * Installs the instance for the @state The @state must have been earlier
-- * marked as multi-instance by @cpuhp_setup_state_multi.
-+ * marked as multi-instance by cpuhp_setup_state_multi. NOP if SMP=3Dn or
-+ * HOTPLUG_CPU=3Dn.
-  */
- static inline int cpuhp_state_add_instance_nocalls(enum cpuhp_state state,
- 						   struct hlist_node *node)
-@@ -329,6 +397,17 @@ static inline int cpuhp_state_add_instan
- 	return __cpuhp_state_add_instance(state, node, false);
- }
-=20
-+/**
-+ * cpuhp_state_add_instance_nocalls_cpuslocked - Add an instance for a sta=
-te
-+ *						 without invoking the startup
-+ *						 callback from a cpus_read_lock()
-+ *						 held region.
-+ * @state:	The state for which the instance is installed
-+ * @node:	The node for this individual state.
-+ *
-+ * Same as cpuhp_state_add_instance_nocalls() except that it must be
-+ * invoked from within a cpus_read_lock() held region.
-+ */
- static inline int
- cpuhp_state_add_instance_nocalls_cpuslocked(enum cpuhp_state state,
- 					    struct hlist_node *node)
-@@ -353,7 +432,7 @@ static inline void cpuhp_remove_state(en
-=20
- /**
-  * cpuhp_remove_state_nocalls - Remove hotplug state callbacks without inv=
-oking
-- *				teardown
-+ *				the teardown callback
-  * @state:	The state for which the calls are removed
-  */
- static inline void cpuhp_remove_state_nocalls(enum cpuhp_state state)
-@@ -361,6 +440,14 @@ static inline void cpuhp_remove_state_no
- 	__cpuhp_remove_state(state, false);
- }
-=20
-+/**
-+ * cpuhp_remove_state_nocalls_cpuslocked - Remove hotplug state callbacks =
-without invoking
-+ *					   teardown from a cpus_read_lock() held region.
-+ * @state:	The state for which the calls are removed
-+ *
-+ * Same as cpuhp_remove_state nocalls() except that it must be invoked
-+ * from within a cpus_read_lock() held region.
-+ */
- static inline void cpuhp_remove_state_nocalls_cpuslocked(enum cpuhp_state =
-state)
- {
- 	__cpuhp_remove_state_cpuslocked(state, false);
-@@ -389,7 +476,7 @@ int __cpuhp_state_remove_instance(enum c
-  * @node:	The node for this individual state.
-  *
-  * Removes the instance and invokes the teardown callback on the present c=
-pus
-- * which have already reached the @state.
-+ * which have already reached @state.
-  */
- static inline int cpuhp_state_remove_instance(enum cpuhp_state state,
- 					      struct hlist_node *node)
+--
+Isabella Basso
