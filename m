@@ -2,96 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD8340122C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 01:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB12D40122F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 01:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238441AbhIEX4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 19:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
+        id S238463AbhIEX6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 19:58:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbhIEX4h (ORCPT
+        with ESMTP id S238448AbhIEX6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 19:56:37 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB83BC061575;
-        Sun,  5 Sep 2021 16:55:33 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630886132;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=htNt0m9nOHGLJS+qiDTAK6Mcl3GNSWsAsqlDk5pIWKs=;
-        b=ZJXLgiWpz+VGt31DxlSZe++i8KKC++HF9m4G3FH/T/6A2sCUjWn3aJs+vD53/fjjJqragO
-        ZG8TcI6DvtiZA+MJPz1fTW+ReHyM2H5OdfFVrvG8WCcbI4eNPcP2W8sgQV9VseiZcocov5
-        /wqMfBAWHQdK3HAlgszTKljhO05jxatal0rNcQE79mUpfJJD4WiEAHOsgDiIV2Qc9HL2Dk
-        3vnHP9gw8DXZ79EqT4vgitX/80aeSx3qBwmlhxH+65Yh9ipeffGOGR0L0erjz+MJMkt5+m
-        p0CFx36xhtYq8BDb1gCDvGtgkps8o+g3LeL3NOa2bKAsJOAyK22Z9M5ycjmJAg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630886132;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=htNt0m9nOHGLJS+qiDTAK6Mcl3GNSWsAsqlDk5pIWKs=;
-        b=Tc++YGUfuxCKx0MXvCKWxi6HEsU5Kceo6oXMeNF4ECU00N0iQ8K+JsA6MfvnfrAMQj1FgX
-        Rlj6xebVNdu3hdCg==
-To:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+a9b681dcbc06eb2bca04@syzkaller.appspotmail.com>
-Cc:     eric.dumazet@gmail.com, hdanton@sina.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] INFO: task hung in __lru_add_drain_all
-In-Reply-To: <20210904080739.3026-1-hdanton@sina.com>
-References: <20210904005650.2914-1-hdanton@sina.com>
- <20210904080739.3026-1-hdanton@sina.com>
-Date:   Mon, 06 Sep 2021 01:55:31 +0200
-Message-ID: <87h7eya87g.ffs@tglx>
+        Sun, 5 Sep 2021 19:58:21 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BEEEC061575;
+        Sun,  5 Sep 2021 16:57:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=hIb2nK0ItXTa5MRBxU9bPeawp9abmfaSM4x8huD2VSA=; b=GXGM4Jvsk2qMYQ5VnE4ZZ7t07g
+        SEaI2u4ex+d0rQLu8QOZlrcEaAm3nr86+DJPuebN9K/hDwIDeWNzsA01iJ3Uc7m+9VK0QZPEuAWid
+        IYqrkWmMGNF5ghED9nFrNAA7396tM5mg+Y+nLr0mQecsMl9FGW/HGNrPIEqpY3bh/fwL4ks2Qg7IA
+        d9v6YqZKsQlStMnrhMWiF5utMreLS1ht2rU0hkSKRBFmLsy8V4d5Aopyr5tPITfxjqT1W/f1CQrEI
+        ya792/EM4ZZqCpRPmsNKRRsc9m692YQRkOo0TbR1ATYh5OnSzFV/mMtty8Ng7svLMHp2jq70MWGdl
+        lyPhwTqg==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mN20i-00Glc5-7z; Sun, 05 Sep 2021 23:57:16 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] media: s5p-jpeg: change "RST" to "RSET" to fix build warnings
+Date:   Sun,  5 Sep 2021 16:57:15 -0700
+Message-Id: <20210905235715.12154-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 04 2021 at 16:07, Hillf Danton wrote:
->
-> See if ieee80211_iface_work is burning more CPU cycles than thought, given the
-> bound workqueue work blocked for more than 143 seconds.
->
-> #syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->
-> --- a/net/mac80211/iface.c
-> +++ b/net/mac80211/iface.c
-> @@ -1494,6 +1494,7 @@ static void ieee80211_iface_work(struct
->  
->  		kfree_skb(skb);
->  		kcov_remote_stop();
-> +		cond_resched();
->  	}
->  
->  	/* process status queue */
-> @@ -1504,6 +1505,7 @@ static void ieee80211_iface_work(struct
->  		kfree_skb(skb);
->  
->  		kcov_remote_stop();
-> +		cond_resched();
->  	}
->  
->  	/* then other type-dependent work */
-> --
+The use of a macro named 'RST' conflicts with one of the same name
+in arch/mips/include/asm/mach-rc32434/rb.h. This causes build
+warnings on some MIPS builds.
 
-Again. What are you trying to achieve here? 
+Change the use of RST to the name RSET.
 
-ieee80211_iface_work() is a work function invoked from a worker thread
-in preemptible task context.
+Fixes these build warnings:
 
-The kernel config used for this has CONFIG_PREEMPT=y, which means that
-the context in which you are sprinkling cond_resched() is already fully
-preemtible and the only reason for this fail would be a fatal bug in the
-scheduler core or in the preemption mechanism. Pretty unlikely to go
-unnoticed for anything else than for this particular reproducer.
+In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos3250.c:14:
+../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+   43 | #define RST                             0xd0
+      | 
+../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+   13 | #define RST             (1 << 15)
 
-Can you please stop waisting precious compute power?
+In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-s5p.c:13:
+../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+   43 | #define RST                             0xd0
+../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+   13 | #define RST             (1 << 15)
 
-Thanks,
+In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos4.c:12:
+../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+   43 | #define RST                             0xd0
+../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+   13 | #define RST             (1 << 15)
 
-        tglx
+In file included from ../drivers/media/platform/s5p-jpeg/jpeg-core.c:31:
+../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+   43 | #define RST                             0xd0
+../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+   13 | #define RST             (1 << 15)
+
+Fixes: bb677f3ac434 ("[media] Exynos4 JPEG codec v4l2 driver")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: linux-media@vger.kernel.org
+Cc: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
+Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: linux-arm-kernel@lists.infradead.org
+---
+ drivers/media/platform/s5p-jpeg/jpeg-core.c |    2 +-
+ drivers/media/platform/s5p-jpeg/jpeg-core.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+--- linux-next-20210903.orig/drivers/media/platform/s5p-jpeg/jpeg-core.c
++++ linux-next-20210903/drivers/media/platform/s5p-jpeg/jpeg-core.c
+@@ -1203,7 +1203,7 @@ static bool s5p_jpeg_parse_hdr(struct s5
+ 			break;
+ 
+ 		/* skip payload-less markers */
+-		case RST ... RST + 7:
++		case RSET ... RSET + 7:
+ 		case SOI:
+ 		case EOI:
+ 		case TEM:
+--- linux-next-20210903.orig/drivers/media/platform/s5p-jpeg/jpeg-core.h
++++ linux-next-20210903/drivers/media/platform/s5p-jpeg/jpeg-core.h
+@@ -40,7 +40,7 @@
+ #define TEM				0x01
+ #define SOF0				0xc0
+ #define DHT				0xc4
+-#define RST				0xd0
++#define RSET				0xd0
+ #define SOI				0xd8
+ #define EOI				0xd9
+ #define	SOS				0xda
