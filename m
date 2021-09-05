@@ -2,110 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6F84010FE
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 19:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6050A401104
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 19:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236081AbhIERMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 13:12:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57648 "EHLO
+        id S238019AbhIERSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 13:18:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbhIERMk (ORCPT
+        with ESMTP id S230471AbhIERSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 13:12:40 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1135CC061575;
-        Sun,  5 Sep 2021 10:11:37 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id z19so6005802edi.9;
-        Sun, 05 Sep 2021 10:11:36 -0700 (PDT)
+        Sun, 5 Sep 2021 13:18:50 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C44C061575
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 10:17:47 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id t19so8610583lfe.13
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 10:17:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t7BrFPAxyoxqn8PlBFpAcZl2upr4e2z/222uQTSSME0=;
-        b=hbAo8L9RYxT6HG0wJS1cDu2Vi3FmMYYYTp6Q4smXbSzeT2+bTiOIIFboBUoqn3kzPb
-         jIZa267yB4aGZGJVLsU68HlCj/mSXxLirtRb0gezGw7pMRL4INNVCRElaHB4Kkw4m1Mt
-         99+jxu2UVI6kyI1W1JuvP2Uf58ssOb3uhjE6fnmncpL6wcx2apngXZsH0ucSw7LsywWR
-         EOf8qpVVyKig/uISQ7hPyhMRT3+WdLyCbbFdyHrdd6hm9jvdyjTYk39rFlamzCnYUnoj
-         iKKUJlLqfn/vthILBvST2rZN8F9+hmoCvQk8J9F/DgrFPCv8QvcELr9TbAwav/CyVrvD
-         xqfA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jpxSclMyPpq3hjTkndeLX+vXWq2jAp6AUp9RJSFInpc=;
+        b=gK/q/jXjhkCQnjJcvu9HTWv3Xy/cZUkhrGXV+w6Yieir7RJN0wnXBCgrW7qEaTLfMe
+         oYo31t90pvfHuligx33j3D0RxXp6Y2ZbKY0rpcBN0DvbvSQ1EHWrcrgoKint1hxYzqDA
+         HGx76j07IWwevhOJYViS08kEj6stJNiezUr3E=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=t7BrFPAxyoxqn8PlBFpAcZl2upr4e2z/222uQTSSME0=;
-        b=Gh9lAGIaupTSIOVsCXWWJA3kxehddHfRa879SJNIbW4TNBRFdbOUJTIsY+b9t4VwDB
-         o0+F4BNZzFBMliSg8Cqz6baftKGky8mF3DFxlkItMPnLZPg5ZPV+tvAa65EJsRlUcFXj
-         VNgFnfoQHKBNDqkttUW0DH8Le08OR/XY9tUnj68tN2lLd+9tpYWQ53r6X6gQrHI8NRs0
-         5sXWrR+UGKJfY/ngqpbgNFt3dm17hGbojve9mY8ZZvI+fnPqv4SqmRpM3e2ibs+6st1e
-         PkVKh8rdwsDE3hNF9E95S97NMfAdi4gbpA1QyDdScTcmwtVuGHh5zMDfBX1XQPD1Hjfy
-         6Fmg==
-X-Gm-Message-State: AOAM533LjrI3pdbNo8dUhtgIEqllfAkkmX1vcaciVADOUHBQD3Shuy9S
-        6mppJwd5+8nbN2khuaQ0OJM=
-X-Google-Smtp-Source: ABdhPJypg+OgEmS9Jn6thY1a2U7Cz2QgaGBNEcQ8iKgAnfhCsMo1D3qj6AjK4IKsyne+8HkSQljZbA==
-X-Received: by 2002:a05:6402:318c:: with SMTP id di12mr9529195edb.55.1630861895627;
-        Sun, 05 Sep 2021 10:11:35 -0700 (PDT)
-Received: from fedora.. (dh207-97-6.xnet.hr. [88.207.97.6])
-        by smtp.googlemail.com with ESMTPSA id q11sm3117926edv.73.2021.09.05.10.11.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Sep 2021 10:11:35 -0700 (PDT)
-From:   Robert Marko <robimarko@gmail.com>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robimarko@gmail.com>
-Subject: [PATCH] soc: qcom: socinfo: Add IPQ8074 family ID-s
-Date:   Sun,  5 Sep 2021 19:11:31 +0200
-Message-Id: <20210905171131.660885-1-robimarko@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jpxSclMyPpq3hjTkndeLX+vXWq2jAp6AUp9RJSFInpc=;
+        b=Fz1qCQDKE8GalcfAkBfEt/tfoU7/9TZbnNSwxZ4WtHo4o+B2QZPI7c56DiapBzFB92
+         cpC1o299u5xtkIkE7wiBvu1ZSVJ+V+twGT+JMR/Z6dDYOlhEfcuqCuYi8Enpsrf1kLTT
+         eYfYZxr4H2tMhIE4fZnTUPox6UQYzXGbMdNeJ/fSKmDSrn1oMKrrJEICqcyp2kmgGrw2
+         hHbanpCdg2puFfhOPMzZlmKBlB56N6L5emxYA58eCgMadbd4JmYQnELvvXIBtw8OPmI0
+         gPEvCixQbEhH0fb7XVmiFG3L57zg1Kq6s/526+C/Su+oauJadhIrsTYA3Q9vsZ67tTsm
+         ds3Q==
+X-Gm-Message-State: AOAM530S71uBqegGmQniufBoHG7jvo8sfRIk0AsgeN/YrFsD1U4u2E6x
+        DP2XDGxkCZa91lIps4GdLZw0goQpzlGLEX5o
+X-Google-Smtp-Source: ABdhPJy0hT8ph71FP4dKk3Bs4UKmQbfL1mTzMaIa2/diPaOHgFPV2f4aQ2aeLeMGOQp2tpGHcYJhBg==
+X-Received: by 2002:ac2:4359:: with SMTP id o25mr6771186lfl.106.1630862265331;
+        Sun, 05 Sep 2021 10:17:45 -0700 (PDT)
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
+        by smtp.gmail.com with ESMTPSA id v16sm710451ljc.138.2021.09.05.10.17.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Sep 2021 10:17:43 -0700 (PDT)
+Received: by mail-lj1-f179.google.com with SMTP id w4so7094483ljh.13
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 10:17:42 -0700 (PDT)
+X-Received: by 2002:a2e:a7d0:: with SMTP id x16mr7195539ljp.494.1630862262563;
+ Sun, 05 Sep 2021 10:17:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210816194840.42769-1-david@redhat.com> <20210816194840.42769-2-david@redhat.com>
+ <20210905153229.GA3019909@roeck-us.net>
+In-Reply-To: <20210905153229.GA3019909@roeck-us.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 5 Sep 2021 10:17:26 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whO-dnNxz5H8yfnGsNxrDHu-TVQq-X-VwhoDyWu3Lgnyg@mail.gmail.com>
+Message-ID: <CAHk-=whO-dnNxz5H8yfnGsNxrDHu-TVQq-X-VwhoDyWu3Lgnyg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/7] binfmt: don't use MAP_DENYWRITE when loading
+ shared libraries via uselib()
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-unionfs@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPQ8074 family SoC ID-s are missing, so lets add them based on
-the downstream driver.
+On Sun, Sep 5, 2021 at 8:32 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> Guess someone didn't care compile testing their code. This is now in
+> mainline.
 
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
- drivers/soc/qcom/socinfo.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+To be fair, a.out is disabled pretty much on all relevant platforms these days.
 
-diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
-index 9faf48302f4b..288897868435 100644
---- a/drivers/soc/qcom/socinfo.c
-+++ b/drivers/soc/qcom/socinfo.c
-@@ -281,19 +281,31 @@ static const struct soc_id soc_id[] = {
- 	{ 319, "APQ8098" },
- 	{ 321, "SDM845" },
- 	{ 322, "MDM9206" },
-+	{ 323, "IPQ8074" },
- 	{ 324, "SDA660" },
- 	{ 325, "SDM658" },
- 	{ 326, "SDA658" },
- 	{ 327, "SDA630" },
- 	{ 338, "SDM450" },
- 	{ 341, "SDA845" },
-+	{ 342, "IPQ8072" },
-+	{ 343, "IPQ8076" },
-+	{ 344, "IPQ8078" },
- 	{ 345, "SDM636" },
- 	{ 346, "SDA636" },
- 	{ 349, "SDM632" },
- 	{ 350, "SDA632" },
- 	{ 351, "SDA450" },
- 	{ 356, "SM8250" },
-+	{ 375, "IPQ8070" },
-+	{ 376, "IPQ8071" },
-+	{ 389, "IPQ8072A" },
-+	{ 390, "IPQ8074A" },
-+	{ 391, "IPQ8076A" },
-+	{ 392, "IPQ8078A" },
- 	{ 394, "SM6125" },
-+	{ 395, "IPQ8070A" },
-+	{ 396, "IPQ8071A" },
- 	{ 402, "IPQ6018" },
- 	{ 403, "IPQ6028" },
- 	{ 421, "IPQ6000" },
--- 
-2.31.1
+Only alpha and m68k left, I think.
 
+I applied the obvious patch from Geert.
+
+            Linus
