@@ -2,59 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C951F400F8B
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 14:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F07400FA1
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 14:21:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237950AbhIEMNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 08:13:02 -0400
-Received: from mail-0301.mail-europe.com ([188.165.51.139]:40982 "EHLO
-        mail-0301.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234382AbhIEMNB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 08:13:01 -0400
-Date:   Sun, 05 Sep 2021 12:11:52 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1630843915;
-        bh=Uxd1HHy1U64AcjCAf6RKRV7zCXuNsgwbFJWE+5uUs4k=;
-        h=Date:To:From:Reply-To:Subject:From;
-        b=wHFdiSladOcnC3+DVJbwjQmSu/XuCjL4qVm5ITTTHHf1yvIGkrJveGwB4zY1MIGSJ
-         w9WtJxYUfLZq56RzfnorciZJL6JHYqxJXgelAVLwyy18BokfotgOOFI2RWDqAirYl4
-         cy2arfxHfDVZgH6eTqyrIWOA7GWJs+2ii4IvVdik=
-To:     linux-kernel <linux-kernel@vger.kernel.org>
-From:   EpicLemon99 <EpicLemon99@protonmail.com>
-Reply-To: EpicLemon99 <EpicLemon99@protonmail.com>
-Subject: Can't boot up Linux ISO on HP computer
-Message-ID: <t2AGLXpsN--6I99ztVoBlXWzyEUo9HarRnRtFyM_sXXkaWbN9m8nmrCLyB1aKetozYTKQ1PV9JEC3Kr3yKpIiYczmcidKgt5uv1COs49c9I=@protonmail.com>
+        id S237977AbhIEMVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 08:21:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229759AbhIEMVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 08:21:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 85C6660EE6;
+        Sun,  5 Sep 2021 12:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630844405;
+        bh=J2BkBNWVOV76htMzrfOMi0F8o1cYpoPckQ+wf6P4loA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=VDRUMfZ30vmVdoWf6jEwbeP035iGFmglsltqaYrBisc09pttxkjSKN3/fOKIRr3u8
+         JA0q8UL+b5T2i9EpQfX1lPdELIapAklK8DyCAF15cLOXn+jkzT9Nysg8Z2eU65JTdM
+         U38MVX9M2SxVz0OLAosc8oW1UPsm4M1v7aiNgiGI/AGOH91zmWzjPRDth4pxhU1S26
+         P+kGn49jOZqDrMBMuqsSM1RGRKVE3ySetgQUAvuQlrD3M17bvvcnzoTTJs1FSysDo9
+         vT85q2OF+AIRVSQhgA8BRPZdOVaKKFGipps10Ye6Y7zFmAeH21HYuXhdyXOTs9WJKr
+         oa0iPjWIynWDQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7A12260A54;
+        Sun,  5 Sep 2021 12:20:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-0.7 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO_END_DIGIT shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v1 1/1] bonding: complain about missing route only once for
+ A/B ARP probes
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163084440549.8315.17060474915496279544.git-patchwork-notify@kernel.org>
+Date:   Sun, 05 Sep 2021 12:20:05 +0000
+References: <20210904063129.3969050-1-decot+git@google.com>
+In-Reply-To: <20210904063129.3969050-1-decot+git@google.com>
+To:     David Decotigny <decot+git@google.com>
+Cc:     j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maheshb@google.com,
+        ddecotig@google.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have problems trying to use Linux distributions on my new machine, a HP P=
-avilion TG01-2856no. The CPU it has was released Q1 2021.
+Hello:
 
-My problem is that whenever I boot a Linux distribution ISO, it appears tha=
-t my CPU stalls on tasks. The most recent kernel version this has happened =
-on is 5.13.13, with Arch Linux.
+This patch was applied to netdev/net.git (refs/heads/master):
 
-I could get journalctl logs from NixOS: https://ibb.co/album/9wMM0p
+On Fri,  3 Sep 2021 23:31:29 -0700 you wrote:
+> From: David Decotigny <ddecotig@google.com>
+> 
+> On configs where there is no confirgured direct route to the target of
+> the ARP probes, these probes are still sent and may be replied to
+> properly, so no need to repeatedly complain about the missing route.
+> 
+> 
+> [...]
 
-The fact that I have the same problem on multiple distributions has led me =
-to believe that it's something to do with the kernel, but I could be wrong.
+Here is the summary with links:
+  - [v1,1/1] bonding: complain about missing route only once for A/B ARP probes
+    https://git.kernel.org/netdev/net/c/0a4fd8df07dd
 
-I have set Secure Boot off in my BIOS settings and the SATA emulation is se=
-t to AHCI. I have tried with RAID.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I have tried the following boot options: nomodeset, noacpi, noapic, acpi=3D=
-off.
 
-The only distributions that I have managed to get working are Devuan and Ge=
-ntoo.
