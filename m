@@ -2,130 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52810400DEA
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 06:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5B8400E56
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 06:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233785AbhIEETd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 00:19:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34676 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231785AbhIEETc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 00:19:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77E836103C;
-        Sun,  5 Sep 2021 04:18:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630815509;
-        bh=hILamdUxAScAanWUq9dM9vg/cWHDnGZEiyiKkUJl9g4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tmZMQa+nwkbHtU6/6zmn2ClmmhDgxFNLclrztOmm1y5TsjbK3vdWV3trieA+hFI54
-         2pVs0EPg4lHhsNWC8KCW5uHjPTSrzcxN6FaYa/aW5+oaoYbcdBZhqKTGD2tuJgr/8O
-         sLGFJwSupP4j/ZO6a3ffhgfUiDVEIjvSaznm/leYQpsMrPwypWGRcu9QpyJyoYR+td
-         ZUKuE2Q6CPoIV/t4tywRkKMcddeNVP6Zmy4O014hzggPrUox4Yn/0rRIvt7zTAzsxd
-         mShAFNcH0lF/pUJc1S9XVLsPuEQ2q7iNjcN2Geb3jeLaQAmY7veAQphD9h+HpxWvfp
-         DoYoo3ZxejBVg==
-Received: by mail-ed1-f43.google.com with SMTP id z19so4607208edi.9;
-        Sat, 04 Sep 2021 21:18:29 -0700 (PDT)
-X-Gm-Message-State: AOAM532oJSTpPLdZuLX7VrjurPrbjfWoTX5W9qy1uBMsvOzSiLe9OBPN
-        bwqrvze+uSYIzKKPoq1zOoxv1ncmBAqnPSbkVQ==
-X-Google-Smtp-Source: ABdhPJyhdyVAnNA0Mv4NieZnYZWl2o+UnL75b6sLcTvXxKX77z04lVP3xY3uwzh8aNDQCHuVhS+3EYQvEM8c/7Oj8dY=
-X-Received: by 2002:a50:bb0f:: with SMTP id y15mr1727649ede.159.1630815507961;
- Sat, 04 Sep 2021 21:18:27 -0700 (PDT)
+        id S234332AbhIEEuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 00:50:44 -0400
+Received: from mail-pg1-f181.google.com ([209.85.215.181]:36784 "EHLO
+        mail-pg1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233722AbhIEEum (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 00:50:42 -0400
+Received: by mail-pg1-f181.google.com with SMTP id t1so3284735pgv.3;
+        Sat, 04 Sep 2021 21:49:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=EOYB1KxFAVgDdS3yLIwc9PdjH+MHLY7d6qXq21McNz0=;
+        b=Yaz8qkDMnk4XZl+D01zVcBqYsd1RIgQUj8F1+OpNVHd55r58FxkeFLvcKyHfaQcnqD
+         4YCn1GQPXB92D08n318lt2iBc1Tc3DLiRj0aWpp+pVo9NgWvEO/p2q5Z6bOjILbHMbYz
+         Th7YrNs4Ot7zcmx0E5AkJZUuiUuQEl7azoXJrERdKz0RUHv7KVAlXpSmgZjF/xKLwmTP
+         B7NnzOgqnYxUqb/4WFSUZXJeMK0cea4K/7gJmTPrZTaCbi6RkmCgl7Vfid3vXJuXjAcM
+         BizOGCCzyI3+LfBuBgGNS7pEb6VXMYDPsGkDGAFEk1/kjbo4qQFOirHl0N49Z/SZlkSE
+         nGcQ==
+X-Gm-Message-State: AOAM5331OQMudCpk1hLs2D1DyoPITvA4j/AaojjNZt6hQuxK9oOHRKCq
+        bDzsEBn3rO/C82GWfHeUbE8=
+X-Google-Smtp-Source: ABdhPJxPGHpV88TdVDKHneSWhdVMIr6oZ5koD0O4q4C2QcruYcA891h1jnR5LTdAEr+ALHUJbcM2dg==
+X-Received: by 2002:a62:b615:0:b0:3f9:1c5a:2671 with SMTP id j21-20020a62b615000000b003f91c5a2671mr6193712pff.10.1630817379902;
+        Sat, 04 Sep 2021 21:49:39 -0700 (PDT)
+Received: from ?IPV6:2601:647:4000:d7:f591:655e:bc:ec9f? ([2601:647:4000:d7:f591:655e:bc:ec9f])
+        by smtp.gmail.com with UTF8SMTPSA id ml10sm3725742pjb.9.2021.09.04.21.49.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 04 Sep 2021 21:49:38 -0700 (PDT)
+Message-ID: <388781f8-b9ce-abc2-148a-0498d32b6cb4@acm.org>
+Date:   Sat, 4 Sep 2021 21:49:36 -0700
 MIME-Version: 1.0
-References: <20210825144833.7757-1-jason-jh.lin@mediatek.com> <20210825144833.7757-10-jason-jh.lin@mediatek.com>
-In-Reply-To: <20210825144833.7757-10-jason-jh.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sun, 5 Sep 2021 12:18:16 +0800
-X-Gmail-Original-Message-ID: <CAAOTY__UuzKqNoTSQw9OwPCyQH7m9Sdf-CUvdcnr7jz5Hne-nA@mail.gmail.com>
-Message-ID: <CAAOTY__UuzKqNoTSQw9OwPCyQH7m9Sdf-CUvdcnr7jz5Hne-nA@mail.gmail.com>
-Subject: Re: [PATCH v9 09/14] drm/mediatek: remove unused define in mtk_drm_ddp_comp.c
-To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Fabien Parent <fparent@baylibre.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, fshao@chromium.org,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Jitao shi <jitao.shi@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
-        DTML <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [PATCH -next] [SCSI] Fix NULL pointer dereference in handling for
+ passthrough commands
+Content-Language: en-US
+To:     Laibin Qiu <qiulaibin@huawei.com>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, hare@suse.de
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210904064534.1919476-1-qiulaibin@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20210904064534.1919476-1-qiulaibin@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jason:
+On 9/3/21 23:45, Laibin Qiu wrote:
+> In passthrough path. If the command size for ioctl request from userspace
+> is 0. The original process will get cmd_len from cmd->cmnd, but It has
+> not been assigned at this time. So it will trigger a NULL pointer BUG.
 
-jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=882=
-5=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=8810:48=E5=AF=AB=E9=81=93=EF=
-=BC=9A
->
-> Remove the unsed define in mtk_drm_ddp_comp.c
-
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-
->
-> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
-> ---
-> rebase on [1] series
-> [1] drm/mediatek: Separate aal module
-> - https://patchwork.kernel.org/project/linux-mediatek/list/?series=3D5164=
-63
-> ---
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 10 ----------
->  1 file changed, 10 deletions(-)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/dr=
-m/mediatek/mtk_drm_ddp_comp.c
-> index 99cbf44463e4..484080a0defa 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> @@ -21,8 +21,6 @@
->  #include "mtk_drm_crtc.h"
->
->  #define DISP_OD_EN                             0x0000
-> -#define DISP_OD_INTEN                          0x0008
-> -#define DISP_OD_INTSTA                         0x000c
->  #define DISP_OD_CFG                            0x0020
->  #define DISP_OD_SIZE                           0x0030
->  #define DISP_DITHER_5                          0x0114
-> @@ -39,26 +37,18 @@
->  #define DITHER_ENGINE_EN                       BIT(1)
->  #define DISP_DITHER_SIZE                       0x0030
->
-> -#define LUT_10BIT_MASK                         0x03ff
-> -
->  #define OD_RELAYMODE                           BIT(0)
->
->  #define UFO_BYPASS                             BIT(2)
->
->  #define DISP_DITHERING                         BIT(2)
->  #define DITHER_LSB_ERR_SHIFT_R(x)              (((x) & 0x7) << 28)
-> -#define DITHER_OVFLW_BIT_R(x)                  (((x) & 0x7) << 24)
->  #define DITHER_ADD_LSHIFT_R(x)                 (((x) & 0x7) << 20)
-> -#define DITHER_ADD_RSHIFT_R(x)                 (((x) & 0x7) << 16)
->  #define DITHER_NEW_BIT_MODE                    BIT(0)
->  #define DITHER_LSB_ERR_SHIFT_B(x)              (((x) & 0x7) << 28)
-> -#define DITHER_OVFLW_BIT_B(x)                  (((x) & 0x7) << 24)
->  #define DITHER_ADD_LSHIFT_B(x)                 (((x) & 0x7) << 20)
-> -#define DITHER_ADD_RSHIFT_B(x)                 (((x) & 0x7) << 16)
->  #define DITHER_LSB_ERR_SHIFT_G(x)              (((x) & 0x7) << 12)
-> -#define DITHER_OVFLW_BIT_G(x)                  (((x) & 0x7) << 8)
->  #define DITHER_ADD_LSHIFT_G(x)                 (((x) & 0x7) << 4)
-> -#define DITHER_ADD_RSHIFT_G(x)                 (((x) & 0x7) << 0)
->
->  struct mtk_ddp_comp_dev {
->         struct clk *clk;
-> --
-> 2.18.0
->
+A Friday night in the middle of the merge window is not the best time to 
+post a kernel patch. Anyway:
+  Reviewed-by: Bart Van Assche <bvanassche@acm.org>
