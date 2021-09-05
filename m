@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6E5400DE5
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 06:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52810400DEA
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 06:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232187AbhIEEMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 00:12:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32952 "EHLO mail.kernel.org"
+        id S233785AbhIEETd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 00:19:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34676 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229541AbhIEEMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 00:12:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9CF061057;
-        Sun,  5 Sep 2021 04:11:19 +0000 (UTC)
+        id S231785AbhIEETc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 00:19:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77E836103C;
+        Sun,  5 Sep 2021 04:18:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630815079;
-        bh=FJt08tLv94mGzxxoL9aKwkbFQx3aABVQCv3d6GkPJ50=;
+        s=k20201202; t=1630815509;
+        bh=hILamdUxAScAanWUq9dM9vg/cWHDnGZEiyiKkUJl9g4=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BkGVJHzzLOWSqg7qiTcFvDwkAz7IvFkSPRqU6MLqjnzLUWEoRoJy2C04dJn99rBm2
-         8jPItABi5toutqoXFN7bM90fBVnhJctZFwug62V6r3xFeTscbRp0JvDH9H/A3LN+TT
-         W1Gmfpo56UaDXGE87GY5qVU9754eKQXwsBguLTUYTDkTq2/pIgOa2Frcjx94/5JwHH
-         9a8KzjE3uUo790W8f4D/3x8jzlwDMQvYaar4a1HpaQQ6gzzyLlZdudj0/SfiokpXOl
-         P7hUBdLNpNlY3VNCQ65Oe/ZsaSCUQGvr3dTsCkfHEB03sj3RhWEtR3Bo3svALVk8rp
-         j18hxIAIQzSfg==
-Received: by mail-ej1-f44.google.com with SMTP id x11so6432366ejv.0;
-        Sat, 04 Sep 2021 21:11:19 -0700 (PDT)
-X-Gm-Message-State: AOAM532jvlouIaRSi+f4tym1fc6Dxqtv/JBOlBtpUISHbW2Rv+hGsjry
-        bBT/HXKXW5xYDiCDAcd33AWbgzeFmdjuLhHZFA==
-X-Google-Smtp-Source: ABdhPJxuQktwkT66NyxvIWF/PbhLjJE31qsp+wgNqVEER3VZSiT7tBa60/3ZxcrdU/9Low1/zRYZ7e6Rc2WPzONInhU=
-X-Received: by 2002:a17:906:26c4:: with SMTP id u4mr6927063ejc.511.1630815078141;
- Sat, 04 Sep 2021 21:11:18 -0700 (PDT)
+        b=tmZMQa+nwkbHtU6/6zmn2ClmmhDgxFNLclrztOmm1y5TsjbK3vdWV3trieA+hFI54
+         2pVs0EPg4lHhsNWC8KCW5uHjPTSrzcxN6FaYa/aW5+oaoYbcdBZhqKTGD2tuJgr/8O
+         sLGFJwSupP4j/ZO6a3ffhgfUiDVEIjvSaznm/leYQpsMrPwypWGRcu9QpyJyoYR+td
+         ZUKuE2Q6CPoIV/t4tywRkKMcddeNVP6Zmy4O014hzggPrUox4Yn/0rRIvt7zTAzsxd
+         mShAFNcH0lF/pUJc1S9XVLsPuEQ2q7iNjcN2Geb3jeLaQAmY7veAQphD9h+HpxWvfp
+         DoYoo3ZxejBVg==
+Received: by mail-ed1-f43.google.com with SMTP id z19so4607208edi.9;
+        Sat, 04 Sep 2021 21:18:29 -0700 (PDT)
+X-Gm-Message-State: AOAM532oJSTpPLdZuLX7VrjurPrbjfWoTX5W9qy1uBMsvOzSiLe9OBPN
+        bwqrvze+uSYIzKKPoq1zOoxv1ncmBAqnPSbkVQ==
+X-Google-Smtp-Source: ABdhPJyhdyVAnNA0Mv4NieZnYZWl2o+UnL75b6sLcTvXxKX77z04lVP3xY3uwzh8aNDQCHuVhS+3EYQvEM8c/7Oj8dY=
+X-Received: by 2002:a50:bb0f:: with SMTP id y15mr1727649ede.159.1630815507961;
+ Sat, 04 Sep 2021 21:18:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210825144833.7757-1-jason-jh.lin@mediatek.com> <20210825144833.7757-5-jason-jh.lin@mediatek.com>
-In-Reply-To: <20210825144833.7757-5-jason-jh.lin@mediatek.com>
+References: <20210825144833.7757-1-jason-jh.lin@mediatek.com> <20210825144833.7757-10-jason-jh.lin@mediatek.com>
+In-Reply-To: <20210825144833.7757-10-jason-jh.lin@mediatek.com>
 From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sun, 5 Sep 2021 12:11:07 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_8XoeNVWqYpGPyUS-9X4jrjo8N=QxoBY0oD8nfeVMsESA@mail.gmail.com>
-Message-ID: <CAAOTY_8XoeNVWqYpGPyUS-9X4jrjo8N=QxoBY0oD8nfeVMsESA@mail.gmail.com>
-Subject: Re: [PATCH v9 04/14] dt-bindings: mediatek: add mediatek,dsc.yaml for
- mt8195 SoC binding
+Date:   Sun, 5 Sep 2021 12:18:16 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__UuzKqNoTSQw9OwPCyQH7m9Sdf-CUvdcnr7jz5Hne-nA@mail.gmail.com>
+Message-ID: <CAAOTY__UuzKqNoTSQw9OwPCyQH7m9Sdf-CUvdcnr7jz5Hne-nA@mail.gmail.com>
+Subject: Re: [PATCH v9 09/14] drm/mediatek: remove unused define in mtk_drm_ddp_comp.c
 To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
 Cc:     Rob Herring <robh+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -71,108 +70,62 @@ jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=882=
 5=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=8810:48=E5=AF=AB=E9=81=93=EF=
 =BC=9A
 >
-> 1. Add mediatek,dsc.yaml to describe DSC module in details.
-> 2. Add mt8195 SoC binding to mediatek,dsc.yaml.
+> Remove the unsed define in mtk_drm_ddp_comp.c
+
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+
 >
 > Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
 > ---
->  .../display/mediatek/mediatek,dsc.yaml        | 70 +++++++++++++++++++
->  1 file changed, 70 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
-diatek,dsc.yaml
+> rebase on [1] series
+> [1] drm/mediatek: Separate aal module
+> - https://patchwork.kernel.org/project/linux-mediatek/list/?series=3D5164=
+63
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 10 ----------
+>  1 file changed, 10 deletions(-)
 >
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-dsc.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsc.=
-yaml
-> new file mode 100644
-> index 000000000000..f26e3010d5f4
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsc.yam=
-l
-> @@ -0,0 +1,70 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/mediatek/mediatek,dsc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: mediatek display DSC controller
-
-Mediatek
-
-Regards,
-Chun-Kuang.
-
-> +
-> +maintainers:
-> +  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> +  - Philipp Zabel <p.zabel@pengutronix.de>
-> +
-> +description: |
-> +  The DSC standard is a specification of the algorithms used for
-> +  compressing and decompressing image display streams, including
-> +  the specification of the syntax and semantics of the compressed
-> +  video bit stream. DSC is designed for real-time systems with
-> +  real-time compression, transmission, decompression and Display.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: mediatek,mt8195-disp-dsc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: DSC Wrapper Clock
-> +
-> +  power-domains:
-> +    description: A phandle and PM domain specifier as defined by binding=
-s of
-> +      the power controller specified by phandle. See
-> +      Documentation/devicetree/bindings/power/power-domain.yaml for deta=
-ils.
-> +
-> +
-> +  mediatek,gce-client-reg:
-> +    description:
-> +      The register of client driver can be configured by gce with 4 argu=
-ments defined
-> +      in this property, such as phandle of gce, subsys id, register offs=
-et and size.
-> +      Each subsys id is mapping to a base address of display function bl=
-ocks register
-> +      which is defined in the gce header include/include/dt-bindings/gce=
-/<chip>-gce.h.
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - power-domains
-> +  - clocks
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +
-> +    dsc0: disp_dsc_wrap@1c009000 {
-> +        compatible =3D "mediatek,mt8195-disp-dsc";
-> +        reg =3D <0 0x1c009000 0 0x1000>;
-> +        interrupts =3D <GIC_SPI 645 IRQ_TYPE_LEVEL_HIGH 0>;
-> +        power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSYS0>;
-> +        clocks =3D <&vdosys0 CLK_VDO0_DSC_WRAP0>;
-> +        mediatek,gce-client-reg =3D <&gce1 SUBSYS_1c00XXXX 0x9000 0x1000=
->;
-> +    };
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/dr=
+m/mediatek/mtk_drm_ddp_comp.c
+> index 99cbf44463e4..484080a0defa 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> @@ -21,8 +21,6 @@
+>  #include "mtk_drm_crtc.h"
+>
+>  #define DISP_OD_EN                             0x0000
+> -#define DISP_OD_INTEN                          0x0008
+> -#define DISP_OD_INTSTA                         0x000c
+>  #define DISP_OD_CFG                            0x0020
+>  #define DISP_OD_SIZE                           0x0030
+>  #define DISP_DITHER_5                          0x0114
+> @@ -39,26 +37,18 @@
+>  #define DITHER_ENGINE_EN                       BIT(1)
+>  #define DISP_DITHER_SIZE                       0x0030
+>
+> -#define LUT_10BIT_MASK                         0x03ff
+> -
+>  #define OD_RELAYMODE                           BIT(0)
+>
+>  #define UFO_BYPASS                             BIT(2)
+>
+>  #define DISP_DITHERING                         BIT(2)
+>  #define DITHER_LSB_ERR_SHIFT_R(x)              (((x) & 0x7) << 28)
+> -#define DITHER_OVFLW_BIT_R(x)                  (((x) & 0x7) << 24)
+>  #define DITHER_ADD_LSHIFT_R(x)                 (((x) & 0x7) << 20)
+> -#define DITHER_ADD_RSHIFT_R(x)                 (((x) & 0x7) << 16)
+>  #define DITHER_NEW_BIT_MODE                    BIT(0)
+>  #define DITHER_LSB_ERR_SHIFT_B(x)              (((x) & 0x7) << 28)
+> -#define DITHER_OVFLW_BIT_B(x)                  (((x) & 0x7) << 24)
+>  #define DITHER_ADD_LSHIFT_B(x)                 (((x) & 0x7) << 20)
+> -#define DITHER_ADD_RSHIFT_B(x)                 (((x) & 0x7) << 16)
+>  #define DITHER_LSB_ERR_SHIFT_G(x)              (((x) & 0x7) << 12)
+> -#define DITHER_OVFLW_BIT_G(x)                  (((x) & 0x7) << 8)
+>  #define DITHER_ADD_LSHIFT_G(x)                 (((x) & 0x7) << 4)
+> -#define DITHER_ADD_RSHIFT_G(x)                 (((x) & 0x7) << 0)
+>
+>  struct mtk_ddp_comp_dev {
+>         struct clk *clk;
 > --
 > 2.18.0
 >
