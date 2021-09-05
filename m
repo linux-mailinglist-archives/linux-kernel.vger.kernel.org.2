@@ -2,157 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C6740105F
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 16:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 420CD401071
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 16:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235954AbhIEOsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 10:48:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57428 "EHLO mail.kernel.org"
+        id S236743AbhIEO73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 10:59:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229566AbhIEOsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 10:48:14 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6EBD4600CC;
-        Sun,  5 Sep 2021 14:47:06 +0000 (UTC)
-Date:   Sun, 5 Sep 2021 15:50:29 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     <lars@metafoo.de>, <pmeerw@pmeerw.net>, <robh+dt@kernel.org>,
-        <joel@jms.id.au>, <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
-        <lgirdwood@gmail.com>, <broonie@kernel.org>,
-        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <BMC-SW@aspeedtech.com>
-Subject: Re: [v5 04/15] iio: adc: aspeed: Keep model data to driver data.
-Message-ID: <20210905155029.3faa2c04@jic23-huawei>
-In-Reply-To: <20210905153339.751732cc@jic23-huawei>
-References: <20210831071458.2334-1-billy_tsai@aspeedtech.com>
-        <20210831071458.2334-5-billy_tsai@aspeedtech.com>
-        <20210905153339.751732cc@jic23-huawei>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S229566AbhIEO72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 10:59:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7AE460F21;
+        Sun,  5 Sep 2021 14:58:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630853905;
+        bh=SeJvBDee3vFwppG4vfbpy5vB8AIiGc4i7mvYhrqC8gk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CwGMOq5W+rOKPNQiYHZ1PGK0Q6vvWs2qEfwtNUBrw/QO45ONvfQmkHn82DQhKTbq1
+         MQnnCd8FO98fwMbS9HMiROI3aScX5bz34fjT7AdRMiexmVdf5l6cX9FmQjSPZO2pYq
+         1KhcYaKJF9KixK7LQ8Pw1wZWvEwVTM0WE0QqSibo=
+Date:   Sun, 5 Sep 2021 16:58:23 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Eric Biederman <ebiederm@xmission.com>, kexec@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lkft-triage@lists.linaro.org
+Subject: Re: kernel/kexec_file.o: failed: Cannot find symbol for section 10:
+ .text.unlikely.
+Message-ID: <YTTbD+BKRpd0g4hq@kroah.com>
+References: <CA+G9fYvMaHgSied79QBs3D=eDVETGH=3gxA8owCSRj313yEhVg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYvMaHgSied79QBs3D=eDVETGH=3gxA8owCSRj313yEhVg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 5 Sep 2021 15:33:39 +0100
-Jonathan Cameron <jic23@kernel.org> wrote:
-
-> On Tue, 31 Aug 2021 15:14:47 +0800
-> Billy Tsai <billy_tsai@aspeedtech.com> wrote:
+On Sun, Sep 05, 2021 at 07:28:35PM +0530, Naresh Kamboju wrote:
+> Following build errors noticed while building stable rc Linux 5.13.14
+> with gcc-11 for powerpc architecture.
 > 
-> > Keep the model data pointer to driver data for reducing the usage of
-> > of_device_get_match_data().
-> > 
-> > Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>  
-> This one starts to be impacted by the fix (as its in the context).
-> Rather than making a mess of things for linux-next etc I'll hold
-> off on these until that fix is upstream in a few weeks.
+> # to reproduce this build locally:
+> tuxmake --target-arch=powerpc --kconfig=defconfig --toolchain=gcc-11
+> --wrapper=sccache --environment=KBUILD_BUILD_TIMESTAMP=@1630691419
+> --environment=KBUILD_BUILD_USER=tuxmake
+> --environment=KBUILD_BUILD_HOST=tuxmake
+> --environment=SCCACHE_BUCKET=sccache.tuxbuild.com --runtime=podman
+> --image=855116176053.dkr.ecr.us-east-1.amazonaws.com/tuxmake/powerpc_gcc-11
+> config default kernel xipkernel modules dtbs dtbs-legacy debugkernel
+> headers
 > 
-> If I seem to have lost it (it's been known to happen :( ) then
-> feel free to poke me!
-
-Having taken another look at the rest of the series (and Philipp's review)
-please do a v6 starting from this patch.
-
-Thanks,
-Jonathan
-
+> make --silent --keep-going --jobs=8
+> O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=powerpc
+> CROSS_COMPILE=powerpc64le-linux-gnu- 'CC=sccache
+> powerpc64le-linux-gnu-gcc' 'HOSTCC=sccache gcc' defconfig
 > 
-> Thanks,
+> make --silent --keep-going --jobs=8
+> O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=powerpc
+> CROSS_COMPILE=powerpc64le-linux-gnu- 'CC=sccache
+> powerpc64le-linux-gnu-gcc' 'HOSTCC=sccache gcc'
+> Cannot find symbol for section 10: .text.unlikely.
+> kernel/kexec_file.o: failed
+> make[2]: *** [/builds/linux/scripts/Makefile.build:273:
+> kernel/kexec_file.o] Error 1
+> make[2]: *** Deleting file 'kernel/kexec_file.o'
 > 
-> Jonathan
-> > ---
-> >  drivers/iio/adc/aspeed_adc.c | 20 +++++++-------------
-> >  1 file changed, 7 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
-> > index f055fe7b2c40..76ae1c3f584b 100644
-> > --- a/drivers/iio/adc/aspeed_adc.c
-> > +++ b/drivers/iio/adc/aspeed_adc.c
-> > @@ -77,6 +77,7 @@ struct aspeed_adc_model_data {
-> >  
-> >  struct aspeed_adc_data {
-> >  	struct device		*dev;
-> > +	const struct aspeed_adc_model_data *model_data;
-> >  	void __iomem		*base;
-> >  	spinlock_t		clk_lock;
-> >  	struct clk_hw		*clk_prescaler;
-> > @@ -118,8 +119,6 @@ static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
-> >  			       int *val, int *val2, long mask)
-> >  {
-> >  	struct aspeed_adc_data *data = iio_priv(indio_dev);
-> > -	const struct aspeed_adc_model_data *model_data =
-> > -			of_device_get_match_data(data->dev);
-> >  
-> >  	switch (mask) {
-> >  	case IIO_CHAN_INFO_RAW:
-> > @@ -127,7 +126,7 @@ static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
-> >  		return IIO_VAL_INT;
-> >  
-> >  	case IIO_CHAN_INFO_SCALE:
-> > -		*val = model_data->vref_voltage;
-> > +		*val = data->model_data->vref_voltage;
-> >  		*val2 = ASPEED_RESOLUTION_BITS;
-> >  		return IIO_VAL_FRACTIONAL_LOG2;
-> >  
-> > @@ -146,13 +145,11 @@ static int aspeed_adc_write_raw(struct iio_dev *indio_dev,
-> >  				int val, int val2, long mask)
-> >  {
-> >  	struct aspeed_adc_data *data = iio_priv(indio_dev);
-> > -	const struct aspeed_adc_model_data *model_data =
-> > -			of_device_get_match_data(data->dev);
-> >  
-> >  	switch (mask) {
-> >  	case IIO_CHAN_INFO_SAMP_FREQ:
-> > -		if (val < model_data->min_sampling_rate ||
-> > -			val > model_data->max_sampling_rate)
-> > +		if (val < data->model_data->min_sampling_rate ||
-> > +			val > data->model_data->max_sampling_rate)
-> >  			return -EINVAL;
-> >  
-> >  		clk_set_rate(data->clk_scaler->clk,
-> > @@ -198,7 +195,6 @@ static int aspeed_adc_probe(struct platform_device *pdev)
-> >  {
-> >  	struct iio_dev *indio_dev;
-> >  	struct aspeed_adc_data *data;
-> > -	const struct aspeed_adc_model_data *model_data;
-> >  	const char *clk_parent_name;
-> >  	int ret;
-> >  	u32 adc_engine_control_reg_val;
-> > @@ -209,6 +205,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
-> >  
-> >  	data = iio_priv(indio_dev);
-> >  	data->dev = &pdev->dev;
-> > +	data->model_data = of_device_get_match_data(&pdev->dev);
-> >  	platform_set_drvdata(pdev, indio_dev);
-> >  
-> >  	data->base = devm_platform_ioremap_resource(pdev, 0);
-> > @@ -249,9 +246,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
-> >  	}
-> >  	reset_control_deassert(data->rst);
-> >  
-> > -	model_data = of_device_get_match_data(&pdev->dev);
-> > -
-> > -	if (model_data->wait_init_sequence) {
-> > +	if (data->model_data->wait_init_sequence) {
-> >  		/* Enable engine in normal mode. */
-> >  		writel(FIELD_PREP(ASPEED_ADC_OP_MODE,
-> >  				  ASPEED_ADC_OP_MODE_NORMAL) |
-> > @@ -281,8 +276,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
-> >  	writel(adc_engine_control_reg_val,
-> >  	       data->base + ASPEED_REG_ENGINE_CONTROL);
-> >  
-> > -	model_data = of_device_get_match_data(&pdev->dev);
-> > -	indio_dev->name = model_data->model_name;
-> > +	indio_dev->name = data->model_data->model_name;
-> >  	indio_dev->info = &aspeed_adc_iio_info;
-> >  	indio_dev->modes = INDIO_DIRECT_MODE;
-> >  	indio_dev->channels = aspeed_adc_iio_channels;  
 > 
+> Build config:
+> https://builds.tuxbuild.com/1xdiIZVZuLCW3X1WO2YT6Fsl19w/config
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> 
+> meta data:
+> -----------
+>     git_repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+>     git_sha: a603798fb16829e56f80f57879611e67bba4910d
+>     git_short_log: a603798fb168 (\Linux 5.13.14\)
+>     kconfig:  defconfig
+>     kernel_version: 5.13.14
+>     target_arch: powerpc
+>     toolchain: gcc-11
+> 
+> steps to reproduce:
+> https://builds.tuxbuild.com/1xdiIZVZuLCW3X1WO2YT6Fsl19w/tuxmake_reproducer.sh
+> 
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
 
+Is this a regression?  Has this compiler ever been able to build this
+arch like this?
+
+thanks,
+
+greg k-h
