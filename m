@@ -2,341 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E21401040
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 16:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C35401048
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 16:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234158AbhIEOfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 10:35:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51236 "EHLO
+        id S233907AbhIEOhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 10:37:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhIEOfE (ORCPT
+        with ESMTP id S229566AbhIEOhJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 10:35:04 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD127C061575;
-        Sun,  5 Sep 2021 07:34:00 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id s3so6687307ljp.11;
-        Sun, 05 Sep 2021 07:34:00 -0700 (PDT)
+        Sun, 5 Sep 2021 10:37:09 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9306C061575;
+        Sun,  5 Sep 2021 07:36:06 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso2849362pjq.4;
+        Sun, 05 Sep 2021 07:36:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=OwVOUJbbA5zybi3WVA5c4Z02aO6YtO65rBi8AS4nRto=;
-        b=HMZdJtlNUiBNQ7q+PF9zxyfvBWOHkKZxTVcYdiVBG+Pb+gN+LcEs0dlpZdF2Yj4Bid
-         FGqWwBJJ/f/rVhxUf5pr9c3pc39M1kvX1xOGIUOGCP5dlbwZdg6HvRrUiLeyqcCNvOYX
-         NakcbHHwAgXDIK+vuTMyPFkjY2lpm1e1is2SJTnSXjPP/ftJsXv2TXoXuMn/P4670TWk
-         oKDb0XT5GrB2zRJENAKuLk4jROxhCb8pgUOZ8CQRQbPpYFnVVAWZH/TT77R+eNEvEP0o
-         LigNzQvxWRQr+aSpMur5Bh+Qq6RqRPHDgqGSsX+ylBiCGx/J0uqboucL5TWzM0fbnUQb
-         BImg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EDYxy+Qwv9cFLFs0Fp8IBwRajJ9Sbuyqg6B6IJ6uKvg=;
+        b=M27pzR6sK3ma6JFa8hekO0SprvDmWm9jfoO473LC3TfE0isfaL66pzRT7bjV1by650
+         9aGsYavgITIbCm9u08rgZcIZibTMQzat5HEL785pbYlwU3LV5Xeksxv2xH38G6YHJJSP
+         TIT8P6M8DuhzCt/ZsAXe6xKZ18VYkqWQ04tJ1DwG0w+o+XW+FQ/One77ppwtPHpGppba
+         VnoX4B1xUXgwsHWRNCyW4s7Vz15sGrrNb2yhRgsXlzK7iCs1uLPMR6lDO0QDuqaynZkY
+         PrpGqTqWoN6XL8bazbjREmJ1C7YeRl5wgvW3NLFR9bO/egw53Yml/cbebWRGDiHAOyu7
+         9OiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OwVOUJbbA5zybi3WVA5c4Z02aO6YtO65rBi8AS4nRto=;
-        b=R7E6nUSFYTtNLvUKZF2J4Qswx6bp0xrhgC4F9vfxrCz2Hgzjpil4VA+IoXH82kwYEc
-         Gu+jDKpHeVO2EB4wOwhc80+RscmzXh/7nzYj/8DNoA5l84t+oWPbOvoQ0jxQ6wS4jQ/x
-         gbXc47AVzTUjFUfiHbqfY42/OOnbFP3NnCM80zANm2RgZEVkMs6xcD/GsMzdnWweq+li
-         E410cOvBbt/mWlEBSi30Y077pHLOF1PZmw2VPoAOE+ausvsKI+ZXAvNuwEOYdPtbtZu1
-         3ksVzh3TRCwF9z1car9TUn8fJq3nC55Db7p1ITt/yzqOpMOYVidxAOlBKt1T8I7zHzAW
-         JQ7A==
-X-Gm-Message-State: AOAM530Zej08O4neUkqkGTrIbG6v4zSBS1HjLTTdcIgRa6vLU1YBT3z8
-        XBn/8IpVj0b+UXJ1Jht0/Uo=
-X-Google-Smtp-Source: ABdhPJxEjzQ0mjjS3dwHGSA/rA/w6fowW+j7+kecrmPrIAEjpElf0b7qULeIeCbORx05VXowYRH9ig==
-X-Received: by 2002:a05:651c:225:: with SMTP id z5mr7066045ljn.409.1630852438912;
-        Sun, 05 Sep 2021 07:33:58 -0700 (PDT)
-Received: from mobilestation ([95.79.127.110])
-        by smtp.gmail.com with ESMTPSA id m17sm657424ljp.80.2021.09.05.07.33.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EDYxy+Qwv9cFLFs0Fp8IBwRajJ9Sbuyqg6B6IJ6uKvg=;
+        b=dqb7fvaI14sgyFEW40UJAhd+G5d+DOqMu82GnRyqPSyNYCXMVOSCgetvdB41U9hLIL
+         ieYHZNvUek7cl81OIGMO9JOyooNkQreLCUwrVGmmhl+fJ2outMvrWStGfSULhv50nTQE
+         k9Y7zHTZudL4CUQvSvHOxT2ICFpaTyp5C9uj6Ob2xtIm3FGLtLSmz22qgmuhPLms1CvK
+         /u5x3CocetO2BCZAAqOU280Lq0LPce7dmWfSUvdJrbyFXhY0blhGVrNkCYbczkMz2v7G
+         PgHhG1emuBS+cAysWO91f6nfkouSlAEfqu1lxSTnADNQoVR2KGIpega6QnRe8X8FhdzV
+         fWsQ==
+X-Gm-Message-State: AOAM530uQmHiFsNHewds5NEjB9A09VHr4Z1AjRYPsqbBb/qHxtBJjWbG
+        ZpBpIRwKUDwllmCgo0szkyU=
+X-Google-Smtp-Source: ABdhPJyUoMTUFiNfX/4bRKo4ylfdhIXs6MLEU6U7PLg/xvM4+3wSMXmCFpUbN31HDLxTBj1jb5+kSg==
+X-Received: by 2002:a17:90b:3603:: with SMTP id ml3mr9147909pjb.96.1630852566375;
+        Sun, 05 Sep 2021 07:36:06 -0700 (PDT)
+Received: from localhost.localdomain ([141.164.38.246])
+        by smtp.gmail.com with ESMTPSA id n185sm5186883pfn.171.2021.09.05.07.36.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Sep 2021 07:33:58 -0700 (PDT)
-Date:   Sun, 5 Sep 2021 17:33:56 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     nandhini.srikandan@intel.com
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        broonie@kernel.org, robh+dt@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        mgross@linux.intel.com, kris.pan@intel.com,
-        kenchappa.demakkanavar@intel.com, furong.zhou@intel.com,
-        mallikarjunappa.sangannavar@intel.com, mahesh.r.vaidya@intel.com,
-        rashmi.a@intel.com
-Subject: Re: [PATCH v2 2/2] spi: dw: Add support for Intel Thunder Bay SPI
-Message-ID: <20210905143356.z2xomprpgsknz3fb@mobilestation>
-References: <20210824085856.12714-1-nandhini.srikandan@intel.com>
- <20210824085856.12714-3-nandhini.srikandan@intel.com>
+        Sun, 05 Sep 2021 07:36:05 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     peterz@infradead.org, mingo@redhat.com, mgorman@suse.de,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        bristot@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        achaiken@aurora.tech, Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v4 0/8] sched: support schedstats for RT sched class 
+Date:   Sun,  5 Sep 2021 14:35:39 +0000
+Message-Id: <20210905143547.4668-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210824085856.12714-3-nandhini.srikandan@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nandhini
+Why do we need schedstats ?
+==========================
 
-On Tue, Aug 24, 2021 at 04:58:56PM +0800, nandhini.srikandan@intel.com wrote:
-> From: Nandhini Srikandan <nandhini.srikandan@intel.com>
-> 
-> Add support for Intel Thunder Bay SPI controller, which uses DesignWare
-> DWC_ssi core.
-> Bit 31 of CTRLR0 register is set for Thunder Bay, to
-> configure the device as a master or as a slave serial peripheral.
-> Bit 14(SSTE) of CTRLR0 register should be set(1) for Thunder Bay.
+schedstats is a useful feature to do thread-level latency analysis. Our
+usecase as follows,
 
-After reading your response to my v1 comments, I've got a better
-notion of the features you are trying to implement here. Please see my
-comments below.
+  Userspace Code Scope         Profiler
 
-> 
-> Signed-off-by: Nandhini Srikandan <nandhini.srikandan@intel.com>
-> ---
+  {
+      user_func_abc(); <----   uprobe_scope_begin() get start schedstats 
+      ...
+      user_func_xyz(); <----   uprobe_scope_end() get end schedstats
+  }
 
-Just to note for your future patchwork. Instead of having a single
-general changelog text in the cover letter it is much more convenient
-for reviewers to see both the summary changelog and a changelog of
-individual patches here under '---' delimiter.
+Then with the result of (end - begin) we can get below latency details
+in a specific user scope,
 
->  drivers/spi/spi-dw-core.c |  7 +++++--
->  drivers/spi/spi-dw-mmio.c | 20 +++++++++++++++++++-
->  drivers/spi/spi-dw.h      | 12 +++++++++---
->  3 files changed, 33 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
-> index a305074c482e..f7d45318db8a 100644
-> --- a/drivers/spi/spi-dw-core.c
-> +++ b/drivers/spi/spi-dw-core.c
-> @@ -300,8 +300,11 @@ static u32 dw_spi_prepare_cr0(struct dw_spi *dws, struct spi_device *spi)
->  		/* CTRLR0[13] Shift Register Loop */
->  		cr0 |= ((spi->mode & SPI_LOOP) ? 1 : 0) << DWC_SSI_CTRLR0_SRL_OFFSET;
->  
-> -		if (dws->caps & DW_SPI_CAP_KEEMBAY_MST)
-> -			cr0 |= DWC_SSI_CTRLR0_KEEMBAY_MST;
+  scope_latency = Wait + Sleep + Blocked [1]  + Run (stime + utime)
 
-> +		if (dws->caps & DW_SPI_CAP_DWC_MST)
-> +			cr0 |= DWC_SSI_CTRLR0_MST;
+If there's no schedstats we have to trace the heavy sched::sched_switch
+and do a lot more stuff. 
 
-Since you've used a generic suffix here, are you sure the MST/SLV feature
-toggled by the BIT(31) bit is generic for all DWC SSI controllers?
-I am asking because I don't have DWC SSI IP manual, but there is a
-CTRL0 register layout posted by your colleague Wan Ahmad Zainie a year
-ago: https://patches.linaro.org/patch/214693/ . It doesn't have that bit
-defined.
+[1]. With patch #4 and don't include sum_block_runtime in sum_sleep_runtime
 
-If you are and it's specific to all DWC SSI controllers of v1.01a and
-newer, then why not to implement that flag setting up in the framework
-of the "DW_SPI_CAP_DWC_SSI" capability? Thus we'd have all
-"snps,dwc-ssi-1.01a"-compatible devices and devices with the
-DW_SPI_CAP_DWC_SSI flag set working well if for some reason they have
-got slave-mode enabled by default.
+Support schedstats for RT sched class
+=====================================
 
-> +
-> +		if (dws->caps & DW_SPI_CAP_DWC_SSTE)
-> +			cr0 |= DWC_SSI_CTRLR0_SSTE;
+If we want to use the schedstats facility to trace other sched classes, we
+should make it independent of fair sched class. The struct sched_statistics
+is the schedular statistics of a task_struct or a task_group. So we can
+move it into struct task_struct and struct task_group to achieve the goal.
 
-Regarding SSTE flag and feature implemented behind it. First of all
-AFAICS from the Wan Ahmad Zainie post sited above it is indeed generic
-for both DWC SSI and DW APB SSI IP-cores of the controllers. Thus we
-don't need an additional DWC SSI capability flag defined for it, but
-need to have it generically implemented in the DW SPI core driver.
-Secondly as you said it two weeks ago it defines a slave-specific
-protocol, the way the SSI and CLK signals are driven between consecutive
-frames:
->> SSTE (Slave Select Toggle Enable)
->> When SSTE bit is set to 1, the slave select line will toggle between
->>  consecutive data frames, with the serial clock being held to its default
->>  value while slave select line is high.
->> When SSTE bit is set to 0, slave select line will stay low and clock will
->>  run continuously for the duration of the transfer.
-In general DWC SSI/DW APB SSI controller can be connected to slave
-devices with SSTE and normal communication protocol requirements at
-the same time by using different CS-lanes. Therefore the SSTE feature
-turns to be Slave/Peripheral-device specific rather than
-controller-specific and needs to be enabled/disabled when it's
-required by a slave device.
+After the patch, schestats are orgnized as follows,
 
-Thus here is what I'd suggest to implement the SSTE feature generically:
-1) Add a new SPI-slave Synopsys-specific DT-property into the bindings
-file like this:
---- a/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-+++ b/Documentation/devicetree/bindings/spi/snps,dw-apb-ssi.yaml
-@@ -143,6 +143,12 @@ patternProperties:
-           is an optional feature of the designware controller, and the
-           upper limit is also subject to controller configuration.
- 
-+      snps,sste:
-+        description: Slave select line will toggle between consecutive
-+          data frames, with the serial clock being held to its default
-+          value while slave select line is high.
-+        type: boolean
-+
- unevaluatedProperties: false
- 
- required:
+    struct task_struct {
+       ...
+       struct sched_entity se;
+       struct sched_rt_entity rt;
+       struct sched_dl_entity dl;
+       ...
+       struct sched_statistics stats;
+       ...
+   };
 
-Please do that in a separate preparation patch submitted before the
-"dt-bindings: spi: Add bindings for Intel Thunder Bay SoC" patch
-in this series.
+Regarding the task group, schedstats is only supported for fair group
+sched, and a new struct sched_entity_stats is introduced, suggested by
+Peter -
 
-2) Add that property support into the driver like this:
-diff --git a/drivers/spi/spi-dw-core.c b/drivers/spi/spi-dw-core.c
-index a305074c482e..5caa74b9aa74 100644
---- a/drivers/spi/spi-dw-core.c
-+++ b/drivers/spi/spi-dw-core.c
-@@ -27,6 +27,7 @@
- struct chip_data {
- 	u32 cr0;
- 	u32 rx_sample_dly;	/* RX sample delay */
-+	bool sste;		/* Slave Select Toggle flag */
- };
- 
- #ifdef CONFIG_DEBUG_FS
-@@ -269,6 +270,7 @@ static irqreturn_t dw_spi_irq(int irq, void *dev_id)
- 
- static u32 dw_spi_prepare_cr0(struct dw_spi *dws, struct spi_device *spi)
- {
-+	struct chip_data *chip = spi_get_ctldata(spi);
- 	u32 cr0 = 0;
- 
- 	if (!(dws->caps & DW_SPI_CAP_DWC_SSI)) {
-@@ -285,6 +287,9 @@ static u32 dw_spi_prepare_cr0(struct dw_spi *dws, struct spi_device *spi)
- 
- 		/* CTRLR0[11] Shift Register Loop */
- 		cr0 |= ((spi->mode & SPI_LOOP) ? 1 : 0) << SPI_SRL_OFFSET;
-+
-+		/* CTRLR0[24] Slave Select Toggle Enable */
-+		cr0 |= chip->sste << SPI_SSTE_OFFSET;
- 	} else {
- 		/* CTRLR0[ 7: 6] Frame Format */
- 		cr0 |= SSI_MOTO_SPI << DWC_SSI_CTRLR0_FRF_OFFSET;
-@@ -300,6 +305,9 @@ static u32 dw_spi_prepare_cr0(struct dw_spi *dws, struct spi_device *spi)
- 		/* CTRLR0[13] Shift Register Loop */
- 		cr0 |= ((spi->mode & SPI_LOOP) ? 1 : 0) << DWC_SSI_CTRLR0_SRL_OFFSET;
- 
-+		/* CTRLR0[14] Slave Select Toggle Enable */
-+		cr0 |= chip->sste << DWC_SSI_CTRLR0_SSTE_OFFSET;
-+
- 		if (dws->caps & DW_SPI_CAP_KEEMBAY_MST)
- 			cr0 |= DWC_SSI_CTRLR0_KEEMBAY_MST;
- 	}
-@@ -789,6 +797,9 @@ static int dw_spi_setup(struct spi_device *spi)
- 		chip->rx_sample_dly = DIV_ROUND_CLOSEST(rx_sample_dly_ns,
- 							NSEC_PER_SEC /
- 							dws->max_freq);
-+
-+		/* Get slave select toggling feature requirement */
-+		chip->sste = device_property_read_bool(&spi->dev, "snps,sste");
- 	}
- 
- 	/*
-diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
-index b665e040862c..2ee3f839de39 100644
---- a/drivers/spi/spi-dw.h
-+++ b/drivers/spi/spi-dw.h
-@@ -65,8 +65,10 @@
- #define SPI_SLVOE_OFFSET		10
- #define SPI_SRL_OFFSET			11
- #define SPI_CFS_OFFSET			12
-+#define SPI_SSTE_OFFSET			24
- 
- /* Bit fields in CTRLR0 based on DWC_ssi_databook.pdf v1.01a */
-+#define DWC_SSI_CTRLR0_SSTE_OFFSET	14
- #define DWC_SSI_CTRLR0_SRL_OFFSET	13
- #define DWC_SSI_CTRLR0_TMOD_OFFSET	10
- #define DWC_SSI_CTRLR0_TMOD_MASK	GENMASK(11, 10)
+    struct sched_entity_stats {
+        struct sched_entity     se;
+        struct sched_statistics stats;
+    } __no_randomize_layout;
 
-Please also do that in a separate preparation patch.
+Then with the se in a task_group, we can easily get the stats.
 
-3) If MST BIT(31) feature is generic, then please discard the
-DW_SPI_CAP_KEEMBAY_MST capability flag and set the MST bit for each
-DWC SSI device with DW_SPI_CAP_DWC_SSI capability set. If it's
-Intel-specific, then convert the DW_SPI_CAP_KEEMBAY_MST capability
-macro name to DW_SPI_CAP_INTEL_MST.
+The sched_statistics members may be frequently modified when schedstats is
+enabled, in order to avoid impacting on random data which may in the same
+cacheline with them, the struct sched_statistics is defined as cacheline
+aligned.
 
-Please also do that in a separate preparation patch.
+As this patch changes the core struct of scheduler, so I verified the
+performance it may impact on the scheduler with 'perf bench sched
+pipe', suggested by Mel. Below is the result, in which all the values
+are in usecs/op.
+                                  Before               After
+      kernel.sched_schedstats=0  5.2~5.4               5.2~5.4
+      kernel.sched_schedstats=1  5.3~5.5               5.3~5.5
+[These data is a little difference with the earlier version, that is
+ because my old test machine is destroyed so I have to use a new
+ different test machine.]
 
-4) After all of that you can add the "Thunder Bay SPI" controller
-support into the DW SPI MMIO driver by placing the
-"intel,thunderbay-ssi" compatibility string into the OF-device table.
-Since both Thunder and Keembay SPIs are based on the same IP-core then
-you can just reuse the dw_spi_keembay_init() for both of them after
-renaming it to something like dw_spi_intel_init().
+Almost no impact on the sched performance.
 
--Sergey
+The user can get the schedstats information in the same way in fair sched
+class. For example,
+       fair                            RT
+       /proc/[pid]/sched               /proc/[pid]/sched
 
->  	}
->  
->  	return cr0;
-> diff --git a/drivers/spi/spi-dw-mmio.c b/drivers/spi/spi-dw-mmio.c
-> index 3379720cfcb8..2bd1dedd90b0 100644
-> --- a/drivers/spi/spi-dw-mmio.c
-> +++ b/drivers/spi/spi-dw-mmio.c
-> @@ -217,7 +217,24 @@ static int dw_spi_dwc_ssi_init(struct platform_device *pdev,
->  static int dw_spi_keembay_init(struct platform_device *pdev,
->  			       struct dw_spi_mmio *dwsmmio)
->  {
-> -	dwsmmio->dws.caps = DW_SPI_CAP_KEEMBAY_MST | DW_SPI_CAP_DWC_SSI;
-> +	/*
-> +	 * Set MST to make keem bay SPI as master.
-> +	 */
-> +	dwsmmio->dws.caps = DW_SPI_CAP_DWC_MST | DW_SPI_CAP_DWC_SSI;
-> +
-> +	return 0;
-> +}
-> +
-> +static int dw_spi_thunderbay_init(struct platform_device *pdev,
-> +				  struct dw_spi_mmio *dwsmmio)
-> +{
-> +	/*
-> +	 * Set MST to make thunder bay SPI as master.
-> +	 * Set SSTE to enable slave select toggle bit which is required
-> +	 * for the slave devices connected to the thunder bay SPI controller.
-> +	 */
-> +	dwsmmio->dws.caps = DW_SPI_CAP_DWC_MST | DW_SPI_CAP_DWC_SSTE |
-> +			    DW_SPI_CAP_DWC_SSI;
->  
->  	return 0;
->  }
-> @@ -349,6 +366,7 @@ static const struct of_device_id dw_spi_mmio_of_match[] = {
->  	{ .compatible = "renesas,rzn1-spi", .data = dw_spi_dw_apb_init},
->  	{ .compatible = "snps,dwc-ssi-1.01a", .data = dw_spi_dwc_ssi_init},
->  	{ .compatible = "intel,keembay-ssi", .data = dw_spi_keembay_init},
-> +	{ .compatible = "intel,thunderbay-ssi", .data = dw_spi_thunderbay_init},
->  	{ .compatible = "microchip,sparx5-spi", dw_spi_mscc_sparx5_init},
->  	{ .compatible = "canaan,k210-spi", dw_spi_canaan_k210_init},
->  	{ /* end of table */}
-> diff --git a/drivers/spi/spi-dw.h b/drivers/spi/spi-dw.h
-> index b665e040862c..9fffe0a02f3a 100644
-> --- a/drivers/spi/spi-dw.h
-> +++ b/drivers/spi/spi-dw.h
-> @@ -76,11 +76,16 @@
->  #define DWC_SSI_CTRLR0_DFS_OFFSET	0
->  
->  /*
-> - * For Keem Bay, CTRLR0[31] is used to select controller mode.
-> + * CTRLR0[31] is used to select controller mode.
->   * 0: SSI is slave
->   * 1: SSI is master
->   */
-> -#define DWC_SSI_CTRLR0_KEEMBAY_MST	BIT(31)
-> +#define DWC_SSI_CTRLR0_MST		BIT(31)
-> +
-> +/*
-> + * CTRLR0[14] is used to enable/disable Slave Select Toggle bit
-> + */
-> +#define DWC_SSI_CTRLR0_SSTE		BIT(14)
->  
->  /* Bit fields in CTRLR1 */
->  #define SPI_NDF_MASK			GENMASK(15, 0)
-> @@ -122,9 +127,10 @@ enum dw_ssi_type {
->  
->  /* DW SPI capabilities */
->  #define DW_SPI_CAP_CS_OVERRIDE		BIT(0)
-> -#define DW_SPI_CAP_KEEMBAY_MST		BIT(1)
-> +#define DW_SPI_CAP_DWC_MST		BIT(1)
->  #define DW_SPI_CAP_DWC_SSI		BIT(2)
->  #define DW_SPI_CAP_DFS32		BIT(3)
-> +#define DW_SPI_CAP_DWC_SSTE		BIT(4)
->  
->  /* Slave spi_transfer/spi_mem_op related */
->  struct dw_spi_cfg {
-> -- 
-> 2.17.1
-> 
+schedstats is not supported for RT group.
+
+The sched:sched_stat_{wait, sleep, iowait, blocked} tracepoints can
+be used to trace RT tasks as well.
+
+Support schedstats for any other sched classes
+==============================================
+
+After this patchset, it is very easy to extend the schedstats to any
+other sched classes. The deadline sched class is also supported in this
+patchset.
+
+Changes Since v3:
+Various code improvement per Peter,
+- don't support schedstats for rt group
+- introduce struct sched_entity_stats for fair group 
+- change the position of 'struct sched_statistics stats'
+- fixes indent issue
+- change the output format in /proc/[pid]/sched
+- add the usecase of schedstats
+- support schedstats for deadline task
+- and other suggestions
+
+Changes Since v2:
+- Fixes the output format in /proc/[pid]/sched 
+- Rebase it on the latest code
+- Redo the performance test
+
+Changes since v1:
+- Fix the build failure reported by kernel test robot.
+- Add the performance data with 'perf bench sched pipe', suggested by
+  Mel.
+- Make the struct sched_statistics cacheline aligned.
+- Introduce task block time in schedstats
+
+Changes since RFC:
+- improvement of schedstats helpers, per Mel.
+- make struct schedstats independent of fair sched class
+
+Yafang Shao (8):
+  sched, fair: use __schedstat_set() in set_next_entity()
+  sched: make struct sched_statistics independent of fair sched class
+  sched: make schedstats helpers independent of fair sched class
+  sched: introduce task block time in schedstats
+  sched, rt: support sched_stat_runtime tracepoint for RT sched class
+  sched, rt: support schedstats for RT sched class
+  sched, dl: support sched_stat_runtime tracepoint for deadline sched
+    class
+  sched, dl: support schedstats for deadline sched class
+
+ include/linux/sched.h    |   8 +-
+ kernel/sched/core.c      |  25 +++---
+ kernel/sched/deadline.c  |  99 +++++++++++++++++++++-
+ kernel/sched/debug.c     |  97 +++++++++++----------
+ kernel/sched/fair.c      | 177 +++++++++++----------------------------
+ kernel/sched/rt.c        | 130 +++++++++++++++++++++++++++-
+ kernel/sched/stats.c     | 104 +++++++++++++++++++++++
+ kernel/sched/stats.h     |  49 +++++++++++
+ kernel/sched/stop_task.c |   4 +-
+ 9 files changed, 500 insertions(+), 193 deletions(-)
+
+-- 
+2.18.2
+
