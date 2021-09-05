@@ -2,157 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5659401156
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 21:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A81401159
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 21:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238427AbhIETJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 15:09:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26009 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238410AbhIETI7 (ORCPT
+        id S238705AbhIETNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 15:13:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229880AbhIETNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 15:08:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630868873;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GBTVYvl6r/DGTmkrkWcHeYmKn9Wnjnzo76ZSWSpnbek=;
-        b=PeqfpFtOcgYLHpImbilspXx7NNcD9AFdc1+vbYZSW8XLdVNXxdpUyIBE6a8Jd//2ySrAW3
-        A3Rarm2+FChvFF82fOeq1qd0qcEaGVFxiA7bu3YZinBh2cKjqLW0qR2oAdLuSd4aERoPN5
-        DrpsC4lYjcWWoLLXHz6HAA10siuMJ7o=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-555-xLSwL4ISOv6esLdIVLc1CQ-1; Sun, 05 Sep 2021 15:07:52 -0400
-X-MC-Unique: xLSwL4ISOv6esLdIVLc1CQ-1
-Received: by mail-wm1-f70.google.com with SMTP id r4-20020a1c4404000000b002e728beb9fbso2878198wma.9
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 12:07:52 -0700 (PDT)
+        Sun, 5 Sep 2021 15:13:33 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA85C061575;
+        Sun,  5 Sep 2021 12:12:29 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id n34so554875pfv.7;
+        Sun, 05 Sep 2021 12:12:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oClDNOQT+GLawQeS0dfRl/HargK9SobeC6dDUiHWklU=;
+        b=UIwichcWFdQy45M0knSwKSVbXz1XtLJOaq0orKwSxLZc1eXBfVqk8m9/5k/7NsamGQ
+         OKGJgZFhfl6G7vSR4WD14WuQAiuMDHQDLNlh7SFkHnAzIBV5Fm5okJ/Ffgrh8YjmetYY
+         3RBMjP4QUNnSVz/RV693X8qImG0dvFHSKPycz9RqPI16a8w2fxiN91ntZXx6nQbEYftA
+         J4Tx8gychIgD0QswBZI+H0OFnPayVOeQIAf95/FcQQ78V5957nkcmdAVJyfqTzFPcV4M
+         oajXKqAegeafuv0XBpaa69ncrxZeS9qtOXZxLGrwmKcqyozJQdYuOK3CG8BqG9V85Etm
+         7Wwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=GBTVYvl6r/DGTmkrkWcHeYmKn9Wnjnzo76ZSWSpnbek=;
-        b=DrVRiE3J7ON3K7uABfRL7nuaH1mPEB4X0O4CiAlKgJM7wn2EI1Z2wzeSWQ3mWcVnsc
-         9HlPmUqgZxTp5IXxTDDszBZ2Mvo+FuLfXpePLf+OTrLCaU0gH5nSJAzTCZw2YCEkCZR/
-         oc/vtM/aNwre7MceXYMl5vtJR+m0tJt0DaO14y1rKZ+HOpY6v0f+SMk1+WBCkzdMHIMa
-         4gQcMmKGp4ORAnidM9QCGld2sqDmpUpk4HIQP00T1ebDBHSp41FrdvZl/Syw07ZNgDun
-         z8L50Svz7HYj6sHkri8Cdt+ihgEhOiNnHQ6UC0tM3SoH204o1C8XGjRCdh+KT42bRIFT
-         y3Jw==
-X-Gm-Message-State: AOAM530ZL/nGntMC+vE5b888JAakAx4ooohPn5rlf2LZJbiE9j64AbO4
-        3biC14HK3nwjdLqrI1CWzzKEsOJepqE2I9zzooeHpUmxtG0PJRYTn3ZGl9sxTH/gh2r/Brg2gTW
-        ERXm6rJ2/RI65JJXbk/a/NKYQ
-X-Received: by 2002:adf:916f:: with SMTP id j102mr9428575wrj.422.1630868871731;
-        Sun, 05 Sep 2021 12:07:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwJKpXpbX8Zx9j1c0iF75tnA3gLF7m6WMhftI7dZFfieFpkJUATagtI6L+4VC8O/dknnYxpxg==
-X-Received: by 2002:adf:916f:: with SMTP id j102mr9428550wrj.422.1630868871507;
-        Sun, 05 Sep 2021 12:07:51 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6f04.dip0.t-ipconnect.de. [91.12.111.4])
-        by smtp.gmail.com with ESMTPSA id i20sm5300193wml.37.2021.09.05.12.07.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Sep 2021 12:07:51 -0700 (PDT)
-Subject: Re: [PATCH v2 1/7] binfmt: don't use MAP_DENYWRITE when loading
- shared libraries via uselib()
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
-        Kevin Brodsky <Kevin.Brodsky@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Price <steven.price@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Peter Xu <peterx@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Marco Elver <elver@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
-        Thomas Cedeno <thomascedeno@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Chengguang Xu <cgxu519@mykernel.net>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        David Laight <David.Laight@aculab.com>,
-        linux-unionfs@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-References: <20210816194840.42769-1-david@redhat.com>
- <20210816194840.42769-2-david@redhat.com>
- <20210905153229.GA3019909@roeck-us.net>
- <CAHk-=whO-dnNxz5H8yfnGsNxrDHu-TVQq-X-VwhoDyWu3Lgnyg@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <77b36c45-773b-3cb8-fa18-45f0914c3090@redhat.com>
-Date:   Sun, 5 Sep 2021 21:07:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oClDNOQT+GLawQeS0dfRl/HargK9SobeC6dDUiHWklU=;
+        b=ruTeo39Y5dt7XQke6bNUZO0iz9RP/L6HzRSh25A1yfUhNIr1AIxjLBQ1vGGY+6FYId
+         t/BuzS7muX2wGFENv1JAbsqKLpnnIyGrvlysnrUUv56EsSOA+uPRTNfm8qXW9dqoerwG
+         0rLK0fz1Gxu2ISuf4S7T+nHZGkMFgf+c6FbaTNqNb6X8rnUDcusrXLrQYrDIIzNDyzXy
+         6rnZRM7QTZtZH9Iy2hnTfxiF3d4DOzxh58Z3Y865eeVa44l36ePVhuEkPCpeQeLd/CJ7
+         Ggyf/bm/RyuV5lrtAIT3rOgUhqbnhxsd7KCywn4qaQ3mgR9n7FTv1+VcMGfL6vucNWjA
+         ildA==
+X-Gm-Message-State: AOAM531xq/nuk0BqjRyQYN/Le12//Yjs908Gff3aSxF6Lr7jFuV0zOZw
+        MLsD5OYBiYawVVJ//Mf4qXw=
+X-Google-Smtp-Source: ABdhPJxRx62rob+PMFUIZGbCbl8wa8C9Sq228UrqAbu/HArueR/qJv3KRPszg+/q6h3KYjHYcHKolQ==
+X-Received: by 2002:aa7:9056:0:b0:412:444e:f601 with SMTP id n22-20020aa79056000000b00412444ef601mr8621568pfo.84.1630869149398;
+        Sun, 05 Sep 2021 12:12:29 -0700 (PDT)
+Received: from tong-desktop.local (99-105-211-126.lightspeed.sntcca.sbcglobal.net. [99.105.211.126])
+        by smtp.googlemail.com with ESMTPSA id h4sm4492638pjs.2.2021.09.05.12.12.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 12:12:29 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        Tong Zhang <ztong0001@gmail.com>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] media: atomisp: fix compilation error
+Date:   Sun,  5 Sep 2021 12:12:21 -0700
+Message-Id: <20210905191222.612949-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=whO-dnNxz5H8yfnGsNxrDHu-TVQq-X-VwhoDyWu3Lgnyg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.09.21 19:17, Linus Torvalds wrote:
-> On Sun, Sep 5, 2021 at 8:32 AM Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> Guess someone didn't care compile testing their code. This is now in
->> mainline.
-> 
-> To be fair, a.out is disabled pretty much on all relevant platforms these days.
+I am getting the following compilation error on ubuntu 20.04 with gcc 9.3.0.
 
-Yes, and it seems like it was disabled in all configs I used. (I did not 
-compile all-yes configs; usually my stuff goes via -mm where it will end 
-up in -next for a while ... this one was special)
+drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function ‘input_system_configure_channel_sensor’:
+drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
+ 1649 | }
+      | ^
+cc1: some warnings being treated as errors
+make[4]: *** [scripts/Makefile.build:277: drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.o] Error 1
 
-> 
-> Only alpha and m68k left, I think.
-> 
-> I applied the obvious patch from Geert.
+I made some minor changes to the switch-case to keep gcc happy.
 
-Thanks Linus!
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+---
+ .../media/atomisp/pci/hive_isp_css_common/host/input_system.c  | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-
+diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+index 8e085dda0c18..58eb74edc953 100644
+--- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
++++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+@@ -1644,8 +1644,9 @@ static input_system_err_t input_system_configure_channel_sensor(
+ 	case INPUT_SYSTEM_XMEM_CAPTURE:
+ 	case INPUT_SYSTEM_XMEM_ACQUIRE:
+ 	default:
+-		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
++		break;
+ 	}
++	return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+ }
+ 
+ // Test flags and set structure.
 -- 
-Thanks,
-
-David / dhildenb
+2.25.1
 
