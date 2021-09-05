@@ -2,288 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6E7401206
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 00:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7C940120F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 01:19:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235167AbhIEWzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 18:55:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
+        id S234277AbhIEXUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 19:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbhIEWzP (ORCPT
+        with ESMTP id S232745AbhIEXUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 18:55:15 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C761C061757
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 15:54:11 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id bt14so9695774ejb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 15:54:11 -0700 (PDT)
+        Sun, 5 Sep 2021 19:20:52 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B3AC061575;
+        Sun,  5 Sep 2021 16:19:48 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id u1so2834660plq.5;
+        Sun, 05 Sep 2021 16:19:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=usp.br; s=usp-google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9sRsr7rlJU7xPFVBenjaWwyJN2JUHQZAp/JvZzzHDgo=;
-        b=oxen/Ncc+XPzSdHn7g/ZaAWOYcqBcAE1YVh7hGJIwzXZ5SHkRloGz2yCSl9GGnzBfE
-         ekEBE1uenPz7At89363Tiba5Bu6GORTqYDGHKtWgRl690oRg81iKci2a+AvCf4S5jprZ
-         8icquHSeGTV7WeutXjOOkptYjEdSyVH1fN3LDH7KlImsQQ0trtQhbDSWzT4wAxSsL1bE
-         LtfEeqa1mOnd9dX3you53xZIFzBJ420rO0nWC6tD3PGVAF8EP6rC91RxrK7K+olc1+J2
-         3uH4yiB2hxpTzGUXqa/kUqeXLILLoCiDZuHWI60tMv6TxaRxxQKk5RbmtXtuiEO41qRl
-         +Qlw==
+         :cc:content-transfer-encoding;
+        bh=7BZXdqPIIbX0lmfQ4SwtNY8oiLwmuMvBZoqm565+qZM=;
+        b=MJSm/ehKryiK4KHSbaVd1Bq9pjHb6JwWb4gkXn/IJsRe6yPqfykinE6UE8Koi4DMvf
+         BTz8DtzdBUophSXgxJqKXEL9HiHjM8W25/w4Cv9gznDkiw7d3+So26uM6pvsHgOPr49o
+         j8MrSVf1rAUTWtIH0Ot2cwQcYVxu3pPtDr8jASbgL/cQHsC731RX7adz1bxJCRcqxwjd
+         Kzbug6y3/2StJO5YRBbBIsvpMwTjN6K3ykHkICuV+E2+gZZR9z1AiIIkE9/aBxkT2f80
+         xJjXOlaHmoqCiTI8PZpoEVjcHvXnCOp03q3+sh+EQ8X1T7+wGTtZLh4nCg5vMOtNnZ3a
+         9llw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9sRsr7rlJU7xPFVBenjaWwyJN2JUHQZAp/JvZzzHDgo=;
-        b=ZTEQP+J1Oa7i+9q8u3ns+xk96AyVm6ufigsHszygVa5ta0y9w0s2pyWXaYgVMUYA6l
-         iyq3VKo+TfVFUtW2V71hNYvcD0CodQl1n4mv1LM3S0+KcDXx9DkiyE12vOto8ZRJTdNf
-         J+KTWdqkSWDgrHIY6yGjc0ppS+DSoIHZiZXH8uuIp7+F283PIDVTiRRzBnoDw4oxYSA2
-         MPg3F9CKCGijCkq6C6bs5y402MmYKKHYvKrWBn8Mjj1Mlj0FCwHJzlC+TjAKJuhl+Q0h
-         Qi3nG+vxxzX1m1aHZo9Afe5KNPRMrJEPPFeNUBqMYqJs9jCBqYMVio0pogmo1PK8okQ2
-         j2Xw==
-X-Gm-Message-State: AOAM5302W4sc7MM/B+utk/RkwGmqouMJjLU6/PdUMfKjcM+Ac/lbCf0i
-        /uoW4jetiPQgJC9Vijtg3HsSCX9Jtc2LOXv31kb23A==
-X-Google-Smtp-Source: ABdhPJygIi2bgU/gVGQd2H9OtrX6AvuGAUexHuFgmGjPeO3vWLQqayFXjayCpEoNn4XVC+jigllVjemC93gV8L8vvq8=
-X-Received: by 2002:a17:906:498b:: with SMTP id p11mr10478413eju.295.1630882449650;
- Sun, 05 Sep 2021 15:54:09 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7BZXdqPIIbX0lmfQ4SwtNY8oiLwmuMvBZoqm565+qZM=;
+        b=SAlKL2kJLXebt7DiVn9I/ogrggrPO9rA7CLcsy1INYHMmPP8rviHL55iNBeEE5YSy1
+         l+CNIRnNPQl4Yywamj3KZV9FAYD5gztRnmTT1o5qp7fx+HJ1+3T2fJVVCwzhG2DlCAmx
+         xFM7bEA5axXI7e6Rw2izC+heT4XLSM5NL/vPFS7UTL6MDLTdaD5ru5BPrws3M88myEhZ
+         FJtk93g6/8BYuWtF54J9lRrznhXECGQdbL9uTwq93AIU1sJc9PxOnrJd9VBwv7n1Qbrg
+         qI+iOGV4f/4VQpDoC4vmxhewYgP7Kjv8QzdUJ2A8wz83a43etiGlJZiILhBeWLVcIlf4
+         4JaQ==
+X-Gm-Message-State: AOAM531ubdNS3rpe6aHu43OgQUubC4p04FJrmSkyjppMnDoyLgYCNAlO
+        ZDDRZu9xchjsDbSq/zPd/92moUYtBZsSn8kD7f4=
+X-Google-Smtp-Source: ABdhPJxsH5A5v5b+7DWL2nI/OixOXfS7188Aze7SkaMeitjT4fO59ORtgY3F3G5cd+2rqSKYKy3vOXeftTmUTQke1D0=
+X-Received: by 2002:a17:90b:1085:: with SMTP id gj5mr10789472pjb.66.1630883988225;
+ Sun, 05 Sep 2021 16:19:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210826012626.1163705-1-isabellabdoamaral@usp.br>
- <20210826012626.1163705-4-isabellabdoamaral@usp.br> <CABVgOSkhN-DPYnhuTG1hGU-2aP0MEaKjz+0=Sr_VNKUhpgz79g@mail.gmail.com>
-In-Reply-To: <CABVgOSkhN-DPYnhuTG1hGU-2aP0MEaKjz+0=Sr_VNKUhpgz79g@mail.gmail.com>
-From:   Isabella B do Amaral <isabellabdoamaral@usp.br>
-Date:   Sun, 5 Sep 2021 19:53:56 -0300
-Message-ID: <CAAniXFQBZUFrRV6c_g9L_yqFMYyvz4DDyof5cOtPc8kWMR+jiw@mail.gmail.com>
-Subject: Re: [PATCH 3/6] test_hash.c: split test_int_hash into arch-specific functions
-To:     David Gow <davidgow@google.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Enzo Ferreira <ferreiraenzoa@gmail.com>,
-        =?UTF-8?Q?Augusto_Dur=C3=A3es_Camargo?= 
-        <augusto.duraes33@gmail.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
+References: <20210824034929.GA13415@raspberrypi>
+In-Reply-To: <20210824034929.GA13415@raspberrypi>
+From:   Austin Kim <austindh.kim@gmail.com>
+Date:   Mon, 6 Sep 2021 08:19:38 +0900
+Message-ID: <CADLLry4tZjHKpJq7cQ3Rmhc_OOvHK+Wmss=8x_8KA-aHP++oLw@mail.gmail.com>
+Subject: Re: [PATCH] ext4: remove an unused variable warning with CONFIG_QUOTA=n
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca
+Cc:     linux-ext4@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        ~lkcamp/patches@lists.sr.ht, rodrigosiqueiramelo@gmail.com
+        =?UTF-8?B?6rmA64+Z7ZiE?= <austin.kim@lge.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, David,
+2021=EB=85=84 8=EC=9B=94 24=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 12:49, =
+Austin Kim <austindh.kim@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> The 'enable_quota' variable is only used in an CONFIG_QUOTA.
+> With CONFIG_QUOTA=3Dn, compiler causes a harmless warning:
+>
+> fs/ext4/super.c: In function =E2=80=98ext4_remount=E2=80=99:
+> fs/ext4/super.c:5840:6: warning: variable =E2=80=98enable_quota=E2=80=99 =
+set but not used
+>   [-Wunused-but-set-variable]
+>   int enable_quota =3D 0;
+>               ^~~~~
+>
+> Move 'enable_quota' into the same #ifdef CONFIG_QUOTA block
+> to remove an unused variable warning.
+>
+> Signed-off-by: Austin Kim <austindh.kim@gmail.com>
+> ---
+>  fs/ext4/super.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 6b03e4281f6f..6adb570f4b31 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -5845,10 +5845,10 @@ static int ext4_remount(struct super_block *sb, i=
+nt *flags, char *data)
+>         struct ext4_sb_info *sbi =3D EXT4_SB(sb);
+>         unsigned long old_sb_flags, vfs_flags;
+>         struct ext4_mount_options old_opts;
+> -       int enable_quota =3D 0;
+>         ext4_group_t g;
+>         int err =3D 0;
+>  #ifdef CONFIG_QUOTA
+> +       int enable_quota =3D 0;
+>         int i, j;
+>         char *to_free[EXT4_MAXQUOTAS];
+>  #endif
+> @@ -6053,7 +6053,9 @@ static int ext4_remount(struct super_block *sb, int=
+ *flags, char *data)
+>                                         err =3D -EROFS;
+>                                         goto restore_opts;
+>                                 }
+> +#ifdef CONFIG_QUOTA
+>                         enable_quota =3D 1;
+> +#endif
+>                 }
+>         }
+>
+> --
+> 2.20.1
+>
 
-On Thu, Aug 26, 2021 at 1:21 AM David Gow <davidgow@google.com> wrote:
->
-> On Thu, Aug 26, 2021 at 9:26 AM Isabella Basso <isabellabdoamaral@usp.br> wrote:
-> >
-> > Split the The test_int_hash function to keep its mainloop separate from
-> > arch-specific chunks, which are only compiled as needed. This aims at
-> > improving readability.
-> >
-> > Signed-off-by: Isabella Basso <isabellabdoamaral@usp.br>
-> > ---
->
-> I like this, but have a note below. It _may_ be worth combining some
-> of these test refactoring patches with the KUnit port patch:
-> definitely a matter of taste rather than something I think is
-> necessary, but I personally think they're related enough they could go
-> together if you wanted.
+If you are available, would you please review this patch?
+It will not take long.
 
-I'm not really comfortable with such big diffs, to be honest, but I'll keep
-this in mind!
-
-> >  lib/test_hash.c | 84 +++++++++++++++++++++++++++++++------------------
-> >  1 file changed, 54 insertions(+), 30 deletions(-)
-> >
-> > diff --git a/lib/test_hash.c b/lib/test_hash.c
-> > index 8bcc645a7294..ed75c768c231 100644
-> > --- a/lib/test_hash.c
-> > +++ b/lib/test_hash.c
-> > @@ -61,6 +61,45 @@ fill_buf(char *buf, size_t len, u32 seed)
-> >         }
-> >  }
-> >
-> > +#ifdef HAVE_ARCH__HASH_32
-> > +static bool __init
-> > +test_int_hash32(u32 *h0, u32 *h1, u32 *h2)
->
-> I'm unsure about this name. Having test_int_hash32() test only
-> __hash_32(), where test_int_hash64() tests hash_64() feels a little
-> bit inconsistent. Maybe this is somewhere we should have the extra
-> underscore like in HAVE_ARCH__HASH_32.
->
-> I get that because the architecture-specific hash_32() is removed
-> earlier, there's no need for an extra function to test how that
-> compares against a generic function, so there's no conflict here, but
-> it did confuse me briefly.
-
-I see your point. This actually hadn't occurred to me. Now I'm thinking
-test_int__hash_32() (and, by extension, test_int_hash_64()) should make for a
-clearer naming convention.
-
-> The other option is, as mentioned in the earlier patch, to keep the
-> architecture-specific hash_32() (and _maybe_ get rid of __hash_32()
-> entirely), in which case this name would be perfect for testing that.
->
-> > +{
-> > +       hash_or[1][0] |= *h2 = __hash_32_generic(h0);
-> > +#if HAVE_ARCH__HASH_32 == 1
-> > +       if (*h1 != *h2) {
-> > +               pr_err("__hash_32(%#x) = %#x != __hash_32_generic() = %#x",
-> > +                      *h0, *h1, *h2);
-> > +               return false;
-> > +       }
-> > +#endif
-> > +       return true;
-> > +}
-> > +#endif
-> > +
-> > +#ifdef HAVE_ARCH_HASH_64
-> > +static bool __init
-> > +test_int_hash64(unsigned long long h64, u32 *h0, u32 *h1, u32 *h2, u32 const *m, int k)
-> > +{
-> > +       *h2 = hash_64_generic(*h64, *k);
-> > +#if HAVE_ARCH_HASH_64 == 1
-> > +       if (*h1 != *h2) {
-> > +               pr_err("hash_64(%#llx, %d) = %#x != hash_64_generic() = %#x",
-> > +                      *h64, *k, *h1, *h2);
-> > +               return false;
-> > +       }
-> > +#else
-> > +       if (*h2 > *m) {
-> > +               pr_err("hash_64_generic(%#llx, %d) = %#x > %#x",
-> > +                      *h64, *k, *h1, *m);
-> > +               return false;
-> > +       }
-> > +#endif
-> > +       return true;
-> > +
-> > +}
-> > +#endif
-> > +
-> >  /*
-> >   * Test the various integer hash functions.  h64 (or its low-order bits)
-> >   * is the integer to hash.  hash_or accumulates the OR of the hash values,
-> > @@ -74,19 +113,17 @@ static bool __init
-> >  test_int_hash(unsigned long long h64)
-> >  {
-> >         int k;
-> > -       u32 h0 = (u32)h64, h1, h2;
-> > +       u32 h0 = (u32)h64, h1;
-> > +
-> > +#if defined HAVE_ARCH__HASH_32 || defined HAVE_ARCH_HASH_64
-> > +       u32 h2;
-> > +#endif
-> >
-> >         /* Test __hash32 */
-> >         hash_or[0][0] |= h1 = __hash_32(h0);
-> >  #ifdef HAVE_ARCH__HASH_32
-> > -       hash_or[1][0] |= h2 = __hash_32_generic(h0);
-> > -#if HAVE_ARCH__HASH_32 == 1
-> > -       if (h1 != h2) {
-> > -               pr_err("__hash_32(%#x) = %#x != __hash_32_generic() = %#x",
-> > -                       h0, h1, h2);
-> > +       if (!test_int_hash32(&h0, &h1, &h2))
-> >                 return false;
-> > -       }
-> > -#endif
-> >  #endif
-> >
-> >         /* Test k = 1..32 bits */
-> > @@ -107,24 +144,11 @@ test_int_hash(unsigned long long h64)
-> >                         return false;
-> >                 }
-> >  #ifdef HAVE_ARCH_HASH_64
-> > -               h2 = hash_64_generic(h64, k);
-> > -#if HAVE_ARCH_HASH_64 == 1
-> > -               if (h1 != h2) {
-> > -                       pr_err("hash_64(%#llx, %d) = %#x != hash_64_generic() "
-> > -                               "= %#x", h64, k, h1, h2);
-> > +               if (!test_int_hash64(&h64, &h0, &h1, &h2, &m, &k))
-> >                         return false;
-> > -               }
-> > -#else
-> > -               if (h2 > m) {
-> > -                       pr_err("hash_64_generic(%#llx, %d) = %#x > %#x",
-> > -                               h64, k, h1, m);
-> > -                       return false;
-> > -               }
-> > -#endif
-> >  #endif
-> >         }
-> >
-> > -       (void)h2;       /* Suppress unused variable warning */
-> >         return true;
-> >  }
-> >
-> > @@ -150,15 +174,15 @@ test_hash_init(void)
-> >                         /* Check that hashlen_string gets the length right */
-> >                         if (hashlen_len(hashlen) != j-i) {
-> >                                 pr_err("hashlen_string(%d..%d) returned length"
-> > -                                       " %u, expected %d",
-> > -                                       i, j, hashlen_len(hashlen), j-i);
-> > +                                      " %u, expected %d",
-> > +                                      i, j, hashlen_len(hashlen), j-i);
->
-> These whitespace changes probably aren't necessary.
-
-Oops, that's my bad. Really unintended changes, thanks for the heads up!
-
-> >                                 return -EINVAL;
-> >                         }
-> >                         /* Check that the hashes match */
-> >                         if (hashlen_hash(hashlen) != h0) {
-> >                                 pr_err("hashlen_string(%d..%d) = %08x != "
-> > -                                       "full_name_hash() = %08x",
-> > -                                       i, j, hashlen_hash(hashlen), h0);
-> > +                                      "full_name_hash() = %08x",
-> > +                                      i, j, hashlen_hash(hashlen), h0);
->
-> These whitespace changes probably aren't necessary.
->
-> >                                 return -EINVAL;
-> >                         }
-> >
-> > @@ -178,14 +202,14 @@ test_hash_init(void)
-> >         }
-> >         if (~hash_or[0][0]) {
-> >                 pr_err("OR of all __hash_32 results = %#x != %#x",
-> > -                       hash_or[0][0], -1u);
-> > +                      hash_or[0][0], -1u);
->
-> This whitespace change probably isn't necessary.
->
-> >                 return -EINVAL;
-> >         }
-> >  #ifdef HAVE_ARCH__HASH_32
-> >  #if HAVE_ARCH__HASH_32 != 1    /* Test is pointless if results match */
-> >         if (~hash_or[1][0]) {
-> >                 pr_err("OR of all __hash_32_generic results = %#x != %#x",
-> > -                       hash_or[1][0], -1u);
-> > +                      hash_or[1][0], -1u);
->
-> You get the idea...
->
-> >                 return -EINVAL;
-> >         }
-> >  #endif
-> > @@ -197,12 +221,12 @@ test_hash_init(void)
-> >
-> >                 if (hash_or[0][i] != m) {
-> >                         pr_err("OR of all hash_32(%d) results = %#x "
-> > -                               "(%#x expected)", i, hash_or[0][i], m);
-> > +                              "(%#x expected)", i, hash_or[0][i], m);
-> >                         return -EINVAL;
-> >                 }
-> >                 if (hash_or[1][i] != m) {
-> >                         pr_err("OR of all hash_64(%d) results = %#x "
-> > -                               "(%#x expected)", i, hash_or[1][i], m);
-> > +                              "(%#x expected)", i, hash_or[1][i], m);
-> >                         return -EINVAL;
-> >                 }
-> >         }
-> > --
-> > 2.33.0
-
-Thanks,
---
-Isabella Basso
+BR,
+Austin Kim
