@@ -2,31 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DA640108D
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 17:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A1440108A
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 17:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237306AbhIEP0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 11:26:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37186 "EHLO mail.kernel.org"
+        id S236037AbhIEPX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 11:23:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235518AbhIEP0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 11:26:16 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S229566AbhIEPXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 11:23:54 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C8CDF60F12;
-        Sun,  5 Sep 2021 15:25:12 +0000 (UTC)
-Date:   Sun, 5 Sep 2021 11:25:10 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [for-next][PATCH] tracing: Add migrate-disabled counter to tracing
- output
-Message-ID: <20210905112510.17ed0b27@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E86A60F12;
+        Sun,  5 Sep 2021 15:22:48 +0000 (UTC)
+Date:   Sun, 5 Sep 2021 16:26:12 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Nuno Sa <Nuno.Sa@analog.com>
+Subject: Re: [PATCH v2 04/16] iio: adc: max1027: Avoid device managed
+ allocators for DMA purposes
+Message-ID: <20210905162612.571fc03a@jic23-huawei>
+In-Reply-To: <20210902211437.503623-5-miquel.raynal@bootlin.com>
+References: <20210902211437.503623-1-miquel.raynal@bootlin.com>
+        <20210902211437.503623-5-miquel.raynal@bootlin.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -34,164 +37,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Gleixner <tglx@linutronix.de>
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-for-next
+On Thu,  2 Sep 2021 23:14:25 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-Head SHA1: 54357f0c9149c871e5e4b83ad385a6f2ad3a749f
+> My overall understanding [1] is that devm_ allocations will require an
+> extra 16 bytes at the beginning of the allocated buffer to store
+> information about the managing device, this shifts a little bit the
+> buffer which may then not be fully aligned on cache lines, disqualifying
+> them for being suitable for DMA.
+> 
+> Let's switch to a regular kmalloc based allocator to ensure st->buffer
+> is DMA-able, as required by the IIO subsystem.
+> 
+> [1] https://linux-arm-kernel.infradead.narkive.com/vyJqy0RQ/question-devm-kmalloc-for-dma
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+As per the other thread (I was late to the discussion) I don't believe this is
+necessary because there is no chance of the data in the cacheline being touched
+by the CPU whilst DMA is going on.
 
+https://linux-arm-kernel.infradead.narkive.com/vyJqy0RQ/question-devm-kmalloc-for-dma#post5
 
-Thomas Gleixner (1):
-      tracing: Add migrate-disabled counter to tracing output.
+Writes before dma transfer are safe.  It's writes during it that can cause problem so as
+long as a driver isn't doing devm_ calls during such writes (and I really hope this isn't)
+then we are safe.  The device will only overwrite the data with what was already there.
 
-----
- kernel/trace/trace.c        | 26 +++++++++++++++++++-------
- kernel/trace/trace_events.c |  1 +
- kernel/trace/trace_output.c | 11 ++++++++---
- 3 files changed, 28 insertions(+), 10 deletions(-)
----------------------------
-commit 54357f0c9149c871e5e4b83ad385a6f2ad3a749f
-Author: Thomas Gleixner <tglx@linutronix.de>
-Date:   Tue Aug 10 15:26:25 2021 +0200
+Jonathan
 
-    tracing: Add migrate-disabled counter to tracing output.
-    
-    migrate_disable() forbids task migration to another CPU. It is available
-    since v5.11 and has already users such as highmem or BPF. It is useful
-    to observe this task state in tracing which already has other states
-    like the preemption counter.
-    
-    Instead of adding the migrate disable counter as a new entry to struct
-    trace_entry, which would extend the whole struct by four bytes, it is
-    squashed into the preempt-disable counter. The lower four bits represent
-    the preemption counter, the upper four bits represent the migrate
-    disable counter. Both counter shouldn't exceed 15 but if they do, there
-    is a safety net which caps the value at 15.
-    
-    Add the migrate-disable counter to the trace entry so it shows up in the
-    trace. Due to the users mentioned above, it is already possible to
-    observe it:
-    
-    |  bash-1108    [000] ...21    73.950578: rss_stat: mm_id=2213312838 curr=0 type=MM_ANONPAGES size=8192B
-    |  bash-1108    [000] d..31    73.951222: irq_disable: caller=flush_tlb_mm_range+0x115/0x130 parent=ptep_clear_flush+0x42/0x50
-    |  bash-1108    [000] d..31    73.951222: tlb_flush: pages:1 reason:local mm shootdown (3)
-    
-    The last value is the migrate-disable counter.
-    
-    Things that popped up:
-    - trace_print_lat_context() does not print the migrate counter. Not sure
-      if it should. It is used in "verbose" mode and uses 8 digits and I'm
-      not sure ther is something processing the value.
-    
-    - trace_define_common_fields() now defines a different variable. This
-      probably breaks things. No ide what to do in order to preserve the old
-      behaviour. Since this is used as a filter it should be split somehow
-      to be able to match both nibbles here.
-    
-    Link: https://lkml.kernel.org/r/20210810132625.ylssabmsrkygokuv@linutronix.de
-    
-    Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-    [bigeasy: patch description.]
-    Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-    [ SDR: Removed change to common_preempt_count field name ]
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+>  drivers/iio/adc/max1027.c | 21 ++++++++++++---------
+>  1 file changed, 12 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
+> index f27044324141..1167d50c1d67 100644
+> --- a/drivers/iio/adc/max1027.c
+> +++ b/drivers/iio/adc/max1027.c
+> @@ -438,9 +438,7 @@ static int max1027_probe(struct spi_device *spi)
+>  	indio_dev->num_channels = st->info->num_channels;
+>  	indio_dev->available_scan_masks = st->info->available_scan_masks;
+>  
+> -	st->buffer = devm_kmalloc_array(&indio_dev->dev,
+> -					indio_dev->num_channels, 2,
+> -					GFP_KERNEL);
+> +	st->buffer = kmalloc_array(indio_dev->num_channels, 2, GFP_KERNEL);
+>  	if (!st->buffer)
+>  		return -ENOMEM;
+>  
+> @@ -451,7 +449,7 @@ static int max1027_probe(struct spi_device *spi)
+>  						      NULL);
+>  		if (ret < 0) {
+>  			dev_err(&indio_dev->dev, "Failed to setup buffer\n");
+> -			return ret;
+> +			goto free_buffer;
+>  		}
+>  
+>  		st->trig = devm_iio_trigger_alloc(&spi->dev, "%s-trigger",
+> @@ -460,7 +458,7 @@ static int max1027_probe(struct spi_device *spi)
+>  			ret = -ENOMEM;
+>  			dev_err(&indio_dev->dev,
+>  				"Failed to allocate iio trigger\n");
+> -			return ret;
+> +			goto free_buffer;
+>  		}
+>  
+>  		st->trig->ops = &max1027_trigger_ops;
+> @@ -470,7 +468,7 @@ static int max1027_probe(struct spi_device *spi)
+>  		if (ret < 0) {
+>  			dev_err(&indio_dev->dev,
+>  				"Failed to register iio trigger\n");
+> -			return ret;
+> +			goto free_buffer;
+>  		}
+>  
+>  		ret = devm_request_threaded_irq(&spi->dev, spi->irq,
+> @@ -481,7 +479,7 @@ static int max1027_probe(struct spi_device *spi)
+>  						st->trig);
+>  		if (ret < 0) {
+>  			dev_err(&indio_dev->dev, "Failed to allocate IRQ.\n");
+> -			return ret;
+> +			goto free_buffer;
+>  		}
+>  	}
+>  
+> @@ -490,7 +488,7 @@ static int max1027_probe(struct spi_device *spi)
+>  	ret = spi_write(st->spi, &st->reg, 1);
+>  	if (ret < 0) {
+>  		dev_err(&indio_dev->dev, "Failed to reset the ADC\n");
+> -		return ret;
+> +		goto free_buffer;
+>  	}
+>  
+>  	/* Disable averaging */
+> @@ -498,10 +496,15 @@ static int max1027_probe(struct spi_device *spi)
+>  	ret = spi_write(st->spi, &st->reg, 1);
+>  	if (ret < 0) {
+>  		dev_err(&indio_dev->dev, "Failed to configure averaging register\n");
+> -		return ret;
+> +		goto free_buffer;
+>  	}
+>  
+>  	return devm_iio_device_register(&spi->dev, indio_dev);
+> +
+> +free_buffer:
+> +	kfree(st->buffer);
+> +
+> +	return ret;
+>  }
+>  
+>  static struct spi_driver max1027_driver = {
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 489924cde4f8..b554e18924f8 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -2603,6 +2603,15 @@ enum print_line_t trace_handle_return(struct trace_seq *s)
- }
- EXPORT_SYMBOL_GPL(trace_handle_return);
- 
-+static unsigned short migration_disable_value(void)
-+{
-+#if defined(CONFIG_SMP)
-+	return current->migration_disabled;
-+#else
-+	return 0;
-+#endif
-+}
-+
- unsigned int tracing_gen_ctx_irq_test(unsigned int irqs_status)
- {
- 	unsigned int trace_flags = irqs_status;
-@@ -2621,7 +2630,8 @@ unsigned int tracing_gen_ctx_irq_test(unsigned int irqs_status)
- 		trace_flags |= TRACE_FLAG_NEED_RESCHED;
- 	if (test_preempt_need_resched())
- 		trace_flags |= TRACE_FLAG_PREEMPT_RESCHED;
--	return (trace_flags << 16) | (pc & 0xff);
-+	return (trace_flags << 16) | (min_t(unsigned int, pc & 0xff, 0xf)) |
-+		(min_t(unsigned int, migration_disable_value(), 0xf)) << 4;
- }
- 
- struct ring_buffer_event *
-@@ -4189,9 +4199,10 @@ static void print_lat_help_header(struct seq_file *m)
- 		    "#                  | / _----=> need-resched    \n"
- 		    "#                  || / _---=> hardirq/softirq \n"
- 		    "#                  ||| / _--=> preempt-depth   \n"
--		    "#                  |||| /     delay            \n"
--		    "#  cmd     pid     ||||| time  |   caller      \n"
--		    "#     \\   /        |||||  \\    |   /         \n");
-+		    "#                  |||| / _-=> migrate-disable \n"
-+		    "#                  ||||| /     delay           \n"
-+		    "#  cmd     pid     |||||| time  |   caller     \n"
-+		    "#     \\   /        ||||||  \\    |    /       \n");
- }
- 
- static void print_event_info(struct array_buffer *buf, struct seq_file *m)
-@@ -4229,9 +4240,10 @@ static void print_func_help_header_irq(struct array_buffer *buf, struct seq_file
- 	seq_printf(m, "#                            %.*s / _----=> need-resched\n", prec, space);
- 	seq_printf(m, "#                            %.*s| / _---=> hardirq/softirq\n", prec, space);
- 	seq_printf(m, "#                            %.*s|| / _--=> preempt-depth\n", prec, space);
--	seq_printf(m, "#                            %.*s||| /     delay\n", prec, space);
--	seq_printf(m, "#           TASK-PID  %.*s CPU#  ||||   TIMESTAMP  FUNCTION\n", prec, "     TGID   ");
--	seq_printf(m, "#              | |    %.*s   |   ||||      |         |\n", prec, "       |    ");
-+	seq_printf(m, "#                            %.*s||| / _-=> migrate-disable\n", prec, space);
-+	seq_printf(m, "#                            %.*s|||| /     delay\n", prec, space);
-+	seq_printf(m, "#           TASK-PID  %.*s CPU#  |||||  TIMESTAMP  FUNCTION\n", prec, "     TGID   ");
-+	seq_printf(m, "#              | |    %.*s   |   |||||     |         |\n", prec, "       |    ");
- }
- 
- void
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 1349b6de5eeb..830b3b9940f4 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -181,6 +181,7 @@ static int trace_define_common_fields(void)
- 
- 	__common_field(unsigned short, type);
- 	__common_field(unsigned char, flags);
-+	/* Holds both preempt_count and migrate_disable */
- 	__common_field(unsigned char, preempt_count);
- 	__common_field(int, pid);
- 
-diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
-index a0bf446bb034..c2ca40e8595b 100644
---- a/kernel/trace/trace_output.c
-+++ b/kernel/trace/trace_output.c
-@@ -492,8 +492,13 @@ int trace_print_lat_fmt(struct trace_seq *s, struct trace_entry *entry)
- 	trace_seq_printf(s, "%c%c%c",
- 			 irqs_off, need_resched, hardsoft_irq);
- 
--	if (entry->preempt_count)
--		trace_seq_printf(s, "%x", entry->preempt_count);
-+	if (entry->preempt_count & 0xf)
-+		trace_seq_printf(s, "%x", entry->preempt_count & 0xf);
-+	else
-+		trace_seq_putc(s, '.');
-+
-+	if (entry->preempt_count & 0xf0)
-+		trace_seq_printf(s, "%x", entry->preempt_count >> 4);
- 	else
- 		trace_seq_putc(s, '.');
- 
-@@ -656,7 +661,7 @@ int trace_print_lat_context(struct trace_iterator *iter)
- 		trace_seq_printf(
- 			s, "%16s %7d %3d %d %08x %08lx ",
- 			comm, entry->pid, iter->cpu, entry->flags,
--			entry->preempt_count, iter->idx);
-+			entry->preempt_count & 0xf, iter->idx);
- 	} else {
- 		lat_print_generic(s, entry, iter->cpu);
- 	}
