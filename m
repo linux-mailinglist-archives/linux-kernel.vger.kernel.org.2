@@ -2,417 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 855A94010DE
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 18:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B264010E8
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 18:39:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238046AbhIEQ0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 12:26:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46914 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231847AbhIEQ0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 12:26:52 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F053360EE6;
-        Sun,  5 Sep 2021 16:25:45 +0000 (UTC)
-Date:   Sun, 5 Sep 2021 17:29:08 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     Michael.Hennerich@analog.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lars@metafoo.de,
-        Dragos.Bogdan@analog.com, Darius.Berghe@analog.com,
-        andy.shevchenko@gmail.com
-Subject: Re: [PATCH v2 2/2] iio: accel: adxl355: Add triggered buffer
- support
-Message-ID: <20210905172858.10aa7b48@jic23-huawei>
-In-Reply-To: <20210903184312.21009-3-puranjay12@gmail.com>
-References: <20210903184312.21009-1-puranjay12@gmail.com>
-        <20210903184312.21009-3-puranjay12@gmail.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S238039AbhIEQki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 12:40:38 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:16264 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231847AbhIEQkh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 12:40:37 -0400
+X-UUID: 37cda44658b14df1af6b188bf2a8d76e-20210906
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=IYHM/TW5iLucDN1aj78GLAplFLu5DgDEPRT7Egaqg3A=;
+        b=hep3aRWZPwctP/Wcd5mL9NsoVlr7OdC8OhSErAh8uASP2Bu4fjo6GJwIAiiFhaG+IOCsMujxpOPRLUNhDlMK6YFrydIeLcm4PpNawfj66BOWtEz60oi1Bcts17JZPTrIeVM5aW/861TTnYsP7zZnjE6bm5IffyYgGr9pTevFt70=;
+X-UUID: 37cda44658b14df1af6b188bf2a8d76e-20210906
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <houlong.wei@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1438420773; Mon, 06 Sep 2021 00:39:27 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 6 Sep
+ 2021 00:39:25 +0800
+Received: from mhfsdcap04 (10.17.3.154) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 6 Sep 2021 00:39:24 +0800
+Message-ID: <801231146ab32f9e8aafafd05e9730a383b610e8.camel@mediatek.com>
+Subject: Re: [PATCH v7 2/7] mtk-mdp: add driver to probe mdp components
+From:   houlong wei <houlong.wei@mediatek.com>
+To:     Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Eizan Miyamoto <eizan@chromium.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        Yong Wu =?UTF-8?Q?=28=E5=90=B4=E5=8B=87=29?= 
+        <Yong.Wu@mediatek.com>, "wenst@chromium.org" <wenst@chromium.org>,
+        CK Hu =?UTF-8?Q?=28=E8=83=A1=E4=BF=8A=E5=85=89=29?= 
+        <ck.hu@mediatek.com>,
+        "Enric Balletbo i Serra" <enric.balletbo@collabora.com>,
+        Yongqiang Niu =?UTF-8?Q?=28=E7=89=9B=E6=B0=B8=E5=BC=BA=29?= 
+        <yongqiang.niu@mediatek.com>,
+        Andrew-CT Chen =?UTF-8?Q?=28=E9=99=B3=E6=99=BA=E8=BF=AA=29?= 
+        <Andrew-CT.Chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Minghsiu Tsai =?UTF-8?Q?=28=E8=94=A1=E6=98=8E=E4=BF=AE=29?= 
+        <Minghsiu.Tsai@mediatek.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, <houlong.wei@mediatek.com>
+Date:   Mon, 6 Sep 2021 00:39:26 +0800
+In-Reply-To: <fc309940c9e59f80397b90c8b11424fea344e1b5.camel@mediatek.com>
+References: <20210825063323.3607738-1-eizan@chromium.org>
+         <20210825163247.v7.2.Ie6d1e6e39cf9b5d6b2108ae1096af34c3d55880b@changeid>
+         <CAAEAJfDNDXdJFfB-bHhFcqnnKZ0TY--d_wLGddKRymQOLQY4TQ@mail.gmail.com>
+         <fc309940c9e59f80397b90c8b11424fea344e1b5.camel@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-TM-SNTS-SMTP: F9A8D31A1C3CFFD16F950366DDA0F36054B66FEBF3FB52A11BC2F7D75F8661A82000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat,  4 Sep 2021 00:13:12 +0530
-Puranjay Mohan <puranjay12@gmail.com> wrote:
-
-> Provide a way for continuous data capture by setting up buffer support. The
-> data ready signal exposed at the DRDY pin of the ADXL355 is exploited as
-> a hardware interrupt which triggers to fill the buffer.
-> 
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-
-A few things inline that were so minor I've just tidied them up along with the
-the various obvious if (ret < 0) in previous patch.
-
-Note some of these tell me you are working on an old tree and need to rebase.
-
-Let me know if any of the following is wrong.   The state ? 0 : 1 is a bit
-annoying, but without it we get a warning.
-
-Anyhow, series applied to the togreg branch of iio.git and pushed out as testing
-for 0-day to see what else we missed.
-
-Thanks,
-
-Jonathan
-
-
-diff --git a/drivers/iio/accel/adxl355_core.c b/drivers/iio/accel/adxl355_core.c
-index 71d79d2dcf7d..4f485909f459 100644
---- a/drivers/iio/accel/adxl355_core.c
-+++ b/drivers/iio/accel/adxl355_core.c
-@@ -210,7 +210,7 @@ static int adxl355_data_rdy_trigger_set_state(struct iio_trigger *trig,
-        ret = regmap_update_bits(data->regmap, ADXL355_POWER_CTL_REG,
-                                 ADXL355_POWER_CTL_DRDY_MSK,
-                                 FIELD_PREP(ADXL355_POWER_CTL_DRDY_MSK,
--                                           !state));
-+                                           state ? 0 : 1));
-        mutex_unlock(&data->lock);
- 
-        return ret;
-@@ -682,7 +682,7 @@ static int adxl355_probe_trigger(struct iio_dev *indio_dev, int irq)
- 
-        data->dready_trig = devm_iio_trigger_alloc(data->dev, "%s-dev%d",
-                                                   indio_dev->name,
--                                                  indio_dev->id);
-+                                                  iio_device_id(indio_dev));
-        if (!data->dready_trig)
-                return -ENOMEM;
- 
-@@ -741,18 +741,20 @@ int adxl355_core_probe(struct device *dev, struct regmap *regmap,
-        ret = devm_iio_triggered_buffer_setup(dev, indio_dev,
-                                              &iio_pollfunc_store_time,
-                                              &adxl355_trigger_handler, NULL);
--       if (ret)
--               return dev_err_probe(dev, ret,
--                                    "iio triggered buffer setup failed\n");
-+       if (ret) {
-+               dev_err(dev, "iio triggered buffer setup failed\n");
-+               return ret;
-+       }
- 
-        /*
-         * TODO: Would be good to move it to the generic version.
-         */
-        irq = of_irq_get_byname(dev->of_node, "DRDY");
--       if (irq > 0)
-+       if (irq > 0) {
-                ret = adxl355_probe_trigger(indio_dev, irq);
--       if (ret)
--               return ret;
-+               if (ret)
-+                       return ret;
-+       }
- 
-        return devm_iio_device_register(dev, indio_dev);
- }
-
-
-> ---
->  drivers/iio/accel/Kconfig        |   4 +
->  drivers/iio/accel/adxl355_core.c | 153 ++++++++++++++++++++++++++++++-
->  2 files changed, 156 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/accel/Kconfig b/drivers/iio/accel/Kconfig
-> index d0c45c809..9c16c1841 100644
-> --- a/drivers/iio/accel/Kconfig
-> +++ b/drivers/iio/accel/Kconfig
-> @@ -69,6 +69,8 @@ config ADXL355_I2C
->  	depends on I2C
->  	select ADXL355
->  	select REGMAP_I2C
-> +	select IIO_BUFFER
-> +	select IIO_TRIGGERED_BUFFER
->  	help
->  	  Say Y here if you want to build i2c support for the Analog Devices
->  	  ADXL355 3-axis digital accelerometer.
-> @@ -82,6 +84,8 @@ config ADXL355_SPI
->  	depends on SPI
->  	select ADXL355
->  	select REGMAP_SPI
-> +	select IIO_BUFFER
-> +	select IIO_TRIGGERED_BUFFER
->  	help
->  	  Say Y here if you want to build spi support for the Analog Devices
->  	  ADXL355 3-axis digital accelerometer.
-> diff --git a/drivers/iio/accel/adxl355_core.c b/drivers/iio/accel/adxl355_core.c
-> index 0b9996c17..4c561315f 100644
-> --- a/drivers/iio/accel/adxl355_core.c
-> +++ b/drivers/iio/accel/adxl355_core.c
-> @@ -9,11 +9,16 @@
->  
->  #include <linux/bits.h>
->  #include <linux/bitfield.h>
-> +#include <linux/iio/buffer.h>
->  #include <linux/iio/iio.h>
-> +#include <linux/iio/trigger.h>
-> +#include <linux/iio/triggered_buffer.h>
-> +#include <linux/iio/trigger_consumer.h>
->  #include <linux/limits.h>
->  #include <linux/math64.h>
->  #include <linux/module.h>
->  #include <linux/mod_devicetable.h>
-> +#include <linux/of_irq.h>
->  #include <linux/regmap.h>
->  #include <asm/unaligned.h>
->  
-> @@ -46,6 +51,7 @@
->  #define ADXL355_RANGE_REG		0x2C
->  #define ADXL355_POWER_CTL_REG		0x2D
->  #define  ADXL355_POWER_CTL_MODE_MSK	GENMASK(1, 0)
-> +#define  ADXL355_POWER_CTL_DRDY_MSK	BIT(2)
->  #define ADXL355_SELF_TEST_REG		0x2E
->  #define ADXL355_RESET_REG		0x2F
->  
-> @@ -165,7 +171,14 @@ struct adxl355_data {
->  	enum adxl355_hpf_3db hpf_3db;
->  	int calibbias[3];
->  	int adxl355_hpf_3db_table[7][2];
-> -	u8 transf_buf[3] ____cacheline_aligned;
-> +	struct iio_trigger *dready_trig;
-> +	union {
-> +		u8 transf_buf[3];
-> +		struct {
-> +			u8 buf[14];
-> +			s64 ts;
-> +		} buffer;
-> +	} ____cacheline_aligned;
->  };
->  
->  static int adxl355_set_op_mode(struct adxl355_data *data,
-> @@ -186,6 +199,23 @@ static int adxl355_set_op_mode(struct adxl355_data *data,
->  	return ret;
->  }
->  
-> +static int adxl355_data_rdy_trigger_set_state(struct iio_trigger *trig,
-> +					      bool state)
-> +{
-> +	struct iio_dev *indio_dev = iio_trigger_get_drvdata(trig);
-> +	struct adxl355_data *data = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	mutex_lock(&data->lock);
-> +	ret = regmap_update_bits(data->regmap, ADXL355_POWER_CTL_REG,
-> +				 ADXL355_POWER_CTL_DRDY_MSK,
-> +				 FIELD_PREP(ADXL355_POWER_CTL_DRDY_MSK,
-> +					    !state));
-> +	mutex_unlock(&data->lock);
-> +
-> +	return ret;
-> +}
-> +
->  static void adxl355_fill_3db_frequency_table(struct adxl355_data *data)
->  {
->  	u32 multiplier;
-> @@ -246,6 +276,12 @@ static int adxl355_setup(struct adxl355_data *data)
->  	if (ret)
->  		return ret;
->  
-> +	ret = regmap_update_bits(data->regmap, ADXL355_POWER_CTL_REG,
-> +				 ADXL355_POWER_CTL_DRDY_MSK,
-> +				 FIELD_PREP(ADXL355_POWER_CTL_DRDY_MSK, 1));
-> +	if (ret)
-> +		return ret;
-> +
->  	adxl355_fill_3db_frequency_table(data);
->  
->  	return adxl355_set_op_mode(data, ADXL355_MEASUREMENT);
-> @@ -499,12 +535,74 @@ static int adxl355_read_avail(struct iio_dev *indio_dev,
->  	}
->  }
->  
-> +static const unsigned long adxl355_avail_scan_masks[] = {
-> +	GENMASK(3, 0),
-> +	0
-> +};
-> +
->  static const struct iio_info adxl355_info = {
->  	.read_raw	= adxl355_read_raw,
->  	.write_raw	= adxl355_write_raw,
->  	.read_avail	= &adxl355_read_avail,
->  };
->  
-> +static const struct iio_trigger_ops adxl355_trigger_ops = {
-> +	.set_trigger_state = &adxl355_data_rdy_trigger_set_state,
-> +	.validate_device = &iio_trigger_validate_own_device,
-> +};
-> +
-> +static irqreturn_t adxl355_trigger_handler(int irq, void *p)
-> +{
-> +	struct iio_poll_func *pf = p;
-> +	struct iio_dev *indio_dev = pf->indio_dev;
-> +	struct adxl355_data *data = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	mutex_lock(&data->lock);
-> +
-> +	/*
-> +	 * data->buffer is used both for triggered buffer support
-> +	 * and read/write_raw(), hence, it has to be zeroed here before usage.
-> +	 */
-> +	data->buffer.buf[0] = 0;
-> +
-> +	/*
-> +	 * The acceleration data is 24 bits and big endian. It has to be saved
-> +	 * in 32 bits, hence, it is saved in the 2nd byte of the 4 byte buffer.
-> +	 * The buf array is 14 bytes as it includes 3x4=12 bytes for
-> +	 * accelaration data of x, y, and z axis. It also includes 2 bytes for
-> +	 * temperature data.
-> +	 */
-> +	ret = regmap_bulk_read(data->regmap, ADXL355_XDATA3_REG,
-> +			       &data->buffer.buf[1], 3);
-> +	if (ret)
-> +		goto out_unlock_notify;
-> +
-> +	ret = regmap_bulk_read(data->regmap, ADXL355_YDATA3_REG,
-> +			       &data->buffer.buf[5], 3);
-> +	if (ret)
-> +		goto out_unlock_notify;
-> +
-> +	ret = regmap_bulk_read(data->regmap, ADXL355_ZDATA3_REG,
-> +			       &data->buffer.buf[9], 3);
-> +	if (ret)
-> +		goto out_unlock_notify;
-> +
-> +	ret = regmap_bulk_read(data->regmap, ADXL355_TEMP2_REG,
-> +			       &data->buffer.buf[12], 2);
-> +	if (ret)
-> +		goto out_unlock_notify;
-> +
-> +	iio_push_to_buffers_with_timestamp(indio_dev, &data->buffer,
-> +					   pf->timestamp);
-> +
-> +out_unlock_notify:
-> +	mutex_unlock(&data->lock);
-> +	iio_trigger_notify_done(indio_dev->trig);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
->  #define ADXL355_ACCEL_CHANNEL(index, reg, axis) {			\
->  	.type = IIO_ACCEL,						\
->  	.address = reg,							\
-> @@ -518,6 +616,7 @@ static const struct iio_info adxl355_info = {
->  	.info_mask_shared_by_type_available =				\
->  		BIT(IIO_CHAN_INFO_SAMP_FREQ) |				\
->  		BIT(IIO_CHAN_INFO_HIGH_PASS_FILTER_3DB_FREQUENCY),	\
-> +	.scan_index = index,						\
->  	.scan_type = {							\
->  		.sign = 's',						\
->  		.realbits = 20,						\
-> @@ -537,6 +636,7 @@ static const struct iio_chan_spec adxl355_channels[] = {
->  		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
->  				      BIT(IIO_CHAN_INFO_SCALE) |
->  				      BIT(IIO_CHAN_INFO_OFFSET),
-> +		.scan_index = 3,
->  		.scan_type = {
->  			.sign = 's',
->  			.realbits = 12,
-> @@ -544,14 +644,48 @@ static const struct iio_chan_spec adxl355_channels[] = {
->  			.endianness = IIO_BE,
->  		},
->  	},
-> +	IIO_CHAN_SOFT_TIMESTAMP(4),
->  };
->  
-> +static int adxl355_probe_trigger(struct iio_dev *indio_dev, int irq)
-> +{
-> +	struct adxl355_data *data = iio_priv(indio_dev);
-> +	int ret;
-> +
-> +	data->dready_trig = devm_iio_trigger_alloc(data->dev, "%s-dev%d",
-> +						   indio_dev->name,
-> +						   indio_dev->id);
-> +	if (!data->dready_trig)
-> +		return -ENOMEM;
-> +
-> +	data->dready_trig->ops = &adxl355_trigger_ops;
-> +	iio_trigger_set_drvdata(data->dready_trig, indio_dev);
-> +
-> +	ret = devm_request_irq(data->dev, irq,
-> +			       &iio_trigger_generic_data_rdy_poll,
-> +			       IRQF_ONESHOT, "adxl355_irq", data->dready_trig);
-> +	if (ret)
-> +		return dev_err_probe(data->dev, ret, "request irq %d failed\n",
-> +				     irq);
-> +
-> +	ret = devm_iio_trigger_register(data->dev, data->dready_trig);
-> +	if (ret) {
-> +		dev_err(data->dev, "iio trigger register failed\n");
-> +		return ret;
-> +	}
-> +
-> +	indio_dev->trig = iio_trigger_get(data->dready_trig);
-> +
-> +	return 0;
-> +}
-> +
->  int adxl355_core_probe(struct device *dev, struct regmap *regmap,
->  		       const char *name)
->  {
->  	struct adxl355_data *data;
->  	struct iio_dev *indio_dev;
->  	int ret;
-> +	int irq;
->  
->  	indio_dev = devm_iio_device_alloc(dev, sizeof(*data));
->  	if (!indio_dev)
-> @@ -568,6 +702,7 @@ int adxl355_core_probe(struct device *dev, struct regmap *regmap,
->  	indio_dev->modes = INDIO_DIRECT_MODE;
->  	indio_dev->channels = adxl355_channels;
->  	indio_dev->num_channels = ARRAY_SIZE(adxl355_channels);
-> +	indio_dev->available_scan_masks = adxl355_avail_scan_masks;
->  
->  	ret = adxl355_setup(data);
->  	if (ret) {
-> @@ -575,6 +710,22 @@ int adxl355_core_probe(struct device *dev, struct regmap *regmap,
->  		return ret;
->  	}
->  
-> +	ret = devm_iio_triggered_buffer_setup(dev, indio_dev,
-> +					      &iio_pollfunc_store_time,
-> +					      &adxl355_trigger_handler, NULL);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret,
-> +				     "iio triggered buffer setup failed\n");
-
-What could cause this particular function to return that it needs to defer the
-probe?  IIRC it's not dependent on any other drivers being loaded (interrupt controllers
-or regulators or similar.)
-Probably just 
-	if (ret) {
-		dev_err();
-		return ret;
-	}
-in this case
-
-
-> +
-> +	/*
-> +	 * TODO: Would be good to move it to the generic version.
-> +	 */
-> +	irq = of_irq_get_byname(dev->of_node, "DRDY");
-
-Trivial but...
-
-> +	if (irq > 0)
-	if (irq> 0) {
-> +		ret = adxl355_probe_trigger(indio_dev, irq);
-> +	if (ret)
-		if (ret)
-			return ret;
-	}
-
-No point in checking a ret that hasn't changed value since we last checked it.
-
-> +		return ret;
-> +
->  	return devm_iio_device_register(dev, indio_dev);
->  }
->  EXPORT_SYMBOL_GPL(adxl355_core_probe);
+U29ycnksIEkgZml4IGEgbGluayBlcnJvciBiZWxvdy4NCg0KT24gTW9uLCAyMDIxLTA5LTA2IGF0
+IDAwOjIzICswODAwLCBob3Vsb25nIHdlaSB3cm90ZToNCj4gSGkgRXplcXVpZWwsDQo+IA0KPiBU
+aGFuayB5b3UgZm9yIHlvdXIgYXR0ZW50aW9uIHRvIHRoaXMgc2VyaWVzIG9mIHBhdGNoZXMuIEkg
+YW5zd2VyDQo+IHBhcnRpYWwgb2YgeW91ciBxdWVzdGlvbnMgYmVsb3cuDQo+IFJlZ2FyZHMsDQo+
+IEhvdWxvbmcNCj4gDQo+IE9uIFNhdCwgMjAyMS0wOS0wNCBhdCAyMDozNCArMDgwMCwgRXplcXVp
+ZWwgR2FyY2lhIHdyb3RlOg0KPiA+IEhpIEVpemFuLA0KPiA+IA0KPiA+IFNvcnJ5IGZvciBzZWVp
+bmcgdGhpcyBzZXJpZXMgc28gbGF0ZS4NCj4gPiANCj4gPiBPbiBXZWQsIDI1IEF1ZyAyMDIxIGF0
+IDAzOjM1LCBFaXphbiBNaXlhbW90byA8ZWl6YW5AY2hyb21pdW0ub3JnPg0KPiA+IHdyb3RlOg0K
+PiA+ID4gDQo+ID4gPiBCcm9hZGx5LCB0aGlzIHBhdGNoICgxKSBhZGRzIGEgZHJpdmVyIGZvciB2
+YXJpb3VzIE1USyBNRFANCj4gPiA+IGNvbXBvbmVudHMgdG8NCj4gPiA+IGdvIGFsb25nc2lkZSB0
+aGUgbWFpbiBNVEsgTURQIGRyaXZlciwgYW5kICgyKSBob29rcyB0aGVtIGFsbA0KPiA+ID4gdG9n
+ZXRoZXINCj4gPiA+IHVzaW5nIHRoZSBjb21wb25lbnQgZnJhbWV3b3JrLg0KPiA+ID4gDQo+ID4g
+PiAoMSkgVXAgdW50aWwgbm93LCB0aGUgTVRLIE1EUCBkcml2ZXIgY29udHJvbHMgOCBkZXZpY2Vz
+IGluIHRoZQ0KPiA+ID4gZGV2aWNlDQo+ID4gPiB0cmVlIG9uIGl0cyBvd24uIFdoZW4gcnVubmlu
+ZyB0ZXN0cyBmb3IgdGhlIGhhcmR3YXJlIHZpZGVvDQo+ID4gPiBkZWNvZGVyLA0KPiA+ID4gd2UN
+Cj4gPiA+IGZvdW5kIHRoYXQgdGhlIGlvbW11cyBhbmQgTEFSQnMgd2VyZSBub3QgYmVpbmcgcHJv
+cGVybHkNCj4gPiA+IGNvbmZpZ3VyZWQuDQo+ID4gDQo+ID4gV2h5IHdlcmUgbm90IGJlaW5nIHBy
+b3Blcmx5IGNvbmZpZ3VyZWQ/IFdoYXQgd2FzIHRoZSBwcm9ibGVtPw0KPiA+IFdoeSBub3QgZml4
+aW5nIHRoYXQgaW5zdGVhZD8NCj4gPiANCj4gPiBEb2VzIHRoaXMgbWVhbiB0aGUgZHJpdmVyIGlz
+IGN1cnJlbnRseSBicm9rZW4gYW5kIHVudXNhYmxlPw0KPiANCj4gVGhpcyBzZXJpZXMgb2YgcGF0
+Y2hlcyBhcmUgc3VwcGxlbWVudHMgdG8gYW5vdGhlciBzZXJpZXMsIHBsZWFzZQ0KPiByZWZlcg0K
+PiB0byAgDQo+IA0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LW1l
+ZGlhdGVrL2xpc3QvP3Nlcmllcz01MTUxMjljDQoNCkZpeCB0aGUgbGluayBhZGRyZXNzOiANCmh0
+dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC1tZWRpYXRlay9saXN0Lz9z
+ZXJpZXM9NTIzNzcxDQoNCj4gLCB3aGljaCBhZGQgZGV2aWNlIGxpbmsgYmV0d2VlbiB0aGUgbXRr
+LWlvbW11IGNvbnN1bWVyIGFuZCB0aGUgbXRrLQ0KPiBsYXJiIA0KPiBkZXZpY2VzLiBXaXRob3V0
+IHRoYXQgc2VyaWVzIG9mIHBhdGNoZXMsIHRoZSBtdGstbWRwIGRyaXZlciBjYW4gd29yaw0KPiB3
+ZWxsIHNvIGZhci4NCj4gQnV0IHdpdGggdGhhdCBzZXJpZXMsIGl0IHNlZW1zIHRoZSBkZXZpY2Ug
+bGluayBvbmx5IGNhbiBiZQ0KPiBlc3RhYmxpc2hlZA0KPiBmb3IgdGhlIGRldmljZSB3aGljaCBp
+cyByZWdpc3RlcmVkIGFzIGEgcGxhdGZvcm0gZHJpdmVyLiBUaGF0J3Mgd2h5DQo+IEVpemFuIGFk
+ZHMgdGhpcyBzZXJpZXMgb2YgcGF0Y2hlcyB0byBtYWtlIGFsbCBtZHAgY29tcG9uZW50cyB0byBi
+ZQ0KPiByZWdpc3RlcmVkIGFzIHBsYXRmb3JtIGRyaXZlcnMuDQo+IA0KPiA+IA0KPiA+ID4gVG8N
+Cj4gPiA+IGNvbmZpZ3VyZSB0aGVtLCBhIGRyaXZlciBmb3IgZWFjaCBiZSBhZGRlZCB0byBtdGtf
+bWRwX2NvbXAgc28NCj4gPiA+IHRoYXQNCj4gPiA+IG10a19pb21tdV9hZGRfZGV2aWNlKCkgY2Fu
+IChldmVudHVhbGx5KSBiZSBjYWxsZWQgZnJvbQ0KPiA+ID4gZG1hX2NvbmZpZ3VyZSgpDQo+ID4g
+PiBpbnNpZGUgcmVhbGx5X3Byb2JlKCkuDQo+ID4gPiANCj4gPiA+ICgyKSBUaGUgaW50ZWdyYXRp
+b24gaW50byB0aGUgY29tcG9uZW50IGZyYW1ld29yayBhbGxvd3MgdXMgdG8NCj4gPiA+IGRlZmVy
+DQo+ID4gPiB0aGUNCj4gPiA+IHJlZ2lzdHJhdGlvbiB3aXRoIHRoZSB2NGwyIHN1YnN5c3RlbSB1
+bnRpbCBhbGwgdGhlIE1EUC1yZWxhdGVkDQo+ID4gPiBkZXZpY2VzDQo+ID4gPiBoYXZlIGJlZW4g
+cHJvYmVkLCBzbyB0aGF0IHRoZSByZWxldmFudCBkZXZpY2Ugbm9kZSBkb2VzIG5vdA0KPiA+ID4g
+YmVjb21lDQo+ID4gPiBhdmFpbGFibGUgdW50aWwgaW5pdGlhbGl6YXRpb24gb2YgYWxsIHRoZSBj
+b21wb25lbnRzIGlzIGNvbXBsZXRlLg0KPiA+ID4gDQo+ID4gPiBTb21lIG5vdGVzIGFib3V0IGhv
+dyB0aGUgY29tcG9uZW50IGZyYW1ld29yayBoYXMgYmVlbiBpbnRlZ3JhdGVkOg0KPiA+ID4gDQo+
+ID4gPiAtIFRoZSBkcml2ZXIgZm9yIHRoZSByZG1hMCBjb21wb25lbnQgc2VydmVzIGRvdWJsZSBk
+dXR5IGFzIHRoZQ0KPiA+ID4gIm1hc3RlciINCj4gPiA+ICAgKGFnZ3JlZ2F0ZSkgZHJpdmVyIGFz
+IHdlbGwgYXMgYSBjb21wb25lbnQgZHJpdmVyLiBUaGlzIGlzIGENCj4gPiA+IG5vbi0NCj4gPiA+
+IGlkZWFsDQo+ID4gPiAgIGNvbXByb21pc2UgdW50aWwgYSBiZXR0ZXIgc29sdXRpb24gaXMgZGV2
+ZWxvcGVkLiBUaGlzIGRldmljZSBpcw0KPiA+ID4gICBkaWZmZXJlbnRpYXRlZCBmcm9tIHRoZSBy
+ZXN0IGJ5IGNoZWNraW5nIGZvciBhICJtZWRpYXRlayx2cHUiDQo+ID4gPiBwcm9wZXJ0eQ0KPiA+
+ID4gICBpbiB0aGUgZGV2aWNlIG5vZGUuDQo+ID4gPiANCj4gPiANCj4gPiBBcyBJIGhhdmUgc3Rh
+dGVkIGluIFl1bmZlaSwgSSBhbSBub3QgY29udmluY2VkIHlvdSBuZWVkIGFuIGFzeW5jDQo+ID4g
+ZnJhbWV3b3JrDQo+ID4gYXQgYWxsLiBJdCBzZWVtcyBhbGwgdGhlc2UgZGV2aWNlcyBjb3VsZCBo
+YXZlIGJlZW4gbGlua2VkIHRvZ2V0aGVyDQo+ID4gaW4gdGhlIGRldmljZSB0cmVlLCBhbmQgdGhl
+biBoYXZlIGEgbWFzdGVyIGRldmljZSB0byB0aWUgdGhlbS4NCj4gPiANCj4gPiBJLmUuIHNvbWV0
+aGluZyBsaWtlDQo+ID4gDQo+ID4gbWRwIHsNCj4gPiAgIG1kcF9yZG1hMCB7DQo+ID4gICB9DQo+
+ID4gICBtZHBfcnN6MCB7DQo+ID4gICB9DQo+ID4gICBtZHBfcnN6MSB7DQo+ID4gICB9DQo+ID4g
+fQ0KPiA+IA0KPiANCj4gVGhlIGNvbW1pdCBtZXNzYWdlIG9mIHRoZSBwYXRjaCBiZWxvdyBleHBs
+YWlucyB0aGF0ICIgSWYgdGhlIG1kcF8qDQo+IG5vZGVzIGFyZSB1bmRlciBhbiBtZHAgc3ViLW5v
+ZGUsIHRoZWlyIGNvcnJlc3BvbmRpbmcgcGxhdGZvcm0gZGV2aWNlDQo+IGRvZXMgbm90IGF1dG9t
+YXRpY2FsbHkgZ2V0IGl0cyBpb21tdSBhc3NpZ25lZCBwcm9wZXJseS4iDQo+IFBsZWFzZSByZWZl
+ciB0byANCj4gDQpodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dp
+dC9zdGFibGUvbGludXguZ2l0L2NvbW1pdC9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210
+ODE3My5kdHNpP2g9djUuMTQuMSZpZD04MTI3ODgxZjc0MWRiYmY5YTFkYTllOWJjNTkxMzM4MjAx
+NjBiMjE3DQo+IA0KPiA+IEFsbCB0aGlzIGFzeW5jIGdhbWVzIHNlZW0gbGlrZSBtYWtpbmcgdGhl
+IGRyaXZlciByZWFsbHkgb2JmdXNjYXRlZCwNCj4gPiB3aGljaCB3aWxsIG1lYW4gaGFyZGVyIHRv
+IGRlYnVnIGFuZCBtYWludGFpbi4NCj4gPiBJIGFtIG5vdCBzdXJlIHdlIHdhbnQgdGhhdCBidXJk
+ZW4uDQo+ID4gDQo+ID4gRXZlbiBpZiB3ZSBhcmUgYWxsIGZ1bGx5IGNvbnZpbmNlZCB0aGF0IHlv
+dSBhYnNvbHV0ZWx5IG5lZWQNCj4gPiBhbiBhc3luYyBmcmFtZXdvcmssIHRoZW4gd2hhdCdzIHdy
+b25nIHdpdGggdjRsMi1hc3luYz8NCj4gPiANCj4gPiBJIHdvdWxkIHN0YXJ0IGJ5IGFkZHJlc3Np
+bmcgd2hhdCBpcyB3cm9uZyB3aXRoIHRoZSBJT01NVXMNCj4gPiBpbiB0aGUgY3VycmVudCBkZXNp
+Z24uDQo+ID4gDQo+ID4gVGhhbmtzLA0KPiA+IEV6ZXF1aWVsDQo+ID4gDQo+ID4gPiAtIFRoZSBs
+aXN0IG9mIG1kcCBjb21wb25lbnRzIHJlbWFpbnMgaGFyZC1jb2RlZCBhcw0KPiA+ID4gbXRrX21k
+cF9jb21wX2R0X2lkc1tdDQo+ID4gPiAgIGluIG10a19tZHBfY29yZS5jLCBhbmQgYXMgbXRrX21k
+cF9jb21wX2RyaXZlcl9kdF9tYXRjaFtdIGluDQo+ID4gPiAgIG10a19tZHBfY29tcC5jLiBUaGlz
+IHVuZm9ydHVuYXRlIGR1cGxpY2F0aW9uIG9mIGluZm9ybWF0aW9uIGlzDQo+ID4gPiAgIGFkZHJl
+c3NlZCBpbiBhIGZvbGxvd2luZyBwYXRjaCBpbiB0aGlzIHNlcmllcy4NCj4gPiA+IA0KPiA+ID4g
+LSBUaGUgY29tcG9uZW50IGRyaXZlciBjYWxscyBjb21wb25lbnRfYWRkKCkgZm9yIGVhY2ggZGV2
+aWNlIHRoYXQNCj4gPiA+IGlzDQo+ID4gPiAgIHByb2JlZC4NCj4gPiA+IA0KPiA+ID4gLSBJbiBt
+dGtfbWRwX3Byb2JlICh0aGUgIm1hc3RlciIgZGV2aWNlKSwgd2Ugc2NhbiB0aGUgZGV2aWNlIHRy
+ZWUNCj4gPiA+IGZvcg0KPiA+ID4gICBhbnkgbWF0Y2hpbmcgbm9kZXMgYWdhaW5zdCBtdGtfbWRw
+X2NvbXBfZHRfaWRzLCBhbmQgYWRkDQo+ID4gPiBjb21wb25lbnQNCj4gPiA+ICAgbWF0Y2hlcyBm
+b3IgdGhlbS4gVGhlIG1hdGNoIGNyaXRlcmlhIGlzIGEgbWF0Y2hpbmcgZGV2aWNlIG5vZGUNCj4g
+PiA+ICAgcG9pbnRlci4NCj4gPiA+IA0KPiA+ID4gLSBXaGVuIHRoZSBzZXQgb2YgY29tcG9uZW50
+cyBkZXZpY2VzIHRoYXQgaGF2ZSBiZWVuIHByb2JlZA0KPiA+ID4gY29ycmVzcG9uZHMNCj4gPiA+
+ICAgd2l0aCB0aGUgbGlzdCB0aGF0IGlzIGdlbmVyYXRlZCBieSB0aGUgIm1hc3RlciIsIHRoZSBj
+YWxsYmFjaw0KPiA+ID4gdG8NCj4gPiA+ICAgbXRrX21kcF9tYXN0ZXJfYmluZCgpIGlzIG1hZGUs
+IHdoaWNoIHRoZW4gY2FsbHMgdGhlIGNvbXBvbmVudA0KPiA+ID4gYmluZA0KPiA+ID4gICBmdW5j
+dGlvbnMuDQo+ID4gPiANCj4gPiA+IC0gSW5zaWRlIG10a19tZHBfbWFzdGVyX2JpbmQoKSwgb25j
+ZSBhbGwgdGhlIGNvbXBvbmVudCBiaW5kDQo+ID4gPiBmdW5jdGlvbnMNCj4gPiA+ICAgaGF2ZSBi
+ZWVuIGNhbGxlZCwgd2UgY2FuIHRoZW4gcmVnaXN0ZXIgb3VyIGRldmljZSB0byB0aGUgdjRsMg0K
+PiA+ID4gICBzdWJzeXN0ZW0uDQo+ID4gPiANCj4gPiA+IC0gVGhlIGNhbGwgdG8gcG1fcnVudGlt
+ZV9lbmFibGUoKSBpbiB0aGUgbWFzdGVyIGRldmljZSBpcyBjYWxsZWQNCj4gPiA+IGFmdGVyDQo+
+ID4gPiAgIGFsbCB0aGUgY29tcG9uZW50cyBoYXZlIGJlZW4gcmVnaXN0ZXJlZCBieSB0aGVpciBi
+aW5kKCkNCj4gPiA+IGZ1bmN0aW9ucw0KPiA+ID4gICBjYWxsZWQgYnkgbXRrX210cF9tYXN0ZXJf
+YmluZCgpLiBBcyBhIHJlc3VsdCwgdGhlIGxpc3Qgb2YNCj4gPiA+IGNvbXBvbmVudHMNCj4gPiA+
+ICAgd2lsbCBub3QgY2hhbmdlIHdoaWxlIHBvd2VyIG1hbmFnZW1lbnQgY2FsbGJhY2tzDQo+ID4g
+PiBtdGtfbWRwX3N1c3BlbmQoKS8NCj4gPiA+ICAgcmVzdW1lKCkgYXJlIGFjY2Vzc2luZyB0aGUg
+bGlzdCBvZiBjb21wb25lbnRzLg0KPiA+ID4gDQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBFaXphbiBN
+aXlhbW90byA8ZWl6YW5AY2hyb21pdW0ub3JnPg0KPiA+ID4gUmV2aWV3ZWQtYnk6IEVucmljIEJh
+bGxldGJvIGkgU2VycmEgPGVucmljLmJhbGxldGJvQGNvbGxhYm9yYS5jb20NCj4gPiA+ID4NCj4g
+PiA+IFJldmlld2VkLWJ5OiBIb3Vsb25nIFdlaSA8aG91bG9uZy53ZWlAbWVkaWF0ZWsuY29tPg0K
+PiA+ID4gLS0tDQo+ID4gPiANCj4gDQo+IA0K
 
