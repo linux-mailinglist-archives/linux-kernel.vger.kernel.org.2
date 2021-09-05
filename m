@@ -2,165 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9B8400DD9
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 05:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C24400DDB
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 05:24:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233201AbhIEDV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 23:21:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50526 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231989AbhIEDV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 23:21:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC3EF60F9D;
-        Sun,  5 Sep 2021 03:20:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630812024;
-        bh=0pSaxwdnYx37vIi2HaUKmPD/HjxIDlDKMXnoHpjawBU=;
-        h=To:Cc:From:Subject:Date:From;
-        b=irTviQDZIaNGPeAeP5aNEa/hq63JagmanVTP2dGoznLI4/LB46Vb35dMA2dYdQ/v4
-         PfzOYHzw7zq0K2YuiC9Km3/+f5kHZWYznieZurkz6UETQV7mmIzVTFiz/W5vm9yvbm
-         uJKECEjCd9mWOAaIgljaiZU9b4ko6Kn+V/Z9mASoLNeKBi1dKE4l89Wodk83/HoZcZ
-         g+71pqhJP7y0UQHnyQ1N6x1MXpyk3qu7UIPdxsa7x80bNsdTRrywZbNLO8XLvqpCuJ
-         J89QO8XQhNAUMqOz79WHx8qdS185Y4pqISsmasC8R4CnFbdYiFEQhtojgzbAziYsaq
-         hE43bCle+E45w==
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Changcheng Deng <deng.changcheng@zte.com.cn>
-From:   Vineet Gupta <vgupta@kernel.org>
-Subject: [GIT PULL] ARC changes for 5.15-rc1
-Message-ID: <56b00ebf-3c2d-5c2a-0491-14b378e85bb3@kernel.org>
-Date:   Sat, 4 Sep 2021 20:20:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S234605AbhIEDXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 4 Sep 2021 23:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233055AbhIEDW7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 4 Sep 2021 23:22:59 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AFAFC061575
+        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 20:21:57 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id n18so3149040pgm.12
+        for <linux-kernel@vger.kernel.org>; Sat, 04 Sep 2021 20:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8/gerKdrKZe0vTryyiju4nrlBJe7KcLhAqRYTVCfauU=;
+        b=V/9277Ev9IgrpJGZG5cuEjoYmo01JmbLLtjDZLZb261ERG7HexloC+xgCVFkS+Kqnm
+         F/JiG2x0o5rFgNro4kjakWXIxNi/O/W+EUKhCS53NEm+mYMWHa/jjHAmdYz7Azc/Nw2t
+         6x5NibuFwef9uV9Xz48dvzq594k9RMSpuRxVt+5qPWsfWeLUV5UF+Bugfsqmcup8NmK9
+         SLYJNy7V2TWlUyfMi+4PPJtAdWLebCu6k6BYcfbVPhLaa8At/R07jjYI8FPBj8dIw7ua
+         yTXawlOcO/9UelaHi2GvBNK/F9nrgqYb4uG2KYknpeMhPuMtrgyvh31IlvUdZBG02yYu
+         EPpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8/gerKdrKZe0vTryyiju4nrlBJe7KcLhAqRYTVCfauU=;
+        b=D6H4fRindHDsh0BLG2QtbrebnkSAqU2H38rz3et81uox7k+loV//XZ3YoRudD/u0VM
+         htrjCD1y6++iJ3UkTwgmZe8lS5hCbqjCvU30DLznZ0WeTzQ7Prp+P6KIc4kJnZ29h9qB
+         hz+ZEkZFr8nLd2G0zhSw2xTyU6xpaolAsJobILS0PhWQtGrtZ9PMgy3QuJujIGdkzUeN
+         Ra/8NPnNu9KPZwZKX1oXkTAxP505TbMsBfN8xZkfE4OTdhiQhXGNd8Tw4Ka/TbA9nnei
+         28uaKy2h4Dq+ccUX1oKO4GB86O2jcyMVQufNOV/0VWjnYRboZDyVfBGISGz2nMpxNSXP
+         jeWQ==
+X-Gm-Message-State: AOAM531uwF3zlWZpDpmgOtp9nVygG7HlbUofjUIlmq81BOlfX0/zsojr
+        gPproFqZ2qk+aNVoExZxP86qOA==
+X-Google-Smtp-Source: ABdhPJyr5N0kHuWsgI2T1HNJZwUFesDD4hhKas8ngvC6PFP2eD5GtZ7jnC0HmwNLF8PkUR5egT6ywA==
+X-Received: by 2002:a62:1c96:0:b0:3f5:e01a:e47 with SMTP id c144-20020a621c96000000b003f5e01a0e47mr9960844pfc.76.1630812115633;
+        Sat, 04 Sep 2021 20:21:55 -0700 (PDT)
+Received: from localhost ([204.124.181.224])
+        by smtp.gmail.com with ESMTPSA id b27sm253327pfr.121.2021.09.04.20.21.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 04 Sep 2021 20:21:54 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v4] coresight: tmc-etr: Speed up for bounce buffer in flat mode
+Date:   Sun,  5 Sep 2021 11:21:44 +0800
+Message-Id: <20210905032144.966766-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The AUX bounce buffer is allocated with API dma_alloc_coherent(), in the
+low level's architecture code, e.g. for Arm64, it maps the memory with
+the attribution "Normal non-cacheable"; this can be concluded from the
+definition for pgprot_dmacoherent() in arch/arm64/include/asm/pgtable.h.
 
-Finally a big pile of changes for ARC (atomics/mm). These are from our 
-internal arc64 tree, preparing mainline for eventual arc64 support. I'm 
-spreading them to avoid tsunami of patches in one release. Please pull.
+Later when access the AUX bounce buffer, since the memory mapping is
+non-cacheable, it's low efficiency due to every load instruction must
+reach out DRAM.
 
-Thx,
--Vineet
---------------->
+This patch changes to allocate pages with dma_alloc_noncoherent(), the
+driver can access the memory via cacheable mapping; therefore, load
+instructions can fetch data from cache lines rather than always read
+data from DRAM, the driver can boost memory performance.  After using
+the cacheable mapping, the driver uses dma_sync_single_for_cpu() to
+invalidate cacheline prior to read bounce buffer so can avoid read stale
+trace data.
 
-The following changes since commit e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93:
+By measurement the duration for function tmc_update_etr_buffer() with
+ftrace function_graph tracer, it shows the performance significant
+improvement for copying 4MiB data from bounce buffer:
 
-   Linux 5.14-rc7 (2021-08-22 14:24:56 -0700)
+  # echo tmc_etr_get_data_flat_buf > set_graph_notrace // avoid noise
+  # echo tmc_update_etr_buffer > set_graph_function
+  # echo function_graph > current_tracer
 
-are available in the Git repository at:
+  before:
 
-git://git.kernel.org/pub/scm/linux/kernel/git/vgupta/arc.git/ 
-tags/arc-5.15-rc1
+  # CPU  DURATION                  FUNCTION CALLS
+  # |     |   |                     |   |   |   |
+  2)               |    tmc_update_etr_buffer() {
+  ...
+  2) # 8148.320 us |    }
 
-for you to fetch changes up to 56809a28d45fcad94b28cfd614600568c0d46545:
+  after:
 
-   ARC: mm: vmalloc sync from kernel to user table to update PMD ... 
-(2021-08-26 13:43:19 -0700)
+  # CPU  DURATION                  FUNCTION CALLS
+  # |     |   |                     |   |   |   |
+  2)               |  tmc_update_etr_buffer() {
+  ...
+  2) # 2525.420 us |  }
 
-----------------------------------------------------------------
-ARC changes for v5.15-rc1
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+---
 
-  - MM rework
-    + Implementing up to 4 paging levels (needed in MMUv6)
-    + Enable STRICT_MM_TYPECHECK
-    + switch pgtable_t back to struct page *
+Changes from v3:
+Refined change to use dma_alloc_noncoherent()/dma_free_noncoherent()
+(Robin Murphy);
+Retested functionality and performance on Juno-r2 board.
 
-  - Atomics rework / implementing relaxed accessors
+Changes from v2:
+Sync the entire buffer in one go when the tracing is wrap around
+(Suzuki);
+Add Suzuki's review tage.
 
-  - Retiring support for legacy ARC750 cores and MMUv1,v2
+ .../hwtracing/coresight/coresight-tmc-etr.c   | 26 ++++++++++++++++---
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
-  - A few other build errors, typos
-
-----------------------------------------------------------------
-Changcheng Deng (1):
-       arch/arc/kernel/: fix misspellings using codespell tool
-
-Randy Dunlap (1):
-       ARC: export clear_user_page() for modules
-
-Vineet Gupta (31):
-       ARC: atomics: disintegrate header
-       ARC: atomic: !LLSC: remove hack in atomic_set() for for UP
-       ARC: atomic: !LLSC: use int data type consistently
-       ARC: atomic64: LLSC: elide unused atomic_{and,or,xor,andnot}_return
-       ARC: atomics: implement relaxed variants
-       ARC: switch to generic bitops
-       ARC: bitops: fls/ffs to take int (vs long) per asm-generic defines
-       ARC: xchg: !LLSC: remove UP micro-optimization/hack
-       ARC: cmpxchg/xchg: rewrite as macros to make type safe
-       ARC: cmpxchg/xchg: implement relaxed variants (LLSC config only)
-       ARC: atomic_cmpxchg/atomic_xchg: implement relaxed variants
-       ARC: retire ARC750 support
-       ARC: retire MMUv1 and MMUv2 support
-       ARC: mm: use SCRATCH_DATA0 register for caching pgdir in ARCv2 only
-       ARC: mm: remove tlb paranoid code
-       ARC: mm: move mmu/cache externs out to setup.h
-       ARC: mm: Fixes to allow STRICT_MM_TYPECHECKS
-       ARC: mm: Enable STRICT_MM_TYPECHECKS
-       ARC: ioremap: use more commonly used PAGE_KERNEL based uncached flag
-       ARC: mm: pmd_populate* to use the canonical set_pmd (and drop 
-pmd_set)
-       ARC: mm: non-functional code movement/cleanup
-       ARC: mm: move MMU specific bits out of ASID allocator
-       ARC: mm: move MMU specific bits out of entry code ...
-       ARC: mm: disintegrate mmu.h (arcv2 bits out)
-       ARC: mm: disintegrate pgtable.h into levels and flags
-       ARC: mm: hack to allow 2 level build with 4 level code
-       ARC: mm: switch pgtable_t back to struct page *
-       ARC: mm: switch to asm-generic/pgalloc.h
-       ARC: mm: support 3 levels of page tables
-       ARC: mm: support 4 levels of page tables
-       ARC: mm: vmalloc sync from kernel to user table to update PMD ...
-
-  arch/arc/Kconfig |  41 +--
-  arch/arc/include/asm/atomic-llsc.h |  97 +++++++
-  arch/arc/include/asm/atomic-spinlock.h | 102 +++++++
-  arch/arc/include/asm/atomic.h | 444 ++----------------------------
-  arch/arc/include/asm/atomic64-arcv2.h | 250 +++++++++++++++++
-  arch/arc/include/asm/bitops.h | 188 +------------
-  arch/arc/include/asm/cache.h |   4 -
-  arch/arc/include/asm/cmpxchg.h | 233 ++++++++--------
-  arch/arc/include/asm/entry-compact.h |   8 -
-  arch/arc/include/asm/hugepage.h |   8 -
-  arch/arc/include/asm/mmu-arcv2.h | 103 +++++++
-  arch/arc/include/asm/mmu.h |  87 +-----
-  arch/arc/include/asm/mmu_context.h |  28 +-
-  arch/arc/include/asm/page.h |  74 +++--
-  arch/arc/include/asm/pgalloc.h |  81 ++----
-  arch/arc/include/asm/pgtable-bits-arcv2.h | 149 ++++++++++
-  arch/arc/include/asm/pgtable-levels.h | 189 +++++++++++++
-  arch/arc/include/asm/pgtable.h | 339 +----------------------
-  arch/arc/include/asm/processor.h |   2 +-
-  arch/arc/include/asm/setup.h |  12 +-
-  arch/arc/include/asm/smp.h |  14 -
-  arch/arc/include/asm/tlb-mmu1.h | 101 -------
-  arch/arc/kernel/entry-arcv2.S |   1 +
-  arch/arc/kernel/entry.S |   7 +-
-  arch/arc/kernel/intc-compact.c |   2 +-
-  arch/arc/kernel/smp.c |   4 +-
-  arch/arc/kernel/stacktrace.c |   2 +-
-  arch/arc/mm/cache.c | 112 +-------
-  arch/arc/mm/fault.c |  20 +-
-  arch/arc/mm/init.c |   5 +
-  arch/arc/mm/ioremap.c |   3 +-
-  arch/arc/mm/tlb.c | 268 +++---------------
-  arch/arc/mm/tlbex.S |  84 ++----
-  33 files changed, 1226 insertions(+), 1836 deletions(-)
-  create mode 100644 arch/arc/include/asm/atomic-llsc.h
-  create mode 100644 arch/arc/include/asm/atomic-spinlock.h
-  create mode 100644 arch/arc/include/asm/atomic64-arcv2.h
-  create mode 100644 arch/arc/include/asm/mmu-arcv2.h
-  create mode 100644 arch/arc/include/asm/pgtable-bits-arcv2.h
-  create mode 100644 arch/arc/include/asm/pgtable-levels.h
-  delete mode 100644 arch/arc/include/asm/tlb-mmu1.h
-
+diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+index acdb59e0e661..a049b525a274 100644
+--- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
++++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+@@ -609,8 +609,9 @@ static int tmc_etr_alloc_flat_buf(struct tmc_drvdata *drvdata,
+ 	if (!flat_buf)
+ 		return -ENOMEM;
+ 
+-	flat_buf->vaddr = dma_alloc_coherent(real_dev, etr_buf->size,
+-					     &flat_buf->daddr, GFP_KERNEL);
++	flat_buf->vaddr = dma_alloc_noncoherent(real_dev, etr_buf->size,
++						&flat_buf->daddr,
++						DMA_FROM_DEVICE, GFP_KERNEL);
+ 	if (!flat_buf->vaddr) {
+ 		kfree(flat_buf);
+ 		return -ENOMEM;
+@@ -631,14 +632,18 @@ static void tmc_etr_free_flat_buf(struct etr_buf *etr_buf)
+ 	if (flat_buf && flat_buf->daddr) {
+ 		struct device *real_dev = flat_buf->dev->parent;
+ 
+-		dma_free_coherent(real_dev, flat_buf->size,
+-				  flat_buf->vaddr, flat_buf->daddr);
++		dma_free_noncoherent(real_dev, etr_buf->size,
++				     flat_buf->vaddr, flat_buf->daddr,
++				     DMA_FROM_DEVICE);
+ 	}
+ 	kfree(flat_buf);
+ }
+ 
+ static void tmc_etr_sync_flat_buf(struct etr_buf *etr_buf, u64 rrp, u64 rwp)
+ {
++	struct etr_flat_buf *flat_buf = etr_buf->private;
++	struct device *real_dev = flat_buf->dev->parent;
++
+ 	/*
+ 	 * Adjust the buffer to point to the beginning of the trace data
+ 	 * and update the available trace data.
+@@ -648,6 +653,19 @@ static void tmc_etr_sync_flat_buf(struct etr_buf *etr_buf, u64 rrp, u64 rwp)
+ 		etr_buf->len = etr_buf->size;
+ 	else
+ 		etr_buf->len = rwp - rrp;
++
++	/*
++	 * The driver always starts tracing at the beginning of the buffer,
++	 * the only reason why we would get a wrap around is when the buffer
++	 * is full.  Sync the entire buffer in one go for this case.
++	 */
++	if (etr_buf->offset + etr_buf->len > etr_buf->size)
++		dma_sync_single_for_cpu(real_dev, flat_buf->daddr,
++					etr_buf->size, DMA_FROM_DEVICE);
++	else
++		dma_sync_single_for_cpu(real_dev,
++					flat_buf->daddr + etr_buf->offset,
++					etr_buf->len, DMA_FROM_DEVICE);
+ }
+ 
+ static ssize_t tmc_etr_get_data_flat_buf(struct etr_buf *etr_buf,
+-- 
+2.25.1
 
