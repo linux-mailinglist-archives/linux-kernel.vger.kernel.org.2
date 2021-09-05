@@ -2,110 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC8C400F1A
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 12:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E62D400F1F
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 12:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237710AbhIEKZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 06:25:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54000 "EHLO mail.kernel.org"
+        id S237669AbhIEKat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 06:30:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234907AbhIEKZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 06:25:49 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E45860FBF;
-        Sun,  5 Sep 2021 10:24:42 +0000 (UTC)
-Date:   Sun, 5 Sep 2021 11:28:05 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Eugen Hristev <eugen.hristev@microchip.com>
-Cc:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <nicolas.ferre@microchip.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <robh+dt@kernel.org>,
-        <ludovic.desroches@microchip.com>
-Subject: Re: [PATCH v3 00/10] iio: adc: at91-sama5d2_adc: add support for
- sama7g5
-Message-ID: <20210905112805.3e11c2dd@jic23-huawei>
-In-Reply-To: <20210901123013.329792-1-eugen.hristev@microchip.com>
-References: <20210901123013.329792-1-eugen.hristev@microchip.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S233851AbhIEKas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 06:30:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8E3661004;
+        Sun,  5 Sep 2021 10:29:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630837785;
+        bh=SQnamrSfmWm1+VwrX7zKerM9TE/6wIgo7gLmeG25mgk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oZllOPHKE5ITiaFi1rELaXaTzxoeyZuurtMzM8cLRDtU24ENlwnnC0gCBSx7TNAfF
+         QMAbZa1U33eFqSQVQ8XlWn6BqTWtR5v7dAJhdUZ5LWS72Ahy2PC82KoNOdFD34IoCZ
+         uCxrOngeuFeLQdUZsy8Rq4NvYwf+vevlPuBDzGFvRcJKzFXR3jNZEUWhevwHALd7ci
+         ujFaVe6qVMVrGtagGwT8qDGQSaBYoju/iwKxG59p1QGlQPH1WvvBdAGNrLhvxwoOCR
+         VUMtGXsLz/tv+XcxM9T9exOF6xoBrmwWQE95h3d5soIqXRy+pAHeHkApowvGHTJI6/
+         KSJb00cqDR/cg==
+Received: by mail-oi1-f173.google.com with SMTP id w19so5042845oik.10;
+        Sun, 05 Sep 2021 03:29:45 -0700 (PDT)
+X-Gm-Message-State: AOAM532/HMqAo0qeJhoGVl0ZoICQKOmhxmeLlOGYcSMYpI9SB6zl+yOx
+        sKmFL0jhRJytEC1ToqSJSNMf6sXJ6zFdDFoUloM=
+X-Google-Smtp-Source: ABdhPJyozsCCAejJVqJAJs6Qufm3Ly5L2PjLRe1v2Lqo9sBFKepwCxpwHhDYtsJUtQt18xHXcX/dIZyhmMJpWp/6K1I=
+X-Received: by 2002:a05:6808:2193:: with SMTP id be19mr5074187oib.102.1630837785219;
+ Sun, 05 Sep 2021 03:29:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210903080203.6136-1-colin.king@canonical.com>
+In-Reply-To: <20210903080203.6136-1-colin.king@canonical.com>
+From:   Oded Gabbay <ogabbay@kernel.org>
+Date:   Sun, 5 Sep 2021 13:29:18 +0300
+X-Gmail-Original-Message-ID: <CAFCwf11PPvjg0vCoY2HUhnEwYYf+DPFPm-4=GW9rxt61VB+kRQ@mail.gmail.com>
+Message-ID: <CAFCwf11PPvjg0vCoY2HUhnEwYYf+DPFPm-4=GW9rxt61VB+kRQ@mail.gmail.com>
+Subject: Re: [PATCH][next] habanalabs: Fix spelling mistake "FEADBACK" -> "FEEDBACK"
+To:     Colin King <colin.king@canonical.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-janitors@vger.kernel.org,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 1 Sep 2021 15:30:03 +0300
-Eugen Hristev <eugen.hristev@microchip.com> wrote:
+On Fri, Sep 3, 2021 at 11:02 AM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> There is a spelling mistake in a literal string. Fix it.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/misc/habanalabs/gaudi/gaudi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
+> index 383865be3c2c..1d5fcca1ee0c 100644
+> --- a/drivers/misc/habanalabs/gaudi/gaudi.c
+> +++ b/drivers/misc/habanalabs/gaudi/gaudi.c
+> @@ -395,7 +395,7 @@ static struct hl_hw_obj_name_entry gaudi_so_id_to_str[] = {
+>
+>  static struct hl_hw_obj_name_entry gaudi_monitor_id_to_str[] = {
+>         { .id = 200, .name = "MON_OBJ_DMA_DOWN_FEEDBACK_RESET" },
+> -       { .id = 201, .name = "MON_OBJ_DMA_UP_FEADBACK_RESET" },
+> +       { .id = 201, .name = "MON_OBJ_DMA_UP_FEEDBACK_RESET" },
+>         { .id = 203, .name = "MON_OBJ_DRAM_TO_SRAM_QUEUE_FENCE" },
+>         { .id = 204, .name = "MON_OBJ_TPC_0_CLK_GATE" },
+>         { .id = 205, .name = "MON_OBJ_TPC_1_CLK_GATE" },
+> --
+> 2.32.0
+>
 
-> Hi,
-> 
-> This series adds support for sama7g5.
-> 
-> The sama7g5 is slightly different from sama5d2, but has the same basic
-> operations. The register map is a bit different, so, I added some primitives
-> to differentiate between the two classes of hardware blocks (sama5d2-sam9x60
-> and sama7g5).
-> 
-> Sama7g5 has 16 channels ADC, no resistive touch, and extra features
-> (FIFOs, better oversampling , not implemented yet).
-> 
-> It is a rework of the series initially sent here:
-> https://marc.info/?l=linux-iio&m=161461656807826&w=2
-> 
-> Changes in v3:
-> updates for the channel indexes ABI
-> minor nitpicks fixes
-> fixed krobot report
-
-v2 dropped,
-v3 1-8 applied to the togreg branch of iio.git and initially pushed out as testing
-for 0-day to poke at and to allow me to rebase after rc1 is available.
-
-Thanks,
-
-Jonathan
-
-> 
-> 
-> 
-> Changes in v2:
-> 
-> I reworked this according to review by Jonathan, meaning that first I created
-> a no-op patch that will convert the driver to a more platform specific data
-> dedicated type of driver. This adds various structures that hold things like
-> register layout and channel information.
-> After this I created few patches that implement the main differences between
-> sama7g5 and older products: the end-of-conversion new register. I added
-> helper functions to make code more easy to read and more simple.
-> One the last patches adds the layout and channels for sama7g5.
-> At this moment in linux-next, the DT for sama7g5 and sama7g5ek is present,
-> and the last patches add and enable this node in DT for this board.
-> 
-> Eugen
-> 
-> 
-> 
-> Eugen Hristev (10):
->   dt-bindings: iio: adc: at91-sama5d2: add compatible for sama7g5-adc
->   iio: adc: at91-sama5d2_adc: initialize hardware after clock is started
->   iio: adc: at91-sama5d2_adc: remove unused definition
->   iio: adc: at91-sama5d2_adc: convert to platform specific data
->     structures
->   iio: adc: at91-sama5d2_adc: add support for separate end of conversion
->     registers
->   iio: adc: at91-sama5d2_adc: add helper for COR register
->   iio: adc: at91-sama5d2_adc: add support for sama7g5 device
->   iio: adc: at91-sama5d2_adc: update copyright and authors information
->   ARM: dts: at91: sama7g5: add node for the ADC
->   ARM: dts: at91: sama7g5ek: enable ADC on the board
-> 
->  .../bindings/iio/adc/atmel,sama5d2-adc.yaml   |   1 +
->  arch/arm/boot/dts/at91-sama7g5ek.dts          |   8 +
->  arch/arm/boot/dts/sama7g5.dtsi                |  16 +
->  drivers/iio/adc/at91-sama5d2_adc.c            | 594 ++++++++++++------
->  4 files changed, 432 insertions(+), 187 deletions(-)
-> 
-
+Thanks!
+Applied to -fixes
+Oded
