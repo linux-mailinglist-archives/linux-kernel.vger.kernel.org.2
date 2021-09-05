@@ -2,147 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A1440108A
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 17:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8552401095
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 17:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236037AbhIEPX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 11:23:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229566AbhIEPXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 11:23:54 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E86A60F12;
-        Sun,  5 Sep 2021 15:22:48 +0000 (UTC)
-Date:   Sun, 5 Sep 2021 16:26:12 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Nuno Sa <Nuno.Sa@analog.com>
-Subject: Re: [PATCH v2 04/16] iio: adc: max1027: Avoid device managed
- allocators for DMA purposes
-Message-ID: <20210905162612.571fc03a@jic23-huawei>
-In-Reply-To: <20210902211437.503623-5-miquel.raynal@bootlin.com>
-References: <20210902211437.503623-1-miquel.raynal@bootlin.com>
-        <20210902211437.503623-5-miquel.raynal@bootlin.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S237552AbhIEPdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 11:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229566AbhIEPdh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 11:33:37 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 008C6C061575;
+        Sun,  5 Sep 2021 08:32:34 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so5454206otk.9;
+        Sun, 05 Sep 2021 08:32:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XoAlzqJi3De8B+VzmGNnnTIvew9rejsmVUIc2D4Tpw0=;
+        b=LurNh+xXN3Seno1v6vKCeczmHg5jkp75T7+rEOTZc9poUVG66GYg/QUXCpVw/gZFaz
+         UrOiFKVGus5FSJFr25SxzrUPwkqmdBOL2RrQ9cqQnQV+zeT6US5zUeogQAglGZ9aQRpu
+         g+f4EQwqe1RumBAG3axpcqPQtpkxvocGhMlE2O7dmqkW0U/qx0C36GKaVq1rhDbNs7Aq
+         d0kmTanGwQiiXk849oEBv1wsz2C3u5LbNaV8lb9H9tcU+UWwtp/6tZUNqAZ+LW9AQmmY
+         /cbJ4ru1mUxJ8CmChZjh79C9VmP5PfoaUWgv6dfo692Lw8w0YblbPX71SpcZgzh3TgZj
+         pi8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=XoAlzqJi3De8B+VzmGNnnTIvew9rejsmVUIc2D4Tpw0=;
+        b=RdLpgm2pEKZXzVPjHyLD4MO8Mx20ZFkjn6KH29aovOh5bnpe4vnxOvEhPNFAodRfUj
+         dWc8w8IZoHkreTKd/nUD7r3jcA3z8G1C2kq+L7hpLHVklmfROz0qSfI1RXT54MyMXlI5
+         DtEqbhWaFTAu9/fAwlGkrW5qkf66NxZd2no3yMf/m7EQcwMQ72/JaIW+kHkNg+eGf2ue
+         aAXNj1RH5aYjmSEmHvVHFzXzRh9sY8ogSXS2/J3pMsdlwSe8PfkbxAVfSpMFxU09zpis
+         W3zolk0P4G83Zzqvm01Z7/JFrrIih/W8pIKITBBHlXhiArHrXbLxAkRXGqIEULQkaJbT
+         2Jjg==
+X-Gm-Message-State: AOAM532nR+HRfvqAnD6c0Oed8K7sNP8K5idjzZw92uF0dwklSgiQP2o0
+        ds2WVENpqpfaobJvhkpbs43jH7QKL9w=
+X-Google-Smtp-Source: ABdhPJzbxr3wcNwbKxd3onpfBStc77h8RDWiIefjN+/Q69lK78BTudJW3loI0eDagfkU7WkIR01wsQ==
+X-Received: by 2002:a9d:6359:: with SMTP id y25mr7629665otk.274.1630855952160;
+        Sun, 05 Sep 2021 08:32:32 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x12sm999383oie.56.2021.09.05.08.32.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 08:32:31 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 5 Sep 2021 08:32:29 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Jann Horn <jannh@google.com>, Feng Tang <feng.tang@intel.com>,
+        Kevin Brodsky <Kevin.Brodsky@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Price <steven.price@arm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        Peter Xu <peterx@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Marco Elver <elver@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Nicolas Viennot <Nicolas.Viennot@twosigma.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Chengguang Xu <cgxu519@mykernel.net>,
+        Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        David Laight <David.Laight@ACULAB.COM>,
+        linux-unionfs@vger.kernel.org, linux-api@vger.kernel.org,
+        x86@kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2 1/7] binfmt: don't use MAP_DENYWRITE when loading
+ shared libraries via uselib()
+Message-ID: <20210905153229.GA3019909@roeck-us.net>
+References: <20210816194840.42769-1-david@redhat.com>
+ <20210816194840.42769-2-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816194840.42769-2-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  2 Sep 2021 23:14:25 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-
-> My overall understanding [1] is that devm_ allocations will require an
-> extra 16 bytes at the beginning of the allocated buffer to store
-> information about the managing device, this shifts a little bit the
-> buffer which may then not be fully aligned on cache lines, disqualifying
-> them for being suitable for DMA.
+On Mon, Aug 16, 2021 at 09:48:34PM +0200, David Hildenbrand wrote:
+> uselib() is the legacy systemcall for loading shared libraries.
+> Nowadays, applications use dlopen() to load shared libraries, completely
+> implemented in user space via mmap().
 > 
-> Let's switch to a regular kmalloc based allocator to ensure st->buffer
-> is DMA-able, as required by the IIO subsystem.
+> For example, glibc uses MAP_COPY to mmap shared libraries. While this
+> maps to MAP_PRIVATE | MAP_DENYWRITE on Linux, Linux ignores any
+> MAP_DENYWRITE specification from user space in mmap.
 > 
-> [1] https://linux-arm-kernel.infradead.narkive.com/vyJqy0RQ/question-devm-kmalloc-for-dma
+> With this change, all remaining in-tree users of MAP_DENYWRITE use it
+> to map an executable. We will be able to open shared libraries loaded
+> via uselib() writable, just as we already can via dlopen() from user
+> space.
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-As per the other thread (I was late to the discussion) I don't believe this is
-necessary because there is no chance of the data in the cacheline being touched
-by the CPU whilst DMA is going on.
-
-https://linux-arm-kernel.infradead.narkive.com/vyJqy0RQ/question-devm-kmalloc-for-dma#post5
-
-Writes before dma transfer are safe.  It's writes during it that can cause problem so as
-long as a driver isn't doing devm_ calls during such writes (and I really hope this isn't)
-then we are safe.  The device will only overwrite the data with what was already there.
-
-Jonathan
-
+> This is one step into the direction of removing MAP_DENYWRITE from the
+> kernel. This can be considered a minor user space visible change.
+> 
+> Acked-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 > ---
->  drivers/iio/adc/max1027.c | 21 ++++++++++++---------
->  1 file changed, 12 insertions(+), 9 deletions(-)
+>  arch/x86/ia32/ia32_aout.c | 2 +-
+>  fs/binfmt_aout.c          | 2 +-
+>  fs/binfmt_elf.c           | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
-> index f27044324141..1167d50c1d67 100644
-> --- a/drivers/iio/adc/max1027.c
-> +++ b/drivers/iio/adc/max1027.c
-> @@ -438,9 +438,7 @@ static int max1027_probe(struct spi_device *spi)
->  	indio_dev->num_channels = st->info->num_channels;
->  	indio_dev->available_scan_masks = st->info->available_scan_masks;
->  
-> -	st->buffer = devm_kmalloc_array(&indio_dev->dev,
-> -					indio_dev->num_channels, 2,
-> -					GFP_KERNEL);
-> +	st->buffer = kmalloc_array(indio_dev->num_channels, 2, GFP_KERNEL);
->  	if (!st->buffer)
->  		return -ENOMEM;
->  
-> @@ -451,7 +449,7 @@ static int max1027_probe(struct spi_device *spi)
->  						      NULL);
->  		if (ret < 0) {
->  			dev_err(&indio_dev->dev, "Failed to setup buffer\n");
-> -			return ret;
-> +			goto free_buffer;
->  		}
->  
->  		st->trig = devm_iio_trigger_alloc(&spi->dev, "%s-trigger",
-> @@ -460,7 +458,7 @@ static int max1027_probe(struct spi_device *spi)
->  			ret = -ENOMEM;
->  			dev_err(&indio_dev->dev,
->  				"Failed to allocate iio trigger\n");
-> -			return ret;
-> +			goto free_buffer;
->  		}
->  
->  		st->trig->ops = &max1027_trigger_ops;
-> @@ -470,7 +468,7 @@ static int max1027_probe(struct spi_device *spi)
->  		if (ret < 0) {
->  			dev_err(&indio_dev->dev,
->  				"Failed to register iio trigger\n");
-> -			return ret;
-> +			goto free_buffer;
->  		}
->  
->  		ret = devm_request_threaded_irq(&spi->dev, spi->irq,
-> @@ -481,7 +479,7 @@ static int max1027_probe(struct spi_device *spi)
->  						st->trig);
->  		if (ret < 0) {
->  			dev_err(&indio_dev->dev, "Failed to allocate IRQ.\n");
-> -			return ret;
-> +			goto free_buffer;
->  		}
->  	}
->  
-> @@ -490,7 +488,7 @@ static int max1027_probe(struct spi_device *spi)
->  	ret = spi_write(st->spi, &st->reg, 1);
->  	if (ret < 0) {
->  		dev_err(&indio_dev->dev, "Failed to reset the ADC\n");
-> -		return ret;
-> +		goto free_buffer;
->  	}
->  
->  	/* Disable averaging */
-> @@ -498,10 +496,15 @@ static int max1027_probe(struct spi_device *spi)
->  	ret = spi_write(st->spi, &st->reg, 1);
->  	if (ret < 0) {
->  		dev_err(&indio_dev->dev, "Failed to configure averaging register\n");
-> -		return ret;
-> +		goto free_buffer;
->  	}
->  
->  	return devm_iio_device_register(&spi->dev, indio_dev);
-> +
-> +free_buffer:
-> +	kfree(st->buffer);
-> +
-> +	return ret;
->  }
->  
->  static struct spi_driver max1027_driver = {
+> diff --git a/arch/x86/ia32/ia32_aout.c b/arch/x86/ia32/ia32_aout.c
+> index 5e5b9fc2747f..321d7b22ad2d 100644
+> --- a/arch/x86/ia32/ia32_aout.c
+> +++ b/arch/x86/ia32/ia32_aout.c
+> @@ -293,7 +293,7 @@ static int load_aout_library(struct file *file)
+>  	/* Now use mmap to map the library into memory. */
+>  	error = vm_mmap(file, start_addr, ex.a_text + ex.a_data,
+>  			PROT_READ | PROT_WRITE | PROT_EXEC,
+> -			MAP_FIXED | MAP_PRIVATE | MAP_DENYWRITE | MAP_32BIT,
+> +			MAP_FIXED | MAP_PRIVATE | MAP_32BIT,
+>  			N_TXTOFF(ex));
+>  	retval = error;
+>  	if (error != start_addr)
+> diff --git a/fs/binfmt_aout.c b/fs/binfmt_aout.c
+> index 145917f734fe..d29de971d3f3 100644
+> --- a/fs/binfmt_aout.c
+> +++ b/fs/binfmt_aout.c
+> @@ -309,7 +309,7 @@ static int load_aout_library(struct file *file)
+>  	/* Now use mmap to map the library into memory. */
+>  	error = vm_mmap(file, start_addr, ex.a_text + ex.a_data,
+>  			PROT_READ | PROT_WRITE | PROT_EXEC,
+> -			MAP_FIXED | MAP_PRIVATE | MAP_DENYWRITE,
+> +			MAP_FIXED | MAP_PRIVATE;
+>  			N_TXTOFF(ex));
 
+Guess someone didn't care compile testing their code. This is now in
+mainline.
+
+Guenter
