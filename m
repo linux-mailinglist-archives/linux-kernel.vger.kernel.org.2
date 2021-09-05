@@ -2,69 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6971B401029
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 16:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA55C401034
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 16:30:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233260AbhIEOZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 10:25:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51074 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229566AbhIEOZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 10:25:25 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69C5B60E8B;
-        Sun,  5 Sep 2021 14:24:16 +0000 (UTC)
-Date:   Sun, 5 Sep 2021 15:27:38 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Billy Tsai <billy_tsai@aspeedtech.com>, robh+dt@kernel.org,
-        linux-aspeed@lists.ozlabs.org, p.zabel@pengutronix.de,
-        pmeerw@pmeerw.net, lars@metafoo.de, linux-iio@vger.kernel.org,
-        broonie@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, andrew@aj.id.au,
-        joel@jms.id.au, devicetree@vger.kernel.org, BMC-SW@aspeedtech.com,
-        lgirdwood@gmail.com
-Subject: Re: [v5 02/15] dt-bindings: iio: adc: Add ast2600-adc bindings
-Message-ID: <20210905152738.2645b531@jic23-huawei>
-In-Reply-To: <YS7ZnG05pZvfA/7m@robh.at.kernel.org>
-References: <20210831071458.2334-1-billy_tsai@aspeedtech.com>
-        <20210831071458.2334-3-billy_tsai@aspeedtech.com>
-        <YS7ZnG05pZvfA/7m@robh.at.kernel.org>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S234177AbhIEO3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 10:29:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233907AbhIEO3g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 10:29:36 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC047C06175F
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 07:28:32 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id t19so7912761ejr.8
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 07:28:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=OeSEurl2+uMNxj+62TOY0u9X0gjRqzf7HvkH7Cdot5w=;
+        b=eQ+xgutM+WOZhiG81CyMUjSC4bRiNMDHUHV3e2o15+vBJHgEAp2FBXkE8un4cPEtB+
+         yx4pPxktEpvi1O/t13gc9BqMshV53ruIOXmh2buH5BfcDBQ44up9/NwTKXS76g2sDq+N
+         FlUIXQheD6GGcIThrhQ6iyKUo0AKw4b6mX1FNqtNiRNtEwdVqY4ho+gd+fXroTsWvRiZ
+         rm0XVt+XAFOffBpJ5LcbV4IfLWaMcNr2RqlaKkGpDHbp2CzmdVhGRM7o8KBEYHNlao5B
+         PbLs+hUXVB9ELtKmqJ6RHn0EWTJww35RWo0PKZwl7L0YJd65ziPseniQsW8nZyiz9WN1
+         APdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=OeSEurl2+uMNxj+62TOY0u9X0gjRqzf7HvkH7Cdot5w=;
+        b=KKmPskxR+idT7RVzX5O8u5w5OToXit8CGwQm/2N1frAjmdlvm2RZ2+iZyXZqXHPKmd
+         W5iG6ScUslGbHSgZkeMY7oshBa4avT+D9sUjxo3s1R7KOcMZ29ebNqoKQivvoXNdya4D
+         hxaacwbg5wQMgen+BtkE4WnOu6wvG6pd2/fTeCAn8TWRPY5g+4kT8wELIXYnAM5lVCF+
+         WEd0nYKDT8s+cPfhHC4CbyUF9YVuYd/0JC6D/JgMcMCSs8O3OutTS2LoFtYQCH2anfq3
+         ZCVfWGGmsyA+AKYzREX5XchX3BdkdkBHsn00GRnmUIZzqqvZ395bR6YAhnCRD+0zB4e0
+         Usug==
+X-Gm-Message-State: AOAM531Sfkux1uslc4fLw3PZmomD2XkfYe2hOyWctGqvmYVBd4GmyMXh
+        ke1cO/OllyuAmyU6fX/7Ke9pQGfFjvhzhF2q1oliJQ==
+X-Google-Smtp-Source: ABdhPJyM4mUratmqo/RzqN0QLV+/EokLYEhrHg7Jt6NqRa9L45VFd4AtOWILD8jrkd5U6HBEchjrJKoYZG3pZd+UaNU=
+X-Received: by 2002:a17:906:318b:: with SMTP id 11mr9194339ejy.493.1630852110473;
+ Sun, 05 Sep 2021 07:28:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sun, 5 Sep 2021 19:58:19 +0530
+Message-ID: <CA+G9fYuYV-JUO5iZAWdh+_WooeiXhwNMh+xr24P2WDHPagTGJA@mail.gmail.com>
+Subject: udmabuf.c:30:17: warning: implicit declaration of function 'open'
+To:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Tom Murphy <murphyt7@tcd.ie>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Aug 2021 20:38:36 -0500
-Rob Herring <robh@kernel.org> wrote:
+Following build warnings noticed while building stable-rc Linux 5.14.1-rc1
+with gcc-11 for arm64 architecture.
 
-> On Tue, 31 Aug 2021 15:14:45 +0800, Billy Tsai wrote:
-> > Add device tree bindings document for the aspeed ast2600 adc device
-> > driver.
-> > 
-> > Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-> > ---
-> >  .../bindings/iio/adc/aspeed,ast2600-adc.yaml  | 100 ++++++++++++++++++
-> >  1 file changed, 100 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/adc/aspeed,ast2600-adc.yaml
-> >   
-> 
-> Reviewed-by: Rob Herring <robh@kernel.org>
+aarch64-linux-gnu-gcc -I../../../../../usr/include/    udmabuf.c  -o
+kselftest/drivers/dma-buf/udmabuf
+udmabuf.c: In function 'main':
+udmabuf.c:30:17: warning: implicit declaration of function 'open'; did
+you mean 'popen'? [-Wimplicit-function-declaration]
+   30 |         devfd = open(/dev/udmabuf, O_RDWR);
+      |                 ^~~~
+      |                 popen
+udmabuf.c:42:15: warning: implicit declaration of function 'fcntl'
+[-Wimplicit-function-declaration]
+   42 |         ret = fcntl(memfd, F_ADD_SEALS, F_SEAL_SHRINK);
+      |               ^~~~~
+make[3]: Leaving directory
+'/builds/linux/tools/testing/selftests/drivers/dma-buf'
 
-I'm going to push on with this series until I hit anything that needs to wait
-for the fix to be available.  If that happens I'll have to wait until that's
-in Linus' tree before taking the rest.
+Build config:
+https://builds.tuxbuild.com/1xXcUtI2INra8KaHjOXXQMOyAD0/config
 
-Applied to the togreg branch of iio.git and pushed out as testing for 0-day
-to work it's magic.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Thanks,
+meta data:
+-----------
+    git_describe: v5.14-rc6-389-g95dc72bb9c03,
+    git_repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc,
+    git_sha: 95dc72bb9c032093e79e628a98c927b3db73a6c3,
+    git_short_log: 95dc72bb9c03 (\Linux 5.14.1-rc1\),
+    kconfig: [
+        defconfig,
+        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/lkft.config,
+        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/lkft-crypto.config,
+        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/distro-overrides.config,
+        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/systemd.config,
+        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/virtio.config,
+        CONFIG_ARM64_MODULE_PLTS=y
+    ],
+    kernel_version: 5.14.1-rc1,
+    target_arch: arm64,
+    targets: [
+        dtbs,
+        dtbs-legacy,
+        headers,
+        kernel,
+        kselftest,
+        kselftest-merge,
+        modules
+    ],
+    toolchain: gcc-11,
 
-Jonathan
+steps to reproduce:
+https://builds.tuxbuild.com/1xXcUtI2INra8KaHjOXXQMOyAD0/tuxmake_reproducer.sh
 
-
+--
+Linaro LKFT
+https://lkft.linaro.org
