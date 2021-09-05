@@ -2,99 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81903401062
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 16:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46C6740105F
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 16:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236536AbhIEOtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 10:49:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57680 "EHLO mail.kernel.org"
+        id S235954AbhIEOsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 10:48:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229566AbhIEOtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 10:49:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E839E60F5E;
-        Sun,  5 Sep 2021 14:48:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630853286;
-        bh=Ml6h4k7pc7nhRrmhLJIKHEX5HhqaFagSdme0GwtDJWM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=S3FwZ5JGx5uDlYlbF26JN9f2eJdulDA8fw1YIntCNoFowXdZ20MDmF+t7ETAPSc7P
-         uDgkzU29g0S89ZgF7jcumMIP17S9dGnyLROmstyfXAkSgtwcZXgFYL/yJUtrKGnGU/
-         fv8giwbl7IrxDQA7+C1h+6WhFy808Mwzx9oeJBbk=
-Date:   Sun, 5 Sep 2021 16:48:03 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        straube.linux@gmail.com, martin@kaiser.cx, nathan@kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        saurav.girepunje@hotmail.com
-Subject: Re: [PATCH v2] staging: r8188eu: os_dep: simplifiy the rtw_resume
- function
-Message-ID: <YTTYo2BSG/JTuijx@kroah.com>
-References: <YTNjNLcNvPfD9+5Z@user>
+        id S229566AbhIEOsO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 10:48:14 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EBD4600CC;
+        Sun,  5 Sep 2021 14:47:06 +0000 (UTC)
+Date:   Sun, 5 Sep 2021 15:50:29 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     <lars@metafoo.de>, <pmeerw@pmeerw.net>, <robh+dt@kernel.org>,
+        <joel@jms.id.au>, <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <BMC-SW@aspeedtech.com>
+Subject: Re: [v5 04/15] iio: adc: aspeed: Keep model data to driver data.
+Message-ID: <20210905155029.3faa2c04@jic23-huawei>
+In-Reply-To: <20210905153339.751732cc@jic23-huawei>
+References: <20210831071458.2334-1-billy_tsai@aspeedtech.com>
+        <20210831071458.2334-5-billy_tsai@aspeedtech.com>
+        <20210905153339.751732cc@jic23-huawei>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTNjNLcNvPfD9+5Z@user>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 04, 2021 at 05:44:44PM +0530, Saurav Girepunje wrote:
-> Remove unused variable ret and pwrpriv.
-> Remove the condition with no effect (if == else) in usb_intf.c
-> file.
-> Remove rtw_resume_process() and move whole thing to rtw_resume().
-> 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> ---
-> 
-> ChangeLog V2:
-> - Remove rtw_resume_process() and move whole thing to rtw_resume().
-> ---
->  drivers/staging/r8188eu/include/usb_osintf.h |  2 --
->  drivers/staging/r8188eu/os_dep/usb_intf.c    | 12 ------------
->  2 files changed, 14 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/include/usb_osintf.h b/drivers/staging/r8188eu/include/usb_osintf.h
-> index d1a1f739309c..34229b1cb081 100644
-> --- a/drivers/staging/r8188eu/include/usb_osintf.h
-> +++ b/drivers/staging/r8188eu/include/usb_osintf.h
-> @@ -24,6 +24,4 @@ void *scdb_findEntry(struct adapter *priv, unsigned char *macAddr,
->  void nat25_db_expire(struct adapter *priv);
->  int nat25_db_handle(struct adapter *priv, struct sk_buff *skb, int method);
-> 
-> -int rtw_resume_process(struct adapter *padapter);
-> -
->  #endif
-> diff --git a/drivers/staging/r8188eu/os_dep/usb_intf.c b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> index bb85ab77fd26..77b03e7631b7 100644
-> --- a/drivers/staging/r8188eu/os_dep/usb_intf.c
-> +++ b/drivers/staging/r8188eu/os_dep/usb_intf.c
-> @@ -493,18 +493,6 @@ static int rtw_resume(struct usb_interface *pusb_intf)
->  {
->  	struct dvobj_priv *dvobj = usb_get_intfdata(pusb_intf);
->  	struct adapter *padapter = dvobj->if1;
-> -	struct pwrctrl_priv *pwrpriv = &padapter->pwrctrlpriv;
-> -	int ret = 0;
-> -
-> -	if (pwrpriv->bInternalAutoSuspend)
-> -		ret = rtw_resume_process(padapter);
-> -	else
-> -		ret = rtw_resume_process(padapter);
-> -	return ret;
-> -}
-> -
-> -int rtw_resume_process(struct adapter *padapter)
-> -{
->  	struct net_device *pnetdev;
->  	struct pwrctrl_priv *pwrpriv = NULL;
->  	int ret = -1;
+On Sun, 5 Sep 2021 15:33:39 +0100
+Jonathan Cameron <jic23@kernel.org> wrote:
 
-You can also remove the test for padapter being NULL in this function,
-as you just proved it could never be null otherwise the above function
-you removed would have crashed, right?  You should do that all at once
-so we remember why that test was removed.
+> On Tue, 31 Aug 2021 15:14:47 +0800
+> Billy Tsai <billy_tsai@aspeedtech.com> wrote:
+> 
+> > Keep the model data pointer to driver data for reducing the usage of
+> > of_device_get_match_data().
+> > 
+> > Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>  
+> This one starts to be impacted by the fix (as its in the context).
+> Rather than making a mess of things for linux-next etc I'll hold
+> off on these until that fix is upstream in a few weeks.
+> 
+> If I seem to have lost it (it's been known to happen :( ) then
+> feel free to poke me!
 
-thanks,
+Having taken another look at the rest of the series (and Philipp's review)
+please do a v6 starting from this patch.
 
-greg k-h
+Thanks,
+Jonathan
+
+> 
+> Thanks,
+> 
+> Jonathan
+> > ---
+> >  drivers/iio/adc/aspeed_adc.c | 20 +++++++-------------
+> >  1 file changed, 7 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
+> > index f055fe7b2c40..76ae1c3f584b 100644
+> > --- a/drivers/iio/adc/aspeed_adc.c
+> > +++ b/drivers/iio/adc/aspeed_adc.c
+> > @@ -77,6 +77,7 @@ struct aspeed_adc_model_data {
+> >  
+> >  struct aspeed_adc_data {
+> >  	struct device		*dev;
+> > +	const struct aspeed_adc_model_data *model_data;
+> >  	void __iomem		*base;
+> >  	spinlock_t		clk_lock;
+> >  	struct clk_hw		*clk_prescaler;
+> > @@ -118,8 +119,6 @@ static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
+> >  			       int *val, int *val2, long mask)
+> >  {
+> >  	struct aspeed_adc_data *data = iio_priv(indio_dev);
+> > -	const struct aspeed_adc_model_data *model_data =
+> > -			of_device_get_match_data(data->dev);
+> >  
+> >  	switch (mask) {
+> >  	case IIO_CHAN_INFO_RAW:
+> > @@ -127,7 +126,7 @@ static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
+> >  		return IIO_VAL_INT;
+> >  
+> >  	case IIO_CHAN_INFO_SCALE:
+> > -		*val = model_data->vref_voltage;
+> > +		*val = data->model_data->vref_voltage;
+> >  		*val2 = ASPEED_RESOLUTION_BITS;
+> >  		return IIO_VAL_FRACTIONAL_LOG2;
+> >  
+> > @@ -146,13 +145,11 @@ static int aspeed_adc_write_raw(struct iio_dev *indio_dev,
+> >  				int val, int val2, long mask)
+> >  {
+> >  	struct aspeed_adc_data *data = iio_priv(indio_dev);
+> > -	const struct aspeed_adc_model_data *model_data =
+> > -			of_device_get_match_data(data->dev);
+> >  
+> >  	switch (mask) {
+> >  	case IIO_CHAN_INFO_SAMP_FREQ:
+> > -		if (val < model_data->min_sampling_rate ||
+> > -			val > model_data->max_sampling_rate)
+> > +		if (val < data->model_data->min_sampling_rate ||
+> > +			val > data->model_data->max_sampling_rate)
+> >  			return -EINVAL;
+> >  
+> >  		clk_set_rate(data->clk_scaler->clk,
+> > @@ -198,7 +195,6 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+> >  {
+> >  	struct iio_dev *indio_dev;
+> >  	struct aspeed_adc_data *data;
+> > -	const struct aspeed_adc_model_data *model_data;
+> >  	const char *clk_parent_name;
+> >  	int ret;
+> >  	u32 adc_engine_control_reg_val;
+> > @@ -209,6 +205,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+> >  
+> >  	data = iio_priv(indio_dev);
+> >  	data->dev = &pdev->dev;
+> > +	data->model_data = of_device_get_match_data(&pdev->dev);
+> >  	platform_set_drvdata(pdev, indio_dev);
+> >  
+> >  	data->base = devm_platform_ioremap_resource(pdev, 0);
+> > @@ -249,9 +246,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+> >  	}
+> >  	reset_control_deassert(data->rst);
+> >  
+> > -	model_data = of_device_get_match_data(&pdev->dev);
+> > -
+> > -	if (model_data->wait_init_sequence) {
+> > +	if (data->model_data->wait_init_sequence) {
+> >  		/* Enable engine in normal mode. */
+> >  		writel(FIELD_PREP(ASPEED_ADC_OP_MODE,
+> >  				  ASPEED_ADC_OP_MODE_NORMAL) |
+> > @@ -281,8 +276,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+> >  	writel(adc_engine_control_reg_val,
+> >  	       data->base + ASPEED_REG_ENGINE_CONTROL);
+> >  
+> > -	model_data = of_device_get_match_data(&pdev->dev);
+> > -	indio_dev->name = model_data->model_name;
+> > +	indio_dev->name = data->model_data->model_name;
+> >  	indio_dev->info = &aspeed_adc_iio_info;
+> >  	indio_dev->modes = INDIO_DIRECT_MODE;
+> >  	indio_dev->channels = aspeed_adc_iio_channels;  
+> 
+
