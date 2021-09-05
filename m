@@ -2,116 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF77940103C
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 16:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2ED4401039
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 16:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234381AbhIEOcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 10:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhIEOcJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 10:32:09 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DFDDC061757
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 07:31:06 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id j13so5665128edv.13
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 07:31:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=7/1jDOGzfp3PXRcY9mA9mIPbXo8eoYQIufcyNrSrdxM=;
-        b=ysj6gmVcqNHadgXS9+bDPwQsbxGxVvOIR/E3NWp852m68iBMAwhSXd6/07o+6DMJsr
-         k/DirnKmIctct/dhSj0twwPKBli9JeeYmVrj2/Mk2Ofq3CAdniV5ae5/0qnSjgf2wkBo
-         daX+WtqPeBMJtXhF/7jezOqmmRlTt3GmPO7OrZV4zlRK0JhF6BOxJSNexqT2eYkOaG/3
-         424dfGfyKbBB5BkXMHhB/7g8OAV9gVN4b0O87tF8TzoHzy2yH/EEDqxS+iP0vRM0GOLv
-         eqFjRtXTuuo44PGn8M2KWjqkNkgN89PWGai9S2WsFUBybPbZAZHCQm3/5Qbtcsa805gr
-         ZoAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=7/1jDOGzfp3PXRcY9mA9mIPbXo8eoYQIufcyNrSrdxM=;
-        b=GOGW0cUeB6muk8elJK8GYjwSOsYNR1//RxXtnU9SDcv+lRxk4vHl/gw1t2mDRbq4o8
-         qU09Spjh7Cladbi7iutdybOgjYW7KUzvQkz1FvStivRcul8WyXyGQUzwAduiAIeHskj2
-         v9zqWkFnA2RUJYRpXceVz6X9sNRlK6xYtmF2czijMnXxuoRfJz1T4i5ERnjlNXEc7VKj
-         iaK4Ugpux9+lhE3V67JfFiDqyLHfHIWg1IeTvG2LbVQHKDVEQAfAL35NtZsBUDWrXYH8
-         xn+q1FgunB8/KDeuy+b0nAD+wx4ceHwFrf5fbFOUCobU/SmAwJV6CJX6wn2HQLS+C7kj
-         DndA==
-X-Gm-Message-State: AOAM530/zkUqVfzQyZtLVM786tMQy24ydjOGqhAOzgKxk3exYVjDFEx1
-        BZSxapF96poh4NgToBe9ZmrU8E8Huk3/+uEOPmpB2g==
-X-Google-Smtp-Source: ABdhPJxLkulszZ+5R2hFoQFt48ejGYp+MiYE+Yd64kvqwhDDt0F7dgJCJoOQl5S+PU2dcz0yxakLb94XV64LLw5bpuQ=
-X-Received: by 2002:aa7:d3c7:: with SMTP id o7mr8971267edr.288.1630852265055;
- Sun, 05 Sep 2021 07:31:05 -0700 (PDT)
+        id S234240AbhIEOb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 10:31:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233497AbhIEObZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 10:31:25 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78F3F60F21;
+        Sun,  5 Sep 2021 14:30:17 +0000 (UTC)
+Date:   Sun, 5 Sep 2021 15:33:39 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     <lars@metafoo.de>, <pmeerw@pmeerw.net>, <robh+dt@kernel.org>,
+        <joel@jms.id.au>, <andrew@aj.id.au>, <p.zabel@pengutronix.de>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <BMC-SW@aspeedtech.com>
+Subject: Re: [v5 04/15] iio: adc: aspeed: Keep model data to driver data.
+Message-ID: <20210905153339.751732cc@jic23-huawei>
+In-Reply-To: <20210831071458.2334-5-billy_tsai@aspeedtech.com>
+References: <20210831071458.2334-1-billy_tsai@aspeedtech.com>
+        <20210831071458.2334-5-billy_tsai@aspeedtech.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sun, 5 Sep 2021 20:00:54 +0530
-Message-ID: <CA+G9fYsNttv1A+iWdaaabZCfbo+miw9LDTzOjrSuuEoKOqVvDA@mail.gmail.com>
-Subject: proc-pid-vm.c:214:19: warning: 'str_vsyscall' defined but not used
-To:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, lkft-triage@lists.linaro.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following build warnings noticed while building stable-rc Linux 5.14.1-rc1
-with gcc-11 for arm64 architecture.
+On Tue, 31 Aug 2021 15:14:47 +0800
+Billy Tsai <billy_tsai@aspeedtech.com> wrote:
 
-aarch64-linux-gnu-gcc -Wall -O2 -Wno-unused-function -D_GNU_SOURCE
-proc-pid-vm.c  -o kselftest/proc/proc-pid-vm
-proc-pid-vm.c:214:19: warning: 'str_vsyscall' defined but not used
-[-Wunused-const-variable=]
-  214 | static const char str_vsyscall[] =
-      |                   ^~~~~~~~~~~~
-proc-pid-vm.c:212:13: warning: 'g_vsyscall' defined but not used
-[-Wunused-variable]
-  212 | static bool g_vsyscall = false;
-      |             ^~~~~~~~~~
+> Keep the model data pointer to driver data for reducing the usage of
+> of_device_get_match_data().
+> 
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+This one starts to be impacted by the fix (as its in the context).
+Rather than making a mess of things for linux-next etc I'll hold
+off on these until that fix is upstream in a few weeks.
 
+If I seem to have lost it (it's been known to happen :( ) then
+feel free to poke me!
 
-Build config:
-https://builds.tuxbuild.com/1xXcUtI2INra8KaHjOXXQMOyAD0/config
+Thanks,
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Jonathan
+> ---
+>  drivers/iio/adc/aspeed_adc.c | 20 +++++++-------------
+>  1 file changed, 7 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/aspeed_adc.c b/drivers/iio/adc/aspeed_adc.c
+> index f055fe7b2c40..76ae1c3f584b 100644
+> --- a/drivers/iio/adc/aspeed_adc.c
+> +++ b/drivers/iio/adc/aspeed_adc.c
+> @@ -77,6 +77,7 @@ struct aspeed_adc_model_data {
+>  
+>  struct aspeed_adc_data {
+>  	struct device		*dev;
+> +	const struct aspeed_adc_model_data *model_data;
+>  	void __iomem		*base;
+>  	spinlock_t		clk_lock;
+>  	struct clk_hw		*clk_prescaler;
+> @@ -118,8 +119,6 @@ static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
+>  			       int *val, int *val2, long mask)
+>  {
+>  	struct aspeed_adc_data *data = iio_priv(indio_dev);
+> -	const struct aspeed_adc_model_data *model_data =
+> -			of_device_get_match_data(data->dev);
+>  
+>  	switch (mask) {
+>  	case IIO_CHAN_INFO_RAW:
+> @@ -127,7 +126,7 @@ static int aspeed_adc_read_raw(struct iio_dev *indio_dev,
+>  		return IIO_VAL_INT;
+>  
+>  	case IIO_CHAN_INFO_SCALE:
+> -		*val = model_data->vref_voltage;
+> +		*val = data->model_data->vref_voltage;
+>  		*val2 = ASPEED_RESOLUTION_BITS;
+>  		return IIO_VAL_FRACTIONAL_LOG2;
+>  
+> @@ -146,13 +145,11 @@ static int aspeed_adc_write_raw(struct iio_dev *indio_dev,
+>  				int val, int val2, long mask)
+>  {
+>  	struct aspeed_adc_data *data = iio_priv(indio_dev);
+> -	const struct aspeed_adc_model_data *model_data =
+> -			of_device_get_match_data(data->dev);
+>  
+>  	switch (mask) {
+>  	case IIO_CHAN_INFO_SAMP_FREQ:
+> -		if (val < model_data->min_sampling_rate ||
+> -			val > model_data->max_sampling_rate)
+> +		if (val < data->model_data->min_sampling_rate ||
+> +			val > data->model_data->max_sampling_rate)
+>  			return -EINVAL;
+>  
+>  		clk_set_rate(data->clk_scaler->clk,
+> @@ -198,7 +195,6 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+>  {
+>  	struct iio_dev *indio_dev;
+>  	struct aspeed_adc_data *data;
+> -	const struct aspeed_adc_model_data *model_data;
+>  	const char *clk_parent_name;
+>  	int ret;
+>  	u32 adc_engine_control_reg_val;
+> @@ -209,6 +205,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+>  
+>  	data = iio_priv(indio_dev);
+>  	data->dev = &pdev->dev;
+> +	data->model_data = of_device_get_match_data(&pdev->dev);
+>  	platform_set_drvdata(pdev, indio_dev);
+>  
+>  	data->base = devm_platform_ioremap_resource(pdev, 0);
+> @@ -249,9 +246,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+>  	}
+>  	reset_control_deassert(data->rst);
+>  
+> -	model_data = of_device_get_match_data(&pdev->dev);
+> -
+> -	if (model_data->wait_init_sequence) {
+> +	if (data->model_data->wait_init_sequence) {
+>  		/* Enable engine in normal mode. */
+>  		writel(FIELD_PREP(ASPEED_ADC_OP_MODE,
+>  				  ASPEED_ADC_OP_MODE_NORMAL) |
+> @@ -281,8 +276,7 @@ static int aspeed_adc_probe(struct platform_device *pdev)
+>  	writel(adc_engine_control_reg_val,
+>  	       data->base + ASPEED_REG_ENGINE_CONTROL);
+>  
+> -	model_data = of_device_get_match_data(&pdev->dev);
+> -	indio_dev->name = model_data->model_name;
+> +	indio_dev->name = data->model_data->model_name;
+>  	indio_dev->info = &aspeed_adc_iio_info;
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>  	indio_dev->channels = aspeed_adc_iio_channels;
 
-meta data:
------------
-    git_describe: v5.14-rc6-389-g95dc72bb9c03,
-    git_repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc,
-    git_sha: 95dc72bb9c032093e79e628a98c927b3db73a6c3,
-    git_short_log: 95dc72bb9c03 (\Linux 5.14.1-rc1\),
-    kconfig: [
-        defconfig,
-        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/lkft.config,
-        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/lkft-crypto.config,
-        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/distro-overrides.config,
-        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/systemd.config,
-        https://raw.githubusercontent.com/Linaro/meta-lkft/sumo/recipes-kernel/linux/files/virtio.config,
-        CONFIG_ARM64_MODULE_PLTS=y
-    ],
-    kernel_version: 5.14.1-rc1,
-    target_arch: arm64,
-    targets: [
-        dtbs,
-        dtbs-legacy,
-        headers,
-        kernel,
-        kselftest,
-        kselftest-merge,
-        modules
-    ],
-    toolchain: gcc-11,
-
-steps to reproduce:
-https://builds.tuxbuild.com/1xXcUtI2INra8KaHjOXXQMOyAD0/tuxmake_reproducer.sh
-
---
-Linaro LKFT
-https://lkft.linaro.org
