@@ -2,118 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F0F4010C9
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 18:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD47C4010CF
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 18:18:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237904AbhIEQPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 12:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhIEQPg (ORCPT
+        id S238013AbhIEQTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 12:19:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34599 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230387AbhIEQTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 12:15:36 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7007C061575;
-        Sun,  5 Sep 2021 09:14:32 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id jg16so8263649ejc.1;
-        Sun, 05 Sep 2021 09:14:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z1qfnInw6eBkH7VjzzpSAckO42XtWnywfSjVuFVYJ3Q=;
-        b=PU14FLyzP6DjD1Xg8mWVpaBO2svY6s7u4j3xgfY/lmmGPcXclmQGtbrjSBwOBgChCi
-         8U7E3QMqeWunvrr7r0hXeVFaiyvvN47s0sSC9Bu6Slhfyi1XHFeLvQxzz9QCQeGODFu6
-         GzBkWImo3OYYrP/A9bu779vxlYlBVhb6LbO0u+wedSDSFzNxtyLlLEhLCXbIJVNaGojQ
-         UKpGG/kQC2Qj4bMWlecREXAMhXXp0zR6yQo1zym6vn89i9m7VS3HOiPnjngTLTjryZNG
-         O93maFPHunXPw9vRhlTcF+NoE6qAziXBHYdhI+PlI2WYjNz5KZAU3DVjAxZ/Yc/0h34/
-         EntA==
+        Sun, 5 Sep 2021 12:19:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630858682;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hW1sN5QGx3Kx2EPNmaIE4CRt6Il/ANBqcp567eWWlqk=;
+        b=NzkRj9Titj7saPXnb7z70ke5gZiqAyAknju4Az/6KZCzKUsLsU+WO2UodfHunzETTk4bFe
+        OPI5/+0u66svGhm2/qnhTZ/YOnnR+e29aZBEKDsgjdGraHm0kYIOf6wwAJLoDEVNhEt0Zo
+        l9jS6VRAJN4wAQDlGER5CecQxyyQPe8=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-390-PxAL8IZAOQKBMIp1Q-d1GQ-1; Sun, 05 Sep 2021 12:18:01 -0400
+X-MC-Unique: PxAL8IZAOQKBMIp1Q-d1GQ-1
+Received: by mail-wm1-f71.google.com with SMTP id r4-20020a1c4404000000b002e728beb9fbso2725806wma.9
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 09:18:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z1qfnInw6eBkH7VjzzpSAckO42XtWnywfSjVuFVYJ3Q=;
-        b=koiZJxTbwRhvgzA4mSPlMHBYO1wQGTKOFpGZEg4fHsnnr3J7zOHjfAag/SzI8ao9SK
-         nJFqXW+8wN4lKZ0F4MVOtpTMYdhjz4RVg+6p2HgCTVYW+liSsX5ifK2jd2qxDUfBYvTK
-         36xxtmoxFX+SU/RWI0d1ldPR4Si440TiMB+JH7jPytT36IJOetIfaPn9exb9t4hRKnpY
-         Go8/XmF/Q/3FYAJTn4Gt0USgtsq0mGgwRMwzYZYK/0U6LU8bWr4zDcmMF6oekI5gbkj8
-         xsg9lb3gIDXl9S2kgfc6N4fWPcc6cXMt2HfeSBrVrunrzDswKL5S4MODiWLb83cUH9A1
-         g9ww==
-X-Gm-Message-State: AOAM53053aaGwnqdnBUpJIF7qdShuoPEaNeoN7yBqsxRKejnAj/hc3O2
-        kv0NYIzHD7tNi/oegsbPX4eoABt9v5SKq6uYZU4=
-X-Google-Smtp-Source: ABdhPJxkm85otXbfQPQGcjOp49xOcY21ScTLcY2EjtERxtwvx5yiJsEhyTBr9ILLH7j1fsbSn+XqGv9mqB0uojt0ais=
-X-Received: by 2002:a17:906:52c5:: with SMTP id w5mr9401187ejn.567.1630858471430;
- Sun, 05 Sep 2021 09:14:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hW1sN5QGx3Kx2EPNmaIE4CRt6Il/ANBqcp567eWWlqk=;
+        b=aXsoZ1serI4zvsmrnmpOytSuhsZkvuzb+EJuPp7RFBxSJKkSORPDecA8lyG6BIuFRV
+         xkee5zo/erWd5xcKR2qXF+qjZWcxZQcbrnjxf9OzATe3WHqbnuZZxHejyf5l3pJd6tKl
+         ltGM/H9xxRFAztP4dp/zswF9BxS61Zz9KKIJQ9PZc4Rx8x4287jxp9EQt8EXQhlWoZCZ
+         m0Dg8OGgjg7ZM2gWaz6WCExQk+2owtLsr+N4+XBQIOildYD1yZXbUtDUfOz+33qXFr9f
+         zVJLwvO9bfE+gMmtWKSUIl9AiMzYB3o1trkSNX2TcIkUEo2B0YW6C3tuFg4dyBIM0tB2
+         /jtg==
+X-Gm-Message-State: AOAM5321+H5tfdzbsA3ARtWBwdO8E143xlX68XVPw1Nuq25aCwU2gZoK
+        cm0OZJluYU+q5Ga1fZGo7slVBUbVS1UWvfQ4wIKfLOe7ldAG9KzM/l3D0iq5qOqXXvRqquXQ+TM
+        eMXYqIZed1zJHLFWMNb6DYn0i
+X-Received: by 2002:adf:e6c5:: with SMTP id y5mr9020252wrm.198.1630858680262;
+        Sun, 05 Sep 2021 09:18:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxCY+j+7T+nDz0P50mK89ZiTPM8ct/jZZ3HWCX3r0RyVKusgkTEzB0PV/xPQQ6NTWshHSYVWg==
+X-Received: by 2002:adf:e6c5:: with SMTP id y5mr9020227wrm.198.1630858679962;
+        Sun, 05 Sep 2021 09:17:59 -0700 (PDT)
+Received: from redhat.com ([2.55.131.183])
+        by smtp.gmail.com with ESMTPSA id n18sm4795503wmc.22.2021.09.05.09.17.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 09:17:58 -0700 (PDT)
+Date:   Sun, 5 Sep 2021 12:17:55 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Cc:     Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yuanxzhang@fudan.edu.cn,
+        Xin Tan <tanxin.ctf@gmail.com>
+Subject: Re: [PATCH] vhost_net: Convert from atomic_t to refcount_t on
+ vhost_net_ubuf_ref->refcount
+Message-ID: <20210905121737-mutt-send-email-mst@kernel.org>
+References: <1626517230-42920-1-git-send-email-xiyuyang19@fudan.edu.cn>
 MIME-Version: 1.0
-References: <20210905155728.11147-1-len.baker@gmx.com>
-In-Reply-To: <20210905155728.11147-1-len.baker@gmx.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 5 Sep 2021 19:13:54 +0300
-Message-ID: <CAHp75VcqTf3qef76nAE_TN32MdcvtYxZP2O8Oekap-_34mey0A@mail.gmail.com>
-Subject: Re: [PATCH] serial: 8250_pci: Prefer struct_size over open coded arithmetic
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mario Kleiner <mario.kleiner.de@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Randy Wright <rwright@hpe.com>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Tobias Diedrich <tobiasdiedrich@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1626517230-42920-1-git-send-email-xiyuyang19@fudan.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 5, 2021 at 6:58 PM Len Baker <len.baker@gmx.com> wrote:
->
-> As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> and Conventions" documentation [1], size calculations (especially
-> multiplication) should not be performed in memory allocator (or similar)
-> function arguments due to the risk of them overflowing. This could lead
-> to values wrapping around and a smaller allocation being made than the
-> caller was expecting. Using those allocations could lead to linear
-> overflows of heap memory and other misbehaviors.
->
-> So, use the struct_size() helper to do the arithmetic instead of the
-> argument "size + size * count" in the kzalloc() function.
+On Sat, Jul 17, 2021 at 06:20:30PM +0800, Xiyu Yang wrote:
+> refcount_t type and corresponding API can protect refcounters from
+> accidental underflow and overflow and further use-after-free situations.
+> 
+> Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
 
-Makes sense
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Pls resubmit after addressing the build bot comments.
+Thanks!
 
-> [1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
->
-> Signed-off-by: Len Baker <len.baker@gmx.com>
 > ---
->  drivers/tty/serial/8250/8250_pci.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-> index a808c283883e..b97ade35d4a3 100644
-> --- a/drivers/tty/serial/8250/8250_pci.c
-> +++ b/drivers/tty/serial/8250/8250_pci.c
-> @@ -3981,9 +3981,7 @@ pciserial_init_ports(struct pci_dev *dev, const struct pciserial_board *board)
->                         nr_ports = rc;
->         }
->
-> -       priv = kzalloc(sizeof(struct serial_private) +
-> -                      sizeof(unsigned int) * nr_ports,
-> -                      GFP_KERNEL);
-> +       priv = kzalloc(struct_size(priv, line, nr_ports), GFP_KERNEL);
->         if (!priv) {
->                 priv = ERR_PTR(-ENOMEM);
->                 goto err_deinit;
-> --
-> 2.25.1
->
+>  drivers/vhost/net.c | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
+> index 6414bd5741b8..e23150ca7d4c 100644
+> --- a/drivers/vhost/net.c
+> +++ b/drivers/vhost/net.c
+> @@ -5,6 +5,7 @@
+>   * virtio-net server in host kernel.
+>   */
+>  
+> +#include <linux/refcount.h>
+>  #include <linux/compat.h>
+>  #include <linux/eventfd.h>
+>  #include <linux/vhost.h>
+> @@ -92,7 +93,7 @@ struct vhost_net_ubuf_ref {
+>  	 *  1: no outstanding ubufs
+>  	 * >1: outstanding ubufs
+>  	 */
+> -	atomic_t refcount;
+> +	refcount_t refcount;
+>  	wait_queue_head_t wait;
+>  	struct vhost_virtqueue *vq;
+>  };
+> @@ -240,7 +241,7 @@ vhost_net_ubuf_alloc(struct vhost_virtqueue *vq, bool zcopy)
+>  	ubufs = kmalloc(sizeof(*ubufs), GFP_KERNEL);
+>  	if (!ubufs)
+>  		return ERR_PTR(-ENOMEM);
+> -	atomic_set(&ubufs->refcount, 1);
+> +	refcount_set(&ubufs->refcount, 1);
+>  	init_waitqueue_head(&ubufs->wait);
+>  	ubufs->vq = vq;
+>  	return ubufs;
+> @@ -248,7 +249,8 @@ vhost_net_ubuf_alloc(struct vhost_virtqueue *vq, bool zcopy)
+>  
+>  static int vhost_net_ubuf_put(struct vhost_net_ubuf_ref *ubufs)
+>  {
+> -	int r = atomic_sub_return(1, &ubufs->refcount);
+> +	refcount_dec(&ubufs->refcount);
+> +	int r = refcount_read(&ubufs->refcount);
+>  	if (unlikely(!r))
+>  		wake_up(&ubufs->wait);
+>  	return r;
+> @@ -257,7 +259,7 @@ static int vhost_net_ubuf_put(struct vhost_net_ubuf_ref *ubufs)
+>  static void vhost_net_ubuf_put_and_wait(struct vhost_net_ubuf_ref *ubufs)
+>  {
+>  	vhost_net_ubuf_put(ubufs);
+> -	wait_event(ubufs->wait, !atomic_read(&ubufs->refcount));
+> +	wait_event(ubufs->wait, !refcount_read(&ubufs->refcount));
+>  }
+>  
+>  static void vhost_net_ubuf_put_wait_and_free(struct vhost_net_ubuf_ref *ubufs)
+> @@ -909,7 +911,7 @@ static void handle_tx_zerocopy(struct vhost_net *net, struct socket *sock)
+>  			ctl.ptr = ubuf;
+>  			msg.msg_controllen = sizeof(ctl);
+>  			ubufs = nvq->ubufs;
+> -			atomic_inc(&ubufs->refcount);
+> +			refcount_inc(&ubufs->refcount);
+>  			nvq->upend_idx = (nvq->upend_idx + 1) % UIO_MAXIOV;
+>  		} else {
+>  			msg.msg_control = NULL;
+> @@ -1384,7 +1386,7 @@ static void vhost_net_flush(struct vhost_net *n)
+>  		vhost_net_ubuf_put_and_wait(n->vqs[VHOST_NET_VQ_TX].ubufs);
+>  		mutex_lock(&n->vqs[VHOST_NET_VQ_TX].vq.mutex);
+>  		n->tx_flush = false;
+> -		atomic_set(&n->vqs[VHOST_NET_VQ_TX].ubufs->refcount, 1);
+> +		refcount_set(&n->vqs[VHOST_NET_VQ_TX].ubufs->refcount, 1);
+>  		mutex_unlock(&n->vqs[VHOST_NET_VQ_TX].vq.mutex);
+>  	}
+>  }
+> -- 
+> 2.7.4
 
-
--- 
-With Best Regards,
-Andy Shevchenko
