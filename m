@@ -2,140 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7DDB4010B3
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 17:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03FB94010B6
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 17:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237939AbhIEP6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 11:58:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36561 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236513AbhIEP6f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 11:58:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630857451;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ALsSmxCI7zZzOlsgFfP2jF6WBrBi9RCCJjNwkZ0c/3s=;
-        b=HbmKQ/IY83JWXQ2DlBSppysfTXKSMD3e2idIk2mKFyq+Xe8xewoN+qjVIZ2C8g/DxrckGM
-        2JPUb73aS6w8VgecNi0pBytxrtnXUuZJarNKPsa3fpEAWFWaatgBt4DttWMntWyB3SYBtq
-        m59x43kKbOTo0Jd9asV5jYCvNnk/7Ro=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-374-S1-QhveNNNWjaM_iiOhTNA-1; Sun, 05 Sep 2021 11:57:30 -0400
-X-MC-Unique: S1-QhveNNNWjaM_iiOhTNA-1
-Received: by mail-wm1-f70.google.com with SMTP id r4-20020a1c4404000000b002e728beb9fbso2706836wma.9
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 08:57:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ALsSmxCI7zZzOlsgFfP2jF6WBrBi9RCCJjNwkZ0c/3s=;
-        b=ZQAFcaXvQymqfewhl4w3SMoMGgvoO4GF5e9oPs/sXlfzwGAtLAurgXqsmiIyT7Q6zA
-         WudU1F3E3FxP/SHRpb1xSqGuBRWBMHFgkT5WlcCS3e/vUmuGBTLnxpOXtIUlvGLG8uaF
-         7fkYvctHMEn1pdjzJO6xO5lj3Mhym9BXWGukTzSH2hEGmAfdkNd9ch0cLxCCA8/dTkPe
-         3ubbTJNh1CBh541MxqZKEh8JY2gLfzmJRz7Ogfn/9yJpa6pmFKOuCmcIyKVq6dahsuh0
-         k5i5N4LVt15/e2D1iNxhWKNKB9OS36C6gnvPZCBQDt7Qnno/jz15mA9JKVaLhQLGw2eZ
-         YWkw==
-X-Gm-Message-State: AOAM530H/2FeZFK/mP5m3I1Gl7oU7tvnYI6FMR2FwPKCwfsb81rwrRZJ
-        odTgvTfSkKIuSLjb0+Hra7YMEmaMhTLrUbBUbkNyn8ffc1/Z2e0HjecCu2eXhDiMo9ODRD2X0+g
-        dpzenDx1Mbn4BPOliWxgcF2IN
-X-Received: by 2002:adf:f991:: with SMTP id f17mr9015612wrr.56.1630857449029;
-        Sun, 05 Sep 2021 08:57:29 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwwnpG4c6ej4zR69bwXXhKihUsDCsR3fnY/KHrXw5h/ma0hALUo9/kK5Sd32+gteCqNYbS8Og==
-X-Received: by 2002:adf:f991:: with SMTP id f17mr9015590wrr.56.1630857448836;
-        Sun, 05 Sep 2021 08:57:28 -0700 (PDT)
-Received: from redhat.com ([2.55.131.183])
-        by smtp.gmail.com with ESMTPSA id u16sm5501569wmc.41.2021.09.05.08.57.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Sep 2021 08:57:28 -0700 (PDT)
-Date:   Sun, 5 Sep 2021 11:57:22 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Xie Yongji <xieyongji@bytedance.com>
-Cc:     jasowang@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
-        parav@nvidia.com, hch@infradead.org,
-        christian.brauner@canonical.com, rdunlap@infradead.org,
-        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
-        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
-        dan.carpenter@oracle.com, joro@8bytes.org,
-        gregkh@linuxfoundation.org, zhe.he@windriver.com,
-        xiaodong.liu@intel.com, joe@perches.com, robin.murphy@arm.com,
-        will@kernel.org, john.garry@huawei.com, songmuchun@bytedance.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v13 03/13] file: Export receive_fd() to modules
-Message-ID: <20210905115642-mutt-send-email-mst@kernel.org>
-References: <20210831103634.33-1-xieyongji@bytedance.com>
- <20210831103634.33-4-xieyongji@bytedance.com>
+        id S237952AbhIEP7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 11:59:24 -0400
+Received: from mout.gmx.net ([212.227.17.20]:32981 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236513AbhIEP7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 11:59:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630857474;
+        bh=yzs5x4RVeCX7GCJ8zRpi43BntS7NvKdUcjfhqS7PxBo=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=gU/cBiqIs9og4QKJpPoF3Ct1B8N3499FJj7/lQmpuOMvTTHGI4zuaxRZffvB+qQ+F
+         rPzNj4H66HqLwUuBaYHfzXUfISSCFAg2mbg4K5yrTicYFZQbcy1iUk8PTZoW6cBKS3
+         yFHTt5ZUFm7OB+3+fC/KCPhORW30tz7D6McN1+Po=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1M72oB-1mKRxd0Qe7-008e5s; Sun, 05 Sep 2021 17:57:54 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mario Kleiner <mario.kleiner.de@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Randy Wright <rwright@hpe.com>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Tobias Diedrich <tobiasdiedrich@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>, linux-serial@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] serial: 8250_pci: Prefer struct_size over open coded arithmetic
+Date:   Sun,  5 Sep 2021 17:57:28 +0200
+Message-Id: <20210905155728.11147-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210831103634.33-4-xieyongji@bytedance.com>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:UYDJTK6j41RrEupZsDTFqHaTUhbI8HGQxCwMtcnqfE2U85RRCSV
+ uLX/EhqSg4m87zkU70rCJK16vpW5d3btW27vcx2csvU3s68rglN3QnJ3ubm8aZ98J4XMjBu
+ P28AOvhifvNtgQLJG5/3hXDUjlJ8MHHvzk/NbHf1iruZ9PYHSgP5ygZGdev2JM4M5XA4l1R
+ q8a7jQhoN6wEESNNZk/Kw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:CS+yAjvovFc=:rgAzYenUXZjYF4iryq9bCF
+ evzwuhqv04eSSJ/e67BzboIPjwtNvKKRJNks7j746SI2vxWkfMZiX0qGVIADB49Mnht/vyPRm
+ E6xUE60CO1s0lLx4IkD7N0d5dXCHEJqNdcEObNXJngb94H2StF3zUbx1gsQ93Izq+SF9gJ7W9
+ KOJvVLv+l/ubmlpom5os3kj+1ncBpNqTmaCNeko9H04/uhaDVOTVomv1KOSSJhsPTiL7EYGT9
+ 4e3z/JOs0DyL8qtVpqr0WDMleNWelc6Xh6Kttpa3qNmC47DNBtPb1LNdwuKR/YaxukkDhuGWz
+ UpjFRXVyKkQzysfeGSbzLzJa/PBGLhLh4Pu5GF6kXhcmfK9Z31kyhU5jJLz1zneBM06ehqdhr
+ PsphygPzWvtqfqu3k+HeAnIw9Misr22f4WAtqrL1OeGpmXc/5pzHy16Aq6bNVHnt2+38/l7n0
+ /X9eTGNMf9c1dyJjf0vw8g6stemRh3wZdC8l+RL0qcUD/YZWuRqWjkOuBKCtMZ16WqOcyJUcR
+ 4wEqsIcwf9WS1ldYF6Al+eMukTPymGI77e/YgbZ/Hoaznj90xq18Ri8r3ce7ri+cxVEpdqNKn
+ 4fjoHfT4P0wSy9fHmRxQBFSkcJMGh8U6wneTOaM7JgJENoalyiLgur8pE687lZs6GGLdA3rP/
+ oc5zXldk9M11H8PQAlTVPLr58jAbAL7idT+I7D/tqyqeacUs17iAKMzNC2/RJdsFThPFXgIQo
+ ZHMOqzoXazNdVkK7D6KY6DuSeNwymzmv4oKNwW2/MwR0GSD0TCfpB29xf4jNuyMWH9K2PMtO/
+ 1Spf+n0vufsaUhJhA90oFortHfl/ZJaoKBDHysSQO3aXXFVaYvYXuT4r6EdfAT/5c6z+zVaHY
+ fBzeIqM1hTHhEzMatwaJdWvlwQEs3l+5gSqSJIiHCv0+wLRQJ1+4If7hkJF0g7Mb9GysrC4lv
+ QyY6xX7r4dG+eG1iW/ENqRacXcT/3RZdrDZyiF9ZzE5Cd3r1ha1x1Oj826TtaFEbN9uI6rSN6
+ Nzd39L5oIxZmomv4pN/DcOcbD8n4mvQOQz9gZci5TyP/nNgFXnSjdQ7KZ1HYl3cg2egiLEmYE
+ 27W9gh4RXVgZ4z4v04UMzq7mSwdLX/dj8bFNo4U1OFSQiWHOYCDrqI1rQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 06:36:24PM +0800, Xie Yongji wrote:
-> Export receive_fd() so that some modules can use
-> it to pass file descriptor between processes without
-> missing any security stuffs.
-> 
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> Acked-by: Jason Wang <jasowang@redhat.com>
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-This needs some acks from fs devels.
-Viro?
+So, use the struct_size() helper to do the arithmetic instead of the
+argument "size + size * count" in the kzalloc() function.
 
+[1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-cod=
+ed-arithmetic-in-allocator-arguments
 
-> ---
->  fs/file.c            | 6 ++++++
->  include/linux/file.h | 7 +++----
->  2 files changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/file.c b/fs/file.c
-> index 86dc9956af32..210e540672aa 100644
-> --- a/fs/file.c
-> +++ b/fs/file.c
-> @@ -1134,6 +1134,12 @@ int receive_fd_replace(int new_fd, struct file *file, unsigned int o_flags)
->  	return new_fd;
->  }
->  
-> +int receive_fd(struct file *file, unsigned int o_flags)
-> +{
-> +	return __receive_fd(file, NULL, o_flags);
-> +}
-> +EXPORT_SYMBOL_GPL(receive_fd);
-> +
->  static int ksys_dup3(unsigned int oldfd, unsigned int newfd, int flags)
->  {
->  	int err = -EBADF;
-> diff --git a/include/linux/file.h b/include/linux/file.h
-> index 2de2e4613d7b..51e830b4fe3a 100644
-> --- a/include/linux/file.h
-> +++ b/include/linux/file.h
-> @@ -94,6 +94,9 @@ extern void fd_install(unsigned int fd, struct file *file);
->  
->  extern int __receive_fd(struct file *file, int __user *ufd,
->  			unsigned int o_flags);
-> +
-> +extern int receive_fd(struct file *file, unsigned int o_flags);
-> +
->  static inline int receive_fd_user(struct file *file, int __user *ufd,
->  				  unsigned int o_flags)
->  {
-> @@ -101,10 +104,6 @@ static inline int receive_fd_user(struct file *file, int __user *ufd,
->  		return -EFAULT;
->  	return __receive_fd(file, ufd, o_flags);
->  }
-> -static inline int receive_fd(struct file *file, unsigned int o_flags)
-> -{
-> -	return __receive_fd(file, NULL, o_flags);
-> -}
->  int receive_fd_replace(int new_fd, struct file *file, unsigned int o_flags);
->  
->  extern void flush_delayed_fput(void);
-> -- 
-> 2.11.0
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ drivers/tty/serial/8250/8250_pci.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/=
+8250_pci.c
+index a808c283883e..b97ade35d4a3 100644
+=2D-- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -3981,9 +3981,7 @@ pciserial_init_ports(struct pci_dev *dev, const stru=
+ct pciserial_board *board)
+ 			nr_ports =3D rc;
+ 	}
+
+-	priv =3D kzalloc(sizeof(struct serial_private) +
+-		       sizeof(unsigned int) * nr_ports,
+-		       GFP_KERNEL);
++	priv =3D kzalloc(struct_size(priv, line, nr_ports), GFP_KERNEL);
+ 	if (!priv) {
+ 		priv =3D ERR_PTR(-ENOMEM);
+ 		goto err_deinit;
+=2D-
+2.25.1
 
