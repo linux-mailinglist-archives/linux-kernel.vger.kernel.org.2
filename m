@@ -2,112 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2070340121E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 01:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFD8340122C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 01:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238231AbhIEXiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 19:38:04 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33686 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbhIEXiC (ORCPT
+        id S238441AbhIEX4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 19:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229666AbhIEX4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 19:38:02 -0400
+        Sun, 5 Sep 2021 19:56:37 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB83BC061575;
+        Sun,  5 Sep 2021 16:55:33 -0700 (PDT)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630885017;
+        s=2020; t=1630886132;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=XRDBwmPSq0OtExDtrXwn2TezsW0Z/MUnaN5kkmANKDA=;
-        b=Tq23GPbTpOfmoAuO1nJdHdzP5Ssdddhg48q3UTqIpcbzKlydMr15p7s58F4AmhFuhS5vcy
-        UX+w5VNwG5BN3BYpZTlHpHZyVq4x8UvnGXsP0gkI9bUujM3+RGP7tVm/sxb5oA6TpKJ+79
-        l1xlfrFpSkdfnFw/0CGV7aATjn7dMu+Jn5glKBNupuCYhphlORdHnIhuK5AGeap+gvBrQX
-        nT0kmaZDcB2TrxznfVzm8FXJ2VAmQO/io251fc7H7w8duD7uXjcoWMdL1slcF5phxT8qto
-        Ju/LAeUhZsedjuCgnuM66kNhhsvkKSJAg7or526uy3lrzZfzCPvbgsDQiQ2BbA==
+         in-reply-to:in-reply-to:references:references;
+        bh=htNt0m9nOHGLJS+qiDTAK6Mcl3GNSWsAsqlDk5pIWKs=;
+        b=ZJXLgiWpz+VGt31DxlSZe++i8KKC++HF9m4G3FH/T/6A2sCUjWn3aJs+vD53/fjjJqragO
+        ZG8TcI6DvtiZA+MJPz1fTW+ReHyM2H5OdfFVrvG8WCcbI4eNPcP2W8sgQV9VseiZcocov5
+        /wqMfBAWHQdK3HAlgszTKljhO05jxatal0rNcQE79mUpfJJD4WiEAHOsgDiIV2Qc9HL2Dk
+        3vnHP9gw8DXZ79EqT4vgitX/80aeSx3qBwmlhxH+65Yh9ipeffGOGR0L0erjz+MJMkt5+m
+        p0CFx36xhtYq8BDb1gCDvGtgkps8o+g3LeL3NOa2bKAsJOAyK22Z9M5ycjmJAg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630885017;
+        s=2020e; t=1630886132;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=XRDBwmPSq0OtExDtrXwn2TezsW0Z/MUnaN5kkmANKDA=;
-        b=AkyuB/Ns+u8qG59Tjk4QQpec7V5GBsNxQdnPNioHu8BzdnEWKGmWuzpHxd5EScozlVJyWD
-        izyUAw1mDYSxQbBw==
+         in-reply-to:in-reply-to:references:references;
+        bh=htNt0m9nOHGLJS+qiDTAK6Mcl3GNSWsAsqlDk5pIWKs=;
+        b=Tc++YGUfuxCKx0MXvCKWxi6HEsU5Kceo6oXMeNF4ECU00N0iQ8K+JsA6MfvnfrAMQj1FgX
+        Rlj6xebVNdu3hdCg==
 To:     Hillf Danton <hdanton@sina.com>,
         syzbot <syzbot+a9b681dcbc06eb2bca04@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, eric.dumazet@gmail.com
+Cc:     eric.dumazet@gmail.com, hdanton@sina.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Subject: Re: [syzbot] INFO: task hung in __lru_add_drain_all
-In-Reply-To: <20210903111011.2811-1-hdanton@sina.com>
-Date:   Mon, 06 Sep 2021 01:36:56 +0200
-Message-ID: <87k0jua92f.ffs@tglx>
+In-Reply-To: <20210904080739.3026-1-hdanton@sina.com>
+References: <20210904005650.2914-1-hdanton@sina.com>
+ <20210904080739.3026-1-hdanton@sina.com>
+Date:   Mon, 06 Sep 2021 01:55:31 +0200
+Message-ID: <87h7eya87g.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hillf,
-
-On Fri, Sep 03 2021 at 19:10, Hillf Danton wrote:
+On Sat, Sep 04 2021 at 16:07, Hillf Danton wrote:
 >
-> See if ksoftirqd is preventing bound workqueue work from running.
-
-What?
-
-> --- a/kernel/softirq.c
-> +++ b/kernel/softirq.c
-> @@ -521,6 +521,7 @@ asmlinkage __visible void __softirq_entr
->  	bool in_hardirq;
->  	__u32 pending;
->  	int softirq_bit;
-> +	bool is_ksoftirqd = __this_cpu_read(ksoftirqd) == current;
+> See if ieee80211_iface_work is burning more CPU cycles than thought, given the
+> bound workqueue work blocked for more than 143 seconds.
+>
+> #syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>
+> --- a/net/mac80211/iface.c
+> +++ b/net/mac80211/iface.c
+> @@ -1494,6 +1494,7 @@ static void ieee80211_iface_work(struct
 >  
->  	/*
->  	 * Mask out PF_MEMALLOC as the current task context is borrowed for the
-> @@ -565,6 +566,8 @@ restart:
->  		}
->  		h++;
->  		pending >>= softirq_bit;
-> +		if (is_ksoftirqd && in_task())
+>  		kfree_skb(skb);
+>  		kcov_remote_stop();
+> +		cond_resched();
+>  	}
+>  
+>  	/* process status queue */
+> @@ -1504,6 +1505,7 @@ static void ieee80211_iface_work(struct
+>  		kfree_skb(skb);
+>  
+>  		kcov_remote_stop();
+> +		cond_resched();
+>  	}
+>  
+>  	/* then other type-dependent work */
+> --
 
-Can you please explain how this would ever be true?
+Again. What are you trying to achieve here? 
 
- #define in_task()	(!(in_nmi() | in_hardirq() | in_serving_softirq()))
+ieee80211_iface_work() is a work function invoked from a worker thread
+in preemptible task context.
 
-in_task() is guaranteed to be false here, because in_serving_softirq()
-is guaranteed to be true simply because this is the softirq processing
-context.
+The kernel config used for this has CONFIG_PREEMPT=y, which means that
+the context in which you are sprinkling cond_resched() is already fully
+preemtible and the only reason for this fail would be a fatal bug in the
+scheduler core or in the preemption mechanism. Pretty unlikely to go
+unnoticed for anything else than for this particular reproducer.
 
-> +			cond_resched();
-
-___do_softirq() returns after 2 msec of softirq processing whether it is
-invoked on return from interrupt or in ksoftirqd context. On return from
-interrupt this wakes ksoftirqd and returns. In ksoftirqd this is a
-rescheduling point.
-
-But that only works when the action handlers, e.g. net_rx_action(),
-behave well and respect that limit as well.
-
-net_rx_action() has it's own time limit: netdev_budget_usecs
-
-That defaults to: 2 * USEC_PER_SEC / HZ 
-
-The config has HZ=100, so this loop should terminate after
-
-    2 * 1e6 / 100 = 20000us = 20ms
-
-The provided C-reproducer does not change that default.
-
-But again this loop can only terminate if napi_poll() and the
-subsequently invoked callchain behaves well.
-
-So instead of sending obviously useless "debug" patches, why are you not
-grabbing the kernel config and the reproducer and figure out what the
-root cause is?
-
-Enable tracing, add some trace_printks and let ftrace_dump_on_oops spill
-it out when the problem triggers. That will pinpoint the issue.
+Can you please stop waisting precious compute power?
 
 Thanks,
 
         tglx
-
-
