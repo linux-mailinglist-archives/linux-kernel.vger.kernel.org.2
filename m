@@ -2,101 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A81401159
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 21:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5850D40115C
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 21:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238705AbhIETNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 15:13:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56032 "EHLO
+        id S237538AbhIET1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 15:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbhIETNd (ORCPT
+        with ESMTP id S233945AbhIET1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 15:13:33 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA85C061575;
-        Sun,  5 Sep 2021 12:12:29 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id n34so554875pfv.7;
-        Sun, 05 Sep 2021 12:12:29 -0700 (PDT)
+        Sun, 5 Sep 2021 15:27:39 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD90C061575;
+        Sun,  5 Sep 2021 12:26:36 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id i6so6370886edu.1;
+        Sun, 05 Sep 2021 12:26:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=oClDNOQT+GLawQeS0dfRl/HargK9SobeC6dDUiHWklU=;
-        b=UIwichcWFdQy45M0knSwKSVbXz1XtLJOaq0orKwSxLZc1eXBfVqk8m9/5k/7NsamGQ
-         OKGJgZFhfl6G7vSR4WD14WuQAiuMDHQDLNlh7SFkHnAzIBV5Fm5okJ/Ffgrh8YjmetYY
-         3RBMjP4QUNnSVz/RV693X8qImG0dvFHSKPycz9RqPI16a8w2fxiN91ntZXx6nQbEYftA
-         J4Tx8gychIgD0QswBZI+H0OFnPayVOeQIAf95/FcQQ78V5957nkcmdAVJyfqTzFPcV4M
-         oajXKqAegeafuv0XBpaa69ncrxZeS9qtOXZxLGrwmKcqyozJQdYuOK3CG8BqG9V85Etm
-         7Wwg==
+        bh=qlez6w9+Xry8jtHHgqQjUNA5ndA2CrnxtsKlEHI62vo=;
+        b=Kk/FIIAPqgwUFLerUyXZRmwCq/E48RR3rZJJbFMatB2+kiS55ufkQAFCmMyqCpJkN+
+         pWbW/nF/nEG+jiOT71kb9y2VmCtYYrWYumDW2+MBaQtdXCX5wypLEWAp/tJHv+AFAYT/
+         p4g2uJefZAs+3xUNfrNNByfmbZKDhLsS+Ugduj4XkEzM74NY+WIyNqLvgaJ9t26TlYsH
+         nGtJO3ZuXY3c9AA7KNb+FFRJlFFSIiOXQbHqm4KHSablhtphox4wIMzvBoA1TcLHNazP
+         1strZGPRX9ng9BBqe3Y7k15QMJBy2FMG9CTgc0YvU1KVWCMfJaRbhZlnZrzcW2qlxBnM
+         ZiSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=oClDNOQT+GLawQeS0dfRl/HargK9SobeC6dDUiHWklU=;
-        b=ruTeo39Y5dt7XQke6bNUZO0iz9RP/L6HzRSh25A1yfUhNIr1AIxjLBQ1vGGY+6FYId
-         t/BuzS7muX2wGFENv1JAbsqKLpnnIyGrvlysnrUUv56EsSOA+uPRTNfm8qXW9dqoerwG
-         0rLK0fz1Gxu2ISuf4S7T+nHZGkMFgf+c6FbaTNqNb6X8rnUDcusrXLrQYrDIIzNDyzXy
-         6rnZRM7QTZtZH9Iy2hnTfxiF3d4DOzxh58Z3Y865eeVa44l36ePVhuEkPCpeQeLd/CJ7
-         Ggyf/bm/RyuV5lrtAIT3rOgUhqbnhxsd7KCywn4qaQ3mgR9n7FTv1+VcMGfL6vucNWjA
-         ildA==
-X-Gm-Message-State: AOAM531xq/nuk0BqjRyQYN/Le12//Yjs908Gff3aSxF6Lr7jFuV0zOZw
-        MLsD5OYBiYawVVJ//Mf4qXw=
-X-Google-Smtp-Source: ABdhPJxRx62rob+PMFUIZGbCbl8wa8C9Sq228UrqAbu/HArueR/qJv3KRPszg+/q6h3KYjHYcHKolQ==
-X-Received: by 2002:aa7:9056:0:b0:412:444e:f601 with SMTP id n22-20020aa79056000000b00412444ef601mr8621568pfo.84.1630869149398;
-        Sun, 05 Sep 2021 12:12:29 -0700 (PDT)
-Received: from tong-desktop.local (99-105-211-126.lightspeed.sntcca.sbcglobal.net. [99.105.211.126])
-        by smtp.googlemail.com with ESMTPSA id h4sm4492638pjs.2.2021.09.05.12.12.28
+        bh=qlez6w9+Xry8jtHHgqQjUNA5ndA2CrnxtsKlEHI62vo=;
+        b=VbNjZnQpNk/6ky4RZ1z/ii1vk2TzFzBErPSpiOkjsG6TuvRLTYQqyabn7Mz1PkZw4i
+         1HEdJJE8HSIrrEt2w8phiVa9jpmlxf+Qxn0KxnJU2L7AGkC/Q77EN5Ob1xqORF2xMwdI
+         rJ6JEUzziz59sOIKn9V9iiRBVuakfU1Daa0WxnlNEJ9SvbQriEmF+ugO6JiDLIIgckvP
+         KhXvceuFA8daby6KyONeKA1v4o9OV8xca8izIb0pbTNsAxobPofBFLmrDlom/RzKy7he
+         nhvdWQPb89DLdsRjgviFL/vCrywCfumyI0k8uEazT4Xk61yblYTUgzk33MXHFtBuUQgS
+         ULBA==
+X-Gm-Message-State: AOAM533XQY88YKh5vYVHMzdqaj+wD8V9E8Tg60iRbH2OXZWVwfBck8uY
+        c4K6xAysYXe1quhJd+kA9ik=
+X-Google-Smtp-Source: ABdhPJwKkZh7U2OnpEzLD2FkeUDsXAtatl/gJKYiiF2lhr2i3q4HMdaUGKVSitTapNvRGbtX/oZvRA==
+X-Received: by 2002:aa7:d99a:: with SMTP id u26mr10016178eds.297.1630869993740;
+        Sun, 05 Sep 2021 12:26:33 -0700 (PDT)
+Received: from kista.localdomain (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
+        by smtp.gmail.com with ESMTPSA id n13sm3238992edq.91.2021.09.05.12.26.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Sep 2021 12:12:29 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Skripkin <paskripkin@gmail.com>,
-        Tong Zhang <ztong0001@gmail.com>, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] media: atomisp: fix compilation error
-Date:   Sun,  5 Sep 2021 12:12:21 -0700
-Message-Id: <20210905191222.612949-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 05 Sep 2021 12:26:33 -0700 (PDT)
+From:   Jernej Skrabec <jernej.skrabec@gmail.com>
+To:     mripard@kernel.org, wens@csie.org
+Cc:     robh+dt@kernel.org, codekipper@gmail.com, peron.clem@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Subject: [PATCH] arm: dts: sunxi: h3/h5: Fix I2S2 node
+Date:   Sun,  5 Sep 2021 21:26:28 +0200
+Message-Id: <20210905192628.206061-1-jernej.skrabec@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am getting the following compilation error on ubuntu 20.04 with gcc 9.3.0.
+I2S2 controller has RX DMA channel according to documentation.
 
-drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c: In function ‘input_system_configure_channel_sensor’:
-drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c:1649:1: error: control reaches end of non-void function [-Werror=return-type]
- 1649 | }
-      | ^
-cc1: some warnings being treated as errors
-make[4]: *** [scripts/Makefile.build:277: drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.o] Error 1
+Add it.
 
-I made some minor changes to the switch-case to keep gcc happy.
-
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Fixes: cd7c897821a0 ("arm: dts: sunxi: h3/h5: Add I2S2 node")
+Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 ---
- .../media/atomisp/pci/hive_isp_css_common/host/input_system.c  | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/sunxi-h3-h5.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
-index 8e085dda0c18..58eb74edc953 100644
---- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
-+++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
-@@ -1644,8 +1644,9 @@ static input_system_err_t input_system_configure_channel_sensor(
- 	case INPUT_SYSTEM_XMEM_CAPTURE:
- 	case INPUT_SYSTEM_XMEM_ACQUIRE:
- 	default:
--		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
-+		break;
- 	}
-+	return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
- }
+diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+index c7428df9469e..bd26f2059220 100644
+--- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
++++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+@@ -670,9 +670,9 @@ i2s2: i2s@1c22800 {
+ 			interrupts = <GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&ccu CLK_BUS_I2S2>, <&ccu CLK_I2S2>;
+ 			clock-names = "apb", "mod";
+-			dmas = <&dma 27>;
++			dmas = <&dma 27>, <&dma 27>;
+ 			resets = <&ccu RST_BUS_I2S2>;
+-			dma-names = "tx";
++			dma-names = "tx", "rx";
+ 			status = "disabled";
+ 		};
  
- // Test flags and set structure.
 -- 
-2.25.1
+2.33.0
 
