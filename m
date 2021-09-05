@@ -2,124 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D123140115F
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 21:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA02401165
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 21:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238121AbhIETaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 15:30:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22356 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237960AbhIETaM (ORCPT
+        id S232996AbhIETl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 15:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230024AbhIETl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 15:30:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630870148;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VJhftX7KdnJxCNtt1OcYAAeR/bKh9VnXaLjpPXlfeQg=;
-        b=O43qjVAbiztNSzIbDLga1y08fwGXtq1jsPevoJU/dt04djclkj8YjvHbNsHOcVXG8zoLer
-        1dVnohQSAfmM42VTq/Ep+sV29rJ2a1MCM/6vhVLkYm5LXeGWM1T/QN/lcEE4r0TJpWSflu
-        7RIw5wHw0gswG6eRgcb2bFyS5fwtbHs=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-N-AWEltePF6x0e5azDZmIA-1; Sun, 05 Sep 2021 15:29:07 -0400
-X-MC-Unique: N-AWEltePF6x0e5azDZmIA-1
-Received: by mail-wm1-f69.google.com with SMTP id m22-20020a7bcb96000000b002f7b840d9dcso2340974wmi.1
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 12:29:06 -0700 (PDT)
+        Sun, 5 Sep 2021 15:41:57 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79ED0C061575;
+        Sun,  5 Sep 2021 12:40:53 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id bt14so8972959ejb.3;
+        Sun, 05 Sep 2021 12:40:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ktfu/1dI5EriLXE5SDDhbia+REVwP853qU4CVNxHqiI=;
+        b=Rxqu+vGpTbt09JrFUNrJ30s3AmbCiII568kBUn+HM9TNaW3Nup6GeXNLCRvBVD85AV
+         uHOfgUPXJL/wvBjFiuGcTIrmKZyJ+R6pw5IKhP9gSOEDs+glsWckJ6NsGbH9w5mEu5Ir
+         w8bdZ8EU2f4eHWxa/nLSHjIWYyKKr25er9bV38pGOY9QdIGNESJQyHdpIsdoFM9kRVBM
+         RFVYf43E8HRO0i8oHWVEr9KxpUCkvN+6xqbQWqNZgE2JCj5gVYrwCOh3ThJnabAHcY+B
+         Z2QZAyFg+V8WIqV8TtBhcLiTiTdUipy+THlZ3so7j8lP+hlaDCAGFeclPeBGDLLe98jp
+         km7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=VJhftX7KdnJxCNtt1OcYAAeR/bKh9VnXaLjpPXlfeQg=;
-        b=kBkwNCIoHYwbPWu2A+ELcKl4VVXg2HzP5BG4vAaNj55Y1w8PTqXQ8pJVa4WM+46QLq
-         ZZPFCuKWP9Wo2/GNYQzmhWLVkSoi/pLSvglA8Ye3wHvzngp1xuSOv5OdkGhey5/JhxWj
-         iSn5Sv629gA/qr8lyNoMzKeq/Rr5x41C9DZSngzglYZVX2XRl7GothbY+O+tJ+iNN5yR
-         QwJ8pnIMuDSw4O5EfqyhpFwyirs0jM9bHsTrqD9OePcXsVYdONX357hTmXr9s3RAFV/a
-         88GwnIXTsSjRO/eVH0mPohfxIlubNvnYCsltwD7vodBPPVf+fJRnOvkuZnq9HGy4dL2m
-         rp7A==
-X-Gm-Message-State: AOAM533IOR3G4/Rlh7DVH0q1uuv7u7BKBTEfA4JxM5vhfnsMjrOg6U6a
-        EwhdNWwc+wL68Tc+Ypmixs5wFUX32mLZrE/WYOuJtrNKrS0NaghQZafNJQTYgwiKOV8Z8pyu/pI
-        wVXJ/iU83MnFIae6zgguTpUua
-X-Received: by 2002:a5d:438a:: with SMTP id i10mr9720552wrq.285.1630870145993;
-        Sun, 05 Sep 2021 12:29:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxu2FTA+hrPwFqGf7dCn9mHcjQyvE9QSkO6Avx438vyzALqkqRc4eOOXzTeN2CgcYcEllBK9w==
-X-Received: by 2002:a5d:438a:: with SMTP id i10mr9720544wrq.285.1630870145830;
-        Sun, 05 Sep 2021 12:29:05 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6f04.dip0.t-ipconnect.de. [91.12.111.4])
-        by smtp.gmail.com with ESMTPSA id l7sm5166459wmj.9.2021.09.05.12.29.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Sep 2021 12:29:05 -0700 (PDT)
-Subject: Re: [PATCH] binfmt: a.out: Fix bogus semicolon
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        noreply@ellerman.id.au
-References: <20210905093034.470554-1-geert@linux-m68k.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <7a9e8a5e-df3d-0ecd-1396-450b50ce2937@redhat.com>
-Date:   Sun, 5 Sep 2021 21:29:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ktfu/1dI5EriLXE5SDDhbia+REVwP853qU4CVNxHqiI=;
+        b=CmC2Fige5fM0YoKz6b3t3Y9NYLItgc0y3WDkgAtmjy0pNIIkR/aShWc1EZNnPLE9Gd
+         jyu9GiK7CTr/MFq3n4S5vfGrP+HM7oIoPFsB5qGOSIbC75cVJVHB9KOfsUW6mzOEgydZ
+         HWmx3DY4KDPso0HBiu1/EHmjuoh+gUJvJ9Aa3xfIJ8UoUivWoPSupHE7h7/Yfcg1el/P
+         P0XEJ6oLM8Z6ZnCr8rLSIW5Jl+59tVySO2yqP1TDw0Cgv7ZCXBhHNIaao0eegqa4bYr7
+         hLRdlva6xpyyJrqWNM6sbfaP5DQadx3eZQPLjWzdiooOoxq6leeIo7S7ovly36FRfKLM
+         EhWg==
+X-Gm-Message-State: AOAM530KBueygfPN31XigyoXp6h/HGW4m6he8vwo+0gxdx9sKzV0owrB
+        D8NfuHvXbEPMHp7ly+k1U5I=
+X-Google-Smtp-Source: ABdhPJx9zcPWC1IOubNX+p+CD/pSo0c5XPiVDRow8ByiiVq9DoQW/HLDz1WVsBR2IX2OinBEA9EdJQ==
+X-Received: by 2002:a17:906:1615:: with SMTP id m21mr10662315ejd.279.1630870852109;
+        Sun, 05 Sep 2021 12:40:52 -0700 (PDT)
+Received: from kista.localnet (cpe-86-58-29-253.static.triera.net. [86.58.29.253])
+        by smtp.gmail.com with ESMTPSA id o19sm3263530edr.18.2021.09.05.12.40.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 12:40:51 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     mripard@kernel.org, wens@csie.org
+Cc:     robh+dt@kernel.org, codekipper@gmail.com, peron.clem@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm: dts: sunxi: h3/h5: Fix I2S2 node
+Date:   Sun, 05 Sep 2021 21:40:50 +0200
+Message-ID: <4281589.rpS0U0bY3j@kista>
+In-Reply-To: <20210905192628.206061-1-jernej.skrabec@gmail.com>
+References: <20210905192628.206061-1-jernej.skrabec@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210905093034.470554-1-geert@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.09.21 11:30, Geert Uytterhoeven wrote:
->      fs/binfmt_aout.c: In function ‘load_aout_library’:
->      fs/binfmt_aout.c:311:27: error: expected ‘)’ before ‘;’ token
->        311 |    MAP_FIXED | MAP_PRIVATE;
-> 	  |                           ^
->      fs/binfmt_aout.c:309:10: error: too few arguments to function ‘vm_mmap’
->        309 |  error = vm_mmap(file, start_addr, ex.a_text + ex.a_data,
-> 	  |          ^~~~~~~
->      In file included from fs/binfmt_aout.c:12:
->      include/linux/mm.h:2626:35: note: declared here
->       2626 | extern unsigned long __must_check vm_mmap(struct file *, unsigned long,
-> 	  |                                   ^~~~~~~
+Hi all,
+
+Dne nedelja, 05. september 2021 ob 21:26:28 CEST je Jernej Skrabec napisal(a):
+> I2S2 controller has RX DMA channel according to documentation.
 > 
-> Fix this by reverting the accidental replacement of a comma by a
-> semicolon.
+
+Sorry for mistake. This is not true. Documentation doesn't have RX DMA 
+documented (I2S2 is connected to HDMI).
+
+Marcus, do you remember if loopback mode actually works on H3, with DMA 
+enabled? Maybe DMA is there, just undocumented. Some SoCs (H6, R40) have RX 
+DMA channel documented, even though it's used for HDMI TX only, and others 
+don't (A64, H3, H5).
+
+Anyway, I got report that I2S driver from 5.14 onwards can't register 
+controller anymore due to missing RX DMA channel. So either driver or DT has 
+to be fixed.
+
+Please disregard this patch for now.
+
+Best regards,
+Jernej
+
+> Add it.
 > 
-> Fixes: 42be8b42535183f8 ("binfmt: don't use MAP_DENYWRITE when loading shared libraries via uselib()")
-> Reported-by: noreply@ellerman.id.au
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Fixes: cd7c897821a0 ("arm: dts: sunxi: h3/h5: Add I2S2 node")
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 > ---
->   fs/binfmt_aout.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/arm/boot/dts/sunxi-h3-h5.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/binfmt_aout.c b/fs/binfmt_aout.c
-> index a47496d0f123355c..0dcfc691e7e218bc 100644
-> --- a/fs/binfmt_aout.c
-> +++ b/fs/binfmt_aout.c
-> @@ -308,7 +308,7 @@ static int load_aout_library(struct file *file)
->   	/* Now use mmap to map the library into memory. */
->   	error = vm_mmap(file, start_addr, ex.a_text + ex.a_data,
->   			PROT_READ | PROT_WRITE | PROT_EXEC,
-> -			MAP_FIXED | MAP_PRIVATE;
-> +			MAP_FIXED | MAP_PRIVATE,
->   			N_TXTOFF(ex));
->   	retval = error;
->   	if (error != start_addr)
+> diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-
+h5.dtsi
+> index c7428df9469e..bd26f2059220 100644
+> --- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+> +++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+> @@ -670,9 +670,9 @@ i2s2: i2s@1c22800 {
+>  			interrupts = <GIC_SPI 15 
+IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&ccu CLK_BUS_I2S2>, <&ccu 
+CLK_I2S2>;
+>  			clock-names = "apb", "mod";
+> -			dmas = <&dma 27>;
+> +			dmas = <&dma 27>, <&dma 27>;
+>  			resets = <&ccu RST_BUS_I2S2>;
+> -			dma-names = "tx";
+> +			dma-names = "tx", "rx";
+>  			status = "disabled";
+>  		};
+>  
+> -- 
+> 2.33.0
+> 
 > 
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
-Thanks for reporting and fixing that quickly!
-
--- 
-Thanks,
-
-David / dhildenb
 
