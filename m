@@ -2,95 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6CE40116C
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 21:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1579401175
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 22:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234139AbhIETvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 15:51:03 -0400
-Received: from mout.web.de ([212.227.15.3]:47567 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229865AbhIETvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 15:51:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1630871395;
-        bh=FAx/rO9K1RK3SrZO0dEK8qHepRBRgwULCOoqC9i3LpI=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=JY5pMoI3mX3wXihLdcjMfTHStVicPRt8JyrcpO/sAsx8JuV2clGF7psTVDt+IbxBu
-         ec3DgmrpPISEDuh0rT0tu5eN0KfX5k9W+//w3ljUU0SKJTh9NZ9m8pHQzjy5/+yxJm
-         J4Qgld7tN5xhL9ok9asQss6Pn5LA0yhaw5yfHE1k=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [10.0.0.110] ([185.159.157.24]) by smtp.web.de (mrweb002
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0MWApN-1mTMz53uqP-00XLKC; Sun, 05
- Sep 2021 21:49:55 +0200
-Subject: Re: Can't boot up Linux ISO on HP computer
-To:     EpicLemon99 <EpicLemon99@protonmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <t2AGLXpsN--6I99ztVoBlXWzyEUo9HarRnRtFyM_sXXkaWbN9m8nmrCLyB1aKetozYTKQ1PV9JEC3Kr3yKpIiYczmcidKgt5uv1COs49c9I=@protonmail.com>
-From:   Andre Muller <andre.muller@web.de>
-Message-ID: <5a291d30-aad9-9285-192e-b5e6c4708315@web.de>
-Date:   Sun, 5 Sep 2021 21:51:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S238130AbhIEUFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 16:05:19 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:33441 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231468AbhIEUFK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 16:05:10 -0400
+Received: by mail-io1-f72.google.com with SMTP id g2-20020a6b7602000000b005be59530196so3741213iom.0
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 13:04:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=u7MTmHe0EZ9aA9LzZAxZXm6GQj3ww9LG3NsEE4FMIzE=;
+        b=VHFvdTP3wu7IAFh78tjZU2I8PKImRM/VzbtnnHTXtIr1hXq0vA+PNVsBdwEoI5NfgH
+         oo7dhSN3wt+c03hlM4/FnJTNvkL6SGkvyDO7Ilgk7+AcASfpKpV9g68C8lg4Djh5Bkwd
+         D89LUT0eFhsS5nJ90g5NEmTPUfonUlLDp/Xx3xyy+Sy56rFUUCDt9RAqq3T2TejNQV8w
+         j8GHpta2pWAh4THdxNAPE3jWF4exCJC2u+fvBVh1o4UfRJfSFVBlPmOMCRKbKjbD+WDL
+         92C8ZNdVIOdE8PKybN0DiUkfxvorrZVjjYwLaA2T1IyzGmIxIDLQRKKl74MbRmkpKrBi
+         fMRA==
+X-Gm-Message-State: AOAM532yPABEqJLjQ2EA/aMDRBIiYeQ52Ugx0gPciDJrhXxhQt/sHgL7
+        HS2X6lzfMUGGRwwAsiWtl+5QZ/rarBjjNrJCoL4bl3dFA/BZ
+X-Google-Smtp-Source: ABdhPJw8uxsAVTc7y/O2Nho+1GgIvGWLtmslQzKpOBn86Tsfrhp/WIPdMKxCklB4s2cNvBUTeZJMFKunrHzUglETpZQX+qZo7Qz/
 MIME-Version: 1.0
-In-Reply-To: <t2AGLXpsN--6I99ztVoBlXWzyEUo9HarRnRtFyM_sXXkaWbN9m8nmrCLyB1aKetozYTKQ1PV9JEC3Kr3yKpIiYczmcidKgt5uv1COs49c9I=@protonmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zwE0gSGpdbfLBzciZ7aEnesmOWscCjCFxHE6YSCFKxQwU7lrS9t
- wLhivkLOqZocgqYpkxRhcAspTtJugrEd5F1vffxB769ZUw2bTg9BrUlc+Yr+EEDKojT8Nse
- GGd5Vj7RqjQBx68EN2yQBGl8CKdVs63KgCfi2iW5lh9O9gSybuH02AyXm44+AtTCQeWBSMh
- VBl3Ey20hF1hlQpDGsVMw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:t3iADJ7HuV0=:9/OFUA3hBy0tIGWjmE3YCT
- /KjOrV35JJRHbioJwpCUzvkmPDygRs2HatCN64o40aVN5+rVou69Qz+FSFOlAaQ6jkp5xH/xI
- pWKxFntxafZA6deHEQl7Sy5iI7mxRRkU/DZaRFzJkag5XSziC1BXCmZM8U/C9XoFZzq+9YzAx
- L08Mt7OhJ1t1NxAoLQB2495xLztrQFwl62nWovl9phr6HVqVAuqKy3GYm0XZ5bWh7mo1p7fGD
- Iq6Nld9Hrt2D7zvrSe+oemMNUsgtEvaNtxLU6YBrfVKMvhBTS/8Osah16zohc2zlAK56eYJup
- 2wbTxQAqVd01kFdsNmP0CDl7PAYhZuJOAR1ZuPAdjJ6+OClpIjqbMpCZ1UybycHZWTtjH7i2k
- /BHWeCCB0AUaNW7iY/iync1lFJ9DqqeCKlVJ5z5XgbVlxyaXIoxeldG5wc8ag4C9QoXkSUias
- Vq/KIstuUYMo4ErG9p2yXDjZNB7p2nrWrMNSs84xDreKda9lWP5zxWrv6H7krhekkLPlTPvVs
- mYVNNamGMH8ejqOgKofpeX5G0KZZzwWDgY9IliKDejPRG5yV3Ip/1o+jgXCzCxD7mKGgDd2ma
- ulz1J0voPzROjAkdA4nUXwT6XZbQAiFLOTbLxGX9o0Cr3HESWK2jS6z84uD83fikEGZcLWQHw
- zTgiglU1m9LCpL5FDPu61hG76e4XJR7pSf3wXxoALehDuXObRmsMZXy3konhSKnnold6Px0ww
- 3aB7Ct4paNC8ryBdBQp0Vq47V+LNV0mI/dcb7zd2zIg52B/2cQ3duMmb7ziq/LifKmCGnnx79
- XpFwQNFTg79X/3PyEfOu3svNzpmjPsER8FcOqyX//wXAHN8dxC3AcTlj8BSHOp8dMdxOzX+3q
- vLSAzZCmlLFX/lUptFbRMd32JDKeYBKJ2EmGf7oM41b/nxEY2yfHtL3l+BxBmuEhP3xFUtJQL
- 0uoSVr54DDUB4YGO2r8VDRX213rLfxiC+sHB5Edv6oGulVP5oanShN7JLH44ZG/ILS9Hx9b4h
- CR6paw8fdTyG9CjSt5NWiHHOZyuVMYfOKx0/s5uM8zhRWVCZHxgqABCFQciLxqR5AXmlsFiG2
- 9S0/T40EpqNPL+FIbsFIWAnJSrNT1QBmHkX9MrY03ul1fdPMTyW/BZEZE5H6MGY/rG6yfI9rK
- LeJm4ZRUKTjjt2ti8+UYnvRYiwUv9FeoM8h0MygJk05oHkmtgtiJRWvW75VZuAa5jk6uM=
+X-Received: by 2002:a6b:7b4b:: with SMTP id m11mr7043393iop.165.1630872246693;
+ Sun, 05 Sep 2021 13:04:06 -0700 (PDT)
+Date:   Sun, 05 Sep 2021 13:04:06 -0700
+In-Reply-To: <0000000000002c756105cb201ef1@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f032a605cb450801@google.com>
+Subject: Re: [syzbot] WARNING: kmalloc bug in bpf_check
+From:   syzbot <syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com,
+        daniel@iogearbox.net, davem@davemloft.net, eric.dumazet@gmail.com,
+        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, nathan@kernel.org, ndesaulniers@google.com,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
+        w@1wt.eu, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/09/2021 14.11, EpicLemon99 wrote:
-> I have problems trying to use Linux distributions on my new machine, a H=
-P Pavilion TG01-2856no. The CPU it has was released Q1 2021.
->
-> My problem is that whenever I boot a Linux distribution ISO, it appears =
-that my CPU stalls on tasks. The most recent kernel version this has happe=
-ned on is 5.13.13, with Arch Linux.
->
-> I could get journalctl logs from NixOS: https://ibb.co/album/9wMM0p
->
-> The fact that I have the same problem on multiple distributions has led =
-me to believe that it's something to do with the kernel, but I could be wr=
-ong.
->
-> I have set Secure Boot off in my BIOS settings and the SATA emulation is=
- set to AHCI. I have tried with RAID.
->
-> I have tried the following boot options: nomodeset, noacpi, noapic, acpi=
-=3Doff.
->
-> The only distributions that I have managed to get working are Devuan and=
- Gentoo.
->
+syzbot has bisected this issue to:
 
-Devuan and Gentoo both do not use systemd,
-about any other distro does so by default.
+commit 7661809d493b426e979f39ab512e3adf41fbcc69
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed Jul 14 16:45:49 2021 +0000
 
-So I would suspect an issue with systemd.
+    mm: don't allow oversized kvmalloc() calls
 
-HTH,
-Andre
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13136b83300000
+start commit:   a9c9a6f741cd Merge tag 'scsi-misc' of git://git.kernel.org..
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10936b83300000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17136b83300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c84ed2c3f57ace
+dashboard link: https://syzkaller.appspot.com/bug?extid=f3e749d4c662818ae439
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e4cdf5300000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14ef3b33300000
+
+Reported-by: syzbot+f3e749d4c662818ae439@syzkaller.appspotmail.com
+Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
