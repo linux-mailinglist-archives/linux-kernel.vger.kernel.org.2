@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6D5540119A
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 22:52:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E0440119B
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 22:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238098AbhIEUw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 16:52:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40154 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231895AbhIEUw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 16:52:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C695960555;
-        Sun,  5 Sep 2021 20:51:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630875082;
-        bh=EN7nU+iSum7n5Y5ag0WJ0/Ms0wLl3a2CLSEOne9eMKU=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=k1j8zXVgxxMuFqM0x9KwOux+t0FYtDzewKGjBIdX19Zo5V5dfwBCHHUcs5tcXVxVt
-         eyyyGm9bUI8Sy823GvLt+XdtkXIbo5Mu2q/oj9LXzRYQ2fzz89kX+9+TYcrJiStlxe
-         fa1JlCmP+vKtUIO91TDcQH545ceRJ0F5pXOXbgtAbyIRICskoqeFaFZhDhXVYO7tjF
-         A/TOifjmLSlp9e4Jn+8tgccl5ECuKkyildi0EbBQmNaLIZxKvkYrBtNIYaob+CVCrp
-         zdpjTELz2MKAWx8R0ZhDMBTU9t8pLG1NwFTWHsuM3xhYVNbouqMu3ncRGgw6mG0R0l
-         GWFG8VGGVkL1w==
-Content-Type: text/plain; charset="utf-8"
+        id S238163AbhIEUxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 16:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231895AbhIEUxX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 16:53:23 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C2CC061575
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 13:52:20 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id c8so9365474lfi.3
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 13:52:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8dWkUEjNkAWUFS7smY/S53tLlwVSBp7wKC32dkhYG8Q=;
+        b=ls+6vNBRkX8hng0+3ffuWcI7eC/K2BuXvKgh7c14rmgf8ZkyGka/cdzNL8MKg82I+a
+         EuKclFfG0DL/90ANVrLDfK5jLFd52GAacfQaAF64QotFUdS/jUi/4AyK+ZLWwty7qzqO
+         /+kcrk2xN2A9zeZvMF5lcQ107VdeFsC5C5pNL0oOVkPVvZCCwYQapGqHDtAE8YiBI96G
+         v0KwCe2xT9O698Y7pKi08gPwL/uTPrVePifrzdPjjhYHKqIdZ9tuMLE+mOGQimJtgfFD
+         qNgyRThHIHmUUj8Fk8zH4ZbDJOGjJM72cOKQ5nhJocTzeDxgT/upQ5q4tfUvymfOKlpp
+         UmFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8dWkUEjNkAWUFS7smY/S53tLlwVSBp7wKC32dkhYG8Q=;
+        b=q/W+l8Ne4FePZLm8eq/Q7E5kShOV7lNMySKixic/HgV5z3903chbh8OdLS/+MtFXEN
+         uK1Mn1bJiGYp1e/hB4y0bK5/3zLDdBLpsxG65+XkJiG5WmQ0/uHIKZjgLq1Nw+GNDEQr
+         t8RJvqMKtgRrOIkC6jyv8dLBCbw7jWxrxJgiT944LAPYhlQRbc9ifVrf49y9Xgy00dvl
+         Ba0tWyT0nEI9qRUNLeuq6Xh3gTzKrW2yqATh+9UxSxah/1Wb/H63fLV+B3g61nOgS7bH
+         ViFOIaR/d13D15/RZWc9opXc5+v/NpROGhjrNbbhX3mFYLSE7ajE/Sev+IidZ04TbqYZ
+         7jaQ==
+X-Gm-Message-State: AOAM530qIfdYxh00yZoAGEem6ikQJ2VQ4oA6tTliBldNF5mdMnM6GoKC
+        fIQ9VgQdQdRbWwNWqJrWvpY=
+X-Google-Smtp-Source: ABdhPJx/CscenNT1ExkPo7OuH35JOivO8iq9aisapt+v7XWY9tfzA1FcSYNfekhrI6nxkmY8aHw7RQ==
+X-Received: by 2002:a05:6512:398b:: with SMTP id j11mr7173902lfu.194.1630875138503;
+        Sun, 05 Sep 2021 13:52:18 -0700 (PDT)
+Received: from localhost.localdomain ([46.235.67.70])
+        by smtp.gmail.com with ESMTPSA id o10sm558817lfb.173.2021.09.05.13.52.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 13:52:18 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
+        gregkh@linuxfoundation.org, straube.linux@gmail.com,
+        fmdefrancesco@gmail.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH] staging: r8188eu: fix type mismacth
+Date:   Sun,  5 Sep 2021 23:52:16 +0300
+Message-Id: <20210905205216.24831-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1d269ff8-9219-cc0a-fda7-236bfd4b4510@sholland.org>
-References: <20210901050526.45673-1-samuel@sholland.org> <20210901050526.45673-5-samuel@sholland.org> <20210903091040.2bngsvhem2ftzhaz@gilmour> <1d269ff8-9219-cc0a-fda7-236bfd4b4510@sholland.org>
-Subject: Re: [PATCH 4/8] clk: sunxi-ng: Rename files to match Kconfig and drivers
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-To:     Maxime Ripard <maxime@cerno.tech>,
-        Samuel Holland <samuel@sholland.org>
-Date:   Sun, 05 Sep 2021 13:51:21 -0700
-Message-ID: <163087508158.405991.8011400324694193509@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Samuel Holland (2021-09-03 13:57:14)
-> Hi Maxime,
->=20
-> On 9/3/21 4:10 AM, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > On Wed, Sep 01, 2021 at 12:05:22AM -0500, Samuel Holland wrote:
-> >> When the drivers are built as modules, the file name will become the
-> >> module name. Rename the files so everything matches: the Kconfig symbo=
-l,
-> >> the platform driver name (as seen in sysfs), and the module name.
-> >>
-> >> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> >=20
-> > I'm not a big fan of big renames like this, it makes merging and
-> > backporting patches harder in the long term.
->=20
-> I can split this into two commits, first the .c files and then the .h
-> files, so everything is a 100% rename, if that makes a difference.
->=20
-> > I assume you did this to make the module autoloading work? If so, using
-> > MODULE_ALIAS would be less intrusive
->=20
-> Autoloading should work anyway, since there is a module alias for the
-> compatible string. This change is more about the principle of least
-> surprise. The compatible is allwinner,sun50i-a64-ccu, the Kconfig symbol
-> is SUN50I_A64_CCU, the driver name (in /sys/bus/platform/drivers) is
-> sun50i_a64_ccu, but yet the module name is ccu-sun50i-a64???
->=20
-> Once we allow building modules, the names are ABI, and this
-> inconsistency will bother me until the end of time :)
->=20
-> If there is a way to completely rename the module without renaming the
-> files (not adding an alias), then that would be enough for me.
+smatch says:
+rtw_cmd.c:1165 rtw_setassocsta_cmd() warn: struct type mismatch 'set_stakey_rsp vs set_assocsta_rsp'
 
-Yes. You have to use Makefile logic to make an object manually that
-renames the old one. The linker will build oldname.o as
-new-module-name.o and then make a .ko out of it if the final goal is a
-module.
+Since psetassocsta_rsp has struct set_stakey_rsp * type, it looks like
+copy-paste failure. This error didn't cause any bugs, because
+sizeof(struct set_assocsta_parm) > sizeof(struct set_stakey_rsp), but
+there is no reason for allocation extra unused memory
 
-  new-module-name-y :=3D oldname.o
-  obj-$(CONFIG_YOUR_SYMBOL_HERE) +=3D new-module-name.o
+Fixes: 15865124feed ("staging: r8188eu: introduce new core dir for RTL8188eu driver")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/staging/r8188eu/core/rtw_cmd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/r8188eu/core/rtw_cmd.c b/drivers/staging/r8188eu/core/rtw_cmd.c
+index fee4208dacba..afe6c7fa594d 100644
+--- a/drivers/staging/r8188eu/core/rtw_cmd.c
++++ b/drivers/staging/r8188eu/core/rtw_cmd.c
+@@ -1162,7 +1162,7 @@ u8 rtw_setassocsta_cmd(struct adapter  *padapter, u8 *mac_addr)
+ 		goto exit;
+ 	}
+ 
+-	psetassocsta_rsp = kzalloc(sizeof(struct set_assocsta_rsp), GFP_ATOMIC);
++	psetassocsta_rsp = kzalloc(sizeof(struct set_stakey_rsp), GFP_ATOMIC);
+ 	if (!psetassocsta_rsp) {
+ 		kfree(ph2c);
+ 		kfree(psetassocsta_para);
+-- 
+2.33.0
+
