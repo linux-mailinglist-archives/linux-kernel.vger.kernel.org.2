@@ -2,149 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A664D400F5D
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 13:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27FF1400F8A
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 14:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237847AbhIELxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 07:53:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55410 "EHLO mail.kernel.org"
+        id S237935AbhIEMLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 08:11:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232168AbhIELxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 07:53:11 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A52D60FBF;
-        Sun,  5 Sep 2021 11:52:04 +0000 (UTC)
-Date:   Sun, 5 Sep 2021 12:55:27 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     <lars@metafoo.de>, <robh+dt@kernel.org>, <shawnguo@kernel.org>,
-        <s.hauer@pengutronix.de>, <kernel@pengutronix.de>,
-        <festevam@gmail.com>, <linux-imx@nxp.com>,
-        <alex.dewar90@gmail.com>, <linux-iio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/6] dt-bindings: iio: adc: Add the binding
- documentation for NXP IMX8QXP ADC
-Message-ID: <20210905125527.1782ba86@jic23-huawei>
-In-Reply-To: <20210830172140.414-5-caihuoqing@baidu.com>
-References: <20210830172140.414-1-caihuoqing@baidu.com>
-        <20210830172140.414-5-caihuoqing@baidu.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S234382AbhIEMLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 08:11:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 12B1E61027;
+        Sun,  5 Sep 2021 12:10:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630843805;
+        bh=eCRJ5yerTqnwpninFmP8ox7avYfWeyLMV+GF7C/+Qeo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=r/2NdhEgwfZyWmgwck6pDPlE3YfRHGouCoinG/kXJiNkVA2/8QsW4TOtWUgmb0W0P
+         2NHojWpuV9UmIm7b3fiVhGqhLgnAekojXaXjqNDEhzIH6/62qx2/37ymITpc4VMXQ8
+         pTXCtdbQ4DTkv9bg/rOkyh193O4/puCb7XtresP6VVfsTLeh9hnRQFHKXyMvddbObW
+         sxztyekScWwws0qwYD0zuhhoEzn6oG0MujXw+f3XpIMNeeLPgVMGLexr5D52cwNRwr
+         IFJhsfahVCBrYC2G3yl8bVZkdJydM5f6o8du6ul2o979SYvCtCEYD2K+ShVa59wVip
+         3zrm4p2WDmB6Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 02CF660986;
+        Sun,  5 Sep 2021 12:10:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 1/1] net: stmmac: Fix overall budget calculation for
+ rxtx_napi
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163084380500.2594.10060610886272582296.git-patchwork-notify@kernel.org>
+Date:   Sun, 05 Sep 2021 12:10:05 +0000
+References: <20210903020026.1381962-1-yoong.siang.song@intel.com>
+In-Reply-To: <20210903020026.1381962-1-yoong.siang.song@intel.com>
+To:     Song Yoong Siang <yoong.siang.song@intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        boon.leong.ong@intel.com, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 31 Aug 2021 01:21:38 +0800
-Cai Huoqing <caihuoqing@baidu.com> wrote:
+Hello:
 
-> The NXP i.MX 8QuadXPlus SOC has a new ADC IP, so add the binding
-> documentation for NXP IMX8QXP ADC
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Fri,  3 Sep 2021 10:00:26 +0800 you wrote:
+> tx_done is not used for napi_complete_done(). Thus, NAPI busy polling
+> mechanism by gro_flush_timeout and napi_defer_hard_irqs will not able
+> be triggered after a packet is transmitted when there is no receive
+> packet.
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  .../bindings/iio/adc/nxp,imx8qxp-adc.yaml     | 85 +++++++++++++++++++
->  1 file changed, 85 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
+> Fix this by taking the maximum value between tx_done and rx_done as
+> overall budget completed by the rxtx NAPI poll to ensure XDP Tx ZC
+> operation is continuously polling for next Tx frame. This gives
+> benefit of lower packet submission processing latency and jitter
+> under XDP Tx ZC mode.
 > 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml b/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
-> new file mode 100644
-> index 000000000000..542329e6a785
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
-> @@ -0,0 +1,85 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/adc/nxp,imx8qxp-adc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP IMX8QXP ADC bindings
-> +
-> +maintainers:
-> +  - Cai Huoqing <caihuoqing@baidu.com>
-> +
-> +description:
-> +  Supports the ADC found on the IMX8QXP SoC.
-> +
-> +properties:
-> +  compatible:
-> +    const: nxp,imx8qxp-adc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 2
-> +
-> +  clock-names:
-> +    items:
-> +      - const: per
-> +      - const: ipg
-> +
-> +  assigned-clocks:
-> +    maxItems: 1
-> +
-> +  assigned-clocks-rate:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  status:
-> +    const: disable
-> +
-> +  "#io-channel-cells":
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - interrupts-parent
-> +  - clocks
-> +  - clock-names
-> +  - assigned-clocks
-> +  - assigned-clock-rates
-> +  - power-domains
-> +  - state
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/firmware/imx/rsrc.h>
-> +    soc {
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +	 adc@5a880000 {
-Clearly some indentation issues here.
-> +            compatible = "nxp,imx8qxp-adc";
-> +            reg = <0x0 0x5a880000 0x0 0x10000>;
-> +            interrupts = <GIC_SPI 240 IRQ_TYPE_LEVEL_HIGH>;
-> +            clocks = <&clk IMX_SC_R_ADC_0>,
-> +                     <&clk IMX_ADMA_LPCG_ADC_0_IPG_CLK>;
-> +            clock-names = "per", "ipg";
-> +            assigned-clocks = <&clk IMX_SC_R_ADC_0>;
-> +            assigned-clock-rates = <24000000>;
-> +            power-domains = <&pm, IMX_SC_R_ADC_0>;
-> +            status = "disabled";
+> [...]
 
-Don't mark the example disabled.
+Here is the summary with links:
+  - [net,1/1] net: stmmac: Fix overall budget calculation for rxtx_napi
+    https://git.kernel.org/netdev/net/c/81d0885d68ec
 
-> +            #io-channel-cells = <1>
-> +	 };
-> +    };
-> +...
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
