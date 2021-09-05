@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FC2D401099
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 17:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBB74010A6
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 17:50:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237622AbhIEPfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 11:35:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40756 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231485AbhIEPfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 11:35:44 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65BD660F4A;
-        Sun,  5 Sep 2021 15:34:40 +0000 (UTC)
-Date:   Sun, 5 Sep 2021 16:38:04 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Nuno Sa <Nuno.Sa@analog.com>
-Subject: Re: [PATCH v2 11/16] iio: adc: max1027: Prevent single channel
- accesses during buffer reads
-Message-ID: <20210905163804.67fca556@jic23-huawei>
-In-Reply-To: <20210902211437.503623-12-miquel.raynal@bootlin.com>
-References: <20210902211437.503623-1-miquel.raynal@bootlin.com>
-        <20210902211437.503623-12-miquel.raynal@bootlin.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S237781AbhIEPvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 11:51:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36865 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231657AbhIEPvW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 11:51:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630857019;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dt3+lUrr17xrCqRRoNhFo4SoQOQwGb+2P4GqnUIMZG4=;
+        b=ZGDlo0d5jxQ1ZDCumKj0VG6tpGI/E76mQRQZzSiaQXq5SQoouQ5n0ykhQ0/+rarJ7+IkBz
+        Vki8ZuEHELeC+KDepNrk71EJr16msnlxY2GQfQ00g1azTZ11vdoZGv+wR0YXwyxaC/B3ZI
+        YW9GsgG1YfR0i05pNY/Ko4b0XYIJk3s=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-193-XMwx7cCwN6iltkwYbC-pYw-1; Sun, 05 Sep 2021 11:50:18 -0400
+X-MC-Unique: XMwx7cCwN6iltkwYbC-pYw-1
+Received: by mail-ej1-f69.google.com with SMTP id cf17-20020a170906b2d100b005d42490f86bso1239387ejb.3
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 08:50:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dt3+lUrr17xrCqRRoNhFo4SoQOQwGb+2P4GqnUIMZG4=;
+        b=pNeQ9Fgrr+KPb7dswHaWEMPQeD6J7D4fjwrsy2LHxovjDeArjKda/vsiF08Q79aHQ2
+         1cFCZthQBzLszuxoJZ4X6QNxd65DRhHrNc0wQrNiMvH9mfYX9ajpKQ7fEmBBVdXzjf47
+         L7sTaXUzDsQuakXbShr2KrR2YYFVpvakNXYGNMTYkirVAqlm23ghtsDhjP2I0iSzKLB1
+         m4Z0EsDXmehsupGB56StkQA8dr8x1M2f7dHVLtAyaCbfoH/2wa7PjBHEY0fiJHjSsm/D
+         b1DVTwKM33a7tfO/FmrLKLhzivZK006esdUQ6FuRx9d5N/kcSJ2KjtHGVWNSHpdKlF6V
+         wyTA==
+X-Gm-Message-State: AOAM531HwJGw13GsP2ETS+T2gmPkgVegspdO2J38zXjH6oXnBHOV9fjo
+        V9i+BVpeUsRfslICWQtLRigKwN8htkE2W3QvNNFyJZ4KVaSar+MyXBYxVEY/QXL11RjWzzA6bnv
+        mEgedrn92JEAKofOdubnrajYY
+X-Received: by 2002:aa7:c514:: with SMTP id o20mr9209159edq.318.1630857016058;
+        Sun, 05 Sep 2021 08:50:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw/Vr1hTVx3/Sty6LNqcZMAJAOmpd1FUx3LtNW8reY+9FMDFhx51QrJugo5epYEB0BNnX/rsw==
+X-Received: by 2002:aa7:c514:: with SMTP id o20mr9209144edq.318.1630857015928;
+        Sun, 05 Sep 2021 08:50:15 -0700 (PDT)
+Received: from redhat.com ([2.55.131.183])
+        by smtp.gmail.com with ESMTPSA id g18sm2495519ejr.99.2021.09.05.08.50.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 08:50:15 -0700 (PDT)
+Date:   Sun, 5 Sep 2021 11:50:11 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v4 2/6] virtio/vsock: add 'VIRTIO_VSOCK_SEQ_EOR'
+ bit.
+Message-ID: <20210905115002-mutt-send-email-mst@kernel.org>
+References: <20210903061353.3187150-1-arseny.krasnov@kaspersky.com>
+ <20210903061523.3187714-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903061523.3187714-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  2 Sep 2021 23:14:32 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+On Fri, Sep 03, 2021 at 09:15:20AM +0300, Arseny Krasnov wrote:
+> This bit is used to handle POSIX MSG_EOR flag passed from
+> userspace in 'send*()' system calls. It marks end of each
+> record and is visible to receiver using 'recvmsg()' system
+> call.
+> 
+> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-> When hardware buffers are enabled (the cnvst pin being the trigger), one
-> should not mess with the device state by requesting a single channel
-> read.
-> 
-> There is already a iio_buffer_enabled() check in *_read_single_value()
-> to merely prevent this situation but the check is inconsistent since
-> buffers can be enabled after the if clause anyway. Instead, use the core
-> mutex by calling iio_device_claim/release_direct_mode().
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Spec patch for this?
+
 > ---
->  drivers/iio/adc/max1027.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+>  include/uapi/linux/virtio_vsock.h | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/drivers/iio/adc/max1027.c b/drivers/iio/adc/max1027.c
-> index f4cb5c75604b..57f62ea2d7aa 100644
-> --- a/drivers/iio/adc/max1027.c
-> +++ b/drivers/iio/adc/max1027.c
-> @@ -296,10 +296,9 @@ static int max1027_read_single_value(struct iio_dev *indio_dev,
->  	int ret;
->  	struct max1027_state *st = iio_priv(indio_dev);
+> diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
+> index 8485b004a5f8..64738838bee5 100644
+> --- a/include/uapi/linux/virtio_vsock.h
+> +++ b/include/uapi/linux/virtio_vsock.h
+> @@ -98,6 +98,7 @@ enum virtio_vsock_shutdown {
+>  /* VIRTIO_VSOCK_OP_RW flags values */
+>  enum virtio_vsock_rw {
+>  	VIRTIO_VSOCK_SEQ_EOM = 1,
+> +	VIRTIO_VSOCK_SEQ_EOR = 2,
+>  };
 >  
-> -	if (iio_buffer_enabled(indio_dev)) {
-> -		dev_warn(&indio_dev->dev, "trigger mode already enabled");
-> -		return -EBUSY;
-> -	}
-> +	ret = iio_device_claim_direct_mode(indio_dev);
-> +	if (ret)
-> +		return ret;
-
->  
->  	/* Configure conversion register with the requested chan */
->  	st->reg = MAX1027_CONV_REG | MAX1027_CHAN(chan->channel) |
-> @@ -325,6 +324,8 @@ static int max1027_read_single_value(struct iio_dev *indio_dev,
->  	if (ret < 0)
->  		return ret;
-
-Must also be released in error paths.  Treat it like a lock (there is one
-internally) so to avoid permanent deadlock we must release it even if things
-are going wrong
-
->  
-> +	iio_device_release_direct_mode(indio_dev);
-> +
->  	*val = be16_to_cpu(st->buffer[0]);
->  
->  	return IIO_VAL_INT;
+>  #endif /* _UAPI_LINUX_VIRTIO_VSOCK_H */
+> -- 
+> 2.25.1
 
