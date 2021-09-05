@@ -2,95 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E38D400DDE
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 05:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6E5400DE5
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 06:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234033AbhIEDhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 4 Sep 2021 23:37:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232187AbhIEDhv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 4 Sep 2021 23:37:51 -0400
-Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838BDC061575
-        for <linux-kernel@vger.kernel.org>; Sat,  4 Sep 2021 20:36:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=CUk4iNYAbYWekShqhuG5j1pDz8bdESz91f03JcDCzPo=; b=jqjE2DCihJDpaXoyLVi+7h6vWk
-        YSdj+HMdqiufx/soAKX9X/WERvuveKRbsjAgqUzmSPNoMxk2i16XyDwnkXwtSDkBGRFrDY9nGb5h5
-        quQx/J6R5W98y6hJXTmdt3k0ewtsMj8/sdEvp3PjRr2MEvF0IJg4qn5xWreAGeuN3wJm59XDLga7P
-        gHk8+9uRo7U7jCTTJMKyXn0n602Q76vVqNVEB2p6GXUhsIBok9N+9f8dRwLcAXGbuCVEPkJZmacnL
-        PX+zzb+gdEqem9J5OlrZ4e4MpfgjiuXzy3mfAOhylHgYSVijs7wVK7I6RFLDjLG0/Wnf7Bkp7WPVh
-        Ig6DaEVA==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mMixZ-00F9UM-LI; Sun, 05 Sep 2021 03:36:45 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Jun Ma <majun258@huawei.com>, Yun Wu <wuyun.wu@huawei.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Aditya Srivastava <yashsri421@gmail.com>
-Subject: [PATCH] irqchip: repair non-kernel-doc notation in irq-mbigen.c
-Date:   Sat,  4 Sep 2021 20:36:44 -0700
-Message-Id: <20210905033644.15988-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        id S232187AbhIEEMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 00:12:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32952 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229541AbhIEEMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 00:12:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9CF061057;
+        Sun,  5 Sep 2021 04:11:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630815079;
+        bh=FJt08tLv94mGzxxoL9aKwkbFQx3aABVQCv3d6GkPJ50=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BkGVJHzzLOWSqg7qiTcFvDwkAz7IvFkSPRqU6MLqjnzLUWEoRoJy2C04dJn99rBm2
+         8jPItABi5toutqoXFN7bM90fBVnhJctZFwug62V6r3xFeTscbRp0JvDH9H/A3LN+TT
+         W1Gmfpo56UaDXGE87GY5qVU9754eKQXwsBguLTUYTDkTq2/pIgOa2Frcjx94/5JwHH
+         9a8KzjE3uUo790W8f4D/3x8jzlwDMQvYaar4a1HpaQQ6gzzyLlZdudj0/SfiokpXOl
+         P7hUBdLNpNlY3VNCQ65Oe/ZsaSCUQGvr3dTsCkfHEB03sj3RhWEtR3Bo3svALVk8rp
+         j18hxIAIQzSfg==
+Received: by mail-ej1-f44.google.com with SMTP id x11so6432366ejv.0;
+        Sat, 04 Sep 2021 21:11:19 -0700 (PDT)
+X-Gm-Message-State: AOAM532jvlouIaRSi+f4tym1fc6Dxqtv/JBOlBtpUISHbW2Rv+hGsjry
+        bBT/HXKXW5xYDiCDAcd33AWbgzeFmdjuLhHZFA==
+X-Google-Smtp-Source: ABdhPJxuQktwkT66NyxvIWF/PbhLjJE31qsp+wgNqVEER3VZSiT7tBa60/3ZxcrdU/9Low1/zRYZ7e6Rc2WPzONInhU=
+X-Received: by 2002:a17:906:26c4:: with SMTP id u4mr6927063ejc.511.1630815078141;
+ Sat, 04 Sep 2021 21:11:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210825144833.7757-1-jason-jh.lin@mediatek.com> <20210825144833.7757-5-jason-jh.lin@mediatek.com>
+In-Reply-To: <20210825144833.7757-5-jason-jh.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sun, 5 Sep 2021 12:11:07 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8XoeNVWqYpGPyUS-9X4jrjo8N=QxoBY0oD8nfeVMsESA@mail.gmail.com>
+Message-ID: <CAAOTY_8XoeNVWqYpGPyUS-9X4jrjo8N=QxoBY0oD8nfeVMsESA@mail.gmail.com>
+Subject: Re: [PATCH v9 04/14] dt-bindings: mediatek: add mediatek,dsc.yaml for
+ mt8195 SoC binding
+To:     "jason-jh.lin" <jason-jh.lin@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Fabien Parent <fparent@baylibre.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, fshao@chromium.org,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        Jitao shi <jitao.shi@mediatek.com>,
+        Nancy Lin <nancy.lin@mediatek.com>, singo.chang@mediatek.com,
+        DTML <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel-doc warnings in irq-mbigen.c:
+Hi, Jason:
 
-irq-mbigen.c:29: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- * In mbigen vector register
-irq-mbigen.c:43: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- * offset of clear register in mbigen node
-irq-mbigen.c:50: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- * offset of interrupt type register
+jason-jh.lin <jason-jh.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B48=E6=9C=882=
+5=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8B=E5=8D=8810:48=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> 1. Add mediatek,dsc.yaml to describe DSC module in details.
+> 2. Add mt8195 SoC binding to mediatek,dsc.yaml.
+>
+> Signed-off-by: jason-jh.lin <jason-jh.lin@mediatek.com>
+> ---
+>  .../display/mediatek/mediatek,dsc.yaml        | 70 +++++++++++++++++++
+>  1 file changed, 70 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,dsc.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+dsc.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsc.=
+yaml
+> new file mode 100644
+> index 000000000000..f26e3010d5f4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dsc.yam=
+l
+> @@ -0,0 +1,70 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/mediatek/mediatek,dsc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: mediatek display DSC controller
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Jun Ma <majun258@huawei.com>
-Cc: Yun Wu <wuyun.wu@huawei.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Aditya Srivastava <yashsri421@gmail.com>
----
- drivers/irqchip/irq-mbigen.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Mediatek
 
---- linux-next-20210903.orig/drivers/irqchip/irq-mbigen.c
-+++ linux-next-20210903/drivers/irqchip/irq-mbigen.c
-@@ -25,7 +25,7 @@
- /* The maximum IRQ pin number of mbigen chip(start from 0) */
- #define MAXIMUM_IRQ_PIN_NUM		1407
- 
--/**
-+/*
-  * In mbigen vector register
-  * bit[21:12]:	event id value
-  * bit[11:0]:	device id
-@@ -39,14 +39,14 @@
- /* offset of vector register in mbigen node */
- #define REG_MBIGEN_VEC_OFFSET		0x200
- 
--/**
-+/*
-  * offset of clear register in mbigen node
-  * This register is used to clear the status
-  * of interrupt
-  */
- #define REG_MBIGEN_CLEAR_OFFSET		0xa000
- 
--/**
-+/*
-  * offset of interrupt type register
-  * This register is used to configure interrupt
-  * trigger type
+Regards,
+Chun-Kuang.
+
+> +
+> +maintainers:
+> +  - Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> +  - Philipp Zabel <p.zabel@pengutronix.de>
+> +
+> +description: |
+> +  The DSC standard is a specification of the algorithms used for
+> +  compressing and decompressing image display streams, including
+> +  the specification of the syntax and semantics of the compressed
+> +  video bit stream. DSC is designed for real-time systems with
+> +  real-time compression, transmission, decompression and Display.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: mediatek,mt8195-disp-dsc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: DSC Wrapper Clock
+> +
+> +  power-domains:
+> +    description: A phandle and PM domain specifier as defined by binding=
+s of
+> +      the power controller specified by phandle. See
+> +      Documentation/devicetree/bindings/power/power-domain.yaml for deta=
+ils.
+> +
+> +
+> +  mediatek,gce-client-reg:
+> +    description:
+> +      The register of client driver can be configured by gce with 4 argu=
+ments defined
+> +      in this property, such as phandle of gce, subsys id, register offs=
+et and size.
+> +      Each subsys id is mapping to a base address of display function bl=
+ocks register
+> +      which is defined in the gce header include/include/dt-bindings/gce=
+/<chip>-gce.h.
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - power-domains
+> +  - clocks
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +
+> +    dsc0: disp_dsc_wrap@1c009000 {
+> +        compatible =3D "mediatek,mt8195-disp-dsc";
+> +        reg =3D <0 0x1c009000 0 0x1000>;
+> +        interrupts =3D <GIC_SPI 645 IRQ_TYPE_LEVEL_HIGH 0>;
+> +        power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSYS0>;
+> +        clocks =3D <&vdosys0 CLK_VDO0_DSC_WRAP0>;
+> +        mediatek,gce-client-reg =3D <&gce1 SUBSYS_1c00XXXX 0x9000 0x1000=
+>;
+> +    };
+> --
+> 2.18.0
+>
