@@ -2,108 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F4C40115D
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 21:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D123140115F
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 21:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238060AbhIET2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 15:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230422AbhIET2J (ORCPT
+        id S238121AbhIETaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 15:30:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22356 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237960AbhIETaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 15:28:09 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59B4C061575
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 12:27:05 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id s12so7588099ljg.0
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 12:27:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8GB7YhVw4I1lPBw5iEYwKcJSJkJXzzk2ALEpsWj50AQ=;
-        b=d4ueszfQ1ChFjZO2aea6b+E01wkxIgHE+pSGmW46ZDORJ+bEbGdJ/41SX0ogREEFtP
-         CM8M9osKCmWe3C9S+idgR1EmTVczhP/XXxe3d3l6Ni2gUB4zKM57dpE3XGbNnxKKyfol
-         G7zFB2dH6nDWpOnyLRqs0z7A89oxk1GDTRSEQ=
+        Sun, 5 Sep 2021 15:30:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630870148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VJhftX7KdnJxCNtt1OcYAAeR/bKh9VnXaLjpPXlfeQg=;
+        b=O43qjVAbiztNSzIbDLga1y08fwGXtq1jsPevoJU/dt04djclkj8YjvHbNsHOcVXG8zoLer
+        1dVnohQSAfmM42VTq/Ep+sV29rJ2a1MCM/6vhVLkYm5LXeGWM1T/QN/lcEE4r0TJpWSflu
+        7RIw5wHw0gswG6eRgcb2bFyS5fwtbHs=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-N-AWEltePF6x0e5azDZmIA-1; Sun, 05 Sep 2021 15:29:07 -0400
+X-MC-Unique: N-AWEltePF6x0e5azDZmIA-1
+Received: by mail-wm1-f69.google.com with SMTP id m22-20020a7bcb96000000b002f7b840d9dcso2340974wmi.1
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 12:29:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8GB7YhVw4I1lPBw5iEYwKcJSJkJXzzk2ALEpsWj50AQ=;
-        b=K5ngviw9hHKrkmZrZI9YGBJ2tGogu15yS4KiJuzyg5wi9Tqpsm/d2HA6HUV5dU8vsL
-         sejDQ9s8tEgx+CISda04u85fIlORfzPh2sg6ZaCb1Cdpq+xjHG8O7Xsdjz9Ay9Hb0Dgj
-         d9jJrDypXOfOyDLtXXb8oZox+v1gDZRUYKSeuZGNkAkz26b3cqBE1J9qPCL9gDghkzNj
-         kfKxAnjdM6iXbL+3e5+XVAyUQLOqVm7m7NItQVNpd27whTpGgSY2DUuSo115Qv/GGArP
-         q5UzaUG1nfwF2fY38wAi48tMC6Lk1vEwc/BqrAQf+qiVye+WrsVPkzjeFy7pF2leQm0G
-         laFQ==
-X-Gm-Message-State: AOAM531LgtVmSrb3OfVJjOGoScWD5j8V93OvwBzKVPXPsOCrihhYfINj
-        2Jed7wQwxLbUYqMT0QUDl4TENc1X0UvwOO1QpF0=
-X-Google-Smtp-Source: ABdhPJzLsDsP+rS3r3+pnojNBcn0friB/TXBEMVOIK2CNtHoZkSgtjjcAlZgeKoLp+6WgHQambzhyA==
-X-Received: by 2002:a2e:824e:: with SMTP id j14mr7719590ljh.65.1630870023497;
-        Sun, 05 Sep 2021 12:27:03 -0700 (PDT)
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
-        by smtp.gmail.com with ESMTPSA id y35sm545318lfa.107.2021.09.05.12.27.01
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=VJhftX7KdnJxCNtt1OcYAAeR/bKh9VnXaLjpPXlfeQg=;
+        b=kBkwNCIoHYwbPWu2A+ELcKl4VVXg2HzP5BG4vAaNj55Y1w8PTqXQ8pJVa4WM+46QLq
+         ZZPFCuKWP9Wo2/GNYQzmhWLVkSoi/pLSvglA8Ye3wHvzngp1xuSOv5OdkGhey5/JhxWj
+         iSn5Sv629gA/qr8lyNoMzKeq/Rr5x41C9DZSngzglYZVX2XRl7GothbY+O+tJ+iNN5yR
+         QwJ8pnIMuDSw4O5EfqyhpFwyirs0jM9bHsTrqD9OePcXsVYdONX357hTmXr9s3RAFV/a
+         88GwnIXTsSjRO/eVH0mPohfxIlubNvnYCsltwD7vodBPPVf+fJRnOvkuZnq9HGy4dL2m
+         rp7A==
+X-Gm-Message-State: AOAM533IOR3G4/Rlh7DVH0q1uuv7u7BKBTEfA4JxM5vhfnsMjrOg6U6a
+        EwhdNWwc+wL68Tc+Ypmixs5wFUX32mLZrE/WYOuJtrNKrS0NaghQZafNJQTYgwiKOV8Z8pyu/pI
+        wVXJ/iU83MnFIae6zgguTpUua
+X-Received: by 2002:a5d:438a:: with SMTP id i10mr9720552wrq.285.1630870145993;
+        Sun, 05 Sep 2021 12:29:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxu2FTA+hrPwFqGf7dCn9mHcjQyvE9QSkO6Avx438vyzALqkqRc4eOOXzTeN2CgcYcEllBK9w==
+X-Received: by 2002:a5d:438a:: with SMTP id i10mr9720544wrq.285.1630870145830;
+        Sun, 05 Sep 2021 12:29:05 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6f04.dip0.t-ipconnect.de. [91.12.111.4])
+        by smtp.gmail.com with ESMTPSA id l7sm5166459wmj.9.2021.09.05.12.29.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Sep 2021 12:27:02 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id x27so9072133lfu.5
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 12:27:01 -0700 (PDT)
-X-Received: by 2002:a05:6512:3da5:: with SMTP id k37mr7080170lfv.655.1630870021592;
- Sun, 05 Sep 2021 12:27:01 -0700 (PDT)
+        Sun, 05 Sep 2021 12:29:05 -0700 (PDT)
+Subject: Re: [PATCH] binfmt: a.out: Fix bogus semicolon
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        noreply@ellerman.id.au
+References: <20210905093034.470554-1-geert@linux-m68k.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <7a9e8a5e-df3d-0ecd-1396-450b50ce2937@redhat.com>
+Date:   Sun, 5 Sep 2021 21:29:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210904184924.16279-1-acme@kernel.org>
-In-Reply-To: <20210904184924.16279-1-acme@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 5 Sep 2021 12:26:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj=9gNaQpZ3ChKfW-=9in7yGwP-sg5M75GVdSmMPEJC9Q@mail.gmail.com>
-Message-ID: <CAHk-=wj=9gNaQpZ3ChKfW-=9in7yGwP-sg5M75GVdSmMPEJC9Q@mail.gmail.com>
-Subject: Re: [GIT PULL] perf tools changes for v5.15
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Alyssa Ross <hi@alyssa.is>,
-        Andreas Gerstmayr <agerstmayr@redhat.com>,
-        Colin King <colin.king@canonical.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Eirik Fuller <efuller@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        James Clark <james.clark@arm.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Joshua Martinez <joshuamart@google.com>,
-        Leo Yan <leo.yan@linaro.org>, Li Huafei <lihuafei1@huawei.com>,
-        Nghia Le <nghialm78@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Shunsuke Nakamura <nakamura.shun@fujitsu.com>,
-        Stephane Eranian <eranian@google.com>,
-        Stephen Brennan <stephen.s.brennan@oracle.com>,
-        Wei Li <liwei391@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210905093034.470554-1-geert@linux-m68k.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 4, 2021 at 11:49 AM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-for-v5.15-2021-09-04
+On 05.09.21 11:30, Geert Uytterhoeven wrote:
+>      fs/binfmt_aout.c: In function ‘load_aout_library’:
+>      fs/binfmt_aout.c:311:27: error: expected ‘)’ before ‘;’ token
+>        311 |    MAP_FIXED | MAP_PRIVATE;
+> 	  |                           ^
+>      fs/binfmt_aout.c:309:10: error: too few arguments to function ‘vm_mmap’
+>        309 |  error = vm_mmap(file, start_addr, ex.a_text + ex.a_data,
+> 	  |          ^~~~~~~
+>      In file included from fs/binfmt_aout.c:12:
+>      include/linux/mm.h:2626:35: note: declared here
+>       2626 | extern unsigned long __must_check vm_mmap(struct file *, unsigned long,
+> 	  |                                   ^~~~~~~
+> 
+> Fix this by reverting the accidental replacement of a comma by a
+> semicolon.
+> 
+> Fixes: 42be8b42535183f8 ("binfmt: don't use MAP_DENYWRITE when loading shared libraries via uselib()")
+> Reported-by: noreply@ellerman.id.au
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> ---
+>   fs/binfmt_aout.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/binfmt_aout.c b/fs/binfmt_aout.c
+> index a47496d0f123355c..0dcfc691e7e218bc 100644
+> --- a/fs/binfmt_aout.c
+> +++ b/fs/binfmt_aout.c
+> @@ -308,7 +308,7 @@ static int load_aout_library(struct file *file)
+>   	/* Now use mmap to map the library into memory. */
+>   	error = vm_mmap(file, start_addr, ex.a_text + ex.a_data,
+>   			PROT_READ | PROT_WRITE | PROT_EXEC,
+> -			MAP_FIXED | MAP_PRIVATE;
+> +			MAP_FIXED | MAP_PRIVATE,
+>   			N_TXTOFF(ex));
+>   	retval = error;
+>   	if (error != start_addr)
+> 
 
-Hmm. I don't usually build the perf tools except after a pull, and I
-might have missed this before, so it's not necessarily new..
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-But the perf build leaves this stale file around:
+Thanks for reporting and fixing that quickly!
 
-        tools/perf/Documentation/doc.dep
+-- 
+Thanks,
 
-which should either be ignored, or it should be renamed to one of the
-names we already do ignore (make it a dot-file?)
+David / dhildenb
 
-              Linus
