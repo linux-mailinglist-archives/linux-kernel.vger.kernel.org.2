@@ -2,133 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDD240112D
-	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 20:36:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E04401134
+	for <lists+linux-kernel@lfdr.de>; Sun,  5 Sep 2021 20:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237398AbhIEScx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 14:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46886 "EHLO
+        id S234890AbhIESrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 14:47:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233532AbhIEScu (ORCPT
+        with ESMTP id S234445AbhIESrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 14:32:50 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2510BC061757
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 11:31:47 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id v123so3824139pfb.11
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 11:31:47 -0700 (PDT)
+        Sun, 5 Sep 2021 14:47:07 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6866EC061575
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 11:46:04 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d17so2603755plr.12
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 11:46:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=jXU5smY1OqzWWvbSsjogwB3pDuhKcKHeqTGvWM/hR/0=;
-        b=QeiGCOmJ6d5RZxjDOv4RLDUUEiefTmixYvtHKRRGMDASqT53zV9EKXBcwE/+nUTPla
-         b7AFuEpCSDUgug8wwoMTk+qzPeuwEGtzQm0SbrXkpDgQal/nBAxdzBgf357AES12LJxr
-         PJ78HGn1YJuOpqqKYmPQf3a4tLYY4qhwA9pc0=
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=A0AxMO/6mnm7mS5tH8sAepDPtEJ/6RXbzlmGEKvemFk=;
+        b=pUe/G4l2M97MzDY/AvQlXjKYHrV+zgLd2iD/nheKBAJwy7DsLqnmVdDCASNJz/nbjE
+         pZN9iNMNILTPqIpPU8fKAsAwUm7104hYcgbmwgnFL9T4bFB7Fy+Cr9+JpJ6P1T7gcnAA
+         FFtu1bSlmPG5yz5/2TLq8QqUSyAnNWuoeUNOMORF+RxCJXQA0j1LzacXaJDraH8HbpLg
+         TF6dOXKG2SIY/IpQNnVRz4ak2CkCJ+h4w4AAnQ1Bu+hkh6ZrhdJSXEaednmRkeEvdB+s
+         Lfvv5nDaJoY5e2mUz/6q8now37T05H4FNivL/aFF+AMXX1UVhZtwKqg0y1Ns6cO78GSH
+         +Byg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=jXU5smY1OqzWWvbSsjogwB3pDuhKcKHeqTGvWM/hR/0=;
-        b=lxEP1jwv81U3m82YnYz5DlbjF8lAjNaCjsE1vx1373RWlNr5gWNOQMWi/2vhoyyDDd
-         J6p1FGGqsGHGndBdGr31mifiU2T1TDXPrFLmJOZf2qp4shnzqrFNDFRLxZrKxCF4/29G
-         0vAjzBJxlg0V8P4U22OUdA+iY9Ge4Ircd/cSggPYXgCtHFO3M4TWQz/vJeLt4uE+yN4h
-         jzyJkp6WoOzXxkYP3S9rt7ZpvKCPe7gcuYaF7DpmK0BKCSpGLvRVutao35rGRPP7CXcR
-         Erq28MQ3S+gQMoDFhM+5z2A8y6Cp2bjBobRoPZj/cXiHH5hs6WJJUZ3LXDM4M9YQqsTi
-         l6Dw==
-X-Gm-Message-State: AOAM532ZjYqlhMCFwrk8r1iBEH3J1FwOL4HPH8C+ghSkS7KIqKwJAVHn
-        um82ASRQu8YLrTwWjTacyAn8sIbxRceoEw==
-X-Google-Smtp-Source: ABdhPJz1qrurDqokxjLX3jEl+qGbItIuFod9R+1hVI9oZbiPM8Hfp1qUnT0UABFv5eqs7/fhgD8XuQ==
-X-Received: by 2002:aa7:94bb:0:b0:40a:6478:d637 with SMTP id a27-20020aa794bb000000b0040a6478d637mr8371506pfl.1.1630866706552;
-        Sun, 05 Sep 2021 11:31:46 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id o14sm6247256pgl.85.2021.09.05.11.31.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=A0AxMO/6mnm7mS5tH8sAepDPtEJ/6RXbzlmGEKvemFk=;
+        b=T/jjY9U1XXHbrb90OuaON1G4kQDufRzR933MEthQqvTpi7XamlzN/+iHp4V56W7Pxy
+         KpZVu3tkBj8O8vLv9h5NpgVXoaLDJ71q7Bu3ekKi6Q5MweqbcGPlOR/xPjLnDByty4WV
+         D4h5OqXkdxj0o4EGftW8xmLc6EKjN3E5rgOUHAa2rA60Ns33k6wS8jw7w/MIMu1pvggr
+         2PguB8chIQXbg+Nfb4RlCAsWSKPDr8TjGv8BQYxV5KdkwGnX97z6DTm0Kt4awQRM+4jc
+         +KU59Qph/mMfO1/ZzqgXnigXP5eM4Nq4a/+kYcBkUHysitw/sA/RhYXBJXCdFL97wpkU
+         NJaQ==
+X-Gm-Message-State: AOAM532Ej8MBwIzrOdw6gXDFp7tQL05NHat0eCaD1NcPeSxXMft29I8m
+        MgLwQxfnGJ/PR9UHeILLgwo=
+X-Google-Smtp-Source: ABdhPJydT3MHzK+39z8my7P2lPiqSumjTIndk0xWZx3a5mdR/UDaskAgbHLflL5vb/OPOI24cbwB8A==
+X-Received: by 2002:a17:90a:7345:: with SMTP id j5mr10225819pjs.48.1630867563685;
+        Sun, 05 Sep 2021 11:46:03 -0700 (PDT)
+Received: from user ([117.98.200.228])
+        by smtp.gmail.com with ESMTPSA id c24sm6388677pgj.63.2021.09.05.11.46.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Sep 2021 11:31:45 -0700 (PDT)
-Date:   Sun, 5 Sep 2021 11:31:44 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Vetter <daniel@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithp@keithp.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [GIT PULL] overflow updates for v5.15-rc1
-Message-ID: <202109051123.11E4E31@keescook>
-References: <202109022012.756B6B5B79@keescook>
- <CAHk-=wiPOXS2f90Ykk3V76sJLx0wMVywke8pc=88r1trmDuhmw@mail.gmail.com>
- <45312958-B844-4B4C-9808-8205866675A1@chromium.org>
- <CAHk-=widUkzjVMW99L6OZpJc1wDnZbBbnOOzgXOMypOPoV6mjg@mail.gmail.com>
+        Sun, 05 Sep 2021 11:46:03 -0700 (PDT)
+Date:   Mon, 6 Sep 2021 00:15:57 +0530
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        gregkh@linuxfoundation.org, fmdefrancesco@gmail.com,
+        saurav.girepunje@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     saurav.girepunje@hotmail.com
+Subject: [PATCH] staging: rtl8712: Move similar execution in to a function.
+Message-ID: <YTUQZdPiYFscIsvU@user>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHk-=widUkzjVMW99L6OZpJc1wDnZbBbnOOzgXOMypOPoV6mjg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 05, 2021 at 10:36:22AM -0700, Linus Torvalds wrote:
-> On Sun, Sep 5, 2021 at 12:38 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > Yeech. Yeah, no, that was not expected at all. I even did test merge builds against your latest tree before sending the Pull Request. This has been in -next for weeks, too.
-> 
-> Sadly, I don't think linux-next checks for warnings.
+Move the common execution for read_macreg_hdl, write_macreg_hdl,
+write_bbreg_hdl and write_rfreg_hdl in to a new function
+common_read_write_hdl.
 
-Oh, I thought I'd gotten such reports from sfr before, but certainly the
-0day bot and others have yelled loudly about new warnings (from earlier
-iterations of this series in -next).
+Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+---
+ drivers/staging/rtl8712/rtl8712_cmd.c | 41 +++++++--------------------
+ 1 file changed, 11 insertions(+), 30 deletions(-)
 
-> I really want to enable -Werror at some point, but every time I think
-> I should, I just end up worrying about another random new compiler (or
-> a random old one).
-> 
-> We do have -Werror in various configurations (and in some sub-trees).
+diff --git a/drivers/staging/rtl8712/rtl8712_cmd.c b/drivers/staging/rtl8712/rtl8712_cmd.c
+index e9294e1ed06e..9bc0588be04b 100644
+--- a/drivers/staging/rtl8712/rtl8712_cmd.c
++++ b/drivers/staging/rtl8712/rtl8712_cmd.c
+@@ -117,9 +117,9 @@ static void r871x_internal_cmd_hdl(struct _adapter *padapter, u8 *pbuf)
+ 	kfree(pdrvcmd->pbuf);
+ }
 
-Yup, I think ppc and drm?
+-static u8 read_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
++static u8 common_read_write_hdl(struct _adapter *padapter, u8 *pbuf)
+ {
+-	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj	*pcmd);
++	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj *pcmd);
+ 	struct cmd_obj *pcmd  = (struct cmd_obj *)pbuf;
 
-> > What was the build environment?
-> 
-> This is actually just bog-standard gcc-11.2 from F34, and an allmodconfig build.
+ 	/*  invoke cmd->callback function */
+@@ -129,20 +129,17 @@ static u8 read_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
+ 	else
+ 		pcmd_callback(padapter, pcmd);
+ 	return H2C_SUCCESS;
++
+ }
 
-Ah, fun. Yeah, I'm behind on versions, it seems. Default gcc version on
-latest stable Ubuntu release is 10.3. I will go retest on the devel
-release.
+-static u8 write_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
++static u8 read_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
+ {
+-	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj	*pcmd);
+-	struct cmd_obj *pcmd  = (struct cmd_obj *)pbuf;
++	return common_read_write_hdl(padapter, pbuf);
++}
 
-> > Seeing an unexpected "-Wunused-value" in your output makes me think I've got a compiler version blind-spot, with some different default flags.)
-> 
-> There were lots of other ones too, I just pasted a small subset. Thne
-> full error log was 400+ lines. Most of those lines are just because of
-> the very verbose warnings.
-> 
-> Three errors due to "-Werror=unused-value", but 17 each of variations on
-> 
->     error: call to ‘__read_overflow’ declared with attribute error:
-> detected read beyond size of object (1st parameter)
-> 
-> and
-> 
->     warning: unsafe xyz() usage lacked '__read_overflow' warning
-> 
-> warnings.
-> 
-> Full 400+ lines (25kB) of errors/warnings messages attached in case
-> you care about the whole thing and can't easily reproduce.
+-	/*  invoke cmd->callback function */
+-	pcmd_callback = cmd_callback[pcmd->cmdcode].callback;
+-	if (!pcmd_callback)
+-		r8712_free_cmd_obj(pcmd);
+-	else
+-		pcmd_callback(padapter, pcmd);
+-	return H2C_SUCCESS;
++static u8 write_macreg_hdl(struct _adapter *padapter, u8 *pbuf)
++{
++	return common_read_write_hdl(padapter, pbuf);
+ }
 
-Yeah, the tests are designed to freak out if it gets an unexpected
-warning (since it's trying to check for _expected_ warnings), but
-regardless, they were not at all supposed to be spewing like this
-immediately! :P
+ static u8 read_bbreg_hdl(struct _adapter *padapter, u8 *pbuf)
+@@ -155,15 +152,7 @@ static u8 read_bbreg_hdl(struct _adapter *padapter, u8 *pbuf)
 
-Sorry for the noise; I will get it cleaned up and re-sent.
+ static u8 write_bbreg_hdl(struct _adapter *padapter, u8 *pbuf)
+ {
+-	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj *pcmd);
+-	struct cmd_obj *pcmd  = (struct cmd_obj *)pbuf;
+-
+-	pcmd_callback = cmd_callback[pcmd->cmdcode].callback;
+-	if (!pcmd_callback)
+-		r8712_free_cmd_obj(pcmd);
+-	else
+-		pcmd_callback(padapter, pcmd);
+-	return H2C_SUCCESS;
++	return common_read_write_hdl(padapter, pbuf);
+ }
 
--Kees
+ static u8 read_rfreg_hdl(struct _adapter *padapter, u8 *pbuf)
+@@ -184,15 +173,7 @@ static u8 read_rfreg_hdl(struct _adapter *padapter, u8 *pbuf)
 
--- 
-Kees Cook
+ static u8 write_rfreg_hdl(struct _adapter *padapter, u8 *pbuf)
+ {
+-	void (*pcmd_callback)(struct _adapter *dev, struct cmd_obj *pcmd);
+-	struct cmd_obj *pcmd  = (struct cmd_obj *)pbuf;
+-
+-	pcmd_callback = cmd_callback[pcmd->cmdcode].callback;
+-	if (!pcmd_callback)
+-		r8712_free_cmd_obj(pcmd);
+-	else
+-		pcmd_callback(padapter, pcmd);
+-	return H2C_SUCCESS;
++	return common_read_write_hdl(padapter, pbuf);
+ }
+
+ static u8 sys_suspend_hdl(struct _adapter *padapter, u8 *pbuf)
+--
+2.32.0
+
