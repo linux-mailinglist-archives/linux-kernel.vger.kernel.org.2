@@ -2,117 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04AD6401A61
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F23401A65
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241099AbhIFLIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 07:08:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56068 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240396AbhIFLIw (ORCPT
+        id S241327AbhIFLKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 07:10:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232819AbhIFLKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 07:08:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630926467;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZI1k/K6ivHiraxD4vMcL+vxFoqbnTrx2bG7F3rS0xHI=;
-        b=Zt0hKJxDXmCPVV3PM0qovH9JNUMR0K7ePpbcEz2WBS2nvKqZNto7NbzXkGn/w6cqmMK96b
-        sO6gchnPG56MFH6w0vEhjXDtVMs30IVZnvdowIDCR2RzmLQwAHSODZu7jItjWy2JPcsXDx
-        1UnENrQHGSZqNz+faY6e9A7q5wa7LSs=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-rmYS8BaIMJ6n_ehlxXFnWQ-1; Mon, 06 Sep 2021 07:07:46 -0400
-X-MC-Unique: rmYS8BaIMJ6n_ehlxXFnWQ-1
-Received: by mail-wm1-f72.google.com with SMTP id r4-20020a1c4404000000b002e728beb9fbso3761866wma.9
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 04:07:46 -0700 (PDT)
+        Mon, 6 Sep 2021 07:10:37 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C0BC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 04:09:32 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id u15-20020a05600c19cf00b002f6445b8f55so4523192wmq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 04:09:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Arq1up5bA53xLHQpnJvwo0x1Fb742WDNGFLacyi2NNw=;
+        b=sqsd4dIPCJITuPasRtiJ+ze6aVIr8Vb4qU2eVNhGWf85MKDGYCstH46jQu1VuBpsKd
+         6bQ5Dp42eh/rxpa2l4Bhx5rbQAGRd2NhhiZ+hzfGLTfQt60s7iddg5yaPHJNQxc4Ln3j
+         +PIAo+WX0/WoSSj4F9yKZWGf1w8ZTSa2K8tDlyDWc+wSA72Kr93h0uhSx5dKNycvzCaX
+         qPGbQuL3fbV5oIXtnPat3sJA6hBCr5xRlV++Vg+3iKiVFVla775hSwWCt5X/anlm8gu6
+         5n7Qo8z70nKG/pA6/Rk0WqamwFMeeTikc8e/RSAUiTtMf8AuW5IEGscxPrjnVQJH16Ev
+         0TWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=ZI1k/K6ivHiraxD4vMcL+vxFoqbnTrx2bG7F3rS0xHI=;
-        b=cerwI5rTgmbgE+uNbE/vTWY169skg0K6+OrlTavRenDQ9dspAalyqUZ2qOLqM16M2i
-         pxhp1S7Zysx4eiLD6xxNi6fn2J1fv1omeMIH65I+zFMN2HrSP60kfc/VCwhyi1sPxH3J
-         itJmXgmejAopkklG65octLXYZOuQNauFz73YYNvdj7L2+pudaXQFkGROsuEa2g9WexkU
-         NLDYQv8VL0yz30NJevDOOYhEj28pvfZD35SUIRQrsDvltVKGI3Mk5s5vaz2N10vBs2Of
-         i/3BTocIoK7f3Tf6xKf0TChRgVtvUno0cXuPqgVObvMzFAjFMyLhQxCqFX4RAs32ek8O
-         gV4Q==
-X-Gm-Message-State: AOAM5315iUkdLlp/6zJIPYXs7ZnmvihEPztzSTYzkGadXiYXgQ8OT6vn
-        I6X52U2Y2rJEzfjhUg+TKeuR8HiMpsqgkFx1GuUiD6Gmh58xrTFfSJuQvpUd5YX8oZgPB1chfLG
-        py4a0Tc4QPdlvMRIooleTGmOG
-X-Received: by 2002:a1c:f613:: with SMTP id w19mr10649244wmc.9.1630926465420;
-        Mon, 06 Sep 2021 04:07:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxSCaYJQUbwtbI35XMt6DrgI6FomYKM94zk2bKZi3g5Ujko33G2NGowArfIHSdln8gB0Uj/1g==
-X-Received: by 2002:a1c:f613:: with SMTP id w19mr10649218wmc.9.1630926465210;
-        Mon, 06 Sep 2021 04:07:45 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id p3sm7429784wrx.82.2021.09.06.04.07.43
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Arq1up5bA53xLHQpnJvwo0x1Fb742WDNGFLacyi2NNw=;
+        b=ArwVBhTlX1HvWqMGHVYOke9T/cYXAsoWbN1FhN+kZVAeNnh5/eKss9cDceQa/74exy
+         w8NpEwyowCQtr0IDuYUm3WEHv2o+aBYkZM5NCHsGLo4mAY2inl0ut6U9Apb01XMBvMjJ
+         HF51DiuMHHPDTNIaNn7i/yUfEIOV/fYpPoRmIaTXCluJhjJoz0EQA84WoOewA4rPAY+Q
+         UJGzkgr2vaxBS+t6+GDp2JFe2rjmYMMUQHNcuEpwpv01FP3Bh5nGsjz/vvAwGtEXpuZP
+         65+DcVblCX0y6NyfHnt+ujdIlGdYnUxgU//8+ynLj71aMCOPEmwBan07+OEwj87MF+PX
+         vhTw==
+X-Gm-Message-State: AOAM5308PeDV/ZG9FvS6OlShwNTiVaSXz1et5cmXYiISfnUWIyIaMxNy
+        N7xnCrdfBzkLVOooZZSHyj0gzg==
+X-Google-Smtp-Source: ABdhPJyyhlYuqxiyV6YBKidEilVhA2tJtdXsvYpAarjRG+v0ujsy6bKkyxEbZvFxQrjqUTMd77CJqg==
+X-Received: by 2002:a1c:f606:: with SMTP id w6mr10789725wmc.42.1630926571381;
+        Mon, 06 Sep 2021 04:09:31 -0700 (PDT)
+Received: from maple.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id d7sm7568540wrs.39.2021.09.06.04.09.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 04:07:44 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Jiang Jiasheng <jiasheng@iscas.ac.cn>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        pbonzini@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com, jarkko@kernel.org,
-        dave.hansen@linux.intel.com
-Subject: Re: [PATCH 4/4] KVM: X86: Potential 'index out of range' bug
-In-Reply-To: <YTI5SYVTJHiMdm+W@google.com>
-References: <1630655700-798374-1-git-send-email-jiasheng@iscas.ac.cn>
- <87czppnasv.fsf@vitty.brq.redhat.com> <YTI5SYVTJHiMdm+W@google.com>
-Date:   Mon, 06 Sep 2021 13:07:43 +0200
-Message-ID: <87tuiy3qtc.fsf@vitty.brq.redhat.com>
+        Mon, 06 Sep 2021 04:09:30 -0700 (PDT)
+Date:   Mon, 6 Sep 2021 12:09:29 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     ason.wessel@windriver.com, dianders@chromium.org,
+        kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kernel: debug: Convert to SPDX identifier
+Message-ID: <20210906110929.7jla5xjjlhpoe34m@maple.lan>
+References: <20210822022206.221-1-caihuoqing@baidu.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210822022206.221-1-caihuoqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+On Sun, Aug 22, 2021 at 10:22:06AM +0800, Cai Huoqing wrote:
+> use SPDX-License-Identifier instead of a verbose license text
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  kernel/debug/debug_core.c | 5 +----
+>  kernel/debug/gdbstub.c    | 5 +----
+>  2 files changed, 2 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+> index b4aa6bb6b2bd..da06a5553835 100644
+> --- a/kernel/debug/debug_core.c
+> +++ b/kernel/debug/debug_core.c
+> @@ -1,3 +1,4 @@
+> +// SPDX-License-Identifier: GPL-2.0
 
-> On Fri, Sep 03, 2021, Vitaly Kuznetsov wrote:
->> Jiang Jiasheng <jiasheng@iscas.ac.cn> writes:
->> 
->> > The kvm_get_vcpu() will call for the array_index_nospec()
->> > with the value of atomic_read(&(v->kvm)->online_vcpus) as size,
->> > and the value of constant '0' as index.
->> > If the size is also '0', it will be unreasonabe
->> > that the index is no less than the size.
->> >
->> 
->> Can this really happen?
->> 
->> 'online_vcpus' is never decreased, it is increased with every
->> kvm_vm_ioctl_create_vcpu() call when a new vCPU is created and is set to
->> 0 when all vCPUs are destroyed (kvm_free_vcpus()).
->> 
->> kvm_guest_time_update() takes a vcpu as a parameter, this means that at
->> least 1 vCPU is currently present so 'online_vcpus' just can't be zero.
->
-> Agreed, but doing kvm_get_vcpu() is ugly and overkill.
->
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 86539c1686fa..cc1cb9a401cd 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -2969,7 +2969,7 @@ static int kvm_guest_time_update(struct kvm_vcpu *v)
->                                        offsetof(struct compat_vcpu_info, time));
->         if (vcpu->xen.vcpu_time_info_set)
->                 kvm_setup_pvclock_page(v, &vcpu->xen.vcpu_time_info_cache, 0);
-> -       if (v == kvm_get_vcpu(v->kvm, 0))
-> +       if (!kvm_vcpu_get_idx(v))
+Should this be: GPL-2.0-only ?
 
-Do we really need to keep kvm_vcpu_get_idx() around though? It has only
-3 users, all in arch/x86/kvm/hyperv.[ch], and the inline simpy returns
-'vcpu->vcpu_idx'.
 
->                 kvm_hv_setup_tsc_page(v->kvm, &vcpu->hv_clock);
->         return 0;
->  }
->
+Daniel.
 
--- 
-Vitaly
 
+>  /*
+>   * Kernel Debug Core
+>   *
+> @@ -22,10 +23,6 @@
+>   *
+>   * Original KGDB stub: David Grothe <dave@gcom.com>,
+>   * Tigran Aivazian <tigran@sco.com>
+> - *
+> - * This file is licensed under the terms of the GNU General Public License
+> - * version 2. This program is licensed "as is" without any warranty of any
+> - * kind, whether express or implied.
+>   */
+>  
+>  #define pr_fmt(fmt) "KGDB: " fmt
+> diff --git a/kernel/debug/gdbstub.c b/kernel/debug/gdbstub.c
+> index b6f28fad4307..9d34d2364b5a 100644
+> --- a/kernel/debug/gdbstub.c
+> +++ b/kernel/debug/gdbstub.c
+> @@ -1,3 +1,4 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+>  /*
+>   * Kernel Debug Core
+>   *
+> @@ -22,10 +23,6 @@
+>   *
+>   * Original KGDB stub: David Grothe <dave@gcom.com>,
+>   * Tigran Aivazian <tigran@sco.com>
+> - *
+> - * This file is licensed under the terms of the GNU General Public License
+> - * version 2. This program is licensed "as is" without any warranty of any
+> - * kind, whether express or implied.
+>   */
+>  
+>  #include <linux/kernel.h>
+> -- 
+> 2.25.1
