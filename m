@@ -2,114 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CBA3401C61
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 15:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4300401C65
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 15:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242590AbhIFNhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 09:37:10 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:32611 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242564AbhIFNhI (ORCPT
+        id S242639AbhIFNh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 09:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242597AbhIFNh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 09:37:08 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630935363; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
- Subject: Sender; bh=VJqyOAQM63NCKoLXJVRl7+vm46IbeShVloXZfhv2BBg=; b=kJGFmdj6uWUMuOf6soTWvKm7lkF4wl1CniJj/1MRCJIAf3cwpxemgh9V3cMLtBjv1oQ94zLJ
- A8FT/QRqnn+ZLobxjb+Y65MOldXsFtmw8WKiS6YNy/iYoNLCh/sFsiNSqMvHoEV93zIG9J8l
- NYYAVwsr4ZfR3W8wys4FIa4EL+U=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 6136193b40d2129ac1dde34f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 06 Sep 2021 13:35:55
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 07E72C43618; Mon,  6 Sep 2021 13:35:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [10.242.137.170] (unknown [202.46.23.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3FC82C4338F;
-        Mon,  6 Sep 2021 13:35:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 3FC82C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
-Subject: Re: [PATCH] ASoC: qcom: lpass-platform: Reset irq clear reg post
- handling interrupts
-To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
-        alsa-devel@alsa-project.org, bgoswami@codeaurora.org,
-        bjorn.andersson@linaro.org, broonie@kernel.org,
-        devicetree@vger.kernel.org, judyhsiao@chromium.org,
-        lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, perex@perex.cz, plai@codeaurora.org,
-        robh+dt@kernel.org, rohitkr@codeaurora.org,
-        srinivas.kandagatla@linaro.org, tiwai@suse.com
-References: <20210903100153.9137-1-srivasam@codeaurora.org>
- <CAE-0n50=vL0MHHHkc22ahrqqD3DskFXZzFU8qjU8=EY1kZ+__Q@mail.gmail.com>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <587ed6fd-0203-cb7d-338f-185185d88f76@codeaurora.org>
-Date:   Mon, 6 Sep 2021 19:05:46 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        Mon, 6 Sep 2021 09:37:56 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B652C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 06:36:51 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id v20-20020a1cf714000000b002e71f4d2026so3864431wmh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 06:36:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=BAhGQaiUNFMd0cF59B0SMEJVdU2tWj7S2/LF/UKcv6g=;
+        b=RYSOiZFCjTkL418WGcVP8CEyv+CIL2CdD4Mr508ZMphamikcEWmCQYwh2rSgJSpjIj
+         R7adpHoBEoteB8/pbIsVPFHdfwKjhMAEQ8Zpi/YujLxueK6V4bjolnfkAZ1KnlyMZez6
+         A0r4Cs6ZxfawdLnGEnPiY1iRnYAkxaIQJceBww/0hDtoj8PxdMAXVK1qOz/VO5b/zzbQ
+         CqGWUqebJtpfryjTuDyFV7TfNsN6KW9hIyWluZ5qM1rJV/XDF0+LeC6SvnRl224EEW8T
+         HL6BXgWe0j32pQZ/DlegkQa6ym5eozBwadSbkxve+gfZ45jinlFvgqEipB+Eb8PycuDV
+         WOBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=BAhGQaiUNFMd0cF59B0SMEJVdU2tWj7S2/LF/UKcv6g=;
+        b=k60cnOKchLrW8P77HTiUduqHi1XgmtluIjHFAezR/NZodIa4FSeY1f18dmGCumISGk
+         eTtUbdEofE+W2GnEwDsTaHMkG7zsfe8MGMwkIpxHjeCISZBVpsSzlW+OcCHA4urKPex/
+         oZRYh0JVDgG2CR8xrMUJ4MN6JsCuEawJW864+0EDULHRTWTUCd4u3sMhYJP5UdcQmlqz
+         39DEI97bCG/3o3w/ObGfyw1bukHNdwVnHak6ZPYlW9m6d9DAdIuyZphtdVQ5f+3Lfo6g
+         wtzHw377zDVBIOn7JqGDlHNJNPgEfN4+zo8UtYUAro51puwRAHjz8fR/8WT0fZxcO23s
+         CqVQ==
+X-Gm-Message-State: AOAM532VOvXas4N7E8Vkq3UtCpsytIG5/uL+4LlmJicZA5yh4QAB0V2z
+        ZaJx0Sv8V8UTsgafa2wVj7guIQ==
+X-Google-Smtp-Source: ABdhPJxhQ8DPhLD12SafiRBRfu4OijkIySpx5v+sXRBz4eKpz4sMYsbNfXMKlBllmBy+mdlAHXWmwQ==
+X-Received: by 2002:a05:600c:3502:: with SMTP id h2mr11686505wmq.182.1630935409867;
+        Mon, 06 Sep 2021 06:36:49 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id q195sm7559994wme.37.2021.09.06.06.36.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Sep 2021 06:36:49 -0700 (PDT)
+Date:   Mon, 6 Sep 2021 15:36:43 +0200
+From:   LABBE Corentin <clabbe@baylibre.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     mchehab@kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        mjpeg-users@lists.sourceforge.net
+Subject: Re: [PATCH 4/8] staging: media: zoran: add debugfs
+Message-ID: <YTYZaxjiKzVurMEF@Red>
+References: <20210903191540.3052775-1-clabbe@baylibre.com>
+ <20210903191540.3052775-5-clabbe@baylibre.com>
+ <YTMJvI1C1OmBgdeI@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <CAE-0n50=vL0MHHHkc22ahrqqD3DskFXZzFU8qjU8=EY1kZ+__Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YTMJvI1C1OmBgdeI@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for Your time Stephen!!
+Le Sat, Sep 04, 2021 at 07:53:00AM +0200, Greg KH a écrit :
+> On Fri, Sep 03, 2021 at 07:15:36PM +0000, Corentin Labbe wrote:
+> > Add debugfs for displaying zoran debug and stats information.
+> > 
+> > Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> > ---
+> >  drivers/staging/media/zoran/Kconfig      | 10 ++++++
+> >  drivers/staging/media/zoran/zoran.h      |  5 +++
+> >  drivers/staging/media/zoran/zoran_card.c | 39 ++++++++++++++++++++++++
+> >  3 files changed, 54 insertions(+)
+> > 
+> > +#ifdef CONFIG_VIDEO_ZORAN_DEBUG
+> > +	struct dentry *dbgfs_dir;
+> > +	struct dentry *dbgfs_file;
+> 
+> No need for these, the file is never referenced and the directory can be
+> looked up when you want to remove it.
+> 
+> > +#endif
+[...]
+> > +#ifdef CONFIG_VIDEO_ZORAN_DEBUG
+> > +	zr->dbgfs_dir = debugfs_create_dir(ZR_DEVNAME(zr), NULL);
+> > +	zr->dbgfs_file = debugfs_create_file("debug", 0444,
+> > +					      zr->dbgfs_dir, zr,
+> > +					      &zoran_debugfs_fops);
+> > +#endif
+> 
+> Wait, when are you removing the files when the device is removed?
+> 
+> That needs to be fixed no matter what before this patch is accepted.
+> 
 
-On 9/4/2021 12:10 AM, Stephen Boyd wrote:
-> Quoting Srinivasa Rao Mandadapu (2021-09-03 03:01:53)
->> Update interrupt clear register with reset value after addressing
->> all interrupts. This is to fix playback or capture hanging issue in
->> simultaneous playback and capture usecase.
->>
->> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->> ---
-> Any Fixes tag?
-Actually it's incremental change. I will add base commit of this function.
->
->>   sound/soc/qcom/lpass-platform.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
->> index f9df76d37858..1a0a4b0b1a03 100644
->> --- a/sound/soc/qcom/lpass-platform.c
->> +++ b/sound/soc/qcom/lpass-platform.c
->> @@ -749,6 +749,12 @@ static irqreturn_t lpass_platform_lpaif_irq(int irq, void *data)
->>                  }
->>          }
->>
->> +       rv = regmap_write(drvdata->lpaif_map, LPAIF_IRQCLEAR_REG(v, LPAIF_IRQ_PORT_HOST), 0x0);
->> +       if (rv) {
->> +               pr_err("error writing to irqstat reg: %d\n", rv);
->> +               return IRQ_NONE;
-> I was thinking we should return IRQ_HANDLED still, but then I guess
-> failing to clear the irq be treated as a spurious irq so that if we fail
-> enough times we'll shut off the irq at the irqchip. Things are going bad
-> if the write fails.
-Here bit confusing. Could You please suggest How to go ahead on this?
->
->> +       }
->> +
->>          return IRQ_HANDLED;
->>   }
->>
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Hello
 
+Sorry to have forgotten this.
+I will fix this.
+
+Thanks
+Regards
