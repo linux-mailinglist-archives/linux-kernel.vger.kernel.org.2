@@ -2,64 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA424018BC
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE774018B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241237AbhIFJSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 05:18:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240430AbhIFJSd (ORCPT
+        id S241209AbhIFJRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 05:17:03 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:19802 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240430AbhIFJQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 05:18:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A44DC061575;
-        Mon,  6 Sep 2021 02:17:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rpadY60xuZTsVqlD3pQoJaPqU3ClhmKBmxShxdIOPTQ=; b=PnvC6D5zqQVeRqwnkETdG9hYJx
-        ljEOQvj4My7mUimGhEI1YNMlvjzbX7PGi2zUTMQmJQhK8Hns7uGt6hka0lnZFNJAsdlAaOCNA5Avs
-        NFC6y8Agrp38qMbZLj6Tj0rySktHbY+AwC3htRPHpABgcJqs8/5c+0iuqiIe27xLRytx/rNIEpsqO
-        ZWyWai5d2hrS9T6DmndX82cTyQCL5YmLldG/mmJW3nN7w1ac5T6SGMgp6R2RTc+Co9HFSjtZPr4IR
-        8uf10wSIJ9a97lAjpGFuZeLuQ8W7X29RmhQVxfn5mxKuCE4/SfrEts5ru+wBawqcL8BDuPky7nXVI
-        GZT9W8mA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNAj6-006oEv-Fr; Mon, 06 Sep 2021 09:15:52 +0000
-Date:   Mon, 6 Sep 2021 10:15:40 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Heiko Carstens <hca@linux.ibm.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
-        gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
-        atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
-        oakad@yahoo.com, ulf.hansson@linaro.org, colin.king@canonical.com,
-        shubhankarvk@gmail.com, baijiaju1990@gmail.com, trix@redhat.com,
-        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
-        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 9/9] s390/block/xpram: add error handling support for
- add_disk()
-Message-ID: <YTXcPBph323n2WJ8@infradead.org>
-References: <20210902174105.2418771-1-mcgrof@kernel.org>
- <20210902174105.2418771-10-mcgrof@kernel.org>
- <YTIr1w/qPvgioUfL@osiris>
+        Mon, 6 Sep 2021 05:16:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630919753; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=Dl9Me7VnLoTQO7YH0kYUePI2o6EfNVuN9BpuqWH1wUc=; b=RtdHrj5eMmgPgjKSat6Ob0PkDHDOa/ipuFkQNkRL9pSwiwADAYKCZXEK9z6M9WOyyKzqR8sk
+ BhwJVDgBwSl4N6A/njoMzpLIaiaUHd3xteQo8xIp9uIvW+j9SdGOn/5BQq9JAQadx+LSKc6z
+ 4QlSgsBoe/VNjFEEXR5gFAmIFZw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6135dc4889cdb62061fa3527 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 06 Sep 2021 09:15:52
+ GMT
+Sender: sanm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 67FA3C43460; Mon,  6 Sep 2021 09:15:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-5.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.0.104] (unknown [49.206.35.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sanm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6EF68C4338F;
+        Mon,  6 Sep 2021 09:15:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 6EF68C4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+Subject: Re: [PATCH 1/3] dt-bindings: usb: qcom,dwc3: Add multi-pd bindings
+ for dwc3 qcom
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Pratham Pratap <prathampratap@codeaurora.org>
+References: <1630346073-7099-1-git-send-email-sanm@codeaurora.org>
+ <1630346073-7099-2-git-send-email-sanm@codeaurora.org>
+ <CAD=FV=XjRMdB=iHDcMATWDq5CSRGdh1ZBCftjrZvTfMk_Nqgvg@mail.gmail.com>
+From:   Sandeep Maheswaram <sanm@codeaurora.org>
+Message-ID: <1dc7aaaa-a8da-565b-664e-64f529a861b1@codeaurora.org>
+Date:   Mon, 6 Sep 2021 14:45:43 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTIr1w/qPvgioUfL@osiris>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <CAD=FV=XjRMdB=iHDcMATWDq5CSRGdh1ZBCftjrZvTfMk_Nqgvg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 04:06:15PM +0200, Heiko Carstens wrote:
-> Hmm, this is a more or less dead device driver, and I'm wondering if
-> we shouldn't remove it instead. But anyway, your patch is not correct:
 
-I'm all for removing it.  I think we need to do a little more spring
-cleaning on unmaintained and likely to be unused block drivers.
+On 8/31/2021 1:37 AM, Doug Anderson wrote:
+> Hi,
+>
+> On Mon, Aug 30, 2021 at 10:55 AM Sandeep Maheswaram <sanm@codeaurora.org> wrote:
+>> Add multi pd bindings to set performance state for cx domain
+>> to maintain minimum corner voltage for USB clocks.
+>>
+>> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
+>> ---
+>>   Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 13 ++++++++++++-
+>>   1 file changed, 12 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>> index e70afc4..838d9c4 100644
+>> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>> @@ -41,7 +41,18 @@ properties:
+>>
+>>     power-domains:
+>>       description: specifies a phandle to PM domain provider node
+>> -    maxItems: 1
+>> +    minItems: 1
+>> +    items:
+>> +      - description: optional,cx power domain
+>> +      - description: USB gdsc power domain
+> You need to re-order the above. The optional one needs to be second, not first.
+>
+I wanted to use required-opps for cx domain only. so I have put it first 
+in order.
+>> +  power-domain-names:
+>> +     items:
+>> +      - const: cx
+>> +      - const: usb_gdsc
+> Why do you need the names at all? The ordering of power-domains is
+> well defined and there are no holes in it and there are no legacy
+> reasons for having the names (like there are for clocks), so you
+> should drop. This is much like reg-names and I always point people to
+> this message from Rob Herring about reg-names:
+>
+> https://lore.kernel.org/r/CAL_Jsq+MMunmVWqeW9v2RyzsMKP+=kMzeTHNMG4JDHM7Fy0HBg@mail.gmail.com/
+>
+> You'll have to change your driver to use dev_pm_domain_attach_by_id()
+> but that should be fine.
+>
+> -Doug
+
+Ok..I will try using  dev_pm_domain_attach_by_id()
+
+
