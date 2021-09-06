@@ -2,91 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9662402096
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 22:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F17840209A
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 22:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243746AbhIFT6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 15:58:14 -0400
-Received: from mga14.intel.com ([192.55.52.115]:49114 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231432AbhIFT6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 15:58:05 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="219723931"
-X-IronPort-AV: E=Sophos;i="5.85,273,1624345200"; 
-   d="scan'208";a="219723931"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 12:57:00 -0700
-X-IronPort-AV: E=Sophos;i="5.85,273,1624345200"; 
-   d="scan'208";a="579729714"
-Received: from ibelagox-mobl1.gar.corp.intel.com ([10.213.76.130])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 12:56:56 -0700
-Message-ID: <980bc41a8bedbd81c199a78ce9f2ab2ef7b9341f.camel@linux.intel.com>
-Subject: Re: [PATCH] cpufreq: intel_pstate: Fix for HWP interrupt before
- driver is ready
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 06 Sep 2021 12:56:53 -0700
-In-Reply-To: <CAJZ5v0iH3TacxX3gzBS5cah7SnmDWbmHz=WCujQJpmEggGhLhg@mail.gmail.com>
-References: <20210904053703.581297-1-srinivas.pandruvada@linux.intel.com>
-         <CAJZ5v0hQp8Hxf__tL22s0oOcTym5mx9tND34ijufTDE3_NSW6A@mail.gmail.com>
-         <926ac4b9-1bb5-e96e-ded3-6461f7a215b7@kernel.dk>
-         <b1d5b6daacef349eb6fcc23ce7264e4786d1d9f4.camel@linux.intel.com>
-         <CAJZ5v0jaXnw0zjpnsb81Hauy4-ApuULfQaaLG10qqL67H-YTNA@mail.gmail.com>
-         <8dc57921f157b154e4af2dba26ce697dc4d4fcc2.camel@linux.intel.com>
-         <CAJZ5v0jLmziZZEqEk-D+b6jD7UUPmeb7MQW1ZptdHTk-2c9nMg@mail.gmail.com>
-         <584a4fad09048e3ea0dbc3515b2e909b745177dd.camel@linux.intel.com>
-         <CAJZ5v0iH3TacxX3gzBS5cah7SnmDWbmHz=WCujQJpmEggGhLhg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0-1 
+        id S244642AbhIFT7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 15:59:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244553AbhIFT7n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 15:59:43 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B465C061757
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 12:58:38 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id q3so9925363iot.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 12:58:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4jKC3FHzKHBCAnlV2/PSK1c4DpRsVjTTdfsdoygYbb4=;
+        b=cY6QYaFpDCZJtp5tKnLfK0uaphhbqH2K9/5kBaf9eULECPvNH2o47Jd5uRNvq7Dblu
+         Zmq7FhSN8Ih8F694W6cm+UiqOYqo+3rEhro8BtGO3UnuBy0Sfvw4fn8MCRlf3dL05agR
+         PIwNbzHZKuf4mLDbRbawYMj1qFjHBCw8T7ZTcqSE6vmSJHJ+ON/fuadAoLfwzMf1GjfJ
+         7kLqPEhncOSxVJQTrLIih+c+ktk43fP2PJaSVtDzRCuVh8SrapLWJb60vnBklHbTn2b2
+         A4f46gv824+6etHj6Z8ZpJKyitiZnbotGYzy2XmXusXS+9dBAgaX+dAx5CtvLE7AhOfQ
+         6l6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4jKC3FHzKHBCAnlV2/PSK1c4DpRsVjTTdfsdoygYbb4=;
+        b=ouDHSEeWJ6hd1sXG8oREp4PckyKMHEGzOczRbPGaE+J2x3KO/HeQZT7Jcb+ReKLsIH
+         /WuhTqX4S3nmiZTUHJ0TnHQF1032hRKlA2H8EaWXJM2LrCJi2cmVveCPgPpXiTjDPGI0
+         gr0UgwceHY0dE1utycllkNQasTiAZS+Rgdqnu6vzMisOvPuTA72XUfpELjGUedOKEo8q
+         4K5EavE0z0LEqDuifV5b50TI0KG8QrqYgWwkCKpdYWjTzKidP7UoLdscA1hS7WiFp6+f
+         ag8XIdZTYIa0vyTCHjwqgOX+G9t3ecKtdyFTd+xd1udo76cgzHTJYnRtUpiPS8rlqHqM
+         T/4A==
+X-Gm-Message-State: AOAM5314Z2Kmo80iPha/WbfchGuoVbaa6FvTBuRzbjJpV/3IVVJbq0Kh
+        fvcmGPC9s3G2JZF/zgONdUcahZUmCBIslrSbaUKePA/SCNZZzYep
+X-Google-Smtp-Source: ABdhPJx3u2oJ0Fc1nRAkRhUH9xRAThEJHXD0P7O4XuDSF54J0Z8CpQV1r8tkxnvxrNSkipa2629NWh9Mpw7lzRY/Asg=
+X-Received: by 2002:a02:3846:: with SMTP id v6mr11926945jae.45.1630958317857;
+ Mon, 06 Sep 2021 12:58:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210729183942.2839925-1-robdclark@gmail.com> <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
+ <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
+ <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org> <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+ <CALAqxLUkyXK2gqNMBbtJFfh01ZpcG46dZaM7Zq4jG3OngvFREg@mail.gmail.com>
+ <CAF6AEGsACLcDuszcgmHHs04GghLPiRfei3tGo161yBXsg7Y-YA@mail.gmail.com>
+ <CAMi1Hd0dniDXPNOuh05ywqHKY+cGvAsd-cnD91K1GLppfO=x0w@mail.gmail.com> <CAF6AEGvtw06MYST2PdhqHVpsG4Tec2DnUA-uwFRP-6xqa9yf5Q@mail.gmail.com>
+In-Reply-To: <CAF6AEGvtw06MYST2PdhqHVpsG4Tec2DnUA-uwFRP-6xqa9yf5Q@mail.gmail.com>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Tue, 7 Sep 2021 01:28:01 +0530
+Message-ID: <CAMi1Hd1kp8ijH8y3U2sxs5cE3Zfat_v-C3rrGtTK01ry8Om6Lw@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Caleb Connolly <caleb.connolly@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-06 at 20:25 +0200, Rafael J. Wysocki wrote:
-> On Mon, Sep 6, 2021 at 8:14 PM Srinivas Pandruvada
-> <srinivas.pandruvada@linux.intel.com> wrote:
-> > 
-> > On Mon, 2021-09-06 at 19:54 +0200, Rafael J. Wysocki wrote:
-> > > 
-[...]
+On Mon, 6 Sept 2021 at 21:54, Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Mon, Sep 6, 2021 at 1:02 AM Amit Pundir <amit.pundir@linaro.org> wrote:
+> >
+> > On Sat, 4 Sept 2021 at 01:55, Rob Clark <robdclark@gmail.com> wrote:
+> > >
+> > > On Fri, Sep 3, 2021 at 12:39 PM John Stultz <john.stultz@linaro.org> wrote:
+> > > >
+> > > > On Thu, Jul 29, 2021 at 1:49 PM Rob Clark <robdclark@gmail.com> wrote:
+> > > > > On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
+> > > > > <caleb.connolly@linaro.org> wrote:
+> > > > > > On 29/07/2021 21:24, Rob Clark wrote:
+> > > > > > > On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
+> > > > > > > <caleb.connolly@linaro.org> wrote:
+> > > > > > >>
+> > > > > > >> Hi Rob,
+> > > > > > >>
+> > > > > > >> I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above
+> > > > > > >> the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more
+> > > > > > >> aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
+> > > > > > >
+> > > > > > > *ohh*, yeah, ok, that would explain it
+> > > > > > >
+> > > > > > >> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable
+> > > > > > >> at the higher frequencies.
+> > > > > > >>
+> > > > > > >> Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in
+> > > > > > >> glxgear.
+> > > > > > >>
+> > > > > > >> I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run
+> > > > > > >> at the voltage the hardware needs to be stable.
+> > > > > > >>
+> > > > > > >> Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have
+> > > > > > >> CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
+> > > > > > >>
+> > > > > > >
+> > > > > > > tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is already
+> > > > > > > on CC and I added sboyd, maybe one of them knows better.
+> > > > > > >
+> > > > > > > In the short term, removing the higher problematic OPPs from dts might
+> > > > > > > be a better option than this patch (which I'm dropping), since there
+> > > > > > > is nothing stopping other workloads from hitting higher OPPs.
+> > > > > > Oh yeah that sounds like a more sensible workaround than mine .
+> > > > > > >
+> > > > > > > I'm slightly curious why I didn't have problems at higher OPPs on my
+> > > > > > > c630 laptop (sdm850)
+> > > > > > Perhaps you won the sillicon lottery - iirc sdm850 is binned for higher clocks as is out of the factory.
+> > > > > >
+> > > > > > Would it be best to drop the OPPs for all devices? Or just those affected? I guess it's possible another c630 might
+> > > > > > crash where yours doesn't?
+> > > > >
+> > > > > I've not heard any reports of similar issues from the handful of other
+> > > > > folks with c630's on #aarch64-laptops.. but I can't really say if that
+> > > > > is luck or not.
+> > > > >
+> > > > > Maybe just remove it for affected devices?  But I'll defer to Bjorn.
+> > > >
+> > > > Just as another datapoint, I was just marveling at how suddenly smooth
+> > > > the UI was performing on db845c and Caleb pointed me at the "drm/msm:
+> > > > Devfreq tuning" patch as the likely cause of the improvement, and
+> > > > mid-discussion my board crashed into USB crash mode:
+> > > > [  146.157696][    C0] adreno 5000000.gpu: CP | AHB bus error
+> > > > [  146.163303][    C0] adreno 5000000.gpu: CP | AHB bus error
+> > > > [  146.168837][    C0] adreno 5000000.gpu: RBBM | ATB bus overflow
+> > > > [  146.174960][    C0] adreno 5000000.gpu: CP | HW fault | status=0x00000000
+> > > > [  146.181917][    C0] adreno 5000000.gpu: CP | AHB bus error
+> > > > [  146.187547][    C0] adreno 5000000.gpu: CP illegal instruction error
+> > > > [  146.194009][    C0] adreno 5000000.gpu: CP | AHB bus error
+> > > > [  146.308909][    T9] Internal error: synchronous external abort:
+> > > > 96000010 [#1] PREEMPT SMP
+> > > > [  146.317150][    T9] Modules linked in:
+> > > > [  146.320941][    T9] CPU: 3 PID: 9 Comm: kworker/u16:1 Tainted: G
+> > > >     W         5.14.0-mainline-06795-g42b258c2275c #24
+> > > > [  146.331974][    T9] Hardware name: Thundercomm Dragonboar
+> > > > Format: Log Type - Time(microsec) - Message - Optional Info
+> > > > Log Type: B - Since Boot(Power On Reset),  D - Delta,  S - Statistic
+> > > > S - QC_IMAGE_VERSION_STRING=BOOT.XF.2.0-00371-SDM845LZB-1
+> > > > S - IMAGE_VARIANT_STRING=SDM845LA
+> > > > S - OEM_IMAGE_VERSION_STRING=TSBJ-FA-PC-02170
+> > > >
+> > > > So Caleb sent me to this thread. :)
+> > > >
+> > > > I'm still trying to trip it again, but it does seem like db845c is
+> > > > also seeing some stability issues with Linus' HEAD.
+> > > >
+> > >
+> > > Caleb's original pastebin seems to have expired (or at least require
+> > > some sort of ubuntu login to access).. were the crashes he was seeing
+> > > also 'AHB bus error'?
+> >
+> > I can reproduce this hard crash
+> > https://www.irccloud.com/pastebin/Cu6UJntE/ and a gpu lockup
+> > https://www.irccloud.com/pastebin/6Ryd2Pug/ at times reliably, by
+> > running antutu benchmark on pocof1.
+> >
+> > Reverting 9bc95570175a ("drm/msm: Devfreq tuning") helps and I no
+> > longer see these errors.
+> >
+> > Complete dmesg for hardcrash https://pastebin.com/raw/GLZVQFQN
+> >
+>
+> Does antutu trigger this issue as easily on db845c?  If no, does
+> db845c have pmic differences compared to pocof1 and Caleb's phone?
 
-> > > 
-> > We are handling offline for other thermal interrupt sources from
-> > same
-> > interrupt in therm-throt.c, where we do similar in offline path (by
-> > TGLX). If cpufreq offline can cause such issue of changing CPU,
-> 
-> This is not cpufreq offline, but intel_pstate_update_status() which
-> may be triggered via sysfs.  And again, the theoretically problematic
-> thing is dereferencing cpudata (which may be cleared by a remote CPU)
-> from the interrupt handler without protection.
+Yes I can reproduce this hard crash with antutu on db845c as well with
+linux/master at 477f70cd2a67 ("Merge tag 'drm-next-2021-08-31-1' of
+git://anongit.freedesktop.org/drm/drm").
 
-This will be a problem.
-
-> 
-> > I can call intel_pstate_disable_hwp_interrupt() via override from
-> > https://elixir.bootlin.com/linux/latest/C/ident/thermal_throttle_offline
-> > after masking APIC interrupt.
-> 
-> But why would using RCU be harder than this?
-I think, this will require all_cpu_data and cpu_data to be rcu
-protected. This needs to be well tested.
-
-I think better to revert the patch for the next release.
-
-Thanks,
-Srinivas
-
-> 
-> Also please note that on RT kernels interrupt handlers are run in
-> threads.
+Dmesg: https://pastebin.com/raw/xXtvxk0G
 
 
+>
+> I think we may need some help from qcom here, but I'll go back and
+> look at older downstream kernels to see if I can find any evidence
+> that we need to limit how far we change the freq in a single step.
+> It's not clear to me if there is some physical constraint that the
+> driver needs to respect, or if we have some missing/incorrect
+> configuration for a630.  IIRC the downstream kernel is letting the GMU
+> do more of the freq management, so it might be handling this case for
+> the kernel.  But the GMU is a bit of a black box to me and I don't
+> have any docs, so just a guess.
+>
+> It would be helpful if someone who can repro this could try the
+> experiments I mentioned about increasing min_freq and/or decreasing
+> max_freq to limit the size of the freq change until the issue does not
+> happen.
+>
+> If we have to, we can merge this hack patch to disable freq clamping
+> on a630.. but that isn't really a fix.  The root issue is a power
+> issue, 9bc95570175a just made it more likely to see the problem.
+>
+> BR,
+> -R
+>
+> > Regards,
+> > Amit Pundir
+> >
+> > >
+> > > If you have a reliable reproducer, I guess it would be worth seeing if
+> > > increasing the min_freq (ie. to limit how far we jump the freq in one
+> > > shot) "fixes" it?
+> > >
+> > > I guess I could check downstream kgsl to see if they were doing
+> > > something to increase freq in smaller increments.. I don't recall that
+> > > they were but it has been a while since I dug thru that code.  And I
+> > > suppose downstream it could also be done in their custom tz governor.
+> > >
+> > > BR,
+> > > -R
