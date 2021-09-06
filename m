@@ -2,170 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1E0401948
+	by mail.lfdr.de (Postfix) with ESMTP id E3091401949
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241679AbhIFJvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 05:51:23 -0400
-Received: from mga12.intel.com ([192.55.52.136]:10721 "EHLO mga12.intel.com"
+        id S241682AbhIFJwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 05:52:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:54268 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241691AbhIFJvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 05:51:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10098"; a="199463756"
-X-IronPort-AV: E=Sophos;i="5.85,272,1624345200"; 
-   d="scan'208";a="199463756"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 02:50:16 -0700
-X-IronPort-AV: E=Sophos;i="5.85,272,1624345200"; 
-   d="scan'208";a="536692853"
-Received: from isandweg-mobl2.ger.corp.intel.com (HELO localhost) ([10.251.212.194])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 02:50:10 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Douglas Anderson <dianders@chromium.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
-        Steev Klimaszewski <steev@kali.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
+        id S241287AbhIFJwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 05:52:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B93E3D6E;
+        Mon,  6 Sep 2021 02:51:06 -0700 (PDT)
+Received: from [10.57.92.222] (unknown [10.57.92.222])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74BD13F73D;
+        Mon,  6 Sep 2021 02:51:05 -0700 (PDT)
+Subject: Re: [PATCH v3 2/2] coresight: Update comments for removing
+ cs_etm_find_snapshot()
+To:     Leo Yan <leo.yan@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 02/16] drm/edid: Break out reading block 0 of the EDID
-In-Reply-To: <20210901131531.v3.2.I62e76a034ac78c994d40a23cd4ec5aeee56fa77c@changeid>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210901201934.1084250-1-dianders@chromium.org> <20210901131531.v3.2.I62e76a034ac78c994d40a23cd4ec5aeee56fa77c@changeid>
-Date:   Mon, 06 Sep 2021 12:50:07 +0300
-Message-ID: <87k0ju8240.fsf@intel.com>
+References: <20210905131237.1035322-1-leo.yan@linaro.org>
+ <20210905131237.1035322-3-leo.yan@linaro.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <4db83b64-445d-2a04-a130-fd95f9157702@arm.com>
+Date:   Mon, 6 Sep 2021 10:51:02 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210905131237.1035322-3-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 01 Sep 2021, Douglas Anderson <dianders@chromium.org> wrote:
-> A future change wants to be able to read just block 0 of the EDID, so
-> break it out of drm_do_get_edid() into a sub-function.
->
-> This is intended to be a no-op change--just code movement.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Hi Leo
+
+
+On 05/09/2021 14:12, Leo Yan wrote:
+> Commit 2f01c200d440 ("perf cs-etm: Remove callback cs_etm_find_snapshot()")
+> has removed the function cs_etm_find_snapshot() from the perf tool in the
+> user space, now CoreSight trace directly uses the perf common function
+> __auxtrace_mmap__read() to calcualte the head and size for AUX trace data
+> in snapshot mode.
+> 
+> Updates the comments in drivers to reflect the changes.
+
+As such I would avoid referencing "userspace" function names in the
+kernel driver. Please could we remove it or make it generic ?
+
+Also, remember, perf is not the only userspace tool driving the kernel
+perf.
+
+Cheers
+Suzuki
+
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 > ---
->
-> (no changes since v1)
->
->  drivers/gpu/drm/drm_edid.c | 62 +++++++++++++++++++++++++++-----------
->  1 file changed, 44 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> index 6325877c5fd6..a22c38482a90 100644
-> --- a/drivers/gpu/drm/drm_edid.c
-> +++ b/drivers/gpu/drm/drm_edid.c
-> @@ -1905,6 +1905,43 @@ int drm_add_override_edid_modes(struct drm_connector *connector)
->  }
->  EXPORT_SYMBOL(drm_add_override_edid_modes);
->  
-> +static struct edid *drm_do_get_edid_blk0(
+>   drivers/hwtracing/coresight/coresight-etb10.c   | 2 +-
+>   drivers/hwtracing/coresight/coresight-tmc-etf.c | 2 +-
+>   drivers/hwtracing/coresight/coresight-tmc-etr.c | 2 +-
+>   3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
+> index f775cbee12b8..1cdb627d6c38 100644
+> --- a/drivers/hwtracing/coresight/coresight-etb10.c
+> +++ b/drivers/hwtracing/coresight/coresight-etb10.c
+> @@ -557,7 +557,7 @@ static unsigned long etb_update_buffer(struct coresight_device *csdev,
+>   
+>   	/*
+>   	 * In snapshot mode we simply increment the head by the number of byte
+> -	 * that were written.  User space function  cs_etm_find_snapshot() will
+> +	 * that were written.  User space function __auxtrace_mmap__read() will
+>   	 * figure out how many bytes to get from the AUX buffer based on the
+>   	 * position of the head.
+>   	 */
+> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
+> index cd0fb7bfba68..a895931a2766 100644
+> --- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
+> +++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
+> @@ -546,7 +546,7 @@ static unsigned long tmc_update_etf_buffer(struct coresight_device *csdev,
+>   
+>   	/*
+>   	 * In snapshot mode we simply increment the head by the number of byte
+> -	 * that were written.  User space function  cs_etm_find_snapshot() will
+> +	 * that were written.  User space function __auxtrace_mmap__read() will
+>   	 * figure out how many bytes to get from the AUX buffer based on the
+>   	 * position of the head.
+>   	 */
+> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+> index d23c7690f29a..941abb70b827 100644
+> --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
+> +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+> @@ -1573,7 +1573,7 @@ tmc_update_etr_buffer(struct coresight_device *csdev,
+>   
+>   	/*
+>   	 * In snapshot mode we simply increment the head by the number of byte
+> -	 * that were written.  User space function  cs_etm_find_snapshot() will
+> +	 * that were written.  User space function __auxtrace_mmap__read() will
+>   	 * figure out how many bytes to get from the AUX buffer based on the
+>   	 * position of the head.
+>   	 */
+> 
 
-Maybe base_block instead of blk0?
-
-> +	int (*get_edid_block)(void *data, u8 *buf, unsigned int block,
-> +			      size_t len),
-> +	void *data, bool *edid_corrupt, int *null_edid_counter)
-> +{
-> +	int i;
-> +	u8 *edid;
-
-With void *edid, this function wouldn't need the cast internally.
-
-> +
-> +	if ((edid = kmalloc(EDID_LENGTH, GFP_KERNEL)) == NULL)
-> +		return NULL;
-
-Could split the allocation and NULL check to two separate lines per
-coding style, while at it?
-
-BR,
-Jani.
-
-> +
-> +	/* base block fetch */
-> +	for (i = 0; i < 4; i++) {
-> +		if (get_edid_block(data, edid, 0, EDID_LENGTH))
-> +			goto out;
-> +		if (drm_edid_block_valid(edid, 0, false, edid_corrupt))
-> +			break;
-> +		if (i == 0 && drm_edid_is_zero(edid, EDID_LENGTH)) {
-> +			if (null_edid_counter)
-> +				(*null_edid_counter)++;
-> +			goto carp;
-> +		}
-> +	}
-> +	if (i == 4)
-> +		goto carp;
-> +
-> +	return (struct edid *)edid;
-> +
-> +carp:
-> +	kfree(edid);
-> +	return ERR_PTR(-EINVAL);
-> +
-> +out:
-> +	kfree(edid);
-> +	return NULL;
-> +}
-> +
->  /**
->   * drm_do_get_edid - get EDID data using a custom EDID block read function
->   * @connector: connector we're probing
-> @@ -1938,25 +1975,16 @@ struct edid *drm_do_get_edid(struct drm_connector *connector,
->  	if (override)
->  		return override;
->  
-> -	if ((edid = kmalloc(EDID_LENGTH, GFP_KERNEL)) == NULL)
-> +	edid = (u8 *)drm_do_get_edid_blk0(get_edid_block, data,
-> +					  &connector->edid_corrupt,
-> +					  &connector->null_edid_counter);
-> +	if (IS_ERR_OR_NULL(edid)) {
-> +		if (IS_ERR(edid))
-> +			connector_bad_edid(connector, edid, 1);
->  		return NULL;
-> -
-> -	/* base block fetch */
-> -	for (i = 0; i < 4; i++) {
-> -		if (get_edid_block(data, edid, 0, EDID_LENGTH))
-> -			goto out;
-> -		if (drm_edid_block_valid(edid, 0, false,
-> -					 &connector->edid_corrupt))
-> -			break;
-> -		if (i == 0 && drm_edid_is_zero(edid, EDID_LENGTH)) {
-> -			connector->null_edid_counter++;
-> -			goto carp;
-> -		}
->  	}
-> -	if (i == 4)
-> -		goto carp;
->  
-> -	/* if there's no extensions, we're done */
-> +	/* if there's no extensions or no connector, we're done */
->  	valid_extensions = edid[0x7e];
->  	if (valid_extensions == 0)
->  		return (struct edid *)edid;
-> @@ -2010,8 +2038,6 @@ struct edid *drm_do_get_edid(struct drm_connector *connector,
->  
->  	return (struct edid *)edid;
->  
-> -carp:
-> -	connector_bad_edid(connector, edid, 1);
->  out:
->  	kfree(edid);
->  	return NULL;
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
