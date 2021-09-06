@@ -2,177 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DA48401AAB
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5EA401AAC
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241196AbhIFLp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 07:45:28 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34828 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231173AbhIFLpZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 07:45:25 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 186BXrJc036697;
-        Mon, 6 Sep 2021 07:43:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=YDq2fdygf8Y3QfqeYgjO/iDMTPx1mMqDc6x9GEPkVK8=;
- b=rXGDkgyuwG12cXOP7sKpTlrDfxf78vS+ERlDVQCznYwY5Umu8fLmsvJUXjC5BHfSGofC
- mNZLMiKDL4Pej8yeE74rxKpkwA6ruFPgvcgdkod+CtyruxDbqBiM7l0TRHnXzBae4/kc
- gleUWs3TeQju2cuGcS33ONcK2nO9ltXSFCx/VXaqcgb8oytTbnYbaQHzPi5FqSrVVY+x
- FSQ0ordEbBK0kmS4GWXSfP4mo5ddON6BAOT/n5lSJ+/1sAR7UCL/FnPvnhXwNf5cRgkB
- X1h0P192iHYvBq71WsaqpcK+siTe0Tf9Ogc7eOakqhmdwAs6sGnyxW2fZUFNmf6ePqiG ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3awj5t0901-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Sep 2021 07:43:56 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 186BYkTj039013;
-        Mon, 6 Sep 2021 07:43:55 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3awj5t08yj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Sep 2021 07:43:55 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 186BhLge007528;
-        Mon, 6 Sep 2021 11:43:53 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 3av0e938eu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Sep 2021 11:43:53 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 186BhnlL43975164
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 6 Sep 2021 11:43:49 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C8747A4054;
-        Mon,  6 Sep 2021 11:43:49 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 36C25A405C;
-        Mon,  6 Sep 2021 11:43:48 +0000 (GMT)
-Received: from thinkpad (unknown [9.171.78.139])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon,  6 Sep 2021 11:43:48 +0000 (GMT)
-Date:   Mon, 6 Sep 2021 13:43:46 +0200
-From:   Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>, axboe@kernel.dk,
-        gregkh@linuxfoundation.org, chaitanya.kulkarni@wdc.com,
-        atulgopinathan@gmail.com, hare@suse.de, maximlevitsky@gmail.com,
-        oakad@yahoo.com, ulf.hansson@linaro.org, colin.king@canonical.com,
-        shubhankarvk@gmail.com, baijiaju1990@gmail.com, trix@redhat.com,
-        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        sth@linux.ibm.com, hoeppner@linux.ibm.com, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, oberpar@linux.ibm.com, tj@kernel.org,
-        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 7/9] s390/block/dcssblk: add error handling support for
- add_disk()
-Message-ID: <20210906134346.19c14246@thinkpad>
-In-Reply-To: <YTLP8mYBX37R++9E@bombadil.infradead.org>
-References: <20210902174105.2418771-1-mcgrof@kernel.org>
-        <20210902174105.2418771-8-mcgrof@kernel.org>
-        <YTIscKy+jg5L/TMh@osiris>
-        <YTLP8mYBX37R++9E@bombadil.infradead.org>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S241296AbhIFLpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 07:45:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45808 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231173AbhIFLpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 07:45:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 97A8B6056B;
+        Mon,  6 Sep 2021 11:44:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630928666;
+        bh=hC5aPFrcJXwbmvjAje6ve3g5ksRe+uHuix3L09NNEV4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ewzHkc4zSgJrADj9ahsPtGZXlDqwdosotrGK6DuC6g/5wIXWEKEQQTI82xGltsPTd
+         pbgrEDuzgEtQ8WI8HPYdVOePN3gzLU2p2ybimTzHXJXnE014KyeTMddocnCBpFIjZR
+         FISq63FVHNtirACoFmUzRZZQ4Zq9FHg98XPETfJCLx0KVa0xgSBbASBnkB7SES6Rzx
+         HRk4ChefTDblw9H+ks76yYSeyvAcl6JL7K/8Q/PkomXnkxFRtHahD8kYEWE7HTdICs
+         oIbJJqhZSf4YYndt82K73QEfdSzLn0+aFimgi5R7L6Z9B4Z3VZRncX5o1z00mgl0Vd
+         RVDqTqYwNoENw==
+Date:   Mon, 6 Sep 2021 12:43:50 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithp@keithp.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [GIT PULL] overflow updates for v5.15-rc1
+Message-ID: <20210906114350.GB4309@sirena.org.uk>
+References: <202109022012.756B6B5B79@keescook>
+ <CAHk-=wiPOXS2f90Ykk3V76sJLx0wMVywke8pc=88r1trmDuhmw@mail.gmail.com>
+ <45312958-B844-4B4C-9808-8205866675A1@chromium.org>
+ <CAHk-=widUkzjVMW99L6OZpJc1wDnZbBbnOOzgXOMypOPoV6mjg@mail.gmail.com>
+ <202109051123.11E4E31@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: lKjoO_-t65aECnh67DPT1WhBnwVtT5Mm
-X-Proofpoint-GUID: koNu9BnZWKx9Oz09ckXYLCDs_6zcUj8t
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-06_05:2021-09-03,2021-09-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- adultscore=0 mlxscore=0 spamscore=0 clxscore=1011 malwarescore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=999 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109060073
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="XOIedfhf+7KOe/yw"
+Content-Disposition: inline
+In-Reply-To: <202109051123.11E4E31@keescook>
+X-Cookie: I smell a RANCID CORN DOG!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 3 Sep 2021 18:46:26 -0700
-Luis Chamberlain <mcgrof@kernel.org> wrote:
 
-> On Fri, Sep 03, 2021 at 04:08:48PM +0200, Heiko Carstens wrote:
-> > On Thu, Sep 02, 2021 at 10:41:03AM -0700, Luis Chamberlain wrote:
-> > > We never checked for errors on add_disk() as this function
-> > > returned void. Now that this is fixed, use the shiny new
-> > > error handling.
-> > >=20
-> > > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> > > ---
-> > >  drivers/s390/block/dcssblk.c | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > >=20
-> > > diff --git a/drivers/s390/block/dcssblk.c b/drivers/s390/block/dcssbl=
-k.c
-> > > index 5be3d1c39a78..b0fd5009a12e 100644
-> > > --- a/drivers/s390/block/dcssblk.c
-> > > +++ b/drivers/s390/block/dcssblk.c
-> > > @@ -696,7 +696,9 @@ dcssblk_add_store(struct device *dev, struct devi=
-ce_attribute *attr, const char
-> > >  	}
-> > > =20
-> > >  	get_device(&dev_info->dev);
-> > > -	device_add_disk(&dev_info->dev, dev_info->gd, NULL);
-> > > +	rc =3D device_add_disk(&dev_info->dev, dev_info->gd, NULL);
-> > > +	if (rc)
-> > > +		goto put_dev;
-> >=20
-> > This looks not correct to me. We seem to have now in case of an error:
-> >=20
-> > - reference count imbalance (=3D memory leak)
-> > - dax cleanup is missing
->=20
-> Care to provide an alternative?
+--XOIedfhf+7KOe/yw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-See patch below:
+On Sun, Sep 05, 2021 at 11:31:44AM -0700, Kees Cook wrote:
+> On Sun, Sep 05, 2021 at 10:36:22AM -0700, Linus Torvalds wrote:
 
-=46rom 7053b5f8c0a126c3ef450de3668d9963bd68ceaa Mon Sep 17 00:00:00 2001
-From: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Date: Mon, 6 Sep 2021 13:18:53 +0200
-Subject: [PATCH] s390/block/dcssblk: add error handling support for add_dis=
-k()
+> > > Yeech. Yeah, no, that was not expected at all. I even did test merge builds against your latest tree before sending the Pull Request. This has been in -next for weeks, too.
 
-Signed-off-by: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
----
- drivers/s390/block/dcssblk.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> > Sadly, I don't think linux-next checks for warnings.
 
-diff --git a/drivers/s390/block/dcssblk.c b/drivers/s390/block/dcssblk.c
-index 5be3d1c39a78..0741a9321712 100644
---- a/drivers/s390/block/dcssblk.c
-+++ b/drivers/s390/block/dcssblk.c
-@@ -696,7 +696,9 @@ dcssblk_add_store(struct device *dev, struct device_att=
-ribute *attr, const char
- 	}
-=20
- 	get_device(&dev_info->dev);
--	device_add_disk(&dev_info->dev, dev_info->gd, NULL);
-+	rc =3D device_add_disk(&dev_info->dev, dev_info->gd, NULL);
-+	if (rc)
-+		goto out_dax;
-=20
- 	switch (dev_info->segment_type) {
- 		case SEG_TYPE_SR:
-@@ -712,6 +714,10 @@ dcssblk_add_store(struct device *dev, struct device_at=
-tribute *attr, const char
- 	rc =3D count;
- 	goto out;
-=20
-+out_dax:
-+	put_device(&dev_info->dev);
-+	kill_dax(dev_info->dax_dev);
-+	put_dax(dev_info->dax_dev);
- put_dev:
- 	list_del(&dev_info->lh);
- 	blk_cleanup_disk(dev_info->gd);
---=20
-2.25.1
+> Oh, I thought I'd gotten such reports from sfr before, but certainly the
+> 0day bot and others have yelled loudly about new warnings (from earlier
+> iterations of this series in -next).
 
+Yes, Stephen will report new warnings in the configs he tested and
+there's a bunch of people who like to go around fixing warnings whenever
+they do appear though only in the more common configurations.
+
+> > > What was the build environment?
+
+> > This is actually just bog-standard gcc-11.2 from F34, and an allmodconfig build.
+
+> Ah, fun. Yeah, I'm behind on versions, it seems. Default gcc version on
+> latest stable Ubuntu release is 10.3. I will go retest on the devel
+> release.
+
+If you're looking for coverage on this stuff it's also good to check
+with clang as well, it's sufficiently different that it often triggers
+extra stuff (eg, turning on -Werror broke i386 allmodconfig for clang-10
+since that triggers some stack frame size warnings which are now
+errors).
+
+--XOIedfhf+7KOe/yw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE1/vUACgkQJNaLcl1U
+h9Cf2Qf/XxqoOJVy17BQ8WlyOMfwUSZl8yxck50R61Fkj3TDtAnU89NtCmKleen1
+u8ReMG75E0DjgKcwZ9SkQoMf0gUdplD+kKsvTAGvM2PvNGsUsnIt/ga97LuLztNz
+3e1J1s7mcEqSiwg10dukT/Qw4YuaMdA5GCuLcUYkROJY65q+du9ACRJeeH3i5+US
+Bfw8MBbdAzJ/iEhRdFT32BqJ3FFNDhdk+cVZL12ZO9K8YDu/LJZJqzgeJ/t1/9Bb
+F6CvE6YWL6PoqnHNxjL7lfVvLbP9IIcrurXgwozU2Od4M8CxcRWR8mGmSf59xlD7
+k2hzt8WrX47o/PZaUHcj8HV8yTJfqQ==
+=fxh3
+-----END PGP SIGNATURE-----
+
+--XOIedfhf+7KOe/yw--
