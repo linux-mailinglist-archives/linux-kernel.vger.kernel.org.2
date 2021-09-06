@@ -2,234 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A4D401DA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D90401DB0
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243164AbhIFPdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 11:33:51 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30028 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242942AbhIFPds (ORCPT
+        id S243271AbhIFPik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 11:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233979AbhIFPii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 11:33:48 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 186F3xX4146268;
-        Mon, 6 Sep 2021 11:32:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=LhLmdJTI6AgTZCvPKytLsM1D6cmN974c7wLVohpLheA=;
- b=dwvIS4lcQsXnCDut+faRAM05/oDfyB+JVLBo/T5qk0IytRsRx4Jon6VfMPaMK/1NH/50
- Km0yYDrQBUeaugxDKhm4VeH9XppYA6FmyHGoKBQ55Uk4s2LqJ9mloO0yHZG+5/P1VfNU
- Q5zqDZ6FQBjD4faaK6vl8zO84p2A9Wyqz+5Jx7z9qqtETHzstHe29Mf6Vpi8JyWKYdSA
- C4G4L9Rs4d1A08/wAmS6nQ3tt5K8Cbd7xzIZpuH0ZBW24YIYFOj2+eUDBiyC21KWwAID
- 7ztTu9Zgne8t+yxkK7Y/F4wj8cXdf69szJg/7S8NLYJjyC8aHHn2BMf7MJkTJtWtRBjM 7g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3awmsyh5es-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Sep 2021 11:32:43 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 186FGUZ5002560;
-        Mon, 6 Sep 2021 11:32:42 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3awmsyh5ea-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Sep 2021 11:32:42 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 186FRWlY007301;
-        Mon, 6 Sep 2021 15:32:41 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06ams.nl.ibm.com with ESMTP id 3av02jdvpp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 06 Sep 2021 15:32:41 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 186FWaBW52167162
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 6 Sep 2021 15:32:36 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BDDDB52065;
-        Mon,  6 Sep 2021 15:32:36 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.145.95.210])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 50DCA52057;
-        Mon,  6 Sep 2021 15:32:36 +0000 (GMT)
-Subject: Re: [PATCH v4 05/14] KVM: s390: pv: leak the ASCE page when destroy
- fails
-To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
-Cc:     cohuck@redhat.com, frankja@linux.ibm.com, thuth@redhat.com,
-        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
-References: <20210818132620.46770-1-imbrenda@linux.ibm.com>
- <20210818132620.46770-6-imbrenda@linux.ibm.com>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <36ce2f10-a65d-ff2a-3a11-8f2cd853f3e9@de.ibm.com>
-Date:   Mon, 6 Sep 2021 17:32:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 6 Sep 2021 11:38:38 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03983C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 08:37:34 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id fs6so4512508pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 08:37:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EgjZqYtbAjQybf0FiR3jfzwWnoQOjy/QCj2+jtWcOhQ=;
+        b=fW/yrbJWXEF8BNtyC21n5Xx55xzQ/RBdn/T08eWb38C90PPnjTx95H9rj0kMBu5mus
+         XRbeYBnolP0To/STHqnTjN/Ihubr/5m5XQu+VxgBP/9EsDq1zFQKacrKhDOMrY+rd2nY
+         osD0OSqsNBAzk1QlK+/ILFyj0doLjDCgSdA+7ntp9Hh767rqQ5gJZ6EJHJyOA7c/eoZo
+         RHWQSPSF1OPSVckzhjtXEEB3nfYnKxivAXfew1cxyPAhhB/z0gT7NOAxYD4pQAk4OIT/
+         n9EgkqE7AWPQBSZXjQ4giY2be1DmyCgDICV9n05csVd8wn89byLSSNUHNuDTERu2XRPt
+         BavA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EgjZqYtbAjQybf0FiR3jfzwWnoQOjy/QCj2+jtWcOhQ=;
+        b=Bm4vHL06Wy/IMUGvUHaNfVBL1xAfJ2LWD/2AiDqpH8qFK/ADdkJU1wLRu+sknAwM2y
+         LarolTYTeDYXC+JWOSV1PBqX1H60kqi7MdQJZzEtGfkmM6nKbtlN9uv0QwJORMM2ven3
+         tY8UGCNX/k7nb5wlEsllnAd6vphZMKxc1os62Dbi8c/GF1DkkL293ojTPAmKpMgxJ67g
+         odpvTGwQbvKfnKcspjyGrQ7cuPPj7MdL/D2QJxoxoVW2Xf1GlYXbYozAzki2H81fCItD
+         c2EgvJx6nP1pTR87tdZjRu6g0bssil2sE7oAp2AiEiRIab6LsRpXFYEF6v6VKziztPS4
+         7+CQ==
+X-Gm-Message-State: AOAM531A68WcNakOqNZPz/6Fn76/umW3uzObquli6VXaNylfr/Sjhiip
+        0QWY9aPdWTv6B1+AxNvOlCYvHw==
+X-Google-Smtp-Source: ABdhPJzzPqszgGttLXpvxN/HeZUksi77ohZQH4hWeR9s38MZ+z/8kKRQErgVfOv6IUYbWEpWcelnsA==
+X-Received: by 2002:a17:90a:49:: with SMTP id 9mr14800601pjb.80.1630942653471;
+        Mon, 06 Sep 2021 08:37:33 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id z65sm8214649pjj.43.2021.09.06.08.37.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Sep 2021 08:37:32 -0700 (PDT)
+Date:   Mon, 6 Sep 2021 09:37:30 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Brian Norris <briannorris@chromium.org>
+Cc:     Leo Yan <leo.yan@linaro.org>, Mike Leach <mike.leach@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] coresight: cpu-debug: control default behavior via
+ Kconfig
+Message-ID: <20210906153730.GB1228692@p14s>
+References: <20210903182839.1.I20856983f2841b78936134dcf9cdf6ecafe632b9@changeid>
 MIME-Version: 1.0
-In-Reply-To: <20210818132620.46770-6-imbrenda@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: MAytNYwHf8ClKL67gIMa5ms91oVoc0Sn
-X-Proofpoint-ORIG-GUID: avYDd4c4sW6gu0ESxYlgekFCnz8Wx-2U
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-06_06:2021-09-03,2021-09-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- mlxlogscore=999 priorityscore=1501 spamscore=0 malwarescore=0 mlxscore=0
- bulkscore=0 clxscore=1015 lowpriorityscore=0 impostorscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2108310000
- definitions=main-2109060096
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903182839.1.I20856983f2841b78936134dcf9cdf6ecafe632b9@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The subject should say
+Hi Brian,
 
-KVM: s390: pv: leak the topmost page table when destroy fails
-
-
-On 18.08.21 15:26, Claudio Imbrenda wrote:
-> When a protected VM is created, the topmost level of page tables of its
-> ASCE is marked by the Ultravisor; any attempt to use that memory for
-> protected virtualization will result in failure.
-
-
-maybe rephrase that to
-Each secure guest must have a unique address space control element and we
-must avoid that new guests will use the same ASCE to avoid an error. As
-the ASCE mostly consists of the top most page table address (and flags)
-we must not return that memory to the pool unless the ASCE is no longer
-used.
-
-Only a a successful Destroy Configuration UVC will make the ASCE no longer
-collide.
-When the Destroy Configuration UVC fails, the ASCE cannot be reused for a
-secure guest ASCE. To avoid a collision, it must not be used again.
-
-  
-> Only a successful Destroy Configuration UVC will remove the marking.
+On Fri, Sep 03, 2021 at 06:28:54PM -0700, Brian Norris wrote:
+> Debugfs is nice and so are module parameters, but
+>  * debugfs doesn't take effect early (e.g., if drivers are locking up
+>    before user space gets anywhere)
+>  * module parameters either add a lot to the kernel command line, or
+>    else take effect late as well (if you build =m and configure in
+>    /etc/modprobe.d/)
 > 
-> When the Destroy Configuration UVC fails, the topmost level of page
-> tables of the VM does not get its marking cleared; to avoid issues it
-> must not be used again.
+> So in the same spirit as these
+>   CONFIG_PANIC_ON_OOPS (also available via cmdline or modparam)
+>   CONFIG_INTEL_IOMMU_DEFAULT_ON (also available via cmdline)
+> add a new Kconfig option.
 > 
-> This is a permanent error and the page becomes in practice unusable, so
-> we set it aside and leak it.
-
-Maybe add: on failure we already leak other memory that has ultravisor marking (the
-variable and base storage for a guest) and not setting the ASCE aside (by
-leaking the topmost page table) was an oversight.
-
-Or something like that
-
-maybe also add that we usually do not expect to see such error under normal
-circumstances.
-
+> Module parameters and debugfs can still override.
 > 
-> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Signed-off-by: Brian Norris <briannorris@chromium.org>
 > ---
->   arch/s390/include/asm/gmap.h |  2 ++
->   arch/s390/kvm/pv.c           |  4 ++-
->   arch/s390/mm/gmap.c          | 55 ++++++++++++++++++++++++++++++++++++
->   3 files changed, 60 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/s390/include/asm/gmap.h b/arch/s390/include/asm/gmap.h
-> index 40264f60b0da..746e18bf8984 100644
-> --- a/arch/s390/include/asm/gmap.h
-> +++ b/arch/s390/include/asm/gmap.h
-> @@ -148,4 +148,6 @@ void gmap_sync_dirty_log_pmd(struct gmap *gmap, unsigned long dirty_bitmap[4],
->   			     unsigned long gaddr, unsigned long vmaddr);
->   int gmap_mark_unmergeable(void);
->   void s390_reset_acc(struct mm_struct *mm);
-> +void s390_remove_old_asce(struct gmap *gmap);
-> +int s390_replace_asce(struct gmap *gmap);
->   #endif /* _ASM_S390_GMAP_H */
-> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
-> index 00d272d134c2..76b0d64ce8fa 100644
-> --- a/arch/s390/kvm/pv.c
-> +++ b/arch/s390/kvm/pv.c
-> @@ -168,9 +168,11 @@ int kvm_s390_pv_deinit_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
->   	atomic_set(&kvm->mm->context.is_protected, 0);
->   	KVM_UV_EVENT(kvm, 3, "PROTVIRT DESTROY VM: rc %x rrc %x", *rc, *rrc);
->   	WARN_ONCE(cc, "protvirt destroy vm failed rc %x rrc %x", *rc, *rrc);
-> -	/* Inteded memory leak on "impossible" error */
-> +	/* Intended memory leak on "impossible" error */
->   	if (!cc)
->   		kvm_s390_pv_dealloc_vm(kvm);
-> +	else
-> +		s390_replace_asce(kvm->arch.gmap);
->   	return cc ? -EIO : 0;
->   }
->   
-> diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
-> index 9bb2c7512cd5..5a138f6220c4 100644
-> --- a/arch/s390/mm/gmap.c
-> +++ b/arch/s390/mm/gmap.c
-> @@ -2706,3 +2706,58 @@ void s390_reset_acc(struct mm_struct *mm)
->   	mmput(mm);
->   }
->   EXPORT_SYMBOL_GPL(s390_reset_acc);
-> +
-> +/*
-> + * Remove the topmost level of page tables from the list of page tables of
-> + * the gmap.
-> + * This means that it will not be freed when the VM is torn down, and needs
-> + * to be handled separately by the caller, unless an intentional leak is
-> + * intended.
-> + */
-> +void s390_remove_old_asce(struct gmap *gmap)
-> +{
-> +	struct page *old;
-> +
-> +	old = virt_to_page(gmap->table);
-> +	spin_lock(&gmap->guest_table_lock);
-> +	list_del(&old->lru);
-> +	spin_unlock(&gmap->guest_table_lock);
-> +	/* in case the ASCE needs to be "removed" multiple times */
-> +	INIT_LIST_HEAD(&old->lru);
-shouldn't that also be under the spin_lock?
+>  drivers/hwtracing/coresight/Kconfig               | 13 +++++++++++++
+>  drivers/hwtracing/coresight/coresight-cpu-debug.c |  2 +-
+>  2 files changed, 14 insertions(+), 1 deletion(-)
+> 
 
-> +}
-> +EXPORT_SYMBOL_GPL(s390_remove_old_asce);
-> +
-> +/*
-> + * Try to replace the current ASCE with another equivalent one.
-> + * If the allocation of the new top level page table fails, the ASCE is not
-> + * replaced.
-> + * In any case, the old ASCE is removed from the list, therefore the caller
-> + * has to make sure to save a pointer to it beforehands, unless an
-> + * intentional leak is intended.
-> + */
-> +int s390_replace_asce(struct gmap *gmap)
-> +{
-> +	unsigned long asce;
-> +	struct page *page;
-> +	void *table;
-> +
-> +	s390_remove_old_asce(gmap);
-> +
-> +	page = alloc_pages(GFP_KERNEL_ACCOUNT, CRST_ALLOC_ORDER);
-> +	if (!page)
-> +		return -ENOMEM;
+I have applied this patch to my local tree.  I will make that tree public when
+next week when 5.15-rc1 has been released.
 
-It seems that we do not handle errors in our caller?
+Thanks,
+Mathieu
 
-> +	table = page_to_virt(page);
-> +	memcpy(table, gmap->table, 1UL << (CRST_ALLOC_ORDER + PAGE_SHIFT));
+> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+> index f026e5c0e777..8b638eb3cb7d 100644
+> --- a/drivers/hwtracing/coresight/Kconfig
+> +++ b/drivers/hwtracing/coresight/Kconfig
+> @@ -150,6 +150,19 @@ config CORESIGHT_CPU_DEBUG
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called coresight-cpu-debug.
+>  
+> +config CORESIGHT_CPU_DEBUG_DEFAULT_ON
+> +	bool "Enable CoreSight CPU Debug by default
+> +	depends on CORESIGHT_CPU_DEBUG
+> +	help
+> +	  Say Y here to enable the CoreSight Debug panic-debug by default. This
+> +	  can also be enabled via debugfs, but this ensures the debug feature
+> +	  is enabled as early as possible.
 > +
-> +	spin_lock(&gmap->guest_table_lock);
-> +	list_add(&page->lru, &gmap->crst_list);
-> +	spin_unlock(&gmap->guest_table_lock);
+> +	  Has the same effect as setting coresight_cpu_debug.enable=1 on the
+> +	  kernel command line.
 > +
-> +	asce = (gmap->asce & ~PAGE_MASK) | __pa(table);
-
-Instead of PAGE_MASK better use _ASCE_ORIGIN ?
-> +	WRITE_ONCE(gmap->asce, asce);
-> +	WRITE_ONCE(gmap->mm->context.gmap_asce, asce);
-> +	WRITE_ONCE(gmap->table, table);
+> +	  Say N if unsure.
 > +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(s390_replace_asce);
+>  config CORESIGHT_CTI
+>  	tristate "CoreSight Cross Trigger Interface (CTI) driver"
+>  	depends on ARM || ARM64
+> diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> index 00de46565bc4..8845ec4b4402 100644
+> --- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> +++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> @@ -105,7 +105,7 @@ static DEFINE_PER_CPU(struct debug_drvdata *, debug_drvdata);
+>  static int debug_count;
+>  static struct dentry *debug_debugfs_dir;
+>  
+> -static bool debug_enable;
+> +static bool debug_enable = IS_ENABLED(CONFIG_CORESIGHT_CPU_DEBUG_DEFAULT_ON);
+>  module_param_named(enable, debug_enable, bool, 0600);
+>  MODULE_PARM_DESC(enable, "Control to enable coresight CPU debug functionality");
+>  
+> -- 
+> 2.33.0.153.gba50c8fa24-goog
 > 
