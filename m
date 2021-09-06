@@ -2,85 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 040D9402094
+	by mail.lfdr.de (Postfix) with ESMTP id C9662402096
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 22:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243755AbhIFT6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 15:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231432AbhIFT6C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 15:58:02 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E70C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 12:56:57 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id a93so15458834ybi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 12:56:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xaieRye1AeYugSPI36l1iJTAUqlrY3yw60sYt+VY7So=;
-        b=owYtIrdgFhnYEPiIVu/2YoEohn98+TOeR5b0yYti2jQJ+RZHA63ZsQZ/i6EFbNK/Z9
-         9y9hvVi2vcnXI0cQYKqV1mswbRtNK591SG/xL4Vb1vFIjBASEvkwLe/ARbUxh6k4hGqk
-         FROLqendx80BAH9hzh3PHgzivzrOC6OEThNKXT6ddElJ4EWfXl1csEq6QCKXOl/Hrb3i
-         YBmezf4cdA3hKb/Zu8674ri5ex4QfV/13vaOI3oSmab5kL4y35C7ksMNNrBhueM84E6A
-         XA1UyX0iwhI3dCok61ccpxBSeKW6nL+cYiWlSkBdNSlzvPHDNYBzuxNgSXlba+l67UcQ
-         7rYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xaieRye1AeYugSPI36l1iJTAUqlrY3yw60sYt+VY7So=;
-        b=PWG1VYxuNSdK6emC1VNcxsfKuxBX5oKpW+z2eI5NKNw6qaV2bNCAnun5dp6zM6uism
-         BTHy+/MIuT7OThxvwrjdBaFlKPvUan+3sCEjxRkPawZSmN32Bojx8C7wMNVV6hEiw6j8
-         Qgr5Y9gRTXgifa2w21R1DB9oXyCXOeqXou3LBKOctoh9VQKH71QydBhbv3Mp2oeAHeue
-         S30hxp59lumL6WLFMreUM0PSIb76z/fFwA9idc4morJUEFBPDpyWB2HINEkawDupZegY
-         5pmdtvvCvUV9or3O6KofFiQOhNzbAW9wohRcwW9594YgmkjF6q3z2KkOhllOMi00zyyV
-         d74Q==
-X-Gm-Message-State: AOAM531OSBpR+gkMDiGw26w56E1gPMbKt9LE71EZFu/Kwq7K1ck1xa0h
-        ZqR7PEWC1JUkbm8w8vRbGwGGzemK+GBTqYQw7CI2Zw==
-X-Google-Smtp-Source: ABdhPJzRQzl8K/3M0uB4Gy1BOL0qXo4S9LDLwtYnf3xODXKZOoKSyv75E1AQ/hr3Ilb3wXtUqAVXg0Ct688vpTSKZSw=
-X-Received: by 2002:a25:500c:: with SMTP id e12mr18963036ybb.30.1630958216940;
- Mon, 06 Sep 2021 12:56:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210829182641.2505220-1-mizhang@google.com> <20210829182641.2505220-2-mizhang@google.com>
- <YS5e4PGxu7tjiEBI@google.com>
-In-Reply-To: <YS5e4PGxu7tjiEBI@google.com>
-From:   Mingwei Zhang <mizhang@google.com>
-Date:   Mon, 6 Sep 2021 12:56:46 -0700
-Message-ID: <CAL715WJBMe8tPX=Tch_v=LiGNjPZpCqQVZKM=8GtzaJ_6Q1bXg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] selftests: KVM: align guest physical memory base
- address to 1GB
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Matlack <dmatlack@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        Peter Xu <peterx@redhat.com>, Ben Gardon <bgardon@google.com>
+        id S243746AbhIFT6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 15:58:14 -0400
+Received: from mga14.intel.com ([192.55.52.115]:49114 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231432AbhIFT6F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 15:58:05 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="219723931"
+X-IronPort-AV: E=Sophos;i="5.85,273,1624345200"; 
+   d="scan'208";a="219723931"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 12:57:00 -0700
+X-IronPort-AV: E=Sophos;i="5.85,273,1624345200"; 
+   d="scan'208";a="579729714"
+Received: from ibelagox-mobl1.gar.corp.intel.com ([10.213.76.130])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 12:56:56 -0700
+Message-ID: <980bc41a8bedbd81c199a78ce9f2ab2ef7b9341f.camel@linux.intel.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Fix for HWP interrupt before
+ driver is ready
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Mon, 06 Sep 2021 12:56:53 -0700
+In-Reply-To: <CAJZ5v0iH3TacxX3gzBS5cah7SnmDWbmHz=WCujQJpmEggGhLhg@mail.gmail.com>
+References: <20210904053703.581297-1-srinivas.pandruvada@linux.intel.com>
+         <CAJZ5v0hQp8Hxf__tL22s0oOcTym5mx9tND34ijufTDE3_NSW6A@mail.gmail.com>
+         <926ac4b9-1bb5-e96e-ded3-6461f7a215b7@kernel.dk>
+         <b1d5b6daacef349eb6fcc23ce7264e4786d1d9f4.camel@linux.intel.com>
+         <CAJZ5v0jaXnw0zjpnsb81Hauy4-ApuULfQaaLG10qqL67H-YTNA@mail.gmail.com>
+         <8dc57921f157b154e4af2dba26ce697dc4d4fcc2.camel@linux.intel.com>
+         <CAJZ5v0jLmziZZEqEk-D+b6jD7UUPmeb7MQW1ZptdHTk-2c9nMg@mail.gmail.com>
+         <584a4fad09048e3ea0dbc3515b2e909b745177dd.camel@linux.intel.com>
+         <CAJZ5v0iH3TacxX3gzBS5cah7SnmDWbmHz=WCujQJpmEggGhLhg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 1gb may not be appropriate for all architectures and we don't want to _just_
-> test 1gb aligned memslots.  The alignment should be tied to the backing store,
-> even if the test is hardcoded to use THP, that way the alignment logic works
-> without modification if the backing store is changed.
+On Mon, 2021-09-06 at 20:25 +0200, Rafael J. Wysocki wrote:
+> On Mon, Sep 6, 2021 at 8:14 PM Srinivas Pandruvada
+> <srinivas.pandruvada@linux.intel.com> wrote:
+> > 
+> > On Mon, 2021-09-06 at 19:54 +0200, Rafael J. Wysocki wrote:
+> > > 
+[...]
 
-Agree on that.
->
-> I had a patch[1] that did this, let me go resurrect that series.  My series got
-> put on the backburner in favor of Yanan's series[2] which did a much better
-> job of identifying/handling the host virtual address alignment, but IIRC my
-> approach for handling GPA was correct.
->
-> [1] https://lore.kernel.org/kvm/20210210230625.550939-6-seanjc@google.com/
-> [2] https://lkml.kernel.org/r/20210330080856.14940-1-wangyanan55@huawei.com
->
+> > > 
+> > We are handling offline for other thermal interrupt sources from
+> > same
+> > interrupt in therm-throt.c, where we do similar in offline path (by
+> > TGLX). If cpufreq offline can cause such issue of changing CPU,
+> 
+> This is not cpufreq offline, but intel_pstate_update_status() which
+> may be triggered via sysfs.  And again, the theoretically problematic
+> thing is dereferencing cpudata (which may be cleared by a remote CPU)
+> from the interrupt handler without protection.
 
-Thanks for the info. I will use patch [1] instead of mine in the next version.
+This will be a problem.
 
-Regards.
--Mingwei
+> 
+> > I can call intel_pstate_disable_hwp_interrupt() via override from
+> > https://elixir.bootlin.com/linux/latest/C/ident/thermal_throttle_offline
+> > after masking APIC interrupt.
+> 
+> But why would using RCU be harder than this?
+I think, this will require all_cpu_data and cpu_data to be rcu
+protected. This needs to be well tested.
+
+I think better to revert the patch for the next release.
+
+Thanks,
+Srinivas
+
+> 
+> Also please note that on RT kernels interrupt handlers are run in
+> threads.
+
+
