@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5A6401BD1
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D26401C03
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 15:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243499AbhIFM7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:59:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36598 "EHLO mail.kernel.org"
+        id S243335AbhIFNBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 09:01:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243190AbhIFM7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:59:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C74461051;
-        Mon,  6 Sep 2021 12:58:02 +0000 (UTC)
+        id S243408AbhIFM75 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 08:59:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCD7560F43;
+        Mon,  6 Sep 2021 12:58:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630933082;
-        bh=qEKW48lz5RT6WnzKz7AWCCSB+KFTcUVLx6/d/jOkxag=;
+        s=korg; t=1630933133;
+        bh=NqlX92/GQHQpSMeOrgCcx4gEgQ4guDEV/v9Zh2d8UaQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aozVJushOXyAwhjRkZpw/QcF02ddXiZ1jf0/4ELzhqUFivGPu/9X9mDmQxhVJsH7W
-         MqWjzXcYuMCxtsRB2lHZtTdnt/Y9MEmce6H/RWX92+RCAFDGYwS+HceSZECR2eCkGu
-         4pih57PuYrucRlcRD7ALzCOvh++HWKTrrTbxTAVg=
+        b=uE10zbVMfaRix98QfHh9MLhJ1z1siJSNCeethepMVGfdqXnw7mJsITmKEfS2U2dxj
+         yhFZzfcTHttNOVZf4s3R5uxNEf0xHT1YyW87l1caQAfsNHADzx4g1USqvuaXQ5oQ4X
+         JU6z9FuIGY6JKUlIwyG3gslju8iaescJyL9K5TGg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.13 22/24] ALSA: hda/realtek: Workaround for conflicting SSID on ASUS ROG Strix G17
-Date:   Mon,  6 Sep 2021 14:55:51 +0200
-Message-Id: <20210906125449.845321148@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.14 06/14] USB: serial: cp210x: fix flow-control error handling
+Date:   Mon,  6 Sep 2021 14:55:52 +0200
+Message-Id: <20210906125448.389455058@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210906125449.112564040@linuxfoundation.org>
-References: <20210906125449.112564040@linuxfoundation.org>
+In-Reply-To: <20210906125448.160263393@linuxfoundation.org>
+References: <20210906125448.160263393@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,48 +38,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Johan Hovold <johan@kernel.org>
 
-commit 13d9c6b998aaa76fd098133277a28a21f2cc2264 upstream.
+commit ba4bbdabecd11530dca78dbae3ee7e51ffdc0a06 upstream.
 
-ASUS ROG Strix G17 has the very same PCI and codec SSID (1043:103f) as
-ASUS TX300, and unfortunately, the existing quirk for TX300 is broken
-on ASUS ROG.  Actually the device works without the quirk, so we'll
-need to clear the quirk before applying for this device.
-Since ASUS ROG has a different codec (ALC294 - while TX300 has
-ALC282), this patch adds a workaround for the device, just clearing
-the codec->fixup_id by checking the codec vendor_id.
+Make sure that the driver crtscts state is not updated in the unlikely
+event that the flow-control request fails. Not doing so could break RTS
+control.
 
-It's a bit ugly to add such a workaround there, but it seems to be the
-simplest way.
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214101
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210820143214.3654-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 5951b8508855 ("USB: serial: cp210x: suppress modem-control errors")
+Cc: stable@vger.kernel.org	# 5.11
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/usb/serial/cp210x.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9457,6 +9457,16 @@ static int patch_alc269(struct hda_codec
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -1190,6 +1190,7 @@ static void cp210x_set_flow_control(stru
+ 	struct cp210x_flow_ctl flow_ctl;
+ 	u32 flow_repl;
+ 	u32 ctl_hs;
++	bool crtscts;
+ 	int ret;
  
- 	snd_hda_pick_fixup(codec, alc269_fixup_models,
- 		       alc269_fixup_tbl, alc269_fixups);
-+	/* FIXME: both TX300 and ROG Strix G17 have the same SSID, and
-+	 * the quirk breaks the latter (bko#214101).
-+	 * Clear the wrong entry.
-+	 */
-+	if (codec->fixup_id == ALC282_FIXUP_ASUS_TX300 &&
-+	    codec->core.vendor_id == 0x10ec0294) {
-+		codec_dbg(codec, "Clear wrong fixup for ASUS ROG Strix G17\n");
-+		codec->fixup_id = HDA_FIXUP_ID_NOT_SET;
-+	}
+ 	/*
+@@ -1249,14 +1250,14 @@ static void cp210x_set_flow_control(stru
+ 			flow_repl |= CP210X_SERIAL_RTS_FLOW_CTL;
+ 		else
+ 			flow_repl |= CP210X_SERIAL_RTS_INACTIVE;
+-		port_priv->crtscts = true;
++		crtscts = true;
+ 	} else {
+ 		ctl_hs &= ~CP210X_SERIAL_CTS_HANDSHAKE;
+ 		if (port_priv->rts)
+ 			flow_repl |= CP210X_SERIAL_RTS_ACTIVE;
+ 		else
+ 			flow_repl |= CP210X_SERIAL_RTS_INACTIVE;
+-		port_priv->crtscts = false;
++		crtscts = false;
+ 	}
+ 
+ 	if (I_IXOFF(tty)) {
+@@ -1279,8 +1280,12 @@ static void cp210x_set_flow_control(stru
+ 	flow_ctl.ulControlHandshake = cpu_to_le32(ctl_hs);
+ 	flow_ctl.ulFlowReplace = cpu_to_le32(flow_repl);
+ 
+-	cp210x_write_reg_block(port, CP210X_SET_FLOW, &flow_ctl,
++	ret = cp210x_write_reg_block(port, CP210X_SET_FLOW, &flow_ctl,
+ 			sizeof(flow_ctl));
++	if (ret)
++		goto out_unlock;
 +
- 	snd_hda_pick_pin_fixup(codec, alc269_pin_fixup_tbl, alc269_fixups, true);
- 	snd_hda_pick_pin_fixup(codec, alc269_fallback_pin_fixup_tbl, alc269_fixups, false);
- 	snd_hda_pick_fixup(codec, NULL,	alc269_fixup_vendor_tbl,
++	port_priv->crtscts = crtscts;
+ out_unlock:
+ 	mutex_unlock(&port_priv->mutex);
+ }
 
 
