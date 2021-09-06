@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0E8401F43
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4AF401F46
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244178AbhIFRlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 13:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47938 "EHLO
+        id S244218AbhIFRlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 13:41:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243988AbhIFRlA (ORCPT
+        with ESMTP id S244010AbhIFRly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 13:41:00 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B96C061757
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 10:39:55 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id s11so7416603pgr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:39:55 -0700 (PDT)
+        Mon, 6 Sep 2021 13:41:54 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB90EC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 10:40:49 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id q11-20020a9d4b0b000000b0051acbdb2869so9592940otf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:40:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wjvFTYIOQu5JpnWulQor+MKslL15Jby4pzZwJkGRjYk=;
-        b=JsMvTblEw7sRMqIVdz9109X4ygsnO2pqxmvofkl60pfIbKVrI/G8YT0ebKbOSXa4zI
-         RHek3D9Oh4VDShtwiUDl21JWlZTHtip84VS0NVCILTxKDKey7+2LoKjeN4Ys9VM7tPPu
-         3g2k34tVKkulSjkDP8kaOhxBIi9Spy1vL3eHE6OPl9EVrRd1g01rGQLf/Mgq7cJf9EJ1
-         r2S3a1bEa89RCQXWllSDYBm6QcwbL7/E+j/RtYKt21Nc1qAF6vlR2GHDBnXwI+I0Pqid
-         9EH6UhH3LSBbxl77HDlZIYTedt6vQgGdqz1oXksQVhDU0HMxs40lFErV5qLf9iusJXJ8
-         RWkQ==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IGzDP1P9SV//47D/1bbDt2xJ8d6dN94V6Uu4MHonLGI=;
+        b=dXQlueRL6yCC1LFm1O4+GsWqrR+kOWkG/f8PNuQDaHoLdUfzrTSsZz3WR3siWSF5oA
+         IRCI/icPdjCL7akV7URsxiE/0yquIkgj0vSN3ktHWvDrEWh0dkUe8l+lnsNLVoXQkiXG
+         kb8R8TmcIH/oW6hTYYmUrIjcJY/o8ZZR30VQygzo9NkceFnkMOl+DLjQHT6lItC77g74
+         YUJsSW3DxMcfepfANzD9H8W/lRq6KYQJsEp+Z5KtXFX3Uwd39/TGCJfkvmJxdwTGQbO/
+         I44RFj3of0utGIURwNZsN+NGymZIzTJLoS6P5/VEgSzbRaffutKNTbpLavTB8Q4uj5BC
+         Ngsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wjvFTYIOQu5JpnWulQor+MKslL15Jby4pzZwJkGRjYk=;
-        b=GXnYssWrJ1hPPHfFyKfAvw1FL95B1RIKq7O4rZvCa2AdhXWVDQEko7qF/EtbCBZCM+
-         AdvXSqSFhPQf3SpDo+y5cFjCDAmVBIYQcP7C0RyAYjZDjV/7HDIUOERMdbD/kSoehsLv
-         dEBLPs0ykz1edNBkSw+pFe2SavRz/Qj728a/8QKMhMmnsGJg5CwyutuQQ3AhmC3qjQB7
-         gj+uRbqroP1fsgGIkRjxlysxcifVbx+a2uB2Ntq04jysTQNSk2uoxX6w6xVWKbyrihkq
-         XWZBcpdHAoL0HhcNJIyVOYJVyqFasaqzLm0qsiUXSRRchXy2TKp5JMg21ttKNbsVzV6t
-         OViA==
-X-Gm-Message-State: AOAM533/Fbi3OTCbtFjw0Fgf2GW48u/+ZPIQbBlEeTpQnjO+pIX8Gy3k
-        Utun1ExYC2j8cNiHl3pGg7qqCt7KLaFyYg==
-X-Google-Smtp-Source: ABdhPJy7yCgToYkUtil623uPqlk6pPPmH8NpPm+QQvyPW9eOJSorqbgU1RfIklWKfoPsII/RU/oXWg==
-X-Received: by 2002:a62:8305:0:b0:3f6:72a:92ee with SMTP id h5-20020a628305000000b003f6072a92eemr12724485pfe.19.1630949994992;
-        Mon, 06 Sep 2021 10:39:54 -0700 (PDT)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id h127sm8198084pfe.191.2021.09.06.10.39.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 10:39:54 -0700 (PDT)
-Subject: Re: [PATCH] block: include dd_queued{,_show} into proper BLK_DEBUG_FS
- guard
-To:     Julio Faracco <jfaracco@redhat.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210906163831.263809-1-jfaracco@redhat.com>
- <56e17907-83d7-7b45-8b0f-5d80d9005c70@kernel.dk>
- <CAHtYXivVcodcR5b2aYnFvhgAJ7yEr0+jYzPZ+w-JxRRzuWJyfA@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <55ccc07f-154e-a1b4-31c5-dd99c8e7d09d@kernel.dk>
-Date:   Mon, 6 Sep 2021 11:39:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IGzDP1P9SV//47D/1bbDt2xJ8d6dN94V6Uu4MHonLGI=;
+        b=c293DVFnMVavGaO19wUckSoatzS9UQzywDRFwGzath23M1rBQSHVBNLXNNIoCz2aI4
+         vztq7wxLifV8cQSTP9E8nTEAMd6exsEKveJGJg38lcIXN6dfQ5Z8cnDy4HETmw7IxAah
+         obx1gfTPGTWFUOwFfPTjo+ZxHgchwc37C0lLtYZlRi/06Y/iKEDutkOt3smSaG+1nO+N
+         u4iKvRegN30pXGmUpURsJaXRuZbMdhzZZxHGguBJaK/XUUGOZluQHEgUxSHucVrlmz71
+         k1z3DHkabumUKzzcGTYABgHIEXgozwGZ8kUhsjp+ZUgTZIn7XyDSXydibb487jxeBNoD
+         9rMg==
+X-Gm-Message-State: AOAM531sycBYnO3qNubZLPQquewAjURncpN+vZmWfUzfIOd6VAm81VoT
+        lB3SSKAvdHob7vR5e3FrmOY2QN9N+Q/IVAriFHi/Y82VjTc=
+X-Google-Smtp-Source: ABdhPJxXk8NGnRG2SjvFy0AvMFnXSEzj53HK6kZKZ3zdKO1ioFir7yFoE8Smana1chGOAcxs4SmWH4Zj3COImxKIgkI=
+X-Received: by 2002:a05:6830:1bf1:: with SMTP id k17mr11577115otb.295.1630950048986;
+ Mon, 06 Sep 2021 10:40:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHtYXivVcodcR5b2aYnFvhgAJ7yEr0+jYzPZ+w-JxRRzuWJyfA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <000000000000bc92ac05cb4ead3e@google.com> <CAJfpeguqH3ukKeC9Rg66pUp_jWArn3rSBxkZozTVPmTnCf+d6g@mail.gmail.com>
+ <CANpmjNM4pxRk0=B+RZzpbtvViV8zSJiamQeN_7mPn-NMxnYX=g@mail.gmail.com> <CAJfpegvzgVwN_4a-ghtHSf-SCV5SEwv4aeURvK_qDzMmU2nA4Q@mail.gmail.com>
+In-Reply-To: <CAJfpegvzgVwN_4a-ghtHSf-SCV5SEwv4aeURvK_qDzMmU2nA4Q@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 6 Sep 2021 19:40:37 +0200
+Message-ID: <CANpmjNM3swsJ6F4P5CrhSTFr3uYMsMTHCFCL9huzXJgWbADxwQ@mail.gmail.com>
+Subject: Re: [syzbot] linux-next test error: KASAN: null-ptr-deref Read in fuse_conn_put
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     syzbot <syzbot+b304e8cb713be5f9d4e1@syzkaller.appspotmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/6/21 11:36 AM, Julio Faracco wrote:
-> Thanks Jens.
-> 
-> On Mon, Sep 6, 2021 at 1:44 PM Jens Axboe <axboe@kernel.dk> wrote:
->>
->> On 9/6/21 10:38 AM, Julio Faracco wrote:
->>> This commit fixes a compilation issue to an unused function if
->>> BLK_DEBUG_FS setting is not enabled. This usually happens in tiny
->>> kernels with several debug options disabled. For further details,
->>> see the message below:
->>>
->>> ../block/mq-deadline.c:274:12: error: ‘dd_queued’ defined but not used [-Werror=unused-function]
->>>   274 | static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
->>>       |            ^~~~~~~~~
->>> cc1: all warnings being treated as errors
->>
->> This is like the 10th one of these... The patch has been queued up for
->> about a week, if you check linux-next or the block tree. It's going
->> upstream soon, in fact it was already sent in yesterday.
-> 
-> I noticed after seeing the same patch earlier this morning, but it was
-> too late to undo.
-> Discard my patch, pls.
+On Mon, 6 Sept 2021 at 19:35, Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> On Mon, 6 Sept 2021 at 18:59, Marco Elver <elver@google.com> wrote:
+> >
+> > On Mon, 6 Sept 2021 at 13:56, Miklos Szeredi <miklos@szeredi.hu> wrote:
+> > > Thanks,
+> > >
+> > > Force pushed fixed commit 660585b56e63 ("fuse: wait for writepages in
+> > > syncfs") to fuse.git#for-next.
+> > >
+> > > This is fixed as far as I'm concerned, not sure how to tell that to syzbot.
+> >
+> > Thanks -- we can let syzbot know:
+> >
+> > #syz fix: fuse: wait for writepages in syncfs
+> >
+> > (The syntax is just "#syz fix: <commit title>".)
+>
+> Yeah, but that patch has several versions, one of which is broken.
+> Syzbot can't tell the difference just based on the title.
 
-No worries - fwiw, the fix is upstream now.
+True, and a general problem with trying to track -next, where even
+commit hashes might change. For -next, we can probably live with just
+marking the problem fixed, meaning anyone checking the issue will see
+a fix exists (and not invest time in trying to fix it).
 
--- 
-Jens Axboe
-
+If the problem persists, syzbot will just keep complaining. ;-)
