@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 891D1401B41
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188CD401B44
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241603AbhIFMgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236783AbhIFMgs (ORCPT
+        id S241847AbhIFMhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:37:07 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:52363 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236783AbhIFMhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:36:48 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDEDC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 05:35:43 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id n27so13243672eja.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 05:35:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=xypxOlLpIj1kGaPZeLVMc46scojUqvHHVmiRLDEQQR8=;
-        b=TL6ZLMNGxgMHqhSbKACJWG4qgO0pISGZjT4JY7BFUYc/LatqxrxQpwN+gwdbM1XDsP
-         xpBb0U2eP8wW9LADy2lHUFT/75fMKfjuqvMyBddfFM1xTtbVHNtw/fkk5gaRIfzWxUUy
-         QdTYsduN+uwL8CXX7zlayO+MTXqottOhFkv4nbTroeFhU75RmvUMsGXCMKZvM+N8o3Bf
-         lQ7P+DQmVasNhKW+dE0+4VyrifzkXnAcGGUgZDWWk4d+4bG79BkdhL6tHCMB4OXivB5o
-         8ga4NUcbLasdXv2/JVZsHoZEBCG4C5HGBZwc803IM3EukNOouLdCm9hRb1HQ0BX5OAh9
-         b0TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=xypxOlLpIj1kGaPZeLVMc46scojUqvHHVmiRLDEQQR8=;
-        b=QS6jsNUSmBCM5f2nWvwhAaNuzVN/udBPz8LQ4to81AlbJmz3DDy7ZFg2EOTK6Ccprz
-         yiBNsxngSxCnyj/KjmbtjJznpL0hlE6sZbC+QEaVH/WLILF9LY+9BScFijaHrJcFz6jl
-         6ACpFvFyu+N01IN0yr3Wc6N8BSLkpLBMROjLJtbtB2IrE12YQvF008i6U6mqDeqDhcQq
-         Tso2scy4oJBbU0yCTEzX+lkixbmVCAjuiDXwUJw7h4T7DpczmcccdgZEEcMw26a9NB1I
-         cekjm7SfvoMwngSacU0oNoZetyCo1SYkFInlK6QZi52zCJoZhR7JB3KR666qCqBL36Qg
-         YHTQ==
-X-Gm-Message-State: AOAM532FrY7hYtA2IwPmgji0sRNnjC0Vxz9xbfstGlfY1Y2NHWSjkUIP
-        FgZSKQBlGQUvTto1tmO3JDGF+f0ngGkrxHoATWTGYQ==
-X-Google-Smtp-Source: ABdhPJx3hPH1VLkxO8Io/KzIZ1VugtEWn5DfCMkNUKAyG5KjbPB8MecAtLLMHCMKfPT+VSVkB0Iyuu0sNY1+YmKFz6E=
-X-Received: by 2002:a17:906:318b:: with SMTP id 11mr13586711ejy.493.1630931742051;
- Mon, 06 Sep 2021 05:35:42 -0700 (PDT)
+        Mon, 6 Sep 2021 08:37:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1630931762; x=1662467762;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=LG2IsHLY2etsqY1+L82PTNHRRUEHtb+Suet6zR7M05Y=;
+  b=V17j5Atm/FrF6uHY+yTN1fS9xo9/2x03y6+swIHatfCXIdylEm8R6V7p
+   4YXit2ljNcO7kQtPAJpQ1FjJvmbVAMS3mknZ6pz1SUW/243SAl9Pc2cKV
+   btJe+TLFlRfl4+Od83La1RYtEM3gQry4njexCHekuadxdcC7oBygMoaW8
+   DS4PlZzixHhGWBJNQSUAX2QxiYNx66I7Qdg5tjcXR06PBhpJYL3K/nbch
+   J/R+TlETIA3wJacItBWCJtmCyhbncYTk8BpfTFqODrvcR1GSFI+0S7SrH
+   JBTv4cpwJ/Pb0ZCML21eYrh5pzWAiCPG0jYdCe2xndP3ILPg6aYXBYBb+
+   w==;
+X-IronPort-AV: E=Sophos;i="5.85,272,1624291200"; 
+   d="scan'208";a="179827817"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 06 Sep 2021 20:36:01 +0800
+IronPort-SDR: AtFDoXvGzq3PgWaxhpJNi8os50xY1/FEeo/lV5ywzqiAlC4YUV/iQIDeDVXatUOqslJizKlS8b
+ q4URx4u6kWEj0XiBYuQKf0pJu+MK09STcwqCxQIsuzR6vsJ6V6jTMknnqHhM6huhsnus5y8m6O
+ ZFCwgsmAgXywHGLsDzTq9o4RPdP0+hgrjC82rdDFfhkg2UAJgG5jEMRSJsmj06zCPNTs/9dkfq
+ or0jE85tw/xlRWnYEa1gjrOfaff/9M8uMkzFtpw5ZjEYC40wKtr78TlWlNksNKId+d5+9BkorQ
+ 8rVM6/MsMziMXxHn0objVsaz
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 05:12:40 -0700
+IronPort-SDR: lMNWe6IoJ0G48H9detkC/Ot3VVcG3Y8fjb/y8CpUMuPU9pANE1mO9dw5u1PjPq2gf8Uh3Y9kLY
+ Q6H+ofy2N3H+psiMnCzHSoqOSuS+j1eyhIdkvJ+UBhkG3dKgGmuuK+n2eFA6NHh8kghdfCP9K/
+ tx2nQpOblXU+fRO//T08u1rGJO/Ywz80zsGClaa/sRxV4FpVwQa47l3yCspvNOxBb16qnJGTSW
+ in5QNQWcveeYJohXENg01Zwz6HRwsiC1jFOyt4Smkq1M6xx/LBWg3C9s/CWo4SFwD/OXBDu9k7
+ 2IU=
+WDCIronportException: Internal
+Received: from unknown (HELO redsun60.ssa.fujisawa.hgst.com) ([10.149.66.36])
+  by uls-op-cesaip02.wdc.com with ESMTP; 06 Sep 2021 05:36:00 -0700
+From:   Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Johannes Thumshirn <jth@kernel.org>, linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 0/1] drivers/mcb update for 5.16
+Date:   Mon,  6 Sep 2021 21:35:47 +0900
+Message-Id: <cover.1630931319.git.johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Mon, 6 Sep 2021 18:05:30 +0530
-Message-ID: <CA+G9fYvA-ctLRz=fimVs9oYPN+s5gtFc32dQVxinkOLyed0DUg@mail.gmail.com>
-Subject: block/mq-deadline.c:274:12: error: 'dd_queued' defined but not used [-Werror=unused-function]
-To:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        Bart Van Assche <bvanassche@acm.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following build warnings/ errors noticed while building linux mainline
-master branch
-with gcc-11 for arm architecture with clps711x_defconfig config file.
+Hi Greg,
 
-block/mq-deadline.c:274:12: error: 'dd_queued' defined but not used
-[-Werror=unused-function]
-  274 | static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
-      |            ^~~~~~~~~
-cc1: all warnings being treated as errors
-make[2]: *** [/builds/linux/scripts/Makefile.build:277:
-block/mq-deadline.o] Error 1
-make[2]: Target '__build' not remade because of errors.
-make[1]: *** [/builds/linux/Makefile:1872: block] Error 2
-make[1]: Target '__all' not remade because of errors.
-make: *** [Makefile:219: __sub-make] Error 2
-make: Target '__all' not remade because of errors.
+Here's a patch from Dan for mcb that was originally intented to go into 5.14.
+Back then you've asked me to tag it for stable and resend, which I forgot to
+do.
 
-Build config:
-https://builds.tuxbuild.com/1xjZuKPY0IygLQHFkTFMY9TPQh4/config
+As this driver has only very small user base I think queueing it for 5.16 is
+ok, but if you can get it into 5.15 it'll be even better.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Thansk a lot and sorry for forgetting it Dan.
 
-meta data:
------------
-    git_describe: v5.14-9687-g27151f177827
-    git_repo: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline
-    git_sha: 27151f177827d478508e756c7657273261aaf8a9
-    git_short_log: 27151f177827 (\Merge tag
-'perf-tools-for-v5.15-2021-09-04' of
-git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux\)
-    kconfig: [
-        clps711x_defconfig
-    ]
-    kernel_version: 5.14.0
-    target_arch: arm
-    toolchain: gcc-11
+Byte,
+	Johannes
 
-steps to reproduce:
-https://builds.tuxbuild.com/1xjZuKPY0IygLQHFkTFMY9TPQh4/tuxmake_reproducer.sh
+Dan Carpenter (1):
+  mcb: fix error handling in mcb_alloc_bus()
 
---
-Linaro LKFT
-https://lkft.linaro.org
+ drivers/mcb/mcb-core.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+-- 
+2.32.0
+
