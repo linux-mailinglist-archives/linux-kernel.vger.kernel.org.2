@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D33B401BCF
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D88401C01
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 15:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243268AbhIFM7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:59:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34516 "EHLO mail.kernel.org"
+        id S243197AbhIFNBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 09:01:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243147AbhIFM7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:59:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 05BEC60F45;
-        Mon,  6 Sep 2021 12:57:59 +0000 (UTC)
+        id S243340AbhIFM7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 08:59:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 74F686108D;
+        Mon,  6 Sep 2021 12:58:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630933080;
-        bh=mic5qVkF7Rr8iez1JKtmdhalvP13xxT+ZtxRZJcYobM=;
+        s=korg; t=1630933130;
+        bh=w11nx2O0Iv4yalhiKt0toQ28MWc0Vtxq3Gql6Am9A0Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZqUr9s4n80osvAKQ6L2Kg8LZ/nsRwc0+jap8FO5eNjB134lv09jK89giQIGS2EA5M
-         HhoN6vnzXDM7wLrdceSLerTga55qiMXMymzvnZ6rLp/+FpIJ5DC+/BZbmB+RQ3KOY0
-         T70VU+9lLGI3bOX4H7h5XviSXmnKgbXogF8O/+yg=
+        b=wAQLlpWUx/zzR20ugwS0Ag2D52TGVzFRVwQdcAEU+xFByYYGnKUre9MUfjrhsx0u7
+         7aALijmKBENlfIYy299s6JMDad7VjJ+eCkPU8jLvH7yVlWAbPUCwETDZe++TCWX7mH
+         sQY3j593mhFgNPwsIMDjDquCluD6FLhTJouNml7k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.13 21/24] ALSA: usb-audio: Fix regression on Sony WALKMAN NW-A45 DAC
-Date:   Mon,  6 Sep 2021 14:55:50 +0200
-Message-Id: <20210906125449.809396204@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.14 05/14] USB: serial: cp210x: fix control-characters error handling
+Date:   Mon,  6 Sep 2021 14:55:51 +0200
+Message-Id: <20210906125448.343349963@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210906125449.112564040@linuxfoundation.org>
-References: <20210906125449.112564040@linuxfoundation.org>
+In-Reply-To: <20210906125448.160263393@linuxfoundation.org>
+References: <20210906125448.160263393@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,49 +38,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Johan Hovold <johan@kernel.org>
 
-commit 7af5a14371c1cf94a41f08eabb62a3faceec8911 upstream.
+commit 2d9a00705910ccea2dc5d9cba5469ff2de72fc87 upstream.
 
-We've got a regression report for USB-audio with Sony WALKMAN NW-A45
-DAC device where no sound is audible on recent kernel.  The bisection
-resulted in the code change wrt endpoint management, and the further
-debug session revealed that it was caused by the order of the USB
-audio interface.  In the earlier code, we always set up the USB
-interface at first before other setups, but it was changed to be done
-at the last for UAC2/3, which is more standard way, while keeping the
-old way for UAC1.  OTOH, this device seems requiring the setup of the
-interface at first just like UAC1.
+In the unlikely event that setting the software flow-control characters
+fails the other flow-control settings should still be updated (just like
+all other terminal settings).
 
-This patch works around the regression by applying the interface setup
-specifically for the WALKMAN at the beginning of the endpoint setup
-procedure.  This change is written straightforwardly to be easily
-backported in old kernels.  A further cleanup to move the workaround
-into a generic quirk section will follow in a later patch.
+Move out the error message printed by the set_chars() helper to make it
+more obvious that this is intentional.
 
-Fixes: bf6313a0ff76 ("ALSA: usb-audio: Refactor endpoint management")
-Cc: <stable@vger.kernel.org>
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=214105
-Link: https://lore.kernel.org/r/20210824054700.8236-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 7748feffcd80 ("USB: serial: cp210x: add support for software flow control")
+Cc: stable@vger.kernel.org	# 5.11
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/usb/endpoint.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/serial/cp210x.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -1286,6 +1286,11 @@ int snd_usb_endpoint_configure(struct sn
- 	 * to be set up before parameter setups
- 	 */
- 	iface_first = ep->cur_audiofmt->protocol == UAC_VERSION_1;
-+	/* Workaround for Sony WALKMAN NW-A45 DAC;
-+	 * it requires the interface setup at first like UAC1
-+	 */
-+	if (chip->usb_id == USB_ID(0x054c, 0x0b8c))
-+		iface_first = true;
- 	if (iface_first) {
- 		err = endpoint_set_interface(chip, ep, true);
- 		if (err < 0)
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -1164,10 +1164,8 @@ static int cp210x_set_chars(struct usb_s
+ 
+ 	kfree(dmabuf);
+ 
+-	if (result < 0) {
+-		dev_err(&port->dev, "failed to set special chars: %d\n", result);
++	if (result < 0)
+ 		return result;
+-	}
+ 
+ 	return 0;
+ }
+@@ -1219,8 +1217,10 @@ static void cp210x_set_flow_control(stru
+ 		chars.bXoffChar = STOP_CHAR(tty);
+ 
+ 		ret = cp210x_set_chars(port, &chars);
+-		if (ret)
+-			return;
++		if (ret) {
++			dev_err(&port->dev, "failed to set special chars: %d\n",
++					ret);
++		}
+ 	}
+ 
+ 	mutex_lock(&port_priv->mutex);
 
 
