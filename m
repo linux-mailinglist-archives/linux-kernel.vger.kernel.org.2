@@ -2,135 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41EA4401D62
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0174401D65
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241093AbhIFPHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 11:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41180 "EHLO
+        id S242382AbhIFPHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 11:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbhIFPHP (ORCPT
+        with ESMTP id S229748AbhIFPHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 11:07:15 -0400
-Received: from lb1-smtp-cloud7.xs4all.net (lb1-smtp-cloud7.xs4all.net [IPv6:2001:888:0:108::1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F6B9C061575;
-        Mon,  6 Sep 2021 08:06:10 -0700 (PDT)
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id NGCDmvT9n0e6wNGCEmjmQm; Mon, 06 Sep 2021 17:06:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1630940766; bh=yeHa/t0AGOYf+3WJOb6kO5tvc+5inH6bRJkSTgSvV0I=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=PMI6lg4+idACUqyL35yCYZ9GGGWKr8OcG6ZYfC8o9ti4eowRMBfSi2HLmkvXsYc8s
-         PXa1ww5aLk25Y3iJZFCFUYm88bEIJRbUdY7JnEIuqwj691uXMtSImVgd8NPuIk+fwr
-         vSJwKvapZ6+8vP7hodx8Gk4TPjND67bZlpFnIUBpsjCRZR9TZTVUCoIpFEY/KpC20i
-         hmX3hw8UXiJqj73O6bOMgGrRwDggX52UQfGymVkjkeEj8R76TVAXAkSgBm9Q4dpcNy
-         LgLSo1yRRcsHxpyMCNMyWH4xgFGw28B46AEEOUZ7Kz4QpT2CBLJfkc18lKCdsquwAn
-         WepygwiopS1UQ==
-Subject: Re: [PATCH 0/8] staging: media: zoran: fusion in one module
-To:     LABBE Corentin <clabbe@baylibre.com>
-Cc:     gregkh@linuxfoundation.org, mchehab@kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
-References: <20210903191540.3052775-1-clabbe@baylibre.com>
- <efe035cc-1839-210f-c0d4-4d58801aa65c@xs4all.nl> <YTYcf3We4dcvBx1h@Red>
- <940d5bdf-89b8-b5a4-f485-aa5b1c51286b@xs4all.nl> <YTYsL5i0B48k/V0Z@Red>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <3745aef0-bab0-06ee-6073-892b80fb4c8b@xs4all.nl>
-Date:   Mon, 6 Sep 2021 17:06:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 6 Sep 2021 11:07:34 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E5DC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 08:06:30 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so4478775pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 08:06:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7bRVRr2cmpld6cVkhHmLiLm6xvgtUebQbicDG7ir3G0=;
+        b=m3nCH0H6dheq/9gTKSlhvraisRdbU5lL2ciDS36vzIDNR1/GfkpADfpz+Lr8Zi9McP
+         X54Xa3Xa+ngumTj/Kc19bIeGcTGHUbmVht9CjCjbeG4HmBSFRCTZbk1bbg1NYA5iLYlJ
+         V+w6SYY5dzVgMDGqFxYfcXSkMUgtWk7XVfhRQfZVOmUYDYliDBdX2FLGOF1mfAC1fiul
+         Y/P7hl0GWXTT04cGhvFT5k3hXHEc2B1jm1Ntt2Ibgq1poHOSYFrZehamga0XLgshVSsw
+         tcm+Di7AMp44hpK6vNUklq8WVLIsdKydM/3QPz2d3MRdpBmEQSGHN/vibbH9o/P6MJ7Z
+         sCYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7bRVRr2cmpld6cVkhHmLiLm6xvgtUebQbicDG7ir3G0=;
+        b=XAx99DwTnePG9bK3rOOBMAfA7w05jrUaN2fIVt6B01F/JcK98tzQcW4hkhYZaxMQEv
+         OOq+xdipO/w6pl2ag8JJMt3f5Xgej2jhGJasMbBeB2sapEJrESxWaX31CufgC+sM2EEO
+         Q62sIkFuLKnyoaE8/Hu3/U5sz+noJuVFh842YOj90jVHkrkcdFFLb1Cv0PnZg+qnhMvZ
+         VzOeFUm4RM7OuGXIXboLDzm6sihGmrYJixtek+O/FMFtC8oaE4PhV5RAhf0UQ28rf5ye
+         AzGNUyI5zhCQR7kJHkQF9v3FwAIKAz+uHA9BUqpYQlTzMnQaaOlH2ypR4K0Z394Hu2/A
+         7W9g==
+X-Gm-Message-State: AOAM531ocHjr5DX53I3JO1RJV5fvxrh44a2PXO7OhOlfwV3mZScJ2g4q
+        qYLNpblO7Qp78NfdT8L2e16Wsw==
+X-Google-Smtp-Source: ABdhPJz7QhFvvQoZNbJT/uu0Intg4qqFBqp1QJOwcr6xXyv7hMGFbr/9aIkaYAr/nvmPmo2gRdieZw==
+X-Received: by 2002:a17:90b:1d0e:: with SMTP id on14mr14275270pjb.97.1630940789541;
+        Mon, 06 Sep 2021 08:06:29 -0700 (PDT)
+Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id y126sm5275753pfy.88.2021.09.06.08.06.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Sep 2021 08:06:28 -0700 (PDT)
+Date:   Mon, 6 Sep 2021 09:06:25 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Jian Cai <jiancai@google.com>
+Cc:     mike.leach@linaro.org, linux@roeck-us.net, dianders@chromium.org,
+        mka@chromium.org, manojgupta@google.com, llozano@google.com,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        clang-built-linux@googlegroups.com,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] coresight: syscfg: fix compiler warnings
+Message-ID: <20210906150625.GA1228692@p14s>
+References: <20210830172820.2840433-1-jiancai@google.com>
 MIME-Version: 1.0
-In-Reply-To: <YTYsL5i0B48k/V0Z@Red>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfPe4A5wkLGAmuzlYMzRdamij6d8UPn4nlc9TZZD7roox9yA20SQmNTRN9cmzE0US4z3HGIflLVfCJ7NLjEHYE1Z9cHTRlXpU1xGDT/qlEf+/I9iv5ljq
- R+BDC2m3dOyU7l1EsLjBP0JaBvS/G+TItpqfmIlw8ir3e97cAiL5en3g07R7nLHHcA4V0UtobPd8+EPuMiWGlakdkltPcTW+NDNT51N75dw6YQZERY6ht5Kg
- DPRKCfgNqFT3hujB5BQAQjUiT9mHaqlbVrGt8O6ZBmPmXqI9MfCzOHTTNW5vsemgFX2RvyIsXFLg9IiSKsNxIeJBZapp9Isn42+8lhOwOXlNiQclbN8ifZC4
- bpFeKzGbnroE6iCxvZBRT9dIuADg6x1CPySnwJsViot8CzNXaYcKQy4Ow1DO7bq89dj8SOepfcq+7JVRSzkiL3B9o20CpiR7dgoDbZfhBS8bFk9A/5M+oJJq
- zUquhXQtuuz/w70eeQ87VwynNDuYnX9CNy5+ScZyPAHg6Pm1/0fJwKwfLYE=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210830172820.2840433-1-jiancai@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/09/2021 16:56, LABBE Corentin wrote:
-> Le Mon, Sep 06, 2021 at 04:11:16PM +0200, Hans Verkuil a écrit :
->> On 06/09/2021 15:49, LABBE Corentin wrote:
->>> Le Mon, Sep 06, 2021 at 01:03:56PM +0200, Hans Verkuil a écrit :
->>>> Hi Corentin,
->>>>
->>>> I finally had the opportunity to test the staging zoran driver.
->>>>
->>>> I found several issues when running v4l2-compliance -s (I posted a patch
->>>> for that), but more seriously is the fact that trying to capture MJPG
->>>> at resolutions 384x288 or less just hangs my PC. It works OK with 768x576.
->>>>
->>>> I discovered this when running 'v4l2-compliance -s -a -f'.
->>>>
->>>> BTW, why isn't the initial format equal to MJPG 768x576?
->>>> I would expect that for these boards that should be the default format.
->>>>
->>>> Another issue is that the TODO should mention that for video output there
->>>> should be a second video device node. And that's really something that
->>>> has to be done before the zoran driver can be moved out of staging.
->>>>
->>>> It shouldn't be that hard to implement, I think.
->>>>
->>>> Right now it is impossible to run the compliance test for the output, since
->>>> it doesn't even see it as an output.
->>>>
->>>> Regards,
->>>>
->>>> 	Hans
->>>
->>> I work on having a second device for output, (it is the reason of "staging: media: zoran: move videodev alloc" which will help).
->>>
->>> But I still have the problem of non working output.
->>>
->>> Does output is really needed for going out of staging ?
->>> Probably nobody have it working for ages. The only way to had it was to use an old mplayer output which is broken since so many time.
->>> Note that this plugin will never work again.
->>>
->>> The only way to work on output is to use ffmpeg which just recently have suport for writing non-raw video to V4L.
->>
->> Then just remove it. The code for output remains in the git history so if someone wants to
->> resurrect that, then that's always possible.
->>
->> The point is that I don't want to have half-baked output support in mainline.
->>
->> But what exactly is the problem with getting output to work? Doesn't it just decode
->> MJPEG frames? (Sorry if you explained it before, it's so long ago that I looked at this
->> that I forgot the details)
->>
+On Mon, Aug 30, 2021 at 10:28:19AM -0700, Jian Cai wrote:
+> This fixes warnings with -Wimplicit-function-declaration, e.g.
 > 
-> The first problem is that zoran dont like comment COM/APP0 markers.
-> This imply a per buffer filtering but this is already handled in my next branch.
+> drivers/hwtracing/coresight/coresight-syscfg.c:455:15: error:
+> implicit declaration of function 'kzalloc' [-Werror,
+> -Wimplicit-function-declaration]
+>         csdev_item = kzalloc(sizeof(struct cscfg_registered_csdev),
+>                              GFP_KERNEL);
 > 
-> But the remaining problem is that any output is like http://kernel.montjoie.ovh/zoran_out.png.
+> Fixes: 85e2414c518a ("coresight: syscfg: Initial coresight system configuration")
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Jian Cai <jiancai@google.com>
+> ---
 > 
-> I hacked the driver to grab a working buffer when doing input and overrun output buffer later.
-> And the result is a working static output.
-> So the hw handling is good and the problem came from the data feeding/handling.
+> Changes v1 -> v2:
+>   Format the commit message and add Fixes and Reviewed-by tag.
 > 
-> I believe that something is wrong in what ffmpeg negociate/send.
+>  drivers/hwtracing/coresight/coresight-syscfg.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+
+I have applied this patch to my local tree.  I will push it to the coresight-next
+branch when 5.15-rc1 is published next week.
+
+Thanks,
+Mathieu
+
+> diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
+> index fc0760f55c53..43054568430f 100644
+> --- a/drivers/hwtracing/coresight/coresight-syscfg.c
+> +++ b/drivers/hwtracing/coresight/coresight-syscfg.c
+> @@ -5,6 +5,7 @@
+>   */
+>  
+>  #include <linux/platform_device.h>
+> +#include <linux/slab.h>
+>  
+>  #include "coresight-config.h"
+>  #include "coresight-etm-perf.h"
+> -- 
+> 2.33.0.259.gc128427fd7-goog
 > 
-> Regards
-> 
-
-Why not use v4l2-ctl to capture video and then replay it? You should be able to do this:
-
-v4l2-ctl --stream-mmap --stream-to-hdr cap.hdr --stream-count 60
-
-then this:
-
-v4l2-ctl --stream-out-mmap --stream-from-hdr cap.hdr
-
-The -hdr options write the frames prefixed with a header containing the length of the frame.
-That way you can capture variable-length frames and stream them out with the same payload
-length.
-
-Regards,
-
-	Hans
