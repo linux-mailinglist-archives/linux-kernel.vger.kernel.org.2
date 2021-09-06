@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8AB40200B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3250F40200C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245149AbhIFS4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 14:56:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36466 "EHLO
+        id S245717AbhIFS4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 14:56:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245176AbhIFSzc (ORCPT
+        with ESMTP id S245188AbhIFSzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 14:55:32 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77030C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:54:27 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id n27so15091688eja.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:54:27 -0700 (PDT)
+        Mon, 6 Sep 2021 14:55:33 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4A6C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:54:28 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a25so15101379ejv.6
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:54:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PTO2QXrKZY0AGmkUtVFYURWGtcSjnC2Lr7CY2NRAnG4=;
-        b=bLK3GLegpsgv72yW36JL8xtQkLIvtw6UT4qzox+xpApIuBYyHBymAsFAR+Ar3KYbKe
-         63Pv5ZIYiMuuPEQiLDsY6UaUtxPaPJKGiGC4bpOlwoeslVCclHD7Dwsw34va9RCdT18r
-         4PQO57h4LZtkKopXuydz7vEuBDm2Vtl/0ost3R3DReFfWw4lI5wnzTLmSFSFuetF8bCT
-         khBCkBJvEBd2qgHjGJgS4zYArySGlN+d4mYRk/PDkF9viucE7KDIyfCt+K9sPCts1+cx
-         xUSKQDsm2VBoGQlFsgJrCd8T+Gs60gbk1q+WpZ/YdP6cTenqi2TuFrvohziktkyVYRlx
-         /nYA==
+        bh=/E76js6TBfOzgnGGToEEuG6uYwpd6xQ5NNXwfApcz3s=;
+        b=K6S1TDzeJvUbK3rQ5yY1QKW9plPHElJXdeWDkD53sBTkHR5jNRK5suMYU05UWWM3a5
+         X9g1QVJFeUKBsASP1s6FBxShaKlYIBrtXqQEyWn22GOG1Cu5+cPThzhdK4hYz/n/TGec
+         IwI9t0avsL+tOBk+sFiPGAjYZ+LcmL81yrz1dxNAighVe67OLDfnayw8QM5jSRDxY9Ad
+         X6fGXHBL791tni0XUvCJ1Hr9AeWbokwF0Y6kW7r5OrMKYHdXBc1UOYxxs+fV5+kyk4G4
+         OlgJeoMBf55s0wAVwgr+vyQ02gUfqJ9CPo5iSlPlyApCbhLLxMHAiJ3GiEp654mpnAc0
+         4Riw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PTO2QXrKZY0AGmkUtVFYURWGtcSjnC2Lr7CY2NRAnG4=;
-        b=P5Wa5o2qb4HXGj5WdKS9Qao/kI5HCtwD8NS/pKFSLThIRr1wMScEoUgzLyi+KtFZ5M
-         4MHz79bm0eM8K+3tu+Rp1VeEtwt/+WNfnXZZkReOzSjbdzO1KMM3CMa5c+LYesl/XeJ6
-         D6fUMyl5lrQoFO2zdQTLWiNRs9SeosBDI30gcURYPAIkH4MZ9GyGnT7J3F2uAT8LvIHy
-         PdgCa5dgcxuzJggROAMM8p4ZTDvd2/7k+ON61omzu+OSHxz3p/VvS/tUcJqJcZYDDoLq
-         +zW79KAtb5fPQlapwAwGjPYaEpajKOYASEJLtH0mSKNxrKeDT97PMTTkQ1f4MpSzcKHK
-         6H6Q==
-X-Gm-Message-State: AOAM533Y2DinDnj5sNzpEi+Xk3hIZ/OtfHIow1UcTtnHaqNlPv2/7hGa
-        X34WOjcgfKOUtFxMBJmUGgs=
-X-Google-Smtp-Source: ABdhPJxfkiCxc0pjKRKN9BoNcZvv2i5RCauxeaVG1sVbKUeB2Vj6UJE8/K0rBX1a2ta9N9/yW0jOqA==
-X-Received: by 2002:a17:906:2cd6:: with SMTP id r22mr14813151ejr.398.1630954466125;
+        bh=/E76js6TBfOzgnGGToEEuG6uYwpd6xQ5NNXwfApcz3s=;
+        b=RNN4vLEw3e/v5Vm//NdJvghEI5Nvg0TeylgE63CqCp9O4xJr/6YcC35sgs2gcomqLE
+         v+wxDdoszvio4UJrlfKYghOt7UXUZirR9aL0XGorKnxrPEy5bCcngEsXkFZ+myesEtA5
+         g3A1fH3wTcGHjQlMUP80NU1TNroZbAsX8WSQtiO4JhKav9rbT3YJ/4dh708FzihwOsAY
+         jVKeaZSBYpprex17yALBpuXatsg3exRq+SthPeUDdWmfKS2bS9BZOztLwg2ajgKg4HPM
+         BPg4XfTLY2BGEY3Vzdu0f2R9d2bFYOfXZxQ/eJhNzG64//8Rn1gcoONGODvstYf1VTR9
+         gwNw==
+X-Gm-Message-State: AOAM5317OU71RkO9KEbVjZXUPntVBCQvgsfX4Rqj222FZ5D+BeM7VYgL
+        BOBSKGGH7H+5uMgTmuD95m4=
+X-Google-Smtp-Source: ABdhPJx6gVFN15DFikezZAza7b7M5Mr0ZliOAoIrAH8b0FDcgDbnoMYVdH5I8RM6Wod9m+DTMFFYlg==
+X-Received: by 2002:a17:906:c52:: with SMTP id t18mr14828029ejf.148.1630954466821;
         Mon, 06 Sep 2021 11:54:26 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::8fe1])
-        by smtp.gmail.com with ESMTPSA id kk2sm4329128ejc.114.2021.09.06.11.54.25
+        by smtp.gmail.com with ESMTPSA id kk2sm4329128ejc.114.2021.09.06.11.54.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 11:54:25 -0700 (PDT)
+        Mon, 06 Sep 2021 11:54:26 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH v2 32/40] staging: r8188eu: remove AntDivBeforeLinkHandler from hal_ops
-Date:   Mon,  6 Sep 2021 20:53:19 +0200
-Message-Id: <20210906185327.10326-33-straube.linux@gmail.com>
+Subject: [PATCH v2 33/40] staging: r8188eu: remove AntDivCompareHandler from hal_ops
+Date:   Mon,  6 Sep 2021 20:53:20 +0200
+Message-Id: <20210906185327.10326-34-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210906185327.10326-1-straube.linux@gmail.com>
 References: <20210906185327.10326-1-straube.linux@gmail.com>
@@ -66,81 +66,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove AntDivBeforeLinkHandler from hal_ops and remove its wrapper
-rtw_hal_antdiv_before_linked(). Call AntDivBeforeLink8188E() directly
+Remove AntDivCompareHandler from hal_ops and remove its wrapper
+rtw_hal_antdiv_rssi_compared(). Call AntDivCompare8188E() directly
 instead.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_mlme_ext.c     | 2 +-
- drivers/staging/r8188eu/hal/hal_intf.c          | 7 -------
+ drivers/staging/r8188eu/core/rtw_mlme.c         | 3 ++-
+ drivers/staging/r8188eu/hal/hal_intf.c          | 8 --------
  drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 1 -
- drivers/staging/r8188eu/include/hal_intf.h      | 2 --
- 4 files changed, 1 insertion(+), 11 deletions(-)
+ drivers/staging/r8188eu/include/hal_intf.h      | 8 --------
+ 4 files changed, 2 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_mlme_ext.c b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-index 2bdc1ed18149..ef04845d7a71 100644
---- a/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/r8188eu/core/rtw_mlme_ext.c
-@@ -6370,7 +6370,7 @@ void site_survey(struct adapter *padapter)
- 			/*  20100721:Interrupt scan operation here. */
- 			/*  For SW antenna diversity before link, it needs to switch to another antenna and scan again. */
- 			/*  It compares the scan result and select beter one to do connection. */
--			if (rtw_hal_antdiv_before_linked(padapter)) {
-+			if (AntDivBeforeLink8188E(padapter)) {
- 				pmlmeext->sitesurvey_res.bss_cnt = 0;
- 				pmlmeext->sitesurvey_res.channel_idx = -1;
- 				pmlmeext->chan_scan_time = SURVEY_TO / 2;
+diff --git a/drivers/staging/r8188eu/core/rtw_mlme.c b/drivers/staging/r8188eu/core/rtw_mlme.c
+index d330f58ab3ad..848b1d4bf398 100644
+--- a/drivers/staging/r8188eu/core/rtw_mlme.c
++++ b/drivers/staging/r8188eu/core/rtw_mlme.c
+@@ -14,6 +14,7 @@
+ #include "../include/wlan_bssdef.h"
+ #include "../include/rtw_ioctl_set.h"
+ #include "../include/usb_osintf.h"
++#include "../include/rtl8188e_dm.h"
+ 
+ extern unsigned char	MCS_rate_2R[16];
+ extern unsigned char	MCS_rate_1R[16];
+@@ -469,7 +470,7 @@ void update_network(struct wlan_bssid_ex *dst, struct wlan_bssid_ex *src,
+ 	u8 sq_final;
+ 	long rssi_final;
+ 
+-	rtw_hal_antdiv_rssi_compared(padapter, dst, src); /* this will update src.Rssi, need consider again */
++	AntDivCompare8188E(padapter, dst, src); /* this will update src.Rssi, need consider again */
+ 
+ 	/* The rule below is 1/5 for sample value, 4/5 for history value */
+ 	if (check_fwstate(&padapter->mlmepriv, _FW_LINKED) && is_same_network(&padapter->mlmepriv.cur_network.network, src)) {
 diff --git a/drivers/staging/r8188eu/hal/hal_intf.c b/drivers/staging/r8188eu/hal/hal_intf.c
-index 27adaea61f84..1bec02b1dede 100644
+index 1bec02b1dede..e723742dab51 100644
 --- a/drivers/staging/r8188eu/hal/hal_intf.c
 +++ b/drivers/staging/r8188eu/hal/hal_intf.c
-@@ -206,13 +206,6 @@ void rtw_hal_bcn_related_reg_setting(struct adapter *adapt)
+@@ -206,14 +206,6 @@ void rtw_hal_bcn_related_reg_setting(struct adapter *adapt)
  		adapt->HalFunc.SetBeaconRelatedRegistersHandler(adapt);
  }
  
--u8 rtw_hal_antdiv_before_linked(struct adapter *adapt)
+-void rtw_hal_antdiv_rssi_compared(struct adapter *adapt,
+-				  struct wlan_bssid_ex *dst,
+-				  struct wlan_bssid_ex *src)
 -{
--	if (adapt->HalFunc.AntDivBeforeLinkHandler)
--		return adapt->HalFunc.AntDivBeforeLinkHandler(adapt);
--	return false;
+-	if (adapt->HalFunc.AntDivCompareHandler)
+-		adapt->HalFunc.AntDivCompareHandler(adapt, dst, src);
 -}
 -
- void rtw_hal_antdiv_rssi_compared(struct adapter *adapt,
- 				  struct wlan_bssid_ex *dst,
- 				  struct wlan_bssid_ex *src)
+ int rtw_hal_iol_cmd(struct adapter  *adapter, struct xmit_frame *xmit_frame,
+ 		    u32 max_wating_ms, u32 bndy_cnt)
+ {
 diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-index 33d4e534f05e..62fd62ced0e5 100644
+index 62fd62ced0e5..84449d8111c0 100644
 --- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
 +++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
 @@ -1773,7 +1773,6 @@ void rtl8188e_set_hal_ops(struct hal_ops *pHalFunc)
  	pHalFunc->run_thread = &rtl8188e_start_thread;
  	pHalFunc->cancel_thread = &rtl8188e_stop_thread;
  
--	pHalFunc->AntDivBeforeLinkHandler = &AntDivBeforeLink8188E;
- 	pHalFunc->AntDivCompareHandler = &AntDivCompare8188E;
+-	pHalFunc->AntDivCompareHandler = &AntDivCompare8188E;
  	pHalFunc->read_bbreg = &rtl8188e_PHY_QueryBBReg;
  	pHalFunc->write_bbreg = &rtl8188e_PHY_SetBBReg;
+ 	pHalFunc->read_rfreg = &rtl8188e_PHY_QueryRFReg;
 diff --git a/drivers/staging/r8188eu/include/hal_intf.h b/drivers/staging/r8188eu/include/hal_intf.h
-index 4b937bd2c63c..929e861cc81b 100644
+index 929e861cc81b..2c6a3d1f0077 100644
 --- a/drivers/staging/r8188eu/include/hal_intf.h
 +++ b/drivers/staging/r8188eu/include/hal_intf.h
-@@ -156,7 +156,6 @@ struct hal_ops {
+@@ -156,10 +156,6 @@ struct hal_ops {
  	void	(*run_thread)(struct adapter *adapter);
  	void	(*cancel_thread)(struct adapter *adapter);
  
--	u8	(*AntDivBeforeLinkHandler)(struct adapter *adapter);
- 	void	(*AntDivCompareHandler)(struct adapter *adapter,
- 					struct wlan_bssid_ex *dst,
- 					struct wlan_bssid_ex *src);
-@@ -256,7 +255,6 @@ void	rtw_hal_write_rfreg(struct adapter *padapter,
+-	void	(*AntDivCompareHandler)(struct adapter *adapter,
+-					struct wlan_bssid_ex *dst,
+-					struct wlan_bssid_ex *src);
+-
+ 	s32	(*hal_xmit)(struct adapter *padapter,
+ 			    struct xmit_frame *pxmitframe);
+ 	s32 (*mgnt_xmit)(struct adapter *padapter,
+@@ -255,10 +251,6 @@ void	rtw_hal_write_rfreg(struct adapter *padapter,
  			    enum rf_radio_path eRFPath, u32 RegAddr,
  			    u32 BitMask, u32 Data);
  
--u8	rtw_hal_antdiv_before_linked(struct adapter *padapter);
- void	rtw_hal_antdiv_rssi_compared(struct adapter *padapter,
- 				     struct wlan_bssid_ex *dst,
- 				     struct wlan_bssid_ex *src);
+-void	rtw_hal_antdiv_rssi_compared(struct adapter *padapter,
+-				     struct wlan_bssid_ex *dst,
+-				     struct wlan_bssid_ex *src);
+-
+ int rtw_hal_iol_cmd(struct adapter  *adapter, struct xmit_frame *xmit_frame,
+ 		    u32 max_wating_ms, u32 bndy_cnt);
+ 
 -- 
 2.33.0
 
