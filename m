@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46029401827
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 10:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEF5401826
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 10:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241104AbhIFIl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 04:41:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbhIFIlZ (ORCPT
+        id S241074AbhIFIlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 04:41:13 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:34988 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230161AbhIFIlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 04:41:25 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF96C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 01:40:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xT814fvWWw70J/M6nc8pISxm2/K29BOxkkAtfEmol6A=; b=aWOWFIKoKbEgpB/11WlRhs7NYQ
-        FgHMpo+La1rd1IhbdPsSy/ThFnQ/LzZgp4+2DE4dokxiyX1VEEPq/LrmKsaZ371Kj8LKQCt1j9Fkb
-        tFN323ZT8xcO+nUSRCzetUgtXrwKhZ6AzYoGAdCtBbR5GiGQUFqF10FEKEjQh7wlD1XfXwxCPZfHH
-        u1wPRd4/b/LEMImjLvUaPxq8i9T1FFpiXan04sT/OA3eq4vUHNsT0ANcgfA9cD/Y7oNQWl6OF9BA4
-        HQg4qk+Honk7uK2k/Ob2CC0ljaEka/p30fhfFY9nTz/EPS3X9dKD889DVyJVGhL0iSEsVaYAsfRXT
-        23jHhYQQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNA8x-006mhR-5b; Mon, 06 Sep 2021 08:38:57 +0000
-Date:   Mon, 6 Sep 2021 09:38:19 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jaewon Kim <jaewon31.kim@samsung.com>
-Cc:     minchan@kernel.org, akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, ytk.lee@samsung.com,
-        jaewon31.kim@gmail.com
-Subject: Re: [PATCH] zram_drv: allow reclaim on bio_alloc
-Message-ID: <YTXTe3U8RrvSAynl@infradead.org>
-References: <CGME20210906052847epcas1p1f53f1ad04ad785d53f64eef150969c34@epcas1p1.samsung.com>
- <20210906052926.6007-1-jaewon31.kim@samsung.com>
+        Mon, 6 Sep 2021 04:41:11 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9F9F2220FB;
+        Mon,  6 Sep 2021 08:40:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630917606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xepuq2g1UzpFTzC0FV5yi43ZLpLb8aMqI7nbH2laTl8=;
+        b=enIQailCj0QG3GmZKHJQ/HdvNX+3DVhiYocJMKVxVVrW4wCw0yUhEluAEBZCYToEalVE9u
+        8y5tr6BKNQn1dolhvVjPE/kVMcZDquknnPmWSqwjlMM3wOmFTldLyiIDX79ZddBj0qlOiY
+        kCOvsRWtpkzxN4VIOIAraIWj0HMqnv0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630917606;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xepuq2g1UzpFTzC0FV5yi43ZLpLb8aMqI7nbH2laTl8=;
+        b=xarIDKwLIHfLikmp7p97wQPLMuG55G1Eqt1tNGzIk/RW6STFT3eabuFmtKE25RDjDEGAdc
+        MvsEUQ1VlhGFzqBg==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7A14113299;
+        Mon,  6 Sep 2021 08:40:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id RFIaHObTNWEycQAAGKfGzw
+        (envelope-from <hare@suse.de>); Mon, 06 Sep 2021 08:40:06 +0000
+Subject: Re: [PATCH v2] nvme: avoid race in shutdown namespace removal
+To:     Christoph Hellwig <hch@infradead.org>,
+        Daniel Wagner <dwagner@suse.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Keith Busch <kbusch@kernel.org>
+References: <20210902092002.67614-1-dwagner@suse.de>
+ <YTXKwOvCtJOHnhpu@infradead.org>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <d63a15af-63a7-3fa0-1559-4518dee3a99a@suse.de>
+Date:   Mon, 6 Sep 2021 10:40:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210906052926.6007-1-jaewon31.kim@samsung.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <YTXKwOvCtJOHnhpu@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 02:29:26PM +0900, Jaewon Kim wrote:
-> The read_from_bdev_async is not called on atomic context. So GFP_NOIO is
-> available rather than GFP_ATOMIC. If there were reclaimable pages with
-> GFP_NOIO, we can avoid allocation failure and page fault failure.
+On 9/6/21 10:01 AM, Christoph Hellwig wrote:
+> On Thu, Sep 02, 2021 at 11:20:02AM +0200, Daniel Wagner wrote:
+>> When we remove the siblings entry, we update ns->head->list, hence we
+>> can't separate the removal and test for being empty. They have to be
+>> in the same critical section to avoid a race.
+>>
+>> To avoid breaking the refcounting imbalance again, add a list empty
+>> check to nvme_find_ns_head.
 > 
-> Reported-by: Yong-Taek Lee <ytk.lee@samsung.com>
-> Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
-> ---
->  drivers/block/zram/zram_drv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Hannes, can you look over this and run your tests on it?
 > 
-> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-> index fcaf2750f68f..53be528a39a2 100644
-> --- a/drivers/block/zram/zram_drv.c
-> +++ b/drivers/block/zram/zram_drv.c
-> @@ -587,7 +587,7 @@ static int read_from_bdev_async(struct zram *zram, struct bio_vec *bvec,
->  {
->  	struct bio *bio;
->  
-> -	bio = bio_alloc(GFP_ATOMIC, 1);
-> +	bio = bio_alloc(GFP_NOIO|__GFP_HIGHMEM, 1);
+I'm at it.
 
-Passing __GFP_HIGHMEM to bio_alloc does not make any sense whatsoever.
+Cheers,
+
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
