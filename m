@@ -2,147 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47F2940215D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 00:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A676B402161
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 01:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbhIFW6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 18:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33012 "EHLO
+        id S231719AbhIFXGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 19:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbhIFW6d (ORCPT
+        with ESMTP id S231645AbhIFXGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 18:58:33 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35061C0613C1
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 15:57:28 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id k5-20020a05600c1c8500b002f76c42214bso424650wms.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 15:57:28 -0700 (PDT)
+        Mon, 6 Sep 2021 19:06:35 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA89C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 16:05:30 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id j16so6621842pfc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 16:05:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=boZeJdNNFnOsVbWVnCJCTbH8B7u4Rp1yojauy9zSZ2Y=;
-        b=mFcoi+u7nGopcLVoIZvQQfYSbDVIER36TYGAhEmouUIcf3HTfcr95USrSEMuyRMG0u
-         XWsDvX6iUNDG/JioA9itdOY4h4Cibbvoaohj/R8d99xJS1ftHunZie30pQs7wrzI6WFx
-         Atpxwsb67/5Cc5UVJi13Zw29JDRMoIpUBiJqnmg4HDHlgSLCURB2egA04anod9NrYZS2
-         EDI5MAhQ5YBxjiOMMsy/JgHzZZqdPYiZkrG6U+IJKSwBw0JGQuf5xPSs1T3j8RczIjAy
-         /HUWLZzrZwcxltnH/zucmhR+a7rE9qxTSdFvIePj+BPGzw8kopl+lKcKDXClCgamd99D
-         MYtw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RsnUjT2+lUd00F759XigVRFI1hNrAY0fPM7J0dBz5Ak=;
+        b=kf8ERraXpY7/9DjZhN2LY8R3OBm2l4f4d41PW8s3L2lEqxeGjqwzu2Qjt/stfq8cgL
+         56qKqdFX6vfgJ5Y4h0AKSrTYyQOtLs0m11njbI/0hI48xw+JkeVRU2/WlsWtDtqwG8fQ
+         C+VFDvrF9zOmVJWV74mKVg4KXCMnEPXO3oESxojPsZX+ULrmKhpQJEG3QwrfCC7Ba31H
+         GuRm9DXurfxNFTW60Q0p8XIbzE5LK21LhdCPQU2NJhy6XOXx8I+5L82rlNSmmdT21l1c
+         IOYq8ggVaZTOJBj7D140CRwfzMNGYOsNyKs5UMS7aAmozHfOiQia19JeHJ/KrOwFbe+L
+         c69w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=boZeJdNNFnOsVbWVnCJCTbH8B7u4Rp1yojauy9zSZ2Y=;
-        b=O7AmyCHxXyAc9Fs0GOilFusAmpknomBBYeelaFEgKXx47gXOpS79sY0/B8AlEZSmDF
-         oybls/Npa6KPdlq2QoQ0vNH9VxEc+rWi9ETgJZlkDK4+vStp3IPHBIyOStDMS2ZS2IZi
-         N9M/OArZ8Sh2F2ofa1nvig63LC9dPC5Z/qMex4tvE9S35awNO/O/V4B6G8l9Zo5FUIvF
-         kTBZTNy4yIJdC5svmLiwA82S5Y4OtzWNyD8Dsi97k9/nsexJ3sNAzzD9ebrEDhjzlecE
-         GTQsRoMjzrGNJDvUd48FXOV0dFnFRY4pAhXjAkYpdBxWZ/3VrGnSib4wlziK1Ebin+Bl
-         asMQ==
-X-Gm-Message-State: AOAM533sjOsBxDZ3lILQK57lq/sbVSqMUmyymchpGInYBGU14AldMQ5Y
-        zNAXgq2xImsuGpI1dO1QKVdSNw==
-X-Google-Smtp-Source: ABdhPJyKQjRtAsrF/B7O4VPB+y52YYdm4z2NiPz3wWkXPM1qNkixHYmFrmj2s/omQobTHvACKHspmw==
-X-Received: by 2002:a1c:cc03:: with SMTP id h3mr1076386wmb.73.1630969046695;
-        Mon, 06 Sep 2021 15:57:26 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id i5sm9012434wrc.86.2021.09.06.15.57.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 15:57:26 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 23:57:24 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Lukas Prediger <lumip@lumip.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org
-Subject: Re: [PATCH v2] drivers/cdrom: improved ioctl for media change
- detection
-Message-ID: <YTac1M6+pdwZ532J@equinox>
-References: <20210829143735.512146-1-lumip@lumip.de>
- <65bf6d1a-f65d-910c-60c7-0a4911a52e9a@kernel.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RsnUjT2+lUd00F759XigVRFI1hNrAY0fPM7J0dBz5Ak=;
+        b=AZAd5VSey5+k5j0Qyd5mKJhyZ+MfkqnWdVg1N10LZbx9tP7WbPEWdmimyqQRlFZdJc
+         WQ9W7j0s/gQ9UA8WctPRCNE3ZjzNpXdxRTBQXMWrTJnw5Q5SyDqnEcNyf/i1/olC1xCw
+         jNki/mxpeqFoDEcEouAahpck0NNsChZ4zrk0B83JxVhKLhdC95OXkbFiI28PDRwJ1aZF
+         pvtJt4UP/o3/bEzFbAWrRs5AfWkb8hml5LswsdWWfuOy4SW7np6NHYhT5BOwlLj+xafA
+         Xec5P/tRGhoQuaxEsruGHM/XDFR+9QbWX0eY+tu2xWnseEcwBRcjKHfHxPRAFbg7Qx13
+         HcPA==
+X-Gm-Message-State: AOAM533NwTjEoPMSIK5b9zBIGy85HhWkwURK8XwkZok6lgYsDhYuBxmL
+        oj86RLdcUSkFc0V5WtqcyKx1dZU//I4db3SnDhTxfA==
+X-Google-Smtp-Source: ABdhPJx5QMGl5O2ZTDIzcGZe6FnwUGR+4uvnqa4pSiPXomY+JNiWgpEPk42WblCceXMK5OcHIFzFWnYGwEYWTLFo/a4=
+X-Received: by 2002:a63:ef58:: with SMTP id c24mr14002991pgk.299.1630969529846;
+ Mon, 06 Sep 2021 16:05:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <65bf6d1a-f65d-910c-60c7-0a4911a52e9a@kernel.dk>
+References: <20210906010106.898-1-phil@philpotter.co.uk> <20210906010106.898-3-phil@philpotter.co.uk>
+ <20210906082535.GK1957@kadam>
+In-Reply-To: <20210906082535.GK1957@kadam>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Tue, 7 Sep 2021 00:05:18 +0100
+Message-ID: <CAA=Fs0mxo5Ty9RfrWBuq53ycaay5xuw9_wk=Z11J18gpeGnW7g@mail.gmail.com>
+Subject: Re: [PATCH 02/14] staging: r8188eu: remove hal_reset_security_engine
+ from struct hal_ops
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Michael Straube <straube.linux@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 02:11:31PM -0600, Jens Axboe wrote:
-> On 8/29/21 8:37 AM, Lukas Prediger wrote:
-> > The current implementation of the CDROM_MEDIA_CHANGED ioctl relies on
-> > global state, meaning that only one process can detect a disc change
-> > while the ioctl call will return 0 for other calling processes afterwards
-> > (see bug 213267 ).
-> > 
-> > This introduces a new cdrom ioctl, CDROM_TIMED_MEDIA_CHANGE, that
-> > works by maintaining a timestamp of the last detected disc change instead
-> > of a boolean flag: Processes calling this ioctl command can provide
-> > a timestamp of the last disc change known to them and receive
-> > an indication whether the disc was changed since then and the updated
-> > timestamp.
-> > 
-> > I considered fixing the buggy behavior in the original
-> > CDROM_MEDIA_CHANGED ioctl but that would require maintaining state
-> > for each calling process in the kernel, which seems like a worse
-> > solution than introducing this new ioctl.
-> 
-> This looks pretty good to me now. Adding Phillip to the CC, he's the new
-> CDROM maintainer. Leaving the rest of the message below intact because
-> of that.
-> 
+On Mon, 6 Sept 2021 at 09:26, Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> On Mon, Sep 06, 2021 at 02:00:54AM +0100, Phillip Potter wrote:
+> > Remove hal_reset_security_engine function pointer from struct hal_ops,
+> > as it is unused.
 > >
-...
+> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> > ---
+> >  drivers/staging/r8188eu/include/hal_intf.h | 1 -
+> >  1 file changed, 1 deletion(-)
 > >
-
-Dear Lukas,
-
-Thank you for the patch, much appreciated and looks great. One very
-minor thing though has jumped out at me after running checkpatch though:
-
-> > --- a/include/uapi/linux/cdrom.h
-> > +++ b/include/uapi/linux/cdrom.h
-> > @@ -147,6 +147,8 @@
-> >  #define CDROM_NEXT_WRITABLE  0x5394  /* get next writable block */
-> >  #define CDROM_LAST_WRITTEN   0x5395  /* get last block written on disc */
+> > diff --git a/drivers/staging/r8188eu/include/hal_intf.h b/drivers/staging/r8188eu/include/hal_intf.h
+> > index 5612274dea4d..3cbe6c277677 100644
+> > --- a/drivers/staging/r8188eu/include/hal_intf.h
+> > +++ b/drivers/staging/r8188eu/include/hal_intf.h
+> > @@ -250,7 +250,6 @@ struct hal_ops {
+> >                                 u32 bndy_cnt);
 > >
-> > +#define CDROM_TIMED_MEDIA_CHANGE   0x5396  /* get the timestamp of the last media change */
-> > +
-> >  /*******************************************************
-> >   * CDROM IOCTL structures
-> >   *******************************************************/
-> > @@ -295,6 +297,19 @@ struct cdrom_generic_command
-> >       };
+> >       void (*hal_notch_filter)(struct adapter *adapter, bool enable);
+> > -     void (*hal_reset_security_engine)(struct adapter *adapter);
+> >       c2h_id_filter c2h_id_filter_ccx;
 > >  };
-> >
-> > +/* This struct is used by CDROM_TIMED_MEDIA_CHANGE */
-> > +struct cdrom_timed_media_change_info
-> > +{
+>
+> I love these patchsets which are removing the HAL layer, but it would
+> be better if you folded patches 1 and 2 together because it would be
+> easier to review.  That way we can just say "Well, if this patch isn't
+> correct it will cause a compile error so let's assume it's correct
+> unless the kbuild-bot complains."
+>
+> There are other pairs in this patchset which are the same way where they
+> would be easier to review if they were merged. 3 & 4.  5 & 6.  Etc.
+>
+> The patcheset is fine but for future reference please fold them together.
+>
+> Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+>
+> regards,
+> dan carpenter
+>
 
-This opening brace should be on the same line as the struct definition
-as per current style rules.
+Dear Dan,
 
-I also got a checkpatch warning about ENOSYS being used as an error
-value, but I can see this usage is standard in the driver and not a
-problem so no issue with that.
-
-I will review and test properly after work tomorrow (being new to the
-role I'd like to make sure I'm taking the proper time), but I have no
-doubt it will work fine. Assuming it does I will be happy to accept the
-patch with the above brace change. Thanks again.
-
-> > +	__s64	last_media_change;	/* Timestamp of the last detected media
-> > +					 * change in ms. May be set by caller, updated
-> > +					 * upon successful return of ioctl.
-> > +					 */
-> > +	__u64	has_changed;		/* Set to 1 by ioctl if last detected media
-> > +					 * change was more recent than
-> > +					 * last_media_change set by caller.
-> > +					 */
-> > +};
-> > +
-> >  /*
-> >   * A CD-ROM physical sector size is 2048, 2052, 2056, 2324, 2332, 2336, 
-> >   * 2340, or 2352 bytes long.  
-> > 
+Thank you for the review, much appreciated. I will endeavour to do
+this in future.
 
 Regards,
 Phil
