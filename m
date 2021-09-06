@@ -2,194 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E76F5401C0E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 15:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292B6401C18
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 15:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243487AbhIFNBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 09:01:45 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:41221 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243806AbhIFNAX (ORCPT
+        id S242514AbhIFND5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 09:03:57 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:35144 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242417AbhIFNDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 09:00:23 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R741e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xuyu@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UnTmxSQ_1630933157;
-Received: from xuyu-mbp15.local(mailfrom:xuyu@linux.alibaba.com fp:SMTPD_---0UnTmxSQ_1630933157)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 06 Sep 2021 20:59:17 +0800
-Subject: Re: kernel BUG in truncate_inode_page
-To:     Hao Sun <sunhao.th@gmail.com>, akpm@linux-foundation.org,
-        linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-References: <CACkBjsbtF_peC7N_4mRfHML_BeiPe+O9DahTfr84puSG_J9rcQ@mail.gmail.com>
-From:   Yu Xu <xuyu@linux.alibaba.com>
-Message-ID: <23adb5bc-13f6-7550-2ec1-b19b713639d6@linux.alibaba.com>
-Date:   Mon, 6 Sep 2021 20:59:17 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <CACkBjsbtF_peC7N_4mRfHML_BeiPe+O9DahTfr84puSG_J9rcQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Mon, 6 Sep 2021 09:03:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1630933368;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=B09f0cMqWuGZ6asm4svnxt2+uit2qVuaeHqBUujlajU=;
+        b=d6BRbZnFBQrFajQKz8YBeCVvB/PUt5E+zKnuSbLMazigqlkOloI7MxSrtbh3H+27za44id
+        ZAKpGGc9ebFrhfC/nSFp/gO7AbeA0qC4KG5WmJrZ7qyPUHPxbARxWlXaKKWyj5+jz4az3e
+        8TLEMn+i0WxOfxXFI+GmRQOGO1/lVNY=
+Received: from EUR04-DB3-obe.outbound.protection.outlook.com
+ (mail-db3eur04lp2054.outbound.protection.outlook.com [104.47.12.54]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-16-QclwmbKDNEao5rnoizbFhA-1; Mon, 06 Sep 2021 15:02:47 +0200
+X-MC-Unique: QclwmbKDNEao5rnoizbFhA-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TxKfu8CtRzx8gxb2fnd0xlSWlWQt2OOjXyxM7xB0YcUMzYd7yiy7Mmn8iOoVHl/nyVM6d1+ComJhMsu0UpPR/UKbRbgeta7NHUanBn0b34PGZf02YZRdfpjq5EDceY51brrtYsAdllTQ+lpuJYYRYhWo1pQw5spvHn3AHO+ZGn5W3xMhr+w49+uwVoaMPPLcRCGHAF5qMFj7z5Vk5ACz6M22sj8JofJLqzItSNaYQ3ksQgGTuzrhXK1wCB6mb4TkZWdxvYCGfkl57z6TEEi7x6CMqludeVp12r3fb02U9CgZDA8xAk3yvRPn6qHQmiy6b/Lo2oCYrnwbX9wrrHzIug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=uoXAR6IwBEQNyiDhhIZwZke07W6ttq94npf+r2Mw3+U=;
+ b=KPvyMgt0guiD4SagV4hmL7bQxVSj0EfY2PEVV/mBVDzR8Y1GbUnD4Jj2e2Kf13P+/QvlMS2scyzIv9RRYhLMKU/4RMenInaVs/rqG2kotDyM4xuj0eaXT8rrdXfKucXxrszXHE6gCD61OnENPxxilqrDGQZNH/7e0xriyzRx+aSAw6m+ncVOd1N3RfiUFAYz7P1NOrsz00qV7U1nDBhDKw7thEz/24lzZFe5VyvaEPQlkkLEFulmfyTh8T2524rLrzIXArE1XxpDpLDmpe6mkRsgqfp7S7hK5KJ8xWiGlDhx2BepA5+74rDxuWEW+ssOp6WOeMzoCvDv0dBKKe48RQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=suse.com;
+Received: from DB7PR04MB5050.eurprd04.prod.outlook.com (2603:10a6:10:22::23)
+ by DB7PR04MB5964.eurprd04.prod.outlook.com (2603:10a6:10:83::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Mon, 6 Sep
+ 2021 13:02:45 +0000
+Received: from DB7PR04MB5050.eurprd04.prod.outlook.com
+ ([fe80::4cc0:191d:5c04:8ede]) by DB7PR04MB5050.eurprd04.prod.outlook.com
+ ([fe80::4cc0:191d:5c04:8ede%7]) with mapi id 15.20.4478.025; Mon, 6 Sep 2021
+ 13:02:45 +0000
+Subject: Re: [PATCH] USB: cdc-acm: fix minor-number release
+To:     Johan Hovold <johan@kernel.org>, Oliver Neukum <oneukum@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Jaejoong Kim <climbbb.kim@gmail.com>
+References: <20210906124339.22264-1-johan@kernel.org>
+From:   Oliver Neukum <oneukum@suse.com>
+Message-ID: <b0af8328-52c4-e5f8-5e11-36f95f32e735@suse.com>
+Date:   Mon, 6 Sep 2021 15:02:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
+In-Reply-To: <20210906124339.22264-1-johan@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR3P189CA0005.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:102:52::10) To DB7PR04MB5050.eurprd04.prod.outlook.com
+ (2603:10a6:10:22::23)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (2001:a61:3b08:ea01:c97d:6ea4:dece:ad44) by PR3P189CA0005.EURP189.PROD.OUTLOOK.COM (2603:10a6:102:52::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend Transport; Mon, 6 Sep 2021 13:02:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 33e49398-db9b-4c75-bbcc-08d971369ebd
+X-MS-TrafficTypeDiagnostic: DB7PR04MB5964:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB7PR04MB596409E59E5D425597009094C7D29@DB7PR04MB5964.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0Ia8ZZB93Y9rTx0tym+FO/8rzdtgibXjCM7dVQPzVD1UwiGzL1j27QGo3LdUQKXI/rrUrdGpUyooAzi+KoAC5plG0616Y8cYyTFvmGx3ziuVDjEYRvp1YaDqfC5q+T/GF0TD/1OsxpX4OmLNvRMgOCkHxZ7+PLpoWiDAWUqnUx83PCRvnE7pwoSJ8AWfOxkvarSXRWMXwi6xYojpDcaiqdOT6SOz5Y7rGDGV8/nYK7UkH0yeZaLXBWXaLp/BLMj7NDvrsy+Ig+FvYa+JTMirdfSNLEdtNU7Ds2ppOdsgis3+0RD20Q0mCJ15RpFnp3v+N5r3bS2h37Qv9DzYButQZMxTzEFP0/GwdyemJQsXH9AQLv0w2SoU8asv8ZT6GcR5fH6xRrG1JtV5P1bG/PM9J3BCIrblhPgOBmFrjNQtHxO1Mrafk/in0pCQAJhJm+vsCD/k/kwCE1/vIbhNis9D1hNJlB5AI4pkgMaMy0KNqMHqxplXta8dbfiFxObr+Hc/6l1v5HH3G1p01G7wm45KIZghx4e/ezZ9DCe2O+vidkNf9q/e5kXzFzQ5ThlH7+jCFSWp5Gu81azjOmyb/5M/7FoQwer5vE8fL0MZMfYBre0UB28SpMnlIqz9UJqNGx7PrRbeswZM9hGqtv6y9/w6DngUcvqK4bcJ0/KGeKttQunK3adraSkagsy6dZbiNdtG7Z81jXIGH9j6ZzWP3Yf7c/Hv/4gIk0Cxs9L8CMc+TC4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB5050.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(396003)(39860400002)(346002)(376002)(186003)(31696002)(5660300002)(66556008)(66476007)(38100700002)(316002)(8936002)(86362001)(4744005)(4326008)(83380400001)(6512007)(8676002)(478600001)(31686004)(53546011)(6506007)(66946007)(110136005)(6486002)(36756003)(2906002)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?R1tZw2tdFMo/LVpMI4H0PGYz1nK5UiebV4KZBsKRPXyUL1QLYU+CDIAahrG0?=
+ =?us-ascii?Q?pqvJ92gvGGkTxRFJXygmowMOeg1Q9Cp0dgD19Wq6QKljLaNRmj0jmPwgOL/D?=
+ =?us-ascii?Q?ggCVY9g6DLOfUxef5kWT/rUeHrDAcYaMcdOflTBSgcRhUTgm/tlh65249iVl?=
+ =?us-ascii?Q?CCve7CBZ4Txt0S8YLWYKYbjL7uzQvissBV1jvX678mIbpnrKTZZfiyKIogo5?=
+ =?us-ascii?Q?i0zSX/Whq93kvFYSSQrZXha74r4Tl4IerpG91VnIJJCvOmSBlVSpkM2Chz2H?=
+ =?us-ascii?Q?XPH0fYO3oQrm1J/7DnWaJ2lpQXu2Dt7e27nbsUsLuLhBc9RoEw46uGtVNvhg?=
+ =?us-ascii?Q?qsMzg46bTAL7MfG2cTWZapEtxbARp0RtCBInktLrssSr7AnRBAfxJkEWnQNa?=
+ =?us-ascii?Q?Ci5c5QyTDi3D0FDqbWP2fvbTGIsD7QBjWweM7mw6n1Bj+yHU2vw7J0xEMjqH?=
+ =?us-ascii?Q?QNbzgb4tmSOJWynR133rO+F7u1rdPfW01Kg5+czdy7CoIKb8c7F81i2ncH+z?=
+ =?us-ascii?Q?t0rjj8KJ/vUBOVTOLHzvtGNVIk8vjd0Fibr9kvJBKJQFvCxZ6jXnEp4L2c+l?=
+ =?us-ascii?Q?1UBRmQkts/fC5DaXAYFhHpzTcRgaOZ87qJYttBlYmlIJNy5NzACEz0SUQC6f?=
+ =?us-ascii?Q?YzgaVf2iIJGAny04uz4hPKJsp4IpOxXWg+M+qunBYhSTjcbrmqf5HTBRHc7e?=
+ =?us-ascii?Q?A7syLb7puPopq/oDFnu82rK/rs22Uze2lxrVUPo2y+xa730x1Dz9DqXbwGs2?=
+ =?us-ascii?Q?jsswI38N7r8YB8b9JTjz9eIafKFcODDTaKlS2WRVSuIYBZUm5IAK9qvRjDJL?=
+ =?us-ascii?Q?5MzK0g2xxtzM/MRJziaTexE+n9eEIiu+mHbKRpoDlncVpgAI+lDkcmr5ddrD?=
+ =?us-ascii?Q?TTz3WQkxo5stSJkW/ERgOeSisU6Q7bew3LcoUbm9fIczmV6vtr6cfuH4P1i/?=
+ =?us-ascii?Q?UELpe3ZwUaMPnBV/h2wcoMHYauuC5FU0PTKIVPWzOk7XDUrpZrvRM56wQ9Dz?=
+ =?us-ascii?Q?+6RVf06KCbeKpVAc97Mqn3KI/3JjGbVv999ziDk/f7FwYuTw+G+d2v7NIgmM?=
+ =?us-ascii?Q?xtIMjDbBA1CaMRwzT5KFIhudcER/ll+exFLHmX0pZOFaSQC/YdF1LWzHuNgG?=
+ =?us-ascii?Q?p8izWQNMQoel5YDJkTIYlR9bCrHDKqfDGEDu/vs4USXIQaJWViCOr9HTzL2d?=
+ =?us-ascii?Q?qny5XfN2QfinmTxAwDpP10U/KnfBvcdX/Bhg0zZR7rCV42nK8MJ/gn46kmCa?=
+ =?us-ascii?Q?+NY8eKZ6jf4dS8ewbXXJHBowwwwLZZ4HhOJYmiMe5+94nGVNA95UNT1AYEfu?=
+ =?us-ascii?Q?v4Z4HfvDt2Yj4LYB+H/TWcUoIGCoOgjWteB/wIIvZDYdUBUivBvlIypIVFDj?=
+ =?us-ascii?Q?vJYi/4Wx0xUMCp+AiVYpOIdrKBp5?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 33e49398-db9b-4c75-bbcc-08d971369ebd
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB5050.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2021 13:02:45.6392
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nahRkVBX/rl+oBdIYS7i56/moZFh0RRGclOdohXZPoSM0vRbJWDbishdrNMPJCEYvoJMrlTWCsaCTuw0tdjWdQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5964
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, we also reproduce such bug recently, and have sent out our patch[1].
 
-In addition, another issue related with xfs and file THP is also
-fixed[2].
+On 06.09.21 14:43, Johan Hovold wrote:
+> @@ -1323,8 +1324,10 @@ static int acm_probe(struct usb_interface *intf,
+>  	usb_get_intf(acm->control); /* undone in destruct() */
+> =20
+>  	minor =3D acm_alloc_minor(acm);
+> -	if (minor < 0)
+> +	if (minor < 0) {
+> +		acm->minor =3D ACM_TTY_MINORS;
+>  		goto err_put_port;
 
-Looking forward to reviews.
 
-[1]https://patchwork.kernel.org/project/linux-mm/patch/20210906121200.57905-2-rongwei.wang@linux.alibaba.com/
-[2]https://patchwork.kernel.org/project/linux-mm/patch/20210906121200.57905-3-rongwei.wang@linux.alibaba.com/
+Hi,
 
+Congratulations for catching that one.
 
-On 9/6/21 2:15 PM, Hao Sun wrote:
-> Hello,
-> 
-> When using Healer to fuzz the latest Linux kernel, the following crash
-> was triggered.
-> 
-> HEAD commit: 9e9fb7655ed58 Merge tag 'net-next-5.15'
-> git tree: upstream
-> console output:
-> https://drive.google.com/file/d/1_eEgvafiNcZHqHlmjIy4d420gQTvkf3r/view?usp=sharing
-> kernel config: https://drive.google.com/file/d/1zgxbwaYkrM26KEmJ-5sUZX57gfXtRrwA/view?usp=sharing
-> C reproducer: https://drive.google.com/file/d/1ZLAhA14JN9prY7Fei_WWnuhNXCg8AM8C/view?usp=sharing
-> Syzlang reproducer:
-> https://drive.google.com/file/d/1TejG8gPgiAkJsKBlwFdHIADKXDK-H6j8/view?usp=sharing
-> 
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: Hao Sun <sunhao.th@gmail.com>
-> 
-> page:ffffea0004730040 refcount:514 mapcount:1 mapping:ffff88800d7d13e8
-> index:0x1 pfn:0x11cc01
-> head:ffffea0004730000 order:9 compound_mapcount:1 compound_pincount:0
-> memcg:ffff888009ba2000
-> aops:def_blk_aops ino:fa00000
-> flags: 0x57ff0000001001f(locked|referenced|uptodate|dirty|lru|head|node=1|zone=2|lastcpupid=0x7ff)
-> raw: 057ff00000000000 ffffea0004730001 0000000000000903 dead000000000200
-> raw: 0000000000000100 0000000000000000 0000000000000000 0000000000000000
-> head: 057ff0000001001f ffffea00044edec8 ffffea00044c2708 ffff88800d7d13e8
-> head: 0000000000000000 0000000000000000 0000020200000000 ffff888009ba2000
-> page dumped because: VM_BUG_ON_PAGE(PageTail(page))
-> page_owner tracks the page as allocated
-> page last allocated via order 9, migratetype Movable, gfp_mask
-> 0x13c24ca(GFP_TRANSHUGE|__GFP_THISNODE), pid 1665, ts 469126509176,
-> free_ts 440578020808
->   prep_new_page+0x16/0x50 mm/page_alloc.c:2436
->   get_page_from_freelist+0x64d/0x29a0 mm/page_alloc.c:4168
->   __alloc_pages+0xde/0x2a0 mm/page_alloc.c:5390
->   __alloc_pages_node include/linux/gfp.h:570 [inline]
->   khugepaged_alloc_page+0x4e/0xc0 mm/khugepaged.c:881
->   collapse_file+0x124/0x2110 mm/khugepaged.c:1655
->   khugepaged_scan_file mm/khugepaged.c:2051 [inline]
->   khugepaged_scan_mm_slot mm/khugepaged.c:2146 [inline]
->   khugepaged_do_scan mm/khugepaged.c:2230 [inline]
->   khugepaged+0x1f8a/0x3540 mm/khugepaged.c:2275
->   kthread+0x178/0x1b0 kernel/kthread.c:319
->   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> page last free stack trace:
->   reset_page_owner include/linux/page_owner.h:24 [inline]
->   free_pages_prepare mm/page_alloc.c:1346 [inline]
->   free_pcp_prepare+0x1d7/0x480 mm/page_alloc.c:1397
->   free_unref_page_prepare mm/page_alloc.c:3332 [inline]
->   free_unref_page+0x19/0x1c0 mm/page_alloc.c:3411
->   release_pages+0x212/0x1130 mm/swap.c:948
->   tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
->   tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
->   tlb_flush_mmu+0x60/0x1e0 mm/mmu_gather.c:249
->   zap_pte_range mm/memory.c:1432 [inline]
->   zap_pmd_range mm/memory.c:1481 [inline]
->   zap_pud_range mm/memory.c:1510 [inline]
->   zap_p4d_range mm/memory.c:1531 [inline]
->   unmap_page_range+0xea6/0x15c0 mm/memory.c:1552
->   unmap_single_vma+0xae/0x140 mm/memory.c:1597
->   unmap_vmas+0xed/0x190 mm/memory.c:1629
->   exit_mmap+0xc9/0x2a0 mm/mmap.c:3195
->   __mmput kernel/fork.c:1103 [inline]
->   mmput+0x8a/0x1a0 kernel/fork.c:1124
->   exit_mm kernel/exit.c:501 [inline]
->   do_exit+0x462/0x11c0 kernel/exit.c:812
->   do_group_exit+0x57/0xe0 kernel/exit.c:922
->   get_signal+0x1d0/0x10b0 kernel/signal.c:2823
->   arch_do_signal_or_restart+0xa9/0x860 arch/x86/kernel/signal.c:865
->   handle_signal_work kernel/entry/common.c:148 [inline]
->   exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
->   exit_to_user_mode_prepare+0xf2/0x280 kernel/entry/common.c:209
->   __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
->   syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
->   do_syscall_64+0x40/0xb0 arch/x86/entry/common.c:86
-> ------------[ cut here ]------------
-> kernel BUG at mm/truncate.c:213!
-> invalid opcode: 0000 [#1] PREEMPT SMP
-> CPU: 1 PID: 27281 Comm: syz-executor Not tainted 5.14.0+ #12
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> RIP: 0010:truncate_inode_page+0x5a/0x70 mm/truncate.c:213
-> Code: ff ff 48 89 ef e8 56 9e fd ff e8 71 2d f0 ff 89 d8 5b 5d 41 5c
-> c3 e8 65 2d f0 ff 48 c7 c6 20 19 2d 85 48 89 ef e8 f6 f7 03 00 <0f> 0b
-> bb fb ff ff ff eb d7 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00
-> RSP: 0018:ffffc9000361fc88 EFLAGS: 00010246
-> RAX: 0000000000040000 RBX: 0000000000000001 RCX: ffffc90001356000
-> RDX: 0000000000040000 RSI: ffffffff8147479a RDI: 00000000ffffffff
-> RBP: ffffea0004730040 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000001 R11: 637379735f6f6420 R12: ffff88800d7d13e8
-> R13: ffffc9000361fd48 R14: 0000000000000001 R15: ffffc9000361fcd0
-> FS:  00007f3c4f6a0700(0000) GS:ffff88813dc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000204001ff CR3: 000000010f099000 CR4: 0000000000750ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> Call Trace:
->   truncate_inode_pages_range+0x3b9/0xc30 mm/truncate.c:397
->   truncate_bdev_range+0x87/0xd0 fs/block_dev.c:125
->   blk_ioctl_zeroout block/ioctl.c:173 [inline]
->   blkdev_common_ioctl+0x2c3/0xad0 block/ioctl.c:472
->   blkdev_ioctl+0x2c2/0x370 block/ioctl.c:583
->   block_ioctl+0x55/0x70 fs/block_dev.c:1421
->   vfs_ioctl fs/ioctl.c:51 [inline]
->   __do_sys_ioctl fs/ioctl.c:874 [inline]
->   __se_sys_ioctl fs/ioctl.c:860 [inline]
->   __x64_sys_ioctl+0xb6/0x100 fs/ioctl.c:860
->   do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->   do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x46a9a9
-> Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-> 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f3c4f69fc58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 000000000078c210 RCX: 000000000046a9a9
-> RDX: 00000000200003c0 RSI: 000000000000127f RDI: 0000000000000004
-> RBP: 00000000004e4042 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078c210
-> R13: 0000000000000000 R14: 000000000078c210 R15: 00007fff7770d6e0
-> Modules linked in:
-> Dumping ftrace buffer:
->     (ftrace buffer empty)
-> ---[ end trace 4d3d97b8450ac449 ]---
-> RIP: 0010:truncate_inode_page+0x5a/0x70 mm/truncate.c:213
-> Code: ff ff 48 89 ef e8 56 9e fd ff e8 71 2d f0 ff 89 d8 5b 5d 41 5c
-> c3 e8 65 2d f0 ff 48 c7 c6 20 19 2d 85 48 89 ef e8 f6 f7 03 00 <0f> 0b
-> bb fb ff ff ff eb d7 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00
-> RSP: 0018:ffffc9000361fc88 EFLAGS: 00010246
-> RAX: 0000000000040000 RBX: 0000000000000001 RCX: ffffc90001356000
-> RDX: 0000000000040000 RSI: ffffffff8147479a RDI: 00000000ffffffff
-> RBP: ffffea0004730040 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000001 R11: 637379735f6f6420 R12: ffff88800d7d13e8
-> R13: ffffc9000361fd48 R14: 0000000000000001 R15: ffffc9000361fcd0
-> FS:  00007f3c4f6a0700(0000) GS:ffff88813dc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000204001ff CR3: 000000010f099000 CR4: 0000000000750ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> 
+May I request to improve understandability of the code that you give
+the constant a distinct name for this purpose? Something like
 
--- 
-Thanks,
-Yu
+ACM_MINOR_POISON or ACM_INVALID_MINOR
+
+so that normal people can understand the fixed code?
+
+=C2=A0=C2=A0=C2=A0 Regards
+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 Oliver
+
