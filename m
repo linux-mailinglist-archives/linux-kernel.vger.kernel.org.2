@@ -2,139 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78430401FBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DE4401F9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245151AbhIFS2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 14:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58052 "EHLO
+        id S245003AbhIFS1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 14:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244730AbhIFS0k (ORCPT
+        with ESMTP id S244452AbhIFS0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 14:26:40 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 625C2C0612A3
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:25:32 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a25so14980129ejv.6
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:25:32 -0700 (PDT)
+        Mon, 6 Sep 2021 14:26:25 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB94C0613D9
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:25:13 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id i23so6243601vsj.4
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:25:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4rDU/Aka2Jxuf6M2FTahHDgy7VZclBVFd9XLtJVQxGI=;
-        b=HH32OtePnoDD33mrzpeNN62Gvy4klcIm5zMAZmlfv+ghYKPtC3Ccrwq7b2km1SMGVv
-         2p3o0qeyeLGkldeH4NrB3DX+eVECy9aKsX63WieDComyqhufAvhG/xXN+JZXJ8chicpy
-         ZxVET6amT+QGjg9EeLaFuo8JvDwDI4B866htOk+LsQ2buK0RztFFDS+TQGZvecbHTqg2
-         9lr+CSAxsMn5FsyInxxpBdtrdntN/o9/mONTsjNFlzagWgiXxV0/2hQX+DB6G8d0IEGk
-         YO9qyk3OaXuw+Sniddnn3ZGayeHlSy/vNxq291UdppbgmwRFqRLG6c//Dc94/iA2fL3n
-         NE6A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i6BKrN7X5suyNsmFH5r3sUKXBVHf29sG6WVeH2BVyjM=;
+        b=clAkQy9mohMLPnVHW5cIgwm5UEQQ5nDlPiwgp0cwJEYS0ycJTwv/DWUsRr0B8bbniX
+         5/nkndYJJQt+jFffYyrtHZE10RuffIy6IiG+DYcDqlWqy8v1aJQBv/22QpJfJH5sAPEp
+         lFzSMj0ku9aH22fxeXosDlemQyfBnrg21y/mGp51LbpdTK2SbNrLJNY55iFB8CjdVghV
+         cCQba6HKcoqGwISK6MvywQ7Ew8wNqzUPIVUUw2uSew4EA9ZcK7Tn69EDc0rfdmfmLWbZ
+         QQBHqFLn51nzUM6pTyUzm7OOUvLdQYde41jakHoVKOSwyJNU9iVB7OSZZDf1tmA+23aw
+         oPsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4rDU/Aka2Jxuf6M2FTahHDgy7VZclBVFd9XLtJVQxGI=;
-        b=rVg1bTRftGuiTAExkpr2k0OSuhO3suzGpoiX4wk1saYwX7bB04suPCGwKn7sztVcbo
-         OuqvT0cYjR5n9sVW0vCtu1zDKyK2oSG0yiGOruyVQqfxrBACZcduOsLRov2ueN1+j6xo
-         CG2s9ysG5jcxseR5ufNemO1hedtUEfEi8IEEkpdiOa144gv1WBCdgFAcLT6Lh/2v8kPu
-         NbAHkoRMQVm7y3qedcl50SifIsMcpkBk1b4GJq+711fN7IvR7JvqY8OvePqOtumcdBab
-         KeGaJM32mh3sB9xeffynAr33dx6gbyYSbNRy2vIECVFZO+BCaMJWZWd5CAg0Dp7Vk/Qx
-         aF7w==
-X-Gm-Message-State: AOAM533b+8Wnob7wa5lzbce4PtdTedvBDEm/zmhCm0qfNoKdTArg+Zlm
-        Qyi86C7CNca8RItYdPyJswM=
-X-Google-Smtp-Source: ABdhPJyJfuKpLPxrs6gxAiO0N01xvXdfQLM1g/qkbGdryaAM4HqjlBXKrRjVlEj31TFiC74Iw6aKXw==
-X-Received: by 2002:a17:907:1b02:: with SMTP id mp2mr14805866ejc.196.1630952730826;
-        Mon, 06 Sep 2021 11:25:30 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::8fe1])
-        by smtp.gmail.com with ESMTPSA id s25sm4284492ejq.17.2021.09.06.11.25.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 11:25:30 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 40/40] staging: r8188eu: remove UpdateHalRAMask8188EUsb from hal_ops
-Date:   Mon,  6 Sep 2021 20:24:38 +0200
-Message-Id: <20210906182438.5417-41-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210906182438.5417-1-straube.linux@gmail.com>
-References: <20210906182438.5417-1-straube.linux@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i6BKrN7X5suyNsmFH5r3sUKXBVHf29sG6WVeH2BVyjM=;
+        b=RXqez9LEAKMlqgxPTCFMK2mhxotdKDTI9QxPSSpq2EKjyNrkgGoowHJr6+zhVXUIBu
+         6DXafCmvVk/K6WJ/UgUzKfKHo3bOb50QTOkpEntbE3TAGan5AcCIWtZUcA03xg7VTC3M
+         BL5Sr6eF0EWs9eQ+LhmKckCpKphAcm9pbrkVv2jJk/qaJkoVuQecq44PrkJ4OBt3DsBH
+         0tn8aEztVKcHa41DkLXaIQviBciv8OOcOyZkqKi1pH8QY2+iStTVdvmlkbhW3EQ54Xjd
+         Z2DwwAEX5163ieUen9WRP8ec3YwNFxJN3iYW15v1HXCjBHN+AFlx41PpSd/JcOYkheCO
+         /lYQ==
+X-Gm-Message-State: AOAM533I4wX2854EvWG/swQjz0F9cZ2YbnxywdAZY4kn16Dpmy85uGW7
+        fnSSlmQWWWPVMfcF/GMjlgqsry+RjzcMpcT1QsyKuYwH
+X-Google-Smtp-Source: ABdhPJyg4VWsnkepgpvWdmz4JefgU8pNg5h7OlRD3wfkop9WYoZH2bRCi5vo8Qu00MZRxt35BDmA2bUFrpbKx4ektFA=
+X-Received: by 2002:a05:6102:188:: with SMTP id r8mr6850374vsq.11.1630952712249;
+ Mon, 06 Sep 2021 11:25:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210831202133.2165222-1-jim.cromie@gmail.com>
+ <20210831202133.2165222-6-jim.cromie@gmail.com> <b3c4b3aa-b873-a2aa-c1ad-5fed80038c6e@linux.intel.com>
+ <CAJfuBxw-i-7YUenvBGHA0unBQ8BqmOGRF3nRYNwNPLVaxWpSvQ@mail.gmail.com> <1aabb5c0-eef9-a483-2631-25726c9dc268@linux.intel.com>
+In-Reply-To: <1aabb5c0-eef9-a483-2631-25726c9dc268@linux.intel.com>
+From:   jim.cromie@gmail.com
+Date:   Mon, 6 Sep 2021 12:24:46 -0600
+Message-ID: <CAJfuBxxQ-dNWHv1VGu7Hh705wZbxmsStDa_-cc=63fDtNZiyjg@mail.gmail.com>
+Subject: Re: [Intel-gfx] [PATCH v7 5/8] drm_print: add choice to use dynamic
+ debug in drm-debug
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        intel-gvt-dev@lists.freedesktop.org,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove UpdateHalRAMask8188EUsb hal_ops and call
-UpdateHalRAMask8188EUsb() directly instead.
+> I'll try to extract the "executive summary" from this, you tell me if I
+> got it right.
+>
+> So using or not using dynamic debug for DRM debug ends up being about
+> shifting the cost between kernel binary size (data section grows by each
+> pr_debug call site) and runtime conditionals?
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/hal/hal_intf.c     | 4 +---
- drivers/staging/r8188eu/hal/usb_halinit.c  | 4 +---
- drivers/staging/r8188eu/include/hal_intf.h | 4 +---
- 3 files changed, 3 insertions(+), 9 deletions(-)
+Yes.
 
-diff --git a/drivers/staging/r8188eu/hal/hal_intf.c b/drivers/staging/r8188eu/hal/hal_intf.c
-index d38a8134b243..92c55b9ab244 100644
---- a/drivers/staging/r8188eu/hal/hal_intf.c
-+++ b/drivers/staging/r8188eu/hal/hal_intf.c
-@@ -139,9 +139,7 @@ void rtw_hal_update_ra_mask(struct adapter *adapt, u32 mac_id, u8 rssi_level)
- 			add_RATid(adapt, psta, 0);/* todo: based on rssi_level*/
- #endif
- 	} else {
--		if (adapt->HalFunc.UpdateRAMaskHandler)
--			adapt->HalFunc.UpdateRAMaskHandler(adapt, mac_id,
--							      rssi_level);
-+		UpdateHalRAMask8188EUsb(adapt, mac_id, rssi_level);
- 	}
- }
- 
-diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
-index 4d60b5156995..37a976c56f06 100644
---- a/drivers/staging/r8188eu/hal/usb_halinit.c
-+++ b/drivers/staging/r8188eu/hal/usb_halinit.c
-@@ -2064,7 +2064,7 @@ static u8 SetHalDefVar8188EUsb(struct adapter *Adapter, enum hal_def_variable eV
- 	return bResult;
- }
- 
--static void UpdateHalRAMask8188EUsb(struct adapter *adapt, u32 mac_id, u8 rssi_level)
-+void UpdateHalRAMask8188EUsb(struct adapter *adapt, u32 mac_id, u8 rssi_level)
- {
- 	u8 init_rate = 0;
- 	u8 networkType, raid;
-@@ -2230,8 +2230,6 @@ void rtl8188eu_set_hal_ops(struct adapter *adapt)
- 	halfunc->GetHalDefVarHandler = &GetHalDefVar8188EUsb;
- 	halfunc->SetHalDefVarHandler = &SetHalDefVar8188EUsb;
- 
--	halfunc->UpdateRAMaskHandler = &UpdateHalRAMask8188EUsb;
--
- 	halfunc->hal_xmit = &rtl8188eu_hal_xmit;
- 	halfunc->mgnt_xmit = &rtl8188eu_mgnt_xmit;
- 
-diff --git a/drivers/staging/r8188eu/include/hal_intf.h b/drivers/staging/r8188eu/include/hal_intf.h
-index 668a21cbe71e..727ef8511f64 100644
---- a/drivers/staging/r8188eu/include/hal_intf.h
-+++ b/drivers/staging/r8188eu/include/hal_intf.h
-@@ -147,9 +147,6 @@ struct hal_ops {
- 				       enum hal_def_variable eVariable,
- 				       void *pValue);
- 
--	void	(*UpdateRAMaskHandler)(struct adapter *padapter,
--				       u32 mac_id, u8 rssi_level);
--
- 	s32	(*hal_xmit)(struct adapter *padapter,
- 			    struct xmit_frame *pxmitframe);
- 	s32 (*mgnt_xmit)(struct adapter *padapter,
-@@ -205,6 +202,7 @@ int rtl8188e_Efuse_PgPacketWrite(struct adapter *pAdapter, u8 offset, u8 word_en
- void hal_notch_filter_8188e(struct adapter *adapter, bool enable);
- 
- void SetBeaconRelatedRegisters8188EUsb(struct adapter *adapt);
-+void UpdateHalRAMask8188EUsb(struct adapter *adapt, u32 mac_id, u8 rssi_level);
- 
- uint rtw_hal_init(struct adapter *padapter);
- uint rtw_hal_deinit(struct adapter *padapter);
--- 
-2.33.0
+> Since the table sizes you mention seem significant enough, I think that
+> justifies existence of DRM_USE_DYNAMIC_DEBUG. It would probably be a
+> good idea to put some commentary on that there. Ideally including some
+> rough estimates both including space cost per call site and space cost
+> for a typical distro kernel build?
 
+yeah, agreed.  I presume you mean in Kconfig entry,
+since commits have some size info now - I have i915, amdgpu, nouveau;
+I can see some prose improvements for 5/8
+
+
+
+
+> Regards,
+>
+> Tvrtko
+
+thanks
+Jim
