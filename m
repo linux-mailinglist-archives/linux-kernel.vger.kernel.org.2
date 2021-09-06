@@ -2,149 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C54401568
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 06:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15BD40156B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 06:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbhIFER2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 00:17:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57899 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229448AbhIFERK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 00:17:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630901764;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=N/7qUCDbLedcIM9wZfeDAGpIH0/Pk2uXbgsdONv5fHc=;
-        b=OFVXMRwwZLbOhsulhGqMMgONm+ip2Y0QJQxC2BMj9X/+jFLEao7bmIOqoPwfeVW58lxdoO
-        J7azFE70ATMk4QpC42KTtCG0UkJMt7Qkzx3Uo/I0BrOxOoPWVd5/dommg8FaharIlhiy7Q
-        fo+YiPmEJ8HSNLAUgT6kE6VwkXvUQm8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-586-zC5vOcY3PEO1DJZod3-5Rw-1; Mon, 06 Sep 2021 00:16:02 -0400
-X-MC-Unique: zC5vOcY3PEO1DJZod3-5Rw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D8945801A92;
-        Mon,  6 Sep 2021 04:16:00 +0000 (UTC)
-Received: from gshan.redhat.com (vpn2-54-40.bne.redhat.com [10.64.54.40])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A56D019C59;
-        Mon,  6 Sep 2021 04:15:53 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-efi@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
-        rdunlap@infradead.org, robh@kernel.org, drjones@redhat.com,
-        ardb@kernel.org, will@kernel.org, maz@kernel.org,
-        catalin.marinas@arm.com, shan.gavin@gmail.com
-Subject: [PATCH] Documentation, dt, numa: Add note to empty NUMA node
-Date:   Mon,  6 Sep 2021 12:14:24 +0800
-Message-Id: <20210906041424.115473-1-gshan@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        id S236203AbhIFESN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 00:18:13 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:43256 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229448AbhIFESL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 00:18:11 -0400
+Received: from localhost.localdomain (unknown [10.214.16.253])
+        by mail-app4 (Coremail) with SMTP id cS_KCgBHTys5ljVhEVO2Ag--.60760S4;
+        Mon, 06 Sep 2021 12:17:01 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Heinz Mauelshagen <heinzm@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] dm raid: fix mddev unlocking in raid_ctr() error paths
+Date:   Mon,  6 Sep 2021 12:16:16 +0800
+Message-Id: <20210906041616.22812-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgBHTys5ljVhEVO2Ag--.60760S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxJrWfuFyUZFy8tFy3Aw1UZFb_yoW8WF47pr
+        48GasxCr48t39FqFWDGw4kK345Kwn0gryqyrs7CayrZa1YgF43ur18GrWUXFWUGFy7Ga4U
+        AF1UAr4DWay0k3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk21xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW0oVCq3wA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCF04k20xvE74AGY7Cv
+        6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgQABlZdtVpWtAAAsG
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The empty memory nodes, where no memory resides in, are allowed.
-For these empty memory nodes, the 'len' of 'reg' property is zero.
-The NUMA node IDs are still valid and parsed, but memory may be
-added to them through hotplug afterwards. Currently, QEMU fails
-to boot when multiple empty memory nodes are specified. It's
-caused by device-tree population failure and duplicated memory
-node names.
+mddev_unlock() is called on all paths after we call mddev_lock_nointr(),
+except for three error handling paths, which may cause a deadlock.
 
-As device-tree specification indicates, the 'unit-address' of
-these empty memory nodes, part of their names, are the equivalents
-to 'base-address'. Unfortunately, I finds difficulty to get where
-the assignment of 'base-address' is properly documented for these
-empty memory nodes. So lets add a section for empty memory nodes
-to cover this in NUMA binding document. The 'unit-address',
-equivalent to 'base-address' in the 'reg' property of these empty
-memory nodes is specified to be the summation of highest memory
-address plus the NUMA node ID.
-
-Signed-off-by: Gavin Shan <gshan@redhat.com>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Fixes: 9dbd1aa3a81c ("dm raid: add reshaping support to the target")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Heinz Mauelshagen <heinzm@redhat.com>
 ---
- Documentation/devicetree/bindings/numa.txt | 60 +++++++++++++++++++++-
- 1 file changed, 59 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/numa.txt b/Documentation/devicetree/bindings/numa.txt
-index 21b35053ca5a..82f047bc8dd6 100644
---- a/Documentation/devicetree/bindings/numa.txt
-+++ b/Documentation/devicetree/bindings/numa.txt
-@@ -103,7 +103,65 @@ Example:
- 		};
+Changelog:
+
+v2: - Simplify the error handling paths.
+---
+ drivers/md/dm-raid.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
+index d9ef52159a22..741bab00e922 100644
+--- a/drivers/md/dm-raid.c
++++ b/drivers/md/dm-raid.c
+@@ -3249,14 +3249,12 @@ static int raid_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+ 	rs->md.in_sync = 0; /* Assume already marked dirty */
+ 	if (r) {
+ 		ti->error = "Failed to run raid array";
+-		mddev_unlock(&rs->md);
+-		goto bad;
++		goto bad_unlock;
+ 	}
  
- ==============================================================================
--4 - Example dts
-+4 - Empty memory nodes
-+==============================================================================
-+
-+Empty memory nodes, which no memory resides in, are allowed. The 'length'
-+field of the 'reg' property is zero. However, the 'base-address' is a
-+dummy and invalid address, which is the summation of highest memory address
-+plus the NUMA node ID. The NUMA node IDs and distance maps are still valid
-+and memory may be added into them through hotplug afterwards.
-+
-+Example:
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x0 0x80000000>;
-+		numa-node-id = <0>;
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x0 0x80000000 0x0 0x80000000>;
-+		numa-node-id = <1>;
-+	};
-+
-+	/* Empty memory node */
-+	memory@100000002 {
-+		device_type = "memory";
-+		reg = <0x1 0x2 0x0 0x0>;
-+		numa-node-id = <2>;
-+	};
-+
-+	/* Empty memory node */
-+	memory@100000003 {
-+		device_type = "memory";
-+		reg = <0x1 0x3 0x0 0x0>;
-+		numa-node-id = <3>;
-+	};
-+
-+	distance-map {
-+		compatible = "numa-distance-map-v1";
-+		distance-matrix = <0 0  10>,
-+				  <0 1  20>,
-+				  <0 2  40>,
-+				  <0 3  20>,
-+				  <1 0  20>,
-+				  <1 1  10>,
-+				  <1 2  20>,
-+				  <1 3  40>,
-+				  <2 0  40>,
-+				  <2 1  20>,
-+				  <2 2  10>,
-+				  <2 3  20>,
-+				  <3 0  20>,
-+				  <3 1  40>,
-+				  <3 2  20>,
-+				  <3 3  10>;
-+	};
-+
-+==============================================================================
-+5 - Example dts
- ==============================================================================
+ 	r = md_start(&rs->md);
+ 	if (r) {
+ 		ti->error = "Failed to start raid array";
+-		mddev_unlock(&rs->md);
+ 		goto bad_md_start;
+ 	}
  
- Dual socket system consists of 2 boards connected through ccn bus and
+@@ -3265,7 +3263,6 @@ static int raid_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+ 		r = r5c_journal_mode_set(&rs->md, rs->journal_dev.mode);
+ 		if (r) {
+ 			ti->error = "Failed to set raid4/5/6 journal mode";
+-			mddev_unlock(&rs->md);
+ 			goto bad_journal_mode_set;
+ 		}
+ 	}
+@@ -3304,10 +3301,12 @@ static int raid_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+ 	mddev_unlock(&rs->md);
+ 	return 0;
+ 
++bad_unlock:
+ bad_md_start:
+ bad_journal_mode_set:
+ bad_stripe_cache:
+ bad_check_reshape:
++	mddev_unlock(&rs->md);
+ 	md_stop(&rs->md);
+ bad:
+ 	raid_set_free(rs);
 -- 
-2.23.0
+2.17.1
 
