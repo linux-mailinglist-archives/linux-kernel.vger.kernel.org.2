@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACB4401FA8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38928401FAA
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245005AbhIFS1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 14:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58080 "EHLO
+        id S245287AbhIFS1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 14:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244574AbhIFS03 (ORCPT
+        with ESMTP id S244575AbhIFS03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 6 Sep 2021 14:26:29 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC2DC0612A3
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:25:19 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id s25so10591162edw.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:25:19 -0700 (PDT)
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 803AEC06129F
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:25:20 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a25so14979295ejv.6
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:25:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ca/jPcESGAma5shg4L8aeWp4njEIw1RS5+IbIZkKvEY=;
-        b=eTbq/i92Bm1WneJhZB7cJBUNuGGsUYDW6f+b56sXQLaVifKPA+PyOvAkQmpgJomGUD
-         nAFZEafoc9trLj+0WMFFj9nsQyHhV6q+Ucyho2W8BcAc7zlhaCtl0RJLDk8MKj8xzvef
-         Pcmn+DMjnsn1+RuVWLMLvyAG9o6MEP1+uP3ZcnAEiWUDhhULmTWl9Hdr/2QLxouu7l+R
-         STIHpp0LUoWO6+j/u/7jo9VaT8wgCE/nxX59T55IqGvZPLKT6FXE5M+R+MAVBKtoqLnl
-         xuMmFfhrsGDmJnArxmMu6LrbxRMiVgzN5yFohNZUNNLtvxIiRUayeV+w/lv+utBdwNfq
-         GUyg==
+        bh=if2TfGl2pzTfpu2/Rwle744t3sR/+uE3qCTkrfC7NJo=;
+        b=n8uSipS1k4vOTHYAQZQ5emmZFH8j+gWglDhfTCcXvNruqeayVTaHYnasW5GaXJJjkd
+         JmkVGI+VWFOi3ccKtyfIEfkeQCkobgb25m6fmVYu+ZNEnFHEJ5LS6Y/PytRal1L7YwkV
+         jcPSUuQqYlLp2SdrAiEAoZCrfXjVYgen3EP4m2Rg0H6jFJqbWSmYibx/J14Rve2eVfrC
+         6/vReRQSdoxng/SYFa/b0ORAGO23ISoeppZPTRwOTbtXPw25fTlxZCQNB9T8CseEgazk
+         2hBuQwJfJdaMagHD1dye9F5FZtHB2CXCK51oXSN4hnOApY2VyIjwQM0tPBxt6dq5D5PS
+         4ubw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ca/jPcESGAma5shg4L8aeWp4njEIw1RS5+IbIZkKvEY=;
-        b=QmVUasORolqFAGJPtl36AHfFHnMCDKucbVOSIRNmXn1aTn2WXjVgAOv/gdtfHkoFuH
-         shv6CYHoxibDHeBR0oSS81XVBWerbB7COG7BFnN30huvj82OMoF3wzklUuLHX5t6xdbk
-         0xrFNJHzuAGJzgPrjpQST1F5P1IklHmdXaZWWBEGXJSZxutrsoQnJtCDHX8bQ0MFDiYO
-         Uo2w/Y64Qt0f+g5pLBQcUjbf1xttDzNhoEvZQyBthOrk/jzenXpF/YNsa76AhoT/n/2T
-         XfrGcYEHHtfeXF2++fW2rOcqkLyYvoGk97L6GCG2/3ddliqCNDnUmFY+Z6LSvizqSSXv
-         gJYA==
-X-Gm-Message-State: AOAM531akN0sbsJwrIgePvCYDuaHL//J/zD4++5ssWjxlKGz+/298dAf
-        tWrKSWwaqzYqhLbaolz7qRU=
-X-Google-Smtp-Source: ABdhPJzf2+ULd4LyO9hvx0jJTK+rM9NXIkksA7o9Fr+jpfeIMMlvtTSRU0CJadH+vd5rBGOJj09QaQ==
-X-Received: by 2002:aa7:c311:: with SMTP id l17mr14396103edq.320.1630952718264;
-        Mon, 06 Sep 2021 11:25:18 -0700 (PDT)
+        bh=if2TfGl2pzTfpu2/Rwle744t3sR/+uE3qCTkrfC7NJo=;
+        b=Jw3Bt+aj5JTQToOoYwvNpk81TZf6UYE5325v99czCgS1GcWAobop0T87YwsJLkzdUr
+         yUhH8AmRxXgLGZB6Tn/IMWQZfJtXl3qeMcuVnmZ57oHSzOqDY8ouFiXie1qDzKfxDhD6
+         6ekfyvx5UbVImi1fv/jCl6eUEpJMG7bEC6X0bFpY4fAAYJWhiP6naxJeLXqnYZWMZfkm
+         EdTerpBzqDTeREZletIPwNustrZYV7AORYjH4kfLdm1XLk/acX6td+KwAOkoRCtw1kQ9
+         mYTj8+rTDklfEK1GIwMClxehy+c7tgqovn2W0EjQnG4xYd/frta0MLU3BWUUN8/C46ei
+         H4ow==
+X-Gm-Message-State: AOAM53157Q/aSCysGb1U0C5R3Hm1+e7Ocw3hF6v1MvtZdLshxtrgwC+B
+        Vc9do/4NyvA1F7usojUHbMA=
+X-Google-Smtp-Source: ABdhPJy2huPP1hz72MPSNMMJjcVn0sACAZvn9PHe5CNUSc5dZ2KDq9m0vLnJjDLc4WL5bXUe0V5diA==
+X-Received: by 2002:a17:906:c416:: with SMTP id u22mr14781400ejz.543.1630952719099;
+        Mon, 06 Sep 2021 11:25:19 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::8fe1])
-        by smtp.gmail.com with ESMTPSA id s25sm4284492ejq.17.2021.09.06.11.25.17
+        by smtp.gmail.com with ESMTPSA id s25sm4284492ejq.17.2021.09.06.11.25.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 11:25:17 -0700 (PDT)
+        Mon, 06 Sep 2021 11:25:18 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 23/40] staging: r8188eu: remove wrapper Efuse_PowerSwitch()
-Date:   Mon,  6 Sep 2021 20:24:21 +0200
-Message-Id: <20210906182438.5417-24-straube.linux@gmail.com>
+Subject: [PATCH 24/40] staging: r8188eu: remove ReadEFuse from hal_ops
+Date:   Mon,  6 Sep 2021 20:24:22 +0200
+Message-Id: <20210906182438.5417-25-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210906182438.5417-1-straube.linux@gmail.com>
 References: <20210906182438.5417-1-straube.linux@gmail.com>
@@ -66,204 +66,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove wrapper Efuse_PowerSwitch() and call rtl8188e_EfusePowerSwitch()
-directly.
+Remove ReadEFuse hal_ops and remove its wrapper efuse_ReadEFuse().
+Call rtl8188e_ReadEFuse() directly instead.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_efuse.c    | 55 ++++++---------------
- drivers/staging/r8188eu/core/rtw_mp_ioctl.c |  8 +--
- drivers/staging/r8188eu/include/rtw_efuse.h |  1 -
- 3 files changed, 18 insertions(+), 46 deletions(-)
+ drivers/staging/r8188eu/core/rtw_efuse.c        | 11 +++--------
+ drivers/staging/r8188eu/hal/rtl8188e_hal_init.c |  7 +++----
+ drivers/staging/r8188eu/include/hal_intf.h      |  5 +++--
+ 3 files changed, 9 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/staging/r8188eu/core/rtw_efuse.c b/drivers/staging/r8188eu/core/rtw_efuse.c
-index 8388ec60d21d..1aeddfa2f14d 100644
+index 1aeddfa2f14d..faf6cefaa4f0 100644
 --- a/drivers/staging/r8188eu/core/rtw_efuse.c
 +++ b/drivers/staging/r8188eu/core/rtw_efuse.c
-@@ -58,33 +58,6 @@ Efuse_Write1ByteToFakeContent(
- 	return true;
- }
+@@ -175,11 +175,6 @@ ReadEFuseByte(
+ /* 					write addr must be after sec5. */
+ /*  */
  
--/*-----------------------------------------------------------------------------
-- * Function:	Efuse_PowerSwitch
-- *
-- * Overview:	When we want to enable write operation, we should change to
-- *				pwr on state. When we stop write, we should switch to 500k mode
-- *				and disable LDO 2.5V.
-- *
-- * Input:       NONE
-- *
-- * Output:      NONE
-- *
-- * Return:      NONE
-- *
-- * Revised History:
-- * When			Who		Remark
-- * 11/17/2008	MHC		Create Version 0.
-- *
-- *---------------------------------------------------------------------------*/
--void
--Efuse_PowerSwitch(
--		struct adapter *pAdapter,
--		u8 write,
--		u8 PwrState)
+-static void efuse_ReadEFuse(struct adapter *Adapter, u8 efuseType, u16 _offset, u16 _size_byte, u8 *pbuf, bool pseudo)
 -{
--	rtl8188e_EfusePowerSwitch(pAdapter, write, PwrState);
+-	Adapter->HalFunc.ReadEFuse(Adapter, efuseType, _offset, _size_byte, pbuf, pseudo);
 -}
 -
- /*-----------------------------------------------------------------------------
-  * Function:	efuse_GetCurrentSize
-  *
-@@ -431,7 +404,7 @@ u8 rtw_efuse_access(struct adapter *padapter, u8 write, u16 start_addr, u16 cnts
- 		rw8 = &efuse_read8;
- 	}
- 
--	Efuse_PowerSwitch(padapter, write, true);
-+	rtl8188e_EfusePowerSwitch(padapter, write, true);
- 
- 	/*  e-fuse one byte read / write */
- 	for (i = 0; i < cnts; i++) {
-@@ -445,7 +418,7 @@ u8 rtw_efuse_access(struct adapter *padapter, u8 write, u16 start_addr, u16 cnts
- 			break;
- 	}
- 
--	Efuse_PowerSwitch(padapter, write, false);
-+	rtl8188e_EfusePowerSwitch(padapter, write, false);
- 
- 	return res;
- }
-@@ -459,9 +432,9 @@ u16 efuse_GetMaxSize(struct adapter *padapter)
- /*  */
- u8 efuse_GetCurrentSize(struct adapter *padapter, u16 *size)
+ void EFUSE_GetEfuseDefinition(struct adapter *pAdapter, u8 efuseType, u8 type, void *pOut, bool pseudo
+ 	)
  {
--	Efuse_PowerSwitch(padapter, false, true);
-+	rtl8188e_EfusePowerSwitch(padapter, false, true);
- 	*size = Efuse_GetCurrentSize(padapter, EFUSE_WIFI, false);
--	Efuse_PowerSwitch(padapter, false, false);
-+	rtl8188e_EfusePowerSwitch(padapter, false, false);
+@@ -450,7 +445,7 @@ u8 rtw_efuse_map_read(struct adapter *padapter, u16 addr, u16 cnts, u8 *data)
  
- 	return _SUCCESS;
- }
-@@ -475,11 +448,11 @@ u8 rtw_efuse_map_read(struct adapter *padapter, u16 addr, u16 cnts, u8 *data)
- 	if ((addr + cnts) > mapLen)
- 		return _FAIL;
+ 	rtl8188e_EfusePowerSwitch(padapter, false, true);
  
--	Efuse_PowerSwitch(padapter, false, true);
-+	rtl8188e_EfusePowerSwitch(padapter, false, true);
+-	efuse_ReadEFuse(padapter, EFUSE_WIFI, addr, cnts, data, false);
++	rtl8188e_ReadEFuse(padapter, EFUSE_WIFI, addr, cnts, data, false);
  
- 	efuse_ReadEFuse(padapter, EFUSE_WIFI, addr, cnts, data, false);
+ 	rtl8188e_EfusePowerSwitch(padapter, false, false);
  
--	Efuse_PowerSwitch(padapter, false, false);
-+	rtl8188e_EfusePowerSwitch(padapter, false, false);
+@@ -468,7 +463,7 @@ u8 rtw_BT_efuse_map_read(struct adapter *padapter, u16 addr, u16 cnts, u8 *data)
  
- 	return _SUCCESS;
- }
-@@ -493,11 +466,11 @@ u8 rtw_BT_efuse_map_read(struct adapter *padapter, u16 addr, u16 cnts, u8 *data)
- 	if ((addr + cnts) > mapLen)
- 		return _FAIL;
+ 	rtl8188e_EfusePowerSwitch(padapter, false, true);
  
--	Efuse_PowerSwitch(padapter, false, true);
-+	rtl8188e_EfusePowerSwitch(padapter, false, true);
+-	efuse_ReadEFuse(padapter, EFUSE_BT, addr, cnts, data, false);
++	rtl8188e_ReadEFuse(padapter, EFUSE_BT, addr, cnts, data, false);
  
- 	efuse_ReadEFuse(padapter, EFUSE_BT, addr, cnts, data, false);
+ 	rtl8188e_EfusePowerSwitch(padapter, false, false);
  
--	Efuse_PowerSwitch(padapter, false, false);
-+	rtl8188e_EfusePowerSwitch(padapter, false, false);
- 
- 	return _SUCCESS;
- }
-@@ -524,7 +497,7 @@ u8 rtw_efuse_map_write(struct adapter *padapter, u16 addr, u16 cnts, u8 *data)
- 	if (ret == _FAIL)
- 		goto exit;
- 
--	Efuse_PowerSwitch(padapter, true, true);
-+	rtl8188e_EfusePowerSwitch(padapter, true, true);
- 
- 	offset = (addr >> 3);
- 	word_en = 0xF;
-@@ -587,7 +560,7 @@ u8 rtw_efuse_map_write(struct adapter *padapter, u16 addr, u16 cnts, u8 *data)
- 		memset(newdata, 0xFF, PGPKT_DATA_SIZE);
- 	} while (1);
- 
--	Efuse_PowerSwitch(padapter, true, false);
-+	rtl8188e_EfusePowerSwitch(padapter, true, false);
- exit:
- 	kfree(map);
- 	return ret;
-@@ -616,7 +589,7 @@ u8 rtw_BT_efuse_map_write(struct adapter *padapter, u16 addr, u16 cnts, u8 *data
- 	if (ret == _FAIL)
- 		goto exit;
- 
--	Efuse_PowerSwitch(padapter, true, true);
-+	rtl8188e_EfusePowerSwitch(padapter, true, true);
- 
- 	offset = (addr >> 3);
- 	word_en = 0xF;
-@@ -679,7 +652,7 @@ u8 rtw_BT_efuse_map_write(struct adapter *padapter, u16 addr, u16 cnts, u8 *data
- 		memset(newdata, 0xFF, PGPKT_DATA_SIZE);
- 	} while (1);
- 
--	Efuse_PowerSwitch(padapter, true, false);
-+	rtl8188e_EfusePowerSwitch(padapter, true, false);
- 
- exit:
- 
-@@ -768,13 +741,13 @@ static void Efuse_ReadAllMap(struct adapter *pAdapter, u8 efuseType, u8 *Efuse,
- {
- 	u16 mapLen = 0;
- 
--	Efuse_PowerSwitch(pAdapter, false, true);
-+	rtl8188e_EfusePowerSwitch(pAdapter, false, true);
+@@ -745,7 +740,7 @@ static void Efuse_ReadAllMap(struct adapter *pAdapter, u8 efuseType, u8 *Efuse,
  
  	EFUSE_GetEfuseDefinition(pAdapter, efuseType, TYPE_EFUSE_MAP_LEN, (void *)&mapLen, pseudo);
  
- 	efuse_ReadEFuse(pAdapter, efuseType, 0, mapLen, Efuse, pseudo);
+-	efuse_ReadEFuse(pAdapter, efuseType, 0, mapLen, Efuse, pseudo);
++	rtl8188e_ReadEFuse(pAdapter, efuseType, 0, mapLen, Efuse, pseudo);
  
--	Efuse_PowerSwitch(pAdapter, false, false);
-+	rtl8188e_EfusePowerSwitch(pAdapter, false, false);
+ 	rtl8188e_EfusePowerSwitch(pAdapter, false, false);
+ }
+diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
+index b5d0cd332165..eed32dd6ee28 100644
+--- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
++++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
+@@ -912,9 +912,9 @@ static void ReadEFuse_Pseudo(struct adapter *Adapter, u8 efuseType, u16 _offset,
+ 	Hal_EfuseReadEFuse88E(Adapter, _offset, _size_byte, pbuf, bPseudoTest);
  }
  
- /*-----------------------------------------------------------------------------
-diff --git a/drivers/staging/r8188eu/core/rtw_mp_ioctl.c b/drivers/staging/r8188eu/core/rtw_mp_ioctl.c
-index c85f8e467337..7cb3f55ff58e 100644
---- a/drivers/staging/r8188eu/core/rtw_mp_ioctl.c
-+++ b/drivers/staging/r8188eu/core/rtw_mp_ioctl.c
-@@ -973,19 +973,19 @@ int rtl8188eu_oid_rt_pro_rw_efuse_pgpkt_hdl(struct oid_par_priv *poid_par_priv)
- 	_irqlevel_changed_(&oldirql, LOWER);
+-static void rtl8188e_ReadEFuse(struct adapter *Adapter, u8 efuseType,
+-			       u16 _offset, u16 _size_byte, u8 *pbuf,
+-			       bool bPseudoTest)
++void rtl8188e_ReadEFuse(struct adapter *Adapter, u8 efuseType,
++			u16 _offset, u16 _size_byte, u8 *pbuf,
++			bool bPseudoTest)
+ {
+ 	if (bPseudoTest)
+ 		ReadEFuse_Pseudo(Adapter, efuseType, _offset, _size_byte, pbuf, bPseudoTest);
+@@ -1782,7 +1782,6 @@ void rtl8188e_set_hal_ops(struct hal_ops *pHalFunc)
+ 	pHalFunc->write_rfreg = &rtl8188e_PHY_SetRFReg;
  
- 	if (poid_par_priv->type_of_oid == QUERY_OID) {
--		Efuse_PowerSwitch(Adapter, false, true);
-+		rtl8188e_EfusePowerSwitch(Adapter, false, true);
- 		if (Efuse_PgPacketRead(Adapter, ppgpkt->offset, ppgpkt->data, false))
- 			*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
- 		else
- 			status = NDIS_STATUS_FAILURE;
--		Efuse_PowerSwitch(Adapter, false, false);
-+		rtl8188e_EfusePowerSwitch(Adapter, false, false);
- 	} else {
--		Efuse_PowerSwitch(Adapter, true, true);
-+		rtl8188e_EfusePowerSwitch(Adapter, true, true);
- 		if (Efuse_PgPacketWrite(Adapter, ppgpkt->offset, ppgpkt->word_en, ppgpkt->data, false))
- 			*poid_par_priv->bytes_rw = poid_par_priv->information_buf_len;
- 		else
- 			status = NDIS_STATUS_FAILURE;
--		Efuse_PowerSwitch(Adapter, true, false);
-+		rtl8188e_EfusePowerSwitch(Adapter, true, false);
- 	}
+ 	/*  Efuse related function */
+-	pHalFunc->ReadEFuse = &rtl8188e_ReadEFuse;
+ 	pHalFunc->EFUSEGetEfuseDefinition = &rtl8188e_EFUSE_GetEfuseDefinition;
+ 	pHalFunc->EfuseGetCurrentSize = &rtl8188e_EfuseGetCurrentSize;
+ 	pHalFunc->Efuse_PgPacketRead = &rtl8188e_Efuse_PgPacketRead;
+diff --git a/drivers/staging/r8188eu/include/hal_intf.h b/drivers/staging/r8188eu/include/hal_intf.h
+index 86456bac3a5a..e1bb1f30c7e9 100644
+--- a/drivers/staging/r8188eu/include/hal_intf.h
++++ b/drivers/staging/r8188eu/include/hal_intf.h
+@@ -177,8 +177,6 @@ struct hal_ops {
+ 			       enum rf_radio_path eRFPath, u32 RegAddr,
+ 			       u32 BitMask, u32 Data);
  
- 	_irqlevel_changed_(&oldirql, RAISE);
-diff --git a/drivers/staging/r8188eu/include/rtw_efuse.h b/drivers/staging/r8188eu/include/rtw_efuse.h
-index b3ff46db2091..18fb9a4d9a0e 100644
---- a/drivers/staging/r8188eu/include/rtw_efuse.h
-+++ b/drivers/staging/r8188eu/include/rtw_efuse.h
-@@ -119,7 +119,6 @@ void EFUSE_GetEfuseDefinition(struct adapter *adapt, u8 type, u8 type1,
- u8 efuse_OneByteRead(struct adapter *adapter, u16 addr, u8 *data, bool test);
- u8 efuse_OneByteWrite(struct adapter *adapter, u16 addr, u8 data, bool	test);
+-	void (*ReadEFuse)(struct adapter *padapter, u8 efuseType, u16 _offset,
+-			  u16 _size_byte, u8 *pbuf, bool bPseudoTest);
+ 	void (*EFUSEGetEfuseDefinition)(struct adapter *padapter, u8 efuseType,
+ 					u8 type, void *pOut, bool bPseudoTest);
+ 	u16	(*EfuseGetCurrentSize)(struct adapter *padapter, u8 efuseType,
+@@ -220,6 +218,9 @@ void rtl8188e_SetHalODMVar(struct adapter *Adapter,
+ u32 rtl8188eu_InitPowerOn(struct adapter *adapt);
  
--void Efuse_PowerSwitch(struct adapter *adapt,u8 bWrite,u8  PwrState);
- int Efuse_PgPacketRead(struct adapter *adapt, u8 offset, u8 *data, bool test);
- int Efuse_PgPacketWrite(struct adapter *adapter, u8 offset, u8 word, u8 *data,
- 			bool test);
+ void rtl8188e_EfusePowerSwitch(struct adapter *pAdapter, u8 bWrite, u8 PwrState);
++void rtl8188e_ReadEFuse(struct adapter *Adapter, u8 efuseType,
++			u16 _offset, u16 _size_byte, u8 *pbuf,
++			bool bPseudoTest);
+ 
+ void	rtw_hal_free_data(struct adapter *padapter);
+ uint rtw_hal_init(struct adapter *padapter);
 -- 
 2.33.0
 
