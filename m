@@ -2,42 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 230D5401798
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 10:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C8D40179A
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 10:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240412AbhIFIKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 04:10:30 -0400
-Received: from verein.lst.de ([213.95.11.211]:60552 "EHLO verein.lst.de"
+        id S240720AbhIFIKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 04:10:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240679AbhIFIK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 04:10:29 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 154AE68AFE; Mon,  6 Sep 2021 10:09:21 +0200 (CEST)
-Date:   Mon, 6 Sep 2021 10:09:21 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
-        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
-        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
-        josef@toxicpanda.com, hch@infradead.org, hare@suse.de,
-        bvanassche@acm.org, ming.lei@redhat.com,
-        linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-mmc@vger.kernel.org, dm-devel@redhat.com,
-        nbd@other.debian.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v3 3/8] nvme: add error handling support for add_disk()
-Message-ID: <20210906080921.GB25575@lst.de>
-References: <20210830212538.148729-1-mcgrof@kernel.org> <20210830212538.148729-4-mcgrof@kernel.org>
+        id S240679AbhIFIKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 04:10:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD0C161039;
+        Mon,  6 Sep 2021 08:09:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630915768;
+        bh=2rU8AFA62jI5s98cMHn3bmdHqREtcQP60uwSfcB4YU8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WQbWUHJYz3xBxDEVD2V75EP6CeiGUfr/MeUfmYAIdeS9+XhzDhp6N26YiBbkBQZSf
+         RtCOhi9AnV7suDWt5Z+m094hH+rPyyd5kcjXiI8Y55bMTmx/YQZv/9M3a7m1UNUXxk
+         ZaOHiAL/la/c3Ju+ZcRagpFEcqil+85NvXhqCSFg=
+Date:   Mon, 6 Sep 2021 10:09:23 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Eric Biederman <ebiederm@xmission.com>, kexec@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Sasha Levin <sashal@kernel.org>, lkft-triage@lists.linaro.org
+Subject: Re: kernel/kexec_file.o: failed: Cannot find symbol for section 10:
+ .text.unlikely.
+Message-ID: <YTXMsxY9I6VdtVsS@kroah.com>
+References: <CA+G9fYvMaHgSied79QBs3D=eDVETGH=3gxA8owCSRj313yEhVg@mail.gmail.com>
+ <YTTbD+BKRpd0g4hq@kroah.com>
+ <CA+G9fYs-K2f+eZW55u5uh1gQedTQpm=TGDNk7K1uOk8AeDNUQA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210830212538.148729-4-mcgrof@kernel.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <CA+G9fYs-K2f+eZW55u5uh1gQedTQpm=TGDNk7K1uOk8AeDNUQA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks,
+On Mon, Sep 06, 2021 at 01:10:34PM +0530, Naresh Kamboju wrote:
+> On Sun, 5 Sept 2021 at 20:28, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Sun, Sep 05, 2021 at 07:28:35PM +0530, Naresh Kamboju wrote:
+> > > Following build errors noticed while building stable rc Linux 5.13.14
+> > > with gcc-11 for powerpc architecture.
+> 
+> <trim>
+> > Is this a regression?  Has this compiler ever been able to build this
+> > arch like this?
+> 
+> Yes. It is a regression with gcc-11.
+> 
+> stable rc Linux 5.13.14 with gcc-11 - powerpc - FAILED
+> stable rc Linux 5.13.14 with gcc-10 - powerpc - PASSED
 
-applied to nvme-5.15.
+Ah, ok, and does 5.14 or newer work properly?
+
+thanks,
+
+greg k-h
