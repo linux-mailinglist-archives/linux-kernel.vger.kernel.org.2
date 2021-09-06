@@ -2,96 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F3D8401E42
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA388401E34
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244091AbhIFQ3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 12:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59644 "EHLO
+        id S243991AbhIFQZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 12:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244088AbhIFQ3c (ORCPT
+        with ESMTP id S243784AbhIFQZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:29:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D692EC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 09:28:27 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 18:28:24 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630945705;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PB4sDy5RPN525RHq+Yq5F3Pi1PEcR3nel1GIZvo8hVo=;
-        b=2XSfZwPk+fJ6GZUip7jDuRN1AMDPIrkuYGo7fcajv/m9mNriOOiTbuTJQTOVw07YNpWES/
-        z1rnrej9D2T828PmPZKCPcE3fLA7EODI9uhu7/X1iOzVIUaKdYJk3YiVDtvN4QoPNvRDhK
-        1Rf6kntcvldZTeu5f74BgT461p3HcrcbjV64YLKemkVzMX5Ph2G83eUyseOFNrkVR9nvvX
-        /i8gNpr/pNpZUI7lwsBQ8/eUNdSVKdvuiS+LQHILo5W/Xr7JEUXwG43zoI6G7BnSDgnH//
-        U3feZmF51W1ymZUEnnd2icJi4M3M525xJgU0RssAbgtTo8Z7F7MZdemWOK8cSQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630945705;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PB4sDy5RPN525RHq+Yq5F3Pi1PEcR3nel1GIZvo8hVo=;
-        b=6F9YD1u9sdGPcUgYsMqx0vvh/x7qdeOw0AZ9I7Pjo+t+PwC8T0GBtrdT+mXRD8kQ8RnNjU
-        mdAtUVgCFAF1PhDw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Marco Elver <elver@google.com>
-Cc:     kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Clark Williams <williams@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 0/5] kcov: PREEMPT_RT fixup + misc
-Message-ID: <20210906162824.3s7tmdqah5i7jnou@linutronix.de>
-References: <20210830172627.267989-1-bigeasy@linutronix.de>
- <CANpmjNPZMVkr5BpywHTY_m+ndLTeWrMLTog=yGG=VLg_miqUvQ@mail.gmail.com>
+        Mon, 6 Sep 2021 12:25:34 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65D82C061575;
+        Mon,  6 Sep 2021 09:24:29 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id n39so3256433wms.1;
+        Mon, 06 Sep 2021 09:24:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9N97VMD4r1tZq16RYsS6sybHGcXF3KLg3mXOap6Uh24=;
+        b=e1EfSk5U3NHH2kNNY9FFtosI1uL/cQ5fBmdjg5CrWc8uCQSWuQJ8Y+eN1iEp3CegNX
+         Cncj7Of8In4TCekKPhGt80ywV5cZRUdmIMwGA1bx/XsPgW30O1viReia5fAmW44MZhl8
+         EzCzxNhgpUIkzBPpw/f+FILzopDJDSLwrOuzj3jyzGepxUmcvHadpwTamGoKK2TLjquo
+         HkoFQHx1A/WScxDIL7T6EJmo5rc9ClQI07LdOW3H7A2xqLa4886Zl+aYJsTQDJ+wzXQ6
+         By70yEXpe98lOCkKASGjki0XSnBdg7RP89Z8IVVtDHuX942ot7RWH8Fgk/3oFtOwwOX+
+         1xjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9N97VMD4r1tZq16RYsS6sybHGcXF3KLg3mXOap6Uh24=;
+        b=EFjkxDL6KXlhD2gVrCdsY3vz19d6c+K0gVEyRn7zF+zTI7rxyF6F766sNg865iNy7y
+         zH5FXqeg480G1oA7SFMYz6Z2fhYsPuBZLMgczvPn7yRTPqtKdybBfnvzCHJhlukIsD4a
+         cl3nS3dK4pTCxWYUZkRpW7njtvkRGVvV177cxs0OiMpdjUD/oftkSJWJItDJ5+k6gD5i
+         rzY992fGaAScjq3w1YlljFqquwGrM4/E70jQJ14d4IVofvF3w/55uJFKRJKcJleoiP3/
+         dUlgzApm6XiLr3b9tfwcmV8rt9dXKC8/4isTVb+Sxt0i9hOBKSqNprFl/P8f/4htrkIy
+         cJ5A==
+X-Gm-Message-State: AOAM530eHFsVHCssAv+XIXb9y2oeSNX7d84BZQCkWvmk2rrBvROeNLcR
+        3Zm8EbPA9vqAyo/kmOSc0QipOWGwuej4o0hp3/c=
+X-Google-Smtp-Source: ABdhPJyECK1opoDK8Fl0t8Cm3YyRHYKPRjer1mMWw44oaHoQjIrr8j4pYRZsqmiTpDKtQvl0pVT+nvCTB9iT7vYJ034=
+X-Received: by 2002:a1c:c903:: with SMTP id f3mr12441394wmb.101.1630945467826;
+ Mon, 06 Sep 2021 09:24:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANpmjNPZMVkr5BpywHTY_m+ndLTeWrMLTog=yGG=VLg_miqUvQ@mail.gmail.com>
+References: <20210729183942.2839925-1-robdclark@gmail.com> <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
+ <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
+ <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org> <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+ <CALAqxLUkyXK2gqNMBbtJFfh01ZpcG46dZaM7Zq4jG3OngvFREg@mail.gmail.com>
+ <CAF6AEGsACLcDuszcgmHHs04GghLPiRfei3tGo161yBXsg7Y-YA@mail.gmail.com> <CAMi1Hd0dniDXPNOuh05ywqHKY+cGvAsd-cnD91K1GLppfO=x0w@mail.gmail.com>
+In-Reply-To: <CAMi1Hd0dniDXPNOuh05ywqHKY+cGvAsd-cnD91K1GLppfO=x0w@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 6 Sep 2021 09:28:45 -0700
+Message-ID: <CAF6AEGvtw06MYST2PdhqHVpsG4Tec2DnUA-uwFRP-6xqa9yf5Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Caleb Connolly <caleb.connolly@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-06 18:13:11 [+0200], Marco Elver wrote:
-> Thanks for sorting this out. Given syzkaller is exercising all of
-> KCOV's feature, I let syzkaller run for a few hours with PROVE_LOCKING
-> (and PROVE_RAW_LOCK_NESTING) on, and looks fine:
-> 
->     Acked-by: Marco Elver <elver@google.com>
->     Tested-by: Marco Elver <elver@google.com>
+On Mon, Sep 6, 2021 at 1:02 AM Amit Pundir <amit.pundir@linaro.org> wrote:
+>
+> On Sat, 4 Sept 2021 at 01:55, Rob Clark <robdclark@gmail.com> wrote:
+> >
+> > On Fri, Sep 3, 2021 at 12:39 PM John Stultz <john.stultz@linaro.org> wrote:
+> > >
+> > > On Thu, Jul 29, 2021 at 1:49 PM Rob Clark <robdclark@gmail.com> wrote:
+> > > > On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
+> > > > <caleb.connolly@linaro.org> wrote:
+> > > > > On 29/07/2021 21:24, Rob Clark wrote:
+> > > > > > On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
+> > > > > > <caleb.connolly@linaro.org> wrote:
+> > > > > >>
+> > > > > >> Hi Rob,
+> > > > > >>
+> > > > > >> I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above
+> > > > > >> the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more
+> > > > > >> aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
+> > > > > >
+> > > > > > *ohh*, yeah, ok, that would explain it
+> > > > > >
+> > > > > >> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable
+> > > > > >> at the higher frequencies.
+> > > > > >>
+> > > > > >> Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in
+> > > > > >> glxgear.
+> > > > > >>
+> > > > > >> I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run
+> > > > > >> at the voltage the hardware needs to be stable.
+> > > > > >>
+> > > > > >> Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have
+> > > > > >> CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
+> > > > > >>
+> > > > > >
+> > > > > > tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is already
+> > > > > > on CC and I added sboyd, maybe one of them knows better.
+> > > > > >
+> > > > > > In the short term, removing the higher problematic OPPs from dts might
+> > > > > > be a better option than this patch (which I'm dropping), since there
+> > > > > > is nothing stopping other workloads from hitting higher OPPs.
+> > > > > Oh yeah that sounds like a more sensible workaround than mine .
+> > > > > >
+> > > > > > I'm slightly curious why I didn't have problems at higher OPPs on my
+> > > > > > c630 laptop (sdm850)
+> > > > > Perhaps you won the sillicon lottery - iirc sdm850 is binned for higher clocks as is out of the factory.
+> > > > >
+> > > > > Would it be best to drop the OPPs for all devices? Or just those affected? I guess it's possible another c630 might
+> > > > > crash where yours doesn't?
+> > > >
+> > > > I've not heard any reports of similar issues from the handful of other
+> > > > folks with c630's on #aarch64-laptops.. but I can't really say if that
+> > > > is luck or not.
+> > > >
+> > > > Maybe just remove it for affected devices?  But I'll defer to Bjorn.
+> > >
+> > > Just as another datapoint, I was just marveling at how suddenly smooth
+> > > the UI was performing on db845c and Caleb pointed me at the "drm/msm:
+> > > Devfreq tuning" patch as the likely cause of the improvement, and
+> > > mid-discussion my board crashed into USB crash mode:
+> > > [  146.157696][    C0] adreno 5000000.gpu: CP | AHB bus error
+> > > [  146.163303][    C0] adreno 5000000.gpu: CP | AHB bus error
+> > > [  146.168837][    C0] adreno 5000000.gpu: RBBM | ATB bus overflow
+> > > [  146.174960][    C0] adreno 5000000.gpu: CP | HW fault | status=0x00000000
+> > > [  146.181917][    C0] adreno 5000000.gpu: CP | AHB bus error
+> > > [  146.187547][    C0] adreno 5000000.gpu: CP illegal instruction error
+> > > [  146.194009][    C0] adreno 5000000.gpu: CP | AHB bus error
+> > > [  146.308909][    T9] Internal error: synchronous external abort:
+> > > 96000010 [#1] PREEMPT SMP
+> > > [  146.317150][    T9] Modules linked in:
+> > > [  146.320941][    T9] CPU: 3 PID: 9 Comm: kworker/u16:1 Tainted: G
+> > >     W         5.14.0-mainline-06795-g42b258c2275c #24
+> > > [  146.331974][    T9] Hardware name: Thundercomm Dragonboar
+> > > Format: Log Type - Time(microsec) - Message - Optional Info
+> > > Log Type: B - Since Boot(Power On Reset),  D - Delta,  S - Statistic
+> > > S - QC_IMAGE_VERSION_STRING=BOOT.XF.2.0-00371-SDM845LZB-1
+> > > S - IMAGE_VARIANT_STRING=SDM845LA
+> > > S - OEM_IMAGE_VERSION_STRING=TSBJ-FA-PC-02170
+> > >
+> > > So Caleb sent me to this thread. :)
+> > >
+> > > I'm still trying to trip it again, but it does seem like db845c is
+> > > also seeing some stability issues with Linus' HEAD.
+> > >
+> >
+> > Caleb's original pastebin seems to have expired (or at least require
+> > some sort of ubuntu login to access).. were the crashes he was seeing
+> > also 'AHB bus error'?
+>
+> I can reproduce this hard crash
+> https://www.irccloud.com/pastebin/Cu6UJntE/ and a gpu lockup
+> https://www.irccloud.com/pastebin/6Ryd2Pug/ at times reliably, by
+> running antutu benchmark on pocof1.
+>
+> Reverting 9bc95570175a ("drm/msm: Devfreq tuning") helps and I no
+> longer see these errors.
+>
+> Complete dmesg for hardcrash https://pastebin.com/raw/GLZVQFQN
+>
 
-awesome.
+Does antutu trigger this issue as easily on db845c?  If no, does
+db845c have pmic differences compared to pocof1 and Caleb's phone?
 
-> > One thing I noticed and have no idea if this is right or not:
-> > The code seems to mix long and uint64_t for the reported instruction
-> > pointer / position in the buffer. For instance
-> > __sanitizer_cov_trace_pc() refers to a 64bit pointer (in the comment)
-> > while the area pointer itself is (long *). The problematic part is that
-> > a 32bit application on a 64bit pointer will expect a four byte pointer
-> > while kernel uses an eight byte pointer.
-> 
-> I think the code is consistent in using 'unsigned long' for writing
-> regular pos/IP (except write_comp_data(), which has a comment about
-> it). The mentions of 64-bit in comments might be inaccurate though.
-> But I think it's working as expected:
-> 
-> - on 64-bit kernels, pos/IP can be up to 64-bit;
-> - on 32-bit kernels, pos/IP can only be up to 32-bit.
-> 
-> User space necessarily has to know about the bit-ness of its kernel,
-> because the coverage information is entirely dependent on the kernel
-> image. I think the examples in documentation weren't exhaustive in
-> this regard. At least that's my take -- Dmitry or Andrey would know
-> for sure (Dmitry is currently on vacation, but hopefully can clarify
-> next week).
+I think we may need some help from qcom here, but I'll go back and
+look at older downstream kernels to see if I can find any evidence
+that we need to limit how far we change the freq in a single step.
+It's not clear to me if there is some physical constraint that the
+driver needs to respect, or if we have some missing/incorrect
+configuration for a630.  IIRC the downstream kernel is letting the GMU
+do more of the freq management, so it might be handling this case for
+the kernel.  But the GMU is a bit of a black box to me and I don't
+have any docs, so just a guess.
 
-okay.
+It would be helpful if someone who can repro this could try the
+experiments I mentioned about increasing min_freq and/or decreasing
+max_freq to limit the size of the freq change until the issue does not
+happen.
 
-> Thanks,
-> -- Marco
+If we have to, we can merge this hack patch to disable freq clamping
+on a630.. but that isn't really a fix.  The root issue is a power
+issue, 9bc95570175a just made it more likely to see the problem.
 
-Sebastian
+BR,
+-R
+
+> Regards,
+> Amit Pundir
+>
+> >
+> > If you have a reliable reproducer, I guess it would be worth seeing if
+> > increasing the min_freq (ie. to limit how far we jump the freq in one
+> > shot) "fixes" it?
+> >
+> > I guess I could check downstream kgsl to see if they were doing
+> > something to increase freq in smaller increments.. I don't recall that
+> > they were but it has been a while since I dug thru that code.  And I
+> > suppose downstream it could also be done in their custom tz governor.
+> >
+> > BR,
+> > -R
