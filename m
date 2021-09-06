@@ -2,109 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5FF401F65
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8414401F67
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244316AbhIFSDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 14:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbhIFSDV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 14:03:21 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13BCC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:02:16 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id a5so4405751qvq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:02:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kudzu-us.20150623.gappssmtp.com; s=20150623;
-        h=from:date:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=7QsvEICZ6OB0fLFnC4FGlJhtsxVgGBKEFw5SvTXHfEI=;
-        b=Dolg4JolVnEztHeytNLimxQtQibFjkEEgeGh2DrD2n5utyQHmpY0rW7Aa7RvdbLZyx
-         htdW0QUcxgNVoPX3TVkx7UtCrRe1wndaUc9fM1VLickdBxSBWIxzNCx0wSH/VqHEbreg
-         ZXqqsMDUdgyV7mUp6V9KB68fXzfG/RsBD5SbPSo2tPY8RXrQWD5Rz1fDwoIqqHb3oscD
-         HD99GcGrmcrPSQ8SGfYc95NDh4zhZAD939xdk5veyw4CjbtZ1LnBnqD95I4dkMuqrLST
-         z46SGG+J6jGMfA4bwQAXelj/9oYExjERTIpXQqFj5Y5nPLGOjm5W8HKkxKO5HbowpB43
-         vswg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=7QsvEICZ6OB0fLFnC4FGlJhtsxVgGBKEFw5SvTXHfEI=;
-        b=amAyi7bBXqU31XXJSALMT+yWK/xjmIPN66T0FdmqUwoknplATBdL9mNgRH06+bw+vF
-         NGejprtFU5+1Hl67NO/ZS76prHCRDtsuZApEJ6SHSiWANFqH98uSWspAk1C1udWbizFh
-         7L0aF5gnBmP7U7UbUFvIN8T68Z0XmShFtHgVLw4Keb5af/JYtwf3CFefjXXIRn8swxkN
-         HKjgb758M2DhW/1fduXHFZfTLYN47RbMx9T3GG3HeeTUT43U3R/qo3dG4mfgaNtflgus
-         4BaKAVoQHu4QEXj53hkQOGx2xCMlDu5CDZ1fLL7L3SEgO0y4IONTAmKiXKkP7Iu9MNt6
-         +IaQ==
-X-Gm-Message-State: AOAM530lk0ipRfxWjW6ew2H9yE81GQ69fJMpfj+0C7H8Iuvyjhg3+3uq
-        G8lcuectAWIir4V4wNmKTslCRp9q7jmr6Q==
-X-Google-Smtp-Source: ABdhPJw8C/DJi23iRWb+S2Gm8MQkvmuym+U2CinI0a06j2yWb0Mmzv8JajOm3tVSXkYOAyh7hJM0zw==
-X-Received: by 2002:a0c:9010:: with SMTP id o16mr7241792qvo.49.1630951329852;
-        Mon, 06 Sep 2021 11:02:09 -0700 (PDT)
-Received: from localhost ([2605:a601:a650:b700:5999:364b:aaba:7f89])
-        by smtp.gmail.com with ESMTPSA id d129sm7067264qkf.136.2021.09.06.11.02.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 11:02:09 -0700 (PDT)
-From:   Jon Mason <jdmason@kudzu.us>
-X-Google-Original-From: Jon Mason <jdm@athena.kudzu.us>
-Date:   Mon, 6 Sep 2021 14:02:09 -0400
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, linux-ntb@googlegroups.com
-Subject: [GIT PULL] NTB bug fixes for v5.15
-Message-ID: <20210906180209.GA14486@athena.kudzu.us>
+        id S244351AbhIFSEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 14:04:47 -0400
+Received: from relay.sw.ru ([185.231.240.75]:56336 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230219AbhIFSEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 14:04:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=dYP/kVnj128ydFQC67ehImb7kV/TltFY1+9Ktuzp6xA=; b=TnqDEF+bamo+Jgk4y
+        qLXLFXXUUzHU3PUraXl11qn0eFHFfsIVeI44tA/lxa1C8JDABq+wcogaXlZuqIrzz3V/E3b4mzQZE
+        cItqAJKpiRmFD4dQsTzSJnSOaKuesYr7Ey4lvVGJfkECxGDSDWILWqL/nAyVZ0gXZhdFyUkJsIybI
+        =;
+Received: from [10.93.0.56]
+        by relay.sw.ru with esmtp (Exim 4.94.2)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1mNIxv-0013kX-Tv; Mon, 06 Sep 2021 21:03:31 +0300
+Subject: Re: [PATCH net v6] skb_expand_head() adjust skb->truesize incorrectly
+From:   Vasily Averin <vvs@virtuozzo.com>
+To:     Christoph Paasch <christoph.paasch@gmail.com>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
+        kernel@openvz.org, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Julian Wiedmann <jwi@linux.ibm.com>
+References: <63f90028-df26-d212-3bd2-65168736ce06@virtuozzo.com>
+ <cd1ad476-2f2b-b3e5-4cae-442c91ad4279@virtuozzo.com>
+Message-ID: <82b4794e-1e39-6ac8-1047-dd19350a168a@virtuozzo.com>
+Date:   Mon, 6 Sep 2021 21:03:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <cd1ad476-2f2b-b3e5-4cae-442c91ad4279@virtuozzo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
-Here are a few NTB bug fixes for v5.15.  Please consider pulling them.
+I've finally reproduced original issue by using reproducer from Christoph Paasch,
+and was able locally validate this patch.
 
-Thanks,
-Jon
+Thank you,
+	Vasily Averin
 
+On 9/6/21 9:01 PM, Vasily Averin wrote:
+> Christoph Paasch reports [1] about incorrect skb->truesize
+> after skb_expand_head() call in ip6_xmit.
+> This may happen because of two reasons:
+> - skb_set_owner_w() for newly cloned skb is called too early,
+> before pskb_expand_head() where truesize is adjusted for (!skb-sk) case.
+> - pskb_expand_head() does not adjust truesize in (skb->sk) case.
+> In this case sk->sk_wmem_alloc should be adjusted too.
+> 
+> [1] https://lkml.org/lkml/2021/8/20/1082
+> 
+> Fixes: f1260ff15a71 ("skbuff: introduce skb_expand_head()")
+> Fixes: 2d85a1b31dde ("ipv6: ip6_finish_output2: set sk into newly allocated nskb")
+> Reported-by: Christoph Paasch <christoph.paasch@gmail.com>
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> ---
+> v6: fixed delta,
+>     improved comments
+> v5: fixed else condition, thanks to Eric
+>     reworked update of expanded skb,
+>     added corresponding comments
+> v4: decided to use is_skb_wmem() after pskb_expand_head() call
+>     fixed 'return (EXPRESSION);' in os_skb_wmem according to Eric Dumazet
+> v3: removed __pskb_expand_head(),
+>     added is_skb_wmem() helper for skb with wmem-compatible destructors
+>     there are 2 ways to use it:
+>      - before pskb_expand_head(), to create skb clones
+>      - after successfull pskb_expand_head() to change owner on extended skb.
+> v2: based on patch version from Eric Dumazet,
+>     added __pskb_expand_head() function, which can be forced
+>     to adjust skb->truesize and sk->sk_wmem_alloc.
+> ---
+>  include/net/sock.h |  1 +
+>  net/core/skbuff.c  | 60 ++++++++++++++++++++++++++++++++++++++++++++++--------
+>  net/core/sock.c    |  8 ++++++++
+>  3 files changed, 60 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/net/sock.h b/include/net/sock.h
+> index 95b2577..173d58c 100644
+> --- a/include/net/sock.h
+> +++ b/include/net/sock.h
+> @@ -1695,6 +1695,7 @@ struct sk_buff *sock_wmalloc(struct sock *sk, unsigned long size, int force,
+>  			     gfp_t priority);
+>  void __sock_wfree(struct sk_buff *skb);
+>  void sock_wfree(struct sk_buff *skb);
+> +bool is_skb_wmem(const struct sk_buff *skb);
+>  struct sk_buff *sock_omalloc(struct sock *sk, unsigned long size,
+>  			     gfp_t priority);
+>  void skb_orphan_partial(struct sk_buff *skb);
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index f931176..e2a2aa31 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -1804,28 +1804,70 @@ struct sk_buff *skb_realloc_headroom(struct sk_buff *skb, unsigned int headroom)
+>  struct sk_buff *skb_expand_head(struct sk_buff *skb, unsigned int headroom)
+>  {
+>  	int delta = headroom - skb_headroom(skb);
+> +	int osize = skb_end_offset(skb);
+> +	struct sk_buff *oskb = NULL;
+> +	struct sock *sk = skb->sk;
+>  
+>  	if (WARN_ONCE(delta <= 0,
+>  		      "%s is expecting an increase in the headroom", __func__))
+>  		return skb;
+>  
+> -	/* pskb_expand_head() might crash, if skb is shared */
+> +	delta = SKB_DATA_ALIGN(delta);
+> +	/* pskb_expand_head() might crash, if skb is shared. */
+>  	if (skb_shared(skb)) {
+>  		struct sk_buff *nskb = skb_clone(skb, GFP_ATOMIC);
+>  
+> -		if (likely(nskb)) {
+> -			if (skb->sk)
+> -				skb_set_owner_w(nskb, skb->sk);
+> -			consume_skb(skb);
+> -		} else {
+> +		if (unlikely(!nskb)) {
+>  			kfree_skb(skb);
+> +			return NULL;
+>  		}
+> +		oskb = skb;
+>  		skb = nskb;
+>  	}
+> -	if (skb &&
+> -	    pskb_expand_head(skb, SKB_DATA_ALIGN(delta), 0, GFP_ATOMIC)) {
+> +	if (pskb_expand_head(skb, delta, 0, GFP_ATOMIC)) {
+>  		kfree_skb(skb);
+> -		skb = NULL;
+> +		kfree_skb(oskb);
+> +		return NULL;
+> +	}
+> +	if (oskb) {
+> +		if (sk)
+> +			skb_set_owner_w(skb, sk);
+> +		consume_skb(oskb);
+> +	} else if (sk && skb->destructor != sock_edemux) {
+> +		bool ref, set_owner;
+> +
+> +		ref = false; set_owner = false;
+> +		delta = skb_end_offset(skb) - osize;
+> +		/* skb_set_owner_w() calls current skb destructor.
+> +		 * It can reduce sk_wmem_alloc to 0 and release sk,
+> +		 * To prevnt this, we increase sk_wmem_alloc in advance.
+> +		 * Some destructors might release the last sk_refcnt,
+> +		 * so it won't be possible to call sock_hold for !fullsock
+> +		 * We take an extra sk_refcnt to prevent this.
+> +		 * In any case we increase truesize of expanded skb.
+> +		 */
+> +		refcount_add(delta, &sk->sk_wmem_alloc);
+> +		if (!is_skb_wmem(skb)) {
+> +			set_owner = true;
+> +			if (!sk_fullsock(sk) && IS_ENABLED(CONFIG_INET)) {
+> +				/* skb_set_owner_w can set sock_edemux */
+> +				ref = refcount_inc_not_zero(&sk->sk_refcnt);
+> +				if (!ref) {
+> +					set_owner = false;
+> +					WARN_ON(refcount_sub_and_test(delta, &sk->sk_wmem_alloc));
+> +				}
+> +			}
+> +		}
+> +		if (set_owner)
+> +			skb_set_owner_w(skb, sk);
+> +#ifdef CONFIG_INET
+> +		if (skb->destructor == sock_edemux) {
+> +			WARN_ON(refcount_sub_and_test(delta, &sk->sk_wmem_alloc));
+> +			if (ref)
+> +				WARN_ON(refcount_dec_and_test(&sk->sk_refcnt));
+> +		}
+> +#endif
+> +		skb->truesize += delta;
+>  	}
+>  	return skb;
+>  }
+> diff --git a/net/core/sock.c b/net/core/sock.c
+> index 950f1e7..6cbda43 100644
+> --- a/net/core/sock.c
+> +++ b/net/core/sock.c
+> @@ -2227,6 +2227,14 @@ void skb_set_owner_w(struct sk_buff *skb, struct sock *sk)
+>  }
+>  EXPORT_SYMBOL(skb_set_owner_w);
+>  
+> +bool is_skb_wmem(const struct sk_buff *skb)
+> +{
+> +	return skb->destructor == sock_wfree ||
+> +	       skb->destructor == __sock_wfree ||
+> +	       (IS_ENABLED(CONFIG_INET) && skb->destructor == tcp_wfree);
+> +}
+> +EXPORT_SYMBOL(is_skb_wmem);
+> +
+>  static bool can_skb_orphan_partial(const struct sk_buff *skb)
+>  {
+>  #ifdef CONFIG_TLS_DEVICE
+> 
 
-
-The following changes since commit 7d2a07b769330c34b4deabeed939325c77a7ec2f:
-
-  Linux 5.14 (2021-08-29 15:04:50 -0700)
-
-are available in the Git repository at:
-
-  git://github.com/jonmason/ntb tags/ntb-5.15
-
-for you to fetch changes up to 38de3afffb7257176978dfa9b3ab67d0c29af95c:
-
-  NTB: switch from 'pci_' to 'dma_' API (2021-09-05 18:08:14 -0400)
-
-----------------------------------------------------------------
-Bug fixes and clean-ups for Linux v5.15
-
-----------------------------------------------------------------
-Christophe JAILLET (1):
-      NTB: switch from 'pci_' to 'dma_' API
-
-Colin Ian King (1):
-      ntb: ntb_pingpong: remove redundant initialization of variables msg_data and spad_data
-
-Dave Jiang (1):
-      ntb: intel: remove invalid email address in header comment
-
-Yang Li (2):
-      NTB: Fix an error code in ntb_msit_probe()
-      NTB: perf: Fix an error code in perf_setup_inbuf()
-
- drivers/ntb/hw/amd/ntb_hw_amd.c     | 12 ++----------
- drivers/ntb/hw/idt/ntb_hw_idt.c     | 15 ++-------------
- drivers/ntb/hw/intel/ntb_hw_gen1.c  | 12 ++----------
- drivers/ntb/hw/intel/ntb_hw_intel.h |  3 ---
- drivers/ntb/test/ntb_msi_test.c     |  4 +++-
- drivers/ntb/test/ntb_perf.c         |  1 +
- drivers/ntb/test/ntb_pingpong.c     |  2 +-
- 7 files changed, 11 insertions(+), 38 deletions(-)
