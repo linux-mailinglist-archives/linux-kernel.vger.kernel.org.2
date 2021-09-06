@@ -2,158 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1382040169E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 08:52:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0AA84016A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 08:55:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239651AbhIFGxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 02:53:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239400AbhIFGxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 02:53:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF49860F21;
-        Mon,  6 Sep 2021 06:51:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630911120;
-        bh=h0WT/Jjj8wKQYQF+5gwJkPL2TfNqu98BCj64BgayA7M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FulvDIvLkR5PGRPFP547Bt52CBBwmIth2844DXgVb6XXg68tZk8keaPt6YHDBf2uA
-         5zxS0C6YIL4AHINEw4PgNj30YY6cCH0PGM0slvrYtVxA7p1/hDdFwdcWSHl7R6AlmN
-         t2NuD/XgYqZxt0/rLYaOz7EASBGRJLc3g3MPWDinA7qqn5phbB4HwwWoQTicUbyk4X
-         aL1u4mXeT864zX6iAL5uRbCsZKtBWZrHL98MsHH0n6qom2SvF3NhzJ3srZB6W5tftW
-         9An3xv6TfdIuRzklCZErXZIgjFBMkgSNqvS809r+bYOh46D34M76TzNx+CT9FfIW6q
-         ONhzS+UWH2qIQ==
-Date:   Mon, 6 Sep 2021 08:51:53 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-media@vger.kernel.org,
-        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] media: s5p-jpeg: change "RST" to "RSET" to fix build
- warnings
-Message-ID: <20210906085153.58edc116@coco.lan>
-In-Reply-To: <20210905235715.12154-1-rdunlap@infradead.org>
-References: <20210905235715.12154-1-rdunlap@infradead.org>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
+        id S239710AbhIFGz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 02:55:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22939 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239399AbhIFGz2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 02:55:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630911263;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I0Wqq4Jy8iaEMvTgV2vlnpJmZdhB/J5L3qG8Ebh53Cs=;
+        b=RlBZBUXiHt8lAQY2HYvXaI0ohzuOpTmqzu6ETw72wxvvFxcG/k9JrLix6wyGk41Q4yioJp
+        aJitVMmLjlL0ZxlWnCIBdJN2/eN7V3kqCIJFW2ffB/884ajfM6zZYjT6ovVJSMw+q4Qop0
+        F4/nf82+QLmrVkW7LRx5I7Pw2Fb1j0g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-URXiBfWjOkuQsCM7reUm2w-1; Mon, 06 Sep 2021 02:54:20 -0400
+X-MC-Unique: URXiBfWjOkuQsCM7reUm2w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8718918397A6;
+        Mon,  6 Sep 2021 06:54:18 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.39.194.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A11C31045E85;
+        Mon,  6 Sep 2021 06:54:15 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
+Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
+References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com>
+        <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com>
+        <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org>
+        <878s0c4vng.fsf@oldenburg.str.redhat.com>
+        <20210904131911.GP1583@gate.crashing.org>
+        <871r644bd2.fsf@oldenburg.str.redhat.com>
+        <CAHk-=wi+XKYN+3u=_fm=ExqpEaHdER0XuKxVauHYVCPKpKR97Q@mail.gmail.com>
+Date:   Mon, 06 Sep 2021 08:54:13 +0200
+In-Reply-To: <CAHk-=wi+XKYN+3u=_fm=ExqpEaHdER0XuKxVauHYVCPKpKR97Q@mail.gmail.com>
+        (Linus Torvalds's message of "Sat, 4 Sep 2021 10:22:25 -0700")
+Message-ID: <87a6kq2nze.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun,  5 Sep 2021 16:57:15 -0700
-Randy Dunlap <rdunlap@infradead.org> escreveu:
+* Linus Torvalds:
 
-> The use of a macro named 'RST' conflicts with one of the same name
-> in arch/mips/include/asm/mach-rc32434/rb.h. This causes build
-> warnings on some MIPS builds.
-> 
-> Change the use of RST to the name RSET.
-> 
-> Fixes these build warnings:
-> 
-> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos3250.c:14:
-> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
->    43 | #define RST                             0xd0
->       | 
-> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
->    13 | #define RST             (1 << 15)
-> 
-> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-s5p.c:13:
-> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
->    43 | #define RST                             0xd0
-> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
->    13 | #define RST             (1 << 15)
-> 
-> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos4.c:12:
-> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
->    43 | #define RST                             0xd0
-> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
->    13 | #define RST             (1 << 15)
-> 
-> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-core.c:31:
-> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
->    43 | #define RST                             0xd0
-> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
->    13 | #define RST             (1 << 15)
-> 
-> Fixes: bb677f3ac434 ("[media] Exynos4 JPEG codec v4l2 driver")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: linux-media@vger.kernel.org
-> Cc: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
-> Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-> Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> ---
->  drivers/media/platform/s5p-jpeg/jpeg-core.c |    2 +-
->  drivers/media/platform/s5p-jpeg/jpeg-core.h |    2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> --- linux-next-20210903.orig/drivers/media/platform/s5p-jpeg/jpeg-core.c
-> +++ linux-next-20210903/drivers/media/platform/s5p-jpeg/jpeg-core.c
-> @@ -1203,7 +1203,7 @@ static bool s5p_jpeg_parse_hdr(struct s5
->  			break;
->  
->  		/* skip payload-less markers */
-> -		case RST ... RST + 7:
-> +		case RSET ... RSET + 7:
->  		case SOI:
->  		case EOI:
->  		case TEM:
-> --- linux-next-20210903.orig/drivers/media/platform/s5p-jpeg/jpeg-core.h
-> +++ linux-next-20210903/drivers/media/platform/s5p-jpeg/jpeg-core.h
-> @@ -40,7 +40,7 @@
->  #define TEM				0x01
->  #define SOF0				0xc0
->  #define DHT				0xc4
-> -#define RST				0xd0
-> +#define RSET				0xd0
->  #define SOI				0xd8
->  #define EOI				0xd9
->  #define	SOS				0xda
+> On Sat, Sep 4, 2021 at 8:19 AM Florian Weimer <fweimer@redhat.com> wrote:
+>>
+>> In any case, it would be nice to know what the real motivation is.
+>
+> I don't know about the original motivation, but the reason I like that
+> patch after-the-fact is that I've actually been in situations where I
+> test out self-built compilers without installing them.
 
-I don't like this change, for a couple reasons:
+Does this really simplify matters?  Why wouldn't the gcc compiler driver
+find cc1, but not be able to pass the right path options, so that the
+include/ subdirectory can be located as well?
 
-1. the JPEG marker is "RST" (actually, "RST0") instead of "RSET" 
-   (see pag. 36 https://www.w3.org/Graphics/JPEG/itu-t81.pdf). The
-   close it sticks with the JPEG standard, the better;
+> Then it's convenient to have a completely standalone kernel tree.
 
-2. better to add a namespace here, as other JPEG markers like SOS,
-   SOI and EOI seems to have a high chance of happening somewhere
-   else on other kernel headers in the future.
+The final patch in the series is here:
 
-So, IMO, the best would be to rename all those markers as a hole, with
-something similar to:
+  isystem: delete global -isystem compile option
+  <https://lore.kernel.org/linux-kernel/YQhY40teUJcTc5H4@localhost.localdomain/>
 
-	$ for i in TEM SOF0 DHT RST SOI EOI SOS DQT DHP; do sed "s,\b$i\b,JPEG_MARKER_$i,g" -i drivers/media/platform/s5p-jpeg/*.[ch]; done
+It's still not self-contained.  And it seems that there has been quite a
+bit of fallout from the removal of <stddef.h>.
 
-and manually adjust the patch, as at least this hunk could be
-improved:
+> Nobody cares about things like <stdatomic.h> They are completely
+> irrelevant for the kernel, exactly because we've always just done our
+> own, or used __builtin_xyz() for things.
 
-	@@ -187,11 +187,11 @@ struct s5p_jpeg_marker {
-	  * @fmt:       driver-specific format of this queue
-	  * @w:         image width
-	  * @h:         image height
-	- * @sos:       SOS marker's position relative to the buffer beginning
-	- * @dht:       DHT markers' positions relative to the buffer beginning
-	- * @dqt:       DQT markers' positions relative to the buffer beginning
-	- * @sof:       SOF0 marker's position relative to the buffer beginning
-	- * @sof_len:   SOF0 marker's payload length (without length field itself)
-	+ * @sos:       JPEG_MARKER_SOS marker's position relative to the buffer beginning
-	+ * @dht:       JPEG_MARKER_DHT markers' positions relative to the buffer beginning
-	+ * @dqt:       JPEG_MARKER_DQT markers' positions relative to the buffer beginning
-	+ * @sof:       JPEG_MARKER_SOF0 marker's position relative to the buffer beginning
-	+ * @sof_len:   JPEG_MARKER_SOF0 marker's payload length (without length field itself)
-	  * @size:      image buffer size in bytes
-	  */
+Apparently, some people care enough about <stdatomic.h> to prevent its
+use.  I still have not seen an explanation.  Maybe it's because we
+haven't Cc:ed the patch author so far (oops).
 
-to avoid repeating the word marker.
+Alexey, why are <stdatomic.h> and <float.h> so special that you called
+them out in your patch?
+
+If it's about unintended use of libatomic, then maybe we should work on
+a proper compiler option that also works for __atomic builtins and the
+_Atomic keyword.
 
 Thanks,
-Mauro
+Florian
+
