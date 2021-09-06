@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7317401525
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 05:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9F6401534
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 05:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239216AbhIFDFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 23:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239093AbhIFDFX (ORCPT
+        id S238578AbhIFDSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 23:18:01 -0400
+Received: from pi.codeconstruct.com.au ([203.29.241.158]:54516 "EHLO
+        codeconstruct.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230062AbhIFDSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 23:05:23 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A72C061757
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 20:04:19 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso3567497pjq.4
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 20:04:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZGF2zuT/IfwjlCiNlmF3KBmCpKmmu4YQ08OMojkPnNs=;
-        b=zMXlHYmM544wB8J8z/xn6rmKqVg4M7bwBlHaK46+3UbjE9izzXWhDn0TRdnm4+PgmF
-         tQO979ysqOWZ7HVk3QEjAwv938G+DVUzWnpIi3venPPEhTLUEJYgmbVO0BnURbVmyZ5I
-         1mEvcWPNfEBDetRN/SKdx1W34lAsQvaddqd7xavnL3W+elrZnc9tiLXbwO0dSzfluEiv
-         Q0t9x/c6rJ2tXXTo6F744gFKTDbFEzuAKOin6uqTOr8pIpR/RKRpWEyabVuSA3x0hC7V
-         c7kZ6zgcmPMDtdJVt17/LM2RGf9y7BmJyAAZdshIEFhmY+Jf/Kgmw4QqSLJlhzCjGfhh
-         FHYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZGF2zuT/IfwjlCiNlmF3KBmCpKmmu4YQ08OMojkPnNs=;
-        b=XSwyuWtxte8fPoNCrHeI/nzaMuY/ICkU0thg/Wm6EHxPmPnGb9XmhpVFK7ZN0ox9tc
-         eNOJVyk0EieCyEAKOpqdgadUc8DgpSnUtbYcsIWPMfL1qaA7AwGRsJ5guK47xqCxur5e
-         H74gVeQfzwWQCoQZBwQjL7XeQuQ0+4Bc3QIS9ilv28hQnavp2p3X7C+Igdh/XotBqBvR
-         pnjHAoBK50zvCOxUkgmNqh88g+z9D5rpraDCdpJIKnzC/mysviIMljTIig35svxLS5GX
-         dnWIByFSb6SeXTBe/y9Q2PMGXLO8h2YNbW8dicwwrjGJZvaaH+nHHT7blc/GWUlrsuod
-         Pyig==
-X-Gm-Message-State: AOAM533teL8HOcewaze5q3f8H9wV3c+1psowv3EvyF7FBz2+VcpXlAYw
-        mICTlwDgVM4ZUlNsZ8Zxepv2gQuL2Pvnow==
-X-Google-Smtp-Source: ABdhPJzapQs79H4XwgEDiI8WQ4k0n4gfxLF1psjjotY8xH+gRutuLQTEYoqBZUFP1aR80NX1DOkpSQ==
-X-Received: by 2002:a17:90a:c908:: with SMTP id v8mr11928513pjt.196.1630897458806;
-        Sun, 05 Sep 2021 20:04:18 -0700 (PDT)
-Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
-        by smtp.gmail.com with ESMTPSA id d13sm5591786pfn.114.2021.09.05.20.04.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Sep 2021 20:04:18 -0700 (PDT)
-Subject: Re: [PATCH] block/mq-deadline: Move dd_queued() to fix defined but
- not used warning
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210830091128.1854266-1-geert@linux-m68k.org>
- <caf2449c-e86d-195d-3635-9be49159166a@kernel.dk>
- <20210906125605.658fe211@canb.auug.org.au>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a0592ddf-306a-a833-785f-750a601487dd@kernel.dk>
-Date:   Sun, 5 Sep 2021 21:04:17 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 5 Sep 2021 23:18:00 -0400
+Received: from [172.16.66.38] (unknown [49.255.141.98])
+        by mail.codeconstruct.com.au (Postfix) with ESMTPSA id B0C892012C;
+        Mon,  6 Sep 2021 11:16:49 +0800 (AWST)
+Message-ID: <6593206c0bc90186f255c6ea86339576576f70dc.camel@codeconstruct.com.au>
+Subject: Re: [PATCH v4 3/4] soc: aspeed: Add eSPI driver
+From:   Jeremy Kerr <jk@codeconstruct.com.au>
+To:     ChiaWei Wang <chiawei_wang@aspeedtech.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc:     Morris Mao <morris_mao@aspeedtech.com>,
+        Ryan Chen <ryan_chen@aspeedtech.com>
+Date:   Mon, 06 Sep 2021 11:16:44 +0800
+In-Reply-To: <HK0PR06MB37799C48533B084CF864E49D91D29@HK0PR06MB3779.apcprd06.prod.outlook.com>
+References: <20210901033015.910-1-chiawei_wang@aspeedtech.com>
+         <20210901033015.910-4-chiawei_wang@aspeedtech.com>
+         <20c13b9bb023091758cac3a07fb4037b7d796578.camel@codeconstruct.com.au>
+         <HK0PR06MB37792273A075533C2570002391CE9@HK0PR06MB3779.apcprd06.prod.outlook.com>
+         <513cb05f8d83d08a5c1e491dc0a9b6784195e7dd.camel@codeconstruct.com.au>
+         <HK0PR06MB37799C48533B084CF864E49D91D29@HK0PR06MB3779.apcprd06.prod.outlook.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-In-Reply-To: <20210906125605.658fe211@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/5/21 8:56 PM, Stephen Rothwell wrote:
-> Hi Jens,
-> 
-> On Thu, 2 Sep 2021 06:35:47 -0600 Jens Axboe <axboe@kernel.dk> wrote:
->>
->> On 8/30/21 3:11 AM, Geert Uytterhoeven wrote:
->>> If CONFIG_BLK_DEBUG_FS=n:
->>>
->>>     block/mq-deadline.c:274:12: warning: ‘dd_queued’ defined but not used [-Wunused-function]
->>>       274 | static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
->>> 	  |            ^~~~~~~~~
->>>
->>> Fix this by moving dd_queued() just before the sole function that calls
->>> it.  
->>
->> Applied, thanks.
-> 
-> Can we get this to Linus ASAP as he has now made warnings fatal, so
-> this is causing lots of build failures.
+Hi Chiawei,
 
-Sure, it's actually the only branch I haven't sent off yet today. Will
-do so now.
+> > If that model doesn't fit though, that's OK, but I think we need
+> > some rationale
+> > there.
+> 
+> After an internal discussion, we found that our eSPI VW device may
+> not fit into existing GPIO model.
+> 
+> The reason is that GPIO direction changes through VW channel has no
+> interrupts triggered.
+> And the direction is controlled by the Host as aforementioned.
 
--- 
-Jens Axboe
+This piqued my curiosity, so I had a look through the 2500 datasheet. It
+appears that the host has full control of both the direction *and*
+hardware GPIO assignment though the platform-specific eSPI configuration
+register set.
+
+So, with VW GPIOs in hardware mode (ESPICTRL[9] = 0, the default), the
+host has arbitrary control of all hardware GPIO lines (except for
+the GPIOAC bank, I guess?).
+
+There's a huge security implication there - for example, GPIOs that
+assert physical presence can now be set by the host, possibly remotely -
+so I'd *strongly* recommend that we always get ESPICTRL[9] to 1, to set
+software-only mode.
+
+With than in mind, if we're disabling hardware mode - what does the
+direction control setting effect when we're in software mode
+(ESPICTRL[9] == 1)? Does it even matter?
+
+For example, what happens when the host goes a GET_VW cycle for a GPIO
+that is marked as 'master-to-slave' mode? Is the state of the GPIO in
+ESPI09C still reported?
+
+If that's the case, then we can just ignore the direction settings from
+ESPICFG800 completely, and have the BMC assign directions to standard
+gpiodevs as appropriate.
+
+Separate from this: I'm also proposing that we represent the system
+event VWs as gpiodevs as well.
+
+> A raw packet, primitive interface should have better flexibility to
+> manage MCTP packets over the OOB channel.
+
+OK, let me phrase this differently: can the OOB channel be used for
+anything other than SMBus messaging? Is it useful to provide an
+interface that isn't a standard SMBus/i2c device?
+
+If you need custom uapi definitions for this driver, that might be okay,
+but it's going to be more work for you (to define an interface that can
+be supported long-term), rather than using standard infrastructure that
+already exists.
+
+Cheers,
+
+
+Jeremy
 
