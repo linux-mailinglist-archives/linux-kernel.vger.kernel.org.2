@@ -2,238 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A2E401B03
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1D9401B07
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241990AbhIFMOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:14:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58486 "EHLO
+        id S242197AbhIFMOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:14:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239993AbhIFMOG (ORCPT
+        with ESMTP id S242078AbhIFMOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:14:06 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4217FC061575;
-        Mon,  6 Sep 2021 05:13:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LgdSNkdSlWB7zsbY0/6EDhJt8ziUdW7VQcJcKDeiYiU=; b=UO/ewHGqlMSbyD7jDEi37n7cCC
-        emJp+D30H90wq6doPYC4e0or2baJa99Z7Lg6VIunA6pmVYppoOACCTvcronVflzHH/mjIsbZTlhxD
-        t+D0aV5BLH1fpNmHxjRu3SKHh5CMj4tt/QgZAwURhL7PoBJzmlUt1XUxQ/BuX4KHZEF5i2aQjx6Ai
-        E3yDu/YExueqQ3uw2fKXxBfbMYYeZmwAUdUcBnUYnU+CqPOT8FpNRONihVeB5KlZ+PMjWRrE9cdQ8
-        /ObSFrWiXUjULPAVucO5UEkWCIu1/VtcuDCGUSPWUdwFouyHD1WFsrZE/BKRTthTv7i8UmFd13XXQ
-        NV0WvQHg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNDTv-006vdB-FL; Mon, 06 Sep 2021 12:12:18 +0000
-Date:   Mon, 6 Sep 2021 13:12:11 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the folio
- tree
-Message-ID: <YTYFm1Ca8LHvrlyq@casper.infradead.org>
-References: <20210721163118.3ca01b57@canb.auug.org.au>
- <20210906144807.4db0790f@canb.auug.org.au>
+        Mon, 6 Sep 2021 08:14:22 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 840B9C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 05:13:17 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id mf2so13080429ejb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 05:13:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4XK2He6XAxXZ4uQ+tUP1SQxv8SHznWmh71eOTMIjERI=;
+        b=xGTcxD7ejbDHeEbg0ZXBUIYzR9oCdXX+beBjuuudikBwUEZeUB9hzQ91YZIEEaRx3T
+         oHnlwQCeXwxqq88qh4cfw6ObirXnGIf/StLNaDv+0Z5BnidsFDCipS2EWhRyQ/zW3H2N
+         /5rphWoxHQeOpOANwtZtvD8kjZIYS0269VOYUuM9i7hPT/0C+UP0Td8JHmOG0qp7IUDY
+         BEjv4LUxVEN3rF9mfccMtptx5kBaiP2w/AWi/WJP7tZ+gWqBwihfay4B9VChiUVhXCkG
+         VuTZE7l7g7a53QbanyNAMpB+KgpG4SLgf2VtIUo88uf6zyBz3cnbKrUxeaOHOe74nVS/
+         U/Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4XK2He6XAxXZ4uQ+tUP1SQxv8SHznWmh71eOTMIjERI=;
+        b=WMseAFzKSFfEyEyQDl4XU3IzgnTlj43tEViFFiAX9fc4VumrD39yz4Au8FyWvD6AJI
+         VnheB2b55AX+5hNqwaxAF2m99bhJModFTkEzqZAq7NPYT9FbATwwcdldUQs84wbcL/ii
+         Q4AA+mArqpKCkt55YCxiIfKEvkLM34mFOfG498Q6d68LEftWnejBVbZDH6taXjP3807a
+         mVKK5sGC/pARFqFeEUuvcM9taVFpu/7cTL3nsWEuWKUcwE4mSZYyPlPjk4vj3T89YjKb
+         n8DuwJTXZttwriaCK4jK7ZaOw2Dfma9476odSuLazi9ucMP1G1YK6/PDlPsAnhxdpKZk
+         R8/A==
+X-Gm-Message-State: AOAM531johE7wzTOIDlQerao0BlDwP+Grhy147MX0OQeXNkTNxRCdQ+X
+        HjVAFklj6+izXtk7M5BKEzYREtI7ReYi4qefVthu
+X-Google-Smtp-Source: ABdhPJzK+qfWM9eD5RSyJJP164cm7bgw35oldCbjaoz6t6fKIkLAriVsnsDFTWGNuSYWqGHiMcBtup9p0O13Crs4IQ4=
+X-Received: by 2002:a17:906:1484:: with SMTP id x4mr13305837ejc.72.1630930396029;
+ Mon, 06 Sep 2021 05:13:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210906144807.4db0790f@canb.auug.org.au>
+References: <20210831103634.33-1-xieyongji@bytedance.com> <20210831103634.33-6-xieyongji@bytedance.com>
+ <20210906015524-mutt-send-email-mst@kernel.org> <CACycT3v4ZVnh7DGe_RtAOx4Vvau0km=HWyCM=KzKhD+ahYKafQ@mail.gmail.com>
+ <20210906023131-mutt-send-email-mst@kernel.org> <CACycT3ssC1bhNzY9Pk=LPvKjMrFFavTfCKTJtR2XEiVYqDxT1Q@mail.gmail.com>
+ <20210906035338-mutt-send-email-mst@kernel.org> <CACycT3vQHRsJ_j5f4T9RoB4MQzBoYO5ts3egVe9K6TcCVfLOFQ@mail.gmail.com>
+ <20210906053210-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210906053210-mutt-send-email-mst@kernel.org>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Mon, 6 Sep 2021 20:13:04 +0800
+Message-ID: <CACycT3uChWmr50FGutFz0hK+2jSjx0KJsJ5w-NVBq-E_nmJm9w@mail.gmail.com>
+Subject: Re: [PATCH v13 05/13] vdpa: Add reset callback in vdpa_config_ops
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        He Zhe <zhe.he@windriver.com>,
+        Liu Xiaodong <xiaodong.liu@intel.com>,
+        Joe Perches <joe@perches.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        John Garry <john.garry@huawei.com>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 02:48:07PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> On Wed, 21 Jul 2021 16:31:18 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > 
-> > Today's linux-next merge of the akpm-current tree got conflicts in:
-> > 
-> >   include/linux/memcontrol.h
-> >   mm/memcontrol.c
-> > 
-> > between commits:
-> > 
-> >   05bb7bbab428 ("mm/memcg: Convert mem_cgroup_charge() to take a folio")
-> >   8b2afb6a1c34 ("mm/memcg: Convert mem_cgroup_uncharge() to take a folio")
-> > 
-> > from the folio tree and commit:
-> > 
-> >   1f4c6a1cf274 ("mm, memcg: inline mem_cgroup_{charge/uncharge} to improve disabled memcg config")
-> > 
-> > from the akpm-current tree.
-> > 
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> > 
-> > diff --cc include/linux/memcontrol.h
-> > index af9c44bb1e42,406058a0c480..000000000000
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@@ -704,15 -691,37 +702,36 @@@ static inline bool mem_cgroup_below_min
-> >   		page_counter_read(&memcg->memory);
-> >   }
-> >   
-> > - int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp);
-> >  -int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-> >  -			gfp_t gfp_mask);
-> >  -static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-> >  -				    gfp_t gfp_mask)
-> > ++int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp);
-> > ++static inline int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm,
-> > ++				    gfp_t gfp)
-> > + {
-> > + 	if (mem_cgroup_disabled())
-> > + 		return 0;
-> >  -	return __mem_cgroup_charge(page, mm, gfp_mask);
-> > ++	return __mem_cgroup_charge(folio, mm, gfp);
-> > + }
-> > + 
-> >   int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
-> >   				  gfp_t gfp, swp_entry_t entry);
-> >   void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry);
-> >   
-> > - void mem_cgroup_uncharge(struct folio *folio);
-> > - void mem_cgroup_uncharge_list(struct list_head *page_list);
-> >  -void __mem_cgroup_uncharge(struct page *page);
-> >  -static inline void mem_cgroup_uncharge(struct page *page)
-> > ++void __mem_cgroup_uncharge(struct folio *folio);
-> > ++static inline void mem_cgroup_uncharge(struct folio *folio)
-> > + {
-> > + 	if (mem_cgroup_disabled())
-> > + 		return;
-> >  -	__mem_cgroup_uncharge(page);
-> > ++	__mem_cgroup_uncharge(folio);
-> > + }
-> > + 
-> > + void __mem_cgroup_uncharge_list(struct list_head *page_list);
-> > + static inline void mem_cgroup_uncharge_list(struct list_head *page_list)
-> > + {
-> > + 	if (mem_cgroup_disabled())
-> > + 		return;
-> > + 	__mem_cgroup_uncharge_list(page_list);
-> > + }
-> >   
-> >  -void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
-> >  +void mem_cgroup_migrate(struct folio *old, struct folio *new);
-> >   
-> >   /**
-> >    * mem_cgroup_lruvec - get the lru list vector for a memcg & node
-> > diff --cc mm/memcontrol.c
-> > index 1d77c873463c,c010164172dd..000000000000
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@@ -6712,29 -6718,27 +6708,26 @@@ out
-> >   }
-> >   
-> >   /**
-> > -  * mem_cgroup_charge - Charge a newly allocated folio to a cgroup.
-> >  - * __mem_cgroup_charge - charge a newly allocated page to a cgroup
-> >  - * @page: page to charge
-> >  - * @mm: mm context of the victim
-> >  - * @gfp_mask: reclaim mode
-> > ++ * __mem_cgroup_charge - Charge a newly allocated folio to a cgroup.
-> >  + * @folio: Folio to charge.
-> >  + * @mm: mm context of the allocating task.
-> >  + * @gfp: Reclaim mode.
-> >    *
-> >  - * Try to charge @page to the memcg that @mm belongs to, reclaiming
-> >  - * pages according to @gfp_mask if necessary. if @mm is NULL, try to
-> >  + * Try to charge @folio to the memcg that @mm belongs to, reclaiming
-> >  + * pages according to @gfp if necessary.  If @mm is NULL, try to
-> >    * charge to the active memcg.
-> >    *
-> >  - * Do not use this for pages allocated for swapin.
-> >  + * Do not use this for folios allocated for swapin.
-> >    *
-> >  - * Returns 0 on success. Otherwise, an error code is returned.
-> >  + * Return: 0 on success. Otherwise, an error code is returned.
-> >    */
-> > - int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp)
-> >  -int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-> >  -			gfp_t gfp_mask)
-> > ++int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp)
-> >   {
-> >   	struct mem_cgroup *memcg;
-> >   	int ret;
-> >   
-> > - 	if (mem_cgroup_disabled())
-> > - 		return 0;
-> > - 
-> >   	memcg = get_mem_cgroup_from_mm(mm);
-> >  -	ret = charge_memcg(page, memcg, gfp_mask);
-> >  +	ret = charge_memcg(folio, memcg, gfp);
-> >   	css_put(&memcg->css);
-> >   
-> >   	return ret;
-> > @@@ -6906,20 -6909,17 +6899,17 @@@ static void uncharge_folio(struct foli
-> >   }
-> >   
-> >   /**
-> > -  * mem_cgroup_uncharge - Uncharge a folio.
-> >  - * __mem_cgroup_uncharge - uncharge a page
-> >  - * @page: page to uncharge
-> > ++ * __mem_cgroup_uncharge - Uncharge a folio.
-> >  + * @folio: Folio to uncharge.
-> >    *
-> >  - * Uncharge a page previously charged with __mem_cgroup_charge().
-> >  + * Uncharge a folio previously charged with mem_cgroup_charge().
-> >    */
-> > - void mem_cgroup_uncharge(struct folio *folio)
-> >  -void __mem_cgroup_uncharge(struct page *page)
-> > ++void __mem_cgroup_uncharge(struct folio *folio)
-> >   {
-> >   	struct uncharge_gather ug;
-> >   
-> > - 	if (mem_cgroup_disabled())
-> > - 		return;
-> > - 
-> >  -	/* Don't touch page->lru of any random page, pre-check: */
-> >  -	if (!page_memcg(page))
-> >  +	/* Don't touch folio->lru of any random page, pre-check: */
-> >  +	if (!folio_memcg(folio))
-> >   		return;
-> >   
-> >   	uncharge_gather_clear(&ug);
-> > @@@ -6932,19 -6932,16 +6922,16 @@@
-> >    * @page_list: list of pages to uncharge
-> >    *
-> >    * Uncharge a list of pages previously charged with
-> > -  * mem_cgroup_charge().
-> > +  * __mem_cgroup_charge().
-> >    */
-> > - void mem_cgroup_uncharge_list(struct list_head *page_list)
-> > + void __mem_cgroup_uncharge_list(struct list_head *page_list)
-> >   {
-> >   	struct uncharge_gather ug;
-> >  -	struct page *page;
-> >  +	struct folio *folio;
-> >   
-> > - 	if (mem_cgroup_disabled())
-> > - 		return;
-> > - 
-> >   	uncharge_gather_clear(&ug);
-> >  -	list_for_each_entry(page, page_list, lru)
-> >  -		uncharge_page(page, &ug);
-> >  +	list_for_each_entry(folio, page_list, lru)
-> >  +		uncharge_folio(folio, &ug);
-> >   	if (ug.memcg)
-> >   		uncharge_batch(&ug);
-> >   }
-> 
-> This is now a conflict between the folio tree and Linus' tree.
+On Mon, Sep 6, 2021 at 6:43 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Mon, Sep 06, 2021 at 04:45:55PM +0800, Yongji Xie wrote:
+> > On Mon, Sep 6, 2021 at 4:01 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > >
+> > > On Mon, Sep 06, 2021 at 03:06:44PM +0800, Yongji Xie wrote:
+> > > > On Mon, Sep 6, 2021 at 2:37 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > >
+> > > > > On Mon, Sep 06, 2021 at 02:09:25PM +0800, Yongji Xie wrote:
+> > > > > > On Mon, Sep 6, 2021 at 1:56 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > > > >
+> > > > > > > On Tue, Aug 31, 2021 at 06:36:26PM +0800, Xie Yongji wrote:
+> > > > > > > > This adds a new callback to support device specific reset
+> > > > > > > > behavior. The vdpa bus driver will call the reset function
+> > > > > > > > instead of setting status to zero during resetting.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+> > > > > > >
+> > > > > > >
+> > > > > > > This does gloss over a significant change though:
+> > > > > > >
+> > > > > > >
+> > > > > > > > ---
+> > > > > > > > @@ -348,12 +352,12 @@ static inline struct device *vdpa_get_dma_dev(struct vdpa_device *vdev)
+> > > > > > > >       return vdev->dma_dev;
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > > -static inline void vdpa_reset(struct vdpa_device *vdev)
+> > > > > > > > +static inline int vdpa_reset(struct vdpa_device *vdev)
+> > > > > > > >  {
+> > > > > > > >       const struct vdpa_config_ops *ops = vdev->config;
+> > > > > > > >
+> > > > > > > >       vdev->features_valid = false;
+> > > > > > > > -     ops->set_status(vdev, 0);
+> > > > > > > > +     return ops->reset(vdev);
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > >  static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
+> > > > > > >
+> > > > > > >
+> > > > > > > Unfortunately this breaks virtio_vdpa:
+> > > > > > >
+> > > > > > >
+> > > > > > > static void virtio_vdpa_reset(struct virtio_device *vdev)
+> > > > > > > {
+> > > > > > >         struct vdpa_device *vdpa = vd_get_vdpa(vdev);
+> > > > > > >
+> > > > > > >         vdpa_reset(vdpa);
+> > > > > > > }
+> > > > > > >
+> > > > > > >
+> > > > > > > and there's no easy way to fix this, kernel can't recover
+> > > > > > > from a reset failure e.g. during driver unbind.
+> > > > > > >
+> > > > > >
+> > > > > > Yes, but it should be safe with the protection of software IOTLB even
+> > > > > > if the reset() fails during driver unbind.
+> > > > > >
+> > > > > > Thanks,
+> > > > > > Yongji
+> > > > >
+> > > > > Hmm. I don't see it.
+> > > > > What exactly will happen? What prevents device from poking at
+> > > > > memory after reset? Note that dma unmap in e.g. del_vqs happens
+> > > > > too late.
+> > > >
+> > > > But I didn't see any problems with touching the memory for virtqueues.
+> > >
+> > > Drivers make the assumption that after reset returns no new
+> > > buffers will be consumed. For example a bunch of drivers
+> > > call virtqueue_detach_unused_buf.
+> >
+> > I'm not sure if I get your point. But it looks like
+> > virtqueue_detach_unused_buf() will check the driver's metadata first
+> > rather than read the memory from virtqueue.
+> >
+> > > I can't say whether block makes this assumption anywhere.
+> > > Needs careful auditing.
+> > >
+> > > > The memory should not be freed after dma unmap?
+> > >
+> > > But unmap does not happen until after the reset.
+> > >
+> >
+> > I mean the memory is totally allocated and controlled by the VDUSE
+> > driver. The VDUSE driver will not return them to the buddy system
+> > unless userspace unmap it.
+>
+> Right. But what stops VDUSE from poking at memory after
+> reset failed?
+>
 
-Quite.  Linus, how do you want to handle this?  Pull the folio-5.15 tag
-I originally sent you?  Pull the pageset-5.15 tag?  Tell me you'll never
-accept this and drop the entire idea?
+Only itself. But in normal cases, userspace would not poke at the
+memory since there is no available data after reset.
 
-Do you need anything from me?
+And it makes me think whether it's better to disallow returning errors
+from userspace for the reset message. Then the only case that leads to
+reset failure is the request timeout, which will mark the device
+broken now.
+
+>
+> > >
+> > > > And the memory for the bounce buffer should also be safe to be
+> > > > accessed by userspace in this case.
+> > > >
+> > > > > And what about e.g. interrupts?
+> > > > > E.g. we have this:
+> > > > >
+> > > > >         /* Virtqueues are stopped, nothing can use vblk->vdev anymore. */
+> > > > >         vblk->vdev = NULL;
+> > > > >
+> > > > > and this is no longer true at this point.
+> > > > >
+> > > >
+> > > > You're right. But I didn't see where the interrupt handler will use
+> > > > the vblk->vdev.
+> > >
+> > > static void virtblk_done(struct virtqueue *vq)
+> > > {
+> > >         struct virtio_blk *vblk = vq->vdev->priv;
+> > >
+> > > vq->vdev is the same as vblk->vdev.
+> > >
+> >
+> > We will test the vq->ready (will be set to false in del_vqs()) before
+> > injecting an interrupt in the VDUSE driver. So it should be OK?
+>
+> Maybe not ...  It's not designed for such asynchronous access, so e.g.
+> there's no locking or memory ordering around accesses.
+>
+
+Yes, so we still need the below fix.
+
+>
+> > >
+> > > > So it seems to be not too late to fix it:
+> > > >
+> > > > diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c
+> > > > b/drivers/vdpa/vdpa_user/vduse_dev.c
+> > > > index 5c25ff6483ad..ea41a7389a26 100644
+> > > > --- a/drivers/vdpa/vdpa_user/vduse_dev.c
+> > > > +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+> > > > @@ -665,13 +665,13 @@ static void vduse_vdpa_set_config(struct
+> > > > vdpa_device *vdpa, unsigned int offset,
+> > > >  static int vduse_vdpa_reset(struct vdpa_device *vdpa)
+> > > >  {
+> > > >         struct vduse_dev *dev = vdpa_to_vduse(vdpa);
+> > > > +       int ret;
+> > > >
+> > > > -       if (vduse_dev_set_status(dev, 0))
+> > > > -               return -EIO;
+> > > > +       ret = vduse_dev_set_status(dev, 0);
+> > > >
+> > > >         vduse_dev_reset(dev);
+> > > >
+> > > > -       return 0;
+> > > > +       return ret;
+> > > >  }
+> > > >
+> > > >  static u32 vduse_vdpa_get_generation(struct vdpa_device *vdpa)
+> > > >
+> > > > Thanks,
+> > > > Yongji
+> > >
+> > > Needs some comments to explain why it's done like this.
+> > >
+> >
+> > This is used to make sure the userspace can't not inject the interrupt
+> > any more after reset. The vduse_dev_reset() will clear the interrupt
+> > callback and flush the irq kworker.
+> >
+> > > BTW device is generally wedged at this point right?
+> > > E.g. if reset during initialization fails, userspace
+> > > will still get the reset at some later point and be
+> > > confused ...
+> > >
+> >
+> > Sorry, I don't get why userspace will get the reset at some later point?
+> >
+> > Thanks,
+> > Yongji
+>
+> I am generally a bit confused about how does reset work with vduse.
+> We clearly want device to get back to its original state.
+> How is that supposed to be achieved?
+>
+
+I think both the userspace daemon and kernel should reset their
+internal states. Besides, userspace daemon needs to stop processing
+virtqueue and clear the memory mapping.
+
+Thanks,
+Yongji
