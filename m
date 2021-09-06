@@ -2,85 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982F6401562
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 06:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A996401564
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 06:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbhIFEOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 00:14:30 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:53324
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229633AbhIFEOZ (ORCPT
+        id S232564AbhIFEOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 00:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhIFEOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 00:14:25 -0400
-Received: from localhost.localdomain (1-171-98-108.dynamic-ip.hinet.net [1.171.98.108])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 960BE3F245;
-        Mon,  6 Sep 2021 04:13:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630901600;
-        bh=aMyOs5KURw0ylNVRy7PWd+JnRcqnOEgyA7dtb08/Cp8=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=A9+QKld1uCsIVfE7kIQEAjCKwCAcUwjJDbK3EbExPWjfmsCRIExsEelE/4zdclKm0
-         i8KI9qBJciphkEf51w/7R7pmpXagbetc0v6He5jfaT9PMQW3rVUpIULhp4sLQZ1TuR
-         CeBh+uNtY3U8BTptq4kRy9O5II2KUkqnUu0a3DeFYiRR7pXIyyXLh/MQkHNFo/AY+P
-         sPqlQ7mLVLE/owlv+LPt4PM2SBh4Lhh26q+TjeG/aBmyTCXPP+HKCmrxvK9fUhg7/+
-         ptTLbLxKsWP8KzrpqHBszkYLshGvswsJoECAT2xbIWkWRgv9yL2QMz6GFAlyV6Z+fh
-         JJFJ4FHm8YZ/A==
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Imre Deak <imre.deak@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/i915/audio: Use BIOS provided value for RKL HDA link
-Date:   Mon,  6 Sep 2021 12:12:59 +0800
-Message-Id: <20210906041300.508458-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Mon, 6 Sep 2021 00:14:53 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3296C061575;
+        Sun,  5 Sep 2021 21:13:48 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so3464926pjc.3;
+        Sun, 05 Sep 2021 21:13:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DDfs506elfVQtwvsSc35KPZpNEn95r25l9p9sqG0B24=;
+        b=ojfO4IOtMRTy69WphW9Tmy1bAz8RPBeEY38eHzq8DFTANyDHjGN0aHRotHC/g2+3LW
+         O7vb9rhbjFmuj4qOI3SCSfq8YtGdoIbcDhNEtw8xUMSMY8xSUlg4O6+QqofS7oRkgwkj
+         T9/WH3HKF7xuJFaO/FYSidOxBt0LgN4fWcWK1EYFLOW0uzkaVBlCF5cu1Icjd2O9ygjA
+         tKyruamwlIESAymZeo/cEi+2AbLLAjfv62HODSGcVFhWDwZ1KYovTCTC7JfODcT7G3cm
+         uiaSgzwRzjDav2ahkjb5jEKQf0exIXIJ9xqT6hrt7lM2CmzMiXe2t1K4lGTlgrfaBgwu
+         5SQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DDfs506elfVQtwvsSc35KPZpNEn95r25l9p9sqG0B24=;
+        b=qnkikaG/ehC8IIDhQkDKL+9GDkxVZS5q9fTncZdGtB7tLiLD0nkBNy0WVy5h9Jb0UM
+         uNxxEaHI8UDZ/JHnyF1ucLKh+9f9puaQO3ufagApaDwzm6YehTkrjPIARwf9RyLTbGVE
+         OyPJbQNH1Duj+kpHfMI2oKa0tFmzyJLLt8mafmA9nmKSBWpsvoe8zUbDfnnWQsebJ0cr
+         l5HJLu6A7k8X0xKajWoZ3URJGVW5bZ5/voIqdyN2bnhU2oocf7TFIx08nys8W9OVtKMt
+         0bFSdE3ESDeLHeVgqwRnqRNvm6+iG9i2xvi3rwM62RZe/VE4iep+0YYPJH2gP+GkidOF
+         tjsA==
+X-Gm-Message-State: AOAM5334C2qoPTtYsBsTA9awAk1E+aC6RVTnSONZ0t6WIEexTNEuUMbl
+        frasxeQvCWrZqAg9bsm4rXeh7CsZbiJwszk4
+X-Google-Smtp-Source: ABdhPJxMIxT7Ba2K2PSJoYH9cYbCR30P8NeyOKCf252DtbTCRww6vB8Dg9SHUzoeDxjQVatLA9j6AA==
+X-Received: by 2002:a17:90a:5107:: with SMTP id t7mr12145885pjh.74.1630901627994;
+        Sun, 05 Sep 2021 21:13:47 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.104])
+        by smtp.gmail.com with ESMTPSA id mv1sm5797989pjb.29.2021.09.05.21.13.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 21:13:47 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc:     paskripkin@gmail.com, Dongliang Mu <mudongliangabcd@gmail.com>,
+        linux-nilfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] nilfs2: fix memory leak in nilfs_sysfs_create_device_group
+Date:   Mon,  6 Sep 2021 12:13:30 +0800
+Message-Id: <20210906041330.2065214-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 989634fb49ad ("drm/i915/audio: set HDA link parameters in
-driver") makes HDMI audio on Lenovo P350 disappear.
+The commit 8fd0c1b0647a ("nilfs2: fix memory leak in
+nilfs_sysfs_delete_device_group") adds a kobject_put to free the leaking
+object name. However, it is incomplete to only add kobject_put in the
+nilfs_sysfs_delete_device_group. The function
+nilfs_sysfs_create_device_group also needs the kobject_put to
+free the object name in the error handling part.
 
-So in addition to TGL, extend the logic to RKL to use BIOS provided
-value to fix the regression.
+Fix this by adding kobject_put in the error handling code of
+nilfs_sysfs_create_device_group.
 
-Fixes: 989634fb49ad ("drm/i915/audio: set HDA link parameters in driver")
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 ---
- drivers/gpu/drm/i915/display/intel_audio.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/nilfs2/sysfs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/i915/display/intel_audio.c b/drivers/gpu/drm/i915/display/intel_audio.c
-index 532237588511..4e0f96bf6158 100644
---- a/drivers/gpu/drm/i915/display/intel_audio.c
-+++ b/drivers/gpu/drm/i915/display/intel_audio.c
-@@ -1308,8 +1308,9 @@ static void i915_audio_component_init(struct drm_i915_private *dev_priv)
- 		else
- 			aud_freq = aud_freq_init;
+diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+index 68e8d61e28dd..7ab60711ca76 100644
+--- a/fs/nilfs2/sysfs.c
++++ b/fs/nilfs2/sysfs.c
+@@ -1024,6 +1024,7 @@ int nilfs_sysfs_create_device_group(struct super_block *sb)
  
--		/* use BIOS provided value for TGL unless it is a known bad value */
--		if (IS_TIGERLAKE(dev_priv) && aud_freq_init != AUD_FREQ_TGL_BROKEN)
-+		/* use BIOS provided value for TGL and RKL unless it is a known bad value */
-+		if ((IS_TIGERLAKE(dev_priv) || IS_ROCKETLAKE(dev_priv)) &&
-+		    aud_freq_init != AUD_FREQ_TGL_BROKEN)
- 			aud_freq = aud_freq_init;
+ cleanup_dev_kobject:
+ 	kobject_del(&nilfs->ns_dev_kobj);
++	kobject_put(&nilfs->ns_dev_kobj);
  
- 		drm_dbg_kms(&dev_priv->drm, "use AUD_FREQ_CNTRL of 0x%x (init value 0x%x)\n",
+ free_dev_subgroups:
+ 	kfree(nilfs->ns_dev_subgroups);
 -- 
-2.32.0
+2.25.1
 
