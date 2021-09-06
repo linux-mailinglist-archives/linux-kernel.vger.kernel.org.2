@@ -2,262 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0704B401ED0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369BB401EB8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241143AbhIFQ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 12:57:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229975AbhIFQ5b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:57:31 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD5CC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 09:56:26 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id q70so14595880ybg.11
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 09:56:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XaMF+DeLAjg4NOrcNx5yKPhZDgSxDgd2/NGyTr3E1P4=;
-        b=Llal/g9ih9jcfAn1nHXt0VNfp+ge5evVfSFn2twpLi2vi9wYj0HbCpsEaZx1aAaLUU
-         Wza2SZtDDb8NcCpBHTSlu5M+0CCV9hKiYkkcCLuvM32fj+nEGcK01fYR1x8eT/1BLB3D
-         tp+axTLJKDQEfQGDFR5I6mX4CvhA55Rufp4PU1iAWRppqolsiY3fbYA2Lf/Fav97JFdH
-         LfARqle14EW/A9wnFfT5nLm7ffJrzfLj5zLN2bxAFYZ/xtN2QNwFbTe1H8GqIrpX17Pm
-         uAc1uRSYBSMLMgQGjOi1fJTuhVEeIO2n3gARYBMKTI0QTBvriXz9h5St2HFMQK0qjEot
-         hUIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XaMF+DeLAjg4NOrcNx5yKPhZDgSxDgd2/NGyTr3E1P4=;
-        b=g0NtrIJ2hcL1dK6MyvQXIUsf/foanG8MoY3XTsGZQC0wkdCi061p9Ox8OeZbQtKVnu
-         6M7nOpdaYXZVv3zqO1g5KWDudihDKTT+fMIxYgs75dGjtARWh/JtymtDFr8+x4KgusCy
-         vyHnvbTkWaaCYGFtQTkatqtkcTEI1oA/UcOxuvsA/s8b4GBYzJhzdfnB/6TdtzGiU5nG
-         I6bH7yEBjut/Q0GSSeYaPb3qKgpTJFOcxtoS5ybOgVPvh2/KswCcabgo/NyZb3vXzmfJ
-         QwCkgMI87KUlI/q/Kw2k2i5NhnESbvRpgkulTQ/HFkBFBbJwg1ydVwQXW/b984pIcFz5
-         AFVg==
-X-Gm-Message-State: AOAM530er8aRnpGTj8ki5tKGo9sICN5LO90ZonWjF+OqnP0Db+JjvxL2
-        hmg0T09D1msJGZHqLSww/SyXQbdVaKcFZroOCXoc8TFcXuZJlQ==
-X-Google-Smtp-Source: ABdhPJwUDwi4HEEC5AwjEwhsaFFqNA+WH02y+E3bupDQQtbUjw3m1kZYCCjXxz5U++0g6orYF5py6RHYIkg+I2HGMrM=
-X-Received: by 2002:a25:5686:: with SMTP id k128mr18302185ybb.127.1630947385793;
- Mon, 06 Sep 2021 09:56:25 -0700 (PDT)
+        id S238733AbhIFQym convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Sep 2021 12:54:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230263AbhIFQyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 12:54:41 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7EADC60FBF;
+        Mon,  6 Sep 2021 16:53:34 +0000 (UTC)
+Date:   Mon, 6 Sep 2021 17:56:57 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Sa, Nuno" <Nuno.Sa@analog.com>
+Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
+ samples
+Message-ID: <20210906175657.62cb0bc6@jic23-huawei>
+In-Reply-To: <SA1PR03MB6355AEE16D42689F671651A999D29@SA1PR03MB6355.namprd03.prod.outlook.com>
+References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
+        <20210818111139.330636-4-miquel.raynal@bootlin.com>
+        <SJ0PR03MB6359415E120CFD3EFAF417F599C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
+        <20210830110756.733d5201@jic23-huawei>
+        <MW4PR03MB6363FE3BAF40A383D244ADC399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
+        <20210830152956.58331a8d@jic23-huawei>
+        <MW4PR03MB6363BC976F039550906B6ED399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
+        <20210901101209.31703187@xps13>
+        <SA1PR03MB6355AEE16D42689F671651A999D29@SA1PR03MB6355.namprd03.prod.outlook.com>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210721163118.3ca01b57@canb.auug.org.au> <20210906144807.4db0790f@canb.auug.org.au>
- <YTYFm1Ca8LHvrlyq@casper.infradead.org>
-In-Reply-To: <YTYFm1Ca8LHvrlyq@casper.infradead.org>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 6 Sep 2021 09:56:14 -0700
-Message-ID: <CAJuCfpFMzpfR2LQ3saFk=vNfzbnKDG9ToOOVzFu5O3adniROHA@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the folio tree
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 6, 2021 at 5:13 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Mon, Sep 06, 2021 at 02:48:07PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > On Wed, 21 Jul 2021 16:31:18 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > >
-> > > Today's linux-next merge of the akpm-current tree got conflicts in:
-> > >
-> > >   include/linux/memcontrol.h
-> > >   mm/memcontrol.c
-> > >
-> > > between commits:
-> > >
-> > >   05bb7bbab428 ("mm/memcg: Convert mem_cgroup_charge() to take a folio")
-> > >   8b2afb6a1c34 ("mm/memcg: Convert mem_cgroup_uncharge() to take a folio")
-> > >
-> > > from the folio tree and commit:
-> > >
-> > >   1f4c6a1cf274 ("mm, memcg: inline mem_cgroup_{charge/uncharge} to improve disabled memcg config")
-> > >
-> > > from the akpm-current tree.
-> > >
-> > > I fixed it up (see below) and can carry the fix as necessary. This
-> > > is now fixed as far as linux-next is concerned, but any non trivial
-> > > conflicts should be mentioned to your upstream maintainer when your tree
-> > > is submitted for merging.  You may also want to consider cooperating
-> > > with the maintainer of the conflicting tree to minimise any particularly
-> > > complex conflicts.
-> > >
-> > > diff --cc include/linux/memcontrol.h
-> > > index af9c44bb1e42,406058a0c480..000000000000
-> > > --- a/include/linux/memcontrol.h
-> > > +++ b/include/linux/memcontrol.h
-> > > @@@ -704,15 -691,37 +702,36 @@@ static inline bool mem_cgroup_below_min
-> > >             page_counter_read(&memcg->memory);
-> > >   }
-> > >
-> > > - int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp);
-> > >  -int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-> > >  -                  gfp_t gfp_mask);
-> > >  -static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-> > >  -                              gfp_t gfp_mask)
-> > > ++int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp);
-> > > ++static inline int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm,
-> > > ++                              gfp_t gfp)
-> > > + {
-> > > +   if (mem_cgroup_disabled())
-> > > +           return 0;
-> > >  -  return __mem_cgroup_charge(page, mm, gfp_mask);
-> > > ++  return __mem_cgroup_charge(folio, mm, gfp);
-> > > + }
-> > > +
-> > >   int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
-> > >                               gfp_t gfp, swp_entry_t entry);
-> > >   void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry);
-> > >
-> > > - void mem_cgroup_uncharge(struct folio *folio);
-> > > - void mem_cgroup_uncharge_list(struct list_head *page_list);
-> > >  -void __mem_cgroup_uncharge(struct page *page);
-> > >  -static inline void mem_cgroup_uncharge(struct page *page)
-> > > ++void __mem_cgroup_uncharge(struct folio *folio);
-> > > ++static inline void mem_cgroup_uncharge(struct folio *folio)
-> > > + {
-> > > +   if (mem_cgroup_disabled())
-> > > +           return;
-> > >  -  __mem_cgroup_uncharge(page);
-> > > ++  __mem_cgroup_uncharge(folio);
-> > > + }
-> > > +
-> > > + void __mem_cgroup_uncharge_list(struct list_head *page_list);
-> > > + static inline void mem_cgroup_uncharge_list(struct list_head *page_list)
-> > > + {
-> > > +   if (mem_cgroup_disabled())
-> > > +           return;
-> > > +   __mem_cgroup_uncharge_list(page_list);
-> > > + }
-> > >
-> > >  -void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
-> > >  +void mem_cgroup_migrate(struct folio *old, struct folio *new);
-> > >
-> > >   /**
-> > >    * mem_cgroup_lruvec - get the lru list vector for a memcg & node
-> > > diff --cc mm/memcontrol.c
-> > > index 1d77c873463c,c010164172dd..000000000000
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@@ -6712,29 -6718,27 +6708,26 @@@ out
-> > >   }
-> > >
-> > >   /**
-> > > -  * mem_cgroup_charge - Charge a newly allocated folio to a cgroup.
-> > >  - * __mem_cgroup_charge - charge a newly allocated page to a cgroup
-> > >  - * @page: page to charge
-> > >  - * @mm: mm context of the victim
-> > >  - * @gfp_mask: reclaim mode
-> > > ++ * __mem_cgroup_charge - Charge a newly allocated folio to a cgroup.
-> > >  + * @folio: Folio to charge.
-> > >  + * @mm: mm context of the allocating task.
-> > >  + * @gfp: Reclaim mode.
-> > >    *
-> > >  - * Try to charge @page to the memcg that @mm belongs to, reclaiming
-> > >  - * pages according to @gfp_mask if necessary. if @mm is NULL, try to
-> > >  + * Try to charge @folio to the memcg that @mm belongs to, reclaiming
-> > >  + * pages according to @gfp if necessary.  If @mm is NULL, try to
-> > >    * charge to the active memcg.
-> > >    *
-> > >  - * Do not use this for pages allocated for swapin.
-> > >  + * Do not use this for folios allocated for swapin.
-> > >    *
-> > >  - * Returns 0 on success. Otherwise, an error code is returned.
-> > >  + * Return: 0 on success. Otherwise, an error code is returned.
-> > >    */
-> > > - int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp)
-> > >  -int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
-> > >  -                  gfp_t gfp_mask)
-> > > ++int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp)
-> > >   {
-> > >     struct mem_cgroup *memcg;
-> > >     int ret;
-> > >
-> > > -   if (mem_cgroup_disabled())
-> > > -           return 0;
-> > > -
-> > >     memcg = get_mem_cgroup_from_mm(mm);
-> > >  -  ret = charge_memcg(page, memcg, gfp_mask);
-> > >  +  ret = charge_memcg(folio, memcg, gfp);
-> > >     css_put(&memcg->css);
-> > >
-> > >     return ret;
-> > > @@@ -6906,20 -6909,17 +6899,17 @@@ static void uncharge_folio(struct foli
-> > >   }
-> > >
-> > >   /**
-> > > -  * mem_cgroup_uncharge - Uncharge a folio.
-> > >  - * __mem_cgroup_uncharge - uncharge a page
-> > >  - * @page: page to uncharge
-> > > ++ * __mem_cgroup_uncharge - Uncharge a folio.
-> > >  + * @folio: Folio to uncharge.
-> > >    *
-> > >  - * Uncharge a page previously charged with __mem_cgroup_charge().
-> > >  + * Uncharge a folio previously charged with mem_cgroup_charge().
-> > >    */
-> > > - void mem_cgroup_uncharge(struct folio *folio)
-> > >  -void __mem_cgroup_uncharge(struct page *page)
-> > > ++void __mem_cgroup_uncharge(struct folio *folio)
-> > >   {
-> > >     struct uncharge_gather ug;
-> > >
-> > > -   if (mem_cgroup_disabled())
-> > > -           return;
-> > > -
-> > >  -  /* Don't touch page->lru of any random page, pre-check: */
-> > >  -  if (!page_memcg(page))
-> > >  +  /* Don't touch folio->lru of any random page, pre-check: */
-> > >  +  if (!folio_memcg(folio))
-> > >             return;
-> > >
-> > >     uncharge_gather_clear(&ug);
-> > > @@@ -6932,19 -6932,16 +6922,16 @@@
-> > >    * @page_list: list of pages to uncharge
-> > >    *
-> > >    * Uncharge a list of pages previously charged with
-> > > -  * mem_cgroup_charge().
-> > > +  * __mem_cgroup_charge().
-> > >    */
-> > > - void mem_cgroup_uncharge_list(struct list_head *page_list)
-> > > + void __mem_cgroup_uncharge_list(struct list_head *page_list)
-> > >   {
-> > >     struct uncharge_gather ug;
-> > >  -  struct page *page;
-> > >  +  struct folio *folio;
-> > >
-> > > -   if (mem_cgroup_disabled())
-> > > -           return;
-> > > -
-> > >     uncharge_gather_clear(&ug);
-> > >  -  list_for_each_entry(page, page_list, lru)
-> > >  -          uncharge_page(page, &ug);
-> > >  +  list_for_each_entry(folio, page_list, lru)
-> > >  +          uncharge_folio(folio, &ug);
-> > >     if (ug.memcg)
-> > >             uncharge_batch(&ug);
-> > >   }
-> >
-> > This is now a conflict between the folio tree and Linus' tree.
->
-> Quite.  Linus, how do you want to handle this?  Pull the folio-5.15 tag
-> I originally sent you?  Pull the pageset-5.15 tag?  Tell me you'll never
-> accept this and drop the entire idea?
->
-> Do you need anything from me?
+On Mon, 6 Sep 2021 08:59:55 +0000
+"Sa, Nuno" <Nuno.Sa@analog.com> wrote:
 
-If dropping my patch (1f4c6a1cf274 ("mm, memcg: inline
-mem_cgroup_{charge/uncharge} to improve disabled memcg config")) helps
-in resolving this, feel free to do that and I'll redo it after folios
-are merged.
-Thanks,
-Suren.
+> > -----Original Message-----
+> > From: Miquel Raynal <miquel.raynal@bootlin.com>
+> > Sent: Wednesday, September 1, 2021 10:12 AM
+> > To: Sa, Nuno <Nuno.Sa@analog.com>
+> > Cc: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
+> > <lars@metafoo.de>; Thomas Petazzoni
+> > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org; linux-
+> > kernel@vger.kernel.org
+> > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
+> > samples
+> > 
+> > [External]
+> > 
+> > Hello,
+> > 
+> > "Sa, Nuno" <Nuno.Sa@analog.com> wrote on Mon, 30 Aug 2021
+> > 15:02:26
+> > +0000:
+> >   
+> > > > -----Original Message-----
+> > > > From: Jonathan Cameron <jic23@kernel.org>
+> > > > Sent: Monday, August 30, 2021 4:30 PM
+> > > > To: Sa, Nuno <Nuno.Sa@analog.com>
+> > > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Lars-Peter  
+> > Clausen  
+> > > > <lars@metafoo.de>; Thomas Petazzoni
+> > > > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org;  
+> > linux-  
+> > > > kernel@vger.kernel.org
+> > > > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the  
+> > requested  
+> > > > samples
+> > > >
+> > > > [External]
+> > > >
+> > > > On Mon, 30 Aug 2021 10:49:50 +0000
+> > > > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+> > > >  
+> > > > > > -----Original Message-----
+> > > > > > From: Jonathan Cameron <jic23@kernel.org>
+> > > > > > Sent: Monday, August 30, 2021 12:08 PM
+> > > > > > To: Sa, Nuno <Nuno.Sa@analog.com>
+> > > > > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Lars-Peter  
+> > > > Clausen  
+> > > > > > <lars@metafoo.de>; Thomas Petazzoni
+> > > > > > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org;  
+> > > > linux-  
+> > > > > > kernel@vger.kernel.org
+> > > > > > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the  
+> > > > requested  
+> > > > > > samples
+> > > > > >
+> > > > > > [External]
+> > > > > >
+> > > > > > On Fri, 20 Aug 2021 07:10:48 +0000
+> > > > > > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+> > > > > >  
+> > > > > > > > -----Original Message-----
+> > > > > > > > From: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > > > > > > Sent: Wednesday, August 18, 2021 1:11 PM
+> > > > > > > > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter  
+> > Clausen  
+> > > > > > > > <lars@metafoo.de>
+> > > > > > > > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>;  
+> > linux-  
+> > > > > > > > iio@vger.kernel.org; linux-kernel@vger.kernel.org; Miquel  
+> > > > Raynal  
+> > > > > > > > <miquel.raynal@bootlin.com>
+> > > > > > > > Subject: [PATCH 03/16] iio: adc: max1027: Push only the  
+> > > > requested  
+> > > > > > > > samples
+> > > > > > > >
+> > > > > > > > [External]
+> > > > > > > >
+> > > > > > > > When a triggered scan occurs, the identity of the desired  
+> > > > channels  
+> > > > > > is  
+> > > > > > > > known in indio_dev->active_scan_mask. Instead of reading  
+> > and  
+> > > > > > > > pushing to
+> > > > > > > > the IIO buffers all channels each time, scan the minimum  
+> > > > amount  
+> > > > > > of  
+> > > > > > > > channels (0 to maximum requested chan, to be exact) and  
+> > only  
+> > > > > > > > provide the
+> > > > > > > > samples requested by the user.
+> > > > > > > >
+> > > > > > > > For example, if the user wants channels 1, 4 and 5, all  
+> > channels  
+> > > > > > from  
+> > > > > > > > 0 to 5 will be scanned but only the desired channels will be  
+> > > > pushed  
+> > > > > > to  
+> > > > > > > > the IIO buffers.
+> > > > > > > >
+> > > > > > > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > > > > > > ---
+> > > > > > > >  drivers/iio/adc/max1027.c | 25 +++++++++++++++++++++-  
+> > ---  
+> > > > > > > >  1 file changed, 21 insertions(+), 4 deletions(-)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/iio/adc/max1027.c  
+> > > > b/drivers/iio/adc/max1027.c  
+> > > > > > > > index b753658bb41e..8ab660f596b5 100644
+> > > > > > > > --- a/drivers/iio/adc/max1027.c
+> > > > > > > > +++ b/drivers/iio/adc/max1027.c
+> > > > > > > > @@ -360,6 +360,9 @@ static int  
+> > > > max1027_set_trigger_state(struct  
+> > > > > > > > iio_trigger *trig, bool state)
+> > > > > > > >  	struct max1027_state *st = iio_priv(indio_dev);
+> > > > > > > >  	int ret;
+> > > > > > > >
+> > > > > > > > +	if (bitmap_empty(indio_dev->active_scan_mask,  
+> > > > indio_dev-  
+> > > > > > > > >masklength))  
+> > > > > > > > +		return -EINVAL;
+> > > > > > > > +  
+> > > > > > >
+> > > > > > > I'm not sure this can actually happen. If you try to enable the  
+> > > > buffer  
+> > > > > > > with no scan element, it should give you an error before you  
+> > > > reach  
+> > > > > > > this point...
+> > > > > > >  
+> > > > > > > >  	if (state) {
+> > > > > > > >  		/* Start acquisition on cnvst */
+> > > > > > > >  		st->reg = MAX1027_SETUP_REG |
+> > > > > > > > MAX1027_CKS_MODE0 |
+> > > > > > > > @@ -368,9 +371,12 @@ static int  
+> > > > max1027_set_trigger_state(struct  
+> > > > > > > > iio_trigger *trig, bool state)
+> > > > > > > >  		if (ret < 0)
+> > > > > > > >  			return ret;
+> > > > > > > >
+> > > > > > > > -		/* Scan from 0 to max */
+> > > > > > > > -		st->reg = MAX1027_CONV_REG |  
+> > > > MAX1027_CHAN(0) |  
+> > > > > > > > -			  MAX1027_SCAN_N_M |  
+> > > > MAX1027_TEMP;  
+> > > > > > > > +		/*
+> > > > > > > > +		 * Scan from 0 to the highest requested  
+> > > > channel. The  
+> > > > > > > > temperature
+> > > > > > > > +		 * could be avoided but it simplifies a bit the  
+> > > > logic.  
+> > > > > > > > +		 */
+> > > > > > > > +		st->reg = MAX1027_CONV_REG |
+> > > > > > > > MAX1027_SCAN_0_N | MAX1027_TEMP;
+> > > > > > > > +		st->reg |= MAX1027_CHAN(fls(*indio_dev-  
+> > > > > > > > >active_scan_mask) - 2);  
+> > > > > > > >  		ret = spi_write(st->spi, &st->reg, 1);
+> > > > > > > >  		if (ret < 0)
+> > > > > > > >  			return ret;
+> > > > > > > > @@ -391,11 +397,22 @@ static irqreturn_t
+> > > > > > > > max1027_trigger_handler(int irq, void *private)
+> > > > > > > >  	struct iio_poll_func *pf = private;
+> > > > > > > >  	struct iio_dev *indio_dev = pf->indio_dev;
+> > > > > > > >  	struct max1027_state *st = iio_priv(indio_dev);
+> > > > > > > > +	unsigned int scanned_chans = fls(*indio_dev-  
+> > > > > > > > >active_scan_mask);  
+> > > > > > > > +	u16 *buf = st->buffer;  
+> > > > > > >
+> > > > > > > I think sparse will complain here. buffer is a __be16 restricted
+> > > > > > > type so you should not mix those...  
+> > > > > > > > +	unsigned int bit;
+> > > > > > > >
+> > > > > > > >  	pr_debug("%s(irq=%d, private=0x%p)\n", __func__,  
+> > > > irq,  
+> > > > > > > >  
+> > > > > >  
+> > > >  
+> > private);in/20210818_miquel_raynal_bring_software_triggers_support  
+> > > > > > _to_max1027_like_adcs.mbx  
+> > > > > > > >
+> > > > > > > >  	/* fill buffer with all channel */
+> > > > > > > > -	spi_read(st->spi, st->buffer, indio_dev->masklength *  
+> > > > 2);  
+> > > > > > > > +	spi_read(st->spi, st->buffer, scanned_chans * 2);
+> > > > > > > > +
+> > > > > > > > +	/* Only keep the channels selected by the user */
+> > > > > > > > +	for_each_set_bit(bit, indio_dev->active_scan_mask,
+> > > > > > > > +			 indio_dev->masklength) {
+> > > > > > > > +		if (buf[0] != st->buffer[bit])
+> > > > > > > > +			buf[0] = st->buffer[bit];  
+> > > > > > >
+> > > > > > > Since we are here, when looking into the driver, I realized
+> > > > > > > that st->buffer is not DMA safe. In IIO, we kind of want to  
+> > > > enforce  
+> > > > > > > that all buffers that are passed to spi/i2c buses are safe...  
+> > Maybe  
+> > > > > > > this is something you can include in your series.  
+> > > > > >
+> > > > > > Why is it not?  st->buffer is result of a devm_kmalloc_array()  
+> > call  
+> > > > and  
+> > > > > > that should provide a DMA safe buffer as I understand it.
+> > > > > >  
+> > > > >
+> > > > > That's a good question. I'm not sure how I came to that  
+> > conclusion  
+> > > > which  
+> > > > > is clearly wrong. Though I think the buffer might share the line  
+> > with  
+> > > > the  
+> > > > > mutex...  
+> > > > Pointer shares a line.  The buffer it points to doesn't as allocated
+> > > > by separate heap allocation.
+> > > >  
+> > >
+> > > Ups, sure :facepalm:  
+> > 
+> > My understanding [1] was that devm_ allocations were generally not
+> > suitable for DMA and should not be used for this particular purpose
+> > because of the extra 16 bytes allocated for storing the devm magic
+> > somewhere, which shifts the entire buffer and prevents it to always
+> > be
+> > aligned on a cache line. I will propose a patch to switch to
+> > kmalloc_array() instead.  
+> 
+> I do not think this is a problem anymore [1]. Nowadays, 'devm_kmalloc'
+> should give you the same alignment guarantees as 'kmalloc'
+> 
+> [1]: https://elixir.bootlin.com/linux/latest/source/drivers/base/devres.c#L35
+Great info. I remembered a discussion about fixing that, but couldn't find
+the patch.  For some reason I didn't just check the code :)
+
+Thanks.
+
+Jonathan
+
+> 
+> - Nuno Sá
+
