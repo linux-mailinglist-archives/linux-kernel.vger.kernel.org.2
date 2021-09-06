@@ -2,64 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C8D40179A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 10:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B03C4017A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 10:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240720AbhIFIKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 04:10:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240679AbhIFIKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 04:10:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD0C161039;
-        Mon,  6 Sep 2021 08:09:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630915768;
-        bh=2rU8AFA62jI5s98cMHn3bmdHqREtcQP60uwSfcB4YU8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WQbWUHJYz3xBxDEVD2V75EP6CeiGUfr/MeUfmYAIdeS9+XhzDhp6N26YiBbkBQZSf
-         RtCOhi9AnV7suDWt5Z+m094hH+rPyyd5kcjXiI8Y55bMTmx/YQZv/9M3a7m1UNUXxk
-         ZaOHiAL/la/c3Ju+ZcRagpFEcqil+85NvXhqCSFg=
-Date:   Mon, 6 Sep 2021 10:09:23 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Eric Biederman <ebiederm@xmission.com>, kexec@lists.infradead.org,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-stable <stable@vger.kernel.org>,
-        Sasha Levin <sashal@kernel.org>, lkft-triage@lists.linaro.org
-Subject: Re: kernel/kexec_file.o: failed: Cannot find symbol for section 10:
- .text.unlikely.
-Message-ID: <YTXMsxY9I6VdtVsS@kroah.com>
-References: <CA+G9fYvMaHgSied79QBs3D=eDVETGH=3gxA8owCSRj313yEhVg@mail.gmail.com>
- <YTTbD+BKRpd0g4hq@kroah.com>
- <CA+G9fYs-K2f+eZW55u5uh1gQedTQpm=TGDNk7K1uOk8AeDNUQA@mail.gmail.com>
+        id S240564AbhIFIOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 04:14:25 -0400
+Received: from mail-ua1-f41.google.com ([209.85.222.41]:35572 "EHLO
+        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239780AbhIFIOX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 04:14:23 -0400
+Received: by mail-ua1-f41.google.com with SMTP id r20so3387595uat.2;
+        Mon, 06 Sep 2021 01:13:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=El6II9rB5uKfaEROETT00Ms0bZLQwJYXTBT5qb9haVU=;
+        b=TGFFEvB/x299FZo4TGJtQf4R5BOB6qlxRR0zTDGhd7X9NFrfFsgqM6fwdhuCuXgyFq
+         JmIBIYfo9/mvqyZzK4HLabflgPHnzhMN34/O+maVDOBf4GBlXbTB1xgAuC0fJX83vBh5
+         LwGiJCVBUUeqaACEF61P6m80LUszSCb/hOSjUiyakA83ZVuyA/lmSfTYv0eefHB8ZCyG
+         Syb4tV6CkOtoBvNpPo4sn3NRt9taksx2Cd7/ggCF1CO48JeGgetJUuA71XnXrClI+SXH
+         Bb+eVbFsOEU0x0/7gL8JKf2Qs+480amld+52mHjywqUkTVHhacS4ILTPHLSOZIMCLqaH
+         KKbQ==
+X-Gm-Message-State: AOAM532x//l7ZgwklPwdaL6kGeZ4N9CUZu9jS3AwpmICmSzLkhvLPRrY
+        dZwOEsV69n4T1SOXdqQp/p2E4Rl4bimTuG5GIsxI6eg4
+X-Google-Smtp-Source: ABdhPJzUfUN15fPzya4j7EGBZro+j88bO5jSNOlVlnA4bbS5/lIkX5ZUZqZnJB3cZOGBvwDoAjATKNco4f4YLMu+fbg=
+X-Received: by 2002:ab0:2989:: with SMTP id u9mr4677806uap.122.1630915998555;
+ Mon, 06 Sep 2021 01:13:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYs-K2f+eZW55u5uh1gQedTQpm=TGDNk7K1uOk8AeDNUQA@mail.gmail.com>
+References: <20210901233655.1602308-1-kieran.bingham@ideasonboard.com>
+In-Reply-To: <20210901233655.1602308-1-kieran.bingham@ideasonboard.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 6 Sep 2021 10:13:07 +0200
+Message-ID: <CAMuHMdXHAfg3_VoeXUBT2-QceLR9KQ3pWjz+5=-wK1QRxK14bw@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: display: renesas,du: Provide bindings for r8a779a0
+To:     Kieran Bingham <kieran.bingham@ideasonboard.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:DRM DRIVERS FOR RENESAS" <dri-devel@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 01:10:34PM +0530, Naresh Kamboju wrote:
-> On Sun, 5 Sept 2021 at 20:28, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Sun, Sep 05, 2021 at 07:28:35PM +0530, Naresh Kamboju wrote:
-> > > Following build errors noticed while building stable rc Linux 5.13.14
-> > > with gcc-11 for powerpc architecture.
-> 
-> <trim>
-> > Is this a regression?  Has this compiler ever been able to build this
-> > arch like this?
-> 
-> Yes. It is a regression with gcc-11.
-> 
-> stable rc Linux 5.13.14 with gcc-11 - powerpc - FAILED
-> stable rc Linux 5.13.14 with gcc-10 - powerpc - PASSED
+Hi Kieran,
 
-Ah, ok, and does 5.14 or newer work properly?
+On Thu, Sep 2, 2021 at 1:39 AM Kieran Bingham
+<kieran.bingham@ideasonboard.com> wrote:
+> From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+>
+> Extend the Renesas DU display bindings to support the r8a779a0 V3U.
+>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> ---
+> v2:
+>  - Collected Laurent's tag
+>  - Remove clock-names requirement
+>  - Specify only a single clock
 
-thanks,
+Thanks for the update!
 
-greg k-h
+> --- a/Documentation/devicetree/bindings/display/renesas,du.yaml
+> +++ b/Documentation/devicetree/bindings/display/renesas,du.yaml
+> @@ -39,6 +39,7 @@ properties:
+>        - renesas,du-r8a77980 # for R-Car V3H compatible DU
+>        - renesas,du-r8a77990 # for R-Car E3 compatible DU
+>        - renesas,du-r8a77995 # for R-Car D3 compatible DU
+> +      - renesas,du-r8a779a0 # for R-Car V3U compatible DU
+>
+>    reg:
+>      maxItems: 1
+> @@ -773,6 +774,55 @@ allOf:
+>          - reset-names
+>          - renesas,vsps
+>
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - renesas,du-r8a779a0
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: Functional clock
+> +
+> +        clock-names:
+> +          maxItems: 1
+> +          items:
+> +            - const: du
+> +
+> +        interrupts:
+> +          maxItems: 2
+> +
+> +        resets:
+> +          maxItems: 1
+> +
+> +        reset-names:
+> +          items:
+> +            - const: du.0
+
+This is now inconsistent with clock-names, which doesn't use a suffix.
+
+> +
+> +        ports:
+> +          properties:
+> +            port@0:
+> +              description: DSI 0
+> +            port@1:
+> +              description: DSI 1
+> +            port@2: false
+> +            port@3: false
+> +
+> +          required:
+> +            - port@0
+> +            - port@1
+> +
+> +        renesas,vsps:
+> +          minItems: 2
+> +
+> +      required:
+> +        - interrupts
+> +        - resets
+> +        - reset-names
+
+Same here, as clock-names is not required anymore.
+
+> +        - renesas,vsps
+> +
+>  additionalProperties: false
+>
+>  examples:
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
