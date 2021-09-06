@@ -2,227 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76070401D2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 16:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A195401D31
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 16:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243565AbhIFOk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 10:40:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20823 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S243461AbhIFOkX (ORCPT
+        id S243519AbhIFOlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 10:41:35 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:35922 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243409AbhIFOle (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 10:40:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630939157;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Mon, 6 Sep 2021 10:41:34 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9A88322169;
+        Mon,  6 Sep 2021 14:40:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1630939228; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=+z2oy7uRo+rUCluRBsFNUqB8lI2Md370z/AcYxkK4jA=;
-        b=dzn6PFHNUFHWYUP46l4Gh4mmFTiQCxPy3le4ZDQg3hKmXRPv76oHCWXPE0jcdmss9KB5EH
-        NJBd/9L1wL79MneU9YWnHy9HSWMp/mZIHDBFPKt/dWYqlz/pc+BDskkAtkjJ1KKPleR9rn
-        n18SdT2EyozbmiflQqF5owa6qK00UWs=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-z9ILn_70O2WXewHIhSL7cg-1; Mon, 06 Sep 2021 10:39:16 -0400
-X-MC-Unique: z9ILn_70O2WXewHIhSL7cg-1
-Received: by mail-wm1-f72.google.com with SMTP id s197-20020a1ca9ce000000b002e72ba822dcso3986954wme.6
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 07:39:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=+z2oy7uRo+rUCluRBsFNUqB8lI2Md370z/AcYxkK4jA=;
-        b=AsVC+zHeOqsKHuCQRKepZoGxNRccMTOLsay40TatgTxOFOg09DKHwh3/qNmc4bGQKF
-         NzyFmlciDPVkm+ReTk/FyPvTiOtNRY9syIPfyNB33v+4zwsHtnBicgnMcxsmovJ7jbmV
-         FfDQCv0cZMtQaAuXoIOyLxeGyZtPh82FI4ZpTEQEMFizphieOCac673IBvMJnea8WDSE
-         RpdlNMqFdE7E8uxGtVvCR7J0aDizb8pUVEft68n/57XrzGIkbNGHVWh0VyFMRg+3pBzq
-         YKGAJO+t3agbppZ8i7Z3h7bYl7nTe1UZURZFGL6q+S34+ycrVL6MF69TlC1FtRIgmFN1
-         famg==
-X-Gm-Message-State: AOAM532AHLMJPud0o0wSJlWPJFe0JrDlT5TbbGiPiqzH0yYufvqCWJhl
-        3Ykl3+6MqTqmVizqSvWbYWPtFYQM41oQHx4aDr/ATE6n1XO7dDtpi/h3UeV6LXjS7Hqs1CjHvul
-        D+q14tFqd527ftVDloBVcrVJP
-X-Received: by 2002:adf:d231:: with SMTP id k17mr13829219wrh.389.1630939155211;
-        Mon, 06 Sep 2021 07:39:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyeRatgQ0xCt0UI+SY5SQtyOXtLxDfFiIuJsWPUTO5VpZ73PMk33KS8HQ6FV/teH8sV8VDRwQ==
-X-Received: by 2002:adf:d231:: with SMTP id k17mr13829186wrh.389.1630939154987;
-        Mon, 06 Sep 2021 07:39:14 -0700 (PDT)
-Received: from work-vm (cpc109021-salf6-2-0-cust453.10-2.cable.virginm.net. [82.29.237.198])
-        by smtp.gmail.com with ESMTPSA id u9sm8160923wrm.70.2021.09.06.07.39.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 07:39:14 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 15:39:12 +0100
-From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Vivek Goyal <vgoyal@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, virtio-fs@redhat.com,
-        dwalsh@redhat.com, christian.brauner@ubuntu.com,
-        casey.schaufler@intel.com,
-        LSM <linux-security-module@vger.kernel.org>,
-        selinux@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Miklos Szeredi <miklos@szeredi.hu>, gscrivan@redhat.com,
-        "Fields, Bruce" <bfields@redhat.com>,
-        stephen.smalley.work@gmail.com, Dave Chinner <david@fromorbit.com>
-Subject: Re: [PATCH v3 0/1] Relax restrictions on user.* xattr
-Message-ID: <YTYoEDT+YOtCHXW0@work-vm>
-References: <20210902152228.665959-1-vgoyal@redhat.com>
- <CAHc6FU4foW+9ZwTRis3DXSJSMAvdb4jXcq7EFFArYgX7FQ1QYg@mail.gmail.com>
+        bh=rFhvnpOKr3OKxjpJTREq9p7eh5KGXFCWvrRzUPaUhm0=;
+        b=dFGHE5sdH1dNgXQGg1O0NlubYKiVn/meKT/MoyTffwWzVylzr/u9DDrkehoUQq7rDfUhcx
+        o22mO17uPDdyqJofXLJx7mWJTWbAXMmbNcigsE7x38wG4/+Bbe1861IM838EHa9KYH5r8d
+        b0N1PPDFpZsVdSNj10aqaUaI6seCkrw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1630939228;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rFhvnpOKr3OKxjpJTREq9p7eh5KGXFCWvrRzUPaUhm0=;
+        b=vN4oeiD+BwKEbgagD2S3l00A+rhQ89C4C0jmNvaa/GV8+e/cCyKT+w6dar8yFX/iVf4aaK
+        E7BOA5dRp+PVsLCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6F15913C29;
+        Mon,  6 Sep 2021 14:40:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id IBkmGlwoNmFvYgAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 06 Sep 2021 14:40:28 +0000
+Message-ID: <597a7731-3692-01b9-9e71-ba265246cc1a@suse.cz>
+Date:   Mon, 6 Sep 2021 16:40:28 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHc6FU4foW+9ZwTRis3DXSJSMAvdb4jXcq7EFFArYgX7FQ1QYg@mail.gmail.com>
-User-Agent: Mutt/2.0.7 (2021-05-04)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [PATCH RESEND 0/8] hugetlb: add demote/split page functionality
+Content-Language: en-US
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>, Zi Yan <ziy@nvidia.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
+        David Rientjes <rientjes@google.com>,
+        Hillf Danton <hdanton@sina.com>
+References: <20210816224953.157796-1-mike.kravetz@oracle.com>
+ <20210816162749.22b921a61156a091f3e1d14d@linux-foundation.org>
+ <b4401912-b59a-2150-feef-468c2d25ba3e@oracle.com>
+ <20210816184611.07b97f4c26b83090f5d48fab@linux-foundation.org>
+ <10d86c18-f0cf-395f-4209-17ac71b9fc03@oracle.com>
+ <efcf6049-6110-d516-b21f-41bb8775f042@suse.cz>
+ <2d826470-d345-0196-1359-b79ed08dfc66@oracle.com>
+ <b3b334ea-0e6f-ced9-e444-df4ec49455a0@suse.cz>
+ <02a1a50f-4e7c-4eb7-519c-35b26ec2c6af@oracle.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <02a1a50f-4e7c-4eb7-519c-35b26ec2c6af@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Andreas Gruenbacher (agruenba@redhat.com) wrote:
-> Hi,
+On 9/2/21 20:17, Mike Kravetz wrote:
+> On 8/30/21 3:11 AM, Vlastimil Babka wrote:
+>> On 8/28/21 01:04, Mike Kravetz wrote:
+>>> On 8/27/21 10:22 AM, Vlastimil Babka wrote:
+>>> I 'may' have been over stressing the system with all CPUs doing file
+>>> reads to fill the page cache with clean pages.  I certainly need to
+>>> spend some more debug/analysis time on this.
+>>
+>> Hm that *could* play a role, as these will allow reclaim to make progress, but
+>> also the reclaimed pages might be stolen immediately and compaction will return
+>> COMPACT_SKIPPED and in should_compact_retry() we might go through this code path:
+>>
+>>         /*      
+>>          * compaction was skipped because there are not enough order-0 pages
+>>          * to work with, so we retry only if it looks like reclaim can help.
+>>          */
+>>         if (compaction_needs_reclaim(compact_result)) {
+>>                 ret = compaction_zonelist_suitable(ac, order, alloc_flags);
+>>                 goto out;
+>>         }       
+>>
+>> where compaction_zonelist_suitable() will return true because it appears
+>> reclaim can free pages to allow progress. And there are no max retries
+>> applied for this case.
+>> With the reclaim and compaction tracepoints it should be possible to
+>> confirm this scenario.
 > 
-> On Thu, Sep 2, 2021 at 5:22 PM Vivek Goyal <vgoyal@redhat.com> wrote:
-> > This is V3 of the patch. Previous versions were posted here.
-> >
-> > v2: https://lore.kernel.org/linux-fsdevel/20210708175738.360757-1-vgoyal@redhat.com/
-> > v1: https://lore.kernel.org/linux-fsdevel/20210625191229.1752531-1-vgoyal@redhat.com/
-> >
-> > Changes since v2
-> > ----------------
-> > - Do not call inode_permission() for special files as file mode bits
-> >   on these files represent permissions to read/write from/to device
-> >   and not necessarily permission to read/write xattrs. In this case
-> >   now user.* extended xattrs can be read/written on special files
-> >   as long as caller is owner of file or has CAP_FOWNER.
-> >
-> > - Fixed "man xattr". Will post a patch in same thread little later. (J.
-> >   Bruce Fields)
-> >
-> > - Fixed xfstest 062. Changed it to run only on older kernels where
-> >   user extended xattrs are not allowed on symlinks/special files. Added
-> >   a new replacement test 648 which does exactly what 062. Just that
-> >   it is supposed to run on newer kernels where user extended xattrs
-> >   are allowed on symlinks and special files. Will post patch in
-> >   same thread (Ted Ts'o).
-> >
-> > Testing
-> > -------
-> > - Ran xfstest "./check -g auto" with and without patches and did not
-> >   notice any new failures.
-> >
-> > - Tested setting "user.*" xattr with ext4/xfs/btrfs/overlay/nfs
-> >   filesystems and it works.
-> >
-> > Description
-> > ===========
-> >
-> > Right now we don't allow setting user.* xattrs on symlinks and special
-> > files at all. Initially I thought that real reason behind this
-> > restriction is quota limitations but from last conversation it seemed
-> > that real reason is that permission bits on symlink and special files
-> > are special and different from regular files and directories, hence
-> > this restriction is in place. (I tested with xfs user quota enabled and
-> > quota restrictions kicked in on symlink).
-> >
-> > This version of patch allows reading/writing user.* xattr on symlink and
-> > special files if caller is owner or priviliged (has CAP_FOWNER) w.r.t inode.
+> Here is some very high level information from a long stall that was
+> interrupted.  This was an order 9 allocation from alloc_buddy_huge_page().
 > 
-> the idea behind user.* xattrs is that they behave similar to file
-> contents as far as permissions go. It follows from that that symlinks
-> and special files cannot have user.* xattrs. This has been the model
-> for many years now and applications may be expecting these semantics,
-> so we cannot simply change the behavior. So NACK from me.
+> 55269.530564] __alloc_pages_slowpath: jiffies 47329325 tries 609673 cpu_tries 1   node 0 FAIL
+> [55269.539893]     r_tries 25       c_tries 609647   reclaim 47325161 compact 607     
 > 
-> > Who wants to set user.* xattr on symlink/special files
-> > -----------------------------------------------------
-> > I have primarily two users at this point of time.
-> >
-> > - virtiofs daemon.
-> >
-> > - fuse-overlay. Giuseppe, seems to set user.* xattr attrs on unpriviliged
-> >   fuse-overlay as well and he ran into similar issue. So fuse-overlay
-> >   should benefit from this change as well.
-> >
-> > Why virtiofsd wants to set user.* xattr on symlink/special files
-> > ----------------------------------------------------------------
-> > In virtiofs, actual file server is virtiosd daemon running on host.
-> > There we have a mode where xattrs can be remapped to something else.
-> > For example security.selinux can be remapped to
-> > user.virtiofsd.securit.selinux on the host.
-> >
-> > This remapping is useful when SELinux is enabled in guest and virtiofs
-> > as being used as rootfs. Guest and host SELinux policy might not match
-> > and host policy might deny security.selinux xattr setting by guest
-> > onto host. Or host might have SELinux disabled and in that case to
-> > be able to set security.selinux xattr, virtiofsd will need to have
-> > CAP_SYS_ADMIN (which we are trying to avoid). Being able to remap
-> > guest security.selinux (or other xattrs) on host to something else
-> > is also better from security point of view.
-> >
-> > But when we try this, we noticed that SELinux relabeling in guest
-> > is failing on some symlinks. When I debugged a little more, I
-> > came to know that "user.*" xattrs are not allowed on symlinks
-> > or special files.
-> >
-> > So if we allow owner (or CAP_FOWNER) to set user.* xattr, it will
-> > allow virtiofs to arbitrarily remap guests's xattrs to something
-> > else on host and that solves this SELinux issue nicely and provides
-> > two SELinux policies (host and guest) to co-exist nicely without
-> > interfering with each other.
+> Yes, in __alloc_pages_slowpath for 47329325 jiffies before being interrupted.
+> should_reclaim_retry returned true 25 times and should_compact_retry returned
+> true 609647 times.
+> Almost all time (47325161 jiffies) spent in __alloc_pages_direct_reclaim, and
+> 607 jiffies spent in __alloc_pages_direct_compact.
 > 
-> The fact that user.* xattrs don't work in this remapping scenario
-> should have told you that you're doing things wrong; the user.*
-> namespace seriously was never meant to be abused in this way.
+> Looks like both
+> reclaim retries > MAX_RECLAIM_RETRIES
+> and
+> compaction retries > MAX_COMPACT_RETRIES
 > 
-> You may be able to get away with using trusted.* xattrs which support
-> roughly the kind of daemon use I think you're talking about here, but
-> I'm not sure selinux will be happy with labels that aren't fully under
-> its own control. I really wonder why this wasn't obvious enough.
 
-It was; however in our use case it wasn't an issue in general, because
-the selinux instance that was setting the labels was inside an untrusted
-guest, as such it's labels on the host are themselves untrusted, and
-hence user. made some sense to the host - until we found out the
-restrictons on user. the hard way.
-
-The mapping code we have doesn't explicitly set user. - it's an
-arbitrary remapper that can map to anything you like, trusted. whatever,
-but user. feels (to us) like it's right for an untrusted guest.
-
-IMHO the real problem here is that the user/trusted/system/security
-'namespaces' are arbitrary hacks rather than a proper namespacing
-mechanism that allows you to create new (nested) namespaces and associate
-permissions with each one.
-
-Each one carries with it some arbitrary baggage (trusted not working on
-NFS, user. having the special rules on symlinks etc).
-
-Then every fs or application that trips over these arbitrary limits adds
-some hack to work around them in a different way to every other fs or
-app that's doing the same thing; (see 9p, overlayfs, fuse-overlayfs,
-crosvm etc etc all that do some level of renaming)
-
-What we really need is a namespace where you can do anything you like,
-but it's then limited by the security modules, so that I could allow
-user.virtiofsd.guest1 to be able to set labels on symlinks for example.
-
-Dave
-
-> Thanks,
-> Andreas
-> 
-> > Thanks
-> > Vivek
-> >
-> > Vivek Goyal (1):
-> >   xattr: Allow user.* xattr on symlink and special files
-> >
-> >  fs/xattr.c | 23 ++++++++++++++++++-----
-> >  1 file changed, 18 insertions(+), 5 deletions(-)
-> >
-> > --
-> > 2.31.1
-> >
-> 
--- 
-Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
-
+Yeah AFAICS that's only possible with the scenario I suspected. I guess
+we should put a limit on compact retries (maybe some multiple of
+MAX_COMPACT_RETRIES) even if it thinks that reclaim could help, while
+clearly it doesn't (i.e. because somebody else is stealing the page like
+in your test case).
