@@ -2,256 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313A3401F59
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A086B401F5C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244303AbhIFRzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 13:55:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243962AbhIFRzJ (ORCPT
+        id S244331AbhIFRzX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Sep 2021 13:55:23 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:44968 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244316AbhIFRzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 13:55:09 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5C5C061575;
-        Mon,  6 Sep 2021 10:54:04 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id r21so5957994qtw.11;
-        Mon, 06 Sep 2021 10:54:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2hKItWeebPyvylBL8MhOaSAfJQALDyW9ilZEFB/W+xU=;
-        b=q49etGc0sY6hVWq+frNdVFnnhMfy3dfgeL2hd+rPW/xwRIjIYUWflnD5JQvB2NZrrA
-         dWqhfbIWLCpfEc1vo1R10y4XAm7Ch0Y487YUf9YDDA75xGx6A9wvKkgN8ZA8oO5RtUlW
-         sF0n4g4iMTbUd7j8q88evnGxNHKVMnF6BD4GOUuzwzYMO3+UAnieusBgtVDoCREK+GIz
-         nqyGhm+6VEEB4Q4nYDSV8cCrsPzkg8SmjCyQOs589DU98NuyVfo7GYcjp1cNfPdglgm3
-         WbDOOzcOxihwREFZAN8++zpCbG5+H558JRwoI0EG8I0+Wox9qjQAe08kMWa7/ihiXzWw
-         YqZg==
+        Mon, 6 Sep 2021 13:55:22 -0400
+Received: by mail-oi1-f175.google.com with SMTP id c79so9615928oib.11;
+        Mon, 06 Sep 2021 10:54:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2hKItWeebPyvylBL8MhOaSAfJQALDyW9ilZEFB/W+xU=;
-        b=S6o5+Lqf3Nzc9OJ7t93m2YxHAFlHamP0l+xoGQl3MG0liIR91pWX3XnKYm0jdmygqu
-         vdur1t2a379GBiGgthlZVobR1nhlKBufX37xlGyQgVPYZUGHIhF9/nYKJZt+XY0l66je
-         I8LyzCCiOOL8ALMm4tfYKKwngHh/fLbeekOYBGyOupztLmEB3v7eAL8Uvl1E0Kj1z4g5
-         GssV8XH7ZYQwU71AFEm5Xk1DUfkEonNiyGtHVAb7LwjY+ANeWc6ULxN4Ys9Tm+Tq0X0H
-         3hzsHsN2RLEyj46Ug36b2fN7aXgdlkvptEr8le9lyIpTwv1NQ9UjHX+0bltf4jOIVy/b
-         2gsQ==
-X-Gm-Message-State: AOAM5330obb69lCHAOWebb4oii6IpqB4Mw6WgnhxAJ6kDKtvTHAmIdKk
-        R5avNrNVNbAp6cK4yHBAVmtsgzrZvIsRTw==
-X-Google-Smtp-Source: ABdhPJyutF8z/b8rARNpr+SxAa87pGv0GFPPUcjFp7NQXb+ji1iejLqZcD2tDSzhuvZ2RrxV4Os09Q==
-X-Received: by 2002:a05:622a:2c3:: with SMTP id a3mr11618554qtx.41.1630950843296;
-        Mon, 06 Sep 2021 10:54:03 -0700 (PDT)
-Received: from localhost.localdomain ([177.89.177.169])
-        by smtp.gmail.com with ESMTPSA id w19sm6834735qki.21.2021.09.06.10.54.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 10:54:02 -0700 (PDT)
-From:   Ramon Fontes <ramonreisfontes@gmail.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org
-Cc:     johannes@sipsolutions.net, kvalo@codeaurora.org,
-        davem@davemloft.net, Ramon Fontes <ramonreisfontes@gmail.com>
-Subject: [PATCH] mac80211_hwsim: enable 6GHz channels
-Date:   Mon,  6 Sep 2021 14:53:50 -0300
-Message-Id: <20210906175350.13461-1-ramonreisfontes@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=agOiD/sLPrazUHJNmAJPU/hng8WCOZrRAVkbyt2MWpg=;
+        b=i1+HDOS3+q05zvahDLZIzUzBlZ/OYDT7Cf8QWBz7vATqw8NmfzF0vOEGnbmju42/YN
+         HMxbte17TylsvIi/CsQg7udFgq5Utzz7WpfXuTBy6N+8ckY1YXvjqJmI6pxTBz8Bwkav
+         pDVhw+r4dGVyohiEekVRs9+MBsnm9QaJG5loNuvaEs4n/2zpBfMqLcDO5t3Tcwux+Kq5
+         0ucVyRd6eGe2LPPBKblB7kCfy2Hg9mvESKOCg9MeqV6hdd1ETMKiIEjacDMA5N5ghkQu
+         h0CuwE2L4zOzANhh1x7eWkODS+O7ftzTjbN8+4wDe2M+T6gdDk9ry8gMfUhv4dhIlBX8
+         dGCw==
+X-Gm-Message-State: AOAM533XwelQzn/uR4HkSMx6d21DFciMn8UON1kNweBYncwFnce7QUwz
+        5Aa6IqZxdcYlPbOTM7Q4Y187Vp9Uug2KX9X20Fw=
+X-Google-Smtp-Source: ABdhPJzwYiV1F9BMIFuGJDc/pzQvqdW+iC6W3/mL2lijdT4MukN8qqhj8S13G8DRxPaLhsOwXXJqC1qSC/fZ3U/XwzI=
+X-Received: by 2002:aca:afcd:: with SMTP id y196mr225798oie.71.1630950856877;
+ Mon, 06 Sep 2021 10:54:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210904053703.581297-1-srinivas.pandruvada@linux.intel.com>
+ <CAJZ5v0hQp8Hxf__tL22s0oOcTym5mx9tND34ijufTDE3_NSW6A@mail.gmail.com>
+ <926ac4b9-1bb5-e96e-ded3-6461f7a215b7@kernel.dk> <b1d5b6daacef349eb6fcc23ce7264e4786d1d9f4.camel@linux.intel.com>
+ <CAJZ5v0jaXnw0zjpnsb81Hauy4-ApuULfQaaLG10qqL67H-YTNA@mail.gmail.com> <8dc57921f157b154e4af2dba26ce697dc4d4fcc2.camel@linux.intel.com>
+In-Reply-To: <8dc57921f157b154e4af2dba26ce697dc4d4fcc2.camel@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 6 Sep 2021 19:54:05 +0200
+Message-ID: <CAJZ5v0jLmziZZEqEk-D+b6jD7UUPmeb7MQW1ZptdHTk-2c9nMg@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Fix for HWP interrupt before
+ driver is ready
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds 6 GHz capabilities and reject HT/VHT
+On Mon, Sep 6, 2021 at 7:23 PM Srinivas Pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
+>
+> On Mon, 2021-09-06 at 18:58 +0200, Rafael J. Wysocki wrote:
+> > On Mon, Sep 6, 2021 at 6:55 PM Srinivas Pandruvada
+> > <srinivas.pandruvada@linux.intel.com> wrote:
+> > >
+> > > On Mon, 2021-09-06 at 10:43 -0600, Jens Axboe wrote:
+> > > > On 9/6/21 10:17 AM, Rafael J. Wysocki wrote:
+> > > > > On Sat, Sep 4, 2021 at 7:37 AM Srinivas Pandruvada
+> > > > > <srinivas.pandruvada@linux.intel.com> wrote:
+> > > > > >
+> > > > > > In Lenovo X1 gen9 laptop, HWP interrupts arrive before driver
+> > > > > > is
+> > > > > > ready
+> > > > > > to handle on that CPU. Basically didn't even allocated memory
+> > > > > > for
+> > > > > > per
+> > > > > > cpu data structure and not even started interrupt enable
+> > > > > > process
+> > > > > > on that
+> > > > > > CPU. So interrupt handler observes a NULL pointer to schedule
+> > > > > > work.
+> > > > > >
+> > > > > > This interrupt was probably for SMM, but since it is
+> > > > > > redirected
+> > > > > > to
+> > > > > > OS by OSC call, OS receives it, but not ready to handle. That
+> > > > > > redirection
+> > > > > > of interrupt to OS was also done to solve one SMM crash on
+> > > > > > Yoga
+> > > > > > 260 for
+> > > > > > HWP interrupt a while back.
+> > > > > >
+> > > > > > To solve this the HWP interrupt handler should ignore such
+> > > > > > request if the
+> > > > > > driver is not ready. This will require some flag to wait till
+> > > > > > the
+> > > > > > driver
+> > > > > > setup a workqueue to handle on a CPU. We can't simply assume
+> > > > > > cpudata to
+> > > > > > be NULL and avoid processing as it may not be NULL but data
+> > > > > > structure is
+> > > > > > not in consistent state.
+> > > > > >
+> > > > > > So created a cpumask which sets the CPU on which interrupt
+> > > > > > was
+> > > > > > setup. If
+> > > > > > not setup, simply clear the interrupt status and return.
+> > > > > > Since
+> > > > > > the
+> > > > > > similar issue can happen during S3 resume, clear the bit
+> > > > > > during
+> > > > > > offline.
+> > > > > >
+> > > > > > Since interrupt timing may be before HWP is enabled, use safe
+> > > > > > MSR
+> > > > > > read
+> > > > > > writes as before the change for HWP interrupt.
+> > > > > >
+> > > > > > Fixes: d0e936adbd22 ("cpufreq: intel_pstate: Process HWP
+> > > > > > Guaranteed change notification")
+> > > > > > Reported-and-tested-by: Jens Axboe <axboe@kernel.dk>
+> > > > > > Signed-off-by: Srinivas Pandruvada <
+> > > > > > srinivas.pandruvada@linux.intel.com>
+> > > > > > ---
+> > > > > >  drivers/cpufreq/intel_pstate.c | 23 ++++++++++++++++++++++-
+> > > > > >  1 file changed, 22 insertions(+), 1 deletion(-)
+> > > > > >
+> > > > > > diff --git a/drivers/cpufreq/intel_pstate.c
+> > > > > > b/drivers/cpufreq/intel_pstate.c
+> > > > > > index b4ffe6c8a0d0..5ac86bfa1080 100644
+> > > > > > --- a/drivers/cpufreq/intel_pstate.c
+> > > > > > +++ b/drivers/cpufreq/intel_pstate.c
+> > > > > > @@ -298,6 +298,8 @@ static bool hwp_boost __read_mostly;
+> > > > > >
+> > > > > >  static struct cpufreq_driver *intel_pstate_driver
+> > > > > > __read_mostly;
+> > > > > >
+> > > > > > +static cpumask_t hwp_intr_enable_mask;
+> > > > > > +
+> > > > > >  #ifdef CONFIG_ACPI
+> > > > > >  static bool acpi_ppc;
+> > > > > >  #endif
+> > > > > > @@ -1067,11 +1069,15 @@ static void
+> > > > > > intel_pstate_hwp_set(unsigned
+> > > > > > int cpu)
+> > > > > >         wrmsrl_on_cpu(cpu, MSR_HWP_REQUEST, value);
+> > > > > >  }
+> > > > > >
+> > > > > > +static void intel_pstate_disable_hwp_interrupt(struct
+> > > > > > cpudata
+> > > > > > *cpudata);
+> > > > > > +
+> > > > > >  static void intel_pstate_hwp_offline(struct cpudata *cpu)
+> > > > > >  {
+> > > > > >         u64 value = READ_ONCE(cpu->hwp_req_cached);
+> > > > > >         int min_perf;
+> > > > > >
+> > > > > > +       intel_pstate_disable_hwp_interrupt(cpu);
+> > > > > > +
+> > > > > >         if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
+> > > > > >                 /*
+> > > > > >                  * In case the EPP has been set to
+> > > > > > "performance"
+> > > > > > by the
+> > > > > > @@ -1645,20 +1651,35 @@ void notify_hwp_interrupt(void)
+> > > > > >         if (!hwp_active ||
+> > > > > > !boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
+> > > > > >                 return;
+> > > > > >
+> > > > > > -       rdmsrl(MSR_HWP_STATUS, value);
+> > > > > > +       rdmsrl_safe(MSR_HWP_STATUS, &value);
+> > > > > >         if (!(value & 0x01))
+> > > > > >                 return;
+> > > > > >
+> > > > > > +       if (!cpumask_test_cpu(this_cpu,
+> > > > > > &hwp_intr_enable_mask)) {
+> > > > > > +               wrmsrl_safe(MSR_HWP_STATUS, 0);
+> > > > > > +               return;
+> > > > > > +       }
+> > > > >
+> > > > > Without additional locking, there is a race between this and
+> > > > > intel_pstate_disable_hwp_interrupt().
+> > > > >
+> > > > > 1. notify_hwp_interrupt() checks hwp_intr_enable_mask() and the
+> > > > > target
+> > > > > CPU is in there, so it will go for scheduling the delayed work.
+> > > > > 2. intel_pstate_disable_hwp_interrupt() runs between the check
+> > > > > and
+> > > > > the
+> > > > > cpudata load below.
+> > > > > 3. hwp_notify_work is scheduled on the CPU that isn't there in
+> > > > > the
+> > > > > mask any more.
+> > > >
+> > > > I noticed that too, not clear to me how much of an issue that is
+> > > > in
+> > > > practice. But there's definitely a race there.
+> > > Glad to see how this is possible from code running in ISR context.
+> >
+> > intel_pstate_disable_hwp_interrupt() may very well run on a different
+> > CPU in parallel with the interrupt handler running on this CPU.  Or
+> > is
+> > this not possible for some reason?
+> I see the offline callback is called from cpufreq core from hotplug
+> online/offline callback. So this should run the call on the target CPU.
+> From Documentation
+> "The states CPUHP_AP_OFFLINE … CPUHP_AP_ONLINE are invoked just the
+> after the CPU has been brought up. The interrupts are off and the
+> scheduler is not yet active on this CPU. Starting with CPUHP_AP_OFFLINE
+> the callbacks are invoked on the target CPU."
+>
+> The only other place it is called is from subsys remove callback. Not
+> sure how can you remove cpufreq subsys on fly.
 
-Signed-off-by: Ramon Fontes <ramonreisfontes@gmail.com>
----
- drivers/net/wireless/mac80211_hwsim.c | 150 +++++++++++++++++++++++---
- 1 file changed, 137 insertions(+), 13 deletions(-)
+cpufreq_unregister_driver() causes this to happen.
 
-diff --git a/drivers/net/wireless/mac80211_hwsim.c b/drivers/net/wireless/mac80211_hwsim.c
-index ffa894f73..d36770db1 100644
---- a/drivers/net/wireless/mac80211_hwsim.c
-+++ b/drivers/net/wireless/mac80211_hwsim.c
-@@ -2988,6 +2988,118 @@ static const struct ieee80211_sband_iftype_data he_capa_5ghz[] = {
- #endif
- };
- 
-+static const struct ieee80211_sband_iftype_data he_capa_6ghz[] = {
-+	{
-+		/* TODO: should we support other types, e.g., P2P?*/
-+		.types_mask = BIT(NL80211_IFTYPE_STATION) |
-+			      BIT(NL80211_IFTYPE_AP),
-+		.he_6ghz_capa = {
-+			.capa = IEEE80211_HE_6GHZ_CAP_MIN_MPDU_START |
-+			        IEEE80211_HE_6GHZ_CAP_MAX_AMPDU_LEN_EXP |
-+			        IEEE80211_HE_6GHZ_CAP_MAX_MPDU_LEN |
-+			        IEEE80211_HE_6GHZ_CAP_TX_ANTPAT_CONS |
-+			        IEEE80211_HE_6GHZ_CAP_RX_ANTPAT_CONS,
-+		},
-+		.he_cap = {
-+			.has_he = true,
-+			.he_cap_elem = {
-+				.mac_cap_info[0] =
-+					IEEE80211_HE_MAC_CAP0_HTC_HE,
-+				.mac_cap_info[1] =
-+					IEEE80211_HE_MAC_CAP1_TF_MAC_PAD_DUR_16US |
-+					IEEE80211_HE_MAC_CAP1_MULTI_TID_AGG_RX_QOS_8,
-+				.mac_cap_info[2] =
-+					IEEE80211_HE_MAC_CAP2_BSR |
-+					IEEE80211_HE_MAC_CAP2_MU_CASCADING |
-+					IEEE80211_HE_MAC_CAP2_ACK_EN,
-+				.mac_cap_info[3] =
-+					IEEE80211_HE_MAC_CAP3_OMI_CONTROL |
-+					IEEE80211_HE_MAC_CAP3_MAX_AMPDU_LEN_EXP_EXT_3,
-+				.mac_cap_info[4] = IEEE80211_HE_MAC_CAP4_AMSDU_IN_AMPDU,
-+				.phy_cap_info[0] =
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_80MHZ_IN_5G |
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_160MHZ_IN_5G |
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_80PLUS80_MHZ_IN_5G,
-+				.phy_cap_info[1] =
-+					IEEE80211_HE_PHY_CAP1_PREAMBLE_PUNC_RX_MASK |
-+					IEEE80211_HE_PHY_CAP1_DEVICE_CLASS_A |
-+					IEEE80211_HE_PHY_CAP1_LDPC_CODING_IN_PAYLOAD |
-+					IEEE80211_HE_PHY_CAP1_MIDAMBLE_RX_TX_MAX_NSTS,
-+				.phy_cap_info[2] =
-+					IEEE80211_HE_PHY_CAP2_NDP_4x_LTF_AND_3_2US |
-+					IEEE80211_HE_PHY_CAP2_STBC_TX_UNDER_80MHZ |
-+					IEEE80211_HE_PHY_CAP2_STBC_RX_UNDER_80MHZ |
-+					IEEE80211_HE_PHY_CAP2_UL_MU_FULL_MU_MIMO |
-+					IEEE80211_HE_PHY_CAP2_UL_MU_PARTIAL_MU_MIMO,
-+
-+				/* Leave all the other PHY capability bytes
-+				 * unset, as DCM, beam forming, RU and PPE
-+				 * threshold information are not supported
-+				 */
-+			},
-+			.he_mcs_nss_supp = {
-+				.rx_mcs_80 = cpu_to_le16(0xfffa),
-+				.tx_mcs_80 = cpu_to_le16(0xfffa),
-+				.rx_mcs_160 = cpu_to_le16(0xfffa),
-+				.tx_mcs_160 = cpu_to_le16(0xfffa),
-+				.rx_mcs_80p80 = cpu_to_le16(0xfffa),
-+				.tx_mcs_80p80 = cpu_to_le16(0xfffa),
-+			},
-+		},
-+	},
-+#ifdef CONFIG_MAC80211_MESH
-+	{
-+		/* TODO: should we support other types, e.g., IBSS?*/
-+		.types_mask = BIT(NL80211_IFTYPE_MESH_POINT),
-+		.he_6ghz_capa = {
-+			.capa = IEEE80211_HE_6GHZ_CAP_MIN_MPDU_START |
-+			        IEEE80211_HE_6GHZ_CAP_MAX_AMPDU_LEN_EXP |
-+			        IEEE80211_HE_6GHZ_CAP_MAX_MPDU_LEN |
-+			        IEEE80211_HE_6GHZ_CAP_TX_ANTPAT_CONS |
-+			        IEEE80211_HE_6GHZ_CAP_RX_ANTPAT_CONS,
-+		},
-+		.he_cap = {
-+			.has_he = true,
-+			.he_cap_elem = {
-+				.mac_cap_info[0] =
-+					IEEE80211_HE_MAC_CAP0_HTC_HE,
-+				.mac_cap_info[1] =
-+					IEEE80211_HE_MAC_CAP1_MULTI_TID_AGG_RX_QOS_8,
-+				.mac_cap_info[2] =
-+					IEEE80211_HE_MAC_CAP2_ACK_EN,
-+				.mac_cap_info[3] =
-+					IEEE80211_HE_MAC_CAP3_OMI_CONTROL |
-+					IEEE80211_HE_MAC_CAP3_MAX_AMPDU_LEN_EXP_EXT_3,
-+				.mac_cap_info[4] = IEEE80211_HE_MAC_CAP4_AMSDU_IN_AMPDU,
-+				.phy_cap_info[0] =
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_40MHZ_80MHZ_IN_5G |
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_160MHZ_IN_5G |
-+					IEEE80211_HE_PHY_CAP0_CHANNEL_WIDTH_SET_80PLUS80_MHZ_IN_5G,
-+				.phy_cap_info[1] =
-+					IEEE80211_HE_PHY_CAP1_PREAMBLE_PUNC_RX_MASK |
-+					IEEE80211_HE_PHY_CAP1_DEVICE_CLASS_A |
-+					IEEE80211_HE_PHY_CAP1_LDPC_CODING_IN_PAYLOAD |
-+					IEEE80211_HE_PHY_CAP1_MIDAMBLE_RX_TX_MAX_NSTS,
-+				.phy_cap_info[2] = 0,
-+
-+				/* Leave all the other PHY capability bytes
-+				 * unset, as DCM, beam forming, RU and PPE
-+				 * threshold information are not supported
-+				 */
-+			},
-+			.he_mcs_nss_supp = {
-+				.rx_mcs_80 = cpu_to_le16(0xfffa),
-+				.tx_mcs_80 = cpu_to_le16(0xfffa),
-+				.rx_mcs_160 = cpu_to_le16(0xfffa),
-+				.tx_mcs_160 = cpu_to_le16(0xfffa),
-+				.rx_mcs_80p80 = cpu_to_le16(0xfffa),
-+				.tx_mcs_80p80 = cpu_to_le16(0xfffa),
-+			},
-+		},
-+	},
-+#endif
-+};
-+
- static void mac80211_hwsim_he_capab(struct ieee80211_supported_band *sband)
- {
- 	u16 n_iftype_data;
-@@ -3000,6 +3112,10 @@ static void mac80211_hwsim_he_capab(struct ieee80211_supported_band *sband)
- 		n_iftype_data = ARRAY_SIZE(he_capa_5ghz);
- 		sband->iftype_data =
- 			(struct ieee80211_sband_iftype_data *)he_capa_5ghz;
-+	} else if (sband->band == NL80211_BAND_6GHZ) {
-+		n_iftype_data = ARRAY_SIZE(he_capa_6ghz);
-+		sband->iftype_data =
-+			(struct ieee80211_sband_iftype_data *)he_capa_6ghz;
- 	} else {
- 		return;
- 	}
-@@ -3290,6 +3406,12 @@ static int mac80211_hwsim_new_radio(struct genl_info *info,
- 			sband->vht_cap.vht_mcs.tx_mcs_map =
- 				sband->vht_cap.vht_mcs.rx_mcs_map;
- 			break;
-+		case NL80211_BAND_6GHZ:
-+			sband->channels = data->channels_6ghz;
-+			sband->n_channels = ARRAY_SIZE(hwsim_channels_6ghz);
-+			sband->bitrates = data->rates + 4;
-+			sband->n_bitrates = ARRAY_SIZE(hwsim_rates) - 4;
-+			break;
- 		case NL80211_BAND_S1GHZ:
- 			memcpy(&sband->s1g_cap, &hwsim_s1g_cap,
- 			       sizeof(sband->s1g_cap));
-@@ -3300,19 +3422,21 @@ static int mac80211_hwsim_new_radio(struct genl_info *info,
- 			continue;
- 		}
- 
--		sband->ht_cap.ht_supported = true;
--		sband->ht_cap.cap = IEEE80211_HT_CAP_SUP_WIDTH_20_40 |
--				    IEEE80211_HT_CAP_GRN_FLD |
--				    IEEE80211_HT_CAP_SGI_20 |
--				    IEEE80211_HT_CAP_SGI_40 |
--				    IEEE80211_HT_CAP_DSSSCCK40;
--		sband->ht_cap.ampdu_factor = 0x3;
--		sband->ht_cap.ampdu_density = 0x6;
--		memset(&sband->ht_cap.mcs, 0,
--		       sizeof(sband->ht_cap.mcs));
--		sband->ht_cap.mcs.rx_mask[0] = 0xff;
--		sband->ht_cap.mcs.rx_mask[1] = 0xff;
--		sband->ht_cap.mcs.tx_params = IEEE80211_HT_MCS_TX_DEFINED;
-+		if (band != NL80211_BAND_6GHZ){
-+			sband->ht_cap.ht_supported = true;
-+			sband->ht_cap.cap = IEEE80211_HT_CAP_SUP_WIDTH_20_40 |
-+					    IEEE80211_HT_CAP_GRN_FLD |
-+					    IEEE80211_HT_CAP_SGI_20 |
-+					    IEEE80211_HT_CAP_SGI_40 |
-+					    IEEE80211_HT_CAP_DSSSCCK40;
-+			sband->ht_cap.ampdu_factor = 0x3;
-+			sband->ht_cap.ampdu_density = 0x6;
-+			memset(&sband->ht_cap.mcs, 0,
-+			       sizeof(sband->ht_cap.mcs));
-+			sband->ht_cap.mcs.rx_mask[0] = 0xff;
-+			sband->ht_cap.mcs.rx_mask[1] = 0xff;
-+			sband->ht_cap.mcs.tx_params = IEEE80211_HT_MCS_TX_DEFINED;
-+		}
- 
- 		mac80211_hwsim_he_capab(sband);
- 
--- 
-2.25.1
+> Let's say it is possible:
+> While running ISR on a local CPU, how can someone pull the CPU before
+> its completion? If the CPU is going away after that, the workqueue is
+> unbounded. So it will run on some other CPU, here if that happens it
+> will call cpufreq update policy, which will be harmless.
 
+Well, it looks to me like if you are super-unlucky, the ISR may run on
+the local CPU in parallel with intel_pstate_update_status() running on
+a remote one and so dereferencing cpudata from it is generally unsafe.
+In theory.  In practice it is unlikely to become problematic for
+timing reasons AFAICS.
+
+Anyway, I would consider using RCU here to stay on the safe side.
