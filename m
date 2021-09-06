@@ -2,307 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35BA84015D2
+	by mail.lfdr.de (Postfix) with ESMTP id C85B04015D4
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 06:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238712AbhIFEs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 00:48:28 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:57918 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236072AbhIFEs0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 00:48:26 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        id S238763AbhIFEtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 00:49:16 -0400
+Received: from ozlabs.org ([203.11.71.1]:56005 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236072AbhIFEtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 00:49:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630903689;
+        bh=AwFKaFJF4BLkecDe8KRlmjohip8z7vEH2CcinA3oC/Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ba9Ss+0QLLq/Rjhp9bZdUkl88PvT3Bv3xBFDeji4Gi5jPBJSt0k3Be8Opw8umUY9E
+         biFUae4n6H+UDhSU4qnc9XOlRsuIJJxCQq18pz/zmrPUaNOSWglwwEU/2XTAvA2tCJ
+         igDFkdW9jo45nIUNfvnrPpwZUQ13hDnhbOzhsvZhhKYD0T7StN5RUq/Dc3e2UaHOLf
+         CF0BaOGfooevuzsZNDvPfkUx39ghe+khuZLbWW4pprEO94mz3WaugMfitqjMhyNF7F
+         NoGQdW/wKppk6J8BFDIezxLyA0HBWdPKfZRkWLQRVpHEYbOB+6v+1ELJb4DxPubP/T
+         t7IbE7hhqmx2Q==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 44F99220B9;
-        Mon,  6 Sep 2021 04:47:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1630903641; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OXt/kb3J0ajJK0Mr7oTdfIxp0ZyFKkK0TKL1fz1LMPA=;
-        b=k2aLrchRJPoqKc1DPTHI7xdzZrgpM6X1TLqlEFvj+1v/wctUx1XfgrfiiqnUr2G66EJ3LD
-        fLkd73pjxyU5FKXzFjLcMidZy5t9kYftArQZY9NLCGiIoHE5ye+GmrCvP6sBQ5nBmv44KI
-        U0YRtfZx23Yf6ojqtThfoNedtopEkwE=
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id B02211332A;
-        Mon,  6 Sep 2021 04:47:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id qw8wKVidNWFwQwAAGKfGzw
-        (envelope-from <jgross@suse.com>); Mon, 06 Sep 2021 04:47:20 +0000
-Subject: Re: [PATCH v2 6/6] x86/kvm: add boot parameter for setting max number
- of vcpus per guest
-To:     Yao Yuan <yaoyuan0329os@gmail.com>
-Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, maz@kernel.org, ehabkost@redhat.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <20210903130808.30142-1-jgross@suse.com>
- <20210903130808.30142-7-jgross@suse.com>
- <20210906004510.3r3cgigswbfivkeg@sapienza>
-From:   Juergen Gross <jgross@suse.com>
-Message-ID: <f5410f97-222a-a91d-908f-2ec8e9f97ea5@suse.com>
-Date:   Mon, 6 Sep 2021 06:47:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H2wrS4PCNz9sRN;
+        Mon,  6 Sep 2021 14:48:08 +1000 (AEST)
+Date:   Mon, 6 Sep 2021 14:48:07 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the
+ folio tree
+Message-ID: <20210906144807.4db0790f@canb.auug.org.au>
+In-Reply-To: <20210721163118.3ca01b57@canb.auug.org.au>
+References: <20210721163118.3ca01b57@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210906004510.3r3cgigswbfivkeg@sapienza>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="ixODA2n7R2faenxQGqDkcgN3OXGYOmOaS"
+Content-Type: multipart/signed; boundary="Sig_/HF1p=+TbwbIJZIkq0YfH0hr";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ixODA2n7R2faenxQGqDkcgN3OXGYOmOaS
-Content-Type: multipart/mixed; boundary="sqxKVVCV5sfQIgTHXtqglg4pYp89Hgddf";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Yao Yuan <yaoyuan0329os@gmail.com>
-Cc: kvm@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, maz@kernel.org, ehabkost@redhat.com,
- Jonathan Corbet <corbet@lwn.net>, Paolo Bonzini <pbonzini@redhat.com>,
- Sean Christopherson <seanjc@google.com>,
- Vitaly Kuznetsov <vkuznets@redhat.com>, Wanpeng Li <wanpengli@tencent.com>,
- Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <f5410f97-222a-a91d-908f-2ec8e9f97ea5@suse.com>
-Subject: Re: [PATCH v2 6/6] x86/kvm: add boot parameter for setting max number
- of vcpus per guest
-References: <20210903130808.30142-1-jgross@suse.com>
- <20210903130808.30142-7-jgross@suse.com>
- <20210906004510.3r3cgigswbfivkeg@sapienza>
-In-Reply-To: <20210906004510.3r3cgigswbfivkeg@sapienza>
-
---sqxKVVCV5sfQIgTHXtqglg4pYp89Hgddf
-Content-Type: multipart/mixed;
- boundary="------------61A99CEC643528FA7B1FF49E"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------61A99CEC643528FA7B1FF49E
-Content-Type: text/plain; charset=utf-8; format=flowed
+--Sig_/HF1p=+TbwbIJZIkq0YfH0hr
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On 06.09.21 02:45, Yao Yuan wrote:
-> On Fri, Sep 03, 2021 at 03:08:07PM +0200, Juergen Gross wrote:
->> Today the maximum number of vcpus of a kvm guest is set via a #define
->> in a header file.
->>
->> In order to support higher vcpu numbers for guests without generally
->> increasing the memory consumption of guests on the host especially on
->> very large systems add a boot parameter for specifying the number of
->> allowed vcpus for guests.
->>
->> The default will still be the current setting of 288. The value 0 has
->> the special meaning to limit the number of possible vcpus to the
->> number of possible cpus of the host.
->>
->> Signed-off-by: Juergen Gross <jgross@suse.com>
->> ---
->>   Documentation/admin-guide/kernel-parameters.txt | 7 +++++++
->>   arch/x86/include/asm/kvm_host.h                 | 5 ++++-
->>   arch/x86/kvm/x86.c                              | 9 ++++++++-
->>   3 files changed, 19 insertions(+), 2 deletions(-)
->>
->> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documen=
-tation/admin-guide/kernel-parameters.txt
->> index 37e194299311..b9641c9989ef 100644
->> --- a/Documentation/admin-guide/kernel-parameters.txt
->> +++ b/Documentation/admin-guide/kernel-parameters.txt
->> @@ -2435,6 +2435,13 @@
->>            feature (tagged TLBs) on capable Intel chips.
->>            Default is 1 (enabled)
->>
->> +	kvm.max_vcpus=3D	[KVM,X86] Set the maximum allowed numbers of vcpus =
-per
->> +			guest. The special value 0 sets the limit to the number
->> +			of physical cpus possible on the host (including not
->> +			yet hotplugged cpus). Higher values will result in
->> +			slightly higher memory consumption per guest.
->> +			Default: 288
->> +
->>    kvm.vcpu_id_add_bits=3D
->>            [KVM,X86] The vcpu-ids of guests are sparse, as they
->>            are constructed by bit-wise concatenation of the ids of
->> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kv=
-m_host.h
->> index 6c28d0800208..a4ab387b0e1c 100644
->> --- a/arch/x86/include/asm/kvm_host.h
->> +++ b/arch/x86/include/asm/kvm_host.h
->> @@ -38,7 +38,8 @@
->>
->>   #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
->>
->> -#define KVM_MAX_VCPUS 288
->> +#define KVM_DEFAULT_MAX_VCPUS 288
->> +#define KVM_MAX_VCPUS max_vcpus
->>   #define KVM_SOFT_MAX_VCPUS 240
->>   #define KVM_MAX_VCPU_ID kvm_max_vcpu_id()
->>   /* memory slots that are not exposed to userspace */
->> @@ -1588,6 +1589,8 @@ extern u64  kvm_max_tsc_scaling_ratio;
->>   extern u64  kvm_default_tsc_scaling_ratio;
->>   /* bus lock detection supported? */
->>   extern bool kvm_has_bus_lock_exit;
->> +/* maximum number of vcpus per guest */
->> +extern unsigned int max_vcpus;
->>   /* maximum vcpu-id */
->>   unsigned int kvm_max_vcpu_id(void);
->>
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index ff142b6dd00c..49c3d91c559e 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -188,9 +188,13 @@ module_param(pi_inject_timer, bint, S_IRUGO | S_I=
-WUSR);
->>   static int __read_mostly vcpu_id_add_bits =3D -1;
->>   module_param(vcpu_id_add_bits, int, S_IRUGO);
->>
->> +unsigned int __read_mostly max_vcpus =3D KVM_DEFAULT_MAX_VCPUS;
->> +module_param(max_vcpus, uint, S_IRUGO);
->> +EXPORT_SYMBOL_GPL(max_vcpus);
->> +
->>   unsigned int kvm_max_vcpu_id(void)
->>   {
->> -	int n_bits =3D fls(KVM_MAX_VCPUS - 1);
->> +	int n_bits =3D fls(max_vcpus - 1);
+Hi all,
+
+On Wed, 21 Jul 2021 16:31:18 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
 >=20
-> A quesintion here: the parameter "vcpu_id_add_bits" also depends
-> on the "max_vcpus", we can't calculate the "vcpu_id_add_bits" from
-> "max_vcpus" because KVM has no topologically knowledge to determine
-> bits needed for each socket/core/thread level, right?
+> Today's linux-next merge of the akpm-current tree got conflicts in:
+>=20
+>   include/linux/memcontrol.h
+>   mm/memcontrol.c
+>=20
+> between commits:
+>=20
+>   05bb7bbab428 ("mm/memcg: Convert mem_cgroup_charge() to take a folio")
+>   8b2afb6a1c34 ("mm/memcg: Convert mem_cgroup_uncharge() to take a folio")
+>=20
+> from the folio tree and commit:
+>=20
+>   1f4c6a1cf274 ("mm, memcg: inline mem_cgroup_{charge/uncharge} to improv=
+e disabled memcg config")
+>=20
+> from the akpm-current tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> diff --cc include/linux/memcontrol.h
+> index af9c44bb1e42,406058a0c480..000000000000
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@@ -704,15 -691,37 +702,36 @@@ static inline bool mem_cgroup_below_min
+>   		page_counter_read(&memcg->memory);
+>   }
+>  =20
+> - int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t =
+gfp);
+>  -int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
+>  -			gfp_t gfp_mask);
+>  -static inline int mem_cgroup_charge(struct page *page, struct mm_struct=
+ *mm,
+>  -				    gfp_t gfp_mask)
+> ++int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_=
+t gfp);
+> ++static inline int mem_cgroup_charge(struct folio *folio, struct mm_stru=
+ct *mm,
+> ++				    gfp_t gfp)
+> + {
+> + 	if (mem_cgroup_disabled())
+> + 		return 0;
+>  -	return __mem_cgroup_charge(page, mm, gfp_mask);
+> ++	return __mem_cgroup_charge(folio, mm, gfp);
+> + }
+> +=20
+>   int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *=
+mm,
+>   				  gfp_t gfp, swp_entry_t entry);
+>   void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry);
+>  =20
+> - void mem_cgroup_uncharge(struct folio *folio);
+> - void mem_cgroup_uncharge_list(struct list_head *page_list);
+>  -void __mem_cgroup_uncharge(struct page *page);
+>  -static inline void mem_cgroup_uncharge(struct page *page)
+> ++void __mem_cgroup_uncharge(struct folio *folio);
+> ++static inline void mem_cgroup_uncharge(struct folio *folio)
+> + {
+> + 	if (mem_cgroup_disabled())
+> + 		return;
+>  -	__mem_cgroup_uncharge(page);
+> ++	__mem_cgroup_uncharge(folio);
+> + }
+> +=20
+> + void __mem_cgroup_uncharge_list(struct list_head *page_list);
+> + static inline void mem_cgroup_uncharge_list(struct list_head *page_list)
+> + {
+> + 	if (mem_cgroup_disabled())
+> + 		return;
+> + 	__mem_cgroup_uncharge_list(page_list);
+> + }
+>  =20
+>  -void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
+>  +void mem_cgroup_migrate(struct folio *old, struct folio *new);
+>  =20
+>   /**
+>    * mem_cgroup_lruvec - get the lru list vector for a memcg & node
+> diff --cc mm/memcontrol.c
+> index 1d77c873463c,c010164172dd..000000000000
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@@ -6712,29 -6718,27 +6708,26 @@@ out
+>   }
+>  =20
+>   /**
+> -  * mem_cgroup_charge - Charge a newly allocated folio to a cgroup.
+>  - * __mem_cgroup_charge - charge a newly allocated page to a cgroup
+>  - * @page: page to charge
+>  - * @mm: mm context of the victim
+>  - * @gfp_mask: reclaim mode
+> ++ * __mem_cgroup_charge - Charge a newly allocated folio to a cgroup.
+>  + * @folio: Folio to charge.
+>  + * @mm: mm context of the allocating task.
+>  + * @gfp: Reclaim mode.
+>    *
+>  - * Try to charge @page to the memcg that @mm belongs to, reclaiming
+>  - * pages according to @gfp_mask if necessary. if @mm is NULL, try to
+>  + * Try to charge @folio to the memcg that @mm belongs to, reclaiming
+>  + * pages according to @gfp if necessary.  If @mm is NULL, try to
+>    * charge to the active memcg.
+>    *
+>  - * Do not use this for pages allocated for swapin.
+>  + * Do not use this for folios allocated for swapin.
+>    *
+>  - * Returns 0 on success. Otherwise, an error code is returned.
+>  + * Return: 0 on success. Otherwise, an error code is returned.
+>    */
+> - int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t =
+gfp)
+>  -int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
+>  -			gfp_t gfp_mask)
+> ++int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_=
+t gfp)
+>   {
+>   	struct mem_cgroup *memcg;
+>   	int ret;
+>  =20
+> - 	if (mem_cgroup_disabled())
+> - 		return 0;
+> -=20
+>   	memcg =3D get_mem_cgroup_from_mm(mm);
+>  -	ret =3D charge_memcg(page, memcg, gfp_mask);
+>  +	ret =3D charge_memcg(folio, memcg, gfp);
+>   	css_put(&memcg->css);
+>  =20
+>   	return ret;
+> @@@ -6906,20 -6909,17 +6899,17 @@@ static void uncharge_folio(struct foli
+>   }
+>  =20
+>   /**
+> -  * mem_cgroup_uncharge - Uncharge a folio.
+>  - * __mem_cgroup_uncharge - uncharge a page
+>  - * @page: page to uncharge
+> ++ * __mem_cgroup_uncharge - Uncharge a folio.
+>  + * @folio: Folio to uncharge.
+>    *
+>  - * Uncharge a page previously charged with __mem_cgroup_charge().
+>  + * Uncharge a folio previously charged with mem_cgroup_charge().
+>    */
+> - void mem_cgroup_uncharge(struct folio *folio)
+>  -void __mem_cgroup_uncharge(struct page *page)
+> ++void __mem_cgroup_uncharge(struct folio *folio)
+>   {
+>   	struct uncharge_gather ug;
+>  =20
+> - 	if (mem_cgroup_disabled())
+> - 		return;
+> -=20
+>  -	/* Don't touch page->lru of any random page, pre-check: */
+>  -	if (!page_memcg(page))
+>  +	/* Don't touch folio->lru of any random page, pre-check: */
+>  +	if (!folio_memcg(folio))
+>   		return;
+>  =20
+>   	uncharge_gather_clear(&ug);
+> @@@ -6932,19 -6932,16 +6922,16 @@@
+>    * @page_list: list of pages to uncharge
+>    *
+>    * Uncharge a list of pages previously charged with
+> -  * mem_cgroup_charge().
+> +  * __mem_cgroup_charge().
+>    */
+> - void mem_cgroup_uncharge_list(struct list_head *page_list)
+> + void __mem_cgroup_uncharge_list(struct list_head *page_list)
+>   {
+>   	struct uncharge_gather ug;
+>  -	struct page *page;
+>  +	struct folio *folio;
+>  =20
+> - 	if (mem_cgroup_disabled())
+> - 		return;
+> -=20
+>   	uncharge_gather_clear(&ug);
+>  -	list_for_each_entry(page, page_list, lru)
+>  -		uncharge_page(page, &ug);
+>  +	list_for_each_entry(folio, page_list, lru)
+>  +		uncharge_folio(folio, &ug);
+>   	if (ug.memcg)
+>   		uncharge_batch(&ug);
+>   }
 
-Correct.
+This is now a conflict between the folio tree and Linus' tree.
 
+--=20
+Cheers,
+Stephen Rothwell
 
-Juergen
-
---------------61A99CEC643528FA7B1FF49E
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------61A99CEC643528FA7B1FF49E--
-
---sqxKVVCV5sfQIgTHXtqglg4pYp89Hgddf--
-
---ixODA2n7R2faenxQGqDkcgN3OXGYOmOaS
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+--Sig_/HF1p=+TbwbIJZIkq0YfH0hr
+Content-Type: application/pgp-signature
 Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmE1nVgFAwAAAAAACgkQsN6d1ii/Ey+x
-bwgAmsT4XhIk5BvNcqhl4D1qHQUXZAZ/AQNdioURmtSzRP6Tb+caqofu0pWMiNpifpqHQ8hQPPYN
-+OfesDeTqpFCOxwBXVDE8HjmKx4deEvA+Durvjln7553FJf8XUKNc3aCl8JT3gZPNDhN+lb4eGw2
-MW9sZqkjnDHvJPKSW/BCHXY4zH8oRXV9dhBwDDq7Uq8uwjFPc5V3HjpgUvwGt5c23neJlgg58a0T
-nQp6VMZBptW386vIariWY4eqU5hx1Uw66DTmVVUmCgdFE0IIZ7TBXQce+XYHffF8O4aa4aM2HhcZ
-l9GzootPfba95ZEFXcI14icwljF7zUx+WlijyKmFsQ==
-=fRaP
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE1nYcACgkQAVBC80lX
+0Gw9ggf+I6IaKtdLcXbyzRMraFeJT5i0DscRfXkGOpi5L+cPBUraWc6YNp0UKrdp
+q4B3SdSPBsS0yBMRQq5HksdshCSJrAsPPS3nWt2gDvexnigGuSJVhn6CJk9NnW11
++ADCyPXBJqsXAdevtjhz/uy3UdSDD5xy1JRQuY/iWC5KQvEAhzk+L2dopRP6pPcF
+WsrhcXXZGz00o9bEVdxeMpEep5JPD8RqlxlCSDiShTrnQk+egNaEhe5UZ5laSDdl
+vSrUwoKkMWhlaumk5dZuDlseMbTkW3jW47igmUHmzP8E8brlS90O4JnM9zLzxww1
+SDnPXSb3BurK8NHiNvSG6l1/YwTU5w==
+=V9Kr
 -----END PGP SIGNATURE-----
 
---ixODA2n7R2faenxQGqDkcgN3OXGYOmOaS--
+--Sig_/HF1p=+TbwbIJZIkq0YfH0hr--
