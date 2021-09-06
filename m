@@ -2,101 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AA8401EED
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A01A401EFC
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243687AbhIFRLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 13:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41058 "EHLO
+        id S242248AbhIFRLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 13:11:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243493AbhIFRK7 (ORCPT
+        with ESMTP id S243797AbhIFRLh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 13:10:59 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF4EDC061757
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 10:09:52 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id g14so12304017ljk.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:09:52 -0700 (PDT)
+        Mon, 6 Sep 2021 13:11:37 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904F3C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 10:10:32 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id k13so14562386lfv.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:10:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wwOCuprYbkSUA/THtMMV9PKpk9+aKaQeh1R3zOdVG40=;
-        b=GzKiYy6zYtAnV54IqbOjO7YFzn9kKGQhm6jYExiS0MBAr6pyq82hfVQkFCa0eYPvPc
-         H2tDkG+3wOiGQOBGFbgdeKLH302ysm8XRWIK+cRXhcJi0tV3C47gAEXKqmNSMLdxX9w8
-         hHur20XkQtjtpG5GbT6Tv4U859Y+byyjBzUsvZessBqI8xpuV3FfAgNMDaKXqmLZ8aVh
-         OmklfKxshBDIqbOKCS388omEIUdWdo396Yqwo1tYqOApmjJbe/jvOU8w8A9BgfJGxNEe
-         gnMSjZCn00V9bIL31Bmb6v0W7UUh39Dx1ZB0d9+I5RwyMmJyO9ZkEf0MdltFqXeXAieM
-         pNyA==
+        bh=noINKmz3hzTGqq034jTZ5E+LdSOi2uYpC/Rle/66Vl4=;
+        b=iYuhyd4uCzT8/2bOYiqWul/nZlbxsr1/PhzUk73eDC6N2l4dLguCZl2MbY01uzkgRA
+         RbG+L1yM5kQiLZ3pmvpdIhRjJBRqnBNohvQRqQT5f/4IxftO5212RnLbyNyxomeQl1r4
+         CY7+Y360ktzEFLIeLa4nSSw+fMsv8wixGi6JYB2AwTsc7yjcHeBazmWagk7Sd+oqZxn9
+         7xxvydbz7tR3J+hjS3d9gRdPT9RbxBce8cRBPn1kkEL2cU4C3WlUjvgTiIbgrzWRV7Qx
+         4NPpu9hltTXmywS3o97zRq+1YeB8PUdWLZKz4w0/MZR2JiX7yjgZk8jDSkxu7+AaJt8P
+         hkDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wwOCuprYbkSUA/THtMMV9PKpk9+aKaQeh1R3zOdVG40=;
-        b=WgNeiGAR9/68Y7ckc9cpqpNfXrhYRykt6kk4ohP3S9m39DRX4ez4bCBFnAcys0mi9V
-         IJPdm+9aYKoGXcap9NH3rGUsMfNjdBxWTzyR3vn1om7UYU5VAEa/imKntSXM8C+a/16K
-         4yOK4Lln9qdZwAknqwhT/m/rnCygQ97dMq29gVRAr44cj5qX8FuRfnxeYlfvYPyjPf2z
-         bNKbA2xtUQFhaOtPg6/lGfsZX+PHpAakxNHQrW9IbzdORJs521HQ7PzHbU12Lj6Ihdk9
-         36IAUS+UJO3QQbvp3TU92jHxBUB4ZlGNVV38MUmhjlpYpRq+TtOLYqlhDPzq3fE64phX
-         1J+A==
-X-Gm-Message-State: AOAM532OV5ANuKQM/p+oiDTDk8ZkBp95g2WRNmVmKMkasO82yms9XRTx
-        /G+IKg2hBLjxYV6iUrkIATshTf7gfsnmaRX1Cg2pA5XnpE0=
-X-Google-Smtp-Source: ABdhPJzCI49eG9K/iE8OK4dQtWJnh1Tnn8OnZUgGLomJ8+WLB6GQmHxbUYfXxjiGBLr/LB0uY/5LxPuox/I20BKPjDk=
-X-Received: by 2002:a2e:b610:: with SMTP id r16mr11489966ljn.367.1630948191250;
- Mon, 06 Sep 2021 10:09:51 -0700 (PDT)
+        bh=noINKmz3hzTGqq034jTZ5E+LdSOi2uYpC/Rle/66Vl4=;
+        b=TWUjhnTcmQCuxfxYVB+6JNTR2QAUZxlr8fb2Ma+Lm/uJ9xqmuDtpjlrzpvAcQ5gCkP
+         +/CnsuHf6OL63oeMSyg7jFKA94MTDWZd0bNsA/V9h5s5/3FPX9t0AY0+qdJ8alVRn38q
+         D6QL/3hzZpZcm/wdHQQj5IOebaNsjCHLXz77c2/7NXIE6e+BSiyidV6JmBlZNUPVVYrl
+         uTPSoO7xRIux6PfscBGjiJbJn7STXP3FV9CbVOeo+3MGD++BkrQgvMMDAi9TZTypgjo9
+         uJQIRSQDRh7pkc2IZzLPhkbtuEKmKUlnX1xMGvtli47Gg7z0J5CN0PYkWSQNVDJ25Hvc
+         W5zg==
+X-Gm-Message-State: AOAM532+AVV03dODIMJCkhoGnZiu/sLgTFt6+VfWoMon66SKGe4DTmp6
+        Q1vAEXuXqWwgXvdsuisfYA9DLmTGJikTV6o9bOhIPg==
+X-Google-Smtp-Source: ABdhPJxlhFOEzJRlkJCRsUZZ2Q4TuaOmHRL8uGNY7RMU3fpBcQJG/A6CDs3tVr/JkHXbcvF9vj/fRKk5UtWSuPkrEEo=
+X-Received: by 2002:a05:6512:3ca5:: with SMTP id h37mr10177779lfv.254.1630948230961;
+ Mon, 06 Sep 2021 10:10:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <CGME20210825094127epcas1p26709a5004dacdb2066e7f21dc1c997f5@epcas1p2.samsung.com>
- <20210825093345.14706-1-cw9316.lee@samsung.com>
-In-Reply-To: <20210825093345.14706-1-cw9316.lee@samsung.com>
+References: <20210827071537.1034-1-derong.liu@mediatek.com>
+In-Reply-To: <20210827071537.1034-1-derong.liu@mediatek.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 6 Sep 2021 19:09:15 +0200
-Message-ID: <CAPDyKFomfnik==x5FtJeALr-9oZmjDNAXJiRft8-fXqPU8m0Dw@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci: Change the code to check auto_cmd23
-To:     Chanwoo Lee <cw9316.lee@samsung.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+Date:   Mon, 6 Sep 2021 19:09:54 +0200
+Message-ID: <CAPDyKFpubTas6HMe=uzqJyQuQS9TRnDGuGjaS80ymjevN_CFMQ@mail.gmail.com>
+Subject: Re: [PATCH v3] mmc: mediatek: add wait dma stop done flow
+To:     Derong Liu <derong.liu@mediatek.com>
+Cc:     Chaotian Jing <chaotian.jing@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        grant.jung@samsung.com, jt77.jang@samsung.com,
-        DooHyun Hwang <dh0421.hwang@samsung.com>,
-        Seunghui Lee <sh043.lee@samsung.com>
+        wsp_upstream@mediatek.com, Peng Zhou <peng.zhou@mediatek.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Aug 2021 at 11:41, Chanwoo Lee <cw9316.lee@samsung.com> wrote:
+On Fri, 27 Aug 2021 at 09:15, Derong Liu <derong.liu@mediatek.com> wrote:
 >
-> From: ChanWoo Lee <cw9316.lee@samsung.com>
+> We found this issue on a 5G platform, during CMDQ error handling, if DMA status is active when it call msdc_reset_hw, it means mmc host hw reset and DMA transfer will be parallel, mmc host may access sram region unexpectedly.
+> According to the programming guide of mtk mmc host, it needs to wait for dma stop done after set dma stop.
+> This change should be applied to all SoCs.
 >
-> It is replaced with a function that is already declared.
-> //[1/5] mmc: sdhci: Add helpers for the auto-CMD23 flag
-> //20200412090349.1607-2-adrian.hunter@intel.com
->
-> Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
+> Change-Id: I9b87523f19b24ca73958bbcb83bb418413c5a180
 
-Queued for v5.16 on the temporary devel branch, thanks!
+I am dropping this tag.
+
+> Signed-off-by: Derong Liu <derong.liu@mediatek.com>
+
+Applied for next, thanks! I guess we should also tag this for stable
+kernels, right?
 
 Kind regards
 Uffe
 
 
 > ---
->  drivers/mmc/host/sdhci.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mmc/host/mtk-sd.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 >
-> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> index 36f15f81a6af..5782650ddf7d 100644
-> --- a/drivers/mmc/host/sdhci.c
-> +++ b/drivers/mmc/host/sdhci.c
-> @@ -3232,7 +3232,7 @@ static void sdhci_cmd_irq(struct sdhci_host *host, u32 intmask, u32 *intmask_p)
->                           -ETIMEDOUT :
->                           -EILSEQ;
+> diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
+> index 4dfc246c5f95..b99330bad6a5 100644
+> --- a/drivers/mmc/host/mtk-sd.c
+> +++ b/drivers/mmc/host/mtk-sd.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/clk.h>
+>  #include <linux/delay.h>
+>  #include <linux/dma-mapping.h>
+> +#include <linux/iopoll.h>
+>  #include <linux/ioport.h>
+>  #include <linux/irq.h>
+>  #include <linux/of_address.h>
+> @@ -2330,6 +2331,7 @@ static void msdc_cqe_enable(struct mmc_host *mmc)
+>  static void msdc_cqe_disable(struct mmc_host *mmc, bool recovery)
+>  {
+>         struct msdc_host *host = mmc_priv(mmc);
+> +       unsigned int val = 0;
 >
-> -               if (mrq->sbc && (host->flags & SDHCI_AUTO_CMD23)) {
-> +               if (sdhci_auto_cmd23(host, mrq)) {
->                         mrq->sbc->error = err;
->                         __sdhci_finish_mrq(host, mrq);
->                         return;
+>         /* disable cmdq irq */
+>         sdr_clr_bits(host->base + MSDC_INTEN, MSDC_INT_CMDQ);
+> @@ -2339,6 +2341,9 @@ static void msdc_cqe_disable(struct mmc_host *mmc, bool recovery)
+>         if (recovery) {
+>                 sdr_set_field(host->base + MSDC_DMA_CTRL,
+>                               MSDC_DMA_CTRL_STOP, 1);
+> +               if (WARN_ON(readl_poll_timeout(host->base + MSDC_DMA_CFG, val,
+> +                       !(val & MSDC_DMA_CFG_STS), 1, 3000)))
+> +                       return;
+>                 msdc_reset_hw(host);
+>         }
+>  }
 > --
-> 2.29.0
->
+> 2.18.0
