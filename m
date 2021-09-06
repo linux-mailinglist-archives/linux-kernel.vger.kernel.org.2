@@ -2,365 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED60401FC8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E8C401FCB
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:39:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244566AbhIFShj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 14:37:39 -0400
-Received: from mga14.intel.com ([192.55.52.115]:47238 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244435AbhIFShi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 14:37:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="219714204"
-X-IronPort-AV: E=Sophos;i="5.85,273,1624345200"; 
-   d="scan'208";a="219714204"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 11:36:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,273,1624345200"; 
-   d="scan'208";a="579716470"
-Received: from bspteam04.iind.intel.com ([10.106.46.142])
-  by orsmga004.jf.intel.com with ESMTP; 06 Sep 2021 11:36:29 -0700
-From:   shruthi.sanil@intel.com
-To:     daniel.lezcano@linaro.org, tglx@linutronix.de, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     andriy.shevchenko@linux.intel.com, kris.pan@linux.intel.com,
-        mgross@linux.intel.com, srikanth.thokala@intel.com,
-        lakshmi.bai.raja.subramanian@intel.com,
-        mallikarjunappa.sangannavar@intel.com, shruthi.sanil@intel.com
-Subject: [PATCH v6 2/2] clocksource: Add Intel Keem Bay timer support
-Date:   Tue,  7 Sep 2021 00:06:21 +0530
-Message-Id: <20210906183621.21075-3-shruthi.sanil@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210906183621.21075-1-shruthi.sanil@intel.com>
-References: <20210906183621.21075-1-shruthi.sanil@intel.com>
+        id S236919AbhIFSiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 14:38:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35364 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236719AbhIFSio (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 14:38:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630953459;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wnh0WKCRe49Jpy2AZ0FfJzHfp3O52I++fgnbbsEPWvk=;
+        b=DGDc2/9nmfoUwgORKjX6iErRKBVc/yMPFRtQEBuxpfpGoFjoyMaSC7cZutejNnYWDTyU8S
+        EYdPhLVol6kqtvRINHTbU73qF5BIb/Y0C+QlDfsYwr3yrTBZ3GYG2AIbQ6EINMVO4pe4zQ
+        oKqO/SUM51QHOeL/7fv9aOb1LXV6eVs=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-1agAJb81OkyqyVkVeE_UXQ-1; Mon, 06 Sep 2021 14:37:38 -0400
+X-MC-Unique: 1agAJb81OkyqyVkVeE_UXQ-1
+Received: by mail-wr1-f70.google.com with SMTP id b8-20020a5d5508000000b001574e8e9237so1367064wrv.16
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:37:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Wnh0WKCRe49Jpy2AZ0FfJzHfp3O52I++fgnbbsEPWvk=;
+        b=D9W9LHPBW1Glb29QKqi0+Oq7DcJHJPpi5twRWzA+FTV6UpSuCjNr/0G/W9jfDJWYfl
+         9J+kMiVElA5KHJxfAARdXZNHBK+BRY6SB3gQUENzlNYK8Uufn0wRVNTwGwmCNXYBrRjc
+         R9QYJBzzfMzcpS2xDjbLwORqR3blUrtwVikcCpaQgyID71S3sJLXJGYXoBj5WYuseSiH
+         bwYf/hMtw6WNt3fDVt0Cgn8PlIDjWfLzKUNY/8h6YUBzI6o67xK+yiwUuHEmM4M/rQMh
+         xoTgHK3b+ni3ZuLlT/xwc2CWudw6cSL6JNdbVp37dLXpgbYTA7vfvLPM1ewmR+Zi7DVY
+         14kQ==
+X-Gm-Message-State: AOAM532ZaBGi+MSCGj5XuI3PlePRvvncxyR3h3GgXYwyB4da2S9dqRes
+        +eKKhzuXdcIMeNFNQX/h/6XdCCbgdc7pxsbBVX7Xg8Sl9im2sPU0J9WEjA3iujWuQjCJmvFs8Il
+        5R2lQa2b6o+fO0TNzOBIPxxYg
+X-Received: by 2002:a1c:2289:: with SMTP id i131mr412360wmi.113.1630953456910;
+        Mon, 06 Sep 2021 11:37:36 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxZGwfAJjZTLGnBV4KbGuYowR9PrWwNbsztoLb9n5KDjqcp7r1O7B+GCYU05DrZdWJQy51Xeg==
+X-Received: by 2002:a1c:2289:: with SMTP id i131mr412347wmi.113.1630953456697;
+        Mon, 06 Sep 2021 11:37:36 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6323.dip0.t-ipconnect.de. [91.12.99.35])
+        by smtp.gmail.com with ESMTPSA id t14sm257161wmi.12.2021.09.06.11.37.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 11:37:36 -0700 (PDT)
+To:     Pierre Morel <pmorel@linux.ibm.com>, kvm@vger.kernel.org
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, frankja@linux.ibm.com, cohuck@redhat.com,
+        thuth@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com
+References: <1627979206-32663-1-git-send-email-pmorel@linux.ibm.com>
+ <1627979206-32663-3-git-send-email-pmorel@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v3 2/3] s390x: KVM: Implementation of Multiprocessor
+ Topology-Change-Report
+Message-ID: <d85a6998-0f86-44d9-4eae-3051b65c2b4e@redhat.com>
+Date:   Mon, 6 Sep 2021 20:37:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <1627979206-32663-3-git-send-email-pmorel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shruthi Sanil <shruthi.sanil@intel.com>
+On 03.08.21 10:26, Pierre Morel wrote:
+> We let the userland hypervisor know if the machine support the CPU
+> topology facility using a new KVM capability: KVM_CAP_S390_CPU_TOPOLOGY.
+> 
+> The PTF instruction will report a topology change if there is any change
+> with a previous STSI_15_2 SYSIB.
+> Changes inside a STSI_15_2 SYSIB occur if CPU bits are set or clear
+> inside the CPU Topology List Entry CPU mask field, which happens with
+> changes in CPU polarization, dedication, CPU types and adding or
+> removing CPUs in a socket.
+> 
+> The reporting to the guest is done using the Multiprocessor
+> Topology-Change-Report (MTCR) bit of the utility entry of the guest's
+> SCA which will be cleared during the interpretation of PTF.
+> 
+> To check if the topology has been modified we use a new field of the
+> arch vCPU to save the previous real CPU ID at the end of a schedule
+> and verify on next schedule that the CPU used is in the same socket.
+> 
+> We deliberatly ignore:
+> - polarization: only horizontal polarization is currently used in linux.
+> - CPU Type: only IFL Type are supported in Linux
+> - Dedication: we consider that only a complete dedicated CPU stack can
+>    take benefit of the CPU Topology.
+> 
+> Signed-off-by: Pierre Morel <pmorel@linux.ibm.com>
 
-The Intel Keem Bay timer driver supports clocksource and clockevent
-features for the timer IP used in Intel Keem Bay SoC.
-The timer block supports 1 free running counter and 8 timers.
-The free running counter can be used as a clocksource and
-the timers can be used as clockevent. Each timer is capable of
-generating individual interrupt.
-Both the features are enabled through the timer general config register.
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-Signed-off-by: Shruthi Sanil <shruthi.sanil@intel.com>
----
- MAINTAINERS                         |   5 +
- drivers/clocksource/Kconfig         |  11 ++
- drivers/clocksource/Makefile        |   1 +
- drivers/clocksource/timer-keembay.c | 252 ++++++++++++++++++++++++++++
- 4 files changed, 269 insertions(+)
- create mode 100644 drivers/clocksource/timer-keembay.c
+> @@ -228,7 +232,7 @@ struct kvm_s390_sie_block {
+>   	__u8	icptcode;		/* 0x0050 */
+>   	__u8	icptstatus;		/* 0x0051 */
+>   	__u16	ihcpu;			/* 0x0052 */
+> -	__u8	reserved54;		/* 0x0054 */
+> +	__u8	mtcr;			/* 0x0054 */
+>   #define IICTL_CODE_NONE		 0x00
+>   #define IICTL_CODE_MCHK		 0x01
+>   #define IICTL_CODE_EXT		 0x02
+> @@ -246,6 +250,7 @@ struct kvm_s390_sie_block {
+>   #define ECB_TE		0x10
+>   #define ECB_SRSI	0x04
+>   #define ECB_HOSTPROTINT	0x02
+> +#define ECB_PTF		0x01
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4278b389218e..f6559dd92971 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9506,6 +9506,11 @@ F:	drivers/crypto/keembay/keembay-ocs-hcu-core.c
- F:	drivers/crypto/keembay/ocs-hcu.c
- F:	drivers/crypto/keembay/ocs-hcu.h
- 
-+INTEL KEEM BAY TIMER SUPPORT
-+M:	Shruthi Sanil <shruthi.sanil@intel.com>
-+S:	Maintained
-+F:	drivers/clocksource/timer-keembay.c
-+
- INTEL MANAGEMENT ENGINE (mei)
- M:	Tomas Winkler <tomas.winkler@intel.com>
- L:	linux-kernel@vger.kernel.org
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index 0f5e3983951a..0dcf2c5aaaf2 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -708,4 +708,15 @@ config MICROCHIP_PIT64B
- 	  modes and high resolution. It is used as a clocksource
- 	  and a clockevent.
- 
-+config KEEMBAY_TIMER
-+	bool "Intel Keem Bay timer"
-+	depends on ARCH_KEEMBAY || COMPILE_TEST
-+	select TIMER_OF
-+	help
-+	  This option enables the support for the Intel Keem Bay
-+	  general purpose timer and free running counter driver.
-+	  Each timer can generate an individual interrupt and
-+	  supports oneshot and periodic modes.
-+	  The 64-bit counter can be used as a clock source.
-+
- endmenu
-diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
-index c17ee32a7151..ea319063ba47 100644
---- a/drivers/clocksource/Makefile
-+++ b/drivers/clocksource/Makefile
-@@ -88,3 +88,4 @@ obj-$(CONFIG_CSKY_MP_TIMER)		+= timer-mp-csky.o
- obj-$(CONFIG_GX6605S_TIMER)		+= timer-gx6605s.o
- obj-$(CONFIG_HYPERV_TIMER)		+= hyperv_timer.o
- obj-$(CONFIG_MICROCHIP_PIT64B)		+= timer-microchip-pit64b.o
-+obj-$(CONFIG_KEEMBAY_TIMER)		+= timer-keembay.o
-diff --git a/drivers/clocksource/timer-keembay.c b/drivers/clocksource/timer-keembay.c
-new file mode 100644
-index 000000000000..8647a05edf2e
---- /dev/null
-+++ b/drivers/clocksource/timer-keembay.c
-@@ -0,0 +1,252 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Intel Keem Bay Timer driver
-+ *
-+ * Copyright (C) 2020 Intel Corporation
-+ */
-+
-+#include <linux/bitops.h>
-+#include <linux/idr.h>
-+#include <linux/interrupt.h>
-+#include <linux/io-64-nonatomic-lo-hi.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/of_address.h>
-+#include <linux/sizes.h>
-+#include <linux/slab.h>
-+#include <linux/regmap.h>
-+
-+#include "timer-of.h"
-+
-+/* Timer register offset */
-+#define TIM_CNT_VAL_OFFSET		0x0
-+#define TIM_RELOAD_VAL_OFFSET		0x4
-+#define TIM_CONFIG_OFFSET		0x8
-+
-+/* Bit fields of timer general config register */
-+#define TIM_CONFIG_PRESCALER_ENABLE	BIT(2)
-+#define TIM_CONFIG_COUNTER_ENABLE	BIT(0)
-+
-+/* Bit fields of timer config register */
-+#define TIM_CONFIG_INTERRUPT_PENDING	BIT(4)
-+#define TIM_CONFIG_INTERRUPT_ENABLE	BIT(2)
-+#define TIM_CONFIG_RESTART		BIT(1)
-+#define TIM_CONFIG_ENABLE		BIT(0)
-+
-+#define TIM_GEN_MASK			GENMASK(31, 12)
-+#define TIM_RATING			200
-+#define TIM_CLKSRC_MASK_BITS		64
-+
-+#define TIMER_NAME_SIZE			25
-+
-+/* Provides a unique ID for each timer */
-+static DEFINE_IDA(keembay_timer_ida);
-+
-+static inline void keembay_timer_enable(void __iomem *base, u32 flags)
-+{
-+	writel(TIM_CONFIG_ENABLE | flags, base + TIM_CONFIG_OFFSET);
-+}
-+
-+static inline void keembay_timer_disable(void __iomem *base)
-+{
-+	writel(0x0, base + TIM_CONFIG_OFFSET);
-+}
-+
-+static inline void keembay_timer_update_counter(void __iomem *base, u32 val)
-+{
-+	writel(val, base + TIM_CNT_VAL_OFFSET);
-+	writel(val, base + TIM_RELOAD_VAL_OFFSET);
-+}
-+
-+static inline void keembay_timer_clear_pending_int(void __iomem *base)
-+{
-+	u32 val;
-+
-+	val = readl(base + TIM_CONFIG_OFFSET);
-+	val &= ~TIM_CONFIG_INTERRUPT_PENDING;
-+	writel(val, base + TIM_CONFIG_OFFSET);
-+}
-+
-+static int keembay_timer_set_next_event(unsigned long evt, struct clock_event_device *ce)
-+{
-+	u32 flags = TIM_CONFIG_INTERRUPT_ENABLE;
-+	struct timer_of *to = to_timer_of(ce);
-+	void __iomem *tim_base = timer_of_base(to);
-+
-+	keembay_timer_disable(tim_base);
-+	keembay_timer_update_counter(tim_base, evt);
-+	keembay_timer_enable(tim_base, flags);
-+
-+	return 0;
-+}
-+
-+static int keembay_timer_periodic(struct clock_event_device *ce)
-+{
-+	u32 flags = TIM_CONFIG_INTERRUPT_ENABLE | TIM_CONFIG_RESTART;
-+	struct timer_of *to = to_timer_of(ce);
-+	void __iomem *tim_base = timer_of_base(to);
-+
-+	keembay_timer_disable(tim_base);
-+	keembay_timer_update_counter(tim_base, timer_of_period(to));
-+	keembay_timer_enable(tim_base, flags);
-+
-+	return 0;
-+}
-+
-+static int keembay_timer_shutdown(struct clock_event_device *ce)
-+{
-+	struct timer_of *to = to_timer_of(ce);
-+
-+	keembay_timer_disable(timer_of_base(to));
-+
-+	return 0;
-+}
-+
-+static irqreturn_t keembay_timer_isr(int irq, void *dev_id)
-+{
-+	struct clock_event_device *evt = dev_id;
-+	struct timer_of *to = to_timer_of(evt);
-+	void __iomem *tim_base = timer_of_base(to);
-+	u32 val;
-+
-+	val = readl(tim_base + TIM_CONFIG_OFFSET);
-+
-+	if (val & TIM_CONFIG_RESTART) {
-+		/* Clear interrupt for periodic timer*/
-+		keembay_timer_clear_pending_int(tim_base);
-+	} else {
-+		/* Disable the timer for one shot timer */
-+		keembay_timer_disable(tim_base);
-+	}
-+
-+	evt->event_handler(evt);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int __init keembay_clockevent_init(struct device_node *np)
-+{
-+	struct timer_of *keembay_ce_to;
-+	struct regmap *regmap;
-+	char *timer_name;
-+	int timer_id;
-+	int ret;
-+	u32 val;
-+
-+	regmap = device_node_to_regmap(np->parent);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	ret = regmap_read(regmap, TIM_CONFIG_OFFSET, &val);
-+	if (ret)
-+		return ret;
-+
-+	/* Prescaler bit must be enabled for the timer to function */
-+	if (!(val & TIM_CONFIG_PRESCALER_ENABLE)) {
-+		pr_err("%pOF: Prescaler is not enabled\n", np);
-+		ret = -ENODEV;
-+	}
-+
-+	keembay_ce_to = kzalloc(sizeof(*keembay_ce_to), GFP_KERNEL);
-+	if (!keembay_ce_to)
-+		ret = -ENOMEM;
-+
-+	timer_id = ida_alloc(&keembay_timer_ida, GFP_KERNEL);
-+	if (timer_id < 0) {
-+		ret = timer_id;
-+		goto err_keembay_ce_to_free;
-+	}
-+
-+	timer_name = kasprintf(GFP_KERNEL, "keembay_timer%d", timer_id);
-+	if (!timer_name) {
-+		ret = -ENOMEM;
-+		goto err_free_ida;
-+	}
-+
-+	keembay_ce_to->flags = TIMER_OF_IRQ | TIMER_OF_BASE | TIMER_OF_CLOCK;
-+	keembay_ce_to->clkevt.name = timer_name;
-+	keembay_ce_to->clkevt.cpumask = cpumask_of(0);
-+	keembay_ce_to->clkevt.features = CLOCK_EVT_FEAT_PERIODIC |
-+					 CLOCK_EVT_FEAT_ONESHOT  |
-+					 CLOCK_EVT_FEAT_DYNIRQ;
-+	keembay_ce_to->clkevt.rating = TIM_RATING;
-+	keembay_ce_to->clkevt.set_next_event = keembay_timer_set_next_event;
-+	keembay_ce_to->clkevt.set_state_periodic = keembay_timer_periodic;
-+	keembay_ce_to->clkevt.set_state_shutdown = keembay_timer_shutdown;
-+	keembay_ce_to->of_irq.handler = keembay_timer_isr;
-+	keembay_ce_to->of_irq.flags = IRQF_TIMER;
-+
-+	ret = timer_of_init(np, keembay_ce_to);
-+	if (ret)
-+		goto err_timer_name_free;
-+
-+	ret = regmap_read(regmap, TIM_RELOAD_VAL_OFFSET, &val);
-+	if (ret)
-+		goto err_timer_name_free;
-+
-+	keembay_ce_to->of_clk.rate = keembay_ce_to->of_clk.rate / (val + 1);
-+
-+	clockevents_config_and_register(&keembay_ce_to->clkevt,
-+					timer_of_rate(keembay_ce_to),
-+					1,
-+					U32_MAX);
-+
-+	return 0;
-+
-+err_timer_name_free:
-+	kfree(timer_name);
-+err_free_ida:
-+	ida_free(&keembay_timer_ida, timer_id);
-+err_keembay_ce_to_free:
-+	kfree(keembay_ce_to);
-+
-+	return ret;
-+}
-+
-+static struct timer_of keembay_cs_to = {
-+	.flags	= TIMER_OF_BASE | TIMER_OF_CLOCK,
-+};
-+
-+static u64 notrace keembay_clocksource_read(struct clocksource *cs)
-+{
-+	return lo_hi_readq(timer_of_base(&keembay_cs_to));
-+}
-+
-+static struct clocksource keembay_counter = {
-+	.name	= "keembay_sys_counter",
-+	.rating	= TIM_RATING,
-+	.read	= keembay_clocksource_read,
-+	.mask	= CLOCKSOURCE_MASK(TIM_CLKSRC_MASK_BITS),
-+	.flags	= CLOCK_SOURCE_IS_CONTINUOUS |
-+		  CLOCK_SOURCE_SUSPEND_NONSTOP,
-+};
-+
-+static int __init keembay_clocksource_init(struct device_node *np)
-+{
-+	struct regmap *regmap;
-+	u32 val;
-+	int ret;
-+
-+	regmap = device_node_to_regmap(np->parent);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	ret = regmap_read(regmap, TIM_CONFIG_OFFSET, &val);
-+	if (ret)
-+		return ret;
-+
-+	/* Free Running Counter bit must be enabled for counter to function */
-+	if (!(val & TIM_CONFIG_COUNTER_ENABLE)) {
-+		pr_err("%pOF: free running counter is not enabled\n", np);
-+		return -ENODEV;
-+	}
-+
-+	ret = timer_of_init(np, &keembay_cs_to);
-+	if (ret)
-+		return ret;
-+
-+	return clocksource_register_hz(&keembay_counter, timer_of_rate(&keembay_cs_to));
-+}
-+
-+TIMER_OF_DECLARE(keembay_clockevent, "intel,keembay-timer", keembay_clockevent_init);
-+TIMER_OF_DECLARE(keembay_clocksource, "intel,keembay-counter", keembay_clocksource_init);
+ From below I understand, that ECB_PTF can be used with stfl(11) in the 
+hypervisor.
+
+What is to happen if the hypervisor doesn't support stfl(11) and we 
+consequently cannot use ECB_PTF? Will QEMU be able to emulate PTF fully?
+
+
+>   	__u8	ecb;			/* 0x0061 */
+>   #define ECB2_CMMA	0x80
+>   #define ECB2_IEP	0x20
+> @@ -747,6 +752,7 @@ struct kvm_vcpu_arch {
+>   	bool skey_enabled;
+>   	struct kvm_s390_pv_vcpu pv;
+>   	union diag318_info diag318_info;
+> +	int prev_cpu;
+>   };
+>   
+>   struct kvm_vm_stat {
+> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+> index b655a7d82bf0..ff6d8a2b511c 100644
+> --- a/arch/s390/kvm/kvm-s390.c
+> +++ b/arch/s390/kvm/kvm-s390.c
+> @@ -568,6 +568,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>   	case KVM_CAP_S390_VCPU_RESETS:
+>   	case KVM_CAP_SET_GUEST_DEBUG:
+>   	case KVM_CAP_S390_DIAG318:
+> +	case KVM_CAP_S390_CPU_TOPOLOGY:
+
+I would have expected instead
+
+r = test_facility(11);
+break
+
+...
+
+>   		r = 1;
+>   		break;
+>   	case KVM_CAP_SET_GUEST_DEBUG2:
+> @@ -819,6 +820,23 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
+>   		icpt_operexc_on_all_vcpus(kvm);
+>   		r = 0;
+>   		break;
+> +	case KVM_CAP_S390_CPU_TOPOLOGY:
+> +		mutex_lock(&kvm->lock);
+> +		if (kvm->created_vcpus) {
+> +			r = -EBUSY;
+> +		} else {
+
+...
+} else if (test_facility(11)) {
+	set_kvm_facility(kvm->arch.model.fac_mask, 11);
+	set_kvm_facility(kvm->arch.model.fac_list, 11);
+	r = 0;
+} else {
+	r = -EINVAL;
+}
+
+similar to how we handle KVM_CAP_S390_VECTOR_REGISTERS.
+
+But I assume you want to be able to support hosts without ECB_PTF, correct?
+
+
+> +			set_kvm_facility(kvm->arch.model.fac_mask, 11);
+> +			set_kvm_facility(kvm->arch.model.fac_list, 11);
+> +			r = 0;
+> +		}
+> +		mutex_unlock(&kvm->lock);
+> +		VM_EVENT(kvm, 3, "ENABLE: CPU TOPOLOGY %s",
+> +			 r ? "(not available)" : "(success)");
+> +		break;
+> +
+> +		r = -EINVAL;
+> +		break;
+
+^ dead code
+
+[...]
+
+>   }
+>   
+>   void kvm_arch_vcpu_put(struct kvm_vcpu *vcpu)
+>   {
+> +	vcpu->arch.prev_cpu = vcpu->cpu;
+>   	vcpu->cpu = -1;
+>   	if (vcpu->arch.cputm_enabled && !is_vcpu_idle(vcpu))
+>   		__stop_cpu_timer_accounting(vcpu);
+> @@ -3198,6 +3239,11 @@ static int kvm_s390_vcpu_setup(struct kvm_vcpu *vcpu)
+>   		vcpu->arch.sie_block->ecb |= ECB_HOSTPROTINT;
+>   	if (test_kvm_facility(vcpu->kvm, 9))
+>   		vcpu->arch.sie_block->ecb |= ECB_SRSI;
+> +
+> +	/* PTF needs both host and guest facilities to enable interpretation */
+> +	if (test_kvm_facility(vcpu->kvm, 11) && test_facility(11))
+> +		vcpu->arch.sie_block->ecb |= ECB_PTF;
+
+Here you say we need both ...
+
+> +
+>   	if (test_kvm_facility(vcpu->kvm, 73))
+>   		vcpu->arch.sie_block->ecb |= ECB_TE;
+>   
+> diff --git a/arch/s390/kvm/vsie.c b/arch/s390/kvm/vsie.c
+> index 4002a24bc43a..50d67190bf65 100644
+> --- a/arch/s390/kvm/vsie.c
+> +++ b/arch/s390/kvm/vsie.c
+> @@ -503,6 +503,9 @@ static int shadow_scb(struct kvm_vcpu *vcpu, struct vsie_page *vsie_page)
+>   	/* Host-protection-interruption introduced with ESOP */
+>   	if (test_kvm_cpu_feat(vcpu->kvm, KVM_S390_VM_CPU_FEAT_ESOP))
+>   		scb_s->ecb |= scb_o->ecb & ECB_HOSTPROTINT;
+> +	/* CPU Topology */
+> +	if (test_kvm_facility(vcpu->kvm, 11))
+> +		scb_s->ecb |= scb_o->ecb & ECB_PTF;
+
+but here you don't check?
+
+>   	/* transactional execution */
+>   	if (test_kvm_facility(vcpu->kvm, 73) && wants_tx) {
+>   		/* remap the prefix is tx is toggled on */
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index d9e4aabcb31a..081ce0cd44b9 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1112,6 +1112,7 @@ struct kvm_ppc_resize_hpt {
+>   #define KVM_CAP_BINARY_STATS_FD 203
+>   #define KVM_CAP_EXIT_ON_EMULATION_FAILURE 204
+>   #define KVM_CAP_ARM_MTE 205
+> +#define KVM_CAP_S390_CPU_TOPOLOGY 206
+>   
+
+We'll need a Documentation/virt/kvm/api.rst description.
+
+I'm not completely confident that the way we're handling the 
+capability+facility is the right approach. It all feels a bit suboptimal.
+
+Except stfl(74) -- STHYI --, we never enable a facility via 
+set_kvm_facility() that's not available in the host. And STHYI is 
+special such that it is never implemented in hardware.
+
+I'll think about what might be cleaner once I get some more details 
+about the interaction with stfl(11) in the hypervisor.
+
 -- 
-2.17.1
+Thanks,
+
+David / dhildenb
 
