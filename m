@@ -2,98 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D15E401C7F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 15:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E00AF401C8A
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 15:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242679AbhIFNlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 09:41:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233820AbhIFNli (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 09:41:38 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21FEC061757
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 06:40:33 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id i3so4634541wmq.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 06:40:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=h8fzMrlNfeqQ1V7Mw80vYgzWg31AUNU+8kCIzeOvUGI=;
-        b=je2IdFXBFDkVDGrZ/5L/zJzOOgyE3lZrrMAc5jKis+ikQ4QzVyyH8H4n6ukkmh/xyk
-         pzBXlWwfxhhK3/LZHDkYYY+Ucdx611532nvBAD5hyazba83gwOma33BsStXJTr1RtskT
-         nS1EWS9FHclna4c1zy6fUHixoJHpZZde3J+wypLKKw8wDd/6sWMXB6Ei7vFiLfu6Ccht
-         Fv3FgSmZ3hfi40JMHNWSKEIyqyefR+rZ+YAIv9Xgj9xsXZfTlEshG0sDKn+wewU/cNe6
-         vOkkVYqsEpUJB58rZ6GGDFzQEBzbAnBn+PPe1+KKA6TZvyUix0r8Wl95MxZYcoHTzbhn
-         1a/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=h8fzMrlNfeqQ1V7Mw80vYgzWg31AUNU+8kCIzeOvUGI=;
-        b=Hn+Si6f95h7toD4OFh8h4wOXc+3Elj33SLWlcWugogb3VoXZo0r00w74+2H65A+TuT
-         4Xx75xbAMTDlwoD3hll5mfd/v5gUatxTrAzg6pqnpY+ith30hNTNnH6fctTMI6Oy7VzN
-         NKoYVi3HXlQBG42DyGpCmTYO65Wm5VsEvoXcsFm0kuk3LWdJkXmfHKBAsbdMBIQfNyYG
-         PsH6+Uh7bvMayJk5KQslAJdE2ltrWwF4aJL7iAwdT5G9h3oqPSPNboBkxEDPiHyyTT/l
-         qjMjAgOaQM4UzyfPl7k/myIiXBnGHSImDIfNFp+J2feci3zOmpBlThYKg2qxSMSMPQ+f
-         aX3Q==
-X-Gm-Message-State: AOAM531ov49ojH8d0GegtXTmhRPpgdyyeCgYjhQxzyLEY4zKrGjzyIwz
-        pylw84GeASYiyewNbi3BujLl8A==
-X-Google-Smtp-Source: ABdhPJxSZNMrd0jxUL99QDIGbL3HxtYqrJ/yXjYhWzUID0G4CuSLLXg2Je/UOA0ZVhX9lg36hyCAuw==
-X-Received: by 2002:a1c:28b:: with SMTP id 133mr11457428wmc.138.1630935632338;
-        Mon, 06 Sep 2021 06:40:32 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id d7sm7934372wrs.39.2021.09.06.06.40.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 06:40:32 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 15:40:30 +0200
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     gregkh@linuxfoundation.org, mchehab@kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
-Subject: Re: [PATCH 6/8] staging: media: zoran: fusion all modules
-Message-ID: <YTYaTk9+fCrwHbTG@Red>
-References: <20210903191540.3052775-1-clabbe@baylibre.com>
- <20210903191540.3052775-7-clabbe@baylibre.com>
- <9318ec41-d884-2c1a-1190-3a93c3f5a3fb@xs4all.nl>
+        id S242738AbhIFNnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 09:43:18 -0400
+Received: from smtpbg587.qq.com ([113.96.223.105]:38239 "EHLO smtpbg587.qq.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242225AbhIFNnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 09:43:17 -0400
+X-QQ-mid: bizesmtp44t1630935649t50rakj1
+Received: from localhost.localdomain (unknown [171.223.98.107])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Mon, 06 Sep 2021 21:40:48 +0800 (CST)
+X-QQ-SSF: 01000000004000C0D000B00A0000000
+X-QQ-FEAT: XokQyc2mVUwxcgEl0jCU/fg+0KFIgWBbOOIJVvdcnqT8CtXtQD7gQvFfsYpPb
+        4OyjtSXZ41Uj23YWZoFr24L/WuOLZ/f5OK8izS+5cqPMwg0skXfBOvshPHhTv6/IO/qjYh3
+        kNop1FxnTvjlI0IlpKve7HDiBN/SmxBXI155HXXTKSt+almvM9ZevKhxaKnNZFCWaBve2r6
+        6y4eyVRKWi4JF6UXx437PhrHjOCph02qW99HI3DCZzl2nCvLGOx0BqCHP+/PJX8bhFZhAlY
+        ldboUh6LAYG3S5a+7Veo01nm+2+1wRLWiWn/GDO8XVw9x+WzgjsvsKYSuMzT7ppbog1w==
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     linus.walleij@linaro.org
+Cc:     geert+renesas@glider.be, linux-renesas-soc@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jason Wang <wangborong@cdjrlc.com>
+Subject: [PATCH] pinctrl: renesas: no need to initialise global statics
+Date:   Mon,  6 Sep 2021 21:40:40 +0800
+Message-Id: <20210906134040.96642-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <9318ec41-d884-2c1a-1190-3a93c3f5a3fb@xs4all.nl>
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Mon, Sep 06, 2021 at 12:41:32PM +0200, Hans Verkuil a écrit :
-> On 03/09/2021 21:15, Corentin Labbe wrote:
-> > The zoran driver is split in many modules, but this lead to some
-> > problems.
-> > One of them is that load order is incorrect when everything is built-in.
-> > 
-> > Having more than one module is useless, so fusion all zoran modules in
-> > one.
-> 
-> After applying this patch I am no longer able to rmmod the module: it will
-> always report that it is in use. This is with a Miro DC30.
-> 
-> So something is wrong with refcounting.
-> 
-> I do like the idea of merging all these modules, but it needs a bit more
-> testing.
-> 
-> Regards,
-> 
-> 	Hans
-> 
+Global static variables dont need to be initialised to 0. Because
+the compiler will initialise them.
 
-Hello
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+---
+ drivers/pinctrl/renesas/core.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-I am sorry, I was sure to have successfully removed the zoran module a couple of time with my DC10.
-Anyway I just acquired a DC30, so I will test it also (even if I believe that model should not change anything).
+diff --git a/drivers/pinctrl/renesas/core.c b/drivers/pinctrl/renesas/core.c
+index f2ab02225837..ef8ef05ba930 100644
+--- a/drivers/pinctrl/renesas/core.c
++++ b/drivers/pinctrl/renesas/core.c
+@@ -741,12 +741,12 @@ static int sh_pfc_suspend_init(struct sh_pfc *pfc) { return 0; }
+ #define SH_PFC_MAX_REGS		300
+ #define SH_PFC_MAX_ENUMS	3000
+ 
+-static unsigned int sh_pfc_errors __initdata = 0;
+-static unsigned int sh_pfc_warnings __initdata = 0;
+-static u32 *sh_pfc_regs __initdata = NULL;
+-static u32 sh_pfc_num_regs __initdata = 0;
+-static u16 *sh_pfc_enums __initdata = NULL;
+-static u32 sh_pfc_num_enums __initdata = 0;
++static unsigned int sh_pfc_errors __initdata;
++static unsigned int sh_pfc_warnings __initdata;
++static u32 *sh_pfc_regs __initdata;
++static u32 sh_pfc_num_regs __initdata;
++static u16 *sh_pfc_enums __initdata;
++static u32 sh_pfc_num_enums __initdata;
+ 
+ #define sh_pfc_err(fmt, ...)					\
+ 	do {							\
+-- 
+2.33.0
 
-Regards
