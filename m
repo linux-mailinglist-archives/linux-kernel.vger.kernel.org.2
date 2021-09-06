@@ -2,105 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B499401E9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DB3401EA0
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244237AbhIFQjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 12:39:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47679 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241972AbhIFQjp (ORCPT
+        id S244310AbhIFQlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 12:41:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241972AbhIFQlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:39:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630946320;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=XDRSVVNXv21/f4fvDTpcmbi/5m6iR2hENhLOMYkY3JU=;
-        b=cA0/JHqEqlKxA+P//baCSzxMyRjrT42tW+vxup5SJ0qM9tdxd/+RxLE+YO2Q5qTAhemfnJ
-        UM8JoLiyrdgsmc6jmWmVVuC0HLZjdMr+Uwly3qPXWxgy3R31IWpJ6tb5dwJMrrugxoq15i
-        08wQWxyDUjSpQ3ihHMKFZUEoWBB23wk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-485-mo6H-W57MNadHDUpDJhaaQ-1; Mon, 06 Sep 2021 12:38:39 -0400
-X-MC-Unique: mo6H-W57MNadHDUpDJhaaQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5061B1020C4E;
-        Mon,  6 Sep 2021 16:38:38 +0000 (UTC)
-Received: from fedora.redhat.com (ovpn-116-52.gru2.redhat.com [10.97.116.52])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D0F1B5C22B;
-        Mon,  6 Sep 2021 16:38:35 +0000 (UTC)
-From:   Julio Faracco <jfaracco@redhat.com>
-To:     axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] block: include dd_queued{,_show} into proper BLK_DEBUG_FS guard
-Date:   Mon,  6 Sep 2021 13:38:31 -0300
-Message-Id: <20210906163831.263809-1-jfaracco@redhat.com>
+        Mon, 6 Sep 2021 12:41:16 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8740C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 09:40:11 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id m4so12190445ljq.8
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 09:40:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kLGf+W5qZqIzs5xlBDQY6TASgcg+cDCU3+/hIp0WRSQ=;
+        b=ZCv1Na58AgWFZ2iFATqhgehgaulyIV7J7ag0K8Y9oyChAGugX3AoStVPklc7w2OhPg
+         W03/VpXx+xSMtO3MUalYb4qSLNbZUwmaR3J8n/O/fkWtK7HCB3hzAJVF5L9bMY1r5a5N
+         giv5P0l+F0rwry5bA3jbyOOZV7JY1km7V1UkI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kLGf+W5qZqIzs5xlBDQY6TASgcg+cDCU3+/hIp0WRSQ=;
+        b=iqgV5ETp24ahofp/xGNcSKLZZzb666/bUGS766++rmTGm44vgeDXLDm9sssMbvp9Do
+         83MsVg/34OAIdznfh5mAxwZjv0DeTfU33W4opfU8omOl3K8zUcvC1FuRZQSbvI7Qtj1N
+         fzuW1ZI13aymwW08mfkUKGM3ZH1+g0Mygb5Ry2khBJDr5NI5nSc9BuXzdwz8+P0jm5gi
+         8SNHopN5W8kFXeGWXDrO+MqFFQZLucnQhytu3QDCmDfVSgCRqIRMaVU9VJhzlLFpGnOv
+         kjb7CsMoFlQen6tSj3izM2zf4nwdkAwPWEYPF4f4ugadlVqsVgmmWUujA3GlTd4+hctd
+         gDQw==
+X-Gm-Message-State: AOAM531TriVqARWKBtFgkJ1CBGDSkAtv9fd4hHuV3zY9SxwES+El53Tw
+        X+FNFOPnQlRTrL9ZqDRKT6CKXdFbZPVdf7Nh+HM=
+X-Google-Smtp-Source: ABdhPJzfYMb8SSf72azxmDmiKl+4U9eJ2FthikKyuLMIknff80tlWcYTBFD/ujf2pkbJO6e6osbJtw==
+X-Received: by 2002:a2e:b24f:: with SMTP id n15mr11099881ljm.124.1630946409553;
+        Mon, 06 Sep 2021 09:40:09 -0700 (PDT)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id f13sm782453lfs.193.2021.09.06.09.40.07
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 09:40:07 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id g14so12190476ljk.5
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 09:40:07 -0700 (PDT)
+X-Received: by 2002:a2e:a7d0:: with SMTP id x16mr11178044ljp.494.1630946407467;
+ Mon, 06 Sep 2021 09:40:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <CA+G9fYsV7sTfaefGj3bpkvVdRQUeiWCVRiu6ovjtM=qri-HJ8g@mail.gmail.com>
+In-Reply-To: <CA+G9fYsV7sTfaefGj3bpkvVdRQUeiWCVRiu6ovjtM=qri-HJ8g@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 6 Sep 2021 09:39:51 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjJ-nr87H_o8y=Gx=DJYPTkxtXz_c=pj_GNdL+XRUMNgQ@mail.gmail.com>
+Message-ID: <CAHk-=wjJ-nr87H_o8y=Gx=DJYPTkxtXz_c=pj_GNdL+XRUMNgQ@mail.gmail.com>
+Subject: Re: bridge.c:157:11: error: variable 'err' is used uninitialized
+ whenever 'if' condition is false
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Vlad Buslov <vladbu@nvidia.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkft-triage@lists.linaro.org, Netdev <netdev@vger.kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit fixes a compilation issue to an unused function if
-BLK_DEBUG_FS setting is not enabled. This usually happens in tiny
-kernels with several debug options disabled. For further details,
-see the message below:
+On Mon, Sep 6, 2021 at 2:11 AM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:157:11: error:
+> variable 'err' is used uninitialized whenever 'if' condition is false
 
-../block/mq-deadline.c:274:12: error: ‘dd_queued’ defined but not used [-Werror=unused-function]
-  274 | static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
-      |            ^~~~~~~~~
-cc1: all warnings being treated as errors
+That compiler warning (now error) seems to be entirely valid.
 
-Signed-off-by: Julio Faracco <jfaracco@redhat.com>
----
- block/mq-deadline.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+That's a
 
-diff --git a/block/mq-deadline.c b/block/mq-deadline.c
-index 3c3693c34f06..07319ac49a1b 100644
---- a/block/mq-deadline.c
-+++ b/block/mq-deadline.c
-@@ -270,12 +270,6 @@ deadline_move_request(struct deadline_data *dd, struct dd_per_prio *per_prio,
- 	deadline_remove_request(rq->q, per_prio, rq);
- }
- 
--/* Number of requests queued for a given priority level. */
--static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
--{
--	return dd_sum(dd, inserted, prio) - dd_sum(dd, completed, prio);
--}
--
- /*
-  * deadline_check_fifo returns 0 if there are no expired requests on the fifo,
-  * 1 otherwise. Requires !list_empty(&dd->fifo_list[data_dir])
-@@ -953,6 +947,13 @@ static int dd_async_depth_show(void *data, struct seq_file *m)
- 	return 0;
- }
- 
-+#ifdef CONFIG_BLK_DEBUG_FS
-+/* Number of requests queued for a given priority level. */
-+static u32 dd_queued(struct deadline_data *dd, enum dd_prio prio)
-+{
-+	return dd_sum(dd, inserted, prio) - dd_sum(dd, completed, prio);
-+}
-+
- static int dd_queued_show(void *data, struct seq_file *m)
- {
- 	struct request_queue *q = data;
-@@ -963,6 +964,7 @@ static int dd_queued_show(void *data, struct seq_file *m)
- 		   dd_queued(dd, DD_IDLE_PRIO));
- 	return 0;
- }
-+#endif
- 
- /* Number of requests owned by the block driver for a given priority. */
- static u32 dd_owned_by_driver(struct deadline_data *dd, enum dd_prio prio)
--- 
-2.31.1
+    if (..)
+    else if (..)
 
+and if neither are valid then the code will return an uninitialized 'err'.
+
+It's possible the two conditionals are guaranteed to cover all cases,
+but as the compiler says, in that case the "if" in the else clause is
+pointless and should be removed.
+
+But it does look like 'ret' should probably just be initialized to 0.
+
+              Linus
