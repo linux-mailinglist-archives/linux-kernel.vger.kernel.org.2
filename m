@@ -2,93 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C09A401D4D
+	by mail.lfdr.de (Postfix) with ESMTP id 77F31401D50
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 16:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243705AbhIFO6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 10:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39158 "EHLO
+        id S243630AbhIFO6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 10:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243640AbhIFO6A (ORCPT
+        with ESMTP id S243528AbhIFO54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 10:58:00 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08FCEC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 07:56:56 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id t19so2285756vkk.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 07:56:55 -0700 (PDT)
+        Mon, 6 Sep 2021 10:57:56 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD04CC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 07:56:51 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id m2so4821781wmm.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 07:56:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+wm+1SxyPhgZ2xyPaqVHOlIIYUpLoXtqsuq+0VC3Sjc=;
-        b=moj6OWG2vw6GntXNWeTQgm7Smvy1QpBa4fBHcAMupAuzUukRol/FdrWgU5z93l3NPQ
-         6MKcKRVOHIc1gnlY06/SaTKFIeV+7N4mqBXunJXSVgBRCYLv1sIi2A1t7PSoceroEu42
-         nlrzfwR/cKNVYtbEIrt0+iEauNFt1iHYtCXY0=
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=CtHiP+D7k5znLaPfpOQWBuuhn0SZQDsGXEHIILBBc1E=;
+        b=WCfNNygVYAjJNE3QPiwsT3pzkIfLqzGlZq7FFjAb99YiilaQBopfe1sVzhYZzwsHKb
+         P/1WE1p1AipRlP3kD+WRUNrrTwNA4wj2ONI8OQpwrLf/1ZGQyEjWZGiaeyBRDsjOdWy9
+         bI/xps0XWhbOXF3PB0ZfALeqob/0rqm68nOHITE74KPteoi3awxHyfAbR5Ty/rvfTJRe
+         2CSD2uEtVlokfkGKiPlWJmoDpzpRdJ3/6fd8DujAPhM34Vsljv2EoHDBTydX8ozILMFp
+         EBwAfWl0gqnVgUpMkgXFekVYRf1VCwn58KNOyw5Ig2J9OywZZLbgomROXpS9D7eARKla
+         b4yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+wm+1SxyPhgZ2xyPaqVHOlIIYUpLoXtqsuq+0VC3Sjc=;
-        b=LY34o7Hb31+512vgSJqEJHlZxLAU5mfSaMTCMifVQA4yVdCcfGrycHdnsqBGPQJYzw
-         UGMKnETc3JXl39hAn8HnRgz5Z3UPWYiBF4QfjfvdboQCscpjMgh8T6qyQi3kQXAmcJrk
-         uRQ4G9jNcaLs2TjEGtVxDm1hHOUWXFf7IuWQkNFEnvAIwF3Oww8UVvt7LXaXJWzNrv7v
-         Ges9PIyb3YUPgVFeMF7btKzcQ/mAyy/k+q+NhsJHJsKXyLQBchalj1Wm2BOhFR1hwMCh
-         l0cfY6harqdhrkAwzP18I2TSMnlBIkt6Wli9emp5ihhwj3PsThTBDF3fSVUxzeh0YI4t
-         R4+w==
-X-Gm-Message-State: AOAM533o/8LLqQH1zqljk1tSQcIrlLEiAmAPgWwG6C02V3rzWu2WqR33
-        /exB/JmLCK/p+ws7TJKNhD7QmrPW6WCgGxKmP+t0Ow==
-X-Google-Smtp-Source: ABdhPJzqc2z0O4HypL+N5TiFC1yajscDCqIXhB97hRi7jls6qKs/M/pVB7E0LSC2ATi0XpZDADaqMYws03dQ9iRqjxM=
-X-Received: by 2002:a05:6122:1430:: with SMTP id o16mr5404231vkp.14.1630940215149;
- Mon, 06 Sep 2021 07:56:55 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=CtHiP+D7k5znLaPfpOQWBuuhn0SZQDsGXEHIILBBc1E=;
+        b=rkk/w45OaVA1sHdJ0tMVOj/yS64gBl4B06oKQvQ/q3l9HFS6EyFpIJ1Y615d7PxtWa
+         Dx/1Uq84NSzoegYCXDGxLX2juUZeuRe67SjM9jGgfn9gEufy9fuYZgVcLFmA5chjDQ7a
+         dQu8JjT5gnoQSGM+6VWLtCtNMsyTexWBxsfyQtq1KBnWPSzLoS7QrRnDKKxmDhLc70eB
+         vBrXwA5XZGhnRBsxYXLWWr/BG/v6ifUpQoKCv49cY722y+aITabAt46cl2ASRxE4RE93
+         htXlK6xhSmjLVdAUhVgX5Kb5pJncuLNLNRSU0AkFKtzCH+cH5aATCPJ+j3RMYsxss0k2
+         iBVA==
+X-Gm-Message-State: AOAM530TXkydAkLxqxsSlnJv2eplGIYfndJoLjIGcdEDDO6T17gbcZwF
+        NAtJFMSL/zv+dSF22ZCCq6Q8zg==
+X-Google-Smtp-Source: ABdhPJy/Skl3RAKF+wBcqUVU5L4hNy7a3LuFeFL2VfNZsmXXpG71TAEvQwFvX+0uZiQrutD1qWuhmA==
+X-Received: by 2002:a7b:cc85:: with SMTP id p5mr11811897wma.42.1630940210493;
+        Mon, 06 Sep 2021 07:56:50 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id g1sm251095wmk.2.2021.09.06.07.56.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Sep 2021 07:56:50 -0700 (PDT)
+Date:   Mon, 6 Sep 2021 16:56:47 +0200
+From:   LABBE Corentin <clabbe@baylibre.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     gregkh@linuxfoundation.org, mchehab@kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
+Subject: Re: [PATCH 0/8] staging: media: zoran: fusion in one module
+Message-ID: <YTYsL5i0B48k/V0Z@Red>
+References: <20210903191540.3052775-1-clabbe@baylibre.com>
+ <efe035cc-1839-210f-c0d4-4d58801aa65c@xs4all.nl>
+ <YTYcf3We4dcvBx1h@Red>
+ <940d5bdf-89b8-b5a4-f485-aa5b1c51286b@xs4all.nl>
 MIME-Version: 1.0
-References: <20210902152228.665959-1-vgoyal@redhat.com> <CAHc6FU4foW+9ZwTRis3DXSJSMAvdb4jXcq7EFFArYgX7FQ1QYg@mail.gmail.com>
- <YTYoEDT+YOtCHXW0@work-vm>
-In-Reply-To: <YTYoEDT+YOtCHXW0@work-vm>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 6 Sep 2021 16:56:44 +0200
-Message-ID: <CAJfpegvbkmdneMxMjYMuNM4+RmWT8S7gaTiDzaq+TCzb0UrQrw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/1] Relax restrictions on user.* xattr
-To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Daniel J Walsh <dwalsh@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        casey.schaufler@intel.com,
-        LSM <linux-security-module@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        "Fields, Bruce" <bfields@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <940d5bdf-89b8-b5a4-f485-aa5b1c51286b@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Sept 2021 at 16:39, Dr. David Alan Gilbert
-<dgilbert@redhat.com> wrote:
+Le Mon, Sep 06, 2021 at 04:11:16PM +0200, Hans Verkuil a écrit :
+> On 06/09/2021 15:49, LABBE Corentin wrote:
+> > Le Mon, Sep 06, 2021 at 01:03:56PM +0200, Hans Verkuil a écrit :
+> >> Hi Corentin,
+> >>
+> >> I finally had the opportunity to test the staging zoran driver.
+> >>
+> >> I found several issues when running v4l2-compliance -s (I posted a patch
+> >> for that), but more seriously is the fact that trying to capture MJPG
+> >> at resolutions 384x288 or less just hangs my PC. It works OK with 768x576.
+> >>
+> >> I discovered this when running 'v4l2-compliance -s -a -f'.
+> >>
+> >> BTW, why isn't the initial format equal to MJPG 768x576?
+> >> I would expect that for these boards that should be the default format.
+> >>
+> >> Another issue is that the TODO should mention that for video output there
+> >> should be a second video device node. And that's really something that
+> >> has to be done before the zoran driver can be moved out of staging.
+> >>
+> >> It shouldn't be that hard to implement, I think.
+> >>
+> >> Right now it is impossible to run the compliance test for the output, since
+> >> it doesn't even see it as an output.
+> >>
+> >> Regards,
+> >>
+> >> 	Hans
+> > 
+> > I work on having a second device for output, (it is the reason of "staging: media: zoran: move videodev alloc" which will help).
+> > 
+> > But I still have the problem of non working output.
+> > 
+> > Does output is really needed for going out of staging ?
+> > Probably nobody have it working for ages. The only way to had it was to use an old mplayer output which is broken since so many time.
+> > Note that this plugin will never work again.
+> > 
+> > The only way to work on output is to use ffmpeg which just recently have suport for writing non-raw video to V4L.
+> 
+> Then just remove it. The code for output remains in the git history so if someone wants to
+> resurrect that, then that's always possible.
+> 
+> The point is that I don't want to have half-baked output support in mainline.
+> 
+> But what exactly is the problem with getting output to work? Doesn't it just decode
+> MJPEG frames? (Sorry if you explained it before, it's so long ago that I looked at this
+> that I forgot the details)
+> 
 
-> IMHO the real problem here is that the user/trusted/system/security
-> 'namespaces' are arbitrary hacks rather than a proper namespacing
-> mechanism that allows you to create new (nested) namespaces and associate
-> permissions with each one.
+The first problem is that zoran dont like comment COM/APP0 markers.
+This imply a per buffer filtering but this is already handled in my next branch.
 
-Indeed.
+But the remaining problem is that any output is like http://kernel.montjoie.ovh/zoran_out.png.
 
-This is what Eric Biederman suggested at some point for supporting
-trusted xattrs within a user namespace:
+I hacked the driver to grab a working buffer when doing input and overrun output buffer later.
+And the result is a working static output.
+So the hw handling is good and the problem came from the data feeding/handling.
 
-| For trusted xattrs I think it makes sense in principle.   The namespace
-| would probably become something like "trusted<ns-root-uid>.".
+I believe that something is wrong in what ffmpeg negociate/send.
 
-Theory sounds simple enough.  Anyone interested in looking at the details?
-
-Thanks,
-Miklos
+Regards
