@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F6D401F04
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AAB401F0F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244004AbhIFRLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 13:11:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41356 "EHLO
+        id S243951AbhIFRMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 13:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243965AbhIFRLx (ORCPT
+        with ESMTP id S243997AbhIFRMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 13:11:53 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF4D2C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 10:10:48 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id w4so12279532ljh.13
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:10:48 -0700 (PDT)
+        Mon, 6 Sep 2021 13:12:09 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC64EC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 10:10:58 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id k13so14564015lfv.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:10:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=eBV6xJO0OJaH8jzRZsLqKsR9gePhFCKXaYbJlTL1SK0=;
-        b=LFms5S3j0LvWEYimyPf3cb4Aisdn+Fk0RcpOrMN+ZdxUItBFt03MZgAJyCUWWC62gA
-         xL6pVj/R4056hMSTJXWaAAW0XJxWY95ANL2inlfc7gjmf6BFW8UdEkjBN6OfL9igtewV
-         2JgY9QMy4BbUAgVA1jm1THz+5T5uS585jDOW2nVtjNTStboUZCsKHDlx3pvPga5s2Aea
-         dvtTuh0M4AIM0YiFHE2rv2jMoWzeXBDMGduAbcmjYKzTNfr7wM1AzhSBU6ieiQ9XTDvy
-         XQyK9QeN2IRddAghms+zRMV1up63wzN38bLJRWblvnD5e2vOcie3vnIumG6eir16lfbi
-         jm5g==
+        bh=CW74dcoV+jr+H/cOee9EJDtMnYKDaAeGSoGkoOfBh0A=;
+        b=fiBYOjOq+VBGQV/Z/w0zPvWtW2UdpSWfKvNcpoxD+K0WhuhAtoceEVoeVxOgsHPOhv
+         efrzRbDV+uvCfhjgMPpEAyHUjdY3TNBRGO2ascjrj0a8sJkn7E+gp/dr4pWniQgzRRQF
+         q98akxIU254+B/rN3gPB3vS2zoJRULAlh32sYQ3MgkDWtN5OmaO+jI6cVC8P0jEcXZjM
+         5J9yOudkRCUkuEmbSVcv7bhsnzpejWiq8jfUXL/v/giNNCifV/BladKTn0Y7v9egF/vN
+         7pklhCc4DE5X6amh2/h+2STJm39f2wwFex5emYYC4FcRMupzl4VSdjFxUGanzZUlpoBw
+         tJyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=eBV6xJO0OJaH8jzRZsLqKsR9gePhFCKXaYbJlTL1SK0=;
-        b=Aw/iTQ4LKZ6MDu+7fQsi2rkmSS8GujBXYgGiSm1DlQwagiTgeSGqxF3NNVdMkfUPWo
-         li0EH6D3s+Epw38D4v8hO2K1QUTNfUuNRe//3GscZJwJf/4HRkU4iejp6Y8a5zWjvZNu
-         r6K5DPQrKukNLa0bpUa0NfWni6ifk3h4Phv660PxS3FHyPcuekDMW6rBgAV6FY4IKoPx
-         FxrbncYjkwiVNovW7SF6wWiNs60yvTL/ToZPBU6nalUaOj2p+e1+sS1E/rryIJ6azShU
-         xd2wrDkil/W9HCOpEZBcwso1u++EE5d0lnjgT+h+Xs3hbmC1bVfUWq8//UrxBqE0urU6
-         MIaQ==
-X-Gm-Message-State: AOAM533f2eqAS3h0SUU1W9H1UJ/ecFsV3HgMwfgZVGwxniFyjWCZME5t
-        t/rTYSQl3HCWHNjmtM5UlhoBiHi//1FUC4aYaAnckw==
-X-Google-Smtp-Source: ABdhPJxhSEFI8wMN4u5XHazx2hzbbCQEPxdsCfALNn+wlwsdQueMDsoHtriqduJghpS67u2M98pG6gst9sXWJqwHE5o=
-X-Received: by 2002:a05:651c:1b3:: with SMTP id c19mr11757010ljn.16.1630948247165;
- Mon, 06 Sep 2021 10:10:47 -0700 (PDT)
+        bh=CW74dcoV+jr+H/cOee9EJDtMnYKDaAeGSoGkoOfBh0A=;
+        b=jY+z4dT/kN4haeK3Hm+kuPFcZThMuO/n/OD4fiB7kvS/LU78iK545UMNsVF2iiPAm5
+         Sn75TeiJ9Hyh8z4mYVXcZK+mMjLUgi+mh0ZPzLhFdeBbFbh7JeJbBGwdULw5Vq5QfLBK
+         BcPSOigift0jCXz2pc8VMM1yd8BiJcnwcEGFbWKsLW+f+k0MtXzo5t93V0SGXJ19zI+8
+         /QTJl4E2FE4cmIyFeoyW8leyUZVEZm1JY00x6vmWfcko7IPa+UaMrliWauS/St/lbHxi
+         Qkay7wPS30CvUpiHDAJ4DfiuJCSYTWWhXHdT6OgeghZKwRJjw3DtxeaL7cmipZN6poZK
+         7N4Q==
+X-Gm-Message-State: AOAM533lgaAaugxT+lWqOQL3zy+OhJiP0zx0tqbxEkTMPBHrDn43jkyA
+        93PV+/5JfZBBS2E1UDjHoW7CjuAwdwaeKMvHPshvKw==
+X-Google-Smtp-Source: ABdhPJyhjHArMca68TR5pTBXzBL9tRGf14Q3uN8WTnzHOdYd8ltoCuxOYH+yY9mOHeyJ4NbktZ7AcuCVRlMvz/GSBvU=
+X-Received: by 2002:a19:dc47:: with SMTP id f7mr9888628lfj.71.1630948256412;
+ Mon, 06 Sep 2021 10:10:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210830212538.148729-1-mcgrof@kernel.org> <20210830212538.148729-5-mcgrof@kernel.org>
-In-Reply-To: <20210830212538.148729-5-mcgrof@kernel.org>
+References: <20210902174105.2418771-1-mcgrof@kernel.org> <20210902174105.2418771-3-mcgrof@kernel.org>
+In-Reply-To: <20210902174105.2418771-3-mcgrof@kernel.org>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 6 Sep 2021 19:10:10 +0200
-Message-ID: <CAPDyKFp9HTjQ_6c2tHuPhhixfcnFa8XQBrPO2PqoB113BszLJw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/8] mmc/core/block: add error handling support for add_disk()
+Date:   Mon, 6 Sep 2021 19:10:20 +0200
+Message-ID: <CAPDyKFoZ1QqPMYi=N=3s2058mnbzcXYPodNFkexCi0eTbD4NmQ@mail.gmail.com>
+Subject: Re: [PATCH 2/9] ms_block: add error handling support for add_disk()
 To:     Luis Chamberlain <mcgrof@kernel.org>
 Cc:     Jens Axboe <axboe@kernel.dk>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>, kbusch@kernel.org,
-        sagi@grimberg.me, Adrian Hunter <adrian.hunter@intel.com>,
-        "Bean Huo (beanhuo)" <beanhuo@micron.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Stephen Boyd <swboyd@chromium.org>, agk@redhat.com,
-        Mike Snitzer <snitzer@redhat.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Christoph Hellwig <hch@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        chaitanya.kulkarni@wdc.com, atulgopinathan@gmail.com,
         Hannes Reinecke <hare@suse.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-nvme@lists.infradead.org,
-        linux-mmc <linux-mmc@vger.kernel.org>, dm-devel@redhat.com,
-        nbd@other.debian.org, linux-block <linux-block@vger.kernel.org>,
+        Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
+        Colin King <colin.king@canonical.com>,
+        Shubhankar Kuranagatti <shubhankarvk@gmail.com>,
+        Jia-Ju Bai <baijiaju1990@gmail.com>, Tom Rix <trix@redhat.com>,
+        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh R <vigneshr@ti.com>, sth@linux.ibm.com,
+        hoeppner@linux.ibm.com, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        oberpar@linux.ibm.com, Tejun Heo <tj@kernel.org>,
+        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 at 23:26, Luis Chamberlain <mcgrof@kernel.org> wrote:
+On Thu, 2 Sept 2021 at 19:41, Luis Chamberlain <mcgrof@kernel.org> wrote:
 >
 > We never checked for errors on add_disk() as this function
 > returned void. Now that this is fixed, use the shiny new
 > error handling.
 >
-> The caller only cleanups the disk if we pass on an allocated md
-> but on error we return return ERR_PTR(ret), and so we must do all
-> the unwinding ourselves.
+> Contrary to the typical removal which delays the put_disk()
+> until later, since we are failing on a probe we immediately
+> put the disk on failure from add_disk by using
+> blk_cleanup_disk().
 >
 > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
 
@@ -94,29 +98,29 @@ Uffe
 
 
 > ---
->  drivers/mmc/core/block.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+>  drivers/memstick/core/ms_block.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 6a15fdf6e5f2..9b2856aa6231 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -2453,9 +2453,14 @@ static struct mmc_blk_data *mmc_blk_alloc_req(struct mmc_card *card,
->         /* used in ->open, must be set before add_disk: */
->         if (area_type == MMC_BLK_DATA_AREA_MAIN)
->                 dev_set_drvdata(&card->dev, md);
-> -       device_add_disk(md->parent, md->disk, mmc_disk_attr_groups);
-> +       ret = device_add_disk(md->parent, md->disk, mmc_disk_attr_groups);
-> +       if (ret)
-> +               goto err_cleanup_queue;
->         return md;
+> diff --git a/drivers/memstick/core/ms_block.c b/drivers/memstick/core/ms_block.c
+> index 4a4573fa7b0f..86c626933c1a 100644
+> --- a/drivers/memstick/core/ms_block.c
+> +++ b/drivers/memstick/core/ms_block.c
+> @@ -2156,10 +2156,14 @@ static int msb_init_disk(struct memstick_dev *card)
+>                 set_disk_ro(msb->disk, 1);
 >
-> + err_cleanup_queue:
-> +       blk_cleanup_queue(md->disk->queue);
-> +       blk_mq_free_tag_set(&md->queue.tag_set);
->   err_kfree:
->         kfree(md);
->   out:
+>         msb_start(card);
+> -       device_add_disk(&card->dev, msb->disk, NULL);
+> +       rc = device_add_disk(&card->dev, msb->disk, NULL);
+> +       if (rc)
+> +               goto out_cleanup_disk;
+>         dbg("Disk added");
+>         return 0;
+>
+> +out_cleanup_disk:
+> +       blk_cleanup_disk(msb->disk);
+>  out_free_tag_set:
+>         blk_mq_free_tag_set(&msb->tag_set);
+>  out_release_id:
 > --
 > 2.30.2
 >
