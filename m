@@ -2,89 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEF5401826
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 10:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A97401831
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 10:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241074AbhIFIlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 04:41:13 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:34988 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbhIFIlL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 04:41:11 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 9F9F2220FB;
-        Mon,  6 Sep 2021 08:40:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1630917606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xepuq2g1UzpFTzC0FV5yi43ZLpLb8aMqI7nbH2laTl8=;
-        b=enIQailCj0QG3GmZKHJQ/HdvNX+3DVhiYocJMKVxVVrW4wCw0yUhEluAEBZCYToEalVE9u
-        8y5tr6BKNQn1dolhvVjPE/kVMcZDquknnPmWSqwjlMM3wOmFTldLyiIDX79ZddBj0qlOiY
-        kCOvsRWtpkzxN4VIOIAraIWj0HMqnv0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1630917606;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xepuq2g1UzpFTzC0FV5yi43ZLpLb8aMqI7nbH2laTl8=;
-        b=xarIDKwLIHfLikmp7p97wQPLMuG55G1Eqt1tNGzIk/RW6STFT3eabuFmtKE25RDjDEGAdc
-        MvsEUQ1VlhGFzqBg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 7A14113299;
-        Mon,  6 Sep 2021 08:40:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id RFIaHObTNWEycQAAGKfGzw
-        (envelope-from <hare@suse.de>); Mon, 06 Sep 2021 08:40:06 +0000
-Subject: Re: [PATCH v2] nvme: avoid race in shutdown namespace removal
-To:     Christoph Hellwig <hch@infradead.org>,
-        Daniel Wagner <dwagner@suse.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Keith Busch <kbusch@kernel.org>
-References: <20210902092002.67614-1-dwagner@suse.de>
- <YTXKwOvCtJOHnhpu@infradead.org>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <d63a15af-63a7-3fa0-1559-4518dee3a99a@suse.de>
-Date:   Mon, 6 Sep 2021 10:40:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-MIME-Version: 1.0
-In-Reply-To: <YTXKwOvCtJOHnhpu@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S240823AbhIFIqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 04:46:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:53578 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230161AbhIFIqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 04:46:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C3B5D6E;
+        Mon,  6 Sep 2021 01:45:05 -0700 (PDT)
+Received: from e123648.arm.com (unknown [10.57.18.108])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E50503F73D;
+        Mon,  6 Sep 2021 01:45:03 -0700 (PDT)
+From:   Lukasz Luba <lukasz.luba@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     lukasz.luba@arm.com, dietmar.eggemann@arm.com, qperret@google.com,
+        rafael.j.wysocki@intel.com, linux-pm@vger.kernel.org,
+        vincent.donnefort@arm.com
+Subject: [PATCH 1/2] PM: EM: fix kernel-doc comments
+Date:   Mon,  6 Sep 2021 09:44:52 +0100
+Message-Id: <20210906084453.3068-1-lukasz.luba@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/6/21 10:01 AM, Christoph Hellwig wrote:
-> On Thu, Sep 02, 2021 at 11:20:02AM +0200, Daniel Wagner wrote:
->> When we remove the siblings entry, we update ns->head->list, hence we
->> can't separate the removal and test for being empty. They have to be
->> in the same critical section to avoid a race.
->>
->> To avoid breaking the refcounting imbalance again, add a list empty
->> check to nvme_find_ns_head.
-> 
-> Hannes, can you look over this and run your tests on it?
-> 
-I'm at it.
+Fix the kernel-doc comments for the improved Energy Model documentation.
 
-Cheers,
+Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+---
+ include/linux/energy_model.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Hannes
+diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+index 1834752c5617..39dcadd492b5 100644
+--- a/include/linux/energy_model.h
++++ b/include/linux/energy_model.h
+@@ -11,7 +11,7 @@
+ #include <linux/types.h>
+ 
+ /**
+- * em_perf_state - Performance state of a performance domain
++ * struct em_perf_state - Performance state of a performance domain
+  * @frequency:	The frequency in KHz, for consistency with CPUFreq
+  * @power:	The power consumed at this level (by 1 CPU or by a registered
+  *		device). It can be a total power: static and dynamic.
+@@ -25,7 +25,7 @@ struct em_perf_state {
+ };
+ 
+ /**
+- * em_perf_domain - Performance domain
++ * struct em_perf_domain - Performance domain
+  * @table:		List of performance states, in ascending order
+  * @nr_perf_states:	Number of performance states
+  * @milliwatts:		Flag indicating the power values are in milli-Watts
+@@ -103,12 +103,12 @@ void em_dev_unregister_perf_domain(struct device *dev);
+ 
+ /**
+  * em_cpu_energy() - Estimates the energy consumed by the CPUs of a
+-		performance domain
++ *		performance domain
+  * @pd		: performance domain for which energy has to be estimated
+  * @max_util	: highest utilization among CPUs of the domain
+  * @sum_util	: sum of the utilization of all CPUs in the domain
+  * @allowed_cpu_cap	: maximum allowed CPU capacity for the @pd, which
+-			  might reflect reduced frequency (due to thermal)
++ *			  might reflect reduced frequency (due to thermal)
+  *
+  * This function must be used only for CPU devices. There is no validation,
+  * i.e. if the EM is a CPU type and has cpumask allocated. It is called from
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+2.17.1
+
