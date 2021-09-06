@@ -2,80 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78955401AC3
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F3B401ABC
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241509AbhIFLsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 07:48:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241229AbhIFLsk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 07:48:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C39FC60F14;
-        Mon,  6 Sep 2021 11:47:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630928856;
-        bh=6aDKCqu7JUaygznso9JGDgn2RHl3/CuxBKHsT/8A0lk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GCIGLnFO443t/wH9KJX7gxqLZ/AsJXnCQeOdnOvRaq7CiFd7g0bIgyW+MbtaUM3Wr
-         +sxyua/eKGw5Sfq4WoOKHmmesRwMGddAp3FjvdsSwSzQ05eF0aS2l6Q/l5C/7vNG+5
-         OYWPmzJbTspXA5CBPo4BY42TShaJN/bN1FyZfl2i/qCiqxXNMkuHMGPDJNrVINtYpU
-         WMGk4ssNYLLwZriGXW9Fn8nxoxJc+XpcHR06q8YTYE+SBWdDATYCV/TujPKtm++atD
-         GoxWhlRTdZ1RDI+I7yV/AUllx0E4hIU0oKXJaFwYDAp7CD0NnxJLCc08haFk7Pu/XL
-         C3f3MXG+u8tPQ==
-Date:   Mon, 6 Sep 2021 12:47:01 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-5.15 0/5] ASoC: fsl: register platform component
- before registering cpu dai
-Message-ID: <20210906114701.GC4309@sirena.org.uk>
-References: <1630665006-31437-1-git-send-email-shengjiu.wang@nxp.com>
+        id S241464AbhIFLsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 07:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241342AbhIFLsc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 07:48:32 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A778C061575;
+        Mon,  6 Sep 2021 04:47:27 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id e18so1810157qvl.4;
+        Mon, 06 Sep 2021 04:47:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ydkSeattX7pqtmLuoMARpH6s/V85guG4/Y69kcyoKjI=;
+        b=DP9qLeF/ReuP+/BRT604rMJmBYUser8C7kY0DRQwQSMF57xyB43PcaW+L7jArum/3z
+         YfbhrnPDs2trWpYG8QQ0trqcIEOWSI+JAlaQtyo7TozwxxB8MpRiyvxwfgRfcH3D00K6
+         FW8SxuXScr8jrkSt8P469DkDgLJAojMkby6lg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ydkSeattX7pqtmLuoMARpH6s/V85guG4/Y69kcyoKjI=;
+        b=bs0vPWNhptBqAMRL9z3esrfZht7OGQd4WMMbLvBwBzjYQFH9TOoOUvnGDqTCKLS1GL
+         e8no2PqRQw++c0lXQk+Pqd2Xryml6Db6854uZ+LWMoQ7UF0GJPfbM5g+cHnvXfZaV62O
+         FbZ053nF2WirJuFeI6nUoAvKPbBqOMip7gWQHvm9GXHkSZ4xzlFxEErTrmXh7QFE/zBG
+         iQQwzCwS7Gm2xx/o9zVAbX1Hy9kjU45y3vDUl+KvlSXbDCIh8JpV/7OPYQQoYn82yOYb
+         Iin3Z00EZgRPrq+0Ydgf+g8X4dUAFQnDZ2uIgqRGTVPSYLv84VwythUka11K9LxJ6Eq9
+         jHww==
+X-Gm-Message-State: AOAM533pOWkBv5G4G2qARr/MVCyoxq6QrAeHy2ETJgQaQjd7Cv3bcuyC
+        WtPt6O4mC1NPyLYE9w1v0Uh7MjCIvb84QQ3I9j8=
+X-Google-Smtp-Source: ABdhPJxPQH0wBMCr0pExnt7qJRixTkXQl+3Qg1d8UOcjWp23ojc7rVeaEtT0MVyZnZngr+ytTVe6IXgeNlYpnps2dW0=
+X-Received: by 2002:ad4:5cc2:: with SMTP id iu2mr11555814qvb.41.1630928846389;
+ Mon, 06 Sep 2021 04:47:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="vOmOzSkFvhd7u8Ms"
-Content-Disposition: inline
-In-Reply-To: <1630665006-31437-1-git-send-email-shengjiu.wang@nxp.com>
-X-Cookie: I smell a RANCID CORN DOG!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210617220229.7352-1-zev@bewilderbeest.net> <46edf81d60a38747f7d2511f840253a1c6867652.camel@linux.ibm.com>
+ <HK0PR06MB338081E134AA6F43ECBCBA4DF2D29@HK0PR06MB3380.apcprd06.prod.outlook.com>
+In-Reply-To: <HK0PR06MB338081E134AA6F43ECBCBA4DF2D29@HK0PR06MB3380.apcprd06.prod.outlook.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Mon, 6 Sep 2021 11:47:14 +0000
+Message-ID: <CACPK8XfE6zB9BWYq7e8WbXkPFp2Cicwv2x2dc8h6jNaR2qZV0g@mail.gmail.com>
+Subject: Re: [PATCH v3] media: aspeed-video: ignore interrupts that aren't enabled
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Eddie James <eajames@linux.ibm.com>,
+        Zev Weiss <zev@bewilderbeest.net>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        Ryan Chen <ryan_chen@aspeedtech.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mauro,
 
---vOmOzSkFvhd7u8Ms
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Mon, 6 Sept 2021 at 10:10, Ryan Chen <ryan_chen@aspeedtech.com> wrote:
+> > Subject: Re: [PATCH v3] media: aspeed-video: ignore interrupts that aren't
+> > enabled
+> >
+> > On Thu, 2021-06-17 at 17:02 -0500, Zev Weiss wrote:
+> > > As partially addressed in commit 65d270acb2d6 ("media: aspeed: clear
+> > > garbage interrupts"), the ASpeed video engine sometimes asserts
+> > > interrupts that the driver hasn't enabled.  In addition to the
+> > > CAPTURE_COMPLETE and FRAME_COMPLETE interrupts dealt with in that
+> > > patch, COMP_READY has also been observed.  Instead of playing
+> > > whack-a-mole with each one individually, we can instead just blanket
+> > > ignore everything we haven't explicitly enabled.
+> >
+> > Suspect this will fix an intermittent problem on AST2500 with screensaver.
+> > Change looks good, thanks!
+> >
+> > Reviewed-by: Eddie James <eajames@linux.ibm.com>
+> >
+> Reviewed-by: Ryan Chen <ryan_chen@aspeedtech.com>
+> > >
+> > > Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
 
-On Fri, Sep 03, 2021 at 06:30:01PM +0800, Shengjiu Wang wrote:
+I notice this wasn't merged in the pull request you sent for v5.15.
+Would you be able to ensure it makes it in the next pull request you
+send?
 
-> There is no defer probe when adding platform component to
-> snd_soc_pcm_runtime(rtd), the code is in snd_soc_add_pcm_runtime()
+It can have some fixes tags too:
 
-...
+Fixes: 65d270acb2d6 ("media: aspeed: clear garbage interrupts")
+Fixes: d2b4387f3bdf ("media: platform: Add Aspeed Video Engine driver")
+Acked-by: Joel Stanley <joel@jms.id.au>
 
-> So if the platform component is not ready at that time, then the
-> sound card still registered successfully, but platform component
-> is empty, the sound card can't be used.
+Cheers,
 
-This sounds like a bug which should be fixed there?
+Joel
 
---vOmOzSkFvhd7u8Ms
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE1/7QACgkQJNaLcl1U
-h9A2PQf+MXqqe36AsD9bn8IpQ83/IyczIGKq7d94luUncaivHbSF3i18scHq2SrW
-d1wUCYn+J0TbavlsquPzmuuFzGVQ8B0I0mWvqfLvcCOboaEce6os/pgXqxJKctqd
-XimllKcJFViLzssrsJG1q2XHCwXw1mj9clwKXZ6iOjQxtTN5GqFEBdQd14hy+Zod
-wKhPoCb87qO/ngT6iSwVqGoET5xip9q4WkeeO5QCTCcTyW1Mc4YbuV9dnqV2DjQ0
-9rW4xZ0xA1ZbLekeaYzqChqmYyWxn0RGdVa/wiyDXPS0I/FaYJAJ6xkD0VvyYF6E
-ObuvLN4+E7wgeufVxAeSwXbORT6/uA==
-=PvOc
------END PGP SIGNATURE-----
-
---vOmOzSkFvhd7u8Ms--
+> > > ---
+> > >
+> > > Changes since v2 [1]:
+> > >  - minor commit message improvements
+> > >
+> > > Changes since v1 [0]:
+> > >  - dropped error message
+> > >  - switched to a blanket-ignore approach as suggested by Ryan
+> > >
+> > > [0]
+> > > https://lore.kernel.org/linux-arm-kernel/20201215024542.18888-1-zev@be
+> > > wilderbeest.net/
+> > > [1]
+> > >
+> > https://lore.kernel.org/openbmc/20210506234048.3214-1-zev@bewilderbees
+> > > t.net/
+> > >
+> > >  drivers/media/platform/aspeed-video.c | 16 ++++++----------
+> > >  1 file changed, 6 insertions(+), 10 deletions(-)
+> > >
+> > > diff --git a/drivers/media/platform/aspeed-video.c
+> > > b/drivers/media/platform/aspeed-video.c
+> > > index 7bb6babdcade..77611c296a25 100644
+> > > --- a/drivers/media/platform/aspeed-video.c
+> > > +++ b/drivers/media/platform/aspeed-video.c
+> > > @@ -563,6 +563,12 @@ static irqreturn_t aspeed_video_irq(int irq, void
+> > > *arg)
+> > >     struct aspeed_video *video = arg;
+> > >     u32 sts = aspeed_video_read(video, VE_INTERRUPT_STATUS);
+> > >
+> > > +   /*
+> > > +    * Hardware sometimes asserts interrupts that we haven't
+> > > actually
+> > > +    * enabled; ignore them if so.
+> > > +    */
+> > > +   sts &= aspeed_video_read(video, VE_INTERRUPT_CTRL);
+> > > +
+> > >     /*
+> > >      * Resolution changed or signal was lost; reset the engine and
+> > >      * re-initialize
+> > > @@ -629,16 +635,6 @@ static irqreturn_t aspeed_video_irq(int irq, void
+> > > *arg)
+> > >                     aspeed_video_start_frame(video);
+> > >     }
+> > >
+> > > -   /*
+> > > -    * CAPTURE_COMPLETE and FRAME_COMPLETE interrupts come even
+> > > when these
+> > > -    * are disabled in the VE_INTERRUPT_CTRL register so clear them
+> > > to
+> > > -    * prevent unnecessary interrupt calls.
+> > > -    */
+> > > -   if (sts & VE_INTERRUPT_CAPTURE_COMPLETE)
+> > > -           sts &= ~VE_INTERRUPT_CAPTURE_COMPLETE;
+> > > -   if (sts & VE_INTERRUPT_FRAME_COMPLETE)
+> > > -           sts &= ~VE_INTERRUPT_FRAME_COMPLETE;
+> > > -
+> > >     return sts ? IRQ_NONE : IRQ_HANDLED;  }
+> > >
+>
