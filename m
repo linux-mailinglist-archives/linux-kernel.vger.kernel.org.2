@@ -2,126 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C97401608
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 07:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D640A40160D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 07:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237426AbhIFFnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 01:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53926 "EHLO
+        id S239097AbhIFFo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 01:44:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhIFFm7 (ORCPT
+        with ESMTP id S229475AbhIFFo6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 01:42:59 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8215CC061575;
-        Sun,  5 Sep 2021 22:41:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630906913;
-        bh=IUXT2gFKIZreWVNVlP87ef6RQd/qD0k5TPWhDhb05ok=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rtNLAFYEfftYvvHVzGfEEMz4pE/5dmi5zs/NugcO3n/BS5i3gA5P40/6Emm4Ztq6L
-         6gBPBLonCc7qNxgr2m0LVQnhZw5HMLgEqWvrItcNlcpasdBQMn+oqktmSW9Sr92P8G
-         DgBEF7vXFBL9RHTUPJpRj4ffZ009WOm1J5aPa1PdZW4c3/nIilqYcg/XKxuA/KddO7
-         QA5dWIyoDwpBSZPhHxvmjoCVcHYKhNBuFINEswxBwLMelpa0aFASEYFNwzmX2LGy1c
-         aqyrVgV9dzI4aNVS8LwAxCjhU0DllQia1ApQG6bRsfjveKxr+ZfmZRNgWe1AysMicz
-         Bx+o0KAFuktWQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H2y2S5xjZz9sVw;
-        Mon,  6 Sep 2021 15:41:52 +1000 (AEST)
-Date:   Mon, 6 Sep 2021 15:41:51 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: linux-next: build warning after merge of the kspp tree
-Message-ID: <20210906154151.0aa41a7a@canb.auug.org.au>
-In-Reply-To: <20210830184429.1ee4b4d8@canb.auug.org.au>
-References: <20210830184429.1ee4b4d8@canb.auug.org.au>
+        Mon, 6 Sep 2021 01:44:58 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA84BC061575;
+        Sun,  5 Sep 2021 22:43:53 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id e21so11044063ejz.12;
+        Sun, 05 Sep 2021 22:43:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dsxGV1RP9Qi0JMIFcPUgri7gLr8bvFdyAKQBx+2bqDQ=;
+        b=XS0PIbA0p2E3/rdHhXs2C/OtTi+suafl5NnoBSza8txXP/vcVueLKhPBLk4IQP0B3R
+         S1PwWMo7p6V+ihljnquaObMu1zYSM+uo3hzNG+b39OQ5e4oWudvWN1FYEol87VvFJcAy
+         tKrx+Pjd9RKCQYxwhD22qNgnkDh5URnQbFAKnqA/QwCu3/wWnD+4+HZP0YcUey7y98cH
+         4YqnYyUfJiwFazHIczoJGIi1eiof62yXsh/snv2pNQitZLwY927vbrZmL2ymqNUi6nzr
+         iOvwC3rTW1sMfUcH88EuFCELA3jIW8lny1e1T/n0PhERdaOphpUqjkHb0hgUWkwA8JUd
+         56pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dsxGV1RP9Qi0JMIFcPUgri7gLr8bvFdyAKQBx+2bqDQ=;
+        b=qtzE1bZGNzb1bqT0Orj9q4vnJd0Szt9MU+muQL25LC9lc1MHABc/C//6NHGiLUqNB/
+         MVFrXm/Lme9QTaEVIW/DVc2fg40fKc1ExG3O75PPSAAbQqUNFIi6Fa/BPLi4tAq7D2sT
+         /ElplGK32GBnMYnbfM+LbQ75rm6Lnx+3Yd26W0QPum0jk014uZB5T89oZiMXYnZ3/qZA
+         H0bQPT04PhxzTDAut4eBxgsJAIcNewfxV+CpkRduK06uewmkItN7JcMYV5Ggf3zDu3GB
+         HuwsLSYfO4FEo/e17/UhJMZW+qTfxWmZH7we5Cq1NsGUk8VBLfqAnDQX/hbxC0AWB5Bl
+         m5tA==
+X-Gm-Message-State: AOAM532Hhas9ysnzvX7TkQuqcjlUONU552eU4sNH0qPXUhexfYOSFneN
+        +vTFhQFogvLUhrjC8oEV01Oz/bg2A3fmGysxM/dNDQPasU2PZR6m
+X-Google-Smtp-Source: ABdhPJziIuA6kiI1zFi7BQAYo+peyr0Zjg6UTC5M0V0BuTbahvCl8SJzeFjZPErL+CJdvuTawJ4UfTzgbZTUgRcr4PM=
+X-Received: by 2002:a17:906:ce24:: with SMTP id sd4mr11923804ejb.329.1630907032449;
+ Sun, 05 Sep 2021 22:43:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+W1mqGOo_LjEdTOMqZCF815";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210906041330.2065214-1-mudongliangabcd@gmail.com>
+In-Reply-To: <20210906041330.2065214-1-mudongliangabcd@gmail.com>
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+Date:   Mon, 6 Sep 2021 13:43:26 +0800
+Message-ID: <CAD-N9QUHfoqOOxDuKniMi8VGLR2j6g50BBy45eAL0kPRrntmgA@mail.gmail.com>
+Subject: Re: [PATCH] nilfs2: fix memory leak in nilfs_sysfs_create_device_group
+To:     Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>, linux-nilfs@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+W1mqGOo_LjEdTOMqZCF815
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Mon, 30 Aug 2021 18:44:29 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
+On Mon, Sep 6, 2021 at 12:13 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
 >
-> After merging the kspp tree, today's linux-next build (powerpc
-> allyesconfig) produced this warning:
->=20
-> drivers/gpu/drm/kmb/kmb_plane.c:135:20: warning: array subscript 3 is abo=
-ve array bounds of 'struct layer_status[1]' [-Warray-bounds]
->   135 |   kmb->plane_status[plane_id].ctrl =3D LCD_CTRL_GL2_ENABLE;
->       |   ~~~~~~~~~~~~~~~~~^~~~~~~~~~
-> In file included from drivers/gpu/drm/kmb/kmb_plane.c:17:
-> drivers/gpu/drm/kmb/kmb_drv.h:48:23: note: while referencing 'plane_statu=
-s'
->    48 |  struct layer_status  plane_status[KMB_MAX_PLANES];
->       |                       ^~~~~~~~~~~~
-> drivers/gpu/drm/kmb/kmb_plane.c:132:20: warning: array subscript 2 is abo=
-ve array bounds of 'struct layer_status[1]' [-Warray-bounds]
->   132 |   kmb->plane_status[plane_id].ctrl =3D LCD_CTRL_GL1_ENABLE;
->       |   ~~~~~~~~~~~~~~~~~^~~~~~~~~~
-> In file included from drivers/gpu/drm/kmb/kmb_plane.c:17:
-> drivers/gpu/drm/kmb/kmb_drv.h:48:23: note: while referencing 'plane_statu=
-s'
->    48 |  struct layer_status  plane_status[KMB_MAX_PLANES];
->       |                       ^~~~~~~~~~~~
-> drivers/gpu/drm/kmb/kmb_plane.c:129:20: warning: array subscript 1 is abo=
-ve array bounds of 'struct layer_status[1]' [-Warray-bounds]
->   129 |   kmb->plane_status[plane_id].ctrl =3D LCD_CTRL_VL2_ENABLE;
->       |   ~~~~~~~~~~~~~~~~~^~~~~~~~~~
-> In file included from drivers/gpu/drm/kmb/kmb_plane.c:17:
-> drivers/gpu/drm/kmb/kmb_drv.h:48:23: note: while referencing 'plane_statu=
-s'
->    48 |  struct layer_status  plane_status[KMB_MAX_PLANES];
->       |                       ^~~~~~~~~~~~
->=20
-> Exposed by commit
->=20
->   656256c0d67c ("Makefile: Enable -Warray-bounds")
->=20
-> Introduced by commit
->=20
->   7f7b96a8a0a1 ("drm/kmb: Add support for KeemBay Display")
->=20
-> from v5.11-rc1.
+> The commit 8fd0c1b0647a ("nilfs2: fix memory leak in
+> nilfs_sysfs_delete_device_group") adds a kobject_put to free the leaking
+> object name. However, it is incomplete to only add kobject_put in the
+> nilfs_sysfs_delete_device_group. The function
+> nilfs_sysfs_create_device_group also needs the kobject_put to
+> free the object name in the error handling part.
+>
+> Fix this by adding kobject_put in the error handling code of
+> nilfs_sysfs_create_device_group.
 
-Due to Linus -Werror, these are now errors :-(
+Even after I add this patch, my local syzkaller still reports this
+memory leak one hour later. Therefore, there are some other paths or
+magics which can trigger the memory leak. I need to dig deeper.
 
-I have reverted commit 656256c0d67c for now.
---=20
-Cheers,
-Stephen Rothwell
+Pavel, do you have any idea about this crash report?
 
---Sig_/+W1mqGOo_LjEdTOMqZCF815
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+BUG: memory leak
+unreferenced object 0xffff88804a1a8a60 (size 32):
+  comm "syz-executor", pid 14551, jiffies 4294960586 (age 14.780s)
+  hex dump (first 32 bytes):
+    6c 6f 6f 70 35 00 00 00 00 00 00 00 00 00 00 00  loop5...........
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff814750c6>] kstrdup+0x36/0x70
+    [<ffffffff81475153>] kstrdup_const+0x53/0x80
+    [<ffffffff822773a2>] kvasprintf_const+0xc2/0x110
+    [<ffffffff82337c5b>] kobject_set_name_vargs+0x3b/0xe0
+    [<ffffffff823385ed>] kobject_init_and_add+0x6d/0xc0
+    [<ffffffff81d2bd08>] nilfs_sysfs_create_device_group+0x98/0x3a0
+    [<ffffffff81d14fc4>] init_nilfs+0x424/0x580
+    [<ffffffff81d02962>] nilfs_mount+0x532/0x8c0
+    [<ffffffff815c754b>] legacy_get_tree+0x2b/0x90
+    [<ffffffff81565158>] vfs_get_tree+0x28/0x100
+    [<ffffffff815a3a82>] path_mount+0xb92/0xfe0
+    [<ffffffff815a3f71>] do_mount+0xa1/0xc0
+    [<ffffffff815a4584>] __x64_sys_mount+0xf4/0x160
+    [<ffffffff8433fd35>] do_syscall_64+0x35/0xb0
+    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE1qh8ACgkQAVBC80lX
-0GyiVQf+PJFYXwWyUe9jhw21HXnLUe+aeBHlhW7TNGHNOPVuPN8MmjU8FJgiypKf
-Vzr8wJJnHXsOULy5ECKEb9w78RltTLSOQHyMQf7jVIjVcCSCMRiKL5NUZ2EAEGpD
-6Z0C7Q46yAKluI+tqDEpeWmvyQbrleo65mLclLDuiImkx+daowJ+Bj70emHN77DR
-mmhWpl3cZBGXCs8Y+iBjQFyIUeMwJ3DqT8ra6w2tIDKwL4R1iiDFsfHFq2AD0QkW
-c/wGhExA4LlcgEhNruMki7fkg1SNNwYq760XVPc/9b8zK4xUz5FYEoLznYVOCv24
-NbfCGL0MNqsEl8ZzCvBZPt1b2oInXA==
-=2oRg
------END PGP SIGNATURE-----
-
---Sig_/+W1mqGOo_LjEdTOMqZCF815--
+>
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> ---
+>  fs/nilfs2/sysfs.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
+> index 68e8d61e28dd..7ab60711ca76 100644
+> --- a/fs/nilfs2/sysfs.c
+> +++ b/fs/nilfs2/sysfs.c
+> @@ -1024,6 +1024,7 @@ int nilfs_sysfs_create_device_group(struct super_block *sb)
+>
+>  cleanup_dev_kobject:
+>         kobject_del(&nilfs->ns_dev_kobj);
+> +       kobject_put(&nilfs->ns_dev_kobj);
+>
+>  free_dev_subgroups:
+>         kfree(nilfs->ns_dev_subgroups);
+> --
+> 2.25.1
+>
