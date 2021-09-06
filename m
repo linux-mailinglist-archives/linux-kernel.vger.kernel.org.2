@@ -2,89 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 309CC401A96
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49850401A9A
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:31:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240164AbhIFLbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 07:31:42 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:36584 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbhIFLbl (ORCPT
+        id S241290AbhIFLc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 07:32:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28119 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231173AbhIFLcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 07:31:41 -0400
-Date:   Mon, 6 Sep 2021 13:30:34 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1630927836;
+        Mon, 6 Sep 2021 07:32:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630927879;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=ZBR5f7NFUsEsljhaHWFAtG/p9HBHdnHvTkMUd2Dyw34=;
-        b=hbcvLOMgSybY4HzWHUw7fxJ+YV3Nggt5lyjGPRatRzY6tZuBrI+hPtE0agwI4v2IdhkDWc
-        yaqHILLv4y9GG9wrq1fTAaMhSnnlm092t3qs3vwkSv5ueg5MMcOPyAw+97YFUEucE1MmU6
-        JAcY4tOsSE4pDIzyN5stVl+iWBk4Xv9XEi6vTYZqIc6qxOyR8aawRhP051vW6/4arqz4rg
-        yMsp2rHL4tMVug/n2G1lOjEFc2F/sRFMq/SPwuNW7n+DgiTZPv8VRrQ7LzHiotjIAOap8s
-        TUhPace4/2K+b72TVTOkgUb+A3ayCAnqrOoXDuOBYDyC+OAONlhPDrL8dSuNZQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1630927836;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=ZBR5f7NFUsEsljhaHWFAtG/p9HBHdnHvTkMUd2Dyw34=;
-        b=xEZAwaQmjhLi0Zt6An4OsMA4jGm5XZvClYGfsrXr0HC1IO+310Bxs7jouLbhK5uRDMj2ue
-        Cyv0yefgzp6+6KBA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH] sched: Make the idle timer expire always in hardirq context.
-Message-ID: <20210906113034.jgfxrjdvxnjqgtmc@linutronix.de>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ifh2AKn2IYRrBAFZpGRrv4Jn5qIpOvQyMh+sOZEw61k=;
+        b=I0aDSYu6O8oj1Gm3ew8jOBv5gW7vTSPAv7VjdzjnIiheg1G0+WzJjC1C/tI39sRyJgfXCq
+        cyMJXQv01f6bVpofLj+LUD9lP0tqVbZxAqTy9lmJP4ccdIHHXbk2z2DTKTepUMHo2to3aw
+        +7Amyy4G/g+1b5O8WVY9hyWpxDXg/K0=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-534-wF-61t1MMPCmL1HL6HJqRg-1; Mon, 06 Sep 2021 07:31:18 -0400
+X-MC-Unique: wF-61t1MMPCmL1HL6HJqRg-1
+Received: by mail-wm1-f72.google.com with SMTP id w25-20020a1cf6190000b0290252505ddd56so2224064wmc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 04:31:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ifh2AKn2IYRrBAFZpGRrv4Jn5qIpOvQyMh+sOZEw61k=;
+        b=TlqbKZzgnYmkEYEQxl6esRu2My4Ha5mLDax2aKjTKnN5J3NNUo7snUFF+q6X5pjNrk
+         9FZnIAU0QGzW+meCVDyn9Fxm9TkouzoIu/pSD8N5bteOqvGfU/vYXPkuUgowJDp0ZZVP
+         rvzPWZBkg6ZuLByUTnSQ/o1LcVqRu715XJ1F8xo2aIBbJ272U6nwA2r5t6Pr9uoa1IAg
+         xkrbMIaNVrC5q+IvL/XMpnC9rDULSsxT2/QNwAi2R09kWAaV8Nn1OiYb3hFmGpes/ivH
+         R8YBWz4kMU+b9BADAJAJ0faTW/tEKm3prDu61kqbQobJ1OGJsnO9XcmaaFhkFS6ABUeU
+         DuWw==
+X-Gm-Message-State: AOAM530FmtvsPR8VarP3jc8ytvgnma+i7q2Ylv8YI5IEZK+tREbNrgLQ
+        fmXedFYj4FkOWqIxMw1nlqNyl9tSWZ9TSFKSkBnUc45wDK5+W4uLd+1LKLtQl3U8K+jr6Wn1piB
+        meRPI1s0obtzqmllfrFAC9Prc
+X-Received: by 2002:adf:eb4a:: with SMTP id u10mr12773352wrn.11.1630927877246;
+        Mon, 06 Sep 2021 04:31:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwRDD+CFWqGasfoJ4bWw1zXPZwgO49ADZdpw61tpeyBjS5qkitLHCkPuytVwq/iV6MGXa+HdQ==
+X-Received: by 2002:adf:eb4a:: with SMTP id u10mr12773300wrn.11.1630927876958;
+        Mon, 06 Sep 2021 04:31:16 -0700 (PDT)
+Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
+        by smtp.gmail.com with ESMTPSA id u26sm7984094wrd.32.2021.09.06.04.31.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 04:31:16 -0700 (PDT)
+From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
+X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     brouer@redhat.com, duanxiongchun@bytedance.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhengqi.arch@bytedance.com, chenying.kernel@bytedance.com,
+        intel-wired-lan@lists.osuosl.org, songmuchun@bytedance.com,
+        bpf@vger.kernel.org, wangdongdong.6@bytedance.com,
+        zhouchengming@bytedance.com, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
+        john.fastabend@gmail.com, jeffrey.t.kirsher@intel.com,
+        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: Re: [External] Re: [Intel-wired-lan] [PATCH v2] ixgbe: Fix NULL
+ pointer dereference in ixgbe_xdp_setup
+To:     Feng Zhou <zhoufeng.zf@bytedance.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Jason Xing <xingwanli@kuaishou.com>
+References: <20210903064013.9842-1-zhoufeng.zf@bytedance.com>
+ <2ee172ab-836c-d464-be59-935030d01f4b@molgen.mpg.de>
+ <8ce8de1c-14bf-20ad-00c0-9e0d8ff34b91@bytedance.com>
+Message-ID: <318e7f75-287e-148a-cdb0-648b7c36e0a9@redhat.com>
+Date:   Mon, 6 Sep 2021 13:31:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <8ce8de1c-14bf-20ad-00c0-9e0d8ff34b91@bytedance.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The intel powerclamp driver will setup a per-CPU worker with RT
-priority. The worker will then invoke play_idle() in which it remains in
-the idle poll loop until it is stopped by the timer it started earlier.
+Hi Feng and Jason,
 
-That timer needs to expire in hardirq context on PREEMPT_RT. Otherwise
-the timer will expire in ksoftirqd as a SOFT timer but that task won't
-be scheduled on the CPU because its priority is lower than the priority
-of the worker which is in the idle loop.
+Please notice that you are both developing patches that change the ixgbe 
+driver in related areas.
 
-Always expire the idle timer in hardirq context.
-
-Fixes:c1de45ca831ac ("sched/idle: Add support for tasks that inject idle")
-Reported-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- kernel/sched/idle.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 912b47aa99d82..d17b0a5ce6ac3 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -379,10 +379,10 @@ void play_idle_precise(u64 duration_ns, u64 latency_ns)
- 	cpuidle_use_deepest_state(latency_ns);
+Jason's patch:
+  Subject: [PATCH v7] ixgbe: let the xdpdrv work with more than 64 cpus
  
- 	it.done = 0;
--	hrtimer_init_on_stack(&it.timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+	hrtimer_init_on_stack(&it.timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
- 	it.timer.function = idle_inject_timer_fn;
- 	hrtimer_start(&it.timer, ns_to_ktime(duration_ns),
--		      HRTIMER_MODE_REL_PINNED);
-+		      HRTIMER_MODE_REL_PINNED_HARD);
- 
- 	while (!READ_ONCE(it.done))
- 		do_idle();
--- 
-2.33.0
+https://lore.kernel.org/all/20210901101206.50274-1-kerneljasonxing@gmail.com/
+
+We might need both as this patch looks like a fix to a panic, and 
+Jason's patch allows XDP on ixgbe to work on machines with more than 64 
+CPUs.
+
+-Jesper
+
+On 06/09/2021 09.49, Feng Zhou wrote:
+> 
+> 在 2021/9/6 下午2:37, Paul Menzel 写道:
+>> Dear Feng,
+>>
+>>
+>> Am 03.09.21 um 08:40 schrieb Feng zhou:
+>>
+>> (If you care, in your email client, your last name does not start with 
+>> a capital letter.)
+>>
+>>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
+>>>
+>>> The ixgbe driver currently generates a NULL pointer dereference with
+>>> some machine (online cpus < 63). This is due to the fact that the
+>>> maximum value of num_xdp_queues is nr_cpu_ids. Code is in
+>>> "ixgbe_set_rss_queues"".
+>>>
+>>> Here's how the problem repeats itself:
+>>> Some machine (online cpus < 63), And user set num_queues to 63 through
+>>> ethtool. Code is in the "ixgbe_set_channels",
+>>> adapter->ring_feature[RING_F_FDIR].limit = count;
+>>
+>> For better legibility, you might want to indent code (blocks) by four 
+>> spaces and add blank lines around it (also below).
+>>
+>>> It becames 63.
+>>
+>> becomes
+>>
+>>> When user use xdp, "ixgbe_set_rss_queues" will set queues num.
+>>> adapter->num_rx_queues = rss_i;
+>>> adapter->num_tx_queues = rss_i;
+>>> adapter->num_xdp_queues = ixgbe_xdp_queues(adapter);
+>>> And rss_i's value is from
+>>> f = &adapter->ring_feature[RING_F_FDIR];
+>>> rss_i = f->indices = f->limit;
+>>> So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
+>>> for (i = 0; i < adapter->num_rx_queues; i++)
+>>>     if (adapter->xdp_ring[i]->xsk_umem)
+>>> lead to panic.
+>>
+>> lead*s*?
+>>
+>>> Call trace:
+>>> [exception RIP: ixgbe_xdp+368]
+>>> RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
+>>> RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
+>>> RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
+>>> RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
+>>> R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
+>>> R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
+>>> ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+>>>   7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
+>>>   8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
+>>>   9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
+>>> 10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
+>>> 11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
+>>> 12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
+>>> 13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
+>>> 14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
+>>> 15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
+>>> 16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
+>>> 17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
+>>> 18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
+>>> 19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
+>>
+>> Please describe the fix in the commit message.
+>>
+>>> Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
+>>> AF_XDP")
+>>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
+>>> ---
+>>> Updates since v1:
+>>> - Fix "ixgbe_max_channels" callback so that it will not allow a 
+>>> setting of
+>>> queues to be higher than the num_online_cpus().
+>>> more details can be seen from here:
+>>> https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20210817075407.11961-1-zhoufeng.zf@bytedance.com/ 
+>>>
+>>> Thanks to Maciej Fijalkowski for your advice.
+>>>
+>>>   drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c | 2 +-
+>>>   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c    | 8 ++++++--
+>>>   2 files changed, 7 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c 
+>>> b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
+>>> index 4ceaca0f6ce3..21321d164708 100644
+>>> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
+>>> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
+>>> @@ -3204,7 +3204,7 @@ static unsigned int ixgbe_max_channels(struct 
+>>> ixgbe_adapter *adapter)
+>>>           max_combined = ixgbe_max_rss_indices(adapter);
+>>>       }
+>>>   -    return max_combined;
+>>> +    return min_t(int, max_combined, num_online_cpus());
+>>>   }
+>>>     static void ixgbe_get_channels(struct net_device *dev,
+>>> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c 
+>>> b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+>>> index 14aea40da50f..5db496cc5070 100644
+>>> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+>>> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+>>> @@ -10112,6 +10112,7 @@ static int ixgbe_xdp_setup(struct net_device 
+>>> *dev, struct bpf_prog *prog)
+>>>       struct ixgbe_adapter *adapter = netdev_priv(dev);
+>>>       struct bpf_prog *old_prog;
+>>>       bool need_reset;
+>>> +    int num_queues;
+>>>         if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
+>>>           return -EINVAL;
+>>> @@ -10161,11 +10162,14 @@ static int ixgbe_xdp_setup(struct 
+>>> net_device *dev, struct bpf_prog *prog)
+>>>       /* Kick start the NAPI context if there is an AF_XDP socket open
+>>>        * on that queue id. This so that receiving will start.
+>>>        */
+>>> -    if (need_reset && prog)
+>>> -        for (i = 0; i < adapter->num_rx_queues; i++)
+>>> +    if (need_reset && prog) {
+>>> +        num_queues = min_t(int, adapter->num_rx_queues,
+>>> +            adapter->num_xdp_queues);
+>>> +        for (i = 0; i < num_queues; i++)
+>>>               if (adapter->xdp_ring[i]->xsk_pool)
+>>>                   (void)ixgbe_xsk_wakeup(adapter->netdev, i,
+>>>                                  XDP_WAKEUP_RX);
+>>> +    }
+>>>         return 0;
+>>>   }
+>>>
+> Thanks for your advice. I will modify the commit message in v3
+> 
 
