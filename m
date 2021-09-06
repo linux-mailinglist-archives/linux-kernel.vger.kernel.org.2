@@ -2,114 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0174401D65
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66887401D6C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:11:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242382AbhIFPHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 11:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbhIFPHe (ORCPT
+        id S242492AbhIFPMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 11:12:15 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:35460
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231823AbhIFPMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 11:07:34 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13E5DC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 08:06:30 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so4478775pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 08:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7bRVRr2cmpld6cVkhHmLiLm6xvgtUebQbicDG7ir3G0=;
-        b=m3nCH0H6dheq/9gTKSlhvraisRdbU5lL2ciDS36vzIDNR1/GfkpADfpz+Lr8Zi9McP
-         X54Xa3Xa+ngumTj/Kc19bIeGcTGHUbmVht9CjCjbeG4HmBSFRCTZbk1bbg1NYA5iLYlJ
-         V+w6SYY5dzVgMDGqFxYfcXSkMUgtWk7XVfhRQfZVOmUYDYliDBdX2FLGOF1mfAC1fiul
-         Y/P7hl0GWXTT04cGhvFT5k3hXHEc2B1jm1Ntt2Ibgq1poHOSYFrZehamga0XLgshVSsw
-         tcm+Di7AMp44hpK6vNUklq8WVLIsdKydM/3QPz2d3MRdpBmEQSGHN/vibbH9o/P6MJ7Z
-         sCYw==
+        Mon, 6 Sep 2021 11:12:13 -0400
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com [209.85.210.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 1490F40779
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 15:11:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1630941068;
+        bh=qrn6Lwq5UjF65G8mpT9qRaUrzJDuHvD3Z3rSvaAaYKs=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=gS0nrOOK0AHKtT65Y4XZhUnuex+XyDXciDpmBQL2Lv0xhhP3fy2lb5WQiEkiSkUBp
+         HgBUYcOhctNt91vrqapvgbeb1VNz2DMUU3w1PhEMF9icW5xqPuBwHkAvIOZxX6HYd6
+         udh8vh3EA6DTRNyVNcyYKb4ldPv486cWxNL+FDqR0445n4U33iqQdOC3dbqEXTovB+
+         /AfGCqUOhEOgvtVJ2NXZYL1jpDcbcLNw1iHg1yjNNTJUVe/nGtrH7SIec5zfXTb4/R
+         j8/u6+GmUq7nu1qA+0eesQYdemXzn+fI/XZCZAcPh6KWEPSIRWWne3HBOVK+PZYA2D
+         B+GeseugLK0uA==
+Received: by mail-ot1-f72.google.com with SMTP id i7-20020a9d6507000000b0051c10643794so4581464otl.22
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 08:11:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7bRVRr2cmpld6cVkhHmLiLm6xvgtUebQbicDG7ir3G0=;
-        b=XAx99DwTnePG9bK3rOOBMAfA7w05jrUaN2fIVt6B01F/JcK98tzQcW4hkhYZaxMQEv
-         OOq+xdipO/w6pl2ag8JJMt3f5Xgej2jhGJasMbBeB2sapEJrESxWaX31CufgC+sM2EEO
-         Q62sIkFuLKnyoaE8/Hu3/U5sz+noJuVFh842YOj90jVHkrkcdFFLb1Cv0PnZg+qnhMvZ
-         VzOeFUm4RM7OuGXIXboLDzm6sihGmrYJixtek+O/FMFtC8oaE4PhV5RAhf0UQ28rf5ye
-         AzGNUyI5zhCQR7kJHkQF9v3FwAIKAz+uHA9BUqpYQlTzMnQaaOlH2ypR4K0Z394Hu2/A
-         7W9g==
-X-Gm-Message-State: AOAM531ocHjr5DX53I3JO1RJV5fvxrh44a2PXO7OhOlfwV3mZScJ2g4q
-        qYLNpblO7Qp78NfdT8L2e16Wsw==
-X-Google-Smtp-Source: ABdhPJz7QhFvvQoZNbJT/uu0Intg4qqFBqp1QJOwcr6xXyv7hMGFbr/9aIkaYAr/nvmPmo2gRdieZw==
-X-Received: by 2002:a17:90b:1d0e:: with SMTP id on14mr14275270pjb.97.1630940789541;
-        Mon, 06 Sep 2021 08:06:29 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id y126sm5275753pfy.88.2021.09.06.08.06.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 08:06:28 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 09:06:25 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Jian Cai <jiancai@google.com>
-Cc:     mike.leach@linaro.org, linux@roeck-us.net, dianders@chromium.org,
-        mka@chromium.org, manojgupta@google.com, llozano@google.com,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        clang-built-linux@googlegroups.com,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] coresight: syscfg: fix compiler warnings
-Message-ID: <20210906150625.GA1228692@p14s>
-References: <20210830172820.2840433-1-jiancai@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qrn6Lwq5UjF65G8mpT9qRaUrzJDuHvD3Z3rSvaAaYKs=;
+        b=NY16+QCD/wuE4vtVOSgDXazyj9f5qpFiMJTO3MvUUuATolFXwjZSLVg3f1iXmaTsDd
+         j6tsWaOZlOeMEFiuleNTOr9ddcGHZTqLGsTzafOaWP/iWJhoU+HTkG1f880Bc2xKKYQp
+         F5YT+9YbNBxXgPau8o6MBdJIv+4Ol2a21qaKr82vEYwqOEKvwVrOTutnB6mi9w3zH1qf
+         A3Khq0n/rDFHBE43anTathyDwA1B9Dqpl9Cp4FODeGiX8QMineEHEEywqTo2DPTIwtv4
+         0730c7IlYrUcW3hgc9/x8lK2Ta9dFkl/NhzchjpsFP4BPkhTrE4D8cmuH/pkPPxz6kVN
+         /Lew==
+X-Gm-Message-State: AOAM531gZ0Nw5QiWU2Vwylw0Br9GFtaK+CaeGVb5O0t6b6NOFWt0IZqz
+        yV80HyXZHpgM+xHUhi6fxX56xo/BudQ3gJQtf2p0nBwlOqSE6TA69VDxuES+WmBWe23PhFljkSs
+        YtnkAGsjcH5qdo/DcKARGTfhCIHZpjIyGdTj5EgBnsZknhw6bnNGpHnsA/A==
+X-Received: by 2002:a4a:d04d:: with SMTP id x13mr14295635oor.65.1630941066594;
+        Mon, 06 Sep 2021 08:11:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzvj0oQe2bL8r0PFOgcgSewvyaRSPTOPhAPexL9N4kMaThlyUks3ALTEErtHaVmg/sSB7jKLzyUJvA+BmtjFTk=
+X-Received: by 2002:a4a:d04d:: with SMTP id x13mr14295598oor.65.1630941066190;
+ Mon, 06 Sep 2021 08:11:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210830172820.2840433-1-jiancai@google.com>
+References: <20210827171452.217123-3-kai.heng.feng@canonical.com>
+ <20210830180940.GA4209@bjorn-Precision-5520> <CAAd53p634-nxEYYDbc69JEVev=cFkqtdCJv5UjAFCDUqdNAk_A@mail.gmail.com>
+ <71aea1f6-749b-e379-70f4-653ac46e7f25@gmail.com>
+In-Reply-To: <71aea1f6-749b-e379-70f4-653ac46e7f25@gmail.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Mon, 6 Sep 2021 23:10:53 +0800
+Message-ID: <CAAd53p7XQWJJrVUgGZe0MC1jO+f3+edAmkEVhP40Lwwtq2bU2A@mail.gmail.com>
+Subject: Re: [RFC] [PATCH net-next v4] [PATCH 2/2] r8169: Implement dynamic
+ ASPM mechanism
+To:     Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     nic_swsd <nic_swsd@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Anthony Wong <anthony.wong@canonical.com>,
+        Linux Netdev List <netdev@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 10:28:19AM -0700, Jian Cai wrote:
-> This fixes warnings with -Wimplicit-function-declaration, e.g.
-> 
-> drivers/hwtracing/coresight/coresight-syscfg.c:455:15: error:
-> implicit declaration of function 'kzalloc' [-Werror,
-> -Wimplicit-function-declaration]
->         csdev_item = kzalloc(sizeof(struct cscfg_registered_csdev),
->                              GFP_KERNEL);
-> 
-> Fixes: 85e2414c518a ("coresight: syscfg: Initial coresight system configuration")
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Jian Cai <jiancai@google.com>
-> ---
-> 
-> Changes v1 -> v2:
->   Format the commit message and add Fixes and Reviewed-by tag.
-> 
->  drivers/hwtracing/coresight/coresight-syscfg.c | 1 +
->  1 file changed, 1 insertion(+)
+On Sat, Sep 4, 2021 at 4:00 AM Heiner Kallweit <hkallweit1@gmail.com> wrote:
 >
+> On 03.09.2021 17:56, Kai-Heng Feng wrote:
+> > On Tue, Aug 31, 2021 at 2:09 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >>
+> >> On Sat, Aug 28, 2021 at 01:14:52AM +0800, Kai-Heng Feng wrote:
+> >>> r8169 NICs on some platforms have abysmal speed when ASPM is enabled.
+> >>> Same issue can be observed with older vendor drivers.
+> >>>
+> >>> The issue is however solved by the latest vendor driver. There's a new
+> >>> mechanism, which disables r8169's internal ASPM when the NIC traffic has
+> >>> more than 10 packets, and vice versa. The possible reason for this is
+> >>> likely because the buffer on the chip is too small for its ASPM exit
+> >>> latency.
+> >>
+> >> This sounds like good speculation, but of course, it would be better
+> >> to have the supporting data.
+> >>
+> >> You say above that this problem affects r8169 on "some platforms."  I
+> >> infer that ASPM works fine on other platforms.  It would be extremely
+> >> interesting to have some data on both classes, e.g., "lspci -vv"
+> >> output for the entire system.
+> >
+> > lspci data collected from working and non-working system can be found here:
+> > https://bugzilla.kernel.org/show_bug.cgi?id=214307
+> >
+> >>
+> >> If r8169 ASPM works well on some systems, we *should* be able to make
+> >> it work well on *all* systems, because the device can't tell what
+> >> system it's in.  All the device can see are the latencies for entry
+> >> and exit for link states.
+> >
+> > That's definitely better if we can make r8169 ASPM work for all platforms.
+> >
+> >>
+> >> IIUC this patch makes the driver wake up every 1000ms.  If the NIC has
+> >> sent or received more than 10 packets in the last 1000ms, it disables
+> >> ASPM; otherwise it enables ASPM.
+> >
+> > Yes, that's correct.
+> >
+> >>
+> >> I asked these same questions earlier, but nothing changed, so I won't
+> >> raise them again if you don't think they're pertinent.  Some patch
+> >> splitting comments below.
+> >
+> > Sorry about that. The lspci data is attached.
+> >
+>
+> Thanks for the additional details. I see that both systems have the L1
+> sub-states active. Do you also face the issue if L1 is enabled but
+> L1.2 and L1.2 are not? Setting the ASPM policy from powersupersave
+> to powersave should be sufficient to disable them.
+> I have a test system Asus PRIME H310I-PLUS, BIOS 2603 10/21/2019 with
+> the same RTL8168h chip version. With L1 active and sub-states inactive
+> everything is fine. With the sub-states activated I get few missed RX
+> errors when running iperf3.
 
-I have applied this patch to my local tree.  I will push it to the coresight-next
-branch when 5.15-rc1 is published next week.
+Once L1.1 and L1.2 are disabled the TX speed can reach 710Mbps and RX
+can reach 941 Mbps. So yes it seems to be the same issue.
+With dynamic ASPM, TX can reach 750 Mbps while ASPM L1.1 and L1.2 are enabled.
 
-Thanks,
-Mathieu
+> One difference between your good and bad logs is the following.
+> (My test system shows the same LTR value like your bad system.)
+>
+> Bad:
+>         Capabilities: [170 v1] Latency Tolerance Reporting
+>                 Max snoop latency: 3145728ns
+>                 Max no snoop latency: 3145728ns
+>
+> Good:
+>         Capabilities: [170 v1] Latency Tolerance Reporting
+>                 Max snoop latency: 1048576ns
+>                 Max no snoop latency: 1048576ns
+>
+> I have to admit that I'm not familiar with LTR and don't know whether
+> this difference could contribute to the differing behavior.
 
-> diff --git a/drivers/hwtracing/coresight/coresight-syscfg.c b/drivers/hwtracing/coresight/coresight-syscfg.c
-> index fc0760f55c53..43054568430f 100644
-> --- a/drivers/hwtracing/coresight/coresight-syscfg.c
-> +++ b/drivers/hwtracing/coresight/coresight-syscfg.c
-> @@ -5,6 +5,7 @@
->   */
->  
->  #include <linux/platform_device.h>
-> +#include <linux/slab.h>
->  
->  #include "coresight-config.h"
->  #include "coresight-etm-perf.h"
-> -- 
-> 2.33.0.259.gc128427fd7-goog
-> 
+I am also unsure what role LTR plays here, so I tried to change the
+LTR value to 1048576ns and yield the same result, the TX and RX remain
+very slow.
+
+Kai-Heng
