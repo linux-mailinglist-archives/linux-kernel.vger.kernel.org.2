@@ -2,122 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8454D4019C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E5EE4019C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232047AbhIFK30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 06:29:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38222 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242021AbhIFK3W (ORCPT
+        id S241860AbhIFK3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 06:29:30 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:38463 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242037AbhIFK3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 06:29:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630924097;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=REmJl8s2nvMdTdbKRVVIcDfYVEbx2wjp9XTagCASYqs=;
-        b=M0Tzz4taVNiDQ7O9U0tpdW1QbeRJ9elAmkEpqslUOUXBdmGj3whd/+ybivfoD9GN1i2m4T
-        R5N7BcHNHfal9jq4A2i7oeL8XfzZ00iCopkW9hVuCjpWkVrzUftHACZQmahxOWuQhHKD1K
-        F5TqTn1xqMSPQBbP3rrsS+tIOWbMg7s=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-581-M6HX1kRmMrKpvf4OcC6ZGw-1; Mon, 06 Sep 2021 06:28:16 -0400
-X-MC-Unique: M6HX1kRmMrKpvf4OcC6ZGw-1
-Received: by mail-ed1-f70.google.com with SMTP id b6-20020aa7c6c6000000b003c2b5b2ddf8so3503051eds.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 03:28:16 -0700 (PDT)
+        Mon, 6 Sep 2021 06:29:24 -0400
+Received: by mail-il1-f199.google.com with SMTP id j6-20020a056e02014600b00224bde51e20so3837893ilr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 03:28:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=REmJl8s2nvMdTdbKRVVIcDfYVEbx2wjp9XTagCASYqs=;
-        b=A3gdPEBpPUnPuvfuijPb/38h4z+NqcGzDqzKVEaKltBUGW2vAeIr74fKyqMLoyo2Nc
-         3F7iOnptEn8ZkxzNcJ9YDXpnGwqPwxdJS+0gERKKvdwjJmtSfgqmTM3YDYQyajsrK778
-         F++OdvzsbbtTQBLIp3TpoDuCLnj21lokj1Pl4v25gks+FUkggkTRx7Xj+qrTxi5Uef0a
-         GfapoATH5lNJPwq3Uz9a0Osz+aOeQ1ir5HI9/7+1bfF70Y1r3u7ZFxRty0luXOa8JsHm
-         407vqcajLXqP0tno6TC1iiBc5WtneqMrVsUp7z1r95WqnvhqMjN5VCL2zsnk3HQpEJl6
-         EvYg==
-X-Gm-Message-State: AOAM530NqCdcKjYjxEnQDK6fLohgHNaF8zYSboPZYSLTkSlXJx9umii2
-        S7cYpFAbJRbf1F6UzWSPMo3b5igkyrb60AFpujqnGAXHtOL+gZ2SnzGv4WrqkSXd1c0mNAva9C7
-        L/uPoPHaXgiyL0DJDtqZOm/Dq
-X-Received: by 2002:a17:906:1d19:: with SMTP id n25mr13007251ejh.11.1630924095430;
-        Mon, 06 Sep 2021 03:28:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz7T8yPC7CUEnqP8Q5KGyfYQsTy7fdIFm0w0WX7OHu/0lN1pf6u81fhziGWQVchhgc+jbFRRA==
-X-Received: by 2002:a17:906:1d19:: with SMTP id n25mr13007231ejh.11.1630924095200;
-        Mon, 06 Sep 2021 03:28:15 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id h7sm4431526edr.4.2021.09.06.03.28.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 03:28:14 -0700 (PDT)
-Subject: Re: [PATCH 1/5] KVM: rseq: Update rseq when processing NOTIFY_RESUME
- on xfer to KVM guest
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     "Russell King, ARM Linux" <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Oleg Nesterov <oleg@redhat.com>, rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        shuah <shuah@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-csky <linux-csky@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        Peter Foley <pefoley@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Ben Gardon <bgardon@google.com>
-References: <20210818001210.4073390-1-seanjc@google.com>
- <20210818001210.4073390-2-seanjc@google.com>
- <1673583543.19718.1629409152244.JavaMail.zimbra@efficios.com>
- <YR7tzZ98XC6OV2vu@google.com>
- <1872633041.20290.1629485463253.JavaMail.zimbra@efficios.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <425456d3-4772-2a1b-9cf3-a5b750b95c2e@redhat.com>
-Date:   Mon, 6 Sep 2021 12:28:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=NRqGjKyIaZ/2rNocjgqDTyt1KNkJAxtXtOnUa+JbDHQ=;
+        b=XpN4o4YW51qmv1tuDWBtP79DyzmL8Ssa3kK6ERt5rxl+mG6Tv/BknTYSzismAr9DgQ
+         XBGoV1OTNlsHFD3ck0/1FTs6LyjV7Sh3MjcckKv7zSekNxstcVMPASPXIFnAhe2C5GYg
+         DOhSV+4d4x7d9L1tevTSOm/15ralWsv+6kVQyL8B9NJ3IpdMsu8NZ3LsbPD5Ktb+oKuC
+         NZjU8Ub5Undt0ezEEk4h/sNo1iCWyop47YtM+9Jp6urTLtZhGfEKIkT8YtG8ovsogVLX
+         z69R8xmiPhau5lRXxseVCh22DvE/w97R397AvHHRsCnoIX6f5hu1brKEML8NPV5YsJFO
+         /WSw==
+X-Gm-Message-State: AOAM5330B/gURQ88ngMg5T97yG4B9St3PsiOKFfYmH3xFBFpFc7qZYNG
+        qRDbio/Vj7z130q1dNcSKVNhmqadD2nvOuL6LBYmtLle34YR
+X-Google-Smtp-Source: ABdhPJzmvWWXOHxJbGx3CwlPOfz/xuB0TBBvowQOnp83B2hjTtH5UK1z1KPX7mc+CYM5JR25ADoPlkXEOneWLnJ4yBmV3quUQQOQ
 MIME-Version: 1.0
-In-Reply-To: <1872633041.20290.1629485463253.JavaMail.zimbra@efficios.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a02:6a24:: with SMTP id l36mr6643043jac.24.1630924099484;
+ Mon, 06 Sep 2021 03:28:19 -0700 (PDT)
+Date:   Mon, 06 Sep 2021 03:28:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009b05a305cb511b76@google.com>
+Subject: [syzbot] BUG: unable to handle kernel paging request in timerqueue_del
+From:   syzbot <syzbot+89ee54915f0135ac38e0@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/08/21 20:51, Mathieu Desnoyers wrote:
->> Ah, or is it the case that rseq_cs is non-NULL if and only if userspace is in an
->> rseq critical section, and because syscalls in critical sections are illegal, by
->> definition clearing rseq_cs is a nop unless userspace is misbehaving.
-> Not quite, as I described above. But we want it to stay set so the CONFIG_DEBUG_RSEQ
-> code executed when returning from ioctl to userspace will be able to validate that
-> it is not nested within a rseq critical section.
-> 
->> If that's true, what about explicitly checking that at NOTIFY_RESUME?  Or is it
->> not worth the extra code to detect an error that will likely be caught anyways?
-> The error will indeed already be caught on return from ioctl to userspace, so I
-> don't see any added value in duplicating this check.
+Hello,
 
-Sean, can you send a v2 (even for this patch only would be okay)?
+syzbot found the following issue on:
 
-Thanks,
+HEAD commit:    b91db6a0b52e Merge tag 'for-5.15/io_uring-vfs-2021-08-30' ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12a993fe300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=210537ff2ddcc232
+dashboard link: https://syzkaller.appspot.com/bug?extid=89ee54915f0135ac38e0
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+userspace arch: i386
 
-Paolo
+Unfortunately, I don't have any reproducer for this issue yet.
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+89ee54915f0135ac38e0@syzkaller.appspotmail.com
+
+BUG: unable to handle page fault for address: ffffc9001bdbfd88
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 10800067 P4D 10800067 PUD 109ba067 PMD 136067 PTE 0
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 19707 Comm: syz-executor.1 Not tainted 5.14.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__rb_change_child include/linux/rbtree_augmented.h:173 [inline]
+RIP: 0010:__rb_erase_augmented include/linux/rbtree_augmented.h:216 [inline]
+RIP: 0010:rb_erase+0x5f6/0x1210 lib/rbtree.c:443
+Code: e3 fc 0f 84 0c 01 00 00 48 8d 7b 10 48 89 dd 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 84 0a 00 00 <4c> 3b 6b 10 0f 84 37 02 00 00 48 8d 7b 08 48 b8 00 00 00 00 00 fc
+RSP: 0018:ffffc90000007d88 EFLAGS: 00010046
+RAX: dffffc0000000000 RBX: ffffc9001bdbfd78 RCX: 0000000000000000
+RDX: 1ffff920037b7fb1 RSI: ffff8880b9c424d0 RDI: ffffc9001bdbfd88
+RBP: ffffc9001bdbfd78 R08: ffffc9001bdbfd79 R09: 0000000000000001
+R10: ffffffff83f38fdc R11: 0000000000000000 R12: ffffc9001bdbfd79
+R13: ffffc9000256fd78 R14: ffffc9001aa2fd78 R15: ffff8880b9c424d0
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0063) knlGS:00000000f55b7b40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: ffffc9001bdbfd88 CR3: 000000008b5d9000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <IRQ>
+ rb_erase_cached include/linux/rbtree.h:126 [inline]
+ timerqueue_del+0x7f/0x140 lib/timerqueue.c:57
+ __remove_hrtimer+0xa1/0x2a0 kernel/time/hrtimer.c:1116
+ __run_hrtimer kernel/time/hrtimer.c:1665 [inline]
+ __hrtimer_run_queues+0x4ea/0xe50 kernel/time/hrtimer.c:1749
+ hrtimer_interrupt+0x31c/0x790 kernel/time/hrtimer.c:1811
+ local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1086 [inline]
+ __sysvec_apic_timer_interrupt+0x146/0x530 arch/x86/kernel/apic/apic.c:1103
+ sysvec_apic_timer_interrupt+0x8e/0xc0 arch/x86/kernel/apic/apic.c:1097
+ </IRQ>
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:638
+RIP: 0010:__sanitizer_cov_trace_const_cmp4+0xc/0x70 kernel/kcov.c:283
+Code: 00 00 00 48 89 7c 30 e8 48 89 4c 30 f0 4c 89 54 d8 20 48 89 10 5b c3 0f 1f 80 00 00 00 00 41 89 f8 bf 03 00 00 00 4c 8b 14 24 <89> f1 65 48 8b 34 25 40 f0 01 00 e8 54 f0 ff ff 84 c0 74 4b 48 8b
+RSP: 0018:ffffc90019797440 EFLAGS: 00000246
+RAX: 0000000000000000 RBX: ffff8880001373e4 RCX: 0000000000000000
+RDX: 0000000000000003 RSI: 0000000000000004 RDI: 0000000000000003
+RBP: ffff8881407c547c R08: 0000000000000000 R09: ffffffff840a6804
+R10: ffffffff840a69c5 R11: 0000000000000008 R12: 0000000000000004
+R13: 0000000000000047 R14: ffff8880001373e0 R15: dffffc0000000000
+ fast_imageblit drivers/video/fbdev/core/cfbimgblt.c:258 [inline]
+ cfb_imageblit+0x655/0x1240 drivers/video/fbdev/core/cfbimgblt.c:300
+ vga_imageblit_expand drivers/video/fbdev/vga16fb.c:1207 [inline]
+ vga16fb_imageblit+0x681/0x2200 drivers/video/fbdev/vga16fb.c:1260
+ bit_putcs_unaligned drivers/video/fbdev/core/bitblit.c:139 [inline]
+ bit_putcs+0x6e1/0xd20 drivers/video/fbdev/core/bitblit.c:188
+ fbcon_putcs+0x35a/0x450 drivers/video/fbdev/core/fbcon.c:1296
+ do_update_region+0x399/0x630 drivers/tty/vt/vt.c:676
+ redraw_screen+0x61f/0x740 drivers/tty/vt/vt.c:1035
+ vc_do_resize+0xe6f/0x1100 drivers/tty/vt/vt.c:1325
+ fbcon_modechanged+0x393/0x6d0 drivers/video/fbdev/core/fbcon.c:2640
+ fbcon_update_vcs+0x3a/0x50 drivers/video/fbdev/core/fbcon.c:2696
+ do_fb_ioctl+0x62e/0x690 drivers/video/fbdev/core/fbmem.c:1108
+ fb_compat_ioctl+0x17e/0x610 drivers/video/fbdev/core/fbmem.c:1307
+ __do_compat_sys_ioctl+0x1c7/0x290 fs/ioctl.c:964
+ do_syscall_32_irqs_on arch/x86/entry/common.c:112 [inline]
+ __do_fast_syscall_32+0x65/0xf0 arch/x86/entry/common.c:178
+ do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:203
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7fbd549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55b75fc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000004601
+RDX: 0000000020000280 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+CR2: ffffc9001bdbfd88
+---[ end trace 573584e01bd36498 ]---
+RIP: 0010:__rb_change_child include/linux/rbtree_augmented.h:173 [inline]
+RIP: 0010:__rb_erase_augmented include/linux/rbtree_augmented.h:216 [inline]
+RIP: 0010:rb_erase+0x5f6/0x1210 lib/rbtree.c:443
+Code: e3 fc 0f 84 0c 01 00 00 48 8d 7b 10 48 89 dd 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 84 0a 00 00 <4c> 3b 6b 10 0f 84 37 02 00 00 48 8d 7b 08 48 b8 00 00 00 00 00 fc
+RSP: 0018:ffffc90000007d88 EFLAGS: 00010046
+RAX: dffffc0000000000 RBX: ffffc9001bdbfd78 RCX: 0000000000000000
+RDX: 1ffff920037b7fb1 RSI: ffff8880b9c424d0 RDI: ffffc9001bdbfd88
+RBP: ffffc9001bdbfd78 R08: ffffc9001bdbfd79 R09: 0000000000000001
+R10: ffffffff83f38fdc R11: 0000000000000000 R12: ffffc9001bdbfd79
+R13: ffffc9000256fd78 R14: ffffc9001aa2fd78 R15: ffff8880b9c424d0
+FS:  0000000000000000(0000) GS:ffff8880b9c00000(0063) knlGS:00000000f55b7b40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: ffffc9001bdbfd88 CR3: 000000008b5d9000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	e3 fc                	jrcxz  0xfffffffe
+   2:	0f 84 0c 01 00 00    	je     0x114
+   8:	48 8d 7b 10          	lea    0x10(%rbx),%rdi
+   c:	48 89 dd             	mov    %rbx,%rbp
+   f:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  16:	fc ff df
+  19:	48 89 fa             	mov    %rdi,%rdx
+  1c:	48 c1 ea 03          	shr    $0x3,%rdx
+  20:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+  24:	0f 85 84 0a 00 00    	jne    0xaae
+* 2a:	4c 3b 6b 10          	cmp    0x10(%rbx),%r13 <-- trapping instruction
+  2e:	0f 84 37 02 00 00    	je     0x26b
+  34:	48 8d 7b 08          	lea    0x8(%rbx),%rdi
+  38:	48                   	rex.W
+  39:	b8 00 00 00 00       	mov    $0x0,%eax
+  3e:	00 fc                	add    %bh,%ah
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
