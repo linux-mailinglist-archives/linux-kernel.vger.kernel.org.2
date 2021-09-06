@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590E0401620
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 07:57:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F63401621
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 07:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239350AbhIFF6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 01:58:54 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:43083 "EHLO ozlabs.org"
+        id S235152AbhIFF7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 01:59:17 -0400
+Received: from mga07.intel.com ([134.134.136.100]:45375 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238941AbhIFF6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 01:58:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630907868;
-        bh=te1bo8gYeMFqnOEhpDNKd3lNEWiP8ZFa/W5V1jGv6jE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=o4PbTf/NWXmFdeBzJEzz07VAVFQO01TJ5x5wtnkKQxp8GaIwhmn5qjdqSUzUdvMlm
-         wKwnu/U02x3TRxaVW/FQXSoulgs/OO8hUpZw3xYcFMHPA7khCqEh2OJHByJdZJU38b
-         kAPxV/Y6uONq/AvnkznFnPN2GJ3VFQlsoJa3XZh2vf2qTRQNnlwT2t9yXG9yLeN0ar
-         tQDlWnaLLYOKVOf+G/UtRtMRUNEz6cTXGN6Kz2v86RnoLzgmwzRFEe+tIvJ4Fk35EB
-         nTiZHXcDyYAnaj69YkmQFXWjJowpjvbsVqewJF25TZDq5M2C7xrer1BfbNRyViOIm/
-         eU1AiINGGwO9w==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H2yNq6GFLz9sRf;
-        Mon,  6 Sep 2021 15:57:47 +1000 (AEST)
-Date:   Mon, 6 Sep 2021 15:57:46 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure in Linus' tree
-Message-ID: <20210906155746.57127887@canb.auug.org.au>
+        id S239371AbhIFF7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 01:59:10 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10098"; a="283601165"
+X-IronPort-AV: E=Sophos;i="5.85,271,1624345200"; 
+   d="scan'208";a="283601165"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2021 22:58:04 -0700
+X-IronPort-AV: E=Sophos;i="5.85,271,1624345200"; 
+   d="scan'208";a="546073707"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2021 22:57:58 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Rui Zhang <rui.zhang@intel.com>, Chen Yu <yu.c.chen@intel.com>,
+        Len Brown <len.brown@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        0day robot <lkp@intel.com>, Yang Shi <shy828301@gmail.com>,
+        Zi Yan <ziy@nvidia.com>, Michal Hocko <mhocko@suse.com>,
+        Wei Xu <weixugc@google.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Greg Thelen <gthelen@google.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        LKML <linux-kernel@vger.kernel.org>, <lkp@lists.01.org>,
+        <feng.tang@intel.com>, <zhengjun.xing@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <linux-mm@kvack.org>,
+        <mm-commits@vger.kernel.org>, <torvalds@linux-foundation.org>
+Subject: Re: [mm/migrate] 9eeb73028c: stress-ng.memhotplug.ops_per_sec
+ -53.8% regression
+References: <20210905135932.GE15026@xsang-OptiPlex-9020>
+        <87y28aii58.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <ee55e83e-d8bd-2888-3159-154706aa5173@intel.com>
+Date:   Mon, 06 Sep 2021 13:57:56 +0800
+In-Reply-To: <ee55e83e-d8bd-2888-3159-154706aa5173@intel.com> (Dave Hansen's
+        message of "Sun, 5 Sep 2021 20:57:55 -0700")
+Message-ID: <87lf4ai6u3.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/rcMaQ_UGYpx5z44R6F2Vy+v";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/rcMaQ_UGYpx5z44R6F2Vy+v
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Dave Hansen <dave.hansen@intel.com> writes:
 
-Hi all,
+> On 9/5/21 6:53 PM, Huang, Ying wrote:
+>>> in testcase: stress-ng
+>>> on test machine: 96 threads 2 sockets Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 192G memory
+>>> with following parameters:
+>>>
+>>> 	nr_threads: 10%
+>>> 	disk: 1HDD
+>>> 	testtime: 60s
+>>> 	fs: ext4
+>>> 	class: os
+>>> 	test: memhotplug
+>>> 	cpufreq_governor: performance
+>>> 	ucode: 0x5003006
+>>>
+>> Because we added some operations during online/offline CPU, it's
+>> expected that the performance of online/offline CPU will decrease.  In
+>> most cases, the performance of CPU hotplug isn't a big problem.  But
+>> then I remembers that the performance of the CPU hotplug may influence
+>> suspend/resume performance :-(
+>> 
+>> It appears that it is easy and reasonable to enclose the added
+>> operations inside #ifdef CONFIG_NUMA.  Is this sufficient to restore the
+>> performance of suspend/resume?
+>
+> It's "memhotplug", not CPUs, right?
 
-Building Linus' tree, today's linux-next build (sparc64 defconfig)
-failed like this:
+Yes.  Thanks for pointing that out!
 
-<stdin>:1515:2: error: #warning syscall clone3 not implemented [-Werror=3Dc=
-pp]
-cc1: all warnings being treated as errors
+We will update node_demotion[] in CPU hotplug too.  Because the status
+that whether a node has CPU may change after CPU hotplug.  And CPU
+online/offline performance may be relevant for suspend/resume.
 
-Caused by commit
+> I didn't do was to actively go out and look for changes that would
+> affect the migration order.  The code just does regenerates and writes
+> the order blindly when it sees any memory hotplug event.  I have the
+> feeling the synchronize_rcu()s are what's killing us.
+>
+> It would be pretty easy to go and generate the order, but only do the
+> update and the RCU bits when the order changes from what was there.
+>
+> I guess we have a motivation now.
 
-  3fe617ccafd6 ("Enable '-Werror' by default for all kernel builds")
+I don't know whether the performance of memory hotplug is important or
+not.  But it should be welcome not to make it too bad.  You proposal
+sounds good.
 
-I have added this patch for today (I guess I could have used
--Wno-error=3Dcpp).
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 6 Sep 2021 15:47:02 +1000
-Subject: [PATCH] don't make the syscall checking produced errors from warni=
-ngs
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- scripts/checksyscalls.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/scripts/checksyscalls.sh b/scripts/checksyscalls.sh
-index b7609958ee36..fd9777f63f14 100755
---- a/scripts/checksyscalls.sh
-+++ b/scripts/checksyscalls.sh
-@@ -266,4 +266,4 @@ syscall_list() {
- }
-=20
- (ignore_list && syscall_list $(dirname $0)/../arch/x86/entry/syscalls/sysc=
-all_32.tbl) | \
--$* -E -x c - > /dev/null
-+$* -Wno-error -E -x c - > /dev/null
---=20
-2.32.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/rcMaQ_UGYpx5z44R6F2Vy+v
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE1rdoACgkQAVBC80lX
-0GxzkQgAoCZNABSqB5RHZJjEKc0fRN35uOGZawBlQ6gFsIydoR8Z0KHjt5t8USlY
-+cACaoJgWkEuM4PhA8w/uTXR7ihZk52GYxXiwnMIAJ+pUlyNdiNe2jIH7JDY2V9u
-+hZ7inND8r9ZbqXNe9ojlrkEVlfjjVh1gBPHtSVRYv/Db3SBpKTVnk/hfYExU7jQ
-SDt1Or/cs3e7S/RzKzMefKlxMtBW+dOS8QUPacXzEgjIuwGYNR0qLu+feIhTiqLl
-Satigni6O8ABCH+gOqY3B3S3gdnVcObz+6uifCGxqVrr9oIztcaU2+18ORth0YTC
-6njINE2ZS7qX0FbOl9/kGxCDyN5cvA==
-=b/bS
------END PGP SIGNATURE-----
-
---Sig_/rcMaQ_UGYpx5z44R6F2Vy+v--
+Best Regards,
+Huang, Ying
