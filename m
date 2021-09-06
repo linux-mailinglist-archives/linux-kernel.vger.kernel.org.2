@@ -2,65 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B174401928
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA8A401927
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241629AbhIFJrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 05:47:00 -0400
-Received: from www.zeus03.de ([194.117.254.33]:33666 "EHLO mail.zeus03.de"
+        id S241618AbhIFJq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 05:46:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241617AbhIFJq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 05:46:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=k1; bh=NLfJgY6uwZTU51uLNvFJ/KrD/C+
-        2m5rzmP5fszb4Cn0=; b=ORiSJsEXFcHmvdlZF2NRJy4B0t5cN0pM/VPOA2CEoIS
-        acBYw484YFygcKRm6BWiKnoNYqfn/fCUVWlPJzSFAl4zHt4lYruXtzw6yKlFwzxQ
-        PAOHhb83HJ4Ok2vhQdEEb550DSXh+hMf2N3i3Zr2M2rJBLTiPOV62SQaOPb4h6gQ
-        =
-Received: (qmail 420914 invoked from network); 6 Sep 2021 11:45:50 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 6 Sep 2021 11:45:50 +0200
-X-UD-Smtp-Session: l3s3148p1@KSuqg1DLCKMgARa4Ra5MAc3ZBYWvSFq1
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-pwm@vger.kernel.org
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: pwm: tpu: Add R-Car M3-W+ device tree bindings
-Date:   Mon,  6 Sep 2021 11:45:35 +0200
-Message-Id: <20210906094536.45223-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.30.2
+        id S241595AbhIFJqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 05:46:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F25926069E;
+        Mon,  6 Sep 2021 09:45:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630921549;
+        bh=/35z53h420eVd9x0GGMxOV6puR3UCGj0ROP/2GZkhJg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qTSidDurVKGLtwj/gtT1DF8lJu2lpq/11xP/Ua2sEBBFrMSTqSa6KdlDFAyNK/Txs
+         T17/IpmwriF7ZFI49MU0W1CrDOVmCSUIyRvHWDSP7cUdq0HCDugpL+dFtMJ7o67QxM
+         f6qj+Fvrla5GKahJG2phieiocqVPT5BT/LpmD6y0=
+Date:   Mon, 6 Sep 2021 11:45:47 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, saurav.girepunje@hotmail.com
+Subject: Re: [PATCH] staging: rtl8712: Move similar execution in to a
+ function.
+Message-ID: <YTXjSwWcyd6RRMjO@kroah.com>
+References: <YTUQZdPiYFscIsvU@user>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTUQZdPiYFscIsvU@user>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree bindings for TPU found on R-Car M3-W+ SoCs.
+On Mon, Sep 06, 2021 at 12:15:57AM +0530, Saurav Girepunje wrote:
+> Move the common execution for read_macreg_hdl, write_macreg_hdl,
+> write_bbreg_hdl and write_rfreg_hdl in to a new function
+> common_read_write_hdl.
 
-Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
- Documentation/devicetree/bindings/pwm/renesas,tpu-pwm.yaml | 1 +
- 1 file changed, 1 insertion(+)
+You said _what_ you did here, but not _why_ you did this.
 
-diff --git a/Documentation/devicetree/bindings/pwm/renesas,tpu-pwm.yaml b/Documentation/devicetree/bindings/pwm/renesas,tpu-pwm.yaml
-index 0171a04257b8..1f5c6384182e 100644
---- a/Documentation/devicetree/bindings/pwm/renesas,tpu-pwm.yaml
-+++ b/Documentation/devicetree/bindings/pwm/renesas,tpu-pwm.yaml
-@@ -35,6 +35,7 @@ properties:
-           - renesas,tpu-r8a7794   # R-Car E2
-           - renesas,tpu-r8a7795   # R-Car H3
-           - renesas,tpu-r8a7796   # R-Car M3-W
-+          - renesas,tpu-r8a77961  # R-Car M3-W+
-           - renesas,tpu-r8a77965  # R-Car M3-N
-           - renesas,tpu-r8a77970  # R-Car V3M
-           - renesas,tpu-r8a77980  # R-Car V3H
--- 
-2.30.2
+I can't easily see why you did this, please explain it better in the
+next version of this patch.
 
+thanks,
+
+greg k-h
