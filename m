@@ -2,90 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E40F402092
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 22:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 718BA402090
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 22:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243547AbhIFTx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 15:53:29 -0400
-Received: from gate.crashing.org ([63.228.1.57]:53507 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241578AbhIFTx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 15:53:28 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 186JmAuS020071;
-        Mon, 6 Sep 2021 14:48:10 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 186Jm8MM020070;
-        Mon, 6 Sep 2021 14:48:08 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Mon, 6 Sep 2021 14:48:08 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
-Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
-Message-ID: <20210906194808.GY1583@gate.crashing.org>
-References: <20210904131911.GP1583@gate.crashing.org> <871r644bd2.fsf@oldenburg.str.redhat.com> <CAHk-=wi+XKYN+3u=_fm=ExqpEaHdER0XuKxVauHYVCPKpKR97Q@mail.gmail.com> <20210904191531.GS1583@gate.crashing.org> <CAHk-=wjc1rxah3xt8mKN=aCxQigjy3-hEf4xh_Y-r=MXAKVrag@mail.gmail.com> <20210906154642.GV1583@gate.crashing.org> <CAHk-=wj=WpWO_V86cZH99LgZGBbvdDb4wR26ce5van0hJqjzLA@mail.gmail.com> <20210906172701.GX1583@gate.crashing.org> <CAHk-=wh0MBVfA89WLWnCiSnJ2a=hSAoSxfG-jyf7JJeBDPK3ew@mail.gmail.com> <87lf49wodu.fsf@oldenburg.str.redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87lf49wodu.fsf@oldenburg.str.redhat.com>
-User-Agent: Mutt/1.4.2.3i
+        id S240553AbhIFTxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 15:53:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235255AbhIFTxL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 15:53:11 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8FCC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 12:52:06 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id u4so913534qvb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 12:52:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
+         :from:to;
+        bh=/HWCAki5G+lVbiHxWhcyDiqEfC+VEd9DkU7YY2YmJIE=;
+        b=mEMfKCujdhFTd1UNMLYapbDASirmCMlcWBmAG+ICS1uHk9R14HJqkGrlQUPsRRI25u
+         P0Zdf7eVspSFnAUulxZHC+nvRVxMvW//gGUBb8CUDuNmC2IFXxxn4vvlJ4V7z+doCXGg
+         vlSfvWDj58XD4pjDO+DUegyIt4r6BzyrwM+K4+zeQYwEZCIqNuVJ4NuAX8dsujwTTabb
+         kBNFqmzIhkNJK4n5NBMhrYpZovE4ssULYobKDasABMNlf/QYd3Eg3jurWNGYB55wd8H3
+         yhAgSIZarxCVlXOwMuS9r5YRoNF8jqkbXRTKaQ3kQa+ZKGBUEnuYQ1rCcS/LoRLe7gxB
+         Xfbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:date:message-id:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=/HWCAki5G+lVbiHxWhcyDiqEfC+VEd9DkU7YY2YmJIE=;
+        b=QzryeecHwwpNtEyCZ+7JbY93pG4cUZG8y1kmvz/fYWbHehgYho8rdrMaJAaXlyDhhJ
+         Y/w5OXbx8J9mPhI/xPhsrA0SFoosYWMRmhq88DHzYhDAbVJZff86ZXLTFFyZI+hrN+la
+         ZuD1LR6tiz310AqASPNytPSrYIBxVZTgOrI4TrC3YyBthquHJWJJUIMt/a9QBYb+V75t
+         5qXMeIfSrOqSlsfuoIKxxyhPP9GBf6ugitZzbx3g9WFdDSU3ft6L8VL/CzGwaN7WbssQ
+         ins1Z3P2F8d2HlnyQvavDk1w22oXTHvQrA2edjnn7+poGGD8u30jJi2pBH5jIy6VSeps
+         XANA==
+X-Gm-Message-State: AOAM533kU3+VNDn9zOoX2C+stGfeqpAxyJ2xWPk3OeCqdD1lWlkdLvxr
+        tUhMfWAVwrc9BzcKd8DEJhwLuQ==
+X-Google-Smtp-Source: ABdhPJxkMdyPqihtMbecIkVh3QvlQZ6CM5K9jNcXKt6Os+i9+qJJSTCujwN5BKXl3Q+du82VzB6IjA==
+X-Received: by 2002:a0c:b293:: with SMTP id r19mr6066662qve.19.1630957925669;
+        Mon, 06 Sep 2021 12:52:05 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id m5sm7280699qkn.33.2021.09.06.12.52.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Sep 2021 12:52:04 -0700 (PDT)
+Subject: [PATCH RESEND] drm/rockchip: cdn-dp-core: Fix cdn_dp_resume unused warning
+Date:   Mon,  6 Sep 2021 12:49:18 -0700
+Message-Id: <20210906194917.376116-1-palmer@dabbelt.com>
+X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     hjc@rock-chips.com, heiko@sntech.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 08:27:25PM +0200, Florian Weimer wrote:
-> * Linus Torvalds:
-> 
-> > We use the compiler intrinsics without the C library header files for
-> > everything else, so doing so for <stdarg.h> seems to actually be a
-> > clarification and improvement.
-> 
-> This is an exaggeration.  On several architectures, the kernel cannot
-> use the vector built-ins directly.  Some of the implementing headers are
-> very special and intertwined with the compiler.  <stdarg.h> is currently
-> not such a case, but it's just not technically not feasible to avoid
-> dependencies on all compiler headers.  I think this considerably weakens
-> the case against <stdarg.h> because the compiler version is so obviously
-> harmless.
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
-Exactly Florian.  Thank you for so clearly making the point.
+cdn_dp_resume is only used under PM_SLEEP, and now that it's static an
+unused function warning is triggered undner !PM_SLEEP.  This
+conditionally enables the function to avoid the warning.
 
-> What the kernel is doing here is imposing an unnecesary constraint on
-> compiler development.  Basically, you are telling compiler writers that
-> implementing features with the help of header files is a bad idea
-> because it makes it more difficult to use them from the kernel.  (See
-> the proposed exceptions for vector code.)
+Fixes: 7c49abb4c2f8 ("drm/rockchip: cdn-dp-core: Make cdn_dp_core_suspend/resume static")
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+---
+I sent this one out in January, but it looks like it got lost in the shuffle.
+I'm getting this on a RISC-V allmodconfig now.
+---
+ drivers/gpu/drm/rockchip/cdn-dp-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Either it will constrain the compiler development, or perhaps more
-likely, building the kernel will break in ways that the kernel people
-will blame the compiler developers for.
+diff --git a/drivers/gpu/drm/rockchip/cdn-dp-core.c b/drivers/gpu/drm/rockchip/cdn-dp-core.c
+index 8ab3247dbc4a..bee0f2d2a9be 100644
+--- a/drivers/gpu/drm/rockchip/cdn-dp-core.c
++++ b/drivers/gpu/drm/rockchip/cdn-dp-core.c
+@@ -1123,6 +1123,7 @@ static int cdn_dp_suspend(struct device *dev)
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_PM_SLEEP
+ static int cdn_dp_resume(struct device *dev)
+ {
+ 	struct cdn_dp_device *dp = dev_get_drvdata(dev);
+@@ -1135,6 +1136,7 @@ static int cdn_dp_resume(struct device *dev)
+ 
+ 	return 0;
+ }
++#endif
+ 
+ static int cdn_dp_probe(struct platform_device *pdev)
+ {
+-- 
+2.33.0.153.gba50c8fa24-goog
 
-The compiler headers (standard or arch-specific, same reason here) are
-there because it decouples the user (that doesn't mean "userland", it
-means the kernel here) from the builtins.  Decoupling has many
-advantages.  The most obvious in general is you can use nicer names in
-a header file, names that can step on the user's toes (like "bool" vs.
-"_Bool", which is essentially all that <stdbool.h> does).  But another
-huge advantage of decoupling is it allows the compiler more freedom in
-bugfixing (or any other maintenance / new development).
-
-It is low probability that there are bugs in the compiler's standard
-headers, and it's not likely the kernel's ad-hoc imitation of it has
-bugs, this is all so small after all (but have I mentioned the
-c46bbf5d2def commit?)
-
-So there is no big pressure for changing anything here.  But OTOH it
-clearly is not a good idea to remove the existing uses of standard
-headers.  No upsides, various downsides, and some of those can be very
-costly.
-
-
-Segher
