@@ -2,148 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED8F4019E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649BE4019F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233746AbhIFKeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 06:34:16 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39159 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229913AbhIFKeP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 06:34:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630924390;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gbgYfPTLlJOQv5aeXOIkWxZpgeJ+lFMDmBB0RWG18OQ=;
-        b=Ut7AP6lXme0gubLZ+LRrD1qcJZbftspwN9ULOiDwyhd/ZpJbvMcw8b17zJSVpmBo2zlgr7
-        KXJ3Jf6rYXIB0fu0nsYMbUM2Cqqk4kbR9Iw5oLCzwlXupZ41wDqyt12hnAeXOkFolPxoJx
-        K54kZ1BYiU/bZHOtqW5D3wLDQ3Po6Gw=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-196-R0S5WI32PSW4fIYDHrFvyQ-1; Mon, 06 Sep 2021 06:33:09 -0400
-X-MC-Unique: R0S5WI32PSW4fIYDHrFvyQ-1
-Received: by mail-ed1-f70.google.com with SMTP id b6-20020aa7c6c6000000b003c2b5b2ddf8so3508675eds.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 03:33:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gbgYfPTLlJOQv5aeXOIkWxZpgeJ+lFMDmBB0RWG18OQ=;
-        b=Mmf1I9OtxO8MKEBDttbuYBLarBHc6XCHj4yNvT5wNR38qHwGrxKM4f29+iojdpsjNv
-         KFnR3r4OaGE5ZwZRtVb1wZwsqEKqhsa7gD8qzTxXYeqkymrKghBSpy3Xr7ySiF12b3Rr
-         RdUy1sbsRCcBbphDBVhMKI2ACd2AxpyF4PFnRRRok4xN9OTIpvsfXissm6aDrHq6CM9l
-         6DEOIJWMBaZ+gblJ9MkEx1aYUmH2hcsSmr4a+LZNgMtQwS8dEMhSelSbW6ryXjg0FBOB
-         wCTOxvdiQASyDWkfyeO4/lMKqPPB+Q4FerME/VfVwgg5QGDgoqjgLPkZAyPt6YzcQbsH
-         w0ww==
-X-Gm-Message-State: AOAM532t8U6IpSB6N2I9Qx2nVhxBet+PwHcciufJKL882qMxUPh6pjsL
-        AMkVNU4je85pHto/zs21EbQ73F1FXAEYjjG+eJ24o9/JSBEw+43D7y0nz4y13L4a1gOypK0NRee
-        tkPwxysRVijxAsbmR0Y/Do+hK
-X-Received: by 2002:a17:907:9604:: with SMTP id gb4mr13153253ejc.142.1630924388296;
-        Mon, 06 Sep 2021 03:33:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxBY2olHo2Ki9RRjv2l/H90deP2aWOgmMa3hYR5ayCqde3Mn92FjTYy/CTAk31/HiEaK4KcQA==
-X-Received: by 2002:a17:907:9604:: with SMTP id gb4mr13153226ejc.142.1630924388012;
-        Mon, 06 Sep 2021 03:33:08 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id y24sm3662535ejc.80.2021.09.06.03.32.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 03:33:07 -0700 (PDT)
-Subject: Re: [PATCH] x86/kvm: Don't enable IRQ when IRQ enabled in kvm_wait
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org
-References: <20210814035129.154242-1-jiangshanlai@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0d385f5d-c01f-2193-ee0f-54249ee149e7@redhat.com>
-Date:   Mon, 6 Sep 2021 12:32:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S242140AbhIFKlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 06:41:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229913AbhIFKlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 06:41:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1920B60EBA;
+        Mon,  6 Sep 2021 10:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630924818;
+        bh=DDPfs7HWdQxUNn6g1tSkQLKbmCHfs6sAw/+UHBIdi/M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Th9BCpYBnVmKPtw+yozEi03DflXbpHZnsOAy4Jc0WTQbi+twSgb1XrzHHguyEtFuD
+         unLwYfRWOgpMIlwzUdVta6PvLtBhb/hhKQ5qEENKV7U9Q2LFFvwWeMqWPPk6Ap99ke
+         t2pEWUD6KxAncNF8dArN3EdFE4wFqS1pAblmOOdgP+5BvHtbm3NKW50g544B2Y1M7A
+         0XwU7gfX6Z1zYK/ZPcefKlnE2u5JqlMtdYXMpq/QSt/s/+ZJTfO/4ugaIfwejhWnlB
+         f5vXatWtRfzOn3a/PJ5ZMIbaUJ+VquKa0OnNdFXWmQbxRvwTPgstQShQxiAmi1QiQD
+         A+2M66YfjlnIQ==
+Date:   Mon, 6 Sep 2021 12:40:11 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Vignesh R <vigneshr@ti.com>, Marc Zyngier <maz@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        dmaengine@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-media@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-serial@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Use 'enum' instead of 'oneOf' plus 'const'
+ entries
+Message-ID: <20210906124011.66b8e9f3@coco.lan>
+In-Reply-To: <20210824202014.978922-1-robh@kernel.org>
+References: <20210824202014.978922-1-robh@kernel.org>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210814035129.154242-1-jiangshanlai@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/08/21 05:51, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
+Em Tue, 24 Aug 2021 15:20:14 -0500
+Rob Herring <robh@kernel.org> escreveu:
+
+> 'enum' is equivalent to 'oneOf' with a list of 'const' entries, but 'enum'
+> is more concise and yields better error messages.
 > 
-> Commit f4e61f0c9add3 ("x86/kvm: Fix broken irq restoration in kvm_wait")
-> replaced "local_irq_restore() when IRQ enabled" with "local_irq_enable()
-> when IRQ enabled" to suppress a warnning.
-> 
-> Although there is no similar debugging warnning for doing local_irq_enable()
-> when IRQ enabled as doing local_irq_restore() in the same IRQ situation.  But
-> doing local_irq_enable() when IRQ enabled is no less broken as doing
-> local_irq_restore() and we'd better avoid it.
-> 
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-> Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Vignesh R <vigneshr@ti.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: dmaengine@vger.kernel.org
+> Cc: linux-i2c@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-pci@vger.kernel.org
+> Cc: linux-phy@lists.infradead.org
+> Cc: linux-serial@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-spi@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
-> 
-> The original debugging warnning was introduced in commit 997acaf6b4b5
-> ("lockdep: report broken irq restoration").  I think a similar debugging
-> check and warnning should also be added to "local_irq_enable() when IRQ
-> enabled" and even maybe "local_irq_disable() when IRQ disabled" to detect
-> something this:
-> 
->      | local_irq_save(flags);
->      | local_irq_disable();
->      | local_irq_restore(flags);
->      | local_irq_enable();
-> 
-> Or even we can do the check in lockdep+TRACE_IRQFLAGS:
-> 
-> In lockdep_hardirqs_on_prepare(), lockdep_hardirqs_enabled() was checked
-> (and exit) before checking DEBUG_LOCKS_WARN_ON(!irqs_disabled()), so lockdep
-> can't give any warning for these kind of situations.  If we did the check
-> in lockdep, we would have found the problem before, and we don't need
-> 997acaf6b4b5.
-> 
-> Any thought? Mark? Peter?
-> 
->   arch/x86/kernel/kvm.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index a26643dc6bd6..b656456c3a94 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -884,10 +884,11 @@ static void kvm_wait(u8 *ptr, u8 val)
->   	} else {
->   		local_irq_disable();
->   
-> +		/* safe_halt() will enable IRQ */
->   		if (READ_ONCE(*ptr) == val)
->   			safe_halt();
-> -
-> -		local_irq_enable();
-> +		else
-> +			local_irq_enable();
->   	}
->   }
->   
-> 
+>  .../bindings/display/msm/dsi-phy-10nm.yaml           |  6 +++---
+>  .../bindings/display/msm/dsi-phy-14nm.yaml           |  6 +++---
+>  .../bindings/display/msm/dsi-phy-28nm.yaml           |  8 ++++----
+>  .../bindings/dma/allwinner,sun6i-a31-dma.yaml        | 12 ++++++------
+>  .../devicetree/bindings/firmware/arm,scpi.yaml       |  6 +++---
+>  .../devicetree/bindings/i2c/ti,omap4-i2c.yaml        | 10 +++++-----
+>  .../interrupt-controller/loongson,liointc.yaml       |  8 ++++----
 
-Queued, thanks.
 
-paolo
+>  .../devicetree/bindings/media/i2c/mipi-ccs.yaml      |  8 ++++----
 
+For media:
+
+Acked-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Thanks,
+Mauro
