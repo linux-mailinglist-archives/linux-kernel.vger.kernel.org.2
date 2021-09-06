@@ -2,197 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6BCF401AF4
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04A43401AF7
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241762AbhIFMI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:08:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241611AbhIFMIv (ORCPT
+        id S241958AbhIFMJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:09:46 -0400
+Received: from mail-wm1-f47.google.com ([209.85.128.47]:55808 "EHLO
+        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241704AbhIFMJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:08:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B062FC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 05:07:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ewnu7HJEY4Ns+ikYJyKBCVxku1I+G02qDkfuLvh8PjQ=; b=nbbvr3LdzEP7dBhcxL3wucClnH
-        kkFHAuFJRa3ypuDe9xjgdOlk+UEQ7CilBiOKypyGrmAzsooaXxp2Sgg74IlEc+L5qRsNTcM3Yfqtm
-        sAXjglDLBcnOfmWixdyyZZ2dKn0U9YFkF9lc1CKmY0mBCDS+xmMXGQUOJ01htqgv/VfiPgm29bxFX
-        ovv42TClroz+kt5XykMIBoKEWTn9BBH4SsK/PrO3PXiwbvb7LJ6cMO8AYCeu6ACqw7NG94U9T0B8G
-        3GrXof9zVZLVJJaPk6b7N6CotEaGg8biQfSYwoxzgt0uwxhj6jmfT8HxpFsNiyVTIrGmG4TyD5Fhu
-        WYCPe/2A==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNDOo-006vKN-W3; Mon, 06 Sep 2021 12:07:04 +0000
-Date:   Mon, 6 Sep 2021 13:06:54 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: kernel BUG in truncate_inode_page
-Message-ID: <YTYEXpOrmOvaikKv@casper.infradead.org>
-References: <CACkBjsbtF_peC7N_4mRfHML_BeiPe+O9DahTfr84puSG_J9rcQ@mail.gmail.com>
+        Mon, 6 Sep 2021 08:09:44 -0400
+Received: by mail-wm1-f47.google.com with SMTP id g135so4424903wme.5;
+        Mon, 06 Sep 2021 05:08:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RWUT2zm9qK9IIjRNDnSP6e3OmZYR6tRm7i7pzxaGXMA=;
+        b=g0f9lCGYMqHiuLza7Hs7T+Z6C4FD78Xm2LyFLTJ85cuTA3Wqy4ItQ57MRRdBgtteu4
+         RSEpYi0+W9sY/QiVsxuNhA3/uqO+PNdxDE1zCkL0m2fINtITfv/nb4dUouEIOSvQW7Mw
+         Et5e6eTO7rx1L83G4qf/0kACo/uBrNMGL3OC7sfjUaSNg1Y6IfRWE99j9yHd5LVkn8Ew
+         WU+xMbZ8aUcQ4A5GwOSO/qpBPKSf3H7o4vqU90Eu1Woebxan9wAjBpA34kdeJaVO7/Vi
+         Mhcs2S2mKXaeR4T7zYchbAH0FAulhDu5fqUAXoVFeydooORyZKolVFlBdHgy50Gm0Ken
+         hZ1Q==
+X-Gm-Message-State: AOAM530tho5/6MnW+AoJjF7TTMLprWursuF5jTENyFFvdzMfeRnr/Fxe
+        XCrwP/GjmOIXlNU2U+u3G6sKazzgroMSyARs
+X-Google-Smtp-Source: ABdhPJxLcw5UmEhntgt3yH3YSWfuX3oTy4wCbL65l5DshA4xYAQ7EQRY2/eCyNlLER9VdBeGkhd9gw==
+X-Received: by 2002:a1c:448a:: with SMTP id r132mr11168853wma.117.1630930119054;
+        Mon, 06 Sep 2021 05:08:39 -0700 (PDT)
+Received: from rockpro.mgmt (host-212-159-138-247.static.as13285.net. [212.159.138.247])
+        by smtp.gmail.com with ESMTPSA id t14sm7772626wrw.59.2021.09.06.05.08.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Sep 2021 05:08:38 -0700 (PDT)
+From:   Shantur Rathore <i@shantur.com>
+Cc:     i@shantur.com, Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] usb: dwc3: fix endpoint direction when inputs are more than outputs
+Date:   Mon,  6 Sep 2021 13:08:34 +0100
+Message-Id: <20210906120836.4596-1-i@shantur.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACkBjsbtF_peC7N_4mRfHML_BeiPe+O9DahTfr84puSG_J9rcQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a bug in CONFIG_READ_ONLY_THP_FOR_FS.
+In RK3399 as per documentation (
+https://usermanual.wiki/Document/RockchipDeveloperGuidelinux44USB.31610806
+), there are 7 Input Endpoints and 6 Output endpoints, in total 13
+endpoints.
 
-We can see the order-9 page was allocated by khugepaged.
-It belongs to a block device, so there's no knowledge of THPs in
-the "filesystem".
+Currently dwc3/gadget.c driver uses the number of endpoints
+available and starts setting them up with even endpoints as output
+endpoints and odd numbered as even endpoints. This leads to 7 Output
+endpoints and 6 input endpoints for RK3399.
 
-I'm on holiday, so no patch from me.  Somebody needs to figure out
-where the page should have been split -- was this ioctl issued through
-a read-only fd, perhaps?
+If you try to create a composite gadget which uses all the input
+endpoints, one can see the issue. You just need to create functions to
+use up the last input ep and it would fail to create. No need to
+connect it to the host.
+This was confirmed when running a rockchip-linux bsp image.
 
-On Mon, Sep 06, 2021 at 02:15:12PM +0800, Hao Sun wrote:
-> Hello,
-> 
-> When using Healer to fuzz the latest Linux kernel, the following crash
-> was triggered.
-> 
-> HEAD commit: 9e9fb7655ed58 Merge tag 'net-next-5.15'
-> git tree: upstream
-> console output:
-> https://drive.google.com/file/d/1_eEgvafiNcZHqHlmjIy4d420gQTvkf3r/view?usp=sharing
-> kernel config: https://drive.google.com/file/d/1zgxbwaYkrM26KEmJ-5sUZX57gfXtRrwA/view?usp=sharing
-> C reproducer: https://drive.google.com/file/d/1ZLAhA14JN9prY7Fei_WWnuhNXCg8AM8C/view?usp=sharing
-> Syzlang reproducer:
-> https://drive.google.com/file/d/1TejG8gPgiAkJsKBlwFdHIADKXDK-H6j8/view?usp=sharing
-> 
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: Hao Sun <sunhao.th@gmail.com>
-> 
-> page:ffffea0004730040 refcount:514 mapcount:1 mapping:ffff88800d7d13e8
-> index:0x1 pfn:0x11cc01
-> head:ffffea0004730000 order:9 compound_mapcount:1 compound_pincount:0
-> memcg:ffff888009ba2000
-> aops:def_blk_aops ino:fa00000
-> flags: 0x57ff0000001001f(locked|referenced|uptodate|dirty|lru|head|node=1|zone=2|lastcpupid=0x7ff)
-> raw: 057ff00000000000 ffffea0004730001 0000000000000903 dead000000000200
-> raw: 0000000000000100 0000000000000000 0000000000000000 0000000000000000
-> head: 057ff0000001001f ffffea00044edec8 ffffea00044c2708 ffff88800d7d13e8
-> head: 0000000000000000 0000000000000000 0000020200000000 ffff888009ba2000
-> page dumped because: VM_BUG_ON_PAGE(PageTail(page))
-> page_owner tracks the page as allocated
-> page last allocated via order 9, migratetype Movable, gfp_mask
-> 0x13c24ca(GFP_TRANSHUGE|__GFP_THISNODE), pid 1665, ts 469126509176,
-> free_ts 440578020808
->  prep_new_page+0x16/0x50 mm/page_alloc.c:2436
->  get_page_from_freelist+0x64d/0x29a0 mm/page_alloc.c:4168
->  __alloc_pages+0xde/0x2a0 mm/page_alloc.c:5390
->  __alloc_pages_node include/linux/gfp.h:570 [inline]
->  khugepaged_alloc_page+0x4e/0xc0 mm/khugepaged.c:881
->  collapse_file+0x124/0x2110 mm/khugepaged.c:1655
->  khugepaged_scan_file mm/khugepaged.c:2051 [inline]
->  khugepaged_scan_mm_slot mm/khugepaged.c:2146 [inline]
->  khugepaged_do_scan mm/khugepaged.c:2230 [inline]
->  khugepaged+0x1f8a/0x3540 mm/khugepaged.c:2275
->  kthread+0x178/0x1b0 kernel/kthread.c:319
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
-> page last free stack trace:
->  reset_page_owner include/linux/page_owner.h:24 [inline]
->  free_pages_prepare mm/page_alloc.c:1346 [inline]
->  free_pcp_prepare+0x1d7/0x480 mm/page_alloc.c:1397
->  free_unref_page_prepare mm/page_alloc.c:3332 [inline]
->  free_unref_page+0x19/0x1c0 mm/page_alloc.c:3411
->  release_pages+0x212/0x1130 mm/swap.c:948
->  tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
->  tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
->  tlb_flush_mmu+0x60/0x1e0 mm/mmu_gather.c:249
->  zap_pte_range mm/memory.c:1432 [inline]
->  zap_pmd_range mm/memory.c:1481 [inline]
->  zap_pud_range mm/memory.c:1510 [inline]
->  zap_p4d_range mm/memory.c:1531 [inline]
->  unmap_page_range+0xea6/0x15c0 mm/memory.c:1552
->  unmap_single_vma+0xae/0x140 mm/memory.c:1597
->  unmap_vmas+0xed/0x190 mm/memory.c:1629
->  exit_mmap+0xc9/0x2a0 mm/mmap.c:3195
->  __mmput kernel/fork.c:1103 [inline]
->  mmput+0x8a/0x1a0 kernel/fork.c:1124
->  exit_mm kernel/exit.c:501 [inline]
->  do_exit+0x462/0x11c0 kernel/exit.c:812
->  do_group_exit+0x57/0xe0 kernel/exit.c:922
->  get_signal+0x1d0/0x10b0 kernel/signal.c:2823
->  arch_do_signal_or_restart+0xa9/0x860 arch/x86/kernel/signal.c:865
->  handle_signal_work kernel/entry/common.c:148 [inline]
->  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
->  exit_to_user_mode_prepare+0xf2/0x280 kernel/entry/common.c:209
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
->  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
->  do_syscall_64+0x40/0xb0 arch/x86/entry/common.c:86
-> ------------[ cut here ]------------
-> kernel BUG at mm/truncate.c:213!
-> invalid opcode: 0000 [#1] PREEMPT SMP
-> CPU: 1 PID: 27281 Comm: syz-executor Not tainted 5.14.0+ #12
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
-> RIP: 0010:truncate_inode_page+0x5a/0x70 mm/truncate.c:213
-> Code: ff ff 48 89 ef e8 56 9e fd ff e8 71 2d f0 ff 89 d8 5b 5d 41 5c
-> c3 e8 65 2d f0 ff 48 c7 c6 20 19 2d 85 48 89 ef e8 f6 f7 03 00 <0f> 0b
-> bb fb ff ff ff eb d7 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00
-> RSP: 0018:ffffc9000361fc88 EFLAGS: 00010246
-> RAX: 0000000000040000 RBX: 0000000000000001 RCX: ffffc90001356000
-> RDX: 0000000000040000 RSI: ffffffff8147479a RDI: 00000000ffffffff
-> RBP: ffffea0004730040 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000001 R11: 637379735f6f6420 R12: ffff88800d7d13e8
-> R13: ffffc9000361fd48 R14: 0000000000000001 R15: ffffc9000361fcd0
-> FS:  00007f3c4f6a0700(0000) GS:ffff88813dc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000204001ff CR3: 000000010f099000 CR4: 0000000000750ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> Call Trace:
->  truncate_inode_pages_range+0x3b9/0xc30 mm/truncate.c:397
->  truncate_bdev_range+0x87/0xd0 fs/block_dev.c:125
->  blk_ioctl_zeroout block/ioctl.c:173 [inline]
->  blkdev_common_ioctl+0x2c3/0xad0 block/ioctl.c:472
->  blkdev_ioctl+0x2c2/0x370 block/ioctl.c:583
->  block_ioctl+0x55/0x70 fs/block_dev.c:1421
->  vfs_ioctl fs/ioctl.c:51 [inline]
->  __do_sys_ioctl fs/ioctl.c:874 [inline]
->  __se_sys_ioctl fs/ioctl.c:860 [inline]
->  __x64_sys_ioctl+0xb6/0x100 fs/ioctl.c:860
->  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
->  do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x46a9a9
-> Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
-> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-> 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f3c4f69fc58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 000000000078c210 RCX: 000000000046a9a9
-> RDX: 00000000200003c0 RSI: 000000000000127f RDI: 0000000000000004
-> RBP: 00000000004e4042 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078c210
-> R13: 0000000000000000 R14: 000000000078c210 R15: 00007fff7770d6e0
-> Modules linked in:
-> Dumping ftrace buffer:
->    (ftrace buffer empty)
-> ---[ end trace 4d3d97b8450ac449 ]---
-> RIP: 0010:truncate_inode_page+0x5a/0x70 mm/truncate.c:213
-> Code: ff ff 48 89 ef e8 56 9e fd ff e8 71 2d f0 ff 89 d8 5b 5d 41 5c
-> c3 e8 65 2d f0 ff 48 c7 c6 20 19 2d 85 48 89 ef e8 f6 f7 03 00 <0f> 0b
-> bb fb ff ff ff eb d7 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00
-> RSP: 0018:ffffc9000361fc88 EFLAGS: 00010246
-> RAX: 0000000000040000 RBX: 0000000000000001 RCX: ffffc90001356000
-> RDX: 0000000000040000 RSI: ffffffff8147479a RDI: 00000000ffffffff
-> RBP: ffffea0004730040 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000001 R11: 637379735f6f6420 R12: ffff88800d7d13e8
-> R13: ffffc9000361fd48 R14: 0000000000000001 R15: ffffc9000361fcd0
-> FS:  00007f3c4f6a0700(0000) GS:ffff88813dc00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000204001ff CR3: 000000010f099000 CR4: 0000000000750ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> 
+[root@rockpro rock]# ls /sys/kernel/debug/usb/fe800000.usb/
+ep0in  ep0out  ep1in  ep1out  ep2in  ep2out  ep3in  ep3out  ep4in
+ep4out  ep5in  ep5out  ep6in  link_state  lsp_dump  mode  regdump
+testmode
+
+Currently in linux mainline it is
+
+[root@rockpro rock]# ls /sys/kernel/debug/usb/fe800000.usb/
+ep0in  ep0out  ep1in  ep1out  ep2in  ep2out  ep3in  ep3out  ep4in
+ep4out  ep5in  ep5out  ep6out  link_state  lsp_dump  mode  regdump
+testmode
+
+ep6 being out instead of in as per the hardware spec.
+
+Upon investigation of rockchip bsp kernel,
+https://github.com/rockchip-linux/kernel/
+
+The issue was clear, currently, dwc3/gadget driver doesn't take
+DWC3_NUM_IN_EPS into consideration while enumerating them.
+
+The patch below fixes the issue and ep6 is correctly enumerated as input.
+---
+ drivers/usb/dwc3/core.c   |  1 +
+ drivers/usb/dwc3/core.h   |  1 +
+ drivers/usb/dwc3/gadget.c | 40 ++++++++++++++++++++++++---------------
+ 3 files changed, 27 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+index 01866dcb953b..279c9a97cb8c 100644
+--- a/drivers/usb/dwc3/core.c
++++ b/drivers/usb/dwc3/core.c
+@@ -555,6 +555,7 @@ static void dwc3_core_num_eps(struct dwc3 *dwc)
+ 	struct dwc3_hwparams	*parms = &dwc->hwparams;
+ 
+ 	dwc->num_eps = DWC3_NUM_EPS(parms);
++	dwc->num_in_eps = DWC3_NUM_IN_EPS(parms);
+ }
+ 
+ static void dwc3_cache_hwparams(struct dwc3 *dwc)
+diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+index 5612bfdf37da..89a0998c618c 100644
+--- a/drivers/usb/dwc3/core.h
++++ b/drivers/usb/dwc3/core.h
+@@ -1227,6 +1227,7 @@ struct dwc3 {
+ 	u8			speed;
+ 
+ 	u8			num_eps;
++	u8			num_in_eps;
+ 
+ 	struct dwc3_hwparams	hwparams;
+ 	struct debugfs_regset32	*regset;
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 804b50548163..d9d19dc0a29f 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -693,9 +693,11 @@ void dwc3_gadget_clear_tx_fifos(struct dwc3 *dwc)
+ 
+ 	dwc->last_fifo_depth = fifo_depth;
+ 	/* Clear existing TXFIFO for all IN eps except ep0 */
+-	for (num = 3; num < min_t(int, dwc->num_eps, DWC3_ENDPOINTS_NUM);
+-	     num += 2) {
++	for (num = 3; num < DWC3_ENDPOINTS_NUM; num += 2) {
+ 		dep = dwc->eps[num];
++
++		if(!dep)
++			continue;
+ 		/* Don't change TXFRAMNUM on usb31 version */
+ 		size = DWC3_IP_IS(DWC3) ? 0 :
+ 			dwc3_readl(dwc->regs, DWC3_GTXFIFOSIZ(num >> 1)) &
+@@ -2257,7 +2259,7 @@ static void dwc3_stop_active_transfers(struct dwc3 *dwc)
+ {
+ 	u32 epnum;
+ 
+-	for (epnum = 2; epnum < dwc->num_eps; epnum++) {
++	for (epnum = 2; epnum < DWC3_ENDPOINTS_NUM; epnum++) {
+ 		struct dwc3_ep *dep;
+ 
+ 		dep = dwc->eps[epnum];
+@@ -2960,10 +2962,9 @@ static int dwc3_gadget_init_out_endpoint(struct dwc3_ep *dep)
+ 	return dwc3_alloc_trb_pool(dep);
+ }
+ 
+-static int dwc3_gadget_init_endpoint(struct dwc3 *dwc, u8 epnum)
++static int dwc3_gadget_init_endpoint(struct dwc3 *dwc, u8 epnum, bool direction)
+ {
+ 	struct dwc3_ep			*dep;
+-	bool				direction = epnum & 1;
+ 	int				ret;
+ 	u8				num = epnum >> 1;
+ 
+@@ -3011,21 +3012,30 @@ static int dwc3_gadget_init_endpoint(struct dwc3 *dwc, u8 epnum)
+ 	return 0;
+ }
+ 
+-static int dwc3_gadget_init_endpoints(struct dwc3 *dwc, u8 total)
++static int dwc3_gadget_init_endpoints(struct dwc3 *dwc, u8 total, u8 num_in_eps)
+ {
+-	u8				epnum;
++	u8				num;
++	int				ret;
+ 
+ 	INIT_LIST_HEAD(&dwc->gadget->ep_list);
+ 
+-	for (epnum = 0; epnum < total; epnum++) {
+-		int			ret;
++	/* init input endpoints as reported by hw */
++        for (num = 0; num < num_in_eps; num++) {
+ 
+-		ret = dwc3_gadget_init_endpoint(dwc, epnum);
+-		if (ret)
+-			return ret;
+-	}
++                ret = dwc3_gadget_init_endpoint(dwc, (num << 1) + 1, 1);
++                if (ret)
++                        return ret;
++        }
+ 
+-	return 0;
++        /* init rest endpoints as output endpoints */
++        for (num = 0; num < total - num_in_eps; num++) {
++
++                ret = dwc3_gadget_init_endpoint(dwc, num << 1, 0);
++                if (ret)
++                        return ret;
++        }
++
++	return ret;
+ }
+ 
+ static void dwc3_gadget_free_endpoints(struct dwc3 *dwc)
+@@ -4282,7 +4292,7 @@ int dwc3_gadget_init(struct dwc3 *dwc)
+ 	 * sure we're starting from a well known location.
+ 	 */
+ 
+-	ret = dwc3_gadget_init_endpoints(dwc, dwc->num_eps);
++	ret = dwc3_gadget_init_endpoints(dwc, dwc->num_eps, dwc->num_in_eps);
+ 	if (ret)
+ 		goto err4;
+ 
+-- 
+2.33.0
+
