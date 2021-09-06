@@ -2,143 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C18B4018BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 453884018C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241239AbhIFJTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 05:19:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
+        id S241218AbhIFJZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 05:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241259AbhIFJTN (ORCPT
+        with ESMTP id S241099AbhIFJZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 05:19:13 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95918C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 02:18:08 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id u16so8791247wrn.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 02:18:08 -0700 (PDT)
+        Mon, 6 Sep 2021 05:25:49 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C59C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 02:24:44 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id d6so8182556wrc.11
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 02:24:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=menJrL5vhN9DrUdSiHpBgq6VcVejyMJMiOC85iSRuHw=;
-        b=XSGP/Ojb2OTTbl5JUgaMJnr9zxX8tLPBm6Z34TViY4QlTKRguErqPwGNuCdZEited5
-         hbdwkGXsgl1rN9UAG1RNTGHYNtG5qwHWVt6g9SCCPN/Bokij+Xk6wlCE3okx3k+GNaQ1
-         a8ZCGzcGUc2d24B4ZV72+Sqw2yNjmtUudRBghk9eHWDft/IytBiiqMg0/DMj71sroqUW
-         2CdIbFGntswJiYdX06SiPvsDDLiMP9uN0YNGsRu1WRcTpvoNQX9m7FQt6dvrXu1YxA8i
-         lTzpFdA9A47ix50SU01Cnb3BW8e7gr4xFklKp7scJhydyPeKSnAMD7rE9mP6uM3kYGgS
-         o9sg==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:date:in-reply-to
+         :message-id:mime-version;
+        bh=0WNNi3JNxBLCd82GRC70DvYt/axOC47YXAp+RlwhHeY=;
+        b=08Bj6eC4ymjS6BQEmD39Bxg8GqwQjVRphNrAAz2pbdcobvVRWsM2moSuk6e6r1CExl
+         d8JBygGvoiIXCb7cQTlPOmenxB6Ps8MX3Zz88iSJxc8eaNTKxihqI9JX5UHZiEcbhCKL
+         DSDHHrmVX1tCwGCT2K15Iqug+1rdYAwfZAhsMmRw6Gj8zUFxyIH5inry3Pi8VGO+QUzF
+         ArCtDa3bhcPmlk01uo9jZhVbBE6n3UkCBIoKcudr//oDkM6pwOdHXkeOE31+ndeRQzeZ
+         o5KQskQTmaqrlZ5m9fAc9ZcTOptqgS7ghqXArsbdEi4b1eubE2KVzP6O3/R0VKw2J/ZH
+         W/dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=menJrL5vhN9DrUdSiHpBgq6VcVejyMJMiOC85iSRuHw=;
-        b=pw0w7i2G6omgJId9XkOEi74sMYn6tp1UIn8TGvGhPGeC3+P+uhlG6BMdvSDe/0ggt8
-         Fr5lPuK18pNKX6fWapSJLyK1AKfdCUVqY15NVGTaZVY4GZltk/l8fHzhWznXMFG28tpc
-         DFN5EBFnSim+/Z+gEjbuakKcbJ3PnCwe3TBGIg2iDTo8G0IKzTqvdoUBN9ncbWpX7oBl
-         sZDxN7P+mY8sPtELDGfuBI662ir4H2U6LbjYJgeNQaQDXpjOQlDAjlAWXrMvfdPFdIqM
-         WM5HXEV8hHXp3llx+R1yafRb/5wvK976c0eekAKfvXuwxs+d3re2MaugOmuIopB0EG7h
-         1hGA==
-X-Gm-Message-State: AOAM532yDD5B0VPgcVa8ZLk8108iy1eyuh0+W5ufTpkbkOPJLGKwxuyz
-        X3rxOM/od3UMpK2CkWGTVohSjA==
-X-Google-Smtp-Source: ABdhPJy9ZemOu0u4TSkFUa85fIvB0sKODTqd8G530TjRDTqC523D+6YAcDl9l71GFuB01XJT2NWWHA==
-X-Received: by 2002:adf:f0c7:: with SMTP id x7mr11188300wro.42.1630919887117;
-        Mon, 06 Sep 2021 02:18:07 -0700 (PDT)
-Received: from google.com ([31.124.24.187])
-        by smtp.gmail.com with ESMTPSA id m3sm8914003wrg.45.2021.09.06.02.18.06
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject:date
+         :in-reply-to:message-id:mime-version;
+        bh=0WNNi3JNxBLCd82GRC70DvYt/axOC47YXAp+RlwhHeY=;
+        b=WZCqVnIFErqjpywgY4mOxy1QodCjJjKO0qyCAEF13mK67NC/IaJDKul1qMIy15SP9S
+         sExvUVe2yjVLjugrA9Ln/aDzEFK+tzT1X30r5iveWqiwp8DRuyeajI5skqozxf/PpC4O
+         5WDBOdROJ6sq5gdvzc5dHzaFqLzAHxb1Kg0JNpjwbqfEXCdDnICD1Wh9lbd8VVO25vUm
+         f0Vm63EgjmL2/CPOG3vW0nuQs+RsfSCiIZKoEaRyHiD9i/oZ5hYwWGTgdLKaMf1r46ly
+         bYnC3vMA138+dqJTh2ey6hJkUOILzoFKTh85uLjp30UhR58w9FveA/4DjnikOVofy+ay
+         k/5Q==
+X-Gm-Message-State: AOAM533fi9T+jQYxPCoQEGD/srITx5BS0v4Ib//K9cJ+icIV6GbnS++O
+        ifWrQcKEN1o+EUG0c8P2yAN04tOMVoGWBA==
+X-Google-Smtp-Source: ABdhPJygv4V2vzMRJKeYwz2DtxRgrK4Ik7kDwnaK7Jy9eAlz9GIf435+5UWz63EZSc7/ftnISFsUkg==
+X-Received: by 2002:a05:6000:22d:: with SMTP id l13mr12081955wrz.410.1630920283228;
+        Mon, 06 Sep 2021 02:24:43 -0700 (PDT)
+Received: from localhost (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id x11sm7361820wro.83.2021.09.06.02.24.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 02:18:06 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 10:18:04 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
-        Biwen Li <biwen.li@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mfd: syscon: request a regmap with raw spinlocks for
- some devices
-Message-ID: <YTXczJbHYCgkpVGu@google.com>
-References: <20210825205041.927788-1-vladimir.oltean@nxp.com>
- <20210825205041.927788-3-vladimir.oltean@nxp.com>
+        Mon, 06 Sep 2021 02:24:42 -0700 (PDT)
+References: <20210812051059.1103641-1-art@khadas.com>
+ <247c746b-621c-5db0-25c0-1ef0d0a0d77e@baylibre.com>
+User-agent: mu4e 1.6.6; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        christianshewitt@gmail.com, art@khadas.com, nick@khadas.com,
+        gouwa@khadas.com, Artem Lapkin <email2tema@gmail.com>
+Subject: Re: [PATCH] arm64: dts: meson: sm1-khadas-vim3l use one sound node
+ configuration with VIM3
+Date:   Mon, 06 Sep 2021 11:18:36 +0200
+In-reply-to: <247c746b-621c-5db0-25c0-1ef0d0a0d77e@baylibre.com>
+Message-ID: <1jpmtmys2t.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210825205041.927788-3-vladimir.oltean@nxp.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 25 Aug 2021, Vladimir Oltean wrote:
 
-> This patch solves a ls-extirq irqchip driver bug in a perhaps
-> non-intuitive (at least non-localized) way.
-> 
-> The issue is that ls-extirq uses regmap, and due to the fact that it is
-> being called by the IRQ core under raw spinlock context, it needs to use
-> raw spinlocks itself. So it needs to request raw spinlocks from the
-> regmap config.
-> 
-> All is fine so far, except the ls-extirq driver does not manage its own
-> regmap, instead it uses syscon_node_to_regmap() to get it from the
-> parent syscon (this driver).
-> 
-> Because the syscon regmap is initialized before any of the consumer
-> drivers (ls-extirq) probe, we need to know beforehand whether to request
-> raw spinlocks or not.
-> 
-> The solution seems to be to check some compatible string. The ls-extirq
-> driver probes on quite a few NXP Layerscape SoCs, all with different
-> compatible strings. This is potentially fragile and subject to bit rot
-> (since the fix is not localized to the ls-extirq driver, adding new
-> compatible strings there but not here seems plausible). Anyway, it is
-> probably the best we can do without major rework.
-> 
-> Suggested-by: Mark Brown <broonie@kernel.org>
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
->  drivers/mfd/syscon.c | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c
-> index 765c0210cb52..70da4e87b072 100644
-> --- a/drivers/mfd/syscon.c
-> +++ b/drivers/mfd/syscon.c
-> @@ -83,6 +83,22 @@ static struct syscon *of_syscon_register(struct device_node *np, bool check_clk)
->  	if (ret)
->  		reg_io_width = 4;
->  
-> +	/*
-> +	 * We might be providing a regmap to e.g. an irqchip driver, and in
-> +	 * that case, normal spinlocks won't do: the IRQ core holds raw
-> +	 * spinlocks, so it needs to be raw spinlocks all the way down.
-> +	 * Detect those drivers here (currently "ls-extirq") and request raw
-> +	 * spinlocks in the regmap config for them.
-> +	 */
-> +	if (of_device_is_compatible(np, "fsl,lx2160a-isc") ||
-> +	    of_device_is_compatible(np, "fsl,ls2080a-isc") ||
-> +	    of_device_is_compatible(np, "fsl,ls2080a-isc") ||
-> +	    of_device_is_compatible(np, "fsl,ls1088a-isc") ||
-> +	    of_device_is_compatible(np, "fsl,ls1043a-scfg") ||
-> +	    of_device_is_compatible(np, "fsl,ls1046a-scfg") ||
-> +	    of_device_is_compatible(np, "fsl,ls1021a-scfg"))
-> +		syscon_config.use_raw_spinlock = true;
-> +
+On Thu 02 Sep 2021 at 15:31, Neil Armstrong <narmstrong@baylibre.com> wrote:
 
-Since syscon is meant to be a generic solution, I'd like to avoid
-spraying platform specific hacks throughout.  So, *IF* this is the
-chosen solution, I'd prefer to solve this with a generic DT property,
-rather than matching on a bunch of compatible strings.
+> Hi,
+>
+> On 12/08/2021 07:10, Artem Lapkin wrote:
+>> Khadas VIM3L board sound configuration same as Khadas VIM3, its already
+>> defined in meson-khadas-vim3.dtsi and no need overwrite it with different
+>> card names and routing configurations.
+>> 
+>> Signed-off-by: Artem Lapkin <art@khadas.com>
+>> ---
+>>  .../boot/dts/amlogic/meson-sm1-khadas-vim3l.dts     | 13 -------------
+>>  1 file changed, 13 deletions(-)
+>> 
+>> diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+>> index f2c098143..06de0b1ce 100644
+>> --- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+>> +++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+>> @@ -32,19 +32,6 @@ vddcpu: regulator-vddcpu {
+>>  		regulator-boot-on;
+>>  		regulator-always-on;
+>>  	};
+>> -
+>> -	sound {
+>> -		model = "G12B-KHADAS-VIM3L";
+>> -		audio-routing = "TDMOUT_A IN 0", "FRDDR_A OUT 0",
+>> -				"TDMOUT_A IN 1", "FRDDR_B OUT 0",
+>> -				"TDMOUT_A IN 2", "FRDDR_C OUT 0",
+>> -				"TDM_A Playback", "TDMOUT_A OUT",
+>> -				"TDMIN_A IN 0", "TDM_A Capture",
+>> -				"TDMIN_A IN 13", "TDM_A Loopback",
+>> -				"TODDR_A IN 0", "TDMIN_A OUT",
+>> -				"TODDR_B IN 0", "TDMIN_A OUT",
+>> -				"TODDR_C IN 0", "TDMIN_A OUT";
+>> -	};
+>>  };
+>>  
+>>  &cpu0 {
+>> 
+>
+> Jerome could you quickly review this ?
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Removing that is wrong.
+Take a look at the Loopback sink - it is different between the sm1 based
+vim3 and the g12b one ... this is simply because the audio block is
+different on these SoCs
+
+So audio-routing property can't go way, Because of that, the cards are
+slightly different and should have different model.
+
+However the model name here is
+a) probably too long
+b) misleading :/ 
+
+>
+> Thanks,
+> Neil
+
