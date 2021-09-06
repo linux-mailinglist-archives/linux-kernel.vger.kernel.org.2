@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3147401EE4
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:06:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A22401EE7
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243582AbhIFRHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 13:07:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243493AbhIFRHQ (ORCPT
+        id S243603AbhIFRI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 13:08:56 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:39632 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231274AbhIFRIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 13:07:16 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5EDC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 10:06:11 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id bg1so4226224plb.13
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9kGlLPSE5ya1mvmcFUC6w8P8vhLXKJTsz+UiH8ESac4=;
-        b=F1Tx7nzKN6Io/hBjVwRluHh+6zh8k2abpxCPdUFBuKyU93dEiNagOX+SdSEJK9ptuU
-         MuTAvG9BF0knNQ4cdW0AVFiYK/cR+pX4MAF3wfgXgwZ2DHM/t8W0boXChGca9SEKNyzU
-         WEBVY/d78s/6chJgT4aaOXAcWDtmQMD6yfedo=
+        Mon, 6 Sep 2021 13:08:54 -0400
+Received: by mail-ot1-f51.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so9471435otf.6;
+        Mon, 06 Sep 2021 10:07:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9kGlLPSE5ya1mvmcFUC6w8P8vhLXKJTsz+UiH8ESac4=;
-        b=hGg9LBrJHza3HbpqgYf6DVtabHvMfR18v+/2JR+uXQJruSs29E9IYbAcLzhQ6YXEWf
-         mDDSo1IE4HjoJVa9dL/WXMjMozkj8oH2AdBpWe9a9ExnQUV1F9tojD2CpLM3U3boU7kU
-         5hF3w373bPYZyvb7AIQDIYXWZuOhTawqkY/QB/MtyknuI/Xs+EJ6X1tt6rR3f88QKjid
-         bw+FKcQ0yJUbThfH9Eyr6AYSycKh2Oq5dJ1u8nP1qSeQOAsu91X8Ul8B6Tss1amLIije
-         PtpYA9FhJ+taJFyxk2AFt1u7Dis+ghgbihS6ykIQ6qAgeCAWYYXygFqTZOTl7y/GiNUE
-         HTew==
-X-Gm-Message-State: AOAM5333NbKvczlTtyeykLi/mlvkoN6hRS43rLXVktpMCGLuDAn1//0r
-        RylA5obnI5HWVyUJKTEkS8/XWw==
-X-Google-Smtp-Source: ABdhPJwVKUqAYy4WikpDYS4P7+dFmykK17jxSW/l8iCU0yiFyTEGLyhbvfYiLZuLLTvgWk6/UzTBlg==
-X-Received: by 2002:a17:903:22c7:b0:13a:330a:ce83 with SMTP id y7-20020a17090322c700b0013a330ace83mr9861plg.52.1630947971107;
-        Mon, 06 Sep 2021 10:06:11 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 83sm8035988pfw.105.2021.09.06.10.06.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 10:06:10 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 10:06:09 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: linux-next: build warning after merge of the kspp tree
-Message-ID: <202109061000.79CF310@keescook>
-References: <20210830184429.1ee4b4d8@canb.auug.org.au>
- <20210906154151.0aa41a7a@canb.auug.org.au>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=++LIn4BzMT/yfmvrIHegIKxrKLsnvbzGkInouRJvYyc=;
+        b=sdOhagY2NnJFq9Zu4txDwO2MJasD0eDPshize9cDIkkrIHE5cIoM0Cy04k5qtXWGF4
+         HHLMPR8ATQ1Ao55yRVs4N2bDglCoYwJQFEoFBO9S9olI0pB3Hw5GjQrtpjKL7qyqKNcF
+         Y72DhBq8Y2c12btnUMCZaX+zmBbAETZjfbOGkxS+Bjfyr7KS1PdHD8lrswbyk4QiQ4rZ
+         zKFiZWWerYRBW7KrAX16GPO2sSaCzSd0QETsIa1P9O/B2oVRbvtjOS2/duhI0cUr9eBB
+         qtNf102f61ZMoPmsfT7xCL0U2eLKiP8OhFjc+QOwa5jSHb/nexqStjGegsN1DcmLtXWV
+         60iA==
+X-Gm-Message-State: AOAM5301BCwx9jUbpCJliG5qtJAEDSmsoJVKTz91zOfbRkX47+3YRU89
+        S7F9tMu6H6pSF9Cfi+eEfAiZR91LuFo93/SW/9Q=
+X-Google-Smtp-Source: ABdhPJxFe+shqvt53iInVBtVbEwgHxwTsvQqM7BZ8tlMMEWr+cag6cxnMCqsopLy1hSSKR9VzP0DVY4VLq48C4xu4fg=
+X-Received: by 2002:a9d:4d93:: with SMTP id u19mr11579566otk.86.1630948068687;
+ Mon, 06 Sep 2021 10:07:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210906154151.0aa41a7a@canb.auug.org.au>
+References: <20210903084937.19392-1-jgross@suse.com> <20210903084937.19392-2-jgross@suse.com>
+ <YTHjPbklWVDVaBfK@kroah.com> <1b6a8f9c-2a5f-e97e-c89d-5983ceeb20e5@suse.com>
+In-Reply-To: <1b6a8f9c-2a5f-e97e-c89d-5983ceeb20e5@suse.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 6 Sep 2021 19:07:37 +0200
+Message-ID: <CAJZ5v0g_WVFqDKCBYnoPtqR5VzH-eBMk+7M1bAmgGsyX0XGpgw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] PM: base: power: don't try to use non-existing RTC
+ for storing data
+To:     Juergen Gross <jgross@suse.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        xen-devel@lists.xenproject.org,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 03:41:51PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> On Mon, 30 Aug 2021 18:44:29 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Fri, Sep 3, 2021 at 11:02 AM Juergen Gross <jgross@suse.com> wrote:
+>
+> On 03.09.21 10:56, Greg Kroah-Hartman wrote:
+> > On Fri, Sep 03, 2021 at 10:49:36AM +0200, Juergen Gross wrote:
+> >> In there is no legacy RTC device, don't try to use it for storing trace
+> >> data across suspend/resume.
+> >>
+> >> Cc: <stable@vger.kernel.org>
+> >> Signed-off-by: Juergen Gross <jgross@suse.com>
+> >> ---
+> >>   drivers/base/power/trace.c | 10 ++++++++++
+> >>   1 file changed, 10 insertions(+)
+> >>
+> >> diff --git a/drivers/base/power/trace.c b/drivers/base/power/trace.c
+> >> index a97f33d0c59f..b7c80849455c 100644
+> >> --- a/drivers/base/power/trace.c
+> >> +++ b/drivers/base/power/trace.c
+> >> @@ -13,6 +13,7 @@
+> >>   #include <linux/export.h>
+> >>   #include <linux/rtc.h>
+> >>   #include <linux/suspend.h>
+> >> +#include <linux/init.h>
+> >>
+> >>   #include <linux/mc146818rtc.h>
+> >>
+> >> @@ -165,6 +166,9 @@ void generate_pm_trace(const void *tracedata, unsigned int user)
+> >>      const char *file = *(const char **)(tracedata + 2);
+> >>      unsigned int user_hash_value, file_hash_value;
+> >>
+> >> +    if (!x86_platform.legacy.rtc)
+> >> +            return 0;
 > >
-> > After merging the kspp tree, today's linux-next build (powerpc
-> > allyesconfig) produced this warning:
-> > 
-> > drivers/gpu/drm/kmb/kmb_plane.c:135:20: warning: array subscript 3 is above array bounds of 'struct layer_status[1]' [-Warray-bounds]
-> >   135 |   kmb->plane_status[plane_id].ctrl = LCD_CTRL_GL2_ENABLE;
-> >       |   ~~~~~~~~~~~~~~~~~^~~~~~~~~~
-> > In file included from drivers/gpu/drm/kmb/kmb_plane.c:17:
-> > drivers/gpu/drm/kmb/kmb_drv.h:48:23: note: while referencing 'plane_status'
-> >    48 |  struct layer_status  plane_status[KMB_MAX_PLANES];
-> >       |                       ^~~~~~~~~~~~
-> > drivers/gpu/drm/kmb/kmb_plane.c:132:20: warning: array subscript 2 is above array bounds of 'struct layer_status[1]' [-Warray-bounds]
-> >   132 |   kmb->plane_status[plane_id].ctrl = LCD_CTRL_GL1_ENABLE;
-> >       |   ~~~~~~~~~~~~~~~~~^~~~~~~~~~
-> > In file included from drivers/gpu/drm/kmb/kmb_plane.c:17:
-> > drivers/gpu/drm/kmb/kmb_drv.h:48:23: note: while referencing 'plane_status'
-> >    48 |  struct layer_status  plane_status[KMB_MAX_PLANES];
-> >       |                       ^~~~~~~~~~~~
-> > drivers/gpu/drm/kmb/kmb_plane.c:129:20: warning: array subscript 1 is above array bounds of 'struct layer_status[1]' [-Warray-bounds]
-> >   129 |   kmb->plane_status[plane_id].ctrl = LCD_CTRL_VL2_ENABLE;
-> >       |   ~~~~~~~~~~~~~~~~~^~~~~~~~~~
-> > In file included from drivers/gpu/drm/kmb/kmb_plane.c:17:
-> > drivers/gpu/drm/kmb/kmb_drv.h:48:23: note: while referencing 'plane_status'
-> >    48 |  struct layer_status  plane_status[KMB_MAX_PLANES];
-> >       |                       ^~~~~~~~~~~~
-> > 
-> > Exposed by commit
-> > 
-> >   656256c0d67c ("Makefile: Enable -Warray-bounds")
-> > 
-> > Introduced by commit
-> > 
-> >   7f7b96a8a0a1 ("drm/kmb: Add support for KeemBay Display")
-> > 
-> > from v5.11-rc1.
-> 
-> Due to Linus -Werror, these are now errors :-(
-> 
-> I have reverted commit 656256c0d67c for now.
+> > Why does the driver core code here care about a platform/arch-specific
+> > thing at all?  Did you just break all other arches?
+>
+> This file is only compiled for x86. It depends on CONFIG_PM_TRACE_RTC,
+> which has a "depends on X86" attribute.
 
-I'm still surprised Linus added -Werror (it seems to go against years of
-his earlier mandates on not breaking the build). Seems like
-3fe617ccafd6 should be reverted instead. ;)
+This feature uses the CMOS RTC memory to store data, so if that memory
+is not present, it's better to avoid using it.
 
-Linus, warnings are being reported (as above), are you sure -Werror is
-the right way to go? (I can't believe I'm saying this, given my past
-desire to make various hardening failures break the build -- you
-convinced me to always warn instead, and it made good sense: a developer
-still gets binary results as well as any new warnings...)
+Please feel free to add
 
--Kees
+Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
 
--- 
-Kees Cook
+to this patch or let me know if you want me to take it.
