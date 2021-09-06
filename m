@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1936D401FF6
+	by mail.lfdr.de (Postfix) with ESMTP id AB0FB401FF8
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245106AbhIFSzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 14:55:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36418 "EHLO
+        id S245442AbhIFSzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 14:55:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244933AbhIFSzR (ORCPT
+        with ESMTP id S244949AbhIFSzT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 14:55:17 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB78C0613C1
+        Mon, 6 Sep 2021 14:55:19 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82883C0613D9
         for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:54:12 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id lc21so15074519ejc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:54:11 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id lc21so15074609ejc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:54:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gDDbV5k8w+ZNilfMRl6tEIv8pUv9RSEpEzotQr9O7i4=;
-        b=q31hFjL0IQZ5XdwzFCmEReu0H3IUHIukaDj6js8My/+dsZN7p85RWlt6RLljH1wFdR
-         zQ0Pc35pUfSEqsJ+PqI+9fE4GWy22FBcOQUmY1rAIOsSkg4zQa/xDvNg2IB9fchltQiR
-         QyVtLzDQ0hKNCE0zwFk+uiwQlTfZcBArGIrDcdHcLWn/Ve/0hnONm6Is4jy0L3L4W0hu
-         eMjcAq7EMkLu6Qevk8p2T473ASsdLfA0ieFlpBbgi3W2IicVbirVVK41a0h7KLWSgsBh
-         NtwpZjU5iJrUEyNEi9U9CcJRpkShNraKnEBisTNS1x6nQ0y8EuqCv7w2cf1YHy49UH8d
-         XX3w==
+        bh=lURT0bL/Ua3DL+p4fVIfhBItarDnpsIG5IN7GeJbB/Q=;
+        b=SLYoF45iT9ysDQ4MAC6jMfYqP4mdYmwXYtYuf/+S7RPNq6xtmqAkl/eEmp1DxNOR+s
+         R1VU46s/RXz6t7m9OHhuC+eZpJ4zrPdP5Wm2+k2AK1UCQ8IAYOvWy003CEWLZi1g9bry
+         +V4iGYhYAhacP9D3TtNPIvXQig2cgS3MAK76aJqBy2R+0a2mAvcpaLSy7D8CZOuaCQFa
+         Tco0FMecb2r8gd9m7j9FPNFX+9tWgpP4PNZqQVZdV8iLl7tWqlxUu3km6ys4x6Xi51em
+         5TISQrydyYB5oI6tN2khR4sgE7RMVlvUOv5uK7MJdQa22Pj3K1uuc36XStLJsXgBsxWi
+         B13A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gDDbV5k8w+ZNilfMRl6tEIv8pUv9RSEpEzotQr9O7i4=;
-        b=slftRuEP8jLISs202L5Jhc2iqfh44R1vgph6bz/qjJye4DqSFhYn2ZMNHyIYmHIaAo
-         D7XpvixmEcSJxunnSCpFfDqUQ2DFM+WtYvgYylKVwAx4mIfIgOAuRuiCMpSOEKagFiW0
-         YvBpIsPBXUjAz6FouI9EmsRzFiZe6JhNTn9aIHo6P/ybAIzCFvH90u9rnRHbU1EoB/i6
-         omeAR92LDAP3Nmp8WkQTBxxl5XYVBGp/rWbc0kJv/nV0qFrnQSNlMWUtCUjSCvnao6HS
-         4C7V0Nx/3hTdpzUTPafg5S/EYUKs02omlM/j3OIimiOObJUIWUEjdcl31vagBPvTstbG
-         9uqg==
-X-Gm-Message-State: AOAM532zKoAVRXstZBb6oprI98F7XnH7KOmzUarDtmk+zSyzOtlkP3RK
-        Usm2UlBrq8H6QZI0Mmpb6lvgN+TUI/Kifg==
-X-Google-Smtp-Source: ABdhPJzSiHLiEYRIxsFosm8Q3alY7SBEavmJqxf9NwTsN4lL7uPmmHp6LH4tEBnYuQl6RKKHefWONQ==
-X-Received: by 2002:a17:906:ae4f:: with SMTP id lf15mr15308396ejb.124.1630954450643;
-        Mon, 06 Sep 2021 11:54:10 -0700 (PDT)
+        bh=lURT0bL/Ua3DL+p4fVIfhBItarDnpsIG5IN7GeJbB/Q=;
+        b=nt7wAG/jrBkVlMgVryOEyut6CW71RB5NVx622k4+EYPQW/eBDNNwsXHv71lQv2a47h
+         W3h1FG686iLm/critPrzYPfnXUiXmeFN07mRUKjsMFwkhrmERHqmTmeIJV4zd3n4v23f
+         3kEmjxxJXc/m+rpeIWidR2ns9UacNF3h02+uwobLzFuE2VArmNdJOLMbZMhAv63gHYtb
+         5ipr+3jTLcb2MMMADkNTU/7KmG2PPSYmAbDJiDyS/LzS9f/yVh+ICqpdNPInYqWY48O6
+         +dijNXF6zgQFbBw/AlEcAeqMozucR/cnnvklb3WpNQgvFQVbUOsVKqLj9Jsrqvp5j94R
+         Teyg==
+X-Gm-Message-State: AOAM532Qx7lBaPkCWOLgox7Qq5ZXTVGDTUMpYUDiprPAXHKJkvWtsp1P
+        ZBh2XsPIijyoVPa5qMNaYqLpeV3ZE54ekg==
+X-Google-Smtp-Source: ABdhPJymwJz3ufK2fcjPmNJkoieZPDpRmFGsEc2irfHTwkJV6HAdHx4KyLDS4JRq8UkEWCdTbyzvxg==
+X-Received: by 2002:a17:907:92c:: with SMTP id au12mr14799225ejc.523.1630954451382;
+        Mon, 06 Sep 2021 11:54:11 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::8fe1])
-        by smtp.gmail.com with ESMTPSA id kk2sm4329128ejc.114.2021.09.06.11.54.09
+        by smtp.gmail.com with ESMTPSA id kk2sm4329128ejc.114.2021.09.06.11.54.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 11:54:10 -0700 (PDT)
+        Mon, 06 Sep 2021 11:54:11 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH v2 11/40] staging: r8188eu: remove set_channel_handler from hal_ops
-Date:   Mon,  6 Sep 2021 20:52:58 +0200
-Message-Id: <20210906185327.10326-12-straube.linux@gmail.com>
+Subject: [PATCH v2 12/40] staging: r8188eu: remove unused enum hal_intf_ps_func
+Date:   Mon,  6 Sep 2021 20:52:59 +0200
+Message-Id: <20210906185327.10326-13-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210906185327.10326-1-straube.linux@gmail.com>
 References: <20210906185327.10326-1-straube.linux@gmail.com>
@@ -66,91 +66,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove set_channel_handler from hal_ops and remove its wrapper
-rtw_hal_set_chan(). Call PHY_SwChnl8188E() directly instead.
+HAL_USB_SELECT_SUSPEND and HAL_MAX_ID are both unused,
+so enum hal_intf_ps_func can be removed.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/core/rtw_wlan_util.c    | 4 ++--
- drivers/staging/r8188eu/hal/hal_intf.c          | 6 ------
- drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 2 --
- drivers/staging/r8188eu/include/hal_intf.h      | 4 ----
- 4 files changed, 2 insertions(+), 14 deletions(-)
+ drivers/staging/r8188eu/include/hal_intf.h | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/core/rtw_wlan_util.c b/drivers/staging/r8188eu/core/rtw_wlan_util.c
-index 37400e29eec4..cd4f1ae61dca 100644
---- a/drivers/staging/r8188eu/core/rtw_wlan_util.c
-+++ b/drivers/staging/r8188eu/core/rtw_wlan_util.c
-@@ -318,7 +318,7 @@ void SelectChannel(struct adapter *padapter, unsigned char channel)
- {
- 	/* saved channel info */
- 	rtw_set_oper_ch(padapter, channel);
--	rtw_hal_set_chan(padapter, channel);
-+	PHY_SwChnl8188E(padapter, channel);
- }
- 
- void SetBWMode(struct adapter *padapter, unsigned short bwmode,
-@@ -359,7 +359,7 @@ void set_channel_bwmode(struct adapter *padapter, unsigned char channel, unsigne
- 	rtw_set_oper_bw(padapter, bwmode);
- 	rtw_set_oper_choffset(padapter, channel_offset);
- 
--	rtw_hal_set_chan(padapter, center_ch); /*  set center channel */
-+	PHY_SwChnl8188E(padapter, center_ch); /*  set center channel */
- 	SetBWMode(padapter, bwmode, channel_offset);
- }
- 
-diff --git a/drivers/staging/r8188eu/hal/hal_intf.c b/drivers/staging/r8188eu/hal/hal_intf.c
-index 93691e72e263..79a2a5a0abd9 100644
---- a/drivers/staging/r8188eu/hal/hal_intf.c
-+++ b/drivers/staging/r8188eu/hal/hal_intf.c
-@@ -215,12 +215,6 @@ void rtw_hal_write_rfreg(struct adapter *adapt, enum rf_radio_path rfpath,
- 					      bitmask, data);
- }
- 
--void rtw_hal_set_chan(struct adapter *adapt, u8 channel)
--{
--	if (adapt->HalFunc.set_channel_handler)
--		adapt->HalFunc.set_channel_handler(adapt, channel);
--}
--
- void rtw_hal_bcn_related_reg_setting(struct adapter *adapt)
- {
- 	if (adapt->HalFunc.SetBeaconRelatedRegistersHandler)
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-index 8a73294d8bec..4274b11e456c 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-@@ -1784,8 +1784,6 @@ void rtl8188e_set_hal_ops(struct hal_ops *pHalFunc)
- {
- 	pHalFunc->free_hal_data = &rtl8188e_free_hal_data;
- 
--	pHalFunc->set_channel_handler = &PHY_SwChnl8188E;
--
- 	pHalFunc->Add_RateATid = &rtl8188e_Add_RateATid;
- 	pHalFunc->run_thread = &rtl8188e_start_thread;
- 	pHalFunc->cancel_thread = &rtl8188e_stop_thread;
 diff --git a/drivers/staging/r8188eu/include/hal_intf.h b/drivers/staging/r8188eu/include/hal_intf.h
-index f3f294aa6a24..eab0b8576c92 100644
+index eab0b8576c92..3bf0d18e2ba8 100644
 --- a/drivers/staging/r8188eu/include/hal_intf.h
 +++ b/drivers/staging/r8188eu/include/hal_intf.h
-@@ -143,8 +143,6 @@ struct hal_ops {
- 	s32	(*init_recv_priv)(struct adapter *padapter);
- 	void	(*free_recv_priv)(struct adapter *padapter);
+@@ -121,11 +121,6 @@ enum hal_odm_variable {
+ 	HAL_ODM_WIFI_DISPLAY_STATE,
+ };
  
--	void	(*set_channel_handler)(struct adapter *padapter, u8 channel);
+-enum hal_intf_ps_func {
+-	HAL_USB_SELECT_SUSPEND,
+-	HAL_MAX_ID,
+-};
 -
- 	void	(*SetHwRegHandler)(struct adapter *padapter, u8	variable,
- 				   u8 *val);
- 	void	(*GetHwRegHandler)(struct adapter *padapter, u8	variable,
-@@ -281,8 +279,6 @@ void	rtw_hal_write_rfreg(struct adapter *padapter,
- 			    enum rf_radio_path eRFPath, u32 RegAddr,
- 			    u32 BitMask, u32 Data);
+ typedef s32 (*c2h_id_filter)(u8 id);
  
--void	rtw_hal_set_chan(struct adapter *padapter, u8 channel);
--
- u8	rtw_hal_antdiv_before_linked(struct adapter *padapter);
- void	rtw_hal_antdiv_rssi_compared(struct adapter *padapter,
- 				     struct wlan_bssid_ex *dst,
+ struct hal_ops {
 -- 
 2.33.0
 
