@@ -2,104 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F15C40168A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 08:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1382040169E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 08:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239478AbhIFGoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 02:44:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239244AbhIFGo1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 02:44:27 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A283EC061575;
-        Sun,  5 Sep 2021 23:43:23 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id c17so5826740pgc.0;
-        Sun, 05 Sep 2021 23:43:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vXyxpFHBcEv4sS2t76pl1COPJ/sZoBUbznBcP7dl+HA=;
-        b=MkDdoGqMO1Z/0vDuONb4VGQmsvo0dCFjgiEDcr1th+volaeMLn8sxOtZ4vT+W6VOlY
-         CffRWTbYj0HVPbt+Ln3ZmYL76xand44xgy14yGo4WF2eJ1tePbv4Gl0/JKYBdP8JfzDR
-         YP5gqO3TqRXhYN1EF8MZMA9MPCFng77f2vsAlsGJx8VyLNUWrkLAvj1iGAc4IJEKLpUU
-         SF8Ci+J7/7K7YBNNGmyM5EDdnKSX7u7CfWws9HxkTqynULxhN76vgCz1Vm5QeVaHWYZe
-         SOjgvW79VGAeKixTDof1cllWD2SfZ7uMkQsKiERvybuRaCt7MAk4RDhP16R1WlZ7mUcS
-         mh1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vXyxpFHBcEv4sS2t76pl1COPJ/sZoBUbznBcP7dl+HA=;
-        b=qqBFTlJOsOmNpMs4S+0Rqlg1fmtsac0Z/Kk3sTNIR6wMEpbvAooMpgd3GVgqe0q0K/
-         Xe5+cdgy1J6mkjz36RwwOWhSVJADibC3FSCbpuzXRe4kWRLgMsoCO5hggNqob4ylCk3D
-         MW5ggmZRAj//IcHU7MkZVafwy8vBRyz3FGG//2ihd9FGCaToxuA4X1wrrRT6TZMawOu3
-         HCxxEMhY7wBE6ks7dU57D7uW1qlBAdY1xmT9iLzlRaYnv2LCrWg2W6arO1Fl0mY97hYr
-         6HUhe+uNSbwwyFuUZjulPtgQ3D+v4pHyiJcyF6me3dxD8f0jx0mCtR+aQ+EtmEC2SWi2
-         QGVw==
-X-Gm-Message-State: AOAM53205VqSvXJ1RBKjUloC5Bh9rv69rIz/fV8hEyBkkmbZZ8nfTRpZ
-        iQsgSQ+6X8ZC+c/d7B3CXAJ/MpBVpbrvOIAY
-X-Google-Smtp-Source: ABdhPJxhCgJQRi7jSe3tZ+uGXk2bms0XFN7UVu1YTeUOVP5h85afqBqXr6ZvBi2mT4wI1Cx6T4vkVw==
-X-Received: by 2002:a63:da49:: with SMTP id l9mr10791109pgj.277.1630910603266;
-        Sun, 05 Sep 2021 23:43:23 -0700 (PDT)
-Received: from localhost.localdomain ([124.126.19.250])
-        by smtp.gmail.com with ESMTPSA id c124sm6615033pfc.216.2021.09.05.23.43.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Sep 2021 23:43:23 -0700 (PDT)
-From:   zhaoxiao <long870912@gmail.com>
-To:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        zhaoxiao <long870912@gmail.com>
-Subject: [PATCH] drm/msm: Remove initialization of static variables
-Date:   Mon,  6 Sep 2021 14:43:15 +0800
-Message-Id: <20210906064315.4975-1-long870912@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        id S239651AbhIFGxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 02:53:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36354 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239400AbhIFGxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 02:53:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF49860F21;
+        Mon,  6 Sep 2021 06:51:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630911120;
+        bh=h0WT/Jjj8wKQYQF+5gwJkPL2TfNqu98BCj64BgayA7M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FulvDIvLkR5PGRPFP547Bt52CBBwmIth2844DXgVb6XXg68tZk8keaPt6YHDBf2uA
+         5zxS0C6YIL4AHINEw4PgNj30YY6cCH0PGM0slvrYtVxA7p1/hDdFwdcWSHl7R6AlmN
+         t2NuD/XgYqZxt0/rLYaOz7EASBGRJLc3g3MPWDinA7qqn5phbB4HwwWoQTicUbyk4X
+         aL1u4mXeT864zX6iAL5uRbCsZKtBWZrHL98MsHH0n6qom2SvF3NhzJ3srZB6W5tftW
+         9An3xv6TfdIuRzklCZErXZIgjFBMkgSNqvS809r+bYOh46D34M76TzNx+CT9FfIW6q
+         ONhzS+UWH2qIQ==
+Date:   Mon, 6 Sep 2021 08:51:53 +0200
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        linux-media@vger.kernel.org,
+        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] media: s5p-jpeg: change "RST" to "RSET" to fix build
+ warnings
+Message-ID: <20210906085153.58edc116@coco.lan>
+In-Reply-To: <20210905235715.12154-1-rdunlap@infradead.org>
+References: <20210905235715.12154-1-rdunlap@infradead.org>
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Address the following checkpatch errors:
-ERROR: do not initialise statics to false
+Em Sun,  5 Sep 2021 16:57:15 -0700
+Randy Dunlap <rdunlap@infradead.org> escreveu:
 
-FILE: :drivers/gpu/drm/msm/msm_drv.c:21:
--static bool reglog = false;
+> The use of a macro named 'RST' conflicts with one of the same name
+> in arch/mips/include/asm/mach-rc32434/rb.h. This causes build
+> warnings on some MIPS builds.
+> 
+> Change the use of RST to the name RSET.
+> 
+> Fixes these build warnings:
+> 
+> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos3250.c:14:
+> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+>    43 | #define RST                             0xd0
+>       | 
+> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+>    13 | #define RST             (1 << 15)
+> 
+> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-s5p.c:13:
+> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+>    43 | #define RST                             0xd0
+> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+>    13 | #define RST             (1 << 15)
+> 
+> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos4.c:12:
+> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+>    43 | #define RST                             0xd0
+> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+>    13 | #define RST             (1 << 15)
+> 
+> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-core.c:31:
+> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+>    43 | #define RST                             0xd0
+> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+>    13 | #define RST             (1 << 15)
+> 
+> Fixes: bb677f3ac434 ("[media] Exynos4 JPEG codec v4l2 driver")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: linux-media@vger.kernel.org
+> Cc: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
+> Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> ---
+>  drivers/media/platform/s5p-jpeg/jpeg-core.c |    2 +-
+>  drivers/media/platform/s5p-jpeg/jpeg-core.h |    2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> --- linux-next-20210903.orig/drivers/media/platform/s5p-jpeg/jpeg-core.c
+> +++ linux-next-20210903/drivers/media/platform/s5p-jpeg/jpeg-core.c
+> @@ -1203,7 +1203,7 @@ static bool s5p_jpeg_parse_hdr(struct s5
+>  			break;
+>  
+>  		/* skip payload-less markers */
+> -		case RST ... RST + 7:
+> +		case RSET ... RSET + 7:
+>  		case SOI:
+>  		case EOI:
+>  		case TEM:
+> --- linux-next-20210903.orig/drivers/media/platform/s5p-jpeg/jpeg-core.h
+> +++ linux-next-20210903/drivers/media/platform/s5p-jpeg/jpeg-core.h
+> @@ -40,7 +40,7 @@
+>  #define TEM				0x01
+>  #define SOF0				0xc0
+>  #define DHT				0xc4
+> -#define RST				0xd0
+> +#define RSET				0xd0
+>  #define SOI				0xd8
+>  #define EOI				0xd9
+>  #define	SOS				0xda
 
-FILE: :drivers/gpu/drm/msm/msm_drv.c:31:
--bool dumpstate = false;
+I don't like this change, for a couple reasons:
 
-Signed-off-by: zhaoxiao <long870912@gmail.com>
----
- drivers/gpu/drm/msm/msm_drv.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+1. the JPEG marker is "RST" (actually, "RST0") instead of "RSET" 
+   (see pag. 36 https://www.w3.org/Graphics/JPEG/itu-t81.pdf). The
+   close it sticks with the JPEG standard, the better;
 
-diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-index 9b8fa2ad0d84..d9ca4bc9620b 100644
---- a/drivers/gpu/drm/msm/msm_drv.c
-+++ b/drivers/gpu/drm/msm/msm_drv.c
-@@ -59,7 +59,7 @@ static const struct drm_mode_config_helper_funcs mode_config_helper_funcs = {
- };
- 
- #ifdef CONFIG_DRM_MSM_REGISTER_LOGGING
--static bool reglog = false;
-+static bool reglog;
- MODULE_PARM_DESC(reglog, "Enable register read/write logging");
- module_param(reglog, bool, 0600);
- #else
-@@ -76,7 +76,7 @@ static char *vram = "16m";
- MODULE_PARM_DESC(vram, "Configure VRAM size (for devices without IOMMU/GPUMMU)");
- module_param(vram, charp, 0);
- 
--bool dumpstate = false;
-+bool dumpstate;
- MODULE_PARM_DESC(dumpstate, "Dump KMS state on errors");
- module_param(dumpstate, bool, 0600);
- 
--- 
-2.20.1
+2. better to add a namespace here, as other JPEG markers like SOS,
+   SOI and EOI seems to have a high chance of happening somewhere
+   else on other kernel headers in the future.
 
+So, IMO, the best would be to rename all those markers as a hole, with
+something similar to:
+
+	$ for i in TEM SOF0 DHT RST SOI EOI SOS DQT DHP; do sed "s,\b$i\b,JPEG_MARKER_$i,g" -i drivers/media/platform/s5p-jpeg/*.[ch]; done
+
+and manually adjust the patch, as at least this hunk could be
+improved:
+
+	@@ -187,11 +187,11 @@ struct s5p_jpeg_marker {
+	  * @fmt:       driver-specific format of this queue
+	  * @w:         image width
+	  * @h:         image height
+	- * @sos:       SOS marker's position relative to the buffer beginning
+	- * @dht:       DHT markers' positions relative to the buffer beginning
+	- * @dqt:       DQT markers' positions relative to the buffer beginning
+	- * @sof:       SOF0 marker's position relative to the buffer beginning
+	- * @sof_len:   SOF0 marker's payload length (without length field itself)
+	+ * @sos:       JPEG_MARKER_SOS marker's position relative to the buffer beginning
+	+ * @dht:       JPEG_MARKER_DHT markers' positions relative to the buffer beginning
+	+ * @dqt:       JPEG_MARKER_DQT markers' positions relative to the buffer beginning
+	+ * @sof:       JPEG_MARKER_SOF0 marker's position relative to the buffer beginning
+	+ * @sof_len:   JPEG_MARKER_SOF0 marker's payload length (without length field itself)
+	  * @size:      image buffer size in bytes
+	  */
+
+to avoid repeating the word marker.
+
+Thanks,
+Mauro
