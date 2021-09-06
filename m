@@ -2,144 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 771AE401AF1
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BCF401AF4
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241796AbhIFMHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:07:03 -0400
-Received: from mail-bn8nam12on2078.outbound.protection.outlook.com ([40.107.237.78]:49554
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241611AbhIFMGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:06:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ij96EfI12NKXNJjSdcY6mSTvq4k1mtkyu9BY+iS3GbdBH9c2QN/zzqSRu5yQb44+MdvN4jsjcJvUKHZ+HRBhs/f0UqM5o9Pwn8CazvM0GWqMyJlc+rfRDURydGL9ZoJ7+bLeKonzQYR4kU82CQVocT9PUBFFYcdYyC2B58Dsk/sS3neDbLeceAW6Oz0rKybpCGgMwdMgFiKTP2+mgbCrXS2ZOxmmLCiRaBagGRIUEIahGso0kq1OqqsMnpopV5XDGuvOkIU4dvc9wzG7Vp0QO51wP+bZOqcvPymRLP24JgJep1jqVgHpzvE+Ul8+7EV6hSMoYv0hEvB4cJJFToSqQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=E0sLbT4Kdg5B2o28LSn4tQluik3lL7SWcwJZBSnwT+A=;
- b=D9o6rKnOa1qy9VcWsLiSToJNJV0GCTMJRFO1vRH8FOxndXD5/OUJhTOCXnuoumAHxTQdSyI/tAvXs1/QIUpxakZxLdzSCIl74uyvMml0hYgjsmRJ4LTkIFMNkR6JReomwkOjR9hHrMJtmMnq61zXIAFiUGinnfrJczM1sfq+x9vGfBXoxQM0hhJ3g976Zq+FCBwU3E43y6G8D2KppVQDHew/y/Iin8eYb1VSiwbnPRc9SYhaL2fQzrqX51O01yN01RrjddBV9emyCOF58bmHF1EA1cEj9yw38Gg1MomNoQWsOe29Ra0CYZiEN99hYpOm64r1O0XeoITJU07W3apcwQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=E0sLbT4Kdg5B2o28LSn4tQluik3lL7SWcwJZBSnwT+A=;
- b=qphSIE1qIVQ2bRU2nzgj5twMQX5JBrpnQE6ag1urIf2fGxnHrfyrxPUGayzvUuxxpvU16mIk/F8MXQd7VYXnySet/2PgztrDvLO8uh6EhjHR2lDt0o0W77yHdxaZamCvWxdOSh+x0GtSxcMll4Ctc6QdkPRaD1nRYzQ6rqOluSY=
-Authentication-Results: roeck-us.net; dkim=none (message not signed)
- header.d=none;roeck-us.net; dmarc=none action=none header.from=amd.com;
-Received: from DM6PR12MB3657.namprd12.prod.outlook.com (10.255.76.18) by
- DM5PR12MB1628.namprd12.prod.outlook.com (10.172.35.141) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4478.17; Mon, 6 Sep 2021 12:05:42 +0000
-Received: from DM6PR12MB3657.namprd12.prod.outlook.com
- ([fe80::909e:4d3a:7c48:a0d6]) by DM6PR12MB3657.namprd12.prod.outlook.com
- ([fe80::909e:4d3a:7c48:a0d6%7]) with mapi id 15.20.4478.025; Mon, 6 Sep 2021
- 12:05:42 +0000
-Date:   Mon, 6 Sep 2021 14:05:34 +0200
-From:   Robert Richter <rrichter@amd.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Terry Bowman <Terry.Bowman@amd.com>,
-        linux-watchdog@vger.kernel.org, wim@linux-watchdog.org,
+        id S241762AbhIFMI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241611AbhIFMIv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 08:08:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B062FC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 05:07:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ewnu7HJEY4Ns+ikYJyKBCVxku1I+G02qDkfuLvh8PjQ=; b=nbbvr3LdzEP7dBhcxL3wucClnH
+        kkFHAuFJRa3ypuDe9xjgdOlk+UEQ7CilBiOKypyGrmAzsooaXxp2Sgg74IlEc+L5qRsNTcM3Yfqtm
+        sAXjglDLBcnOfmWixdyyZZ2dKn0U9YFkF9lc1CKmY0mBCDS+xmMXGQUOJ01htqgv/VfiPgm29bxFX
+        ovv42TClroz+kt5XykMIBoKEWTn9BBH4SsK/PrO3PXiwbvb7LJ6cMO8AYCeu6ACqw7NG94U9T0B8G
+        3GrXof9zVZLVJJaPk6b7N6CotEaGg8biQfSYwoxzgt0uwxhj6jmfT8HxpFsNiyVTIrGmG4TyD5Fhu
+        WYCPe/2A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mNDOo-006vKN-W3; Mon, 06 Sep 2021 12:07:04 +0000
+Date:   Mon, 6 Sep 2021 13:06:54 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Watchdog: sp5100_tco: Replace watchdog cd6h/cd7h port
- I/O accesses with MMIO accesses
-Message-ID: <YTYEDvTTrE5JXlk4@rric.localdomain>
-References: <20210813213216.54780-1-Terry.Bowman@amd.com>
- <416a67a7-646b-eb8d-b617-80cbbbc028c6@roeck-us.net>
+Subject: Re: kernel BUG in truncate_inode_page
+Message-ID: <YTYEXpOrmOvaikKv@casper.infradead.org>
+References: <CACkBjsbtF_peC7N_4mRfHML_BeiPe+O9DahTfr84puSG_J9rcQ@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <416a67a7-646b-eb8d-b617-80cbbbc028c6@roeck-us.net>
-X-ClientProxiedBy: BE0P281CA0031.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:14::18) To DM6PR12MB3657.namprd12.prod.outlook.com
- (2603:10b6:5:149::18)
-MIME-Version: 1.0
-Received: from rric.localdomain (77.183.108.107) by BE0P281CA0031.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:14::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.4 via Frontend Transport; Mon, 6 Sep 2021 12:05:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bd271f7b-e6c5-4805-b6f3-08d9712ea62b
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1628:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR12MB162831D690683299D4F1508B9CD29@DM5PR12MB1628.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mlpfoXJFxJswYOiU7uIpx0AYj3VV/+K8z9ZcpF2DJnO4RErntS0ri6Tl001PAkyQybelQCgohbb/gTjtLd0uFGNDuMCRj87HpO6b4WClOq8q97nzMNGv+UUREKounc22V8csS+4ywkzNBll1E/O1IRck28XQK5Ab0fMTKAXgtqefmaa5dX+/H7M7gvas+WKTexbQyh22+RKg0e0MtuzFkuNSzBM65vqqhv3Dl1Y9QmmSbyixIxDHVvJ87HJbdQBpGlehglVROdlLc6qHfZNbID2eERsECo0b30vehip9MpRr5EBnuEUAorjpnztPDtOs3xnEjcQW5WdGcSqL10gkYy5H5zrvGWkTrfOpv2C64XEnOz1rt6SsQTjgwncA6VmcZwnt2TKPkhj9qoDMPcdOSrg3mCGc15HxWaOuBy9tk23KvwW+FPZOS9mURZz4Pb0ZvBuk+mjRQhMBVNnD/Pk/4atFxEjix8UfmJoh8ckXP55VdjDYIpUPaBCikUwJq6bwIhyx9vohdIr4J1SRJPakzDGBxF669/1OuFgjhW/wcRN2XxLYE5bhXCWqoIc9+XK8TU4alTE65aSpdajEDjNEHbF9y8xc88gSietmsL/nFEfCmipf+MSBK1+PH5XdDp6zMCUV6x64dLDq1NQhXsfJBAFtpRLys82vxYxlArj6BqY4bWQ534ovTK1dfM3e7A64US1fXzpQ1SFQeKGMvexSk7hpEyBAgjYfuuTkEjbvKmk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3657.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(376002)(39860400002)(136003)(7696005)(55016002)(5660300002)(52116002)(6666004)(53546011)(6506007)(66946007)(38100700002)(186003)(9686003)(316002)(2906002)(4326008)(478600001)(38350700002)(8676002)(8936002)(26005)(956004)(6916009)(66476007)(66556008)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1ruli8hpGtbQAmS7F4fNncDnTM+GiT5+0pzV73MITZx3noZVNJyv8C/vS2iL?=
- =?us-ascii?Q?ko8V7JyfQ/KfyZ0EYScLnglf1fVdvkLEzrAU8SBU0uBNMZMsQ8/aTFrXddLk?=
- =?us-ascii?Q?/7KbzcajZSsWw1j2fUPWqxOflX3uD12sMZN/lo5B4OUlrFp1dEoUk5Z7+r1A?=
- =?us-ascii?Q?y9VKNeAj0XcFiffLGzZusv1LshMRhXbJdsLYCC9eiPVsMe5a11QnQ0xVzFSz?=
- =?us-ascii?Q?ytmi+PD55KdPTkv+llAquIZmiTbnALS8xSxFODepyPDncWNBKFTSzV/I60cq?=
- =?us-ascii?Q?c2+kC0AJjA214Vk4PifXxxgnw4uTR5sRj4V3MiTAu060BEcte/7orYfnMj+B?=
- =?us-ascii?Q?8ICmYI1+EmQpDW1y6lD1ejurYcmlP8EbWVB1miUXyjwmGvHMbQkhw+6CCR7X?=
- =?us-ascii?Q?/lPtGwybA692pzARWZess5Z3Bye+uQed6mDu7fi93eS8E49N1zrmvneH+CLD?=
- =?us-ascii?Q?CFgyZiXs5pmm0vrSl5y/8rpp/HFxnXVpc8mv9pFquGEQEpb7SIDNGTXvD+9q?=
- =?us-ascii?Q?I/vHHb69tZDSDRjSsWl/h623iQr4Y9KrtXDyZwvIujzz5uwP9zwkaXDg7fC1?=
- =?us-ascii?Q?woCJBN3BBCpXofaXyUiAqj5H88cuIL5md8liD5G6priIjbzzyitzl+tpQgcq?=
- =?us-ascii?Q?bn78brDzyobSp0m5Hia32zClboS4ZAvMXzBCcN5V17c9r/n8X3H0upvbRAdW?=
- =?us-ascii?Q?KY3MSD0ZDcd56mkuab1kA7N9cPQZRdhtiyMaULfo8qCYQ/dMKTYPCVeLQHP5?=
- =?us-ascii?Q?k7WJ0dgNmIWuFIMEEbmXdfLW4tAs5vGNR1MmKmel/PSxAQ/ZX+T1tqjvzAtT?=
- =?us-ascii?Q?sIPTZEjxwOjaTkd0rs2dQ5kFq8IfFmtXqCakQVyfneXyUT+TlDsU/RfFxBNV?=
- =?us-ascii?Q?91mClk7ost6fCUzZjmrMVmwr8Oscn4X/YWg4H2S8+Vf/SPX1oshsLynXN8zb?=
- =?us-ascii?Q?nB8Z55fj4XDGdhs2+oBJFsLT1PXtivD0I/onJY/cCoRe1wwJgF3tbDxbynui?=
- =?us-ascii?Q?9JMfA6Yd5J1p6nRSsdxiZD+4mBuoELQLe4YX6/VJsch+IRikLaWb0g+VWU1O?=
- =?us-ascii?Q?y1uQq4YpB5Wlxb54DTQZPr3uXKUHWaueXN3YuK2ZhlfsshM9q173gVPJNjQi?=
- =?us-ascii?Q?Jb69XF8ZYTMIhS4NQy8tAXnxhAyQrXdH3eJlfuYvg7tl+t/94PqSoE4XJOHa?=
- =?us-ascii?Q?zmj29Pi841qZgz57In0PARwao4EBfbpzhOzS15PVgQNLi+J40nzYb5UR961e?=
- =?us-ascii?Q?yU6dbhdRASGpIEowLfkBd5fVKr+J6xbKBFj30DlQjHoAXiee5IH3qWXqs9b4?=
- =?us-ascii?Q?1Gk+6ASHmV2JMM6zMNJhW2Sw?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bd271f7b-e6c5-4805-b6f3-08d9712ea62b
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3657.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Sep 2021 12:05:42.1921
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ape4yhYMxV7RTrWRZbBmVnuDH9TQhwO8yqwWIDGUHaxY6gOq2iWpaodPtX2ruXz+fCREqwjbFMz7IZvpey2joA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1628
+In-Reply-To: <CACkBjsbtF_peC7N_4mRfHML_BeiPe+O9DahTfr84puSG_J9rcQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Guenter,
+This is a bug in CONFIG_READ_ONLY_THP_FOR_FS.
 
-On 13.08.21 15:37:30, Guenter Roeck wrote:
-> I am sorry, I don't understand why the new code can not use devm functions,
+We can see the order-9 page was allocated by khugepaged.
+It belongs to a block device, so there's no knowledge of THPs in
+the "filesystem".
 
-devm was not chosen here as the iomem is only used during
-initialization. The resource is released at the end of it. Using devm
-would keep it open and carry it around including its data until the
-device is released which we wanted to avoid. This would also add
-unnecessary data to struct sp5100_tco and/or the device's data.
+I'm on holiday, so no patch from me.  Somebody needs to figure out
+where the page should have been split -- was this ioctl issued through
+a read-only fd, perhaps?
 
-> why the new data structure is necessary in the first place,
-
-Instead we used struct efch_cfg to carry all that temporary data
-required during initialization. This is destroyed at the end of
-sp5100_tco_setupdevice().
-
-> and why it is
-> not possible to improve alignment with the existing code.
-
-The driver serves 3 to 4 platforms now. To refactor it a core driver
-is needed plus sub-drivers for each platform. We decided not to change
-existing code here for older platforms and keep it as it is for them.
-
-Moreover, the efch driver only needs changes to its initialization
-code (using mmio instead of ioports), everything else remains the
-same.
-
-> This will require
-> a substantial amount of time to review to ensure that the changes are not
-> excessive (at first glance it for sure looks like that to me).
-
-This patch implements mostly helper functions and adds alternative
-code paths for the mmio case. For an easier review we could split the
-patch in about 3-4 patches, would that help?
-
-Thanks,
-
--Robert
+On Mon, Sep 06, 2021 at 02:15:12PM +0800, Hao Sun wrote:
+> Hello,
+> 
+> When using Healer to fuzz the latest Linux kernel, the following crash
+> was triggered.
+> 
+> HEAD commit: 9e9fb7655ed58 Merge tag 'net-next-5.15'
+> git tree: upstream
+> console output:
+> https://drive.google.com/file/d/1_eEgvafiNcZHqHlmjIy4d420gQTvkf3r/view?usp=sharing
+> kernel config: https://drive.google.com/file/d/1zgxbwaYkrM26KEmJ-5sUZX57gfXtRrwA/view?usp=sharing
+> C reproducer: https://drive.google.com/file/d/1ZLAhA14JN9prY7Fei_WWnuhNXCg8AM8C/view?usp=sharing
+> Syzlang reproducer:
+> https://drive.google.com/file/d/1TejG8gPgiAkJsKBlwFdHIADKXDK-H6j8/view?usp=sharing
+> 
+> If you fix this issue, please add the following tag to the commit:
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
+> 
+> page:ffffea0004730040 refcount:514 mapcount:1 mapping:ffff88800d7d13e8
+> index:0x1 pfn:0x11cc01
+> head:ffffea0004730000 order:9 compound_mapcount:1 compound_pincount:0
+> memcg:ffff888009ba2000
+> aops:def_blk_aops ino:fa00000
+> flags: 0x57ff0000001001f(locked|referenced|uptodate|dirty|lru|head|node=1|zone=2|lastcpupid=0x7ff)
+> raw: 057ff00000000000 ffffea0004730001 0000000000000903 dead000000000200
+> raw: 0000000000000100 0000000000000000 0000000000000000 0000000000000000
+> head: 057ff0000001001f ffffea00044edec8 ffffea00044c2708 ffff88800d7d13e8
+> head: 0000000000000000 0000000000000000 0000020200000000 ffff888009ba2000
+> page dumped because: VM_BUG_ON_PAGE(PageTail(page))
+> page_owner tracks the page as allocated
+> page last allocated via order 9, migratetype Movable, gfp_mask
+> 0x13c24ca(GFP_TRANSHUGE|__GFP_THISNODE), pid 1665, ts 469126509176,
+> free_ts 440578020808
+>  prep_new_page+0x16/0x50 mm/page_alloc.c:2436
+>  get_page_from_freelist+0x64d/0x29a0 mm/page_alloc.c:4168
+>  __alloc_pages+0xde/0x2a0 mm/page_alloc.c:5390
+>  __alloc_pages_node include/linux/gfp.h:570 [inline]
+>  khugepaged_alloc_page+0x4e/0xc0 mm/khugepaged.c:881
+>  collapse_file+0x124/0x2110 mm/khugepaged.c:1655
+>  khugepaged_scan_file mm/khugepaged.c:2051 [inline]
+>  khugepaged_scan_mm_slot mm/khugepaged.c:2146 [inline]
+>  khugepaged_do_scan mm/khugepaged.c:2230 [inline]
+>  khugepaged+0x1f8a/0x3540 mm/khugepaged.c:2275
+>  kthread+0x178/0x1b0 kernel/kthread.c:319
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+> page last free stack trace:
+>  reset_page_owner include/linux/page_owner.h:24 [inline]
+>  free_pages_prepare mm/page_alloc.c:1346 [inline]
+>  free_pcp_prepare+0x1d7/0x480 mm/page_alloc.c:1397
+>  free_unref_page_prepare mm/page_alloc.c:3332 [inline]
+>  free_unref_page+0x19/0x1c0 mm/page_alloc.c:3411
+>  release_pages+0x212/0x1130 mm/swap.c:948
+>  tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
+>  tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
+>  tlb_flush_mmu+0x60/0x1e0 mm/mmu_gather.c:249
+>  zap_pte_range mm/memory.c:1432 [inline]
+>  zap_pmd_range mm/memory.c:1481 [inline]
+>  zap_pud_range mm/memory.c:1510 [inline]
+>  zap_p4d_range mm/memory.c:1531 [inline]
+>  unmap_page_range+0xea6/0x15c0 mm/memory.c:1552
+>  unmap_single_vma+0xae/0x140 mm/memory.c:1597
+>  unmap_vmas+0xed/0x190 mm/memory.c:1629
+>  exit_mmap+0xc9/0x2a0 mm/mmap.c:3195
+>  __mmput kernel/fork.c:1103 [inline]
+>  mmput+0x8a/0x1a0 kernel/fork.c:1124
+>  exit_mm kernel/exit.c:501 [inline]
+>  do_exit+0x462/0x11c0 kernel/exit.c:812
+>  do_group_exit+0x57/0xe0 kernel/exit.c:922
+>  get_signal+0x1d0/0x10b0 kernel/signal.c:2823
+>  arch_do_signal_or_restart+0xa9/0x860 arch/x86/kernel/signal.c:865
+>  handle_signal_work kernel/entry/common.c:148 [inline]
+>  exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+>  exit_to_user_mode_prepare+0xf2/0x280 kernel/entry/common.c:209
+>  __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+>  syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+>  do_syscall_64+0x40/0xb0 arch/x86/entry/common.c:86
+> ------------[ cut here ]------------
+> kernel BUG at mm/truncate.c:213!
+> invalid opcode: 0000 [#1] PREEMPT SMP
+> CPU: 1 PID: 27281 Comm: syz-executor Not tainted 5.14.0+ #12
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+> RIP: 0010:truncate_inode_page+0x5a/0x70 mm/truncate.c:213
+> Code: ff ff 48 89 ef e8 56 9e fd ff e8 71 2d f0 ff 89 d8 5b 5d 41 5c
+> c3 e8 65 2d f0 ff 48 c7 c6 20 19 2d 85 48 89 ef e8 f6 f7 03 00 <0f> 0b
+> bb fb ff ff ff eb d7 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00
+> RSP: 0018:ffffc9000361fc88 EFLAGS: 00010246
+> RAX: 0000000000040000 RBX: 0000000000000001 RCX: ffffc90001356000
+> RDX: 0000000000040000 RSI: ffffffff8147479a RDI: 00000000ffffffff
+> RBP: ffffea0004730040 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000001 R11: 637379735f6f6420 R12: ffff88800d7d13e8
+> R13: ffffc9000361fd48 R14: 0000000000000001 R15: ffffc9000361fcd0
+> FS:  00007f3c4f6a0700(0000) GS:ffff88813dc00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000204001ff CR3: 000000010f099000 CR4: 0000000000750ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> PKRU: 55555554
+> Call Trace:
+>  truncate_inode_pages_range+0x3b9/0xc30 mm/truncate.c:397
+>  truncate_bdev_range+0x87/0xd0 fs/block_dev.c:125
+>  blk_ioctl_zeroout block/ioctl.c:173 [inline]
+>  blkdev_common_ioctl+0x2c3/0xad0 block/ioctl.c:472
+>  blkdev_ioctl+0x2c2/0x370 block/ioctl.c:583
+>  block_ioctl+0x55/0x70 fs/block_dev.c:1421
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:874 [inline]
+>  __se_sys_ioctl fs/ioctl.c:860 [inline]
+>  __x64_sys_ioctl+0xb6/0x100 fs/ioctl.c:860
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x46a9a9
+> Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+> 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f3c4f69fc58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+> RAX: ffffffffffffffda RBX: 000000000078c210 RCX: 000000000046a9a9
+> RDX: 00000000200003c0 RSI: 000000000000127f RDI: 0000000000000004
+> RBP: 00000000004e4042 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078c210
+> R13: 0000000000000000 R14: 000000000078c210 R15: 00007fff7770d6e0
+> Modules linked in:
+> Dumping ftrace buffer:
+>    (ftrace buffer empty)
+> ---[ end trace 4d3d97b8450ac449 ]---
+> RIP: 0010:truncate_inode_page+0x5a/0x70 mm/truncate.c:213
+> Code: ff ff 48 89 ef e8 56 9e fd ff e8 71 2d f0 ff 89 d8 5b 5d 41 5c
+> c3 e8 65 2d f0 ff 48 c7 c6 20 19 2d 85 48 89 ef e8 f6 f7 03 00 <0f> 0b
+> bb fb ff ff ff eb d7 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00
+> RSP: 0018:ffffc9000361fc88 EFLAGS: 00010246
+> RAX: 0000000000040000 RBX: 0000000000000001 RCX: ffffc90001356000
+> RDX: 0000000000040000 RSI: ffffffff8147479a RDI: 00000000ffffffff
+> RBP: ffffea0004730040 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000001 R11: 637379735f6f6420 R12: ffff88800d7d13e8
+> R13: ffffc9000361fd48 R14: 0000000000000001 R15: ffffc9000361fcd0
+> FS:  00007f3c4f6a0700(0000) GS:ffff88813dc00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000204001ff CR3: 000000010f099000 CR4: 0000000000750ee0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> PKRU: 55555554
+> 
