@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A1C4016B4
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:03:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDFC4016B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239820AbhIFHEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 03:04:55 -0400
-Received: from kirsty.vergenet.net ([202.4.237.240]:33168 "EHLO
+        id S239871AbhIFHGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 03:06:32 -0400
+Received: from kirsty.vergenet.net ([202.4.237.240]:33196 "EHLO
         kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231154AbhIFHEy (ORCPT
+        with ESMTP id S239824AbhIFHG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 03:04:54 -0400
+        Mon, 6 Sep 2021 03:06:29 -0400
 Received: from madeliefje.horms.nl (tulip.horms.nl [83.161.246.101])
-        by kirsty.vergenet.net (Postfix) with ESMTPA id 8B29025B7C9;
-        Mon,  6 Sep 2021 17:03:48 +1000 (AEST)
+        by kirsty.vergenet.net (Postfix) with ESMTPA id 656A025B849;
+        Mon,  6 Sep 2021 17:05:23 +1000 (AEST)
 Received: by madeliefje.horms.nl (Postfix, from userid 7100)
-        id E618D41AB; Mon,  6 Sep 2021 09:03:46 +0200 (CEST)
-Date:   Mon, 6 Sep 2021 09:03:46 +0200
+        id BFFF641AB; Mon,  6 Sep 2021 09:05:21 +0200 (CEST)
+Date:   Mon, 6 Sep 2021 09:05:21 +0200
 From:   Simon Horman <horms@verge.net.au>
 To:     Geert Uytterhoeven <geert+renesas@glider.be>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -28,47 +28,58 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Frank Rowand <frowand.list@gmail.com>,
         linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/3] ia64: Fix #endif comment for reserve_elfcorehdr()
-Message-ID: <20210906070346.GB19281@vergenet.net>
+Subject: Re: [PATCH 3/3] ia64: Make num_rsvd_regions static
+Message-ID: <20210906070521.GC19281@vergenet.net>
 References: <cover.1629884459.git.geert+renesas@glider.be>
- <77b4c0648f200cab7e1c2c5171c06763e09362aa.1629884459.git.geert+renesas@glider.be>
+ <a377b5437e3e9da93d02f996fe06a2b956cb0990.1629884459.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <77b4c0648f200cab7e1c2c5171c06763e09362aa.1629884459.git.geert+renesas@glider.be>
+In-Reply-To: <a377b5437e3e9da93d02f996fe06a2b956cb0990.1629884459.git.geert+renesas@glider.be>
 Organisation: Horms Solutions BV
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 01:48:27PM +0200, Geert Uytterhoeven wrote:
-> The definition of reserve_elfcorehdr() depends on CONFIG_CRASH_DUMP, not
-> CONFIG_PROC_VMCORE.
+On Wed, Aug 25, 2021 at 01:48:29PM +0200, Geert Uytterhoeven wrote:
+> Commit f62800992e5917f2 ("ia64: switch to NO_BOOTMEM") removed the last
+> user of num_rsvd_regions outside arch/ia64/kernel/setup.c.
 > 
-> Fixes: d9a9855d0b06ca6d ("always reserve elfcore header memory in crash kernel")
-> Fixes: 17c1f07ed70afa4f ("[IA64] Reserve elfcorehdr memory in CONFIG_CRASH_DUMP")
 > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
 Reviewed-by: Simon Horman <horms@verge.net.au>
 
 > ---
->  arch/ia64/kernel/setup.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/ia64/include/asm/meminit.h | 1 -
+>  arch/ia64/kernel/setup.c        | 2 +-
+>  2 files changed, 1 insertion(+), 2 deletions(-)
 > 
+> diff --git a/arch/ia64/include/asm/meminit.h b/arch/ia64/include/asm/meminit.h
+> index 2738f62b5f989492..f1d5bf2ba847a135 100644
+> --- a/arch/ia64/include/asm/meminit.h
+> +++ b/arch/ia64/include/asm/meminit.h
+> @@ -29,7 +29,6 @@ struct rsvd_region {
+>  };
+>  
+>  extern struct rsvd_region rsvd_region[IA64_MAX_RSVD_REGIONS + 1];
+> -extern int num_rsvd_regions;
+>  
+>  extern void find_memory (void);
+>  extern void reserve_memory (void);
 > diff --git a/arch/ia64/kernel/setup.c b/arch/ia64/kernel/setup.c
-> index dd595fbd800651fe..fbd931f1eb270d98 100644
+> index 5e6ee8939092a2df..31fb84de2d21469a 100644
 > --- a/arch/ia64/kernel/setup.c
 > +++ b/arch/ia64/kernel/setup.c
-> @@ -546,7 +546,7 @@ int __init reserve_elfcorehdr(u64 *start, u64 *end)
->  	return 0;
->  }
+> @@ -131,7 +131,7 @@ unsigned long ia64_cache_stride_shift = ~0;
+>   * We use a special marker for the end of memory and it uses the extra (+1) slot
+>   */
+>  struct rsvd_region rsvd_region[IA64_MAX_RSVD_REGIONS + 1] __initdata;
+> -int num_rsvd_regions __initdata;
+> +static int num_rsvd_regions __initdata;
 >  
-> -#endif /* CONFIG_PROC_VMCORE */
-> +#endif /* CONFIG_CRASH_DUMP */
 >  
->  void __init
->  setup_arch (char **cmdline_p)
+>  /*
 > -- 
 > 2.25.1
 > 
