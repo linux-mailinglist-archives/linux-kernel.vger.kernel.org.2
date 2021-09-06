@@ -2,253 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6344018F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A644018EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241431AbhIFJgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 05:36:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28814 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241411AbhIFJgK (ORCPT
+        id S241408AbhIFJgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 05:36:07 -0400
+Received: from x127130.tudelft.net ([131.180.127.130]:34940 "EHLO
+        djo.tudelft.nl" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S241112AbhIFJgF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 05:36:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630920905;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bI+QSMrpQxc8wh/CBiWru2XSKk75+RIIlvQnbtIvrtU=;
-        b=iqoy3lR7WJaEGBnFJJ8C6zCCm6C6fRiaYd4r3N7uuFfe7sH1RFA970yLvsvtPxg0RlnTgB
-        YbzL7Hxmo/btKR46ZAnqmIopYTmr2tuyn3G9sEEg8qGNceBo75nTmy5CrIm2KTfDBKkKrM
-        qgA10UOVB4inSP/Q13epFQrgJP4VO/E=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-245-gZHiz3BXOpWwvnowX4iB8g-1; Mon, 06 Sep 2021 05:35:04 -0400
-X-MC-Unique: gZHiz3BXOpWwvnowX4iB8g-1
-Received: by mail-wr1-f71.google.com with SMTP id z15-20020adff74f000000b001577d70c98dso1030611wrp.12
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 02:35:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=bI+QSMrpQxc8wh/CBiWru2XSKk75+RIIlvQnbtIvrtU=;
-        b=MWFy8ZmbB/77rclVVZNBwrNw5lZy8/4PtVYePp8mffP8Rp3tDFkL48tcA4g5NkIOmz
-         Y10bAQb4VIH6OpfCJZnCjgn7lPM0SBkhUY711UAnG93WFLVYS807AcpxOto/+ktXB3ul
-         iOWgnHgT2MSSojaeeOTIqOMgB4Ed2AJpFCpTcG/dlNmYfXkhjwSUo11p6wnA4Okkt/tL
-         mbbU++fcz3xHw6488pdmWVMNS5fhbKI3A2b9nig2O9um1+JJ1RWreIGnYKF55SkiAAn3
-         4buv4fzNYOzLN4mg+6OqXLnEpzUNWy6XJQ0uTS5Get137NormhVIMUQmPw+yjpRTYaxv
-         aDnA==
-X-Gm-Message-State: AOAM530H9zhEjgfmy6x883/IWO5HXqYJbPC5J6kZwhamfuRURIq0OoGz
-        kiapIDN/Tsc3Vs3QdCq4zhg9COq9AzGxUdqe0EU3QFBgVfWCw5HDP6AxDRBgJaTtauG+knUkAVn
-        zscUAdaX8fhjjw6zrnNH1qx2e
-X-Received: by 2002:adf:c144:: with SMTP id w4mr12400051wre.398.1630920903347;
-        Mon, 06 Sep 2021 02:35:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzbjWLL9Dg2dcCjoGBqscLyTJKrOzkY3j2f7fPQOprJwdMQPtB17RuwCmXe2g/aYqEVItyxtw==
-X-Received: by 2002:adf:c144:: with SMTP id w4mr12400028wre.398.1630920903077;
-        Mon, 06 Sep 2021 02:35:03 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6323.dip0.t-ipconnect.de. [91.12.99.35])
-        by smtp.gmail.com with ESMTPSA id i4sm7804373wmd.5.2021.09.06.02.35.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 02:35:02 -0700 (PDT)
-Subject: Re: [RFC PATCH] fs/exec: Add the support for ELF program's NUMA
- replication
-To:     Huang Shijie <shijie@os.amperecomputing.com>,
-        viro@zeniv.linux.org.uk
-Cc:     akpm@linux-foundation.org, jlayton@kernel.org,
-        bfields@fieldses.org, torvalds@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, song.bao.hua@hisilicon.com,
-        patches@amperecomputing.com, zwang@amperecomputing.com
-References: <20210906161613.4249-1-shijie@os.amperecomputing.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <2cb841ca-2a04-f088-cee2-6c020ecc9508@redhat.com>
-Date:   Mon, 6 Sep 2021 11:35:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 6 Sep 2021 05:36:05 -0400
+Received: by djo.tudelft.nl (Postfix, from userid 2001)
+        id 0935C1C42C4; Mon,  6 Sep 2021 11:36:11 +0200 (CEST)
+Date:   Mon, 6 Sep 2021 11:36:11 +0200
+From:   wim <wim@djo.tudelft.nl>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wim <wim@djo.tudelft.nl>
+Subject: Re: kernel-4.9.270 crash
+Message-ID: <20210906093611.GA20123@djo.tudelft.nl>
+Reply-To: wim@djo.tudelft.nl
+References: <20210904235231.GA31607@djo.tudelft.nl>
+ <20210905190045.GA10991@djo.tudelft.nl>
+ <YTWgKo4idyocDuCD@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210906161613.4249-1-shijie@os.amperecomputing.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTWgKo4idyocDuCD@kroah.com>
+User-Agent: Mutt/1.11.2 (2019-01-07)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.09.21 18:16, Huang Shijie wrote:
-> This patch adds AT_NUMA_REPLICATION for execveat().
+On Mon, Sep 06, 2021 at 06:59:22AM +0200, Greg KH wrote:
+> On Sun, Sep 05, 2021 at 09:00:45PM +0200, wim wrote:
+> > On Sun, Sep 05, 2021 at 01:52:31AM +0200, wim wrote:
+> > > 
+> > > Hello Greg,
+> > > 
+> > > from kernel-4.9.270 up until now (4.9.282) I experience kernel crashes upon
+> > > loading a GPU module.
+> > > It happens on two out of at least six different machines.
+> > > I can't believe that I'm the only one where that happens, but since the bug
+> > > is still there twelve versions later, I need to report this.
+> > > ...
 > 
-> If this flag is set, the kernel will trigger COW(copy on write)
-> on the mmapped ELF binary. So the program will have a copied-page
-> on its NUMA node, even if the original page in page cache is
-> on other NUMA nodes.
+> Do you have any kernel log messages when these crashes happen?
 
-Am I missing something important or is this just absolutely not what we 
-want?
+On the AMD machine:
 
-This means that for each and every invocation of the binary, we'll COW 
-the complete binary -- an awful lot of wasted main memory and swap.
-
-This is not a NUMA replication, this is en executable ELF code replication.
-
-> 
-> Signed-off-by: Huang Shijie <shijie@os.amperecomputing.com>
-> ---
->   fs/binfmt_elf.c            | 27 ++++++++++++++++++++++-----
->   fs/exec.c                  |  5 ++++-
->   include/linux/binfmts.h    |  1 +
->   include/linux/mm.h         |  2 ++
->   include/uapi/linux/fcntl.h |  2 ++
->   mm/mprotect.c              |  2 +-
->   6 files changed, 32 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-> index 439ed81e755a..fac8f4a4555a 100644
-> --- a/fs/binfmt_elf.c
-> +++ b/fs/binfmt_elf.c
-> @@ -362,13 +362,14 @@ create_elf_tables(struct linux_binprm *bprm, const struct elfhdr *exec,
->   
->   static unsigned long elf_map(struct file *filep, unsigned long addr,
->   		const struct elf_phdr *eppnt, int prot, int type,
-> -		unsigned long total_size)
-> +		unsigned long total_size, int numa_replication)
->   {
->   	unsigned long map_addr;
->   	unsigned long size = eppnt->p_filesz + ELF_PAGEOFFSET(eppnt->p_vaddr);
->   	unsigned long off = eppnt->p_offset - ELF_PAGEOFFSET(eppnt->p_vaddr);
->   	addr = ELF_PAGESTART(addr);
->   	size = ELF_PAGEALIGN(size);
-> +	int ret;
->   
->   	/* mmap() will return -EINVAL if given a zero size, but a
->   	 * segment with zero filesize is perfectly valid */
-> @@ -385,11 +386,26 @@ static unsigned long elf_map(struct file *filep, unsigned long addr,
->   	*/
->   	if (total_size) {
->   		total_size = ELF_PAGEALIGN(total_size);
-> -		map_addr = vm_mmap(filep, addr, total_size, prot, type, off);
-> +
-> +		if (numa_replication) {
-> +			/* Trigger the COW for this ELF code section */
-> +			map_addr = vm_mmap(filep, addr, total_size, prot | PROT_WRITE,
-> +						type | MAP_POPULATE, off);
-> +			if (!IS_ERR_VALUE(map_addr) && !(prot & PROT_WRITE)) {
-> +				/* Change back */
-> +				ret = do_mprotect_pkey(map_addr, total_size, prot, -1);
-> +				if (ret)
-> +					return ret;
-> +			}
-> +		} else {
-> +			map_addr = vm_mmap(filep, addr, total_size, prot, type, off);
-> +		}
-> +
->   		if (!BAD_ADDR(map_addr))
->   			vm_munmap(map_addr+size, total_size-size);
-> -	} else
-> +	} else {
->   		map_addr = vm_mmap(filep, addr, size, prot, type, off);
-> +	}
->   
->   	if ((type & MAP_FIXED_NOREPLACE) &&
->   	    PTR_ERR((void *)map_addr) == -EEXIST)
-> @@ -635,7 +651,7 @@ static unsigned long load_elf_interp(struct elfhdr *interp_elf_ex,
->   				load_addr = -vaddr;
->   
->   			map_addr = elf_map(interpreter, load_addr + vaddr,
-> -					eppnt, elf_prot, elf_type, total_size);
-> +					eppnt, elf_prot, elf_type, total_size, 0);
->   			total_size = 0;
->   			error = map_addr;
->   			if (BAD_ADDR(map_addr))
-> @@ -1139,7 +1155,8 @@ static int load_elf_binary(struct linux_binprm *bprm)
->   		}
->   
->   		error = elf_map(bprm->file, load_bias + vaddr, elf_ppnt,
-> -				elf_prot, elf_flags, total_size);
-> +				elf_prot, elf_flags, total_size,
-> +				bprm->support_numa_replication);
->   		if (BAD_ADDR(error)) {
->   			retval = IS_ERR((void *)error) ?
->   				PTR_ERR((void*)error) : -EINVAL;
-> diff --git a/fs/exec.c b/fs/exec.c
-> index 38f63451b928..d27efa540641 100644
-> --- a/fs/exec.c
-> +++ b/fs/exec.c
-> @@ -900,7 +900,7 @@ static struct file *do_open_execat(int fd, struct filename *name, int flags)
->   		.lookup_flags = LOOKUP_FOLLOW,
->   	};
->   
-> -	if ((flags & ~(AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH)) != 0)
-> +	if ((flags & ~(AT_SYMLINK_NOFOLLOW | AT_EMPTY_PATH | AT_NUMA_REPLICATION)) != 0)
->   		return ERR_PTR(-EINVAL);
->   	if (flags & AT_SYMLINK_NOFOLLOW)
->   		open_exec_flags.lookup_flags &= ~LOOKUP_FOLLOW;
-> @@ -1828,6 +1828,9 @@ static int bprm_execve(struct linux_binprm *bprm,
->   	if (retval)
->   		goto out;
->   
-> +	/* Do we support NUMA replication for this program? */
-> +	bprm->support_numa_replication = flags & AT_NUMA_REPLICATION;
-> +
->   	retval = exec_binprm(bprm);
->   	if (retval < 0)
->   		goto out;
-> diff --git a/include/linux/binfmts.h b/include/linux/binfmts.h
-> index 049cf9421d83..1874e1732f20 100644
-> --- a/include/linux/binfmts.h
-> +++ b/include/linux/binfmts.h
-> @@ -64,6 +64,7 @@ struct linux_binprm {
->   	struct rlimit rlim_stack; /* Saved RLIMIT_STACK used during exec. */
->   
->   	char buf[BINPRM_BUF_SIZE];
-> +	int support_numa_replication;
->   } __randomize_layout;
->   
->   #define BINPRM_FLAGS_ENFORCE_NONDUMP_BIT 0
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 7ca22e6e694a..76611381be2a 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -3244,6 +3244,8 @@ unsigned long wp_shared_mapping_range(struct address_space *mapping,
->   #endif
->   
->   extern int sysctl_nr_trim_pages;
-> +int do_mprotect_pkey(unsigned long start, size_t len,
-> +			unsigned long prot, int pkey);
->   
->   #ifdef CONFIG_PRINTK
->   void mem_dump_obj(void *object);
-> diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
-> index 2f86b2ad6d7e..de99c5ae8eca 100644
-> --- a/include/uapi/linux/fcntl.h
-> +++ b/include/uapi/linux/fcntl.h
-> @@ -111,4 +111,6 @@
->   
->   #define AT_RECURSIVE		0x8000	/* Apply to the entire subtree */
->   
-> +#define AT_NUMA_REPLICATION	0x10000	/* Support NUMA replication for the ELF program */
-> +
->   #endif /* _UAPI_LINUX_FCNTL_H */
-> diff --git a/mm/mprotect.c b/mm/mprotect.c
-> index 883e2cc85cad..d1f8cececfed 100644
-> --- a/mm/mprotect.c
-> +++ b/mm/mprotect.c
-> @@ -519,7 +519,7 @@ mprotect_fixup(struct vm_area_struct *vma, struct vm_area_struct **pprev,
->   /*
->    * pkey==-1 when doing a legacy mprotect()
->    */
-> -static int do_mprotect_pkey(unsigned long start, size_t len,
-> +int do_mprotect_pkey(unsigned long start, size_t len,
->   		unsigned long prot, int pkey)
->   {
->   	unsigned long nstart, end, tmp, reqprot;
-> 
+Aug  1 20:51:24 djo kernel: [drm] Initialized
+Aug  1 20:51:24 djo kernel: checking generic (a0000 10000) vs hw (e0000000 8000000)
+Aug  1 20:51:24 djo kernel: checking generic (a0000 10000) vs hw (ea000000 1000000)
+Aug  1 20:51:24 djo kernel: fb: switching to nouveaufb from VGA16 VGA
+Aug  1 20:51:24 djo kernel: divide error: 0000 [#1] SMP
+Aug  1 20:51:24 djo kernel: Modules linked in: nouveau(+) video drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops ttm drm agpgart i2c_algo_bit tun lirc_serial(C) lirc_dev arc4 binfmt_misc snd_pcm_oss snd_mixer_oss fbcon bitblit softcursor font tileblit ath9k_htc ath9k_common ath9k_hw ath mac80211 cfg80211 uvcvideo rfkill firmware_class snd_usb_audio sr9700 videobuf2_vmalloc videobuf2_memops snd_usbmidi_lib videobuf2_v4l2 dm9601 videobuf2_core usbnet snd_rawmidi mii usb_storage snd_hda_codec_generic kvm snd_hda_intel irqbypass snd_hda_codec gpio_ich ppdev snd_hwdep pcspkr snd_hda_core snd_pcm uhci_hcd ohci_pci snd_timer ohci_hcd lpc_ich ehci_pci snd ehci_hcd wmi mfd_core usbcore soundcore parport_pc floppy usb_common parport acpi_cpufreq button processor
+Aug  1 20:51:24 djo kernel: CPU: 0 PID: 2791 Comm: modprobe Tainted: G         C      4.9.277 #1
+Aug  1 20:51:24 djo kernel: Hardware name: Hewlett-Packard HP xw4300 Workstation/0A00h, BIOS 786D3 v01.08 03/10/2006
+Aug  1 20:51:24 djo kernel: task: f6317080 task.stack: f4058000
+Aug  1 20:51:24 djo kernel: EIP: 0060:[<c02f789d>] EFLAGS: 00010206 CPU: 0
+Aug  1 20:51:24 djo kernel: EAX: 00000190 EBX: ffffffea ECX: 00000019 EDX: 00000000
+Aug  1 20:51:24 djo kernel: ESI: f52db800 EDI: 00000050 EBP: c02f7838 ESP: f4059c10
+Aug  1 20:51:24 djo kernel:  DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
+Aug  1 20:51:24 djo kernel: CR0: 80050033 CR2: 080a1a54 CR3: 35234000 CR4: 00000690
+Aug  1 20:51:24 djo kernel: Stack:
+Aug  1 20:51:24 djo kernel:  00000050 f52db800 00000019 c0340732 00000000 000000a0 000000a0 00000fa0
+Aug  1 20:51:24 djo kernel:  f62f4000 0000001e 00000000 00000000 f5a63800 00000000 00000000 00000000
+Aug  1 20:51:24 djo kernel:  00000000 00000000 f6024000 00000000 f52db800 00000001 00000000 00000000
+Aug  1 20:51:24 djo kernel: Call Trace:
+Aug  1 20:51:24 djo kernel:  [<c0340732>] ? 0xc0340732
+Aug  1 20:51:24 djo kernel:  [<c0340988>] ? 0xc0340988
+Aug  1 20:51:24 djo kernel:  [<c02f734a>] ? 0xc02f734a
+Aug  1 20:51:24 djo kernel:  [<c033f780>] ? 0xc033f780
+Aug  1 20:51:24 djo kernel:  [<c0340b32>] ? 0xc0340b32
+Aug  1 20:51:24 djo kernel:  [<c0340d20>] ? 0xc0340d20
+Aug  1 20:51:24 djo kernel:  [<f8bc4ef7>] ? 0xf8bc4ef7
+Aug  1 20:51:24 djo kernel:  [<c0163715>] ? 0xc0163715
+Aug  1 20:51:24 djo kernel:  [<f8bc4c82>] ? 0xf8bc4c82
+Aug  1 20:51:24 djo kernel:  [<c014aac4>] ? 0xc014aac4
+Aug  1 20:51:24 djo kernel:  [<c014ad8a>] ? 0xc014ad8a
+Aug  1 20:51:24 djo kernel:  [<c014ada6>] ? 0xc014ada6
+Aug  1 20:51:24 djo kernel:  [<c02f9aa4>] ? 0xc02f9aa4
+Aug  1 20:51:24 djo kernel:  [<c0168c32>] ? 0xc0168c32
+Aug  1 20:51:24 djo kernel:  [<c02fa294>] ? 0xc02fa294
+Aug  1 20:51:24 djo kernel:  [<c02fa47e>] ? 0xc02fa47e
+Aug  1 20:51:24 djo kernel:  [<c02fa4f5>] ? 0xc02fa4f5
+Aug  1 20:51:24 djo kernel:  [<f90a5c94>] ? 0xf90a5c94
+Aug  1 20:51:24 djo kernel:  [<f90a5b88>] ? 0xf90a5b88
+Aug  1 20:51:24 djo kernel:  [<c02e82de>] ? 0xc02e82de
+Aug  1 20:51:24 djo kernel:  [<c03545f8>] ? 0xc03545f8
+Aug  1 20:51:24 djo kernel:  [<c035475d>] ? 0xc035475d
+Aug  1 20:51:24 djo kernel:  [<c03533a9>] ? 0xc03533a9
+Aug  1 20:51:24 djo kernel:  [<c035424a>] ? 0xc035424a
+Aug  1 20:51:24 djo kernel:  [<c0354705>] ? 0xc0354705
+Aug  1 20:51:24 djo kernel:  [<c0353f3d>] ? 0xc0353f3d
+Aug  1 20:51:24 djo kernel:  [<c0354e44>] ? 0xc0354e44
+Aug  1 20:51:24 djo kernel:  [<f9124000>] ? 0xf9124000
+Aug  1 20:51:24 djo kernel:  [<c01003df>] ? 0xc01003df
+Aug  1 20:51:24 djo kernel:  [<c01dbb22>] ? 0xc01dbb22
+Aug  1 20:51:24 djo kernel:  [<c04ba42d>] ? 0xc04ba42d
+Aug  1 20:51:24 djo kernel:  [<c04ba45c>] ? 0xc04ba45c
+Aug  1 20:51:24 djo kernel:  [<c01889d5>] ? 0xc01889d5
+Aug  1 20:51:24 djo kernel:  [<c01e45e4>] ? 0xc01e45e4
+Aug  1 20:51:24 djo kernel:  [<c0188c2b>] ? 0xc0188c2b
+Aug  1 20:51:24 djo kernel:  [<c0101211>] ? 0xc0101211
+Aug  1 20:51:24 djo kernel:  [<c04c0579>] ? 0xc04c0579
+Aug  1 20:51:24 djo kernel: Code: 63 c0 eb 53 f6 04 24 01 bb ea ff ff ff 75 4a 0f b6 05 07 c5 6c c0 3b 04 24 72 3e 0f b6 05 0e c5 6c c0 31 d2 0f af 05 08 cc 63 c0 <f7> b6 ec 00 00 00 39 c8 72 24 8b 86 24 02 00 00 31 db 3b 30 75
+Aug  1 20:51:24 djo kernel: EIP: [<c02f789d>] 
+Aug  1 20:51:24 djo kernel:  SS:ESP 0068:f4059c10
+Aug  1 20:51:24 djo kernel: ---[ end trace 307fdb439b21cfc0 ]---
 
 
--- 
-Thanks,
+On the Intel machine:
 
-David / dhildenb
+Sep  5 00:20:26 asusUX410U kernel: Adding 2097148k swap on /dev/sda2.  Priority:-1 extents:1 across:2097148k FS
+Sep  5 00:20:38 asusUX410U kernel: [drm] Memory usable by graphics device = 4096M
+Sep  5 00:20:38 asusUX410U kernel: fb: switching to inteldrmfb from VGA16 VGA
+Sep  5 00:20:38 asusUX410U kernel: divide error: 0000 [#1] SMP
+Sep  5 00:20:38 asusUX410U kernel: Modules linked in: i915(+) intel_gtt cmac uvcvideo videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_core arc4 iwlmvm mac80211 nouveau drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops ttm drm agpgart btusb btrtl btbcm btintel bluetooth hid_multitouch iwlwifi i2c_designware_platform mxm_wmi i2c_designware_core cfg80211 x86_pkg_temp_thermal intel_powerclamp pcspkr nvidiafb i2c_algo_bit fb_ddc rfkill firmware_class thermal i2c_hid xhci_pci xhci_hcd usbcore battery int3403_thermal wmi video ac int3400_thermal acpi_thermal_rel acpi_pad asus_wireless intel_lpss_pci intel_lpss button processor_thermal_device i2c_i801 intel_soc_dts_iosf i2c_smbus intel_pch_thermal usb_common mfd_core int340x_thermal_zone binfmt_misc snd_hda_codec_generic snd_pcm_oss snd_mixer_oss snd_hda_intel
+Sep  5 00:20:38 asusUX410U kernel:  snd_hda_codec snd_hwdep snd_hda_core snd_pcm snd_timer snd soundcore fbcon bitblit softcursor font tileblit
+Sep  5 00:20:38 asusUX410U kernel: CPU: 2 PID: 2601 Comm: modprobe Not tainted 4.9.282 #1
+Sep  5 00:20:38 asusUX410U kernel: Hardware name: ASUSTeK COMPUTER INC. UX410UQK/UX410UQK, BIOS UX410UQK.301 12/12/2016
+Sep  5 00:20:38 asusUX410U kernel: task: ffff880264ac8000 task.stack: ffffc90003ee0000
+Sep  5 00:20:38 asusUX410U kernel: RIP: 0010:[<ffffffff8044b341>]  [<ffffffff8044b341>] 0xffffffff8044b341
+Sep  5 00:20:38 asusUX410U kernel: RSP: 0018:ffffc90003ee38e8  EFLAGS: 00010246
+Sep  5 00:20:38 asusUX410U kernel: RAX: 0000000000000190 RBX: 00000000000000a0 RCX: 0000000000000000
+Sep  5 00:20:38 asusUX410U kernel: RDX: 0000000000000000 RSI: 0000000000000050 RDI: ffff880256b9b800
+Sep  5 00:20:38 asusUX410U kernel: RBP: 0000000000000019 R08: 0000000000000019 R09: 00000000000000a0
+Sep  5 00:20:38 asusUX410U kernel: R10: 000000000000001e R11: 0000000000000001 R12: 00000000ffffffea
+Sep  5 00:20:38 asusUX410U kernel: R13: ffff880256b9b800 R14: 0000000000000fa0 R15: 0000000000000000
+Sep  5 00:20:38 asusUX410U kernel: FS:  00007fb959a4cc00(0000) GS:ffff88026ed00000(0000) knlGS:0000000000000000
+Sep  5 00:20:38 asusUX410U kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+Sep  5 00:20:38 asusUX410U kernel: CR2: 000056515c106000 CR3: 0000000259500000 CR4: 0000000000360670
+Sep  5 00:20:38 asusUX410U kernel: Stack:
+Sep  5 00:20:38 asusUX410U kernel:  0000000000000050 ffffffff804a8d05 ffff880259667000 0000000000000000
+Sep  5 00:20:38 asusUX410U kernel:  ffff88020000001e 000000a000000fa0 00000000000000a0 00000000000000a0
+Sep  5 00:20:38 asusUX410U kernel:  0190000000500019 ffff880256b9b800 ffff880256b9b800 0000000000000000
+Sep  5 00:20:38 asusUX410U kernel: Call Trace:
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804a8d05>] ? 0xffffffff804a8d05
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff8044adee>] ? 0xffffffff8044adee
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804a79dd>] ? 0xffffffff804a79dd
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804a9160>] ? 0xffffffff804a9160
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804a9395>] ? 0xffffffff804a9395
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffffa000c549>] ? 0xffffffffa000c549
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff80257d40>] ? 0xffffffff80257d40
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff80258077>] ? 0xffffffff80258077
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff8044d551>] ? 0xffffffff8044d551
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff8044e213>] ? 0xffffffff8044e213
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff8044e457>] ? 0xffffffff8044e457
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff8044e4de>] ? 0xffffffff8044e4de
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffffa05cb585>] ? 0xffffffffa05cb585
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff80439f8a>] ? 0xffffffff80439f8a
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804c0d1e>] ? 0xffffffff804c0d1e
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804c0eda>] ? 0xffffffff804c0eda
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804c0e72>] ? 0xffffffff804c0e72
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804bf59b>] ? 0xffffffff804bf59b
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804c04c9>] ? 0xffffffff804c04c9
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffffa06ab000>] ? 0xffffffffa06ab000
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804c1738>] ? 0xffffffff804c1738
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff80200341>] ? 0xffffffff80200341
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff802962fc>] ? 0xffffffff802962fc
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff80297a24>] ? 0xffffffff80297a24
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff80297e0e>] ? 0xffffffff80297e0e
+Sep  5 00:20:38 asusUX410U last message buffered 1 times
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff802014fd>] ? 0xffffffff802014fd
+Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff80645a3e>] ? 0xffffffff80645a3e
+Sep  5 00:20:38 asusUX410U kernel: Code: 65 00 eb 57 41 bc ea ff ff ff 40 f6 c6 01 75 4e 0f b6 05 da 22 75 00 39 f0 72 43 0f b6 05 d6 22 75 00 0f af 05 e9 6d 65 00 31 d2 <f7> b7 7c 01 00 00 44 39 c0 72 28 48 8b 87 00 03 00 00 45 31 e4 
+Sep  5 00:20:38 asusUX410U kernel:  RSP <ffffc90003ee38e8>
+Sep  5 00:20:38 asusUX410U kernel: ---[ end trace a46f8400460cdde1 ]---
 
+
+
+> Can you use 'git bisect' to track down the offending commit?
+
+If I would know how to do that
+
+> And why are you stuck on 4.9.y for these machines?  Why not use 5.10 or
+> newer?
+
+Because in 4.10 they dropped lirc-serial and I need that. The new ir-serial
+is no replacement. (The last working version of LIRC is 0.9.6. After that
+they destroyed transmitter support.)
+
+(I believe irda support got dropped too, which I need for my old nokia.)
+
+
+Wim.
