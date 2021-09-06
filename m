@@ -2,99 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADA8401D8D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 788D9401D8E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242901AbhIFPWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 11:22:22 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:38789 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhIFPWT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 11:22:19 -0400
-Received: by mail-oi1-f182.google.com with SMTP id bd1so7228419oib.5;
-        Mon, 06 Sep 2021 08:21:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=NhVMAnFWkEDHp3N7s9/kE4AIdpYmEdoiHRWavP3wKGw=;
-        b=Xu8XVf/xh7NvAlTN9QDsWYKS32IQMzO8PrELaP/6/Mtc14q6rxT6HuzujsFyr1FIj7
-         0N0PBpdGRb36TzBKPpTzsiMEzu4gZnPf0qqmb+BZjTN96UGrErZAk9ImXSWT9nG2tXMD
-         DFXYKnoAZMnIQFHTqlH0E4wY9FINZFWAPRAYM6wKjgWJVa/xrbpwMLFZUGFrn8KNug0b
-         Patoqq0FcE7M2467Aftf43T9vYsD9R/9TV/PxHD3ue+dFck+IggwZda0zur+5plbG1+h
-         Am5ypzoGpefKXcD1hEushSv6fzb3Ktx+QOrAzy0+LoxDRw6rZlrxqEGdt/r5vtxkCeIs
-         dyWA==
-X-Gm-Message-State: AOAM532oS020ySBC1BlNh0USzb1pSScoLUlZvYeJxQ+oX43vCckJWm8E
-        q8yzIPKGO9fS68iTtEUJKA==
-X-Google-Smtp-Source: ABdhPJy+l0D7FCPnNx9xIWA4YBi4231EcFQBebEZd1SUGrrTsRR5+JmSQg0LpQh8wlddCVj7KpH+0g==
-X-Received: by 2002:aca:5f03:: with SMTP id t3mr9075263oib.54.1630941674391;
-        Mon, 06 Sep 2021 08:21:14 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id v10sm1824088otp.25.2021.09.06.08.21.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 08:21:13 -0700 (PDT)
-Received: (nullmailer pid 1057762 invoked by uid 1000);
-        Mon, 06 Sep 2021 15:21:12 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-clk@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        martin.botka@somainline.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        angelogioacchino.delregno@somainline.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        marijn.suijten@somainline.org, devicetree@vger.kernel.org,
-        jamipkettunen@somainline.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20210904183014.43528-1-konrad.dybcio@somainline.org>
-References: <20210904183014.43528-1-konrad.dybcio@somainline.org>
-Subject: Re: [PATCH v3 1/9] dt-bindings: clk: qcom: Add bindings for MSM8994 GCC driver
-Date:   Mon, 06 Sep 2021 10:21:12 -0500
-Message-Id: <1630941672.493430.1057761.nullmailer@robh.at.kernel.org>
+        id S242980AbhIFPXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 11:23:55 -0400
+Received: from foss.arm.com ([217.140.110.172]:56682 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233929AbhIFPXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 11:23:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1CA3A31B;
+        Mon,  6 Sep 2021 08:22:49 -0700 (PDT)
+Received: from e121896.arm.com (unknown [10.57.47.83])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B7C3E3F766;
+        Mon,  6 Sep 2021 08:22:47 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     acme@kernel.org, linux-perf-users@vger.kernel.org
+Cc:     James Clark <james.clark@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] perf tests: Fix flaky test 'Object code reading'
+Date:   Mon,  6 Sep 2021 16:22:38 +0100
+Message-Id: <20210906152238.3415467-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 04 Sep 2021 20:30:05 +0200, Konrad Dybcio wrote:
-> Add documentation for the MSM8994 GCC driver.
-> 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
-> Changes since v2:
-> 
-> - Dropped second dt-binding part for the weird SD card clock configuration
-> - Fix up many mistakes, including maintainers, license and order
-> - I still have no idea why I get a pinctrl regex error.. need help here!
-> 
->  .../bindings/clock/qcom,gcc-msm8994.yaml      | 70 +++++++++++++++++++
->  1 file changed, 70 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.yaml
-> 
+This test occasionally fails on aarch64 when a sample is taken in
+free@plt and it fails with "Bytes read differ from those read by
+objdump". This is because that symbol is near a section boundary in the
+elf file. Despite the -z option to always output zeros, objdump uses
+bfd_map_over_sections() to iterate through the elf file so it doesn't
+see outside of the sections where these zeros are and can't print them.
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+For example this boundary proceeds free@plt in libc with a gap of 48
+bytes between .plt and .text:
 
-yamllint warnings/errors:
+  objdump -d -z --start-address=0x23cc8 --stop-address=0x23d08 libc-2.30.so
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,gcc-msm8994.example.dt.yaml: clock-controller@300000: 'clock-names', 'clocks' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/qcom,gcc.yaml
+  libc-2.30.so:     file format elf64-littleaarch64
 
-doc reference errors (make refcheckdocs):
+  Disassembly of section .plt:
 
-See https://patchwork.ozlabs.org/patch/1524636
+  0000000000023cc8 <*ABS*+0x7fd00@plt+0x8>:
+     23cc8:	91018210 	add	x16, x16, #0x60
+     23ccc:	d61f0220 	br	x17
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+  Disassembly of section .text:
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+  0000000000023d00 <abort@@GLIBC_2.17-0x98>:
+     23d00:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
+     23d04:	910003fd 	mov	x29, sp
 
-pip3 install dtschema --upgrade
+Taking a sample in free@plt is very rare because it is so small, but the
+test can be forced to fail almost every time on any platform by linking
+the test with a shared library that has a single empty function and
+calling it in a loop.
 
-Please check and re-submit.
+The fix is to zero the buffers so that when there is a jump in the
+addresses output by objdump, zeros are already filled in between.
+
+Signed-off-by: James Clark <james.clark@arm.com>
+---
+ tools/perf/tests/code-reading.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/tests/code-reading.c b/tools/perf/tests/code-reading.c
+index 9866cddebf23..9b4a765e4b73 100644
+--- a/tools/perf/tests/code-reading.c
++++ b/tools/perf/tests/code-reading.c
+@@ -229,8 +229,8 @@ static int read_object_code(u64 addr, size_t len, u8 cpumode,
+ 			    struct thread *thread, struct state *state)
+ {
+ 	struct addr_location al;
+-	unsigned char buf1[BUFSZ];
+-	unsigned char buf2[BUFSZ];
++	unsigned char buf1[BUFSZ] = {0};
++	unsigned char buf2[BUFSZ] = {0};
+ 	size_t ret_len;
+ 	u64 objdump_addr;
+ 	const char *objdump_name;
+-- 
+2.28.0
 
