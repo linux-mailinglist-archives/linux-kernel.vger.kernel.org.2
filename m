@@ -2,139 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D90401DB0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBDE401DBC
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243271AbhIFPik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 11:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233979AbhIFPii (ORCPT
+        id S239795AbhIFPry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 11:47:54 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58852 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231359AbhIFPrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 11:38:38 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03983C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 08:37:34 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id fs6so4512508pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 08:37:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EgjZqYtbAjQybf0FiR3jfzwWnoQOjy/QCj2+jtWcOhQ=;
-        b=fW/yrbJWXEF8BNtyC21n5Xx55xzQ/RBdn/T08eWb38C90PPnjTx95H9rj0kMBu5mus
-         XRbeYBnolP0To/STHqnTjN/Ihubr/5m5XQu+VxgBP/9EsDq1zFQKacrKhDOMrY+rd2nY
-         osD0OSqsNBAzk1QlK+/ILFyj0doLjDCgSdA+7ntp9Hh767rqQ5gJZ6EJHJyOA7c/eoZo
-         RHWQSPSF1OPSVckzhjtXEEB3nfYnKxivAXfew1cxyPAhhB/z0gT7NOAxYD4pQAk4OIT/
-         n9EgkqE7AWPQBSZXjQ4giY2be1DmyCgDICV9n05csVd8wn89byLSSNUHNuDTERu2XRPt
-         BavA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EgjZqYtbAjQybf0FiR3jfzwWnoQOjy/QCj2+jtWcOhQ=;
-        b=Bm4vHL06Wy/IMUGvUHaNfVBL1xAfJ2LWD/2AiDqpH8qFK/ADdkJU1wLRu+sknAwM2y
-         LarolTYTeDYXC+JWOSV1PBqX1H60kqi7MdQJZzEtGfkmM6nKbtlN9uv0QwJORMM2ven3
-         tY8UGCNX/k7nb5wlEsllnAd6vphZMKxc1os62Dbi8c/GF1DkkL293ojTPAmKpMgxJ67g
-         odpvTGwQbvKfnKcspjyGrQ7cuPPj7MdL/D2QJxoxoVW2Xf1GlYXbYozAzki2H81fCItD
-         c2EgvJx6nP1pTR87tdZjRu6g0bssil2sE7oAp2AiEiRIab6LsRpXFYEF6v6VKziztPS4
-         7+CQ==
-X-Gm-Message-State: AOAM531A68WcNakOqNZPz/6Fn76/umW3uzObquli6VXaNylfr/Sjhiip
-        0QWY9aPdWTv6B1+AxNvOlCYvHw==
-X-Google-Smtp-Source: ABdhPJzzPqszgGttLXpvxN/HeZUksi77ohZQH4hWeR9s38MZ+z/8kKRQErgVfOv6IUYbWEpWcelnsA==
-X-Received: by 2002:a17:90a:49:: with SMTP id 9mr14800601pjb.80.1630942653471;
-        Mon, 06 Sep 2021 08:37:33 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id z65sm8214649pjj.43.2021.09.06.08.37.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 08:37:32 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 09:37:30 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Brian Norris <briannorris@chromium.org>
-Cc:     Leo Yan <leo.yan@linaro.org>, Mike Leach <mike.leach@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] coresight: cpu-debug: control default behavior via
- Kconfig
-Message-ID: <20210906153730.GB1228692@p14s>
-References: <20210903182839.1.I20856983f2841b78936134dcf9cdf6ecafe632b9@changeid>
+        Mon, 6 Sep 2021 11:47:53 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 186FYfMo042902;
+        Mon, 6 Sep 2021 11:46:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=bJPDx5YkN0OvbpWmsIrGzk78OW8FXNIw73w9gZpOJ44=;
+ b=aPxa96N/xDDUAt6s178S6tApJMWcjH341XbmphlMU3Bv+9JLd+I5WKBqQB1WqB1sFI5S
+ 3q9dGmRcLi3u6QxQxaJXexBy1A4plLwryV8UxP7dFoD8GRd9GtrI5ii5TNzFWvnmRnIY
+ UT/bDHVnfOrNi/Y8aY6vhRKFSAARL5IeTrQB/hzySmWeW8B+ktlb5WJfvlsN2/HqHrmn
+ vsJtF2Ljf1rrprrweWQg/eTMzAgR3yeFfhvZwwBG4HTAwKwF7cojUzGBuClAbJYZo1/l
+ mtPelPsu7yNJ65p5djrd9BY2XGtZyXvSAZyHHGA0JwxuujmpkuxH6UO9NhooGfdzMK2x QA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3awnrkr50j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Sep 2021 11:46:47 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 186FZOsm047791;
+        Mon, 6 Sep 2021 11:46:47 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3awnrkr505-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Sep 2021 11:46:47 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 186FhOfV014213;
+        Mon, 6 Sep 2021 15:46:45 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06fra.de.ibm.com with ESMTP id 3av02j55f7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Sep 2021 15:46:45 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 186FgUh556820154
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 Sep 2021 15:42:30 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7FDC252057;
+        Mon,  6 Sep 2021 15:46:41 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.95.210])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 196EB5204F;
+        Mon,  6 Sep 2021 15:46:41 +0000 (GMT)
+Subject: Re: [PATCH v4 06/14] KVM: s390: pv: properly handle page flags for
+ protected guests
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, frankja@linux.ibm.com, thuth@redhat.com,
+        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
+References: <20210818132620.46770-1-imbrenda@linux.ibm.com>
+ <20210818132620.46770-7-imbrenda@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <1a44ff5c-f59f-2f37-2585-084294ed5e11@de.ibm.com>
+Date:   Mon, 6 Sep 2021 17:46:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210903182839.1.I20856983f2841b78936134dcf9cdf6ecafe632b9@changeid>
+In-Reply-To: <20210818132620.46770-7-imbrenda@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: K4dlWt3rTIdepGndDu4RgLPYmqToymp6
+X-Proofpoint-GUID: xjVZqJVlpIwISUtsgH9ROE-vT8x_osvG
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-06_06:2021-09-03,2021-09-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 suspectscore=0 bulkscore=0 impostorscore=0 adultscore=0
+ malwarescore=0 mlxlogscore=999 phishscore=0 mlxscore=0 priorityscore=1501
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109060099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Brian,
 
-On Fri, Sep 03, 2021 at 06:28:54PM -0700, Brian Norris wrote:
-> Debugfs is nice and so are module parameters, but
->  * debugfs doesn't take effect early (e.g., if drivers are locking up
->    before user space gets anywhere)
->  * module parameters either add a lot to the kernel command line, or
->    else take effect late as well (if you build =m and configure in
->    /etc/modprobe.d/)
+
+On 18.08.21 15:26, Claudio Imbrenda wrote:
+> Introduce variants of the convert and destroy page functions that also
+> clear the PG_arch_1 bit used to mark them as secure pages.
 > 
-> So in the same spirit as these
->   CONFIG_PANIC_ON_OOPS (also available via cmdline or modparam)
->   CONFIG_INTEL_IOMMU_DEFAULT_ON (also available via cmdline)
-> add a new Kconfig option.
+> These new functions can only be called on pages for which a reference
+> is already being held.
 > 
-> Module parameters and debugfs can still override.
-> 
-> Signed-off-by: Brian Norris <briannorris@chromium.org>
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+> Acked-by: Janosch Frank <frankja@linux.ibm.com>
+
+Can you refresh my mind? We do have over-indication of PG_arch_1 and this
+might result in spending some unneeded cycles but in the end this will be
+correct. Right?
+And this patch will fix some unnecessary places that add overindication.
 > ---
+>   arch/s390/include/asm/pgtable.h |  9 ++++++---
+>   arch/s390/include/asm/uv.h      | 10 ++++++++--
+>   arch/s390/kernel/uv.c           | 34 ++++++++++++++++++++++++++++++++-
+>   arch/s390/mm/gmap.c             |  4 +++-
+>   4 files changed, 50 insertions(+), 7 deletions(-)
 > 
->  drivers/hwtracing/coresight/Kconfig               | 13 +++++++++++++
->  drivers/hwtracing/coresight/coresight-cpu-debug.c |  2 +-
->  2 files changed, 14 insertions(+), 1 deletion(-)
-> 
-
-I have applied this patch to my local tree.  I will make that tree public when
-next week when 5.15-rc1 has been released.
-
-Thanks,
-Mathieu
-
-> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
-> index f026e5c0e777..8b638eb3cb7d 100644
-> --- a/drivers/hwtracing/coresight/Kconfig
-> +++ b/drivers/hwtracing/coresight/Kconfig
-> @@ -150,6 +150,19 @@ config CORESIGHT_CPU_DEBUG
->  	  To compile this driver as a module, choose M here: the
->  	  module will be called coresight-cpu-debug.
->  
-> +config CORESIGHT_CPU_DEBUG_DEFAULT_ON
-> +	bool "Enable CoreSight CPU Debug by default
-> +	depends on CORESIGHT_CPU_DEBUG
-> +	help
-> +	  Say Y here to enable the CoreSight Debug panic-debug by default. This
-> +	  can also be enabled via debugfs, but this ensures the debug feature
-> +	  is enabled as early as possible.
+> diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
+> index dcac7b2df72c..0f1af2232ebe 100644
+> --- a/arch/s390/include/asm/pgtable.h
+> +++ b/arch/s390/include/asm/pgtable.h
+> @@ -1074,8 +1074,9 @@ static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
+>   	pte_t res;
+>   
+>   	res = ptep_xchg_lazy(mm, addr, ptep, __pte(_PAGE_INVALID));
+> +	/* At this point the reference through the mapping is still present */
+>   	if (mm_is_protected(mm) && pte_present(res))
+> -		uv_convert_from_secure(pte_val(res) & PAGE_MASK);
+> +		uv_convert_owned_from_secure(pte_val(res) & PAGE_MASK);
+>   	return res;
+>   }
+>   
+> @@ -1091,8 +1092,9 @@ static inline pte_t ptep_clear_flush(struct vm_area_struct *vma,
+>   	pte_t res;
+>   
+>   	res = ptep_xchg_direct(vma->vm_mm, addr, ptep, __pte(_PAGE_INVALID));
+> +	/* At this point the reference through the mapping is still present */
+>   	if (mm_is_protected(vma->vm_mm) && pte_present(res))
+> -		uv_convert_from_secure(pte_val(res) & PAGE_MASK);
+> +		uv_convert_owned_from_secure(pte_val(res) & PAGE_MASK);
+>   	return res;
+>   }
+>   
+> @@ -1116,8 +1118,9 @@ static inline pte_t ptep_get_and_clear_full(struct mm_struct *mm,
+>   	} else {
+>   		res = ptep_xchg_lazy(mm, addr, ptep, __pte(_PAGE_INVALID));
+>   	}
+> +	/* At this point the reference through the mapping is still present */
+>   	if (mm_is_protected(mm) && pte_present(res))
+> -		uv_convert_from_secure(pte_val(res) & PAGE_MASK);
+> +		uv_convert_owned_from_secure(pte_val(res) & PAGE_MASK);
+>   	return res;
+>   }
+>   
+> diff --git a/arch/s390/include/asm/uv.h b/arch/s390/include/asm/uv.h
+> index b35add51b967..3236293d5a31 100644
+> --- a/arch/s390/include/asm/uv.h
+> +++ b/arch/s390/include/asm/uv.h
+> @@ -356,8 +356,9 @@ static inline int is_prot_virt_host(void)
+>   }
+>   
+>   int gmap_make_secure(struct gmap *gmap, unsigned long gaddr, void *uvcb);
+> -int uv_destroy_page(unsigned long paddr);
+> +int uv_destroy_owned_page(unsigned long paddr);
+>   int uv_convert_from_secure(unsigned long paddr);
+> +int uv_convert_owned_from_secure(unsigned long paddr);
+>   int gmap_convert_to_secure(struct gmap *gmap, unsigned long gaddr);
+>   
+>   void setup_uv(void);
+> @@ -367,7 +368,7 @@ void adjust_to_uv_max(unsigned long *vmax);
+>   static inline void setup_uv(void) {}
+>   static inline void adjust_to_uv_max(unsigned long *vmax) {}
+>   
+> -static inline int uv_destroy_page(unsigned long paddr)
+> +static inline int uv_destroy_owned_page(unsigned long paddr)
+>   {
+>   	return 0;
+>   }
+> @@ -376,6 +377,11 @@ static inline int uv_convert_from_secure(unsigned long paddr)
+>   {
+>   	return 0;
+>   }
 > +
-> +	  Has the same effect as setting coresight_cpu_debug.enable=1 on the
-> +	  kernel command line.
+> +static inline int uv_convert_owned_from_secure(unsigned long paddr)
+> +{
+> +	return 0;
+> +}
+>   #endif
+>   
+>   #if defined(CONFIG_PROTECTED_VIRTUALIZATION_GUEST) || IS_ENABLED(CONFIG_KVM)
+> diff --git a/arch/s390/kernel/uv.c b/arch/s390/kernel/uv.c
+> index 68a8fbafcb9c..05f8bf61d20a 100644
+> --- a/arch/s390/kernel/uv.c
+> +++ b/arch/s390/kernel/uv.c
+> @@ -115,7 +115,7 @@ static int uv_pin_shared(unsigned long paddr)
+>    *
+>    * @paddr: Absolute host address of page to be destroyed
+>    */
+> -int uv_destroy_page(unsigned long paddr)
+> +static int uv_destroy_page(unsigned long paddr)
+>   {
+>   	struct uv_cb_cfs uvcb = {
+>   		.header.cmd = UVC_CMD_DESTR_SEC_STOR,
+> @@ -135,6 +135,22 @@ int uv_destroy_page(unsigned long paddr)
+>   	return 0;
+>   }
+>   
+> +/*
+> + * The caller must already hold a reference to the page
+> + */
+> +int uv_destroy_owned_page(unsigned long paddr)
+> +{
+> +	struct page *page = phys_to_page(paddr);
+> +	int rc;
 > +
-> +	  Say N if unsure.
+> +	get_page(page);
+> +	rc = uv_destroy_page(paddr);
+> +	if (!rc)
+> +		clear_bit(PG_arch_1, &page->flags);
+> +	put_page(page);
+> +	return rc;
+> +}
 > +
->  config CORESIGHT_CTI
->  	tristate "CoreSight Cross Trigger Interface (CTI) driver"
->  	depends on ARM || ARM64
-> diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-> index 00de46565bc4..8845ec4b4402 100644
-> --- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
-> +++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-> @@ -105,7 +105,7 @@ static DEFINE_PER_CPU(struct debug_drvdata *, debug_drvdata);
->  static int debug_count;
->  static struct dentry *debug_debugfs_dir;
->  
-> -static bool debug_enable;
-> +static bool debug_enable = IS_ENABLED(CONFIG_CORESIGHT_CPU_DEBUG_DEFAULT_ON);
->  module_param_named(enable, debug_enable, bool, 0600);
->  MODULE_PARM_DESC(enable, "Control to enable coresight CPU debug functionality");
->  
-> -- 
-> 2.33.0.153.gba50c8fa24-goog
+>   /*
+>    * Requests the Ultravisor to encrypt a guest page and make it
+>    * accessible to the host for paging (export).
+> @@ -154,6 +170,22 @@ int uv_convert_from_secure(unsigned long paddr)
+>   	return 0;
+>   }
+>   
+> +/*
+> + * The caller must already hold a reference to the page
+> + */
+> +int uv_convert_owned_from_secure(unsigned long paddr)
+> +{
+> +	struct page *page = phys_to_page(paddr);
+> +	int rc;
+> +
+> +	get_page(page);
+> +	rc = uv_convert_from_secure(paddr);
+> +	if (!rc)
+> +		clear_bit(PG_arch_1, &page->flags);
+> +	put_page(page);
+> +	return rc;
+> +}
+> +
+>   /*
+>    * Calculate the expected ref_count for a page that would otherwise have no
+>    * further pins. This was cribbed from similar functions in other places in
+> diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+> index 5a138f6220c4..38b792ab57f7 100644
+> --- a/arch/s390/mm/gmap.c
+> +++ b/arch/s390/mm/gmap.c
+> @@ -2678,8 +2678,10 @@ static int __s390_reset_acc(pte_t *ptep, unsigned long addr,
+>   {
+>   	pte_t pte = READ_ONCE(*ptep);
+>   
+> +	/* There is a reference through the mapping */
+>   	if (pte_present(pte))
+> -		WARN_ON_ONCE(uv_destroy_page(pte_val(pte) & PAGE_MASK));
+> +		WARN_ON_ONCE(uv_destroy_owned_page(pte_val(pte) & PAGE_MASK));
+> +
+>   	return 0;
+>   }
+>   
 > 
