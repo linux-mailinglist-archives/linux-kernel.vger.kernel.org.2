@@ -2,156 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B81DE401DCB
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4E68401DC9
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243182AbhIFPwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 11:52:15 -0400
-Received: from gate.crashing.org ([63.228.1.57]:56697 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231359AbhIFPwO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 11:52:14 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 186Fkn6J005485;
-        Mon, 6 Sep 2021 10:46:49 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 186Fkmi9005477;
-        Mon, 6 Sep 2021 10:46:48 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Mon, 6 Sep 2021 10:46:42 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Linus Torvalds <torvalds@linuxfoundation.org>
-Cc:     Florian Weimer <fweimer@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
-Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
-Message-ID: <20210906154642.GV1583@gate.crashing.org>
-References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com> <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com> <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org> <878s0c4vng.fsf@oldenburg.str.redhat.com> <20210904131911.GP1583@gate.crashing.org> <871r644bd2.fsf@oldenburg.str.redhat.com> <CAHk-=wi+XKYN+3u=_fm=ExqpEaHdER0XuKxVauHYVCPKpKR97Q@mail.gmail.com> <20210904191531.GS1583@gate.crashing.org> <CAHk-=wjc1rxah3xt8mKN=aCxQigjy3-hEf4xh_Y-r=MXAKVrag@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjc1rxah3xt8mKN=aCxQigjy3-hEf4xh_Y-r=MXAKVrag@mail.gmail.com>
-User-Agent: Mutt/1.4.2.3i
+        id S243096AbhIFPvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 11:51:13 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:62592 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231359AbhIFPvL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 11:51:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630943406; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=+EJw87u3VrcDLuHUv/GxuAklamXxAsR9kAqaJTr6SFU=;
+ b=YZHpRhOVBZtdNGuk2ovoQjPnePFFGwru6ylJyysuzFTLBIbdSGqtnD3B8ozdXBWr7XP4jgvt
+ gdmt7mL20apemloR+dqBUp+E8ulFsHEbMhP4FoYUrIqYQ7T8VyRKAFBOvfhN1NW7+TQXvlCr
+ lvuBhYl2h25R/xIVhvVLO6AcROQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 613638a61567234b8c292c17 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 06 Sep 2021 15:49:58
+ GMT
+Sender: kathirav=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2299BC43616; Mon,  6 Sep 2021 15:49:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kathirav)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 79313C4338F;
+        Mon,  6 Sep 2021 15:49:57 +0000 (UTC)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 06 Sep 2021 21:19:57 +0530
+From:   Kathiravan T <kathirav@codeaurora.org>
+To:     Robert Marko <robimarko@gmail.com>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] soc: qcom: socinfo: Add IPQ8074 family ID-s
+In-Reply-To: <20210905171131.660885-1-robimarko@gmail.com>
+References: <20210905171131.660885-1-robimarko@gmail.com>
+Message-ID: <2c26a5c1302813f5343cb0fd5c192267@codeaurora.org>
+X-Sender: kathirav@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 04, 2021 at 12:58:50PM -0700, Linus Torvalds wrote:
-> On Sat, Sep 4, 2021 at 12:18 PM Segher Boessenkool
-> <segher@kernel.crashing.org> wrote:
-> > And the C standard requires you to use these headers to use some
-> > features of the C language
+On 2021-09-05 22:41, Robert Marko wrote:
+> IPQ8074 family SoC ID-s are missing, so lets add them based on
+> the downstream driver.
 > 
-> That's really the point here: we don't care AT ALL.
+
+Did you intentionally left out the IDs for below variants?
+
+IPQ8172 - 397
+IPQ8173 - 398
+IPQ8174 - 399
+
+Reviewed-by: Kathiravan T <kathirav@codeaurora.org>
+
+> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> ---
+>  drivers/soc/qcom/socinfo.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 > 
-> The C standard headers are simply not relevant for the kernel. Never
-> have been, never will be.
+> diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
+> index 9faf48302f4b..288897868435 100644
+> --- a/drivers/soc/qcom/socinfo.c
+> +++ b/drivers/soc/qcom/socinfo.c
+> @@ -281,19 +281,31 @@ static const struct soc_id soc_id[] = {
+>  	{ 319, "APQ8098" },
+>  	{ 321, "SDM845" },
+>  	{ 322, "MDM9206" },
+> +	{ 323, "IPQ8074" },
+>  	{ 324, "SDA660" },
+>  	{ 325, "SDM658" },
+>  	{ 326, "SDA658" },
+>  	{ 327, "SDA630" },
+>  	{ 338, "SDM450" },
+>  	{ 341, "SDA845" },
+> +	{ 342, "IPQ8072" },
+> +	{ 343, "IPQ8076" },
+> +	{ 344, "IPQ8078" },
+>  	{ 345, "SDM636" },
+>  	{ 346, "SDA636" },
+>  	{ 349, "SDM632" },
+>  	{ 350, "SDA632" },
+>  	{ 351, "SDA450" },
+>  	{ 356, "SM8250" },
+> +	{ 375, "IPQ8070" },
+> +	{ 376, "IPQ8071" },
+> +	{ 389, "IPQ8072A" },
+> +	{ 390, "IPQ8074A" },
+> +	{ 391, "IPQ8076A" },
+> +	{ 392, "IPQ8078A" },
+>  	{ 394, "SM6125" },
+> +	{ 395, "IPQ8070A" },
+> +	{ 396, "IPQ8071A" },
+>  	{ 402, "IPQ6018" },
+>  	{ 403, "IPQ6028" },
+>  	{ 421, "IPQ6000" },
 
-Yes they are.  It is the single standard way to get the functionality
-you want.
-
-These are not library headers.  These headers are provided by the
-compiler itself.  (The one exception is limits.h, but you have no use
-for that in the kernel anyway).
-
-> We care about the low-level compiler infrastructure, not the standard C headers.
-
-I don't know why you think you can separate that.  Take <stdarg.h> --
-there is no other (portable, standard) way to implement receiving
-variadic arguments.
-
-Yes you can mimic what GCC currently does in its <stdarg.h>, and hope
-that keeps working on later versions of GCC, and on all older compiler
-versions you care about, and that it works on other compilers as well.
-
-> Those standards are designed for - and try to cater to - a completely
-> different audience.
-
-"""
-  This International Standard specifies the form and establishes the
-  interpretation of programs expressed in the programming language C.
-  Its purpose is to promote portability, reliability, maintainability,
-  and efficient execution of C language programs on a variety of
-  computing systems.
-"""
-
-Is the kernel not written in C?  The C standard is not the POSIX
-standard, or anything like it.
-
-> We do our own type system, and again, we don't care at all about the C
-> "official" type system and odd name rules that change from one version
-> to the other.
-
-<stdint.h> has existed since C99, and has not relevantly changed since.
-
-And you *do* care about this feature, deeply.  That is why the kernel
-has u8, for the exact same reason standard C has uint8_t: to get exact
-width integer types.  The kernel could just include the standard header
-and then
-  typedef uint8_t u8;
-instead of the dance it currently goes through.
-
-> We generally *cannot* use the system header files, because they bring
-> in things that the kernel simply cannot handle.
-
-Like?
-
-These header files are part of the compiler.  The compiler is required
-to provide these to be a C compiler.  Without using those header files
-there is no portable way to use some important features of C.
-
-These are not library headers.  These are not headers provided by some
-third party.  These headers are an intricate part of the compiler
-itself.
-
-> > You also need <stdint.h> and <stddef.h>.
-> 
-> No, you really don't.
-> 
-> We avoid those intentionally, and always have. Because the system
-> header files have never been a good match.
-
-Linux re-implements all of it.  It *does* need it, it just has its own
-implementation if it.  It needs the features it provides.
-
-> But it does look like gcc and clang have both ended up exposing the
-> interfaces the same way, using the __buildin_xyz model to just wrap
-> the standard names in a namespace-clean way.
-> 
-> That really wasn't historically true. Back in the bad old days of
-> varargs etc, you literally had "va_list" be a "char *" and the
-> accessor functions were magic macros that updated things by hand by
-> the size of the arguments etc...
-
-Before C90 there was <varargs.h> instead, and that was like that indeed.
-The standard C <stdarg.h> header *cannot* be implemented in terms of
-other building blocks in C.  This is the underlying theme of all
-standard C headers.
-
-> In ways that a lot of other "standard C header files" very much are
-> *not* - many of those are about the types that the system provides.
-> 
-> And in fact often the kernel is the *source* and definition of parts of them.
-
-That is not true at all.  These headers in no way depend on Linux or any
-other OS.  Some of it is mandated by the C standard, some of it is
-mandated by the low-level ABI used (the size of an int for example, that
-kind of thing).  But none of it is from any kernel.
-
-
-I get that long ago in the dark ages Linux had to implement many things
-from scratch.  And that implementing things from scratch is more fun
-anyway.  Also, everything seems to work now, tinkering with it is not
-necessarily the best idea.
-
-But that does not mean that if you had to start over you should not use
-the standard C headers, or that it would be a bad idea to use them more
-often now.
-
-
-Segher
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of Code Aurora Forum, hosted by The Linux Foundation
