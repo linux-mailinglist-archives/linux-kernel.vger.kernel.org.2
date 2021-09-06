@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E06401B1D
+	by mail.lfdr.de (Postfix) with ESMTP id 71350401B1C
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242105AbhIFMZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:25:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58950 "EHLO mail.kernel.org"
+        id S242076AbhIFMZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:25:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237245AbhIFMZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237454AbhIFMZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 6 Sep 2021 08:25:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D23AA60F45;
+Received: by mail.kernel.org (Postfix) with ESMTPS id E080560F43;
         Mon,  6 Sep 2021 12:24:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1630931045;
-        bh=Zy6R3EZkqy/7oKKjFPZvaCgdsk/p/dmxINF1eormd2I=;
+        bh=ll0PgTxU1AsOAoGrJa5MgZES4B9sMq3D4bqmFJ7km00=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mobPM3FuHmPvktTp1XetDVVecmIwCeUfsHDs8j5oSSKxvo2JqTryi/bn+1d6a1vIj
-         uSMHzRYAvL+y36YcYNSjJYH8Z5IK3MEH8QVqtGIgmHpHPTe//3D70lYo/KnnGkKL/3
-         AbdKVXL/TOc/aH9Y2B/Ua55wXVcH1g2pE+KuqUyGU2aVqpkqZ81ytcGEzcWX8NyBBy
-         8lfvP41sJxZdxfFTOY3Q58B4TofqImwr8yLj+oH6cULSwzrLbNlqgx2Mp8A89/scDT
-         ZA50tobH/qFBtF4eWP1e0JP3spgFNBMTNiPedyOF2yJHk1+ooNQlYSbL0JqbnL/Cie
-         8uRYYsacyFA+A==
+        b=mwFJBfjlkZ5zff6vbA06vBG3Lnd6xoe858Px4OHvdn9B9mQ4nd9KXPdk41gmGeysk
+         M2ETSzqNxoIrqeItn4Zj+giUaJimTToC+s8pO6VKpK43fbgBwPM7rZgl9x/poOyxxT
+         t1fUC5fvFhSXtDuyY0pEadPZsqUHM3kl+SfZLzWc53h+ZIAaUmENmlkAB0HbotPVA0
+         ntuThAgWJQHEM5wNzktYoopih1uMd5tim0eFa0K3UKjjh1E5PDF0YbT3iRV54iNNgT
+         YqyGeyjoYNspWU+OfXjy9PjgJJ+rH5UA2MNHKC3YqOS62jQErHbYWOLtYI+w3Zwg8T
+         FrkUWLRt+LgOA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C544F60A37;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D0188609B9;
         Mon,  6 Sep 2021 12:24:05 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] stmmac: dwmac-loongson:Fix missing return value
+Subject: Re: [PATCH] net: hns3: make hclgevf_cmd_caps_bit_map0 and
+ hclge_cmd_caps_bit_map0 static
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163093104580.13830.7607505980479153914.git-patchwork-notify@kernel.org>
+Message-Id: <163093104584.13830.17839603759630854215.git-patchwork-notify@kernel.org>
 Date:   Mon, 06 Sep 2021 12:24:05 +0000
-References: <20210906072107.10906-1-long870912@gmail.com>
-In-Reply-To: <20210906072107.10906-1-long870912@gmail.com>
-To:     zhaoxiao <long870912@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, mcoquelin.stm32@gmail.com,
-        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, netdev@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1630921919-36549-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1630921919-36549-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -49,17 +48,19 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Mon,  6 Sep 2021 15:21:07 +0800 you wrote:
-> Add the return value when phy_mode < 0.
+On Mon,  6 Sep 2021 17:51:59 +0800 you wrote:
+> From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
 > 
-> Signed-off-by: zhaoxiao <long870912@gmail.com>
-> ---
->  drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> This symbols is not used outside of hclge_cmd.c and hclgevf_cmd.c, so marks
+> it static.
+> 
+> Fix the following sparse warning:
+> 
+> [...]
 
 Here is the summary with links:
-  - stmmac: dwmac-loongson:Fix missing return value
-    https://git.kernel.org/netdev/net/c/5289de5929d1
+  - net: hns3: make hclgevf_cmd_caps_bit_map0 and hclge_cmd_caps_bit_map0 static
+    https://git.kernel.org/netdev/net/c/0c0383918a3e
 
 You are awesome, thank you!
 --
