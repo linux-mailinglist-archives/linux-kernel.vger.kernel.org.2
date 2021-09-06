@@ -2,131 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C198E4016F0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D88A4016F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240129AbhIFHZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 03:25:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48036 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233050AbhIFHZC (ORCPT
+        id S239597AbhIFHa3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Sep 2021 03:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233050AbhIFHa2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 03:25:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630913037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wf8KRCDP99l0Ftn5x2zHgfYJe6BFFbdxma/jTrXRbLU=;
-        b=D2mAFF9k2duSUcY6aJ34UoIMQout2qhAIbD5S+8TRK4RD5Vdau2IxAsoO4CvpL/bmI1oOF
-        Be/fH6NMKAhe04uo1ZA/Qv6+4uDLXziffrIvzpbothRXlGpBNuStOnGz9q3N2+7efN1y7/
-        2r64YLNwCa9aScdldKKoEQYSl4Wa22A=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-330-0wWyXA3gMbKcO-7tB4ED2A-1; Mon, 06 Sep 2021 03:23:55 -0400
-X-MC-Unique: 0wWyXA3gMbKcO-7tB4ED2A-1
-Received: by mail-wr1-f69.google.com with SMTP id p10-20020adfce0a000000b001572d05c970so907780wrn.21
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 00:23:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=wf8KRCDP99l0Ftn5x2zHgfYJe6BFFbdxma/jTrXRbLU=;
-        b=l3hw1UdBID3W56vR9BT+R7EJH+1lqa5srFDU2matrSmp1i7BepZ4YRfyRVNZcDXbTw
-         OwWWPkHTcD2DFGrpUIwjEEbh3M8E6h6Lg1e0oWHSh4Q3mvg01Q/SvQNDr9IOPhJ5XaD+
-         Th86vgjh14mIC0o31603QXa7EPWcnxM2YY2neJ13ANGDBGzuvxkENRxUiZdWDjBAOSkv
-         CKX6jNWugQdZF2wZeBS/UzAXSpVn8AMDT4+EXoJe1AJDjRd8gaZ6JQmGz4quY0SMhZGE
-         updGG/B5DYOX/A0JGR7y5y6mav+kDvdeieFcs/JTJfFk/UfiCiES3SRDW0s3b95U6zWO
-         wt2w==
-X-Gm-Message-State: AOAM533kF0c2HIPiO3CW6Q9XyawHZmY9HCgFKMJ6x5goRIEb6IKa2y/k
-        wGmNGKzhJKe/VyHvxStiVm3mo4HgF/BfpQdLMh23c6eqo504NWD0BZNb/B34otvcRpiy6xtRsYl
-        3srnB4nG7i/WgFHgWGXEg2rzgJM20sbbMF08+AL6mEsM/f3ocSLgxqKiY4IggmRPaALYkkqWEiH
-        7f
-X-Received: by 2002:adf:fb91:: with SMTP id a17mr11227368wrr.376.1630913034569;
-        Mon, 06 Sep 2021 00:23:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxdaR3Mh8cLUnR+nwZrbR2K1Bv76qt2OHscdhtOpNYxiADNGF0/XvoztVGTSICRDJ/6aJonwg==
-X-Received: by 2002:adf:fb91:: with SMTP id a17mr11227346wrr.376.1630913034375;
-        Mon, 06 Sep 2021 00:23:54 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id o12sm6471190wmr.2.2021.09.06.00.23.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 00:23:53 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 8/8] KVM: Make kvm_make_vcpus_request_mask() use
- pre-allocated cpu_kick_mask
-In-Reply-To: <YTJMvI1GE5Ux7eVE@google.com>
-References: <20210903075141.403071-1-vkuznets@redhat.com>
- <20210903075141.403071-9-vkuznets@redhat.com>
- <YTJMvI1GE5Ux7eVE@google.com>
-Date:   Mon, 06 Sep 2021 09:23:52 +0200
-Message-ID: <87wnnu416f.fsf@vitty.brq.redhat.com>
+        Mon, 6 Sep 2021 03:30:28 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2115C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 00:29:23 -0700 (PDT)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mN948-0000Qj-Dr; Mon, 06 Sep 2021 09:29:16 +0200
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1mN946-0005Cl-If; Mon, 06 Sep 2021 09:29:14 +0200
+Message-ID: <d93c6866fb8a6e9bebf3b3ed6959e2c3abaf647d.camel@pengutronix.de>
+Subject: Re: [PATCH v5 09/16] soc: mediatek: mmsys: modify reset controller
+ for MT8195 vdosys1
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     "Nancy.Lin" <nancy.lin@mediatek.com>, CK Hu <ck.hu@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        singo.chang@mediatek.com, srv_heupstream@mediatek.com
+Date:   Mon, 06 Sep 2021 09:29:14 +0200
+In-Reply-To: <20210906071539.12953-10-nancy.lin@mediatek.com>
+References: <20210906071539.12953-1-nancy.lin@mediatek.com>
+         <20210906071539.12953-10-nancy.lin@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+Hi Nancy,
 
-> On Fri, Sep 03, 2021, Vitaly Kuznetsov wrote:
->> kvm_make_vcpus_request_mask() already disables preemption so just like
->> kvm_make_all_cpus_request_except() it can be switched to using
->> pre-allocated per-cpu cpumasks. This allows for improvements for both
->> users of the function: in Hyper-V emulation code 'tlb_flush' can now be
->> dropped from 'struct kvm_vcpu_hv' and kvm_make_scan_ioapic_request_mask()
->> gets rid of dynamic allocation.
->> 
->> cpumask_available() checks in kvm_make_vcpu_request() and
->> kvm_kick_many_cpus() can now be dropped as they checks for an impossible
->> condition: kvm_init() makes sure per-cpu masks are allocated.
->> 
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> ---
->
-> Reviewed-by: Sean Christopherson <seanjc@google.com>
->
+On Mon, 2021-09-06 at 15:15 +0800, Nancy.Lin wrote:
+> MT8195 vdosys1 has more than 32 reset bits and a different reset base
+> than other chips. Modify mmsys for support 64 bit and different reset
+> base.
+> 
+> Signed-off-by: Nancy.Lin <nancy.lin@mediatek.com>
+> ---
+>  drivers/soc/mediatek/mt8195-mmsys.h |  1 +
+>  drivers/soc/mediatek/mtk-mmsys.c    | 15 ++++++++++++---
+>  drivers/soc/mediatek/mtk-mmsys.h    |  1 +
+>  3 files changed, 14 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/soc/mediatek/mt8195-mmsys.h b/drivers/soc/mediatek/mt8195-mmsys.h
+> index 648baaec112b..f67801c42fd9 100644
+> --- a/drivers/soc/mediatek/mt8195-mmsys.h
+> +++ b/drivers/soc/mediatek/mt8195-mmsys.h
+> @@ -123,6 +123,7 @@
+>  #define MT8195_VDO1_MIXER_SOUT_SEL_IN				0xf68
+>  #define MT8195_MIXER_SOUT_SEL_IN_FROM_DISP_MIXER		(0 << 0)
+>  
+> +#define MT8195_VDO1_SW0_RST_B           0x1d0
+>  #define MT8195_VDO1_MERGE0_ASYNC_CFG_WD	0xe30
+>  #define MT8195_VDO1_MERGE1_ASYNC_CFG_WD	0xe40
+>  #define MT8195_VDO1_MERGE2_ASYNC_CFG_WD	0xe50
+> diff --git a/drivers/soc/mediatek/mtk-mmsys.c b/drivers/soc/mediatek/mtk-mmsys.c
+> index 060065501b8a..97cb26339ef6 100644
+> --- a/drivers/soc/mediatek/mtk-mmsys.c
+> +++ b/drivers/soc/mediatek/mtk-mmsys.c
+> @@ -18,6 +18,8 @@
+>  #include "mt8365-mmsys.h"
+>  #include "mt8195-mmsys.h"
+>  
+> +#define MMSYS_SW_RESET_PER_REG 32
+> +
+>  static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
+>  	.clk_driver = "clk-mt2701-mm",
+>  	.routes = mmsys_default_routing_table,
+> @@ -48,12 +50,14 @@ static const struct mtk_mmsys_driver_data mt8173_mmsys_driver_data = {
+>  	.clk_driver = "clk-mt8173-mm",
+>  	.routes = mmsys_default_routing_table,
+>  	.num_routes = ARRAY_SIZE(mmsys_default_routing_table),
+> +	.sw_reset_start = MMSYS_SW0_RST_B,
+>  };
+>  
+>  static const struct mtk_mmsys_driver_data mt8183_mmsys_driver_data = {
+>  	.clk_driver = "clk-mt8183-mm",
+>  	.routes = mmsys_mt8183_routing_table,
+>  	.num_routes = ARRAY_SIZE(mmsys_mt8183_routing_table),
+> +	.sw_reset_start = MMSYS_SW0_RST_B,
+>  };
+>  
+>  static const struct mtk_mmsys_driver_data mt8365_mmsys_driver_data = {
+> @@ -74,6 +78,7 @@ static const struct mtk_mmsys_driver_data mt8195_vdosys1_driver_data = {
+>  	.num_routes = ARRAY_SIZE(mmsys_mt8195_routing_table),
+>  	.config = mmsys_mt8195_config_table,
+>  	.num_configs = ARRAY_SIZE(mmsys_mt8195_config_table),
+> +	.sw_reset_start = MT8195_VDO1_SW0_RST_B,
+>  };
+>  
+>  struct mtk_mmsys {
+> @@ -126,19 +131,23 @@ static int mtk_mmsys_reset_update(struct reset_controller_dev *rcdev, unsigned l
+>  {
+>  	struct mtk_mmsys *mmsys = container_of(rcdev, struct mtk_mmsys, rcdev);
+>  	unsigned long flags;
+> +	u32 offset;
+>  	u32 reg;
+>  	int i;
+>  
+> +	offset = (id / MMSYS_SW_RESET_PER_REG) * sizeof(u32);
+> +	id = id % MMSYS_SW_RESET_PER_REG;
+> +
+>  	spin_lock_irqsave(&mmsys->lock, flags);
+>  
+> -	reg = readl_relaxed(mmsys->regs + MMSYS_SW0_RST_B);
+> +	reg = readl_relaxed(mmsys->regs + mmsys->data->sw_reset_start + offset);
+>  
+>  	if (assert)
+>  		reg &= ~BIT(id);
+>  	else
+>  		reg |= BIT(id);
+>  
+> -	writel_relaxed(reg, mmsys->regs + MMSYS_SW0_RST_B);
+> +	writel_relaxed(reg, mmsys->regs + mmsys->data->sw_reset_start + offset);
+>  
+>  	spin_unlock_irqrestore(&mmsys->lock, flags);
+>  
+> @@ -237,7 +246,7 @@ static int mtk_mmsys_probe(struct platform_device *pdev)
+>  	spin_lock_init(&mmsys->lock);
+>  
+>  	mmsys->rcdev.owner = THIS_MODULE;
+> -	mmsys->rcdev.nr_resets = 32;
+> +	mmsys->rcdev.nr_resets = 64;
 
-Thanks!
+If only MT8195 vdosys1 has more than 32 reset bits, this should be kept
+at 32 for the others.
 
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index a4752dcc2a75..91c1e6c98b0f 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -9224,14 +9224,8 @@ static void process_smi(struct kvm_vcpu *vcpu)
->>  void kvm_make_scan_ioapic_request_mask(struct kvm *kvm,
->>  				       unsigned long *vcpu_bitmap)
->>  {
->> -	cpumask_var_t cpus;
->> -
->> -	zalloc_cpumask_var(&cpus, GFP_ATOMIC);
->> -
->>  	kvm_make_vcpus_request_mask(kvm, KVM_REQ_SCAN_IOAPIC,
->> -				    vcpu_bitmap, cpus);
->> -
->> -	free_cpumask_var(cpus);
->> +				    vcpu_bitmap);
->
-> Nit, this can all go on a single line.
->
-
-Sorry, you've mentioned this on v4 but I forgot. Hope this can be fixed
-upon commit...
-
->>  }
->>  
->>  void kvm_make_scan_ioapic_request(struct kvm *kvm)
->
-
--- 
-Vitaly
-
+regards
+Philipp
