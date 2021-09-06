@@ -2,133 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B9C401B2F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCDE401B25
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242207AbhIFM2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:28:02 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:52505 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242100AbhIFM2B (ORCPT
+        id S242078AbhIFM0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:26:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237245AbhIFM0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:28:01 -0400
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210906122655epoutp02269514ef4f930f5aef8c00d426d33b0b~iO0yUS0aj1221612216epoutp02v
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 12:26:55 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210906122655epoutp02269514ef4f930f5aef8c00d426d33b0b~iO0yUS0aj1221612216epoutp02v
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1630931215;
-        bh=5Scyun2f9vAe7f2WluCnvJycg0mdcot342qdWyjo0WU=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=iIG7Fu0SBAeEzQervBTMcLfcy4eoakaA1f3uEi3Fh4UQQDpDX2xOSUfnLIBQDQ7y6
-         WgYjURg6hu2EnxkmhzJT9SKVhwTmrKDbxdV1XqpAv7B9Rb52euYU3Q9w4cPqoBgC/K
-         8/Nzg4YPmuklhEeyqcYkLlMZ88DEMxQdFcj6nKq8=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20210906122654epcas5p2291014d722a311ab307eb76bb9807f9c~iO0xxhn0B1400014000epcas5p2Q;
-        Mon,  6 Sep 2021 12:26:54 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        10.23.38346.E0906316; Mon,  6 Sep 2021 21:26:54 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210906122653epcas5p19c46576f0be4d4a101f851a751addde8~iO0wrC_mF0552505525epcas5p1A;
-        Mon,  6 Sep 2021 12:26:53 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210906122653epsmtrp2884f31c37a01b0e1f0a412fb4e307975~iO0wqQt-71366813668epsmtrp2Z;
-        Mon,  6 Sep 2021 12:26:53 +0000 (GMT)
-X-AuditID: b6c32a4b-251ff700000095ca-c8-6136090e5274
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        35.E5.08750.D0906316; Mon,  6 Sep 2021 21:26:53 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.109.224.44]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210906122651epsmtip12adac5912126f63ce2592241171f4ca8~iO0vMCalX3207332073epsmtip1a;
-        Mon,  6 Sep 2021 12:26:51 +0000 (GMT)
-From:   Ravi Singh <ravi.singh1@samsung.com>
-To:     hannes@cmpxchg.org, mingo@redhat.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     a.sahrawat@samsung.com, v.narang@samsung.com,
-        vishal.goel@samsung.com, Ravi Singh <ravi.singh1@samsung.com>
-Subject: [PATCH] psi: fix integer overflow on unsigned int multiply on 32
- bit systems
-Date:   Mon,  6 Sep 2021 17:55:24 +0530
-Message-Id: <1630931124-27197-1-git-send-email-ravi.singh1@samsung.com>
-X-Mailer: git-send-email 2.7.4
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNIsWRmVeSWpSXmKPExsWy7bCmpi4fp1miwZcnchYXd6darN7ka3F5
-        1xw2i0sHFjBZHO89wGRxaRGLxaGTcxkt1t0+zejA4XH4zXtmj80rtDze77vK5tG3ZRWjx+dN
-        cgGsUVw2Kak5mWWpRfp2CVwZXw6+ZS34zVXRe/0oSwNjI2cXIyeHhICJRMvyFcxdjFwcQgK7
-        GSUmXlrEBOF8YpQ433OBDcL5zCjx5+ZeoDIOsJalOz0h4rsYJVovP2UGGSUk8IVR4soxNRCb
-        TUBL4tHVP4wgtohAnMSDe7+ZQHqZBQol9ry0AwkLC4RL/Fr6GqyERUBVYuOJN+wgNq+Au8Ss
-        f5tZIK6Tk7h5rhPsOgmBTewSm7bPYINIuEicvnaLHcIWlnh1fAuULSXx+d1eqJpqid6+rVDN
-        HYwSW9vPQBXZSzy5uJAV4iBNifW79EHCzAJ8Er2/nzBB/Mgr0dEmBFGtKvFj+nqoTmmJxRc/
-        sELYHhI7Tl+Hej1WounLZrYJjDKzEIYuYGRcxSiZWlCcm55abFpgnJdarlecmFtcmpeul5yf
-        u4kRHN9a3jsYHz34oHeIkYmD8RCjBAezkghvtLNRohBvSmJlVWpRfnxRaU5q8SFGaQ4WJXFe
-        3VcyiUIC6YklqdmpqQWpRTBZJg5OqQam47nNDDVLPfaz7xS/9LEuX/ml5qet8053v4oT43x/
-        /99HHSW3XCcVWxF+lhMWVWdOd29fnNq1oyDcaZ0U42QPq6bPLKL5S5fVRkSac0aWT/b7Vb/4
-        1bHQnAeF9q+kuCdf5mC5+fiH94cpdRUH5207Or1r/7KeKZ98y25PWrv7dpGZrkFD6wfFJLa+
-        PkMul+DcPXPDLT72mYb+cDdPeT7Vpn1lgLvEZ5nfq7nDO/6+PW5kpWd07v/NXXe/md1fr7HJ
-        z2Pn3WVx982miPOYvwwQS3ybspox4E/Jjt3nrA2WiivvD+6sqw+6tvBfO/uWt+eXLDPptvmv
-        8PHqk8nJyqcnH5TJ32rAfGTnxfxzbHJ/lViKMxINtZiLihMBeCAWcF4DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHJMWRmVeSWpSXmKPExsWy7bCSnC4vp1miwd1WAYuLu1MtVm/ytbi8
-        aw6bxaUDC5gsjvceYLK4tIjF4tDJuYwW626fZnTg8Dj85j2zx+YVWh7v911l8+jbsorR4/Mm
-        uQDWKC6blNSczLLUIn27BK6MLwffshb85qrovX6UpYGxkbOLkYNDQsBEYulOzy5GTg4hgR2M
-        Er9/l4DYEgLSElcWLGaEsIUlVv57zt7FyAVU84lR4sjPiywgCTYBLYlHV/+AFYkIJEksudML
-        FmcWKJU4O/0kK4gtLBAqseVsLzuIzSKgKrHxxBswm1fAXWLWv80sEAvkJG6e62SewMizgJFh
-        FaNkakFxbnpusWGBUV5quV5xYm5xaV66XnJ+7iZGcBBpae1g3LPqg94hRiYOxkOMEhzMSiK8
-        0c5GiUK8KYmVValF+fFFpTmpxYcYpTlYlMR5L3SdjBcSSE8sSc1OTS1ILYLJMnFwSjUwsf5f
-        e7Dzxh3xMJWrJx0OrGKJ01i8fcPPU7l7K8uDnSKzGqNOb0/d8P64c+n08pAV3dOyMu8k3Jnr
-        NfP5msgql8yVMefYLr8Ie1fZEmxc8dSEPUj7cEK+Jcvzy4t0V+yW637xu+zotBnrLgUs+cjN
-        M5ff5XOU2vFkFfev3SceZf8waZmY6Xjo/9rVQr71XbqtRj5BKdOt4mbdqkpyY3Awt/qaWvvw
-        WNy56L+NBg9iNsZtz89rfmu07a5LEMPsTZ+UuB4+a/KSKc0MW5CcwHxslatZQ2x/YEnP//W9
-        zNsXCTDfvezFtJVfibert+CMtvU2xTPBBgl/9gVefcd309at5NfGTVKqyw+eyc6vDLiqxFKc
-        kWioxVxUnAgAPJbH/pECAAA=
-X-CMS-MailID: 20210906122653epcas5p19c46576f0be4d4a101f851a751addde8
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210906122653epcas5p19c46576f0be4d4a101f851a751addde8
-References: <CGME20210906122653epcas5p19c46576f0be4d4a101f851a751addde8@epcas5p1.samsung.com>
+        Mon, 6 Sep 2021 08:26:42 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53F7BC061575;
+        Mon,  6 Sep 2021 05:25:38 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id j16so5531410pfc.2;
+        Mon, 06 Sep 2021 05:25:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=UmBZm6nsLJ37H9eh10vOWK3FkWVJCo2NauoZ+XB4cd0=;
+        b=gWLNTCcRISfyVGlu17uPjXxYADtSl8OE5nVWpruGPxrrJ/BVt6g4rq/EtLQcEF+yij
+         XnuzPXgQLVfbYWH0sP99ff552bnFy3DDA9T4w4oFdCo+9IKhmuHjrlcHiLeYbTakOkl3
+         DKhQdsU2QtuK/2QNQWQZJTG4ULIrBom0wUh1mbfBhLBr7JCj/0De90yIr9t8twQvnoBH
+         uD0MwNg9Dyoh+QuqXMUgnYO6RuraC3mGHL3KT8NTDLVjCNvnD364P3I0ecH6DjgryiaX
+         ug5q0159eMvb0Fy9aK1Vw5qH3x8GiQUdOlVKzM+iJmN/xvCsmXD3kVrDrOHGUm774/0q
+         0sYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=UmBZm6nsLJ37H9eh10vOWK3FkWVJCo2NauoZ+XB4cd0=;
+        b=e9bQmGCEiLc0NoT6emlscFgVqpjYl8OqQkIWPO9YgeoUTITSMIaqOvVzVNcBldQkgQ
+         Jb4Ox3Y5lQTboP+6tvDoe816VZNKPQeFHAXGaFTY+gMKxndWo1szLailhEpi6kxXU7n/
+         hllkB7y1wnPEmC6ftPrZ5dvwK32xmGeMkn060wmSoCY5xnaEpRoOjtCTmtpJz0HBm9V3
+         e8TeDsB6PpJIowkZUwhciFVSvPGKccmhTxjo3uB7ic/tgGrDTz6mg+XirSRFsNYv6Z81
+         6F6/eo9Ppt0Jdu5g4vER2yAcalwtYmxTD2OwTiAQ0d01GAAq4efauNPukLKENUEyuaId
+         F35g==
+X-Gm-Message-State: AOAM532aYUUkZrpHvzdYGnCngDa+uyS/cmwsAencEJJo6oCTEJLHItVg
+        s1oK9OykUs24SHQHn67NntNJRFXxv4o=
+X-Google-Smtp-Source: ABdhPJwTb86ZckUvhutjrCJCv6YO6apn5oh4IL7MbeHd6BfMWZGI80bPyThgf2Nd9wen/D+mPCb7Hg==
+X-Received: by 2002:a63:4303:: with SMTP id q3mr12030866pga.375.1630931137543;
+        Mon, 06 Sep 2021 05:25:37 -0700 (PDT)
+Received: from localhost ([47.251.3.230])
+        by smtp.gmail.com with ESMTPSA id e19sm7370242pfi.139.2021.09.06.05.25.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 06 Sep 2021 05:25:37 -0700 (PDT)
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org
+Subject: [PATCH V3 1/2] KVM: x86/mmu: Verify shadow walk doesn't terminate early in  page faults
+Date:   Mon,  6 Sep 2021 20:25:46 +0800
+Message-Id: <20210906122547.263316-1-jiangshanlai@gmail.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
+In-Reply-To: <YTE3bRcZv2BiVxzH@google.com>
+References: <YTE3bRcZv2BiVxzH@google.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-psi accepts window sizes upto WINDOW_MAX_US(10000000). In the case
-where window_us is larger than 4294967, the result of an
-multiplication overflows an unsigned int/long(4 bytes on 32 bit
-system).
+From: Sean Christopherson <seanjc@google.com>
 
-For example, this can happen when the window_us is 5000000 so 5000000
-* 1000 (NSEC_PER_USEC) will result in 5000000000 which is greater than
-UINT_MAX(4294967295). Due to this overflow, 705032704 is stored in
-t->win.size instead of 5000000000. Now psi will be monitoring the
-window size of 705 msecs instead of 5 secs as expected by user.
+WARN and bail if the shadow walk for faulting in a SPTE terminates early,
+i.e. doesn't reach the expected level because the walk encountered a
+terminal SPTE.  The shadow walks for page faults are subtle in that they
+install non-leaf SPTEs (zapping leaf SPTEs if necessary!) in the loop
+body, and consume the newly created non-leaf SPTE in the loop control,
+e.g. __shadow_walk_next().  In other words, the walks guarantee that the
+walk will stop if and only if the target level is reached by installing
+non-leaf SPTEs to guarantee the walk remains valid.
 
-Fix this by type casting the first term of the mutiply to a u64.
+Opportunistically use fault->goal-level instead of it.level in
+FNAME(fetch) to further clarify that KVM always installs the leaf SPTE at
+the target level.
 
-Issue doesnot occur on 64 bit systems because NSEC_PER_USEC is of type
-long which is 8 bytes on 64 bit systems.
-
-Signed-off-by: Ravi Singh <ravi.singh1@samsung.com>
-Signed-off-by: Vishal Goel <vishal.goel@samsung.com>
+Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- kernel/sched/psi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/mmu/mmu.c         | 3 +++
+ arch/x86/kvm/mmu/paging_tmpl.h | 7 +++++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 1652f2bb5..a2cc33dc2 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -1145,7 +1145,7 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group,
- 	t->group = group;
- 	t->state = state;
- 	t->threshold = threshold_us * NSEC_PER_USEC;
--	t->win.size = window_us * NSEC_PER_USEC;
-+	t->win.size = (u64)window_us * NSEC_PER_USEC;
- 	window_reset(&t->win, 0, 0, 0);
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 4853c033e6ce..538be037549d 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -3006,6 +3006,9 @@ static int __direct_map(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+ 			account_huge_nx_page(vcpu->kvm, sp);
+ 	}
  
- 	t->event = 0;
++	if (WARN_ON_ONCE(it.level != fault->goal_level))
++		return -EFAULT;
++
+ 	ret = mmu_set_spte(vcpu, it.sptep, ACC_ALL,
+ 			   fault->write, fault->goal_level, base_gfn, fault->pfn,
+ 			   fault->prefault, fault->map_writable);
+diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+index 50ade6450ace..4d559d2d4d66 100644
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -749,9 +749,12 @@ static int FNAME(fetch)(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
+ 		}
+ 	}
+ 
++	if (WARN_ON_ONCE(it.level != fault->goal_level))
++		return -EFAULT;
++
+ 	ret = mmu_set_spte(vcpu, it.sptep, gw->pte_access, fault->write,
+-			   it.level, base_gfn, fault->pfn, fault->prefault,
+-			   fault->map_writable);
++			   fault->goal_level, base_gfn, fault->pfn,
++			   fault->prefault, fault->map_writable);
+ 	if (ret == RET_PF_SPURIOUS)
+ 		return ret;
+ 
 -- 
-2.17.1
+2.19.1.6.gb485710b
 
