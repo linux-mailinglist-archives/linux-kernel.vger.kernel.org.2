@@ -2,105 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1960E40217E
+	by mail.lfdr.de (Postfix) with ESMTP id D1AEB402180
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 01:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhIFXiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 19:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhIFXiR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 19:38:17 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC46C061575;
-        Mon,  6 Sep 2021 16:37:10 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id e7so8132966pgk.2;
-        Mon, 06 Sep 2021 16:37:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sanJQgCOj6QndmuB/d1oi1oeHwgYC+0Otb8h+XZVNNI=;
-        b=Z5I2WDWbjBd8bVxVY5zxa5Lf6V+l0DGyC/hOgiwHSrTOOen/88bEu07rDPQ4ZShBgQ
-         dSUy9aWem3GOLdx3PzONf9XLsqdDFHgVstzRF+EdBjFoeY37c8bJZY+SWsOfyMsYLoWB
-         iFilu0WgaYjxlK17giSFJ1D+ykz1C1SLgZqkwMFdEx+R+g1GYgJTvMBabjnJKP/crLMR
-         I+ieOQGPYltTq7oDpxKVsg1Gkcpsu1ecvpEhfyNGTYzVYAhRK1ChnO+OY4qTtbQ09pny
-         xwdTl1DjEIS4+AvBZrvhTOSl2gLYeRban0knGGjzJLESTLxctKuPAmy1jRDteoxQFH61
-         rmwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sanJQgCOj6QndmuB/d1oi1oeHwgYC+0Otb8h+XZVNNI=;
-        b=Ot2C/Uj4EXyxEJTmRJbdav8QjyBlGn/N/GYsSPwMvlc7YPQA6buG+GXRxH7L8/joJi
-         Saw1XO7CW6IjojUHljyO4RBKSk50Wa7ncEXMI6Q7G5ykBXhHZvEGKmsuHciBmWkg/R1R
-         HBF++RgKHO7J6qc1lMplMk465ZGRC08K/LwXs9YCeVEcFI3rJprdQMjrehoPL4fJaHgx
-         HkheCgNyIJXt1d6hMRK/ryQmK378hdrKIKQDhtNKBAe1iYqjU8aMjMuAm4mviaV24gEH
-         kj1zxoIp+rVSobKn2gt6tJpfleala8g3aD+R7fzf45JrEDpxrpFQUJ2oHOAuctxnmtw2
-         f6SA==
-X-Gm-Message-State: AOAM532MxMRm/WHbSVKnX0i5t26x/zGEvHG3NM+v5KANKQWUlvbdYrD8
-        /a9vvbywMY4Wu+MwKYzWdnE=
-X-Google-Smtp-Source: ABdhPJxQv460ugCPPWo2Au4TeA7NDFDB7zF3qIAdkwwmscxGUcK+DTWr5lJwt5yAdkfHSl7t2N3ENQ==
-X-Received: by 2002:a62:8415:0:b0:407:8998:7c84 with SMTP id k21-20020a628415000000b0040789987c84mr14198037pfd.71.1630971429983;
-        Mon, 06 Sep 2021 16:37:09 -0700 (PDT)
-Received: from tong-desktop.local (99-105-211-126.lightspeed.sntcca.sbcglobal.net. [99.105.211.126])
-        by smtp.googlemail.com with ESMTPSA id t68sm10890250pgc.59.2021.09.06.16.37.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 16:37:09 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tong Zhang <ztong0001@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Dario Binacchi <dariobin@libero.it>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] can: c_can: fix null-ptr-deref on ioctl()
-Date:   Mon,  6 Sep 2021 16:37:02 -0700
-Message-Id: <20210906233704.1162666-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S234191AbhIFXnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 19:43:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229866AbhIFXnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 19:43:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C7C6610E8;
+        Mon,  6 Sep 2021 23:42:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630971755;
+        bh=cuA40y3WCNTC7CV2ya4Ol9astWJ3BZ/R1zc7YsJ6DPA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hpN7vQakMSneLWTFVH6kZZKK4AhSVRO7Ecnkyzi22rWZMdDaDmCfJGp/sGAJx/5As
+         GgAx4SCnLhHUB6dkNnyfIeWiwzOpnnxSB+yfhC/rjf+eNWmNjjZUgTiqsHr0XkE9XJ
+         jD1j6RtWUqfaj+e8PjnF9aO1SQyq58+mz0jAAgk3hrdU/scVgiUQXVvOK9lRITTFkw
+         k6tRK8Fbc77Ea5I3UyrpIQhTfkar5lY9WhIXwjly72Qb6J9djnmFESFJWIl45tiA0j
+         QmiMLSWfdh0BcIeGw41pCHaZ5lEGu+jZ/m2ZAn2p2y0y6WzPxko0VPwV78xk1BkLNk
+         9xiptRB80UHvw==
+Received: by mail-ed1-f45.google.com with SMTP id r7so11346180edd.6;
+        Mon, 06 Sep 2021 16:42:35 -0700 (PDT)
+X-Gm-Message-State: AOAM531anSU4fX50nSOPmOoQTPB2Veqb0cqRGwRnSJ//I483BM6oVh2w
+        eyoHU2137UatrUG9T3mvSM9wARGb5W+lzLKl4Q==
+X-Google-Smtp-Source: ABdhPJw32cZWysU/gUon/jwslWOIEpz6VH6QFcrMYANk7op3saADxfLqzXBlOA7lAnpQU/NU929WdYzUfwR6UAj9wSE=
+X-Received: by 2002:a05:6402:51c9:: with SMTP id r9mr15862686edd.65.1630971753787;
+ Mon, 06 Sep 2021 16:42:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210906071539.12953-1-nancy.lin@mediatek.com> <20210906071539.12953-2-nancy.lin@mediatek.com>
+In-Reply-To: <20210906071539.12953-2-nancy.lin@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Tue, 7 Sep 2021 07:42:22 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_-rVhh4_m39JPRnE-zwW38k-OPArVv6GqOmORaD=qStVQ@mail.gmail.com>
+Message-ID: <CAAOTY_-rVhh4_m39JPRnE-zwW38k-OPArVv6GqOmORaD=qStVQ@mail.gmail.com>
+Subject: Re: [PATCH v5 01/16] dt-bindings: mediatek: add vdosys1 RDMA
+ definition for mt8195
+To:     "Nancy.Lin" <nancy.lin@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        singo.chang@mediatek.com,
+        srv_heupstream <srv_heupstream@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the pdev maybe not a platform device, e.g. c_can_pci device,
-in this case, calling to_platform_device() would not make sense.
-Also, per the comment in drivers/net/can/c_can/c_can_ethtool.c, @bus_info
-sould match dev_name() string, so I am replacing this with dev_name() to
-fix this issue.
+Hi, Nancy:
 
-[    1.458583] BUG: unable to handle page fault for address: 0000000100000000
-[    1.460921] RIP: 0010:strnlen+0x1a/0x30
-[    1.466336]  ? c_can_get_drvinfo+0x65/0xb0 [c_can]
-[    1.466597]  ethtool_get_drvinfo+0xae/0x360
-[    1.466826]  dev_ethtool+0x10f8/0x2970
-[    1.467880]  sock_ioctl+0xef/0x300
+Nancy.Lin <nancy.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=886=E6=97=
+=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=883:15=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> Add vdosys1 RDMA definition.
+>
+> Signed-off-by: Nancy.Lin <nancy.lin@mediatek.com>
+> ---
+>  .../display/mediatek/mediatek,mdp-rdma.yaml   | 77 +++++++++++++++++++
+>  1 file changed, 77 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
+diatek,mdp-rdma.yaml
+>
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+mdp-rdma.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek=
+,mdp-rdma.yaml
+> new file mode 100644
+> index 000000000000..3610093848e1
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,mdp-rdm=
+a.yaml
 
-Fixes: 2722ac986e93 ("can: c_can: add ethtool support")
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
- drivers/net/can/c_can/c_can_ethtool.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+I've compared the rdma driver in mdp [1] with the rdma driver in
+display [2], both are similar. The difference are like merge0 versus
+merge5. So I would like both binding document are placed together. In
+display folder? In media folder? In SoC folder? I've no idea which one
+is better, but at lease put together.
 
-diff --git a/drivers/net/can/c_can/c_can_ethtool.c b/drivers/net/can/c_can/c_can_ethtool.c
-index cd5f07fca2a5..377c7d2e7612 100644
---- a/drivers/net/can/c_can/c_can_ethtool.c
-+++ b/drivers/net/can/c_can/c_can_ethtool.c
-@@ -15,10 +15,8 @@ static void c_can_get_drvinfo(struct net_device *netdev,
- 			      struct ethtool_drvinfo *info)
- {
- 	struct c_can_priv *priv = netdev_priv(netdev);
--	struct platform_device *pdev = to_platform_device(priv->device);
--
- 	strscpy(info->driver, "c_can", sizeof(info->driver));
--	strscpy(info->bus_info, pdev->name, sizeof(info->bus_info));
-+	strscpy(info->bus_info, dev_name(priv->device), sizeof(info->bus_info));
- }
- 
- static void c_can_get_ringparam(struct net_device *netdev,
--- 
-2.25.1
+[1] https://patchwork.kernel.org/project/linux-mediatek/patch/2021082410002=
+7.25989-6-moudy.ho@mediatek.com/
+[2] https://patchwork.kernel.org/project/linux-mediatek/patch/2021090607153=
+9.12953-12-nancy.lin@mediatek.com/
 
+Regards,
+Chun-Kuang.
+
+> @@ -0,0 +1,77 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/mediatek/mediatek,mdp-rdma.ya=
+ml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: mediatek display MDP RDMA
+> +
+> +maintainers:
+> +  - CK Hu <ck.hu@mediatek.com>
+> +
+> +description: |
+> +  The mediatek display MDP RDMA stands for Read Direct Memory Access.
+> +  It provides real time data to the back-end panel driver, such as DSI,
+> +  DPI and DP_INTF.
+> +  It contains one line buffer to store the sufficient pixel data.
+> +  RDMA device node must be siblings to the central MMSYS_CONFIG node.
+> +  For a description of the MMSYS_CONFIG binding, see
+> +  Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml for=
+ details.
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: mediatek,mt8195-vdo1-rdma
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    description: A phandle and PM domain specifier as defined by binding=
+s of
+> +      the power controller specified by phandle. See
+> +      Documentation/devicetree/bindings/power/power-domain.yaml for deta=
+ils.
+> +
+> +  clocks:
+> +    items:
+> +      - description: RDMA Clock
+> +
+> +  iommus:
+> +    description:
+> +      This property should point to the respective IOMMU block with mast=
+er port as argument,
+> +      see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml fo=
+r details.
+> +
+> +  mediatek,gce-client-reg:
+> +    description:
+> +      The register of display function block to be set by gce. There are=
+ 4 arguments,
+> +      such as gce node, subsys id, offset and register size. The subsys =
+id that is
+> +      mapping to the register of display function blocks is defined in t=
+he gce header
+> +      include/include/dt-bindings/gce/<chip>-gce.h of each chips.
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - power-domains
+> +  - clocks
+> +  - iommus
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +
+> +    vdo1_rdma0: vdo1_rdma@1c104000 {
+> +        compatible =3D "mediatek,mt8195-vdo1-rdma";
+> +        reg =3D <0 0x1c104000 0 0x1000>;
+> +        interrupts =3D <GIC_SPI 495 IRQ_TYPE_LEVEL_HIGH 0>;
+> +        clocks =3D <&vdosys1 CLK_VDO1_MDP_RDMA0>;
+> +        power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSYS1>;
+> +        iommus =3D <&iommu_vdo M4U_PORT_L2_MDP_RDMA0>;
+> +        mediatek,gce-client-reg =3D <&gce1 SUBSYS_1c10XXXX 0x4000 0x1000=
+>;
+> +    };
+> +
+> --
+> 2.18.0
+>
