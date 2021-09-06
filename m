@@ -2,109 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F07E40198E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:14:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81F25401997
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:16:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241853AbhIFKO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 06:14:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46844 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241852AbhIFKOZ (ORCPT
+        id S241816AbhIFKRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 06:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241728AbhIFKRM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 06:14:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630923200;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6w6LAFexoBEaduWz7q8eyw7xCDoy2E5zTIuRR/QZtqk=;
-        b=Jz93mwJ+QVRQbG5Bd6BeuVzlmfBfB9vWMuLD7TqG6s79a5eaiejaPHdm1ynxAACYtpI8LW
-        NasJnL3Ha3FdXTZQ5vHtYhXMKWCQhHp17KcKxWfvJwNPDSSOPe0Sk+w7P0y3ACMET25KLr
-        yjZJboC4VR2UTMtlkssU+L0R466MpJA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-TQgVxGzWNe6M84K0F4ycAg-1; Mon, 06 Sep 2021 06:13:19 -0400
-X-MC-Unique: TQgVxGzWNe6M84K0F4ycAg-1
-Received: by mail-wm1-f69.google.com with SMTP id k5-20020a7bc3050000b02901e081f69d80so2159832wmj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 03:13:19 -0700 (PDT)
+        Mon, 6 Sep 2021 06:17:12 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72882C061575;
+        Mon,  6 Sep 2021 03:16:07 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id g22so8814454edy.12;
+        Mon, 06 Sep 2021 03:16:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=oo2xWBhFucxQhgfCJPJat37DS4B52WhmbBtOKiTxJic=;
+        b=B9i+FFaL+D8vW6JzaIvpiMpQLI5G6NuCqRABbmuyN9Go+TPC077khQtAC2bumJiYdD
+         YQEYetWy3pRZQdkqviEFHgyMW37viZyEKkuGccUHVwzD8zE/fXEtFNLTsuofwQOvTOCk
+         /6sv2RsXeQTHzc1+40h5z0hrYmC5SL+hlO1BKFLFdtg/CtMLZFa06buv4+xT4n35SQ1O
+         GJP0T6kQSNKwlNobt+fUSf+0+FSZfy0LegUe8uHgXzDvUoBvsU8xtTN+Mb88zHIBnqnO
+         msdqp1LPFV0X8oHdupo7PiujDfyG6z56IABPyFw+nPCyY6otkfAc/ErxL+vC0A+3Yu4r
+         bi5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6w6LAFexoBEaduWz7q8eyw7xCDoy2E5zTIuRR/QZtqk=;
-        b=YDpsUyMR4cTojp5Y8R2tp6PEAEm+583ASFtue3poGtjxxJW9WI4Q0Espp4tLR56HrJ
-         Ge1B+Sj6zHTYtctqdAUe7cpzD9QcoMg8U/1cYwhqRg9UqH0bkd90rEy/azFuJrWLOPwm
-         kV+aMBgHhkA9/zbZRL6vivnxZ++2WtwQZj7u/GLaz+Z5BNOX860eihWR2cbg9eNPhYt7
-         g9qrfOKpE4lzNU2hG3MZZSD/kFtNbgG/BdU/2fxuMFz8u+8SAk7gPKx7TOl0Jzjgh4w+
-         1ecVFuRBoAhR/is6qc0LMb/SFKpxtTbPbfH7fVoxHfiS+8qqZfeS5W0+sskf/1BkMN1P
-         QTNw==
-X-Gm-Message-State: AOAM5302xTKdc5mZmBl1UW5S1Rryi9cdRvrMdbQGvqqod4Mzv7yXhY/7
-        oly2nGkxluzzIGO1xRF9IQM94VE9Uzer/7gHXyNyzrG6Eg7fclqCDx2WAigsZ6JiOPco3HmT+Ih
-        WAarLVYbwx6hOQNMUN0m/Cbnph6L6LUdU2RfjHc9PWUBw6U+5wAridaXJ4HfU0nFaro0JZCj48o
-        PD
-X-Received: by 2002:adf:f00f:: with SMTP id j15mr12767455wro.265.1630923198319;
-        Mon, 06 Sep 2021 03:13:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxWNKIJirwR0n4MrIYuHA/BoWJh22sJ26zsj+XcsKpsxVGIHDHCEpJzatFFAPC9c5KeqDfNLw==
-X-Received: by 2002:adf:f00f:: with SMTP id j15mr12767420wro.265.1630923198005;
-        Mon, 06 Sep 2021 03:13:18 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id h11sm8796814wrx.9.2021.09.06.03.13.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 03:13:17 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86/mmu: Remove unused field mmio_cached in struct
- kvm_mmu_page
-To:     Jia He <justin.he@arm.com>, Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210830145336.27183-1-justin.he@arm.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a4cbba0a-b346-628c-36f1-6f7c5d1c1ca1@redhat.com>
-Date:   Mon, 6 Sep 2021 12:13:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=oo2xWBhFucxQhgfCJPJat37DS4B52WhmbBtOKiTxJic=;
+        b=afuvZgwboLSDzepqN2mFuQALmOZ9dDbnX4OA9WYq2HeCRYyCDfaXY9NVP5rr+sNlJf
+         JDH5UL/0gw6pgSh2sWCdUtZh8282lNBatbFyLo0g4Xr1uod5nH4imGuzlHGUNs9D3o59
+         7NQWCUY9yVnRq5IOQikRAxKJkv7HMH6D3GxW4W0t4PZ9KbugacjJ5DcsHjUeSyPhWJYB
+         uuIi/9aorbTHmtUt6mJZzRGRr7u3gTnoPkjuGCFz+IOoZsITBVK5zOEdv3jMoMbw2Da1
+         mTAgKrC8McuW8ywr3OCHZx8mMtoyhg/aIExMTnQ6PVUbef24pyXaIPxjjTpbDjm05qrN
+         jx5A==
+X-Gm-Message-State: AOAM531BQCUj+TuN2wvJuSxRkEJ4WjDfuS8aK2pdWP4zbTsKxtFt2MWU
+        M3ASK2/GH3wey0rWSCqJjhm4mlis8cGoe/Rho74=
+X-Google-Smtp-Source: ABdhPJzQw6zHxo7M/Y9oDkgLCijq13EI4QrtckTgsiLz8v+rHPvKT09fsdCpvstKi6F8ke87yChzNGGZPuY2ofzSlcQ=
+X-Received: by 2002:aa7:d40b:: with SMTP id z11mr12832262edq.224.1630923365971;
+ Mon, 06 Sep 2021 03:16:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210830145336.27183-1-justin.he@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210901194549.3999-1-wsa+renesas@sang-engineering.com>
+ <20210901194549.3999-2-wsa+renesas@sang-engineering.com> <CAHp75VdZt_dDb0YpThfsoqRvWdjfVZT70o=eCJCbThJ9qbD42w@mail.gmail.com>
+ <YTXZgNQJj0aI4zuC@kunai>
+In-Reply-To: <YTXZgNQJj0aI4zuC@kunai>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 6 Sep 2021 13:15:28 +0300
+Message-ID: <CAHp75VdJZhgqshOQS=L1rKiNZLTqNnrc4FXoJKaNpaQT0QB_Eg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] gpio: add sloppy logic analyzer using polling
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/08/21 16:53, Jia He wrote:
-> After reverting and restoring the fast tlb invalidation patch series,
-> the mmio_cached is not removed. Hence a unused field is left in
-> kvm_mmu_page.
-> 
-> Cc: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Jia He <justin.he@arm.com>
-> ---
->   arch/x86/kvm/mmu/mmu_internal.h | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-> index 35567293c1fd..3e6f21c1871a 100644
-> --- a/arch/x86/kvm/mmu/mmu_internal.h
-> +++ b/arch/x86/kvm/mmu/mmu_internal.h
-> @@ -37,7 +37,6 @@ struct kvm_mmu_page {
->   
->   	bool unsync;
->   	u8 mmu_valid_gen;
-> -	bool mmio_cached;
->   	bool lpage_disallowed; /* Can't be replaced by an equiv large page */
->   
->   	/*
-> 
+On Mon, Sep 6, 2021 at 12:04 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
 
-Queued, thanks.
+...
 
-Paolo
+> > > +#!/bin/sh -eu
+> >
+> > Next step is to add 'f' to the mix here :-)
+>
+> -f broke zip file generation in a way I didn't know how to resolve
+> differently. Sadly, I can't recall the details right now.
 
+Yes, it means you are not able to use * (a.k.a. glob() function) in
+the shell which increases a lot security and other (misuse) concerns.
+Instead you have to use `find` or similar tools to collect the list of
+the files of your interest.
+
+...
+
+> > > +while true; do
+> > > +       case "$1" in
+> > > +       -c|--cpu) initcpu="$2"; shift 2;;
+> > > +       -d|--duration-us) duration="$2"; shift 2;;
+> > > +       -h|--help) print_help; exit 0;;
+> > > +       -i|--instance) lasysfsdir="$sysfsdir/$2"; shift 2;;
+> > > +       -k|--kernel-debug-dir) debugdir="$2"; shift 2;;
+> > > +       -n|--num_samples) numsamples="$2"; shift 2;;
+> > > +       -o|--output-dir) outputdir="$2"; shift 2;;
+> > > +       -s|--sample_freq) samplefreq="$2"; shift 2;;
+> > > +       -t|--trigger) triggerdat="$2"; shift 2;;
+> > > +       --)     shift; break;;
+> > > +       *)      fail "error parsing commandline: $*";;
+> > > +       esac
+> >
+> > I would prefer to have a clear shift here instead of doing shift 2
+> > everywhere above (less error prone).
+>
+> If we ever support binary arguments (toggles), then a generic 'shift 2'
+> won't work?
+
+To me it's less error prone to have something like this:
+
+while [ $# -gt 1 ]; do # notice the condition, btw
+  case "$1" in
+  opt_with_parameter) ...; shift;;
+  toggler_opt) ...;;
+  esac
+  shift
+done
+
+> > > +done
+
+Either way it's minor.
+
+-- 
+With Best Regards,
+Andy Shevchenko
