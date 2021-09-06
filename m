@@ -2,87 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCA0401A3B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56478401A42
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238812AbhIFK5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 06:57:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29858 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231511AbhIFK5w (ORCPT
+        id S240925AbhIFK7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 06:59:22 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:18597 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240407AbhIFK7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 06:57:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630925807;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=RK2Ni9Cbo/+wilrr5SKGs0bqB6QPRnMOhzJVRr0kJ8Y=;
-        b=e4DWBZs+wjfDbLjsZfCzBdB0XpLjrRk4/nRSksZZSaTnsb+qOPbExRgLLFsoYXa4gFNO3E
-        AsObtLW7sVJwGxZIh/h3Xn72NFXTZDquA3YJzg7nM6P7jfxOaNxhAmfGyLmWHu65zmbq2u
-        LelzM8Wf3Az6gRebn9mT6/kIj43u3Ic=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-472-uZJrnWC_Prqlk6lZB4ZTgA-1; Mon, 06 Sep 2021 06:56:46 -0400
-X-MC-Unique: uZJrnWC_Prqlk6lZB4ZTgA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 6 Sep 2021 06:59:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630925895; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=vsOcnMr2wpiwvzUcC8f61q76ivDkmYdEEI0Rs1N9cVE=;
+ b=tWnLLBcer4ahKFBZKflFNR1FqbbxDfTkPOu3jwEGsbpXj6EPBoJ2OoXLHkndjsDjIJePa/QC
+ IgOowgkQufjThdat/sPNA1d4bYRWlRslfjYLQYce7B82WoWDo2+IaXTjqvkzyEeMi0a5n6U8
+ E9i4+Qoy8A/68WvrBGgyago0s6U=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 6135f44740d2129ac15e150f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 06 Sep 2021 10:58:15
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D75D9C4360D; Mon,  6 Sep 2021 10:58:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92BB2107ACE8;
-        Mon,  6 Sep 2021 10:56:45 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0ADBD18649;
-        Mon,  6 Sep 2021 10:56:44 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     seanjc@google.com, kernel test robot <lkp@intel.com>
-Subject: [PATCH] KVM: MMU: mark role_regs and role accessors as maybe unused
-Date:   Mon,  6 Sep 2021 06:56:44 -0400
-Message-Id: <20210906105644.3686909-1-pbonzini@redhat.com>
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5FF9AC4338F;
+        Mon,  6 Sep 2021 10:58:14 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 06 Sep 2021 16:28:14 +0530
+From:   skakit@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH V2 2/2] arm64: dts: sc7280: Add volume up support for
+ sc7280-idp
+In-Reply-To: <CAE-0n52VOzjexezuEe449vT_crB_zVkn5Bnrkh6-RcJfWGTQ9w@mail.gmail.com>
+References: <1630574106-3394-1-git-send-email-skakit@codeaurora.org>
+ <1630574106-3394-3-git-send-email-skakit@codeaurora.org>
+ <CAE-0n52VOzjexezuEe449vT_crB_zVkn5Bnrkh6-RcJfWGTQ9w@mail.gmail.com>
+Message-ID: <9137f113e0cdd718edaa3d32b30bf043@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is reasonable for these functions to be used only in some configurations,
-for example only if the host is 64-bits (and therefore supports 64-bit
-guests).  It is also reasonable to keep the role_regs and role accessors
-in sync even though some of the accessors may be used only for one of the
-two sets (as is the case currently for CR4.LA57)..
+On 2021-09-03 23:42, Stephen Boyd wrote:
+> Quoting satya priya (2021-09-02 02:15:06)
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> index 371a2a9..52bcbbc 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dtsi
+>> @@ -199,6 +199,37 @@
+>>         modem-init;
+>>  };
+>> 
+>> +&soc {
+> 
+> 's' comes after 'p' so this is in the wrong place.
+> 
 
-Because clang reports warnings for unused inlines declared in a .c file,
-mark both sets of accessors as __maybe_unused.
+Okay will move it accordingly.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/mmu/mmu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+>> +       gpio_keys {
+>> +               compatible = "gpio-keys";
+>> +               label = "gpio-keys";
+>> +
+>> +               pinctrl-names = "default";
+>> +               pinctrl-0 = <&key_vol_up_default>;
+>> +
+>> +               vol_up {
+>> +                       label = "volume_up";
+>> +                       gpios = <&pm7325_gpios 6 GPIO_ACTIVE_LOW>;
+>> +                       linux,input-type = <1>;
+>> +                       linux,code = <KEY_VOLUMEUP>;
+>> +                       gpio-key,wakeup;
+>> +                       debounce-interval = <15>;
+>> +                       linux,can-disable;
+>> +               };
+>> +       };
+>> +};
+>> +
+>> +&pm7325_gpios {
+>> +       key_vol_up_default: key_vol_up_default {
+> 
+> Please move this to the "PINCTRL - additions to nodes defined in
+> sc7280.dtsi" section and then sort alphabetically on node naem.
+> 
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 9b0cdec8b62d..2d7e61122af8 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -204,7 +204,7 @@ struct kvm_mmu_role_regs {
-  * the single source of truth for the MMU's state.
-  */
- #define BUILD_MMU_ROLE_REGS_ACCESSOR(reg, name, flag)			\
--static inline bool ____is_##reg##_##name(struct kvm_mmu_role_regs *regs)\
-+static inline bool __maybe_unused ____is_##reg##_##name(struct kvm_mmu_role_regs *regs)\
- {									\
- 	return !!(regs->reg & flag);					\
- }
-@@ -226,7 +226,7 @@ BUILD_MMU_ROLE_REGS_ACCESSOR(efer, lma, EFER_LMA);
-  * and the vCPU may be incorrect/irrelevant.
-  */
- #define BUILD_MMU_ROLE_ACCESSOR(base_or_ext, reg, name)		\
--static inline bool is_##reg##_##name(struct kvm_mmu *mmu)	\
-+static inline bool __maybe_unused is_##reg##_##name(struct kvm_mmu *mmu)	\
- {								\
- 	return !!(mmu->mmu_role. base_or_ext . reg##_##name);	\
- }
--- 
-2.27.0
+Okay.
 
+>> +               pins = "gpio6";
+>> +               function = "normal";
+>> +               input-enable;
+>> +               bias-pull-up;
+>> +               power-source = <0>;
+>> +               qcom,drive-strength = <3>;
+>> +       };
+>> +};
+>> +
+>>  &pmk8350_vadc {
+>>         pmk8350_die_temp {
+>>                 reg = <PMK8350_ADC7_DIE_TEMP>;
