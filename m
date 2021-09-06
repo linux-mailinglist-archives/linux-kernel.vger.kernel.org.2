@@ -2,132 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F501401A89
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AC1E401A8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240875AbhIFLX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 07:23:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37555 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232819AbhIFLX6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 07:23:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630927373;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BGwfvEWhPcux+PIUI2boLtU32tDpQ6UGvcizmy6RoBs=;
-        b=Xf3VUCk33hXgQeeNrYbj2YNedmdCq6xvVWxUE633Od+KaZuWV7vjU3Zjvm3QZ7Jygak6Xm
-        /RpZFTR2Cx6MMRXVjpTAE8iQhmEB4lkhsd3KVJvdDjUUv5dKTv6DnIvpMQ1cSV4R9eLh7W
-        v7dXTlVutBjgVmqD3q4R47grE0gPTOI=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-149-Fgxd_fp8PcahquibTSa92g-1; Mon, 06 Sep 2021 07:22:52 -0400
-X-MC-Unique: Fgxd_fp8PcahquibTSa92g-1
-Received: by mail-wm1-f69.google.com with SMTP id 5-20020a1c00050000b02902e67111d9f0so2217871wma.4
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 04:22:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BGwfvEWhPcux+PIUI2boLtU32tDpQ6UGvcizmy6RoBs=;
-        b=osQjDVIdgjmDO4NbBjoe31dQ15TC4fp0PLVOxo2N9UyDY0nmNpVkFanz95XuXbVfbc
-         Gjp8to9NKSY8PmG+Ls9bLUqn3UC6Gj/Mzp7uZAFvd/aAJrgXR3fB+EwhG/ikQDmMOhJ8
-         9pzFdD8H8KBWsGphLKYi/K3TcjSBeYddjpMd8T2rEnxYZqnmW5TSBtNU1tih0nk4sUBi
-         Z/eniAzO0YnUtlOOQUOTXiuWLps9I5Q/ntNV0gytHl55gevaQ66S3DkDeZz8/Rx9XIae
-         Nelsc9H58VFl58O1vmAcP82PKUrSkfbUSL+iuZhMYAraTVduibxC1tkxMKz4QWaiO4WK
-         NSFQ==
-X-Gm-Message-State: AOAM5314JqU1P8p8sPErJJsTOZ+YgSjygroB807gFqUN3JMUvLezXo5L
-        QrTe8dZkK2+DST/ULvsm5bAjaSnZ2/u/uWljeLeTt0W4nCECmuOm0H60TGCFC4/O/1yLZZ0pFyA
-        IaxJ7fhoDtkpjwBkOc20k3Q8W
-X-Received: by 2002:a7b:c18c:: with SMTP id y12mr10782045wmi.3.1630927370853;
-        Mon, 06 Sep 2021 04:22:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyIaHHIds/tZnD3Oefj97zXNdBn3IO4a5V08lISda1PJLYo7l+c6IKytev/esLB8HsvvHzGbg==
-X-Received: by 2002:a7b:c18c:: with SMTP id y12mr10782032wmi.3.1630927370638;
-        Mon, 06 Sep 2021 04:22:50 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id w20sm4933082wrg.1.2021.09.06.04.22.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 04:22:50 -0700 (PDT)
-Subject: Re: [PATCH] Guest system time jumps when new vCPUs is hot-added
-To:     Zelin Deng <zelin.deng@linux.alibaba.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org
-References: <1619576521-81399-1-git-send-email-zelin.deng@linux.alibaba.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <9f0d0543-db41-fbb0-019c-7df5b9319c33@redhat.com>
-Date:   Mon, 6 Sep 2021 13:22:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S241390AbhIFLYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 07:24:24 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:40390 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241354AbhIFLYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 07:24:21 -0400
+Received: from BJHW-Mail-Ex11.internal.baidu.com (unknown [10.127.64.34])
+        by Forcepoint Email with ESMTPS id 81BDD6BC8BE2EDBD5A51;
+        Mon,  6 Sep 2021 19:23:10 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BJHW-Mail-Ex11.internal.baidu.com (10.127.64.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Mon, 6 Sep 2021 19:23:10 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Mon, 6 Sep 2021 19:23:09 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <daniel.thompson@linaro.org>, <ason.wessel@windriver.com>,
+        <dianders@chromium.org>
+CC:     <kgdb-bugreport@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, Cai Huoqing <caihuoqing@baidu.com>
+Subject: [PATCH v2] kernel: debug: Convert to SPDX identifier
+Date:   Mon, 6 Sep 2021 19:23:02 +0800
+Message-ID: <20210906112302.937-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <1619576521-81399-1-git-send-email-zelin.deng@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex30.internal.baidu.com (172.31.51.24) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/04/21 04:22, Zelin Deng wrote:
-> Hello,
-> I have below VM configuration:
-> ...
->      <vcpu placement='static' current='1'>2</vcpu>
->      <cpu mode='host-passthrough'>
->      </cpu>
->      <clock offset='utc'>
->          <timer name='tsc' frequency='3000000000'/>
->      </clock>
-> ...
-> After VM has been up for a few minutes, I use "virsh setvcpus" to hot-add
-> second vCPU into VM, below dmesg is observed:
-> [   53.273484] CPU1 has been hot-added
-> [   85.067135] SMP alternatives: switching to SMP code
-> [   85.078409] x86: Booting SMP configuration:
-> [   85.079027] smpboot: Booting Node 0 Processor 1 APIC 0x1
-> [   85.080240] kvm-clock: cpu 1, msr 77601041, secondary cpu clock
-> [   85.080450] smpboot: CPU 1 Converting physical 0 to logical die 1
-> [   85.101228] TSC ADJUST compensate: CPU1 observed 169175101528 warp. Adjust: 169175101528
-> [  141.513496] TSC ADJUST compensate: CPU1 observed 166 warp. Adjust: 169175101694
-> [  141.513496] TSC synchronization [CPU#0 -> CPU#1]:
-> [  141.513496] Measured 235 cycles TSC warp between CPUs, turning off TSC clock.
-> [  141.513496] tsc: Marking TSC unstable due to check_tsc_sync_source failed
-> [  141.543996] KVM setup async PF for cpu 1
-> [  141.544281] kvm-stealtime: cpu 1, msr 13bd2c080
-> [  141.549381] Will online and init hotplugged CPU: 1
-> 
-> System time jumps from 85.101228 to 141.51.3496.
-> 
-> Guest:                                   KVM
-> -----                                    ------
-> check_tsc_sync_target()
-> wrmsrl(MSR_IA32_TSC_ADJUST,...)
->                                           kvm_set_msr_common(vcpu,...)
->                                           adjust_tsc_offset_guest(vcpu,...) //tsc_offset jumped
->                                           vcpu_enter_guest(vcpu) //tsc_timestamp was not changed
-> ...
-> rdtsc() jumped, system time jumped
-> 
-> tsc_timestamp must be updated before go back to guest.
-> 
-> ---
-> Zelin Deng (1):
->    KVM: x86: Update vCPU's hv_clock before back to guest when tsc_offset
->      is adjusted
-> 
->   arch/x86/kvm/x86.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
+use SPDX-License-Identifier instead of a verbose license text
 
-While Thomas is right in general, what you found is indeed a bug with 
-the KVM->userspace API to set up the vCPU TSC adjust.  So I'm queueing 
-the patch for 5.15.
+Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+---
+v1->v2: change GPL-2.0 to GPL-2.0-only
 
-Thanks,
+ kernel/debug/debug_core.c | 5 +----
+ kernel/debug/gdbstub.c    | 5 +----
+ 2 files changed, 2 insertions(+), 8 deletions(-)
 
-Paolo
+diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+index b4aa6bb6b2bd..da06a5553835 100644
+--- a/kernel/debug/debug_core.c
++++ b/kernel/debug/debug_core.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Kernel Debug Core
+  *
+@@ -22,10 +23,6 @@
+  *
+  * Original KGDB stub: David Grothe <dave@gcom.com>,
+  * Tigran Aivazian <tigran@sco.com>
+- *
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2. This program is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
+  */
+ 
+ #define pr_fmt(fmt) "KGDB: " fmt
+diff --git a/kernel/debug/gdbstub.c b/kernel/debug/gdbstub.c
+index b6f28fad4307..9d34d2364b5a 100644
+--- a/kernel/debug/gdbstub.c
++++ b/kernel/debug/gdbstub.c
+@@ -1,3 +1,4 @@
++// SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Kernel Debug Core
+  *
+@@ -22,10 +23,6 @@
+  *
+  * Original KGDB stub: David Grothe <dave@gcom.com>,
+  * Tigran Aivazian <tigran@sco.com>
+- *
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2. This program is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
+  */
+ 
+ #include <linux/kernel.h>
+-- 
+2.25.1
 
