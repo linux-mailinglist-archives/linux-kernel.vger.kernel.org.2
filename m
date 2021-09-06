@@ -2,88 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05C3E401A7E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F501401A89
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238415AbhIFLVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 07:21:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31728 "EHLO
+        id S240875AbhIFLX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 07:23:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37555 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231667AbhIFLV1 (ORCPT
+        by vger.kernel.org with ESMTP id S232819AbhIFLX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 07:21:27 -0400
+        Mon, 6 Sep 2021 07:23:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630927222;
+        s=mimecast20190719; t=1630927373;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=j7VH8fL3glvum3Nt0WVFPZDDHGKO9yZkd04H/l3akBA=;
-        b=Qj05cyGYy6ALDy97812fK3Snt+vbujbdmxBGJd7XaaaCA8G6fIOF1SxIIO12/u2OKbLHXt
-        PZLY0pGw+chH+qDO1cyDuIPnNIUouDotKfyRClvQk/8CaWWS1zuSFryL9/9OibLth44nxZ
-        w4u1vMESFELlQ1Lqg2V20AzLOK9LcMs=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-CWEeILBuOcKcTJic72XMgA-1; Mon, 06 Sep 2021 07:20:21 -0400
-X-MC-Unique: CWEeILBuOcKcTJic72XMgA-1
-Received: by mail-wm1-f70.google.com with SMTP id c4-20020a1c9a04000000b002e864b7edd1so2216835wme.6
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 04:20:21 -0700 (PDT)
+        bh=BGwfvEWhPcux+PIUI2boLtU32tDpQ6UGvcizmy6RoBs=;
+        b=Xf3VUCk33hXgQeeNrYbj2YNedmdCq6xvVWxUE633Od+KaZuWV7vjU3Zjvm3QZ7Jygak6Xm
+        /RpZFTR2Cx6MMRXVjpTAE8iQhmEB4lkhsd3KVJvdDjUUv5dKTv6DnIvpMQ1cSV4R9eLh7W
+        v7dXTlVutBjgVmqD3q4R47grE0gPTOI=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-149-Fgxd_fp8PcahquibTSa92g-1; Mon, 06 Sep 2021 07:22:52 -0400
+X-MC-Unique: Fgxd_fp8PcahquibTSa92g-1
+Received: by mail-wm1-f69.google.com with SMTP id 5-20020a1c00050000b02902e67111d9f0so2217871wma.4
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 04:22:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=j7VH8fL3glvum3Nt0WVFPZDDHGKO9yZkd04H/l3akBA=;
-        b=B3v3jvdvXU341yKQxNMJASUXRdFXW/+T+T2LTveGVJX0g62RoSKai6gDLzf7N2Dz9H
-         RstGqzlwobpZB5b34Cil129MAvlJoU3KsXnT3NsSrZZFcuKbr0ZpUpFq/uHG/TAEesit
-         e6B9jeCjSLjiRUvZPVdZRJ8MMPHLgU6f56r/5EyXsyYF+YgcAibPwZbNTCQsZi46Arcp
-         5GfZ2YeIkUABmPfrCxJcWrur8qxMRGYZ//xoCnfNVukE5HHPxaoRaU+iNvzzLKCPIwU0
-         jliKb5Ea0ad9fuMYcwKiDmifMa1OWvpYswNtk2iC4hj9KuQWrRg7yTRFpxGKsYFTqk/W
-         drLA==
-X-Gm-Message-State: AOAM532H1yHXYLkxs5hyV0WRin/ON40lzNw6n70UmH1MMFBEJvBGF2/v
-        4eoN6BNK+33cz+guuVt3h3iJpNeHqEPuZU1D7JEbVUhud6K/1G9HGmz8mVhGA7Z0ecJc6YEL7Od
-        g+OvzG3kQj7mafciq0A0G+hcH
-X-Received: by 2002:a1c:9a0e:: with SMTP id c14mr11072634wme.119.1630927220095;
-        Mon, 06 Sep 2021 04:20:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxnnpEuWDhXm/HsiMYhbswprAY/0U3Qm9lUNt38ZqMW4d4O9iigvGYH5X6vA70t10AlgvDOaw==
-X-Received: by 2002:a1c:9a0e:: with SMTP id c14mr11072600wme.119.1630927219810;
-        Mon, 06 Sep 2021 04:20:19 -0700 (PDT)
+        bh=BGwfvEWhPcux+PIUI2boLtU32tDpQ6UGvcizmy6RoBs=;
+        b=osQjDVIdgjmDO4NbBjoe31dQ15TC4fp0PLVOxo2N9UyDY0nmNpVkFanz95XuXbVfbc
+         Gjp8to9NKSY8PmG+Ls9bLUqn3UC6Gj/Mzp7uZAFvd/aAJrgXR3fB+EwhG/ikQDmMOhJ8
+         9pzFdD8H8KBWsGphLKYi/K3TcjSBeYddjpMd8T2rEnxYZqnmW5TSBtNU1tih0nk4sUBi
+         Z/eniAzO0YnUtlOOQUOTXiuWLps9I5Q/ntNV0gytHl55gevaQ66S3DkDeZz8/Rx9XIae
+         Nelsc9H58VFl58O1vmAcP82PKUrSkfbUSL+iuZhMYAraTVduibxC1tkxMKz4QWaiO4WK
+         NSFQ==
+X-Gm-Message-State: AOAM5314JqU1P8p8sPErJJsTOZ+YgSjygroB807gFqUN3JMUvLezXo5L
+        QrTe8dZkK2+DST/ULvsm5bAjaSnZ2/u/uWljeLeTt0W4nCECmuOm0H60TGCFC4/O/1yLZZ0pFyA
+        IaxJ7fhoDtkpjwBkOc20k3Q8W
+X-Received: by 2002:a7b:c18c:: with SMTP id y12mr10782045wmi.3.1630927370853;
+        Mon, 06 Sep 2021 04:22:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyIaHHIds/tZnD3Oefj97zXNdBn3IO4a5V08lISda1PJLYo7l+c6IKytev/esLB8HsvvHzGbg==
+X-Received: by 2002:a7b:c18c:: with SMTP id y12mr10782032wmi.3.1630927370638;
+        Mon, 06 Sep 2021 04:22:50 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id m11sm7585194wrz.28.2021.09.06.04.20.15
+        by smtp.gmail.com with ESMTPSA id w20sm4933082wrg.1.2021.09.06.04.22.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 04:20:19 -0700 (PDT)
-Subject: Re: [PATCH v3 6/6] KVM: selftests: test KVM_GUESTDBG_BLOCKIRQ
-To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
-Cc:     Kieran Bingham <kbingham@kernel.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Mon, 06 Sep 2021 04:22:50 -0700 (PDT)
+Subject: Re: [PATCH] Guest system time jumps when new vCPUs is hot-added
+To:     Zelin Deng <zelin.deng@linux.alibaba.com>,
         Sean Christopherson <seanjc@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jessica Yu <jeyu@kernel.org>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Yang Weijiang <weijiang.yang@intel.com>,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20210811122927.900604-1-mlevitsk@redhat.com>
- <20210811122927.900604-7-mlevitsk@redhat.com>
+        Wanpeng Li <wanpengli@tencent.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org
+References: <1619576521-81399-1-git-send-email-zelin.deng@linux.alibaba.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <137f2dcc-75d2-9d71-e259-dd66d43ad377@redhat.com>
-Date:   Mon, 6 Sep 2021 13:20:14 +0200
+Message-ID: <9f0d0543-db41-fbb0-019c-7df5b9319c33@redhat.com>
+Date:   Mon, 6 Sep 2021 13:22:49 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210811122927.900604-7-mlevitsk@redhat.com>
+In-Reply-To: <1619576521-81399-1-git-send-email-zelin.deng@linux.alibaba.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -91,97 +72,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/08/21 14:29, Maxim Levitsky wrote:
-> Modify debug_regs test to create a pending interrupt
-> and see that it is blocked when single stepping is done
-> with KVM_GUESTDBG_BLOCKIRQ
+On 28/04/21 04:22, Zelin Deng wrote:
+> Hello,
+> I have below VM configuration:
+> ...
+>      <vcpu placement='static' current='1'>2</vcpu>
+>      <cpu mode='host-passthrough'>
+>      </cpu>
+>      <clock offset='utc'>
+>          <timer name='tsc' frequency='3000000000'/>
+>      </clock>
+> ...
+> After VM has been up for a few minutes, I use "virsh setvcpus" to hot-add
+> second vCPU into VM, below dmesg is observed:
+> [   53.273484] CPU1 has been hot-added
+> [   85.067135] SMP alternatives: switching to SMP code
+> [   85.078409] x86: Booting SMP configuration:
+> [   85.079027] smpboot: Booting Node 0 Processor 1 APIC 0x1
+> [   85.080240] kvm-clock: cpu 1, msr 77601041, secondary cpu clock
+> [   85.080450] smpboot: CPU 1 Converting physical 0 to logical die 1
+> [   85.101228] TSC ADJUST compensate: CPU1 observed 169175101528 warp. Adjust: 169175101528
+> [  141.513496] TSC ADJUST compensate: CPU1 observed 166 warp. Adjust: 169175101694
+> [  141.513496] TSC synchronization [CPU#0 -> CPU#1]:
+> [  141.513496] Measured 235 cycles TSC warp between CPUs, turning off TSC clock.
+> [  141.513496] tsc: Marking TSC unstable due to check_tsc_sync_source failed
+> [  141.543996] KVM setup async PF for cpu 1
+> [  141.544281] kvm-stealtime: cpu 1, msr 13bd2c080
+> [  141.549381] Will online and init hotplugged CPU: 1
 > 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> System time jumps from 85.101228 to 141.51.3496.
+> 
+> Guest:                                   KVM
+> -----                                    ------
+> check_tsc_sync_target()
+> wrmsrl(MSR_IA32_TSC_ADJUST,...)
+>                                           kvm_set_msr_common(vcpu,...)
+>                                           adjust_tsc_offset_guest(vcpu,...) //tsc_offset jumped
+>                                           vcpu_enter_guest(vcpu) //tsc_timestamp was not changed
+> ...
+> rdtsc() jumped, system time jumped
+> 
+> tsc_timestamp must be updated before go back to guest.
+> 
 > ---
->   .../testing/selftests/kvm/x86_64/debug_regs.c | 24 ++++++++++++++++---
->   1 file changed, 21 insertions(+), 3 deletions(-)
+> Zelin Deng (1):
+>    KVM: x86: Update vCPU's hv_clock before back to guest when tsc_offset
+>      is adjusted
+> 
+>   arch/x86/kvm/x86.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
 
-I haven't looked very much at this, but the test fails.
+While Thomas is right in general, what you found is indeed a bug with 
+the KVM->userspace API to set up the vCPU TSC adjust.  So I'm queueing 
+the patch for 5.15.
+
+Thanks,
 
 Paolo
-
-> diff --git a/tools/testing/selftests/kvm/x86_64/debug_regs.c b/tools/testing/selftests/kvm/x86_64/debug_regs.c
-> index 6097a8283377..5f078db1bcba 100644
-> --- a/tools/testing/selftests/kvm/x86_64/debug_regs.c
-> +++ b/tools/testing/selftests/kvm/x86_64/debug_regs.c
-> @@ -8,12 +8,15 @@
->   #include <string.h>
->   #include "kvm_util.h"
->   #include "processor.h"
-> +#include "apic.h"
->   
->   #define VCPU_ID 0
->   
->   #define DR6_BD		(1 << 13)
->   #define DR7_GD		(1 << 13)
->   
-> +#define IRQ_VECTOR 0xAA
-> +
->   /* For testing data access debug BP */
->   uint32_t guest_value;
->   
-> @@ -21,6 +24,11 @@ extern unsigned char sw_bp, hw_bp, write_data, ss_start, bd_start;
->   
->   static void guest_code(void)
->   {
-> +	/* Create a pending interrupt on current vCPU */
-> +	x2apic_enable();
-> +	x2apic_write_reg(APIC_ICR, APIC_DEST_SELF | APIC_INT_ASSERT |
-> +			 APIC_DM_FIXED | IRQ_VECTOR);
-> +
->   	/*
->   	 * Software BP tests.
->   	 *
-> @@ -38,12 +46,19 @@ static void guest_code(void)
->   		     "mov %%rax,%0;\n\t write_data:"
->   		     : "=m" (guest_value) : : "rax");
->   
-> -	/* Single step test, covers 2 basic instructions and 2 emulated */
-> +	/*
-> +	 * Single step test, covers 2 basic instructions and 2 emulated
-> +	 *
-> +	 * Enable interrupts during the single stepping to see that
-> +	 * pending interrupt we raised is not handled due to KVM_GUESTDBG_BLOCKIRQ
-> +	 */
->   	asm volatile("ss_start: "
-> +		     "sti\n\t"
->   		     "xor %%eax,%%eax\n\t"
->   		     "cpuid\n\t"
->   		     "movl $0x1a0,%%ecx\n\t"
->   		     "rdmsr\n\t"
-> +		     "cli\n\t"
->   		     : : : "eax", "ebx", "ecx", "edx");
->   
->   	/* DR6.BD test */
-> @@ -72,11 +87,13 @@ int main(void)
->   	uint64_t cmd;
->   	int i;
->   	/* Instruction lengths starting at ss_start */
-> -	int ss_size[4] = {
-> +	int ss_size[6] = {
-> +		1,		/* sti*/
->   		2,		/* xor */
->   		2,		/* cpuid */
->   		5,		/* mov */
->   		2,		/* rdmsr */
-> +		1,		/* cli */
->   	};
->   
->   	if (!kvm_check_cap(KVM_CAP_SET_GUEST_DEBUG)) {
-> @@ -154,7 +171,8 @@ int main(void)
->   	for (i = 0; i < (sizeof(ss_size) / sizeof(ss_size[0])); i++) {
->   		target_rip += ss_size[i];
->   		CLEAR_DEBUG();
-> -		debug.control = KVM_GUESTDBG_ENABLE | KVM_GUESTDBG_SINGLESTEP;
-> +		debug.control = KVM_GUESTDBG_ENABLE | KVM_GUESTDBG_SINGLESTEP |
-> +				KVM_GUESTDBG_BLOCKIRQ;
->   		debug.arch.debugreg[7] = 0x00000400;
->   		APPLY_DEBUG();
->   		vcpu_run(vm, VCPU_ID);
-> 
 
