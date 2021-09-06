@@ -2,93 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 788D9401D8E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE204401D9B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242980AbhIFPXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 11:23:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:56682 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233929AbhIFPXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 11:23:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1CA3A31B;
-        Mon,  6 Sep 2021 08:22:49 -0700 (PDT)
-Received: from e121896.arm.com (unknown [10.57.47.83])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id B7C3E3F766;
-        Mon,  6 Sep 2021 08:22:47 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     acme@kernel.org, linux-perf-users@vger.kernel.org
-Cc:     James Clark <james.clark@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] perf tests: Fix flaky test 'Object code reading'
-Date:   Mon,  6 Sep 2021 16:22:38 +0100
-Message-Id: <20210906152238.3415467-1-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
+        id S243028AbhIFPc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 11:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231751AbhIFPc0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 11:32:26 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE2AC0613D9
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 08:31:21 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id g135so4863109wme.5
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 08:31:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PQ0Sz3nSdC4M1Li6PaTkmdjXBaQB3/I9C/9VyXKR078=;
+        b=UXRljDfh9pslkpfpiZW87xjIeGBWGwIaAMRlhWJCKG7426frC0Kf3IPd4Y1I1la0VX
+         yR+sttTvRZyIIqXtqEvMNgsD46eYnTi/cTMP9nhkOXv4qZJ2YwpO6rzL+Ad9sxuj2FUM
+         6W6/m+rhws4O7vtCY4Xiva5VZ95hBKwVmVRc5gCM+RrOnt67C1wg/drGrneMfWvU+jG5
+         l7O1qd0bsLRgpjxFf8Bd6t5jthk5fKIaMSBNPrDlWhhP0XLPqT4MFYj+oA0vYzozk3X2
+         bZpg5O3sTif4O/ZWaOrDw3jH9S/DBp5s9fEn++665aVy0K0x/CMSqlpEfnUx6laQG736
+         0S6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PQ0Sz3nSdC4M1Li6PaTkmdjXBaQB3/I9C/9VyXKR078=;
+        b=TGkfkXG79VhRwD4dskUmjVM3BRaOrUQZvmNHFFZ2VrEAXsGovWUZv4V1gWzbhuXN6E
+         qyg63ohzEAJFMA4/+V0/lZGJdtgUaZDJlajiIw46n4G5s/LpB3m9twSTrXsJ1jWfnzBB
+         7ogWcPiEtd6U5b0bGYsXNG2wPr/ZxmXpcEO4o9w9S2eKbHe3LNOvtqwhMl+ao31xZzpe
+         IU7+LfXwSaoC2xnm5RHPLf04kHXVoYha3pE5wKeffKQDQz65yzWV5dTm2wjTWjCgWSp9
+         4xMK7iyEdDF2Us02XX4MCsUsAWlvQKyy5haIeuB9t5U8tu91mlht5vBOydcBIEhUrxcO
+         6lMA==
+X-Gm-Message-State: AOAM5301P/AJl6dPtrrZmsPcF5wPk2C3eg6EPo4LnMDRFJwD5ka0IcnJ
+        e59C/g17aqQala5oPVkxxEzrUw==
+X-Google-Smtp-Source: ABdhPJw1GKspi6vCehDcEOXPQ+NCWmQvHbO1FyzGfSYpe1CVz0Iflaaie8Hoz/ZDPTqau9R2oirf6Q==
+X-Received: by 2002:a1c:1f49:: with SMTP id f70mr12167723wmf.13.1630942279756;
+        Mon, 06 Sep 2021 08:31:19 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id f20sm7471638wmb.32.2021.09.06.08.31.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 08:31:19 -0700 (PDT)
+Subject: Re: [PATCH] dt-bindings: Use 'enum' instead of 'oneOf' plus 'const'
+ entries
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Cc:     alsa-devel@alsa-project.org, Vignesh R <vigneshr@ti.com>,
+        linux-pci@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-phy@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-serial@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        linux-media@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+References: <20210824202014.978922-1-robh@kernel.org>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <b2e70818-521d-eff8-d7d5-be5a8d95df19@linaro.org>
+Date:   Mon, 6 Sep 2021 16:31:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210824202014.978922-1-robh@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This test occasionally fails on aarch64 when a sample is taken in
-free@plt and it fails with "Bytes read differ from those read by
-objdump". This is because that symbol is near a section boundary in the
-elf file. Despite the -z option to always output zeros, objdump uses
-bfd_map_over_sections() to iterate through the elf file so it doesn't
-see outside of the sections where these zeros are and can't print them.
 
-For example this boundary proceeds free@plt in libc with a gap of 48
-bytes between .plt and .text:
 
-  objdump -d -z --start-address=0x23cc8 --stop-address=0x23d08 libc-2.30.so
+On 24/08/2021 21:20, Rob Herring wrote:
+> 'enum' is equivalent to 'oneOf' with a list of 'const' entries, but 'enum'
+> is more concise and yields better error messages.
+> 
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Vignesh R <vigneshr@ti.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
+> Cc: dmaengine@vger.kernel.org
+> Cc: linux-i2c@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-pci@vger.kernel.org
+> Cc: linux-phy@lists.infradead.org
+> Cc: linux-serial@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-spi@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>   .../bindings/display/msm/dsi-phy-10nm.yaml           |  6 +++---
+>   .../bindings/display/msm/dsi-phy-14nm.yaml           |  6 +++---
+>   .../bindings/display/msm/dsi-phy-28nm.yaml           |  8 ++++----
+>   .../bindings/dma/allwinner,sun6i-a31-dma.yaml        | 12 ++++++------
+>   .../devicetree/bindings/firmware/arm,scpi.yaml       |  6 +++---
+>   .../devicetree/bindings/i2c/ti,omap4-i2c.yaml        | 10 +++++-----
+>   .../interrupt-controller/loongson,liointc.yaml       |  8 ++++----
+>   .../devicetree/bindings/media/i2c/mipi-ccs.yaml      |  8 ++++----
+>   .../devicetree/bindings/mfd/ti,lp87565-q1.yaml       |  6 +++---
+>   .../devicetree/bindings/net/realtek-bluetooth.yaml   |  8 ++++----
+>   .../bindings/net/ti,k3-am654-cpsw-nuss.yaml          |  8 ++++----
+>   .../devicetree/bindings/net/ti,k3-am654-cpts.yaml    |  6 +++---
+>   Documentation/devicetree/bindings/pci/loongson.yaml  |  8 ++++----
+>   .../devicetree/bindings/phy/intel,lgm-emmc-phy.yaml  |  6 +++---
+>   .../devicetree/bindings/serial/8250_omap.yaml        |  9 +++++----
 
-  libc-2.30.so:     file format elf64-littleaarch64
+>   .../devicetree/bindings/sound/qcom,sm8250.yaml       |  6 +++---
 
-  Disassembly of section .plt:
+for sm8250 sound card,
 
-  0000000000023cc8 <*ABS*+0x7fd00@plt+0x8>:
-     23cc8:	91018210 	add	x16, x16, #0x60
-     23ccc:	d61f0220 	br	x17
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-  Disassembly of section .text:
-
-  0000000000023d00 <abort@@GLIBC_2.17-0x98>:
-     23d00:	a9bf7bfd 	stp	x29, x30, [sp, #-16]!
-     23d04:	910003fd 	mov	x29, sp
-
-Taking a sample in free@plt is very rare because it is so small, but the
-test can be forced to fail almost every time on any platform by linking
-the test with a shared library that has a single empty function and
-calling it in a loop.
-
-The fix is to zero the buffers so that when there is a jump in the
-addresses output by objdump, zeros are already filled in between.
-
-Signed-off-by: James Clark <james.clark@arm.com>
----
- tools/perf/tests/code-reading.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/tests/code-reading.c b/tools/perf/tests/code-reading.c
-index 9866cddebf23..9b4a765e4b73 100644
---- a/tools/perf/tests/code-reading.c
-+++ b/tools/perf/tests/code-reading.c
-@@ -229,8 +229,8 @@ static int read_object_code(u64 addr, size_t len, u8 cpumode,
- 			    struct thread *thread, struct state *state)
- {
- 	struct addr_location al;
--	unsigned char buf1[BUFSZ];
--	unsigned char buf2[BUFSZ];
-+	unsigned char buf1[BUFSZ] = {0};
-+	unsigned char buf2[BUFSZ] = {0};
- 	size_t ret_len;
- 	u64 objdump_addr;
- 	const char *objdump_name;
--- 
-2.28.0
-
+>   .../devicetree/bindings/sound/tlv320adcx140.yaml     |  8 ++++----
+>   .../devicetree/bindings/spi/realtek,rtl-spi.yaml     | 12 ++++++------
+>   .../devicetree/bindings/timer/arm,sp804.yaml         |  6 +++---
+>   19 files changed, 74 insertions(+), 73 deletions(-)
+> 
