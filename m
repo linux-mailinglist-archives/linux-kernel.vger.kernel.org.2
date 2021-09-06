@@ -2,55 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3494014FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 04:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A1E401501
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 04:28:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238833AbhIFCPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 22:15:34 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:8078 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232050AbhIFCPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 22:15:33 -0400
-Received: by ajax-webmail-mail-app2 (Coremail) ; Mon, 6 Sep 2021 10:14:24
- +0800 (GMT+08:00)
-X-Originating-IP: [10.214.16.36]
-Date:   Mon, 6 Sep 2021 10:14:24 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Heinz Mauelshagen" <heinzm@redhat.com>
-Cc:     kjlu@umn.edu, "Alasdair Kergon" <agk@redhat.com>,
-        "Mike Snitzer" <snitzer@redhat.com>, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] dm raid: add missed unlock in raid_ctr
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
- Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
-In-Reply-To: <CAM23VxrzCk4XxbsG3dwqCq2PAnxNiEXoFXyp=t4t41o32THYrA@mail.gmail.com>
-References: <20210903075531.20310-1-dinghao.liu@zju.edu.cn>
- <CAM23VxrzCk4XxbsG3dwqCq2PAnxNiEXoFXyp=t4t41o32THYrA@mail.gmail.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S238835AbhIFC3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 22:29:18 -0400
+Received: from ozlabs.org ([203.11.71.1]:45153 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234431AbhIFC3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 22:29:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630895290;
+        bh=+pAa/eR4v7fOkpCC//6IVlxYA28AMktSFDdO91ILrSg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=teUpPLlgXbzkx+duhQfGCVMUiSKQmGqLIwDc9lbgGOPv+r3TVRx2Nrr4Oy4SHwdDB
+         LDuFlFq5f8zUDE6HI4/PPTHm1G4/nXJGbarVpVnblvTAdJioHg2HUDjyOQVKzlrrxI
+         hhq1Xs/2IpjmF8AkLXmJdc71EO1lhvK7G8tU5rwSgZ2BrVITnKb5bjjnGwdRWu8y2H
+         tCK/tf/F909ASytZZlB4q4dP8VJ/a7CPO5xZgO3+ETYKogxK8/QvXnwKSuxn/YU0JB
+         Z1lKwehEQmIq1z51jHpY75RKQ1zkGXvHlIkqTlIGFdf2gChX97MSYOlN4QPkhFp2II
+         k0KEGjc4B8zEg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H2skx63NJz9sVw;
+        Mon,  6 Sep 2021 12:28:09 +1000 (AEST)
+Date:   Mon, 6 Sep 2021 12:28:06 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Xie Yongji <xieyongji@bytedance.com>
+Subject: linux-next: manual merge of the vhost tree with Linus' tree
+Message-ID: <20210906122806.2ca7e715@canb.auug.org.au>
 MIME-Version: 1.0
-Message-ID: <37fdfa89.be2a1.17bb8e29eee.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: by_KCgC3aBWBeTVhbF5gBQ--.28492W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgYABlZdtVpN8wABsZ
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VW7Jw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: multipart/signed; boundary="Sig_/MNbI+rgE4FGM3nXEZp89sFZ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cj4gPiBPbiBGcmksIFNlcCAzLCAyMDIxIGF0IDEwOjAyIEFNIERpbmdoYW8gTGl1IGRpbmdoYW8u
-bGl1QHpqdS5lZHUuY24+IHdyb3RlOgo+ID4gbWRkZXZfdW5sb2NrKCkgaXMgY2FsbGVkIG9uIGFs
-bCBwYXRocyBhZnRlciB3ZSBjYWxsIG1kZGV2X2xvY2tfbm9pbnRyKCksCj4gPiBleGNlcHQgZm9y
-IHRocmVlIGVycm9yIGhhbmRsaW5nIHBhdGhzLCB3aGljaCBtYXkgY2F1c2UgYSBkZWFkbG9jay4g
-VGhpcwo+ID4gYnVnIGlzIHN1Z2dlc3RlZCBieSBhIHN0YXRpYyBhbmFseXNpcyB0b29sLCBwbGVh
-c2UgYWR2aXNlLgo+ID4gSGksICAgIAo+ID4gICAgIAo+ID4gICAgIGNvcnJlY3QsIHRob3NlIHVu
-bG9jayBjYWxscyBhcmUgbWlzc2luZy4gICAgCj4gPgo+ID4gICAgIEFzIHdlIGFyZSBiYWlsaW5n
-IG91dCBhZnRlciBtZF9ydW4oKSB3aXRoIGxvY2sgaGVsZCwgICAgIAo+ID4gICAgIHdlIGNhbiBj
-bGVhbiB0aGUgbG90IG9mIGVycm9yIHBhdGhzIHVuZGVybmVhdGggdXAgYnkganVtcGluZyB0byBi
-ZWZvcmUKPiA+ICAgICBtZF9zdG9wKCkgYW5kIGFkZCB0aGUgbWRkZXZfdW5sb2NrIHVwZnJvbnQg
-aXQgbGlrZTogICAgCiAgICAKVGhhbmtzIGZvciB5b3VyIGFkdmljZSEgSSB3aWxsIGZpeCB0aGlz
-IGFuZCBzZW5kIGEgbmV3IHBhdGNoIHNvb24uCgpSZWdhcmRzLApEaW5naGFvCgo=
+--Sig_/MNbI+rgE4FGM3nXEZp89sFZ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+Today's linux-next merge of the vhost tree got a conflict in:
+
+  fs/eventfd.c
+
+between commit:
+
+  b542e383d8c0 ("eventfd: Make signal recursion protection a task bit")
+
+from Linus' tree and commit:
+
+  0afdb2abbff3 ("eventfd: Export eventfd_wake_count to modules")
+
+from the vhost tree.
+
+I fixed it up (I removed eventfd_wake_count as I could not see any added
+use for it) and can carry the fix as necessary. This is now fixed as
+far as linux-next is concerned, but any non trivial conflicts should be
+mentioned to your upstream maintainer when your tree is submitted for
+merging.  You may also want to consider cooperating with the maintainer
+of the conflicting tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/MNbI+rgE4FGM3nXEZp89sFZ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE1fLYACgkQAVBC80lX
+0Gxyggf8CecNxONqquYz4i9PJ8d8Jx8tC4Uk4XO6kt2ADjun7rkZm0HXjL3Mn7Lz
+2AwMW6HGCzjemcFLt0OFjJm6KQqa4AAkLMdjW4z4tEpxiiGbvXDQAMvocyGwj7+S
+Ok0fdZo/KT4gmQ9Seyg1o2ii1B60/xUW5zAROQ7XKIs9jT2qhMuAXCDZ1tYK5qTs
+XWpOlIqLnDzYTZoWXDDnkYqVSYyYOphP8+gGD1gSiXj2jO91jDvTrsnfxCtTVqNC
+5SdbQxeW3MXMxTR1rILAcbdKAX9MAONGwHX/M8QRLrqAMbc2oAb4vlrA6+4v+q0p
+xCADysuiMWfSq2joh2qIg7hmvmFs8w==
+=JnAW
+-----END PGP SIGNATURE-----
+
+--Sig_/MNbI+rgE4FGM3nXEZp89sFZ--
