@@ -2,87 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B2ED401FCC
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:39:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FED401FE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238560AbhIFSjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 14:39:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbhIFSje (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 14:39:34 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F4DC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:38:28 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id g8so9320429edt.7
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:38:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=5qxOSUsAvpDHSMLpGbVT+4MUrgaqCQsk57usbM5FUQA=;
-        b=oS1pJaJNmoKNUp3OAGHbYYPiDbcwyH4364r5pn/7SRLQvOUU3JWcM9TbyfYQFuznI3
-         sCCLZDQ/HkGPU6uwzExVsF4qvRTRRMx+QTSrm5py4ybdu3fQMnWNZx/yqMBAIbKciY97
-         cLHwWAUevCOBqtcrOWhD3YN4kPTzD1EdB7w7TF6VgPBFSsraPj3oYFosmVvFJVpgWoN4
-         vLvPU2CSqG9WsjxRMgLpdHZxER4DOxV94LxELhhsBARaGtWGr97CoriAdpLJi4MJWAOG
-         bjuVhCH9nY8WJUfrXf5clF/cQQjjyCBpAjwsNmxU+bge4I9XC63Qdy6TYnk0b+SrCtGy
-         KzXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=5qxOSUsAvpDHSMLpGbVT+4MUrgaqCQsk57usbM5FUQA=;
-        b=IEO24xP9zM+Oo9ebXn1zmQbDt1LkVczu7jVGG2Ds0rX99bCjQ59Vs8uzIxHxQ6IeMF
-         u26C8TGhScSXlpjSyzysHIewbdQ4ojpH+cJB69an5Vjb6JDD/IXsUcLviu3rqMsUhnj1
-         rsWDUGm1L6zpg0wj4q+wCpJYghyHG7ZQqlfTH2HIy3V1QDboDy17OghOEfv8YaMK5l1v
-         JwAKuiRIK180o66wvA9IhaqScT2cSJU6z1ndpLcdvL4hseUznwqQhvSXrkb9CHRpBe6X
-         wXaDq1aov04qwK9+y9fWOuVk5xlxl236E8JvXPg+gW1g7YLo8Rt4iOe3evpC7u/YZh5u
-         i4Aw==
-X-Gm-Message-State: AOAM532frGD0G8hmZd9kMZmX6y6BcgsLvXAllYkPzrRC8DavDLoy1UiS
-        IuoUqPkxfNdpOt/MVTd/Phs+Ih9uu2lZbA==
-X-Google-Smtp-Source: ABdhPJwpoEZWa4qVwaKDjw3npiXsKUEdhmQzDxp74swm3Ht6EjZvBjb3PAvJ1JJuxE//ph7uUcf98g==
-X-Received: by 2002:a05:6402:350d:: with SMTP id b13mr14569940edd.1.1630953507637;
-        Mon, 06 Sep 2021 11:38:27 -0700 (PDT)
-Received: from ?IPV6:2a02:8108:96c0:3b88::8fe1? ([2a02:8108:96c0:3b88::8fe1])
-        by smtp.gmail.com with UTF8SMTPSA id r11sm4355205ejy.71.2021.09.06.11.38.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 11:38:27 -0700 (PDT)
-Message-ID: <a762c010-e6b3-6fed-30e9-1520664b6b25@gmail.com>
-Date:   Mon, 6 Sep 2021 20:38:26 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.1
-Subject: Re: [PATCH 00/40] staging: r8188eu: remove function pointers from
- struct hal_ops
+        id S236719AbhIFSwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 14:52:30 -0400
+Received: from mga17.intel.com ([192.55.52.151]:31951 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229977AbhIFSw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 14:52:29 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="200235642"
+X-IronPort-AV: E=Sophos;i="5.85,273,1624345200"; 
+   d="scan'208";a="200235642"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 11:51:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,273,1624345200"; 
+   d="scan'208";a="691769926"
+Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
+  by fmsmga006.fm.intel.com with ESMTP; 06 Sep 2021 11:51:24 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 6 Sep 2021 11:51:24 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 6 Sep 2021 11:51:23 -0700
+Received: from orsmsx610.amr.corp.intel.com ([10.22.229.23]) by
+ ORSMSX610.amr.corp.intel.com ([10.22.229.23]) with mapi id 15.01.2242.012;
+ Mon, 6 Sep 2021 11:51:23 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>
+CC:     "Zhang, Cathy" <cathy.zhang@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4 5/6] x86/sgx: Hook sgx_memory_failure() into mainline
+ code
+Thread-Topic: [PATCH v4 5/6] x86/sgx: Hook sgx_memory_failure() into mainline
+ code
+Thread-Index: AQHXm32N+zFqinyIzkeTnR6PEPyjK6uSU9kAgAAMBgCABQikEA==
+Date:   Mon, 6 Sep 2021 18:51:23 +0000
+Message-ID: <25db682402d14c34af9ba525cffe85c5@intel.com>
+References: <20210728204653.1509010-1-tony.luck@intel.com>
+         <20210827195543.1667168-1-tony.luck@intel.com>
+         <20210827195543.1667168-6-tony.luck@intel.com>
+         <49fccddbbf92279f575409851a9c682495146ad8.camel@kernel.org>
+ <681d530d72de842c8bf43733c11f3c3f2ebf8c6e.camel@kernel.org>
+In-Reply-To: <681d530d72de842c8bf43733c11f3c3f2ebf8c6e.camel@kernel.org>
+Accept-Language: en-US
 Content-Language: en-US
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <20210906182438.5417-1-straube.linux@gmail.com>
-From:   Michael Straube <straube.linux@gmail.com>
-In-Reply-To: <20210906182438.5417-1-straube.linux@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/6/21 20:23, Michael Straube wrote:
-> In order to get rid of the HAL layer this series removes the next
-> bunch of function pointers from struct hal_ops.
-> 
-> Also it removes some empty functions and cleans up some minor style
-> issues I stumbled upon.
-> 
-> Tested on x86_64 with Inter-Tech DMG-02.
-> 
-
-Ouch, although I've checked everything, starting with patch 20 there
-is a typo in the commit messages. The word 'from' is missing. :(
-
-I'll fix it and send v2, sorry.
-
-Michael
+T24gRnJpLCAyMDIxLTA5LTAzIGF0IDA5OjEyICswMzAwLCBKYXJra28gU2Fra2luZW4gd3JvdGU6
+DQo+IE9uIEZyaSwgMjAyMS0wOC0yNyBhdCAxMjo1NSAtMDcwMCwgVG9ueSBMdWNrIHdyb3RlOg0K
+PiA+ICsjaWZkZWYgQ09ORklHX1g4Nl9TR1gNCj4gPiAraW50IHNneF9tZW1vcnlfZmFpbHVyZSh1
+bnNpZ25lZCBsb25nIHBmbiwgaW50IGZsYWdzKTsNCj4gPiArYm9vbCBzZ3hfaXNfZXBjX3BhZ2Uo
+dTY0IHBhZGRyKTsNCj4gPiArI2Vsc2UNCj4gPiArc3RhdGljIGlubGluZSBpbnQgc2d4X21lbW9y
+eV9mYWlsdXJlKHVuc2lnbmVkIGxvbmcgcGZuLCBpbnQgZmxhZ3MpDQo+ID4gK3sNCj4gPiArCXJl
+dHVybiAtRU5YSU87DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBpbmxpbmUgYm9vbCBzZ3hf
+aXNfZXBjX3BhZ2UodTY0IHBhZGRyKQ0KPiA+ICt7DQo+ID4gKwlyZXR1cm4gZmFsc2U7DQo+ID4g
+K30NCj4gPiArI2VuZGlmDQo+IA0KPiBUaGVzZSBkZWNsJ3Mgc2hvdWxkIGJlIGluIGFyY2gveDg2
+L2luY2x1ZGUvYXNtL3NneC5oLCBhbmQgYXMgcGFydCBvZg0KPiBwYXRjaCB0aGF0IGNvbnRhaW5z
+IHRoZSBpbXBsZW1lbnRhdGlvbnMuDQoNCkJ1dCBJIG5lZWQgdG8gdXNlIHRoZXNlIGZ1bmN0aW9u
+cyBpbiBhcmNoIGluZGVwZW5kZW50IGNvZGUuICBTcGVjaWZpY2FsbHkgaW4NCm1tL21lbW9yeS1m
+YWlsdXJlLmMgYW5kIGRyaXZlcnMvYWNwaS9hcGVpL2VpbmouYw0KDQpJZiBJIGp1c3QgI2luY2x1
+ZGUgPGFzbS9zZ3guaD4gaW4gdGhvc2UgZmlsZXMgSSdsbCBicmVhayB0aGUgYnVpbGQgZm9yIG90
+aGVyDQphcmNoaXRlY3R1cmVzLg0KDQotVG9ueQ0K
