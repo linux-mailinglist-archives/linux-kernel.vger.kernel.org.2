@@ -2,87 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153C2401B5D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACF5401B58
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242177AbhIFMpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:45:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242143AbhIFMpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:45:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EA0460EE6;
-        Mon,  6 Sep 2021 12:44:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630932275;
-        bh=2LXqSReT8SHF8LfIKml+aOLX7rlWLst/LYZu0lXukhc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=OjIvZZYJAPvK97M3PpNaRASfWP7+Kp2/rLXGUbvB7ocH0/0q288viavvI91HA45EL
-         aHiUIQjKJcvXh9KHxnn1Xe4XMtK7ETp3rLOqZcPktGEvuJuqkoPuCaQlbvNF/U1dt+
-         whuOL84Ga1APMLmhjpod1ZXJsBC1UBsJjr8aFZdBzeDSPAsTQx1FCcZCbUSYACyEBJ
-         hyxJHVTYpPBbWUCLoVexSRzgOvRHR8Q+yFQ+84y4wXi2HnOl7S4PPPwKfKDjLuCL1K
-         bSaHnN0B6zgZYM0fZU4LOgtbkC1b92kQtxtnVviFTvcswBaOkrq1wqs2SW6xbN66Hh
-         z56w29WXYR2MQ==
-Received: from johan by xi with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1mNDz3-0005ny-Rk; Mon, 06 Sep 2021 14:44:22 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Oliver Neukum <oneukum@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>, stable@vger.kernel.org,
-        Jaejoong Kim <climbbb.kim@gmail.com>
-Subject: [PATCH] USB: cdc-acm: fix minor-number release
-Date:   Mon,  6 Sep 2021 14:43:39 +0200
-Message-Id: <20210906124339.22264-1-johan@kernel.org>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S241804AbhIFMpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:45:01 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:10817 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241553AbhIFMo7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 08:44:59 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210906124353epoutp01687bb91844789e19320ba8260c30c8ab~iPDnJ3udW2982129821epoutp01o
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 12:43:53 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210906124353epoutp01687bb91844789e19320ba8260c30c8ab~iPDnJ3udW2982129821epoutp01o
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1630932233;
+        bh=EFp0m3tslH5KjpSoT1hMcrA4KY3cyIg9bqTxXSjX/RA=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=sgVa/UyRiFBfk60bo/Ud0GRrn5zBibnpSK0IJXD8qwRbEj93MiwxMry30BUVHUM0L
+         84vd67MAMueyPgKao22rQv1CGia2jR+WU2k9+oEL38Xj5pmdqYZbaM01jArJp/OfAl
+         hQZ0CzeIXq1E4O3dHAHH/qzeZZ7q3ZXos/Kevyzo=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20210906124352epcas5p415d157ca83aad931d48291f6992220f5~iPDl82cyn1714217142epcas5p43;
+        Mon,  6 Sep 2021 12:43:52 +0000 (GMT)
+X-AuditID: b6c32a4b-23bff700000095ca-5b-61360d082cab
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        28.55.38346.80D06316; Mon,  6 Sep 2021 21:43:52 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: [PATCH 1/1] exception/stackdepot: add irqentry section in case
+ of STACKDEPOT
+Reply-To: maninder1.s@samsung.com
+Sender: Maninder Singh <maninder1.s@samsung.com>
+From:   Maninder Singh <maninder1.s@samsung.com>
+To:     Maninder Singh <maninder1.s@samsung.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "joey.gouly@arm.com" <joey.gouly@arm.com>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "pcc@google.com" <pcc@google.com>,
+        "amit.kachhap@arm.com" <amit.kachhap@arm.com>,
+        "ryabinin.a.a@gmail.com" <ryabinin.a.a@gmail.com>,
+        "dvyukov@google.com" <dvyukov@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        Vaneet Narang <v.narang@samsung.com>,
+        AMIT SAHRAWAT <a.sahrawat@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <1629270943-9304-1-git-send-email-maninder1.s@samsung.com>
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210906124351epcms5p6020fbfe5f885f1e8834a72784b28d434@epcms5p6>
+Date:   Mon, 06 Sep 2021 18:13:51 +0530
+X-CMS-MailID: 20210906124351epcms5p6020fbfe5f885f1e8834a72784b28d434
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrFKsWRmVeSWpSXmKPExsWy7bCmui4Hr1miwcGZ8hYXd6dazFm/hs1i
+        yocdrBbvl/UwWkx42MZu8aW5jclixbP7TBabHl9jtbi8aw6bxaGpexktDs9vY7FYev0ik8XO
+        OSdZLfrvXGezOL51C7PFoZNzGS1a7pg6CHqsmbeG0ePytYvMHjtn3WX3WLCp1GPPxJNsHptW
+        dbJ5nJjxm8Vj85J6j74tqxg9Pm+SC+CK4rJJSc3JLEst0rdL4Mp4OamLvaBNuOLlNY8GxhkC
+        XYycHBICJhJ35q9j7WLk4hAS2M0oMeldE1MXIwcHr4CgxN8dwiA1wgLREhvOXmMHsYUEFCUu
+        zFjDCFIiLGAg8WurBkiYTUBPYtWuPSwgY0QE1rJIzH69C8xhFljIJLHswSxmiGW8EjPan7JA
+        2NIS25dvZQSxOQXcJU4fW8gKEReVuLn6LTuM/f7YfEYIW0Si9d5ZqDmCEg9+7oaKy0is3twL
+        tkxCoJtRYv27vVDODEaJnkfToDrMJdYvWQU2lVfAV2Ljv9lgV7AIqEpcf/GPHeQdCQEXia2T
+        REHCzALyEtvfzmEGCTMLaEqs36UPEeaT6P39hAnmlx3zYGxViZabG1hh/vr88SMLxEQPiSVr
+        FSBh28co8WHGKeYJjPKzEME7C8myWQjLFjAyr2KUTC0ozk1PLTYtMM5LLdcrTswtLs1L10vO
+        z93ECE5uWt47GB89+KB3iJGJg/EQowQHs5IIb7SzUaIQb0piZVVqUX58UWlOavEhRmkOFiVx
+        Xt1XMolCAumJJanZqakFqUUwWSYOTqkGpnnGOzm1lnjrv1e3ET18XOHtVd3XXGwVx7iMPRZu
+        8U8we78/miW0a5dlzO3EebsWvbizfub01RuvrAvaeiFev3CWWiCf72xxdoXnv6afWXqs88qk
+        3S/OMAhLOph2XJFedfWZn8zeZPm/app6IVIpX0okdcXNLycc+v1ValOAZqh56xoegy3PzaM/
+        zloVvSVu/WG/kuUi8+r0/ZjO7/yf/v38jddBe/8n1q0XXOLjFbimI+KMiK7fX3uJdJUM9YCS
+        2riZYQIXNBYdNlK3zT+f0Rf/qKzhimV8ruhs8bTdklN0AwrfyS6aNP1x0Debp5/X/gipzW5n
+        V3zoFMcaypDNpdNhKf21UlUq96fbI9VaJZbijERDLeai4kQAQrbsb90DAAA=
+X-CMS-RootMailID: 20210818071602epcas5p4fecf459638312c95c5d5aaa29e7e983a
+References: <1629270943-9304-1-git-send-email-maninder1.s@samsung.com>
+        <CGME20210818071602epcas5p4fecf459638312c95c5d5aaa29e7e983a@epcms5p6>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the driver runs out of minor numbers it would release minor 0 and
-allow another device to claim the minor while still in use.
 
-Fortunately, registering the tty class device of the second device would
-fail (with a stack dump) due to the sysfs name collision so no memory is
-leaked.
+Hi,
 
-Fixes: cae2bc768d17 ("usb: cdc-acm: Decrement tty port's refcount if probe() fail")
-Cc: stable@vger.kernel.org      # 4.19
-Cc: Jaejoong Kim <climbbb.kim@gmail.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/class/cdc-acm.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Any inputs on this?
 
-diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-index 4895325b16a4..5f0260bc4469 100644
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -726,7 +726,8 @@ static void acm_port_destruct(struct tty_port *port)
- {
- 	struct acm *acm = container_of(port, struct acm, port);
+>As of now if CONFIG_FUNCTION_GRAPH_TRACER is disabled some functions
+>like gic_handle_irq will not be added in irqentry text section.
+> 
+>which leads to adding more stacks in stackdepot as frames below IRQ
+>will not be filtered with filter_irq_stack() function.
+> 
+>checked with debug interface for satckdepot:
+>https://lkml.org/lkml/2017/11/22/242
+> 
+>e.g. (ARM)
+>stack count 23188 backtrace
+> prep_new_page+0x14c/0x160
+> get_page_from_freelist+0x1258/0x1350
+>...
+> __handle_domain_irq+0x1ac/0x4ac
+> gic_handle_irq+0x44/0x80
+> __irq_svc+0x5c/0x98
+> __slab_alloc.constprop.0+0x84/0xac
+> __kmalloc+0x31c/0x340
+> sf_malloc+0x14/0x18
+> 
+>and for same _irq_svc there were 25000 calls which was causing
+>memory pressure of 2MB more on satckdepot, which will keep increasing.
+> 
+>Before patch memory consumption on ARM target after 2 hours:
+>Memory consumed by Stackdepot:3600 KB
+> 
+>After change:
+>============
+>Memory consumed by Stackdepot:1744 KB
+> 
+> prep_new_page+0x14c/0x160
+> get_page_from_freelist+0x2e4/0x1350
+>...
+> __handle_domain_irq+0x1ac/0x4ac
+> gic_handle_irq+0x44/0x80
+> 
+>^^^^^ no frames below this.
+> 
+>Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+>Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+>---
+> arch/arm/include/asm/exception.h   | 2 +-
+> arch/arm64/include/asm/exception.h | 2 +-
+> 2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+>diff --git a/arch/arm/include/asm/exception.h b/arch/arm/include/asm/exception.h
+>index 58e039a851af..3f4534cccc0f 100644
+>--- a/arch/arm/include/asm/exception.h
+>+++ b/arch/arm/include/asm/exception.h
+>@@ -10,7 +10,7 @@
+> 
+> #include <linux/interrupt.h>
+> 
+>-#ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>+#if defined(CONFIG_FUNCTION_GRAPH_TRACER) || defined(CONFIG_STACKDEPOT)
+> #define __exception_irq_entry        __irq_entry
+> #else
+> #define __exception_irq_entry
+>diff --git a/arch/arm64/include/asm/exception.h b/arch/arm64/include/asm/exception.h
+>index 339477dca551..ef2581b63405 100644
+>--- a/arch/arm64/include/asm/exception.h
+>+++ b/arch/arm64/include/asm/exception.h
+>@@ -13,7 +13,7 @@
+> 
+> #include <linux/interrupt.h>
+> 
+>-#ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>+#if defined(CONFIG_FUNCTION_GRAPH_TRACER) || defined(CONFIG_STACKDEPOT)
+> #define __exception_irq_entry        __irq_entry
+> #else
+> #define __exception_irq_entry        __kprobes
+>-- 
+
  
--	acm_release_minor(acm);
-+	if (acm->minor != ACM_TTY_MINORS)
-+		acm_release_minor(acm);
- 	usb_put_intf(acm->control);
- 	kfree(acm->country_codes);
- 	kfree(acm);
-@@ -1323,8 +1324,10 @@ static int acm_probe(struct usb_interface *intf,
- 	usb_get_intf(acm->control); /* undone in destruct() */
  
- 	minor = acm_alloc_minor(acm);
--	if (minor < 0)
-+	if (minor < 0) {
-+		acm->minor = ACM_TTY_MINORS;
- 		goto err_put_port;
-+	}
- 
- 	acm->minor = minor;
- 	acm->dev = usb_dev;
--- 
-2.32.0
-
