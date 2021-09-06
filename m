@@ -2,235 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723FF401974
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877F6401980
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241712AbhIFKGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 06:06:49 -0400
-Received: from mga12.intel.com ([192.55.52.136]:7187 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232021AbhIFKGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 06:06:48 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10098"; a="199466072"
-X-IronPort-AV: E=Sophos;i="5.85,272,1624345200"; 
-   d="scan'208";a="199466072"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 03:05:43 -0700
-X-IronPort-AV: E=Sophos;i="5.85,272,1624345200"; 
-   d="scan'208";a="536701783"
-Received: from isandweg-mobl2.ger.corp.intel.com (HELO localhost) ([10.251.212.194])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 03:05:37 -0700
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Douglas Anderson <dianders@chromium.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus W <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
-        Steev Klimaszewski <steev@kali.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 03/16] drm/edid: Allow the querying/working with the panel ID from the EDID
-In-Reply-To: <20210901131531.v3.3.I4a672175ba1894294d91d3dbd51da11a8239cf4a@changeid>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210901201934.1084250-1-dianders@chromium.org> <20210901131531.v3.3.I4a672175ba1894294d91d3dbd51da11a8239cf4a@changeid>
-Date:   Mon, 06 Sep 2021 13:05:34 +0300
-Message-ID: <87h7ey81e9.fsf@intel.com>
+        id S241738AbhIFKKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 06:10:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59819 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241716AbhIFKKb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 06:10:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630922966;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HzNSo6ZS3uFrxA20jWLtzoSv8xjVW2nhmQ7Wv83IjVA=;
+        b=C2LXMUHiJGwQLrCVI/X+hSJZ2CA7sF/MS9pQ3L1xl/PbpArhcaMbzEeHHE4YtyymLm3xyF
+        Qn7hyuVGrXPIepTA/2sgJyR1ihSnb+kywtjiBHtbgjYa+r9hcnjFqIsxqAAEvtmPyzjjTv
+        3vqZShmzXblbabcXl/9G8kWf5+iMXPA=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-255-etxbxGGvMLC2ugj2Sv_wFQ-1; Mon, 06 Sep 2021 06:09:25 -0400
+X-MC-Unique: etxbxGGvMLC2ugj2Sv_wFQ-1
+Received: by mail-ej1-f71.google.com with SMTP id r21-20020a1709067055b02904be5f536463so2146938ejj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 03:09:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HzNSo6ZS3uFrxA20jWLtzoSv8xjVW2nhmQ7Wv83IjVA=;
+        b=nWM9HmB8llpxt7mO9AnBBrRXDJz1/55fvrG+Exyc4yXTEuCSny7NEn4NhffVfJXfr3
+         tBPxaj/3sO4K1iuWSG8EKTa8iGUFpHOZ5LJ/N72AnhNHfp9uDuJmnsMteEn8KZD2rCQS
+         hoNFBN8KpLPaTFl3Lare8RaTypul6V8CUGIPD9aBl+ahlwmUrET/+h/46401QGaA9IZc
+         3HPw5OBHN14LvVwCaO4USg60EZtq60vZaxgRBJDwcqzokeBrwJIExLAiAi0OxYAmSTDu
+         6Cj9fzEN0M9MJA2zQTDYrDbdZ/l9ztx85zOR66CbpfADMHMDDLfJjIpdnthiDJT1TW7O
+         jk1Q==
+X-Gm-Message-State: AOAM533CAU2FDRA3pilR+RD2HMCONVL7Juc6zFBZN9gCwvSr1stmo9nh
+        1av88hDDy7XZpadSvcZqN51EZJ4zfp8/6BJUtcB8WVIm1RiU+HZuSSxaW4H6B+bc6L+Y1PETrPd
+        d5nMZogcIZjgS8py7DO3n3IRYyfXQC6Ef7bNeL43/mJyyXDcSZX8SZxru0TcJzfRx/jiQZzFxzN
+        Hf
+X-Received: by 2002:a17:906:12d8:: with SMTP id l24mr12531109ejb.126.1630922964299;
+        Mon, 06 Sep 2021 03:09:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzd9KbL+Acs/HYH/PjpLSyiMZlMgHJj0efCCqbwsXoqVusO8sfoN1t9OiWHp06pAKfBgPBlrw==
+X-Received: by 2002:a17:906:12d8:: with SMTP id l24mr12531079ejb.126.1630922964078;
+        Mon, 06 Sep 2021 03:09:24 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id q18sm3661864ejc.84.2021.09.06.03.09.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 03:09:23 -0700 (PDT)
+Subject: Re: [PATCH 1/2] KVM: VMX: avoid running vmx_handle_exit_irqoff in
+ case of emulation
+To:     Sean Christopherson <seanjc@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+References: <20210826095750.1650467-1-mlevitsk@redhat.com>
+ <20210826095750.1650467-2-mlevitsk@redhat.com> <YSe6wphK9b8KSkXW@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a642cc28-272b-9a1f-51bb-657416e588d0@redhat.com>
+Date:   Mon, 6 Sep 2021 12:09:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YSe6wphK9b8KSkXW@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 01 Sep 2021, Douglas Anderson <dianders@chromium.org> wrote:
-> EDIDs have 32-bits worth of data which is intended to be used to
-> uniquely identify the make/model of a panel. This has historically
-> been used only internally in the EDID processing code to identify
-> quirks with panels.
->
-> We'd like to use this panel ID in panel-simple to identify which panel
-> is hooked up and from that information figure out power sequence
-> timings. Let's expose this information from the EDID code and also
-> allow it to be accessed early, before a connector has been created.
->
-> To make matching in the panel-simple code easier, we'll return the
-> panel ID as a 32-bit value. We'll provide some functions for
-> converting this value back and forth to something more human readable.
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
->
-> Changes in v3:
-> - Decode hex product ID w/ same endianness as everyone else.
->
->  drivers/gpu/drm/drm_edid.c | 59 ++++++++++++++++++++++++++++++++++++++
->  include/drm/drm_edid.h     | 47 ++++++++++++++++++++++++++++++
->  2 files changed, 106 insertions(+)
->
-> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> index a22c38482a90..ac128bc3478a 100644
-> --- a/drivers/gpu/drm/drm_edid.c
-> +++ b/drivers/gpu/drm/drm_edid.c
-> @@ -2086,6 +2086,65 @@ struct edid *drm_get_edid(struct drm_connector *connector,
->  }
->  EXPORT_SYMBOL(drm_get_edid);
->  
-> +/**
-> + * drm_get_panel_id - Get a panel's ID through DDC
-> + * @adapter: I2C adapter to use for DDC
-> + *
-> + * This function reads the first block of the EDID of a panel and (assuming
-> + * that the EDID is valid) extracts the ID out of it. The ID is a 32-bit value
-> + * (16 bits of manufacturer ID and 16 bits of per-manufacturer ID) that's
-> + * supposed to be different for each different modem of panel.
-> + *
-> + * This function is intended to be used during early probing on devices where
-> + * more than one panel might be present. Because of its intended use it must
-> + * assume that the EDID of the panel is correct, at least as far as the ID
-> + * is concerned (in other words, we don't process any overrides here).
-> + *
-> + * NOTE: it's expected that this function and drm_do_get_edid() will both
-> + * be read the EDID, but there is no caching between them. Since we're only
-> + * reading the first block, hopefully this extra overhead won't be too big.
-> + *
-> + * Return: A 32-bit ID that should be different for each make/model of panel.
-> + *         See the functions encode_edid_id() and decode_edid_id() for some
-> + *         details on the structure of this ID.
-> + */
-> +u32 drm_get_panel_id(struct i2c_adapter *adapter)
+On 26/08/21 18:01, Sean Christopherson wrote:
+>> +	if (vmx->emulation_required)
+>> +		return;
+> Rather than play whack-a-mole with flows consuming stale state, I'd much prefer
+> to synthesize a VM-Exit(INVALID_GUEST_STATE).  Alternatively, just skip ->run()
+> entirely by adding hooks in vcpu_enter_guest(), but that's a much larger change
+> and probably not worth the risk at this juncture.
 
-Please call it drm_edid_get_panel_id() because that's what it is, and
-this is in drm_edid.[ch].
+I'm going with Maxim's patch for now (and for stable kernels especially)
+but I like the
 
-> +{
-> +	struct edid *edid;
-> +	u32 val;
-> +
-> +	edid = drm_do_get_edid_blk0(drm_do_probe_ddc_edid, adapter, NULL, NULL);
-> +
-> +	/*
-> +	 * There are no manufacturer IDs of 0, so if there is a problem reading
-> +	 * the EDID then we'll just return 0.
-> +	 */
-> +	if (IS_ERR_OR_NULL(edid))
-> +		return 0;
-> +
-> +	/*
-> +	 * In theory we could try to de-obfuscate this like edid_get_quirks()
-> +	 * does, but it's easier to just deal with a 32-bit number.
 
-Hmm, but is it, really? AFAICT this is just an internal representation
-for a table, where it could just as well be stored in a struct that
-could be just as compact now, but extensible later. You populate the
-table via an encoding macro, then decode the id using a function - while
-it could be in a format that's directly usable without the decode. If
-suitably chosen, the struct could perhaps be reused between the quirks
-code and your code.
++       if (unlikely(static_call(kvm_x86_emulation_required)(vcpu)))
++               return static_call(kvm_x86_emulate_invalid_guest_state)(vcpu);
++
 
-> +	 *
-> +	 * NOTE that we deal with endianness differently for the top half
-> +	 * of this ID than for the bottom half. The bottom half (the product
-> +	 * id) gets decoded as little endian by the EDID_PRODUCT_ID because
-> +	 * that's how everyone seems to interpret it. The top half (the mfg_id)
-> +	 * gets stored as big endian because that makes encode_edid_id() and
-> +	 * decode_edid_id() easier to write (it's easier to extract the ASCII).
-> +	 * It doesn't really matter, though, as long as the number here is
-> +	 * unique.
-> +	 */
-> +	val = (u32)edid->mfg_id[0] << 24   |
-> +	      (u32)edid->mfg_id[1] << 16   |
-> +	      (u32)EDID_PRODUCT_ID(edid);
-> +
-> +	kfree(edid);
-> +
-> +	return val;
-> +}
-> +EXPORT_SYMBOL(drm_get_panel_id);
-> +
->  /**
->   * drm_get_edid_switcheroo - get EDID data for a vga_switcheroo output
->   * @connector: connector we're probing
-> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-> index deccfd39e6db..73da40d0b5d1 100644
-> --- a/include/drm/drm_edid.h
-> +++ b/include/drm/drm_edid.h
-> @@ -508,6 +508,52 @@ static inline u8 drm_eld_get_conn_type(const uint8_t *eld)
->  	return eld[DRM_ELD_SAD_COUNT_CONN_TYPE] & DRM_ELD_CONN_TYPE_MASK;
->  }
->  
-> +/**
-> + * encode_edid_id - Encode an ID for matching against drm_get_panel_id()
-> + * @vend_chr_0: First character of the vendor string.
-> + * @vend_chr_2: Second character of the vendor string.
-> + * @vend_chr_3: Third character of the vendor string.
-> + * @product_id: The 16-bit product ID.
-> + *
-> + * This is a macro so that it can be calculated at compile time and used
-> + * as an initializer.
-> + *
-> + * For instance:
-> + *   encode_edid_id('B', 'O', 'E', 0x2d08) => 0x09e52d08
-> + *
-> + * Return: a 32-bit ID per panel.
-> + */
-> +#define encode_edid_id(vend_chr_0, vend_chr_1, vend_chr_2, product_id) \
-> +	((((u32)(vend_chr_0) - '@') & 0x1f) << 26 | \
-> +	 (((u32)(vend_chr_1) - '@') & 0x1f) << 21 | \
-> +	 (((u32)(vend_chr_2) - '@') & 0x1f) << 16 | \
-> +	 ((product_id) & 0xffff))
-> +
-> +/**
-> + * decode_edid_id - Decode a panel ID from encode_edid_id()
-> + * @panel_id: The panel ID to decode.
-> + * @vend: A 4-byte buffer to store the 3-letter vendor string plus a '\0'
-> + *	  termination
-> + * @product_id: The product ID will be returned here.
-> + *
-> + * For instance, after:
-> + *   decode_edid_id(0x09e52d08, vend, &product_id)
-> + * These will be true:
-> + *   vend[0] = 'B'
-> + *   vend[1] = 'O'
-> + *   vend[2] = 'E'
-> + *   vend[3] = '\0'
-> + *   product_id = 0x2d08
-> + */
-> +static inline void decode_edid_id(u32 panel_id, char vend[4], u16 *product_id)
-> +{
-> +	*product_id = (u16)(panel_id & 0xffff);
-> +	vend[0] = '@' + ((panel_id >> 26) & 0x1f);
-> +	vend[1] = '@' + ((panel_id >> 21) & 0x1f);
-> +	vend[2] = '@' + ((panel_id >> 16) & 0x1f);
-> +	vend[3] = '\0';
-> +}
+idea.  I'll put a Fixes for 95b5a48c4f2b ("KVM: VMX: Handle NMIs, #MCs and
+async #PFs in common irqs-disabled fn", Linux 5.3).
 
-I think the names here could use a drm_edid_ prefix too.
+Paolo
 
-Maybe drm_edid_encode_panel_id and drm_edid_decode_panel_id, aligning
-nicely with drm_edid_get_panel_id.
-
-BR,
-Jani.
-
-> +
->  bool drm_probe_ddc(struct i2c_adapter *adapter);
->  struct edid *drm_do_get_edid(struct drm_connector *connector,
->  	int (*get_edid_block)(void *data, u8 *buf, unsigned int block,
-> @@ -515,6 +561,7 @@ struct edid *drm_do_get_edid(struct drm_connector *connector,
->  	void *data);
->  struct edid *drm_get_edid(struct drm_connector *connector,
->  			  struct i2c_adapter *adapter);
-> +u32 drm_get_panel_id(struct i2c_adapter *adapter);
->  struct edid *drm_get_edid_switcheroo(struct drm_connector *connector,
->  				     struct i2c_adapter *adapter);
->  struct edid *drm_edid_duplicate(const struct edid *edid);
-
--- 
-Jani Nikula, Intel Open Source Graphics Center
