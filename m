@@ -2,220 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FD8401F2F
+	by mail.lfdr.de (Postfix) with ESMTP id 4170D401F2D
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244051AbhIFRfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 13:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243683AbhIFRfy (ORCPT
+        id S243935AbhIFRfW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Sep 2021 13:35:22 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:51947 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243799AbhIFRfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 13:35:54 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A28C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 10:34:49 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id s12so12468004ljg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:34:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZB7ptLKThIof5MsfSNoSfl71X/ddabBU4eJpmUp1LMw=;
-        b=dtWU61OYshd3Y+OyFkWADvTWnBSQA2Zi2ywgF+75xJEs6qPUJbuyW+R1tYxseKO0We
-         GugPP/jtoDGaMm2ncJI3NJyZNQ/Rrmz1nJlaVDhcVQQuWrV1eFvuAWcJ0TvqEbsbOGbd
-         /pR0UPQolnoqcawWjNiHJgT5t5vQaTDSf6nfP++PvY4wG/EO6XTXCMJgPFjJvzD0NdsO
-         DMdUV3ZdCYx3naKxM9BvAzneJPZ85TaO5cAhFRhFFDoj3MCnZUXsAUiJarx7bNWIZ/ja
-         hYsIwfRuVWMAP3JDrLrrYg2D2JMoE34ZAm53ys9GTPxmQFpRXEj8s+zj7ZXWipYh/4hr
-         UEjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZB7ptLKThIof5MsfSNoSfl71X/ddabBU4eJpmUp1LMw=;
-        b=E1FoaTfhqvPF40WlGb/yD+i7h3Um6SGsDCKovEAHQq7iSjuQKVP61xxq3qdkT3i0J7
-         JJYOlo8B0oa/ZFZ/EJUAxMIFV+mr0unooSTQqdHsCGsjAs+D1u1SMQvGFpnodxX2B6ci
-         zsou+ijTvq+o2PSk9HpfbQSx3ExagJTUQQl8eFbpOD5HDrnBZGy8rCSJE9RdGYwBkxaY
-         nIxNws6cbe+j+uROppd2KW8Ega9ABI/a3v3cdtdra4kC6uovF9d/U+V5ofu9MlGlKRKt
-         zKNUPmFEbtfZIcNjKBZd2bNClP677obbxCc8sGnVKosJIhSUaMt8sicnDtOJPxboU+JW
-         fHKA==
-X-Gm-Message-State: AOAM530JGPKHYOUmTcBI9SjUiPbzoszVf177HtoCk/aTNICeG/C4kwxN
-        ljOxKqbgCE41FUF+gpDbsbWeqpZT2bIJWHaLAjOpMg==
-X-Google-Smtp-Source: ABdhPJyXgpFtHdrPAIt5FCLdMhMDoTzeasiJqDqVPE4jUp7klgLZC2xlDbH7mXNUw8yIZTxY/8Vu3eI0B0yQUIZdeN0=
-X-Received: by 2002:a05:651c:102d:: with SMTP id w13mr11588002ljm.229.1630949687405;
- Mon, 06 Sep 2021 10:34:47 -0700 (PDT)
+        Mon, 6 Sep 2021 13:35:21 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id CFCAA24000A;
+        Mon,  6 Sep 2021 17:34:14 +0000 (UTC)
+Date:   Mon, 6 Sep 2021 19:34:13 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     "Sa, Nuno" <Nuno.Sa@analog.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
+ samples
+Message-ID: <20210906193413.1892f0c8@xps13>
+In-Reply-To: <20210906175657.62cb0bc6@jic23-huawei>
+References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
+        <20210818111139.330636-4-miquel.raynal@bootlin.com>
+        <SJ0PR03MB6359415E120CFD3EFAF417F599C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
+        <20210830110756.733d5201@jic23-huawei>
+        <MW4PR03MB6363FE3BAF40A383D244ADC399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
+        <20210830152956.58331a8d@jic23-huawei>
+        <MW4PR03MB6363BC976F039550906B6ED399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
+        <20210901101209.31703187@xps13>
+        <SA1PR03MB6355AEE16D42689F671651A999D29@SA1PR03MB6355.namprd03.prod.outlook.com>
+        <20210906175657.62cb0bc6@jic23-huawei>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210902101634.827187-1-ulf.hansson@linaro.org>
- <20210902101634.827187-2-ulf.hansson@linaro.org> <08335cd4-7dc8-3b8b-d63f-374585ffa373@gmail.com>
- <CAPDyKFofrEj2LdqXh-L256b2Tcz=qYQgzTUBVuvx0rOR58SrVg@mail.gmail.com>
- <b597c805-e346-8c23-5014-cbb116e88075@gmail.com> <CAPDyKFrWofUKhbhvwTCjiFwJD8-Pzi8UMzU7ZjYLKm2j1HeeBg@mail.gmail.com>
- <6603212d-f36c-afff-6222-8125de5b7b79@gmail.com> <CAPDyKFoyszG2Wo3jbXK562XgpqXns_GPqm7nNu8WOdMCXYUOMQ@mail.gmail.com>
- <66fbbc69-3e16-e07c-4e25-48d59d69fd3c@gmail.com>
-In-Reply-To: <66fbbc69-3e16-e07c-4e25-48d59d69fd3c@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 6 Sep 2021 19:34:10 +0200
-Message-ID: <CAPDyKFqqdgr2DHf1Fidj3ksPHe3XgwvCo8SbQ2Cmnc5y1PDvMw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] PM: domains: Drop the performance state vote for a
- device at detach
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Sept 2021 at 16:11, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 06.09.2021 13:24, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Sun, 5 Sept 2021 at 10:26, Dmitry Osipenko <digetx@gmail.com> wrote:
-> >>
-> >> 03.09.2021 17:03, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>> On Fri, 3 Sept 2021 at 11:58, Dmitry Osipenko <digetx@gmail.com> wrot=
-e:
-> >>>>
-> >>>> 03.09.2021 11:22, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>>>> On Fri, 3 Sept 2021 at 08:01, Dmitry Osipenko <digetx@gmail.com> wr=
-ote:
-> >>>>>>
-> >>>>>> 02.09.2021 13:16, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>>>>>> When a device is detached from its genpd, genpd loses track of th=
-e device,
-> >>>>>>> including its performance state vote that may have been requested=
- for it.
-> >>>>>>>
-> >>>>>>> Rather than relying on the consumer driver to drop the performanc=
-e state
-> >>>>>>> vote for its device, let's do it internally in genpd when the dev=
-ice is
-> >>>>>>> getting detached. In this way, we makes sure that the aggregation=
- of the
-> >>>>>>> votes in genpd becomes correct.
-> >>>>>>
-> >>>>>> This is a dangerous behaviour in a case where performance state
-> >>>>>> represents voltage. If hardware is kept active on detachment, say =
-it's
-> >>>>>> always-on, then it may be a disaster to drop the voltage for the a=
-ctive
-> >>>>>> hardware.
-> >>>>>>
-> >>>>>> It's safe to drop performance state only if you assume that there =
-is a
-> >>>>>> firmware behind kernel which has its own layer of performance mana=
-gement
-> >>>>>> and it will prevent the disaster by saying 'nope, I'm not doing th=
-is'.
-> >>>>>>
-> >>>>>> The performance state should be persistent for a device and it sho=
-uld be
-> >>>>>> controlled in a conjunction with runtime PM. If platform wants to =
-drop
-> >>>>>> performance state to zero on detachment, then this behaviour shoul=
-d be
-> >>>>>> specific to that platform.
-> >>>>>
-> >>>>> I understand your concern, but at this point, genpd can't help to f=
-ix this.
-> >>>>>
-> >>>>> Genpd has no information about the device, unless it's attached to =
-it.
-> >>>>> For now and for these always on HWs, we simply need to make sure th=
-e
-> >>>>> device stays attached, in one way or the other.
-> >>>>
-> >>>> This indeed requires to redesign GENPD to make it more coupled with =
-a
-> >>>> device, but this is not a real problem for any of the current API us=
-ers
-> >>>> AFAIK. Ideally the state should be persistent to make API more unive=
-rsal.
-> >>>
-> >>> Right. In fact this has been discussed in the past. In principle, the
-> >>> idea was to attach to genpd at device registration, rather than at
-> >>> driver probe.
-> >>>
-> >>> Although, this is not very easy to implement - and it seems like the
-> >>> churns to do, have not been really worth it. At least so far.
-> >>>
-> >>>>
-> >>>> Since for today we assume that device should be suspended at the tim=
-e of
-> >>>> the detachment (if the default OPP state isn't used), it may be bett=
-er
-> >>>> to add a noisy warning message if pstate!=3D0, keeping the state unt=
-ouched
-> >>>> if it's not zero.
-> >>>
-> >>> That would just be very silly in my opinion.
-> >>>
-> >>> When the device is detached (suspended or not), it may cause it's PM
-> >>> domain to be powered off - and there is really nothing we can do abou=
-t
-> >>> that from the genpd point of view.
-> >>>
-> >>> As stated, the only current short term solution is to avoid detaching
-> >>> the device. Anything else, would just be papering of the issue.
-> >>
-> >> What about to re-evaluate the performance state of the domain after
-> >> detachment instead of setting the state to zero?
-> >
-> > I am not suggesting to set the performance state of the genpd to zero,
-> > but to drop a potential vote for a performance state for the *device*
-> > that is about to be detached.
->
-> By removing the vote of the *device*, you will drop the performance
-> state of the genpd. If device is active and it's wrong to drop its
-> state, then you may cause the damage.
->
-> > Calling genpd_set_performance_state(dev, 0), during detach will have
-> > the same effect as triggering a re-evaluation of the performance state
-> > for the genpd, but after the detach.
->
-> Yes
->
-> >> This way PD driver may
-> >> take an action on detachment if performance isn't zero, before hardwar=
-e
-> >> is crashed, for example it may emit a warning.
-> >
-> > Not sure I got that. Exactly when do you want to emit a warning and
-> > for what reason?
-> >
-> > Do you want to add a check somewhere to see if
-> > 'gpd_data->performance_state' is non zero - and then print a warning?
->
-> I want to check the 'gpd_data->performance_state' from the detachment
-> callback and emit the warning + lock further performance changes in the
-> PD driver since it's a error condition.
+Hi Jonathan,
 
-Alright, so if I understand correctly, you intend to do the check for
-the "error condition" of the device in the genpd->detach_dev()
-callback?
+jic23@kernel.org wrote on Mon, 6 Sep 2021 17:56:57 +0100:
 
-What exactly do you intend to do beyond this point, if you detect the
-"error condition"? Locking further changes of the performance state
-seems fragile too, especially if some other device/driver requires the
-performance state to be raised. It sounds like you simply need to call
-BUG_ON() then?
+> On Mon, 6 Sep 2021 08:59:55 +0000
+> "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+> 
+> > > -----Original Message-----
+> > > From: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > Sent: Wednesday, September 1, 2021 10:12 AM
+> > > To: Sa, Nuno <Nuno.Sa@analog.com>
+> > > Cc: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
+> > > <lars@metafoo.de>; Thomas Petazzoni
+> > > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org; linux-
+> > > kernel@vger.kernel.org
+> > > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
+> > > samples
+> > > 
+> > > [External]
+> > > 
+> > > Hello,
+> > > 
+> > > "Sa, Nuno" <Nuno.Sa@analog.com> wrote on Mon, 30 Aug 2021
+> > > 15:02:26
+> > > +0000:
+> > >     
+> > > > > -----Original Message-----
+> > > > > From: Jonathan Cameron <jic23@kernel.org>
+> > > > > Sent: Monday, August 30, 2021 4:30 PM
+> > > > > To: Sa, Nuno <Nuno.Sa@analog.com>
+> > > > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Lars-Peter    
+> > > Clausen    
+> > > > > <lars@metafoo.de>; Thomas Petazzoni
+> > > > > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org;    
+> > > linux-    
+> > > > > kernel@vger.kernel.org
+> > > > > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the    
+> > > requested    
+> > > > > samples
+> > > > >
+> > > > > [External]
+> > > > >
+> > > > > On Mon, 30 Aug 2021 10:49:50 +0000
+> > > > > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+> > > > >    
+> > > > > > > -----Original Message-----
+> > > > > > > From: Jonathan Cameron <jic23@kernel.org>
+> > > > > > > Sent: Monday, August 30, 2021 12:08 PM
+> > > > > > > To: Sa, Nuno <Nuno.Sa@analog.com>
+> > > > > > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Lars-Peter    
+> > > > > Clausen    
+> > > > > > > <lars@metafoo.de>; Thomas Petazzoni
+> > > > > > > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org;    
+> > > > > linux-    
+> > > > > > > kernel@vger.kernel.org
+> > > > > > > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the    
+> > > > > requested    
+> > > > > > > samples
+> > > > > > >
+> > > > > > > [External]
+> > > > > > >
+> > > > > > > On Fri, 20 Aug 2021 07:10:48 +0000
+> > > > > > > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
+> > > > > > >    
+> > > > > > > > > -----Original Message-----
+> > > > > > > > > From: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > > > > > > > Sent: Wednesday, August 18, 2021 1:11 PM
+> > > > > > > > > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter    
+> > > Clausen    
+> > > > > > > > > <lars@metafoo.de>
+> > > > > > > > > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>;    
+> > > linux-    
+> > > > > > > > > iio@vger.kernel.org; linux-kernel@vger.kernel.org; Miquel    
+> > > > > Raynal    
+> > > > > > > > > <miquel.raynal@bootlin.com>
+> > > > > > > > > Subject: [PATCH 03/16] iio: adc: max1027: Push only the    
+> > > > > requested    
+> > > > > > > > > samples
+> > > > > > > > >
+> > > > > > > > > [External]
+> > > > > > > > >
+> > > > > > > > > When a triggered scan occurs, the identity of the desired    
+> > > > > channels    
+> > > > > > > is    
+> > > > > > > > > known in indio_dev->active_scan_mask. Instead of reading    
+> > > and    
+> > > > > > > > > pushing to
+> > > > > > > > > the IIO buffers all channels each time, scan the minimum    
+> > > > > amount    
+> > > > > > > of    
+> > > > > > > > > channels (0 to maximum requested chan, to be exact) and    
+> > > only    
+> > > > > > > > > provide the
+> > > > > > > > > samples requested by the user.
+> > > > > > > > >
+> > > > > > > > > For example, if the user wants channels 1, 4 and 5, all    
+> > > channels    
+> > > > > > > from    
+> > > > > > > > > 0 to 5 will be scanned but only the desired channels will be    
+> > > > > pushed    
+> > > > > > > to    
+> > > > > > > > > the IIO buffers.
+> > > > > > > > >
+> > > > > > > > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > > > > > > > ---
+> > > > > > > > >  drivers/iio/adc/max1027.c | 25 +++++++++++++++++++++-    
+> > > ---    
+> > > > > > > > >  1 file changed, 21 insertions(+), 4 deletions(-)
+> > > > > > > > >
+> > > > > > > > > diff --git a/drivers/iio/adc/max1027.c    
+> > > > > b/drivers/iio/adc/max1027.c    
+> > > > > > > > > index b753658bb41e..8ab660f596b5 100644
+> > > > > > > > > --- a/drivers/iio/adc/max1027.c
+> > > > > > > > > +++ b/drivers/iio/adc/max1027.c
+> > > > > > > > > @@ -360,6 +360,9 @@ static int    
+> > > > > max1027_set_trigger_state(struct    
+> > > > > > > > > iio_trigger *trig, bool state)
+> > > > > > > > >  	struct max1027_state *st = iio_priv(indio_dev);
+> > > > > > > > >  	int ret;
+> > > > > > > > >
+> > > > > > > > > +	if (bitmap_empty(indio_dev->active_scan_mask,    
+> > > > > indio_dev-    
+> > > > > > > > > >masklength))    
+> > > > > > > > > +		return -EINVAL;
+> > > > > > > > > +    
+> > > > > > > >
+> > > > > > > > I'm not sure this can actually happen. If you try to enable the    
+> > > > > buffer    
+> > > > > > > > with no scan element, it should give you an error before you    
+> > > > > reach    
+> > > > > > > > this point...
+> > > > > > > >    
+> > > > > > > > >  	if (state) {
+> > > > > > > > >  		/* Start acquisition on cnvst */
+> > > > > > > > >  		st->reg = MAX1027_SETUP_REG |
+> > > > > > > > > MAX1027_CKS_MODE0 |
+> > > > > > > > > @@ -368,9 +371,12 @@ static int    
+> > > > > max1027_set_trigger_state(struct    
+> > > > > > > > > iio_trigger *trig, bool state)
+> > > > > > > > >  		if (ret < 0)
+> > > > > > > > >  			return ret;
+> > > > > > > > >
+> > > > > > > > > -		/* Scan from 0 to max */
+> > > > > > > > > -		st->reg = MAX1027_CONV_REG |    
+> > > > > MAX1027_CHAN(0) |    
+> > > > > > > > > -			  MAX1027_SCAN_N_M |    
+> > > > > MAX1027_TEMP;    
+> > > > > > > > > +		/*
+> > > > > > > > > +		 * Scan from 0 to the highest requested    
+> > > > > channel. The    
+> > > > > > > > > temperature
+> > > > > > > > > +		 * could be avoided but it simplifies a bit the    
+> > > > > logic.    
+> > > > > > > > > +		 */
+> > > > > > > > > +		st->reg = MAX1027_CONV_REG |
+> > > > > > > > > MAX1027_SCAN_0_N | MAX1027_TEMP;
+> > > > > > > > > +		st->reg |= MAX1027_CHAN(fls(*indio_dev-    
+> > > > > > > > > >active_scan_mask) - 2);    
+> > > > > > > > >  		ret = spi_write(st->spi, &st->reg, 1);
+> > > > > > > > >  		if (ret < 0)
+> > > > > > > > >  			return ret;
+> > > > > > > > > @@ -391,11 +397,22 @@ static irqreturn_t
+> > > > > > > > > max1027_trigger_handler(int irq, void *private)
+> > > > > > > > >  	struct iio_poll_func *pf = private;
+> > > > > > > > >  	struct iio_dev *indio_dev = pf->indio_dev;
+> > > > > > > > >  	struct max1027_state *st = iio_priv(indio_dev);
+> > > > > > > > > +	unsigned int scanned_chans = fls(*indio_dev-    
+> > > > > > > > > >active_scan_mask);    
+> > > > > > > > > +	u16 *buf = st->buffer;    
+> > > > > > > >
+> > > > > > > > I think sparse will complain here. buffer is a __be16 restricted
+> > > > > > > > type so you should not mix those...    
+> > > > > > > > > +	unsigned int bit;
+> > > > > > > > >
+> > > > > > > > >  	pr_debug("%s(irq=%d, private=0x%p)\n", __func__,    
+> > > > > irq,    
+> > > > > > > > >    
+> > > > > > >    
+> > > > >    
+> > > private);in/20210818_miquel_raynal_bring_software_triggers_support    
+> > > > > > > _to_max1027_like_adcs.mbx    
+> > > > > > > > >
+> > > > > > > > >  	/* fill buffer with all channel */
+> > > > > > > > > -	spi_read(st->spi, st->buffer, indio_dev->masklength *    
+> > > > > 2);    
+> > > > > > > > > +	spi_read(st->spi, st->buffer, scanned_chans * 2);
+> > > > > > > > > +
+> > > > > > > > > +	/* Only keep the channels selected by the user */
+> > > > > > > > > +	for_each_set_bit(bit, indio_dev->active_scan_mask,
+> > > > > > > > > +			 indio_dev->masklength) {
+> > > > > > > > > +		if (buf[0] != st->buffer[bit])
+> > > > > > > > > +			buf[0] = st->buffer[bit];    
+> > > > > > > >
+> > > > > > > > Since we are here, when looking into the driver, I realized
+> > > > > > > > that st->buffer is not DMA safe. In IIO, we kind of want to    
+> > > > > enforce    
+> > > > > > > > that all buffers that are passed to spi/i2c buses are safe...    
+> > > Maybe    
+> > > > > > > > this is something you can include in your series.    
+> > > > > > >
+> > > > > > > Why is it not?  st->buffer is result of a devm_kmalloc_array()    
+> > > call    
+> > > > > and    
+> > > > > > > that should provide a DMA safe buffer as I understand it.
+> > > > > > >    
+> > > > > >
+> > > > > > That's a good question. I'm not sure how I came to that    
+> > > conclusion    
+> > > > > which    
+> > > > > > is clearly wrong. Though I think the buffer might share the line    
+> > > with    
+> > > > > the    
+> > > > > > mutex...    
+> > > > > Pointer shares a line.  The buffer it points to doesn't as allocated
+> > > > > by separate heap allocation.
+> > > > >    
+> > > >
+> > > > Ups, sure :facepalm:    
+> > > 
+> > > My understanding [1] was that devm_ allocations were generally not
+> > > suitable for DMA and should not be used for this particular purpose
+> > > because of the extra 16 bytes allocated for storing the devm magic
+> > > somewhere, which shifts the entire buffer and prevents it to always
+> > > be
+> > > aligned on a cache line. I will propose a patch to switch to
+> > > kmalloc_array() instead.    
+> > 
+> > I do not think this is a problem anymore [1]. Nowadays, 'devm_kmalloc'
+> > should give you the same alignment guarantees as 'kmalloc'
+> > 
+> > [1]: https://elixir.bootlin.com/linux/latest/source/drivers/base/devres.c#L35  
+> Great info. I remembered a discussion about fixing that, but couldn't find
+> the patch.  For some reason I didn't just check the code :)
 
-Also note that a very similar problem exists, *before* the device gets
-attached in the first place. More precisely, nothing prevents the
-performance state from being set to a non-compatible value for an
-always-on HW/device that hasn't been attached yet. So maybe you need
-to set the maximum performance state at genpd initializations, then
-use the ->sync_state() callback to very that all consumers have been
-attached to the genpd provider, before allowing the state to be
-changed/lowered?
+Nice! I didn't know about that, thanks a lot for sharing. So this patch
+can be safely discarded then.
 
-Kind regards
-Uffe
+Thanks,
+Miquèl
