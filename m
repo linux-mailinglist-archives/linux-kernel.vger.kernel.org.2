@@ -2,93 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0082D401E9E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79029401EAA
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244236AbhIFQlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 12:41:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34230 "EHLO
+        id S237559AbhIFQrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 12:47:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241972AbhIFQlO (ORCPT
+        with ESMTP id S243812AbhIFQow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:41:14 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D839C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 09:40:09 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id j1so4610728pjv.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 09:40:09 -0700 (PDT)
+        Mon, 6 Sep 2021 12:44:52 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D70C061757
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 09:43:47 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id s11so7288828pgr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 09:43:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:subject:to:references:from:message-id:date:user-agent
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Id4IX7WNAacgPXIphmc2k5gyC+m0hiqYBkdrE/MPtks=;
-        b=kBCfkgdYuVEn/boyOC/8CVOCiHUy5PqQ0EddIOm/b2kYpY1vS6UxJrOeatra2KToIv
-         sXuwihBL1wN0qexKUNEF7rHpdNl6IRu/6EWw+cLutG4aoOIfDARjB8fJYsDDY73vNqlO
-         QV+rmJrXUvEY51I0erAEkkjCVLXG6IY7Ih0a7z28pT2hwthMQ3mPrWSk7NvUCeuQigUq
-         rBDr0aAAAbCN09oMLNWLHsB/jW8DEMKt4i3y1ryx67yjzGcQhVzuiRomlKMABOKymhj3
-         CImmTJcXKop9ODoNWBmf4UdHtDLzG+kqlctlGX/gb6msUXnJMzvP7jjkN1XkCxLQhURg
-         jWgw==
+        bh=gpCBeF0p4omYE2D9GwBpGanZ1k+kf8G9nWZ3OfHPsNM=;
+        b=RpsV7BN0PHzqNOwJTNcmMJ05qcNTbYA55cmj8TJCR+tzJWV4pg4s2AXrjcw8S0NHP9
+         s4dmHp34qA5FIudzQUA4OiM34SwPny1EfrGnWGOll5tMP2QWLOHXVyDx/x7I9fA0ZgZm
+         Un66Fx7Ab/1Y/XO+e85l+n6sh+WAmZjEWolKJBw9CSiEd35ZGdknsA6937zCjBTDmofv
+         4HwnzBqeaOivVabm7aRy5R6nlsW6OWg76Ia5LMT+NkZ2yfP/Ur0ZlypjCD5u1NpJAusO
+         cGQJL+ClZ6SqoQR7SMFtOCW4TwoQAfHvT+e40MeXFitmfG9fWBE+bhK4UPf9aIxKjdhl
+         MpGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Id4IX7WNAacgPXIphmc2k5gyC+m0hiqYBkdrE/MPtks=;
-        b=ETwevfdHkfV6ZP/jSPaF9JDnjHux+T13WDdORcuBanXd8Rh+rHh5b69Kw86iKgxhBj
-         st+RtsqXsjeFrYselwtE0MQqeNVOhCWiZUNuO5P7CoI/R2Pss/7bq+tDADau3l9qgdFL
-         I+9eueT5Oju9Y7xcDkZm05w4OCDaK4oLRQqJwRHoVuxE3sIrUx+PqWBeOlSzA8ZHOl0r
-         MrklWZoS0UOXmNLohulKg63PMy03dyE1MzvfuzjRs7vOC2suZlo1swWdwefIdCpHyAoa
-         nUa5lup+pN/hZYvJVHDpMbXbIMqDJN5sChuulORtCc20EB0821C7jj9QaJO5eFzhXrVZ
-         5hBg==
-X-Gm-Message-State: AOAM531iqFf2hLiJkeac1c8DYU/yTz7ObTyhsJmoqnAjuZi62XkbYf/U
-        WgK3NuSm8qvtZ/Ma1Qa/DA15ljTL5eEfaQ==
-X-Google-Smtp-Source: ABdhPJy9FY92iSOiLR5dF/Ju7R1WHruQJ2enjFHx1DshRbyipXCPqOomp/NfxJ5To0JHWI+o14qVcg==
-X-Received: by 2002:a17:90a:9b13:: with SMTP id f19mr15375pjp.224.1630946408627;
-        Mon, 06 Sep 2021 09:40:08 -0700 (PDT)
-Received: from [192.168.1.6] ([117.98.200.228])
-        by smtp.gmail.com with ESMTPSA id h16sm8008282pfn.215.2021.09.06.09.40.06
+        bh=gpCBeF0p4omYE2D9GwBpGanZ1k+kf8G9nWZ3OfHPsNM=;
+        b=WnBnD1e72XIxjp0eQlacFv46LXa9CMaSyM//Di2LJcq0lSTaQMK3a3HZQyzVOYLoK6
+         GWrKLRDkL41A03oA34zwQRzOy76a25WB/dRY9pXz3dZA4inUnEQqGnA7Q/g9gDEIxF7I
+         ElUcKnMbWP/9jP0bMWGtOM+miI+0Soonxn/lSX/4OZekvSFz2MwHDMVp9wl2jRWHvqt2
+         p7Wvg1F+NkCHywV3Tg1vLP5/6TzD1jtaSteVFTw9Ax/oD4ptZ4SqzrpLc33Epj/BDv1p
+         TH9mD8F0tnqmgJ9M4Rxc5iLu/cqI6fA4vo2Ie3M7yQ1aUzTOyM8+97YL69yaIW54yItS
+         vxuQ==
+X-Gm-Message-State: AOAM532E7eHgTMdM1wqnqaLNOAg2ExzkzeU1g4paCI8pSUXpXGIC4GVG
+        LZVvQkV10DWkcuNip0Pv7/Z5Z2DrbJHAaA==
+X-Google-Smtp-Source: ABdhPJxw8UPaJ5wwZygZo9edzEuiLbWk9adGqsksRle6zSSYcHmbY0+7F+xDpEiVbrsLH7rq+NMVpA==
+X-Received: by 2002:a63:d456:: with SMTP id i22mr12918638pgj.421.1630946626437;
+        Mon, 06 Sep 2021 09:43:46 -0700 (PDT)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id b4sm7776822pga.69.2021.09.06.09.43.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 09:40:08 -0700 (PDT)
-Cc:     saurav.girepunje@hotmail.com, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, straube.linux@gmail.com,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: core: remove duplicate structure.
-To:     Greg KH <gregkh@linuxfoundation.org>
-References: <YTSj7upqzTiccWH2@user> <YTYchKn/l3GboOsd@kroah.com>
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-Message-ID: <4537b0fd-848e-5188-823b-3a3bb750391d@gmail.com>
-Date:   Mon, 6 Sep 2021 22:10:04 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 06 Sep 2021 09:43:45 -0700 (PDT)
+Subject: Re: [PATCH] cpufreq: intel_pstate: Fix for HWP interrupt before
+ driver is ready
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210904053703.581297-1-srinivas.pandruvada@linux.intel.com>
+ <CAJZ5v0hQp8Hxf__tL22s0oOcTym5mx9tND34ijufTDE3_NSW6A@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <926ac4b9-1bb5-e96e-ded3-6461f7a215b7@kernel.dk>
+Date:   Mon, 6 Sep 2021 10:43:42 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YTYchKn/l3GboOsd@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAJZ5v0hQp8Hxf__tL22s0oOcTym5mx9tND34ijufTDE3_NSW6A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 06/09/21 7:19 pm, Greg KH wrote:
-> On Sun, Sep 05, 2021 at 04:33:10PM +0530, Saurav Girepunje wrote:
->> Remove duplicate structure mlme_handler and action_handler. Both
->> structure are having same member. Replace it with mlme_action_handler.
+On 9/6/21 10:17 AM, Rafael J. Wysocki wrote:
+> On Sat, Sep 4, 2021 at 7:37 AM Srinivas Pandruvada
+> <srinivas.pandruvada@linux.intel.com> wrote:
+>>
+>> In Lenovo X1 gen9 laptop, HWP interrupts arrive before driver is ready
+>> to handle on that CPU. Basically didn't even allocated memory for per
+>> cpu data structure and not even started interrupt enable process on that
+>> CPU. So interrupt handler observes a NULL pointer to schedule work.
+>>
+>> This interrupt was probably for SMM, but since it is redirected to
+>> OS by OSC call, OS receives it, but not ready to handle. That redirection
+>> of interrupt to OS was also done to solve one SMM crash on Yoga 260 for
+>> HWP interrupt a while back.
+>>
+>> To solve this the HWP interrupt handler should ignore such request if the
+>> driver is not ready. This will require some flag to wait till the driver
+>> setup a workqueue to handle on a CPU. We can't simply assume cpudata to
+>> be NULL and avoid processing as it may not be NULL but data structure is
+>> not in consistent state.
+>>
+>> So created a cpumask which sets the CPU on which interrupt was setup. If
+>> not setup, simply clear the interrupt status and return. Since the
+>> similar issue can happen during S3 resume, clear the bit during offline.
+>>
+>> Since interrupt timing may be before HWP is enabled, use safe MSR read
+>> writes as before the change for HWP interrupt.
+>>
+>> Fixes: d0e936adbd22 ("cpufreq: intel_pstate: Process HWP Guaranteed change notification")
+>> Reported-and-tested-by: Jens Axboe <axboe@kernel.dk>
+>> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+>> ---
+>>  drivers/cpufreq/intel_pstate.c | 23 ++++++++++++++++++++++-
+>>  1 file changed, 22 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+>> index b4ffe6c8a0d0..5ac86bfa1080 100644
+>> --- a/drivers/cpufreq/intel_pstate.c
+>> +++ b/drivers/cpufreq/intel_pstate.c
+>> @@ -298,6 +298,8 @@ static bool hwp_boost __read_mostly;
+>>
+>>  static struct cpufreq_driver *intel_pstate_driver __read_mostly;
+>>
+>> +static cpumask_t hwp_intr_enable_mask;
+>> +
+>>  #ifdef CONFIG_ACPI
+>>  static bool acpi_ppc;
+>>  #endif
+>> @@ -1067,11 +1069,15 @@ static void intel_pstate_hwp_set(unsigned int cpu)
+>>         wrmsrl_on_cpu(cpu, MSR_HWP_REQUEST, value);
+>>  }
+>>
+>> +static void intel_pstate_disable_hwp_interrupt(struct cpudata *cpudata);
+>> +
+>>  static void intel_pstate_hwp_offline(struct cpudata *cpu)
+>>  {
+>>         u64 value = READ_ONCE(cpu->hwp_req_cached);
+>>         int min_perf;
+>>
+>> +       intel_pstate_disable_hwp_interrupt(cpu);
+>> +
+>>         if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
+>>                 /*
+>>                  * In case the EPP has been set to "performance" by the
+>> @@ -1645,20 +1651,35 @@ void notify_hwp_interrupt(void)
+>>         if (!hwp_active || !boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
+>>                 return;
+>>
+>> -       rdmsrl(MSR_HWP_STATUS, value);
+>> +       rdmsrl_safe(MSR_HWP_STATUS, &value);
+>>         if (!(value & 0x01))
+>>                 return;
+>>
+>> +       if (!cpumask_test_cpu(this_cpu, &hwp_intr_enable_mask)) {
+>> +               wrmsrl_safe(MSR_HWP_STATUS, 0);
+>> +               return;
+>> +       }
 > 
-> Why merge both names together?  Why not just pick one name and stick
-> with that if they really do the same thing?
+> Without additional locking, there is a race between this and
+> intel_pstate_disable_hwp_interrupt().
 > 
-> thanks,
-> 
-> greg k-h
-> 
+> 1. notify_hwp_interrupt() checks hwp_intr_enable_mask() and the target
+> CPU is in there, so it will go for scheduling the delayed work.
+> 2. intel_pstate_disable_hwp_interrupt() runs between the check and the
+> cpudata load below.
+> 3. hwp_notify_work is scheduled on the CPU that isn't there in the
+> mask any more.
 
-Yes, we can pick one name also . I think action_handler name will be better.
+I noticed that too, not clear to me how much of an issue that is in
+practice. But there's definitely a race there.
 
-Thanks for review Greg,
+Can we just revert d0e936adbd22 for now so this can get solved in due
+time? I doubt I'm the only one that got bit by this, but I might be the
+only one that bothered to actually figured out what caused my laptop to
+crash with a black screen on boot.
 
+-- 
+Jens Axboe
 
-Regards,
-Saurav Girepunje
