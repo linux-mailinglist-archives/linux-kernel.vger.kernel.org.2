@@ -2,120 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC99401B35
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:27:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B8FF401B36
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242267AbhIFM27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:28:59 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:56720 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242247AbhIFM25 (ORCPT
+        id S241797AbhIFM3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239957AbhIFM3p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:28:57 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id E5CB41FEEE;
-        Mon,  6 Sep 2021 12:27:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1630931270;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q5Gjv/o2r31Pg5vgSEoAXdlHZThs4FawYEtj69ES0+s=;
-        b=Wjec5BuFH/snRU+lj0EWXJqw1F4PdiMVA37DDVriVRPiWzNFBLTMKM+So6qgjp8cBOY/qw
-        mLKxW4bglIuDqnshO4dHOIsK58LZE/JEXPlTsU3dQChorU5/ge+QzD9/+bwdt4nGYB2374
-        Ttk8f5ucNkvnpjn9swZWaWNBoOv0zCM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1630931270;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=q5Gjv/o2r31Pg5vgSEoAXdlHZThs4FawYEtj69ES0+s=;
-        b=y8Fm6tjaBOyin7BFqKGEf25V2DvFHbrdu1O/xm6qRqlDTwZCeG5RsNRnYtAbEYpos5US/D
-        R0+7g9L9iR25S/Cw==
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id DB451A3B88;
-        Mon,  6 Sep 2021 12:27:50 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 83674DA781; Mon,  6 Sep 2021 14:27:47 +0200 (CEST)
-Date:   Mon, 6 Sep 2021 14:27:47 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Baptiste Lepers <baptiste.lepers@gmail.com>
-Cc:     "Paul E . McKenney" <paulmck@linux.ibm.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: transaction: Fix misplaced barrier in
- btrfs_record_root_in_trans
-Message-ID: <20210906122747.GG3379@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Baptiste Lepers <baptiste.lepers@gmail.com>,
-        "Paul E . McKenney" <paulmck@linux.ibm.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210906012559.8605-1-baptiste.lepers@gmail.com>
+        Mon, 6 Sep 2021 08:29:45 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F38FBC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 05:28:40 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id b10so9676307wru.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 05:28:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=c7jc3IYQ7RGnXbO/5TtHji0wZke1aLhu70WLZPxKzuY=;
+        b=jyBrm4jeQ/XpKdWWPTMjMxU4AhAImOR86O32BnDTgg2yYXIy2VUq0AU5GUTAljkgj4
+         VDDdmJwovzbUspiL8jnTM47hLd9ZRg4DJg1p0nxa4BfKWq5bp0BcQyIebPfkzXxJUN8i
+         oEDCvk76HjuKSiqTfWREA9jARHSqCITA0fqU8Dmp7RSvRp+WTm+vmsTV/Fw6pArfqJrs
+         4PMpzckqf+ATKQvU/5FVLTzO4bxMktKXh4oSk/MOsyumaI/BpGZuvPS2uDte6umjbgaZ
+         gMY3Gm/TuBfc1ssZyQ7ZK8Ao1/mnANlj5icGCiExsUpu5UI+/LH+bODvVTcAFpMuT65D
+         uGBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=c7jc3IYQ7RGnXbO/5TtHji0wZke1aLhu70WLZPxKzuY=;
+        b=AcIS64rzjYdcoghP4qtV6mR0Itd6gz0dnVrqUvdxdjqsjUZUcnGHubWsEjmL2UEDJl
+         M0oEi1ZqIdDJz7W0G4+eOx0DOsw1yknxGxS3JhRP43jSHuAXbRxDVtFhdDjdK5vo9XUZ
+         bEV6rh0a0EVnwY/MiCqmmlWrvmCClMqBAkYmt/5Stp2TtcPcb4l1uCKJYs/zLcMKIpKS
+         +wDBRTTwDczrxDkjxAFuoAAjGjUGAvhtqrjz+tiW1Ejzts9DwLFT92UnutsbJEovo6RB
+         D/9DnS5CSDb+ZHr8ixrvzyCyl57Ny9uZNUDKEylHf7vyWGKIY9/1bcRH5hPXq1rOYt/T
+         43Zw==
+X-Gm-Message-State: AOAM531RS3fzhkMIPH3+qSyBDlbQTW6qx1nfzd+A0giQropFVB2i+9Yy
+        SS7/GbA/M1zX405OmZP2l5hCYIJ83xrh5I/V
+X-Google-Smtp-Source: ABdhPJxFPdt+Egf/+bN+An3ipOHNnO47OWI8DI4FFeyq5OD4hknChjLFGpHxRVWz1ai5EoO2ldeUqQ==
+X-Received: by 2002:a5d:5712:: with SMTP id a18mr12958148wrv.367.1630931319458;
+        Mon, 06 Sep 2021 05:28:39 -0700 (PDT)
+Received: from ?IPv6:2001:861:44c0:66c0:9afb:57ba:5ea:2010? ([2001:861:44c0:66c0:9afb:57ba:5ea:2010])
+        by smtp.gmail.com with ESMTPSA id n5sm7051594wmd.29.2021.09.06.05.28.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 05:28:39 -0700 (PDT)
+Subject: Re: [PATCH] arm64: dts: meson-sm1: add spdifin spdifout nodes
+To:     Art Nikpal <email2tema@gmail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Artem Lapkin <art@khadas.com>, Nick Xie <nick@khadas.com>,
+        Gouwa Wang <gouwa@khadas.com>
+References: <20210811050941.398360-1-art@khadas.com>
+ <64a6a9e1-64de-4b31-9413-cdfd981862de@baylibre.com>
+ <1jlf4ayrv1.fsf@starbuckisacylon.baylibre.com>
+ <CAKaHn9JOtmYoJsmZed4hLYAbtdyyMkhaM1iVThs0=2SV6y5ojQ@mail.gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <5c9583a5-62bb-5a5f-5f1c-72479f8bfbf8@baylibre.com>
+Date:   Mon, 6 Sep 2021 14:28:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210906012559.8605-1-baptiste.lepers@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <CAKaHn9JOtmYoJsmZed4hLYAbtdyyMkhaM1iVThs0=2SV6y5ojQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 11:25:59AM +1000, Baptiste Lepers wrote:
-> Per comment, record_root_in_trans orders the writes of the root->state
-> and root->last_trans:
->       set_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state);
->       smp_wmb();
->       root->last_trans = trans->transid;
+On 06/09/2021 13:56, Art Nikpal wrote:
+>> It would be nice to indicate how it was tested ?
 > 
-> But the barrier that enforces the order on the read side is misplaced:
->      smp_rmb(); <-- misplaced
->      if (root->last_trans == trans->transid &&
->     <-- missing barrier here -->
->             !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
+> https://github.com/khadas/khadas-linux-kernel/blob/master/patches/linux-5.14-rc5.sound/0001-arm64-dts-meson-khadas-vim3-remake-simple-sound-for-.patch
 > 
-> This patches fixes the ordering and wraps the racy accesses with
-> READ_ONCE and WRITE_ONCE calls to avoid load/store tearing.
+> i have test it
 > 
-> Fixes: 7585717f304f5 ("Btrfs: fix relocation races")
-> Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
-> ---
->  fs/btrfs/transaction.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+> i2s  and spdif output from gpio headers - works well
 > 
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index 14b9fdc8aaa9..a609222e6704 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -437,7 +437,7 @@ static int record_root_in_trans(struct btrfs_trans_handle *trans,
->  				   (unsigned long)root->root_key.objectid,
->  				   BTRFS_ROOT_TRANS_TAG);
->  		spin_unlock(&fs_info->fs_roots_radix_lock);
-> -		root->last_trans = trans->transid;
-> +		WRITE_ONCE(root->last_trans, trans->transid);
->  
->  		/* this is pretty tricky.  We don't want to
->  		 * take the relocation lock in btrfs_record_root_in_trans
-> @@ -489,7 +489,7 @@ int btrfs_record_root_in_trans(struct btrfs_trans_handle *trans,
->  			       struct btrfs_root *root)
->  {
->  	struct btrfs_fs_info *fs_info = root->fs_info;
-> -	int ret;
-> +	int ret, last_trans;
->  
->  	if (!test_bit(BTRFS_ROOT_SHAREABLE, &root->state))
->  		return 0;
-> @@ -498,8 +498,9 @@ int btrfs_record_root_in_trans(struct btrfs_trans_handle *trans,
->  	 * see record_root_in_trans for comments about IN_TRANS_SETUP usage
->  	 * and barriers
->  	 */
-> +	last_trans = READ_ONCE(root->last_trans);
->  	smp_rmb();
-> -	if (root->last_trans == trans->transid &&
-> +	if (last_trans == trans->transid &&
->  	    !test_bit(BTRFS_ROOT_IN_TRANS_SETUP, &root->state))
+> On Mon, Sep 6, 2021 at 5:29 PM Jerome Brunet <jbrunet@baylibre.com> wrote:
+>>
+>>
+>> On Thu 02 Sep 2021 at 15:31, Neil Armstrong <narmstrong@baylibre.com> wrote:
+>>
+>>> Hi,
+>>>
+>>> On 11/08/2021 07:09, Artem Lapkin wrote:
+>>>> Add spdifin spdifout spdifout_b nodes for Amlogic SM1 SoCs.
+>>>>
+>>>> Signed-off-by: Artem Lapkin <art@khadas.com>
+>>>> ---
+>>>>  arch/arm64/boot/dts/amlogic/meson-sm1.dtsi | 40 ++++++++++++++++++++++
+>>>>  1 file changed, 40 insertions(+)
+>>>>
+>>>> diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
+>>>> index 3d8b1f4f2..1efdbb61e 100644
+>>>> --- a/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
+>>>> +++ b/arch/arm64/boot/dts/amlogic/meson-sm1.dtsi
+>>>> @@ -356,6 +356,33 @@ tdmin_lb: audio-controller@3c0 {
+>>>>                      status = "disabled";
+>>>>              };
+>>>>
+>>>> +            spdifin: audio-controller@400 {
+>>>> +                    compatible = "amlogic,g12a-spdifin",
+>>>> +                    "amlogic,axg-spdifin";
+>>>> +                    reg = <0x0 0x400 0x0 0x30>;
+>>>> +                    #sound-dai-cells = <0>;
+>>>> +                    sound-name-prefix = "SPDIFIN";
+>>>> +                    interrupts = <GIC_SPI 151 IRQ_TYPE_EDGE_RISING>;
+>>>> +                    clocks = <&clkc_audio AUD_CLKID_SPDIFIN>,
+>>>> +                    <&clkc_audio AUD_CLKID_SPDIFIN_CLK>;
+>>>> +                    clock-names = "pclk", "refclk";
+>>>> +                    resets = <&clkc_audio AUD_RESET_SPDIFIN>;
+>>>> +                    status = "disabled";
+>>>> +            };
+>>>> +
+>>>> +            spdifout: audio-controller@480 {
+>>>> +                    compatible = "amlogic,g12a-spdifout",
+>>>> +                    "amlogic,axg-spdifout";
+>>>> +                    reg = <0x0 0x480 0x0 0x50>;
+>>>> +                    #sound-dai-cells = <0>;
+>>>> +                    sound-name-prefix = "SPDIFOUT";
+>>>> +                    clocks = <&clkc_audio AUD_CLKID_SPDIFOUT>,
+>>>> +                    <&clkc_audio AUD_CLKID_SPDIFOUT_CLK>;
+>>>> +                    clock-names = "pclk", "mclk";
+>>>> +                    resets = <&clkc_audio AUD_RESET_SPDIFOUT>;
+>>>> +                    status = "disabled";
+>>>> +            };
+>>>> +
+>>>>              tdmout_a: audio-controller@500 {
+>>>>                      compatible = "amlogic,sm1-tdmout";
+>>>>                      reg = <0x0 0x500 0x0 0x40>;
+>>>> @@ -401,6 +428,19 @@ tdmout_c: audio-controller@580 {
+>>>>                      status = "disabled";
+>>>>              };
+>>>>
+>>>> +            spdifout_b: audio-controller@680 {
+>>>> +                    compatible = "amlogic,g12a-spdifout",
+>>>> +                    "amlogic,axg-spdifout";
+>>>> +                    reg = <0x0 0x680 0x0 0x50>;
+>>>> +                    #sound-dai-cells = <0>;
+>>>> +                    sound-name-prefix = "SPDIFOUT_B";
+>>>> +                    clocks = <&clkc_audio AUD_CLKID_SPDIFOUT_B>,
+>>>> +                    <&clkc_audio AUD_CLKID_SPDIFOUT_B_CLK>;
+>>>> +                    clock-names = "pclk", "mclk";
+>>>> +                    resets = <&clkc_audio AUD_RESET_SPDIFOUT_B>;
+>>>> +                    status = "disabled";
+>>>> +            };
+>>>> +
+>>>>              toacodec: audio-controller@740 {
+>>>>                      compatible = "amlogic,sm1-toacodec",
+>>>>                                   "amlogic,g12a-toacodec";
+>>>>
+>>>
+>>> Jerome could you quickly review this ?
+>>>
+>>
+>> Just this, without the related card change is not usefull as it won't be
+>> part of the card.
+>>
+>> It would be nice to indicate how it was tested ?
+>>
+>> AFAIK:
+>> - spdifout b can only be routed to hdmi and dw-hdmi driver does not
+>>   support that yet
 
-Aren't the smp_rmb barriers supposed to be used before the condition?
+It doesn't harm to have it described in DT, maybe one day the dw-hdmi driver will support SPDIF input.
+
+Neil
+
+>> - the VIM3 does not have connectors for the spdif (in or out). If it
+>>   requires some extension card, it should be noted somewhere, at least
+>>
+>>
+>>> Thanks,
+>>> Neil
+>>
+
