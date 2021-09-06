@@ -2,96 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880F240151A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 04:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461CD40151E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 04:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239094AbhIFC5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 22:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45694 "EHLO
+        id S239142AbhIFC5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 22:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238842AbhIFC5N (ORCPT
+        with ESMTP id S239097AbhIFC5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 22:57:13 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A75C061575;
-        Sun,  5 Sep 2021 19:56:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630896967;
-        bh=gVuz8afyJ/HunKgJw2vF5XMPhVB1a8pcL5e5aB23HhA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BY+sYAKh5QV2OoKud0iQ+Dva/XcEZ09UqUgKA7u7+wOiNLF7XT//xCJ0wmeEMdZnh
-         XZGsM2V7c7aj0IwZE5krcP1sjszG9PEsoOV6CFgPB9TYxdiOqGk//LBrio+rsh0DvL
-         VmkHObNCX8WfWISkLYxZAvqwuXHoiMVY+e1W58fj+tYlqroJd4k/2LP4eCl4rZF07M
-         JYbFVHvxEKiOFByaoxT8YRdYrDkC+cqnHRHOsSPUrdyODg0HuzPVYs7haX1wUxEHQ+
-         bRgZrXAlGTbV7HXkHTOOQ8LT7ak8PNfWZl3JQdX+0N/6DxfZbzPqiIfvv9Q1YGs6dn
-         ZEOgbhHz245eA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H2tMB6cqRz9sW4;
-        Mon,  6 Sep 2021 12:56:06 +1000 (AEST)
-Date:   Mon, 6 Sep 2021 12:56:05 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] block/mq-deadline: Move dd_queued() to fix defined but
- not used warning
-Message-ID: <20210906125605.658fe211@canb.auug.org.au>
-In-Reply-To: <caf2449c-e86d-195d-3635-9be49159166a@kernel.dk>
-References: <20210830091128.1854266-1-geert@linux-m68k.org>
-        <caf2449c-e86d-195d-3635-9be49159166a@kernel.dk>
+        Sun, 5 Sep 2021 22:57:35 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7064C061575;
+        Sun,  5 Sep 2021 19:56:31 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id q3so3057243plx.4;
+        Sun, 05 Sep 2021 19:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JH6TtgtQhGIwE9M2MLPh7OfMEzqjYHtchmJv+WM7wsc=;
+        b=qP5WFrkVyFdeiAH6cAv6ziDuOUlLsFg5QoKrnjdPJgXrOF0Nn7jZsuuSwA7ZjkoJG9
+         RCcpEgkCV6VFAyMW2NRO1/BdDaFzEJOde3LIu0tjjEd3VQN2hxfwt6bgXQjLPSKschLz
+         imrk0OP65/TquJNmjIGQbuq4hEq9LAW/YcB7qUEhEFnjw6fz8/B61ohsakHzZcJTQNHS
+         r6W6bbNT6T6klkfoi3SsKL7dKM1RRoscmwAs0hioHYvYjJ/QGLW8N9L5IZ/GOfiP25Cf
+         DkNOVDtg42EjwWfX7R/p8XflGm0Kw81eD6VppxBJqIVyEQfXkIym6jX5q9swSTmYCQeq
+         7BFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JH6TtgtQhGIwE9M2MLPh7OfMEzqjYHtchmJv+WM7wsc=;
+        b=ApOc/qX5kYLY8lRCn+0w/RDJxvXlFrQh8dyoI1d1AbityIQQi+Nl3eq4y3AEtSi4yj
+         xhzDJLBb6tpH8+m0LZAw+AjKJjOItXb8X0i5bnkSNUAdnSjGf28B/O4sT6KshXNdcwUo
+         VghcN+7EUVnVHatnNtHZGvDmjuOX0M5v7my7txhQj2iwlDFJQR3p2dec6OwiBqSx6LIU
+         mhFftBS6/Zqf7cUM7VwAxXlzrAc4WAluk57vfVkcODV9ReKkfBZ32LwN6lMQHUYp2Wyb
+         pe8+WkA0tlQ8X/46EQG8qsLLrVqfuwpPbbCz0+2NKxfQQeCthol6MMWjjeasXpnxPaY/
+         LqyA==
+X-Gm-Message-State: AOAM5331vSRwUnFWfVo0SmrRzOAUUhpzNUQ91p1taqLu6mLERxw/zjeX
+        KLf3aSAzQuPa3vcp3TWpVD8=
+X-Google-Smtp-Source: ABdhPJxibDR2zS0bzw6FDJlKGnXb4Tjcm1CctWMZ0hgHGEC1u17TUfu0ebgSshEl5tk3wm3bvS6b/g==
+X-Received: by 2002:a17:90b:3603:: with SMTP id ml3mr11550953pjb.96.1630896991089;
+        Sun, 05 Sep 2021 19:56:31 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:4bc3:62de:220d:cd94])
+        by smtp.gmail.com with ESMTPSA id u2sm5582650pjv.10.2021.09.05.19.56.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 19:56:29 -0700 (PDT)
+Date:   Sun, 5 Sep 2021 19:56:27 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     "simba.hsu" <simba.hsu@raydium.corp-partner.google.com>
+Cc:     simba.hsu@rad-ic.com, furquan@google.com, seanpaul@chromium.org,
+        rrangle@chromium.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, KP.li@rad-ic.com,
+        jeffrey.lin@rad-ic.com
+Subject: Re: [PATCH] Input: raydium_i2c_ts - read device version in
+ bootloader mode
+Message-ID: <YTWDW0bt32GRp3PU@google.com>
+References: <20210818063644.8654-1-simba.hsu@rad-ic.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0TbvdZ.k.mzgR5pRSS1_teB";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818063644.8654-1-simba.hsu@rad-ic.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0TbvdZ.k.mzgR5pRSS1_teB
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Wed, Aug 18, 2021 at 02:36:44PM +0800, simba.hsu wrote:
+> Add support reading device ID when controller is in bootloader
+> mode, which may happen if firmware update has been interrupted.
+> 
+> Signed-off-by: simba.hsu <simba.hsu@rad-ic.com>
+> ---
+>  drivers/input/touchscreen/raydium_i2c_ts.c | 52 ++++++++++++++++++----
+>  1 file changed, 44 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/raydium_i2c_ts.c b/drivers/input/touchscreen/raydium_i2c_ts.c
+> index 4d2d22a86977..d3f8cc3285a2 100644
+> --- a/drivers/input/touchscreen/raydium_i2c_ts.c
+> +++ b/drivers/input/touchscreen/raydium_i2c_ts.c
+> @@ -36,7 +36,8 @@
+>  #define RM_CMD_BOOT_CHK		0x33		/* send data check */
+>  #define RM_CMD_BOOT_READ	0x44		/* send wait bl data ready*/
+>  
+> -#define RM_BOOT_RDY		0xFF		/* bl data ready */
+> +#define RM_BOOT_RDY		0xFF			/* bl data ready */
+> +#define RM_BOOT_CMD_READHWID	0x0E	/* read hwid */
+>  
+>  /* I2C main commands */
+>  #define RM_CMD_QUERY_BANK	0x2B
+> @@ -155,6 +156,7 @@ static int raydium_i2c_xfer(struct i2c_client *client, u32 addr,
+>  	 * sent first. Else, skip the header i.e. xfer[0].
+>  	 */
+>  	int xfer_start_idx = (addr > 0xff) ? 0 : 1;
+> +
+>  	xfer_count -= xfer_start_idx;
 
-Hi Jens,
+I dropped this unrelated chunk, made couple of cosmetic changes and
+applied, thank you.
 
-On Thu, 2 Sep 2021 06:35:47 -0600 Jens Axboe <axboe@kernel.dk> wrote:
->
-> On 8/30/21 3:11 AM, Geert Uytterhoeven wrote:
-> > If CONFIG_BLK_DEBUG_FS=3Dn:
-> >=20
-> >     block/mq-deadline.c:274:12: warning: =E2=80=98dd_queued=E2=80=99 de=
-fined but not used [-Wunused-function]
-> >       274 | static u32 dd_queued(struct deadline_data *dd, enum dd_prio=
- prio)
-> > 	  |            ^~~~~~~~~
-> >=20
-> > Fix this by moving dd_queued() just before the sole function that calls
-> > it. =20
->=20
-> Applied, thanks.
-
-Can we get this to Linus ASAP as he has now made warnings fatal, so
-this is causing lots of build failures.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/0TbvdZ.k.mzgR5pRSS1_teB
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE1g0UACgkQAVBC80lX
-0GxoqQf/c+RsNXvAYNILKQnSN2h4RX5Hp1KPTrRTqtA2fIfg75H0AkkRSes12lPZ
-+3k4bbPJ11iELiCSTycYsDH457PjYcKAOA2/AQwy2rIsCBjvjx0w95TyaYok7Id6
-bvQFxzgW0e0yHgic84UF8eGd4uM74Kl9R9n6hN9lolMaSfM+6iEVRtJ22HvfeyhF
-bOnv4PVAvioibwbBthL1k+wmHu9dbhGzXuNpd9UiG8K6s65rn/P1aAqonea5Jhfi
-xTmaRGbmsAaec2+qMbxhIaFifmQx784TCus7NGi426B0pCa/OFwM2YRsVrUsq3hY
-QNHk/JxwgOfot/N3uibvER/dw5jU+Q==
-=ePjo
------END PGP SIGNATURE-----
-
---Sig_/0TbvdZ.k.mzgR5pRSS1_teB--
+-- 
+Dmitry
