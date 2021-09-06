@@ -2,84 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDFC4016B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 620824016BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239871AbhIFHGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 03:06:32 -0400
-Received: from kirsty.vergenet.net ([202.4.237.240]:33196 "EHLO
-        kirsty.vergenet.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239824AbhIFHG3 (ORCPT
+        id S239954AbhIFHIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 03:08:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239792AbhIFHIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 03:06:29 -0400
-Received: from madeliefje.horms.nl (tulip.horms.nl [83.161.246.101])
-        by kirsty.vergenet.net (Postfix) with ESMTPA id 656A025B849;
-        Mon,  6 Sep 2021 17:05:23 +1000 (AEST)
-Received: by madeliefje.horms.nl (Postfix, from userid 7100)
-        id BFFF641AB; Mon,  6 Sep 2021 09:05:21 +0200 (CEST)
-Date:   Mon, 6 Sep 2021 09:05:21 +0200
-From:   Simon Horman <horms@verge.net.au>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tony Luck <tony.luck@intel.com>, Jay Lan <jlan@sgi.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 3/3] ia64: Make num_rsvd_regions static
-Message-ID: <20210906070521.GC19281@vergenet.net>
-References: <cover.1629884459.git.geert+renesas@glider.be>
- <a377b5437e3e9da93d02f996fe06a2b956cb0990.1629884459.git.geert+renesas@glider.be>
+        Mon, 6 Sep 2021 03:08:01 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5E18C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 00:06:56 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id e21so11429969ejz.12
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 00:06:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q3MG6YTB+QzDfQAiZySr2rS0jN8YaIk13obJQJ/stWo=;
+        b=lkQZaa6g9ei4zhefeS4/oyNQrJS2xco6ilGBKyKlZ6vC0SUD8QQ+1knPvpyi6IaHac
+         GqpF6T/J9e8UZEhbRcxYY2Vqkdxa9S0Mc6OSDQEPV8Lm2RG5xwllvm/ICW7ihxTyN8cQ
+         6q8HxGdwJRriwFkXrBLniQ+rOGGSciTVwRPaZN0SjIEyZqVJuZ/w0QfR4/wBg4GuaIvK
+         u5g1glJnwNcAurESAAaeIz8Og+r0qqEHDRcUcXNFnSlIosPcpoHpNITG9ICSkR9Z8ltb
+         ne8SJRTHipR+XIW/F978DLyiAT4QKN6N8mAAM4madRU69d+NI8I3REMHopnFJfCrL03M
+         8PUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q3MG6YTB+QzDfQAiZySr2rS0jN8YaIk13obJQJ/stWo=;
+        b=Pt9JciLohkd+tG/k68Hm1HK3yNBoBaeEDRw/P9smw+L1oo2t9V+cPVFsnnqBoQbPyU
+         QuxuFbUpO/b3wFN/vmzTm2gryde6w9PcdWgU0yrsU5a1NsNchRSo3+8wUe+u5Q3O0R7h
+         /GBgqqB6MqocvJOVrmf7jFoH51NZwdmX2jAEKSjxVCW+Yf1wRehPookjr6LqmO0F5Vdr
+         5Nap1xnnC+Ur9gHafKz4l83f55DIUsOPOUiY2QJmpwHifsb51dpbnF35X2WS7RMNV2QE
+         NAlcK6ZT9BIZWC+BSAY+nQUpzCbuB73HpKLyqtoph/zV/KLKeKnttGbwQ1jq6/fljL0F
+         gwlg==
+X-Gm-Message-State: AOAM530VpNKId2tfDKzmZkoXNSCikybDKO7XE30FJKCJVYNxUGeV8JMy
+        VGq0HBkqc5XA5JzZzfYoPud3cTciKNonENEL6cvg
+X-Google-Smtp-Source: ABdhPJywBwaaVm3boucqd1sdO/Cfi8IGS0P4Me7y+BCi/2fL1YgT6rXVQRK94JvNPY5a+i9h1dktiuFSZgpWUJHXv74=
+X-Received: by 2002:a17:906:8da:: with SMTP id o26mr12057282eje.424.1630912015321;
+ Mon, 06 Sep 2021 00:06:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a377b5437e3e9da93d02f996fe06a2b956cb0990.1629884459.git.geert+renesas@glider.be>
-Organisation: Horms Solutions BV
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210831103634.33-1-xieyongji@bytedance.com> <20210831103634.33-6-xieyongji@bytedance.com>
+ <20210906015524-mutt-send-email-mst@kernel.org> <CACycT3v4ZVnh7DGe_RtAOx4Vvau0km=HWyCM=KzKhD+ahYKafQ@mail.gmail.com>
+ <20210906023131-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210906023131-mutt-send-email-mst@kernel.org>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Mon, 6 Sep 2021 15:06:44 +0800
+Message-ID: <CACycT3ssC1bhNzY9Pk=LPvKjMrFFavTfCKTJtR2XEiVYqDxT1Q@mail.gmail.com>
+Subject: Re: [PATCH v13 05/13] vdpa: Add reset callback in vdpa_config_ops
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        He Zhe <zhe.he@windriver.com>,
+        Liu Xiaodong <xiaodong.liu@intel.com>,
+        Joe Perches <joe@perches.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        John Garry <john.garry@huawei.com>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 01:48:29PM +0200, Geert Uytterhoeven wrote:
-> Commit f62800992e5917f2 ("ia64: switch to NO_BOOTMEM") removed the last
-> user of num_rsvd_regions outside arch/ia64/kernel/setup.c.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On Mon, Sep 6, 2021 at 2:37 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Mon, Sep 06, 2021 at 02:09:25PM +0800, Yongji Xie wrote:
+> > On Mon, Sep 6, 2021 at 1:56 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > >
+> > > On Tue, Aug 31, 2021 at 06:36:26PM +0800, Xie Yongji wrote:
+> > > > This adds a new callback to support device specific reset
+> > > > behavior. The vdpa bus driver will call the reset function
+> > > > instead of setting status to zero during resetting.
+> > > >
+> > > > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+> > >
+> > >
+> > > This does gloss over a significant change though:
+> > >
+> > >
+> > > > ---
+> > > > @@ -348,12 +352,12 @@ static inline struct device *vdpa_get_dma_dev(struct vdpa_device *vdev)
+> > > >       return vdev->dma_dev;
+> > > >  }
+> > > >
+> > > > -static inline void vdpa_reset(struct vdpa_device *vdev)
+> > > > +static inline int vdpa_reset(struct vdpa_device *vdev)
+> > > >  {
+> > > >       const struct vdpa_config_ops *ops = vdev->config;
+> > > >
+> > > >       vdev->features_valid = false;
+> > > > -     ops->set_status(vdev, 0);
+> > > > +     return ops->reset(vdev);
+> > > >  }
+> > > >
+> > > >  static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
+> > >
+> > >
+> > > Unfortunately this breaks virtio_vdpa:
+> > >
+> > >
+> > > static void virtio_vdpa_reset(struct virtio_device *vdev)
+> > > {
+> > >         struct vdpa_device *vdpa = vd_get_vdpa(vdev);
+> > >
+> > >         vdpa_reset(vdpa);
+> > > }
+> > >
+> > >
+> > > and there's no easy way to fix this, kernel can't recover
+> > > from a reset failure e.g. during driver unbind.
+> > >
+> >
+> > Yes, but it should be safe with the protection of software IOTLB even
+> > if the reset() fails during driver unbind.
+> >
+> > Thanks,
+> > Yongji
+>
+> Hmm. I don't see it.
+> What exactly will happen? What prevents device from poking at
+> memory after reset? Note that dma unmap in e.g. del_vqs happens
+> too late.
 
-Reviewed-by: Simon Horman <horms@verge.net.au>
+But I didn't see any problems with touching the memory for virtqueues.
+The memory should not be freed after dma unmap?
 
-> ---
->  arch/ia64/include/asm/meminit.h | 1 -
->  arch/ia64/kernel/setup.c        | 2 +-
->  2 files changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/ia64/include/asm/meminit.h b/arch/ia64/include/asm/meminit.h
-> index 2738f62b5f989492..f1d5bf2ba847a135 100644
-> --- a/arch/ia64/include/asm/meminit.h
-> +++ b/arch/ia64/include/asm/meminit.h
-> @@ -29,7 +29,6 @@ struct rsvd_region {
->  };
->  
->  extern struct rsvd_region rsvd_region[IA64_MAX_RSVD_REGIONS + 1];
-> -extern int num_rsvd_regions;
->  
->  extern void find_memory (void);
->  extern void reserve_memory (void);
-> diff --git a/arch/ia64/kernel/setup.c b/arch/ia64/kernel/setup.c
-> index 5e6ee8939092a2df..31fb84de2d21469a 100644
-> --- a/arch/ia64/kernel/setup.c
-> +++ b/arch/ia64/kernel/setup.c
-> @@ -131,7 +131,7 @@ unsigned long ia64_cache_stride_shift = ~0;
->   * We use a special marker for the end of memory and it uses the extra (+1) slot
->   */
->  struct rsvd_region rsvd_region[IA64_MAX_RSVD_REGIONS + 1] __initdata;
-> -int num_rsvd_regions __initdata;
-> +static int num_rsvd_regions __initdata;
->  
->  
->  /*
-> -- 
-> 2.25.1
-> 
+And the memory for the bounce buffer should also be safe to be
+accessed by userspace in this case.
+
+> And what about e.g. interrupts?
+> E.g. we have this:
+>
+>         /* Virtqueues are stopped, nothing can use vblk->vdev anymore. */
+>         vblk->vdev = NULL;
+>
+> and this is no longer true at this point.
+>
+
+You're right. But I didn't see where the interrupt handler will use
+the vblk->vdev.
+
+So it seems to be not too late to fix it:
+
+diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c
+b/drivers/vdpa/vdpa_user/vduse_dev.c
+index 5c25ff6483ad..ea41a7389a26 100644
+--- a/drivers/vdpa/vdpa_user/vduse_dev.c
++++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+@@ -665,13 +665,13 @@ static void vduse_vdpa_set_config(struct
+vdpa_device *vdpa, unsigned int offset,
+ static int vduse_vdpa_reset(struct vdpa_device *vdpa)
+ {
+        struct vduse_dev *dev = vdpa_to_vduse(vdpa);
++       int ret;
+
+-       if (vduse_dev_set_status(dev, 0))
+-               return -EIO;
++       ret = vduse_dev_set_status(dev, 0);
+
+        vduse_dev_reset(dev);
+
+-       return 0;
++       return ret;
+ }
+
+ static u32 vduse_vdpa_get_generation(struct vdpa_device *vdpa)
+
+Thanks,
+Yongji
