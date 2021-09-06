@@ -2,119 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E45A401CF8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 16:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA96401CF9
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 16:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243315AbhIFOYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 10:24:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243298AbhIFOYI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 10:24:08 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86ADDC061575;
-        Mon,  6 Sep 2021 07:23:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1630938178;
-        bh=a1ig8YTFMn8o0S8xZRd6vor5m3Cp6vgqt+R8f3Aaqr8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=gPDFVvcgFKVCtnnFcqifi3/U7sQu2oKLjlWmQLo9QKNWq1U2MACHRnqyFWKrnad56
-         uL+i5BVZJzimDdNdOdWWL97qyY3vQEru4eOyRsCgGll1qxWgWbklqZekpDGcAGKuCf
-         7DC9/fmleSs/J6PLf3UKelktEfEUDK/VqMn/+w368Z5+i7rKCZizeZ9JNKFm1pNAA5
-         h4LY2z9lptO/oPnnmWr1502XTFsZvG+pEmckwN3k0Ifrq04O0itioFFI4oF6PBSbWI
-         occtjlLIAW9X8Cbc98/3bwK1W8QWf6J3uswp0ONhi5bpMTYeu0fzaFaimB7DadN/5M
-         jHul5fcpFPOCA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H39bX6gcYz9sW4;
-        Tue,  7 Sep 2021 00:22:48 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Weizhao Ouyang <o451686892@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, Weizhao Ouyang <o451686892@gmail.com>
-Subject: Re: [PATCH v2] ftrace: Cleanup ftrace_dyn_arch_init()
-In-Reply-To: <20210906111626.1259867-1-o451686892@gmail.com>
-References: <20210906111626.1259867-1-o451686892@gmail.com>
-Date:   Tue, 07 Sep 2021 00:22:46 +1000
-Message-ID: <87v93dn5qh.fsf@mpe.ellerman.id.au>
+        id S243228AbhIFOZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 10:25:48 -0400
+Received: from smtpbg128.qq.com ([106.55.201.39]:41015 "EHLO smtpbg587.qq.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S243181AbhIFOZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 10:25:47 -0400
+X-QQ-mid: bizesmtp38t1630938260t4h85za2
+Received: from localhost.localdomain (unknown [171.223.98.107])
+        by esmtp6.qq.com (ESMTP) with 
+        id ; Mon, 06 Sep 2021 22:24:19 +0800 (CST)
+X-QQ-SSF: 01000000004000C0D000D00A0000000
+X-QQ-FEAT: g9nl15ZGxljfoOlENwnUlRl4D911hd7+YUc9VSw/bAHddBK1BDYNP/fHFQRyJ
+        xDpoLcRfETIJ79lwMDeuv7haFdWAYknnXQA/bAEGVBm7r3qlxz6Ea1at1YDRWbZGxzlNJS0
+        HaY645VxGNuHo+Rti4sF/hwm45/j2445e8LFvaCKdgcWfc7u0S/meAsTZFwSedCKAZA7z4X
+        6cvLaGdbws+UrzaQCc+kQbWXvQAFkJ5LEmsAky7OJtDz4Ft1Xz+GrTEn/1W2xNSO13gtOAZ
+        93xXaj9z/dryzXot+lcxmQFqdy8rVtjZCY2LzERV1cKm2Hnzd32QRhxidr/n7GvESPuZwni
+        B/J9vMep5bIGF4XWPdZ5yUQ2ic3cYyesrjGaJ3N
+X-QQ-GoodBg: 0
+From:   Jason Wang <wangborong@cdjrlc.com>
+To:     geert@linux-m68k.org
+Cc:     arnd@arndb.de, linus.walleij@linaro.org, wangborong@cdjrlc.com,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] m68k: Add a missing SPDX license header
+Date:   Mon,  6 Sep 2021 22:24:13 +0800
+Message-Id: <20210906142413.130774-1-wangborong@cdjrlc.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Weizhao Ouyang <o451686892@gmail.com> writes:
-> Most of ARCHs use empty ftrace_dyn_arch_init(), introduce a weak common
-> ftrace_dyn_arch_init() to cleanup them.
->
-> Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
-> Acked-by: Heiko Carstens <hca@linux.ibm.com> (s390)
->
-> ---
->
-> Changes in v2:
-> -- correct CONFIG_DYNAMIC_FTRACE on PowerPC
-> -- add Acked-by tag
+Add the missing SPDX license header to arch/m68k/q40/q40ints.c.
 
-> diff --git a/arch/powerpc/include/asm/ftrace.h b/arch/powerpc/include/asm/ftrace.h
-> index debe8c4f7062..d59f67c0225f 100644
-> --- a/arch/powerpc/include/asm/ftrace.h
-> +++ b/arch/powerpc/include/asm/ftrace.h
-> @@ -61,6 +61,10 @@ struct dyn_arch_ftrace {
->  };
->  #endif /* __ASSEMBLY__ */
->  
-> +#ifdef CONFIG_DYNAMIC_FTRACE
-> +int __init ftrace_dyn_arch_init(void);
-> +#endif /* CONFIG_DYNAMIC_FTRACE */
-> +
->  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
->  #define ARCH_SUPPORTS_FTRACE_OPS 1
->  #endif
+Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+---
+ arch/m68k/q40/q40ints.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-That breaks the build for powerpc:
+diff --git a/arch/m68k/q40/q40ints.c b/arch/m68k/q40/q40ints.c
+index 6886a5d0007b..a0eb05079fdf 100644
+--- a/arch/m68k/q40/q40ints.c
++++ b/arch/m68k/q40/q40ints.c
+@@ -1,12 +1,9 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * arch/m68k/q40/q40ints.c
+  *
+  * Copyright (C) 1999,2001 Richard Zidlicky
+  *
+- * This file is subject to the terms and conditions of the GNU General Public
+- * License.  See the file COPYING in the main directory of this archive
+- * for more details.
+- *
+  * .. used to be loosely based on bvme6000ints.c
+  *
+  */
+-- 
+2.33.0
 
-  /linux/arch/powerpc/include/asm/ftrace.h: Assembler messages:
-  /linux/arch/powerpc/include/asm/ftrace.h:65: Error: unrecognized opcode: `int'
-  make[4]: *** [/linux/scripts/Makefile.build:352: arch/powerpc/kernel/trace/ftrace_64.o] Error 1
-  make[3]: *** [/linux/scripts/Makefile.build:514: arch/powerpc/kernel/trace] Error 2
-  make[2]: *** [/linux/scripts/Makefile.build:514: arch/powerpc/kernel] Error 2
-  make[1]: *** [/linux/Makefile:1861: arch/powerpc] Error 2
-  make[1]: *** Waiting for unfinished jobs....
 
-It needs to be inside an #ifndef __ASSEMBLY__ section.
-
-cheers
