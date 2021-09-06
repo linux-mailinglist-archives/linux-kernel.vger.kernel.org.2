@@ -2,236 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49850401A9A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B89401A9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241290AbhIFLc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 07:32:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28119 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231173AbhIFLcY (ORCPT
+        id S238865AbhIFLdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 07:33:38 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19010 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231173AbhIFLdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 07:32:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630927879;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ifh2AKn2IYRrBAFZpGRrv4Jn5qIpOvQyMh+sOZEw61k=;
-        b=I0aDSYu6O8oj1Gm3ew8jOBv5gW7vTSPAv7VjdzjnIiheg1G0+WzJjC1C/tI39sRyJgfXCq
-        cyMJXQv01f6bVpofLj+LUD9lP0tqVbZxAqTy9lmJP4ccdIHHXbk2z2DTKTepUMHo2to3aw
-        +7Amyy4G/g+1b5O8WVY9hyWpxDXg/K0=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-wF-61t1MMPCmL1HL6HJqRg-1; Mon, 06 Sep 2021 07:31:18 -0400
-X-MC-Unique: wF-61t1MMPCmL1HL6HJqRg-1
-Received: by mail-wm1-f72.google.com with SMTP id w25-20020a1cf6190000b0290252505ddd56so2224064wmc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 04:31:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:cc:subject:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ifh2AKn2IYRrBAFZpGRrv4Jn5qIpOvQyMh+sOZEw61k=;
-        b=TlqbKZzgnYmkEYEQxl6esRu2My4Ha5mLDax2aKjTKnN5J3NNUo7snUFF+q6X5pjNrk
-         9FZnIAU0QGzW+meCVDyn9Fxm9TkouzoIu/pSD8N5bteOqvGfU/vYXPkuUgowJDp0ZZVP
-         rvzPWZBkg6ZuLByUTnSQ/o1LcVqRu715XJ1F8xo2aIBbJ272U6nwA2r5t6Pr9uoa1IAg
-         xkrbMIaNVrC5q+IvL/XMpnC9rDULSsxT2/QNwAi2R09kWAaV8Nn1OiYb3hFmGpes/ivH
-         R8YBWz4kMU+b9BADAJAJ0faTW/tEKm3prDu61kqbQobJ1OGJsnO9XcmaaFhkFS6ABUeU
-         DuWw==
-X-Gm-Message-State: AOAM530FmtvsPR8VarP3jc8ytvgnma+i7q2Ylv8YI5IEZK+tREbNrgLQ
-        fmXedFYj4FkOWqIxMw1nlqNyl9tSWZ9TSFKSkBnUc45wDK5+W4uLd+1LKLtQl3U8K+jr6Wn1piB
-        meRPI1s0obtzqmllfrFAC9Prc
-X-Received: by 2002:adf:eb4a:: with SMTP id u10mr12773352wrn.11.1630927877246;
-        Mon, 06 Sep 2021 04:31:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwRDD+CFWqGasfoJ4bWw1zXPZwgO49ADZdpw61tpeyBjS5qkitLHCkPuytVwq/iV6MGXa+HdQ==
-X-Received: by 2002:adf:eb4a:: with SMTP id u10mr12773300wrn.11.1630927876958;
-        Mon, 06 Sep 2021 04:31:16 -0700 (PDT)
-Received: from [192.168.42.238] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id u26sm7984094wrd.32.2021.09.06.04.31.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 04:31:16 -0700 (PDT)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     brouer@redhat.com, duanxiongchun@bytedance.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhengqi.arch@bytedance.com, chenying.kernel@bytedance.com,
-        intel-wired-lan@lists.osuosl.org, songmuchun@bytedance.com,
-        bpf@vger.kernel.org, wangdongdong.6@bytedance.com,
-        zhouchengming@bytedance.com, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, jeffrey.t.kirsher@intel.com,
-        magnus.karlsson@intel.com, maciej.fijalkowski@intel.com,
-        Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: Re: [External] Re: [Intel-wired-lan] [PATCH v2] ixgbe: Fix NULL
- pointer dereference in ixgbe_xdp_setup
-To:     Feng Zhou <zhoufeng.zf@bytedance.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Jason Xing <xingwanli@kuaishou.com>
-References: <20210903064013.9842-1-zhoufeng.zf@bytedance.com>
- <2ee172ab-836c-d464-be59-935030d01f4b@molgen.mpg.de>
- <8ce8de1c-14bf-20ad-00c0-9e0d8ff34b91@bytedance.com>
-Message-ID: <318e7f75-287e-148a-cdb0-648b7c36e0a9@redhat.com>
-Date:   Mon, 6 Sep 2021 13:31:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 6 Sep 2021 07:33:37 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H35kR6x1zzbmFX;
+        Mon,  6 Sep 2021 19:28:31 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Mon, 6 Sep 2021 19:32:30 +0800
+Subject: Re: [PATCH] mm/page_isolation: don't putback unisolated page
+To:     David Hildenbrand <david@redhat.com>, <akpm@linux-foundation.org>
+CC:     <vbabka@suse.cz>, <iamjoonsoo.kim@lge.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210904091839.20270-1-linmiaohe@huawei.com>
+ <e060283a-6295-9191-9b92-a3c183e9de02@redhat.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <b533742e-e82a-a721-9a24-4087688dd812@huawei.com>
+Date:   Mon, 6 Sep 2021 19:32:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <8ce8de1c-14bf-20ad-00c0-9e0d8ff34b91@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <e060283a-6295-9191-9b92-a3c183e9de02@redhat.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.100]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Feng and Jason,
-
-Please notice that you are both developing patches that change the ixgbe 
-driver in related areas.
-
-Jason's patch:
-  Subject: [PATCH v7] ixgbe: let the xdpdrv work with more than 64 cpus
- 
-https://lore.kernel.org/all/20210901101206.50274-1-kerneljasonxing@gmail.com/
-
-We might need both as this patch looks like a fix to a panic, and 
-Jason's patch allows XDP on ixgbe to work on machines with more than 64 
-CPUs.
-
--Jesper
-
-On 06/09/2021 09.49, Feng Zhou wrote:
+On 2021/9/6 17:40, David Hildenbrand wrote:
+> On 04.09.21 11:18, Miaohe Lin wrote:
+>> If __isolate_free_page() failed, due to zone watermark check, the page is
+>> still on the free list. But this page will be put back to free list again
+>> via __putback_isolated_page() now. This may trigger page->flags checks in
+>> __free_one_page() if PageReported is set. Or we will corrupt the free list
+>> because list_add() will be called for pages already on another list.
+>>
+>> Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>   mm/page_isolation.c | 6 ++----
+>>   1 file changed, 2 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+>> index 9bb562d5d194..7d70d772525c 100644
+>> --- a/mm/page_isolation.c
+>> +++ b/mm/page_isolation.c
+>> @@ -93,10 +93,8 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+>>               buddy_pfn = __find_buddy_pfn(pfn, order);
+>>               buddy = page + (buddy_pfn - pfn);
+>>   -            if (!is_migrate_isolate_page(buddy)) {
+>> -                __isolate_free_page(page, order);
+>> -                isolated_page = true;
+>> -            }
+>> +            if (!is_migrate_isolate_page(buddy))
+>> +                isolated_page = !!__isolate_free_page(page, order);
+>>           }
+>>       }
+>>  
 > 
-> 在 2021/9/6 下午2:37, Paul Menzel 写道:
->> Dear Feng,
->>
->>
->> Am 03.09.21 um 08:40 schrieb Feng zhou:
->>
->> (If you care, in your email client, your last name does not start with 
->> a capital letter.)
->>
->>> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>>
->>> The ixgbe driver currently generates a NULL pointer dereference with
->>> some machine (online cpus < 63). This is due to the fact that the
->>> maximum value of num_xdp_queues is nr_cpu_ids. Code is in
->>> "ixgbe_set_rss_queues"".
->>>
->>> Here's how the problem repeats itself:
->>> Some machine (online cpus < 63), And user set num_queues to 63 through
->>> ethtool. Code is in the "ixgbe_set_channels",
->>> adapter->ring_feature[RING_F_FDIR].limit = count;
->>
->> For better legibility, you might want to indent code (blocks) by four 
->> spaces and add blank lines around it (also below).
->>
->>> It becames 63.
->>
->> becomes
->>
->>> When user use xdp, "ixgbe_set_rss_queues" will set queues num.
->>> adapter->num_rx_queues = rss_i;
->>> adapter->num_tx_queues = rss_i;
->>> adapter->num_xdp_queues = ixgbe_xdp_queues(adapter);
->>> And rss_i's value is from
->>> f = &adapter->ring_feature[RING_F_FDIR];
->>> rss_i = f->indices = f->limit;
->>> So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
->>> for (i = 0; i < adapter->num_rx_queues; i++)
->>>     if (adapter->xdp_ring[i]->xsk_umem)
->>> lead to panic.
->>
->> lead*s*?
->>
->>> Call trace:
->>> [exception RIP: ixgbe_xdp+368]
->>> RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
->>> RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
->>> RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
->>> RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
->>> R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
->>> R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
->>> ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
->>>   7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
->>>   8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
->>>   9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
->>> 10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
->>> 11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
->>> 12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
->>> 13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
->>> 14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
->>> 15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
->>> 16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
->>> 17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
->>> 18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
->>> 19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
->>
->> Please describe the fix in the commit message.
->>
->>> Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
->>> AF_XDP")
->>> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->>> ---
->>> Updates since v1:
->>> - Fix "ixgbe_max_channels" callback so that it will not allow a 
->>> setting of
->>> queues to be higher than the num_online_cpus().
->>> more details can be seen from here:
->>> https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20210817075407.11961-1-zhoufeng.zf@bytedance.com/ 
->>>
->>> Thanks to Maciej Fijalkowski for your advice.
->>>
->>>   drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c | 2 +-
->>>   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c    | 8 ++++++--
->>>   2 files changed, 7 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c 
->>> b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
->>> index 4ceaca0f6ce3..21321d164708 100644
->>> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
->>> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
->>> @@ -3204,7 +3204,7 @@ static unsigned int ixgbe_max_channels(struct 
->>> ixgbe_adapter *adapter)
->>>           max_combined = ixgbe_max_rss_indices(adapter);
->>>       }
->>>   -    return max_combined;
->>> +    return min_t(int, max_combined, num_online_cpus());
->>>   }
->>>     static void ixgbe_get_channels(struct net_device *dev,
->>> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c 
->>> b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->>> index 14aea40da50f..5db496cc5070 100644
->>> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->>> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->>> @@ -10112,6 +10112,7 @@ static int ixgbe_xdp_setup(struct net_device 
->>> *dev, struct bpf_prog *prog)
->>>       struct ixgbe_adapter *adapter = netdev_priv(dev);
->>>       struct bpf_prog *old_prog;
->>>       bool need_reset;
->>> +    int num_queues;
->>>         if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
->>>           return -EINVAL;
->>> @@ -10161,11 +10162,14 @@ static int ixgbe_xdp_setup(struct 
->>> net_device *dev, struct bpf_prog *prog)
->>>       /* Kick start the NAPI context if there is an AF_XDP socket open
->>>        * on that queue id. This so that receiving will start.
->>>        */
->>> -    if (need_reset && prog)
->>> -        for (i = 0; i < adapter->num_rx_queues; i++)
->>> +    if (need_reset && prog) {
->>> +        num_queues = min_t(int, adapter->num_rx_queues,
->>> +            adapter->num_xdp_queues);
->>> +        for (i = 0; i < num_queues; i++)
->>>               if (adapter->xdp_ring[i]->xsk_pool)
->>>                   (void)ixgbe_xsk_wakeup(adapter->netdev, i,
->>>                                  XDP_WAKEUP_RX);
->>> +    }
->>>         return 0;
->>>   }
->>>
-> Thanks for your advice. I will modify the commit message in v3
+> Shouldn't we much rather force to ignore watermarks here and make sure __isolate_free_page() never fails?
+
+It seems it is not easy to force to ignore watermarks here. And it's not a problem
+if __isolate_free_page() fails because we can do move_freepages_block() anyway.
+What do you think? Many thanks.
+
 > 
 
