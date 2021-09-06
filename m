@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE8B401BF1
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:59:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B726401BC6
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:58:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243508AbhIFNAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 09:00:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35978 "EHLO mail.kernel.org"
+        id S242562AbhIFM7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:59:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242517AbhIFM6q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:58:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1382B61027;
-        Mon,  6 Sep 2021 12:57:40 +0000 (UTC)
+        id S242323AbhIFM6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 08:58:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B69E061057;
+        Mon,  6 Sep 2021 12:57:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630933061;
-        bh=xsD3OpnHmDWYg5pIy4jE8yd4rGk9PIdNbR+vQmGCa1w=;
+        s=korg; t=1630933064;
+        bh=VENqdq+HkTiw4Yh4g4a6fxcjvRQDGMjRGGVT37S2/Ys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NEz4NcNu+psXa0lFc+WHuFEdow5MLOBqPTTkDxmX41vZ+2WXP/ticzopXOmNMHWHH
-         1uschfNxb1yCGHDFL0X0zmZR7FqDWGd+nGpnl/l4ZpxKg+CpR88dpE2D1pXHQn0+Wl
-         2KdtbAREUVo/5lbufr4NUfmaAKfJLLY9zBpjIZGk=
+        b=BOm9et2leBx6HgRrEKvjWdMv6mzNVlsvbVVrGNH7j+aEchmd/OZr4Sge1y3eZCCAc
+         +hjtId2VCxosc3Li8EHWXPzaBhZjUTKRmaSFlsp9pXu2YO8O58OBe636uti1lEAKJ9
+         rGapMWmHWlQSuCThYAVFUX8PTHetXfn3rsj1U2NA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 15/24] cryptoloop: add a deprecation warning
-Date:   Mon,  6 Sep 2021 14:55:44 +0200
-Message-Id: <20210906125449.617891557@linuxfoundation.org>
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Chris Zankel <chris@zankel.net>, linux-xtensa@linux-xtensa.org
+Subject: [PATCH 5.13 16/24] xtensa: fix kconfig unmet dependency warning for HAVE_FUTEX_CMPXCHG
+Date:   Mon,  6 Sep 2021 14:55:45 +0200
+Message-Id: <20210906125449.649085343@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210906125449.112564040@linuxfoundation.org>
 References: <20210906125449.112564040@linuxfoundation.org>
@@ -39,62 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 222013f9ac30b9cec44301daa8dbd0aae38abffb ]
+commit ed5aacc81cd41efc4d561e14af408d1003f7b855 upstream.
 
-Support for cryptoloop has been officially marked broken and deprecated
-in favor of dm-crypt (which supports the same broken algorithms if
-needed) in Linux 2.6.4 (released in March 2004), and support for it has
-been entirely removed from losetup in util-linux 2.23 (released in April
-2013).  Add a warning and a deprecation schedule.
+XTENSA should only select HAVE_FUTEX_CMPXCHG when FUTEX is
+set/enabled. This prevents a kconfig warning.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20210827163250.255325-1-hch@lst.de
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+WARNING: unmet direct dependencies detected for HAVE_FUTEX_CMPXCHG
+  Depends on [n]: FUTEX [=n]
+  Selected by [y]:
+  - XTENSA [=y] && !MMU [=n]
+
+Fixes: d951ba21b959 ("xtensa: nommu: select HAVE_FUTEX_CMPXCHG")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: Chris Zankel <chris@zankel.net>
+Cc: linux-xtensa@linux-xtensa.org
+Message-Id: <20210526070337.28130-1-rdunlap@infradead.org>
+Signed-off-by: Max Filippov <jcmvbkbc@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/block/Kconfig      | 4 ++--
- drivers/block/cryptoloop.c | 2 ++
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ arch/xtensa/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
-index 63056cfd4b62..fbb3a558139f 100644
---- a/drivers/block/Kconfig
-+++ b/drivers/block/Kconfig
-@@ -213,7 +213,7 @@ config BLK_DEV_LOOP_MIN_COUNT
- 	  dynamically allocated with the /dev/loop-control interface.
- 
- config BLK_DEV_CRYPTOLOOP
--	tristate "Cryptoloop Support"
-+	tristate "Cryptoloop Support (DEPRECATED)"
- 	select CRYPTO
- 	select CRYPTO_CBC
- 	depends on BLK_DEV_LOOP
-@@ -225,7 +225,7 @@ config BLK_DEV_CRYPTOLOOP
- 	  WARNING: This device is not safe for journaled file systems like
- 	  ext3 or Reiserfs. Please use the Device Mapper crypto module
- 	  instead, which can be configured to be on-disk compatible with the
--	  cryptoloop device.
-+	  cryptoloop device.  cryptoloop support will be removed in Linux 5.16.
- 
- source "drivers/block/drbd/Kconfig"
- 
-diff --git a/drivers/block/cryptoloop.c b/drivers/block/cryptoloop.c
-index 3cabc335ae74..f0a91faa43a8 100644
---- a/drivers/block/cryptoloop.c
-+++ b/drivers/block/cryptoloop.c
-@@ -189,6 +189,8 @@ init_cryptoloop(void)
- 
- 	if (rc)
- 		printk(KERN_ERR "cryptoloop: loop_register_transfer failed\n");
-+	else
-+		pr_warn("the cryptoloop driver has been deprecated and will be removed in in Linux 5.16\n");
- 	return rc;
- }
- 
--- 
-2.30.2
-
+--- a/arch/xtensa/Kconfig
++++ b/arch/xtensa/Kconfig
+@@ -30,7 +30,7 @@ config XTENSA
+ 	select HAVE_DMA_CONTIGUOUS
+ 	select HAVE_EXIT_THREAD
+ 	select HAVE_FUNCTION_TRACER
+-	select HAVE_FUTEX_CMPXCHG if !MMU
++	select HAVE_FUTEX_CMPXCHG if !MMU && FUTEX
+ 	select HAVE_HW_BREAKPOINT if PERF_EVENTS
+ 	select HAVE_IRQ_TIME_ACCOUNTING
+ 	select HAVE_PCI
 
 
