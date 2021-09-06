@@ -2,100 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091FF401E54
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 238F3401E89
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244177AbhIFQb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 12:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244154AbhIFQb0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:31:26 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BBFC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 09:30:21 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id c8so14382208lfi.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 09:30:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8IrmItaVABpTCCV1GTBCmSGs8mDxg06CHACTL5Qkb7w=;
-        b=R2wRvIZ5fztexmU3w2tyRYRDA1Rg0puldwTR9y4HA3UlQ/qnMC08DRaXlPDdqtri+Q
-         fAFEd+j22NAvQfMj3ireP0Bgf1gZNxEMJl31x2rd6p84iAF4Z4IsEEKwIkc2JxJLl4T5
-         f6z/63UOWwOUtQoNqw8I23oboEBdueZySRELo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8IrmItaVABpTCCV1GTBCmSGs8mDxg06CHACTL5Qkb7w=;
-        b=hjKT0NOt5d/0aUcWqvvZ9fUg3+NIn5WKJ+WUHjdA/IxfSgVsD/xz9CyHiARSHPXr8M
-         lwGyjKN4DWJ9qSiz1OHAwxIQBQK1OX1wT/64wBd9UM8RCFLMmBWtvdifSUPrySsc5yzO
-         P5Krqb26pC2p0v1MEmVHLNtELyX2vC2V6puTQs6eMsev7R+l85xTmnhLFvWkZwxrbtFb
-         6uW3qGuMwy5XAYmxZZY05S4jYYmLslAc2/HEUWem7VbQTWPuVx8lAAz1kE6S4ggGDU3a
-         POHOdUQmAQ1287rMKH8G/MZY5YQn0V7vhdvwn2UzdJabXge8QYyKLcHAmIkxrLCFI76I
-         fqCQ==
-X-Gm-Message-State: AOAM533fQrXbOVjJsk8puzyrRV2ETbZKUhUbZ/m6cHHuah3zJ7q/NRff
-        +mAEVL80uvPVXHCkQWwYFG5Fn/7BhpmsSM12bjA=
-X-Google-Smtp-Source: ABdhPJzyTvYNSNXEMAaYajDfjN/URX5cUs7BCmL0DfLzjNQh4gDFdwSL/FRnmSdk87eGItB4104d9w==
-X-Received: by 2002:a05:6512:3404:: with SMTP id i4mr9700453lfr.149.1630945819594;
-        Mon, 06 Sep 2021 09:30:19 -0700 (PDT)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id k20sm1112451ljc.2.2021.09.06.09.30.18
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 09:30:18 -0700 (PDT)
-Received: by mail-lf1-f50.google.com with SMTP id h16so14336955lfk.10
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 09:30:18 -0700 (PDT)
-X-Received: by 2002:a05:6512:2611:: with SMTP id bt17mr10258695lfb.141.1630945817827;
- Mon, 06 Sep 2021 09:30:17 -0700 (PDT)
+        id S244708AbhIFQeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 12:34:46 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:58344 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S244071AbhIFQep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 12:34:45 -0400
+Received: from BC-Mail-Ex17.internal.baidu.com (unknown [172.31.51.11])
+        by Forcepoint Email with ESMTPS id 8B3737027043849DA0F4;
+        Tue,  7 Sep 2021 00:33:34 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex17.internal.baidu.com (172.31.51.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.12; Tue, 7 Sep 2021 00:33:34 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 7 Sep 2021 00:33:33 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "Sascha Hauer" <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/3] iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC
+Date:   Tue, 7 Sep 2021 00:32:08 +0800
+Message-ID: <20210906163212.1289-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com>
- <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com>
- <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org> <878s0c4vng.fsf@oldenburg.str.redhat.com>
- <20210904131911.GP1583@gate.crashing.org> <871r644bd2.fsf@oldenburg.str.redhat.com>
- <CAHk-=wi+XKYN+3u=_fm=ExqpEaHdER0XuKxVauHYVCPKpKR97Q@mail.gmail.com>
- <20210904191531.GS1583@gate.crashing.org> <CAHk-=wjc1rxah3xt8mKN=aCxQigjy3-hEf4xh_Y-r=MXAKVrag@mail.gmail.com>
- <20210906154642.GV1583@gate.crashing.org>
-In-Reply-To: <20210906154642.GV1583@gate.crashing.org>
-From:   Linus Torvalds <torvalds@linuxfoundation.org>
-Date:   Mon, 6 Sep 2021 09:30:01 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj=WpWO_V86cZH99LgZGBbvdDb4wR26ce5van0hJqjzLA@mail.gmail.com>
-Message-ID: <CAHk-=wj=WpWO_V86cZH99LgZGBbvdDb4wR26ce5van0hJqjzLA@mail.gmail.com>
-Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Florian Weimer <fweimer@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex25.internal.baidu.com (172.31.51.19) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 6, 2021 at 8:50 AM Segher Boessenkool
-<segher@kernel.crashing.org> wrote:
->
->
-> Yes they are.  It is the single standard way to get the functionality
-> you want.
+The NXP i.MX 8QuadXPlus SOC has a new ADC IP. These patches add
+driver support for this ADC
 
-Sorry, but 'standard' is the part that the kernel simply doesn't do.
+dt-bindings: iio: adc:
+v1->v2: *Fix some indentation issues.
+        *Mark status as okay.
+        *Change clock2 source.
 
-Just face it. The kernel isn't written with all those standards that
-are designed for entirely different things in mind.
+iio: imx8qxp-adc:
+v1->v2:	*Squash patches 1, 2, 3, and 5 into a single patch.
+	*Add device specific prefix.
+	*Remove the brackets around individual numbers.
+	*Make use of FIELD_PREP() and FIELD_GET().
+	*Remove a lot of cache values.
+	*Replace mlock with adc->lock.
+	*Move adc->value read from isr to the completion.
+	*Set pm_runtime_disable/_put_noidle() before adc_disable.
+	*Add error handler-err_disable_reg/err_unprepare_clk.
 
-> I don't know why you think you can separate that.  Take <stdarg.h> --
-> there is no other (portable, standard) way to implement receiving
-> variadic arguments.
+v1 link:
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210830172140.414-4-caihuoqing@baidu.com/
 
-You clearly haven't actually read the thread.
+Cai Huoqing (3):
+  iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC
+  dt-bindings: iio: adc: Add the binding documentation for NXP IMX8QXP
+    ADC
+  MAINTAINERS:  Add the driver info of the NXP IMX8QXP ADC
 
-That was my whole argument.  For the _historical_ situation.
+ .../bindings/iio/adc/nxp,imx8qxp-adc.yaml     |  85 ++++
+ MAINTAINERS                                   |   7 +
+ drivers/iio/adc/Kconfig                       |  10 +
+ drivers/iio/adc/Makefile                      |   1 +
+ drivers/iio/adc/imx8qxp-adc.c                 | 470 ++++++++++++++++++
+ 5 files changed, 573 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
+ create mode 100644 drivers/iio/adc/imx8qxp-adc.c
 
-           Linus
+-- 
+2.25.1
+
