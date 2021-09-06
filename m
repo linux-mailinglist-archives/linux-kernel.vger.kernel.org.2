@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A262401FF1
+	by mail.lfdr.de (Postfix) with ESMTP id A3A22401FF2
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244943AbhIFSzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 14:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36392 "EHLO
+        id S245225AbhIFSzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 14:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244515AbhIFSzN (ORCPT
+        with ESMTP id S244757AbhIFSzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 14:55:13 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7767CC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:54:08 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id h9so15108413ejs.4
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:54:08 -0700 (PDT)
+        Mon, 6 Sep 2021 14:55:14 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213A6C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:54:09 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id j13so10566555edv.13
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QXVzeoyjMV+agTPaWJLE9UNLbNfSwKQpfreP1FngznE=;
-        b=WVBmsxHE5Ih3h0xyt/RXaD+ADF5npyi6MVpJ0GohA5ufC3QSlTp83IUz9R8hyV9hCl
-         3oOLepmiswje0xQ9Am7IrAZA/OqQgx1MoE+p4qI+Gc3EEZYTXJQRA0rU7fxIPVucRlEG
-         71D9Izl2Y+oz4gAWOWCj0MHdCNGeyhsYBZIBzk4nLPPmKLUHLJRTuXBjcKtqM9DbbBi9
-         3xVCIM3+wK1OGMeDM6wWMy+QKRU/Li1utXrzc8G4G/oxZ1euG71bo00SE0dcsrLjy7Sq
-         UGIHQGbuS42+zk3p/4gSDVgfkwvQo8Hrr/aJAoH5g0kHWYaLpJ3uvPf8YBWWlDOd6iqL
-         Xd/g==
+        bh=qYfDSWWLfbRbSNVuId0vyBxYwKOU4bWEtZJKFkrF65E=;
+        b=DIOXb3QGd6Qs6IXG5XkvUzPdWsLv+hNTwNbdtgd5inOC4qvIcltIuV2Ss+HSsAIvT2
+         hYNCD0NIjSs8aVIOt15PhQ++M6N1Qi5WA1tw+DQYxaZHZpuVUDfJ+vhBWBkvDR4kfZ+z
+         tT26rWc7oeAzVRHdNof5u+2Jt/Cnu4Tg8m6HVAEaclQc4ICzv8haXlxTNyftlYeh0isE
+         wkgWaT+IGamqFe7acEl6tAG+zJ1qHANUfgi5tdL6Hq0ZxaZ+yEDaMEko7sFBYYVsOp38
+         q8K/pyWKhzZJL13VycP1FdVG0IVAZSRSbKrtcdPQAHNsYx8IDcZiwrZ9p15FYOzes63j
+         423w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QXVzeoyjMV+agTPaWJLE9UNLbNfSwKQpfreP1FngznE=;
-        b=pB45/4ieoGpLtKAfgMmHGQlSmeIHoUyW271EUJZG4ns0iDsAl0PMpDMBwpTj405Uc/
-         GwXJFEJDXPt01VDCCivjg9XekynM4KGRhtZ+U3lNWuEviuOL6UUtGwaVEG6vvsT4/DSN
-         J+X9tcZdTmx778RY7w1JJATNiwr9P5hzjEn7ge7wkjIrODeB1X5pZM+etEkcE8Shu8V6
-         1K3gV4N9YD4j8cTywNBlRcahMxqdhIAF472sTcZdydI/EGnI2Tlj94Uw27JIbEw+rWiE
-         FQca8pu5YmHVg5eCJNgXVeRK5IKpcDsvGWuGNJLkKXASEcHQ9Rgwylce++5HNjDngt8s
-         UJdw==
-X-Gm-Message-State: AOAM533V5B1DhRJeQ9+MBtAxpY8JaCK+h8nheSTUYT1HAcr4djq7DcBv
-        RowUFfgK4PMyNJokSuqKOcJQsnIcbsLVOw==
-X-Google-Smtp-Source: ABdhPJzY1H3mKqAxAcKUk6/NqYzlLfUZU3GdGYHs4sP/x2DAI4e/CpaKtIJX+DxcqB7526nVPNR28Q==
-X-Received: by 2002:a17:906:26c4:: with SMTP id u4mr14618004ejc.511.1630954447116;
+        bh=qYfDSWWLfbRbSNVuId0vyBxYwKOU4bWEtZJKFkrF65E=;
+        b=cg7OyJXbNhTk8Sn05k7LOkPLbREO/VAIsZg1YZv0jgwW9VRtoH5oOMQndwOjZ8WLV1
+         KkBt6flcQUOpIbZMzD7uAkBYIsTQSHGJ0p2+0DA/eUPBl8F+oAg5dqQcNCDmeYxMpb+7
+         ibl5Ohl1LBygaDC/29kfeMmFDqf3l6c7hL87nBRGmGlOmA1e840OrrpLoyqzGQFAwhQd
+         oF2wO56cqGUlNPtP/LKMazR9myy/G6BVDRuPkQO2B1XmlIAXO68Bjd8ZsTvmY7AqYTC7
+         E0AH7u0MFInmhwnJVdqPqA+oJYc5e/Rlx3gSw0dviEV+2xuQk0+30SuiR0XQR3dMAhZg
+         lfAA==
+X-Gm-Message-State: AOAM533op4b5K95iZRWfy87FRE5hOZx3FlMavg3GF9tV3mvpujbA0z1M
+        v04pXqHyQ99NhEVhBC5df+Y=
+X-Google-Smtp-Source: ABdhPJx7OAIH9vBzDTkXSK6fIi6CXZuZNh1aivKdKUk9rqdSwEQ3ONh9C/RiTkaehQw+5Ip6xusTaQ==
+X-Received: by 2002:a05:6402:b69:: with SMTP id cb9mr14702502edb.324.1630954447801;
         Mon, 06 Sep 2021 11:54:07 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::8fe1])
-        by smtp.gmail.com with ESMTPSA id kk2sm4329128ejc.114.2021.09.06.11.54.06
+        by smtp.gmail.com with ESMTPSA id kk2sm4329128ejc.114.2021.09.06.11.54.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 11:54:06 -0700 (PDT)
+        Mon, 06 Sep 2021 11:54:07 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH v2 06/40] staging: r8188eu: remove empty functions
-Date:   Mon,  6 Sep 2021 20:52:53 +0200
-Message-Id: <20210906185327.10326-7-straube.linux@gmail.com>
+Subject: [PATCH v2 07/40] staging: r8188eu: remove unused function rtw_interface_ps_func()
+Date:   Mon,  6 Sep 2021 20:52:54 +0200
+Message-Id: <20210906185327.10326-8-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210906185327.10326-1-straube.linux@gmail.com>
 References: <20210906185327.10326-1-straube.linux@gmail.com>
@@ -66,93 +66,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the following empty functions.
-
-Hal_InitChannelPlan()
-Hal_CustomizeByCustomerID_8188EU()
-_InitBeaconMaxError()
+Remove unused function rtw_interface_ps_func().
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/hal/rtl8188e_hal_init.c |  4 ----
- drivers/staging/r8188eu/hal/usb_halinit.c       | 15 ---------------
- drivers/staging/r8188eu/include/rtl8188e_hal.h  |  1 -
- 3 files changed, 20 deletions(-)
+ drivers/staging/r8188eu/core/rtw_pwrctrl.c    | 8 --------
+ drivers/staging/r8188eu/include/rtw_pwrctrl.h | 2 --
+ 2 files changed, 10 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-index bed89a1234bd..ca020f2ed7a2 100644
---- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-+++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-@@ -2242,10 +2242,6 @@ void Hal_ReadThermalMeter_88E(struct adapter *Adapter, u8 *PROMContent, bool Aut
- 	DBG_88E("ThermalMeter = 0x%x\n", pHalData->EEPROMThermalMeter);
+diff --git a/drivers/staging/r8188eu/core/rtw_pwrctrl.c b/drivers/staging/r8188eu/core/rtw_pwrctrl.c
+index c3897b29121c..00750394c50b 100644
+--- a/drivers/staging/r8188eu/core/rtw_pwrctrl.c
++++ b/drivers/staging/r8188eu/core/rtw_pwrctrl.c
+@@ -473,14 +473,6 @@ void rtw_free_pwrctrl_priv(struct adapter *adapter)
+ 
  }
  
--void Hal_InitChannelPlan(struct adapter *padapter)
+-u8 rtw_interface_ps_func(struct adapter *padapter, enum hal_intf_ps_func efunc_id, u8 *val)
 -{
+-	u8 bResult = true;
+-	rtw_hal_intf_ps_func(padapter, efunc_id, val);
+-
+-	return bResult;
 -}
 -
- bool HalDetectPwrDownMode88E(struct adapter *Adapter)
+ inline void rtw_set_ips_deny(struct adapter *padapter, u32 ms)
  {
- 	u8 tmpvalue = 0;
-diff --git a/drivers/staging/r8188eu/hal/usb_halinit.c b/drivers/staging/r8188eu/hal/usb_halinit.c
-index 87aa12a6b5ba..65f68f35b611 100644
---- a/drivers/staging/r8188eu/hal/usb_halinit.c
-+++ b/drivers/staging/r8188eu/hal/usb_halinit.c
-@@ -403,10 +403,6 @@ static void _InitEDCA(struct adapter *Adapter)
- 	rtw_write32(Adapter, REG_EDCA_VO_PARAM, 0x002FA226);
- }
+ 	struct pwrctrl_priv *pwrpriv = &padapter->pwrctrlpriv;
+diff --git a/drivers/staging/r8188eu/include/rtw_pwrctrl.h b/drivers/staging/r8188eu/include/rtw_pwrctrl.h
+index 543f928e8089..8446dfb50f34 100644
+--- a/drivers/staging/r8188eu/include/rtw_pwrctrl.h
++++ b/drivers/staging/r8188eu/include/rtw_pwrctrl.h
+@@ -251,8 +251,6 @@ s32 LPS_RF_ON_check(struct adapter *adapter, u32 delay_ms);
+ void LPS_Enter(struct adapter *adapter);
+ void LPS_Leave(struct adapter *adapter);
  
--static void _InitBeaconMaxError(struct adapter *Adapter, bool		InfraMode)
--{
--}
--
- static void _InitHWLed(struct adapter *Adapter)
- {
- 	struct led_priv *pledpriv = &Adapter->ledpriv;
-@@ -819,7 +815,6 @@ static u32 rtl8188eu_hal_init(struct adapter *Adapter)
- 	InitUsbAggregationSetting(Adapter);
- 	_InitOperationMode(Adapter);/* todo */
- 	_InitBeaconParameters(Adapter);
--	_InitBeaconMaxError(Adapter, true);
- 
- 	/*  */
- 	/*  Init CR MACTXEN, MACRXEN after setting RxFF boundary REG_TRXFF_BNDY to patch */
-@@ -1140,10 +1135,6 @@ static void Hal_EfuseParseMACAddr_8188EU(struct adapter *adapt, u8 *hwinfo, bool
- 	}
- }
- 
--static void Hal_CustomizeByCustomerID_8188EU(struct adapter *adapt)
--{
--}
--
- static void
- readAdapterInfo_8188EU(
- 		struct adapter *adapt
-@@ -1166,12 +1157,6 @@ readAdapterInfo_8188EU(
- 	Hal_EfuseParseBoardType88E(adapt, eeprom->efuse_eeprom_data, eeprom->bautoload_fail_flag);
- 	Hal_ReadThermalMeter_88E(adapt, eeprom->efuse_eeprom_data, eeprom->bautoload_fail_flag);
- 
--	/*  */
--	/*  The following part initialize some vars by PG info. */
--	/*  */
--	Hal_InitChannelPlan(adapt);
--	Hal_CustomizeByCustomerID_8188EU(adapt);
--
- 	_ReadLEDSetting(adapt, eeprom->efuse_eeprom_data, eeprom->bautoload_fail_flag);
- }
- 
-diff --git a/drivers/staging/r8188eu/include/rtl8188e_hal.h b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-index 5cd441e8e16b..bb5620a9b17b 100644
---- a/drivers/staging/r8188eu/include/rtl8188e_hal.h
-+++ b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-@@ -434,7 +434,6 @@ void Hal_ReadPowerSavingMode88E(struct adapter *pAdapter, u8 *hwinfo,
- 
- bool HalDetectPwrDownMode88E(struct adapter *Adapter);
- 
--void Hal_InitChannelPlan(struct adapter *padapter);
- void rtl8188e_set_hal_ops(struct hal_ops *pHalFunc);
- 
- void rtl8188e_read_chip_version(struct adapter *padapter);
+-u8 rtw_interface_ps_func(struct adapter *adapter,
+-			 enum hal_intf_ps_func efunc_id, u8 *val);
+ void rtw_set_ips_deny(struct adapter *adapter, u32 ms);
+ int _rtw_pwr_wakeup(struct adapter *adapter, u32 ips_defer_ms,
+ 		    const char *caller);
 -- 
 2.33.0
 
