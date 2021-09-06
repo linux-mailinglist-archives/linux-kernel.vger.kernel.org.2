@@ -2,112 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2820E401A4A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDAA5401A50
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235004AbhIFLCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 07:02:01 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:43741 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbhIFLCA (ORCPT
+        id S233893AbhIFLFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 07:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231511AbhIFLFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 07:02:00 -0400
-Received: from leknes.fjasle.eu ([92.116.67.85]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1M6YEz-1mKiSF16Gf-006wug; Mon, 06 Sep 2021 13:00:46 +0200
-Received: by leknes.fjasle.eu (Postfix, from userid 1000)
-        id B0DE03C06F; Mon,  6 Sep 2021 13:00:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fjasle.eu; s=mail;
-        t=1630926041; bh=+zY/N666dI+j+8Q++GxUyEvKFTQg7EkmGQw6oq0CEOw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=DXVXIseC82m9Q874yyzN7Epsxcg9sQHv1ywmgXB+MAd0FKsF+luoTlpwVygTtmpj0
-         CgeQ8Z9LszBwo2xh4GhWRhQ+CciTBxmrsMKgra0/KhZ2YBTHx9n6cv+mJT8Y5NJUaP
-         kjF2Pm/CJwO8EcMa8VfgkrLHTbPH55Qkq0JVEIoc=
-Date:   Mon, 6 Sep 2021 13:00:41 +0200
-From:   Nicolas Schier <nicolas@fjasle.eu>
-To:     David Howells <dhowells@redhat.com>, linux-cachefs@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH] [RESEND] fscache: re-match MODULE_PARM_DESC() calls to
- module parameters
-Message-ID: <YTX02eiVawkpTquX@fjasle.eu>
+        Mon, 6 Sep 2021 07:05:03 -0400
+Received: from lb1-smtp-cloud9.xs4all.net (lb1-smtp-cloud9.xs4all.net [IPv6:2001:888:0:108::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0918C061575;
+        Mon,  6 Sep 2021 04:03:58 -0700 (PDT)
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id NCPsm6vHllQKhNCPtmQzSN; Mon, 06 Sep 2021 13:03:57 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1630926237; bh=mDvtFV9UjP+KgBf+7q8PbDmYnyjvS8LhvtNWmmO4/Uk=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=h7YHvb1CK1GEjunBsOYuF/d6z4r+chqjsNh4lVpvYcvwoggkr4d9tYKnqKfINSEkt
+         oo+pfgRxAFKClLK8f7S5Cxmb+6WBbilsxULb2HqKSrdzNG2S4OPrqQhobmFdiJ76XA
+         UjIEQnAOGIIRaiKIs1IMMxISszv0m84Hmrpg0g3u+g9oRRIRjpW3Hs6qUHrzadWh/r
+         M1BMshXgsVbw6VB0fcF2oKPxtmysahQJ7qv2zXi0XQBOyFCnZ3Krl7G3yHkpjF463j
+         F7l655g6L9dcZQ5xWMWXvEm+Ra7SahOoRKdIqsBfr+N+Rlsy9Whja/YFCR6NYZG+8h
+         M2tVIjrgQSzKw==
+Subject: Re: [PATCH 0/8] staging: media: zoran: fusion in one module
+To:     Corentin Labbe <clabbe@baylibre.com>, gregkh@linuxfoundation.org,
+        mchehab@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
+References: <20210903191540.3052775-1-clabbe@baylibre.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <efe035cc-1839-210f-c0d4-4d58801aa65c@xs4all.nl>
+Date:   Mon, 6 Sep 2021 13:03:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email 2.30.1
-X-Provags-ID: V03:K1:/H9DjLa+mnADC9aIrzArNFSQHwrOlJWq7UziF01SrgtYKe3fyS4
- w8n/RCNKHDOjWJPKrESZshtcxMIdjp2GnubrLLAls0AC2rx+JM7YLGNgOjeWfPVgCluiG3I
- c7TPivoD7ytkwANCCZPZkV23ovGWnpgnip6vi38nQkrBEdaqEgoGo77/fKRVMO8jgohNe54
- AKv7WbI5NQ8xV0E6H+Iig==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:rJuJ/9MTm2k=:Cc1uw+93Nk28J9in4EW46Z
- oSQ9x1kyGNjy64Uv8x3FrAQ9SAkwOH5eziVP/vJFVlOglQXkAxSPrUeDy22B1iq9t89l27z5C
- VfZa6DCO6nSPSSE2DXZcIW/m+1S0/BLTM9BWsS9K6e6sKe5HOdwOV2ni4S5jNb0YIUyozvspl
- kLzo7g6n81x2JhRuSQkspIsTI1yep2MQcq0o2iM/BQRLIRYtZMi+o1/hw+KC2R1JBsDIEJ4+g
- NQNjwk4BpRb2ZSOvUUOVvlduMNzxf3Wvlx66kDnuHeGLNYnH2e3GzEdYJoWxqgxWSGmpSN5R4
- CFrAsfS7oOWlYvxS7xUaYqrTlgIa8cWW2c5jjGkV62N81kTIJpU6+to4OHNfG1huncEPTvxkO
- pGoV8Ns41uQs2uRJCzoEHdL2ev9HSveyxq/y0fKiTw71FGaZCp2BLGQYi2LcMYeMuzt6BkdrY
- wy92yoKZueubbRzlmxae3In1HmYwvdCoa4Okz7ItUDKmYmro5Lj4SYEHIDBEW6xR1OCMjtRae
- H09qevX485aX/dshUFb2HN1ISC7CepU5b9suTdhLmS+g5uxSqPa60x3yDmnEsYy4+gZ2CDy/f
- 1yimwlZoYnpFkerxPC9EM89MvOKWM5+J0x7lb+f69nBCZxrA0XEZXjEU+q5KSYYHsvSdbDDxM
- XhP2TQx1ZuB1UGvVJXDYpum8+fc+M+HSE+2VTeFjn/ved34ToyB07jZ/GMUMqgRnmBcWP6J5N
- tyytnFWbHC1Lqrs3KxjhsByyxnAckYu/tVIUfA==
+In-Reply-To: <20210903191540.3052775-1-clabbe@baylibre.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfJIXL08RwQgMNMzOYbe0M0VJlLntr2uNqP+LLvSAcYVjylm6uej9Wx4ry4BYBNOsaxT/1woOlqCnq/HGjhbnPEot+2QLc9CggTOnJLFl8Io7omw+8BB8
+ mGgN2mJrKsxT1QWv3Wav2WvQeSKCDOjGtPVjZnxkcKCCloHzN+HUPdkEvciFs2VX5enEbb6BWK8b/XtG/JijRKRwyEnC+2WP4a7GNmjxAHPzHnvgbUKbsAaU
+ vKgmsnxUXksAcIfM/GlTYRh2XqsWniIpRrHkYMBkYkBjwHmud7iu53p5qNvfwluIkJn//RrJXHrZ/opgKXK5lDFXfDhGI/XzP5QQSAv3y9zEbta4h2+XKEJr
+ qGItXiPM+S8oWacsLHcDVlW2TNlzCYyQoqzsNmgNRbBazbvAESHGyA5StVfaACqcpndLDGaVkBRjX6xe/tY380px5hnViikZFiieqbsW6JZ3g54H6K0jEvMz
+ 9nJcfvc1bcJ9S9QjAnMQq8c3KsyLj4i0Irt470PW/ozYNJ1yZf2nxW0P7Q8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix calls of MODULE_PARM_DESC() such that the first argument matches the
-actual module parameter name.  This changes the 'parm' section in the
-output of `modinfo fscache` from:
+Hi Corentin,
 
-    parm: defer_lookup:uint
-    parm: fscache_defer_lookup:Defer cookie lookup to background thread
-    parm: defer_create:uint
-    parm: fscache_defer_create:Defer cookie creation to background thread
-    parm: debug:uint
-    parm: fscache_debug:FS-Cache debugging mask
+I finally had the opportunity to test the staging zoran driver.
 
-into:
+I found several issues when running v4l2-compliance -s (I posted a patch
+for that), but more seriously is the fact that trying to capture MJPG
+at resolutions 384x288 or less just hangs my PC. It works OK with 768x576.
 
-    parm: defer_lookup:Defer cookie lookup to background thread (uint)
-    parm: defer_create:Defer cookie creation to background thread (uint)
-    parm: debug:FS-Cache debugging mask (uint)
-.
+I discovered this when running 'v4l2-compliance -s -a -f'.
 
-Signed-off-by: Nicolas Schier <nicolas@fjasle.eu>
----
- fs/fscache/main.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+BTW, why isn't the initial format equal to MJPG 768x576?
+I would expect that for these boards that should be the default format.
 
---
-Resend unmodified as list approval for linux-cachefs@r.c timed out.
+Another issue is that the TODO should mention that for video output there
+should be a second video device node. And that's really something that
+has to be done before the zoran driver can be moved out of staging.
 
-diff --git a/fs/fscache/main.c b/fs/fscache/main.c
-index c1e6cc9091aa..ccb06dc0a6e9 100644
---- a/fs/fscache/main.c
-+++ b/fs/fscache/main.c
-@@ -22,19 +22,19 @@ MODULE_LICENSE("GPL");
- unsigned fscache_defer_lookup = 1;
- module_param_named(defer_lookup, fscache_defer_lookup, uint,
- 		   S_IWUSR | S_IRUGO);
--MODULE_PARM_DESC(fscache_defer_lookup,
-+MODULE_PARM_DESC(defer_lookup,
- 		 "Defer cookie lookup to background thread");
- 
- unsigned fscache_defer_create = 1;
- module_param_named(defer_create, fscache_defer_create, uint,
- 		   S_IWUSR | S_IRUGO);
--MODULE_PARM_DESC(fscache_defer_create,
-+MODULE_PARM_DESC(defer_create,
- 		 "Defer cookie creation to background thread");
- 
- unsigned fscache_debug;
- module_param_named(debug, fscache_debug, uint,
- 		   S_IWUSR | S_IRUGO);
--MODULE_PARM_DESC(fscache_debug,
-+MODULE_PARM_DESC(debug,
- 		 "FS-Cache debugging mask");
- 
- struct kobject *fscache_root;
--- 
-2.30.1
+It shouldn't be that hard to implement, I think.
+
+Right now it is impossible to run the compliance test for the output, since
+it doesn't even see it as an output.
+
+Regards,
+
+	Hans
+
+On 03/09/2021 21:15, Corentin Labbe wrote:
+> Hello
+> 
+> The main change of this serie is to fusion all zoran related modules in
+> one.
+> This fixes the load order problem when everything is built-in.
+> 
+> Regards
+> 
+> Corentin Labbe (8):
+>   staging: media: zoran: move module parameter checks to zoran_probe
+>   staging: media: zoran: use module_pci_driver
+>   staging: media: zoran: rename debug module parameter
+>   staging: media: zoran: add debugfs
+>   staging: media: zoran: videocode: remove procfs
+>   staging: media: zoran: fusion all modules
+>   staging: media: zoran: remove vidmem
+>   staging: media: zoran: move videodev alloc
+> 
+>  drivers/staging/media/zoran/Kconfig        |  24 +-
+>  drivers/staging/media/zoran/Makefile       |   8 +-
+>  drivers/staging/media/zoran/videocodec.c   |  60 +----
+>  drivers/staging/media/zoran/videocodec.h   |   5 +
+>  drivers/staging/media/zoran/zoran.h        |   7 +-
+>  drivers/staging/media/zoran/zoran_card.c   | 259 +++++++++++++--------
+>  drivers/staging/media/zoran/zoran_driver.c |   5 +-
+>  drivers/staging/media/zoran/zr36016.c      |  23 +-
+>  drivers/staging/media/zoran/zr36016.h      |   2 +
+>  drivers/staging/media/zoran/zr36050.c      |  20 +-
+>  drivers/staging/media/zoran/zr36050.h      |   2 +
+>  drivers/staging/media/zoran/zr36060.c      |  20 +-
+>  drivers/staging/media/zoran/zr36060.h      |   2 +
+>  13 files changed, 229 insertions(+), 208 deletions(-)
+> 
+
