@@ -2,164 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFFF401605
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 07:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C97401608
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 07:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239133AbhIFFhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 01:37:39 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:40318 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S238935AbhIFFhZ (ORCPT
+        id S237426AbhIFFnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 01:43:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhIFFm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 01:37:25 -0400
-X-UUID: 4791b14a33a7456e83c181dece8505d3-20210906
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=3GVhXi/JoV/t4HxqlSqOoLTvFkr0OMh36QfzIuSd7aA=;
-        b=dtzGEUIDHI+QDbFyxHFa+/9Ip/NYLs+NAxv7lcY+lMHeP5jIt8jRRCIx4izE2GoDKHGWCjZ33yA1ShPBspuFMP1SZmOtAKSnZplm6dFt5ktuEeXvvcSsX6XYWYHEZg7o5grOR6hxezxk4zl/sMnuBdQyELzdUT5Emi9Zh7LUYWw=;
-X-UUID: 4791b14a33a7456e83c181dece8505d3-20210906
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <mingchuang.qiao@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1146871297; Mon, 06 Sep 2021 13:36:16 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 6 Sep 2021 13:36:15 +0800
-Received: from mcddlt001.gcn.mediatek.inc (10.19.240.15) by
- mtkcas10.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Mon, 6 Sep 2021 13:36:14 +0800
-Message-ID: <3a48bce6723c5588170dc0c399e7a266cb3b1817.camel@mediatek.com>
-Subject: Re: [v4] PCI: Avoid unsync of LTR mechanism configuration
-From:   mingchuang qiao <mingchuang.qiao@mediatek.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <kerun.zhu@mediatek.com>, <linux-pci@vger.kernel.org>,
-        <lambert.wang@mediatek.com>, <rjw@rjwysocki.net>,
-        <linux-kernel@vger.kernel.org>, <matthias.bgg@gmail.com>,
-        <alex.williamson@redhat.com>, <linux-mediatek@lists.infradead.org>,
-        <utkarsh.h.patel@intel.com>, <haijun.liu@mediatek.com>,
-        <bhelgaas@google.com>, <mika.westerberg@linux.intel.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <mingchuang.qiao@mediatek.com>
-Date:   Mon, 6 Sep 2021 13:36:14 +0800
-In-Reply-To: <20210218165006.GA983767@bjorn-Precision-5520>
-References: <20210218165006.GA983767@bjorn-Precision-5520>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.1-2 
+        Mon, 6 Sep 2021 01:42:59 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8215CC061575;
+        Sun,  5 Sep 2021 22:41:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630906913;
+        bh=IUXT2gFKIZreWVNVlP87ef6RQd/qD0k5TPWhDhb05ok=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rtNLAFYEfftYvvHVzGfEEMz4pE/5dmi5zs/NugcO3n/BS5i3gA5P40/6Emm4Ztq6L
+         6gBPBLonCc7qNxgr2m0LVQnhZw5HMLgEqWvrItcNlcpasdBQMn+oqktmSW9Sr92P8G
+         DgBEF7vXFBL9RHTUPJpRj4ffZ009WOm1J5aPa1PdZW4c3/nIilqYcg/XKxuA/KddO7
+         QA5dWIyoDwpBSZPhHxvmjoCVcHYKhNBuFINEswxBwLMelpa0aFASEYFNwzmX2LGy1c
+         aqyrVgV9dzI4aNVS8LwAxCjhU0DllQia1ApQG6bRsfjveKxr+ZfmZRNgWe1AysMicz
+         Bx+o0KAFuktWQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H2y2S5xjZz9sVw;
+        Mon,  6 Sep 2021 15:41:52 +1000 (AEST)
+Date:   Mon, 6 Sep 2021 15:41:51 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: linux-next: build warning after merge of the kspp tree
+Message-ID: <20210906154151.0aa41a7a@canb.auug.org.au>
+In-Reply-To: <20210830184429.1ee4b4d8@canb.auug.org.au>
+References: <20210830184429.1ee4b4d8@canb.auug.org.au>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; boundary="Sig_/+W1mqGOo_LjEdTOMqZCF815";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQmpvcm4sDQoNCk9uIFRodSwgMjAyMS0wMi0xOCBhdCAxMDo1MCAtMDYwMCwgQmpvcm4gSGVs
-Z2FhcyB3cm90ZToNCj4gT24gVGh1LCBGZWIgMDQsIDIwMjEgYXQgMDU6NTE6MjVQTSArMDgwMCwg
-bWluZ2NodWFuZy5xaWFvQG1lZGlhdGVrLmNvDQo+IG0gd3JvdGU6DQo+ID4gRnJvbTogTWluZ2No
-dWFuZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KPiA+IA0KPiA+IEluIGJ1
-cyBzY2FuIGZsb3csIHRoZSAiTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJpdCBvZiBERVZDVEwyDQo+
-ID4gcmVnaXN0ZXIgaXMNCj4gPiBjb25maWd1cmVkIGluIHBjaV9jb25maWd1cmVfbHRyKCkuIElm
-IGRldmljZSBhbmQgYnJpZGdlIGJvdGgNCj4gPiBzdXBwb3J0IExUUg0KPiA+IG1lY2hhbmlzbSwg
-dGhlICJMVFIgTWVjaGFuaXNtIEVuYWJsZSIgYml0IG9mIGRldmljZSBhbmQgYnJpZGdlIHdpbGwN
-Cj4gPiBiZQ0KPiA+IGVuYWJsZWQgaW4gREVWQ1RMMiByZWdpc3Rlci4gQW5kIHBjaV9kZXYtPmx0
-cl9wYXRoIHdpbGwgYmUgc2V0IGFzDQo+ID4gMS4NCj4gPiANCj4gPiBJZiBQQ0llIGxpbmsgZ29l
-cyBkb3duIHdoZW4gZGV2aWNlIHJlc2V0cywgdGhlICJMVFIgTWVjaGFuaXNtDQo+ID4gRW5hYmxl
-IiBiaXQNCj4gPiBvZiBicmlkZ2Ugd2lsbCBjaGFuZ2UgdG8gMCBhY2NvcmRpbmcgdG8gUENJZSBy
-NS4wLCBzZWMgNy41LjMuMTYuDQo+ID4gSG93ZXZlciwNCj4gPiB0aGUgcGNpX2Rldi0+bHRyX3Bh
-dGggdmFsdWUgb2YgYnJpZGdlIGlzIHN0aWxsIDEuDQo+ID4gDQo+ID4gRm9yIGZvbGxvd2luZyBj
-b25kaXRpb25zLCBjaGVjayBhbmQgcmUtY29uZmlndXJlICJMVFIgTWVjaGFuaXNtDQo+ID4gRW5h
-YmxlIiBiaXQNCj4gPiBvZiBicmlkZ2UgdG8gbWFrZSAiTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJp
-dCBtYXRjaCBsdHJfcGF0aCB2YWx1ZS4NCj4gPiAgICAtYmVmb3JlIGNvbmZpZ3VyaW5nIGRldmlj
-ZSdzIExUUiBmb3IgaG90LXJlbW92ZS9ob3QtYWRkDQo+ID4gICAgLWJlZm9yZSByZXN0b3Jpbmcg
-ZGV2aWNlJ3MgREVWQ1RMMiByZWdpc3RlciB3aGVuIHJlc3RvcmUgZGV2aWNlDQo+ID4gc3RhdGUN
-Cj4gDQo+IFRoZXJlJ3MgZGVmaW5pdGVseSBhIGJ1ZyBoZXJlLiAgVGhlIGNvbW1pdCBsb2cgc2hv
-dWxkIHNheSBhIGxpdHRsZQ0KPiBtb3JlIGFib3V0IHdoYXQgaXQgaXMuICBJICp0aGluayogaWYg
-TFRSIGlzIGVuYWJsZWQgYW5kIHdlIHN1c3BlbmQNCj4gKHB1dHRpbmcgdGhlIGRldmljZSBpbiBE
-M2NvbGQpIGFuZCByZXN1bWUsIExUUiBwcm9iYWJseSBkb2Vzbid0IHdvcmsNCj4gYWZ0ZXIgcmVz
-dW1lIGJlY2F1c2UgTFRSIGlzIGRpc2FibGVkIGluIHRoZSB1cHN0cmVhbSBicmlkZ2UsIHdoaWNo
-DQo+IHdvdWxkIGJlIGFuIG9idmlvdXMgYnVnLg0KPiANCj4gQWxzbywgaWYgYSBkZXZpY2Ugd2l0
-aCBMVFIgZW5hYmxlZCBpcyBob3QtcmVtb3ZlZCwgYW5kIHdlIGhvdC1hZGQgYQ0KPiBkZXZpY2Us
-IEkgdGhpbmsgTFRSIHdpbGwgbm90IHdvcmsgb24gdGhlIG5ldyBkZXZpY2UuICBQb3NzaWJseSBh
-bHNvIGENCj4gYnVnLCBhbHRob3VnaCBJJ20gbm90IGNvbnZpbmNlZCB3ZSBrbm93IGhvdyB0byBj
-b25maWd1cmUgTFRSIG9uIHRoZQ0KPiBuZXcgZGV2aWNlIGFueXdheS4NCj4gDQo+IFNvIEknZCAq
-bGlrZSogdG8gbWVyZ2UgdGhlIGJ1ZyBmaXggZm9yIHY1LjEyLCBidXQgSSB0aGluayBJJ2xsIHdh
-aXQNCj4gYmVjYXVzZSBvZiB0aGUgaXNzdWUgYmVsb3cuDQo+IA0KDQpBIGZyaWVuZGx5IHBpbmcu
-DQpBbnkgZnVydGhlciBwcm9jZXNzIHNoYWxsIEkgbWFrZSB0byBnZXQgdGhpcyBwYXRjaCBtZXJn
-ZWQ/DQoNCj4gPiBTaWduZWQtb2ZmLWJ5OiBNaW5nY2h1YW5nIFFpYW8gPG1pbmdjaHVhbmcucWlh
-b0BtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gY2hhbmdlcyBvZiB2NA0KPiA+ICAtZml4IHR5
-cG8gb2YgY29tbWl0IG1lc3NhZ2UNCj4gPiAgLXJlbmFtZTogcGNpX3JlY29uZmlndXJlX2JyaWRn
-ZV9sdHIoKS0NCj4gPiA+cGNpX2JyaWRnZV9yZWNvbmZpZ3VyZV9sdHIoKQ0KPiA+IGNoYW5nZXMg
-b2YgdjMNCj4gPiAgLWNhbGwgcGNpX3JlY29uZmlndXJlX2JyaWRnZV9sdHIoKSBpbiBwcm9iZS5j
-DQo+ID4gY2hhbmdlcyBvZiB2Mg0KPiA+ICAtbW9kaWZ5IHBhdGNoIGRlc2NyaXB0aW9uDQo+ID4g
-IC1yZWNvbmZpZ3VyZSBicmlkZ2UncyBMVFIgYmVmb3JlIHJlc3RvcmluZyBkZXZpY2UgREVWQ1RM
-MiByZWdpc3Rlcg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL3BjaS9wY2kuYyAgIHwgMjUgKysrKysr
-KysrKysrKysrKysrKysrKysrKw0KPiA+ICBkcml2ZXJzL3BjaS9wY2kuaCAgIHwgIDEgKw0KPiA+
-ICBkcml2ZXJzL3BjaS9wcm9iZS5jIHwgMTMgKysrKysrKysrKy0tLQ0KPiA+ICAzIGZpbGVzIGNo
-YW5nZWQsIDM2IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvcGNpL3BjaS5jIGIvZHJpdmVycy9wY2kvcGNpLmMNCj4gPiBpbmRleCBi
-OWZlY2MyNWQyMTMuLjZiZjY1ZDI5NTMzMSAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3BjaS9w
-Y2kuYw0KPiA+ICsrKyBiL2RyaXZlcnMvcGNpL3BjaS5jDQo+ID4gQEAgLTE0MzcsNiArMTQzNywy
-NCBAQCBzdGF0aWMgaW50IHBjaV9zYXZlX3BjaWVfc3RhdGUoc3RydWN0DQo+ID4gcGNpX2RldiAq
-ZGV2KQ0KPiA+ICAJcmV0dXJuIDA7DQo+ID4gIH0NCj4gPiAgDQo+ID4gK3ZvaWQgcGNpX2JyaWRn
-ZV9yZWNvbmZpZ3VyZV9sdHIoc3RydWN0IHBjaV9kZXYgKmRldikNCj4gPiArew0KPiA+ICsjaWZk
-ZWYgQ09ORklHX1BDSUVBU1BNDQo+ID4gKwlzdHJ1Y3QgcGNpX2RldiAqYnJpZGdlOw0KPiA+ICsJ
-dTMyIGN0bDsNCj4gPiArDQo+ID4gKwlicmlkZ2UgPSBwY2lfdXBzdHJlYW1fYnJpZGdlKGRldik7
-DQo+ID4gKwlpZiAoYnJpZGdlICYmIGJyaWRnZS0+bHRyX3BhdGgpIHsNCj4gPiArCQlwY2llX2Nh
-cGFiaWxpdHlfcmVhZF9kd29yZChicmlkZ2UsDQo+ID4gUENJX0VYUF9ERVZDVEwyLCAmY3RsKTsN
-Cj4gPiArCQlpZiAoIShjdGwgJiBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKSkgew0KPiA+ICsJCQlw
-Y2lfZGJnKGJyaWRnZSwgInJlLWVuYWJsaW5nIExUUlxuIik7DQo+ID4gKwkJCXBjaWVfY2FwYWJp
-bGl0eV9zZXRfd29yZChicmlkZ2UsDQo+ID4gUENJX0VYUF9ERVZDVEwyLA0KPiA+ICsJCQkJCQkg
-UENJX0VYUF9ERVZDVEwyX0wNCj4gPiBUUl9FTik7DQo+IA0KPiBUaGlzIHBhdHRlcm4gb2YgdXBk
-YXRpbmcgdGhlIHVwc3RyZWFtIGJyaWRnZSBvbiBiZWhhbGYgb2YgImRldiIgaXMNCj4gcHJvYmxl
-bWF0aWMgYmVjYXVzZSBpdCdzIHJhY3k6DQo+IA0KPiAgIENQVSAxICAgICAgICAgICAgICAgICAg
-ICAgQ1BVIDINCj4gICAtLS0tLS0tLS0tLS0tLS0tLS0tICAgICAgIC0tLS0tLS0tLS0tLS0tLS0t
-LS0tLQ0KPiAgIGN0bCA9IHJlYWQgREVWQ1RMMiAgICAgICAgY3RsID0gcmVhZChERVZDVEwyKQ0K
-PiAgIGN0bCB8PSBERVZDVEwyX0xUUl9FTiAgICAgY3RsIHw9IERFVkNUTDJfQVJJDQo+ICAgd3Jp
-dGUoREVWQ1RMMiwgY3RsKQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd3JpdGUoREVW
-Q1RMMiwgY3RsKQ0KPiANCj4gTm93IHRoZSBicmlkZ2UgaGFzIEFSSSBzZXQsIGJ1dCBub3QgTFRS
-X0VOLg0KPiANCj4gV2UgaGF2ZSB0aGUgc2FtZSBwcm9ibGVtIGluIHRoZSBwY2lfZW5hYmxlX2Rl
-dmljZSgpIHBhdGguICBUaGUgbW9zdA0KPiByZWNlbnQgdHJ5IGF0IGZpeGluZyBpdCBpcyBbMV0u
-DQo+IA0KPiBbMV0gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtcGNpLzIwMjAxMjE4MTc0
-MDExLjM0MDUxNC0yLXMubWlyb3MNCj4gaG5pY2hlbmtvQHlhZHJvLmNvbS8NCj4gDQo+ID4gKwkJ
-fQ0KPiA+ICsJfQ0KPiA+ICsjZW5kaWYNCj4gPiArfQ0KPiA+ICsNCj4gPiAgc3RhdGljIHZvaWQg
-cGNpX3Jlc3RvcmVfcGNpZV9zdGF0ZShzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0KPiA+ICB7DQo+ID4g
-IAlpbnQgaSA9IDA7DQo+ID4gQEAgLTE0NDcsNiArMTQ2NSwxMyBAQCBzdGF0aWMgdm9pZCBwY2lf
-cmVzdG9yZV9wY2llX3N0YXRlKHN0cnVjdA0KPiA+IHBjaV9kZXYgKmRldikNCj4gPiAgCWlmICgh
-c2F2ZV9zdGF0ZSkNCj4gPiAgCQlyZXR1cm47DQo+ID4gIA0KPiA+ICsJLyoNCj4gPiArCSAqIERv
-d25zdHJlYW0gcG9ydHMgcmVzZXQgdGhlIExUUiBlbmFibGUgYml0IHdoZW4gbGluaw0KPiA+IGdv
-ZXMgZG93bi4NCj4gPiArCSAqIENoZWNrIGFuZCByZS1jb25maWd1cmUgdGhlIGJpdCBoZXJlIGJl
-Zm9yZSByZXN0b3JpbmcNCj4gPiBkZXZpY2UuDQo+ID4gKwkgKiBQQ0llIHI1LjAsIHNlYyA3LjUu
-My4xNi4NCj4gPiArCSAqLw0KPiA+ICsJcGNpX2JyaWRnZV9yZWNvbmZpZ3VyZV9sdHIoZGV2KTsN
-Cj4gPiArDQo+ID4gIAljYXAgPSAodTE2ICopJnNhdmVfc3RhdGUtPmNhcC5kYXRhWzBdOw0KPiA+
-ICAJcGNpZV9jYXBhYmlsaXR5X3dyaXRlX3dvcmQoZGV2LCBQQ0lfRVhQX0RFVkNUTCwgY2FwW2kr
-K10pOw0KPiA+ICAJcGNpZV9jYXBhYmlsaXR5X3dyaXRlX3dvcmQoZGV2LCBQQ0lfRVhQX0xOS0NU
-TCwgY2FwW2krK10pOw0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9wY2kuaCBiL2RyaXZl
-cnMvcGNpL3BjaS5oDQo+ID4gaW5kZXggNWM1OTM2NTA5MmZhLi5iM2E1ZTUyODdjYjcgMTAwNjQ0
-DQo+ID4gLS0tIGEvZHJpdmVycy9wY2kvcGNpLmgNCj4gPiArKysgYi9kcml2ZXJzL3BjaS9wY2ku
-aA0KPiA+IEBAIC0xMTEsNiArMTExLDcgQEAgdm9pZCBwY2lfZnJlZV9jYXBfc2F2ZV9idWZmZXJz
-KHN0cnVjdCBwY2lfZGV2DQo+ID4gKmRldik7DQo+ID4gIGJvb2wgcGNpX2JyaWRnZV9kM19wb3Nz
-aWJsZShzdHJ1Y3QgcGNpX2RldiAqZGV2KTsNCj4gPiAgdm9pZCBwY2lfYnJpZGdlX2QzX3VwZGF0
-ZShzdHJ1Y3QgcGNpX2RldiAqZGV2KTsNCj4gPiAgdm9pZCBwY2lfYnJpZGdlX3dhaXRfZm9yX3Nl
-Y29uZGFyeV9idXMoc3RydWN0IHBjaV9kZXYgKmRldik7DQo+ID4gK3ZvaWQgcGNpX2JyaWRnZV9y
-ZWNvbmZpZ3VyZV9sdHIoc3RydWN0IHBjaV9kZXYgKmRldik7DQo+ID4gIA0KPiA+ICBzdGF0aWMg
-aW5saW5lIHZvaWQgcGNpX3dha2V1cF9ldmVudChzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0KPiA+ICB7
-DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGNpL3Byb2JlLmMgYi9kcml2ZXJzL3BjaS9wcm9i
-ZS5jDQo+ID4gaW5kZXggOTUzZjE1YWJjODUwLi5hZGUwNTVlOWZiNTggMTAwNjQ0DQo+ID4gLS0t
-IGEvZHJpdmVycy9wY2kvcHJvYmUuYw0KPiA+ICsrKyBiL2RyaXZlcnMvcGNpL3Byb2JlLmMNCj4g
-PiBAQCAtMjEzMiw5ICsyMTMyLDE2IEBAIHN0YXRpYyB2b2lkIHBjaV9jb25maWd1cmVfbHRyKHN0
-cnVjdCBwY2lfZGV2DQo+ID4gKmRldikNCj4gPiAgCSAqIENvbXBsZXggYW5kIGFsbCBpbnRlcm1l
-ZGlhdGUgU3dpdGNoZXMgaW5kaWNhdGUgc3VwcG9ydA0KPiA+IGZvciBMVFIuDQo+ID4gIAkgKiBQ
-Q0llIHI0LjAsIHNlYyA2LjE4Lg0KPiA+ICAJICovDQo+ID4gLQlpZiAocGNpX3BjaWVfdHlwZShk
-ZXYpID09IFBDSV9FWFBfVFlQRV9ST09UX1BPUlQgfHwNCj4gPiAtCSAgICAoKGJyaWRnZSA9IHBj
-aV91cHN0cmVhbV9icmlkZ2UoZGV2KSkgJiYNCj4gPiAtCSAgICAgIGJyaWRnZS0+bHRyX3BhdGgp
-KSB7DQo+ID4gKwlpZiAocGNpX3BjaWVfdHlwZShkZXYpID09IFBDSV9FWFBfVFlQRV9ST09UX1BP
-UlQpIHsNCj4gPiArCQlwY2llX2NhcGFiaWxpdHlfc2V0X3dvcmQoZGV2LCBQQ0lfRVhQX0RFVkNU
-TDIsDQo+ID4gKwkJCQkJIFBDSV9FWFBfREVWQ1RMMl9MVFJfRU4pOw0KPiA+ICsJCWRldi0+bHRy
-X3BhdGggPSAxOw0KPiA+ICsJCXJldHVybjsNCj4gPiArCX0NCj4gPiArDQo+ID4gKwlicmlkZ2Ug
-PSBwY2lfdXBzdHJlYW1fYnJpZGdlKGRldik7DQo+ID4gKwlpZiAoYnJpZGdlICYmIGJyaWRnZS0+
-bHRyX3BhdGgpIHsNCj4gPiArCQlwY2lfYnJpZGdlX3JlY29uZmlndXJlX2x0cihkZXYpOw0KPiA+
-ICAJCXBjaWVfY2FwYWJpbGl0eV9zZXRfd29yZChkZXYsIFBDSV9FWFBfREVWQ1RMMiwNCj4gPiAg
-CQkJCQkgUENJX0VYUF9ERVZDVEwyX0xUUl9FTik7DQo+ID4gIAkJZGV2LT5sdHJfcGF0aCA9IDE7
-DQo+ID4gLS0gDQo+ID4gMi4xOC4wDQo+IA0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXw0KPiBMaW51eC1tZWRpYXRlayBtYWlsaW5nIGxpc3QNCj4gTGlu
-dXgtbWVkaWF0ZWtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW1lZGlhdGVr
+--Sig_/+W1mqGOo_LjEdTOMqZCF815
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
+
+On Mon, 30 Aug 2021 18:44:29 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the kspp tree, today's linux-next build (powerpc
+> allyesconfig) produced this warning:
+>=20
+> drivers/gpu/drm/kmb/kmb_plane.c:135:20: warning: array subscript 3 is abo=
+ve array bounds of 'struct layer_status[1]' [-Warray-bounds]
+>   135 |   kmb->plane_status[plane_id].ctrl =3D LCD_CTRL_GL2_ENABLE;
+>       |   ~~~~~~~~~~~~~~~~~^~~~~~~~~~
+> In file included from drivers/gpu/drm/kmb/kmb_plane.c:17:
+> drivers/gpu/drm/kmb/kmb_drv.h:48:23: note: while referencing 'plane_statu=
+s'
+>    48 |  struct layer_status  plane_status[KMB_MAX_PLANES];
+>       |                       ^~~~~~~~~~~~
+> drivers/gpu/drm/kmb/kmb_plane.c:132:20: warning: array subscript 2 is abo=
+ve array bounds of 'struct layer_status[1]' [-Warray-bounds]
+>   132 |   kmb->plane_status[plane_id].ctrl =3D LCD_CTRL_GL1_ENABLE;
+>       |   ~~~~~~~~~~~~~~~~~^~~~~~~~~~
+> In file included from drivers/gpu/drm/kmb/kmb_plane.c:17:
+> drivers/gpu/drm/kmb/kmb_drv.h:48:23: note: while referencing 'plane_statu=
+s'
+>    48 |  struct layer_status  plane_status[KMB_MAX_PLANES];
+>       |                       ^~~~~~~~~~~~
+> drivers/gpu/drm/kmb/kmb_plane.c:129:20: warning: array subscript 1 is abo=
+ve array bounds of 'struct layer_status[1]' [-Warray-bounds]
+>   129 |   kmb->plane_status[plane_id].ctrl =3D LCD_CTRL_VL2_ENABLE;
+>       |   ~~~~~~~~~~~~~~~~~^~~~~~~~~~
+> In file included from drivers/gpu/drm/kmb/kmb_plane.c:17:
+> drivers/gpu/drm/kmb/kmb_drv.h:48:23: note: while referencing 'plane_statu=
+s'
+>    48 |  struct layer_status  plane_status[KMB_MAX_PLANES];
+>       |                       ^~~~~~~~~~~~
+>=20
+> Exposed by commit
+>=20
+>   656256c0d67c ("Makefile: Enable -Warray-bounds")
+>=20
+> Introduced by commit
+>=20
+>   7f7b96a8a0a1 ("drm/kmb: Add support for KeemBay Display")
+>=20
+> from v5.11-rc1.
+
+Due to Linus -Werror, these are now errors :-(
+
+I have reverted commit 656256c0d67c for now.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/+W1mqGOo_LjEdTOMqZCF815
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE1qh8ACgkQAVBC80lX
+0GyiVQf+PJFYXwWyUe9jhw21HXnLUe+aeBHlhW7TNGHNOPVuPN8MmjU8FJgiypKf
+Vzr8wJJnHXsOULy5ECKEb9w78RltTLSOQHyMQf7jVIjVcCSCMRiKL5NUZ2EAEGpD
+6Z0C7Q46yAKluI+tqDEpeWmvyQbrleo65mLclLDuiImkx+daowJ+Bj70emHN77DR
+mmhWpl3cZBGXCs8Y+iBjQFyIUeMwJ3DqT8ra6w2tIDKwL4R1iiDFsfHFq2AD0QkW
+c/wGhExA4LlcgEhNruMki7fkg1SNNwYq760XVPc/9b8zK4xUz5FYEoLznYVOCv24
+NbfCGL0MNqsEl8ZzCvBZPt1b2oInXA==
+=2oRg
+-----END PGP SIGNATURE-----
+
+--Sig_/+W1mqGOo_LjEdTOMqZCF815--
