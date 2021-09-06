@@ -2,149 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D494016FD
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E7C401704
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239984AbhIFHe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 03:34:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:38127 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239854AbhIFHeZ (ORCPT
+        id S240162AbhIFHfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 03:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239960AbhIFHfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 03:34:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630913600;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RSrx4XOVTKDR+lRM3utIJIs7HCPXyZCtAZOFr15Y8Bw=;
-        b=X7DT8HoDz8ZPSQAjJcAahyqM4Mi0w3eMABkPs2OEiDrDk20exV38TUUI/K/gZqOu1IAs0p
-        lFwCwaIAeWkogUzMg4AcoyER+xsxhwAbt0fdDThFR5sPQ8gg9j9McxtF3/uCuwFQ7P364Z
-        LPrUP/SZCGmamLqpA3wNBDHZrDDHrSU=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-13-VRasUscAPPijmbrMgSHphg-1; Mon, 06 Sep 2021 03:33:19 -0400
-X-MC-Unique: VRasUscAPPijmbrMgSHphg-1
-Received: by mail-ej1-f71.google.com with SMTP id cf17-20020a170906b2d100b005d42490f86bso1947164ejb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 00:33:19 -0700 (PDT)
+        Mon, 6 Sep 2021 03:35:37 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E88C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 00:34:33 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id q11-20020a9d4b0b000000b0051acbdb2869so7794280otf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 00:34:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KLDv73P0F0QVUgxl+s78WI8WF2RJUO8K40NpRb3AqHQ=;
+        b=AySEBLAeHsj5uVKS43yZ6s3q3C829S5+QMS0aYfinQTmdXtS7JbvxxOJcj6be0Ta0E
+         ZqB32nk4+F7M0IwkVWOBwR7Tta9/EP/i9LsctRGtbHGfLF90/LyUlyOIzM5jSr0gTsyL
+         ETmg1qXQwAEiNDF8NRPmhEXuM/iQRbQbOR00U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RSrx4XOVTKDR+lRM3utIJIs7HCPXyZCtAZOFr15Y8Bw=;
-        b=WORO39Ng+ggNzNOth07bIwcbk8tAXiuycCi+VemXfnQzSUo6o8YXbY2L8m4QuUCRYm
-         gYb0ewurtpmNZwuGl1hBgXVs964J1h6hD/SjAViubw492ADz55BtaqfFZjgbagBSNP1j
-         T7NkCdF020+5Qtr9gOeUwDEHABvlr8bLoFd4h8wx2MmY2mZM1Wo91EKJrVL3trtOszHk
-         b2fTsSkfkmZMoZxR4ciok42YKp0o+Yx8heGcRsQDqpWSLAG2G2GUujg0LVtS8Cwf9WFN
-         ZENlo2XLVDfJ/fu53PmoTVR5kKlU0anvBpGJXyoQ9vRJ5oJkaBEVNRTv/YFo8+n/fuNg
-         qVbA==
-X-Gm-Message-State: AOAM532f5JXwNKJKcos+l/GcDaTki8weckGdSGGoDFItQeX75w81O45D
-        Tu/mb1iR26o9hqTsY099NE+uRfAHWaF8C6/KCcITwVzsZLpFESUDx2CgqdxPmMZldoM+IsZZgos
-        wbU6keTZxzJKT5qG46zruyTHK
-X-Received: by 2002:a05:6402:524f:: with SMTP id t15mr12090721edd.121.1630913598479;
-        Mon, 06 Sep 2021 00:33:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJztuWeCXr3yeqKVL82y9FHLYnMqEF7PCrl5+Qj+0fsCR1hZx3SVNS75Zj5Zq0HWAuYyDMs9jw==
-X-Received: by 2002:a05:6402:524f:: with SMTP id t15mr12090699edd.121.1630913598298;
-        Mon, 06 Sep 2021 00:33:18 -0700 (PDT)
-Received: from steredhat (host-79-51-2-59.retail.telecomitalia.it. [79.51.2.59])
-        by smtp.gmail.com with ESMTPSA id y32sm4119673ede.22.2021.09.06.00.33.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 00:33:17 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 09:33:15 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stsp2@yandex.ru" <stsp2@yandex.ru>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-Subject: Re: [PATCH net-next v5 0/6] virtio/vsock: introduce MSG_EOR flag for
- SEQPACKET
-Message-ID: <20210906073315.n7qgsv3gm7dasgzu@steredhat>
-References: <20210903123016.3272800-1-arseny.krasnov@kaspersky.com>
- <20210905115139-mutt-send-email-mst@kernel.org>
- <4558e96b-6330-667f-955b-b689986f884f@kaspersky.com>
- <20210905121932-mutt-send-email-mst@kernel.org>
- <5b20410a-fb8f-2e38-59d9-74dc6b8a9d4f@kaspersky.com>
- <20210905161809-mutt-send-email-mst@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KLDv73P0F0QVUgxl+s78WI8WF2RJUO8K40NpRb3AqHQ=;
+        b=D07O8znVllDBxh8Ka+a3rJlfT8vQK6N5nGHZTgu559Y1a0xoellnD1QsAAdYGrnyAY
+         5NVsL06Okko4esUJEujWruHyTUf2w66OLHsAWUOs2aWRuRASlHYIDzATBoQpyJN6P/hu
+         1PFhwQQbY5cYn/yNgwH++dvnF0v0W1gWLXMskpanDu6sk5TMvm+nHP3iXu0YXu89ANdC
+         i21QOsTQk9VRnhDR+7EG1BD3uoDrvLBid/geDghxLFA5CbVTGpcQV4Ct4HGt/mB64Lty
+         XlYrRUq6E+5mQWDHwkG4s1wt2wyi+gY/RStWqO/jvf2bJirClZ7/i1euJMkZcUf2nwsf
+         7ZYQ==
+X-Gm-Message-State: AOAM530uGrKMHmQejiKKfuv2+MoGFYgfbqsu7HWbmNNNdutbLvprjchv
+        YM9Pl0T/E8nXNN5712WtdPARTC++ck4AOPqwr77HgA==
+X-Google-Smtp-Source: ABdhPJx1IPLOWvU3juMO7W0BfSfAXxm8nc0F1B4hcn35OkdkhajuYdWFrNbDFUxrBcyUq7wkCAIMwhj7M36O42pmDvY=
+X-Received: by 2002:a05:6830:156:: with SMTP id j22mr9487069otp.75.1630913673121;
+ Mon, 06 Sep 2021 00:34:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210905161809-mutt-send-email-mst@kernel.org>
+References: <20210820123348.6535a87e@canb.auug.org.au> <CAK7LNASv-F1Y7kpaDF+_=TW0Jzvpo1uuNL1B5jUmCCRqv-45bA@mail.gmail.com>
+ <20210902075038.7461d3c8@canb.auug.org.au> <20210906084947.4f65761d@canb.auug.org.au>
+In-Reply-To: <20210906084947.4f65761d@canb.auug.org.au>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Mon, 6 Sep 2021 09:34:21 +0200
+Message-ID: <CAKMK7uF6K+gdWVT09wL0sPBQs8RRixggk01e291veE0VecD=TQ@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the drm tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        "Nikula, Jani" <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        John Harrison <John.C.Harrison@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 05, 2021 at 04:18:52PM -0400, Michael S. Tsirkin wrote:
->On Sun, Sep 05, 2021 at 07:21:10PM +0300, Arseny Krasnov wrote:
->>
->> On 05.09.2021 19:19, Michael S. Tsirkin wrote:
->> > On Sun, Sep 05, 2021 at 07:02:44PM +0300, Arseny Krasnov wrote:
->> >> On 05.09.2021 18:55, Michael S. Tsirkin wrote:
->> >>> On Fri, Sep 03, 2021 at 03:30:13PM +0300, Arseny Krasnov wrote:
->> >>>> 	This patchset implements support of MSG_EOR bit for SEQPACKET
->> >>>> AF_VSOCK sockets over virtio transport.
->> >>>> 	First we need to define 'messages' and 'records' like this:
->> >>>> Message is result of sending calls: 'write()', 'send()', 'sendmsg()'
->> >>>> etc. It has fixed maximum length, and it bounds are visible using
->> >>>> return from receive calls: 'read()', 'recv()', 'recvmsg()' etc.
->> >>>> Current implementation based on message definition above.
->> >>>> 	Record has unlimited length, it consists of multiple message,
->> >>>> and bounds of record are visible via MSG_EOR flag returned from
->> >>>> 'recvmsg()' call. Sender passes MSG_EOR to sending system call and
->> >>>> receiver will see MSG_EOR when corresponding message will be processed.
->> >>>> 	Idea of patchset comes from POSIX: it says that SEQPACKET
->> >>>> supports record boundaries which are visible for receiver using
->> >>>> MSG_EOR bit. So, it looks like MSG_EOR is enough thing for SEQPACKET
->> >>>> and we don't need to maintain boundaries of corresponding send -
->> >>>> receive system calls. But, for 'sendXXX()' and 'recXXX()' POSIX says,
->> >>>> that all these calls operates with messages, e.g. 'sendXXX()' sends
->> >>>> message, while 'recXXX()' reads messages and for SEQPACKET, 'recXXX()'
->> >>>> must read one entire message from socket, dropping all out of size
->> >>>> bytes. Thus, both message boundaries and MSG_EOR bit must be supported
->> >>>> to follow POSIX rules.
->> >>>> 	To support MSG_EOR new bit was added along with existing
->> >>>> 'VIRTIO_VSOCK_SEQ_EOR': 'VIRTIO_VSOCK_SEQ_EOM'(end-of-message) - now it
->> >>>> works in the same way as 'VIRTIO_VSOCK_SEQ_EOR'. But 'VIRTIO_VSOCK_SEQ_EOR'
->> >>>> is used to mark 'MSG_EOR' bit passed from userspace.
->> >>>> 	This patchset includes simple test for MSG_EOR.
->> >>> I'm prepared to merge this for this window,
->> >>> but I'm not sure who's supposed to ack the net/vmw_vsock/af_vsock.c
->> >>> bits. It's a harmless variable renaming so maybe it does not matter.
->> >>>
->> >>> The rest is virtio stuff so I guess my tree is ok.
->> >>>
->> >>> Objections, anyone?
->> >> https://lkml.org/lkml/2021/9/3/76 this is v4. It is same as v5 in af_vsock.c changes.
->> >>
->> >> It has Reviewed by from Stefano Garzarella.
->> > Is Stefano the maintainer for af_vsock then?
->> > I wasn't sure.
-
-I'm maintaining virtio-vsock stuff, but I'm reviewing most of the 
-af_vsock patches. We don't have an entry for it in MAINTAINERS, maybe we 
-should.
-
->> Ack, let's wait for maintainer's comment
+On Mon, Sep 6, 2021 at 12:49 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> Hi all,
 >
+> On Thu, 2 Sep 2021 07:50:38 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > On Fri, 20 Aug 2021 15:23:34 +0900 Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > >
+> > > On Fri, Aug 20, 2021 at 11:33 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > > >
+>  > > After merging the drm tree, today's linux-next build (x86_64 allmodconfig)
+> > > > failed like this:
+> > > >
+> > > > In file included from drivers/gpu/drm/i915/i915_debugfs.c:39:
+> > > > drivers/gpu/drm/i915/gt/intel_gt_requests.h:9:10: fatal error: stddef.h: No such file or directory
+> > > >     9 | #include <stddef.h>
+> > > >       |          ^~~~~~~~~~
+> > > >
+> > > > Caused by commit
+> > > >
+> > > >   564f963eabd1 ("isystem: delete global -isystem compile option")
+> > > >
+> > > > from the kbuild tree interacting with commit
+> > > >
+> > > >   b97060a99b01 ("drm/i915/guc: Update intel_gt_wait_for_idle to work with GuC")
+> > > >
+> > > > I have applied the following patch for today.
+> > >
+> > >
+> > > Thanks.
+> > >
+> > > This fix-up does not depend on my kbuild tree in any way.
+> > >
+> > > So, the drm maintainer can apply it to his tree.
+> > >
+> > > Perhaps with
+> > >
+> > > Fixes: b97060a99b01 ("drm/i915/guc: Update intel_gt_wait_for_idle to
+> > > work with GuC")
+> >
+> > OK, so that didn't happen so I will now apply the merge fix up to the
+> > merge of the kbuild tree.
+> >
+> > > > From: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > > Date: Fri, 20 Aug 2021 12:24:19 +1000
+> > > > Subject: [PATCH] drm/i915: use linux/stddef.h due to "isystem: trim/fixup stdarg.h and other headers"
+> > > >
+> > > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> > > > ---
+> > > >  drivers/gpu/drm/i915/gt/intel_gt_requests.h | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/i915/gt/intel_gt_requests.h b/drivers/gpu/drm/i915/gt/intel_gt_requests.h
+> > > > index 51dbe0e3294e..d2969f68dd64 100644
+> > > > --- a/drivers/gpu/drm/i915/gt/intel_gt_requests.h
+> > > > +++ b/drivers/gpu/drm/i915/gt/intel_gt_requests.h
+> > > > @@ -6,7 +6,7 @@
+> > > >  #ifndef INTEL_GT_REQUESTS_H
+> > > >  #define INTEL_GT_REQUESTS_H
+> > > >
+> > > > -#include <stddef.h>
+> > > > +#include <linux/stddef.h>
+> > > >
+> > > >  struct intel_engine_cs;
+> > > >  struct intel_gt;
+> > > > --
+> > > > 2.32.0
 >
->The specific patch is a trivial variable renaming so
->I parked this in my tree for now, will merge unless I
->hear any objections in the next couple of days.
+> Ping?  I am still applying this ...
 
-I agree, I think your tree is fine, since this series is mostly about 
-virtio-vsock.
+Apologies, this fell through a lot of cracks. I applied this to drm-next now.
 
-Thanks,
-Stefano
+Matt/John, as author/committer it's your job to make sure issues and
+fixes for the stuff you're pushing don't get lost. I'd have expected
+John to apply this to at least drm-intel-gt-next (it's not even
+there).
 
+Joonas, I think this is the 2nd or 3rd or so issue this release cycle
+where some compile fix got stuck a bit because drm-intel-gt-next isn't
+in linux-next. Can we please fix that? It probably needs some changes
+to the dim script.
+
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
