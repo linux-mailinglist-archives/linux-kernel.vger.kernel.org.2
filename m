@@ -2,136 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CAE4016E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EE74016E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240005AbhIFHQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 03:16:08 -0400
-Received: from mail-vs1-f41.google.com ([209.85.217.41]:38599 "EHLO
-        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233040AbhIFHQH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 03:16:07 -0400
-Received: by mail-vs1-f41.google.com with SMTP id a25so4778970vso.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 00:15:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/+lyTeHgpCDp3c3yF7GwweZe7fgOgOOdi97EH6LIddw=;
-        b=TiKHjKnIxNgep226+7uYyLr3q0DW9hWIl+cI8n1b6Dnt9bRziZmx59QwOIlMZycKS2
-         m6fH2o8xXZtYce0cnG4HicH4oCR8yIyzf7uR652UW2JsxXWn+qy3N2oAbQ8x8dTDgxVP
-         uy/Dgn49R/7Tw6Vg+mOjetVE5UTyTzlspDjS951Lkfz8sBw5pZZFYW3XvyENS7MmFEV7
-         jg67dJmwwuTpICdnohk7JBWs0b97M1HOXwjHz4QGfEMjW0DkAhu+jO4z/JqxFXvrdTCH
-         AKzAWgVlthHnGVl3ilHOUdW1c++bmfylJXPSFkzT3hIJGH55zraICz2dVjZdobSbOMSf
-         y8Qg==
-X-Gm-Message-State: AOAM530X+vWEON902KAvbcVL6jizuN0+1dNekVfp3n4VgEniEh2C2GkY
-        9ebYkoM5zFeaQDt6WPtJy3RLuZGNLwQeD+0QOcQ=
-X-Google-Smtp-Source: ABdhPJwDpp3xUZ2EsTWxY2yM2j8OGQRBQBLh7qYKrpDBshgnN16v17gxVhZqfEOQtWVH48ARuasK7mk5BVbe27a+EU0=
-X-Received: by 2002:a67:efd6:: with SMTP id s22mr5165647vsp.50.1630912502493;
- Mon, 06 Sep 2021 00:15:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210707214752.3831-1-rdunlap@infradead.org> <fca8f952-2be0-5c57-d60d-5c4f025abc4d@microchip.com>
- <49495ab9-5039-f332-2895-1a79c034f58d@infradead.org> <CAMuHMdU=ODKZJ0OOsuCeJnTWuM3fP5DE7coSzB=fvAbxPQWDcg@mail.gmail.com>
- <a94c9788-0415-ffe3-9dd4-e6ed8d7ee96a@infradead.org>
-In-Reply-To: <a94c9788-0415-ffe3-9dd4-e6ed8d7ee96a@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 6 Sep 2021 09:14:51 +0200
-Message-ID: <CAMuHMdWUcaC-xiW0UiVdTpx-R=e_i8eHSNc8JF_wqbcO6FynWw@mail.gmail.com>
-Subject: Re: [PATCH v3] ASoC: atmel: ATMEL drivers don't need HAS_DMA
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Codrin.Ciubotariu@microchip.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, mirq-linux@rere.qmqm.pl,
-        Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S240056AbhIFHVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 03:21:54 -0400
+Received: from mail.thorsis.com ([92.198.35.195]:51298 "EHLO mail.thorsis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233040AbhIFHVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 03:21:53 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.thorsis.com (Postfix) with ESMTP id EB34D1C60;
+        Mon,  6 Sep 2021 09:20:47 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
+Received: from mail.thorsis.com ([127.0.0.1])
+        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Na__r9QRpKGM; Mon,  6 Sep 2021 09:20:47 +0200 (CEST)
+Received: by mail.thorsis.com (Postfix, from userid 109)
+        id 4FF701C69; Mon,  6 Sep 2021 09:20:45 +0200 (CEST)
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
+        NO_RELAYS,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
+        version=3.4.2
+X-Spam-Report: * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
+        *      [score: 0.0000]
+        *  0.0 URIBL_BLOCKED ADMINISTRATOR NOTICE: The query to URIBL was
+        *      blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [URIs: thorsis.com]
+        * -0.0 NO_RELAYS Informational: message was not relayed via SMTP
+        * -0.0 NO_RECEIVED Informational: message has no Received headers
+From:   Alexander Dahl <ada@thorsis.com>
+To:     Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>, linux-usb@vger.kernel.org,
+        Cristian Birsan <Cristian.Birsan@microchip.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] USB: host: ehci-atmel: Allow enabling HSIC on SAMA5D2
+Date:   Mon, 06 Sep 2021 09:20:38 +0200
+Message-ID: <2753502.AcZM6cElzO@ada>
+In-Reply-To: <7c3d1248-b708-68f9-a76a-712e345b8218@microchip.com>
+References: <20210823140052.GA120849@rowland.harvard.edu> <20210824063702.24586-1-ada@thorsis.com> <7c3d1248-b708-68f9-a76a-712e345b8218@microchip.com>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+Hello Nicolas,
 
-On Fri, Sep 3, 2021 at 9:53 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> On 9/2/21 9:44 AM, Geert Uytterhoeven wrote:
-> > On Thu, Jul 8, 2021 at 6:51 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> >> On 7/8/21 1:19 AM, Codrin.Ciubotariu@microchip.com wrote:
-> >>> On 08.07.2021 00:47, Randy Dunlap wrote:
-> >>>> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >>>>
-> >>>> On a config (such as arch/sh/) which does not set HAS_DMA when MMU
-> >>>> is not set, several ATMEL ASoC drivers select symbols that cause
-> >>>> kconfig warnings. There is one "depends on HAS_DMA" which is no longer
-> >>>> needed. Dropping it eliminates the kconfig warnings and still builds
-> >>>> with no problems reported.
-> >>>>
-> >>>> Fix the following kconfig warnings:
-> >>>>
-> >>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
-> >>>>     Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-> >>>>     Selected by [m]:
-> >>>>     - SND_ATMEL_SOC_SSC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m]
-> >>>>     - SND_ATMEL_SOC_SSC_PDC [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
-> >>>>
-> >>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_PDC
-> >>>>     Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-> >>>>     Selected by [m]:
-> >>>>     - SND_AT91_SOC_SAM9G20_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-> >>>>
-> >>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC
-> >>>>     Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && HAS_DMA [=n]
-> >>>>     Selected by [m]:
-> >>>>     - SND_ATMEL_SOC_SSC_DMA [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m]
-> >>>>
-> >>>> WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_SSC_DMA
-> >>>>     Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && ATMEL_SSC [=m] && HAS_DMA [=n]
-> >>>>     Selected by [m]:
-> >>>>     - SND_ATMEL_SOC_WM8904 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && I2C [=m]
-> >>>>     - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_ATMEL_SOC [=m] && (ARCH_AT91 || COMPILE_TEST [=y]) && ATMEL_SSC [=m] && SND_SOC_I2C_AND_SPI [=m]
-> >>>>
-> >>>> Fixes: 3951e4aae2ce ("ASoC: atmel-pcm: dma support based on pcm dmaengine")
-> >>>> Fixes: 18291410557f ("ASoC: atmel: enable SOC_SSC_PDC and SOC_SSC_DMA in Kconfig")
-> >>>> Fixes: 061981ff8cc8 ("ASoC: atmel: properly select dma driver state")
-> >>>
-> >>> I am not sure about these fixes tags. As Alexandre mentioned, it looks
-> >>> like the reason for HAS_DMA in the first place was the COMPILE_TEST with
-> >>> m32r arch. I dig a bit, and, if any, I think we should use:
-> >>> Fixes: eb17726b00b3 ("m32r: add simple dma")
-> >>> since this commit adds dummy DMA support for m32r and seems to fix the
-> >>> HAS_DMA dependency.
-> >>
-> >> Ah, I forgot to update the Fixes: tag(s).
-> >>
-> >> I won't disagree with your Fixes: suggestion (good digging) but
-> >> I would probably have used 8d7d11005e930:
-> >>    ASoC: atmel: fix build failure
-> >> which is the commit that added "depends on HAS_DMA".
-> >
-> > M32r was not the only platform NO_DMA, so I guess the build would
-> > have failed for the others, too (e.g. Sun-3).
-> >
-> > So the real fix was probably commit f29ab49b5388b2f8 ("dma-mapping:
-> > Convert NO_DMA get_dma_ops() into a real dummy"), or one of the
-> > related commits adding dummies to subsystems.
->
-> Hi Geert,
-> Does this mean that some other actions are needed here?
-> E.g. revert + a different kind of fix?
+Am Donnerstag, 2. September 2021, 17:33:50 CEST schrieb Nicolas Ferre:
+> Hi Alexander,
+>=20
+> On 24/08/2021 at 08:37, Alexander Dahl wrote:
+> > Unlike other SoC series featuring the 'atmel,at91sam9g45-ehci' USB EHCI
+> > controller, which have embedded USB high-speed transceivers for each
+> > port, the third port on the SAMA5D2 series is HSIC only.  That HSIC
+> > interface is not enabled after a power-on reset, but can be enabled by
+> > setting a flag in a vendor specific EHCI register.
+> >=20
+> > The register offsets added to the new header file were compared with
+> > those for the SAM9G45, SAM9X25, SAMA5D3, SAMA5D4, and SAM9X60 series and
+> > there are no differences in the offsets or contents of those registers.
+> > Which of those additional vendor specific registers are supported,
+> > differs by SoC family.  So while the HSIC enable feature is currently
+> > only present for SAMA5D2, it probably does not hurt to set it on the
+> > other families, hence no additional check for SoC family here.
+> >=20
+> > Tested on a custom board featuring a SAMA5D27C-D5M SiP connected to an
+> > USB3503 hub with an upstream HSIC interface.
+> >=20
+> > Link: https://community.atmel.com/forum/sama5d2-using-hsic-under-linux
+> > Signed-off-by: Alexander Dahl <ada@thorsis.com>
+>=20
+> Sorry for not having coming back to you earlier, summertime...
 
-While we can now compile drivers using DMA features on NO_DMA
-platforms, thanks to the dummies, it does mean many of these drivers
-cannot work on such platforms.  So I think it makes sense to replace
-"depends on HAS_DMA" by "depends on HAS_DMA || COMPILE_TEST" if DMA
-is not optional to the driver.
+I had one week off last week due to a mild infection myself, so we just=20
+proceed here and now. (-:
 
-Gr{oetje,eeting}s,
+> What you are looking for is what Cristian developed in our "vendor tree"
+> and that needs to be "Mainlined":
+> https://github.com/linux4sam/linux-at91/commit/ca368f544899c14b03df9ce751=
+068
+> 4f03acf1bf9
 
-                        Geert
+Looks like it does what it should from quick code inspection. One could=20
+nitpick some things, maybe I add some comments on GitHub.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> It allows us to have a gigabit Ethernet HSIC connected on our sama5d2
+> ICP board. It works well for some time.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Good to hear.
+
+> For DT, we rely on the standard "phy_type" property set to "hsic" as
+> highlighted in this DT node on the ICP board precisely:
+> https://github.com/linux4sam/linux-at91/blob/master/arch/arm/boot/dts/at9=
+1-s
+> ama5d2_icp.dts#L766
+>=20
+> This way we can use the of_usb_get_phy_mode() standard function:
+> https://github.com/linux4sam/linux-at91/blob/master/drivers/usb/phy/of.c#=
+L28
+
+I noticed that phy_type property, but did not follow that approach, because=
+=20
+that USB block in SAMA5D2 has three ports, where one (A) is shared with a=20
+device port, two (A and B) have embedded transceivers, and only the third (=
+C)=20
+has that HSIC interface, but nothing else. So the flag has no effect on por=
+t A=20
+and B anyways, and I would have found it misleading to set phy_type to HSIC=
+=20
+for the whole USB block.
+
+> All this tells me that I would prefer Cristi's approach. If agreed,
+> we'll make sure to make progress on the mainlining part soon.
+
+I don't mind. If that's your preferred approach, I will happily test it. Wa=
+s=20
+the series already posted to upstream?
+
+> Hope that it helps. Best regards,
+>    Nicolas
+
+Yes, indeed. Thanks for your feedback.
+
+Greets
+Alex
+
+>=20
+> > ---
+> >=20
+> > Notes:
+> >      - for introducing new dt binding, would be nice to convert old one
+> >     =20
+> >        first, probably needs split up and multiple iteration review?
+> >     =20
+> >      - name of that new dt property?
+> >      - register definitions put to a separate file, like
+> >     =20
+> >        'drivers/usb/host/ehci-fsl.h'
+> >     =20
+> >      - unsure where exactly in the probe process that register write
+> >      should
+> >     =20
+> >        happen, datasheet gives no hint
+> >     =20
+> >      - should suspend/resume be considered?
+> >  =20
+> >   drivers/usb/host/ehci-atmel.c | 17 +++++++++++++++++
+> >   drivers/usb/host/ehci-atmel.h | 19 +++++++++++++++++++
+> >   2 files changed, 36 insertions(+)
+> >   create mode 100644 drivers/usb/host/ehci-atmel.h
+> >=20
+> > diff --git a/drivers/usb/host/ehci-atmel.c b/drivers/usb/host/ehci-atme=
+l.c
+> > index e893467d659c..f8d9e686c082 100644
+> > --- a/drivers/usb/host/ehci-atmel.c
+> > +++ b/drivers/usb/host/ehci-atmel.c
+> > @@ -20,6 +20,7 @@
+> >=20
+> >   #include <linux/usb/hcd.h>
+> >  =20
+> >   #include "ehci.h"
+> >=20
+> > +#include "ehci-atmel.h"
+> >=20
+> >   #define DRIVER_DESC "EHCI Atmel driver"
+> >=20
+> > @@ -85,6 +86,7 @@ static void atmel_stop_ehci(struct platform_device
+> > *pdev)
+> >=20
+> >   static int ehci_atmel_drv_probe(struct platform_device *pdev)
+> >   {
+> >=20
+> > +       struct device_node *np =3D pdev->dev.of_node;
+> >=20
+> >          struct usb_hcd *hcd;
+> >          const struct hc_driver *driver =3D &ehci_atmel_hc_driver;
+> >          struct resource *res;
+> >=20
+> > @@ -149,6 +151,14 @@ static int ehci_atmel_drv_probe(struct
+> > platform_device *pdev)>=20
+> >          atmel_start_ehci(pdev);
+> >=20
+> > +       if (of_property_read_bool(np, "atmel,enable-hsic")) {
+> > +               u32 tmp;
+> > +
+> > +               tmp =3D ehci_readl(ehci, hcd->regs + AT91_UHPHS_INSNREG=
+08);
+> > +               tmp |=3D AT91_UHPHS_HSIC_EN;
+> > +               ehci_writel(ehci, tmp, hcd->regs + AT91_UHPHS_INSNREG08=
+);
+> > +       }
+> > +
+> >=20
+> >          retval =3D usb_add_hcd(hcd, irq, IRQF_SHARED);
+> >          if (retval)
+> >         =20
+> >                  goto fail_add_hcd;
+> >=20
+> > @@ -170,10 +180,17 @@ static int ehci_atmel_drv_probe(struct
+> > platform_device *pdev)>=20
+> >   static int ehci_atmel_drv_remove(struct platform_device *pdev)
+> >   {
+> >  =20
+> >          struct usb_hcd *hcd =3D platform_get_drvdata(pdev);
+> >=20
+> > +       struct ehci_hcd *ehci;
+> > +       u32 tmp;
+> >=20
+> >          usb_remove_hcd(hcd);
+> >          usb_put_hcd(hcd);
+> >=20
+> > +       ehci =3D hcd_to_ehci(hcd);
+> > +       tmp =3D ehci_readl(ehci, hcd->regs + AT91_UHPHS_INSNREG08);
+> > +       tmp &=3D ~AT91_UHPHS_HSIC_EN;
+> > +       ehci_writel(ehci, tmp, hcd->regs + AT91_UHPHS_INSNREG08);
+> > +
+> >=20
+> >          atmel_stop_ehci(pdev);
+> >         =20
+> >          return 0;
+> >=20
+> > diff --git a/drivers/usb/host/ehci-atmel.h b/drivers/usb/host/ehci-atme=
+l.h
+> > new file mode 100644
+> > index 000000000000..4c4998c2a6dd
+> > --- /dev/null
+> > +++ b/drivers/usb/host/ehci-atmel.h
+> > @@ -0,0 +1,19 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +/*
+> > + * Vendor specific definitions for EHCI on Atmel/Microchip SoCs.
+> > + *
+> > + * =A9 2021 Alexander Dahl <ada@thorsis.com>
+> > + */
+> > +#ifndef EHCI_ATMEL_H
+> > +#define EHCI_ATMEL_H
+> > +
+> > +/* device specific register offsets, taken from SAMA5D2 datasheet */
+> > +
+> > +#define AT91_UHPHS_INSNREG06    0xA8        /* AHB Error Status Regist=
+er
+> > */ +
+> > +#define AT91_UHPHS_INSNREG07    0xAC        /* AHB Master Error Address
+> > Register */ +
+> > +#define AT91_UHPHS_INSNREG08    0xB0        /* HSIC Enable/Disable
+> > Register */ +#define AT91_UHPHS_HSIC_EN      (1 << 2)    /* HSIC
+> > Enable/Disable */ +
+> > +#endif /* ECHI_ATMEL_H */
+> >=20
+> > base-commit: e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93
+> > --
+> > 2.30.2
+
+
+=2D-=20
+
+
+
