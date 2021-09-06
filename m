@@ -2,116 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEBE3401E07
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3738401E0D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243882AbhIFQFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 12:05:09 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:37505 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S243842AbhIFQFH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:05:07 -0400
-Received: from localhost.localdomain ([114.149.34.46])
-        by mwinf5d79 with ME
-        id qg3U2500Z0zjR6y03g3z7v; Mon, 06 Sep 2021 18:04:01 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 06 Sep 2021 18:04:01 +0200
-X-ME-IP: 114.149.34.46
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Subject: [PATCH v3 2/2] can: bittiming: change can_calc_tdco()'s prototype to not directly modify priv
-Date:   Tue,  7 Sep 2021 01:03:10 +0900
-Message-Id: <20210906160310.54831-3-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210906160310.54831-1-mailhol.vincent@wanadoo.fr>
-References: <20210906160310.54831-1-mailhol.vincent@wanadoo.fr>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S243774AbhIFQJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 12:09:33 -0400
+Received: from mga04.intel.com ([192.55.52.120]:53222 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243510AbhIFQJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 12:09:32 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="218136421"
+X-IronPort-AV: E=Sophos;i="5.85,272,1624345200"; 
+   d="scan'208";a="218136421"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 09:08:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,272,1624345200"; 
+   d="scan'208";a="468894542"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
+  by orsmga007.jf.intel.com with ESMTP; 06 Sep 2021 09:08:22 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] perf dlfilter: Add dlfilter-show-cycles
+Date:   Mon,  6 Sep 2021 19:08:50 +0300
+Message-Id: <20210906160850.22716-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In previous commit, we introduced a temporary priv variable in
-can_changelink(), wrote the changes to it and committed all changes at
-the very end of the function.
+Add a new dlfilter to show cycles.
 
-However, the function can_calc_tdco() directly retrieves can_priv from
-the net_device and directly modifies it. We change the prototype so
-that it instead writes its changes to a struct can_priv that is passed
-as an argument. This way, can_changelink() can pass the newly
-introduced temporary priv variable.
+Cycle counts are accumulated per CPU (or per thread if CPU is not recorded)
+from IPC information, and printed together with the change since the last
+print, at the start of each line.
 
-
-Fixes: c25cc7993243 ("can: bittiming: add calculation for CAN FD Transmitter Delay Compensation (TDC)")
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- drivers/net/can/dev/bittiming.c | 8 ++------
- drivers/net/can/dev/netlink.c   | 2 +-
- include/linux/can/bittiming.h   | 7 +++++--
- 3 files changed, 8 insertions(+), 9 deletions(-)
+ tools/perf/Makefile.perf                    |   2 +-
+ tools/perf/dlfilters/dlfilter-show-cycles.c | 107 ++++++++++++++++++++
+ 2 files changed, 108 insertions(+), 1 deletion(-)
+ create mode 100644 tools/perf/dlfilters/dlfilter-show-cycles.c
 
-diff --git a/drivers/net/can/dev/bittiming.c b/drivers/net/can/dev/bittiming.c
-index f49170eadd54..bddd93e2e439 100644
---- a/drivers/net/can/dev/bittiming.c
-+++ b/drivers/net/can/dev/bittiming.c
-@@ -175,13 +175,9 @@ int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 	return 0;
- }
+diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+index e04313c4d840..6b2c8b46ea80 100644
+--- a/tools/perf/Makefile.perf
++++ b/tools/perf/Makefile.perf
+@@ -360,7 +360,7 @@ ifndef NO_JVMTI
+ PROGRAMS += $(OUTPUT)$(LIBJVMTI)
+ endif
  
--void can_calc_tdco(struct net_device *dev)
-+void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
-+		   const struct can_bittiming *dbt)
- {
--	struct can_priv *priv = netdev_priv(dev);
--	const struct can_bittiming *dbt = &priv->data_bittiming;
--	struct can_tdc *tdc = &priv->tdc;
--	const struct can_tdc_const *tdc_const = priv->tdc_const;
--
- 	if (!tdc_const)
- 		return;
+-DLFILTERS := dlfilter-test-api-v0.so
++DLFILTERS := dlfilter-test-api-v0.so dlfilter-show-cycles.so
+ DLFILTERS := $(patsubst %,$(OUTPUT)dlfilters/%,$(DLFILTERS))
  
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 21b76ca8cb22..66815ea6046e 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -190,7 +190,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 			return -EINVAL;
- 		}
- 
--		can_calc_tdco(dev);
-+		can_calc_tdco(&priv->tdc, priv->tdc_const, &priv->data_bittiming);
- 
- 		if (priv->do_set_data_bittiming) {
- 			/* Finally, set the bit-timing registers */
-diff --git a/include/linux/can/bittiming.h b/include/linux/can/bittiming.h
-index 9de6e9053e34..b3c1711ee0f0 100644
---- a/include/linux/can/bittiming.h
-+++ b/include/linux/can/bittiming.h
-@@ -87,7 +87,8 @@ struct can_tdc_const {
- int can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 		       const struct can_bittiming_const *btc);
- 
--void can_calc_tdco(struct net_device *dev);
-+void can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
-+		   const struct can_bittiming *dbt);
- #else /* !CONFIG_CAN_CALC_BITTIMING */
- static inline int
- can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
-@@ -97,7 +98,9 @@ can_calc_bittiming(struct net_device *dev, struct can_bittiming *bt,
- 	return -EINVAL;
- }
- 
--static inline void can_calc_tdco(struct net_device *dev)
-+static inline void
-+can_calc_tdco(struct can_tdc *tdc, const struct can_tdc_const *tdc_const,
-+	      const struct can_bittiming *dbt)
- {
- }
- #endif /* CONFIG_CAN_CALC_BITTIMING */
+ # what 'all' will build and 'install' will install, in perfexecdir
+diff --git a/tools/perf/dlfilters/dlfilter-show-cycles.c b/tools/perf/dlfilters/dlfilter-show-cycles.c
+new file mode 100644
+index 000000000000..d5b37f560ffd
+--- /dev/null
++++ b/tools/perf/dlfilters/dlfilter-show-cycles.c
+@@ -0,0 +1,107 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * dlfilter-show-cycles.c: Print the number of cycles at the start of each line
++ * Copyright (c) 2021, Intel Corporation.
++ */
++#include <perf/perf_dlfilter.h>
++#include <stdio.h>
++
++#define MAX_CPU 4096
++
++static __u64 cycles[MAX_CPU];
++static __u64 cycles_rpt[MAX_CPU];
++
++#define BITS		16
++#define TABLESZ		(1 << BITS)
++#define TABLEMAX	(TABLESZ / 2)
++#define MASK		(TABLESZ - 1)
++
++static struct entry {
++	__u32 used;
++	__s32 tid;
++	__u64 cycles;
++	__u64 cycles_rpt;
++} table[TABLESZ];
++
++static int tid_cnt;
++
++static struct entry *find_entry(__s32 tid)
++{
++	__u32 pos = tid & MASK;
++	struct entry *e;
++
++	e = &table[pos];
++	while (e->used) {
++		if (e->tid == tid)
++			return e;
++		if (++pos == TABLESZ)
++			pos = 0;
++		e = &table[pos];
++	}
++
++	if (tid_cnt >= TABLEMAX) {
++		fprintf(stderr, "Too many threads\n");
++		return NULL;
++	}
++
++	tid_cnt += 1;
++	e->used = 1;
++	e->tid = tid;
++	return e;
++}
++
++static void add_entry(__s32 tid, __u64 cnt)
++{
++	struct entry *e = find_entry(tid);
++
++	if (e)
++		e->cycles += cnt;
++}
++
++int filter_event_early(void *data, const struct perf_dlfilter_sample *sample, void *ctx)
++{
++	__s32 cpu = sample->cpu;
++	__s32 tid = sample->tid;
++
++	if (cpu >= 0 && cpu < MAX_CPU)
++		cycles[cpu] += sample->cyc_cnt;
++	else if (tid != -1)
++		add_entry(tid, sample->cyc_cnt);
++	return 0;
++}
++
++int filter_event(void *data, const struct perf_dlfilter_sample *sample, void *ctx)
++{
++	__s32 cpu = sample->cpu;
++	__s32 tid = sample->tid;
++
++	if (cpu >= 0 && cpu < MAX_CPU) {
++		printf("%10llu %10llu ", cycles[cpu], cycles[cpu] - cycles_rpt[cpu]);
++		cycles_rpt[cpu] = cycles[cpu];
++		return 0;
++	}
++
++	if (tid != -1) {
++		struct entry *e = find_entry(tid);
++
++		if (e) {
++			printf("%10llu %10llu ", e->cycles, e->cycles - e->cycles_rpt);
++			e->cycles_rpt = e->cycles;
++			return 0;
++		}
++	}
++
++	printf("%22s", "");
++	return 0;
++}
++
++const char *filter_description(const char **long_description)
++{
++	static char *long_desc = "Cycle counts are accumulated per CPU (or "
++		"per thread if CPU is not recorded) from IPC information, and "
++		"printed together with the change since the last print, at the "
++		"start of each line.";
++
++	*long_description = long_desc;
++	return "Print the number of cycles at the start of each line";
++}
 -- 
-2.32.0
+2.17.1
 
