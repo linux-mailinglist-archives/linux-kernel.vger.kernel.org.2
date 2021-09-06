@@ -2,141 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BBA9402056
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 21:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AFCC402061
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 21:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245275AbhIFTL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 15:11:58 -0400
-Received: from mail-oln040093003003.outbound.protection.outlook.com ([40.93.3.3]:1174
-        "EHLO na01-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243755AbhIFTLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 15:11:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bkay9/SViCQ2jE9+7RtHNTIiwh1WxunrY18GRwv+40z7wou0JIy6AScnm4qe5wrKjzQZ+vHwZmsT4y+oWMRZQ9E/kCN03g928501eX0e1QFqSPc0BaEN7oPDs3imFwzwkrapw/6/+Ya7DgayBh4lYc7r23cJZXwOEwC/AOpkxTeoS3PDbRm9fIaRZYxEC9UFhlgdWX7zJixCKZOggsWAsHrrFsecHdF3oLCxmt9QbNCORz2hz5xrvbkQfUR5zgNsEjdU7GLnpLannaQYoRwX//8EYQ89/CRwa5U4/p8JD0GuS0osWAr9/hbkO4b86PyNtb+IDerZgukv6d+QeaezfQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=G2vUUjW6Z4LunfHdSguPn7k5K4STR0B9El3eMcQ+dl0=;
- b=U0XuolDth7URm9WZZUOee/sH0TRMG5ZzL/OIp0HqREecfzIMok3sqyWt7hPpxd3FWlG1SaGER4etlvb31oyfqeWzLd/uCdmcnVehELvJ1F7oE4HMPeAVJv+NjYMLA5OAG2RGq805cS5+/JaiYCkRLySiFt6fB8vAP8XLqDapE8TZ1fV9kHIKWnqiLe1Ad3ComuEhJFGK2s9tOp0Prn8nQmtN09JTDp2tx0BKsKQ7nAcX51XVmE0/58cZPaCfqu3zBZxf0/5aeSx098HQQEWdhGua/V5PJ4b4c/wH1+fkvVusfPGGehUAH6qtGGlSRS93gjWNtQVJAymnDvv/CaVsgw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G2vUUjW6Z4LunfHdSguPn7k5K4STR0B9El3eMcQ+dl0=;
- b=eG/d5+UPsj2a5cYs9sIxxkGQtLLlfsq52G+WKkWf1qqGKMFTCOWUWvs5oSyUskZ8QXU18nbp/1xjcPZzH3LAfTdNorZa/AE3Ft4eLuuoEvUvlCCkwVFIzyRHohghaP7UhP3t3JEBLeEVmlshfud6pJFFS5NecYAGDqW5BhHr1wM=
-Received: from BYAPR21MB1270.namprd21.prod.outlook.com (2603:10b6:a03:105::15)
- by BYAPR21MB1622.namprd21.prod.outlook.com (2603:10b6:a02:be::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.7; Mon, 6 Sep
- 2021 19:10:46 +0000
-Received: from BYAPR21MB1270.namprd21.prod.outlook.com
- ([fe80::d9dd:dc3b:2f98:7924]) by BYAPR21MB1270.namprd21.prod.outlook.com
- ([fe80::d9dd:dc3b:2f98:7924%9]) with mapi id 15.20.4500.004; Mon, 6 Sep 2021
- 19:10:46 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: RE: [PATCH] MAINTAINERS: add VM SOCKETS (AF_VSOCK) entry
-Thread-Topic: [PATCH] MAINTAINERS: add VM SOCKETS (AF_VSOCK) entry
-Thread-Index: AQHXov9L/BhYZtlmv0aYWU8ANIV5qauXXKYQ
-Date:   Mon, 6 Sep 2021 19:10:46 +0000
-Message-ID: <BYAPR21MB1270B80C872030CA534C667EBFD29@BYAPR21MB1270.namprd21.prod.outlook.com>
-References: <20210906091159.66181-1-sgarzare@redhat.com>
-In-Reply-To: <20210906091159.66181-1-sgarzare@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=7bb7a008-996e-4318-bc11-56fb8840d2db;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-09-06T18:59:30Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fcb9cf68-789c-4069-ade9-08d9716a080f
-x-ms-traffictypediagnostic: BYAPR21MB1622:
-x-microsoft-antispam-prvs: <BYAPR21MB1622E1477F92E36ED7E89D20BFD29@BYAPR21MB1622.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 82+idIrHhxZaeo6tX+Fdd6HjVzd3J7iEu7q1WiSrMIxVRDVFV9ulTohzKW8MOnWMriPYUy3tKmEZYtXk3ccLtHwqGDIsghsJLJrA14FojTkr6iA0QP6Qvniw6g60pTGZ7yOHLLAPMekcMmxXoWoG7IPekvbdTmTBzCqT4Mh9s6HHzwlx3HkyEXSSZkWHBdG34X64L2TcR7+A0JdNIUwXHvMqy0L80dAV9WleuoQpTGd9h3mXVH2yIF3KbLhhzJNFtdD1zlB5Pi1EhKctgduFOYrS9T5QbWV1VGW8e07V+5Shqh06A8bHjqk/KvLmoLrpDTG8Yo0Dyr86/Qxzyx3JZG0Vk45qqY3rqtKuE59U1n1iXSKWgqrKtLuQ5T75fkkCANBITm/FmJ/CztQgXzhrn1odp+VZxiTIf59i1OvBSuzQ71tHuFctYFLGBM01g/UnGHeC9+tGszbZUiC883d/RlTfNDLCvQ+XnP56RuqtK+oFqUyzV/UkDvVqjiJbWOGQv5IaHboQpvjFWFdDkrgGaCOqd4RC7H5Te+AUf1lylzCuosUXxnMlfUWKhPa2US41u9OoKyLbnb6s7Je1YGI8R2MVRB3ZoxBtLLj6m9Gikev0+fBTtzYk4dUjiavOovHJJA1P/eikhOOQVoKugYG7ElYlXtvq4OSKobLBeAAX/k7DkL3t7WEe/3kX1JXy76Pl11q2Ye4LxIR4sJZcN5Aeuw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1270.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(110136005)(4326008)(508600001)(71200400001)(52536014)(7696005)(4744005)(6506007)(316002)(10290500003)(55016002)(86362001)(8676002)(2906002)(26005)(122000001)(76116006)(33656002)(8990500004)(186003)(66556008)(64756008)(66476007)(5660300002)(66446008)(66946007)(54906003)(8936002)(9686003)(38070700005)(38100700002)(82950400001)(82960400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?fm1EFmHnADCTmYo3ZvsI1PZ8fkPqD2FJXNMSdZatLqPFCKLEXAN0FTV//xdk?=
- =?us-ascii?Q?8QRH8JfpGs/r47S0BuAL2wG96vWbL0N2A/EESfot6V4R+kCnGNR/IHF8iytL?=
- =?us-ascii?Q?/uEZ4TI7iq7gzshlNibheouUVE0oMNEnSJO9q1X+k5nKQZ5cYP8yMv6LiX2b?=
- =?us-ascii?Q?QoUfRVLBk4+33FBN9H4KCchmxOay7smjPE2cQLQzvbz6rAXwxUd3Tsm/PWho?=
- =?us-ascii?Q?ofGfHkaiBmdSMv5zEa2HQWp00nsyJUrM3i97a+9JPxWrXLjy1t1xPnMVRjJe?=
- =?us-ascii?Q?xqP1+1PM7Ajo9dCNk3EhSOUrZVb3tZCd747O2e2PUoylnOV2p2BHRQQmBdF4?=
- =?us-ascii?Q?hPETFDppUGx6WMOgcnrLj2yygsBDbR59LvHXRQiablWMfTITdDJNnTEKlHQX?=
- =?us-ascii?Q?b/uEPR8ybnZZrTgp9e6yDDxfPu3etVnSnkWmnjCVWMxGluSWUVYatM50aapW?=
- =?us-ascii?Q?D1WGNvRI5TUlNkFMwOChG7YuzksHD87ZWlol6/eFn0ceOY0qkz3WOy6DB1ft?=
- =?us-ascii?Q?I8WfEw1m0ZHXL9K8aJ5o00TCHZ1ShPHHZ0iw92ZLvyUtQWoCK0oDxLhdWAUq?=
- =?us-ascii?Q?NNuQZI3S9sWue8bZcR7+IdUlI/fnyEskk/r0mNTWJVMjO1ZQvAuVylsMAxhh?=
- =?us-ascii?Q?GzSz9MlLcvymPqhD+FSrNMzGNSHoZYLJ6cnHAINVlf2QcLnGDnu1/JJ8NwgA?=
- =?us-ascii?Q?JcB/5rWF6tzY+Uz8NfOm6Lny4iSdRygk28rNnxf1ianse6VyUI81VGKwjfww?=
- =?us-ascii?Q?KQm2y9OZONs7UvwZUI+FtennLmpniJ1rQ2DsQIfNgwnFq9eLbE7oeC7Itvmi?=
- =?us-ascii?Q?SoHx97LE6shRe9v6os5WLdeiyjEhIgkyyp7+CJArAeIO+E9X9xiFEHBPZOxO?=
- =?us-ascii?Q?cor9QXhljVKLhN7kBou4IL10qwZanN+NCj9hcbL2y+MhF7oWcnh/aMvr0pQn?=
- =?us-ascii?Q?fQaszJ3PiQCJNJW+5YBNKq5ZlnmyoyNiBKWSkcRpasOdZRKaNEI+bekUgAGs?=
- =?us-ascii?Q?wxmEnGpEA9bwTNIxtt4F4mp897/MgcGnSmmK/EYzN6ZKMtfm/DgerRs+0kHr?=
- =?us-ascii?Q?RRhjqwHmd/GhrVp8vh0jeP0soii5jD/xAPyZxKf7syVDwO5AaCC34ckISMX9?=
- =?us-ascii?Q?RHhSvCbrCXwKG/bgqQsKyHGpxS58u/thhRxZ9dY9uxsX7SgFvuZzJVowe3Q7?=
- =?us-ascii?Q?5W7KVft5Hkjikf8rDA/z/aJN87mVFJ9zmTD80exY5NewmxP9pc3RcgRET+AH?=
- =?us-ascii?Q?+8mZlolDrUx4mvNF6n1JURB1hlFrFmbhRakBNww7mC9gZeu66PU5DM1jqOc6?=
- =?us-ascii?Q?DRwbx+z+lWM8A9drvEWH1P8T?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S230419AbhIFTVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 15:21:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41620 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229678AbhIFTVS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 15:21:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630956012;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rEHc56k7ZFIBpjFDov8p4EWeaCiKlIL9gEWlSxoICMg=;
+        b=bHSbcv4Qxi2XadRdSMcVO6ntveZCa0L/taEdEZ8sBdGHwED4+mOOaGNxM9/LLTFlRya7c7
+        NDrbDB4MULH+Oz1jOuNyyBjwLNVy4h7aum06aQvykC7I4XGymbKW+S9uD/+bmvOSNHmM5T
+        ql8TBHQFOXPXEGy+72WHqb4TdXYzk4o=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-6-XpKN5b-QO5a7b_Gtk0dHug-1; Mon, 06 Sep 2021 15:20:11 -0400
+X-MC-Unique: XpKN5b-QO5a7b_Gtk0dHug-1
+Received: by mail-wm1-f71.google.com with SMTP id f17-20020a05600c155100b002f05f30ff03so103554wmg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 12:20:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=rEHc56k7ZFIBpjFDov8p4EWeaCiKlIL9gEWlSxoICMg=;
+        b=MJ39k/UGSAtsYb+WWvJS518VIaRnCZwC3rLDX8rq7ij9hv6V5gxeZj61IbZ778y4JX
+         9L2KvB1S/+H9TFnF9XLIqsqvU+1CbVuvl8z3ZNGen6c5KNcRC7jFKMkQXuzu7Ssb/4mN
+         uPqPQGbxPzFGEHF8LzCwmcVZK23J10WMxQK0Q+he7OGosjCZyWv1UFmd+8qETm5b4CDD
+         Wv/BLBZhosz+Ys+w9EDm+C9utKp9UTS9yXM/nPxlEjql6FY5FzvH/Yv7evvuniDFz2SJ
+         IiT8FMA9jULxTV4t1azyPbzwr3orWODNd5L+K5ee53hgaL4ZC5aiKbZfAD49FB7sVLr4
+         IcwQ==
+X-Gm-Message-State: AOAM531zOTl5sMgRAmxlbW/L46odS9uUJ1AflYovGxxAgRI4BRTVCPFD
+        Lz+6OQSZOnriiVH2IZ9pKeb+T6UvkClHWUHC3CteL6f6uKxEYcqk5VGJdausJw8MOMkQcud5y/S
+        0PNWpyQUQGy0xC+ijUkQiqC7x
+X-Received: by 2002:a05:6000:1244:: with SMTP id j4mr14911475wrx.335.1630956010357;
+        Mon, 06 Sep 2021 12:20:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwfNeKWWGiCxGjrk6wfcQ0gagAcVjp2TJJiioLGI6ohLpGWa/Ko6B9trweEm0tzFElvsoKgsw==
+X-Received: by 2002:a05:6000:1244:: with SMTP id j4mr14911463wrx.335.1630956010093;
+        Mon, 06 Sep 2021 12:20:10 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6323.dip0.t-ipconnect.de. [91.12.99.35])
+        by smtp.gmail.com with ESMTPSA id r25sm7919454wrc.26.2021.09.06.12.20.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 12:20:09 -0700 (PDT)
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        syzbot <syzbot+aa7a876b8108f1622bc3@syzkaller.appspotmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        syzkaller-bugs@googlegroups.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+References: <00000000000063692b05cb493f6d@google.com>
+ <20210906103309.f4152941a9a00a27f62dbc2b@linux-foundation.org>
+ <59af1f1c-ae77-cfec-8d8c-32368f8ffdb6@redhat.com>
+ <bc9f68b7-6db0-0d02-090e-1d28c2124ad6@roeck-us.net>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [syzbot] BUG: soft lockup in handle_mm_fault (2)
+Message-ID: <6d7ea31d-66af-84e5-1db0-9cbbb634f649@redhat.com>
+Date:   Mon, 6 Sep 2021 21:20:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1270.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fcb9cf68-789c-4069-ade9-08d9716a080f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Sep 2021 19:10:46.4613
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zu7y0cgfxEVA+I84RaZyEw9VvXZh491HtxpXmaknrod4vcQAtQV4zlLPoqdexB5tapK0rlNV8IZlqULNJztGxw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR21MB1622
+In-Reply-To: <bc9f68b7-6db0-0d02-090e-1d28c2124ad6@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Stefano Garzarella <sgarzare@redhat.com>
-> Sent: Monday, September 6, 2021 2:12 AM
->=20
-> Add a new entry for VM Sockets (AF_VSOCK) that covers vsock core,
-> tests, and headers. Move some general vsock stuff from virtio-vsock
-> entry into this new more general vsock entry.
->=20
-> I've been reviewing and contributing for the last few years,
-> so I'm available to help maintain this code.
->=20
-> Cc: Dexuan Cui <decui@microsoft.com>
-> Cc: Jorgen Hansen <jhansen@vmware.com>
-> Cc: Stefan Hajnoczi <stefanha@redhat.com>
-> Suggested-by: Michael S. Tsirkin <mst@redhat.com>
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
->=20
-> Dexuan, Jorgen, Stefan, would you like to co-maintain or
-> be added as a reviewer?
->=20
-> Thanks,
-> Stefano
+On 06.09.21 20:53, Guenter Roeck wrote:
+> On 9/6/21 10:46 AM, David Hildenbrand wrote:
+>> On 06.09.21 19:33, Andrew Morton wrote:
+>>> (cc's added)
+>>>
+>>> On Sun, 05 Sep 2021 18:05:40 -0700 syzbot <syzbot+aa7a876b8108f1622bc3@syzkaller.appspotmail.com> wrote:
+>>>
+>>>> Hello,
+>>>>
+>>>> syzbot found the following issue on:
+>>>>
+>>>> HEAD commit:    49624efa65ac Merge tag 'denywrite-for-5.15' of git://githu..
+>>>> git tree:       upstream
+>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=12eff4b3300000
+>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=c598149362d97396
+>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=aa7a876b8108f1622bc3
+>>>> compiler:       aarch64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
+>>>> userspace arch: arm64
+>>>>
+>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>>
+>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>> Reported-by: syzbot+aa7a876b8108f1622bc3@syzkaller.appspotmail.com
+>>>>
+>>>> watchdog: BUG: soft lockup - CPU#0 stuck for 23s! [syz-executor.1:26449]
+>>>> Modules linked in:
+>>>> irq event stamp: 248
+>>>> hardirqs last  enabled at (247): [<ffff8000145ed108>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:81 [inline]
+>>>> hardirqs last  enabled at (247): [<ffff8000145ed108>] exit_to_kernel_mode+0x38/0x230 arch/arm64/kernel/entry-common.c:91
+>>>> hardirqs last disabled at (248): [<ffff8000145ed0c0>] enter_el1_irq_or_nmi+0x10/0x20 arch/arm64/kernel/entry-common.c:227
+>>>> softirqs last  enabled at (182): [<ffff800010010964>] _stext+0x964/0xff8
+>>>> softirqs last disabled at (41): [<ffff800010160f58>] do_softirq_own_stack include/asm-generic/softirq_stack.h:10 [inline]
+>>>> softirqs last disabled at (41): [<ffff800010160f58>] invoke_softirq kernel/softirq.c:439 [inline]
+>>>> softirqs last disabled at (41): [<ffff800010160f58>] __irq_exit_rcu+0x208/0x4f0 kernel/softirq.c:636
+>>>> CPU: 0 PID: 26449 Comm: syz-executor.1 Not tainted 5.14.0-syzkaller-09416-g49624efa65ac #0
+>>>> Hardware name: linux,dummy-virt (DT)
+>>>> pstate: 00000005 (nzcv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+>>>> pc : clear_page+0x14/0x28 arch/arm64/lib/clear_page.S:23
+>>>> lr : clear_highpage include/linux/highmem.h:181 [inline]
+>>>> lr : kernel_init_free_pages.part.0+0x6c/0x17c mm/page_alloc.c:1286
+>>>> sp : ffff800019be75e0
+>>>> x29: ffff800019be75e0 x28: 0000000000000000 x27: 0000000000000000
+>>>> x26: ffff000009d64940 x25: ffff6000013ac928 x24: 00000000000014c0
+>>>> x23: ffff000009d63480 x22: fffffc0000173340 x21: ffff800015794a78
+>>>> x20: dfff800000000000 x19: fffffc0000173300 x18: 0000000000000000
+>>>> x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000000
+>>>> x14: 1ffff0000337ce86 x13: 0000000000000013 x12: ffff7f800002e667
+>>>> x11: 1fffff800002e666 x10: ffff7f800002e666 x9 : 0000000000000000
+>>>> x8 : ffff600000b99a00 x7 : 0000000000000000 x6 : 000000000000003f
+>>>> x5 : 0000000000000040 x4 : 1ffff00003060d98 x3 : 1fffe000013ac691
+>>>> x2 : 0000000000000004 x1 : 0000000000000040 x0 : ffff000005ccc880
+>>>> Call trace:
+>>>>    clear_page+0x14/0x28 arch/arm64/lib/clear_page.S:21
+>>>>    kernel_init_free_pages mm/page_alloc.c:1283 [inline]
+>>>>    post_alloc_hook+0x1ac/0x25c mm/page_alloc.c:2426
+>>>>    prep_new_page mm/page_alloc.c:2436 [inline]
+>>>>    get_page_from_freelist+0x184c/0x2320 mm/page_alloc.c:4168
+>>>>    __alloc_pages+0x1a8/0x21d0 mm/page_alloc.c:5390
+>>>>    alloc_pages_vma+0xbc/0x530 mm/mempolicy.c:2252
+>>>>    alloc_zeroed_user_highpage_movable+0x9c/0xd0 arch/arm64/mm/fault.c:926
+>>>>    do_anonymous_page mm/memory.c:3767 [inline]
+>>>>    handle_pte_fault mm/memory.c:4556 [inline]
+>>>>    __handle_mm_fault+0xbc4/0x2210 mm/memory.c:4693
+>>>>    handle_mm_fault+0x1dc/0x4f0 mm/memory.c:4791
+>>>>    __do_page_fault arch/arm64/mm/fault.c:499 [inline]
+>>>>    do_page_fault+0x230/0x8c0 arch/arm64/mm/fault.c:599
+>>>>    do_translation_fault+0x1a4/0x210 arch/arm64/mm/fault.c:680
+>>>>    do_mem_abort+0x64/0x1c0 arch/arm64/mm/fault.c:813
+>>>>    el0_da+0x7c/0x2b0 arch/arm64/kernel/entry-common.c:481
+>>>>    el0t_64_sync_handler+0x168/0x1b0 arch/arm64/kernel/entry-common.c:616
+>>>>    el0t_64_sync+0x1a0/0x1a4 arch/arm64/kernel/entry.S:572
+>>
+>> At first sight, looks unrelated. Being stuck in clear_page() is weird; we're running inside a VM ("dummy-virt"), whereby such stuck tasks in the guests are sometimes the result of the hypervisor being stuck (e.g., heavily overcommitted).
+>>
+> Unrelated to your series, yes, because it was first reported after commit ebf435d3b51b
+> ("Merge tag 'staging-5.15-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging")
+> which predates your series.
+> 
+>> If we don't get a reproducer, that's most probably the root cause. Let's see.
+>>
+> 
+> That seems unlikely. The problem was seen 8 times by now, starting September 2.
 
-Please skip me (I still review the hv_sock related patches).
+.. always in a similar setup? (even the same hypervisor involved ?)
 
+I've seen these exact symptoms
+
+a) when the hypervisor was heavily overcommitting
+b) the hypervisor was using uffd (e.g., for psotcopy live migration) and 
+not properly resolving faults in user space for the VM process
+
+It would happen when the VM would first access some yet unpopulated page 
+in the hypervisor.
+
+But obviously, could be something else, especially once we spot it on 
+real HW. But it smells like the VM is slow.
+
+
+I can spot: 
+https://groups.google.com/g/syzkaller-bugs/c/l6RsKu3FhT0/m/7we3AMNxAAAJ
+
+"This is also due to arm64 removal of CMDLINE support.
+syzbot sets watchdog_thresh=165, but this fired after 22s. "
+
+and there, it was also "dummy-virt" ... so maybe really a 
+slow/overloaded hypervisor.
+
+-- 
 Thanks,
--- Dexuan
+
+David / dhildenb
+
