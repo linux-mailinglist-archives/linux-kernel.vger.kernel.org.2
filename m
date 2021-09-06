@@ -2,157 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B1B40215B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 00:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F2940215D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 00:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231534AbhIFW61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 18:58:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
+        id S231745AbhIFW6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 18:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbhIFW6X (ORCPT
+        with ESMTP id S231693AbhIFW6d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 18:58:23 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A34C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 15:57:17 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id z2so15834902lft.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 15:57:17 -0700 (PDT)
+        Mon, 6 Sep 2021 18:58:33 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35061C0613C1
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 15:57:28 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id k5-20020a05600c1c8500b002f76c42214bso424650wms.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 15:57:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=srhXsa7k4z9B9dewP7CJCYsVdqMPxXC7d+eygyid4e8=;
-        b=J+09wqF8jOGAMMBs89W04LMSnaLIETskzEdq4xIie+Kz+/M9D6Jpqweo8uCauxLlmL
-         8PclP85hVU8K8UCFQCDQWgFkMhDH4W1c+JV7clvuum17YU5mT8PPwyAZ/0KdPhwU2bwi
-         1MabchyM63ljP49yZXtDHcKIjXvIxlNxkCCe+EBee6w64L8FDa3kZ04p5Cs3CS7uSgdJ
-         UjlYuHw/koXKlTgAbBcQzu8mWKLC/ylPW8QDeeZzzKwF135Fq2zrtG/7lujCdTDq75E2
-         Q5wqkMFViYLSd6Bbv+CS1qKab0UtsQFA6Uqo4DuhjrQa55K2YI2jyIZCyzZoJ22+KUKJ
-         lwVw==
+        bh=boZeJdNNFnOsVbWVnCJCTbH8B7u4Rp1yojauy9zSZ2Y=;
+        b=mFcoi+u7nGopcLVoIZvQQfYSbDVIER36TYGAhEmouUIcf3HTfcr95USrSEMuyRMG0u
+         XWsDvX6iUNDG/JioA9itdOY4h4Cibbvoaohj/R8d99xJS1ftHunZie30pQs7wrzI6WFx
+         Atpxwsb67/5Cc5UVJi13Zw29JDRMoIpUBiJqnmg4HDHlgSLCURB2egA04anod9NrYZS2
+         EDI5MAhQ5YBxjiOMMsy/JgHzZZqdPYiZkrG6U+IJKSwBw0JGQuf5xPSs1T3j8RczIjAy
+         /HUWLZzrZwcxltnH/zucmhR+a7rE9qxTSdFvIePj+BPGzw8kopl+lKcKDXClCgamd99D
+         MYtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=srhXsa7k4z9B9dewP7CJCYsVdqMPxXC7d+eygyid4e8=;
-        b=gJCe5rphY7Knedv8JbgKMjlvaRll9PwzLdtpL0nSgkXnEzlg4SAOvoCszdymLNNFyh
-         v9zy6GUh7oqyIlyvlUCWEzG757cZqtAJD/yQzM9R+pPkvwPyi1LoX8xhIadVI/xyVFJK
-         KbK/7I4KTgntd7PFgbT7cJY8IaEIiPAgK5NShB/N8ZirjjxK0u9o3oP6JWiMhD/MqXZm
-         38dK2NLHopQJWRNlobKQwp4OHnlQMb/Zn45vtJvaOZHKtihEZ5meEqCaqKeLRl9isMlU
-         tfBUm996BIpvQr+VqWpTdgJjZNin8u2qfmbycU2ezZcdjSNPaMS+NDinoCEUWk1Z++hx
-         FesQ==
-X-Gm-Message-State: AOAM533sOkGjskdRumEwTpDMUoF5ZYlpg+vpPLVa6UX6aZiXMNX/dW3a
-        y7lszOx9f806ffTdatb0a7kP7COMjao=
-X-Google-Smtp-Source: ABdhPJx59RTf/i9N7xLp/SDkzmYOTfDZaSGE+PQHbqtgxfpKU6wP1NcVzjcH3Af+0V+fB63Jcjqe6A==
-X-Received: by 2002:a05:6512:3fa3:: with SMTP id x35mr10827686lfa.536.1630969035883;
-        Mon, 06 Sep 2021 15:57:15 -0700 (PDT)
-Received: from kari-VirtualBox ([31.132.12.44])
-        by smtp.gmail.com with ESMTPSA id g22sm839308lfb.96.2021.09.06.15.57.14
+        bh=boZeJdNNFnOsVbWVnCJCTbH8B7u4Rp1yojauy9zSZ2Y=;
+        b=O7AmyCHxXyAc9Fs0GOilFusAmpknomBBYeelaFEgKXx47gXOpS79sY0/B8AlEZSmDF
+         oybls/Npa6KPdlq2QoQ0vNH9VxEc+rWi9ETgJZlkDK4+vStp3IPHBIyOStDMS2ZS2IZi
+         N9M/OArZ8Sh2F2ofa1nvig63LC9dPC5Z/qMex4tvE9S35awNO/O/V4B6G8l9Zo5FUIvF
+         kTBZTNy4yIJdC5svmLiwA82S5Y4OtzWNyD8Dsi97k9/nsexJ3sNAzzD9ebrEDhjzlecE
+         GTQsRoMjzrGNJDvUd48FXOV0dFnFRY4pAhXjAkYpdBxWZ/3VrGnSib4wlziK1Ebin+Bl
+         asMQ==
+X-Gm-Message-State: AOAM533sjOsBxDZ3lILQK57lq/sbVSqMUmyymchpGInYBGU14AldMQ5Y
+        zNAXgq2xImsuGpI1dO1QKVdSNw==
+X-Google-Smtp-Source: ABdhPJyKQjRtAsrF/B7O4VPB+y52YYdm4z2NiPz3wWkXPM1qNkixHYmFrmj2s/omQobTHvACKHspmw==
+X-Received: by 2002:a1c:cc03:: with SMTP id h3mr1076386wmb.73.1630969046695;
+        Mon, 06 Sep 2021 15:57:26 -0700 (PDT)
+Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id i5sm9012434wrc.86.2021.09.06.15.57.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 15:57:15 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 01:57:13 +0300
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        phil@philpotter.co.uk, martin@kaiser.cx, fmdefrancesco@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/40] staging: r8188eu: remove function pointers from
- struct hal_ops
-Message-ID: <20210906225713.zbkm6tzghjsv3s2t@kari-VirtualBox>
-References: <20210906190223.11396-1-straube.linux@gmail.com>
+        Mon, 06 Sep 2021 15:57:26 -0700 (PDT)
+Date:   Mon, 6 Sep 2021 23:57:24 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Lukas Prediger <lumip@lumip.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org
+Subject: Re: [PATCH v2] drivers/cdrom: improved ioctl for media change
+ detection
+Message-ID: <YTac1M6+pdwZ532J@equinox>
+References: <20210829143735.512146-1-lumip@lumip.de>
+ <65bf6d1a-f65d-910c-60c7-0a4911a52e9a@kernel.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210906190223.11396-1-straube.linux@gmail.com>
+In-Reply-To: <65bf6d1a-f65d-910c-60c7-0a4911a52e9a@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 09:01:43PM +0200, Michael Straube wrote:
-> In order to get rid of the HAL layer this series removes the next
-> bunch of function pointers from struct hal_ops.
+On Mon, Sep 06, 2021 at 02:11:31PM -0600, Jens Axboe wrote:
+> On 8/29/21 8:37 AM, Lukas Prediger wrote:
+> > The current implementation of the CDROM_MEDIA_CHANGED ioctl relies on
+> > global state, meaning that only one process can detect a disc change
+> > while the ioctl call will return 0 for other calling processes afterwards
+> > (see bug 213267 ).
+> > 
+> > This introduces a new cdrom ioctl, CDROM_TIMED_MEDIA_CHANGE, that
+> > works by maintaining a timestamp of the last detected disc change instead
+> > of a boolean flag: Processes calling this ioctl command can provide
+> > a timestamp of the last disc change known to them and receive
+> > an indication whether the disc was changed since then and the updated
+> > timestamp.
+> > 
+> > I considered fixing the buggy behavior in the original
+> > CDROM_MEDIA_CHANGED ioctl but that would require maintaining state
+> > for each calling process in the kernel, which seems like a worse
+> > solution than introducing this new ioctl.
 > 
-> Also it removes some empty functions and cleans up some minor style
-> issues I stumbled upon.
+> This looks pretty good to me now. Adding Phillip to the CC, he's the new
+> CDROM maintainer. Leaving the rest of the message below intact because
+> of that.
 > 
-> Tested on x86_64 with Inter-Tech DMG-02.
-> 
-> 
-> v1 -> v2
-> Fixed typos in commit messages.
-> 
-> v2 -> v3
-> Added this missing patchset version changelog.
+> >
+...
+> >
 
-Can you please hold on litle bit longer before you send next patch
-series. This will make quite bit traffic on the lists and it does
-not add value. Wait for bit for reviewers and after that make new
-series. You can even post below yours own messages if you found some
-mistake and point out that you will change it when you send next
-series. Good hold on time would be 3-7 days with series this big imo.
+Dear Lukas,
 
-> 
-> Michael Straube (40):
->   staging: r8188eu: remove InitSwLeds from hal_ops
->   staging: r8188eu: remove DeInitSwLeds from hal_ops
->   staging: r8188eu: remove dm_init from hal_ops
->   staging: r8188eu: remove dm_deinit from hal_ops
->   staging: r8188eu: remove SetHalODMVarHandler from hal_ops
->   staging: r8188eu: remove empty functions
->   staging: r8188eu: remove unused function rtw_interface_ps_func()
->   staging: r8188eu: remove interface_ps_func from hal_ops
->   staging: r8188eu: remove hal_dm_watchdog from hal_ops
->   staging: r8188eu: remove set_bwmode_handler from hal_ops
->   staging: r8188eu: remove set_channel_handler from hal_ops
->   staging: r8188eu: remove unused enum hal_intf_ps_func
->   staging: r8188eu: remove Add_RateATid from hal_ops
->   staging: r8188eu: remove hal_power_on from hal_ops
->   staging: r8188eu: remove sreset_init_value from hal_ops
->   staging: r8188eu: remove sreset_reset_value from hal_ops
->   staging: r8188eu: remove silentreset from hal_ops
->   staging: r8188eu: remove sreset_xmit_status_check from hal_ops
->   staging: r8188eu: remove sreset_linked_status_check from hal_ops
->   staging: r8188eu: remove sreset_get_wifi_status from hal_ops
->   staging: r8188eu: remove EfusePowerSwitch from hal_ops
->   staging: r8188eu: rename hal_EfusePowerSwitch_RTL8188E()
->   staging: r8188eu: remove wrapper Efuse_PowerSwitch()
->   staging: r8188eu: remove ReadEFuse from hal_ops
->   staging: r8188eu: remove EFUSEGetEfuseDefinition from hal_ops
->   staging: r8188eu: remove EfuseGetCurrentSize from hal_ops
->   staging: r8188eu: remove empty comments
->   staging: r8188eu: remove Efuse_PgPacketRead from hal_ops
->   staging: r8188eu: remove Efuse_PgPacketWrite from hal_ops
->   staging: r8188eu: remove Efuse_WordEnableDataWrite from hal_ops
->   staging: r8188eu: remove useless assignment
->   staging: r8188eu: remove AntDivBeforeLinkHandler from hal_ops
->   staging: r8188eu: remove AntDivCompareHandler from hal_ops
->   staging: r8188eu: remove empty function rtl8188e_start_thread()
->   staging: r8188eu: remove empty function rtl8188e_stop_thread()
->   staging: r8188eu: remove hal_notch_filter from hal_ops
->   staging: r8188eu: remove free_hal_data from hal_ops
->   staging: r8188eu: remove unused function rtl8188e_clone_haldata()
->   staging: r8188eu: remove SetBeaconRelatedRegistersHandler from hal_ops
->   staging: r8188eu: remove UpdateHalRAMask8188EUsb from hal_ops
-> 
->  drivers/staging/r8188eu/core/rtw_ap.c         |   9 +-
->  drivers/staging/r8188eu/core/rtw_cmd.c        |   6 +-
->  drivers/staging/r8188eu/core/rtw_efuse.c      | 182 ++++--------------
->  drivers/staging/r8188eu/core/rtw_mlme.c       |   7 +-
->  drivers/staging/r8188eu/core/rtw_mlme_ext.c   |   5 +-
->  drivers/staging/r8188eu/core/rtw_mp_ioctl.c   |  18 +-
->  drivers/staging/r8188eu/core/rtw_p2p.c        |   4 +-
->  drivers/staging/r8188eu/core/rtw_pwrctrl.c    |   8 -
->  drivers/staging/r8188eu/core/rtw_sta_mgt.c    |   2 +-
->  drivers/staging/r8188eu/core/rtw_wlan_util.c  |   8 +-
->  drivers/staging/r8188eu/hal/hal_intf.c        | 170 +---------------
->  .../staging/r8188eu/hal/rtl8188e_hal_init.c   | 123 +++---------
->  drivers/staging/r8188eu/hal/usb_halinit.c     |  36 +---
->  drivers/staging/r8188eu/include/hal_intf.h    | 123 ++----------
->  .../staging/r8188eu/include/rtl8188e_hal.h    |   5 -
->  drivers/staging/r8188eu/include/rtw_efuse.h   |   9 -
->  drivers/staging/r8188eu/include/rtw_pwrctrl.h |   2 -
->  drivers/staging/r8188eu/os_dep/ioctl_linux.c  |  31 +--
->  drivers/staging/r8188eu/os_dep/os_intfs.c     |  21 +-
->  19 files changed, 142 insertions(+), 627 deletions(-)
-> 
-> -- 
-> 2.33.0
-> 
+Thank you for the patch, much appreciated and looks great. One very
+minor thing though has jumped out at me after running checkpatch though:
+
+> > --- a/include/uapi/linux/cdrom.h
+> > +++ b/include/uapi/linux/cdrom.h
+> > @@ -147,6 +147,8 @@
+> >  #define CDROM_NEXT_WRITABLE  0x5394  /* get next writable block */
+> >  #define CDROM_LAST_WRITTEN   0x5395  /* get last block written on disc */
+> >
+> > +#define CDROM_TIMED_MEDIA_CHANGE   0x5396  /* get the timestamp of the last media change */
+> > +
+> >  /*******************************************************
+> >   * CDROM IOCTL structures
+> >   *******************************************************/
+> > @@ -295,6 +297,19 @@ struct cdrom_generic_command
+> >       };
+> >  };
+> >
+> > +/* This struct is used by CDROM_TIMED_MEDIA_CHANGE */
+> > +struct cdrom_timed_media_change_info
+> > +{
+
+This opening brace should be on the same line as the struct definition
+as per current style rules.
+
+I also got a checkpatch warning about ENOSYS being used as an error
+value, but I can see this usage is standard in the driver and not a
+problem so no issue with that.
+
+I will review and test properly after work tomorrow (being new to the
+role I'd like to make sure I'm taking the proper time), but I have no
+doubt it will work fine. Assuming it does I will be happy to accept the
+patch with the above brace change. Thanks again.
+
+> > +	__s64	last_media_change;	/* Timestamp of the last detected media
+> > +					 * change in ms. May be set by caller, updated
+> > +					 * upon successful return of ioctl.
+> > +					 */
+> > +	__u64	has_changed;		/* Set to 1 by ioctl if last detected media
+> > +					 * change was more recent than
+> > +					 * last_media_change set by caller.
+> > +					 */
+> > +};
+> > +
+> >  /*
+> >   * A CD-ROM physical sector size is 2048, 2052, 2056, 2324, 2332, 2336, 
+> >   * 2340, or 2352 bytes long.  
+> > 
+
+Regards,
+Phil
