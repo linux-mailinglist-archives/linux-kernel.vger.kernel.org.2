@@ -2,72 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77B7C401931
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CDC3401933
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241370AbhIFJtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 05:49:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237787AbhIFJtu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 05:49:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F51D60E76;
-        Mon,  6 Sep 2021 09:48:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630921725;
-        bh=GTm4LMyrJO46jZPaunW0iPmpuOeJCENNG+sx2uRU49Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NrvDF2ekfcbcC9a/TU3cntSt0gmZ03oxna0cIgbwgjZlloPIpY5oDNVrmTjmk1YAd
-         RJLdu67Z90D2G0JsVKtGGEKSpuASIUQbTVoh6xdQlrCqiMijmTOqoUpg/u1C+9DiEV
-         vWnDjb4ss+LyDkjQJgFS1K0EpJvf/d3Q4/gViVDA=
-Date:   Mon, 6 Sep 2021 11:48:43 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Saurav Girepunje <saurav.girepunje@gmail.com>
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk,
-        linux-kernel@vger.kernel.org, saurav.girepunje@hotmail.com
-Subject: Re: [PATCH] staging: r8188eu: include: remove duplicate declaration.
-Message-ID: <YTXj+6QU10tYmec7@kroah.com>
-References: <YTRuXTu/kePBDwAF@user>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTRuXTu/kePBDwAF@user>
+        id S241454AbhIFJuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 05:50:11 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:34308 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241413AbhIFJuC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 05:50:02 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R931e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UnOy8TL_1630921725;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UnOy8TL_1630921725)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 06 Sep 2021 17:48:56 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     mike.marciniszyn@cornelisnetworks.com
+Cc:     dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        chongjiapeng <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] IB/hfi1: make hist static
+Date:   Mon,  6 Sep 2021 17:48:43 +0800
+Message-Id: <1630921723-21545-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 05, 2021 at 12:44:37PM +0530, Saurav Girepunje wrote:
-> Remove below duplicate declaration from rtl8188e_led.h file
-> 
-> void SwLedOn(struct adapter *padapter, struct LED_871x *pLed);
-> void SwLedOff(struct adapter *padapter, struct LED_871x *pLed);
-> 
-> Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
-> ---
->  drivers/staging/r8188eu/include/rtl8188e_led.h | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/include/rtl8188e_led.h b/drivers/staging/r8188eu/include/rtl8188e_led.h
-> index b00954198764..02cdc970bb17 100644
-> --- a/drivers/staging/r8188eu/include/rtl8188e_led.h
-> +++ b/drivers/staging/r8188eu/include/rtl8188e_led.h
-> @@ -12,7 +12,5 @@
->  /*  */
->  void rtl8188eu_InitSwLeds(struct adapter *padapter);
->  void rtl8188eu_DeInitSwLeds(struct adapter *padapter);
-> -void SwLedOn(struct adapter *padapter, struct LED_871x *pLed);
-> -void SwLedOff(struct adapter *padapter, struct LED_871x *pLed);
-> 
->  #endif
-> --
-> 2.32.0
-> 
+From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
 
-This email did not make it to lore.kernel.org again:
-	https://lore.kernel.org/r/YTRuXTu/kePBDwAF@user
+This symbol is not used outside of trace.c, so marks it static.
 
-Any ideas what is happening?
+Fix the following sparse warning:
 
-thanks,
+drivers/infiniband/hw/hfi1/trace.c:491:23: warning: symbol 'hist' was
+not declared. Should it be static?
 
-greg k-h
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/infiniband/hw/hfi1/trace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/trace.c b/drivers/infiniband/hw/hfi1/trace.c
+index d9b5bbb..8302469 100644
+--- a/drivers/infiniband/hw/hfi1/trace.c
++++ b/drivers/infiniband/hw/hfi1/trace.c
+@@ -488,7 +488,7 @@ struct hfi1_ctxt_hist {
+ 	atomic_t data[255];
+ };
+ 
+-struct hfi1_ctxt_hist hist = {
++static struct hfi1_ctxt_hist hist = {
+ 	.count = ATOMIC_INIT(0)
+ };
+ 
+-- 
+1.8.3.1
+
