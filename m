@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D194402031
+	by mail.lfdr.de (Postfix) with ESMTP id D1976402032
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 21:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343771AbhIFTFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 15:05:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38482 "EHLO
+        id S1344567AbhIFTFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 15:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243572AbhIFTEH (ORCPT
+        with ESMTP id S245215AbhIFTEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 6 Sep 2021 15:04:07 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A39C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 12:03:01 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id mf2so15086611ejb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 12:03:01 -0700 (PDT)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C1FDC0613C1
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 12:03:02 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id eb14so10614823edb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 12:03:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=I71lkep6zOcslL4BykWHkhODqaJTjlyYljZt7QjV/g0=;
-        b=N94F0YREbGRcpMj2XFkMp8wetZYYmLkfLk3WNG6u2eKeKZ73yVGuWqHbGlLu+EuFus
-         uc0QAjAqBOFeOhJIyfPUuIrzmoyyxw5eAS0odzUaVsRmAk01BMdY92jH7btSvlyOYlku
-         1RQ0HX+Ny4D2I6XfC2+3ndbLHlNNKj7UgHnKg+6sgrb2FzzNjtN/sFxIeGomy4bDCE80
-         nFDSJLmKDduIeLjm9t48ZJMKqA/QjlOmAaQQSmweAxhVJISVOaw1nKwjXOei4ka4VZTs
-         l3si4C3JQJ3wIQdWAv5bNYZh2S/5v5fdyIxLlXR9e549F0r/dmDy0PKx8uyJQgAXSiwv
-         xehQ==
+        bh=0JLjw1LG1EqFWNQ8nBF3vVHD63NcJfn88butHEvinAA=;
+        b=T1griKZtt9nUYthUy8YwEod8iMiugibDhE31UGT8TQYAqSOW8VZCJVdvyt24xuUeH5
+         fV5oI7G/L8c+ltvw3Oyc0SGuj3DFH1daLv3Vgl+kYO9jyhq9ty56YfI54iyNzEX3+fqM
+         me+Z9T4nFHF+Q7ljzSxQcn9nFNhQ73SqMaVD7OHknTFGvAv9/jie26L/cjAJzgP9N7hc
+         +bFlqh18hu8IGRTuj64lhnO+PYnqSHPN1IlhK0JWomtmoy5n7hZQnnH985G1UvD6G9nX
+         ZrbXDXJ6MuN7uQGRno20gE9JORFdggnKVI3Ev+T8ChyTQcTd100sXd5p/zuEn/Ei2wGT
+         THIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=I71lkep6zOcslL4BykWHkhODqaJTjlyYljZt7QjV/g0=;
-        b=JFWMfGo/jK0cbMqrynhK2CFlPysc8hOe9uyDitGSc8ExzvNbzZUnuxyp8zKTIJELgb
-         fKo9B+86D+UEdtdAYnIvgBx/BrZS1hLGk31yb/3bn3YBnwfDZFgutB881DVe+Z4ygvvE
-         6cohQG1sG4V3H+BOSsWHuidruaS995Kkj+KzmJQtxMDScGGt3w7uZLcsSnJBS4SR/Zf+
-         450ijwEbv3k985n1UebEX6IQQF2S7/lE1I8ZmxgztBXAdhT3saHOLzMsNcjGFORO/PxS
-         yM9J+UpHk1ifVwQanP+3HwO/2BgzCW/ujvB2+ic7qunTav7HYvFNTG9iLNF1kCuHOOaV
-         ZL/g==
-X-Gm-Message-State: AOAM531Aejyh4DvhPfuJ0awIBxSy3pBN51N26BoCouPV9LQm+lu6dIa1
-        2E99/MbcybWmBFvvmn3S564=
-X-Google-Smtp-Source: ABdhPJzHfs9487pxNA/LtWUGTju6F5PUluAQUKeyJ8juibCqYZFFXWvyTf29eieMouaW2aR4rNUTEA==
-X-Received: by 2002:a17:907:7f93:: with SMTP id qk19mr14371694ejc.433.1630954980057;
-        Mon, 06 Sep 2021 12:03:00 -0700 (PDT)
+        bh=0JLjw1LG1EqFWNQ8nBF3vVHD63NcJfn88butHEvinAA=;
+        b=E7dIeXfP8CAXSnkOVklUxCcGRCTI0CizoBZnksc43JlCzT9iB7cIi5yZsXGdlaCGHL
+         VHt6bpreEvBKdJcYhEl0h3RCh3SVwJW7NCSjSUZ1IFCz3UBukucZcmhc3AlopQS3848P
+         xKAYCWSvun37xkZnzQ0Kx1vjhxUT5wttDRhoQ3g7I3Sug4jyioQYjroHd1iWS7y17kJN
+         ofVmk3PMyxZS7bAiuRFiRi9lo2FrcCrIn/lpqFS34uh3krt8+N15bfus3qzO5rJYwM0Z
+         I3cDG7CajeKjZc8s93S514K8c9bAQLBQe7A3nEzGC3lbKtUnfiIc0U37LwUaP0q39d9s
+         Y2xw==
+X-Gm-Message-State: AOAM532cGb2uAxc7UwNzEZJihuAWnw+PokjUknmQxBkfjSdu3q7TOvvT
+        uDBR3Pxh2b8DuLS/NHBECes=
+X-Google-Smtp-Source: ABdhPJzbGrH5V3a9AIvgqkeCHmbUpJvTRyr94GzfBWzK1IuxAv329DVgVJHjHPhLxRqQ+yNn76U1fA==
+X-Received: by 2002:a05:6402:3090:: with SMTP id de16mr14920253edb.7.1630954981052;
+        Mon, 06 Sep 2021 12:03:01 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::8fe1])
-        by smtp.gmail.com with ESMTPSA id k15sm4372018ejb.92.2021.09.06.12.02.59
+        by smtp.gmail.com with ESMTPSA id k15sm4372018ejb.92.2021.09.06.12.03.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 12:02:59 -0700 (PDT)
+        Mon, 06 Sep 2021 12:03:00 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH v3 20/40] staging: r8188eu: remove sreset_get_wifi_status from hal_ops
-Date:   Mon,  6 Sep 2021 21:02:03 +0200
-Message-Id: <20210906190223.11396-21-straube.linux@gmail.com>
+Subject: [PATCH v3 21/40] staging: r8188eu: remove EfusePowerSwitch from hal_ops
+Date:   Mon,  6 Sep 2021 21:02:04 +0200
+Message-Id: <20210906190223.11396-22-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210906190223.11396-1-straube.linux@gmail.com>
 References: <20210906190223.11396-1-straube.linux@gmail.com>
@@ -66,86 +66,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove sreset_get_wifi_status from hal_ops and remove its wrapper
-rtw_hal_sreset_get_wifi_status(). Call sreset_get_wifi_status()
-directly instead.
+Remove EfusePowerSwitch from hal_ops and call
+rtl8188e_EfusePowerSwitch() directly instead.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/hal/hal_intf.c          | 9 ---------
- drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 2 --
- drivers/staging/r8188eu/include/hal_intf.h      | 4 ----
- drivers/staging/r8188eu/os_dep/ioctl_linux.c    | 2 +-
- 4 files changed, 1 insertion(+), 16 deletions(-)
+ drivers/staging/r8188eu/core/rtw_efuse.c        | 2 +-
+ drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 7 +------
+ drivers/staging/r8188eu/include/hal_intf.h      | 4 ++--
+ 3 files changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/staging/r8188eu/hal/hal_intf.c b/drivers/staging/r8188eu/hal/hal_intf.c
-index 1840c4046859..27adaea61f84 100644
---- a/drivers/staging/r8188eu/hal/hal_intf.c
-+++ b/drivers/staging/r8188eu/hal/hal_intf.c
-@@ -221,15 +221,6 @@ void rtw_hal_antdiv_rssi_compared(struct adapter *adapt,
- 		adapt->HalFunc.AntDivCompareHandler(adapt, dst, src);
+diff --git a/drivers/staging/r8188eu/core/rtw_efuse.c b/drivers/staging/r8188eu/core/rtw_efuse.c
+index e1a9c031435b..8388ec60d21d 100644
+--- a/drivers/staging/r8188eu/core/rtw_efuse.c
++++ b/drivers/staging/r8188eu/core/rtw_efuse.c
+@@ -82,7 +82,7 @@ Efuse_PowerSwitch(
+ 		u8 write,
+ 		u8 PwrState)
+ {
+-	pAdapter->HalFunc.EfusePowerSwitch(pAdapter, write, PwrState);
++	rtl8188e_EfusePowerSwitch(pAdapter, write, PwrState);
  }
  
--u8   rtw_hal_sreset_get_wifi_status(struct adapter *adapt)
--{
--	u8 status = 0;
--
--	if (adapt->HalFunc.sreset_get_wifi_status)
--		status = adapt->HalFunc.sreset_get_wifi_status(adapt);
--	return status;
--}
--
- int rtw_hal_iol_cmd(struct adapter  *adapter, struct xmit_frame *xmit_frame,
- 		    u32 max_wating_ms, u32 bndy_cnt)
- {
+ /*-----------------------------------------------------------------------------
 diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-index 0ee7da10633a..04c382e698f9 100644
+index 04c382e698f9..c7edb9ba4085 100644
 --- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
 +++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-@@ -1803,8 +1803,6 @@ void rtl8188e_set_hal_ops(struct hal_ops *pHalFunc)
- 	pHalFunc->Efuse_PgPacketWrite = &rtl8188e_Efuse_PgPacketWrite;
- 	pHalFunc->Efuse_WordEnableDataWrite = &rtl8188e_Efuse_WordEnableDataWrite;
+@@ -757,11 +757,7 @@ hal_EfusePowerSwitch_RTL8188E(
+ 	}
+ }
  
--	pHalFunc->sreset_get_wifi_status  = &sreset_get_wifi_status;
--
- 	pHalFunc->IOL_exec_cmds_sync = &rtl8188e_IOL_exec_cmds_sync;
+-static void
+-rtl8188e_EfusePowerSwitch(
+-		struct adapter *pAdapter,
+-		u8 bWrite,
+-		u8 PwrState)
++void rtl8188e_EfusePowerSwitch(struct adapter *pAdapter, u8 bWrite, u8 PwrState)
+ {
+ 	hal_EfusePowerSwitch_RTL8188E(pAdapter, bWrite, PwrState);
+ }
+@@ -1795,7 +1791,6 @@ void rtl8188e_set_hal_ops(struct hal_ops *pHalFunc)
+ 	pHalFunc->write_rfreg = &rtl8188e_PHY_SetRFReg;
  
- 	pHalFunc->hal_notch_filter = &hal_notch_filter_8188e;
+ 	/*  Efuse related function */
+-	pHalFunc->EfusePowerSwitch = &rtl8188e_EfusePowerSwitch;
+ 	pHalFunc->ReadEFuse = &rtl8188e_ReadEFuse;
+ 	pHalFunc->EFUSEGetEfuseDefinition = &rtl8188e_EFUSE_GetEfuseDefinition;
+ 	pHalFunc->EfuseGetCurrentSize = &rtl8188e_EfuseGetCurrentSize;
 diff --git a/drivers/staging/r8188eu/include/hal_intf.h b/drivers/staging/r8188eu/include/hal_intf.h
-index baa08d9346f9..f85385cc9288 100644
+index f85385cc9288..86456bac3a5a 100644
 --- a/drivers/staging/r8188eu/include/hal_intf.h
 +++ b/drivers/staging/r8188eu/include/hal_intf.h
-@@ -193,8 +193,6 @@ struct hal_ops {
- 					     u16 efuse_addr, u8 word_en,
- 					     u8 *data, bool bPseudoTest);
+@@ -177,8 +177,6 @@ struct hal_ops {
+ 			       enum rf_radio_path eRFPath, u32 RegAddr,
+ 			       u32 BitMask, u32 Data);
  
--	u8 (*sreset_get_wifi_status)(struct adapter *padapter);
--
- 	int (*IOL_exec_cmds_sync)(struct adapter *padapter,
- 				  struct xmit_frame *frame, u32 max_wait,
- 				  u32 bndy_cnt);
-@@ -269,8 +267,6 @@ void	rtw_hal_antdiv_rssi_compared(struct adapter *padapter,
- 				     struct wlan_bssid_ex *dst,
- 				     struct wlan_bssid_ex *src);
+-	void (*EfusePowerSwitch)(struct adapter *padapter, u8 bWrite,
+-				 u8 PwrState);
+ 	void (*ReadEFuse)(struct adapter *padapter, u8 efuseType, u16 _offset,
+ 			  u16 _size_byte, u8 *pbuf, bool bPseudoTest);
+ 	void (*EFUSEGetEfuseDefinition)(struct adapter *padapter, u8 efuseType,
+@@ -221,6 +219,8 @@ void rtl8188e_SetHalODMVar(struct adapter *Adapter,
+ 			   enum hal_odm_variable eVariable, void *pValue1, bool bSet);
+ u32 rtl8188eu_InitPowerOn(struct adapter *adapt);
  
--u8   rtw_hal_sreset_get_wifi_status(struct adapter *padapter);
--
- int rtw_hal_iol_cmd(struct adapter  *adapter, struct xmit_frame *xmit_frame,
- 		    u32 max_wating_ms, u32 bndy_cnt);
- 
-diff --git a/drivers/staging/r8188eu/os_dep/ioctl_linux.c b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-index 803caf94da4c..19354eb41031 100644
---- a/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-+++ b/drivers/staging/r8188eu/os_dep/ioctl_linux.c
-@@ -2305,7 +2305,7 @@ static void rtw_dbg_mode_hdl(struct adapter *padapter, u32 id, u8 *pdata, u32 le
- 		rtw_hal_set_hwreg(padapter, HW_VAR_TRIGGER_GPIO_0, NULL);
- 		break;
- 	case GEN_MP_IOCTL_SUBCODE(GET_WIFI_STATUS):
--		*pdata = rtw_hal_sreset_get_wifi_status(padapter);
-+		*pdata = sreset_get_wifi_status(padapter);
- 		break;
- 	default:
- 		break;
++void rtl8188e_EfusePowerSwitch(struct adapter *pAdapter, u8 bWrite, u8 PwrState);
++
+ void	rtw_hal_free_data(struct adapter *padapter);
+ uint rtw_hal_init(struct adapter *padapter);
+ uint rtw_hal_deinit(struct adapter *padapter);
 -- 
 2.33.0
 
