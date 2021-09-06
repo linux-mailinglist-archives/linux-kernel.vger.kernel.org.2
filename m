@@ -2,171 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A6F401679
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 08:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FDB401680
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 08:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239626AbhIFGii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 02:38:38 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:55061 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239356AbhIFGig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 02:38:36 -0400
-Received: from [192.168.0.4] (ip5f5ae911.dynamic.kabel-deutschland.de [95.90.233.17])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id C480A61E64784;
-        Mon,  6 Sep 2021 08:37:29 +0200 (CEST)
-Subject: Re: [Intel-wired-lan] [PATCH v2] ixgbe: Fix NULL pointer dereference
- in ixgbe_xdp_setup
-To:     Feng Zhou <zhoufeng.zf@bytedance.com>
-Cc:     duanxiongchun@bytedance.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhengqi.arch@bytedance.com,
-        chenying.kernel@bytedance.com, intel-wired-lan@lists.osuosl.org,
-        songmuchun@bytedance.com, bpf@vger.kernel.org,
-        wangdongdong.6@bytedance.com, zhouchengming@bytedance.com,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        jeffrey.t.kirsher@intel.com, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com
-References: <20210903064013.9842-1-zhoufeng.zf@bytedance.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <2ee172ab-836c-d464-be59-935030d01f4b@molgen.mpg.de>
-Date:   Mon, 6 Sep 2021 08:37:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S239665AbhIFGkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 02:40:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26711 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239633AbhIFGkM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 02:40:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630910345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pFZpAGoXWqtD1eNY9zjgxvjbpkWIm9fS1Q1YaYaJFgM=;
+        b=OBZ1bQilztxl4te6PG57UvNVqo6kIW1jESOeTAr3soI9DA5bjMl7K54uPJ1ANHaF0Q4AN2
+        ePo8CZvny2AhHhlB5I0t/BS4GGYx9xlFU43dzJrVWEdaUAr7fD3eTC2QBciMkNrK3yl4yP
+        vXPrkFT1VrEzLq3qSsJ2el/OrVm4xyk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-27-MKRDUdjtOq29q9OjldWf_w-1; Mon, 06 Sep 2021 02:39:03 -0400
+X-MC-Unique: MKRDUdjtOq29q9OjldWf_w-1
+Received: by mail-ed1-f70.google.com with SMTP id a23-20020aa7cf17000000b003caffcef4beso3189141edy.5
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 23:39:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pFZpAGoXWqtD1eNY9zjgxvjbpkWIm9fS1Q1YaYaJFgM=;
+        b=UUHWy6NJjy+4b8JLPL9BEYH8UR7rEVIBvqbjT16ZBVwd6gcc8SBXlpCLkK/qdluI6y
+         wqhRUH1CoVjxQZLKYr/6EUxeRg+WFGdoaj7ir5xpPzPSJ7pqOyU9ervh5dxRLOUiBmJF
+         j09OhQzJ36gLjS8J9EJQtMmECl0c8OLud8ybxi8agu+Xrwz5twLKmNzMbe4evQQHcdKD
+         pNuX7gPS7Vdc4lzIkBSoEgERcoG9s+a57eOV/HWPDKeKDtsy5OGJ2flXbWpwOAtVTWBG
+         9Av2kOo+WrHYVba/LPYTgpCmQCE789ZhTw3qE+C/V5jKSUr5/Zl0waa43GWMgrIWI+OF
+         kvDQ==
+X-Gm-Message-State: AOAM533GKJZAPt8DrquJKZiwWRQH8rMU/2IznZUeLJYoCKyn+UE+0pA1
+        6Yo9rG9WrhUrrXHzVuWjEbLkBKfLY2/l4OG2j1OqP+vP4CNPeMzNDli5iS1Z/7shPYPdlAElA6w
+        DQMuGLh2g38N5GsVxtE8P3P49
+X-Received: by 2002:a05:6402:4404:: with SMTP id y4mr11919679eda.52.1630910342564;
+        Sun, 05 Sep 2021 23:39:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyX0TpXnbRYGfoD24m32rvU84qJrmQaW7wiPn31Nr/Q9F8DbdaCT6Gpt6cuVdJvK5mJP25OsQ==
+X-Received: by 2002:a05:6402:4404:: with SMTP id y4mr11919656eda.52.1630910342402;
+        Sun, 05 Sep 2021 23:39:02 -0700 (PDT)
+Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
+        by smtp.gmail.com with ESMTPSA id i13sm3885374edc.48.2021.09.05.23.39.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 23:39:02 -0700 (PDT)
+Date:   Mon, 6 Sep 2021 08:39:00 +0200
+From:   Andrew Jones <drjones@redhat.com>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v3 12/12] KVM: arm64: selftests: arch_timer: Support vCPU
+ migration
+Message-ID: <20210906063900.t6rbykpwyau5u32s@gator.home>
+References: <20210901211412.4171835-1-rananta@google.com>
+ <20210901211412.4171835-13-rananta@google.com>
+ <20210903110514.22x3txynin5hg46z@gator.home>
+ <CAJHc60xf90-0E8vkge=UC0Mq3Wz3g=n1OuHa2Lchw4G6egJEig@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210903064013.9842-1-zhoufeng.zf@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJHc60xf90-0E8vkge=UC0Mq3Wz3g=n1OuHa2Lchw4G6egJEig@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Feng,
+On Fri, Sep 03, 2021 at 01:53:27PM -0700, Raghavendra Rao Ananta wrote:
+> On Fri, Sep 3, 2021 at 4:05 AM Andrew Jones <drjones@redhat.com> wrote:
+> >
+> > On Wed, Sep 01, 2021 at 09:14:12PM +0000, Raghavendra Rao Ananta wrote:
+> > > Since the timer stack (hardware and KVM) is per-CPU, there
+> > > are potential chances for races to occur when the scheduler
+> > > decides to migrate a vCPU thread to a different physical CPU.
+> > > Hence, include an option to stress-test this part as well by
+> > > forcing the vCPUs to migrate across physical CPUs in the
+> > > system at a particular rate.
+> > >
+> > > Originally, the bug for the fix with commit 3134cc8beb69d0d
+> > > ("KVM: arm64: vgic: Resample HW pending state on deactivation")
+> > > was discovered using arch_timer test with vCPU migrations and
+> > > can be easily reproduced.
+> > >
+> > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+> > > ---
+> > >  .../selftests/kvm/aarch64/arch_timer.c        | 108 +++++++++++++++++-
+> > >  1 file changed, 107 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+> > > index 1383f33850e9..de246c7afab2 100644
+> > > --- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
+> > > +++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+> > > @@ -14,6 +14,8 @@
+> > >   *
+> > >   * The test provides command-line options to configure the timer's
+> > >   * period (-p), number of vCPUs (-n), and iterations per stage (-i).
+> > > + * To stress-test the timer stack even more, an option to migrate the
+> > > + * vCPUs across pCPUs (-m), at a particular rate, is also provided.
+> > >   *
+> > >   * Copyright (c) 2021, Google LLC.
+> > >   */
+> > > @@ -24,6 +26,8 @@
+> > >  #include <pthread.h>
+> > >  #include <linux/kvm.h>
+> > >  #include <linux/sizes.h>
+> > > +#include <linux/bitmap.h>
+> > > +#include <sys/sysinfo.h>
+> > >
+> > >  #include "kvm_util.h"
+> > >  #include "processor.h"
+> > > @@ -41,12 +45,14 @@ struct test_args {
+> > >       int nr_vcpus;
+> > >       int nr_iter;
+> > >       int timer_period_ms;
+> > > +     int migration_freq_ms;
+> > >  };
+> > >
+> > >  static struct test_args test_args = {
+> > >       .nr_vcpus = NR_VCPUS_DEF,
+> > >       .nr_iter = NR_TEST_ITERS_DEF,
+> > >       .timer_period_ms = TIMER_TEST_PERIOD_MS_DEF,
+> > > +     .migration_freq_ms = 0,         /* Turn off migrations by default */
+> >
+> > I'd rather we enable good tests like these by default.
+> >
+> Well, that was my original idea, but I was concerned about the ease
+> for diagnosing
+> things since it'll become too noisy. And so I let it as a personal
+> preference. But I can
+> include it back and see how it goes.
 
+Break the tests into two? One run without migration and one with. If
+neither work, then we can diagnose the one without first, possibly
+avoiding the need to diagnose the one with.
 
-Am 03.09.21 um 08:40 schrieb Feng zhou:
+Thanks,
+drew
 
-(If you care, in your email client, your last name does not start with a 
-capital letter.)
-
-> From: Feng Zhou <zhoufeng.zf@bytedance.com>
-> 
-> The ixgbe driver currently generates a NULL pointer dereference with
-> some machine (online cpus < 63). This is due to the fact that the
-> maximum value of num_xdp_queues is nr_cpu_ids. Code is in
-> "ixgbe_set_rss_queues"".
-> 
-> Here's how the problem repeats itself:
-> Some machine (online cpus < 63), And user set num_queues to 63 through
-> ethtool. Code is in the "ixgbe_set_channels",
-> adapter->ring_feature[RING_F_FDIR].limit = count;
-
-For better legibility, you might want to indent code (blocks) by four 
-spaces and add blank lines around it (also below).
-
-> It becames 63.
-
-becomes
-
-> When user use xdp, "ixgbe_set_rss_queues" will set queues num.
-> adapter->num_rx_queues = rss_i;
-> adapter->num_tx_queues = rss_i;
-> adapter->num_xdp_queues = ixgbe_xdp_queues(adapter);
-> And rss_i's value is from
-> f = &adapter->ring_feature[RING_F_FDIR];
-> rss_i = f->indices = f->limit;
-> So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
-> for (i = 0; i < adapter->num_rx_queues; i++)
-> 	if (adapter->xdp_ring[i]->xsk_umem)
-> lead to panic.
-
-lead*s*?
-
-> Call trace:
-> [exception RIP: ixgbe_xdp+368]
-> RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
-> RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
-> RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
-> RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
-> R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
-> R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
-> ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
->   7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
->   8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
->   9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
-> 10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
-> 11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
-> 12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
-> 13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
-> 14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
-> 15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
-> 16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
-> 17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
-> 18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
-> 19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
-
-Please describe the fix in the commit message.
-
-> Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
-> AF_XDP")
-> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
-> ---
-> Updates since v1:
-> - Fix "ixgbe_max_channels" callback so that it will not allow a setting of
-> queues to be higher than the num_online_cpus().
-> more details can be seen from here:
-> https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20210817075407.11961-1-zhoufeng.zf@bytedance.com/
-> Thanks to Maciej Fijalkowski for your advice.
-> 
->   drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c | 2 +-
->   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c    | 8 ++++++--
->   2 files changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
-> index 4ceaca0f6ce3..21321d164708 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
-> @@ -3204,7 +3204,7 @@ static unsigned int ixgbe_max_channels(struct ixgbe_adapter *adapter)
->   		max_combined = ixgbe_max_rss_indices(adapter);
->   	}
->   
-> -	return max_combined;
-> +	return min_t(int, max_combined, num_online_cpus());
->   }
->   
->   static void ixgbe_get_channels(struct net_device *dev,
-> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> index 14aea40da50f..5db496cc5070 100644
-> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-> @@ -10112,6 +10112,7 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
->   	struct ixgbe_adapter *adapter = netdev_priv(dev);
->   	struct bpf_prog *old_prog;
->   	bool need_reset;
-> +	int num_queues;
->   
->   	if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
->   		return -EINVAL;
-> @@ -10161,11 +10162,14 @@ static int ixgbe_xdp_setup(struct net_device *dev, struct bpf_prog *prog)
->   	/* Kick start the NAPI context if there is an AF_XDP socket open
->   	 * on that queue id. This so that receiving will start.
->   	 */
-> -	if (need_reset && prog)
-> -		for (i = 0; i < adapter->num_rx_queues; i++)
-> +	if (need_reset && prog) {
-> +		num_queues = min_t(int, adapter->num_rx_queues,
-> +			adapter->num_xdp_queues);
-> +		for (i = 0; i < num_queues; i++)
->   			if (adapter->xdp_ring[i]->xsk_pool)
->   				(void)ixgbe_xsk_wakeup(adapter->netdev, i,
->   						       XDP_WAKEUP_RX);
-> +	}
->   
->   	return 0;
->   }
-> 
