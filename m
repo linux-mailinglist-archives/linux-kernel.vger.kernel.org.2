@@ -2,161 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E46484019AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA6694019B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241894AbhIFKVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 06:21:41 -0400
-Received: from mga18.intel.com ([134.134.136.126]:16279 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241895AbhIFKVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 06:21:31 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10098"; a="207053451"
-X-IronPort-AV: E=Sophos;i="5.85,272,1624345200"; 
-   d="scan'208";a="207053451"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 03:20:21 -0700
-X-IronPort-AV: E=Sophos;i="5.85,272,1624345200"; 
-   d="scan'208";a="691617047"
-Received: from ljdobbs-mobl1.ger.corp.intel.com (HELO [10.213.197.10]) ([10.213.197.10])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 03:20:19 -0700
-Subject: Re: [Intel-gfx] [PATCH v7 5/8] drm_print: add choice to use dynamic
- debug in drm-debug
-To:     jim.cromie@gmail.com
-Cc:     Jason Baron <jbaron@akamai.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
-References: <20210831202133.2165222-1-jim.cromie@gmail.com>
- <20210831202133.2165222-6-jim.cromie@gmail.com>
- <b3c4b3aa-b873-a2aa-c1ad-5fed80038c6e@linux.intel.com>
- <CAJfuBxw-i-7YUenvBGHA0unBQ8BqmOGRF3nRYNwNPLVaxWpSvQ@mail.gmail.com>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-Message-ID: <1aabb5c0-eef9-a483-2631-25726c9dc268@linux.intel.com>
-Date:   Mon, 6 Sep 2021 11:20:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S241929AbhIFKWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 06:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241912AbhIFKWE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 06:22:04 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0D6C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 03:20:57 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1630923656;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=HBo+wIXmi7Lv5XQUqO6oLN4A2Krbr53UNQHRwql5XeM=;
+        b=hkMXtoMYEdHTnVc7PI7rUxflmB1zC+tJ5NJIvauEuywChZ8SWmiG7TNoVd/gsYfRTejDa6
+        pdEdfXDns3+WddTkFLA4iw5CJ6WaXoILlSGxOlC+KtCbOF/yHwQ09At/zioNIWrHKmsAkU
+        JJQ1LDBx07gIKtDarTtVQLVzANwUAw0=
+From:   Jackie Liu <liu.yun@linux.dev>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, liu.yun@linux.dev
+Subject: [PATCH] mdacon: fix redefinition of 'scr_memsetw'
+Date:   Mon,  6 Sep 2021 18:20:30 +0800
+Message-Id: <20210906102030.1659910-1-liu.yun@linux.dev>
 MIME-Version: 1.0
-In-Reply-To: <CAJfuBxw-i-7YUenvBGHA0unBQ8BqmOGRF3nRYNwNPLVaxWpSvQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: liu.yun@linux.dev
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Jackie Liu <liuyun01@kylinos.cn>
 
-On 03/09/2021 22:57, jim.cromie@gmail.com wrote:
-> On Fri, Sep 3, 2021 at 5:15 AM Tvrtko Ursulin
-> <tvrtko.ursulin@linux.intel.com> wrote:
->>
->>
->> On 31/08/2021 21:21, Jim Cromie wrote:
->>> drm's debug system writes 10 distinct categories of messages to syslog
->>> using a small API[1]: drm_dbg*(10 names), DRM_DEV_DEBUG*(3 names),
->>> DRM_DEBUG*(8 names).  There are thousands of these callsites, each
->>> categorized in this systematized way.
->>>
->>> These callsites can be enabled at runtime by their category, each
->>> controlled by a bit in drm.debug (/sys/modules/drm/parameter/debug).
->>> In the current "basic" implementation, drm_debug_enabled() tests these
->>> bits in __drm_debug each time an API[1] call is executed; while cheap
->>> individually, the costs accumulate with uptime.
->>>
->>> This patch uses dynamic-debug with jump-label to patch enabled calls
->>> onto their respective NOOP slots, avoiding all runtime bit-checks of
->>> __drm_debug by drm_debug_enabled().
->>>
->>> Dynamic debug has no concept of category, but we can emulate one by
->>> replacing enum categories with a set of prefix-strings; "drm:core:",
->>> "drm:kms:" "drm:driver:" etc, and prepend them (at compile time) to
->>> the given formats.
->>>
->>> Then we can use:
->>>     `echo module drm format "^drm:core: " +p > control`
->>>
->>> to enable the whole category with one query.
->>
->> Probably stupid question - enabling stuff at boot time still works as
->> described in Documentation/admin-guide/dynamic-debug-howto.rst?
->>
-> 
-> yes.  its turned on in earlyinit, and cmdline args are a processed then,
-> and when modules are added
-> 
-> 
->> Second question, which perhaps has been covered in the past so apologies
->> if redundant - what is the advantage of allowing this to be
->> configurable, versus perhaps always enabling it? Like what would be the
->> reasons someone wouldn't just want to have CONFIG_DYNAMIC_DEBUG compiled
->> in? Kernel binary size?
->>
-> 
-> Im unaware of anything on this topic, but I can opine :-)
-> Its been configurable since I saw it and thought "jump-labels are cool!"
-> 
-> code is small
-> [jimc@frodo local-i915m]$ size lib/dynamic_debug.o
->     text    data     bss     dec     hex filename
->    24016    8041      64   32121    7d79 lib/dynamic_debug.o
-> 
-> Its data tables are big, particularly the __dyndbg section
-> builtins:
-> dyndbg: 108 debug prints in module mptcp
-> dyndbg:   2 debug prints in module i386
-> dyndbg:   2 debug prints in module xen
-> dyndbg:   2 debug prints in module fixup
-> dyndbg:   7 debug prints in module irq
-> dyndbg: 3039 prdebugs in 283 modules, 11 KiB in ddebug tables, 166 kiB
-> in __dyndbg section
-> 
-> bash-5.1#
-> bash-5.1# for m in i915 amdgpu ; do modprobe $m dyndbg=+_ ; done
-> dyndbg: 384 debug prints in module drm
-> dyndbg: 211 debug prints in module drm_kms_helper
-> dyndbg:   2 debug prints in module ttm
-> dyndbg:   8 debug prints in module video
-> dyndbg: 1727 debug prints in module i915
-> dyndbg: processed 1 queries, with 3852 matches, 0 errs
-> dyndbg: 3852 debug prints in module amdgpu
-> [drm] amdgpu kernel modesetting enabled.
-> amdgpu: CRAT table disabled by module option
-> amdgpu: Virtual CRAT table created for CPU
-> amdgpu: Topology: Add CPU node
-> bash-5.1#
-> 
-> At 56 bytes / callsite, it adds up.
-> And teaching DRM to use it enlarges its use dramatically,
-> not just in drm itself, but in many drivers
-> 
-> amdgpu has 3852 callsite, (vs 3039 in my kernel), so it has ~240kb.
-> It has extra (large chunks generated by macros) to trim,
-> but i915 has ~1700, and drm has ~380
-> 
-> I have WIP to reduce the table space, by splitting it into 2 separate ones;
-> guts and decorations (module, function, file pointers).
-> The decoration recs are redundant, 45% are copies of previous
-> (function changes fastest)
-> It needs much rework, but it should get 20% overall.
-> decorations are 24/56 of footprint.
+CONFIG_VGA_CONSOLE=n and CONFIG_MDA_CONSOLE=n will cause vt_buffer.h not
+include <asm/vga.h>.
 
-I'll try to extract the "executive summary" from this, you tell me if I 
-got it right.
+But if we set CONFIG_MDA_CONSOLE=m, mdacon.c include <linux/vt_buffer.h>
+is in front of include <asm/vga.h>. VT_BUF_HAVE_MEMSETW is not defined,
+so vt_buffer.h will define a scr_memsetw, after that, vga.h also define
+a scr_memsetw, so the repeated definition of scr_memsetw appears, builds
+error.
 
-So using or not using dynamic debug for DRM debug ends up being about 
-shifting the cost between kernel binary size (data section grows by each 
-pr_debug call site) and runtime conditionals?
+We only need to make vt_buffer.h also contain vga.h when
+CONFIG_MDA_CONSOLE=m. This problem can be fixed.
 
-Since the table sizes you mention seem significant enough, I think that 
-justifies existence of DRM_USE_DYNAMIC_DEBUG. It would probably be a 
-good idea to put some commentary on that there. Ideally including some 
-rough estimates both including space cost per call site and space cost 
-for a typical distro kernel build?
+BTW, mdacon.c no need to include vga.h forcibly, let vt_buffer.h do it.
 
-Regards,
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-fbdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+---
+ drivers/video/console/mdacon.c | 1 -
+ include/linux/vt_buffer.h      | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-Tvrtko
+diff --git a/drivers/video/console/mdacon.c b/drivers/video/console/mdacon.c
+index ef29b321967f..5898d01bc492 100644
+--- a/drivers/video/console/mdacon.c
++++ b/drivers/video/console/mdacon.c
+@@ -42,7 +42,6 @@
+ #include <linux/init.h>
+ 
+ #include <asm/io.h>
+-#include <asm/vga.h>
+ 
+ static DEFINE_SPINLOCK(mda_lock);
+ 
+diff --git a/include/linux/vt_buffer.h b/include/linux/vt_buffer.h
+index 848db1b1569f..3e71f879e7c0 100644
+--- a/include/linux/vt_buffer.h
++++ b/include/linux/vt_buffer.h
+@@ -16,7 +16,7 @@
+ 
+ #include <linux/string.h>
+ 
+-#if defined(CONFIG_VGA_CONSOLE) || defined(CONFIG_MDA_CONSOLE)
++#if defined(CONFIG_VGA_CONSOLE) || defined(CONFIG_MDA_CONSOLE) || defined(CONFIG_MDA_CONSOLE_MODULE)
+ #include <asm/vga.h>
+ #endif
+ 
+-- 
+2.25.1
+
