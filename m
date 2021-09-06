@@ -2,101 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99479401EDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0704B401ED0
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240212AbhIFRCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 13:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39112 "EHLO
+        id S241143AbhIFQ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 12:57:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233888AbhIFRCM (ORCPT
+        with ESMTP id S229975AbhIFQ5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 13:02:12 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195ABC061575;
-        Mon,  6 Sep 2021 10:01:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MT10U4Fb2yrV/o7nel8We7nzm4JzOXr+NT/ZqDcuAPU=; b=rcFf6HHcKYcC6WYuRsQUmbf+Co
-        BLs3xJOIi/fpxkw21lrBYoykFjlkDHylFfBq4eeiLMCO6vBqvaRuUt/IN/6WInQ95mzV0o0FQ3tnL
-        /guKGayuPIuWl6r/g14pwRHusRV03hCBGVlm6FSnyRjVF6tKzounSzfllJMPea3B8trl+c33++r+9
-        fYE1Lupo7y3obORedbLu/d4eIvahDQMTYHPxLV1q+t0H5edGA4X/8USfPinDV7fO89O7fcw2/VwU6
-        MlfFiXHDTmpteG/qnfsEXiJ/AC2gka0Zz5+8zY8v6S0ziX44BcHowaWQkAQHANhoEB6NQZpJiXVh4
-        XB9H+PYw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNHuU-007896-6m; Mon, 06 Sep 2021 16:56:05 +0000
-Date:   Mon, 6 Sep 2021 17:55:54 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, ccross@google.com,
-        sumit.semwal@linaro.org, mhocko@suse.com, dave.hansen@intel.com,
-        keescook@chromium.org, kirill.shutemov@linux.intel.com,
-        vbabka@suse.cz, hannes@cmpxchg.org, corbet@lwn.net,
-        viro@zeniv.linux.org.uk, rdunlap@infradead.org,
-        kaleshsingh@google.com, peterx@redhat.com, rppt@kernel.org,
-        peterz@infradead.org, catalin.marinas@arm.com,
-        vincenzo.frascino@arm.com, chinwen.chang@mediatek.com,
-        axelrasmussen@google.com, aarcange@redhat.com, jannh@google.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, yuzhao@google.com,
-        will@kernel.org, fenghua.yu@intel.com, thunder.leizhen@huawei.com,
-        hughd@google.com, feng.tang@intel.com, jgg@ziepe.ca, guro@fb.com,
-        tglx@linutronix.de, krisman@collabora.com, chris.hyser@oracle.com,
-        pcc@google.com, ebiederm@xmission.com, axboe@kernel.dk,
-        legion@kernel.org, eb@emlix.com, gorcunov@gmail.com,
-        songmuchun@bytedance.com, viresh.kumar@linaro.org,
-        thomascedeno@google.com, sashal@kernel.org, cxfcosmos@gmail.com,
-        linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-mm@kvack.org, kernel-team@android.com
-Subject: Re: [PATCH v9 2/3] mm: add a field to store names for private
- anonymous memory
-Message-ID: <YTZIGhbSTghbUay+@casper.infradead.org>
-References: <20210902231813.3597709-1-surenb@google.com>
- <20210902231813.3597709-2-surenb@google.com>
+        Mon, 6 Sep 2021 12:57:31 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDD5CC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 09:56:26 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id q70so14595880ybg.11
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 09:56:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XaMF+DeLAjg4NOrcNx5yKPhZDgSxDgd2/NGyTr3E1P4=;
+        b=Llal/g9ih9jcfAn1nHXt0VNfp+ge5evVfSFn2twpLi2vi9wYj0HbCpsEaZx1aAaLUU
+         Wza2SZtDDb8NcCpBHTSlu5M+0CCV9hKiYkkcCLuvM32fj+nEGcK01fYR1x8eT/1BLB3D
+         tp+axTLJKDQEfQGDFR5I6mX4CvhA55Rufp4PU1iAWRppqolsiY3fbYA2Lf/Fav97JFdH
+         LfARqle14EW/A9wnFfT5nLm7ffJrzfLj5zLN2bxAFYZ/xtN2QNwFbTe1H8GqIrpX17Pm
+         uAc1uRSYBSMLMgQGjOi1fJTuhVEeIO2n3gARYBMKTI0QTBvriXz9h5St2HFMQK0qjEot
+         hUIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XaMF+DeLAjg4NOrcNx5yKPhZDgSxDgd2/NGyTr3E1P4=;
+        b=g0NtrIJ2hcL1dK6MyvQXIUsf/foanG8MoY3XTsGZQC0wkdCi061p9Ox8OeZbQtKVnu
+         6M7nOpdaYXZVv3zqO1g5KWDudihDKTT+fMIxYgs75dGjtARWh/JtymtDFr8+x4KgusCy
+         vyHnvbTkWaaCYGFtQTkatqtkcTEI1oA/UcOxuvsA/s8b4GBYzJhzdfnB/6TdtzGiU5nG
+         I6bH7yEBjut/Q0GSSeYaPb3qKgpTJFOcxtoS5ybOgVPvh2/KswCcabgo/NyZb3vXzmfJ
+         QwCkgMI87KUlI/q/Kw2k2i5NhnESbvRpgkulTQ/HFkBFBbJwg1ydVwQXW/b984pIcFz5
+         AFVg==
+X-Gm-Message-State: AOAM530er8aRnpGTj8ki5tKGo9sICN5LO90ZonWjF+OqnP0Db+JjvxL2
+        hmg0T09D1msJGZHqLSww/SyXQbdVaKcFZroOCXoc8TFcXuZJlQ==
+X-Google-Smtp-Source: ABdhPJwUDwi4HEEC5AwjEwhsaFFqNA+WH02y+E3bupDQQtbUjw3m1kZYCCjXxz5U++0g6orYF5py6RHYIkg+I2HGMrM=
+X-Received: by 2002:a25:5686:: with SMTP id k128mr18302185ybb.127.1630947385793;
+ Mon, 06 Sep 2021 09:56:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902231813.3597709-2-surenb@google.com>
+References: <20210721163118.3ca01b57@canb.auug.org.au> <20210906144807.4db0790f@canb.auug.org.au>
+ <YTYFm1Ca8LHvrlyq@casper.infradead.org>
+In-Reply-To: <YTYFm1Ca8LHvrlyq@casper.infradead.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 6 Sep 2021 09:56:14 -0700
+Message-ID: <CAJuCfpFMzpfR2LQ3saFk=vNfzbnKDG9ToOOVzFu5O3adniROHA@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the folio tree
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 04:18:12PM -0700, Suren Baghdasaryan wrote:
-> On Android we heavily use a set of tools that use an extended version of
-> the logic covered in Documentation/vm/pagemap.txt to walk all pages mapped
-> in userspace and slice their usage by process, shared (COW) vs.  unique
-> mappings, backing, etc.  This can account for real physical memory usage
-> even in cases like fork without exec (which Android uses heavily to share
-> as many private COW pages as possible between processes), Kernel SamePage
-> Merging, and clean zero pages.  It produces a measurement of the pages
-> that only exist in that process (USS, for unique), and a measurement of
-> the physical memory usage of that process with the cost of shared pages
-> being evenly split between processes that share them (PSS).
-> 
-> If all anonymous memory is indistinguishable then figuring out the real
-> physical memory usage (PSS) of each heap requires either a pagemap walking
-> tool that can understand the heap debugging of every layer, or for every
-> layer's heap debugging tools to implement the pagemap walking logic, in
-> which case it is hard to get a consistent view of memory across the whole
-> system.
-> 
-> Tracking the information in userspace leads to all sorts of problems.
-> It either needs to be stored inside the process, which means every
-> process has to have an API to export its current heap information upon
-> request, or it has to be stored externally in a filesystem that
-> somebody needs to clean up on crashes.  It needs to be readable while
-> the process is still running, so it has to have some sort of
-> synchronization with every layer of userspace.  Efficiently tracking
-> the ranges requires reimplementing something like the kernel vma
-> trees, and linking to it from every layer of userspace.  It requires
-> more memory, more syscalls, more runtime cost, and more complexity to
-> separately track regions that the kernel is already tracking.
+On Mon, Sep 6, 2021 at 5:13 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Mon, Sep 06, 2021 at 02:48:07PM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > On Wed, 21 Jul 2021 16:31:18 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > >
+> > > Today's linux-next merge of the akpm-current tree got conflicts in:
+> > >
+> > >   include/linux/memcontrol.h
+> > >   mm/memcontrol.c
+> > >
+> > > between commits:
+> > >
+> > >   05bb7bbab428 ("mm/memcg: Convert mem_cgroup_charge() to take a folio")
+> > >   8b2afb6a1c34 ("mm/memcg: Convert mem_cgroup_uncharge() to take a folio")
+> > >
+> > > from the folio tree and commit:
+> > >
+> > >   1f4c6a1cf274 ("mm, memcg: inline mem_cgroup_{charge/uncharge} to improve disabled memcg config")
+> > >
+> > > from the akpm-current tree.
+> > >
+> > > I fixed it up (see below) and can carry the fix as necessary. This
+> > > is now fixed as far as linux-next is concerned, but any non trivial
+> > > conflicts should be mentioned to your upstream maintainer when your tree
+> > > is submitted for merging.  You may also want to consider cooperating
+> > > with the maintainer of the conflicting tree to minimise any particularly
+> > > complex conflicts.
+> > >
+> > > diff --cc include/linux/memcontrol.h
+> > > index af9c44bb1e42,406058a0c480..000000000000
+> > > --- a/include/linux/memcontrol.h
+> > > +++ b/include/linux/memcontrol.h
+> > > @@@ -704,15 -691,37 +702,36 @@@ static inline bool mem_cgroup_below_min
+> > >             page_counter_read(&memcg->memory);
+> > >   }
+> > >
+> > > - int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp);
+> > >  -int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
+> > >  -                  gfp_t gfp_mask);
+> > >  -static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
+> > >  -                              gfp_t gfp_mask)
+> > > ++int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp);
+> > > ++static inline int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm,
+> > > ++                              gfp_t gfp)
+> > > + {
+> > > +   if (mem_cgroup_disabled())
+> > > +           return 0;
+> > >  -  return __mem_cgroup_charge(page, mm, gfp_mask);
+> > > ++  return __mem_cgroup_charge(folio, mm, gfp);
+> > > + }
+> > > +
+> > >   int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
+> > >                               gfp_t gfp, swp_entry_t entry);
+> > >   void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry);
+> > >
+> > > - void mem_cgroup_uncharge(struct folio *folio);
+> > > - void mem_cgroup_uncharge_list(struct list_head *page_list);
+> > >  -void __mem_cgroup_uncharge(struct page *page);
+> > >  -static inline void mem_cgroup_uncharge(struct page *page)
+> > > ++void __mem_cgroup_uncharge(struct folio *folio);
+> > > ++static inline void mem_cgroup_uncharge(struct folio *folio)
+> > > + {
+> > > +   if (mem_cgroup_disabled())
+> > > +           return;
+> > >  -  __mem_cgroup_uncharge(page);
+> > > ++  __mem_cgroup_uncharge(folio);
+> > > + }
+> > > +
+> > > + void __mem_cgroup_uncharge_list(struct list_head *page_list);
+> > > + static inline void mem_cgroup_uncharge_list(struct list_head *page_list)
+> > > + {
+> > > +   if (mem_cgroup_disabled())
+> > > +           return;
+> > > +   __mem_cgroup_uncharge_list(page_list);
+> > > + }
+> > >
+> > >  -void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
+> > >  +void mem_cgroup_migrate(struct folio *old, struct folio *new);
+> > >
+> > >   /**
+> > >    * mem_cgroup_lruvec - get the lru list vector for a memcg & node
+> > > diff --cc mm/memcontrol.c
+> > > index 1d77c873463c,c010164172dd..000000000000
+> > > --- a/mm/memcontrol.c
+> > > +++ b/mm/memcontrol.c
+> > > @@@ -6712,29 -6718,27 +6708,26 @@@ out
+> > >   }
+> > >
+> > >   /**
+> > > -  * mem_cgroup_charge - Charge a newly allocated folio to a cgroup.
+> > >  - * __mem_cgroup_charge - charge a newly allocated page to a cgroup
+> > >  - * @page: page to charge
+> > >  - * @mm: mm context of the victim
+> > >  - * @gfp_mask: reclaim mode
+> > > ++ * __mem_cgroup_charge - Charge a newly allocated folio to a cgroup.
+> > >  + * @folio: Folio to charge.
+> > >  + * @mm: mm context of the allocating task.
+> > >  + * @gfp: Reclaim mode.
+> > >    *
+> > >  - * Try to charge @page to the memcg that @mm belongs to, reclaiming
+> > >  - * pages according to @gfp_mask if necessary. if @mm is NULL, try to
+> > >  + * Try to charge @folio to the memcg that @mm belongs to, reclaiming
+> > >  + * pages according to @gfp if necessary.  If @mm is NULL, try to
+> > >    * charge to the active memcg.
+> > >    *
+> > >  - * Do not use this for pages allocated for swapin.
+> > >  + * Do not use this for folios allocated for swapin.
+> > >    *
+> > >  - * Returns 0 on success. Otherwise, an error code is returned.
+> > >  + * Return: 0 on success. Otherwise, an error code is returned.
+> > >    */
+> > > - int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp)
+> > >  -int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
+> > >  -                  gfp_t gfp_mask)
+> > > ++int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp)
+> > >   {
+> > >     struct mem_cgroup *memcg;
+> > >     int ret;
+> > >
+> > > -   if (mem_cgroup_disabled())
+> > > -           return 0;
+> > > -
+> > >     memcg = get_mem_cgroup_from_mm(mm);
+> > >  -  ret = charge_memcg(page, memcg, gfp_mask);
+> > >  +  ret = charge_memcg(folio, memcg, gfp);
+> > >     css_put(&memcg->css);
+> > >
+> > >     return ret;
+> > > @@@ -6906,20 -6909,17 +6899,17 @@@ static void uncharge_folio(struct foli
+> > >   }
+> > >
+> > >   /**
+> > > -  * mem_cgroup_uncharge - Uncharge a folio.
+> > >  - * __mem_cgroup_uncharge - uncharge a page
+> > >  - * @page: page to uncharge
+> > > ++ * __mem_cgroup_uncharge - Uncharge a folio.
+> > >  + * @folio: Folio to uncharge.
+> > >    *
+> > >  - * Uncharge a page previously charged with __mem_cgroup_charge().
+> > >  + * Uncharge a folio previously charged with mem_cgroup_charge().
+> > >    */
+> > > - void mem_cgroup_uncharge(struct folio *folio)
+> > >  -void __mem_cgroup_uncharge(struct page *page)
+> > > ++void __mem_cgroup_uncharge(struct folio *folio)
+> > >   {
+> > >     struct uncharge_gather ug;
+> > >
+> > > -   if (mem_cgroup_disabled())
+> > > -           return;
+> > > -
+> > >  -  /* Don't touch page->lru of any random page, pre-check: */
+> > >  -  if (!page_memcg(page))
+> > >  +  /* Don't touch folio->lru of any random page, pre-check: */
+> > >  +  if (!folio_memcg(folio))
+> > >             return;
+> > >
+> > >     uncharge_gather_clear(&ug);
+> > > @@@ -6932,19 -6932,16 +6922,16 @@@
+> > >    * @page_list: list of pages to uncharge
+> > >    *
+> > >    * Uncharge a list of pages previously charged with
+> > > -  * mem_cgroup_charge().
+> > > +  * __mem_cgroup_charge().
+> > >    */
+> > > - void mem_cgroup_uncharge_list(struct list_head *page_list)
+> > > + void __mem_cgroup_uncharge_list(struct list_head *page_list)
+> > >   {
+> > >     struct uncharge_gather ug;
+> > >  -  struct page *page;
+> > >  +  struct folio *folio;
+> > >
+> > > -   if (mem_cgroup_disabled())
+> > > -           return;
+> > > -
+> > >     uncharge_gather_clear(&ug);
+> > >  -  list_for_each_entry(page, page_list, lru)
+> > >  -          uncharge_page(page, &ug);
+> > >  +  list_for_each_entry(folio, page_list, lru)
+> > >  +          uncharge_folio(folio, &ug);
+> > >     if (ug.memcg)
+> > >             uncharge_batch(&ug);
+> > >   }
+> >
+> > This is now a conflict between the folio tree and Linus' tree.
+>
+> Quite.  Linus, how do you want to handle this?  Pull the folio-5.15 tag
+> I originally sent you?  Pull the pageset-5.15 tag?  Tell me you'll never
+> accept this and drop the entire idea?
+>
+> Do you need anything from me?
 
-I understand that the information is currently incoherent, but why is
-this the right way to make it coherent?  It would seem more useful to
-use something like one of the tracing mechanisms (eg ftrace, LTTng,
-whatever the current hotness is in userspace tracing) for the malloc
-library to log all the useful information, instead of injecting a subset
-of it into the kernel for userspace to read out again.
+If dropping my patch (1f4c6a1cf274 ("mm, memcg: inline
+mem_cgroup_{charge/uncharge} to improve disabled memcg config")) helps
+in resolving this, feel free to do that and I'll redo it after folios
+are merged.
+Thanks,
+Suren.
