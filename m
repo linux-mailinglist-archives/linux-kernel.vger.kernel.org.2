@@ -2,189 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A644018EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9EC4018FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241408AbhIFJgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 05:36:07 -0400
-Received: from x127130.tudelft.net ([131.180.127.130]:34940 "EHLO
-        djo.tudelft.nl" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S241112AbhIFJgF (ORCPT
+        id S241112AbhIFJjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 05:39:23 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:7518 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241357AbhIFJjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 05:36:05 -0400
-Received: by djo.tudelft.nl (Postfix, from userid 2001)
-        id 0935C1C42C4; Mon,  6 Sep 2021 11:36:11 +0200 (CEST)
-Date:   Mon, 6 Sep 2021 11:36:11 +0200
-From:   wim <wim@djo.tudelft.nl>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wim <wim@djo.tudelft.nl>
-Subject: Re: kernel-4.9.270 crash
-Message-ID: <20210906093611.GA20123@djo.tudelft.nl>
-Reply-To: wim@djo.tudelft.nl
-References: <20210904235231.GA31607@djo.tudelft.nl>
- <20210905190045.GA10991@djo.tudelft.nl>
- <YTWgKo4idyocDuCD@kroah.com>
+        Mon, 6 Sep 2021 05:39:21 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 185Lnfjq013962;
+        Mon, 6 Sep 2021 05:38:04 -0400
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2044.outbound.protection.outlook.com [104.47.56.44])
+        by mx0a-00128a01.pphosted.com with ESMTP id 3aw2whaqvx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Sep 2021 05:38:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gqaxiWSRIp3+Fm6cWpSP4lrsvBSxxqwGtC9mgeZXZa3b1VqjYlMBP5ihYNZpWC0NYpCCs6/gPJJpsDJxrD1nh7YOvnDx0vR9segFAILVl9brcTIid5TkU2nvZOrDJnkts6w9q6vikZMWTvaRfG0bgFFqJCgXMd99kvIj4oXA1rmoZWxYJgFgBXUxYZhvlaCF77jo8TniIOUNQL5NyRdR9cwhv+i5KPqZa2eOtnG2fBREOcwLPfif2yVnOcUbilWvzGrNSMgl2HzhI5qDftOELy9TqJ51B3w4SjCdYqotayrw/fLL+zdwsoLQ9LH20+ke9RHu281kmtA+LYYWCHdyWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=7/guqjhQiuReSUM3xjRnBep0oqyp5vRsfgJLVrkemao=;
+ b=aDXtQXUN4OkDORyGu9ZbJx3EVGrItHxV2TfCq4+Mkhv5ilLNqwgYsXWuN8VDqGu0IBm8nt3lhk8v+eQbAIi9lMPWLe1ykaJn5pgbbmQhGSK0BvS79rTtiZuWqXwKhKBnWL8QoZnv2ySTSZpKLOtQiHsujsvIeJJAxQotJ21z6MPsH0RnT/KZYqArGgmAmengKBFpxhnNA52O6QTVVUDeXAIXa3vuBw3S1XHMj3L88B7WsCJ9p/44RjToCzgMamP/o9HpzDIKzujmp6fNU6ev+6zBTX9MPd11qehtnlCZiZS54HtOS41seN6/aQTefdzU2c1o7Rkbnu2ON+yfihgZFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7/guqjhQiuReSUM3xjRnBep0oqyp5vRsfgJLVrkemao=;
+ b=wmAfSnQpKT//Gp9OLmUDA4BaofW/0exmhjzLcgr1pefo0bKLtcEpvP5f45B3jHrevZGN2D/shRdQcrH24ltIZ0Je0Jr6rTaOFYjsWJvSiT/ECiPC174C3T2ur4M0EyUdpmnA86ngNoGcSWS3ZLy5GvXc0gnotE7+0X47pdusZ9Q=
+Received: from SA1PR03MB6355.namprd03.prod.outlook.com (2603:10b6:806:1b6::10)
+ by SA1PR03MB6321.namprd03.prod.outlook.com (2603:10b6:806:1b4::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.20; Mon, 6 Sep
+ 2021 09:38:02 +0000
+Received: from SA1PR03MB6355.namprd03.prod.outlook.com
+ ([fe80::f0f4:64cb:bc0b:95d9]) by SA1PR03MB6355.namprd03.prod.outlook.com
+ ([fe80::f0f4:64cb:bc0b:95d9%9]) with mapi id 15.20.4415.024; Mon, 6 Sep 2021
+ 09:38:02 +0000
+From:   "Sa, Nuno" <Nuno.Sa@analog.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: RE: [PATCH v2 14/16] iio: adc: max1027: Don't just sleep when the EOC
+ interrupt is available
+Thread-Topic: [PATCH v2 14/16] iio: adc: max1027: Don't just sleep when the
+ EOC interrupt is available
+Thread-Index: AQHXoD+VyvpZRmfyEUGYFlXZeOtExKuWw0JA
+Date:   Mon, 6 Sep 2021 09:38:02 +0000
+Message-ID: <SA1PR03MB6355578764364F98D3FF163A99D29@SA1PR03MB6355.namprd03.prod.outlook.com>
+References: <20210902211437.503623-1-miquel.raynal@bootlin.com>
+ <20210902211437.503623-15-miquel.raynal@bootlin.com>
+In-Reply-To: <20210902211437.503623-15-miquel.raynal@bootlin.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
+ =?utf-8?B?bk5jYm5OaFhHRndjR1JoZEdGY2NtOWhiV2x1WjF3d09XUTRORGxpTmkwek1t?=
+ =?utf-8?B?UXpMVFJoTkRBdE9EVmxaUzAyWWpnMFltRXlPV1V6TldKY2JYTm5jMXh0YzJj?=
+ =?utf-8?B?dE1XWXpNMlZqTlRjdE1HVm1OaTB4TVdWakxUaGlPR1F0WlRSaU9UZGhOMk5q?=
+ =?utf-8?B?TnpFd1hHRnRaUzEwWlhOMFhERm1Nek5sWXpVNExUQmxaall0TVRGbFl5MDRZ?=
+ =?utf-8?B?amhrTFdVMFlqazNZVGRqWXpjeE1HSnZaSGt1ZEhoMElpQnplajBpTWpJMk9D?=
+ =?utf-8?B?SWdkRDBpTVRNeU56VXpPVFEyT0RBME5ETTVORFF5SWlCb1BTSkJNRkl5TWxa?=
+ =?utf-8?B?NVJtUlVTREYyVG0xWlJXRkxTVTB6UkVObmVuTTlJaUJwWkQwaUlpQmliRDBp?=
+ =?utf-8?B?TUNJZ1ltODlJakVpSUdOcFBTSmpRVUZCUVVWU1NGVXhVbE5TVlVaT1EyZFZR?=
+ =?utf-8?B?VUZKV1VSQlFVTlRVMk12YUVGeFVGaEJWbGhKYWtWSFdtaGFhVU5XWTJsTlVW?=
+ =?utf-8?B?cHRSbTFKU1VaQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCU0VG?=
+ =?utf-8?B?QlFVRkJWMEYzUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJSVUZC?=
+ =?utf-8?B?VVVGQ1FVRkJRVmh0V21kcWQwRkJRVUZCUVVGQlFVRkJRVUZCUVVvMFFVRkJR?=
+ =?utf-8?B?bWhCUjFGQllWRkNaa0ZJVFVGYVVVSnFRVWhWUVdOblFteEJSamhCWTBGQ2VV?=
+ =?utf-8?B?RkhPRUZoWjBKc1FVZE5RV1JCUW5wQlJqaEJXbWRDYUVGSGQwRmpkMEpzUVVZ?=
+ =?utf-8?B?NFFWcG5RblpCU0UxQllWRkNNRUZIYTBGa1owSnNRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkZRVUZCUVVGQlFVRkJRV2RCUVVG?=
+ =?utf-8?B?QlFVRnVaMEZCUVVkRlFWcEJRbkJCUmpoQlkzZENiRUZIVFVGa1VVSjVRVWRW?=
+ =?utf-8?B?UVZoM1FuZEJTRWxCWW5kQ2NVRkhWVUZaZDBJd1FVaE5RVmgzUWpCQlIydEJX?=
+ =?utf-8?B?bEZDZVVGRVJVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCVVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVOQlFVRkJRVUZEWlVGQlFVRlpVVUpyUVVkclFWaDNRbnBCUjFWQldY?=
+ =?utf-8?B?ZENNVUZJU1VGYVVVSm1RVWhCUVdOblFuWkJSMjlCV2xGQ2FrRklVVUZqZDBK?=
+ =?utf-8?B?bVFVaFJRV0ZSUW14QlNFbEJUV2RCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFrRkJRVUZCUVVGQlFVRkpRVUZCUVVGQlNqUkJRVUZDYUVGSVNVRmhVVUpv?=
+ =?utf-8?B?UVVZNFFWcEJRbkJCUjAxQlpFRkNjRUZIT0VGaVowSm9RVWhKUVdWUlFtWkJT?=
+ =?utf-8?B?RkZCWVZGQ2JFRklTVUZOVVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVVZCUVVGQlFVRkJRVUZCWjBGQlFVRkJRVzVuUVVGQlIw?=
+ =?utf-8?B?VkJZMmRDY0VGSFJVRllkMEpyUVVkclFWbDNRakJCUjJ0QlluZENkVUZIUlVG?=
+ =?utf-8?B?alowSTFRVVk0UVdSQlFuQkJSMVZCWTJkQmVVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGUlFVRkJRVUZCUVVGQlEwRkJRVUZC?=
+ =?utf-8?B?UVVFOUlpOCtQQzl0WlhSaFBnPT0=?=
+x-dg-rorf: true
+authentication-results: bootlin.com; dkim=none (message not signed)
+ header.d=none;bootlin.com; dmarc=none action=none header.from=analog.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c18b6e36-f725-4215-ff1e-08d9711a0569
+x-ms-traffictypediagnostic: SA1PR03MB6321:
+x-microsoft-antispam-prvs: <SA1PR03MB6321FEA0044636C34B7C966099D29@SA1PR03MB6321.namprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 51zavDeXcpY8Pn1F8ScBH+MoDbaG1cKvPvJ3fu1Q7DrJBDpX4o0v3dkmRbwv5mQP9nSWjS07JwXi5mT3xI3yQDdYR6zfQfAjT4wvSCeo1W3AY1cikZkyUtNz4tugfJ9hBTqG9pgd1SlPUKG8ncM3QbzympqtjoF/tynG8+5MTti1w/P1WnzZMpz3Gc+LJynWGRJWtwJoHbhj4LWy5nDQOkR/It5pVL+UI44CoMlfYS6v6Mc9AylPn9k5gZf8xHPtb2AxkAZqNGci7AD/kNdEuFXlO1M0qlpSU8mBfOlqWcJ4rMrppfZQAoZeVyDkkzSdvhAhNjrdw2fmXZ715LT8xVuehFrR4Jf7eMqtZq5JlK7rNbStIePWg2U+OxPsgKGUqKzx2SN0hwyAdrtHAZRfuxdRnHAFVitdM6H5k8FMYtnB2WrmaajTkrmkT0m9lu7RX+P9BAt39nkd37Ajouyt5lUAxSXt6LQsVfVDf+rsXuYwfbGkjgfTl9CVgV3+AWalZCMq5ML/joSapFq08RQ1PQrYzoM+nxlLRagT6KX+Vbg244IOcMHIbuKlHeh3y2QZmM5njM3wex/MbzNKRYzw7DAJD3k3Rxn4LmV/OxGOyB7lTmfZhyhSav11koDLgmB7CVgkxOiTK3C+Vwj5pqHPhafoYQc4hnpwGw+7RyaSGf2OblIX5BuGZm2MrU3zIyDQQ7Rwhr5bkQh/2UZ7Fda3aw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR03MB6355.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(366004)(376002)(39860400002)(122000001)(110136005)(38100700002)(316002)(33656002)(5660300002)(83380400001)(38070700005)(4326008)(76116006)(8676002)(66446008)(66556008)(64756008)(66476007)(86362001)(66946007)(6506007)(478600001)(2906002)(55016002)(26005)(7696005)(8936002)(52536014)(9686003)(53546011)(186003)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MTJySUlCUm9FMDRMZ0tMWFdyS1IzdHNXdFdKcjlocFZ6V3BLZEhZaVZtVDUr?=
+ =?utf-8?B?S1lyTndOUitKUkhSNkZuVndTMS9hd0NFRFl0N09tdHZHcEo1OTJSK0xXazg3?=
+ =?utf-8?B?dGhyZ2luVm1FSExsYy95YWhCUkhhczNWaXhTMUFnRGtHVmh2NndWNk16V2Zs?=
+ =?utf-8?B?UU9vTmRmS0pXWG54dzdQNnhVOGorN0s4YUY4ck9NSms5ekFWaDh2bk9nVDd3?=
+ =?utf-8?B?YmJuMG5sSS9nUG0rbTBlbGZ3VTRiMklxMlBFZDgzN3RtUklXWnZnTkRwRFFv?=
+ =?utf-8?B?TmgzMTkyK012NXJlNG53V3JxaVc2NjEzL214YTdEbmRERmFzWEVtNithZkxX?=
+ =?utf-8?B?U0FBTnc0VG5ZM2lxZUpDUGxUTS9QZndRZHY3UEhOTVpyc3BnN2ZONWhsbDh4?=
+ =?utf-8?B?emM3bVEwSEJnN3czMyt3RzhPc2hMNmJhdDZFbWk4eVhCVm5MR1ZDNTEzODcy?=
+ =?utf-8?B?cDk5U09VZW9HeE4ycnhzNUFwVlR3KzE1cHJnKzVSa1Z4SWdwaXNQWWQrUmo2?=
+ =?utf-8?B?RUpMd0tOeE42QjY4Q1FmaWNoamgxMzhXOG9ta05IWWF2dHgvbDF0eDhmMG1u?=
+ =?utf-8?B?RE9HRXZGMlU5a0FGNWZQOWxqNTdNUWp6c0F4blRtOU00U1RRc3NrM1BHYmhx?=
+ =?utf-8?B?cTQ0TGlCVUxSYTRhZzhvbXNrTVpVa2xrOEtKeGs3RGZpbklRZ1BrQ3VXd1FT?=
+ =?utf-8?B?Z2FrNVZPekwxTklhU2w1WEtBTWVFRjRiQklYVGovRmtSeTQzSkVTWEhiVzlR?=
+ =?utf-8?B?ZVlrdFF2d0Ewdlg3emJ6Y3F3dmFKOTd6cDdXN1VhN3QrL3VzSCtZOG5BOFhD?=
+ =?utf-8?B?RlNRSzVOVUZOWEJWY0RwbC9IZHMzVTFvbDV3NEZwdm5UK05rUmxDdGswVEcw?=
+ =?utf-8?B?YnVpTUx3cHJ4WkFBTTJ2TGtyODZZREhlcklDQ2pXbUhOanRHUnh3WnlCTmZx?=
+ =?utf-8?B?QUJLOHRtRVY3dUgwTkoyd2VKN1duQ3JkZjNvemxGMkhpVzhrMkpneFJJQWNB?=
+ =?utf-8?B?cktTQklodS9neU1TT1lSMmxkK3gvUWRFV0JxQjJQdnhiZEt2WGJhU2wvZTlB?=
+ =?utf-8?B?c0Nta05ucWlPVUtDaVVNTmMvQXF4VHVqUjZjWlZTbjFzc2w0YXcvTDIvT3RZ?=
+ =?utf-8?B?emRmYmVMcmF1NEkyS1cyd2paSGlhUmdNcUE0dWxNTFhwNnhsSjUyeUVHMHcv?=
+ =?utf-8?B?UXFnZTRZbnA4TFM4QmhvMkMxRERhSVpyRFQ0b1pWQnBHbGFaS1AvelpkTXND?=
+ =?utf-8?B?eGFGTjllZE82MXJTZ3YvV2JRbmVjNGVzN0ZLQXhaL0RJaEM1ZUNVcG54U09s?=
+ =?utf-8?B?YThGQmxUZnFONmpFQ2ZVVjhEZSswdHV4VlJaVUpTUzNGc1lCdHUxeTRXcUw3?=
+ =?utf-8?B?VGJFWU53UG9JR3ZscTlaSldZMGNrY1h2SUsyY3hWSTUvUk1UV0FRZjBSbmJu?=
+ =?utf-8?B?NFcrbWU4M3VvUjBISlltN2F3UTNIdWlEY2NodURhSnY0K05yeFlGSDJsRmFl?=
+ =?utf-8?B?RVl0NnZvcmF1cDNscHh5WFFnQ1BoRHJsN09rZDZiK0ZWdXFkYUV1ZUQycGg5?=
+ =?utf-8?B?SkpNSWRhTk9sU3ZKdTRlZ0wzN0svRWxWV1hEUHhBajRNWWdMeUJwMmQrUU9E?=
+ =?utf-8?B?QnVWSDN3L0toei92a3hIOGd2akVTN2pkSndISkVYK2dkdVExaDJxc0JhUFBr?=
+ =?utf-8?B?bURlZEpTKzV6YnBYSlB6S1lyRm1sczdldEZuU0xRdW1WVElqTUEyc2lidFMy?=
+ =?utf-8?Q?iKb95ZDC1/GAKvomzIsiZlMqEm9GyD11kD+J+Ma?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTWgKo4idyocDuCD@kroah.com>
-User-Agent: Mutt/1.11.2 (2019-01-07)
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR03MB6355.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c18b6e36-f725-4215-ff1e-08d9711a0569
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Sep 2021 09:38:02.2372
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9r1yX7Rgv+9IvV62ke9ePehsQZ5YQr0/VedXPsM0jAhPPB+Y1wd4xCBW+dHGkWZhI/XXFfmXbwS6Jye25V6VeA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR03MB6321
+X-Proofpoint-ORIG-GUID: 1IwqVmvT0YwYXSLMFKdCUj34cdg6v8F_
+X-Proofpoint-GUID: 1IwqVmvT0YwYXSLMFKdCUj34cdg6v8F_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-06_05,2021-09-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 mlxscore=0 suspectscore=0 clxscore=1015 priorityscore=1501
+ impostorscore=0 spamscore=0 mlxlogscore=999 adultscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109060060
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 06:59:22AM +0200, Greg KH wrote:
-> On Sun, Sep 05, 2021 at 09:00:45PM +0200, wim wrote:
-> > On Sun, Sep 05, 2021 at 01:52:31AM +0200, wim wrote:
-> > > 
-> > > Hello Greg,
-> > > 
-> > > from kernel-4.9.270 up until now (4.9.282) I experience kernel crashes upon
-> > > loading a GPU module.
-> > > It happens on two out of at least six different machines.
-> > > I can't believe that I'm the only one where that happens, but since the bug
-> > > is still there twelve versions later, I need to report this.
-> > > ...
-> 
-> Do you have any kernel log messages when these crashes happen?
-
-On the AMD machine:
-
-Aug  1 20:51:24 djo kernel: [drm] Initialized
-Aug  1 20:51:24 djo kernel: checking generic (a0000 10000) vs hw (e0000000 8000000)
-Aug  1 20:51:24 djo kernel: checking generic (a0000 10000) vs hw (ea000000 1000000)
-Aug  1 20:51:24 djo kernel: fb: switching to nouveaufb from VGA16 VGA
-Aug  1 20:51:24 djo kernel: divide error: 0000 [#1] SMP
-Aug  1 20:51:24 djo kernel: Modules linked in: nouveau(+) video drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops ttm drm agpgart i2c_algo_bit tun lirc_serial(C) lirc_dev arc4 binfmt_misc snd_pcm_oss snd_mixer_oss fbcon bitblit softcursor font tileblit ath9k_htc ath9k_common ath9k_hw ath mac80211 cfg80211 uvcvideo rfkill firmware_class snd_usb_audio sr9700 videobuf2_vmalloc videobuf2_memops snd_usbmidi_lib videobuf2_v4l2 dm9601 videobuf2_core usbnet snd_rawmidi mii usb_storage snd_hda_codec_generic kvm snd_hda_intel irqbypass snd_hda_codec gpio_ich ppdev snd_hwdep pcspkr snd_hda_core snd_pcm uhci_hcd ohci_pci snd_timer ohci_hcd lpc_ich ehci_pci snd ehci_hcd wmi mfd_core usbcore soundcore parport_pc floppy usb_common parport acpi_cpufreq button processor
-Aug  1 20:51:24 djo kernel: CPU: 0 PID: 2791 Comm: modprobe Tainted: G         C      4.9.277 #1
-Aug  1 20:51:24 djo kernel: Hardware name: Hewlett-Packard HP xw4300 Workstation/0A00h, BIOS 786D3 v01.08 03/10/2006
-Aug  1 20:51:24 djo kernel: task: f6317080 task.stack: f4058000
-Aug  1 20:51:24 djo kernel: EIP: 0060:[<c02f789d>] EFLAGS: 00010206 CPU: 0
-Aug  1 20:51:24 djo kernel: EAX: 00000190 EBX: ffffffea ECX: 00000019 EDX: 00000000
-Aug  1 20:51:24 djo kernel: ESI: f52db800 EDI: 00000050 EBP: c02f7838 ESP: f4059c10
-Aug  1 20:51:24 djo kernel:  DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
-Aug  1 20:51:24 djo kernel: CR0: 80050033 CR2: 080a1a54 CR3: 35234000 CR4: 00000690
-Aug  1 20:51:24 djo kernel: Stack:
-Aug  1 20:51:24 djo kernel:  00000050 f52db800 00000019 c0340732 00000000 000000a0 000000a0 00000fa0
-Aug  1 20:51:24 djo kernel:  f62f4000 0000001e 00000000 00000000 f5a63800 00000000 00000000 00000000
-Aug  1 20:51:24 djo kernel:  00000000 00000000 f6024000 00000000 f52db800 00000001 00000000 00000000
-Aug  1 20:51:24 djo kernel: Call Trace:
-Aug  1 20:51:24 djo kernel:  [<c0340732>] ? 0xc0340732
-Aug  1 20:51:24 djo kernel:  [<c0340988>] ? 0xc0340988
-Aug  1 20:51:24 djo kernel:  [<c02f734a>] ? 0xc02f734a
-Aug  1 20:51:24 djo kernel:  [<c033f780>] ? 0xc033f780
-Aug  1 20:51:24 djo kernel:  [<c0340b32>] ? 0xc0340b32
-Aug  1 20:51:24 djo kernel:  [<c0340d20>] ? 0xc0340d20
-Aug  1 20:51:24 djo kernel:  [<f8bc4ef7>] ? 0xf8bc4ef7
-Aug  1 20:51:24 djo kernel:  [<c0163715>] ? 0xc0163715
-Aug  1 20:51:24 djo kernel:  [<f8bc4c82>] ? 0xf8bc4c82
-Aug  1 20:51:24 djo kernel:  [<c014aac4>] ? 0xc014aac4
-Aug  1 20:51:24 djo kernel:  [<c014ad8a>] ? 0xc014ad8a
-Aug  1 20:51:24 djo kernel:  [<c014ada6>] ? 0xc014ada6
-Aug  1 20:51:24 djo kernel:  [<c02f9aa4>] ? 0xc02f9aa4
-Aug  1 20:51:24 djo kernel:  [<c0168c32>] ? 0xc0168c32
-Aug  1 20:51:24 djo kernel:  [<c02fa294>] ? 0xc02fa294
-Aug  1 20:51:24 djo kernel:  [<c02fa47e>] ? 0xc02fa47e
-Aug  1 20:51:24 djo kernel:  [<c02fa4f5>] ? 0xc02fa4f5
-Aug  1 20:51:24 djo kernel:  [<f90a5c94>] ? 0xf90a5c94
-Aug  1 20:51:24 djo kernel:  [<f90a5b88>] ? 0xf90a5b88
-Aug  1 20:51:24 djo kernel:  [<c02e82de>] ? 0xc02e82de
-Aug  1 20:51:24 djo kernel:  [<c03545f8>] ? 0xc03545f8
-Aug  1 20:51:24 djo kernel:  [<c035475d>] ? 0xc035475d
-Aug  1 20:51:24 djo kernel:  [<c03533a9>] ? 0xc03533a9
-Aug  1 20:51:24 djo kernel:  [<c035424a>] ? 0xc035424a
-Aug  1 20:51:24 djo kernel:  [<c0354705>] ? 0xc0354705
-Aug  1 20:51:24 djo kernel:  [<c0353f3d>] ? 0xc0353f3d
-Aug  1 20:51:24 djo kernel:  [<c0354e44>] ? 0xc0354e44
-Aug  1 20:51:24 djo kernel:  [<f9124000>] ? 0xf9124000
-Aug  1 20:51:24 djo kernel:  [<c01003df>] ? 0xc01003df
-Aug  1 20:51:24 djo kernel:  [<c01dbb22>] ? 0xc01dbb22
-Aug  1 20:51:24 djo kernel:  [<c04ba42d>] ? 0xc04ba42d
-Aug  1 20:51:24 djo kernel:  [<c04ba45c>] ? 0xc04ba45c
-Aug  1 20:51:24 djo kernel:  [<c01889d5>] ? 0xc01889d5
-Aug  1 20:51:24 djo kernel:  [<c01e45e4>] ? 0xc01e45e4
-Aug  1 20:51:24 djo kernel:  [<c0188c2b>] ? 0xc0188c2b
-Aug  1 20:51:24 djo kernel:  [<c0101211>] ? 0xc0101211
-Aug  1 20:51:24 djo kernel:  [<c04c0579>] ? 0xc04c0579
-Aug  1 20:51:24 djo kernel: Code: 63 c0 eb 53 f6 04 24 01 bb ea ff ff ff 75 4a 0f b6 05 07 c5 6c c0 3b 04 24 72 3e 0f b6 05 0e c5 6c c0 31 d2 0f af 05 08 cc 63 c0 <f7> b6 ec 00 00 00 39 c8 72 24 8b 86 24 02 00 00 31 db 3b 30 75
-Aug  1 20:51:24 djo kernel: EIP: [<c02f789d>] 
-Aug  1 20:51:24 djo kernel:  SS:ESP 0068:f4059c10
-Aug  1 20:51:24 djo kernel: ---[ end trace 307fdb439b21cfc0 ]---
-
-
-On the Intel machine:
-
-Sep  5 00:20:26 asusUX410U kernel: Adding 2097148k swap on /dev/sda2.  Priority:-1 extents:1 across:2097148k FS
-Sep  5 00:20:38 asusUX410U kernel: [drm] Memory usable by graphics device = 4096M
-Sep  5 00:20:38 asusUX410U kernel: fb: switching to inteldrmfb from VGA16 VGA
-Sep  5 00:20:38 asusUX410U kernel: divide error: 0000 [#1] SMP
-Sep  5 00:20:38 asusUX410U kernel: Modules linked in: i915(+) intel_gtt cmac uvcvideo videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_core arc4 iwlmvm mac80211 nouveau drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_fops ttm drm agpgart btusb btrtl btbcm btintel bluetooth hid_multitouch iwlwifi i2c_designware_platform mxm_wmi i2c_designware_core cfg80211 x86_pkg_temp_thermal intel_powerclamp pcspkr nvidiafb i2c_algo_bit fb_ddc rfkill firmware_class thermal i2c_hid xhci_pci xhci_hcd usbcore battery int3403_thermal wmi video ac int3400_thermal acpi_thermal_rel acpi_pad asus_wireless intel_lpss_pci intel_lpss button processor_thermal_device i2c_i801 intel_soc_dts_iosf i2c_smbus intel_pch_thermal usb_common mfd_core int340x_thermal_zone binfmt_misc snd_hda_codec_generic snd_pcm_oss snd_mixer_oss snd_hda_intel
-Sep  5 00:20:38 asusUX410U kernel:  snd_hda_codec snd_hwdep snd_hda_core snd_pcm snd_timer snd soundcore fbcon bitblit softcursor font tileblit
-Sep  5 00:20:38 asusUX410U kernel: CPU: 2 PID: 2601 Comm: modprobe Not tainted 4.9.282 #1
-Sep  5 00:20:38 asusUX410U kernel: Hardware name: ASUSTeK COMPUTER INC. UX410UQK/UX410UQK, BIOS UX410UQK.301 12/12/2016
-Sep  5 00:20:38 asusUX410U kernel: task: ffff880264ac8000 task.stack: ffffc90003ee0000
-Sep  5 00:20:38 asusUX410U kernel: RIP: 0010:[<ffffffff8044b341>]  [<ffffffff8044b341>] 0xffffffff8044b341
-Sep  5 00:20:38 asusUX410U kernel: RSP: 0018:ffffc90003ee38e8  EFLAGS: 00010246
-Sep  5 00:20:38 asusUX410U kernel: RAX: 0000000000000190 RBX: 00000000000000a0 RCX: 0000000000000000
-Sep  5 00:20:38 asusUX410U kernel: RDX: 0000000000000000 RSI: 0000000000000050 RDI: ffff880256b9b800
-Sep  5 00:20:38 asusUX410U kernel: RBP: 0000000000000019 R08: 0000000000000019 R09: 00000000000000a0
-Sep  5 00:20:38 asusUX410U kernel: R10: 000000000000001e R11: 0000000000000001 R12: 00000000ffffffea
-Sep  5 00:20:38 asusUX410U kernel: R13: ffff880256b9b800 R14: 0000000000000fa0 R15: 0000000000000000
-Sep  5 00:20:38 asusUX410U kernel: FS:  00007fb959a4cc00(0000) GS:ffff88026ed00000(0000) knlGS:0000000000000000
-Sep  5 00:20:38 asusUX410U kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-Sep  5 00:20:38 asusUX410U kernel: CR2: 000056515c106000 CR3: 0000000259500000 CR4: 0000000000360670
-Sep  5 00:20:38 asusUX410U kernel: Stack:
-Sep  5 00:20:38 asusUX410U kernel:  0000000000000050 ffffffff804a8d05 ffff880259667000 0000000000000000
-Sep  5 00:20:38 asusUX410U kernel:  ffff88020000001e 000000a000000fa0 00000000000000a0 00000000000000a0
-Sep  5 00:20:38 asusUX410U kernel:  0190000000500019 ffff880256b9b800 ffff880256b9b800 0000000000000000
-Sep  5 00:20:38 asusUX410U kernel: Call Trace:
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804a8d05>] ? 0xffffffff804a8d05
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff8044adee>] ? 0xffffffff8044adee
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804a79dd>] ? 0xffffffff804a79dd
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804a9160>] ? 0xffffffff804a9160
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804a9395>] ? 0xffffffff804a9395
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffffa000c549>] ? 0xffffffffa000c549
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff80257d40>] ? 0xffffffff80257d40
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff80258077>] ? 0xffffffff80258077
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff8044d551>] ? 0xffffffff8044d551
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff8044e213>] ? 0xffffffff8044e213
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff8044e457>] ? 0xffffffff8044e457
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff8044e4de>] ? 0xffffffff8044e4de
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffffa05cb585>] ? 0xffffffffa05cb585
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff80439f8a>] ? 0xffffffff80439f8a
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804c0d1e>] ? 0xffffffff804c0d1e
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804c0eda>] ? 0xffffffff804c0eda
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804c0e72>] ? 0xffffffff804c0e72
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804bf59b>] ? 0xffffffff804bf59b
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804c04c9>] ? 0xffffffff804c04c9
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffffa06ab000>] ? 0xffffffffa06ab000
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff804c1738>] ? 0xffffffff804c1738
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff80200341>] ? 0xffffffff80200341
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff802962fc>] ? 0xffffffff802962fc
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff80297a24>] ? 0xffffffff80297a24
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff80297e0e>] ? 0xffffffff80297e0e
-Sep  5 00:20:38 asusUX410U last message buffered 1 times
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff802014fd>] ? 0xffffffff802014fd
-Sep  5 00:20:38 asusUX410U kernel:  [<ffffffff80645a3e>] ? 0xffffffff80645a3e
-Sep  5 00:20:38 asusUX410U kernel: Code: 65 00 eb 57 41 bc ea ff ff ff 40 f6 c6 01 75 4e 0f b6 05 da 22 75 00 39 f0 72 43 0f b6 05 d6 22 75 00 0f af 05 e9 6d 65 00 31 d2 <f7> b7 7c 01 00 00 44 39 c0 72 28 48 8b 87 00 03 00 00 45 31 e4 
-Sep  5 00:20:38 asusUX410U kernel:  RSP <ffffc90003ee38e8>
-Sep  5 00:20:38 asusUX410U kernel: ---[ end trace a46f8400460cdde1 ]---
-
-
-
-> Can you use 'git bisect' to track down the offending commit?
-
-If I would know how to do that
-
-> And why are you stuck on 4.9.y for these machines?  Why not use 5.10 or
-> newer?
-
-Because in 4.10 they dropped lirc-serial and I need that. The new ir-serial
-is no replacement. (The last working version of LIRC is 0.9.6. After that
-they destroyed transmitter support.)
-
-(I believe irda support got dropped too, which I need for my old nokia.)
-
-
-Wim.
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWlxdWVsIFJheW5hbCA8
+bWlxdWVsLnJheW5hbEBib290bGluLmNvbT4NCj4gU2VudDogVGh1cnNkYXksIFNlcHRlbWJlciAy
+LCAyMDIxIDExOjE1IFBNDQo+IFRvOiBKb25hdGhhbiBDYW1lcm9uIDxqaWMyM0BrZXJuZWwub3Jn
+PjsgTGFycy1QZXRlciBDbGF1c2VuDQo+IDxsYXJzQG1ldGFmb28uZGU+OyBsaW51eC1paW9Admdl
+ci5rZXJuZWwub3JnOyBsaW51eC0NCj4ga2VybmVsQHZnZXIua2VybmVsLm9yZw0KPiBDYzogVGhv
+bWFzIFBldGF6em9uaSA8dGhvbWFzLnBldGF6em9uaUBib290bGluLmNvbT47IFNhLCBOdW5vDQo+
+IDxOdW5vLlNhQGFuYWxvZy5jb20+OyBNaXF1ZWwgUmF5bmFsIDxtaXF1ZWwucmF5bmFsQGJvb3Rs
+aW4uY29tPg0KPiBTdWJqZWN0OiBbUEFUQ0ggdjIgMTQvMTZdIGlpbzogYWRjOiBtYXgxMDI3OiBE
+b24ndCBqdXN0IHNsZWVwIHdoZW4gdGhlDQo+IEVPQyBpbnRlcnJ1cHQgaXMgYXZhaWxhYmxlDQo+
+IA0KPiBbRXh0ZXJuYWxdDQo+IA0KPiBUaGUgaW50ZXJydXB0IHdpbGwgZmlyZSB1cG9uIGVuZCBv
+ZiBjb252ZXJzaW9uLiBUaGlzIGN1cnJlbnRseSBjYW4NCj4gaGFwcGVuIGluIHR3byBzaXR1YXRp
+b25zOiBlaXRoZXIgdGhlIGNudnN0IHRyaWdnZXIgd2FzIGVuYWJsZWQgYW5kDQo+IHRvZ2dsZWQs
+IG9yIGEgc2luZ2xlIHJlYWQgd2FzIHJlcXVlc3RlZCBhbmQgdGhlIGRhdGEgaXMgcmVhZHkuIFRo
+ZSBmaXJzdA0KPiBzaXR1YXRpb24gaXMgYWxyZWFkeSBjb3ZlcmVkIHdoaWxlIHRoZSBzZWNvbmQg
+aXMgbm90LiBJbnN0ZWFkLCBhIHdhaXRpbmcNCj4gZGVsYXkgaXMgYXBwbGllZC4gTGV0J3MgaGFu
+ZGxlIHRoZXNlIGludGVycnVwdHMgbW9yZSBwcm9wZXJseSBieSBhZGRpbmcNCj4gc2Vjb25kIHBh
+dGggaW4gb3VyIEVPQyBoZWxwZXIuDQo+IA0KPiBSZW5hbWUgdGhlIGludGVycnVwdCBoYW5kbGVy
+IHRvIGEgbW9yZSBnZW5lcmljIG5hbWUgYXMgaXQgd29uJ3Qgb25seQ0KPiBoYW5kbGUgdHJpZ2dl
+cmVkIHNpdHVhdGlvbnMuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBNaXF1ZWwgUmF5bmFsIDxtaXF1
+ZWwucmF5bmFsQGJvb3RsaW4uY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvaWlvL2FkYy9tYXgxMDI3
+LmMgfCAzMSArKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tDQo+ICAxIGZpbGUgY2hhbmdl
+ZCwgMjggaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL2lpby9hZGMvbWF4MTAyNy5jIGIvZHJpdmVycy9paW8vYWRjL21heDEwMjcuYw0KPiBp
+bmRleCBiODVmZTBhNDhmZjkuLmU3MzRkMzJhNTUwNyAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9p
+aW8vYWRjL21heDEwMjcuYw0KPiArKysgYi9kcml2ZXJzL2lpby9hZGMvbWF4MTAyNy5jDQo+IEBA
+IC0yNTYsMTUgKzI1NiwyNyBAQCBzdHJ1Y3QgbWF4MTAyN19zdGF0ZSB7DQo+ICAJc3RydWN0IGlp
+b190cmlnZ2VyCQkqdHJpZzsNCj4gIAlfX2JlMTYJCQkJKmJ1ZmZlcjsNCj4gIAlzdHJ1Y3QgbXV0
+ZXgJCQlsb2NrOw0KPiArCXN0cnVjdCBjb21wbGV0aW9uCQljb21wbGV0ZTsNCj4gDQo+ICAJdTgJ
+CQkJcmVnIF9fX19jYWNoZWxpbmVfYWxpZ25lZDsNCj4gIH07DQo+IA0KPiAgc3RhdGljIGludCBt
+YXgxMDI3X3dhaXRfZW9jKHN0cnVjdCBpaW9fZGV2ICppbmRpb19kZXYpDQo+ICB7DQo+ICsJc3Ry
+dWN0IG1heDEwMjdfc3RhdGUgKnN0ID0gaWlvX3ByaXYoaW5kaW9fZGV2KTsNCj4gIAl1bnNpZ25l
+ZCBpbnQgY29udmVyc2lvbl90aW1lID0NCj4gTUFYMTAyN19DT05WRVJTSU9OX1VERUxBWTsNCj4g
+KwlpbnQgcmV0Ow0KPiANCj4gLQl1c2xlZXBfcmFuZ2UoY29udmVyc2lvbl90aW1lLCBjb252ZXJz
+aW9uX3RpbWUgKiAyKTsNCj4gKwlpZiAoc3QtPnNwaS0+aXJxKSB7DQo+ICsJCXJldCA9IHdhaXRf
+Zm9yX2NvbXBsZXRpb25fdGltZW91dCgmc3QtPmNvbXBsZXRlLA0KPiArDQo+IG1zZWNzX3RvX2pp
+ZmZpZXMoMTAwMCkpOw0KPiArCQlpZiAoIXJldCkNCj4gKwkJCXJldHVybiByZXQ7DQo+ICsNCj4g
+KwkJcmVpbml0X2NvbXBsZXRpb24oJnN0LT5jb21wbGV0ZSk7DQoNCkkgd291bGQgY2FsbCB0aGlz
+IGJlZm9yZSB0aGUgd2FpdGluZy4uLg0KDQotIE51bm8gU8OhDQo=
