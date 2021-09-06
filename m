@@ -2,109 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C39F401E18
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A24F401E1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243866AbhIFQOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 12:14:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234132AbhIFQO2 (ORCPT
+        id S243895AbhIFQRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 12:17:24 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36772 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234132AbhIFQRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:14:28 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A878DC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 09:13:23 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id v2so9365383oie.6
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 09:13:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sSHWLdRniClMLbNX/vMWN1xbfEPKJ8OMc5qP3DmQu0A=;
-        b=IxYvyvZzricv+JQAlndessS8MQviEWJRmtsZpVl63E1YrMf+RcCzdvsT1+QVskKZOH
-         Vem7F8yfI9FU2jGcEK12Mz+yuCui2fTbo041O1chTetSesNYOyRBLhh+dTtMd0Ebchtw
-         Iz+5pS+byB+JbwjwD3AzC38hfkKvCMIQSaTYt5ZugaJ3DSOtz6yn6XdkqXHVqmif9ugW
-         a2192wEDiY7rpzyfQ2ppI/kmeAfjbGDLQYCQOECAUmaCvkxAvUPrgoV5Nvo9Pt59cxU8
-         wQ07aucV39UJeop9dTDvnIMJrh8aF4TVwlBtSg84eijSKM1I05+kiQYDu95uFLc9pvSI
-         j7lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sSHWLdRniClMLbNX/vMWN1xbfEPKJ8OMc5qP3DmQu0A=;
-        b=a9HPy99tqWwPQ9VyK6f7ybSCqx9WvTtt0GN21GhMcONoDzMmS5pDhSN4YE+uM1/82A
-         NzSJ6PQQQM4XgxRrrEFEELDtbtvhca2zeF2m0r+rGYgd3UkrNHiNSvhLPu8Ldlh1b+xL
-         0GaDY6jl7X7OupHiRQcmfXYueRp65FPHC/0S/fbqEfrGgqrjD11ytTaAP6+/Y4OObfuv
-         i/fo0Op2ZeWmMpoBqzECYfPXiX9sHq4J+abaP9JGPFn/9AgVycQboteWAo18BXTSQ21I
-         RxXyAhBngoh/AcgTMyR96okJr+c869rFqPvObKBVGRpQxXAAXXSihU+TFqF8A9pBYHby
-         6V+Q==
-X-Gm-Message-State: AOAM531SKQDkUpQd0JsMC9jW8TynublyHlsm44bKL3uknM2E9cXHkrxh
-        aoTfbUCoBv+pokSVqdmMh+wND0pWJ0cHCwmglpwQSXV1nI4zZw==
-X-Google-Smtp-Source: ABdhPJxXUQ06WnN7/hZlpgf62x4QOfkuUmsoCH68vCcbFUDAmI2ww+Umqn2DGBmre5S8Zx9RiSazha2SK4hXrjudW80=
-X-Received: by 2002:aca:4344:: with SMTP id q65mr9355069oia.70.1630944802829;
- Mon, 06 Sep 2021 09:13:22 -0700 (PDT)
+        Mon, 6 Sep 2021 12:17:23 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 186GEHr2054075;
+        Mon, 6 Sep 2021 12:16:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=4LuLvRTwcB5+x/Z+K7GSrWAkFn9onhsaecda0nUz62I=;
+ b=Vj9RVpQbnx5MFdrQSFMIXADgRO8n5Ytqv/IPdbIp+2F7BEW8HzEiuYIIBHdHF0xVWCzA
+ gnbgAXY6LxR93OZl1TO8XzYhnj/tDD4SpL4H39VuQnHOAidMqEoh7wkQkCmlOiccJ+Tz
+ vqL3DT5gIL8rDPVNqnqpTsjCdfc1pRyyxgB2l1hJcq3tieFpHaGPswGqLSy9mKLrf2pb
+ DI7vBnm1wmCP/7XuioMb9yUeCrtZMeH6iVn5DzOjGQiPLn9ClZVSnBdjDgTvEF+CMLed
+ zji/JnRbG+Nlm3EZln3sRrBhVyv86bDdc+DPy7kkbc7Y7MF8p2dxFNfAntk2iE5+6bMw 7A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3awmc62d7n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Sep 2021 12:16:18 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 186GGDWd060607;
+        Mon, 6 Sep 2021 12:16:18 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3awmc62d70-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Sep 2021 12:16:18 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 186GDPAd011105;
+        Mon, 6 Sep 2021 16:16:16 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04fra.de.ibm.com with ESMTP id 3av0e9da97-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Sep 2021 16:16:15 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 186GBvJp37683482
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 Sep 2021 16:11:57 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 70B3E52052;
+        Mon,  6 Sep 2021 16:16:11 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.95.210])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 0B84F52054;
+        Mon,  6 Sep 2021 16:16:11 +0000 (GMT)
+Subject: Re: [PATCH v4 06/14] KVM: s390: pv: properly handle page flags for
+ protected guests
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc:     kvm@vger.kernel.org, cohuck@redhat.com, frankja@linux.ibm.com,
+        thuth@redhat.com, pasic@linux.ibm.com, david@redhat.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ulrich.Weigand@de.ibm.com,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+References: <20210818132620.46770-1-imbrenda@linux.ibm.com>
+ <20210818132620.46770-7-imbrenda@linux.ibm.com>
+ <1a44ff5c-f59f-2f37-2585-084294ed5e11@de.ibm.com>
+ <20210906175618.4ce0323f@p-imbrenda>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <35e4b7a3-42d8-6b8f-e2e7-5b6a81dfcfa3@de.ibm.com>
+Date:   Mon, 6 Sep 2021 18:16:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210830172627.267989-1-bigeasy@linutronix.de>
-In-Reply-To: <20210830172627.267989-1-bigeasy@linutronix.de>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 6 Sep 2021 18:13:11 +0200
-Message-ID: <CANpmjNPZMVkr5BpywHTY_m+ndLTeWrMLTog=yGG=VLg_miqUvQ@mail.gmail.com>
-Subject: Re: [PATCH 0/5] kcov: PREEMPT_RT fixup + misc
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Clark Williams <williams@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210906175618.4ce0323f@p-imbrenda>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 3lNbS7yAX7Cph2cK1wos9PWw4Y4TYO9k
+X-Proofpoint-GUID: IDYCKt2rdwNe6EwvY7s_cxQU_e-tdyIV
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-06_08:2021-09-03,2021-09-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
+ adultscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0 malwarescore=0
+ priorityscore=1501 impostorscore=0 clxscore=1015 lowpriorityscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109060103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 30 Aug 2021 at 19:26, Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
-> The last patch in series is follow-up to address the PREEMPT_RT issue
-> within in kcov reported by Clark [0].
-> Patches 1-3 are smaller things that I noticed while staring at it.
-> Patch 4 is small change which makes replacement in #5 simpler / more
-> obvious.
-> I tested this with the three examples in the documentation folder and I
-> didn't notice higher latency with kcov enabled. Debug or not, I don't
-> see a reason to make the lock a raw_spin_lock_t annd it would complicate
-> memory allocation as mentioned in #5.
 
-Thanks for sorting this out. Given syzkaller is exercising all of
-KCOV's feature, I let syzkaller run for a few hours with PROVE_LOCKING
-(and PROVE_RAW_LOCK_NESTING) on, and looks fine:
 
-    Acked-by: Marco Elver <elver@google.com>
-    Tested-by: Marco Elver <elver@google.com>
+On 06.09.21 17:56, Claudio Imbrenda wrote:
+> On Mon, 6 Sep 2021 17:46:40 +0200
+> Christian Borntraeger <borntraeger@de.ibm.com> wrote:
+> 
+>> On 18.08.21 15:26, Claudio Imbrenda wrote:
+>>> Introduce variants of the convert and destroy page functions that also
+>>> clear the PG_arch_1 bit used to mark them as secure pages.
+>>>
+>>> These new functions can only be called on pages for which a reference
+>>> is already being held.
+>>>
+>>> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+>>> Acked-by: Janosch Frank <frankja@linux.ibm.com>
+>>
+>> Can you refresh my mind? We do have over-indication of PG_arch_1 and this
+>> might result in spending some unneeded cycles but in the end this will be
+>> correct. Right?
+>> And this patch will fix some unnecessary places that add overindication.
+> 
+> correct, PG_arch_1 will still overindicate, but with this patch it will
+> happen less.
+> 
+> And PG_arch_1 overindication is perfectly fine from a correctness point
+> of view.
 
-> One thing I noticed and have no idea if this is right or not:
-> The code seems to mix long and uint64_t for the reported instruction
-> pointer / position in the buffer. For instance
-> __sanitizer_cov_trace_pc() refers to a 64bit pointer (in the comment)
-> while the area pointer itself is (long *). The problematic part is that
-> a 32bit application on a 64bit pointer will expect a four byte pointer
-> while kernel uses an eight byte pointer.
+Maybe add something like this to the patch description then.
 
-I think the code is consistent in using 'unsigned long' for writing
-regular pos/IP (except write_comp_data(), which has a comment about
-it). The mentions of 64-bit in comments might be inaccurate though.
-But I think it's working as expected:
+>>> +/*
+>>> + * The caller must already hold a reference to the page
+>>> + */
+>>> +int uv_destroy_owned_page(unsigned long paddr)
+>>> +{
+>>> +	struct page *page = phys_to_page(paddr);
 
-- on 64-bit kernels, pos/IP can be up to 64-bit;
-- on 32-bit kernels, pos/IP can only be up to 32-bit.
+Do we have to protect against weird mappings without struct page here? I have not
+followed the discussion about this topic. Maybe Gerald knows if we can have memory
+without struct pages.
 
-User space necessarily has to know about the bit-ness of its kernel,
-because the coverage information is entirely dependent on the kernel
-image. I think the examples in documentation weren't exhaustive in
-this regard. At least that's my take -- Dmitry or Andrey would know
-for sure (Dmitry is currently on vacation, but hopefully can clarify
-next week).
+>>> +	int rc;
+>>> +
+>>> +	get_page(page);
+>>> +	rc = uv_destroy_page(paddr);
+>>> +	if (!rc)
+>>> +		clear_bit(PG_arch_1, &page->flags);
+>>> +	put_page(page);
+>>> +	return rc;
+>>> +}
+>>> +
+>>>    /*
+>>>     * Requests the Ultravisor to encrypt a guest page and make it
+>>>     * accessible to the host for paging (export).
+>>> @@ -154,6 +170,22 @@ int uv_convert_from_secure(unsigned long paddr)
+>>>    	return 0;
+>>>    }
+>>>    
+>>> +/*
+>>> + * The caller must already hold a reference to the page
+>>> + */
+>>> +int uv_convert_owned_from_secure(unsigned long paddr)
+>>> +{
+>>> +	struct page *page = phys_to_page(paddr);
 
-Thanks,
--- Marco
+Same here. If this is not an issue (and you add something to the patch description as
+outlined above)
+
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+
+
