@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1FC401BB8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003B3401BE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242716AbhIFM7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:59:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34962 "EHLO mail.kernel.org"
+        id S243418AbhIFNAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 09:00:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242606AbhIFM62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:58:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5AC760F92;
-        Mon,  6 Sep 2021 12:57:23 +0000 (UTC)
+        id S243093AbhIFM7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 08:59:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BEFB6103E;
+        Mon,  6 Sep 2021 12:58:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630933044;
-        bh=tdjlYTaRlUajVrYooywOn6HHZajWtuu8PEPU3aqSCnM=;
+        s=korg; t=1630933095;
+        bh=D349oO5QEXvpIRCUTESb1cUfYEXErlCjDIDFbLtpT14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YJMopF+vYMG4HDWTGGwO7J+Isd6V/BXR0gENoBmogWxegQ8jg5PfKXZEEDd53gBvJ
-         VX5GkdkMWDfG47tRTW4M1+5TnPaZxLNnD0pDtDKK0Bb6wkZl7iKuCMskKh8+p9K+8G
-         0WujlbscqE6g0amNOo6rwJ0FY3YCwWfdZ5PXGxjM=
+        b=b998pVe2B3/76iIVwFb2uu/ZBF2FYkVQrq5HBcIMXpLzfM2Akv/N3aFqftvePeUf+
+         SdFtHEUIzmhIWsXRPoijRvl03ypexfVfISbrnk/HaOAdaQIROJu5o99HqgcLvfkS8r
+         jho0rqCdXMu+3azDh0BmBk2z8g8unVJyFgrBY+jw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kim Phillips <kim.phillips@amd.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 19/29] perf/x86/amd/ibs: Work around erratum #1197
+        stable@vger.kernel.org, Prabhakar Kushwaha <pkushwaha@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Shai Malin <smalin@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.13 05/24] qed: Fix the VF msix vectors flow
 Date:   Mon,  6 Sep 2021 14:55:34 +0200
-Message-Id: <20210906125450.432987971@linuxfoundation.org>
+Message-Id: <20210906125449.287488202@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210906125449.756437409@linuxfoundation.org>
-References: <20210906125449.756437409@linuxfoundation.org>
+In-Reply-To: <20210906125449.112564040@linuxfoundation.org>
+References: <20210906125449.112564040@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,62 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kim Phillips <kim.phillips@amd.com>
+From: Shai Malin <smalin@marvell.com>
 
-[ Upstream commit 26db2e0c51fe83e1dd852c1321407835b481806e ]
+[ Upstream commit b0cd08537db8d2fbb227cdb2e5835209db295a24 ]
 
-Erratum #1197 "IBS (Instruction Based Sampling) Register State May be
-Incorrect After Restore From CC6" is published in a document:
+For VFs we should return with an error in case we didn't get the exact
+number of msix vectors as we requested.
+Not doing that will lead to a crash when starting queues for this VF.
 
-  "Revision Guide for AMD Family 19h Models 00h-0Fh Processors" 56683 Rev. 1.04 July 2021
-
-  https://bugzilla.kernel.org/show_bug.cgi?id=206537
-
-Implement the erratum's suggested workaround and ignore IBS samples if
-MSRC001_1031 == 0.
-
-Signed-off-by: Kim Phillips <kim.phillips@amd.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210817221048.88063-3-kim.phillips@amd.com
+Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Shai Malin <smalin@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/events/amd/ibs.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/ethernet/qlogic/qed/qed_main.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/events/amd/ibs.c b/arch/x86/events/amd/ibs.c
-index 40669eac9d6d..921f47b9bb24 100644
---- a/arch/x86/events/amd/ibs.c
-+++ b/arch/x86/events/amd/ibs.c
-@@ -90,6 +90,7 @@ struct perf_ibs {
- 	unsigned long			offset_mask[1];
- 	int				offset_max;
- 	unsigned int			fetch_count_reset_broken : 1;
-+	unsigned int			fetch_ignore_if_zero_rip : 1;
- 	struct cpu_perf_ibs __percpu	*pcpu;
- 
- 	struct attribute		**format_attrs;
-@@ -672,6 +673,10 @@ fail:
- 	if (check_rip && (ibs_data.regs[2] & IBS_RIP_INVALID)) {
- 		regs.flags &= ~PERF_EFLAGS_EXACT;
- 	} else {
-+		/* Workaround for erratum #1197 */
-+		if (perf_ibs->fetch_ignore_if_zero_rip && !(ibs_data.regs[1]))
-+			goto out;
-+
- 		set_linear_ip(&regs, ibs_data.regs[1]);
- 		regs.flags |= PERF_EFLAGS_EXACT;
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_main.c b/drivers/net/ethernet/qlogic/qed/qed_main.c
+index 5bd58c65e163..6bb9ec98a12b 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_main.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_main.c
+@@ -616,7 +616,12 @@ static int qed_enable_msix(struct qed_dev *cdev,
+ 			rc = cnt;
  	}
-@@ -769,6 +774,9 @@ static __init void perf_event_ibs_init(void)
- 	if (boot_cpu_data.x86 >= 0x16 && boot_cpu_data.x86 <= 0x18)
- 		perf_ibs_fetch.fetch_count_reset_broken = 1;
  
-+	if (boot_cpu_data.x86 == 0x19 && boot_cpu_data.x86_model < 0x10)
-+		perf_ibs_fetch.fetch_ignore_if_zero_rip = 1;
-+
- 	perf_ibs_pmu_init(&perf_ibs_fetch, "ibs_fetch");
- 
- 	if (ibs_caps & IBS_CAPS_OPCNT) {
+-	if (rc > 0) {
++	/* For VFs, we should return with an error in case we didn't get the
++	 * exact number of msix vectors as we requested.
++	 * Not doing that will lead to a crash when starting queues for
++	 * this VF.
++	 */
++	if ((IS_PF(cdev) && rc > 0) || (IS_VF(cdev) && rc == cnt)) {
+ 		/* MSI-x configuration was achieved */
+ 		int_params->out.int_mode = QED_INT_MODE_MSIX;
+ 		int_params->out.num_vectors = rc;
 -- 
 2.30.2
 
