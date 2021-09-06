@@ -2,272 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88723401A14
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2C2401A1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230131AbhIFKoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 06:44:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49045 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230284AbhIFKob (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 06:44:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630925006;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ul4qFH3gT696MqPqcmDxIOKc6JmUkzaJFABQhow9EWg=;
-        b=jS/4G4hsSU7TeVPlCE0Ti6JQdICkGYroM73RM/9qW4a7z76rpZ0wkyDL8KuKuQ3qair+4f
-        IlfyXpqlRCz0RxQQZtQGlxk1uVTIR5oun8JNUSsIF59ovWac6PsA9sdrFYvLaBtmVtvxDY
-        68nyTjuDh/EPGZY7cWwzhcO6nvqSTZ4=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-92-11cv2dvBNYKyXqpe40C_3w-1; Mon, 06 Sep 2021 06:43:25 -0400
-X-MC-Unique: 11cv2dvBNYKyXqpe40C_3w-1
-Received: by mail-wm1-f70.google.com with SMTP id s197-20020a1ca9ce000000b002e72ba822dcso3745283wme.6
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 03:43:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ul4qFH3gT696MqPqcmDxIOKc6JmUkzaJFABQhow9EWg=;
-        b=TDpyLi8vbIAYMRBJ1wO+jGQkOKy+/inbpF5ehCXjxqAyEi7dYFt6VDI+o4siURyMfy
-         jUlwFtVCUvIqufOs6zO3jdoWmYB4qvxqb45460jzr6GcGWc2U9RQW1rBfrel37Dyou1a
-         7bMQGJWMzVxKEp7xSsnqppbXM5dgxYbdFUjSIloME8WOAuMYrZOb5oEQ90O/nVTSE8iE
-         g9ZiCjZOG4WUR27622ZmRkxk4LXHXdfRa3Go+PfsTGW5uEBoxo76/8O7JoT9Oea8Sniq
-         6pL7pGK74il9542WXj2juCo3Gc07fWqYSjlkk1oOkbkD3SWcp16GDoXQg66Q4cg3qQim
-         AXfg==
-X-Gm-Message-State: AOAM531wx8XTbJ9Qg8B3+dUKuZ72HIQ/6zAFVxohCextF7eWNxKfb8nb
-        8gLnpPS+3QpN8fY3jAh+boHmohakhjhFoSzRFErBrNl8WdX7IesPCTHE7EScmeXFawNVLYOFjjw
-        lRSw2KePZoUlo0Ij0WjYPDl6P
-X-Received: by 2002:a05:600c:3543:: with SMTP id i3mr10798059wmq.2.1630925004177;
-        Mon, 06 Sep 2021 03:43:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzq0y7NDDKEVc4QMn/xSXfsLrateDW5EX086OFKHb0Me/zK5A7xaZmIg1gdA2WViHz/LIzfeQ==
-X-Received: by 2002:a05:600c:3543:: with SMTP id i3mr10798024wmq.2.1630925003942;
-        Mon, 06 Sep 2021 03:43:23 -0700 (PDT)
-Received: from redhat.com ([2.55.131.183])
-        by smtp.gmail.com with ESMTPSA id g5sm7424960wrq.80.2021.09.06.03.43.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 03:43:22 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 06:43:15 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Yongji Xie <xieyongji@bytedance.com>
-Cc:     Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mika =?iso-8859-1?Q?Penttil=E4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        He Zhe <zhe.he@windriver.com>,
-        Liu Xiaodong <xiaodong.liu@intel.com>,
-        Joe Perches <joe@perches.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Will Deacon <will@kernel.org>,
-        John Garry <john.garry@huawei.com>, songmuchun@bytedance.com,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v13 05/13] vdpa: Add reset callback in vdpa_config_ops
-Message-ID: <20210906053210-mutt-send-email-mst@kernel.org>
-References: <20210831103634.33-1-xieyongji@bytedance.com>
- <20210831103634.33-6-xieyongji@bytedance.com>
- <20210906015524-mutt-send-email-mst@kernel.org>
- <CACycT3v4ZVnh7DGe_RtAOx4Vvau0km=HWyCM=KzKhD+ahYKafQ@mail.gmail.com>
- <20210906023131-mutt-send-email-mst@kernel.org>
- <CACycT3ssC1bhNzY9Pk=LPvKjMrFFavTfCKTJtR2XEiVYqDxT1Q@mail.gmail.com>
- <20210906035338-mutt-send-email-mst@kernel.org>
- <CACycT3vQHRsJ_j5f4T9RoB4MQzBoYO5ts3egVe9K6TcCVfLOFQ@mail.gmail.com>
+        id S241231AbhIFKrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 06:47:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241194AbhIFKrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 06:47:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23BEE6056C;
+        Mon,  6 Sep 2021 10:46:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630925164;
+        bh=nkt6YdC2fvjv2R61BatWeT1Biq4yHRYc7LagT+ARMgY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qMxoo9QvpiVDf2qd3DNblfRozyaZHbZ2xc4bBS9SPvuUFmHJqRlhae9XovPqG7a0A
+         yt9X3SF+6981uzRFt7IYDFuXkcU4zOO5aAQDKExBrnk3l3Qf7ZnmKV3F36JAWjpRAu
+         RydBst1cjzHKhXljImxJpVGoDhYGVYjqucgsQLwI=
+Date:   Mon, 6 Sep 2021 12:46:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Jackie Liu <liu.yun@linux.dev>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mdacon: fix redefinition of 'scr_memsetw'
+Message-ID: <YTXxaU+w0mTgeL2K@kroah.com>
+References: <20210906102030.1659910-1-liu.yun@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACycT3vQHRsJ_j5f4T9RoB4MQzBoYO5ts3egVe9K6TcCVfLOFQ@mail.gmail.com>
+In-Reply-To: <20210906102030.1659910-1-liu.yun@linux.dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 04:45:55PM +0800, Yongji Xie wrote:
-> On Mon, Sep 6, 2021 at 4:01 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> >
-> > On Mon, Sep 06, 2021 at 03:06:44PM +0800, Yongji Xie wrote:
-> > > On Mon, Sep 6, 2021 at 2:37 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > > >
-> > > > On Mon, Sep 06, 2021 at 02:09:25PM +0800, Yongji Xie wrote:
-> > > > > On Mon, Sep 6, 2021 at 1:56 PM Michael S. Tsirkin <mst@redhat.com> wrote:
-> > > > > >
-> > > > > > On Tue, Aug 31, 2021 at 06:36:26PM +0800, Xie Yongji wrote:
-> > > > > > > This adds a new callback to support device specific reset
-> > > > > > > behavior. The vdpa bus driver will call the reset function
-> > > > > > > instead of setting status to zero during resetting.
-> > > > > > >
-> > > > > > > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> > > > > >
-> > > > > >
-> > > > > > This does gloss over a significant change though:
-> > > > > >
-> > > > > >
-> > > > > > > ---
-> > > > > > > @@ -348,12 +352,12 @@ static inline struct device *vdpa_get_dma_dev(struct vdpa_device *vdev)
-> > > > > > >       return vdev->dma_dev;
-> > > > > > >  }
-> > > > > > >
-> > > > > > > -static inline void vdpa_reset(struct vdpa_device *vdev)
-> > > > > > > +static inline int vdpa_reset(struct vdpa_device *vdev)
-> > > > > > >  {
-> > > > > > >       const struct vdpa_config_ops *ops = vdev->config;
-> > > > > > >
-> > > > > > >       vdev->features_valid = false;
-> > > > > > > -     ops->set_status(vdev, 0);
-> > > > > > > +     return ops->reset(vdev);
-> > > > > > >  }
-> > > > > > >
-> > > > > > >  static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
-> > > > > >
-> > > > > >
-> > > > > > Unfortunately this breaks virtio_vdpa:
-> > > > > >
-> > > > > >
-> > > > > > static void virtio_vdpa_reset(struct virtio_device *vdev)
-> > > > > > {
-> > > > > >         struct vdpa_device *vdpa = vd_get_vdpa(vdev);
-> > > > > >
-> > > > > >         vdpa_reset(vdpa);
-> > > > > > }
-> > > > > >
-> > > > > >
-> > > > > > and there's no easy way to fix this, kernel can't recover
-> > > > > > from a reset failure e.g. during driver unbind.
-> > > > > >
-> > > > >
-> > > > > Yes, but it should be safe with the protection of software IOTLB even
-> > > > > if the reset() fails during driver unbind.
-> > > > >
-> > > > > Thanks,
-> > > > > Yongji
-> > > >
-> > > > Hmm. I don't see it.
-> > > > What exactly will happen? What prevents device from poking at
-> > > > memory after reset? Note that dma unmap in e.g. del_vqs happens
-> > > > too late.
-> > >
-> > > But I didn't see any problems with touching the memory for virtqueues.
-> >
-> > Drivers make the assumption that after reset returns no new
-> > buffers will be consumed. For example a bunch of drivers
-> > call virtqueue_detach_unused_buf.
+On Mon, Sep 06, 2021 at 06:20:30PM +0800, Jackie Liu wrote:
+> From: Jackie Liu <liuyun01@kylinos.cn>
 > 
-> I'm not sure if I get your point. But it looks like
-> virtqueue_detach_unused_buf() will check the driver's metadata first
-> rather than read the memory from virtqueue.
+> CONFIG_VGA_CONSOLE=n and CONFIG_MDA_CONSOLE=n will cause vt_buffer.h not
+> include <asm/vga.h>.
 > 
-> > I can't say whether block makes this assumption anywhere.
-> > Needs careful auditing.
-> >
-> > > The memory should not be freed after dma unmap?
-> >
-> > But unmap does not happen until after the reset.
-> >
+> But if we set CONFIG_MDA_CONSOLE=m, mdacon.c include <linux/vt_buffer.h>
+> is in front of include <asm/vga.h>. VT_BUF_HAVE_MEMSETW is not defined,
+> so vt_buffer.h will define a scr_memsetw, after that, vga.h also define
+> a scr_memsetw, so the repeated definition of scr_memsetw appears, builds
+> error.
 > 
-> I mean the memory is totally allocated and controlled by the VDUSE
-> driver. The VDUSE driver will not return them to the buddy system
-> unless userspace unmap it.
-
-Right. But what stops VDUSE from poking at memory after
-reset failed?
-
-
-
-> >
-> > > And the memory for the bounce buffer should also be safe to be
-> > > accessed by userspace in this case.
-> > >
-> > > > And what about e.g. interrupts?
-> > > > E.g. we have this:
-> > > >
-> > > >         /* Virtqueues are stopped, nothing can use vblk->vdev anymore. */
-> > > >         vblk->vdev = NULL;
-> > > >
-> > > > and this is no longer true at this point.
-> > > >
-> > >
-> > > You're right. But I didn't see where the interrupt handler will use
-> > > the vblk->vdev.
-> >
-> > static void virtblk_done(struct virtqueue *vq)
-> > {
-> >         struct virtio_blk *vblk = vq->vdev->priv;
-> >
-> > vq->vdev is the same as vblk->vdev.
-> >
+> We only need to make vt_buffer.h also contain vga.h when
+> CONFIG_MDA_CONSOLE=m. This problem can be fixed.
 > 
-> We will test the vq->ready (will be set to false in del_vqs()) before
-> injecting an interrupt in the VDUSE driver. So it should be OK?
-
-Maybe not ...  It's not designed for such asynchronous access, so e.g.
-there's no locking or memory ordering around accesses.
-
-
-> >
-> > > So it seems to be not too late to fix it:
-> > >
-> > > diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c
-> > > b/drivers/vdpa/vdpa_user/vduse_dev.c
-> > > index 5c25ff6483ad..ea41a7389a26 100644
-> > > --- a/drivers/vdpa/vdpa_user/vduse_dev.c
-> > > +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-> > > @@ -665,13 +665,13 @@ static void vduse_vdpa_set_config(struct
-> > > vdpa_device *vdpa, unsigned int offset,
-> > >  static int vduse_vdpa_reset(struct vdpa_device *vdpa)
-> > >  {
-> > >         struct vduse_dev *dev = vdpa_to_vduse(vdpa);
-> > > +       int ret;
-> > >
-> > > -       if (vduse_dev_set_status(dev, 0))
-> > > -               return -EIO;
-> > > +       ret = vduse_dev_set_status(dev, 0);
-> > >
-> > >         vduse_dev_reset(dev);
-> > >
-> > > -       return 0;
-> > > +       return ret;
-> > >  }
-> > >
-> > >  static u32 vduse_vdpa_get_generation(struct vdpa_device *vdpa)
-> > >
-> > > Thanks,
-> > > Yongji
-> >
-> > Needs some comments to explain why it's done like this.
-> >
+> BTW, mdacon.c no need to include vga.h forcibly, let vt_buffer.h do it.
 > 
-> This is used to make sure the userspace can't not inject the interrupt
-> any more after reset. The vduse_dev_reset() will clear the interrupt
-> callback and flush the irq kworker.
-> 
-> > BTW device is generally wedged at this point right?
-> > E.g. if reset during initialization fails, userspace
-> > will still get the reset at some later point and be
-> > confused ...
-> >
-> 
-> Sorry, I don't get why userspace will get the reset at some later point?
-> 
-> Thanks,
-> Yongji
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 
-I am generally a bit confused about how does reset work with vduse.
-We clearly want device to get back to its original state.
-How is that supposed to be achieved?
+As this has always been an issue, how is this really a "fix"?
 
--- 
-MST
+How can the above config options be set in this manner, do you have to
+do it manually or does a system really need that configuration?
 
+
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+> ---
+>  drivers/video/console/mdacon.c | 1 -
+>  include/linux/vt_buffer.h      | 2 +-
+>  2 files changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/video/console/mdacon.c b/drivers/video/console/mdacon.c
+> index ef29b321967f..5898d01bc492 100644
+> --- a/drivers/video/console/mdacon.c
+> +++ b/drivers/video/console/mdacon.c
+> @@ -42,7 +42,6 @@
+>  #include <linux/init.h>
+>  
+>  #include <asm/io.h>
+> -#include <asm/vga.h>
+>  
+>  static DEFINE_SPINLOCK(mda_lock);
+>  
+> diff --git a/include/linux/vt_buffer.h b/include/linux/vt_buffer.h
+> index 848db1b1569f..3e71f879e7c0 100644
+> --- a/include/linux/vt_buffer.h
+> +++ b/include/linux/vt_buffer.h
+> @@ -16,7 +16,7 @@
+>  
+>  #include <linux/string.h>
+>  
+> -#if defined(CONFIG_VGA_CONSOLE) || defined(CONFIG_MDA_CONSOLE)
+> +#if defined(CONFIG_VGA_CONSOLE) || defined(CONFIG_MDA_CONSOLE) || defined(CONFIG_MDA_CONSOLE_MODULE)
+
+If this really is needed, please use the correct define macro that
+catches both of these options.
+
+thanks,
+
+greg k-h
