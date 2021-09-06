@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA624015E8
+	by mail.lfdr.de (Postfix) with ESMTP id 013224015E7
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 07:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239009AbhIFF2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 01:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50704 "EHLO
+        id S238950AbhIFF2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 01:28:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238881AbhIFF2n (ORCPT
+        with ESMTP id S238102AbhIFF2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 01:28:43 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0092AC061757;
+        Mon, 6 Sep 2021 01:28:42 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2E2C061575;
         Sun,  5 Sep 2021 22:27:38 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id pi15-20020a17090b1e4f00b00197449fc059so985672pjb.0;
-        Sun, 05 Sep 2021 22:27:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O8EgemLUAyhEE0xDtSpxWPGSz/8UwJOOmPy6hkxB9ZY=;
-        b=LFFBtt8QCnNg/4EX9uSSFk/oNMDV509nCQa+LBnV/KoqvnFDl9iuOGgYiWBbyVl9C0
-         kDlLIph19uG2HdPFMvQLonf6Cm3GTNAPN9gfpzS0sYLuRDaCGlhOWGPclbZgrY04A87C
-         ILBNzd07Ga15AsXAprrvloSS+Muari2Qxe8gMAMQAM0lEXtgWtiA9R3+K7CHgLA6wfMX
-         xLKsJI5m5hOpk23JLVbOvrIvvj0CyKis/W0XaOvqYoBgWRhdg5qFGuMEZ3b+REd3TMQX
-         V0H2n1IjZnGk8QqKkwy6X++myicn+XOC9jjDgfGAyO9Ihw9/+pf3eepdmh6VnP5ZBJhZ
-         5m5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O8EgemLUAyhEE0xDtSpxWPGSz/8UwJOOmPy6hkxB9ZY=;
-        b=tUTCvgbBiAk64UGc5g8vv9QbHcBM1BIMYzWc0Be9T2wWmj/Q/B4aOzTpkTaHQCZMzQ
-         y5BDuTc/hi8QGTf4MbY7pTWlPHWlBM5wDOBnEX/X11F3aisNMMR++caH1es8xTS4nmvb
-         76JVLCYObbzHAn1fqYX+ZRlPiUglrEg9uwgPZE+XftQpJUeZGS0COWdicNTT/hhv9DHY
-         XdlDOI1Pgz4aoqNEkfRJoDrPzdE3lvpVw9F2i+zMzkZvBkb3u0VGRk6sSj9BDtS1thte
-         tXQFSjgOa1UF25CUf5RuoABVjS87LNoh69v4QS5XEnpJOqLYfO0UNIfsqsBWzjgLTjuJ
-         15BA==
-X-Gm-Message-State: AOAM530yTjn5WXgcf3MLVdeRM5O8ltyU6Ry7xcpUZH7nxpJn7N4CnfR3
-        uTLaiYg+S1lHLVx3jrvOOqcCiGJ2T7UYzw==
-X-Google-Smtp-Source: ABdhPJw3BzChu7rKDhHBe52O5LwZGgcvCBHhm0t8hApbFNm8WE3azi/K3p2FtykUH3BA1049T4veDw==
-X-Received: by 2002:a17:90a:3ec4:: with SMTP id k62mr12355034pjc.32.1630906057664;
-        Sun, 05 Sep 2021 22:27:37 -0700 (PDT)
-Received: from localhost.localdomain ([124.126.19.250])
-        by smtp.gmail.com with ESMTPSA id y23sm6039222pfe.129.2021.09.05.22.27.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Sep 2021 22:27:37 -0700 (PDT)
-From:   zhaoxiao <long870912@gmail.com>
-To:     f.fainelli@gmail.com, rjui@broadcom.com, sbranden@broadcom.com,
-        bcm-kernel-feedback-list@broadcom.com
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhaoxiao <long870912@gmail.com>
-Subject: [PATCH] i2c: Fix return value of bcm_kona_i2c_probe()
-Date:   Mon,  6 Sep 2021 13:27:30 +0800
-Message-Id: <20210906052730.19644-1-long870912@gmail.com>
-X-Mailer: git-send-email 2.20.1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630906056;
+        bh=wRP6H3xLozP+d9ZCC0YyBnN4YegkYGX8jU5kAZtJ8wc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=e7DBWt2dHzczZJHJC3Fxf1pVNLIJvvXAhYy3hSn8gmqQ0T5iDw6h02QhhOPzn3OSb
+         I0sXOP3TQ0NiAAqdcAP0h0YQNGe0ZK6+KCH4+9rHKfhm1xAd8nlZ6WpYIyqo39PtI5
+         Wjzos/xJTVK5xydm+3aAMh3Hry/Rm7HTdN/0o8iSkCqy6VUbFYN15ZoafJ7wLwZooh
+         QVUCIkLT1xEwmiAyh06BhKm068ElOo/PJ8cHtVUtH0WcNwt+H1XyA5uOMbXZbhmWV0
+         y2CY1x31lpnbn/GlHIiq5zjbdmi/D5ByV6KYLMQqAhub8E4Qy5+cnR36x8nCfupORF
+         98TFtuf+A2Y2g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H2xjx0Fs0z9sVw;
+        Mon,  6 Sep 2021 15:27:32 +1000 (AEST)
+Date:   Mon, 6 Sep 2021 15:27:31 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithp@keithp.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [GIT PULL] overflow updates for v5.15-rc1
+Message-ID: <20210906152731.43a9c67e@canb.auug.org.au>
+In-Reply-To: <CAHk-=widUkzjVMW99L6OZpJc1wDnZbBbnOOzgXOMypOPoV6mjg@mail.gmail.com>
+References: <202109022012.756B6B5B79@keescook>
+        <CAHk-=wiPOXS2f90Ykk3V76sJLx0wMVywke8pc=88r1trmDuhmw@mail.gmail.com>
+        <45312958-B844-4B4C-9808-8205866675A1@chromium.org>
+        <CAHk-=widUkzjVMW99L6OZpJc1wDnZbBbnOOzgXOMypOPoV6mjg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/=Sbf_q1jPPWfNEYdPkEF9el";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When call function devm_platform_ioremap_resource(), we should use IS_ERR()
-to check the return value and return PTR_ERR() if failed.
+--Sig_/=Sbf_q1jPPWfNEYdPkEF9el
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: zhaoxiao <long870912@gmail.com>
----
- drivers/i2c/busses/i2c-bcm-kona.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi Linus,
 
-diff --git a/drivers/i2c/busses/i2c-bcm-kona.c b/drivers/i2c/busses/i2c-bcm-kona.c
-index ed5e1275ae46..8e350f20cde0 100644
---- a/drivers/i2c/busses/i2c-bcm-kona.c
-+++ b/drivers/i2c/busses/i2c-bcm-kona.c
-@@ -763,7 +763,7 @@ static int bcm_kona_i2c_probe(struct platform_device *pdev)
- 	/* Map hardware registers */
- 	dev->base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(dev->base))
--		return -ENOMEM;
-+		return PTR_ERR(dev->base);
- 
- 	/* Get and enable external clock */
- 	dev->external_clk = devm_clk_get(dev->device, NULL);
--- 
-2.20.1
+On Sun, 5 Sep 2021 10:36:22 -0700 Linus Torvalds <torvalds@linux-foundation=
+.org> wrote:
+>
+> On Sun, Sep 5, 2021 at 12:38 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > Yeech. Yeah, no, that was not expected at all. I even did test merge bu=
+ilds against your latest tree before sending the Pull Request. This has bee=
+n in -next for weeks, too. =20
+>=20
+> Sadly, I don't think linux-next checks for warnings.
 
+Yes, I do.  And report them.  I did not get these warnings for some
+reason.  One of my builds is an X86_64 allmodconfig, currently using
+
+x86_64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/=Sbf_q1jPPWfNEYdPkEF9el
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE1psMACgkQAVBC80lX
+0GwyLQf/dS0qDqLBYPog4aARLifKVXXjCe0+Apz4UYnDZAofwYOi6ACDjoVp8yMA
+ei8RDDZjlL6xdBcYZkXh0eK4tBljlWxT6kiEYkM/wkZvIOD4fSqbTZWXP+NDNevi
+D4EQwVsR42jEg0vHS+q6kry5a5lMnhBWObdnCTGjzMntpYActiTSxzDi6xSZlrP3
+R9cZbnn60MN8vv2oPXA44FR9UFGHlfS7j9sk5Zl7ge8lUlxORnF/9PTmNVPcRSWL
+23YS+dRDYSIi73tfV4ugfosr3dAesFU/11VySmjqqIwLkS1k1y5rZ8x4ViSvr5WK
+iO2PNDo5nNVhfskYaHjeZjnK7+n3HQ==
+=2YWD
+-----END PGP SIGNATURE-----
+
+--Sig_/=Sbf_q1jPPWfNEYdPkEF9el--
