@@ -2,92 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235794014D9
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 03:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D90264014EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 03:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238610AbhIFByw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 21:54:52 -0400
-Received: from mga03.intel.com ([134.134.136.65]:63775 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238511AbhIFByv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 21:54:51 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10098"; a="219916175"
-X-IronPort-AV: E=Sophos;i="5.85,271,1624345200"; 
-   d="scan'208";a="219916175"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2021 18:53:47 -0700
-X-IronPort-AV: E=Sophos;i="5.85,271,1624345200"; 
-   d="scan'208";a="536346047"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2021 18:53:41 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     kernel test robot <oliver.sang@intel.com>,
-        Rui Zhang <rui.zhang@intel.com>, Chen Yu <yu.c.chen@intel.com>,
-        Len Brown <len.brown@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        0day robot <lkp@intel.com>, Yang Shi <shy828301@gmail.com>,
-        Zi Yan <ziy@nvidia.com>, Michal Hocko <mhocko@suse.com>,
-        Wei Xu <weixugc@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Greg Thelen <gthelen@google.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        LKML <linux-kernel@vger.kernel.org>, <lkp@lists.01.org>,
-        <feng.tang@intel.com>, <zhengjun.xing@linux.intel.com>,
-        <dave.hansen@linux.intel.com>, <linux-mm@kvack.org>,
-        <mm-commits@vger.kernel.org>, <torvalds@linux-foundation.org>
-Subject: Re: [mm/migrate]  9eeb73028c:  stress-ng.memhotplug.ops_per_sec
- -53.8% regression
-References: <20210905135932.GE15026@xsang-OptiPlex-9020>
-Date:   Mon, 06 Sep 2021 09:53:39 +0800
-In-Reply-To: <20210905135932.GE15026@xsang-OptiPlex-9020> (kernel test robot's
-        message of "Sun, 5 Sep 2021 21:59:33 +0800")
-Message-ID: <87y28aii58.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+        id S238736AbhIFCAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 22:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238487AbhIFCAm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 22:00:42 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B556CC061575;
+        Sun,  5 Sep 2021 18:59:38 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id g13-20020a17090a3c8d00b00196286963b9so3320961pjc.3;
+        Sun, 05 Sep 2021 18:59:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=lL/gGNTGH9DC6PNdYT9D3YTeFu4Msr6Mh1n9Bkcpt+I=;
+        b=a1nY/qBjMOjzV9rNW9tJLMV0pIcbDyaGWIb9A7UiPDxyfejOhT9zKnLXuCVJGi3dXU
+         Ck9nSSQn+nJ+VzZ/w8cADCDfwn4PwkrFk8YOmuFNw+ES62CRMCXpjHmClOwsYJJ9NOwL
+         vUId7+I4ibGxnWf6Vj/O5wm24nKs4ucZWdD/r53mCAzdbFVD1OjXaopjG0JvlU+3X+6U
+         h9+TODQB80z9PciqZigmNUegyjzjZQ1u/G/E9LHT9DthgFHUdIVj73V4f5yHuXAOot/+
+         5Nx7nOOViFpXnhMICGcUdW4vH49O4jJW4zEVzn/mqpGEmtL58uZFVNCzI0cPiaHYarz+
+         jSmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=lL/gGNTGH9DC6PNdYT9D3YTeFu4Msr6Mh1n9Bkcpt+I=;
+        b=Dj5/UljJf7hQuWE8UoTkA7ZCSRXl3UBFgrSM81nuH8LeSixEg7ymSsoltIRVWkYikG
+         GmpG5ZnbG5zgX+h2LyIqez7OejIpIPiAXE4KS4xQD3yIkXT4VmKP+KKNgOuZE+aex0Pw
+         qkITg/8HcPHkuZwIhVhwrI1s7Z4kE0VHIhB0REztUMIwMkFmO3NUm0iL+j4Zh+NzOZIu
+         MICWjOg8i+xh4PZf3oR4eKRoGfdY8N/pBCSXYWA4Z43VD3XZOKGvVJ4qEgGPHlLo2V5V
+         k4++3A+2Fe+yziKzEWT4E+/oSdM/AZuWIF5MHypLubs1leirU9j0XyDr+vo0KWCbc6jq
+         m+eg==
+X-Gm-Message-State: AOAM533STjDns0X706vOlaE7ZxL7y531oFjBsACx5Bs3X09Pt73b0cLY
+        bFGuwBc70ZpOmbaE6tejAVQ=
+X-Google-Smtp-Source: ABdhPJzes0CjsVGE7pEjW1LLfpBpTPz2z91olb7uM6pHTm+WcRjAmDDVq6jdRQ9IrRzSSvM9SLrmlg==
+X-Received: by 2002:a17:90a:bf06:: with SMTP id c6mr11419229pjs.55.1630893578044;
+        Sun, 05 Sep 2021 18:59:38 -0700 (PDT)
+Received: from localhost (natp-s01-129-78-56-229.gw.usyd.edu.au. [129.78.56.229])
+        by smtp.gmail.com with ESMTPSA id w5sm6757301pgp.79.2021.09.05.18.59.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 05 Sep 2021 18:59:37 -0700 (PDT)
+From:   Baptiste Lepers <baptiste.lepers@gmail.com>
+Cc:     Baptiste Lepers <baptiste.lepers@gmail.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Tao Peng <bergwolf@primarydata.com>,
+        Tom Haynes <loghyr@primarydata.com>,
+        Weston Andros Adamson <dros@primarydata.com>,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] pnfs/flexfiles: Fix misplaced barrier in nfs4_ff_layout_prepare_ds
+Date:   Mon,  6 Sep 2021 11:59:24 +1000
+Message-Id: <20210906015925.13705-1-baptiste.lepers@gmail.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot <oliver.sang@intel.com> writes:
+_nfs4_pnfs_v3/v4_ds_connect do
+   some work
+   smp_wmb
+   ds->ds_clp = clp;
 
-> Greeting,
->
-> FYI, we noticed a -53.8% regression of stress-ng.memhotplug.ops_per_sec due to commit:
->
->
-> commit: 9eeb73028cfb54eb06efe87c50cc014d3f1ff43e ("[patch 174/212] mm/migrate: update node demotion order on hotplug events")
-> url: https://github.com/0day-ci/linux/commits/Andrew-Morton/ia64-fix-typo-in-a-comment/20210903-065028
->
->
-> in testcase: stress-ng
-> on test machine: 96 threads 2 sockets Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 192G memory
-> with following parameters:
->
-> 	nr_threads: 10%
-> 	disk: 1HDD
-> 	testtime: 60s
-> 	fs: ext4
-> 	class: os
-> 	test: memhotplug
-> 	cpufreq_governor: performance
-> 	ucode: 0x5003006
->
+And nfs4_ff_layout_prepare_ds currently does
+   smp_rmb
+   if(ds->ds_clp)
+      ...
 
-Because we added some operations during online/offline CPU, it's
-expected that the performance of online/offline CPU will decrease.  In
-most cases, the performance of CPU hotplug isn't a big problem.  But
-then I remembers that the performance of the CPU hotplug may influence
-suspend/resume performance :-(
+This patch places the smp_rmb after the if. This ensures that following
+reads only happen once nfs4_ff_layout_prepare_ds has checked that data
+has been properly initialized.
 
-It appears that it is easy and reasonable to enclose the added
-operations inside #ifdef CONFIG_NUMA.  Is this sufficient to restore the
-performance of suspend/resume?
+Fixes: d67ae825a59d6 ("pnfs/flexfiles: Add the FlexFile Layout Driver")
+Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
+---
+ fs/nfs/flexfilelayout/flexfilelayoutdev.c | 4 ++--
+ fs/nfs/pnfs_nfs.c                         | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Best Regards,
-Huang, Ying
+diff --git a/fs/nfs/flexfilelayout/flexfilelayoutdev.c b/fs/nfs/flexfilelayout/flexfilelayoutdev.c
+index c9b61b818ec1..bfa7202ca7be 100644
+--- a/fs/nfs/flexfilelayout/flexfilelayoutdev.c
++++ b/fs/nfs/flexfilelayout/flexfilelayoutdev.c
+@@ -378,10 +378,10 @@ nfs4_ff_layout_prepare_ds(struct pnfs_layout_segment *lseg,
+ 		goto noconnect;
+ 
+ 	ds = mirror->mirror_ds->ds;
++	if (READ_ONCE(ds->ds_clp))
++		goto out;
+ 	/* matching smp_wmb() in _nfs4_pnfs_v3/4_ds_connect */
+ 	smp_rmb();
+-	if (ds->ds_clp)
+-		goto out;
+ 
+ 	/* FIXME: For now we assume the server sent only one version of NFS
+ 	 * to use for the DS.
+diff --git a/fs/nfs/pnfs_nfs.c b/fs/nfs/pnfs_nfs.c
+index cf19914fec81..02bd6e83961d 100644
+--- a/fs/nfs/pnfs_nfs.c
++++ b/fs/nfs/pnfs_nfs.c
+@@ -895,7 +895,7 @@ static int _nfs4_pnfs_v3_ds_connect(struct nfs_server *mds_srv,
+ 	}
+ 
+ 	smp_wmb();
+-	ds->ds_clp = clp;
++	WRITE_ONCE(ds->ds_clp, clp);
+ 	dprintk("%s [new] addr: %s\n", __func__, ds->ds_remotestr);
+ out:
+ 	return status;
+@@ -973,7 +973,7 @@ static int _nfs4_pnfs_v4_ds_connect(struct nfs_server *mds_srv,
+ 	}
+ 
+ 	smp_wmb();
+-	ds->ds_clp = clp;
++	WRITE_ONCE(ds->ds_clp, clp);
+ 	dprintk("%s [new] addr: %s\n", __func__, ds->ds_remotestr);
+ out:
+ 	return status;
+-- 
+2.17.1
+
