@@ -2,177 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3738401E0D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB4F401E16
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243774AbhIFQJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 12:09:33 -0400
-Received: from mga04.intel.com ([192.55.52.120]:53222 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243510AbhIFQJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:09:32 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="218136421"
-X-IronPort-AV: E=Sophos;i="5.85,272,1624345200"; 
-   d="scan'208";a="218136421"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 09:08:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,272,1624345200"; 
-   d="scan'208";a="468894542"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
-  by orsmga007.jf.intel.com with ESMTP; 06 Sep 2021 09:08:22 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] perf dlfilter: Add dlfilter-show-cycles
-Date:   Mon,  6 Sep 2021 19:08:50 +0300
-Message-Id: <20210906160850.22716-1-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S243858AbhIFQNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 12:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238452AbhIFQNg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 12:13:36 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B926C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 09:12:31 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id s12so12159703ljg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 09:12:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hYS9+nltkRVvqUm5CmdhVmH+ALslv6xme21bOkTYocQ=;
+        b=VYGGPZPNBbWCuSJ1UEVbkPjJq2Lyfd/u0WtP0VF5Pl5b8+dBnFmHXlVDSNRplBiDAH
+         KszTYCunx4zsrA5cbC8iwV4WCjXhIgyPbwlQd18riW8k/UhlgyxmltKZiWdU5Ar0uzF8
+         ORkGrm6zw2qvK+d6Sm9faG2fYVydaGxRmVf5k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hYS9+nltkRVvqUm5CmdhVmH+ALslv6xme21bOkTYocQ=;
+        b=sivGapfvS9C5eZsbADasfnwxQy33VJ3G9/mCfhSO2loi2DVY0RBdBFyAVlFv5KvAoj
+         EYEZEgzoWdWREC+WIeyd4Ny4mz+lDhgT5NOLhcOQLi8fgxgM0xebzcVq8r+8XRP0HpDd
+         QSGb0e2C6RIAQ5Q28dQ5JKlY/Ju1/gE1Gy3k4UtkrIEEqAzxjWvc8aEwZoBZZWaaoVsQ
+         ASsUS/gFBWg81Mj3b5bYugD8tvqz8fHiPFOFc8QqUcG2wjZjrsCUbwLh24IJoAw1J9v+
+         tbhIS5bv/WwoFwjCdJp2ITQoDVCuMqPgxJJUjtfEDw4m66tU5h/9V1nmb+ITTxTv/ZSB
+         86Ew==
+X-Gm-Message-State: AOAM533l5xvfn7nM2zq0BpAhmgpikq+UNJU42rDn8AcxBOM2H9Gl4Me8
+        Npthr5wNyMfn9SApRcpinlhz9I5+3use4iewnzk=
+X-Google-Smtp-Source: ABdhPJwXC1bFLxOUiW5cN4u3NZr4NmyojwXnjZCTO/1gPsAErOH+XeXNYPTN3ZCZ9+fxR1/2CjCyvw==
+X-Received: by 2002:a2e:22c1:: with SMTP id i184mr11563602lji.89.1630944749155;
+        Mon, 06 Sep 2021 09:12:29 -0700 (PDT)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id a13sm1111390ljn.120.2021.09.06.09.12.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 09:12:28 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id y34so14275879lfa.8
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 09:12:28 -0700 (PDT)
+X-Received: by 2002:a05:6512:114c:: with SMTP id m12mr9963367lfg.150.1630944748158;
+ Mon, 06 Sep 2021 09:12:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210906142615.GA1917503@roeck-us.net>
+In-Reply-To: <20210906142615.GA1917503@roeck-us.net>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 6 Sep 2021 09:12:12 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+Message-ID: <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new dlfilter to show cycles.
+On Mon, Sep 6, 2021 at 7:26 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> Build results:
+>         total: 153 pass: 89 fail: 64
 
-Cycle counts are accumulated per CPU (or per thread if CPU is not recorded)
-from IPC information, and printed together with the change since the last
-print, at the start of each line.
+Well, that sadly proves the point of that patch. x86-64 may be clean,
+because I have required it manually. Others not necessarily so much..
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- tools/perf/Makefile.perf                    |   2 +-
- tools/perf/dlfilters/dlfilter-show-cycles.c | 107 ++++++++++++++++++++
- 2 files changed, 108 insertions(+), 1 deletion(-)
- create mode 100644 tools/perf/dlfilters/dlfilter-show-cycles.c
+I've got at least one sparc64 fix in my inbox. It _might_ fix some
+other cases too (syscall checking), but I suspect it's one of those
+"death by a thousand cuts" situations, not just one or two issues that
+show up.
 
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index e04313c4d840..6b2c8b46ea80 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -360,7 +360,7 @@ ifndef NO_JVMTI
- PROGRAMS += $(OUTPUT)$(LIBJVMTI)
- endif
- 
--DLFILTERS := dlfilter-test-api-v0.so
-+DLFILTERS := dlfilter-test-api-v0.so dlfilter-show-cycles.so
- DLFILTERS := $(patsubst %,$(OUTPUT)dlfilters/%,$(DLFILTERS))
- 
- # what 'all' will build and 'install' will install, in perfexecdir
-diff --git a/tools/perf/dlfilters/dlfilter-show-cycles.c b/tools/perf/dlfilters/dlfilter-show-cycles.c
-new file mode 100644
-index 000000000000..d5b37f560ffd
---- /dev/null
-+++ b/tools/perf/dlfilters/dlfilter-show-cycles.c
-@@ -0,0 +1,107 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * dlfilter-show-cycles.c: Print the number of cycles at the start of each line
-+ * Copyright (c) 2021, Intel Corporation.
-+ */
-+#include <perf/perf_dlfilter.h>
-+#include <stdio.h>
-+
-+#define MAX_CPU 4096
-+
-+static __u64 cycles[MAX_CPU];
-+static __u64 cycles_rpt[MAX_CPU];
-+
-+#define BITS		16
-+#define TABLESZ		(1 << BITS)
-+#define TABLEMAX	(TABLESZ / 2)
-+#define MASK		(TABLESZ - 1)
-+
-+static struct entry {
-+	__u32 used;
-+	__s32 tid;
-+	__u64 cycles;
-+	__u64 cycles_rpt;
-+} table[TABLESZ];
-+
-+static int tid_cnt;
-+
-+static struct entry *find_entry(__s32 tid)
-+{
-+	__u32 pos = tid & MASK;
-+	struct entry *e;
-+
-+	e = &table[pos];
-+	while (e->used) {
-+		if (e->tid == tid)
-+			return e;
-+		if (++pos == TABLESZ)
-+			pos = 0;
-+		e = &table[pos];
-+	}
-+
-+	if (tid_cnt >= TABLEMAX) {
-+		fprintf(stderr, "Too many threads\n");
-+		return NULL;
-+	}
-+
-+	tid_cnt += 1;
-+	e->used = 1;
-+	e->tid = tid;
-+	return e;
-+}
-+
-+static void add_entry(__s32 tid, __u64 cnt)
-+{
-+	struct entry *e = find_entry(tid);
-+
-+	if (e)
-+		e->cycles += cnt;
-+}
-+
-+int filter_event_early(void *data, const struct perf_dlfilter_sample *sample, void *ctx)
-+{
-+	__s32 cpu = sample->cpu;
-+	__s32 tid = sample->tid;
-+
-+	if (cpu >= 0 && cpu < MAX_CPU)
-+		cycles[cpu] += sample->cyc_cnt;
-+	else if (tid != -1)
-+		add_entry(tid, sample->cyc_cnt);
-+	return 0;
-+}
-+
-+int filter_event(void *data, const struct perf_dlfilter_sample *sample, void *ctx)
-+{
-+	__s32 cpu = sample->cpu;
-+	__s32 tid = sample->tid;
-+
-+	if (cpu >= 0 && cpu < MAX_CPU) {
-+		printf("%10llu %10llu ", cycles[cpu], cycles[cpu] - cycles_rpt[cpu]);
-+		cycles_rpt[cpu] = cycles[cpu];
-+		return 0;
-+	}
-+
-+	if (tid != -1) {
-+		struct entry *e = find_entry(tid);
-+
-+		if (e) {
-+			printf("%10llu %10llu ", e->cycles, e->cycles - e->cycles_rpt);
-+			e->cycles_rpt = e->cycles;
-+			return 0;
-+		}
-+	}
-+
-+	printf("%22s", "");
-+	return 0;
-+}
-+
-+const char *filter_description(const char **long_description)
-+{
-+	static char *long_desc = "Cycle counts are accumulated per CPU (or "
-+		"per thread if CPU is not recorded) from IPC information, and "
-+		"printed together with the change since the last print, at the "
-+		"start of each line.";
-+
-+	*long_description = long_desc;
-+	return "Print the number of cycles at the start of each line";
-+}
--- 
-2.17.1
+Do you end up exposing the errors anywhere where I can take a look?
 
+If some of them are just because of bad tooling on certain
+architectures (ie fundamentally "this is unfixable, because we use
+gcc-XYZ that just always causes warnings") then those we could/should
+just disable -Werror for those and forget about them.
+
+But hopefully most cases are just "people haven't cared enough" and
+easily fixed.
+
+              Linus
