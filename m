@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003B3401BE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 073EB401BA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243418AbhIFNAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 09:00:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36364 "EHLO mail.kernel.org"
+        id S242917AbhIFM6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:58:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243093AbhIFM7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:59:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BEFB6103E;
-        Mon,  6 Sep 2021 12:58:14 +0000 (UTC)
+        id S242553AbhIFM6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 08:58:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1AA461027;
+        Mon,  6 Sep 2021 12:56:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630933095;
-        bh=D349oO5QEXvpIRCUTESb1cUfYEXErlCjDIDFbLtpT14=;
+        s=korg; t=1630933019;
+        bh=Omw1PFBQpa2oGnMIlEQ1ce+cdnCzeMg2fpLt5V870oc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b998pVe2B3/76iIVwFb2uu/ZBF2FYkVQrq5HBcIMXpLzfM2Akv/N3aFqftvePeUf+
-         SdFtHEUIzmhIWsXRPoijRvl03ypexfVfISbrnk/HaOAdaQIROJu5o99HqgcLvfkS8r
-         jho0rqCdXMu+3azDh0BmBk2z8g8unVJyFgrBY+jw=
+        b=zrI53XkA22//Hraqa/LVNII9LQ5ccXAvNsa37Bv+EGOS90LpwvbEnubO3Y6zIGPSG
+         VsxdqvZwEvFUlfwc3/ApD4qtgzt0zlxbwOCGwazniixIQchXXVAtqZdF1KTBYv+5+d
+         4oCbS33Inqpf+uPhsxufXVQfZrRi8+uRb3HLPmd4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Prabhakar Kushwaha <pkushwaha@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Shai Malin <smalin@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 05/24] qed: Fix the VF msix vectors flow
-Date:   Mon,  6 Sep 2021 14:55:34 +0200
-Message-Id: <20210906125449.287488202@linuxfoundation.org>
+        stable@vger.kernel.org, Kim Phillips <kim.phillips@amd.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 20/29] perf/x86/amd/power: Assign pmu.module
+Date:   Mon,  6 Sep 2021 14:55:35 +0200
+Message-Id: <20210906125450.463692371@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210906125449.112564040@linuxfoundation.org>
-References: <20210906125449.112564040@linuxfoundation.org>
+In-Reply-To: <20210906125449.756437409@linuxfoundation.org>
+References: <20210906125449.756437409@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,41 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shai Malin <smalin@marvell.com>
+From: Kim Phillips <kim.phillips@amd.com>
 
-[ Upstream commit b0cd08537db8d2fbb227cdb2e5835209db295a24 ]
+[ Upstream commit ccf26483416a339c114409f6e7cd02abdeaf8052 ]
 
-For VFs we should return with an error in case we didn't get the exact
-number of msix vectors as we requested.
-Not doing that will lead to a crash when starting queues for this VF.
+Assign pmu.module so the driver can't be unloaded whilst in use.
 
-Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
-Signed-off-by: Ariel Elior <aelior@marvell.com>
-Signed-off-by: Shai Malin <smalin@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Kim Phillips <kim.phillips@amd.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20210817221048.88063-4-kim.phillips@amd.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qed/qed_main.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ arch/x86/events/amd/power.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_main.c b/drivers/net/ethernet/qlogic/qed/qed_main.c
-index 5bd58c65e163..6bb9ec98a12b 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_main.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_main.c
-@@ -616,7 +616,12 @@ static int qed_enable_msix(struct qed_dev *cdev,
- 			rc = cnt;
- 	}
+diff --git a/arch/x86/events/amd/power.c b/arch/x86/events/amd/power.c
+index 16a2369c586e..37d5b380516e 100644
+--- a/arch/x86/events/amd/power.c
++++ b/arch/x86/events/amd/power.c
+@@ -213,6 +213,7 @@ static struct pmu pmu_class = {
+ 	.stop		= pmu_event_stop,
+ 	.read		= pmu_event_read,
+ 	.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
++	.module		= THIS_MODULE,
+ };
  
--	if (rc > 0) {
-+	/* For VFs, we should return with an error in case we didn't get the
-+	 * exact number of msix vectors as we requested.
-+	 * Not doing that will lead to a crash when starting queues for
-+	 * this VF.
-+	 */
-+	if ((IS_PF(cdev) && rc > 0) || (IS_VF(cdev) && rc == cnt)) {
- 		/* MSI-x configuration was achieved */
- 		int_params->out.int_mode = QED_INT_MODE_MSIX;
- 		int_params->out.num_vectors = rc;
+ static int power_cpu_exit(unsigned int cpu)
 -- 
 2.30.2
 
