@@ -2,109 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A8140153B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 05:21:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FF640153F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 05:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232531AbhIFDWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 23:22:02 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:58430 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231207AbhIFDV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 23:21:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630898455; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=zeI7cb88S3dlLs0mexnW614GGMS9653bA0VelDKM6RQ=;
- b=kYDIwt7+3bxIYazVECWE/qfw/DrPjZ9HHFSSLYz5BGV/05zM4wJMiGDF13bRdPoJK3DM2fHq
- 0AxgjakgDgJc59IHgYeUFPDpXFwZ+KHOShK8AwMQfrMGp4CbJX67etYYdn9FCgkhAEL2qPZt
- GUWKcPij829ewJczKDer27tBDbA=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 6135890589cdb6206103d8ef (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 06 Sep 2021 03:20:37
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C3790C4360D; Mon,  6 Sep 2021 03:20:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3DBE6C4338F;
-        Mon,  6 Sep 2021 03:20:36 +0000 (UTC)
+        id S235761AbhIFDg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 23:36:57 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:15292 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230191AbhIFDg4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 23:36:56 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H2vDV6C3cz8sqH;
+        Mon,  6 Sep 2021 11:35:22 +0800 (CST)
+Received: from dggema764-chm.china.huawei.com (10.1.198.206) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2308.8; Mon, 6 Sep 2021 11:35:50 +0800
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
+ dggema764-chm.china.huawei.com (10.1.198.206) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Mon, 6 Sep 2021 11:35:49 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <intel-gfx@lists.freedesktop.org>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     <jani.nikula@linux.intel.com>, <joonas.lahtinen@linux.intel.com>,
+        <rodrigo.vivi@intel.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <ville.syrjala@linux.intel.com>, <tiwai@suse.de>,
+        <wanghaibin.wang@huawei.com>, Zenghui Yu <yuzenghui@huawei.com>,
+        "Kai-Heng Feng" <kai.heng.feng@canonical.com>
+Subject: [PATCH] drm/i915: Free the returned object of acpi_evaluate_dsm()
+Date:   Mon, 6 Sep 2021 11:35:41 +0800
+Message-ID: <20210906033541.862-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 06 Sep 2021 08:50:36 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>, sboyd@kernel.org,
-        robh+dt@kernel.org, viresh.kumar@linaro.org, agross@kernel.org,
-        rjw@rjwysocki.net, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, dianders@chromium.org,
-        tdas@codeaurora.org
-Subject: Re: [PATCH 3/4] arm64: dts: qcom: sc7280: Fixup the cpufreq node
-In-Reply-To: <YS5hDq+xblntYbh0@ripper>
-References: <1627581885-32165-1-git-send-email-sibis@codeaurora.org>
- <1627581885-32165-4-git-send-email-sibis@codeaurora.org>
- <YS5LDb4KDFx/dRnM@google.com> <YS5hDq+xblntYbh0@ripper>
-Message-ID: <fde7bac239f796b039b9be58b391fb77@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.179]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema764-chm.china.huawei.com (10.1.198.206)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-08-31 22:34, Bjorn Andersson wrote:
-> On Tue 31 Aug 08:30 PDT 2021, Matthias Kaehlcke wrote:
-> 
->> On Thu, Jul 29, 2021 at 11:34:44PM +0530, Sibi Sankar wrote:
->> > Fixup the register regions used by the cpufreq node on SC7280 SoC to
->> > support per core L3 DCVS.
->> >
->> > Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
->> > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> 
->> This patch landed in the Bjorn's tree, however the corresponding 
->> driver
->> change ("cpufreq: qcom: Re-arrange register offsets to support per 
->> core
->> L3 DCVS" / 
->> https://patchwork.kernel.org/project/linux-arm-msm/patch/1627581885-32165-3-git-send-email-sibis@codeaurora.org/)
->> did not land in any maintainer tree yet AFAIK. IIUC the DT change 
->> alone
->> breaks cpufreq since the changed register regions require the changed
->> offset in the cpufreq driver.
->> 
-> 
-> Thanks for the note Matthias, it must have slipped by as I scraped the
-> inbox for things that looked ready.
-> 
-> I'm actually not in favor of splitting these memory blocks in DT to
-> facilitate the Linux implementation of splitting that in multiple
-> drivers...
-> 
-> But I've not been following up on that discussion.
-> 
-> Regards,
-> Bjorn
-> 
->> Sibi, please confirm or clarify that my concern is unwarranted.
+As per the comment on top of acpi_evaluate_dsm():
 
-Let's drop the patch asap as it breaks
-SC7280 cpufreq on lnext without the driver
-changes.
+| * Evaluate device's _DSM method with specified GUID, revision id and
+| * function number. Caller needs to free the returned object.
 
+We should free the returned object of acpi_evaluate_dsm() to avoid memory
+leakage. Otherwise the kmemleak splat will be triggered at boot time (if we
+compile kernel with CONFIG_DEBUG_TEST_DRIVER_REMOVE=y).
+
+Fixes: 8e55f99c510f ("drm/i915: Invoke another _DSM to enable MUX on HP Workstation laptops")
+Cc: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+---
+ drivers/gpu/drm/i915/display/intel_acpi.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
+index 7cfe91fc05f2..68abeaf2d7d4 100644
+--- a/drivers/gpu/drm/i915/display/intel_acpi.c
++++ b/drivers/gpu/drm/i915/display/intel_acpi.c
+@@ -186,13 +186,16 @@ void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915)
+ {
+ 	struct pci_dev *pdev = to_pci_dev(i915->drm.dev);
+ 	acpi_handle dhandle;
++	union acpi_object *obj;
+ 
+ 	dhandle = ACPI_HANDLE(&pdev->dev);
+ 	if (!dhandle)
+ 		return;
+ 
+-	acpi_evaluate_dsm(dhandle, &intel_dsm_guid2, INTEL_DSM_REVISION_ID,
+-			  INTEL_DSM_FN_GET_BIOS_DATA_FUNCS_SUPPORTED, NULL);
++	obj = acpi_evaluate_dsm(dhandle, &intel_dsm_guid2, INTEL_DSM_REVISION_ID,
++				INTEL_DSM_FN_GET_BIOS_DATA_FUNCS_SUPPORTED, NULL);
++	if (obj)
++		ACPI_FREE(obj);
+ }
+ 
+ /*
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+2.19.1
+
