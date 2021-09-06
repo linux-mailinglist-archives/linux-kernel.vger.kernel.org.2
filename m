@@ -2,95 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2162D401EB0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76485401EB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:51:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232911AbhIFQvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 12:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36490 "EHLO
+        id S234245AbhIFQwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 12:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbhIFQvP (ORCPT
+        with ESMTP id S230263AbhIFQwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:51:15 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7767C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 09:50:09 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id d3-20020a17090ae28300b0019629c96f25so309179pjz.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 09:50:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mzSa9wZBKlWhK0MfqqmZO/9vUDeVuVCig7dzjAMX9tU=;
-        b=poqQLF143MSqjX1x09dOGpUZELMkqVG4vNZB2PH8jKS7wyUw0A9iY9zGVZ3qWDJ9rb
-         oawjx9L3oObPLILFPPfqAuzEjlafiSg8GXvwrRH+KOGkTvmwonfCQfTe010LosiSNJVZ
-         Cq9NWoiUfK6hmL0NLmUBxsyXLsSPWx/xnSf0b9+6UuERLwEZ0+niwqvqKaKs3n68jnu4
-         t3I9t2bhawcfYthhIeyvt6QhSAxJPRmnYG1Da0fovy360VJ0fiHwEqk6/M0ya8fuDVEb
-         6spBzwAp5I0GRsznKzmnRgir0U1zAv9aksoCiwoZ2i/ztvJCCEhR3KcAyaODBiFFlvHe
-         wECQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mzSa9wZBKlWhK0MfqqmZO/9vUDeVuVCig7dzjAMX9tU=;
-        b=t4+FJxyRtnSIUmABWvVOPH0jUlmgUL21jlRiCs9RtsHvIbYQvFOCjAUZDj6Fi98b+E
-         Pc6bCtpxyVqMNXdiFFCD4OrgZZtRrB+F0RWMuAHACUctY55RYGHDytbxmyfCOC6v66om
-         LEyudyLTx/1y3+EY2Ux96/engSS0qSyfEG7qlQXmxnCbbFQeXbtb+jqMKWW7xutrUKqP
-         DDzfA5+Zc/AjK20QV/HfZaWleSEABfOskOo5UQVVms6qU2/fDYwSmU6VgxlLuYFlOGE0
-         53LcY1Olu7C4YwdAR5q59+T9loyrqgE4n3grGIQeJW0q77XmAOnwLh4PjgcdyzD+lgjK
-         sQJg==
-X-Gm-Message-State: AOAM5329Q8p6CDjMVnWkh3gchua7izAUu+RqnorXwoVLpo9SIanQD229
-        NgXUg+JzzpWVWmQemrS8Y5tnme+8SchO+w==
-X-Google-Smtp-Source: ABdhPJy/jURIOVEtyn0M+4wXFYwWfE4UEADRr4DC3FcP1IgRZ/135+xS9pCFjmSYRiKZCcwC4jlp4w==
-X-Received: by 2002:a17:902:6f01:b0:138:9aca:efda with SMTP id w1-20020a1709026f0100b001389acaefdamr11493582plk.19.1630947008991;
-        Mon, 06 Sep 2021 09:50:08 -0700 (PDT)
-Received: from [192.168.1.6] ([117.98.200.228])
-        by smtp.gmail.com with ESMTPSA id 11sm8143234pfl.41.2021.09.06.09.50.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 09:50:08 -0700 (PDT)
-Cc:     saurav.girepunje@hotmail.com, Larry.Finger@lwfinger.net,
-        florian.c.schilhabel@googlemail.com, fmdefrancesco@gmail.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8712: Move similar execution in to a
- function.
-To:     Greg KH <gregkh@linuxfoundation.org>
-References: <YTUQZdPiYFscIsvU@user> <YTXjSwWcyd6RRMjO@kroah.com>
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-Message-ID: <4b62cbec-b356-b920-17ba-3ee7cc6f9713@gmail.com>
-Date:   Mon, 6 Sep 2021 22:20:05 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Mon, 6 Sep 2021 12:52:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49372C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 09:51:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=wiD2AcN785WWBM0bTHn9B8Epeoow+GpyloPCBFHVPJw=; b=SUdKJuF5ikJNwHDq7TwMPG3OlT
+        tYTaGhMenbVeeul3ysFha0UHmyhfP0sUrmXuxCdF1zddfliFeDBvtAj6j4QoeKw8c9QEXhzvX+cda
+        GzKVjxJ/jx43saH6WYwp3JmoNgketgXedOx2UNR3C9ZfJM5wZcoc4E+fRMv9kKIu29UlcDV0k4HnZ
+        tZ6yoNxxTLWPZ+srKjjx5FoePvurTID5I9+DBuBkUCS+xH+C7lt6a3hA+gM/amsDu933i2GhFom+S
+        y0jFsQrgXVc/zr1T/hvgGyH1H9l7ihynOzi0qQB1814UXgeQ73vGDblY1OSEN0CztQYE99agaYnMm
+        uUgr0GCQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mNHp8-0077vR-BF; Mon, 06 Sep 2021 16:50:33 +0000
+Date:   Mon, 6 Sep 2021 17:50:22 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Yu Xu <xuyu@linux.alibaba.com>
+Cc:     Hao Sun <sunhao.th@gmail.com>, akpm@linux-foundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: kernel BUG in truncate_inode_page
+Message-ID: <YTZGziPzpTZP+cnn@casper.infradead.org>
+References: <CACkBjsbtF_peC7N_4mRfHML_BeiPe+O9DahTfr84puSG_J9rcQ@mail.gmail.com>
+ <23adb5bc-13f6-7550-2ec1-b19b713639d6@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <YTXjSwWcyd6RRMjO@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <23adb5bc-13f6-7550-2ec1-b19b713639d6@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 06/09/21 3:15 pm, Greg KH wrote:
-> On Mon, Sep 06, 2021 at 12:15:57AM +0530, Saurav Girepunje wrote:
->> Move the common execution for read_macreg_hdl, write_macreg_hdl,
->> write_bbreg_hdl and write_rfreg_hdl in to a new function
->> common_read_write_hdl.
+On Mon, Sep 06, 2021 at 08:59:17PM +0800, Yu Xu wrote:
+> Hi, we also reproduce such bug recently, and have sent out our patch[1].
 > 
-> You said _what_ you did here, but not _why_ you did this.
+> In addition, another issue related with xfs and file THP is also
+> fixed[2].
 > 
-> I can't easily see why you did this, please explain it better in the
-> next version of this patch.
+> Looking forward to reviews.
 > 
-> thanks,
-> 
-> greg k-h
-> 
+> [1]https://patchwork.kernel.org/project/linux-mm/patch/20210906121200.57905-2-rongwei.wang@linux.alibaba.com/
+> [2]https://patchwork.kernel.org/project/linux-mm/patch/20210906121200.57905-3-rongwei.wang@linux.alibaba.com/
 
-Ok, I will add explanation and send next version.
-
-Thanks for review greg.
-
-Regards,
-Saurav Girepunje
+I had a quick look, and there are some problems with both patches.
+I don't have time to do a detailed review; as I said I'm on holiday.
+I'll be back in two weeks.
