@@ -2,148 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FDB401680
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 08:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C70401683
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 08:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239665AbhIFGkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 02:40:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:26711 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239633AbhIFGkM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 02:40:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630910345;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pFZpAGoXWqtD1eNY9zjgxvjbpkWIm9fS1Q1YaYaJFgM=;
-        b=OBZ1bQilztxl4te6PG57UvNVqo6kIW1jESOeTAr3soI9DA5bjMl7K54uPJ1ANHaF0Q4AN2
-        ePo8CZvny2AhHhlB5I0t/BS4GGYx9xlFU43dzJrVWEdaUAr7fD3eTC2QBciMkNrK3yl4yP
-        vXPrkFT1VrEzLq3qSsJ2el/OrVm4xyk=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-27-MKRDUdjtOq29q9OjldWf_w-1; Mon, 06 Sep 2021 02:39:03 -0400
-X-MC-Unique: MKRDUdjtOq29q9OjldWf_w-1
-Received: by mail-ed1-f70.google.com with SMTP id a23-20020aa7cf17000000b003caffcef4beso3189141edy.5
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 23:39:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pFZpAGoXWqtD1eNY9zjgxvjbpkWIm9fS1Q1YaYaJFgM=;
-        b=UUHWy6NJjy+4b8JLPL9BEYH8UR7rEVIBvqbjT16ZBVwd6gcc8SBXlpCLkK/qdluI6y
-         wqhRUH1CoVjxQZLKYr/6EUxeRg+WFGdoaj7ir5xpPzPSJ7pqOyU9ervh5dxRLOUiBmJF
-         j09OhQzJ36gLjS8J9EJQtMmECl0c8OLud8ybxi8agu+Xrwz5twLKmNzMbe4evQQHcdKD
-         pNuX7gPS7Vdc4lzIkBSoEgERcoG9s+a57eOV/HWPDKeKDtsy5OGJ2flXbWpwOAtVTWBG
-         9Av2kOo+WrHYVba/LPYTgpCmQCE789ZhTw3qE+C/V5jKSUr5/Zl0waa43GWMgrIWI+OF
-         kvDQ==
-X-Gm-Message-State: AOAM533GKJZAPt8DrquJKZiwWRQH8rMU/2IznZUeLJYoCKyn+UE+0pA1
-        6Yo9rG9WrhUrrXHzVuWjEbLkBKfLY2/l4OG2j1OqP+vP4CNPeMzNDli5iS1Z/7shPYPdlAElA6w
-        DQMuGLh2g38N5GsVxtE8P3P49
-X-Received: by 2002:a05:6402:4404:: with SMTP id y4mr11919679eda.52.1630910342564;
-        Sun, 05 Sep 2021 23:39:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyX0TpXnbRYGfoD24m32rvU84qJrmQaW7wiPn31Nr/Q9F8DbdaCT6Gpt6cuVdJvK5mJP25OsQ==
-X-Received: by 2002:a05:6402:4404:: with SMTP id y4mr11919656eda.52.1630910342402;
-        Sun, 05 Sep 2021 23:39:02 -0700 (PDT)
-Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
-        by smtp.gmail.com with ESMTPSA id i13sm3885374edc.48.2021.09.05.23.39.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Sep 2021 23:39:02 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 08:39:00 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 12/12] KVM: arm64: selftests: arch_timer: Support vCPU
- migration
-Message-ID: <20210906063900.t6rbykpwyau5u32s@gator.home>
-References: <20210901211412.4171835-1-rananta@google.com>
- <20210901211412.4171835-13-rananta@google.com>
- <20210903110514.22x3txynin5hg46z@gator.home>
- <CAJHc60xf90-0E8vkge=UC0Mq3Wz3g=n1OuHa2Lchw4G6egJEig@mail.gmail.com>
+        id S239565AbhIFGln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 02:41:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239244AbhIFGll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 02:41:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0858460F45;
+        Mon,  6 Sep 2021 06:40:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630910437;
+        bh=/k4XCGEwuUQdAuLEeJ+zbInWBfr68zIyh+zZnBxjAn0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=llguqzU/IeTGVGoMMMluXHkFcYIOHa8zHUgyTabLYT+23QzJY2fm7ulmxvKFmuNI/
+         cPMncjoNLcrTmlhsmGD+oEcN2XewNsTUWetqcy50NDd2R1e3jUkHV0mpEG7aqLIdMW
+         j2OeBlvcPARRjIm/u/Hy1EjFOH8nYtA/g3tdM4+koR9r7vDDVkj/RzPXyGQQwANk/9
+         Ye5YkJIywq18BdEHglqrnwXw5xz7gG5vwcShGe4IJHaPpu4VrwbCx2E13km5QcQbJv
+         +ZhNxqEKlKuljHWNphT2mpdY/97Ca3sFu5fBEiuN5zVvIlrCtntvgO65oBJ6N3iwPX
+         3Lkjj23gp18JA==
+Date:   Mon, 6 Sep 2021 08:40:31 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, arnd@arndb.de, jasowang@redhat.com,
+        andriy.shevchenko@linux.intel.com, yu1.wang@intel.com,
+        shuo.a.liu@intel.com, conghui.chen@intel.com, stefanha@redhat.com,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH v14] i2c: virtio: add a virtio i2c frontend driver
+Message-ID: <YTW33xK8QkYcOoFw@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, arnd@arndb.de, jasowang@redhat.com,
+        andriy.shevchenko@linux.intel.com, yu1.wang@intel.com,
+        shuo.a.liu@intel.com, conghui.chen@intel.com, stefanha@redhat.com,
+        gregkh@linuxfoundation.org
+References: <984ebecaf697058eb73389ed14ead9dd6d38fb53.1625796246.git.jie.deng@intel.com>
+ <20210904160059-mutt-send-email-mst@kernel.org>
+ <20210906044307.se4dcld2wlblieyv@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5CQvKhLjITxIbgje"
 Content-Disposition: inline
-In-Reply-To: <CAJHc60xf90-0E8vkge=UC0Mq3Wz3g=n1OuHa2Lchw4G6egJEig@mail.gmail.com>
+In-Reply-To: <20210906044307.se4dcld2wlblieyv@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 03, 2021 at 01:53:27PM -0700, Raghavendra Rao Ananta wrote:
-> On Fri, Sep 3, 2021 at 4:05 AM Andrew Jones <drjones@redhat.com> wrote:
-> >
-> > On Wed, Sep 01, 2021 at 09:14:12PM +0000, Raghavendra Rao Ananta wrote:
-> > > Since the timer stack (hardware and KVM) is per-CPU, there
-> > > are potential chances for races to occur when the scheduler
-> > > decides to migrate a vCPU thread to a different physical CPU.
-> > > Hence, include an option to stress-test this part as well by
-> > > forcing the vCPUs to migrate across physical CPUs in the
-> > > system at a particular rate.
-> > >
-> > > Originally, the bug for the fix with commit 3134cc8beb69d0d
-> > > ("KVM: arm64: vgic: Resample HW pending state on deactivation")
-> > > was discovered using arch_timer test with vCPU migrations and
-> > > can be easily reproduced.
-> > >
-> > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > > ---
-> > >  .../selftests/kvm/aarch64/arch_timer.c        | 108 +++++++++++++++++-
-> > >  1 file changed, 107 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> > > index 1383f33850e9..de246c7afab2 100644
-> > > --- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> > > +++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> > > @@ -14,6 +14,8 @@
-> > >   *
-> > >   * The test provides command-line options to configure the timer's
-> > >   * period (-p), number of vCPUs (-n), and iterations per stage (-i).
-> > > + * To stress-test the timer stack even more, an option to migrate the
-> > > + * vCPUs across pCPUs (-m), at a particular rate, is also provided.
-> > >   *
-> > >   * Copyright (c) 2021, Google LLC.
-> > >   */
-> > > @@ -24,6 +26,8 @@
-> > >  #include <pthread.h>
-> > >  #include <linux/kvm.h>
-> > >  #include <linux/sizes.h>
-> > > +#include <linux/bitmap.h>
-> > > +#include <sys/sysinfo.h>
-> > >
-> > >  #include "kvm_util.h"
-> > >  #include "processor.h"
-> > > @@ -41,12 +45,14 @@ struct test_args {
-> > >       int nr_vcpus;
-> > >       int nr_iter;
-> > >       int timer_period_ms;
-> > > +     int migration_freq_ms;
-> > >  };
-> > >
-> > >  static struct test_args test_args = {
-> > >       .nr_vcpus = NR_VCPUS_DEF,
-> > >       .nr_iter = NR_TEST_ITERS_DEF,
-> > >       .timer_period_ms = TIMER_TEST_PERIOD_MS_DEF,
-> > > +     .migration_freq_ms = 0,         /* Turn off migrations by default */
-> >
-> > I'd rather we enable good tests like these by default.
-> >
-> Well, that was my original idea, but I was concerned about the ease
-> for diagnosing
-> things since it'll become too noisy. And so I let it as a personal
-> preference. But I can
-> include it back and see how it goes.
 
-Break the tests into two? One run without migration and one with. If
-neither work, then we can diagnose the one without first, possibly
-avoiding the need to diagnose the one with.
+--5CQvKhLjITxIbgje
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-drew
 
+> The current version simply fails to transmit the messages in case the
+> length of a buffer is 0. I have patch ready to make it work with the
+> proposed spec changes, just waiting for them to be accepted.
+
+For the record, it fails gracefully. The driver has the proper quirk
+flag set, so the I2C core knows it doesn't zupport 0 length messages.
+
+
+--5CQvKhLjITxIbgje
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmE1t9sACgkQFA3kzBSg
+KbbKNw/6Ay5LQIFbUaWW8YkfD4w53f3QnjeVB+Jc3RTX314r/S3byFcjDdV4kv7t
+Cd+V+IphWMGjWQ+Nfe/CSc43/7XH7CV9EpEN4PH+Dk3UBlbxs2ZM/609nzSry18O
+O1g+qkE/R+lJcbviChyJgYx8hCevq5UeMY2HaP46qYsar/EWhACuojBgbb40EPFp
+yiIpgU1SKE9YqExcfWKvB5O87iIvp9nD4Qt6sAeQL8Ba6OCjWOR6D9gRqYsH5Gn2
+apHuXxeIw5Z7u299RM/SlxCAY3vQOKh74KnusD8PMHl8AZTDVB6ZjvTHDEys5SYT
+R8ZaM2hkX4I60O3aBbQERDjPg1P3v1w85fjiXAgXnIi9YXM2UJrF393E3VIOYUkL
+Uf6pqoVIR1aIPVhCFYYh2KsG0RoQmSmT7iV9qQg0nDEWzTZwEhYBEW6ayaMIV2/Z
+m+/zExeuPT/8t/2SLHN6tGPrYmuCDb4tRZtxQB+O9r8boFkDa1iyHHaGebHZh4ON
+pB2xuuC9s4sdkZ+DNW5h8DtTWCCogjYaayRMGmz+YysGB1vk6+Let+ajuBszfIyU
+wTYlS6XmI+VDnEJnuuMhFFIWrYq9CIHZ4EyVMnJVUxeGW4mJTypz3Mi6ePqqlaXj
+68KOV/C458iaOSPEk4gamkcV42gMjyS8O645JAEV+xmvY+/yi60=
+=bFFy
+-----END PGP SIGNATURE-----
+
+--5CQvKhLjITxIbgje--
