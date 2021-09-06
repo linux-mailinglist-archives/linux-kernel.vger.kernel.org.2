@@ -2,107 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0AA84016A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 08:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0804016A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 08:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239710AbhIFGz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 02:55:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:22939 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239399AbhIFGz2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 02:55:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630911263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I0Wqq4Jy8iaEMvTgV2vlnpJmZdhB/J5L3qG8Ebh53Cs=;
-        b=RlBZBUXiHt8lAQY2HYvXaI0ohzuOpTmqzu6ETw72wxvvFxcG/k9JrLix6wyGk41Q4yioJp
-        aJitVMmLjlL0ZxlWnCIBdJN2/eN7V3kqCIJFW2ffB/884ajfM6zZYjT6ovVJSMw+q4Qop0
-        F4/nf82+QLmrVkW7LRx5I7Pw2Fb1j0g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-346-URXiBfWjOkuQsCM7reUm2w-1; Mon, 06 Sep 2021 02:54:20 -0400
-X-MC-Unique: URXiBfWjOkuQsCM7reUm2w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S239735AbhIFG5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 02:57:20 -0400
+Received: from ozlabs.org ([203.11.71.1]:38799 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238731AbhIFG5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 02:57:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630911373;
+        bh=jcQ/6Pc2/Mt2USwYnSLPOKPRTPl5IBzg5wdJ+DsqOfU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lVjpohUObh6Y3PtsCAvjMPA4kN4HEgpAyFQG1/va5qROWZw5H2KaHx2kjUESB1uQn
+         JZNLQRFrIC71SUGvqtnHI/sQsmOnmfv4pPgPAp/NuEl0n/L+V0UuBf7FA5x07rJJxB
+         BN8hIB/fklXGRv9yWe/8kEMLDiOg3WMdd7Jk+VcicHXOl80v1BeIcdrJTEM8e+7DXM
+         8SYtVeNNm9o8gClgIiVZ1ixbv3TiKt8laGOicxcF6206kcP2Ox+ou5VIouZw34Nbkf
+         3R8xE/Bp8W05QXHaRmqMGiXh3Hw+BDpx8tFm6F96M2rJDar6VRc29v0YadJ0feAQnY
+         xrSVFachn/muA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8718918397A6;
-        Mon,  6 Sep 2021 06:54:18 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.194.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A11C31045E85;
-        Mon,  6 Sep 2021 06:54:15 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
-Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
-References: <CAK7LNAQ0Q6CdXaD-dVGj_e3O3JYs_crpejWKpXHYQJYxyk-1VQ@mail.gmail.com>
-        <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com>
-        <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org>
-        <878s0c4vng.fsf@oldenburg.str.redhat.com>
-        <20210904131911.GP1583@gate.crashing.org>
-        <871r644bd2.fsf@oldenburg.str.redhat.com>
-        <CAHk-=wi+XKYN+3u=_fm=ExqpEaHdER0XuKxVauHYVCPKpKR97Q@mail.gmail.com>
-Date:   Mon, 06 Sep 2021 08:54:13 +0200
-In-Reply-To: <CAHk-=wi+XKYN+3u=_fm=ExqpEaHdER0XuKxVauHYVCPKpKR97Q@mail.gmail.com>
-        (Linus Torvalds's message of "Sat, 4 Sep 2021 10:22:25 -0700")
-Message-ID: <87a6kq2nze.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H2zhF2Pt3z9sCD;
+        Mon,  6 Sep 2021 16:56:12 +1000 (AEST)
+Date:   Mon, 6 Sep 2021 16:56:11 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] block/mq-deadline: Move dd_queued() to fix defined but
+ not used warning
+Message-ID: <20210906165611.0e52f096@canb.auug.org.au>
+In-Reply-To: <a0592ddf-306a-a833-785f-750a601487dd@kernel.dk>
+References: <20210830091128.1854266-1-geert@linux-m68k.org>
+        <caf2449c-e86d-195d-3635-9be49159166a@kernel.dk>
+        <20210906125605.658fe211@canb.auug.org.au>
+        <a0592ddf-306a-a833-785f-750a601487dd@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: multipart/signed; boundary="Sig_/dmmp0/GyNKKoKjoHbF.jZAc";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Linus Torvalds:
+--Sig_/dmmp0/GyNKKoKjoHbF.jZAc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On Sat, Sep 4, 2021 at 8:19 AM Florian Weimer <fweimer@redhat.com> wrote:
->>
->> In any case, it would be nice to know what the real motivation is.
+Hi Jens,
+
+On Sun, 5 Sep 2021 21:04:17 -0600 Jens Axboe <axboe@kernel.dk> wrote:
 >
-> I don't know about the original motivation, but the reason I like that
-> patch after-the-fact is that I've actually been in situations where I
-> test out self-built compilers without installing them.
+> Sure, it's actually the only branch I haven't sent off yet today. Will
+> do so now.
 
-Does this really simplify matters?  Why wouldn't the gcc compiler driver
-find cc1, but not be able to pass the right path options, so that the
-include/ subdirectory can be located as well?
+Excellent, thanks.
 
-> Then it's convenient to have a completely standalone kernel tree.
+--=20
+Cheers,
+Stephen Rothwell
 
-The final patch in the series is here:
+--Sig_/dmmp0/GyNKKoKjoHbF.jZAc
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-  isystem: delete global -isystem compile option
-  <https://lore.kernel.org/linux-kernel/YQhY40teUJcTc5H4@localhost.localdomain/>
+-----BEGIN PGP SIGNATURE-----
 
-It's still not self-contained.  And it seems that there has been quite a
-bit of fallout from the removal of <stddef.h>.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE1u4sACgkQAVBC80lX
+0Gy41wf9FCzS6NlUsQLBdscrRA81iTYhS9n4HRGSyuEjmj/9/Vz2PCj/gmSt4XcE
+81IIpVI/deTJOPYsRiMJU1Wp252Z0/FNeZ7Iw7Qkh5k+3Y4mtw8VVYLUCJ1w4csq
+3nOYl8QxVvFY0qpR93e10wsqH4Um0OOajQYL4EjKzUuPyJsgtbyIb4cksP2u3/UV
+LXyDLWVmIC8lXiglj0XaXYsuV56+fESkWuqjDhBmRNdWod8XutHAlwAvUkRpMlU5
+xLsgpKpjQoNMY41flj9Ye3tElsF9pxiCjaupdIdQ77RLiES6ZuR8P+YK7mFMlw1M
+SpJCffgw63RAfKmaPSlogXd5QMI6uw==
+=aQJc
+-----END PGP SIGNATURE-----
 
-> Nobody cares about things like <stdatomic.h> They are completely
-> irrelevant for the kernel, exactly because we've always just done our
-> own, or used __builtin_xyz() for things.
-
-Apparently, some people care enough about <stdatomic.h> to prevent its
-use.  I still have not seen an explanation.  Maybe it's because we
-haven't Cc:ed the patch author so far (oops).
-
-Alexey, why are <stdatomic.h> and <float.h> so special that you called
-them out in your patch?
-
-If it's about unintended use of libatomic, then maybe we should work on
-a proper compiler option that also works for __atomic builtins and the
-_Atomic keyword.
-
-Thanks,
-Florian
-
+--Sig_/dmmp0/GyNKKoKjoHbF.jZAc--
