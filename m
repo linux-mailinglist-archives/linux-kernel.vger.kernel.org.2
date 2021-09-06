@@ -2,192 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AEB402180
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 01:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752D2402182
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 01:51:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234191AbhIFXnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 19:43:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56734 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229866AbhIFXnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 19:43:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C7C6610E8;
-        Mon,  6 Sep 2021 23:42:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630971755;
-        bh=cuA40y3WCNTC7CV2ya4Ol9astWJ3BZ/R1zc7YsJ6DPA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hpN7vQakMSneLWTFVH6kZZKK4AhSVRO7Ecnkyzi22rWZMdDaDmCfJGp/sGAJx/5As
-         GgAx4SCnLhHUB6dkNnyfIeWiwzOpnnxSB+yfhC/rjf+eNWmNjjZUgTiqsHr0XkE9XJ
-         jD1j6RtWUqfaj+e8PjnF9aO1SQyq58+mz0jAAgk3hrdU/scVgiUQXVvOK9lRITTFkw
-         k6tRK8Fbc77Ea5I3UyrpIQhTfkar5lY9WhIXwjly72Qb6J9djnmFESFJWIl45tiA0j
-         QmiMLSWfdh0BcIeGw41pCHaZ5lEGu+jZ/m2ZAn2p2y0y6WzPxko0VPwV78xk1BkLNk
-         9xiptRB80UHvw==
-Received: by mail-ed1-f45.google.com with SMTP id r7so11346180edd.6;
-        Mon, 06 Sep 2021 16:42:35 -0700 (PDT)
-X-Gm-Message-State: AOAM531anSU4fX50nSOPmOoQTPB2Veqb0cqRGwRnSJ//I483BM6oVh2w
-        eyoHU2137UatrUG9T3mvSM9wARGb5W+lzLKl4Q==
-X-Google-Smtp-Source: ABdhPJw32cZWysU/gUon/jwslWOIEpz6VH6QFcrMYANk7op3saADxfLqzXBlOA7lAnpQU/NU929WdYzUfwR6UAj9wSE=
-X-Received: by 2002:a05:6402:51c9:: with SMTP id r9mr15862686edd.65.1630971753787;
- Mon, 06 Sep 2021 16:42:33 -0700 (PDT)
+        id S232484AbhIFXud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 19:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229866AbhIFXu3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 19:50:29 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FC0C061575;
+        Mon,  6 Sep 2021 16:49:24 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso10599401ota.8;
+        Mon, 06 Sep 2021 16:49:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=uCkVMuDBb5O5O3CJOrqaZb70Yl28I5zWeoqjnVjLs58=;
+        b=csqSgWpxFBFJ4l55rE3JczcIdyrJ4w5O6JrGbON1nauTReBCfYtG+xbloOTCsVF7pb
+         F5lgkUqx+liBB8ckCTBlhlZbrSp7rM33ojEEIZEcYYN9+aIXHusI7tfCK/xShtDkdmnX
+         DjhL1hksyFooGJlip0Ath8ncvXQ9xaH5cby4cI56WBhEEm1j6X9DhJxC65B/e1HKtB4Z
+         FPujGLK4HM4Ngt0aIKnTTRQOsnp4Fbl2XhNJokYdkO9BzELf+Gqd5++XFNgtbBSgHoPx
+         rLkmpINfpHQDNXTJuO9MKNYhCVNSahFzVVsqR+ix+qYBuYl3DASieIQ6fINygXn4SEk+
+         SuPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=uCkVMuDBb5O5O3CJOrqaZb70Yl28I5zWeoqjnVjLs58=;
+        b=mRlToAJMHwtYJjXN35r1rczx5bLjypg2uJvFzBLA+sHlTXsN1B1czfii+PbyO+GcrM
+         2uG5k06loRcjblGsODdOKwv+qbhldTYNLP4ZBURqES3QfZx1cKUz+fwrRUj9qRlQuPyY
+         Yzw43QJ6l8Nv7Zq4PP8ARm+XuKKF2DspB6m9V5vNcgHDLSok6U3dkWW0SQCrVuzhkYiu
+         DdUHX/HiCnVrTBIEvAudvgokGcqjyDZpTJbEI2TE+A9Q0yu1uxTa8J+pr5rYO6lFy+p2
+         cI+xFT+u9IBqSqv0kl+M2BQ8/P5Z+Ky5YaU2CLMNqZ5SlWd32Rbf83QsZaGleZouPhXV
+         PuBQ==
+X-Gm-Message-State: AOAM5315pLZ/eUvV0STmvaiYGVI25aRg/tuOWhAvWTncfxWc1YKuoC+h
+        pB10+hBmTcBntorqkMayv+g++QBhoLk=
+X-Google-Smtp-Source: ABdhPJy/bX7INO/KsciNDJTGU3elaxSMxGvbL2W3qFOxzEL+uwBRquLZb2wEMUaBdXzNRNfK42//VQ==
+X-Received: by 2002:a9d:d35:: with SMTP id 50mr12658813oti.22.1630972163297;
+        Mon, 06 Sep 2021 16:49:23 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r20sm1919041oot.16.2021.09.06.16.49.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Sep 2021 16:49:22 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 6 Sep 2021 16:49:21 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+Message-ID: <20210906234921.GA1394069@roeck-us.net>
+References: <20210906142615.GA1917503@roeck-us.net>
+ <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net>
+ <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210906071539.12953-1-nancy.lin@mediatek.com> <20210906071539.12953-2-nancy.lin@mediatek.com>
-In-Reply-To: <20210906071539.12953-2-nancy.lin@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 7 Sep 2021 07:42:22 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-rVhh4_m39JPRnE-zwW38k-OPArVv6GqOmORaD=qStVQ@mail.gmail.com>
-Message-ID: <CAAOTY_-rVhh4_m39JPRnE-zwW38k-OPArVv6GqOmORaD=qStVQ@mail.gmail.com>
-Subject: Re: [PATCH v5 01/16] dt-bindings: mediatek: add vdosys1 RDMA
- definition for mt8195
-To:     "Nancy.Lin" <nancy.lin@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "jason-jh . lin" <jason-jh.lin@mediatek.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        singo.chang@mediatek.com,
-        srv_heupstream <srv_heupstream@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Nancy:
+On Mon, Sep 06, 2021 at 04:06:04PM -0700, Linus Torvalds wrote:
+> [ Adding some subsystem maintainers ]
+> 
+> On Mon, Sep 6, 2021 at 10:06 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > > But hopefully most cases are just "people haven't cared enough" and
+> > > easily fixed.
+> >
+> > We'll see. For my testbed I disabled the new configuration flag
+> > for the time being because its primary focus is boot tests, and
+> > there won't be any boot tests if images fail to build.
+> 
+> Sure, reasonable.
+> 
+> I've checked a few of the build errors by doing the appropriate cross
+> compiles, and it doesn't seem bad - but it does seem like we have a
+> number of really pointless long-standing warnings that should have
+> been fixed long ago.
+> 
+> For example, looking at sparc64, there are several build errors due to
+> those warnings now being fatal:
+> 
+>  - drivers/gpu/drm/ttm/ttm_pool.c:386
+> 
+>    This is a type mismatch error. It looks like __fls() on sparc64
+> returns 'int'. And the ttm_pool.c code assumes it returns 'unsigned
+> long'.
+> 
+>    Oddly enough, the very line after that line does "min_t(unsigned
+> int" to get the types in line.
+> 
+>    So  the immediate reason is "sparc64 is different". But the deeper
+> reason seems to be that ttm_pool.c has odd type assumptions. But that
+> warning should have been fixed long ago, either way.
+> 
+>    Christian/Huang? I get the feeling that both lines in that file
+> should use the min_t(). Hmm?
+> 
+>  - drivers/input/joystick/analog.c:160
+> 
+>    #warning Precise timer not defined for this architecture.
+> 
+>    Unfortunate. I suspect that warning just has to be removed. It has
+> never caused anything to be fixed, it's old to the point of predating
+> the git history. Dmitry?
+> 
+My solution would be to just remove the old code (that isn't using ktime)
+including the module parameter that disables it. Sure, we want to be
+backward compatible, but that code is 15+ years old and should really be
+retired.
 
-Nancy.Lin <nancy.lin@mediatek.com> =E6=96=BC 2021=E5=B9=B49=E6=9C=886=E6=97=
-=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=883:15=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> Add vdosys1 RDMA definition.
->
-> Signed-off-by: Nancy.Lin <nancy.lin@mediatek.com>
-> ---
->  .../display/mediatek/mediatek,mdp-rdma.yaml   | 77 +++++++++++++++++++
->  1 file changed, 77 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/mediatek/me=
-diatek,mdp-rdma.yaml
->
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-mdp-rdma.yaml b/Documentation/devicetree/bindings/display/mediatek/mediatek=
-,mdp-rdma.yaml
-> new file mode 100644
-> index 000000000000..3610093848e1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,mdp-rdm=
-a.yaml
+>  - at least a couple of stringop-overread errors. Attached is a
+> possible for for one of them.
+> 
+> The stringop overread is odd, because another one of them is
+> 
+>    fs/qnx4/dir.c: In function ‘qnx4_readdir’:
+>    fs/qnx4/dir.c:51:32: error: ‘strnlen’ specified bound 48 exceeds
+> source size 16 [-Werror=stringop-overread]
+>       51 |                         size = strnlen(de->di_fname, size);
+>          |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> but I'm not seeing why that one happens on sparc64, but not on arm64
+> or x86-64. There doesn't seem to be anything architecture-specific
+> anywhere in that area.
+> 
+> Funky.
+> 
+Not really. That is because de->di_fname is always 16 bytes but size
+can be 48 if the node is really a link. The use of de is overloaded
+in that case; de is struct qnx4_inode_entry (where di_fname is 16 bytes)
+but the actual data is struct qnx4_link_info where the name is 48 bytes
+long. A possible fix (compile tested only) is below.
 
-I've compared the rdma driver in mdp [1] with the rdma driver in
-display [2], both are similar. The difference are like merge0 versus
-merge5. So I would like both binding document are placed together. In
-display folder? In media folder? In SoC folder? I've no idea which one
-is better, but at lease put together.
+I think the warning/error is only reported with gcc 11.x. Do you possibly
+use an older compiler for x86/arm64 ?
 
-[1] https://patchwork.kernel.org/project/linux-mediatek/patch/2021082410002=
-7.25989-6-moudy.ho@mediatek.com/
-[2] https://patchwork.kernel.org/project/linux-mediatek/patch/2021090607153=
-9.12953-12-nancy.lin@mediatek.com/
+Anyway, below is a partial list of build errors I have seen. Some of
+them are easy to fix (such as the ones due to unused functions),
+but others seem to be tricky.
 
-Regards,
-Chun-Kuang.
+Guenter
 
-> @@ -0,0 +1,77 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/mediatek/mediatek,mdp-rdma.ya=
-ml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: mediatek display MDP RDMA
-> +
-> +maintainers:
-> +  - CK Hu <ck.hu@mediatek.com>
-> +
-> +description: |
-> +  The mediatek display MDP RDMA stands for Read Direct Memory Access.
-> +  It provides real time data to the back-end panel driver, such as DSI,
-> +  DPI and DP_INTF.
-> +  It contains one line buffer to store the sufficient pixel data.
-> +  RDMA device node must be siblings to the central MMSYS_CONFIG node.
-> +  For a description of the MMSYS_CONFIG binding, see
-> +  Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml for=
- details.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - const: mediatek,mt8195-vdo1-rdma
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    description: A phandle and PM domain specifier as defined by binding=
-s of
-> +      the power controller specified by phandle. See
-> +      Documentation/devicetree/bindings/power/power-domain.yaml for deta=
-ils.
-> +
-> +  clocks:
-> +    items:
-> +      - description: RDMA Clock
-> +
-> +  iommus:
-> +    description:
-> +      This property should point to the respective IOMMU block with mast=
-er port as argument,
-> +      see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml fo=
-r details.
-> +
-> +  mediatek,gce-client-reg:
-> +    description:
-> +      The register of display function block to be set by gce. There are=
- 4 arguments,
-> +      such as gce node, subsys id, offset and register size. The subsys =
-id that is
-> +      mapping to the register of display function blocks is defined in t=
-he gce header
-> +      include/include/dt-bindings/gce/<chip>-gce.h of each chips.
-> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - power-domains
-> +  - clocks
-> +  - iommus
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +
-> +    vdo1_rdma0: vdo1_rdma@1c104000 {
-> +        compatible =3D "mediatek,mt8195-vdo1-rdma";
-> +        reg =3D <0 0x1c104000 0 0x1000>;
-> +        interrupts =3D <GIC_SPI 495 IRQ_TYPE_LEVEL_HIGH 0>;
-> +        clocks =3D <&vdosys1 CLK_VDO1_MDP_RDMA0>;
-> +        power-domains =3D <&spm MT8195_POWER_DOMAIN_VDOSYS1>;
-> +        iommus =3D <&iommu_vdo M4U_PORT_L2_MDP_RDMA0>;
-> +        mediatek,gce-client-reg =3D <&gce1 SUBSYS_1c10XXXX 0x4000 0x1000=
->;
-> +    };
-> +
-> --
-> 2.18.0
->
+---
+diff --git a/fs/qnx4/dir.c b/fs/qnx4/dir.c
+index a6ee23aadd28..f75dcadd98e5 100644
+--- a/fs/qnx4/dir.c
++++ b/fs/qnx4/dir.c
+@@ -44,20 +44,17 @@ static int qnx4_readdir(struct file *file, struct dir_context *ctx)
+ 				continue;
+ 			if (!(de->di_status & (QNX4_FILE_USED|QNX4_FILE_LINK)))
+ 				continue;
+-			if (!(de->di_status & QNX4_FILE_LINK))
+-				size = QNX4_SHORT_NAME_MAX;
+-			else
+-				size = QNX4_NAME_MAX;
+-			size = strnlen(de->di_fname, size);
+-			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, de->di_fname));
+-			if (!(de->di_status & QNX4_FILE_LINK))
++			if (!(de->di_status & QNX4_FILE_LINK)) {
++				size = strnlen(de->di_fname, QNX4_SHORT_NAME_MAX);
+ 				ino = blknum * QNX4_INODES_PER_BLOCK + ix - 1;
+-			else {
++			} else {
+ 				le  = (struct qnx4_link_info*)de;
++				size = strnlen(le->dl_fname, QNX4_NAME_MAX);
+ 				ino = ( le32_to_cpu(le->dl_inode_blk) - 1 ) *
+ 					QNX4_INODES_PER_BLOCK +
+ 					le->dl_inode_ndx;
+ 			}
++			QNX4DEBUG((KERN_INFO "qnx4_readdir:%.*s\n", size, de->di_fname));
+ 			if (!dir_emit(ctx, de->di_fname, size, ino, DT_UNKNOWN)) {
+ 				brelse(bh);
+ 				return 0;
+
+---
+alpha.log:arch/alpha/kernel/setup.c:493:13: error: 'strcmp' reading 1 or more bytes from a region of size 0 [-Werror=stringop-overread]
+alpha.log:drivers/atm/ambassador.c:1747:58: error: passing argument 1 of 'virt_to_bus' discards 'volatile' qualifier from pointer target type [-Werror=discarded-qualifiers]
+alpha.log:drivers/gpu/drm/rockchip/cdn-dp-core.c:1126:12: error: 'cdn_dp_resume' defined but not used [-Werror=unused-function]
+alpha.log:drivers/net/ethernet/3com/3c515.c:1053:22: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+alpha.log:drivers/net/ethernet/amd/ni65.c:751:37: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+alpha.log:drivers/net/hamradio/6pack.c:71:41: error: unsigned conversion from 'int' to 'unsigned char' changes value from '256' to '0' [-Werror=overflow]
+alpha.log:drivers/net/wan/lmc/lmc_main.c:1782:50: error: passing argument 1 of 'virt_to_bus' discards 'volatile' qualifier from pointer target type [-Werror=discarded-qualifiers]
+alpha.log:drivers/net/wan/lmc/lmc_main.c:1791:53: error: passing argument 1 of 'virt_to_bus' discards 'volatile' qualifier from pointer target type [-Werror=discarded-qualifiers]
+alpha.log:drivers/net/wan/lmc/lmc_main.c:1793:51: error: passing argument 1 of 'virt_to_bus' discards 'volatile' qualifier from pointer target type [-Werror=discarded-qualifiers]
+alpha.log:drivers/net/wan/lmc/lmc_main.c:1804:50: error: passing argument 1 of 'virt_to_bus' discards 'volatile' qualifier from pointer target type [-Werror=discarded-qualifiers]
+alpha.log:drivers/net/wan/lmc/lmc_main.c:1806:50: error: passing argument 1 of 'virt_to_bus' discards 'volatile' qualifier from pointer target type [-Werror=discarded-qualifiers]
+alpha.log:drivers/net/wan/lmc/lmc_main.c:1807:51: error: passing argument 1 of 'virt_to_bus' discards 'volatile' qualifier from pointer target type [-Werror=discarded-qualifiers]
+alpha.log:drivers/spi/spi-tegra20-slink.c:1188:12: error: 'tegra_slink_runtime_suspend' defined but not used [-Werror=unused-function]
+alpha.log:drivers/spi/spi-tegra20-slink.c:1200:12: error: 'tegra_slink_runtime_resume' defined but not used [-Werror=unused-function]
+alpha.log:fs/qnx4/dir.c:51:32: error: 'strnlen' specified bound 48 exceeds source size 16 [-Werror=stringop-overread]
+m68k.log:./arch/m68k/include/asm/raw_io.h:20:19: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+m68k.log:./arch/m68k/include/asm/raw_io.h:30:32: error: cast to pointer from integer of different size [-Werror=int-to-pointer-cast]
+m68k.log:./arch/m68k/include/asm/string.h:72:25: error: '__builtin_memcpy' reading 6 bytes from a region of size 0 [-Werror=stringop-overread]
+m68k.log:arch/m68k/mvme147/config.c:174:2: error: #warning check me! [-Werror=cpp]
+m68k.log:arch/m68k/mvme16x/config.c:439:2: error: #warning check me! [-Werror=cpp]
+m68k.log:drivers/gpu/drm/rockchip/cdn-dp-core.c:1126:12: error: 'cdn_dp_resume' defined but not used [-Werror=unused-function]
+m68k.log:drivers/input/joystick/analog.c:160:2: error: #warning Precise timer not defined for this architecture. [-Werror=cpp]
+m68k.log:drivers/spi/spi-tegra20-slink.c:1188:12: error: 'tegra_slink_runtime_suspend' defined but not used [-Werror=unused-function]
+m68k.log:drivers/spi/spi-tegra20-slink.c:1200:12: error: 'tegra_slink_runtime_resume' defined but not used [-Werror=unused-function]
+mips.log:./arch/mips/include/asm/sibyte/bcm1480_scd.h:261: error: "M_SPC_CFG_CLEAR" redefined [-Werror]
+mips.log:./arch/mips/include/asm/sibyte/bcm1480_scd.h:262: error: "M_SPC_CFG_ENABLE" redefined [-Werror]
+mips.log:drivers/input/joystick/analog.c:160:2: error: #warning Precise timer not defined for this architecture. [-Werror=cpp]
+ppc.log:drivers/net/ethernet/cirrus/cs89x0.c:897:41: error: implicit declaration of function 'isa_virt_to_bus' [-Werror=implicit-function-declaration]
+riscv32.log:drivers/gpu/drm/rockchip/cdn-dp-core.c:1126:12: error: 'cdn_dp_resume' defined but not used [-Werror=unused-function]
+riscv.log:drivers/gpu/drm/rockchip/cdn-dp-core.c:1126:12: error: 'cdn_dp_resume' defined but not used [-Werror=unused-function]
+s390.log:arch/s390/kernel/syscall.c:168:1: error: '__do_syscall' uses dynamic stack allocation [-Werror]
+s390.log:drivers/gpu/drm/rockchip/cdn-dp-core.c:1126:12: error: 'cdn_dp_resume' defined but not used [-Werror=unused-function]
+s390.log:drivers/input/joystick/analog.c:160:2: error: #warning Precise timer not defined for this architecture. [-Werror=cpp]
+s390.log:drivers/spi/spi-tegra20-slink.c:1188:12: error: 'tegra_slink_runtime_suspend' defined but not used [-Werror=unused-function]
+s390.log:drivers/spi/spi-tegra20-slink.c:1200:12: error: 'tegra_slink_runtime_resume' defined but not used [-Werror=unused-function]
+s390.log:lib/test_kasan.c:767:1: error: 'kasan_alloca_oob_left' uses dynamic stack allocation [-Werror]
+s390.log:lib/test_kasan.c:782:1: error: 'kasan_alloca_oob_right' uses dynamic stack allocation [-Werror]
+s390.log:s390-linux-objcopy: error: the input file 'arch/s390/boot/compressed/syms.bin' is empty
+sparc64.log:arch/sparc/kernel/mdesc.c:647:22: error: 'strcmp' reading 1 or more bytes from a region of size 0 [-Werror=stringop-overread]
+sparc64.log:arch/sparc/kernel/mdesc.c:692:22: error: 'strcmp' reading 1 or more bytes from a region of size 0 [-Werror=stringop-overread]
+sparc64.log:arch/sparc/kernel/mdesc.c:719:21: error: 'strcmp' reading 1 or more bytes from a region of size 0 [-Werror=stringop-overread]
+sparc64.log:drivers/input/joystick/analog.c:160:2: error: #warning Precise timer not defined for this architecture. [-Werror=cpp]
+sparc64.log:fs/qnx4/dir.c:51:32: error: 'strnlen' specified bound 48 exceeds source size 16 [-Werror=stringop-overread]
+sparc64.log:./include/linux/minmax.h:20:35: error: comparison of distinct pointer types lacks a cast [-Werror]
+sparc.log:crypto/blake2b_generic.c:109:1: error: the frame size of 2288 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
+sparc.log:drivers/input/joystick/analog.c:160:2: error: #warning Precise timer not defined for this architecture. [-Werror=cpp]
+sparc.log:drivers/spi/spi-tegra20-slink.c:1188:12: error: 'tegra_slink_runtime_suspend' defined but not used [-Werror=unused-function]
+sparc.log:drivers/spi/spi-tegra20-slink.c:1200:12: error: 'tegra_slink_runtime_resume' defined but not used [-Werror=unused-function]
+sparc.log:drivers/tty/serial/sunzilog.c:1128:13: error: 'sunzilog_putchar' defined but not used [-Werror=unused-function]
+sparc.log:drivers/usb/host/ehci-hcd.c:1301: error: "PLATFORM_DRIVER" redefined [-Werror]
+sparc.log:drivers/usb/host/ehci-sh.c:173:31: error: 'ehci_hcd_sh_driver' defined but not used [-Werror=unused-variable]
+sparc.log:fs/qnx4/dir.c:51:32: error: 'strnlen' specified bound 48 exceeds source size 16 [-Werror=stringop-overread]
