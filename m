@@ -2,113 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F70401900
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF0F40190E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:44:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241293AbhIFJln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 05:41:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45862 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239548AbhIFJli (ORCPT
+        id S241450AbhIFJoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 05:44:00 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19009 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241358AbhIFJn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 05:41:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630921233;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cYA37SlRuRPHoIjk69T5OroCeNXU9xA4x0HI4zeLbQw=;
-        b=N3lbHd06W27kO/UlKam+Mu0aM+/CXd0eB3Pg+TcfCIqUtOh4A3b2Mi5FWd5Ti79koQ876a
-        xtPsLicw+WPFIbKq006JssSVdlsb6voTTc5w8TwaN1L5xVYoR5g6pj9gJhEtwIHqrr2ovG
-        UcFc2MPvWLzJBNp0pFSK0pspxp2TUG0=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-461-uHdRa3-hNDW3hv6og1Rsqg-1; Mon, 06 Sep 2021 05:40:32 -0400
-X-MC-Unique: uHdRa3-hNDW3hv6og1Rsqg-1
-Received: by mail-wm1-f71.google.com with SMTP id n16-20020a1c7210000000b002ea2ed60dc6so1997745wmc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 02:40:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=cYA37SlRuRPHoIjk69T5OroCeNXU9xA4x0HI4zeLbQw=;
-        b=Oo+DwInh/nAvpN8T6PSjfJ2GH0wZrMTVpaOG2egV+tUxPCGtT2HcbMAUdsoTeiXGWT
-         yHrhBVBLYWj2xex6VEZrO82d9HVlCGLJrEty3AE9qSa71r9uVFWIW/m51dJz/kKspbRb
-         H/H0GFBNXxRIW/hyklv2OxxnA5u4A9IJAMRPT3vpPBBGNajA2jhOHLdhnwrR+l/1dBJI
-         A0wSxyCpsX+Ubu6ILYGCIHcHxMdcMcTgPlC96SSYwfAOc/Nm/0ebcKn1xBhc4G2S6upE
-         NCGje0hTj0LgGxNwZmaXkft1XhyYzITRRIIdvSuCb0bOI2/RUlDMH35UREInufpdU4ZJ
-         m0AA==
-X-Gm-Message-State: AOAM532Bvo7oZXshUBdM37U5eAUc7L4R2l+YUcWMjDASGFmTMWTdPR5g
-        gZcD9y/PaJIaVACpmQDvzeAm+Bmx/Rk3XQiLcJ+If1ZpBk0MOGJ8ktsHTPzdfjatp/T4epnj6Wr
-        wuaiaBg+AEQT2rv0ciLjtdb8WvFfcWvNIinHBm73b4BbYlD3XUva17qhYtTUSHDw4rzgYdQw1
-X-Received: by 2002:a1c:4cd:: with SMTP id 196mr10331372wme.10.1630921231215;
-        Mon, 06 Sep 2021 02:40:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwBtZlHsLGYFzWRzJ5Y5Nuo0pZbnJi5t0VUGtyWpg9J5ZrFUPZmKp16fwujCtQNaoe5gTaa5w==
-X-Received: by 2002:a1c:4cd:: with SMTP id 196mr10331346wme.10.1630921230940;
-        Mon, 06 Sep 2021 02:40:30 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6323.dip0.t-ipconnect.de. [91.12.99.35])
-        by smtp.gmail.com with ESMTPSA id f20sm6656589wmb.32.2021.09.06.02.40.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 02:40:30 -0700 (PDT)
-Subject: Re: [PATCH] mm/page_isolation: don't putback unisolated page
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     vbabka@suse.cz, iamjoonsoo.kim@lge.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210904091839.20270-1-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <e060283a-6295-9191-9b92-a3c183e9de02@redhat.com>
-Date:   Mon, 6 Sep 2021 11:40:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 6 Sep 2021 05:43:59 -0400
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H33Hy1MlVzbmD1;
+        Mon,  6 Sep 2021 17:38:54 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Mon, 6 Sep 2021 17:42:52 +0800
+From:   Ziyang Xuan <william.xuanziyang@huawei.com>
+To:     <robin@protonic.nl>
+CC:     <linux@rempel-privat.de>, <socketcan@hartkopp.net>,
+        <mkl@pengutronix.de>, <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH net] can: j1939: fix errant WARN_ON_ONCE in j1939_session_deactivate
+Date:   Mon, 6 Sep 2021 17:42:00 +0800
+Message-ID: <20210906094200.95868-1-william.xuanziyang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210904091839.20270-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.09.21 11:18, Miaohe Lin wrote:
-> If __isolate_free_page() failed, due to zone watermark check, the page is
-> still on the free list. But this page will be put back to free list again
-> via __putback_isolated_page() now. This may trigger page->flags checks in
-> __free_one_page() if PageReported is set. Or we will corrupt the free list
-> because list_add() will be called for pages already on another list.
-> 
-> Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->   mm/page_isolation.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-> index 9bb562d5d194..7d70d772525c 100644
-> --- a/mm/page_isolation.c
-> +++ b/mm/page_isolation.c
-> @@ -93,10 +93,8 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
->   			buddy_pfn = __find_buddy_pfn(pfn, order);
->   			buddy = page + (buddy_pfn - pfn);
->   
-> -			if (!is_migrate_isolate_page(buddy)) {
-> -				__isolate_free_page(page, order);
-> -				isolated_page = true;
-> -			}
-> +			if (!is_migrate_isolate_page(buddy))
-> +				isolated_page = !!__isolate_free_page(page, order);
->   		}
->   	}
->   
-> 
+The conclusion "j1939_session_deactivate() should be called with a
+session ref-count of at least 2" is incorrect. In some concurrent
+scenarios, j1939_session_deactivate can be called with the session
+ref-count less than 2. But there is not any problem because it
+will check the session active state before session putting in
+j1939_session_deactivate_locked().
 
-Shouldn't we much rather force to ignore watermarks here and make sure 
-__isolate_free_page() never fails?
+Here is the concurrent scenario of the problem reported by syzbot
+and my reproduction log.
 
+        cpu0                            cpu1
+                                j1939_xtp_rx_eoma
+j1939_xtp_rx_abort_one
+                                j1939_session_get_by_addr [kref == 2]
+j1939_session_get_by_addr [kref == 3]
+j1939_session_deactivate [kref == 2]
+j1939_session_put [kref == 1]
+				j1939_session_completed
+				j1939_session_deactivate
+				WARN_ON_ONCE(kref < 2)
+
+=====================================================
+WARNING: CPU: 1 PID: 21 at net/can/j1939/transport.c:1088 j1939_session_deactivate+0x5f/0x70
+CPU: 1 PID: 21 Comm: ksoftirqd/1 Not tainted 5.14.0-rc7+ #32
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1 04/01/2014
+RIP: 0010:j1939_session_deactivate+0x5f/0x70
+Call Trace:
+ j1939_session_deactivate_activate_next+0x11/0x28
+ j1939_xtp_rx_eoma+0x12a/0x180
+ j1939_tp_recv+0x4a2/0x510
+ j1939_can_recv+0x226/0x380
+ can_rcv_filter+0xf8/0x220
+ can_receive+0x102/0x220
+ ? process_backlog+0xf0/0x2c0
+ can_rcv+0x53/0xf0
+ __netif_receive_skb_one_core+0x67/0x90
+ ? process_backlog+0x97/0x2c0
+ __netif_receive_skb+0x22/0x80
+
+Fixes: 0c71437dd50d ("can: j1939: j1939_session_deactivate(): clarify lifetime of session object")
+Reported-by: syzbot+9981a614060dcee6eeca@syzkaller.appspotmail.com
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+---
+ net/can/j1939/transport.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index bdc95bd7a851..0f8309314075 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1079,10 +1079,6 @@ static bool j1939_session_deactivate(struct j1939_session *session)
+ 	bool active;
+ 
+ 	j1939_session_list_lock(priv);
+-	/* This function should be called with a session ref-count of at
+-	 * least 2.
+-	 */
+-	WARN_ON_ONCE(kref_read(&session->kref) < 2);
+ 	active = j1939_session_deactivate_locked(session);
+ 	j1939_session_list_unlock(priv);
+ 
 -- 
-Thanks,
-
-David / dhildenb
+2.25.1
 
