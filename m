@@ -2,71 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9114019AE
+	by mail.lfdr.de (Postfix) with ESMTP id E46484019AF
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241882AbhIFKVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 06:21:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31776 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232032AbhIFKVK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 06:21:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630923605;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kApZxRcNths8CwofL4jwNIMwgxVB9nVlu1PJuFsciKs=;
-        b=bSjBrM9CplVykqZZt6L0625yX9b4zwYky2O5spF7FMzE4OVN7rfcCm21XOoSBxMIhqKROr
-        ByLLU8GVCHd0xM/kVLWKrpVz8j4Flp0aTG7Jv5W3YU36AhUB8TFfha4pJi4IOW53BgtEzd
-        jq/vweU/SUqdoFcu7jYU0Y7voBAFZyo=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-309-eJby92csORi3YZbWM_uTQw-1; Mon, 06 Sep 2021 06:20:05 -0400
-X-MC-Unique: eJby92csORi3YZbWM_uTQw-1
-Received: by mail-ej1-f70.google.com with SMTP id r21-20020a1709067055b02904be5f536463so2160176ejj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 03:20:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kApZxRcNths8CwofL4jwNIMwgxVB9nVlu1PJuFsciKs=;
-        b=IsZD+YlwQk+9VOf7BJPJcVIXZcafptR4XkUNhSVXfhUDo8up7UaGpb8PLgHHpSffeJ
-         2CQUAJODlt0lWz4Tb/XiQEBD3F0BqL++9ukxPheh3Mh6FOvi9pGSVihiUVFOOo8zkauS
-         aOuj4v0+oDKmZ1EP9vmC1hRH85O3qwYbJDgbPgMnwWfxaU5lGkPP+OX3c7UGxnq6lKa/
-         /lW6WND6CS+3VuR+qSXe0vTWvepWSAiKj5eTR347Ip1F9hoPfZmOojJp62OMEEUEU2qY
-         qUwcMsFK/M7pQStscCmZG1Q8vDATrZ6zjcjva1JRn4z/ap/XXdd8o/nWcL3uk7e1KzE9
-         zNbQ==
-X-Gm-Message-State: AOAM530BaPH+J/aNbvrihrVN+NflEZ52jEJ0J2XaxSOjton7lbw/2Maq
-        6x+djMzH6gohNc78r0Oa2rb4dQZhaVKS8LWkIKJyaTYKtQLxAjka4yFQw0bMQH3ozhh4Z8Fv8x0
-        /djs7+tn3DnNI+r+jZ6dyb3Od
-X-Received: by 2002:a17:906:b00c:: with SMTP id v12mr12809172ejy.222.1630923603867;
-        Mon, 06 Sep 2021 03:20:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyPJ+JhtNZmx05ysP93LZo4bmGfUAKojyaBYEWc3KUkgJMiIG8poRKWqRwdzqSe7p8yZW5CTg==
-X-Received: by 2002:a17:906:b00c:: with SMTP id v12mr12809159ejy.222.1630923603602;
-        Mon, 06 Sep 2021 03:20:03 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id p23sm4471023edw.94.2021.09.06.03.20.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 03:20:03 -0700 (PDT)
-Subject: Re: [PATCH 0/3] KVM: x86/mmu: kvm_mmu_page cleanups
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jia He <justin.he@arm.com>
-References: <20210901221023.1303578-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <6636f9c9-96e9-40bf-e344-c0b3f6ed7bed@redhat.com>
-Date:   Mon, 6 Sep 2021 12:20:00 +0200
+        id S241894AbhIFKVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 06:21:41 -0400
+Received: from mga18.intel.com ([134.134.136.126]:16279 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241895AbhIFKVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 06:21:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10098"; a="207053451"
+X-IronPort-AV: E=Sophos;i="5.85,272,1624345200"; 
+   d="scan'208";a="207053451"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 03:20:21 -0700
+X-IronPort-AV: E=Sophos;i="5.85,272,1624345200"; 
+   d="scan'208";a="691617047"
+Received: from ljdobbs-mobl1.ger.corp.intel.com (HELO [10.213.197.10]) ([10.213.197.10])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 03:20:19 -0700
+Subject: Re: [Intel-gfx] [PATCH v7 5/8] drm_print: add choice to use dynamic
+ debug in drm-debug
+To:     jim.cromie@gmail.com
+Cc:     Jason Baron <jbaron@akamai.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        intel-gvt-dev@lists.freedesktop.org,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
+References: <20210831202133.2165222-1-jim.cromie@gmail.com>
+ <20210831202133.2165222-6-jim.cromie@gmail.com>
+ <b3c4b3aa-b873-a2aa-c1ad-5fed80038c6e@linux.intel.com>
+ <CAJfuBxw-i-7YUenvBGHA0unBQ8BqmOGRF3nRYNwNPLVaxWpSvQ@mail.gmail.com>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+Message-ID: <1aabb5c0-eef9-a483-2631-25726c9dc268@linux.intel.com>
+Date:   Mon, 6 Sep 2021 11:20:17 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210901221023.1303578-1-seanjc@google.com>
+In-Reply-To: <CAJfuBxw-i-7YUenvBGHA0unBQ8BqmOGRF3nRYNwNPLVaxWpSvQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,31 +49,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/09/21 00:10, Sean Christopherson wrote:
-> Patch 1 is from Jia He to remove a defunct boolean from kvm_mmu_page
-> (link[*] below if you want to take it directly).
-> 
-> Patch 2 builds on that patch to micro-optimize the TDP MMU flag.
-> 
-> Patch 3 is another micro-optimization that probably doesn't buy much
-> performance (I didn't check), feel free to ignore it.
-> 
-> [*] https://lkml.kernel.org/r/20210830145336.27183-1-justin.he@arm.com
-> 
-> Jia He (1):
->    KVM: x86/mmu: Remove unused field mmio_cached in struct kvm_mmu_page
-> 
-> Sean Christopherson (2):
->    KVM: x86/mmu: Relocate kvm_mmu_page.tdp_mmu_page for better cache
->      locality
->    KVM: x86/mmu: Move lpage_disallowed_link further "down" in
->      kvm_mmu_page
-> 
->   arch/x86/kvm/mmu/mmu_internal.h | 10 ++++++----
->   1 file changed, 6 insertions(+), 4 deletions(-)
-> 
 
-Queued, thanks.
+On 03/09/2021 22:57, jim.cromie@gmail.com wrote:
+> On Fri, Sep 3, 2021 at 5:15 AM Tvrtko Ursulin
+> <tvrtko.ursulin@linux.intel.com> wrote:
+>>
+>>
+>> On 31/08/2021 21:21, Jim Cromie wrote:
+>>> drm's debug system writes 10 distinct categories of messages to syslog
+>>> using a small API[1]: drm_dbg*(10 names), DRM_DEV_DEBUG*(3 names),
+>>> DRM_DEBUG*(8 names).  There are thousands of these callsites, each
+>>> categorized in this systematized way.
+>>>
+>>> These callsites can be enabled at runtime by their category, each
+>>> controlled by a bit in drm.debug (/sys/modules/drm/parameter/debug).
+>>> In the current "basic" implementation, drm_debug_enabled() tests these
+>>> bits in __drm_debug each time an API[1] call is executed; while cheap
+>>> individually, the costs accumulate with uptime.
+>>>
+>>> This patch uses dynamic-debug with jump-label to patch enabled calls
+>>> onto their respective NOOP slots, avoiding all runtime bit-checks of
+>>> __drm_debug by drm_debug_enabled().
+>>>
+>>> Dynamic debug has no concept of category, but we can emulate one by
+>>> replacing enum categories with a set of prefix-strings; "drm:core:",
+>>> "drm:kms:" "drm:driver:" etc, and prepend them (at compile time) to
+>>> the given formats.
+>>>
+>>> Then we can use:
+>>>     `echo module drm format "^drm:core: " +p > control`
+>>>
+>>> to enable the whole category with one query.
+>>
+>> Probably stupid question - enabling stuff at boot time still works as
+>> described in Documentation/admin-guide/dynamic-debug-howto.rst?
+>>
+> 
+> yes.  its turned on in earlyinit, and cmdline args are a processed then,
+> and when modules are added
+> 
+> 
+>> Second question, which perhaps has been covered in the past so apologies
+>> if redundant - what is the advantage of allowing this to be
+>> configurable, versus perhaps always enabling it? Like what would be the
+>> reasons someone wouldn't just want to have CONFIG_DYNAMIC_DEBUG compiled
+>> in? Kernel binary size?
+>>
+> 
+> Im unaware of anything on this topic, but I can opine :-)
+> Its been configurable since I saw it and thought "jump-labels are cool!"
+> 
+> code is small
+> [jimc@frodo local-i915m]$ size lib/dynamic_debug.o
+>     text    data     bss     dec     hex filename
+>    24016    8041      64   32121    7d79 lib/dynamic_debug.o
+> 
+> Its data tables are big, particularly the __dyndbg section
+> builtins:
+> dyndbg: 108 debug prints in module mptcp
+> dyndbg:   2 debug prints in module i386
+> dyndbg:   2 debug prints in module xen
+> dyndbg:   2 debug prints in module fixup
+> dyndbg:   7 debug prints in module irq
+> dyndbg: 3039 prdebugs in 283 modules, 11 KiB in ddebug tables, 166 kiB
+> in __dyndbg section
+> 
+> bash-5.1#
+> bash-5.1# for m in i915 amdgpu ; do modprobe $m dyndbg=+_ ; done
+> dyndbg: 384 debug prints in module drm
+> dyndbg: 211 debug prints in module drm_kms_helper
+> dyndbg:   2 debug prints in module ttm
+> dyndbg:   8 debug prints in module video
+> dyndbg: 1727 debug prints in module i915
+> dyndbg: processed 1 queries, with 3852 matches, 0 errs
+> dyndbg: 3852 debug prints in module amdgpu
+> [drm] amdgpu kernel modesetting enabled.
+> amdgpu: CRAT table disabled by module option
+> amdgpu: Virtual CRAT table created for CPU
+> amdgpu: Topology: Add CPU node
+> bash-5.1#
+> 
+> At 56 bytes / callsite, it adds up.
+> And teaching DRM to use it enlarges its use dramatically,
+> not just in drm itself, but in many drivers
+> 
+> amdgpu has 3852 callsite, (vs 3039 in my kernel), so it has ~240kb.
+> It has extra (large chunks generated by macros) to trim,
+> but i915 has ~1700, and drm has ~380
+> 
+> I have WIP to reduce the table space, by splitting it into 2 separate ones;
+> guts and decorations (module, function, file pointers).
+> The decoration recs are redundant, 45% are copies of previous
+> (function changes fastest)
+> It needs much rework, but it should get 20% overall.
+> decorations are 24/56 of footprint.
 
-Paolo
+I'll try to extract the "executive summary" from this, you tell me if I 
+got it right.
 
+So using or not using dynamic debug for DRM debug ends up being about 
+shifting the cost between kernel binary size (data section grows by each 
+pr_debug call site) and runtime conditionals?
+
+Since the table sizes you mention seem significant enough, I think that 
+justifies existence of DRM_USE_DYNAMIC_DEBUG. It would probably be a 
+good idea to put some commentary on that there. Ideally including some 
+rough estimates both including space cost per call site and space cost 
+for a typical distro kernel build?
+
+Regards,
+
+Tvrtko
