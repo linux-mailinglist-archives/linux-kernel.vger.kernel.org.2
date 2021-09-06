@@ -2,125 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38AAB401F0F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BD6401EF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243951AbhIFRMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 13:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
+        id S243827AbhIFRLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 13:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243997AbhIFRMJ (ORCPT
+        with ESMTP id S243725AbhIFRLc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 13:12:09 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC64EC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 10:10:58 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id k13so14564015lfv.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:10:57 -0700 (PDT)
+        Mon, 6 Sep 2021 13:11:32 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B80EC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 10:10:26 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id u1so6094065vsq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:10:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CW74dcoV+jr+H/cOee9EJDtMnYKDaAeGSoGkoOfBh0A=;
-        b=fiBYOjOq+VBGQV/Z/w0zPvWtW2UdpSWfKvNcpoxD+K0WhuhAtoceEVoeVxOgsHPOhv
-         efrzRbDV+uvCfhjgMPpEAyHUjdY3TNBRGO2ascjrj0a8sJkn7E+gp/dr4pWniQgzRRQF
-         q98akxIU254+B/rN3gPB3vS2zoJRULAlh32sYQ3MgkDWtN5OmaO+jI6cVC8P0jEcXZjM
-         5J9yOudkRCUkuEmbSVcv7bhsnzpejWiq8jfUXL/v/giNNCifV/BladKTn0Y7v9egF/vN
-         7pklhCc4DE5X6amh2/h+2STJm39f2wwFex5emYYC4FcRMupzl4VSdjFxUGanzZUlpoBw
-         tJyA==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=gPWXiaNTPVTv8v8NJ16SYW6dYjSrDpzV61pQz3V3yPU=;
+        b=E3Vj8tFM3oaNkSxAciwWF7bviT0F6jf5FgCaeSSSEFUulwczVgWSChEiBzxUXWRkLz
+         DOJT2xrMKHse+pHjrAC1N+EhDprz2mU5Wiw6FgvBv3Jzyh+GDZY6kcSVoKm5qoxsf1oE
+         cHmAKkSITVkS1h+63G86K0bztxNW6BIvxE/n8YNaR9g+GpPqeod+YXE6Rs4n5e83s4Ke
+         4/kHz1kT6y2SlkidSPfwj5KyAiT15o9nwGInEmmj6n/y90zwfI4UlxZfKGjJjo4zmYRs
+         +SzQH+Y5kOKcchRHvyrJHQYIPiHbBS8uEg2OSXkYZ8j8pAANxnZIjQwY2at4acXOmcVr
+         FpMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CW74dcoV+jr+H/cOee9EJDtMnYKDaAeGSoGkoOfBh0A=;
-        b=jY+z4dT/kN4haeK3Hm+kuPFcZThMuO/n/OD4fiB7kvS/LU78iK545UMNsVF2iiPAm5
-         Sn75TeiJ9Hyh8z4mYVXcZK+mMjLUgi+mh0ZPzLhFdeBbFbh7JeJbBGwdULw5Vq5QfLBK
-         BcPSOigift0jCXz2pc8VMM1yd8BiJcnwcEGFbWKsLW+f+k0MtXzo5t93V0SGXJ19zI+8
-         /QTJl4E2FE4cmIyFeoyW8leyUZVEZm1JY00x6vmWfcko7IPa+UaMrliWauS/St/lbHxi
-         Qkay7wPS30CvUpiHDAJ4DfiuJCSYTWWhXHdT6OgeghZKwRJjw3DtxeaL7cmipZN6poZK
-         7N4Q==
-X-Gm-Message-State: AOAM533lgaAaugxT+lWqOQL3zy+OhJiP0zx0tqbxEkTMPBHrDn43jkyA
-        93PV+/5JfZBBS2E1UDjHoW7CjuAwdwaeKMvHPshvKw==
-X-Google-Smtp-Source: ABdhPJyhjHArMca68TR5pTBXzBL9tRGf14Q3uN8WTnzHOdYd8ltoCuxOYH+yY9mOHeyJ4NbktZ7AcuCVRlMvz/GSBvU=
-X-Received: by 2002:a19:dc47:: with SMTP id f7mr9888628lfj.71.1630948256412;
- Mon, 06 Sep 2021 10:10:56 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=gPWXiaNTPVTv8v8NJ16SYW6dYjSrDpzV61pQz3V3yPU=;
+        b=TfYoEwdSja3hcV5INsS+h/Hodh14GrEgi8zXbOqEfOG3OmqZhTBDJL/C6DCN9Zk97R
+         9nKqyXOsXzDduOGGTWq4JOxJZOG8u7MpBDYz/OG0u5rIULp30mKww7wgPK1+YM9EZgN4
+         nImIziC6mxCqcIpkNyX9Vo1MWSd14G+SYvGuY8bb0VHHH0RlqJLVefHXqIwq2i/vIpA8
+         WscG73bvRSCHtSxENJQSXDgyAD/YIDL8ibOs1xVojQWhyZVFsuUwlXDxX3+URfTWgPvR
+         zY2p7Eqs0U0A3gLJNysC6rJecyLg9cbnVvVBFitTgJLzMDX/8/50iO97LbKfQkWeLCTn
+         xJcA==
+X-Gm-Message-State: AOAM5335yab9Az6b9+qytnR5SCa0mdRFqm7MRFK9w+AXZ45/sMvk1+8N
+        WgyaL/mbxpstWr4oSWd7pYfwQRZe7+1uh5RM0B4=
+X-Google-Smtp-Source: ABdhPJyzHhwvF+isdxxoB8YzVq5YmZwkDWqUtavxucpZ2oHig2dHn4DOkhIve7MzsYDs7iuwcJVgXpY4aEgq/k3Ct5E=
+X-Received: by 2002:a05:6102:7a4:: with SMTP id x4mr6600372vsg.10.1630948225484;
+ Mon, 06 Sep 2021 10:10:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210902174105.2418771-1-mcgrof@kernel.org> <20210902174105.2418771-3-mcgrof@kernel.org>
-In-Reply-To: <20210902174105.2418771-3-mcgrof@kernel.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 6 Sep 2021 19:10:20 +0200
-Message-ID: <CAPDyKFoZ1QqPMYi=N=3s2058mnbzcXYPodNFkexCi0eTbD4NmQ@mail.gmail.com>
-Subject: Re: [PATCH 2/9] ms_block: add error handling support for add_disk()
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        chaitanya.kulkarni@wdc.com, atulgopinathan@gmail.com,
-        Hannes Reinecke <hare@suse.de>,
-        Maxim Levitsky <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>,
-        Colin King <colin.king@canonical.com>,
-        Shubhankar Kuranagatti <shubhankarvk@gmail.com>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>, Tom Rix <trix@redhat.com>,
-        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh R <vigneshr@ti.com>, sth@linux.ibm.com,
-        hoeppner@linux.ibm.com, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        oberpar@linux.ibm.com, Tejun Heo <tj@kernel.org>,
-        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Received: by 2002:ab0:2a08:0:0:0:0:0 with HTTP; Mon, 6 Sep 2021 10:10:24 -0700 (PDT)
+Reply-To: geomic123@yahoo.com
+From:   George <georgefox277@gmail.com>
+Date:   Mon, 6 Sep 2021 18:10:24 +0100
+Message-ID: <CADSebuQ_1CVEomO636rbdzt99xuHSAD9XpM2Gu9UBNRxVy2OCQ@mail.gmail.com>
+Subject: Read My Mail
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Sept 2021 at 19:41, Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling.
->
-> Contrary to the typical removal which delays the put_disk()
-> until later, since we are failing on a probe we immediately
-> put the disk on failure from add_disk by using
-> blk_cleanup_disk().
->
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+-- 
+Dear Sir/Madam
 
-Queued for v5.16 on the temporary devel branch, thanks!
+My name is Mr George Michael,i am the Personal Aid to former
+President Baba Yahya Abdul-Aziz Jemus Jammeh the Republic of Gambia in
+west Africa, who is currently in exile with his farmily. I have been
+trying on how to get in touch with you over an important issue
+concerning a project that will be profitable . I anticipate hearing
+from you for more details.
 
-Kind regards
-Uffe
-
-
-> ---
->  drivers/memstick/core/ms_block.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/memstick/core/ms_block.c b/drivers/memstick/core/ms_block.c
-> index 4a4573fa7b0f..86c626933c1a 100644
-> --- a/drivers/memstick/core/ms_block.c
-> +++ b/drivers/memstick/core/ms_block.c
-> @@ -2156,10 +2156,14 @@ static int msb_init_disk(struct memstick_dev *card)
->                 set_disk_ro(msb->disk, 1);
->
->         msb_start(card);
-> -       device_add_disk(&card->dev, msb->disk, NULL);
-> +       rc = device_add_disk(&card->dev, msb->disk, NULL);
-> +       if (rc)
-> +               goto out_cleanup_disk;
->         dbg("Disk added");
->         return 0;
->
-> +out_cleanup_disk:
-> +       blk_cleanup_disk(msb->disk);
->  out_free_tag_set:
->         blk_mq_free_tag_set(&msb->tag_set);
->  out_release_id:
-> --
-> 2.30.2
->
+Yours faithfully
+Mr George Michael
