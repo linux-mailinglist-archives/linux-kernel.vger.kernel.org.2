@@ -2,123 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D640A40160D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 07:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FA1401618
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 07:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239097AbhIFFo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 01:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhIFFo6 (ORCPT
+        id S239116AbhIFF4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 01:56:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55138 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236124AbhIFF4C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 01:44:58 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA84BC061575;
-        Sun,  5 Sep 2021 22:43:53 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id e21so11044063ejz.12;
-        Sun, 05 Sep 2021 22:43:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dsxGV1RP9Qi0JMIFcPUgri7gLr8bvFdyAKQBx+2bqDQ=;
-        b=XS0PIbA0p2E3/rdHhXs2C/OtTi+suafl5NnoBSza8txXP/vcVueLKhPBLk4IQP0B3R
-         S1PwWMo7p6V+ihljnquaObMu1zYSM+uo3hzNG+b39OQ5e4oWudvWN1FYEol87VvFJcAy
-         tKrx+Pjd9RKCQYxwhD22qNgnkDh5URnQbFAKnqA/QwCu3/wWnD+4+HZP0YcUey7y98cH
-         4YqnYyUfJiwFazHIczoJGIi1eiof62yXsh/snv2pNQitZLwY927vbrZmL2ymqNUi6nzr
-         iOvwC3rTW1sMfUcH88EuFCELA3jIW8lny1e1T/n0PhERdaOphpUqjkHb0hgUWkwA8JUd
-         56pg==
+        Mon, 6 Sep 2021 01:56:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630907697;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uXUj74/nW7Dop13kd56Tk5oKTffqICUe0M10X4WaPl4=;
+        b=Ez6nMAi9WZKpGDW4iVTRmQtfcIQMwBaQRPzPTJXwgIXvHWh3q3Kk+zvWNjrlKGckPa2VeN
+        dUsDaprBmSXFa2ccf8dcsbex4/0ypTnac6ysFLKnAAGr/FpZW5zfNLKDLFHMEPPvyyIgwf
+        J6ZhPwSPXx/yJ6vhKVxycmeR+7hGTT0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-fZFvOklLMPyJH83D2tm9gA-1; Mon, 06 Sep 2021 01:54:55 -0400
+X-MC-Unique: fZFvOklLMPyJH83D2tm9gA-1
+Received: by mail-wr1-f70.google.com with SMTP id d10-20020adffbca000000b00157bc86d94eso838981wrs.20
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 22:54:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dsxGV1RP9Qi0JMIFcPUgri7gLr8bvFdyAKQBx+2bqDQ=;
-        b=qtzE1bZGNzb1bqT0Orj9q4vnJd0Szt9MU+muQL25LC9lc1MHABc/C//6NHGiLUqNB/
-         MVFrXm/Lme9QTaEVIW/DVc2fg40fKc1ExG3O75PPSAAbQqUNFIi6Fa/BPLi4tAq7D2sT
-         /ElplGK32GBnMYnbfM+LbQ75rm6Lnx+3Yd26W0QPum0jk014uZB5T89oZiMXYnZ3/qZA
-         H0bQPT04PhxzTDAut4eBxgsJAIcNewfxV+CpkRduK06uewmkItN7JcMYV5Ggf3zDu3GB
-         HuwsLSYfO4FEo/e17/UhJMZW+qTfxWmZH7we5Cq1NsGUk8VBLfqAnDQX/hbxC0AWB5Bl
-         m5tA==
-X-Gm-Message-State: AOAM532Hhas9ysnzvX7TkQuqcjlUONU552eU4sNH0qPXUhexfYOSFneN
-        +vTFhQFogvLUhrjC8oEV01Oz/bg2A3fmGysxM/dNDQPasU2PZR6m
-X-Google-Smtp-Source: ABdhPJziIuA6kiI1zFi7BQAYo+peyr0Zjg6UTC5M0V0BuTbahvCl8SJzeFjZPErL+CJdvuTawJ4UfTzgbZTUgRcr4PM=
-X-Received: by 2002:a17:906:ce24:: with SMTP id sd4mr11923804ejb.329.1630907032449;
- Sun, 05 Sep 2021 22:43:52 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uXUj74/nW7Dop13kd56Tk5oKTffqICUe0M10X4WaPl4=;
+        b=RZzAbcu90BbcIrgdodBe4iTu7NCfrrGOF78BY+MXcsnuWtjEtNtTIUFBrCHUpRJM0a
+         B92iJl74GOXrrk1DkVFM0bXkMHzYGT34jM+Lf+BreOBczTolyYIaopUMmzM/xuWcnoXt
+         CcEv8aP0HbMDpG9WYSar4F1eaB0cuIL0cwJwd1T3tFAnQ1BzUTH/2yZyPBE0dXDwFoUq
+         5zWcPFpe9+VWX1KggxoLNRgTDRQcHPkp7ylXWJcrwm3KBh9MT07TaGBYKEYPi9yP7IYV
+         4hjCCpA5HdVypIPRE3pgwQdtEFkuChO70HQB4EKzgUG0wtvExZpy1tqiMKFookLWWmDg
+         Y3VQ==
+X-Gm-Message-State: AOAM532oCqrA3Qbflfwc5mDNIstDrs75eLvql6LNobDF6m6c5fJHd2jV
+        xrLWwdgDkKMzj5kx67F55EYQkUToy2oJuVx6AX3FD6sG6sYF9Wv7jiBO59t0liMltXJ8zJLSSaw
+        hyJtv1KWyyGSfCtKjZg2sryHB
+X-Received: by 2002:adf:c14c:: with SMTP id w12mr11478518wre.115.1630907694584;
+        Sun, 05 Sep 2021 22:54:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzR1O2bgM/VI9yvbWaSh3BRtvaI+DJ+X6rHFaklEn67szHR3xlYEE2NCPwCA7NsX4rJPFqdkg==
+X-Received: by 2002:adf:c14c:: with SMTP id w12mr11478480wre.115.1630907694360;
+        Sun, 05 Sep 2021 22:54:54 -0700 (PDT)
+Received: from redhat.com ([2.55.131.183])
+        by smtp.gmail.com with ESMTPSA id h8sm6166143wmb.35.2021.09.05.22.54.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 22:54:53 -0700 (PDT)
+Date:   Mon, 6 Sep 2021 01:54:46 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Xie Yongji <xieyongji@bytedance.com>
+Cc:     jasowang@redhat.com, stefanha@redhat.com, sgarzare@redhat.com,
+        parav@nvidia.com, hch@infradead.org,
+        christian.brauner@canonical.com, rdunlap@infradead.org,
+        willy@infradead.org, viro@zeniv.linux.org.uk, axboe@kernel.dk,
+        bcrl@kvack.org, corbet@lwn.net, mika.penttila@nextfour.com,
+        dan.carpenter@oracle.com, joro@8bytes.org,
+        gregkh@linuxfoundation.org, zhe.he@windriver.com,
+        xiaodong.liu@intel.com, joe@perches.com, robin.murphy@arm.com,
+        will@kernel.org, john.garry@huawei.com, songmuchun@bytedance.com,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v12 05/13] vdpa: Add reset callback in vdpa_config_ops
+Message-ID: <20210906015243-mutt-send-email-mst@kernel.org>
+References: <20210830141737.181-1-xieyongji@bytedance.com>
+ <20210830141737.181-6-xieyongji@bytedance.com>
 MIME-Version: 1.0
-References: <20210906041330.2065214-1-mudongliangabcd@gmail.com>
-In-Reply-To: <20210906041330.2065214-1-mudongliangabcd@gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Mon, 6 Sep 2021 13:43:26 +0800
-Message-ID: <CAD-N9QUHfoqOOxDuKniMi8VGLR2j6g50BBy45eAL0kPRrntmgA@mail.gmail.com>
-Subject: Re: [PATCH] nilfs2: fix memory leak in nilfs_sysfs_create_device_group
-To:     Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Cc:     Pavel Skripkin <paskripkin@gmail.com>, linux-nilfs@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210830141737.181-6-xieyongji@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 6, 2021 at 12:13 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->
-> The commit 8fd0c1b0647a ("nilfs2: fix memory leak in
-> nilfs_sysfs_delete_device_group") adds a kobject_put to free the leaking
-> object name. However, it is incomplete to only add kobject_put in the
-> nilfs_sysfs_delete_device_group. The function
-> nilfs_sysfs_create_device_group also needs the kobject_put to
-> free the object name in the error handling part.
->
-> Fix this by adding kobject_put in the error handling code of
-> nilfs_sysfs_create_device_group.
+On Mon, Aug 30, 2021 at 10:17:29PM +0800, Xie Yongji wrote:
+> This adds a new callback to support device specific reset
+> behavior. The vdpa bus driver will call the reset function
+> instead of setting status to zero during resetting.
+> 
+> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
 
-Even after I add this patch, my local syzkaller still reports this
-memory leak one hour later. Therefore, there are some other paths or
-magics which can trigger the memory leak. I need to dig deeper.
+This does gloss over a significant change though:
 
-Pavel, do you have any idea about this crash report?
+> @@ -348,12 +352,12 @@ static inline struct device *vdpa_get_dma_dev(struct vdpa_device *vdev)
+>  	return vdev->dma_dev;
+>  }
+>  
+> -static inline void vdpa_reset(struct vdpa_device *vdev)
+> +static inline int vdpa_reset(struct vdpa_device *vdev)
+>  {
+>  	const struct vdpa_config_ops *ops = vdev->config;
+>  
+>  	vdev->features_valid = false;
+> -	ops->set_status(vdev, 0);
+> +	return ops->reset(vdev);
+>  }
+>  
+>  static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
 
-BUG: memory leak
-unreferenced object 0xffff88804a1a8a60 (size 32):
-  comm "syz-executor", pid 14551, jiffies 4294960586 (age 14.780s)
-  hex dump (first 32 bytes):
-    6c 6f 6f 70 35 00 00 00 00 00 00 00 00 00 00 00  loop5...........
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff814750c6>] kstrdup+0x36/0x70
-    [<ffffffff81475153>] kstrdup_const+0x53/0x80
-    [<ffffffff822773a2>] kvasprintf_const+0xc2/0x110
-    [<ffffffff82337c5b>] kobject_set_name_vargs+0x3b/0xe0
-    [<ffffffff823385ed>] kobject_init_and_add+0x6d/0xc0
-    [<ffffffff81d2bd08>] nilfs_sysfs_create_device_group+0x98/0x3a0
-    [<ffffffff81d14fc4>] init_nilfs+0x424/0x580
-    [<ffffffff81d02962>] nilfs_mount+0x532/0x8c0
-    [<ffffffff815c754b>] legacy_get_tree+0x2b/0x90
-    [<ffffffff81565158>] vfs_get_tree+0x28/0x100
-    [<ffffffff815a3a82>] path_mount+0xb92/0xfe0
-    [<ffffffff815a3f71>] do_mount+0xa1/0xc0
-    [<ffffffff815a4584>] __x64_sys_mount+0xf4/0x160
-    [<ffffffff8433fd35>] do_syscall_64+0x35/0xb0
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+Unfortunately this breaks virtio_vdpa:
 
 
->
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
->  fs/nilfs2/sysfs.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
-> index 68e8d61e28dd..7ab60711ca76 100644
-> --- a/fs/nilfs2/sysfs.c
-> +++ b/fs/nilfs2/sysfs.c
-> @@ -1024,6 +1024,7 @@ int nilfs_sysfs_create_device_group(struct super_block *sb)
->
->  cleanup_dev_kobject:
->         kobject_del(&nilfs->ns_dev_kobj);
-> +       kobject_put(&nilfs->ns_dev_kobj);
->
->  free_dev_subgroups:
->         kfree(nilfs->ns_dev_subgroups);
-> --
-> 2.25.1
->
+static void virtio_vdpa_reset(struct virtio_device *vdev)
+{
+        struct vdpa_device *vdpa = vd_get_vdpa(vdev);
+
+        vdpa_reset(vdpa);
+}
+
+
+and there's no easy way to fix this, kernel can't recover
+from a reset failure e.g. during driver unbind.
+
+Find a way to disable virtio_vdpa for now?
+
+> -- 
+> 2.11.0
+
