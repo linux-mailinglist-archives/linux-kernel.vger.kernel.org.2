@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718BA402090
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 22:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040D9402094
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 22:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240553AbhIFTxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 15:53:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49340 "EHLO
+        id S243755AbhIFT6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 15:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235255AbhIFTxL (ORCPT
+        with ESMTP id S231432AbhIFT6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 15:53:11 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8FCC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 12:52:06 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id u4so913534qvb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 12:52:06 -0700 (PDT)
+        Mon, 6 Sep 2021 15:58:02 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E70C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 12:56:57 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id a93so15458834ybi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 12:56:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
-         :from:to;
-        bh=/HWCAki5G+lVbiHxWhcyDiqEfC+VEd9DkU7YY2YmJIE=;
-        b=mEMfKCujdhFTd1UNMLYapbDASirmCMlcWBmAG+ICS1uHk9R14HJqkGrlQUPsRRI25u
-         P0Zdf7eVspSFnAUulxZHC+nvRVxMvW//gGUBb8CUDuNmC2IFXxxn4vvlJ4V7z+doCXGg
-         vlSfvWDj58XD4pjDO+DUegyIt4r6BzyrwM+K4+zeQYwEZCIqNuVJ4NuAX8dsujwTTabb
-         kBNFqmzIhkNJK4n5NBMhrYpZovE4ssULYobKDasABMNlf/QYd3Eg3jurWNGYB55wd8H3
-         yhAgSIZarxCVlXOwMuS9r5YRoNF8jqkbXRTKaQ3kQa+ZKGBUEnuYQ1rCcS/LoRLe7gxB
-         Xfbw==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xaieRye1AeYugSPI36l1iJTAUqlrY3yw60sYt+VY7So=;
+        b=owYtIrdgFhnYEPiIVu/2YoEohn98+TOeR5b0yYti2jQJ+RZHA63ZsQZ/i6EFbNK/Z9
+         9y9hvVi2vcnXI0cQYKqV1mswbRtNK591SG/xL4Vb1vFIjBASEvkwLe/ARbUxh6k4hGqk
+         FROLqendx80BAH9hzh3PHgzivzrOC6OEThNKXT6ddElJ4EWfXl1csEq6QCKXOl/Hrb3i
+         YBmezf4cdA3hKb/Zu8674ri5ex4QfV/13vaOI3oSmab5kL4y35C7ksMNNrBhueM84E6A
+         XA1UyX0iwhI3dCok61ccpxBSeKW6nL+cYiWlSkBdNSlzvPHDNYBzuxNgSXlba+l67UcQ
+         7rYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:message-id:mime-version
-         :content-transfer-encoding:cc:from:to;
-        bh=/HWCAki5G+lVbiHxWhcyDiqEfC+VEd9DkU7YY2YmJIE=;
-        b=QzryeecHwwpNtEyCZ+7JbY93pG4cUZG8y1kmvz/fYWbHehgYho8rdrMaJAaXlyDhhJ
-         Y/w5OXbx8J9mPhI/xPhsrA0SFoosYWMRmhq88DHzYhDAbVJZff86ZXLTFFyZI+hrN+la
-         ZuD1LR6tiz310AqASPNytPSrYIBxVZTgOrI4TrC3YyBthquHJWJJUIMt/a9QBYb+V75t
-         5qXMeIfSrOqSlsfuoIKxxyhPP9GBf6ugitZzbx3g9WFdDSU3ft6L8VL/CzGwaN7WbssQ
-         ins1Z3P2F8d2HlnyQvavDk1w22oXTHvQrA2edjnn7+poGGD8u30jJi2pBH5jIy6VSeps
-         XANA==
-X-Gm-Message-State: AOAM533kU3+VNDn9zOoX2C+stGfeqpAxyJ2xWPk3OeCqdD1lWlkdLvxr
-        tUhMfWAVwrc9BzcKd8DEJhwLuQ==
-X-Google-Smtp-Source: ABdhPJxkMdyPqihtMbecIkVh3QvlQZ6CM5K9jNcXKt6Os+i9+qJJSTCujwN5BKXl3Q+du82VzB6IjA==
-X-Received: by 2002:a0c:b293:: with SMTP id r19mr6066662qve.19.1630957925669;
-        Mon, 06 Sep 2021 12:52:05 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id m5sm7280699qkn.33.2021.09.06.12.52.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 12:52:04 -0700 (PDT)
-Subject: [PATCH RESEND] drm/rockchip: cdn-dp-core: Fix cdn_dp_resume unused warning
-Date:   Mon,  6 Sep 2021 12:49:18 -0700
-Message-Id: <20210906194917.376116-1-palmer@dabbelt.com>
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xaieRye1AeYugSPI36l1iJTAUqlrY3yw60sYt+VY7So=;
+        b=PWG1VYxuNSdK6emC1VNcxsfKuxBX5oKpW+z2eI5NKNw6qaV2bNCAnun5dp6zM6uism
+         BTHy+/MIuT7OThxvwrjdBaFlKPvUan+3sCEjxRkPawZSmN32Bojx8C7wMNVV6hEiw6j8
+         Qgr5Y9gRTXgifa2w21R1DB9oXyCXOeqXou3LBKOctoh9VQKH71QydBhbv3Mp2oeAHeue
+         S30hxp59lumL6WLFMreUM0PSIb76z/fFwA9idc4morJUEFBPDpyWB2HINEkawDupZegY
+         5pmdtvvCvUV9or3O6KofFiQOhNzbAW9wohRcwW9594YgmkjF6q3z2KkOhllOMi00zyyV
+         d74Q==
+X-Gm-Message-State: AOAM531OSBpR+gkMDiGw26w56E1gPMbKt9LE71EZFu/Kwq7K1ck1xa0h
+        ZqR7PEWC1JUkbm8w8vRbGwGGzemK+GBTqYQw7CI2Zw==
+X-Google-Smtp-Source: ABdhPJzRQzl8K/3M0uB4Gy1BOL0qXo4S9LDLwtYnf3xODXKZOoKSyv75E1AQ/hr3Ilb3wXtUqAVXg0Ct688vpTSKZSw=
+X-Received: by 2002:a25:500c:: with SMTP id e12mr18963036ybb.30.1630958216940;
+ Mon, 06 Sep 2021 12:56:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     hjc@rock-chips.com, heiko@sntech.de
+References: <20210829182641.2505220-1-mizhang@google.com> <20210829182641.2505220-2-mizhang@google.com>
+ <YS5e4PGxu7tjiEBI@google.com>
+In-Reply-To: <YS5e4PGxu7tjiEBI@google.com>
+From:   Mingwei Zhang <mizhang@google.com>
+Date:   Mon, 6 Sep 2021 12:56:46 -0700
+Message-ID: <CAL715WJBMe8tPX=Tch_v=LiGNjPZpCqQVZKM=8GtzaJ_6Q1bXg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] selftests: KVM: align guest physical memory base
+ address to 1GB
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        Peter Xu <peterx@redhat.com>, Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Palmer Dabbelt <palmerdabbelt@google.com>
+> 1gb may not be appropriate for all architectures and we don't want to _just_
+> test 1gb aligned memslots.  The alignment should be tied to the backing store,
+> even if the test is hardcoded to use THP, that way the alignment logic works
+> without modification if the backing store is changed.
 
-cdn_dp_resume is only used under PM_SLEEP, and now that it's static an
-unused function warning is triggered undner !PM_SLEEP.  This
-conditionally enables the function to avoid the warning.
+Agree on that.
+>
+> I had a patch[1] that did this, let me go resurrect that series.  My series got
+> put on the backburner in favor of Yanan's series[2] which did a much better
+> job of identifying/handling the host virtual address alignment, but IIRC my
+> approach for handling GPA was correct.
+>
+> [1] https://lore.kernel.org/kvm/20210210230625.550939-6-seanjc@google.com/
+> [2] https://lkml.kernel.org/r/20210330080856.14940-1-wangyanan55@huawei.com
+>
 
-Fixes: 7c49abb4c2f8 ("drm/rockchip: cdn-dp-core: Make cdn_dp_core_suspend/resume static")
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
----
-I sent this one out in January, but it looks like it got lost in the shuffle.
-I'm getting this on a RISC-V allmodconfig now.
----
- drivers/gpu/drm/rockchip/cdn-dp-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks for the info. I will use patch [1] instead of mine in the next version.
 
-diff --git a/drivers/gpu/drm/rockchip/cdn-dp-core.c b/drivers/gpu/drm/rockchip/cdn-dp-core.c
-index 8ab3247dbc4a..bee0f2d2a9be 100644
---- a/drivers/gpu/drm/rockchip/cdn-dp-core.c
-+++ b/drivers/gpu/drm/rockchip/cdn-dp-core.c
-@@ -1123,6 +1123,7 @@ static int cdn_dp_suspend(struct device *dev)
- 	return ret;
- }
- 
-+#ifdef CONFIG_PM_SLEEP
- static int cdn_dp_resume(struct device *dev)
- {
- 	struct cdn_dp_device *dp = dev_get_drvdata(dev);
-@@ -1135,6 +1136,7 @@ static int cdn_dp_resume(struct device *dev)
- 
- 	return 0;
- }
-+#endif
- 
- static int cdn_dp_probe(struct platform_device *pdev)
- {
--- 
-2.33.0.153.gba50c8fa24-goog
-
+Regards.
+-Mingwei
