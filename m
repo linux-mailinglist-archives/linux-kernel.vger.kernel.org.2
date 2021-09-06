@@ -2,125 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EAB401FC2
+	by mail.lfdr.de (Postfix) with ESMTP id C92D4401FC4
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244280AbhIFShD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 14:37:03 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:44097 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhIFShC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 14:37:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1630953357; x=1662489357;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=zyMK5O/PHL1QnpDxO+QE66IrpDGM25Huc+ptLFymepw=;
-  b=MFTS+78AoJZrkCoTXnpgUtFWG7gCoNzRR627Cg12Vs7JPOmrGLReUJWg
-   r+xCgBdkNIMgpWH8DL3t4zkQtK2ByA4jXGOaq6hv4cTrUFs2hKEuJfEP6
-   y/lqyC2OPqZRHOue7XBKT+RrBFcU9lEU0wL8Rm+lhVbTmIWQqNBUQ9dCi
-   8=;
-X-IronPort-AV: E=Sophos;i="5.85,273,1624320000"; 
-   d="scan'208";a="157935869"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 06 Sep 2021 18:35:49 +0000
-Received: from EX13D16EUB004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id EA0A4A1EBF;
-        Mon,  6 Sep 2021 18:35:47 +0000 (UTC)
-Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
- EX13D16EUB004.ant.amazon.com (10.43.166.11) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Mon, 6 Sep 2021 18:35:46 +0000
-Received: from dev-dsk-anelkz-1b-031e727b.eu-west-1.amazon.com (10.13.225.27)
- by mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP Server id
- 15.0.1497.23 via Frontend Transport; Mon, 6 Sep 2021 18:35:45 +0000
-Received: by dev-dsk-anelkz-1b-031e727b.eu-west-1.amazon.com (Postfix, from userid 14141144)
-        id F0A6F593A; Mon,  6 Sep 2021 18:35:44 +0000 (UTC)
-From:   Anel Orazgaliyeva <anelkz@amazon.de>
-CC:     <anelkz@amazon.de>, Aman Priyadarshi <apeureka@amazon.de>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] cpuidle: Fix memory leaks
-Date:   Mon, 6 Sep 2021 18:34:40 +0000
-Message-ID: <20210906183440.85710-1-anelkz@amazon.de>
-X-Mailer: git-send-email 2.32.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To:     unlisted-recipients:; (no To-header on input)
+        id S244414AbhIFShd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 14:37:33 -0400
+Received: from mga14.intel.com ([192.55.52.115]:47238 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244290AbhIFShb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 14:37:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="219714174"
+X-IronPort-AV: E=Sophos;i="5.85,273,1624345200"; 
+   d="scan'208";a="219714174"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 11:36:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,273,1624345200"; 
+   d="scan'208";a="579716452"
+Received: from bspteam04.iind.intel.com ([10.106.46.142])
+  by orsmga004.jf.intel.com with ESMTP; 06 Sep 2021 11:36:22 -0700
+From:   shruthi.sanil@intel.com
+To:     daniel.lezcano@linaro.org, tglx@linutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     andriy.shevchenko@linux.intel.com, kris.pan@linux.intel.com,
+        mgross@linux.intel.com, srikanth.thokala@intel.com,
+        lakshmi.bai.raja.subramanian@intel.com,
+        mallikarjunappa.sangannavar@intel.com, shruthi.sanil@intel.com
+Subject: [PATCH v6 0/2] Add the driver for Intel Keem Bay SoC timer block
+Date:   Tue,  7 Sep 2021 00:06:19 +0530
+Message-Id: <20210906183621.21075-1-shruthi.sanil@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit c343bf1ba5ef ("cpuidle: Fix three reference count leaks")
-fixes the cleanup of kobjects; however, it removes kfree() calls
-altogether, leading to memory leaks.
+From: Shruthi Sanil <shruthi.sanil@intel.com>
 
-Fix those and also defer the initialization of dev->kobj_dev until
-after the error check, so that we do not end up with a dangling
-pointer.
+The timer block supports 1 64-bit free running counter
+and 8 32-bit general purpose timers.
 
-Signed-off-by: Anel Orazgaliyeva <anelkz@amazon.de>
-Suggested-by: Aman Priyadarshi <apeureka@amazon.de>
----
- drivers/cpuidle/sysfs.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Patch 1 holds the device tree binding documentation.
+Patch 2 holds the device driver.
 
-diff --git a/drivers/cpuidle/sysfs.c b/drivers/cpuidle/sysfs.c
-index 53ec9585ccd4..469e18547d06 100644
---- a/drivers/cpuidle/sysfs.c
-+++ b/drivers/cpuidle/sysfs.c
-@@ -488,6 +488,7 @@ static int cpuidle_add_state_sysfs(struct cpuidle_device *device)
- 					   &kdev->kobj, "state%d", i);
- 		if (ret) {
- 			kobject_put(&kobj->kobj);
-+			kfree(kobj);
- 			goto error_state;
- 		}
- 		cpuidle_add_s2idle_attr_group(kobj);
-@@ -619,6 +620,7 @@ static int cpuidle_add_driver_sysfs(struct cpuidle_device *dev)
- 				   &kdev->kobj, "driver");
- 	if (ret) {
- 		kobject_put(&kdrv->kobj);
-+		kfree(kdrv);
- 		return ret;
- 	}
- 
-@@ -705,7 +707,6 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
- 	if (!kdev)
- 		return -ENOMEM;
- 	kdev->dev = dev;
--	dev->kobj_dev = kdev;
- 
- 	init_completion(&kdev->kobj_unregister);
- 
-@@ -713,9 +714,11 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
- 				   "cpuidle");
- 	if (error) {
- 		kobject_put(&kdev->kobj);
-+		kfree(kdev);
- 		return error;
- 	}
- 
-+	dev->kobj_dev = kdev;
- 	kobject_uevent(&kdev->kobj, KOBJ_ADD);
- 
- 	return 0;
+This driver is tested on the Keem Bay evaluation module board.
+
+Changes since v5:
+- Created a MFD device for the common configuration register
+  in the device tree bindings.
+- Updated the timer driver with the MFD framework to access the
+  common configuration register.
+
+Changes since v4:
+- Updated the description in the device tree bindings.
+- Updated the unit address of all the timers and counter
+  in the device tree binding.
+
+Changes since v3:
+- Update in KConfig file to support COMPILE_TEST for Keem Bay timer.
+- Update in device tree bindings to remove status field.
+- Update in device tree bindings to remove 64-bit address space for
+  the child nodes by using non-empty ranges.
+
+Changes since v2:
+- Add multi timer support.
+- Update in the device tree binding to support multi timers.
+- Code optimization.
+
+Changes since v1:
+- Add support for KEEMBAY_TIMER to get selected through Kconfig.platforms.
+- Add CLOCK_EVT_FEAT_DYNIRQ as part of clockevent feature.
+- Avoid overlapping reg regions across 2 device nodes.
+- Simplify 2 device nodes as 1 because both are from same IP block.
+- Adapt the driver code according to the new simplified devicetree.
+
+Shruthi Sanil (2):
+  dt-bindings: timer: Add bindings for Intel Keem Bay SoC Timer
+  clocksource: Add Intel Keem Bay timer support
+
+ .../bindings/timer/intel,keembay-timer.yaml   | 173 ++++++++++++
+ MAINTAINERS                                   |   5 +
+ drivers/clocksource/Kconfig                   |  11 +
+ drivers/clocksource/Makefile                  |   1 +
+ drivers/clocksource/timer-keembay.c           | 252 ++++++++++++++++++
+ 5 files changed, 442 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
+ create mode 100644 drivers/clocksource/timer-keembay.c
+
+
+base-commit: 27151f177827d478508e756c7657273261aaf8a9
 -- 
-2.32.0
-
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
+2.17.1
 
