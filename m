@@ -2,58 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C6B40482F
-	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 12:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F288404BD7
+	for <lists+linux-kernel@lfdr.de>; Thu,  9 Sep 2021 13:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233327AbhIIKDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 9 Sep 2021 06:03:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229601AbhIIKDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 9 Sep 2021 06:03:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7F3B611AD;
-        Thu,  9 Sep 2021 10:01:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631181714;
-        bh=/1f9r8n9WVDTH6/Q/V695DPtM4Oyh3rAnEy9HTpXCm8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GaBNtYTxaCkbW00RDO9jLMx28TcPJ2arczOBGqvAa6l6vLBjt9nYPnTO8sf8d37j4
-         SqR3oQan0g82yJ1F90YPW1cK9o2jeW2+sKJ2HgIIXtkYm2NwSY4+Q7qzZs/zJHSpGF
-         7pdh/UB9TvVYOUn+xTSm5h4nduILlOBa1UXHgI5Q=
-Date:   Thu, 9 Sep 2021 12:01:51 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Larry Finger <Larry.Finger@lwfinger.net>
-Cc:     phil@philpotter.co.uk, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: Remove conditionals
- CONFIG_88EU_{AP_MODE,P2P}
-Message-ID: <YTnbj+1fLVav5fyN@kroah.com>
-References: <20210908050109.1279-1-Larry.Finger@lwfinger.net>
+        id S240608AbhIILxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 9 Sep 2021 07:53:32 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:39382 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240943AbhIILuv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 9 Sep 2021 07:50:51 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id EC097200EF;
+        Mon,  6 Sep 2021 19:35:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1630956946; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Myxi+rNyKHYVeMxsZEIiSjP23vQUMmsIvDtzesxP3qg=;
+        b=ugKP2+XRMgyLHw31scY7psFVAofUuJdQ0wYthgcIqdO1wcAgczM7lgWU29SjDbGu7dTiZs
+        aVD8IdJBjscUBRYbHtbhokcjw939BaJBNMOle1VmfAxazChHq9By+omAonWuWBpgpJmFev
+        XehwO2YWmbjutW6950aFcw7W83QDTxQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1630956946;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Myxi+rNyKHYVeMxsZEIiSjP23vQUMmsIvDtzesxP3qg=;
+        b=FoU8I4jEvkIDSm+wRdop7ggSULrkAgMIPo3na5SGl37ix+img2g0cFLU5wXL716PXVEl6O
+        XJkn34qEPE6GioAA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 60A0E12FF9;
+        Mon,  6 Sep 2021 19:35:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id f1yAFpJtNmETGQAAGKfGzw
+        (envelope-from <afaerber@suse.de>); Mon, 06 Sep 2021 19:35:46 +0000
+Message-ID: <41b2ff7b-2dee-62e8-abb6-df90d7156313@suse.de>
+Date:   Mon, 6 Sep 2021 21:35:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210908050109.1279-1-Larry.Finger@lwfinger.net>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [PATCH 1/8] dt-bindings: arm: fsl: add NXP S32G2 boards
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>, Chester Lin <clin@suse.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>, "Lee, Chun-Yi" <jlee@suse.com>
+References: <20210805065429.27485-1-clin@suse.com>
+ <20210805065429.27485-2-clin@suse.com> <YRaxt1LCF+hWaMJU@robh.at.kernel.org>
+From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Organization: SUSE Software Solutions Germany GmbH
+In-Reply-To: <YRaxt1LCF+hWaMJU@robh.at.kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 12:01:09AM -0500, Larry Finger wrote:
-> These two conditional compile symbols are explicitly defined.
-> As a result, their included code is always compiled. They could be
-> converted to Kconfig symbols; however, my experience with this driver
-> in a GitHub repo is that many users of the device have it built into
-> a SOC or SBC that they wish to use as an access point. As a result,
-> CONFIG_88EU_APMODE would need to be selected. Thus it should be built in.
+On 13.08.21 19:53, Rob Herring wrote:
+> On Thu, Aug 05, 2021 at 02:54:22PM +0800, Chester Lin wrote:
+>> Add bindings for S32G2's evaluation board (S32G-VNP-EVB) and reference
+>> design 2 board ( S32G-VNP-RDB2).
+>>
+>> Signed-off-by: Chester Lin <clin@suse.com>
+>> ---
+>>  Documentation/devicetree/bindings/arm/fsl.yaml | 7 +++++++
+>>  1 file changed, 7 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+>> index e2097011c4b0..3914aa09e503 100644
+>> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+>> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+>> @@ -983,6 +983,13 @@ properties:
+>>            - const: solidrun,lx2160a-cex7
+>>            - const: fsl,lx2160a
+>>  
+>> +      - description: S32G2 based Boards
+>> +        items:
+>> +          - enum:
+>> +              - fsl,s32g274a-evb
+>> +              - fsl,s32g274a-rdb2
+>> +          - const: fsl,s32g2
 > 
-> There have also been many users the wish to establish peer-to-peer
-> networks with this device. For this reason, I am also proposing that
-> CONFIG_88EU_P2P be automatically included.
+> Given this is an entirely different family from i.MX and new?, shouldn't 
+> it use 'nxp' instead of 'fsl'?
+
+S32V also still used fsl prefix, despite the company name long being NXP
+(same for several Layerscape and i.MX models).
+
+If, as Radu indicated on 3/8, NXP wants to make that switch now for S32G
+then I see no reason against nxp. I verified that it's already defined:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/Documentation/devicetree/bindings/vendor-prefixes.yaml
+
+However, should the matching .dts[i] files using nxp prefix (4-6/8) then
+still go under dts/freescale/, or should they go to a new dts/nxp/ then?
+That would separate it from S32V. Intel did do a switch from dts/altera/
+to dts/intel/ at some point, so there's precedence for either, I guess.
+No idea whether anything might break if we moved S32V alongside S32G.
+
+Similarly, the easiest and most merge-friendly would be to leave
+arm/fsl.yaml and add the nxp-prefixed S32G2 there, as done here. If NXP
+want to rename fsl.yaml to nxp.yaml in a general housekeeping effort,
+that could be done independently, outside Chester's patchset.
+
+> Either way,
 > 
-> Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Makes sense.  If this really does need to be split up in the future, it
-can be done better without all of this #ifdef mess in the .c files.
+Thanks,
+Andreas
 
-thanks,
-
-greg k-h
+-- 
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer
+HRB 36809 (AG Nürnberg)
