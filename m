@@ -2,175 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7956401E41
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:28:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F3D8401E42
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244077AbhIFQ31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 12:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
+        id S244091AbhIFQ3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 12:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243784AbhIFQ3Z (ORCPT
+        with ESMTP id S244088AbhIFQ3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:29:25 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF8CC061575;
-        Mon,  6 Sep 2021 09:28:20 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id jg16so14493596ejc.1;
-        Mon, 06 Sep 2021 09:28:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6oKyG7zEb/nW+FeiP30bM48MUXtoqIWfTDkbvnG8BkY=;
-        b=bszZ/g+TVWRlcuLYrm4cp/AJpQzap4khelKGOFDxT37GwmFEI0nnoKH1mXocTABgEr
-         kVhKcce52l+Bda2ODC/ZGHW8uZSxriuGwxC0LX48Hp8snUsmUVEXttz7mv959xm+oqyF
-         bAg5uikiKTYSVezC6S3St86oKeK8d99jnXGqhATYzzcK2iRXCj37sVbgIQH+FlBFzMu7
-         qfs6jGjKM5o0LL9zRHBR73Sg1ZX0fRKN9P+K9qpA/WpYOc26ou7hAj7+mogNeb7JbXOf
-         qOBWnKxn3Tz5Xu3MlM0GqX3FLeEaCgGOT/oL2MxPcb3m9e093RzGm+AL2OOUcvurFelA
-         a4ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6oKyG7zEb/nW+FeiP30bM48MUXtoqIWfTDkbvnG8BkY=;
-        b=RQF5n4tw1xWqkk4rzPzWEyh2JzDVcsAYgfmgM8t6MNtojeLof6lWYyOhKpYQIaxTCD
-         oWYrTLaSaXNRTCXj6HqVSwCCnhnFv/9y8fe7OknO020aDpHQo++tF7V8ZlR6q8jFL8lw
-         fxvAygjC2mBMkNEJBhzKoJaeljaVDd/Jo2hqA9LAlvYHBMICAMFXvMc2VcNdh1tu6tSh
-         MNQ9rrk2BmDsC1bGrC0veODBa+9IJNKwfCwE4PRv/5aze1tVcJgRzxp7ksKnDikqfk8r
-         GFC9qz7WJmFIkciqkDtU5LHkbZtGBacenrvmKnPhsByk7hPzy5BBDEjAYNR8orkjT2Co
-         Y7Iw==
-X-Gm-Message-State: AOAM532dOsB6y4HLGqGMzJmugq+v842Bvp7yhhoPsCFm3COX3Q8SK7rP
-        d+ANKAsmiBT83fpjToaMXTftaLLSJp949tYlcoo=
-X-Google-Smtp-Source: ABdhPJwyZI2iQmBxtUR38Zx7Nafy9EsJjNnIzDOyi9cAU4A8FwKXYxAZphlwRFe+JlmOEU0Qn2HcyvKeOV2DlHvWXs0=
-X-Received: by 2002:a17:906:fb19:: with SMTP id lz25mr14543783ejb.162.1630945699450;
- Mon, 06 Sep 2021 09:28:19 -0700 (PDT)
+        Mon, 6 Sep 2021 12:29:32 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D692EC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 09:28:27 -0700 (PDT)
+Date:   Mon, 6 Sep 2021 18:28:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630945705;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PB4sDy5RPN525RHq+Yq5F3Pi1PEcR3nel1GIZvo8hVo=;
+        b=2XSfZwPk+fJ6GZUip7jDuRN1AMDPIrkuYGo7fcajv/m9mNriOOiTbuTJQTOVw07YNpWES/
+        z1rnrej9D2T828PmPZKCPcE3fLA7EODI9uhu7/X1iOzVIUaKdYJk3YiVDtvN4QoPNvRDhK
+        1Rf6kntcvldZTeu5f74BgT461p3HcrcbjV64YLKemkVzMX5Ph2G83eUyseOFNrkVR9nvvX
+        /i8gNpr/pNpZUI7lwsBQ8/eUNdSVKdvuiS+LQHILo5W/Xr7JEUXwG43zoI6G7BnSDgnH//
+        U3feZmF51W1ymZUEnnd2icJi4M3M525xJgU0RssAbgtTo8Z7F7MZdemWOK8cSQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630945705;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PB4sDy5RPN525RHq+Yq5F3Pi1PEcR3nel1GIZvo8hVo=;
+        b=6F9YD1u9sdGPcUgYsMqx0vvh/x7qdeOw0AZ9I7Pjo+t+PwC8T0GBtrdT+mXRD8kQ8RnNjU
+        mdAtUVgCFAF1PhDw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Marco Elver <elver@google.com>
+Cc:     kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Clark Williams <williams@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 0/5] kcov: PREEMPT_RT fixup + misc
+Message-ID: <20210906162824.3s7tmdqah5i7jnou@linutronix.de>
+References: <20210830172627.267989-1-bigeasy@linutronix.de>
+ <CANpmjNPZMVkr5BpywHTY_m+ndLTeWrMLTog=yGG=VLg_miqUvQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <CAOuPNLhqSpaTm3u4kFsnuZ0PLDKuX8wsxuF=vUJ1TEG0EP+L1g@mail.gmail.com>
- <alpine.LRH.2.02.2107200737510.19984@file01.intranet.prod.int.rdu2.redhat.com>
- <CAOuPNLhh_LkLQ8mSA4eoUDLCLzHo5zHXsiQZXUB_-T_F1_v6-g@mail.gmail.com>
- <alpine.LRH.2.02.2107211300520.10897@file01.intranet.prod.int.rdu2.redhat.com>
- <CAOuPNLi-xz_4P+v45CHLx00ztbSwU3_maf4tuuyso5RHyeOytg@mail.gmail.com>
- <CAOuPNLg0m-Q7Vhp4srbQrjXHsxVhOr-K2dvnNqzdR6Dr4kioqA@mail.gmail.com>
- <20210830185541.715f6a39@windsurf> <CAOuPNLhTidgLNWUbtUgdESYcKcE1C4SOdzKeQVhFGQvEoc0QEg@mail.gmail.com>
- <20210830211224.76391708@windsurf> <CAOuPNLgMd0AThhmSknbmKqp3_P8PFhBGr-jW0Mqjb6K6NchEMg@mail.gmail.com>
-In-Reply-To: <CAOuPNLgMd0AThhmSknbmKqp3_P8PFhBGr-jW0Mqjb6K6NchEMg@mail.gmail.com>
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Mon, 6 Sep 2021 21:58:08 +0530
-Message-ID: <CAOuPNLiW10-E6F_Ndte7U9NPBKa9Y_UuLhgdwAYTc0eYMk5Mqg@mail.gmail.com>
-Subject: Re: Kernel 4.14: Using dm-verity with squashfs rootfs - mounting issue
-To:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc:     Mikulas Patocka <mpatocka@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>, dm-devel@redhat.com,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>, agk@redhat.com,
-        snitzer@redhat.com, Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CANpmjNPZMVkr5BpywHTY_m+ndLTeWrMLTog=yGG=VLg_miqUvQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Thomas, Mikulas,
-Need your help in root causing my dm-verity issue with squashfs.
-Please see my comments inline.
+On 2021-09-06 18:13:11 [+0200], Marco Elver wrote:
+> Thanks for sorting this out. Given syzkaller is exercising all of
+> KCOV's feature, I let syzkaller run for a few hours with PROVE_LOCKING
+> (and PROVE_RAW_LOCK_NESTING) on, and looks fine:
+> 
+>     Acked-by: Marco Elver <elver@google.com>
+>     Tested-by: Marco Elver <elver@google.com>
 
-On Tue, 31 Aug 2021 at 18:49, Pintu Agarwal <pintu.ping@gmail.com> wrote:
+awesome.
 
-> > No, but you can backport it easily. Back at
-> > http://lists.infradead.org/pipermail/openwrt-devel/2019-November/025967.html
-> > I provided backports of this feature to OpenWrt, for the 4.14 and 4.19
-> > kernels.
-> >
-> Yes, I can backport it to our 4.14 Kernel.
-> Can you share the list of patches to be backported to make it work on 4.14 ?
-> If it's backported also I need to report to our internal kernel, but
-> it might be slightly easier.
-> Please share the details.
->
+> > One thing I noticed and have no idea if this is right or not:
+> > The code seems to mix long and uint64_t for the reported instruction
+> > pointer / position in the buffer. For instance
+> > __sanitizer_cov_trace_pc() refers to a 64bit pointer (in the comment)
+> > while the area pointer itself is (long *). The problematic part is that
+> > a 32bit application on a 64bit pointer will expect a four byte pointer
+> > while kernel uses an eight byte pointer.
+> 
+> I think the code is consistent in using 'unsigned long' for writing
+> regular pos/IP (except write_comp_data(), which has a comment about
+> it). The mentions of 64-bit in comments might be inaccurate though.
+> But I think it's working as expected:
+> 
+> - on 64-bit kernels, pos/IP can be up to 64-bit;
+> - on 32-bit kernels, pos/IP can only be up to 32-bit.
+> 
+> User space necessarily has to know about the bit-ness of its kernel,
+> because the coverage information is entirely dependent on the kernel
+> image. I think the examples in documentation weren't exhaustive in
+> this regard. At least that's my take -- Dmitry or Andrey would know
+> for sure (Dmitry is currently on vacation, but hopefully can clarify
+> next week).
 
-I am interested to backport dm-mod.create related patches to our 4.14 kernel.
-Please let me know where can I find all the patches ?
-Is it already part of mainline 4.14 ?
-Please share the list of commits (from mainline) that we need to pull
-and backport.
+okay.
 
-> > > Here is our kernel command line:
-> > >
-> > > [    0.000000] Kernel command line: ro rootwait
-> > > console=ttyMSM0,115200,n8 ....  verity="95384 11923
-> > > 16da5e4bbc706e5d90511d2a3dae373b5d878f9aebd522cd614a4faaace6baa3 12026
-> > > " rootfstype=squashfs ubi.mtd=40,0,30 ubi.block=0,0 root=/dev/dm-0
-> > > .... init=/sbin/init root=/dev/dm-0 dm="rootfs none ro,0 95384 verity
-> > > 1 /dev/ubiblock0_0 /dev/mtdblock53 4096 4096 11923 8 sha256
-> > > 16da5e4bbc706e5d90511d2a3dae373b5d878f9aebd522cd614a4faaace6baa3
-> > > aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7 10
-> > > restart_on_corruption ignore_zero_blocks use_fec_from_device
-> > > /dev/mtdblock53 fec_roots 2 fec_blocks 12026 fec_start 12026" ...
-> >
-> > I don't see how this can work without the dm-mod.create feature. Are
-> > you sure the verity= and dm= kernel arguments exist?
->
-I checked a little further and yes there is "dm=" command line in
-kernel available.
-This is already working with ext4 glue, but was never tried with squashfs.
-I think it is mainline derived from Android.
-https://patchwork.kernel.org/project/dm-devel/patch/2c01b2a43a46fab760208d7af3a7af37eec8c41a.1537936397.git.helen.koike@collabora.com/
-https://github.com/projectceladon/device-androidia-kernel/blob/master/init/do_mounts_dm.c
+> Thanks,
+> -- Marco
 
-Mostly, this is the main repo where our source might be derived:
-https://github.com/android-linux-stable/msm-4.14
-
-Can we backport the patches here ?
-If I get the list I can try it.
-
->
-> Also, you mentioned:
-> >>> Here, it definitely worked to append the hash tree to the squashfs
-> >>> image and store them in the same partition.
-> Can you share some details about it ?
-> How it can be done since squashfs is readonly.
-Can you share your reference, how are you appending the hash tree ?
-Let me try the same.
-
-But it seems like the underlying concept is the same for both
-"dm-mod.create" and "dm=".
-However, I am not sure if there are any changes required for squashfs
-as block device..
-
-Errors:
-Currently, we are getting this in boot logs:
-
-[    4.962188] device-mapper: init: attempting early device configuration.
-[    4.969699] device-mapper: init: created device '253:0'
-[    4.975503] device-mapper: init: adding target '0 95384 verity 1
-/dev/ubiblock0_0 /dev/mtdblock53 4096 4096 11923 8 sha256
-8fc2e4bb751f4b3145a486a0f4f1b58149ba3eedc2a67312f31fbee131380dab
-aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7 10
-restart_on_corruption ignore_zero_blocks use_fec_from_device
-/dev/mtdblock53 fec_roots 2 fec_blocks 12026 fec_start 12026'
-[    4.992323] device-mapper: verity: sha256 using implementation
-"sha256-generic"
-[    5.015568] device-mapper: init: dm-0 is ready
-[   10.080065] prepare_namespace: dm_run_setup - done
-[   10.080093] prepare_namespace: saved_root_name: /dev/dm-0
-[   10.083903] prepare_namespace: Inside: name_to_dev_t
-[   10.089605] prepare_namespace: Calling - mount_root() ...
-[   10.094519] [PINTU]: mount_block_root: called with input name:
-/dev/root, fs_names: squashfs
-[   10.263510] [PINTU]: do_mount_root: sys_mount failed: err: -22
-[   10.263544] [PINTU]: mount_block_root: do_mount_root: err: -22, p:
-squashfs, flags: 32769, root_mount_data: (null)
-[..]
-[   10.745672] No filesystem could mount root, tried:
-[   10.745676]  squashfs
-[   10.748015]
-[   10.755232] Kernel panic - not syncing: VFS: Unable to mount root
-fs on unknown-block(253,0)
-
-It seems the rootfs could not mount due to invalid arguments.
-Not sure which arguments are invalid here...
-
-
-Thanks,
-Pintu
+Sebastian
