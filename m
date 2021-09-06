@@ -2,126 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C040D401B00
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:12:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A2E401B03
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:13:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242013AbhIFMNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:13:12 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:48099 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241866AbhIFMNJ (ORCPT
+        id S241990AbhIFMOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:14:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239993AbhIFMOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:13:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R841e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UnRyn5B_1630930321;
-Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0UnRyn5B_1630930321)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 06 Sep 2021 20:12:03 +0800
-From:   Rongwei Wang <rongwei.wang@linux.alibaba.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     akpm@linux-foundation.org, cfijalkovich@google.com,
-        song@kernel.org, william.kucharski@oracle.com, hughd@google.com
-Subject: [PATCH 2/2] mm, thp: bail out early in collapse_file for writeback page
-Date:   Mon,  6 Sep 2021 20:12:00 +0800
-Message-Id: <20210906121200.57905-3-rongwei.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
-References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
+        Mon, 6 Sep 2021 08:14:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4217FC061575;
+        Mon,  6 Sep 2021 05:13:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LgdSNkdSlWB7zsbY0/6EDhJt8ziUdW7VQcJcKDeiYiU=; b=UO/ewHGqlMSbyD7jDEi37n7cCC
+        emJp+D30H90wq6doPYC4e0or2baJa99Z7Lg6VIunA6pmVYppoOACCTvcronVflzHH/mjIsbZTlhxD
+        t+D0aV5BLH1fpNmHxjRu3SKHh5CMj4tt/QgZAwURhL7PoBJzmlUt1XUxQ/BuX4KHZEF5i2aQjx6Ai
+        E3yDu/YExueqQ3uw2fKXxBfbMYYeZmwAUdUcBnUYnU+CqPOT8FpNRONihVeB5KlZ+PMjWRrE9cdQ8
+        /ObSFrWiXUjULPAVucO5UEkWCIu1/VtcuDCGUSPWUdwFouyHD1WFsrZE/BKRTthTv7i8UmFd13XXQ
+        NV0WvQHg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mNDTv-006vdB-FL; Mon, 06 Sep 2021 12:12:18 +0000
+Date:   Mon, 6 Sep 2021 13:12:11 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the folio
+ tree
+Message-ID: <YTYFm1Ca8LHvrlyq@casper.infradead.org>
+References: <20210721163118.3ca01b57@canb.auug.org.au>
+ <20210906144807.4db0790f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210906144807.4db0790f@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently collapse_file does not explicitly check PG_writeback, instead,
-page_has_private and try_to_release_page are used to filter writeback
-pages. This does not work for xfs with blocksize equal to or larger
-than pagesize, because in such case xfs has no page->private.
+On Mon, Sep 06, 2021 at 02:48:07PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> On Wed, 21 Jul 2021 16:31:18 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> > 
+> > Today's linux-next merge of the akpm-current tree got conflicts in:
+> > 
+> >   include/linux/memcontrol.h
+> >   mm/memcontrol.c
+> > 
+> > between commits:
+> > 
+> >   05bb7bbab428 ("mm/memcg: Convert mem_cgroup_charge() to take a folio")
+> >   8b2afb6a1c34 ("mm/memcg: Convert mem_cgroup_uncharge() to take a folio")
+> > 
+> > from the folio tree and commit:
+> > 
+> >   1f4c6a1cf274 ("mm, memcg: inline mem_cgroup_{charge/uncharge} to improve disabled memcg config")
+> > 
+> > from the akpm-current tree.
+> > 
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> > 
+> > diff --cc include/linux/memcontrol.h
+> > index af9c44bb1e42,406058a0c480..000000000000
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@@ -704,15 -691,37 +702,36 @@@ static inline bool mem_cgroup_below_min
+> >   		page_counter_read(&memcg->memory);
+> >   }
+> >   
+> > - int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp);
+> >  -int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
+> >  -			gfp_t gfp_mask);
+> >  -static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
+> >  -				    gfp_t gfp_mask)
+> > ++int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp);
+> > ++static inline int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm,
+> > ++				    gfp_t gfp)
+> > + {
+> > + 	if (mem_cgroup_disabled())
+> > + 		return 0;
+> >  -	return __mem_cgroup_charge(page, mm, gfp_mask);
+> > ++	return __mem_cgroup_charge(folio, mm, gfp);
+> > + }
+> > + 
+> >   int mem_cgroup_swapin_charge_page(struct page *page, struct mm_struct *mm,
+> >   				  gfp_t gfp, swp_entry_t entry);
+> >   void mem_cgroup_swapin_uncharge_swap(swp_entry_t entry);
+> >   
+> > - void mem_cgroup_uncharge(struct folio *folio);
+> > - void mem_cgroup_uncharge_list(struct list_head *page_list);
+> >  -void __mem_cgroup_uncharge(struct page *page);
+> >  -static inline void mem_cgroup_uncharge(struct page *page)
+> > ++void __mem_cgroup_uncharge(struct folio *folio);
+> > ++static inline void mem_cgroup_uncharge(struct folio *folio)
+> > + {
+> > + 	if (mem_cgroup_disabled())
+> > + 		return;
+> >  -	__mem_cgroup_uncharge(page);
+> > ++	__mem_cgroup_uncharge(folio);
+> > + }
+> > + 
+> > + void __mem_cgroup_uncharge_list(struct list_head *page_list);
+> > + static inline void mem_cgroup_uncharge_list(struct list_head *page_list)
+> > + {
+> > + 	if (mem_cgroup_disabled())
+> > + 		return;
+> > + 	__mem_cgroup_uncharge_list(page_list);
+> > + }
+> >   
+> >  -void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
+> >  +void mem_cgroup_migrate(struct folio *old, struct folio *new);
+> >   
+> >   /**
+> >    * mem_cgroup_lruvec - get the lru list vector for a memcg & node
+> > diff --cc mm/memcontrol.c
+> > index 1d77c873463c,c010164172dd..000000000000
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@@ -6712,29 -6718,27 +6708,26 @@@ out
+> >   }
+> >   
+> >   /**
+> > -  * mem_cgroup_charge - Charge a newly allocated folio to a cgroup.
+> >  - * __mem_cgroup_charge - charge a newly allocated page to a cgroup
+> >  - * @page: page to charge
+> >  - * @mm: mm context of the victim
+> >  - * @gfp_mask: reclaim mode
+> > ++ * __mem_cgroup_charge - Charge a newly allocated folio to a cgroup.
+> >  + * @folio: Folio to charge.
+> >  + * @mm: mm context of the allocating task.
+> >  + * @gfp: Reclaim mode.
+> >    *
+> >  - * Try to charge @page to the memcg that @mm belongs to, reclaiming
+> >  - * pages according to @gfp_mask if necessary. if @mm is NULL, try to
+> >  + * Try to charge @folio to the memcg that @mm belongs to, reclaiming
+> >  + * pages according to @gfp if necessary.  If @mm is NULL, try to
+> >    * charge to the active memcg.
+> >    *
+> >  - * Do not use this for pages allocated for swapin.
+> >  + * Do not use this for folios allocated for swapin.
+> >    *
+> >  - * Returns 0 on success. Otherwise, an error code is returned.
+> >  + * Return: 0 on success. Otherwise, an error code is returned.
+> >    */
+> > - int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp)
+> >  -int __mem_cgroup_charge(struct page *page, struct mm_struct *mm,
+> >  -			gfp_t gfp_mask)
+> > ++int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp)
+> >   {
+> >   	struct mem_cgroup *memcg;
+> >   	int ret;
+> >   
+> > - 	if (mem_cgroup_disabled())
+> > - 		return 0;
+> > - 
+> >   	memcg = get_mem_cgroup_from_mm(mm);
+> >  -	ret = charge_memcg(page, memcg, gfp_mask);
+> >  +	ret = charge_memcg(folio, memcg, gfp);
+> >   	css_put(&memcg->css);
+> >   
+> >   	return ret;
+> > @@@ -6906,20 -6909,17 +6899,17 @@@ static void uncharge_folio(struct foli
+> >   }
+> >   
+> >   /**
+> > -  * mem_cgroup_uncharge - Uncharge a folio.
+> >  - * __mem_cgroup_uncharge - uncharge a page
+> >  - * @page: page to uncharge
+> > ++ * __mem_cgroup_uncharge - Uncharge a folio.
+> >  + * @folio: Folio to uncharge.
+> >    *
+> >  - * Uncharge a page previously charged with __mem_cgroup_charge().
+> >  + * Uncharge a folio previously charged with mem_cgroup_charge().
+> >    */
+> > - void mem_cgroup_uncharge(struct folio *folio)
+> >  -void __mem_cgroup_uncharge(struct page *page)
+> > ++void __mem_cgroup_uncharge(struct folio *folio)
+> >   {
+> >   	struct uncharge_gather ug;
+> >   
+> > - 	if (mem_cgroup_disabled())
+> > - 		return;
+> > - 
+> >  -	/* Don't touch page->lru of any random page, pre-check: */
+> >  -	if (!page_memcg(page))
+> >  +	/* Don't touch folio->lru of any random page, pre-check: */
+> >  +	if (!folio_memcg(folio))
+> >   		return;
+> >   
+> >   	uncharge_gather_clear(&ug);
+> > @@@ -6932,19 -6932,16 +6922,16 @@@
+> >    * @page_list: list of pages to uncharge
+> >    *
+> >    * Uncharge a list of pages previously charged with
+> > -  * mem_cgroup_charge().
+> > +  * __mem_cgroup_charge().
+> >    */
+> > - void mem_cgroup_uncharge_list(struct list_head *page_list)
+> > + void __mem_cgroup_uncharge_list(struct list_head *page_list)
+> >   {
+> >   	struct uncharge_gather ug;
+> >  -	struct page *page;
+> >  +	struct folio *folio;
+> >   
+> > - 	if (mem_cgroup_disabled())
+> > - 		return;
+> > - 
+> >   	uncharge_gather_clear(&ug);
+> >  -	list_for_each_entry(page, page_list, lru)
+> >  -		uncharge_page(page, &ug);
+> >  +	list_for_each_entry(folio, page_list, lru)
+> >  +		uncharge_folio(folio, &ug);
+> >   	if (ug.memcg)
+> >   		uncharge_batch(&ug);
+> >   }
+> 
+> This is now a conflict between the folio tree and Linus' tree.
 
-This makes collapse_file bail out early for writeback page. Otherwise,
-xfs end_page_writeback will panic as follows.
+Quite.  Linus, how do you want to handle this?  Pull the folio-5.15 tag
+I originally sent you?  Pull the pageset-5.15 tag?  Tell me you'll never
+accept this and drop the entire idea?
 
-[ 6411.448211] page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:ffff0003f88c86a8 index:0x0 pfn:0x84ef32
-[ 6411.448304] aops:xfs_address_space_operations [xfs] ino:30000b7 dentry name:"libtest.so"
-[ 6411.448312] flags: 0x57fffe0000008027(locked|referenced|uptodate|active|writeback)
-[ 6411.448317] raw: 57fffe0000008027 ffff80001b48bc28 ffff80001b48bc28 ffff0003f88c86a8
-[ 6411.448321] raw: 0000000000000000 0000000000000000 00000000ffffffff ffff0000c3e9a000
-[ 6411.448324] page dumped because: VM_BUG_ON_PAGE(((unsigned int) page_ref_count(page) + 127u <= 127u))
-[ 6411.448327] page->mem_cgroup:ffff0000c3e9a000
-[ 6411.448340] ------------[ cut here ]------------
-[ 6411.448343] kernel BUG at include/linux/mm.h:1212!
-[ 6411.449288] Internal error: Oops - BUG: 0 [#1] SMP
-[ 6411.449786] Modules linked in:
-[ 6411.449790] BUG: Bad page state in process khugepaged  pfn:84ef32
-[ 6411.450143]  xfs(E)
-[ 6411.450459] page:fffffe00201bcc80 refcount:0 mapcount:0 mapping:0 index:0x0 pfn:0x84ef32
-[ 6411.451361]  libcrc32c(E) rfkill(E) aes_ce_blk(E) crypto_simd(E) cryptd(E) aes_ce_cipher(E) crct10dif_ce(E) ghash_ce(E) sha1_ce(E) uio_pdrv_genirq(E) uio(E) vfat(E) nfsd(E) fat(E) auth_rpcgss(E) nfs_acl(E) lockd(E) grace(E) sunrpc(E) sch_fq_codel(E) ip_tables(E) ext4(E) mbcache(E) jbd2(E) virtio_net(E) net_failover(E) virtio_blk(E) failover(E) sha2_ce(E) sha256_arm64(E) virtio_mmio(E) virtio_pci(E) virtio_ring(E) virtio(E)
-[ 6411.451387] CPU: 25 PID: 0 Comm: swapper/25 Kdump: loaded Tainted: G        W   E
-[ 6411.451389] pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
-[ 6411.451393] pc : end_page_writeback+0x1c0/0x214
-[ 6411.451394] lr : end_page_writeback+0x1c0/0x214
-[ 6411.451395] sp : ffff800011ce3cc0
-[ 6411.451396] x29: ffff800011ce3cc0 x28: 0000000000000000
-[ 6411.451398] x27: ffff000c04608040 x26: 0000000000000000
-[ 6411.451399] x25: ffff000c04608040 x24: 0000000000001000
-[ 6411.451401] x23: ffff0003f88c8530 x22: 0000000000001000
-[ 6411.451403] x21: ffff0003f88c8530 x20: 0000000000000000
-[ 6411.451404] x19: fffffe00201bcc80 x18: 0000000000000030
-[ 6411.451406] x17: 0000000000000000 x16: 0000000000000000
-[ 6411.451407] x15: ffff000c018f9760 x14: ffffffffffffffff
-[ 6411.451409] x13: ffff8000119d72b0 x12: ffff8000119d6ee3
-[ 6411.451410] x11: ffff8000117b69b8 x10: 00000000ffff8000
-[ 6411.451412] x9 : ffff800010617534 x8 : 0000000000000000
-[ 6411.451413] x7 : ffff8000114f69b8 x6 : 000000000000000f
-[ 6411.451415] x5 : 0000000000000000 x4 : 0000000000000000
-[ 6411.451416] x3 : 0000000000000400 x2 : 0000000000000000
-[ 6411.451418] x1 : 0000000000000000 x0 : 0000000000000000
-[ 6411.451420] Call trace:
-[ 6411.451421]  end_page_writeback+0x1c0/0x214
-[ 6411.451424]  iomap_finish_page_writeback+0x13c/0x204
-[ 6411.451425]  iomap_finish_ioend+0xe8/0x19c
-[ 6411.451426]  iomap_writepage_end_bio+0x38/0x50
-[ 6411.451427]  bio_endio+0x168/0x1ec
-[ 6411.451430]  blk_update_request+0x278/0x3f0
-[ 6411.451432]  blk_mq_end_request+0x34/0x15c
-[ 6411.451435]  virtblk_request_done+0x38/0x74 [virtio_blk]
-[ 6411.451437]  blk_done_softirq+0xc4/0x110
-[ 6411.451439]  __do_softirq+0x128/0x38c
-[ 6411.451441]  __irq_exit_rcu+0x118/0x150
-[ 6411.451442]  irq_exit+0x1c/0x30
-[ 6411.451445]  __handle_domain_irq+0x8c/0xf0
-[ 6411.451446]  gic_handle_irq+0x84/0x108
-[ 6411.451447]  el1_irq+0xcc/0x180
-[ 6411.451448]  arch_cpu_idle+0x18/0x40
-[ 6411.451450]  default_idle_call+0x4c/0x1a0
-[ 6411.451453]  cpuidle_idle_call+0x168/0x1e0
-[ 6411.451454]  do_idle+0xb4/0x104
-[ 6411.451455]  cpu_startup_entry+0x30/0x9c
-[ 6411.451458]  secondary_start_kernel+0x104/0x180
-[ 6411.451460] Code: d4210000 b0006161 910c8021 94013f4d (d4210000)
-[ 6411.451462] ---[ end trace 4a88c6a074082f8c ]---
-[ 6411.451464] Kernel panic - not syncing: Oops - BUG: Fatal exception in interrupt
-
-Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
-Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
-Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
----
- mm/khugepaged.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 045cc57..529b117 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -1798,7 +1798,8 @@ static void collapse_file(struct mm_struct *mm,
- 			goto out_unlock;
- 		}
- 
--		if (!is_shmem && PageDirty(page)) {
-+		if (!is_shmem && (PageDirty(page) ||
-+				  PageWriteback(page))) {
- 			/*
- 			 * khugepaged only works on read-only fd, so this
- 			 * page is dirty because it hasn't been flushed
--- 
-1.8.3.1
-
+Do you need anything from me?
