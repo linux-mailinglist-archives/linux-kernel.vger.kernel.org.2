@@ -2,129 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F36401F7C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00F3401F84
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244334AbhIFSTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 14:19:34 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:35436 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233859AbhIFSTd (ORCPT
+        id S244043AbhIFS0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 14:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233859AbhIFS0H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 14:19:33 -0400
-Received: by mail-io1-f72.google.com with SMTP id g14-20020a6be60e000000b005b62a0c2a41so5517128ioh.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:18:28 -0700 (PDT)
+        Mon, 6 Sep 2021 14:26:07 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15131C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:25:02 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id z19so10495704edi.9
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:25:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yk5iTFNaloAXMSb8ZHzRcfuP8bkhzFyauDwjq9HvArE=;
+        b=DLbtfSYMWIdqh/gVIcG6c2H++U//oBsK/Atjw1gMs0h3qAGCnTN3zLrvk1avzHnotz
+         TWV+/fyLuo4DCNmZOUQztfqcf58fMWm1GtlThlkVMIwSpxXqvY/mcYPG/m9WoKB9aWUI
+         YWNfLo3wiMuSJ+mi3gnq2Vuu845aqHBg0FbxPeHWFtaABJrUtg/0XgYBLaN58oAhEB4r
+         Kce5taJq8OUqdHRUw1t45HXQ61vH09VDwbgyGFDqLkURt92d5vCY/rvt16biSMmlhIqM
+         spwmORbqvzEjj6ogfsa9xqf21840do+l37b0HkBFOl5Ee964QjZYyQbJ+rWXIsR/NSUI
+         pLQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=CbFOppKerIOMfz01zxChfgriamnUUxzr6i/aOdK7d80=;
-        b=L1PZaDi/ECQVMiymj2/usHD3jM+ml4s0/MMCW3XfsaJ5qoqZYJYlhihwfZ5UlSYa8F
-         uyok5bIzBQAd+1AFR03PxG8y5c30wJ/E2qGy1rjebwhP9Uez9l4G9tCuw56t92pjLShG
-         fFdyxrADXfQGUrJ6QN5vYTSQrx1cc8rSxDE3Itji6uTOTV+I/Tr1U4aqbl1t3CZbbDZh
-         3WvxXvxK9+/O7/AKVDnEk77+v8gviccxypl72Cx2yqnsWLd0I57y9/BxjYzWZoYWCTVd
-         gCHJFFtOSv7TWyNOE6ZZwlhT4WyZifVm+72npo2fAMFJLLfBdbIhVvaQQ5CU6KoapYLN
-         5zvQ==
-X-Gm-Message-State: AOAM532GMUiLIf3nuOBibC0y4JG08KrGBM6kdDUcrNpnN+6AomZqwgzP
-        nNtlgDd02kCMkbyt9TCN8EvpQEOL6bUwmfMzk3Unw2vMEbQn
-X-Google-Smtp-Source: ABdhPJxBSOgQ9J+AR77+E5wk9XSzpkz+H8+KapnGDp4NJXf3Ud2RlQENfAytlX7iGjmu8NF37fI/oATHPxlbMyp7kcRLo/6TOHNN
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yk5iTFNaloAXMSb8ZHzRcfuP8bkhzFyauDwjq9HvArE=;
+        b=Sm/6YDtWJBPOj5O+WXL/Z0nEDCL6A5T+KjmCYMsytvmX7QRF3PjOuA4Xp+IMNmM732
+         LNwqa1lZTCUG2+UQigpwS27Ft6+Xra22q5yjqXmPr0LO5DNSV56AW9TymlJMnp7uCqei
+         3hKdzN8V/gygyQE+ZDfx3IIQqOKfFkPRZt4xLO323q0jEuR25RCFLsIWb04I9nqcKmQG
+         aJQ9hibidDnEn4/nBzsAupuqXkK0XETfB8UoYRmsW/r+8LBq5tYe5h4Z7HvaZVgJd+lZ
+         V3zjdsUFrpzmE7bTMAp/j0O4mKFEjMM4adqKJactqrscPjrtGEGYI49CKyaXh7MuF+yl
+         1tnQ==
+X-Gm-Message-State: AOAM530iLocXeGUNZUk2xzEJvdL4hFwZSdrn7bHfYcsZTK0/mHVM1Gjl
+        BAx8HMZ9w84e19/HC66z2wc=
+X-Google-Smtp-Source: ABdhPJyY/BOFsCGw3OJDsJR5IK1x9ayz9dEIw5aqcRBiuY709K0nZAkn6PucrADyRBJnAPA1xcVOxA==
+X-Received: by 2002:a50:c90b:: with SMTP id o11mr5072083edh.216.1630952700555;
+        Mon, 06 Sep 2021 11:25:00 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8108:96c0:3b88::8fe1])
+        by smtp.gmail.com with ESMTPSA id s25sm4284492ejq.17.2021.09.06.11.24.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Sep 2021 11:25:00 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
+        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH 00/40] staging: r8188eu: remove function pointers from struct hal_ops
+Date:   Mon,  6 Sep 2021 20:23:58 +0200
+Message-Id: <20210906182438.5417-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:296:: with SMTP id 144mr10583774ioc.114.1630952307961;
- Mon, 06 Sep 2021 11:18:27 -0700 (PDT)
-Date:   Mon, 06 Sep 2021 11:18:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f6349105cb57accd@google.com>
-Subject: [syzbot] WARNING in pvr2_send_request_ex/usb_submit_urb
-From:   syzbot <syzbot+20fef510634faf733060@syzkaller.appspotmail.com>
-To:     isely@pobox.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-usb@vger.kernel.org,
-        mchehab@kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+In order to get rid of the HAL layer this series removes the next
+bunch of function pointers from struct hal_ops.
 
-syzbot found the following issue on:
+Also it removes some empty functions and cleans up some minor style
+issues I stumbled upon.
 
-HEAD commit:    1b4f3dfb4792 Merge tag 'usb-serial-5.15-rc1' of https://gi..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=160b7ecd300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=63ae519fb23783f7
-dashboard link: https://syzkaller.appspot.com/bug?extid=20fef510634faf733060
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1308a286300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1654f791300000
+Tested on x86_64 with Inter-Tech DMG-02.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+20fef510634faf733060@syzkaller.appspotmail.com
+Michael Straube (40):
+  staging: r8188eu: remove InitSwLeds from hal_ops
+  staging: r8188eu: remove DeInitSwLeds from hal_ops
+  staging: r8188eu: remove dm_init from hal_ops
+  staging: r8188eu: remove dm_deinit from hal_ops
+  staging: r8188eu: remove SetHalODMVarHandler from hal_ops
+  staging: r8188eu: remove empty functions
+  staging: r8188eu: remove unused function rtw_interface_ps_func()
+  staging: r8188eu: remove interface_ps_func from hal_ops
+  staging: r8188eu: remove hal_dm_watchdog from hal_ops
+  staging: r8188eu: remove set_bwmode_handler from hal_ops
+  staging: r8188eu: remove set_channel_handler from hal_ops
+  staging: r8188eu: remove unused enum hal_intf_ps_func
+  staging: r8188eu: remove Add_RateATid from hal_ops
+  staging: r8188eu: remove hal_power_on from hal_ops
+  staging: r8188eu: remove sreset_init_value from hal_ops
+  staging: r8188eu: remove sreset_reset_value from hal_ops
+  staging: r8188eu: remove silentreset from hal_ops
+  staging: r8188eu: remove sreset_xmit_status_check from hal_ops
+  staging: r8188eu: remove sreset_linked_status_check from hal_ops
+  staging: r8188eu: remove sreset_get_wifi_status from hal_ops
+  staging: r8188eu: remove EfusePowerSwitch from hal_ops
+  staging: r8188eu: rename hal_EfusePowerSwitch_RTL8188E()
+  staging: r8188eu: remove wrapper Efuse_PowerSwitch()
+  staging: r8188eu: remove ReadEFuse from hal_ops
+  staging: r8188eu: remove EFUSEGetEfuseDefinition from hal_ops
+  staging: r8188eu: remove EfuseGetCurrentSize from hal_ops
+  staging: r8188eu: remove empty comments
+  staging: r8188eu: remove Efuse_PgPacketRead from hal_ops
+  staging: r8188eu: remove Efuse_PgPacketWrite from hal_ops
+  staging: r8188eu: remove Efuse_WordEnableDataWrite from hal_ops
+  staging: r8188eu: remove useless assignment
+  staging: r8188eu: remove AntDivBeforeLinkHandler from hal_ops
+  staging: r8188eu: remove AntDivCompareHandler from hal_ops
+  staging: r8188eu: remove empty function rtl8188e_start_thread()
+  staging: r8188eu: remove empty function rtl8188e_stop_thread()
+  staging: r8188eu: remove hal_notch_filter from hal_ops
+  staging: r8188eu: remove free_hal_data from hal_ops
+  staging: r8188eu: remove unused function rtl8188e_clone_haldata()
+  staging: r8188eu: remove SetBeaconRelatedRegistersHandler from hal_ops
+  staging: r8188eu: remove UpdateHalRAMask8188EUsb from hal_ops
 
-pvrusb2: Invalid read control endpoint
-------------[ cut here ]------------
-URB 00000000b3505d0d submitted while active
-WARNING: CPU: 0 PID: 2391 at drivers/usb/core/urb.c:378 usb_submit_urb+0x14e2/0x18a0 drivers/usb/core/urb.c:378
-Modules linked in:
-CPU: 0 PID: 2391 Comm: pvrusb2-context Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:usb_submit_urb+0x14e2/0x18a0 drivers/usb/core/urb.c:378
-Code: 89 de e8 31 c0 ab fd 84 db 0f 85 a9 f3 ff ff e8 f4 b8 ab fd 4c 89 fe 48 c7 c7 20 26 84 86 c6 05 d8 3c ef 04 01 e8 11 8c 00 02 <0f> 0b e9 87 f3 ff ff 41 be ed ff ff ff e9 7c f3 ff ff e8 c7 b8 ab
-RSP: 0018:ffffc90006996f78 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88810fc89b40 RSI: ffffffff812aca53 RDI: fffff52000d32de1
-RBP: 00000000c0008200 R08: 0000000000000001 R09: 0000000000000000
-R10: ffffffff814c6d1b R11: 0000000000000000 R12: ffff888119e0a000
-R13: 0000000000000005 R14: 00000000fffffff0 R15: ffff888110825600
-FS:  0000000000000000(0000) GS:ffff8881f6800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055e769882928 CR3: 0000000100fbe000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- pvr2_send_request_ex+0x7c2/0x20e0 drivers/media/usb/pvrusb2/pvrusb2-hdw.c:3667
- pvr2_send_request+0x35/0x40 drivers/media/usb/pvrusb2/pvrusb2-hdw.c:3810
- pvr2_i2c_read drivers/media/usb/pvrusb2/pvrusb2-i2c-core.c:130 [inline]
- pvr2_i2c_basic_op+0x4af/0x900 drivers/media/usb/pvrusb2/pvrusb2-i2c-core.c:172
- pvr2_i2c_xfer+0x375/0xb90 drivers/media/usb/pvrusb2/pvrusb2-i2c-core.c:445
- __i2c_transfer+0x52b/0x16e0 drivers/i2c/i2c-core-base.c:2207
- i2c_smbus_xfer_emulated+0x1b5/0xfe0 drivers/i2c/i2c-core-smbus.c:468
- __i2c_smbus_xfer drivers/i2c/i2c-core-smbus.c:606 [inline]
- __i2c_smbus_xfer+0x4b9/0xfb0 drivers/i2c/i2c-core-smbus.c:552
- i2c_smbus_xfer drivers/i2c/i2c-core-smbus.c:544 [inline]
- i2c_smbus_xfer+0x100/0x380 drivers/i2c/i2c-core-smbus.c:534
- i2c_smbus_read_byte_data+0x107/0x1b0 drivers/i2c/i2c-core-smbus.c:141
- saa711x_detect_chip drivers/media/i2c/saa7115.c:1718 [inline]
- saa711x_probe+0x1e8/0x940 drivers/media/i2c/saa7115.c:1824
- i2c_device_probe+0xacc/0xc90 drivers/i2c/i2c-core-base.c:572
- call_driver_probe drivers/base/dd.c:517 [inline]
- really_probe+0x245/0xcc0 drivers/base/dd.c:596
- __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:751
- driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:781
- __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:898
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
- __device_attach+0x228/0x4a0 drivers/base/dd.c:969
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
- device_add+0xc35/0x21b0 drivers/base/core.c:3353
- i2c_new_client_device+0x613/0xaf0 drivers/i2c/i2c-core-base.c:1062
- v4l2_i2c_new_subdev_board+0xaf/0x2c0 drivers/media/v4l2-core/v4l2-i2c.c:80
- v4l2_i2c_new_subdev+0x102/0x170 drivers/media/v4l2-core/v4l2-i2c.c:135
- pvr2_hdw_load_subdev drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2022 [inline]
- pvr2_hdw_load_modules drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2074 [inline]
- pvr2_hdw_setup_low drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2155 [inline]
- pvr2_hdw_setup drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2261 [inline]
- pvr2_hdw_initialize+0xc97/0x37d0 drivers/media/usb/pvrusb2/pvrusb2-hdw.c:2338
- pvr2_context_check drivers/media/usb/pvrusb2/pvrusb2-context.c:109 [inline]
- pvr2_context_thread_func+0x250/0x850 drivers/media/usb/pvrusb2/pvrusb2-context.c:158
- kthread+0x3c2/0x4a0 kernel/kthread.c:319
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+ drivers/staging/r8188eu/core/rtw_ap.c         |   9 +-
+ drivers/staging/r8188eu/core/rtw_cmd.c        |   6 +-
+ drivers/staging/r8188eu/core/rtw_efuse.c      | 182 ++++--------------
+ drivers/staging/r8188eu/core/rtw_mlme.c       |   7 +-
+ drivers/staging/r8188eu/core/rtw_mlme_ext.c   |   5 +-
+ drivers/staging/r8188eu/core/rtw_mp_ioctl.c   |  18 +-
+ drivers/staging/r8188eu/core/rtw_p2p.c        |   4 +-
+ drivers/staging/r8188eu/core/rtw_pwrctrl.c    |   8 -
+ drivers/staging/r8188eu/core/rtw_sta_mgt.c    |   2 +-
+ drivers/staging/r8188eu/core/rtw_wlan_util.c  |   8 +-
+ drivers/staging/r8188eu/hal/hal_intf.c        | 170 +---------------
+ .../staging/r8188eu/hal/rtl8188e_hal_init.c   | 123 +++---------
+ drivers/staging/r8188eu/hal/usb_halinit.c     |  36 +---
+ drivers/staging/r8188eu/include/hal_intf.h    | 123 ++----------
+ .../staging/r8188eu/include/rtl8188e_hal.h    |   5 -
+ drivers/staging/r8188eu/include/rtw_efuse.h   |   9 -
+ drivers/staging/r8188eu/include/rtw_pwrctrl.h |   2 -
+ drivers/staging/r8188eu/os_dep/ioctl_linux.c  |  31 +--
+ drivers/staging/r8188eu/os_dep/os_intfs.c     |  21 +-
+ 19 files changed, 142 insertions(+), 627 deletions(-)
 
+-- 
+2.33.0
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
