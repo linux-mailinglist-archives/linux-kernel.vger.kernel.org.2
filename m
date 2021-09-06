@@ -2,208 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9711E40174B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EE240174F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240067AbhIFHul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 03:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239750AbhIFHuh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 03:50:37 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3781FC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 00:49:33 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id w19-20020a17090aaf9300b00191e6d10a19so3987162pjq.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 00:49:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=QhCgaSu1eSPlQErUzwwryEHE0CwHlTOVTpvkyIqt2lY=;
-        b=FyBs0dS972vRSpbRXyL/n2BoWxI9wjF0pW66zG8EINOOWNDBBPxLIpcDeDNHBerhky
-         ROizbdJpol1HJiEH6RWQVuiU0zpi+Csg7Sz/hVQDngfF3LKQbWNmTpdj+WKiO6u+OfFb
-         pWFiOzvFln64Sf/xocDEiwiWeeJ5npaxNrl64ccMtE9T75HkrlJK0jYj1lFfVTfrQR/9
-         whVvklRPvazLMZItzVy+K51m5GQTPk7bHwFuqPY8oub8dlp/9NKQxSEz31AnzLAC1+d0
-         miE51W0ESBqLWTQWtaKJcYltIbrqAN+qylZ3PMj5inAx67CeA9qBFbPsYm7PHSRUCWew
-         ESrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=QhCgaSu1eSPlQErUzwwryEHE0CwHlTOVTpvkyIqt2lY=;
-        b=BcnTbPS0scSrm0z1RifKhBihQNTILjzHt8L8lH4WPrmPLnKSyIIQFgcyEaRtGbRYWH
-         Tfofy0jJ4Tv1yjP1U2gzEQJ6qwFnybw9Vr3ZQMMkRvxc+DEX2yzZtthofhAPIr2LFj0v
-         5zywB9ZGUXeplm8JGBlAfM9+HElUcu6u/pMRYX2U+im6EG0Mh7W6yWz/Wp6oQ6ezNI1b
-         WjdHraQuHT7MHG1nWNN+7zLFQJXazg3nNf5yktm1zE3If0iMaOzMxKCLNLxzWAQWsrRP
-         bBOx5fjcPIVgX7DaECVTpfwGm8yBvQNvXwkorMK1qxq4WuAQ81PoKulPFwH2iLrIzBqH
-         SvLg==
-X-Gm-Message-State: AOAM533l9Mq2nERUwtENBSCBLUqcuPYeG/PUqDnSV1mpeICP7aeIKPmT
-        C8v12KD0KQhVwEHi9FArsmSH/g==
-X-Google-Smtp-Source: ABdhPJx0gT7JlX46NVcK4JvhNMy5PdKAZKmSGUvzvcQ61C/cHg9pE7IdgRjJVir9P0f72bbU/7pBug==
-X-Received: by 2002:a17:90b:4b87:: with SMTP id lr7mr5179690pjb.47.1630914572689;
-        Mon, 06 Sep 2021 00:49:32 -0700 (PDT)
-Received: from [10.86.116.180] ([139.177.225.230])
-        by smtp.gmail.com with ESMTPSA id lw14sm6368804pjb.48.2021.09.06.00.49.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 00:49:31 -0700 (PDT)
-Subject: Re: [External] Re: [Intel-wired-lan] [PATCH v2] ixgbe: Fix NULL
- pointer dereference in ixgbe_xdp_setup
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     duanxiongchun@bytedance.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zhengqi.arch@bytedance.com,
-        chenying.kernel@bytedance.com, intel-wired-lan@lists.osuosl.org,
-        songmuchun@bytedance.com, bpf@vger.kernel.org,
-        wangdongdong.6@bytedance.com, zhouchengming@bytedance.com,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
-        jeffrey.t.kirsher@intel.com, magnus.karlsson@intel.com,
-        maciej.fijalkowski@intel.com
-References: <20210903064013.9842-1-zhoufeng.zf@bytedance.com>
- <2ee172ab-836c-d464-be59-935030d01f4b@molgen.mpg.de>
-From:   Feng Zhou <zhoufeng.zf@bytedance.com>
-Message-ID: <8ce8de1c-14bf-20ad-00c0-9e0d8ff34b91@bytedance.com>
-Date:   Mon, 6 Sep 2021 15:49:22 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S240293AbhIFHuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 03:50:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240232AbhIFHuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 03:50:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFAF260F43
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 07:49:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630914585;
+        bh=Gc0lprsv7w/okSpJYAt55fjl1xzEXuErDUTeV6+8RZ4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JqP03wy8XTp7qDt1TgdOCzYKiph2r9C8s08SL+DZr0/Ssf56d7gjsvNFoitU8FIcK
+         ttUIED0qi0nr1tE6fzWtStAVsAQWfNlJdz4nWl7DqJ88ywAtzWVL1qK6CN8USnVLRS
+         GziyBcDGCB9M8SDb6JErMmJjd8tSrUuqsIcO+MAo+HSkukbC9s9WrvesnwYM1eJguB
+         UBkgBTeOU8H3sWLkx3goAhleGOunGjpstAM0ahnBpny5xrdHeN3YBb24AI6i87J2Nq
+         PPvMTXedZIq/TlgW5ZO3QxzPlD+i0BJ4wWtRHIBlcFQ1AookCd2DfJzU20lfktVpEm
+         UIc8s7yxyCXEQ==
+Received: by mail-ot1-f54.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so7790950otg.11
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 00:49:45 -0700 (PDT)
+X-Gm-Message-State: AOAM530LIx8Zisq64dQTEjlfkCWAv/0MPO3WONXKu9zAJdWMd+KkMh4Y
+        s5kOnQyfjcc2ZBODp0Q2LJnKeUizZWLfsXpzAqI=
+X-Google-Smtp-Source: ABdhPJw2KhJSX56bD1ujc4nIOhS/AujhCUCRQrLrbPPE+SfehRlXCts4tMFpDIOxUFDz2OkohPYafgZKcJSPeDIus0w=
+X-Received: by 2002:a9d:12e2:: with SMTP id g89mr10172221otg.112.1630914585091;
+ Mon, 06 Sep 2021 00:49:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2ee172ab-836c-d464-be59-935030d01f4b@molgen.mpg.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20210902155429.3987201-1-keithp@keithp.com> <20210904060908.1310204-1-keithp@keithp.com>
+ <20210904060908.1310204-3-keithp@keithp.com> <CAMj1kXHHb_d4Exg7_5OdB-Ah=EQxVEUgEv1agUQZg-Rz8pLd5Q@mail.gmail.com>
+ <8735qifcy6.fsf@keithp.com>
+In-Reply-To: <8735qifcy6.fsf@keithp.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 6 Sep 2021 09:49:33 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFQHX-PDQXaRXGNjyJNn_frf9tYNFND06DAYC095JhDbw@mail.gmail.com>
+Message-ID: <CAMj1kXFQHX-PDQXaRXGNjyJNn_frf9tYNFND06DAYC095JhDbw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] ARM: Move thread_info into task_struct (v7 only)
+To:     Keith Packard <keithp@keithp.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Abbott Liu <liuwenliang@huawei.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Jens Axboe <axboe@kernel.dk>, Jian Cai <jiancai@google.com>,
+        Joe Perches <joe@perches.com>,
+        Kees Cook <keescook@chromium.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Rob Herring <robh@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
+        YiFei Zhu <yifeifz2@illinois.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 6 Sept 2021 at 08:14, Keith Packard <keithp@keithp.com> wrote:
+>
+> Ard Biesheuvel <ardb@kernel.org> writes:
+>
+> > c13 is not a register, it is a value in one of the dimensions of the
+> > ARM sysreg space, and probably covers other system registers that
+> > pre-v7 cores do implement.
+>
+> > Better to use its architectural name (TPIDRPRW) and clarify that
+> > pre-v6k/v7 cores simply don't implement it.
+>
+> Thanks, I'll reword the commit message
+>
+> > Could we split this up?
+>
+> I could split up the assembler macro changes which add a temporary
+> register to the calls getting the current thread_info/task_struct value?
+> If that would help get this reviewed, I'd be happy to do
+> that. Otherwise, it's pretty much all-or-nothing as enabling
+> THREAD_INFO_IN_TASK requires a bunch of synchronized changes.
+>
 
-在 2021/9/6 下午2:37, Paul Menzel 写道:
-> Dear Feng,
->
->
-> Am 03.09.21 um 08:40 schrieb Feng zhou:
->
-> (If you care, in your email client, your last name does not start with 
-> a capital letter.)
->
->> From: Feng Zhou <zhoufeng.zf@bytedance.com>
->>
->> The ixgbe driver currently generates a NULL pointer dereference with
->> some machine (online cpus < 63). This is due to the fact that the
->> maximum value of num_xdp_queues is nr_cpu_ids. Code is in
->> "ixgbe_set_rss_queues"".
->>
->> Here's how the problem repeats itself:
->> Some machine (online cpus < 63), And user set num_queues to 63 through
->> ethtool. Code is in the "ixgbe_set_channels",
->> adapter->ring_feature[RING_F_FDIR].limit = count;
->
-> For better legibility, you might want to indent code (blocks) by four 
-> spaces and add blank lines around it (also below).
->
->> It becames 63.
->
-> becomes
->
->> When user use xdp, "ixgbe_set_rss_queues" will set queues num.
->> adapter->num_rx_queues = rss_i;
->> adapter->num_tx_queues = rss_i;
->> adapter->num_xdp_queues = ixgbe_xdp_queues(adapter);
->> And rss_i's value is from
->> f = &adapter->ring_feature[RING_F_FDIR];
->> rss_i = f->indices = f->limit;
->> So "num_rx_queues" > "num_xdp_queues", when run to "ixgbe_xdp_setup",
->> for (i = 0; i < adapter->num_rx_queues; i++)
->>     if (adapter->xdp_ring[i]->xsk_umem)
->> lead to panic.
->
-> lead*s*?
->
->> Call trace:
->> [exception RIP: ixgbe_xdp+368]
->> RIP: ffffffffc02a76a0  RSP: ffff9fe16202f8d0  RFLAGS: 00010297
->> RAX: 0000000000000000  RBX: 0000000000000020  RCX: 0000000000000000
->> RDX: 0000000000000000  RSI: 000000000000001c  RDI: ffffffffa94ead90
->> RBP: ffff92f8f24c0c18   R8: 0000000000000000   R9: 0000000000000000
->> R10: ffff9fe16202f830  R11: 0000000000000000  R12: ffff92f8f24c0000
->> R13: ffff9fe16202fc01  R14: 000000000000000a  R15: ffffffffc02a7530
->> ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
->>   7 [ffff9fe16202f8f0] dev_xdp_install at ffffffffa89fbbcc
->>   8 [ffff9fe16202f920] dev_change_xdp_fd at ffffffffa8a08808
->>   9 [ffff9fe16202f960] do_setlink at ffffffffa8a20235
->> 10 [ffff9fe16202fa88] rtnl_setlink at ffffffffa8a20384
->> 11 [ffff9fe16202fc78] rtnetlink_rcv_msg at ffffffffa8a1a8dd
->> 12 [ffff9fe16202fcf0] netlink_rcv_skb at ffffffffa8a717eb
->> 13 [ffff9fe16202fd40] netlink_unicast at ffffffffa8a70f88
->> 14 [ffff9fe16202fd80] netlink_sendmsg at ffffffffa8a71319
->> 15 [ffff9fe16202fdf0] sock_sendmsg at ffffffffa89df290
->> 16 [ffff9fe16202fe08] __sys_sendto at ffffffffa89e19c8
->> 17 [ffff9fe16202ff30] __x64_sys_sendto at ffffffffa89e1a64
->> 18 [ffff9fe16202ff38] do_syscall_64 at ffffffffa84042b9
->> 19 [ffff9fe16202ff50] entry_SYSCALL_64_after_hwframe at ffffffffa8c0008c
->
-> Please describe the fix in the commit message.
->
->> Fixes: 4a9b32f30f80 ("ixgbe: fix potential RX buffer starvation for
->> AF_XDP")
->> Signed-off-by: Feng Zhou <zhoufeng.zf@bytedance.com>
->> ---
->> Updates since v1:
->> - Fix "ixgbe_max_channels" callback so that it will not allow a 
->> setting of
->> queues to be higher than the num_online_cpus().
->> more details can be seen from here:
->> https://patchwork.ozlabs.org/project/intel-wired-lan/patch/20210817075407.11961-1-zhoufeng.zf@bytedance.com/ 
->>
->> Thanks to Maciej Fijalkowski for your advice.
->>
->>   drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c | 2 +-
->>   drivers/net/ethernet/intel/ixgbe/ixgbe_main.c    | 8 ++++++--
->>   2 files changed, 7 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c 
->> b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
->> index 4ceaca0f6ce3..21321d164708 100644
->> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
->> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ethtool.c
->> @@ -3204,7 +3204,7 @@ static unsigned int ixgbe_max_channels(struct 
->> ixgbe_adapter *adapter)
->>           max_combined = ixgbe_max_rss_indices(adapter);
->>       }
->>   -    return max_combined;
->> +    return min_t(int, max_combined, num_online_cpus());
->>   }
->>     static void ixgbe_get_channels(struct net_device *dev,
->> diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c 
->> b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->> index 14aea40da50f..5db496cc5070 100644
->> --- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->> +++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
->> @@ -10112,6 +10112,7 @@ static int ixgbe_xdp_setup(struct net_device 
->> *dev, struct bpf_prog *prog)
->>       struct ixgbe_adapter *adapter = netdev_priv(dev);
->>       struct bpf_prog *old_prog;
->>       bool need_reset;
->> +    int num_queues;
->>         if (adapter->flags & IXGBE_FLAG_SRIOV_ENABLED)
->>           return -EINVAL;
->> @@ -10161,11 +10162,14 @@ static int ixgbe_xdp_setup(struct 
->> net_device *dev, struct bpf_prog *prog)
->>       /* Kick start the NAPI context if there is an AF_XDP socket open
->>        * on that queue id. This so that receiving will start.
->>        */
->> -    if (need_reset && prog)
->> -        for (i = 0; i < adapter->num_rx_queues; i++)
->> +    if (need_reset && prog) {
->> +        num_queues = min_t(int, adapter->num_rx_queues,
->> +            adapter->num_xdp_queues);
->> +        for (i = 0; i < num_queues; i++)
->>               if (adapter->xdp_ring[i]->xsk_pool)
->>                   (void)ixgbe_xsk_wakeup(adapter->netdev, i,
->>                                  XDP_WAKEUP_RX);
->> +    }
->>         return 0;
->>   }
->>
-Thanks for your advice. I will modify the commit message in v3
+Sure, so it is precisely for that reason that it is better to isolate
+changes that can be isolated.
 
+...
+> >> +DECLARE_PER_CPU(struct task_struct *, current_task);
+> >> +
+> >> +static __always_inline struct task_struct *get_current(void)
+> >> +{
+> >> +       return raw_cpu_read(current_task);
+> >
+> > This needs to run with preemption disabled, or we might get migrated
+> > to another CPU halfway through, and produce the wrong result (i.e.,
+> > the current task of the CPU we migrated from). However, it appears
+> > that manipulating the preempt count will create a circular dependency
+> > here.
+>
+> Yeah, I really don't understand the restrictions of this API well. Any
+> code fetching the current task pointer better not be subject to
+> preemption or that value will be stale at some point after it was
+> computed. Do you know if it could ever be run in a context allowing
+> preemption?
+
+All the time. 'current' essentially never changes value from the POV
+of code running in task context, so there is usually no reason to care
+about preemption/migration when referring to it. Using per-CPU
+variables is what creates the problem here.
+
+> >
+> > Instead of using a per-CPU variable for current, I think it might be
+> > better to borrow another system register (TPIDRURO or TPIDRURW) to
+> > carry 'current' when THREAD_INFO_IN_TASK is in effect, similar to how
+> > arm64 uses SP_EL0 - those registers could be preserved/restored in the
+> > entry/exit from/to user space paths rather than in the context switch
+> > path, and then be used any way we like while running in the kernel.
+>
+> Making sure these values don't leak through to user space somehow? I'm
+> not excited by that prospect at all.
+
+Moving the code that pokes the right user space value into these
+registers from the context switch patch to the user space exit path
+should be rather straight-forward, so I am not too concerned about
+security issues here (famous last words)
+
+> But, perhaps someone can help me
+> understand the conditions under which the current task value can be
+> computed where preemption was enabled and have that not be a problem for
+> the enclosing code?
+>
+
+In principle, it should be sufficient to run the per-CPU variable load
+sequence with preemption disabled. For instance, your asm version
+
+       movw    \dst, #:lower16:\sym
+       movt    \dst, #:upper16:\sym
+       this_cpu_offset \tmp
+       ldr     \dst, [\dst, \tmp]
+
+must not be preempted and migrated right before the ldr instruction,
+because that would end up accessing another CPU's value for 'current'.
+
+However, the preempt_count itself is stored in thread_info as well, so
+I'm not sure there is a way we can safely disable preemption for this
+sequence to begin with, unless we run the above with interrupts
+disabled.
+
+Given that we are already relying on the MP extensions for this
+anyway, I personally think that using another thread ID register to
+carry 'current' is a reasonable approach as well, since it would also
+allow us to get per-task stack protector support into the compiler.
+But I would like to hear from some other folks on cc as well.
