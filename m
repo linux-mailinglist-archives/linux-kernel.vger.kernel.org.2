@@ -2,63 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A02440217B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 01:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1960E40217E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 01:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232651AbhIFXcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 19:32:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229866AbhIFXcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 19:32:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 202CF600CC;
-        Mon,  6 Sep 2021 23:31:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630971078;
-        bh=aoF1H2UmYoxlhAhStuXzzpNjbkpPfAGfpYh/lGmuDEg=;
-        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
-        b=OjDLMmnnKOHtkIAlfmFhaXxgCWmpBa6lvAYUCM0kGTm8uWvUzEcjThPTAwrTCaF5i
-         fUVhx41tWiSHoqrss3kt8aRM6rsBUnkPAGuTobZwnLMbZY9CC/Q3Xenpa6XRsbKRhp
-         YTOjzDUp6q3Vquas3qETf4QEvVXyglMBFhgBnekU2ZCJzpvVbJy0JE/2AJQ89iwKvM
-         yzwgjoYCqXNq2uJr9+tCTEPuIWkVHX+pKN+y/vrekqH9EA2QMue6D7ASKRw8fO6yBy
-         Qo1cZAY/a421tTbUdINxP2Vfr9egSE1Iqf4/r92ALqhfMrG4igTjUZoBkO3XMYQDhR
-         bfESv5kQRGl8w==
-Received: by mail-ot1-f48.google.com with SMTP id v33-20020a0568300921b0290517cd06302dso10528022ott.13;
-        Mon, 06 Sep 2021 16:31:18 -0700 (PDT)
-X-Gm-Message-State: AOAM531Fzgy3YN0725ra+ySWtUjsl8xio+dtoBMD359Qm2HDkhQFJ1Ik
-        91/UoXYJOHqWElWaJdAowVnwcndR58/wT6SIHCc=
-X-Google-Smtp-Source: ABdhPJzZiG8rIbqxwlSWGA0Tqz4WOy8/QHQkuIyQDs+xgXpfvUI35OFZ7hYDAoZFNtK6porraGbx4rx6ZKjxKAaglRo=
-X-Received: by 2002:a9d:6c04:: with SMTP id f4mr12489798otq.185.1630971077487;
- Mon, 06 Sep 2021 16:31:17 -0700 (PDT)
+        id S233186AbhIFXiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 19:38:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229866AbhIFXiR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 19:38:17 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC46C061575;
+        Mon,  6 Sep 2021 16:37:10 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id e7so8132966pgk.2;
+        Mon, 06 Sep 2021 16:37:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sanJQgCOj6QndmuB/d1oi1oeHwgYC+0Otb8h+XZVNNI=;
+        b=Z5I2WDWbjBd8bVxVY5zxa5Lf6V+l0DGyC/hOgiwHSrTOOen/88bEu07rDPQ4ZShBgQ
+         dSUy9aWem3GOLdx3PzONf9XLsqdDFHgVstzRF+EdBjFoeY37c8bJZY+SWsOfyMsYLoWB
+         iFilu0WgaYjxlK17giSFJ1D+ykz1C1SLgZqkwMFdEx+R+g1GYgJTvMBabjnJKP/crLMR
+         I+ieOQGPYltTq7oDpxKVsg1Gkcpsu1ecvpEhfyNGTYzVYAhRK1ChnO+OY4qTtbQ09pny
+         xwdTl1DjEIS4+AvBZrvhTOSl2gLYeRban0knGGjzJLESTLxctKuPAmy1jRDteoxQFH61
+         rmwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sanJQgCOj6QndmuB/d1oi1oeHwgYC+0Otb8h+XZVNNI=;
+        b=Ot2C/Uj4EXyxEJTmRJbdav8QjyBlGn/N/GYsSPwMvlc7YPQA6buG+GXRxH7L8/joJi
+         Saw1XO7CW6IjojUHljyO4RBKSk50Wa7ncEXMI6Q7G5ykBXhHZvEGKmsuHciBmWkg/R1R
+         HBF++RgKHO7J6qc1lMplMk465ZGRC08K/LwXs9YCeVEcFI3rJprdQMjrehoPL4fJaHgx
+         HkheCgNyIJXt1d6hMRK/ryQmK378hdrKIKQDhtNKBAe1iYqjU8aMjMuAm4mviaV24gEH
+         kj1zxoIp+rVSobKn2gt6tJpfleala8g3aD+R7fzf45JrEDpxrpFQUJ2oHOAuctxnmtw2
+         f6SA==
+X-Gm-Message-State: AOAM532MxMRm/WHbSVKnX0i5t26x/zGEvHG3NM+v5KANKQWUlvbdYrD8
+        /a9vvbywMY4Wu+MwKYzWdnE=
+X-Google-Smtp-Source: ABdhPJxQv460ugCPPWo2Au4TeA7NDFDB7zF3qIAdkwwmscxGUcK+DTWr5lJwt5yAdkfHSl7t2N3ENQ==
+X-Received: by 2002:a62:8415:0:b0:407:8998:7c84 with SMTP id k21-20020a628415000000b0040789987c84mr14198037pfd.71.1630971429983;
+        Mon, 06 Sep 2021 16:37:09 -0700 (PDT)
+Received: from tong-desktop.local (99-105-211-126.lightspeed.sntcca.sbcglobal.net. [99.105.211.126])
+        by smtp.googlemail.com with ESMTPSA id t68sm10890250pgc.59.2021.09.06.16.37.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Sep 2021 16:37:09 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tong Zhang <ztong0001@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Dario Binacchi <dariobin@libero.it>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] can: c_can: fix null-ptr-deref on ioctl()
+Date:   Mon,  6 Sep 2021 16:37:02 -0700
+Message-Id: <20210906233704.1162666-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a8a:74d:0:0:0:0:0 with HTTP; Mon, 6 Sep 2021 16:31:16 -0700 (PDT)
-In-Reply-To: <20210906134438.14250-1-colin.king@canonical.com>
-References: <20210906134438.14250-1-colin.king@canonical.com>
-From:   Namjae Jeon <linkinjeon@kernel.org>
-Date:   Tue, 7 Sep 2021 08:31:16 +0900
-X-Gmail-Original-Message-ID: <CAKYAXd8Rsu88exReJCt8hW8d_D=cqpRy1G7siaK+2AOo3EOO4w@mail.gmail.com>
-Message-ID: <CAKYAXd8Rsu88exReJCt8hW8d_D=cqpRy1G7siaK+2AOo3EOO4w@mail.gmail.com>
-Subject: Re: [PATCH][next] ksmbd: add missing assignments to ret on
- ndr_read_int64 read calls
-To:     Colin King <colin.king@canonical.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steve French <sfrench@samba.org>,
-        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021-09-06 22:44 GMT+09:00, Colin King <colin.king@canonical.com>:
-> From: Colin Ian King <colin.king@canonical.com>
->
-> Currently there are two ndr_read_int64 calls where ret is being checked
-> for failure but ret is not being assigned a return value from the call.
-> Static analyis is reporting the checks on ret as dead code.  Fix this.
->
-> Addresses-Coverity: ("Logical dead code")
-> Fixes: 303fff2b8c77 ("ksmbd: add validation for ndr read/write functions")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Applied it to my queue. I will send it to Steve after testing.
-Thanks for your patch!
+the pdev maybe not a platform device, e.g. c_can_pci device,
+in this case, calling to_platform_device() would not make sense.
+Also, per the comment in drivers/net/can/c_can/c_can_ethtool.c, @bus_info
+sould match dev_name() string, so I am replacing this with dev_name() to
+fix this issue.
+
+[    1.458583] BUG: unable to handle page fault for address: 0000000100000000
+[    1.460921] RIP: 0010:strnlen+0x1a/0x30
+[    1.466336]  ? c_can_get_drvinfo+0x65/0xb0 [c_can]
+[    1.466597]  ethtool_get_drvinfo+0xae/0x360
+[    1.466826]  dev_ethtool+0x10f8/0x2970
+[    1.467880]  sock_ioctl+0xef/0x300
+
+Fixes: 2722ac986e93 ("can: c_can: add ethtool support")
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+---
+ drivers/net/can/c_can/c_can_ethtool.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/net/can/c_can/c_can_ethtool.c b/drivers/net/can/c_can/c_can_ethtool.c
+index cd5f07fca2a5..377c7d2e7612 100644
+--- a/drivers/net/can/c_can/c_can_ethtool.c
++++ b/drivers/net/can/c_can/c_can_ethtool.c
+@@ -15,10 +15,8 @@ static void c_can_get_drvinfo(struct net_device *netdev,
+ 			      struct ethtool_drvinfo *info)
+ {
+ 	struct c_can_priv *priv = netdev_priv(netdev);
+-	struct platform_device *pdev = to_platform_device(priv->device);
+-
+ 	strscpy(info->driver, "c_can", sizeof(info->driver));
+-	strscpy(info->bus_info, pdev->name, sizeof(info->bus_info));
++	strscpy(info->bus_info, dev_name(priv->device), sizeof(info->bus_info));
+ }
+ 
+ static void c_can_get_ringparam(struct net_device *netdev,
+-- 
+2.25.1
+
