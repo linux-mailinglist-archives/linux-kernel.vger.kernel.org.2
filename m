@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 739BB401FB4
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D2A6401FB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245733AbhIFS2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 14:28:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58052 "EHLO
+        id S244450AbhIFS2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 14:28:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244364AbhIFS0d (ORCPT
+        with ESMTP id S244651AbhIFS0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 14:26:33 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 832F6C061757
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:25:28 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id t19so14949196ejr.8
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:25:28 -0700 (PDT)
+        Mon, 6 Sep 2021 14:26:35 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E282C0617AD
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:25:29 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a25so14979960ejv.6
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:25:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=sXXSA0c+SHY34EOMuaUJW7qEAiEP8/m0m4ZBvHYTna8=;
-        b=KtlQKT5ENVMTJjBzk/v7rDUKpMeXIXFKHa/NmbaNSJvvWX3Ien1SP25v5aSjnqmZlD
-         KLJ12XKw1iHVBnEEBfkpSjAiPmItxPi5Cz2MQ8lNyvTScOlb0jCsmCunBTCRdj5qVh3G
-         UNVDEU8E3V7Fj40FO3M59XnWkez7Pbq2TjOIkX8/2M0H1xBgkBbJ+U1HArfPM0gDQX30
-         sCyf/8chxdRiVn7iK+JAOk20kfhfmM1Lffdoxq44hhXVu+C+sMtdrlOykuvDIFEAv0dp
-         h9fIfJnYw8a1tcTjjgopbIaEMLDdZhC3l63fbjS1U9F8Pk6Yvgz6BDk/7Y+DoU9gsLPY
-         0DEg==
+        bh=zGs9GphWZZtf+FuA3V7VBkOJBN3a0kKtobp5qpsYgWE=;
+        b=DHdxW3X+uZlIFgIzR8MJO1SQnriDnJXL+xCnjfgNz2ou3vfyOKNTIjDfFuRXOFU3dP
+         0o3ggq4fk/O2L06kHD/RqXCuGPWbINXv6GYTOqSBZ1K5fzQtKxU6KXeijgd6NuX19mm1
+         qefZbaRcBEqTJBpy/9DdLrj3FMmMKlf8gnr5+4Sv7AGCALZ/kKIP0tjv375OiGzuD/GI
+         aAq9M4bSzLg0Y3uk7ipgqhZ2OJDEeKzg28DG6gKlu4/18x/crvKi0t+W5GndXTP8s5/p
+         HdoyyaWbVvH5Xkwls7VN1z36QbF2JorXLeaGwAN4PJx8XB0JIwspmLepRfD4VfZ0HPhi
+         avrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=sXXSA0c+SHY34EOMuaUJW7qEAiEP8/m0m4ZBvHYTna8=;
-        b=oEPy4RsyuQa/TFPkuFJY+WsC8GNX3FxjVhhdFN5XIHXyCEstHdJb3THlulTx1Pfdgi
-         iALJLJcSTIHCK07SpI2K0J50sAcR1AgaXPcEVeoTgVnb/Xp/0f1uejloZRXi7jDvuRH4
-         S5yre4jSivo/YweG6F3cW+yKGirCbVP1hePvvcpukrPfjGtJvJEgPwByi97YyvjHdDxb
-         NXnVEaXKeq6vg00HzDat6cDLSF3Uzneecuz/aA9T4DBIFhFjQBmn2CikFQUhu8oh0ldx
-         XtWL7y0MHhDgeRWpwAB5shzVdjzT8DtXSApeLgsoRBf1dPkOVvv9v+YUKEGFFFhJ5sLr
-         5KLQ==
-X-Gm-Message-State: AOAM531hDVwFKPJAMcp3twkNdM2qGLu+Dyq4BHFHgOoDTp5nmLzj0SAe
-        3TlZdZyHM3oAGRG1jxpGJWQ=
-X-Google-Smtp-Source: ABdhPJzF20Ajj3iUvL89Q7BjgmVslW2ihvucQgaumDb/1wV0wEROTxjITa0I2S5v4UgiXXlcU4rTrQ==
-X-Received: by 2002:a17:906:7250:: with SMTP id n16mr14734942ejk.147.1630952727110;
+        bh=zGs9GphWZZtf+FuA3V7VBkOJBN3a0kKtobp5qpsYgWE=;
+        b=bowSYhGH8K7ICF0Cth/MyO/c32E2MxWbunAC2lYj5NtSXnDCiEHsROriILJj7m1XPG
+         QKvCKGiPPOGGL46unU6YTEriXVB/c595v6ApLumLrx6LLxDRykpfc/2kDmj3+fkxbECl
+         PB+Jiz15KMePgNCbr+9r2rEIozohG9SsKV+6+oi48oaytPd2pljdpn/Ds2vzUKqUi/PL
+         cwtxmHD10o+9dPBflOUy8gsZb9azbuong+6w798NCzOTOXTuN200zu03kuYQ9j9A1pJw
+         DyxIz4DIySfKhyx6tnrx8O1c1EZYx3RL9IZyYAxm0bgE/ZcqBB/cBnth3Mwfy6elbRro
+         gOFQ==
+X-Gm-Message-State: AOAM5301AA6pNoxe58L2mepbbb7jkpHscdj8My+o711vllwsYa4hCt79
+        ihz7cT19oCP4Tj73DCcfBzc=
+X-Google-Smtp-Source: ABdhPJyp7RthB1EvkSNJm9wj9gXYaLBk8pm3DZ+cspTbUGwl536ecO6F6/hoylFeIP60qkH9DWHzaQ==
+X-Received: by 2002:a17:906:bcd7:: with SMTP id lw23mr15075785ejb.141.1630952727852;
         Mon, 06 Sep 2021 11:25:27 -0700 (PDT)
 Received: from localhost.localdomain ([2a02:8108:96c0:3b88::8fe1])
-        by smtp.gmail.com with ESMTPSA id s25sm4284492ejq.17.2021.09.06.11.25.26
+        by smtp.gmail.com with ESMTPSA id s25sm4284492ejq.17.2021.09.06.11.25.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 11:25:26 -0700 (PDT)
+        Mon, 06 Sep 2021 11:25:27 -0700 (PDT)
 From:   Michael Straube <straube.linux@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
         fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH 35/40] staging: r8188eu: remove empty function rtl8188e_stop_thread()
-Date:   Mon,  6 Sep 2021 20:24:33 +0200
-Message-Id: <20210906182438.5417-36-straube.linux@gmail.com>
+Subject: [PATCH 36/40] staging: r8188eu: remove hal_notch_filter from hal_ops
+Date:   Mon,  6 Sep 2021 20:24:34 +0200
+Message-Id: <20210906182438.5417-37-straube.linux@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210906182438.5417-1-straube.linux@gmail.com>
 References: <20210906182438.5417-1-straube.linux@gmail.com>
@@ -66,105 +66,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove empty function rtl8188e_stop_thread() and related code.
+Remove hal_notch_filter hal_ops and remove its wrapper
+rtw_hal_notch_filter(). Call hal_notch_filter_8188e() directly
+instead.
 
 Signed-off-by: Michael Straube <straube.linux@gmail.com>
 ---
- drivers/staging/r8188eu/hal/hal_intf.c          | 7 -------
- drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 6 ------
- drivers/staging/r8188eu/include/hal_intf.h      | 3 ---
- drivers/staging/r8188eu/include/rtl8188e_hal.h  | 1 -
- drivers/staging/r8188eu/os_dep/os_intfs.c       | 2 --
- 5 files changed, 19 deletions(-)
+ drivers/staging/r8188eu/hal/hal_intf.c          | 8 +-------
+ drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 4 +---
+ drivers/staging/r8188eu/include/hal_intf.h      | 6 ++----
+ 3 files changed, 4 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/staging/r8188eu/hal/hal_intf.c b/drivers/staging/r8188eu/hal/hal_intf.c
-index 3ea581fb2c7e..4a9820c2b36e 100644
+index 4a9820c2b36e..4394c6825f1a 100644
 --- a/drivers/staging/r8188eu/hal/hal_intf.c
 +++ b/drivers/staging/r8188eu/hal/hal_intf.c
-@@ -151,13 +151,6 @@ void rtw_hal_update_ra_mask(struct adapter *adapt, u32 mac_id, u8 rssi_level)
- 	}
- }
+@@ -24,7 +24,7 @@ uint	 rtw_hal_init(struct adapter *adapt)
+ 		adapt->hw_init_completed = true;
  
--/*	Start specifical interface thread		*/
--void rtw_hal_stop_thread(struct adapter *adapt)
--{
--	if (adapt->HalFunc.cancel_thread)
--		adapt->HalFunc.cancel_thread(adapt);
--}
+ 		if (adapt->registrypriv.notch_filter == 1)
+-			rtw_hal_notch_filter(adapt, 1);
++			hal_notch_filter_8188e(adapt, 1);
+ 	} else {
+ 		adapt->hw_init_completed = false;
+ 		DBG_88E("rtw_hal_init: hal__init fail\n");
+@@ -201,9 +201,3 @@ int rtw_hal_iol_cmd(struct adapter  *adapter, struct xmit_frame *xmit_frame,
+ 							   bndy_cnt);
+ 	return _FAIL;
+ }
 -
- u32 rtw_hal_read_bbreg(struct adapter *adapt, u32 regaddr, u32 bitmask)
- {
- 	u32 data = 0;
+-void rtw_hal_notch_filter(struct adapter *adapter, bool enable)
+-{
+-	if (adapter->HalFunc.hal_notch_filter)
+-		adapter->HalFunc.hal_notch_filter(adapter, enable);
+-}
 diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-index fc420cbec5de..f87cfa0e404a 100644
+index f87cfa0e404a..9a76e9aaa2d0 100644
 --- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
 +++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-@@ -1748,10 +1748,6 @@ void rtl8188e_clone_haldata(struct adapter *dst_adapter, struct adapter *src_ada
+@@ -1748,7 +1748,7 @@ void rtl8188e_clone_haldata(struct adapter *dst_adapter, struct adapter *src_ada
  	memcpy(dst_adapter->HalData, src_adapter->HalData, dst_adapter->hal_data_sz);
  }
  
--void rtl8188e_stop_thread(struct adapter *padapter)
--{
--}
--
- static void hal_notch_filter_8188e(struct adapter *adapter, bool enable)
+-static void hal_notch_filter_8188e(struct adapter *adapter, bool enable)
++void hal_notch_filter_8188e(struct adapter *adapter, bool enable)
  {
  	if (enable) {
-@@ -1766,8 +1762,6 @@ void rtl8188e_set_hal_ops(struct hal_ops *pHalFunc)
- {
- 	pHalFunc->free_hal_data = &rtl8188e_free_hal_data;
+ 		DBG_88E("Enable notch filter\n");
+@@ -1768,8 +1768,6 @@ void rtl8188e_set_hal_ops(struct hal_ops *pHalFunc)
+ 	pHalFunc->write_rfreg = &rtl8188e_PHY_SetRFReg;
  
--	pHalFunc->cancel_thread = &rtl8188e_stop_thread;
+ 	pHalFunc->IOL_exec_cmds_sync = &rtl8188e_IOL_exec_cmds_sync;
 -
- 	pHalFunc->read_bbreg = &rtl8188e_PHY_QueryBBReg;
- 	pHalFunc->write_bbreg = &rtl8188e_PHY_SetBBReg;
- 	pHalFunc->read_rfreg = &rtl8188e_PHY_QueryRFReg;
-diff --git a/drivers/staging/r8188eu/include/hal_intf.h b/drivers/staging/r8188eu/include/hal_intf.h
-index caee83ed962d..fdde4b2b8ec4 100644
---- a/drivers/staging/r8188eu/include/hal_intf.h
-+++ b/drivers/staging/r8188eu/include/hal_intf.h
-@@ -153,8 +153,6 @@ struct hal_ops {
- 				       u32 mac_id, u8 rssi_level);
- 	void	(*SetBeaconRelatedRegistersHandler)(struct adapter *padapter);
- 
--	void	(*cancel_thread)(struct adapter *adapter);
--
- 	s32	(*hal_xmit)(struct adapter *padapter,
- 			    struct xmit_frame *pxmitframe);
- 	s32 (*mgnt_xmit)(struct adapter *padapter,
-@@ -236,7 +234,6 @@ void	rtw_hal_free_recv_priv(struct adapter *padapter);
- void rtw_hal_update_ra_mask(struct adapter *padapter, u32 mac_id, u8 level);
- void	rtw_hal_clone_data(struct adapter *dst_adapt,
- 			   struct adapter *src_adapt);
--void	rtw_hal_stop_thread(struct adapter *padapter);
- 
- void rtw_hal_bcn_related_reg_setting(struct adapter *padapter);
- 
-diff --git a/drivers/staging/r8188eu/include/rtl8188e_hal.h b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-index 5947708594d2..40bc00a9b23b 100644
---- a/drivers/staging/r8188eu/include/rtl8188e_hal.h
-+++ b/drivers/staging/r8188eu/include/rtl8188e_hal.h
-@@ -439,7 +439,6 @@ void rtl8188e_set_hal_ops(struct hal_ops *pHalFunc);
- void rtl8188e_read_chip_version(struct adapter *padapter);
- 
- void rtl8188e_clone_haldata(struct adapter *dst, struct adapter *src);
--void rtl8188e_stop_thread(struct adapter *padapter);
- 
- void rtw_IOL_cmd_tx_pkt_buf_dump(struct adapter  *Adapter, int len);
- s32 rtl8188e_iol_efuse_patch(struct adapter *padapter);
-diff --git a/drivers/staging/r8188eu/os_dep/os_intfs.c b/drivers/staging/r8188eu/os_dep/os_intfs.c
-index c18f6a7237c7..3b277774b39a 100644
---- a/drivers/staging/r8188eu/os_dep/os_intfs.c
-+++ b/drivers/staging/r8188eu/os_dep/os_intfs.c
-@@ -742,8 +742,6 @@ void rtw_stop_drv_threads(struct adapter *padapter)
- 	up(&padapter->cmdpriv.cmd_queue_sema);
- 	if (padapter->cmdThread)
- 		_rtw_down_sema(&padapter->cmdpriv.terminate_cmdthread_sema);
--
--	rtw_hal_stop_thread(padapter);
+-	pHalFunc->hal_notch_filter = &hal_notch_filter_8188e;
  }
  
- static u8 rtw_init_default_value(struct adapter *padapter)
+ u8 GetEEPROMSize8188E(struct adapter *padapter)
+diff --git a/drivers/staging/r8188eu/include/hal_intf.h b/drivers/staging/r8188eu/include/hal_intf.h
+index fdde4b2b8ec4..35201286704f 100644
+--- a/drivers/staging/r8188eu/include/hal_intf.h
++++ b/drivers/staging/r8188eu/include/hal_intf.h
+@@ -172,8 +172,6 @@ struct hal_ops {
+ 	int (*IOL_exec_cmds_sync)(struct adapter *padapter,
+ 				  struct xmit_frame *frame, u32 max_wait,
+ 				  u32 bndy_cnt);
+-
+-	void (*hal_notch_filter)(struct adapter *adapter, bool enable);
+ };
+ 
+ #define RF_CHANGE_BY_INIT	0
+@@ -207,6 +205,8 @@ u16 rtl8188e_EfuseGetCurrentSize(struct adapter *pAdapter, u8 efuseType, bool bP
+ int rtl8188e_Efuse_PgPacketRead(struct adapter *pAdapter, u8 offset, u8 *data, bool bPseudoTest);
+ int rtl8188e_Efuse_PgPacketWrite(struct adapter *pAdapter, u8 offset, u8 word_en, u8 *data, bool bPseudoTest);
+ 
++void hal_notch_filter_8188e(struct adapter *adapter, bool enable);
++
+ void	rtw_hal_free_data(struct adapter *padapter);
+ uint rtw_hal_init(struct adapter *padapter);
+ uint rtw_hal_deinit(struct adapter *padapter);
+@@ -249,8 +249,6 @@ void	rtw_hal_write_rfreg(struct adapter *padapter,
+ int rtw_hal_iol_cmd(struct adapter  *adapter, struct xmit_frame *xmit_frame,
+ 		    u32 max_wating_ms, u32 bndy_cnt);
+ 
+-void rtw_hal_notch_filter(struct adapter *adapter, bool enable);
+-
+ void indicate_wx_scan_complete_event(struct adapter *padapter);
+ u8 rtw_do_join(struct adapter *padapter);
+ 
 -- 
 2.33.0
 
