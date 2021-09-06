@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2E4401F12
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C005F401F14
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243179AbhIFROC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 13:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41910 "EHLO
+        id S243851AbhIFROK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 13:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236854AbhIFROB (ORCPT
+        with ESMTP id S243812AbhIFROF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 13:14:01 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E936AC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 10:12:55 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id y6so12338797lje.2
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:12:55 -0700 (PDT)
+        Mon, 6 Sep 2021 13:14:05 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B70CC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 10:13:01 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id w8so7371811pgf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:13:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wG+m7axsyf9xe/P3eHS5Xatu0sFA+zmgWESW9SpvH6I=;
-        b=LLRQolIN0Z8DHNVqkw31H4xNxRValfnKjUOyyhL9sHuUUjtKUGSTH69a+eYok9fgvp
-         g1L+bhrywdbnu57OcTIWACmngZXKAQmXpMTaZg38WX3/ZbWpNZuD31WEQFPVLWqOlFOs
-         /lBf+EeQKzTUNFwbSwsYdh93DQvBy9fU1SGcM=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6NacCBKP1frBhmpqgKkyBTREBZY+hKJD0S9nQbqPwa8=;
+        b=WTVPuCHHyicu0+YRTXvNjGuJGvP/yWLoNGUygGsaS/hAOd5NZtdha4u4GUm9BTE2St
+         2mwYQ1nPSmq/BqNkeBKRCYeKkxqJRbE29sYhNzqWxRnnDe9u+f421xNYyE7alEVm/8/I
+         ZzxCjX0HpUe0NGt3OBy7lDDdBH5JJnNXmdCZk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wG+m7axsyf9xe/P3eHS5Xatu0sFA+zmgWESW9SpvH6I=;
-        b=JZMPF8rOxF+VuQ2rJlo6Fhc1PsCPLDreGQRX5r/seiZovCW1uutvNbho4AST6XKmvR
-         punEUrZWAXkAkLuhG19FNchuxd6GzVhivvX7aNWJPCZDZSiJUNkyKl6lGqaCeE2gdewg
-         Lq+Dq4WhDRKZM6q+ICQgG8aU4Zuzbfs8aCNaRC8eIJ4AnzDYLQ8W+alVKudWnhO65EkM
-         5cMzkZVdnnpyHcs+rzoKND1QPotzMUYDQofoaqeUoiMjg8eLSZDSGSpvwR2/vmPW1DKs
-         UYbB+eAz7sFhYAdK/j4eCwYZBDLlJYkaJlfltkxSlu1tiwIQ9NwAIHUaR2/ZPcVAqbtb
-         9Jog==
-X-Gm-Message-State: AOAM533x0qGkl1JjsmCcK7Mac68ckTNWk/nHib0Ch/NJFJi8dxYiWlBS
-        YNlPjvvbADv66a/JeUMOxht3DVot6p2VgjrCcds=
-X-Google-Smtp-Source: ABdhPJzK89YhzMKheyO1CFEGHP/THThB/7cYEzCHuquWXtisSzz78IvLi/YiZzek+oK5hdShYOc1rA==
-X-Received: by 2002:a2e:b613:: with SMTP id r19mr11180764ljn.136.1630948373433;
-        Mon, 06 Sep 2021 10:12:53 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id d20sm788311lfv.117.2021.09.06.10.12.52
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 10:12:52 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id m28so14543525lfj.6
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:12:52 -0700 (PDT)
-X-Received: by 2002:a05:6512:2611:: with SMTP id bt17mr10361132lfb.141.1630948372307;
- Mon, 06 Sep 2021 10:12:52 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210830184429.1ee4b4d8@canb.auug.org.au> <20210906154151.0aa41a7a@canb.auug.org.au>
- <202109061000.79CF310@keescook>
-In-Reply-To: <202109061000.79CF310@keescook>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 6 Sep 2021 10:12:36 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgSzN4p0EW2LkA0YkRBjkOXpdaiLZMez=h=3d4Q2Gjp3A@mail.gmail.com>
-Message-ID: <CAHk-=wgSzN4p0EW2LkA0YkRBjkOXpdaiLZMez=h=3d4Q2Gjp3A@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the kspp tree
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6NacCBKP1frBhmpqgKkyBTREBZY+hKJD0S9nQbqPwa8=;
+        b=TQzRMOWcCZ8Jw4AdyEXfyz+6pbfGUbslBo+8B1kPqLgXp2WfZvIU7kuR2HQKlMN0N6
+         wx911DxwpKOCaAylRZgexx33OMhafxbnkDEJidC+ypxoulxtqt+or98RihPzJBZd3oFD
+         lQ0wCtWk3vi0W/IOb2cyKamyEGmK2tscBMwZ4+oO/GgPuWZY2lxlXm1qxS/HaLZM84DY
+         9K5+FnIF9tW+OcbTfZrC0eVFF7RvEdPgTL9fhdZEFqyykRQv7dpMcGDjiuVuXs2ePwwL
+         nT/He6H5cTz8MWkcxi19TxXPa+bzkt4qyOxr7lIxndlQchIMPE0xqTqsS+DwSQWioqMc
+         ejpA==
+X-Gm-Message-State: AOAM531eUfbuT8SpNnmwOdLvh34Mw8HgdmZCKefKsxgWYjvaKqcrVLXF
+        FhlXv73MXVQshFla+HQnqruECA==
+X-Google-Smtp-Source: ABdhPJxZPrDJihM1ow1QccxmKJO1KNet51HC2onoK3El64aMy3Uv7Uj0m3HXCTsjG+Ygs6jtFEhlOA==
+X-Received: by 2002:a63:3c4d:: with SMTP id i13mr13298336pgn.54.1630948380070;
+        Mon, 06 Sep 2021 10:13:00 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v7sm52296pjg.34.2021.09.06.10.12.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Sep 2021 10:12:59 -0700 (PDT)
+Date:   Mon, 6 Sep 2021 10:12:58 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Content-Type: text/plain; charset="UTF-8"
+        Arnd Bergmann <arnd@arndb.de>, Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithp@keithp.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [GIT PULL] overflow updates for v5.15-rc1
+Message-ID: <202109061009.3C4B6114C3@keescook>
+References: <202109022012.756B6B5B79@keescook>
+ <CAHk-=wiPOXS2f90Ykk3V76sJLx0wMVywke8pc=88r1trmDuhmw@mail.gmail.com>
+ <45312958-B844-4B4C-9808-8205866675A1@chromium.org>
+ <CAHk-=widUkzjVMW99L6OZpJc1wDnZbBbnOOzgXOMypOPoV6mjg@mail.gmail.com>
+ <20210906152731.43a9c67e@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210906152731.43a9c67e@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 6, 2021 at 10:06 AM Kees Cook <keescook@chromium.org> wrote:
->>
-> Linus, warnings are being reported (as above)
+On Mon, Sep 06, 2021 at 03:27:31PM +1000, Stephen Rothwell wrote:
+> Hi Linus,
+> 
+> On Sun, 5 Sep 2021 10:36:22 -0700 Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> >
+> > On Sun, Sep 5, 2021 at 12:38 AM Kees Cook <keescook@chromium.org> wrote:
+> > >
+> > > Yeech. Yeah, no, that was not expected at all. I even did test merge builds against your latest tree before sending the Pull Request. This has been in -next for weeks, too.  
+> > 
+> > Sadly, I don't think linux-next checks for warnings.
+> 
+> Yes, I do.  And report them.  I did not get these warnings for some
+> reason.  One of my builds is an X86_64 allmodconfig, currently using
+> 
+> x86_64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110
 
-New warnings are apparently at least partly reported, but also clearly
-(a) old warnings are ignored, and (b) new warnings seem to be very
-spottily fixed too.
+FWIW, the difference turned out to be LANG=C.UTF-8 in Fedora (vs LANG=C or
+LANG=en_US.UTF-8), and the warning analysis being done in the self-tests
+I added got unlucky when I tried to avoid setting "LANG". (i.e. I didn't
+want to depend on matching English output, and used the trailing "'" in
+the function name matcher -- which is a "`" under C.UTF-8.)
 
-Guenter reports "pass: 89 fail: 64" for his build setups.
+This has been fixed now -- I just got fantastically unlucky, it seems,
+as literally only Linus appears to have been building with LANG=C.UTF-8.
+(None of the other build bots warned about this for the weeks it's been
+in -next). :(
 
-So the fact that *I* require a clean build, and generally have two
-reject a couple of build requests every merge window because of that
-clearly doesn't mean that we actually have clean builds.
-
-I've had that "no warnings" requirement for years. And that means that
-*my* build has been clean for years.
-
-I want *all* builds to be clean, or at least as far as possible.
-
-You should be the last to complain. You are literally the drop that
-broke the camel's back. I'm done being the last guard against build
-warnings.
-
-           Linus
+-- 
+Kees Cook
