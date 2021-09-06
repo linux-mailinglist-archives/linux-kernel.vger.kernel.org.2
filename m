@@ -2,181 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 288724019BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8454D4019C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241838AbhIFK0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 06:26:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232418AbhIFK0e (ORCPT
+        id S232047AbhIFK30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 06:29:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38222 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242021AbhIFK3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 06:26:34 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26809C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 03:25:30 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id y34so12597373lfa.8
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 03:25:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RErsc/TBCJQsZBsQ+eHRBNFWkmkUWRJ6eCzgNVakbjw=;
-        b=wRhcXazJEs4c7ocVrHGzuDsNssEXREj47wdUsLi8T1YGSVbfvXTYcp7JawnyggO4lD
-         pyin4znQQwTKbPPLEnb6Sv/Ss0GkAQ65lS+PZ2AOPv7QGg8+Pd7RTrGqkNaqz5nDlyRG
-         BLNPmLo5Va9DqseUqXx3NwzoV2Lsb2QZzQyaEwIhYVviJcXMJBxlTWWawab22pXbX/BF
-         dlY81zfyK4mk4eO4oEbjb2MfU1zjL+FrwDdm7TCb7HoKvTaJI7movVV+mRdGQTONWYEh
-         1A2/oZ5/50JzohMIpuglReE2dSdqfBr6uSmwRGaIFbXC9ZWsCQjxLoCKC2IiDjkbw9sH
-         iaaQ==
+        Mon, 6 Sep 2021 06:29:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630924097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=REmJl8s2nvMdTdbKRVVIcDfYVEbx2wjp9XTagCASYqs=;
+        b=M0Tzz4taVNiDQ7O9U0tpdW1QbeRJ9elAmkEpqslUOUXBdmGj3whd/+ybivfoD9GN1i2m4T
+        R5N7BcHNHfal9jq4A2i7oeL8XfzZ00iCopkW9hVuCjpWkVrzUftHACZQmahxOWuQhHKD1K
+        F5TqTn1xqMSPQBbP3rrsS+tIOWbMg7s=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-581-M6HX1kRmMrKpvf4OcC6ZGw-1; Mon, 06 Sep 2021 06:28:16 -0400
+X-MC-Unique: M6HX1kRmMrKpvf4OcC6ZGw-1
+Received: by mail-ed1-f70.google.com with SMTP id b6-20020aa7c6c6000000b003c2b5b2ddf8so3503051eds.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 03:28:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RErsc/TBCJQsZBsQ+eHRBNFWkmkUWRJ6eCzgNVakbjw=;
-        b=AmTLG/Tdyb853gAPr5s24uCYZx+DgnSmKbnGMZEekeS29rWw9kcv0qJplbk1VC6+qy
-         92b5FL4h7tiInD3ucdfvsVRXAA8HG2BxnBKSMQs2cwotQtORCPh/I9qOIJcPxyR+Au9r
-         9pJTzIJx++UTw2qOA8rqzHtYzPPIT0cuz3kRATqRUoOrrZs9YgXcosnJCy1Jcw0Uhm9H
-         cNtuibJhj1YawWAf8u+gYwtnebB/lMxHdGMsgNWjye2KB9GU2lAS8ThbxBHddZIkeqs2
-         ujWl0xIGg9AgVGycTfWbVpJKHQ+BxvIP4yqA72OIzGwuM+HJyckZt3vxrFmYdgoifNoJ
-         XphQ==
-X-Gm-Message-State: AOAM5305S3+vwcAK7rhLvNwX9QhHziBaqplGL1YbRuu7lZU8K+glyzn+
-        E8NeJhPbFTZk8ZypNi4M7/1W9M+GqUFGQiCtuxpHKw==
-X-Google-Smtp-Source: ABdhPJxLSP3+lPbKzI6UzV24s/b18K8qiiW7udt0Ujl4x6s4APzNS/1pJwidhMr6nK2dQcIuxsX2zuS6IYcjHkD30Lw=
-X-Received: by 2002:a19:dc47:: with SMTP id f7mr8802284lfj.71.1630923928356;
- Mon, 06 Sep 2021 03:25:28 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=REmJl8s2nvMdTdbKRVVIcDfYVEbx2wjp9XTagCASYqs=;
+        b=A3gdPEBpPUnPuvfuijPb/38h4z+NqcGzDqzKVEaKltBUGW2vAeIr74fKyqMLoyo2Nc
+         3F7iOnptEn8ZkxzNcJ9YDXpnGwqPwxdJS+0gERKKvdwjJmtSfgqmTM3YDYQyajsrK778
+         F++OdvzsbbtTQBLIp3TpoDuCLnj21lokj1Pl4v25gks+FUkggkTRx7Xj+qrTxi5Uef0a
+         GfapoATH5lNJPwq3Uz9a0Osz+aOeQ1ir5HI9/7+1bfF70Y1r3u7ZFxRty0luXOa8JsHm
+         407vqcajLXqP0tno6TC1iiBc5WtneqMrVsUp7z1r95WqnvhqMjN5VCL2zsnk3HQpEJl6
+         EvYg==
+X-Gm-Message-State: AOAM530NqCdcKjYjxEnQDK6fLohgHNaF8zYSboPZYSLTkSlXJx9umii2
+        S7cYpFAbJRbf1F6UzWSPMo3b5igkyrb60AFpujqnGAXHtOL+gZ2SnzGv4WrqkSXd1c0mNAva9C7
+        L/uPoPHaXgiyL0DJDtqZOm/Dq
+X-Received: by 2002:a17:906:1d19:: with SMTP id n25mr13007251ejh.11.1630924095430;
+        Mon, 06 Sep 2021 03:28:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz7T8yPC7CUEnqP8Q5KGyfYQsTy7fdIFm0w0WX7OHu/0lN1pf6u81fhziGWQVchhgc+jbFRRA==
+X-Received: by 2002:a17:906:1d19:: with SMTP id n25mr13007231ejh.11.1630924095200;
+        Mon, 06 Sep 2021 03:28:15 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id h7sm4431526edr.4.2021.09.06.03.28.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 03:28:14 -0700 (PDT)
+Subject: Re: [PATCH 1/5] KVM: rseq: Update rseq when processing NOTIFY_RESUME
+ on xfer to KVM guest
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     "Russell King, ARM Linux" <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Oleg Nesterov <oleg@redhat.com>, rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        shuah <shuah@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-csky <linux-csky@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>,
+        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        Peter Foley <pefoley@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Ben Gardon <bgardon@google.com>
+References: <20210818001210.4073390-1-seanjc@google.com>
+ <20210818001210.4073390-2-seanjc@google.com>
+ <1673583543.19718.1629409152244.JavaMail.zimbra@efficios.com>
+ <YR7tzZ98XC6OV2vu@google.com>
+ <1872633041.20290.1629485463253.JavaMail.zimbra@efficios.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <425456d3-4772-2a1b-9cf3-a5b750b95c2e@redhat.com>
+Date:   Mon, 6 Sep 2021 12:28:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210902101634.827187-1-ulf.hansson@linaro.org>
- <20210902101634.827187-2-ulf.hansson@linaro.org> <08335cd4-7dc8-3b8b-d63f-374585ffa373@gmail.com>
- <CAPDyKFofrEj2LdqXh-L256b2Tcz=qYQgzTUBVuvx0rOR58SrVg@mail.gmail.com>
- <b597c805-e346-8c23-5014-cbb116e88075@gmail.com> <CAPDyKFrWofUKhbhvwTCjiFwJD8-Pzi8UMzU7ZjYLKm2j1HeeBg@mail.gmail.com>
- <6603212d-f36c-afff-6222-8125de5b7b79@gmail.com>
-In-Reply-To: <6603212d-f36c-afff-6222-8125de5b7b79@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 6 Sep 2021 12:24:51 +0200
-Message-ID: <CAPDyKFoyszG2Wo3jbXK562XgpqXns_GPqm7nNu8WOdMCXYUOMQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] PM: domains: Drop the performance state vote for a
- device at detach
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1872633041.20290.1629485463253.JavaMail.zimbra@efficios.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 5 Sept 2021 at 10:26, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 03.09.2021 17:03, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Fri, 3 Sept 2021 at 11:58, Dmitry Osipenko <digetx@gmail.com> wrote:
-> >>
-> >> 03.09.2021 11:22, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>> On Fri, 3 Sept 2021 at 08:01, Dmitry Osipenko <digetx@gmail.com> wrot=
-e:
-> >>>>
-> >>>> 02.09.2021 13:16, Ulf Hansson =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>>>> When a device is detached from its genpd, genpd loses track of the =
-device,
-> >>>>> including its performance state vote that may have been requested f=
-or it.
-> >>>>>
-> >>>>> Rather than relying on the consumer driver to drop the performance =
-state
-> >>>>> vote for its device, let's do it internally in genpd when the devic=
-e is
-> >>>>> getting detached. In this way, we makes sure that the aggregation o=
-f the
-> >>>>> votes in genpd becomes correct.
-> >>>>
-> >>>> This is a dangerous behaviour in a case where performance state
-> >>>> represents voltage. If hardware is kept active on detachment, say it=
-'s
-> >>>> always-on, then it may be a disaster to drop the voltage for the act=
-ive
-> >>>> hardware.
-> >>>>
-> >>>> It's safe to drop performance state only if you assume that there is=
- a
-> >>>> firmware behind kernel which has its own layer of performance manage=
-ment
-> >>>> and it will prevent the disaster by saying 'nope, I'm not doing this=
-'.
-> >>>>
-> >>>> The performance state should be persistent for a device and it shoul=
-d be
-> >>>> controlled in a conjunction with runtime PM. If platform wants to dr=
-op
-> >>>> performance state to zero on detachment, then this behaviour should =
-be
-> >>>> specific to that platform.
-> >>>
-> >>> I understand your concern, but at this point, genpd can't help to fix=
- this.
-> >>>
-> >>> Genpd has no information about the device, unless it's attached to it=
-.
-> >>> For now and for these always on HWs, we simply need to make sure the
-> >>> device stays attached, in one way or the other.
-> >>
-> >> This indeed requires to redesign GENPD to make it more coupled with a
-> >> device, but this is not a real problem for any of the current API user=
-s
-> >> AFAIK. Ideally the state should be persistent to make API more univers=
-al.
-> >
-> > Right. In fact this has been discussed in the past. In principle, the
-> > idea was to attach to genpd at device registration, rather than at
-> > driver probe.
-> >
-> > Although, this is not very easy to implement - and it seems like the
-> > churns to do, have not been really worth it. At least so far.
-> >
-> >>
-> >> Since for today we assume that device should be suspended at the time =
-of
-> >> the detachment (if the default OPP state isn't used), it may be better
-> >> to add a noisy warning message if pstate!=3D0, keeping the state untou=
-ched
-> >> if it's not zero.
-> >
-> > That would just be very silly in my opinion.
-> >
-> > When the device is detached (suspended or not), it may cause it's PM
-> > domain to be powered off - and there is really nothing we can do about
-> > that from the genpd point of view.
-> >
-> > As stated, the only current short term solution is to avoid detaching
-> > the device. Anything else, would just be papering of the issue.
->
-> What about to re-evaluate the performance state of the domain after
-> detachment instead of setting the state to zero?
+On 20/08/21 20:51, Mathieu Desnoyers wrote:
+>> Ah, or is it the case that rseq_cs is non-NULL if and only if userspace is in an
+>> rseq critical section, and because syscalls in critical sections are illegal, by
+>> definition clearing rseq_cs is a nop unless userspace is misbehaving.
+> Not quite, as I described above. But we want it to stay set so the CONFIG_DEBUG_RSEQ
+> code executed when returning from ioctl to userspace will be able to validate that
+> it is not nested within a rseq critical section.
+> 
+>> If that's true, what about explicitly checking that at NOTIFY_RESUME?  Or is it
+>> not worth the extra code to detect an error that will likely be caught anyways?
+> The error will indeed already be caught on return from ioctl to userspace, so I
+> don't see any added value in duplicating this check.
 
-I am not suggesting to set the performance state of the genpd to zero,
-but to drop a potential vote for a performance state for the *device*
-that is about to be detached.
+Sean, can you send a v2 (even for this patch only would be okay)?
 
-Calling genpd_set_performance_state(dev, 0), during detach will have
-the same effect as triggering a re-evaluation of the performance state
-for the genpd, but after the detach.
+Thanks,
 
-> This way PD driver may
-> take an action on detachment if performance isn't zero, before hardware
-> is crashed, for example it may emit a warning.
+Paolo
 
-Not sure I got that. Exactly when do you want to emit a warning and
-for what reason?
-
-Do you want to add a check somewhere to see if
-'gpd_data->performance_state' is non zero - and then print a warning?
-
-Kind regards
-Uffe
