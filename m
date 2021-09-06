@@ -2,92 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8A1E401501
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 04:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF61E40150D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 04:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238835AbhIFC3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 22:29:18 -0400
-Received: from ozlabs.org ([203.11.71.1]:45153 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234431AbhIFC3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 22:29:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630895290;
-        bh=+pAa/eR4v7fOkpCC//6IVlxYA28AMktSFDdO91ILrSg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=teUpPLlgXbzkx+duhQfGCVMUiSKQmGqLIwDc9lbgGOPv+r3TVRx2Nrr4Oy4SHwdDB
-         LDuFlFq5f8zUDE6HI4/PPTHm1G4/nXJGbarVpVnblvTAdJioHg2HUDjyOQVKzlrrxI
-         hhq1Xs/2IpjmF8AkLXmJdc71EO1lhvK7G8tU5rwSgZ2BrVITnKb5bjjnGwdRWu8y2H
-         tCK/tf/F909ASytZZlB4q4dP8VJ/a7CPO5xZgO3+ETYKogxK8/QvXnwKSuxn/YU0JB
-         Z1lKwehEQmIq1z51jHpY75RKQ1zkGXvHlIkqTlIGFdf2gChX97MSYOlN4QPkhFp2II
-         k0KEGjc4B8zEg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H2skx63NJz9sVw;
-        Mon,  6 Sep 2021 12:28:09 +1000 (AEST)
-Date:   Mon, 6 Sep 2021 12:28:06 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Xie Yongji <xieyongji@bytedance.com>
-Subject: linux-next: manual merge of the vhost tree with Linus' tree
-Message-ID: <20210906122806.2ca7e715@canb.auug.org.au>
+        id S238934AbhIFCoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 22:44:23 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:53324 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232050AbhIFCoT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 22:44:19 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1862MODC004631;
+        Mon, 6 Sep 2021 10:22:24 +0800 (GMT-8)
+        (envelope-from billy_tsai@aspeedtech.com)
+Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 6 Sep
+ 2021 10:41:44 +0800
+From:   Billy Tsai <billy_tsai@aspeedtech.com>
+To:     <lee.jones@linaro.org>, <robh+dt@kernel.org>, <joel@jms.id.au>,
+        <andrew@aj.id.au>, <thierry.reding@gmail.com>,
+        <u.kleine-koenig@pengutronix.de>, <p.zabel@pengutronix.de>,
+        <billy_tsai@aspeedtech.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pwm@vger.kernel.org>
+CC:     <BMC-SW@aspeedtech.com>
+Subject: [v12 0/2] Support pwm driver for aspeed ast26xx
+Date:   Mon, 6 Sep 2021 10:43:37 +0800
+Message-ID: <20210906024339.21124-1-billy_tsai@aspeedtech.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/MNbI+rgE4FGM3nXEZp89sFZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.2.149]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1862MODC004631
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/MNbI+rgE4FGM3nXEZp89sFZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The legacy driver of aspeed pwm is binding with tach controller and it
+doesn't follow the pwm framworks usage. In addition, the pwm register
+usage of the 6th generation of ast26xx has drastic change. So these
+patch serials add the new aspeed pwm driver to fix up the problem above.
 
-Hi all,
+Change since v11:
+- pwm-aspeed-ast2600.c
+  - Request reset controller before clock enable.
 
-Today's linux-next merge of the vhost tree got a conflict in:
+Change since v10:
+- pwm-aspeed-ast2600.c
+  - Add more comment to explain the feature of PWM
+  - Fix the naming of some parameters.
+  - Set pin_enable and clk_enable at the same time.
+  - Always set fixed divisor to hw register when apply.
 
-  fs/eventfd.c
+Change since v9:
+- dt-bindings:
+  - Change the naming of tach subnode channel setting property to
+  aspeed,tach-ch.
+- pwm-aspeed-ast2600.c
+  - Fix the naming of some parameters.
+  - Capitalise error messages.
+  - Handling potentially mult overflow when .apply
 
-between commit:
+Change since v8:
+- pwm-aspeed-ast2600.c
+  - Replace "* _BITULL(div_h)" to "<< div_h"
+  - Fix duty_cycle precision problem.
+  - Add the comment about the formula of duty_cycle.
 
-  b542e383d8c0 ("eventfd: Make signal recursion protection a task bit")
+Change since v7:
+- pwm-aspeed-g6.c
+  - Rename the driver: pwm-aspeed-g6.c -> pwm-aspeed-ast2600.c.
+  - Macro remove "_CH" part of the register name.
+  - Unroll the aspeed_pwm_get_period and remove it.
+  - Simplify the formula to get duty_pt
+  - Reduce the number of writing register. Organize all the fields and
+    write them at once.
 
-from Linus' tree and commit:
+Change since v6:
+- dt-bindings:
+  - Add blank line between each DT property.
+  - Change the sub-node name from fan to tach-ch.
+- pwm-aspeed-g6.c
+  - Merge aspeed_pwm_set_period and aspeed_pwm_set_duty into .apply.
+  - Convert the factor type to u64 when calculating the period value.
+  - Using ROUND_UP strategy to calculate div_h for finer resolution.
 
-  0afdb2abbff3 ("eventfd: Export eventfd_wake_count to modules")
+Change since v5:
+- pwm-aspeed-g6.c suggested by Uwe Kleine-König
+  - Move the divide at the end of the calculation.
+  - Unified the prefix of the function name.
+  - Use div64_u64 to calculate the divider of frequency.
 
-from the vhost tree.
+Change since v4:
+- dt_binding:
+  - pwm/tach yaml: Replace child-node with additionalProperties
+  - pwm-tach yaml: Replace child-node with patternProperties
+- pwm-aspeed-g6.c suggested by Uwe Kleine-König
+  - The bit definitions contained the name of the register.
+  - Remove single caller function and fold it to the caller.
+  - Avoid to divide by the result of a division.
+  - Remove unnecessary condition in .apply().
+  - Use goto for error handling
 
-I fixed it up (I removed eventfd_wake_count as I could not see any added
-use for it) and can carry the fix as necessary. This is now fixed as
-far as linux-next is concerned, but any non trivial conflicts should be
-mentioned to your upstream maintainer when your tree is submitted for
-merging.  You may also want to consider cooperating with the maintainer
-of the conflicting tree to minimise any particularly complex conflicts.
+Changes since v3:
+- Add the dt_binding for aspeed,ast2600-tach.
+- Describe the pwm/tach as child-node of pwm-tach mfd.
+- Complete the properties of pwm node.
 
---=20
-Cheers,
-Stephen Rothwell
+Changes since v2:
+- Remove the tach node, #address-cells and #size-cells from pwm-tach.yaml
+- Add clocks and reset properties to pwm-tach.yaml
+- Kconfig/Makfile sorted alphabetically
+- pwm-aspeed-g6.c suggested by Uwe Kleine-König
+  - Add more hardware descriptions at top of the driver.
+  - Remove unused api request and free
+  - Move the initialize settings of all pwm channel to probe.
+  - Change the method of getting the approximate period.
+  - Read the hardware register values to fill the state for .get_state()
 
---Sig_/MNbI+rgE4FGM3nXEZp89sFZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Changes since v1:
+- Fix the dt_binding_check fail suggested by Rob Herring
+- Add depends to PWM_ASPEED_G6 configure suggested by Uwe Kleine-Konig
+- pwm-aspeed-g6.c suggested by Uwe Kleine-König
+  - Fix license header
+  - Use bitfiled.h macro to define register fields
+  - Implement .remove device function
+  - Implement .get_state pwm api
 
------BEGIN PGP SIGNATURE-----
+Billy Tsai (2):
+  dt-bindings: Add bindings for aspeed pwm-tach.
+  pwm: Add Aspeed ast2600 PWM support
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE1fLYACgkQAVBC80lX
-0Gxyggf8CecNxONqquYz4i9PJ8d8Jx8tC4Uk4XO6kt2ADjun7rkZm0HXjL3Mn7Lz
-2AwMW6HGCzjemcFLt0OFjJm6KQqa4AAkLMdjW4z4tEpxiiGbvXDQAMvocyGwj7+S
-Ok0fdZo/KT4gmQ9Seyg1o2ii1B60/xUW5zAROQ7XKIs9jT2qhMuAXCDZ1tYK5qTs
-XWpOlIqLnDzYTZoWXDDnkYqVSYyYOphP8+gGD1gSiXj2jO91jDvTrsnfxCtTVqNC
-5SdbQxeW3MXMxTR1rILAcbdKAX9MAONGwHX/M8QRLrqAMbc2oAb4vlrA6+4v+q0p
-xCADysuiMWfSq2joh2qIg7hmvmFs8w==
-=JnAW
------END PGP SIGNATURE-----
+ .../bindings/hwmon/aspeed,ast2600-tach.yaml   |  68 ++++
+ .../bindings/mfd/aspeed,ast2600-pwm-tach.yaml |  76 ++++
+ .../bindings/pwm/aspeed,ast2600-pwm.yaml      |  64 ++++
+ drivers/pwm/Kconfig                           |  10 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-aspeed-ast2600.c              | 327 ++++++++++++++++++
+ 6 files changed, 546 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,ast2600-tach.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml
+ create mode 100644 Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml
+ create mode 100644 drivers/pwm/pwm-aspeed-ast2600.c
 
---Sig_/MNbI+rgE4FGM3nXEZp89sFZ--
+-- 
+2.25.1
+
