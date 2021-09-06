@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C16A0401BE6
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EBC401BE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242644AbhIFNAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 09:00:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37084 "EHLO mail.kernel.org"
+        id S242687AbhIFNAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 09:00:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243057AbhIFM7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:59:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB4C960238;
-        Mon,  6 Sep 2021 12:58:19 +0000 (UTC)
+        id S243079AbhIFM71 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 08:59:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 554D261050;
+        Mon,  6 Sep 2021 12:58:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630933100;
-        bh=NWYTvM0sI0RsedRisTvpAexFsWNQJcIeYCKhRWCpyPo=;
+        s=korg; t=1630933102;
+        bh=HA1DpjQ0I9yUNDwjmc5qY/slPOJxrXMT/MCVIXabKzU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AGG1FL03llKG3UYBARfAGW2R1h6mR33CgnY84GIrHIa06+xZ5+xG9LrRpNYI8PCOM
-         Wm2gTz526VHAhPM66uEGCTK8UHVkIDZ4JnZuX+6XYZM7DZsh0NO9lvwpFNhwwWICJD
-         NezQ+yVflWvE3SCWZYoW5QE1RS+djBYjcFBcVKBo=
+        b=AmbC0ChnNvSHmRznFG/tYY4h+UKa1e3gWF85D22iX0XIknN68f2r2u+55h1HEuk+c
+         KqD7T2H7xEVhW4f3z6rFew7WrtrSms4gAayQUiiIJdhYnx8tUwkqspMJ3GYCG+FGDB
+         V/8rBkDIK9rMbYFkF6IyT57S93sq6bg7h2o8WMo0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Bin Meng <bin.meng@windriver.com>,
-        conor dooley <conor.dooley@microchip.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
         Palmer Dabbelt <palmerdabbelt@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.13 07/24] riscv: dts: microchip: Use local-mac-address for emac1
-Date:   Mon,  6 Sep 2021 14:55:36 +0200
-Message-Id: <20210906125449.358332679@linuxfoundation.org>
+Subject: [PATCH 5.13 08/24] riscv: dts: microchip: Add ethernet0 to the aliases node
+Date:   Mon,  6 Sep 2021 14:55:37 +0200
+Message-Id: <20210906125449.390861533@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210906125449.112564040@linuxfoundation.org>
 References: <20210906125449.112564040@linuxfoundation.org>
@@ -44,36 +43,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bin Meng <bin.meng@windriver.com>
 
-[ Upstream commit 719588dee26bac0d5979c122bc530c43dc5d07c7 ]
+[ Upstream commit 417166ddec020c4e969aea064e23822591ad54df ]
 
-Per the DT spec, 'local-mac-address' is used to specify MAC address
-that was assigned to the network device, while 'mac-address' is used
-to specify the MAC address that was last used by the boot program,
-and shall be used only if the value differs from 'local-mac-address'
-property value.
+U-Boot expects this alias to be in place in order to fix up the mac
+address of the ethernet node.
+
+Note on the Icicle Kit board, currently only emac1 is enabled so it
+becomes the 'ethernet0'.
 
 Signed-off-by: Bin Meng <bin.meng@windriver.com>
-Reviewed-by: conor dooley <conor.dooley@microchip.com>
 Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-index b9819570a7d1..9d2fbbc1f777 100644
---- a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-+++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-@@ -317,7 +317,7 @@
- 			reg = <0x0 0x20112000 0x0 0x2000>;
- 			interrupt-parent = <&plic>;
- 			interrupts = <70 71 72 73>;
--			mac-address = [00 00 00 00 00 00];
-+			local-mac-address = [00 00 00 00 00 00];
- 			clocks = <&clkcfg 5>, <&clkcfg 2>;
- 			status = "disabled";
- 			clock-names = "pclk", "hclk";
+diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+index ec79944065c9..baea7d204639 100644
+--- a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
++++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
+@@ -14,6 +14,10 @@
+ 	model = "Microchip PolarFire-SoC Icicle Kit";
+ 	compatible = "microchip,mpfs-icicle-kit";
+ 
++	aliases {
++		ethernet0 = &emac1;
++	};
++
+ 	chosen {
+ 		stdout-path = &serial0;
+ 	};
 -- 
 2.30.2
 
