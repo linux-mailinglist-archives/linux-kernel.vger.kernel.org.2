@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044AF401A90
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309CC401A96
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 13:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234967AbhIFL2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 07:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbhIFL2U (ORCPT
+        id S240164AbhIFLbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 07:31:42 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36584 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231173AbhIFLbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 07:28:20 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7819CC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 04:27:15 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id g14so10820995ljk.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 04:27:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=DWxtwbPHsZjzKORxhH3ZJyLv4eFONuBy4xKBbiXed3E=;
-        b=AYYvapqW4nFzlfIinSP4bg/6pSCg3hGYdDVbcM9xIa49C7hwwRqJ9WV7e37AiMJoCg
-         4IQUxdDHkPoBsecgNajRETKJEv6DFIoznaAi8EHz6vvdbiyRarKlNsGSla5ZGtTjNLPW
-         hLIb6yErCDxH9hOOT23ZMkLopJriDWMyHi+0t5bceKRio/dItu17zpjDwJJrcSD+ABze
-         sea8uex+HZ7Mc7sap5PGn+zwiJPFzD3Wwr4qE/joRJ2QEH4/E2N/2M6bxr44tr0UjrMa
-         SJejIM1OebGuxLv4sw/WncNELRYHyhZsCe8a4tiYoG/gP48uuTBoW7emCtLMFiUX0uzo
-         RflA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=DWxtwbPHsZjzKORxhH3ZJyLv4eFONuBy4xKBbiXed3E=;
-        b=RLx6WqwOTR9Oq2Bft+88eSNPy6tOtcsyspxvDyuaAc+YLNZb9I2r4L8q1Ix6A+No6n
-         yysSU3xHoCoeG8k3TTKHxerxsCpOrhqK0WQ03SLWfXGbFoMLJ1mGWD8XWad1eaO0cCOi
-         UTZFWQE9ol+5c8LHqcJ26Qz/RAfXjV7p5onD+uaHAgSroiW7OxrDQW81lEoBvQe7P4ou
-         7vCVIMQEBFmt4xdFsidNzuzyNntEY5ux3eOmAPp0zFeO8+PlhhICpJIT8Uop08mpcduD
-         unYkcpzbI27Dye4lsFLVEnG9urD/vg+VsHFBNLamMokDt01o7Cb/cn+/0TWJiDZprBys
-         l0GA==
-X-Gm-Message-State: AOAM530g+mnxgLrRjEb+ZnSl1wqQJF3+vZEoShwaie2sz5HQHaxAbT4H
-        CQkta25CkwYUBRDilOdPjMcztJxQARg78KSOYHU=
-X-Google-Smtp-Source: ABdhPJxPIXlDE8J6TEpDR/CQ+9SeDgJzFFVa5kQxpcAGxh44hQzjYfQmdS/kIKeHkDAaRu/TCVyqx4ENbhJiJbP+vBU=
-X-Received: by 2002:a2e:a80c:: with SMTP id l12mr10349624ljq.475.1630927633823;
- Mon, 06 Sep 2021 04:27:13 -0700 (PDT)
+        Mon, 6 Sep 2021 07:31:41 -0400
+Date:   Mon, 6 Sep 2021 13:30:34 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1630927836;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=ZBR5f7NFUsEsljhaHWFAtG/p9HBHdnHvTkMUd2Dyw34=;
+        b=hbcvLOMgSybY4HzWHUw7fxJ+YV3Nggt5lyjGPRatRzY6tZuBrI+hPtE0agwI4v2IdhkDWc
+        yaqHILLv4y9GG9wrq1fTAaMhSnnlm092t3qs3vwkSv5ueg5MMcOPyAw+97YFUEucE1MmU6
+        JAcY4tOsSE4pDIzyN5stVl+iWBk4Xv9XEi6vTYZqIc6qxOyR8aawRhP051vW6/4arqz4rg
+        yMsp2rHL4tMVug/n2G1lOjEFc2F/sRFMq/SPwuNW7n+DgiTZPv8VRrQ7LzHiotjIAOap8s
+        TUhPace4/2K+b72TVTOkgUb+A3ayCAnqrOoXDuOBYDyC+OAONlhPDrL8dSuNZQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1630927836;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=ZBR5f7NFUsEsljhaHWFAtG/p9HBHdnHvTkMUd2Dyw34=;
+        b=xEZAwaQmjhLi0Zt6An4OsMA4jGm5XZvClYGfsrXr0HC1IO+310Bxs7jouLbhK5uRDMj2ue
+        Cyv0yefgzp6+6KBA==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH] sched: Make the idle timer expire always in hardirq context.
+Message-ID: <20210906113034.jgfxrjdvxnjqgtmc@linutronix.de>
 MIME-Version: 1.0
-Received: by 2002:a05:6512:3a91:0:0:0:0 with HTTP; Mon, 6 Sep 2021 04:27:13
- -0700 (PDT)
-Reply-To: musaj825@gmail.com
-From:   Mr Musa Jones <officewesternunion073@gmail.com>
-Date:   Mon, 6 Sep 2021 11:27:13 +0000
-Message-ID: <CAOeCq=YOOMoLxCXn6X3RaHKhQwtnRy5EvqH021UxfRQjx=KzNw@mail.gmail.com>
-Subject: Dear Friend,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The intel powerclamp driver will setup a per-CPU worker with RT
+priority. The worker will then invoke play_idle() in which it remains in
+the idle poll loop until it is stopped by the timer it started earlier.
+
+That timer needs to expire in hardirq context on PREEMPT_RT. Otherwise
+the timer will expire in ksoftirqd as a SOFT timer but that task won't
+be scheduled on the CPU because its priority is lower than the priority
+of the worker which is in the idle loop.
+
+Always expire the idle timer in hardirq context.
+
+Fixes:c1de45ca831ac ("sched/idle: Add support for tasks that inject idle")
+Reported-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ kernel/sched/idle.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+index 912b47aa99d82..d17b0a5ce6ac3 100644
+--- a/kernel/sched/idle.c
++++ b/kernel/sched/idle.c
+@@ -379,10 +379,10 @@ void play_idle_precise(u64 duration_ns, u64 latency_ns)
+ 	cpuidle_use_deepest_state(latency_ns);
+ 
+ 	it.done = 0;
+-	hrtimer_init_on_stack(&it.timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++	hrtimer_init_on_stack(&it.timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
+ 	it.timer.function = idle_inject_timer_fn;
+ 	hrtimer_start(&it.timer, ns_to_ktime(duration_ns),
+-		      HRTIMER_MODE_REL_PINNED);
++		      HRTIMER_MODE_REL_PINNED_HARD);
+ 
+ 	while (!READ_ONCE(it.done))
+ 		do_idle();
 -- 
-Dear Friend,
+2.33.0
 
-I Am Mr Musa Jones. from west Africa i have a business deal to share with
-you in the sum of10.2 USD dollars that is been held in our
-(B.O.A) bank of Africa the fund mentioned rightful belong to one of
-our late client who deposited the money in our bank here ever since he
-died nobody have been able to apply to claim the fund so i wish that
-you will come and
-assume as his foreign business partner also note this business is risk
-free not to be sacred or doubt is real please my dearest one also note
-this, once we succeed in transferring this fund to your wish provided
-account in your country it
-will be shared among us in agreement of 60%40 i believe that after this
-deal joy and happiness will be on or face's and family's please reply
-to me with your details so we can move on with this great plan ok.
-
-
-REPLY TO-- ( musaj825@gmail.com )
-
-
-Your Full Name.......
-
-Your Age&Sex........
-
-Your Marital Status......
-
-Your Country Name.......
-
-Your Phone Number......
-
-Your Occupation.....
-
-Your Bank Name......
-
-Your Account Number......
-
-Thanks Yours Brotherly
-
-Mr.Musa Jones.
