@@ -2,103 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0AB401758
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65A2D40175B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240268AbhIFHyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 03:54:51 -0400
-Received: from meesny.iki.fi ([195.140.195.201]:43772 "EHLO meesny.iki.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240166AbhIFHyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 03:54:49 -0400
-Received: from hillosipuli.retiisi.eu (89-27-100-251.bb.dnainternet.fi [89.27.100.251])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sailus)
-        by meesny.iki.fi (Postfix) with ESMTPSA id F16B1201A8;
-        Mon,  6 Sep 2021 10:53:42 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
-        t=1630914823;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dl04EcBEovB0z67bJJd0IcCsfjvcm4H5nKTPh9ieLzw=;
-        b=YVLA4GBqSRyTSpUY7ume0bLAofYSq0800w/Lt0pEjYeNfSmbMcbGk6TdZGJGRSUI3d1v38
-        isEKy+BWyjSm6p5DhTyWdBD9MSt96n5PGl1NWELeHYlDIlHiCwaVxgcH9XKNszIAW3irX8
-        etqy8qtMTKBrG0NexfciOOoi17gNN4A=
-Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 4134D634C8D;
-        Mon,  6 Sep 2021 10:53:42 +0300 (EEST)
-Date:   Mon, 6 Sep 2021 10:53:41 +0300
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Martin Kepplinger <martin.kepplinger@puri.sm>,
-        devicetree@vger.kernel.org, kernel@puri.sm,
-        krzysztof.kozlowski@canonical.com,
-        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, mchehab@kernel.org,
-        paul.kocialkowski@bootlin.com, phone-devel@vger.kernel.org,
-        robh@kernel.org, shawnx.tu@intel.com
-Subject: Re: [PATCH v8 3/4] media: i2c: add driver for the SK Hynix Hi-846 8M
- pixel camera
-Message-ID: <YTXJBYb2EzR9iIzx@valkosipuli.retiisi.eu>
-References: <20210831134344.1673318-1-martin.kepplinger@puri.sm>
- <20210831134344.1673318-4-martin.kepplinger@puri.sm>
- <20210903161742.GD2209@bug>
+        id S240319AbhIFHzH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 03:55:07 -0400
+Received: from mail-vs1-f46.google.com ([209.85.217.46]:37571 "EHLO
+        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240117AbhIFHzF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 03:55:05 -0400
+Received: by mail-vs1-f46.google.com with SMTP id i23so4844872vsj.4;
+        Mon, 06 Sep 2021 00:54:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xon8B2SCZnddw6P26dcLHhHXVXDY1KEqtTk0C4c5WI8=;
+        b=szQNWjj+G0hWiwJFuk3suUNWJ8gBJ9K2ol/zZXrWYqQFnfgblr/8JH6UBAq41eYow7
+         lr8I02tgJiLcQ/ov6OliWak13u7wlrFIUT4LHHovHKfaOCbJsSGaqw/eWGOJf5w/rkKb
+         Ml6fr81oL/XVQwJw8lH3NACVt8Y24ACGlbq0/qy0StG2oi3RzlNVyDVhV8L/9Wj6YFWz
+         gawhT1afjrWrw2YqeDB7TyBeuXHoIc/BZPF9P1arb/9n7JxNZV7+wrIfwA9kx7T7UTzm
+         k1gi9LdiwN5V0q8Q8kVV50v4a0MmIBwdBIMrlLExNLuIOZxYCHKIBvacxbNq2ba+REV0
+         H5AQ==
+X-Gm-Message-State: AOAM531AZDZY74FmS15CWyM2OdnhlbBVO2mxzuGi6ZbzVihj0cju5rvL
+        q6FFIpaXQiqQ1uh/qqIUQexbERYHyD9n09CMkLg=
+X-Google-Smtp-Source: ABdhPJwiJLO1eun4znmfPQAmEZ02gXfXHVnSn4DLHuIKjjf0oWm84/rA+gjdhs/7qH0Ulg2tAq6+9LjizZw+NnURxdw=
+X-Received: by 2002:a67:cb0a:: with SMTP id b10mr4993974vsl.9.1630914840618;
+ Mon, 06 Sep 2021 00:54:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210903161742.GD2209@bug>
-ARC-Seal: i=1; s=meesny; d=iki.fi; t=1630914823; a=rsa-sha256; cv=none;
-        b=ognmFP0waEVCmTO3zE3mhMVI1xR6yBzs6GkZToIu68SkGCCqI4EblTDAeKo2Ga4HJMSO36
-        h9MX/Q2zbLq6tL8GTNkA71+9fVg+Wxi+6ZKDonYwx1Er+DsCG9pMvXdTAS+Ul0FyYcqz/0
-        dpPGDXLiU+PpdHQPeflU0AR+IA7C6Ac=
-ARC-Authentication-Results: i=1;
-        ORIGINATING;
-        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
-        s=meesny; t=1630914823;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dl04EcBEovB0z67bJJd0IcCsfjvcm4H5nKTPh9ieLzw=;
-        b=k3UT4FMT+0+VuZr74rUWguYh8Csfl8zq+ll+Hs4vOoBMhatglEeti+kpc9Nx5d14J+tCea
-        JglDzfh8fFmBlf0w2ZgLt1v02wcqU2ACeQNfywDBXolfiOdqlJee5nocPyRSKznh06nWfD
-        OOeBg6+nwJ406Nfsc3ud09Ort9i7UWQ=
+References: <20210904000543.2019010-1-saravanak@google.com> <20210904000543.2019010-2-saravanak@google.com>
+In-Reply-To: <20210904000543.2019010-2-saravanak@google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 6 Sep 2021 09:53:49 +0200
+Message-ID: <CAMuHMdUhZy7W_HLtNJ2ECK5uQV5xHV7pDk5BXfNUpW9L68G5Aw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] drivers: bus: simple-pm-bus: Add support for
+ probing simple bus only devices
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-oxnas@groups.io,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:TI ETHERNET SWITCH DRIVER (CPSW)" 
+        <linux-omap@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel, Martin,
+Hi Saravana,
 
-On Fri, Sep 03, 2021 at 06:17:43PM +0200, Pavel Machek wrote:
-> > +static void hi846_write_reg_16(struct hi846 *hi846, u16 reg, u16 val, int *err)
-> > +{
-> > +	struct i2c_client *client = v4l2_get_subdevdata(&hi846->sd);
-> > +	u8 buf[6];
-> > +	int ret;
-> > +
-> > +	if (*err < 0)
-> > +		return;
-> > +
-> > +	put_unaligned_be16(reg, buf);
-> > +	put_unaligned_be32(val << 8 * 2, buf + 2);
-> 
-> Is that obfuscated way of saying put_unaligned_be16(val, buf+2); buf[3] = 0; buf[4] = 0; ?
+Thanks for your patch!
 
-Good catch.
+CC linux-pm, Lee (mfd)
 
-The buf should be only four u8's long, and you should use 16-bit variant
-here, too.
+On Sat, Sep 4, 2021 at 2:05 AM Saravana Kannan <saravanak@google.com> wrote:
+> fw_devlink could end up creating device links for bus only devices.
+> However, bus only devices don't get probed and can block probe() or
+> sync_state() [1] call backs of other devices. To avoid this, probe these
+> devices using the simple-pm-bus driver.
+>
+> However, there are instances of devices that are not simple buses (they
+> get probed by their specific drivers) that also list the "simple-bus"
+> (or other bus only compatible strings) in their compatible property to
+> automatically populate their child devices. We still want these devices
+> to get probed by their specific drivers. So, we make sure this driver
+> only probes devices that are only buses.
 
-Also the transfer should be done on sizeof(buf), not 4 (which indeed is the
-same, but cleaner).
+Note that this can also be the case for buses declaring compatibility
+with "simple-pm-bus".  However, at the moment, none of such device
+nodes in upstream DTS files have device-specific drivers.
+
+> [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> Tested-by: Saravana Kannan <saravanak@google.com>
+
+> --- a/drivers/bus/simple-pm-bus.c
+> +++ b/drivers/bus/simple-pm-bus.c
+> @@ -13,11 +13,26 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+>
+> -
+>  static int simple_pm_bus_probe(struct platform_device *pdev)
+>  {
+> -       const struct of_dev_auxdata *lookup = dev_get_platdata(&pdev->dev);
+> -       struct device_node *np = pdev->dev.of_node;
+> +       const struct device *dev = &pdev->dev;
+> +       const struct of_dev_auxdata *lookup = dev_get_platdata(dev);
+> +       struct device_node *np = dev->of_node;
+> +       const struct of_device_id *match;
+> +
+> +       match = of_match_device(dev->driver->of_match_table, dev);
+> +
+> +       /*
+> +        * These are transparent bus devices (not simple-pm-bus matches) that
+> +        * have their child nodes populated automatically.  So, don't need to
+> +        * do anything more.
+> +        */
+> +       if (match && match->data) {
+> +               if (of_property_match_string(np, "compatible", match->compatible) == 0)
+
+Does this work as expected? Having multiple compatible values in a
+device node does not guarantee there exist a separate driver for any
+of the device-specific compatible values.
+
+> +                       return 0;
+> +               else
+> +                       return -ENODEV;
+
+So if we get here, as both branches use "return", we skip the
+pm_runtime_enable() and of_platform_populate() below:
+  - of_platform_populate() is handled for these buses by
+    of_platform_default_populate(), so that's OK,
+  - I'm wondering if any of the simple-mfd sub-devices use Runtime
+    PM, but currently fail to save power because pm_runtime_enable()
+    is never called for the MFD container, just like with simple-bus...
+
+> +       }
+>
+>         dev_dbg(&pdev->dev, "%s\n", __func__);
+>
+> @@ -31,14 +46,25 @@ static int simple_pm_bus_probe(struct platform_device *pdev)
+>
+>  static int simple_pm_bus_remove(struct platform_device *pdev)
+>  {
+> +       const void *data = of_device_get_match_data(&pdev->dev);
+> +
+> +       if (data)
+> +               return 0;
+> +
+>         dev_dbg(&pdev->dev, "%s\n", __func__);
+>
+>         pm_runtime_disable(&pdev->dev);
+>         return 0;
+>  }
+>
+> +#define ONLY_BUS       ((void *) 1) /* Match if the device is only a bus. */
+> +
+>  static const struct of_device_id simple_pm_bus_of_match[] = {
+>         { .compatible = "simple-pm-bus", },
+> +       { .compatible = "simple-bus",   .data = ONLY_BUS },
+> +       { .compatible = "simple-mfd",   .data = ONLY_BUS },
+> +       { .compatible = "isa",          .data = ONLY_BUS },
+
+#ifdef CONFIG_ARM_AMBA ?
+
+> +       { .compatible = "arm,amba-bus", .data = ONLY_BUS },
+>         { /* sentinel */ }
+
+This is now (almost[*]) the same as of_default_bus_match_table[]
+in drivers/of/platform.c. Perhaps it can be shared?
+
+[*] Especially if "simple-pm-bus" and "simple-bus" would be treated
+    the same.
+
+>  };
+>  MODULE_DEVICE_TABLE(of, simple_pm_bus_of_match);
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Regards,
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Sakari Ailus
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
