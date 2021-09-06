@@ -2,102 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013224015E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 07:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1234E4015F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 07:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238950AbhIFF2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 01:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238102AbhIFF2m (ORCPT
+        id S239115AbhIFFaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 01:30:07 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:38033 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239209AbhIFF3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 01:28:42 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2E2C061575;
-        Sun,  5 Sep 2021 22:27:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1630906056;
-        bh=wRP6H3xLozP+d9ZCC0YyBnN4YegkYGX8jU5kAZtJ8wc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=e7DBWt2dHzczZJHJC3Fxf1pVNLIJvvXAhYy3hSn8gmqQ0T5iDw6h02QhhOPzn3OSb
-         I0sXOP3TQ0NiAAqdcAP0h0YQNGe0ZK6+KCH4+9rHKfhm1xAd8nlZ6WpYIyqo39PtI5
-         Wjzos/xJTVK5xydm+3aAMh3Hry/Rm7HTdN/0o8iSkCqy6VUbFYN15ZoafJ7wLwZooh
-         QVUCIkLT1xEwmiAyh06BhKm068ElOo/PJ8cHtVUtH0WcNwt+H1XyA5uOMbXZbhmWV0
-         y2CY1x31lpnbn/GlHIiq5zjbdmi/D5ByV6KYLMQqAhub8E4Qy5+cnR36x8nCfupORF
-         98TFtuf+A2Y2g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 6 Sep 2021 01:29:50 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1630906126; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=k/a18ZoONqVOFEAG/rgi7O88wIXQQL+eQLTocQIvD0U=; b=Xc37upucecGT6YQP7AqrdElCVoWjXtvWl0eLQAA6IQXLHrdmpmGm2PJzLN7USFg9D3DogEpQ
+ d5rlyfT08UhfckflH+39Ew9x/pEgg/jFqPzu1fUjHqPnRmCTOmA60DTJJHqJp2I7n+0oLj4d
+ oYHK5KRDy7t+pk9MtHpD1yusX94=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 6135a6f31567234b8c02127d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 06 Sep 2021 05:28:19
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 64A19C43617; Mon,  6 Sep 2021 05:28:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H2xjx0Fs0z9sVw;
-        Mon,  6 Sep 2021 15:27:32 +1000 (AEST)
-Date:   Mon, 6 Sep 2021 15:27:31 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Vetter <daniel@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithp@keithp.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [GIT PULL] overflow updates for v5.15-rc1
-Message-ID: <20210906152731.43a9c67e@canb.auug.org.au>
-In-Reply-To: <CAHk-=widUkzjVMW99L6OZpJc1wDnZbBbnOOzgXOMypOPoV6mjg@mail.gmail.com>
-References: <202109022012.756B6B5B79@keescook>
-        <CAHk-=wiPOXS2f90Ykk3V76sJLx0wMVywke8pc=88r1trmDuhmw@mail.gmail.com>
-        <45312958-B844-4B4C-9808-8205866675A1@chromium.org>
-        <CAHk-=widUkzjVMW99L6OZpJc1wDnZbBbnOOzgXOMypOPoV6mjg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=Sbf_q1jPPWfNEYdPkEF9el";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7E6FAC4338F;
+        Mon,  6 Sep 2021 05:28:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 7E6FAC4338F
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=codeaurora.org
+From:   Maulik Shah <mkshah@codeaurora.org>
+To:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
+        bjorn.andersson@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
+        rnayak@codeaurora.org, lsrao@codeaurora.org,
+        Maulik Shah <mkshah@codeaurora.org>
+Subject: [PATCH v9 0/5] Introduce SoC sleep stats driver
+Date:   Mon,  6 Sep 2021 10:57:58 +0530
+Message-Id: <1630906083-32194-1-git-send-email-mkshah@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/=Sbf_q1jPPWfNEYdPkEF9el
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Changes in v9:
+- Remove soft dependency on smem module
+- Return -EIO to userspace in case of error
+- Make struct sleep_stats *stat a const pointer
+- Remove the driver from soc_sleep_stats_driver name
+- Remove offset address and directly mention the msgram address in dtsi
+- Use devm_platform_get_and_ioremap_resource() to ioremap dtsi address
+- Update device node name to mention aop_msgram instead rpmh-sleep-stats
+- Update dtsi and documentation accordingly but retain the reviews
 
-Hi Linus,
+Changes in v8:
+- Addressed bjorn's comments in driver from v7
+- Update aoss_qmp device node reg size for sc7280
 
-On Sun, 5 Sep 2021 10:36:22 -0700 Linus Torvalds <torvalds@linux-foundation=
-.org> wrote:
->
-> On Sun, Sep 5, 2021 at 12:38 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > Yeech. Yeah, no, that was not expected at all. I even did test merge bu=
-ilds against your latest tree before sending the Pull Request. This has bee=
-n in -next for weeks, too. =20
->=20
-> Sadly, I don't think linux-next checks for warnings.
+Changes in v7:
+- Fix example in bindings documentation as per #address/size-cells = <1>.
+- Add comment in driver from where 'ddr' subsystems name is read.
+- Update comment in driver to s/beside/besides and others from v6.
+- Rename debugfs_create_entries() from v6.
+- Drop use of memcpy_fromio() to find the name.
+- Use sizeof(*prv_data) in devm_kzalloc().
+- Add change to define readq() if its not yet defined for compile support.
+- Add wpss subsystem in the list of subsystems.
+- Add module soft dependency on smem module.
+- Add new change to add device node for sc7280.
 
-Yes, I do.  And report them.  I did not get these warnings for some
-reason.  One of my builds is an X86_64 allmodconfig, currently using
+Changes in v6:
+- Address stephen's comments from v5 which includes below
+- Pad 0 in documentation example to make address 8 digit
+- define macro to calculate offset in driver
+- Add appended_stats_avail to prv_data instead of using entire stats_config
+- make array subsystems[] as const
+- Add comment for SSR case
+- Use memcpy_fromio() and devm_kcalloc() during probe
+- Change file permission mode from 444 to 400 
 
-x86_64-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110
---=20
-Cheers,
-Stephen Rothwell
+- Address guenter's comments to add depends on QCOM_SMEM
 
---Sig_/=Sbf_q1jPPWfNEYdPkEF9el
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+- Add adsp_island and cdsp_island subsystems
+- Use strim() to remove whitespace in stat name
 
------BEGIN PGP SIGNATURE-----
+Changes in v5:
+- Remove underscore from node name in Documentation and DTSI change
+- Remove global config from driver change
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE1psMACgkQAVBC80lX
-0GwyLQf/dS0qDqLBYPog4aARLifKVXXjCe0+Apz4UYnDZAofwYOi6ACDjoVp8yMA
-ei8RDDZjlL6xdBcYZkXh0eK4tBljlWxT6kiEYkM/wkZvIOD4fSqbTZWXP+NDNevi
-D4EQwVsR42jEg0vHS+q6kry5a5lMnhBWObdnCTGjzMntpYActiTSxzDi6xSZlrP3
-R9cZbnn60MN8vv2oPXA44FR9UFGHlfS7j9sk5Zl7ge8lUlxORnF/9PTmNVPcRSWL
-23YS+dRDYSIi73tfV4ugfosr3dAesFU/11VySmjqqIwLkS1k1y5rZ8x4ViSvr5WK
-iO2PNDo5nNVhfskYaHjeZjnK7+n3HQ==
-=2YWD
------END PGP SIGNATURE-----
+Changes in v4:
+- Address bjorn's comments from v3 on change 2.
+- Add bjorn's Reviewed-by on change 3 and 4.
 
---Sig_/=Sbf_q1jPPWfNEYdPkEF9el--
+Changes in v3:
+- Address stephen's comments from v2 in change 1 and 2.
+- Address bjorn's comments from v2 in change 3 and 4.
+- Add Rob and bjorn's Reviewed-by on YAML change.
+
+Changes in v2:
+- Convert Documentation to YAML.
+- Address stephen's comments from v1.
+- Use debugfs instead of sysfs.
+- Add sc7180 dts changes for sleep stats
+- Add defconfig changes to enable driver
+- Include subsystem stats from [1] in this single stats driver.
+- Address stephen's comments from [1]
+- Update cover letter inline to mention [1]
+
+Qualcomm Technologies, Inc. (QTI)'s chipsets support SoC level low power
+modes. SoCs Always On Processor/Resource Power Manager produces statistics
+of the SoC sleep modes involving lowering or powering down of the rails and
+the oscillator clock.
+
+Additionally multiple subsystems present on SoC like modem, spss, adsp,
+cdsp maintains their low power mode statistics in shared memory (SMEM).
+
+Statistics includes SoC sleep mode type, number of times LPM entered, time
+of last entry, exit, and accumulated sleep duration in seconds.
+
+This series adds a driver to read the stats and export to debugfs.
+
+[1] https://lore.kernel.org/patchwork/patch/1149381/
+
+Mahesh Sivasubramanian (2):
+  dt-bindings: Introduce SoC sleep stats bindings
+  soc: qcom: Add SoC sleep stats driver
+
+Maulik Shah (3):
+  arm64: dts: qcom: sc7180: Enable SoC sleep stats
+  arm64: defconfig: Enable SoC sleep stats driver
+  arm64: dts: qcom: sc7280: Enable SoC sleep stats
+
+ .../bindings/soc/qcom/soc-sleep-stats.yaml         |  48 ++++
+ arch/arm64/boot/dts/qcom/sc7180.dtsi               |   7 +-
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |   7 +-
+ arch/arm64/configs/defconfig                       |   1 +
+ drivers/soc/qcom/Kconfig                           |  10 +
+ drivers/soc/qcom/Makefile                          |   1 +
+ drivers/soc/qcom/soc_sleep_stats.c                 | 241 +++++++++++++++++++++
+ 7 files changed, 313 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/soc-sleep-stats.yaml
+ create mode 100644 drivers/soc/qcom/soc_sleep_stats.c
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
