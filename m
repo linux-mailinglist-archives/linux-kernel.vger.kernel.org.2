@@ -2,283 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369BB401EB8
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2256C401ED3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238733AbhIFQym convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Sep 2021 12:54:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230263AbhIFQyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:54:41 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7EADC60FBF;
-        Mon,  6 Sep 2021 16:53:34 +0000 (UTC)
-Date:   Mon, 6 Sep 2021 17:56:57 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Sa, Nuno" <Nuno.Sa@analog.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
- samples
-Message-ID: <20210906175657.62cb0bc6@jic23-huawei>
-In-Reply-To: <SA1PR03MB6355AEE16D42689F671651A999D29@SA1PR03MB6355.namprd03.prod.outlook.com>
-References: <20210818111139.330636-1-miquel.raynal@bootlin.com>
-        <20210818111139.330636-4-miquel.raynal@bootlin.com>
-        <SJ0PR03MB6359415E120CFD3EFAF417F599C19@SJ0PR03MB6359.namprd03.prod.outlook.com>
-        <20210830110756.733d5201@jic23-huawei>
-        <MW4PR03MB6363FE3BAF40A383D244ADC399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
-        <20210830152956.58331a8d@jic23-huawei>
-        <MW4PR03MB6363BC976F039550906B6ED399CB9@MW4PR03MB6363.namprd03.prod.outlook.com>
-        <20210901101209.31703187@xps13>
-        <SA1PR03MB6355AEE16D42689F671651A999D29@SA1PR03MB6355.namprd03.prod.outlook.com>
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.30; x86_64-pc-linux-gnu)
+        id S242007AbhIFQ7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 12:59:45 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:38712 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231893AbhIFQ7n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 12:59:43 -0400
+Received: by mail-oi1-f175.google.com with SMTP id bd1so7506745oib.5;
+        Mon, 06 Sep 2021 09:58:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OgKlb4iJmcJ2cYW3VxrDWPKBagpMWhsBEhypY5ySsxg=;
+        b=QHtpRnk4VEmhAAnDkeEhZAiq9E2P9Trnjo6vfQNSZJLmlvshg0xsA83ZVAJYZ42aY/
+         Sa8Qe5kjZKxN6bL76tvEhWUCAo4q1Pbr2FankhOM/zIPxhNnvtl9cUzRjGCSRNozUkqs
+         MHo4V2KbKCoxoZ1F26v3x8DxEqyoSLhBzlOntm4kErA6qkNoED7a6M2fmXrHJLju92DO
+         6ZwrwxQZ5I588a74A3tzwRDnau0O+ms+UhtrKIeI1zk178Idy2hNZvtRh3d94LM9ryMl
+         au72mPdKQOxuw3nkqo9hSSbvnmzwTNL0kaA9+fPUStzNMDyzIaHO1z8tmFeYBQUlkJ2O
+         G17g==
+X-Gm-Message-State: AOAM532jEIS002syvSgSKTcRahJGXMqvypGCH7tR7SjnaQBveE3jDrnE
+        Op3MCYIKNJat6xA0x0E3JKQ02AM1oNTt0v7TVjQ=
+X-Google-Smtp-Source: ABdhPJxFC8GgM61+wHgpy/oZ+wpeXPwk15NIALG30krQAUJ3nBb7Gy55pjbgLwCnQc/PJ0z0fOZqYXMowdFGIlRRxKA=
+X-Received: by 2002:a05:6808:10ce:: with SMTP id s14mr36534ois.157.1630947518534;
+ Mon, 06 Sep 2021 09:58:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210904053703.581297-1-srinivas.pandruvada@linux.intel.com>
+ <CAJZ5v0hQp8Hxf__tL22s0oOcTym5mx9tND34ijufTDE3_NSW6A@mail.gmail.com>
+ <926ac4b9-1bb5-e96e-ded3-6461f7a215b7@kernel.dk> <b1d5b6daacef349eb6fcc23ce7264e4786d1d9f4.camel@linux.intel.com>
+In-Reply-To: <b1d5b6daacef349eb6fcc23ce7264e4786d1d9f4.camel@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 6 Sep 2021 18:58:27 +0200
+Message-ID: <CAJZ5v0jaXnw0zjpnsb81Hauy4-ApuULfQaaLG10qqL67H-YTNA@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Fix for HWP interrupt before
+ driver is ready
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Sep 2021 08:59:55 +0000
-"Sa, Nuno" <Nuno.Sa@analog.com> wrote:
-
-> > -----Original Message-----
-> > From: Miquel Raynal <miquel.raynal@bootlin.com>
-> > Sent: Wednesday, September 1, 2021 10:12 AM
-> > To: Sa, Nuno <Nuno.Sa@analog.com>
-> > Cc: Jonathan Cameron <jic23@kernel.org>; Lars-Peter Clausen
-> > <lars@metafoo.de>; Thomas Petazzoni
-> > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org; linux-
-> > kernel@vger.kernel.org
-> > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the requested
-> > samples
-> > 
-> > [External]
-> > 
-> > Hello,
-> > 
-> > "Sa, Nuno" <Nuno.Sa@analog.com> wrote on Mon, 30 Aug 2021
-> > 15:02:26
-> > +0000:
-> >   
-> > > > -----Original Message-----
-> > > > From: Jonathan Cameron <jic23@kernel.org>
-> > > > Sent: Monday, August 30, 2021 4:30 PM
-> > > > To: Sa, Nuno <Nuno.Sa@analog.com>
-> > > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Lars-Peter  
-> > Clausen  
-> > > > <lars@metafoo.de>; Thomas Petazzoni
-> > > > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org;  
-> > linux-  
-> > > > kernel@vger.kernel.org
-> > > > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the  
-> > requested  
-> > > > samples
+On Mon, Sep 6, 2021 at 6:55 PM Srinivas Pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
+>
+> On Mon, 2021-09-06 at 10:43 -0600, Jens Axboe wrote:
+> > On 9/6/21 10:17 AM, Rafael J. Wysocki wrote:
+> > > On Sat, Sep 4, 2021 at 7:37 AM Srinivas Pandruvada
+> > > <srinivas.pandruvada@linux.intel.com> wrote:
 > > > >
-> > > > [External]
+> > > > In Lenovo X1 gen9 laptop, HWP interrupts arrive before driver is
+> > > > ready
+> > > > to handle on that CPU. Basically didn't even allocated memory for
+> > > > per
+> > > > cpu data structure and not even started interrupt enable process
+> > > > on that
+> > > > CPU. So interrupt handler observes a NULL pointer to schedule
+> > > > work.
 > > > >
-> > > > On Mon, 30 Aug 2021 10:49:50 +0000
-> > > > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
-> > > >  
-> > > > > > -----Original Message-----
-> > > > > > From: Jonathan Cameron <jic23@kernel.org>
-> > > > > > Sent: Monday, August 30, 2021 12:08 PM
-> > > > > > To: Sa, Nuno <Nuno.Sa@analog.com>
-> > > > > > Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Lars-Peter  
-> > > > Clausen  
-> > > > > > <lars@metafoo.de>; Thomas Petazzoni
-> > > > > > <thomas.petazzoni@bootlin.com>; linux-iio@vger.kernel.org;  
-> > > > linux-  
-> > > > > > kernel@vger.kernel.org
-> > > > > > Subject: Re: [PATCH 03/16] iio: adc: max1027: Push only the  
-> > > > requested  
-> > > > > > samples
-> > > > > >
-> > > > > > [External]
-> > > > > >
-> > > > > > On Fri, 20 Aug 2021 07:10:48 +0000
-> > > > > > "Sa, Nuno" <Nuno.Sa@analog.com> wrote:
-> > > > > >  
-> > > > > > > > -----Original Message-----
-> > > > > > > > From: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > > > > > > Sent: Wednesday, August 18, 2021 1:11 PM
-> > > > > > > > To: Jonathan Cameron <jic23@kernel.org>; Lars-Peter  
-> > Clausen  
-> > > > > > > > <lars@metafoo.de>
-> > > > > > > > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>;  
-> > linux-  
-> > > > > > > > iio@vger.kernel.org; linux-kernel@vger.kernel.org; Miquel  
-> > > > Raynal  
-> > > > > > > > <miquel.raynal@bootlin.com>
-> > > > > > > > Subject: [PATCH 03/16] iio: adc: max1027: Push only the  
-> > > > requested  
-> > > > > > > > samples
-> > > > > > > >
-> > > > > > > > [External]
-> > > > > > > >
-> > > > > > > > When a triggered scan occurs, the identity of the desired  
-> > > > channels  
-> > > > > > is  
-> > > > > > > > known in indio_dev->active_scan_mask. Instead of reading  
-> > and  
-> > > > > > > > pushing to
-> > > > > > > > the IIO buffers all channels each time, scan the minimum  
-> > > > amount  
-> > > > > > of  
-> > > > > > > > channels (0 to maximum requested chan, to be exact) and  
-> > only  
-> > > > > > > > provide the
-> > > > > > > > samples requested by the user.
-> > > > > > > >
-> > > > > > > > For example, if the user wants channels 1, 4 and 5, all  
-> > channels  
-> > > > > > from  
-> > > > > > > > 0 to 5 will be scanned but only the desired channels will be  
-> > > > pushed  
-> > > > > > to  
-> > > > > > > > the IIO buffers.
-> > > > > > > >
-> > > > > > > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > > > > > > ---
-> > > > > > > >  drivers/iio/adc/max1027.c | 25 +++++++++++++++++++++-  
-> > ---  
-> > > > > > > >  1 file changed, 21 insertions(+), 4 deletions(-)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/iio/adc/max1027.c  
-> > > > b/drivers/iio/adc/max1027.c  
-> > > > > > > > index b753658bb41e..8ab660f596b5 100644
-> > > > > > > > --- a/drivers/iio/adc/max1027.c
-> > > > > > > > +++ b/drivers/iio/adc/max1027.c
-> > > > > > > > @@ -360,6 +360,9 @@ static int  
-> > > > max1027_set_trigger_state(struct  
-> > > > > > > > iio_trigger *trig, bool state)
-> > > > > > > >  	struct max1027_state *st = iio_priv(indio_dev);
-> > > > > > > >  	int ret;
-> > > > > > > >
-> > > > > > > > +	if (bitmap_empty(indio_dev->active_scan_mask,  
-> > > > indio_dev-  
-> > > > > > > > >masklength))  
-> > > > > > > > +		return -EINVAL;
-> > > > > > > > +  
-> > > > > > >
-> > > > > > > I'm not sure this can actually happen. If you try to enable the  
-> > > > buffer  
-> > > > > > > with no scan element, it should give you an error before you  
-> > > > reach  
-> > > > > > > this point...
-> > > > > > >  
-> > > > > > > >  	if (state) {
-> > > > > > > >  		/* Start acquisition on cnvst */
-> > > > > > > >  		st->reg = MAX1027_SETUP_REG |
-> > > > > > > > MAX1027_CKS_MODE0 |
-> > > > > > > > @@ -368,9 +371,12 @@ static int  
-> > > > max1027_set_trigger_state(struct  
-> > > > > > > > iio_trigger *trig, bool state)
-> > > > > > > >  		if (ret < 0)
-> > > > > > > >  			return ret;
-> > > > > > > >
-> > > > > > > > -		/* Scan from 0 to max */
-> > > > > > > > -		st->reg = MAX1027_CONV_REG |  
-> > > > MAX1027_CHAN(0) |  
-> > > > > > > > -			  MAX1027_SCAN_N_M |  
-> > > > MAX1027_TEMP;  
-> > > > > > > > +		/*
-> > > > > > > > +		 * Scan from 0 to the highest requested  
-> > > > channel. The  
-> > > > > > > > temperature
-> > > > > > > > +		 * could be avoided but it simplifies a bit the  
-> > > > logic.  
-> > > > > > > > +		 */
-> > > > > > > > +		st->reg = MAX1027_CONV_REG |
-> > > > > > > > MAX1027_SCAN_0_N | MAX1027_TEMP;
-> > > > > > > > +		st->reg |= MAX1027_CHAN(fls(*indio_dev-  
-> > > > > > > > >active_scan_mask) - 2);  
-> > > > > > > >  		ret = spi_write(st->spi, &st->reg, 1);
-> > > > > > > >  		if (ret < 0)
-> > > > > > > >  			return ret;
-> > > > > > > > @@ -391,11 +397,22 @@ static irqreturn_t
-> > > > > > > > max1027_trigger_handler(int irq, void *private)
-> > > > > > > >  	struct iio_poll_func *pf = private;
-> > > > > > > >  	struct iio_dev *indio_dev = pf->indio_dev;
-> > > > > > > >  	struct max1027_state *st = iio_priv(indio_dev);
-> > > > > > > > +	unsigned int scanned_chans = fls(*indio_dev-  
-> > > > > > > > >active_scan_mask);  
-> > > > > > > > +	u16 *buf = st->buffer;  
-> > > > > > >
-> > > > > > > I think sparse will complain here. buffer is a __be16 restricted
-> > > > > > > type so you should not mix those...  
-> > > > > > > > +	unsigned int bit;
-> > > > > > > >
-> > > > > > > >  	pr_debug("%s(irq=%d, private=0x%p)\n", __func__,  
-> > > > irq,  
-> > > > > > > >  
-> > > > > >  
-> > > >  
-> > private);in/20210818_miquel_raynal_bring_software_triggers_support  
-> > > > > > _to_max1027_like_adcs.mbx  
-> > > > > > > >
-> > > > > > > >  	/* fill buffer with all channel */
-> > > > > > > > -	spi_read(st->spi, st->buffer, indio_dev->masklength *  
-> > > > 2);  
-> > > > > > > > +	spi_read(st->spi, st->buffer, scanned_chans * 2);
-> > > > > > > > +
-> > > > > > > > +	/* Only keep the channels selected by the user */
-> > > > > > > > +	for_each_set_bit(bit, indio_dev->active_scan_mask,
-> > > > > > > > +			 indio_dev->masklength) {
-> > > > > > > > +		if (buf[0] != st->buffer[bit])
-> > > > > > > > +			buf[0] = st->buffer[bit];  
-> > > > > > >
-> > > > > > > Since we are here, when looking into the driver, I realized
-> > > > > > > that st->buffer is not DMA safe. In IIO, we kind of want to  
-> > > > enforce  
-> > > > > > > that all buffers that are passed to spi/i2c buses are safe...  
-> > Maybe  
-> > > > > > > this is something you can include in your series.  
-> > > > > >
-> > > > > > Why is it not?  st->buffer is result of a devm_kmalloc_array()  
-> > call  
-> > > > and  
-> > > > > > that should provide a DMA safe buffer as I understand it.
-> > > > > >  
-> > > > >
-> > > > > That's a good question. I'm not sure how I came to that  
-> > conclusion  
-> > > > which  
-> > > > > is clearly wrong. Though I think the buffer might share the line  
-> > with  
-> > > > the  
-> > > > > mutex...  
-> > > > Pointer shares a line.  The buffer it points to doesn't as allocated
-> > > > by separate heap allocation.
-> > > >  
+> > > > This interrupt was probably for SMM, but since it is redirected
+> > > > to
+> > > > OS by OSC call, OS receives it, but not ready to handle. That
+> > > > redirection
+> > > > of interrupt to OS was also done to solve one SMM crash on Yoga
+> > > > 260 for
+> > > > HWP interrupt a while back.
+> > > >
+> > > > To solve this the HWP interrupt handler should ignore such
+> > > > request if the
+> > > > driver is not ready. This will require some flag to wait till the
+> > > > driver
+> > > > setup a workqueue to handle on a CPU. We can't simply assume
+> > > > cpudata to
+> > > > be NULL and avoid processing as it may not be NULL but data
+> > > > structure is
+> > > > not in consistent state.
+> > > >
+> > > > So created a cpumask which sets the CPU on which interrupt was
+> > > > setup. If
+> > > > not setup, simply clear the interrupt status and return. Since
+> > > > the
+> > > > similar issue can happen during S3 resume, clear the bit during
+> > > > offline.
+> > > >
+> > > > Since interrupt timing may be before HWP is enabled, use safe MSR
+> > > > read
+> > > > writes as before the change for HWP interrupt.
+> > > >
+> > > > Fixes: d0e936adbd22 ("cpufreq: intel_pstate: Process HWP
+> > > > Guaranteed change notification")
+> > > > Reported-and-tested-by: Jens Axboe <axboe@kernel.dk>
+> > > > Signed-off-by: Srinivas Pandruvada <
+> > > > srinivas.pandruvada@linux.intel.com>
+> > > > ---
+> > > >  drivers/cpufreq/intel_pstate.c | 23 ++++++++++++++++++++++-
+> > > >  1 file changed, 22 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/cpufreq/intel_pstate.c
+> > > > b/drivers/cpufreq/intel_pstate.c
+> > > > index b4ffe6c8a0d0..5ac86bfa1080 100644
+> > > > --- a/drivers/cpufreq/intel_pstate.c
+> > > > +++ b/drivers/cpufreq/intel_pstate.c
+> > > > @@ -298,6 +298,8 @@ static bool hwp_boost __read_mostly;
+> > > >
+> > > >  static struct cpufreq_driver *intel_pstate_driver __read_mostly;
+> > > >
+> > > > +static cpumask_t hwp_intr_enable_mask;
+> > > > +
+> > > >  #ifdef CONFIG_ACPI
+> > > >  static bool acpi_ppc;
+> > > >  #endif
+> > > > @@ -1067,11 +1069,15 @@ static void intel_pstate_hwp_set(unsigned
+> > > > int cpu)
+> > > >         wrmsrl_on_cpu(cpu, MSR_HWP_REQUEST, value);
+> > > >  }
+> > > >
+> > > > +static void intel_pstate_disable_hwp_interrupt(struct cpudata
+> > > > *cpudata);
+> > > > +
+> > > >  static void intel_pstate_hwp_offline(struct cpudata *cpu)
+> > > >  {
+> > > >         u64 value = READ_ONCE(cpu->hwp_req_cached);
+> > > >         int min_perf;
+> > > >
+> > > > +       intel_pstate_disable_hwp_interrupt(cpu);
+> > > > +
+> > > >         if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
+> > > >                 /*
+> > > >                  * In case the EPP has been set to "performance"
+> > > > by the
+> > > > @@ -1645,20 +1651,35 @@ void notify_hwp_interrupt(void)
+> > > >         if (!hwp_active || !boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
+> > > >                 return;
+> > > >
+> > > > -       rdmsrl(MSR_HWP_STATUS, value);
+> > > > +       rdmsrl_safe(MSR_HWP_STATUS, &value);
+> > > >         if (!(value & 0x01))
+> > > >                 return;
+> > > >
+> > > > +       if (!cpumask_test_cpu(this_cpu, &hwp_intr_enable_mask)) {
+> > > > +               wrmsrl_safe(MSR_HWP_STATUS, 0);
+> > > > +               return;
+> > > > +       }
 > > >
-> > > Ups, sure :facepalm:  
-> > 
-> > My understanding [1] was that devm_ allocations were generally not
-> > suitable for DMA and should not be used for this particular purpose
-> > because of the extra 16 bytes allocated for storing the devm magic
-> > somewhere, which shifts the entire buffer and prevents it to always
-> > be
-> > aligned on a cache line. I will propose a patch to switch to
-> > kmalloc_array() instead.  
-> 
-> I do not think this is a problem anymore [1]. Nowadays, 'devm_kmalloc'
-> should give you the same alignment guarantees as 'kmalloc'
-> 
-> [1]: https://elixir.bootlin.com/linux/latest/source/drivers/base/devres.c#L35
-Great info. I remembered a discussion about fixing that, but couldn't find
-the patch.  For some reason I didn't just check the code :)
+> > > Without additional locking, there is a race between this and
+> > > intel_pstate_disable_hwp_interrupt().
+> > >
+> > > 1. notify_hwp_interrupt() checks hwp_intr_enable_mask() and the
+> > > target
+> > > CPU is in there, so it will go for scheduling the delayed work.
+> > > 2. intel_pstate_disable_hwp_interrupt() runs between the check and
+> > > the
+> > > cpudata load below.
+> > > 3. hwp_notify_work is scheduled on the CPU that isn't there in the
+> > > mask any more.
+> >
+> > I noticed that too, not clear to me how much of an issue that is in
+> > practice. But there's definitely a race there.
+> Glad to see how this is possible from code running in ISR context.
 
-Thanks.
-
-Jonathan
-
-> 
-> - Nuno Sá
-
+intel_pstate_disable_hwp_interrupt() may very well run on a different
+CPU in parallel with the interrupt handler running on this CPU.  Or is
+this not possible for some reason?
