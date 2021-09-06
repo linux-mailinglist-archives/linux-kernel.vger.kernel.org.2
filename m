@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7FC401C0D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 15:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05115401BC9
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245438AbhIFNBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 09:01:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38386 "EHLO mail.kernel.org"
+        id S243124AbhIFM72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:59:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34962 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243437AbhIFNAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 09:00:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F109361051;
-        Mon,  6 Sep 2021 12:59:04 +0000 (UTC)
+        id S243083AbhIFM64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 08:58:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CEF2560F92;
+        Mon,  6 Sep 2021 12:57:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630933145;
-        bh=ultJftXe2XkVYnmOk8UWy08LFzE4g3CVf/4sLRRd5MU=;
+        s=korg; t=1630933071;
+        bh=BbFQTMnMVcbcQP+/8uleePfdrKe0+A9XIIteMV/lkVw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wSj7lnJd6IE1V2QxKlarFB3jMn4nTZiwdFxIAm1a3yA55AEl1/2YVGnFx3GbkpWty
-         ISLpI+yXJQ6j8D2X0//vphDkQuTQUWmgq1aB9sQb/Jse2xqbViVQLpAmgKLrfP4X3i
-         zDrxJ+lnz3e3SVmsK8rnYsjOTwQWqxiH2kcR2xTg=
+        b=v/EDQ7VCB4inrZf9JmNkQUrpbejjx6+NknOwz0Xm/bDTIlIODs3Yy2fI+nbRfcLuT
+         rNEhKQUfxIk9DLfRvAvDMR3b3gJ19emgk7CxL+x2MIHjBTK59wqe7KUKKW3FNlDUUU
+         Z8wirfHkHN8bwLn5a3Hxar0XkylGaUx+8tdl4OrI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        syzbot+13146364637c7363a7de@syzkaller.appspotmail.com,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.14 01/14] ext4: fix race writing to an inline_data file while its xattrs are changing
-Date:   Mon,  6 Sep 2021 14:55:47 +0200
-Message-Id: <20210906125448.209079113@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.13 19/24] USB: serial: cp210x: fix flow-control error handling
+Date:   Mon,  6 Sep 2021 14:55:48 +0200
+Message-Id: <20210906125449.747969044@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210906125448.160263393@linuxfoundation.org>
-References: <20210906125448.160263393@linuxfoundation.org>
+In-Reply-To: <20210906125449.112564040@linuxfoundation.org>
+References: <20210906125449.112564040@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,42 +38,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Theodore Ts'o <tytso@mit.edu>
+From: Johan Hovold <johan@kernel.org>
 
-commit a54c4613dac1500b40e4ab55199f7c51f028e848 upstream.
+commit ba4bbdabecd11530dca78dbae3ee7e51ffdc0a06 upstream.
 
-The location of the system.data extended attribute can change whenever
-xattr_sem is not taken.  So we need to recalculate the i_inline_off
-field since it mgiht have changed between ext4_write_begin() and
-ext4_write_end().
+Make sure that the driver crtscts state is not updated in the unlikely
+event that the flow-control request fails. Not doing so could break RTS
+control.
 
-This means that caching i_inline_off is probably not helpful, so in
-the long run we should probably get rid of it and shrink the in-memory
-ext4 inode slightly, but let's fix the race the simple way for now.
-
-Cc: stable@kernel.org
-Fixes: f19d5870cbf72 ("ext4: add normal write support for inline data")
-Reported-by: syzbot+13146364637c7363a7de@syzkaller.appspotmail.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Fixes: 5951b8508855 ("USB: serial: cp210x: suppress modem-control errors")
+Cc: stable@vger.kernel.org	# 5.11
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/inline.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/usb/serial/cp210x.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -750,6 +750,12 @@ int ext4_write_inline_data_end(struct in
- 	ext4_write_lock_xattr(inode, &no_expand);
- 	BUG_ON(!ext4_has_inline_data(inode));
+--- a/drivers/usb/serial/cp210x.c
++++ b/drivers/usb/serial/cp210x.c
+@@ -1136,6 +1136,7 @@ static void cp210x_set_flow_control(stru
+ 	struct cp210x_flow_ctl flow_ctl;
+ 	u32 flow_repl;
+ 	u32 ctl_hs;
++	bool crtscts;
+ 	int ret;
  
-+	/*
-+	 * ei->i_inline_off may have changed since ext4_write_begin()
-+	 * called ext4_try_to_write_inline_data()
-+	 */
-+	(void) ext4_find_inline_data_nolock(inode);
+ 	/*
+@@ -1195,14 +1196,14 @@ static void cp210x_set_flow_control(stru
+ 			flow_repl |= CP210X_SERIAL_RTS_FLOW_CTL;
+ 		else
+ 			flow_repl |= CP210X_SERIAL_RTS_INACTIVE;
+-		port_priv->crtscts = true;
++		crtscts = true;
+ 	} else {
+ 		ctl_hs &= ~CP210X_SERIAL_CTS_HANDSHAKE;
+ 		if (port_priv->rts)
+ 			flow_repl |= CP210X_SERIAL_RTS_ACTIVE;
+ 		else
+ 			flow_repl |= CP210X_SERIAL_RTS_INACTIVE;
+-		port_priv->crtscts = false;
++		crtscts = false;
+ 	}
+ 
+ 	if (I_IXOFF(tty)) {
+@@ -1225,8 +1226,12 @@ static void cp210x_set_flow_control(stru
+ 	flow_ctl.ulControlHandshake = cpu_to_le32(ctl_hs);
+ 	flow_ctl.ulFlowReplace = cpu_to_le32(flow_repl);
+ 
+-	cp210x_write_reg_block(port, CP210X_SET_FLOW, &flow_ctl,
++	ret = cp210x_write_reg_block(port, CP210X_SET_FLOW, &flow_ctl,
+ 			sizeof(flow_ctl));
++	if (ret)
++		goto out_unlock;
 +
- 	kaddr = kmap_atomic(page);
- 	ext4_write_inline_data(inode, &iloc, kaddr, pos, len);
- 	kunmap_atomic(kaddr);
++	port_priv->crtscts = crtscts;
+ out_unlock:
+ 	mutex_unlock(&port_priv->mutex);
+ }
 
 
