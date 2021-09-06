@@ -2,98 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E828401D44
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 16:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30B8401D48
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 16:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243583AbhIFOx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 10:53:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58180 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239634AbhIFOx0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 10:53:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CE7260F45;
-        Mon,  6 Sep 2021 14:52:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630939940;
-        bh=esriyLvHzgDbNbMTj20a96cZLW13fHn4a0ByWh6XP+g=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=KcYhHBs9fdRDjTk7RH9aIZVinHoR2vjZEz0e54G9S7uSfxlE/yo8dpCOjtX+xoiQu
-         pHpVvRwZPSuJs3x067lbm7XucF9xaTP9R41GvjLrly2PbcINPz1RBzhw1a3Sm+dHas
-         nyStzQKySPOZjsGNH6pY3FP9kMMCH2sVxe+pa+glT7XSGRJrzwXwQimJiJmHpq6oNE
-         gJGVpfQC7Q2BY8iKme1D4vegJ6/ovQjBCp+J8B3RGY0qTjJh2qPNwY+17DAfEVZGVo
-         jAYzDfz9VRjgGgCHlhQ5W8V/7tsSB3p+p05SX2kvSY0wYQpBkbfG3zG6hRkBi7SHeU
-         6avXQ60ljRmwQ==
-Message-ID: <15bb23ac8b8cefdd8b976a8b20e161715b32da19.camel@kernel.org>
-Subject: Re: 5.4.143-rt63 fscache_cookie_hash initialisation
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Gregor Beck <gregor.beck@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     "williams@redhat.com" <williams@redhat.com>, bigeasy@linutronix.de
-Date:   Mon, 06 Sep 2021 09:52:19 -0500
-In-Reply-To: <CAEvSrY+XS2+xYTDT=up6VwLer8STS1KmNbP43PjZ4Z=qKvL4-w@mail.gmail.com>
-References: <CAEvSrY+XS2+xYTDT=up6VwLer8STS1KmNbP43PjZ4Z=qKvL4-w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S243616AbhIFO4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 10:56:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35866 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243594AbhIFO4i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 10:56:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630940133;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LuJQ3d86zOdSndkgpNKh8Y22Hrim56ARoO6+9G+J+AQ=;
+        b=MgG8y6zFwCDaMQwcj+PNVJcgsl9uW5tnqXVzmeQuFqviRGaQ1BV11tLruvfjAr/6TE/ZbX
+        xhm4aNPSVr92kcUoHWDH2Sbg5XbjJVr7V856Ht5234GlDDXG6Pxz5zPVvvNqEdV/7PAfEn
+        b1bIe0o0wd4dBda4/pM41K07fLHudhw=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-588-DvUAzUd4NhGWZd0ItWbbSA-1; Mon, 06 Sep 2021 10:55:32 -0400
+X-MC-Unique: DvUAzUd4NhGWZd0ItWbbSA-1
+Received: by mail-wm1-f69.google.com with SMTP id w25-20020a1cf6190000b0290252505ddd56so2422902wmc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 07:55:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LuJQ3d86zOdSndkgpNKh8Y22Hrim56ARoO6+9G+J+AQ=;
+        b=eH3NRoJwWaniptMNNIhRqmIqhDUMaKS+BGrFSdTdP7oNml1fLzCjbwqr8ZnRloL1vB
+         KrRojD+6zAPU1UX31Rw7FTOUZq0AX3j8884urQDeBUqXfxexXMHIvTDQR2i+9j5saobz
+         ll2rTppnVVqyE1IYrZvj4yrZDmBAL+77gcCPl5vPRAeU4VdPfgHovGY4A7WeMbE0SO7e
+         ahazDsudHlU1sS6Zfq07IT339p1bp7WZqmz4zU5xvg6Nc8UMEupVUVgtZRReC4ajIPxi
+         NOHoAD7vmnW8n1UXMa6lotbf9NTiy4SFwEf9zO1F0h3lgu28PydoGIbvY6G8aMV/pcgK
+         3vtQ==
+X-Gm-Message-State: AOAM530sTJaLPQa6eL8XSchc7wKggdwYMTLJ3LkEkFgZ+TRTsBjPyLci
+        gd5Td0CAqGEQbDhssgQ89u3+YFQUc+j/Q9UHuMVQ6CRnYoF7pav61bn3nbaHY4xWYfOEyL+/QgK
+        ambzC5pnCX0xbfroFQ9/ske7y
+X-Received: by 2002:a7b:c1cf:: with SMTP id a15mr12111945wmj.85.1630940131321;
+        Mon, 06 Sep 2021 07:55:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx7G11soewZleZXFNlU6hNQkMzaIZ61i+xkpkLePDsamNTU1MoFcHYNhJ0ALCPN/xHIpE8IAg==
+X-Received: by 2002:a7b:c1cf:: with SMTP id a15mr12111916wmj.85.1630940131068;
+        Mon, 06 Sep 2021 07:55:31 -0700 (PDT)
+Received: from work-vm (cpc109021-salf6-2-0-cust453.10-2.cable.virginm.net. [82.29.237.198])
+        by smtp.gmail.com with ESMTPSA id o5sm8023611wrw.17.2021.09.06.07.55.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Sep 2021 07:55:30 -0700 (PDT)
+Date:   Mon, 6 Sep 2021 15:55:28 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Vivek Goyal <vgoyal@redhat.com>, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, dwalsh@redhat.com,
+        christian.brauner@ubuntu.com, casey.schaufler@intel.com,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        tytso@mit.edu, miklos@szeredi.hu, gscrivan@redhat.com,
+        bfields@redhat.com, stephen.smalley.work@gmail.com,
+        agruenba@redhat.com, david@fromorbit.com
+Subject: Re: [PATCH v3 0/1] Relax restrictions on user.* xattr
+Message-ID: <YTYr4MgWnOgf/SWY@work-vm>
+References: <20210902152228.665959-1-vgoyal@redhat.com>
+ <79dcd300-a441-cdba-e523-324733f892ca@schaufler-ca.com>
+ <YTEEPZJ3kxWkcM9x@redhat.com>
+ <YTENEAv6dw9QoYcY@redhat.com>
+ <3bca47d0-747d-dd49-a03f-e0fa98eaa2f7@schaufler-ca.com>
+ <YTEur7h6fe4xBJRb@redhat.com>
+ <1f33e6ef-e896-09ef-43b1-6c5fac40ba5f@schaufler-ca.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f33e6ef-e896-09ef-43b1-6c5fac40ba5f@schaufler-ca.com>
+User-Agent: Mutt/2.0.7 (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gregor,
+* Casey Schaufler (casey@schaufler-ca.com) wrote:
+> On 9/2/2021 1:06 PM, Vivek Goyal wrote:
 
-On Mon, 2021-09-06 at 09:55 +0200, Gregor Beck wrote:
-> Hi,
+> >  If LSMs are not configured,
+> > then hiding the directory is the solution.
 > 
-> Patch 602660600bcdb53e56a87edee6b4dbbcc248a0cc "fscache: initialize
-> cookie hash table raw spinlocks" fails to initialize the last element
-> of fscache_cookie_hash.
+> It's not a solution at all. It's wishful thinking that
+> some admin is going to do absolutely everything right, will
+> never make a mistake and will never, ever, read the mount(2)
+> man page.
+
+That is why we run our virtiofsd with a sandbox setup and seccomp; and
+frankly anything we can or could turn on we would.
+
+> > So why that's not a solution and only relying on CAP_SYS_ADMIN is the
+> > solution. I don't understand that part.
 > 
-> [   79.218128] 003: BUG: spinlock bad magic on CPU#3, bash/2090 
-> [   79.218132] 003:  lock:
-> fscache_cookie_hash+0xfffe8/0xffffffffffff4fa0 [fscache], .magic:
-> 00000000, .owner: <none>/-1
-> , .owner_cpu: 0 
-> [   79.218140] 003: CPU: 3 PID: 2090 Comm: bash Not tainted 5.4.143-
-> rt63 #1 
-> [   79.218141] 003: Hardware name: To be filled by O.E.M. To be
-> filled by O.E.M./MAHOBAY, BIOS 4.6.5 11/07/2013 
-> [   79.218142] 003: Call Trace: 
-> [   79.218145] 003:  dump_stack+0x50/0x63 
-> [   79.218149] 003:  do_raw_spin_lock+0x71/0xc0 
-> [   79.218152] 003:  fscache_hash_cookie+0x3e/0x390 [fscache] 
-> [   79.218156] 003:  __fscache_acquire_cookie+0x9f/0x2d0 [fscache] 
-> [   79.218159] 003:  nfs_fscache_init_inode+0xbf/0xe0 [nfs] 
-> [   79.218171] 003:  nfs_fhget+0x416/0x600 [nfs] 
-> [   79.218177] 003:  nfs_readdir_page_filler+0x551/0x690 [nfs] 
-> [   79.218183] 003:  nfs_readdir_xdr_to_array+0x2ba/0x420 [nfs] 
-> [   79.218188] 003:  ? preempt_count_sub+0x9b/0xd0 
-> [   79.218190] 003:  nfs_readdir_filler+0x1d/0x80 [nfs] 
-> [   79.218195] 003:  do_read_cache_page+0x33c/0x780 
-> [   79.218197] 003:  ? nfs_readdir_xdr_to_array+0x420/0x420 [nfs] 
-> [   79.218201] 003:  ? verify_dirent_name+0x1c/0x30 
-> [   79.218203] 003:  ? filldir64+0x3b/0x1c0 
-> [   79.218204] 003:  nfs_readdir+0x20d/0x700 [nfs] 
-> [   79.218209] 003:  ? nfs4_xdr_dec_server_caps+0xa0/0xa0 [nfsv4] 
-> [   79.218222] 003:  iterate_dir+0x94/0x1a0 
-> [   79.218223] 003:  ksys_getdents64+0xc1/0x170 
-> [   79.218224] 003:  ? filldir+0x1c0/0x1c0 
-> [   79.218226] 003:  __x64_sys_getdents64+0x16/0x20 
-> [   79.218227] 003:  do_syscall_64+0x81/0x1b0 
-> [   79.218229] 003:  entry_SYSCALL_64_after_hwframe+0x44/0xa9 
-> [   79.218230] 003: RIP: 0033:0x7f3b7141781b
+> It comes back to your design, which is fundamentally flawed. You
+> can't store system security information in an attribute that can
+> be manipulated by untrusted entities. That's why we have system.*
+> xattrs. You want to have an attribute on the host that maps to a
+> security attribute on the guest. The host has to protect the attribute
+> on the guest with mechanisms of comparable strength as the guest's
+> mechanisms.
+
+Can you just explain this line to me a bit more: 
+> Otherwise you can't trust the guest with host data.
+
+Note we're not trying to trust the guest with the host data here;
+we're trying to allow the guest to store the data on the host, while
+trusting the host.
+
 > 
-> Gregor Beck
+> It's a real shame that CAP_SYS_ADMIN is so scary. The capability
+> mechanism as implemented today won't scale to the hundreds of individual
+> capabilities it would need to break CAP_SYS_ADMIN up. Maybe someday.
+> I'm not convinced that there isn't a way to accomplish what you're
+> trying to do without privilege, but this isn't it, and I don't know
+> what is. Sorry.
 > 
+> > Also if directory is not hidden, unprivileged users can change file
+> > data and other metadata.
 > 
+> I assumed that you've taken that into account. Are you saying that
+> isn't going to be done correctly either?
+> 
+> >  Why that's not a concern and why there is
+> > so much of focus only security xattr.
+> 
+> As with an NFS mount, the assumption is that UID 567 (or its magically
+> mapped equivalent) has the same access rights on both the server/host
+> and client/guest. I'm not worried about the mode bits because they are
+> presented consistently on both machines. If, on the other hand, an
+> attribute used to determine access is security.esprit on the guest and
+> user.security.esprit on the host, the unprivileged user on the host
+> can defeat the privilege requirements on the guest. That's why.
 
-Thanks for the patch.  I'll apply it to the 5.4 rt stable kernel, but
-it's missing your Signed-off-by:
+We're OK with that; remember that the host can do wth it likes to the
+guest anyway - it can just go in and poke at the guests RAM if it wants
+to do something evil to the guest.
+We wouldn't suggest using a scheme like this once you have
+encrypted/protected guest RAM for example (SEV/TDX etc)
 
-Can you resend it after adding your Signed-off-by?
+> >  If you were to block modification
+> > of file then you will have rely on LSMs.
+> 
+> No. We're talking about the semantics of the xattr namespaces.
+> LSMs can further constrain access to xattrs, but the basic rules
+> of access to the user.* and security.* attributes are different
+> in any case. This is by design.
 
-Thanks,
+I'm happy if you can suggest somewhere else to store the guests xattr
+data other than in one of the hosts xattr's - the challenge is doing
+that in a non-racy way, and making sure that the xattr's never get
+associated with the wrong file as seen by a guest.
 
-Tom
+> >  And if LSMs are not configured,
+> > then we will rely on shared directory not being visible.
+> 
+> LSMs are not the problem. LSMs use security.* xattrs, which is why
+> they come up in the discussion.
+> 
+> > Can you please help me understand why hiding shared directory from
+> > unprivileged users is not a solution
+> 
+> Maybe you can describe the mechanism you use to "hide" a shared directory
+> on the host. If the filesystem is mounted on the host it seems unlikely
+> that you can provide a convincing argument for sufficient protection.
+
+Why? What can a guests fs mounted on the host, under one of the
+directories that's already typically used for container fs's do - it's
+already what fileservers, and existing container systems do.
+
+Dave
 
 
+
+> >  (With both LSMs configured or
+> > not configured on host). That's a requirement for virtiofs anyway. 
+> > And if we agree on that, then I don't see why using "user.*" xattrs
+> > for storing guest sercurity attributes is a problem.
+> >
+> > Thanks
+> > Vivek
+> >
+> 
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
 
