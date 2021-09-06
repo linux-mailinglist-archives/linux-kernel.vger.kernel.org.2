@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E2AB401DC4
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 320EF401DC7
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242193AbhIFPvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 11:51:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbhIFPvE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 11:51:04 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C6FC061575;
-        Mon,  6 Sep 2021 08:50:00 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so4525020pjr.1;
-        Mon, 06 Sep 2021 08:49:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=TuDe/riw9YVR+eY57Bb/egxHV7sRrGLSN2rFO3UOF8A=;
-        b=JFDrYEBx2UuD8UHurgupeg6IJHWYx1TaKLEAUsJooxo+web+ESEZxTu9lQ6k2B1oVg
-         pVdvtbx7ataW/0rVSErfuQCsGtY2FkV1fcSu3/bFbKCn1EXVbheoM4GHevsXf5skUcDT
-         1WwcuICoIZLL2FUN38ClErezeJUkp1IsFA9598wcCeKh70/qk0TyXgoF/X16dJs3AB5B
-         kBDwkmN5MUx4pfXuCjoyAFKbPE2z8oDG08MOao0NsnOULKXB1rwTGxBFNJvlKQ5gWnaq
-         cCIruhRk6AVDk6x2La0HaPExSQ6tR6JRGqVtJuFXwcFim+QDvaUWTWtYufFHn2Z8kQ7p
-         Ks6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=TuDe/riw9YVR+eY57Bb/egxHV7sRrGLSN2rFO3UOF8A=;
-        b=Ov97TxLzjTtAe9yg0rIlG5oa3yITFI6Q60kFwR9IsGTZiJ36tDvgjur7/1GuTEyRqo
-         ylcTMLeVGnawNupFafdjtvBT/Xv5w4kZDNlcF4m4EY6xFqP6qS9cpGMEWVbzjXV9bWVZ
-         Ot733185ulMlFQpYgESEWTM0ZGbd0CEB2f0o3jrv0ExRBaGYnu3THFFyCSEHF9Gdbx6K
-         CmmHLR9EJ6y5ck8uNCybhm2MljloOCuP45ojQiuxNS/i7lbE0p07p4IATZ73xsJR/aui
-         IyIbIp50GNGF6MmnmK9U+lfdBD4Q3a+E0tfER9pCSm7Qvzo7uFKqqncjmEAj5sIJ1Jn1
-         tG8Q==
-X-Gm-Message-State: AOAM530aQgUkRqoKwP49XKGtFg1OJWzEpEWlVm8n395ISOR9Nak3nzZ5
-        nmWV2HH9JqBHI8aYoxnr3xhhuZiW2KEKQa6E4/0=
-X-Google-Smtp-Source: ABdhPJyb7y1vH8OYI2yUTixapJtBbLAyAE+bH0TLgpAS8sawKcFla6AEEIsjTjWpwfIodjCpiK1Z1A==
-X-Received: by 2002:a17:90a:a791:: with SMTP id f17mr14570407pjq.225.1630943398932;
-        Mon, 06 Sep 2021 08:49:58 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id r23sm7774499pjo.3.2021.09.06.08.49.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 08:49:58 -0700 (PDT)
-Message-ID: <613638a6.1c69fb81.e54f9.5131@mx.google.com>
-Date:   Mon, 06 Sep 2021 08:49:58 -0700 (PDT)
-X-Google-Original-Date: Mon, 06 Sep 2021 15:49:56 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210906125448.160263393@linuxfoundation.org>
-Subject: RE: [PATCH 5.14 00/14] 5.14.2-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        id S242364AbhIFPvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 11:51:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242432AbhIFPvK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 11:51:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4B8B960F9E;
+        Mon,  6 Sep 2021 15:50:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630943405;
+        bh=HqLRktkRBEJxR+5alQ8M/Dk+icix4Yp6GNAzyh2MS+Q=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=JJ60xXimupeOLrSIpfH4aNdgrOtsxNs28xBRzBrZLSuUb51bEYh3a5n6WnJ+w/J0X
+         voiP168YGN8SIUyQffbKkaRjWYEdfuPmRDYLwH14V2aP0vm8yyuWix64GuJ50dLa8s
+         3Dl5wEcSGXmKYLx8ncTQxMjmDsIq9/3oG4EUNucBM5tVdxUZtC4qrKS2y8j9FscENj
+         ful60HeyqkM2ltUq1OGuD1D2wI4L+xxprmnAk6HGef8nF1YxBD9u7Sto6o2f71Fmfj
+         6/9IwFA2/avCgJ6JNy9Nm4AeE300U9rkj/Y8Y5nkp0tOUDn3Zhgb5ByhnRqTT4tWYL
+         jk22ACRl/PQWg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3FE5460A37;
+        Mon,  6 Sep 2021 15:50:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: qcom/emac: Replace strlcpy with strscpy
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163094340525.32353.11305691764552334355.git-patchwork-notify@kernel.org>
+Date:   Mon, 06 Sep 2021 15:50:05 +0000
+References: <20210906135653.109449-1-wangborong@cdjrlc.com>
+In-Reply-To: <20210906135653.109449-1-wangborong@cdjrlc.com>
+To:     Jason Wang <wangborong@cdjrlc.com>
+Cc:     davem@davemloft.net, timur@kernel.org, kuba@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  6 Sep 2021 14:55:46 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.14.2 release.
-> There are 14 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 08 Sep 2021 12:54:40 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.14.2-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.14.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hello:
 
-5.14.2-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Mon,  6 Sep 2021 21:56:53 +0800 you wrote:
+> The strlcpy should not be used because it doesn't limit the source
+> length. As linus says, it's a completely useless function if you
+> can't implicitly trust the source string - but that is almost always
+> why people think they should use it! All in all the BSD function
+> will lead some potential bugs.
+> 
+> But the strscpy doesn't require reading memory from the src string
+> beyond the specified "count" bytes, and since the return value is
+> easier to error-check than strlcpy()'s. In addition, the implementation
+> is robust to the string changing out from underneath it, unlike the
+> current strlcpy() implementation.
+> 
+> [...]
+
+Here is the summary with links:
+  - net: qcom/emac: Replace strlcpy with strscpy
+    https://git.kernel.org/netdev/net/c/0a83299935f0
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
