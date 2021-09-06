@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC363401C9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 15:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CFD401C9E
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 15:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242868AbhIFNst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 09:48:49 -0400
-Received: from smtpbg126.qq.com ([106.55.201.22]:17264 "EHLO smtpbg587.qq.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S242330AbhIFNss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 09:48:48 -0400
-X-QQ-mid: bizesmtp32t1630936019t1xc7n3c
-Received: from localhost.localdomain (unknown [171.223.98.107])
-        by esmtp6.qq.com (ESMTP) with 
-        id ; Mon, 06 Sep 2021 21:46:58 +0800 (CST)
-X-QQ-SSF: 01000000004000C0D000B00A0000000
-X-QQ-FEAT: 0VmwRkEgV1FWcRSAALeydNZuGmmRQOvfXre6MvYzyVi1tkDn5Cdgidi1shKhC
-        Sknu6ZAyCKbDkD7bhCk4DUrSVQWEWwZ/1tMhR00TDwWO46mldUDlTSUNAgX9zJJwfBGTBkU
-        sPy52KRAoeMhK+psazlvQl7L7gSG05rhgy40VmG0ySByUhWVgZaKxnUqI2/HITYeuggXlcY
-        ehYW7X98Am2kPVE9HWoBXyB0ZURRZuZLJts5a1zb7r6FSEpu+qFAtTCBR90rAKgj8zgQdHN
-        sRxfqxY7Y1PFGscAvyn5mQJi8zDlJNQlmV5glWW5j9lgTwiYgwuOmHdu90jmDCiMijwXmrX
-        ANE6jGtwghATq3QHn2N/266Qki2DA==
-X-QQ-GoodBg: 0
-From:   Jason Wang <wangborong@cdjrlc.com>
-To:     krzysztof.kozlowski@canonical.com
-Cc:     linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Wang <wangborong@cdjrlc.com>
-Subject: [PATCH] ARM: s3c: Use strscpy to replace strlcpy
-Date:   Mon,  6 Sep 2021 21:46:56 +0800
-Message-Id: <20210906134656.101088-1-wangborong@cdjrlc.com>
-X-Mailer: git-send-email 2.33.0
+        id S242904AbhIFNtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 09:49:43 -0400
+Received: from outbound-smtp33.blacknight.com ([81.17.249.66]:46676 "EHLO
+        outbound-smtp33.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242330AbhIFNtn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 09:49:43 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp33.blacknight.com (Postfix) with ESMTPS id 8243FBACB5
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 14:48:35 +0100 (IST)
+Received: (qmail 13005 invoked from network); 6 Sep 2021 13:48:35 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.17.29])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 6 Sep 2021 13:48:35 -0000
+Date:   Mon, 6 Sep 2021 14:48:20 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Hugh Dickins <hughd@google.com>, Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] mm/vmstat: Protect per cpu variables with preempt
+ disable on RT
+Message-ID: <20210906134820.GA3959@techsingularity.net>
+References: <20210805160019.1137-1-mgorman@techsingularity.net>
+ <20210805160019.1137-2-mgorman@techsingularity.net>
+ <20210831164546.t7b6ksblzhsmm6jr@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:cdjrlc.com:qybgspam:qybgspam2
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210831164546.t7b6ksblzhsmm6jr@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The strlcpy should not be used because it doesn't limit the source
-length. As linus says, it's a completely useless function if you
-can't implicitly trust the source string - but that is almost always
-why people think they should use it! All in all the BSD function
-will lead some potential bugs.
+On Tue, Aug 31, 2021 at 06:45:46PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2021-08-05 17:00:19 [+0100], Mel Gorman wrote:
+> >  mm/vmstat.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 48 insertions(+)
+> 
+> The version in RT also covered the functions
+>   __count_vm_event()
+>   __count_vm_events()
+> 
+> in include/linux/vmstat.h. Were they dropped by mistake or on purpose? 
+> 
 
-But the strscpy doesn't require reading memory from the src string
-beyond the specified "count" bytes, and since the return value is
-easier to error-check than strlcpy()'s. In addition, the implementation
-is robust to the string changing out from underneath it, unlike the
-current strlcpy() implementation.
+Sorry for the long delay, this got lost in a mess of mail. It was
+dropped on purpose and I tried to explain why in the changelog
 
-Thus, We prefer using strscpy instead of strlcpy.
+	This patch differs from the preempt-rt version where
+	__count_vm_event and __count_vm_events are also protected. The
+	counters are explicitly "allowed to be to be racy" so there is
+	no need to protect them from preemption. Only the accurate page
+	stats that are updated by a read-modify-write need protection. This
+	patch also differs in that a preempt_[en|dis]able_rt helper is not
+	used. As vmstat is the only user of the helper, it was suggested
+	that it be open-coded in vmstat.c instead of risking the helper
+	being used in unnecessary contexts.
 
-Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
----
- arch/arm/mach-s3c/mach-mini6410.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Does that answer your question?
 
-diff --git a/arch/arm/mach-s3c/mach-mini6410.c b/arch/arm/mach-s3c/mach-mini6410.c
-index 741fa1f09694..c14c2e27127b 100644
---- a/arch/arm/mach-s3c/mach-mini6410.c
-+++ b/arch/arm/mach-s3c/mach-mini6410.c
-@@ -262,7 +262,7 @@ static char mini6410_features_str[12] __initdata = "0";
- static int __init mini6410_features_setup(char *str)
- {
- 	if (str)
--		strlcpy(mini6410_features_str, str,
-+		strscpy(mini6410_features_str, str,
- 			sizeof(mini6410_features_str));
- 	return 1;
- }
 -- 
-2.33.0
-
+Mel Gorman
+SUSE Labs
