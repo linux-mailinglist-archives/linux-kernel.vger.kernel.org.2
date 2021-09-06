@@ -2,89 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A934014BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 03:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85134013D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 03:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353280AbhIFBgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 21:36:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351931AbhIFBbQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 21:31:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5C0661050;
-        Mon,  6 Sep 2021 01:24:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630891487;
-        bh=ygTgi3ZOuywsl37Y3rfKuIb8lCI6FVLBpXonPSgzYwY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ocbcrS5JdIHOsZQLi1FCta2nLVTNOeWzkjN2DCRI2axtbCghMvyOA1G4wGCg4GDsV
-         f7atlsP+IWSZOIbSu7YtMkIh+oxp1TNIu5j/7IaWHdnb21JEx1j6V1MU3raUSK5w9q
-         AMqIBeF93ycf9M+Be35VYNKiUhuj4lXFOdUik+5RO314jkeErEo/NVOC3j8VX1OU4l
-         ZmhtYJu3CNTjJHLyJWKWfhlRyAjQ0aNspShuo3R8S0rn88SJU2ZOPVEm/52RfQK0qc
-         KrMS9Zdi8dyW3+cOnDijL5qnekxhhRaGpHtLG9x4qJHT2SXcAa+WCOMpTLMv0PJfW4
-         mQoVotJOOZ10g==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Stian Skjelstad <stian.skjelstad@gmail.com>,
-        Jan Kara <jack@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 4.4 9/9] udf_get_extendedattr() had no boundary checks.
-Date:   Sun,  5 Sep 2021 21:24:34 -0400
-Message-Id: <20210906012435.931318-9-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210906012435.931318-1-sashal@kernel.org>
-References: <20210906012435.931318-1-sashal@kernel.org>
+        id S241418AbhIFB3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 21:29:10 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:15291 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240936AbhIFB1F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 5 Sep 2021 21:27:05 -0400
+Received: from dggeml756-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H2rLh2dmBz8sqg;
+        Mon,  6 Sep 2021 09:25:32 +0800 (CST)
+Received: from [10.174.179.14] (10.174.179.14) by
+ dggeml756-chm.china.huawei.com (10.1.199.158) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Mon, 6 Sep 2021 09:25:59 +0800
+Subject: Re: [PATCH] scsi: libsas: co-locate exports with symbols
+To:     John Garry <john.garry@huawei.com>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <1630664852-225115-1-git-send-email-john.garry@huawei.com>
+From:   Jason Yan <yanaijie@huawei.com>
+Message-ID: <f767b99a-e4cb-642f-a319-5cea2b4a2a88@huawei.com>
+Date:   Mon, 6 Sep 2021 09:25:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.2
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+In-Reply-To: <1630664852-225115-1-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.14]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggeml756-chm.china.huawei.com (10.1.199.158)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stian Skjelstad <stian.skjelstad@gmail.com>
 
-[ Upstream commit 58bc6d1be2f3b0ceecb6027dfa17513ec6aa2abb ]
+ÔÚ 2021/9/3 18:27, John Garry Ð´µÀ:
+> It is standard practice to co-locate export declarations with the symbol
+> which is being exported. Or at least in the same file - see
+> sas_phy_reset().
+> 
+> Modify libsas to follow this practice consistently.
+> 
+> Signed-off-by: John Garry<john.garry@huawei.com>
 
-When parsing the ExtendedAttr data, malicous or corrupt attribute length
-could cause kernel hangs and buffer overruns in some special cases.
-
-Link: https://lore.kernel.org/r/20210822093332.25234-1-stian.skjelstad@gmail.com
-Signed-off-by: Stian Skjelstad <stian.skjelstad@gmail.com>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/udf/misc.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/fs/udf/misc.c b/fs/udf/misc.c
-index 71d1c25f360d..8c7f9ea251e5 100644
---- a/fs/udf/misc.c
-+++ b/fs/udf/misc.c
-@@ -175,13 +175,22 @@ struct genericFormat *udf_get_extendedattr(struct inode *inode, uint32_t type,
- 		else
- 			offset = le32_to_cpu(eahd->appAttrLocation);
- 
--		while (offset < iinfo->i_lenEAttr) {
-+		while (offset + sizeof(*gaf) < iinfo->i_lenEAttr) {
-+			uint32_t attrLength;
-+
- 			gaf = (struct genericFormat *)&ea[offset];
-+			attrLength = le32_to_cpu(gaf->attrLength);
-+
-+			/* Detect undersized elements and buffer overflows */
-+			if ((attrLength < sizeof(*gaf)) ||
-+			    (attrLength > (iinfo->i_lenEAttr - offset)))
-+				break;
-+
- 			if (le32_to_cpu(gaf->attrType) == type &&
- 					gaf->attrSubtype == subtype)
- 				return gaf;
- 			else
--				offset += le32_to_cpu(gaf->attrLength);
-+				offset += attrLength;
- 		}
- 	}
- 
--- 
-2.30.2
-
+Reviewed-by: Jason Yan <yanaijie@huawei.com>
