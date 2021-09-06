@@ -2,112 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F12D2401B1A
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:24:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E06401B1D
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241947AbhIFMZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:25:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60938 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241425AbhIFMZK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S242105AbhIFMZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:25:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237245AbhIFMZK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 6 Sep 2021 08:25:10 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10FE3C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 05:24:06 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id x6so9556422wrv.13
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 05:24:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BB59IKAfrwSwSdWxafFGFhSlkLl8VbEjXjV3EpRJFr0=;
-        b=WH0mSvnCL+acOmSHB5tbkeUzV72W8TU05gNSd2bsemQomgCcv1JOEOmTc0IpPWxpLR
-         K5LISkLF3ij5Uxxyl4X/Yxx5j3OIQo6yYALIxkavaNoaNJhkbnzAB9vM418nrlD+lmuB
-         haNq7/JnF7dRztxGthevIIMCcCddo2KPq3bPB+QWG65HIVO/+lk/bZTwE6MWtmAV4yc1
-         Py3PWZrzuWQvJU12bG1mwlT5aD/Qvm+wMo6eYnxve1kMV6481OquymQAsNi8awdzNWZj
-         U3+8Bgk5pCkhf6r4k9Y1ri+JjfXa5YnBY+XxEF0DDO8myxLSwTF4mgKF9TZKqefbPSwp
-         GUOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=BB59IKAfrwSwSdWxafFGFhSlkLl8VbEjXjV3EpRJFr0=;
-        b=pXg7q+xJBgg4PxtFc8WfvyTqOtlfBu1sxfR8u8st2KyO0zFZxEe5ubLq/C2HgWojvn
-         CLdLazCIJX4WgaasDzebIpkdGf8ARO1zMdSdozecEFcwyM6Cmj1ZhrdL4b0fXYusFFI7
-         igK4kPhtJqo4M+ueL/Wv/wOtSkbRgplTgioli6b3WJ3sJbWDqxq5L7TiMfR5/SMsLVpC
-         mlgUhBmktbmq/cSAJq7huPhZum/YXoNhVT+0JbsvPjTavEPG6J6M2x27My1qwQ+K+NDp
-         63+CVvO4BdNhCLqPsakdM0WhoRc9Bs+nL/eHalouV19mQ1NL0CeWkjWQJmaJU4yZrpjK
-         MvYg==
-X-Gm-Message-State: AOAM531bmm0zneTE0J29LhufQNuPGZdmMqQ5f0xH98YXyFwt6jZ7DGpb
-        FTA/sCaFRp6tQ796sL20I/mRzyQl3nteOQ2A
-X-Google-Smtp-Source: ABdhPJwU9sW7OD+Tf4zkvp4IV8JncMXHvha1k67ulucGwUQzXRfB/DmhfbDq7VAPkIanJB/wNKHnrw==
-X-Received: by 2002:adf:fd51:: with SMTP id h17mr13261148wrs.178.1630931044475;
-        Mon, 06 Sep 2021 05:24:04 -0700 (PDT)
-Received: from ?IPv6:2001:861:44c0:66c0:9afb:57ba:5ea:2010? ([2001:861:44c0:66c0:9afb:57ba:5ea:2010])
-        by smtp.gmail.com with ESMTPSA id c9sm7748121wrf.77.2021.09.06.05.24.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 05:24:04 -0700 (PDT)
-Subject: Re: [PATCH v3 1/4] dt-bindings: arm: amlogic: add bindings for Jethub
- D1/H1
-To:     Vyacheslav Bocharov <adeep@lexina.in>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh+dt@kernel.org
-References: <20210904142745.183875-1-adeep@lexina.in>
- <20210904142745.183875-2-adeep@lexina.in>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <8541f649-0885-bc15-0bb0-ac54110ac47c@baylibre.com>
-Date:   Mon, 6 Sep 2021 14:24:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Received: by mail.kernel.org (Postfix) with ESMTPS id D23AA60F45;
+        Mon,  6 Sep 2021 12:24:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630931045;
+        bh=Zy6R3EZkqy/7oKKjFPZvaCgdsk/p/dmxINF1eormd2I=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=mobPM3FuHmPvktTp1XetDVVecmIwCeUfsHDs8j5oSSKxvo2JqTryi/bn+1d6a1vIj
+         uSMHzRYAvL+y36YcYNSjJYH8Z5IK3MEH8QVqtGIgmHpHPTe//3D70lYo/KnnGkKL/3
+         AbdKVXL/TOc/aH9Y2B/Ua55wXVcH1g2pE+KuqUyGU2aVqpkqZ81ytcGEzcWX8NyBBy
+         8lfvP41sJxZdxfFTOY3Q58B4TofqImwr8yLj+oH6cULSwzrLbNlqgx2Mp8A89/scDT
+         ZA50tobH/qFBtF4eWP1e0JP3spgFNBMTNiPedyOF2yJHk1+ooNQlYSbL0JqbnL/Cie
+         8uRYYsacyFA+A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C544F60A37;
+        Mon,  6 Sep 2021 12:24:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210904142745.183875-2-adeep@lexina.in>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] stmmac: dwmac-loongson:Fix missing return value
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163093104580.13830.7607505980479153914.git-patchwork-notify@kernel.org>
+Date:   Mon, 06 Sep 2021 12:24:05 +0000
+References: <20210906072107.10906-1-long870912@gmail.com>
+In-Reply-To: <20210906072107.10906-1-long870912@gmail.com>
+To:     zhaoxiao <long870912@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, mcoquelin.stm32@gmail.com,
+        peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/09/2021 16:27, Vyacheslav Bocharov wrote:
-> JetHome is a series of home automation controllers:
-> - Jethub D1 based on Amlogic A113X
-> - Jethub H1 based on AmLogic S905W
+Hello:
+
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Mon,  6 Sep 2021 15:21:07 +0800 you wrote:
+> Add the return value when phy_mode < 0.
 > 
-> Signed-off-by: Vyacheslav Bocharov <adeep@lexina.in>
+> Signed-off-by: zhaoxiao <long870912@gmail.com>
 > ---
->  Documentation/devicetree/bindings/arm/amlogic.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/amlogic.yaml b/Documentation/devicetree/bindings/arm/amlogic.yaml
-> index 6423377710ee..b223d7829c3d 100644
-> --- a/Documentation/devicetree/bindings/arm/amlogic.yaml
-> +++ b/Documentation/devicetree/bindings/arm/amlogic.yaml
-> @@ -86,6 +86,7 @@ properties:
->            - enum:
->                - amlogic,p281
->                - oranth,tx3-mini
-> +              - jethome,jethub-j80
->            - const: amlogic,s905w
->            - const: amlogic,meson-gxl
->  
-> @@ -133,6 +134,7 @@ properties:
->          items:
->            - enum:
->                - amlogic,s400
-> +              - jethome,jethub-j100
->            - const: amlogic,a113d
->            - const: amlogic,meson-axg
->  
-> 
+>  drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-Please keep review tags across patchset versions.
+Here is the summary with links:
+  - stmmac: dwmac-loongson:Fix missing return value
+    https://git.kernel.org/netdev/net/c/5289de5929d1
 
-Acked-by: Rob Herring <robh@kernel.org>
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Neil
+
