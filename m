@@ -2,92 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8260E401FBD
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EAB401FC2
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245284AbhIFS3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 14:29:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48551 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245114AbhIFS2k (ORCPT
+        id S244280AbhIFShD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 14:37:03 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:44097 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229635AbhIFShC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 14:28:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630952855;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zdZg7k52Zmj/hALie/T8LIPyy9j0vAZZQI7YDqk+68Q=;
-        b=DUMQUUKzeaVH9O5+48cIHvNp6/Q125V1+K74nBavESr/3ODn7gUSjshd4khMTxtIBLoIQF
-        xBbR0+KOE9CFKTxo6/hGuLJTh0qPsbcVjGomCR0MPl/95Mj9edw/rdW6kuIGHz22SWvT19
-        UKn7HlPDjFocPOUq40b2kpNglb3JX4M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-334-8aTRbxFEMw2lx2hBnSYCSQ-1; Mon, 06 Sep 2021 14:27:32 -0400
-X-MC-Unique: 8aTRbxFEMw2lx2hBnSYCSQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59C0C1883520;
-        Mon,  6 Sep 2021 18:27:30 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (unknown [10.39.195.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A66C25C22B;
-        Mon,  6 Sep 2021 18:27:27 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Linus Torvalds <torvalds@linuxfoundation.org>
-Cc:     Segher Boessenkool <segher@kernel.crashing.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
-Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
-References: <CAHk-=wgoX0pVqNMMOcrhq=nuOfoZB_3qihyHB3y1S8qo=MDs6w@mail.gmail.com>
-        <3b461878-a4a0-2f84-e177-9daf8fe285e7@kernel.org>
-        <878s0c4vng.fsf@oldenburg.str.redhat.com>
-        <20210904131911.GP1583@gate.crashing.org>
-        <871r644bd2.fsf@oldenburg.str.redhat.com>
-        <CAHk-=wi+XKYN+3u=_fm=ExqpEaHdER0XuKxVauHYVCPKpKR97Q@mail.gmail.com>
-        <20210904191531.GS1583@gate.crashing.org>
-        <CAHk-=wjc1rxah3xt8mKN=aCxQigjy3-hEf4xh_Y-r=MXAKVrag@mail.gmail.com>
-        <20210906154642.GV1583@gate.crashing.org>
-        <CAHk-=wj=WpWO_V86cZH99LgZGBbvdDb4wR26ce5van0hJqjzLA@mail.gmail.com>
-        <20210906172701.GX1583@gate.crashing.org>
-        <CAHk-=wh0MBVfA89WLWnCiSnJ2a=hSAoSxfG-jyf7JJeBDPK3ew@mail.gmail.com>
-Date:   Mon, 06 Sep 2021 20:27:25 +0200
-In-Reply-To: <CAHk-=wh0MBVfA89WLWnCiSnJ2a=hSAoSxfG-jyf7JJeBDPK3ew@mail.gmail.com>
-        (Linus Torvalds's message of "Mon, 6 Sep 2021 11:11:35 -0700")
-Message-ID: <87lf49wodu.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Mon, 6 Sep 2021 14:37:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1630953357; x=1662489357;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=zyMK5O/PHL1QnpDxO+QE66IrpDGM25Huc+ptLFymepw=;
+  b=MFTS+78AoJZrkCoTXnpgUtFWG7gCoNzRR627Cg12Vs7JPOmrGLReUJWg
+   r+xCgBdkNIMgpWH8DL3t4zkQtK2ByA4jXGOaq6hv4cTrUFs2hKEuJfEP6
+   y/lqyC2OPqZRHOue7XBKT+RrBFcU9lEU0wL8Rm+lhVbTmIWQqNBUQ9dCi
+   8=;
+X-IronPort-AV: E=Sophos;i="5.85,273,1624320000"; 
+   d="scan'208";a="157935869"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 06 Sep 2021 18:35:49 +0000
+Received: from EX13D16EUB004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id EA0A4A1EBF;
+        Mon,  6 Sep 2021 18:35:47 +0000 (UTC)
+Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
+ EX13D16EUB004.ant.amazon.com (10.43.166.11) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Mon, 6 Sep 2021 18:35:46 +0000
+Received: from dev-dsk-anelkz-1b-031e727b.eu-west-1.amazon.com (10.13.225.27)
+ by mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP Server id
+ 15.0.1497.23 via Frontend Transport; Mon, 6 Sep 2021 18:35:45 +0000
+Received: by dev-dsk-anelkz-1b-031e727b.eu-west-1.amazon.com (Postfix, from userid 14141144)
+        id F0A6F593A; Mon,  6 Sep 2021 18:35:44 +0000 (UTC)
+From:   Anel Orazgaliyeva <anelkz@amazon.de>
+CC:     <anelkz@amazon.de>, Aman Priyadarshi <apeureka@amazon.de>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] cpuidle: Fix memory leaks
+Date:   Mon, 6 Sep 2021 18:34:40 +0000
+Message-ID: <20210906183440.85710-1-anelkz@amazon.de>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Linus Torvalds:
+Commit c343bf1ba5ef ("cpuidle: Fix three reference count leaks")
+fixes the cleanup of kobjects; however, it removes kfree() calls
+altogether, leading to memory leaks.
 
-> We use the compiler intrinsics without the C library header files for
-> everything else, so doing so for <stdarg.h> seems to actually be a
-> clarification and improvement.
+Fix those and also defer the initialization of dev->kobj_dev until
+after the error check, so that we do not end up with a dangling
+pointer.
 
-This is an exaggeration.  On several architectures, the kernel cannot
-use the vector built-ins directly.  Some of the implementing headers are
-very special and intertwined with the compiler.  <stdarg.h> is currently
-not such a case, but it's just not technically not feasible to avoid
-dependencies on all compiler headers.  I think this considerably weakens
-the case against <stdarg.h> because the compiler version is so obviously
-harmless.
+Signed-off-by: Anel Orazgaliyeva <anelkz@amazon.de>
+Suggested-by: Aman Priyadarshi <apeureka@amazon.de>
+---
+ drivers/cpuidle/sysfs.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-What the kernel is doing here is imposing an unnecesary constraint on
-compiler development.  Basically, you are telling compiler writers that
-implementing features with the help of header files is a bad idea
-because it makes it more difficult to use them from the kernel.  (See
-the proposed exceptions for vector code.)
+diff --git a/drivers/cpuidle/sysfs.c b/drivers/cpuidle/sysfs.c
+index 53ec9585ccd4..469e18547d06 100644
+--- a/drivers/cpuidle/sysfs.c
++++ b/drivers/cpuidle/sysfs.c
+@@ -488,6 +488,7 @@ static int cpuidle_add_state_sysfs(struct cpuidle_device *device)
+ 					   &kdev->kobj, "state%d", i);
+ 		if (ret) {
+ 			kobject_put(&kobj->kobj);
++			kfree(kobj);
+ 			goto error_state;
+ 		}
+ 		cpuidle_add_s2idle_attr_group(kobj);
+@@ -619,6 +620,7 @@ static int cpuidle_add_driver_sysfs(struct cpuidle_device *dev)
+ 				   &kdev->kobj, "driver");
+ 	if (ret) {
+ 		kobject_put(&kdrv->kobj);
++		kfree(kdrv);
+ 		return ret;
+ 	}
+ 
+@@ -705,7 +707,6 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
+ 	if (!kdev)
+ 		return -ENOMEM;
+ 	kdev->dev = dev;
+-	dev->kobj_dev = kdev;
+ 
+ 	init_completion(&kdev->kobj_unregister);
+ 
+@@ -713,9 +714,11 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
+ 				   "cpuidle");
+ 	if (error) {
+ 		kobject_put(&kdev->kobj);
++		kfree(kdev);
+ 		return error;
+ 	}
+ 
++	dev->kobj_dev = kdev;
+ 	kobject_uevent(&kdev->kobj, KOBJ_ADD);
+ 
+ 	return 0;
+-- 
+2.32.0
 
-Thanks,
-Florian
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
 
