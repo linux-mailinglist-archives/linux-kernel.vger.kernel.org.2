@@ -2,78 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0265C401833
+	by mail.lfdr.de (Postfix) with ESMTP id C3EF0401835
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 10:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241756AbhIFIsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 04:48:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:53586 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241013AbhIFIqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 04:46:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 753A11063;
-        Mon,  6 Sep 2021 01:45:07 -0700 (PDT)
-Received: from e123648.arm.com (unknown [10.57.18.108])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CD3863F73D;
-        Mon,  6 Sep 2021 01:45:05 -0700 (PDT)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     lukasz.luba@arm.com, dietmar.eggemann@arm.com, qperret@google.com,
-        rafael.j.wysocki@intel.com, linux-pm@vger.kernel.org,
-        vincent.donnefort@arm.com
-Subject: [PATCH 2/2] Documentation: power: include kernel-doc in Energy Model doc
-Date:   Mon,  6 Sep 2021 09:44:53 +0100
-Message-Id: <20210906084453.3068-2-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210906084453.3068-1-lukasz.luba@arm.com>
-References: <20210906084453.3068-1-lukasz.luba@arm.com>
+        id S241125AbhIFIsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 04:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241497AbhIFIrN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 04:47:13 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82085C061757
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 01:46:08 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id mf2so11987439ejb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 01:46:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8LAmaSyJa7xIkRyWmQFQLPdtTpPfl6cF8N/0UDdi5JQ=;
+        b=ftFDUtejRaca7/VzbCnbdEqwMSB1qRj0J5JYAYxPmAajPt03iJ9JCXESud9TiTSFw/
+         I7SEgZbb5lKtt2/bzhJSqptGgf4gIGPXHdpEN+PqnzoJCwe5G6zw1nZV5r1mHhS2Uj6u
+         Ma3WF0jXLDn+f7ZSOT3zf1nrVt/O+3Hz8nT/Xs9Zrojfwv8wZrnspilhtE7WoyICjPFF
+         /BMAycSuJw9hbx4I4PL//aQpMrxhcaD/FCjz3yn0AM8kK11PIo9D4z2JpAZFfyn00OAF
+         XAOQbuFOpM72i24Kdf2NjGDkRC54nedjfG1Hhy3fsWsggeuCs9rfuR4xMpV0zJe/P+Dq
+         iNcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8LAmaSyJa7xIkRyWmQFQLPdtTpPfl6cF8N/0UDdi5JQ=;
+        b=JXdjhjr89/JfZkBDb8alLsh8cfValyR+HPw6U80qtFbEJn+/X17X6xo5XAABbVNYJK
+         gYhTwHbn7n3fmASu6T01AzzNNBrgh96tNL3tCKgb+plS3Xoek4MdFAgdKUFBsjbxT+1R
+         mc6Jh4diAtEPqHbHfEmazv2FKlfgSsfxbVg23Uwn+dHEx5RXFpVRUD1LPm4POPfPmZhD
+         y2rJAk+CbJU8kZ6VLM2DBcRfaW93QQ+Vxb7mZDSQkwIs0wdEBSyDkz0BLXbX/Y7g/cZn
+         sTDzpb5WBMDdc6WECfIskdOS7Z31zrbXPqE4+QSQYkGFgvwtP2xz1T+cuUYGtF0g1X7B
+         vfZA==
+X-Gm-Message-State: AOAM530aQaFNWMtrp8NgJC3hLfsD8VYXzmaIXdm737j0n9Ja1gQbqT42
+        jnxKzmXxpw6scPuDnFi4OOYxcknLkW5S6K9/b7Ea
+X-Google-Smtp-Source: ABdhPJxRcevb7Cx9lFr/uLNuGUc45WhioHM0KmVHs1F8bqTkXfZVuaNxvzm/8iuqiAHlOvgz0eipWdPdNONQLdXkGV8=
+X-Received: by 2002:a17:907:1c01:: with SMTP id nc1mr12529737ejc.504.1630917966948;
+ Mon, 06 Sep 2021 01:46:06 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210831103634.33-1-xieyongji@bytedance.com> <20210831103634.33-6-xieyongji@bytedance.com>
+ <20210906015524-mutt-send-email-mst@kernel.org> <CACycT3v4ZVnh7DGe_RtAOx4Vvau0km=HWyCM=KzKhD+ahYKafQ@mail.gmail.com>
+ <20210906023131-mutt-send-email-mst@kernel.org> <CACycT3ssC1bhNzY9Pk=LPvKjMrFFavTfCKTJtR2XEiVYqDxT1Q@mail.gmail.com>
+ <20210906035338-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20210906035338-mutt-send-email-mst@kernel.org>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Mon, 6 Sep 2021 16:45:55 +0800
+Message-ID: <CACycT3vQHRsJ_j5f4T9RoB4MQzBoYO5ts3egVe9K6TcCVfLOFQ@mail.gmail.com>
+Subject: Re: [PATCH v13 05/13] vdpa: Add reset callback in vdpa_config_ops
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        He Zhe <zhe.he@windriver.com>,
+        Liu Xiaodong <xiaodong.liu@intel.com>,
+        Joe Perches <joe@perches.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>,
+        John Garry <john.garry@huawei.com>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Improve the existing documentation of the Energy Model and add kernel-doc
-comments. This extends an API description and helps better understanding
-the usage.
+On Mon, Sep 6, 2021 at 4:01 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Mon, Sep 06, 2021 at 03:06:44PM +0800, Yongji Xie wrote:
+> > On Mon, Sep 6, 2021 at 2:37 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > >
+> > > On Mon, Sep 06, 2021 at 02:09:25PM +0800, Yongji Xie wrote:
+> > > > On Mon, Sep 6, 2021 at 1:56 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+> > > > >
+> > > > > On Tue, Aug 31, 2021 at 06:36:26PM +0800, Xie Yongji wrote:
+> > > > > > This adds a new callback to support device specific reset
+> > > > > > behavior. The vdpa bus driver will call the reset function
+> > > > > > instead of setting status to zero during resetting.
+> > > > > >
+> > > > > > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+> > > > >
+> > > > >
+> > > > > This does gloss over a significant change though:
+> > > > >
+> > > > >
+> > > > > > ---
+> > > > > > @@ -348,12 +352,12 @@ static inline struct device *vdpa_get_dma_dev(struct vdpa_device *vdev)
+> > > > > >       return vdev->dma_dev;
+> > > > > >  }
+> > > > > >
+> > > > > > -static inline void vdpa_reset(struct vdpa_device *vdev)
+> > > > > > +static inline int vdpa_reset(struct vdpa_device *vdev)
+> > > > > >  {
+> > > > > >       const struct vdpa_config_ops *ops = vdev->config;
+> > > > > >
+> > > > > >       vdev->features_valid = false;
+> > > > > > -     ops->set_status(vdev, 0);
+> > > > > > +     return ops->reset(vdev);
+> > > > > >  }
+> > > > > >
+> > > > > >  static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
+> > > > >
+> > > > >
+> > > > > Unfortunately this breaks virtio_vdpa:
+> > > > >
+> > > > >
+> > > > > static void virtio_vdpa_reset(struct virtio_device *vdev)
+> > > > > {
+> > > > >         struct vdpa_device *vdpa = vd_get_vdpa(vdev);
+> > > > >
+> > > > >         vdpa_reset(vdpa);
+> > > > > }
+> > > > >
+> > > > >
+> > > > > and there's no easy way to fix this, kernel can't recover
+> > > > > from a reset failure e.g. during driver unbind.
+> > > > >
+> > > >
+> > > > Yes, but it should be safe with the protection of software IOTLB even
+> > > > if the reset() fails during driver unbind.
+> > > >
+> > > > Thanks,
+> > > > Yongji
+> > >
+> > > Hmm. I don't see it.
+> > > What exactly will happen? What prevents device from poking at
+> > > memory after reset? Note that dma unmap in e.g. del_vqs happens
+> > > too late.
+> >
+> > But I didn't see any problems with touching the memory for virtqueues.
+>
+> Drivers make the assumption that after reset returns no new
+> buffers will be consumed. For example a bunch of drivers
+> call virtqueue_detach_unused_buf.
 
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
----
- Documentation/power/energy-model.rst | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+I'm not sure if I get your point. But it looks like
+virtqueue_detach_unused_buf() will check the driver's metadata first
+rather than read the memory from virtqueue.
 
-diff --git a/Documentation/power/energy-model.rst b/Documentation/power/energy-model.rst
-index 60ac091d3b0d..8a2788afe89b 100644
---- a/Documentation/power/energy-model.rst
-+++ b/Documentation/power/energy-model.rst
-@@ -101,8 +101,7 @@ subsystems which use EM might rely on this flag to check if all EM devices use
- the same scale. If there are different scales, these subsystems might decide
- to: return warning/error, stop working or panic.
- See Section 3. for an example of driver implementing this
--callback, and kernel/power/energy_model.c for further documentation on this
--API.
-+callback, or Section 2.4 for further documentation on this API
- 
- 
- 2.3 Accessing performance domains
-@@ -123,7 +122,17 @@ em_cpu_energy() API. The estimation is performed assuming that the schedutil
- CPUfreq governor is in use in case of CPU device. Currently this calculation is
- not provided for other type of devices.
- 
--More details about the above APIs can be found in include/linux/energy_model.h.
-+More details about the above APIs can be found in ``<linux/energy_model.h>``
-+or in Section 2.4
-+
-+
-+2.4 Description details of this API
-+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-+.. kernel-doc:: include/linux/energy_model.h
-+   :internal:
-+
-+.. kernel-doc:: kernel/power/energy_model.c
-+   :export:
- 
- 
- 3. Example driver
--- 
-2.17.1
+> I can't say whether block makes this assumption anywhere.
+> Needs careful auditing.
+>
+> > The memory should not be freed after dma unmap?
+>
+> But unmap does not happen until after the reset.
+>
 
+I mean the memory is totally allocated and controlled by the VDUSE
+driver. The VDUSE driver will not return them to the buddy system
+unless userspace unmap it.
+
+>
+> > And the memory for the bounce buffer should also be safe to be
+> > accessed by userspace in this case.
+> >
+> > > And what about e.g. interrupts?
+> > > E.g. we have this:
+> > >
+> > >         /* Virtqueues are stopped, nothing can use vblk->vdev anymore. */
+> > >         vblk->vdev = NULL;
+> > >
+> > > and this is no longer true at this point.
+> > >
+> >
+> > You're right. But I didn't see where the interrupt handler will use
+> > the vblk->vdev.
+>
+> static void virtblk_done(struct virtqueue *vq)
+> {
+>         struct virtio_blk *vblk = vq->vdev->priv;
+>
+> vq->vdev is the same as vblk->vdev.
+>
+
+We will test the vq->ready (will be set to false in del_vqs()) before
+injecting an interrupt in the VDUSE driver. So it should be OK?
+
+>
+> > So it seems to be not too late to fix it:
+> >
+> > diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c
+> > b/drivers/vdpa/vdpa_user/vduse_dev.c
+> > index 5c25ff6483ad..ea41a7389a26 100644
+> > --- a/drivers/vdpa/vdpa_user/vduse_dev.c
+> > +++ b/drivers/vdpa/vdpa_user/vduse_dev.c
+> > @@ -665,13 +665,13 @@ static void vduse_vdpa_set_config(struct
+> > vdpa_device *vdpa, unsigned int offset,
+> >  static int vduse_vdpa_reset(struct vdpa_device *vdpa)
+> >  {
+> >         struct vduse_dev *dev = vdpa_to_vduse(vdpa);
+> > +       int ret;
+> >
+> > -       if (vduse_dev_set_status(dev, 0))
+> > -               return -EIO;
+> > +       ret = vduse_dev_set_status(dev, 0);
+> >
+> >         vduse_dev_reset(dev);
+> >
+> > -       return 0;
+> > +       return ret;
+> >  }
+> >
+> >  static u32 vduse_vdpa_get_generation(struct vdpa_device *vdpa)
+> >
+> > Thanks,
+> > Yongji
+>
+> Needs some comments to explain why it's done like this.
+>
+
+This is used to make sure the userspace can't not inject the interrupt
+any more after reset. The vduse_dev_reset() will clear the interrupt
+callback and flush the irq kworker.
+
+> BTW device is generally wedged at this point right?
+> E.g. if reset during initialization fails, userspace
+> will still get the reset at some later point and be
+> confused ...
+>
+
+Sorry, I don't get why userspace will get the reset at some later point?
+
+Thanks,
+Yongji
