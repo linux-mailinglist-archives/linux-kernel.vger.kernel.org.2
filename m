@@ -2,176 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39AA8401643
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 08:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD9E401644
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 08:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239347AbhIFGPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 02:15:22 -0400
-Received: from home.keithp.com ([63.227.221.253]:43210 "EHLO elaine.keithp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229792AbhIFGPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 02:15:17 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by elaine.keithp.com (Postfix) with ESMTP id 86EAF3F307E8;
-        Sun,  5 Sep 2021 23:13:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=keithp.com; s=mail;
-        t=1630908828; bh=nzQzOWzurWPXI3nB4kbriI3K5D3ah45RRHm3ACe7Waw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=vaOfet+uYMffXEWxV3r4g6+YzBofDhX54sdRdPrR+r3xkeKN6cZadhVWo1WJJ7xeD
-         88TAeYER/TSzYrkF4Mm21LwnQMtysa82uey18kW5KfieUbgATvplvUbKFYTusGyd00
-         eXDF/j0fujASLnlKYG+t375RR6v3YdQ9j+0cNyW6DuQWfBn+izE5LmhodiqBSgOhf5
-         fqrJqUrT4xS2pLpjiciG3hFh1fJFLvKvEocMmTfeqQWgJsXcNLGinithxz0chjuD5A
-         0/PvvoTZ9XPSweJr1xxlwnfWVD7fONhznQZ+svIgRpkJh88AcT7rqQ4wtd8OpnrBoh
-         ZaPaGndBaYVLg==
-X-Virus-Scanned: Debian amavisd-new at keithp.com
-Received: from elaine.keithp.com ([127.0.0.1])
-        by localhost (elaine.keithp.com [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id bTezPySDxRLX; Sun,  5 Sep 2021 23:13:48 -0700 (PDT)
-Received: from keithp.com (168-103-156-98.tukw.qwest.net [168.103.156.98])
-        by elaine.keithp.com (Postfix) with ESMTPSA id C11C73F307D6;
-        Sun,  5 Sep 2021 23:13:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=keithp.com; s=mail;
-        t=1630908828; bh=nzQzOWzurWPXI3nB4kbriI3K5D3ah45RRHm3ACe7Waw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=vaOfet+uYMffXEWxV3r4g6+YzBofDhX54sdRdPrR+r3xkeKN6cZadhVWo1WJJ7xeD
-         88TAeYER/TSzYrkF4Mm21LwnQMtysa82uey18kW5KfieUbgATvplvUbKFYTusGyd00
-         eXDF/j0fujASLnlKYG+t375RR6v3YdQ9j+0cNyW6DuQWfBn+izE5LmhodiqBSgOhf5
-         fqrJqUrT4xS2pLpjiciG3hFh1fJFLvKvEocMmTfeqQWgJsXcNLGinithxz0chjuD5A
-         0/PvvoTZ9XPSweJr1xxlwnfWVD7fONhznQZ+svIgRpkJh88AcT7rqQ4wtd8OpnrBoh
-         ZaPaGndBaYVLg==
-Received: by keithp.com (Postfix, from userid 1000)
-        id 6D1A21E60119; Sun,  5 Sep 2021 23:14:09 -0700 (PDT)
-From:   Keith Packard <keithp@keithp.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Jens Axboe <axboe@kernel.dk>, Jian Cai <jiancai@google.com>,
-        Joe Perches <joe@perches.com>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Rob Herring <robh@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>
-Subject: Re: [PATCH 2/3] ARM: Move thread_info into task_struct (v7 only)
-In-Reply-To: <CAMj1kXHHb_d4Exg7_5OdB-Ah=EQxVEUgEv1agUQZg-Rz8pLd5Q@mail.gmail.com>
-References: <20210902155429.3987201-1-keithp@keithp.com>
- <20210904060908.1310204-1-keithp@keithp.com>
- <20210904060908.1310204-3-keithp@keithp.com>
- <CAMj1kXHHb_d4Exg7_5OdB-Ah=EQxVEUgEv1agUQZg-Rz8pLd5Q@mail.gmail.com>
-Date:   Sun, 05 Sep 2021 23:14:09 -0700
-Message-ID: <8735qifcy6.fsf@keithp.com>
+        id S239199AbhIFGQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 02:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231271AbhIFGQ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 02:16:28 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE38C061575
+        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 23:15:24 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id q21so3294881plq.3
+        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 23:15:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=w3QybRdE74NWNLemuu8RQm9XTt27jt4707YRex4U32A=;
+        b=ejZFajcxetHSUe6t3B7gDLkgFshGoC5do/P/wbH787hY1JJQCC6QSW3PgtjECOWci2
+         No+hg3RHC67NJR80DqHHOevZhMuD4kiB0gj1MYBDyEqrzMU/i1qWNn6AXX/69NiQsrUk
+         JDtNKM66/b3y3orrONVZxWdcFELq6YyHsvryW3F7iCR4yHvTc1zwt5BGerBDWUHlz42o
+         4ROleCaM/P/vfkLQVXoDGHqCEKVl8CCKWSanS7Wlu8GDpW7OOhPo3eqeGV9bhGHZfl4w
+         QLZlwHc82Li2ye1B6kAKxCFgsrsFWaOznwWzBRtRXsb13trltuYsUzF13fD8fhqBSmvG
+         GuSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=w3QybRdE74NWNLemuu8RQm9XTt27jt4707YRex4U32A=;
+        b=Bcy7MZL8odEBgiEaJXOMcicULPT2iNCta+XHImjzAi59Ib199m8I9ls+En15qn57cg
+         u2PMscAXSp4ColQfwHJmh1NuzYmFLrPEuvf6JF+8b9szrzL2Jc0GZmxVl+r0fuiK9RAH
+         KAidbYaMXSedWZr6LuIPOMHajiGBnBNGed/0OPkDdulm8a6uW2cHv/SeNw27F9xWtPH7
+         7Iq5N6EIPAilq1NT2nqWyT3euonf0po//43muSmZoaIkNEZ9r1Y7tLyfkp4oycN5xHSy
+         Mv5GBW+YGS9oAq9NR95ralxZH6oTlq1CqK7ZE21T6G5IJmvvWX7/Bj3B9TH80wfaLa5T
+         yJYg==
+X-Gm-Message-State: AOAM531Oexj/mcN0UdNjXmOG/jxWOwPGQBlpceA9jroZlgO1s7Bp4ewk
+        jsfRrgxW43QGdaYzKLjd4qwFlsTH7FzRzk4X9R3cWEmiLCHSEK4=
+X-Google-Smtp-Source: ABdhPJxtTSd1OZWe+DGF1mtLr3AXPpv2mUmFzh+VkWKOEbup+kBZvEPpw2obl2q+afpXJxGSWsHBYYg1oXKEHxJ9sAw=
+X-Received: by 2002:a17:902:e743:b0:13a:eb0:d124 with SMTP id
+ p3-20020a170902e74300b0013a0eb0d124mr8862234plf.38.1630908923364; Sun, 05 Sep
+ 2021 23:15:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Mon, 6 Sep 2021 14:15:12 +0800
+Message-ID: <CACkBjsbtF_peC7N_4mRfHML_BeiPe+O9DahTfr84puSG_J9rcQ@mail.gmail.com>
+Subject: kernel BUG in truncate_inode_page
+To:     akpm@linux-foundation.org, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Ard Biesheuvel <ardb@kernel.org> writes:
+When using Healer to fuzz the latest Linux kernel, the following crash
+was triggered.
 
-> c13 is not a register, it is a value in one of the dimensions of the
-> ARM sysreg space, and probably covers other system registers that
-> pre-v7 cores do implement.
+HEAD commit: 9e9fb7655ed58 Merge tag 'net-next-5.15'
+git tree: upstream
+console output:
+https://drive.google.com/file/d/1_eEgvafiNcZHqHlmjIy4d420gQTvkf3r/view?usp=sharing
+kernel config: https://drive.google.com/file/d/1zgxbwaYkrM26KEmJ-5sUZX57gfXtRrwA/view?usp=sharing
+C reproducer: https://drive.google.com/file/d/1ZLAhA14JN9prY7Fei_WWnuhNXCg8AM8C/view?usp=sharing
+Syzlang reproducer:
+https://drive.google.com/file/d/1TejG8gPgiAkJsKBlwFdHIADKXDK-H6j8/view?usp=sharing
 
-> Better to use its architectural name (TPIDRPRW) and clarify that
-> pre-v6k/v7 cores simply don't implement it.
+If you fix this issue, please add the following tag to the commit:
+Reported-by: Hao Sun <sunhao.th@gmail.com>
 
-Thanks, I'll reword the commit message
-
-> Could we split this up?
-
-I could split up the assembler macro changes which add a temporary
-register to the calls getting the current thread_info/task_struct value?
-If that would help get this reviewed, I'd be happy to do
-that. Otherwise, it's pretty much all-or-nothing as enabling
-THREAD_INFO_IN_TASK requires a bunch of synchronized changes.
-
->> +#ifdef CONFIG_THREAD_INFO_IN_TASK
->
-> No need for this #ifdef - it only guards macros that will have no
-> effect if they are never instantiated (another case below)
-
-Sure, the resulting code is a bit less noisy, which seems good.
-
->> +DECLARE_PER_CPU(struct task_struct *, current_task);
->> +
->> +static __always_inline struct task_struct *get_current(void)
->> +{
->> +       return raw_cpu_read(current_task);
->
-> This needs to run with preemption disabled, or we might get migrated
-> to another CPU halfway through, and produce the wrong result (i.e.,
-> the current task of the CPU we migrated from). However, it appears
-> that manipulating the preempt count will create a circular dependency
-> here.
-
-Yeah, I really don't understand the restrictions of this API well. Any
-code fetching the current task pointer better not be subject to
-preemption or that value will be stale at some point after it was
-computed. Do you know if it could ever be run in a context allowing
-preemption?
->
-> Instead of using a per-CPU variable for current, I think it might be
-> better to borrow another system register (TPIDRURO or TPIDRURW) to
-> carry 'current' when THREAD_INFO_IN_TASK is in effect, similar to how
-> arm64 uses SP_EL0 - those registers could be preserved/restored in the
-> entry/exit from/to user space paths rather than in the context switch
-> path, and then be used any way we like while running in the kernel.
-
-Making sure these values don't leak through to user space somehow? I'm
-not excited by that prospect at all. But, perhaps someone can help me
-understand the conditions under which the current task value can be
-computed where preemption was enabled and have that not be a problem for
-the enclosing code?
-
-=2D-=20
-=2Dkeith
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEw4O3eCVWE9/bQJ2R2yIaaQAAABEFAmE1sbEACgkQ2yIaaQAA
-ABGusg/9FwN3xd/eIDwhSpWhgmZQsghjqpdH0H9Sjh/+nk4W6N9kRp22bty3b6Sx
-thxasQmaf6sgH+ZZA27hWbuoKU8QGBRj+cmjR9kSZWo/ia9C6QsqqvJB4W9Je6WQ
-S7wnmUrE2wIvcRsVNyPv1qBhpjoPq5yoCD8TainCrz9+n39QEmb4VL4ptwOpMvQr
-bk6iSoKdsv+KlZfOSGN4v4uO47KhMBpoJQQZGDsolBgmqDzKsI2LAqQUhLSt4YLr
-bZJkE7OGJ+DMrYCZBFka3P0UaJQC1mTdyv4IPYsLnY5wkNmje1AyfMYqgnjGVNgs
-7mlkClXI+yrkBGSW6BHfEzpkAgjql+ZuEMBXY7TFNn0mUMuJ3qspJwwAU4YgFaHZ
-lkSp6aOJMCBshBvbbbG7BQ4unNlVhy43iJa9pHfMjeURSxV6dqydxmiQ7w9VjTJq
-g4pwRM8n7aoi2+aiPLgnR/Jva0U5JIM9Co4+97JtzbivVsnkLlZB2uC1DQe7VnPZ
-fPBg+ZDVYe46CftOjpmeG0Uogu2glKwUyaH3W+GTxXs4gHk6QfKkLZTaa+3FJQZv
-ejYsfvTeU/eAoMQeskyOOgvOlbkBxlGLiGUCvsV9pxZR2BwyFlGnTpz9Eq7ZZXG8
-S+LacsRFQ87EmnAJBZMgRhL15/I0JOg3ybkYECzv3njVOUv2B2Y=
-=1sPs
------END PGP SIGNATURE-----
---=-=-=--
+page:ffffea0004730040 refcount:514 mapcount:1 mapping:ffff88800d7d13e8
+index:0x1 pfn:0x11cc01
+head:ffffea0004730000 order:9 compound_mapcount:1 compound_pincount:0
+memcg:ffff888009ba2000
+aops:def_blk_aops ino:fa00000
+flags: 0x57ff0000001001f(locked|referenced|uptodate|dirty|lru|head|node=1|zone=2|lastcpupid=0x7ff)
+raw: 057ff00000000000 ffffea0004730001 0000000000000903 dead000000000200
+raw: 0000000000000100 0000000000000000 0000000000000000 0000000000000000
+head: 057ff0000001001f ffffea00044edec8 ffffea00044c2708 ffff88800d7d13e8
+head: 0000000000000000 0000000000000000 0000020200000000 ffff888009ba2000
+page dumped because: VM_BUG_ON_PAGE(PageTail(page))
+page_owner tracks the page as allocated
+page last allocated via order 9, migratetype Movable, gfp_mask
+0x13c24ca(GFP_TRANSHUGE|__GFP_THISNODE), pid 1665, ts 469126509176,
+free_ts 440578020808
+ prep_new_page+0x16/0x50 mm/page_alloc.c:2436
+ get_page_from_freelist+0x64d/0x29a0 mm/page_alloc.c:4168
+ __alloc_pages+0xde/0x2a0 mm/page_alloc.c:5390
+ __alloc_pages_node include/linux/gfp.h:570 [inline]
+ khugepaged_alloc_page+0x4e/0xc0 mm/khugepaged.c:881
+ collapse_file+0x124/0x2110 mm/khugepaged.c:1655
+ khugepaged_scan_file mm/khugepaged.c:2051 [inline]
+ khugepaged_scan_mm_slot mm/khugepaged.c:2146 [inline]
+ khugepaged_do_scan mm/khugepaged.c:2230 [inline]
+ khugepaged+0x1f8a/0x3540 mm/khugepaged.c:2275
+ kthread+0x178/0x1b0 kernel/kthread.c:319
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:295
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1346 [inline]
+ free_pcp_prepare+0x1d7/0x480 mm/page_alloc.c:1397
+ free_unref_page_prepare mm/page_alloc.c:3332 [inline]
+ free_unref_page+0x19/0x1c0 mm/page_alloc.c:3411
+ release_pages+0x212/0x1130 mm/swap.c:948
+ tlb_batch_pages_flush mm/mmu_gather.c:49 [inline]
+ tlb_flush_mmu_free mm/mmu_gather.c:242 [inline]
+ tlb_flush_mmu+0x60/0x1e0 mm/mmu_gather.c:249
+ zap_pte_range mm/memory.c:1432 [inline]
+ zap_pmd_range mm/memory.c:1481 [inline]
+ zap_pud_range mm/memory.c:1510 [inline]
+ zap_p4d_range mm/memory.c:1531 [inline]
+ unmap_page_range+0xea6/0x15c0 mm/memory.c:1552
+ unmap_single_vma+0xae/0x140 mm/memory.c:1597
+ unmap_vmas+0xed/0x190 mm/memory.c:1629
+ exit_mmap+0xc9/0x2a0 mm/mmap.c:3195
+ __mmput kernel/fork.c:1103 [inline]
+ mmput+0x8a/0x1a0 kernel/fork.c:1124
+ exit_mm kernel/exit.c:501 [inline]
+ do_exit+0x462/0x11c0 kernel/exit.c:812
+ do_group_exit+0x57/0xe0 kernel/exit.c:922
+ get_signal+0x1d0/0x10b0 kernel/signal.c:2823
+ arch_do_signal_or_restart+0xa9/0x860 arch/x86/kernel/signal.c:865
+ handle_signal_work kernel/entry/common.c:148 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:172 [inline]
+ exit_to_user_mode_prepare+0xf2/0x280 kernel/entry/common.c:209
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:302
+ do_syscall_64+0x40/0xb0 arch/x86/entry/common.c:86
+------------[ cut here ]------------
+kernel BUG at mm/truncate.c:213!
+invalid opcode: 0000 [#1] PREEMPT SMP
+CPU: 1 PID: 27281 Comm: syz-executor Not tainted 5.14.0+ #12
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.12.0-59-gc9ba5276e321-prebuilt.qemu.org 04/01/2014
+RIP: 0010:truncate_inode_page+0x5a/0x70 mm/truncate.c:213
+Code: ff ff 48 89 ef e8 56 9e fd ff e8 71 2d f0 ff 89 d8 5b 5d 41 5c
+c3 e8 65 2d f0 ff 48 c7 c6 20 19 2d 85 48 89 ef e8 f6 f7 03 00 <0f> 0b
+bb fb ff ff ff eb d7 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00
+RSP: 0018:ffffc9000361fc88 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: 0000000000000001 RCX: ffffc90001356000
+RDX: 0000000000040000 RSI: ffffffff8147479a RDI: 00000000ffffffff
+RBP: ffffea0004730040 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 637379735f6f6420 R12: ffff88800d7d13e8
+R13: ffffc9000361fd48 R14: 0000000000000001 R15: ffffc9000361fcd0
+FS:  00007f3c4f6a0700(0000) GS:ffff88813dc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000204001ff CR3: 000000010f099000 CR4: 0000000000750ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ truncate_inode_pages_range+0x3b9/0xc30 mm/truncate.c:397
+ truncate_bdev_range+0x87/0xd0 fs/block_dev.c:125
+ blk_ioctl_zeroout block/ioctl.c:173 [inline]
+ blkdev_common_ioctl+0x2c3/0xad0 block/ioctl.c:472
+ blkdev_ioctl+0x2c2/0x370 block/ioctl.c:583
+ block_ioctl+0x55/0x70 fs/block_dev.c:1421
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:874 [inline]
+ __se_sys_ioctl fs/ioctl.c:860 [inline]
+ __x64_sys_ioctl+0xb6/0x100 fs/ioctl.c:860
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x34/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x46a9a9
+Code: f7 d8 64 89 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 48 89 f8 48
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f3c4f69fc58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000078c210 RCX: 000000000046a9a9
+RDX: 00000000200003c0 RSI: 000000000000127f RDI: 0000000000000004
+RBP: 00000000004e4042 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000078c210
+R13: 0000000000000000 R14: 000000000078c210 R15: 00007fff7770d6e0
+Modules linked in:
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+---[ end trace 4d3d97b8450ac449 ]---
+RIP: 0010:truncate_inode_page+0x5a/0x70 mm/truncate.c:213
+Code: ff ff 48 89 ef e8 56 9e fd ff e8 71 2d f0 ff 89 d8 5b 5d 41 5c
+c3 e8 65 2d f0 ff 48 c7 c6 20 19 2d 85 48 89 ef e8 f6 f7 03 00 <0f> 0b
+bb fb ff ff ff eb d7 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00
+RSP: 0018:ffffc9000361fc88 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: 0000000000000001 RCX: ffffc90001356000
+RDX: 0000000000040000 RSI: ffffffff8147479a RDI: 00000000ffffffff
+RBP: ffffea0004730040 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000001 R11: 637379735f6f6420 R12: ffff88800d7d13e8
+R13: ffffc9000361fd48 R14: 0000000000000001 R15: ffffc9000361fcd0
+FS:  00007f3c4f6a0700(0000) GS:ffff88813dc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000204001ff CR3: 000000010f099000 CR4: 0000000000750ee0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
