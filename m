@@ -2,68 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52332401760
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:56:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2538D401767
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240372AbhIFH5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 03:57:13 -0400
-Received: from mga03.intel.com ([134.134.136.65]:38491 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230466AbhIFH5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 03:57:12 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10098"; a="219968292"
-X-IronPort-AV: E=Sophos;i="5.85,271,1624345200"; 
-   d="scan'208";a="219968292"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 00:56:07 -0700
-X-IronPort-AV: E=Sophos;i="5.85,271,1624345200"; 
-   d="scan'208";a="448515225"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 00:56:05 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 6DD73204C6;
-        Mon,  6 Sep 2021 10:56:03 +0300 (EEST)
-Date:   Mon, 6 Sep 2021 10:56:03 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] media: i2c: ths8200 needs V4L2_ASYNC
-Message-ID: <20210906075603.GD3@paasikivi.fi.intel.com>
-References: <20210904232808.25638-1-rdunlap@infradead.org>
+        id S240397AbhIFIAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 04:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240206AbhIFIAQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 04:00:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2AEC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 00:59:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oOFV3aBUUEEGyqvLAa8hfq+cLKEmGeypv5PDL5XSJEM=; b=by6aIIKk03uvjCAvjPQuiYUlYE
+        q8jRCXMRztEBoYU6O426ssAa9KcZpWfL7ER69FBal0pENP/9S9hiDu1+3L/9gxeSdo9RZ3u94P8DZ
+        7NUGUe/KKYoWXIosJyAtBybX/FhZrMPjtKeXMVWUHfzIUqN/HGjdu5jv7b7cvb5aSXzkLlQBLPifT
+        NkFw9vOu94tiT8ASL57JcFX0gxW3bL6BQtG0+GsbC/qP8ADfRhm9Q8PHxGg+WjML1lYHahFPsAdRu
+        BmAxQbpLkqEOS56c5hRngdiN87/7M6je6BTpnu4erJAHpeNJqePeIjCwZAOPyYogPvlvAkQesFON1
+        QtAzB9sg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mN9WG-006kn5-7B; Mon, 06 Sep 2021 07:58:29 +0000
+Date:   Mon, 6 Sep 2021 08:58:20 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Daniel Wagner <dwagner@suse.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v1] nvme-tcp: enable linger socket option on shutdown
+Message-ID: <YTXKHOfnuf+urV1D@infradead.org>
+References: <20210903121757.140357-1-dwagner@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210904232808.25638-1-rdunlap@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210903121757.140357-1-dwagner@suse.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 04, 2021 at 04:28:08PM -0700, Randy Dunlap wrote:
-> Fix the build errors reported by the kernel test robot by
-> selecting V4L2_ASYNC:
+On Fri, Sep 03, 2021 at 02:17:57PM +0200, Daniel Wagner wrote:
+> When the no linger is set, the networking stack sends FIN followed by
+> RST immediately when shutting down the socket. By enabling linger when
+> shutting down we have a proper shutdown sequence on the wire.
 > 
-> mips-linux-ld: drivers/media/i2c/ths8200.o: in function `ths8200_remove':
-> ths8200.c:(.text+0x1ec): undefined reference to `v4l2_async_unregister_subdev'
-> mips-linux-ld: drivers/media/i2c/ths8200.o: in function `ths8200_probe':
-> ths8200.c:(.text+0x404): undefined reference to `v4l2_async_register_subdev'
-> 
-> Fixes: ed29f89497006 ("media: i2c: ths8200: support asynchronous probing")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-> Cc: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Cc: Ezequiel Garcia <ezequiel@collabora.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: linux-media@vger.kernel.org
+> Signed-off-by: Daniel Wagner <dwagner@suse.de>
+> ---
+> The current shutdown sequence on the wire is a bit harsh and
+> doesn't let the remote host to react. I suppose we should
+> introduce a short (how long?) linger pause when shutting down
+> the connection. Thoughs?
 
-Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-
--- 
-Sakari Ailus
+Why?  I'm not really a TCP expert, but why is this different from
+say iSCSI or NBD?
