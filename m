@@ -2,96 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DE4401F9F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C106A401FBB
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 20:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245003AbhIFS1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 14:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244452AbhIFS0Z (ORCPT
+        id S245386AbhIFS2s convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 6 Sep 2021 14:28:48 -0400
+Received: from mail-oo1-f48.google.com ([209.85.161.48]:43841 "EHLO
+        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245097AbhIFS1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 14:26:25 -0400
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB94C0613D9
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 11:25:13 -0700 (PDT)
-Received: by mail-vs1-xe2a.google.com with SMTP id i23so6243601vsj.4
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 11:25:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i6BKrN7X5suyNsmFH5r3sUKXBVHf29sG6WVeH2BVyjM=;
-        b=clAkQy9mohMLPnVHW5cIgwm5UEQQ5nDlPiwgp0cwJEYS0ycJTwv/DWUsRr0B8bbniX
-         5/nkndYJJQt+jFffYyrtHZE10RuffIy6IiG+DYcDqlWqy8v1aJQBv/22QpJfJH5sAPEp
-         lFzSMj0ku9aH22fxeXosDlemQyfBnrg21y/mGp51LbpdTK2SbNrLJNY55iFB8CjdVghV
-         cCQba6HKcoqGwISK6MvywQ7Ew8wNqzUPIVUUw2uSew4EA9ZcK7Tn69EDc0rfdmfmLWbZ
-         QQBHqFLn51nzUM6pTyUzm7OOUvLdQYde41jakHoVKOSwyJNU9iVB7OSZZDf1tmA+23aw
-         oPsA==
+        Mon, 6 Sep 2021 14:27:14 -0400
+Received: by mail-oo1-f48.google.com with SMTP id y16-20020a4ad6500000b0290258a7ff4058so2197683oos.10;
+        Mon, 06 Sep 2021 11:26:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i6BKrN7X5suyNsmFH5r3sUKXBVHf29sG6WVeH2BVyjM=;
-        b=RXqez9LEAKMlqgxPTCFMK2mhxotdKDTI9QxPSSpq2EKjyNrkgGoowHJr6+zhVXUIBu
-         6DXafCmvVk/K6WJ/UgUzKfKHo3bOb50QTOkpEntbE3TAGan5AcCIWtZUcA03xg7VTC3M
-         BL5Sr6eF0EWs9eQ+LhmKckCpKphAcm9pbrkVv2jJk/qaJkoVuQecq44PrkJ4OBt3DsBH
-         0tn8aEztVKcHa41DkLXaIQviBciv8OOcOyZkqKi1pH8QY2+iStTVdvmlkbhW3EQ54Xjd
-         Z2DwwAEX5163ieUen9WRP8ec3YwNFxJN3iYW15v1HXCjBHN+AFlx41PpSd/JcOYkheCO
-         /lYQ==
-X-Gm-Message-State: AOAM533I4wX2854EvWG/swQjz0F9cZ2YbnxywdAZY4kn16Dpmy85uGW7
-        fnSSlmQWWWPVMfcF/GMjlgqsry+RjzcMpcT1QsyKuYwH
-X-Google-Smtp-Source: ABdhPJyg4VWsnkepgpvWdmz4JefgU8pNg5h7OlRD3wfkop9WYoZH2bRCi5vo8Qu00MZRxt35BDmA2bUFrpbKx4ektFA=
-X-Received: by 2002:a05:6102:188:: with SMTP id r8mr6850374vsq.11.1630952712249;
- Mon, 06 Sep 2021 11:25:12 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=BVmeNacfQjfXr9muf65BMgwZ9meaGbashp3T2U1wQ4Q=;
+        b=VzEqqDOXr7ANGm/E1U99fcZcJCfhaQTVDhN8VXw1wXcZSxp7y1DRLahkY6ZFSoXzNM
+         x2B4tUw8aPNYGSLwmKDaMHStcOEa46brW/2vAkKyUg0ZpY70Tr7sUax4ktChBsS2Rh9r
+         e8koQhV4/NYYMa+1FMjS/4D7n/9GkbhPtkhsN7KoOqnAq1TqpUPh4A+YdyHtdjOsMDZ4
+         6IwGQKX92Ef8FrG+00Bqcy7MrYOIgJQEtjdFqs5sGgtynKRxWfEKrUyDUVbx6QzEUVyU
+         UyVKxv4XVusjR6HJbGdN8cuUIF3EMq88a5FceA/TIcg+3qL3TKWxAqDzmS9StCcERvFB
+         l2ug==
+X-Gm-Message-State: AOAM531eiFITR3XOFms7bQ8l+Q7euWuS8AxgfcStoKPlGMl49hIyksqq
+        BP/bN4WocH8V0ccsEgA/B7WVPV/pD6YQp3F9Anc=
+X-Google-Smtp-Source: ABdhPJwWSE4cggjd8TvsuiT0WvL04CBszBORdZf798NbtZse5WcLTx6Voeth+mgGEAPNeck3JWB8i2Ncx2W7LFBoxUM=
+X-Received: by 2002:a4a:ca83:: with SMTP id x3mr14920538ooq.2.1630952768753;
+ Mon, 06 Sep 2021 11:26:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210831202133.2165222-1-jim.cromie@gmail.com>
- <20210831202133.2165222-6-jim.cromie@gmail.com> <b3c4b3aa-b873-a2aa-c1ad-5fed80038c6e@linux.intel.com>
- <CAJfuBxw-i-7YUenvBGHA0unBQ8BqmOGRF3nRYNwNPLVaxWpSvQ@mail.gmail.com> <1aabb5c0-eef9-a483-2631-25726c9dc268@linux.intel.com>
-In-Reply-To: <1aabb5c0-eef9-a483-2631-25726c9dc268@linux.intel.com>
-From:   jim.cromie@gmail.com
-Date:   Mon, 6 Sep 2021 12:24:46 -0600
-Message-ID: <CAJfuBxxQ-dNWHv1VGu7Hh705wZbxmsStDa_-cc=63fDtNZiyjg@mail.gmail.com>
-Subject: Re: [Intel-gfx] [PATCH v7 5/8] drm_print: add choice to use dynamic
- debug in drm-debug
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Cc:     Jason Baron <jbaron@akamai.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
+References: <20210904053703.581297-1-srinivas.pandruvada@linux.intel.com>
+ <CAJZ5v0hQp8Hxf__tL22s0oOcTym5mx9tND34ijufTDE3_NSW6A@mail.gmail.com>
+ <926ac4b9-1bb5-e96e-ded3-6461f7a215b7@kernel.dk> <b1d5b6daacef349eb6fcc23ce7264e4786d1d9f4.camel@linux.intel.com>
+ <CAJZ5v0jaXnw0zjpnsb81Hauy4-ApuULfQaaLG10qqL67H-YTNA@mail.gmail.com>
+ <8dc57921f157b154e4af2dba26ce697dc4d4fcc2.camel@linux.intel.com>
+ <CAJZ5v0jLmziZZEqEk-D+b6jD7UUPmeb7MQW1ZptdHTk-2c9nMg@mail.gmail.com> <584a4fad09048e3ea0dbc3515b2e909b745177dd.camel@linux.intel.com>
+In-Reply-To: <584a4fad09048e3ea0dbc3515b2e909b745177dd.camel@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 6 Sep 2021 20:25:57 +0200
+Message-ID: <CAJZ5v0iH3TacxX3gzBS5cah7SnmDWbmHz=WCujQJpmEggGhLhg@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Fix for HWP interrupt before
+ driver is ready
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I'll try to extract the "executive summary" from this, you tell me if I
-> got it right.
+On Mon, Sep 6, 2021 at 8:14 PM Srinivas Pandruvada
+<srinivas.pandruvada@linux.intel.com> wrote:
 >
-> So using or not using dynamic debug for DRM debug ends up being about
-> shifting the cost between kernel binary size (data section grows by each
-> pr_debug call site) and runtime conditionals?
+> On Mon, 2021-09-06 at 19:54 +0200, Rafael J. Wysocki wrote:
+> > On Mon, Sep 6, 2021 at 7:23 PM Srinivas Pandruvada
+> > <srinivas.pandruvada@linux.intel.com> wrote:
+> > >
+> > > On Mon, 2021-09-06 at 18:58 +0200, Rafael J. Wysocki wrote:
+> > > > On Mon, Sep 6, 2021 at 6:55 PM Srinivas Pandruvada
+> > > > <srinivas.pandruvada@linux.intel.com> wrote:
+> > > > >
+> > > > > On Mon, 2021-09-06 at 10:43 -0600, Jens Axboe wrote:
+> > > > > > On 9/6/21 10:17 AM, Rafael J. Wysocki wrote:
+> > > > > > > On Sat, Sep 4, 2021 at 7:37 AM Srinivas Pandruvada
+> > > > > > > <srinivas.pandruvada@linux.intel.com> wrote:
+> > > > > > > >
+> > > > > > > > In Lenovo X1 gen9 laptop, HWP interrupts arrive before
+> > > > > > > > driver
+> > > > > > > > is
+> > > > > > > > ready
+> > > > > > > > to handle on that CPU. Basically didn't even allocated
+> > > > > > > > memory
+> > > > > > > > for
+> > > > > > > > per
+> > > > > > > > cpu data structure and not even started interrupt enable
+> > > > > > > > process
+> > > > > > > > on that
+> > > > > > > > CPU. So interrupt handler observes a NULL pointer to
+> > > > > > > > schedule
+> > > > > > > > work.
+> > > > > > > >
+> > > > > > > > This interrupt was probably for SMM, but since it is
+> > > > > > > > redirected
+> > > > > > > > to
+> > > > > > > > OS by OSC call, OS receives it, but not ready to handle.
+> > > > > > > > That
+> > > > > > > > redirection
+> > > > > > > > of interrupt to OS was also done to solve one SMM crash on
+> > > > > > > > Yoga
+> > > > > > > > 260 for
+> > > > > > > > HWP interrupt a while back.
+> > > > > > > >
+> > > > > > > > To solve this the HWP interrupt handler should ignore such
+> > > > > > > > request if the
+> > > > > > > > driver is not ready. This will require some flag to wait
+> > > > > > > > till
+> > > > > > > > the
+> > > > > > > > driver
+> > > > > > > > setup a workqueue to handle on a CPU. We can't simply
+> > > > > > > > assume
+> > > > > > > > cpudata to
+> > > > > > > > be NULL and avoid processing as it may not be NULL but data
+> > > > > > > > structure is
+> > > > > > > > not in consistent state.
+> > > > > > > >
+> > > > > > > > So created a cpumask which sets the CPU on which interrupt
+> > > > > > > > was
+> > > > > > > > setup. If
+> > > > > > > > not setup, simply clear the interrupt status and return.
+> > > > > > > > Since
+> > > > > > > > the
+> > > > > > > > similar issue can happen during S3 resume, clear the bit
+> > > > > > > > during
+> > > > > > > > offline.
+> > > > > > > >
+> > > > > > > > Since interrupt timing may be before HWP is enabled, use
+> > > > > > > > safe
+> > > > > > > > MSR
+> > > > > > > > read
+> > > > > > > > writes as before the change for HWP interrupt.
+> > > > > > > >
+> > > > > > > > Fixes: d0e936adbd22 ("cpufreq: intel_pstate: Process HWP
+> > > > > > > > Guaranteed change notification")
+> > > > > > > > Reported-and-tested-by: Jens Axboe <axboe@kernel.dk>
+> > > > > > > > Signed-off-by: Srinivas Pandruvada <
+> > > > > > > > srinivas.pandruvada@linux.intel.com>
+> > > > > > > > ---
+> > > > > > > >  drivers/cpufreq/intel_pstate.c | 23
+> > > > > > > > ++++++++++++++++++++++-
+> > > > > > > >  1 file changed, 22 insertions(+), 1 deletion(-)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/cpufreq/intel_pstate.c
+> > > > > > > > b/drivers/cpufreq/intel_pstate.c
+> > > > > > > > index b4ffe6c8a0d0..5ac86bfa1080 100644
+> > > > > > > > --- a/drivers/cpufreq/intel_pstate.c
+> > > > > > > > +++ b/drivers/cpufreq/intel_pstate.c
+> > > > > > > > @@ -298,6 +298,8 @@ static bool hwp_boost __read_mostly;
+> > > > > > > >
+> > > > > > > >  static struct cpufreq_driver *intel_pstate_driver
+> > > > > > > > __read_mostly;
+> > > > > > > >
+> > > > > > > > +static cpumask_t hwp_intr_enable_mask;
+> > > > > > > > +
+> > > > > > > >  #ifdef CONFIG_ACPI
+> > > > > > > >  static bool acpi_ppc;
+> > > > > > > >  #endif
+> > > > > > > > @@ -1067,11 +1069,15 @@ static void
+> > > > > > > > intel_pstate_hwp_set(unsigned
+> > > > > > > > int cpu)
+> > > > > > > >         wrmsrl_on_cpu(cpu, MSR_HWP_REQUEST, value);
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > > +static void intel_pstate_disable_hwp_interrupt(struct
+> > > > > > > > cpudata
+> > > > > > > > *cpudata);
+> > > > > > > > +
+> > > > > > > >  static void intel_pstate_hwp_offline(struct cpudata *cpu)
+> > > > > > > >  {
+> > > > > > > >         u64 value = READ_ONCE(cpu->hwp_req_cached);
+> > > > > > > >         int min_perf;
+> > > > > > > >
+> > > > > > > > +       intel_pstate_disable_hwp_interrupt(cpu);
+> > > > > > > > +
+> > > > > > > >         if (boot_cpu_has(X86_FEATURE_HWP_EPP)) {
+> > > > > > > >                 /*
+> > > > > > > >                  * In case the EPP has been set to
+> > > > > > > > "performance"
+> > > > > > > > by the
+> > > > > > > > @@ -1645,20 +1651,35 @@ void notify_hwp_interrupt(void)
+> > > > > > > >         if (!hwp_active ||
+> > > > > > > > !boot_cpu_has(X86_FEATURE_HWP_NOTIFY))
+> > > > > > > >                 return;
+> > > > > > > >
+> > > > > > > > -       rdmsrl(MSR_HWP_STATUS, value);
+> > > > > > > > +       rdmsrl_safe(MSR_HWP_STATUS, &value);
+> > > > > > > >         if (!(value & 0x01))
+> > > > > > > >                 return;
+> > > > > > > >
+> > > > > > > > +       if (!cpumask_test_cpu(this_cpu,
+> > > > > > > > &hwp_intr_enable_mask)) {
+> > > > > > > > +               wrmsrl_safe(MSR_HWP_STATUS, 0);
+> > > > > > > > +               return;
+> > > > > > > > +       }
+> > > > > > >
+> > > > > > > Without additional locking, there is a race between this and
+> > > > > > > intel_pstate_disable_hwp_interrupt().
+> > > > > > >
+> > > > > > > 1. notify_hwp_interrupt() checks hwp_intr_enable_mask() and
+> > > > > > > the
+> > > > > > > target
+> > > > > > > CPU is in there, so it will go for scheduling the delayed
+> > > > > > > work.
+> > > > > > > 2. intel_pstate_disable_hwp_interrupt() runs between the
+> > > > > > > check
+> > > > > > > and
+> > > > > > > the
+> > > > > > > cpudata load below.
+> > > > > > > 3. hwp_notify_work is scheduled on the CPU that isn't there
+> > > > > > > in
+> > > > > > > the
+> > > > > > > mask any more.
+> > > > > >
+> > > > > > I noticed that too, not clear to me how much of an issue that
+> > > > > > is
+> > > > > > in
+> > > > > > practice. But there's definitely a race there.
+> > > > > Glad to see how this is possible from code running in ISR
+> > > > > context.
+> > > >
+> > > > intel_pstate_disable_hwp_interrupt() may very well run on a
+> > > > different
+> > > > CPU in parallel with the interrupt handler running on this CPU.  Or
+> > > > is
+> > > > this not possible for some reason?
+> > > I see the offline callback is called from cpufreq core from hotplug
+> > > online/offline callback. So this should run the call on the target
+> > > CPU.
+> > > From Documentation
+> > > "The states CPUHP_AP_OFFLINE … CPUHP_AP_ONLINE are invoked just the
+> > > after the CPU has been brought up. The interrupts are off and the
+> > > scheduler is not yet active on this CPU. Starting with
+> > > CPUHP_AP_OFFLINE
+> > > the callbacks are invoked on the target CPU."
+> > >
+> > > The only other place it is called is from subsys remove callback. Not
+> > > sure how can you remove cpufreq subsys on fly.
+> >
+> > cpufreq_unregister_driver() causes this to happen.
+> >
+> > > Let's say it is possible:
+> > > While running ISR on a local CPU, how can someone pull the CPU before
+> > > its completion? If the CPU is going away after that, the workqueue is
+> > > unbounded. So it will run on some other CPU, here if that happens it
+> > > will call cpufreq update policy, which will be harmless.
+> >
+> > Well, it looks to me like if you are super-unlucky, the ISR may run on
+> > the local CPU in parallel with intel_pstate_update_status() running on
+> > a remote one and so dereferencing cpudata from it is generally unsafe.
+> > In theory.  In practice it is unlikely to become problematic for
+> > timing reasons AFAICS.
+> >
+> >
+> We are handling offline for other thermal interrupt sources from same
+> interrupt in therm-throt.c, where we do similar in offline path (by
+> TGLX). If cpufreq offline can cause such issue of changing CPU,
 
-Yes.
+This is not cpufreq offline, but intel_pstate_update_status() which
+may be triggered via sysfs.  And again, the theoretically problematic
+thing is dereferencing cpudata (which may be cleared by a remote CPU)
+from the interrupt handler without protection.
 
-> Since the table sizes you mention seem significant enough, I think that
-> justifies existence of DRM_USE_DYNAMIC_DEBUG. It would probably be a
-> good idea to put some commentary on that there. Ideally including some
-> rough estimates both including space cost per call site and space cost
-> for a typical distro kernel build?
+> I can call intel_pstate_disable_hwp_interrupt() via override from
+> https://elixir.bootlin.com/linux/latest/C/ident/thermal_throttle_offline
+> after masking APIC interrupt.
 
-yeah, agreed.  I presume you mean in Kconfig entry,
-since commits have some size info now - I have i915, amdgpu, nouveau;
-I can see some prose improvements for 5/8
+But why would using RCU be harder than this?
 
-
-
-
-> Regards,
->
-> Tvrtko
-
-thanks
-Jim
+Also please note that on RT kernels interrupt handlers are run in threads.
