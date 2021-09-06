@@ -2,99 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAA9F401960
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 12:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E218340195C
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241482AbhIFKBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 06:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbhIFKBs (ORCPT
+        id S241841AbhIFKAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 06:00:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54517 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241712AbhIFKAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 06:01:48 -0400
-Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BF4C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 03:00:43 -0700 (PDT)
-Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1mNBQf-00C7qA-AC
-        for linux-kernel@vger.kernel.org; Mon, 06 Sep 2021 12:00:41 +0200
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.4
-Received: from [2a02:578:460c:1:ae1f:6bff:fed1:9ca8] (helo=sumner.biot.com)
-        by yawp.biot.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1mNBQ3-00C7oT-15; Mon, 06 Sep 2021 12:00:03 +0200
-Received: from bert by sumner.biot.com with local (Exim 4.93)
-        (envelope-from <bert@biot.com>)
-        id 1mNBQ2-00HYaC-AH; Mon, 06 Sep 2021 12:00:02 +0200
-From:   Bert Vermeulen <bert@biot.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Bert Vermeulen <bert@biot.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     John Crispin <john@phrozen.org>
-Subject: [PATCH] ARM: decompress: Use /memreserve/ DTS nodes when validating memory
-Date:   Mon,  6 Sep 2021 11:59:28 +0200
-Message-Id: <20210906095930.4184449-1-bert@biot.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 6 Sep 2021 06:00:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630922375;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ln+FhIjAOLIZcHHs/un/E8sHKq6ymUXIqYlk/ITlGRc=;
+        b=X9JodeHkQHNRDi2qVg2ghi7fM3VZvxLtQ7HF2jpiH4/XnFRsbcwFHIFO1V2yqHCRWtqWCh
+        ZIootCh9A0Hdpzss3/QAJgRbFePQ5y8fLBbklwcnoC6eNwC3q7bNHICr4e+0+Gdb6hH1q7
+        CsjS4wlfeSCnnqIbQfLPsLD8TqO+2XM=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-8-V_VFFPlRP969FUkg-SadVQ-1; Mon, 06 Sep 2021 05:59:33 -0400
+X-MC-Unique: V_VFFPlRP969FUkg-SadVQ-1
+Received: by mail-wm1-f72.google.com with SMTP id n16-20020a1c7210000000b002ea2ed60dc6so2014263wmc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 02:59:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ln+FhIjAOLIZcHHs/un/E8sHKq6ymUXIqYlk/ITlGRc=;
+        b=GeRjcF9WYFAQzOtSDhNbKkXuIZpZW90vqHkoY0cWhVCsmB/0lNHHNJOCiUTDc7PjXe
+         yzPjVAtcN964s8zQXG8Ji17hJFiO1mNmcTM9zPwmf72NFxdPo0axpRX4CPOJ/l3JoOiw
+         mXtB59RCWnmsjtCmUo2/F1gKBVv35RAYVJddHt1LJeRaCancdQippB5J7mbg9ymCAori
+         AKyFObS7RaXZ4TeR4EDrTg8zfNMUOkxMTh1B5OObM2yni8FRbtHASglCNHqcsdgwqwSR
+         cCyL2VheHoBc6Er0otCXdleyvtLjidQKp15CdlB5WVXpumSeAH6g6lA83NrzmvMQMqb8
+         mDGg==
+X-Gm-Message-State: AOAM532JFnvn+xvJX+/wXYb+CyuATosfqwfQ3ysSgqdZV5mqavM1vufi
+        w1kL1zQzCagNaY38NcorNu5C7LGGkBoVlGmFYUWM8yU2hsgQ6VoQ/ctve72JLf+jFkpd8yL0sMx
+        Ls6y387nWP4GIUvwYRoyKDqCk
+X-Received: by 2002:adf:910b:: with SMTP id j11mr12211459wrj.114.1630922372217;
+        Mon, 06 Sep 2021 02:59:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyiHIqaW9fHVOPDTeK3ozCBD7Ac3u998cfVAxT2DHj4q13ToXhlRK5OpfQFtpWeFDn+PILHXA==
+X-Received: by 2002:adf:910b:: with SMTP id j11mr12211442wrj.114.1630922371995;
+        Mon, 06 Sep 2021 02:59:31 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id t7sm8226792wrq.90.2021.09.06.02.59.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 02:59:31 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86/mmu: Don't freak out if pml5_root is NULL on
+ 4-level host
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
+References: <20210824005824.205536-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <53b71fd5-a90d-ba61-0bbd-1fa3b2289fb8@redhat.com>
+Date:   Mon, 6 Sep 2021 11:59:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210824005824.205536-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the bootloader needs the start of memory to be preserved, for example
-because it dropped the Trusted Firmware blob there, this chunk of memory
-shouldn't be used by the kernel.
+On 24/08/21 02:58, Sean Christopherson wrote:
+> Include pml5_root in the set of special roots if and only if the host,
+> and thus NPT, is using 5-level paging.  mmu_alloc_special_roots() expects
+> special roots to be allocated as a bundle, i.e. they're either all valid
+> or all NULL.  But for pml5_root, that expectation only holds true if the
+> host uses 5-level paging, which causes KVM to WARN about pml5_root being
+> NULL when the other special roots are valid.
+> 
+> The silver lining of 4-level vs. 5-level NPT being tied to the host
+> kernel's paging level is that KVM's shadow root level is constant; unlike
+> VMX's EPT, KVM can't choose 4-level NPT based on guest.MAXPHYADDR.  That
+> means KVM can still expect pml5_root to be bundled with the other special
+> roots, it just needs to be conditioned on the shadow root level.
+> 
+> Fixes: cb0f722aff6e ("KVM: x86/mmu: Support shadowing NPT when 5-level paging is enabled in host")
+> Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
+> Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/mmu/mmu.c | 14 +++++++++++---
+>   1 file changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 4853c033e6ce..39c7b5a587df 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3548,6 +3548,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>   static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
+>   {
+>   	struct kvm_mmu *mmu = vcpu->arch.mmu;
+> +	bool need_pml5 = mmu->shadow_root_level > PT64_ROOT_4LEVEL;
+>   	u64 *pml5_root = NULL;
+>   	u64 *pml4_root = NULL;
+>   	u64 *pae_root;
+> @@ -3562,7 +3563,14 @@ static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
+>   	    mmu->shadow_root_level < PT64_ROOT_4LEVEL)
+>   		return 0;
+>   
+> -	if (mmu->pae_root && mmu->pml4_root && mmu->pml5_root)
+> +	/*
+> +	 * NPT, the only paging mode that uses this horror, uses a fixed number
+> +	 * of levels for the shadow page tables, e.g. all MMUs are 4-level or
+> +	 * all MMus are 5-level.  Thus, this can safely require that pml5_root
+> +	 * is allocated if the other roots are valid and pml5 is needed, as any
+> +	 * prior MMU would also have required pml5.
+> +	 */
+> +	if (mmu->pae_root && mmu->pml4_root && (!need_pml5 || mmu->pml5_root))
+>   		return 0;
+>   
+>   	/*
+> @@ -3570,7 +3578,7 @@ static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
+>   	 * bail if KVM ends up in a state where only one of the roots is valid.
+>   	 */
+>   	if (WARN_ON_ONCE(!tdp_enabled || mmu->pae_root || mmu->pml4_root ||
+> -			 mmu->pml5_root))
+> +			 (need_pml5 && mmu->pml5_root)))
+>   		return -EIO;
+>   
+>   	/*
+> @@ -3586,7 +3594,7 @@ static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
+>   	if (!pml4_root)
+>   		goto err_pml4;
+>   
+> -	if (mmu->shadow_root_level > PT64_ROOT_4LEVEL) {
+> +	if (need_pml5) {
+>   		pml5_root = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
+>   		if (!pml5_root)
+>   			goto err_pml5;
+> 
 
-To avoid adding yet another SoC-specific text offset to arch/arm/Makefile,
-this patch allows for a /memreserve/ entry in the DTS to mark off the
-memory chunk instead.
+Queued, thanks.
 
-Signed-off-by: Bert Vermeulen <bert@biot.com>
----
- arch/arm/boot/compressed/fdt_check_mem_start.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/compressed/fdt_check_mem_start.c b/arch/arm/boot/compressed/fdt_check_mem_start.c
-index 62450d824c3c..15a20c60155e 100644
---- a/arch/arm/boot/compressed/fdt_check_mem_start.c
-+++ b/arch/arm/boot/compressed/fdt_check_mem_start.c
-@@ -64,7 +64,7 @@ uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
- 	uint32_t addr_cells, size_cells, base;
- 	uint32_t fdt_mem_start = 0xffffffff;
- 	const fdt32_t *reg, *endp;
--	uint64_t size, end;
-+	uint64_t rsvaddr, size, end;
- 	const char *type;
- 	int offset, len;
- 
-@@ -74,6 +74,19 @@ uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
- 	if (fdt_magic(fdt) != FDT_MAGIC)
- 		return mem_start;
- 
-+	for (offset = fdt_off_mem_rsvmap(fdt); ; offset += 16) {
-+		rsvaddr = get_val(fdt + offset, 8);
-+		size = get_val(fdt + offset + 8, 8);
-+
-+		if (!rsvaddr && !size)
-+			break;
-+
-+		end = rsvaddr + size;
-+		if (mem_start >= rsvaddr && mem_start <= end)
-+			/* Relocate past reserved block */
-+			mem_start = round_up(end, SZ_2M);
-+	}
-+
- 	/* There may be multiple cells on LPAE platforms */
- 	addr_cells = get_cells(fdt, "#address-cells");
- 	size_cells = get_cells(fdt, "#size-cells");
--- 
-2.25.1
+Paolo
 
