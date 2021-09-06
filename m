@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286F1401754
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0AB401758
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240059AbhIFHyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 03:54:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230466AbhIFHyg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 03:54:36 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542F1C061757
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 00:53:32 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so3803708pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 00:53:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=rlaLLiMPNdX6nNJMxLikoTvHO7/HZLWVppl3vRWfr5k=;
-        b=BtRbsXztmfeZlr2eUdjZKt9p9ijpkUx2lzClwVoY2p+cL5DtkINv+VBUC5HA/0cC9U
-         D+V/ARnbijw3EDe9D/Izm9eF4TSs48nFdOzd7Dzb0DRdEDzMvrilQT/45YqLDvI/KZm3
-         EKIZbEdYvh+6Q8g9b1LVCi46LqynSrdTq3gKN8T41M+M/8AHFRhEeMxhcpCke0jqb8hl
-         HmprZ8o2b/bicn7KWMqYz2cIWuUquUsmouoVYz/0ODP0ca6tXyD6CKjaHIW9UiIxQ3iF
-         bgGeWnoEIkP+G0lZh7l4+wWcJPj24POIMG/kb/ORG7yh4+pOOhUgnLL9Z/sW/Xn4row+
-         cddg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=rlaLLiMPNdX6nNJMxLikoTvHO7/HZLWVppl3vRWfr5k=;
-        b=AywKAjT/qU9LR5z0DRLmfnyfqyms+Lsiq7UO7/ztBulL7u/rsTjyAI8dootjSaVA6Z
-         Eb7pmuJ/gkS6NHKFeoYBKLkPFaii23tgXdopBbi9fsLuzJOJNL2hyay5jGjeHm6po73U
-         UPwHMzkeIXiiiJmaiNWbkg6WUDaYP+HBG4MMhstv+ENjaAcAL302eNKuaGstp+vhjHCS
-         pOg1l4SJjEioVHqDL2HHOeWJ35aZs5sk13JmI47mCCKlyuG4s16arj/jO5XUfKOIdCr9
-         uxqe8lno5nX6+BlpihkgDg37ja9Oy+WB8ISdZWeqGHGPRYljCaxdWrVrw6bqJ1O9OQso
-         CGmQ==
-X-Gm-Message-State: AOAM531e0fw7CuizLs+PExUfsTAg8ekyBUZUgDG3Dsxc3JhXqDTEh/u+
-        vlzGvnGBsvuTHApFG+tocPkCtQ==
-X-Google-Smtp-Source: ABdhPJxa7VODnGLnMj+iLcEo8Wj2OTDHWE5rnzJIJ+Lx07zI/gpZnKfxGEBWVVe5i46jYcdr7xG+3g==
-X-Received: by 2002:a17:90b:105:: with SMTP id p5mr12902957pjz.183.1630914811820;
-        Mon, 06 Sep 2021 00:53:31 -0700 (PDT)
-Received: from smtpclient.apple ([139.177.225.225])
-        by smtp.gmail.com with ESMTPSA id g11sm7027760pgn.41.2021.09.06.00.53.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 06 Sep 2021 00:53:31 -0700 (PDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
-Subject: Re: [PATCH] RDMA/rxe: Fix wrong port_cap_flags
-From:   Junji Wei <weijunji@bytedance.com>
-In-Reply-To: <CAD=hENcbvs3_Mu7tjTPfrj8h1xTDb03y-5bACU3cckOpmPJveg@mail.gmail.com>
-Date:   Mon, 6 Sep 2021 15:53:26 +0800
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, xieyongji@bytedance.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <DB1899F3-88A0-44A2-8F44-A380D625A98F@bytedance.com>
-References: <20210831083223.65797-1-weijunji@bytedance.com>
- <CAD=hENcbvs3_Mu7tjTPfrj8h1xTDb03y-5bACU3cckOpmPJveg@mail.gmail.com>
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-X-Mailer: Apple Mail (2.3654.80.0.2.43)
+        id S240268AbhIFHyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 03:54:51 -0400
+Received: from meesny.iki.fi ([195.140.195.201]:43772 "EHLO meesny.iki.fi"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240166AbhIFHyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 03:54:49 -0400
+Received: from hillosipuli.retiisi.eu (89-27-100-251.bb.dnainternet.fi [89.27.100.251])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sailus)
+        by meesny.iki.fi (Postfix) with ESMTPSA id F16B1201A8;
+        Mon,  6 Sep 2021 10:53:42 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+        t=1630914823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dl04EcBEovB0z67bJJd0IcCsfjvcm4H5nKTPh9ieLzw=;
+        b=YVLA4GBqSRyTSpUY7ume0bLAofYSq0800w/Lt0pEjYeNfSmbMcbGk6TdZGJGRSUI3d1v38
+        isEKy+BWyjSm6p5DhTyWdBD9MSt96n5PGl1NWELeHYlDIlHiCwaVxgcH9XKNszIAW3irX8
+        etqy8qtMTKBrG0NexfciOOoi17gNN4A=
+Received: from valkosipuli.retiisi.eu (valkosipuli.localdomain [192.168.4.2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 4134D634C8D;
+        Mon,  6 Sep 2021 10:53:42 +0300 (EEST)
+Date:   Mon, 6 Sep 2021 10:53:41 +0300
+From:   Sakari Ailus <sakari.ailus@iki.fi>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Martin Kepplinger <martin.kepplinger@puri.sm>,
+        devicetree@vger.kernel.org, kernel@puri.sm,
+        krzysztof.kozlowski@canonical.com,
+        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, mchehab@kernel.org,
+        paul.kocialkowski@bootlin.com, phone-devel@vger.kernel.org,
+        robh@kernel.org, shawnx.tu@intel.com
+Subject: Re: [PATCH v8 3/4] media: i2c: add driver for the SK Hynix Hi-846 8M
+ pixel camera
+Message-ID: <YTXJBYb2EzR9iIzx@valkosipuli.retiisi.eu>
+References: <20210831134344.1673318-1-martin.kepplinger@puri.sm>
+ <20210831134344.1673318-4-martin.kepplinger@puri.sm>
+ <20210903161742.GD2209@bug>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903161742.GD2209@bug>
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1630914823; a=rsa-sha256; cv=none;
+        b=ognmFP0waEVCmTO3zE3mhMVI1xR6yBzs6GkZToIu68SkGCCqI4EblTDAeKo2Ga4HJMSO36
+        h9MX/Q2zbLq6tL8GTNkA71+9fVg+Wxi+6ZKDonYwx1Er+DsCG9pMvXdTAS+Ul0FyYcqz/0
+        dpPGDXLiU+PpdHQPeflU0AR+IA7C6Ac=
+ARC-Authentication-Results: i=1;
+        ORIGINATING;
+        auth=pass smtp.auth=sailus smtp.mailfrom=sakari.ailus@iki.fi
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+        s=meesny; t=1630914823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dl04EcBEovB0z67bJJd0IcCsfjvcm4H5nKTPh9ieLzw=;
+        b=k3UT4FMT+0+VuZr74rUWguYh8Csfl8zq+ll+Hs4vOoBMhatglEeti+kpc9Nx5d14J+tCea
+        JglDzfh8fFmBlf0w2ZgLt1v02wcqU2ACeQNfywDBXolfiOdqlJee5nocPyRSKznh06nWfD
+        OOeBg6+nwJ406Nfsc3ud09Ort9i7UWQ=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Pavel, Martin,
 
-> On Sep 6, 2021, at 3:21 PM, Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
->=20
-> On Tue, Aug 31, 2021 at 4:32 PM Junji Wei <weijunji@bytedance.com> =
-wrote:
->>=20
->> The port->attr.port_cap_flags should be set to enum
->> ib_port_capability_mask_bits in ib_mad.h,
->> not RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP.
->>=20
->> Signed-off-by: Junji Wei <weijunji@bytedance.com>
->> ---
->> drivers/infiniband/sw/rxe/rxe_param.h | 2 +-
->> 1 file changed, 1 insertion(+), 1 deletion(-)
->>=20
->> diff --git a/drivers/infiniband/sw/rxe/rxe_param.h =
-b/drivers/infiniband/sw/rxe/rxe_param.h
->> index 742e6ec93686..b5a70cbe94aa 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_param.h
->> +++ b/drivers/infiniband/sw/rxe/rxe_param.h
->> @@ -113,7 +113,7 @@ enum rxe_device_param {
->> /* default/initial rxe port parameters */
->> enum rxe_port_param {
->>        RXE_PORT_GID_TBL_LEN            =3D 1024,
->> -       RXE_PORT_PORT_CAP_FLAGS         =3D =
-RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP,
->> +       RXE_PORT_PORT_CAP_FLAGS         =3D IB_PORT_CM_SUP,
->=20
-> RXE_PORT_PORT_CAP_FLAGS         =3D IB_PORT_CM_SUP |
-> RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP,
->=20
-> Is it better?
->=20
-> Zhu Yanjun
+On Fri, Sep 03, 2021 at 06:17:43PM +0200, Pavel Machek wrote:
+> > +static void hi846_write_reg_16(struct hi846 *hi846, u16 reg, u16 val, int *err)
+> > +{
+> > +	struct i2c_client *client = v4l2_get_subdevdata(&hi846->sd);
+> > +	u8 buf[6];
+> > +	int ret;
+> > +
+> > +	if (*err < 0)
+> > +		return;
+> > +
+> > +	put_unaligned_be16(reg, buf);
+> > +	put_unaligned_be32(val << 8 * 2, buf + 2);
+> 
+> Is that obfuscated way of saying put_unaligned_be16(val, buf+2); buf[3] = 0; buf[4] = 0; ?
 
-I don=E2=80=99t think so.
+Good catch.
 
-Because RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP(0x800000)
-means IB_PORT_BOOT_MGMT_SUP(1 << 23) in ib_mad.h.
-RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP should be used for
-port=E2=80=99s core_cap_flags.
+The buf should be only four u8's long, and you should use 16-bit variant
+here, too.
 
->=20
->>        RXE_PORT_MAX_MSG_SZ             =3D 0x800000,
->>        RXE_PORT_BAD_PKEY_CNTR          =3D 0,
->>        RXE_PORT_QKEY_VIOL_CNTR         =3D 0,
->> --
->> 2.30.1 (Apple Git-130)
->>=20
+Also the transfer should be done on sizeof(buf), not 4 (which indeed is the
+same, but cleaner).
 
+-- 
+Regards,
+
+Sakari Ailus
