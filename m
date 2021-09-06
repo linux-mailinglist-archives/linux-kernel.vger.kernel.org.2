@@ -2,125 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3224B401DD3
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B950401DD6
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243296AbhIFPx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 11:53:29 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:49036 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbhIFPx2 (ORCPT
+        id S243478AbhIFPxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 11:53:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243398AbhIFPxj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 11:53:28 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 186FqLZ1103762;
-        Mon, 6 Sep 2021 10:52:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1630943541;
-        bh=AmCdNApGszIldNsIIkEGWv5ioCQhcJfxkbQ+XX/90J8=;
-        h=To:CC:From:Subject:Date;
-        b=gEHZA09u1yS7gjKMRjfKR4gxmjxHn3NzsT3Kv8rTM7EH60w8rYtOlpeFxXwHAdKW/
-         qGH5tGHEqecYJIGiADdE58zSsJG/8jYmWlerPBIiMCFffV6W0sCMkwHHQ7mV5ADbZr
-         6xID1HvP01opju7vBdBMAiFyQTNoJQh7HR3ggVXU=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 186FqLsK061765
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 6 Sep 2021 10:52:21 -0500
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Mon, 6
- Sep 2021 10:52:21 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Mon, 6 Sep 2021 10:52:21 -0500
-Received: from [10.250.235.239] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 186FqGiv119307;
-        Mon, 6 Sep 2021 10:52:17 -0500
-To:     Cornelia Huck <cohuck@redhat.com>, <alex.williamson@redhat.com>
-CC:     <kvm@vger.kernel.org>, Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Vutla, Lokesh" <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "Strashko, Grygorii" <grygorii.strashko@ti.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Subject: [QUERY] Flushing cache from userspace using VFIO
-Message-ID: <d338414f-ed88-20d4-7da0-6742dedb8579@ti.com>
-Date:   Mon, 6 Sep 2021 21:22:15 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 6 Sep 2021 11:53:39 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370A7C06175F
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 08:52:35 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id c6so14340752ybm.10
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 08:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/bgcmHKDn3LorkuSVcyCAc/MMYfBn+zOMCmk2ZUB6aM=;
+        b=olm2PhGCTEx8jQKQDPim0F/G0tBroK7mfgYdUepqc+UelRqSX/GROVmY2M3UCa0lob
+         Vljs4WXF/BrdWjVIYgzg4cHFZ5N3sLEb4jPJ8VHqmMqO0WIJ7jMdOvI7xve98ywgsEmk
+         EJ+yoAt2Mwy2iuR9zQuXuWrMK5753BkiByyq7AqIO9hK2DPVV1IeUeZNeZ9AZ4W3GdHt
+         Ys+bDqqEUpRXHYUH2HmtmAv4xb0GKy4kmP1/5emiSbc9kHoTUoanAAe7XrLQRbhDn5CA
+         8xhWkM+3BdIWs3T0IY3LbfaCLto0Jy/FxqN+q+PyMvj7bDJY5Gr7MuaL3DwjC39N8BLS
+         h9Ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/bgcmHKDn3LorkuSVcyCAc/MMYfBn+zOMCmk2ZUB6aM=;
+        b=gFhAOu8No3a5br/glSR0/sxCueRsFb6sDE2Tw3AA/D4aITyvDvxQBWxfemn9Yr5A66
+         gxSCG7+hvZODlhxwqPL2nIrwzoeGjKM2lS00uwrmv+vt/w3Ts34V4EBT3f3OFpMXZvPX
+         U4Dr531H6gumlTBXBUAwHGTlI2h9GJ4owhgoI2smPCFnFcNPC5NQ6drk5TlOb+mMW5Vm
+         L4E5EyxWNeVSdNHGPDfUaocOZf6RiE52WcfHVKNz7wnZDwjJPGvyjI5sev9L2TSDY5go
+         0SI0C8RddbIycXLAK4NdQFWGo9Ap8QzAEfnJWcjuP7JDFgkZBGKQihpxBTx5P4dwpmQc
+         /8Cg==
+X-Gm-Message-State: AOAM532IwLq7wFXPKUqjmqp/x31rFLqs64MUzBPG0dfux+Weox6uPf1S
+        LLXOR82VTzVZgV/2xELIs7a2UMz0xla31UU/wjZP8Q==
+X-Google-Smtp-Source: ABdhPJxgYWk6hy+mdeQO4de4+4PREXPTlKpeaHpkquia6aZN9siSokaYw+RKTlqY3cv1THELavVZ+hiDZKAMXGk9cW0=
+X-Received: by 2002:a25:b9c8:: with SMTP id y8mr18444413ybj.487.1630943554077;
+ Mon, 06 Sep 2021 08:52:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210902231813.3597709-1-surenb@google.com> <20210902231813.3597709-2-surenb@google.com>
+ <202109031420.2F17A2C9@keescook> <20210905130418.GA7117@localhost>
+In-Reply-To: <20210905130418.GA7117@localhost>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 6 Sep 2021 08:52:23 -0700
+Message-ID: <CAJuCfpH9o=SPE=vspc-o8mFomyg_LZsx7OQtzSQh91pTwKH6Mg@mail.gmail.com>
+Subject: Re: [PATCH v9 2/3] mm: add a field to store names for private
+ anonymous memory
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Colin Cross <ccross@google.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Peter Xu <peterx@redhat.com>, rppt@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        vincenzo.frascino@arm.com,
+        =?UTF-8?B?Q2hpbndlbiBDaGFuZyAo5by16Yym5paHKQ==?= 
+        <chinwen.chang@mediatek.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>, apopple@nvidia.com,
+        John Hubbard <jhubbard@nvidia.com>,
+        Yu Zhao <yuzhao@google.com>, Will Deacon <will@kernel.org>,
+        fenghua.yu@intel.com, thunder.leizhen@huawei.com,
+        Hugh Dickins <hughd@google.com>, feng.tang@intel.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, Roman Gushchin <guro@fb.com>,
+        Thomas Gleixner <tglx@linutronix.de>, krisman@collabora.com,
+        chris.hyser@oracle.com, Peter Collingbourne <pcc@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Jens Axboe <axboe@kernel.dk>, legion@kernel.org,
+        Rolf Eike Beer <eb@emlix.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Thomas Cedeno <thomascedeno@google.com>, sashal@kernel.org,
+        cxfcosmos@gmail.com, Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex, Cornelia,
+On Sun, Sep 5, 2021 at 6:04 AM Pavel Machek <pavel@ucw.cz> wrote:
+>
+> Hi!
+>
+> > > the process is still running, so it has to have some sort of
+> > > synchronization with every layer of userspace.  Efficiently tracking
+> > > the ranges requires reimplementing something like the kernel vma
+> > > trees, and linking to it from every layer of userspace.  It requires
+> > > more memory, more syscalls, more runtime cost, and more complexity to
+> > > separately track regions that the kernel is already tracking.
+>
+> Ok so far.
+>
+> > > This patch adds a field to /proc/pid/maps and /proc/pid/smaps to show a
+> > > userspace-provided name for anonymous vmas.  The names of named anonymous
+> > > vmas are shown in /proc/pid/maps and /proc/pid/smaps as [anon:<name>].
+> > >
+> > > Userspace can set the name for a region of memory by calling
+> > > prctl(PR_SET_VMA, PR_SET_VMA_ANON_NAME, start, len, (unsigned
+> > > long)name);
+>
+> Would setting a 64-bit integer instead of name be enough? Even if
+> each party would set it randomly, risk of collisions would be very
+> low... and we'd not have to deal with strings in kernel.
 
-I'm trying to see if I can use VFIO (Versatile Framework for userspace I/O
-[1]) for communication between two cores within the same SoC. I've tried to put
-down a picture like below which tries to communicate between ARM64 (running
-Linux) and CORTEX R5 (running firmware). It uses rpmsg/remoteproc for the
-control messages and the actual data buffers are directly accessed from the
-userspace. The location of the data buffers can be informed to the userspace via
-rpmsg_vfio (which has to be built as a rpmsg endpoint).
+Thanks for the question, Pavel. I believe this was discussed in this
+thread before and Colin provided the explanation with usage examples:
+https://lore.kernel.org/linux-mm/20200821070552.GW2074@grain/.
+Thanks,
+Suren.
 
-My question is after the userspace application in ARM64 writes to a buffer in
-the SYSTEM MEMORY, can it flush it (through a VFIO IOCTL) before handing the
-buffer to the CORTEX R5.
-
-If it's implemented within kernel either we use dma_alloc_coherent() for
-allocating coherent memory or streaming DMA APIs like
-dma_map_single()/dma_unmap_single() for flushing/invalidate the cache.
-
-Trying to see if that is already supported in VFIO or if not, would it be
-acceptable to implement it.
-
-Please let me know your thoughts.
-
-┌───────────────────────────────────────────────────────────────────────────┐
-│                                                                           │
-│ ┌────────────────────┐                                                    │
-│ │                    │                                                    │
-│ │ ┌──────────────┐   │                                                    │
-│ │ │ userspace    │   │  Data Buffers                                      │
-│ │ │ Application  ├───┼──────────────┐                                     │
-│ │ │              │   │              │                                     │
-│ │ └──────▲──┬────┘   │              │                                     │
-│ │        │  │        │              │                                     │
-│ │        │  │ user   │              │                 ┌─────────────────┐ │
-│ │  ──────┼──┼─────── │              │                 │                 │ │
-│ │        │  │ kernel │              │                 │                 │ │
-│ │  ┌─────┴──▼────┐   │    ┌─────────┼────────────┐    │                 │ │
-│ │  │             │   │    │         │            │    │  Data           │ │
-│ │  │  rpmsg_vfio │   │    │  ┌──────▼─────────┐  │    │  Buffers        │ │
-│ │  │             │   │    │  │ Reserved Region◄──┼────┼────────┐        │ │
-│ │  └─────▲──┬────┘   │    │  │                │  │    │        │        │ │
-│ │        │  │        │    │  └────────────────┘  │    │        │        │ │
-│ │  ┌─────┴──▼────┐   │    │                      │    │        │        │ │
-│ │  │             │   │    │                      │    │ ┌──────┴──────┐ │ │
-│ │  │  rpmsg      │   │    │     SYSTEM MEMORY    │    │ │ Application │ │ │
-│ │  │             │   │    │       (DDR)          │    │ │   Logic     │ │ │
-│ │  └─────▲──┬────┘   │    └──────────────────────┘    │ └───▲────┬────┘ │ │
-│ │        │  │        │                                │     │    │      │ │
-│ │  ┌─────┴──▼────┐   │Notify Firmware/Control Message │ ┌───┴────▼────┐ │ │
-│ │  │             ├───┼────────────────────────────────┼─►             │ │ │
-│ │  │  remoteproc │   │Interrupt ARM/Control Message   │ │   Firmware  │ │ │
-│ │  │             ◄───┼────────────────────────────────┼─┤             │ │ │
-│ │  └─────────────┘   │                                │ └─────────────┘ │ │
-│ │      ARM64(Linux)  │                                │   ARM CORTEX R5 │ │
-│ └────────────────────┘                                └─────────────────┘ │
-│                                                                           │
-│                                                                       SoC │
-└───────────────────────────────────────────────────────────────────────────┘
-
-Thank You,
-Kishon
-
-[1] -> https://youtu.be/WFkdTFTOTpA
+>
+>                                                                 Pavel
+>
+>
+> --
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+>
