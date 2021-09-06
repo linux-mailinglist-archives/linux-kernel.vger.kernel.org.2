@@ -2,143 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE204401D9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:31:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A4D401DA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 17:32:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243028AbhIFPc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 11:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231751AbhIFPc0 (ORCPT
+        id S243164AbhIFPdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 11:33:51 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30028 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242942AbhIFPds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 11:32:26 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE2AC0613D9
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 08:31:21 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id g135so4863109wme.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 08:31:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PQ0Sz3nSdC4M1Li6PaTkmdjXBaQB3/I9C/9VyXKR078=;
-        b=UXRljDfh9pslkpfpiZW87xjIeGBWGwIaAMRlhWJCKG7426frC0Kf3IPd4Y1I1la0VX
-         yR+sttTvRZyIIqXtqEvMNgsD46eYnTi/cTMP9nhkOXv4qZJ2YwpO6rzL+Ad9sxuj2FUM
-         6W6/m+rhws4O7vtCY4Xiva5VZ95hBKwVmVRc5gCM+RrOnt67C1wg/drGrneMfWvU+jG5
-         l7O1qd0bsLRgpjxFf8Bd6t5jthk5fKIaMSBNPrDlWhhP0XLPqT4MFYj+oA0vYzozk3X2
-         bZpg5O3sTif4O/ZWaOrDw3jH9S/DBp5s9fEn++665aVy0K0x/CMSqlpEfnUx6laQG736
-         0S6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PQ0Sz3nSdC4M1Li6PaTkmdjXBaQB3/I9C/9VyXKR078=;
-        b=TGkfkXG79VhRwD4dskUmjVM3BRaOrUQZvmNHFFZ2VrEAXsGovWUZv4V1gWzbhuXN6E
-         qyg63ohzEAJFMA4/+V0/lZGJdtgUaZDJlajiIw46n4G5s/LpB3m9twSTrXsJ1jWfnzBB
-         7ogWcPiEtd6U5b0bGYsXNG2wPr/ZxmXpcEO4o9w9S2eKbHe3LNOvtqwhMl+ao31xZzpe
-         IU7+LfXwSaoC2xnm5RHPLf04kHXVoYha3pE5wKeffKQDQz65yzWV5dTm2wjTWjCgWSp9
-         4xMK7iyEdDF2Us02XX4MCsUsAWlvQKyy5haIeuB9t5U8tu91mlht5vBOydcBIEhUrxcO
-         6lMA==
-X-Gm-Message-State: AOAM5301P/AJl6dPtrrZmsPcF5wPk2C3eg6EPo4LnMDRFJwD5ka0IcnJ
-        e59C/g17aqQala5oPVkxxEzrUw==
-X-Google-Smtp-Source: ABdhPJw1GKspi6vCehDcEOXPQ+NCWmQvHbO1FyzGfSYpe1CVz0Iflaaie8Hoz/ZDPTqau9R2oirf6Q==
-X-Received: by 2002:a1c:1f49:: with SMTP id f70mr12167723wmf.13.1630942279756;
-        Mon, 06 Sep 2021 08:31:19 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id f20sm7471638wmb.32.2021.09.06.08.31.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 08:31:19 -0700 (PDT)
-Subject: Re: [PATCH] dt-bindings: Use 'enum' instead of 'oneOf' plus 'const'
- entries
-To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     alsa-devel@alsa-project.org, Vignesh R <vigneshr@ti.com>,
-        linux-pci@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-phy@lists.infradead.org, Lee Jones <lee.jones@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        linux-serial@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        linux-media@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        netdev@vger.kernel.org, dmaengine@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-References: <20210824202014.978922-1-robh@kernel.org>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <b2e70818-521d-eff8-d7d5-be5a8d95df19@linaro.org>
-Date:   Mon, 6 Sep 2021 16:31:17 +0100
+        Mon, 6 Sep 2021 11:33:48 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 186F3xX4146268;
+        Mon, 6 Sep 2021 11:32:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=LhLmdJTI6AgTZCvPKytLsM1D6cmN974c7wLVohpLheA=;
+ b=dwvIS4lcQsXnCDut+faRAM05/oDfyB+JVLBo/T5qk0IytRsRx4Jon6VfMPaMK/1NH/50
+ Km0yYDrQBUeaugxDKhm4VeH9XppYA6FmyHGoKBQ55Uk4s2LqJ9mloO0yHZG+5/P1VfNU
+ Q5zqDZ6FQBjD4faaK6vl8zO84p2A9Wyqz+5Jx7z9qqtETHzstHe29Mf6Vpi8JyWKYdSA
+ C4G4L9Rs4d1A08/wAmS6nQ3tt5K8Cbd7xzIZpuH0ZBW24YIYFOj2+eUDBiyC21KWwAID
+ 7ztTu9Zgne8t+yxkK7Y/F4wj8cXdf69szJg/7S8NLYJjyC8aHHn2BMf7MJkTJtWtRBjM 7g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3awmsyh5es-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Sep 2021 11:32:43 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 186FGUZ5002560;
+        Mon, 6 Sep 2021 11:32:42 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3awmsyh5ea-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Sep 2021 11:32:42 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 186FRWlY007301;
+        Mon, 6 Sep 2021 15:32:41 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 3av02jdvpp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 06 Sep 2021 15:32:41 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 186FWaBW52167162
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 6 Sep 2021 15:32:36 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BDDDB52065;
+        Mon,  6 Sep 2021 15:32:36 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.95.210])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 50DCA52057;
+        Mon,  6 Sep 2021 15:32:36 +0000 (GMT)
+Subject: Re: [PATCH v4 05/14] KVM: s390: pv: leak the ASCE page when destroy
+ fails
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
+Cc:     cohuck@redhat.com, frankja@linux.ibm.com, thuth@redhat.com,
+        pasic@linux.ibm.com, david@redhat.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ulrich.Weigand@de.ibm.com
+References: <20210818132620.46770-1-imbrenda@linux.ibm.com>
+ <20210818132620.46770-6-imbrenda@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <36ce2f10-a65d-ff2a-3a11-8f2cd853f3e9@de.ibm.com>
+Date:   Mon, 6 Sep 2021 17:32:36 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <20210824202014.978922-1-robh@kernel.org>
+In-Reply-To: <20210818132620.46770-6-imbrenda@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: MAytNYwHf8ClKL67gIMa5ms91oVoc0Sn
+X-Proofpoint-ORIG-GUID: avYDd4c4sW6gu0ESxYlgekFCnz8Wx-2U
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-06_06:2021-09-03,2021-09-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 priorityscore=1501 spamscore=0 malwarescore=0 mlxscore=0
+ bulkscore=0 clxscore=1015 lowpriorityscore=0 impostorscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2108310000
+ definitions=main-2109060096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The subject should say
+
+KVM: s390: pv: leak the topmost page table when destroy fails
 
 
-On 24/08/2021 21:20, Rob Herring wrote:
-> 'enum' is equivalent to 'oneOf' with a list of 'const' entries, but 'enum'
-> is more concise and yields better error messages.
+On 18.08.21 15:26, Claudio Imbrenda wrote:
+> When a protected VM is created, the topmost level of page tables of its
+> ASCE is marked by the Ultravisor; any attempt to use that memory for
+> protected virtualization will result in failure.
+
+
+maybe rephrase that to
+Each secure guest must have a unique address space control element and we
+must avoid that new guests will use the same ASCE to avoid an error. As
+the ASCE mostly consists of the top most page table address (and flags)
+we must not return that memory to the pool unless the ASCE is no longer
+used.
+
+Only a a successful Destroy Configuration UVC will make the ASCE no longer
+collide.
+When the Destroy Configuration UVC fails, the ASCE cannot be reused for a
+secure guest ASCE. To avoid a collision, it must not be used again.
+
+  
+> Only a successful Destroy Configuration UVC will remove the marking.
 > 
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Vignesh R <vigneshr@ti.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-i2c@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-pci@vger.kernel.org
-> Cc: linux-phy@lists.infradead.org
-> Cc: linux-serial@vger.kernel.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-spi@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> When the Destroy Configuration UVC fails, the topmost level of page
+> tables of the VM does not get its marking cleared; to avoid issues it
+> must not be used again.
+> 
+> This is a permanent error and the page becomes in practice unusable, so
+> we set it aside and leak it.
+
+Maybe add: on failure we already leak other memory that has ultravisor marking (the
+variable and base storage for a guest) and not setting the ASCE aside (by
+leaking the topmost page table) was an oversight.
+
+Or something like that
+
+maybe also add that we usually do not expect to see such error under normal
+circumstances.
+
+> 
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 > ---
->   .../bindings/display/msm/dsi-phy-10nm.yaml           |  6 +++---
->   .../bindings/display/msm/dsi-phy-14nm.yaml           |  6 +++---
->   .../bindings/display/msm/dsi-phy-28nm.yaml           |  8 ++++----
->   .../bindings/dma/allwinner,sun6i-a31-dma.yaml        | 12 ++++++------
->   .../devicetree/bindings/firmware/arm,scpi.yaml       |  6 +++---
->   .../devicetree/bindings/i2c/ti,omap4-i2c.yaml        | 10 +++++-----
->   .../interrupt-controller/loongson,liointc.yaml       |  8 ++++----
->   .../devicetree/bindings/media/i2c/mipi-ccs.yaml      |  8 ++++----
->   .../devicetree/bindings/mfd/ti,lp87565-q1.yaml       |  6 +++---
->   .../devicetree/bindings/net/realtek-bluetooth.yaml   |  8 ++++----
->   .../bindings/net/ti,k3-am654-cpsw-nuss.yaml          |  8 ++++----
->   .../devicetree/bindings/net/ti,k3-am654-cpts.yaml    |  6 +++---
->   Documentation/devicetree/bindings/pci/loongson.yaml  |  8 ++++----
->   .../devicetree/bindings/phy/intel,lgm-emmc-phy.yaml  |  6 +++---
->   .../devicetree/bindings/serial/8250_omap.yaml        |  9 +++++----
+>   arch/s390/include/asm/gmap.h |  2 ++
+>   arch/s390/kvm/pv.c           |  4 ++-
+>   arch/s390/mm/gmap.c          | 55 ++++++++++++++++++++++++++++++++++++
+>   3 files changed, 60 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/s390/include/asm/gmap.h b/arch/s390/include/asm/gmap.h
+> index 40264f60b0da..746e18bf8984 100644
+> --- a/arch/s390/include/asm/gmap.h
+> +++ b/arch/s390/include/asm/gmap.h
+> @@ -148,4 +148,6 @@ void gmap_sync_dirty_log_pmd(struct gmap *gmap, unsigned long dirty_bitmap[4],
+>   			     unsigned long gaddr, unsigned long vmaddr);
+>   int gmap_mark_unmergeable(void);
+>   void s390_reset_acc(struct mm_struct *mm);
+> +void s390_remove_old_asce(struct gmap *gmap);
+> +int s390_replace_asce(struct gmap *gmap);
+>   #endif /* _ASM_S390_GMAP_H */
+> diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
+> index 00d272d134c2..76b0d64ce8fa 100644
+> --- a/arch/s390/kvm/pv.c
+> +++ b/arch/s390/kvm/pv.c
+> @@ -168,9 +168,11 @@ int kvm_s390_pv_deinit_vm(struct kvm *kvm, u16 *rc, u16 *rrc)
+>   	atomic_set(&kvm->mm->context.is_protected, 0);
+>   	KVM_UV_EVENT(kvm, 3, "PROTVIRT DESTROY VM: rc %x rrc %x", *rc, *rrc);
+>   	WARN_ONCE(cc, "protvirt destroy vm failed rc %x rrc %x", *rc, *rrc);
+> -	/* Inteded memory leak on "impossible" error */
+> +	/* Intended memory leak on "impossible" error */
+>   	if (!cc)
+>   		kvm_s390_pv_dealloc_vm(kvm);
+> +	else
+> +		s390_replace_asce(kvm->arch.gmap);
+>   	return cc ? -EIO : 0;
+>   }
+>   
+> diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
+> index 9bb2c7512cd5..5a138f6220c4 100644
+> --- a/arch/s390/mm/gmap.c
+> +++ b/arch/s390/mm/gmap.c
+> @@ -2706,3 +2706,58 @@ void s390_reset_acc(struct mm_struct *mm)
+>   	mmput(mm);
+>   }
+>   EXPORT_SYMBOL_GPL(s390_reset_acc);
+> +
+> +/*
+> + * Remove the topmost level of page tables from the list of page tables of
+> + * the gmap.
+> + * This means that it will not be freed when the VM is torn down, and needs
+> + * to be handled separately by the caller, unless an intentional leak is
+> + * intended.
+> + */
+> +void s390_remove_old_asce(struct gmap *gmap)
+> +{
+> +	struct page *old;
+> +
+> +	old = virt_to_page(gmap->table);
+> +	spin_lock(&gmap->guest_table_lock);
+> +	list_del(&old->lru);
+> +	spin_unlock(&gmap->guest_table_lock);
+> +	/* in case the ASCE needs to be "removed" multiple times */
+> +	INIT_LIST_HEAD(&old->lru);
+shouldn't that also be under the spin_lock?
 
->   .../devicetree/bindings/sound/qcom,sm8250.yaml       |  6 +++---
+> +}
+> +EXPORT_SYMBOL_GPL(s390_remove_old_asce);
+> +
+> +/*
+> + * Try to replace the current ASCE with another equivalent one.
+> + * If the allocation of the new top level page table fails, the ASCE is not
+> + * replaced.
+> + * In any case, the old ASCE is removed from the list, therefore the caller
+> + * has to make sure to save a pointer to it beforehands, unless an
+> + * intentional leak is intended.
+> + */
+> +int s390_replace_asce(struct gmap *gmap)
+> +{
+> +	unsigned long asce;
+> +	struct page *page;
+> +	void *table;
+> +
+> +	s390_remove_old_asce(gmap);
+> +
+> +	page = alloc_pages(GFP_KERNEL_ACCOUNT, CRST_ALLOC_ORDER);
+> +	if (!page)
+> +		return -ENOMEM;
 
-for sm8250 sound card,
+It seems that we do not handle errors in our caller?
 
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> +	table = page_to_virt(page);
+> +	memcpy(table, gmap->table, 1UL << (CRST_ALLOC_ORDER + PAGE_SHIFT));
+> +
+> +	spin_lock(&gmap->guest_table_lock);
+> +	list_add(&page->lru, &gmap->crst_list);
+> +	spin_unlock(&gmap->guest_table_lock);
+> +
+> +	asce = (gmap->asce & ~PAGE_MASK) | __pa(table);
 
->   .../devicetree/bindings/sound/tlv320adcx140.yaml     |  8 ++++----
->   .../devicetree/bindings/spi/realtek,rtl-spi.yaml     | 12 ++++++------
->   .../devicetree/bindings/timer/arm,sp804.yaml         |  6 +++---
->   19 files changed, 74 insertions(+), 73 deletions(-)
+Instead of PAGE_MASK better use _ASCE_ORIGIN ?
+> +	WRITE_ONCE(gmap->asce, asce);
+> +	WRITE_ONCE(gmap->mm->context.gmap_asce, asce);
+> +	WRITE_ONCE(gmap->table, table);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(s390_replace_asce);
 > 
