@@ -2,109 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4300401C65
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 15:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D15E401C7F
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 15:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242639AbhIFNh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 09:37:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49218 "EHLO
+        id S242679AbhIFNlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 09:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242597AbhIFNh4 (ORCPT
+        with ESMTP id S233820AbhIFNli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 09:37:56 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B652C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 06:36:51 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id v20-20020a1cf714000000b002e71f4d2026so3864431wmh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 06:36:51 -0700 (PDT)
+        Mon, 6 Sep 2021 09:41:38 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B21FEC061757
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 06:40:33 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id i3so4634541wmq.3
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 06:40:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=BAhGQaiUNFMd0cF59B0SMEJVdU2tWj7S2/LF/UKcv6g=;
-        b=RYSOiZFCjTkL418WGcVP8CEyv+CIL2CdD4Mr508ZMphamikcEWmCQYwh2rSgJSpjIj
-         R7adpHoBEoteB8/pbIsVPFHdfwKjhMAEQ8Zpi/YujLxueK6V4bjolnfkAZ1KnlyMZez6
-         A0r4Cs6ZxfawdLnGEnPiY1iRnYAkxaIQJceBww/0hDtoj8PxdMAXVK1qOz/VO5b/zzbQ
-         CqGWUqebJtpfryjTuDyFV7TfNsN6KW9hIyWluZ5qM1rJV/XDF0+LeC6SvnRl224EEW8T
-         HL6BXgWe0j32pQZ/DlegkQa6ym5eozBwadSbkxve+gfZ45jinlFvgqEipB+Eb8PycuDV
-         WOBQ==
+        bh=h8fzMrlNfeqQ1V7Mw80vYgzWg31AUNU+8kCIzeOvUGI=;
+        b=je2IdFXBFDkVDGrZ/5L/zJzOOgyE3lZrrMAc5jKis+ikQ4QzVyyH8H4n6ukkmh/xyk
+         pzBXlWwfxhhK3/LZHDkYYY+Ucdx611532nvBAD5hyazba83gwOma33BsStXJTr1RtskT
+         nS1EWS9FHclna4c1zy6fUHixoJHpZZde3J+wypLKKw8wDd/6sWMXB6Ei7vFiLfu6Ccht
+         Fv3FgSmZ3hfi40JMHNWSKEIyqyefR+rZ+YAIv9Xgj9xsXZfTlEshG0sDKn+wewU/cNe6
+         vOkkVYqsEpUJB58rZ6GGDFzQEBzbAnBn+PPe1+KKA6TZvyUix0r8Wl95MxZYcoHTzbhn
+         1a/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=BAhGQaiUNFMd0cF59B0SMEJVdU2tWj7S2/LF/UKcv6g=;
-        b=k60cnOKchLrW8P77HTiUduqHi1XgmtluIjHFAezR/NZodIa4FSeY1f18dmGCumISGk
-         eTtUbdEofE+W2GnEwDsTaHMkG7zsfe8MGMwkIpxHjeCISZBVpsSzlW+OcCHA4urKPex/
-         oZRYh0JVDgG2CR8xrMUJ4MN6JsCuEawJW864+0EDULHRTWTUCd4u3sMhYJP5UdcQmlqz
-         39DEI97bCG/3o3w/ObGfyw1bukHNdwVnHak6ZPYlW9m6d9DAdIuyZphtdVQ5f+3Lfo6g
-         wtzHw377zDVBIOn7JqGDlHNJNPgEfN4+zo8UtYUAro51puwRAHjz8fR/8WT0fZxcO23s
-         CqVQ==
-X-Gm-Message-State: AOAM532VOvXas4N7E8Vkq3UtCpsytIG5/uL+4LlmJicZA5yh4QAB0V2z
-        ZaJx0Sv8V8UTsgafa2wVj7guIQ==
-X-Google-Smtp-Source: ABdhPJxhQ8DPhLD12SafiRBRfu4OijkIySpx5v+sXRBz4eKpz4sMYsbNfXMKlBllmBy+mdlAHXWmwQ==
-X-Received: by 2002:a05:600c:3502:: with SMTP id h2mr11686505wmq.182.1630935409867;
-        Mon, 06 Sep 2021 06:36:49 -0700 (PDT)
+        bh=h8fzMrlNfeqQ1V7Mw80vYgzWg31AUNU+8kCIzeOvUGI=;
+        b=Hn+Si6f95h7toD4OFh8h4wOXc+3Elj33SLWlcWugogb3VoXZo0r00w74+2H65A+TuT
+         4Xx75xbAMTDlwoD3hll5mfd/v5gUatxTrAzg6pqnpY+ith30hNTNnH6fctTMI6Oy7VzN
+         NKoYVi3HXlQBG42DyGpCmTYO65Wm5VsEvoXcsFm0kuk3LWdJkXmfHKBAsbdMBIQfNyYG
+         PsH6+Uh7bvMayJk5KQslAJdE2ltrWwF4aJL7iAwdT5G9h3oqPSPNboBkxEDPiHyyTT/l
+         qjMjAgOaQM4UzyfPl7k/myIiXBnGHSImDIfNFp+J2feci3zOmpBlThYKg2qxSMSMPQ+f
+         aX3Q==
+X-Gm-Message-State: AOAM531ov49ojH8d0GegtXTmhRPpgdyyeCgYjhQxzyLEY4zKrGjzyIwz
+        pylw84GeASYiyewNbi3BujLl8A==
+X-Google-Smtp-Source: ABdhPJxSZNMrd0jxUL99QDIGbL3HxtYqrJ/yXjYhWzUID0G4CuSLLXg2Je/UOA0ZVhX9lg36hyCAuw==
+X-Received: by 2002:a1c:28b:: with SMTP id 133mr11457428wmc.138.1630935632338;
+        Mon, 06 Sep 2021 06:40:32 -0700 (PDT)
 Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id q195sm7559994wme.37.2021.09.06.06.36.48
+        by smtp.googlemail.com with ESMTPSA id d7sm7934372wrs.39.2021.09.06.06.40.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 06:36:49 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 15:36:43 +0200
+        Mon, 06 Sep 2021 06:40:32 -0700 (PDT)
+Date:   Mon, 6 Sep 2021 15:40:30 +0200
 From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     mchehab@kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        mjpeg-users@lists.sourceforge.net
-Subject: Re: [PATCH 4/8] staging: media: zoran: add debugfs
-Message-ID: <YTYZaxjiKzVurMEF@Red>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     gregkh@linuxfoundation.org, mchehab@kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
+Subject: Re: [PATCH 6/8] staging: media: zoran: fusion all modules
+Message-ID: <YTYaTk9+fCrwHbTG@Red>
 References: <20210903191540.3052775-1-clabbe@baylibre.com>
- <20210903191540.3052775-5-clabbe@baylibre.com>
- <YTMJvI1C1OmBgdeI@kroah.com>
+ <20210903191540.3052775-7-clabbe@baylibre.com>
+ <9318ec41-d884-2c1a-1190-3a93c3f5a3fb@xs4all.nl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YTMJvI1C1OmBgdeI@kroah.com>
+In-Reply-To: <9318ec41-d884-2c1a-1190-3a93c3f5a3fb@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Sat, Sep 04, 2021 at 07:53:00AM +0200, Greg KH a écrit :
-> On Fri, Sep 03, 2021 at 07:15:36PM +0000, Corentin Labbe wrote:
-> > Add debugfs for displaying zoran debug and stats information.
+Le Mon, Sep 06, 2021 at 12:41:32PM +0200, Hans Verkuil a écrit :
+> On 03/09/2021 21:15, Corentin Labbe wrote:
+> > The zoran driver is split in many modules, but this lead to some
+> > problems.
+> > One of them is that load order is incorrect when everything is built-in.
 > > 
-> > Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-> > ---
-> >  drivers/staging/media/zoran/Kconfig      | 10 ++++++
-> >  drivers/staging/media/zoran/zoran.h      |  5 +++
-> >  drivers/staging/media/zoran/zoran_card.c | 39 ++++++++++++++++++++++++
-> >  3 files changed, 54 insertions(+)
-> > 
-> > +#ifdef CONFIG_VIDEO_ZORAN_DEBUG
-> > +	struct dentry *dbgfs_dir;
-> > +	struct dentry *dbgfs_file;
+> > Having more than one module is useless, so fusion all zoran modules in
+> > one.
 > 
-> No need for these, the file is never referenced and the directory can be
-> looked up when you want to remove it.
+> After applying this patch I am no longer able to rmmod the module: it will
+> always report that it is in use. This is with a Miro DC30.
 > 
-> > +#endif
-[...]
-> > +#ifdef CONFIG_VIDEO_ZORAN_DEBUG
-> > +	zr->dbgfs_dir = debugfs_create_dir(ZR_DEVNAME(zr), NULL);
-> > +	zr->dbgfs_file = debugfs_create_file("debug", 0444,
-> > +					      zr->dbgfs_dir, zr,
-> > +					      &zoran_debugfs_fops);
-> > +#endif
+> So something is wrong with refcounting.
 > 
-> Wait, when are you removing the files when the device is removed?
+> I do like the idea of merging all these modules, but it needs a bit more
+> testing.
 > 
-> That needs to be fixed no matter what before this patch is accepted.
+> Regards,
+> 
+> 	Hans
 > 
 
 Hello
 
-Sorry to have forgotten this.
-I will fix this.
+I am sorry, I was sure to have successfully removed the zoran module a couple of time with my DC10.
+Anyway I just acquired a DC30, so I will test it also (even if I believe that model should not change anything).
 
-Thanks
 Regards
