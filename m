@@ -2,123 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF056401B61
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981DB401B64
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242254AbhIFMqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:46:02 -0400
-Received: from mga05.intel.com ([192.55.52.43]:49846 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242222AbhIFMqB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:46:01 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10098"; a="305521653"
-X-IronPort-AV: E=Sophos;i="5.85,272,1624345200"; 
-   d="scan'208";a="305521653"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 05:44:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,272,1624345200"; 
-   d="scan'208";a="448600974"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga002.jf.intel.com with ESMTP; 06 Sep 2021 05:44:48 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 97ECE15D; Mon,  6 Sep 2021 15:44:51 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     M Chetan Kumar <m.chetan.kumar@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Intel Corporation <linuxwwan@intel.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH v1 net-next 2/2] net: wwan: iosm: Unify IO accessors used in the driver
-Date:   Mon,  6 Sep 2021 15:44:49 +0300
-Message-Id: <20210906124449.20742-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210906124449.20742-1-andriy.shevchenko@linux.intel.com>
-References: <20210906124449.20742-1-andriy.shevchenko@linux.intel.com>
+        id S242261AbhIFMqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:46:22 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:19011 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242199AbhIFMqV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 08:46:21 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H37LL6hX4zbkXS;
+        Mon,  6 Sep 2021 20:41:14 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Mon, 6 Sep 2021 20:45:13 +0800
+Subject: Re: [PATCH] mm/page_isolation: don't putback unisolated page
+To:     David Hildenbrand <david@redhat.com>, <akpm@linux-foundation.org>
+CC:     <vbabka@suse.cz>, <iamjoonsoo.kim@lge.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210904091839.20270-1-linmiaohe@huawei.com>
+ <3b36529f-ab97-ddfe-0407-66f0cd1fd38d@redhat.com>
+ <2d06db75-5c26-8fe2-6883-ac99056a9894@redhat.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <b0a2947b-360a-40c2-03e4-f0f67845f4c3@huawei.com>
+Date:   Mon, 6 Sep 2021 20:45:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <2d06db75-5c26-8fe2-6883-ac99056a9894@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.100]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently we have readl()/writel()/ioread*()/iowrite*() APIs in use.
-Let's unify to use only ioread*()/iowrite*() variants.
+On 2021/9/6 20:11, David Hildenbrand wrote:
+> On 06.09.21 14:02, David Hildenbrand wrote:
+>> On 04.09.21 11:18, Miaohe Lin wrote:
+>>> If __isolate_free_page() failed, due to zone watermark check, the page is
+>>> still on the free list. But this page will be put back to free list again
+>>> via __putback_isolated_page() now. This may trigger page->flags checks in
+>>> __free_one_page() if PageReported is set. Or we will corrupt the free list
+>>> because list_add() will be called for pages already on another list.
+>>>
+>>> Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
+>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>> ---
+>>>    mm/page_isolation.c | 6 ++----
+>>>    1 file changed, 2 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+>>> index 9bb562d5d194..7d70d772525c 100644
+>>> --- a/mm/page_isolation.c
+>>> +++ b/mm/page_isolation.c
+>>> @@ -93,10 +93,8 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+>>>                buddy_pfn = __find_buddy_pfn(pfn, order);
+>>>                buddy = page + (buddy_pfn - pfn);
+>>>    -            if (!is_migrate_isolate_page(buddy)) {
+>>> -                __isolate_free_page(page, order);
+>>> -                isolated_page = true;
+>>> -            }
+>>> +            if (!is_migrate_isolate_page(buddy))
+>>> +                isolated_page = !!__isolate_free_page(page, order);
+>>>            }
+>>>        }
+>>>   
+>>
+>> Thanks!
+>>
+>> Reviewed-by: David Hildenbrand <david@redhat.com>
+>>
+> 
+> To make the confusion perfect (sorry) :D I tripple-checked:
+> 
+> In unset_migratetype_isolate() we check that is_migrate_isolate_page(page) holds, otherwise we return.
+> 
+> We call __isolate_free_page() only for such pages.
+> 
+> __isolate_free_page() won't perform watermark checks on is_migrate_isolate().
+> 
+> Consequently, __isolate_free_page() should never fail when called from unset_migratetype_isolate()
+> 
+> If that's correct then we  could instead maybe add a VM_BUG_ON() and a comment why this can't fail.
+> 
+> 
+> Makes sense or am I missing something?
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/net/wwan/iosm/iosm_ipc_mmio.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+I think you're right. __isolate_free_page() should never fail when called from unset_migratetype_isolate()
+as explained by you. But it might be too fragile to reply on the failure conditions of __isolate_free_page().
+If that changes, VM_BUG_ON() here might trigger unexpectedly. Or am I just over-worried as failure conditions
+of __isolate_free_page() can hardly change?
 
-diff --git a/drivers/net/wwan/iosm/iosm_ipc_mmio.c b/drivers/net/wwan/iosm/iosm_ipc_mmio.c
-index dadd8fada259..09f94c123531 100644
---- a/drivers/net/wwan/iosm/iosm_ipc_mmio.c
-+++ b/drivers/net/wwan/iosm/iosm_ipc_mmio.c
-@@ -69,7 +69,7 @@ void ipc_mmio_update_cp_capability(struct iosm_mmio *ipc_mmio)
- 	unsigned int ver;
- 
- 	ver = ipc_mmio_get_cp_version(ipc_mmio);
--	cp_cap = readl(ipc_mmio->base + ipc_mmio->offset.cp_capability);
-+	cp_cap = ioread32(ipc_mmio->base + ipc_mmio->offset.cp_capability);
- 
- 	ipc_mmio->has_mux_lite = (ver >= IOSM_CP_VERSION) &&
- 				 !(cp_cap & DL_AGGR) && !(cp_cap & UL_AGGR);
-@@ -150,8 +150,8 @@ enum ipc_mem_exec_stage ipc_mmio_get_exec_stage(struct iosm_mmio *ipc_mmio)
- 	if (!ipc_mmio)
- 		return IPC_MEM_EXEC_STAGE_INVALID;
- 
--	return (enum ipc_mem_exec_stage)readl(ipc_mmio->base +
--					      ipc_mmio->offset.exec_stage);
-+	return (enum ipc_mem_exec_stage)ioread32(ipc_mmio->base +
-+						 ipc_mmio->offset.exec_stage);
- }
- 
- void ipc_mmio_copy_chip_info(struct iosm_mmio *ipc_mmio, void *dest,
-@@ -167,8 +167,8 @@ enum ipc_mem_device_ipc_state ipc_mmio_get_ipc_state(struct iosm_mmio *ipc_mmio)
- 	if (!ipc_mmio)
- 		return IPC_MEM_DEVICE_IPC_INVALID;
- 
--	return (enum ipc_mem_device_ipc_state)
--		readl(ipc_mmio->base + ipc_mmio->offset.ipc_status);
-+	return (enum ipc_mem_device_ipc_state)ioread32(ipc_mmio->base +
-+						       ipc_mmio->offset.ipc_status);
- }
- 
- enum rom_exit_code ipc_mmio_get_rom_exit_code(struct iosm_mmio *ipc_mmio)
-@@ -176,8 +176,8 @@ enum rom_exit_code ipc_mmio_get_rom_exit_code(struct iosm_mmio *ipc_mmio)
- 	if (!ipc_mmio)
- 		return IMEM_ROM_EXIT_FAIL;
- 
--	return (enum rom_exit_code)readl(ipc_mmio->base +
--					 ipc_mmio->offset.rom_exit_code);
-+	return (enum rom_exit_code)ioread32(ipc_mmio->base +
-+					    ipc_mmio->offset.rom_exit_code);
- }
- 
- void ipc_mmio_config(struct iosm_mmio *ipc_mmio)
-@@ -202,7 +202,7 @@ void ipc_mmio_set_psi_addr_and_size(struct iosm_mmio *ipc_mmio, dma_addr_t addr,
- 		return;
- 
- 	iowrite64(addr, ipc_mmio->base + ipc_mmio->offset.psi_address);
--	writel(size, ipc_mmio->base + ipc_mmio->offset.psi_size);
-+	iowrite32(size, ipc_mmio->base + ipc_mmio->offset.psi_size);
- }
- 
- void ipc_mmio_set_contex_info_addr(struct iosm_mmio *ipc_mmio, phys_addr_t addr)
-@@ -218,6 +218,8 @@ void ipc_mmio_set_contex_info_addr(struct iosm_mmio *ipc_mmio, phys_addr_t addr)
- 
- int ipc_mmio_get_cp_version(struct iosm_mmio *ipc_mmio)
- {
--	return ipc_mmio ? readl(ipc_mmio->base + ipc_mmio->offset.cp_version) :
--			  -EFAULT;
-+	if (ipc_mmio)
-+		return ioread32(ipc_mmio->base + ipc_mmio->offset.cp_version);
-+
-+	return -EFAULT;
- }
--- 
-2.33.0
+Many thanks. :)
+
+> 
 
