@@ -2,106 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981DB401B64
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92D9401B6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242261AbhIFMqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:46:22 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:19011 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242199AbhIFMqV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:46:21 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4H37LL6hX4zbkXS;
-        Mon,  6 Sep 2021 20:41:14 +0800 (CST)
-Received: from [10.174.178.100] (10.174.178.100) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Mon, 6 Sep 2021 20:45:13 +0800
-Subject: Re: [PATCH] mm/page_isolation: don't putback unisolated page
-To:     David Hildenbrand <david@redhat.com>, <akpm@linux-foundation.org>
-CC:     <vbabka@suse.cz>, <iamjoonsoo.kim@lge.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20210904091839.20270-1-linmiaohe@huawei.com>
- <3b36529f-ab97-ddfe-0407-66f0cd1fd38d@redhat.com>
- <2d06db75-5c26-8fe2-6883-ac99056a9894@redhat.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <b0a2947b-360a-40c2-03e4-f0f67845f4c3@huawei.com>
-Date:   Mon, 6 Sep 2021 20:45:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S242351AbhIFMtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:49:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231287AbhIFMtI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 08:49:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E9F86101C;
+        Mon,  6 Sep 2021 12:48:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630932484;
+        bh=/ST7X1c8DQCgiY0ou0QT7ESHMj9xrSDt45dcYJeTI6s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Hb5DLefgMiRLLs3wpEyKeNKxcxpbPi0GZGjRlW9F1ZDNLReahO5kZ1ILLkAS8C4Av
+         SuFFBunuJTqsIiPRplbBWRvkofr4O+63MkH3twp30T73/lyjhKOxX7G0EeXpX5dcdp
+         /o3mPq7cjD60TOuYOAVLTeQwMKAi0b00wtKrMhlXvtqjkcuc/bDdk4B4HgNUpMw50f
+         J4cyXs3lw2bhxMY/s5JfxLsaOl+jpfZICHwFy1CiIy09jsbBLDIYpVcsEjNy0T3Tfr
+         Iz/jzEE9Yyfj6zfBPHClxSCaKUx6yjWFVdzmhxPjIhFgA1rCNNh1HU9jd3ZrxuooGg
+         Yy6CNLOfhALJQ==
+Received: from johan by xi with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1mNE2R-0005pf-MK; Mon, 06 Sep 2021 14:47:51 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     David Lin <dtwlin@gmail.com>, Johan Hovold <johan@kernel.org>,
+        Alex Elder <elder@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: [PATCH] staging: greybus: uart: fix tty use after free
+Date:   Mon,  6 Sep 2021 14:45:38 +0200
+Message-Id: <20210906124538.22358-1-johan@kernel.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <2d06db75-5c26-8fe2-6883-ac99056a9894@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.100]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/9/6 20:11, David Hildenbrand wrote:
-> On 06.09.21 14:02, David Hildenbrand wrote:
->> On 04.09.21 11:18, Miaohe Lin wrote:
->>> If __isolate_free_page() failed, due to zone watermark check, the page is
->>> still on the free list. But this page will be put back to free list again
->>> via __putback_isolated_page() now. This may trigger page->flags checks in
->>> __free_one_page() if PageReported is set. Or we will corrupt the free list
->>> because list_add() will be called for pages already on another list.
->>>
->>> Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
->>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>> ---
->>>    mm/page_isolation.c | 6 ++----
->>>    1 file changed, 2 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
->>> index 9bb562d5d194..7d70d772525c 100644
->>> --- a/mm/page_isolation.c
->>> +++ b/mm/page_isolation.c
->>> @@ -93,10 +93,8 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
->>>                buddy_pfn = __find_buddy_pfn(pfn, order);
->>>                buddy = page + (buddy_pfn - pfn);
->>>    -            if (!is_migrate_isolate_page(buddy)) {
->>> -                __isolate_free_page(page, order);
->>> -                isolated_page = true;
->>> -            }
->>> +            if (!is_migrate_isolate_page(buddy))
->>> +                isolated_page = !!__isolate_free_page(page, order);
->>>            }
->>>        }
->>>   
->>
->> Thanks!
->>
->> Reviewed-by: David Hildenbrand <david@redhat.com>
->>
-> 
-> To make the confusion perfect (sorry) :D I tripple-checked:
-> 
-> In unset_migratetype_isolate() we check that is_migrate_isolate_page(page) holds, otherwise we return.
-> 
-> We call __isolate_free_page() only for such pages.
-> 
-> __isolate_free_page() won't perform watermark checks on is_migrate_isolate().
-> 
-> Consequently, __isolate_free_page() should never fail when called from unset_migratetype_isolate()
-> 
-> If that's correct then we  could instead maybe add a VM_BUG_ON() and a comment why this can't fail.
-> 
-> 
-> Makes sense or am I missing something?
+User space can hold a tty open indefinitely and tty drivers must not
+release the underlying structures until the last user is gone.
 
-I think you're right. __isolate_free_page() should never fail when called from unset_migratetype_isolate()
-as explained by you. But it might be too fragile to reply on the failure conditions of __isolate_free_page().
-If that changes, VM_BUG_ON() here might trigger unexpectedly. Or am I just over-worried as failure conditions
-of __isolate_free_page() can hardly change?
+Switch to using the tty-port reference counter to manage the life time
+of the greybus tty state to avoid use after free after a disconnect.
 
-Many thanks. :)
+Fixes: a18e15175708 ("greybus: more uart work")
+Cc: stable@vger.kernel.org      # 4.9
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/staging/greybus/uart.c | 62 ++++++++++++++++++----------------
+ 1 file changed, 32 insertions(+), 30 deletions(-)
 
-> 
+diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
+index 73f01ed1e5b7..a943fce322be 100644
+--- a/drivers/staging/greybus/uart.c
++++ b/drivers/staging/greybus/uart.c
+@@ -761,6 +761,17 @@ static void gb_tty_port_shutdown(struct tty_port *port)
+ 	gbphy_runtime_put_autosuspend(gb_tty->gbphy_dev);
+ }
+ 
++static void gb_tty_port_destruct(struct tty_port *port)
++{
++	struct gb_tty *gb_tty = container_of(port, struct gb_tty, port);
++
++	if (gb_tty->minor != GB_NUM_MINORS)
++		release_minor(gb_tty);
++	kfifo_free(&gb_tty->write_fifo);
++	kfree(gb_tty->buffer);
++	kfree(gb_tty);
++}
++
+ static const struct tty_operations gb_ops = {
+ 	.install =		gb_tty_install,
+ 	.open =			gb_tty_open,
+@@ -786,6 +797,7 @@ static const struct tty_port_operations gb_port_ops = {
+ 	.dtr_rts =		gb_tty_dtr_rts,
+ 	.activate =		gb_tty_port_activate,
+ 	.shutdown =		gb_tty_port_shutdown,
++	.destruct =		gb_tty_port_destruct,
+ };
+ 
+ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+@@ -798,17 +810,11 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+ 	int retval;
+ 	int minor;
+ 
+-	gb_tty = kzalloc(sizeof(*gb_tty), GFP_KERNEL);
+-	if (!gb_tty)
+-		return -ENOMEM;
+-
+ 	connection = gb_connection_create(gbphy_dev->bundle,
+ 					  le16_to_cpu(gbphy_dev->cport_desc->id),
+ 					  gb_uart_request_handler);
+-	if (IS_ERR(connection)) {
+-		retval = PTR_ERR(connection);
+-		goto exit_tty_free;
+-	}
++	if (IS_ERR(connection))
++		return PTR_ERR(connection);
+ 
+ 	max_payload = gb_operation_get_payload_size_max(connection);
+ 	if (max_payload < sizeof(struct gb_uart_send_data_request)) {
+@@ -816,13 +822,23 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+ 		goto exit_connection_destroy;
+ 	}
+ 
++	gb_tty = kzalloc(sizeof(*gb_tty), GFP_KERNEL);
++	if (!gb_tty) {
++		retval = -ENOMEM;
++		goto exit_connection_destroy;
++	}
++
++	tty_port_init(&gb_tty->port);
++	gb_tty->port.ops = &gb_port_ops;
++	gb_tty->minor = GB_NUM_MINORS;
++
+ 	gb_tty->buffer_payload_max = max_payload -
+ 			sizeof(struct gb_uart_send_data_request);
+ 
+ 	gb_tty->buffer = kzalloc(gb_tty->buffer_payload_max, GFP_KERNEL);
+ 	if (!gb_tty->buffer) {
+ 		retval = -ENOMEM;
+-		goto exit_connection_destroy;
++		goto exit_put_port;
+ 	}
+ 
+ 	INIT_WORK(&gb_tty->tx_work, gb_uart_tx_write_work);
+@@ -830,7 +846,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+ 	retval = kfifo_alloc(&gb_tty->write_fifo, GB_UART_WRITE_FIFO_SIZE,
+ 			     GFP_KERNEL);
+ 	if (retval)
+-		goto exit_buf_free;
++		goto exit_put_port;
+ 
+ 	gb_tty->credits = GB_UART_FIRMWARE_CREDITS;
+ 	init_completion(&gb_tty->credits_complete);
+@@ -844,7 +860,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+ 		} else {
+ 			retval = minor;
+ 		}
+-		goto exit_kfifo_free;
++		goto exit_put_port;
+ 	}
+ 
+ 	gb_tty->minor = minor;
+@@ -853,9 +869,6 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+ 	init_waitqueue_head(&gb_tty->wioctl);
+ 	mutex_init(&gb_tty->mutex);
+ 
+-	tty_port_init(&gb_tty->port);
+-	gb_tty->port.ops = &gb_port_ops;
+-
+ 	gb_tty->connection = connection;
+ 	gb_tty->gbphy_dev = gbphy_dev;
+ 	gb_connection_set_data(connection, gb_tty);
+@@ -863,7 +876,7 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+ 
+ 	retval = gb_connection_enable_tx(connection);
+ 	if (retval)
+-		goto exit_release_minor;
++		goto exit_put_port;
+ 
+ 	send_control(gb_tty, gb_tty->ctrlout);
+ 
+@@ -890,16 +903,10 @@ static int gb_uart_probe(struct gbphy_device *gbphy_dev,
+ 
+ exit_connection_disable:
+ 	gb_connection_disable(connection);
+-exit_release_minor:
+-	release_minor(gb_tty);
+-exit_kfifo_free:
+-	kfifo_free(&gb_tty->write_fifo);
+-exit_buf_free:
+-	kfree(gb_tty->buffer);
++exit_put_port:
++	tty_port_put(&gb_tty->port);
+ exit_connection_destroy:
+ 	gb_connection_destroy(connection);
+-exit_tty_free:
+-	kfree(gb_tty);
+ 
+ 	return retval;
+ }
+@@ -930,15 +937,10 @@ static void gb_uart_remove(struct gbphy_device *gbphy_dev)
+ 	gb_connection_disable_rx(connection);
+ 	tty_unregister_device(gb_tty_driver, gb_tty->minor);
+ 
+-	/* FIXME - free transmit / receive buffers */
+-
+ 	gb_connection_disable(connection);
+-	tty_port_destroy(&gb_tty->port);
+ 	gb_connection_destroy(connection);
+-	release_minor(gb_tty);
+-	kfifo_free(&gb_tty->write_fifo);
+-	kfree(gb_tty->buffer);
+-	kfree(gb_tty);
++
++	tty_port_put(&gb_tty->port);
+ }
+ 
+ static int gb_tty_init(void)
+-- 
+2.32.0
 
