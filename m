@@ -2,84 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 905A7401746
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1121401750
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240098AbhIFHte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 03:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239505AbhIFHtd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 03:49:33 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971ACC061575;
-        Mon,  6 Sep 2021 00:48:28 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id me10so11676009ejb.11;
-        Mon, 06 Sep 2021 00:48:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=jNCadg78ZZbTw5rG5vcUAeu/57QdK1VcpaVIJeax+Zo=;
-        b=M2Pp/NOoc1wCUokzrD3FlfithOVNSX0oHrMleq5LO6tawwL+sQrfx0sgzwEFCloPkU
-         sEAU9DvYAsc6CNg1gPl+gRSjKnB7QRW2uSdfyscl9VGwZYF9a6Y13Y2xgsNcq4BxXb62
-         z4ZI/eox1ZxsJzU08pVtxIZd/LTcA23z7gAmPGJpGD9VepkEXB6daIRR1AgH3M6rXFCB
-         Dnl/Gf1Udb6PO5+DVSk3h3Atc9DcoB42NXKcJNYeJYGvyWL9vcNUKWL85Zzx6PnO8MDM
-         yf/SCJK+VtQYKz65FW+hhUTfXz28ItcKotD8URPP1BK8tfelM44K0BLT+hjdzg80Tlge
-         +//A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=jNCadg78ZZbTw5rG5vcUAeu/57QdK1VcpaVIJeax+Zo=;
-        b=mvsKObOmQO7YaxIL1ywMZ+mk8aGb1/bC95TviZItfx/FTCpOiyGM38Mi/3dX6O5aQ7
-         IHlOXVDEGgHkksAlyoaSuZgmtb/uET7IxE5gQTcwoY9gX/xzkcaJT6KlipgCByk48cZb
-         +SHKYyvW05kkGcHpreFBij0vrHeXWpvJRL6YC5hAEf/ttPTrPdI7xAr3mC4zjoKaTXqn
-         OMoG5N3EtYb4oOFtTCgSACZJEAiuIablmwShqF7mDLIbDsYWAmlzeMoIONxjKswe9/r+
-         5Iz2Wy+5iq+juvvIkoM2CfCGSYklr3zc49eOruGcQyQ8bThmm4UTLCfchAVp4gP1047N
-         9t/Q==
-X-Gm-Message-State: AOAM533aHBAgOt1s5WkqfkyO0CmCQFTCYx0GBt0346oXkXmKZdvUdXcu
-        Ed+OcxhGdvIBM5yj74m1Qsn1plle8R2HRaOZ0dw=
-X-Google-Smtp-Source: ABdhPJyQK0ZZfRUjLcpFEz4qUOksA0fPViZuTEBschVEytlyqhKrwPskK0GFLCBKA1GyuH0eePZ8Sm4aql6OeL2Zeqo=
-X-Received: by 2002:a17:906:1707:: with SMTP id c7mr11781226eje.377.1630914507040;
- Mon, 06 Sep 2021 00:48:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210901194549.3999-1-wsa+renesas@sang-engineering.com>
- <20210901194549.3999-2-wsa+renesas@sang-engineering.com> <CAHp75VdNnvUfMEL3gMrJOFix3AATL8LAiU18LXJJVL77feBRow@mail.gmail.com>
- <YTXFh46EBghq8lyq@kunai>
-In-Reply-To: <YTXFh46EBghq8lyq@kunai>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 6 Sep 2021 10:47:50 +0300
-Message-ID: <CAHp75Vc6E_ZJxGn_qjY5kr3QSCjMmhdddUNJSZwpbkF2-ShF+w@mail.gmail.com>
-Subject: Re: [PATCH 1/1] gpio: add sloppy logic analyzer using polling
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
+        id S240290AbhIFHux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 03:50:53 -0400
+Received: from comms.puri.sm ([159.203.221.185]:49936 "EHLO comms.puri.sm"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239895AbhIFHuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 03:50:50 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by comms.puri.sm (Postfix) with ESMTP id 9E666DFE25;
+        Mon,  6 Sep 2021 00:49:15 -0700 (PDT)
+Received: from comms.puri.sm ([127.0.0.1])
+        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id WmJRLevP9RkE; Mon,  6 Sep 2021 00:49:14 -0700 (PDT)
+Message-ID: <99d6902d8e4ed68de4c011d618344485552002ea.camel@puri.sm>
+Subject: Re: [PATCH v8 3/4] media: i2c: add driver for the SK Hynix Hi-846
+ 8M pixel camera
+From:   Martin Kepplinger <martin.kepplinger@puri.sm>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     devicetree@vger.kernel.org, kernel@puri.sm,
+        krzysztof.kozlowski@canonical.com,
+        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, mchehab@kernel.org,
+        paul.kocialkowski@bootlin.com, phone-devel@vger.kernel.org,
+        robh@kernel.org, sakari.ailus@iki.fi, shawnx.tu@intel.com
+Date:   Mon, 06 Sep 2021 09:49:09 +0200
+In-Reply-To: <20210903161742.GD2209@bug>
+References: <20210831134344.1673318-1-martin.kepplinger@puri.sm>
+         <20210831134344.1673318-4-martin.kepplinger@puri.sm>
+         <20210903161742.GD2209@bug>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.38.3-1 
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 6, 2021 at 10:38 AM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> > Any reason you are not cc=E2=80=99ing me? ;)
->
-> Yes, your reviews are too strict ;)
+Am Freitag, dem 03.09.2021 um 18:17 +0200 schrieb Pavel Machek:
+> Hi!
+> 
+> > The SK Hynix Hi-846 is a 1/4" 8M Pixel CMOS Image Sensor. It
+> > supports
+> > usual features like I2C control, CSI-2 for frame data,
+> > digital/analog
+> > gain control or test patterns.
+> > 
+> > This driver supports the 640x480, 1280x720 and 1632x1224 resolution
+> > modes. It supports runtime PM in order not to draw any unnecessary
+> > power.
+> > 
+> > The part is also called YACG4D0C9SHC and a datasheet can be found
+> > at
+> > https://product.skhynix.com/products/cis/cis.go
+> > 
+> > The large sets of partly undocumented register values are for
+> > example
+> > found when searching for the hi846_mipi_raw_Sensor.c Android
+> > driver.
+> > 
+> > Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+> 
+> Reviewed-by: Pavel Machek <pavel@ucw.cz>
+> 
+> Some nitpicks below..
+> 
+> > +config VIDEO_HI846
+> > +       tristate "Hynix Hi-846 sensor support"
+> > +       depends on I2C && VIDEO_V4L2
+> > +       select MEDIA_CONTROLLER
+> > +       select VIDEO_V4L2_SUBDEV_API
+> > +       select V4L2_FWNODE
+> > +       help
+> > +         This is a Video4Linux2 sensor driver for the Hynix
+> > +         Hi-846 camera.
+> > +
+> > +         To compile this driver as a module, choose M here: the
+> > +         module will be called hi846.
+> 
+> hi846.ko?
 
-Ha-ha!
+hi Pavel, thanks a lot for taking the time! the module name doesn't
+include the file ending, according to all other Kconfig descriptions.
 
-> No, seriously, since you always
-> responded to the patchset anyhow, I didn't see a need.
+the rest looks good and I'll change it according to your review.
 
-Thanks to AI behind Gmail :-)
-I would appreciate if you Cc me explicitly.
+                           martin
 
---=20
-With Best Regards,
-Andy Shevchenko
+
+
