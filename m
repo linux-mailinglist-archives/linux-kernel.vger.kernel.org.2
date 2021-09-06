@@ -2,172 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EE240174F
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:52:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 286F1401754
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 09:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240293AbhIFHuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 03:50:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240232AbhIFHuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 03:50:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFAF260F43
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 07:49:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630914585;
-        bh=Gc0lprsv7w/okSpJYAt55fjl1xzEXuErDUTeV6+8RZ4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JqP03wy8XTp7qDt1TgdOCzYKiph2r9C8s08SL+DZr0/Ssf56d7gjsvNFoitU8FIcK
-         ttUIED0qi0nr1tE6fzWtStAVsAQWfNlJdz4nWl7DqJ88ywAtzWVL1qK6CN8USnVLRS
-         GziyBcDGCB9M8SDb6JErMmJjd8tSrUuqsIcO+MAo+HSkukbC9s9WrvesnwYM1eJguB
-         UBkgBTeOU8H3sWLkx3goAhleGOunGjpstAM0ahnBpny5xrdHeN3YBb24AI6i87J2Nq
-         PPvMTXedZIq/TlgW5ZO3QxzPlD+i0BJ4wWtRHIBlcFQ1AookCd2DfJzU20lfktVpEm
-         UIc8s7yxyCXEQ==
-Received: by mail-ot1-f54.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so7790950otg.11
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 00:49:45 -0700 (PDT)
-X-Gm-Message-State: AOAM530LIx8Zisq64dQTEjlfkCWAv/0MPO3WONXKu9zAJdWMd+KkMh4Y
-        s5kOnQyfjcc2ZBODp0Q2LJnKeUizZWLfsXpzAqI=
-X-Google-Smtp-Source: ABdhPJw2KhJSX56bD1ujc4nIOhS/AujhCUCRQrLrbPPE+SfehRlXCts4tMFpDIOxUFDz2OkohPYafgZKcJSPeDIus0w=
-X-Received: by 2002:a9d:12e2:: with SMTP id g89mr10172221otg.112.1630914585091;
- Mon, 06 Sep 2021 00:49:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210902155429.3987201-1-keithp@keithp.com> <20210904060908.1310204-1-keithp@keithp.com>
- <20210904060908.1310204-3-keithp@keithp.com> <CAMj1kXHHb_d4Exg7_5OdB-Ah=EQxVEUgEv1agUQZg-Rz8pLd5Q@mail.gmail.com>
- <8735qifcy6.fsf@keithp.com>
-In-Reply-To: <8735qifcy6.fsf@keithp.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 6 Sep 2021 09:49:33 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFQHX-PDQXaRXGNjyJNn_frf9tYNFND06DAYC095JhDbw@mail.gmail.com>
-Message-ID: <CAMj1kXFQHX-PDQXaRXGNjyJNn_frf9tYNFND06DAYC095JhDbw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] ARM: Move thread_info into task_struct (v7 only)
-To:     Keith Packard <keithp@keithp.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Abbott Liu <liuwenliang@huawei.com>,
-        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Jens Axboe <axboe@kernel.dk>, Jian Cai <jiancai@google.com>,
-        Joe Perches <joe@perches.com>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Rob Herring <robh@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>
-Content-Type: text/plain; charset="UTF-8"
+        id S240059AbhIFHyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 03:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230466AbhIFHyg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 03:54:36 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542F1C061757
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 00:53:32 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so3803708pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 00:53:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=rlaLLiMPNdX6nNJMxLikoTvHO7/HZLWVppl3vRWfr5k=;
+        b=BtRbsXztmfeZlr2eUdjZKt9p9ijpkUx2lzClwVoY2p+cL5DtkINv+VBUC5HA/0cC9U
+         D+V/ARnbijw3EDe9D/Izm9eF4TSs48nFdOzd7Dzb0DRdEDzMvrilQT/45YqLDvI/KZm3
+         EKIZbEdYvh+6Q8g9b1LVCi46LqynSrdTq3gKN8T41M+M/8AHFRhEeMxhcpCke0jqb8hl
+         HmprZ8o2b/bicn7KWMqYz2cIWuUquUsmouoVYz/0ODP0ca6tXyD6CKjaHIW9UiIxQ3iF
+         bgGeWnoEIkP+G0lZh7l4+wWcJPj24POIMG/kb/ORG7yh4+pOOhUgnLL9Z/sW/Xn4row+
+         cddg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=rlaLLiMPNdX6nNJMxLikoTvHO7/HZLWVppl3vRWfr5k=;
+        b=AywKAjT/qU9LR5z0DRLmfnyfqyms+Lsiq7UO7/ztBulL7u/rsTjyAI8dootjSaVA6Z
+         Eb7pmuJ/gkS6NHKFeoYBKLkPFaii23tgXdopBbi9fsLuzJOJNL2hyay5jGjeHm6po73U
+         UPwHMzkeIXiiiJmaiNWbkg6WUDaYP+HBG4MMhstv+ENjaAcAL302eNKuaGstp+vhjHCS
+         pOg1l4SJjEioVHqDL2HHOeWJ35aZs5sk13JmI47mCCKlyuG4s16arj/jO5XUfKOIdCr9
+         uxqe8lno5nX6+BlpihkgDg37ja9Oy+WB8ISdZWeqGHGPRYljCaxdWrVrw6bqJ1O9OQso
+         CGmQ==
+X-Gm-Message-State: AOAM531e0fw7CuizLs+PExUfsTAg8ekyBUZUgDG3Dsxc3JhXqDTEh/u+
+        vlzGvnGBsvuTHApFG+tocPkCtQ==
+X-Google-Smtp-Source: ABdhPJxa7VODnGLnMj+iLcEo8Wj2OTDHWE5rnzJIJ+Lx07zI/gpZnKfxGEBWVVe5i46jYcdr7xG+3g==
+X-Received: by 2002:a17:90b:105:: with SMTP id p5mr12902957pjz.183.1630914811820;
+        Mon, 06 Sep 2021 00:53:31 -0700 (PDT)
+Received: from smtpclient.apple ([139.177.225.225])
+        by smtp.gmail.com with ESMTPSA id g11sm7027760pgn.41.2021.09.06.00.53.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 06 Sep 2021 00:53:31 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
+Subject: Re: [PATCH] RDMA/rxe: Fix wrong port_cap_flags
+From:   Junji Wei <weijunji@bytedance.com>
+In-Reply-To: <CAD=hENcbvs3_Mu7tjTPfrj8h1xTDb03y-5bACU3cckOpmPJveg@mail.gmail.com>
+Date:   Mon, 6 Sep 2021 15:53:26 +0800
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, xieyongji@bytedance.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <DB1899F3-88A0-44A2-8F44-A380D625A98F@bytedance.com>
+References: <20210831083223.65797-1-weijunji@bytedance.com>
+ <CAD=hENcbvs3_Mu7tjTPfrj8h1xTDb03y-5bACU3cckOpmPJveg@mail.gmail.com>
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+X-Mailer: Apple Mail (2.3654.80.0.2.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 6 Sept 2021 at 08:14, Keith Packard <keithp@keithp.com> wrote:
->
-> Ard Biesheuvel <ardb@kernel.org> writes:
->
-> > c13 is not a register, it is a value in one of the dimensions of the
-> > ARM sysreg space, and probably covers other system registers that
-> > pre-v7 cores do implement.
->
-> > Better to use its architectural name (TPIDRPRW) and clarify that
-> > pre-v6k/v7 cores simply don't implement it.
->
-> Thanks, I'll reword the commit message
->
-> > Could we split this up?
->
-> I could split up the assembler macro changes which add a temporary
-> register to the calls getting the current thread_info/task_struct value?
-> If that would help get this reviewed, I'd be happy to do
-> that. Otherwise, it's pretty much all-or-nothing as enabling
-> THREAD_INFO_IN_TASK requires a bunch of synchronized changes.
->
 
-Sure, so it is precisely for that reason that it is better to isolate
-changes that can be isolated.
+> On Sep 6, 2021, at 3:21 PM, Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
+>=20
+> On Tue, Aug 31, 2021 at 4:32 PM Junji Wei <weijunji@bytedance.com> =
+wrote:
+>>=20
+>> The port->attr.port_cap_flags should be set to enum
+>> ib_port_capability_mask_bits in ib_mad.h,
+>> not RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP.
+>>=20
+>> Signed-off-by: Junji Wei <weijunji@bytedance.com>
+>> ---
+>> drivers/infiniband/sw/rxe/rxe_param.h | 2 +-
+>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>>=20
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_param.h =
+b/drivers/infiniband/sw/rxe/rxe_param.h
+>> index 742e6ec93686..b5a70cbe94aa 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_param.h
+>> +++ b/drivers/infiniband/sw/rxe/rxe_param.h
+>> @@ -113,7 +113,7 @@ enum rxe_device_param {
+>> /* default/initial rxe port parameters */
+>> enum rxe_port_param {
+>>        RXE_PORT_GID_TBL_LEN            =3D 1024,
+>> -       RXE_PORT_PORT_CAP_FLAGS         =3D =
+RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP,
+>> +       RXE_PORT_PORT_CAP_FLAGS         =3D IB_PORT_CM_SUP,
+>=20
+> RXE_PORT_PORT_CAP_FLAGS         =3D IB_PORT_CM_SUP |
+> RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP,
+>=20
+> Is it better?
+>=20
+> Zhu Yanjun
 
-...
-> >> +DECLARE_PER_CPU(struct task_struct *, current_task);
-> >> +
-> >> +static __always_inline struct task_struct *get_current(void)
-> >> +{
-> >> +       return raw_cpu_read(current_task);
-> >
-> > This needs to run with preemption disabled, or we might get migrated
-> > to another CPU halfway through, and produce the wrong result (i.e.,
-> > the current task of the CPU we migrated from). However, it appears
-> > that manipulating the preempt count will create a circular dependency
-> > here.
->
-> Yeah, I really don't understand the restrictions of this API well. Any
-> code fetching the current task pointer better not be subject to
-> preemption or that value will be stale at some point after it was
-> computed. Do you know if it could ever be run in a context allowing
-> preemption?
+I don=E2=80=99t think so.
 
-All the time. 'current' essentially never changes value from the POV
-of code running in task context, so there is usually no reason to care
-about preemption/migration when referring to it. Using per-CPU
-variables is what creates the problem here.
+Because RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP(0x800000)
+means IB_PORT_BOOT_MGMT_SUP(1 << 23) in ib_mad.h.
+RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP should be used for
+port=E2=80=99s core_cap_flags.
 
-> >
-> > Instead of using a per-CPU variable for current, I think it might be
-> > better to borrow another system register (TPIDRURO or TPIDRURW) to
-> > carry 'current' when THREAD_INFO_IN_TASK is in effect, similar to how
-> > arm64 uses SP_EL0 - those registers could be preserved/restored in the
-> > entry/exit from/to user space paths rather than in the context switch
-> > path, and then be used any way we like while running in the kernel.
->
-> Making sure these values don't leak through to user space somehow? I'm
-> not excited by that prospect at all.
+>=20
+>>        RXE_PORT_MAX_MSG_SZ             =3D 0x800000,
+>>        RXE_PORT_BAD_PKEY_CNTR          =3D 0,
+>>        RXE_PORT_QKEY_VIOL_CNTR         =3D 0,
+>> --
+>> 2.30.1 (Apple Git-130)
+>>=20
 
-Moving the code that pokes the right user space value into these
-registers from the context switch patch to the user space exit path
-should be rather straight-forward, so I am not too concerned about
-security issues here (famous last words)
-
-> But, perhaps someone can help me
-> understand the conditions under which the current task value can be
-> computed where preemption was enabled and have that not be a problem for
-> the enclosing code?
->
-
-In principle, it should be sufficient to run the per-CPU variable load
-sequence with preemption disabled. For instance, your asm version
-
-       movw    \dst, #:lower16:\sym
-       movt    \dst, #:upper16:\sym
-       this_cpu_offset \tmp
-       ldr     \dst, [\dst, \tmp]
-
-must not be preempted and migrated right before the ldr instruction,
-because that would end up accessing another CPU's value for 'current'.
-
-However, the preempt_count itself is stored in thread_info as well, so
-I'm not sure there is a way we can safely disable preemption for this
-sequence to begin with, unless we run the above with interrupts
-disabled.
-
-Given that we are already relying on the MP extensions for this
-anyway, I personally think that using another thread ID register to
-carry 'current' is a reasonable approach as well, since it would also
-allow us to get per-task stack protector support into the compiler.
-But I would like to hear from some other folks on cc as well.
