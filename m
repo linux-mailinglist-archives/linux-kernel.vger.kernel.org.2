@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29DCC401B7F
+	by mail.lfdr.de (Postfix) with ESMTP id BB944401B81
 	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242368AbhIFM52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:57:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33372 "EHLO mail.kernel.org"
+        id S242433AbhIFM5a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:57:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242356AbhIFM50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:57:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B86CE61039;
-        Mon,  6 Sep 2021 12:56:20 +0000 (UTC)
+        id S242398AbhIFM52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 08:57:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 614BA60EB7;
+        Mon,  6 Sep 2021 12:56:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630932981;
-        bh=h4s6S/fKS1X94ZYE2zRjyE0IgdC/3AncBjqqAi/i0PY=;
+        s=korg; t=1630932983;
+        bh=D349oO5QEXvpIRCUTESb1cUfYEXErlCjDIDFbLtpT14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=02Lp6cGoW0REpinP4iXurGWMeCbNZll/ncwTE+2bNmo9/acWSmu5o8ULgvM/V/Wot
-         RodX/y3MdcPqiPDVifppJFicNWZ+UY3fQnThwR4ZxPAoqfmKoIBn582cM7kysbNpFW
-         RsXuQZn73BJiMqFQP6vc9k0jXjDBHT5Vxi0u7GX0=
+        b=WNb5aEx1NQpyLgoviqJmU5w+StMDS0kcfFr+wUzPaJ+BBJaXIKzfUjWrUOen2e6ME
+         CEsnWG9JrxR9LDnH62vLmkrc6w2SYiN1jeEoJsdqn/v9XMCdGLDsPN4oem68dVV8Ck
+         ZF4qUwFroPTGfDMCVE55m1wKaY2sQIZhDMhYPuw4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        stable@vger.kernel.org, Prabhakar Kushwaha <pkushwaha@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Shai Malin <smalin@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 13/29] reset: reset-zynqmp: Fixed the argument data type
-Date:   Mon,  6 Sep 2021 14:55:28 +0200
-Message-Id: <20210906125450.232161917@linuxfoundation.org>
+Subject: [PATCH 5.10 14/29] qed: Fix the VF msix vectors flow
+Date:   Mon,  6 Sep 2021 14:55:29 +0200
+Message-Id: <20210906125450.263629480@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210906125449.756437409@linuxfoundation.org>
 References: <20210906125449.756437409@linuxfoundation.org>
@@ -42,37 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
+From: Shai Malin <smalin@marvell.com>
 
-[ Upstream commit ed104ca4bd9c405b41e968ad4ece51f6462e90b6 ]
+[ Upstream commit b0cd08537db8d2fbb227cdb2e5835209db295a24 ]
 
-This patch changes the data type of the variable 'val' from
-int to u32.
+For VFs we should return with an error in case we didn't get the exact
+number of msix vectors as we requested.
+Not doing that will lead to a crash when starting queues for this VF.
 
-Addresses-Coverity: argument of type "int *" is incompatible with parameter of type "u32 *"
-Signed-off-by: Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-Link: https://lore.kernel.org/r/925cebbe4eb73c7d0a536da204748d33c7100d8c.1624448778.git.michal.simek@xilinx.com
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Shai Malin <smalin@marvell.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/reset/reset-zynqmp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/qlogic/qed/qed_main.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/reset/reset-zynqmp.c b/drivers/reset/reset-zynqmp.c
-index ebd433fa09dd..8c51768e9a72 100644
---- a/drivers/reset/reset-zynqmp.c
-+++ b/drivers/reset/reset-zynqmp.c
-@@ -53,7 +53,8 @@ static int zynqmp_reset_status(struct reset_controller_dev *rcdev,
- 			       unsigned long id)
- {
- 	struct zynqmp_reset_data *priv = to_zynqmp_reset_data(rcdev);
--	int val, err;
-+	int err;
-+	u32 val;
+diff --git a/drivers/net/ethernet/qlogic/qed/qed_main.c b/drivers/net/ethernet/qlogic/qed/qed_main.c
+index 5bd58c65e163..6bb9ec98a12b 100644
+--- a/drivers/net/ethernet/qlogic/qed/qed_main.c
++++ b/drivers/net/ethernet/qlogic/qed/qed_main.c
+@@ -616,7 +616,12 @@ static int qed_enable_msix(struct qed_dev *cdev,
+ 			rc = cnt;
+ 	}
  
- 	err = zynqmp_pm_reset_get_status(priv->data->reset_id + id, &val);
- 	if (err)
+-	if (rc > 0) {
++	/* For VFs, we should return with an error in case we didn't get the
++	 * exact number of msix vectors as we requested.
++	 * Not doing that will lead to a crash when starting queues for
++	 * this VF.
++	 */
++	if ((IS_PF(cdev) && rc > 0) || (IS_VF(cdev) && rc == cnt)) {
+ 		/* MSI-x configuration was achieved */
+ 		int_params->out.int_mode = QED_INT_MODE_MSIX;
+ 		int_params->out.num_vectors = rc;
 -- 
 2.30.2
 
