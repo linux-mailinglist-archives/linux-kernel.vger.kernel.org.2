@@ -2,109 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B95E401E3E
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:27:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7956401E41
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 18:28:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244048AbhIFQ2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 12:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59406 "EHLO
+        id S244077AbhIFQ31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 12:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244017AbhIFQ2e (ORCPT
+        with ESMTP id S243784AbhIFQ3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 12:28:34 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E37C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 09:27:29 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id s15so5986246vst.13
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 09:27:29 -0700 (PDT)
+        Mon, 6 Sep 2021 12:29:25 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF8CC061575;
+        Mon,  6 Sep 2021 09:28:20 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id jg16so14493596ejc.1;
+        Mon, 06 Sep 2021 09:28:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1v7i8HiyO/1Ym8mqrztY8OP2nXDvUjYMU9SPvvdR5iI=;
-        b=KeHclL15otyM8f+dOzQIGQr7RAW+HW31nUm+fsJMd5ukKGOzcIIoebv4l1rxxXdtow
-         2fLv4nH55dwxD6gWWBmA140rbu234m3x5wf0LDpPh4sAK0NohP5zfd6vUKchNaYgOGiA
-         HL7C76TFHjncsA/UknFYGkUCsGfGwNvcBjRl5b9pqn7T8e3GeSmQeE2JviKh+hTXPiH8
-         W3BLdUlb6j6hZMp6lyDcAHGq2rNF5/ZzxpvNboC+KUURUxc2GOwJ+tpmmR73RePzER5F
-         xgX63er1eENm88yda0CY34Qf6EDq5VLW6gBxZ6qPPjiD1bt3kIioC5S7Sq5kOXmX7nKi
-         JUrg==
+        bh=6oKyG7zEb/nW+FeiP30bM48MUXtoqIWfTDkbvnG8BkY=;
+        b=bszZ/g+TVWRlcuLYrm4cp/AJpQzap4khelKGOFDxT37GwmFEI0nnoKH1mXocTABgEr
+         kVhKcce52l+Bda2ODC/ZGHW8uZSxriuGwxC0LX48Hp8snUsmUVEXttz7mv959xm+oqyF
+         bAg5uikiKTYSVezC6S3St86oKeK8d99jnXGqhATYzzcK2iRXCj37sVbgIQH+FlBFzMu7
+         qfs6jGjKM5o0LL9zRHBR73Sg1ZX0fRKN9P+K9qpA/WpYOc26ou7hAj7+mogNeb7JbXOf
+         qOBWnKxn3Tz5Xu3MlM0GqX3FLeEaCgGOT/oL2MxPcb3m9e093RzGm+AL2OOUcvurFelA
+         a4ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1v7i8HiyO/1Ym8mqrztY8OP2nXDvUjYMU9SPvvdR5iI=;
-        b=iE2k2PBnPJdj2eMkRZikzA5B/IknTJNOZEHWZUnO49DMOAlDUrR0h/QKpromZIq1T9
-         j5bxm+OlaYK1WqYONG92S0aGLyeHK+1wAey6u5UKmFbtmyBhiQ9oGZqq3D4Cc3Z94Mld
-         9Tl0QLlY24YfJGTP2a1OYHgD0ch6FF6awTNlo3UvfMzOKMxBWNwhUn0v1aC/59C/p2ZN
-         77KJroWyGouHzO2RessITBtYwi22Nsm+GwaZiJcL7GBCiI28DeH9+E94HswCpbXUXq5t
-         rQama9MX2oT1jsX6/io2n7mjIT24/AUKM51VDXmGcq6m3s14apf/MFJcsXoVJqcoPGxY
-         2zWQ==
-X-Gm-Message-State: AOAM533do0nMcZNgamPiiExuMd5D4iw+C9uRRaq8wLVG4rKWWrENvvYQ
-        ORRwVnvb9VuNt8jqq5AliOYMo4o6ue5nqKAy8A+iaA==
-X-Google-Smtp-Source: ABdhPJx42jYyWvN/Qn4VgmviI0/F3R5RsPLT5EvzkWi6iwNer+i/tY/TKP2zG7TW4SPXjMUt+ScleFoLjPAzV0zGCcs=
-X-Received: by 2002:a67:d387:: with SMTP id b7mr6860162vsj.55.1630945648771;
- Mon, 06 Sep 2021 09:27:28 -0700 (PDT)
+        bh=6oKyG7zEb/nW+FeiP30bM48MUXtoqIWfTDkbvnG8BkY=;
+        b=RQF5n4tw1xWqkk4rzPzWEyh2JzDVcsAYgfmgM8t6MNtojeLof6lWYyOhKpYQIaxTCD
+         oWYrTLaSaXNRTCXj6HqVSwCCnhnFv/9y8fe7OknO020aDpHQo++tF7V8ZlR6q8jFL8lw
+         fxvAygjC2mBMkNEJBhzKoJaeljaVDd/Jo2hqA9LAlvYHBMICAMFXvMc2VcNdh1tu6tSh
+         MNQ9rrk2BmDsC1bGrC0veODBa+9IJNKwfCwE4PRv/5aze1tVcJgRzxp7ksKnDikqfk8r
+         GFC9qz7WJmFIkciqkDtU5LHkbZtGBacenrvmKnPhsByk7hPzy5BBDEjAYNR8orkjT2Co
+         Y7Iw==
+X-Gm-Message-State: AOAM532dOsB6y4HLGqGMzJmugq+v842Bvp7yhhoPsCFm3COX3Q8SK7rP
+        d+ANKAsmiBT83fpjToaMXTftaLLSJp949tYlcoo=
+X-Google-Smtp-Source: ABdhPJwyZI2iQmBxtUR38Zx7Nafy9EsJjNnIzDOyi9cAU4A8FwKXYxAZphlwRFe+JlmOEU0Qn2HcyvKeOV2DlHvWXs0=
+X-Received: by 2002:a17:906:fb19:: with SMTP id lz25mr14543783ejb.162.1630945699450;
+ Mon, 06 Sep 2021 09:28:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210811114827.27322-1-semen.protsenko@linaro.org>
- <20210811114827.27322-4-semen.protsenko@linaro.org> <YRwodjUxlZmvrvSC@robh.at.kernel.org>
-In-Reply-To: <YRwodjUxlZmvrvSC@robh.at.kernel.org>
-From:   Sam Protsenko <semen.protsenko@linaro.org>
-Date:   Mon, 6 Sep 2021 19:27:17 +0300
-Message-ID: <CAPLW+4kvty3PQmSki8eM+WSgcA+zFfyD+--e6KBpird0-gOhMw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/7] dt-bindings: serial: samsung: Add Exynos850 doc
-To:     Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tom Gall <tom.gall@linaro.org>, Marc Zyngier <maz@kernel.org>,
-        =?UTF-8?Q?Pawe=C5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Ryu Euiyoul <ryu.real@samsung.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Charles Keepax <ckeepax@opensource.wolfsonmicro.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>
+References: <CAOuPNLhqSpaTm3u4kFsnuZ0PLDKuX8wsxuF=vUJ1TEG0EP+L1g@mail.gmail.com>
+ <alpine.LRH.2.02.2107200737510.19984@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAOuPNLhh_LkLQ8mSA4eoUDLCLzHo5zHXsiQZXUB_-T_F1_v6-g@mail.gmail.com>
+ <alpine.LRH.2.02.2107211300520.10897@file01.intranet.prod.int.rdu2.redhat.com>
+ <CAOuPNLi-xz_4P+v45CHLx00ztbSwU3_maf4tuuyso5RHyeOytg@mail.gmail.com>
+ <CAOuPNLg0m-Q7Vhp4srbQrjXHsxVhOr-K2dvnNqzdR6Dr4kioqA@mail.gmail.com>
+ <20210830185541.715f6a39@windsurf> <CAOuPNLhTidgLNWUbtUgdESYcKcE1C4SOdzKeQVhFGQvEoc0QEg@mail.gmail.com>
+ <20210830211224.76391708@windsurf> <CAOuPNLgMd0AThhmSknbmKqp3_P8PFhBGr-jW0Mqjb6K6NchEMg@mail.gmail.com>
+In-Reply-To: <CAOuPNLgMd0AThhmSknbmKqp3_P8PFhBGr-jW0Mqjb6K6NchEMg@mail.gmail.com>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Mon, 6 Sep 2021 21:58:08 +0530
+Message-ID: <CAOuPNLiW10-E6F_Ndte7U9NPBKa9Y_UuLhgdwAYTc0eYMk5Mqg@mail.gmail.com>
+Subject: Re: Kernel 4.14: Using dm-verity with squashfs rootfs - mounting issue
+To:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc:     Mikulas Patocka <mpatocka@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>, dm-devel@redhat.com,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>, agk@redhat.com,
+        snitzer@redhat.com, Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 18 Aug 2021 at 00:22, Rob Herring <robh@kernel.org> wrote:
+Dear Thomas, Mikulas,
+Need your help in root causing my dm-verity issue with squashfs.
+Please see my comments inline.
+
+On Tue, 31 Aug 2021 at 18:49, Pintu Agarwal <pintu.ping@gmail.com> wrote:
+
+> > No, but you can backport it easily. Back at
+> > http://lists.infradead.org/pipermail/openwrt-devel/2019-November/025967.html
+> > I provided backports of this feature to OpenWrt, for the 4.14 and 4.19
+> > kernels.
+> >
+> Yes, I can backport it to our 4.14 Kernel.
+> Can you share the list of patches to be backported to make it work on 4.14 ?
+> If it's backported also I need to report to our internal kernel, but
+> it might be slightly easier.
+> Please share the details.
 >
-> On Wed, 11 Aug 2021 14:48:23 +0300, Sam Protsenko wrote:
-> > Add compatible string for Exynos850 SoC.
+
+I am interested to backport dm-mod.create related patches to our 4.14 kernel.
+Please let me know where can I find all the patches ?
+Is it already part of mainline 4.14 ?
+Please share the list of commits (from mainline) that we need to pull
+and backport.
+
+> > > Here is our kernel command line:
+> > >
+> > > [    0.000000] Kernel command line: ro rootwait
+> > > console=ttyMSM0,115200,n8 ....  verity="95384 11923
+> > > 16da5e4bbc706e5d90511d2a3dae373b5d878f9aebd522cd614a4faaace6baa3 12026
+> > > " rootfstype=squashfs ubi.mtd=40,0,30 ubi.block=0,0 root=/dev/dm-0
+> > > .... init=/sbin/init root=/dev/dm-0 dm="rootfs none ro,0 95384 verity
+> > > 1 /dev/ubiblock0_0 /dev/mtdblock53 4096 4096 11923 8 sha256
+> > > 16da5e4bbc706e5d90511d2a3dae373b5d878f9aebd522cd614a4faaace6baa3
+> > > aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7 10
+> > > restart_on_corruption ignore_zero_blocks use_fec_from_device
+> > > /dev/mtdblock53 fec_roots 2 fec_blocks 12026 fec_start 12026" ...
 > >
-> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> > Signed-off-by: Sam Protsenko <semen.protsenko@linaro.org>
-> > ---
-> > Changes in v3:
-> >   - None
-> >
-> > Changes in v2:
-> >   - None
-> >
-> >  Documentation/devicetree/bindings/serial/samsung_uart.yaml | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
+> > I don't see how this can work without the dm-mod.create feature. Are
+> > you sure the verity= and dm= kernel arguments exist?
 >
-> Acked-by: Rob Herring <robh@kernel.org>
+I checked a little further and yes there is "dm=" command line in
+kernel available.
+This is already working with ext4 glue, but was never tried with squashfs.
+I think it is mainline derived from Android.
+https://patchwork.kernel.org/project/dm-devel/patch/2c01b2a43a46fab760208d7af3a7af37eec8c41a.1537936397.git.helen.koike@collabora.com/
+https://github.com/projectceladon/device-androidia-kernel/blob/master/init/do_mounts_dm.c
 
-Hi guys,
+Mostly, this is the main repo where our source might be derived:
+https://github.com/android-linux-stable/msm-4.14
 
-Can we please merge this one? I can see that corresponding driver
-changes were pulled in already into malinline, but this one seems to
-be missed.
+Can we backport the patches here ?
+If I get the list I can try it.
 
-Thanks!
+>
+> Also, you mentioned:
+> >>> Here, it definitely worked to append the hash tree to the squashfs
+> >>> image and store them in the same partition.
+> Can you share some details about it ?
+> How it can be done since squashfs is readonly.
+Can you share your reference, how are you appending the hash tree ?
+Let me try the same.
+
+But it seems like the underlying concept is the same for both
+"dm-mod.create" and "dm=".
+However, I am not sure if there are any changes required for squashfs
+as block device..
+
+Errors:
+Currently, we are getting this in boot logs:
+
+[    4.962188] device-mapper: init: attempting early device configuration.
+[    4.969699] device-mapper: init: created device '253:0'
+[    4.975503] device-mapper: init: adding target '0 95384 verity 1
+/dev/ubiblock0_0 /dev/mtdblock53 4096 4096 11923 8 sha256
+8fc2e4bb751f4b3145a486a0f4f1b58149ba3eedc2a67312f31fbee131380dab
+aee087a5be3b982978c923f566a94613496b417f2af592639bc80d141e34dfe7 10
+restart_on_corruption ignore_zero_blocks use_fec_from_device
+/dev/mtdblock53 fec_roots 2 fec_blocks 12026 fec_start 12026'
+[    4.992323] device-mapper: verity: sha256 using implementation
+"sha256-generic"
+[    5.015568] device-mapper: init: dm-0 is ready
+[   10.080065] prepare_namespace: dm_run_setup - done
+[   10.080093] prepare_namespace: saved_root_name: /dev/dm-0
+[   10.083903] prepare_namespace: Inside: name_to_dev_t
+[   10.089605] prepare_namespace: Calling - mount_root() ...
+[   10.094519] [PINTU]: mount_block_root: called with input name:
+/dev/root, fs_names: squashfs
+[   10.263510] [PINTU]: do_mount_root: sys_mount failed: err: -22
+[   10.263544] [PINTU]: mount_block_root: do_mount_root: err: -22, p:
+squashfs, flags: 32769, root_mount_data: (null)
+[..]
+[   10.745672] No filesystem could mount root, tried:
+[   10.745676]  squashfs
+[   10.748015]
+[   10.755232] Kernel panic - not syncing: VFS: Unable to mount root
+fs on unknown-block(253,0)
+
+It seems the rootfs could not mount due to invalid arguments.
+Not sure which arguments are invalid here...
+
+
+Thanks,
+Pintu
