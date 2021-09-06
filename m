@@ -2,125 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5876401F10
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2E4401F12
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 19:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244041AbhIFRMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 13:12:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41454 "EHLO
+        id S243179AbhIFROC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 13:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238964AbhIFRML (ORCPT
+        with ESMTP id S236854AbhIFROB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 13:12:11 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE598C06175F
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 10:11:05 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id s10so14493978lfr.11
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:11:05 -0700 (PDT)
+        Mon, 6 Sep 2021 13:14:01 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E936AC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 10:12:55 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id y6so12338797lje.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:12:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Cu2xJTqozk4xsbaxL8H9BoFzyGhonAhAaycqLOW0ec8=;
-        b=OlLhUgbAfIRcaQBkm3ucc7CkjQAA3BY3foo15moLBOuI3bnD2Kus4MNZyf0QsYgIYo
-         nYbwNGvkReFol2qerrmiIPhJwlB8yfL4VS7xERe6PQW1ZAkPROcukdDIAppf1FTAiEtW
-         y+1oyCqSnc3RJ5wKu+lHo6J8Hhxb89KqfMf2R86r38NWDbRsmOlMpqbHkNHi7bCFiSqW
-         cl3lahlfSxznPdky39hR5eu7x7LzmxY6PmVuGHoR2GG6KV3mnQh2ksxW1J/2m2kjXAZA
-         AXoTX3K6GFv1heJQ79c2pUmD74HsC98NaYlHdj2R9LB8Mw6mkN6Kj8B5D6ZJn7udld5B
-         OXKg==
+        bh=wG+m7axsyf9xe/P3eHS5Xatu0sFA+zmgWESW9SpvH6I=;
+        b=LLRQolIN0Z8DHNVqkw31H4xNxRValfnKjUOyyhL9sHuUUjtKUGSTH69a+eYok9fgvp
+         g1L+bhrywdbnu57OcTIWACmngZXKAQmXpMTaZg38WX3/ZbWpNZuD31WEQFPVLWqOlFOs
+         /lBf+EeQKzTUNFwbSwsYdh93DQvBy9fU1SGcM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Cu2xJTqozk4xsbaxL8H9BoFzyGhonAhAaycqLOW0ec8=;
-        b=owkpbb9vBxEfdPRIJaKFoudG8RCEcJkh0LBrFClD8y0pG4uwmJnEI9807yv2WNM+GC
-         7riQPT75Mp8OVbkRJIXG6nBzQiV5kqjtdafH3ipN8x1fbb4Xl4SXImXpxrgParZlUr5I
-         DKFPBEFqXye/ZeTFBc6ZNx3MCwZud0PRPtUCdrIoOsuaO8gSmzjhQK88/z64qxuchMeN
-         hH8EeU8FC+Xaqaa13OWA6No/ei1ini8gjjzbDy4BaHvAu+MZGsUux0gILR3oMVCRulEu
-         VCvQlVKTU+g8pkoX1hdyO9EJIgadpxT/f16qfYmFQyIMrTRKS4aMo/WhSq0tePZ4tDSX
-         wqAA==
-X-Gm-Message-State: AOAM533EhgD4uBbJwfAz1BQG2i5SfYrrVHNVjczVGgzbtTM1zXvHGggF
-        gedPKFEsm30+5Dumy09KFUmVG4eAQp2l7uhpSBRjcA==
-X-Google-Smtp-Source: ABdhPJySjVy/4t45uf+nwvNhsrs7H6NHiflWPlp7zgQ9bQXGTclgeFZjH9Q4gk7PApD5uzg0A1VOJOtWwiyVL3oaHNk=
-X-Received: by 2002:a05:6512:1043:: with SMTP id c3mr9631426lfb.358.1630948263963;
- Mon, 06 Sep 2021 10:11:03 -0700 (PDT)
+        bh=wG+m7axsyf9xe/P3eHS5Xatu0sFA+zmgWESW9SpvH6I=;
+        b=JZMPF8rOxF+VuQ2rJlo6Fhc1PsCPLDreGQRX5r/seiZovCW1uutvNbho4AST6XKmvR
+         punEUrZWAXkAkLuhG19FNchuxd6GzVhivvX7aNWJPCZDZSiJUNkyKl6lGqaCeE2gdewg
+         Lq+Dq4WhDRKZM6q+ICQgG8aU4Zuzbfs8aCNaRC8eIJ4AnzDYLQ8W+alVKudWnhO65EkM
+         5cMzkZVdnnpyHcs+rzoKND1QPotzMUYDQofoaqeUoiMjg8eLSZDSGSpvwR2/vmPW1DKs
+         UYbB+eAz7sFhYAdK/j4eCwYZBDLlJYkaJlfltkxSlu1tiwIQ9NwAIHUaR2/ZPcVAqbtb
+         9Jog==
+X-Gm-Message-State: AOAM533x0qGkl1JjsmCcK7Mac68ckTNWk/nHib0Ch/NJFJi8dxYiWlBS
+        YNlPjvvbADv66a/JeUMOxht3DVot6p2VgjrCcds=
+X-Google-Smtp-Source: ABdhPJzK89YhzMKheyO1CFEGHP/THThB/7cYEzCHuquWXtisSzz78IvLi/YiZzek+oK5hdShYOc1rA==
+X-Received: by 2002:a2e:b613:: with SMTP id r19mr11180764ljn.136.1630948373433;
+        Mon, 06 Sep 2021 10:12:53 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id d20sm788311lfv.117.2021.09.06.10.12.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 10:12:52 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id m28so14543525lfj.6
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 10:12:52 -0700 (PDT)
+X-Received: by 2002:a05:6512:2611:: with SMTP id bt17mr10361132lfb.141.1630948372307;
+ Mon, 06 Sep 2021 10:12:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210902174105.2418771-1-mcgrof@kernel.org> <20210902174105.2418771-4-mcgrof@kernel.org>
-In-Reply-To: <20210902174105.2418771-4-mcgrof@kernel.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 6 Sep 2021 19:10:27 +0200
-Message-ID: <CAPDyKFrwjJyLXfr48+Jujfp7VvxPu5JCGJAhZJn3-GzDb1Kh5A@mail.gmail.com>
-Subject: Re: [PATCH 3/9] mspro_block: add error handling support for add_disk()
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        chaitanya.kulkarni@wdc.com, atulgopinathan@gmail.com,
-        Hannes Reinecke <hare@suse.de>,
-        Maxim Levitsky <maximlevitsky@gmail.com>,
-        Alex Dubov <oakad@yahoo.com>,
-        Colin King <colin.king@canonical.com>,
-        Shubhankar Kuranagatti <shubhankarvk@gmail.com>,
-        Jia-Ju Bai <baijiaju1990@gmail.com>, Tom Rix <trix@redhat.com>,
-        dongsheng.yang@easystack.cn, ceph-devel@vger.kernel.org,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh R <vigneshr@ti.com>, sth@linux.ibm.com,
-        hoeppner@linux.ibm.com, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        oberpar@linux.ibm.com, Tejun Heo <tj@kernel.org>,
-        linux-s390@vger.kernel.org, linux-mtd@lists.infradead.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210830184429.1ee4b4d8@canb.auug.org.au> <20210906154151.0aa41a7a@canb.auug.org.au>
+ <202109061000.79CF310@keescook>
+In-Reply-To: <202109061000.79CF310@keescook>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 6 Sep 2021 10:12:36 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgSzN4p0EW2LkA0YkRBjkOXpdaiLZMez=h=3d4Q2Gjp3A@mail.gmail.com>
+Message-ID: <CAHk-=wgSzN4p0EW2LkA0YkRBjkOXpdaiLZMez=h=3d4Q2Gjp3A@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the kspp tree
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Sam Ravnborg <sam@ravnborg.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2 Sept 2021 at 19:41, Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling.
->
-> Contrary to the typical removal which delays the put_disk()
-> until later, since we are failing on a probe we immediately
-> put the disk on failure from add_disk by using
-> blk_cleanup_disk().
->
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+On Mon, Sep 6, 2021 at 10:06 AM Kees Cook <keescook@chromium.org> wrote:
+>>
+> Linus, warnings are being reported (as above)
 
-Queued for v5.16 on the temporary devel branch, thanks!
+New warnings are apparently at least partly reported, but also clearly
+(a) old warnings are ignored, and (b) new warnings seem to be very
+spottily fixed too.
 
-Kind regards
-Uffe
+Guenter reports "pass: 89 fail: 64" for his build setups.
 
+So the fact that *I* require a clean build, and generally have two
+reject a couple of build requests every merge window because of that
+clearly doesn't mean that we actually have clean builds.
 
-> ---
->  drivers/memstick/core/mspro_block.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/memstick/core/mspro_block.c b/drivers/memstick/core/mspro_block.c
-> index 22778d0e24f5..c0450397b673 100644
-> --- a/drivers/memstick/core/mspro_block.c
-> +++ b/drivers/memstick/core/mspro_block.c
-> @@ -1239,10 +1239,14 @@ static int mspro_block_init_disk(struct memstick_dev *card)
->         set_capacity(msb->disk, capacity);
->         dev_dbg(&card->dev, "capacity set %ld\n", capacity);
->
-> -       device_add_disk(&card->dev, msb->disk, NULL);
-> +       rc = device_add_disk(&card->dev, msb->disk, NULL);
-> +       if (rc)
-> +               goto out_cleanup_disk;
->         msb->active = 1;
->         return 0;
->
-> +out_cleanup_disk:
-> +       blk_cleanup_disk(msb->disk);
->  out_free_tag_set:
->         blk_mq_free_tag_set(&msb->tag_set);
->  out_release_id:
-> --
-> 2.30.2
->
+I've had that "no warnings" requirement for years. And that means that
+*my* build has been clean for years.
+
+I want *all* builds to be clean, or at least as far as possible.
+
+You should be the last to complain. You are literally the drop that
+broke the camel's back. I'm done being the last guard against build
+warnings.
+
+           Linus
