@@ -2,73 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A01F4015E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 07:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA624015E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 07:30:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238267AbhIFF0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 01:26:15 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:50805 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238371AbhIFF0N (ORCPT
+        id S239009AbhIFF2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 01:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238881AbhIFF2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 01:26:13 -0400
-Received: by mail-io1-f69.google.com with SMTP id b202-20020a6bb2d3000000b005b7fb465c4aso4376811iof.17
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 22:25:07 -0700 (PDT)
+        Mon, 6 Sep 2021 01:28:43 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0092AC061757;
+        Sun,  5 Sep 2021 22:27:38 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id pi15-20020a17090b1e4f00b00197449fc059so985672pjb.0;
+        Sun, 05 Sep 2021 22:27:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O8EgemLUAyhEE0xDtSpxWPGSz/8UwJOOmPy6hkxB9ZY=;
+        b=LFFBtt8QCnNg/4EX9uSSFk/oNMDV509nCQa+LBnV/KoqvnFDl9iuOGgYiWBbyVl9C0
+         kDlLIph19uG2HdPFMvQLonf6Cm3GTNAPN9gfpzS0sYLuRDaCGlhOWGPclbZgrY04A87C
+         ILBNzd07Ga15AsXAprrvloSS+Muari2Qxe8gMAMQAM0lEXtgWtiA9R3+K7CHgLA6wfMX
+         xLKsJI5m5hOpk23JLVbOvrIvvj0CyKis/W0XaOvqYoBgWRhdg5qFGuMEZ3b+REd3TMQX
+         V0H2n1IjZnGk8QqKkwy6X++myicn+XOC9jjDgfGAyO9Ihw9/+pf3eepdmh6VnP5ZBJhZ
+         5m5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=ZvVDoBv3IAH8y1S0lXBguVVm08g+13BDGKyt9/bor9Y=;
-        b=KAGpSAn/kTxree7d3SQs3RYaWwOaJAFXy1uKIqzjJjWx3OTioMsaHBUAdhXmV/k47Z
-         iAnIxfvv8RhlgfEzrZIi4WiZ8ZYbHfQJ8NMOaMGdP3fSgevbMK1KpEg4ptmRAPYBNTnU
-         2+ef+3qrex7NH1uDi63aypHFlq7EqWV9O0Swi2LZKsCcwzjbk5x86N1k7xk7SlVkBm52
-         cOFNfbj3gp3znZ1GYG6hvrWujRa+hSCwtfxbF71ODxml/NyNb541RR9VZ5+7+X7e/XzA
-         jq7GX2helrjPKnnL72ikZdQJL2h2sray32fYfoV5utZd46Gbq1V4NOBzcqfJlywyMHGq
-         P7kA==
-X-Gm-Message-State: AOAM530DNlZPPT3VWIORxOIvRXrrNs78fXOrFmNmO/OdDRmNiG7w6pBI
-        ad/uKayRM+vH1KlnhhnZCMfbSBlhVp9ZY7SDzXVOtsgzmf+B
-X-Google-Smtp-Source: ABdhPJzd449QRHh060sSTuNCXAhTIrwXmTA69htRCTu+gj5HcaUCJCrRFnuZykGCC4UYH518hB/hhMO85JbepGiR6Qh7k2AHNNjo
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O8EgemLUAyhEE0xDtSpxWPGSz/8UwJOOmPy6hkxB9ZY=;
+        b=tUTCvgbBiAk64UGc5g8vv9QbHcBM1BIMYzWc0Be9T2wWmj/Q/B4aOzTpkTaHQCZMzQ
+         y5BDuTc/hi8QGTf4MbY7pTWlPHWlBM5wDOBnEX/X11F3aisNMMR++caH1es8xTS4nmvb
+         76JVLCYObbzHAn1fqYX+ZRlPiUglrEg9uwgPZE+XftQpJUeZGS0COWdicNTT/hhv9DHY
+         XdlDOI1Pgz4aoqNEkfRJoDrPzdE3lvpVw9F2i+zMzkZvBkb3u0VGRk6sSj9BDtS1thte
+         tXQFSjgOa1UF25CUf5RuoABVjS87LNoh69v4QS5XEnpJOqLYfO0UNIfsqsBWzjgLTjuJ
+         15BA==
+X-Gm-Message-State: AOAM530yTjn5WXgcf3MLVdeRM5O8ltyU6Ry7xcpUZH7nxpJn7N4CnfR3
+        uTLaiYg+S1lHLVx3jrvOOqcCiGJ2T7UYzw==
+X-Google-Smtp-Source: ABdhPJw3BzChu7rKDhHBe52O5LwZGgcvCBHhm0t8hApbFNm8WE3azi/K3p2FtykUH3BA1049T4veDw==
+X-Received: by 2002:a17:90a:3ec4:: with SMTP id k62mr12355034pjc.32.1630906057664;
+        Sun, 05 Sep 2021 22:27:37 -0700 (PDT)
+Received: from localhost.localdomain ([124.126.19.250])
+        by smtp.gmail.com with ESMTPSA id y23sm6039222pfe.129.2021.09.05.22.27.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 22:27:37 -0700 (PDT)
+From:   zhaoxiao <long870912@gmail.com>
+To:     f.fainelli@gmail.com, rjui@broadcom.com, sbranden@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhaoxiao <long870912@gmail.com>
+Subject: [PATCH] i2c: Fix return value of bcm_kona_i2c_probe()
+Date:   Mon,  6 Sep 2021 13:27:30 +0800
+Message-Id: <20210906052730.19644-1-long870912@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Received: by 2002:a02:294b:: with SMTP id p72mr9242294jap.0.1630905907569;
- Sun, 05 Sep 2021 22:25:07 -0700 (PDT)
-Date:   Sun, 05 Sep 2021 22:25:07 -0700
-In-Reply-To: <000000000000ed8c0a05cb1ff6d8@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000486b8b05cb4cdf5c@google.com>
-Subject: Re: [syzbot] WARNING: kmalloc bug in nf_tables_newset
-From:   syzbot <syzbot+cd43695a64bcd21b8596@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, coreteam@netfilter.org,
-        davem@davemloft.net, eric.dumazet@gmail.com, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        torvalds@linux-foundation.org, w@1wt.eu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+When call function devm_platform_ioremap_resource(), we should use IS_ERR()
+to check the return value and return PTR_ERR() if failed.
 
-commit 7661809d493b426e979f39ab512e3adf41fbcc69
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed Jul 14 16:45:49 2021 +0000
+Signed-off-by: zhaoxiao <long870912@gmail.com>
+---
+ drivers/i2c/busses/i2c-bcm-kona.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-    mm: don't allow oversized kvmalloc() calls
+diff --git a/drivers/i2c/busses/i2c-bcm-kona.c b/drivers/i2c/busses/i2c-bcm-kona.c
+index ed5e1275ae46..8e350f20cde0 100644
+--- a/drivers/i2c/busses/i2c-bcm-kona.c
++++ b/drivers/i2c/busses/i2c-bcm-kona.c
+@@ -763,7 +763,7 @@ static int bcm_kona_i2c_probe(struct platform_device *pdev)
+ 	/* Map hardware registers */
+ 	dev->base = devm_platform_ioremap_resource(pdev, 0);
+ 	if (IS_ERR(dev->base))
+-		return -ENOMEM;
++		return PTR_ERR(dev->base);
+ 
+ 	/* Get and enable external clock */
+ 	dev->external_clk = devm_clk_get(dev->device, NULL);
+-- 
+2.20.1
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15f767b1300000
-start commit:   a9c9a6f741cd Merge tag 'scsi-misc' of git://git.kernel.org..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=17f767b1300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=13f767b1300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7860a0536ececf0c
-dashboard link: https://syzkaller.appspot.com/bug?extid=cd43695a64bcd21b8596
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13281b33300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1077b4b9300000
-
-Reported-by: syzbot+cd43695a64bcd21b8596@syzkaller.appspotmail.com
-Fixes: 7661809d493b ("mm: don't allow oversized kvmalloc() calls")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
