@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE0F401BCD
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B92B401BFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243442AbhIFM7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:59:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36482 "EHLO mail.kernel.org"
+        id S242512AbhIFNBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 09:01:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243131AbhIFM7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:59:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7094661052;
-        Mon,  6 Sep 2021 12:57:57 +0000 (UTC)
+        id S243333AbhIFM7y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 08:59:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4881561056;
+        Mon,  6 Sep 2021 12:58:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1630933078;
-        bh=5pWxRXWS6BeYnRDm27Yaob4ot5rEujuppscH3KhZuNM=;
+        s=korg; t=1630933128;
+        bh=H6Ec/h8dYi+r/7tH8UjUPCKMdRzqno0ISBFRLdo00bQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ArV/5VG0wvtE93qMa3q9eG/DhTVRQC0aWnxSeg4wv+N9UR+4xLZkLpsLt/2CUZ5KY
-         ktSjLx6V7nQSiMrWwlqiIl4n13SJLiE9FpUMj3bhIO/8TLT08CVhqKicARUnDo8Y1Z
-         z//bLv4xG7EXIBI3QNd9rA+Chh0LEwgly2X2Jles=
+        b=B/nauYAPeveYyqCWP2pM6WavJSsy+MBM23KJxiHSq3Z3HLi34ea1PYy+kUt3MLTmc
+         XL9sgIv4096AzE68MhzL4zGMYB9XcJAidn96sNGk/z+4HeRlkvpsU81BTMpH7LQh9u
+         dV4NoIHUA5OtfAi4QA/rwx5cFN229EQ37e7qYmT8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johnathon Clark <john.clark@cantab.net>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.13 20/24] ALSA: hda/realtek: Quirk for HP Spectre x360 14 amp setup
-Date:   Mon,  6 Sep 2021 14:55:49 +0200
-Message-Id: <20210906125449.780294969@linuxfoundation.org>
+        stable@vger.kernel.org, Robert Marko <robert.marko@sartura.hr>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.14 04/14] USB: serial: pl2303: fix GL type detection
+Date:   Mon,  6 Sep 2021 14:55:50 +0200
+Message-Id: <20210906125448.302396823@linuxfoundation.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20210906125449.112564040@linuxfoundation.org>
-References: <20210906125449.112564040@linuxfoundation.org>
+In-Reply-To: <20210906125448.160263393@linuxfoundation.org>
+References: <20210906125448.160263393@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,32 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johnathon Clark <john.clark@cantab.net>
+From: Robert Marko <robert.marko@sartura.hr>
 
-commit 93ab3eafb0b3551c54175cb38afed3b82356a047 upstream.
+commit dcf097e7d21fbdfbf20e473ac155f4d154018374 upstream.
 
-This patch extends support for the HP Spectre x360 14
-amp enable quirk to support a model of the device with
-an additional subdevice ID.
+At least some PL2303GL have a bcdDevice of 0x405 instead of 0x100 as the
+datasheet claims. Add it to the list of known release numbers for the
+HXN (G) type.
 
-Signed-off-by: Johnathon Clark <john.clark@cantab.net>
-Link: https://lore.kernel.org/r/20210823162110.8870-1-john.clark@cantab.net
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 894758d0571d ("USB: serial: pl2303: tighten type HXN (G) detection")
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+Cc: stable@vger.kernel.org	# 5.13
+Link: https://lore.kernel.org/r/20210826110239.5269-1-robert.marko@sartura.hr
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 +
+ drivers/usb/serial/pl2303.c |    1 +
  1 file changed, 1 insertion(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -8378,6 +8378,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x103c, 0x87f2, "HP ProBook 640 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x87f6, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
- 	SND_PCI_QUIRK(0x103c, 0x87f7, "HP Spectre x360 14", ALC245_FIXUP_HP_X360_AMP),
- 	SND_PCI_QUIRK(0x103c, 0x8805, "HP ProBook 650 G8 Notebook PC", ALC236_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x880d, "HP EliteBook 830 G8 Notebook PC", ALC285_FIXUP_HP_GPIO_LED),
+--- a/drivers/usb/serial/pl2303.c
++++ b/drivers/usb/serial/pl2303.c
+@@ -433,6 +433,7 @@ static int pl2303_detect_type(struct usb
+ 		switch (bcdDevice) {
+ 		case 0x100:
+ 		case 0x305:
++		case 0x405:
+ 			/*
+ 			 * Assume it's an HXN-type if the device doesn't
+ 			 * support the old read request value.
 
 
