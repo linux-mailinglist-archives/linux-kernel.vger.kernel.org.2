@@ -2,78 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44495401899
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AAEF4018A1
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 11:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240765AbhIFJIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 05:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44290 "EHLO
+        id S240978AbhIFJMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 05:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229499AbhIFJIE (ORCPT
+        with ESMTP id S240727AbhIFJMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 05:08:04 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 690A7C061575;
-        Mon,  6 Sep 2021 02:07:00 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id y17so5131894pfl.13;
-        Mon, 06 Sep 2021 02:07:00 -0700 (PDT)
+        Mon, 6 Sep 2021 05:12:12 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926EAC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 02:11:07 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id r7so8600700edd.6
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 02:11:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7TvTCAQAKWGsSR90jk8cgr0doCoZwdzVQCvvtv6JSzU=;
-        b=SoFOcLd2b5JNE80CYq2/ba/SX8C6n+g/tuwwUSeHe4CmGZ05rORjqIqjdqVvYBxlNs
-         BIT5b5F73MyI2DiF0m8U2Ll3uz6WnULYATapd0NgD1rOtPphuofEpRtUpajpRkSERNAB
-         88umh9itDc4rIvpoAIYNWcIV+4vBqJn1pN1RG46fHyxRDmDaOyb2Fm4DMmED+Ad0uz6P
-         cgQPkRgOG/9EixCCtRT72Snj/f/s1lSKK1d+U3mYAGwg1qcDWdV+xrF8j9VEzBb9XNfw
-         WHoAzqfM9XxQAmLELEpicU0MzXR5ByzMhDZKeUoxvzqi5cphKQ3BpS2WPzfoPMQPuS+j
-         cCfQ==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Hi4k8mC8CL14+JpmMfxB3pX6Pa/j8Ek3zliWtRdRWbY=;
+        b=WCBQOTgYvEvslSxbmTiQOgaY221XzlEViOHuyzF74lJGYlkYxi1f+t89NdCBKt6RD5
+         b7udVVd6fRYmnrHGu2kFYGQSIvMD45sbaFWsgY4NYL78O7tnR1s1I8VbPZgCwqJwyRDT
+         77y6/CAgFt9lDmZCUH1eDppvCUiKtqMwlh+1rio3DvBhArlukQBeB5RAbDFrOvBsaLuv
+         Ory1+YLwUaTtsVUuO8wFcr64gieCfI0N6WNkXWMIFmpziHdbjjV7BdQjQccKPsL2D0Ys
+         w/3WdrL58bnqGYJvkMwSCm+ZIpSJkgRLRUylihcYL26i6dZvHvE9dMi8wkommjQLCBmp
+         3nBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7TvTCAQAKWGsSR90jk8cgr0doCoZwdzVQCvvtv6JSzU=;
-        b=tj4qpaMW70olpCDdiI4DS0wHAD7Uvg8xhHZlUvQsWE76vgIWHj+udt3jIBtdS/66l1
-         701+1jKVLwNB1hnEf2WsdcxyHv6tpTvvXt6mBH+xkJ0s2msZiMN9fQ4iaOhPefZyALs8
-         FS4DWSLT3LP1Y4fiTS3RfehaHX5E+row7OGi4btaXmMKsg6QTYs1XkzC7a4jUlqKWKEJ
-         Cx4LAoap+RSmBZVkrIlxuvaCmM9SwByg8Q0fcmVuNuzNRBFgjILQrQdfEK5nYyJTLxDy
-         w7yVnKj8Ul6iNgYdlptDzkxO0ByXnqBFQezUSPVwX0MXVxT2iYJUGo0IhDhUJpVxloZR
-         jDMQ==
-X-Gm-Message-State: AOAM5316r8rFgtxANlydjN/NIkOQRV8PaW/WCYfXK8QAHsU2StNnqVzj
-        G3wytjj2nuM5NAvlWtVmFmVjm2lojG1ao3jCcFM=
-X-Google-Smtp-Source: ABdhPJz9/3ZOZ03+sae5raOlBsnWSXNV1XhZcCe9pKR8e9TswPMP26OqQrn91tBBIEKrzOCq1c15BcU5cLjzNY8n+/g=
-X-Received: by 2002:a65:5a49:: with SMTP id z9mr11387468pgs.121.1630919219912;
- Mon, 06 Sep 2021 02:06:59 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Hi4k8mC8CL14+JpmMfxB3pX6Pa/j8Ek3zliWtRdRWbY=;
+        b=AQcgeZ2/C9s+khxOb7gAbRiEaj/mZNA0Agb1y7QAs24YR/wB6ei3pvNhWxaaUd5/aD
+         NGFi/G1/URpMpSV0pp78t6VJCKv807kv0jFuEMHoOzdOFqqpcZOtc1wMG8P3nbzdbsAm
+         OTXk2rTduPIXaqy1bEMNBZbAcj49ZsGprjRQiFjsdqMAFc3AArl/ARqbtyHXwgYU/Y+S
+         hcXlbP9QPkZOlkMVbINJ6XUKXkzXkADZbdJGLX5p1JQ76EhS5IT2u6pFvWjXBZrt0cKs
+         31N1UuO8hwAZOhvh+oSHfdwRRvQXfmS5g8kl8ue4KjSKLRLKnO9TO3gRrUlKgRm3sUiE
+         6QDg==
+X-Gm-Message-State: AOAM533M9bNyJu/12SvSa6CDHuao8zwcPj2YahumP6pQUd9R+SgSK3Ix
+        4M9j1+9ZGcmtN+B4ysh/luo06/4iM6/m3ROEGTQ40w96uYdZZA==
+X-Google-Smtp-Source: ABdhPJwJqiChATE9J/d95eknVM/yvgSZBffBpXx5PCp5StDfuK8SSo6BS4yEg5S1g0GL6P8BxQcEKItCtyGaEk4AyXg=
+X-Received: by 2002:aa7:db10:: with SMTP id t16mr12313802eds.357.1630919464755;
+ Mon, 06 Sep 2021 02:11:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210825154817.242411-1-junhuahuangdream@163.com>
-In-Reply-To: <20210825154817.242411-1-junhuahuangdream@163.com>
-From:   teng sterling <sterlingteng@gmail.com>
-Date:   Mon, 6 Sep 2021 17:06:49 +0800
-Message-ID: <CAMU9jJpq+Yz+hCrGGWa+c619YgFzwqTRF-m9s_R=V7jFHak1uw@mail.gmail.com>
-Subject: Re: [PATCH v3] docs/zh_CN: Add zh_CN/admin-guide/sysrq.rst
-To:     Junhua Huang <junhuahuangdream@163.com>
-Cc:     Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        "Wu X.C." <bobwxc@email.cn>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Junhua Huang <huang.junhua@zte.com.cn>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 6 Sep 2021 14:40:53 +0530
+Message-ID: <CA+G9fYsV7sTfaefGj3bpkvVdRQUeiWCVRiu6ovjtM=qri-HJ8g@mail.gmail.com>
+Subject: bridge.c:157:11: error: variable 'err' is used uninitialized whenever
+ 'if' condition is false
+To:     open list <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        lkft-triage@lists.linaro.org, Netdev <netdev@vger.kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "David S. Miller" <davem@davemloft.net>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Junhua Huang <junhuahuangdream@163.com> =E4=BA=8E2021=E5=B9=B48=E6=9C=8826=
-=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8A=E5=8D=8812:13=E5=86=99=E9=81=93=EF=BC=
-=9A
->
-> From: Junhua Huang <huang.junhua@zte.com.cn>
->
-> Add translation zh_CN/admin-guide/sysrq.rst and link it to
-> zh_CN/admin-guide/index.rst while clean its todo entry.
->
-> Signed-off-by: Junhua Huang <huang.junhua@zte.com.cn>
-Reviewed-by: Yanteng Si <siyanteng@loongson.cn>
+[Please ignore if it is already reported]
 
-Thanks,
+Following build warnings/ errors noticed while building linux mainline
+master branch
+with clang-nightly, clang-13, clang-12, clang-11 and clang-10 for
+arm64 architecture.
+Whereas gcc-11 build pass.
 
-Yanteng
+# to reproduce this build locally: tuxmake --target-arch=arm64
+--kconfig=defconfig --toolchain=clang-nightly --wrapper=none
+--environment=KBUILD_BUILD_TIMESTAMP=@1630870764
+--environment=KBUILD_BUILD_USER=tuxmake
+--environment=KBUILD_BUILD_HOST=tuxmake --runtime=podman
+--image=855116176053.dkr.ecr.us-east-1.amazonaws.com/tuxmake/arm64_clang-nightly
+config default kernel xipkernel modules dtbs dtbs-legacy debugkernel
+headers
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm64
+CROSS_COMPILE=aarch64-linux-gnu- HOSTCC=clang CC=clang defconfig
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/current ARCH=arm64
+CROSS_COMPILE=aarch64-linux-gnu- HOSTCC=clang CC=clang
+scripts/dtc/include-prefixes/arm/bcm2711-rpi-4-b.dts:220.10-231.4:
+Warning (pci_device_reg): /scb/pcie@7d500000/pci@1,0: PCI unit address
+format error, expected 0,0
+scripts/dtc/include-prefixes/arm/bcm2711-rpi-4-b.dts:220.10-231.4:
+Warning (pci_device_reg): /scb/pcie@7d500000/pci@1,0: PCI unit address
+format error, expected 0,0
+arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi:464.3-52: Warning
+(pci_device_reg): /pcie@f8000000/pcie@0,0:reg: PCI reg address is not
+configuration space
+arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi:464.3-52: Warning
+(pci_device_reg): /pcie@f8000000/pcie@0,0:reg: PCI reg address is not
+configuration space
+arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi:464.3-52: Warning
+(pci_device_reg): /pcie@f8000000/pcie@0,0:reg: PCI reg address is not
+configuration space
+arch/arm64/boot/dts/rockchip/rk3399-gru.dtsi:464.3-52: Warning
+(pci_device_reg): /pcie@f8000000/pcie@0,0:reg: PCI reg address is not
+configuration space
+arch/arm64/kvm/hyp/nvhe/Makefile:58: FORCE prerequisite is missing
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:157:11: error:
+variable 'err' is used uninitialized whenever 'if' condition is false
+[-Werror,-Wsometimes-uninitialized]
+        else if (mlx5_esw_bridge_dev_same_hw(rep, esw))
+                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:164:9: note:
+uninitialized use occurs here
+        return err;
+               ^~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:157:7: note:
+remove the 'if' if its condition is always true
+        else if (mlx5_esw_bridge_dev_same_hw(rep, esw))
+             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:140:9: note:
+initialize the variable 'err' to silence this warning
+        int err;
+               ^
+                = 0
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:262:7: error:
+variable 'err' is used uninitialized whenever switch case is taken
+[-Werror,-Wsometimes-uninitialized]
+        case SWITCHDEV_ATTR_ID_PORT_BRIDGE_FLAGS:
+             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:276:9: note:
+uninitialized use occurs here
+        return err;
+               ^~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:257:7: error:
+variable 'err' is used uninitialized whenever 'if' condition is false
+[-Werror,-Wsometimes-uninitialized]
+                if (attr->u.brport_flags.mask & ~(BR_LEARNING |
+BR_FLOOD | BR_MCAST_FLOOD)) {
+
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:276:9: note:
+uninitialized use occurs here
+        return err;
+               ^~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:257:3: note:
+remove the 'if' if its condition is always true
+                if (attr->u.brport_flags.mask & ~(BR_LEARNING |
+BR_FLOOD | BR_MCAST_FLOOD)) {
+
+^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.c:247:9: note:
+initialize the variable 'err' to silence this warning
+        int err;
+               ^
+                = 0
+3 errors generated.
+make[6]: *** [scripts/Makefile.build:277:
+drivers/net/ethernet/mellanox/mlx5/core/en/rep/bridge.o] Error 1
+make[6]: Target '__build' not remade because of errors.
+make[5]: *** [scripts/Makefile.build:540:
+drivers/net/ethernet/mellanox/mlx5/core] Error 2
+make[5]: Target '__build' not remade because of errors.
+make[4]: *** [scripts/Makefile.build:540: drivers/net/ethernet/mellanox] Error 2
+make[4]: Target '__build' not remade because of errors.
+make[3]: *** [scripts/Makefile.build:540: drivers/net/ethernet] Error 2
+make[3]: Target '__build' not remade because of errors.
+make[2]: *** [scripts/Makefile.build:540: drivers/net] Error 2
+make[2]: Target '__build' not remade because of errors.
+make[1]: *** [Makefile:1872: drivers] Error 2
+make[1]: Target '__all' not remade because of errors.
+make: *** [Makefile:219: __sub-make] Error 2
+make: Target '__all' not remade because of errors.
+
+Build config:
+https://builds.tuxbuild.com/1xjZrnXEZfc3qYzziclNRaugAaN/config
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+meta data:
+-----------
+    git_describe: v5.14-9687-g27151f177827
+    git_repo: https://gitlab.com/Linaro/lkft/mirrors/torvalds/linux-mainline
+    git_sha: 27151f177827d478508e756c7657273261aaf8a9
+    git_short_log: 27151f177827 (\Merge tag
+'perf-tools-for-v5.15-2021-09-04' of
+git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux\)
+    kconfig: [
+        defconfig
+    ],
+    kernel_version: 5.14.0
+    status_message: failure while building tuxmake target(s): default
+    target_arch: arm64
+    toolchain: clang-nightly, clang-13, clang-12, clang-11 and clang-10
+
+steps to reproduce:
+https://builds.tuxbuild.com/1xjZrnXEZfc3qYzziclNRaugAaN/tuxmake_reproducer.sh
+
+--
+Linaro LKFT
+https://lkft.linaro.org
