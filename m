@@ -2,92 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A92F4015C0
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 06:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737604015C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 06:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235261AbhIFEoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 00:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40966 "EHLO
+        id S236217AbhIFEra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 00:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232680AbhIFEoO (ORCPT
+        with ESMTP id S230340AbhIFEr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 00:44:14 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C45DC061757
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 21:43:10 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id ot2-20020a17090b3b4200b0019127f8ed87so3020639pjb.1
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 21:43:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3zWdOueDKtAVWRvfy9UP9yg3qL1geWqf5YsZ2lnxtUo=;
-        b=pHag5NqN7NmLLdCbx6/9eOnpQtF7ZlLiKc0HpXCLEHtYhFph+QMys170qxyVKIziAJ
-         enhc3w7ko88B/HrujeSJFW01Tsp70YxHU5h7+qcxRx/yPlTwmNSRAygOJ/VqxGqskb78
-         n8uNACU1NwyC3ZYEZa3Zvk2c+yxY/GkY692LDiF6q15ZWgGC74nDpAXLre+X+TESFFnL
-         DMkSwFFLmbQlek3KbcJp8a/1dp0UEvsdaG1SQv9RSw0l9n26nA05ViLHUoE2ydq/s842
-         jpLOLaILRNKQHmHgsHh1CiqQpd1G8rrWRD6m0F8jrPKzpRL3gtF128GTM3KoKaW4P0yj
-         Cslg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3zWdOueDKtAVWRvfy9UP9yg3qL1geWqf5YsZ2lnxtUo=;
-        b=m1XJ5clkCcAerrs/WJh6fPhId7qDTA4ib4fF/DXULiZctE+F+FZ6befEjcu4K138cR
-         bUWkxBgFrjN5YY0IRKBprzl6EtSfdbH4nwadeCZsah+I3Lut9RowrGV5JmyJJULrdyif
-         c6hAdL940ZdvHjp+raiG8TZYiUAOEFgrfbF0I4Ik/8KLstgqSfQg0yV/Uhhvn/hOcoi/
-         dkwm12ascVRY5Enk+rvNTzTL4P4OSAK8ZsbER8lmgdJse0czU1y+1P5pXl+2LLM4AutF
-         pqy+5G5gxfTdapeccbyGTgRu+31onmUX19ETfNcR3Q2/UBT9puFVmUJ+A+WO6r9haZy4
-         SDTg==
-X-Gm-Message-State: AOAM531kULasLLg2PH/mh2xQfqh4rdJ/WVYcgZXDRMot7PPAlgZrXLDE
-        yT/ooPM7GPuAjuae7GB5drFu6w==
-X-Google-Smtp-Source: ABdhPJwe0pj97liB4LbsuYiSoF/Xal92iCreh5AfSiBr0sUl9OcHufz0zEsxfvXQheepjecetEIs7w==
-X-Received: by 2002:a17:90b:4b4f:: with SMTP id mi15mr11975932pjb.120.1630903390124;
-        Sun, 05 Sep 2021 21:43:10 -0700 (PDT)
-Received: from localhost ([122.172.201.85])
-        by smtp.gmail.com with ESMTPSA id m28sm7594271pgl.9.2021.09.05.21.43.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 05 Sep 2021 21:43:09 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 10:13:07 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Jie Deng <jie.deng@intel.com>, linux-i2c@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, wsa@kernel.org,
-        wsa+renesas@sang-engineering.com, arnd@arndb.de,
-        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
-        yu1.wang@intel.com, shuo.a.liu@intel.com, conghui.chen@intel.com,
-        stefanha@redhat.com, gregkh@linuxfoundation.org
-Subject: Re: [PATCH v14] i2c: virtio: add a virtio i2c frontend driver
-Message-ID: <20210906044307.se4dcld2wlblieyv@vireshk-i7>
-References: <984ebecaf697058eb73389ed14ead9dd6d38fb53.1625796246.git.jie.deng@intel.com>
- <20210904160059-mutt-send-email-mst@kernel.org>
+        Mon, 6 Sep 2021 00:47:29 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0808CC061575;
+        Sun,  5 Sep 2021 21:46:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1630903581;
+        bh=RzSzDTHci4V2ziXtE5vIRYIpw+paSUotIA2LSQZH0eU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gR90qONM52pLQX1CCJwe85SwvDngfw01gEJHvlLgaE3M50MZ93PD5vyq3uRulxpFC
+         C1Tm8qbBmC9lSGob68DvXg5lof9ruKriAigEnAtpEtHO5G2wPMt0YwMWFILyuZmbKi
+         eFdDV0RKLh2Qt9fDXK4nLzc7khh8WIRI1t/aNHSzPoO1w+CCvAtQOLutttgUVFrOYo
+         KMGejFeAD3rzWawFHeeXeD5bHHNFYCUzO2GoZy497Z1NTV1uRIrlb56Jh5z7/H1oT2
+         wyglEk6aCpv4N6Unhpq2N5ugk3wZpav9uTLHvrsg9UgDe/3y4F5+KMg0xYXu3pE4I2
+         mPyJrcaNfnh7A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4H2wpM0d9Sz9sRN;
+        Mon,  6 Sep 2021 14:46:19 +1000 (AEST)
+Date:   Mon, 6 Sep 2021 14:46:17 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Vasily Averin <vvs@virtuozzo.com>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the arm
+ tree
+Message-ID: <20210906144617.20cd87c0@canb.auug.org.au>
+In-Reply-To: <20210824191039.10d869cb@canb.auug.org.au>
+References: <20210824191039.10d869cb@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210904160059-mutt-send-email-mst@kernel.org>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: multipart/signed; boundary="Sig_/LjgvNLQcUWHp5jFvpFl8cxN";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04-09-21, 16:01, Michael S. Tsirkin wrote:
-> Same as with qemu bits, I am confused as to what is the status
-> of proposed spec changes and whether the driver will work
-> with them.
+--Sig_/LjgvNLQcUWHp5jFvpFl8cxN
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This is already merged as well.
+Hi all,
 
-The current version simply fails to transmit the messages in case the
-length of a buffer is 0. I have patch ready to make it work with the
-proposed spec changes, just waiting for them to be accepted.
+On Tue, 24 Aug 2021 19:10:39 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> Today's linux-next merge of the akpm-current tree got a conflict in:
+>=20
+>   ipc/sem.c
+>=20
+> between commit:
+>=20
+>   bdec0145286f ("ARM: 9114/1: oabi-compat: rework sys_semtimedop emulatio=
+n")
+>=20
+> from the arm tree and commit:
+>=20
+>   7a4207f02a96 ("memcg: enable accounting of ipc resources")
+>=20
+> from the akpm-current tree.
+>=20
+> I fixed it up (I think, see below) and can carry the fix as
+> necessary. This is now fixed as far as linux-next is concerned, but any
+> non trivial conflicts should be mentioned to your upstream maintainer
+> when your tree is submitted for merging.  You may also want to consider
+> cooperating with the maintainer of the conflicting tree to minimise any
+> particularly complex conflicts.
+>=20
+> diff --cc ipc/sem.c
+> index ae8d9104b0a0,1a8b9f0ac047..000000000000
+> --- a/ipc/sem.c
+> +++ b/ipc/sem.c
+> @@@ -2216,40 -2229,9 +2216,40 @@@ long __do_semtimedop(int semid, struct=
+=20
+>  =20
+>   	unlink_queue(sma, &queue);
+>  =20
+>  -out_unlock_free:
+>  +out_unlock:
+>   	sem_unlock(sma, locknum);
+>   	rcu_read_unlock();
+>  +out:
+>  +	return error;
+>  +}
+>  +
+>  +static long do_semtimedop(int semid, struct sembuf __user *tsops,
+>  +		unsigned nsops, const struct timespec64 *timeout)
+>  +{
+>  +	struct sembuf fast_sops[SEMOPM_FAST];
+>  +	struct sembuf *sops =3D fast_sops;
+>  +	struct ipc_namespace *ns;
+>  +	int ret;
+>  +
+>  +	ns =3D current->nsproxy->ipc_ns;
+>  +	if (nsops > ns->sc_semopm)
+>  +		return -E2BIG;
+>  +	if (nsops < 1)
+>  +		return -EINVAL;
+>  +
+>  +	if (nsops > SEMOPM_FAST) {
+> - 		sops =3D kvmalloc_array(nsops, sizeof(*sops), GFP_KERNEL);
+> ++		sops =3D kvmalloc_array(nsops, sizeof(*sops), GFP_KERNEL_ACCOUNT);
+>  +		if (sops =3D=3D NULL)
+>  +			return -ENOMEM;
+>  +	}
+>  +
+>  +	if (copy_from_user(sops, tsops, nsops * sizeof(*tsops))) {
+>  +		ret =3D  -EFAULT;
+>  +		goto out_free;
+>  +	}
+>  +
+>  +	ret =3D __do_semtimedop(semid, sops, nsops, timeout, ns);
+>  +
+>   out_free:
+>   	if (sops !=3D fast_sops)
+>   		kvfree(sops);
 
-> Let's let the dust settle on them then, then
-> resubmit?
+This is now a conflict between the arm tree and Linus' tree.
 
-It doesn't break anything for now since we don't have much users and
-we know zero length transfers don't work. I will submit the necessary
-changes once spec is finalized.
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
-viresh
+--Sig_/LjgvNLQcUWHp5jFvpFl8cxN
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmE1nRkACgkQAVBC80lX
+0GznSwgAlnp26CA+nBp+V9WYBM4Rd8DHC/l4yzvpQxNgRSmTr7pzD4sVrs/NtlUe
+G2QST6sYQPahSUB9j6IKdb2krCKtzT3gwsOTV2dCtr2hUBB8iuXMrr1CG3xMBuaD
+4Wtno+brYdKzviiewzLHHhQRS4BnrgrFj5fYWSrKNrdhovO/xYz77iSkHuV9PpCp
+kVCYSzNw9Ec0io8QW6gX2QU3m4WsBRS0kjybE0FJjiJPhNppxo987tpzN+wkO7fk
+inL1+7fUVNB7maQUfxt6d6Binyvc2I3pSUcK1mgOdd/eZ4UtqkJHJKhhHIicOgGr
+yQmNZlbQl9tddYpt/oJwSbVFZoFEwg==
+=cctH
+-----END PGP SIGNATURE-----
+
+--Sig_/LjgvNLQcUWHp5jFvpFl8cxN--
