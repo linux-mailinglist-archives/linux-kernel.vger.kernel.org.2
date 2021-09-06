@@ -2,132 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F31401D50
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 16:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E955401D59
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 16:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243630AbhIFO6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 10:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39140 "EHLO
+        id S243747AbhIFO7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 10:59:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243528AbhIFO54 (ORCPT
+        with ESMTP id S243684AbhIFO7H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 10:57:56 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD04CC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 07:56:51 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id m2so4821781wmm.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 07:56:51 -0700 (PDT)
+        Mon, 6 Sep 2021 10:59:07 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04246C061575;
+        Mon,  6 Sep 2021 07:58:03 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so4447409pjr.1;
+        Mon, 06 Sep 2021 07:58:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=CtHiP+D7k5znLaPfpOQWBuuhn0SZQDsGXEHIILBBc1E=;
-        b=WCfNNygVYAjJNE3QPiwsT3pzkIfLqzGlZq7FFjAb99YiilaQBopfe1sVzhYZzwsHKb
-         P/1WE1p1AipRlP3kD+WRUNrrTwNA4wj2ONI8OQpwrLf/1ZGQyEjWZGiaeyBRDsjOdWy9
-         bI/xps0XWhbOXF3PB0ZfALeqob/0rqm68nOHITE74KPteoi3awxHyfAbR5Ty/rvfTJRe
-         2CSD2uEtVlokfkGKiPlWJmoDpzpRdJ3/6fd8DujAPhM34Vsljv2EoHDBTydX8ozILMFp
-         EBwAfWl0gqnVgUpMkgXFekVYRf1VCwn58KNOyw5Ig2J9OywZZLbgomROXpS9D7eARKla
-         b4yg==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=e7Lxz1rTUMVMiOxDU3ihYWK5WPfaNeZ9K8ew2EFVN6M=;
+        b=LXgp52W5k+6e+E1lD/+fnmwROVu0im0ZTbRaTGFRUHoee98niPkmedBSPuoaU+C901
+         xA0zVCRtm3ZstMaY0r+bfrLwX0h4lJRwjHZSrSd7VMiiQmuNR4VJb4KIkfYgNr45+6R/
+         Ytm3SgdnIw+8vdyNM7Qrbyc2ZfHYtokHyF9mvUbjZBpqaG9aV9hVDtVpCH7AesyMXvxe
+         UqoY/NFf7dqJ+B2r0NE5QZJnHLwexfdT+iciJQG7/AjInHtDs1ZoecQ7oAJRB4rOv/f9
+         sTenECUfv5Z+O8xZpmI3XfSxkSvYjZ+DMUZOgmuBqGpnmkHpr4lFbj1WgmAnvQDDLG1o
+         HBzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=CtHiP+D7k5znLaPfpOQWBuuhn0SZQDsGXEHIILBBc1E=;
-        b=rkk/w45OaVA1sHdJ0tMVOj/yS64gBl4B06oKQvQ/q3l9HFS6EyFpIJ1Y615d7PxtWa
-         Dx/1Uq84NSzoegYCXDGxLX2juUZeuRe67SjM9jGgfn9gEufy9fuYZgVcLFmA5chjDQ7a
-         dQu8JjT5gnoQSGM+6VWLtCtNMsyTexWBxsfyQtq1KBnWPSzLoS7QrRnDKKxmDhLc70eB
-         vBrXwA5XZGhnRBsxYXLWWr/BG/v6ifUpQoKCv49cY722y+aITabAt46cl2ASRxE4RE93
-         htXlK6xhSmjLVdAUhVgX5Kb5pJncuLNLNRSU0AkFKtzCH+cH5aATCPJ+j3RMYsxss0k2
-         iBVA==
-X-Gm-Message-State: AOAM530TXkydAkLxqxsSlnJv2eplGIYfndJoLjIGcdEDDO6T17gbcZwF
-        NAtJFMSL/zv+dSF22ZCCq6Q8zg==
-X-Google-Smtp-Source: ABdhPJy/Skl3RAKF+wBcqUVU5L4hNy7a3LuFeFL2VfNZsmXXpG71TAEvQwFvX+0uZiQrutD1qWuhmA==
-X-Received: by 2002:a7b:cc85:: with SMTP id p5mr11811897wma.42.1630940210493;
-        Mon, 06 Sep 2021 07:56:50 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id g1sm251095wmk.2.2021.09.06.07.56.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 07:56:50 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 16:56:47 +0200
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     gregkh@linuxfoundation.org, mchehab@kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, mjpeg-users@lists.sourceforge.net
-Subject: Re: [PATCH 0/8] staging: media: zoran: fusion in one module
-Message-ID: <YTYsL5i0B48k/V0Z@Red>
-References: <20210903191540.3052775-1-clabbe@baylibre.com>
- <efe035cc-1839-210f-c0d4-4d58801aa65c@xs4all.nl>
- <YTYcf3We4dcvBx1h@Red>
- <940d5bdf-89b8-b5a4-f485-aa5b1c51286b@xs4all.nl>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=e7Lxz1rTUMVMiOxDU3ihYWK5WPfaNeZ9K8ew2EFVN6M=;
+        b=iA89nih+C3XC4TBfbpSu9gKv5NHVSmzdRFP0BLVNNkz18vfDPvVjyCvnlH6h6vQu3H
+         pqU0PohkolvcapHtnjs0kfhmVt3sUOy09O4pnxENd4wiWxG4xVoeCsaDb+uLiWVDoD/l
+         CNR53Hsj2+5Bae5qe88JoLQYQSeyQJuEbk+lxwkCcna86ghSeZSzgkPrHxGenWzkAPRs
+         OkCrMpzNxhII0AhaubXod+KvY/jPgX59+lqI0rQ048f0DtxruFjwOFRa0d1Ph2F6z4sc
+         KpXXnnsiwqkFLmjw3kb44Vtpp+lBtZ3//JBVvAwioSrchw+eja5mTkHeWloNxWu1IGLN
+         6AYw==
+X-Gm-Message-State: AOAM530K/Gc3aHBcoueBxmIbajNs5c4hKAsVX2uBCno5/ZZdfALz3LFd
+        /4NzsXPIRq1DmVC/CvHBQNbphEXQ9ZcAySCJqUM=
+X-Google-Smtp-Source: ABdhPJx4U2UXdqmjv3wFeCTa6pX3ETSedWET7Gxlb8aTpJkm1WYcBE+shFcj4K1cKKYWsG7A6RIebw==
+X-Received: by 2002:a17:902:8648:b029:129:dda4:ddc2 with SMTP id y8-20020a1709028648b0290129dda4ddc2mr11168934plt.4.1630940282178;
+        Mon, 06 Sep 2021 07:58:02 -0700 (PDT)
+Received: from owniadeMacBook-Pro.local ([8.21.11.90])
+        by smtp.gmail.com with ESMTPSA id p3sm7607183pfw.71.2021.09.06.07.57.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 07:58:01 -0700 (PDT)
+Subject: Re: [PATCH v2] ftrace: Cleanup ftrace_dyn_arch_init()
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org
+References: <20210906111626.1259867-1-o451686892@gmail.com>
+ <87v93dn5qh.fsf@mpe.ellerman.id.au>
+From:   Weizhao Ouyang <o451686892@gmail.com>
+Message-ID: <87b80cd6-f20f-a673-f438-faff5d7d4334@gmail.com>
+Date:   Mon, 6 Sep 2021 22:57:53 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <940d5bdf-89b8-b5a4-f485-aa5b1c51286b@xs4all.nl>
+In-Reply-To: <87v93dn5qh.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Mon, Sep 06, 2021 at 04:11:16PM +0200, Hans Verkuil a écrit :
-> On 06/09/2021 15:49, LABBE Corentin wrote:
-> > Le Mon, Sep 06, 2021 at 01:03:56PM +0200, Hans Verkuil a écrit :
-> >> Hi Corentin,
-> >>
-> >> I finally had the opportunity to test the staging zoran driver.
-> >>
-> >> I found several issues when running v4l2-compliance -s (I posted a patch
-> >> for that), but more seriously is the fact that trying to capture MJPG
-> >> at resolutions 384x288 or less just hangs my PC. It works OK with 768x576.
-> >>
-> >> I discovered this when running 'v4l2-compliance -s -a -f'.
-> >>
-> >> BTW, why isn't the initial format equal to MJPG 768x576?
-> >> I would expect that for these boards that should be the default format.
-> >>
-> >> Another issue is that the TODO should mention that for video output there
-> >> should be a second video device node. And that's really something that
-> >> has to be done before the zoran driver can be moved out of staging.
-> >>
-> >> It shouldn't be that hard to implement, I think.
-> >>
-> >> Right now it is impossible to run the compliance test for the output, since
-> >> it doesn't even see it as an output.
-> >>
-> >> Regards,
-> >>
-> >> 	Hans
-> > 
-> > I work on having a second device for output, (it is the reason of "staging: media: zoran: move videodev alloc" which will help).
-> > 
-> > But I still have the problem of non working output.
-> > 
-> > Does output is really needed for going out of staging ?
-> > Probably nobody have it working for ages. The only way to had it was to use an old mplayer output which is broken since so many time.
-> > Note that this plugin will never work again.
-> > 
-> > The only way to work on output is to use ffmpeg which just recently have suport for writing non-raw video to V4L.
-> 
-> Then just remove it. The code for output remains in the git history so if someone wants to
-> resurrect that, then that's always possible.
-> 
-> The point is that I don't want to have half-baked output support in mainline.
-> 
-> But what exactly is the problem with getting output to work? Doesn't it just decode
-> MJPEG frames? (Sorry if you explained it before, it's so long ago that I looked at this
-> that I forgot the details)
-> 
 
-The first problem is that zoran dont like comment COM/APP0 markers.
-This imply a per buffer filtering but this is already handled in my next branch.
+On 2021/9/6 22:22, Michael Ellerman wrote:
+> Weizhao Ouyang <o451686892@gmail.com> writes:
+>> Most of ARCHs use empty ftrace_dyn_arch_init(), introduce a weak common
+>> ftrace_dyn_arch_init() to cleanup them.
+>>
+>> Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
+>> Acked-by: Heiko Carstens <hca@linux.ibm.com> (s390)
+>>
+>> ---
+>>
+>> Changes in v2:
+>> -- correct CONFIG_DYNAMIC_FTRACE on PowerPC
+>> -- add Acked-by tag
+>> diff --git a/arch/powerpc/include/asm/ftrace.h b/arch/powerpc/include/asm/ftrace.h
+>> index debe8c4f7062..d59f67c0225f 100644
+>> --- a/arch/powerpc/include/asm/ftrace.h
+>> +++ b/arch/powerpc/include/asm/ftrace.h
+>> @@ -61,6 +61,10 @@ struct dyn_arch_ftrace {
+>>  };
+>>  #endif /* __ASSEMBLY__ */
+>>  
+>> +#ifdef CONFIG_DYNAMIC_FTRACE
+>> +int __init ftrace_dyn_arch_init(void);
+>> +#endif /* CONFIG_DYNAMIC_FTRACE */
+>> +
+>>  #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+>>  #define ARCH_SUPPORTS_FTRACE_OPS 1
+>>  #endif
+> That breaks the build for powerpc:
+>
+>   /linux/arch/powerpc/include/asm/ftrace.h: Assembler messages:
+>   /linux/arch/powerpc/include/asm/ftrace.h:65: Error: unrecognized opcode: `int'
+>   make[4]: *** [/linux/scripts/Makefile.build:352: arch/powerpc/kernel/trace/ftrace_64.o] Error 1
+>   make[3]: *** [/linux/scripts/Makefile.build:514: arch/powerpc/kernel/trace] Error 2
+>   make[2]: *** [/linux/scripts/Makefile.build:514: arch/powerpc/kernel] Error 2
+>   make[1]: *** [/linux/Makefile:1861: arch/powerpc] Error 2
+>   make[1]: *** Waiting for unfinished jobs....
+>
+> It needs to be inside an #ifndef __ASSEMBLY__ section.
+>
+> cheers
 
-But the remaining problem is that any output is like http://kernel.montjoie.ovh/zoran_out.png.
-
-I hacked the driver to grab a working buffer when doing input and overrun output buffer later.
-And the result is a working static output.
-So the hw handling is good and the problem came from the data feeding/handling.
-
-I believe that something is wrong in what ffmpeg negociate/send.
-
-Regards
+Thanks for reply, I'll fix it up.
