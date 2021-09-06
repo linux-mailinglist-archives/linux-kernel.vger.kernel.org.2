@@ -2,240 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4454540123C
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 02:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BE4401240
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 02:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237209AbhIFAom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 5 Sep 2021 20:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43824 "EHLO
+        id S238456AbhIFAqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 5 Sep 2021 20:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbhIFAoj (ORCPT
+        with ESMTP id S231383AbhIFAqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 5 Sep 2021 20:44:39 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 330E5C061575
-        for <linux-kernel@vger.kernel.org>; Sun,  5 Sep 2021 17:43:35 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id s20so6930952oiw.3
-        for <linux-kernel@vger.kernel.org>; Sun, 05 Sep 2021 17:43:35 -0700 (PDT)
+        Sun, 5 Sep 2021 20:46:17 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0838C061575;
+        Sun,  5 Sep 2021 17:45:13 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id w7so5042539pgk.13;
+        Sun, 05 Sep 2021 17:45:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kali.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=VXz3E7pt4ytJZFiidta6LWpYOPkipEqLXRupmapbEkg=;
-        b=hG0uEpCkucAjn2t8kIfAgSG7UwOiEnFhcQemLyHrWcRloRDLXWznn6ZN3Z9qmKEJp/
-         stQb9NvQo+/tXaM8tSPvQGrrM12aGphPU9BROyJNOaVij0ZZANc7SO6fnSoH5XjHkRYE
-         T0O3janIJjd11ceL5oFXFhpFsBQxu+Vcub48fzPxz3LglWw10a1DFhS0TBvElFyTBIoU
-         DPg8TWiX3NbiTnM9dQQ4cPJOuJIBDnDPMfI18A5K79JANydFKd/PVjOaL48hk2hbt/qx
-         jcchydaLfw0arkQ8f3IadtWggyLwbnU68bGVYTaV8QxdiYbh0IKFmAiBWPN99aq5ugw3
-         xGhw==
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ubh9Dxu334N6pDTUezOTO6r2/WGzT8aOIrCi4LnVh9s=;
+        b=kFxiqVypuyuTe23+exCK4Kt/9mBbstlJIGFKtJM179Z11djHJ/nMMlrOOnRlHbSEdn
+         izvGEO1SpRJg3ir0PZXBvi+83QpKXPGuQ8e7N2B4JjAk2mPPDrvOTXzWBAEa6o1pybr2
+         cu8k28NoIhMJoac90dy2ymk5m5/q+Xi1cTHLlZEF3okK1zB8FLJDBzjqNIxWlgvri4jh
+         U4vbrtcNSA/fWmr2/r1Y7xD8GkIrVqbj6VXNSCCarXHSu1qbPJF2E6A0tFgmpzmtmBxJ
+         xzY6J02CCW1RgObQcyynxMCs+AsupKPad6CEqN49mTbk1Ut369nOH6DLtIFpdhxb9Awy
+         mliQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=VXz3E7pt4ytJZFiidta6LWpYOPkipEqLXRupmapbEkg=;
-        b=MPUzKR6H5/1ujhSDoyij+1crf5MlDhg2vA6rRm50hD1/9InXEGvjRZQegQA9eYtftu
-         BZgHBaJQVWqOxSUMLf+zJC8ean4UOuCeBFds6d0X3oiXbhefOD6JanCaisHsm8mkntJo
-         Kv6TGdLqN9vxVlQZf6r8wOA/01/Lw3FEbSkHxb6EY1W5C7vSnqxAt7fwuBd3/2eKBLsh
-         d714wZTEFgvhw0RqBlIqQjaVMAzSjrv0UEtY9HURGZB+fYSKQnigQjkxhq1207EVyFht
-         TUiae6G7cBsK3jDV+ONZOnXeCNPAfvDsHUu+16hraIoHB8ty183sUyAMJQjAomuXubcS
-         yEpQ==
-X-Gm-Message-State: AOAM530NmMT+58R7e5NE45iLJ8vpWDvvL+lD5sFBMMSN9dZ9y1NBaPwz
-        imYJutrg2oKdfPuFkyFbX9Tjag==
-X-Google-Smtp-Source: ABdhPJxMgzd1ppDDtypbqleJZ+qHh8aZdbGzv7WtFvDErUHqWWycI0D7asw3iyPTo4fjijSD3iB68Q==
-X-Received: by 2002:a05:6808:a01:: with SMTP id n1mr6665277oij.52.1630889014515;
-        Sun, 05 Sep 2021 17:43:34 -0700 (PDT)
-Received: from MacBook-Pro.hackershack.net (cpe-173-173-107-246.satx.res.rr.com. [173.173.107.246])
-        by smtp.gmail.com with ESMTPSA id u14sm1482783oth.73.2021.09.05.17.43.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 05 Sep 2021 17:43:34 -0700 (PDT)
-Subject: Re: [PATCH] ath10k: Don't always treat modem stop events as crashes
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        netdev@vger.kernel.org, Govind Singh <govinds@codeaurora.org>,
-        Youghandhar Chintala <youghand@codeaurora.org>,
-        Abhishek Kumar <kuabhs@chromium.org>
-References: <20210905210400.1157870-1-swboyd@chromium.org>
-From:   Steev Klimaszewski <steev@kali.org>
-Message-ID: <2ab941df-f604-59b7-28ab-d1a9a6ced2c7@kali.org>
-Date:   Sun, 5 Sep 2021 19:43:32 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ubh9Dxu334N6pDTUezOTO6r2/WGzT8aOIrCi4LnVh9s=;
+        b=r2Yi6WDOI+Rplx3FREtGwfdaRz3GKGCFQTxJTqoHgtimUsYzUqthOSsBryn3d8p7za
+         adki/D0ckAHlgPfjUtlXkSPyjM964+mmvCGuPnKSUmQGyzLgef/v2zLh0hddYB5jQgKp
+         /yDcGLS73BDpfu1I+dWIVIblSOTI2Ow5a5iysczFK3Td77yn5kX+fiYZ8Po+zGrXZOcR
+         YM07dFgRjaeZudRE8VlnIH0vY8CNITrIx68ANl9oV8EJsAdmuEFQhBj00MS3VdkPm1X7
+         kmbjv1xq2to6y7/HgXO7cQxz8DUMuW7OQAbQ6VEpBkMp4v7ECPU5NAbSr58s7K5IkNmX
+         arSg==
+X-Gm-Message-State: AOAM531SmkD9saOLYkjRZiP3KmLMZ1Z2kYHFym4e2PEt3r3YH0g1mDrf
+        qg7+XQliOzBvesUUCmwg+Fk=
+X-Google-Smtp-Source: ABdhPJxRhUA9540Wx3K8shgq/3JrqbMwNDitZ/rj5tNIPPlRfk3rgR0Z/yR1RwwzmXlzEMEEVGhbJg==
+X-Received: by 2002:a05:6a00:1c58:b0:40c:b337:622c with SMTP id s24-20020a056a001c5800b0040cb337622cmr9388683pfw.3.1630889113235;
+        Sun, 05 Sep 2021 17:45:13 -0700 (PDT)
+Received: from localhost (176.222.229.35.bc.googleusercontent.com. [35.229.222.176])
+        by smtp.gmail.com with ESMTPSA id v7sm5395753pjk.37.2021.09.05.17.45.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Sep 2021 17:45:12 -0700 (PDT)
+Date:   Mon, 6 Sep 2021 08:45:10 +0800
+From:   Yao Yuan <yaoyuan0329os@gmail.com>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     kvm@vger.kernel.org, x86@kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, maz@kernel.org, ehabkost@redhat.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v2 6/6] x86/kvm: add boot parameter for setting max
+ number of vcpus per guest
+Message-ID: <20210906004510.3r3cgigswbfivkeg@sapienza>
+References: <20210903130808.30142-1-jgross@suse.com>
+ <20210903130808.30142-7-jgross@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20210905210400.1157870-1-swboyd@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903130808.30142-7-jgross@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/5/21 4:04 PM, Stephen Boyd wrote:
-> When rebooting on sc7180 Trogdor devices I see the following crash from
-> the wifi driver.
+On Fri, Sep 03, 2021 at 03:08:07PM +0200, Juergen Gross wrote:
+> Today the maximum number of vcpus of a kvm guest is set via a #define
+> in a header file.
 >
->  ath10k_snoc 18800000.wifi: firmware crashed! (guid 83493570-29a2-4e98-a83e-70048c47669c)
+> In order to support higher vcpu numbers for guests without generally
+> increasing the memory consumption of guests on the host especially on
+> very large systems add a boot parameter for specifying the number of
+> allowed vcpus for guests.
 >
-> This is because a modem stop event looks just like a firmware crash to
-> the driver, the qmi connection is closed in both cases. Use the qcom ssr
-> notifier block to stop treating the qmi connection close event as a
-> firmware crash signal when the modem hasn't actually crashed. See
-> ath10k_qmi_event_server_exit() for more details.
+> The default will still be the current setting of 288. The value 0 has
+> the special meaning to limit the number of possible vcpus to the
+> number of possible cpus of the host.
 >
-> This silences the crash message seen during every reboot.
->
-> Fixes: 3f14b73c3843 ("ath10k: Enable MSA region dump support for WCN3990")
-> Cc: Govind Singh <govinds@codeaurora.org>
-> Cc: Youghandhar Chintala <youghand@codeaurora.org>
-> Cc: Abhishek Kumar <kuabhs@chromium.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Juergen Gross <jgross@suse.com>
 > ---
->  drivers/net/wireless/ath/ath10k/snoc.c | 75 ++++++++++++++++++++++++++
->  drivers/net/wireless/ath/ath10k/snoc.h |  4 ++
->  2 files changed, 79 insertions(+)
+>  Documentation/admin-guide/kernel-parameters.txt | 7 +++++++
+>  arch/x86/include/asm/kvm_host.h                 | 5 ++++-
+>  arch/x86/kvm/x86.c                              | 9 ++++++++-
+>  3 files changed, 19 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-> index ea00fbb15601..fc4970e063f8 100644
-> --- a/drivers/net/wireless/ath/ath10k/snoc.c
-> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
-> @@ -12,6 +12,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/property.h>
->  #include <linux/regulator/consumer.h>
-> +#include <linux/remoteproc/qcom_rproc.h>
->  #include <linux/of_address.h>
->  #include <linux/iommu.h>
->  
-> @@ -1477,6 +1478,70 @@ void ath10k_snoc_fw_crashed_dump(struct ath10k *ar)
->  	mutex_unlock(&ar->dump_mutex);
->  }
->  
-> +static int ath10k_snoc_modem_notify(struct notifier_block *nb, unsigned long action,
-> +				    void *data)
-> +{
-> +	struct ath10k_snoc *ar_snoc = container_of(nb, struct ath10k_snoc, nb);
-> +	struct ath10k *ar = ar_snoc->ar;
-> +	struct qcom_ssr_notify_data *notify_data = data;
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 37e194299311..b9641c9989ef 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -2435,6 +2435,13 @@
+>           feature (tagged TLBs) on capable Intel chips.
+>           Default is 1 (enabled)
+>
+> +	kvm.max_vcpus=	[KVM,X86] Set the maximum allowed numbers of vcpus per
+> +			guest. The special value 0 sets the limit to the number
+> +			of physical cpus possible on the host (including not
+> +			yet hotplugged cpus). Higher values will result in
+> +			slightly higher memory consumption per guest.
+> +			Default: 288
 > +
-> +	switch (action) {
-> +	case QCOM_SSR_BEFORE_POWERUP:
-> +		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem starting event\n");
-> +		clear_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
-> +		break;
+>   kvm.vcpu_id_add_bits=
+>           [KVM,X86] The vcpu-ids of guests are sparse, as they
+>           are constructed by bit-wise concatenation of the ids of
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 6c28d0800208..a4ab387b0e1c 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -38,7 +38,8 @@
+>
+>  #define __KVM_HAVE_ARCH_VCPU_DEBUGFS
+>
+> -#define KVM_MAX_VCPUS 288
+> +#define KVM_DEFAULT_MAX_VCPUS 288
+> +#define KVM_MAX_VCPUS max_vcpus
+>  #define KVM_SOFT_MAX_VCPUS 240
+>  #define KVM_MAX_VCPU_ID kvm_max_vcpu_id()
+>  /* memory slots that are not exposed to userspace */
+> @@ -1588,6 +1589,8 @@ extern u64  kvm_max_tsc_scaling_ratio;
+>  extern u64  kvm_default_tsc_scaling_ratio;
+>  /* bus lock detection supported? */
+>  extern bool kvm_has_bus_lock_exit;
+> +/* maximum number of vcpus per guest */
+> +extern unsigned int max_vcpus;
+>  /* maximum vcpu-id */
+>  unsigned int kvm_max_vcpu_id(void);
+>
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index ff142b6dd00c..49c3d91c559e 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -188,9 +188,13 @@ module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
+>  static int __read_mostly vcpu_id_add_bits = -1;
+>  module_param(vcpu_id_add_bits, int, S_IRUGO);
+>
+> +unsigned int __read_mostly max_vcpus = KVM_DEFAULT_MAX_VCPUS;
+> +module_param(max_vcpus, uint, S_IRUGO);
+> +EXPORT_SYMBOL_GPL(max_vcpus);
 > +
-> +	case QCOM_SSR_AFTER_POWERUP:
-> +		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem running event\n");
-> +		break;
-> +
-> +	case QCOM_SSR_BEFORE_SHUTDOWN:
-> +		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem %s event\n",
-> +			   notify_data->crashed ? "crashed" : "stopping");
-> +		if (!notify_data->crashed)
-> +			set_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
-> +		else
-> +			clear_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
-> +		break;
-> +
-> +	case QCOM_SSR_AFTER_SHUTDOWN:
-> +		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem offline event\n");
-> +		break;
-> +
-> +	default:
-> +		ath10k_err(ar, "received unrecognized event %lu\n", action);
-> +		break;
-> +	}
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
-> +static int ath10k_modem_init(struct ath10k *ar)
-> +{
-> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-> +	void *notifier;
-> +
-> +	ar_snoc->nb.notifier_call = ath10k_snoc_modem_notify;
-> +
-> +	notifier = qcom_register_ssr_notifier("mpss", &ar_snoc->nb);
-> +	if (IS_ERR(notifier))
-> +		return PTR_ERR(notifier);
-> +
-> +	ar_snoc->notifier = notifier;
-> +
-> +	return 0;
-> +}
-> +
-> +static void ath10k_modem_deinit(struct ath10k *ar)
-> +{
-> +	int ret;
-> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
-> +
-> +	ret = qcom_unregister_ssr_notifier(ar_snoc->notifier, &ar_snoc->nb);
-> +	if (ret)
-> +		ath10k_err(ar, "error %d unregistering notifier\n", ret);
-> +}
-> +
->  static int ath10k_setup_msa_resources(struct ath10k *ar, u32 msa_size)
+>  unsigned int kvm_max_vcpu_id(void)
 >  {
->  	struct device *dev = ar->dev;
-> @@ -1740,10 +1805,19 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
->  		goto err_fw_deinit;
->  	}
->  
-> +	ret = ath10k_modem_init(ar);
-> +	if (ret) {
-> +		ath10k_err(ar, "failed to initialize modem notifier: %d\n", ret);
-> +		goto err_qmi_deinit;
-> +	}
-> +
->  	ath10k_dbg(ar, ATH10K_DBG_SNOC, "snoc probe\n");
->  
->  	return 0;
->  
-> +err_qmi_deinit:
-> +	ath10k_qmi_deinit(ar);
-> +
->  err_fw_deinit:
->  	ath10k_fw_deinit(ar);
->  
-> @@ -1771,6 +1845,7 @@ static int ath10k_snoc_free_resources(struct ath10k *ar)
->  	ath10k_fw_deinit(ar);
->  	ath10k_snoc_free_irq(ar);
->  	ath10k_snoc_release_resource(ar);
-> +	ath10k_modem_deinit(ar);
->  	ath10k_qmi_deinit(ar);
->  	ath10k_core_destroy(ar);
->  
-> diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
-> index 5095d1893681..d986edc772f8 100644
-> --- a/drivers/net/wireless/ath/ath10k/snoc.h
-> +++ b/drivers/net/wireless/ath/ath10k/snoc.h
-> @@ -6,6 +6,8 @@
->  #ifndef _SNOC_H_
->  #define _SNOC_H_
->  
-> +#include <linux/notifier.h>
-> +
->  #include "hw.h"
->  #include "ce.h"
->  #include "qmi.h"
-> @@ -75,6 +77,8 @@ struct ath10k_snoc {
->  	struct clk_bulk_data *clks;
->  	size_t num_clks;
->  	struct ath10k_qmi *qmi;
-> +	struct notifier_block nb;
-> +	void *notifier;
->  	unsigned long flags;
->  	bool xo_cal_supported;
->  	u32 xo_cal_data;
+> -	int n_bits = fls(KVM_MAX_VCPUS - 1);
+> +	int n_bits = fls(max_vcpus - 1);
+
+A quesintion here: the parameter "vcpu_id_add_bits" also depends
+on the "max_vcpus", we can't calculate the "vcpu_id_add_bits" from
+"max_vcpus" because KVM has no topologically knowledge to determine
+bits needed for each socket/core/thread level, right?
+
 >
-> base-commit: 7d2a07b769330c34b4deabeed939325c77a7ec2f
-
-
-I was also seeing this on the Lenovo Yoga C630, so I pulled the patch in
-to test here and after testing 20 reboots, I have not seen the message once.
-
-Tested-By: Steev Klimaszewski <steev@kali.org>
-
+>   if (vcpu_id_add_bits < -1 || vcpu_id_add_bits > (32 - n_bits)) {
+>       pr_err("Invalid value of vcpu_id_add_bits=%d parameter!\n",
+> @@ -11033,6 +11037,9 @@ int kvm_arch_hardware_setup(void *opaque)
+>   if (boot_cpu_has(X86_FEATURE_XSAVES))
+>       rdmsrl(MSR_IA32_XSS, host_xss);
+>
+> +	if (max_vcpus == 0)
+> +		max_vcpus = num_possible_cpus();
+> +
+>   kvm_pcpu_vcpu_mask = __alloc_percpu(KVM_VCPU_MASK_SZ,
+>                       sizeof(unsigned long));
+>   kvm_hv_vp_bitmap = __alloc_percpu(KVM_HV_VPMAP_SZ, sizeof(u64));
+> --
+> 2.26.2
+>
