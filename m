@@ -2,114 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4828A401AE1
-	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6212A401AE3
+	for <lists+linux-kernel@lfdr.de>; Mon,  6 Sep 2021 14:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239228AbhIFME0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 08:04:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28859 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229648AbhIFMEB (ORCPT
+        id S241496AbhIFME2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 08:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241333AbhIFMEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 08:04:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630929776;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=frAukOYVGtOJ1Dxa66lVEbsorbkE/tBlVsVnTX50G4U=;
-        b=Kyz1vOhoJ9ojl+e+swl5WFC8Ui9J9VO74441zJEVR5v3wPuWzh0u2VMEzXVODar95MGJ4/
-        CAOIigM2+oGrSTfJhKZe89eitKWt0UqVMNCTRDlul++2cPJ0/dTswD/sR5jNSq7r/3tFVD
-        SXtDHJ0F6byz3I4T2tV7NRXA5yg7bvw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-176-kgqMND5LMC2yhCcueEktxg-1; Mon, 06 Sep 2021 08:02:55 -0400
-X-MC-Unique: kgqMND5LMC2yhCcueEktxg-1
-Received: by mail-wr1-f72.google.com with SMTP id d10-20020adffbca000000b00157bc86d94eso1132709wrs.20
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 05:02:55 -0700 (PDT)
+        Mon, 6 Sep 2021 08:04:15 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126EEC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 05:03:11 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id a13so8403436iol.5
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 05:03:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O7ISh/OwFD2H80nlF7WhKIYbG9cBOwzE8UDDaZsXvsA=;
+        b=PT3/Qdobfe0XUw4ybHv2sxcU7bEZ4U8GpCM75nkOhP5SL755yd4LdmI5e96ScqA2L3
+         J8Ffv1NMhvlqSijsiavC45D52SLRkaWocVM0GP0s7TNnbHyXAfahuP1zrqdib+ujk+EM
+         CU1LizVvzDHmBLU+Wwf8TzBAzyzy/eGNKb8fjnrchdaF05wK2rVfgOaIh5Hc8dMjIKN1
+         GTKQm1Ot2cd7xF+PxmzXai7Ru372heQ158Pv8KT9oqxZLHrVTFGEHLKOiN3TyS7nOKf9
+         sRtb6KrzVdz90nATiOqiUkRxnLac/Ph+juUv9DQjEosiGvAAlj2Srl51NPJOM3jY/uCv
+         mSIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=frAukOYVGtOJ1Dxa66lVEbsorbkE/tBlVsVnTX50G4U=;
-        b=WJYe2ImY9wRJUQCg/WmBQa+EzpqE9XnXa6EVvtZpQGzI2Hbciaz83GIut86rphc6b8
-         6zq2O9pNi63S7uavveNrvxLBp4tfYvLwRDR1y+frmEbx7OwnIhymKPn5RBVM+Zxfm48n
-         iWpFTq1D+biH01rmRhEYGXPdqD1sUo5+bLx9XLAsKv3yO35y2I5o4VhT60dGRWjvUH53
-         zOciEFKPq2JMAupM+M+72UFLf/a8SNuXr3NxjsweAPK5ne21/jHK+oQa+abuQCRG5WUI
-         aSpg3zcvbeNGXQs8CbEmHyaYdlenUNACq7QP6xwIM+Gw8NBhRyoenIB9d4IIhzEysehe
-         HbUQ==
-X-Gm-Message-State: AOAM533hbNBCJvZqwHMoCyYUUGV40zpFxVWqU8ccmzQe2Hjw0jultMu/
-        quwZlAqL/K1pMgCME0rcH/Iij900DfPjrtTpd95w6T11c+gwsmQC/UTBBnZBPAV6pzNzfnF7SjG
-        j9q6mAMN3GCgU8fYjZJN5yxamynntoDj/PCYfIBFbnmFiPFVt9uGsKVEsLg3dl5e0q98mv+z6
-X-Received: by 2002:adf:df0c:: with SMTP id y12mr13034299wrl.155.1630929774457;
-        Mon, 06 Sep 2021 05:02:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyhKhtm32LcEgWkjl3X4v4Wu0VKN7KkWyfSQxdUPJRD/eW1BxpQQtgWjoFber1coF0YiWqYaA==
-X-Received: by 2002:adf:df0c:: with SMTP id y12mr13034275wrl.155.1630929774260;
-        Mon, 06 Sep 2021 05:02:54 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c6323.dip0.t-ipconnect.de. [91.12.99.35])
-        by smtp.gmail.com with ESMTPSA id p5sm8179521wrd.25.2021.09.06.05.02.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 05:02:53 -0700 (PDT)
-Subject: Re: [PATCH] mm/page_isolation: don't putback unisolated page
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     vbabka@suse.cz, iamjoonsoo.kim@lge.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210904091839.20270-1-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <3b36529f-ab97-ddfe-0407-66f0cd1fd38d@redhat.com>
-Date:   Mon, 6 Sep 2021 14:02:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O7ISh/OwFD2H80nlF7WhKIYbG9cBOwzE8UDDaZsXvsA=;
+        b=MEP6kAbQtaSiJ2NQ50krrBmR8x+astbetyY7keC+Op/oQIxFqQl5G5XfZdXL44Ev7r
+         Z17DOTcnfJr4Hcu5zKj30m07wmiyLJkpiUryeCytDo4aPqeaLBpFW1/3mHof0TrxE7iL
+         Ib2jL1ihqsf8DPk0o8iCKv2wD96SHcVilCiyFB8mxymBov6RwJ4bmi7GqTzELUcy9ILA
+         TuI0DWK9b8iPQDAhhyGzXdFoD5jzvs+vp4u/wKCPKSNY78NQao8bEjnfw4E3y3K2pPvd
+         Z8WjecsnbvXh53RGxKScANaW0lOgKkgYZ/qbmyOjd4o+vCw0+H7ImLFHbn5aYsvSDoVZ
+         LMyg==
+X-Gm-Message-State: AOAM530vyqeBeCGp5H4aMJecZk6SAcNxo9I7s38Osuu7eEoAI91GOXXl
+        T5+COGaE/eIU026Dyp300OOjP9ZSsbbncxLlpM8=
+X-Google-Smtp-Source: ABdhPJzA51CZzsXmRD/8mfSkSWFTnPv6HG06K4ZkpxKx5Ats57sEW7izaxtVJ1LHGNNDeMnzRanXapodSqQiPmAFRYk=
+X-Received: by 2002:a05:6602:2211:: with SMTP id n17mr9431211ion.142.1630929790513;
+ Mon, 06 Sep 2021 05:03:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210904091839.20270-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210812051059.1103641-1-art@khadas.com> <247c746b-621c-5db0-25c0-1ef0d0a0d77e@baylibre.com>
+ <1jpmtmys2t.fsf@starbuckisacylon.baylibre.com>
+In-Reply-To: <1jpmtmys2t.fsf@starbuckisacylon.baylibre.com>
+From:   Art Nikpal <email2tema@gmail.com>
+Date:   Mon, 6 Sep 2021 20:02:59 +0800
+Message-ID: <CAKaHn9KLYNo9p_Ythq5eXjJSJyJ2=+uhB22A0xp+msLZ9JhJCw@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: meson: sm1-khadas-vim3l use one sound node
+ configuration with VIM3
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Artem Lapkin <art@khadas.com>, Nick Xie <nick@khadas.com>,
+        Gouwa Wang <gouwa@khadas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.09.21 11:18, Miaohe Lin wrote:
-> If __isolate_free_page() failed, due to zone watermark check, the page is
-> still on the free list. But this page will be put back to free list again
-> via __putback_isolated_page() now. This may trigger page->flags checks in
-> __free_one_page() if PageReported is set. Or we will corrupt the free list
-> because list_add() will be called for pages already on another list.
-> 
-> Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->   mm/page_isolation.c | 6 ++----
->   1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-> index 9bb562d5d194..7d70d772525c 100644
-> --- a/mm/page_isolation.c
-> +++ b/mm/page_isolation.c
-> @@ -93,10 +93,8 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
->   			buddy_pfn = __find_buddy_pfn(pfn, order);
->   			buddy = page + (buddy_pfn - pfn);
->   
-> -			if (!is_migrate_isolate_page(buddy)) {
-> -				__isolate_free_page(page, order);
-> -				isolated_page = true;
-> -			}
-> +			if (!is_migrate_isolate_page(buddy))
-> +				isolated_page = !!__isolate_free_page(page, order);
->   		}
->   	}
->   
-> 
+> Take a look at the Loopback sink - it is different between the sm1 based
+vim3 and the g12b one ... this is simply because the audio block is
+different on these SoCs
 
-Thanks!
+Maybe you are right ! i will test it soon too
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Another question is:  loopback necessary ? same as 3 alsa sub devices
+? mixer configuration is already not easy for  understanding;)
 
--- 
-Thanks,
+> However the model name here is
+> a) probably too long
 
-David / dhildenb
+yes i think need to be like other model = "KHADAS-VIM3L";
 
+On Mon, Sep 6, 2021 at 5:24 PM Jerome Brunet <jbrunet@baylibre.com> wrote:
+>
+>
+> On Thu 02 Sep 2021 at 15:31, Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> > Hi,
+> >
+> > On 12/08/2021 07:10, Artem Lapkin wrote:
+> >> Khadas VIM3L board sound configuration same as Khadas VIM3, its already
+> >> defined in meson-khadas-vim3.dtsi and no need overwrite it with different
+> >> card names and routing configurations.
+> >>
+> >> Signed-off-by: Artem Lapkin <art@khadas.com>
+> >> ---
+> >>  .../boot/dts/amlogic/meson-sm1-khadas-vim3l.dts     | 13 -------------
+> >>  1 file changed, 13 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+> >> index f2c098143..06de0b1ce 100644
+> >> --- a/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+> >> +++ b/arch/arm64/boot/dts/amlogic/meson-sm1-khadas-vim3l.dts
+> >> @@ -32,19 +32,6 @@ vddcpu: regulator-vddcpu {
+> >>              regulator-boot-on;
+> >>              regulator-always-on;
+> >>      };
+> >> -
+> >> -    sound {
+> >> -            model = "G12B-KHADAS-VIM3L";
+> >> -            audio-routing = "TDMOUT_A IN 0", "FRDDR_A OUT 0",
+> >> -                            "TDMOUT_A IN 1", "FRDDR_B OUT 0",
+> >> -                            "TDMOUT_A IN 2", "FRDDR_C OUT 0",
+> >> -                            "TDM_A Playback", "TDMOUT_A OUT",
+> >> -                            "TDMIN_A IN 0", "TDM_A Capture",
+> >> -                            "TDMIN_A IN 13", "TDM_A Loopback",
+> >> -                            "TODDR_A IN 0", "TDMIN_A OUT",
+> >> -                            "TODDR_B IN 0", "TDMIN_A OUT",
+> >> -                            "TODDR_C IN 0", "TDMIN_A OUT";
+> >> -    };
+> >>  };
+> >>
+> >>  &cpu0 {
+> >>
+> >
+> > Jerome could you quickly review this ?
+>
+> Removing that is wrong.
+> Take a look at the Loopback sink - it is different between the sm1 based
+> vim3 and the g12b one ... this is simply because the audio block is
+> different on these SoCs
+>
+> So audio-routing property can't go way, Because of that, the cards are
+> slightly different and should have different model.
+>
+> However the model name here is
+> a) probably too long
+> b) misleading :/
+>
+> >
+> > Thanks,
+> > Neil
+>
