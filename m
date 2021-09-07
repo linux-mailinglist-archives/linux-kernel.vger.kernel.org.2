@@ -2,115 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B6340238E
+	by mail.lfdr.de (Postfix) with ESMTP id ACF9540238F
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:45:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233814AbhIGGlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 02:41:00 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:36681 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231779AbhIGGk7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 02:40:59 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 06 Sep 2021 23:39:53 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 06 Sep 2021 23:39:52 -0700
-X-QCInternal: smtphost
-Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 07 Sep 2021 12:09:41 +0530
-Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
-        id EC9CD222D3; Tue,  7 Sep 2021 12:09:39 +0530 (IST)
-From:   Md Sadre Alam <mdalam@codeaurora.org>
-To:     miquel.raynal@bootlin.com, mani@kernel.org,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org, stable@kernel.org
-Subject: [PATCH V5] mtd: rawnand: qcom: Update code word value for raw read
-Date:   Tue,  7 Sep 2021 12:09:31 +0530
-Message-Id: <1630996771-29866-1-git-send-email-mdalam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S234079AbhIGGlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 02:41:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231779AbhIGGlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 02:41:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96DBB610C8;
+        Tue,  7 Sep 2021 06:40:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1630996826;
+        bh=vw36oiTbd8GqLY+2Rft58nRS8q9JMwoME7OU7t2o8VM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XKPJR3sh0Zxgkpj1mC87uUzG/+S+CKTSkaO5q0KWpMc+nhaTYOuPu8wGlJgkA0o1d
+         VmHcaPH0eeMWQN2yhCxzofmpQJk9Aj+zIzVT9DcAwGDKPh/vA66SAdD7r1REsOH47L
+         19GQD7ccy1gH9lyZrOwnBvf30EkmWrDsyTrCJ5zo=
+Date:   Tue, 7 Sep 2021 08:40:23 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Saurav Girepunje <saurav.girepunje@gmail.com>
+Cc:     saurav.girepunje@hotmail.com, Larry.Finger@lwfinger.net,
+        phil@philpotter.co.uk, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: r8188eu: include: remove duplicate declaration.
+Message-ID: <YTcJV4AuWF8xaZBJ@kroah.com>
+References: <YTRuXTu/kePBDwAF@user>
+ <YTXj+6QU10tYmec7@kroah.com>
+ <c6cfec10-dc13-7d02-d122-76278b3d15be@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c6cfec10-dc13-7d02-d122-76278b3d15be@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From QPIC V2 onwards there is a separate register to read
-last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
+On Mon, Sep 06, 2021 at 10:04:07PM +0530, Saurav Girepunje wrote:
+> 
+> 
+> On 06/09/21 3:18 pm, Greg KH wrote:
+> > On Sun, Sep 05, 2021 at 12:44:37PM +0530, Saurav Girepunje wrote:
+> > > Remove below duplicate declaration from rtl8188e_led.h file
+> > > 
+> > > void SwLedOn(struct adapter *padapter, struct LED_871x *pLed);
+> > > void SwLedOff(struct adapter *padapter, struct LED_871x *pLed);
+> > > 
+> > > Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
+> > > ---
+> > >   drivers/staging/r8188eu/include/rtl8188e_led.h | 2 --
+> > >   1 file changed, 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/r8188eu/include/rtl8188e_led.h b/drivers/staging/r8188eu/include/rtl8188e_led.h
+> > > index b00954198764..02cdc970bb17 100644
+> > > --- a/drivers/staging/r8188eu/include/rtl8188e_led.h
+> > > +++ b/drivers/staging/r8188eu/include/rtl8188e_led.h
+> > > @@ -12,7 +12,5 @@
+> > >   /*  */
+> > >   void rtl8188eu_InitSwLeds(struct adapter *padapter);
+> > >   void rtl8188eu_DeInitSwLeds(struct adapter *padapter);
+> > > -void SwLedOn(struct adapter *padapter, struct LED_871x *pLed);
+> > > -void SwLedOff(struct adapter *padapter, struct LED_871x *pLed);
+> > > 
+> > >   #endif
+> > > --
+> > > 2.32.0
+> > > 
+> > 
+> > This email did not make it to lore.kernel.org again:
+> > 	https://lore.kernel.org/r/YTRuXTu/kePBDwAF@user
+> > 
+> > Any ideas what is happening?
+> > linux-staging@lists.linux.dev
+> > thanks,
+> > 
+> > greg k-h
+> > 
+> 
+> I missed to add the linux-staging@lists.linux.dev. I will resend it v2
+> version of this patch.
+> However I am able to see it on  https://lore.kernel.org .
+> 
+> https://lore.kernel.org/all/YTRuXTu%2FkePBDwAF@user/
 
-qcom_nandc_read_cw_raw() is used to read only one code word
-at a time. If we will configure number of code words to 1 in
-in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
-its reading the last code word, since from QPIC V2 onwards
-we are having separate register to read the last code word,
-we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
-register to fetch data from controller buffer to system
-memory.
+You are right, that is odd.  I've emailed the b4 developer to see what
+is up with this, I'll take this patch in a bit...
 
-Fixes: 503ee5aad43054a26cfd5cc592a31270c05539cd ("mtd: rawnand: qcom: update last code word register")
-Cc: stable@kernel.org
-Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
----
-Changes in V5:
+thanks,
 
- * Incorporated "hash commit" comment from Mani.
- * Updated commit hash
-
-Changes in V4:
-
- * Incorporated "Change log" comment from Miquèl
- * Updated change log
-
-Changes in V3:
- 
- * Incorporated "Fixes tags are missing" comment from Miquèl
- * Added Fixes tag Fixes:503ee5aa ("mtd: rawnand: qcom: update last code word register")
-
-
-Changes in V2:
-
- * Incorporated "stable tags are missing" comment from Miquèl
- * Added stable tags Cc:stable@kernel.org
-
-  
-
- drivers/mtd/nand/raw/qcom_nandc.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index ef0bade..04e6f7b 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -1676,13 +1676,17 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	int data_size1, data_size2, oob_size1, oob_size2;
- 	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
-+	int raw_cw = cw;
- 
- 	nand_read_page_op(chip, page, 0, NULL, 0);
- 	host->use_ecc = false;
- 
-+	if (nandc->props->qpic_v2)
-+		raw_cw = ecc->steps - 1;
-+
- 	clear_bam_transaction(nandc);
- 	set_address(host, host->cw_size * cw, page);
--	update_rw_regs(host, 1, true, cw);
-+	update_rw_regs(host, 1, true, raw_cw);
- 	config_nand_page_read(chip);
- 
- 	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
-@@ -1711,7 +1715,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
- 		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
- 	}
- 
--	config_nand_cw_read(chip, false, cw);
-+	config_nand_cw_read(chip, false, raw_cw);
- 
- 	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
- 	reg_off += data_size1;
--- 
-2.7.4
-
+greg k-h
