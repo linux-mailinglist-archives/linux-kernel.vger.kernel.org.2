@@ -2,120 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 766B1402396
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5E340239B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234338AbhIGGtz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Sep 2021 02:49:55 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:52925 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbhIGGty (ORCPT
+        id S234594AbhIGGvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 02:51:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35952 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231429AbhIGGvn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 02:49:54 -0400
-Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id D7FCF60007;
-        Tue,  7 Sep 2021 06:48:45 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 08:48:44 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Md Sadre Alam <mdalam@codeaurora.org>
-Cc:     mani@kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org,
-        stable@kernel.org
-Subject: Re: [PATCH V5] mtd: rawnand: qcom: Update code word value for raw
- read
-Message-ID: <20210907084844.1ad92ef1@xps13>
-In-Reply-To: <1630996771-29866-1-git-send-email-mdalam@codeaurora.org>
-References: <1630996771-29866-1-git-send-email-mdalam@codeaurora.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Tue, 7 Sep 2021 02:51:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1630997437;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cTDhhUvvDbJ7NpxaaVzsPO+lW+QLm0QYSBqXZYb5YbI=;
+        b=KOO7mXzuf5ZsB4eHV+O6MiQM9oWvhG/9/SadDm2MWQUBoFrRUychmcqpT1Jaopg6+uAi6k
+        KbtY0UsWh09CDfxmJFRPiQIpsck+A/eakYvYeWSCvV+xobadtYBGnHA8xcsZWMP0M2akIB
+        hxe/vxoa2ARe/cUtnvCQ1I4KQ3c4WCQ=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-477-qotxHs8KPGGjS9VCU1fWtQ-1; Tue, 07 Sep 2021 02:50:36 -0400
+X-MC-Unique: qotxHs8KPGGjS9VCU1fWtQ-1
+Received: by mail-wm1-f69.google.com with SMTP id v2-20020a7bcb420000b02902e6b108fcf1so745932wmj.8
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 23:50:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cTDhhUvvDbJ7NpxaaVzsPO+lW+QLm0QYSBqXZYb5YbI=;
+        b=IUmQj3mJGxf9H9X+PAAXlpKx+hGrcRGcyuOtylqOvVjHbAUKlnzPe7QFeAxudQuaTA
+         p2f8LVXBCUH6hdu3nfL5rTdNmAM0nNFuRsq7lAYrqKA9D8OYJYV5nbNqzHHDetLvQBZz
+         0f3ICaED0+ZYXejmZ0iBMuHhQ0yEPsNbK3EX8b0RMqVfjTLaO6Lmc9LK0O1lV/a2JjSL
+         yNb/lcFPEGcIUAD0PVSqr2DkXkEohV6QJtqOPyeC29YnXr6yuM6C+/FHfyl4Pl7+zQEJ
+         RDtn+ByVIJXRMI0893DA357uNyQr9lxvIxnpFffIdRN3fniYrbSs7kJ2/4ETnzq8ffFs
+         J5pw==
+X-Gm-Message-State: AOAM531dQvN6cVZfk5qsYssIGkgg4bu6j66mRZezLCq5JJwE2dLeZaiL
+        K59d3FnL+NF44a/I2nOqEEOG0UvlWvei24EOuJUH95A4vx6mSvXg4XNCLWJwHgqNgQ+LY2JwmR8
+        WV5zwoAWMxhAm+0XDjb4P4+uTQbVjCn2FXEhARv8ZrHNF/wHQehF+A5Y6GHnrjfTpFVBOMCX2T8
+        vL
+X-Received: by 2002:a5d:58e9:: with SMTP id f9mr16550034wrd.154.1630997434667;
+        Mon, 06 Sep 2021 23:50:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxCETlFGE/fGAH7ycrp8pZpq7ggabDZaenWfDkmVgVwD7eIIKSMb+i7CdtVIc62tH5jU7/A9Q==
+X-Received: by 2002:a5d:58e9:: with SMTP id f9mr16550007wrd.154.1630997434458;
+        Mon, 06 Sep 2021 23:50:34 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j4sm9760221wrt.23.2021.09.06.23.50.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 23:50:33 -0700 (PDT)
+Subject: Re: [PATCH 1/2] KVM: VMX: avoid running vmx_handle_exit_irqoff in
+ case of emulation
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+References: <20210826095750.1650467-1-mlevitsk@redhat.com>
+ <20210826095750.1650467-2-mlevitsk@redhat.com> <YSe6wphK9b8KSkXW@google.com>
+ <a642cc28-272b-9a1f-51bb-657416e588d0@redhat.com>
+ <e3e84acd383d4f5716745c2e513d442782b6b786.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <b2d1d944-d865-5cd4-104b-35977f7d97eb@redhat.com>
+Date:   Tue, 7 Sep 2021 08:50:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <e3e84acd383d4f5716745c2e513d442782b6b786.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 06/09/21 23:07, Maxim Levitsky wrote:
+> Note that I posted V2 of this patch series ([PATCH v2 0/6] KVM: few more SMM fixes)
+> 
+> There I addressed the review feedback from this patch series,
+> and for this particular case, I synthesized invalid VM exit as was suggested.
 
-mdalam@codeaurora.org wrote on Tue,  7 Sep 2021 12:09:31 +0530:
+Yes, that's intended.  I will revert this version in 5.16.
 
-> From QPIC V2 onwards there is a separate register to read
-> last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
-> 
-> qcom_nandc_read_cw_raw() is used to read only one code word
-> at a time. If we will configure number of code words to 1 in
-> in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
-> its reading the last code word, since from QPIC V2 onwards
-> we are having separate register to read the last code word,
-> we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
-> register to fetch data from controller buffer to system
-> memory.
-> 
-> Fixes: 503ee5aad43054a26cfd5cc592a31270c05539cd ("mtd: rawnand: qcom: update last code word register")
+Paolo
 
-Still wrong. It's 12 digits, as reported by Manivannan.
-
-> Cc: stable@kernel.org
-> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
-> ---
-> Changes in V5:
-> 
->  * Incorporated "hash commit" comment from Mani.
->  * Updated commit hash
-> 
-> Changes in V4:
-> 
->  * Incorporated "Change log" comment from Miquèl
->  * Updated change log
-> 
-> Changes in V3:
->  
->  * Incorporated "Fixes tags are missing" comment from Miquèl
->  * Added Fixes tag Fixes:503ee5aa ("mtd: rawnand: qcom: update last code word register")
-> 
-> 
-> Changes in V2:
-> 
->  * Incorporated "stable tags are missing" comment from Miquèl
->  * Added stable tags Cc:stable@kernel.org
-> 
->   
-> 
->  drivers/mtd/nand/raw/qcom_nandc.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> index ef0bade..04e6f7b 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -1676,13 +1676,17 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
->  	struct nand_ecc_ctrl *ecc = &chip->ecc;
->  	int data_size1, data_size2, oob_size1, oob_size2;
->  	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
-> +	int raw_cw = cw;
->  
->  	nand_read_page_op(chip, page, 0, NULL, 0);
->  	host->use_ecc = false;
->  
-> +	if (nandc->props->qpic_v2)
-> +		raw_cw = ecc->steps - 1;
-> +
->  	clear_bam_transaction(nandc);
->  	set_address(host, host->cw_size * cw, page);
-> -	update_rw_regs(host, 1, true, cw);
-> +	update_rw_regs(host, 1, true, raw_cw);
->  	config_nand_page_read(chip);
->  
->  	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
-> @@ -1711,7 +1715,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
->  		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
->  	}
->  
-> -	config_nand_cw_read(chip, false, cw);
-> +	config_nand_cw_read(chip, false, raw_cw);
->  
->  	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
->  	reg_off += data_size1;
-
-
-Thanks,
-Miquèl
