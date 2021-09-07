@@ -2,115 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3056E402F48
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C368402F4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346215AbhIGT6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 15:58:14 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45238 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346312AbhIGT5w (ORCPT
+        id S1346610AbhIGT6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 15:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346361AbhIGT6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 15:57:52 -0400
-Message-ID: <20210907195004.888293505@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631044605;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=hyvbnbIdba3aIUMikIZq5XBHm5TKNH+S4SCGtu4MYY4=;
-        b=2+FYNx4S/Wxbe4IcMwMjkamVbffkwSRAwHHY+/gdFEnBGM5/izCTNAwwsepbwc/tGqcuNT
-        dJDIojtDpEbiCe3Aeq3R5AnFC+8htWk/Xy9euhOIPp83RrU0bL9QaWDVJsRucSvjkZxKUp
-        Rae/JEQa4vAFZQnLCQLqKm7H/2Fr5p02AeTYDT09/5Ejnaqf6io53I1WYbcOS0smi/Qsia
-        sJiwCuKIEZk8gDVkekvbmntzclnvXgwqQExByJax4gzcOTXTuSuVTyQebhhMIfxmZPMTSF
-        XqmP34LiVwaL3hQWzZq2O6RVfuIIC/AzGAEWKNfNMVxYtdpdpbnvqrDvXvGh/g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631044605;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=hyvbnbIdba3aIUMikIZq5XBHm5TKNH+S4SCGtu4MYY4=;
-        b=R9ecQqoTM+1ZrEla93ajKmf6aMPjry2/xqudhKxe5vkwUZPvH0J9kF58lRpKdVWtV4ia4I
-        DVG96NVlenqmvLCA==
-3Message-ID: <20210907193229.370353258@linutronix.de>
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Ziljstra <peterz@infradead.org>
-Subject: [patch V2 20/20] x86/fpu/signal: Change return code of
- restore_fpregs_from_user() to boolean
+        Tue, 7 Sep 2021 15:58:04 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E481C0612A6
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:56:50 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id w78so36460qkb.4
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 12:56:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=B/Edk4LBvfx9KZTPxI+wCQZQrNHzI91hTxxTHmpXYcg=;
+        b=THT107TMWHUXrfqR+8kWpmGAqYj44+aNM71kA+mDhbI2QpWNQIk+F1tRBpCciU3r/b
+         FrA2/GjjdY79cFGVTuDVK/uPHa8nM0wVqY/8xTWcnuvvXowj9W04bJap+FlPfduTg05d
+         kk6PAVx5GNvDpX473oeEGMCASW/rfguG4GYr0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B/Edk4LBvfx9KZTPxI+wCQZQrNHzI91hTxxTHmpXYcg=;
+        b=gcZm6cWW/lM2lbN4wi6UjLWTvXcF8eAruuLjaMsF68i5j1dODsy8q5VT7r0SzI1Bxt
+         Zs+26jX68laTc8XslTJZC5LnrFPPyu5bHiNWrnBEMUT6kJ7MV+vUxgFAHhF6zeD3qD8A
+         eKoKwcwH8noBJ0UWFK29Uf+S5pDH7xLtCbPr3Om7rJ8mERzQMS4osBha8ldzbdXTEMPy
+         EgvE7EjtydaIXw7n97uONKy9p7PgDcL46m3IG9IeMQeybVGA8in/Cg/mouwsKNnED7i4
+         vX0Kv070o1AHZA2XhqqwKqYki0IShvtzD1xO3fzdQWsXbaNuBuFii75Dx9DAa8AJJlv6
+         7wfA==
+X-Gm-Message-State: AOAM5317+NUHghb07BAKqdNfzqatK1wjkXaW1nEn9nMBnJsg3ztn2jfC
+        dfEfcdgZzBwr6wYgGILTferwggC5cOlQ2A==
+X-Google-Smtp-Source: ABdhPJxAnNBJwxIS/AdEwBflPdiomQ4uO4hxydRTqQWkwIZmInKPj9+HszAE/vWgBXHSlBs5TbpAMw==
+X-Received: by 2002:ae9:dd43:: with SMTP id r64mr17060789qkf.225.1631044609470;
+        Tue, 07 Sep 2021 12:56:49 -0700 (PDT)
+Received: from meerkat.local (bras-base-mtrlpq5031w-grc-32-216-209-220-181.dsl.bell.ca. [216.209.220.181])
+        by smtp.gmail.com with ESMTPSA id l13sm17947qkp.97.2021.09.07.12.56.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 12:56:49 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 15:56:47 -0400
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     pr-tracker-bot@kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] gpio: updates for v5.15
+Message-ID: <20210907195647.jutizso7o2r4mddj@meerkat.local>
+References: <20210907083613.31268-1-brgl@bgdev.pl>
+ <CAHk-=wgQBgkut6zXTbZN45AtJmSceXwDw6Y60ZmwrPkOL__A8g@mail.gmail.com>
+ <163104361220.4526.774832613459764535.pr-tracker-bot@kernel.org>
+ <CAHk-=wgAi8jHOFuk8iqXsL4Aekst996HGeN18aKQhXd-qu2dcQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
-Date:   Tue,  7 Sep 2021 21:56:44 +0200 (CEST)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wgAi8jHOFuk8iqXsL4Aekst996HGeN18aKQhXd-qu2dcQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__fpu_sig_restore() only needs information about success or fail and no
-real error code.
+On Tue, Sep 07, 2021 at 12:49:03PM -0700, Linus Torvalds wrote:
+> > The pull request you sent on Tue, 7 Sep 2021 12:36:25 -0700:
+> >
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl refs/heads/master
+> >
+> > has been merged into torvalds/linux.git:
+> > https://git.kernel.org/torvalds/c/9c23aa51477a37f8b56c3c40192248db0663c196
+> 
+> What what what?
+> 
+> Konstantin, is pr-tracker-bot confused?
 
-This cleans up the confusing conversion of the trap number, which is
-returned by the *RSTOR() exception fixups, to an error code.
+Failure is always an option. Let me poke at the logs and see what happened
+here.
 
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/kernel/fpu/signal.c |   17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
-
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -255,8 +255,8 @@ static int __restore_fpregs_from_user(vo
-  * Attempt to restore the FPU registers directly from user memory.
-  * Pagefaults are handled and any errors returned are fatal.
-  */
--static int restore_fpregs_from_user(void __user *buf, u64 xrestore,
--				    bool fx_only, unsigned int size)
-+static bool restore_fpregs_from_user(void __user *buf, u64 xrestore,
-+				     bool fx_only, unsigned int size)
- {
- 	struct fpu *fpu = &current->thread.fpu;
- 	int ret;
-@@ -285,12 +285,11 @@ static int restore_fpregs_from_user(void
- 
- 		/* Try to handle #PF, but anything else is fatal. */
- 		if (ret != X86_TRAP_PF)
--			return -EINVAL;
-+			return false;
- 
--		ret = fault_in_pages_readable(buf, size);
--		if (!ret)
-+		if (!fault_in_pages_readable(buf, size))
- 			goto retry;
--		return ret;
-+		return false;
- 	}
- 
- 	/*
-@@ -307,7 +306,7 @@ static int restore_fpregs_from_user(void
- 
- 	fpregs_mark_activate();
- 	fpregs_unlock();
--	return 0;
-+	return true;
- }
- 
- static bool __fpu_restore_sig(void __user *buf, void __user *buf_fx,
-@@ -342,8 +341,8 @@ static bool __fpu_restore_sig(void __use
- 		 * faults. If it does, fall back to the slow path below, going
- 		 * through the kernel buffer with the enabled pagefault handler.
- 		 */
--		return !restore_fpregs_from_user(buf_fx, user_xfeatures, fx_only,
--						 state_size);
-+		return restore_fpregs_from_user(buf_fx, user_xfeatures, fx_only,
-+						state_size);
- 	}
- 
- 	/*
+-K
 
