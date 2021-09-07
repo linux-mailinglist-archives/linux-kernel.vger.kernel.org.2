@@ -2,159 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FDF2402297
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 06:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDDEE402299
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 06:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229740AbhIGEBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 00:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42042 "EHLO
+        id S229867AbhIGEIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 00:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhIGEBm (ORCPT
+        with ESMTP id S229491AbhIGEIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 00:01:42 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD0DC061575;
-        Mon,  6 Sep 2021 21:00:37 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id n27so17005534eja.5;
-        Mon, 06 Sep 2021 21:00:37 -0700 (PDT)
+        Tue, 7 Sep 2021 00:08:14 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF95AC061575;
+        Mon,  6 Sep 2021 21:07:08 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso1181723pjq.4;
+        Mon, 06 Sep 2021 21:07:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zvYVDMQgs67A0xyIISSLD3E0W3ASycTx+U4ytRbx0js=;
-        b=fo9ddkCjC4KeMP2iMIRoV5LjMKTgvwXJiUQ+7vflzMiQUusDNytZ3hTxkB/T5Enri8
-         wPtR5VyZHn7M0cvtFQ0vjmtbAMmB02reH3Cl+qODQ+tVv15Pl3LxNUwcsjc51h9RNIM+
-         KJWBIVjWc90LfxktKgxr7oFvtYENWI8XZfKIhvcvEmLquR3ucznwViS4Pio4m2bxJYXu
-         0kbxsyd7L4lMkzgtB/qQZFn1CLEsYqS66WJQELZpg1qPGV26vyMPg0O0FFkVuP/D3Ald
-         ATrG5UYpY4LtjaMtzrlXEQIbITb0Cy9W6OZvBJBTFoT7gOqiDOiDfMg9Xn3fq82HBe+n
-         giTg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eoAtwz/HI/43X/dImzE2MSr2lE2uK0vvPjZTO/+eO94=;
+        b=nkBZzaoGaVDLDtJbh82aWdYllxxJ0jwYm7q+0OQTUS6OJFNBhtDnSmC75Hiuk2T87y
+         6KHWCQCC9IA6ZnnCNER/D32f9M7QiINiDjQvAazh2KvJbX+ytN0bqr0/R4VQ4Ot3LwMs
+         SWbJMgIGGIa690jvX8/zACeO3qw3Ak16LK0fU1nDB0AJWfZq5XajX6MHMvrSl1tPvhFf
+         /sH8z5lgk11mFljz/q3yNPxTJcvHQd8qAZs27cQMgV61CfqMeQHNvINKdpg0VZRzUiWj
+         NE+uTj64sPJCWUQ8USGSgfj/JGsbM6nfoJm9BykLkZpkAWg1u5P+yACXXiLi1I2nZqNw
+         hvlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zvYVDMQgs67A0xyIISSLD3E0W3ASycTx+U4ytRbx0js=;
-        b=NLTeznslUMfk8nFJeDOUEWSSCvnx8fj7dKfIlDk/rpwo50E2rR5ZsBZ7WkJ2et6YMX
-         mgYRQDZB4K2OQ/Dj7l9eobnptKCz6pe64uEx1PPBAkLkNSe388YQGtdF/MUrig5hKOpE
-         N+wuUD0RpeZvzU6MyXxUeuiLQz2aAHQK8bwwMzstI8QdGTpxIpfnBYWDTDdprJeVuGU/
-         j2Edu7bwislXb3QmY1W9bc8W/DfV8/F0woxD6p2HSZ0GQHdpE06WAAni8fDEbZ0m9Kc6
-         xAhcQ9BVG/EQ1hku8KBVD6z6yqDt+0Ht55AzBwOP5tB6MiZkldK0VYtP+9s5a+DI/11/
-         haaA==
-X-Gm-Message-State: AOAM533M274hOa4dRlEdnbHcQX6CDoAbytJd8bEoCKE5ZmbXnanJowNy
-        dcn2bCMtbup387J8QVdf8qzM9C7dSALjGZ9wqGx+55MdipZr7kol
-X-Google-Smtp-Source: ABdhPJzeOhGZ4TzwFWN4c1vdR0UD9qGqA6WlEIHkfokww0GOMrGej8AxSLinFJm4026f66Qk1x9dY6Twe1um1geEpe0=
-X-Received: by 2002:a17:906:7fc4:: with SMTP id r4mr17505347ejs.75.1630987235479;
- Mon, 06 Sep 2021 21:00:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eoAtwz/HI/43X/dImzE2MSr2lE2uK0vvPjZTO/+eO94=;
+        b=YXrFBX7fIFA4KUFFsTOPjzHd7j7vGrAUyhswDk8ZzNkYxRcxVTHOG3uIKLmwkBKBBm
+         LJqhb9FWV7V0kDl8w6xwA8ugmXzsfhfQ5krggI95BK6raohAXauOBu5HgX/MIhUM57UO
+         oaHqWAeQYTQ6nxBgLWFHatzF3TpCTL2XM90MIubqYdMiNqUNUtNvJrDlASn1jNLOMKrt
+         pngiFSMoxI75yDJe3CFjOFHPFqbw15WrZs3udq20ci9UKDg/deVhzP+kVyRYLXXNIgdg
+         CgjWoNgzVQNIzAPZFy23l+dEbx+p0NlmhEJJj5oNtijyNljf+vO0a2nGqpZYULHZ38Hl
+         W9AQ==
+X-Gm-Message-State: AOAM532ggaY0PWp5cS5Y7Gfq11geupejyJrJw+1UQ45VSJuGC8tuqbZj
+        z0917BelCR5uasFAhzYflDE=
+X-Google-Smtp-Source: ABdhPJyNXtUK0r5C3DcP4PQzsZ1BeRfL99Edo04uZhTP+/8ItWPRQ8jsT4QqI0YFb621wNZSj+L1Hg==
+X-Received: by 2002:a17:90a:d98f:: with SMTP id d15mr2445084pjv.81.1630987628198;
+        Mon, 06 Sep 2021 21:07:08 -0700 (PDT)
+Received: from tong-desktop.local (99-105-211-126.lightspeed.sntcca.sbcglobal.net. [99.105.211.126])
+        by smtp.googlemail.com with ESMTPSA id b7sm8894873pfl.195.2021.09.06.21.07.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Sep 2021 21:07:07 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Oliver Neukum <oliver@neukum.org>, Ali Akcaagac <aliakc@web.de>,
+        Jamie Lenehan <lenehan@twibble.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        dc395x@twibble.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Tong Zhang <ztong0001@gmail.com>
+Subject: [PATCH v1] scsi: dc395: fix error case unwinding
+Date:   Mon,  6 Sep 2021 21:07:02 -0700
+Message-Id: <20210907040702.1846409-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210906041330.2065214-1-mudongliangabcd@gmail.com>
- <CAD-N9QUHfoqOOxDuKniMi8VGLR2j6g50BBy45eAL0kPRrntmgA@mail.gmail.com>
- <aa2fb8c6-ef6b-a1ca-d598-b0814529a31d@gmail.com> <53fb4217-21b8-ac46-bb39-581a4c9837a4@gmail.com>
-In-Reply-To: <53fb4217-21b8-ac46-bb39-581a4c9837a4@gmail.com>
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-Date:   Tue, 7 Sep 2021 12:00:09 +0800
-Message-ID: <CAD-N9QUjd-yNVa2uOac434tgyd2wXEQ6Z=aA9Yu9-_UANv7YjA@mail.gmail.com>
-Subject: Re: [PATCH] nilfs2: fix memory leak in nilfs_sysfs_create_device_group
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        linux-nilfs@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 12:47 AM Pavel Skripkin <paskripkin@gmail.com> wrote:
->
-> On 9/6/21 18:56, Pavel Skripkin wrote:
-> > On 9/6/21 08:43, Dongliang Mu wrote:
-> >> On Mon, Sep 6, 2021 at 12:13 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
-> >>>
-> >>> The commit 8fd0c1b0647a ("nilfs2: fix memory leak in
-> >>> nilfs_sysfs_delete_device_group") adds a kobject_put to free the leaking
-> >>> object name. However, it is incomplete to only add kobject_put in the
-> >>> nilfs_sysfs_delete_device_group. The function
-> >>> nilfs_sysfs_create_device_group also needs the kobject_put to
-> >>> free the object name in the error handling part.
-> >>>
-> >>> Fix this by adding kobject_put in the error handling code of
-> >>> nilfs_sysfs_create_device_group.
-> >>
-> >> Even after I add this patch, my local syzkaller still reports this
-> >> memory leak one hour later. Therefore, there are some other paths or
-> >> magics which can trigger the memory leak. I need to dig deeper.
-> >>
-> >> Pavel, do you have any idea about this crash report?
-> >>
-> >> BUG: memory leak
-> >> unreferenced object 0xffff88804a1a8a60 (size 32):
-> >>    comm "syz-executor", pid 14551, jiffies 4294960586 (age 14.780s)
-> >>    hex dump (first 32 bytes):
-> >>      6c 6f 6f 70 35 00 00 00 00 00 00 00 00 00 00 00  loop5...........
-> >>      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-> >>    backtrace:
-> >>      [<ffffffff814750c6>] kstrdup+0x36/0x70
-> >>      [<ffffffff81475153>] kstrdup_const+0x53/0x80
-> >>      [<ffffffff822773a2>] kvasprintf_const+0xc2/0x110
-> >>      [<ffffffff82337c5b>] kobject_set_name_vargs+0x3b/0xe0
-> >>      [<ffffffff823385ed>] kobject_init_and_add+0x6d/0xc0
-> >>      [<ffffffff81d2bd08>] nilfs_sysfs_create_device_group+0x98/0x3a0
-> >>      [<ffffffff81d14fc4>] init_nilfs+0x424/0x580
-> >>      [<ffffffff81d02962>] nilfs_mount+0x532/0x8c0
-> >>      [<ffffffff815c754b>] legacy_get_tree+0x2b/0x90
-> >>      [<ffffffff81565158>] vfs_get_tree+0x28/0x100
-> >>      [<ffffffff815a3a82>] path_mount+0xb92/0xfe0
-> >>      [<ffffffff815a3f71>] do_mount+0xa1/0xc0
-> >>      [<ffffffff815a4584>] __x64_sys_mount+0xf4/0x160
-> >>      [<ffffffff8433fd35>] do_syscall_64+0x35/0xb0
-> >>      [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-> >>
-> >>
-> >
-> > Hi, Dongliang!
-> >
-> >
-> > This report says nothing to me... It shows, that there is missing
-> > kobject_put() somewhere. I think, we need a reproducer for this leak,
-> > otherwise only code review can help :(
-> >
-> >
-> >
->
-> Hm, I guess, I see... We should call kobject_put() in case of
-> kobject_init_and_add() failure:
->
-> lib/kobject.c:459
->
->   * If this function returns an error, kobject_put() must be called to
->   * properly clean up the memory associated with the object.  This is the
->
->
-> so I suggest:
->
-> diff --git a/fs/nilfs2/sysfs.c b/fs/nilfs2/sysfs.c
-> index 68e8d61e28dd..e8717f4ba2a1 100644
-> --- a/fs/nilfs2/sysfs.c
-> +++ b/fs/nilfs2/sysfs.c
-> @@ -1026,6 +1026,7 @@ int nilfs_sysfs_create_device_group(struct
-> super_block *sb)        kobject_del(&nilfs->ns_dev_kobj);
->
->   free_dev_subgroups:
-> +       kobject_put(&nilfs->ns_dev_kobj);
->         kfree(nilfs->ns_dev_subgroups);
->
->   failed_create_device_group:
->
->
-> This patch should fix 2 memory leaks :)
+dc395x_init_one()->adapter_init() might fail. In this case, the acb
+is already clean up by adapter_init(), no need to do that in
+adapter_uninit(acb) again.
 
-Yes. We should move kobject_put from the label cleanup_dev_kobject to
-free_dev_subgroups.
+[    1.252251] dc395x: adapter init failed
+[    1.254900] RIP: 0010:adapter_uninit+0x94/0x170 [dc395x]
+[    1.260307] Call Trace:
+[    1.260442]  dc395x_init_one.cold+0x72a/0x9bb [dc395x]
 
-However, I tried the syz reproducer just sent to you. The memory leak
-is still there.
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+---
+ drivers/scsi/dc395x.c | 1 +
+ 1 file changed, 1 insertion(+)
 
->
->
->
->
-> With regards,
-> Pavel Skripkin
+diff --git a/drivers/scsi/dc395x.c b/drivers/scsi/dc395x.c
+index 24c7cefb0b78..1c79e6c27163 100644
+--- a/drivers/scsi/dc395x.c
++++ b/drivers/scsi/dc395x.c
+@@ -4618,6 +4618,7 @@ static int dc395x_init_one(struct pci_dev *dev, const struct pci_device_id *id)
+ 	/* initialise the adapter and everything we need */
+  	if (adapter_init(acb, io_port_base, io_port_len, irq)) {
+ 		dprintkl(KERN_INFO, "adapter init failed\n");
++		acb = NULL;
+ 		goto fail;
+ 	}
+ 
+-- 
+2.25.1
+
