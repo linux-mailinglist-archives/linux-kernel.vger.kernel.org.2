@@ -2,67 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50A4402B56
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29ED402B51
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344913AbhIGPJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 11:09:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39072 "EHLO mail.kernel.org"
+        id S1344909AbhIGPH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 11:07:27 -0400
+Received: from mga07.intel.com ([134.134.136.100]:18081 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231362AbhIGPJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 11:09:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54415610FE;
-        Tue,  7 Sep 2021 15:08:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631027313;
-        bh=wb3iMuE8+dgGBp7mPY7dLBqnaPDERTiGYW/cvaJFmj4=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ES2OUYneQn0YkL+UU5T4YP55gCC2ZcCmPLcAWwLonU9V4r1D1sY1QpnmexpxigVJI
-         cxdNeeXcsqM8GaOhtOKW9Ok91tkiDfRlX/ugxGQsl8WIShwnHVv5osnRXszISn5ZSW
-         OjBgRUy4qqLQnct8zk9tqhgaiFuIM8Dbmd2gi/SGX0m2LmTJYzCeVqpwAAVrx7ZdQV
-         +4Vbi2gR7jZeQPal6+qAj+5gikK2FrCQCZLgHA0vE18tlL5a2XqdOQk6z2IEFw3WQr
-         m0yK+I8KDu0rcJwN2JJmm6QbkYdgBHSzB2QgV7Yq0LeFmpRjGpRRqC1/V8D9MfaZaK
-         aSh0Ngx2P5FZg==
-Message-ID: <250de8f97efe2458afc39f080c3ef6a55f42623c.camel@kernel.org>
-Subject: Re: [PATCH v4 5/6] x86/sgx: Hook sgx_memory_failure() into mainline
- code
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>
-Cc:     "Zhang, Cathy" <cathy.zhang@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Tue, 07 Sep 2021 18:08:31 +0300
-In-Reply-To: <40da1a9a7d5f41bb9b82ea2cbebce73a@intel.com>
-References: <20210728204653.1509010-1-tony.luck@intel.com>
-         <20210827195543.1667168-1-tony.luck@intel.com>
-         <20210827195543.1667168-6-tony.luck@intel.com>
-         <49fccddbbf92279f575409851a9c682495146ad8.camel@kernel.org>
-         <681d530d72de842c8bf43733c11f3c3f2ebf8c6e.camel@kernel.org>
-         <25db682402d14c34af9ba525cffe85c5@intel.com>
-         <848905ffa20cf234446b16682cbbcf1e56853950.camel@kernel.org>
-         <40da1a9a7d5f41bb9b82ea2cbebce73a@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S231362AbhIGPH0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 11:07:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="283929189"
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="283929189"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 08:05:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="538008820"
+Received: from chenyu-desktop.sh.intel.com ([10.239.158.176])
+  by FMSMGA003.fm.intel.com with ESMTP; 07 Sep 2021 08:05:26 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     linux-acpi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, Chen Yu <yu.c.chen@intel.com>
+Subject: [PATCH 0/5][RFC] Introduce Platform Firmware Runtime Update and Telemetry drivers
+Date:   Tue,  7 Sep 2021 23:08:33 +0800
+Message-Id: <cover.1631025237.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-07 at 15:03 +0000, Luck, Tony wrote:
-> > > If I just #include <asm/sgx.h> in those files I'll break the build fo=
-r other
-> > > architectures.
-> >=20
-> > What does specifically break the build?
->=20
-> There is no file named arch/arm/include/asm/sgx.h (ditto for other archit=
-ectures that build memory-failure.c and einj.c).
->=20
-> -Tony
+High Service Level Agreements (SLAs) requires that the system runs without
+service interruptions. Generally, system firmware provides runtime services
+such as RAS(Reliability, Availability and Serviceability) features, UEFI runtime
+services and ACPI services. Currently if there is any firmware code changes in
+these code area, the system firmware update and reboot is required. Example of
+bug fix could be wrong register size or location of the register. This means
+customer services are not available during the firmware upgrade, which could
+approach several minutes, resulting in not able to meet SLAs.
 
-Would it be too obnoxious to flag that include in those files?
+Intel provides a mechanism named Management Mode Runtime Update to help the users
+update the firmware without having to reboot[1].
 
-/Jarkko
+This series provides the following facilities.
+
+  1. Perform a runtime firmware driver update and activate.
+  2. Ability to inject firmware code at runtime, for dynamic instrumentation.
+  3. Facility to retrieve logs from runtime firmware update and activate telemetry.
+     (The telemetry is based on runtime firmware update: it records the logs during
+      runtime update(code injection and driver update).
+
+The Management Mode Runtime Update OS Interface Specification[1] provides two ACPI
+device objects to interface with system firmware to perform these updates. This patch
+series introduces the drivers for those ACPI devices.
+
+[1] https://uefi.org/sites/default/files/resources/Intel_MM_OS_Interface_Spec_Rev100.pdf
+
+Chen Yu (5):
+  Documentation: Introduce Platform Firmware Runtime Update
+    documentation
+  efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and
+    corresponding structures
+  drivers/acpi: Introduce Platform Firmware Runtime Update device driver
+  drivers/acpi: Introduce Platform Firmware Runtime Update Telemetry
+  selftests/pfru: add test for Platform Firmware Runtime Update and
+    Telemetry
+
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ Documentation/x86/pfru.rst                    |  98 ++++
+ drivers/acpi/Kconfig                          |   1 +
+ drivers/acpi/Makefile                         |   1 +
+ drivers/acpi/pfru/Kconfig                     |  29 +
+ drivers/acpi/pfru/Makefile                    |   3 +
+ drivers/acpi/pfru/pfru_telemetry.c            | 412 +++++++++++++
+ drivers/acpi/pfru/pfru_update.c               | 544 ++++++++++++++++++
+ include/linux/efi.h                           |  50 ++
+ include/uapi/linux/pfru.h                     | 152 +++++
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/pfru/Makefile         |   7 +
+ tools/testing/selftests/pfru/config           |   2 +
+ tools/testing/selftests/pfru/pfru.h           | 152 +++++
+ tools/testing/selftests/pfru/pfru_test.c      | 324 +++++++++++
+ 15 files changed, 1777 insertions(+)
+ create mode 100644 Documentation/x86/pfru.rst
+ create mode 100644 drivers/acpi/pfru/Kconfig
+ create mode 100644 drivers/acpi/pfru/Makefile
+ create mode 100644 drivers/acpi/pfru/pfru_telemetry.c
+ create mode 100644 drivers/acpi/pfru/pfru_update.c
+ create mode 100644 include/uapi/linux/pfru.h
+ create mode 100644 tools/testing/selftests/pfru/Makefile
+ create mode 100644 tools/testing/selftests/pfru/config
+ create mode 100644 tools/testing/selftests/pfru/pfru.h
+ create mode 100644 tools/testing/selftests/pfru/pfru_test.c
+
+-- 
+2.25.1
+
