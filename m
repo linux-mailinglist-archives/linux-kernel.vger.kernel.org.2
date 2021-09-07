@@ -2,165 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D644026B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08EF74026BA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243209AbhIGKFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 06:05:47 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:27929 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231194AbhIGKFp (ORCPT
+        id S243857AbhIGKG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 06:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231194AbhIGKGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 06:05:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1631009079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=mESkZMCn3zmsbiDZ07Z3XiuHmv0bzZgcJCIsETD9bV4=;
-        b=f9te18dHO8t7eLXe6jKnWru5DmTbFdpaqOanYQOAK/1Ki+v7RUdsnr6jzD6IlHl+x3cbwW
-        6nfYDgOasNNen5DFzxQrk0Sj73GVnhAyPWoL/kYIvndiqCoDe2c3rsM51qAh7MEk9+IS07
-        +7psCLuIGL+JJbr1cJOOHY+FmQ9QANU=
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com
- (mail-db8eur05lp2110.outbound.protection.outlook.com [104.47.17.110])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-9-hpqGuoH9PGq115orbvAkig-1; Tue, 07 Sep 2021 12:04:37 +0200
-X-MC-Unique: hpqGuoH9PGq115orbvAkig-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FBFcSFwxe8k9APKb6ChixWW5QTh3KUK3lQrk/5ZSjQzECd983whDtHVuXV+zVKW3hLWUTZYNZQ9ibCDanbCTJ93aBRVDLYcxCHUlEyOBl8f3ZhZJ2DD8zJ7ijJblnMNH7C25LN3d//X65rooVLtr4ZXBgKbnmuouQh8JQOj1kpinW0Ve9UBRmo/MgYJgSX3TMYiOaloEOclRIW/YnjwAGZUg+4h3bc0adJEKyl92UkdDjUx2eaSSnFoI22Hb/gwaVMYD+x9mPFZFsIWtDZwMqQPD7v7Ys9O6qqZalJlhF39PVdOsVDn9sxR8Oy+A4pQRzHagpwNkYDsMAzRIDCngPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=mESkZMCn3zmsbiDZ07Z3XiuHmv0bzZgcJCIsETD9bV4=;
- b=OJWnPLAL1KTnRcJZuu48HMMOASP8nA6t5tNHyXgJIZkMuEFwwbiMnLfqz7rWylxbJrNj2HpnhQ9e+gL+f3/4wfsR/rlkPa2erXsW0TCpnevVHY10YH3Nc0Khtgpa+X5ZlqCCGHMDBqrCz0AzFmIDckWUxd6lYysjv3nTHeJLT9U29m2VPikckQ/Gn9TBngC94rXbjWxd3j8NQcV0R55ksXRGcPe8VdIxoVcT17iVvOSfOQ58xr1UbchOBHHfSnCsINO2oYqPYTUjiZk1EaapZLR8ZIxwVLxKlqvNeN3u1f/z6vFQ5Z9x2tZFWHBA6U2YDiuipOnXXTQ1b7Lg2pUsUg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
- header.d=none;lists.xenproject.org; dmarc=none action=none
- header.from=suse.com;
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
- by VI1PR04MB6861.eurprd04.prod.outlook.com (2603:10a6:803:13c::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Tue, 7 Sep
- 2021 10:04:36 +0000
-Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
- ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4500.014; Tue, 7 Sep 2021
- 10:04:36 +0000
-To:     Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-From:   Jan Beulich <jbeulich@suse.com>
-Subject: [PATCH 0/9] xen/x86: PVH Dom0 fixes and fallout adjustments
-Message-ID: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
-Date:   Tue, 7 Sep 2021 12:04:34 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: PR3P189CA0086.EURP189.PROD.OUTLOOK.COM
- (2603:10a6:102:b4::31) To VI1PR04MB5600.eurprd04.prod.outlook.com
- (2603:10a6:803:e7::16)
+        Tue, 7 Sep 2021 06:06:54 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE0BC061575;
+        Tue,  7 Sep 2021 03:05:48 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id m21-20020a17090a859500b00197688449c4so1314451pjn.0;
+        Tue, 07 Sep 2021 03:05:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XsFH+qQagyYhml3ETf2vA7O/cJmrmxQNmknQNQS/89c=;
+        b=EPEtxHQW9yV2reHCWPlSiaCfwvz536XVy6+nVlEmEoHFIqWlNio/chou6bg3zuLD6R
+         DgWF28ZEC8RZbdDFpaMNkGQec2xJH0a5n2nRj4XWPMjwx/Ml29sjudUTFa01/GK7dKL9
+         JhTuUP1500A3CvAAeWxsXWkKJaWyDrb063krX61oHn+tpgWuwTGWcDkt8z6+KZC9/CgF
+         NVsQH5HZlIG/ffOdGblF4sjYArdVxmx9IQsC48kCqWwcGFFodQp9Do7mOs1EROYlWdV6
+         iAJP+W4py/eQ2HqozJwQfQhoND404sHsr7Knr8WYZy02EMz+SzQ3lxZ3W/3TGY7G3iQ4
+         WJ9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XsFH+qQagyYhml3ETf2vA7O/cJmrmxQNmknQNQS/89c=;
+        b=i6u8VtPdxIugu5KlYg6Jp8tI6hySnt0SuNq/GvbRnVXd7zXGGxMH5iaQirYHxInKh7
+         kCaTkmvXPqpgJ49rVwfWKjVvfWwyw+Z1tzamH//Eswg0RJjOiuAu23Ms847bzktOqxLA
+         YV65Bv+wobDjYddN+aI7yLZW1lphiMLVfBBhaxDyK0Qc8xwTXA6I2RxedZ8StIPcWV5s
+         xTkgmr9E0Hb+cnJH0N2fQlrQthrIMFhd/ZMyGLZTMREhuOGKzSrCMkyWYCJYH6jsEIWA
+         KRaTT/HnsB3qM7+VpT0yMoroGrNZ97BJ9rA03MdJGf7pXQEGEkW0vd89HJ20C0lyBTTj
+         6cJw==
+X-Gm-Message-State: AOAM530rGvl2HYvyVpPR3+2LJoh0ozpexXauoNe4IcZFb1U62HR9XKVn
+        IiZ7I6GFno4YPlX/KkliEc4=
+X-Google-Smtp-Source: ABdhPJwdxvq27bvyuBdou1sXQrmHEZ7qMV/BvFtlru+2WaV0e5/rX3mk5Mexx9s0y+UJtnE6jpKOlQ==
+X-Received: by 2002:a17:90a:be11:: with SMTP id a17mr3611354pjs.229.1631009147670;
+        Tue, 07 Sep 2021 03:05:47 -0700 (PDT)
+Received: from ownia.. ([173.248.225.217])
+        by smtp.gmail.com with ESMTPSA id x10sm10599983pfj.174.2021.09.07.03.05.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 03:05:47 -0700 (PDT)
+From:   Weizhao Ouyang <o451686892@gmail.com>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, Weizhao Ouyang <o451686892@gmail.com>
+Subject: [PATCH v3] ftrace: Cleanup ftrace_dyn_arch_init()
+Date:   Tue,  7 Sep 2021 18:05:24 +0800
+Message-Id: <20210907100524.1454928-1-o451686892@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.156.60.236] (37.24.206.209) by PR3P189CA0086.EURP189.PROD.OUTLOOK.COM (2603:10a6:102:b4::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 7 Sep 2021 10:04:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3f7bf4a6-61b8-4bae-9838-08d971e6e5de
-X-MS-TrafficTypeDiagnostic: VI1PR04MB6861:
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB6861E95D1B4BAD83CC93F0DAB3D39@VI1PR04MB6861.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2HFuW6qjrpDU+nMRA4sqT+UmRulKiRMvir2UGiWWhZJVi+TyTBfaarxs2jLscRYOX5OtsWFqOt7FbB4P0DYcKn9DufThRExjmgt7Qm7vaEUR8A/OhixtQbLZMnp3Ak8n/PLU1U/z1fFfgYKCiqhgHJJQxeqdRg8f5AcX19KkPEw9Ws2AZ0GKrAxnesGTzL9ASdZP60khriLDDb5CI1igK1JHMJ3b5Ub+gKrCUUQ52grVKgsLqKkB9kubmo7d4D+DKC1lYi6j8Z30pW4DCZneL4oroOkFrSZIylgOxiOJlI7yGbYKyo8lJEMSRKCccNyPmRBYFUYxPqtHFLUzVgap5PEARjmd6OfMvtqWQh2Z5iUQuJOiUipIX1WFt3GGBuN3WS1EzZySj4k3ZTj0ZgXDUZjzwb8pjZ8YWMRdrdT3EZuvXq2ci4tt4R4OGLc1wI89PN32cXBq0c06CjKCY0pT0LwIYTsxDb9uhx3Ip+qlj1sEd/AyOO6rkK8dCoO/PrM/a/udwDKVwft+fYsuThECxK1ml9beKZct7g06RzHyTGqktSzoHTB+lmT8Mh0sYUWT6nvSA+g05bKDWgF74YHCVPpPa90mH9o0jMHEbGK4tc8cKWIMAQMYGRLAZ84HdklWRmczRpOMXyqRLamPT2idtD2MtaiQQViYst8nF8Zu8eh3gMTsX14UfN4TAlF7qLfBWu7663XALdWvltHnjoN1gQdfj7A2uhKI5Mgoq5Oa1anf14sfQpYuXs8BB5Oy73ZA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(396003)(376002)(366004)(346002)(316002)(16576012)(54906003)(83380400001)(86362001)(2906002)(31696002)(110136005)(6486002)(478600001)(36756003)(38100700002)(4326008)(31686004)(186003)(26005)(66476007)(66556008)(8676002)(66946007)(8936002)(956004)(5660300002)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VlJSSjlBZ09IbHV2Z0NoZXZzS2M0eGxYb0JLeTlyR0V5QkJZT25RUkcrNDVN?=
- =?utf-8?B?QjBHUEVOaFIyYVlMT1lWSFBPN2V5MC9wV3EvUUU5MzhSWmpmcmcyakIrck5z?=
- =?utf-8?B?U25yRE9QbmNIaHRvazYyc1FsUDFaaWR5cUtGdzFmREQzV0pVTWhRVU5lRzV0?=
- =?utf-8?B?TWlWVmZRMkx0bFNjSzBLdHdWbEZwak55K1Q3czRZWVVpcDl4aGFYUERqUnBw?=
- =?utf-8?B?dXpuZVJ1S01qZVEwaTdXK0lsUkMyeWwvRHRxbkVLZW96M0Z3N0lsWjdnbG9Z?=
- =?utf-8?B?NDRiclFMRjRSNjB4NkI4WDJydUUyL3VYOG5hYThHWEZWbUxhQjl2ZlZBeVZX?=
- =?utf-8?B?QXZHR0VMcHRNR1RRNHl5R2xhbGJqZW1udnJ3ZndleEIvSWlCK2hvUlhTa3dE?=
- =?utf-8?B?a1FmaWoyTFBMNENRYXRnTVRSNnROTHRkZlY4dnZUVjlQQkZGbTVDeUJTK3Bq?=
- =?utf-8?B?Q25TZCtJU0RwQTA2cGcxL1JIUnZDUHlsRFV1cW9oTnRwalZnQzZKdUx1aGFj?=
- =?utf-8?B?N0x2T3RwcmtsbENPQlZrSTBFOS9kNzNQTHBpZ0xubERmc0p6USs0R0duR3d1?=
- =?utf-8?B?QkZOZWdVSDJoZHZlMnUxKzhwOXZpYjRRNnV1ZVNRU1crVFA5ZS90OTh1SUFU?=
- =?utf-8?B?cEgvSHVSb21BOHgzM2FlSEdFdHZtSXlKQmFUQVo5NFFQVS9CcWQrRjZ3R2dk?=
- =?utf-8?B?bmVXelU4UGlIMUVuRTZuQnY2NkNwRzRIUzFpZnc5bWMzdktIMWtQZW9QdHpl?=
- =?utf-8?B?TFlNNXphT1g0Q2dJTTlqZi9zblk0WEdaTVFsRnVxVThlNDJzaUtVbU1WVnpP?=
- =?utf-8?B?ZGRqbGhUZjh4YUJ1ZjNERmFiUjl4QjM3cWMrZXFtMXBiZXhPdjg0aWp4OVpB?=
- =?utf-8?B?cWc0b2tXQ2wvWlV0dEJQcjlxUU5QQ0orVzhmUU1LaldXcXNCQkpjcVNUbDgx?=
- =?utf-8?B?MVdYSGR6UkNmL2FmYk1vRlFRaHhNTGRjaWpUWTVMUEhENXFZNk02WWlGS2R1?=
- =?utf-8?B?dVNmVDlwUmFXQTBITUhQZzlzOXE3MStVcXVkRWduYWxNSXpYUUxLMDhBUG5J?=
- =?utf-8?B?OHROU3RTKzlHa3c4UzVSaUlGQytHOWVXZFFOVnZkQzRQUERjaGsraDFWVnF6?=
- =?utf-8?B?ZHhpcTZHcWVXbkdrNjFuRmFoY0duODhSTk1xRmtZbTdVWDNhRkxPeUpSczFj?=
- =?utf-8?B?bzlldTF1em04TnM4VWFNbCtSZktOSzhKck1GWGFHaFMzWXJRc2pBV1ZNaEM5?=
- =?utf-8?B?TEx0ZjAxS2dFUTJGNDZSRVhsanRFS1hCd1YzdFAvekQvOU5lN0xCcFFTY0t4?=
- =?utf-8?B?U2JPOC9sVHU3MC9ySXduU2J0SUdMU2wwKzFnZXFmL3hrdWtyWkpkbXBpRTNH?=
- =?utf-8?B?Qjd2UUMvY3JzQUFhdHU2TUNvdGJQN2VtbkhiZXhPbVBXa1FDeEJQL2hNZkc0?=
- =?utf-8?B?cDFsejdWd1dPaEFIZnVsbW9CL1ZDOVhhaFRJZVdteUhkeTRQaHhjMTVTaWEv?=
- =?utf-8?B?dEwydG1Ydjc4M29XZEFFaGxZeG5WendIOFdKUm9admFodllESVJhTDhNRzFZ?=
- =?utf-8?B?K2dmOXN1SkZ1RjJBRWhBbklvb2oxVStteUN5am8xa0hDRnZvUXYvVVB2TCsy?=
- =?utf-8?B?ejNJb21XeWV4MzArejRZNHYreEpaZWE5cXFScTlFOUI4VjgyU2hiMU1IQW1y?=
- =?utf-8?B?MTFWcXRoVC8xUWxWZldZSnI1NzdUaWpySGFta2VjWHFmM2t3RjUvNzdyRGNU?=
- =?utf-8?Q?t/TZlfT7VPwDUXdKhEkGyH+b5fvEBIJB5aqBUYh?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f7bf4a6-61b8-4bae-9838-08d971e6e5de
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 10:04:36.3542
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jUdCjTt80pqdIGPC1zPRU8QD1iXXM9sL+g3kvZyTWuaPBXu9MbyA21lMB215uSiHDcysixCMNOPLx3hCRfwWkQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6861
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to try to debug hypervisor side breakage from XSA-378 I found
-myself urged to finally give PVH Dom0 a try. Sadly things didn't work
-quite as expected. In the course of investigating these issues I actually
-spotted one piece of PV Dom0 breakage as well, a fix for which is also
-included here.
+Most of ARCHs use empty ftrace_dyn_arch_init(), introduce a weak common
+ftrace_dyn_arch_init() to cleanup them.
 
-There are two immediate remaining issues (also mentioned in affected
-patches):
+Signed-off-by: Weizhao Ouyang <o451686892@gmail.com>
+Acked-by: Heiko Carstens <hca@linux.ibm.com> (s390)
+Acked-by: Helge Deller <deller@gmx.de> (parisc)
 
-1) It is not clear to me how PCI device reporting is to work. PV Dom0
-   reports devices as they're discovered, including ones the hypervisor
-   may not have been able to discover itself (ones on segments other
-   than 0 or hotplugged ones). The respective hypercall, however, is
-   inaccessible to PVH Dom0. Depending on the answer to this, either
-   the hypervisor will need changing (to permit the call) or patch 2
-   here will need further refinement.
+---
+Changes in v3:
+-- fix unrecognized opcode on PowerPC
 
-2) Dom0, unlike in the PV case, cannot access the screen (to use as a
-   console) when in a non-default mode (i.e. not 80x25 text), as the
-   necessary information (in particular about VESA-bases LFB modes) is
-   not communicated. On the hypervisor side this looks like deliberate
-   behavior, but it is unclear to me what the intentions were towards
-   an alternative model. (X may be able to access the screen depending
-   on whether it has a suitable driver besides the presently unusable
-   /dev/fb<N> based one.)
+Changes in v2:
+-- correct CONFIG_DYNAMIC_FTRACE on PowerPC
+-- add Acked-by tag
 
-1: xen/x86: prevent PVH type from getting clobbered
-2: xen/x86: allow PVH Dom0 without XEN_PV=y
-3: xen/x86: make "earlyprintk=xen" work better for PVH Dom0
-4: xen/x86: allow "earlyprintk=xen" to work for PV Dom0
-5: xen/x86: make "earlyprintk=xen" work for HVM/PVH DomU
-6: xen/x86: generalize preferred console model from PV to PVH Dom0
-7: xen/x86: hook up xen_banner() also for PVH 
-8: x86/PVH: adjust function/data placement
-9: xen/x86: adjust data placement
+---
+ arch/arm/kernel/ftrace.c          | 5 -----
+ arch/arm64/kernel/ftrace.c        | 5 -----
+ arch/csky/kernel/ftrace.c         | 5 -----
+ arch/ia64/kernel/ftrace.c         | 6 ------
+ arch/microblaze/kernel/ftrace.c   | 5 -----
+ arch/mips/include/asm/ftrace.h    | 2 ++
+ arch/nds32/kernel/ftrace.c        | 5 -----
+ arch/parisc/kernel/ftrace.c       | 5 -----
+ arch/powerpc/include/asm/ftrace.h | 4 ++++
+ arch/riscv/kernel/ftrace.c        | 5 -----
+ arch/s390/kernel/ftrace.c         | 5 -----
+ arch/sh/kernel/ftrace.c           | 5 -----
+ arch/sparc/kernel/ftrace.c        | 5 -----
+ arch/x86/kernel/ftrace.c          | 5 -----
+ include/linux/ftrace.h            | 1 -
+ kernel/trace/ftrace.c             | 5 +++++
+ 16 files changed, 11 insertions(+), 62 deletions(-)
 
-Jan
+diff --git a/arch/arm/kernel/ftrace.c b/arch/arm/kernel/ftrace.c
+index 3c83b5d29697..a006585e1c09 100644
+--- a/arch/arm/kernel/ftrace.c
++++ b/arch/arm/kernel/ftrace.c
+@@ -193,11 +193,6 @@ int ftrace_make_nop(struct module *mod,
+ 
+ 	return ret;
+ }
+-
+-int __init ftrace_dyn_arch_init(void)
+-{
+-	return 0;
+-}
+ #endif /* CONFIG_DYNAMIC_FTRACE */
+ 
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+diff --git a/arch/arm64/kernel/ftrace.c b/arch/arm64/kernel/ftrace.c
+index 7f467bd9db7a..fc62dfe73f93 100644
+--- a/arch/arm64/kernel/ftrace.c
++++ b/arch/arm64/kernel/ftrace.c
+@@ -236,11 +236,6 @@ void arch_ftrace_update_code(int command)
+ 	command |= FTRACE_MAY_SLEEP;
+ 	ftrace_modify_all_code(command);
+ }
+-
+-int __init ftrace_dyn_arch_init(void)
+-{
+-	return 0;
+-}
+ #endif /* CONFIG_DYNAMIC_FTRACE */
+ 
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+diff --git a/arch/csky/kernel/ftrace.c b/arch/csky/kernel/ftrace.c
+index b4a7ec1517ff..50bfcf129078 100644
+--- a/arch/csky/kernel/ftrace.c
++++ b/arch/csky/kernel/ftrace.c
+@@ -133,11 +133,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
+ 				(unsigned long)func, true, true);
+ 	return ret;
+ }
+-
+-int __init ftrace_dyn_arch_init(void)
+-{
+-	return 0;
+-}
+ #endif /* CONFIG_DYNAMIC_FTRACE */
+ 
+ #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+diff --git a/arch/ia64/kernel/ftrace.c b/arch/ia64/kernel/ftrace.c
+index b2ab2d58fb30..d6360fd404ab 100644
+--- a/arch/ia64/kernel/ftrace.c
++++ b/arch/ia64/kernel/ftrace.c
+@@ -194,9 +194,3 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
+ 	flush_icache_range(addr, addr + 16);
+ 	return 0;
+ }
+-
+-/* run from kstop_machine */
+-int __init ftrace_dyn_arch_init(void)
+-{
+-	return 0;
+-}
+diff --git a/arch/microblaze/kernel/ftrace.c b/arch/microblaze/kernel/ftrace.c
+index 224eea40e1ee..188749d62709 100644
+--- a/arch/microblaze/kernel/ftrace.c
++++ b/arch/microblaze/kernel/ftrace.c
+@@ -163,11 +163,6 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
+ 	return ret;
+ }
+ 
+-int __init ftrace_dyn_arch_init(void)
+-{
+-	return 0;
+-}
+-
+ int ftrace_update_ftrace_func(ftrace_func_t func)
+ {
+ 	unsigned long ip = (unsigned long)(&ftrace_call);
+diff --git a/arch/mips/include/asm/ftrace.h b/arch/mips/include/asm/ftrace.h
+index b463f2aa5a61..ed013e767390 100644
+--- a/arch/mips/include/asm/ftrace.h
++++ b/arch/mips/include/asm/ftrace.h
+@@ -76,6 +76,8 @@ do {						\
+ 
+ 
+ #ifdef CONFIG_DYNAMIC_FTRACE
++int __init ftrace_dyn_arch_init(void);
++
+ static inline unsigned long ftrace_call_adjust(unsigned long addr)
+ {
+ 	return addr;
+diff --git a/arch/nds32/kernel/ftrace.c b/arch/nds32/kernel/ftrace.c
+index 0e23e3a8df6b..f0ef4842d191 100644
+--- a/arch/nds32/kernel/ftrace.c
++++ b/arch/nds32/kernel/ftrace.c
+@@ -84,11 +84,6 @@ void _ftrace_caller(unsigned long parent_ip)
+ 	/* restore all state needed by the compiler epilogue */
+ }
+ 
+-int __init ftrace_dyn_arch_init(void)
+-{
+-	return 0;
+-}
+-
+ static unsigned long gen_sethi_insn(unsigned long addr)
+ {
+ 	unsigned long opcode = 0x46000000;
+diff --git a/arch/parisc/kernel/ftrace.c b/arch/parisc/kernel/ftrace.c
+index 0a1e75af5382..01581f715737 100644
+--- a/arch/parisc/kernel/ftrace.c
++++ b/arch/parisc/kernel/ftrace.c
+@@ -94,11 +94,6 @@ int ftrace_disable_ftrace_graph_caller(void)
+ #endif
+ 
+ #ifdef CONFIG_DYNAMIC_FTRACE
+-
+-int __init ftrace_dyn_arch_init(void)
+-{
+-	return 0;
+-}
+ int ftrace_update_ftrace_func(ftrace_func_t func)
+ {
+ 	return 0;
+diff --git a/arch/powerpc/include/asm/ftrace.h b/arch/powerpc/include/asm/ftrace.h
+index debe8c4f7062..b05c43f13a4d 100644
+--- a/arch/powerpc/include/asm/ftrace.h
++++ b/arch/powerpc/include/asm/ftrace.h
+@@ -126,6 +126,10 @@ static inline void this_cpu_enable_ftrace(void) { }
+ static inline void this_cpu_set_ftrace_enabled(u8 ftrace_enabled) { }
+ static inline u8 this_cpu_get_ftrace_enabled(void) { return 1; }
+ #endif /* CONFIG_PPC64 */
++
++#ifdef CONFIG_DYNAMIC_FTRACE
++int __init ftrace_dyn_arch_init(void);
++#endif /* CONFIG_DYNAMIC_FTRACE */
+ #endif /* !__ASSEMBLY__ */
+ 
+ #endif /* _ASM_POWERPC_FTRACE */
+diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
+index 7f1e5203de88..4716f4cdc038 100644
+--- a/arch/riscv/kernel/ftrace.c
++++ b/arch/riscv/kernel/ftrace.c
+@@ -154,11 +154,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
+ 
+ 	return ret;
+ }
+-
+-int __init ftrace_dyn_arch_init(void)
+-{
+-	return 0;
+-}
+ #endif
+ 
+ #ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
+diff --git a/arch/s390/kernel/ftrace.c b/arch/s390/kernel/ftrace.c
+index 0a464d328467..3fd80397ff52 100644
+--- a/arch/s390/kernel/ftrace.c
++++ b/arch/s390/kernel/ftrace.c
+@@ -262,11 +262,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
+ 	return 0;
+ }
+ 
+-int __init ftrace_dyn_arch_init(void)
+-{
+-	return 0;
+-}
+-
+ void arch_ftrace_update_code(int command)
+ {
+ 	if (ftrace_shared_hotpatch_trampoline(NULL))
+diff --git a/arch/sh/kernel/ftrace.c b/arch/sh/kernel/ftrace.c
+index 295c43315bbe..930001bb8c6a 100644
+--- a/arch/sh/kernel/ftrace.c
++++ b/arch/sh/kernel/ftrace.c
+@@ -252,11 +252,6 @@ int ftrace_make_call(struct dyn_ftrace *rec, unsigned long addr)
+ 
+ 	return ftrace_modify_code(rec->ip, old, new);
+ }
+-
+-int __init ftrace_dyn_arch_init(void)
+-{
+-	return 0;
+-}
+ #endif /* CONFIG_DYNAMIC_FTRACE */
+ 
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+diff --git a/arch/sparc/kernel/ftrace.c b/arch/sparc/kernel/ftrace.c
+index 684b84ce397f..eaead3da8e03 100644
+--- a/arch/sparc/kernel/ftrace.c
++++ b/arch/sparc/kernel/ftrace.c
+@@ -82,11 +82,6 @@ int ftrace_update_ftrace_func(ftrace_func_t func)
+ 	new = ftrace_call_replace(ip, (unsigned long)func);
+ 	return ftrace_modify_code(ip, old, new);
+ }
+-
+-int __init ftrace_dyn_arch_init(void)
+-{
+-	return 0;
+-}
+ #endif
+ 
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+index 1b3ce3b4a2a2..23d221a9a3cd 100644
+--- a/arch/x86/kernel/ftrace.c
++++ b/arch/x86/kernel/ftrace.c
+@@ -252,11 +252,6 @@ void arch_ftrace_update_code(int command)
+ 	ftrace_modify_all_code(command);
+ }
+ 
+-int __init ftrace_dyn_arch_init(void)
+-{
+-	return 0;
+-}
+-
+ /* Currently only x86_64 supports dynamic trampolines */
+ #ifdef CONFIG_X86_64
+ 
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index 832e65f06754..f1eca123d89d 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -573,7 +573,6 @@ ftrace_set_early_filter(struct ftrace_ops *ops, char *buf, int enable);
+ 
+ /* defined in arch */
+ extern int ftrace_ip_converted(unsigned long ip);
+-extern int ftrace_dyn_arch_init(void);
+ extern void ftrace_replace_code(int enable);
+ extern int ftrace_update_ftrace_func(ftrace_func_t func);
+ extern void ftrace_caller(void);
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 7efbc8aaf7f6..4c090323198d 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -6846,6 +6846,11 @@ void __init ftrace_free_init_mem(void)
+ 	ftrace_free_mem(NULL, start, end);
+ }
+ 
++int __init __weak ftrace_dyn_arch_init(void)
++{
++	return 0;
++}
++
+ void __init ftrace_init(void)
+ {
+ 	extern unsigned long __start_mcount_loc[];
+-- 
+2.30.2
 
