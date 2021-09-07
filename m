@@ -2,109 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E093D4023C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A874023CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236244AbhIGHEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 03:04:22 -0400
-Received: from mail-ua1-f51.google.com ([209.85.222.51]:36663 "EHLO
-        mail-ua1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236158AbhIGHEL (ORCPT
+        id S236613AbhIGHHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 03:07:38 -0400
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:5117 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235480AbhIGHHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 03:04:11 -0400
-Received: by mail-ua1-f51.google.com with SMTP id x23so5033691uav.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 00:03:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RnzOQ0rKdquIXLN6HTpR8yt5pLvPfBFYXKRIuAB1ab0=;
-        b=cS42rNIpBjIE6tauAlUcYCFXbQpW6TPetA9uWaAqqzZl/0Le72XvWIK338tuivhxod
-         nNbPdcSSUzzi4kzRS/NDcbyc4LuZ8sXkbdtxU/Fabco3kmWHZyUgaljx0VFLulo3w2mF
-         Qi8W+zZyj7saDDI/r7RkX05gq2ywyQKUsNfSOTAZkwbuu2jnAjUnRnGZK9teHY+PDTD1
-         LtkUbTVE+NqFfgsZZUHnr0mAVX3XLD4r+4ZvUeCBCfa48m1yZQSJuc4vqrwZmXFY+BJp
-         DeXLlwCT1eOnYc9n/MAU33/JPRZz/kbIxsTqUiRoHdMdgoVtBjB5qbu+IDAl3g5EUx90
-         ifng==
-X-Gm-Message-State: AOAM5334lCh4N/wGuERHv9xweiNRYT63fbBGKoziSDWe+2WnR1laz3p1
-        Alv4i+C0Vu/MsZru2OWMczUsWodIKxhVv5q796yXukCLJP8=
-X-Google-Smtp-Source: ABdhPJw7bE6+/3En0eoolnWevATWF39/p5nYQ/eGyl8MjEBtehFgXksrlK6Bp+Q+vuDVQFYZfg/6LgZg/grUFjA7IxE=
-X-Received: by 2002:a9f:35aa:: with SMTP id t39mr7415384uad.89.1630998185101;
- Tue, 07 Sep 2021 00:03:05 -0700 (PDT)
+        Tue, 7 Sep 2021 03:07:21 -0400
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 07 Sep 2021 00:06:15 -0700
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 07 Sep 2021 00:06:14 -0700
+X-QCInternal: smtphost
+Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 07 Sep 2021 12:36:02 +0530
+Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
+        id AC9D5222D3; Tue,  7 Sep 2021 12:36:01 +0530 (IST)
+From:   Md Sadre Alam <mdalam@codeaurora.org>
+To:     miquel.raynal@bootlin.com, mani@kernel.org,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org, stable@kernel.org
+Subject: [PATCH V6] mtd: rawnand: qcom: Update code word value for raw read
+Date:   Tue,  7 Sep 2021 12:35:57 +0530
+Message-Id: <1630998357-1359-1-git-send-email-mdalam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20210906194917.376116-1-palmer@dabbelt.com>
-In-Reply-To: <20210906194917.376116-1-palmer@dabbelt.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 7 Sep 2021 09:02:53 +0200
-Message-ID: <CAMuHMdUtg1qA7hx-QGGwd6nfe_vDEzoH95732T736FPH0Jb5dA@mail.gmail.com>
-Subject: Re: [PATCH RESEND] drm/rockchip: cdn-dp-core: Fix cdn_dp_resume
- unused warning
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Sandy Huang <hjc@rock-chips.com>, Heiko Stuebner <heiko@sntech.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 6, 2021 at 9:58 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> From: Palmer Dabbelt <palmerdabbelt@google.com>
->
-> cdn_dp_resume is only used under PM_SLEEP, and now that it's static an
-> unused function warning is triggered undner !PM_SLEEP.  This
-> conditionally enables the function to avoid the warning.
->
-> Fixes: 7c49abb4c2f8 ("drm/rockchip: cdn-dp-core: Make cdn_dp_core_suspend/resume static")
-> Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+From QPIC V2 onwards there is a separate register to read
+last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+qcom_nandc_read_cw_raw() is used to read only one code word
+at a time. If we will configure number of code words to 1 in
+in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
+its reading the last code word, since from QPIC V2 onwards
+we are having separate register to read the last code word,
+we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
+register to fetch data from controller buffer to system
+memory.
 
-> ---
-> I sent this one out in January, but it looks like it got lost in the shuffle.
-> I'm getting this on a RISC-V allmodconfig now.
-> ---
->  drivers/gpu/drm/rockchip/cdn-dp-core.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/gpu/drm/rockchip/cdn-dp-core.c b/drivers/gpu/drm/rockchip/cdn-dp-core.c
-> index 8ab3247dbc4a..bee0f2d2a9be 100644
-> --- a/drivers/gpu/drm/rockchip/cdn-dp-core.c
-> +++ b/drivers/gpu/drm/rockchip/cdn-dp-core.c
-> @@ -1123,6 +1123,7 @@ static int cdn_dp_suspend(struct device *dev)
->         return ret;
->  }
->
-> +#ifdef CONFIG_PM_SLEEP
->  static int cdn_dp_resume(struct device *dev)
+Fixes: 503ee5aad430 ("mtd: rawnand: qcom: update last code word register")
+Cc: stable@kernel.org
+Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
+---
+Changes in V6:
 
-An alternative solution would be to tag the function with
-__maybe_unused.
+ * Incorporated "commit hash" comment from Miquèl
+ * updated commit hash to 12 digits in Fixes tag.
 
->  {
->         struct cdn_dp_device *dp = dev_get_drvdata(dev);
-> @@ -1135,6 +1136,7 @@ static int cdn_dp_resume(struct device *dev)
->
->         return 0;
->  }
-> +#endif
->
->  static int cdn_dp_probe(struct platform_device *pdev)
->  {
+Changes in V5:
 
-Gr{oetje,eeting}s,
+ * Incorporated "hash commit" comment from Mani.
+ * Updated commit hash
 
-                        Geert
+Changes in V4:
 
+ * Incorporated "Change log" comment from Miquèl
+ * Updated change log
+
+Changes in V3:
+ 
+ * Incorporated "Fixes tags are missing" comment from Miquèl
+ * Added Fixes tag Fixes:503ee5aa ("mtd: rawnand: qcom: update last code word register")
+
+
+Changes in V2:
+
+ * Incorporated "stable tags are missing" comment from Miquèl
+ * Added stable tags Cc:stable@kernel.org
+
+ drivers/mtd/nand/raw/qcom_nandc.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index ef0bade..04e6f7b 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -1676,13 +1676,17 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	int data_size1, data_size2, oob_size1, oob_size2;
+ 	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
++	int raw_cw = cw;
+ 
+ 	nand_read_page_op(chip, page, 0, NULL, 0);
+ 	host->use_ecc = false;
+ 
++	if (nandc->props->qpic_v2)
++		raw_cw = ecc->steps - 1;
++
+ 	clear_bam_transaction(nandc);
+ 	set_address(host, host->cw_size * cw, page);
+-	update_rw_regs(host, 1, true, cw);
++	update_rw_regs(host, 1, true, raw_cw);
+ 	config_nand_page_read(chip);
+ 
+ 	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
+@@ -1711,7 +1715,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
+ 	}
+ 
+-	config_nand_cw_read(chip, false, cw);
++	config_nand_cw_read(chip, false, raw_cw);
+ 
+ 	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
+ 	reg_off += data_size1;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.7.4
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
