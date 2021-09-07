@@ -2,411 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FAA4025DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7EB4025E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244983AbhIGJDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 05:03:12 -0400
-Received: from mail-4319.protonmail.ch ([185.70.43.19]:37799 "EHLO
-        mail-4319.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245159AbhIGJC4 (ORCPT
+        id S244325AbhIGJFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 05:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245489AbhIGJFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 05:02:56 -0400
-Date:   Tue, 07 Sep 2021 09:01:17 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1631005283;
-        bh=VX4z0nZhRbkOu8FN8dekK+/P0JFwsoSYZ5ci1w9PVKo=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=KWUCZsCVchTrT743cdlTDPBkyQpp6BQ1w9bS6ePycJ1VXk2m53/t/OzCSp8tXWYN4
-         ZYbfXUDGDu+N1Bz+V8++Hkvu2Qdm4nsDnmA1WglhVh4keALxMgTXfqtrFSFriAJNmI
-         DmCwYkGmoG2NMg9/px463M1wrTdiDDXflBMGNQ48=
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-From:   Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
-Subject: Re: [PATCH v3 1/2] Input: cypress-sf - Add Cypress StreetFighter touchkey driver
-Message-ID: <SO32ZQ.ZZ96JBE1E2N91@protonmail.com>
-In-Reply-To: <YTW1zso4zW4RC6N0@google.com>
-References: <20210901165231.236728-1-y.oudjana@protonmail.com> <20210901165231.236728-2-y.oudjana@protonmail.com> <YTW1zso4zW4RC6N0@google.com>
+        Tue, 7 Sep 2021 05:05:15 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89CDBC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 02:04:09 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id g14so7644894pfm.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 02:04:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JT40h1sqFKOXqQynjb32P0gwjUjlNSTVOulfaGgY9SY=;
+        b=e+/yuG0NefU01Sn/0N6reRSzg64hFOX0e2EOZgQwHA/fJX9drVd8IEnz0/6hZ6TSUY
+         iyZgb5WGpFSrKlJdxUwLChOZgef4Er8kh7A8HlrsCud6emMcaZZZAZC0BaV6489eCW73
+         BtnctBXpzDC8Y186iUxsEuvAt03Sq+R8Xa/YQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JT40h1sqFKOXqQynjb32P0gwjUjlNSTVOulfaGgY9SY=;
+        b=UbuJKSI8tpLa+smhv7fn6nYWr3hyjpNpPiLiVA8r9scpPhijihn/kPROlgmQYEVZJ/
+         3iNxbj8jnqfwpu4UZvns6PQyGvQId90Vr1PqMSOseugDuycZ1iN5f2SfT5pGUKSh05lJ
+         5hzWNpbi+gs7rqlPGqVQIdzsv9b57PHTx+4kYbpTwky9KBfW0NQvh9eTOkWNl6i1cxsn
+         +K7gPUtRua86t5Rc8m73ZrYD+WoGz89Q/bBaAPmTIVvqDdEVeFA6nngXs2XXK77GZ9hJ
+         S4jaGBaBqD8RdOFIz8qFHUjnLsKGQ498xNzXS/a/R4C1aAB0Ykb4AoKOQamsfwueMqPD
+         PrVg==
+X-Gm-Message-State: AOAM531K1JQHjOZzHLXEJcinxTPI1kvfEePJ/PsjqQLLHqQfZicaQ9pJ
+        rwQDxy+1qmrYFAGDw8R+oBnksQ==
+X-Google-Smtp-Source: ABdhPJwm31KByBnVlIs7w8AhfNmb0SVtrFTViZTx/Z2vDwUsInRHv7kDRMPZxQRCnuti15RgLOsTmQ==
+X-Received: by 2002:a63:1b60:: with SMTP id b32mr16009500pgm.422.1631005449064;
+        Tue, 07 Sep 2021 02:04:09 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:4040:44a5:1453:e72c])
+        by smtp.gmail.com with ESMTPSA id f10sm143297pfd.53.2021.09.07.02.04.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 02:04:08 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 18:04:03 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ksmbd: remove unnecessary conditions
+Message-ID: <YTcrA2U2n5QAUkt5@google.com>
+References: <20210907073428.GD18254@kili>
+ <YTcdbOgmB7758K+/@google.com>
+ <20210907085430.GM1957@kadam>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210907085430.GM1957@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On (21/09/07 11:54), Dan Carpenter wrote:
+> On Tue, Sep 07, 2021 at 05:06:04PM +0900, Sergey Senozhatsky wrote:
+> > On (21/09/07 10:34), Dan Carpenter wrote:
+> > >  
+> > >  		id = le32_to_cpu(psid->sub_auth[psid->num_subauth - 1]);
+> > > -		if (id >= 0) {
+> > > -			/*
+> > > -			 * Translate raw sid into kuid in the server's user
+> > > -			 * namespace.
+> > > -			 */
+> > > -			uid = make_kuid(&init_user_ns, id);
+> > > -
+> > > -			/* If this is an idmapped mount, apply the idmapping. */
+> > > -			uid = kuid_from_mnt(user_ns, uid);
+> > > -			if (uid_valid(uid)) {
+> > > -				fattr->cf_uid = uid;
+> > > -				rc = 0;
+> > > -			}
+> > > +		/*
+> > > +		 * Translate raw sid into kuid in the server's user
+> > > +		 * namespace.
+> > > +		 */
+> > > +		uid = make_kuid(&init_user_ns, id);
+> > 
+> > Can make_kuid() return INVALID_UID? IOW, uid_valid(uid) here as well?
+> 
+> No need to check twice.  We're going to check at the end.
+> 
+> > 
+> > > +
+> > > +		/* If this is an idmapped mount, apply the idmapping. */
+> > > +		uid = kuid_from_mnt(user_ns, uid);
+> > > +		if (uid_valid(uid)) {
+>                     ^^^^^^^^^^^^^^
+> The check here is sufficient.
 
-
-On Mon, Sep 6 2021 at 10:31:42 +0400, Dmitry Torokhov=20
-<dmitry.torokhov@gmail.com> wrote:
-> Hi Yassine,
->=20
-> On Wed, Sep 01, 2021 at 04:52:58PM +0000, Yassine Oudjana wrote:
->>  This adds support for Cypress StreetFighter touchkey controllers=20
->> such as sf3155.
->>  This driver supports managing regulators and generating input=20
->> events.
->>=20
->>  Due to lack of documentation, this driver is entirely based on=20
->> information
->>  gathered from a driver written for an old Android kernel fork[1][2].
->>=20
->>  Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
->=20
-> Thank you for the patch. Please run your patches through=20
-> checkpatch.pl.
-
-Sure.
-
-> See additional comments below.
->=20
->=20
->>=20
->>  [1]=20
->> https://github.com/LineageOS/android_kernel_xiaomi_msm8996/blob/lineage-=
-18.1/drivers/input/touchscreen/cyttsp_button.c
->>  [2]=20
->> https://github.com/LineageOS/android_kernel_xiaomi_msm8996/blob/lineage-=
-18.1/arch/arm/boot/dts/qcom/a4-msm8996-mtp.dtsi#L291-L314
->>  ---
->>  Changes since v2:
->>   - Code style fixes.
->>   - Added copyright statement.
->>  Changes since v1:
->>   - Changed version variables in probe to int to allow storing error=20
->> codes.
->>=20
->>   drivers/input/keyboard/Kconfig      |  10 ++
->>   drivers/input/keyboard/Makefile     |   1 +
->>   drivers/input/keyboard/cypress-sf.c | 223=20
->> ++++++++++++++++++++++++++++
->>   3 files changed, 234 insertions(+)
->>   create mode 100644 drivers/input/keyboard/cypress-sf.c
->>=20
->>  diff --git a/drivers/input/keyboard/Kconfig=20
->> b/drivers/input/keyboard/Kconfig
->>  index 40a070a2e7f5..6f3fbea8b803 100644
->>  --- a/drivers/input/keyboard/Kconfig
->>  +++ b/drivers/input/keyboard/Kconfig
->>  @@ -788,4 +788,14 @@ config KEYBOARD_MTK_PMIC
->>   =09  To compile this driver as a module, choose M here: the
->>   =09  module will be called pmic-keys.
->>=20
->>  +config KEYBOARD_CYPRESS_SF
->>  +=09tristate "Cypress StreetFighter touchkey support"
->>  +=09depends on I2C
->>  +=09help
->>  +=09  Say Y here if you want to enable support for Cypress=20
->> StreetFighter
->>  +=09  touchkeys.
->>  +
->>  +=09  To compile this driver as a module, choose M here: the
->>  +=09  module will be called cypress-sf.
->>  +
->>   endif
->>  diff --git a/drivers/input/keyboard/Makefile=20
->> b/drivers/input/keyboard/Makefile
->>  index 1d689fdd5c00..e3c8648f834e 100644
->>  --- a/drivers/input/keyboard/Makefile
->>  +++ b/drivers/input/keyboard/Makefile
->>  @@ -17,6 +17,7 @@ obj-$(CONFIG_KEYBOARD_BCM)=09=09+=3D bcm-keypad.o
->>   obj-$(CONFIG_KEYBOARD_CAP11XX)=09=09+=3D cap11xx.o
->>   obj-$(CONFIG_KEYBOARD_CLPS711X)=09=09+=3D clps711x-keypad.o
->>   obj-$(CONFIG_KEYBOARD_CROS_EC)=09=09+=3D cros_ec_keyb.o
->>  +obj-$(CONFIG_KEYBOARD_CYPRESS_SF)=09+=3D cypress-sf.o
->>   obj-$(CONFIG_KEYBOARD_DAVINCI)=09=09+=3D davinci_keyscan.o
->>   obj-$(CONFIG_KEYBOARD_DLINK_DIR685)=09+=3D dlink-dir685-touchkeys.o
->>   obj-$(CONFIG_KEYBOARD_EP93XX)=09=09+=3D ep93xx_keypad.o
->>  diff --git a/drivers/input/keyboard/cypress-sf.c=20
->> b/drivers/input/keyboard/cypress-sf.c
->>  new file mode 100644
->>  index 000000000000..f2862547f633
->>  --- /dev/null
->>  +++ b/drivers/input/keyboard/cypress-sf.c
->>  @@ -0,0 +1,223 @@
->>  +// SPDX-License-Identifier: GPL-2.0-only
->>  +/*
->>  + * Cypress StreetFighter Touchkey Driver
->>  + *
->>  + * Copyright (c) 2021 Yassine Oudjana <y.oudjana@protonmail.com>
->>  + */
->>  +
->>  +#include <linux/bitops.h>
->>  +#include <linux/device.h>
->>  +#include <linux/i2c.h>
->>  +#include <linux/input.h>
->>  +#include <linux/interrupt.h>
->>  +#include <linux/module.h>
->>  +#include <linux/pm.h>
->>  +#include <linux/regulator/consumer.h>
->>  +
->>  +#define CYPRESS_SF_DEV_NAME "cypress-sf"
->>  +
->>  +#define CYPRESS_SF_REG_FW_VERSION=090x46
->>  +#define CYPRESS_SF_REG_HW_VERSION=090x48
->>  +#define CYPRESS_SF_REG_BUTTON_STATUS=090x4a
->>  +
->>  +struct cypress_sf_data {
->>  +=09struct i2c_client *client;
->>  +=09struct input_dev *input_dev;
->>  +=09struct regulator_bulk_data regulators[2];
->>  +=09u32 *keycodes;
->>  +=09unsigned long keystates;
->>  +=09int num_keys;
->>  +};
->>  +
->>  +static irqreturn_t cypress_sf_irq_handler(int irq, void *devid)
->>  +{
->>  +=09struct cypress_sf_data *touchkey =3D devid;
->>  +=09unsigned long keystates;
->>  +=09bool curr_state, new_state;
->>  +=09int key;
->>  +
->>  +=09keystates =3D i2c_smbus_read_byte_data(touchkey->client,
->>  +=09=09=09=09=09CYPRESS_SF_REG_BUTTON_STATUS);
->>  +=09if (keystates < 0) {
->=20
-> keystates is declared as unsigned, so this condition will never=20
-> trigger.
-
-Right. I'll change it.
-
->=20
->>  +=09=09dev_err(&touchkey->client->dev, "Failed to read button status");
->>  +=09=09return IRQ_NONE;
->>  +=09}
->>  +
->>  +=09for(key =3D 0; key < touchkey->num_keys; ++key) {
->>  +=09=09curr_state =3D test_bit(key, &touchkey->keystates);
->>  +=09=09new_state =3D test_bit(key, &keystates);
->>  +
->>  +=09=09if(curr_state ^ new_state) {
->=20
-> Instead of this please do
->=20
-> =09bitmap_xor(&changed, &keystates, &touchkey->keystates,
-> =09=09   touchkey->num_keys);
-> =09for_each_set_bit(key, &changed, touchkey->num_keys) {
-> =09=09...
-> =09}
->=20
-
-Noted.
-
->>  +=09=09=09dev_dbg(&touchkey->client->dev,\
->>  +=09=09=09=09"Key %d changed to %d", key, new_state);
->>  +=09=09=09input_report_key(touchkey->input_dev,
->>  +=09=09=09=09=09touchkey->keycodes[key],
->>  +=09=09=09=09=09new_state);
->>  +=09=09}
->>  +=09}
->>  +=09input_sync(touchkey->input_dev);
->>  +=09touchkey->keystates =3D keystates;
->>  +
->>  +=09return IRQ_HANDLED;
->>  +}
->>  +
->>  +static int cypress_sf_probe(struct i2c_client *client,
->>  +=09=09=09=09const struct i2c_device_id *id)
->>  +{
->>  +=09struct cypress_sf_data *touchkey;
->>  +=09int hw_version, fw_version;
->>  +=09int i, ret;
->>  +
->>  +=09touchkey =3D devm_kzalloc(&client->dev, sizeof(*touchkey),=20
->> GFP_KERNEL);
->>  +=09if(!touchkey)
->>  +=09=09return -ENOMEM;
->>  +
->>  +=09touchkey->client =3D client;
->>  +=09i2c_set_clientdata(client, touchkey);
->>  +
->>  +=09touchkey->regulators[0].supply =3D "vdd";
->>  +=09touchkey->regulators[1].supply =3D "avdd";
->>  +
->>  +=09ret =3D devm_regulator_bulk_get(&client->dev,
->>  +=09=09=09=09=09ARRAY_SIZE(touchkey->regulators),
->>  +=09=09=09=09=09touchkey->regulators);
->>  +=09if(ret) {
->>  +=09=09dev_err(&client->dev, "Failed to get regulators: %d\n", ret);
->>  +=09=09return ret;
->>  +=09}
->>  +
->>  +=09touchkey->num_keys =3D=20
->> of_property_count_elems_of_size(client->dev.of_node,
->>  +=09=09=09=09=09=09=09"linux,keycodes",
->>  +=09=09=09=09=09=09=09sizeof(u32));
->=20
-> Please use device_property_* API instead of of_property_*.
-
-Noted.
-
->>  +=09if(touchkey->num_keys < 0)
->>  +=09=09/* Default key count */
->>  +=09=09touchkey->num_keys =3D 2;
->>  +
->>  +=09touchkey->keycodes =3D devm_kzalloc(&client->dev,
->>  +=09=09=09=09sizeof(u32) * touchkey->num_keys, GFP_KERNEL);
->>  +=09if(!touchkey->keycodes)
->>  +=09=09return -ENOMEM;
->>  +
->>  +=09ret =3D of_property_read_u32_array(client->dev.of_node,=20
->> "linux,keycodes",
->>  +=09=09=09=09=09=09touchkey->keycodes, touchkey->num_keys);
->>  +
->>  +=09if(touchkey->num_keys < 0) {
->>  +=09=09/* Default keycodes */
->>  +=09=09touchkey->keycodes[0] =3D KEY_BACK;
->>  +=09=09touchkey->keycodes[1] =3D KEY_MENU;
->>  +=09}
->>  +
->>  +=09ret =3D regulator_bulk_enable(ARRAY_SIZE(touchkey->regulators),
->>  +=09=09=09=09=09touchkey->regulators);
->=20
-> Please call variables that carry error core or 0 for success 'error'.
-
-I'll rename them.
-
->=20
->>  +=09if(ret) {
->>  +=09=09dev_err(&client->dev, "Failed to enable regulators: %d\n", ret);
->>  +=09=09return ret;
->>  +=09}
->>  +
->>  +=09touchkey->input_dev =3D devm_input_allocate_device(&client->dev);
->>  +=09if(!touchkey->input_dev) {
->>  +=09=09dev_err(&client->dev, "Failed to allocate input device\n");
->>  +=09=09return -ENOMEM;
->>  +=09}
->>  +
->>  +=09touchkey->input_dev->name =3D CYPRESS_SF_DEV_NAME;
->>  +=09touchkey->input_dev->id.bustype =3D BUS_I2C;
->>  +
->>  +=09hw_version =3D i2c_smbus_read_byte_data(touchkey->client,
->>  +=09=09=09=09CYPRESS_SF_REG_HW_VERSION);
->>  +=09fw_version =3D i2c_smbus_read_word_data(touchkey->client,
->>  +=09=09=09=09CYPRESS_SF_REG_FW_VERSION);
->>  +=09if(hw_version < 0 || fw_version < 0)
->>  +=09=09dev_warn(&client->dev, "Failed to read versions\n");
->>  +=09else
->>  +=09=09dev_info(&client->dev, "HW version %d, FW version %d\n",
->>  +=09=09=09=09hw_version, fw_version);
->=20
-> Why is this needed?
-
-I was using it as an indicator for success finding the chip, but it=20
-isn't
-strictly needed. I'll remove it.
-
->=20
->>  +
->>  +=09for(i =3D 0; i < touchkey->num_keys; ++i)
->>  +=09=09input_set_capability(touchkey->input_dev, EV_KEY,
->>  +=09=09=09=09=09touchkey->keycodes[i]);
->>  +
->>  +=09ret =3D input_register_device(touchkey->input_dev);
->>  +=09if(ret) {
->>  +=09=09dev_err(&client->dev,
->>  +=09=09=09"Failed to register input device: %d\n", ret);
->>  +=09=09return ret;
->>  +=09}
->>  +
->>  +=09ret =3D devm_request_threaded_irq(&client->dev, client->irq,
->>  +=09=09=09=09=09NULL, cypress_sf_irq_handler,
->>  +=09=09=09=09=09IRQF_ONESHOT,
->>  +=09=09=09=09=09CYPRESS_SF_DEV_NAME, touchkey);
->>  +=09if(ret) {
->>  +=09=09dev_err(&client->dev,
->>  +=09=09=09"Failed to register threaded irq: %d", ret);
->>  +=09=09return ret;
->>  +=09}
->>  +
->>  +=09return 0;
->>  +};
->>  +
->>  +static int __maybe_unused cypress_sf_suspend(struct device *dev) {
->>  +=09struct i2c_client *client =3D to_i2c_client(dev);
->>  +=09struct cypress_sf_data *touchkey =3D i2c_get_clientdata(client);
->>  +=09int ret;
->>  +
->>  +=09disable_irq(client->irq);
->>  +=09ret =3D regulator_bulk_disable(ARRAY_SIZE(touchkey->regulators),
->>  +=09=09=09=09=09touchkey->regulators);
->>  +=09if(ret) {
->>  +=09=09dev_err(dev, "Failed to disable regulators: %d", ret);
->>  +=09=09enable_irq(client->irq);
->>  +=09=09return ret;
->>  +=09}
->>  +=09dev_dbg(dev, "Suspended device");
->>  +
->>  +=09return 0;
->>  +}
->>  +
->>  +static int __maybe_unused cypress_sf_resume(struct device *dev) {
->>  +=09struct i2c_client *client =3D to_i2c_client(dev);
->>  +=09struct cypress_sf_data *touchkey =3D i2c_get_clientdata(client);
->>  +=09int ret;
->>  +
->>  +=09ret =3D regulator_bulk_enable(ARRAY_SIZE(touchkey->regulators),
->>  +=09=09=09=09=09touchkey->regulators);
->>  +=09if(ret) {
->>  +=09=09dev_err(dev, "Failed to enable regulators: %d", ret);
->>  +=09=09return ret;
->>  +=09}
->>  +=09enable_irq(client->irq);
->>  +=09dev_dbg(dev, "Resumed device");
->>  +
->>  +=09return 0;
->>  +}
->>  +
->>  +static SIMPLE_DEV_PM_OPS(cypress_sf_pm_ops,
->>  +=09=09=09 cypress_sf_suspend, cypress_sf_resume);
->>  +
->>  +static struct i2c_device_id cypress_sf_id_table[] =3D {
->>  +=09{ CYPRESS_SF_DEV_NAME, 0 },
->>  +=09{ }
->>  +};
->>  +MODULE_DEVICE_TABLE(i2c, cypress_sf_id_table);
->>  +
->>  +static const struct of_device_id cypress_sf_of_match[] =3D {
->>  +=09{ .compatible =3D "cypress,sf3155", },
->>  +=09{ },
->>  +};
->>  +MODULE_DEVICE_TABLE(of, cypress_sf_of_match);
->>  +
->>  +static struct i2c_driver cypress_sf_driver =3D {
->>  +=09.driver =3D {
->>  +=09=09.name =3D CYPRESS_SF_DEV_NAME,
->>  +=09=09.pm =3D &cypress_sf_pm_ops,
->>  +=09=09.of_match_table =3D of_match_ptr(cypress_sf_of_match),
->>  +=09},
->>  +=09.id_table =3D cypress_sf_id_table,
->>  +=09.probe =3D cypress_sf_probe,
->>  +};
->>  +module_i2c_driver(cypress_sf_driver);
->>  +
->>  +MODULE_AUTHOR("Yassine Oudjana <y.oudjana@protonmail.com>");
->>  +MODULE_DESCRIPTION("Cypress StreetFighter Touchkey Driver");
->>  +MODULE_LICENSE("GPL v2");
->>  --
->>  2.33.0
->>=20
->>=20
->=20
-> Thanks.
->=20
-> --
-> Dmitry
-
-Thanks for the review!
-Yassine
-
-
-
+My point was more that a potentially invalid UID is passed to kuid_from_mnt()
+and kgid_from_mnt(). I don't see map_id_up(), for example, checking that
+passed UID is valid. So decided to double check.
