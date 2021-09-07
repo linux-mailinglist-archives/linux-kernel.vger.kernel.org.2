@@ -2,82 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDE6402A66
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:07:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97756402A68
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:08:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232251AbhIGOI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:08:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229650AbhIGOIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:08:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAAAF6103B;
-        Tue,  7 Sep 2021 14:07:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631023637;
-        bh=+6pq5RkAoSIUZfooNDRh1HsK7vTGdlktLrMWVjASe44=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=QjGn5Z9WvN50IBXQt4+0/uMA1Nsheh/VG4nYFnb+d298Hzj4pdS4YllRxdiOoDQCM
-         j4cvrq+M5qrWFEnOgz8SqW7Io+tku7z5ZuLMnTITy3/ZgYBAg2TAkyyNqiOIx9OUhI
-         pls72UWzM93Fx9OOJie5iJpqfZO2oz7Op1Olpee9+Q4RSsiss15iNqn8bZo4xI/nFt
-         VSRlvMUBIkOHhzag/Lv+2+1HMgGPcNQNhY84AYTdvfhCJ4Z6j5nsbqGBbc4rAaaJG+
-         VwYHGp+9QvK/g0OaSnL58fD9Dshc2FBE1hdk5/fUHdwKHKHl/cihpR8sbK9jrEvrwp
-         k3UVuo8G0nqFA==
-Message-ID: <848905ffa20cf234446b16682cbbcf1e56853950.camel@kernel.org>
-Subject: Re: [PATCH v4 5/6] x86/sgx: Hook sgx_memory_failure() into mainline
- code
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     "Luck, Tony" <tony.luck@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>
-Cc:     "Zhang, Cathy" <cathy.zhang@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Tue, 07 Sep 2021 17:07:14 +0300
-In-Reply-To: <25db682402d14c34af9ba525cffe85c5@intel.com>
-References: <20210728204653.1509010-1-tony.luck@intel.com>
-         <20210827195543.1667168-1-tony.luck@intel.com>
-         <20210827195543.1667168-6-tony.luck@intel.com>
-         <49fccddbbf92279f575409851a9c682495146ad8.camel@kernel.org>
-         <681d530d72de842c8bf43733c11f3c3f2ebf8c6e.camel@kernel.org>
-         <25db682402d14c34af9ba525cffe85c5@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.36.5-0ubuntu1 
+        id S234354AbhIGOJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:09:49 -0400
+Received: from sonic302-21.consmr.mail.gq1.yahoo.com ([98.137.68.147]:35571
+        "EHLO sonic302-21.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231431AbhIGOJs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 10:09:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1631023722; bh=Z9zQx6waEf/ujPUYmr8rGd6yJIYG33Wc+DNBT4U1n50=; h=From:To:Cc:Subject:Date:References:From:Subject:Reply-To; b=lD8uqCmEMqGzcplZo882RPFQeNJsCTWOG9ffeNgnlv4oDpIreqkA3PrrmTDI29wlI301rpP1B0HuGUfGzyjyCaOiocMW1py+lOJdtv1cM9l3R10AjK2tDMSkLovmDKaemLRw2aA2HVx1ve3vhu9dIYOkl43OHKu4paBoCkqdm7b2x0MHBBirtZYZJ0+ZveFR1Zi399Cf5lt/AFPijrUKDp0OLcjdpBG46sXJfQZXRE8n3h1cOJFMlwWpr9IMbWXqWHyZDuzMCcX6O/tdBJ/aH8cwHxgFmeWPtXoC9msqvJD1mfOXuoIl1DmOrsxXMCrkNv2CvNsiVALY1+AqOqH7Iw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1631023722; bh=fpd42H7duosmZRXSpKbiIFlCLvyfCo9cWQFzfVN3Tqo=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=HFg4KRpjJ3yf/ecxBKwmp6DeTgH/2PcsMnZG2TQsGaQ2TYeKG/me4mwEwI68DmnThvHPYzZYIyxuSKbVd5kB6/iUmVvPBLxnzznDB9AlyGWJ0d9QpXu0pLJoVVZ35Uqofrty87Ctds29pyXcM5GNRvJN7StVqqGUHBPoQYV5wX/xS7TXB+0LzCe7AkNCRT3JDLNqKDwBWhqcN5jtuw2+JtC+HAT5YHPiLuhgvrbPot48EF8PEcchdN4X3bvWV+n1xNWclBFveMIWc21fcRLMmy5Wq63cStIQt++6PPR9dNGMP0o/RPua9HImJBqyFTn3tDqwnFD6xz4Xx3pUxPcoRg==
+X-YMail-OSG: WnasCEoVM1l67jJwpfyVUjsg3YQyuBB64YEnUn029KiyVF0bhbuVtRErTb6Gf1X
+ im2NOHCXYmHXa9T5Kk6jka9Eo7edX2U6wvcsyejPN88z1E7hRnld_jYmsYMfuZMAOJRhVgFtt_Ir
+ rOKiisFWdsuwsBTqu43AEbHN5jUxOi0ac3N1e0QZoeazZKhFROb7e1_BUFezeEmqE2gcvKxAITgJ
+ bvQySPUkLj3k1XlBfW5RdronfAV_2_5zEiMzwluvTLWmzeplTGbJqD5vmBKr806IssmvSIUYAyUg
+ N9zhH9raKOVnRXAK4KxcnjEgUeBV8R6kulFXauSrNBxKp51DPKRBvf05emk8IfhU4sLtTKX9j5A4
+ RaKsyjZAkREBZGEtzBIvQcF019VjI.aTqpHS1OUGKTrFwfVikaIM8evETNbNLngWv2Z7VcJDrUnv
+ 0EqX_WHlq4Ca7cqhflFx99XMtp1H9smTiyAhCvKjY2oAyZJATm_tJTPjVq1XLYt5yEC9gTVTmGkW
+ hgx1N1iMUNQP2ZqNToTKLg8bHRJLuOMe6OmNn6PBoV8.1zDT0IsuFlx2XG19KPquO.1.3Tr_nno0
+ 5nuV3_PcrTd.BaItCGCOGxqeEIxUMFK.ArpiEavcbsqtpAGlcvvIsZUntnPOpk.qm6jpgsD5yz5u
+ 7gSCjH2.YqLEN4_4veC1r7UcgyIFEc0iWqPcDfGLHAYHs_fcptVI8aPs2j3n9_7g3tum2njv9gIR
+ VzI9MV58iyulFjAo7xgoNhqcSp7BDvmpafynQAU1eIAsitiJOOJa8cQYgF4SkRWVZubgK3YZakX_
+ m1xggGmu27WGMhlHGj5mWeITJCgzZE7_xWIgrM3TvBSCtDKTOGJA6rXgs79xQqV7AsciXqeRHjTh
+ La0pwpEngCoU7UVtqg.k6_.mZCY0aWXErh_b8YsVR18yhgqjABlzbhnqH0aE4xp1P2yzpuSx7XOL
+ h1nEqRBaj6bLpRFsqZdXlnNyadG_lzugrH2pT5wbDrS9164nRhoZHh0IlSbd.6s1LUFFPdMK.HFT
+ 1Pe0Q21lXLg_YgoPno1IRp91JCXh9uN7hLQ1vbccV.e9jZ28I3hpXefq31tiN_hYYSMXfjy5mZii
+ w0ElO4J9mcw1Blo4kFgOdiG8QbdLwWmvlX9J7OF3Xdes60arCyFJrLNbpXbRGoTG2UHegv6IGI7Y
+ hdra5lIaJMUVW.bgraiZPmwksNGFN773hgIP0TB.Jr5lYnH__vXGcmZ3FrW093uix51RHjdCcoDB
+ r9Peurcm2V3LvqofbuyNtfQjBs7juBVtq3.8TfAHwNMlbwBHUbw83osZGXnamcOPBDlDwZ11HiTf
+ bakgD1y8Ai55d4c87qQLk83vopZZ25W.S29th1bR7ddHTls1SCGgCBwo131hdVB9axGkjzBS9Q6h
+ pwWeu86toMygt2mycTjQCv.ta_ajQqT0pGQ48eAr_blKEX7kMLDZSS04N8LFhK8vRngl7AHdmI1y
+ ZKxZBswAi6m_P9GFwttUp7TmwBcf8NVcMrtNXfMvnvpSruJ.mJMckcbSYEhtprSG3bFySLlhau98
+ 7eDjFLQvaxT5ooA2eEgE1ffetGh3PEogsoAxrX_3EIZ5qw77OIH4cp5WNtuOfA3Z0.PnPjL9DuJG
+ bhyKR8uOoSp.GGDQdGZcm8il_q8ToTTinaXOFAZUMSukR6BpAMUQ2pGfhoGRGWIllF3cOFvfCIJG
+ wgULz_ksy.daLR.QvOlohpdwMf5NvAQ7Qpb.3CXCwtNngHQe3qlxmBrZldyOxeKdoYG1cauqz56D
+ zQs.nwV3cdxWcMD7P9Ut.8JNHCJUbjSTizW9UuFgP0cUYazBZGm4yaFBcyjjrIj8uTUKvWWhbON_
+ IhIfCKbXaXURyFgFB.IEk1FUR9CVE49D2qCZX3qvxhQU6J95lac.f5YTb_BdoFEo7gffMTEjjqKh
+ .36j0LQujOniFL3sTNDQkBYyw2byrFZNlDXDJNVfh1fq0RJ9pnS_c5s_dszXNOJmSSdgnZPv2WUQ
+ hEKfgDTZ1qANl6rQ6YKrKDnpq7aRqfHWkbssNgPGKpOpiSw8UfQXNfFEzUUnsHTaKmfJOv6hyEXS
+ d2E.gXwmpJmCgr_dsn160p6350VCpB_u8WwM8TTxOmS1sJAClUxjArMQDzQOFz.hDfibs_UBXQKY
+ TU3rgPYFo3kqOP8c91HLGW2cmPsNAUwzrZpoZ3w_rZVWgC2jFBzGLSvoJC0j41IGSS4DXV0fcr4t
+ OiINOuovEYR4GhRf3jGby5OP_hzMgYcrtUbfr5O34V1X_F1YUWv_L8i8z3XLfE8eik7h2BsaEMie
+ MePEfWO_V7JqYzt9pugR2H2suAf5S0rA3Un8TnnAzDwA-
+X-Sonic-MF: <alex_y_xu@yahoo.ca>
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.gq1.yahoo.com with HTTP; Tue, 7 Sep 2021 14:08:42 +0000
+Received: by kubenode510.mail-prod1.omega.gq1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID b517298d82bc14160bf5b508c63db16f;
+          Tue, 07 Sep 2021 14:08:38 +0000 (UTC)
+From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+To:     dri-devel@lists.freedesktop.org
+Cc:     ville.syrjala@linux.intel.com, linux-kernel@vger.kernel.org,
+        "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: [PATCH] drm/plane-helper: fix uninitialized variable reference
+Date:   Tue,  7 Sep 2021 10:08:36 -0400
+Message-Id: <20210907140836.323149-1-alex_y_xu@yahoo.ca>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+References: <20210907140836.323149-1-alex_y_xu.ref@yahoo.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-09-06 at 18:51 +0000, Luck, Tony wrote:
-> On Fri, 2021-09-03 at 09:12 +0300, Jarkko Sakkinen wrote:
-> > On Fri, 2021-08-27 at 12:55 -0700, Tony Luck wrote:
-> > > +#ifdef CONFIG_X86_SGX
-> > > +int sgx_memory_failure(unsigned long pfn, int flags);
-> > > +bool sgx_is_epc_page(u64 paddr);
-> > > +#else
-> > > +static inline int sgx_memory_failure(unsigned long pfn, int flags)
-> > > +{
-> > > +	return -ENXIO;
-> > > +}
-> > > +
-> > > +static inline bool sgx_is_epc_page(u64 paddr)
-> > > +{
-> > > +	return false;
-> > > +}
-> > > +#endif
-> >=20
-> > These decl's should be in arch/x86/include/asm/sgx.h, and as part of
-> > patch that contains the implementations.
->=20
-> But I need to use these functions in arch independent code.  Specifically=
- in
-> mm/memory-failure.c and drivers/acpi/apei/einj.c
->=20
-> If I just #include <asm/sgx.h> in those files I'll break the build for ot=
-her
-> architectures.
+drivers/gpu/drm/drm_plane_helper.c: In function 'drm_primary_helper_update':
+drivers/gpu/drm/drm_plane_helper.c:113:32: error: 'visible' is used uninitialized [-Werror=uninitialized]
+  113 |         struct drm_plane_state plane_state = {
+      |                                ^~~~~~~~~~~
+drivers/gpu/drm/drm_plane_helper.c:178:14: note: 'visible' was declared here
+  178 |         bool visible;
+      |              ^~~~~~~
+cc1: all warnings being treated as errors
 
-What does specifically break the build?
+visible is an output, not an input. in practice this use might turn out
+OK but it's still UB.
 
-/Jarkko
+Fixes: df86af9133 ("drm/plane-helper: Add drm_plane_helper_check_state()")
+---
+ drivers/gpu/drm/drm_plane_helper.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/drm_plane_helper.c b/drivers/gpu/drm/drm_plane_helper.c
+index 5b2d0ca03705..838b32b70bce 100644
+--- a/drivers/gpu/drm/drm_plane_helper.c
++++ b/drivers/gpu/drm/drm_plane_helper.c
+@@ -123,7 +123,6 @@ static int drm_plane_helper_check_update(struct drm_plane *plane,
+ 		.crtc_w = drm_rect_width(dst),
+ 		.crtc_h = drm_rect_height(dst),
+ 		.rotation = rotation,
+-		.visible = *visible,
+ 	};
+ 	struct drm_crtc_state crtc_state = {
+ 		.crtc = crtc,
+-- 
+2.33.0
+
