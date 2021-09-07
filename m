@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B259402E3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D715402E44
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:16:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345771AbhIGSQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 14:16:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39156 "EHLO
+        id S1345777AbhIGSSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 14:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244207AbhIGSQY (ORCPT
+        with ESMTP id S1345736AbhIGSR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 14:16:24 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB11CC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 11:15:17 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id z2so21238094lft.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 11:15:17 -0700 (PDT)
+        Tue, 7 Sep 2021 14:17:59 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B8BC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 11:16:52 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id i24so8813758pfo.12
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 11:16:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wm79qTaMpN7nT2BwS0Vub5W7d+vMXYOezw7ENLjvPw4=;
-        b=WN5rZrFXucPapyb/KqoBksMp9uvr/+xNwe3CsvSgYkcIcsTosMQOClJf/8RJ8rTYv7
-         gV8Hf+0EiES1rwv/bMWHOI8O+qCs1Lqj0/KIyaGhudeC1VrHUGGCI7VKHV37AWNMA3hi
-         +RqI3so67ZL/hrYkyIFCo9Yxxvx0mYekCLweE=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MTKC20tO9zMCWTI8piOtIK2h9ol7uIIjMhJrYZXtkYg=;
+        b=JP54FaieVXwvNpDq0XuDG07BQCdr2Dtael/Sn0U3W4F72gblOSgWKOsVQPfglUQAaR
+         StOI2FGY99ADuiwTdcirDT+f0z6RhL7DTRVC6isDQEcfoj3yj9RU/kovpZIum8a+La0t
+         Pz7XbBeLrdLb73e0g/FBjw0cAHp/L5prC+VWE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wm79qTaMpN7nT2BwS0Vub5W7d+vMXYOezw7ENLjvPw4=;
-        b=jkvv2k4MNKoYxi6OaDoXZ0QKV3cg/JMoeNcVkNYqKGgkN2PiF1h07/ak+khFQ0tW9F
-         ANxXl4p1ZI1brgaek/fkfrl0DWVUcni42SeddzJ3GsX4FzPjWZ6OSyq4LUYJD5mRnwsm
-         HTvpUyyXUD7NsikihDKH93HwriWs5oNmMPM5+R61+pLhoEync1KpLDefK+rcohspwSZD
-         03r/CzhuoNpIDSbXGr4SroEv8JhTKkeFg5CvDWnOoSNEBvusWUCpqfV63sDbAGb834EG
-         CBNTtqDu4uTdYy4vCWyleM0FQqXFABzprVKMESME7u3Ym1PhleHlRhYbZsIRIsmEDLQH
-         61ag==
-X-Gm-Message-State: AOAM532zbGc0uhTo67ijU6L9hSyQzixn/INZneZoueRmFXJAgG0jH0ds
-        gx49TlN14xC4ADXutwCkWECTmOKCf/T3sQN2YhE=
-X-Google-Smtp-Source: ABdhPJx6dW/cMfAYv6DocaqdKlJ5ZcgPsXodywRDdRXeNhKVAKO/aK9O2WtS1bkZLKr3GyGmc5xZsQ==
-X-Received: by 2002:a05:6512:c11:: with SMTP id z17mr14139516lfu.590.1631038515626;
-        Tue, 07 Sep 2021 11:15:15 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id v12sm1071692lft.226.2021.09.07.11.15.13
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MTKC20tO9zMCWTI8piOtIK2h9ol7uIIjMhJrYZXtkYg=;
+        b=aoiFftB8pGx+g0qcCjFDabO68D1tJe4FLfD1bi3lMDOqYQv2g469IpBATvwrSbOzYU
+         Z6okPQbpxy8Myv3dt1fX3cXkiTHSPbmRJ+PAz0y7HSn8uEAj19lznT281TNRKXLwdam+
+         C1/HhnChuZiHMHaz1fy0TpCIzIixA+7jgyywzfgNbxrM63n5f03g2drAWGuwvPtEq0ZY
+         pW+y5SmMT+GxoN0w7Sg1UA2C3z51w/iMAtW9lVY1ZedsStl5HBJz4EAiP7tjv9aovImc
+         3IIaD+DogGLrv3KaP4mEz5gQDOCP95OX4a6XUNMCU77chIBxGN/WfjBortJQ3wpK0nsu
+         ezGw==
+X-Gm-Message-State: AOAM532LpWE2Ti0h22sljHrP+0Mg9kkSCQ+Fds4Sj6vjTg7SSzql+his
+        HvWLMpikWOJY6DHP6ap/i7Bjfg==
+X-Google-Smtp-Source: ABdhPJx9jtF/JxyCIZPs2rLwflSaCsmFbpbllqX2GRRW80zYBwd0FSUQ8BPYOPQvDaCV2DUIfScgUA==
+X-Received: by 2002:a65:6a4b:: with SMTP id o11mr17543541pgu.278.1631038611904;
+        Tue, 07 Sep 2021 11:16:51 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:c6b2:7ae:474d:36f6])
+        by smtp.gmail.com with UTF8SMTPSA id h4sm3704143pjc.28.2021.09.07.11.16.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 11:15:13 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id d16so13217ljq.4
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 11:15:13 -0700 (PDT)
-X-Received: by 2002:a2e:8107:: with SMTP id d7mr16316158ljg.68.1631038512458;
- Tue, 07 Sep 2021 11:15:12 -0700 (PDT)
+        Tue, 07 Sep 2021 11:16:51 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 11:16:49 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        swboyd@chromium.org, kgunda@codeaurora.org,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: pm8350c: Add pwm support
+Message-ID: <YTeskY7kXsdmvGPp@google.com>
+References: <1630924867-4663-1-git-send-email-skakit@codeaurora.org>
+ <1630924867-4663-4-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-References: <20210907153736.GF17617@xsang-OptiPlex-9020>
-In-Reply-To: <20210907153736.GF17617@xsang-OptiPlex-9020>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 7 Sep 2021 11:14:56 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh=4TJ3yN0+qpzDPJcH3KFkVsHcHO1FJjKHjaPTx8UCdQ@mail.gmail.com>
-Message-ID: <CAHk-=wh=4TJ3yN0+qpzDPJcH3KFkVsHcHO1FJjKHjaPTx8UCdQ@mail.gmail.com>
-Subject: Re: [mm/gup] 9857a17f20: kernel_BUG_at_include/linux/pagemap.h
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>, Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1630924867-4663-4-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 8:20 AM kernel test robot <oliver.sang@intel.com> wrote:
->
-> FYI, we noticed the following commit (built with clang-14):
->
-> commit: 9857a17f206f ("mm/gup: remove try_get_page(), call try_get_compound_head() directly")
-> caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
->
-> [  143.908513][ T3260] kernel BUG at include/linux/pagemap.h:223!
+On Mon, Sep 06, 2021 at 04:11:07PM +0530, satya priya wrote:
+> Add pwm support for PM8350C pmic.
+> 
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
+>  arch/arm64/boot/dts/qcom/pm8350c.dtsi | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/pm8350c.dtsi b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+> index e1b75ae..ecdae55 100644
+> --- a/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/pm8350c.dtsi
+> @@ -29,6 +29,12 @@
+>  			interrupt-controller;
+>  			#interrupt-cells = <2>;
+>  		};
+> +
+> +		pm8350c_pwm4: pwm {
 
-Ahh, well, yes.
+What does the '4' represent, an internal channel number? It should
+probably be omitted if the PM8350 only has a single output PWM
+port.
 
-That commit is clearly buggy, in that the try_get_compound_head() code
-really doesn't work at all for us.
+> +			compatible = "qcom,pm8350c-pwm";
+> +			#pwm-cells = <2>;
+> +			status = "okay";
 
-__page_cache_add_speculative() is not at all the same as
-try_get_page(), and I should have caught on to this as I applied it. I
-just read the explanation, and it sounded believable, but it was
-entirely wrong.
-
-try_get_page() is literally about that "page ref overflow" case, but
-try_get_compound_head() uses page_cache_add_speculative() which has
-different logic and has those extra "this only works in RCU context"
-logic.
-
-So that commit was completely bogus, and the "lack of maintenance" was
-not lack of maintenance at all, it was all about entirely different
-semantics.
-
-Reverted.
-
-                 Linus
+I don't think it should be enabled by default, there may be boards with
+the PM8350C that don't use the PWM.
