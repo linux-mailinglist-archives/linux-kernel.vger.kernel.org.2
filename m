@@ -2,183 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6884C402DBE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12937402DC0
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345662AbhIGRck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 13:32:40 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62668 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229493AbhIGRcj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 13:32:39 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 187HSAdp002074;
-        Tue, 7 Sep 2021 10:31:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=YddA6gcHT4qdwMCxDLoCMVJvsWcQFGBisYxqxj1xaa0=;
- b=Wd1XNy97+JLdR/6VnPDjZDnM8KHULjypNOeiZR1OFVH3YHF3kQaaB1SaBDmy84eQefyP
- io6naaeNemHXn99oml5gfUNADSLBJrOaXrxhMCSyFxk861Wt4vqc1g+LjzSTkzL89NJW
- luUJQAhIDk3VfGBBCFSNGikLg8RRXut7/Oo= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3awwxp5whh-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 07 Sep 2021 10:31:12 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+        id S1345731AbhIGReV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 13:34:21 -0400
+Received: from mga03.intel.com ([134.134.136.65]:41196 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345697AbhIGReO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 13:34:14 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10100"; a="220325858"
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="220325858"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 10:33:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="538076662"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by FMSMGA003.fm.intel.com with ESMTP; 07 Sep 2021 10:33:06 -0700
+Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.14; Tue, 7 Sep 2021 10:31:05 -0700
+ 15.1.2242.12; Tue, 7 Sep 2021 10:33:06 -0700
+Received: from orsmsx605.amr.corp.intel.com (10.22.229.18) by
+ ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Tue, 7 Sep 2021 10:33:05 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Tue, 7 Sep 2021 10:33:05 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Tue, 7 Sep 2021 10:32:55 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SAByyJT76Eyd5AOfYgcjn//uOTrZQGR9D+sRAQgAES2RM5FgCI1JCcReCZFPOd7WXa9fwDAPCOMkLnrHaJdKyqf1KII1KQKJoPE8uAuYwKlagLJeAvJHRqVZYCFkg9Tf1Nsf7z8bZQHx/XwmgUyjLr3ahkGrMBeKEdyxLOZ9MoOd6N3OzY6OTJoDWdmCpFWa+W8XHEQtszply2PodzwPvZv9bD+cStgMpum0dtHkOcUEQggUupjfiATHgXqXYFqDhXGx06xa+pcMZIzh/2F8cr216xcYx3d/M8JeXg6rnWxle60Sq01GqbHd1jlvAIaJKZXUhDfKyDiYQdHwbdyLpg==
+ b=G8PQio2qIxEPYwgGYsfDjCi/4am8nSe4KFIckflnuN0OEtZYcobFCKYvLLGMZJGJ3rgYJzxtEfXdF5FL5guUkRIRx2k7UpLqGVhywXLb/5OPNx5wM2cJkzoleHML2rGjqDwUb0GrUcXxMof9301JUC7RLJyXHCDX7Tibvt8307sL40oTp8k5xHY3HNuW/vwfNrhcDrydeMCeGCPfVN7L+zNQ5Iy1BM3I8nJcPaLNn5GiLnmhJGaPAMwpZoxkdPY5ENsU/CVfhdeTxarOKKZjW9+mETRu0Rw8VisWSddKf2b1lCjd3sZltb2ggG1s9XyOnLHknA68RT1fuq2eyDtVvA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=YddA6gcHT4qdwMCxDLoCMVJvsWcQFGBisYxqxj1xaa0=;
- b=UwN8rg7ZO8z8w3RwTR0+RXh/sxiJYFzOfLDfQmkYjZS8fyllHfFdbOsb6gkM+KEHEI1Alx7HRu5jKXg/NI7Up16V5SAiavcktvzmERRYkI2QnJpxf5wBaNpVu5WQOjuyyqI4zljv7/IwGNHtoTuNVoBaTEzNxb7X+G4EoL6hikPz/mJVb0vmbYXXPSUyMdXNdeSJ6WSicnVmkrxllUL6gRs1v249sDy97v+gTzTS5Bley9TCzbSp4N5wm6zU98445xkxPQCcfRUMCxXdmXWm/7XJOBgxk8t2lW814Gq4xcUmHv7A2Jvr6DZlzVD/w9d5+o60KMB92AZdTM7zBKQOZw==
+ bh=vgOMyN8bnaOFNTjXcCHjPEY58hjiKGtfNaBMe2/lkcw=;
+ b=UpFlrzMABtgPb4a8Srlz4gCOpTYBVCiXISqtb4ei6x80YiZ7X0oDObAwXmbSU67S9bAsVkwTpbvbHAhzFCXt2Q03ZBQRMGgFMVeLaoFmacbpv84GRb3yBfhXweVKxMPdT6ZIOqn+pj69jdGWZEMEckHTAaNdCRsEeumVqrmOUWJCafyWPCqjiNkb8wzprs5PSdOO97tPpDtQskSzn8Zf9HFIyibdC10nxwuQsXFPHzorY0nO/oBsdhWTDF6KBBQUnsNuaj9sdS/BbtOnQKlcDTE15nxtF36qe1MTfGKMmjUknz0xXN5w2NoF8mBwrL/Z44IJ55YgcBrzBVPhID70Ww==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by SJ0PR15MB4373.namprd15.prod.outlook.com (2603:10b6:a03:35a::22) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vgOMyN8bnaOFNTjXcCHjPEY58hjiKGtfNaBMe2/lkcw=;
+ b=zNWVQLU62aBs01YZD8gS3k2nZxe5AMlXS6wVcDfBU2/KYwGJu91GdENbCNukAQtsPatFvYf5i2uHCVhZvrbciVKGJiq/bttsUHz3sB41A/pQFdcEOBrDU7wb9AaZIW+yx/usNJy/9aQ2F2vj1N3iTE0RXKVT9THRvbrlrjVqRLg=
+Received: from BY5PR11MB4182.namprd11.prod.outlook.com (2603:10b6:a03:183::10)
+ by SJ0PR11MB5200.namprd11.prod.outlook.com (2603:10b6:a03:2df::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Tue, 7 Sep
- 2021 17:31:04 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::1144:84e8:6ae1:833c]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::1144:84e8:6ae1:833c%7]) with mapi id 15.20.4478.025; Tue, 7 Sep 2021
- 17:31:04 +0000
-Date:   Tue, 7 Sep 2021 10:31:01 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Tejun Heo <tj@kernel.org>
-CC:     Jens Axboe <axboe@kernel.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Borislav Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yutian Yang <nglaive@gmail.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, <lkp@lists.01.org>,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>
-Subject: Re: [memcg] 0f12156dff: will-it-scale.per_process_ops -33.6%
- regression
-Message-ID: <YTeh1WkseQtyboM9@carbon.dhcp.thefacebook.com>
-References: <20210907150757.GE17617@xsang-OptiPlex-9020>
- <dbc9955d-6c28-1dd5-b842-ef39a762aa3b@kernel.dk>
- <CAHk-=wgrF65BpP6P6_a6+k+C8V+JOBiEx0X-c9idiM87uk32FQ@mail.gmail.com>
- <774dee70-69bd-9f95-d197-4cff83e4e633@kernel.dk>
- <YTedOVCV3s6Z210f@carbon.dhcp.thefacebook.com>
- <YTeeBf64yUwj01Sf@slm.duckdns.org>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Tue, 7 Sep
+ 2021 17:32:54 +0000
+Received: from BY5PR11MB4182.namprd11.prod.outlook.com
+ ([fe80::e189:6f03:9fde:2062]) by BY5PR11MB4182.namprd11.prod.outlook.com
+ ([fe80::e189:6f03:9fde:2062%5]) with mapi id 15.20.4478.025; Tue, 7 Sep 2021
+ 17:32:54 +0000
+From:   "Chrisanthus, Anitha" <anitha.chrisanthus@intel.com>
+To:     Kees Cook <keescook@chromium.org>
+CC:     "Dea, Edmund J" <edmund.j.dea@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: RE: [PATCH] drm/kmb: Avoid warnings on impossible plane_id
+Thread-Topic: [PATCH] drm/kmb: Avoid warnings on impossible plane_id
+Thread-Index: AQHXmd2XU9vEPkR5QkaaPDsb+p2SVauEr1kwgBQ4SdA=
+Date:   Tue, 7 Sep 2021 17:32:53 +0000
+Message-ID: <BY5PR11MB4182FEB7263045FC3855723B8CD39@BY5PR11MB4182.namprd11.prod.outlook.com>
+References: <20210825181807.1138053-1-keescook@chromium.org>
+ <BY5PR11MB4182ABD607EB99C1F68777928CC69@BY5PR11MB4182.namprd11.prod.outlook.com>
+In-Reply-To: <BY5PR11MB4182ABD607EB99C1F68777928CC69@BY5PR11MB4182.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 56001d0b-64ec-4b72-1cd1-08d97225863f
+x-ms-traffictypediagnostic: SJ0PR11MB5200:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SJ0PR11MB5200B71D935D2FCA1091A3BB8CD39@SJ0PR11MB5200.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:332;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: vTKjQxdQeezETPUKymbTqBYK8hbm/eahywWq+zxb7DX5e27N+9NJaM6VgJhPE1VWc443SyF6fKrNJjkLW7K+Drztuf3NXUYYBnl0PQ1F+Aa3WOFNjnneNKO/H0oI+6QEwH3pBMgrLEQfz1hCEf6YeVLBkq0103chDlqhqJ5EfllKrTzvHUmcJEM6bhon1JmRI/vyNmGBDhIq9e8+BF9BHtf6azMmmU6EuuREB2HTWvH151330spOPRPuyOgd5trl/zJ7Eb2feUdWyHOjXTTy3Bxi2fk2EZLrsYaB6O1+2/QXov4dPZ7AtpZ/dOuBcFAlmpgdxfDRlARF9dfyDex+0bCVji/ZvqmDrGeV4cUJwaFP9WiFxuPSRGwu3tnORVjr3p6JMw7Q4a0KErdLdD5pE85Aj40zjPeDq/MAsm7XdjMelbqBKiTPP2qI9/pSui/R9x0KVxE9EaKPHrh6hU+jOWvXjeREvS0XbZqSuP9VoxwVUe4RV71yiFJbnAUrizOJkxZn0j2KPPfDyaqGa2E8NoP69z7qodycxWQCGhw03D/OI/sMtZRrt+KNUD3pH+KOskZ8wA5QRgGGOfLPdcrzDRvajNYsfSDQp8J0ngRIUGUN/XbURkBDhUaIET2TIcgbUMH1lxPTMWsrsNZ743MlMr74lZ5XVDXz/YJZMPmfxm91W6iAJCY2HZnVhQFfxXd4M0sOVTMiQPb40QCLWlGWqQQZSwR9W91ztsvWZaINGLu2LFQFv2N1ElGprpmJzu8UmrEFI5SHvObo1cHdcLmg18A5/OSdFwrTsYKInYvJiWlqzpuT0TLxINcPW67yd6vxInGukdppElNUWFS2WqZnNg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4182.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(396003)(136003)(366004)(122000001)(33656002)(4326008)(54906003)(66446008)(2906002)(66556008)(66476007)(5660300002)(71200400001)(64756008)(76116006)(53546011)(6506007)(66946007)(7696005)(8936002)(26005)(52536014)(38070700005)(186003)(55016002)(8676002)(966005)(478600001)(6916009)(9686003)(316002)(83380400001)(38100700002)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?8UnCjb1jU7TYyKANVY/+fhUFCYuJ3DzD5vC1YDkRXYBO5CNOPjOZBItQ+Tia?=
+ =?us-ascii?Q?sMF8BFvZFdZ0Ei8hpmB/SJdqHIz7YT/qYIV4aRY2acc6hCiBXRSfU8Pvqa+D?=
+ =?us-ascii?Q?LoYiTuxaCUEUoP4IWm9acH9SQcX4gnA+3t8MYPwpNZR+E/N9BUtQCpFC4PaN?=
+ =?us-ascii?Q?Mu1Z0lLPXS+ncV2GV/dC4Ci4RYmV321rM3P9sptJ64GUOHiQP+SSH7KgFHpc?=
+ =?us-ascii?Q?/4oxSPQvhHkJsjpJobipODVr0pnHqWI8WdpE9sFvoasEqCeKbS91n31n69xV?=
+ =?us-ascii?Q?2nMUUxsamdlmi4IoBZ5JDGBueoym6G90nOxBSItxlfe6iR9weyo+OxPDpHO6?=
+ =?us-ascii?Q?bcNNHgGhdq0MTC7nzjlK4pTAZj66XZL49E7dfK9JyWUM3imw+LjeJAzhHEBU?=
+ =?us-ascii?Q?Di3aEbVjekBuwd9bs2KjNkuqPYK+Ya35crLInK5TvY5hiKT5iXDsVwtQKDzd?=
+ =?us-ascii?Q?g/C9e1QZ2uOAATcXRHtTrw0H8WkNKlx1z6KC8lZvPwPCrSVVdCA99NJQMr8H?=
+ =?us-ascii?Q?h9W8zjy2vwsEyTv1BzUwlPed2UJJXNZJoPEQa2ivhczNxLYV8owcDZF/kw1I?=
+ =?us-ascii?Q?jyoNf3CnMo9NbpAKosQ8zVqcNoo8fgKnlsX/HORNQe6t4C17xqmIiyV/kRYW?=
+ =?us-ascii?Q?jyoef45JupeydSFPUtUYgRsiQEXTk5KuBfv6eFCFjrHSYj2ha8wnkWfKTlC8?=
+ =?us-ascii?Q?zxxOerOX8DVdLnP/baCgBJLCmTM0uj+TNL/JrxFrHlDbn4K1bw2LFpwp2/6A?=
+ =?us-ascii?Q?vaXoJ8fT2OqpjiNuXXzgWYO32Mi1Xkv96tf87IbA8bhJN1hyMjoztPk+jBZr?=
+ =?us-ascii?Q?xa27aksPlSnMp3UaZACW3Ux/ZWFuTbA9veEavKISVO6bHAkYp/qEMeusPS2P?=
+ =?us-ascii?Q?1LnV/niz6um8cOY8H1qtZu4G3N8GLsfTSJTgYba2BjLFgCPLWuLvapS5DKnv?=
+ =?us-ascii?Q?TT/m419kTAA0qQthKq+ym6BCR/XL68whlq64zMhuGUHVjUqtwGOrMwu0jtg7?=
+ =?us-ascii?Q?/Pi/7bAwPu2/KMFWZr7/fdHpDw3rmTfxQD0NmF3hpB1MtLRFTBU5/+M+YmbQ?=
+ =?us-ascii?Q?pTKkLRSSQyqq+CQbwOQXJxjxQy9zuX1UTekYqbFPZfFYmnPQzG1ba8skyFMk?=
+ =?us-ascii?Q?CeZEroCdj2l2UTrMzBwkupChZ19wXEco/yKpppUK53mPVAvv/Brm5zWWNBYY?=
+ =?us-ascii?Q?5Slg6fdbud2qXkJ7BlaR5BCeMlZgqeX8k7cmV+uroXb7xRDCwPgd3JI89fL+?=
+ =?us-ascii?Q?eilnYg2lMZiXeGrJ+im2lqZF2SxhUYoCPr3SQ159tY40Vr/C8xrQMAQ2XzmD?=
+ =?us-ascii?Q?jao=3D?=
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YTeeBf64yUwj01Sf@slm.duckdns.org>
-X-ClientProxiedBy: BYAPR07CA0024.namprd07.prod.outlook.com
- (2603:10b6:a02:bc::37) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:f46f) by BYAPR07CA0024.namprd07.prod.outlook.com (2603:10b6:a02:bc::37) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 7 Sep 2021 17:31:03 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8f2a75d7-bacb-40bc-32be-08d972254494
-X-MS-TrafficTypeDiagnostic: SJ0PR15MB4373:
-X-Microsoft-Antispam-PRVS: <SJ0PR15MB4373E3929185385B5D9B372CBED39@SJ0PR15MB4373.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WfdJwYBt/dqL1AgoADmv2+uuDSXrvZ/E81Z3YdEltTxZ9Tm3VyxAWV3OM3jOjd+8MNOgfZnkyt7kMc4xG7GEkcmricJaZvs25iIuAynhqGUZubd/IGY2iLPNWlmanz98x1Y9LqB57sttEvTVj7x/QrFzTIRTlYbqHw2syPgS+01GRBjdpeYEsMEoLHk264/l1I8oJjLTFR1TXhf8ROEODAKZU92NEx2bThmWluifTfV2LBcld2JGMg1lc8cUuNbm5MsORIs4VSHt9AB1THUFKMcNQUSTs5fWkyQsdCQmne12tukcli/gtrTJziGrbQh9L60/bXpyEM9aGG75wNTGmLNdBfAjqDkhWhHTpXby0uBpTH/aIonTQX9TUCdGy0Rw6fxoxPP544bWJ/O7a1h819dHDPpUN47gLdh1rX7SrLxAykzYY9XfSjiM4ApbRFOrzhLsCnjHj4/vIaJX4wax1O7u6yziXm7F9uhmiPs9zdjM4RsXePGH65ybmW89rV3SIjfZrHpprTXnZkjz126onzH9CGVryvvyO34Z5pull0TqmZSOIWve/BlD7IYt5aS1FPMTR+KLSaE3zXyoGtDpS+3SsYomZMLX6RsvQrA6RPFLFIe9I29PLIf5IBnKhLFe3SONimbFsN9FrQonuOZaqg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(7406005)(7416002)(316002)(38100700002)(54906003)(6506007)(86362001)(4326008)(66476007)(66556008)(8936002)(66946007)(186003)(2906002)(55016002)(9686003)(8676002)(6916009)(7696005)(52116002)(83380400001)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2DPeKor1Ykmmu9n0sVOmOnrZK/QQezV33ySTqfm4svVkoPLJo6Y+GkP3iIAE?=
- =?us-ascii?Q?zLOYUMaMa+iWr6GNRzJsAz7dQauc/+zlZA/37yoB6PKctoFuLUEvQ04h5wx4?=
- =?us-ascii?Q?Rr0eucLYoQbYZgWDsXVSmy7QhjB+zTfN27VN287HcHb6uaT9IbkhtMZPzewp?=
- =?us-ascii?Q?F4S1nW60xbEdysD683zGmnr143ZCAwQhfitS6p4mVeBVhfY9RMzJXNT1sF+j?=
- =?us-ascii?Q?N2fmyL/u/r723gaoDPZRXCvwh9NwzKfwWn2i/eCBFjx4TZ2Jlu+Yn/0tgURo?=
- =?us-ascii?Q?/L4h/rLwvMaDMiTbnHsrLbH6b7D7Zao/NbOf7Y9F7Lbxo5UsA3eCtuu0JQeV?=
- =?us-ascii?Q?XBvvUI0zeklAca99MIPzeT20QSyaTMh5wYX9LMRN5Wa6TGyI2OK4pbHwXcAL?=
- =?us-ascii?Q?jOgJXZL//zlSzgrHxOvw6Fb4RV5j5kzZfm8RoxedP9zZbf/LQ6fxPxJ5og54?=
- =?us-ascii?Q?h7qSYYABA0Fh/8sF/hOdMM4RpHaNCVklWyEw75Sc09XBDqz9tibphUyLtS4D?=
- =?us-ascii?Q?e6E3gw801kexD+B/H//sLrMVq9Xp7EEs19omE3ztqxr5zsComhHdGHSYKVNB?=
- =?us-ascii?Q?C/13ufpD7+gStIj6hqmaGgedUSL+YycW1FUfpM2RgGcjq7MpoLA4yhqBkvNE?=
- =?us-ascii?Q?cFLj3VHWDmQ6WFHcaarj4PJtCGLFzTXROp7Ni1/Df0o++90XPyXXbd5GOhpx?=
- =?us-ascii?Q?ToLMpHjsX68+IKFbWf+RNNxSN8dkk2jqYh2L0g4hlINIWy8IdIP/emSmiKav?=
- =?us-ascii?Q?0mRmIJJSx1o/rcdIAotXtLZZFJjGVtTD0/XMPGGbpc/0JoOBE167u9kr6wIy?=
- =?us-ascii?Q?uAK9AjdT53XlPQRO8qnkzwLZ3cR6ghfeS3BWjCdSMnGmI7ChC36N258Pjhv+?=
- =?us-ascii?Q?k/AumhczbaGzBe4vlBWvoj4pxUdxY99vsv+UCrivD1GMxc766TguSTSVn7Xg?=
- =?us-ascii?Q?1Jd9v9uwkWw+DdZWMTr/yqBoeJrkpSmDCHjIUCiwZEhmnw4CPkXwgySGFDOp?=
- =?us-ascii?Q?NnJbuyrQlxAK8yIH6oBqW7gwwJgBP3oh/H1neFxAuP+sg5OD9nTxR7ADKyrx?=
- =?us-ascii?Q?Z5za/Y6K4+SkWWW5ca7gCM0XurGy/KqWVLb+ALWp4ReRw9hs+tuc1du6ycza?=
- =?us-ascii?Q?saT4JHfASLzhIjvd39TqD66v7sBUtkDYAzfqOO0F2ng9ee7sRY8rRFEgDgXx?=
- =?us-ascii?Q?7LIJtyAfJjMGphHz/blvwA5O/BOPk4rZ0rbGZZEvERPuzgTlbLDmYaQ45/CU?=
- =?us-ascii?Q?nyo6/Or6x0PEoKPP6mzBI9i7JhpLgsrCkVyiLhOXZUREAmdFcqbn3UI7z2sG?=
- =?us-ascii?Q?KLDfUkadOCLs/yQsSEEWZ4BfgUAqDLiCP34dk1Vmr74kDQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f2a75d7-bacb-40bc-32be-08d972254494
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 17:31:04.1084
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4182.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56001d0b-64ec-4b72-1cd1-08d97225863f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2021 17:32:53.9496
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +gtNkXI5gAyQ7Lzwd8I6U9wolWEIU0m7tnmFvVTwBToR7qu1GZ76+J2UkMBncN10
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4373
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: k4aoTwQNHXlErLeMTnvpHwBZIAebWsc3
-X-Proofpoint-ORIG-GUID: k4aoTwQNHXlErLeMTnvpHwBZIAebWsc3
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-07_06:2021-09-07,2021-09-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
- lowpriorityscore=0 phishscore=0 spamscore=0 clxscore=1015 suspectscore=0
- adultscore=0 mlxlogscore=971 bulkscore=0 malwarescore=0 impostorscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109070114
-X-FB-Internal: deliver
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: hQy3j/vRnLQ1Ww5vH1Sxjf9ItN1WuWaUjYakSWGaY5dI5TRsd12iXS9PzWz1sUKJxZjYcK/Z2kAN1wXejynvWXmj6tDAGLuseAENEEsPYLY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5200
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 07:14:45AM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> On Tue, Sep 07, 2021 at 10:11:21AM -0700, Roman Gushchin wrote:
-> > There are two polar cases:
-> > 1) a big number of relatively short-living allocations, which lifetime is well
-> >    bounded (e.g. by a lifetime of a task),
-> > 2) a relatively small number of long-living allocations, which lifetime
-> >    is potentially indefinite (e.g. struct mount).
-> > 
-> > We can't use the same approach for both cases, otherwise we'll run into either
-> > performance or garbage collection problems (which also lead to performance
-> > problems, but delayed).
-> 
-> Wouldn't a front cache which expires after some seconds catch both cases?
+Hi Kees,
+This patch https://patchwork.kernel.org/project/dri-devel/patch/20210728003=
+126.1425028-13-anitha.chrisanthus@intel.com/ is pushed to drm-misc-fixes. T=
+his change should fix the below warnings.
 
-I'm not sure. For the second case we need to pack allocations from different
-tasks/cgroups into a small number of shared pages. It means the front cache
-should be really small/non-existing. For the first case we likely need a
-substantial cache. Maybe we can do something really smart with scattering
-the cache over multiple pages, but I really doubt.
+I apologize for all the inconveniences.=20
+
+Thanks,
+Anitha
+
+> -----Original Message-----
+> From: Chrisanthus, Anitha
+> Sent: Wednesday, August 25, 2021 1:44 PM
+> To: Kees Cook <keescook@chromium.org>
+> Cc: Dea, Edmund J <edmund.j.dea@intel.com>; David Airlie <airlied@linux.i=
+e>;
+> Daniel Vetter <daniel@ffwll.ch>; dri-devel@lists.freedesktop.org; Sam
+> Ravnborg <sam@ravnborg.org>; linux-kernel@vger.kernel.org; linux-
+> hardening@vger.kernel.org
+> Subject: RE: [PATCH] drm/kmb: Avoid warnings on impossible plane_id
+>=20
+> Hi Kees,
+> Thanks for your patch.
+> The switch statement is needed for multiple planes which is already appro=
+ved
+> in this patch series.
+> https://patchwork.kernel.org/project/dri-
+> devel/patch/20210728003126.1425028-13-anitha.chrisanthus@intel.com/
+>=20
+> This patch has dependencies on the previous patches in this series, and w=
+e are
+> waiting for reviews on those before this can be checked in.
+>=20
+> Thanks,
+> Anitha
+>=20
+> > -----Original Message-----
+> > From: Kees Cook <keescook@chromium.org>
+> > Sent: Wednesday, August 25, 2021 11:18 AM
+> > To: Chrisanthus, Anitha <anitha.chrisanthus@intel.com>
+> > Cc: Kees Cook <keescook@chromium.org>; Dea, Edmund J
+> > <edmund.j.dea@intel.com>; David Airlie <airlied@linux.ie>; Daniel Vette=
+r
+> > <daniel@ffwll.ch>; dri-devel@lists.freedesktop.org; Sam Ravnborg
+> > <sam@ravnborg.org>; linux-kernel@vger.kernel.org; linux-
+> > hardening@vger.kernel.org
+> > Subject: [PATCH] drm/kmb: Avoid warnings on impossible plane_id
+> >
+> > KMB_MAX_PLANES is defined as 1, yet kmb_plane_atomic_disable() had
+> code
+> > for writing beyond 1. It is gated by a WARN_ON() that would skip it,
+> > though, but under some compiler versions, poor Dead Code Elimination
+> > wasn't optimizing away the unused switch cases, leading to array bounds
+> > warnings when building with -Warray-bounds:
+> >
+> > drivers/gpu/drm/kmb/kmb_plane.c:135:20: warning: array subscript 3 is
+> > above array bounds of 'struct layer_status[1]' [-Warray-bounds]
+> > drivers/gpu/drm/kmb/kmb_plane.c:132:20: warning: array subscript 2 is
+> > above array bounds of 'struct layer_status[1]' [-Warray-bounds]
+> > drivers/gpu/drm/kmb/kmb_plane.c:129:20: warning: array subscript 1 is
+> > above array bounds of 'struct layer_status[1]' [-Warray-bounds]
+> >
+> > Instead, just remove the switch statement entirely and adjust the index
+> > type to match the struct "id" member.
+> >
+> > Cc: Anitha Chrisanthus <anitha.chrisanthus@intel.com>
+> > Cc: Edmund Dea <edmund.j.dea@intel.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: dri-devel@lists.freedesktop.org
+> > Fixes: 7f7b96a8a0a1 ("drm/kmb: Add support for KeemBay Display")
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  drivers/gpu/drm/kmb/kmb_plane.c | 18 ++----------------
+> >  1 file changed, 2 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/kmb/kmb_plane.c
+> > b/drivers/gpu/drm/kmb/kmb_plane.c
+> > index ecee6782612d..3d46e756f2fe 100644
+> > --- a/drivers/gpu/drm/kmb/kmb_plane.c
+> > +++ b/drivers/gpu/drm/kmb/kmb_plane.c
+> > @@ -113,7 +113,7 @@ static void kmb_plane_atomic_disable(struct
+> > drm_plane *plane,
+> >  				     struct drm_atomic_state *state)
+> >  {
+> >  	struct kmb_plane *kmb_plane =3D to_kmb_plane(plane);
+> > -	int plane_id =3D kmb_plane->id;
+> > +	unsigned char plane_id =3D kmb_plane->id;
+> >  	struct kmb_drm_private *kmb;
+> >
+> >  	kmb =3D to_kmb(plane->dev);
+> > @@ -121,21 +121,7 @@ static void kmb_plane_atomic_disable(struct
+> > drm_plane *plane,
+> >  	if (WARN_ON(plane_id >=3D KMB_MAX_PLANES))
+> >  		return;
+> >
+> > -	switch (plane_id) {
+> > -	case LAYER_0:
+> > -		kmb->plane_status[plane_id].ctrl =3D LCD_CTRL_VL1_ENABLE;
+> > -		break;
+> > -	case LAYER_1:
+> > -		kmb->plane_status[plane_id].ctrl =3D LCD_CTRL_VL2_ENABLE;
+> > -		break;
+> > -	case LAYER_2:
+> > -		kmb->plane_status[plane_id].ctrl =3D LCD_CTRL_GL1_ENABLE;
+> > -		break;
+> > -	case LAYER_3:
+> > -		kmb->plane_status[plane_id].ctrl =3D LCD_CTRL_GL2_ENABLE;
+> > -		break;
+> > -	}
+> > -
+> > +	kmb->plane_status[plane_id].ctrl =3D LCD_CTRL_VL1_ENABLE;
+> >  	kmb->plane_status[plane_id].disable =3D true;
+> >  }
+> >
+> > --
+> > 2.30.2
+
