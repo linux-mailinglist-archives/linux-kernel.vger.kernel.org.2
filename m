@@ -2,98 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81824402D07
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABCE402D09
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344470AbhIGQnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:43:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45912 "EHLO
+        id S1344756AbhIGQo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 12:44:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238089AbhIGQnw (ORCPT
+        with ESMTP id S238089AbhIGQoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:43:52 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11289C061575;
-        Tue,  7 Sep 2021 09:42:46 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id f65so5038918pfb.10;
-        Tue, 07 Sep 2021 09:42:46 -0700 (PDT)
+        Tue, 7 Sep 2021 12:44:55 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB1EC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 09:43:49 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id u7so10740258ilk.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 09:43:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=SZIQY2jeaisbXv5Qb528dcglvGXsiAr6+8cdcczJBv8=;
-        b=PZd51H4/gcCq4PAveHUGRLFYVtCcRrj9TJHCNoU21r/71jPUgi+N4tyPo4eJMw2D40
-         DMa8bO3vXv2nCOKBR4QrmB/LwlepQGaT4o5eon18G73UKxpjwAN1KAe/M2Ez4W47P+kO
-         OG2nVLH69oxGPoRWCAO51fDtrwU6V22vwpMv0g54DxN9HpJA6J9lAYaow0YCX9kfyHxx
-         hl7E7/5RWn6A/SYI6ffOYXRzhVT9YZcwiv5hA0xbqj07cHpQSuDHIVesw596PCEhqYqp
-         DUdIKqWNUoeVQcxdoT6VaRXQA+0xQg5ExfsUMKq9n1zRuvXe7MllH2ZYPV7sZ73wWSBr
-         Sl2A==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3KTSECMQ89sSb/89xBh9CeoozoL34Ed1QNjuTkUfkOs=;
+        b=QyXDKfAD8zjNlfoWIRh+yxEfBJgzD+PngynPGAoCY8A8nPq0p2no9hMirpaPNiwbnc
+         PvcihJ+Hi64vaSH2hCaf5dtNnWw5cQjUj76CftD8bKAueAtDWzvJ8J1v2dAT7IQWW+vq
+         QNgZJUvkw4HjGBs8FScbp+bgS8xRD2XjK0CxjnadreCK9849sXTRTXAtDl46uCGjaPwa
+         dKbErC381J6uGS1muBokbVos+X0CU154fURDUgGHgBMLGuXrA+Q+xxsdigj4SYDIK3Lp
+         y5GRf+g4CAshcUT/H2lxHThmX+xV0hq8YzWrcEFlEBJBgJBEPCndbUpH8ak9uSFzU3CT
+         +jGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=SZIQY2jeaisbXv5Qb528dcglvGXsiAr6+8cdcczJBv8=;
-        b=FrrbyFe1QMyZyOV47LX3Mh0YL216RuCTeCrv8D9dNIvO92q1ZxZ03uMC13YARP4wsz
-         BMYwFRGdQrZUXdwyzwVROgKh/Q9VhJ+7FQrAQWCfiHe22n+NClI8xBwWXhmYf0mg65YB
-         HWV/IHYo0Kx42mNYMN48bM7YQgZvDLWK6qQ85EvpLifHRtgDeQAb/COmVheQKnvI+Axe
-         e2vTEnLXLFdcdLo0/NK1pL+Kn8d5LyVp/XbPpFTLHFhGFDjtERR/KzlYE80DtHjhRLli
-         +MUx5mWLCwnqo5V6ZoXj/1BIHA9G+y1GuNQaX6QTthOz68MfO9qyECpxeCXcgxXIe6xz
-         oLlQ==
-X-Gm-Message-State: AOAM531qzEa1Qulg1GuHctafqx6dW10+X4QWIX2Hj25yEBdeoyoc0j/4
-        t3csGnrRatphqtNnrrZgEFA=
-X-Google-Smtp-Source: ABdhPJw+3rMrhpMdSPPJXR/0Tif/doZ9t1hA3Y8Bh+lX3/LteJYbxtzYpx22pJs8R1wNcVx617DGXw==
-X-Received: by 2002:a65:6487:: with SMTP id e7mr17592515pgv.27.1631032965467;
-        Tue, 07 Sep 2021 09:42:45 -0700 (PDT)
-Received: from [10.230.31.46] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id l12sm11065456pff.182.2021.09.07.09.42.40
+        bh=3KTSECMQ89sSb/89xBh9CeoozoL34Ed1QNjuTkUfkOs=;
+        b=F6TypPD5lpo4sNW7SmcwjPL/5DSrIB45MGPvG7f0NDohoY3+6o4NkhHxnZkA5kgY79
+         7pgm8CSWPASNFRXuOe/an7O7keigVumblfV/Jh8XEKw0X436PE8beNtCkYRp6m8IsFJw
+         sHJBT4uEER0DzcD2gU2T9O+7awc/4ypOnRcOTYKK9dykbInqTeNuVPCUlbLS6Opzu/7S
+         rvq5yelNJ5cDHEMLiJN0ZGlSKWnzQizyDAsE++1AL4bHjNTXO4/ttIru6WJc3tQNta6g
+         BOShebAInN5YkVhitXa9ji9q9LRDPR9qNKYZmZTTJRHZsabSveNVvdcoI0vNZMa8mx4O
+         HZdw==
+X-Gm-Message-State: AOAM53077dDS8J/SBaxKqU4SLwLLE9861KcUVEU5EfvR6ENixKqCGJ27
+        fm7nJR0oMKpZgb1Ml0ZaUP8evQ==
+X-Google-Smtp-Source: ABdhPJydgmex2AVNNZBm6S5H+yBNtfc6E4tKAvdERShRVi5efwE1Gu/s8rPZ/hyTim9QMsb2dR1fvA==
+X-Received: by 2002:a92:c5ac:: with SMTP id r12mr12191376ilt.279.1631033028454;
+        Tue, 07 Sep 2021 09:43:48 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.234.126])
+        by smtp.gmail.com with ESMTPSA id c25sm7103722iom.9.2021.09.07.09.43.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 09:42:45 -0700 (PDT)
-Message-ID: <6d9fc76e-319a-3254-4889-c4b0fc60a6d4@gmail.com>
-Date:   Tue, 7 Sep 2021 09:42:37 -0700
+        Tue, 07 Sep 2021 09:43:48 -0700 (PDT)
+Subject: Re: [memcg] 0f12156dff: will-it-scale.per_process_ops -33.6%
+ regression
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Borislav Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, Roman Gushchin <guro@fb.com>,
+        Serge Hallyn <serge@hallyn.com>, Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yutian Yang <nglaive@gmail.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>
+References: <20210907150757.GE17617@xsang-OptiPlex-9020>
+ <dbc9955d-6c28-1dd5-b842-ef39a762aa3b@kernel.dk>
+ <CAHk-=wgrF65BpP6P6_a6+k+C8V+JOBiEx0X-c9idiM87uk32FQ@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <774dee70-69bd-9f95-d197-4cff83e4e633@kernel.dk>
+Date:   Tue, 7 Sep 2021 10:43:46 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.3
-Subject: Re: [PATCH 5.13 00/24] 5.13.15-rc1 review
+In-Reply-To: <CAHk-=wgrF65BpP6P6_a6+k+C8V+JOBiEx0X-c9idiM87uk32FQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210906125449.112564040@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20210906125449.112564040@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/6/2021 5:55 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.13.15 release.
-> There are 24 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 9/7/21 10:39 AM, Linus Torvalds wrote:
+> On Tue, Sep 7, 2021 at 8:46 AM Jens Axboe <axboe@kernel.dk> wrote:
+>>
+>> Are we at all worried about these? There's been a number of them
+>> reported, basically for all the accounting enablements that have been
+>> done in this merge window.
 > 
-> Responses should be made by Wed, 08 Sep 2021 12:54:40 +0000.
-> Anything received after that time might be too late.
+> We are worried about them. I'm considering reverting several of them
+> because I think the problems are
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.13.15-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.13.y
-> and the diffstat can be found below.
+>  (a) big
 > 
-> thanks,
+>  (b) nontrivial
 > 
-> greg k-h
+> and the patches clearly weren't ready and people weren't aware of this issue.
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+I think that is prudent. When I first enabled it for io_uring it was a
+bit of a shit show in terms of performance degradations, and some work
+had to be done before it could get enabled in a sane fashion.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+The accounting needs to be more efficient if we're seeing 30-50%
+slowdowns simply by enabling it on a kmem cache.
+
 -- 
-Florian
+Jens Axboe
+
