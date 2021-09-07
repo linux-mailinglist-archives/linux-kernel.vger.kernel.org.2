@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7414029A8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4434029AA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344189AbhIGNYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 09:24:13 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:55464 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344594AbhIGNYL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 09:24:11 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 76AF922039;
-        Tue,  7 Sep 2021 13:23:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631020984; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aojQ+XjeVol79Oj7r5W7LXkmOkN6KiAM0lqjItLMF6o=;
-        b=DC+niSMj425X8PXff7k+rXNLHDMGgE0bmqoQCf7Kt0Gb4PImaIeCN1fU1RAnrbXXGsnoEN
-        UEVH2EO5cBzsiUCJ0Dfx5qzpUKjl/iz2xRX0SHHSXL0iTEBmP6jElG+teNklFWV0MKRjR2
-        I6g2kP3fYzlzGhx71SeHfgmD7zf7M/A=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1344585AbhIGNYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 09:24:45 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:41297 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1344757AbhIGNYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 09:24:34 -0400
+Received: from [141.14.13.3] (g258.RadioFreeInternet.molgen.mpg.de [141.14.13.3])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id D059EA3B8F;
-        Tue,  7 Sep 2021 13:23:03 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 15:23:03 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     =?utf-8?B?7J207Jqp7YOd?= <ytk.lee@samsung.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "john.ogness@linutronix.de" <john.ogness@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] printk: use kvmalloc instead of kmalloc for devkmsg_user
-Message-ID: <YTdnt8YJJYSHM2k8@alley>
-References: <CGME20210830071701epcms1p70f72ae10940bc407a3c33746d20da771@epcms1p7>
- <20210830071701epcms1p70f72ae10940bc407a3c33746d20da771@epcms1p7>
- <YS4jqsSlD7UySNRA@alley>
- <YS608AfYqPgQ3F7R@google.com>
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id C1AB661E64846;
+        Tue,  7 Sep 2021 15:23:15 +0200 (CEST)
+Subject: Re: New warning: PRMT not present
+To:     Aubrey Li <aubrey.li@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <64150c95-3f7d-d21f-d6fb-b9d478ed6798@molgen.mpg.de>
+ <766862fc-80fa-775b-6e63-6d9422d1d258@molgen.mpg.de>
+ <CAJZ5v0i91+kPe4C-wy+oCDvYbR_Vp=MzwEyL+8T3xJU5O4XjRA@mail.gmail.com>
+ <c6aaf684-2cd1-f615-34e1-7ef2020ae2d2@molgen.mpg.de>
+ <54b6f8cb-4714-587c-b2d0-98134473293d@linux.intel.com>
+ <a55ebebc-c8f8-5654-adff-3569d1de2e27@molgen.mpg.de>
+ <727d85ff-9efc-42a5-70f1-fcd9fd9e4494@linux.intel.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <e7cbf294-1b0f-cd63-e6cf-3d743e1fe036@molgen.mpg.de>
+Date:   Tue, 7 Sep 2021 15:23:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <727d85ff-9efc-42a5-70f1-fcd9fd9e4494@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YS608AfYqPgQ3F7R@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-09-01 08:02:09, Sergey Senozhatsky wrote:
-> On (21/08/31 14:42), Petr Mladek wrote:
-> > On Mon 2021-08-30 16:17:01, 이용택 wrote:
-> > > Size of struct devkmsg_user increased to 16784 by commit 896fbe20b4e2
-> > > ("printk: use the lockless ringbuffer") so order3(32kb) is needed for
-> > > kmalloc. Under stress conditions the kernel may temporary fail to
-> > > allocate 32k with kmalloc. Use kvmalloc instead of kmalloc to aviod
-> > > this issue.
-> > > 
-> > > qseecomd invoked oom-killer: gfp_mask=0x40cc0(GFP_KERNEL|__GFP_COMP), order=3, oom_score_adj=-1000
-> > > Call trace:
-> > >  dump_backtrace+0x0/0x34c
-> > >  dump_stack_lvl+0xd4/0x16c
-> > >  dump_header+0x5c/0x338
-> > >  out_of_memory+0x374/0x4cc
-> > >  __alloc_pages_slowpath+0xbc8/0x1130
-> > >  __alloc_pages_nodemask+0x170/0x1b0
-> > >  kmalloc_order+0x5c/0x24c
-> > >  devkmsg_open+0x1f4/0x558
-> > >  memory_open+0x94/0xf0
-> > >  chrdev_open+0x288/0x3dc
-> > >  do_dentry_open+0x2b4/0x618
-> > >  path_openat+0xce4/0xfa8
-> > >  do_filp_open+0xb0/0x164
-> > >  do_sys_openat2+0xa8/0x264
-> > >  __arm64_sys_openat+0x70/0xa0
-> > >  el0_svc_common+0xc4/0x270
-> > >  el0_svc+0x34/0x9c
-> > >  el0_sync_handler+0x88/0xf0
-> > >  el0_sync+0x1bc/0x200
-> > > 
-> > >  DMA32: 4521*4kB (UMEC) 1377*8kB (UMECH) 73*16kB (UM) 0*32kB 0*64kB 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 30268kB
-> > >  Normal: 2490*4kB (UMEH) 277*8kB (UMH) 27*16kB (UH) 1*32kB (H) 0*64kB 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 12640kB
-> > > 
-> > > Signed-off-by: Yong-Taek Lee <ytk.lee@samsung.com>
-> > 
-> > Reviewed-by: Petr Mladek <pmladek@suse.com>
+Dear Aubrey,
+
+
+Am 07.09.21 um 15:02 schrieb Aubrey Li:
+> On 9/7/21 3:22 PM, Paul Menzel wrote:
+
+>> Am 07.09.21 um 05:26 schrieb Aubrey Li:
+>>
+>>> On 9/6/21 10:15 PM, Paul Menzel wrote:
+>>
+>>>> Am 06.09.21 um 14:02 schrieb Rafael J. Wysocki:
+>>>>>
+>>>>> This should be addressed by commit 2bbfa0addd63 "ACPI: PRM: Deal with
+>>>>> table not present or no module found", or yet another fix is needed.
+>>>>
+>>>> Linux still warns on my systems with Linux 5.14 and Linus’ master in QEMU i440fx and an Asus F2A85-M PRO.
+>>>
+>>> Does the following patch address your problem?
+>>
+>> Yes, it does. With this patch cherry-picked to my Linux tree, the warning is gone in QEMU.
+>>
+>>      qemu-system-x86_64 -kernel /dev/shm/bzImage -append "earlyprintk=serial,ttyS0,keep console=ttyS0,115200 console=tty0" -display none -serial stdio
+>>
+>> (I have to check my configuration, why normal serial console does not work in QEMU.)
+>>
+>>> ----------------------------------------------------------------------
+>>>   From 52fda76410fcb7a3661687e960634d34fa44fb5f Mon Sep 17 00:00:00 2001
+>>> From: Aubrey Li <aubrey.li@intel.com>
+>>> Date: Tue, 7 Sep 2021 11:06:59 +0800
+>>> Subject: [PATCH] ACPI/RPM: Find PRMT table before parse it
+>>
+>> What does RPM mean?
 > 
-> Acked-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> PRM, Platform Runtime Mechanism:
+> https://uefi.org/sites/default/files/resources/Platform%20Runtime%20Mechanism%20-%20with%20legal%20notice.pdf
 
-The patch has been comitted into printk/linux.git, branch for-5.16.
+Ah, so just a typo in the prefix: RPM → PRM.
 
-Best Regards,
-Petr
+>>> Find and verify PRMT table before parse it, this eliminates a
+>>> warning on machines without PRMT table.
+>>
+>> Please paste the warning for people grepping the commit messages.
+>>
+>>      ACPI: PRMT not present
+> 
+> Nice suggestion.
+> 
+>>
+>>> Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
+>>> ---
+>>>    drivers/acpi/prmt.c | 10 +++++++++-
+>>>    1 file changed, 9 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/acpi/prmt.c b/drivers/acpi/prmt.c
+>>> index 1f6007a..89c22bc 100644
+>>> --- a/drivers/acpi/prmt.c
+>>> +++ b/drivers/acpi/prmt.c
+>>> @@ -288,10 +288,18 @@ static acpi_status acpi_platformrt_space_handler(u32 function,
+>>>      void __init init_prmt(void)
+>>>    {
+>>> +    struct acpi_table_header *tbl;
+>>>        acpi_status status;
+>>> -    int mc = acpi_table_parse_entries(ACPI_SIG_PRMT, sizeof(struct acpi_table_prmt) +
+>>> +    int mc;
+>>> +
+>>> +    status = acpi_get_table(ACPI_SIG_PRMT, 0, &tbl);
+>>> +    if (ACPI_FAILURE(status))
+>>> +        return;
+>>> +
+>>> +    mc = acpi_table_parse_entries(ACPI_SIG_PRMT, sizeof(struct acpi_table_prmt) +
+>>>                          sizeof (struct acpi_table_prmt_header),
+>>>                          0, acpi_parse_prmt, 0);
+>>> +    acpi_put_table(tbl);
+>>>        /*
+>>>         * Return immediately if PRMT table is not present or no PRM module found.
+>>>         */
+>>>
+>>
+>> Tested-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> 
+> Thanks for testing, I'll send a formal patch to Rafael.
+
+Thank you.
+
+
+Kind regards,
+
+Paul
