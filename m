@@ -2,79 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4B740250F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 633A6402513
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242355AbhIGIZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 04:25:38 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:33872 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230286AbhIGIZg (ORCPT
+        id S242645AbhIGI0a convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Sep 2021 04:26:30 -0400
+Received: from mail-vs1-f50.google.com ([209.85.217.50]:35730 "EHLO
+        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242535AbhIGI0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 04:25:36 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 37B0E21F49;
-        Tue,  7 Sep 2021 08:24:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1631003070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ivtjlHm9PGvCOAfWgUOdjroiZ3RBt7Q0P4cX/o/868Y=;
-        b=jZS0iFdgIsAdViWDOfYzzm+0oaqLKQwTQ5/jPYCVb+DekVXTkbClm+CKBs10PQgN2o26ea
-        dbb7WejnWOKwKsXoVkSpfkWB3bpd4D5Ec3dro+8ZwDgP8mHnAl8kHDoua+j1KxyMzloPee
-        cg4bQ816AVmPQWBitH5e1YjGMLaPr7w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1631003070;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ivtjlHm9PGvCOAfWgUOdjroiZ3RBt7Q0P4cX/o/868Y=;
-        b=45GZyTbHAHMEzXY1gUyE7AQkgm8s8nF1p3bfWuW1gJDkX/1f5DuuzU4BCyiui+7jHcq0Fn
-        2UYBcDEHaGuUgpBg==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id EF93C132AB;
-        Tue,  7 Sep 2021 08:24:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id 0JwdOL0hN2FJIAAAGKfGzw
-        (envelope-from <jdelvare@suse.de>); Tue, 07 Sep 2021 08:24:29 +0000
-Date:   Tue, 7 Sep 2021 10:24:28 +0200
-From:   Jean Delvare <jdelvare@suse.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: [GIT PULL] dmi fix for v5.15
-Message-ID: <20210907102428.616e5087@endymion>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
+        Tue, 7 Sep 2021 04:26:16 -0400
+Received: by mail-vs1-f50.google.com with SMTP id p14so7610659vsm.2;
+        Tue, 07 Sep 2021 01:25:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=i5otPz9IyNInXN4bHLqTb0mS9hIBl4WWXnjx8UfK1+8=;
+        b=hGKtKYVWwtPBx+cdkbe+Qu+cE8MRQbJDEt17SNywML54Kl9fpRLOTQWO2AtyCJt65r
+         JLpExbQWDfVpMTtpjcC9+2CN8etIkEY3IAIUzlKFghcJrzuh7ejEoy2pAlNXGQXlUUso
+         skSCjdjPTQxJHreBxYKRlcXFKLHmJCXd9n5JfI+8lbIIPKKwlGaJMDcjwxZntr+/UDKs
+         9simxmSqkU5tFjHoAiqlFyjUnQWARFgZ8iBrlf0t/MDkPk6+wbqHKWFe2GgeeEmNmbFj
+         Q8+hW+GHOUj0fMOXs2AxEbzYY6JyHi2URLWlLcMNvrkwWIAp2gSnPMnyzbP+eUh2Y/ET
+         spMQ==
+X-Gm-Message-State: AOAM532vyTGFFJmztXjtsArTJNMqbrA5kivn2USE4F9iQvyGhlttYe93
+        CjCUtrJOEsxr68MHhrJ1WzD70Mb/GCP4Uy2MwJ4=
+X-Google-Smtp-Source: ABdhPJzwZKq9XwQQIWNnk4yre3z52lV+DpCZ+Fh8SeQZudq4WhXPp91m3s38OB9Wl4gw/hVKRQWmznD55GZGp8/YmGU=
+X-Received: by 2002:a67:cb0a:: with SMTP id b10mr8214785vsl.9.1631003110202;
+ Tue, 07 Sep 2021 01:25:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210803114051.2112986-1-arnd@kernel.org> <20210803114051.2112986-11-arnd@kernel.org>
+ <CAMuHMdVvBL=qZkWF5DXdKjFMKgT-3X-OUBnLYrqawQijoLG4Xw@mail.gmail.com>
+In-Reply-To: <CAMuHMdVvBL=qZkWF5DXdKjFMKgT-3X-OUBnLYrqawQijoLG4Xw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 7 Sep 2021 10:24:58 +0200
+Message-ID: <CAMuHMdVhN-frrSgsxJ_28_5B+gYROTkN_dPT1yHBsQU+2U4_=g@mail.gmail.com>
+Subject: Re: [PATCH v2 10/14] [net-next] make legacy ISA probe optional
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     netdev <netdev@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>, Andrii Nakryiko <andriin@fb.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Doug Berger <opendmb@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        Sam Creasey <sammy@sammy.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Arnd,
 
-Please pull dmi subsystem fixes for Linux v5.15 from:
+On Wed, Aug 11, 2021 at 4:50 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Tue, Aug 3, 2021 at 1:41 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > There are very few ISA drivers left that rely on the static probing from
+> > drivers/net/Space.o. Make them all select a new CONFIG_NETDEV_LEGACY_INIT
+> > symbol, and drop the entire probe logic when that is disabled.
+> >
+> > The 9 drivers that are called from Space.c are the same set that
+> > calls netdev_boot_setup_check().
+> >
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> > --- a/drivers/net/ethernet/8390/ne.c
+> > +++ b/drivers/net/ethernet/8390/ne.c
+> > @@ -951,6 +951,7 @@ static int __init ne_init(void)
+> >  }
+> >  module_init(ne_init);
+> >
+> > +#ifdef CONFIG_NETDEV_LEGACY_INIT
+> >  struct net_device * __init ne_probe(int unit)
+> >  {
+> >         int this_dev;
+> > @@ -991,6 +992,7 @@ struct net_device * __init ne_probe(int unit)
+> >
+> >         return ERR_PTR(-ENODEV);
+> >  }
+> > +#endif
+> >  #endif /* MODULE */
+>
+> My rbtx4927 build log says:
+>
+> drivers/net/ethernet/8390/ne.c:909:20: warning: ‘ne_add_devices’
+> defined but not used [-Wunused-function]
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging.git dmi-for-linus
+Same for atari_defconfig.
 
- drivers/firmware/dmi-id.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Gr{oetje,eeting}s,
 
----------------
+                        Geert
 
-Hans de Goede (1):
-      firmware: dmi: Move product_sku info to the end of the modalias
-
-Thanks,
 -- 
-Jean Delvare
-SUSE L3 Support
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
