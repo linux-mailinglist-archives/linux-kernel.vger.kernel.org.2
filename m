@@ -2,225 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143D5402953
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9AB40295E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344559AbhIGNEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 09:04:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51356 "EHLO
+        id S1344536AbhIGNIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 09:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344499AbhIGNEl (ORCPT
+        with ESMTP id S1344611AbhIGNIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 09:04:41 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B5F7C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 06:03:34 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id y47-20020a4a9832000000b00290fb9f6d3fso2881834ooi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 06:03:34 -0700 (PDT)
+        Tue, 7 Sep 2021 09:08:04 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521D0C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 06:06:58 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a25so19563926ejv.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 06:06:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uhC7nzqpqA4nMheQgFCEgMJ6vQ3bkE9hy3QtYBGq9aI=;
-        b=iy5Pab0mOazD/amTTWfY4e/vbO7jZSzp8XFUAEVZF5cdt5JEs2ep1HTTxrt/Zk14pa
-         o/s3v+TTVyd0ak3Z1LZW11YRp+NebeaPuibrA+9DtLlWi5gUzz4QEd2QWsqaztwapLq2
-         cJITIf3sZo6m4sv2NV0Q3NVHtn3YZ1LOEy46HtKKX/Nts9/SM7sDVwWuTQbGLe0HfADv
-         M8+1AoYk0+oC4BQHkPkfNro6sO0zGvON3xuamnPjeQLKwuBBB25pENgv/UOGw2TUu6pa
-         ii99KCMjSkmG+curuRxyRROdxftAzasoukEQQal97EyGDk6U9tQFgWWFGR0zN++DWKY/
-         Krpg==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=L4oWWGov+bkftJWApz4guBbjvDk1FzTK4dXqUmqhsGo=;
+        b=rnSIxm8cJRcatY6H7Eo6xNBmKdAEFiSjwDRpe1p581pHp2njaMR21jCJhp4BSa6AF9
+         sdAlWMYna02+u2ELL6Dy9FN4vDBj1NbNoYRcvx7YrBG60NFQBZTkEkJkVB02YtmUl49u
+         GlpTMTsuwJOd3+A4KMoTcJQE2njez1aT+nZbbWyHy3rE+DzcGRsL1uChH1WXPA3vVecs
+         wpU53lPC5zPSWTm1g09vm2+9YVOWzWWPLoZh+1GyxgAox4HcOZudkDV2WBP6hHp75FVG
+         T1WQdjvUc/J8teTsE4S6db1q46Vn+Zvjzy9m6ghat29UvFjY9ZQI2hgX58E499q6xR7Q
+         1WRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uhC7nzqpqA4nMheQgFCEgMJ6vQ3bkE9hy3QtYBGq9aI=;
-        b=BklBmoXUL+YFXC1gjKubiHmaC4jdiPQLC6w/juuXktJ8YYHBJWaMddCQT4IzXVN34Y
-         Ep3Zz5YAlDguy+E8QCk00iSpR0qHXEoKl2dnjI/KUYUPreXy3WJSAwXXYY6GOTs1QZ8k
-         bM+PXObDbSzr972fYPatb2M856Wayfz7p2cESq/9fMoytBUgDvob5OK3kK9IawR2XyYm
-         tksMtv2N/FQkkK3or+LruLUZkdJJLhWKvlwtDe+VB/FGCgzXRqeVO19ddgn0m/2OxGAS
-         HJNzpBFxVZGu2uBNEhSy/ji7dp8eHMr5tZviFg1EIWKXT27nzZTDBIBOjrF4u9VNfyXt
-         1Eyw==
-X-Gm-Message-State: AOAM531JIFGxEhgfqEz/ksij9j52n1+K52r9T9NewK0bapSRRsKXaQCm
-        2+41vA+Evi4eGx2WRhOzI8edhA==
-X-Google-Smtp-Source: ABdhPJxXMAZmloUHdgSE5zF9AilK2k10mV+Z9C0H9OxJkTzKVhWtamTncqC0p02F+PqlkciLdix31Q==
-X-Received: by 2002:a4a:dfac:: with SMTP id k12mr17537075ook.41.1631019812044;
-        Tue, 07 Sep 2021 06:03:32 -0700 (PDT)
-Received: from ripper (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id v10sm2425326otp.25.2021.09.07.06.03.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 06:03:31 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 06:04:31 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        paul.bouchara@somainline.org
-Subject: Re: [PATCH 1/7] arm64: dts: qcom: Introduce support for MSM8998 Sony
- Yoshino platform
-Message-ID: <YTdjX2/XGZYQQRDW@ripper>
-References: <20210903180924.1006044-1-angelogioacchino.delregno@somainline.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=L4oWWGov+bkftJWApz4guBbjvDk1FzTK4dXqUmqhsGo=;
+        b=mgKa2THVmluizSlBGs4/FNKHsPGWby7choGjYIn6ziLSrmM1MRx1EK1fED4md4R0kf
+         WyAhfz5SsCMTv8iM+ZqWlagRXg5D7XoLhydH1YAFM668KIQ50hT4c0WXlqJwzrwfzyvC
+         PssAtsTJfrC6C/Lm+XKQppMOFBigQLly5Gg0I+MhrMNYEthD1fn3h/2lGqkb3YCtlj7y
+         h/wvdhDiQxIHcqbrPKSqenyXUG4orfcVDilevY6ZuqHQ2nduClrxXfoxghF9MdJn6dUd
+         XPh1CacDY7hi1+2yh9TQe5q+CsKPYV/IDUmh+6cyindq2Ck5ndaq0dIxOd55j7D1A/2Q
+         G7gg==
+X-Gm-Message-State: AOAM532gKB78xfQvggAWafN/8Msnr7uj+Kcz8hqlLO3VJpJHLVrP59dc
+        jN5Epdymbp34AeNI6iISN07gHAis5k3QqJw2tbNo
+X-Google-Smtp-Source: ABdhPJwDAmt2hGxT5ZkcZv9YGnSEohNbSITnIOxntCgMm5mnhtxhhGJHKQSwvGW7B6b8gVrXH65MjjesrNwq98dkGuI=
+X-Received: by 2002:a17:906:8cd:: with SMTP id o13mr18352630eje.341.1631020016659;
+ Tue, 07 Sep 2021 06:06:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210903180924.1006044-1-angelogioacchino.delregno@somainline.org>
+References: <20210830115942.1017300-1-sashal@kernel.org> <20210830115942.1017300-13-sashal@kernel.org>
+ <CAD-N9QUXXjEMtdDniuqcNSAtaOhKtHE=hLMchtCJgbvxQXdABQ@mail.gmail.com>
+ <CAHC9VhTjFMw111-fyZsFaCSnN3b-TuQjqXcc1zVu2QTTekTohw@mail.gmail.com> <YTS96ql9DzxpYpnl@sashalap>
+In-Reply-To: <YTS96ql9DzxpYpnl@sashalap>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 7 Sep 2021 09:06:45 -0400
+Message-ID: <CAHC9VhR_eHxS9HFGx1QwRj9wqcmcg5794cCJ8QXKsbGA1+QELQ@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.13 13/14] net: fix NULL pointer reference in cipso_v4_doi_free
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 03 Sep 11:09 PDT 2021, AngeloGioacchino Del Regno wrote:
+On Sun, Sep 5, 2021 at 8:54 AM Sasha Levin <sashal@kernel.org> wrote:
+> On Mon, Aug 30, 2021 at 10:20:22AM -0400, Paul Moore wrote:
+> >On Mon, Aug 30, 2021 at 8:42 AM Dongliang Mu <mudongliangabcd@gmail.com>=
+ wrote:
+> >>
+> >> On Mon, Aug 30, 2021 at 8:01 PM Sasha Levin <sashal@kernel.org> wrote:
+> >> >
+> >> > From: =E7=8E=8B=E8=B4=87 <yun.wang@linux.alibaba.com>
+> >> >
+> >> > [ Upstream commit 733c99ee8be9a1410287cdbb943887365e83b2d6 ]
+> >> >
+> >>
+> >> Hi Sasha,
+> >>
+> >> Michael Wang has sent a v2 patch [1] for this bug and it is merged
+> >> into netdev/net-next.git. However, the v1 patch is already in the
+> >> upstream tree.
+> >>
+> >> How do you guys handle such a issue?
+> >>
+> >> [1] https://lkml.org/lkml/2021/8/30/229
+> >
+> >Ugh.  Michael can you please work with netdev to fix this in the
+> >upstream, and hopefully -stable, kernels?  My guess is you will need
+> >to rebase your v2 patch on top of the v1 patch (basically what exists
+> >in upstream) and send that back out.
+>
+> I'm just going to drop this one for now (it never made it in). If there
+> is a follow-up you do want us to queue please let us know :)
 
-> This commit introduces support for the Sony Yoshino platform, using
-> the MSM8998 SoC, including:
-> - Sony Xperia XZ1 (codename Poplar),
-> - Sony Xperia XZ1 Compact (codename Lilac),
-> - Sony Xperia XZ Premium (codename Maple).
-> 
+Thanks Sasha.  The lore link below is the v2 version of the patch and
+it is worth merging as a fix into the older kernels.
 
-Nice!
+* https://lore.kernel.org/linux-security-module/18f0171e-0cc8-6ae6-d04a-a69=
+a2a3c1a39@linux.alibaba.com
 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
-[..]
-> +	vph_pwr: vph-pwr-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vph_pwr";
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +	};
-> +
-> +	gpio_keys {
-
-Please don't use '_' in node names.
-
-> +		compatible = "gpio-keys";
-> +		input-name = "gpio-keys";
-> +		label = "Side buttons";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&vol_down_pin_a>, <&cam_focus_pin_a>,
-> +			    <&cam_snapshot_pin_a>;
-> +		vol-down {
-> +			label = "Volume Down";
-> +			gpios = <&pm8998_gpio 5 GPIO_ACTIVE_LOW>;
-> +			linux,input-type = <1>;
-> +			linux,code = <KEY_VOLUMEDOWN>;
-> +			gpio-key,wakeup;
-> +			debounce-interval = <15>;
-> +		};
-> +
-> +		camera-snapshot {
-> +			label = "Camera Snapshot";
-> +			gpios = <&pm8998_gpio 7 GPIO_ACTIVE_LOW>;
-> +			linux,input-type = <1>;
-> +			linux,code = <KEY_CAMERA>;
-> +			debounce-interval = <15>;
-> +		};
-> +
-> +		camera-focus {
-> +			label = "Camera Focus";
-> +			gpios = <&pm8998_gpio 8 GPIO_ACTIVE_LOW>;
-> +			linux,input-type = <1>;
-> +			linux,code = <KEY_CAMERA_FOCUS>;
-> +			debounce-interval = <15>;
-> +		};
-> +	};
-> +
-> +	gpio_hall_sensor {
-
-Ditto.
-
-> +		compatible = "gpio-keys";
-> +		input-name = "hall-sensors";
-> +		label = "Hall sensors";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&hall_sensor0_default>;
-> +
-> +		hall_sensor0 {
-
-And here...
-
-> +			label = "Cover Hall Sensor";
-> +			gpios = <&tlmm 124 GPIO_ACTIVE_LOW>;
-> +			linux,input-type = <EV_SW>;
-> +			linux,code = <SW_LID>;
-> +			gpio-key,wakeup;
-> +			debounce-interval = <30>;
-> +		};
-> +	};
-> +
-> +	reserved-memory {
-> +		#address-cells = <2>;
-> +		#size-cells = <2>;
-> +		ranges;
-> +
-> +		hyp_mem: memory@85800000 {
-> +			reg = <0x0 0x85800000 0x0 0x3700000>;
-> +			no-map;
-> +		};
-> +
-> +		cont_splash_mem: cont-splash-region@9d400000 {
-
-Is there any reason for not just naming this "memory"?
-
-> +			reg = <0x0 0x9d400000 0x0 0x2400000>;
-> +			no-map;
-> +		};
-> +
-> +		zap_shader_region: gpu@f6400000 {
-
-This is also just "memory" here.
-
-> +			compatible = "shared-dma-pool";
-> +			reg = <0x0 0xf6400000 0x0 0x2000>;
-> +			no-map;
-> +		};
-> +
-[..]
-> +&rpm_requests {
-> +	pm8998-regulators {
-> +		compatible = "qcom,rpm-pm8998-regulators";
-> +
-[..]
-> +		vreg_lvs1a_1p8: lvs1 { };
-> +		vreg_lvs2a_1p8: lvs2 { };
-> +
-
-Blank line.
-
-> +	};
-> +
-> +	pmi8998-regulators {
-> +		compatible = "qcom,rpm-pmi8998-regulators";
-> +
-> +		vdd_bob-supply = <&vph_pwr>;
-> +
-> +		vreg_bob: bob {
-> +			regulator-min-microvolt = <3312000>;
-> +			regulator-max-microvolt = <3600000>;
-> +		};
-> +	};
-> +};
-> +
-> +&sdhc2 {
-> +	status = "okay";
-> +	cd-gpios = <&tlmm 95 GPIO_ACTIVE_HIGH>;
-> +
-> +	vmmc-supply = <&vreg_l21a_2p95>;
-> +	vqmmc-supply = <&vreg_l13a_2p95>;
-> +
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-0 = <&sdc2_clk_on  &sdc2_cmd_on  &sdc2_data_on  &sdc2_cd_on>;
-> +	pinctrl-1 = <&sdc2_clk_off &sdc2_cmd_off &sdc2_data_off &sdc2_cd_off>;
-
-How about grouping these various pins as "sdc2_default_state" and
-"sdc2_sleep_state"?
-
-> +};
-> +
-Regards,
-Bjorn
+--=20
+paul moore
+www.paul-moore.com
