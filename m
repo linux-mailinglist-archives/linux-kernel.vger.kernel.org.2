@@ -2,116 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3890E4024E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 514024024EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:15:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241848AbhIGILX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 04:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240530AbhIGILV (ORCPT
+        id S241896AbhIGIQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 04:16:21 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44176 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S239550AbhIGIQT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 04:11:21 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3657FC061575;
-        Tue,  7 Sep 2021 01:10:15 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id k13so17968058lfv.2;
-        Tue, 07 Sep 2021 01:10:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MDKgUOk2Pvmf4N3Pomrnd43ATp9QvOvkpc8abXhpJGA=;
-        b=kzlGW1FVA3CuNStZtvaE20V1sOQa0IYU9cCB4qrfCClNymYG4f7V0eaFYXL8WccOIX
-         5K6ne2ETZaHeusrSSzUcjhOfScSUieYysTqg/daw62pJuPHSth/pUbEdZcDv42f0++kc
-         YHM221/PDW26cbrUXnuzAobWpOyRJRk53qusfYWtegEZHVK/N/p2IbdOSUBqGcKFB7s3
-         /s2is53JMbkv3fyQKmLlxqZj0vcPw1qYoYYWuzgbD5X7lHWf6K4QnwKQz3WBCZmq2oIm
-         2RjW0gWGdhSOXsYteG0YTV1mrjfwgMaLi+/JPJafgNxUV10yAO8OANezaK1T1pMmWEtY
-         SPVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MDKgUOk2Pvmf4N3Pomrnd43ATp9QvOvkpc8abXhpJGA=;
-        b=ImyF3XjiEzljAmmaU5DA+LE+Cen82tK0jkXqZ/saf9u+HU1FBI2VEmo1yec4MCavCn
-         Z6uFNQ/KRLwZqq5uor1fojRmaLLWyXap5SuxakxLaCg4VHJJ8fGEKHDDRUDZlyLedpSm
-         3L+Beih+5jkpVCa7MBtBbrqEnJFRA997GzNc5/QrSMNepZJ7oV8U+aNXHtZ6Gt4ks3GK
-         tCaMiMjk6XYhAnInfZr6DtZdGL8Hxc02Lkd71cKg0M/l/knURo1wGhwVPBl68N/mQYvo
-         iPtnG0DD1ewQ8iJo4oxoT7KIQHqBNd6FlV+Qbb1A7pVtg2aLbcrr8BJ5rrWAPr44/yhb
-         g12A==
-X-Gm-Message-State: AOAM533pJ5+f3A1qLzF1AVlvrbyb+LVsgI4zgfpg7bPSVsTFI2C6XrZm
-        lP0jAbLeDhihPrFlrZhcfdB9c+jttwo=
-X-Google-Smtp-Source: ABdhPJym3ofWIRZH2bvkuRXPkEnN/luDUmyRz4c1dwHVPc4pNqqXlkbVa5MRAVxwzIf+FTY8oqa25Q==
-X-Received: by 2002:ac2:5d45:: with SMTP id w5mr12129021lfd.642.1631002213380;
-        Tue, 07 Sep 2021 01:10:13 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-3-129.dynamic.spd-mgts.ru. [46.138.3.129])
-        by smtp.googlemail.com with ESMTPSA id r7sm1012772lfr.60.2021.09.07.01.10.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 01:10:12 -0700 (PDT)
-Subject: Re: [PATCH 3/3] PM: domains: Add a ->dev_get_performance_state()
- callback to genpd
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210902101634.827187-1-ulf.hansson@linaro.org>
- <20210902101634.827187-4-ulf.hansson@linaro.org>
- <4e36e732-6ca3-1d00-e6dd-38bb8877577b@gmail.com>
- <CAPDyKFr2oQnKOhKhWt_9VyBoe=HQ7Y0uZUMKTcZ05a7G9RaBYA@mail.gmail.com>
- <1124dae5-478f-f0ca-ea91-b6945f7c9254@gmail.com>
- <CAPDyKFqE+thX0pLTg9d-ds7Tj3hsB78EmDB1Cryh26tN3kvQDA@mail.gmail.com>
- <3d92711f-ce30-2c19-c6a4-bb77d32df2dd@gmail.com>
- <CAPDyKFpJU3g2OzJeR9KUdtN-8wJsDckqVAMQMHBV=enu=DfURg@mail.gmail.com>
- <fbca049a-e673-1598-658f-a7bb5de52f18@gmail.com>
- <20210907034038.ncx5nas6mhrk4u3r@vireshk-i7>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b9b679ab-1214-a4dc-d903-4a8841e397dd@gmail.com>
-Date:   Tue, 7 Sep 2021 11:10:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 7 Sep 2021 04:16:19 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1878323B057385;
+        Tue, 7 Sep 2021 04:15:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=NJlAWd2ZoDnMVS3u4vbcylYowczJek5eRBYRxN05iAY=;
+ b=izUYESbiYUTeSN1Eep9hvZ7Ci4iYKjL6Ogb0ZuIqIgo0YsPoAF3UWqHea2yuq6R8omSp
+ ETiMEfgcwP/XeYiToDLhmdqty7MwRBiDlA/4495mZWxjAhcxoaD71G9rQfp5IisjLdXi
+ 2jrmGSbMSiIBZIAASqRL3LRnq7gPY0QU4ulvLhXHkB99muEmWAQCFY1PRtI/v7zOTxH2
+ l1avNB6b5YUfwodopnSF2V+d9ewKMTKzs0ABqPa+LIc1M6ThXdvvG8FhyymddJ9EEAeX
+ JUJZp3ALb6fMZw0ZwxoQUI4jTtoPntV3f15OCSs4LP7wrvfteMgm/Yg6urcY2wnO4+Gm GQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3ax0p3mqch-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Sep 2021 04:15:03 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18784Kic064280;
+        Tue, 7 Sep 2021 04:15:02 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3ax0p3mqbj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Sep 2021 04:15:02 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1878CEpF026961;
+        Tue, 7 Sep 2021 08:15:00 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06fra.de.ibm.com with ESMTP id 3av02jb8cm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Sep 2021 08:15:00 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1878EtJR44040692
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 7 Sep 2021 08:14:55 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4ED2F4C044;
+        Tue,  7 Sep 2021 08:14:55 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ADCF74C05E;
+        Tue,  7 Sep 2021 08:14:54 +0000 (GMT)
+Received: from sig-9-145-36-222.uk.ibm.com (unknown [9.145.36.222])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  7 Sep 2021 08:14:54 +0000 (GMT)
+Message-ID: <644a0e6f802f25e760e29b2047861b1141c32a6f.camel@linux.ibm.com>
+Subject: Re: [PATCH 3/5] PCI: Move pci_dev_is/assign_added() to pci.h
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, kbuild-all@lists.01.org,
+        Linas Vepstas <linasvepstas@gmail.com>,
+        "Oliver O'Halloran" <oohall@gmail.com>,
+        Russell Currey <ruscur@russell.cc>,
+        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>
+Date:   Tue, 07 Sep 2021 10:14:54 +0200
+In-Reply-To: <CAHp75VeiWH0MoAchctDES7zLk4Q9NwODu=O2y-NYOsu3SBeimg@mail.gmail.com>
+References: <20210906094927.524106-4-schnelle@linux.ibm.com>
+         <202109070818.aHlo0OT9-lkp@intel.com>
+         <CAHp75VeiWH0MoAchctDES7zLk4Q9NwODu=O2y-NYOsu3SBeimg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: f8PGt5Ha2Ilwpn9v2PDBQYDCRwE0apW4
+X-Proofpoint-ORIG-GUID: 7XufGAcG5COEYj8eCR8GxJa5gc1nlLXA
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <20210907034038.ncx5nas6mhrk4u3r@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-07_02:2021-09-03,2021-09-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=999 impostorscore=0 malwarescore=0 priorityscore=1501
+ mlxscore=0 bulkscore=0 phishscore=0 suspectscore=0 spamscore=0
+ adultscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109070053
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-07.09.2021 06:40, Viresh Kumar пишет:
-> On 06-09-21, 17:35, Dmitry Osipenko wrote:
->> Viresh, are you okay with going back to the variant with the
->> dev_pm_opp_sync() helper?
+On Tue, 2021-09-07 at 10:51 +0300, Andy Shevchenko wrote:
+> On Tue, Sep 7, 2021 at 3:26 AM kernel test robot <lkp@intel.com> wrote:
+> > Hi Niklas,
+> > 
+> > I love your patch! Yet something to improve:
+> > 
+> > [auto build test ERROR on s390/features]
+> > [also build test ERROR on next-20210906]
+> > [cannot apply to pci/next powerpc/next v5.14]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch]
+> > 
+> > url:    https://github.com/0day-ci/linux/commits/Niklas-Schnelle/s390-pci-automatic-error-recovery/20210906-175309
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git features
+> > config: i386-allyesconfig (attached as .config)
+> > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> > reproduce (this is a W=1 build):
+> >         # https://github.com/0day-ci/linux/commit/404ed8c00a612e7ae31c50557c80c6726c464863
+> >         git remote add linux-review https://github.com/0day-ci/linux
+> >         git fetch --no-tags linux-review Niklas-Schnelle/s390-pci-automatic-error-recovery/20210906-175309
+> >         git checkout 404ed8c00a612e7ae31c50557c80c6726c464863
+> >         # save the attached .config to linux build tree
+> >         make W=1 ARCH=i386
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > All errors (new ones prefixed by >>):
 > 
-> I have missed a lot of stuff in between and wasn't following this
-> carefully as I thought my half was resolved :)
+> Obviously drivers/pci/pci.h is not only for the above.
 > 
-> Can you describe what to propose to do again ? From what I remember,
-> doing this one time from probe() is okay, doing it from
-> suspend/resume, not so much.
+> When play with headers always do two test builds: allyesconfig and allmodconfig.
 
-Hmm.. actually, it's not a problem to set up the performance state from
-probe() now with that recent change that was made to the PD core. [1]
+You're right and additionally have to built on some other architectures
+as well because allyesconfig and allmodconfig both run through fine on
+s390. 
 
-[1]
-https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?id=3c5a272202c28c1f9309566f206ba40787246149
+I'll look into it but at first glance it looks like I was over reaching
+removing the include from drivers/pci/hotplug/acpiphp_glue.c in
+addition it's not even the same kind of awkward relative include from
+drivers into arch code. Sorry about that.
 
-And then we indeed don't need neither the dev_get_performance_state()
-callback, nor the dev_pm_opp_sync() helper.
+> 
 
-The devm_tegra_core_dev_init_opp_table() already supports performance
-state syncing, so I will just need to call it after the RPM setup made
-by consumer driver, allowing PD core to set the rpm_pstate. I already
-gave it a quick test and it works perfectly.
-
-Ulf, are you okay with abandoning the dev_get_performance_state()
-callback? We don't need it anymore.
