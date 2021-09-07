@@ -2,96 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDEE402299
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 06:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7943E4022A2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 06:18:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhIGEIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 00:08:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhIGEIO (ORCPT
+        id S229978AbhIGETd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 00:19:33 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:47898 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229456AbhIGETb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 00:08:14 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF95AC061575;
-        Mon,  6 Sep 2021 21:07:08 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id f11-20020a17090aa78b00b0018e98a7cddaso1181723pjq.4;
-        Mon, 06 Sep 2021 21:07:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eoAtwz/HI/43X/dImzE2MSr2lE2uK0vvPjZTO/+eO94=;
-        b=nkBZzaoGaVDLDtJbh82aWdYllxxJ0jwYm7q+0OQTUS6OJFNBhtDnSmC75Hiuk2T87y
-         6KHWCQCC9IA6ZnnCNER/D32f9M7QiINiDjQvAazh2KvJbX+ytN0bqr0/R4VQ4Ot3LwMs
-         SWbJMgIGGIa690jvX8/zACeO3qw3Ak16LK0fU1nDB0AJWfZq5XajX6MHMvrSl1tPvhFf
-         /sH8z5lgk11mFljz/q3yNPxTJcvHQd8qAZs27cQMgV61CfqMeQHNvINKdpg0VZRzUiWj
-         NE+uTj64sPJCWUQ8USGSgfj/JGsbM6nfoJm9BykLkZpkAWg1u5P+yACXXiLi1I2nZqNw
-         hvlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=eoAtwz/HI/43X/dImzE2MSr2lE2uK0vvPjZTO/+eO94=;
-        b=YXrFBX7fIFA4KUFFsTOPjzHd7j7vGrAUyhswDk8ZzNkYxRcxVTHOG3uIKLmwkBKBBm
-         LJqhb9FWV7V0kDl8w6xwA8ugmXzsfhfQ5krggI95BK6raohAXauOBu5HgX/MIhUM57UO
-         oaHqWAeQYTQ6nxBgLWFHatzF3TpCTL2XM90MIubqYdMiNqUNUtNvJrDlASn1jNLOMKrt
-         pngiFSMoxI75yDJe3CFjOFHPFqbw15WrZs3udq20ci9UKDg/deVhzP+kVyRYLXXNIgdg
-         CgjWoNgzVQNIzAPZFy23l+dEbx+p0NlmhEJJj5oNtijyNljf+vO0a2nGqpZYULHZ38Hl
-         W9AQ==
-X-Gm-Message-State: AOAM532ggaY0PWp5cS5Y7Gfq11geupejyJrJw+1UQ45VSJuGC8tuqbZj
-        z0917BelCR5uasFAhzYflDE=
-X-Google-Smtp-Source: ABdhPJyNXtUK0r5C3DcP4PQzsZ1BeRfL99Edo04uZhTP+/8ItWPRQ8jsT4QqI0YFb621wNZSj+L1Hg==
-X-Received: by 2002:a17:90a:d98f:: with SMTP id d15mr2445084pjv.81.1630987628198;
-        Mon, 06 Sep 2021 21:07:08 -0700 (PDT)
-Received: from tong-desktop.local (99-105-211-126.lightspeed.sntcca.sbcglobal.net. [99.105.211.126])
-        by smtp.googlemail.com with ESMTPSA id b7sm8894873pfl.195.2021.09.06.21.07.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 21:07:07 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Oliver Neukum <oliver@neukum.org>, Ali Akcaagac <aliakc@web.de>,
-        Jamie Lenehan <lenehan@twibble.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        dc395x@twibble.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Tong Zhang <ztong0001@gmail.com>
-Subject: [PATCH v1] scsi: dc395: fix error case unwinding
-Date:   Mon,  6 Sep 2021 21:07:02 -0700
-Message-Id: <20210907040702.1846409-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 7 Sep 2021 00:19:31 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 278BE1FF56;
+        Tue,  7 Sep 2021 04:18:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1630988305; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=h49ksqWpNBrOpV9ozMeMCOB3BPOEfvBt8DuU3qwVRqc=;
+        b=sZNNeEPwCdCRgkir273n5eFwHDgdw09J9nVsrNWcwRIcB8eB9BEzwnPVCPOPZCdJRaUvtb
+        NxyFo5jPrQPrxrxIirIpNeQ1LSKCvGhkbtLkmmgRNtGv89i+lkQsylxBGUAM4rdp7dydgg
+        ePYUWKRc0W2M5DRpLXYO2RjSjFhzsS0=
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id B8D0612FF9;
+        Tue,  7 Sep 2021 04:18:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id 5CvvKhDoNmE4awAAGKfGzw
+        (envelope-from <jgross@suse.com>); Tue, 07 Sep 2021 04:18:24 +0000
+Subject: Re: [PATCH 1/2] PM: base: power: don't try to use non-existing RTC
+ for storing data
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        xen-devel@lists.xenproject.org,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Stable <stable@vger.kernel.org>
+References: <20210903084937.19392-1-jgross@suse.com>
+ <20210903084937.19392-2-jgross@suse.com> <YTHjPbklWVDVaBfK@kroah.com>
+ <1b6a8f9c-2a5f-e97e-c89d-5983ceeb20e5@suse.com>
+ <CAJZ5v0g_WVFqDKCBYnoPtqR5VzH-eBMk+7M1bAmgGsyX0XGpgw@mail.gmail.com>
+From:   Juergen Gross <jgross@suse.com>
+Message-ID: <3f08f433-a228-d512-3608-3ed0c797e653@suse.com>
+Date:   Tue, 7 Sep 2021 06:18:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0g_WVFqDKCBYnoPtqR5VzH-eBMk+7M1bAmgGsyX0XGpgw@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="2WDWaUILT1zcTAfwQw13cP6arEOvVJ7NT"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dc395x_init_one()->adapter_init() might fail. In this case, the acb
-is already clean up by adapter_init(), no need to do that in
-adapter_uninit(acb) again.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--2WDWaUILT1zcTAfwQw13cP6arEOvVJ7NT
+Content-Type: multipart/mixed; boundary="40AjFM7hF7VBwEyptUN1cRO8vL4caXhmG";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ xen-devel@lists.xenproject.org, Linux PM <linux-pm@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <len.brown@intel.com>,
+ Pavel Machek <pavel@ucw.cz>, Stable <stable@vger.kernel.org>
+Message-ID: <3f08f433-a228-d512-3608-3ed0c797e653@suse.com>
+Subject: Re: [PATCH 1/2] PM: base: power: don't try to use non-existing RTC
+ for storing data
+References: <20210903084937.19392-1-jgross@suse.com>
+ <20210903084937.19392-2-jgross@suse.com> <YTHjPbklWVDVaBfK@kroah.com>
+ <1b6a8f9c-2a5f-e97e-c89d-5983ceeb20e5@suse.com>
+ <CAJZ5v0g_WVFqDKCBYnoPtqR5VzH-eBMk+7M1bAmgGsyX0XGpgw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0g_WVFqDKCBYnoPtqR5VzH-eBMk+7M1bAmgGsyX0XGpgw@mail.gmail.com>
 
-[    1.252251] dc395x: adapter init failed
-[    1.254900] RIP: 0010:adapter_uninit+0x94/0x170 [dc395x]
-[    1.260307] Call Trace:
-[    1.260442]  dc395x_init_one.cold+0x72a/0x9bb [dc395x]
+--40AjFM7hF7VBwEyptUN1cRO8vL4caXhmG
+Content-Type: multipart/mixed;
+ boundary="------------9B3DCA2E79466DA893357F5F"
+Content-Language: en-US
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
- drivers/scsi/dc395x.c | 1 +
- 1 file changed, 1 insertion(+)
+This is a multi-part message in MIME format.
+--------------9B3DCA2E79466DA893357F5F
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/scsi/dc395x.c b/drivers/scsi/dc395x.c
-index 24c7cefb0b78..1c79e6c27163 100644
---- a/drivers/scsi/dc395x.c
-+++ b/drivers/scsi/dc395x.c
-@@ -4618,6 +4618,7 @@ static int dc395x_init_one(struct pci_dev *dev, const struct pci_device_id *id)
- 	/* initialise the adapter and everything we need */
-  	if (adapter_init(acb, io_port_base, io_port_len, irq)) {
- 		dprintkl(KERN_INFO, "adapter init failed\n");
-+		acb = NULL;
- 		goto fail;
- 	}
- 
--- 
-2.25.1
+On 06.09.21 19:07, Rafael J. Wysocki wrote:
+> On Fri, Sep 3, 2021 at 11:02 AM Juergen Gross <jgross@suse.com> wrote:
+>>
+>> On 03.09.21 10:56, Greg Kroah-Hartman wrote:
+>>> On Fri, Sep 03, 2021 at 10:49:36AM +0200, Juergen Gross wrote:
+>>>> In there is no legacy RTC device, don't try to use it for storing tr=
+ace
+>>>> data across suspend/resume.
+>>>>
+>>>> Cc: <stable@vger.kernel.org>
+>>>> Signed-off-by: Juergen Gross <jgross@suse.com>
+>>>> ---
+>>>>    drivers/base/power/trace.c | 10 ++++++++++
+>>>>    1 file changed, 10 insertions(+)
+>>>>
+>>>> diff --git a/drivers/base/power/trace.c b/drivers/base/power/trace.c=
 
+>>>> index a97f33d0c59f..b7c80849455c 100644
+>>>> --- a/drivers/base/power/trace.c
+>>>> +++ b/drivers/base/power/trace.c
+>>>> @@ -13,6 +13,7 @@
+>>>>    #include <linux/export.h>
+>>>>    #include <linux/rtc.h>
+>>>>    #include <linux/suspend.h>
+>>>> +#include <linux/init.h>
+>>>>
+>>>>    #include <linux/mc146818rtc.h>
+>>>>
+>>>> @@ -165,6 +166,9 @@ void generate_pm_trace(const void *tracedata, un=
+signed int user)
+>>>>       const char *file =3D *(const char **)(tracedata + 2);
+>>>>       unsigned int user_hash_value, file_hash_value;
+>>>>
+>>>> +    if (!x86_platform.legacy.rtc)
+>>>> +            return 0;
+>>>
+>>> Why does the driver core code here care about a platform/arch-specifi=
+c
+>>> thing at all?  Did you just break all other arches?
+>>
+>> This file is only compiled for x86. It depends on CONFIG_PM_TRACE_RTC,=
+
+>> which has a "depends on X86" attribute.
+>=20
+> This feature uses the CMOS RTC memory to store data, so if that memory
+> is not present, it's better to avoid using it.
+>=20
+> Please feel free to add
+>=20
+> Reviewed-by: Rafael J. Wysocki <rafael@kernel.org>
+
+Thanks!
+
+>=20
+> to this patch or let me know if you want me to take it.
+>=20
+
+No, I can take it with the other patch of this small series, thanks.
+
+
+Juergen
+
+--------------9B3DCA2E79466DA893357F5F
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------9B3DCA2E79466DA893357F5F--
+
+--40AjFM7hF7VBwEyptUN1cRO8vL4caXhmG--
+
+--2WDWaUILT1zcTAfwQw13cP6arEOvVJ7NT
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmE26BAFAwAAAAAACgkQsN6d1ii/Ey9r
+Hwf/c5XiAVGxbZw83ONwePCE+bf8D3q8KJTcmCkhNwelw0RK36RQnVYNwSa9bzaSR89Lzi1swmXh
+Lr82MokgGFWKUx9MPteFyc4i5PyxI2YNuktNKru/bQNoiVjNzBtppdt1N2GozS0vE2SeeAr+VNIf
+OYYpAWaHOSV0UtyOSbD5pQYD8+dAfs87HJ+1iX3p9RLGNZI+zO0MHdzqVLdTxEaVhOitakKC1sPR
+WXjVRTPTduUUqcnQUt93kt/1rz4zUcHoO5KdI859qIY4EmLKL4psTa2SEyjU0oB0JrUQxpoceul6
+05bb8ymydiOv8M2YIpC1tRIiQMXnSWLYtp7FTgO7bg==
+=1oDE
+-----END PGP SIGNATURE-----
+
+--2WDWaUILT1zcTAfwQw13cP6arEOvVJ7NT--
