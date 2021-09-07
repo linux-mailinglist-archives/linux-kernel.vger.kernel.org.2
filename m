@@ -2,228 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC97402D05
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E478402CFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344833AbhIGQmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:42:43 -0400
-Received: from mga07.intel.com ([134.134.136.100]:27264 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344732AbhIGQmi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:42:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="283959539"
-X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
-   d="scan'208";a="283959539"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 09:38:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
-   d="scan'208";a="430979316"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
-  by orsmga003.jf.intel.com with ESMTP; 07 Sep 2021 09:38:46 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V3 3/3] perf intel-pt: Add support for PERF_RECORD_AUX_OUTPUT_HW_ID
-Date:   Tue,  7 Sep 2021 19:39:03 +0300
-Message-Id: <20210907163903.11820-4-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210907163903.11820-1-adrian.hunter@intel.com>
-References: <20210907163903.11820-1-adrian.hunter@intel.com>
+        id S1344549AbhIGQkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 12:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343868AbhIGQko (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 12:40:44 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C141C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 09:39:38 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id me10so20862510ejb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 09:39:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=caN7E+Jp9gV/N2qAG+zwG3Ny5H5LTkTCLeyDIvVWjFg=;
+        b=iHnyywJbb10KAIjqP+PtbJqd4z/wsIFM3hvnsxB8tw8c978znSUWNOkKvLpPSLJ7MQ
+         pMu0kLrnlehTdnsAEWhBNEAxf6LO4ocZivc6TiR92eRKX9xFOFrWkZ7LRlLK6UBbcvmY
+         y7wkjSvmK5+a64LPzOhzGf3wAl/7QNeFQVRMw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=caN7E+Jp9gV/N2qAG+zwG3Ny5H5LTkTCLeyDIvVWjFg=;
+        b=GB3ktMrsX1lc9tpjml34lbBQjHo/pi7NTlDx3p7TTgLEh4Wg6vxFh4eOE3daCDtzhL
+         HJRLENsTRwVIyyUIZAC2ClwQr3oiHooL4sVla3qJq336FuBypY1ESvWpIkEj31/svI9K
+         UV3usEMdpWZ2DI4e0k/kYk2EKdb/ogp4R/kDSGMAjpUHVQBtFrcFbReJhyv3u+AX3Ofh
+         m84X6pNqFtozG/8bT3t5mnh/BM4rA+6ZOAOVdoHXnaeOA9OnU+LlDLjjRr+gnikH9NrE
+         zqp8gBRh6W6QO+bm5AlyjAH35kwy0Qv9zUqT+FsGnffhkIN0iO076x9ZPWSJasw5W3JR
+         LCuw==
+X-Gm-Message-State: AOAM532cnNWHGpNP/4T5LSW2+zQ9hreA27fXv6RViZdNfIgHIShz6LLZ
+        6cNeiNmGo6xclr4ZRF5frJqAciaS63nJKn6pCXU=
+X-Google-Smtp-Source: ABdhPJzgoVg/fn05bCZKmL12v+Q/utpMRyR7ZcCUcs5P3mbgrFZWWjIm9l0fNPQnVek6WnycLICWEA==
+X-Received: by 2002:a17:906:abcd:: with SMTP id kq13mr19907032ejb.195.1631032776255;
+        Tue, 07 Sep 2021 09:39:36 -0700 (PDT)
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
+        by smtp.gmail.com with ESMTPSA id y20sm5583072eje.113.2021.09.07.09.39.32
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 09:39:34 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id r7so14772877edd.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 09:39:32 -0700 (PDT)
+X-Received: by 2002:a05:6512:3da5:: with SMTP id k37mr13740102lfv.655.1631032761639;
+ Tue, 07 Sep 2021 09:39:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210907150757.GE17617@xsang-OptiPlex-9020> <dbc9955d-6c28-1dd5-b842-ef39a762aa3b@kernel.dk>
+In-Reply-To: <dbc9955d-6c28-1dd5-b842-ef39a762aa3b@kernel.dk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Sep 2021 09:39:05 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgrF65BpP6P6_a6+k+C8V+JOBiEx0X-c9idiM87uk32FQ@mail.gmail.com>
+Message-ID: <CAHk-=wgrF65BpP6P6_a6+k+C8V+JOBiEx0X-c9idiM87uk32FQ@mail.gmail.com>
+Subject: Re: [memcg] 0f12156dff: will-it-scale.per_process_ops -33.6% regression
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     kernel test robot <oliver.sang@intel.com>,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        Borislav Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, Roman Gushchin <guro@fb.com>,
+        Serge Hallyn <serge@hallyn.com>, Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yutian Yang <nglaive@gmail.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        Zhengjun Xing <zhengjun.xing@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Originally, software only supported redirecting at most one PEBS event to
-Intel PT (PEBS-via-PT) because it was not able to differentiate one event
-from another. To overcome that, add support for the
-PERF_RECORD_AUX_OUTPUT_HW_ID side-band event.
+On Tue, Sep 7, 2021 at 8:46 AM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> Are we at all worried about these? There's been a number of them
+> reported, basically for all the accounting enablements that have been
+> done in this merge window.
 
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Reviewed-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
----
- tools/perf/Documentation/perf-intel-pt.txt |  7 +-
- tools/perf/util/intel-pt.c                 | 85 +++++++++++++++++++++-
- 2 files changed, 87 insertions(+), 5 deletions(-)
+We are worried about them. I'm considering reverting several of them
+because I think the problems are
 
-diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-index 184ba62420f0..19f792876085 100644
---- a/tools/perf/Documentation/perf-intel-pt.txt
-+++ b/tools/perf/Documentation/perf-intel-pt.txt
-@@ -1144,7 +1144,12 @@ Recording is selected by using the aux-output config term e.g.
- 
- 	perf record -c 10000 -e '{intel_pt/branch=0/,cycles/aux-output/ppp}' uname
- 
--Note that currently, software only supports redirecting at most one PEBS event.
-+Originally, software only supported redirecting at most one PEBS event because it
-+was not able to differentiate one event from another. To overcome that, more recent
-+kernels and perf tools add support for the PERF_RECORD_AUX_OUTPUT_HW_ID side-band event.
-+To check for the presence of that event in a PEBS-via-PT trace:
-+
-+	perf script -D --no-itrace | grep PERF_RECORD_AUX_OUTPUT_HW_ID
- 
- To display PEBS events from the Intel PT trace, use the itrace 'o' option e.g.
- 
-diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-index 6f852b305e92..1073c56a512c 100644
---- a/tools/perf/util/intel-pt.c
-+++ b/tools/perf/util/intel-pt.c
-@@ -111,6 +111,7 @@ struct intel_pt {
- 	u64 cbr_id;
- 	u64 psb_id;
- 
-+	bool single_pebs;
- 	bool sample_pebs;
- 	struct evsel *pebs_evsel;
- 
-@@ -148,6 +149,14 @@ enum switch_state {
- 	INTEL_PT_SS_EXPECTING_SWITCH_IP,
- };
- 
-+/* applicable_counters is 64-bits */
-+#define INTEL_PT_MAX_PEBS 64
-+
-+struct intel_pt_pebs_event {
-+	struct evsel *evsel;
-+	u64 id;
-+};
-+
- struct intel_pt_queue {
- 	struct intel_pt *pt;
- 	unsigned int queue_nr;
-@@ -189,6 +198,7 @@ struct intel_pt_queue {
- 	u64 last_br_cyc_cnt;
- 	unsigned int cbr_seen;
- 	char insn[INTEL_PT_INSN_BUF_SZ];
-+	struct intel_pt_pebs_event pebs[INTEL_PT_MAX_PEBS];
- };
- 
- static void intel_pt_dump(struct intel_pt *pt __maybe_unused,
-@@ -1978,15 +1988,13 @@ static void intel_pt_add_lbrs(struct branch_stack *br_stack,
- 	}
- }
- 
--static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
-+static int intel_pt_do_synth_pebs_sample(struct intel_pt_queue *ptq, struct evsel *evsel, u64 id)
- {
- 	const struct intel_pt_blk_items *items = &ptq->state->items;
- 	struct perf_sample sample = { .ip = 0, };
- 	union perf_event *event = ptq->event_buf;
- 	struct intel_pt *pt = ptq->pt;
--	struct evsel *evsel = pt->pebs_evsel;
- 	u64 sample_type = evsel->core.attr.sample_type;
--	u64 id = evsel->core.id[0];
- 	u8 cpumode;
- 	u64 regs[8 * sizeof(sample.intr_regs.mask)];
- 
-@@ -2112,6 +2120,45 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
- 	return intel_pt_deliver_synth_event(pt, event, &sample, sample_type);
- }
- 
-+static int intel_pt_synth_single_pebs_sample(struct intel_pt_queue *ptq)
-+{
-+	struct intel_pt *pt = ptq->pt;
-+	struct evsel *evsel = pt->pebs_evsel;
-+	u64 id = evsel->core.id[0];
-+
-+	return intel_pt_do_synth_pebs_sample(ptq, evsel, id);
-+}
-+
-+static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
-+{
-+	const struct intel_pt_blk_items *items = &ptq->state->items;
-+	struct intel_pt_pebs_event *pe;
-+	struct intel_pt *pt = ptq->pt;
-+	int err = -EINVAL;
-+	int hw_id;
-+
-+	if (!items->has_applicable_counters || !items->applicable_counters) {
-+		if (!pt->single_pebs)
-+			pr_err("PEBS-via-PT record with no applicable_counters\n");
-+		return intel_pt_synth_single_pebs_sample(ptq);
-+	}
-+
-+	for_each_set_bit(hw_id, &items->applicable_counters, INTEL_PT_MAX_PEBS) {
-+		pe = &ptq->pebs[hw_id];
-+		if (!pe->evsel) {
-+			if (!pt->single_pebs)
-+				pr_err("PEBS-via-PT record with no matching event, hw_id %d\n",
-+				       hw_id);
-+			return intel_pt_synth_single_pebs_sample(ptq);
-+		}
-+		err = intel_pt_do_synth_pebs_sample(ptq, pe->evsel, pe->id);
-+		if (err)
-+			return err;
-+	}
-+
-+	return err;
-+}
-+
- static int intel_pt_synth_error(struct intel_pt *pt, int code, int cpu,
- 				pid_t pid, pid_t tid, u64 ip, u64 timestamp)
- {
-@@ -2882,6 +2929,30 @@ static int intel_pt_process_itrace_start(struct intel_pt *pt,
- 					event->itrace_start.tid);
- }
- 
-+static int intel_pt_process_aux_output_hw_id(struct intel_pt *pt,
-+					     union perf_event *event,
-+					     struct perf_sample *sample)
-+{
-+	u64 hw_id = event->aux_output_hw_id.hw_id;
-+	struct auxtrace_queue *queue;
-+	struct intel_pt_queue *ptq;
-+	struct evsel *evsel;
-+
-+	queue = auxtrace_queues__sample_queue(&pt->queues, sample, pt->session);
-+	evsel = evlist__id2evsel_strict(pt->session->evlist, sample->id);
-+	if (!queue || !queue->priv || !evsel || hw_id > INTEL_PT_MAX_PEBS) {
-+		pr_err("Bad AUX output hardware ID\n");
-+		return -EINVAL;
-+	}
-+
-+	ptq = queue->priv;
-+
-+	ptq->pebs[hw_id].evsel = evsel;
-+	ptq->pebs[hw_id].id = sample->id;
-+
-+	return 0;
-+}
-+
- static int intel_pt_find_map(struct thread *thread, u8 cpumode, u64 addr,
- 			     struct addr_location *al)
- {
-@@ -3009,6 +3080,8 @@ static int intel_pt_process_event(struct perf_session *session,
- 		err = intel_pt_process_switch(pt, sample);
- 	else if (event->header.type == PERF_RECORD_ITRACE_START)
- 		err = intel_pt_process_itrace_start(pt, event, sample);
-+	else if (event->header.type == PERF_RECORD_AUX_OUTPUT_HW_ID)
-+		err = intel_pt_process_aux_output_hw_id(pt, event, sample);
- 	else if (event->header.type == PERF_RECORD_SWITCH ||
- 		 event->header.type == PERF_RECORD_SWITCH_CPU_WIDE)
- 		err = intel_pt_context_switch(pt, event, sample);
-@@ -3393,9 +3466,13 @@ static void intel_pt_setup_pebs_events(struct intel_pt *pt)
- 
- 	evlist__for_each_entry(pt->session->evlist, evsel) {
- 		if (evsel->core.attr.aux_output && evsel->core.id) {
-+			if (pt->single_pebs) {
-+				pt->single_pebs = false;
-+				return;
-+			}
-+			pt->single_pebs = true;
- 			pt->sample_pebs = true;
- 			pt->pebs_evsel = evsel;
--			return;
- 		}
- 	}
- }
--- 
-2.17.1
+ (a) big
 
+ (b) nontrivial
+
+and the patches clearly weren't ready and people weren't aware of this issue.
+
+           Linus
