@@ -2,91 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA9B4024F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E13402502
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241504AbhIGITE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 04:19:04 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:58933 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233452AbhIGIS6 (ORCPT
+        id S242405AbhIGIUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 04:20:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42638 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241770AbhIGIUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 04:18:58 -0400
-Received: from mail-wr1-f47.google.com ([209.85.221.47]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1N3sye-1n5gp447n6-00zrwp for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021
- 10:17:51 +0200
-Received: by mail-wr1-f47.google.com with SMTP id t18so2392396wrb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 01:17:48 -0700 (PDT)
-X-Gm-Message-State: AOAM5333FfVtncRDYHCet4WwvSBjGz7/FeNyKUasKq0niOXNeTOMy8Pe
-        FJCROFqdOlI1STny7uCh9cUn4R6sl3PHU75SRkY=
-X-Google-Smtp-Source: ABdhPJyiTwB42Ik9Nd62RhRczNyAg0nbb/ltMSwY4nNsSbCmZOvOZpJebJwSFy4ShYpdcFJayx1+05VvpIVcJPUKXQE=
-X-Received: by 2002:a5d:4ed0:: with SMTP id s16mr17191037wrv.71.1631002668640;
- Tue, 07 Sep 2021 01:17:48 -0700 (PDT)
+        Tue, 7 Sep 2021 04:20:37 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4EEC061757
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 01:19:31 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id q3so11624246iot.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 01:19:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9MXLDJhiY0fcXEg+LnGTR4OLM7jMrz/NHCTwfTLwDMg=;
+        b=ElO/UJxIHNBjrNw3yfn9GFGNJhWRax3Eba+PUZ2fRtFre/HLcwkOVfWXRighUoPjEM
+         51pdOWhi5deDUkefb5ithDBAYMI1Xt3Ha6kCwxlz2jU3xLR7RY9A2cvZS1TToCOjgiwb
+         G90h5wXsl4q8wEdtWuWhAcFViVGAa6gdHujMmr+8R2+97UhFUYN8BnSW82RzYCS9z25m
+         U3Hbpw/V04VgoxO2f7CU769BkfR4sAUGF4mft1VQBJSWBaog2UPCDTdWjAc5BfTT59gu
+         jjL8bOtXSq9C7rgou3bRoFo0EQUhz/R3Vi7onjxMLCD33If4/Ri4kEThFAQfEbRnGaik
+         JwGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9MXLDJhiY0fcXEg+LnGTR4OLM7jMrz/NHCTwfTLwDMg=;
+        b=AlnzHeT3pf1GJvojcHn4wVJks/g2tb5UXtkj4B4JAv27UlvkkI7Re7KRky6zDkWvEa
+         KDeC9LuAkNiEzUlec0LDQEwbK1l4mqrtUgw1wvpJGZZQ3rogasLEknwDVgWPsChtOpev
+         UTIlEeyXSB91dDDw42usXtcuxwiAh+bfeMpOaypKHh6T8QpQdQtLKiJoj6yWuavHYu2A
+         PcpUT/nvjBENhW+f5TLvLtgYcYuLlk98O4dLYhEbvTqhlvLAz9X4lk7K38BfmfcwFAHr
+         bWDO5bbkqK3WK6IiM4SzYqdGDK20NZLsHhkU4nyjzwlsvLROU7rXrHHRUiT9OGNQJOmq
+         K9Dw==
+X-Gm-Message-State: AOAM531MoOAhNiJZsLS5QMMoWWXU6PpBywgrp7WH2fCkkR5HRNxa48kl
+        pBhbxICgeYBFbzwX7e9iuronD4d8/ekfP+0kxtBa/g==
+X-Google-Smtp-Source: ABdhPJwIQXLBjfDY4x2hegViI0I26x9Ldz3+Wvni8m5cPnPark5Q3y14GL2LxjfcnaO2magWZu87krrTNuiTaU5QMBA=
+X-Received: by 2002:a6b:be02:: with SMTP id o2mr12593752iof.103.1631002770826;
+ Tue, 07 Sep 2021 01:19:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210906194917.376116-1-palmer@dabbelt.com> <CAMuHMdUtg1qA7hx-QGGwd6nfe_vDEzoH95732T736FPH0Jb5dA@mail.gmail.com>
-In-Reply-To: <CAMuHMdUtg1qA7hx-QGGwd6nfe_vDEzoH95732T736FPH0Jb5dA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Tue, 7 Sep 2021 10:17:32 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2R=GhAjBNjKk7hs6E7Fr6j3yAbSvf29+TdiZtpsSgisQ@mail.gmail.com>
-Message-ID: <CAK8P3a2R=GhAjBNjKk7hs6E7Fr6j3yAbSvf29+TdiZtpsSgisQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND] drm/rockchip: cdn-dp-core: Fix cdn_dp_resume
- unused warning
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
+References: <20210729183942.2839925-1-robdclark@gmail.com> <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
+ <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
+ <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org> <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+ <CALAqxLUkyXK2gqNMBbtJFfh01ZpcG46dZaM7Zq4jG3OngvFREg@mail.gmail.com>
+ <CAF6AEGsACLcDuszcgmHHs04GghLPiRfei3tGo161yBXsg7Y-YA@mail.gmail.com>
+ <CAMi1Hd0dniDXPNOuh05ywqHKY+cGvAsd-cnD91K1GLppfO=x0w@mail.gmail.com>
+ <CAF6AEGvtw06MYST2PdhqHVpsG4Tec2DnUA-uwFRP-6xqa9yf5Q@mail.gmail.com>
+ <CAMi1Hd1kp8ijH8y3U2sxs5cE3Zfat_v-C3rrGtTK01ry8Om6Lw@mail.gmail.com>
+ <CAF6AEGuE2KAnOQRGwbbVHmms0uOfq4XCvF=a8FJ98spzJ5=+XQ@mail.gmail.com> <CAF6AEGukn2=z-7CroxiKcHiCPfS_U3reOBe0ZYV1fj9UBap17w@mail.gmail.com>
+In-Reply-To: <CAF6AEGukn2=z-7CroxiKcHiCPfS_U3reOBe0ZYV1fj9UBap17w@mail.gmail.com>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Tue, 7 Sep 2021 13:48:54 +0530
+Message-ID: <CAMi1Hd2cO=vmFA81y2T9oAPxyKPpKn5d+uOs9emFbiop1vFD-A@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Caleb Connolly <caleb.connolly@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Arnd Bergmann <arnd@arndb.de>
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:frjT1zc6wkJ0LfHg5LVnCSJUMFSQyIJELUTauH/IC4lHxD5K3Y6
- IGnEFLYv8MZRO6GUbvfU32pNE5ly38zmgWc+jX2dW47JVwqJCm9jxLJa0uGh95UBCCWBmMy
- 0+MWwWCE0MBKO55CUk7FSCSdYVGrVjfgruKQx9nnW2BzSgbac6A+6GmsNuuvcEyftxXJurY
- cBtKfDSlp+otxG/1uGYDA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jkk6WWd73Yc=:YjKpsB0EkVKvIoT5hDPGVf
- 8CG5VxrDoSF96SsTxW/hMUbAZPVHZf1YcQST38LIoS2Xp6fr3b/taPAcF/olfciRbozNZfZZc
- nWIyVqR1GVucpfrxMiJl0sp6orSXTqnSwPPk5tVkZZ9Bi1U5bHgFBrk/u2Yn0mW/RELzlai5J
- Oz4p8WXeHOnZ+318eLFKN3DeAyDAsAIioGryuNrVzFvsseqExPQTYLLtA8LftejERfCsJTXLr
- BfcLmnQFXk/clKGOww8asVZWxDyPvcjlnQWLmV2kEg5iY4nODpPM4kti7lBqvEeIlsdDYK+KH
- ICzjHlpsqUv5UIY3OSEP5h0gAN12CF4Q53Xa6YRvh0LtiIMcUJjdjNZcXv1dSUDCQRxNYi1QH
- HIDvHnunIXGSH3zGdzUWfoVYY7EBHNPHSBWIzdcVeJhoTAG4LIKiKyIag5wGUJGZfZ+1oSgGs
- MbNbS8rePFf9U6YnwD/K2OjLXXAuZXnWMlI3voYCazb5XMs6HnAXQXLfXhEW9kkyXBUf7uQy0
- xWvY/Q5IZw9ViW8deCdCfQcZIiTN2+PlMfgXnfnOG5Nyk3MxYjJ+g6bRuikLYZwii+Xd26LOm
- sDCLuKVdJVy620uZ7yHFWA9OpcP073I1qsL1S2JNmkKVEwcL2oor4/77t/paoh97APjlGp7qV
- IkjpAt3XQ0l6IZ9tBUQ8yyj8yrptBo31EmfDwjFxRqppxkfFJtSA12CUw/h086BwH9TdVvj2f
- v8ex+A+wMQCgNTaJ/2qTRE+p7bDBig7iWQiAskFNnhcIonVxNckyXKrpbZl1yhY4PTkQiMK24
- ZqGQdG3GIfugemqUQvTQIpiMHczZwcp+Rt6L459K63cHwgVlA0h/GkgQVhsC+O8DoQ01GdeFI
- xKdX0F8UenpIe/hB4FoA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 9:02 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Mon, Sep 6, 2021 at 9:58 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> > From: Palmer Dabbelt <palmerdabbelt@google.com>
-
-> >
-> > +#ifdef CONFIG_PM_SLEEP
-> >  static int cdn_dp_resume(struct device *dev)
+On Tue, 7 Sept 2021 at 02:53, Rob Clark <robdclark@gmail.com> wrote:
 >
-> An alternative solution would be to tag the function with
-> __maybe_unused.
+> On Mon, Sep 6, 2021 at 1:50 PM Rob Clark <robdclark@gmail.com> wrote:
+> >
+> >
+> > ok, I guess it is at least not a board specific thing (ie. won't need
+> > to introduce some dt binding)..
+> >
+> > It would be nice to know what the maximum we can safely increase freq
+> > in one step, if we need to limit that.
+>
+> Also, one sanity check.. for android builds, are you using the same
+> a630_gmu.bin from linux-firmware?  If not, does the l-f gmu fw change
+> things?
 
-Right. In this case, both are correct, but generally speaking I tend to use the
-__maybe_unused variant because it's more reliable at fixing the warning for
-good when there are additional functions called by the suspend/resume
-helpers that now become unused in some configurations, or when you pick
-the wrong set of #ifdefs.
+We are using the same a630_gmu.bin from linux-firmware.
 
-Having fewer #ifdef checks also helps with build coverage testing when there
-is a warning inside of an #ifdef.
-
-       Arnd
+>
+> For freq changes, we basically ask gmu for the freq we want, and it
+> votes for the requested freq.. so a gmu fw bug could be possible here.
+>
+> BR,
+> -R
