@@ -2,120 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90061402D7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0B1402D81
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345600AbhIGRKQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 13:10:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52260 "EHLO
+        id S1345609AbhIGRLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 13:11:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345398AbhIGRKO (ORCPT
+        with ESMTP id S1345398AbhIGRLj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 13:10:14 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79ED6C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 10:09:07 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id bi4so13606192oib.9
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:09:07 -0700 (PDT)
+        Tue, 7 Sep 2021 13:11:39 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3650AC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 10:10:30 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id c8so20887754lfi.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:10:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kK/sEOfN/pZIuqO14/lsd4LIY43xYqn1JYhVweF1vGI=;
-        b=Mqfrhoc6dDyOOKYKg8JmzfkKcP7bC2XDcIAejCqjWUuHwRw32QFPLrMh3AFntRPgNY
-         sQpyvXh2xR7YXesIdHdWl7wByP72cRua98xOmS/suC6DwFsymUUPDE5Ont6H5yR15CYq
-         aXKPiSwBsyc/aLhumurGupVHGy9Hpt0/8U2WsXbB2bUHx2ID3NHDQafzyYL5uEXLP1By
-         EcjHQqazagwCMzgdV/pHNhrL9s7wd7Q12U4Kr1cfAYlfSJrXHrpoFQb4J71TsR4UYUqE
-         /hsenOoFDa43Qe2TSjEXj0WgAPcTJzAfdwj7Fcm/lZH9seotoMFe0NJM9Z325Hq8RISN
-         snrg==
+        bh=H+GlpUmGC3s0m862BFnaEghUBDcmr0hsoDqEpHfudes=;
+        b=ZrpTD11YcoTzlnxV9wbY07amfLrzROABaXwapPT/EEW1bkKcXuC/n8hMUS1To0EImi
+         DPnKnhPDFJMiXLp6aEjyyVpW8E7s3FPi0evoO0M+tFEFfJy19SP9BS7fxujNluGVqvaR
+         KofKwxkpnp3XGnzZgyHrIyRK5eh2/qXYrkUjM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
+        d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kK/sEOfN/pZIuqO14/lsd4LIY43xYqn1JYhVweF1vGI=;
-        b=fyJCZwJ6DwROlrdbL4kVyHHk0e27+rcVe+ECMnAN/Kh5BB8/0XU+htO0g6eWf74vwX
-         hcYk8fmyQsZOVmCefj47YzRa52tA1vC0KE3gwiBXWeAreqEeN5fKnkBNXCG4e9AAtq7c
-         LCtEBAoAAKMlgPIPiORNzKtpMqiglpPe6bwfiH406d1v3GAsBFG5q9kAO4YBiypntGuM
-         uXs564HV2DaSBEeWh0j9NT0NHyMuJj+hqs+CoBmoWwnsABLBXXHX0qWFWBE6WDBQXYf3
-         LQHolrkw55bmHP0QobiVE7A8eu2xF7DkkK51mjBFzI/WwYafUW7a7LagFOrmcTgzvvCa
-         sVGQ==
-X-Gm-Message-State: AOAM533045zjuuO5XbA5w2nar46ghbAj8Yw4DzfszmttknwQwfhCr9E5
-        DrTAV5FdeSfNl81+kwHT6VERG/J/nXA9wlhBVTx+IgMw
-X-Google-Smtp-Source: ABdhPJw3/KyAiUHheOHTfy1uxzpNIALadQUdXX4RSLVEVjvJIVCLeww+QUmPCLFJXghPEihFMVQ58zj8hBJHILS7AAg=
-X-Received: by 2002:a05:6808:483:: with SMTP id z3mr3634257oid.5.1631034546918;
- Tue, 07 Sep 2021 10:09:06 -0700 (PDT)
+        bh=H+GlpUmGC3s0m862BFnaEghUBDcmr0hsoDqEpHfudes=;
+        b=Y8agEkZIXp6ftubAzNJ0KuQHD/UfDOkPzPdoMVxuz47X6o2XAlBqhXzHQIcY1bBK49
+         dYVCPu5mpTrMjFSSNqvijRssuP8sVY39HymwwjwOE1q/doOBXZR2R9W1GtGPaQ89dddH
+         mV6hYbqi0NJQUXlLuSVvVdHZEE4gjUHGhtyuCk8u/v7X44EKK5CtRJ2Vuwv0j4q7q0Q3
+         sRwVpy3KYwezFBoyCCVoujPS8UXMjFY5lldYxKzDm3iCceoLeARhCVA3PyKpyiepDIJJ
+         yQZmkwKDYxhgQGZ/pLSF/CQCuNmDzk+sgWrFzEObziTUrUx1DAoi4zloamtsQIflE47j
+         70jQ==
+X-Gm-Message-State: AOAM530qzGoj85/cPRsAw5KG6WxF7bu5gQSrVzRUFt8Y0kmcruRLvE3q
+        tXF29t6Zhn7tLCigFD8gHBDNthSW07qANLM0G0k=
+X-Google-Smtp-Source: ABdhPJxYKZ4/4if81ZOGoo6AyUwEA2q6JHBJpQkvCf+q9FzdQLzmrwdNslVriIoUHayEXJGkIIqJTQ==
+X-Received: by 2002:a05:6512:1326:: with SMTP id x38mr13508989lfu.591.1631034627878;
+        Tue, 07 Sep 2021 10:10:27 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id m5sm1497513ljg.55.2021.09.07.10.10.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 10:10:27 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id d16so17700643ljq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:10:26 -0700 (PDT)
+X-Received: by 2002:a2e:a7d0:: with SMTP id x16mr15231271ljp.494.1631034626531;
+ Tue, 07 Sep 2021 10:10:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <1630921347-122646-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1630921347-122646-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 7 Sep 2021 13:08:56 -0400
-Message-ID: <CADnq5_PYgN2__PLUB89LR6PNNjOOxeyVcgmBG_N2jsBFXKiQCg@mail.gmail.com>
-Subject: Re: [PATCH] drm/amd/display: make configure_lttpr_mode_transparent
- and configure_lttpr_mode_non_transparent static
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        xinhui pan <Xinhui.Pan@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <YTbOs13waorzamZ6@Ryzen-9-3900X.localdomain> <CAK8P3a3_Tdc-XVPXrJ69j3S9048uzmVJGrNcvi0T6yr6OrHkPw@mail.gmail.com>
+In-Reply-To: <CAK8P3a3_Tdc-XVPXrJ69j3S9048uzmVJGrNcvi0T6yr6OrHkPw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Sep 2021 10:10:10 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgZkQ+eZ02TaCpAWo_ffiLMwA2tYNHyL+B1dQ4YB0qfmA@mail.gmail.com>
+Message-ID: <CAHk-=wgZkQ+eZ02TaCpAWo_ffiLMwA2tYNHyL+B1dQ4YB0qfmA@mail.gmail.com>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        llvm@lists.linux.dev, Nick Desaulniers <ndesaulniers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Tue, Sep 7, 2021 at 2:11 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> > x86_64-alpine.log:drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c:452:13: error: stack frame size (1800) exceeds limit (1280) in function 'dcn_bw_calc_rq_dlg_ttu' [-Werror,-Wframe-larger-than]
+> > x86_64-alpine.log:drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn21/display_rq_dlg_calc_21.c:1657:6: error: stack frame size (1336) exceeds limit (1280) in function 'dml21_rq_dlg_get_dlg_reg' [-Werror,-Wframe-larger-than]
+> > x86_64-alpine.log:drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn30/display_rq_dlg_calc_30.c:1831:6: error: stack frame size (1352) exceeds limit (1280) in function 'dml30_rq_dlg_get_dlg_reg' [-Werror,-Wframe-larger-than]
+> > x86_64-alpine.log:drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn31/display_rq_dlg_calc_31.c:1676:6: error: stack frame size (1336) exceeds limit (1280) in function 'dml31_rq_dlg_get_dlg_reg' [-Werror,-Wframe-larger-than]
+> > x86_64-alpine.log:drivers/vhost/scsi.c:1831:12: error: stack frame size (1320) exceeds limit (1280) in function 'vhost_scsi_release' [-Werror,-Wframe-larger-than]
+> >
+> > Another instance where distros lower CONFIG_FRAME_WARN below the 2048
+> > default. Again, none look particularly scary but should still probably
+> > be dealt with.
+>
+> I would argue that they are still scary and should be addressed in the
+> code, it's just that we don't see them on build bots that use the 2048 byte default.
 
-Alex
+No, they are scary for another reason entirely: clang is clearly doing
+a *HORRIBLE* job with stack usage.
 
-On Mon, Sep 6, 2021 at 5:42 AM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
->
-> This symbols is not used outside of dc_link_dp.c, so marks it static.
->
-> Fix the following sparse warning:
->
-> drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c:1766:16:
-> warning: symbol 'configure_lttpr_mode_non_transparent' was not declared.
-> Should it be static?
->
-> drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_link_dp.c:1755:16:
-> warning: symbol 'configure_lttpr_mode_transparent' was not declared.
-> Should it be static?
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-> index a666401..4e2cf8f 100644
-> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_dp.c
-> @@ -1752,7 +1752,7 @@ uint8_t dp_convert_to_count(uint8_t lttpr_repeater_count)
->         return 0; // invalid value
->  }
->
-> -enum dc_status configure_lttpr_mode_transparent(struct dc_link *link)
-> +static enum dc_status configure_lttpr_mode_transparent(struct dc_link *link)
->  {
->         uint8_t repeater_mode = DP_PHY_REPEATER_MODE_TRANSPARENT;
->
-> @@ -1763,7 +1763,7 @@ enum dc_status configure_lttpr_mode_transparent(struct dc_link *link)
->                         sizeof(repeater_mode));
->  }
->
-> -enum dc_status configure_lttpr_mode_non_transparent(
-> +static enum dc_status configure_lttpr_mode_non_transparent(
->                 struct dc_link *link,
->                 const struct link_training_settings *lt_settings)
->  {
-> --
-> 1.8.3.1
->
+To take that dml30_rq_dlg_get_dlg_reg() function as an example: yes,
+it has a few structures on the stack, but gcc allocates 512-720 bytes
+of stack space depending on my config.
+
+Not 1280 bytes.
+
+So it's not even *close* to the 1024 byte limit with gcc, much less the 2kB one.
+
+I don't know why clang basically decides to use almost double the
+stack space. Maybe it's some other config option that does it, I tried
+a fairly normal one and a "almost everythign enabled" one, and
+couldn't get close to the reported stack frame size with gcc.
+
+Just to try to make things as close as possible, I tried with the
+exact same normal non-debug config (apart from obvious
+compiler-dependent things), and picked that dml30_rq_dlg_get_dlg_reg()
+function to look at (for no real reason other than that the stack
+frame was biggest above.
+
+Gcc did a 720-byte stack frame for that case. Not great, but whatever.
+
+clang did a 1136-byte stack frame for the same thing.
+
+Do I know why? No. I do note that that code is disgusting.
+
+It's passing one of those structs around by value, for example. That's
+a 72-byte structure that is copied on the stack due to stupid calling
+conventions. Maybe clang generates a few extra temporaries for it as
+part of the function call stack setup? Who knows..
+
+                 Linus
