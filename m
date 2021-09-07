@@ -2,74 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B98402EF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E835E402EF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238674AbhIGT30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 15:29:26 -0400
-Received: from mail-oo1-f46.google.com ([209.85.161.46]:35539 "EHLO
-        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhIGT3Y (ORCPT
+        id S1343837AbhIGTbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 15:31:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233485AbhIGTbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 15:29:24 -0400
-Received: by mail-oo1-f46.google.com with SMTP id y3-20020a4ab403000000b00290e2a52c71so124325oon.2;
-        Tue, 07 Sep 2021 12:28:18 -0700 (PDT)
+        Tue, 7 Sep 2021 15:31:20 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B8DC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:30:13 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id j12so282116ljg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 12:30:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AfOuA3V/bhaGSLfM+8kkyDGmwsdYvlTYteI9hO4FV+Y=;
+        b=qxGrqhtkxJ3P9PF1/eOoax3YESGQ2FMvH5ftKPw4tEjWfKTEt8xD0Umy+i4lcOnC3F
+         Nk3jx0Yl1bIJ3pIcRJXPFHgJMjSW+yWwjyEKyFncvbixQ2BC6mVQTHJaJ/YEkefYaMHx
+         YFN7ifPEhsWdcLW+YvvzK1uTIOgbeap0/h5d6yZnQuN3sRCH62gL5yt4Gj1VsetixtTL
+         DczOEIfLV57OBkHSfhpAl2r3Z4IU5/LUSsu7yoYNwXGMpfjoNOUmMMcK8B5H9/4LpIYS
+         1GIZqoBm2C+YqW+PNIT/aGLSVow+mEqN7YibNmJt43nrCXbVrXXglMhXBGvciRSlX5hV
+         nZ8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TFNxI/th+I6c8v2S1JhOFknsclAVoGZJrQS33g8IB4s=;
-        b=eVIS3EcZbE2zeKIIhu8+LxuBw4cJ8CfHRMnNHR52UDNWfo2GlfolKlntX8agJ6+QcY
-         ujnweaz3RM9n2jF3AHEHRGitEhR4wNrdpF6g5ytqR2aoMeQ2XhP0hO2O900ku66EPcgV
-         84454TIGv+lAJ8MDMUc3NDGLK1dtNaY6O+G6AdzagOfd6lii5MP8kbs1Tn9gNQ/tKs6i
-         fKDJHtZhVFZtq4yR1nfRc+WuCom0yJzMeErVemrkcrTE42VD9nUJLLkFql+Qpfq8JlNO
-         wPZLUjtPb6Qdn/UD3a+a+ObkRK2W3wANiAtg+oMoiUWSWIAW7s+tiLS+C5er537s9/od
-         mRQg==
-X-Gm-Message-State: AOAM5315VfGlsylr8o9HGqV7p6gNQR5/WYjjXWXE1Yl5ubRMnPShCNDW
-        DQxd73GlMGyr12ci91t02w==
-X-Google-Smtp-Source: ABdhPJyw2cjiz04Vl4DlvrU3cwBlg7+DslpHmlBuvmJuxSQy2fZDpW50Db/BYzeqQzzFQUqSJMu3hw==
-X-Received: by 2002:a4a:ab0c:: with SMTP id i12mr1342573oon.24.1631042897722;
-        Tue, 07 Sep 2021 12:28:17 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id c14sm2582754otd.62.2021.09.07.12.28.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 12:28:16 -0700 (PDT)
-Received: (nullmailer pid 205682 invoked by uid 1000);
-        Tue, 07 Sep 2021 19:28:15 -0000
-Date:   Tue, 7 Sep 2021 14:28:15 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Fengquan Chen <Fengquan.Chen@mediatek.com>
-Cc:     randy.wu@mediatek.com, Rob Herring <robh+dt@kernel.org>,
-        linux-watchdog@vger.kernel.org, rex-bc.chen@mediatek.com,
-        Guenter Roeck <linux@roeck-us.net>, christine.zhu@mediatek.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, zhishuang.zhang@mediatek.com,
-        fengquan.chen@mediatek.com, tinghan.shen@mediatek.com,
-        joe.yang@mediatek.com
-Subject: Re: [v2,2/2] dt-bindings: watchdog: mtk-wdt: add disable_wdt_extrst
- support
-Message-ID: <YTe9T/oqpwN5CHKR@robh.at.kernel.org>
-References: <20210903061623.10715-1-Fengquan.Chen@mediatek.com>
- <20210903061623.10715-3-Fengquan.Chen@mediatek.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AfOuA3V/bhaGSLfM+8kkyDGmwsdYvlTYteI9hO4FV+Y=;
+        b=cX4sjDVTdQVkdcnwftiU13woVgbnT7Ovaabzpk7MjO43OP9giJl/rKFhIO57+WtBAl
+         C2zY7lVao9okx2D6U4IrT7q7XV5HAUtfWF7aW9QNdockfbEvkkXLs6gnR3YVmSEupSHl
+         rE+pLZTntfd2Kzw/LfJ4wj7wXXdeAnDrqTQGA/mt64ozU0qrlXmv14dNimKGsQe0dcIk
+         T7SpsyK5rk8uI5tnSQJsNxp8DxZC6681/NZg24rAC2lwnnCCB1Vwnzd/IM46VfbDfDUV
+         EGzhKNbmRgjHCflWbA2Kfktzy2o0AlkbBh+QM3AfFOmOmRtcIR4pH54hQMga2QDbBSTx
+         5NyQ==
+X-Gm-Message-State: AOAM531bfcnc5T4Pu1Uet2ou691GJSyQvCUsJIE2VOKIu5SvamvKl2f8
+        gQduZF3ypjZIHiC0vDIOCTfQlt6d95G5Zklh0y0fbg==
+X-Google-Smtp-Source: ABdhPJwrXcVs+UXHHDay0UNgijYVzPYvtCxuzS3w7Yh0sx9pV9sdemLkJUP6yxArthq9QoLikhkPoN542ZR82qpzBJo=
+X-Received: by 2002:a05:651c:1601:: with SMTP id f1mr15627004ljq.112.1631043011492;
+ Tue, 07 Sep 2021 12:30:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210903061623.10715-3-Fengquan.Chen@mediatek.com>
+References: <303401d0-25c9-d04b-e96d-3ca2aa0a616d@gmail.com>
+In-Reply-To: <303401d0-25c9-d04b-e96d-3ca2aa0a616d@gmail.com>
+From:   Todd Kjos <tkjos@google.com>
+Date:   Tue, 7 Sep 2021 12:29:59 -0700
+Message-ID: <CAHRSSEy9cYk2cUSQku5fsOjBErj9eEhMuMDQP8SJPJU9UhNOPw@mail.gmail.com>
+Subject: Re: [BUG] android: possible ABBA deadlock in print_binder_proc() and binder_get_txn_from_and_acq_inner()
+To:     Jia-Ju Bai <baijiaju1990@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, arve@android.com,
+        tkjos@android.com, maco@android.com, joel@joelfernandes.org,
+        christian@brauner.io, hridya@google.com, surenb@google.com,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 03 Sep 2021 14:16:23 +0800, Fengquan Chen wrote:
-> This patch add a description and example of disable_wdt_extrst
-> element for watchdog on MTK Socs
-> 
-> Signed-off-by: fengquan.chen <fengquan.chen@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/watchdog/mtk-wdt.txt | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+On Mon, Sep 6, 2021 at 7:30 PM Jia-Ju Bai <baijiaju1990@gmail.com> wrote:
+>
+> Hello,
+>
+> My static analysis tool reports a possible ABBA deadlock in the android
+> driver in Linux 5.10:
+>
+> print_binder_proc()
+>    binder_inner_proc_lock()
+>      _binder_inner_proc_lock()
+>        spin_lock(&proc->inner_lock); --> Line 662 (Lock A)
+>    print_binder_thread_ilocked()
+>      print_binder_transaction_ilocked()
+>        spin_lock(&t->lock); --> Line 5531 (Lock B)
+>
+> binder_get_txn_from_and_acq_inner()
+>    binder_get_txn_from()
+>      spin_lock(&t->lock); --> Line 1833 (Lock B)
+>    binder_inner_proc_lock()
+>      _binder_inner_proc_lock()
+>        spin_lock(&proc->inner_lock); --> Line 662 (Lock A)
 
-Acked-by: Rob Herring <robh@kernel.org>
+Hmm. What kernel version are you looking at? These line numbers don't
+match what I see in mainline. Also, the sequence for
+binder_get_txn_from_and_acq_inner() looks like this for me:
+
+binder_get_txn_from_and_acq_inner()
+    binder_get_txn_from()
+      spin_lock(&t->lock); --> Line 1427 (Lock B)
+      spin_unlock(&t->lock); --> Line 1431 (Lock B)
+    binder_inner_proc_lock()
+      _binder_inner_proc_lock()
+         spin_lock(&proc->inner_lock); --> Line 256 (Lock A)
+
+Which doesn't have the deadlock hazard.
+
+>
+> When print_binder_proc() and binder_get_txn_from_and_acq_inner() are
+> concurrently executed, the deadlock can occur.
+>
+> I am not quite sure whether this possible deadlock is real and how to
+> fix it if it is real.
+> Any feedback would be appreciated, thanks :)
+>
+> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+>
+>
+> Best wishes,
+> Jia-Ju Bai
