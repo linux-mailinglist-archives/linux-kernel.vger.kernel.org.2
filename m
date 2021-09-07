@@ -2,134 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D567C403002
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F23D403006
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:56:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346082AbhIGU4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:56:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
+        id S1346343AbhIGU52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:57:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229601AbhIGU4M (ORCPT
+        with ESMTP id S229601AbhIGU51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:56:12 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61EEC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:55:05 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id m26so151738pff.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:55:05 -0700 (PDT)
+        Tue, 7 Sep 2021 16:57:27 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86A7AC061575;
+        Tue,  7 Sep 2021 13:56:20 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id u1so6600710plq.5;
+        Tue, 07 Sep 2021 13:56:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wGaKI/yf6S0oUQYpDmwjH/p4Na2pyd87gFzKo1CWnso=;
-        b=ixdOmrehN/QeCK0jpo5gTlYdtXGq2P900/s6Cbx5hzSs52ePfcKJvzs2fmujYInuVX
-         KXYv6oJXQAPfcHW8pevszF96PSpRXWZjz9h2h7jMkDprO+GQln6e8RhKTPXcXEy6bgZD
-         aB2d2Di7S16LvGa1NKCSPZqlanhrqI+bLfQ3A=
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=YmP9q78+HL9MRTEtUSJRzT3l9AZ1B5DfbRIDhNkP2QU=;
+        b=qi5igrp407rylIsW9HzbtpKoxnOMZnLRKgriZX/FQ2OAzAugVpBNwe8Up+oWyHPDqa
+         ld0XlUeq7hj224Laq8rvoPCDFjMIdzUwHObbUZoOZYedytDPEO6r9tDEWa82Lef5SPat
+         9s5quEH6w5D1O1n1mJGQE2yeBr6nmjpqH1t4vzL88DT+otvPkITfeo7I9iWU5aBEdlo2
+         cfbFpPG9jiehBvB2YPx01GuXxzt/hOANdGL712A4K4Hg9SXlqMUJscD8tgSFS+r5WGZc
+         Q86R9QF8kTT5ETLL6mgfoUIoLl5QyFLzgRtmK8N9a+tJ0MKfdQA73pKNCg9fDMijqJl2
+         sm4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wGaKI/yf6S0oUQYpDmwjH/p4Na2pyd87gFzKo1CWnso=;
-        b=WAPVgENOYVu83Yd0iQavdBhZku79Zo2Hejaolo1uqOECRgo47H61Wp6q0O+AmdyFCI
-         CdFYlavNKHlQwGH/fjCF9hvs2RfgvX5bktGrxTqZYBe+MrkMmgU7mbE7bunUxX85fhjJ
-         /AxkqtsAbchirTATJf6x7ifVR+0SrCfNLF5IUfl90DB/uoYTMzDmT7tuBjdz9tUn5XNA
-         YZ0g9hig6Z+/Ml7gTtTGmWwb/TMoKCiRnGgF01uaKXRuAFTUzhHPki7eMhmCMd1V2kjI
-         e5RIk2gEw7a4bt183XSs1s5qnYphs9eiom4W5oI5io+jkNIieuFp6d1WjoRY/uroMiJ8
-         wm+Q==
-X-Gm-Message-State: AOAM532fT/XQKV9lt2nT1p0KTUUeH7S/LKPdXSWkjjFcRFArSDNXpeuV
-        +vVx/0zcWbOY2Vr4NWHeyxx2VQ==
-X-Google-Smtp-Source: ABdhPJznsxKxiqpSc33nzng/rxyyYCDmutmO65n8y2+nksEV1jNF1GMyekDDc5jtSI0UPYJmupffwQ==
-X-Received: by 2002:a63:ed4a:: with SMTP id m10mr236852pgk.448.1631048105231;
-        Tue, 07 Sep 2021 13:55:05 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:c6b2:7ae:474d:36f6])
-        by smtp.gmail.com with UTF8SMTPSA id 70sm19201pfu.93.2021.09.07.13.55.03
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=YmP9q78+HL9MRTEtUSJRzT3l9AZ1B5DfbRIDhNkP2QU=;
+        b=tPLPCdvdUjU7NzSHazcK2GG41zaFbfinOJof2cYJzMhjuU0zIlwqpFloQ6z2eyP7Vz
+         URQY3ZtcKE+OWpF2nBAm2kG9fDHUHofInUg2/FHPhZB4c7JLAl3G9BaSaKb8udfNuQyj
+         FYQ/Ap6SkQel/D991I67tgD5W7XccifoLt8UHK0fEpcdlvzBYZvnsz7VsR+w1p2pxPxd
+         BQtvxHiPs/F7KJIeWliFzg9usAa9dWnn5zwCXcEq1JxjubJlFY+xWEnLJdOGCFcRByQB
+         HqNpkGSQRLm2cXw9ANOVUX2cBHsuSqwu4XD48hkrt9J81a7JKLmMCbQi1imTpvWlFBo/
+         dguw==
+X-Gm-Message-State: AOAM533LJN3NSCXGG+bk1kfjjeTJ9yQkplDq1ZmJur6y4xD7W7DsYnHU
+        D9T/YEy5g95ii5jF1Q7fgGzSIpIbqyg=
+X-Google-Smtp-Source: ABdhPJwjF9v9eFwUgV1yYcVLqYDk4WaZbtKIyAgxjT5qZjtP/6aZuuR6xwi7MzfbVZ/vxTSb+qauZQ==
+X-Received: by 2002:a17:90a:1904:: with SMTP id 4mr315044pjg.217.1631048179871;
+        Tue, 07 Sep 2021 13:56:19 -0700 (PDT)
+Received: from [192.168.1.121] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id z9sm24510pfk.28.2021.09.07.13.56.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 13:55:04 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 13:55:03 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] drivers: thermal: tsens: add timeout to
- get_tem_tsens_valid
-Message-ID: <YTfRp1pOoQYFRGX+@google.com>
-References: <20210905174708.4605-1-ansuelsmth@gmail.com>
- <20210905174708.4605-2-ansuelsmth@gmail.com>
+        Tue, 07 Sep 2021 13:56:19 -0700 (PDT)
+Message-ID: <73b64f16-a8d0-cd1e-c08f-dbc3cf493e5a@gmail.com>
+Date:   Tue, 7 Sep 2021 13:56:15 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210905174708.4605-2-ansuelsmth@gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.3
+Subject: Re: [syzbot] net build error (3)
+Content-Language: en-US
+To:     Marco Elver <elver@google.com>,
+        syzbot <syzbot+8322c0f0976fafa0ae88@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, bp@alien8.de, davem@davemloft.net,
+        hpa@zytor.com, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, netdev@vger.kernel.org,
+        rafael.j.wysocki@intel.com, rppt@kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de, x86@kernel.org
+References: <000000000000cdb6a905cb069738@google.com>
+ <CANpmjNP2JEyFO_d9Dxkw5h6WQL70AhDsxkyoFTizvo+n3Ct3Tg@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <CANpmjNP2JEyFO_d9Dxkw5h6WQL70AhDsxkyoFTizvo+n3Ct3Tg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 05, 2021 at 07:47:08PM +0200, Ansuel Smith wrote:
-> The function can loop and lock the system if for whatever reason the bit
-> for the target sensor is NEVER valid. This is the case if a sensor is
-> disabled by the factory and the valid bit is never reported as actually
-> valid. Add a timeout check and exit if a timeout occurs. As this is
-> a very rare condition, handle the timeout only if the first read fails.
+
+
+On 9/3/2021 1:14 AM, Marco Elver wrote:
+> #syz fix: x86/setup: Explicitly include acpi.h
 > 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->  drivers/thermal/qcom/tsens.c | 23 ++++++++++++++++-------
->  1 file changed, 16 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
-> index b1162e566a70..38afde1a599f 100644
-> --- a/drivers/thermal/qcom/tsens.c
-> +++ b/drivers/thermal/qcom/tsens.c
-> @@ -599,6 +599,7 @@ int get_temp_tsens_valid(const struct tsens_sensor *s, int *temp)
->  	int hw_id = s->hw_id;
->  	u32 temp_idx = LAST_TEMP_0 + hw_id;
->  	u32 valid_idx = VALID_0 + hw_id;
-> +	unsigned long timeout;
->  	u32 valid;
->  	int ret;
->  
-> @@ -607,13 +608,21 @@ int get_temp_tsens_valid(const struct tsens_sensor *s, int *temp)
->  		ret = regmap_field_read(priv->rf[valid_idx], &valid);
->  		if (ret)
->  			return ret;
-> -		while (!valid) {
-> -			/* Valid bit is 0 for 6 AHB clock cycles.
-> -			 * At 19.2MHz, 1 AHB clock is ~60ns.
-> -			 * We should enter this loop very, very rarely.
-> -			 */
-> -			ndelay(400);
-> -			ret = regmap_field_read(priv->rf[valid_idx], &valid);
-> +
-> +		if (!valid) {
-> +			timeout = jiffies + msecs_to_jiffies(20);
-> +
-> +			do {
-> +				/* Valid bit is 0 for 6 AHB clock cycles.
-> +				 * At 19.2MHz, 1 AHB clock is ~60ns.
-> +				 * We should enter this loop very, very rarely.
-> +				 */
-> +				ndelay(400);
-> +				ret = regmap_field_read(priv->rf[valid_idx], &valid);
-> +				if (valid || ret)
-> +					break;
-> +			} while (!(ret = time_after_eq(jiffies, timeout)));
-> +
->  			if (ret)
->  				return ret;
+> On Thu, 2 Sept 2021 at 19:34, syzbot
+> <syzbot+8322c0f0976fafa0ae88@syzkaller.appspotmail.com> wrote:
 
-With the overloading of 'ret' the return logic is getting a bit more
-convoluted. Also the function should probably return -ETIMEDOUT or
-some other meaningful error if the bit is never valid.
+David, Jakub can you cherry pick that change into net/master, today's 
+net/master tree was still failing to build because of this.
 
-How about keeping the 'while (!valid)' condition, and adding
-
-	if (time_after_eq(jiffies, timeout))
-		return -ETIMEDOUT;
-
-inside the loop?
-
+Thanks!
+-- 
+Florian
