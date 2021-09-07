@@ -2,111 +2,410 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10245402996
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6364029B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344762AbhIGNVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 09:21:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39834 "EHLO mail.kernel.org"
+        id S1344226AbhIGN2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 09:28:42 -0400
+Received: from mblankhorst.nl ([141.105.120.124]:44646 "EHLO mblankhorst.nl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344699AbhIGNVF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 09:21:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89B956112D;
-        Tue,  7 Sep 2021 13:19:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631020799;
-        bh=qYWci1SoCZOQNlWd+tCa0Fi+qEhu1uT7uC9+PXQtZBI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uNNTAXYFUmPsGOq0aqc8tk25KZGoWx3U0MVOQPxY+Dksc88VIC1VTCi5/DhqwwWrG
-         pswA8OEemVU2uVb1Z+LqROSD7cFhJ4+lFbxVrie8GEXAAHD8VupMpkl0wn7hp4n5MP
-         J4hN2TU0HBASyu1hWiAEgBHCTuUiZ3FUp7daORH2JZZnMH8ymlWDGixxH/1PvFMMoO
-         YtdATmK2LYedxp1edbso5CoVeXlotqqimtIEOBGKeztIc2PC+HEkzJXu8bEjTN0Ne+
-         hSa1S1YtjZvEorJAi8nuEBP/LE4kK7g70Sg9YBhQvldDopJrPUtVFrl+JHvS6Sstdx
-         fCyyIHQfHQjng==
-Received: by mail-wr1-f41.google.com with SMTP id q11so14420219wrr.9;
-        Tue, 07 Sep 2021 06:19:59 -0700 (PDT)
-X-Gm-Message-State: AOAM531BA+5xfrsSfdQSR31Jugojc0CshT1653BrD14pSyerf643NXmL
-        zqoCqCtRmkdmjMV4LOtwcZwPnmm4RoC6LaLhCVM=
-X-Google-Smtp-Source: ABdhPJzMBRguq8oS0bFuYHxuoDHcWbD2fy6PvbPgdjL0OHi+WI3ao2kaGpIdYHxSBZAB6pMYVbu1Lz1c3zcXq7PP7aU=
-X-Received: by 2002:a5d:4ed0:: with SMTP id s16mr18622368wrv.71.1631020798060;
- Tue, 07 Sep 2021 06:19:58 -0700 (PDT)
+        id S232913AbhIGN2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 09:28:40 -0400
+X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Sep 2021 09:28:39 EDT
+From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+To:     intel-gfx@lists.freedesktop.org
+Cc:     dri-devel@lists.freedesktop.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] kernel/locking: Add context to ww_mutex_trylock.
+Date:   Tue,  7 Sep 2021 15:20:44 +0200
+Message-Id: <20210907132044.157225-1-maarten.lankhorst@linux.intel.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20210803114051.2112986-1-arnd@kernel.org> <20210803114051.2112986-11-arnd@kernel.org>
- <CAMuHMdVvBL=qZkWF5DXdKjFMKgT-3X-OUBnLYrqawQijoLG4Xw@mail.gmail.com> <CAMuHMdVhN-frrSgsxJ_28_5B+gYROTkN_dPT1yHBsQU+2U4_=g@mail.gmail.com>
-In-Reply-To: <CAMuHMdVhN-frrSgsxJ_28_5B+gYROTkN_dPT1yHBsQU+2U4_=g@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 7 Sep 2021 15:19:42 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1qba2OxymYJtKyc5-x5rSD2_jcrCXyw2rV7pX+o0vdxw@mail.gmail.com>
-Message-ID: <CAK8P3a1qba2OxymYJtKyc5-x5rSD2_jcrCXyw2rV7pX+o0vdxw@mail.gmail.com>
-Subject: Re: [PATCH v2 10/14] [net-next] make legacy ISA probe optional
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     netdev <netdev@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>, Andrii Nakryiko <andriin@fb.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Doug Berger <opendmb@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Sam Creasey <sammy@sammy.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 10:24 AM Geert Uytterhoeven <geert@linux-m68k.org> w=
-rote:
-> On Wed, Aug 11, 2021 at 4:50 PM Geert Uytterhoeven <geert@linux-m68k.org>=
- wrote:
-> > On Tue, Aug 3, 2021 at 1:41 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >
-> > > There are very few ISA drivers left that rely on the static probing f=
-rom
-> > > drivers/net/Space.o. Make them all select a new CONFIG_NETDEV_LEGACY_=
-INIT
-> > > symbol, and drop the entire probe logic when that is disabled.
-> > >
-> > > The 9 drivers that are called from Space.c are the same set that
-> > > calls netdev_boot_setup_check().
-> > >
-> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> >
-> > > --- a/drivers/net/ethernet/8390/ne.c
-> > > +++ b/drivers/net/ethernet/8390/ne.c
-> > > @@ -951,6 +951,7 @@ static int __init ne_init(void)
-> > >  }
-> > >  module_init(ne_init);
-> > >
-> > > +#ifdef CONFIG_NETDEV_LEGACY_INIT
-> > >  struct net_device * __init ne_probe(int unit)
-> > >  {
-> > >         int this_dev;
-> > > @@ -991,6 +992,7 @@ struct net_device * __init ne_probe(int unit)
-> > >
-> > >         return ERR_PTR(-ENODEV);
-> > >  }
-> > > +#endif
-> > >  #endif /* MODULE */
-> >
-> > My rbtx4927 build log says:
-> >
-> > drivers/net/ethernet/8390/ne.c:909:20: warning: =E2=80=98ne_add_devices=
-=E2=80=99
-> > defined but not used [-Wunused-function]
->
-> Same for atari_defconfig.
+i915 will soon gain an eviction path that trylock a whole lot of locks
+for eviction, getting dmesg failures like below:
 
-Sorry about that. I made the patch when you first reported it, and I was
-sure I had sent it, but apparently not. Sent it now.
+BUG: MAX_LOCK_DEPTH too low!
+turning off the locking correctness validator.
+depth: 48  max: 48!
+48 locks held by i915_selftest/5776:
+ #0: ffff888101a79240 (&dev->mutex){....}-{3:3}, at: __driver_attach+0x88/0x160
+ #1: ffffc900009778c0 (reservation_ww_class_acquire){+.+.}-{0:0}, at: i915_vma_pin.constprop.63+0x39/0x1b0 [i915]
+ #2: ffff88800cf74de8 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_vma_pin.constprop.63+0x5f/0x1b0 [i915]
+ #3: ffff88810c7f9e38 (&vm->mutex/1){+.+.}-{3:3}, at: i915_vma_pin_ww+0x1c4/0x9d0 [i915]
+ #4: ffff88810bad5768 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_gem_evict_something+0x110/0x860 [i915]
+ #5: ffff88810bad60e8 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_gem_evict_something+0x110/0x860 [i915]
+...
+ #46: ffff88811964d768 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_gem_evict_something+0x110/0x860 [i915]
+ #47: ffff88811964e0e8 (reservation_ww_class_mutex){+.+.}-{3:3}, at: i915_gem_evict_something+0x110/0x860 [i915]
+INFO: lockdep is turned off.
 
-       Arnd
+Fixing eviction to nest into ww_class_acquire is a high priority,
+but it requires a rework of the entire driver, which can only be
+done one step at a time.
+
+As an intermediate solution, add an acquire context to ww_mutex_trylock,
+which allows us to do proper nesting annotations on the trylocks, making
+the above lockdep splat disappear.
+
+This is also useful in regulator_lock_nested, which may avoid dropping
+regulator_nesting_mutex in the uncontended path, so use it there.
+
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/gpu/drm/drm_modeset_lock.c |  2 +-
+ drivers/regulator/core.c           |  2 +-
+ include/linux/dma-resv.h           |  2 +-
+ include/linux/ww_mutex.h           | 13 +----
+ kernel/locking/mutex.c             | 38 +++++++++++++
+ kernel/locking/test-ww_mutex.c     | 86 ++++++++++++++++++++++--------
+ lib/locking-selftest.c             |  2 +-
+ 7 files changed, 109 insertions(+), 36 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_modeset_lock.c b/drivers/gpu/drm/drm_modeset_lock.c
+index fcfe1a03c4a1..bf8a6e823a15 100644
+--- a/drivers/gpu/drm/drm_modeset_lock.c
++++ b/drivers/gpu/drm/drm_modeset_lock.c
+@@ -248,7 +248,7 @@ static inline int modeset_lock(struct drm_modeset_lock *lock,
+ 	if (ctx->trylock_only) {
+ 		lockdep_assert_held(&ctx->ww_ctx);
+ 
+-		if (!ww_mutex_trylock(&lock->mutex))
++		if (!ww_mutex_trylock(&lock->mutex, NULL))
+ 			return -EBUSY;
+ 		else
+ 			return 0;
+diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+index ca6caba8a191..f4d441b1a8bf 100644
+--- a/drivers/regulator/core.c
++++ b/drivers/regulator/core.c
+@@ -145,7 +145,7 @@ static inline int regulator_lock_nested(struct regulator_dev *rdev,
+ 
+ 	mutex_lock(&regulator_nesting_mutex);
+ 
+-	if (ww_ctx || !ww_mutex_trylock(&rdev->mutex)) {
++	if (!ww_mutex_trylock(&rdev->mutex, ww_ctx)) {
+ 		if (rdev->mutex_owner == current)
+ 			rdev->ref_cnt++;
+ 		else
+diff --git a/include/linux/dma-resv.h b/include/linux/dma-resv.h
+index e1ca2080a1ff..39fefb86780b 100644
+--- a/include/linux/dma-resv.h
++++ b/include/linux/dma-resv.h
+@@ -173,7 +173,7 @@ static inline int dma_resv_lock_slow_interruptible(struct dma_resv *obj,
+  */
+ static inline bool __must_check dma_resv_trylock(struct dma_resv *obj)
+ {
+-	return ww_mutex_trylock(&obj->lock);
++	return ww_mutex_trylock(&obj->lock, NULL);
+ }
+ 
+ /**
+diff --git a/include/linux/ww_mutex.h b/include/linux/ww_mutex.h
+index b77f39f319ad..0b8f28577c00 100644
+--- a/include/linux/ww_mutex.h
++++ b/include/linux/ww_mutex.h
+@@ -313,17 +313,8 @@ ww_mutex_lock_slow_interruptible(struct ww_mutex *lock,
+ 
+ extern void ww_mutex_unlock(struct ww_mutex *lock);
+ 
+-/**
+- * ww_mutex_trylock - tries to acquire the w/w mutex without acquire context
+- * @lock: mutex to lock
+- *
+- * Trylocks a mutex without acquire context, so no deadlock detection is
+- * possible. Returns 1 if the mutex has been acquired successfully, 0 otherwise.
+- */
+-static inline int __must_check ww_mutex_trylock(struct ww_mutex *lock)
+-{
+-	return mutex_trylock(&lock->base);
+-}
++int __must_check ww_mutex_trylock(struct ww_mutex *lock,
++				  struct ww_acquire_ctx *ctx);
+ 
+ /***
+  * ww_mutex_destroy - mark a w/w mutex unusable
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index d2df5e68b503..5d0f5b04b568 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -1112,6 +1112,44 @@ __ww_mutex_lock(struct mutex *lock, unsigned int state, unsigned int subclass,
+ 	return __mutex_lock_common(lock, state, subclass, nest_lock, ip, ww_ctx, true);
+ }
+ 
++/**
++ * ww_mutex_trylock - tries to acquire the w/w mutex with optional acquire context
++ * @lock: mutex to lock
++ * @ctx: optional w/w acquire context
++ *
++ * Trylocks a mutex with the optional acquire context; no deadlock detection is
++ * possible. Returns 1 if the mutex has been acquired successfully, 0 otherwise.
++ *
++ * Unlike ww_mutex_lock, no deadlock handling is performed. However, if a @ctx is
++ * specified, -EALREADY and -EDEADLK handling may happen in calls to ww_mutex_lock.
++ *
++ * A mutex acquired with this function must be released with ww_mutex_unlock.
++ */
++int __sched
++ww_mutex_trylock(struct ww_mutex *ww, struct ww_acquire_ctx *ctx)
++{
++	bool locked;
++
++	if (!ctx)
++		return mutex_trylock(&ww->base);
++
++#ifdef CONFIG_DEBUG_MUTEXES
++	DEBUG_LOCKS_WARN_ON(ww->base.magic != &ww->base);
++#endif
++
++	preempt_disable();
++	locked = __mutex_trylock(&ww->base);
++
++	if (locked) {
++		ww_mutex_set_context_fastpath(ww, ctx);
++		mutex_acquire_nest(&ww->base.dep_map, 0, 1, &ctx->dep_map, _RET_IP_);
++	}
++	preempt_enable();
++
++	return locked;
++}
++EXPORT_SYMBOL(ww_mutex_trylock);
++
+ #ifdef CONFIG_DEBUG_LOCK_ALLOC
+ void __sched
+ mutex_lock_nested(struct mutex *lock, unsigned int subclass)
+diff --git a/kernel/locking/test-ww_mutex.c b/kernel/locking/test-ww_mutex.c
+index 3e82f449b4ff..d63ac411f367 100644
+--- a/kernel/locking/test-ww_mutex.c
++++ b/kernel/locking/test-ww_mutex.c
+@@ -16,6 +16,15 @@
+ static DEFINE_WD_CLASS(ww_class);
+ struct workqueue_struct *wq;
+ 
++#ifdef CONFIG_DEBUG_WW_MUTEX_SLOWPATH
++#define ww_acquire_init_noinject(a, b) do { \
++		ww_acquire_init((a), (b)); \
++		(a)->deadlock_inject_countdown = ~0U; \
++	} while (0)
++#else
++#define ww_acquire_init_noinject(a, b) ww_acquire_init((a), (b))
++#endif
++
+ struct test_mutex {
+ 	struct work_struct work;
+ 	struct ww_mutex mutex;
+@@ -36,7 +45,7 @@ static void test_mutex_work(struct work_struct *work)
+ 	wait_for_completion(&mtx->go);
+ 
+ 	if (mtx->flags & TEST_MTX_TRY) {
+-		while (!ww_mutex_trylock(&mtx->mutex))
++		while (!ww_mutex_trylock(&mtx->mutex, NULL))
+ 			cond_resched();
+ 	} else {
+ 		ww_mutex_lock(&mtx->mutex, NULL);
+@@ -109,19 +118,38 @@ static int test_mutex(void)
+ 	return 0;
+ }
+ 
+-static int test_aa(void)
++static int test_aa(bool trylock)
+ {
+ 	struct ww_mutex mutex;
+ 	struct ww_acquire_ctx ctx;
+ 	int ret;
++	const char *from = trylock ? "trylock" : "lock";
+ 
+ 	ww_mutex_init(&mutex, &ww_class);
+ 	ww_acquire_init(&ctx, &ww_class);
+ 
+-	ww_mutex_lock(&mutex, &ctx);
++	if (!trylock) {
++		ret = ww_mutex_lock(&mutex, &ctx);
++		if (ret) {
++			pr_err("%s: initial lock failed!\n", __func__);
++			goto out;
++		}
++	} else {
++		if (!ww_mutex_trylock(&mutex, &ctx)) {
++			pr_err("%s: initial trylock failed!\n", __func__);
++			goto out;
++		}
++	}
+ 
+-	if (ww_mutex_trylock(&mutex))  {
+-		pr_err("%s: trylocked itself!\n", __func__);
++	if (ww_mutex_trylock(&mutex, NULL))  {
++		pr_err("%s: trylocked itself without context from %s!\n", __func__, from);
++		ww_mutex_unlock(&mutex);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	if (ww_mutex_trylock(&mutex, &ctx))  {
++		pr_err("%s: trylocked itself with context from %s!\n", __func__, from);
+ 		ww_mutex_unlock(&mutex);
+ 		ret = -EINVAL;
+ 		goto out;
+@@ -129,17 +157,17 @@ static int test_aa(void)
+ 
+ 	ret = ww_mutex_lock(&mutex, &ctx);
+ 	if (ret != -EALREADY) {
+-		pr_err("%s: missed deadlock for recursing, ret=%d\n",
+-		       __func__, ret);
++		pr_err("%s: missed deadlock for recursing, ret=%d from %s\n",
++		       __func__, ret, from);
+ 		if (!ret)
+ 			ww_mutex_unlock(&mutex);
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
+ 
++	ww_mutex_unlock(&mutex);
+ 	ret = 0;
+ out:
+-	ww_mutex_unlock(&mutex);
+ 	ww_acquire_fini(&ctx);
+ 	return ret;
+ }
+@@ -150,7 +178,7 @@ struct test_abba {
+ 	struct ww_mutex b_mutex;
+ 	struct completion a_ready;
+ 	struct completion b_ready;
+-	bool resolve;
++	bool resolve, trylock;
+ 	int result;
+ };
+ 
+@@ -160,8 +188,13 @@ static void test_abba_work(struct work_struct *work)
+ 	struct ww_acquire_ctx ctx;
+ 	int err;
+ 
+-	ww_acquire_init(&ctx, &ww_class);
+-	ww_mutex_lock(&abba->b_mutex, &ctx);
++	ww_acquire_init_noinject(&ctx, &ww_class);
++	if (!abba->trylock)
++		ww_mutex_lock(&abba->b_mutex, &ctx);
++	else
++		WARN_ON(!ww_mutex_trylock(&abba->b_mutex, &ctx));
++
++	WARN_ON(READ_ONCE(abba->b_mutex.ctx) != &ctx);
+ 
+ 	complete(&abba->b_ready);
+ 	wait_for_completion(&abba->a_ready);
+@@ -181,7 +214,7 @@ static void test_abba_work(struct work_struct *work)
+ 	abba->result = err;
+ }
+ 
+-static int test_abba(bool resolve)
++static int test_abba(bool trylock, bool resolve)
+ {
+ 	struct test_abba abba;
+ 	struct ww_acquire_ctx ctx;
+@@ -192,12 +225,18 @@ static int test_abba(bool resolve)
+ 	INIT_WORK_ONSTACK(&abba.work, test_abba_work);
+ 	init_completion(&abba.a_ready);
+ 	init_completion(&abba.b_ready);
++	abba.trylock = trylock;
+ 	abba.resolve = resolve;
+ 
+ 	schedule_work(&abba.work);
+ 
+-	ww_acquire_init(&ctx, &ww_class);
+-	ww_mutex_lock(&abba.a_mutex, &ctx);
++	ww_acquire_init_noinject(&ctx, &ww_class);
++	if (!trylock)
++		ww_mutex_lock(&abba.a_mutex, &ctx);
++	else
++		WARN_ON(!ww_mutex_trylock(&abba.a_mutex, &ctx));
++
++	WARN_ON(READ_ONCE(abba.a_mutex.ctx) != &ctx);
+ 
+ 	complete(&abba.a_ready);
+ 	wait_for_completion(&abba.b_ready);
+@@ -249,7 +288,7 @@ static void test_cycle_work(struct work_struct *work)
+ 	struct ww_acquire_ctx ctx;
+ 	int err, erra = 0;
+ 
+-	ww_acquire_init(&ctx, &ww_class);
++	ww_acquire_init_noinject(&ctx, &ww_class);
+ 	ww_mutex_lock(&cycle->a_mutex, &ctx);
+ 
+ 	complete(cycle->a_signal);
+@@ -581,7 +620,9 @@ static int stress(int nlocks, int nthreads, unsigned int flags)
+ static int __init test_ww_mutex_init(void)
+ {
+ 	int ncpus = num_online_cpus();
+-	int ret;
++	int ret, i;
++
++	printk(KERN_INFO "Beginning ww mutex selftests\n");
+ 
+ 	wq = alloc_workqueue("test-ww_mutex", WQ_UNBOUND, 0);
+ 	if (!wq)
+@@ -591,17 +632,19 @@ static int __init test_ww_mutex_init(void)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = test_aa();
++	ret = test_aa(false);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = test_abba(false);
++	ret = test_aa(true);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = test_abba(true);
+-	if (ret)
+-		return ret;
++	for (i = 0; i < 4; i++) {
++		ret = test_abba(i & 1, i & 2);
++		if (ret)
++			return ret;
++	}
+ 
+ 	ret = test_cycle(ncpus);
+ 	if (ret)
+@@ -619,6 +662,7 @@ static int __init test_ww_mutex_init(void)
+ 	if (ret)
+ 		return ret;
+ 
++	printk(KERN_INFO "All ww mutex selftests passed\n");
+ 	return 0;
+ }
+ 
+diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+index 161108e5d2fe..71652e1c397c 100644
+--- a/lib/locking-selftest.c
++++ b/lib/locking-selftest.c
+@@ -258,7 +258,7 @@ static void init_shared_classes(void)
+ #define WWAF(x)			ww_acquire_fini(x)
+ 
+ #define WWL(x, c)		ww_mutex_lock(x, c)
+-#define WWT(x)			ww_mutex_trylock(x)
++#define WWT(x)			ww_mutex_trylock(x, NULL)
+ #define WWL1(x)			ww_mutex_lock(x, NULL)
+ #define WWU(x)			ww_mutex_unlock(x)
+ 
+-- 
+2.33.0
+
