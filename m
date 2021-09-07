@@ -2,106 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC239402555
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7EE9402557
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243006AbhIGIpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 04:45:45 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:37400 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236858AbhIGIpn (ORCPT
+        id S243103AbhIGIqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 04:46:43 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:60488
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230259AbhIGIqm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 04:45:43 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2BACB21FE4;
-        Tue,  7 Sep 2021 08:44:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1631004276; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KLbWJgt7Pq7iTo2+u+wRsltkx42moH/GKLU6EPym12c=;
-        b=fb8TAUdnRMI1pKMM76wf/il79XFi0Xe4TReUmU6/lhZUL3XOJc62vvSBdlMVUv9YqHGlKm
-        veoFeOD4ahD2cCGJRlkIqS0cRLa/UWqJsPQNi4VfQP43kHbcnp0xPo7hTXoEha1qFpV3H1
-        bxfKDDTXbJyIg0mAxgPGQLyk7Oh4nGw=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Tue, 7 Sep 2021 04:46:42 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id EFDD5A3B81;
-        Tue,  7 Sep 2021 08:44:35 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 10:44:32 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Rientjes <rientjes@google.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/page_alloc: detect allocation forbidden by cpuset and
- bail out early
-Message-ID: <YTcmcEUmtO++WeBk@dhcp22.suse.cz>
-References: <1631003150-96935-1-git-send-email-feng.tang@intel.com>
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id DC50A4017A;
+        Tue,  7 Sep 2021 08:45:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631004335;
+        bh=oCiPtmkkbYn3+4ND5fAN4SGrEk+sY+yFDlI4yjQjrR4=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=HxX8b+p9yTy+fYJdNTfONf1CQNtp12DXgh0eFO801pIJPDKw4hp/GVbVNQAkkUIDG
+         2cYD7OSZm/ATLE5HVzBKxoC6cjMU4KQu4TfbSgbwJkOj/76oxuo0JWctJ5LHt/YeXv
+         U841YHZhlpZ2yVfgkWziTeuBqzr5AhP8VyWR5r968r5UgDx/ESRTtFdrmUlIWT/rxB
+         yGP0CUQ3VtB2SgYwoiTOQ+ucuyRlToTnGxa3KRzT/juPl/4QsKUSg8YSsQjPcGfU+L
+         8+w+O5zUUJXOZOuBSBV0PAQLxGsUqV9CWJ+Umqx+ud5bbl5XgEwClrdOkgKliqmUwl
+         IhiVeotcYgs0A==
+From:   Colin King <colin.king@canonical.com>
+To:     Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] bonding: 3ad: pass parameter bond_params by reference
+Date:   Tue,  7 Sep 2021 09:45:34 +0100
+Message-Id: <20210907084534.10323-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1631003150-96935-1-git-send-email-feng.tang@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 07-09-21 16:25:50, Feng Tang wrote:
-> There was report that starting an Ubuntu in docker while using cpuset
-> to bind it to movlabe nodes (a node only has movable zone, like a node
+From: Colin Ian King <colin.king@canonical.com>
 
-s@movlabe@movable@
+The parameter bond_params is a relatively large 192 byte sized
+struct so pass it by reference rather than by value to reduce
+copying.
 
-> for hotplug or a Persistent Memory  node in normal usage) will fail
-> due to memory allocation failure, and then OOM is involved and many
-> other innocent processes got killed. It can be reproduced with command:
-> $docker run -it --rm  --cpuset-mems 4 ubuntu:latest bash -c
-> "grep Mems_allowed /proc/self/status" (node 4 is a movable node)
-> 
-> The reason is, in the case, the target cpuset nodes only have movable
-> zone, while the creation of an OS in docker sometimes needs to allocate
-> memory in non-movable zones (dma/dma32/normal) like GFP_HIGHUSER, and
-> the cpuset limit forbids the allocation, then out-of-memory killing is
-> involved even when normal nodes and movable nodes both have many free
-> memory.
+Addresses-Coverity: ("Big parameter passed by value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/bonding/bond_3ad.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-It would be great to add a oom report here as an example.
-
-> The failure is reasonable, but still there is one problem, that when
-> the usage fails as it's an mission impossible due to the cpuset limit,
-> the allocation should just not trigger reclaim/compaction, and more
-> importantly, not get any innocent process oom-killed.
-
-I would reformulate to something like:
-"
-The OOM killer cannot help to resolve the situation as there is no
-usable memory for the request in the cpuset scope. The only reasonable
-measure to take is to fail the allocation right away and have the caller
-to deal with it.
-"
+diff --git a/drivers/net/bonding/bond_3ad.c b/drivers/net/bonding/bond_3ad.c
+index a4a202b9a0a2..6006c2e8fa2b 100644
+--- a/drivers/net/bonding/bond_3ad.c
++++ b/drivers/net/bonding/bond_3ad.c
+@@ -96,7 +96,7 @@ static int ad_marker_send(struct port *port, struct bond_marker *marker);
+ static void ad_mux_machine(struct port *port, bool *update_slave_arr);
+ static void ad_rx_machine(struct lacpdu *lacpdu, struct port *port);
+ static void ad_tx_machine(struct port *port);
+-static void ad_periodic_machine(struct port *port, struct bond_params bond_params);
++static void ad_periodic_machine(struct port *port, struct bond_params *bond_params);
+ static void ad_port_selection_logic(struct port *port, bool *update_slave_arr);
+ static void ad_agg_selection_logic(struct aggregator *aggregator,
+ 				   bool *update_slave_arr);
+@@ -1298,7 +1298,7 @@ static void ad_tx_machine(struct port *port)
+  *
+  * Turn ntt flag on priodically to perform periodic transmission of lacpdu's.
+  */
+-static void ad_periodic_machine(struct port *port, struct bond_params bond_params)
++static void ad_periodic_machine(struct port *port, struct bond_params *bond_params)
+ {
+ 	periodic_states_t last_state;
  
-> So add detection for cases like this in the slowpath of allocation,
-> and bail out early returning NULL for the allocation.
-> 
-> We've run some cases of malloc/mmap/page_fault/lru-shm/swap from
-> will-it-scale and vm-scalability, and didn't see obvious performance
-> change (all inside +/- 1%), test boxes are 2 socket Cascade Lake and
-> Icelake servers.
-> 
-> [thanks to Micho Hocko and David Rientjes for suggesting not handle
->  it inside OOM code]
-
-While this is a good fix from the functionality POV I believe you can go
-a step further. Please add a detection to the cpuset code and complain
-to the kernel log if somebody tries to configure movable only cpuset.
-Once you have that in place you can easily create a static branch for
-cpuset_insane_setup() and have zero overhead for all reasonable
-configuration. There shouldn't be any reason to pay a single cpu cycle
-to check for something that almost nobody does.
-
-What do you think?
+@@ -1308,7 +1308,7 @@ static void ad_periodic_machine(struct port *port, struct bond_params bond_param
+ 	/* check if port was reinitialized */
+ 	if (((port->sm_vars & AD_PORT_BEGIN) || !(port->sm_vars & AD_PORT_LACP_ENABLED) || !port->is_enabled) ||
+ 	    (!(port->actor_oper_port_state & LACP_STATE_LACP_ACTIVITY) && !(port->partner_oper.port_state & LACP_STATE_LACP_ACTIVITY)) ||
+-	    !bond_params.lacp_active) {
++	    !bond_params->lacp_active) {
+ 		port->sm_periodic_state = AD_NO_PERIODIC;
+ 	}
+ 	/* check if state machine should change state */
+@@ -2342,7 +2342,7 @@ void bond_3ad_state_machine_handler(struct work_struct *work)
+ 		}
+ 
+ 		ad_rx_machine(NULL, port);
+-		ad_periodic_machine(port, bond->params);
++		ad_periodic_machine(port, &bond->params);
+ 		ad_port_selection_logic(port, &update_slave_arr);
+ 		ad_mux_machine(port, &update_slave_arr);
+ 		ad_tx_machine(port);
 -- 
-Michal Hocko
-SUSE Labs
+2.32.0
+
