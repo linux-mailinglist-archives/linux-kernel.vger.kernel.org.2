@@ -2,88 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A136F4027F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 13:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F397B4027FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 13:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244318AbhIGLmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 07:42:23 -0400
-Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:37896
-        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S229827AbhIGLmW (ORCPT
+        id S244545AbhIGLqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 07:46:16 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:36209 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229827AbhIGLqP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 07:42:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fudan.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-        Message-Id; bh=hkwm9u4nTSBzKeRTIEk991MA+zWhDWTTfBLJj7scdOY=; b=U
-        vN/wBRAYwSnzBNjhKsZM+nONxgx0ShV6pFpUv5EdAyWZRStHK3ptzvBJI+KYe9ZE
-        C4Jkm1dFsI6Rqq7p10MqsS61AEpJdQzdCqNgQNDoO518XDdgVLzUKIAJW2FEd4e+
-        P2SKcidGHzRowiJGuySrxm20C2oT/Ad86M4BysCZRY=
-Received: from t640 (unknown [10.176.36.8])
-        by app1 (Coremail) with SMTP id XAUFCgD3_1_TTzdheQgvAA--.55810S3;
-        Tue, 07 Sep 2021 19:41:07 +0800 (CST)
-From:   Chenyuan Mi <cymi20@fudan.edu.cn>
-Cc:     yuanxzhang@fudan.edu.cn, Chenyuan Mi <cymi20@fudan.edu.cn>,
-        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        devel@lists.orangefs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] orangefs: Fix sb refcount leak when allocate sb info failed.
-Date:   Tue,  7 Sep 2021 19:41:05 +0800
-Message-Id: <20210907114105.2452-1-cymi20@fudan.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: XAUFCgD3_1_TTzdheQgvAA--.55810S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrKrW5tFWDCw15AFW7ur1DAwb_yoWDWrc_Cr
-        Z7AF4xZ3yUCr1Iyr4UCrZYyF4q93Zayr4v9Fn8J3W5Cas0va98GrZ8Jrn5ZF13Xa17tFZ8
-        CrZ3tr93Aw1fAjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb3xFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IE
-        rcIFxwCY02Avz4vE-syl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
-        IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
-        6r1q6r43MI8E62xC7I0kMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
-        AIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0D
-        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvf
-        C2KfnxnUUI43ZEXa7sREo7KUUUUUU==
-X-CM-SenderInfo: isqsiiisuqikmt6i3vldqovvfxof0/
-To:     unlisted-recipients:; (no To-header on input)
+        Tue, 7 Sep 2021 07:46:15 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id AC96D5C00FE;
+        Tue,  7 Sep 2021 07:45:08 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 07 Sep 2021 07:45:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=rzp/06KSg17CA95z5
+        zuCstXPs2EnExhE7oilBk0+Dfs=; b=Y7RLfJ9veG/UtW4Sd9U8kFDqAlPkVyX3X
+        eMNe//wZKs9N5/7gXywgg3VWUgU484EUAiI2xEd4fNmSY9T2zR6rmprE1NPdaRoa
+        Dl1C/DdhJLTMRY76yzGo5FYOGN6Vir7jaswLX0zNf7qn6R6uvk6KB5vMrDOdAP3b
+        94lUI9iRT53D2/6lJ6/kibUuyjdC3LDAbDyr2vYlSK7gu/wzZFHyI38uYlaV4YLq
+        GTMqhT4136An83hqENDBNnFGqxQqUVUMs/454Lhrfyz10xbTsAX43DfMhiZgxMYm
+        x83HM/GCOvWwuUDf3kbZJAUkN9J+ruj1Eyf7w5FHDMnHQq5w49Cgg==
+X-ME-Sender: <xms:w1A3YUSugx82Em4dGxeLa-tKMjjq07-OhIjJg3iAZAlVIzR-X8QpjA>
+    <xme:w1A3YRxnSKDIKS3zWNw-ch7ELMLdLrTGNqgO0otVDPuYp956PiaTOmlqPBkK6x7es
+    u4-RS2XZ5aySPZ-u3s>
+X-ME-Received: <xmr:w1A3YR1np5joHB0xVg8e0IMgINWQMa0J2XCFZbZTigoRnIZ7uSsFwYp_DXMz>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefhedggeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomhepfdfnuhhkvgcuffdrucflohhnvghsfdcuoehluhhkvgeslhhjohhn
+    vghsrdguvghvqeenucggtffrrghtthgvrhhnpeelffelhfeltdfhtdevuefgveeuueekge
+    etiefgiefhgfejvdetvdeuvedthfdvkeenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslhhjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:w1A3YYBhit8zC-FFwlXwJMx026dK-y-e8E66QrCOxXrfB9G8E4lWTQ>
+    <xmx:w1A3YdhHyJ8goqiEljJeP_nRJsPGiHvzuj5IKD7v1CNUx2tKwNBiGQ>
+    <xmx:w1A3YUpD2QR5x5Abk8Wg06iRoO5nw1kDyvsZ9TFScucpMqgUBq7Okw>
+    <xmx:xFA3Yde7LPpWc6zK1BLkbsIC7_PeW5-m-B0-1qUSGaFlSK9zZvkH2A>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 7 Sep 2021 07:45:03 -0400 (EDT)
+From:   "Luke D. Jones" <luke@ljones.dev>
+To:     linux-kernel@vger.kernel.org
+Cc:     hdegoede@redhat.com, pobrn@protonmail.com, hadess@hadess.net,
+        linux@roeck-us.net, platform-driver-x86@vger.kernel.org,
+        "Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH v10 0/1] asus-wmi: Add support for custom fan curves
+Date:   Tue,  7 Sep 2021 23:44:55 +1200
+Message-Id: <20210907114456.65315-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The reference counting issue happens in one exception handling
-path of orangefs_mount(). When failing to allocate sb info, the
-function forgets to decrease the refcount of sb increased by
-sget(), causing a refcount leak.
+Add support for custom fan curves found on some ASUS ROG laptops.
 
-Fix this issue by jumping to the label "free_sb_and_op" instead
-of "free_op"
+- V1
+  + Initial patch work
+- V2
+  + Don't fail and remove wmi driver if error from
+    asus_wmi_evaluate_method_buf() if error is -ENODEV
+- V3
+  + Store the "default" fan curves
+  + Call throttle_thermal_policy_write() if a curve is erased to ensure
+    that the factory default for a profile is applied again
+- V4
+  + Do not apply default curves by default. Testers have found that the
+    default curves don't quite match actual no-curve behaviours
+  + Add method to enable/disable curves for each profile
+- V5
+  + Remove an unrequired function left over from previous iterations
+  + Ensure default curves are applied if user writes " " to a curve path
+  + Rename "active_fan_curve_profiles" to "enabled_fan_curve_profiles" to
+    better reflect the behavious of this setting
+  + Move throttle_thermal_policy_write_*pu_curves() and rename to
+    fan_curve_*pu_write()
+  + Merge fan_curve_check_valid() and fan_curve_write()
+  + Remove some leftover debug statements
+- V6
+  + Refactor data structs to store  array or u8 instead of strings.
+    This affects the entire patch except the enabled_fan_curves block
+  + Use sysfs_match_string in enabled_fan_curve block
+  + Add some extra comments to describe things
+  + Allow some variation in how fan curve input can be formatted
+  + Use SENSOR_DEVICE_ATTR_2_RW() to reduce the amount of lines per
+    fan+profile combo drastically
+- V7
+  + Further refactor to use pwm1_auto_point1_temp + pwm1_auto_point1_pwm
+    format, creating two blocks of attributes for CPU and GPU fans
+  + Remove storing of defualt curves and method to reset them. The
+    factory defaults are still populated in to structs on module load
+    so users have a starting point
+- V8
+  + Make asus_wmi_evaluate_method_buf() safe
+  + Take in to account machines that do not have throttle_thermal_policy
+    but do have a single custom fan curve. These machines can't use a 
+    throttle_thermal mode change to reset the fans to factory default if
+    fan curve is disabled so we need to write their stored default back.
+    In some cases this is also needed due to mistakes in ASUS ACPI tables.
+  + Formatting tidy and dev_err() use
+  + Extra comments to make certain things (such as above) more clear
+  + Give generated hwmon a more descriptive `name asus_custom_fan_curve`
+-V9
+  + Cleanup and remove per-profile setting
+  + Call `asus_fan_set_auto()` if method supported to ensure fan state is
+    reset on these models
+  + Add extra case (3) to related `pwm<N>_enable`s for fan curves to reset
+    the used curve to factory default
+  + Related to the above is that if throttle_thermal_policy is supported
+    then the fetched factory default curve is correct for the current
+    throttle_thermal_policy_mode
+  + Ensure that if throttle_thermal_policy_mode is changed then fan_curve
+    is set to disabled.
+  + Ensure the same for pwm1_enable_store()
+- V10
+  - Better handling of conditions in asus_wmi_evaluate_method_buf()
+  - Correct a mistaken conversion to percentage for temperature
+  - Remove unused function
+  - Formating corrections
+  - Update or remove various comments
+  - Update commit message to better reflect purpose of patch
 
-Signed-off-by: Chenyuan Mi <cymi20@fudan.edu.cn>
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Luke D. Jones (1):
+  asus-wmi: Add support for custom fan curves
 
----
- fs/orangefs/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/platform/x86/asus-wmi.c            | 652 ++++++++++++++++++++-
+ include/linux/platform_data/x86/asus-wmi.h |   2 +
+ 2 files changed, 646 insertions(+), 8 deletions(-)
 
-diff --git a/fs/orangefs/super.c b/fs/orangefs/super.c
-index 2f2e430461b2..c46a9005fc44 100644
---- a/fs/orangefs/super.c
-+++ b/fs/orangefs/super.c
-@@ -526,7 +526,7 @@ struct dentry *orangefs_mount(struct file_system_type *fst,
- 	sb->s_fs_info = kzalloc(sizeof(struct orangefs_sb_info_s), GFP_KERNEL);
- 	if (!ORANGEFS_SB(sb)) {
- 		d = ERR_PTR(-ENOMEM);
--		goto free_op;
-+		goto free_sb_and_op;
- 	}
- 
- 	ret = orangefs_fill_sb(sb,
 -- 
-2.17.1
+2.31.1
 
