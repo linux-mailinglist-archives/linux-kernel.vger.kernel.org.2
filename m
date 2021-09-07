@@ -2,94 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39547402ED1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6726A402ED5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345983AbhIGTOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 15:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233374AbhIGTOI (ORCPT
+        id S1345652AbhIGTPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 15:15:20 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:45826 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233374AbhIGTPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 15:14:08 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F33FC061575;
-        Tue,  7 Sep 2021 12:13:02 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id z1so72091ioh.7;
-        Tue, 07 Sep 2021 12:13:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bDAmrQspvTHk4pXz96SxgqAEoYvB8Qdlb33lW2JOQKI=;
-        b=iiaLA9iMJ1l/ZVUFBUL09riUqd8KCAFHSBgHpVV94Te6gjyYNUe468qaok1x0albDO
-         IxsvhA9VjWjL68B2TtpsU79ayleQF+6eLhi3eOsxorE/xnyq5VsPeAV1G5rXH1XH4vwH
-         25yrQ3QdtaqOUQIimvO98kzNHEgIBnJK+fxLSSjhoy1U+KonCL69C9Bgpzhxv8L4t87q
-         pIeQ+5LilhJTDuERHH0MjhPzDQ45jkofDeejMgOpldFf6hdwGuc4xMtsgv3Ic7qEriOW
-         0OThCYpCF6l7sjDKKUHyqwFX4HJ/ejjXla4KWYGl3ARlMipeZTb3UNq6WeacvSz51VB0
-         blPA==
+        Tue, 7 Sep 2021 15:15:19 -0400
+Received: by mail-ot1-f50.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso360425otv.12;
+        Tue, 07 Sep 2021 12:14:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=bDAmrQspvTHk4pXz96SxgqAEoYvB8Qdlb33lW2JOQKI=;
-        b=luG6hfsF6DBrD5SoSpjAdSEfhcocreNMLdAg+A7l495VlKkKKPntkN/TBjmO6vUA12
-         leZ6GmULSA1qvCB7IiUqDaWgNMgD+yX7FFjXZzczNpMpbJnrTv5eLPItuWbo/GSP+x0w
-         rPRtqa1qgtVzSHGNpoO1IJP8zRYmRMp+L7O402gHpqepORMg3UVErN8I/zFv913Jmnoq
-         JZ7EbMHJy91tbq7DM0/9AapsKWxgNhkd/5VflIUIQx2SEIvIBaJg6a9akZYWwglSNpyV
-         to7//ZjnT8b1gXyO2RSVJOAVS1RH8BnDU1F7EeuV7cjzsVNr5mVf1sq+Mg7AU5hkzoPo
-         EZDg==
-X-Gm-Message-State: AOAM5321RdWHcmqtNHBkpOFxTCPJPvBLb7vuF2yWUKg0SFGX/m/Xvnr8
-        VwruOf8ZJD9X74kXi2Up5ida+7Mv/AMrjk8ON2A=
-X-Google-Smtp-Source: ABdhPJwzbaiPi0tOgc36KfgAKqrn62eE1qk9JEH9OxgwGowNbmENlYJ37v4PzRRODGJoiIfiZTATjqiN8fzzPEMm/24=
-X-Received: by 2002:a05:6638:2690:: with SMTP id o16mr17203558jat.65.1631041981634;
- Tue, 07 Sep 2021 12:13:01 -0700 (PDT)
+        bh=QM0pnBbZCN7JGJ3PcVpJ1P3dHXC4qKi2o9dbP7qotE8=;
+        b=YI33Z38DlY52u4xdJH0xuIFQIpw8Nr/g3WLkkSEYEIwBxqskmfr2kvJg4KCx9Li+e8
+         BZ+KG6c/ZZqNxTYveCUEXuY1NgH/nanGR/ixZ4YO1M17JJoYp2D5ATzwCtHAF1PWi41w
+         YCrBNg7SFBOK40W02g0IE5LQ7chrueU9xfyr8VlmbbxSAZi26WC9Equ6YG3+I2T+CzlO
+         Z/ZdJe3r9YuNKtkfAv9EQFGYQE5cKyry53tQzXfrpJlhyaOrHfKYtiif3pfKnCfTn69I
+         DlZb7r81ezjRrQh0SLVLYrav0iI13SmT8uq79qmKilEZ6rvBbS9d91C6R7xk5I8ns5UK
+         gH4A==
+X-Gm-Message-State: AOAM531WFJeCbrJlDvxfnS5L1wsQ7jKz2GCZAN94d2xqEUftqVc/JxW2
+        kd5JPX1aG/EUNuPW1uFuN/LyVd0Pt9cyh8g9PAk=
+X-Google-Smtp-Source: ABdhPJz4Cn/V39TGR4W44vmuWWLvTjHAPaKfwzkl/2vWyem7eSC/v66yGSCiO4TaW1TxIkNwLNeKW2kJlJAz4Blmrw0=
+X-Received: by 2002:a9d:4d93:: with SMTP id u19mr16241586otk.86.1631042053048;
+ Tue, 07 Sep 2021 12:14:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210901181138.1052653-1-angelogioacchino.delregno@somainline.org>
- <20210901181138.1052653-2-angelogioacchino.delregno@somainline.org>
-In-Reply-To: <20210901181138.1052653-2-angelogioacchino.delregno@somainline.org>
-From:   Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Date:   Tue, 7 Sep 2021 13:12:50 -0600
-Message-ID: <CAOCk7NoOdjxp0vxu9XJzYsi7a04kpqpTOZHm42ApAN3MqkqtDw@mail.gmail.com>
-Subject: Re: [Freedreno] [PATCH 2/3] drm/msm/dpu1: Add MSM8998 to hw catalog
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org, paul.bouchara@somainline.org,
-        DTML <devicetree@vger.kernel.org>
+References: <20210903210633.277807-1-kari.argillander@gmail.com>
+In-Reply-To: <20210903210633.277807-1-kari.argillander@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 7 Sep 2021 21:14:02 +0200
+Message-ID: <CAJZ5v0iNZvaLVgwJm7PG4-M9T9cyHuQJm0vqEeQ9sg7E0GeObw@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: scan: Remove unneeded header linux/nls.h
+To:     Kari Argillander <kari.argillander@gmail.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 1, 2021 at 12:11 PM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@somainline.org> wrote:
+On Fri, Sep 3, 2021 at 11:07 PM Kari Argillander
+<kari.argillander@gmail.com> wrote:
 >
-> Bringup functionality for MSM8998 in the DPU, driver which is mostly
-> the same as SDM845 (just a few variations).
+> Code that use linux/nls.h was moved to device_sysfs.c by commit
+> c2efefb33abf ("ACPI / scan: Move sysfs-related device code to a separate file")
 >
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> Remove this include so that complier has easier times and it would be
+> easier to grep where nls code is used.
+>
+> Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
+> ---
+>  drivers/acpi/scan.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index b24513ec3fae..5b54c80b9d32 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -16,7 +16,6 @@
+>  #include <linux/signal.h>
+>  #include <linux/kthread.h>
+>  #include <linux/dmi.h>
+> -#include <linux/nls.h>
+>  #include <linux/dma-map-ops.h>
+>  #include <linux/platform_data/x86/apple.h>
+>  #include <linux/pgtable.h>
+> --
 
-I don't seem to see a cover letter for this series.
-
-Eh, there are a fair number of differences between the MDSS versions
-for 8998 and 845.
-
-Probably a bigger question, why extend the DPU driver for 8998, when
-the MDP5 driver already supports it[1]?  The MDP/DPU split is pretty
-dumb, but I don't see a valid reason for both drivers supporting the
-same target/display revision.  IMO, if you want this support in DPU,
-remove it from MDP5.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v5.14&id=d6c7b2284b14c66a268a448a7a8d54f585d38785
+Applied as 5.15-rc material, thanks!
