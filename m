@@ -2,258 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F02402216
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D0A402218
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238555AbhIGBmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 21:42:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230143AbhIGBmK (ORCPT
+        id S238764AbhIGBsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 21:48:07 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:15244 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229967AbhIGBsG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 21:42:10 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA6CC061575;
-        Mon,  6 Sep 2021 18:41:05 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id s24so76754wmh.4;
-        Mon, 06 Sep 2021 18:41:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6IvLWu/7qfFU33s9UIbv0TYSF6R5mFJDRgiIZtSY5YI=;
-        b=eYNQXbpGg6QXnqsKLpmf4129/MVqlgUnS4D6d5KViJ52OUMe7joeMfisq4aLZ5qjaL
-         0LMkIrxXg1lcLEtmzDhSDkq7kUUZ6JHNT7GKmUS9spR5FVmbcJlCF0WTuNREo9sz9+0Y
-         /zyIDyzYGjHyd24GUAuEEaBTcfvoRCURbcqBgj8OHB23DOi+BEMSSQckryWe7Myo7F8Z
-         kn0cYNVRsFVh9923dcvnPA1+qcNgRJgvl1VSXNmtlwqvOYr8LydcWaHsawN8RDFT3hf7
-         q2NNLf011Y22lWS9xpgroCD3QzAX5Kmlki3tteYYvL7H4Phv8Ey5Y0mZC9oEVQ8Pytql
-         4r0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6IvLWu/7qfFU33s9UIbv0TYSF6R5mFJDRgiIZtSY5YI=;
-        b=LL2T7ti0KvGxxWqC+38JDV4/EWh7XHocEUFXHGN81XuPDncF6XyocSx6vfGtp8KXhH
-         cQrP4FX5N0vl1nn5DhICnpDOUMkXqL/U5lGqX00r/JKQ75RnXiQ5wolfKZF1b1o8RnZc
-         LcswUphzj8COmVXhnUfSJwEgka7UEDg+Vs5F07yYZnQ0sffUE+VoQLH3O+gMLkkmpMtq
-         7CSaznayej2qvo7jrNcYSitsnr1nEqTTcm9ioZAN0b49nBfFvtNBUyJ6Rv606gBN9pAu
-         7L6zsXTURsyBXyvdHaFOupN1EHLFuAPtsRtMLwCqC4Eq4Klcm1Sw1epqdd0XRiRSngj2
-         ug1A==
-X-Gm-Message-State: AOAM531eopyOT4hgq/WDs2wZyKq7qqZVWg5XOwjEUCeNCJtvkFiSUkFg
-        7hKswUxseciQ2/aqLdYGwCW5aZW9waE+DoY0OtA=
-X-Google-Smtp-Source: ABdhPJz9mirFy4n6DSu9TlHhNbwifeKK+OcCA6FshJx0CB/0wysYkAfozRCmyjciWx6bXMM++OtJcTKbStEnS/Pbwy0=
-X-Received: by 2002:a7b:cb53:: with SMTP id v19mr1473587wmj.127.1630978863684;
- Mon, 06 Sep 2021 18:41:03 -0700 (PDT)
+        Mon, 6 Sep 2021 21:48:06 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4H3Sm06lzdz1DGpB;
+        Tue,  7 Sep 2021 09:46:08 +0800 (CST)
+Received: from [10.174.178.100] (10.174.178.100) by
+ dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Tue, 7 Sep 2021 09:46:58 +0800
+Subject: Re: [PATCH] mm/page_isolation: don't putback unisolated page
+To:     David Hildenbrand <david@redhat.com>, <akpm@linux-foundation.org>
+CC:     <vbabka@suse.cz>, <iamjoonsoo.kim@lge.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210904091839.20270-1-linmiaohe@huawei.com>
+ <3b36529f-ab97-ddfe-0407-66f0cd1fd38d@redhat.com>
+ <2d06db75-5c26-8fe2-6883-ac99056a9894@redhat.com>
+ <b0a2947b-360a-40c2-03e4-f0f67845f4c3@huawei.com>
+ <c60dc5e2-6f19-3be8-56be-555033cc9ca4@redhat.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <57392d12-9a6c-dbb5-3c3e-39ed9ab7c31c@huawei.com>
+Date:   Tue, 7 Sep 2021 09:46:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210729183942.2839925-1-robdclark@gmail.com> <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
- <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
- <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org> <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
- <CALAqxLUkyXK2gqNMBbtJFfh01ZpcG46dZaM7Zq4jG3OngvFREg@mail.gmail.com>
- <CAF6AEGsACLcDuszcgmHHs04GghLPiRfei3tGo161yBXsg7Y-YA@mail.gmail.com>
- <CAMi1Hd0dniDXPNOuh05ywqHKY+cGvAsd-cnD91K1GLppfO=x0w@mail.gmail.com>
- <CAF6AEGvtw06MYST2PdhqHVpsG4Tec2DnUA-uwFRP-6xqa9yf5Q@mail.gmail.com> <CAMi1Hd1kp8ijH8y3U2sxs5cE3Zfat_v-C3rrGtTK01ry8Om6Lw@mail.gmail.com>
-In-Reply-To: <CAMi1Hd1kp8ijH8y3U2sxs5cE3Zfat_v-C3rrGtTK01ry8Om6Lw@mail.gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 6 Sep 2021 18:45:21 -0700
-Message-ID: <CAF6AEGugB5QinhyOxvAiG_V40=mXS20nnqxgk71xe_fmm1iZsw@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
-To:     Amit Pundir <amit.pundir@linaro.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Caleb Connolly <caleb.connolly@linaro.org>,
-        Rob Clark <robdclark@chromium.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c60dc5e2-6f19-3be8-56be-555033cc9ca4@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.100]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggeme703-chm.china.huawei.com (10.1.199.99)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 6, 2021 at 12:58 PM Amit Pundir <amit.pundir@linaro.org> wrote:
->
-> On Mon, 6 Sept 2021 at 21:54, Rob Clark <robdclark@gmail.com> wrote:
-> >
-> > On Mon, Sep 6, 2021 at 1:02 AM Amit Pundir <amit.pundir@linaro.org> wrote:
-> > >
-> > > On Sat, 4 Sept 2021 at 01:55, Rob Clark <robdclark@gmail.com> wrote:
-> > > >
-> > > > On Fri, Sep 3, 2021 at 12:39 PM John Stultz <john.stultz@linaro.org> wrote:
-> > > > >
-> > > > > On Thu, Jul 29, 2021 at 1:49 PM Rob Clark <robdclark@gmail.com> wrote:
-> > > > > > On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
-> > > > > > <caleb.connolly@linaro.org> wrote:
-> > > > > > > On 29/07/2021 21:24, Rob Clark wrote:
-> > > > > > > > On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
-> > > > > > > > <caleb.connolly@linaro.org> wrote:
-> > > > > > > >>
-> > > > > > > >> Hi Rob,
-> > > > > > > >>
-> > > > > > > >> I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above
-> > > > > > > >> the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more
-> > > > > > > >> aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
-> > > > > > > >
-> > > > > > > > *ohh*, yeah, ok, that would explain it
-> > > > > > > >
-> > > > > > > >> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable
-> > > > > > > >> at the higher frequencies.
-> > > > > > > >>
-> > > > > > > >> Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in
-> > > > > > > >> glxgear.
-> > > > > > > >>
-> > > > > > > >> I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run
-> > > > > > > >> at the voltage the hardware needs to be stable.
-> > > > > > > >>
-> > > > > > > >> Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have
-> > > > > > > >> CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
-> > > > > > > >>
-> > > > > > > >
-> > > > > > > > tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is already
-> > > > > > > > on CC and I added sboyd, maybe one of them knows better.
-> > > > > > > >
-> > > > > > > > In the short term, removing the higher problematic OPPs from dts might
-> > > > > > > > be a better option than this patch (which I'm dropping), since there
-> > > > > > > > is nothing stopping other workloads from hitting higher OPPs.
-> > > > > > > Oh yeah that sounds like a more sensible workaround than mine .
-> > > > > > > >
-> > > > > > > > I'm slightly curious why I didn't have problems at higher OPPs on my
-> > > > > > > > c630 laptop (sdm850)
-> > > > > > > Perhaps you won the sillicon lottery - iirc sdm850 is binned for higher clocks as is out of the factory.
-> > > > > > >
-> > > > > > > Would it be best to drop the OPPs for all devices? Or just those affected? I guess it's possible another c630 might
-> > > > > > > crash where yours doesn't?
-> > > > > >
-> > > > > > I've not heard any reports of similar issues from the handful of other
-> > > > > > folks with c630's on #aarch64-laptops.. but I can't really say if that
-> > > > > > is luck or not.
-> > > > > >
-> > > > > > Maybe just remove it for affected devices?  But I'll defer to Bjorn.
-> > > > >
-> > > > > Just as another datapoint, I was just marveling at how suddenly smooth
-> > > > > the UI was performing on db845c and Caleb pointed me at the "drm/msm:
-> > > > > Devfreq tuning" patch as the likely cause of the improvement, and
-> > > > > mid-discussion my board crashed into USB crash mode:
-> > > > > [  146.157696][    C0] adreno 5000000.gpu: CP | AHB bus error
-> > > > > [  146.163303][    C0] adreno 5000000.gpu: CP | AHB bus error
-> > > > > [  146.168837][    C0] adreno 5000000.gpu: RBBM | ATB bus overflow
-> > > > > [  146.174960][    C0] adreno 5000000.gpu: CP | HW fault | status=0x00000000
-> > > > > [  146.181917][    C0] adreno 5000000.gpu: CP | AHB bus error
-> > > > > [  146.187547][    C0] adreno 5000000.gpu: CP illegal instruction error
-> > > > > [  146.194009][    C0] adreno 5000000.gpu: CP | AHB bus error
-> > > > > [  146.308909][    T9] Internal error: synchronous external abort:
-> > > > > 96000010 [#1] PREEMPT SMP
-> > > > > [  146.317150][    T9] Modules linked in:
-> > > > > [  146.320941][    T9] CPU: 3 PID: 9 Comm: kworker/u16:1 Tainted: G
-> > > > >     W         5.14.0-mainline-06795-g42b258c2275c #24
-> > > > > [  146.331974][    T9] Hardware name: Thundercomm Dragonboar
-> > > > > Format: Log Type - Time(microsec) - Message - Optional Info
-> > > > > Log Type: B - Since Boot(Power On Reset),  D - Delta,  S - Statistic
-> > > > > S - QC_IMAGE_VERSION_STRING=BOOT.XF.2.0-00371-SDM845LZB-1
-> > > > > S - IMAGE_VARIANT_STRING=SDM845LA
-> > > > > S - OEM_IMAGE_VERSION_STRING=TSBJ-FA-PC-02170
-> > > > >
-> > > > > So Caleb sent me to this thread. :)
-> > > > >
-> > > > > I'm still trying to trip it again, but it does seem like db845c is
-> > > > > also seeing some stability issues with Linus' HEAD.
-> > > > >
-> > > >
-> > > > Caleb's original pastebin seems to have expired (or at least require
-> > > > some sort of ubuntu login to access).. were the crashes he was seeing
-> > > > also 'AHB bus error'?
-> > >
-> > > I can reproduce this hard crash
-> > > https://www.irccloud.com/pastebin/Cu6UJntE/ and a gpu lockup
-> > > https://www.irccloud.com/pastebin/6Ryd2Pug/ at times reliably, by
-> > > running antutu benchmark on pocof1.
-> > >
-> > > Reverting 9bc95570175a ("drm/msm: Devfreq tuning") helps and I no
-> > > longer see these errors.
-> > >
-> > > Complete dmesg for hardcrash https://pastebin.com/raw/GLZVQFQN
-> > >
-> >
-> > Does antutu trigger this issue as easily on db845c?  If no, does
-> > db845c have pmic differences compared to pocof1 and Caleb's phone?
->
-> Yes I can reproduce this hard crash with antutu on db845c as well with
-> linux/master at 477f70cd2a67 ("Merge tag 'drm-next-2021-08-31-1' of
-> git://anongit.freedesktop.org/drm/drm").
->
-> Dmesg: https://pastebin.com/raw/xXtvxk0G
->
+On 2021/9/6 20:49, David Hildenbrand wrote:
+> On 06.09.21 14:45, Miaohe Lin wrote:
+>> On 2021/9/6 20:11, David Hildenbrand wrote:
+>>> On 06.09.21 14:02, David Hildenbrand wrote:
+>>>> On 04.09.21 11:18, Miaohe Lin wrote:
+>>>>> If __isolate_free_page() failed, due to zone watermark check, the page is
+>>>>> still on the free list. But this page will be put back to free list again
+>>>>> via __putback_isolated_page() now. This may trigger page->flags checks in
+>>>>> __free_one_page() if PageReported is set. Or we will corrupt the free list
+>>>>> because list_add() will be called for pages already on another list.
+>>>>>
+>>>>> Fixes: 3c605096d315 ("mm/page_alloc: restrict max order of merging on isolated pageblock")
+>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>>> ---
+>>>>>     mm/page_isolation.c | 6 ++----
+>>>>>     1 file changed, 2 insertions(+), 4 deletions(-)
+>>>>>
+>>>>> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+>>>>> index 9bb562d5d194..7d70d772525c 100644
+>>>>> --- a/mm/page_isolation.c
+>>>>> +++ b/mm/page_isolation.c
+>>>>> @@ -93,10 +93,8 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+>>>>>                 buddy_pfn = __find_buddy_pfn(pfn, order);
+>>>>>                 buddy = page + (buddy_pfn - pfn);
+>>>>>     -            if (!is_migrate_isolate_page(buddy)) {
+>>>>> -                __isolate_free_page(page, order);
+>>>>> -                isolated_page = true;
+>>>>> -            }
+>>>>> +            if (!is_migrate_isolate_page(buddy))
+>>>>> +                isolated_page = !!__isolate_free_page(page, order);
+>>>>>             }
+>>>>>         }
+>>>>>    
+>>>>
+>>>> Thanks!
+>>>>
+>>>> Reviewed-by: David Hildenbrand <david@redhat.com>
+>>>>
+>>>
+>>> To make the confusion perfect (sorry) :D I tripple-checked:
+>>>
+>>> In unset_migratetype_isolate() we check that is_migrate_isolate_page(page) holds, otherwise we return.
+>>>
+>>> We call __isolate_free_page() only for such pages.
+>>>
+>>> __isolate_free_page() won't perform watermark checks on is_migrate_isolate().
+>>>
+>>> Consequently, __isolate_free_page() should never fail when called from unset_migratetype_isolate()
+>>>
+>>> If that's correct then we  could instead maybe add a VM_BUG_ON() and a comment why this can't fail.
+>>>
+>>>
+>>> Makes sense or am I missing something?
+>>
+>> I think you're right. __isolate_free_page() should never fail when called from unset_migratetype_isolate()
+>> as explained by you. But it might be too fragile to reply on the failure conditions of __isolate_free_page().
+>> If that changes, VM_BUG_ON() here might trigger unexpectedly. Or am I just over-worried as failure conditions
+>> of __isolate_free_page() can hardly change?
+> 
+> Maybe
+> 
+> isolated_page = !!__isolate_free_page(page, order);
+> /*
+>  * Isolating a free page in an isolated pageblock is expected to always
+>  * work as watermarks don't apply here.
+>  */
+> VM_BUG_ON(isolated_page);
 
-One thing I thought of, which would be worth ruling out, is whether
-this issue only occurs with freq changes immediately after resuming
-the GPU, vs freq changes in general.  Could you try the below patch.
-And if it "fixes" the issue, then try reducing the delay until you
-start seeing GPU hangs again.
+Should this be VM_BUG_ON(!isolated_page) ?
 
-----------
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index 40c9fef457a4..278b85207ea3 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -1513,6 +1513,8 @@ static int a6xx_pm_resume(struct msm_gpu *gpu)
-  if (ret)
-  return ret;
+> 
+> 
+> VM_BUG_ON() allows us to detect any issues when testing. Combined with the comment it tells everybody messing with __isolate_free_page() what we expect in this function.
+> 
+> In production system, we would handle it gracefully.
+> 
 
-+ msleep(5);
-+
-  msm_devfreq_resume(gpu);
-
-  a6xx_llc_activate(a6xx_gpu);
-----------
-
-BR,
--R
-
->
-> >
-> > I think we may need some help from qcom here, but I'll go back and
-> > look at older downstream kernels to see if I can find any evidence
-> > that we need to limit how far we change the freq in a single step.
-> > It's not clear to me if there is some physical constraint that the
-> > driver needs to respect, or if we have some missing/incorrect
-> > configuration for a630.  IIRC the downstream kernel is letting the GMU
-> > do more of the freq management, so it might be handling this case for
-> > the kernel.  But the GMU is a bit of a black box to me and I don't
-> > have any docs, so just a guess.
-> >
-> > It would be helpful if someone who can repro this could try the
-> > experiments I mentioned about increasing min_freq and/or decreasing
-> > max_freq to limit the size of the freq change until the issue does not
-> > happen.
-> >
-> > If we have to, we can merge this hack patch to disable freq clamping
-> > on a630.. but that isn't really a fix.  The root issue is a power
-> > issue, 9bc95570175a just made it more likely to see the problem.
-> >
-> > BR,
-> > -R
-> >
-> > > Regards,
-> > > Amit Pundir
-> > >
-> > > >
-> > > > If you have a reliable reproducer, I guess it would be worth seeing if
-> > > > increasing the min_freq (ie. to limit how far we jump the freq in one
-> > > > shot) "fixes" it?
-> > > >
-> > > > I guess I could check downstream kgsl to see if they were doing
-> > > > something to increase freq in smaller increments.. I don't recall that
-> > > > they were but it has been a while since I dug thru that code.  And I
-> > > > suppose downstream it could also be done in their custom tz governor.
-> > > >
-> > > > BR,
-> > > > -R
+Sounds reasonable. Will do it in v2. Many thanks for your suggestion and effort!
