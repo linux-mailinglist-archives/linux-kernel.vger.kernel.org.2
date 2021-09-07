@@ -2,118 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86847402DAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98992402DBB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345680AbhIGRWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 13:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55046 "EHLO
+        id S1345581AbhIGR2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 13:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234497AbhIGRWH (ORCPT
+        with ESMTP id S231132AbhIGR2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 13:22:07 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123A0C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 10:21:01 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id j2so6257600pll.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:21:01 -0700 (PDT)
+        Tue, 7 Sep 2021 13:28:20 -0400
+Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF2FC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 10:27:13 -0700 (PDT)
+Received: by mail-vs1-xe32.google.com with SMTP id bf15so66588vsb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:27:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QrALAof3e93o8mC9f1B/BSGreLUfRte55Ordj5X3t8A=;
-        b=JMe6Am76oke/iV4XHXHAUjTAkwDcgN0Nz1QkaAqGuCMjDkWnlKu2SH1TtN8U+V1AOh
-         PN+dYSG+cka6tpYAfqR2xrgv276jzV8y14RuxLob8x0vgAwSyFA7xq5sSu/KMxqxngmw
-         egy8RKL5soJxS6Wv1g9T3EsnMu9TGpqiyKvMxKGYKIDoKVJcvs7aWtZEU26Vbf6HOm4h
-         dhDOTzMZSM3j4x00EXhk283kYzcfeWOA61vZVVPEiSKSzQrgt0jEcrmniEfAn8RGWNrf
-         kIp1sz4q8OTsZn7tinh+V9z1I5UHwrJiTjZm4fRugaUF5RSF8iMVBl/7ejbltotSmMBA
-         Lkrw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LC0TnzBIm7kldlTZWFwbiNFGUzVHexmW80QmHFbf/JU=;
+        b=ieHN2db3PcG2jtfXnwvh5b+FuSokYOFRS4Bi5bNwo/Z73PjPuSJEFj4ZLW7XIknwuC
+         TiTmzJrjhhRJ5OJCtt/7v5DCkahiBnjQJKRMb3ALmxd3D060+9+SM4SJdR1DSg/3fFfj
+         mmGXn6SyYYiLLaFdYzGcPjUQB5Qu/M0R8Wj7Yj15g9AlGxEGf0vw568pD3pSmbpW1Roa
+         3axeG1NxT+h01zgukfg/Bq4TvnnvxRf7SOgzBtAoVp/4F/tyiymCy1+ogrQ+uyKijiaa
+         nQJ9rDDl46PTGRJbXnqhRfQzDiWfRVs3goMpzDvb4A2e/3MdLX0AtE1PQOZSVe8rhshR
+         VQNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=QrALAof3e93o8mC9f1B/BSGreLUfRte55Ordj5X3t8A=;
-        b=VQTNazA+wN62dxPP/73TWmyc+8xUyjzOAzirYJgRnuKWXB57MzjloUiOvUdZ3gOTZK
-         5e0JujaxXrvjmcCs+VE3h4PnW3883CWtvfwjxy3L5ZpyUDrHSnrhx3OgWGNLrE3dT4uy
-         nBfuz3DHijog5A7OnGaiXMUi2aDdXLKeKQcfuN8mKjvQmKT4LZuE6dE+9aYeIR5x9ONp
-         60ziaSVRlR778B8B88S39fftaeKWu+p6YfCgwSzrtipFd6fcV9A8zTyrewf7hOKZNaRP
-         VxKMsm241VGlyoVhUjgyq4MhiVea7SjPWdIgZ8pkByEBGv+C/gIn0RvCr2r4Ssox+Zxs
-         N28w==
-X-Gm-Message-State: AOAM533NgVpFTeqbfTDLDou61Tl8Zpl4EKgvchDZ6KgDthhAEfqWjlgW
-        L9oQQhZOnnlXsL+/Xej6ocA=
-X-Google-Smtp-Source: ABdhPJzXeli19eQnEd5f9odSdCpc3u5rS355h/GooW8HPHyZLRJkJe+DAQfrvgX54RO4hjaLi0NP1A==
-X-Received: by 2002:a17:90b:3ec1:: with SMTP id rm1mr5626136pjb.5.1631035260480;
-        Tue, 07 Sep 2021 10:21:00 -0700 (PDT)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id v7sm3007849pjg.34.2021.09.07.10.20.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 10:21:00 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 7 Sep 2021 07:20:58 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Borislav Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yutian Yang <nglaive@gmail.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>
-Subject: Re: [memcg] 0f12156dff: will-it-scale.per_process_ops -33.6%
- regression
-Message-ID: <YTefelthK5kSIvUU@slm.duckdns.org>
-References: <20210907150757.GE17617@xsang-OptiPlex-9020>
- <dbc9955d-6c28-1dd5-b842-ef39a762aa3b@kernel.dk>
- <CAHk-=wgrF65BpP6P6_a6+k+C8V+JOBiEx0X-c9idiM87uk32FQ@mail.gmail.com>
- <774dee70-69bd-9f95-d197-4cff83e4e633@kernel.dk>
- <YTedOVCV3s6Z210f@carbon.dhcp.thefacebook.com>
- <YTeeBf64yUwj01Sf@slm.duckdns.org>
- <22a0156e-f74f-51c8-b7fd-9b5a375d7c81@kernel.dk>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LC0TnzBIm7kldlTZWFwbiNFGUzVHexmW80QmHFbf/JU=;
+        b=Y/YBzN3Hf7mCARNH981G/NYkiulvzQZa+KDuWKQd++QwDvBGToxWfIls2pzfHNozvX
+         eTRznaYhx9jbfjaCsElQtiMAT3qXIgNGnIpiAV1jzaEoTihE31v09HvG4tdxsZwrTrfb
+         7DF6b8xPizN7WXmJOmw15UFtcQy3vaCNDz2PSrO+XUwvJMBpO61KB0WT55xDy3nU3hth
+         bjv+/FKeVVQ1u6BqBuop0DZwdGrer5087ReBErTFNwjHsOO2XjRDXWjYegvwX3zDfxlv
+         Lapt/7G3FyMWNPFtEunCBv3UGdxIBwSWXxA/+XMVxtAXGce/+c42IOarLsB/HXFeC6D+
+         HR/A==
+X-Gm-Message-State: AOAM532FABA37U6N8Pif2dMNM2KzllhgNDJ59gCks/ytpagpifgosuZS
+        wJeAnQ1rED0jDzfddMxKx5CqSzNceR/2T7wuxpk=
+X-Google-Smtp-Source: ABdhPJzw9KOkfNVmNb05rNdw1aVHB0qlmxd5gveD+2sJgFMYTfpkNnRkyVTydMqT9KrWCacjCgcqkNXw7ntoGqAT19Q=
+X-Received: by 2002:a67:d098:: with SMTP id s24mr9651450vsi.23.1631035632569;
+ Tue, 07 Sep 2021 10:27:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <22a0156e-f74f-51c8-b7fd-9b5a375d7c81@kernel.dk>
+References: <20210831202133.2165222-1-jim.cromie@gmail.com>
+ <20210831202133.2165222-4-jim.cromie@gmail.com> <9fe5e962-e65e-6844-269a-058cce944a89@linux.intel.com>
+ <CAJfuBxz+cZyyDSBrDR0+Rf7K9fqpmeAfcWb1x2MkwD0P9LuDcQ@mail.gmail.com>
+ <2bfbd75c-8f7f-e756-05c3-13dff41264e4@linux.intel.com> <CAJfuBxymoFx79kQzGw_Gxv1vk7kVaTN-V0Hn694C6kT=kP7u2A@mail.gmail.com>
+ <92c7639b-c8f4-cfa4-f9ca-82c0a06e0337@linux.intel.com>
+In-Reply-To: <92c7639b-c8f4-cfa4-f9ca-82c0a06e0337@linux.intel.com>
+From:   jim.cromie@gmail.com
+Date:   Tue, 7 Sep 2021 11:26:46 -0600
+Message-ID: <CAJfuBxxeG0-bijXvoExRyh6Zv5o8PSz42cWam6m0aVCUKPMZ+Q@mail.gmail.com>
+Subject: Re: [Intel-gfx] [PATCH v7 3/8] i915/gvt: use DEFINE_DYNAMIC_DEBUG_CATEGORIES
+ to create "gvt:core:" etc categories
+To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc:     Sean Paul <seanpaul@chromium.org>, Jason Baron <jbaron@akamai.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        intel-gvt-dev@lists.freedesktop.org,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 11:18:21AM -0600, Jens Axboe wrote:
-> A purely time based approach might be problematic, as you can allocate a
-> LOT of data in a short amount of time. Heuristics probably need to be a
-> hybrid of "time much time has passed" OR "we're over the front cache
-> threshold in terms of deferred accounting". But yes, I don't see why
-> we'd necessarily need different approaches for short vs long life times.
+On Tue, Sep 7, 2021 at 9:14 AM Tvrtko Ursulin
+<tvrtko.ursulin@linux.intel.com> wrote:
+>
+>
+> On 06/09/2021 18:41, jim.cromie@gmail.com wrote:
+> > On Mon, Sep 6, 2021 at 6:26 AM Tvrtko Ursulin
+> > <tvrtko.ursulin@linux.intel.com <mailto:tvrtko.ursulin@linux.intel.com>>
+> > wrote:
+> >  >
+> >  >
+> >  > On 03/09/2021 20:22, jim.cromie@gmail.com
+> > <mailto:jim.cromie@gmail.com> wrote:
+> >  > > On Fri, Sep 3, 2021 at 5:07 AM Tvrtko Ursulin
+> >  > > <tvrtko.ursulin@linux.intel.com
+> > <mailto:tvrtko.ursulin@linux.intel.com>> wrote:
+> >  > >>
+> >  > >>
+> >  > >> On 31/08/2021 21:21, Jim Cromie wrote:
+> >  > >>> The gvt component of this driver has ~120 pr_debugs, in 9 categories
+> >  > >>> quite similar to those in DRM.  Following the interface model of
+> >  > >>> drm.debug, add a parameter to map bits to these categorizations.
+> >  > >>>
+> >  > >>> DEFINE_DYNAMIC_DEBUG_CATEGORIES(debug_gvt, __gvt_debug,
+> >  > >>>        "dyndbg bitmap desc",
+> >  > >>>        { "gvt:cmd: ",  "command processing" },
+> >
+> >  > >>> v7:
+> >  > >>> . move ccflags addition up to i915/Makefile from i915/gvt
+> >  > >>> ---
+> >  > >>>    drivers/gpu/drm/i915/Makefile      |  4 ++++
+> >  > >>>    drivers/gpu/drm/i915/i915_params.c | 35
+> > ++++++++++++++++++++++++++++++
+> >  > >>
+> >  > >> Can this work if put under gvt/ or at least intel_gvt.h|c?
+> >
+> > I tried this.
+> > I moved the code block into gvt/debug.c (new file)
+> > added it to Makefile GVT_SOURCES
+> > dunno why it wont make.
+> > frustratig basic err, Im not seeing.
+> > It does seem proper placement, will resolve...
+> >
+> >
+> >  > >>
+> >  > >
+> >  > > I thought it belonged here more, at least according to the name of the
+> >  > > config.var
+> >  >
+> >  > Hmm bear with me please - the categories this patch creates are intended
+> >  > to be used explicitly from the GVT "sub-module", or they somehow even
+> >  > get automatically used with no further intervention to callers required?
+> >  >
+> >
+> > 2009 - v5.9.0  the only users were admins reading/echoing
+> > /proc/dynamic_debug/control
+> > presumably cuz they wanted more info in the logs, episodically.
+> > v5.9.0 exported dynamic_debug_exec_queries for in-kernel use,
+> > reusing the stringy: echo $query_command > control  idiom.
+> > My intention was to let in-kernel users roll their own drm.debug type
+> > interface,
+> > or whatever else they needed.  nobodys using it yet.
+>
+> What is 2009 referring to?
+>
+> I am still not quite following. In case of the GVT categories you added,
+> in order for them to be used, would you or not also need to use some new
+> logging macros?
+>
+> > patch 1/8 implements that drm.debug interface.
+> > 5/8 is the primary use case
+> > 3/8 (this patch) & 4/8 are patches of opportunity, test cases, proof of
+> > function/utility.
+> > its value as such is easier control of those pr-debugs than given by
+> > echo > control
+> >
+> > Sean Paul seanpaul@chromium.org <mailto:seanpaul@chromium.org> worked up
+> > a patchset to do runtime steering of drm-debug stream,
+> > in particular watching for drm:atomic:fail: type activity (a subcategory
+> > which doesnt exist yet).
+> > 5/8 conflicts with his patchset, I have an rfc approach to that, so his
+> > concerns are mine too.
+>
+> What kind of runtime steering is that - would you happen to have a link?
 
-Yeah, it'd need some heuristics to guard against the cache exploding and a
-lot of laziness in expiration logic but none of those should be too
-complicated.
+Sean's patches
+https://patchwork.freedesktop.org/series/78133/
 
-Thanks.
+what I think might work better
+https://lore.kernel.org/dri-devel/20210822222009.2035788-11-jim.cromie@gmail.com/
 
--- 
-tejun
+> One idea we in the GEM team have mentioned a few time is the ability of
+> making the debug log stream per DRM client. That means opening
+> "something" (socket, fd, etc), enabling debug, which would only show
+> debug logs belonging to one client. That can sometimes be useful (and
+> more secure) than enabling a lot of debug for the system as a whole. But
+> of course there isn't much overlap with your dyndbg work. So just
+> mentioning this since the word "runtime steering" reminded me of it.
+>
+
+my rfc patch above might help. it adds
+   register_dyndbg_tracer ( selector_query, handler_callback)
+
+I think you could write a single handler to further select / steer the
+debug stream
+according to your pr_debug arguments.
+
+
+>
+> >      > unsigned long __gvt_debug;
+> >      > EXPORT_SYMBOL(__gvt_debug);
+> >      >
+> >      >
+> >      >>> +
+> >      >>>    # Please keep these build lists sorted!
+> >      >>>
+> >      >>>    # core driver code
+> >      >>> diff --git a/drivers/gpu/drm/i915/i915_params.c
+> >     b/drivers/gpu/drm/i915/i915_params.c
+> >      >>> index e07f4cfea63a..e645e149485e 100644
+> >      >>> --- a/drivers/gpu/drm/i915/i915_params.c
+> >      >>> +++ b/drivers/gpu/drm/i915/i915_params.c
+> >      >>> @@ -265,3 +265,38 @@ void i915_params_free(struct i915_params
+> >     *params)
+> >      >>> +                             _DD_cat_("gvt:mmio:"),
+> >      >>> +                             _DD_cat_("gvt:render:"),
+> >      >>> +                             _DD_cat_("gvt:sched:"));
+> >      >>> +
+> >      >>> +#endif
+> >      >>
+> >      >> So just the foundation - no actual use sites I mean? How would
+> >     these be
+> >      >> used from the code?
+> >      >>
+> >      >
+> >      > there are 120 pr_debug "users" :-)
+> >      >
+> >      > no users per se, but anyone using drm.debug
+> >      > /sys/module/drm/parameters/debug
+> >      > might use this too.
+> >      > its a bit easier than composing queries for
+> >      >/proc/dyamic_debug/control
+> >
+> >     Same as my previous question, perhaps I am not up to speed with this
+> >     yet.. Even if pr_debug is used inside GVT - are the categories and
+> >     debug_gvt global as of this patch (or series)?
+> >
+> >
+> > they are already global in the sense that if kernel is built with
+> > DYNAMIC_DEBUG,
+> > the admin can turn those pr_debugs on and off, and change their
+> > decorations in the log (mod,func.line).
+> > Nor are modules protected from each other; drm-core could use
+> > dd-exec-queries to enable/disable
+> > pr-debugs in i915 etc
+> >
+> > This patch just adds a gvt-debug knob like drm-debug. using the existing
+> > format prefixes to categorize them.
+> > Whether those prefixes should be bent towards consistency with the rest
+> > of drm-debug
+> > or adapted towards some gvt community need I couldnt say.
+> >
+> > Its no save-the-world feature, but its pretty cheap.
+> >
+> > Id expect the same users as those who play with drm.debug, for similar
+> > reasons.
+> >
+> > does this clarify ?
+>
+> Not yet I'm afraid. :)
+
+heh - 2 blind dudes describing their side of the elephant !
+
+When you say "using the existing format
+> prefixes", but it is not using __drm_debug but __gvt_debug (which isn't
+> a modparam). So I am lost as to what is __gvt_debug for and how does it
+> tie to existing DRM categories.
+>
+
+we have 2 kinds of "categories":
+1- proper drm categories - one of 10
+2- ad-hoc categories - these are systematized - using small set of
+format-prefixes
+i915 has 120 of these in GVT, with 9 different prefixes, touched in patches 2,3
+i915 also has ~1500 uses of drm-debug API  (with proper drm category enums)
+amdgpu also has lots of both kinds of debug; 13 kinds of prefixes.
+
+Ive probably created some confusion by stealing the "category" name,
+it could have been "class", but I thought we didnt need new vocabulary with
+subtle and ambiguous differences from the original term.
+
+Long term, maybe those ad-hoc prefixes can be aligned better with proper drm
+categories, but thats a separate discussion.
+
+But we can control them now, using a well oiled idiom, a drm.debug
+"style" bitmap.
+Its like drm.debug's little sisters, __gvt_debug & __debug_dc.  not
+identical, but related.
+
+Anyway, patches 2,3,4 work the ad-hoc prefix categorizations so theyre
+controllable.
+
+5/8 adapts DRM-debug itself - obsoleting enum category for most of drm-debug api
+this is where dyndbg's data table gets bigger - core & drivers! have
+many drm-debug uses,
+rivaling all builtin prdebugs in size.
+
+Then, we have a unified foundation on dyndbg, using glorified prefix strings
+for both formal DRM_DBG_CAT_* categories, and for similar existing uses.
+
+Then we could evolve / extend / bikeshed the categories (spelling,
+separator char '.' is nice too)
+
+Sean has already suggested "drm:atomic:fail:" sub-category.
+I agree - it is using the new stringy flexibility to significant
+expressive benefit.
+dyndbg makes new categories actionable.
+
+istm "*:fail:" is maybe a meta-sub-category (dont read that too closely;)
+maybe "*:warn:" "*:err:" ( what about warning, error ? here lies
+bikeshed madness !!)
+
+> Regards,
+>
+> Tvrtko
+
+thanks
+JIm
