@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B799403017
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 23:06:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED87402FE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346881AbhIGVID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 17:08:03 -0400
-Received: from rosenzweig.io ([138.197.143.207]:46226 "EHLO rosenzweig.io"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232045AbhIGVIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 17:08:01 -0400
-Date:   Tue, 7 Sep 2021 16:48:26 -0400
-From:   Alyssa Rosenzweig <alyssa@rosenzweig.io>
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Hector Martin <marcan@marcan.st>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: mailbox: Add Apple mailbox bindings
-Message-ID: <YTfQGqLv6FLnUfv+@sunset>
-References: <20210907145501.69161-1-sven@svenpeter.dev>
- <20210907145501.69161-3-sven@svenpeter.dev>
- <YTe17jGBobarePaK@sunset>
- <ff66c30d-1b43-43d3-a4b0-02fe7d346118@www.fastmail.com>
+        id S1346504AbhIGUv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:51:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229601AbhIGUv0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 16:51:26 -0400
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D0CC061575;
+        Tue,  7 Sep 2021 13:50:19 -0700 (PDT)
+Received: by mail-yb1-xb2d.google.com with SMTP id z18so1094664ybg.8;
+        Tue, 07 Sep 2021 13:50:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c67uG96v7m5oK6v4jgMgyYQ8vaVF+ha9XkRfekq/788=;
+        b=pMAobo9YyVRUKw/e0lSeOrV7MzoP1qHoxGq8kRvC9THZX5iSxB3qteUbxw0PjY7KW+
+         laobPerUdQAc0Yl3Du7F9AggiSAbM9c0JmZmQ1xewS1u4dTZsWeQ/79dLQ7oHxufFCFI
+         /J1ItRGJnN5/XY9zEhttI6t+nPQCILUYm5JzQVCHebKPRgZSVl95KfKJK6vxR2zAIC9B
+         61YK2JMJpDrH5/G05Xyps4NnRbfG9RRS3LZaCrABOQhNYtPXNOa9UYg6ucFiKcr5I1/q
+         pIeKOVklz3UTov7xILClILhf37fsJiz4a5g6vgiiy5iNy/2RYDQEVyEYhjUlT/2yb5yW
+         xgkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c67uG96v7m5oK6v4jgMgyYQ8vaVF+ha9XkRfekq/788=;
+        b=XxiRnMWQdUcFDZENBjjgkxOFFjJtnC3Y56Yo124ZDR3bKmuY1i+IFHsgz8IvkbiEVg
+         HQmKXAHIxy9sjJyrtc+WWpQcEeoax+PKwU/dqU83KHquNYlNoo4npV+IKaxLiOCsHfYR
+         dPXdrykhVfcMQtwoMSKPnSw93n01laAsdTpR7YVHzY+3Z79e2VfcsFRqmcLJZO6wynSF
+         dF7gCfI19bJw7PQZg5NmOI4menuv1pbfi0SuX68z333Y87F9B9vpTnnBWkNl3q9oDn0M
+         e9/7CICNqtH4Y4lcOJSGyP0o3GOAaG/KxdibKHNFQoiZQ5nyFlxeru4mYbsbMpIJiUFm
+         aWWQ==
+X-Gm-Message-State: AOAM5312MOlUWUefriUWvPEzov+P2nwma9d+SgF0A6K439QLy69Yu22h
+        YGRfN4i2FGMOveyDMCpBd63kLkBkDKdXkNTuJsU=
+X-Google-Smtp-Source: ABdhPJybg9oFilkeCBAgj727ohS1ttz6miPunDJMsWJhvp+uTbm1kaEwtFDY7Y2R8WzmRLxFk6D27omAtLDUAAz051c=
+X-Received: by 2002:a25:65c4:: with SMTP id z187mr423211ybb.113.1631047818433;
+ Tue, 07 Sep 2021 13:50:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ff66c30d-1b43-43d3-a4b0-02fe7d346118@www.fastmail.com>
+References: <20210902165706.2812867-1-songliubraving@fb.com>
+ <20210902165706.2812867-2-songliubraving@fb.com> <YTHWoCcSgvfx24/N@hirez.programming.kicks-ass.net>
+ <D501C4AD-3778-431B-A710-3399BFE6EE56@fb.com> <B3CCDCB4-1D06-4331-A3C7-B1D413A4ABA5@fb.com>
+In-Reply-To: <B3CCDCB4-1D06-4331-A3C7-B1D413A4ABA5@fb.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 7 Sep 2021 13:50:07 -0700
+Message-ID: <CAEf4Bzacgy=u+aTmTGbWo6UhHUWk6uA-zsKdsNCk5g6oPNycog@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 1/3] perf: enable branch record for software events
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, bpf <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "kjain@linux.ibm.com" <kjain@linux.ibm.com>,
+        Kernel Team <Kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > +      - description:
-> > > +          M3 mailboxes are an older variant with a slightly different MMIO
-> > > +          interface still found on the M1.
-> > > +        items:
-> > > +          - const: apple,t8103-m3-mailbox
-> > 
-> > Would be nice to document an example of where an M3 mailbox is found.
-> 
-> Sure, I can add a comment that this is used for the coprocessor controlling Thunderbolt.
+On Tue, Sep 7, 2021 at 12:02 PM Song Liu <songliubraving@fb.com> wrote:
+>
+>
+>
+> > On Sep 3, 2021, at 9:50 AM, Song Liu <songliubraving@fb.com> wrote:
+> >
+> >
+> >
+> >> On Sep 3, 2021, at 1:02 AM, Peter Zijlstra <peterz@infradead.org> wrote:
+> >>
+> >> On Thu, Sep 02, 2021 at 09:57:04AM -0700, Song Liu wrote:
+> >>> +static int
+> >>> +intel_pmu_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
+> >>> +{
+> >>> +   struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+> >>> +
+> >>> +   intel_pmu_disable_all();
+> >>> +   intel_pmu_lbr_read();
+> >>> +   cnt = min_t(unsigned int, cnt, x86_pmu.lbr_nr);
+> >>> +
+> >>> +   memcpy(entries, cpuc->lbr_entries, sizeof(struct perf_branch_entry) * cnt);
+> >>> +   intel_pmu_enable_all(0);
+> >>> +   return cnt;
+> >>> +}
+> >>
+> >> Would something like the below help get rid of that memcpy() ?
+> >>
+> >> (compile tested only)
+> >
+> > We can get rid of the memcpy. But we will need an extra "size" or "num_entries"
+> > parameter for intel_pmu_lbr_read. I can add this change in the next version.
+> >
+>
+> This is trickier than I thought. As current lbr_read() function works with
+> perf_branch_stack, while the BPF helper side uses array of perf_branch_entry.
+> And the array is passed into the helper by the BPF program. Therefore, to
+> really get rid of the memcpy, we need to refactor the lbr driver code more.
+> How about we keep the memcpy for now, and add the optimization later (if we
+> think it is necessary)?
+>
 
-That raises another issue ... how do we know the M3 code works at all
-without TB support yet? It "looks" correct but some of the IRQ handling
-stuff is nontrivial.
+Sounds good to me!
 
-> > > +  interrupts:
-> > > +    minItems: 4
-> > > +    items:
-> > > +      - description: send fifo is empty interrupt
-> > > +      - description: send fifo is not empty interrupt
-> > > +      - description: receive fifo is empty interrupt
-> > > +      - description: receive fifo is not empty interrupt
-> > > +
-> > > +  interrupt-names:
-> > > +    minItems: 4
-> > > +    items:
-> > > +      - const: send-empty
-> > > +      - const: send-not-empty
-> > > +      - const: recv-empty
-> > > +      - const: recv-not-empty
-> > 
-> > If the names became not-constant the asprintf thing goes away, not sure
-> > that's better or worse.
-> 
-> I'm not sure I understand your comment here. This property just gives a name
-> to the interrupts so that they can be referenced by that instead of a magic
-> number between 0 and 4 in the driver.
-
-D'oh, right, retracted. (Both this comment and the corresponding comment
-on the driver itself). Sorry about that.
-
-> > > +  clocks:
-> > > +    description:
-> > > +      Reference to the clock gate phandle(s) if required for this mailbox.
-> > > +      Optional since not all mailboxes are attached to a clock gate.
-> > 
-> > Do we do anything with the clocks at this point?
-> > 
-> 
-> The device tree bindings describe the hardware (as best as we can without proper
-> documentation) and some of these mailboxes have clock gates which need to be turned
-> on before accessing their MMIO. This driver already tries to do that and works fine
-> with the downstream clock driver(s) we have.
-
-Good enough for me, thanks for clarifying 👍
-
-Commit r-b, though Rob will surely point out problems and I'll need to
-rereview 😉
+> Thanks,
+> Song
+>
