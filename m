@@ -2,62 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5724840319E
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 01:45:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E9D4031A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 01:50:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241953AbhIGXq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 19:46:26 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:33781 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231519AbhIGXqV (ORCPT
+        id S1346475AbhIGXvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 19:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231519AbhIGXvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 19:46:21 -0400
-Received: by mail-io1-f70.google.com with SMTP id g2-20020a6b7602000000b005be59530196so476735iom.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 16:45:14 -0700 (PDT)
+        Tue, 7 Sep 2021 19:51:03 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A70C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 16:49:56 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id d16so402664ljq.4
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 16:49:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FECPoa1g9+9dsqYv+iSJV+4ByXKkIUfIRQm65q5XJsw=;
+        b=Ao7WGPwitXn5c2MO++qjMMxGjpAW4tTnL7npoHAF64WOVVCHhaM4k6teVfuN4ScyVZ
+         DPFDpWA0mMTLjTVQ5fC0lNRLA0OsawTGUn8vrhyPxXJ4s8mfA40FAyw4QDmZSav7D8UH
+         kba8D7ntoNzi/CZ/5UkXctqbluhNzpNIYeTS8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=azO+95TCO/1HFtLgHV37fVlP8fKel1LFnAD0jlvW0n8=;
-        b=XLZ8hMNQ+RrNjr3Kni1zIxnfQs/+F4wJI2zSbj+ueuMljdqQbweAR+9SUywLYd9vad
-         KRxSO3yMeaUwCd7udDrC9ZDG0OKZLN0aTYCAArldbo4QpI3RkcwzV8r3olMDZMjW16Mh
-         VxRIMhhEkhU0H7k1oR05ffcPf/rGy6nuDKQ0Wi8UTMCXYFYNjoaLdf3QcaIrjMhTzwIE
-         lu1H7h9gpy5JWVxedz24okG4cNNhYlkMsL5h+D/RE03oQKmVRcgsGJu2g+Qi3ZjdmSNy
-         9xQl6lWKlGByV0p0+J/8nfjzvDRzwY7N79NBP53b1y31D33qk6ZKwyG32XU2aC3THIjC
-         eKwQ==
-X-Gm-Message-State: AOAM533DoY4OSySnwX3Dn9acq7EeyD/vTagWdV0NprxhD6o9qZbWwjC2
-        DNjc8EZGulJeLAxjfzofYuEoRuALbukTYvIcYxmXiuWIqAyS
-X-Google-Smtp-Source: ABdhPJyXE68bJO2rLgRncQnLtK+Rmo0JITAwKn95hC4okYl+2TZ29ztaLKHbFGMeYnpeh8qMxrGW+CcMpt9CKnYudar6dZuXcMe3
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FECPoa1g9+9dsqYv+iSJV+4ByXKkIUfIRQm65q5XJsw=;
+        b=CM9lw6gAEAFAktyMVIt5Iz+V2TODc2m0JXUJl6w+0QrfQYaCH6ZQkWM/BtQDzT20bU
+         nNVXHSOnitXxJZU56qDPBCbc94cTrCVQ5sFUImbSoERz3D3YCQLHuU1vEJGaRhwdltnZ
+         jVXTJC0LjhXBtZdbxvMHA2YttqyY2JoptQlJSKnONB0XaSEXNB+4+YE4VEiAUR+emqpc
+         eS75Lqyswfw7O4QRa4v5y20TBE6TnGBUnkxra14UwAwvjH9m+OA2ve/4pWZYe/SdDDI7
+         p1ayiB2Mo9utNKYfjROE7OPx/wJaX6x+pZgoTM2Hz0OL/UGIC/imNeWpNmAC03no6Qjc
+         Ao8Q==
+X-Gm-Message-State: AOAM533y8+fSbnVcluz8y1MVTgOgVExKx9mUiQe2NyNO6FD+v6mncLwq
+        N2ojA/+heAaqhpCec/htxx4e2hB//09dq3OIaV8=
+X-Google-Smtp-Source: ABdhPJxLDGJYcNL7lnL6Vemr5/Go6GzHB0YY/y0rl6iglQPiSZ1eQm8aPOoDWblTo/S063MJ/Dxdkg==
+X-Received: by 2002:a2e:7005:: with SMTP id l5mr528574ljc.355.1631058594327;
+        Tue, 07 Sep 2021 16:49:54 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id t184sm34353lff.250.2021.09.07.16.49.51
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 16:49:51 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id t19so619687lfe.13
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 16:49:51 -0700 (PDT)
+X-Received: by 2002:a05:6512:2611:: with SMTP id bt17mr662435lfb.141.1631058590780;
+ Tue, 07 Sep 2021 16:49:50 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:7f42:: with SMTP id m2mr686330ioq.86.1631058314537;
- Tue, 07 Sep 2021 16:45:14 -0700 (PDT)
-Date:   Tue, 07 Sep 2021 16:45:14 -0700
-In-Reply-To: <CAJfpegvr1y9VTXb3Gm2F1Y9mZzWYAEYutV8kdhnD2Yyo8FTvcQ@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000072333305cb705ba0@google.com>
-Subject: Re: [syzbot] possible deadlock in fuse_reverse_inval_entry
-From:   syzbot <syzbot+9f747458f5990eaa8d43@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
+References: <CA+G9fYtFvJdtBknaDKR54HHMf4XsXKD4UD3qXkQ1KhgY19n3tw@mail.gmail.com>
+ <CAHk-=wisUqoX5Njrnnpp0pDx+bxSAJdPxfgEUv82tZkvUqoN1w@mail.gmail.com>
+ <CAHk-=whF9F89vsfH8E9TGc0tZA-yhzi2Di8wOtquNB5vRkFX5w@mail.gmail.com> <92c20b62-c4a7-8e63-4a94-76bdf6d9481e@kernel.org>
+In-Reply-To: <92c20b62-c4a7-8e63-4a94-76bdf6d9481e@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Sep 2021 16:49:35 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiynwuneR4EbUNtd2_yNT_DR0VQhUF1QOZ352D-NOncjQ@mail.gmail.com>
+Message-ID: <CAHk-=wiynwuneR4EbUNtd2_yNT_DR0VQhUF1QOZ352D-NOncjQ@mail.gmail.com>
+Subject: Re: ipv4/tcp.c:4234:1: error: the frame size of 1152 bytes is larger
+ than 1024 bytes [-Werror=frame-larger-than=]
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Ariel Elior <aelior@marvell.com>,
+        GR-everest-linux-l2@marvell.com, Wei Liu <wei.liu@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Eric Dumazet <edumazet@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Sep 7, 2021 at 4:35 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> Won't your example only fix the issue with CONFIG_CPUMASK_OFFSTACK=y
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Yes, but..
 
-Reported-and-tested-by: syzbot+9f747458f5990eaa8d43@syzkaller.appspotmail.com
+> or am I misreading the gigantic comment in include/linux/cpumask.h?
 
-Tested on:
+you're not misreading the comment, but you are missing this important fact:
 
-commit:         626bf91a Merge tag 'net-5.15-rc1' of git://git.kernel...
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f9bfda6f9dee77cd
-dashboard link: https://syzkaller.appspot.com/bug?extid=9f747458f5990eaa8d43
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=143b02ed300000
+  config NR_CPUS_RANGE_END
+        int
+        depends on X86_64
+        default 8192 if  SMP && CPUMASK_OFFSTACK
+        default  512 if  SMP && !CPUMASK_OFFSTACK
+        default    1 if !SMP
 
-Note: testing is done by a robot and is best-effort only.
+so basically you can't choose more than 512 CPU's unless
+CPUMASK_OFFSTACK is set.
+
+Of course, we may have some bug in the Kconfig elsewhere, and I didn't
+check other architectures. So maybe there's some way to work around
+it.
+
+But basically the rule is that CPUMASK_OFFSTACK and NR_CPUS are linked.
+
+That linkage is admittedly a bit hidden and much too subtle. I think
+the only real reason why it's done that way is because people wanted
+to do test builds with CPUMASK_OFFSTACK even without having to have
+some ludicrous number of NR_CPUS.
+
+You'll notice that the question "CPUMASK_OFFSTACK" is only enabled if
+DEBUG_PER_CPU_MAPS is true.
+
+That whole "for debugging" reason made more sense a decade ago when
+this was all new and fancy.
+
+It might make more sense to do that very explicitly, and make
+CPUMASK_OFFSTACK be just something like
+
+  config NR_CPUS_RANGE_END
+        def_bool NR_CPUS <= 512
+
+and get rid of the subtlety and choice in the matter.
+
+             Linus
