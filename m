@@ -2,125 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F8A403142
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 00:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AD540313E
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 00:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345387AbhIGXAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 19:00:03 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:25512 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhIGXAB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 19:00:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631055534; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=YHLJt++Yk8SoMmB1dGCCJS5cBmhjYlM8QhmxUbhnFP4=;
- b=dkVgVqZVUpd+DtsMWn4GrHQen61/CFo+BQsxALg+JpDe4TOgTaRXjSILq2dUoD1sfdGR0cOI
- /VkK4CJltmLw/uxxjundA5cnqVQEcafPSHtIKyxu6sO6zaV3jBCtqPWRGCBm/1FFc5M2z/Rg
- YowYQe46NdValPQG8FgadZq1FLc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 6137eeaec603a0154f94beea (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 07 Sep 2021 22:58:54
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BC9C1C43618; Tue,  7 Sep 2021 22:58:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9FACC4338F;
-        Tue,  7 Sep 2021 22:58:52 +0000 (UTC)
+        id S1346866AbhIGW6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 18:58:49 -0400
+Received: from mga18.intel.com ([134.134.136.126]:43286 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229522AbhIGW6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 18:58:48 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10100"; a="207448907"
+X-IronPort-AV: E=Sophos;i="5.85,276,1624345200"; 
+   d="scan'208";a="207448907"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 15:57:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,276,1624345200"; 
+   d="scan'208";a="469382603"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by orsmga007.jf.intel.com with ESMTP; 07 Sep 2021 15:57:41 -0700
+Date:   Tue, 7 Sep 2021 15:59:12 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Hao Peng <flyingpenghao@gmail.com>
+Cc:     tglx@linutronix.de, mingo@redhat.com,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/tsx: clear RTM and HLE when MSR_IA32_TSX_CTRL is not
+ supported
+Message-ID: <20210907225912.2i6cmprvauyxrhlu@gupta-dev2.localdomain>
+References: <CAPm50aJyfxobKhTrS=dC3pQmM5EbwY2xunet3X5XgnnFUEMmBA@mail.gmail.com>
+ <20210907051454.56eocxfxeuqixlf6@gupta-dev2.localdomain>
+ <CAPm50aLWUJZbgmvrt09S9LKowuH28NQpn7ZSuCkJGf_=jKFjXg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 07 Sep 2021 15:58:52 -0700
-From:   abhinavk@codeaurora.org
-To:     Marijn Suijten <marijn.suijten@somainline.org>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        Jami Kettunen <jami.kettunen@somainline.org>,
-        Pavel Dubrova <pashadubrova@gmail.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/msm/dsi: Use division result from div_u64_rem in 7nm
- and 14nm PLL
-In-Reply-To: <20210906202535.824233-1-marijn.suijten@somainline.org>
-References: <20210906202535.824233-1-marijn.suijten@somainline.org>
-Message-ID: <37d3d27f56787ebe608121ce05bb2ad0@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAPm50aLWUJZbgmvrt09S9LKowuH28NQpn7ZSuCkJGf_=jKFjXg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-06 13:25, Marijn Suijten wrote:
-> div_u64_rem provides the result of the divison and additonally the
-> remainder; don't use this function to solely calculate the remainder
-> while calculating the division again with div_u64.
-> 
-> A similar improvement was applied earlier to the 10nm pll in
-> 5c191fef4ce2 ("drm/msm/dsi_pll_10nm: Fix dividing the same numbers
-> twice").
-> 
-> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c | 4 +---
->  drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c  | 4 +---
->  2 files changed, 2 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
-> b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
-> index 3c1e2106d962..8905f365c932 100644
-> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
-> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
-> @@ -213,9 +213,7 @@ static void pll_14nm_dec_frac_calc(struct
-> dsi_pll_14nm *pll, struct dsi_pll_conf
->  	DBG("vco_clk_rate=%lld ref_clk_rate=%lld", vco_clk_rate, fref);
-> 
->  	dec_start_multiple = div_u64(vco_clk_rate * multiplier, fref);
-> -	div_u64_rem(dec_start_multiple, multiplier, &div_frac_start);
-> -
-> -	dec_start = div_u64(dec_start_multiple, multiplier);
-> +	dec_start = div_u64_rem(dec_start_multiple, multiplier, 
-> &div_frac_start);
-> 
->  	pconf->dec_start = (u32)dec_start;
->  	pconf->div_frac_start = div_frac_start;
-> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-> b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-> index c77c30628cca..1a5abbd9fb76 100644
-> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-> @@ -114,9 +114,7 @@ static void dsi_pll_calc_dec_frac(struct
-> dsi_pll_7nm *pll, struct dsi_pll_config
-> 
->  	multiplier = 1 << FRAC_BITS;
->  	dec_multiple = div_u64(pll_freq * multiplier, divider);
-> -	div_u64_rem(dec_multiple, multiplier, &frac);
-> -
-> -	dec = div_u64(dec_multiple, multiplier);
-> +	dec = div_u64_rem(dec_multiple, multiplier, &frac);
-> 
->  	if (!(pll->phy->cfg->quirks & DSI_PHY_7NM_QUIRK_V4_1))
->  		config->pll_clock_inverters = 0x28;
+On 07.09.2021 14:36, Hao Peng wrote:
+>On Tue, Sep 7, 2021 at 1:13 PM Pawan Gupta
+><pawan.kumar.gupta@linux.intel.com> wrote:
+>>
+>> On 06.09.2021 10:46, Hao Peng wrote:
+>> >If hypervisor does not support MSR_IA32_TSX_CTRL, but guest supports
+>> >RTM and HLE features, it will affect TAA mitigation.
+>>
+>> Guests are on purpose not allowed to control TSX via MSR_IA32_TSX_CTRL,
+>> otherwise a malicious guest can enable TSX and attack host or other
+>> guests. The TAA mitigation within a guest is same as MDS i.e.
+>> micro-architectural buffer clear using VERW instruction. Support for
+>> VERW is added by the microcode update and enumerate by
+>> MSR_ARCH_CAP[MD_CLEAR] bit.
+>>
+>> >Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+>> >---
+>> > arch/x86/kernel/cpu/tsx.c | 7 +++++++
+>> > 1 file changed, 7 insertions(+)
+>> >
+>> >diff --git a/arch/x86/kernel/cpu/tsx.c b/arch/x86/kernel/cpu/tsx.c
+>> >index 9c7a5f049292..5e852c14fef2 100644
+>> >--- a/arch/x86/kernel/cpu/tsx.c
+>> >+++ b/arch/x86/kernel/cpu/tsx.c
+>> >@@ -122,6 +122,13 @@ void __init tsx_init(void)
+>> >
+>> >        if (!tsx_ctrl_is_supported()) {
+>> >                tsx_ctrl_state = TSX_CTRL_NOT_SUPPORTED;
+>> >+
+>> >+               /* If hypervisor does not support MSR_IA32_TSX_CTRL emulation,
+>> >+                * but guest supports RTM and HLE features, it will affect TAA
+>> >+                * （tsx_async_abort）mitigation.
+>> >+                */
+>> >+               setup_clear_cpu_cap(X86_FEATURE_RTM);
+>> >+               setup_clear_cpu_cap(X86_FEATURE_HLE);
+>>
+>> This is not correct. TSX feature can exist without TSX_CTRL MSR.
+>> Moreover, clearing the cached bits with setup_clear_cpu_cap() doesn't
+>> disable the TSX feature in CPU.
+>>
+>After applying this patch, the output of
+>/sys/devices/system/cpu/vulnerabilities/tsx_async_abort
+>becomes “Mitigation: TSX disabled”.Do you mean that tsx is still
+>enabled in this case in guest?
+
+If the host has TSX enabled, guest can use TSX instructions irrespective
+of what cpu capabilities in the guest says.
+
+>I made a mistake in the description before. This problem occurred
+>under the qemu -cpu Icelake-server .
+
+So looks like the real problem is with qemu feature definitions for
+cpu "Icelake-Server", it is probably not exporting "taa-no".
+
+>When I debug this problem to -cpu host, the guest can see taa-no.
+>Thanks.
+
+Thats good.
