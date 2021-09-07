@@ -2,72 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14E8F402919
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 14:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7539402922
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 14:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344181AbhIGMnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 08:43:02 -0400
-Received: from mail-ua1-f45.google.com ([209.85.222.45]:41797 "EHLO
-        mail-ua1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234142AbhIGMnA (ORCPT
+        id S1344279AbhIGMpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 08:45:54 -0400
+Received: from smtp-relay-internal-1.canonical.com ([185.125.188.123]:34688
+        "EHLO smtp-relay-internal-1.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1343949AbhIGMpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 08:43:00 -0400
-Received: by mail-ua1-f45.google.com with SMTP id 75so5477484uav.8;
-        Tue, 07 Sep 2021 05:41:54 -0700 (PDT)
+        Tue, 7 Sep 2021 08:45:53 -0400
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com [209.85.221.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 4163C40783
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:44:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631018686;
+        bh=lSByXk3vZ2uUwX6aw8cCNLfpPVphgUncd0Iy1wU4m98=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=NUXVVFZLqN06ORECmcq+PM3c02HmSfXZHcHFzBXtfmOqRSQY6iWRV+/SPYyimJ0wW
+         ZLv0rtlW+1fRoN4ZaJMGYPDSRfFdgqdOnI+WWJ9/1EPBXjHSiO8dO4CWTVxWTEf9FX
+         +Lvao6OSz38hsKDQZUrPJV7WN6+DM6Rmrpm1fnqbt3msMSAc0hUSJj6Xnfb1Aio5Ax
+         SxKFceAsIcFKRo2WD7nRVyPwPd/Fk9LyE0vqaBGX80r4ddUjeaJupwXHURolGJyg7H
+         b4qrlAEyzrZrwRITa7mruRuDkAOaL0Gbt2MjwXAS6SOaCZxyzXke7r+frCRvLQ0B49
+         /NHkAIUEndpUA==
+Received: by mail-wr1-f70.google.com with SMTP id u30-20020adfa19e000000b00159aba4fe42so613137wru.9
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 05:44:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8ez+F2PzifSpa6RnlnkxVNCWhWZwCuwikPm2gtf77/A=;
-        b=FMWLUGIVKBF5QErbP6cR2OOS42xUQ0+5h3t5af3lNz7TaJN3NpPhl2gj+oDRXb+foT
-         SV67OV6HfvHiCcF6UopgnZWnZMkx2sRhtuZsqZQu5opk1coeYbVUBA9FVQa1sZxpRuk3
-         b7eadg9oT7XAR+yJYridRXUFsheIiNGyPnm9RR5C1FRpSIwvaR8+yEIdWcXypgx4TkDx
-         8alzT05EpohFa5m5SCJVL+wkFyuNOEcEQXZt2eCq7qB7Yybwc58x9ZDzrN8To1SffWji
-         qaIX1rw42xcCT3u1iB2zgEZX3mmxTZMEg+d5CAh+IgDZAqlv3HPtw4pjrikVnqS8iZVj
-         60jQ==
-X-Gm-Message-State: AOAM531TyZEVoQokpRw1JTImmTShxeSA/IX4eVc3fkRcXfswlcorGUWD
-        4ckL8N6XgfbPjU5gNXuzv9Pn75D9GQ2i/k8VDa2AitvN
-X-Google-Smtp-Source: ABdhPJyYGhd3Rl4aEfXoBBdPbYqviYjyQJ8NGtW6C3+1ndPp/9tZq2uLx4Yk1zKj/blY036D/gicj8RLJ2p/tjuh1uQ=
-X-Received: by 2002:ab0:6887:: with SMTP id t7mr8378101uar.114.1631018513905;
- Tue, 07 Sep 2021 05:41:53 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lSByXk3vZ2uUwX6aw8cCNLfpPVphgUncd0Iy1wU4m98=;
+        b=I3ZWsGEKoEjCTjGs/kqBxGAk/am0Lhb8fEzkb8n3uLeyDy8+bI2ZQbb+1avnysN3Ad
+         km6OpuD/3vkLgedw3KUZ6C1SNKkjFydTftBLyIonQqBWRpfolBX/kLDTgCuGdv7+UsiX
+         m2koVDcO/fhhHnX4T/V0Qd06Sv5dUP7kFrXPMgEhOakhWllGzb+d1lKVV+6Z797skoNr
+         cPgj3qKGvowgzWw8Y8X7Nr1SG4CVmTOXPrtQFYnX0Yatdy81u/IING4LGLdzyB3jlgkt
+         T72xv2Dn/8Pm0cNPM071JAWr9EUEDOdsc1fppbaNcNyW+Sw7JAzhRwpPlPW5pfzONV+3
+         aQ9A==
+X-Gm-Message-State: AOAM5316IfBPm5TFqTIm52HWcoCCQkhHAiMLaIu55IoSbI5As0iyMYKi
+        uKmAvCPSlmuQMxH58tx6dRdoZOP6JGffM7K1BjZAD2qla0IiJ94q7qnp7ZLGH+JgAT1LMJEiEbz
+        MM4X2l5uEyleuQr1Qmywrmfv/UOvJfxVywXaJyqNN2g==
+X-Received: by 2002:a05:600c:4293:: with SMTP id v19mr3778463wmc.32.1631018684944;
+        Tue, 07 Sep 2021 05:44:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwK6fnMG9DMg8Wh9yb3/1zvfnsgWtOWMPQWv5TUQtox0L6VWRDRiglmp218n4VGf1BVNmBBdA==
+X-Received: by 2002:a05:600c:4293:: with SMTP id v19mr3778442wmc.32.1631018684754;
+        Tue, 07 Sep 2021 05:44:44 -0700 (PDT)
+Received: from [192.168.3.211] ([79.98.113.74])
+        by smtp.gmail.com with ESMTPSA id o21sm2704077wms.32.2021.09.07.05.44.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 05:44:44 -0700 (PDT)
+Subject: Re: [PATCH v3 1/8] ARM: dts: omap: Fixup GPMC child nodes
+To:     Roger Quadros <rogerq@kernel.org>, tony@atomide.com
+Cc:     robh+dt@kernel.org, grygorii.strashko@ti.com, nm@ti.com,
+        lokeshvutla@ti.com, nsekhar@ti.com, miquel.raynal@bootlin.com,
+        devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210907113226.31876-1-rogerq@kernel.org>
+ <20210907113226.31876-2-rogerq@kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <8e29cf74-313f-b8c5-7514-60b5e404833d@canonical.com>
+Date:   Tue, 7 Sep 2021 14:44:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210907123734.21520-1-linux@roeck-us.net>
-In-Reply-To: <20210907123734.21520-1-linux@roeck-us.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 7 Sep 2021 14:41:42 +0200
-Message-ID: <CAMuHMdUUuhSEF2=EtkmWVFShxYaKsShdScCDuWCzazcoYDZc8A@mail.gmail.com>
-Subject: Re: [PATCH v3] Input: analog: Always use ktime functions
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210907113226.31876-2-rogerq@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 2:37 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> m68k, mips, s390, and sparc allmodconfig images fail to build with the
-> following error.
->
-> drivers/input/joystick/analog.c:160:2: error:
->         #warning Precise timer not defined for this architecture.
->
-> Remove architecture specific time handling code and always use ktime
-> functions to determine time deltas. Also remove the now useless use_ktime
-> kernel parameter.
->
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+On 07/09/2021 13:32, Roger Quadros wrote:
+> Fixes up the GPMC child nodes to prevent dtbs_check errors
+> after device tree binding conversion to yaml.
+> 
+> - Use reg address as node name
+> - gpmc,cycle2cycle-samecsen and gpmc,cycle2cycle-diffcsen are
+>   boolean properties.
+> 
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
+>  .../boot/dts/logicpd-som-lv-baseboard.dtsi    |  2 +-
+>  .../boot/dts/logicpd-torpedo-37xx-devkit.dts  |  2 +-
+>  .../boot/dts/logicpd-torpedo-baseboard.dtsi   |  2 +-
+>  arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi     | 62 +++++++++----------
+>  arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi     | 59 +++++++++---------
+>  arch/arm/boot/dts/omap-zoom-common.dtsi       | 16 ++---
+>  arch/arm/boot/dts/omap2430-sdp.dts            |  6 +-
+>  arch/arm/boot/dts/omap3-cm-t3x30.dtsi         |  6 +-
+>  .../arm/boot/dts/omap3-devkit8000-common.dtsi |  4 +-
+>  arch/arm/boot/dts/omap3-evm-37xx.dts          |  1 +
+>  arch/arm/boot/dts/omap3-evm-common.dtsi       |  9 ---
+>  .../boot/dts/omap3-evm-processor-common.dtsi  |  5 +-
+>  arch/arm/boot/dts/omap3-evm.dts               |  1 +
+>  arch/arm/boot/dts/omap3-igep0020-common.dtsi  |  5 +-
+>  arch/arm/boot/dts/omap3-ldp.dts               |  5 +-
+>  arch/arm/boot/dts/omap3-n900.dts              |  2 +-
+>  .../dts/omap3-overo-chestnut43-common.dtsi    |  6 +-
+>  .../arm/boot/dts/omap3-overo-tobi-common.dtsi |  6 +-
+>  .../boot/dts/omap3-overo-tobiduo-common.dtsi  |  8 +--
+>  arch/arm/boot/dts/omap3-sb-t35.dtsi           |  4 +-
+>  arch/arm/boot/dts/omap4-duovero-parlor.dts    |  6 +-
+>  21 files changed, 105 insertions(+), 112 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi b/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi
+> index 7d0468a23781..f2364cb114c5 100644
+> --- a/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi
+> +++ b/arch/arm/boot/dts/logicpd-som-lv-baseboard.dtsi
+> @@ -65,7 +65,7 @@
+>  		  1 0 0x2c000000 0x1000000	/* CS1: 16MB for LAN9221 */
+>  		  2 0 0x10000000 0x2000000>;    /* CS2: 32MB for NOR */
+>  
+> -	ethernet@gpmc {
+> +	gpmc_ethernet: ethernet@1,0 {
+>  		pinctrl-names = "default";
+>  		pinctrl-0 = <&lan9221_pins>;
+>  		interrupt-parent = <&gpio5>;
+> diff --git a/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts b/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
+> index 5532db04046c..6357915d207b 100644
+> --- a/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
+> +++ b/arch/arm/boot/dts/logicpd-torpedo-37xx-devkit.dts
+> @@ -4,8 +4,8 @@
+>  
+>  #include "omap36xx.dtsi"
+>  #include "logicpd-torpedo-som.dtsi"
+> -#include "omap-gpmc-smsc9221.dtsi"
+>  #include "logicpd-torpedo-baseboard.dtsi"
+> +#include "omap-gpmc-smsc9221.dtsi"
+>  
+>  / {
+>  	model = "LogicPD Zoom DM3730 Torpedo + Wireless Development Kit";
+> diff --git a/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi b/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi
+> index 533a47bc4a53..05049a34b6f1 100644
+> --- a/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi
+> +++ b/arch/arm/boot/dts/logicpd-torpedo-baseboard.dtsi
+> @@ -95,7 +95,7 @@
+>  	ranges = <0 0 0x30000000 0x1000000	/* CS0: 16MB for NAND */
+>  		  1 0 0x2c000000 0x1000000>;	/* CS1: 16MB for LAN9221 */
+>  
+> -	ethernet@gpmc {
+> +	gpmc_ethernet: ethernet@1,0 {
+>  		pinctrl-names = "default";
+>  		pinctrl-0 = <&lan9221_pins>;
+>  		interrupt-parent = <&gpio5>;
+> diff --git a/arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi b/arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi
+> index ded7e8fec9eb..2a462cb65a7d 100644
+> --- a/arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi
+> +++ b/arch/arm/boot/dts/omap-gpmc-smsc911x.dtsi
+> @@ -20,36 +20,34 @@
+>  	};
+>  };
+>  
+> -&gpmc {
+> -	ethernet@gpmc {
+> -		compatible = "smsc,lan9221", "smsc,lan9115";
+> -		bank-width = <2>;
+> -		gpmc,device-width = <1>;
+> -		gpmc,cycle2cycle-samecsen = <1>;
+> -		gpmc,cycle2cycle-diffcsen = <1>;
+> -		gpmc,cs-on-ns = <5>;
+> -		gpmc,cs-rd-off-ns = <150>;
+> -		gpmc,cs-wr-off-ns = <150>;
+> -		gpmc,adv-on-ns = <0>;
+> -		gpmc,adv-rd-off-ns = <15>;
+> -		gpmc,adv-wr-off-ns = <40>;
+> -		gpmc,oe-on-ns = <45>;
+> -		gpmc,oe-off-ns = <140>;
+> -		gpmc,we-on-ns = <45>;
+> -		gpmc,we-off-ns = <140>;
+> -		gpmc,rd-cycle-ns = <155>;
+> -		gpmc,wr-cycle-ns = <155>;
+> -		gpmc,access-ns = <120>;
+> -		gpmc,page-burst-access-ns = <20>;
+> -		gpmc,bus-turnaround-ns = <75>;
+> -		gpmc,cycle2cycle-delay-ns = <75>;
+> -		gpmc,wait-monitoring-ns = <0>;
+> -		gpmc,clk-activation-ns = <0>;
+> -		gpmc,wr-data-mux-bus-ns = <0>;
+> -		gpmc,wr-access-ns = <0>;
+> -		vddvario-supply = <&vddvario>;
+> -		vdd33a-supply = <&vdd33a>;
+> -		reg-io-width = <4>;
+> -		smsc,save-mac-address;
+> -	};
+> +&gpmc_ethernet {
+> +	compatible = "smsc,lan9221", "smsc,lan9115";
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+This looks like regular override-by-label instead of full path.
+Unfortunately change of the indentation causes difficulties to find the
+real difference - if there is such. Can you split it into separate patch?
 
-Gr{oetje,eeting}s,
+The point is that override-by-label should have zero effect on
+functionality and produce same dtb. This is easy to compare with
+dtx_diff or fdt-decompile but if you mix it with other changes, the
+comparison is not straight-forward.
 
-                        Geert
+> +	bank-width = <2>;
+> +	gpmc,device-width = <1>;
+> +	gpmc,cycle2cycle-samecsen;
+> +	gpmc,cycle2cycle-diffcsen;
+> +	gpmc,cs-on-ns = <5>;
+> +	gpmc,cs-rd-off-ns = <150>;
+> +	gpmc,cs-wr-off-ns = <150>;
+> +	gpmc,adv-on-ns = <0>;
+> +	gpmc,adv-rd-off-ns = <15>;
+> +	gpmc,adv-wr-off-ns = <40>;
+> +	gpmc,oe-on-ns = <45>;
+> +	gpmc,oe-off-ns = <140>;
+> +	gpmc,we-on-ns = <45>;
+> +	gpmc,we-off-ns = <140>;
+> +	gpmc,rd-cycle-ns = <155>;
+> +	gpmc,wr-cycle-ns = <155>;
+> +	gpmc,access-ns = <120>;
+> +	gpmc,page-burst-access-ns = <20>;
+> +	gpmc,bus-turnaround-ns = <75>;
+> +	gpmc,cycle2cycle-delay-ns = <75>;
+> +	gpmc,wait-monitoring-ns = <0>;
+> +	gpmc,clk-activation-ns = <0>;
+> +	gpmc,wr-data-mux-bus-ns = <0>;
+> +	gpmc,wr-access-ns = <0>;
+> +	vddvario-supply = <&vddvario>;
+> +	vdd33a-supply = <&vdd33a>;
+> +	reg-io-width = <4>;
+> +	smsc,save-mac-address;
+>  };
+> diff --git a/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi b/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
+> index 7f6aefd13451..c1e78f929d2b 100644
+> --- a/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
+> +++ b/arch/arm/boot/dts/omap-gpmc-smsc9221.dtsi
+> @@ -24,36 +24,33 @@
+>  	};
+>  };
+>  
+> -&gpmc {
+> -	ethernet@gpmc {
+> -		compatible = "smsc,lan9221","smsc,lan9115";
+> -		bank-width = <2>;
+> +&gpmc_ethernet {
+> +	compatible = "smsc,lan9221","smsc,lan9115";
+> +	bank-width = <2>;
+> +	gpmc,mux-add-data = <0>;
+> +	gpmc,cs-on-ns = <0>;
+> +	gpmc,cs-rd-off-ns = <42>;
+> +	gpmc,cs-wr-off-ns = <36>;
+> +	gpmc,adv-on-ns = <6>;
+> +	gpmc,adv-rd-off-ns = <12>;
+> +	gpmc,adv-wr-off-ns = <12>;
+> +	gpmc,oe-on-ns = <0>;
+> +	gpmc,oe-off-ns = <42>;
+> +	gpmc,we-on-ns = <0>;
+> +	gpmc,we-off-ns = <36>;
+> +	gpmc,rd-cycle-ns = <60>;
+> +	gpmc,wr-cycle-ns = <54>;
+> +	gpmc,access-ns = <36>;
+> +	gpmc,page-burst-access-ns = <0>;
+> +	gpmc,bus-turnaround-ns = <0>;
+> +	gpmc,cycle2cycle-delay-ns = <0>;
+> +	gpmc,wr-data-mux-bus-ns = <18>;
+> +	gpmc,wr-access-ns = <42>;
+> +	gpmc,cycle2cycle-samecsen;
+> +	gpmc,cycle2cycle-diffcsen;
+>  
+> -		gpmc,mux-add-data;
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Same here and in other places. Actually here a sneaky change is visible
+- different property.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Best regards,
+Krzysztof
