@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3141F402236
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8EAD40223A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242271AbhIGCJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 22:09:15 -0400
-Received: from mga11.intel.com ([192.55.52.93]:47530 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230250AbhIGCJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 22:09:13 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="216916157"
-X-IronPort-AV: E=Sophos;i="5.85,273,1624345200"; 
-   d="scan'208";a="216916157"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 19:08:06 -0700
-X-IronPort-AV: E=Sophos;i="5.85,273,1624345200"; 
-   d="scan'208";a="605024733"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.122]) ([10.239.13.122])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 19:08:04 -0700
-Subject: Re: [PATCH] x86/tsx: clear RTM and HLE when MSR_IA32_TSX_CTRL is not
- supported
-To:     Hao Peng <flyingpenghao@gmail.com>, Borislav Petkov <bp@alien8.de>
-Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-References: <CAPm50aJyfxobKhTrS=dC3pQmM5EbwY2xunet3X5XgnnFUEMmBA@mail.gmail.com>
- <YTXfmRIwWREJgEU9@zn.tnic>
- <CAPm50aLBt=YkFLi==-9U88YzwoJsmMTfEtj2v3+vx7fSRdDMLA@mail.gmail.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <f89e1eee-aea8-7c59-3af5-8859a43e121c@intel.com>
-Date:   Tue, 7 Sep 2021 10:08:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S240228AbhIGCMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 22:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232833AbhIGCMA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 22:12:00 -0400
+Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A38C061575;
+        Mon,  6 Sep 2021 19:10:55 -0700 (PDT)
+Received: by mail-vk1-xa2a.google.com with SMTP id s71so2774159vke.13;
+        Mon, 06 Sep 2021 19:10:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to;
+        bh=gqblQLOZyF+eItV+8wKN74v+NLRtXbXSy5aKMsEa2LM=;
+        b=KmUIT3tNI24M5bY0DZc9I6PxkANeHaN1psnXURWjk8zX9U8saR+P0o8ONnzQIQXfPh
+         jhNKMmnzGHMPYFp76QNhAW658sNrTucSAfDU8vNsVYgwxF1eyTaKjfW2ScRI/2S3ng73
+         EVBNMboqE1nMeK2WuwJvtfa2mDr+hV8qT2DL8MUHXH6/M3Bq67N86FBz2d7gAtVPvloy
+         V0+GrzDF+I/mGnCEu9pIBWTPrcUFU1oeh44VJ+xYG34xklfP9gkTThMetYMZowbjatHU
+         ikxTnWAYj5ewnoLfzfTvA7R3J6L3xDt+9ekWpUSaKyT8ORiBl+vUwrzpjtPRgUyx8v9j
+         wqPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to;
+        bh=gqblQLOZyF+eItV+8wKN74v+NLRtXbXSy5aKMsEa2LM=;
+        b=UcgyOo2AKB+qnPF+fIPyzMLo/NwvnT/X6J7EExG0x3DCaEAcdl2kHiWIADhh469Oql
+         Zm5HpaflsfXFAXGvh4m7wOWXynCFjgjtXHnYT9ihmZroTnzUSw4pgG1uApy4aqzPJy3I
+         0J78AZinbI7v3XWGJsNF80sphQ9BH8epPFQ7urH+uZxylDtTkEhUk1fyoq0DJOKsL8fd
+         s6s+jNp+xRjpAIBdkYqvhZ1RSrD/4Bibp4XI8/N3sA8r2yq7ZgRqfyYv64TfL1/2Og/A
+         9VHNi3Ayw2V7OhEB6bcKANoYq2DbRDGI5TbyQQw0tu/jyFiSonvEydJilxojbSgb4ENY
+         LIBw==
+X-Gm-Message-State: AOAM531pzUzKD2OvHrmyCZvV+kvE4bOrhoGwfNZzfn635dUxUVmly5q0
+        PYTMMu0MIp6RcB1006v2SUrKEDRTNYxznZJBQj0gWzj+
+X-Google-Smtp-Source: ABdhPJwqPdxF89RdqqyXNmlJTXGt67XTpL6INlVvqq8VjrVWl0wlljlqWfQsK+GBqC4JT1FpC9wEnZr5LfVDuCliSe4=
+X-Received: by 2002:a1f:3095:: with SMTP id w143mr6974707vkw.0.1630980654142;
+ Mon, 06 Sep 2021 19:10:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAPm50aLBt=YkFLi==-9U88YzwoJsmMTfEtj2v3+vx7fSRdDMLA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210906094927.524106-1-schnelle@linux.ibm.com> <CAHrUA34TK6U4TB34FHejott9TdFvSgAedOpmro-Uj2ZwnvzecQ@mail.gmail.com>
+In-Reply-To: <CAHrUA34TK6U4TB34FHejott9TdFvSgAedOpmro-Uj2ZwnvzecQ@mail.gmail.com>
+Reply-To: linasvepstas@gmail.com
+From:   Linas Vepstas <linasvepstas@gmail.com>
+Date:   Mon, 6 Sep 2021 21:10:42 -0500
+Message-ID: <CAHrUA35pTXpmcQKwFN=mgE+qFD9nNp=9QcB-VZCs9+0=6T3QcQ@mail.gmail.com>
+Subject: Fwd: [PATCH 0/5] s390/pci: automatic error recovery
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-s390@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/2021 9:47 AM, Hao Peng wrote:
-> On Mon, Sep 6, 2021 at 5:30 PM Borislav Petkov <bp@alien8.de> wrote:
->>
->> On Mon, Sep 06, 2021 at 10:46:05AM +0800, Hao Peng wrote:
->>> If hypervisor does not support MSR_IA32_TSX_CTRL, but guest supports
->>> RTM and HLE features, it will affect TAA mitigation.
->>>
->>> Signed-off-by: Peng Hao <flyingpeng@tencent.com>
->>> ---
->>>   arch/x86/kernel/cpu/tsx.c | 7 +++++++
->>>   1 file changed, 7 insertions(+)
->>>
->>> diff --git a/arch/x86/kernel/cpu/tsx.c b/arch/x86/kernel/cpu/tsx.c
->>> index 9c7a5f049292..5e852c14fef2 100644
->>> --- a/arch/x86/kernel/cpu/tsx.c
->>> +++ b/arch/x86/kernel/cpu/tsx.c
->>> @@ -122,6 +122,13 @@ void __init tsx_init(void)
->>>
->>>          if (!tsx_ctrl_is_supported()) {
->>>                  tsx_ctrl_state = TSX_CTRL_NOT_SUPPORTED;
->>> +
->>> +               /* If hypervisor does not support MSR_IA32_TSX_CTRL emulation,
->>> +                * but guest supports RTM and HLE features, it will affect TAA
->>> +                * （tsx_async_abort）mitigation.
->>> +                */
->>> +               setup_clear_cpu_cap(X86_FEATURE_RTM);
->>> +               setup_clear_cpu_cap(X86_FEATURE_HLE);
+Ooops, try again without the html. --linas
 
-anyway, IMHO, we shouldn't do anything here for TAA. It should be in 
-taa_select_mitigation()
+---------- Forwarded message ---------
+From: Linas Vepstas <linasvepstas@gmail.com>
+Date: Mon, Sep 6, 2021 at 9:05 PM
+Subject: Re: [PATCH 0/5] s390/pci: automatic error recovery
+To: Niklas Schnelle <schnelle@linux.ibm.com>
+Cc: Bjorn Helgaas <bhelgaas@google.com>, Oliver O'Halloran
+<oohall@gmail.com>, Russell Currey <ruscur@russell.cc>,
+<linuxppc-dev@lists.ozlabs.org>, linux-kernel@vger.kernel.org
+<linux-kernel@vger.kernel.org>, <linux-s390@vger.kernel.org>, Matthew
+Rosato <mjrosato@linux.ibm.com>, Pierre Morel <pmorel@linux.ibm.com>
 
->>>                  return;
->>>          }
->>
->> How does that even happen - the hypervisor does not support the MSR but
->> "guest supports" TSX features?!
->>
->> I guess the guest is detecting it wrong.
->>
->> What hypervisor, what guest, how do I reproduce?
->>
-> hypervisor is kvm, guest is linux too.
->> Please give full details.
->>
-> The host I used is kernel-5.4, and guest is kernel-5.13.
-> MSR_IA32_TSX_CTRL is exposed
-> to guest and guest to support RTM and HLE features, no direct
-> dependence. at the qemu I
-> started guest with -cpu host-model.
-> I have viewed the code of kernel-5.4, and MSR_IA32_TSX_CTRL is not
-> exposed to guest.
 
-Does guest see TAA_NO bit?
 
-> Thanks.
->> --
->> Regards/Gruss,
->>      Boris.
->>
->> https://people.kernel.org/tglx/notes-about-netiquette
 
+On Mon, Sep 6, 2021 at 4:49 AM Niklas Schnelle <schnelle@linux.ibm.com> wrote:
+>
+>  I believe we might be the first
+> implementation of PCI device recovery in a virtualized setting requiring us to
+> coordinate the device reset with the hypervisor platform by issuing a disable
+> and re-enable to the platform as well as starting the recovery following
+> a platform event.
+
+
+I recall none of the details, but SRIOV is a standardized system for
+sharing a PCI device across multiple virtual machines. It has detailed
+info on what the hypervisor must do, and what the local OS instance
+must do to accomplish this.  It's part of the PCI standard, and its
+more than a decade old now, maybe two. Being a part of the PCI
+standard, it was interoperable with error recovery, to the best of my
+recollection. At the time it was introduced, it got pushed very
+aggressively.  The x86 hypervisor vendors were aiming at the heart of
+zseries, and were militant about it.
+
+-- Linas
+
+-- 
+Patrick: Are they laughing at us?
+Sponge Bob: No, Patrick, they are laughing next to us.
+
+
+
+
+-- 
+Patrick: Are they laughing at us?
+Sponge Bob: No, Patrick, they are laughing next to us.
