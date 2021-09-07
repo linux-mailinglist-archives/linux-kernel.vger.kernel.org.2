@@ -2,105 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F8E4028BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 14:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC96E4028C5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 14:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344129AbhIGM3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 08:29:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234142AbhIGM3E (ORCPT
+        id S1344167AbhIGM3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 08:29:40 -0400
+Received: from smtp-relay-internal-0.canonical.com ([185.125.188.122]:37470
+        "EHLO smtp-relay-internal-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344162AbhIGM3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 08:29:04 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1AE2C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 05:27:57 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id c19so7722687qte.7
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 05:27:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WazygCXGIt0oTRoPxuhpgEJkZwMCzOdNrpXcapD6IMQ=;
-        b=L/y9MxYCco9ZCQyc7JqOQbveaeL7yhvAnHpMIYeiTpx4hjqmrG9hQodGGT0d8VXqOu
-         Gm9iF1/C4HrM5ieUokxjwdIYYjmZjyPchGaP1OcYUcTysdb5DbH5xwBN767Ma7PsGcH+
-         DRCXRFH4B6TKGbm5fbOezD0Ki16vHifMMKQpU=
+        Tue, 7 Sep 2021 08:29:14 -0400
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 083854019A
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:28:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1631017686;
+        bh=i4ZGHX9mGJzs9Nqqb56NmrxFgegnuQrVd9flgc2QjQE=;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+         In-Reply-To:Content-Type;
+        b=CMoA7T5AT3W8FgDwmV59z5a/IP+M42qb0I/519Ep8p8kP2bXKUZ9zWj7kMOFd5zXU
+         RsbIWVEnx1lF1HbUZWt2SoNhx8HhZ7jcqytiDsWTvnKYuxybQWhlswXZQ7ZTnFislE
+         ndRU5mFqmH863GbGrTHJ6t2FeOV8ktBUFvbu49pmImGxNHBa28P3W4WGxk7kJp5LSJ
+         f1IG5wg4F1j9/KPcwTZHeVWo55nPqDdTmtj9zzaYdqLE9lwsZxW2Mg5QyEtyo4ymd7
+         jMqtzTbqgLKrYW58xZoqNR9D4T2g3qT6SXrSUe//v+/HL0E8hicUQKp2x5KUfNcgmw
+         gWFE6SY519sQA==
+Received: by mail-wm1-f72.google.com with SMTP id r4-20020a1c4404000000b002e728beb9fbso1114155wma.9
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 05:28:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WazygCXGIt0oTRoPxuhpgEJkZwMCzOdNrpXcapD6IMQ=;
-        b=uTCTpC4Vk0mkWUQgJZxqmueqRy+ewsT1MOw8eFag62SJpgK75qOxHXJkSwJojzV9x0
-         IJmQbpSYbLXOd0Xu/HKfee6da67N9uTEXXHLzzrfd4qtdxieGVh8daWMWmEdEeftV0O0
-         EEEEAWAxdzL7cIlOX+ZX/yCUvisxchUhPPlYblrklx7Z3xDyb7a3xaMRBqrYuFGUCiTV
-         GM4+DdcEE78HzO8wGlbo2AAIdSKzTgMYhcwrRuDifVtrBLNXKC86ki/+QduQRMfRJ3rP
-         5KmfuWYTGNdaEYPkFnjXrMN02vB1os8ZltAjRoSUV/sgkv6f4kmTOhrBp9amTv10XoS5
-         KXcw==
-X-Gm-Message-State: AOAM530YVknVKJZkYtLrytPcji7e77l3M2F71DzYultNBN/lTu5OHN6w
-        U//98UYxoLpb0uRFQczzxhpNKq1R1ziQeCIahuDI5w==
-X-Google-Smtp-Source: ABdhPJyi+j+8R4WVWLZ33fUYunDQD0QKbKyw0r+Z98UCxjGkJzFsMjOjzhdmUuElK2X1vli9DvbtMH6AQV9U8Cf1ugY=
-X-Received: by 2002:ac8:5a13:: with SMTP id n19mr14999884qta.380.1631017676983;
- Tue, 07 Sep 2021 05:27:56 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=i4ZGHX9mGJzs9Nqqb56NmrxFgegnuQrVd9flgc2QjQE=;
+        b=jxbtfZcMsl+gG6qg1PScS1aPFaIicZiVUXFPOYQlA11k2xJgdAf2JQP6Q2gcjnbuhg
+         x41ScovjOaUTjh6qKEZTPTSD6Ph2I2dDzSJmtG7n89n4EoZkJhlKP+IjtBqItlfJzk80
+         wHJ7hKbKIFtahjNwbNOnxrtZvVClbZb3ci0yV1DJ+YerOqQ3aBYK0r6jwXMGlhMUxntq
+         Hibivbg1OG2J5yPNYH/bh3DtJeFmeIg+cQVKQIFvKxYrzHMBNh5cIOui8lnuF4fcTFNH
+         Q0dgVJh8bTA9iCWw7FQooLGncwD+Ttwfu188Ng59Afqcpmct1SWrd014OtYaXu3hEjLC
+         9KLQ==
+X-Gm-Message-State: AOAM533DRWhPX1Ali8LwMVppwkkQ1z2OhetHNdc+qlbKt6NvSwlqbOlu
+        tj+eAVogv8e9etbtB1vWPb8z6w/fLAyeTJytszIazsbJVI1RqMHdywvo3Ayln/Op2/dMcXEiSgF
+        v6U1/Lf9X+fRkxX6YMdubljW4+YpmUy3mwUNyTGpRRQ==
+X-Received: by 2002:adf:9d45:: with SMTP id o5mr18367587wre.226.1631017685246;
+        Tue, 07 Sep 2021 05:28:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyxLSApf9aQAMF6rcSiRU6Die4JjL+/6CF8DzzLKlDlLHeOBw4SUW1cF3S2JUunqQGD5sLqZQ==
+X-Received: by 2002:adf:9d45:: with SMTP id o5mr18367571wre.226.1631017685071;
+        Tue, 07 Sep 2021 05:28:05 -0700 (PDT)
+Received: from [192.168.3.211] ([79.98.113.47])
+        by smtp.gmail.com with ESMTPSA id l7sm2333190wmj.9.2021.09.07.05.28.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 05:28:04 -0700 (PDT)
+Subject: Re: [PATCH] clk: samsung: exynos4412-isp: Make use of the helper
+ function devm_platform_ioremap_resource()
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210907085107.4203-1-caihuoqing@baidu.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <2b378450-4ea5-e30f-750d-9e20bc1d113e@canonical.com>
+Date:   Tue, 7 Sep 2021 14:28:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210907102722.47543-1-bert@biot.com> <20210907102722.47543-5-bert@biot.com>
- <CAFr9PXmCKPfdHnHU7=ALh=j2SDf71ibd8kEnLTK6aPN1vmQVdg@mail.gmail.com> <CAK8P3a21N8khjyV-f=p28ZogoakhLTrkoPBd6PeXrigba=7-TQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a21N8khjyV-f=p28ZogoakhLTrkoPBd6PeXrigba=7-TQ@mail.gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Tue, 7 Sep 2021 21:27:46 +0900
-Message-ID: <CAFr9PXn4JXGKSCDNeKMJDPgfezktyfBsTcq8GErt+ROuumDgrg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] ARM: Add basic support for Airoha EN7523 SoC
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Bert Vermeulen <bert@biot.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        John Crispin <john@phrozen.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mike Rapoport <rppt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210907085107.4203-1-caihuoqing@baidu.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On 07/09/2021 10:51, Cai Huoqing wrote:
+> Use the devm_platform_ioremap_resource() helper instead of
+> calling platform_get_resource() and devm_ioremap_resource()
+> separately
+> 
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+>  drivers/clk/samsung/clk-exynos4412-isp.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
 
-On Tue, 7 Sept 2021 at 20:52, Arnd Bergmann <arnd@arndb.de> wrote:
-> > Off-topic but related:  Another MediaTek spin off, SigmaStar, seems to
-> > have done exactly the same thing. Cortex A53 chip running as a 32bit
-> > system to avoid having to fix their software. I'm interested to see if
-> > this makes it into arm or arm64. :)
->
-> Maybe it's best to just add them to both at the same time? The boot
-> loader situation might take a bit to work out, but in theory this should
-> be fixable.
 
-I wonder how fixable it would be..
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-I haven't gotten a board with the chip in question (SSD268G) yet but
-from looking at some firmware binaries I can see that even u-boot is a
-6 year old 32bit version.
-As far as I can tell there's no PSCI, ATF etc that I think would be
-expected for an arm64 machine.
-I think the broken memory controller is still there so somehow I'd
-need to get the heavy barrier to work in arm64. I haven't yet worked
-out if that's even possible.
-I think they are advertising that it supports up to 2GB of DDR. So
-it's a hobbled 64bit capable system with highmem.
 
-Putting most of the DT bits under arm64 even though it's so broken
-it'll only ever boot a 32bit kernel makes sense to me.
-Better than having lots of arm64 typical stuff like a newer GIC in a
-file under arm and confusing everyone that comes across it.
-
-Cheers,
-
-Daniel
+Best regards,
+Krzysztof
