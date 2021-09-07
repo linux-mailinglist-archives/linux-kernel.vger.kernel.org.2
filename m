@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 297D1403186
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 01:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFE0B4030AA
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 00:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238321AbhIGXaF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Sep 2021 19:30:05 -0400
-Received: from smtprelay04.ispgateway.de ([80.67.18.16]:62950 "EHLO
-        smtprelay04.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbhIGXaC (ORCPT
+        id S1347493AbhIGWDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 18:03:12 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62720 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231251AbhIGWDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 19:30:02 -0400
-X-Greylist: delayed 1024 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Sep 2021 19:30:02 EDT
-Received: from [88.78.105.74] (helo=sju.home.jstuber.net)
-        by smtprelay04.ispgateway.de with esmtpa (Exim 4.94.2)
-        (envelope-from <juergen@jstuber.net>)
-        id 1mNfiD-000511-CP; Tue, 07 Sep 2021 20:20:49 +0200
-Date:   Tue, 7 Sep 2021 20:23:10 +0200
-From:   Juergen Stuber <juergen@jstuber.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ricky Wu <ricky_wu@realtek.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: Thunderbolt 3 Dock, USB issues when undocking then docking
-Message-ID: <20210907202310.77dea423@sju.home.jstuber.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 7 Sep 2021 18:03:11 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 187LwiZr031968;
+        Tue, 7 Sep 2021 18:01:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=M3NLre3imKrWCdFZG/thQ+NIcwjy1kwY8mADZafIJBs=;
+ b=adKivwUWvdKFHffSRurfPdtaU757HHkXhTo0vcXKGCni78MgrOaFXprKOWpAxwSTY6UA
+ X1h3RD1wauYmTchUyHrbmwRS/8PMIZs3qGMBnxGYfQVqIdko8IeALjGZc9zOm82oBh8e
+ Jc5ACzlU5DUW1hwu/cj7gjeQlA6lKS7eXBKJ4dfBH4ywjo4PTjHe850OxaoksJCY0JXP
+ haqbf/8nnU+vpMHN+AlRgJLK62l23w0gLSrizr/IG4DOFjgqRqvlk9ti68UTtHEK22HD
+ aRd3CSaCBGSvhbZpqwtmIPjnBzqqiZVT8v2Sd8P8NtrdtUPcI4c45W8GiMLKdmzIB6k0 gg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3axgfm81up-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Sep 2021 18:01:34 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 187M01Uq033905;
+        Tue, 7 Sep 2021 18:01:34 -0400
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3axgfm81u9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Sep 2021 18:01:34 -0400
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 187LvvER015141;
+        Tue, 7 Sep 2021 22:01:33 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma02wdc.us.ibm.com with ESMTP id 3axcnn4pur-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Sep 2021 22:01:33 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 187M1W1U23200132
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 7 Sep 2021 22:01:33 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D6FB6124055;
+        Tue,  7 Sep 2021 22:01:32 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BC5DD12406B;
+        Tue,  7 Sep 2021 22:01:31 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.160.169.122])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue,  7 Sep 2021 22:01:31 +0000 (GMT)
+Subject: Re: [PATCH] pci/hotplug/pnv-php: Remove probable double put
+To:     Xu Wang <vulab@iscas.ac.cn>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+References: <20210907085946.21694-1-vulab@iscas.ac.cn>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <0fa7ddfa-cd65-583e-a83f-4cbcd4e7337f@linux.ibm.com>
+Date:   Tue, 7 Sep 2021 15:01:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Df-Sender: OTE4MDk1
+In-Reply-To: <20210907085946.21694-1-vulab@iscas.ac.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: a16-xvygUGq7bfcHPNiwH3asPIJqqLKr
+X-Proofpoint-ORIG-GUID: JSSbdBOQQusVuBTPysKKMj22cm6ZMSgJ
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-09-07_08:2021-09-07,2021-09-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ impostorscore=0 mlxscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
+ mlxlogscore=999 suspectscore=0 priorityscore=1501 clxscore=1011
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109070135
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings!
+On 9/7/21 1:59 AM, Xu Wang wrote:
+> Device node iterators put the previous value of the index variable,
+> so an explicit put causes a double put.
+> 
+> Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+> ---
+>  drivers/pci/hotplug/pnv_php.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/pci/hotplug/pnv_php.c b/drivers/pci/hotplug/pnv_php.c
+> index 04565162a449..ed4d1a2c3f22 100644
+> --- a/drivers/pci/hotplug/pnv_php.c
+> +++ b/drivers/pci/hotplug/pnv_php.c
+> @@ -158,7 +158,6 @@ static void pnv_php_detach_device_nodes(struct device_node *parent)
+>  	for_each_child_of_node(parent, dn) {
+>  		pnv_php_detach_device_nodes(dn);
+> 
+> -		of_node_put(dn);
+>  		of_detach_node(dn);
 
-In Linux versions 5.10-rc1 or newer (exact bisect see below) I have
-issues when I undock and then dock my Thunderbolt 3 dock.
-Afterwards I see
+Are you sure this is a double put? This looks to me like its meant to drive tear
+down of the device by putting a long term reference and not the short term get
+that is part of the iterator.
 
-- log messages like "retire_capture_urb: 571 callbacks suppressed"
-  (always)
-- audio glitches when playing audio via the dock on USB speakers
-  (almost always)
-- keyboard events are lost on a dock-connected keyboard (sometimes)
+-Tyrel
 
-I tested this by undocking, waiting a short while, then redocking, and
-after that playing audio via USB speakers connected to the dock.
-It seems to be deterministic, that is, in affected kernels it seems to
-happen on every undock-dock cycle.
-
-This is a Thinkpad T14 Gen1 Intel (20S0000HGE) and
-a Thinkpad Thunderbolt 3 Dock Gen2 (40AN / SD20M70247), 
-the USB speakers are Logitech Z-10,
-the distribution is Debian bullseye.
-
-I bisected the issue, this pointed to the first bad commit
-
-726eb70e0d34 Merge tag 'char-misc-5.10-rc1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc
-
-Since that was a big merge and thus not too helpful, I bisected the two
-branches that were merged. That is, I bisected one branch and merged
-into the head of the other branch and tested the merge.
-On char-misc this pointed to
-
-7c33e3c4c79a misc: rtsx: Add power saving functions and fix driving
-parameter
-
-The affected driver is in use for a device in my system:
-02:00.0 Unassigned class [ff00]: Realtek Semiconductor Co., Ltd.
-RTS522A PCI Express Card Reader [10ec:522a] (rev 01)
-
-Log output:
-[    1.179205] rtsx_pci 0000:02:00.0: enabling device (0000 -> 0002)
-
-On the mainline side the bisect points to
-
-edc649a82341 xhci: Tune interrupt blocking for isochronous transfers
-
-
-I tried to revert each of these, but that was not easily possible.
-
-
-RedHat has a bug report about this issue:
-https://bugzilla.redhat.com/show_bug.cgi?id=1951372
-
-Please ask if you need more info or testing.
-
-
-Jürgen
-
--- 
-Jürgen Stuber <juergen@jstuber.net>
-http://www.jstuber.net/
+>  	}
+>  }
+> 
 
