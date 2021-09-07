@@ -2,76 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05CA402AFD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D626402AF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244798AbhIGOrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:47:10 -0400
-Received: from gate.crashing.org ([63.228.1.57]:50810 "EHLO gate.crashing.org"
+        id S233978AbhIGOqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:46:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244071AbhIGOrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:47:09 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 187EfdkK007864;
-        Tue, 7 Sep 2021 09:41:39 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 187EfcpQ007861;
-        Tue, 7 Sep 2021 09:41:38 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Tue, 7 Sep 2021 09:41:38 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Linus Torvalds <torvalds@linuxfoundation.org>
-Cc:     Jakub Jelinek <jakub@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
-Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
-Message-ID: <20210907144138.GG1583@gate.crashing.org>
-References: <CAHk-=wjc1rxah3xt8mKN=aCxQigjy3-hEf4xh_Y-r=MXAKVrag@mail.gmail.com> <20210906154642.GV1583@gate.crashing.org> <CAHk-=wj=WpWO_V86cZH99LgZGBbvdDb4wR26ce5van0hJqjzLA@mail.gmail.com> <20210906172701.GX1583@gate.crashing.org> <CAHk-=wh0MBVfA89WLWnCiSnJ2a=hSAoSxfG-jyf7JJeBDPK3ew@mail.gmail.com> <87lf49wodu.fsf@oldenburg.str.redhat.com> <20210906194808.GY1583@gate.crashing.org> <20210906201432.GZ920497@tucnak> <CAHk-=wi80NGPppGmBpc5zuGRAsv4_7qsDu7ehW515J2FJoezAQ@mail.gmail.com> <CAHk-=wikLP4KbTUUY_OKL6doyztjqFNKu_Q713vcrkjthc4S0g@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wikLP4KbTUUY_OKL6doyztjqFNKu_Q713vcrkjthc4S0g@mail.gmail.com>
-User-Agent: Mutt/1.4.2.3i
+        id S235028AbhIGOqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 10:46:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D721610F8;
+        Tue,  7 Sep 2021 14:44:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631025897;
+        bh=pb6uQnkJOj7jZan0UZ5W50IT54400yv6W78lHUUCqDA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GuVHmRa9F+YxsE7/VqZYKEPDBHgnctH14+lDJxav5wg4mIWlsd4XSaT0FeBdXyY2E
+         Mqty3aIwOvW9OIjveu64e2UvY3NILsfErPO0daYvljrNmkPls+cmqnm+LzDIUSARCI
+         vz5RS0+z+Rk9fAwc85Q7JzaC+oPYJJ9N5QckUU+HzkGBY3zpFl/UrFcQvkYsQVhZDj
+         KQ7aczAbXcRK8GoMUgmaofQYXHnxTM3YaI95CoxIw+20VV6f/iq/+vtje+rvaKLNS9
+         yYx70IBlL6juOSsJSg/UYadyELkCfKl9pKE93kavxUbf3PSG4KT0WRhKHBnCcHsgbO
+         4cT0Y1d+YXqxw==
+Received: by mail-ed1-f46.google.com with SMTP id z19so14245098edi.9;
+        Tue, 07 Sep 2021 07:44:57 -0700 (PDT)
+X-Gm-Message-State: AOAM53393YKW31UvSuC2XXZCpV6IbRTWCfksOTL8gVaqkYcza7FgOGcu
+        SXwAb9Ua96BusGZYCXAQuKfrsH/nBZ838dmcpg==
+X-Google-Smtp-Source: ABdhPJz35+eT13PtjAMyE1Cn8up0MviN8dZ3s6bQ7mHM7z/iu5075VVR/KfUXFoatJy0IhBX3jK0MFw2F/aL12TBWMA=
+X-Received: by 2002:a50:ed09:: with SMTP id j9mr19082569eds.164.1631025895705;
+ Tue, 07 Sep 2021 07:44:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210901053951.60952-1-samuel@sholland.org> <20210901053951.60952-2-samuel@sholland.org>
+ <YTDtelCx5If3J5cM@robh.at.kernel.org> <53d6d018-93bf-9bfc-e296-a232105306de@sholland.org>
+In-Reply-To: <53d6d018-93bf-9bfc-e296-a232105306de@sholland.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 7 Sep 2021 09:44:43 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKQ-9EWLPah2+q0=Y9viES1FSMS2_Mq6Kw-dMkN=rAhyQ@mail.gmail.com>
+Message-ID: <CAL_JsqKQ-9EWLPah2+q0=Y9viES1FSMS2_Mq6Kw-dMkN=rAhyQ@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/7] dt-bindings: rtc: sun6i: Add H616 and R329 compatibles
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 02:24:39PM -0700, Linus Torvalds wrote:
-> There are some *very* core header files that the kernel cannot include
-> from outside. That "stdlib.h" thing already came up in the errors I
-> quoted.
-> 
-> But I think you'll find that you guys want to include things like
-> <errno.h> too, and you'll probably add others (<types.h>? things like
-> that) simply because they always work fine in user space, and you'd
-> not even notice.
+On Fri, Sep 3, 2021 at 10:36 AM Samuel Holland <samuel@sholland.org> wrote:
+>
+> On 9/2/21 10:27 AM, Rob Herring wrote:
+> > On Wed, Sep 01, 2021 at 12:39:45AM -0500, Samuel Holland wrote:
+> >> For these new SoCs, start requiring a complete list of input clocks.
+> >>
+> >> For H616, this means bus, hosc, and pll-32k. For R329, this means ahb,
+> >> bus, and hosc; and optionally ext-osc32k.
+> >>
+> >> I'm not sure how to best represent this in the binding...
+> >>
+> >> Signed-off-by: Samuel Holland <samuel@sholland.org>
+> >> ---
+> >>  .../bindings/rtc/allwinner,sun6i-a31-rtc.yaml | 55 +++++++++++++++++--
+> >>  include/dt-bindings/clock/sun50i-rtc.h        | 12 ++++
+> >>  2 files changed, 61 insertions(+), 6 deletions(-)
+> >>  create mode 100644 include/dt-bindings/clock/sun50i-rtc.h
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> >> index beeb90e55727..3e085db1294f 100644
+> >> --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> >> +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> >> @@ -26,6 +26,8 @@ properties:
+> >>            - const: allwinner,sun50i-a64-rtc
+> >>            - const: allwinner,sun8i-h3-rtc
+> >>        - const: allwinner,sun50i-h6-rtc
+> >> +      - const: allwinner,sun50i-h616-rtc
+> >> +      - const: allwinner,sun50i-r329-rtc
+> >
+> > Can you please make all the single entry cases a single 'enum'.
+> >
+> >>
+> >>    reg:
+> >>      maxItems: 1
+> >> @@ -37,7 +39,24 @@ properties:
+> >>        - description: RTC Alarm 1
+> >>
+> >>    clocks:
+> >> -    maxItems: 1
+> >> +    minItems: 1
+> >> +    maxItems: 4
+> >> +
+> >> +  clock-names:
+> >> +    minItems: 1
+> >> +    maxItems: 4
+> >> +    items:
+> >> +      - anyOf:
+> >
+> > This says the first entry is any of these. What about the rest of them?
+>
+> Oh, right. The list below is the list of all possible clocks.
+>
+> >> +          - const: ahb
+> >> +            description: AHB parent for SPI bus clock
+> >
+> > The description should go in 'clocks'.
+>
+> Will do for v2.
+>
+> > The order should be defined as well with the first clock being the
+> > one that existed previously.
+>
+> The only way I know how to further refine the list is with
+> minItems/maxItems. My problem is that 1) some clocks are only valid for
+> certain SoCs, and 2) some clocks are optional, depending on how the
+> board is wired. So there is no single order where the "valid"
+> combinations are prefixes of the "possible" combinations of clocks.
+>
+> Or in other words, how can I say "clocks #1 and #2 from this list are
+> required, and #4 is optional, but #3 is not allowed"?
 
-Guess what.  We actually test this.  We do notice.  Except we don't,
-because all those problems do not actually exist.
+This says you have up to 4 clocks, but only defines the 1st 2:
 
-Long ago there were issues.  We do not live long ago now.
+maxItems: 4
+items:
+  - description: 1st clock
+  - description: 2nd clock
 
-> I'm pretty sure you guys don't really want to deal with the pain that
-> is crazy kernel people that have their very bare environment.
+But I think you will be better off with just defining the range
+(minItems/maxItems) at the top level and then use if/then schemas.
 
-There are many other users that use freestanding environments.  Most of
-them do use the standard headers.
+>
+> Some concrete examples, with the always-required clocks moved to the
+> beginning:
+>
+> H6:
+>  - bus: required
+>  - hosc: required
+>  - ahb: not allowed
+>  - ext-osc32k: optional
+>  - pll-32k: not allowed
 
-> So you may *think* you want the kernel to use your header files
-> "because compiler portability". Instead, you should be very thankful
-> that we don't, and that you don't have to deal with our mess any more
-> than you already do.
+Is this really 2 different 32k clock inputs to the h/w block? Doesn't
+seem like it given both are never valid.
 
-We would like it to be *less* pain, *less* unnecessary work, that is why
-we would like the kernel to use the compiler headers.  Instead of what
-the current patches do: getting rid of more of them, which will end up
-as more work for everyone.
+>
+> H616:
+>  - bus: required
+>  - hosc: required
+>  - ahb: not allowed
+>  - ext-osc32k: not allowed
+>  - pll-32k: required
+>
+> R329:
+>  - bus: required
+>  - hosc: required
+>  - ahb: required
+>  - ext-osc32k: optional
+>  - pll-32k: not allowed
+>
+> Should I just move the entire clocks/clock-items properties to if/then
+> blocks based on the compatible?
 
+Probably so.
 
-Segher
+Rob
