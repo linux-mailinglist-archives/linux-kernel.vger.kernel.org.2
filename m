@@ -2,115 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C866B402FB0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F1B402FB1
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346765AbhIGU04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345433AbhIGU0V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:26:21 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D867FC0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:25:13 -0700 (PDT)
-Message-ID: <20210907200849.396117872@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631046312;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=hyvbnbIdba3aIUMikIZq5XBHm5TKNH+S4SCGtu4MYY4=;
-        b=spS9kG5VjiPaTYo79U536qMP5jT4/qj34k5vGbdgFsqd7zdjtSO+vj0ceCgeNaV6wCNLmE
-        W6jiKzS5c35PjTOn2EP1HWAjOEDOtax/5+NSAEJFwlVHq5FjFxn/5kEWdrKRoGvLd6oZwU
-        cz96NePXbYw1RQ9//Ynf0UXQjk19hyaHhRDBx2xn3Xx8f+87urjvipVvHc0yJtdZ6HbJsY
-        QAqjZqdrwJ7vgH22tzq3lG7VH6D6dysbzpFWE/U6VCmXG+QLjqYfBPae1UeJK6z0SInoFA
-        isC6dVxLBamIVvHis1GnjwHconwdDgkGpFmODJ0VUp+d8m740irl6/7myMpyqg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631046312;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=hyvbnbIdba3aIUMikIZq5XBHm5TKNH+S4SCGtu4MYY4=;
-        b=SPQk3t2DRFOsGXVwiJTQ1W8DvRj9B5I+WXk9HWgkKmoeHfsLIxlndfm/RriG8//BCa8egA
-        rIrPk8h2/0Z9cbDA==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Ziljstra <peterz@infradead.org>
-Subject: [patch V2.1 20/20] x86/fpu/signal: Change return code of
- restore_fpregs_from_user() to boolean
-References: <20210907200722.067068005@linutronix.de>
+        id S1346832AbhIGU1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:27:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1346879AbhIGU0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 16:26:46 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 531E261152;
+        Tue,  7 Sep 2021 20:25:39 +0000 (UTC)
+Date:   Tue, 7 Sep 2021 16:25:37 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michel Lespinasse <walken.cr@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v3] mmap_lock: Change trace and locking order
+Message-ID: <20210907162537.27cbf082@gandalf.local.home>
+In-Reply-To: <20210907201456.4036910-1-Liam.Howlett@oracle.com>
+References: <20210907201456.4036910-1-Liam.Howlett@oracle.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue,  7 Sep 2021 22:25:11 +0200 (CEST)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__fpu_sig_restore() only needs information about success or fail and no
-real error code.
+On Tue, 7 Sep 2021 20:15:19 +0000
+Liam Howlett <liam.howlett@oracle.com> wrote:
 
-This cleans up the confusing conversion of the trap number, which is
-returned by the *RSTOR() exception fixups, to an error code.
+> The ordering of the printed messages from the mmap_lock trace can occur
+> out of order.  This results in confusing trace logs such as:
+> 
+> task          cpu     atomic counter: message
+> ---------------------------------------------
+> task-749     [006] ....     14437980: mmap_lock_acquire_returned: mm=00000000c94d28b8 memcg_path= write=true success=true
+> task-750     [007] ....     14437981: mmap_lock_acquire_returned: mm=00000000c94d28b8 memcg_path= write=true success=true
+> task-749     [006] ....     14437983: mmap_lock_released: mm=00000000c94d28b8 memcg_path= write=true
+> 
+> When the actual series of evens are as follows:
+> 
+> task-749     [006]  mmap_lock_acquire_returned: mm=00000000c94d28b8 memcg_path= write=true success=true
+> task-749     [006]  mmap_lock_released: mm=00000000c94d28b8 memcg_path= write=true
+> 
+> task-750     [007]  mmap_lock_acquire_returned: mm=00000000c94d28b8 memcg_path= write=true success=true
+> 
+> The incorrect ordering of the trace log happens because the release log
+> is outside of the lock itself.  The ordering can be guaranteed by
+> protecting the acquire success and release trace logs by the lock.
+> 
+> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+> Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
- arch/x86/kernel/fpu/signal.c |   17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+FYI,
 
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -255,8 +255,8 @@ static int __restore_fpregs_from_user(vo
-  * Attempt to restore the FPU registers directly from user memory.
-  * Pagefaults are handled and any errors returned are fatal.
-  */
--static int restore_fpregs_from_user(void __user *buf, u64 xrestore,
--				    bool fx_only, unsigned int size)
-+static bool restore_fpregs_from_user(void __user *buf, u64 xrestore,
-+				     bool fx_only, unsigned int size)
- {
- 	struct fpu *fpu = &current->thread.fpu;
- 	int ret;
-@@ -285,12 +285,11 @@ static int restore_fpregs_from_user(void
- 
- 		/* Try to handle #PF, but anything else is fatal. */
- 		if (ret != X86_TRAP_PF)
--			return -EINVAL;
-+			return false;
- 
--		ret = fault_in_pages_readable(buf, size);
--		if (!ret)
-+		if (!fault_in_pages_readable(buf, size))
- 			goto retry;
--		return ret;
-+		return false;
- 	}
- 
- 	/*
-@@ -307,7 +306,7 @@ static int restore_fpregs_from_user(void
- 
- 	fpregs_mark_activate();
- 	fpregs_unlock();
--	return 0;
-+	return true;
- }
- 
- static bool __fpu_restore_sig(void __user *buf, void __user *buf_fx,
-@@ -342,8 +341,8 @@ static bool __fpu_restore_sig(void __use
- 		 * faults. If it does, fall back to the slow path below, going
- 		 * through the kernel buffer with the enabled pagefault handler.
- 		 */
--		return !restore_fpregs_from_user(buf_fx, user_xfeatures, fx_only,
--						 state_size);
-+		return restore_fpregs_from_user(buf_fx, user_xfeatures, fx_only,
-+						state_size);
- 	}
- 
- 	/*
+If you received Acks for a patch, and you resend just to update the change
+log, you can then include those acks in that email, as the acks were
+already done for the code change. If you change the code, you may need to
+ask to get the review/acks again.
+
+But since this time you only changed the change log, and the code is still
+the same, you should have included:
+
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+-- Steve
+
+
+
+> ---
+>  include/linux/mmap_lock.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
+> index 0540f0156f58..b179f1e3541a 100644
+> --- a/include/linux/mmap_lock.h
+> +++ b/include/linux/mmap_lock.h
+> @@ -101,14 +101,14 @@ static inline bool mmap_write_trylock(struct mm_struct *mm)
+>  
+>  static inline void mmap_write_unlock(struct mm_struct *mm)
+>  {
+> -	up_write(&mm->mmap_lock);
+>  	__mmap_lock_trace_released(mm, true);
+> +	up_write(&mm->mmap_lock);
+>  }
+>  
+>  static inline void mmap_write_downgrade(struct mm_struct *mm)
+>  {
+> -	downgrade_write(&mm->mmap_lock);
+>  	__mmap_lock_trace_acquire_returned(mm, false, true);
+> +	downgrade_write(&mm->mmap_lock);
+>  }
+>  
+>  static inline void mmap_read_lock(struct mm_struct *mm)
+> @@ -140,8 +140,8 @@ static inline bool mmap_read_trylock(struct mm_struct *mm)
+>  
+>  static inline void mmap_read_unlock(struct mm_struct *mm)
+>  {
+> -	up_read(&mm->mmap_lock);
+>  	__mmap_lock_trace_released(mm, false);
+> +	up_read(&mm->mmap_lock);
+>  }
+>  
+>  static inline bool mmap_read_trylock_non_owner(struct mm_struct *mm)
+> @@ -155,8 +155,8 @@ static inline bool mmap_read_trylock_non_owner(struct mm_struct *mm)
+>  
+>  static inline void mmap_read_unlock_non_owner(struct mm_struct *mm)
+>  {
+> -	up_read_non_owner(&mm->mmap_lock);
+>  	__mmap_lock_trace_released(mm, false);
+> +	up_read_non_owner(&mm->mmap_lock);
+>  }
+>  
+>  static inline void mmap_assert_locked(struct mm_struct *mm)
 
