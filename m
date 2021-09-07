@@ -2,443 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A63402CCD
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99C4402C6C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhIGQYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:24:49 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:23240 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235555AbhIGQYs (ORCPT
+        id S244962AbhIGQDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 12:03:35 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:46944 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234524AbhIGQDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:24:48 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 187EgKc4008786;
-        Tue, 7 Sep 2021 16:23:23 GMT
+        Tue, 7 Sep 2021 12:03:23 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 187Ehq72015568;
+        Tue, 7 Sep 2021 16:01:37 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=ONQ9jJnQJ/IxHik/LzzCjXDrHhN3dW9SvSr13Jj1KAw=;
- b=zqx/E5pOHX4ajPKn0pTAXdknAjnDKEqNzhL9Qee6Pep0hcvfhp7IChfTascmx7WXB7gm
- dx5U3/wtySK3Hd3XMOPwD/2dh9JljIp3S1ecXT/xoH399u2MguEolt0YmiDMrui/OQsy
- 0Xpd+zFxtIq74681V7dcrmWPoFMYihncQuI8kPDoa14uyzO2YXwL5ei0fITrmTy8IpYU
- AHDthMZBRmpLxjs1MapYsnjNNZVrnjHywqWFQKpv2RJqWgBZ5q2vES3fYaNezrtnJm/q
- yG6Nz6m/w4JK62h5jmn0qJtmpQUZDh/VPfG+678tmNOu0uwSVmTpeMOaNIMupiV++trN Cw== 
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2021-07-09; bh=y/M0AOwHWRBjGCOiCMUEM/RnaVYdkTrhp293S9bX4w0=;
+ b=klHpm22F/82Wb1HVZ+kBqNNCA4h5GPCNy3uEgUyWH5KaC5F79exKaZuyO3UhnCdcrg7B
+ jvfhjMpwJinkZT3rvWDgRmTky9XP03R+APgk/pTItWJI4kqA0s8+yM5dnNCsTszw5Pai
+ hkRYFcX2CBhgWUsqhf9Ez8S8PqMu5dafSVL2ZJkh6KmMKFdlKAk/r51c4orarPqzq/cg
+ yQDm2qglfXiXocbim0kR35PScZRWY4JULK4H5040r99/KS+OkW3OppYCpAgUoIj6k0Di
+ 5MkHFitH2wGRPjl+1VIYytba82nE6Pjr5dspJeRzmYMhgLIwx72yk486/03Ik+0/MQhr YA== 
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=ONQ9jJnQJ/IxHik/LzzCjXDrHhN3dW9SvSr13Jj1KAw=;
- b=hXpc/FqXv6zSLHlzQ3ITdXrrnyogZquh+hvxh3GEY/k0VuUKACCJ4IqntA/qM8JYQB1S
- ddjtUqbZK2LjVRarpfILBhDkU/ENHP/6si6u9AO+WEAxGcmcScRWR4tthhCiVJwSIlww
- q0LWFUUvNQL7kXIvjQGXar/zzGFrQwyMu2S2MWK4Sm3u5Nx1pq4FEai6efViEylK1i0H
- 1+ZlVEAJ3Ah2eGhF1Vg4MrC/lkFGB1mfUDyvhKvv6J3d6nZYNHUdQFLpRawhpPBldCtc
- w6iHWhBimoP6q0NT21Vrx44ThItt0Jrv5Qwk51CyHhh4iE4iCuHHjy7yo5J+n+3HP7gz eA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3awpwktvys-3
+ subject : date : message-id : content-type : mime-version;
+ s=corp-2020-01-29; bh=y/M0AOwHWRBjGCOiCMUEM/RnaVYdkTrhp293S9bX4w0=;
+ b=VwvPxD70So7z8c2OUUKiuUH9Rs6oa6txLWT5ly8pqBlfToJcNOVMnv8bWZp72ZywMdwq
+ Z1h0H1HL7/v4K6mZmy7lpB/lkh2ppGKobQguxwHB3aPdyudlcEc1UV6vpjGqlE6I1byJ
+ ur6UoY9WXk80etZIjDqiVnTlX1sACOonuRQIli1JuzpSagVo0Mm8vs2FbCEFmvU2UQ+N
+ 6uNZTEJVakGbD9T8VXRhmTjN3eZikSq2VXALxIyZBT5nD/BQ98bSnuxKItBThSh2YifS
+ B/CXhQKoAypsPRvKGuJ6eXRH72x0YdWo4hEieYSV6d23VdAIlFd+KLpXsVhOXJOvuk94 ww== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3awq18adxg-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Sep 2021 16:23:23 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 187Fu3gp163611;
-        Tue, 7 Sep 2021 15:57:08 GMT
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam07lp2043.outbound.protection.outlook.com [104.47.51.43])
-        by aserp3020.oracle.com with ESMTP id 3av0m4ssp6-2
+        Tue, 07 Sep 2021 16:01:36 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 187G0F3f134735;
+        Tue, 7 Sep 2021 16:01:28 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2048.outbound.protection.outlook.com [104.47.74.48])
+        by userp3020.oracle.com with ESMTP id 3avqte3cts-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Sep 2021 15:57:08 +0000
+        Tue, 07 Sep 2021 16:01:27 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=guSXsccjddi0Eab0kELowO0fVCmzEcdSibLHtakyWQEqAMHnkBwcniYNO33Lw3R157JcK7ceuLcK9XDLEyd0UaxpRct2YUslseiSkcglvcMgoPlACOn3HOUzjeQWwn4kZxTBCxFMy8L2MM2r28eRdP1S4cu0Lo19f1ZxE+zDrgle+o2KlTTJ+hNZe3Uhe9O2FnocvmWAMOaT3RDhUxCj5JDQyrrX0ndMkZK8XGLImnLuXPtTkllS5M/TNtCVFNK1+KC5ubXW2AIxGf0wAwmVDFdU2JjJSya8HcxgElD4Wyo7GRS2qI/WTifo4e4gT9kJtPplbHd3Q0TJxd5lOtoscQ==
+ b=mOrgrlBaHI54qIpgJ8J873/eqtrpqG3oJSX0yrerj25cC1UbDdr+5aCUCubCnE3mhT6UJDxGTurhEUZJEhc0yS8hRwHRMdaPE9fvQRy3jjJXSA98B8MIAlubcYWlN/ONoH6TJO8NtuU7/Zlb36G62wyy9sbpMp36YprN4vFBvRDcB1k1G8m2JfP87mK8AI2XDLASsQBxspbj+Rsc2FH+s1IxI2iSGzW43eH5Nu1Eoj9pbB10RHXhd2mMyd89WmmIJ6W0xMrIuvgreD0Quz5xfIu1CZr17aaR/L/SBBfdfbdGR5p2XryApo6FylSmWxaOnm/VqxeeoJzLJE+oLupFfQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=ONQ9jJnQJ/IxHik/LzzCjXDrHhN3dW9SvSr13Jj1KAw=;
- b=UBZEvzMvhU9OX+Y0FcMN8CBHS3560Nm0ECoBjG5v/xVJEOWoi0OTMDi39lEH/ENSmEeiu2EUL8JXPFHLAT6XjkdO8A8q3palpGPekmlXo//tAP1NYCa+HwZ0UXY8bqGsjnoT5BzRs/PfWiYykeASVk/s/MB/uYCphURXdBi983m2IYFaTTkn+CvMp5Sxs62jjRszvheA06OqD8X0F3PgrWwa/3GBnACBaaoYygYwqHKu/XW/V+ZNVJ0JIqaDb/goY2nUB8Kq8GASpP31xK6NMmg2vQGiLWHHIi1Fj22eCQ+UwDiQ3ECTC3WDD95y6sZJdBq6jJbwLqPBQtJW+7VRjQ==
+ bh=y/M0AOwHWRBjGCOiCMUEM/RnaVYdkTrhp293S9bX4w0=;
+ b=YfQqqmwTEQ9f+jbndEAeLdU6yP6xyTLnfRzPLafh3CUajsQbv052OwacyDGb1+IHHcrVji2Tb0E6bWF1DyPgaI/0Y96Ly7ZiKlD9FE/+SBO6FYVdCR1rTKIHEo7FBWVAsoo5N+QKTMRCppp5fNYTeHTjhS8v3GMj4MBMVWbGsS4OvfaZqGwpYKOKZ7MclmaBIUfmPMxtIe5TMyJT54cAd9TkExLAihCLM2kDriT5Us5gfRd2lB9LJya/Qu1iY0scw7YpEDJ3BISq54v8kt6ylNexxUq/pptQx2bP7QB6S8Xf26Yfn52t2mQNnQYiisngcAJD5NwTR/cf4hurxAD/vQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ONQ9jJnQJ/IxHik/LzzCjXDrHhN3dW9SvSr13Jj1KAw=;
- b=gy58dYE2W/YFBD654HR3UxS2OmlOneFo3/JGnK4LS9XgABEOQI5AkhE/ZGKaoICNmkQq0VKgoOA/vR+SxLMBiTRfI4q4HkDlXIfyPq5psgW+2/z0C+gCcdAV1KqpD5iINY0DlVQxaSy4k0Sm51fREs7kRLE+dz/QqaDJD0sY6cQ=
-Received: from SN6PR10MB2701.namprd10.prod.outlook.com (2603:10b6:805:45::20)
- by SN4PR10MB5541.namprd10.prod.outlook.com (2603:10b6:806:1e8::22) with
+ bh=y/M0AOwHWRBjGCOiCMUEM/RnaVYdkTrhp293S9bX4w0=;
+ b=d07d1dygpKZE64mXf+HNrL0gacT5rAT7ru2fkBaZmrf+QwOYrsErW217S04GZ3ivNBReLgB9t/YtYOVdCwxKDvvtOS+SJz4vgYgX3P6URN/gubpep8d8llvTKQPcHEv9IOZ5VJma2LiYvbNydoGRhs44+g2cPxez+cuCMlpfs9w=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from CH2PR10MB4150.namprd10.prod.outlook.com (2603:10b6:610:ac::13)
+ by CH0PR10MB5177.namprd10.prod.outlook.com (2603:10b6:610:df::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.22; Tue, 7 Sep
- 2021 15:57:06 +0000
-Received: from SN6PR10MB2701.namprd10.prod.outlook.com
- ([fe80::64da:7ae6:af82:ebfe]) by SN6PR10MB2701.namprd10.prod.outlook.com
- ([fe80::64da:7ae6:af82:ebfe%5]) with mapi id 15.20.4478.025; Tue, 7 Sep 2021
- 15:57:06 +0000
-From:   Wengang Wang <wen.gang.wang@oracle.com>
-To:     Gang He <ghe@suse.com>
-CC:     "mark@fasheh.com" <mark@fasheh.com>,
-        "jlbec@evilplan.org" <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ocfs2-devel@oss.oracle.com" <ocfs2-devel@oss.oracle.com>
-Subject: Re: [Ocfs2-devel] [PATCH] ocfs2: avoid getting dlm lock of the target
- directory multiple times during reflink process
-Thread-Topic: [Ocfs2-devel] [PATCH] ocfs2: avoid getting dlm lock of the
- target directory multiple times during reflink process
-Thread-Index: AQHXnjEQ7mXexg5a5UWyHghQ8QAQ56uYxZ+A
-Date:   Tue, 7 Sep 2021 15:57:06 +0000
-Message-ID: <3FF09C2E-2855-457E-8533-50BBD8EECEF1@oracle.com>
-References: <20210826075941.28480-1-ghe@suse.com>
- <744d756c-7640-d312-37ef-126755324e8a@suse.com>
-In-Reply-To: <744d756c-7640-d312-37ef-126755324e8a@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.60.0.2.21)
-authentication-results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=oracle.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f3114647-82d1-4005-9b41-08d972182452
-x-ms-traffictypediagnostic: SN4PR10MB5541:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN4PR10MB5541CC27B13A85E3C9D70580CFD39@SN4PR10MB5541.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ebLGcb1EtVWOK/oSh68TrWKIt7L/7myGSJW4NlfZxbFZOkiORs8hhHa6ELOvzT955OmL+hsxHXhP9Qctl2RaLuEzkI+V7dpaxy5Tk4D1O+IWfUTxeiCDEZUxdOiQtFnEZtQfDHQMkdkFSeuc1AAb1jw4dmLaP7hlp8KIJs+3oY+xm1a3JwkpznPkL681HscHzcBH8fugvZ9DHyvfYfRFap8LdqrTSD9uqAguCPn8MF+GcmszQFopPpsY6YhCG7uMnS9YeXGB4aWYqQ3MpEbXg/KZy6mHEG31tkP5AhSW5yOHo37Dy+BiJO6LO6XyIZlONxSmF+yce7Atuc6GJE5GxRUD4zW7Lb4cAj2Soyk28zFC0N7pkp/FWcwzGJV8CfPyVf4OvDOM3HOqjgwez8TQKuxJ63e4RVXHTX9uhWr3rQyXhYFnqlI2QzqC0B+zLrGVikMI/RgnkLJAeX4+IwI8ggOUeFcRFb3N8JRj4hM6MdblLcASPFSTin4JYzLToVhDkgnpLW3WLAfsEYUkbapL7v3q4pUggjvCQyd/cxq79rsVJdUxCeOBYCQOdwt+wvhKuh/jZEsnpf1vXEIUNZZsdahiT5sLB7OTcKT71rGdO/lgKvxQd3P8lY+glpsDUaOKLBzKQDuJ3DUXQQ8Hy4Lmm8YquyKCQA1KcUa3UMs7O3GIKL/orIsOWlg2cY50OJijnVX/hUGv1/BHduawOY1RLYP/S5+thjPKHTgI0BEWjizzfz1nhnyK4w9ruIh45enydj8Yjeym3lgtAkpMgKHPclmzorT/tmVdYfzYpypIISaKW5cwtA9Wfz43ZmrI4eVhChmStyZgl54RQZON5CUdXw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB2701.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(376002)(396003)(366004)(136003)(6486002)(86362001)(66946007)(2906002)(33656002)(54906003)(316002)(66446008)(64756008)(66556008)(83380400001)(478600001)(186003)(6506007)(38100700002)(5660300002)(53546011)(107886003)(66476007)(966005)(122000001)(6916009)(71200400001)(8676002)(4326008)(38070700005)(6512007)(36756003)(8936002)(2616005)(76116006)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?mm/KX05O1qWx/owXpVY6TTalgavLyTx7RMwZFvpiv2GUXhUPXz1T/YOLLmt+?=
- =?us-ascii?Q?GgfElI7nGeiovmx3QQgtrZZWZFm+pQnW4+ueorsd7/U/1vAqJzph8OD+P29M?=
- =?us-ascii?Q?hT9vuJqsRio1h6JGDatSLXPNnm3bSP0LMIZky164GdM+aw0x/9TCtSLze0N0?=
- =?us-ascii?Q?cRPlIePUGva9zx7FmS7WN8WuDMKhvRiqTM309QFpl6+vakSSoPE9F0SWkSA5?=
- =?us-ascii?Q?G9YHnHKz+D9S13hSnHRjEa39eCtwydrkie+nQWHq3MLNKxXKn3xQZMT0AeKf?=
- =?us-ascii?Q?Plr+NS9ckx3xCbIVFbRwbEHyOs3GX9oOzRoZtjCK+8nZZnNuyXTSV4YvEyc7?=
- =?us-ascii?Q?kGDjPU1Al9N3ixn7FjGKl+aUSWF6cV4hY91cFXpn9PbAinhehAYkr8L9uTlc?=
- =?us-ascii?Q?7pTI73sRE0WiphEvdeKOQ3AIs9uVqtRl8DtLhdb5YrOFy2JkTco15ae65Drt?=
- =?us-ascii?Q?2uYyB3412gds1OejaMoO76t/ZNkdQ9HrY051nMG196czsa77GGx7ox9JiSul?=
- =?us-ascii?Q?YX1XkbZdEg0ssh37tT8+n8TAkJZzM++EN1cAX3UhXkZMMpCKlg4KpRG/ufy1?=
- =?us-ascii?Q?78l4BRCBo3bED/R8nsi6EHvWbUiCioafQa00osu7xlOa1evVwFPSvBra6XNG?=
- =?us-ascii?Q?udqEU+RiNnW9kCGyjAE42zXLfD2VdnHxtMLkgRbpypXmAa0RUDqcD6EaESXr?=
- =?us-ascii?Q?Ax1e5wpZFlUy1Tl86ckzjkOr69dUIVXxDnIbL1LjPJ/G2qxCDz15rJeFNdvN?=
- =?us-ascii?Q?t8N5oSV586mjkLK7wc19iS2ELrFMe7nPmenV8hxIBhss/O6lZqCIcgSO18FS?=
- =?us-ascii?Q?hTXxQOK2V+LNIJIVbcXwbpoXh5rQrkSsQeGmZV4tOQQsf8J5eYm1zKZ4LdWQ?=
- =?us-ascii?Q?AqQlBG6jhTg+wUUocj9mqnSkczE+RuZGvWhjejSUWt9VbZvNo4D++zYU3y9O?=
- =?us-ascii?Q?TtaBdrn1KTAXN5iwl0IKGGKsQGlelYHLHRBsWbfvRDdK+RyUwci+pQ2oV7+4?=
- =?us-ascii?Q?RVoThv8e2mRu1pQ/xBK2H6QcKqmluKWGgZL54nMVBL6NudVTecyIVPSytD4V?=
- =?us-ascii?Q?YdlkCrt7KysFDOcIsHnAL4+GFwbp9JxTHSsVVqHJn/qtCb4xvkLe+X44eNKD?=
- =?us-ascii?Q?/MhjfIJ3N1rdcx5U4L3PUtp+S2ie7KTWCVI1ySdE4XixfpbZNAt6nGs4zpSn?=
- =?us-ascii?Q?rHdE9/XqosYudu5IQZuhhxGGgVHHkduiOzhShRAvy5COxmMBQopMpWc/adVU?=
- =?us-ascii?Q?3dctj8EDVxoQufsUxQv+N6TfINfPtf5EsjL1BSBKFiYEZ/+msVs247Uf1nKE?=
- =?us-ascii?Q?o1/TwJx6ZosxHFauXgLiSL+0Hr35JJ7V3Zev933khE4jMYBGvTZ8z36m/YtR?=
- =?us-ascii?Q?8ld0rXM=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <8148C25A8015E74F863E82B93E436038@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.21; Tue, 7 Sep
+ 2021 16:01:25 +0000
+Received: from CH2PR10MB4150.namprd10.prod.outlook.com
+ ([fe80::340c:c4d9:1efa:5bc7]) by CH2PR10MB4150.namprd10.prod.outlook.com
+ ([fe80::340c:c4d9:1efa:5bc7%8]) with mapi id 15.20.4478.025; Tue, 7 Sep 2021
+ 16:01:25 +0000
+From:   Eric Snowberg <eric.snowberg@oracle.com>
+To:     keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
+        zohar@linux.ibm.com, dhowells@redhat.com, dwmw2@infradead.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        jarkko@kernel.org, jmorris@namei.org, serge@hallyn.com
+Cc:     eric.snowberg@oracle.com, keescook@chromium.org,
+        gregkh@linuxfoundation.org, torvalds@linux-foundation.org,
+        scott.branden@broadcom.com, weiyongjun1@huawei.com,
+        nayna@linux.ibm.com, ebiggers@google.com, ardb@kernel.org,
+        nramas@linux.microsoft.com, lszubowi@redhat.com,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James.Bottomley@HansenPartnership.com, pjones@redhat.com,
+        konrad.wilk@oracle.com
+Subject: [PATCH v5 00/12] Enroll kernel keys thru MOK
+Date:   Tue,  7 Sep 2021 12:00:58 -0400
+Message-Id: <20210907160110.2699645-1-eric.snowberg@oracle.com>
+X-Mailer: git-send-email 2.18.4
+Content-Type: text/plain
+X-ClientProxiedBy: BY3PR05CA0023.namprd05.prod.outlook.com
+ (2603:10b6:a03:254::28) To CH2PR10MB4150.namprd10.prod.outlook.com
+ (2603:10b6:610:ac::13)
 MIME-Version: 1.0
+Received: from localhost.us.oracle.com (148.87.23.13) by BY3PR05CA0023.namprd05.prod.outlook.com (2603:10b6:a03:254::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.4 via Frontend Transport; Tue, 7 Sep 2021 16:01:22 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2cf3be7c-474b-4e08-c217-08d97218be5b
+X-MS-TrafficTypeDiagnostic: CH0PR10MB5177:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CH0PR10MB517769AF54B00C021BEE635687D39@CH0PR10MB5177.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7hMf1hZPPFjKO3wkewQor7ntwQ/VwusuRai/NEGqNJAg7R3M/Lokgv1glcnB/2bxF8t31NhvNdllJX98oaLLyHr/OheaKOYZ3thgWA9mchfbWi3IxO6pUkO4pD7dZXn2zePmrZpB/eiZVvZBcjXHT0tY+pvcn1ksw1EsHcz1ZKoQSl0rzquI8H+uOyQtQ69LJw4J0wRsjoHgGevyewZeEEpEm3hGTMWad7EdO4YbEns2J66KpmuYzsQxAhc3Ra++QPLDRfXG1tETi1Tq2UQu17+t/h/+x6AuZtjsxPdf4CRyJTwbQ3arWVkMnZ/EwQ/yGBARngzzd3EtYrQ3qC8a0LrDPluCfPbyE215RpO87se8uyL8yYcXYzGenN/+yk8gXGV2s51dw2KMMrax6nGoXdrHXCiYZcjtaX4GHGlehFWcLT6G7mX1+Dx4H5iXdj8i4/vJ/vmOyoUCvvwlD6mkJvBSBnEJbMkyrQ4SwfBVM9x84DtD73WjdfVfy3pUhVM4DqaL4snuqm86k01I9CZRL9FvDxQPEuNo8HFb+5TQ6bxS4SmcX8vHseZSxAXwJjPQ/QHcx/50leTKexpBNmULFkMpXjIrY+QHqJGiU9Mn+6k4Xp3TdffewO4adjoQCsFA1mgx9ETVKrYa4GZcTSyxtWbaa5M3jlFKMon92qLelcZi6Cx43cLhvu9rx3NTsX+nru3dYJJ2ATNgNaNpfp4RlSpmCKClZcmiYpznMz6noBzkffcTO0qzvViHRx+e7OTlhjw91GBN+TneVhuOvYw+5m+Zly0NrognxYL2vYwgpRW9v44oGAzVRp1VrwI7uIgWAoHxLZZoTEhpIUvLiEh/Aw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4150.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(52116002)(956004)(7696005)(2906002)(2616005)(5660300002)(8936002)(186003)(921005)(1076003)(66476007)(6666004)(26005)(38350700002)(38100700002)(36756003)(86362001)(66556008)(44832011)(7416002)(83380400001)(4326008)(6486002)(8676002)(508600001)(966005)(107886003)(316002)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FGbhPW3WMmSbzXk+zMFBV3TVIw0vsFNEGZCJDw8VAvJGPPiJiihg9VjV4t+W?=
+ =?us-ascii?Q?4m255dBy+OkE4p4cXCDrUZ4XJXj+nKCB/l9tN5O+Oml8ksvVWtSk9loZL8WQ?=
+ =?us-ascii?Q?gxjaY7rj5bND+nis+Od4GrfsmH6k+tjH14wnv6AIw8vyaC5AZnGkQzBKCcxs?=
+ =?us-ascii?Q?0YSpQrT0QfraWqzG5oQH05WOkXmSF3SME5B2CzdKqeaGu4WVkP1u1P4QDeXu?=
+ =?us-ascii?Q?Vp6v1zpDb/R0QuiFJALCq8R9WsA56x/4lcJTgs0qDCgm3ic4HtUvlN1RvZcJ?=
+ =?us-ascii?Q?uLD86A5Se31AbpAop72tR64/iCTvXkh8eK6mQcx512Yxt2on9DQQ15oqIXCO?=
+ =?us-ascii?Q?cfoAjjPPu/Ld94KySJWPIjllinJGb/XYUxP/CH2dGL0nr3z7pEjvRL4AZ7jU?=
+ =?us-ascii?Q?UIBSflNJt0vRTW/x+n4yHQ/Qd3WxwmxplB29DsvlcYho9cYKIeWuYNDn73eN?=
+ =?us-ascii?Q?gVX08Ctm5bRDaRkNJbWUmXHp01YjzqqqZLUt+VZZ4PO5qsG81rJx2581DlqI?=
+ =?us-ascii?Q?OLeGeOEg+UHQK0G8+lWmGV5ZDYMLskrBua0FEQinwhVlo7Fi+fcRFFrb92+9?=
+ =?us-ascii?Q?ccjfHxx+KEJYPcuiYgY3Dg04ZdCW+M4vBHX6xHMTaJi7a/hpSbCdUZE1a0BH?=
+ =?us-ascii?Q?kFLXO4mNn7fpqPoHXfIT8VRgc9I/aRsZEnzN767DniI7bUnouEQ+uOc4JHEB?=
+ =?us-ascii?Q?vWAiIokCizRnuY5yjdy9y7Al5C2k+jD/S7p6+57JJ0tpx8W/VdnkPjlurNas?=
+ =?us-ascii?Q?VdlxVns4BTJsdNL6Ut33DSlr3A3L7rUZ7YgC8OZoel9kRDDnShieottGuFZS?=
+ =?us-ascii?Q?1+WBlYBS4Wx/58gyBlipR9jCiZJZdcs/sANDLOxlITtZM3WvVb6y331s63Ig?=
+ =?us-ascii?Q?cBIofPUVnl42NC+uvRR9OmDDV7ar5fUiF2uT2j4gF/GZ5bHYo6SJPQszJael?=
+ =?us-ascii?Q?KgG7WbmI+cS3PEkwq4l+1IvDxk86KCEUgZk5/p5fkXcoqjqBVeB0EA39Rgla?=
+ =?us-ascii?Q?2gLgjlEwT/RXIj8p5I6px5R6aGY20TdzDThsUu9U5Gl6iIrVqBKAaPP26i6R?=
+ =?us-ascii?Q?oBpoEZwmvSmXPJC5gIt0M+WLsiy468wFUApRZgFyjOeeXZJgbOhh0oyt9t4G?=
+ =?us-ascii?Q?KMMciD1SvqvZYPwYNLlD6FvxQnf6EczdN0JrhYj0XM0NbPu7Cbf7ZQp/eKp8?=
+ =?us-ascii?Q?I43vMKvIjmvRM1s33WEcHFqIu3I8EwE6V4MHXhHgBi5zcl7IFH+oUDIk7Yov?=
+ =?us-ascii?Q?GTdO8il71nkuSoJhgvQYRAe2sYu/8U7Fa3eBtXjhcgZKkUqtfOSYcLWgVmuE?=
+ =?us-ascii?Q?mcMBdKQFgN8Z/5yjSOpFlTQj?=
 X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2cf3be7c-474b-4e08-c217-08d97218be5b
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4150.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB2701.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3114647-82d1-4005-9b41-08d972182452
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2021 15:57:06.3411
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 16:01:25.0401
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fqUepSkiqdXWjLk39HaSyOWbTU3+jlcrAyw4gj8U6bsooWmJlVnjN07bduUVV90QyvEoORIat3k0bnOtH7YDVxJWxDV5sP3TxtinnwZmHJ8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR10MB5541
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3h3sb2w5QpFonVyUCI2eJHt6LUXzQbfocUfkfg0b59RC3tGopmOo4nVKDhWNaQFannN01uRWn9kYTM3RBpu4wdiLxrIIIVsGxhlp4bzyFtY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB5177
 X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10099 signatures=668682
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
- phishscore=0 bulkscore=0 suspectscore=0 spamscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109070104
-X-Proofpoint-GUID: -dtT41YrtdE1nLQHVqHuyWWxmYv_JYSH
-X-Proofpoint-ORIG-GUID: -dtT41YrtdE1nLQHVqHuyWWxmYv_JYSH
+ bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2108310000 definitions=main-2109070105
+X-Proofpoint-GUID: abWxKp5W61Gb0P4KjyjMOQ2cMan2h0FK
+X-Proofpoint-ORIG-GUID: abWxKp5W61Gb0P4KjyjMOQ2cMan2h0FK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Gang,
+Many UEFI Linux distributions boot using shim.  The UEFI shim provides
+what is called Machine Owner Keys (MOK).  Shim uses both the UEFI Secure
+Boot DB and MOK keys to validate the next step in the boot chain.  The
+MOK facility can be used to import user generated keys.  These keys can
+be used to sign an end-user development kernel build.  When Linux boots,
+pre-boot keys (both UEFI Secure Boot DB and MOK keys) get loaded in the
+Linux .platform keyring.  
 
-Sure, I will look into the problem you are trying to address. Any bug fix a=
-nd performance improvement is welcomed!
-Well, can you please provide the analysis on the tcpdumps between the (two)=
- nodes that covers the reflink operation with/without your patch to show ho=
-w you saved dlm locking ping-pongs?
+Currently, pre-boot keys are not trusted within the Linux trust boundary
+[1]. These platform keys can only be used for kexec. If an end-user
+wants to use their own key within the Linux trust boundary, they must
+either compile it into the kernel themselves or use the insert-sys-cert
+script. Both options present a problem. Many end-users do not want to
+compile their own kernels. With the insert-sys-cert option, there are
+missing upstream changes [2].  Also, with the insert-sys-cert option,
+the end-user must re-sign their kernel again with their own key, and
+then insert that key into the MOK db. Another problem with
+insert-sys-cert is that only a single key can be inserted into a
+compressed kernel.
 
-And what cases did you test to get better performance?
+Having the ability to insert a key into the Linux trust boundary opens
+up various possibilities.  The end-user can use a pre-built kernel and
+sign their own kernel modules.  It also opens up the ability for an
+end-user to more easily use digital signature based IMA-appraisal.  To
+get a key into the ima keyring, it must be signed by a key within the
+Linux trust boundary.
 
-thanks,
-wengang
+Downstream Linux distros try to have a single signed kernel for each
+architecture.  Each end-user may use this kernel in entirely different
+ways.  Some downstream kernels have chosen to always trust platform keys
+within the Linux trust boundary for kernel module signing.  These
+kernels have no way of using digital signature base IMA appraisal.
 
-> On Aug 30, 2021, at 11:25 PM, Gang He <ghe@suse.com> wrote:
->=20
-> Hello Joseph and Wengang,
->=20
-> When you have time, please help review this patch.
-> About the deadlock problem which was caused by ocfs2_downconvert_lock=20
-> failure, we have the fix patch, it is very key.
-> But I feel this patch is still useful as a optimization patch, the user
-> case is to reflink the files to the same directory concurrently, our=20
-> users usually backup the files(via reflink) from the cluster nodes=20
-> concurrently(via crontab) every day/hour.
-> The current design, during the reflink process, the node will=20
-> acquire/release dlm lock of the target directory multiple times,
-> this is very inefficient in concurrently reflink.
->=20
->=20
-> Thanks
-> Gang
->=20
-> On 2021/8/26 15:59, Gang He wrote:
->> During the reflink process, we should acquire the target directory
->> inode dlm lock at the beginning, and hold this dlm lock until end
->> of the function.
->> With this patch, we avoid dlm lock ping-pong effect when clone
->> files to the same directory simultaneously from multiple nodes.
->> There is a typical user scenario, users regularly back up files
->> to a specified directory through the reflink feature from the
->> multiple nodes.
->>=20
->> Signed-off-by: Gang He <ghe@suse.com>
->> ---
->>  fs/ocfs2/namei.c        | 32 +++++++++++++-------------------
->>  fs/ocfs2/namei.h        |  2 ++
->>  fs/ocfs2/refcounttree.c | 15 +++++++++++----
->>  fs/ocfs2/xattr.c        | 12 +-----------
->>  fs/ocfs2/xattr.h        |  1 +
->>  5 files changed, 28 insertions(+), 34 deletions(-)
->>=20
->> diff --git a/fs/ocfs2/namei.c b/fs/ocfs2/namei.c
->> index 2c46ff6ba4ea..f8bbb22cc60b 100644
->> --- a/fs/ocfs2/namei.c
->> +++ b/fs/ocfs2/namei.c
->> @@ -2489,6 +2489,7 @@ static int ocfs2_prep_new_orphaned_file(struct ino=
-de *dir,
->>  }
->>=20
->>  int ocfs2_create_inode_in_orphan(struct inode *dir,
->> +				 struct buffer_head **dir_bh,
->>  				 int mode,
->>  				 struct inode **new_inode)
->>  {
->> @@ -2597,13 +2598,16 @@ int ocfs2_create_inode_in_orphan(struct inode *d=
-ir,
->>=20
->>  	brelse(new_di_bh);
->>=20
->> -	if (!status)
->> -		*new_inode =3D inode;
->> -
->>  	ocfs2_free_dir_lookup_result(&orphan_insert);
->>=20
->> -	ocfs2_inode_unlock(dir, 1);
->> -	brelse(parent_di_bh);
->> +	if (!status) {
->> +		*new_inode =3D inode;
->> +		*dir_bh =3D parent_di_bh;
->> +	} else {
->> +		ocfs2_inode_unlock(dir, 1);
->> +		brelse(parent_di_bh);
->> +	}
->> +
->>  	return status;
->>  }
->>=20
->> @@ -2760,11 +2764,11 @@ int ocfs2_del_inode_from_orphan(struct ocfs2_sup=
-er *osb,
->>  }
->>=20
->>  int ocfs2_mv_orphaned_inode_to_new(struct inode *dir,
->> +				   struct buffer_head *dir_bh,
->>  				   struct inode *inode,
->>  				   struct dentry *dentry)
->>  {
->>  	int status =3D 0;
->> -	struct buffer_head *parent_di_bh =3D NULL;
->>  	handle_t *handle =3D NULL;
->>  	struct ocfs2_super *osb =3D OCFS2_SB(dir->i_sb);
->>  	struct ocfs2_dinode *dir_di, *di;
->> @@ -2778,14 +2782,7 @@ int ocfs2_mv_orphaned_inode_to_new(struct inode *=
-dir,
->>  				(unsigned long long)OCFS2_I(dir)->ip_blkno,
->>  				(unsigned long long)OCFS2_I(inode)->ip_blkno);
->>=20
->> -	status =3D ocfs2_inode_lock(dir, &parent_di_bh, 1);
->> -	if (status < 0) {
->> -		if (status !=3D -ENOENT)
->> -			mlog_errno(status);
->> -		return status;
->> -	}
->> -
->> -	dir_di =3D (struct ocfs2_dinode *) parent_di_bh->b_data;
->> +	dir_di =3D (struct ocfs2_dinode *) dir_bh->b_data;
->>  	if (!dir_di->i_links_count) {
->>  		/* can't make a file in a deleted directory. */
->>  		status =3D -ENOENT;
->> @@ -2798,7 +2795,7 @@ int ocfs2_mv_orphaned_inode_to_new(struct inode *d=
-ir,
->>  		goto leave;
->>=20
->>  	/* get a spot inside the dir. */
->> -	status =3D ocfs2_prepare_dir_for_insert(osb, dir, parent_di_bh,
->> +	status =3D ocfs2_prepare_dir_for_insert(osb, dir, dir_bh,
->>  					      dentry->d_name.name,
->>  					      dentry->d_name.len, &lookup);
->>  	if (status < 0) {
->> @@ -2862,7 +2859,7 @@ int ocfs2_mv_orphaned_inode_to_new(struct inode *d=
-ir,
->>  	ocfs2_journal_dirty(handle, di_bh);
->>=20
->>  	status =3D ocfs2_add_entry(handle, dentry, inode,
->> -				 OCFS2_I(inode)->ip_blkno, parent_di_bh,
->> +				 OCFS2_I(inode)->ip_blkno, dir_bh,
->>  				 &lookup);
->>  	if (status < 0) {
->>  		mlog_errno(status);
->> @@ -2886,10 +2883,7 @@ int ocfs2_mv_orphaned_inode_to_new(struct inode *=
-dir,
->>  	iput(orphan_dir_inode);
->>  leave:
->>=20
->> -	ocfs2_inode_unlock(dir, 1);
->> -
->>  	brelse(di_bh);
->> -	brelse(parent_di_bh);
->>  	brelse(orphan_dir_bh);
->>=20
->>  	ocfs2_free_dir_lookup_result(&lookup);
->> diff --git a/fs/ocfs2/namei.h b/fs/ocfs2/namei.h
->> index 9cc891eb874e..03a2c526e2c1 100644
->> --- a/fs/ocfs2/namei.h
->> +++ b/fs/ocfs2/namei.h
->> @@ -24,6 +24,7 @@ int ocfs2_orphan_del(struct ocfs2_super *osb,
->>  		     struct buffer_head *orphan_dir_bh,
->>  		     bool dio);
->>  int ocfs2_create_inode_in_orphan(struct inode *dir,
->> +				 struct buffer_head **dir_bh,
->>  				 int mode,
->>  				 struct inode **new_inode);
->>  int ocfs2_add_inode_to_orphan(struct ocfs2_super *osb,
->> @@ -32,6 +33,7 @@ int ocfs2_del_inode_from_orphan(struct ocfs2_super *os=
-b,
->>  		struct inode *inode, struct buffer_head *di_bh,
->>  		int update_isize, loff_t end);
->>  int ocfs2_mv_orphaned_inode_to_new(struct inode *dir,
->> +				   struct buffer_head *dir_bh,
->>  				   struct inode *new_inode,
->>  				   struct dentry *new_dentry);
->>=20
->> diff --git a/fs/ocfs2/refcounttree.c b/fs/ocfs2/refcounttree.c
->> index 7f6355cbb587..a9a0c7c37e8e 100644
->> --- a/fs/ocfs2/refcounttree.c
->> +++ b/fs/ocfs2/refcounttree.c
->> @@ -4250,7 +4250,7 @@ static int ocfs2_reflink(struct dentry *old_dentry=
-, struct inode *dir,
->>  {
->>  	int error, had_lock;
->>  	struct inode *inode =3D d_inode(old_dentry);
->> -	struct buffer_head *old_bh =3D NULL;
->> +	struct buffer_head *old_bh =3D NULL, *dir_bh =3D NULL;
->>  	struct inode *new_orphan_inode =3D NULL;
->>  	struct ocfs2_lock_holder oh;
->>=20
->> @@ -4258,7 +4258,7 @@ static int ocfs2_reflink(struct dentry *old_dentry=
-, struct inode *dir,
->>  		return -EOPNOTSUPP;
->>=20
->>=20
->> -	error =3D ocfs2_create_inode_in_orphan(dir, inode->i_mode,
->> +	error =3D ocfs2_create_inode_in_orphan(dir, &dir_bh, inode->i_mode,
->>  					     &new_orphan_inode);
->>  	if (error) {
->>  		mlog_errno(error);
->> @@ -4304,13 +4304,15 @@ static int ocfs2_reflink(struct dentry *old_dent=
-ry, struct inode *dir,
->>=20
->>  	/* If the security isn't preserved, we need to re-initialize them. */
->>  	if (!preserve) {
->> -		error =3D ocfs2_init_security_and_acl(dir, new_orphan_inode,
->> +		error =3D ocfs2_init_security_and_acl(dir, dir_bh,
->> +						    new_orphan_inode,
->>  						    &new_dentry->d_name);
->>  		if (error)
->>  			mlog_errno(error);
->>  	}
->>  	if (!error) {
->> -		error =3D ocfs2_mv_orphaned_inode_to_new(dir, new_orphan_inode,
->> +		error =3D ocfs2_mv_orphaned_inode_to_new(dir, dir_bh,
->> +						       new_orphan_inode,
->>  						       new_dentry);
->>  		if (error)
->>  			mlog_errno(error);
->> @@ -4328,6 +4330,11 @@ static int ocfs2_reflink(struct dentry *old_dentr=
-y, struct inode *dir,
->>  			iput(new_orphan_inode);
->>  	}
->>=20
->> +	if (dir_bh) {
->> +		ocfs2_inode_unlock(dir, 1);
->> +		brelse(dir_bh);
->> +	}
->> +
->>  	return error;
->>  }
->>=20
->> diff --git a/fs/ocfs2/xattr.c b/fs/ocfs2/xattr.c
->> index dd784eb0cd7c..3f23e3a5018c 100644
->> --- a/fs/ocfs2/xattr.c
->> +++ b/fs/ocfs2/xattr.c
->> @@ -7203,16 +7203,13 @@ int ocfs2_reflink_xattrs(struct inode *old_inode=
-,
->>  /*
->>   * Initialize security and acl for a already created inode.
->>   * Used for reflink a non-preserve-security file.
->> - *
->> - * It uses common api like ocfs2_xattr_set, so the caller
->> - * must not hold any lock expect i_mutex.
->>   */
->>  int ocfs2_init_security_and_acl(struct inode *dir,
->> +				struct buffer_head *dir_bh,
->>  				struct inode *inode,
->>  				const struct qstr *qstr)
->>  {
->>  	int ret =3D 0;
->> -	struct buffer_head *dir_bh =3D NULL;
->>=20
->>  	ret =3D ocfs2_init_security_get(inode, dir, qstr, NULL);
->>  	if (ret) {
->> @@ -7220,17 +7217,10 @@ int ocfs2_init_security_and_acl(struct inode *di=
-r,
->>  		goto leave;
->>  	}
->>=20
->> -	ret =3D ocfs2_inode_lock(dir, &dir_bh, 0);
->> -	if (ret) {
->> -		mlog_errno(ret);
->> -		goto leave;
->> -	}
->>  	ret =3D ocfs2_init_acl(NULL, inode, dir, NULL, dir_bh, NULL, NULL);
->>  	if (ret)
->>  		mlog_errno(ret);
->>=20
->> -	ocfs2_inode_unlock(dir, 0);
->> -	brelse(dir_bh);
->>  leave:
->>  	return ret;
->>  }
->> diff --git a/fs/ocfs2/xattr.h b/fs/ocfs2/xattr.h
->> index 00308b57f64f..b27fd8ba0019 100644
->> --- a/fs/ocfs2/xattr.h
->> +++ b/fs/ocfs2/xattr.h
->> @@ -83,6 +83,7 @@ int ocfs2_reflink_xattrs(struct inode *old_inode,
->>  			 struct buffer_head *new_bh,
->>  			 bool preserve_security);
->>  int ocfs2_init_security_and_acl(struct inode *dir,
->> +				struct buffer_head *dir_bh,
->>  				struct inode *inode,
->>  				const struct qstr *qstr);
->>  #endif /* OCFS2_XATTR_H */
->>=20
->=20
->=20
-> _______________________________________________
-> Ocfs2-devel mailing list
-> Ocfs2-devel@oss.oracle.com
-> https://oss.oracle.com/mailman/listinfo/ocfs2-devel
+This series introduces a new Linux kernel keyring containing the Machine
+Owner Keys (MOK) called .machine. It also adds a new MOK variable to shim.
+This variable allows the end-user to decide if they want to trust keys
+enrolled in the MOK within the Linux trust boundary.  By default,
+nothing changes; MOK keys are not trusted within the Linux kernel.  They
+are only trusted after the end-user makes the decision themselves.  The
+end-user would set this through mokutil using a new --trust-mok option
+[3]. This would work similar to how the kernel uses MOK variables to
+enable/disable signature validation as well as use/ignore the db.
+
+When shim boots, it mirrors the new MokTML Boot Services variable to a
+new MokListTrustedRT Runtime Services variable and extends PCR14.
+MokListTrustedRT is written without EFI_VARIABLE_NON_VOLATILE set,
+preventing an end-user from setting it after booting and doing a kexec.
+
+When the kernel boots, if MokListTrustedRT is set and
+EFI_VARIABLE_NON_VOLATILE is not set, the MokListRT is loaded into the
+machine keyring instead of the platform keyring. Mimi has suggested that
+only CA keys be loaded into this keyring. All other certs will load 
+into the platform keyring instead.
+
+The machine keyring contains a new keyring permission that only allows CA
+keys to be loaded. If the permission fails, the key is later loaded into
+the platform keyring.  After all keys are added into the machine keyring,
+they are linked to the secondary trusted keyring.  After the link is 
+created, keys contained in the machine keyring will automatically be 
+searched when searching the secondary trusted keys.
+
+Secure Boot keys will never be trusted.  They will always be loaded into
+the platform keyring.  If an end-user wanted to trust one, they would
+need to enroll it into the MOK.
+
+I have included links to both the mokutil [3] and shim [4] changes I
+have made to support this new functionality.
+
+V2 changes:
+- The .mok keyring persists past boot
+- Removed the unrestricted move into the secondary keyring
+- Removed the keyring move bypass patch
+- Added restrictions to allow the .mok to be linked to either the
+  builtin or secondary keyrings
+- Secondary keyring dependency has been removed
+
+V3 changes:
+- Only CA keys contained in the MOKList are loaded, nothing else
+- Support for kernels built without the secondary trusted keyring
+  has been dropped.
+
+V4 changes:
+- Add new Kconfig INTEGRITY_MOK_KEYRING and move all mok keyring
+  code behind it
+- Changed patch series ordering
+- Consolidated a few patches
+
+V5 changes:
+- Rename from mok keyring to machine keyring
+
+[1] https://lore.kernel.org/lkml/1556221605.24945.3.camel@HansenPartnership.com/
+[2] https://lore.kernel.org/patchwork/cover/902768/
+[3] https://github.com/esnowberg/mokutil/tree/0.3.0-mokvars-v2
+[4] https://github.com/esnowberg/shim/tree/mokvars-v2
+
+Eric Snowberg (12):
+  integrity: Introduce a Linux keyring called machine
+  integrity: Do not allow machine keyring updates following init
+  KEYS: CA link restriction
+  integrity: restrict INTEGRITY_KEYRING_MACHINE to restrict_link_by_ca
+  integrity: add new keyring handler for mok keys
+  KEYS: add a reference to machine keyring
+  KEYS: Introduce link restriction to include builtin, secondary and
+    machine keys
+  KEYS: integrity: change link restriction to trust the machine keyring
+  KEYS: link secondary_trusted_keys to machine trusted keys
+  integrity: store reference to machine keyring
+  integrity: Trust MOK keys if MokListTrustedRT found
+  integrity: Only use machine keyring when uefi_check_trust_mok_keys is
+    true
+
+ certs/system_keyring.c                        | 40 ++++++++-
+ crypto/asymmetric_keys/restrict.c             | 40 +++++++++
+ include/crypto/public_key.h                   |  5 ++
+ include/keys/system_keyring.h                 | 14 +++
+ security/integrity/Kconfig                    | 11 +++
+ security/integrity/Makefile                   |  1 +
+ security/integrity/digsig.c                   | 18 +++-
+ security/integrity/integrity.h                | 17 +++-
+ .../platform_certs/keyring_handler.c          | 17 +++-
+ .../platform_certs/keyring_handler.h          |  5 ++
+ security/integrity/platform_certs/load_uefi.c |  4 +-
+ .../platform_certs/machine_keyring.c          | 85 +++++++++++++++++++
+ 12 files changed, 249 insertions(+), 8 deletions(-)
+ create mode 100644 security/integrity/platform_certs/machine_keyring.c
+
+
+base-commit: e22ce8eb631bdc47a4a4ea7ecf4e4ba499db4f93
+-- 
+2.18.4
 
