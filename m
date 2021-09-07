@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C996B402F3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6005402F3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346256AbhIGT5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 15:57:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346170AbhIGT5b (ORCPT
+        id S1346328AbhIGT5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 15:57:43 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45134 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346234AbhIGT5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 15:57:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B66C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:56:25 -0700 (PDT)
-Message-ID: <20210907195004.161996229@linutronix.de>
+        Tue, 7 Sep 2021 15:57:32 -0400
+Message-ID: <20210907195004.216576712@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631044583;
+        s=2020; t=1631044585;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding;
-        bh=a7Wv01T8o7f/lHSmbG1OlY9G45DQgw4FmmXe+1nvRxg=;
-        b=4te0cJr1pXvC3vt1snn5zElBUQmaGDzQq0NEeZwFcs0QVbeXVbGpQd6scP661MiPkxO5jV
-        F57qXLJnaa2Pbm36/pQamu/XKYJd1+D3Uo1yaG4KbZcyJ4X1b9oLvz/bD+Gkb5LpuKoZ32
-        0WNbkYjoIMI+2vuar6YZdvSstSmiHILMUxDdU+5jIdqVIbLYWr47fKNGWxHMFDKlcYjGhs
-        DDn8+CkTDnOjPpN637Gt5OyB08s1XTkKApMz+xmTG9FyAmn6ePv9WUv7pqpoX6rNTbWxKv
-        1MBB+aw735O0ATgUmkJWEcps84OxBne6/NQE9kTPj48syqwCk9FXvP0H4gtM+w==
+        bh=txLTAvfCrpbPpD4W1xlvr75l/SIzjME+EBlmu+C3LU0=;
+        b=Rm3IAK34YZkrU/GBKwu0XNB7LjqD9MZPxAWs/EKF4T2hY5XfNPwATLKjMW+yMiBul1tbg2
+        go97pMcg65g8Es461sfGU7f2pKnsMLrvWW3iOmBGP8D5punXcFud+zV+g0j0YHrBjo6hy/
+        gP3AhPJPftLxDQsbX5YkdviwzdTftdHiNvOH5qSodXOyN0mz58RazC3vfY62iEen0avgWP
+        NXuqk3HVE/AflSBoDQp5yQI9k36kqqUWG6/On9nA4PIu+DhRiP4xu+eActE62MUUZq04jH
+        N51dA5XS22NTvq6R139vywFw90NhCvRS3A1ysL3xtsz/fN+2dSYPaedgcfa1wQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631044583;
+        s=2020e; t=1631044585;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding;
-        bh=a7Wv01T8o7f/lHSmbG1OlY9G45DQgw4FmmXe+1nvRxg=;
-        b=8BAsCsg6LRXIgG8rbWd7NV89cAgWg6B7twNaJNM4RdA+DGtcGdEVrkrvM6IH1g/s8y+VX8
-        GpwjNEGaea9whyAQ==
+        bh=txLTAvfCrpbPpD4W1xlvr75l/SIzjME+EBlmu+C3LU0=;
+        b=Ym0f1Asx6hzuXs1Q1WpwfrqJ0B3U+zmhqIlDVnKmvyY9tAe6ft1nm1hQnYEgvKyqekf9tW
+        +iOXs6MxgICN7+Bg==
 3Message-ID: <20210907193229.370353258@linutronix.de>
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
@@ -45,50 +42,48 @@ Cc:     x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Peter Ziljstra <peterz@infradead.org>
-Subject: [patch V2 07/20] x86/copy_mc: Use EX_TYPE_DEFAULT_MCE_SAFE for
- exception fixups
+Subject: [patch V2 08/20] x86/fpu: Use EX_TYPE_FAULT_MCE_SAFE for exception fixups
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
-Date:   Tue,  7 Sep 2021 21:56:23 +0200 (CEST)
+Date:   Tue,  7 Sep 2021 21:56:24 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nothing in that code uses the trap number which was stored by the exception
-fixup which is instantiated via _ASM_EXTABLE_FAULT().
+The macros used for restoring FPU state from a user space buffer can handle
+all exceptions including #MC. They need to return the trap number in the
+error case as the code which invokes them needs to distinguish the cause of
+the failure. It aborts the operation for anything except #PF.
 
-Use _ASM_EXTABLE(... EX_TYPE_DEFAULT_MCE_SAFE) instead which just handles
-the IP fixup and the type indicates to the #MC handler that the call site
-can handle the abort caused by #MC correctly.
+Use the new EX_TYPE_FAULT_MCE_SAFE exception table fixup type to document
+the nature of the fixup.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
 V2: New patch
 ---
- arch/x86/lib/copy_mc_64.S |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/x86/include/asm/fpu/internal.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/x86/lib/copy_mc_64.S
-+++ b/arch/x86/lib/copy_mc_64.S
-@@ -107,9 +107,9 @@ SYM_FUNC_END(copy_mc_fragile)
- 
- 	.previous
- 
--	_ASM_EXTABLE_FAULT(.L_read_leading_bytes, .E_leading_bytes)
--	_ASM_EXTABLE_FAULT(.L_read_words, .E_read_words)
--	_ASM_EXTABLE_FAULT(.L_read_trailing_bytes, .E_trailing_bytes)
-+	_ASM_EXTABLE_TYPE(.L_read_leading_bytes, .E_leading_bytes, EX_TYPE_DEFAULT_MCE_SAFE)
-+	_ASM_EXTABLE_TYPE(.L_read_words, .E_read_words, EX_TYPE_DEFAULT_MCE_SAFE)
-+	_ASM_EXTABLE_TYPE(.L_read_trailing_bytes, .E_trailing_bytes, EX_TYPE_DEFAULT_MCE_SAFE)
- 	_ASM_EXTABLE(.L_write_leading_bytes, .E_leading_bytes)
- 	_ASM_EXTABLE(.L_write_words, .E_write_words)
- 	_ASM_EXTABLE(.L_write_trailing_bytes, .E_trailing_bytes)
-@@ -149,5 +149,5 @@ SYM_FUNC_END(copy_mc_enhanced_fast_strin
- 
- 	.previous
- 
--	_ASM_EXTABLE_FAULT(.L_copy, .E_copy)
-+	_ASM_EXTABLE_TYPE(.L_copy, .E_copy, EX_TYPE_DEFAULT_MCE_SAFE)
- #endif /* !CONFIG_UML */
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -102,7 +102,7 @@ extern void save_fpregs_to_fpstate(struc
+ 		     "3:  negl %%eax\n"					\
+ 		     "    jmp  2b\n"					\
+ 		     ".previous\n"					\
+-		     _ASM_EXTABLE_FAULT(1b, 3b)				\
++		     _ASM_EXTABLE_TYPE(1b, 3b, EX_TYPE_FAULT_MCE_SAFE)	\
+ 		     : [err] "=a" (err), output				\
+ 		     : "0"(0), input);					\
+ 	err;								\
+@@ -209,7 +209,7 @@ static inline void fxsave(struct fxregs_
+ 		     "3: negl %%eax\n\t"				\
+ 		     "jmp 2b\n\t"					\
+ 		     ".popsection\n\t"					\
+-		     _ASM_EXTABLE_FAULT(1b, 3b)				\
++		     _ASM_EXTABLE_TYPE(1b, 3b, EX_TYPE_FAULT_MCE_SAFE)	\
+ 		     : [err] "=a" (err)					\
+ 		     : "D" (st), "m" (*st), "a" (lmask), "d" (hmask)	\
+ 		     : "memory")
 
