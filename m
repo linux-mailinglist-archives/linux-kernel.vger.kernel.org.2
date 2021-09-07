@@ -2,189 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7640402D0D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:46:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7291A402D0F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344794AbhIGQrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:47:16 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:40888 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343837AbhIGQrN (ORCPT
+        id S1344865AbhIGQry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 12:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344807AbhIGQrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:47:13 -0400
-Received: by mail-oi1-f175.google.com with SMTP id h133so13539848oib.7;
-        Tue, 07 Sep 2021 09:46:07 -0700 (PDT)
+        Tue, 7 Sep 2021 12:47:53 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B433C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 09:46:47 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id d5so6730370pjx.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 09:46:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PP2ABdQKAw7a9Vz1k0Jj0CJwbnVZivj1PUS2EvlCvgY=;
+        b=hj4juZ9Y4gulEIE2+5Tmdsl6/hSiw0jMQoKY7j1HVLnpkYg71iUsOJla9YDf7Cduh6
+         DstWDWhTwVDrLlaFof+hUrerVjCSRceKfROWvlsfhHcPO1UDRsT9spbCjq6n4swgS1/d
+         ptsgPpu1R+lqqxAOjUw7fxNTE0UlEy2kf/ihI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DCZNN4p5E8kdrXSmi6bXMnp7xKFnaiWBCB0tHa5A5OA=;
-        b=Bw64cYmMn9sgJZ61c+4aG+oIce/PCjfOlP1xG0sMycZ8w1S6J7nrkLrJh0shO9bKV9
-         GEr2nuWhIRm+hXAGgsaLvna0O1IXnI4jSzCoxSPyjeKAWAiAHt+5lz9gOUWCU/c8JgBp
-         oewVTeXdPIw3bJCcg0ol8+f5qNNyMp3awS5Jjn+9vezZNZVABx/Ti1WrSBMpv0M20et4
-         Ji49zKjNPRpelTvNgB4hI1DMouZfxWKIH7gtkTrJCp616yW1E4wbKNqrnkMbQZS+vWTT
-         gZT6/3RcGCpC51gLlouPRIpvrJe+IDIcg84nZraCi3mICvKQMlPFZi/+SVSh2Dsu2+Kl
-         Wt/g==
-X-Gm-Message-State: AOAM5317kU9r9LPZnrNfJJL5107Gm5MwBghd33+XKeAXIo5hgUXP1D40
-        wMiDTNYPQCYdff+iW2tW+A==
-X-Google-Smtp-Source: ABdhPJyEWZxNDh9WKG25RoeCwev0Ca107OKI1Rf+mUhA3Dl4aN8TzcDh+oMu6TG6+aso5kQpCnX2YA==
-X-Received: by 2002:a05:6808:13d3:: with SMTP id d19mr3506601oiw.178.1631033166614;
-        Tue, 07 Sep 2021 09:46:06 -0700 (PDT)
-Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id x4sm2327260ood.2.2021.09.07.09.46.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 09:46:05 -0700 (PDT)
-Received: (nullmailer pid 4134391 invoked by uid 1000);
-        Tue, 07 Sep 2021 16:46:04 -0000
-Date:   Tue, 7 Sep 2021 11:46:04 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] dt-bindings: iio: adc: Add the binding
- documentation for NXP IMX8QXP ADC
-Message-ID: <YTeXTLX05lvmwWvo@robh.at.kernel.org>
-References: <20210907015724.1377-1-caihuoqing@baidu.com>
- <20210907015724.1377-3-caihuoqing@baidu.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PP2ABdQKAw7a9Vz1k0Jj0CJwbnVZivj1PUS2EvlCvgY=;
+        b=sTeqM2dd1JmxrF/sv59mnqqLYSxOR1Z3MrrDH3v0+5iFwt7vPRbsQvPEMauXuOl6iE
+         6ZZ/KYXQA0nptMUsSGN/JfU3PAAFsevG31gGuN2C/vuLtY0FiVO+XFkbv47rS1nAzQFQ
+         QWuvd/8vwCAkrHfT6ef1JKqLby5+vvW6+qIfkCRsZ8AsQP9PuZ9t3/HOZscxkbItZ7op
+         LjicrQ89nFbNBMKHVaPSJXGmM4abUtGcZzoDhm+oyhyjbWg9Qw9fJ3vRlpTyro5Y5jIH
+         cPDeYBTms0wbXkMwwNhN2O1MYf9k7H1pMUwA5nfXkmiJ5BPnlV1nhasbkkN2gtnyYelf
+         WH9A==
+X-Gm-Message-State: AOAM533fFpAb3PD0n9aKkz1a0WMaQRcCWRF6Ry23AuqJfef4dNO7GkaM
+        tBB8bAy4o0h6sFoCE7sX56G/Qg==
+X-Google-Smtp-Source: ABdhPJxvuFfk9GSy2PRDzf3a1XQiZDc7Rc4bkdjCm1pJK0CbBHydSsXo2x55MjkidEHQT3e+aSkaoQ==
+X-Received: by 2002:a17:90a:450d:: with SMTP id u13mr5539107pjg.138.1631033206634;
+        Tue, 07 Sep 2021 09:46:46 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:7662:6d8e:510:db67])
+        by smtp.gmail.com with UTF8SMTPSA id l11sm3118441pjg.22.2021.09.07.09.46.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 09:46:45 -0700 (PDT)
+From:   Brian Norris <briannorris@chromium.org>
+To:     Heiko Stuebner <heiko@sntech.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, Chen-Yu Tsai <wenst@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Brian Norris <briannorris@chromium.org>
+Subject: [RESEND PATCH 1/2] clk: rockchip: rk3399: expose PCLK_COREDBG_{B,L}
+Date:   Tue,  7 Sep 2021 09:46:36 -0700
+Message-Id: <20210907094628.RESEND.1.If29cd838efbcee4450a62b8d84a99b23c86e0a3f@changeid>
+X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210907015724.1377-3-caihuoqing@baidu.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 09:57:22AM +0800, Cai Huoqing wrote:
-> The NXP i.MX 8QuadXPlus SOC has a new ADC IP, so add the binding
-> documentation for NXP IMX8QXP ADC.
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
-> v1->v2: *Fix some indentation issues.
->         *Mark status as okay.
->         *Change clock2 source.
-> v1 link:
-> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210830172140.414-5-caihuoqing@baidu.com/
-> 
->  .../bindings/iio/adc/nxp,imx8qxp-adc.yaml     | 85 +++++++++++++++++++
->  1 file changed, 85 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml b/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
-> new file mode 100644
-> index 000000000000..77501898a563
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
-> @@ -0,0 +1,85 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/adc/nxp,imx8qxp-adc.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP IMX8QXP ADC bindings
-> +
-> +maintainers:
-> +  - Cai Huoqing <caihuoqing@baidu.com>
-> +
-> +description:
-> +  Supports the ADC found on the IMX8QXP SoC.
-> +
-> +properties:
-> +  compatible:
-> +    const: nxp,imx8qxp-adc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 2
-> +
-> +  clock-names:
-> +    items:
-> +      - const: per
-> +      - const: ipg
-> +
-> +  assigned-clocks:
-> +    maxItems: 1
-> +
-> +  assigned-clocks-rate:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  status:
-> +    const: disable
+We have DT IDs for PCLK_COREDBG_L and PCLK_COREDBG_B, but we don't
+actually expose them.
 
-???
+In exposing these clocks (and attaching them to the coresight debug
+driver), the AMBA bus may start to disable them. Because no CPU driver
+owns these clocks (e.g., cpufreq-dt doesn't enable() them -- and even if
+it did, it's not early enough -- nor does arch/arm64/kernel/smp.c), the
+common clock framework then feels the need to disable the parents
+(including the CPU PLLs) -- which is no fun for anyone.
 
-You don't need 'status' in bindings. Plus this would cause 'status = 
-"okay"' to cause an error in your dts files.
+Thus, mark the CPU clocks as critical as well.
 
-> +
-> +  "#io-channel-cells":
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - interrupts-parent
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+---
+Resending, because I missed the mailing lists on the first version.
 
-It is valid for interrupt-parent to be in a parent node, so it is never 
-required.
+ drivers/clk/rockchip/clk-rk3399.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-> +  - clocks
-> +  - clock-names
-> +  - assigned-clocks
-> +  - assigned-clock-rates
-> +  - power-domains
-> +  - state
+diff --git a/drivers/clk/rockchip/clk-rk3399.c b/drivers/clk/rockchip/clk-rk3399.c
+index 62a4f2543960..53ed5cca335b 100644
+--- a/drivers/clk/rockchip/clk-rk3399.c
++++ b/drivers/clk/rockchip/clk-rk3399.c
+@@ -481,7 +481,7 @@ static struct rockchip_clk_branch rk3399_clk_branches[] __initdata = {
+ 	COMPOSITE_NOMUX(0, "atclk_core_l", "armclkl", CLK_IGNORE_UNUSED,
+ 			RK3399_CLKSEL_CON(1), 0, 5, DFLAGS | CLK_DIVIDER_READ_ONLY,
+ 			RK3399_CLKGATE_CON(0), 5, GFLAGS),
+-	COMPOSITE_NOMUX(0, "pclk_dbg_core_l", "armclkl", CLK_IGNORE_UNUSED,
++	COMPOSITE_NOMUX(PCLK_COREDBG_L, "pclk_dbg_core_l", "armclkl", CLK_IGNORE_UNUSED,
+ 			RK3399_CLKSEL_CON(1), 8, 5, DFLAGS | CLK_DIVIDER_READ_ONLY,
+ 			RK3399_CLKGATE_CON(0), 6, GFLAGS),
+ 
+@@ -531,7 +531,7 @@ static struct rockchip_clk_branch rk3399_clk_branches[] __initdata = {
+ 	GATE(ACLK_GIC_ADB400_CORE_B_2_GIC, "aclk_core_adb400_core_b_2_gic", "armclkb", CLK_IGNORE_UNUSED,
+ 			RK3399_CLKGATE_CON(14), 4, GFLAGS),
+ 
+-	DIV(0, "pclken_dbg_core_b", "pclk_dbg_core_b", CLK_IGNORE_UNUSED,
++	DIV(PCLK_COREDBG_B, "pclken_dbg_core_b", "pclk_dbg_core_b", CLK_IGNORE_UNUSED,
+ 			RK3399_CLKSEL_CON(3), 13, 2, DFLAGS | CLK_DIVIDER_READ_ONLY),
+ 
+ 	GATE(0, "pclk_dbg_cxcs_pd_core_b", "pclk_dbg_core_b", CLK_IGNORE_UNUSED,
+@@ -1514,7 +1514,10 @@ static const char *const rk3399_cru_critical_clocks[] __initconst = {
+ 	"aclk_vio_noc",
+ 
+ 	/* ddrc */
+-	"sclk_ddrc"
++	"sclk_ddrc",
++
++	"armclkl",
++	"armclkb",
+ };
+ 
+ static const char *const rk3399_pmucru_critical_clocks[] __initconst = {
+@@ -1549,9 +1552,6 @@ static void __init rk3399_clk_init(struct device_node *np)
+ 	rockchip_clk_register_branches(ctx, rk3399_clk_branches,
+ 				  ARRAY_SIZE(rk3399_clk_branches));
+ 
+-	rockchip_clk_protect_critical(rk3399_cru_critical_clocks,
+-				      ARRAY_SIZE(rk3399_cru_critical_clocks));
+-
+ 	rockchip_clk_register_armclk(ctx, ARMCLKL, "armclkl",
+ 			mux_armclkl_p, ARRAY_SIZE(mux_armclkl_p),
+ 			&rk3399_cpuclkl_data, rk3399_cpuclkl_rates,
+@@ -1562,6 +1562,9 @@ static void __init rk3399_clk_init(struct device_node *np)
+ 			&rk3399_cpuclkb_data, rk3399_cpuclkb_rates,
+ 			ARRAY_SIZE(rk3399_cpuclkb_rates));
+ 
++	rockchip_clk_protect_critical(rk3399_cru_critical_clocks,
++				      ARRAY_SIZE(rk3399_cru_critical_clocks));
++
+ 	rockchip_register_softrst(np, 21, reg_base + RK3399_SOFTRST_CON(0),
+ 				  ROCKCHIP_SOFTRST_HIWORD_MASK);
+ 
+-- 
+2.33.0.153.gba50c8fa24-goog
 
-Not documented.
-
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/firmware/imx/rsrc.h>
-> +    soc {
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        adc@5a880000 {
-> +            compatible = "nxp,imx8qxp-adc";
-> +            reg = <0x0 0x5a880000 0x0 0x10000>;
-> +            interrupts = <GIC_SPI 240 IRQ_TYPE_LEVEL_HIGH>;
-> +            clocks = <&clk IMX_SC_R_ADC_0>,
-> +                     <&clk IMX_SC_R_ADC_0>;
-> +            clock-names = "per", "ipg";
-> +            assigned-clocks = <&clk IMX_SC_R_ADC_0>;
-> +            assigned-clock-rates = <24000000>;
-> +            power-domains = <&pd IMX_SC_R_ADC_0>;
-> +            status = "okay";
-
-Remove status from examples.
-
-> +            #io-channel-cells = <1>;
-> +        };
-> +    };
-> +...
-> -- 
-> 2.25.1
-> 
-> 
