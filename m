@@ -2,298 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98992402DBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A472B402DBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345581AbhIGR2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 13:28:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
+        id S244488AbhIGRbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 13:31:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbhIGR2U (ORCPT
+        with ESMTP id S229914AbhIGRbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 13:28:20 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCF2FC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 10:27:13 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id bf15so66588vsb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:27:13 -0700 (PDT)
+        Tue, 7 Sep 2021 13:31:12 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BEDBC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 10:30:06 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id x19so8723681pfu.4
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:30:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LC0TnzBIm7kldlTZWFwbiNFGUzVHexmW80QmHFbf/JU=;
-        b=ieHN2db3PcG2jtfXnwvh5b+FuSokYOFRS4Bi5bNwo/Z73PjPuSJEFj4ZLW7XIknwuC
-         TiTmzJrjhhRJ5OJCtt/7v5DCkahiBnjQJKRMb3ALmxd3D060+9+SM4SJdR1DSg/3fFfj
-         mmGXn6SyYYiLLaFdYzGcPjUQB5Qu/M0R8Wj7Yj15g9AlGxEGf0vw568pD3pSmbpW1Roa
-         3axeG1NxT+h01zgukfg/Bq4TvnnvxRf7SOgzBtAoVp/4F/tyiymCy1+ogrQ+uyKijiaa
-         nQJ9rDDl46PTGRJbXnqhRfQzDiWfRVs3goMpzDvb4A2e/3MdLX0AtE1PQOZSVe8rhshR
-         VQNA==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vjTxGNoImuIhDp4ZU4F0M0RmU0pYqlzioHk3BE15X7E=;
+        b=VIPyCSzmwYwkIDNutJGP7K+imsB3i7QYdFqn0+uGDBW236ho9XuYGWGiP1RAjoB1lf
+         ctXsE1WqK8PrhAiZ3tbDvD8FuAIYJHXtR9FpGrnfKcpRu2lmuyaOS4kR0ZIOE4+kQsPK
+         6W2pE/oQ89Cw4XXELHjP+t/oo/AGpw7uDL8I430IUgrBhtdqrxGzjXjFybCUZWLX1pB8
+         dz0991PR3zWwyb8kbw0zNnwSVPhZNH0fB7W2lekkaOt8LnlUJVl33Yh96QkR0UpZlwyN
+         f8JgryVr371ehPSN01I1yVVU/FDVCOoMLY3svn+fws1L8zqbnE7ovKxbMoq0UIUNHz9m
+         CUxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LC0TnzBIm7kldlTZWFwbiNFGUzVHexmW80QmHFbf/JU=;
-        b=Y/YBzN3Hf7mCARNH981G/NYkiulvzQZa+KDuWKQd++QwDvBGToxWfIls2pzfHNozvX
-         eTRznaYhx9jbfjaCsElQtiMAT3qXIgNGnIpiAV1jzaEoTihE31v09HvG4tdxsZwrTrfb
-         7DF6b8xPizN7WXmJOmw15UFtcQy3vaCNDz2PSrO+XUwvJMBpO61KB0WT55xDy3nU3hth
-         bjv+/FKeVVQ1u6BqBuop0DZwdGrer5087ReBErTFNwjHsOO2XjRDXWjYegvwX3zDfxlv
-         Lapt/7G3FyMWNPFtEunCBv3UGdxIBwSWXxA/+XMVxtAXGce/+c42IOarLsB/HXFeC6D+
-         HR/A==
-X-Gm-Message-State: AOAM532FABA37U6N8Pif2dMNM2KzllhgNDJ59gCks/ytpagpifgosuZS
-        wJeAnQ1rED0jDzfddMxKx5CqSzNceR/2T7wuxpk=
-X-Google-Smtp-Source: ABdhPJzw9KOkfNVmNb05rNdw1aVHB0qlmxd5gveD+2sJgFMYTfpkNnRkyVTydMqT9KrWCacjCgcqkNXw7ntoGqAT19Q=
-X-Received: by 2002:a67:d098:: with SMTP id s24mr9651450vsi.23.1631035632569;
- Tue, 07 Sep 2021 10:27:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vjTxGNoImuIhDp4ZU4F0M0RmU0pYqlzioHk3BE15X7E=;
+        b=SgPENBBmGly6VQTVFkD8+rabpDTZY4K5ZjYHqDjE9JPKSWlK4WpRtLKxuipnBNRRIt
+         KatngpZp5mPKLA5mpmGMokOAIxKW0b+5jfobWJ7x4GlnPeTFkzh7v0tmWcTD53GVnrQr
+         LfnWURBTiqB/0DyhDdscYzL7OHIbZ9TZD+OqYs89XRKNXCKb/0zBwY5TzkbUh5CM8XtD
+         Rypw8UgZlN2m4cZdRkWnaNe0s2Q5DnjOiv0QPnm2EJTBJO86PyA65XCzAUfyZbN0EXTK
+         6JA/JtxHEAZU0U03mrYdwkutmYaqsk2PyktLXiJnZqUtKZ6VSjca34+vzmQP+lMpsIkh
+         uqeA==
+X-Gm-Message-State: AOAM531sQorGMDz659PoKL656ZJlAFJTKOs4KUIEHIadXc8Zut+4Txu2
+        FIQCeOvDKgA5fr6iaSJe8Y1j4w==
+X-Google-Smtp-Source: ABdhPJyKlo8IrLZ+BrqkQVqfx9KP1qFCyHrsUDbyo/Kp7066B3hlJmtNpuKhC34LcIfk6Y+ll01mww==
+X-Received: by 2002:a63:4610:: with SMTP id t16mr18030575pga.176.1631035805550;
+        Tue, 07 Sep 2021 10:30:05 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id c21sm11503205pfd.200.2021.09.07.10.30.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 10:30:05 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 17:30:01 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     syzbot <syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com>
+Cc:     bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        jarkko@kernel.org, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sgx@vger.kernel.org, mingo@redhat.com, pbonzini@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ben Gardon <bgardon@google.com>
+Subject: Re: [syzbot] WARNING: kmalloc bug in memslot_rmap_alloc
+Message-ID: <YTehmR1+G34uOHh3@google.com>
+References: <0000000000006096fa05cb454a9c@google.com>
 MIME-Version: 1.0
-References: <20210831202133.2165222-1-jim.cromie@gmail.com>
- <20210831202133.2165222-4-jim.cromie@gmail.com> <9fe5e962-e65e-6844-269a-058cce944a89@linux.intel.com>
- <CAJfuBxz+cZyyDSBrDR0+Rf7K9fqpmeAfcWb1x2MkwD0P9LuDcQ@mail.gmail.com>
- <2bfbd75c-8f7f-e756-05c3-13dff41264e4@linux.intel.com> <CAJfuBxymoFx79kQzGw_Gxv1vk7kVaTN-V0Hn694C6kT=kP7u2A@mail.gmail.com>
- <92c7639b-c8f4-cfa4-f9ca-82c0a06e0337@linux.intel.com>
-In-Reply-To: <92c7639b-c8f4-cfa4-f9ca-82c0a06e0337@linux.intel.com>
-From:   jim.cromie@gmail.com
-Date:   Tue, 7 Sep 2021 11:26:46 -0600
-Message-ID: <CAJfuBxxeG0-bijXvoExRyh6Zv5o8PSz42cWam6m0aVCUKPMZ+Q@mail.gmail.com>
-Subject: Re: [Intel-gfx] [PATCH v7 3/8] i915/gvt: use DEFINE_DYNAMIC_DEBUG_CATEGORIES
- to create "gvt:core:" etc categories
-To:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Cc:     Sean Paul <seanpaul@chromium.org>, Jason Baron <jbaron@akamai.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        intel-gvt-dev@lists.freedesktop.org,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000006096fa05cb454a9c@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 9:14 AM Tvrtko Ursulin
-<tvrtko.ursulin@linux.intel.com> wrote:
->
->
-> On 06/09/2021 18:41, jim.cromie@gmail.com wrote:
-> > On Mon, Sep 6, 2021 at 6:26 AM Tvrtko Ursulin
-> > <tvrtko.ursulin@linux.intel.com <mailto:tvrtko.ursulin@linux.intel.com>>
-> > wrote:
-> >  >
-> >  >
-> >  > On 03/09/2021 20:22, jim.cromie@gmail.com
-> > <mailto:jim.cromie@gmail.com> wrote:
-> >  > > On Fri, Sep 3, 2021 at 5:07 AM Tvrtko Ursulin
-> >  > > <tvrtko.ursulin@linux.intel.com
-> > <mailto:tvrtko.ursulin@linux.intel.com>> wrote:
-> >  > >>
-> >  > >>
-> >  > >> On 31/08/2021 21:21, Jim Cromie wrote:
-> >  > >>> The gvt component of this driver has ~120 pr_debugs, in 9 categories
-> >  > >>> quite similar to those in DRM.  Following the interface model of
-> >  > >>> drm.debug, add a parameter to map bits to these categorizations.
-> >  > >>>
-> >  > >>> DEFINE_DYNAMIC_DEBUG_CATEGORIES(debug_gvt, __gvt_debug,
-> >  > >>>        "dyndbg bitmap desc",
-> >  > >>>        { "gvt:cmd: ",  "command processing" },
-> >
-> >  > >>> v7:
-> >  > >>> . move ccflags addition up to i915/Makefile from i915/gvt
-> >  > >>> ---
-> >  > >>>    drivers/gpu/drm/i915/Makefile      |  4 ++++
-> >  > >>>    drivers/gpu/drm/i915/i915_params.c | 35
-> > ++++++++++++++++++++++++++++++
-> >  > >>
-> >  > >> Can this work if put under gvt/ or at least intel_gvt.h|c?
-> >
-> > I tried this.
-> > I moved the code block into gvt/debug.c (new file)
-> > added it to Makefile GVT_SOURCES
-> > dunno why it wont make.
-> > frustratig basic err, Im not seeing.
-> > It does seem proper placement, will resolve...
-> >
-> >
-> >  > >>
-> >  > >
-> >  > > I thought it belonged here more, at least according to the name of the
-> >  > > config.var
-> >  >
-> >  > Hmm bear with me please - the categories this patch creates are intended
-> >  > to be used explicitly from the GVT "sub-module", or they somehow even
-> >  > get automatically used with no further intervention to callers required?
-> >  >
-> >
-> > 2009 - v5.9.0  the only users were admins reading/echoing
-> > /proc/dynamic_debug/control
-> > presumably cuz they wanted more info in the logs, episodically.
-> > v5.9.0 exported dynamic_debug_exec_queries for in-kernel use,
-> > reusing the stringy: echo $query_command > control  idiom.
-> > My intention was to let in-kernel users roll their own drm.debug type
-> > interface,
-> > or whatever else they needed.  nobodys using it yet.
->
-> What is 2009 referring to?
->
-> I am still not quite following. In case of the GVT categories you added,
-> in order for them to be used, would you or not also need to use some new
-> logging macros?
->
-> > patch 1/8 implements that drm.debug interface.
-> > 5/8 is the primary use case
-> > 3/8 (this patch) & 4/8 are patches of opportunity, test cases, proof of
-> > function/utility.
-> > its value as such is easier control of those pr-debugs than given by
-> > echo > control
-> >
-> > Sean Paul seanpaul@chromium.org <mailto:seanpaul@chromium.org> worked up
-> > a patchset to do runtime steering of drm-debug stream,
-> > in particular watching for drm:atomic:fail: type activity (a subcategory
-> > which doesnt exist yet).
-> > 5/8 conflicts with his patchset, I have an rfc approach to that, so his
-> > concerns are mine too.
->
-> What kind of runtime steering is that - would you happen to have a link?
++Linus and Ben
 
-Sean's patches
-https://patchwork.freedesktop.org/series/78133/
+On Sun, Sep 05, 2021, syzbot wrote:
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 8419 at mm/util.c:597 kvmalloc_node+0x111/0x120 mm/util.c:597
+> Modules linked in:
+> CPU: 0 PID: 8419 Comm: syz-executor520 Not tainted 5.14.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
 
-what I think might work better
-https://lore.kernel.org/dri-devel/20210822222009.2035788-11-jim.cromie@gmail.com/
+...
 
-> One idea we in the GEM team have mentioned a few time is the ability of
-> making the debug log stream per DRM client. That means opening
-> "something" (socket, fd, etc), enabling debug, which would only show
-> debug logs belonging to one client. That can sometimes be useful (and
-> more secure) than enabling a lot of debug for the system as a whole. But
-> of course there isn't much overlap with your dyndbg work. So just
-> mentioning this since the word "runtime steering" reminded me of it.
->
+> Call Trace:
+>  kvmalloc include/linux/mm.h:806 [inline]
+>  kvmalloc_array include/linux/mm.h:824 [inline]
+>  kvcalloc include/linux/mm.h:829 [inline]
+>  memslot_rmap_alloc+0xf6/0x310 arch/x86/kvm/x86.c:11320
+>  kvm_alloc_memslot_metadata arch/x86/kvm/x86.c:11388 [inline]
+>  kvm_arch_prepare_memory_region+0x48d/0x610 arch/x86/kvm/x86.c:11462
+>  kvm_set_memslot+0xfe/0x1700 arch/x86/kvm/../../../virt/kvm/kvm_main.c:1505
+>  __kvm_set_memory_region+0x761/0x10e0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:1668
+>  kvm_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:1689 [inline]
+>  kvm_vm_ioctl_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:1701 [inline]
+>  kvm_vm_ioctl+0x4c6/0x2330 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4236
 
-my rfc patch above might help. it adds
-   register_dyndbg_tracer ( selector_query, handler_callback)
+KVM is tripping the WARN_ON_ONCE(size > INT_MAX) added in commit 7661809d493b
+("mm: don't allow oversized kvmalloc() calls").  The allocation size is absurd and
+doomed to fail in this particular configuration (syzkaller is just throwing garbage
+at KVM), but for humongous virtual machines it's feasible that KVM could run afoul
+of the sanity check for an otherwise legitimate allocation.
 
-I think you could write a single handler to further select / steer the
-debug stream
-according to your pr_debug arguments.
+The allocation in question is for KVM's "rmap" to translate a guest pfn to a host
+virtual address.  The size of the rmap in question is an unsigned long per 4kb page
+in a memslot, i.e. on x86-64, 8 bytes per 4096 bytes of guest memory in a memslot.
+With INT_MAX=0x7fffffff, KVM will trip the WARN and fail rmap allocations for
+memslots >= 1tb, and Google already has VMs that create 1.5tb memslots (12tb of
+total guest memory spread across 8 virtual NUMA nodes).
 
+One caveat is that KVM's newfangled "TDP MMU" was designed specifically to avoid
+the rmap allocation (among other things), precisely because of its scalability
+issues.  I.e. it's unlikely KVM's so called "legacy MMU" that relies on the rmaps
+would be used for such large VMs.  However, KVM's legacy MMU is still the only option
+for shadowing nested EPT/NPT, i.e. the rmap allocation would be problematic if/when
+nested virtualization is enabled in large VMs.
 
->
-> >      > unsigned long __gvt_debug;
-> >      > EXPORT_SYMBOL(__gvt_debug);
-> >      >
-> >      >
-> >      >>> +
-> >      >>>    # Please keep these build lists sorted!
-> >      >>>
-> >      >>>    # core driver code
-> >      >>> diff --git a/drivers/gpu/drm/i915/i915_params.c
-> >     b/drivers/gpu/drm/i915/i915_params.c
-> >      >>> index e07f4cfea63a..e645e149485e 100644
-> >      >>> --- a/drivers/gpu/drm/i915/i915_params.c
-> >      >>> +++ b/drivers/gpu/drm/i915/i915_params.c
-> >      >>> @@ -265,3 +265,38 @@ void i915_params_free(struct i915_params
-> >     *params)
-> >      >>> +                             _DD_cat_("gvt:mmio:"),
-> >      >>> +                             _DD_cat_("gvt:render:"),
-> >      >>> +                             _DD_cat_("gvt:sched:"));
-> >      >>> +
-> >      >>> +#endif
-> >      >>
-> >      >> So just the foundation - no actual use sites I mean? How would
-> >     these be
-> >      >> used from the code?
-> >      >>
-> >      >
-> >      > there are 120 pr_debug "users" :-)
-> >      >
-> >      > no users per se, but anyone using drm.debug
-> >      > /sys/module/drm/parameters/debug
-> >      > might use this too.
-> >      > its a bit easier than composing queries for
-> >      >/proc/dyamic_debug/control
-> >
-> >     Same as my previous question, perhaps I am not up to speed with this
-> >     yet.. Even if pr_debug is used inside GVT - are the categories and
-> >     debug_gvt global as of this patch (or series)?
-> >
-> >
-> > they are already global in the sense that if kernel is built with
-> > DYNAMIC_DEBUG,
-> > the admin can turn those pr_debugs on and off, and change their
-> > decorations in the log (mod,func.line).
-> > Nor are modules protected from each other; drm-core could use
-> > dd-exec-queries to enable/disable
-> > pr-debugs in i915 etc
-> >
-> > This patch just adds a gvt-debug knob like drm-debug. using the existing
-> > format prefixes to categorize them.
-> > Whether those prefixes should be bent towards consistency with the rest
-> > of drm-debug
-> > or adapted towards some gvt community need I couldnt say.
-> >
-> > Its no save-the-world feature, but its pretty cheap.
-> >
-> > Id expect the same users as those who play with drm.debug, for similar
-> > reasons.
-> >
-> > does this clarify ?
->
-> Not yet I'm afraid. :)
+KVM also has other allocations based on memslot size that are _not_ avoided by KVM's
+TDP MMU and may eventually be problematic, though presumably not for quite some time
+as it would require petabyte? memslots.  E.g. a different metadata array requires
+4 bytes per 2mb of guest memory.
 
-heh - 2 blind dudes describing their side of the elephant !
-
-When you say "using the existing format
-> prefixes", but it is not using __drm_debug but __gvt_debug (which isn't
-> a modparam). So I am lost as to what is __gvt_debug for and how does it
-> tie to existing DRM categories.
->
-
-we have 2 kinds of "categories":
-1- proper drm categories - one of 10
-2- ad-hoc categories - these are systematized - using small set of
-format-prefixes
-i915 has 120 of these in GVT, with 9 different prefixes, touched in patches 2,3
-i915 also has ~1500 uses of drm-debug API  (with proper drm category enums)
-amdgpu also has lots of both kinds of debug; 13 kinds of prefixes.
-
-Ive probably created some confusion by stealing the "category" name,
-it could have been "class", but I thought we didnt need new vocabulary with
-subtle and ambiguous differences from the original term.
-
-Long term, maybe those ad-hoc prefixes can be aligned better with proper drm
-categories, but thats a separate discussion.
-
-But we can control them now, using a well oiled idiom, a drm.debug
-"style" bitmap.
-Its like drm.debug's little sisters, __gvt_debug & __debug_dc.  not
-identical, but related.
-
-Anyway, patches 2,3,4 work the ad-hoc prefix categorizations so theyre
-controllable.
-
-5/8 adapts DRM-debug itself - obsoleting enum category for most of drm-debug api
-this is where dyndbg's data table gets bigger - core & drivers! have
-many drm-debug uses,
-rivaling all builtin prdebugs in size.
-
-Then, we have a unified foundation on dyndbg, using glorified prefix strings
-for both formal DRM_DBG_CAT_* categories, and for similar existing uses.
-
-Then we could evolve / extend / bikeshed the categories (spelling,
-separator char '.' is nice too)
-
-Sean has already suggested "drm:atomic:fail:" sub-category.
-I agree - it is using the new stringy flexibility to significant
-expressive benefit.
-dyndbg makes new categories actionable.
-
-istm "*:fail:" is maybe a meta-sub-category (dont read that too closely;)
-maybe "*:warn:" "*:err:" ( what about warning, error ? here lies
-bikeshed madness !!)
-
-> Regards,
->
-> Tvrtko
-
-thanks
-JIm
+I don't have any clever ideas to handle this from the KVM side, at least not in the
+short term.  Long term, I think it would be doable to reduce the rmap size for large
+memslots by 512x, but any change of that nature would be very invasive to KVM and
+be fairly risky.  It also wouldn't prevent syskaller from triggering this WARN at will.
