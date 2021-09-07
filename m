@@ -2,169 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB331402FE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0553402FE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346879AbhIGUtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:49:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346834AbhIGUtF (ORCPT
+        id S1346806AbhIGUtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:49:02 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:44976 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346752AbhIGUtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:49:05 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EBCC061575;
-        Tue,  7 Sep 2021 13:47:58 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id 6so107555oiy.8;
-        Tue, 07 Sep 2021 13:47:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UopwoFn7rqfh5UL49/4APVM7g8LLvGNu8u3opnFNc2M=;
-        b=d9GH4MSSomWd+TKdZBGJoBuJk9sGkSDpXWx6iBm+Bz6kOHnqz1OO8gIpo+FBeJItw2
-         zrBk832kEv8OerXc0q77211wGWbsGk9W2wYVXVH5L5o2PJGl58H+dSFa2a81xtPvC/8l
-         JRMI/DUMXpN3SxfBpv0uZisT9VS2pySj3GyzG26O3avpYH3AP4EKmR7stPM8qlJoXTzp
-         N+a41OLUOsf+4wFrrFBLUJdeY9XD0TQ49FIa3SV7vLokHDUMldiGPdkZQKKRFKTAOK8F
-         2ABEywcaEKKfEIsq0fZruRbgPk0cdMZAm0DhzetPPck+o1yCTTrUPlgtsBEuc+TUvbGi
-         qBdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UopwoFn7rqfh5UL49/4APVM7g8LLvGNu8u3opnFNc2M=;
-        b=WocvnVBFPTY3i9ZfOk/KoYupPsghrxz6sz4lPx9C42qjYSPeGpl7ZTJwRz0iGs5e2Z
-         gA9Cfg85AkKfG9+SfB/2pgUOV5IyeYXQzVJ0w17CdTmk34srbgOaj7VUG77GenAgSz8C
-         vWRkpt5PKcH7Ocggl920tDEVaMxWpgIrRp/RJa9TvP2W0yXuD5zUoYsO/DEBb0Wx/kCr
-         FVPmkPfA5H3WieuoHB+3pheLnYtBAkqo90b/ymqNRvH8MbqpKs1yqQ5T2MUrYM7CU8C5
-         vBXT/TVsco7Y0qS8ISeov2I/rFskAC8Sb7FrmCTxs66xJhVCSUDKK07UuHSiNTkczAhI
-         d2Kg==
-X-Gm-Message-State: AOAM530o3oN82lCckCpTxgybhYkdm4cpNcvCgQjtiMckEmNOXndOI1+7
-        rRWGEUdwBnYMO7MBcIPoqNLwSfwfAFvEBaIbZa39JbEUSM4L7w==
-X-Google-Smtp-Source: ABdhPJwgnAxOzHlN5kUGiujwfo4/KLkFbgPPlSslacq4qvxiaXwPBsJux4afJod6S7AxtahsF30JNkQIckD99eekPM8=
-X-Received: by 2002:a05:6808:209a:: with SMTP id s26mr20818oiw.98.1631047678287;
- Tue, 07 Sep 2021 13:47:58 -0700 (PDT)
+        Tue, 7 Sep 2021 16:49:00 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631047674; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=84xmrz2XVH3FwGCgz/JKGOKJty2YePbiyLIkDOPrV8U=;
+ b=oFdyjHvZq8TTW92j9bNzcRJwCFPoVG99nGfgDf61E90hPu8F9G2Tt008ONwuoyQa8pNet2px
+ QA/Rlev4yel4ANL7+aJj41nLbcTLiNcfmvZ9Xbw8npp3SP+GwNZkaV1PXeRZcHytjifjeNt/
+ NybldgGp01751Yr7hzH7xbhN6kc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6137cff56fc2cf7ad94f8729 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 07 Sep 2021 20:47:49
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 88A7BC4361C; Tue,  7 Sep 2021 20:47:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5A64FC43460;
+        Tue,  7 Sep 2021 20:47:47 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210829095614.50021-1-kari.argillander@gmail.com>
- <20210907073618.bpz3fmu7jcx5mlqh@kari-VirtualBox> <69c8ab24-9443-59ad-d48d-7765b29f28f9@paragon-software.com>
- <CAHp75Vd==Dm1s=WK9p2q3iEBSHxN-1spHmmtZ21eRNoqyJ5v=Q@mail.gmail.com>
-In-Reply-To: <CAHp75Vd==Dm1s=WK9p2q3iEBSHxN-1spHmmtZ21eRNoqyJ5v=Q@mail.gmail.com>
-From:   Kari Argillander <kari.argillander@gmail.com>
-Date:   Tue, 7 Sep 2021 23:47:47 +0300
-Message-ID: <CAC=eVgTwDsE+i3jG+iwZJhFDBXzCyPprRnGk5tjUKXP+Ltrw4w@mail.gmail.com>
-Subject: Re: [PATCH v3 0/9] fs/ntfs3: Use new mount api and change some opts
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Tue, 07 Sep 2021 13:47:47 -0700
+From:   khsieh@codeaurora.org
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, rsubbia@codeaurora.org,
+        rnayak@codeaurora.org, freedreno@lists.freedesktop.org,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] drm/dp_mst: Fix return code on sideband message
+ failure
+In-Reply-To: <db5ae1c8d070509580218a501cfa9caaf3f029e1.camel@redhat.com>
+References: <1625585434-9562-1-git-send-email-khsieh@codeaurora.org>
+ <87zguy7c5a.fsf@intel.com> <a514c19f712a6feeddf854dc17cb8eb5@codeaurora.org>
+ <2da3949fa3504592da42c9d01dc060691c6a8b8b.camel@redhat.com>
+ <d9ec812b4be57e32246735ca2f5e9560@codeaurora.org>
+ <79c5a60fc189261b7a9ef611acd126a41f921593.camel@redhat.com>
+ <696a009e2ab34747abd12bda03c103c7@codeaurora.org>
+ <e725235a77935184cd20dab5af55da95b28d9e88.camel@redhat.com>
+ <64049ef6c598910c1025e0e5802bb83e@codeaurora.org>
+ <88b5fbe60c95bcdf42353bec9f8c48aefa864a31.camel@redhat.com>
+ <f0fcfe7a73e87150a7a1f042269b76a3@codeaurora.org>
+ <db5ae1c8d070509580218a501cfa9caaf3f029e1.camel@redhat.com>
+Message-ID: <4937c56eb3efd91a09f8293bcec3221e@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, September 7, 2021, Andy Shevchenko
-(andy.shevchenko@gmail.com) wrote:
-> On Tuesday, September 7, 2021, Konstantin Komarov <almaz.alexandrovich@paragon-software.com> wrote:
->> On 07.09.2021 10:36, Kari Argillander wrote:
->> > On Sun, Aug 29, 2021 at 12:56:05PM +0300, Kari Argillander wrote:
->> >> See V2 if you want:
->> >> lore.kernel.org/ntfs3/20210819002633.689831-1-kari.argillander@gmail.com
->> >>
->> >> NLS change is now blocked when remounting. Christoph also suggest that
->> >> we block all other mount options, but I have tested a couple and they
->> >> seem to work. I wish that we do not block any other than NLS because
->> >> in theory they should work. Also Konstantin can comment about this.
->> >>
->> >> I have not include reviewed/acked to patch "Use new api for mounting"
->> >> because it change so much. I have also included three new patch to this
->> >> series:
->> >>      - Convert mount options to pointer in sbi
->> >>              So that we do not need to initiliaze whole spi in
->> >>              remount.
->> >>      - Init spi more in init_fs_context than fill_super
->> >>              This is just refactoring. (Series does not depend on this)
->> >>      - Show uid/gid always in show_options()
->> >>              Christian Brauner kinda ask this. (Series does not depend
->> >>              on this)
->> >>
->> >> Series is ones again tested with kvm-xfstests. Every commit is build
->> >> tested.
+On 2021-08-30 09:58, Lyude Paul wrote:
+> On Mon, 2021-08-30 at 08:56 -0700, khsieh@codeaurora.org wrote:
+>> On 2021-08-25 09:26, Lyude Paul wrote:
+>> > The patch was pushed yes (was part of drm-misc-next-2021-07-29), seems
+>> > like it
+>> > just hasn't trickled down to linus's branch quite yet.
+>> 
+>> Hi Stephen B,
+>> 
+>> Would you mind back porting this patch to V5.10 branch?
+>> It will have lots of helps for us to support display port MST case.
+>> Thanks,
+> 
+> I'm assuming you're talking to someone else? A little confused because 
+> I don't
+> see a Stephen B in this thread
+
+Yes,
+I am asking Stephen B (swbody@chromium.org) helps to back port this 
+patch to v5.10.
+> 
+>> 
+>> 
+>> 
 >> >
->> > I will send v4 within couple of days. It will address issues what Pali
->> > says in patch 8/9. Everything else should be same at least for now. Is
->> > everything else looking ok?
->> >
->>
->> Yes, everything else seems good.
->> We tested patches locally - no regression was
->
-> The formal answer in such case should also contain the Tested-by tag. I would suggest you to read the Submitting Patches document (available in the Linux kernel source tree).
-
-He is a maintainer so he can add tags when he picks this up. This is not
-really relevant here. Yes it should be good to include that but I have already
-sended v4 which he has not tested. So I really cannot put this tag for him.
-So at the end he really should not even put it here.
-
-Also usually the maintainers will always make their own tests and usually
-they will not even bother with a tested-by tag. Or do you say to me that I
-should go read Submitting Patches document as I'm the one who submit
-this?
-
-  Argillander
-
->> >>
->> >> v3:
->> >>      - Add patch "Convert mount options to pointer in sbi"
->> >>      - Add patch "Init spi more in init_fs_context than fill_super"
->> >>      - Add patch "Show uid/gid always in show_options"
->> >>      - Patch "Use new api for mounting" has make over
->> >>      - NLS loading is not anymore possible when remounting
->> >>      - show_options() iocharset printing is fixed
->> >>      - Delete comment that testing should be done with other
->> >>        mount options.
->> >>      - Add reviewed/acked-tags to 1,2,6,8
->> >>      - Rewrite this cover
->> >> v2:
->> >>      - Rewrite this cover leter
->> >>      - Reorder noatime to first patch
->> >>      - NLS loading with string
->> >>      - Delete default_options function
->> >>      - Remove remount flags
->> >>      - Rename no_acl_rules mount option
->> >>      - Making code cleaner
->> >>      - Add comment that mount options should be tested
->> >>
->> >> Kari Argillander (9):
->> >>   fs/ntfs3: Remove unnecesarry mount option noatime
->> >>   fs/ntfs3: Remove unnecesarry remount flag handling
->> >>   fs/ntfs3: Convert mount options to pointer in sbi
->> >>   fs/ntfs3: Use new api for mounting
->> >>   fs/ntfs3: Init spi more in init_fs_context than fill_super
->> >>   fs/ntfs3: Make mount option nohidden more universal
->> >>   fs/ntfs3: Add iocharset= mount option as alias for nls=
->> >>   fs/ntfs3: Rename mount option no_acl_rules > (no)acl_rules
->> >>   fs/ntfs3: Show uid/gid always in show_options()
->> >>
->> >>  Documentation/filesystems/ntfs3.rst |  10 +-
->> >>  fs/ntfs3/attrib.c                   |   2 +-
->> >>  fs/ntfs3/dir.c                      |   8 +-
->> >>  fs/ntfs3/file.c                     |   4 +-
->> >>  fs/ntfs3/inode.c                    |  12 +-
->> >>  fs/ntfs3/ntfs_fs.h                  |  26 +-
->> >>  fs/ntfs3/super.c                    | 486 +++++++++++++++-------------
->> >>  fs/ntfs3/xattr.c                    |   2 +-
->> >>  8 files changed, 284 insertions(+), 266 deletions(-)
->> >>
->> >> --
->> >> 2.25.1
->> >>
->> >>
->
->
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+>> > On Wed, 2021-08-25 at 09:06 -0700, khsieh@codeaurora.org wrote:
+>> > > On 2021-07-27 15:44, Lyude Paul wrote:
+>> > > > Nice timing, you literally got me as I was 2 minutes away from leaving
+>> > > > work
+>> > > > for the day :P. I will go ahead and push it now.
+>> > > >
+>> > > Hi Lyude,
+>> > >
+>> > > Had you pushed this patch yet?
+>> > > We still did not see this patch at msm-nex and v5.10 branch.
+>> > > Thanks,
+>> > >
+>> > >
+>> > > > BTW - in the future I recommend using dim to add Fixes: tags as it'll
+>> > > > add Cc:
+>> > > > to stable as appropriate (this patch in particular should be Cc:
+>> > > > stable@vger.kernel.org # v5.3+). will add these tags when I push it
+>> > > >
+>> > > > On Tue, 2021-07-27 at 15:41 -0700, khsieh@codeaurora.org wrote:
+>> > > > > On 2021-07-27 12:21, Lyude Paul wrote:
+>> > > > > > On Thu, 2021-07-22 at 15:28 -0700, khsieh@codeaurora.org wrote:
+>> > > > > > >
+>> > > > > > > It looks like this patch is good to go (mainlined).
+>> > > > > > > Anything needed from me to do?
+>> > > > > > > Thanks,
+>> > > > > >
+>> > > > > > Do you have access for pushing this patch? If not let me know and
+>> > > > > > I
+>> > > > > > can
+>> > > > > > go
+>> > > > > > ahead and push it to drm-misc-next for you.
+>> > > > > no, I do not have access to drm-misc-next.
+>> > > > > Please push it for me.
+>> > > > > Thanks a lots.
+>> > > > >
+>> > >
+>> 
