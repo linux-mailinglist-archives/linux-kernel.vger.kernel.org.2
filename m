@@ -2,126 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C10D40304D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 23:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7FF40305B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 23:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348389AbhIGVbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 17:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348681AbhIGVaF (ORCPT
+        id S1347265AbhIGVim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 17:38:42 -0400
+Received: from mother.openwall.net ([195.42.179.200]:47524 "HELO
+        mother.openwall.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S229875AbhIGVii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 17:30:05 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4725C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 14:28:54 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id g9so362727ioq.11
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 14:28:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uQ1QKlOMUxMJjspXpCNHZjX329YTQj9Uc23PyYscxxE=;
-        b=FbO+pDJXDBkBjC1rlKAdQfQgfh08Xa3kp6kg4kr7w0Y5RfqJlJsZJaWhpbBQz8nQqc
-         keSp3KjF48yyjtGYzivaNDwdC5pmNPDMlXgcahzEhY/BtqEdJRNRPSFOYLUsZ498FeFY
-         NucFj/hNQX432SYJKtlG1bl88o+Q4HvaC23zc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uQ1QKlOMUxMJjspXpCNHZjX329YTQj9Uc23PyYscxxE=;
-        b=dU0n9w2UiKccplJdMAX0p8kq+9VO7RAGct70tb3xqRlvtn1uXaysYq0qbx1W4M3gJU
-         qLpQkYiBdBIbVekJFYilk+S5j5lz6GLugbGroVaXxxZ3FeW1EBuoGZhBxlGItXOEjeFl
-         sOVYvvRSpKEOH7wBLIcZnhKDiRu2LT+hCYbpVOhCoOd8tu0o8GjTX/yZWx8sal2XZTtm
-         UyojUWbaM5JgCvZnGlbhmh2h1iT3/ISmumZ9YxmWfSSjOOLbKACLQ7mDsqE1LZaQqdP6
-         QrlOT74kutmQC8gu6IVO7FDhpEAb1hE3mSeOwARyetZVUSNdQX8DoyWKGY+tiEaixV97
-         DyEg==
-X-Gm-Message-State: AOAM530Uz9e9BmnDjS5ePEGk3nZ5JCKtbwpZflywp6gGNwjuQRW7lFyo
-        FdJh4qUTUoILnxK71CKwgpCB2wNQW8iWdw==
-X-Google-Smtp-Source: ABdhPJzq6xHc9ICyXPhNWoqmW3TFqPqfpQwhKPYhzkwAjJos1JLP7WLlq4mXoHgNUL0MH3n/iMByWw==
-X-Received: by 2002:a05:6638:4104:: with SMTP id ay4mr397781jab.10.1631050134251;
-        Tue, 07 Sep 2021 14:28:54 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id m13sm140087ilh.43.2021.09.07.14.28.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 14:28:53 -0700 (PDT)
-Subject: Re: [PATCH 5/5][RFC] selftests/pfru: add test for Platform Firmware
- Runtime Update and Telemetry
-To:     Chen Yu <yu.c.chen@intel.com>, linux-acpi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, Shuah Khan <shuah@kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Dou Shengnan <shengnanx.dou@intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1631025237.git.yu.c.chen@intel.com>
- <1cef405de3484eef108251562fbf461bad4294c7.1631025237.git.yu.c.chen@intel.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <82889db2-1927-582d-c27f-b1f0927ca903@linuxfoundation.org>
-Date:   Tue, 7 Sep 2021 15:28:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <1cef405de3484eef108251562fbf461bad4294c7.1631025237.git.yu.c.chen@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 7 Sep 2021 17:38:38 -0400
+X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Sep 2021 17:38:38 EDT
+Received: (qmail 8086 invoked from network); 7 Sep 2021 21:30:48 -0000
+Received: from localhost (HELO pvt.openwall.com) (127.0.0.1)
+  by localhost with SMTP; 7 Sep 2021 21:30:48 -0000
+Received: by pvt.openwall.com (Postfix, from userid 503)
+        id 58A79AB88C; Tue,  7 Sep 2021 23:30:42 +0200 (CEST)
+Date:   Tue, 7 Sep 2021 23:30:42 +0200
+From:   Solar Designer <solar@openwall.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     CGEL <cgel.zte@gmail.com>, peterz@infradead.org,
+        tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        Ran Xiaokai <ran.xiaokai@zte.com.cn>,
+        James Morris <jamorris@linux.microsoft.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>, NeilBrown <neilb@suse.de>
+Subject: Re: [PATCH] set_user: add capability check when rlimit(RLIMIT_NPROC) exceeds
+Message-ID: <20210907213042.GA22626@openwall.com>
+References: <20210728072629.530435-1-ran.xiaokai@zte.com.cn> <20210728115930.2lzs57h4hvnqipue@wittgenstein> <20210730082329.GA544980@www> <20210803100354.GA607722@www> <20210803140702.f3rdnka3e2x6vj4r@wittgenstein>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210803140702.f3rdnka3e2x6vj4r@wittgenstein>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/21 9:40 AM, Chen Yu wrote:
-> Introduce a simple test for Platform Firmware Runtime Update and Telemetry
-> drivers. It is based on ioctl to either update firmware driver or code injection,
-> and read corresponding PFRU Telemetry log into user space.
+Hi all,
+
+Brad Spengler brought this to my attention on Twitter, and Christian
+Brauner agreed I should follow up.  So here goes, below the quote:
+
+On Tue, Aug 03, 2021 at 04:07:02PM +0200, Christian Brauner wrote:
+> On Tue, Aug 03, 2021 at 03:03:54AM -0700, CGEL wrote:
+> > On Fri, Jul 30, 2021 at 01:23:31AM -0700, CGEL wrote:
+> > > On Wed, Jul 28, 2021 at 01:59:30PM +0200, Christian Brauner wrote:
+> > > > [Ccing a few people that did the PF_NPROC_EXCEEDED changes]
+> > > > 
+> > > > 
+> > > > Hey Cgel,
+> > > > Hey Ran,
+> > > > 
+> > > > The gist seems to me that this code wants to make sure that a program
+> > > > can't successfully exec if it has gone through a set*id() transition
+> > > > while exceeding its RLIMIT_NPROC.
+> > > > 
+> > > > But I agree that the semantics here are a bit strange.
+> > > > 
+> > > > Iicu, a capable but non-INIT_USER caller getting PF_NPROC_EXCEEDED set
+> > > > during a set*id() transition wouldn't be able to exec right away if they
+> > > > still exceed their RLIMIT_NPROC at the time of exec. So their exec would
+> > > > fail in fs/exec.c:
+> > > > 
+> > > > 	if ((current->flags & PF_NPROC_EXCEEDED) &&
+> > > > 	    is_ucounts_overlimit(current_ucounts(), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
+> > > > 		retval = -EAGAIN;
+> > > > 		goto out_ret;
+> > > > 	}
+> > > > 
+> > > > However, if the caller were to fork() right after the set*id()
+> > > > transition but before the exec while still exceeding their RLIMIT_NPROC
+> > > > then they would get PF_NPROC_EXCEEDED cleared (while the child would
+> > > > inherit it):
+> > > > 
+> > > > 	retval = -EAGAIN;
+> > > > 	if (is_ucounts_overlimit(task_ucounts(p), UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC))) {
+> > > > 		if (p->real_cred->user != INIT_USER &&
+> > > > 		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
+> > > > 			goto bad_fork_free;
+> > > > 	}
+> > > > 	current->flags &= ~PF_NPROC_EXCEEDED;
+> > > > 
+> > > > which means a subsequent exec by the capable caller would now succeed
+> > > > even though they could still exceed their RLIMIT_NPROC limit.
+> > > > 
+> > > > So at first glance, it seems that set_user() should probably get the
+> > > > same check as it can be circumvented today unless I misunderstand the
+> > > > original motivation.
+> > > > 
+> > > > Christian
+> > > 
+> > > Hi Christian,
+> > > 
+> > > I think i didn't give enough information in the commit message.
+> > > When switch to a capable but non-INIT_SUER and the RLIMIT_NPROC limit already exceeded,
+> > > and calls these funcs:
+> > > 1. set_xxuid()->exec() 
+> > >              ---> fail
+> > > 2. set_xxuid()->fork()->exec()
+> > >              ---> success
+> > > Kernel should have the same behavior to uer space.
+> > > Also i think non init_user CAN exceed the limit when with proper capability,
+> > > so in the patch, set_user() clear PF_NPROC_EXCEEDED flag if capable()
+> > > returns true.
+> > 
+> > Hi, Christian
+> > 
+> > Do you have any further comments on this patch?
+> > is there anything i did not give enough infomation ?
 > 
+> Yeah, this is fine and how I understood it too. I don't see anything
+> obviously wrong with it and the weird detour workaround via fork() seems
+> inconsistent. So if I don't here anyone come up with a good reason the
+> current behavior makes sense I'll pick this up.
+> 
+> Christian
 
-A few things to consider and add handling for them in the
-test.
+As I understand, the resulting commit:
 
-What happens when non-root user runs this test?
-What happens when the pfru device doesn't exist?
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2863643fb8b92291a7e97ba46e342f1163595fa8
 
+broke RLIMIT_NPROC support for Apache httpd suexec and likely similar.
 
-[snip]
+Yes, I can see how having a detour via fork() was inconsistent, but
+since the privileged process can be assumed non-malicious it was no big
+deal.  suexec just doesn't have fork() in there.
 
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int fd_update, fd_log, fd_capsule;
-> +	struct telem_data_info data_info;
-> +	struct telem_info info;
-> +	struct update_cap_info cap;
-> +	void *addr_map_capsule;
-> +	struct stat st;
-> +	char *log_buf;
-> +	int ret = 0;
-> +
-> +	parse_options(argc, argv);
-> +
-> +	fd_log = open("/dev/pfru/telemetry", O_RDWR);
-> +	if (fd_log < 0) {
-> +		perror("Cannot open telemetry device...");
-> +		return 1;
-> +	}
+Historically, the resetting on fork() appears to have been due to my
+suggestion here:
 
-Is this considered an error or unsupported?
+https://www.openwall.com/lists/kernel-hardening/2011/07/25/4
 
-> +	fd_update = open("/dev/pfru/update", O_RDWR);
-> +	if (fd_update < 0) {
-> +		perror("Cannot open code injection device...");
-> +		return 1;
-> +	}
-> +
+"Perhaps also reset the flag on fork() because we have an RLIMIT_NPROC
+check on fork() anyway."
 
-Same here. If test is run on platform with pfru test should skip
-instead of reporting failure/error.
+Looks like I didn't consider the inconsistency for capable() processes
+(or maybe that exception wasn't yet in there?)
 
-thanks,
--- Shuah
+Anyway, now I suggest that 2863643fb8b92291a7e97ba46e342f1163595fa8 be
+reverted, and if there's any reason to make any change (what reason?
+mere consistency or any real issue?) then I suggest that the flag
+resetting on fork() be made conditional.  Something like this:
+
+	if (atomic_read(&p->real_cred->user->processes) >=
+			task_rlimit(p, RLIMIT_NPROC)) {
+		if (p->real_cred->user != INIT_USER &&
+		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
+			goto bad_fork_free;
+-	}
+-	current->flags &= ~PF_NPROC_EXCEEDED;
++	} else
++		current->flags &= ~PF_NPROC_EXCEEDED;
+
+Alexander
