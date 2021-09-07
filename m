@@ -2,114 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54349402251
+	by mail.lfdr.de (Postfix) with ESMTP id 9D469402252
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbhIGCoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 22:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhIGCon (ORCPT
+        id S236442AbhIGCuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 22:50:20 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:54689 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230366AbhIGCuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 22:44:43 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB1FC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 19:43:37 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id ew6so4981905qvb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 19:43:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=q8EAvjumu/OJAeJcXbA7H2hzcYUuPTK9t0l5alooUiY=;
-        b=Pmo+uYbbkBqdBVNpqse5shcoez2d/H1Qcdv6h/Vy8RLiSqPrt8ejRjpujP6T4rMWVF
-         nEHi0dy/D8Lh6jma63/OfIqutDyThbpRrGfGBDeYn2EziRF76UZ0vJwEtdvXsFaIedOU
-         5/7HSqX1DusB+O1PybFEHlRET0OpfZqdnUjZRSXKbOaHTl71kmakb0Db4Xk3Ag/uotCK
-         EsieL1LsCU4XtvjH/axVR/XfGyr68lBQ+SyJR0Ibp3l+odmIUi4leYeW5V6R0+nTTRhm
-         tuP220jYFGk/ksKx0KA8KsvNZbO3lLUNu5bLE4wcIQ2HNA3NlXQhG4f1SRYueNRTagEh
-         IE3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=q8EAvjumu/OJAeJcXbA7H2hzcYUuPTK9t0l5alooUiY=;
-        b=JscD0tL2NIu9t6UI81DjvV5bZDj6BXEopdfZrAJcOvOvd1Cbn+ZrgJ5Ow/IJh/H2Oe
-         zoGWFbAiKVlcILk47KilghxcvnqzUiaIlWpQ0woQmrBElfWJ4hFB/RXD8Wwj/2mdiXSW
-         3GPUeUYVZb9rsHUcCV/0Xg7+5/pgfzkQASdglKCFFc5Src1EC5zZKfmB9z+8MvCsamWT
-         E5mvlMP6pYn06+eJ/XwaO+ZEvTgRVrKmfsRf7tUENgwOgolwe8WHt3cXWXtYvI+5wuI2
-         QmDSTXIG3hurRZWEYhg7TvCzhGiNJTy/9I3qzag8N2ZzHjn3VthmuTQ0HFT41KZU13Kb
-         /Sww==
-X-Gm-Message-State: AOAM530O1gyrq8Jr8+ICxwMiULV9am11k5cAwZlAAWhCTEz4betRRGma
-        +yV81WCpaoPC4dbw3dKHS5wRyZ0fN8k0IIyBfs5bJrAbRyA=
-X-Google-Smtp-Source: ABdhPJyjPbrX3ue83Z7GFZ6Rrf6Te85hNnUz2Ud9JAzgWqPZ2jaz9QxhFZQk5FOxkPsinhqn+KuRgte7q2aYk1iO95g=
-X-Received: by 2002:a05:6214:11e5:: with SMTP id e5mr1131874qvu.55.1630982616853;
- Mon, 06 Sep 2021 19:43:36 -0700 (PDT)
+        Mon, 6 Sep 2021 22:50:19 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=xuyu@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UnYFK0M_1630982950;
+Received: from xuyu-mbp15.local(mailfrom:xuyu@linux.alibaba.com fp:SMTPD_---0UnYFK0M_1630982950)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 07 Sep 2021 10:49:11 +0800
+Subject: Re: [PATCH 1/2] mm, thp: check page mapping when truncating page
+ cache
+To:     Rongwei Wang <rongwei.wang@linux.alibaba.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, cfijalkovich@google.com,
+        song@kernel.org, william.kucharski@oracle.com, hughd@google.com
+References: <20210906121200.57905-1-rongwei.wang@linux.alibaba.com>
+ <20210906121200.57905-2-rongwei.wang@linux.alibaba.com>
+From:   Yu Xu <xuyu@linux.alibaba.com>
+Message-ID: <ecee241f-f7eb-e77d-0e4e-2aaa386c17b3@linux.alibaba.com>
+Date:   Tue, 7 Sep 2021 10:49:10 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <1630665006-31437-1-git-send-email-shengjiu.wang@nxp.com> <20210906114701.GC4309@sirena.org.uk>
-In-Reply-To: <20210906114701.GC4309@sirena.org.uk>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Tue, 7 Sep 2021 10:43:26 +0800
-Message-ID: <CAA+D8APjyq74FECmH6ZzyVKHOz6MEV0bt+D4-Xkfc-6C5n9hZg@mail.gmail.com>
-Subject: Re: [PATCH for-5.15 0/5] ASoC: fsl: register platform component
- before registering cpu dai
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, alsa-devel@alsa-project.org,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210906121200.57905-2-rongwei.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark
+On 9/6/21 8:11 PM, Rongwei Wang wrote:
+> Transparent huge page has supported read-only non-shmem files. The file-
+> backed THP is collapsed by khugepaged and truncated when written (for
+> shared libraries).
+> 
+> However, there is race in two possible places.
+> 
+> 1) multiple writers truncate the same page cache concurrently;
+> 2) collapse_file rolls back when writer truncates the page cache;
+> 
+> In both cases, subpage(s) of file THP can be revealed by find_get_entry
+> in truncate_inode_pages_range, which will trigger PageTail BUG_ON in
+> truncate_inode_page, as follows.
+> 
+> [40326.247034] page:000000009e420ff2 refcount:1 mapcount:0 mapping:0000000000000000 index:0x7ff pfn:0x50c3ff
+> [40326.247041] head:0000000075ff816d order:9 compound_mapcount:0 compound_pincount:0
+> [40326.247046] flags: 0x37fffe0000010815(locked|uptodate|lru|arch_1|head)
+> [40326.247051] raw: 37fffe0000000000 fffffe0013108001 dead000000000122 dead000000000400
+> [40326.247053] raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+> [40326.247055] head: 37fffe0000010815 fffffe001066bd48 ffff000404183c20 0000000000000000
+> [40326.247057] head: 0000000000000600 0000000000000000 00000001ffffffff ffff000c0345a000
+> [40326.247058] page dumped because: VM_BUG_ON_PAGE(PageTail(page))
+> [40326.247077] ------------[ cut here ]------------
+> [40326.247080] kernel BUG at mm/truncate.c:213!
+> [40326.280581] Internal error: Oops - BUG: 0 [#1] SMP
+> [40326.281077] Modules linked in: xfs(E) libcrc32c(E) rfkill(E) aes_ce_blk(E) crypto_simd(E) cryptd(E) aes_ce_cipher(E) crct10dif_ce(E) ghash_ce(E) sha1_ce(E) uio_pdrv_genirq(E) uio(E) nfsd(E) vfat(E) fat(E) auth_rpcgss(E) nfs_acl(E) lockd(E) grace(E) sunrpc(E) sch_fq_codel(E) ip_tables(E) ext4(E) mbcache(E) jbd2(E) virtio_net(E) net_failover(E) virtio_blk(E) failover(E) sha2_ce(E) sha256_arm64(E) virtio_mmio(E) virtio_pci(E) virtio_ring(E) virtio(E)
+> [40326.285130] CPU: 14 PID: 11394 Comm: check_madvise_d Kdump: loaded Tainted: G        W   E     5.10.46-hugetext+ #55
+> [40326.286202] Hardware name: Alibaba Cloud Alibaba Cloud ECS, BIOS 0.0.0 02/06/2015
+> [40326.286968] pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=--)
+> [40326.287584] pc : truncate_inode_page+0x64/0x70
+> [40326.288040] lr : truncate_inode_page+0x64/0x70
+> [40326.288498] sp : ffff80001b60b900
+> [40326.288837] x29: ffff80001b60b900 x28: 00000000000007ff
+> [40326.289377] x27: ffff80001b60b9a0 x26: 0000000000000000
+> [40326.289943] x25: 000000000000000f x24: ffff80001b60b9a0
+> [40326.290485] x23: ffff80001b60ba18 x22: ffff0001e0999ea8
+> [40326.291027] x21: ffff0000c21db300 x20: ffffffffffffffff
+> [40326.291566] x19: fffffe001310ffc0 x18: 0000000000000020
+> [40326.292106] x17: 0000000000000000 x16: 0000000000000000
+> [40326.292655] x15: ffff0000c21db960 x14: 3030306666666620
+> [40326.293197] x13: 6666666666666666 x12: 3130303030303030
+> [40326.293746] x11: ffff8000117b69b8 x10: 00000000ffff8000
+> [40326.294313] x9 : ffff80001012690c x8 : 0000000000000000
+> [40326.294851] x7 : ffff8000114f69b8 x6 : 0000000000017ffd
+> [40326.295392] x5 : ffff0007fffbcbc8 x4 : ffff80001b60b5c0
+> [40326.295942] x3 : 0000000000000001 x2 : 0000000000000000
+> [40326.296497] x1 : 0000000000000000 x0 : 0000000000000000
+> [40326.297047] Call trace:
+> [40326.297304]  truncate_inode_page+0x64/0x70
+> [40326.297724]  truncate_inode_pages_range+0x550/0x7e4
+> [40326.298251]  truncate_pagecache+0x58/0x80
+> [40326.298662]  do_dentry_open+0x1e4/0x3c0
+> [40326.299052]  vfs_open+0x38/0x44
+> [40326.299377]  do_open+0x1f0/0x310
+> [40326.299709]  path_openat+0x114/0x1dc
+> [40326.300077]  do_filp_open+0x84/0x134
+> [40326.300444]  do_sys_openat2+0xbc/0x164
+> [40326.300825]  __arm64_sys_openat+0x74/0xc0
+> [40326.301236]  el0_svc_common.constprop.0+0x88/0x220
+> [40326.301723]  do_el0_svc+0x30/0xa0
+> [40326.302089]  el0_svc+0x20/0x30
+> [40326.302404]  el0_sync_handler+0x1a4/0x1b0
+> [40326.302814]  el0_sync+0x180/0x1c0
+> [40326.303157] Code: aa0103e0 900061e1 910ec021 9400d300 (d4210000)
+> [40326.303775] ---[ end trace f70cdb42cb7c2d42 ]---
+> [40326.304244] Kernel panic - not syncing: Oops - BUG: Fatal exception
+> 
+> This checks the page mapping and retries when subpage of file THP is
+> found, in truncate_inode_pages_range.
+> 
+> Fixes: eb6ecbed0aa2 ("mm, thp: relax the VM_DENYWRITE constraint on file-backed THPs")
+> Signed-off-by: Xu Yu <xuyu@linux.alibaba.com>
+> Signed-off-by: Rongwei Wang <rongwei.wang@linux.alibaba.com>
+> ---
+>   mm/filemap.c  |  7 ++++++-
+>   mm/truncate.c | 17 ++++++++++++++++-
+>   2 files changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index dae481293..a3af2ec 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -2093,7 +2093,6 @@ unsigned find_lock_entries(struct address_space *mapping, pgoff_t start,
+>   		if (!xa_is_value(page)) {
+>   			if (page->index < start)
+>   				goto put;
+> -			VM_BUG_ON_PAGE(page->index != xas.xa_index, page);
+>   			if (page->index + thp_nr_pages(page) - 1 > end)
+>   				goto put;
+>   			if (!trylock_page(page))
+> @@ -2102,6 +2101,12 @@ unsigned find_lock_entries(struct address_space *mapping, pgoff_t start,
+>   				goto unlock;
+>   			VM_BUG_ON_PAGE(!thp_contains(page, xas.xa_index),
+>   					page);
+> +			/*
+> +			 * We can find and get head page of file THP with
+> +			 * non-head index. The head page should have already
+> +			 * be truncated with page->mapping reset to NULL.
+> +			 */
+> +			VM_BUG_ON_PAGE(page->index != xas.xa_index, page);
+>   		}
+>   		indices[pvec->nr] = xas.xa_index;
+>   		if (!pagevec_add(pvec, page))
+> diff --git a/mm/truncate.c b/mm/truncate.c
+> index 714eaf1..8c59c00 100644
+> --- a/mm/truncate.c
+> +++ b/mm/truncate.c
+> @@ -319,7 +319,8 @@ void truncate_inode_pages_range(struct address_space *mapping,
+>   	index = start;
+>   	while (index < end && find_lock_entries(mapping, index, end - 1,
+>   			&pvec, indices)) {
+> -		index = indices[pagevec_count(&pvec) - 1] + 1;
+> +		index = indices[pagevec_count(&pvec) - 1] +
+> +			thp_nr_pages(pvec.pages[pagevec_count(&pvec) - 1]);
+>   		truncate_exceptional_pvec_entries(mapping, &pvec, indices);
+>   		for (i = 0; i < pagevec_count(&pvec); i++)
+>   			truncate_cleanup_page(pvec.pages[i]);
+> @@ -391,6 +392,20 @@ void truncate_inode_pages_range(struct address_space *mapping,
+>   			if (xa_is_value(page))
+>   				continue;
+>   
+> +			/*
+> +			 * Already truncated? We can find and get subpage
+> +			 * of file THP, of which the head page is truncated.
+> +			 *
+> +			 * In addition, another race will be avoided, where
+> +			 * collapse_file rolls back when writer truncates the
+> +			 * page cache.
+> +			 */
+> +			if (page_mapping(page) != mapping) {
+> +				/* Restart to make sure all gone */
+> +				index = start - 1;
+> +				continue;
+> +			}
+> +
+>   			lock_page(page);
 
-On Mon, Sep 6, 2021 at 7:48 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, Sep 03, 2021 at 06:30:01PM +0800, Shengjiu Wang wrote:
->
-> > There is no defer probe when adding platform component to
-> > snd_soc_pcm_runtime(rtd), the code is in snd_soc_add_pcm_runtime()
->
-> ...
->
-> > So if the platform component is not ready at that time, then the
-> > sound card still registered successfully, but platform component
-> > is empty, the sound card can't be used.
->
-> This sounds like a bug which should be fixed there?
+Better to check page mapping with page lock, i.e., move above chunk
+after lock_page(page), and do not forget to unlock.
 
-It is hard.
+                         lock_page(page);
++                       /*
++                        * Already truncated? We can find and get subpage
++                        * of file THP, of which the head page is truncated.
++                        *
++                        * In addition, another race will be avoided, where
++                        * collapse_file rolls back when writer 
+truncates the
++                        * page cache.
++                        */
++                       if (page_mapping(page) != mapping) {
++                               unlock_page(page);
++                               /* Restart to make sure all gone */
++                               index = start - 1;
++                               break;
++                       }
++
 
-In cpu dai driver we always register two components, one is for
-cpu dai, another is for platform, so for sound card platform and
-cpu share the same node.
 
-        /* Find PLATFORM from registered PLATFORMs */
-        for_each_link_platforms(dai_link, i, platform) {
-                for_each_component(component) {
-                        if (!snd_soc_is_matching_component(platform, component))
-                                continue;
+We will wait for other reviews till we send out v2.
 
-                        snd_soc_rtd_add_component(rtd, component);
-                }
-        }
 
-Above code in snd_soc_add_pcm_runtime() checks components
-for the platform,  because there are two components for the node,
-the first one is the component of cpu dai, which is added by
-registering dai, it is already added in the beginning,  so it is
-duplicated,  but the second one (which is for platform) is not ready,
-then issue happens.
 
-It is hard to add conditions here for defer probe.  And maybe
-some drivers need the same components for cpu and platform.
-Do you have any suggestions?
+>   			WARN_ON(page_to_index(page) != index);
+>   			wait_on_page_writeback(page);
+> 
 
-(The easy way is to fix in each drivers:))
-
-Best Regards
-Wang Shengjiu
+-- 
+Thanks,
+Yu
