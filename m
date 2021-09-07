@@ -2,113 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF13403111
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 00:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 912FD40311C
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 00:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346229AbhIGWbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 18:31:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41302 "EHLO
+        id S1344757AbhIGWgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 18:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344382AbhIGWbN (ORCPT
+        with ESMTP id S1347634AbhIGWe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 18:31:13 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BE1C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 15:30:05 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id q68so356532pga.9
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 15:30:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mP/IIf+MJPppx6rdwrLf1UIeleriTJ/3EK8yRMv6DsY=;
-        b=OKiv359hU6qwhV0SwGATvX1niwWqBdt0iGVarRgaeolD4hzPmJDltZkhIaBcjrxj1g
-         8yqQPMtR9hTicQqC8UdXe3yUS0N3dSxGGrPc9IrbaA8rPIH2uFWArfsiBL9gxZ02lRzt
-         O663f/s9A0fsw5delQpKcLC6q9liiTEMIJmqOnSV4JrDPkBPxQQHSCSRa7lf0B3HHtvO
-         S2DsnYxaJMzK2N+LCiesfvt4mPCPfFTZnVl2wK3EVkfJcPHs3Nk4T0Ny9h0NU6woqGE2
-         pMUBvw488luPIt/5A6pXMXJSoXQMjUu3cDYu7Ve4Rziy5iIwyrF7OU90trUnnzjOpEPq
-         V48g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mP/IIf+MJPppx6rdwrLf1UIeleriTJ/3EK8yRMv6DsY=;
-        b=ZljiGyQ6RWVueu54zJo5y+KupzaM0wwg2JCo9sSJGuysXQs8nzsGxWJ5GHerJ81gtk
-         Kd88J6XsPCWFNSPmdSjEn9LZk5YiVtDN8n5ibSdSf9XCc8TokF8jjZ8tHBzaSIA01LVQ
-         aFYfyaaw2WJt2YQyU+Yer5VimbejPwKh7ES9L7sCt0KXw6PL/JLprCd5adq8NsuGyFav
-         IQzM39sLKacURdPK/JE9zJtLpGhrzSMFySMOR9uth9foWiaa0GtPxEs3S3S5aVlAU08P
-         M1kLe4qM0QT+0FP40/4YsQT7GBxNt7E59uOSZp5VXKJd3mI+pN7fGNHl7nzfAH/geHb+
-         Le/g==
-X-Gm-Message-State: AOAM532FDX2BxO4BWM3EdnQZHENiClhGc++1QiVG7voYNPSz/FhoJwJc
-        PgZCZhFzBfHqnS8fPJgrxD07Yp+wKoLvwf3/YI1gqA==
-X-Google-Smtp-Source: ABdhPJzgkyotWqm/GhDUt9M4xwX5X+VVZD0hVUEAJ1Bsel6IlV6f5bjhhHaFaC6IFBLXBU7Canbhv3p1uWvFRkEaI7g=
-X-Received: by 2002:a63:dd46:: with SMTP id g6mr528777pgj.347.1631053804832;
- Tue, 07 Sep 2021 15:30:04 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210907210924.22287-1-straube.linux@gmail.com>
-In-Reply-To: <20210907210924.22287-1-straube.linux@gmail.com>
-From:   Phillip Potter <phil@philpotter.co.uk>
-Date:   Tue, 7 Sep 2021 23:29:53 +0100
-Message-ID: <CAA=Fs0mg7ZjgK-NeeGehEVKczyfH2ZsruWe_nneroBJw6kz=zw@mail.gmail.com>
-Subject: Re: [PATCH] staging: r8188eu: remove unused function Hal_ProSetCrystalCap()
-To:     Michael Straube <straube.linux@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Martin Kaiser <martin@kaiser.cx>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Tue, 7 Sep 2021 18:34:29 -0400
+Received: from bombadil.infradead.org (unknown [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D104EC061575;
+        Tue,  7 Sep 2021 15:33:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=bxPWNII6t/NMGO1fgxjyatCVjEuxKu/pncqEFjLY/38=; b=Ui1wNMHr1qisfggLyZY6EljOSh
+        DaWVRD0Q5qi69FfBZ0WLKQakWxLm4gU4vxPk6Vji1flAFMLNy3B8/CFNn8a6c+s1RGYuxcksZ7smS
+        P2L/f8NMosaY0ld2cM0fVt88682m9DlkZLwEHw2a6TRCaiGTmdQJ/gG7I0BNthhEkSM5jFJQs2aC5
+        wFPYstbOO8DYLPxymIfy2C+443vPwmfXCwFZneCHFvwBvTP5J8E2S3DB15J1DSGYw2mH/iu0RdJ+K
+        Gxs92jqjmNaQis/aeSs9pi+smE0kEve5rEiVsJvgfGc8QUaPRjEkCaVf/Xk04tgsm80VcTlluS4TP
+        2LnK2jdw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mNjea-004xPm-64; Tue, 07 Sep 2021 22:33:20 +0000
+Subject: Re: [PATCH] Revert "Enable '-Werror' by default for all kernel
+ builds"
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Marco Elver <elver@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>, llvm@lists.linux.dev,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vipin Sharma <vipinsh@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <20210907183843.33028-1-ndesaulniers@google.com>
+ <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
+ <CAKwvOdkuYoke=Sa8Qziveo9aSA2zaNWEcKW8LZLg+d3TPwHkoA@mail.gmail.com>
+ <YTfkO2PdnBXQXvsm@elver.google.com>
+ <CAHk-=wgPaQsEr+En=cqCqAC_sWmVP6x5rD2rmZRomH9EnTQL7Q@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <c8fb537f-26e5-b305-6bc5-06f0d27a4029@infradead.org>
+Date:   Tue, 7 Sep 2021 15:33:18 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <CAHk-=wgPaQsEr+En=cqCqAC_sWmVP6x5rD2rmZRomH9EnTQL7Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Sept 2021 at 22:09, Michael Straube <straube.linux@gmail.com> wrote:
->
-> Remove unused function Hal_ProSetCrystalCap().
->
-> Signed-off-by: Michael Straube <straube.linux@gmail.com>
-> ---
->  drivers/staging/r8188eu/core/rtw_mp.c    | 9 ---------
->  drivers/staging/r8188eu/include/rtw_mp.h | 1 -
->  2 files changed, 10 deletions(-)
->
-> diff --git a/drivers/staging/r8188eu/core/rtw_mp.c b/drivers/staging/r8188eu/core/rtw_mp.c
-> index dabdd0406f30..82268f754da0 100644
-> --- a/drivers/staging/r8188eu/core/rtw_mp.c
-> +++ b/drivers/staging/r8188eu/core/rtw_mp.c
-> @@ -924,12 +924,3 @@ void _rtw_mp_xmit_priv(struct xmit_priv *pxmitpriv)
->  exit:
->         ;
->  }
-> -
-> -void Hal_ProSetCrystalCap(struct adapter *pAdapter, u32 CrystalCapVal)
-> -{
-> -       CrystalCapVal = CrystalCapVal & 0x3F;
-> -
-> -       // write 0x24[16:11] = 0x24[22:17] = CrystalCap
-> -       PHY_SetBBReg(pAdapter, REG_AFE_XTAL_CTRL, 0x7FF800,
-> -                    (CrystalCapVal | (CrystalCapVal << 6)));
-> -}
-> diff --git a/drivers/staging/r8188eu/include/rtw_mp.h b/drivers/staging/r8188eu/include/rtw_mp.h
-> index b2befe09d944..73fb6974d076 100644
-> --- a/drivers/staging/r8188eu/include/rtw_mp.h
-> +++ b/drivers/staging/r8188eu/include/rtw_mp.h
-> @@ -466,7 +466,6 @@ void Hal_TriggerRFThermalMeter(struct adapter *pAdapter);
->  u8 Hal_ReadRFThermalMeter(struct adapter *pAdapter);
->  void Hal_SetCCKContinuousTx(struct adapter *pAdapter, u8 bStart);
->  void Hal_SetOFDMContinuousTx(struct adapter *pAdapter, u8 bStart);
-> -void Hal_ProSetCrystalCap (struct adapter *pAdapter , u32 CrystalCapVal);
->  void _rtw_mp_xmit_priv(struct xmit_priv *pxmitpriv);
->  void MP_PHY_SetRFPathSwitch(struct adapter *pAdapter ,bool bMain);
->
-> --
-> 2.33.0
->
+On 9/7/21 3:18 PM, Linus Torvalds wrote:
+> On Tue, Sep 7, 2021 at 3:14 PM Marco Elver <elver@google.com> wrote:
+>>
+>>
+>>   config WERROR
+>>          bool "Compile the kernel with warnings as errors"
+>> -       default y
+>> +       default COMPILE_TEST
+> 
+> That seems reasonable. It very much is about build-testing.
 
-Looks good Michael, many thanks.
+That and 2 more things IMO:
 
-Acked-by: Phillip Potter <phil@philpotter.co.uk>
+a. having developers be responsible for build warnings, not just
+    build errors
 
-Regards,
-Phil
+b. having maintainers merge them more like they are build errors
+    and not just some warnings that can be overlooked.
+
+I don't see enough of a. or b.  :(
+
+-- 
+~Randy
+
