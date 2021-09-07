@@ -2,90 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0822A402534
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E649402538
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243128AbhIGIg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 04:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46090 "EHLO
+        id S242811AbhIGIh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 04:37:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242835AbhIGIgL (ORCPT
+        with ESMTP id S242915AbhIGIhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 04:36:11 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004A8C061796
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 01:34:59 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id h16so18015630lfk.10
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 01:34:59 -0700 (PDT)
+        Tue, 7 Sep 2021 04:37:24 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6067C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 01:36:17 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id b6so13216840wrh.10
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 01:36:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CtxYUHHPIcThwVP0UB7Lx6CHuiQRrXcZpwKxsh057eE=;
-        b=apfvhDIqPlNvssNiHUw0pFzamwVhtrnZ3nJs1bqYOMKQA/Jr78142NiUlS52qnSYjs
-         OrT9PaBOxBlovDH+usrbkPBISIdcjfqEUFS2yYsT5ayLxF6f60O7bVrAqjowCeUR3OCL
-         FoEiYE5y4EFTQIjBQiHjv3lyes7cEei6TooxkMRxTU4aBorpTvN99owc0x6eLHZVdjW9
-         reNVWuhjD0hIlozDYHLXSNQWW3qNdMoYjNWgp3gP2Opib32lcVHmGN5hVlX0LRfew5G9
-         QzgwUATRUMXdazN854a57ZEa2jvlrZzsCQqX3QoHrRTMzUvS1BTB5cpro29qGOuHzPY4
-         ndTw==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Do8X31vMuXsGoFDxl1UrBFMJCYmyJorVQ5Hu9AvrSbM=;
+        b=QouHOwrVpDnRBwbpPUu3YfsPvMiNd0VINkUYEM/2+nkR5DRBuo9bqjeLocysTHbYcH
+         anSaF1CtXoU4u8WoSjfmdiXsoOvf7wCJB9I2iJrtniEzGrXSkndkmb11av/Dx29VL1xB
+         0RoVoDK204HKnxhvjIeNFrgIPdSb8M7fvefEkgsNJHcGw+CPBHCEZeqVPSg0/saUSYKR
+         L+wm9KsymFhxcKngCc5tSpuMNrGQycwFBGGjrrNDgn/Alyy8D+LfqjVarYt0E16qXAju
+         GpiqY52YJG1R9wYauh2UkCvafG6MgB/7nV5wet2rTGqcR1MmmY3sA98cMU9qqgGqUn1w
+         /9Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CtxYUHHPIcThwVP0UB7Lx6CHuiQRrXcZpwKxsh057eE=;
-        b=t7w/24Rek1F0ZhlpnMuYStqwJ7RPv9yoJF8Fxf671T2BCGGfmnxRzn1SrP8i6r0VEM
-         mziNOhSFvy2HqA5L0C/n0K8cjCNvvLmLJA4Xn12oHSjbEMety5SzCjk5jHpOKPRJAn0G
-         sRaFRiqQFLU1K4MS/V8gi2BixtwkQGXgc1731umqU/kV0o3ySgJfC0FbUa/4QXStth3B
-         hnD7fcHfnK1PG/uSDh/95+5h8gzwOQi7M6oP7oOVjfqcDea5dVkW3Nf4vqCjlQXamlBy
-         g6UKS6PikfKRnSCOwhZay8k5Sdqhoolgn5cP0CZrgbbidQbl4NFX3KDk2E3xRxbV7VEu
-         Iwrw==
-X-Gm-Message-State: AOAM532Php00GXsvboPI30HRjRFxqt1qzz9bov3/BFcc+rGQIMIPqXuO
-        14bAxfgjv37q994mCq/7KM4=
-X-Google-Smtp-Source: ABdhPJzqGUIQX2CxiYHmC8tth8p2KwumY2EB/qBr640tCazomTuKlKAsJi8Eh8AB9rvHJpZdMeYvfA==
-X-Received: by 2002:ac2:4106:: with SMTP id b6mr12534866lfi.89.1631003698230;
-        Tue, 07 Sep 2021 01:34:58 -0700 (PDT)
-Received: from kari-VirtualBox.telewell.oy (85-23-89-224.bb.dnainternet.fi. [85.23.89.224])
-        by smtp.gmail.com with ESMTPSA id q30sm944771lfb.155.2021.09.07.01.34.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Do8X31vMuXsGoFDxl1UrBFMJCYmyJorVQ5Hu9AvrSbM=;
+        b=HIUGHinh1hSGDd3OvpOArKto22+WLV56O125Wy6Jd8ck3MJJvrw6wP9i1WtYI8pknr
+         jIcRktMh5QF0vdec4LkWy7rsfEjBLtpFrUZCqUgqRWjnH9JoiYJ7UFnyoq4BEQFcAbLu
+         dK2pgFLy55k09tGt83iuFH52K0RPlkmAoeDHixfBwd1n1O4YkwhPg3Q/tAzPhZPoDwKK
+         3qaT6FsRgCvB2lw+CaxP6rOb2jBn/Jz4fAA99cq2IeBg10/XDEeGtvDw7UipVaXVUcqc
+         COkdiyP77DsG/kbijudurrzzeNkX/djXMN7PfMMmXWXdRvpf0W3EYcX3wMJsCWZCjRdz
+         J3yQ==
+X-Gm-Message-State: AOAM531UHSw4OZhnRbgsoPGNTwwzzs6lbSET8FZlQjGY8vW3us6qFZMv
+        7pIGGUaDSAMtc3C4p9vHvYcV9XwTgZJQEw==
+X-Google-Smtp-Source: ABdhPJxo6JNP8VyHDw7Fev5ySPRkS+PStXpkA8Hd3bmhjnBAi4cqH3xN/dQgJiXn+KtRtoJ2+RBp2A==
+X-Received: by 2002:a5d:6cc9:: with SMTP id c9mr17167557wrc.158.1631003776355;
+        Tue, 07 Sep 2021 01:36:16 -0700 (PDT)
+Received: from debian-brgl.home ([2a01:cb1d:334:ac00:7d50:ff5:f5c1:e225])
+        by smtp.gmail.com with ESMTPSA id u2sm1738068wmj.29.2021.09.07.01.36.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 01:34:57 -0700 (PDT)
-From:   Kari Argillander <kari.argillander@gmail.com>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        ntfs3@lists.linux.dev
-Cc:     Kari Argillander <kari.argillander@gmail.com>,
-        linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>
-Subject: [PATCH v2 4/4] fs/ntfs3: Remove tabs before spaces from comment
-Date:   Tue,  7 Sep 2021 11:34:41 +0300
-Message-Id: <20210907083441.3212-5-kari.argillander@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210907083441.3212-1-kari.argillander@gmail.com>
-References: <20210907083441.3212-1-kari.argillander@gmail.com>
+        Tue, 07 Sep 2021 01:36:16 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [GIT PULL] gpio: updates for v5.15
+Date:   Tue,  7 Sep 2021 10:36:13 +0200
+Message-Id: <20210907083613.31268-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove tabs before spaces from comment as recommended by kernel coding
-style. Checkpatch also warn about these.
+Hi Linus,
 
-Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
----
- fs/ntfs3/lznt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Here's the pull-request for this cycle from the GPIO subsystem. We mostly
+have various improvements and refactoring all over the place but also some
+interesting new features - like the virtio GPIO driver that allows guest VMs
+to use host's GPIOs. We also have a new/old GPIO driver for rockchip - this
+one has been split out of the pinctrl driver, hence the pull from the
+pinctrl tree you can see in my branch. Another merge in the tree is from Andy
+for the intel drivers. Details are in the signed tag.
 
-diff --git a/fs/ntfs3/lznt.c b/fs/ntfs3/lznt.c
-index f1f691a67cc4..734a251deae9 100644
---- a/fs/ntfs3/lznt.c
-+++ b/fs/ntfs3/lznt.c
-@@ -292,7 +292,7 @@ static inline ssize_t decompress_chunk(u8 *unc, u8 *unc_end, const u8 *cmpr,
- /*
-  * get_lznt_ctx
-  * @level: 0 - Standard compression.
-- * 	   !0 - Best compression, requires a lot of cpu.
-+ *	   !0 - Best compression, requires a lot of cpu.
-  */
- struct lznt *get_lznt_ctx(int level)
- {
--- 
-2.25.1
+Please pull!
+Bartosz
 
+The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
+
+  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.15
+
+for you to fetch changes up to 889a1b3f35db6ba5ba6a0c23a3a55594570b6a17:
+
+  gpio: mpc8xxx: Use 'devm_gpiochip_add_data()' to simplify the code and avoid a leak (2021-08-31 12:10:24 +0200)
+
+----------------------------------------------------------------
+gpio updates for v5.15
+
+- new driver: gpio-virtio allowing a guest VM running linux to access
+  GPIO lines provided by the host
+- split the GPIO driver out of the rockchip pin control driver
+- add support for a new model to gpio-aspeed-sgpio, refactor the driver
+  and use generic device property interfaces, improve property sanitization
+- add ACPI support to gpio-tegra186
+- improve the code setting the line names to support multiple GPIO banks
+  per device
+- constify a bunch of OF functions in the core GPIO code and make the
+  declaration for one of the core OF functions we use consistent within its
+  header
+- use software nodes in intel_quark_i2c_gpio
+- add support for the gpio-line-names property in gpio-mt7621
+- use the standard GPIO function for setting the GPIO names in gpio-brcmstb
+- fix a bunch of leaks and other bugs in gpio-mpc8xxx
+- use generic pm callbacks in gpio-ml-ioh
+- improve resource management and PM handling in gpio-mlxbf2
+- modernize and improve the gpio-dwapb driver
+- coding style improvements in gpio-rcar
+- documentation fixes and improvements
+- update the MAINTAINERS entry for gpio-zynq
+- minor tweaks in several drivers
+
+----------------------------------------------------------------
+Akhil R (1):
+      gpio: tegra186: Add ACPI support
+
+Alexandru Ardelean (1):
+      gpio: viperboard: remove platform_set_drvdata() call in probe
+
+Andy Shevchenko (9):
+      gpiolib: Deduplicate forward declaration in the consumer.h header
+      gpio: dwapb: Unify ACPI enumeration checks in get_irq() and configure_irqs()
+      gpio: dwapb: Read GPIO base from gpio-base property
+      mfd: intel_quark_i2c_gpio: Convert GPIO to use software nodes
+      gpio: dwapb: Get rid of legacy platform data
+      gpio: mlxbf2: Convert to device PM ops
+      gpio: mlxbf2: Drop wrong use of ACPI_PTR()
+      gpio: mlxbf2: Use devm_platform_ioremap_resource()
+      gpio: mlxbf2: Use DEFINE_RES_MEM_NAMED() helper macro
+
+Bartosz Golaszewski (2):
+      Merge tag 'intel-gpio-v5.15-1' of gitolite.kernel.org:pub/scm/linux/kernel/git/andy/linux-gpio-intel into gpio/for-next
+      Merge branch 'ib-rockchip' of git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl into gpio/for-next
+
+Christophe JAILLET (3):
+      gpio: mpc8xxx: Fix a resources leak in the error handling path of 'mpc8xxx_probe()'
+      gpio: mpc8xxx: Fix a potential double iounmap call in 'mpc8xxx_probe()'
+      gpio: mpc8xxx: Use 'devm_gpiochip_add_data()' to simplify the code and avoid a leak
+
+Geert Uytterhoeven (1):
+      gpio: rcar: Always use local variable dev in gpio_rcar_probe()
+
+Hannu Hartikainen (1):
+      docs: gpio: explain GPIOD_OUT_* values and toggling active low
+
+Jianqun Xu (9):
+      pinctrl/rockchip: always enable clock for gpio controller
+      pinctrl/rockchip: separate struct rockchip_pin_bank to a head file
+      pinctrl/rockchip: add pinctrl device to gpio bank struct
+      dt-bindings: gpio: change items restriction of clock for rockchip,gpio-bank
+      gpio/rockchip: add driver for rockchip gpio
+      gpio/rockchip: use struct rockchip_gpio_regs for gpio controller
+      gpio/rockchip: support next version gpio controller
+      gpio/rockchip: drop irq_gc_lock/irq_gc_unlock for irq set type
+      pinctrl/rockchip: drop the gpio related codes
+
+Krzysztof Kozlowski (3):
+      of: unify of_count_phandle_with_args() arguments with !CONFIG_OF
+      gpiolib: constify passed device_node pointer
+      gpiolib: of: constify few local device_node variables
+
+Linus Walleij (1):
+      gpio: max730x: Use the right include
+
+Lukas Bulwahn (1):
+      gpio: remove the obsolete MX35 3DS BOARD MC9S08DZ60 GPIO functions
+
+Mauro Carvalho Chehab (1):
+      MAINTAINERS: update gpio-zynq.yaml reference
+
+Sergio Paracuellos (3):
+      gpiolib: convert 'devprop_gpiochip_set_names' to support multiple gpiochip banks per device
+      gpio: mt7621: support gpio-line-names property
+      gpio: brcmstb: remove custom 'brcmstb_gpio_set_names'
+
+Steven Lee (5):
+      gpio: gpio-aspeed-sgpio: Add AST2600 sgpio support
+      gpio: gpio-aspeed-sgpio: Add set_config function
+      gpio: gpio-aspeed-sgpio: Move irq_chip to aspeed-sgpio struct
+      gpio: gpio-aspeed-sgpio: Use generic device property APIs
+      gpio: gpio-aspeed-sgpio: Return error if ngpios is not multiple of 8.
+
+Vaibhav Gupta (1):
+      gpio: ml-ioh: Convert to dev_pm_ops
+
+Vincent Pelletier (1):
+      Documentation: gpio: driver.rst: Remove gpiochip_irqchip_add mention
+
+Viresh Kumar (3):
+      gpio: Add virtio-gpio driver
+      gpio: virtio: Fix sparse warnings
+      gpio: virtio: Add missing mailings lists in MAINTAINERS entry
+
+ .../bindings/gpio/rockchip,gpio-bank.yaml          |   5 +-
+ Documentation/driver-api/gpio/consumer.rst         |  10 +-
+ Documentation/driver-api/gpio/driver.rst           |  11 +-
+ MAINTAINERS                                        |  11 +-
+ drivers/gpio/Kconfig                               |  23 +-
+ drivers/gpio/Makefile                              |   3 +-
+ drivers/gpio/gpio-aspeed-sgpio.c                   | 178 ++--
+ drivers/gpio/gpio-brcmstb.c                        |  45 +-
+ drivers/gpio/gpio-dwapb.c                          |  56 +-
+ drivers/gpio/gpio-mc9s08dz60.c                     | 112 ---
+ drivers/gpio/gpio-ml-ioh.c                         |  49 +-
+ drivers/gpio/gpio-mlxbf2.c                         |  43 +-
+ drivers/gpio/gpio-mpc8xxx.c                        |  13 +-
+ drivers/gpio/gpio-mt7621.c                         |   1 +
+ drivers/gpio/gpio-rcar.c                           |   4 +-
+ drivers/gpio/gpio-rockchip.c                       | 771 +++++++++++++++++
+ drivers/gpio/gpio-tegra186.c                       |  30 +-
+ drivers/gpio/gpio-viperboard.c                     |  14 +-
+ drivers/gpio/gpio-virtio.c                         | 374 +++++++++
+ drivers/gpio/gpiolib-devres.c                      |   2 +-
+ drivers/gpio/gpiolib-of.c                          |  16 +-
+ drivers/gpio/gpiolib.c                             |  32 +-
+ drivers/mfd/intel_quark_i2c_gpio.c                 |  71 +-
+ drivers/pinctrl/pinctrl-rockchip.c                 | 909 +--------------------
+ drivers/pinctrl/pinctrl-rockchip.h                 | 287 +++++++
+ include/linux/gpio/consumer.h                      |  14 +-
+ include/linux/gpio/driver.h                        |   4 +
+ include/linux/of.h                                 |   2 +-
+ include/linux/of_gpio.h                            |  15 +-
+ include/linux/platform_data/gpio-dwapb.h           |  25 -
+ include/linux/spi/max7301.h                        |   2 +-
+ include/uapi/linux/virtio_gpio.h                   |  47 ++
+ include/uapi/linux/virtio_ids.h                    |   1 +
+ 33 files changed, 1841 insertions(+), 1339 deletions(-)
+ delete mode 100644 drivers/gpio/gpio-mc9s08dz60.c
+ create mode 100644 drivers/gpio/gpio-rockchip.c
+ create mode 100644 drivers/gpio/gpio-virtio.c
+ create mode 100644 drivers/pinctrl/pinctrl-rockchip.h
+ delete mode 100644 include/linux/platform_data/gpio-dwapb.h
+ create mode 100644 include/uapi/linux/virtio_gpio.h
