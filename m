@@ -2,133 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C004402FB4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6643D402FB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346502AbhIGU1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:27:49 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:39027 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1346457AbhIGU1r (ORCPT
+        id S1346468AbhIGU2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:28:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239260AbhIGU2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:27:47 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 664BF5C0152;
-        Tue,  7 Sep 2021 16:26:40 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute1.internal (MEProxy); Tue, 07 Sep 2021 16:26:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=lcpU2CxkGVxmNJlEgg40FlED8MuY
-        46mhZqXqU1CnrRQ=; b=VjcHXlXAALRMftUEOdXM6giehfWYvRiyBMyyYGIXffPZ
-        YMTOvDYAItd4hZB40+/NQjN+W1qaVkX5CUFODvGX/RiVBJYhSOzOz13X6t166qM2
-        EvcU8MY8g9st6pVtZJZ/lnWdutcYf0mZDWWojV4QBBsDvqQNjCSn5n4jienM77Jx
-        dw8MPrEyLYXHwRX1rsm41zQck14brFoKkHL3+7wikiNnSMErysNZVaR8PQg2A89b
-        qZdx6m1vC+gS7r89faBcb4lhVjYtxYEOqPJW8MjiwVmkSS6fl5vxJs67SDBsfmaM
-        KvayNwVDjBCQx2TuCwvadHkWCDItS97ynUJ3JR/Zqw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=lcpU2C
-        xkGVxmNJlEgg40FlED8MuY46mhZqXqU1CnrRQ=; b=KIRudOLKGrSUVYTPzOw7BJ
-        te7I+q51c9DsYZ0Yz1D6oM9MyUQnRfga6EdCYLXNSfF/Ai6P35rwacb+2rWX6N3S
-        Tncij3mLh1lE1a0QbZjc+q05oDgdy1F5EnJN7oXOxqbM8htzHKFkGfVFRRVlUfSH
-        Fzw9jBvydmBrd1Hm/4Rj10sktRbQp+I6bIrpuyH+P+XvioBgRjkOBZpFPopGxioy
-        TWpna7O8efxiE1n0vRcUv4E0Mtxzfp066hMmu7OIET2kxdAZJNtqHNWqHIg931pU
-        1FYmUMJ/FwnznYoaDXnR6G5kNEm0Mg5gADYgIXMWjd9goYvORHqQSG2pDjCPWFOw
-        ==
-X-ME-Sender: <xms:_so3YXDDPjIBTx_RdwC497gX2ANCbQJoppWbdA6mUCwAMp9WPoW0TA>
-    <xme:_so3YdjyhVse3DRyoxKyE_drG6yFaYgm3WNOUIowqVHKDJxt09Y7vzntH5_ikhpS8
-    -ysmSUyrIEkdp_pOsM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefhedgudehtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhv
-    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
-    grthhtvghrnhepgfeigeeiffeuhfettdejgfetjeetfeelfefgfefgvddvtdfghfffudeh
-    vdefkeffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
-X-ME-Proxy: <xmx:_so3YSnOtnZhYCbTHc0NChq0Dfest5tSxwJUQ8GpOzHNEczOWRuFWA>
-    <xmx:_so3YZwJvqmQrOKZhb6G-5dUyUudiTN1FhUErBXbAeLv2MR1Tnm5zw>
-    <xmx:_so3YcQDoGKK0GfB0PtaS38QbuEbrm2BwMOwYkEz8dHnJbi2RTRTkg>
-    <xmx:AMs3YRTjMUWlKqiUoNjyd5LiSh4EGNmrv4eKWnkKiYgb91zF8ry2TA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id C7D0C51C0060; Tue,  7 Sep 2021 16:26:38 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-1126-g6962059b07-fm-20210901.001-g6962059b
-Mime-Version: 1.0
-Message-Id: <ff66c30d-1b43-43d3-a4b0-02fe7d346118@www.fastmail.com>
-In-Reply-To: <YTe17jGBobarePaK@sunset>
-References: <20210907145501.69161-1-sven@svenpeter.dev>
- <20210907145501.69161-3-sven@svenpeter.dev> <YTe17jGBobarePaK@sunset>
-Date:   Tue, 07 Sep 2021 22:26:17 +0200
-From:   "Sven Peter" <sven@svenpeter.dev>
-To:     "Alyssa Rosenzweig" <alyssa@rosenzweig.io>
-Cc:     "Jassi Brar" <jassisinghbrar@gmail.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
-        "Hector Martin" <marcan@marcan.st>,
-        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
-        "Stan Skowronek" <stan@corellium.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: mailbox: Add Apple mailbox bindings
-Content-Type: text/plain
+        Tue, 7 Sep 2021 16:28:10 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12363C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:27:04 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id q21so551811ljj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:27:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kNnWr7VvFbJVbHak9kzp8+A6N60RsRSsS3eaMhvDg9w=;
+        b=dHhZoSbrc9jWRGG2vEoUeiijoLGiPxW++foOws+QuVh2LrLYuJ+tCVwuNxIipJVZiL
+         oR7MAdYImKp2LiksWPkITfXqUtoLqq9zDDbaTXUMBNnZUPgMzpq25BkouYXu/XVZq0lB
+         CPX5srk4/vlW/QWGQ0ICoBHq8bPy7YQhkNDmU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kNnWr7VvFbJVbHak9kzp8+A6N60RsRSsS3eaMhvDg9w=;
+        b=ija/C7Rs6PIgtKCSIaItxagSoHWhzp9K3GfFtN3jenmMLNgckZ9PEArjQL47R1uQn4
+         U6beG6HMM6b/kugudiAunphuf7GaiseK2C16pwgjEOMwdhmUjlPNC1T07Sk6eT/drJ9p
+         +kX+npX7i7fAEc66eDVW4cB9aOsbDfxI5HdHXs9+R+pa1d9VHH6+63RdnhCx5WgeqWHR
+         bAFf/T2UZL455fULhNCP++fVKqxhMKRSYCUE2VY3iW50vvxQ3Jq3mYv/IOd5hYQhFB1c
+         XPxQX6aGMf8sZtX0JBg8ErUHOrKr9++gDylBlYBIPIIcuBHrVQ9gYYFqrpk/TbJMzQa3
+         52ig==
+X-Gm-Message-State: AOAM531moiVxx2EB0wOqdcSkVky+VRix3KvQRVZFCWnh4NoTGJQKiqBb
+        hRg7Zx6AYSjgKAJi7U8HKCZKhe4KLU9/NGEJU5M=
+X-Google-Smtp-Source: ABdhPJx8nhK3hDCEQKqGRpP2fyZJNYECWsLxwi/QB452/UnoJzTArVHyVde/l7/pJIl0T64YuQHDNg==
+X-Received: by 2002:a2e:8650:: with SMTP id i16mr63844ljj.354.1631046422154;
+        Tue, 07 Sep 2021 13:27:02 -0700 (PDT)
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
+        by smtp.gmail.com with ESMTPSA id x24sm1094756lfc.246.2021.09.07.13.27.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 13:27:01 -0700 (PDT)
+Received: by mail-lf1-f52.google.com with SMTP id k13so247473lfv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:27:01 -0700 (PDT)
+X-Received: by 2002:a05:6512:1112:: with SMTP id l18mr158455lfg.402.1631046421443;
+ Tue, 07 Sep 2021 13:27:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210907083613.31268-1-brgl@bgdev.pl> <CAHk-=wgQBgkut6zXTbZN45AtJmSceXwDw6Y60ZmwrPkOL__A8g@mail.gmail.com>
+ <163104361220.4526.774832613459764535.pr-tracker-bot@kernel.org>
+ <CAHk-=wgAi8jHOFuk8iqXsL4Aekst996HGeN18aKQhXd-qu2dcQ@mail.gmail.com>
+ <20210907195647.jutizso7o2r4mddj@meerkat.local> <CAHk-=wiFkW3XGD+Ejv_mxTaPxh+tpRTCP+zufrWnNEiMm9PPEQ@mail.gmail.com>
+ <20210907202047.2tm4q5euaxlb7cjz@meerkat.local>
+In-Reply-To: <20210907202047.2tm4q5euaxlb7cjz@meerkat.local>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Sep 2021 13:26:45 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiEPq1QkCMQvL449rdEbJmhkpUo0Uv5OkisYeYKv7LcsA@mail.gmail.com>
+Message-ID: <CAHk-=wiEPq1QkCMQvL449rdEbJmhkpUo0Uv5OkisYeYKv7LcsA@mail.gmail.com>
+Subject: Re: [GIT PULL] gpio: updates for v5.15
+To:     Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     pr-tracker-bot@kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Sep 7, 2021 at 1:20 PM Konstantin Ryabitsev
+<konstantin@linuxfoundation.org> wrote:
+>
+> So, we can either live with an occasional fail like this or I can try to
+> figure out how to narrow down the rules for what is and isn't a valid pull
+> request.
 
+I guess the occasional false positives are fine - if this was the
+first time I noticed something like that in the almost three years (?)
+we've had pr-tracker-bot, and you figured out what happened quickly,
+it clearly isn't a huge problem in practice.
 
-On Tue, Sep 7, 2021, at 20:56, Alyssa Rosenzweig wrote:
-> > +      - description:
-> > +          M3 mailboxes are an older variant with a slightly different MMIO
-> > +          interface still found on the M1.
-> > +        items:
-> > +          - const: apple,t8103-m3-mailbox
-> 
-> Would be nice to document an example of where an M3 mailbox is found.
-
-Sure, I can add a comment that this is used for the coprocessor controlling Thunderbolt.
-
-> 
-> > +  interrupts:
-> > +    minItems: 4
-> > +    items:
-> > +      - description: send fifo is empty interrupt
-> > +      - description: send fifo is not empty interrupt
-> > +      - description: receive fifo is empty interrupt
-> > +      - description: receive fifo is not empty interrupt
-> > +
-> > +  interrupt-names:
-> > +    minItems: 4
-> > +    items:
-> > +      - const: send-empty
-> > +      - const: send-not-empty
-> > +      - const: recv-empty
-> > +      - const: recv-not-empty
-> 
-> If the names became not-constant the asprintf thing goes away, not sure
-> that's better or worse.
-
-I'm not sure I understand your comment here. This property just gives a name
-to the interrupts so that they can be referenced by that instead of a magic
-number between 0 and 4 in the driver.
-
-> 
-> > +  clocks:
-> > +    description:
-> > +      Reference to the clock gate phandle(s) if required for this mailbox.
-> > +      Optional since not all mailboxes are attached to a clock gate.
-> 
-> Do we do anything with the clocks at this point?
-> 
-
-The device tree bindings describe the hardware (as best as we can without proper
-documentation) and some of these mailboxes have clock gates which need to be turned
-on before accessing their MMIO. This driver already tries to do that and works fine
-with the downstream clock driver(s) we have.
-
-
-
-Sven
+           Linus
