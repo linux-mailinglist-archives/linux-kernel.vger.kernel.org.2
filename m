@@ -2,79 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F189402F85
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA1F402F86
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346147AbhIGUSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238011AbhIGUSq (ORCPT
+        id S1346411AbhIGUTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:19:23 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45620 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345683AbhIGUTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:18:46 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40041C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:17:39 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id c8so194009lfi.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:17:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c+KGhYMgK1PVHY7rBwS9EUIJXA2FVDMYX9D+w6O1J5w=;
-        b=VEz360yo7xu2o0NuXGXH5d8Q7YvFTngvyuJBX8GHrU0YXCxs51kibW+M2plsjo4dDK
-         Ndn74+JzT91U/n5NlJfhQ9Nnq3vM0rbjUCsRdQ5cQyJG8dEvJE0nC6koSHjF19nhiVAx
-         yfJo6e0butS5hr2d5jVc5/1EMBpy3M5TlsOFA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c+KGhYMgK1PVHY7rBwS9EUIJXA2FVDMYX9D+w6O1J5w=;
-        b=RvaVSjta5z4fCbh9ZvWLXypjUU4agzOpxH9h/qvbluJ5eaUXsHz3MfQyYB75ycMPKy
-         Z+V06rBtultcsJ9MO5UaBvcGAhvUnaWQXywGk7Hws91bx6Q0THHt2xMPs7+o/hv50h01
-         VbRF+BbVIrtSHvUsUrVJWXWJHVC57hB2fbn+P3zNkOj1g65XKsM5qOr3mNlzl9eCJQLM
-         lP5S0iEYw8v69ja2cMCMzOVD3iW1rJlpfOTxuY3QBm+MnC13gc1y8v6LqEzOkOiJIjuz
-         Gn7DZXx/viozX7QgItEVEZNoX9DgCo6pbX4xWOscjuYQaXRvm5wYvvqX6sK0kw8MBqkD
-         p6pQ==
-X-Gm-Message-State: AOAM533SPV1WhaqsCnbloei7KO1K8PLnJlKBJdueI2N2+KwmCZEPpPiO
-        wJ+0y0iUpAuqiRR9oBz/H6rMEf4PsVOBtmZBkyw=
-X-Google-Smtp-Source: ABdhPJxl9Tz89oH5gANABuP9eYFDyEE9TY2v87trXvdKQFs2IPkuujfIHjeaPcKYm/uaK8ziDll66w==
-X-Received: by 2002:ac2:50c7:: with SMTP id h7mr131736lfm.75.1631045857159;
-        Tue, 07 Sep 2021 13:17:37 -0700 (PDT)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id n5sm1531611ljj.97.2021.09.07.13.17.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 13:17:36 -0700 (PDT)
-Received: by mail-lj1-f170.google.com with SMTP id m4so500088ljq.8
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:17:36 -0700 (PDT)
-X-Received: by 2002:a2e:8107:: with SMTP id d7mr56757ljg.68.1631045856232;
- Tue, 07 Sep 2021 13:17:36 -0700 (PDT)
+        Tue, 7 Sep 2021 16:19:21 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1631045893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5UOXtuhpxa2Uvzi3wL8Ac7kEQaY5QeuXJwt0YUgkORE=;
+        b=l4sEv/R+PAVFLG0WMly7bhHBeMxdZQ4XjIlXZKvaVrhQBwxlIcGbEbbMJVOAlNjbnDidSP
+        F4RGdK7m7rXHVfyqpv9O6d8kFpZfDzdok0Lf1b+aBQmf7xolusP86FY4v6aNXXMmLbbIAU
+        DFbxj5TY+WegDlew77qbC24GoFXZA9rOPnHR5kigY/B+0dpPv3v7dsh4kURgej9MSMJxNa
+        E3FYfjAoIhh1O+jPCBTQTFA9o18UdxVvlhcJs0hsVHh8eBKIq/tv9Sy1MzwUS9OWWeaZVi
+        1GygykMf/EGYmpinZE3kEpioisN8c7H1CMZtXgvqeA1yKTZnweU3vGd9CS8s5A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1631045893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5UOXtuhpxa2Uvzi3wL8Ac7kEQaY5QeuXJwt0YUgkORE=;
+        b=r0hT9gJkuY7WHJNeSCVCXqxbySj9HnLsrhqsfJyFWNrIBvTtZTnE29muN2CjPsh0mtK+u6
+        jq8aFC/ejTAeXmAA==
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     "x86@kernel.org" <x86@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Song Liu <songliubraving@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Peter Ziljstra <peterz@infradead.org>
+Subject: RE: [patch V2 00/20] x86/fpu: Clean up exception fixups and error
+ handling in sigframe related code
+In-Reply-To: <e190b62e3f954cc1804a41149a842641@intel.com>
+References: <20210907195612.321345EED@xen13.tec.linutronix.de>
+ <874kaw9mpo.ffs@tglx> <e190b62e3f954cc1804a41149a842641@intel.com>
+Date:   Tue, 07 Sep 2021 22:18:13 +0200
+Message-ID: <871r609m2i.ffs@tglx>
 MIME-Version: 1.0
-References: <20210907102428.616e5087@endymion>
-In-Reply-To: <20210907102428.616e5087@endymion>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 7 Sep 2021 13:17:20 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgLh7BGv-6_TFsqezM31o0ZoZruBkUs8fus-Fm-sn233g@mail.gmail.com>
-Message-ID: <CAHk-=wgLh7BGv-6_TFsqezM31o0ZoZruBkUs8fus-Fm-sn233g@mail.gmail.com>
-Subject: Re: [GIT PULL] dmi fix for v5.15
-To:     Jean Delvare <jdelvare@suse.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 1:24 AM Jean Delvare <jdelvare@suse.de> wrote:
+On Tue, Sep 07 2021 at 20:07, Tony Luck wrote:
+
+>> Please ignore. My quilt scripts went berserk for some weird reason.
 >
-> Please pull dmi subsystem fixes for Linux v5.15 from:
+> Was it just the email post that was bad? I.e. are the patches in:
+>
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/fpu
+>
+> ok?  I just compiled that, should I boot it, or wait?
 
-Please give me a blurb about what this fixes.
+Just the mail script went south. The git tree is fine.
 
-I did look at the single commit and made something up, so this is
-already merged (as pr-tracker-bot has noticed), but in general even
-just one-liner trivial "this fixes modalias that got broken by a
-misplaced field" would have been appreciated.
+Thanks,
 
-             Linus
+        tglx
