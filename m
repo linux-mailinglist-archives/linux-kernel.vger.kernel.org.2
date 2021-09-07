@@ -2,104 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C0D40230D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 07:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF19402312
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 07:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbhIGF3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 01:29:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbhIGF3L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 01:29:11 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DDBC061575;
-        Mon,  6 Sep 2021 22:28:06 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id mw10-20020a17090b4d0a00b0017b59213831so799628pjb.0;
-        Mon, 06 Sep 2021 22:28:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xkYVFbnjRXNaVulr+h3N+YQAw1zNtm2NUhsbkh3G6cg=;
-        b=a3vuaT8dKMV1Xilu56/NFdrXfcfqM9qQJQbR08EEk8NLpwSiV2A/GExVYHWr4L/2yD
-         IpdTFbx0+nrOfrDOfkUriQ6n/TkUx4vnPJTNr1kw5ZLuPyBgEIg1tH5qCxnjQAx9QSV8
-         lRFXTywGfKiseKhzyQ/dNi0r1IdhM+AF2ZydXz00tm4vRSGWBUDYoPxPLfAe1heShLKW
-         c6NNLsroSlo2X938rqq+8JJqy1BHgCxYNAHGUGODAYMpowGA/vX47YK/irGxptyEMn2M
-         QE95jfCRblxMYz93jJHKxiKR8tce3hBAzWNcq3crvb6Jb/kobYUxSB5NbbXaH+A9w6Ri
-         FsCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xkYVFbnjRXNaVulr+h3N+YQAw1zNtm2NUhsbkh3G6cg=;
-        b=p0pQJ8/rpUGjctK7vMmFNPaZzxCtbreb8mvtnBq6JNac8LORRJhy+EP6QhreV5ds1J
-         J9dkLPjfBhgdyNgAlfrkihE8bYfRHpapxuEGnDRKP58hX9fA9QFvQGf0r4A0XHBk3GR2
-         5RvMkzEHtgp+KunbK9PIMixJjZ+gYJlQDtX0oVxsRRjlus1jLq+u2geBhVwjQWAiEvJT
-         ZlT2dFQZk4kaPNQzbXUkzO4GN+DckPfsN5h83Xpls1pQElQva6oTnOIYAoxbCJlMfHb1
-         7+9SwnZLCBNjtmAcT0E4NUnlIgVfPdUtlx+OXjAAPj/mBphWVRIjzICX3zmona1Z5q7n
-         I8qg==
-X-Gm-Message-State: AOAM533roGn6t0TWKm+Mm5LW5CDh6PB6kbXSoLvW4s9T1FwYsiSNHpsn
-        HqKm+4C6AHCXeG0i0dGtDos=
-X-Google-Smtp-Source: ABdhPJyDvyK8WhtkOVMqqW8j252ZiVFZxynqJf5B6tpQC1edhDGYc81ZIJPHUmeJK1GuHyNilc7w4g==
-X-Received: by 2002:a17:90a:4306:: with SMTP id q6mr2663673pjg.202.1630992485454;
-        Mon, 06 Sep 2021 22:28:05 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:668f:8a8e:5bc5:fb2d])
-        by smtp.gmail.com with ESMTPSA id i10sm9235106pfk.87.2021.09.06.22.28.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 22:28:04 -0700 (PDT)
-Date:   Mon, 6 Sep 2021 22:28:01 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     "jingle.wu" <jingle.wu@emc.com.tw>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        phoenix@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw
-Subject: Re: [PATCH] Input: elan_i2c - Reduce the resume time for WHITEBOX
- Machine.
-Message-ID: <YTb4YbVIPeYvHlhp@google.com>
-References: <20210907012924.11391-1-jingle.wu@emc.com.tw>
+        id S236353AbhIGFdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 01:33:53 -0400
+Received: from mail-bn7nam10on2063.outbound.protection.outlook.com ([40.107.92.63]:7265
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230486AbhIGFdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 01:33:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bDgQAIPjktS0LtCbIBXE+NmIkE+6f2LIHPJE9f8Dpy3y9yfqCtw6IgqolPWoPWTpvUfwjenxZnKcNEj8UO3F/WI+2H+YIsIsUBOv2s3ZsL5D5mUh2UC2R6wf6836khX/6WP191dfUVBG9OzFtHtG4+nWiqjz/1F9kjGE5moeOrErXn57qN3j51JmNKo9jc7XrCuAj/Rocgp16BJmp4gIwJNbGURBbV3pBADmLtr5EqqZz5AnFt3TUC+C7AHSk6Q5N7Rm7aIicr+fqEVN7WJwql9PODFib7EdC0k+7+VuALxCREb+c9SKoXQJxuEZkHx4j8LaVimgM2uCvZjH/+JX/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=472Y6pFj3P4VLP+EVFeSRGwSymyg1b8QMkkMEA1xzH0=;
+ b=gjRQZDeqftAWbDKMkDFbwEk6Mvgn20GZGXoz2KAnl7ZcxgZGxCVtYKAnYiYfd1S0+EgqvD1Fc7Pa3MHCvvy0hHSn6qJmAQ9ikpsWRmUWId5FWFnF3fKA4wqP077SwPi14hvZLa1xt/9I9Qeoo239beI2dhBKv9AGotDsAhsi5vRro9A6HL6uPy6lAwBKdGGTEs22hyT3bZmIJcUx3wIvfi6y0u+4iUMWnrBeS2ZbgVSi6FMafaowUG9TkrLGsk7lqQDVRF33UHeRKdyDVpmbbxCa7nnX3fijRcmRTdfCd0jdOjlUIlBT/zNiiG8Zg567m+UjRIeYtMphTQ8U9VtO7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linux-foundation.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=472Y6pFj3P4VLP+EVFeSRGwSymyg1b8QMkkMEA1xzH0=;
+ b=fYit1JQ/FwSWvY6w9CfOosOUDL6Jos9t24U5Ct4yew3ehnZy94nNvjIs7Y1u446KzJEBi4Ewbbca1LQMdLpOe/k+sGGD7JNnSVFH5iVh1rSevqFT3SRyOQ5XOlhjJSUCMKru7kk5wkEcLAhuvf4BJo2qpv+fHLcrrxXUDG1GBk0=
+Received: from DM5PR17CA0062.namprd17.prod.outlook.com (2603:10b6:3:13f::24)
+ by MWHPR12MB1630.namprd12.prod.outlook.com (2603:10b6:301:c::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.21; Tue, 7 Sep
+ 2021 05:32:39 +0000
+Received: from DM6NAM11FT059.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:13f:cafe::19) by DM5PR17CA0062.outlook.office365.com
+ (2603:10b6:3:13f::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.17 via Frontend
+ Transport; Tue, 7 Sep 2021 05:32:38 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=pass action=none
+ header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DM6NAM11FT059.mail.protection.outlook.com (10.13.172.92) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4478.19 via Frontend Transport; Tue, 7 Sep 2021 05:32:38 +0000
+Received: from hr-amd (10.180.168.240) by SATLEXMB04.amd.com (10.181.40.145)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 7 Sep 2021
+ 00:32:36 -0500
+Date:   Tue, 7 Sep 2021 13:32:36 +0800
+From:   Huang Rui <ray.huang@amd.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Guenter Roeck <linux@roeck-us.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+Message-ID: <20210907053236.GB3271077@hr-amd>
+References: <20210906142615.GA1917503@roeck-us.net>
+ <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net>
+ <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="gb2312"
 Content-Disposition: inline
-In-Reply-To: <20210907012924.11391-1-jingle.wu@emc.com.tw>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 56edc5da-832f-47fa-2ac1-08d971c0e7ee
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1630:
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1630911A7F73166A47BBD8E3ECD39@MWHPR12MB1630.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lgCpglwYbN9zliC+fc7qmawBp4NWrYrHxhIOeEaBPx1qlIHHnAaRQT+gGc0ixi8C6U5Fj86+JpbJAJH7ARlp/Ofa0Mvu/R7+CzcFryh0Ll1EvqQ6GXuXnZSFuso+nSOzWbbn/hNB72yjxMtaKEryEozf7Zt0rAh7Y4Em3r+ZmSiGMzh5Jopi8Cb3eM8FfGxUchAnpjze+UOPSY7g/pcCMm9HjKy/kvT6sOIzlXBToP/Oa037PQNAZGDsrvrDKdkl0uKgCfazhdvG99D0d5+8EWX3d138gpvM8Bx7mJqb37IIaNG+Z84DbLnjJvpK1is+SghZjQ7L7UZCE0B7gMk9+8l4hTV43RXevOn+9oEx+Lc4CXv1k6G+DpjtqGJz4zXxAwUugcMpACaqovOMMykmYlsbADUDOHSmraruoiucpHRr7NsjdSluoEGUDjuXfBZPXL14owY1ug9tDHLOr+LfXT5nrTkfzgLZ+4WBBjh5t2HA9n0/etCCSkVJfDLke1gLnRteumbUEDoVZjbWmco7i3vwXTZ30KEi2PKiGVytF44BRIq3SSQbZGGVelZW2mPMGEtsJrnl/qgAygsuTADPifOD1V9X3Yktd24N29Ryz9MZ500iEcMsv2wcFEO20ngg+/7gKBKJT71hbzXFts8p1SuuUmw9Bgl/nFPCWvAJadBaIuEn5PVnHe0eGILb5Hr6QOP5OfstCuRMsacFaI2bYKI8KpNptL47naqFMM2d1z8=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(36860700001)(16526019)(186003)(33656002)(8676002)(26005)(81166007)(9686003)(8936002)(2906002)(70206006)(5660300002)(70586007)(83380400001)(82310400003)(356005)(54906003)(336012)(47076005)(508600001)(1076003)(4326008)(6916009)(86362001)(55016002)(33716001)(316002)(426003)(53546011)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 05:32:38.7581
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56edc5da-832f-47fa-2ac1-08d971c0e7ee
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT059.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1630
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jingle,
-
-On Tue, Sep 07, 2021 at 09:29:24AM +0800, jingle.wu wrote:
-> Singed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
-> ---
->  drivers/input/mouse/elan_i2c.h      | 1 +
->  drivers/input/mouse/elan_i2c_core.c | 1 +
->  2 files changed, 2 insertions(+)
+On Tue, Sep 07, 2021 at 07:06:04AM +0800, Linus Torvalds wrote:
+> [ Adding some subsystem maintainers ]
 > 
-> diff --git a/drivers/input/mouse/elan_i2c.h b/drivers/input/mouse/elan_i2c.h
-> index dc4a240f4489..84b4a678b482 100644
-> --- a/drivers/input/mouse/elan_i2c.h
-> +++ b/drivers/input/mouse/elan_i2c.h
-> @@ -59,6 +59,7 @@
->  #define ETP_PRODUCT_ID_VOXEL	0x00BF
->  #define ETP_PRODUCT_ID_MAGPIE	0x0120
->  #define ETP_PRODUCT_ID_BOBBA	0x0121
-> +#define ETP_PRODUCT_ID_WHITEBOX	0x00B8
+> On Mon, Sep 6, 2021 at 10:06 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > > But hopefully most cases are just "people haven't cared enough" and
+> > > easily fixed.
+> >
+> > We'll see. For my testbed I disabled the new configuration flag
+> > for the time being because its primary focus is boot tests, and
+> > there won't be any boot tests if images fail to build.
+> 
+> Sure, reasonable.
+> 
+> I've checked a few of the build errors by doing the appropriate cross
+> compiles, and it doesn't seem bad - but it does seem like we have a
+> number of really pointless long-standing warnings that should have
+> been fixed long ago.
+> 
+> For example, looking at sparc64, there are several build errors due to
+> those warnings now being fatal:
+> 
+>  - drivers/gpu/drm/ttm/ttm_pool.c:386
+> 
+>    This is a type mismatch error. It looks like __fls() on sparc64
+> returns 'int'. And the ttm_pool.c code assumes it returns 'unsigned
+> long'.
+> 
+>    Oddly enough, the very line after that line does "min_t(unsigned
+> int" to get the types in line.
+> 
+>    So  the immediate reason is "sparc64 is different". But the deeper
+> reason seems to be that ttm_pool.c has odd type assumptions. But that
+> warning should have been fixed long ago, either way.
+> 
+>    Christian/Huang? I get the feeling that both lines in that file
+> should use the min_t(). Hmm?
+
+
+Shall we align the return type like __fls() on all the arches?
+
+But it looks OK for me to change min to min_t() here as well, I can file a
+patch to the update:
+
+-       for (order = min(MAX_ORDER - 1UL, __fls(num_pages)); num_pages;
++       for (order = min_t(unsigned int, MAX_ORDER - 1UL, __fls(num_pages)); num_pages;
+
+Christian, what's your opinion?
+
+Thanks,
+Ray
+
+> 
+>  - drivers/input/joystick/analog.c:160
+> 
+>    #warning Precise timer not defined for this architecture.
+> 
+>    Unfortunate. I suspect that warning just has to be removed. It has
+> never caused anything to be fixed, it's old to the point of predating
+> the git history. Dmitry?
+> 
+>  - at least a couple of stringop-overread errors. Attached is a
+> possible for for one of them.
+> 
+> The stringop overread is odd, because another one of them is
+> 
+>    fs/qnx4/dir.c: In function ¡®qnx4_readdir¡¯:
+>    fs/qnx4/dir.c:51:32: error: ¡®strnlen¡¯ specified bound 48 exceeds
+> source size 16 [-Werror=stringop-overread]
+>       51 |                         size = strnlen(de->di_fname, size);
+>          |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> but I'm not seeing why that one happens on sparc64, but not on arm64
+> or x86-64. There doesn't seem to be anything architecture-specific
+> anywhere in that area.
+> 
+> Funky.
+> 
+> Davem - attached patch compiles cleanly for me, but I'm not sure it's
+> necessarily the right thing to do, and I didn't check the code
+> generation. Maybe it screws up. Can somebody test on sparc64 and
+> perhaps think about it more than I did?
+> 
+>                Linus
+
+>  arch/sparc/kernel/mdesc.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/sparc/kernel/mdesc.c b/arch/sparc/kernel/mdesc.c
+> index 8e645ddac58e..30f171b7b00c 100644
+> --- a/arch/sparc/kernel/mdesc.c
+> +++ b/arch/sparc/kernel/mdesc.c
+> @@ -39,6 +39,7 @@ struct mdesc_hdr {
+>  	u32	node_sz; /* node block size */
+>  	u32	name_sz; /* name block size */
+>  	u32	data_sz; /* data block size */
+> +	char	data[];
+>  } __attribute__((aligned(16)));
 >  
->  struct i2c_client;
->  struct completion;
-> diff --git a/drivers/input/mouse/elan_i2c_core.c b/drivers/input/mouse/elan_i2c_core.c
-> index dad22c1ea6a0..a3edf71982ce 100644
-> --- a/drivers/input/mouse/elan_i2c_core.c
-> +++ b/drivers/input/mouse/elan_i2c_core.c
-> @@ -108,6 +108,7 @@ static u32 elan_i2c_lookup_quirks(u16 ic_type, u16 product_id)
->  		{ 0x10, ETP_PRODUCT_ID_VOXEL, ETP_QUIRK_QUICK_WAKEUP },
->  		{ 0x14, ETP_PRODUCT_ID_MAGPIE, ETP_QUIRK_QUICK_WAKEUP },
->  		{ 0x14, ETP_PRODUCT_ID_BOBBA, ETP_QUIRK_QUICK_WAKEUP },
-> +		{ 0x0D, ETP_PRODUCT_ID_WHITEBOX, ETP_QUIRK_QUICK_WAKEUP },
+>  struct mdesc_elem {
+> @@ -612,7 +613,7 @@ EXPORT_SYMBOL(mdesc_get_node_info);
+>  
+>  static struct mdesc_elem *node_block(struct mdesc_hdr *mdesc)
+>  {
+> -	return (struct mdesc_elem *) (mdesc + 1);
+> +	return (struct mdesc_elem *) mdesc->data;
+>  }
+>  
+>  static void *name_block(struct mdesc_hdr *mdesc)
 
-I reordered this and the above so the entries are sorted properly and
-applied.
-
-Thanks.
-
--- 
-Dmitry
