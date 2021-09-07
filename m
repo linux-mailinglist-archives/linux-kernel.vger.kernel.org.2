@@ -2,100 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2533402F8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0657402F8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343984AbhIGUVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
+        id S1345488AbhIGUWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:22:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232816AbhIGUVa (ORCPT
+        with ESMTP id S232816AbhIGUV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:21:30 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCFD1C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:20:23 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso598565otv.12
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:20:23 -0700 (PDT)
+        Tue, 7 Sep 2021 16:21:57 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C99C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:20:50 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id x5so453653qtq.13
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:20:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=ukPiPPE2rZ88vZN1HP1lB0rTF2OeXPBUpUGvxMb6w7A=;
-        b=kyqoGXnxMsNL5PFmmBaRpA3fUSFzACYYEJxAgrqLqfisBC7GAJWkod8Uqn55/K35Mi
-         yM23x2n0ovoqTTeaQJXg169ZYYouKU+wFJaCdxnSrs/TVE2An7bwq6vDk8vFjK/cjlL6
-         zFC7Yj++kgWDa/LOxFnG3zcLCHHyZSJ8anrw8=
+        d=linuxfoundation.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DnMGstwpP4WxQT6+Xyzo4pEeCxQ24RpGikfTYrXfzQY=;
+        b=hCtdRHnIFcZtDM7EdvwAYS1Q0ZAd5cGBSkM0WWt6Il9QameMZskLIlCRGYbHbhbJs3
+         vVY8ZCz18LRIqM27n7hBsyyzWtJOk45wHLrOZ1jJq4U+GMHg4JAfIYLN6icUYTk6bIWL
+         bZz6mFS0aCjQhULTCFQB9iox5YUgyQKKpJLHs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=ukPiPPE2rZ88vZN1HP1lB0rTF2OeXPBUpUGvxMb6w7A=;
-        b=f1CwIVKlp71x2iZS0EShwEN+pnoJOrexUwk/4A6qb59Mwok/KmDmY/KK+Gr3G1gZiE
-         hebschcWWhkI01hS92YLEXuTFm2J40AnO02uI+4jnCz5Vsuexr1S2GjVw27vprvGAguS
-         kUKbORerW4K8YYquE4a5gVickLJp9jpesrWQX/u6sXwoXXZhxj3rbbtMsMcl2z+U1bAn
-         hsdFfvyU5OrY2vfPttNWa9IptcmeM6SkWmBN1/RSgNq5UNX+YJ5iVGWV3xY9Irf739XJ
-         GgfhDFAzfLXGGBH/GNNcuDksbEMs5wHueXE/ncAaNFJIn4cVXli8JX9Xy79JfJlK5HJU
-         2tBA==
-X-Gm-Message-State: AOAM530tKR/V7S4F98cg/Al2bdBhg7uHP717XZckxYtlpKeN5I2D2Lqt
-        cRjqlnOFAKRRkYWJW2lQhVASMVlDTYQn7+tDreppVw==
-X-Google-Smtp-Source: ABdhPJwYa1VNZ8SWZ957Teoa4i0325fu9DZgnTn3d3Vrdn657RvBqUeJFE1e8/tQPlx1wh3Bf/tNEWc0pG6yKORbGsk=
-X-Received: by 2002:a05:6830:719:: with SMTP id y25mr174735ots.77.1631046023013;
- Tue, 07 Sep 2021 13:20:23 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 7 Sep 2021 20:20:22 +0000
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DnMGstwpP4WxQT6+Xyzo4pEeCxQ24RpGikfTYrXfzQY=;
+        b=GwHWL6b8efIEfbVFXioh+ckloh3eIQE5YYdPAFNurRgjdSQrDtcGNEhqpi5q6m1CHv
+         eIFf30XblEPMCCtDlp+StfQ+hszlmPeyesz+TvEjRrnyL8NmK5raHS4RCgTl8loSmaiM
+         E1CI1Ra/Brkqxn/D6aKd9sI4Qq+8fKF+pxF/79Du2MhnQwV4cDT80nmXczWcSmd1Ml5q
+         y+LnrNjj4hYZiyg93z7N9iu903kjBrwe53spegcSJs6z8N8krZ6nLLI/5AwKz2oCTRzf
+         o1b1iZGxJg5fr4wdwtoAsTfHzZpFdukfAh0GYUtcQk0Voi0rODzqxTU1BO1B9I9fhsfH
+         rYWQ==
+X-Gm-Message-State: AOAM532GHbae+LCmOutMaCurYDb7ZykVv5UgbIOf57KL6eaVSQzx2Kur
+        eCiZ6rnFMQ8FE6dmaMInrL1e2A==
+X-Google-Smtp-Source: ABdhPJwqQxtuAO2y1425kZ1AHL7kW1fwfw05VJtaerHvkwGDyeYpWi8mZjPvow68sf5bREBa7UzKig==
+X-Received: by 2002:ac8:4892:: with SMTP id i18mr247140qtq.13.1631046049650;
+        Tue, 07 Sep 2021 13:20:49 -0700 (PDT)
+Received: from meerkat.local (bras-base-mtrlpq5031w-grc-32-216-209-220-181.dsl.bell.ca. [216.209.220.181])
+        by smtp.gmail.com with ESMTPSA id h18sm94965qke.6.2021.09.07.13.20.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 13:20:49 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 16:20:47 -0400
+From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     pr-tracker-bot@kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] gpio: updates for v5.15
+Message-ID: <20210907202047.2tm4q5euaxlb7cjz@meerkat.local>
+References: <20210907083613.31268-1-brgl@bgdev.pl>
+ <CAHk-=wgQBgkut6zXTbZN45AtJmSceXwDw6Y60ZmwrPkOL__A8g@mail.gmail.com>
+ <163104361220.4526.774832613459764535.pr-tracker-bot@kernel.org>
+ <CAHk-=wgAi8jHOFuk8iqXsL4Aekst996HGeN18aKQhXd-qu2dcQ@mail.gmail.com>
+ <20210907195647.jutizso7o2r4mddj@meerkat.local>
+ <CAHk-=wiFkW3XGD+Ejv_mxTaPxh+tpRTCP+zufrWnNEiMm9PPEQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1630924867-4663-3-git-send-email-skakit@codeaurora.org>
-References: <1630924867-4663-1-git-send-email-skakit@codeaurora.org> <1630924867-4663-3-git-send-email-skakit@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 7 Sep 2021 20:20:22 +0000
-Message-ID: <CAE-0n52Jb9nw9rbbQJrKNDQ_O2iCahDr8WLGkWORcNks9ptH-g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] leds: Add pm8350c support to Qualcomm LPG driver
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        satya priya <skakit@codeaurora.org>
-Cc:     mka@chromium.org, kgunda@codeaurora.org,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiFkW3XGD+Ejv_mxTaPxh+tpRTCP+zufrWnNEiMm9PPEQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting satya priya (2021-09-06 03:41:06)
-> Add pm8350c compatible and lpg_data to the driver.
->
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
->  drivers/leds/rgb/leds-qcom-lpg.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
-> index 327e81a..6ee80d6 100644
-> --- a/drivers/leds/rgb/leds-qcom-lpg.c
-> +++ b/drivers/leds/rgb/leds-qcom-lpg.c
-> @@ -1275,9 +1275,19 @@ static const struct lpg_data pm8150l_lpg_data = {
->         },
->  };
->
-> +static const struct lpg_data pm8350c_pwm_data = {
-> +       .pwm_9bit_mask = BIT(2),
-> +
-> +       .num_channels = 1,
-> +       .channels = (struct lpg_channel_data[]) {
+On Tue, Sep 07, 2021 at 01:01:37PM -0700, Linus Torvalds wrote:
+> On Tue, Sep 7, 2021 at 12:56 PM Konstantin Ryabitsev
+> <konstantin@linuxfoundation.org> wrote:
+> >
+> > Failure is always an option. Let me poke at the logs and see what happened
+> > here.
+> 
+> I was spooked by how it actually sent the email just after I had done
+> the merge, but before I had pushed it out.
 
-Can this be const struct lpg_channel_data? I think that will move it to
-rodata which is only a good thing.
+Uh... I'm borrowing some ideas from some large processor manufacturers and
+implementing what I refer to as "speculative" pre-processing of pull requests.
+If you've previously merged similar-looking requests in the past, then I'm
+just extrapolating the average delay times and sending predictive
+notifications.
 
-> +               { .base = 0xeb00 },
-> +       },
-> +};
-> +
->  static const struct of_device_id lpg_of_table[] = {
->         { .compatible = "qcom,pm8150b-lpg", .data = &pm8150b_lpg_data },
->         { .compatible = "qcom,pm8150l-lpg", .data = &pm8150l_lpg_data },
-> +       { .compatible = "qcom,pm8350c-pwm", .data = &pm8350c_pwm_data },
->         { .compatible = "qcom,pm8916-pwm", .data = &pm8916_pwm_data },
->         { .compatible = "qcom,pm8941-lpg", .data = &pm8941_lpg_data },
->         { .compatible = "qcom,pm8994-lpg", .data = &pm8994_lpg_data },
+The real reason this happened is just bot stupidity, actually. In your
+response to the pull request in question [1], you had the following lines:
+
+>     Merge branch 'ib-rockchip' of
+>     git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl
+>     into gpio/for-next
+
+[1] https://lore.kernel.org/all/CAHk-=wgQBgkut6zXTbZN45AtJmSceXwDw6Y60ZmwrPkOL__A8g@mail.gmail.com/
+
+This was enough for the bot to think that this was a whole new pull request,
+which it catalogued as pointing at commit 8096acd7442e613fad0354fc8dfdb2003cceea0b
+(where linusw/linux-pinctrl master is). Then, since that commit already exists
+in your tree, it sent out the notification.
+
+I'm not sure what the right course of action here is. On the one hand,
+recognizing your response as a pull request was clearly wrong. On the other
+hand, a lot of valid pull requests are actually very similar to that (just
+someone sending a "please pull" and a URL in the body -- often as a response
+to a previous message, so we can't even reasonably weed out subjects with
+"Re:").
+
+So, we can either live with an occasional fail like this or I can try to
+figure out how to narrow down the rules for what is and isn't a valid pull
+request. One option is to check if the object is already in your tree and
+over a few days old -- which would indicate that it's obviously not a pull
+request to which we should be paying any attention.
+
+-K
