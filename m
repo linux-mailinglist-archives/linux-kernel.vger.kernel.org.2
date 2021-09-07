@@ -2,100 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E943402F94
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0500402F75
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346387AbhIGUZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:25:05 -0400
-Received: from infomag.iguana.be ([185.87.124.46]:42222 "EHLO
-        infomag.iguana.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232456AbhIGUZE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:25:04 -0400
-X-Greylist: delayed 565 seconds by postgrey-1.27 at vger.kernel.org; Tue, 07 Sep 2021 16:25:03 EDT
-Received: by infomag.iguana.be (Postfix, from userid 1001)
-        id 1408D603CACE; Tue,  7 Sep 2021 22:14:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 infomag.iguana.be 1408D603CACE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=iguana.be;
-        s=infomag-20180602; t=1631045669;
-        bh=Wq1Ut3kmDA4Qs1MUa9QhyW5dfF/rigDOl+Eh9VKTXik=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=swsLaixR7nTIu8HccvB8qTzPt89gCreJJaG+BOPsOl0p/RPbkRFuB8Z5fPidYJZlt
-         idzkIvBFM5IdATAWY3xfEPBCarsU90heHYzxVQjO7JnzpfRhYU31Vym1OyuTbR9c9S
-         Ska3mtf0sSKvu3JLmlvv0Lr8yMBEw7vH5/3bZc8k=
-Date:   Tue, 7 Sep 2021 22:14:29 +0200
-From:   Wim Van Sebroeck <wim@iguana.be>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jan Kiszka <jan.kiszka@siemens.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Christian Storm <christian.storm@siemens.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mantas =?utf-8?Q?Mikul=C4=97nas?= <grawity@gmail.com>
-Subject: Re: [PATCH] watchdog: iTCO_wdt: Fix detection of SMI-off case
-Message-ID: <20210907201428.GA1109@infomag.iguana.be>
-References: <d84f8e06-f646-8b43-d063-fb11f4827044@siemens.com>
- <1444efd5-b778-949b-34e8-99d2541350e9@siemens.com>
- <85c2c85e-147c-b54e-e84d-10b989610979@siemens.com>
- <904ea225-e7de-a11a-419a-0c7ac05e9b6e@roeck-us.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <904ea225-e7de-a11a-419a-0c7ac05e9b6e@roeck-us.net>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+        id S1346076AbhIGUPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:15:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345290AbhIGUPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 16:15:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 30F76610E9;
+        Tue,  7 Sep 2021 20:14:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631045671;
+        bh=1dujuKFK8w4P9EEKkDUQFmkdzg+7U5OwR+zr3bspJOY=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=YcC4k15gvru9rvImXltRb50JScvBidkcngD9TwbUQM/DnYyZIPGcnzH8J7EVrtva5
+         bD7OSzY/bxunqX4Pr1UWzJhZCzoSHIdAsSCrzO3NL6+H7QN0oc7ZEmWz+FF7P9g6KT
+         oWCJrJmDCAWftBKcvgYHdfGuPCpBUPD7xPA5rQ1vLSDhS9mCdbsNX0IDVr0oCilc7b
+         sJVqXzfxavAdDXVvj0dwy19nif/00QWFeSmgu32/FyERSzrOobf9rRLwOHfKe8hzuP
+         oRdVUJt1V343wEJYkc69dmVpoMGgQX2mQIoECsY6+kQn04PozcxbqVxkyiRLDQxbGP
+         wk3EyEPCLkCiw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2B10A609F5;
+        Tue,  7 Sep 2021 20:14:31 +0000 (UTC)
+Subject: Re: [GIT PULL] fuse update for 5.15
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YTcUNWiS2+m705i7@miu.piliscsaba.redhat.com>
+References: <YTcUNWiS2+m705i7@miu.piliscsaba.redhat.com>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YTcUNWiS2+m705i7@miu.piliscsaba.redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-update-5.15
+X-PR-Tracked-Commit-Id: a9667ac88e2b20f6426e09945e9dbf555fb86ff0
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 75b96f0ec5faf730128c32187e3e28441c27a094
+Message-Id: <163104567116.21240.326539270436901238.pr-tracker-bot@kernel.org>
+Date:   Tue, 07 Sep 2021 20:14:31 +0000
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+The pull request you sent on Tue, 7 Sep 2021 09:26:45 +0200:
 
-> On 8/30/21 12:47 PM, Jan Kiszka wrote:
-> >On 20.08.21 15:45, Jan Kiszka wrote:
-> >>On 26.07.21 13:46, Jan Kiszka wrote:
-> >>>From: Jan Kiszka <jan.kiszka@siemens.com>
-> >>>
-> >>>Obviously, the test needs to run against the register content, not its
-> >>>address.
-> >>>
-> >>>Fixes: cb011044e34c ("watchdog: iTCO_wdt: Account for rebooting on second timeout")
-> >>>Reported-by: Mantas Mikulėnas <grawity@gmail.com>
-> >>>Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-> >>>---
-> >>>  drivers/watchdog/iTCO_wdt.c | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>>diff --git a/drivers/watchdog/iTCO_wdt.c b/drivers/watchdog/iTCO_wdt.c
-> >>>index b3f604669e2c..643c6c2d0b72 100644
-> >>>--- a/drivers/watchdog/iTCO_wdt.c
-> >>>+++ b/drivers/watchdog/iTCO_wdt.c
-> >>>@@ -362,7 +362,7 @@ static int iTCO_wdt_set_timeout(struct watchdog_device *wd_dev, unsigned int t)
-> >>>  	 * Otherwise, the BIOS generally reboots when the SMI triggers.
-> >>>  	 */
-> >>>  	if (p->smi_res &&
-> >>>-	    (SMI_EN(p) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
-> >>>+	    (inl(SMI_EN(p)) & (TCO_EN | GBL_SMI_EN)) != (TCO_EN | GBL_SMI_EN))
-> >>>  		tmrval /= 2;
-> >>>  	/* from the specs: */
-> >>>
-> >>
-> >>Ping, this is still missing in master. Stable kernels had the revert,
-> >>but 5.14 will need this.
-> >>
-> >
-> >Second reminder: 5.14 is out and now broken. Is the patch queued
-> >somewhere? I do not see it in the watchdog staging branch.
-> >
-> 
-> I had it in my own watchdog-next branch for about a month.
-> Usually Wim picks it up from there or from the mainling list;
-> he handles all upstreaming. Wim ?
+> git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-update-5.15
 
-This one is in linux-watchdog-next since 22 Aug.
-Working on getting it upstream now.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/75b96f0ec5faf730128c32187e3e28441c27a094
 
-Kind regards,
-Wim.
+Thank you!
 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
