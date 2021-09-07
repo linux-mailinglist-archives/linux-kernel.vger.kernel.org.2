@@ -2,139 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06D7402A8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F352402A7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234505AbhIGOQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232439AbhIGOPY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:15:24 -0400
-Received: from mail-ed1-x54a.google.com (mail-ed1-x54a.google.com [IPv6:2a00:1450:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 056B8C06179A
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:14:17 -0700 (PDT)
-Received: by mail-ed1-x54a.google.com with SMTP id y11-20020aa7d50b000000b003ca1ef38cf3so5351719edq.7
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:14:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=7ChlQWANvSBXBNUBCDuMgq5Cekd+HYTjR/ntyIg1Zyg=;
-        b=edoUkiH2Kkf33Hq4VE8PDcQnBfHm5jDj20cp4k+Ev2uzNaB5gKzMC6RyQBjJ/HqWeA
-         9uhk1YYgKb1sTHBCprikkPstROStRUGJt+ih9Bl0vPYrM4fJzRNU+8YVNEU2c/lesHKs
-         fMkeV5JG0zhQBnMlXbQB78wv25kORlv1naya33fky1/kGMs6AoB4XkDmbXevrTe9zsdB
-         3gvNw2jML5LfuIwNd8Uu5m9X7nB5Sy0pv7mJcrSPiRtPY0KRkWCf8dbv6a6uZAWAdm7w
-         HYrhWzMSDLxOwDjA2liJXFub2QPHIr2N2pdYf3Z6AsIazDG3kWr4p7d8hMmTeoUc2pBb
-         Q5/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=7ChlQWANvSBXBNUBCDuMgq5Cekd+HYTjR/ntyIg1Zyg=;
-        b=CRzBg0wQ20dieAqQtnnjy+512/z/ssEv7rGHeeOXzPoPQBxvYldqZ1mMI8dCr4cHKZ
-         jrWFa8Wby4hyv9kEkaOANIsraBhN5Pn/8g0Jq1qD2jWRebnblGlOiK2VsdaBZeVuDAGI
-         rsQN7JErDU6WBok5eY1cwrGQsEbWgHMj43iFUFIpjCRLZw5Bq1CgPM3z90O34CgkvFSk
-         EA8qTqcQ32ibulrnv4Bu9QrqEq0DDAGmYHoPklDYvtHNbJc0tBl38gt9FF2+CSxt0b7b
-         L8bfZvFCGu1WiR15ftfJxXfvMcBqm2/3SaSCL9lEUyuUJBUDZvvvgeK6UkqvyrHiSstG
-         x4nw==
-X-Gm-Message-State: AOAM5336o/CZRCnDfAUWyZSeC9CBKl1Rm7SmSw6ENu5rcAw2WMqLp+gV
-        3KIu0JFN61zSDIhhseLJf5OMaR9HzQ==
-X-Google-Smtp-Source: ABdhPJyGsdfkionufVLXwZil0TbakqGI5ZpVw9BOrl5sbBB/o1m93aEaygEZ4Rn6IuxIMOU0utYtynfPFQ==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:6800:c1ea:4271:5898])
- (user=elver job=sendgmr) by 2002:a05:6402:3107:: with SMTP id
- dc7mr18886580edb.341.1631024055406; Tue, 07 Sep 2021 07:14:15 -0700 (PDT)
-Date:   Tue,  7 Sep 2021 16:13:07 +0200
-In-Reply-To: <20210907141307.1437816-1-elver@google.com>
-Message-Id: <20210907141307.1437816-7-elver@google.com>
-Mime-Version: 1.0
-References: <20210907141307.1437816-1-elver@google.com>
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH 6/6] workqueue, kasan: avoid alloc_pages() when recording stack
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Walter Wu <walter-zh.wu@mediatek.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S235145AbhIGOO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:14:56 -0400
+Received: from mga09.intel.com ([134.134.136.24]:30237 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233059AbhIGOOz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 10:14:55 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="220233929"
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="220233929"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 07:13:49 -0700
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="430932142"
+Received: from jrfullwi-mobl.amr.corp.intel.com (HELO [10.212.209.203]) ([10.212.209.203])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 07:13:48 -0700
+Subject: Re: [PATCH v4 5/6] x86/sgx: Hook sgx_memory_failure() into mainline
+ code
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     "Zhang, Cathy" <cathy.zhang@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210728204653.1509010-1-tony.luck@intel.com>
+ <20210827195543.1667168-1-tony.luck@intel.com>
+ <20210827195543.1667168-6-tony.luck@intel.com>
+ <49fccddbbf92279f575409851a9c682495146ad8.camel@kernel.org>
+ <681d530d72de842c8bf43733c11f3c3f2ebf8c6e.camel@kernel.org>
+ <25db682402d14c34af9ba525cffe85c5@intel.com>
+ <848905ffa20cf234446b16682cbbcf1e56853950.camel@kernel.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <30034c82-99fa-3592-c215-cb9c61f87456@intel.com>
+Date:   Tue, 7 Sep 2021 07:13:46 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <848905ffa20cf234446b16682cbbcf1e56853950.camel@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shuah Khan reported:
+On 9/7/21 7:07 AM, Jarkko Sakkinen wrote:
+>> If I just #include <asm/sgx.h> in those files I'll break the build for other
+>> architectures.
+> What does specifically break the build?
 
- | When CONFIG_PROVE_RAW_LOCK_NESTING=y and CONFIG_KASAN are enabled,
- | kasan_record_aux_stack() runs into "BUG: Invalid wait context" when
- | it tries to allocate memory attempting to acquire spinlock in page
- | allocation code while holding workqueue pool raw_spinlock.
- |
- | There are several instances of this problem when block layer tries
- | to __queue_work(). Call trace from one of these instances is below:
- |
- |     kblockd_mod_delayed_work_on()
- |       mod_delayed_work_on()
- |         __queue_delayed_work()
- |           __queue_work() (rcu_read_lock, raw_spin_lock pool->lock held)
- |             insert_work()
- |               kasan_record_aux_stack()
- |                 kasan_save_stack()
- |                   stack_depot_save()
- |                     alloc_pages()
- |                       __alloc_pages()
- |                         get_page_from_freelist()
- |                           rm_queue()
- |                             rm_queue_pcplist()
- |                               local_lock_irqsave(&pagesets.lock, flags);
- |                               [ BUG: Invalid wait context triggered ]
+Remember, our x86 "<asm/sgx.h>" is:
 
-The default kasan_record_aux_stack() calls stack_depot_save() with
-GFP_NOWAIT, which in turn can then call alloc_pages(GFP_NOWAIT, ...).
-In general, however, it is not even possible to use either GFP_ATOMIC
-nor GFP_NOWAIT in certain non-preemptive contexts, including
-raw_spin_locks (see gfp.h and ab00db216c9c7).
+	arch/x86/include/asm/sgx.h
 
-Fix it by instructing stackdepot to not expand stack storage via
-alloc_pages() in case it runs out by using kasan_record_aux_stack_noalloc().
+On powerpc, "<asm/sgx.h>" is:
 
-While there is an increased risk of failing to insert the stack trace,
-this is typically unlikely, especially if the same insertion had already
-succeeded previously (stack depot hit). For frequent calls from the same
-location, it therefore becomes extremely unlikely that
-kasan_record_aux_stack_noalloc() fails.
+	arch/powerpc/include/asm/sgx.h
 
-Link: https://lkml.kernel.org/r/20210902200134.25603-1-skhan@linuxfoundation.org
-Reported-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Marco Elver <elver@google.com>
----
- kernel/workqueue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You'll get a file not found error looking for sgx.h.
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 50142fc08902..0681774e6908 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -1329,7 +1329,7 @@ static void insert_work(struct pool_workqueue *pwq, struct work_struct *work,
- 	struct worker_pool *pool = pwq->pool;
- 
- 	/* record the work call stack in order to print it in KASAN reports */
--	kasan_record_aux_stack(work);
-+	kasan_record_aux_stack_noalloc(work);
- 
- 	/* we own @work, set data and link */
- 	set_work_pwq(work, pwq, extra_flags);
--- 
-2.33.0.153.gba50c8fa24-goog
+That said... Tony, it's probably a bit more friendly if the mm.h code
+you add:
 
+> +#ifdef CONFIG_X86_SGX
+> +int sgx_memory_failure(unsigned long pfn, int flags);
+> +bool sgx_is_epc_page(u64 paddr);
+> +#else
+> +static inline int sgx_memory_failure(unsigned long pfn, int flags)
+> +{
+> +	return -ENXIO;
+> +}
+> +
+> +static inline bool sgx_is_epc_page(u64 paddr)
+> +{
+> +	return false;
+> +}
+> +#endif
+
+was a bit more generic.  Maybe something like:
+
+	int arch_memory_failure(unsigned long pfn, int flags);
+
+BTW, I don't see sgx_is_epc_page() in arch-generic code.  Does it really
+need to be in mm.h?
