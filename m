@@ -2,142 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B25BA402E1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:05:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F17402E22
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345576AbhIGSGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 14:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233525AbhIGSGq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 14:06:46 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 921E0C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 11:05:39 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id u7so11023590ilk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 11:05:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qzpzgK3vW8zHPmHABhnfN3E8pmOfA9CLtZXPUD7O1yA=;
-        b=VFDD3+qB1T70aPLYjMFO8iu9L5Ye5pHkxGgSF+BsKCbgrI/ivvRtvOUDnYL22P2B6F
-         Geitq9A0wVPm7nSIFKaYJm/jeB3BQ/vCv3QOVkgPIMZ5Go4x7Vju/n+BnPfMR6FfVA3q
-         vWZ041iqLVDxMATcQ4Qb+XIlGKVd7jXGsbJ3ZeEYQ0BQD/SLoEXLaLNDLcLjCFkTsGaW
-         fi7AeZCFw8ayEIch3nQO/S6OkhDQywgrd9yMPgL1m2MR8zQMhGqTl6tUM6907assvL9z
-         +KidFvJ0FG5Hm6gtPX+rShAuHUEVgqUDLBdAnKGA1fD7ZrMuc5nG79vVHfuiVE2mlPEH
-         6D6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qzpzgK3vW8zHPmHABhnfN3E8pmOfA9CLtZXPUD7O1yA=;
-        b=g9K0dMweNLTTFWGRM4ircJaiW7xggvHovYufoQGD6dHfnqyvMpwUIR7ZEMObBy4Iof
-         43LO8wstWLNlqfxQ3YYwLdGw9XkF4944uDoUoLXvsNQxKpE+cyquefQIlIKGSFEKQwrw
-         pRa7hS3BGiHcm25mZgMxrtbpAmgQNLL2nSkVmWwf6mVwYFFEpXynDCaWMKCKli7GCdPV
-         1aYr6xMnW0BNozdq3JAaokyEuJF1VyeFpJAONBZovS4FjPEBXqUYAyfpmdaLN4EyN8eT
-         qte9CkSNWcoUKQoUoyV0PPs5nBYWwW3j3olQDPwvsG4KyXKSX+KRET5lLH9sada5awBW
-         YeNQ==
-X-Gm-Message-State: AOAM533tZ7OEt/H1NYqY8/IzKZSIP7Sh8YQuzxrLojzlb8Jg/O6naw93
-        B7AjvOhxvvYt7Ela16rA7wmcfSWJolsl4tygYv1Y7w==
-X-Google-Smtp-Source: ABdhPJwGjNRsARjK37GX3NrPfYazkOzZO+CMfXuxbNbqXapBb+yZmKH7Ce0+n6QGLp+mht0dQVWIvz2nCCOxYLT99a8=
-X-Received: by 2002:a92:c5aa:: with SMTP id r10mr12869774ilt.274.1631037938808;
- Tue, 07 Sep 2021 11:05:38 -0700 (PDT)
+        id S1345614AbhIGSH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 14:07:27 -0400
+Received: from mga14.intel.com ([192.55.52.115]:21842 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233525AbhIGSHZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 14:07:25 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10100"; a="219966950"
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="219966950"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 11:06:19 -0700
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="478802532"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 11:06:13 -0700
+Received: from andy by smile with local (Exim 4.95-RC2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1mNfU2-000zMm-0g;
+        Tue, 07 Sep 2021 21:06:10 +0300
+Date:   Tue, 7 Sep 2021 21:06:10 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Chris Morgan <macroalpha82@gmail.com>
+Cc:     abel.vesa@nxp.com, festevam@gmail.com, heiko@sntech.de,
+        kernel@pengutronix.de, lee.jones@linaro.org, lenb@kernel.org,
+        linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        mturquette@baylibre.com, rafael.j.wysocki@intel.com,
+        rjw@rjwysocki.net, s.hauer@pengutronix.de, sboyd@kernel.org,
+        shawnguo@kernel.org, zhangqing@rock-chips.com,
+        Chris Morgan <macromorgan@hotmail.com>
+Subject: Re: [PATCH v4 1/4] clk: fractional-divider: Export approximation
+ algorithm to the CCF users
+Message-ID: <YTeqEilet1p4vTAU@smile.fi.intel.com>
+References: <20210812170025.67074-1-andriy.shevchenko@linux.intel.com>
+ <20210907154400.26656-1-macroalpha82@gmail.com>
+ <YTenPMOOepGo2ZU8@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <0000000000006096fa05cb454a9c@google.com> <YTehmR1+G34uOHh3@google.com>
-In-Reply-To: <YTehmR1+G34uOHh3@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Tue, 7 Sep 2021 11:05:27 -0700
-Message-ID: <CANgfPd_yUH6cuVQ54oKRkU3NQ6oevE8ySeeyW=AvAnj4S_AT+w@mail.gmail.com>
-Subject: Re: [syzbot] WARNING: kmalloc bug in memslot_rmap_alloc
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     syzbot <syzbot+e0de2333cbf95ea473e8@syzkaller.appspotmail.com>,
-        Borislav Petkov <bp@alien8.de>, dave.hansen@linux.intel.com,
-        "H. Peter Anvin" <hpa@zytor.com>, jarkko@kernel.org,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-sgx@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTenPMOOepGo2ZU8@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 10:30 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> +Linus and Ben
->
-> On Sun, Sep 05, 2021, syzbot wrote:
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 0 PID: 8419 at mm/util.c:597 kvmalloc_node+0x111/0x120 mm/util.c:597
-> > Modules linked in:
-> > CPU: 0 PID: 8419 Comm: syz-executor520 Not tainted 5.14.0-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > RIP: 0010:kvmalloc_node+0x111/0x120 mm/util.c:597
->
-> ...
->
-> > Call Trace:
-> >  kvmalloc include/linux/mm.h:806 [inline]
-> >  kvmalloc_array include/linux/mm.h:824 [inline]
-> >  kvcalloc include/linux/mm.h:829 [inline]
-> >  memslot_rmap_alloc+0xf6/0x310 arch/x86/kvm/x86.c:11320
-> >  kvm_alloc_memslot_metadata arch/x86/kvm/x86.c:11388 [inline]
-> >  kvm_arch_prepare_memory_region+0x48d/0x610 arch/x86/kvm/x86.c:11462
-> >  kvm_set_memslot+0xfe/0x1700 arch/x86/kvm/../../../virt/kvm/kvm_main.c:1505
-> >  __kvm_set_memory_region+0x761/0x10e0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:1668
-> >  kvm_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:1689 [inline]
-> >  kvm_vm_ioctl_set_memory_region arch/x86/kvm/../../../virt/kvm/kvm_main.c:1701 [inline]
-> >  kvm_vm_ioctl+0x4c6/0x2330 arch/x86/kvm/../../../virt/kvm/kvm_main.c:4236
->
-> KVM is tripping the WARN_ON_ONCE(size > INT_MAX) added in commit 7661809d493b
-> ("mm: don't allow oversized kvmalloc() calls").  The allocation size is absurd and
-> doomed to fail in this particular configuration (syzkaller is just throwing garbage
-> at KVM), but for humongous virtual machines it's feasible that KVM could run afoul
-> of the sanity check for an otherwise legitimate allocation.
->
-> The allocation in question is for KVM's "rmap" to translate a guest pfn to a host
-> virtual address.  The size of the rmap in question is an unsigned long per 4kb page
-> in a memslot, i.e. on x86-64, 8 bytes per 4096 bytes of guest memory in a memslot.
-> With INT_MAX=0x7fffffff, KVM will trip the WARN and fail rmap allocations for
-> memslots >= 1tb, and Google already has VMs that create 1.5tb memslots (12tb of
-> total guest memory spread across 8 virtual NUMA nodes).
->
-> One caveat is that KVM's newfangled "TDP MMU" was designed specifically to avoid
-> the rmap allocation (among other things), precisely because of its scalability
-> issues.  I.e. it's unlikely KVM's so called "legacy MMU" that relies on the rmaps
-> would be used for such large VMs.  However, KVM's legacy MMU is still the only option
-> for shadowing nested EPT/NPT, i.e. the rmap allocation would be problematic if/when
-> nested virtualization is enabled in large VMs.
->
-> KVM also has other allocations based on memslot size that are _not_ avoided by KVM's
-> TDP MMU and may eventually be problematic, though presumably not for quite some time
-> as it would require petabyte? memslots.  E.g. a different metadata array requires
-> 4 bytes per 2mb of guest memory.
+On Tue, Sep 07, 2021 at 08:54:04PM +0300, Andy Shevchenko wrote:
+> On Tue, Sep 07, 2021 at 10:44:00AM -0500, Chris Morgan wrote:
+> > From: Chris Morgan <macromorgan@hotmail.com>
+> > 
+> > Unfortunately, I can confirm this breaks the DSI panel on the Rockchip
+> > PX30 (and possibly other SoCs). Tested on my Odroid Go Advance. When
+> > I revert 4e7cf74fa3b2 "clk: fractional-divider: Export approximation
+> > algorithm to the CCF users" and 928f9e268611 "clk: fractional-divider:
+> > Hide clk_fractional_divider_ops from wide audience" the panel begins
+> > working again as expected on the master branch.
+> > 
+> > It looks like an assumption is made in the vop_crtc_mode_fixup()
+> > function in the rockchip_drm_vop.c that gets broken with this change.
+> > Specifically, the function says in the comments "When DRM gives us a
+> > mode, we should add 999 Hz to it.". I believe this is no longer true
+> > after this clk change, and when I remove the + 999 from the function
+> > the DSI panel works again. Note that I do not know the implications
+> > of removing this 999 aside from that it fixes the DSI panel on my
+> > PX30 after this change, so I don't know if it's a positive change
+> > or not.
+> > 
+> > Thank you.
+> 
+> Thank you for the report!
+> 
+> I'll check this. Perhaps Heiko can help with testing as well on his side.
 
-KVM's dirty bitmap requires 1 bit per 4K, so we'd hit this limit even
-sooner with 64TB memslots.
-Still, that can be avoided with Peter Xu's dirty ring and we're still
-a ways away from 64TB memslots.
+On the first glance the mentioned patch may not be the culprit because it does
+not change the functional behaviour (if I'm not mistaken). What really changes
+it is the additional flag that removes the left-shift of the rate in the
+calculations.
 
->
-> I don't have any clever ideas to handle this from the KVM side, at least not in the
-> short term.  Long term, I think it would be doable to reduce the rmap size for large
-> memslots by 512x, but any change of that nature would be very invasive to KVM and
-> be fairly risky.  It also wouldn't prevent syskaller from triggering this WARN at will.
+To me sounds like you found a proper solution to the issue and that +999 is
+a hack against the (blindly?) copied part of the algorithm used in fractional
+divider. Have you read the top comment in clk-fractional-divider.c? It should
+explain how it works after my series.
 
-Not the most elegant solution, but KVM could, and perhaps should,
-impose a maximum memslot size. KVM operations (e.g. dirty logging)
-which operate on a memslot can take a very long time with terabyte
-memslots. Forcing userspace to handle memory in units of a more
-reasonable size could be a good limitation to impose sooner rather
-than later while there are few users (if any outside Google) of these
-massive memslots.
+In any case I'm not going to come to any conclusions right now and also want
+to hear from people who have better understanding of this hardware.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
