@@ -2,161 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDF80402D51
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8714402D54
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345527AbhIGQ7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
+        id S1345367AbhIGRAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 13:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345314AbhIGQ7t (ORCPT
+        with ESMTP id S232621AbhIGRAU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:59:49 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F21DC061575;
-        Tue,  7 Sep 2021 09:58:42 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id q11so15474686wrr.9;
-        Tue, 07 Sep 2021 09:58:42 -0700 (PDT)
+        Tue, 7 Sep 2021 13:00:20 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BACABC061575;
+        Tue,  7 Sep 2021 09:59:13 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id b5-20020a4ac285000000b0029038344c3dso3120128ooq.8;
+        Tue, 07 Sep 2021 09:59:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=QOvPnmUsLHR2ePcx/VDpvZbJYRDmRyZEnoWkG5O40CA=;
-        b=JQd9jMgMO73LlAPc/I61qpuzM7alrLRWzAGsCnuzjJPHGcshaPZKq5BUYFgsDAqocf
-         Xos6T4xCNhOsThojP4G/SeWPAzwggsvpmHLWhmKJJJp/t7Z5/zbj2VCLt/UPULBca1j7
-         KEGt3bTJEwSbxeXwVYDWU7CNgUSvGhFh6LCePtzSKduNQOxddBYfH66DICH0NfJY/XLX
-         yltKL9T14ePvyX1rqsNb1RZIwfIwk70HMkzoIkkSxHuiZPNPhID7TEEr9Jh2+mYc4CuG
-         K/mUGACppGhBuG+ZIqr5J4oGaHH+skY1zc+6tyycg3q1dJY+JzIy+F9L/mkGhLXo7k0V
-         /jdw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=yGhlEcWAmkOIUP0KcWj+kobRkgQf1kC9BN+bCXhgInU=;
+        b=nlLEhmuIw37kyWO+W+izNA5oEpC//ZXt13F33/D9ZojjKBXu73jbv61UPIGkmMgC0Q
+         cqi/3dW9asI+eDILJr4YhiagPZRYuvXqJBQaGqDuw13uX5tZjt5Yotki/TL+OGsKV0WZ
+         PdHoZtrACfkVJXMmm3NyxzI6yE2TzHF+RSaCXPpHoObGjlJw5sL1aF3gFqRhX9Hf55cr
+         eGBb+pO4tUabBBFmO7F5jaHGVzhj+4KgykGgEBLWghNS5E8XpNROulgLRXRv3HM5RwUR
+         0PANTYfuyEEh+VfW95UX8p93dEnGnb+JQm8tVRLliu5Gg06/pZC7tz+i7RXXZGgYXelH
+         XLNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=QOvPnmUsLHR2ePcx/VDpvZbJYRDmRyZEnoWkG5O40CA=;
-        b=kO+lMXSrCJ4vVSnwlBCwsk5LfFTUUpBQHAnJG/Tk+mgpCVxPbDLJ/SbcFF1SNfZqP9
-         DaVodAEzZAue/vw1Cm5HRDEZHtITkhchv34VYPFvB27yXztNTAXEIfIDnDR0KQjFt7Jj
-         3CvO1JYqqNAmbcAHnrPmpNIHB/xex/LW0MtuipVeY6oS1X0uLSh4MawN5v5Nv1JEuuQo
-         IfEOr2cPHkvYyhzpZxlMN1pZxigaxRhj271ER2ZL4mojWLmEyQlzQuRQWTh+3b8KWGkb
-         0dAQxVnYwy6eYZcBlxz845oddNxNmqcgd48cbPOqGzwq/43KbdiF+PFT05A3g0U/h+zT
-         zNvA==
-X-Gm-Message-State: AOAM531Uda5WmLF1IKOx8mA529GDFllGSiWjuugbBWaKrJ4YFx0IJYzT
-        XSzuZOwlMvLtQG0101uTXFo=
-X-Google-Smtp-Source: ABdhPJxUpZEg5VjevA3LTacU1KoAqbnsaJciaWYIIQzfgbuVKLvgKanSXJWznVLvvxVSeZDHIji3rA==
-X-Received: by 2002:adf:f552:: with SMTP id j18mr18845200wrp.273.1631033920629;
-        Tue, 07 Sep 2021 09:58:40 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id r27sm2216242wrr.70.2021.09.07.09.58.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 09:58:39 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 18:58:38 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: tegra20-slink: Declare runtime suspend and resume
- functions conditionally
-Message-ID: <YTeaPnxDhmia4/OB@orome.fritz.box>
-References: <20210907045358.2138282-1-linux@roeck-us.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=yGhlEcWAmkOIUP0KcWj+kobRkgQf1kC9BN+bCXhgInU=;
+        b=IqrLWKTTxcIl5MA5M6bip8OQ138JYBsglDcYUu9L3czg1+hT/eYLB8MfRUaRmiqZxu
+         7XY0ypriTJxQMepeUu8hUwhLZM3jW7ybBhhBsmlmFBZ02UnRKeRHK/yBd1/B9aT1V1J4
+         BRuLxtdNzHgQqgOJiZaoTSjA5eunN1TebVpHx1DJzcL/1f1SRo28Ptefn6ERuQ7YT0gN
+         yjaS6GJRZ7k8HOYyP/WQwChbcHXA7ikCutVUm7n941A9MmR6EaqysZKwUfOzLv03wIwx
+         gLAR3hE5L0KR4qQPlBFJgdlmNFkN7BtW8idUPsiSMExO8dOfsVBg64GdgS25Gp3fxBqX
+         O0wQ==
+X-Gm-Message-State: AOAM532xDJ7NtiqUqfs6QoIPCpBv3m0cVUZgvxzUXR+W1vx1B8UTNELG
+        oepK6UeaP+KVolO7dtwb710i1FQxsOtEfgMv+XA=
+X-Google-Smtp-Source: ABdhPJztexkmO6F4hC0uTaplz22vYnXIkvWMVIv6HMvkULpmAknxRcB9k8FShKGIQZf3yT5nYu9/1rtbZGwuoyMMmrA=
+X-Received: by 2002:a4a:d794:: with SMTP id c20mr692176oou.23.1631033953123;
+ Tue, 07 Sep 2021 09:59:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="L1EJoNpK+VemqDAB"
-Content-Disposition: inline
-In-Reply-To: <20210907045358.2138282-1-linux@roeck-us.net>
-User-Agent: Mutt/2.1.2 (9a92dba0) (2021-08-24)
+References: <20210902215127.55330-1-colin.king@canonical.com> <bb5105f8-2ec6-e494-8764-3dcc5fc0681b@amd.com>
+In-Reply-To: <bb5105f8-2ec6-e494-8764-3dcc5fc0681b@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 7 Sep 2021 12:59:02 -0400
+Message-ID: <CADnq5_Psv9HG5C=9OwaXY64uRLnmJ4NjnsbviG6zwvpdmuNcRA@mail.gmail.com>
+Subject: Re: [PATCH][next] drm/amdgpu: sdma: clean up identation
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Colin King <colin.king@canonical.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        xinhui pan <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Applied.  Thanks!
 
---L1EJoNpK+VemqDAB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Alex
 
-On Mon, Sep 06, 2021 at 09:53:58PM -0700, Guenter Roeck wrote:
-> The following build error is seen with CONFIG_PM=3Dn.
->=20
-> drivers/spi/spi-tegra20-slink.c:1188:12: error:
-> 	'tegra_slink_runtime_suspend' defined but not used
-> drivers/spi/spi-tegra20-slink.c:1200:12: error:
-> 	'tegra_slink_runtime_resume' defined but not used
->=20
-> Declare the functions only if PM is enabled. While at it, remove the
-> unnecessary forward declarations.
->=20
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
->  drivers/spi/spi-tegra20-slink.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/spi/spi-tegra20-slink.c b/drivers/spi/spi-tegra20-sl=
-ink.c
-> index ebd27f883033..8ce840c7ecc8 100644
-> --- a/drivers/spi/spi-tegra20-slink.c
-> +++ b/drivers/spi/spi-tegra20-slink.c
-> @@ -204,9 +204,6 @@ struct tegra_slink_data {
->  	struct dma_async_tx_descriptor		*tx_dma_desc;
->  };
-> =20
-> -static int tegra_slink_runtime_suspend(struct device *dev);
-> -static int tegra_slink_runtime_resume(struct device *dev);
-> -
->  static inline u32 tegra_slink_readl(struct tegra_slink_data *tspi,
->  		unsigned long reg)
->  {
-> @@ -1185,6 +1182,7 @@ static int tegra_slink_resume(struct device *dev)
->  }
->  #endif
-> =20
-> +#ifdef CONFIG_PM
->  static int tegra_slink_runtime_suspend(struct device *dev)
->  {
->  	struct spi_master *master =3D dev_get_drvdata(dev);
-> @@ -1210,6 +1208,7 @@ static int tegra_slink_runtime_resume(struct device=
- *dev)
->  	}
->  	return 0;
->  }
-> +#endif /* CONFIG_PM */
-> =20
->  static const struct dev_pm_ops slink_pm_ops =3D {
->  	SET_RUNTIME_PM_OPS(tegra_slink_runtime_suspend,
-
-Looks like this is mostly leftover from commit e4bb903fda0e ("spi:
-tegra20-slink: Improve runtime PM usage"). That's likely going to go
-into v5.15 since it's been in linux-next for a couple of weeks, so this
-one should go there as well.
-
-But yeah, looks correct. On a side-note: ARCH_TEGRA always selects PM,
-so we typically assume that these guards are not needed. However, since
-SPI's Kconfig has these two symbols || COMPILE_TEST, that assumption is
-obviously no longer true.
-
-Anyway, this looks correct, so:
-
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---L1EJoNpK+VemqDAB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmE3mjwACgkQ3SOs138+
-s6F12w/+NoQME2r+r4vwCE2N55IVSsRTdKiTGpqM+Efen8JBWkcq66FZMbZIUZkB
-E/+IVm0NcPAxziikeDJ6PrAN+95QHpqMKHb4X7AKTzXKO3LikLhgq7Sdk9TJLKdl
-MA+s6UUX7N/+k2/ittrgoolI+l44+i0UXjRiRCiiquLui9p7p3hrLMWx8ZXNoOdy
-3NaY9jk8AnVAvHLSAsd8TbexCiQ4HRDPiH2LpLxDsRXwr2gyPtkFwFYnR/ZZdDnw
-NEijSyLhG71ixlY5Mn39MaeDrX0w08y2SoVvHLjGLODL1byvTqXHI4JI8gl1RfcR
-6Dycj7X7XZP6WcSUrzgm/lslcm9xDESLcmxGxf6cExiN38KhdJBORfhTB8htn8Xm
-Q/QIR+TZvAItTVOjeEo8gFjVIjrwEKR9oPHVSp43MUslLW8G3kMOoloIlnfaswPX
-9O8Ako6NUK7/m45NKNYpSJtLZDNBgSHPTKJLViSfpd+44k+90BKVNbMNFG/hG6Mx
-LOV0FqA2bZ4TmwHWdEshA94Mdnn1h3Eo+l5gigRGESlbGoZUf0pdwYqh4yxaSGEp
-EgbynKLiEluOXhy4KEmSADZ1aZsIsaWeOH15m86GZnJ3MgPcmB7UmzEcbtyIH0qW
-nO52jLL6SUlkHIYjy0Sb94qzTMcLA3qjFi1pArvBHPFKSxNVXrU=
-=fjmd
------END PGP SIGNATURE-----
-
---L1EJoNpK+VemqDAB--
+On Fri, Sep 3, 2021 at 2:31 AM Christian K=C3=B6nig <christian.koenig@amd.c=
+om> wrote:
+>
+> Am 02.09.21 um 23:51 schrieb Colin King:
+> > From: Colin Ian King <colin.king@canonical.com>
+> >
+> > There is a statement that is indented incorrectly. Clean it up.
+> >
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c | 8 ++++----
+> >   1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c b/drivers/gpu/drm/a=
+md/amdgpu/sdma_v5_2.c
+> > index 779f5c911e11..e4a96e7e386d 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
+> > @@ -375,10 +375,10 @@ static void sdma_v5_2_ring_emit_ib(struct amdgpu_=
+ring *ring,
+> >    */
+> >   static void sdma_v5_2_ring_emit_mem_sync(struct amdgpu_ring *ring)
+> >   {
+> > -    uint32_t gcr_cntl =3D
+> > -                 SDMA_GCR_GL2_INV | SDMA_GCR_GL2_WB | SDMA_GCR_GLM_INV=
+ |
+> > -                     SDMA_GCR_GL1_INV | SDMA_GCR_GLV_INV | SDMA_GCR_GL=
+K_INV |
+> > -                     SDMA_GCR_GLI_INV(1);
+> > +     uint32_t gcr_cntl =3D SDMA_GCR_GL2_INV | SDMA_GCR_GL2_WB |
+> > +                         SDMA_GCR_GLM_INV | SDMA_GCR_GL1_INV |
+> > +                         SDMA_GCR_GLV_INV | SDMA_GCR_GLK_INV |
+> > +                         SDMA_GCR_GLI_INV(1);
+> >
+> >       /* flush entire cache L0/L1/L2, this can be optimized by performa=
+nce requirement */
+> >       amdgpu_ring_write(ring, SDMA_PKT_HEADER_OP(SDMA_OP_GCR_REQ));
+>
