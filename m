@@ -2,99 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3186403049
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 23:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C10D40304D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 23:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347120AbhIGV2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 17:28:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55308 "EHLO
+        id S1348389AbhIGVbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 17:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236194AbhIGV2k (ORCPT
+        with ESMTP id S1348681AbhIGVaF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 17:28:40 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF61BC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 14:27:33 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id w8so204693pgf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 14:27:33 -0700 (PDT)
+        Tue, 7 Sep 2021 17:30:05 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4725C06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 14:28:54 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id g9so362727ioq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 14:28:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Chby1I103cCIUjx2Pr1mMoXi27BMhl4OPMXZ/OAAfSc=;
-        b=fzUU2Iak7Q9DlSAS9eudlQVvZf5wSAdkok02sTBgnyi5AsjPEQPAsPbuBOdSbOeohL
-         rxQHwQ29wlft9KJMqhM6eAjWtqGpVIVRRsPkwhqfEctrPoY+XYTvqsA5Pzqh3MMUtwj/
-         GkS33+nT//Wrv3TTzctG4f7t9LccDnmzbeSWbM1icCdXUd0oQaVtooh5aLP1DkrX+To+
-         9C+YaHOue5bpbYkEBAE3HvbExxj5ABqo+6fM72ckzsL8rsFmBcwnNRDOxbBUlrM5hcIT
-         SPhVP59Kcs8mfQ+IOZCAsy6oCj4mns9ls87pnM4MVdCj4Dw4/eM7I84m6KgGiUr5fhb2
-         OCNQ==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uQ1QKlOMUxMJjspXpCNHZjX329YTQj9Uc23PyYscxxE=;
+        b=FbO+pDJXDBkBjC1rlKAdQfQgfh08Xa3kp6kg4kr7w0Y5RfqJlJsZJaWhpbBQz8nQqc
+         keSp3KjF48yyjtGYzivaNDwdC5pmNPDMlXgcahzEhY/BtqEdJRNRPSFOYLUsZ498FeFY
+         NucFj/hNQX432SYJKtlG1bl88o+Q4HvaC23zc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Chby1I103cCIUjx2Pr1mMoXi27BMhl4OPMXZ/OAAfSc=;
-        b=ChZ/g9pLp0wUTQa4DSScIk1YoYYXic0BssyheTCqjFU2QrteX6u56uGak/metP4fy+
-         F2DCfItA1CUZ467p9Llud5FrswKVgglaBTw9ycQBNEwUQswjFnPXJUVczdiEPjuCQAxp
-         DCx200Ud6UqsXbUgQtsDRowkarFvI2ykskFd2WJvEP3uRNxMWWUF8VIXI/8Gy/V2YXvc
-         FmR8ysr50fZbeDkCUvF9A3iu59jFqiizX45Kw4Dfbc4p7ZW6JmV2O6i/xGkzEbU1ph0v
-         t75R4uE9Wo8XN19+c2YbgaLdu3aQ+EsVyLb0qvq8Pgwuvu7sExgF9SzE1udssXrMTsJj
-         cPhw==
-X-Gm-Message-State: AOAM5300p6DRccXQgyvrcPuyAnan6pyDSNCEZmnkQomvSDz/7S76O0HR
-        x8NlqDf5kRRRdkpGb7NB7Oo=
-X-Google-Smtp-Source: ABdhPJx6UdSG37g20A1AUqvY3OWshOmWPSs9nNP0pgBwa/nzbjhALgQa7Ad+L+fYRUv0bHe1htQpDA==
-X-Received: by 2002:a63:da54:: with SMTP id l20mr323092pgj.341.1631050053192;
-        Tue, 07 Sep 2021 14:27:33 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:998a:2486:f524:8502])
-        by smtp.gmail.com with ESMTPSA id s15sm48978pfu.67.2021.09.07.14.27.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 14:27:32 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 7 Sep 2021 14:27:30 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc:     "Xing, Zhengjun" <zhengjun.xing@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Laura Abbott <labbott@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        John Dias <joaodias@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com, Minchan Kim <minchan.kim@gmail.com>
-Subject: Re: [LKP] Re: [mm] 8cc621d2f4: fio.write_iops -21.8% regression
-Message-ID: <YTfZQoMhZvQy1H53@google.com>
-References: <20210520083144.GD14190@xsang-OptiPlex-9020>
- <YKasEeXCr9R5yzCr@google.com>
- <45f761de51d514f77cc48214846c5f8f@codeaurora.org>
- <YK0Us01mBTRWOQIw@google.com>
- <YK0oQ76zX0uVZCwQ@google.com>
- <5abc4469d16535119818e8e72173398d@codeaurora.org>
- <034fc860-d0d0-0c61-09d2-3c41c4f020c6@intel.com>
- <YTeZm71hmcbJp+E2@google.com>
- <d4902ba55d51c5b4a7b9e01414391f0d@codeaurora.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uQ1QKlOMUxMJjspXpCNHZjX329YTQj9Uc23PyYscxxE=;
+        b=dU0n9w2UiKccplJdMAX0p8kq+9VO7RAGct70tb3xqRlvtn1uXaysYq0qbx1W4M3gJU
+         qLpQkYiBdBIbVekJFYilk+S5j5lz6GLugbGroVaXxxZ3FeW1EBuoGZhBxlGItXOEjeFl
+         sOVYvvRSpKEOH7wBLIcZnhKDiRu2LT+hCYbpVOhCoOd8tu0o8GjTX/yZWx8sal2XZTtm
+         UyojUWbaM5JgCvZnGlbhmh2h1iT3/ISmumZ9YxmWfSSjOOLbKACLQ7mDsqE1LZaQqdP6
+         QrlOT74kutmQC8gu6IVO7FDhpEAb1hE3mSeOwARyetZVUSNdQX8DoyWKGY+tiEaixV97
+         DyEg==
+X-Gm-Message-State: AOAM530Uz9e9BmnDjS5ePEGk3nZ5JCKtbwpZflywp6gGNwjuQRW7lFyo
+        FdJh4qUTUoILnxK71CKwgpCB2wNQW8iWdw==
+X-Google-Smtp-Source: ABdhPJzq6xHc9ICyXPhNWoqmW3TFqPqfpQwhKPYhzkwAjJos1JLP7WLlq4mXoHgNUL0MH3n/iMByWw==
+X-Received: by 2002:a05:6638:4104:: with SMTP id ay4mr397781jab.10.1631050134251;
+        Tue, 07 Sep 2021 14:28:54 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id m13sm140087ilh.43.2021.09.07.14.28.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 14:28:53 -0700 (PDT)
+Subject: Re: [PATCH 5/5][RFC] selftests/pfru: add test for Platform Firmware
+ Runtime Update and Telemetry
+To:     Chen Yu <yu.c.chen@intel.com>, linux-acpi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, Shuah Khan <shuah@kernel.org>,
+        linux-kselftest@vger.kernel.org,
+        Dou Shengnan <shengnanx.dou@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1631025237.git.yu.c.chen@intel.com>
+ <1cef405de3484eef108251562fbf461bad4294c7.1631025237.git.yu.c.chen@intel.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <82889db2-1927-582d-c27f-b1f0927ca903@linuxfoundation.org>
+Date:   Tue, 7 Sep 2021 15:28:52 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d4902ba55d51c5b4a7b9e01414391f0d@codeaurora.org>
+In-Reply-To: <1cef405de3484eef108251562fbf461bad4294c7.1631025237.git.yu.c.chen@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chris,
-
-On Tue, Sep 07, 2021 at 11:46:02AM -0700, Chris Goldsworthy wrote:
-< snip >
-
-> Hi Minchan,
+On 9/7/21 9:40 AM, Chen Yu wrote:
+> Introduce a simple test for Platform Firmware Runtime Update and Telemetry
+> drivers. It is based on ioctl to either update firmware driver or code injection,
+> and read corresponding PFRU Telemetry log into user space.
 > 
-> I believe that was the first iteration of your patch - there was some
-> further feedback, such that this was the last version you submitted:
 
-I totally forgot it. Thanks for the heads up!
-I just sent the new version to prevent confusion.
-https://lore.kernel.org/lkml/20210907212347.1977686-1-minchan@kernel.org/T/#u
+A few things to consider and add handling for them in the
+test.
 
-Thanks!
+What happens when non-root user runs this test?
+What happens when the pfru device doesn't exist?
+
+
+[snip]
+
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int fd_update, fd_log, fd_capsule;
+> +	struct telem_data_info data_info;
+> +	struct telem_info info;
+> +	struct update_cap_info cap;
+> +	void *addr_map_capsule;
+> +	struct stat st;
+> +	char *log_buf;
+> +	int ret = 0;
+> +
+> +	parse_options(argc, argv);
+> +
+> +	fd_log = open("/dev/pfru/telemetry", O_RDWR);
+> +	if (fd_log < 0) {
+> +		perror("Cannot open telemetry device...");
+> +		return 1;
+> +	}
+
+Is this considered an error or unsupported?
+
+> +	fd_update = open("/dev/pfru/update", O_RDWR);
+> +	if (fd_update < 0) {
+> +		perror("Cannot open code injection device...");
+> +		return 1;
+> +	}
+> +
+
+Same here. If test is run on platform with pfru test should skip
+instead of reporting failure/error.
+
+thanks,
+-- Shuah
