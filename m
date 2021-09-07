@@ -2,128 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 630D3402FD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB331402FE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346402AbhIGUj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:39:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
+        id S1346879AbhIGUtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:49:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244893AbhIGUjy (ORCPT
+        with ESMTP id S1346834AbhIGUtF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:39:54 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634A9C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:38:47 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id n27so159261oij.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:38:47 -0700 (PDT)
+        Tue, 7 Sep 2021 16:49:05 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4EBCC061575;
+        Tue,  7 Sep 2021 13:47:58 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id 6so107555oiy.8;
+        Tue, 07 Sep 2021 13:47:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=VloxAkcKG25Kax+zrrIt0tSfG0rrkP/DpDGPGBa4V04=;
-        b=GZC3vLjHoU+aQWZajREbtnGkyy7J3AjBCBXO+DIFbiucNkClNQ1XA+GO4LaVJFgUy4
-         001Xvz2V0Xug60qCb+5NICKn6YAC7ll8/RvipgFJyqIZpPWS6k7s+yQ8S687jZxYES2p
-         ZujRrz/s0Y+4SX61vW7cXtJNMezR6hSLcZn+yUe+b9PoNgAF+eH0NpmsL3nPQNHwqv9J
-         XJZlrCMXZGL2dHmKHNvVowxmNcfULWcBHFbDg0M4cS9mvohr1QpCkZMeW66T1j8YcI3h
-         KviS+bXqkaIrRkacCfxW0b4/JWTe7Ep/dMpw2VXvQjq/M79lQ4oTV7Mqd4gc7wmyDyov
-         cWyQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UopwoFn7rqfh5UL49/4APVM7g8LLvGNu8u3opnFNc2M=;
+        b=d9GH4MSSomWd+TKdZBGJoBuJk9sGkSDpXWx6iBm+Bz6kOHnqz1OO8gIpo+FBeJItw2
+         zrBk832kEv8OerXc0q77211wGWbsGk9W2wYVXVH5L5o2PJGl58H+dSFa2a81xtPvC/8l
+         JRMI/DUMXpN3SxfBpv0uZisT9VS2pySj3GyzG26O3avpYH3AP4EKmR7stPM8qlJoXTzp
+         N+a41OLUOsf+4wFrrFBLUJdeY9XD0TQ49FIa3SV7vLokHDUMldiGPdkZQKKRFKTAOK8F
+         2ABEywcaEKKfEIsq0fZruRbgPk0cdMZAm0DhzetPPck+o1yCTTrUPlgtsBEuc+TUvbGi
+         qBdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=VloxAkcKG25Kax+zrrIt0tSfG0rrkP/DpDGPGBa4V04=;
-        b=YfgCMYv+yb93CpLmlbzgx2MVbcYknXtBQxn+geVitUwSmo3kfhiN1Z4e0lrgfsi8Ez
-         eViSnWtWSvzQEwRaeiWJq8o/KN2qibbJTwhBBs8gN2TOE2Ff8g3sTDkh5tisTnPDy56m
-         3fcS/d4YeEu+x32/a3JW8zM/UVXfSHKgRjtSTSGBRHfw2kZjUK2eYM4BMRcYBHXyVO0N
-         kJvRsZrN+kI2gh7nV7AL2jyeRN3UDiQ8+qSXLhz078Fqvz1s8Q/hwbAcSqlUAW3VhMiC
-         /QsmVOYhVcpYskjlfy1QMtAAZBNDq0YMaKu1hmtRuGAvgIK1dwvP+pktlcMmZrCD4SWa
-         hzQA==
-X-Gm-Message-State: AOAM531e05bcRcV6nk/Vl88ISUXovxBXDBPyPRtNFpfF/ytmVfmNuUOj
-        sOn3bfYgEMPT7Q/Rjta5IcwCnxY1ME1987ekJGk=
-X-Google-Smtp-Source: ABdhPJw91o1VwNp4ZYxWcSGCiJxuN53UE10hTXQRfd9/u7glAdZstWOCp2GnACjNlwB7ME56+J3shYlq2PokqsS4Zy8=
-X-Received: by 2002:aca:ad55:: with SMTP id w82mr33231oie.45.1631047126797;
- Tue, 07 Sep 2021 13:38:46 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UopwoFn7rqfh5UL49/4APVM7g8LLvGNu8u3opnFNc2M=;
+        b=WocvnVBFPTY3i9ZfOk/KoYupPsghrxz6sz4lPx9C42qjYSPeGpl7ZTJwRz0iGs5e2Z
+         gA9Cfg85AkKfG9+SfB/2pgUOV5IyeYXQzVJ0w17CdTmk34srbgOaj7VUG77GenAgSz8C
+         vWRkpt5PKcH7Ocggl920tDEVaMxWpgIrRp/RJa9TvP2W0yXuD5zUoYsO/DEBb0Wx/kCr
+         FVPmkPfA5H3WieuoHB+3pheLnYtBAkqo90b/ymqNRvH8MbqpKs1yqQ5T2MUrYM7CU8C5
+         vBXT/TVsco7Y0qS8ISeov2I/rFskAC8Sb7FrmCTxs66xJhVCSUDKK07UuHSiNTkczAhI
+         d2Kg==
+X-Gm-Message-State: AOAM530o3oN82lCckCpTxgybhYkdm4cpNcvCgQjtiMckEmNOXndOI1+7
+        rRWGEUdwBnYMO7MBcIPoqNLwSfwfAFvEBaIbZa39JbEUSM4L7w==
+X-Google-Smtp-Source: ABdhPJwgnAxOzHlN5kUGiujwfo4/KLkFbgPPlSslacq4qvxiaXwPBsJux4afJod6S7AxtahsF30JNkQIckD99eekPM8=
+X-Received: by 2002:a05:6808:209a:: with SMTP id s26mr20818oiw.98.1631047678287;
+ Tue, 07 Sep 2021 13:47:58 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a05:6820:342:0:0:0:0 with HTTP; Tue, 7 Sep 2021 13:38:46
- -0700 (PDT)
-Reply-To: om250752@gmail.com
-From:   Mrs Rose Samuel <mayorcreditloan1960@gmail.com>
-Date:   Tue, 7 Sep 2021 13:38:46 -0700
-Message-ID: <CAD3iyFSt5s3w=c86-9f4oxLEBDqk21Wwh_dw53r42vUE7bOU3A@mail.gmail.com>
-Subject: Thanks and God bless you.
-To:     undisclosed-recipients:;
+References: <20210829095614.50021-1-kari.argillander@gmail.com>
+ <20210907073618.bpz3fmu7jcx5mlqh@kari-VirtualBox> <69c8ab24-9443-59ad-d48d-7765b29f28f9@paragon-software.com>
+ <CAHp75Vd==Dm1s=WK9p2q3iEBSHxN-1spHmmtZ21eRNoqyJ5v=Q@mail.gmail.com>
+In-Reply-To: <CAHp75Vd==Dm1s=WK9p2q3iEBSHxN-1spHmmtZ21eRNoqyJ5v=Q@mail.gmail.com>
+From:   Kari Argillander <kari.argillander@gmail.com>
+Date:   Tue, 7 Sep 2021 23:47:47 +0300
+Message-ID: <CAC=eVgTwDsE+i3jG+iwZJhFDBXzCyPprRnGk5tjUKXP+Ltrw4w@mail.gmail.com>
+Subject: Re: [PATCH v3 0/9] fs/ntfs3: Use new mount api and change some opts
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        "ntfs3@lists.linux.dev" <ntfs3@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Good Friend.
+On Tuesday, September 7, 2021, Andy Shevchenko
+(andy.shevchenko@gmail.com) wrote:
+> On Tuesday, September 7, 2021, Konstantin Komarov <almaz.alexandrovich@paragon-software.com> wrote:
+>> On 07.09.2021 10:36, Kari Argillander wrote:
+>> > On Sun, Aug 29, 2021 at 12:56:05PM +0300, Kari Argillander wrote:
+>> >> See V2 if you want:
+>> >> lore.kernel.org/ntfs3/20210819002633.689831-1-kari.argillander@gmail.com
+>> >>
+>> >> NLS change is now blocked when remounting. Christoph also suggest that
+>> >> we block all other mount options, but I have tested a couple and they
+>> >> seem to work. I wish that we do not block any other than NLS because
+>> >> in theory they should work. Also Konstantin can comment about this.
+>> >>
+>> >> I have not include reviewed/acked to patch "Use new api for mounting"
+>> >> because it change so much. I have also included three new patch to this
+>> >> series:
+>> >>      - Convert mount options to pointer in sbi
+>> >>              So that we do not need to initiliaze whole spi in
+>> >>              remount.
+>> >>      - Init spi more in init_fs_context than fill_super
+>> >>              This is just refactoring. (Series does not depend on this)
+>> >>      - Show uid/gid always in show_options()
+>> >>              Christian Brauner kinda ask this. (Series does not depend
+>> >>              on this)
+>> >>
+>> >> Series is ones again tested with kvm-xfstests. Every commit is build
+>> >> tested.
+>> >
+>> > I will send v4 within couple of days. It will address issues what Pali
+>> > says in patch 8/9. Everything else should be same at least for now. Is
+>> > everything else looking ok?
+>> >
+>>
+>> Yes, everything else seems good.
+>> We tested patches locally - no regression was
+>
+> The formal answer in such case should also contain the Tested-by tag. I would suggest you to read the Submitting Patches document (available in the Linux kernel source tree).
 
-I am happy to inform you about my success in getting those funds
-transferred under the cooperation of a new partner from India.
-Presently I am in India for investment projects with my own share of
-the total sum. Meanwhile, I didn=E2=80=99t forget you=E2=80=99re past effor=
-ts and
-attempts to assist me in transferring those funds despite that it
-failed us some how. Now contact my lawyer in Benin Republic his name
-is Barrister Adam Smith.
+He is a maintainer so he can add tags when he picks this up. This is not
+really relevant here. Yes it should be good to include that but I have already
+sended v4 which he has not tested. So I really cannot put this tag for him.
+So at the end he really should not even put it here.
 
+Also usually the maintainers will always make their own tests and usually
+they will not even bother with a tested-by tag. Or do you say to me that I
+should go read Submitting Patches document as I'm the one who submit
+this?
 
+  Argillander
 
-Barrister Adam Smith.
-
-Email:adm.smth126@gmail.com
-
-
-
-Contact him and ask him to send you the total of $920.000.00.{Nine
-Hundred And Twenty Thousand United States Dollars} which I kept for
-your past efforts and attempts to assist me in this matter. I
-appreciated your efforts at that time very much. So feel free and get
-in touched with my lawyer and instruct him where to send the amount to
-you. Please do let me know immediately you receive it so that we can
-share the joy after all the sufferness at that time. Do send to Adam
-Smith, your contact details.
-
-
-
-Your Full Names=E2=80=A6...........................................
-
-
-
-You=E2=80=99re Address=E2=80=A6............................................=
-..
-
-
-
-Cell Phone Number=E2=80=A6........................................
-
-
-
-Your occupation................................................
-
-
-
-Your Age=E2=80=A6.....................................................
-
-
-
-To enable him submit your details to my paying bank the Need Bank in
-Benin Republic to wire your compensation money to your nominated bank
-account/western Union or they can send to you an authorized bank ATM
-VISA CARD  to your address for you to withdraw the money from any bank
-ATM machine in your country.
-
-
-In the moment, I am very busy here because of the investment projects
-which me and the new partner are having at hand, finally, remember
-that I had forwarded instruction to my lawyer on your behalf to
-receive that money, so feel free to get in touch with him and he will
-send the amount to you with out any delay.
-
-
-Thanks and God bless you.
-Regards
-Mrs Rose Samuel
+>> >>
+>> >> v3:
+>> >>      - Add patch "Convert mount options to pointer in sbi"
+>> >>      - Add patch "Init spi more in init_fs_context than fill_super"
+>> >>      - Add patch "Show uid/gid always in show_options"
+>> >>      - Patch "Use new api for mounting" has make over
+>> >>      - NLS loading is not anymore possible when remounting
+>> >>      - show_options() iocharset printing is fixed
+>> >>      - Delete comment that testing should be done with other
+>> >>        mount options.
+>> >>      - Add reviewed/acked-tags to 1,2,6,8
+>> >>      - Rewrite this cover
+>> >> v2:
+>> >>      - Rewrite this cover leter
+>> >>      - Reorder noatime to first patch
+>> >>      - NLS loading with string
+>> >>      - Delete default_options function
+>> >>      - Remove remount flags
+>> >>      - Rename no_acl_rules mount option
+>> >>      - Making code cleaner
+>> >>      - Add comment that mount options should be tested
+>> >>
+>> >> Kari Argillander (9):
+>> >>   fs/ntfs3: Remove unnecesarry mount option noatime
+>> >>   fs/ntfs3: Remove unnecesarry remount flag handling
+>> >>   fs/ntfs3: Convert mount options to pointer in sbi
+>> >>   fs/ntfs3: Use new api for mounting
+>> >>   fs/ntfs3: Init spi more in init_fs_context than fill_super
+>> >>   fs/ntfs3: Make mount option nohidden more universal
+>> >>   fs/ntfs3: Add iocharset= mount option as alias for nls=
+>> >>   fs/ntfs3: Rename mount option no_acl_rules > (no)acl_rules
+>> >>   fs/ntfs3: Show uid/gid always in show_options()
+>> >>
+>> >>  Documentation/filesystems/ntfs3.rst |  10 +-
+>> >>  fs/ntfs3/attrib.c                   |   2 +-
+>> >>  fs/ntfs3/dir.c                      |   8 +-
+>> >>  fs/ntfs3/file.c                     |   4 +-
+>> >>  fs/ntfs3/inode.c                    |  12 +-
+>> >>  fs/ntfs3/ntfs_fs.h                  |  26 +-
+>> >>  fs/ntfs3/super.c                    | 486 +++++++++++++++-------------
+>> >>  fs/ntfs3/xattr.c                    |   2 +-
+>> >>  8 files changed, 284 insertions(+), 266 deletions(-)
+>> >>
+>> >> --
+>> >> 2.25.1
+>> >>
+>> >>
+>
+>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
