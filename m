@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06DF40272D
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A88940273B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245594AbhIGK3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 06:29:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
+        id S245732AbhIGKba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 06:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245568AbhIGK3A (ORCPT
+        with ESMTP id S233477AbhIGKb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 06:29:00 -0400
+        Tue, 7 Sep 2021 06:31:27 -0400
 Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 023B0C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 03:27:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A02CDC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 03:30:21 -0700 (PDT)
 Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
         (envelope-from <bert@biot.com>)
-        id 1mNYKW-00CH2f-4S
-        for linux-kernel@vger.kernel.org; Tue, 07 Sep 2021 12:27:52 +0200
+        id 1mNYMt-00CHA1-8o
+        for linux-kernel@vger.kernel.org; Tue, 07 Sep 2021 12:30:19 +0200
 X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
@@ -27,19 +27,29 @@ Received: from [2a02:578:460c:1:ae1f:6bff:fed1:9ca8] (helo=sumner.biot.com)
         by yawp.biot.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <bert@biot.com>)
-        id 1mNYKI-00CGxw-D7; Tue, 07 Sep 2021 12:27:38 +0200
+        id 1mNYKK-00CGzV-9S; Tue, 07 Sep 2021 12:27:40 +0200
 Received: from bert by sumner.biot.com with local (Exim 4.93)
         (envelope-from <bert@biot.com>)
-        id 1mNYKH-000CPY-UC; Tue, 07 Sep 2021 12:27:37 +0200
+        id 1mNYKJ-000CPu-Qm; Tue, 07 Sep 2021 12:27:39 +0200
 From:   Bert Vermeulen <bert@biot.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     John Crispin <john@phrozen.org>, Bert Vermeulen <bert@biot.com>
-Subject: [PATCH v2 3/5] ARM: dts: Add basic support for Airoha EN7523
-Date:   Tue,  7 Sep 2021 12:27:20 +0200
-Message-Id: <20210907102722.47543-4-bert@biot.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        John Crispin <john@phrozen.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Mike Rapoport <rppt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     devicetree@vger.kernel.org, Bert Vermeulen <bert@biot.com>
+Subject: [PATCH v2 4/5] ARM: Add basic support for Airoha EN7523 SoC
+Date:   Tue,  7 Sep 2021 12:27:21 +0200
+Message-Id: <20210907102722.47543-5-bert@biot.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210907102722.47543-1-bert@biot.com>
 References: <20210907102722.47543-1-bert@biot.com>
@@ -51,186 +61,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: John Crispin <john@phrozen.org>
 
-Add basic support for Airoha EN7523, enough for booting to console.
-
-The UART is basically 8250-compatible, except for the clock selection.
-A clock-frequency value is synthesized to get this to run at 115200 bps.
+EN7523 is an armv7 based silicon used inside broadband access type devices
+such as xPON and xDSL. It shares various silicon blocks with MediaTek
+silicon such as the MT7622.
 
 Signed-off-by: John Crispin <john@phrozen.org>
 Signed-off-by: Bert Vermeulen <bert@biot.com>
 ---
- arch/arm/boot/dts/Makefile       |   2 +
- arch/arm/boot/dts/en7523-evb.dts |  26 +++++++
- arch/arm/boot/dts/en7523.dtsi    | 114 +++++++++++++++++++++++++++++++
- 3 files changed, 142 insertions(+)
- create mode 100644 arch/arm/boot/dts/en7523-evb.dts
- create mode 100644 arch/arm/boot/dts/en7523.dtsi
+ arch/arm/Kconfig | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 863347b6b65e..3525ace2d2e0 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -174,6 +174,8 @@ dtb-$(CONFIG_ARCH_DAVINCI) += \
- 	da850-lego-ev3.dtb
- dtb-$(CONFIG_ARCH_DIGICOLOR) += \
- 	cx92755_equinox.dtb
-+dtb-$(CONFIG_ARCH_AIROHA) += \
-+	en7523-evb.dtb
- dtb-$(CONFIG_ARCH_EXYNOS3) += \
- 	exynos3250-artik5-eval.dtb \
- 	exynos3250-monk.dtb \
-diff --git a/arch/arm/boot/dts/en7523-evb.dts b/arch/arm/boot/dts/en7523-evb.dts
-new file mode 100644
-index 000000000000..fa595b97bdd8
---- /dev/null
-+++ b/arch/arm/boot/dts/en7523-evb.dts
-@@ -0,0 +1,26 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/dts-v1/;
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 82f908fa5676..4c210df05c77 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -580,6 +580,20 @@ config ARCH_VIRT
+ 	select HAVE_ARM_ARCH_TIMER
+ 	select ARCH_SUPPORTS_BIG_ENDIAN
+ 
++config ARCH_AIROHA
++	bool "Airoha SoC Support"
++	depends on ARCH_MULTI_V7
++	select ARM_AMBA
++	select ARM_GIC
++	select ARM_GIC_V3
++	select ARM_DMA_USE_IOMMU
++	select ARM_PSCI
++	select HAVE_ARM_ARCH_TIMER
++	select IOMMU_DMA
++	select COMMON_CLK
++	help
++	  Support for Airoha EN7523 SoCs
 +
-+/* Bootloader installs ATF here */
-+/memreserve/ 0x80000000 0x80000;
-+
-+#include "en7523.dtsi"
-+
-+/ {
-+	model = "Airoha EN7523 Evaluation Board";
-+	compatible = "airoha,en7523-evb", "airoha,en7523";
-+
-+	aliases {
-+		serial0 = &uart1;
-+	};
-+
-+	chosen {
-+		bootargs = "earlycon=uart8250,mmio32,0x1fbf0000 console=ttyS0,115200";
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x80000000 0x20000000>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/en7523.dtsi b/arch/arm/boot/dts/en7523.dtsi
-new file mode 100644
-index 000000000000..034bd1de2cd6
---- /dev/null
-+++ b/arch/arm/boot/dts/en7523.dtsi
-@@ -0,0 +1,114 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+/ {
-+	interrupt-parent = <&gic>;
-+	#address-cells = <1>;
-+	#size-cells = <1>;
-+
-+	reserved-memory {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges;
-+
-+		npu_binary@84000000 {
-+			no-map;
-+			reg = <0x84000000 0xA00000>;
-+		};
-+
-+		npu_flag@84B0000 {
-+			no-map;
-+			reg = <0x84B00000 0x100000>;
-+		};
-+
-+		npu_pkt@85000000 {
-+			no-map;
-+			reg = <0x85000000 0x1A00000>;
-+		};
-+
-+		npu_phyaddr@86B00000 {
-+			no-map;
-+			reg = <0x86B00000 0x100000>;
-+		};
-+
-+		npu_rxdesc@86D00000 {
-+			no-map;
-+			reg = <0x86D00000 0x100000>;
-+		};
-+	};
-+
-+	psci {
-+		compatible = "arm,psci-0.2";
-+		method = "smc";
-+	};
-+
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu-map {
-+			cluster0 {
-+				core0 {
-+					cpu = <&cpu0>;
-+				};
-+				core1 {
-+					cpu = <&cpu1>;
-+				};
-+			};
-+		};
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			reg = <0x0>;
-+			enable-method = "psci";
-+			clock-frequency = <80000000>;
-+			next-level-cache = <&L2_0>;
-+		};
-+
-+		cpu1: cpu@1 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			reg = <0x1>;
-+			enable-method = "psci";
-+			clock-frequency = <80000000>;
-+			next-level-cache = <&L2_0>;
-+		};
-+
-+		L2_0: l2-cache0 {
-+			compatible = "cache";
-+		};
-+	};
-+
-+	gic: interrupt-controller@9000000 {
-+		compatible = "arm,gic-v3";
-+		interrupt-controller;
-+		#interrupt-cells = <3>;
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		reg = <0x09000000 0x20000>, <0x09080000 0x80000>;
-+		interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_LOW>;
-+	};
-+
-+	timer {
-+		compatible = "arm,armv7-timer";
-+		interrupt-parent = <&gic>;
-+		interrupts = <GIC_PPI 13 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 14 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 11 IRQ_TYPE_LEVEL_LOW>,
-+			     <GIC_PPI 10 IRQ_TYPE_LEVEL_LOW>;
-+		clock-frequency = <25000000>;
-+	};
-+
-+	uart1: serial@1fbf0000 {
-+		compatible = "ns8250";
-+		reg = <0x1fbf0000 0x30>;
-+		reg-io-width = <4>;
-+		reg-shift = <2>;
-+		interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
-+		clock-frequency = <1843200>;
-+		status = "okay";
-+	};
-+};
+ #
+ # This is sorted alphabetically by mach-* pathname.  However, plat-*
+ # Kconfigs may be included either alphabetically (according to the
 -- 
 2.25.1
 
