@@ -2,139 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0E0402EEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E331402EEB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346070AbhIGTY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 15:24:29 -0400
-Received: from mout.web.de ([212.227.15.3]:51897 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346052AbhIGTY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 15:24:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1631042581;
-        bh=C3Kava3hgepg/XaIDROu8dHiXBxSSlrzwnw2BXTTxu8=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=F34+gslEYeoBXcN3bghzku+i7clvDzh2RBQ/M9jbz3bg03teZgpsI4NW81YdcuyJq
-         x4PhmsRc9ZlbTjbgWwetsSS8H67vwHi4EXSBk8FFm1x5IxabxDT49WtY+jtxR+bha6
-         A7n6Kkda9oCzBMhyGdsAJgV7wu5onSx+PNC5xqpc=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.27] ([89.12.22.161]) by smtp.web.de (mrweb004
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0MLUDi-1mN8ic3ogc-000aA6; Tue, 07
- Sep 2021 21:23:01 +0200
-Subject: [BUG] Re: [PATCH] brcmfmac: use ISO3166 country code and 0 rev as
- fallback
-To:     Shawn Guo <shawn.guo@linaro.org>, Kalle Valo <kvalo@codeaurora.org>
-Cc:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-rockchip@lists.infradead.org" 
-        <linux-rockchip@lists.infradead.org>
-References: <20210425110200.3050-1-shawn.guo@linaro.org>
-From:   Soeren Moch <smoch@web.de>
-Message-ID: <cb7ac252-3356-8ef7-fcf9-eb017f5f161f@web.de>
-Date:   Tue, 7 Sep 2021 21:22:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S1346041AbhIGTYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 15:24:22 -0400
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:46970 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346056AbhIGTYR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 15:24:17 -0400
+Received: by mail-oi1-f173.google.com with SMTP id w144so214210oie.13;
+        Tue, 07 Sep 2021 12:23:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6BJUSy7ZuZKYt9ryvhuAcYMqADTMlcTk8t8PG14IBng=;
+        b=eP6G28L09y11NyH9/uCYG/00IkSb0fMlsSZXg3vyHbbVenVT+y6dxef5wVrM98pAe6
+         1uSk37OHdbsdPApCrGi6rYu+xjkmhu0735HN9uZUtZhs1zAe5mVqfzkcuyHBVdBxM0pr
+         Bkq0LTKYuVKo9A/OSpNOm7kHGE4CdhrVkAD3SYicXxIHcmvWmdIMccebcGfM9gCjx53T
+         lGOUAbPh2S/t84rzV0vjd92VktPE3jPxuCV5tOd81YDNcq2wIqD0WOjVBEEIesddZE4V
+         FJlyWRjDtXWeNVmXG2vZkN/v8wI7jdWObu5ZdS5O1eanDfGOn0NPm6WpbNmP1FsIuOEl
+         dtXQ==
+X-Gm-Message-State: AOAM531qmDdtxVTwGKPbLWjm+c+XR5z8wq39T0oAg58tV3mXPmZmMoe3
+        ZGZhl+1Urm2N/VbsZuBe2qqMiHdVcsHe2f1f/Y2PDI8K
+X-Google-Smtp-Source: ABdhPJwk4TBgNGvld9R9q2flqqzH2YVJpwLNkfZBk8HuP/Q1K3Xl/kA7/xDixPYEi8eNX71pkGsY3CBEQh6GXOINWqs=
+X-Received: by 2002:a05:6808:10c1:: with SMTP id s1mr4058235ois.69.1631042590849;
+ Tue, 07 Sep 2021 12:23:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210425110200.3050-1-shawn.guo@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-GB
-X-Provags-ID: V03:K1:slohztXf3BTkkoBYuYLA1V9JVQKp3w602USBrAoPIC4BUO/YYP+
- hWpggc/Wu4nzDjc19d/6TODSknsPsfXprnkl0AzalPdCdzyTA7uIXePKNmM7F8GcqwPxNEK
- cfAr9EY79iuOr1onVlEU5TWlPVawIrX1VV9fBBw3tjBZXMm8SacELYdtKlxbq5GXpfss8Q8
- KE924fHKVxJVVFjoHrwng==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ExnSiwBjD2s=:IA5XJh8uKbl+uI+OZe3887
- DbkIFzvC2TdLGsbchBIXFrCH4Oaz6fvoE8KuiltMJ/vVCXrxDo3qzWRab41lOIqwH4lNJN289
- q+gnRP+OcQPOAj6A6IYwGBxzomSK2vvnP53zlNMq60Nf3OEmKfYR2F0XU6sM6/7DIC0YBbLyV
- MX5QFbLCyDudiLvss8fGCQD32CXo8e4nYfx1JBumTV/w/X77mfbY6UyebZYNi21m08QE64l3U
- VTdgBtblvLXtu4TWaZqj6Y/q4LZXbpPUgphps4vK/BEMjrS4LW+anUKD29c0yS8NC3AHHm3KR
- xzTHFGU/Q4VvyKRKaONJffM3AxNmFjBoUH5v2apmiwjF7iXDm5ypXC/Rn2onUU8rXAEkwVrbT
- Fbm/Ex9TppX/xuEMOb9VFYOIqMTJ8QcRvoGjWq0/dsWFxgcdasmTX73ucPPiZ2Vsy8y1iCS0Z
- 1fll7/6xnuYB4FKgGBhSMK+XcnVWrNcaN4pROPoA7HGlQwnCPTKzWpkNtKs+/FtdY8rjGWvTG
- avYXyV269I85+BT2ZyM33gQBOw25Syf0G/bAyj+z2hawZjQvWG+fQ6Lc3xl0ZStjE5hgLiQHa
- qM8hElmc+rcefhEiYv9JQTyF9jgSNYfxa05pWhDX0qc03YCm8td/EbgiUwrB7MAc2/RdPq/on
- 9F7zWNixLWmoXLusSuGUNzIbNKoPxRzbOKVOQ+IVgEPq9aqofQ2+EGn9e71hwg9/zFqXdTaod
- JOg7s/YiRKOh2BxzY/F8dTRk3JeKyju1gHBPgd3BIPJ4huuC4y6xM+BNjPRpzBnIn3+Pee1Wa
- YzNxaz0TH+L7VUl1DUVQtcdbtJahFyA4c3778PlMNy/ktkM/NRHs2KWfAYz+sOflJkOMGuuQa
- iQxZHFVdN5nzTqQfLE27ES4cLDV/d0soNsopLAYSqlyeuvtrqm3YMdp8cbKjhYykbzOk0XCkP
- yvjHyS9n0YDH0FBMHDB6zA5eLh1UGRf0qxGZZvg9SioQuXGO6sFrEd2sa9wcspeUIsN6aUYNC
- tIEevqAgNLcN6oyVuRMhy07phv5JAfz3fp4ZUQ9EpGLd8DiKlGO0z20IhizluBxMhJmAPFR62
- fqYJnRwJCy6P4Q=
+References: <1631013863-43141-1-git-send-email-psodagud@codeaurora.org>
+In-Reply-To: <1631013863-43141-1-git-send-email-psodagud@codeaurora.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 7 Sep 2021 21:22:59 +0200
+Message-ID: <CAJZ5v0i1X--QwB1yjZLUCofnx5BQbr_f9d-gNOHSK1m-Bfk8bw@mail.gmail.com>
+Subject: Re: [PATCH v5] PM: sleep: core: Avoid setting power.must_resume to false
+To:     Prasad Sodagudi <psodagud@codeaurora.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Pavel Machek <pavel@ucw.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.04.21 13:02, Shawn Guo wrote:
-> Instead of aborting country code setup in firmware, use ISO3166 country
-> code and 0 rev as fallback, when country_codes mapping table is not
-> configured.  This fallback saves the country_codes table setup for recen=
-t
-> brcmfmac chipsets/firmwares, which just use ISO3166 code and require no
-> revision number.
-This patch breaks wireless support on RockPro64. At least the access
-point is not usable, station mode not tested.
-
-brcmfmac: brcmf_c_preinit_dcmds: Firmware: BCM4359/9 wl0: Mar=C2=A0 6 2017
-10:16:06 version 9.87.51.7 (r686312) FWID 01-4dcc75d9
-
-Reverting this patch makes the access point show up again with linux-5.14 =
-.
-
-Regards,
-Soeren
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+On Tue, Sep 7, 2021 at 1:24 PM Prasad Sodagudi <psodagud@codeaurora.org> wrote:
+>
+> There are variables(power.may_skip_resume and dev->power.must_resume)
+> and DPM_FLAG_MAY_SKIP_RESUME flags to control the resume of devices after
+> a system wide suspend transition.
+>
+> Setting the DPM_FLAG_MAY_SKIP_RESUME flag means that the driver allows
+> its "noirq" and "early" resume callbacks to be skipped if the device
+> can be left in suspend after a system-wide transition into the working
+> state. PM core determines that the driver's "noirq" and "early" resume
+> callbacks should be skipped or not with dev_pm_skip_resume() function by
+> checking power.may_skip_resume variable.
+>
+> power.must_resume variable is getting set to false in __device_suspend()
+> function without checking device's DPM_FLAG_MAY_SKIP_RESUME settings.
+> In problematic scenario, where all the devices in the suspend_late
+> stage are successful and some device can fail to suspend in
+> suspend_noirq phase. So some devices successfully suspended in suspend_late
+> stage are not getting chance to execute __device_suspend_noirq()
+> to set dev->power.must_resume variable to true and not getting
+> resumed in early_resume phase.
+>
+> Add a check for device's DPM_FLAG_MAY_SKIP_RESUME flag before
+> setting power.must_resume variable in __device_suspend function.
+>
+> Fixes: 6e176bf8d461 ("PM: sleep: core: Do not skip callbacks in the resume phase")
+> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
 > ---
->  .../broadcom/brcm80211/brcmfmac/cfg80211.c      | 17 +++++++++++------
->  1 file changed, 11 insertions(+), 6 deletions(-)
+>  V4 -> V5: Fix coding style
+>  V3 -> V4: Remove dev->power.usage_count variable check
+>  V2 -> V3: Format issues patch posting
+>  V1 -> V2: Fixed indentation and commit text to include scenario
+>  drivers/base/power/main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c=
- b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> index f4405d7861b6..6cb09c7c37b6 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-> @@ -7442,18 +7442,23 @@ static s32 brcmf_translate_country_code(struct b=
-rcmf_pub *drvr, char alpha2[2],
->  	s32 found_index;
->  	int i;
+> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> index d568772..cbea78e 100644
+> --- a/drivers/base/power/main.c
+> +++ b/drivers/base/power/main.c
+> @@ -1642,7 +1642,7 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
+>         }
 >
-> -	country_codes =3D drvr->settings->country_codes;
-> -	if (!country_codes) {
-> -		brcmf_dbg(TRACE, "No country codes configured for device\n");
-> -		return -EINVAL;
-> -	}
-> -
->  	if ((alpha2[0] =3D=3D ccreq->country_abbrev[0]) &&
->  	    (alpha2[1] =3D=3D ccreq->country_abbrev[1])) {
->  		brcmf_dbg(TRACE, "Country code already set\n");
->  		return -EAGAIN;
->  	}
+>         dev->power.may_skip_resume = true;
+> -       dev->power.must_resume = false;
+> +       dev->power.must_resume = !dev_pm_test_driver_flags(dev, DPM_FLAG_MAY_SKIP_RESUME);
 >
-> +	country_codes =3D drvr->settings->country_codes;
-> +	if (!country_codes) {
-> +		brcmf_dbg(TRACE, "No country codes configured for device, using ISO31=
-66 code and 0 rev\n");
-> +		memset(ccreq, 0, sizeof(*ccreq));
-> +		ccreq->country_abbrev[0] =3D alpha2[0];
-> +		ccreq->country_abbrev[1] =3D alpha2[1];
-> +		ccreq->ccode[0] =3D alpha2[0];
-> +		ccreq->ccode[1] =3D alpha2[1];
-> +		return 0;
-> +	}
-> +
->  	found_index =3D -1;
->  	for (i =3D 0; i < country_codes->table_size; i++) {
->  		cc =3D &country_codes->table[i];
+>         dpm_watchdog_set(&wd, dev);
+>         device_lock(dev);
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
 
+Applied as 5.15-rc material, thanks!
