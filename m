@@ -2,97 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5E340239B
+	by mail.lfdr.de (Postfix) with ESMTP id E485F40239D
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234594AbhIGGvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 02:51:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35952 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231429AbhIGGvn (ORCPT
+        id S235084AbhIGGwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 02:52:14 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:34659 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234831AbhIGGwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 02:51:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630997437;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cTDhhUvvDbJ7NpxaaVzsPO+lW+QLm0QYSBqXZYb5YbI=;
-        b=KOO7mXzuf5ZsB4eHV+O6MiQM9oWvhG/9/SadDm2MWQUBoFrRUychmcqpT1Jaopg6+uAi6k
-        KbtY0UsWh09CDfxmJFRPiQIpsck+A/eakYvYeWSCvV+xobadtYBGnHA8xcsZWMP0M2akIB
-        hxe/vxoa2ARe/cUtnvCQ1I4KQ3c4WCQ=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-477-qotxHs8KPGGjS9VCU1fWtQ-1; Tue, 07 Sep 2021 02:50:36 -0400
-X-MC-Unique: qotxHs8KPGGjS9VCU1fWtQ-1
-Received: by mail-wm1-f69.google.com with SMTP id v2-20020a7bcb420000b02902e6b108fcf1so745932wmj.8
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 23:50:35 -0700 (PDT)
+        Tue, 7 Sep 2021 02:52:13 -0400
+Received: by mail-il1-f199.google.com with SMTP id d17-20020a9287510000b0290223c9088c96so5469261ilm.1
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 23:51:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cTDhhUvvDbJ7NpxaaVzsPO+lW+QLm0QYSBqXZYb5YbI=;
-        b=IUmQj3mJGxf9H9X+PAAXlpKx+hGrcRGcyuOtylqOvVjHbAUKlnzPe7QFeAxudQuaTA
-         p2f8LVXBCUH6hdu3nfL5rTdNmAM0nNFuRsq7lAYrqKA9D8OYJYV5nbNqzHHDetLvQBZz
-         0f3ICaED0+ZYXejmZ0iBMuHhQ0yEPsNbK3EX8b0RMqVfjTLaO6Lmc9LK0O1lV/a2JjSL
-         yNb/lcFPEGcIUAD0PVSqr2DkXkEohV6QJtqOPyeC29YnXr6yuM6C+/FHfyl4Pl7+zQEJ
-         RDtn+ByVIJXRMI0893DA357uNyQr9lxvIxnpFffIdRN3fniYrbSs7kJ2/4ETnzq8ffFs
-         J5pw==
-X-Gm-Message-State: AOAM531dQvN6cVZfk5qsYssIGkgg4bu6j66mRZezLCq5JJwE2dLeZaiL
-        K59d3FnL+NF44a/I2nOqEEOG0UvlWvei24EOuJUH95A4vx6mSvXg4XNCLWJwHgqNgQ+LY2JwmR8
-        WV5zwoAWMxhAm+0XDjb4P4+uTQbVjCn2FXEhARv8ZrHNF/wHQehF+A5Y6GHnrjfTpFVBOMCX2T8
-        vL
-X-Received: by 2002:a5d:58e9:: with SMTP id f9mr16550034wrd.154.1630997434667;
-        Mon, 06 Sep 2021 23:50:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxCETlFGE/fGAH7ycrp8pZpq7ggabDZaenWfDkmVgVwD7eIIKSMb+i7CdtVIc62tH5jU7/A9Q==
-X-Received: by 2002:a5d:58e9:: with SMTP id f9mr16550007wrd.154.1630997434458;
-        Mon, 06 Sep 2021 23:50:34 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j4sm9760221wrt.23.2021.09.06.23.50.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 Sep 2021 23:50:33 -0700 (PDT)
-Subject: Re: [PATCH 1/2] KVM: VMX: avoid running vmx_handle_exit_irqoff in
- case of emulation
-To:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-References: <20210826095750.1650467-1-mlevitsk@redhat.com>
- <20210826095750.1650467-2-mlevitsk@redhat.com> <YSe6wphK9b8KSkXW@google.com>
- <a642cc28-272b-9a1f-51bb-657416e588d0@redhat.com>
- <e3e84acd383d4f5716745c2e513d442782b6b786.camel@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <b2d1d944-d865-5cd4-104b-35977f7d97eb@redhat.com>
-Date:   Tue, 7 Sep 2021 08:50:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=bQd9Yn1U78LI0fg5YUZ8e9dnmnC6+HnT8KD9nGnx8JU=;
+        b=TYSrHQyRtafOee2TI9xo49qtxm3T9bhFxGqpekah0+PH8dBaPkO+UqN9WAVcUgl5Ki
+         Dqqqy8HbXIvBNqLVZzG6HwZHpz1DoAvMrLtfRUpFf/9vraVl6k0jR1yBa2AkX/IGFPK0
+         HH8ld+rV2EVAZTr1luGOt0HwoNDvS2ih+kn3+LotE9B4FEl4zsJ6vGHeDhfa6A31xmYV
+         lmotUwT1CyBA3dGdz41CcC6kdXEkkmW8U3Xp+Ni7DNDZa4/AH0wDC9qPMpRH0qykI5kO
+         KziKzEz3+sRiecai1vdfsu72bkNzOYUagtI+yxszOWHaWCno/OxBK8A3u9s30FfBx3/G
+         KmOA==
+X-Gm-Message-State: AOAM530Exe1eXTRzmB2XHcWNYK1PNUrlPEd7N2hAIE4MB+vzia9Vh/r1
+        ymSoKMnblA8HYjEQbok45jb1AOL1c1U/C99MB/CmGw4Tu/lk
+X-Google-Smtp-Source: ABdhPJyeUmZ77BzmFV6pTkT9Wvawnx2OaFZU5c3skKh+qRRWvRHB3C05eZo7fTlP2AYnx5kDHHj5zeGxsKLKjX/w3mvetoc6Vl5/
 MIME-Version: 1.0
-In-Reply-To: <e3e84acd383d4f5716745c2e513d442782b6b786.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a6b:fb0b:: with SMTP id h11mr12845176iog.59.1630997467748;
+ Mon, 06 Sep 2021 23:51:07 -0700 (PDT)
+Date:   Mon, 06 Sep 2021 23:51:07 -0700
+In-Reply-To: <000000000000bb5f8605c697fd87@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b1e03005cb6230b5@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Write in get_ucounts
+From:   syzbot <syzbot+8c3af233123df0578a5c@syzkaller.appspotmail.com>
+To:     ebiederm@xmission.com, legion@kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/09/21 23:07, Maxim Levitsky wrote:
-> Note that I posted V2 of this patch series ([PATCH v2 0/6] KVM: few more SMM fixes)
-> 
-> There I addressed the review feedback from this patch series,
-> and for this particular case, I synthesized invalid VM exit as was suggested.
+syzbot suspects this issue was fixed by commit:
 
-Yes, that's intended.  I will revert this version in 5.16.
+commit 345daff2e994ee844d6a609c37f085695fbb4c4d
+Author: Alexey Gladkov <legion@kernel.org>
+Date:   Tue Jul 27 15:24:18 2021 +0000
 
-Paolo
+    ucounts: Fix race condition between alloc_ucounts and put_ucounts
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1378d0ed300000
+start commit:   d5ad8ec3cfb5 Merge tag 'media/v5.14-2' of git://git.kernel..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=702bfdfbf389c324
+dashboard link: https://syzkaller.appspot.com/bug?extid=8c3af233123df0578a5c
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16fedec6300000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: ucounts: Fix race condition between alloc_ucounts and put_ucounts
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
