@@ -2,107 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9AB40295E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A65402964
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344536AbhIGNIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 09:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344611AbhIGNIE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 09:08:04 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 521D0C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 06:06:58 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a25so19563926ejv.6
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 06:06:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=L4oWWGov+bkftJWApz4guBbjvDk1FzTK4dXqUmqhsGo=;
-        b=rnSIxm8cJRcatY6H7Eo6xNBmKdAEFiSjwDRpe1p581pHp2njaMR21jCJhp4BSa6AF9
-         sdAlWMYna02+u2ELL6Dy9FN4vDBj1NbNoYRcvx7YrBG60NFQBZTkEkJkVB02YtmUl49u
-         GlpTMTsuwJOd3+A4KMoTcJQE2njez1aT+nZbbWyHy3rE+DzcGRsL1uChH1WXPA3vVecs
-         wpU53lPC5zPSWTm1g09vm2+9YVOWzWWPLoZh+1GyxgAox4HcOZudkDV2WBP6hHp75FVG
-         T1WQdjvUc/J8teTsE4S6db1q46Vn+Zvjzy9m6ghat29UvFjY9ZQI2hgX58E499q6xR7Q
-         1WRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=L4oWWGov+bkftJWApz4guBbjvDk1FzTK4dXqUmqhsGo=;
-        b=mgKa2THVmluizSlBGs4/FNKHsPGWby7choGjYIn6ziLSrmM1MRx1EK1fED4md4R0kf
-         WyAhfz5SsCMTv8iM+ZqWlagRXg5D7XoLhydH1YAFM668KIQ50hT4c0WXlqJwzrwfzyvC
-         PssAtsTJfrC6C/Lm+XKQppMOFBigQLly5Gg0I+MhrMNYEthD1fn3h/2lGqkb3YCtlj7y
-         h/wvdhDiQxIHcqbrPKSqenyXUG4orfcVDilevY6ZuqHQ2nduClrxXfoxghF9MdJn6dUd
-         XPh1CacDY7hi1+2yh9TQe5q+CsKPYV/IDUmh+6cyindq2Ck5ndaq0dIxOd55j7D1A/2Q
-         G7gg==
-X-Gm-Message-State: AOAM532gKB78xfQvggAWafN/8Msnr7uj+Kcz8hqlLO3VJpJHLVrP59dc
-        jN5Epdymbp34AeNI6iISN07gHAis5k3QqJw2tbNo
-X-Google-Smtp-Source: ABdhPJwDAmt2hGxT5ZkcZv9YGnSEohNbSITnIOxntCgMm5mnhtxhhGJHKQSwvGW7B6b8gVrXH65MjjesrNwq98dkGuI=
-X-Received: by 2002:a17:906:8cd:: with SMTP id o13mr18352630eje.341.1631020016659;
- Tue, 07 Sep 2021 06:06:56 -0700 (PDT)
+        id S1344642AbhIGNKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 09:10:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344507AbhIGNK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 09:10:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A08F161057;
+        Tue,  7 Sep 2021 13:09:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631020161;
+        bh=EwAZ6xsh+B077xdiAiUPyl2HqmdVrDjC+5YWJzZ/NfU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Q/zlmlKmY5yaK8vdBrwafAOfK+k7tAOK2PrHwh8Y7zubnXxcJNdNEK3MGJd7YYk8t
+         sVl5Iu+QmwjsouHH6tILI1wa00lk2DaRqTAA5QfccE5pIVUom4M8sghvYRxsBkj2FH
+         fu8HjQChFTdeBL09bWX+HBa4oYvDUhf0iKabh82sdWM1dtDS/4qAMSkAqSng5JuHj2
+         4h3AnJHki2aETz+rcuvDs0HiTdNEL5+UsvCFeXrlbc2lTl1lOSbnMGZu9fJxtrcO7j
+         3rSOF6EWvhoobW0F7JVSY7MaQGZzVM2UUtoW+vwTyvjnOA/L0fJzuYdmV7faaUqPM/
+         jsXz/nziD5lXg==
+Received: by mail-ej1-f44.google.com with SMTP id a25so19578065ejv.6;
+        Tue, 07 Sep 2021 06:09:21 -0700 (PDT)
+X-Gm-Message-State: AOAM530VhfuOXCNWvMa6BOfNEjYNHIOAPkJA8LvYbg3gWFmHn7GHSzLO
+        A4vReSfg3p0kvQGR439jHSEp2bm+a2YKEvmKKw==
+X-Google-Smtp-Source: ABdhPJxBSSSWDWXZKUa0KTwW8npz3Wes4pinOo+DiOg4l/HZ6ENDCXtawjSrYUBvQFdNIbIB14Rbld0CnFGz+MWKkhk=
+X-Received: by 2002:a17:906:2dcf:: with SMTP id h15mr18410957eji.320.1631020160188;
+ Tue, 07 Sep 2021 06:09:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210830115942.1017300-1-sashal@kernel.org> <20210830115942.1017300-13-sashal@kernel.org>
- <CAD-N9QUXXjEMtdDniuqcNSAtaOhKtHE=hLMchtCJgbvxQXdABQ@mail.gmail.com>
- <CAHC9VhTjFMw111-fyZsFaCSnN3b-TuQjqXcc1zVu2QTTekTohw@mail.gmail.com> <YTS96ql9DzxpYpnl@sashalap>
-In-Reply-To: <YTS96ql9DzxpYpnl@sashalap>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 7 Sep 2021 09:06:45 -0400
-Message-ID: <CAHC9VhR_eHxS9HFGx1QwRj9wqcmcg5794cCJ8QXKsbGA1+QELQ@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 5.13 13/14] net: fix NULL pointer reference in cipso_v4_doi_free
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Abaci <abaci@linux.alibaba.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        linux-security-module@vger.kernel.org
+References: <20210903145340.225511-1-daniel.baluta@oss.nxp.com>
+ <20210903145340.225511-3-daniel.baluta@oss.nxp.com> <YTJTF5VMOyG2iZb0@robh.at.kernel.org>
+ <CAEnQRZC-GN9iEPk6-A_oKPHcCYj8_WeQC0TT_NpK_QntkmAqiQ@mail.gmail.com>
+In-Reply-To: <CAEnQRZC-GN9iEPk6-A_oKPHcCYj8_WeQC0TT_NpK_QntkmAqiQ@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 7 Sep 2021 08:09:08 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqK_DGqYQxKBHDS7PyviF35V-OP7__KRmmTePn9ZHhiz_w@mail.gmail.com>
+Message-ID: <CAL_JsqK_DGqYQxKBHDS7PyviF35V-OP7__KRmmTePn9ZHhiz_w@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] dt-bindings: dsp: fsl: Add DSP optional clocks documentation
+To:     Daniel Baluta <daniel.baluta@gmail.com>
+Cc:     Daniel Baluta <daniel.baluta@oss.nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        =?UTF-8?Q?P=C3=A9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Suman Anna <s-anna@ti.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 5, 2021 at 8:54 AM Sasha Levin <sashal@kernel.org> wrote:
-> On Mon, Aug 30, 2021 at 10:20:22AM -0400, Paul Moore wrote:
-> >On Mon, Aug 30, 2021 at 8:42 AM Dongliang Mu <mudongliangabcd@gmail.com>=
- wrote:
-> >>
-> >> On Mon, Aug 30, 2021 at 8:01 PM Sasha Levin <sashal@kernel.org> wrote:
-> >> >
-> >> > From: =E7=8E=8B=E8=B4=87 <yun.wang@linux.alibaba.com>
-> >> >
-> >> > [ Upstream commit 733c99ee8be9a1410287cdbb943887365e83b2d6 ]
-> >> >
-> >>
-> >> Hi Sasha,
-> >>
-> >> Michael Wang has sent a v2 patch [1] for this bug and it is merged
-> >> into netdev/net-next.git. However, the v1 patch is already in the
-> >> upstream tree.
-> >>
-> >> How do you guys handle such a issue?
-> >>
-> >> [1] https://lkml.org/lkml/2021/8/30/229
-> >
-> >Ugh.  Michael can you please work with netdev to fix this in the
-> >upstream, and hopefully -stable, kernels?  My guess is you will need
-> >to rebase your v2 patch on top of the v1 patch (basically what exists
-> >in upstream) and send that back out.
+On Sat, Sep 4, 2021 at 9:51 AM Daniel Baluta <daniel.baluta@gmail.com> wrote:
 >
-> I'm just going to drop this one for now (it never made it in). If there
-> is a follow-up you do want us to queue please let us know :)
+> On Fri, Sep 3, 2021 at 8:11 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Fri, Sep 03, 2021 at 05:53:40PM +0300, Daniel Baluta wrote:
+> > > From: Daniel Baluta <daniel.baluta@nxp.com>
+> > >
+> > > DSP node on the Linux kernel side must also take care of enabling
+> > > DAI/DMA related clocks.
+> > >
+> > > By design we choose to manage DAI/DMA clocks from the kernel side because of
+> > > the architecture of some i.MX8 boards.
+> > >
+> > > Clocks are handled by a special M4 core which runs a special firmware
+> > > called SCFW (System Controler firmware).
+> > >
+> > > This communicates with A cores running Linux via a special Messaging
+> > > Unit and implements a custom API which is already implemented by the
+> > > Linux kernel i.MX clocks implementation.
+> > >
+> > > Note that these clocks are optional. We can use the DSP without them.
+> > >
+> > > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> > > ---
+> > >  .../devicetree/bindings/dsp/fsl,dsp.yaml      | 33 +++++++++++++++++++
+> > >  1 file changed, 33 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > > index 7afc9f2be13a..1453668c0194 100644
+> > > --- a/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > > +++ b/Documentation/devicetree/bindings/dsp/fsl,dsp.yaml
+> > > @@ -24,16 +24,49 @@ properties:
+> > >      maxItems: 1
+> > >
+> > >    clocks:
+> > > +    minItems: 3
+> > >      items:
+> > >        - description: ipg clock
+> > >        - description: ocram clock
+> > >        - description: core clock
+> > > +      - description: esai0 core clock for accessing registers
+> > > +      - description: esai0 baud clock
+> > > +      - description: esai0 system clock
+> > > +      - description: esai0 spba clock required when ESAI is placed in slave mode
+> > > +      - description: SAI1 bus clock
+> > > +      - description: SAI1 master clock 0
+> > > +      - description: SAI1 master clock 1
+> > > +      - description: SAI1 master clock 2
+> > > +      - description: SAI1 master clock 3
+> > > +      - description: SAI3 bus clock
+> > > +      - description: SAI3 master clock 0
+> > > +      - description: SAI3 master clock 1
+> > > +      - description: SAI3 master clock 2
+> > > +      - description: SAI3 master clock 3
+> > > +      - description: SDMA3 root clock used for accessing registers
+> >
+> > Sigh, I just rejected this kind of thing for the other i.MX8 DSP
+> > binding[1].
+> >
+> > Add a reference to the h/w block and then get the clocks (and other
+> > resources) from there.
+>
+> The H/W block is controlled by the DSP firmware. So, we don't want
+> to use the Linux kernel driver (thus the H/W block device tree node).
 
-Thanks Sasha.  The lore link below is the v2 version of the patch and
-it is worth merging as a fix into the older kernels.
+'status' is how you disable a device to not be used by the OS.
 
-* https://lore.kernel.org/linux-security-module/18f0171e-0cc8-6ae6-d04a-a69=
-a2a3c1a39@linux.alibaba.com
+The information about that device's resources are already in DT, we
+don't need to duplicate that here. If you want a list of devices
+assigned to the DSP here, that would be okay.
 
---=20
-paul moore
-www.paul-moore.com
+> The only thing that we cannot control from the DSP firmware are the clocks
+> hence we handle them in the DSP node.
+>
+> We moved the DAI clocks under the DSP node as I think you suggested here:
+>
+> https://www.lkml.org/lkml/2020/3/12/969
+
+No, that's certainly not what I was suggesting. The resources in the
+DSP node should be the h/w resources of the DSP itself.
+
+Rob
