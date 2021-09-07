@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AEA840310F
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 00:29:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF13403111
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 00:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346053AbhIGWac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 18:30:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41144 "EHLO
+        id S1346229AbhIGWbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 18:31:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232816AbhIGWaa (ORCPT
+        with ESMTP id S1344382AbhIGWbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 18:30:30 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0911C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 15:29:23 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id z2so829402lft.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 15:29:23 -0700 (PDT)
+        Tue, 7 Sep 2021 18:31:13 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BE1C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 15:30:05 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id q68so356532pga.9
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 15:30:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=mLneQ0gyxHkkDtfnQOD0UsHJuuTR6tVk0d26lWCdN+E=;
-        b=ilpTH5u3Qk+WishFjyAu6KuJqTJ09gPdjP8PRQUVAZZ8eHQKhJ2bCX/cXDHRP3gikt
-         WPhA5uyLi+Kn864Yw/ptwhh4k8sZACwGNGzFACwidZrUdslXW5JyOEhGYPjMP8J4If1D
-         +hdwO078kHDUEod1IiW+++jnRc2Wa2yTlsMX3E+3VP5l4QHx8Zmr8/DtxOr7s/aa5m30
-         l5WI75VZ8VmlvyEE2xBy/9hopqcKSgUejybHURPW+Z9+lyyXGLw1mHtQN2rk9zAjV63e
-         9VWf6KKIPgW5l77HdCxYUaKpHBEZK1EHJgBsgcOYxexJi/fzkcclBB9OuO47GMqszF5+
-         2zrA==
+        bh=mP/IIf+MJPppx6rdwrLf1UIeleriTJ/3EK8yRMv6DsY=;
+        b=OKiv359hU6qwhV0SwGATvX1niwWqBdt0iGVarRgaeolD4hzPmJDltZkhIaBcjrxj1g
+         8yqQPMtR9hTicQqC8UdXe3yUS0N3dSxGGrPc9IrbaA8rPIH2uFWArfsiBL9gxZ02lRzt
+         O663f/s9A0fsw5delQpKcLC6q9liiTEMIJmqOnSV4JrDPkBPxQQHSCSRa7lf0B3HHtvO
+         S2DsnYxaJMzK2N+LCiesfvt4mPCPfFTZnVl2wK3EVkfJcPHs3Nk4T0Ny9h0NU6woqGE2
+         pMUBvw488luPIt/5A6pXMXJSoXQMjUu3cDYu7Ve4Rziy5iIwyrF7OU90trUnnzjOpEPq
+         V48g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mLneQ0gyxHkkDtfnQOD0UsHJuuTR6tVk0d26lWCdN+E=;
-        b=MwqVWEgTjxJUg5QvDqihjQfLrKzv3+ztwaYCZDd+LUjNo/XYzd6OLXor/VGge95ZKj
-         /qIZCATl5BQiF0Ktkj1aMxglI0tNbRccYtXd2MD/7OndP4TqhHTeLvPd9wZt1Be3skQm
-         JLSCvRxOGnkGdSFKWnPcijhUsB7g71a0LPNeG/Jpp2PCQv3rWnmILGEAWSYWi+Depb5Z
-         u9AGAX5BLvNm3En61PbpT6RkzbxLOkd8tvOj/DZeP2oP5jgZzphrEdJJ59/KSg9ep8qf
-         qeat8BP0sAu1k7FTKvUsr2ab/1tSY+FXRSsvcA3n4LJZb5MwvtbTPoIebFUtlz7okEBn
-         ozIg==
-X-Gm-Message-State: AOAM532pZsy//l/oOVeB4fw95+KFEh1S9/eMBUiSIWeWHvzeehMGT4of
-        mg/QgISKHinJTTXgBpDLU2f7pr1HTShqZVY9G/L3ug==
-X-Google-Smtp-Source: ABdhPJy+3Fh2/TUVFm2riSjDONzsxcAbvhzevvTtD3GSMOgR57hNrnLarHgePQ+7B7Wi7nNxEH3/MU1B/tOUfL166CA=
-X-Received: by 2002:a05:6512:36d9:: with SMTP id e25mr432276lfs.553.1631053761858;
- Tue, 07 Sep 2021 15:29:21 -0700 (PDT)
+        bh=mP/IIf+MJPppx6rdwrLf1UIeleriTJ/3EK8yRMv6DsY=;
+        b=ZljiGyQ6RWVueu54zJo5y+KupzaM0wwg2JCo9sSJGuysXQs8nzsGxWJ5GHerJ81gtk
+         Kd88J6XsPCWFNSPmdSjEn9LZk5YiVtDN8n5ibSdSf9XCc8TokF8jjZ8tHBzaSIA01LVQ
+         aFYfyaaw2WJt2YQyU+Yer5VimbejPwKh7ES9L7sCt0KXw6PL/JLprCd5adq8NsuGyFav
+         IQzM39sLKacURdPK/JE9zJtLpGhrzSMFySMOR9uth9foWiaa0GtPxEs3S3S5aVlAU08P
+         M1kLe4qM0QT+0FP40/4YsQT7GBxNt7E59uOSZp5VXKJd3mI+pN7fGNHl7nzfAH/geHb+
+         Le/g==
+X-Gm-Message-State: AOAM532FDX2BxO4BWM3EdnQZHENiClhGc++1QiVG7voYNPSz/FhoJwJc
+        PgZCZhFzBfHqnS8fPJgrxD07Yp+wKoLvwf3/YI1gqA==
+X-Google-Smtp-Source: ABdhPJzgkyotWqm/GhDUt9M4xwX5X+VVZD0hVUEAJ1Bsel6IlV6f5bjhhHaFaC6IFBLXBU7Canbhv3p1uWvFRkEaI7g=
+X-Received: by 2002:a63:dd46:: with SMTP id g6mr528777pgj.347.1631053804832;
+ Tue, 07 Sep 2021 15:30:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210907123112.10232-1-justin.he@arm.com> <20210907123112.10232-3-justin.he@arm.com>
-In-Reply-To: <20210907123112.10232-3-justin.he@arm.com>
-From:   Oliver Upton <oupton@google.com>
-Date:   Tue, 7 Sep 2021 17:29:11 -0500
-Message-ID: <CAOQ_QsjOmHw+545J0T9i-nWV2bVGGEwHq5SPVvBOM-SHMXpP5g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] KVM: arm64: Add memcg accounting to KVM allocations
-To:     Jia He <justin.he@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-        Alexandru Elisei <Alexandru.Elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, Liu Shixin <liushixin2@huawei.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org
+References: <20210907210924.22287-1-straube.linux@gmail.com>
+In-Reply-To: <20210907210924.22287-1-straube.linux@gmail.com>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Tue, 7 Sep 2021 23:29:53 +0100
+Message-ID: <CAA=Fs0mg7ZjgK-NeeGehEVKczyfH2ZsruWe_nneroBJw6kz=zw@mail.gmail.com>
+Subject: Re: [PATCH] staging: r8188eu: remove unused function Hal_ProSetCrystalCap()
+To:     Michael Straube <straube.linux@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Martin Kaiser <martin@kaiser.cx>,
+        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        "open list:STAGING SUBSYSTEM" <linux-staging@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jia,
-
-On Tue, Sep 7, 2021 at 7:33 AM Jia He <justin.he@arm.com> wrote:
+On Tue, 7 Sept 2021 at 22:09, Michael Straube <straube.linux@gmail.com> wrote:
 >
-> Inspired by commit 254272ce6505 ("kvm: x86: Add memcg accounting to KVM
-> allocations"), it would be better to make arm64 KVM consistent with
-> common kvm codes.
+> Remove unused function Hal_ProSetCrystalCap().
 >
-> The memory allocations of VM scope should be charged into VM process
-> cgroup, hence change GFP_KERNEL to GFP_KERNEL_ACCOUNT.
+> Signed-off-by: Michael Straube <straube.linux@gmail.com>
+> ---
+>  drivers/staging/r8188eu/core/rtw_mp.c    | 9 ---------
+>  drivers/staging/r8188eu/include/rtw_mp.h | 1 -
+>  2 files changed, 10 deletions(-)
 >
-> There remain a few cases since these allocations are global, not in VM
-> scope.
+> diff --git a/drivers/staging/r8188eu/core/rtw_mp.c b/drivers/staging/r8188eu/core/rtw_mp.c
+> index dabdd0406f30..82268f754da0 100644
+> --- a/drivers/staging/r8188eu/core/rtw_mp.c
+> +++ b/drivers/staging/r8188eu/core/rtw_mp.c
+> @@ -924,12 +924,3 @@ void _rtw_mp_xmit_priv(struct xmit_priv *pxmitpriv)
+>  exit:
+>         ;
+>  }
+> -
+> -void Hal_ProSetCrystalCap(struct adapter *pAdapter, u32 CrystalCapVal)
+> -{
+> -       CrystalCapVal = CrystalCapVal & 0x3F;
+> -
+> -       // write 0x24[16:11] = 0x24[22:17] = CrystalCap
+> -       PHY_SetBBReg(pAdapter, REG_AFE_XTAL_CTRL, 0x7FF800,
+> -                    (CrystalCapVal | (CrystalCapVal << 6)));
+> -}
+> diff --git a/drivers/staging/r8188eu/include/rtw_mp.h b/drivers/staging/r8188eu/include/rtw_mp.h
+> index b2befe09d944..73fb6974d076 100644
+> --- a/drivers/staging/r8188eu/include/rtw_mp.h
+> +++ b/drivers/staging/r8188eu/include/rtw_mp.h
+> @@ -466,7 +466,6 @@ void Hal_TriggerRFThermalMeter(struct adapter *pAdapter);
+>  u8 Hal_ReadRFThermalMeter(struct adapter *pAdapter);
+>  void Hal_SetCCKContinuousTx(struct adapter *pAdapter, u8 bStart);
+>  void Hal_SetOFDMContinuousTx(struct adapter *pAdapter, u8 bStart);
+> -void Hal_ProSetCrystalCap (struct adapter *pAdapter , u32 CrystalCapVal);
+>  void _rtw_mp_xmit_priv(struct xmit_priv *pxmitpriv);
+>  void MP_PHY_SetRFPathSwitch(struct adapter *pAdapter ,bool bMain);
+>
+> --
+> 2.33.0
+>
 
-I believe there are more memory allocations that could be switched to
-GFP_KERNEL_ACCOUNT. For non-pKVM kernels, we probably should charge
-all stage-2 paging structure allocations to the VM process. Your patch
-appears to only change the allocation of the kvm_pgtable structure,
-but not descendent paging structures.
+Looks good Michael, many thanks.
 
---
-Thanks,
-Oliver
+Acked-by: Phillip Potter <phil@philpotter.co.uk>
+
+Regards,
+Phil
