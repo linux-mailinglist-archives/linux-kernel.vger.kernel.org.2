@@ -2,150 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9C6402A97
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD38402AA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236655AbhIGOSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:18:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40308 "EHLO
+        id S237550AbhIGOWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233970AbhIGOSk (ORCPT
+        with ESMTP id S235580AbhIGOWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:18:40 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA98EC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:17:34 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id n27so13008798oij.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:17:34 -0700 (PDT)
+        Tue, 7 Sep 2021 10:22:30 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92F7C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:21:21 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id l7-20020a1c2507000000b002e6be5d86b3so2380279wml.3
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:21:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=41eOpaggA77QHE2mPAqNRgEMJRJWSV+8azyguMYtpmM=;
-        b=EtwIW0igagjseOSzp2URGEilPWeMajVqYIFW0ddiz6c/duZDJeehXvUdAzNVPS7yOE
-         seaFsEEJXpwaLbHCWpGGsJJIlrufOmnEd8regUYsoQHTr+5ag/CfCf+LtMbsQ2iWzUr6
-         CvSe8W+Mro0dBHANjvzD5d6Z3ZttkEzk1uxBMQum1j4TeJiUl79hy8I6DkkCZfWPus5t
-         H7VuHChcUpK6UnnjR8hBspqRb1EmTI5zAjYz02gMM7l51kfJqUMu6G8ib6L+lWZJUb4p
-         +GRVDdaEYtyamjicCmfP7OTgeg20pMYkreUD2kfcisY+1DU48XYYl1LjbHAjzbm6prij
-         Rcfw==
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=2gu+y92BYzICAyv4Ce791IMnEMPI3rpFeRLqnjo79b8=;
+        b=Np0xMTUIcbMIUogmfEeMOSWMkTPL3jRyzvMdYIKqIiM9Ydc7uxOcFhUlMZRkeCbNb/
+         vGzGCC/xzA+FdKg5BSPzU1EBrDxGPq7GwAW+LxChB2FaLLdy6CZpng5HB9a0t2Ee1Gbs
+         AWAyMU2s1MBGbba4RlhwgYC0aXxCnK3EI+3aB53Yf0mFrDNvUlfuk1ZmBZkOFGbQwBbR
+         MFSb3dV9Y0aP3/fsbj/diXUGtvpr3DWSABzWo0wOaRyKnILevHAtGd8uXZzXMkWJcGHc
+         5PkX+FenrbYNjqBIxfeHhPw2YJ3xYZZI55JfTxycySwkhSXtA1+gS+qkmXhOts3/gaRl
+         f8zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=41eOpaggA77QHE2mPAqNRgEMJRJWSV+8azyguMYtpmM=;
-        b=NS3QQXLPmLqjkfTf3cIJXIS0I5rSpHwB/ZZGKKlve8TDcMa0O/j3mahiroIqi3UgJT
-         HFA4g8qU3Z8m1RCzYIANqLxRMIAl8ob8JR2tNrcDmka4kn59dWEq4UONB67k1EoTtg9h
-         Op6uiP2Ih49fV6vGbS1ek4Jqepdx3ET2JQ6yA4LPO9WzLGHnV+aedR6m5syfrXni/OB1
-         sElvzEYZ5JdtR/OvEah12IyDlGCBE2R9A0zsuzuT2pnnQGd4SuGRVEhErgnwKjbsmWkE
-         FxYzXOqP/3BlF8T4tzyUFxRnIAJOZzEOVlZnuLBPzz6PZUOkdl5Ae4m3i1HJCcN2fIDJ
-         QFCg==
-X-Gm-Message-State: AOAM531L2TW41lbeKbxpCNPWBa0npcew5Q8VQQL4kH0ULKju568nBcey
-        ZuL6mzP281wg/4yQ3St1Ao6ysUWKgOFr+Lk+dwrD2Q==
-X-Google-Smtp-Source: ABdhPJw24uKwJ66mYEDoqTBfJL7AR7WbHgTKwv/Kn2XnNEDj4FxfNFwauxvf89B5UPwsmABrzRX9KXpphcFtidc5SIU=
-X-Received: by 2002:aca:4589:: with SMTP id s131mr3105616oia.121.1631024253637;
- Tue, 07 Sep 2021 07:17:33 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=2gu+y92BYzICAyv4Ce791IMnEMPI3rpFeRLqnjo79b8=;
+        b=UCopS2OUMLnbVelEqa1USGoz2MwaSLbf5wzh6r3/mjDtp779o2uPcycI39XPU//Sg6
+         FXTJz5bMaeYgxljTue1tFnpHtfY7oG8ov1ciHEt6dRXw7BJuvCApXcbYh9XYOM5sHNUu
+         duAg5RuoRkzCzNx2yJonIHsOi92U4R6qdYNhlRmBQtIwJHO1/IDbdUJwB2WYoMbiHt6S
+         vFKFGPnv2l5ZiIP3c4VNp4eEULsTP98a5pn0Z/c6PnT4Fn6nWS8NwMnd94i//+7D7ExL
+         KACK0gaArlsGHBa8v94esoxR9JmR2O2vM0lrcNr2FB6NyjfAkXus/wEm3dq2ZaRVKyIa
+         c0rA==
+X-Gm-Message-State: AOAM532AXkyhTZZXoiXWh5bKPx/O7U0oxP+m3KYRgpsxg1/j1k4N1fWS
+        C3XRvwdrm912fnrl/oTWFuq1ubs3osWF1iKrobs=
+X-Google-Smtp-Source: ABdhPJxaHb54U5uFbSSeL1hdI5ayXa81B3fRTy3IKuTmxA8gCiDMpIw9CHZpyRJs4CKEy+Yqfl3KGRO4ZAjOCFQoN08=
+X-Received: by 2002:a05:600c:a44:: with SMTP id c4mr4287823wmq.83.1631024480461;
+ Tue, 07 Sep 2021 07:21:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210907141307.1437816-1-elver@google.com>
-In-Reply-To: <20210907141307.1437816-1-elver@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 7 Sep 2021 16:17:21 +0200
-Message-ID: <CANpmjNMenewC=wBGOcRv0m=G-i4xjR+_nm2noK5QEkyG_DpnJg@mail.gmail.com>
-Subject: Re: [PATCH 0/6] stackdepot, kasan, workqueue: Avoid expanding
- stackdepot slabs when holding raw_spin_lock
-To:     elver@google.com, Andrew Morton <akpm@linux-foundation.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>, Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Walter Wu <walter-zh.wu@mediatek.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Aleksandr Nogikh <nogikh@google.com>,
-        Taras Madan <tarasmadan@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Received: by 2002:adf:9cc4:0:0:0:0:0 with HTTP; Tue, 7 Sep 2021 07:21:19 -0700 (PDT)
+Reply-To: phillipknight903@gmail.com
+From:   Phillip Knight <massmodarmanne@gmail.com>
+Date:   Tue, 7 Sep 2021 07:21:19 -0700
+Message-ID: <CALdc+pv5d774OOg18QLkwVHxGZhrkPBtScr0=bWvwf+9Nhwrvw@mail.gmail.com>
+Subject: Dear winner,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Cc: Thomas, Sebastian]
-
-Sorry, forgot to Cc you... :-/
-
-On Tue, 7 Sept 2021 at 16:14, Marco Elver <elver@google.com> wrote:
->
-> Shuah Khan reported [1]:
->
->  | When CONFIG_PROVE_RAW_LOCK_NESTING=y and CONFIG_KASAN are enabled,
->  | kasan_record_aux_stack() runs into "BUG: Invalid wait context" when
->  | it tries to allocate memory attempting to acquire spinlock in page
->  | allocation code while holding workqueue pool raw_spinlock.
->  |
->  | There are several instances of this problem when block layer tries
->  | to __queue_work(). Call trace from one of these instances is below:
->  |
->  |     kblockd_mod_delayed_work_on()
->  |       mod_delayed_work_on()
->  |         __queue_delayed_work()
->  |           __queue_work() (rcu_read_lock, raw_spin_lock pool->lock held)
->  |             insert_work()
->  |               kasan_record_aux_stack()
->  |                 kasan_save_stack()
->  |                   stack_depot_save()
->  |                     alloc_pages()
->  |                       __alloc_pages()
->  |                         get_page_from_freelist()
->  |                           rm_queue()
->  |                             rm_queue_pcplist()
->  |                               local_lock_irqsave(&pagesets.lock, flags);
->  |                               [ BUG: Invalid wait context triggered ]
->
-> [1] https://lkml.kernel.org/r/20210902200134.25603-1-skhan@linuxfoundation.org
->
-> PROVE_RAW_LOCK_NESTING is pointing out that (on RT kernels) the locking
-> rules are being violated. More generally, memory is being allocated from
-> a non-preemptive context (raw_spin_lock'd c-s) where it is not allowed.
->
-> To properly fix this, we must prevent stackdepot from replenishing its
-> "stack slab" pool if memory allocations cannot be done in the current
-> context: it's a bug to use either GFP_ATOMIC nor GFP_NOWAIT in certain
-> non-preemptive contexts, including raw_spin_locks (see gfp.h and
-> ab00db216c9c7).
->
-> The only downside is that saving a stack trace may fail if: stackdepot
-> runs out of space AND the same stack trace has not been recorded before.
-> I expect this to be unlikely, and a simple experiment (boot the kernel)
-> didn't result in any failure to record stack trace from insert_work().
->
-> The series includes a few minor fixes to stackdepot that I noticed in
-> preparing the series. It then introduces __stack_depot_save(), which
-> exposes the option to force stackdepot to not allocate any memory.
-> Finally, KASAN is changed to use the new stackdepot interface and
-> provide kasan_record_aux_stack_noalloc(), which is then used by
-> workqueue code.
->
-> Marco Elver (6):
->   lib/stackdepot: include gfp.h
->   lib/stackdepot: remove unused function argument
->   lib/stackdepot: introduce __stack_depot_save()
->   kasan: common: provide can_alloc in kasan_save_stack()
->   kasan: generic: introduce kasan_record_aux_stack_noalloc()
->   workqueue, kasan: avoid alloc_pages() when recording stack
->
->  include/linux/kasan.h      |  2 ++
->  include/linux/stackdepot.h |  6 +++++
->  kernel/workqueue.c         |  2 +-
->  lib/stackdepot.c           | 51 ++++++++++++++++++++++++++++++--------
->  mm/kasan/common.c          |  6 ++---
->  mm/kasan/generic.c         | 14 +++++++++--
->  mm/kasan/kasan.h           |  2 +-
->  7 files changed, 65 insertions(+), 18 deletions(-)
->
-> --
-> 2.33.0.153.gba50c8fa24-goog
->
+-- 
+Dear winner, I'm writing to let you know about your recent win by your
+Email Account. We are here to inform you that your Email Account winner
+has been selected as the winner of this year (Molottery 2021). This
+year you earned $ 1.8 million as one of the selected winners  of
+(Molottery 2021)
+Contact Mr. Phillip Knight, at this email address (phillipknight903@gmail.com)
+for the claim of your wining prize.
+Mr. Phillip will tell you how to get your winning fund.
+Congratulation once again
