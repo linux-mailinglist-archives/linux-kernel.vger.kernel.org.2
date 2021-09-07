@@ -2,126 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ABCE402D09
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7640402D0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:46:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344756AbhIGQo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:44:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238089AbhIGQoz (ORCPT
+        id S1344794AbhIGQrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 12:47:16 -0400
+Received: from mail-oi1-f175.google.com ([209.85.167.175]:40888 "EHLO
+        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343837AbhIGQrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:44:55 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB1EC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 09:43:49 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id u7so10740258ilk.7
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 09:43:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3KTSECMQ89sSb/89xBh9CeoozoL34Ed1QNjuTkUfkOs=;
-        b=QyXDKfAD8zjNlfoWIRh+yxEfBJgzD+PngynPGAoCY8A8nPq0p2no9hMirpaPNiwbnc
-         PvcihJ+Hi64vaSH2hCaf5dtNnWw5cQjUj76CftD8bKAueAtDWzvJ8J1v2dAT7IQWW+vq
-         QNgZJUvkw4HjGBs8FScbp+bgS8xRD2XjK0CxjnadreCK9849sXTRTXAtDl46uCGjaPwa
-         dKbErC381J6uGS1muBokbVos+X0CU154fURDUgGHgBMLGuXrA+Q+xxsdigj4SYDIK3Lp
-         y5GRf+g4CAshcUT/H2lxHThmX+xV0hq8YzWrcEFlEBJBgJBEPCndbUpH8ak9uSFzU3CT
-         +jGQ==
+        Tue, 7 Sep 2021 12:47:13 -0400
+Received: by mail-oi1-f175.google.com with SMTP id h133so13539848oib.7;
+        Tue, 07 Sep 2021 09:46:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3KTSECMQ89sSb/89xBh9CeoozoL34Ed1QNjuTkUfkOs=;
-        b=F6TypPD5lpo4sNW7SmcwjPL/5DSrIB45MGPvG7f0NDohoY3+6o4NkhHxnZkA5kgY79
-         7pgm8CSWPASNFRXuOe/an7O7keigVumblfV/Jh8XEKw0X436PE8beNtCkYRp6m8IsFJw
-         sHJBT4uEER0DzcD2gU2T9O+7awc/4ypOnRcOTYKK9dykbInqTeNuVPCUlbLS6Opzu/7S
-         rvq5yelNJ5cDHEMLiJN0ZGlSKWnzQizyDAsE++1AL4bHjNTXO4/ttIru6WJc3tQNta6g
-         BOShebAInN5YkVhitXa9ji9q9LRDPR9qNKYZmZTTJRHZsabSveNVvdcoI0vNZMa8mx4O
-         HZdw==
-X-Gm-Message-State: AOAM53077dDS8J/SBaxKqU4SLwLLE9861KcUVEU5EfvR6ENixKqCGJ27
-        fm7nJR0oMKpZgb1Ml0ZaUP8evQ==
-X-Google-Smtp-Source: ABdhPJydgmex2AVNNZBm6S5H+yBNtfc6E4tKAvdERShRVi5efwE1Gu/s8rPZ/hyTim9QMsb2dR1fvA==
-X-Received: by 2002:a92:c5ac:: with SMTP id r12mr12191376ilt.279.1631033028454;
-        Tue, 07 Sep 2021 09:43:48 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id c25sm7103722iom.9.2021.09.07.09.43.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 09:43:48 -0700 (PDT)
-Subject: Re: [memcg] 0f12156dff: will-it-scale.per_process_ops -33.6%
- regression
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Borislav Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, Roman Gushchin <guro@fb.com>,
-        Serge Hallyn <serge@hallyn.com>, Tejun Heo <tj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yutian Yang <nglaive@gmail.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Zhengjun Xing <zhengjun.xing@linux.intel.com>
-References: <20210907150757.GE17617@xsang-OptiPlex-9020>
- <dbc9955d-6c28-1dd5-b842-ef39a762aa3b@kernel.dk>
- <CAHk-=wgrF65BpP6P6_a6+k+C8V+JOBiEx0X-c9idiM87uk32FQ@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <774dee70-69bd-9f95-d197-4cff83e4e633@kernel.dk>
-Date:   Tue, 7 Sep 2021 10:43:46 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DCZNN4p5E8kdrXSmi6bXMnp7xKFnaiWBCB0tHa5A5OA=;
+        b=Bw64cYmMn9sgJZ61c+4aG+oIce/PCjfOlP1xG0sMycZ8w1S6J7nrkLrJh0shO9bKV9
+         GEr2nuWhIRm+hXAGgsaLvna0O1IXnI4jSzCoxSPyjeKAWAiAHt+5lz9gOUWCU/c8JgBp
+         oewVTeXdPIw3bJCcg0ol8+f5qNNyMp3awS5Jjn+9vezZNZVABx/Ti1WrSBMpv0M20et4
+         Ji49zKjNPRpelTvNgB4hI1DMouZfxWKIH7gtkTrJCp616yW1E4wbKNqrnkMbQZS+vWTT
+         gZT6/3RcGCpC51gLlouPRIpvrJe+IDIcg84nZraCi3mICvKQMlPFZi/+SVSh2Dsu2+Kl
+         Wt/g==
+X-Gm-Message-State: AOAM5317kU9r9LPZnrNfJJL5107Gm5MwBghd33+XKeAXIo5hgUXP1D40
+        wMiDTNYPQCYdff+iW2tW+A==
+X-Google-Smtp-Source: ABdhPJyEWZxNDh9WKG25RoeCwev0Ca107OKI1Rf+mUhA3Dl4aN8TzcDh+oMu6TG6+aso5kQpCnX2YA==
+X-Received: by 2002:a05:6808:13d3:: with SMTP id d19mr3506601oiw.178.1631033166614;
+        Tue, 07 Sep 2021 09:46:06 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id x4sm2327260ood.2.2021.09.07.09.46.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 09:46:05 -0700 (PDT)
+Received: (nullmailer pid 4134391 invoked by uid 1000);
+        Tue, 07 Sep 2021 16:46:04 -0000
+Date:   Tue, 7 Sep 2021 11:46:04 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] dt-bindings: iio: adc: Add the binding
+ documentation for NXP IMX8QXP ADC
+Message-ID: <YTeXTLX05lvmwWvo@robh.at.kernel.org>
+References: <20210907015724.1377-1-caihuoqing@baidu.com>
+ <20210907015724.1377-3-caihuoqing@baidu.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wgrF65BpP6P6_a6+k+C8V+JOBiEx0X-c9idiM87uk32FQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210907015724.1377-3-caihuoqing@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/21 10:39 AM, Linus Torvalds wrote:
-> On Tue, Sep 7, 2021 at 8:46 AM Jens Axboe <axboe@kernel.dk> wrote:
->>
->> Are we at all worried about these? There's been a number of them
->> reported, basically for all the accounting enablements that have been
->> done in this merge window.
+On Tue, Sep 07, 2021 at 09:57:22AM +0800, Cai Huoqing wrote:
+> The NXP i.MX 8QuadXPlus SOC has a new ADC IP, so add the binding
+> documentation for NXP IMX8QXP ADC.
 > 
-> We are worried about them. I'm considering reverting several of them
-> because I think the problems are
+> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> ---
+> v1->v2: *Fix some indentation issues.
+>         *Mark status as okay.
+>         *Change clock2 source.
+> v1 link:
+> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210830172140.414-5-caihuoqing@baidu.com/
 > 
->  (a) big
+>  .../bindings/iio/adc/nxp,imx8qxp-adc.yaml     | 85 +++++++++++++++++++
+>  1 file changed, 85 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
 > 
->  (b) nontrivial
+> diff --git a/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml b/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
+> new file mode 100644
+> index 000000000000..77501898a563
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
+> @@ -0,0 +1,85 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/adc/nxp,imx8qxp-adc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: NXP IMX8QXP ADC bindings
+> +
+> +maintainers:
+> +  - Cai Huoqing <caihuoqing@baidu.com>
+> +
+> +description:
+> +  Supports the ADC found on the IMX8QXP SoC.
+> +
+> +properties:
+> +  compatible:
+> +    const: nxp,imx8qxp-adc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 2
+> +
+> +  clock-names:
+> +    items:
+> +      - const: per
+> +      - const: ipg
+> +
+> +  assigned-clocks:
+> +    maxItems: 1
+> +
+> +  assigned-clocks-rate:
+> +    maxItems: 1
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  status:
+> +    const: disable
+
+???
+
+You don't need 'status' in bindings. Plus this would cause 'status = 
+"okay"' to cause an error in your dts files.
+
+> +
+> +  "#io-channel-cells":
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - interrupts-parent
+
+It is valid for interrupt-parent to be in a parent node, so it is never 
+required.
+
+> +  - clocks
+> +  - clock-names
+> +  - assigned-clocks
+> +  - assigned-clock-rates
+> +  - power-domains
+> +  - state
+
+Not documented.
+
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/firmware/imx/rsrc.h>
+> +    soc {
+> +        #address-cells = <1>;
+> +        #size-cells = <1>;
+> +        adc@5a880000 {
+> +            compatible = "nxp,imx8qxp-adc";
+> +            reg = <0x0 0x5a880000 0x0 0x10000>;
+> +            interrupts = <GIC_SPI 240 IRQ_TYPE_LEVEL_HIGH>;
+> +            clocks = <&clk IMX_SC_R_ADC_0>,
+> +                     <&clk IMX_SC_R_ADC_0>;
+> +            clock-names = "per", "ipg";
+> +            assigned-clocks = <&clk IMX_SC_R_ADC_0>;
+> +            assigned-clock-rates = <24000000>;
+> +            power-domains = <&pd IMX_SC_R_ADC_0>;
+> +            status = "okay";
+
+Remove status from examples.
+
+> +            #io-channel-cells = <1>;
+> +        };
+> +    };
+> +...
+> -- 
+> 2.25.1
 > 
-> and the patches clearly weren't ready and people weren't aware of this issue.
-
-I think that is prudent. When I first enabled it for io_uring it was a
-bit of a shit show in terms of performance degradations, and some work
-had to be done before it could get enabled in a sane fashion.
-
-The accounting needs to be more efficient if we're seeing 30-50%
-slowdowns simply by enabling it on a kmem cache.
-
--- 
-Jens Axboe
-
+> 
