@@ -2,94 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BC0402AD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C379402ACB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbhIGOfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:35:06 -0400
-Received: from gate.crashing.org ([63.228.1.57]:32928 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230054AbhIGOfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:35:05 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 187ETeIO006845;
-        Tue, 7 Sep 2021 09:29:40 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 187ETeHc006818;
-        Tue, 7 Sep 2021 09:29:40 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Tue, 7 Sep 2021 09:29:34 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Linus Torvalds <torvalds@linuxfoundation.org>
-Cc:     Jakub Jelinek <jakub@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        id S244179AbhIGOa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244330AbhIGOal (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 10:30:41 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EFFDC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:29:35 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id p17so5888069qvo.8
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:29:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uiwuCaM/ip2ATzb/vAgsfRG3Vq6kM1/Vmxsm0eaBXgI=;
+        b=XiCXDw6vd8aYNn3yIgBnPRJ7yQETxzdciXvvmMsl1G2SvyuSfFQtBFFgR3M49AgOTH
+         Rul0KIxrjGx7CWfOBBTi6iu0mX4Slsg/6Fzqa8aqAOgJUCzLssfQY5c/gsnh+5z/Z5Nh
+         hAQpM0QcERPuFEC042Q7IAiE5wkZPcGluh84c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uiwuCaM/ip2ATzb/vAgsfRG3Vq6kM1/Vmxsm0eaBXgI=;
+        b=tTb6C6n7US7KQQyxsIBVA8dB9guDD5Z3XPMC0j6+q+Vgwat0MXQJn8SE1ar5Kqoeqe
+         EkNegd8X6RDY9NoeS8TGPD+ei1IA/PHXIen6PVIAkerq7QEOPfh3RrygJthGen2LSiwW
+         +xsqoE56XExPI0oKIH5mrXFUiC6/zkabWz96gYzv/NBqqI7EsRaviwaWlAsPPftkLqlj
+         6UF+aq/QHmNGyZlGyvLyaPI3BspY+pIV+1UMoTYrCoiq9PYsw2R2Fnp3W1excDquhPdv
+         aWSzEt9HCLI/LI3VOa+A2a5cjKbotuHuzWdsmDqKJjdRps/SC7Ksqp3RIBm2p1F1aEcC
+         CvqQ==
+X-Gm-Message-State: AOAM533Z1pwXqrA3fAQ9PaLApolaAgQkwKM6FgrdmSrudT/azO0NkWOY
+        UV0jwepdeZb43648pjPvZKdtTi8vggTcKP/FdCg0dg==
+X-Google-Smtp-Source: ABdhPJwPexcnMj82Bzxxv5m1UIj5BWLQNhxv3H7DGR1gOBaGw72OqIecTvWq1Mx/E8Dr3wZGy2d3qWw6p92Nx5vlNis=
+X-Received: by 2002:ad4:498d:: with SMTP id t13mr14976136qvx.55.1631024974444;
+ Tue, 07 Sep 2021 07:29:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210907102722.47543-1-bert@biot.com> <20210907102722.47543-5-bert@biot.com>
+ <CAFr9PXmCKPfdHnHU7=ALh=j2SDf71ibd8kEnLTK6aPN1vmQVdg@mail.gmail.com>
+ <CAK8P3a21N8khjyV-f=p28ZogoakhLTrkoPBd6PeXrigba=7-TQ@mail.gmail.com>
+ <CAFr9PXn4JXGKSCDNeKMJDPgfezktyfBsTcq8GErt+ROuumDgrg@mail.gmail.com> <CAK8P3a0y0PhmOdMPnx10zG6s6RfiuC9Ju9s5SMnOk8oZ+cAFMw@mail.gmail.com>
+In-Reply-To: <CAK8P3a0y0PhmOdMPnx10zG6s6RfiuC9Ju9s5SMnOk8oZ+cAFMw@mail.gmail.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Tue, 7 Sep 2021 23:32:20 +0900
+Message-ID: <CAFr9PX=Oi-HJYUFBfJn4pHUSk=drf7otyx473hvq1UC5_gaTHQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] ARM: Add basic support for Airoha EN7523 SoC
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Bert Vermeulen <bert@biot.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        John Crispin <john@phrozen.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Mike Rapoport <rppt@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
-Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
-Message-ID: <20210907142934.GF1583@gate.crashing.org>
-References: <20210904191531.GS1583@gate.crashing.org> <CAHk-=wjc1rxah3xt8mKN=aCxQigjy3-hEf4xh_Y-r=MXAKVrag@mail.gmail.com> <20210906154642.GV1583@gate.crashing.org> <CAHk-=wj=WpWO_V86cZH99LgZGBbvdDb4wR26ce5van0hJqjzLA@mail.gmail.com> <20210906172701.GX1583@gate.crashing.org> <CAHk-=wh0MBVfA89WLWnCiSnJ2a=hSAoSxfG-jyf7JJeBDPK3ew@mail.gmail.com> <87lf49wodu.fsf@oldenburg.str.redhat.com> <20210906194808.GY1583@gate.crashing.org> <20210906201432.GZ920497@tucnak> <CAHk-=wi80NGPppGmBpc5zuGRAsv4_7qsDu7ehW515J2FJoezAQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi80NGPppGmBpc5zuGRAsv4_7qsDu7ehW515J2FJoezAQ@mail.gmail.com>
-User-Agent: Mutt/1.4.2.3i
+        DTML <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021 at 02:08:58PM -0700, Linus Torvalds wrote:
-> On Mon, Sep 6, 2021 at 1:14 PM Jakub Jelinek <jakub@redhat.com> wrote:
-> >
-> > the only guaranteed APIs are
-> > those provided by the headers (x86intrin.h/*mmintrin.h etc. on x86,
-> > arm_{neon,sve}.h etc. on arm*, ...)
-> 
-> You guys realize we don't use those, do you?
+Hi Arnd,
 
-Linux does use the Arm and Power vector intrinsics (arm_neon.h and
-altivec.h).
+On Tue, 7 Sept 2021 at 23:12, Arnd Bergmann <arnd@arndb.de> wrote:
 
-> And you don't seem to realize that you are actively arguing *AGAINST*
-> what you think you argue for.
+> > I think the broken memory controller is still there so somehow I'd
+> > need to get the heavy barrier to work in arm64. I haven't yet worked
+> > out if that's even possible.
+>I think I missed that part of the discussion, or I forgot about it already.
+>What is the issue you are referring to here?
 
-I have no idea what you think we are arguing for, only what we are.
+Sorry. I should have put a bit more context. This is for the SSD268G
+not the original target of this series. But a similar situation.
+The SSD268G (according to the decompiled device tree) is the same
+hardware as the MSTAR_V7 chips but with a Cortex A53 instead of the
+Cortex A7.
+So it probably has the same memory controller as the MSTAR_V7 stuff
+and that memory controller is not coherent so it needs the kernel to
+make sure memory requests are flushed out to memory before DMA
+happens[0]. For arm I fixed that with the heavy mb callback. With
+arm64 I have no idea how to fix that.
 
-> That "immintrin.h" file, for example, is simply not usable for the
-> kernel. I just checked.
+I'm interested to see how this Airoha EN7523 series goes as if/when I
+push anything for the SSD268G it'll probably only be for a 32bit
+kernel.
 
-Yes.  It cannot be used in freestanding environments; it includes a
-header file we don't ship (<mm_malloc.h>, via <xmmintrin.h>).  Or
-perhaps we do ship it, but only on native systems?  Same issue, anyway.
-
-The top comment in the latter says
-  /* Implemented from the specification included in the Intel C++ Compiler
-     User Guide and Reference, version 9.0.  */
-so the shortcoming exists there already probably?
-
->       27 | #include <stdlib.h>
->          |          ^~~~~~~~~~
-> 
-> Oops.
-
-Yup, that is not a (freestanding) standard C header.
-
-> Very similar things happens if you try to use that <stdint.h> file
-> that somebody mentioned earlier.
-
-Not at all.  <stdint.h> *is* a standard C header, and we ship it, it
-always works.  If you find problems with it, please report them!
-
-> You also don't seem to realize how hard it is to separate out the
-> user-land crap that we really cannot use, and must not use.
-
-We have worked very hard for many years to make this better.  For the
-freestanding headers only <limits.h> is still problematic, and you do
-not need that one anyway, it is legacy more than anything else.
-
-
-Segher
+0 - https://elixir.bootlin.com/linux/latest/source/arch/arm/mach-mstar/mstarv7.c#L61
