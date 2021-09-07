@@ -2,140 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514024024EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A424024F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241896AbhIGIQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 04:16:21 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:44176 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S239550AbhIGIQT (ORCPT
+        id S242115AbhIGIRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 04:17:51 -0400
+Received: from mail-vs1-f42.google.com ([209.85.217.42]:38579 "EHLO
+        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239550AbhIGIRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 04:16:19 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1878323B057385;
-        Tue, 7 Sep 2021 04:15:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=NJlAWd2ZoDnMVS3u4vbcylYowczJek5eRBYRxN05iAY=;
- b=izUYESbiYUTeSN1Eep9hvZ7Ci4iYKjL6Ogb0ZuIqIgo0YsPoAF3UWqHea2yuq6R8omSp
- ETiMEfgcwP/XeYiToDLhmdqty7MwRBiDlA/4495mZWxjAhcxoaD71G9rQfp5IisjLdXi
- 2jrmGSbMSiIBZIAASqRL3LRnq7gPY0QU4ulvLhXHkB99muEmWAQCFY1PRtI/v7zOTxH2
- l1avNB6b5YUfwodopnSF2V+d9ewKMTKzs0ABqPa+LIc1M6ThXdvvG8FhyymddJ9EEAeX
- JUJZp3ALb6fMZw0ZwxoQUI4jTtoPntV3f15OCSs4LP7wrvfteMgm/Yg6urcY2wnO4+Gm GQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3ax0p3mqch-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Sep 2021 04:15:03 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 18784Kic064280;
-        Tue, 7 Sep 2021 04:15:02 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3ax0p3mqbj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Sep 2021 04:15:02 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1878CEpF026961;
-        Tue, 7 Sep 2021 08:15:00 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06fra.de.ibm.com with ESMTP id 3av02jb8cm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Sep 2021 08:15:00 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1878EtJR44040692
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Sep 2021 08:14:55 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4ED2F4C044;
-        Tue,  7 Sep 2021 08:14:55 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ADCF74C05E;
-        Tue,  7 Sep 2021 08:14:54 +0000 (GMT)
-Received: from sig-9-145-36-222.uk.ibm.com (unknown [9.145.36.222])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  7 Sep 2021 08:14:54 +0000 (GMT)
-Message-ID: <644a0e6f802f25e760e29b2047861b1141c32a6f.camel@linux.ibm.com>
-Subject: Re: [PATCH 3/5] PCI: Move pci_dev_is/assign_added() to pci.h
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, kbuild-all@lists.01.org,
-        Linas Vepstas <linasvepstas@gmail.com>,
-        "Oliver O'Halloran" <oohall@gmail.com>,
-        Russell Currey <ruscur@russell.cc>,
-        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-s390@vger.kernel.org,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>
-Date:   Tue, 07 Sep 2021 10:14:54 +0200
-In-Reply-To: <CAHp75VeiWH0MoAchctDES7zLk4Q9NwODu=O2y-NYOsu3SBeimg@mail.gmail.com>
-References: <20210906094927.524106-4-schnelle@linux.ibm.com>
-         <202109070818.aHlo0OT9-lkp@intel.com>
-         <CAHp75VeiWH0MoAchctDES7zLk4Q9NwODu=O2y-NYOsu3SBeimg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-16.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: f8PGt5Ha2Ilwpn9v2PDBQYDCRwE0apW4
-X-Proofpoint-ORIG-GUID: 7XufGAcG5COEYj8eCR8GxJa5gc1nlLXA
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 7 Sep 2021 04:17:46 -0400
+Received: by mail-vs1-f42.google.com with SMTP id a25so7578108vso.5
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 01:16:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nlFSfoQ7SXqrtlS/FSZSEtUCAir1A7uzxwYSF0gDcQI=;
+        b=byyyE82snrzXEY9ODgeemw+/uVqLX0WMLIRT5ch564aa224SdhTMzAciViXbflseKu
+         3yzF7uIVouhjLzLAGgP2UI9EryawbNymDBWcQbLCcxQ0FzttDRrAkPAPW5s0JqhVhjS4
+         aJe8Yjn931kw3N1d64Ie+5i9+/01u5fcuZZWd9C8+cnLzMzuea/i1Hugvc6YQSDGbXVc
+         aAKtB2Rwn/imNLPE86a4n0uIu3aTdV93vdu5yynh2fGfPXV9I8w7UP/SCZqltaMrbKkp
+         FZF4jfDHsDCT4a6Zj+kjJlOJ7ukme5dvlXNwvJSSJnSoEJMMx1p6xzCMdMHDIcO/lZKb
+         5mJg==
+X-Gm-Message-State: AOAM533LsUiUoiMNO3fgCL9LRVO1EUg1h4BRCvtkYlq6uCmR2433D56c
+        Rfi7LXbOXik42dkrZxe2mG4UNb0awyXRICrEIWs=
+X-Google-Smtp-Source: ABdhPJyIqfPg+bWlK++5mI/mNj91/3OCX62E73H+ngnTOIFp/L9yNDBZA/0e3DY1dortDt3Rjbkv4zqhfzYpyazfc3o=
+X-Received: by 2002:a67:3289:: with SMTP id y131mr8357469vsy.37.1631002600397;
+ Tue, 07 Sep 2021 01:16:40 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-09-07_02:2021-09-03,2021-09-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=999 impostorscore=0 malwarescore=0 priorityscore=1501
- mlxscore=0 bulkscore=0 phishscore=0 suspectscore=0 spamscore=0
- adultscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2108310000 definitions=main-2109070053
+References: <20210906095930.4184449-1-bert@biot.com>
+In-Reply-To: <20210906095930.4184449-1-bert@biot.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 7 Sep 2021 10:16:28 +0200
+Message-ID: <CAMuHMdVqEw+5yM9BuCiZ3LA8OkQnKVOrb5ExREAdRBXS-2KS5Q@mail.gmail.com>
+Subject: Re: [PATCH] ARM: decompress: Use /memreserve/ DTS nodes when
+ validating memory
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        John Crispin <john@phrozen.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-09-07 at 10:51 +0300, Andy Shevchenko wrote:
-> On Tue, Sep 7, 2021 at 3:26 AM kernel test robot <lkp@intel.com> wrote:
-> > Hi Niklas,
-> > 
-> > I love your patch! Yet something to improve:
-> > 
-> > [auto build test ERROR on s390/features]
-> > [also build test ERROR on next-20210906]
-> > [cannot apply to pci/next powerpc/next v5.14]
-> > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > And when submitting patch, we suggest to use '--base' as documented in
-> > https://git-scm.com/docs/git-format-patch]
-> > 
-> > url:    https://github.com/0day-ci/linux/commits/Niklas-Schnelle/s390-pci-automatic-error-recovery/20210906-175309
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git features
-> > config: i386-allyesconfig (attached as .config)
-> > compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> > reproduce (this is a W=1 build):
-> >         # https://github.com/0day-ci/linux/commit/404ed8c00a612e7ae31c50557c80c6726c464863
-> >         git remote add linux-review https://github.com/0day-ci/linux
-> >         git fetch --no-tags linux-review Niklas-Schnelle/s390-pci-automatic-error-recovery/20210906-175309
-> >         git checkout 404ed8c00a612e7ae31c50557c80c6726c464863
-> >         # save the attached .config to linux build tree
-> >         make W=1 ARCH=i386
-> > 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > 
-> > All errors (new ones prefixed by >>):
-> 
-> Obviously drivers/pci/pci.h is not only for the above.
-> 
-> When play with headers always do two test builds: allyesconfig and allmodconfig.
+Hoi Bert,
 
-You're right and additionally have to built on some other architectures
-as well because allyesconfig and allmodconfig both run through fine on
-s390. 
+On Mon, Sep 6, 2021 at 12:00 PM Bert Vermeulen <bert@biot.com> wrote:
+> If the bootloader needs the start of memory to be preserved, for example
+> because it dropped the Trusted Firmware blob there, this chunk of memory
+> shouldn't be used by the kernel.
+>
+> To avoid adding yet another SoC-specific text offset to arch/arm/Makefile,
+> this patch allows for a /memreserve/ entry in the DTS to mark off the
+> memory chunk instead.
+>
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
 
-I'll look into it but at first glance it looks like I was over reaching
-removing the include from drivers/pci/hotplug/acpiphp_glue.c in
-addition it's not even the same kind of awkward relative include from
-drivers into arch code. Sorry about that.
+Thanks for your patch!
 
-> 
+> --- a/arch/arm/boot/compressed/fdt_check_mem_start.c
+> +++ b/arch/arm/boot/compressed/fdt_check_mem_start.c
+> @@ -64,7 +64,7 @@ uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
+>         uint32_t addr_cells, size_cells, base;
+>         uint32_t fdt_mem_start = 0xffffffff;
+>         const fdt32_t *reg, *endp;
+> -       uint64_t size, end;
+> +       uint64_t rsvaddr, size, end;
+>         const char *type;
+>         int offset, len;
+>
+> @@ -74,6 +74,19 @@ uint32_t fdt_check_mem_start(uint32_t mem_start, const void *fdt)
+>         if (fdt_magic(fdt) != FDT_MAGIC)
+>                 return mem_start;
+>
+> +       for (offset = fdt_off_mem_rsvmap(fdt); ; offset += 16) {
+> +               rsvaddr = get_val(fdt + offset, 8);
+> +               size = get_val(fdt + offset + 8, 8);
 
+The last parameter of get_val() is the number of cells, not the number
+of bytes. Hence it should be 2 for the 64-bit values in the memory
+reservation block.
+
+The rest looks good to me.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
