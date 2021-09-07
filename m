@@ -2,86 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0290402AE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9EF402AE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239100AbhIGOiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:38:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44858 "EHLO
+        id S237377AbhIGOjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:39:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233978AbhIGOiP (ORCPT
+        with ESMTP id S231174AbhIGOjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:38:15 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BF2C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:37:09 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id z1so13138222ioh.7
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:37:09 -0700 (PDT)
+        Tue, 7 Sep 2021 10:39:42 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B960BC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:38:36 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id q22so3540548pfu.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:38:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/S6NVKS+rAl9aR4n3SE5uAuU4aZe4mciq8781mBYsjY=;
-        b=VOSgUj1wc8knZeRVbNf3FAbpUzXJwSywrL5pYnfp/MjmVmoTrq28kVxU5DqwyIILlZ
-         DT2SMXaXjzmzG4AZ7rXZwgKHeXg8KqB4S3W/w36ws2XAxAswl50Xo3REg9dt+BN3TdLW
-         lmBD1A+fLx4oLlSeJVpuaGEhe/i+1snel97IOVR21KRTIlS3aFXdtIaNnIxXygIZbgXV
-         cmC9VAeQ7K4sFJwKTadlgI46iF7/Uk2OrUEcLBQDiUGlQJbAu2htDS0OpSjh9tCcX0Y/
-         YnCYlMXiUrsklhsGY+zQCX5/Z4Odevd6KG+8Eq5B0+D8gagDAARC/GOuTv9KYRdH0Hjx
-         kzRQ==
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qhhCof7Bxt7WkPbfZU7ElxFgFbYJKUpmBYIoqT3FQG0=;
+        b=dDM249O1jyYEP+sPZcNiaaYYByaEMpzFEK/dirlDIZo1llr4qtiA9AwONG4gfWFxuh
+         GI+LHZeQL/xeGEQ7Yfkgt3/vvEePqhDwrmKdVjtWDvjOavLauOARfD2emyCkCFDIZ3e5
+         RZJODDFiVIiw9T1gza4f7jn3IWawg1iNUGGJLjWdnuO+yJ9asXLrHQr2+tGWyM13pjym
+         1+byStjxJrGiqSwx/wJlrs7mmw75bxC4tAQmD1XUWS2Kmf6OB7eQm5ViyURea6XHmtW+
+         mck5xXQNXvsw8NgSA/A4XmTbdZUQ2dwVHhPiE7RfQH0O5+QpGIXptx+UdEU6zgDpgmg+
+         vWmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/S6NVKS+rAl9aR4n3SE5uAuU4aZe4mciq8781mBYsjY=;
-        b=KmdKPILbJ0zPmzqC8PejveuZbXDXLiT+42Cl+UDZartd056E4uAM2t4ysqNB2wUDbl
-         iLpw9aUy2dggBZaNtMEoXgNds18KyCbOzT1N98Ag2r2FZiN52gci3W2eWB9QWpoK1xRd
-         zQe8oBgzS2auiZ3pkkTo49l3NFk7HMPA6a7v2UZWaxcsB4TSQEam59uXO9hW8mSvjDwX
-         UlVVRS/s+jKudl0YxVAjVho3OMzSPT9Vbson1YL9UeCKv73wKWFluZdsRPcvKI4FAiJ+
-         VUqG/Tnufq+qMlnRFIjZTNBCHfbX3Aan655n0MXz7rbR9inBXUmXDBatBlqgjscJy/wx
-         d8gw==
-X-Gm-Message-State: AOAM532JtT0e2bU8NLLIUEXRxAa0pUgWhgXsg67cQWwCUo3VRcqiGj5e
-        tsFRw/7s+nBm8JUwUvWv7x68Uw==
-X-Google-Smtp-Source: ABdhPJxCFz1RVkSXmkxnoFMSLRVGtw+KyJ9h6cFRIdCUSz6PRJxUpW/2mXD2QFUHzuf5zVNN1O6PoQ==
-X-Received: by 2002:a5e:da44:: with SMTP id o4mr13768582iop.147.1631025428502;
-        Tue, 07 Sep 2021 07:37:08 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id u17sm6343646iln.81.2021.09.07.07.37.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 07:37:07 -0700 (PDT)
-Subject: Re: [PATCH] blk-throttle: fix UAF by deleteing timer in
- blk_throtl_exit()
-To:     Li Jinlin <lijinlin3@huawei.com>, tj@kernel.org
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linfeilong@huawei.com,
-        louhongxiang@huawei.com
-References: <20210907121242.2885564-1-lijinlin3@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <1f962850-06d6-f50b-2c2f-e6d5bfd3823a@kernel.dk>
-Date:   Tue, 7 Sep 2021 08:37:06 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qhhCof7Bxt7WkPbfZU7ElxFgFbYJKUpmBYIoqT3FQG0=;
+        b=K+FdzL9esGBYA0I1PeKmQwpDLtmhf2QeOb022G6+1dcyQGQnNuB+ifrCL1NB7oG/fl
+         vpFLEohT+9Tj06aORPekMoOnBSy+RBim3I27MQMPLQCKpM4SjZFp+tu7Q8yfJdviiWTb
+         ofW+A7GV5RKP7Nnx8scX1Hch49xDTb1BPlwlTXBHmWP4DfKdP6M74oDMhZUoID0G4QNO
+         QP9wjOAiyO2xEUJbZyJ0biyCU9fsvvkCMGAr89nA5unGzNwr2q390dwSZu47bhZ0nVuc
+         8xtXSEIji5qZMS2nNY4CIIVSq2qD6SfccTjZEzHeord+3z4dPZlxLRJg99sW160bexRx
+         g6yg==
+X-Gm-Message-State: AOAM531kEoKDYZcvwIlmXq00QHbb5bH7cc3wWkpknzZ6oIQJZhSkRwJ7
+        wN7GMWXzZAsFeMSwgjmWWXQj2g==
+X-Google-Smtp-Source: ABdhPJzl5tT+vIOlvAuqK2CqdOtw1QALWHjYejAcBedH1JDRDyFV2NrE6Q9L+J99MDm/UGDNVHbaHA==
+X-Received: by 2002:a63:c10b:: with SMTP id w11mr17484810pgf.228.1631025516087;
+        Tue, 07 Sep 2021 07:38:36 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id j6sm13428682pgq.0.2021.09.07.07.38.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 07:38:35 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 14:38:31 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Russell King, ARM Linux" <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Oleg Nesterov <oleg@redhat.com>, rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        shuah <shuah@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-csky <linux-csky@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>,
+        linux-kselftest <linux-kselftest@vger.kernel.org>,
+        Peter Foley <pefoley@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Ben Gardon <bgardon@google.com>
+Subject: Re: [PATCH 1/5] KVM: rseq: Update rseq when processing NOTIFY_RESUME
+ on xfer to KVM guest
+Message-ID: <YTd5Z91j9N2LuuIr@google.com>
+References: <20210818001210.4073390-1-seanjc@google.com>
+ <20210818001210.4073390-2-seanjc@google.com>
+ <1673583543.19718.1629409152244.JavaMail.zimbra@efficios.com>
+ <YR7tzZ98XC6OV2vu@google.com>
+ <1872633041.20290.1629485463253.JavaMail.zimbra@efficios.com>
+ <425456d3-4772-2a1b-9cf3-a5b750b95c2e@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210907121242.2885564-1-lijinlin3@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <425456d3-4772-2a1b-9cf3-a5b750b95c2e@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/21 6:12 AM, Li Jinlin wrote:
-> From: Li Jinlin <lijinlin3@huawei.com>
+On Mon, Sep 06, 2021, Paolo Bonzini wrote:
+> On 20/08/21 20:51, Mathieu Desnoyers wrote:
+> > > Ah, or is it the case that rseq_cs is non-NULL if and only if userspace is in an
+> > > rseq critical section, and because syscalls in critical sections are illegal, by
+> > > definition clearing rseq_cs is a nop unless userspace is misbehaving.
+> > Not quite, as I described above. But we want it to stay set so the CONFIG_DEBUG_RSEQ
+> > code executed when returning from ioctl to userspace will be able to validate that
+> > it is not nested within a rseq critical section.
+> > 
+> > > If that's true, what about explicitly checking that at NOTIFY_RESUME?  Or is it
+> > > not worth the extra code to detect an error that will likely be caught anyways?
+> > The error will indeed already be caught on return from ioctl to userspace, so I
+> > don't see any added value in duplicating this check.
 > 
-> The pending timer has been set up in blk_throtl_init(). However, the
-> timer is not deleted in blk_throtl_exit(). This means that the timer
-> handler may still be running after freeing the timer, which would
-> result in a use-after-free.
-> 
-> Fix by calling del_timer_sync() to delete the timer in blk_throtl_exit().
+> Sean, can you send a v2 (even for this patch only would be okay)?
 
-Applied, thanks.
+Made it all the way to v3 while you were out :-)
 
--- 
-Jens Axboe
-
+https://lkml.kernel.org/r/20210901203030.1292304-1-seanjc@google.com
