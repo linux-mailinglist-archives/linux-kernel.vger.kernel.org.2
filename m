@@ -2,103 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5396B4025FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7828940263A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245062AbhIGJLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 05:11:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:33528 "EHLO foss.arm.com"
+        id S233241AbhIGJfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 05:35:08 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:48172 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244782AbhIGJLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 05:11:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0FDCD31B;
-        Tue,  7 Sep 2021 02:10:10 -0700 (PDT)
-Received: from [10.57.94.84] (unknown [10.57.94.84])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 434273F766;
-        Tue,  7 Sep 2021 02:10:08 -0700 (PDT)
-Subject: Re: [PATCH 07/10] arm64: Add erratum detection for TRBE overwrite in
- FILL mode
-To:     Linu Cherian <linuc.decode@gmail.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>, maz@kernel.org,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        catalin.marinas@arm.com, Coresight ML <coresight@lists.linaro.org>,
-        linux-kernel@vger.kernel.org, james.morse@arm.com,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Linu Cherian <lcherian@marvell.com>
-References: <20210728135217.591173-1-suzuki.poulose@arm.com>
- <20210728135217.591173-8-suzuki.poulose@arm.com>
- <CAAHhmWj=dTkobukjRYmdsP_BwmVwKQrcecH4=0kOjtgo8axVaQ@mail.gmail.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <3731f9a8-2923-8586-4adc-da3550a6c55a@arm.com>
-Date:   Tue, 7 Sep 2021 10:10:06 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <CAAHhmWj=dTkobukjRYmdsP_BwmVwKQrcecH4=0kOjtgo8axVaQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S233059AbhIGJfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 05:35:07 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B22D81A2AFA;
+        Tue,  7 Sep 2021 11:34:00 +0200 (CEST)
+Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 7A88E1A165D;
+        Tue,  7 Sep 2021 11:34:00 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id 1DE30183AC4C;
+        Tue,  7 Sep 2021 17:33:59 +0800 (+08)
+From:   Shengjiu Wang <shengjiu.wang@nxp.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, ckeepax@opensource.cirrus.com,
+        kuninori.morimoto.gx@renesas.com, patches@opensource.cirrus.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: wm8960: Fix clock configuration on slave mode
+Date:   Tue,  7 Sep 2021 17:11:09 +0800
+Message-Id: <1631005869-7308-1-git-send-email-shengjiu.wang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/08/2021 13:44, Linu Cherian wrote:
-> Hi Suzuki,
-> 
-> On Wed, Jul 28, 2021 at 7:23 PM Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
->>
->> Arm Neoverse-N2 and the Cortex-A710 cores are affected
->> by a CPU erratum where the TRBE will overwrite the trace buffer
->> in FILL mode. The TRBE doesn't stop (as expected in FILL mode)
->> when it reaches the limit and wraps to the base to continue
->> writing upto 3 cache lines. This will overwrite any trace that
->> was written previously.
->>
->> Add the Neoverse-N2 erratumi(#2139208) and Cortex-A710 erratum
->> (#2119858) to the  detection logic.
->>
->> This will be used by the TRBE driver in later patches to work
->> around the issue. The detection has been kept with the core
->> arm64 errata framework list to make sure :
->>    - We don't duplicate the framework in TRBE driver
->>    - The errata detection is advertised like the rest
->>      of the CPU errata.
->>
->> Note that the Kconfig entries will be added after we have added
->> the work around in the TRBE driver, which depends on the cpucap
->> from here.
->>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> cc: Leo Yan <leo.yan@linaro.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+There is a noise issue for 8kHz sample rate on slave mode.
+Compared with master mode, the difference is the DACDIV
+setting, after correcting the DACDIV, the noise is gone.
 
+There is no noise issue for 48kHz sample rate, because
+the default value of DACDIV is correct for 48kHz.
 
->> diff --git a/arch/arm64/tools/cpucaps b/arch/arm64/tools/cpucaps
->> index 49305c2e6dfd..1ccb92165bd8 100644
->> --- a/arch/arm64/tools/cpucaps
->> +++ b/arch/arm64/tools/cpucaps
->> @@ -53,6 +53,7 @@ WORKAROUND_1418040
->>   WORKAROUND_1463225
->>   WORKAROUND_1508412
->>   WORKAROUND_1542419
->> +WORKAROUND_TRBE_OVERWRITE_FILL_MODE
->>   WORKAROUND_CAVIUM_23154
->>   WORKAROUND_CAVIUM_27456
->>   WORKAROUND_CAVIUM_30115
-> 
-> We need to keep this list sorted ?
+So wm8960_configure_clocking() should be functional for
+ADC and DAC function even if it is slave mode.
 
-Not necessary, anymore. For a given kernel the numbers are
-autogenerated by the script.
+In order to be compatible for old use case, just add
+condition for checking that sysclk is zero with
+slave mode.
 
-See arch/arm64/tools/gen-cpucaps.awk
+Fixes: 0e50b51aa22f ("ASoC: wm8960: Let wm8960 driver configure its bit clock and frame clock")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+---
+ sound/soc/codecs/wm8960.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Suzuki
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 9e621a254392..9c6af76a60fd 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -742,7 +742,7 @@ static int wm8960_configure_clocking(struct snd_soc_component *component)
+ 	int i, j, k;
+ 	int ret;
+ 
+-	if (!(iface1 & (1<<6))) {
++	if (!(iface1 & (1 << 6)) && !wm8960->sysclk) {
+ 		dev_dbg(component->dev,
+ 			"Codec is slave mode, no need to configure clock\n");
+ 		return 0;
+-- 
+2.17.1
+
