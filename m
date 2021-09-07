@@ -2,444 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC3940269F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F233402696
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243428AbhIGJ7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 05:59:13 -0400
-Received: from mx.msync.work ([95.217.65.204]:33762 "EHLO mx.msync.work"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243285AbhIGJ7I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 05:59:08 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 64142DDAE9;
-        Tue,  7 Sep 2021 09:58:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lexina.in; s=dkim;
-        t=1631008680; h=from:subject:date:message-id:to:cc:mime-version:
-         content-transfer-encoding:in-reply-to:references;
-        bh=U+LgFrJgk7t1uu6zOnKxnyhKlXVetjZDvoyIVgjV0Kk=;
-        b=nyWO7PY+LuBbUtLZeDaEm2lZ0XnmqVeQvWnoq4XICd8n+2w0HS6WbpKE7txMfH4hrN4TMd
-        v7P5o35ISR8UgI6Bb0uXvywJPcHQTJDhjXY++5usbtYvOjf6DprQ6LRyH6BaYkCSxJdA6Z
-        O8vyCIjYLkyrubJsgpcpWLcXhI4dQYVjPKZYWpQzfypfLbqr7OHQl3qh22jeR2gMv9ja6P
-        c+VPgfZfO5f+ezpsw6hMNDnPpjCqBcjXYKicDrvUcKyYyyGZgDnaNcZWYy3M+tGU8JSjZJ
-        rg+GJmp9JzKrSbFxaNhzcXc2uEYttmJ/Xs/er0aWM39mPK3ahxt2sOJGX+bYqg==
-From:   Vyacheslav Bocharov <adeep@lexina.in>
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 4/4] arm64: dts: meson-axg: add support for JetHub D1
-Date:   Tue,  7 Sep 2021 12:56:06 +0300
-Message-Id: <20210907095603.1520109-5-adeep@lexina.in>
-In-Reply-To: <20210907095603.1520109-1-adeep@lexina.in>
-References: <20210907095603.1520109-1-adeep@lexina.in>
+        id S237121AbhIGJ5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 05:57:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56853 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235095AbhIGJ5a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 05:57:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631008584;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WZix3g89yH38VBI/+aNMJk3dvjLYvV1IblN/1ztVbHc=;
+        b=ShaiAbl4NSGRmZ1qwrKJy5F2bW0Tkzh7C96YClu/bRqDnoyT+rBEnQTmpZGbkb6u8yaFHi
+        ds1mE5CxBUXM/29uw/mRrnFmrIgo3kORCR0nEtZNZWOfy82Dcz85Bbtyqq2tkEa6JIIoyW
+        0RzIIK9qHq6HK8JChcv0UbwiTn332wk=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-156-xHDr36jhOuyVn0zG6X5GOg-1; Tue, 07 Sep 2021 05:56:23 -0400
+X-MC-Unique: xHDr36jhOuyVn0zG6X5GOg-1
+Received: by mail-wr1-f69.google.com with SMTP id d10-20020adffbca000000b00157bc86d94eso1924516wrs.20
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 02:56:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=WZix3g89yH38VBI/+aNMJk3dvjLYvV1IblN/1ztVbHc=;
+        b=jOs8S4VbK0uR1YvGR1sKy4tIpCw8xYA7vw81CxXdCLxTUXgq/YGcQXFGtsQ4Z/f3Rf
+         8azwfGoJNQit6s4EX5YdAZmXAMak5Oo5CCP0dqsd54Z4K1f9y9rhcBYYu8tp8EPgpBsy
+         ba5ibN4l/ugiuv4T3vGoWWkJ5BViVHqVK5+ZwxJZR556Fs+boF3ptcpzxNPFOEjShy8n
+         r7c67geNXGWDdweCqUDtiMJcAxmvVtxKPZ/9I3zxmVdYqxSmE7+7+qoiBObK7TH0Z9o8
+         W9NjuP0RTbx1H2pymDNZH4neMpsksUJvfE9HPBzph/W63z5nj+f1UadHRI2LFNQtN8dc
+         xcYw==
+X-Gm-Message-State: AOAM531kqKMFv8tx4kFN52okcKz9kbRWO6dr7lcsEDU44AYMRfglmFW7
+        tgjctjKCm1AHuXQ7k3QUoynTQI5SiqNPzQA8kgNKxD8dMwJNCiJ1v3pms9GEzQv187lDaphPkUy
+        SVF8Vx2ijyDXLUAiLXb0x9wc/ka6m3q9+8Lyh9QMRfMQK24vxjzW7CDBpD2TxOYJT/4FsUroo
+X-Received: by 2002:a05:600c:294:: with SMTP id 20mr3105730wmk.180.1631008582393;
+        Tue, 07 Sep 2021 02:56:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxwvf9pfG2k28UQz3mTfSELrqKrfnBOyxpBncA+3AC0xy5VsgXwaFkm8y5VTwZ7gkbGJY19tA==
+X-Received: by 2002:a05:600c:294:: with SMTP id 20mr3105693wmk.180.1631008581995;
+        Tue, 07 Sep 2021 02:56:21 -0700 (PDT)
+Received: from [192.168.3.132] (p4ff23fca.dip0.t-ipconnect.de. [79.242.63.202])
+        by smtp.gmail.com with ESMTPSA id v62sm1886533wme.21.2021.09.07.02.56.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 02:56:21 -0700 (PDT)
+Subject: Re: [PATCH] mm/page_isolation: don't putback unisolated page
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
+Cc:     iamjoonsoo.kim@lge.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210904091839.20270-1-linmiaohe@huawei.com>
+ <3b36529f-ab97-ddfe-0407-66f0cd1fd38d@redhat.com>
+ <2d06db75-5c26-8fe2-6883-ac99056a9894@redhat.com>
+ <b0a2947b-360a-40c2-03e4-f0f67845f4c3@huawei.com>
+ <c60dc5e2-6f19-3be8-56be-555033cc9ca4@redhat.com>
+ <b4615b3c-8217-9f32-39c7-b91c9ec3cccb@suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <80cfffdc-227e-c045-be74-1c08fb62c1e3@redhat.com>
+Date:   Tue, 7 Sep 2021 11:56:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <b4615b3c-8217-9f32-39c7-b91c9ec3cccb@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Last-TLS-Session-Version: TLSv1.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-JetHome Jethub D1 (http://jethome.ru/jethub-d1) is a home automation
-controller with the following features:
-- DIN Rail Mounting
-- Amlogic A113X (ARM Cortex-A53) quad-core up to 1.5GHz
-- no video out
-- 512Mb/1GB LPDDR4
-- 8/16GB eMMC flash
-- 1 x USB 2.0
-- 1 x 10/100Mbps ethernet
-- WiFi / Bluetooth AMPAK AP6255 (Broadcom BCM43455) IEEE 802.11a/b/g/n/ac,
-  Bluetooth 4.2.
-- TI CC2538 + CC2592 Zigbee Wireless Module with up to 20dBm output power
-  and Zigbee 3.0 support.
-- 2 x gpio LEDS
-- GPIO user Button
-- 1 x 1-Wire
-- 2 x RS-485
-- 4 x dry contact digital GPIO inputs
-- 3 x relay GPIO outputs
-- DC source with a voltage of 9 to 56 V / Passive POE
+On 07.09.21 10:08, Vlastimil Babka wrote:
+> On 9/6/21 14:49, David Hildenbrand wrote:
+>> On 06.09.21 14:45, Miaohe Lin wrote:
+>>> On 2021/9/6 20:11, David Hildenbrand wrote:
+>>>> On 06.09.21 14:02, David Hildenbrand wrote:
+>>>>> On 04.09.21 11:18, Miaohe Lin wrote:
+>>>>>
+>>>>> Thanks!
+>>>>>
+>>>>> Reviewed-by: David Hildenbrand <david@redhat.com>
+>>>>>
+>>>>
+>>>> To make the confusion perfect (sorry) :D I tripple-checked:
+>>>>
+>>>> In unset_migratetype_isolate() we check that is_migrate_isolate_page(page) holds, otherwise we return.
+>>>>
+>>>> We call __isolate_free_page() only for such pages.
+>>>>
+>>>> __isolate_free_page() won't perform watermark checks on is_migrate_isolate().
+>>>>
+>>>> Consequently, __isolate_free_page() should never fail when called from unset_migratetype_isolate()
+>>>>
+>>>> If that's correct then we  could instead maybe add a VM_BUG_ON() and a comment why this can't fail.
+>>>>
+>>>>
+>>>> Makes sense or am I missing something?
+>>>
+>>> I think you're right. __isolate_free_page() should never fail when called from unset_migratetype_isolate()
+>>> as explained by you. But it might be too fragile to reply on the failure conditions of __isolate_free_page().
+>>> If that changes, VM_BUG_ON() here might trigger unexpectedly. Or am I just over-worried as failure conditions
+>>> of __isolate_free_page() can hardly change?
+>>
+>> Maybe
+>>
+>> isolated_page = !!__isolate_free_page(page, order);
+>> /*
+>>    * Isolating a free page in an isolated pageblock is expected to always
+>>    * work as watermarks don't apply here.
+>>    */
+>> VM_BUG_ON(isolated_page);
+>>
+>>
+>> VM_BUG_ON() allows us to detect any issues when testing. Combined with
+>> the comment it tells everybody messing with __isolate_free_page() what
+>> we expect in this function.
+>>
+>> In production system, we would handle it gracefully.
+> 
+> If this can be handled gracefully, then I'd rather go with VM_WARN_ON.
+> Maybe even WARN_ON_ONCE?
+> 
 
-Signed-off-by: Vyacheslav Bocharov <adeep@lexina.in>
----
- arch/arm64/boot/dts/amlogic/Makefile          |   1 +
- .../amlogic/meson-axg-jethome-jethub-j100.dts | 356 ++++++++++++++++++
- 2 files changed, 357 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
+I think either VM_BUG_ON() or VM_WARN_ON() -- compiling the runtime 
+checks out -- should be good enough.
 
-diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-index 2c3ce7c401a5..3ba6f58b9833 100644
---- a/arch/arm64/boot/dts/amlogic/Makefile
-+++ b/arch/arm64/boot/dts/amlogic/Makefile
-@@ -1,5 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0
- dtb-$(CONFIG_ARCH_MESON) += meson-axg-s400.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-axg-jethome-jethub-j100.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12a-sei510.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12a-u200.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-g12a-x96-max.dtb
-diff --git a/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts b/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
-new file mode 100644
-index 000000000000..ecffc90d9884
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
-@@ -0,0 +1,356 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2021 Vyacheslav Bocharov <adeep@lexina.in>
-+ * Copyright (c) 2020 JetHome
-+ * Author: Aleksandr Kazantsev <ak@tvip.ru>
-+ * Author: Alexey Shevelkin <ash@tvip.ru>
-+ * Author: Vyacheslav Bocharov <adeep@lexina.in>
-+ */
-+
-+/dts-v1/;
-+
-+#include "meson-axg.dtsi"
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/thermal/thermal.h>
-+
-+/ {
-+	compatible = "jethome,jethub-j100", "amlogic,a113d", "amlogic,meson-axg";
-+	model = "JetHome JetHub J100";
-+	aliases {
-+		serial0 = &uart_AO;   /* Console */
-+		serial1 = &uart_AO_B; /* External UART (Wireless Module) */
-+		ethernet0 = &ethmac;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	/* 1024MB RAM */
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x0 0x40000000>;
-+	};
-+
-+	reserved-memory {
-+		linux,cma {
-+			size = <0x0 0x400000>;
-+		};
-+	};
-+
-+	emmc_pwrseq: emmc-pwrseq {
-+		compatible = "mmc-pwrseq-emmc";
-+		reset-gpios = <&gpio BOOT_9 GPIO_ACTIVE_LOW>;
-+	};
-+
-+	vcc_3v3: regulator-vcc_3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vddao_3v3>;
-+		regulator-always-on;
-+	};
-+
-+	vcc_5v: regulator-vcc_5v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VCC5V";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+
-+	vddao_3v3: regulator-vddao_3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDAO_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		vin-supply = <&vcc_5v>;
-+		regulator-always-on;
-+	};
-+
-+	vddio_ao18: regulator-vddio_ao18 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDIO_AO18";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vddao_3v3>;
-+		regulator-always-on;
-+	};
-+
-+	vddio_boot: regulator-vddio_boot {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VDDIO_BOOT";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		vin-supply = <&vddao_3v3>;
-+		regulator-always-on;
-+	};
-+
-+	usb_pwr: regulator-usb_pwr {
-+		compatible = "regulator-fixed";
-+		regulator-name = "USB_PWR";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		vin-supply = <&vcc_5v>;
-+		regulator-always-on;
-+	};
-+
-+	sdio_pwrseq: sdio-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		reset-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_LOW>;
-+		clocks = <&wifi32k>;
-+		clock-names = "ext_clock";
-+	};
-+
-+	wifi32k: wifi32k {
-+		compatible = "pwm-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <32768>;
-+		pwms = <&pwm_ab 0 30518 0>; /* PWM_A at 32.768KHz */
-+	};
-+
-+	thermal-zones {
-+		cpu_thermal: cpu-thermal {
-+			polling-delay-passive = <250>;
-+			polling-delay = <1000>;
-+			thermal-sensors = <&scpi_sensors 0>;
-+			trips {
-+				cpu_passive: cpu-passive {
-+					temperature = <70000>; /* millicelsius */
-+					hysteresis = <2000>; /* millicelsius */
-+					type = "passive";
-+				};
-+
-+				cpu_hot: cpu-hot {
-+					temperature = <80000>; /* millicelsius */
-+					hysteresis = <2000>; /* millicelsius */
-+					type = "hot";
-+				};
-+
-+				cpu_critical: cpu-critical {
-+					temperature = <100000>; /* millicelsius */
-+					hysteresis = <2000>; /* millicelsius */
-+					type = "critical";
-+				};
-+			};
-+		};
-+
-+		cpu_cooling_maps: cooling-maps {
-+			map0 {
-+				trip = <&cpu_passive>;
-+				cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+			};
-+
-+			map1 {
-+				trip = <&cpu_hot>;
-+				cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu2 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-+						<&cpu3 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+			};
-+		};
-+	};
-+};
-+
-+&efuse {
-+	sn: sn@32 {
-+		reg = <0x32 0x20>;
-+	};
-+
-+	eth_mac: eth_mac@0 {
-+		reg = <0x0 0x6>;
-+	};
-+
-+	bt_mac: bt_mac@6 {
-+		reg = <0x6 0x6>;
-+	};
-+
-+	wifi_mac: wifi_mac@c {
-+		reg = <0xc 0x6>;
-+	};
-+
-+	bid: bid@12 {
-+		reg = <0x12 0x20>;
-+	};
-+};
-+
-+&ethmac {
-+	status = "okay";
-+	pinctrl-0 = <&eth_rmii_x_pins>;
-+	pinctrl-names = "default";
-+	phy-handle = <&eth_phy0>;
-+	phy-mode = "rmii";
-+
-+	mdio {
-+		compatible = "snps,dwmac-mdio";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		/* ICPlus IP101A/G Ethernet PHY (vendor_id=0x0243, model_id=0x0c54) */
-+		eth_phy0: ethernet-phy@0 {
-+			/* compatible = "ethernet-phy-id0243.0c54";*/
-+			max-speed = <100>;
-+			reg = <0>;
-+
-+			reset-assert-us = <10000>;
-+			reset-deassert-us = <10000>;
-+			reset-gpios = <&gpio GPIOZ_5 GPIO_ACTIVE_LOW>;
-+		};
-+	};
-+};
-+
-+/* Internal I2C bus (on CPU module) */
-+&i2c1 {
-+	status = "okay";
-+	pinctrl-0 = <&i2c1_z_pins>;
-+	pinctrl-names = "default";
-+
-+	/* RTC */
-+	pcf8563: pcf8563@51 {
-+		compatible = "nxp,pcf8563";
-+		reg = <0x51>;
-+		status = "okay";
-+	};
-+};
-+
-+/* Peripheral I2C bus (on motherboard) */
-+&i2c_AO {
-+	status = "okay";
-+	pinctrl-0 = <&i2c_ao_sck_10_pins>, <&i2c_ao_sda_11_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&pwm_ab {
-+	status = "okay";
-+	pinctrl-0 = <&pwm_a_x20_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+/* wifi module */
-+&sd_emmc_b {
-+	status = "okay";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	pinctrl-0 = <&sdio_pins>;
-+	pinctrl-1 = <&sdio_clk_gate_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	sd-uhs-sdr104;
-+	max-frequency = <200000000>;
-+	non-removable;
-+	disable-wp;
-+
-+	mmc-pwrseq = <&sdio_pwrseq>;
-+
-+	vmmc-supply = <&vddao_3v3>;
-+	vqmmc-supply = <&vddio_boot>;
-+
-+	brcmf: wifi@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+	};
-+};
-+
-+/* emmc storage */
-+&sd_emmc_c {
-+	status = "okay";
-+	pinctrl-0 = <&emmc_pins>, <&emmc_ds_pins>;
-+	pinctrl-1 = <&emmc_clk_gate_pins>;
-+	pinctrl-names = "default", "clk-gate";
-+
-+	bus-width = <8>;
-+	cap-mmc-highspeed;
-+	max-frequency = <200000000>;
-+	non-removable;
-+	disable-wp;
-+	mmc-ddr-1_8v;
-+	mmc-hs200-1_8v;
-+
-+	mmc-pwrseq = <&emmc_pwrseq>;
-+
-+	vmmc-supply = <&vcc_3v3>;
-+	vqmmc-supply = <&vddio_boot>;
-+};
-+
-+/* UART Bluetooth */
-+&uart_B {
-+	status = "okay";
-+	pinctrl-0 = <&uart_b_z_pins>, <&uart_b_z_cts_rts_pins>;
-+	pinctrl-names = "default";
-+	uart-has-rtscts;
-+
-+	bluetooth {
-+		compatible = "brcm,bcm43438-bt";
-+		shutdown-gpios = <&gpio GPIOZ_7 GPIO_ACTIVE_HIGH>;
-+	};
-+};
-+
-+/* UART Console */
-+&uart_AO {
-+	status = "okay";
-+	pinctrl-0 = <&uart_ao_a_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+/* UART Wireless module */
-+&uart_AO_B {
-+	status = "okay";
-+	pinctrl-0 = <&uart_ao_b_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&usb {
-+	status = "okay";
-+	phy-supply = <&usb_pwr>;
-+};
-+
-+&spicc1 {
-+	status = "okay";
-+	pinctrl-0 = <&spi1_x_pins>, <&spi1_ss0_x_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&gpio {
-+	gpio-line-names =
-+		"", "", "", "", "", // 0 - 4
-+		"", "", "", "", "", // 5 - 9
-+		"UserButton", "", "", "", "", // 10 - 14
-+		"", "", "", "", "", // 15 - 19
-+		"", "", "", "", "", // 20 - 24
-+		"", "LedRed", "LedGreen", "Output3", "Output2", // 25 - 29
-+		"Output1", "", "", "", "", // 30 - 34
-+		"", "ZigBeeBOOT", "", "", "", // 35 - 39
-+		"", "ZigBeeRESET", "", "Input4", "Input3", // 40 - 44
-+		"Input2", "Input1", "", "", "", // 45 - 49
-+		"", "", "", "", "", // 50 - 54
-+		"", "", "", "", "", // 55 - 59
-+		"", "", "", "", "", // 60 - 64
-+		"", "", "", "", "", // 65 - 69
-+		"", "", "", "", "", // 70 - 74
-+		"", "", "", "", "", // 75 - 79
-+		"", "", "", "", "", // 80 - 84
-+		"", ""; // 85-86
-+};
-+
-+&cpu0 {
-+	#cooling-cells = <2>;
-+};
-+
-+&cpu1 {
-+	#cooling-cells = <2>;
-+};
-+
-+&cpu2 {
-+	#cooling-cells = <2>;
-+};
-+
-+&cpu3 {
-+	#cooling-cells = <2>;
-+};
+I'd just go with VM_BUG_ON(), because anybody messing with 
+__isolate_free_page() should clearly spot that we expect the current 
+handling. But no strong opinion.
+
 -- 
-2.30.2
+Thanks,
+
+David / dhildenb
 
