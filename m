@@ -2,102 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD189402447
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:27:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E54840244A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232170AbhIGH15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 03:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
+        id S235147AbhIGH2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 03:28:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231324AbhIGH1z (ORCPT
+        with ESMTP id S231208AbhIGH2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 03:27:55 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40B0C061757
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 00:26:49 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id n27so17837875eja.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 00:26:49 -0700 (PDT)
+        Tue, 7 Sep 2021 03:28:13 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DB5C061575;
+        Tue,  7 Sep 2021 00:27:07 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id h16so17704249lfk.10;
+        Tue, 07 Sep 2021 00:27:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=IWZdd34mYgIPewtgc5tJtV8hbSTMXe/opG3OPllHdhA=;
-        b=aJL5RU3be4VNEvtQHHggMa3w2xhD6DUNln6TqrlWmXjHBx3Y+tTRHAjqf38TcAkkYs
-         d3Puy2cd/AOoPSHdM00SuqgtqIXakD0rR8HKBvXcniWIGnNiiWxzFdVRPkA8AgOGbAQl
-         JCE4LB8XhxSK+77L1zooc6EEqGYRFhSrZUwQA=
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=X0MR/JzbyhczX6Z4sq/vQDWWS/j750GwkAgqvzPOzPQ=;
+        b=g+viYzimD1eABLGqXjiUFIXhGCSmnrN8Xz0wWqKRNddp9Bx1K1pvw+ay2GdXArvH2n
+         QDW6talcveaugUo7UE8K2cl+tuZV64ZB6RuVnVWIDQW7qgBiH6s0mpi9HxRIyL6r96es
+         FkNkGAFkKdfX/0+m8Ig6Jm+54m1jGOvuYRQaDiSxt6FRLvTJxZ4VqFqL3AeBPDGIOy/H
+         C2eGpFvvRU04ls2HwXeuUfU6gxKFtmmkkoy366ED53xBhnpqgenxOenCeFmBZc82FgJQ
+         TVGHKCk54fTOQ6Z7LWBa9lMXIZ3KlX2FwGxhV5QPqygEYqm/o9PKtPBrrTh6Oy1ZrVJH
+         cSUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=IWZdd34mYgIPewtgc5tJtV8hbSTMXe/opG3OPllHdhA=;
-        b=Cv5BVjk5RH0mOty0hzX8H2sTlP9v4rFm+cOCyQRcv8T8Nt37ruMLsNH031N6ga5xxP
-         ZkIFyupQSEOr/fREph/a8VaasilfiteGqFertibNII19sSjLouUoRnGcI4v4TpjIbRuD
-         L5ZlP10d/ppgJWZ2qpsBFmwCwIevUn2g+/dcZN0g7wkmRzeQyrkqVn9mmslUYXLQahS5
-         3+XIryZysM094yMNlVagpIgyqKyKmvTXWIFXI5VKIvPJ7fmypw+XQ6JDL0Md7zETS5MG
-         Ms83DPrWUQMTetHws8RGlewSjhtwoRjOPRR2ljq3VyFnIKHznv8Z7IBEN5HlA07c/B36
-         x31Q==
-X-Gm-Message-State: AOAM533upOVYcf72maPxL/tEZ1rJ2E6HInnEGxeUHJElICiMmr1Tukop
-        ixrNLv+EvKplOI0VzE9lCEFS0shgX283eg==
-X-Google-Smtp-Source: ABdhPJx9aaD2luS3+7Z2YZO5jby4bcPmlEONqstwpExgmeqfKB0+0p41yoEhopszjtcse2ss1fxsHQ==
-X-Received: by 2002:a17:906:608e:: with SMTP id t14mr17228650ejj.441.1630999608158;
-        Tue, 07 Sep 2021 00:26:48 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-16.catv.broadband.hu. [86.101.169.16])
-        by smtp.gmail.com with ESMTPSA id c10sm5071451eje.37.2021.09.07.00.26.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 00:26:47 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 09:26:45 +0200
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [GIT PULL] fuse update for 5.15
-Message-ID: <YTcUNWiS2+m705i7@miu.piliscsaba.redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=X0MR/JzbyhczX6Z4sq/vQDWWS/j750GwkAgqvzPOzPQ=;
+        b=akl/Ux7U9uPPpDDc1uYcx2lGyGH7ybuPif5q5w5IWT4BeiAQOwKzCizozrE3xwni1R
+         5DGt/WSWk+H+jsdsb3Sw9xB8Saev7F0sIByInYRWe3Ot8SPxc/ZdR9Pn25mrBzE0Hbn1
+         IEmUKg5LtrPJW8iACtNvg1e3XZ44KNJH9pm1Ui7InqTuzdsMCYafwqTLeTxAYDSQ+ZeJ
+         qAXYPMm4C+Q58dUry96xa189KaaOJMJBn+IL9R0L9w3q0XBBtg1HPAL1LVE8gEEI9GTZ
+         /wayWrWElqSE/oW4FeuVVtnNo4py9uef+H0tzPONk4GXWl1PaLyR3Teoyyx8KIJJxaGn
+         pgkg==
+X-Gm-Message-State: AOAM531UH7HGcLJOomk3YzJPTrR9cNlANuEnojCUwVuL7AjDXiWKtEQM
+        ApvsVak6fKdpRNRlZAnwq7A=
+X-Google-Smtp-Source: ABdhPJxAzR4mxfzUI7fkRkSnRmwRuPJXTNBPzjgMakhWbclZDfa626xjtWU8BOghFGTsr5yxUwn97A==
+X-Received: by 2002:a05:6512:344c:: with SMTP id j12mr11970692lfr.594.1630999626100;
+        Tue, 07 Sep 2021 00:27:06 -0700 (PDT)
+Received: from [192.168.0.192] ([194.146.248.73])
+        by smtp.gmail.com with ESMTPSA id y14sm1341773ljm.39.2021.09.07.00.27.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 00:27:05 -0700 (PDT)
+Subject: Re: [PATCH v2] media: s5p-jpeg: rename JPEG marker constants to
+ prevent build warnings
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        linux-media@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        linux-arm-kernel@lists.infradead.org
+References: <20210907044022.30602-1-rdunlap@infradead.org>
+ <20210907081125.21c311f1@coco.lan>
+From:   Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
+Message-ID: <6c69dd69-9ace-114a-f887-3fe0fdd5d500@gmail.com>
+Date:   Tue, 7 Sep 2021 09:27:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210907081125.21c311f1@coco.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Mauro,
 
-Please pull from:
+W dniu 07.09.2021 o 08:11, Mauro Carvalho Chehab pisze:
+> Em Mon,  6 Sep 2021 21:40:22 -0700
+> Randy Dunlap <rdunlap@infradead.org> escreveu:
+> 
+>> The use of a macro named 'RST' conflicts with one of the same name
+>> in arch/mips/include/asm/mach-rc32434/rb.h. This causes build
+>> warnings on some MIPS builds.
+>>
+>> Change the names of the JPEG marker constants to be in their own
+>> namespace to fix these build warnings and to prevent other similar
+>> problems in the future.
+>>
+>> Fixes these build warnings:
+>>
+>> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos3250.c:14:
+>> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+>>     43 | #define RST                             0xd0
+>>        |
+>> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+>>     13 | #define RST             (1 << 15)
+>>
+>> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-s5p.c:13:
+>> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+>>     43 | #define RST                             0xd0
+>> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+>>     13 | #define RST             (1 << 15)
+>>
+>> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos4.c:12:
+>> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+>>     43 | #define RST                             0xd0
+>> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+>>     13 | #define RST             (1 << 15)
+>>
+>> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-core.c:31:
+>> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+>>     43 | #define RST                             0xd0
+>> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+>>     13 | #define RST             (1 << 15)
+>>
+>> Also update the kernel-doc so that the word "marker" is not
+>> repeated.
+>>
+>> Fixes: bb677f3ac434 ("[media] Exynos4 JPEG codec v4l2 driver")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+>> Cc: linux-media@vger.kernel.org
+>> Cc: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
+>> Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+>> Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> ---
+>> v2: change all JPEG marker macros to be in their own namespace (as
+>>      suggested by Mauro)
+> 
+> Applied, thanks!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/fuse.git tags/fuse-update-5.15
+You can add
 
-- Allow mounting an active fuse device.  Previously the fuse device would
-  always be mounted during initialization, and sharing a fuse superblock
-  was only possible through mount or namespace cloning
+Acked-by: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
 
-- Fix data flushing in syncfs (virtiofs only)
-
-- Fix data flushing in copy_file_range()
-
-- Fix a possible deadlock in atomic O_TRUNC
-
-- Misc fixes and cleanups
-
-The recent commit dates for the two head commits are due to a trival bug
-fix being folded in.
-
-Thanks,
-Miklos
-
----
-Miklos Szeredi (9):
-      fuse: fix use after free in fuse_read_interrupt()
-      fuse: name fs_context consistently
-      fuse: move option checking into fuse_fill_super()
-      fuse: move fget() to fuse_get_tree()
-      fuse: allow sharing existing sb
-      fuse: truncate pagecache on atomic_o_trunc
-      fuse: flush extending writes
-      fuse: wait for writepages in syncfs
-      fuse: remove unused arg in fuse_write_file_get()
-
----
- fs/fuse/control.c   |  10 +--
- fs/fuse/dev.c       |   4 +-
- fs/fuse/file.c      |  45 ++++++++----
- fs/fuse/fuse_i.h    |  20 ++++++
- fs/fuse/inode.c     | 203 ++++++++++++++++++++++++++++++++++++++--------------
- fs/fuse/virtio_fs.c |  12 ++--
- 6 files changed, 214 insertions(+), 80 deletions(-)
+> 
+> Regards,
+> Mauro
+> 
+> Thanks,
+> Mauro
+> 
