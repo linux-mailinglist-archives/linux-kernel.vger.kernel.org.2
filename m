@@ -2,237 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6BF40234B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A88BB40235A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:21:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231528AbhIGGRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 02:17:10 -0400
-Received: from mail-mw2nam10on2064.outbound.protection.outlook.com ([40.107.94.64]:32097
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230286AbhIGGRG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 02:17:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FthDBHbRVE6tUnHZEzzPwDvi2Mr3OIBDritdWhQRi8Je5vGotjxZk7I0atXjz8tsZrKNUWQWxz5fggxwpH3QzrV/HCcl/++FqXZ1749WlkczQGa5cFJCsCNbUxk8B/Q10TOFCyetS/aTeBB+nscfkwSc5/g9u8+BZrYKsry43JYlJV8967J+OqgUwNtZ0pVxyPCRPGLfiDreif9J2KD8sj7j9sT8vzc08y6TFJQ2GE8KjbZXeGYhy4JyIoFHFRVgiGK1iFcnFveiqziKoJwejjZPL+VfN8RrAo04Vo2cROqY1J0C9jAsXXdM5bhUJ5K3vt2veff7NG26w4lrK655wA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=ueErFGUTvOS36MOhig1XO0ME6cU8Q2Zxy250LLlkHwA=;
- b=n85qWFFY9kGn9jZ4vjgH3jdGBoIKMuG65iLUVgYguk0yVVTpbXyGXApxc4bk/CjXJwkKck6Nk3b81RkhZmArAGuONr7j/cGQK617kyUiSZosk1Kpz+kMfaQC9n4LhTRSRlUI7zszykJi1W4D0e8k/K6zBj4Bjb3IHiWjoDIBiJHtAmYIyWVCDVbcci7sGvcaUJY52eMgbDKOd+PrxEFHSW8YZD34fNaKTaJsWeYWcp/GHPCmT8oc+rxMVmFD7qK9u6f9IkyWc/EMQTtSmcG3kEvDmGNjYhbdjNi/2MMUud9EBc6WrxX1OKG1eRygYnkumy+pUXDh6GbMskKg1MX/rA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ueErFGUTvOS36MOhig1XO0ME6cU8Q2Zxy250LLlkHwA=;
- b=MgLINUbMT3DMsTRgqpMtmKcnZD0sxc0hZVXvFSqk2klljhDEmSJ6Sh/WmlaXptWQDHtS9Ioe821LSQVs9ay9409FPkk6Dklfwysf6vsSZkAMMLwB36Kqum+sJA6zh2Z/VAfwcgXLrCnM9f8242l7s8p1NUg+3NV6dYRWiXYx8Ak=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by BL0PR12MB2516.namprd12.prod.outlook.com (2603:10b6:207:4e::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.22; Tue, 7 Sep
- 2021 06:15:53 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4478.025; Tue, 7 Sep 2021
- 06:15:53 +0000
-Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
-To:     Huang Rui <ray.huang@amd.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-sparc <sparclinux@vger.kernel.org>
-References: <20210906142615.GA1917503@roeck-us.net>
- <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
- <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net>
- <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
- <20210907053236.GB3271077@hr-amd>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <0d63f82c-7bdc-1bf0-f64b-8331291e2d4e@amd.com>
-Date:   Tue, 7 Sep 2021 08:15:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-In-Reply-To: <20210907053236.GB3271077@hr-amd>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: AM0PR02CA0099.eurprd02.prod.outlook.com
- (2603:10a6:208:154::40) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S231477AbhIGGW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 02:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230342AbhIGGWX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 02:22:23 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C45C061757
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 23:21:17 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id v5so12351284edc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 23:21:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kyLqso2zFvMOQ+4RWU6jmHnwEql9tRheZI3QDveqF5I=;
+        b=yJULVcFN75pagbjz1NkL9/3Eytz3zDcWFTcbtnVbMAkqDd0nn8zOv3eBP5fL8O8krX
+         MXlQlBBMRcQXtG88CbWfZHkIh3ZJWeRrOZxu1aqMJejdyPUFefkJ6WaJ7SU9TxeqMNKr
+         S37+2+BRyyizWuamXaUuNXSScdnn7JEFkzDpatvgzGTaPgWaeiJcHXaxWdWRdb4GsMkm
+         4ucjFRP4B9DDxl9yVfsmWWo8hTDNcpdflHAT8GLKDKyZcINTPoB2UeVxO4NVppQtJS9U
+         MDB0nHMzYrK/hs5+krICzU1vD2T8rNRBBigtZYaXn68uUpZ8ktRIYVk6P8qWL+c8DYRX
+         19/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kyLqso2zFvMOQ+4RWU6jmHnwEql9tRheZI3QDveqF5I=;
+        b=cpyJgUAFPy68SgW0yOY8v77/3+en/u1vm1ciHs+ExFFBzO280xvl12Cee2EK3FHn9W
+         Vgy9tIpIjqE/ay7OLUV6WzDSATCxTQAGWf/nYgB1WWDbLUf53ovlKTpUAjng79sZDRMa
+         zAMveT2b6e60mj+OCH156LLESwesED6l1QkQ7ryJ8AvVv0puXLTpii5nTdFf7PdD0U4L
+         jzEnpgN9EJNbMA5ZdS0llboIGziewcplk1OWHnirQBx5IG+HoorAuUh8llaf3L9sf7PF
+         jxcBcejWERZdlcNivwonYOyrQ8XrJyPB3hELCeztMvunUpd0GI9DWs8N821MyxoIevux
+         NeQQ==
+X-Gm-Message-State: AOAM530Cso+wXcevYs4ClXVFiI88EkV9dWQUmPKZcav4BSIWmXLQdOlk
+        9H8uPw4TbMylEg1+A7a8jvegrrpHQIEWLc04RM0mcA==
+X-Google-Smtp-Source: ABdhPJw64fQkoXwa2HfFRvaQaBZqeQJRTwvo627G8yTuR5S2pgV31f66YKf1ugFdetFuFfjQbKRV3yB1A8kObU27jbM=
+X-Received: by 2002:aa7:d3c7:: with SMTP id o7mr16831573edr.288.1630995675861;
+ Mon, 06 Sep 2021 23:21:15 -0700 (PDT)
 MIME-Version: 1.0
-Received: from [192.168.178.21] (91.14.161.181) by AM0PR02CA0099.eurprd02.prod.outlook.com (2603:10a6:208:154::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 7 Sep 2021 06:15:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ec2c97ec-980e-45af-f00e-08d971c6f235
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2516:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB2516029A4CF832CF5FFD0CB083D39@BL0PR12MB2516.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: scgu5XDFutUkuMchC9MoyOOMqW7RQaGdVoKAnXOdctHizp1OC+P1BQQ9Qvc410CZhKHeqKXsBWVbWf22z50TjRb7wKs5yk/bwPYFiRxm3yXKEGGm5N/9kgulIJ1Qc05CTyb3nmw+PuNAZfXXoaRhq2kvOFNM9P76eg17X5Nj1Ili81BRLFOOCaJz0rCeKPy1hjNqIX5Dnad8kj1i3d7Wu3mDSM0rp7AvGDM1edHxVENK/npJ5vCvodIfiCIO8MuMdFTtZCmJ4T9h9+50Ba6rHej+vcBWC1wGBseIjulK74IvC1LSJ2rLV1YESDrgNiKhNzgpxeN+qpbk6cUbkB5b14Cy30eJ6Dm6tsLYGuLEiN0I3vHtgULL662BBQEKEwnv9KW90+X1et9UBSObFVmMAgo09s9HoWD69swrFhs3zLHES41pj2T5RsNQo5mBa6hVJ+1WMnBnm++/pHT7e+LsY18+uxyZXnJNZKvlVQJkzrSQgh3vLDx2NmWPKyVwKC8BlFOO18DkNrjs+7LeVCCMZyeRjdrj6XfiND4jILTPHaIVNFVmiXAaM4trqherwqVsquyc2A1+E1ljDcXeAc6V9ETicC9tp+2Tge9rkgNm0miMfZzlGkld07ZN+904u8Lkuqlrv68WN+kCcEj/VkLagk6Ide3JolX4HPndIROxxiSzgOFtyYGmZTJ1+QhE+U2zm5dKv+CNh1e4uwDwuPmJmJIXp9oIUriF0iaqgXdYBNU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2906002)(66556008)(66946007)(186003)(4326008)(38100700002)(53546011)(36756003)(508600001)(83380400001)(86362001)(31696002)(5660300002)(26005)(8676002)(316002)(956004)(6666004)(16576012)(110136005)(2616005)(54906003)(6486002)(31686004)(66476007)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?gb2312?B?bGVVcG44cW9lRHNhWE16Zmg5djRPc1BlWHRGQnNFa2x6WUg3Y0VBUlE2UTN5?=
- =?gb2312?B?Yjc5OTNMYzF4Q0x3OTFLRmdPQXE3OEtRRHBLZUNIcG41bHVoOUM5YnRna3VP?=
- =?gb2312?B?RUdtZ1Y0L3pVTDJmZU84VHNUdGY0RkJHMW9KTk81VzBOQmRmbUhMa0NkTkxv?=
- =?gb2312?B?NUprKzFmZ1IxZnJFY2VuUDBVSUp1ZDNMbVpmYjlUYWRiSitBWGVmVXhtczZX?=
- =?gb2312?B?bkxaQlpXemVzeTRadnlqWm9WMnd2TUdsa21USlkwc2tOL3VjRDAvcGV4Rmwy?=
- =?gb2312?B?Q09Mb01oUHFtbm9PTldmaG8xMXEvcWxxbExJaW80TlY2NXQzN0tQNTFKRE81?=
- =?gb2312?B?bTQ4U2tiN25iYXo2dUk3T2YzZUtvL3dYY2pTRXdiRnZMSWdPVldqSFFqQlkw?=
- =?gb2312?B?anhlVGRMME9TRkE4L3dvY0JOL080SHlISDgwSVBMYi9ueTl6dEJtNGc4c0h1?=
- =?gb2312?B?emdhelFsdkRxRXRoOFFaRjFVWndldGJhMHdJWndsbkE3WkhlczBKWFJzQWZX?=
- =?gb2312?B?UXhpWnFWbmxGaHQrMjRWb1c1Y0EzU2ViMm1PMUNvUFJ6SG4zZTF3K0dRWk9p?=
- =?gb2312?B?d3R0dzBzb3ZvaUJFa3VnL2Zrd3NQNlQ0cHN3SzNoS3F3YzFlSm9xVUFFUDRF?=
- =?gb2312?B?MUYzWVIwQ0F2cjhUU25NcVdsNno2eWFVZG1Jdko1SDJnN1grWm8vbWZQMUhW?=
- =?gb2312?B?QWMxdkhsTUMwWFJzMDdQY2JJeEhnbkVxdDJFb25YYW9CanlYeXdZeWhhZGRJ?=
- =?gb2312?B?WFRCL0pMM2hiMHNUTjlCZFM3ZkJIL2pmWC84MGRERHkrMjJ3eWZtVEhoeCtD?=
- =?gb2312?B?QVQ3WElod0dLYXA5MmtjdzRReU5SVmc4QmR0UkhQVjZLYmVJQy9rdldZZ203?=
- =?gb2312?B?ZUJ4d3MyRldWMitmcVlXS1d3NDUvOUl6K2xqOWFDbmpqWlhqQWkyMm1HcVk4?=
- =?gb2312?B?RDZLZis4R3crcXkvWXdUeWNiU28ydEFmMkhqRVdQbldKTWoxREVQQzBFRFJy?=
- =?gb2312?B?dm5SZnZnR3U0eXI3RlVNdlQ5QWQ4akFVOTJDakVtMkFRTnAyS3VyZTNWR3o1?=
- =?gb2312?B?WU9IZGpxdkI5emhRSDJkZG5WR3RYWHl2Zzh1UzhxallVeGdYRWhaRWtkK1FQ?=
- =?gb2312?B?LzFtNENZRWtUSkphUTRCVFBKa1BXSzZVWGhLSmNFZ0ZlQXRCWm5mdm5BUjRr?=
- =?gb2312?B?WlJhd3RtTjFnSkY0ZXNPQ24wOEVnalBMZVRObVFVU2VhTlJJUVlPeHhTMFBu?=
- =?gb2312?B?THM1UVZJekZxOVVBeWE0MDVBMGx2ejcxbXpCQnBScDF0ZG9EWkVuMjdxaXBL?=
- =?gb2312?B?MFdhb2I3cGVhUU9sYktRQjFnTTk3NitRSlByV09HdlhtYkNFVVkwajJtNkE0?=
- =?gb2312?B?WGhZclc2L25TSUlCS3dsZG1yeGxYc3pVVFNnQUticFhjVmdyWWRwZFJBNjdS?=
- =?gb2312?B?SE5ZcHJjWWozNHBRU2xZWVdISHVEYVNHU0F6b09hRTd0bXA4Y3ZSeU1DU0c5?=
- =?gb2312?B?OGJWbCtMczdEd1RlM3pUTUxGNTM0am1sN2Rabk9MakZ3MCtzcUJ6VFdoTnBv?=
- =?gb2312?B?TUlKWng3QWhpUmYxYnkyUFIzQVgvSnY2cmZ1R2c0YTdPb3JCTHQ0emtjQXhF?=
- =?gb2312?B?c1RmZHdxajdENVlGcVFXU1hqOHBHSEtDTDRjM3pENWU3emRGRXVZT0xYSlpV?=
- =?gb2312?B?MjFsSlBIWHI1NDRCc1QyeXZicnYrM1RFNG5VOW1LRUNreG9hWVdhcEwrWUtG?=
- =?gb2312?Q?1336JwhY0KUSaC8SoTWhsMID+VpFLTNWZW9gN7V?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec2c97ec-980e-45af-f00e-08d971c6f235
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 06:15:53.3108
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wadj8hQffCx9yZfXKTbmUwbxhyUpmEoHHWAuAuenFHxLi0zrxQMH7xwpU9LJdBCC
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2516
+References: <20210906125448.160263393@linuxfoundation.org>
+In-Reply-To: <20210906125448.160263393@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 7 Sep 2021 11:51:04 +0530
+Message-ID: <CA+G9fYsCNv2p88g21qyDcTZGDZERiKj1=_QwsrVvw1m4_f1DcA@mail.gmail.com>
+Subject: Re: [PATCH 5.14 00/14] 5.14.2-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 07.09.21 um 07:32 schrieb Huang Rui:
-> On Tue, Sep 07, 2021 at 07:06:04AM +0800, Linus Torvalds wrote:
->> [ Adding some subsystem maintainers ]
->>
->> On Mon, Sep 6, 2021 at 10:06 AM Guenter Roeck <linux@roeck-us.net> wrote:
->>>> But hopefully most cases are just "people haven't cared enough" and
->>>> easily fixed.
->>> We'll see. For my testbed I disabled the new configuration flag
->>> for the time being because its primary focus is boot tests, and
->>> there won't be any boot tests if images fail to build.
->> Sure, reasonable.
->>
->> I've checked a few of the build errors by doing the appropriate cross
->> compiles, and it doesn't seem bad - but it does seem like we have a
->> number of really pointless long-standing warnings that should have
->> been fixed long ago.
->>
->> For example, looking at sparc64, there are several build errors due to
->> those warnings now being fatal:
->>
->>   - drivers/gpu/drm/ttm/ttm_pool.c:386
->>
->>     This is a type mismatch error. It looks like __fls() on sparc64
->> returns 'int'. And the ttm_pool.c code assumes it returns 'unsigned
->> long'.
->>
->>     Oddly enough, the very line after that line does "min_t(unsigned
->> int" to get the types in line.
->>
->>     So  the immediate reason is "sparc64 is different". But the deeper
->> reason seems to be that ttm_pool.c has odd type assumptions. But that
->> warning should have been fixed long ago, either way.
->>
->>     Christian/Huang? I get the feeling that both lines in that file
->> should use the min_t(). Hmm?
+On Mon, 6 Sept 2021 at 18:28, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Shall we align the return type like __fls() on all the arches?
-
-I think so, yes. IIRC I was a bit surprised that it returns UL on x86. I 
-mean the maximum possible value here is 63.
-
+> This is the start of the stable review cycle for the 5.14.2 release.
+> There are 14 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> But it looks OK for me to change min to min_t() here as well, I can file a
-> patch to the update:
+> Responses should be made by Wed, 08 Sep 2021 12:54:40 +0000.
+> Anything received after that time might be too late.
 >
-> -       for (order = min(MAX_ORDER - 1UL, __fls(num_pages)); num_pages;
-> +       for (order = min_t(unsigned int, MAX_ORDER - 1UL, __fls(num_pages)); num_pages;
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.14.2-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.14.y
+> and the diffstat can be found below.
 >
-> Christian, what's your opinion?
-
-The "MAX_ORDER - 1UL" can now be changed to "MAX_ORDER - 1", but apart 
-from that looks good to me.
-
-Thanks,
-Christian.
-
+> thanks,
 >
-> Thanks,
-> Ray
->
->>   - drivers/input/joystick/analog.c:160
->>
->>     #warning Precise timer not defined for this architecture.
->>
->>     Unfortunate. I suspect that warning just has to be removed. It has
->> never caused anything to be fixed, it's old to the point of predating
->> the git history. Dmitry?
->>
->>   - at least a couple of stringop-overread errors. Attached is a
->> possible for for one of them.
->>
->> The stringop overread is odd, because another one of them is
->>
->>     fs/qnx4/dir.c: In function ¡®qnx4_readdir¡¯:
->>     fs/qnx4/dir.c:51:32: error: ¡®strnlen¡¯ specified bound 48 exceeds
->> source size 16 [-Werror=stringop-overread]
->>        51 |                         size = strnlen(de->di_fname, size);
->>           |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->>
->> but I'm not seeing why that one happens on sparc64, but not on arm64
->> or x86-64. There doesn't seem to be anything architecture-specific
->> anywhere in that area.
->>
->> Funky.
->>
->> Davem - attached patch compiles cleanly for me, but I'm not sure it's
->> necessarily the right thing to do, and I didn't check the code
->> generation. Maybe it screws up. Can somebody test on sparc64 and
->> perhaps think about it more than I did?
->>
->>                 Linus
->>   arch/sparc/kernel/mdesc.c | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/sparc/kernel/mdesc.c b/arch/sparc/kernel/mdesc.c
->> index 8e645ddac58e..30f171b7b00c 100644
->> --- a/arch/sparc/kernel/mdesc.c
->> +++ b/arch/sparc/kernel/mdesc.c
->> @@ -39,6 +39,7 @@ struct mdesc_hdr {
->>   	u32	node_sz; /* node block size */
->>   	u32	name_sz; /* name block size */
->>   	u32	data_sz; /* data block size */
->> +	char	data[];
->>   } __attribute__((aligned(16)));
->>   
->>   struct mdesc_elem {
->> @@ -612,7 +613,7 @@ EXPORT_SYMBOL(mdesc_get_node_info);
->>   
->>   static struct mdesc_elem *node_block(struct mdesc_hdr *mdesc)
->>   {
->> -	return (struct mdesc_elem *) (mdesc + 1);
->> +	return (struct mdesc_elem *) mdesc->data;
->>   }
->>   
->>   static void *name_block(struct mdesc_hdr *mdesc)
+> greg k-h
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.14.2-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.14.y
+* git commit: afbaa4bb4e04f7c99e483611d4436b299129483d
+* git describe: v5.14.1-15-gafbaa4bb4e04
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.14.y/build/v5.14=
+.1-15-gafbaa4bb4e04
+
+## No regressions (compared to v5.14-12-g95dc72bb9c03)
+
+## No fixes (compared to v5.14-12-g95dc72bb9c03)
+
+## Test result summary
+total: 89039, pass: 74152, fail: 1065, skip: 13023, xfail: 799
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 289 total, 289 passed, 0 failed
+* arm64: 39 total, 39 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 38 total, 38 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 51 total, 51 passed, 0 failed
+* parisc: 12 total, 12 passed, 0 failed
+* powerpc: 36 total, 35 passed, 1 failed
+* riscv: 30 total, 30 passed, 0 failed
+* s390: 27 total, 18 passed, 9 failed
+* sh: 24 total, 24 passed, 0 failed
+* sparc: 12 total, 12 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 39 total, 39 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-arm64
+* kselftest-arm64/arm64.btitest.bti_c_func
+* kselftest-arm64/arm64.btitest.bti_j_func
+* kselftest-arm64/arm64.btitest.bti_jc_func
+* kselftest-arm64/arm64.btitest.bti_none_func
+* kselftest-arm64/arm64.btitest.nohint_func
+* kselftest-arm64/arm64.btitest.paciasp_func
+* kselftest-arm64/arm64.nobtitest.bti_c_func
+* kselftest-arm64/arm64.nobtitest.bti_j_func
+* kselftest-arm64/arm64.nobtitest.bti_jc_func
+* kselftest-arm64/arm64.nobtitest.bti_none_func
+* kselftest-arm64/arm64.nobtitest.nohint_func
+* kselftest-arm64/arm64.nobtitest.paciasp_func
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* prep-inline
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
