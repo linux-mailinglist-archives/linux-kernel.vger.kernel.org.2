@@ -2,123 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73ED84026B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48D644026B4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240091AbhIGKEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 06:04:39 -0400
-Received: from mail-mw2nam08on2064.outbound.protection.outlook.com ([40.107.101.64]:43969
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231194AbhIGKEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 06:04:33 -0400
+        id S243209AbhIGKFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 06:05:47 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:27929 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231194AbhIGKFp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 06:05:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1631009079;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=mESkZMCn3zmsbiDZ07Z3XiuHmv0bzZgcJCIsETD9bV4=;
+        b=f9te18dHO8t7eLXe6jKnWru5DmTbFdpaqOanYQOAK/1Ki+v7RUdsnr6jzD6IlHl+x3cbwW
+        6nfYDgOasNNen5DFzxQrk0Sj73GVnhAyPWoL/kYIvndiqCoDe2c3rsM51qAh7MEk9+IS07
+        +7psCLuIGL+JJbr1cJOOHY+FmQ9QANU=
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com
+ (mail-db8eur05lp2110.outbound.protection.outlook.com [104.47.17.110])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-9-hpqGuoH9PGq115orbvAkig-1; Tue, 07 Sep 2021 12:04:37 +0200
+X-MC-Unique: hpqGuoH9PGq115orbvAkig-1
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X8E0ZFsp8NUm4LSr6xkvzEburc5Wl+TvuBepFoP0uYTpCzaNHBf4F6kyid8D7JvaivKL2CoSgHccyxXoH4vkAC7T3mTNnqykhyH0SHgsjgKGZzok0B0Vs1CgD4M+5m0hHOiodm+bmqOXKKwLPDlr6nKCDPBlZOfw5GCpzyAhIe97r4gKTe8zjbSDe6yzvuuLCT1g2l5IhBdF72RPHJVy/KUfrmyQaBaZp83uhHEs4ckmhi3UQCE/0LX7ipjgXY5zryQCRdKsrpD/2mdA58o7PUAoQT/bTWZX0syLsvERtJ5pRBXPeB3agZA2XC4SXpNoRtkShOCeND4XV6jwdMMkNw==
+ b=FBFcSFwxe8k9APKb6ChixWW5QTh3KUK3lQrk/5ZSjQzECd983whDtHVuXV+zVKW3hLWUTZYNZQ9ibCDanbCTJ93aBRVDLYcxCHUlEyOBl8f3ZhZJ2DD8zJ7ijJblnMNH7C25LN3d//X65rooVLtr4ZXBgKbnmuouQh8JQOj1kpinW0Ve9UBRmo/MgYJgSX3TMYiOaloEOclRIW/YnjwAGZUg+4h3bc0adJEKyl92UkdDjUx2eaSSnFoI22Hb/gwaVMYD+x9mPFZFsIWtDZwMqQPD7v7Ys9O6qqZalJlhF39PVdOsVDn9sxR8Oy+A4pQRzHagpwNkYDsMAzRIDCngPA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=ymdB83v2h9vcJyo3O2Oe7vm75KEd8RwGnzSjAE6Z1fA=;
- b=NR67NulNzByGMfWgySdiMF2JMXTfOx19787a2owJnYhalV/Y+01bpZu5LS5vjR9DTmQU+Yrba/pM5gle7jQsZsaaJptOgN8CpjqfC6Bv1onPMFLioiN1gv1AEhS8300kx0pBI0ivPGtyVE4ftErtJEdFdrtgu/aTpDUcPzLWeWkKi7F89lfWC0WzP0VRKewVAzCzZUcs3HcsLbOGW3l/9Pk/wDICvTWO/nbBbBTt85GE38/vRbA6WYizXbUbsNJKPMgf8i3Rj4jHFEAI6TgtW72dA1s+VnEeSFkvYgDJ4Va35qZ+GJPAW2ctHKyXgkJnXY9l53UemICnVEltfL0AhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=ffwll.ch smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ymdB83v2h9vcJyo3O2Oe7vm75KEd8RwGnzSjAE6Z1fA=;
- b=VKiajmruLe6AaeUWGbewWcEVQhE8/bJNqCiJNq1psJylxlk5Xeizp/VQXSiAJCS1sFSYaj/y/qMGwPyZME4vSVXbow1dIAEtWjyHmUqUdsvokXsdZMoUzfxf9f4TksyiQJ7bQ/Cl8BSvTwXN5ng3QH3c7LALu0YDYYGfp4NR2Yo=
-Received: from DM5PR12CA0006.namprd12.prod.outlook.com (2603:10b6:4:1::16) by
- MN2PR12MB3264.namprd12.prod.outlook.com (2603:10b6:208:104::23) with
+ bh=mESkZMCn3zmsbiDZ07Z3XiuHmv0bzZgcJCIsETD9bV4=;
+ b=OJWnPLAL1KTnRcJZuu48HMMOASP8nA6t5tNHyXgJIZkMuEFwwbiMnLfqz7rWylxbJrNj2HpnhQ9e+gL+f3/4wfsR/rlkPa2erXsW0TCpnevVHY10YH3Nc0Khtgpa+X5ZlqCCGHMDBqrCz0AzFmIDckWUxd6lYysjv3nTHeJLT9U29m2VPikckQ/Gn9TBngC94rXbjWxd3j8NQcV0R55ksXRGcPe8VdIxoVcT17iVvOSfOQ58xr1UbchOBHHfSnCsINO2oYqPYTUjiZk1EaapZLR8ZIxwVLxKlqvNeN3u1f/z6vFQ5Z9x2tZFWHBA6U2YDiuipOnXXTQ1b7Lg2pUsUg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
+ header.d=none;lists.xenproject.org; dmarc=none action=none
+ header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR04MB6861.eurprd04.prod.outlook.com (2603:10a6:803:13c::9) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Tue, 7 Sep
- 2021 10:03:21 +0000
-Received: from DM6NAM11FT047.eop-nam11.prod.protection.outlook.com
- (2603:10b6:4:1:cafe::be) by DM5PR12CA0006.outlook.office365.com
- (2603:10b6:4:1::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19 via Frontend
- Transport; Tue, 7 Sep 2021 10:03:21 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; ffwll.ch; dkim=none (message not signed)
- header.d=none;ffwll.ch; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DM6NAM11FT047.mail.protection.outlook.com (10.13.172.139) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4478.19 via Frontend Transport; Tue, 7 Sep 2021 10:03:20 +0000
-Received: from hr-amd.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.8; Tue, 7 Sep 2021
- 05:03:18 -0500
-From:   Huang Rui <ray.huang@amd.com>
-To:     =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Daniel Vetter" <daniel.vetter@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        <linux-kernel@vger.kernel.org>, <sparclinux@vger.kernel.org>,
-        Huang Rui <ray.huang@amd.com>
-Subject: [PATCH] drm/ttm: fix the type mismatch error on sparc64
-Date:   Tue, 7 Sep 2021 18:03:02 +0800
-Message-ID: <20210907100302.3684453-1-ray.huang@amd.com>
-X-Mailer: git-send-email 2.25.1
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Tue, 7 Sep
+ 2021 10:04:36 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4500.014; Tue, 7 Sep 2021
+ 10:04:36 +0000
+To:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+From:   Jan Beulich <jbeulich@suse.com>
+Subject: [PATCH 0/9] xen/x86: PVH Dom0 fixes and fallout adjustments
+Message-ID: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+Date:   Tue, 7 Sep 2021 12:04:34 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR3P189CA0086.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:102:b4::31) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by PR3P189CA0086.EURP189.PROD.OUTLOOK.COM (2603:10a6:102:b4::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 7 Sep 2021 10:04:35 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 08ed54b0-b979-47b7-f14b-08d971e6b902
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3264:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB32642EABFEC95568D01B9892ECD39@MN2PR12MB3264.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Office365-Filtering-Correlation-Id: 3f7bf4a6-61b8-4bae-9838-08d971e6e5de
+X-MS-TrafficTypeDiagnostic: VI1PR04MB6861:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB6861E95D1B4BAD83CC93F0DAB3D39@VI1PR04MB6861.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: scZjuTrRTim9eC76wyqPXm6GV2YRxzqfKRhMMXAMQGEVGliD1vqNNOyH+NG+Zad3PGKF7rcR5KwJgL/hp97zCYPPGHkfk00icOKoqbmBjn3QLEHD5BQzahnfF121l3IwgMlrDa8WY55f4Vwhvr41Y4LDc2inc8QQ3wlpSP7zpauzaxmhOW2vjHlX3XDTnThd1zbLkuf2cEK0tOogFMcZsTuwTR7WJ9b4Ye+0M6LAnefqQitXKDCIyAIiGLg/JbxwLPjbOZLoLLwDAJL+6UFTi7OckYooa5Yf+S/QGWFhNNro+EKtVxqfZNMGPfC7dOHs/7d1Aj4FReEDxJNZgOiZdRiwPppCrx5N34C13JPVwttLPxIpF0JhctZwf402/RtPNCQF7HjEQHl/rEX4ZhWw6veB5mQ2N6hfuhyOA1HQPtS7dFpyFy/0eFxYq3c/mxHGxRvAogQebYwTDK9RvxckIruV1ZXikGct1CpOMfR5OmHOfJB2eYbR5/8DM58zXK3PYQZBllpnoUKUyVw797FCvTLiWWJLerOPERm6TjVZzFluXMPiKOHFQEAoDdQ9a/gWS7oVxRCltN7cl7jrkeZGJHc20elEbhUZxqwaNUwFyoHV3uoEiMszGrRKc0KfastXbB3ZKJkQqtA9GgG8IafItWBAdcoEtShSSI+R03eNQsr0mUFB/PnaYlF9yVLnrmqxhVQ4tXBhZ4oKaiyNiRhXLkihUyVEUTR9y4BdxfnrwRj5l55Tj7nOhe+nV2WyKBgm
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(376002)(39860400002)(136003)(346002)(46966006)(36840700001)(6666004)(1076003)(47076005)(8936002)(4326008)(82740400003)(7696005)(356005)(81166007)(36860700001)(2906002)(26005)(82310400003)(336012)(66574015)(426003)(2616005)(16526019)(186003)(110136005)(478600001)(70586007)(70206006)(5660300002)(316002)(36756003)(83380400001)(54906003)(86362001)(8676002)(36900700001)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 10:03:20.9160
+X-Microsoft-Antispam-Message-Info: 2HFuW6qjrpDU+nMRA4sqT+UmRulKiRMvir2UGiWWhZJVi+TyTBfaarxs2jLscRYOX5OtsWFqOt7FbB4P0DYcKn9DufThRExjmgt7Qm7vaEUR8A/OhixtQbLZMnp3Ak8n/PLU1U/z1fFfgYKCiqhgHJJQxeqdRg8f5AcX19KkPEw9Ws2AZ0GKrAxnesGTzL9ASdZP60khriLDDb5CI1igK1JHMJ3b5Ub+gKrCUUQ52grVKgsLqKkB9kubmo7d4D+DKC1lYi6j8Z30pW4DCZneL4oroOkFrSZIylgOxiOJlI7yGbYKyo8lJEMSRKCccNyPmRBYFUYxPqtHFLUzVgap5PEARjmd6OfMvtqWQh2Z5iUQuJOiUipIX1WFt3GGBuN3WS1EzZySj4k3ZTj0ZgXDUZjzwb8pjZ8YWMRdrdT3EZuvXq2ci4tt4R4OGLc1wI89PN32cXBq0c06CjKCY0pT0LwIYTsxDb9uhx3Ip+qlj1sEd/AyOO6rkK8dCoO/PrM/a/udwDKVwft+fYsuThECxK1ml9beKZct7g06RzHyTGqktSzoHTB+lmT8Mh0sYUWT6nvSA+g05bKDWgF74YHCVPpPa90mH9o0jMHEbGK4tc8cKWIMAQMYGRLAZ84HdklWRmczRpOMXyqRLamPT2idtD2MtaiQQViYst8nF8Zu8eh3gMTsX14UfN4TAlF7qLfBWu7663XALdWvltHnjoN1gQdfj7A2uhKI5Mgoq5Oa1anf14sfQpYuXs8BB5Oy73ZA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(396003)(376002)(366004)(346002)(316002)(16576012)(54906003)(83380400001)(86362001)(2906002)(31696002)(110136005)(6486002)(478600001)(36756003)(38100700002)(4326008)(31686004)(186003)(26005)(66476007)(66556008)(8676002)(66946007)(8936002)(956004)(5660300002)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VlJSSjlBZ09IbHV2Z0NoZXZzS2M0eGxYb0JLeTlyR0V5QkJZT25RUkcrNDVN?=
+ =?utf-8?B?QjBHUEVOaFIyYVlMT1lWSFBPN2V5MC9wV3EvUUU5MzhSWmpmcmcyakIrck5z?=
+ =?utf-8?B?U25yRE9QbmNIaHRvazYyc1FsUDFaaWR5cUtGdzFmREQzV0pVTWhRVU5lRzV0?=
+ =?utf-8?B?TWlWVmZRMkx0bFNjSzBLdHdWbEZwak55K1Q3czRZWVVpcDl4aGFYUERqUnBw?=
+ =?utf-8?B?dXpuZVJ1S01qZVEwaTdXK0lsUkMyeWwvRHRxbkVLZW96M0Z3N0lsWjdnbG9Z?=
+ =?utf-8?B?NDRiclFMRjRSNjB4NkI4WDJydUUyL3VYOG5hYThHWEZWbUxhQjl2ZlZBeVZX?=
+ =?utf-8?B?QXZHR0VMcHRNR1RRNHl5R2xhbGJqZW1udnJ3ZndleEIvSWlCK2hvUlhTa3dE?=
+ =?utf-8?B?a1FmaWoyTFBMNENRYXRnTVRSNnROTHRkZlY4dnZUVjlQQkZGbTVDeUJTK3Bq?=
+ =?utf-8?B?Q25TZCtJU0RwQTA2cGcxL1JIUnZDUHlsRFV1cW9oTnRwalZnQzZKdUx1aGFj?=
+ =?utf-8?B?N0x2T3RwcmtsbENPQlZrSTBFOS9kNzNQTHBpZ0xubERmc0p6USs0R0duR3d1?=
+ =?utf-8?B?QkZOZWdVSDJoZHZlMnUxKzhwOXZpYjRRNnV1ZVNRU1crVFA5ZS90OTh1SUFU?=
+ =?utf-8?B?cEgvSHVSb21BOHgzM2FlSEdFdHZtSXlKQmFUQVo5NFFQVS9CcWQrRjZ3R2dk?=
+ =?utf-8?B?bmVXelU4UGlIMUVuRTZuQnY2NkNwRzRIUzFpZnc5bWMzdktIMWtQZW9QdHpl?=
+ =?utf-8?B?TFlNNXphT1g0Q2dJTTlqZi9zblk0WEdaTVFsRnVxVThlNDJzaUtVbU1WVnpP?=
+ =?utf-8?B?ZGRqbGhUZjh4YUJ1ZjNERmFiUjl4QjM3cWMrZXFtMXBiZXhPdjg0aWp4OVpB?=
+ =?utf-8?B?cWc0b2tXQ2wvWlV0dEJQcjlxUU5QQ0orVzhmUU1LaldXcXNCQkpjcVNUbDgx?=
+ =?utf-8?B?MVdYSGR6UkNmL2FmYk1vRlFRaHhNTGRjaWpUWTVMUEhENXFZNk02WWlGS2R1?=
+ =?utf-8?B?dVNmVDlwUmFXQTBITUhQZzlzOXE3MStVcXVkRWduYWxNSXpYUUxLMDhBUG5J?=
+ =?utf-8?B?OHROU3RTKzlHa3c4UzVSaUlGQytHOWVXZFFOVnZkQzRQUERjaGsraDFWVnF6?=
+ =?utf-8?B?ZHhpcTZHcWVXbkdrNjFuRmFoY0duODhSTk1xRmtZbTdVWDNhRkxPeUpSczFj?=
+ =?utf-8?B?bzlldTF1em04TnM4VWFNbCtSZktOSzhKck1GWGFHaFMzWXJRc2pBV1ZNaEM5?=
+ =?utf-8?B?TEx0ZjAxS2dFUTJGNDZSRVhsanRFS1hCd1YzdFAvekQvOU5lN0xCcFFTY0t4?=
+ =?utf-8?B?U2JPOC9sVHU3MC9ySXduU2J0SUdMU2wwKzFnZXFmL3hrdWtyWkpkbXBpRTNH?=
+ =?utf-8?B?Qjd2UUMvY3JzQUFhdHU2TUNvdGJQN2VtbkhiZXhPbVBXa1FDeEJQL2hNZkc0?=
+ =?utf-8?B?cDFsejdWd1dPaEFIZnVsbW9CL1ZDOVhhaFRJZVdteUhkeTRQaHhjMTVTaWEv?=
+ =?utf-8?B?dEwydG1Ydjc4M29XZEFFaGxZeG5WendIOFdKUm9admFodllESVJhTDhNRzFZ?=
+ =?utf-8?B?K2dmOXN1SkZ1RjJBRWhBbklvb2oxVStteUN5am8xa0hDRnZvUXYvVVB2TCsy?=
+ =?utf-8?B?ejNJb21XeWV4MzArejRZNHYreEpaZWE5cXFScTlFOUI4VjgyU2hiMU1IQW1y?=
+ =?utf-8?B?MTFWcXRoVC8xUWxWZldZSnI1NzdUaWpySGFta2VjWHFmM2t3RjUvNzdyRGNU?=
+ =?utf-8?Q?t/TZlfT7VPwDUXdKhEkGyH+b5fvEBIJB5aqBUYh?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3f7bf4a6-61b8-4bae-9838-08d971e6e5de
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 10:04:36.3542
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08ed54b0-b979-47b7-f14b-08d971e6b902
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT047.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3264
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jUdCjTt80pqdIGPC1zPRU8QD1iXXM9sL+g3kvZyTWuaPBXu9MbyA21lMB215uSiHDcysixCMNOPLx3hCRfwWkQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6861
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__fls() on sparc64 return "int", but here it is expected as "unsigned
-long" (x86). It will cause the build errors because the warning becomes
-fatal while it is using sparc configuration. As suggested by Linus, it
-can use min_t instead of min to force the type as "unsigned int".
+In order to try to debug hypervisor side breakage from XSA-378 I found
+myself urged to finally give PVH Dom0 a try. Sadly things didn't work
+quite as expected. In the course of investigating these issues I actually
+spotted one piece of PV Dom0 breakage as well, a fix for which is also
+included here.
 
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Huang Rui <ray.huang@amd.com>
-Cc: Christian König <christian.koenig@amd.com>
----
- drivers/gpu/drm/ttm/ttm_pool.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+There are two immediate remaining issues (also mentioned in affected
+patches):
 
-diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.c
-index af1b41369626..c961a788b519 100644
---- a/drivers/gpu/drm/ttm/ttm_pool.c
-+++ b/drivers/gpu/drm/ttm/ttm_pool.c
-@@ -382,7 +382,8 @@ int ttm_pool_alloc(struct ttm_pool *pool, struct ttm_tt *tt,
- 	else
- 		gfp_flags |= GFP_HIGHUSER;
- 
--	for (order = min(MAX_ORDER - 1UL, __fls(num_pages)); num_pages;
-+	for (order = min_t(unsigned int, MAX_ORDER - 1, __fls(num_pages));
-+	     num_pages;
- 	     order = min_t(unsigned int, order, __fls(num_pages))) {
- 		bool apply_caching = false;
- 		struct ttm_pool_type *pt;
--- 
-2.25.1
+1) It is not clear to me how PCI device reporting is to work. PV Dom0
+   reports devices as they're discovered, including ones the hypervisor
+   may not have been able to discover itself (ones on segments other
+   than 0 or hotplugged ones). The respective hypercall, however, is
+   inaccessible to PVH Dom0. Depending on the answer to this, either
+   the hypervisor will need changing (to permit the call) or patch 2
+   here will need further refinement.
+
+2) Dom0, unlike in the PV case, cannot access the screen (to use as a
+   console) when in a non-default mode (i.e. not 80x25 text), as the
+   necessary information (in particular about VESA-bases LFB modes) is
+   not communicated. On the hypervisor side this looks like deliberate
+   behavior, but it is unclear to me what the intentions were towards
+   an alternative model. (X may be able to access the screen depending
+   on whether it has a suitable driver besides the presently unusable
+   /dev/fb<N> based one.)
+
+1: xen/x86: prevent PVH type from getting clobbered
+2: xen/x86: allow PVH Dom0 without XEN_PV=y
+3: xen/x86: make "earlyprintk=xen" work better for PVH Dom0
+4: xen/x86: allow "earlyprintk=xen" to work for PV Dom0
+5: xen/x86: make "earlyprintk=xen" work for HVM/PVH DomU
+6: xen/x86: generalize preferred console model from PV to PVH Dom0
+7: xen/x86: hook up xen_banner() also for PVH 
+8: x86/PVH: adjust function/data placement
+9: xen/x86: adjust data placement
+
+Jan
 
