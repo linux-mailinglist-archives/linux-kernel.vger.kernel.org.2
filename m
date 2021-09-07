@@ -2,117 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EFC0402219
+	by mail.lfdr.de (Postfix) with ESMTP id B7DF240221A
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239317AbhIGBs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 21:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41434 "EHLO
+        id S239947AbhIGBs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 21:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbhIGBsz (ORCPT
+        with ESMTP id S232766AbhIGBs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 21:48:55 -0400
-Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD8FC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 18:47:49 -0700 (PDT)
-Received: by mail-vk1-xa2b.google.com with SMTP id j5so2773738vki.0
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 18:47:49 -0700 (PDT)
+        Mon, 6 Sep 2021 21:48:58 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6435C061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 18:47:52 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id s29so6866291pfw.5
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 18:47:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VRQ2NT5P6lslZai3b6+lYryp+86xw04llh15jxL+wkw=;
-        b=h1X8Vt06g7Z0C3a1MlWO1uCmfRCmGVUxfezoabIMI00lbuF1qZsyulsC59wamiN993
-         5EwNJgieohQUCkQ2NaGmzgvwESKwZvY/q9lLoim3zMjfx+zRQUNh3405Yw5DoCfclfc9
-         +080+bfiyIJoG8f75F+Zqt3UpAHt53jpZekosFP2u6+N282gnvfeBPMtfFt3u0QCIVsE
-         92PXoqo6xD41Z4e9c/WjQoe4vwsV8VP1CvTa0iWKKhV7OIVKktNGZl2J+d+89e3b4AND
-         HDcD8d21/dzC1Y/in9J43dPVeGNhTfy3LggYnZ2gembplNRS0a3K4bwkVxFKSkmIVmec
-         kovw==
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6mc027pv6u15MDfXa8/3uliAGB1haKo3X34nc3V5v00=;
+        b=oC0DtrPvwGiND0GVCJXzXX+dI34T4Zqz0WDJq566WiviOsRcoCp10XRByr4+cjaegm
+         Mz4YmBM2xfPwYdcc8pL7u6265hJfeL8l5wVMS2lthiuR+gOihgA5sYWpjxMGbSxCy/eY
+         xgZAKIx3setTGWmKAiD4FzZo+dksYXs9e3yMhTRteSmu5D0SgwEUrM86yYzSkE1x1Ny8
+         +CSLi6GoRIUNdcdUsKhUEN31ciH0rSqnIZcFtgJtJOGX6aoeF1I35Ea+QMrPftKVUZAG
+         nvlr9rkU84SzeChGIDD1xlTQmn/7j7CEWx8PHH/wj0vavyzZEmNN8JqwU2+w8b8ZVpgG
+         h3AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VRQ2NT5P6lslZai3b6+lYryp+86xw04llh15jxL+wkw=;
-        b=qRkVDhSdiPUBBCraLjM0SAItTVquNoyH+6nh3XoBTGoRxllbG7e4Qv2ikELkHKEpDo
-         Co/etzUdqEDsGlSAQT2Luqte/wHqaDHes+R0pWZt3PA9XcVHwrXSvB0ZH7XcLC2en0lU
-         Qa+CvegeLUDuPZ4rpZodhFr8bHL9AZQ1g8vAxFJHnwZcl1+mv6f0ioEfnbwNjFp6u7dY
-         +nw/hDqUpMQt9RiUV+hje7uJXC9w4IMPjl1Iuh53a+raEviz6Vz23NZKw6JEHD7TBMau
-         AcelUQBMU8wz9TtnZfAZCpDqSWFDQ4YmUtNUWXIDHrNz4mvG4JgJ70OG2xhEUW8LAaVr
-         FIcA==
-X-Gm-Message-State: AOAM530RSxTxfN9ub2bHE/yyXwyztxI+cwWNSKJNllRYknTYnDy8Se01
-        pPqCu9y+pgTnAHFi+qftrLamwdk3HeXWr9MiGhU=
-X-Google-Smtp-Source: ABdhPJw2TTdKkFNeecc2gY/rtMF+RIY9EyENK+YEAp4jvqYkpTPibcnG1m6t6Miz3YNOZH1MOH+e3jm37tPtswg/vgQ=
-X-Received: by 2002:a1f:add0:: with SMTP id w199mr6851778vke.0.1630979269098;
- Mon, 06 Sep 2021 18:47:49 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6mc027pv6u15MDfXa8/3uliAGB1haKo3X34nc3V5v00=;
+        b=WXCoEXoqDhKFWAKdMgvjL8XYXFEzPzLMO6mWR/XzBdMxlD1kpuaVInevQ9YarLs1+A
+         3N6dLM+RyOSH2j26pHIasy4w2KV2Sp/8d3wb++Ui9EkFcb4SOXlLAROvQHfzoE49/EkH
+         xiDdKyweZWaDugGh1mpw6/mNOo8vmfRJ7SqgUDF0yfahy3E/5ru2R/ji5QszxagFF5vP
+         +btdYkMYN/9RofAGPlkXMmdukEEZLp+s29gXz3I/cKZdf2iBSUAy4tvV4P0QU6qhxLcC
+         bIwtVaCtNPHDyrnV/NAI/hxsrk30cVpLFxVhjzWXkHBYZFa/zQjOzyimCLfEmnYG2HLR
+         KKXQ==
+X-Gm-Message-State: AOAM5320TTgdvpoiLlL0WtOlKaawvTzsxx3H0Qq9y7H9lbxXT1DeFBWn
+        4yp7a9dcIQOZ6P/UYPChXGAc93tIGep8WQ==
+X-Google-Smtp-Source: ABdhPJxUQ+t24jfciNyfQu1gi3O+qJsmIQ4TWAwZD7uUI8KaPuNkV7ME7C8E94lysZjNFushXSkUuQ==
+X-Received: by 2002:a62:36c3:0:b0:3fd:52ea:bd70 with SMTP id d186-20020a6236c3000000b003fd52eabd70mr14379411pfa.38.1630979272172;
+        Mon, 06 Sep 2021 18:47:52 -0700 (PDT)
+Received: from tong-desktop.local (99-105-211-126.lightspeed.sntcca.sbcglobal.net. [99.105.211.126])
+        by smtp.googlemail.com with ESMTPSA id p16sm545172pjz.44.2021.09.06.18.47.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Sep 2021 18:47:51 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Tong Zhang <ztong0001@gmail.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] ALSA: vx222: fix null-ptr-deref
+Date:   Mon,  6 Sep 2021 18:47:45 -0700
+Message-Id: <20210907014746.1445278-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAPm50aJyfxobKhTrS=dC3pQmM5EbwY2xunet3X5XgnnFUEMmBA@mail.gmail.com>
- <YTXfmRIwWREJgEU9@zn.tnic>
-In-Reply-To: <YTXfmRIwWREJgEU9@zn.tnic>
-From:   Hao Peng <flyingpenghao@gmail.com>
-Date:   Tue, 7 Sep 2021 09:47:21 +0800
-Message-ID: <CAPm50aLBt=YkFLi==-9U88YzwoJsmMTfEtj2v3+vx7fSRdDMLA@mail.gmail.com>
-Subject: Re: [PATCH] x86/tsx: clear RTM and HLE when MSR_IA32_TSX_CTRL is not supported
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 6, 2021 at 5:30 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Mon, Sep 06, 2021 at 10:46:05AM +0800, Hao Peng wrote:
-> > If hypervisor does not support MSR_IA32_TSX_CTRL, but guest supports
-> > RTM and HLE features, it will affect TAA mitigation.
-> >
-> > Signed-off-by: Peng Hao <flyingpeng@tencent.com>
-> > ---
-> >  arch/x86/kernel/cpu/tsx.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/arch/x86/kernel/cpu/tsx.c b/arch/x86/kernel/cpu/tsx.c
-> > index 9c7a5f049292..5e852c14fef2 100644
-> > --- a/arch/x86/kernel/cpu/tsx.c
-> > +++ b/arch/x86/kernel/cpu/tsx.c
-> > @@ -122,6 +122,13 @@ void __init tsx_init(void)
-> >
-> >         if (!tsx_ctrl_is_supported()) {
-> >                 tsx_ctrl_state =3D TSX_CTRL_NOT_SUPPORTED;
-> > +
-> > +               /* If hypervisor does not support MSR_IA32_TSX_CTRL emu=
-lation,
-> > +                * but guest supports RTM and HLE features, it will aff=
-ect TAA
-> > +                * =EF=BC=88tsx_async_abort=EF=BC=89mitigation.
-> > +                */
-> > +               setup_clear_cpu_cap(X86_FEATURE_RTM);
-> > +               setup_clear_cpu_cap(X86_FEATURE_HLE);
-> >                 return;
-> >         }
->
-> How does that even happen - the hypervisor does not support the MSR but
-> "guest supports" TSX features?!
->
-> I guess the guest is detecting it wrong.
->
-> What hypervisor, what guest, how do I reproduce?
->
-hypervisor is kvm, guest is linux too.
-> Please give full details.
->
-The host I used is kernel-5.4, and guest is kernel-5.13.
-MSR_IA32_TSX_CTRL is exposed
-to guest and guest to support RTM and HLE features, no direct
-dependence. at the qemu I
-started guest with -cpu host-model.
-I have viewed the code of kernel-5.4, and MSR_IA32_TSX_CTRL is not
-exposed to guest.
-Thanks.
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+a recent refactor created a null pointer vx in snd_vx222_probe().
+The vx pointer should have been populated in snd_vx222_create() as
+suggested in earlier version, otherwise vx->core.ibl.size will throw an
+error.
+
+[    1.298398] BUG: kernel NULL pointer dereference, address: 00000000000001d8
+[    1.316799] RIP: 0010:snd_vx222_probe+0x155/0x290 [snd_vx222]
+
+Fixes: 3bde3359aa16 ("ALSA: vx222: Allocate resources with device-managed APIs")
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+---
+ sound/pci/vx222/vx222.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/vx222/vx222.c b/sound/pci/vx222/vx222.c
+index f48cc20b9e8a..468a6a20dc1e 100644
+--- a/sound/pci/vx222/vx222.c
++++ b/sound/pci/vx222/vx222.c
+@@ -137,6 +137,7 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
+ 	}
+ 	chip->irq = pci->irq;
+ 	card->sync_irq = chip->irq;
++	*rchip = vx;
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
+
