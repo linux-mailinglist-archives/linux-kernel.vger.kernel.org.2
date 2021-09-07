@@ -2,124 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693A3402CFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA03402CFC
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344504AbhIGQkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344272AbhIGQkU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1344409AbhIGQkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 7 Sep 2021 12:40:20 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B816C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 09:39:13 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id y18so13746133ioc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 09:39:13 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232588AbhIGQkT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 12:40:19 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D93B7C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 09:39:12 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id bg1so6156869plb.13
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 09:39:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=AQSygVQR7X2p3idaY2kblM6hHvDCfsOME2h6aqCtJ1E=;
-        b=J9wKA2u//rt2N18EvKurLQs1GYvrydFPT69DIE8jqvK5Vpht4Wxy/HB56V4oPgYinq
-         1//uIpWNYkyykf3cXw5GwzRzSNBA+8ixPI20f3Blmalav1y3CGExTXh+JLs3eJ61ivv1
-         b7cbY3MkyIVaPUf3yyqPvxK6OBqnt2Cx5QiOPZnVPHJ4y1uVfgf5lqn5o6WpgeBPe1ud
-         4uEZklUCj9aLkMN2ftXy1kyT6d7yoTDwgmnBnKu1X1GkXW0/3vSNctlhW4AjF3nKvLmE
-         VCVNmGGna35wLb6uHqq+BGApQC92/5qYkNnbTaNlntssGOPxgOtbawJp2Vq8nX1fjaYg
-         dmzA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9ggBt1/XcGMk1GgPoYY4NtuKRl2ZcdoZPPws/++QS6M=;
+        b=M/0bt3uVF/S98xnbmyKOSCrfR6OJRZ8a7V0/XeKbliG/m4etlFlvkR5SPf7pHssQ/O
+         61ITWuKkHQGMlzJFK0o4JNaJq8gzXoFNC2UX4d23udONpUN5Y9A/xDS21VQ3FrUzN4c8
+         ZKPHjI9vCVhePAXLiDFf26TGWwdUaiMJlyTEXxdKZ1t1DUylM/RqWIRfgU4rWWzdK2an
+         FpJ7QEj0mVWmOu83p9aDoUG2UXqyT0GF3//x7S25otwLnBqc344OYSvEeU1wVkPdASip
+         WvQESURIGFnvFCQIKwxtv7PFvC79zf4e7RLSNvgJtWAdGBzi7uWe5jafiZ0muLOngPVe
+         gymQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=AQSygVQR7X2p3idaY2kblM6hHvDCfsOME2h6aqCtJ1E=;
-        b=C0HfL7hDFF/1nR09eT+SHwNwjEkvRNOyhU9d1GlUiXyMYS1V46F84HZqNMmuWR7UK1
-         Ax5R6hH8H8OmAh4YVhp9CvmlDy7FoWw5WKUuUbzZk9nX0ecK+LuJ6fRfAKVK3YLzsmow
-         wQ6kw5XnyKsoSTPPEg9UTHglUjL21Vky8cFXofzHZY4CbJe28vlYcT8iZA6Q7vX9stMr
-         mXhfZGX/Qd7Q8tWl8AgFKpzdMCItEox1J3jNNZaFtMQ1ciqJFmCRNLOxSoOgzR8SHKYY
-         NxF6sUN4Rc42FzZpT3dOoI6H4z/755n6L+IfjADm7Llvqjk6iZsgnkCpIlfZ07up+yUn
-         W34w==
-X-Gm-Message-State: AOAM5308qEsCUFviAwDXP8FX0ZPMMIEpeb2fjzkimV1N2QiwIqvwXPLK
-        /nkiuZRAnn73tQuE89yTutgvGK+vSO0GsI5tWCU=
-X-Google-Smtp-Source: ABdhPJwS84Fo64mI7QO8+1acNeBj59dyW9yjpUGkzz1OJsk0mCniz8QEjs7KXwrHzcuHXAat/C78ddMIVImiZHvfSWU=
-X-Received: by 2002:a6b:b842:: with SMTP id i63mr12245025iof.115.1631032752746;
- Tue, 07 Sep 2021 09:39:12 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=9ggBt1/XcGMk1GgPoYY4NtuKRl2ZcdoZPPws/++QS6M=;
+        b=DPA+Ynt6EekQwrToT+74YxNDZa1UtMcYqyZzs2F4+wkn2WlnDKaA46bjzGJGlpOkc9
+         dSyQlHoQrfZ1eGsybadGg5EWIA4hVBR0IW7D1UfEw+mrTpaaDXIfirUM9CFPDOqNSQz6
+         9ltufTYEWWjVTlxx90dXkxfu6TiyAeIeAE5ndOqhSmcSTDc/QtogT7c7Kcf2Ac3YwZYk
+         HZgwXdQnyld/Rxx9WTU5Y6I/AMapNJ+2pO5p7vxyBPP1829LF/CzwvdGcOT+889384Wf
+         8RPJDfywzsK/vLG0NuXpdNqBttsyGHstCBjypc8YEIHB+Oau3oobCKHBIUTcXiPABelv
+         idSQ==
+X-Gm-Message-State: AOAM532C+wTmbhzGO5r2HJwbPOc1ymJPOD6lqDqcKB51Kv7+QLFl4IMT
+        IZJZWwoF6DM40hsCvMpcogg=
+X-Google-Smtp-Source: ABdhPJzZ1x983+WmHHXiknDxIoG/x56wROgmY8ow7uoOsy/TPLq1jvWmCXTf0c8UMALMcClEc3xjCg==
+X-Received: by 2002:a17:90b:1e4a:: with SMTP id pi10mr4393075pjb.135.1631032752193;
+        Tue, 07 Sep 2021 09:39:12 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id 126sm14850350pgi.86.2021.09.07.09.39.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 09:39:11 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 7 Sep 2021 06:39:10 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Walter Wu <walter-zh.wu@mediatek.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Aleksandr Nogikh <nogikh@google.com>,
+        Taras Madan <tarasmadan@google.com>
+Subject: Re: [PATCH 6/6] workqueue, kasan: avoid alloc_pages() when recording
+ stack
+Message-ID: <YTeVriit6r82gWGz@slm.duckdns.org>
+References: <20210907141307.1437816-1-elver@google.com>
+ <20210907141307.1437816-7-elver@google.com>
 MIME-Version: 1.0
-Received: by 2002:a4f:44c2:0:0:0:0:0 with HTTP; Tue, 7 Sep 2021 09:39:10 -0700 (PDT)
-Reply-To: shawnhayden424@gmail.com
-From:   Shawn Hayden <sophiebrandon679@gmail.com>
-Date:   Tue, 7 Sep 2021 17:39:10 +0100
-Message-ID: <CAFXeZCQZ_sdiz6_9VN6O5Ekwvq+VhNFQUVpGf5umuNvpq6OzGA@mail.gmail.com>
-Subject: =?UTF-8?B?Q2hhcml0eS/UstWh1oDVpdWj1bjWgNWu1bjWgtWp1bXVuNaC1bYgQmFyZWdvcnRzdXQ=?=
-        =?UTF-8?B?4oCZeXVu?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210907141307.1437816-7-elver@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1Y3Vq9aA1aXVrNWrINWo1bbVr9Wl1oAsDQoNCtS11b0g1LHVvtW91b/WgNWh1azVq9Wh1bXVqyDW
-hNWh1bLVodaE1aHWgdWrINWl1bQsINWh1brWgNW41oLVtCDVpdW0INSx1YTVhiAt1bjWgtW0INaH
-INW81avVpdWs1anVuNaAINWl1bQgMzUg1b/VodaA1b7VoQ0K1aHVt9Wt1aHVv9Wh1bbWhNWh1bXV
-q9W2INaD1bjWgNWx1bjVvg0K1oPVuNaA1bHVodW81bjWgtWp1bXVuNaC1bY6INWO1aXWgNW71aXW
-gNW9INW+1aHWgNWh1a/VvtWl1oHVqyBDb3ZpZC0xOSDVvtWr1oDVuNaC1b3VuNW+INaHINWk1oDV
-oSDVutWh1b/Vs9Wh1bzVuNW+DQrVq9W0INW/1aHWgNWr1oTVqywg1aXVvSDVudWl1bQg1a/VodaA
-1a7VuNaC1bQsINW41oAg1a/VodaA1bjVsiDVpdW0INWj1bjVtdWh1b/Wh9Wl1awg1b3VoTog1LXV
-vSDVqdWp1b7VodWu1bbVqyDVv9Wh1a8g1aXVtCDVpdWy1aXVrCDVoQ0K1bTVqyDWhNWh1bbVqyDW
-hdaALCDWhyDVpdW9INW51aXVtCDVr9Wh1oDVuNWyINWv1bXVodW21oTVvSDVo9W21aXVrCDWg9W4
-1bLVuNW+OiDUtdW9INWv1aHWgNW41bIg1aXVtCA1NSDVtNWr1azVq9W41bYNCtSx1YTVhiDVpNW4
-1azVodaAINW21b7Vq9aA1aHVotWl1oDVpdWsINWi1aHWgNWl1aPVuNaA1a7VuNaC1anVtdWh1bbV
-qCwNCtWw1aHVv9Wv1aHVutWl1b0g1aHVstaE1aHVv9W21aXWgNWr1bYg1oXVo9W21aXVrNW41oIg
-1bDVodW01aHWgDog1LHVttaB1bXVodWsINW/1aHWgNWrINWl1b0g1a/VuNaA1oHWgNWl1oHVqyDV
-r9W21bjVu9W9DQrWhNWh1bLWgdWv1aXVstWr1oEsINaHINWr1bQg1bTVq9Wh1a8g1bjWgNWk1avV
-tiDWhNaA1bjVttWr1a8g1bDVq9W+1aHVttWkINWnDQrVrdWh1bLVodW01bjVrCwg1bjVviDVtNW9
-1a3VpdaBINWr1bQg1b/WgNWh1bTVodWk1oDVodWuINWi1bjVrNW41oAg1bTVq9W71bjWgdW21aXW
-gNWoOg0K1YDVq9W+1aHVttWkINWw1avVvtWh1bbVpCDVodW21a/VuNWy1bbVuNaC1bQg1brVodW8
-1a/VodWuINWdINWh1bzVodW21oEg1aPVuNW11aHVv9aH1bTVodW2INWw1bjWgtW11b0g1bjWgtW2
-1aXVttWh1azVuNaCLCDVtNWh1bLVqdW41oLVtCDVpdW0DQrVpNW41oIg1avVttWxINaF1aPVttWl
-1oHVq9aAINWv1aHVv9Wh1oDVpdWsINWr1bQg1b7VpdaA1bvVq9W2INaB1aHVttWv1bjWgtWp1bXV
-uNaC1bbVqDog1Y3VoSDWgdWh1bbVr9W41oLVqdW11bjWgtW2INWnLCDVuNaA1agNCtWv1a7VodW8
-1aHVtdWrINWr1bbVsQ0K1bjWgNW61aXVvSDVodWy1aHVudWh1bbWhCDUsdW91b/VrtW41oLVtiDV
-q9W0INWw1bjVo9W41oIg1ocg1avVtCDVtNWl1bLWhNWl1oDVqyDVqdW41bLVuNaC1anVtdWh1bYg
-1bDVodW01aHWgDog1LXVqdWlIOKAi+KAi9W61aHVv9aA1aHVvdW/INWl1oQNCtaHINW61aHVv9aA
-1aHVvdW/INWnINaF1aPVttWl1awsINWt1bbVpNaA1bjWgtW0INWl1bQg1brVodW/1aHVvdWt1aHV
-ttWl1oQg1avVttWxLCDWhyDVpdW9INWx1aXVpiDVtNWh1bbWgNWh1bTVodW91bbVpdaADQrVr9W/
-1aHVtDog1LXVvSDVo9Wr1b/VpdW0LCDVuNaAINWl1b0NCtWv1aHWgNW41bIg1acg1b7VvdW/1aHV
-sNWl1awg1oTVpdWmOiDVldWj1bbVpdaB1aXWhCwg1a3VttWk1oDVuNaC1bQg1aXVtC4NCg0K1YDV
-odaA1aPVodW21oTVttWl1oDVuNW+Lg0KDQrVh9W41bYg1YDVpdW11aTVpdW2Lg0KDQpTaXJlbGkg
-eW5rZXIsDQoNClllcyBBdnN0cmFsaWF5aSBr4oCZYWdoYWvigJlhdHPigJlpIHllbSwgYXBydW0g
-eWVtIEFNTiAtdW0geWV2IHJyaXllbHTigJl2b3INCnllbSAzNSB0YXJ2YSBhc2hraGF0YW5r4oCZ
-YXlpbiBw4oCZdm9yZHpvdg0KcOKAmXZvcmR6YXJydXTigJl5dW46IFZlcmplcnMgdmFyYWt2ZXRz
-4oCZaSBDb3ZpZC0xOSB2aXJ1c292IHlldiBkcmEgcGF0Y2hhcnJvdg0KaW0gdGFyaWvigJlpLCB5
-ZXMgY2jigJllbSBrYXJ0c3VtLCB2b3Iga2Fyb2doIHllbSBnb3lhdGV2ZWwgc2E6IFllcw0KdOKA
-mXTigJl2YXRzbmkgdGFrIHllbSB5ZWdoZWwgYQ0KbWkga+KAmWFuaSBvciwgeWV2IHllcyBjaOKA
-mWVtIGthcm9naCBreWFua+KAmXMgZ25lbCBw4oCZdm9naG92OiBZZXMga2Fyb2doDQp5ZW0gNTUg
-bWlsaW9uIEFNTiBkb2xhciBudmlyYWJlcmVsIGJhcmVnb3J0c3V04oCZeWFueSwNCmhhdGthcGVz
-IGFnaGvigJlhdG5lcmluIG9nbmVsdSBoYW1hcjogQW50c+KAmXlhbCB0YXJpIHllcyBrb3J0c+KA
-mXJldHPigJlpDQprbm9qcyBr4oCZYWdodHPigJlrZWdoaXRz4oCZLCB5ZXYgaW0gbWlhayB2b3Jk
-aW4ga+KAmXJvbmlrIGhpdmFuZCBlDQpraGFnaGFtb2wsIG92IG1za2hldHPigJkgaW0gdHJhbWFk
-cmF0cyBib2xvciBtaWpvdHPigJluZXJ5Og0KSGl2YW5kIGhpdmFuZCBhbmtvZ2hudW0gcGFycmth
-dHMg1Z0gYXJyYW50c+KAmSBnb3lhdGV2bWFuIGh1eXMgdW5lbmFsdSwNCm1hZ2h04oCZdW0geWVt
-DQpkdSBpbmR6IG9nbmV0c+KAmWlyIGthdGFyZWwgaW0gdmVyamluIHRz4oCZYW5rdXTigJl5dW55
-OiBTYSB0c+KAmWFua3V04oCZeXVuIGUsDQp2b3J5IGt0c2FycmF5aSBpbmR6DQp2b3JwZXMgYWdo
-YWNo4oCZYW5r4oCZIEFzdHRzdW4gaW0gaG9ndSB5ZXYgaW0gbWVnaGvigJllcmkgdOKAmXZvZ2h1
-dOKAmXlhbg0KaGFtYXI6IFlldOKAmWUg4oCL4oCLcGF0cmFzdCB5ZWvigJkNCnlldiBwYXRyYXN0
-IGUgb2duZWwsIGtobmRydW0geWVtIHBhdGFza2hhbmVr4oCZIGluZHosIHlldiB5ZXMgZHpleg0K
-bWFucmFtYXNuZXIga3RhbTogWWVzIGdpdGVtLCB2b3IgeWVzDQprYXJvZ2ggZSB2c3RhaGVsIGvi
-gJllejogT2duZXRz4oCZZWvigJksIGtobmRydW0geWVtLg0KDQpIYXJnYW5r4oCZbmVyb3YuDQoN
-ClNob24gSGV5ZGVuLg0KDQoNCg0KRGVhciBmcmllbmQsDQoNCkkgYW0gYW4gQXVzdHJhbGlhbiBj
-aXRpemVuIGxpdmluZyBpbiB0aGUgVVNBIGFuZCBhIHJlYWx0b3Igd2l0aCAzNSB5ZWFycyBvZg0K
-ZXhwZXJpZW5jZS4gSSByZWNlbnRseSBiZWNhbWUgaW5mZWN0ZWQgd2l0aCB0aGUgQ292aWQtMTkg
-dmlydXMgYW5kIGR1ZSB0bw0KbXkgYWdlLCBJIGRvbid0IHRoaW5rIEkgY2FuIHN1cnZpdmUgdGhp
-cy4gSSBoYXZlIGJlZW4gdW5kZXIgb3h5Z2VuIGZvciBhDQpmZXcgZGF5cyBhbmQgSSBjYW4ndCBi
-dXkgbXkgbGlmZSB3aXRoIG1vbmV5LiBJIGNvdWxkIGRvbmF0ZSA1NW1pbGxpb24NClVTRCB0byBj
-aGFyaXR5LA0KZXNwZWNpYWxseSB0byBoZWxwIHRoZSBwb29yLiBMYXN0IHllYXIgSSBsb3N0IG15
-IHdpZmUgdG8gY2FuY2VyIGFuZCBteQ0Kb25seSBzb24gaXMgYSBjaHJvbmljDQpnYW1ibGVyIHdo
-byBzcXVhbmRlcmVkIGFsbCB0aGUgZnVuZHMgSSBnYXZlIHRvIGhpbS4NCkx5aW5nIGluIG15IHNp
-Y2sgYmVkLCB3aXRoIG5vIGhvcGUgb2Ygc3Vydml2YWwsIEkgd2lzaA0KeW91IGhlbHBlZCBtZSBm
-dWxmaWxsIG15IGxhc3Qgd2lzaC4gVGhpcyBpcyBhIHdpc2ggdGhhdCB3aWxsIHNlcnZlIG1lDQph
-cyBhIHBsZWEgdG8gR29kIGZvciBteSBzb3VsIGFuZCBteSBmb3JnaXZlbmVzcyBvZiBzaW5zLiBJ
-ZiB5b3UgYXJlIHdpbGxpbmcNCmFuZCByZWFkeSB0byBoZWxwLCBwbGVhc2UgYW5zd2VyIG1lIGFu
-ZCBJIHdpbGwgZ2l2ZSB5b3UgZGV0YWlscy4gSSBrbm93IEkNCmNhbiB0cnVzdCB5b3UuIEhlbHAg
-bWUgcGxlYXNlLg0KDQpLaW5kIHJlZ2FyZHMsDQoNClNoYXduIEhheWRlbi4NCg==
+On Tue, Sep 07, 2021 at 04:13:07PM +0200, Marco Elver wrote:
+> Shuah Khan reported:
+> 
+>  | When CONFIG_PROVE_RAW_LOCK_NESTING=y and CONFIG_KASAN are enabled,
+>  | kasan_record_aux_stack() runs into "BUG: Invalid wait context" when
+>  | it tries to allocate memory attempting to acquire spinlock in page
+>  | allocation code while holding workqueue pool raw_spinlock.
+>  |
+>  | There are several instances of this problem when block layer tries
+>  | to __queue_work(). Call trace from one of these instances is below:
+>  |
+>  |     kblockd_mod_delayed_work_on()
+>  |       mod_delayed_work_on()
+>  |         __queue_delayed_work()
+>  |           __queue_work() (rcu_read_lock, raw_spin_lock pool->lock held)
+>  |             insert_work()
+>  |               kasan_record_aux_stack()
+>  |                 kasan_save_stack()
+>  |                   stack_depot_save()
+>  |                     alloc_pages()
+>  |                       __alloc_pages()
+>  |                         get_page_from_freelist()
+>  |                           rm_queue()
+>  |                             rm_queue_pcplist()
+>  |                               local_lock_irqsave(&pagesets.lock, flags);
+>  |                               [ BUG: Invalid wait context triggered ]
+> 
+> The default kasan_record_aux_stack() calls stack_depot_save() with
+> GFP_NOWAIT, which in turn can then call alloc_pages(GFP_NOWAIT, ...).
+> In general, however, it is not even possible to use either GFP_ATOMIC
+> nor GFP_NOWAIT in certain non-preemptive contexts, including
+> raw_spin_locks (see gfp.h and ab00db216c9c7).
+> 
+> Fix it by instructing stackdepot to not expand stack storage via
+> alloc_pages() in case it runs out by using kasan_record_aux_stack_noalloc().
+> 
+> While there is an increased risk of failing to insert the stack trace,
+> this is typically unlikely, especially if the same insertion had already
+> succeeded previously (stack depot hit). For frequent calls from the same
+> location, it therefore becomes extremely unlikely that
+> kasan_record_aux_stack_noalloc() fails.
+> 
+> Link: https://lkml.kernel.org/r/20210902200134.25603-1-skhan@linuxfoundation.org
+> Reported-by: Shuah Khan <skhan@linuxfoundation.org>
+> Signed-off-by: Marco Elver <elver@google.com>
+
+Acked-by: Tejun Heo <tj@kernel.org>
+
+Thanks.
+
+-- 
+tejun
