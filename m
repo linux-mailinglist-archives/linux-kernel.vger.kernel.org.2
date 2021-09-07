@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5205E40309E
+	by mail.lfdr.de (Postfix) with ESMTP id C3B7A40309F
 	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 00:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347403AbhIGWBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 18:01:51 -0400
-Received: from home.keithp.com ([63.227.221.253]:56010 "EHLO elaine.keithp.com"
+        id S1347348AbhIGWBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 18:01:52 -0400
+Received: from home.keithp.com ([63.227.221.253]:56072 "EHLO elaine.keithp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344772AbhIGWBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 18:01:50 -0400
+        id S1347380AbhIGWBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 18:01:51 -0400
 Received: from localhost (localhost [127.0.0.1])
-        by elaine.keithp.com (Postfix) with ESMTP id 0A85D3F30866;
+        by elaine.keithp.com (Postfix) with ESMTP id 136533F30867;
         Tue,  7 Sep 2021 15:00:19 -0700 (PDT)
 X-Virus-Scanned: Debian amavisd-new at keithp.com
 Received: from elaine.keithp.com ([127.0.0.1])
         by localhost (elaine.keithp.com [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id BrT72QuO-XSn; Tue,  7 Sep 2021 15:00:18 -0700 (PDT)
+        with LMTP id LYoWbEmDiZX3; Tue,  7 Sep 2021 15:00:18 -0700 (PDT)
 Received: from keithp.com (168-103-156-98.tukw.qwest.net [168.103.156.98])
-        by elaine.keithp.com (Postfix) with ESMTPSA id B2A033F30862;
+        by elaine.keithp.com (Postfix) with ESMTPSA id A3F673F30861;
         Tue,  7 Sep 2021 15:00:18 -0700 (PDT)
 Received: by keithp.com (Postfix, from userid 1000)
-        id D53551E60132; Tue,  7 Sep 2021 15:00:40 -0700 (PDT)
+        id D854B1E6013A; Tue,  7 Sep 2021 15:00:40 -0700 (PDT)
 From:   Keith Packard <keithpac@amazon.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Abbott Liu <liuwenliang@huawei.com>,
@@ -58,9 +58,9 @@ Cc:     Abbott Liu <liuwenliang@huawei.com>,
         Viresh Kumar <viresh.kumar@linaro.org>,
         "Wolfram Sang (Renesas)" <wsa+renesas@sang-engineering.com>,
         YiFei Zhu <yifeifz2@illinois.edu>
-Subject: [PATCH 3/7] ARM: Use smp_processor_id() in vfp_pm_suspend instead of ti->cpu
-Date:   Tue,  7 Sep 2021 15:00:34 -0700
-Message-Id: <20210907220038.91021-4-keithpac@amazon.com>
+Subject: [PATCH 4/7] ARM: Use hack from powerpc to get current cpu number
+Date:   Tue,  7 Sep 2021 15:00:35 -0700
+Message-Id: <20210907220038.91021-5-keithpac@amazon.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20210907220038.91021-1-keithpac@amazon.com>
 References: <20210904060908.1310204-1-keithp@keithp.com>
@@ -71,39 +71,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These are equivalent when thread_info contains the CPU value, but when
-THREAD_INFO_IN_TASK is enabled, cpu moves to task_struct. Using the macro
-allows either.
+When we enable THREAD_INFO_IN_TASK, the cpu number will disappear from
+thread_info and reappear in task_struct. As we cannot include
+linux/sched.h in asm/smp.h, there's no way to use that struct type in
+the raw_smp_processor_id macro. Instead, a hack from the powerpc code
+is used. This pulls the TI_CPU offset out of asm-offsets.h and uses
+that to find the cpu value.
 
 Signed-off-by: Keith Packard <keithpac@amazon.com>
 ---
- arch/arm/vfp/vfpmodule.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/Makefile          |  8 ++++++++
+ arch/arm/include/asm/smp.h | 18 +++++++++++++++++-
+ 2 files changed, 25 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/vfp/vfpmodule.c b/arch/arm/vfp/vfpmodule.c
-index 2cb355c1b5b7..d7a3818da671 100644
---- a/arch/arm/vfp/vfpmodule.c
-+++ b/arch/arm/vfp/vfpmodule.c
-@@ -458,16 +458,16 @@ static int vfp_pm_suspend(void)
+diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+index 415c3514573a..6752995d2914 100644
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -284,6 +284,14 @@ stack_protector_prepare: prepare0
+ 	$(eval GCC_PLUGINS_CFLAGS += $(SSP_PLUGIN_CFLAGS))
+ endif
  
- 		/* disable, just in case */
- 		fmxr(FPEXC, fmrx(FPEXC) & ~FPEXC_EN);
--	} else if (vfp_current_hw_state[ti->cpu]) {
-+	} else if (vfp_current_hw_state[smp_processor_id()]) {
- #ifndef CONFIG_SMP
- 		fmxr(FPEXC, fpexc | FPEXC_EN);
--		vfp_save_state(vfp_current_hw_state[ti->cpu], fpexc);
-+		vfp_save_state(vfp_current_hw_state[smp_processor_id()], fpexc);
- 		fmxr(FPEXC, fpexc);
++ifdef CONFIG_SMP
++prepare: task_cpu_prepare
++
++PHONY += task_cpu_prepare
++task_cpu_prepare: prepare0
++	$(eval KBUILD_CFLAGS += -D_TI_CPU=$(shell awk '{if ($$2 == "TI_CPU") print $$3;}' include/generated/asm-offsets.h))
++endif
++
+ all:	$(notdir $(KBUILD_IMAGE))
+ 
+ 
+diff --git a/arch/arm/include/asm/smp.h b/arch/arm/include/asm/smp.h
+index d43b64635d77..f77ba3753bc4 100644
+--- a/arch/arm/include/asm/smp.h
++++ b/arch/arm/include/asm/smp.h
+@@ -15,7 +15,23 @@
+ # error "<asm/smp.h> included in non-SMP build"
  #endif
- 	}
  
- 	/* clear any information we had about last context state */
--	vfp_current_hw_state[ti->cpu] = NULL;
-+	vfp_current_hw_state[smp_processor_id()] = NULL;
+-#define raw_smp_processor_id() (current_thread_info()->cpu)
++/*
++ * This is particularly ugly: it appears we can't actually get the
++ * definition of task_struct here, but we need access to the CPU this
++ * task is running on, which is stored in task_struct when
++ * THREAD_INFO_IN_TASK is set.  Instead of using task_struct we're
++ * using TI_CPU which is extracted from asm-offsets.h by kbuild to get
++ * the current processor ID.
++ *
++ * This also needs to be safeguarded when building asm-offsets.s
++ * because at that time TI_CPU is not defined yet.
++ */
++#ifndef _TI_CPU
++#define raw_smp_processor_id()		(0)
++#else
++#define raw_smp_processor_id()	\
++	(*(unsigned int *)((void *)current_thread_info() + _TI_CPU))
++#endif
  
- 	return 0;
- }
+ struct seq_file;
+ 
 -- 
 2.33.0
 
