@@ -2,154 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA924023D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB724023DC
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237136AbhIGHJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 03:09:01 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:39023 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236153AbhIGHI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 03:08:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1630998474; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=6Xh+4WrtgpRuYe7a5VffIuD9Uyie8k3UdTu61v/dacM=;
- b=pNuGGCvPu/mFhYw9QV5mjxA+/40E+3ci2rD4u2CYYEWVtqgKdqAP3Psj431SCe7CRX2OO1nJ
- infXX8fprXJwfEnlfVGzRGeLho6UhktYd6Q4+0saBGkZgmag+lvY+UrxvrxgOKi2oHt1n3c/
- O/sA1L0Q+MHA/MQRG3onCnl4XPE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 61370fa3e0fcecca1933b695 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 07 Sep 2021 07:07:15
- GMT
-Sender: mdalam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 28E2DC43617; Tue,  7 Sep 2021 07:07:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdalam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A8767C43460;
-        Tue,  7 Sep 2021 07:07:14 +0000 (UTC)
+        id S237245AbhIGHKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 03:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235953AbhIGHKQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 03:10:16 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD15C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 00:09:10 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id i28so1625943wrb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 00:09:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LIu3oOHWEmY3wQIAxqSNQIyaCKUxHsLssdTO6YON+08=;
+        b=o/qBi4CH3HaRDR5bQWk1T7vSl1D/KMMjoEVRUtpQEYYYNtJoWsbsgVbv2hp3WxnoFC
+         P1wqlO3zjnNVTmKXxBIS5CDmj25jPudO6R05EAS9k00Stq0pybfYUpIGNJtT3Ti9bqDX
+         1/htb7JsW3Q1ddjf+Q/f494NOpHdO5Xjkukv/ADAAcRVSKSwbwR/Mfn5/49IHjuMMv9z
+         tMM8YHFh8MLMrUoGMUGxc5usuvrIPaarFEkukcszcpR9WvX7NMBIoCOd7pOfiNNCtT/u
+         Fe5/raK3tiuWJaCKFpwnAuzXXFNTqKkKkrqncMriKGWI0LYkhYcHbfje3BMPz4dK6lm6
+         0tUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=LIu3oOHWEmY3wQIAxqSNQIyaCKUxHsLssdTO6YON+08=;
+        b=gtlmvn6q1eY977UlinPwSw/0I+FiDNnYVLJKYzwn9LiVh1nxHN5gslRSpf7tJCF8fM
+         19J9W3UbJTtX+aYkOo/JeqPC6EFn7jci9f5XvR3c1rbkmACkDGl30j0BgLyfkP1seEvN
+         NQVqCoVosuCEYAld+a/m/XNtRmQPuNs9D/QscPx2MQU/1j08HUhkmhOchinbcDpkqyYp
+         7GxZ0nkZJBvnqN8EexCUbpZvqa1IVQGczqbFktSmnKk3jVgX4OMc7zdCWiOEmDFERSOx
+         mVrR/JLWJkKzQErTJyJPf84bwqvlSvYdsZiF8OD50UbQuAf62XorXFwOfZ/6Bi+3Fkik
+         bACQ==
+X-Gm-Message-State: AOAM531lPxH1dWh+xO8TfNAVR4J1yz09qdYkL+2BrZ1KoVrOabQTnssE
+        C/CS0SIQLfF1d0F4An0Ih7LQvXNRyI1RjcnK
+X-Google-Smtp-Source: ABdhPJxBBb07iGeSfx+y8zGr1Fv3QEHQnM3o0CVUlxPEOvrWTeUEtyfU2Wnr0KYAvyj9J61Gqx8QYw==
+X-Received: by 2002:adf:c7d1:: with SMTP id y17mr2514305wrg.214.1630998548660;
+        Tue, 07 Sep 2021 00:09:08 -0700 (PDT)
+Received: from ?IPv6:2001:861:44c0:66c0:48a5:8e41:47ff:c025? ([2001:861:44c0:66c0:48a5:8e41:47ff:c025])
+        by smtp.gmail.com with ESMTPSA id l21sm1462479wmh.31.2021.09.07.00.09.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 00:09:08 -0700 (PDT)
+Subject: Re: [PATCH v3 4/4] arm64: dts: meson-axg: add support for JetHub D1
+To:     Vyacheslav <adeep@lexina.in>, Kevin Hilman <khilman@baylibre.com>
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210904142745.183875-1-adeep@lexina.in>
+ <20210904142745.183875-5-adeep@lexina.in>
+ <77699dc0-88d5-3462-15fe-eb376c862d30@baylibre.com>
+ <c6430622-5857-877c-6293-fc101500a6e6@lexina.in>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <83730df2-5104-bfff-949e-4499e0c2612a@baylibre.com>
+Date:   Tue, 7 Sep 2021 09:09:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
+In-Reply-To: <c6430622-5857-877c-6293-fc101500a6e6@lexina.in>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Date:   Tue, 07 Sep 2021 12:37:14 +0530
-From:   mdalam@codeaurora.org
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     mani@kernel.org, linux-mtd@lists.infradead.org,
-        linux-kernel@vger.kernel.org, sricharan@codeaurora.org,
-        stable@kernel.org
-Subject: Re: [PATCH V5] mtd: rawnand: qcom: Update code word value for raw
- read
-In-Reply-To: <20210907084844.1ad92ef1@xps13>
-References: <1630996771-29866-1-git-send-email-mdalam@codeaurora.org>
- <20210907084844.1ad92ef1@xps13>
-Message-ID: <d351bff49b8438186f849214bb133abd@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-07 12:18, Miquel Raynal wrote:
-> mdalam@codeaurora.org wrote on Tue,  7 Sep 2021 12:09:31 +0530:
-> 
->> From QPIC V2 onwards there is a separate register to read
->> last code word "QPIC_NAND_READ_LOCATION_LAST_CW_n".
->> 
->> qcom_nandc_read_cw_raw() is used to read only one code word
->> at a time. If we will configure number of code words to 1 in
->> in QPIC_NAND_DEV0_CFG0 register then QPIC controller thinks
->> its reading the last code word, since from QPIC V2 onwards
->> we are having separate register to read the last code word,
->> we have to configure "QPIC_NAND_READ_LOCATION_LAST_CW_n"
->> register to fetch data from controller buffer to system
->> memory.
->> 
->> Fixes: 503ee5aad43054a26cfd5cc592a31270c05539cd ("mtd: rawnand: qcom: 
->> update last code word register")
-> 
-> Still wrong. It's 12 digits, as reported by Manivannan.
+Hi,
 
-   Updated in patch V6.
+On 06/09/2021 17:07, Vyacheslav wrote:
+> 06.09.2021 15:26, Neil Armstrong пишет:
+>> On 04/09/2021 16:27, Vyacheslav Bocharov wrote:
+>>> JetHome Jethub D1 (http://jethome.ru/jethub-d1) is a home automation
+>>> controller with the following features:
+>>>
+>>> +
+>>> +&spicc1 {
+>>> +	status = "okay";
+>>> +};
+>> Why enabling it without pinctrl properties ?
 > 
->> Cc: stable@kernel.org
->> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
->> ---
->> Changes in V5:
->> 
->>  * Incorporated "hash commit" comment from Mani.
->>  * Updated commit hash
->> 
->> Changes in V4:
->> 
->>  * Incorporated "Change log" comment from Miquèl
->>  * Updated change log
->> 
->> Changes in V3:
->> 
->>  * Incorporated "Fixes tags are missing" comment from Miquèl
->>  * Added Fixes tag Fixes:503ee5aa ("mtd: rawnand: qcom: update last 
->> code word register")
->> 
->> 
->> Changes in V2:
->> 
->>  * Incorporated "stable tags are missing" comment from Miquèl
->>  * Added stable tags Cc:stable@kernel.org
->> 
->> 
->> 
->>  drivers/mtd/nand/raw/qcom_nandc.c | 8 ++++++--
->>  1 file changed, 6 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c 
->> b/drivers/mtd/nand/raw/qcom_nandc.c
->> index ef0bade..04e6f7b 100644
->> --- a/drivers/mtd/nand/raw/qcom_nandc.c
->> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
->> @@ -1676,13 +1676,17 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, 
->> struct nand_chip *chip,
->>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
->>  	int data_size1, data_size2, oob_size1, oob_size2;
->>  	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
->> +	int raw_cw = cw;
->> 
->>  	nand_read_page_op(chip, page, 0, NULL, 0);
->>  	host->use_ecc = false;
->> 
->> +	if (nandc->props->qpic_v2)
->> +		raw_cw = ecc->steps - 1;
->> +
->>  	clear_bam_transaction(nandc);
->>  	set_address(host, host->cw_size * cw, page);
->> -	update_rw_regs(host, 1, true, cw);
->> +	update_rw_regs(host, 1, true, raw_cw);
->>  	config_nand_page_read(chip);
->> 
->>  	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
->> @@ -1711,7 +1715,7 @@ qcom_nandc_read_cw_raw(struct mtd_info *mtd, 
->> struct nand_chip *chip,
->>  		nandc_set_read_loc(chip, cw, 3, read_loc, oob_size2, 1);
->>  	}
->> 
->> -	config_nand_cw_read(chip, false, cw);
->> +	config_nand_cw_read(chip, false, raw_cw);
->> 
->>  	read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
->>  	reg_off += data_size1;
+> spiccwas planned for use during the development of the device, but in fact it is not currently used. Pins exist on expand pad.
+> 
+> Its better to add pinctrl as below or leave spicc1 disabled?
+
+As you want, if the HW is present and functional, usually it's enabled in the DT.
+
+Neil
+
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts b/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
+> index bc10f3357c09..ecffc90d9884 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
+> +++ b/arch/arm64/boot/dts/amlogic/meson-axg-jethome-jethub-j100.dts
+> @@ -313,6 +313,8 @@ &usb {
+>  
+>  &spicc1 {
+>         status = "okay";
+> +       pinctrl-0 = <&spi1_x_pins>, <&spi1_ss0_x_pins>;
+> +       pinctrl-names = "default";
+>  };
+>  
+>  &gpio {
 > 
 > 
-> Thanks,
-> Miquèl
+> --
+> 
+> Vyacheslav
+> 
+
