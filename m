@@ -2,102 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30D8402B97
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D962D402B5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345144AbhIGPTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 11:19:03 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:44132 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1345127AbhIGPSw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 11:18:52 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 187Eun7c017194;
-        Tue, 7 Sep 2021 17:17:32 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=selector1;
- bh=Z3kLq+iRfOzStH8O3le61AdJ+iVekYXxLeWKDMeJ8KA=;
- b=su13Up+Nlw1v0E/ZGKxVRciKeB31ArDhisMq3fGZ4BIB/0YizHXqKKvubD/W1gc2cKGL
- vUs1yfkedxw7y+pJo5SPhYk1djVnO9QPDOW38ODkcBnY+HB4RwNz2vnDUCzKeKTHYF6A
- PNnk/0uHOT/LezrbDS1DOsxJm4Z1RvBlaH1bXhSeRqfuxmgcWKH5ivFWk0CW6pRblbe7
- dcPbFB7o59uQaEv2Vapa1+Olz9v8Sj5Jid6ae7A+uH4b3jHU5LdYl+UTXdwU3ZfEw0l/
- yWGHuRq8FyvVN/hfwKn7XJUjs4L3Bjdxcu7Km2xPQ5UScxhg8nf1kMJFBLyyXtdJO7D9 mQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 3awyx2um6h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 07 Sep 2021 17:17:32 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2683310002A;
-        Tue,  7 Sep 2021 17:17:31 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1629D22A6C9;
-        Tue,  7 Sep 2021 17:17:31 +0200 (CEST)
-Received: from localhost (10.75.127.46) by SFHDAG1NODE3.st.com (10.75.127.3)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 7 Sep 2021 17:17:30
- +0200
-From:   Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-To:     Yannick Fertre <yannick.fertre@foss.st.com>,
-        Philippe Cornu <philippe.cornu@foss.st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>
-CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
-        Raphael Gallais-Pou <raphael.gallais-pou@st.com>
-Subject: [PATCH v2] drm/stm: ltdc: add layer alpha support
-Date:   Tue, 7 Sep 2021 17:15:34 +0200
-Message-ID: <20210907151534.6013-1-raphael.gallais-pou@foss.st.com>
-X-Mailer: git-send-email 2.17.1
+        id S1344939AbhIGPLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 11:11:13 -0400
+Received: from mga14.intel.com ([192.55.52.115]:4937 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232090AbhIGPLL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 11:11:11 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="219909052"
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="219909052"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 08:10:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="469228799"
+Received: from chenyu-desktop.sh.intel.com ([10.239.158.176])
+  by orsmga007.jf.intel.com with ESMTP; 07 Sep 2021 08:09:59 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     linux-acpi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Aubrey Li <aubrey.li@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>, Chen Yu <yu.c.chen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, x86@kernel.org
+Subject: [PATCH 1/5][RFC] Documentation: Introduce Platform Firmware Runtime Update documentation
+Date:   Tue,  7 Sep 2021 23:15:46 +0800
+Message-Id: <c135a9bf742f3c2181650914f40ce563d7a3dc48.1631025237.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1631025237.git.yu.c.chen@intel.com>
+References: <cover.1631025237.git.yu.c.chen@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG1NODE3.st.com
- (10.75.127.3)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-07_05,2021-09-07_01,2020-04-07_01
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Android Hardware Composer supports alpha values applied to layers.
-Enabling non-opaque layers for the STM CRTC could help offload GPU
-resources for screen composition.
+Add the Platform Firmware Runtime Update/Telemetry documentation.
 
-Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
-Acked-by: Yannick Fertre <yannick.fertre@foss.st.com>
-Reviewed-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
 ---
- drivers/gpu/drm/stm/ltdc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Documentation/x86/pfru.rst | 98 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 98 insertions(+)
+ create mode 100644 Documentation/x86/pfru.rst
 
-diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
-index 195de30eb90c..e0fef8bacfa8 100644
---- a/drivers/gpu/drm/stm/ltdc.c
-+++ b/drivers/gpu/drm/stm/ltdc.c
-@@ -845,7 +845,7 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
- 			LXCFBLR_CFBLL | LXCFBLR_CFBP, val);
- 
- 	/* Specifies the constant alpha value */
--	val = CONSTA_MAX;
-+	val = newstate->alpha >> 8;
- 	reg_update_bits(ldev->regs, LTDC_L1CACR + lofs, LXCACR_CONSTA, val);
- 
- 	/* Specifies the blending factors */
-@@ -997,6 +997,8 @@ static struct drm_plane *ltdc_plane_create(struct drm_device *ddev,
- 
- 	drm_plane_helper_add(plane, &ltdc_plane_helper_funcs);
- 
-+	drm_plane_create_alpha_property(plane);
+diff --git a/Documentation/x86/pfru.rst b/Documentation/x86/pfru.rst
+new file mode 100644
+index 000000000000..321729f46737
+--- /dev/null
++++ b/Documentation/x86/pfru.rst
+@@ -0,0 +1,98 @@
++.. SPDX-License-Identifier: GPL-2.0
 +
- 	DRM_DEBUG_DRIVER("plane:%d created\n", plane->base.id);
- 
- 	return plane;
++========================================================
++The Linux Platform Firmware Runtime Update and Telemetry
++========================================================
++
++According to the specification of <Management Mode Firmware Runtime Update>[1],
++certain computing systems require high Service Level Agreements (SLAs) where
++system reboot fewer firmware updates are required to deploy firmware changes
++to address bug fixes, security updates and to debug and root cause issues. This
++technology is called Intel Seamless Update. The management mode (MM),
++UEFI runtime services and ACPI services handle most of the system runtime
++functions. Changing the MM code execution during runtime is called MM Runtime
++Update. Since the "MM" acronyms might be misunderstood as "Memory Management",
++this driver uses "Platform Firmware Runtime Update"(PFRU)
++
++PFRU provides the following facilities: Performs a runtime firmware driver update
++and activate. Ability to inject firmware code at runtime, for dynamic instrumentation.
++PFRU Telemetry is a service which allows Runtime Update handler to produce telemetry
++data to upper layer OS consumer at runtime. The OS provides interfaces to let the
++users query the telemetry data via read operations. The specification specifies the
++interface and recommended policy to extract the data, the format and use are left to
++individual OEM's and BIOS implementations on what that data represents.
++
++PFRU interfaces
++=====================
++
++The user space tool manipulates on /dev/pfru/update for code injection and
++driver update. PFRU stands for Platform Firmware Runtime Update, and the /dev/pfru
++directory might be reserved for future usage.
++
++ 1. mmap the capsule file
++    fd_capsule = open("capsule.cap", O_RDONLY);
++    fstat(fd_capsule, &stat);
++    addr = mmap(0, stat.st_size, PROT_READ, fd_capsule);
++
++ 2. Get the capability information(version control, etc) from BIOS via
++    read() and do sanity check in user space.
++    fd_update = open("/dev/pfru/update", O_RDWR);
++    read(fd_update, &cap, sizeof(cap));
++    sanity_check(&cap);
++
++ 3. Write the capsule file to runtime update communication buffer
++    //kernel might return error if capsule file size is longer than
++    //communication buffer
++    write(fd_update, addr, stat.st_size);
++
++ 4. Stage the code injection
++    ioctl(fd_update, PFRU_IOC_STATGE);
++
++ 5. Activate the code injection
++    ioctl(fd_update, PFRU_IOC_ACTIVATE);
++
++ 6. Stage and activate the code injection
++    ioctl(fd_update, PFRU_IOC_STAGE_ACTIVATE);
++
++    PFRU_IOC_STATGE: Stage a capsule image from communication buffer
++                    and perform authentication.
++    PFRU_IOC_ACTIVATE: Activate a previous staged capsule image.
++    PFRU_IOC_STAGE_ACTIVATE: Perform both stage and activation actions.
++
++PFRU Telemetry
++=============
++
++The user space tool manipulates on /dev/pfru/telemetry for PFRU telemetry log.
++Sample code:
++
++ 1. Open telemetry device
++    fd_log = open("/dev/pfru/telemetry", O_RDWR);
++
++ 2. Get log level, log type, revision_id via one ioctl invoke
++    ioctl(fd_log, PFRU_IOC_GET_LOG_INFO, &info);
++
++ 3. Set log level, log type, revision_id
++    ioctl(fd_log, PFRU_IOC_SET_LOG_INFO, &info);
++
++ 4. ioctl(fd_log, PFRU_IOC_GET_DATA_INFO, &data_info);
++    Query the information of PFRU telemetry log buffer. The user is
++    responsible for parsing the result per the specification.
++
++ 5. Read the telemetry data:
++    read(fd_log, buf, data_info.size);
++
++Please refer to tools/testing/selftests/pfru/pfru_test.c for detail.
++
++According to <Management Mode Firmware Runtime Update>[1], the telemetry
++buffer is a wrap around buffer. If the telemetry buffer gets full, most recent
++log data will overwrite old log data. Besides, it is required in the spec that
++the read of telemetry should support both full data retrieval and delta telemetry
++data retrieval. Since this requirement is more likely a policy we leave this
++implementation in user space. That is to say, it is recommended for the user
++to double-read the telemetry parameters such as chunk1_size, chunk2_size,
++rollover_cnt in data_info structure to make sure that there is no more data appended
++while the user is reading the buffer. Besides, only after the runtime update has
++been run at least once, the telemetry log would have valid data, otherwise errno code
++of EBUSY would be returned.
++
++[1] https://uefi.org/sites/default/files/resources/Intel_MM_OS_Interface_Spec_Rev100.pdf
 -- 
-2.17.1
+2.25.1
 
