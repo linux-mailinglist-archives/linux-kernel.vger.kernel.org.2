@@ -2,200 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660A54022E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 06:41:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D8E4022EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 07:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233171AbhIGElk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 00:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233071AbhIGEla (ORCPT
+        id S235661AbhIGEt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 00:49:59 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:55171 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234303AbhIGEt5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 00:41:30 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5224FC061575;
-        Mon,  6 Sep 2021 21:40:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=zQBa6rh27PGE3wkubOhbLzF3Gt/qmyP7Pg4wfjAggnQ=; b=JOzPiwD1+jsYJR3wixQfVIRdL6
-        S8kz1iSEIdnyt83hIPtmiEoP4sSVJrZgr753CuYPgZCUbXPpepwfGdhz18SAJD58TcUd98rhICj7N
-        jNZ7biMI0A8NtSGKaqNRSlwijifDVDp4X5aZCaC4ZadOeu1brw4ytAEhosoYoOdU8nKh7xg6VF4Vx
-        W0UqMTFO/OqmVKeTzzYDLKtASSBFmpGT/WCwWpYlE5ETdkO3ljuN6F+G92iT2eLrOiqeIzgQTgIBB
-        yHm/354NWba2B3QztIY+5p3s2z0/4FNo7eMHww/CSpniLeBIA/jmpQyPB9KZWGRaLzWY4HjL9MBeu
-        XQbVkzcQ==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNSuF-002Rre-Gd; Tue, 07 Sep 2021 04:40:23 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2] media: s5p-jpeg: rename JPEG marker constants to prevent build warnings
-Date:   Mon,  6 Sep 2021 21:40:22 -0700
-Message-Id: <20210907044022.30602-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        Tue, 7 Sep 2021 00:49:57 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210907044849epoutp0192c48de94b188572976de35cdc481f0e~icOG1CYzJ2116621166epoutp01t
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 04:48:49 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210907044849epoutp0192c48de94b188572976de35cdc481f0e~icOG1CYzJ2116621166epoutp01t
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1630990129;
+        bh=8uHJcyLOVZnF590J/OwYJts8gD9hMkd0fISIovGR4d0=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=exQP6yTvGS4z88+Gfz/YBjg1z9w0VaiPTHz8lj3dCo6ZoyyiaexbG42V/eAcAzpHn
+         sR6Qe2chx+MqdzR/SBAwAnr96NKwhGzclyjoCfM4Henn8mQy+UoXtZBqpVdDdcGrXr
+         zuVGWqhVipi5PT39RptsyTM3pRPNbjZjCip0oN5w=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210907044848epcas1p209c423dd9db153c18ed15d8b949c3048~icOF3cHFl0326303263epcas1p2x;
+        Tue,  7 Sep 2021 04:48:48 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.38.247]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4H3Xpl52HLz4x9Px; Tue,  7 Sep
+        2021 04:48:47 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        8D.2E.09910.F2FE6316; Tue,  7 Sep 2021 13:48:47 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210907044846epcas1p297b8ef121290fc3265cf9dc3eadc44de~icOD6GjkU0077500775epcas1p2G;
+        Tue,  7 Sep 2021 04:48:46 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210907044846epsmtrp2a260ca664c6c7bf73325764e005ba294~icOD7Q_EL0308503085epsmtrp26;
+        Tue,  7 Sep 2021 04:48:46 +0000 (GMT)
+X-AuditID: b6c32a35-c45ff700000026b6-d4-6136ef2fe0d7
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        7C.73.08750.E2FE6316; Tue,  7 Sep 2021 13:48:46 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.100.232]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210907044846epsmtip1822bf54d8fd5b182431e8caf8cda3c1f~icODpHfYA0844408444epsmtip1O;
+        Tue,  7 Sep 2021 04:48:46 +0000 (GMT)
+From:   Chanwoo Lee <cw9316.lee@samsung.com>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-arm-msm@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
+        dh0421.hwang@samsung.com, sh043.lee@samsung.com,
+        ChanWoo Lee <cw9316.lee@samsung.com>
+Subject: [PATCH] scsi: ufs-qcom: Remove unneeded variable 'err'
+Date:   Tue,  7 Sep 2021 13:41:11 +0900
+Message-Id: <20210907044111.29632-1-cw9316.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPJsWRmVeSWpSXmKPExsWy7bCmvq7+e7NEg6eblC3OPf7NYvFg3jY2
+        i5c/r7JZnN7/jsVixqk2Vot9106yW/z6u57dYtGNbUwWO56fYbeYuP8su8XlXXPYLLqv72Cz
+        WH78H5NF0599LA58HptWdbJ53Lm2h81jwqIDjB4fn95i8ejbsorR4/MmOY/2A91MAexR2TYZ
+        qYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6bpk5QDcrKZQl5pQC
+        hQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgrMCvSKE3OLS/PS9fJSS6wMDQyMTIEKE7Izvnev
+        ZCt4y1bx7cRXlgbGI6xdjJwcEgImEv3XlgHZXBxCAjsYJfZeamCCcD4xSvQtm8UC4XxmlNjX
+        9JQNpmX2/1NQLbsYJc40zGaEcL4wSuy8vIu5i5GDg01AS+L2MW+QuIjAO0aJVb3P2EAcZoEu
+        RolfB7tYQEYJC9hLPGh+xg5iswioSux8sYkRpJlXwFri1AUjiG3yEn/u9zCD2LwCghInZz4B
+        a2UGijdvnc0MMlNCYCqHxNxL/cwQDS4Sh7ZegDpVWOLV8S3sELaUxOd3e9kgGpoZJU7NPscO
+        4bQwSry+cgOqylji0+fPYFcwC2hKrN+lDxFWlNj5ey4jxGY+iXdfe1hBSiQEeCU62oQgSlQk
+        5nSdY4PZ9fHGY2gIe0h8/P4NrFVIIFbiw7TLLBMY5Wch+WcWkn9mISxewMi8ilEstaA4Nz21
+        2LDAEB6vyfm5mxjBKVfLdAfjxLcf9A4xMnEwHmKU4GBWEuH9a26WKMSbklhZlVqUH19UmpNa
+        fIjRFBjAE5mlRJPzgUk/ryTe0MTSwMTMyMTC2NLYTEmcl/GVTKKQQHpiSWp2ampBahFMHxMH
+        p1QDU1svM0Pn+fU3E81EN9/LD5iyZfPXnr5ETbessIl7J5s171xlpvOA33z/lzefTzwReiqa
+        OvlpzMs9uyLWSa0/FGusdio8sizlfeP1kOeXLf+2uNporKtif3Lrf9Z/k9drl0QqiuxcvWMB
+        48rGhMWftWXnlV34ztxtxeDj8KE9/ecp7uT3bJK9DZ/+Ptq7c9bSxng9VZ6S7e1vnupdXPDw
+        se7CyIrNrCe/zU1b5HrpzXFpP8016TEZ/V9n5SgfuOkuWPWna2LTScXqW9dk/6kEZM5baDen
+        xNPmjsHeTU9/RBXwBKw/lZlafS8jWmFGcuuWzRW2FenzjfZ2ThV6Kf+AxU53ygvLxlfRkSU7
+        miyi9imxFGckGmoxFxUnAgCw4zk0QgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrNLMWRmVeSWpSXmKPExsWy7bCSnK7ee7NEg3mXFS3OPf7NYvFg3jY2
+        i5c/r7JZnN7/jsVixqk2Vot9106yW/z6u57dYtGNbUwWO56fYbeYuP8su8XlXXPYLLqv72Cz
+        WH78H5NF0599LA58HptWdbJ53Lm2h81jwqIDjB4fn95i8ejbsorR4/MmOY/2A91MAexRXDYp
+        qTmZZalF+nYJXBnfu1eyFbxlq/h24itLA+MR1i5GTg4JAROJ2f9PAdlcHEICOxglbvZ1MUEk
+        pCR27z/P1sXIAWQLSxw+XAxR84lRYkLXNSaQOJuAlsTtY94gcRGBH4wSLx59YQRxmAUmMEos
+        vvKWGWSQsIC9xIPmZ+wgNouAqsTOF5sYQZp5BawlTl0wgtglL/Hnfg9YOa+AoMTJmU9YQGxm
+        oHjz1tnMExj5ZiFJzUKSWsDItIpRMrWgODc9t9iwwCgvtVyvODG3uDQvXS85P3cTIzj8tbR2
+        MO5Z9UHvECMTB+MhRgkOZiUR3r/mZolCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeS90nYwXEkhP
+        LEnNTk0tSC2CyTJxcEo1MFlpS95uVNSI2V9mkq+/6JLAZX7Wy2UOPoftuGbNXn/Q7OBLRb/k
+        n66y8nHbPT+lGzjdYwuX//uDw/Awh7jwB67AzQcMdSQ8HHPle3puHCn0mr7Wq7B0td/G5Y0H
+        ZtyI8P9j7hy/53y/hdTKVb1xN/u4vp36XByjxmMlJs0lE7xwUazgX4/EtUkM4bqTu97LiE9/
+        FKjpmcEyzWTixMffHpp9Czh+6eK+xNM56k8OX21tCp8V7TrhvM4lmTNtbLcEF7dbbTX8471q
+        0sY/39oPuGod4Zuy1r4qhremNXSP5i1B/bZtxcmZ+7ybnrH5XE2WYd2jI9w3J3DZY0UvyW0X
+        J3l2vfiWudT4+u+nP73ilFiKMxINtZiLihMBf0t9uO4CAAA=
+X-CMS-MailID: 20210907044846epcas1p297b8ef121290fc3265cf9dc3eadc44de
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210907044846epcas1p297b8ef121290fc3265cf9dc3eadc44de
+References: <CGME20210907044846epcas1p297b8ef121290fc3265cf9dc3eadc44de@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The use of a macro named 'RST' conflicts with one of the same name
-in arch/mips/include/asm/mach-rc32434/rb.h. This causes build
-warnings on some MIPS builds.
+From: ChanWoo Lee <cw9316.lee@samsung.com>
 
-Change the names of the JPEG marker constants to be in their own
-namespace to fix these build warnings and to prevent other similar
-problems in the future.
+'err' is not used.
+So i remove the unneeded variable.
 
-Fixes these build warnings:
-
-In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos3250.c:14:
-../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
-   43 | #define RST                             0xd0
-      | 
-../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
-   13 | #define RST             (1 << 15)
-
-In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-s5p.c:13:
-../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
-   43 | #define RST                             0xd0
-../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
-   13 | #define RST             (1 << 15)
-
-In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos4.c:12:
-../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
-   43 | #define RST                             0xd0
-../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
-   13 | #define RST             (1 << 15)
-
-In file included from ../drivers/media/platform/s5p-jpeg/jpeg-core.c:31:
-../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
-   43 | #define RST                             0xd0
-../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
-   13 | #define RST             (1 << 15)
-
-Also update the kernel-doc so that the word "marker" is not
-repeated.
-
-Fixes: bb677f3ac434 ("[media] Exynos4 JPEG codec v4l2 driver")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-media@vger.kernel.org
-Cc: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
-Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: linux-arm-kernel@lists.infradead.org
+Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
 ---
-v2: change all JPEG marker macros to be in their own namespace (as
-    suggested by Mauro)
+ drivers/scsi/ufs/ufs-qcom.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
- drivers/media/platform/s5p-jpeg/jpeg-core.c |   18 +++++------
- drivers/media/platform/s5p-jpeg/jpeg-core.h |   28 +++++++++---------
- 2 files changed, 23 insertions(+), 23 deletions(-)
+diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+index 9d9770f1db4f..92d4c61fc9d0 100644
+--- a/drivers/scsi/ufs/ufs-qcom.c
++++ b/drivers/scsi/ufs/ufs-qcom.c
+@@ -888,7 +888,6 @@ static int ufs_qcom_setup_clocks(struct ufs_hba *hba, bool on,
+ 				 enum ufs_notify_change_status status)
+ {
+ 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+-	int err = 0;
+ 
+ 	/*
+ 	 * In case ufs_qcom_init() is not yet done, simply ignore.
+@@ -916,7 +915,7 @@ static int ufs_qcom_setup_clocks(struct ufs_hba *hba, bool on,
+ 		break;
+ 	}
+ 
+-	return err;
++	return 0;
+ }
+ 
+ static int
+-- 
+2.29.0
 
---- linux-next-20210906.orig/drivers/media/platform/s5p-jpeg/jpeg-core.c
-+++ linux-next-20210906/drivers/media/platform/s5p-jpeg/jpeg-core.c
-@@ -1140,8 +1140,8 @@ static bool s5p_jpeg_parse_hdr(struct s5
- 			continue;
- 		length = 0;
- 		switch (c) {
--		/* SOF0: baseline JPEG */
--		case SOF0:
-+		/* JPEG_MARKER_SOF0: baseline JPEG */
-+		case JPEG_MARKER_SOF0:
- 			if (get_word_be(&jpeg_buffer, &word))
- 				break;
- 			length = (long)word - 2;
-@@ -1172,7 +1172,7 @@ static bool s5p_jpeg_parse_hdr(struct s5
- 			notfound = 0;
- 			break;
- 
--		case DQT:
-+		case JPEG_MARKER_DQT:
- 			if (get_word_be(&jpeg_buffer, &word))
- 				break;
- 			length = (long)word - 2;
-@@ -1185,7 +1185,7 @@ static bool s5p_jpeg_parse_hdr(struct s5
- 			skip(&jpeg_buffer, length);
- 			break;
- 
--		case DHT:
-+		case JPEG_MARKER_DHT:
- 			if (get_word_be(&jpeg_buffer, &word))
- 				break;
- 			length = (long)word - 2;
-@@ -1198,15 +1198,15 @@ static bool s5p_jpeg_parse_hdr(struct s5
- 			skip(&jpeg_buffer, length);
- 			break;
- 
--		case SOS:
-+		case JPEG_MARKER_SOS:
- 			sos = jpeg_buffer.curr - 2; /* 0xffda */
- 			break;
- 
- 		/* skip payload-less markers */
--		case RST ... RST + 7:
--		case SOI:
--		case EOI:
--		case TEM:
-+		case JPEG_MARKER_RST ... JPEG_MARKER_RST + 7:
-+		case JPEG_MARKER_SOI:
-+		case JPEG_MARKER_EOI:
-+		case JPEG_MARKER_TEM:
- 			break;
- 
- 		/* skip uninteresting payload markers */
---- linux-next-20210906.orig/drivers/media/platform/s5p-jpeg/jpeg-core.h
-+++ linux-next-20210906/drivers/media/platform/s5p-jpeg/jpeg-core.h
-@@ -37,15 +37,15 @@
- #define EXYNOS3250_IRQ_TIMEOUT		0x10000000
- 
- /* a selection of JPEG markers */
--#define TEM				0x01
--#define SOF0				0xc0
--#define DHT				0xc4
--#define RST				0xd0
--#define SOI				0xd8
--#define EOI				0xd9
--#define	SOS				0xda
--#define DQT				0xdb
--#define DHP				0xde
-+#define JPEG_MARKER_TEM				0x01
-+#define JPEG_MARKER_SOF0				0xc0
-+#define JPEG_MARKER_DHT				0xc4
-+#define JPEG_MARKER_RST				0xd0
-+#define JPEG_MARKER_SOI				0xd8
-+#define JPEG_MARKER_EOI				0xd9
-+#define	JPEG_MARKER_SOS				0xda
-+#define JPEG_MARKER_DQT				0xdb
-+#define JPEG_MARKER_DHP				0xde
- 
- /* Flags that indicate a format can be used for capture/output */
- #define SJPEG_FMT_FLAG_ENC_CAPTURE	(1 << 0)
-@@ -187,11 +187,11 @@ struct s5p_jpeg_marker {
-  * @fmt:	driver-specific format of this queue
-  * @w:		image width
-  * @h:		image height
-- * @sos:	SOS marker's position relative to the buffer beginning
-- * @dht:	DHT markers' positions relative to the buffer beginning
-- * @dqt:	DQT markers' positions relative to the buffer beginning
-- * @sof:	SOF0 marker's position relative to the buffer beginning
-- * @sof_len:	SOF0 marker's payload length (without length field itself)
-+ * @sos:	JPEG_MARKER_SOS's position relative to the buffer beginning
-+ * @dht:	JPEG_MARKER_DHT' positions relative to the buffer beginning
-+ * @dqt:	JPEG_MARKER_DQT' positions relative to the buffer beginning
-+ * @sof:	JPEG_MARKER_SOF0's position relative to the buffer beginning
-+ * @sof_len:	JPEG_MARKER_SOF0's payload length (without length field itself)
-  * @size:	image buffer size in bytes
-  */
- struct s5p_jpeg_q_data {
