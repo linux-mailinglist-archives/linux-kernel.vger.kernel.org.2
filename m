@@ -2,125 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0FF402C10
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123B5402C2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345383AbhIGPnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 11:43:43 -0400
-Received: from mga02.intel.com ([134.134.136.20]:21515 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235162AbhIGPnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 11:43:42 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="207458040"
-X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
-   d="scan'208";a="207458040"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 08:42:36 -0700
-X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
-   d="scan'208";a="538028650"
-Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.176])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 08:42:32 -0700
-Date:   Tue, 7 Sep 2021 23:48:30 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-doc@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH 1/5][RFC] Documentation: Introduce Platform Firmware
- Runtime Update documentation
-Message-ID: <20210907154830.GA44825@chenyu-desktop>
-References: <cover.1631025237.git.yu.c.chen@intel.com>
- <c135a9bf742f3c2181650914f40ce563d7a3dc48.1631025237.git.yu.c.chen@intel.com>
- <87sfygtnna.fsf@meer.lwn.net>
+        id S1345338AbhIGPvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 11:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232935AbhIGPvU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 11:51:20 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EB9C061575;
+        Tue,  7 Sep 2021 08:50:14 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id v20-20020a4a2554000000b0028f8cc17378so3055172ooe.0;
+        Tue, 07 Sep 2021 08:50:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ogax7Hn2du6LFF8ec+bJATwLOn6GD0dmA5bAclndcIk=;
+        b=ggRQSP8FTEPed7xT35spZwEld02mmPoC1B/XzF8hPC8MjmOx+0xuOvXUmToFH/JNI2
+         UCfanRRhEZ8F32QKHAr2EvHBktME5sJcpj3/GPGC2vVnwwxAOKBZuV5lPPoKR+NQxNOu
+         zEtoVRrMhuoyjbuB2ienXRvyq652b7gWbdcDcLvgMiYfKwbn0uL0FRqWh8BZA/6xwps7
+         FD0HDph0uACn/8eGn/Dl5yng6Ts4pP9k5XLsOBBDadsgG82h3AVuJ+Eoz5TBrJ4QN0Px
+         QPKYBgfhzvj0MrnFNaz/+h3r0Y3+JWicAnQ/JS+ZpJJazc7G3Uuu96hgNXJDl3vuS67R
+         WcNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:from:to:cc:references:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ogax7Hn2du6LFF8ec+bJATwLOn6GD0dmA5bAclndcIk=;
+        b=ITxkRjEaj7ji097hSLNCWzG3h67wGZEE0pGBU25HzEwLjOS5wbwWRtKsrq7jE/gUBY
+         rSj0KENrHc9PYYnvjbOFrdrpAT0lgp3QaAkDl+XK4PjvcqSaFIIoXoMgoTNZBLbapavh
+         xAzCXLhaZrNVBCarldV0/rvD/UZvyfJ2wcGbfdrgBYVtBXnZdhcN9ZpjCmMz/ZA29dIG
+         QFfkq9lESRlg2ICsGT6982BisLEjbEar/MWKSH5x3XicD2J0CPgiS0LZSwJm1WDLgBKD
+         tUcHCJ2UfFvs/aknIz3d0HR0Uso06QwnBotD7I3Em0s6jOVJUkF2juIZDrlCZJCx83ty
+         bZsA==
+X-Gm-Message-State: AOAM530lcfvpYIErzQFT5aFGjIvZCt4dLruLXclPzSjaKtDIRM0GD3B/
+        1JcarJMSoZomlAg2GjnJJUI=
+X-Google-Smtp-Source: ABdhPJxO2HsjgSPUw/01ROuUYTNuOAEIcUMYpPSfnEzhrce9r08JL8YZiD0J3aFG6xuVaZyVCNhEMA==
+X-Received: by 2002:a4a:88e2:: with SMTP id q31mr343033ooh.91.1631029813663;
+        Tue, 07 Sep 2021 08:50:13 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c24sm2487574otf.71.2021.09.07.08.50.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 08:50:13 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>
+References: <20210906142615.GA1917503@roeck-us.net>
+ <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net>
+ <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
+ <20210906234921.GA1394069@roeck-us.net>
+ <CAHk-=wjvfUpPJLbWz6Jezr4ZNjhC6j2WYi5MHUd9bjK94JC24A@mail.gmail.com>
+ <4fa776ea-c225-157e-6321-f852393422b9@roeck-us.net>
+Message-ID: <f14e32ae-4a7c-44e6-97d3-1c7ef757cb19@roeck-us.net>
+Date:   Tue, 7 Sep 2021 08:50:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87sfygtnna.fsf@meer.lwn.net>
+In-Reply-To: <4fa776ea-c225-157e-6321-f852393422b9@roeck-us.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jon,
-On Tue, Sep 07, 2021 at 09:23:53AM -0600, Jonathan Corbet wrote:
-> Thanks for adding to the documentation.  I have a few nits for you...
+On 9/6/21 7:29 PM, Guenter Roeck wrote:
+> On 9/6/21 6:12 PM, Linus Torvalds wrote:
+>> On Mon, Sep 6, 2021 at 4:49 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>>>
+>>>> but I'm not seeing why that one happens on sparc64, but not on arm64
+>>>> or x86-64. There doesn't seem to be anything architecture-specific
+>>>> anywhere in that area.
+>>>>
+>>>> Funky.
+>>>
+>>> Not really. That is because de->di_fname is always 16 bytes but size
+>>> can be 48 if the node is really a link. The use of de is overloaded
+>>> in that case; de is struct qnx4_inode_entry (where di_fname is 16 bytes)
+>>> but the actual data is struct qnx4_link_info where the name is 48 bytes
+>>> long. A possible fix (compile tested only) is below.
+>>>
+>>> I think the warning/error is only reported with gcc 11.x. Do you possibly
+>>> use an older compiler for x86/arm64 ?
+>>
+>> No. Literally the same exact version. All of them are
+>>
+>>      gcc version 11.2.1 20210728
+>>
+>> from F34.
+>>
+>> I suspect it's something about the config - a sparc64 allmodconfig
+>> presumably doesn't end up having some of the things x86-64 has enabled
+>> (because of different core config parameters), and then optimizes
+>> differently as a result and shows the issue that way.
+>>
+>> Or something. <wild handwaving>
+>>
 > 
-Thank you very much for your comments.
-> Chen Yu <yu.c.chen@intel.com> writes:
+> Looks like Arnd stumbled into the qnx4 problem before:
 > 
-> > Add the Platform Firmware Runtime Update/Telemetry documentation.
-> >
-> > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> > ---
-> >  Documentation/x86/pfru.rst | 98 ++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 98 insertions(+)
-> >  create mode 100644 Documentation/x86/pfru.rst
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99578
 > 
-> When you add a new RST file, you also need to find a spot for it in
-> index.rst so it becomes part of the docs build.
-> 
-I see. Will do in next version.
-> > diff --git a/Documentation/x86/pfru.rst b/Documentation/x86/pfru.rst
-> > new file mode 100644
-> > index 000000000000..321729f46737
-> > --- /dev/null
-> > +++ b/Documentation/x86/pfru.rst
-> > @@ -0,0 +1,98 @@
-> > +.. SPDX-License-Identifier: GPL-2.0
-> > +
-> > +========================================================
-> > +The Linux Platform Firmware Runtime Update and Telemetry
-> > +========================================================
-> > +
-> > +According to the specification of <Management Mode Firmware Runtime Update>[1],
-> > +certain computing systems require high Service Level Agreements (SLAs) where
-> > +system reboot fewer firmware updates are required to deploy firmware changes
-> > +to address bug fixes, security updates and to debug and root cause issues. This
-> > +technology is called Intel Seamless Update. The management mode (MM),
-> > +UEFI runtime services and ACPI services handle most of the system runtime
-> > +functions. Changing the MM code execution during runtime is called MM Runtime
-> > +Update. Since the "MM" acronyms might be misunderstood as "Memory Management",
-> > +this driver uses "Platform Firmware Runtime Update"(PFRU)
-> > +
-> > +PFRU provides the following facilities: Performs a runtime firmware driver update
-> > +and activate. Ability to inject firmware code at runtime, for dynamic instrumentation.
-> > +PFRU Telemetry is a service which allows Runtime Update handler to produce telemetry
-> > +data to upper layer OS consumer at runtime. The OS provides interfaces to let the
-> > +users query the telemetry data via read operations. The specification specifies the
-> > +interface and recommended policy to extract the data, the format and use are left to
-> > +individual OEM's and BIOS implementations on what that data represents.
-> 
-> Sticking to the 80-column limit is preferable; it keeps the text
-> readable. 
-> 
-Okay, will do.
-> > +PFRU interfaces
-> > +=====================
-> 
-> Underline lengths should match the title text, or Sphinx will get grumpy
-> with you.
-> 
-Got it, will fix it.
-> > +The user space tool manipulates on /dev/pfru/update for code injection and
-> > +driver update. PFRU stands for Platform Firmware Runtime Update, and the /dev/pfru
-> > +directory might be reserved for future usage.
-> > +
-> > + 1. mmap the capsule file
-> > +    fd_capsule = open("capsule.cap", O_RDONLY);
-> > +    fstat(fd_capsule, &stat);
-> > +    addr = mmap(0, stat.st_size, PROT_READ, fd_capsule);
-> 
-> These will not render the way you would like; you'll want to use literal
-> blocks for the code samples.
-> 
-Okay, I'll fix it.
 
-thanks,
-Chenyu
+... and submitted a patch for it:
+
+https://lore.kernel.org/lkml/20210322160253.4032422-6-arnd@kernel.org/
+
+Looks like it got lost.
+
+Guenter
