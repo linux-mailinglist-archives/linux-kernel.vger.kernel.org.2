@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6EA403137
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 00:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F8A403142
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 00:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344373AbhIGW5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 18:57:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229522AbhIGW5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 18:57:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D619F610F8;
-        Tue,  7 Sep 2021 22:55:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631055357;
-        bh=pqhuRk0JknHnJoif+xNYU0aw4+UPHhsHd3PdJqaE6nU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C9ZhrRrXpOxTlgadYR58CPb6Li7eLXtXUKYDme/9JCzsXWZAmzYZnWKNB8gP3gS5c
-         cg1FnKYaX76sBWsXgLkeMl1mpts8nt7xqGQ9ismdWXQfSP82ALS6xMjj/eizIUMM+t
-         Y/BPIY2CfX7WipIgkeAYWvj6xFSXInRGRAGoPNwQvNoACYqMy+FlK0F9BxWpOal5Sk
-         WJhUUqEFizq5/FZoga8AnkRyxCKmqj3Z9B6lQaFjzbxPQHVk1aw84mARsQRWUb1G1/
-         n+p3WZDOBU8cdXYO0x23Gb6Ln1J6nUnBH/y8u5y/apIw9v3z52a/W18COnaf2t9wyE
-         5PyVzy3IfQrqQ==
-Date:   Tue, 7 Sep 2021 23:55:22 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        llvm@lists.linux.dev,
-        LSM List <linux-security-module@vger.kernel.org>,
-        linux-toolchains@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vipin Sharma <vipinsh@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Revert "Enable '-Werror' by default for all kernel
- builds"
-Message-ID: <20210907225522.GA24901@sirena.org.uk>
-References: <20210907183843.33028-1-ndesaulniers@google.com>
- <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
- <CAKwvOdkuYoke=Sa8Qziveo9aSA2zaNWEcKW8LZLg+d3TPwHkoA@mail.gmail.com>
- <YTfkO2PdnBXQXvsm@elver.google.com>
+        id S1345387AbhIGXAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 19:00:03 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:25512 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229522AbhIGXAB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 19:00:01 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1631055534; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=YHLJt++Yk8SoMmB1dGCCJS5cBmhjYlM8QhmxUbhnFP4=;
+ b=dkVgVqZVUpd+DtsMWn4GrHQen61/CFo+BQsxALg+JpDe4TOgTaRXjSILq2dUoD1sfdGR0cOI
+ /VkK4CJltmLw/uxxjundA5cnqVQEcafPSHtIKyxu6sO6zaV3jBCtqPWRGCBm/1FFc5M2z/Rg
+ YowYQe46NdValPQG8FgadZq1FLc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6137eeaec603a0154f94beea (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 07 Sep 2021 22:58:54
+ GMT
+Sender: abhinavk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BC9C1C43618; Tue,  7 Sep 2021 22:58:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: abhinavk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C9FACC4338F;
+        Tue,  7 Sep 2021 22:58:52 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
-Content-Disposition: inline
-In-Reply-To: <YTfkO2PdnBXQXvsm@elver.google.com>
-X-Cookie: <<<<< EVACUATION ROUTE <<<<<
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 07 Sep 2021 15:58:52 -0700
+From:   abhinavk@codeaurora.org
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        Jami Kettunen <jami.kettunen@somainline.org>,
+        Pavel Dubrova <pashadubrova@gmail.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm/dsi: Use division result from div_u64_rem in 7nm
+ and 14nm PLL
+In-Reply-To: <20210906202535.824233-1-marijn.suijten@somainline.org>
+References: <20210906202535.824233-1-marijn.suijten@somainline.org>
+Message-ID: <37d3d27f56787ebe608121ce05bb2ad0@codeaurora.org>
+X-Sender: abhinavk@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---r5Pyd7+fXNt84Ff3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Sep 08, 2021 at 12:14:19AM +0200, Marco Elver wrote:
-
-> I'm predicting most distributions and runtime-focused CIs will disable
-> the warning.
-
-Yes, indeed.
-
-> Date: Tue, 7 Sep 2021 23:12:08 +0200
-> Subject: [PATCH] kbuild: Only default to -Werror if COMPILE_TEST
->=20
-> The cross-product of the kernel's supported toolchains, architectures,
-> and configuration options is large. So large, that it's generally
-> accepted to be infeasible to enumerate and build+test them all
-> (many compile-testers rely on randomly generated configs).
-
-Reviwed-by: Mark Brown <broonie@kernel.org>
-
---r5Pyd7+fXNt84Ff3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmE37dkACgkQJNaLcl1U
-h9D/+ggAgWj/i1gizRbWFFYr2BLDiU+b9vUEurxkkajDDZ19kGHmsvHVl3VirsYS
-gzf7J1+LL6hrJ+xp2GgtG+IoxMblhCpEBOv0MUbzE8u2MfzmDpn4l2tzNCK9uCty
-IwkYbn+/FrBdchGXTnaGpjbaapNmfH6Dma8ujgaZ2mmayRKjNmoqEMNMaitZkh2p
-0d9dyoV3D5k/VNn/SEP0ki5tGV64twL3v9jnDJQEpdAL1imwscG61BCpi+vs1xf6
-nf69gmf8P+JZ1/UFwAB3RHWf7DlMjF0v2NHONrD0aBrqZU8ibDb0tmdyTHSbY8+g
-stQN1SzdP64hyzvQcju9LH6ERV6KOg==
-=7aSj
------END PGP SIGNATURE-----
-
---r5Pyd7+fXNt84Ff3--
+On 2021-09-06 13:25, Marijn Suijten wrote:
+> div_u64_rem provides the result of the divison and additonally the
+> remainder; don't use this function to solely calculate the remainder
+> while calculating the division again with div_u64.
+> 
+> A similar improvement was applied earlier to the 10nm pll in
+> 5c191fef4ce2 ("drm/msm/dsi_pll_10nm: Fix dividing the same numbers
+> twice").
+> 
+> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
+Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
+> ---
+>  drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c | 4 +---
+>  drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c  | 4 +---
+>  2 files changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> index 3c1e2106d962..8905f365c932 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_14nm.c
+> @@ -213,9 +213,7 @@ static void pll_14nm_dec_frac_calc(struct
+> dsi_pll_14nm *pll, struct dsi_pll_conf
+>  	DBG("vco_clk_rate=%lld ref_clk_rate=%lld", vco_clk_rate, fref);
+> 
+>  	dec_start_multiple = div_u64(vco_clk_rate * multiplier, fref);
+> -	div_u64_rem(dec_start_multiple, multiplier, &div_frac_start);
+> -
+> -	dec_start = div_u64(dec_start_multiple, multiplier);
+> +	dec_start = div_u64_rem(dec_start_multiple, multiplier, 
+> &div_frac_start);
+> 
+>  	pconf->dec_start = (u32)dec_start;
+>  	pconf->div_frac_start = div_frac_start;
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> index c77c30628cca..1a5abbd9fb76 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> @@ -114,9 +114,7 @@ static void dsi_pll_calc_dec_frac(struct
+> dsi_pll_7nm *pll, struct dsi_pll_config
+> 
+>  	multiplier = 1 << FRAC_BITS;
+>  	dec_multiple = div_u64(pll_freq * multiplier, divider);
+> -	div_u64_rem(dec_multiple, multiplier, &frac);
+> -
+> -	dec = div_u64(dec_multiple, multiplier);
+> +	dec = div_u64_rem(dec_multiple, multiplier, &frac);
+> 
+>  	if (!(pll->phy->cfg->quirks & DSI_PHY_7NM_QUIRK_V4_1))
+>  		config->pll_clock_inverters = 0x28;
