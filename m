@@ -2,184 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3364025BF
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A534025C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243908AbhIGI4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 04:56:07 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:57442 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242828AbhIGI4F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 04:56:05 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1876HH6D001550;
-        Tue, 7 Sep 2021 08:54:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2021-07-09;
- bh=pdpjYAjXpT7PoQae1fApaP9zrs+O3GE9JZWZSOz1sfI=;
- b=zK7GCYMadN0R2VxgWm9KllHktxYNxGdL1I8ys8bQUvBKT45ESBxpnNQx+cdlgZhifBY1
- nvP2oMY/tRYOO1f4D69R4trZcrfvrCgY+ToSjHMhSznUU3KqNTi+3Je6pip0O2irawLG
- b26HHRU8IfvfR6SOZ2oDeOf/b7JRZfDAUmksdAhYafb8Yi9Zi0hvflyIeHuQiMcd3njv
- 215X7UZwgLhTncHL2JB07hDcPbW2Jlcoy8YlSovTToGwDpyf7MK0AtvlK9eWNsEGVbNL
- uw34xehUA9TDcqTEe87NlD1pgY69HIlkU/7VPfaqwtis9U7ojh/YwDuzl3PVKWgdDYD6 eA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=pdpjYAjXpT7PoQae1fApaP9zrs+O3GE9JZWZSOz1sfI=;
- b=R1wYCrPIXgvjth0UWgVxukTHWF5qu84sSuHDLYYLKjsyKYD9KUPtk7pMqVFKdHoH87nq
- tJ18yhg4XNIESTGnJo7wodEMnr7MGTJLzKx5swWOUjqb8MQTT+CW2S79htiibWJvATW6
- MHUbF0bRL69syOOtHYSMVTv++2XM3jO4jd8xw2EIhBBxHqY010/1mZMSiaD4xfPDs7pF
- ivZB/rDOiw2LMgiYyR15H0BJEiCPFT7dAnbpLXugi7LVezMDz8B0zIvHdAsv2bHnGnXm
- 46jGzca21d6aqu1vQO4+VVaAlHivEpCqKZiW+Vz4ho/hrBzvEFR7WIriMpjrIcHhojYn og== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3awq1895dh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Sep 2021 08:54:50 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1878o8eO130748;
-        Tue, 7 Sep 2021 08:54:50 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2171.outbound.protection.outlook.com [104.47.58.171])
-        by aserp3030.oracle.com with ESMTP id 3auxudafq1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 07 Sep 2021 08:54:50 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WGFpS5JKaR3BG8pAbmy41nlrj8EEnW2o6N+UypXZ2tJv2AFLgzmGdVuAjAGsHP61wpCTBIKBubOK2t1IunvH6wHL4JdQIHVRCt6dBkNtLcYXU4hRT+efU3aFfgrGmVfxjNAIxIvzl3+a69cMwgZXz4JjQyF1/4RA+enDGAJkf2x6/TZeQkrcaMDZXFphJfbvS2uNpcIDYTesriz6Ff291jr4P9TM9omSLEVVR4zUgjViTuyqh6kT/3NRSJF0OMgu7N3sYbif28wTptybbkozhoX01NFcth9ELhzu/Aj3zf3myJdXhJgX5X77VSSenPn2Yr68mhOWq8ionoZZmdYfnA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=pdpjYAjXpT7PoQae1fApaP9zrs+O3GE9JZWZSOz1sfI=;
- b=h9WoEtntwtZTHGU7vCUTWLRZKsb+1S2xt4YQX/aj65e4FBnRBvXZgL53GFG3hpUsd/ijM+019ZCmr1/UYkRDPuN9WM2apbayXGtuGfftoIGQxuKYiUNfoRdC7qtIWFWigD3YQDEemRxxnTaUj+C6igB2JfZv3j4+Y87DEyHViMjPS+i35yxLbJWtTDYckNhTm6HpneVU/W7rrZqC2fUxaMNJB7MZlkBZHF1u7hEgS991qrfqb3KivfbDN4f6+ymz/jwn+HSPAhynbWxHuwm0ylb7N2k5/E/XlHkmPlad7tRFLLqd6MDJEKr1r4vY5xJTQIRC5DhFNRfw6j6qBfa/Sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pdpjYAjXpT7PoQae1fApaP9zrs+O3GE9JZWZSOz1sfI=;
- b=L6bMSWvl/1LPTEgunq0nT+Q1cW9LkqZgDorXAy78i6/ZuZTBBULphQBKe4qUbkVL87MfFIbYiy7BaQWZm3UF/ienZKer2nNIFB0vWcj9Uyy4Xon/cuupHRMVw/PCxCluHyiAgbw+v8xt8JBwK0O0zlPckJ7XMD7Sw9M9/ghACew=
-Authentication-Results: chromium.org; dkim=none (message not signed)
- header.d=none;chromium.org; dmarc=none action=none header.from=oracle.com;
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- (2603:10b6:301:2d::28) by MWHPR10MB1296.namprd10.prod.outlook.com
- (2603:10b6:300:1f::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Tue, 7 Sep
- 2021 08:54:47 +0000
-Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
- ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4478.025; Tue, 7 Sep 2021
- 08:54:47 +0000
-Date:   Tue, 7 Sep 2021 11:54:30 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Namjae Jeon <linkinjeon@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ksmbd: remove unnecessary conditions
-Message-ID: <20210907085430.GM1957@kadam>
-References: <20210907073428.GD18254@kili>
- <YTcdbOgmB7758K+/@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YTcdbOgmB7758K+/@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: JN2P275CA0011.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::23)
- To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
+        id S244153AbhIGI6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 04:58:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242828AbhIGI6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 04:58:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50391610E9;
+        Tue,  7 Sep 2021 08:56:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631005018;
+        bh=5FwQgdqHiCk4qrBnRBDZ7R7Y2Jv/W7kGMEfNG3K45Ow=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IxBWPDbyminDJoUjkG8JLHkVQs53VG2rSy2PMTLjhNcpkmGV/rqRf7JS/LDrPOvvL
+         wSDxqqwD11o+Mfp/VnMhKJoxmiFXqP0yBBRy/QmAVinmfb7kO7IQ4bH1Y27Lrgpvjp
+         UJJ9zPVeRkZwwddAB3GMtVsFsQPM3dOXsSNZ+OFW49RhRp5t+02cxvMAUXwgVY4vvQ
+         URLmN+R8zK8gjZivYLS546CYX6mtWP/dJIJuKjQaY2QpNPyQ3QBYZ42tY5YfQdT9F9
+         xFvmc64wXVS0AVmJ/HKtdAWGix+Dq7GZjqsFl47aL4BYwjFz9n3fwn6Z+LcUfMDRsm
+         iPiRJAjY7D9sA==
+Received: by mail-wm1-f52.google.com with SMTP id m2so6272504wmm.0;
+        Tue, 07 Sep 2021 01:56:58 -0700 (PDT)
+X-Gm-Message-State: AOAM533yNAenEQkhiknSAHEo/BLeoi4iBidPQeKBSsrXIkbzXlCOkJxA
+        tvy/cGY1h7OHKmpi/bFmuDljPoeY/+9gsltPs5I=
+X-Google-Smtp-Source: ABdhPJyIHAJwziASQyXA9WKTYbsUInPiF9gmsApUbOfB+4JGIVFUSDgi+Cwpjh7mT4/KI95EIaWeWfoocM4PirSjR0s=
+X-Received: by 2002:a1c:3182:: with SMTP id x124mr2756387wmx.35.1631005016875;
+ Tue, 07 Sep 2021 01:56:56 -0700 (PDT)
 MIME-Version: 1.0
-Received: from kadam (62.8.83.99) by JN2P275CA0011.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:3::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.21 via Frontend Transport; Tue, 7 Sep 2021 08:54:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4ea2b645-72c4-4a0b-3780-08d971dd24af
-X-MS-TrafficTypeDiagnostic: MWHPR10MB1296:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR10MB12968D6014669298D629C63D8ED39@MWHPR10MB1296.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CRTVJBdaJo+K+Lp6szf32ZpqPCawMWoI0+J1o/83yr7e/E3sE2ewEs3B5AyEn7TKML/lW1iVen4HXU6dLZ+HHp63XyjqhhTeNlrQ2Ry/51w/k/ofQGIG42O3SI5VvQPAs7sfYDJ8YrhmAViezyOx6QfhaZIkezpltybhk4EOjvhqQN5b1EQp9VFFTpYgYBadFkyf8c7vgPBzcpCqmKh9Ma5vyN2dNW9MTxc72HRbEY96nEfTAWCAJxdE8d3vXS437iF5iH5HJ2JgenFyi66x5x216emgBuls/U5ivHfm9Fc4mhmHVjg0jpqlASXHv/P/RJxTPkIyML1pDfdM+nDb6VQhSBYofMh9z/FGQBa9/y4oX1987DjPn+5qu8uKTOO0LGO2o3B5QlqyJ6IOVFXZkIuxhkiF1hPRjdkQ3IjMJf9OtZWiqTACN4t21mUAgyqMIqXyfrdXuCKSBmD68cxZbua5jkai80A2O8Ds7PVpJ+bVBvA4cu3vxQ+gnKTpxm1C6ox8YddXWnTjUKtHTjJug3KHoYIGCzHcDBu9M1KnNA2Oc8K9+9zjMpvvfkLrzzB02XKBmV13kqaBdz+N+ajPHnNLZwuiaNdzBYhIxW9eg+zMZ399RvyGuJ4vFWJlgKElp9YeW3RTII+nTo6tpShXGKpfdvQ+Z+eMgjag4a2rATphtINrezPLeKZ+iVUwShsPSsgFiSke3fBjxeiH9wHvIg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(366004)(39860400002)(346002)(376002)(956004)(54906003)(66946007)(66556008)(55016002)(4326008)(186003)(86362001)(9576002)(5660300002)(52116002)(8676002)(1076003)(66476007)(316002)(6496006)(6916009)(6666004)(4744005)(2906002)(478600001)(38350700002)(38100700002)(8936002)(44832011)(33716001)(33656002)(9686003)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Mrj4xsMFYojeW7zQw4rUc3wnJmPCgeCZi7UhBOHOGRg0XvkEhDtBzp4zIHHO?=
- =?us-ascii?Q?KAjxpv/j9GsbTYiDr4ELmHuu8lFht+LP6fUU03LimaK60TJCtKxA0UTec+3o?=
- =?us-ascii?Q?epNu49j3vMKdgMOoNNXOOvuHlDv8tAUeFM4lbJZtUAxES78gtyROe8OxSdPN?=
- =?us-ascii?Q?XmiJB15FLOs+GgxwxqZsZUUa0H5iohEUXWpvXxv1ZgDmEHzzjTJZ5OLpqnAC?=
- =?us-ascii?Q?dFwPPCoSs28Bb+BSmqc7qBSlJ3tnedwtUlya4Wt/5Jb9lpXuGXDCVNIHiaX5?=
- =?us-ascii?Q?xpdQTKghPfl8lp/Xt9/vep9K1bL1JeAbt60qCYTuAx7IjvTXlVYkwO9k5QN7?=
- =?us-ascii?Q?Tixbvk1/wAGWsPok9RmGxiKtVcXAhDoCpZcTHCmozNGb9Va1NoW+8aFwKRYe?=
- =?us-ascii?Q?G95Xf2tu8mxmwDCK8s1TL0ByDTJRuj2uUOOqlpuqVpzN385IXjxeSYtzC40C?=
- =?us-ascii?Q?JioeMB2daECTKjaPHqgIAjaEcGIvltKbZHMhPutXDoRokWTGSSb8ZGk7k6UY?=
- =?us-ascii?Q?rFLCvvoiG3y8aOxKm37ENU5EMdTuD102pw0e/KErnjTyPNdZmZu4K/6Qt+NH?=
- =?us-ascii?Q?wth/+Sk3XVo6eFmzDnFNcgEX3FqgzbIqerDXW4J58R+3qwPtE5OZBjN5MWAd?=
- =?us-ascii?Q?lO5JAGDGcxgU2W5NxAHYdQGfeVIn8a6I5/HCke35QDamEu1WTQE/stsTlUAM?=
- =?us-ascii?Q?GI9BQHcRplwz+Q99AhC/9ZYkfXN+yRRMWKyEK4H0e6d9PFCN7QGJi9WqONxJ?=
- =?us-ascii?Q?bW+uBLOuA5xfYCOtaZBJ21A4pYxllkyGaJorG7WeITV264tR0QWf38fIMPp4?=
- =?us-ascii?Q?89QK04ndN8mh4z+Q9g1eQpGiZo2/KAsZ1y3zy2C+n1I9AYkT7PwZy0YbyFPA?=
- =?us-ascii?Q?DZR5FvJORltvLxpFAvnLiOW4lwxhJSr8PFHUfehEHJIZm++j+gn1ofXk5meK?=
- =?us-ascii?Q?uoDqbpPG+zBI4QxWCbn40Tbe685SUHYku+m0IDK3DMM4Ofh6GEe8oj+P09l/?=
- =?us-ascii?Q?pUVLdBHtQZga+R3hHaigCAzZ4S0BkNA2gEoPyrD7YLubYuhgfIGI9IVW0TGa?=
- =?us-ascii?Q?6NwIemMqbrNAPTotWb//fB8YmrDUCWqvBrs2q+tdvT2UZU7BeUnVKYyDnlmx?=
- =?us-ascii?Q?WUTUhRSqJ0hS88E7eAbbBNau/kjJUYIk0MfJAkLlMoxNEVCYFVoYZhVKkGAL?=
- =?us-ascii?Q?YXG5Syg+fCW3pQDYqxaMARIDz2ndhQvNQ7DXOreWncAQ4aFa0sg+DkWOqEwc?=
- =?us-ascii?Q?i5JXyIylvyB26vFU1uocFCB+LHDo3FO4Ki7+wgxb+IXCVc+oHWdby545mk0S?=
- =?us-ascii?Q?WN92y37od/FrEUqSbxLa+ptv?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ea2b645-72c4-4a0b-3780-08d971dd24af
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 08:54:47.0967
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RgyRG4RBMNUp+wu81m5Yewf0NEOGrHnDnUwwh+4OuEraeT8FE/4IDW2o7l4592PCemFpVNmv4vG0mXmAUZefv/ZUOsnNbYErJifDNxwZdyU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1296
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10099 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 suspectscore=0
- bulkscore=0 spamscore=0 malwarescore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2108310000
- definitions=main-2109070058
-X-Proofpoint-GUID: VK5tT_IImf_MmVq9EvhQ1q7BWhYOMFAg
-X-Proofpoint-ORIG-GUID: VK5tT_IImf_MmVq9EvhQ1q7BWhYOMFAg
+References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
+ <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net> <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
+ <20210906234921.GA1394069@roeck-us.net>
+In-Reply-To: <20210906234921.GA1394069@roeck-us.net>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 7 Sep 2021 10:56:40 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2H6HMpz26myHXYr+5cR=PM1hbW8=afy5LaEJTj28a8WQ@mail.gmail.com>
+Message-ID: <CAK8P3a2H6HMpz26myHXYr+5cR=PM1hbW8=afy5LaEJTj28a8WQ@mail.gmail.com>
+Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 05:06:04PM +0900, Sergey Senozhatsky wrote:
-> On (21/09/07 10:34), Dan Carpenter wrote:
-> >  
-> >  		id = le32_to_cpu(psid->sub_auth[psid->num_subauth - 1]);
-> > -		if (id >= 0) {
-> > -			/*
-> > -			 * Translate raw sid into kuid in the server's user
-> > -			 * namespace.
-> > -			 */
-> > -			uid = make_kuid(&init_user_ns, id);
-> > -
-> > -			/* If this is an idmapped mount, apply the idmapping. */
-> > -			uid = kuid_from_mnt(user_ns, uid);
-> > -			if (uid_valid(uid)) {
-> > -				fattr->cf_uid = uid;
-> > -				rc = 0;
-> > -			}
-> > +		/*
-> > +		 * Translate raw sid into kuid in the server's user
-> > +		 * namespace.
-> > +		 */
-> > +		uid = make_kuid(&init_user_ns, id);
-> 
-> Can make_kuid() return INVALID_UID? IOW, uid_valid(uid) here as well?
+On Tue, Sep 7, 2021 at 1:51 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> On Mon, Sep 06, 2021 at 04:06:04PM -0700, Linus Torvalds wrote:
+> > [ Adding some subsystem maintainers ]
+> >
+> > On Mon, Sep 6, 2021 at 10:06 AM Guenter Roeck <linux@roeck-us.net> wrot=
+e:
+> > >
+> > > > But hopefully most cases are just "people haven't cared enough" and
+> > > > easily fixed.
+> > >
+> > > We'll see. For my testbed I disabled the new configuration flag
+> > > for the time being because its primary focus is boot tests, and
+> > > there won't be any boot tests if images fail to build.
+> >
+> > Sure, reasonable.
+> >
+> > I've checked a few of the build errors by doing the appropriate cross
+> > compiles, and it doesn't seem bad - but it does seem like we have a
+> > number of really pointless long-standing warnings that should have
+> > been fixed long ago.
 
-No need to check twice.  We're going to check at the end.
+I have a tree with fixes for anything that has hit on arm, arm64 or x86.
+There are many reasons why some patch never made it in, but usually
+it's because I was not persistent about resending the fix when the first
+version didn't make it. In other cases I wasn't sure about my own fix.
 
-> 
-> > +
-> > +		/* If this is an idmapped mount, apply the idmapping. */
-> > +		uid = kuid_from_mnt(user_ns, uid);
-> > +		if (uid_valid(uid)) {
-                    ^^^^^^^^^^^^^^
-The check here is sufficient.
+> > For example, looking at sparc64, there are several build errors due to
+> > those warnings now being fatal:
+> >
+> >  - drivers/gpu/drm/ttm/ttm_pool.c:386
+> >
+> >    This is a type mismatch error. It looks like __fls() on sparc64
+> > returns 'int'. And the ttm_pool.c code assumes it returns 'unsigned
+> > long'.
+> >    Oddly enough, the very line after that line does "min_t(unsigned
+> > int" to get the types in line.
+> >    So  the immediate reason is "sparc64 is different".
 
-regards,
-dan carpenter
+arc is the same as sparc here, but everything else uses unsigned long.
+We've come a long way in making all those helper functions consistent
+in their types, but there are still a number of exceptions.
 
+> > But the deeper
+> > reason seems to be that ttm_pool.c has odd type assumptions. But that
+> > warning should have been fixed long ago, either way.
+> >
+> >    Christian/Huang? I get the feeling that both lines in that file
+> > should use the min_t(). Hmm?
+> >
+> >  - drivers/input/joystick/analog.c:160
+> >
+> >    #warning Precise timer not defined for this architecture.
+> >
+> >    Unfortunate. I suspect that warning just has to be removed. It has
+> > never caused anything to be fixed, it's old to the point of predating
+> > the git history. Dmitry?
+> >
+> My solution would be to just remove the old code (that isn't using ktime)
+> including the module parameter that disables it. Sure, we want to be
+> backward compatible, but that code is 15+ years old and should really be
+> retired.
+
+Agreed. I added a couple of architectures to the #ifdef check over time,
+but realistically this driver is only ever used on x86-32 anyway, and
+we don't even care about the others here.
+
+If we remove the #else path here, I'd make it "depends on ISA ||
+COMPILE_TEST".
+
+> >  - at least a couple of stringop-overread errors. Attached is a
+> > possible for for one of them.
+> >
+> > The stringop overread is odd, because another one of them is
+> >
+> >    fs/qnx4/dir.c: In function =E2=80=98qnx4_readdir=E2=80=99:
+> >    fs/qnx4/dir.c:51:32: error: =E2=80=98strnlen=E2=80=99 specified boun=
+d 48 exceeds
+> > source size 16 [-Werror=3Dstringop-overread]
+> >       51 |                         size =3D strnlen(de->di_fname, size)=
+;
+> >          |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >
+> > but I'm not seeing why that one happens on sparc64, but not on arm64
+> > or x86-64. There doesn't seem to be anything architecture-specific
+> > anywhere in that area.
+> >
+> > Funky.
+> >
+> Not really. That is because de->di_fname is always 16 bytes but size
+> can be 48 if the node is really a link. The use of de is overloaded
+> in that case; de is struct qnx4_inode_entry (where di_fname is 16 bytes)
+> but the actual data is struct qnx4_link_info where the name is 48 bytes
+> long. A possible fix (compile tested only) is below.
+>
+> I think the warning/error is only reported with gcc 11.x. Do you possibly
+> use an older compiler for x86/arm64 ?
+>
+> Anyway, below is a partial list of build errors I have seen. Some of
+> them are easy to fix (such as the ones due to unused functions),
+> but others seem to be tricky.
+
+This one is worse, I think this is the same warning as the one I
+reported as a false-positive in
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D99673
+and https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D99578
+
+I submitted a patch in
+https://lore.kernel.org/all/20210322160253.4032422-6-arnd@kernel.org/
+
+To summarize the problems:
+
+- gcc and clang have different approaches to this type of warning: clang
+  tries to only produce diagnostics that are 100% reproducible regardless
+  of compiler internals, while gcc tries to use as much information as it h=
+as
+  to warn about things that may go wrong, including things that it only kno=
+ws
+  because of inlining. Making this warning reliable is a variation of the
+  halting problem, just like the -Wmaybe-uninitialized warnings. The diagno=
+stic
+  is definitely helpful and I found real bugs because of it, but you can ne=
+ver
+  be sure that you have found all instances.
+
+- Some of the -Wstringop-overread warnings (and related ones) from gcc are
+  actually wrong, because the object size is just a heuristic. If you
+have multiple
+  overlapping fixed-length fields in a union, gcc-11 picks one of the union
+  members to determine the size of the string buffer within the structure, =
+even
+  when the string operation uses a different union member as the output, an=
+d
+  that member has the correct size.
+  This is also a common problem: when a new warning option gets introduced
+  first, there are false positives that get fixed in subsequent
+compiler versions.
+
+
+> alpha.log:arch/alpha/kernel/setup.c:493:13: error: 'strcmp' reading 1 or =
+more bytes from a region of size 0 [-Werror=3Dstringop-overread]
+
+I sent a couple of fixes for these: this is another false-postive bug
+in gcc that made it
+into the release, and it triggers on every architecture that accesses
+the boot parameters
+at a fixed pointer. The problem is that gcc treats '(void *)0x12345'
+the same as 'NULL +
+0x12345', and decides that this is an invalid NULL pointer access, so
+the array has
+zero readable bytes.
+
+> alpha.log:drivers/atm/ambassador.c:1747:58: error: passing argument 1 of =
+'virt_to_bus' discards 'volatile' qualifier from pointer target type [-Werr=
+or=3Ddiscarded-qualifiers]
+
+Surely an alpha specific mistake, though we could fix all those
+drivers to drop the
+'volatile'.
+
+> alpha.log:drivers/net/ethernet/amd/ni65.c:751:37: error: cast from pointe=
+r to integer of different size [-Werror=3Dpointer-to-int-cast]
+
+Nobody tests ISA drivers on 64-bit architectures...
+
+> alpha.log:drivers/net/hamradio/6pack.c:71:41: error: unsigned conversion =
+from 'int' to 'unsigned char' changes value from '256' to '0' [-Werror=3Dov=
+erflow]
+
+This driver is apparently broken for any HZ >=3D 1024
+> ppc.log:drivers/net/ethernet/cirrus/cs89x0.c:897:41: error: implicit decl=
+aration of function 'isa_virt_to_bus' [-Werror=3Dimplicit-function-declarat=
+ion]
+
+My fix is in the network tree.
+
+> riscv32.log:drivers/gpu/drm/rockchip/cdn-dp-core.c:1126:12: error: 'cdn_d=
+p_resume' defined but not used [-Werror=3Dunused-function]
+> riscv.log:drivers/gpu/drm/rockchip/cdn-dp-core.c:1126:12: error: 'cdn_dp_=
+resume' defined but not used [-Werror=3Dunused-function]
+
+A fix was submitted today, we get at least a dozen of those for each
+kernel release, and there
+is a plan for avoiding them altogether, but it's a giant treewide
+change that nobody has managed
+to tackle.
+
+> s390.log:arch/s390/kernel/syscall.c:168:1: error: '__do_syscall' uses dyn=
+amic stack allocation [-Werror]
+
+This is add_random_kstack_offset(). No idea why it doesn't trigger on
+x86, but that
+warning should probably get shut up inside of the macro.
+
+> sparc64.log:arch/sparc/kernel/mdesc.c:647:22: error: 'strcmp' reading 1 o=
+r more bytes from a region of size 0 [-Werror=3Dstringop-overread]
+> sparc64.log:arch/sparc/kernel/mdesc.c:692:22: error: 'strcmp' reading 1 o=
+r more bytes from a region of size 0 [-Werror=3Dstringop-overread]
+> sparc64.log:arch/sparc/kernel/mdesc.c:719:21: error: 'strcmp' reading 1 o=
+r more bytes from a region of size 0 [-Werror=3Dstringop-overread]
+
+Same as on alpha
+
+       Arnd
