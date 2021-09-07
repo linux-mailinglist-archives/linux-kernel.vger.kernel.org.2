@@ -2,73 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C344027F8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 13:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8579C402827
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 14:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244378AbhIGLoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 07:44:44 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:15301 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229827AbhIGLoj (ORCPT
+        id S243105AbhIGMEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 08:04:08 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:42432 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233864AbhIGMEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 07:44:39 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H3k0j4mfVz8srh;
-        Tue,  7 Sep 2021 19:43:01 +0800 (CST)
-Received: from dggema773-chm.china.huawei.com (10.1.198.217) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2308.8; Tue, 7 Sep 2021 19:43:30 +0800
-Received: from localhost.huawei.com (10.175.124.27) by
- dggema773-chm.china.huawei.com (10.1.198.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.8; Tue, 7 Sep 2021 19:43:29 +0800
-From:   Li Jinlin <lijinlin3@huawei.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linfeilong@huawei.com>,
-        <louhongxiang@huawei.com>
-Subject: [PATCH] blk-throttle: fix UAF by deleteing timer in blk_throtl_exit()
-Date:   Tue, 7 Sep 2021 20:12:42 +0800
-Message-ID: <20210907121242.2885564-1-lijinlin3@huawei.com>
-X-Mailer: git-send-email 2.27.0
+        Tue, 7 Sep 2021 08:04:06 -0400
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id D210622119;
+        Tue,  7 Sep 2021 12:02:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1631016179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j25+LpQod1QI80++OlSQRGUgFsrVKKSgFf0138c8TVQ=;
+        b=L6bZSsu2pNXyftKXlI+rdsHuDIyQPIGfBY09AwkHJ8dkrXqH5ssvKC99sB8OGrgfsnryqn
+        OOZLx5m/Lhi/y5eH7r47QMsk0qZQecVl3jMSEQbZROIG1vv+I+h9qntEsTt/qGAe8xwLgP
+        xnlCawBlaxGhjxtxSCHFqDGwOoeLPcQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1631016179;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j25+LpQod1QI80++OlSQRGUgFsrVKKSgFf0138c8TVQ=;
+        b=QdRf3J/OBaiaXjxKdiy5D+6HSzM4dDlr59ppGPkwZ8KO1fqiFSJcbh+lBuPCt+Ciok5sGr
+        V6mUxfeDYIxbPDDQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B806013C56;
+        Tue,  7 Sep 2021 12:02:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id kcRTLPNUN2HdDAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Tue, 07 Sep 2021 12:02:59 +0000
+Message-ID: <79c08d1d-eef5-bc15-8186-7e3367b4ebe7@suse.cz>
+Date:   Tue, 7 Sep 2021 14:02:59 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.124.27]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema773-chm.china.huawei.com (10.1.198.217)
-X-CFilter-Loop: Reflected
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [PATCH] mm : bail out from psi memstall after submit_bio in
+ swap_readpage
+Content-Language: en-US
+To:     Huangzhaoyang <huangzhaoyang@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>
+References: <1631015968-9779-1-git-send-email-huangzhaoyang@gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <1631015968-9779-1-git-send-email-huangzhaoyang@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Jinlin <lijinlin3@huawei.com>
+On 9/7/21 13:59, Huangzhaoyang wrote:
+> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> 
+> It doesn't make sense to count IO time into psi memstall. Bail out after
+> bio submitted.
 
-The pending timer has been set up in blk_throtl_init(). However, the
-timer is not deleted in blk_throtl_exit(). This means that the timer
-handler may still be running after freeing the timer, which would
-result in a use-after-free.
+Isn't that the point if psi, to observe real stalls, which include IO?
+Anyway, CCing Johannes.
 
-Fix by calling del_timer_sync() to delete the timer in blk_throtl_exit().
-
-Signed-off-by: Li Jinlin <lijinlin3@huawei.com>
----
- block/blk-throttle.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 55c49015e533..dbe49e181a88 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -2458,6 +2458,7 @@ int blk_throtl_init(struct request_queue *q)
- void blk_throtl_exit(struct request_queue *q)
- {
- 	BUG_ON(!q->td);
-+	del_timer_sync(&q->td->service_queue.pending_timer);
- 	throtl_shutdown_wq(q);
- 	blkcg_deactivate_policy(q, &blkcg_policy_throtl);
- 	free_percpu(q->td->latency_buckets[READ]);
--- 
-2.27.0
+> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> ---
+>  mm/page_io.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/page_io.c b/mm/page_io.c
+> index c493ce9..1d131fc 100644
+> --- a/mm/page_io.c
+> +++ b/mm/page_io.c
+> @@ -423,6 +423,7 @@ int swap_readpage(struct page *page, bool synchronous)
+>  	count_vm_event(PSWPIN);
+>  	bio_get(bio);
+>  	qc = submit_bio(bio);
+> +	psi_memstall_leave(&pflags);
+>  	while (synchronous) {
+>  		set_current_state(TASK_UNINTERRUPTIBLE);
+>  		if (!READ_ONCE(bio->bi_private))
+> @@ -433,7 +434,7 @@ int swap_readpage(struct page *page, bool synchronous)
+>  	}
+>  	__set_current_state(TASK_RUNNING);
+>  	bio_put(bio);
+> -
+> +	return ret;
+>  out:
+>  	psi_memstall_leave(&pflags);
+>  	return ret;
+> 
 
