@@ -2,148 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8E9402CB2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCEF7402CB4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242506AbhIGQPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233616AbhIGQPb (ORCPT
+        id S245587AbhIGQPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 12:15:41 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:35338 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244135AbhIGQPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:15:31 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E400C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 09:14:25 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id a22so5464123iok.12
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 09:14:25 -0700 (PDT)
+        Tue, 7 Sep 2021 12:15:37 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 96512415;
+        Tue,  7 Sep 2021 19:14:27 +0300 (MSK)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ocAbRfkRSVpNHeDLSlcbbOznxT7qGzgjfFfLF+3x3Hw=;
-        b=UHUjSG6V2zAED0y56RYnJWnVU4MGEVDqOXr1KZX/NgYahZ0Duj8Q4aRxF0BE8erBGT
-         cnsbKJ2GfIKKrIM0e0XvY+clw2YQwSxvb7yKRqS8B/Tm2BKKBGX7Zs52l3MB9pi1Axm7
-         3n3KCpODuIjXU4iqwr5mLyXPG5YWtL4O1KTEVBKMX3H1c2HilsAKA1KOKmtzpeD+Lvzt
-         enJNjSYgxz8XIRsLTRblDyEKXozNpYoInjwXWfCZwQ5Rj3AQB45R+eF9wXo7KqueR7eB
-         l5X7o4mJyeUPXq2Uwg21TBJCe4N/5QJ0J/Ue8+2IbgwzSMYM/DCFkHD1ea8X35P802VR
-         lT8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ocAbRfkRSVpNHeDLSlcbbOznxT7qGzgjfFfLF+3x3Hw=;
-        b=uGs6m5uEKj5aXvWXkY92XiPalLVyy+hrTgJTdSHl49oaPBp5EFPhjI1l2M/kWrw4Y2
-         ovU/1lPBlAQxG5PwRLQPDa6JAEeVTd/KpV86+A6TbZ2FIFw5wpl829DlNsNTRivnCNKH
-         pR4QaGk3qWHEgdwXVVmYvAhh6xyA7hdkWgyA3aCBmC0YAnprBlQxlnblv8vAX8i55Cn/
-         Y4je2fy6mzdnU567zQbvTPM/gicHOVUzIUSxLauBzk895aTsesJZt/R9VO/WiNkFZsN5
-         XMRuL85xN6yG0TB3n9oPWH/6mOcFgYDGORozcRIVVHVeJ4bWfWfDsaG4SFwXiy2df2nV
-         HV4g==
-X-Gm-Message-State: AOAM531O95i/DeSNN6dnT/4codJHSsVdftjF88zZngIWLJbCX031bN78
-        +9asN/iO/MwyefxIK1KxkKCpHA==
-X-Google-Smtp-Source: ABdhPJw6pWIkN5gPkz6k/wxAFs5+njd0ac/36v7H1Ca+PZZaHi5X4HGrE0gvgsGBRNFNBbXeVUPEAg==
-X-Received: by 2002:a6b:710f:: with SMTP id q15mr14740308iog.77.1631031264510;
-        Tue, 07 Sep 2021 09:14:24 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id m10sm6495441ilg.20.2021.09.07.09.14.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 09:14:23 -0700 (PDT)
-Subject: Re: [memcg] 0f12156dff: will-it-scale.per_process_ops -33.6%
- regression
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Borislav Petkov <bp@alien8.de>, Borislav Petkov <bp@suse.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, Roman Gushchin <guro@fb.com>,
-        Serge Hallyn <serge@hallyn.com>, Tejun Heo <tj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yutian Yang <nglaive@gmail.com>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
-References: <20210907150757.GE17617@xsang-OptiPlex-9020>
- <dbc9955d-6c28-1dd5-b842-ef39a762aa3b@kernel.dk>
- <CALvZod6S+NmG8+-ftS-w3t3zJg_kbr3-F9h-n4jwSnqh0jTUGQ@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <27face50-0e55-ad2b-ebb7-2fe48aee8374@kernel.dk>
-Date:   Tue, 7 Sep 2021 10:14:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        d=paragon-software.com; s=mail; t=1631031267;
+        bh=/677Cv3P5bvchgyfuP6mrlK0Dsgo2NNOnd1aDEVqAAo=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=QjktKAFowwn+q8Y00od4uRHxYS8XFM7RFHPLlw9LNKN4Jx3i+SFrwalJqrRLHBrSF
+         B7RO9TQG1kDipw7g2cjd1yirJUzVIqq5vkd8P06f6mrrIqv2FcYXyUCo/N/4MhZpjA
+         FkHVw4lHqOr3TW2ZEXRTYdtQraAO059R4syB/aVI=
+Received: from [192.168.211.115] (192.168.211.115) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 7 Sep 2021 19:14:27 +0300
+Subject: Re: [PATCH v3 0/9] fs/ntfs3: Use new mount api and change some opts
+To:     Kari Argillander <kari.argillander@gmail.com>,
+        <ntfs3@lists.linux.dev>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+References: <20210829095614.50021-1-kari.argillander@gmail.com>
+ <20210907073618.bpz3fmu7jcx5mlqh@kari-VirtualBox>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Message-ID: <69c8ab24-9443-59ad-d48d-7765b29f28f9@paragon-software.com>
+Date:   Tue, 7 Sep 2021 19:14:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-In-Reply-To: <CALvZod6S+NmG8+-ftS-w3t3zJg_kbr3-F9h-n4jwSnqh0jTUGQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210907073618.bpz3fmu7jcx5mlqh@kari-VirtualBox>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.211.115]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/21 9:57 AM, Shakeel Butt wrote:
-> On Tue, Sep 7, 2021 at 8:46 AM Jens Axboe <axboe@kernel.dk> wrote:
+
+
+On 07.09.2021 10:36, Kari Argillander wrote:
+> On Sun, Aug 29, 2021 at 12:56:05PM +0300, Kari Argillander wrote:
+>> See V2 if you want:
+>> lore.kernel.org/ntfs3/20210819002633.689831-1-kari.argillander@gmail.com
 >>
->> On 9/7/21 9:07 AM, kernel test robot wrote:
->>>
->>>
->>> Greeting,
->>>
->>> FYI, we noticed a -33.6% regression of will-it-scale.per_process_ops due to commit:
->>>
->>>
->>> commit: 0f12156dff2862ac54235fc72703f18770769042 ("memcg: enable accounting for file lock caches")
->>> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+>> NLS change is now blocked when remounting. Christoph also suggest that
+>> we block all other mount options, but I have tested a couple and they
+>> seem to work. I wish that we do not block any other than NLS because
+>> in theory they should work. Also Konstantin can comment about this.
 >>
->> Are we at all worried about these? There's been a number of them
->> reported, basically for all the accounting enablements that have been
->> done in this merge window.
+>> I have not include reviewed/acked to patch "Use new api for mounting"
+>> because it change so much. I have also included three new patch to this
+>> series:
+>> 	- Convert mount options to pointer in sbi
+>> 		So that we do not need to initiliaze whole spi in 
+>> 		remount.
+>> 	- Init spi more in init_fs_context than fill_super
+>> 		This is just refactoring. (Series does not depend on this)
+>> 	- Show uid/gid always in show_options()
+>> 		Christian Brauner kinda ask this. (Series does not depend
+>> 		on this)
 >>
->> When io_uring was switched to use accounted memory, we did a bunch of
->> work to ameliorate the inevitable slowdowns that happen if you do
->> repeated allocs and/or frees and have memcg accounting enabled.
->>
+>> Series is ones again tested with kvm-xfstests. Every commit is build
+>> tested.
 > 
-> I think these are important and we should aim to continuously improve
-> performance with memcg accounting. I would like to know more about the
-> io_uring work done to improve memcg accounting. Maybe we can
-> generalize it to others as well.
+> I will send v4 within couple of days. It will address issues what Pali
+> says in patch 8/9. Everything else should be same at least for now. Is
+> everything else looking ok?
+> 
 
-It's pretty basic and may not be applicable to all cases, we simply hang
-on to our allocations for longer periods and reuse them. Hence instead
-of always going through alloc+free to each "unit", they are recycled and
-reused until no longer needed.
+Yes, everything else seems good. 
+We tested patches locally - no regression was found.
 
-Now this is more efficient in general for us, as we can have a very high
-rate of requests (and hence allocs+frees). I suspect most use cases
-would benefit from simply having a cache in front of memcg slabs, but
-that seems like solving the issue at the wrong layer. IMHO it'd be
-better to have the memcg accounting be done in batches, eg have some
-notion of deferred frees. If someone allocates before the deferred frees
-are accounted, then that would have saved two pieces of accounting.
-
-It is of course possible that a lot of these regressions are simply
-accounting the alloc, in which case it seems like accounting in batches
-might help there. All depends on the slack that is acceptable for memcg.
-
--- 
-Jens Axboe
-
+>>
+>> v3:
+>> 	- Add patch "Convert mount options to pointer in sbi"
+>> 	- Add patch "Init spi more in init_fs_context than fill_super"
+>> 	- Add patch "Show uid/gid always in show_options"
+>> 	- Patch "Use new api for mounting" has make over
+>> 	- NLS loading is not anymore possible when remounting
+>> 	- show_options() iocharset printing is fixed
+>> 	- Delete comment that testing should be done with other
+>> 	  mount options.
+>> 	- Add reviewed/acked-tags to 1,2,6,8 
+>> 	- Rewrite this cover
+>> v2:
+>> 	- Rewrite this cover leter
+>> 	- Reorder noatime to first patch
+>> 	- NLS loading with string
+>> 	- Delete default_options function
+>> 	- Remove remount flags
+>> 	- Rename no_acl_rules mount option
+>> 	- Making code cleaner
+>> 	- Add comment that mount options should be tested
+>>
+>> Kari Argillander (9):
+>>   fs/ntfs3: Remove unnecesarry mount option noatime
+>>   fs/ntfs3: Remove unnecesarry remount flag handling
+>>   fs/ntfs3: Convert mount options to pointer in sbi
+>>   fs/ntfs3: Use new api for mounting
+>>   fs/ntfs3: Init spi more in init_fs_context than fill_super
+>>   fs/ntfs3: Make mount option nohidden more universal
+>>   fs/ntfs3: Add iocharset= mount option as alias for nls=
+>>   fs/ntfs3: Rename mount option no_acl_rules > (no)acl_rules
+>>   fs/ntfs3: Show uid/gid always in show_options()
+>>
+>>  Documentation/filesystems/ntfs3.rst |  10 +-
+>>  fs/ntfs3/attrib.c                   |   2 +-
+>>  fs/ntfs3/dir.c                      |   8 +-
+>>  fs/ntfs3/file.c                     |   4 +-
+>>  fs/ntfs3/inode.c                    |  12 +-
+>>  fs/ntfs3/ntfs_fs.h                  |  26 +-
+>>  fs/ntfs3/super.c                    | 486 +++++++++++++++-------------
+>>  fs/ntfs3/xattr.c                    |   2 +-
+>>  8 files changed, 284 insertions(+), 266 deletions(-)
+>>
+>> -- 
+>> 2.25.1
+>>
+>>
