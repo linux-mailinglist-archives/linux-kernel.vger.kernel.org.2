@@ -2,76 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6726A402ED5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AFD3402ED9
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345652AbhIGTPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 15:15:20 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:45826 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233374AbhIGTPT (ORCPT
+        id S1346010AbhIGTPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 15:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345993AbhIGTP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 15:15:19 -0400
-Received: by mail-ot1-f50.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso360425otv.12;
-        Tue, 07 Sep 2021 12:14:13 -0700 (PDT)
+        Tue, 7 Sep 2021 15:15:29 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9BCC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:14:23 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id l10so154167ilh.8
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 12:14:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wptDSYLyDM12oE9PwIaapQVmJMO09viAmQFPtSVPYek=;
+        b=g6tHrIqYCpyi3uj+Y8V0ZzItGWMeRuxbj7UZPUdqo9Ry/Sn6Ke28/Dg30vmx4JzCqo
+         P666Khn7t7fmoEngyabMLFpP8CPK0f0OV9XBYX8VYiMK7gPoOcmKMoEVfQg4SzTjJ3l8
+         Br8oh0YDph1cvQZS95VDMXVGHdGTntHbICFKQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QM0pnBbZCN7JGJ3PcVpJ1P3dHXC4qKi2o9dbP7qotE8=;
-        b=YI33Z38DlY52u4xdJH0xuIFQIpw8Nr/g3WLkkSEYEIwBxqskmfr2kvJg4KCx9Li+e8
-         BZ+KG6c/ZZqNxTYveCUEXuY1NgH/nanGR/ixZ4YO1M17JJoYp2D5ATzwCtHAF1PWi41w
-         YCrBNg7SFBOK40W02g0IE5LQ7chrueU9xfyr8VlmbbxSAZi26WC9Equ6YG3+I2T+CzlO
-         Z/ZdJe3r9YuNKtkfAv9EQFGYQE5cKyry53tQzXfrpJlhyaOrHfKYtiif3pfKnCfTn69I
-         DlZb7r81ezjRrQh0SLVLYrav0iI13SmT8uq79qmKilEZ6rvBbS9d91C6R7xk5I8ns5UK
-         gH4A==
-X-Gm-Message-State: AOAM531WFJeCbrJlDvxfnS5L1wsQ7jKz2GCZAN94d2xqEUftqVc/JxW2
-        kd5JPX1aG/EUNuPW1uFuN/LyVd0Pt9cyh8g9PAk=
-X-Google-Smtp-Source: ABdhPJz4Cn/V39TGR4W44vmuWWLvTjHAPaKfwzkl/2vWyem7eSC/v66yGSCiO4TaW1TxIkNwLNeKW2kJlJAz4Blmrw0=
-X-Received: by 2002:a9d:4d93:: with SMTP id u19mr16241586otk.86.1631042053048;
- Tue, 07 Sep 2021 12:14:13 -0700 (PDT)
+        bh=wptDSYLyDM12oE9PwIaapQVmJMO09viAmQFPtSVPYek=;
+        b=L1igwMW8x4VyKrX+gdB+kH24g76Lq+Zhk6pNLf5lttfOzgZKa+dm0t7NTP0dR5U9Dr
+         mrFER3JYQyF3HGbrmJp0sUC0eMfJAdYYLO2QC0NRC+ec9ALh5ncWH6qI7VWWLpAA1T0X
+         tfdvUibupX74Cz0BLFA6xVDjBHlPoS6urDtbQGCowGEzIKdDtuTTItv54vkHsZBFcNP8
+         4b2GRv+w5HtITO5FajaoZzBHsAgz2nILSJwVuJis0+/Nqz6H9Ge+PNCzJX58Sied2M8y
+         x5+jr8sKmWUtsw6a7bnZsaorjir9PUD6NtxT1fTnc1Eo7pbnRqt4bl+LzmXxKsQUqeZJ
+         iYnA==
+X-Gm-Message-State: AOAM532q72svfZJBCeAW7xeyF+cwGj3lQKGCEPJbDOWM3NxsNx+Q0yK7
+        1zbVZ7EjgZ6miw82yiGl/tzWPXljjbRxJw==
+X-Google-Smtp-Source: ABdhPJwK14s4/nhzB81p4Y14IMvhxI+ipQkzuuS4HFRsyI8DFwX8++lDLByJD3QzpIYl45gdlFJ8gg==
+X-Received: by 2002:a92:b747:: with SMTP id c7mr12793067ilm.306.1631042062544;
+        Tue, 07 Sep 2021 12:14:22 -0700 (PDT)
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com. [209.85.166.170])
+        by smtp.gmail.com with ESMTPSA id g16sm6569543ilr.40.2021.09.07.12.14.21
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 12:14:21 -0700 (PDT)
+Received: by mail-il1-f170.google.com with SMTP id j15so198153ila.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 12:14:21 -0700 (PDT)
+X-Received: by 2002:a92:6b0a:: with SMTP id g10mr3631557ilc.27.1631042060676;
+ Tue, 07 Sep 2021 12:14:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210903210633.277807-1-kari.argillander@gmail.com>
-In-Reply-To: <20210903210633.277807-1-kari.argillander@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 7 Sep 2021 21:14:02 +0200
-Message-ID: <CAJZ5v0iNZvaLVgwJm7PG4-M9T9cyHuQJm0vqEeQ9sg7E0GeObw@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: scan: Remove unneeded header linux/nls.h
-To:     Kari Argillander <kari.argillander@gmail.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1627581885-32165-1-git-send-email-sibis@codeaurora.org>
+ <1627581885-32165-4-git-send-email-sibis@codeaurora.org> <YS5LDb4KDFx/dRnM@google.com>
+ <YS5hDq+xblntYbh0@ripper> <fde7bac239f796b039b9be58b391fb77@codeaurora.org>
+In-Reply-To: <fde7bac239f796b039b9be58b391fb77@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 7 Sep 2021 12:14:08 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=XHzwvudc4jABHVUC0OkKat-xdvo5yY2xRJ0VP5gds91w@mail.gmail.com>
+Message-ID: <CAD=FV=XHzwvudc4jABHVUC0OkKat-xdvo5yY2xRJ0VP5gds91w@mail.gmail.com>
+Subject: Re: [PATCH 3/4] arm64: dts: qcom: sc7280: Fixup the cpufreq node
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Taniya Das <tdas@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 3, 2021 at 11:07 PM Kari Argillander
-<kari.argillander@gmail.com> wrote:
->
-> Code that use linux/nls.h was moved to device_sysfs.c by commit
-> c2efefb33abf ("ACPI / scan: Move sysfs-related device code to a separate file")
->
-> Remove this include so that complier has easier times and it would be
-> easier to grep where nls code is used.
->
-> Signed-off-by: Kari Argillander <kari.argillander@gmail.com>
-> ---
->  drivers/acpi/scan.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index b24513ec3fae..5b54c80b9d32 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -16,7 +16,6 @@
->  #include <linux/signal.h>
->  #include <linux/kthread.h>
->  #include <linux/dmi.h>
-> -#include <linux/nls.h>
->  #include <linux/dma-map-ops.h>
->  #include <linux/platform_data/x86/apple.h>
->  #include <linux/pgtable.h>
-> --
+Hi,
 
-Applied as 5.15-rc material, thanks!
+On Sun, Sep 5, 2021 at 8:20 PM Sibi Sankar <sibis@codeaurora.org> wrote:
+>
+> On 2021-08-31 22:34, Bjorn Andersson wrote:
+> > On Tue 31 Aug 08:30 PDT 2021, Matthias Kaehlcke wrote:
+> >
+> >> On Thu, Jul 29, 2021 at 11:34:44PM +0530, Sibi Sankar wrote:
+> >> > Fixup the register regions used by the cpufreq node on SC7280 SoC to
+> >> > support per core L3 DCVS.
+> >> >
+> >> > Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
+> >> > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+> >>
+> >> This patch landed in the Bjorn's tree, however the corresponding
+> >> driver
+> >> change ("cpufreq: qcom: Re-arrange register offsets to support per
+> >> core
+> >> L3 DCVS" /
+> >> https://patchwork.kernel.org/project/linux-arm-msm/patch/1627581885-32165-3-git-send-email-sibis@codeaurora.org/)
+> >> did not land in any maintainer tree yet AFAIK. IIUC the DT change
+> >> alone
+> >> breaks cpufreq since the changed register regions require the changed
+> >> offset in the cpufreq driver.
+> >>
+> >
+> > Thanks for the note Matthias, it must have slipped by as I scraped the
+> > inbox for things that looked ready.
+> >
+> > I'm actually not in favor of splitting these memory blocks in DT to
+> > facilitate the Linux implementation of splitting that in multiple
+> > drivers...
+> >
+> > But I've not been following up on that discussion.
+> >
+> > Regards,
+> > Bjorn
+> >
+> >> Sibi, please confirm or clarify that my concern is unwarranted.
+>
+> Let's drop the patch asap as it breaks
+> SC7280 cpufreq on lnext without the driver
+> changes.
+
+It's already landed so we need a revert:
+
+https://lore.kernel.org/r/20210907121220.1.I08460f490473b70de0d768db45f030a4d5c17828@changeid/
+
+-Doug
