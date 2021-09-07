@@ -2,175 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB28402454
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2A5402458
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235953AbhIGHax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 03:30:53 -0400
-Received: from smtp-relay-canonical-1.canonical.com ([185.125.188.121]:55908
-        "EHLO smtp-relay-canonical-1.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232056AbhIGHau (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 03:30:50 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 440BA3F101;
-        Tue,  7 Sep 2021 07:29:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1630999782;
-        bh=CjLbqfN2yNEt3Pqk3AxMfUe2cR3Bz7R0AKeNAxMZH7A=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=QkMEZc8EUHRnRNRiU8nDWQT+444XlNfVh1HLMT95XSmUyVJT8YFE8WieWt7p0dMQj
-         MHOT6F/xATR6AlRhhu92+fKS3DTu3AE0B4MOpI+/58tlBbKJMl/0N0jdZ90Pqfkpjt
-         +HA66J7892yL+6LnGDmjZHakrJtX/KuYad2r3ocdpC5EGZngGoGI1u41Xl+9GZJ/5e
-         c9EKo6rMwczHXkRET/l3mJUc+s3fnc0Nd3ujJbF2cjaDf8AysqQ7vrWjPaUisrcCP1
-         4rcfgqT8QIDW27Msf+gJQPZaYgT09Xtsw4QOagibeTQ5vsDrJYVLLFFxnmmY12dBV2
-         9OmL2mN8xO1DQ==
-From:   Colin King <colin.king@canonical.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] scripts/spelling.txt: add more spellings to spelling.txt
-Date:   Tue,  7 Sep 2021 08:29:41 +0100
-Message-Id: <20210907072941.7033-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        id S235483AbhIGHcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 03:32:07 -0400
+Received: from mail-mw2nam10on2083.outbound.protection.outlook.com ([40.107.94.83]:32495
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230261AbhIGHcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 03:32:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WU1OIN1fZX4vz+RyZnM2Wvg8W9grv+4Z7RLDe1E8Txzux2dNc2AMebL3XINTa1vCqGkXfYqDUtdyhIxrUWPlNe8w9+0XC3D2lH5AuG70QJbVIwMCCa5h5VgbPuBkWLR5NrmujHfU4lNPzLZffCgdLqacdBIDfe7iX+MB4/CqmJ5L6NZaeygam1mWlTS313W1c5Vba8MV6U1H+odFCSXQU0APsMqqSDpWxrDGRup7+BaeVuUKDZR6m7iNNwvc5NsfJJ9FUXrtj7G+bWJ5Oc5C28i1GCExstSngxOkaScmOu+l0exIM2cLUUbh08Lmka8P2gcIf0PmrnlaZff5BAxLwA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=VuIk28lCjfp02OHJsIQ3CXgUwRgOgKb0IbeATEFDDKw=;
+ b=NlASE/FpHku3HVxOi7SWaeIwUEnZXDnvlKvONe/Yr2S659LcRmIBk4WKv8cnLH+dF0QgVLCObnOqFxXrjuMVadnr4jfvLBizD5/DPZYRbtH06mxhKgb7KBPAx5sjI11NNKcZ4yTNv2hEOPgO1UaPBd6v4eGscqlpUxb3U4X5Ej8ecPBeQdjrlhUzdqh36aGaIj++z4/7BNVa1iJlCDmz4EE87b/nZFK2bZdO6tNKMtnmbbHyswuUPjYBHaP0JZfwBF8Rc9kiNbCeA9qSaj/ItW5MEsvhYkJIvQSGR4BykjU0O1py3o8mi9XN6+f6aOW9EpcGi4ZfwJc/NHXxHtuRrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VuIk28lCjfp02OHJsIQ3CXgUwRgOgKb0IbeATEFDDKw=;
+ b=r2J5y9PZA1Dqq+M4BBChD+BU0+b9KyYhT9S1Hxz7xM2b1p8eJ4BB1cqNxPppp4jYcvqPu4t12kDb8/8EEGgHELkbQ+SrHRsbK/+AIcUA8qhPwQxxf5BxlVo62KRP6NGla/jzCLVCIJvfTq10ZMJML2lTJYOSAP7oKPHpmeUf1LXjfXQ8j1xFuUdXjpAnzBIg2HtSMwFOgKYFP/IFm+iGNybDppXCUj4g4ivS6+0PdfcdBKyhgvx9iixnl+B8/XCxXQhK2Ru2uwHEUUU5y4qCmjV8UQTdOPDxcMbRLrd9pBHiRYz0zQWnrsQK5KhmrEvyelKLklH0wriqU5z0Hv4/zw==
+Received: from BN9PR03CA0047.namprd03.prod.outlook.com (2603:10b6:408:fb::22)
+ by BYAPR12MB4599.namprd12.prod.outlook.com (2603:10b6:a03:107::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Tue, 7 Sep
+ 2021 07:30:58 +0000
+Received: from BN8NAM11FT058.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:fb:cafe::ef) by BN9PR03CA0047.outlook.office365.com
+ (2603:10b6:408:fb::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend
+ Transport; Tue, 7 Sep 2021 07:30:58 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ BN8NAM11FT058.mail.protection.outlook.com (10.13.177.58) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4478.19 via Frontend Transport; Tue, 7 Sep 2021 07:30:58 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 7 Sep
+ 2021 00:30:57 -0700
+Received: from pshete-ubuntu.nvidia.com (172.20.187.5) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Tue, 7 Sep 2021 07:30:55 +0000
+From:   Prathamesh Shete <pshete@nvidia.com>
+To:     <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
+        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <linux-gpio@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <smangipudi@nvidia.com>, <pshete@nvidia.com>
+Subject: [PATCH v2 0/2] gpio: tegra: add multiple interrupt support
+Date:   Tue, 7 Sep 2021 13:00:36 +0530
+Message-ID: <20210907073038.2983-1-pshete@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <YTWeSJ7jGamxx9Uu@orome.fritz.box>
+References: <YTWeSJ7jGamxx9Uu@orome.fritz.box>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2dc86926-ffed-46f3-822b-08d971d16fd3
+X-MS-TrafficTypeDiagnostic: BYAPR12MB4599:
+X-Microsoft-Antispam-PRVS: <BYAPR12MB4599A19FC434FD7A5B6333DAB7D39@BYAPR12MB4599.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NoHM7dg3ATy/bX7I3t0Id5gA2lPxRmotSSOjxZq3h3F6ifcbyv70FVySyKsaXaQTLFjVu9Tbz7ITuNRkrse5K0u8XnQp6UoxBnjfTJw+yh9muvlxfX48j8caNQ0X5LIcUiLbjZQf3NrEIG0A2lqCCz38hQWX/w0JljC9WvEHm2oUlHTA5USs5B84V8xUY4n7bYoeMr/n7nKyI+2eOs9BBcomGbMoYrcU/W+MPrdShiKYKau27U1zd60i960YCtmDwIXMbW2WQOW9GemjRnuktiC1LBDyQWMOPShmK2FWceA0JzTJ/I/RkeW1E17QjKaeSWbbt3z7Syv7idkVluYBB/S4V6MUmTe3Zb9izzTkzzKFSdozvHGysnBHOtiJ5cAg/ik1wcWcJjBMisS3oMq6mmmDEOGRCzmIiBlGH7zHzptvrOiUe5DXycYVU0oTQXTBRrMfry4Jc5CP5sul3HU7v/6JnHg2eEvGeQ/MZROfALwV7qp6CxDjaOOrxkXm7bfNm0lXTprhsm/ly1dwRKQBMNQEcVopiWSRsxNUZglV5u6dRG3sll1jFAssPRxdrTGYruVhHiiH5wtG6X2G2YuJ24++PuonHoUlzELSM84+kCItEL4ss7L24FVYNXvuLs4jyQcXqqzJydiUHShLZHZAllEYAiChojHzwWaYzlT3tGowdE1xVUjB0CLc9NPa6k9K8rEvV7vVByq7O2NpcuQssA==
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(70586007)(70206006)(8936002)(6666004)(5660300002)(83380400001)(8676002)(426003)(336012)(186003)(1076003)(82310400003)(47076005)(4744005)(2906002)(86362001)(4326008)(7696005)(316002)(107886003)(7636003)(54906003)(356005)(2616005)(36860700001)(508600001)(36756003)(110136005)(26005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 07:30:58.6232
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2dc86926-ffed-46f3-822b-08d971d16fd3
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT058.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB4599
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: pshete <pshete@nvidia.com>
 
-Some of the more common spelling mistakes and typos that I've found
-while fixing up spelling mistakes in the kernel in the past few months.
+These patches adds multiple interrupt support.
+Each main GPIO is associated with 8 interrupts 
+per controller in case of NON-AON GPIO's and 
+4 interrupts per controller in AON GPIO.
+This is new feature starting T194
+The interrupt route map determines which interrupt line is to be used.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- scripts/spelling.txt | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+pshete (2):
+  gpio: tegra: add multiple interrupt support
+  arm64: tegra: GPIO Interrupt entries
 
-diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-index 17fdc620d548..fd8f07317b8e 100644
---- a/scripts/spelling.txt
-+++ b/scripts/spelling.txt
-@@ -178,6 +178,7 @@ assum||assume
- assumtpion||assumption
- asuming||assuming
- asycronous||asynchronous
-+asychronous||asynchronous
- asynchnous||asynchronous
- asynchromous||asynchronous
- asymetric||asymmetric
-@@ -241,6 +242,7 @@ beter||better
- betweeen||between
- bianries||binaries
- bitmast||bitmask
-+bitwiedh||bitwidth
- boardcast||broadcast
- borad||board
- boundry||boundary
-@@ -265,7 +267,10 @@ calucate||calculate
- calulate||calculate
- cancelation||cancellation
- cancle||cancel
-+cant||can't
-+cant'||can't
- canot||cannot
-+cann't||can't
- capabilites||capabilities
- capabilties||capabilities
- capabilty||capability
-@@ -501,6 +506,7 @@ disble||disable
- disgest||digest
- disired||desired
- dispalying||displaying
-+dissable||disable
- diplay||display
- directon||direction
- direcly||directly
-@@ -595,6 +601,7 @@ exceded||exceeded
- exceds||exceeds
- exceeed||exceed
- excellant||excellent
-+exchnage||exchange
- execeeded||exceeded
- execeeds||exceeds
- exeed||exceed
-@@ -938,6 +945,7 @@ migrateable||migratable
- milliseonds||milliseconds
- minium||minimum
- minimam||minimum
-+minimun||minimum
- miniumum||minimum
- minumum||minimum
- misalinged||misaligned
-@@ -956,6 +964,7 @@ mmnemonic||mnemonic
- mnay||many
- modfiy||modify
- modifer||modifier
-+modul||module
- modulues||modules
- momery||memory
- memomry||memory
-@@ -1154,6 +1163,7 @@ programable||programmable
- programers||programmers
- programm||program
- programms||programs
-+progres||progress
- progresss||progress
- prohibitted||prohibited
- prohibitting||prohibiting
-@@ -1328,6 +1338,7 @@ servive||service
- setts||sets
- settting||setting
- shapshot||snapshot
-+shoft||shift
- shotdown||shutdown
- shoud||should
- shouldnt||shouldn't
-@@ -1439,6 +1450,7 @@ syfs||sysfs
- symetric||symmetric
- synax||syntax
- synchonized||synchronized
-+synchronization||synchronization
- synchronuously||synchronously
- syncronize||synchronize
- syncronized||synchronized
-@@ -1521,6 +1533,7 @@ unexpexted||unexpected
- unfortunatelly||unfortunately
- unifiy||unify
- uniterrupted||uninterrupted
-+uninterruptable||uninterruptible
- unintialized||uninitialized
- unitialized||uninitialized
- unkmown||unknown
-@@ -1553,6 +1566,7 @@ unuseful||useless
- unvalid||invalid
- upate||update
- upsupported||unsupported
-+useable||usable
- usefule||useful
- usefull||useful
- usege||usage
-@@ -1574,6 +1588,7 @@ varient||variant
- vaule||value
- verbse||verbose
- veify||verify
-+verfication||verification
- veriosn||version
- verisons||versions
- verison||version
-@@ -1586,6 +1601,7 @@ visiters||visitors
- vitual||virtual
- vunerable||vulnerable
- wakeus||wakeups
-+was't||wasn't
- wathdog||watchdog
- wating||waiting
- wiat||wait
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi | 49 +++++++++++++++++++++++-
+ drivers/gpio/gpio-tegra186.c             | 25 ++++++++++--
+ 2 files changed, 68 insertions(+), 6 deletions(-)
+
 -- 
-2.32.0
+2.17.1
 
