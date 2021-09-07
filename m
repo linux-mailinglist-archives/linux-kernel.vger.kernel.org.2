@@ -2,178 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB13C40300E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 23:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA8A403014
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 23:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346237AbhIGVDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 17:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245337AbhIGVD2 (ORCPT
+        id S1346810AbhIGVHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 17:07:46 -0400
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:28707 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346428AbhIGVHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 17:03:28 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A47C06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 14:02:21 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id y18so327837ioc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 14:02:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L/rKcATmeaNcVjKXqpdxqEp5aNsfDE5SuF1Ce5K5Gx8=;
-        b=mxNNVn+9KgZZoIHCC6VzlavgyutyjZLLVbhFpg2s55PnctD9B1o6C/zYwQASPWXKqU
-         mQAYbyFkKZVkpeBtaIvR6Wy2b6tngmGQkkqnI9+4/s6MmZKqSRXDaHudZ2C6cir2xsvC
-         BBjdtmU0oV9uZfRIYetYhp32KbIifOOO++bTZlG56KqA2dhJux5krzk2FZlIJURMQwuI
-         khMaJRFIgfoJU4/hKoUzFLuuvu0qS8m6hlElLDz0s2khpSuPqBmgK4AbrjgHm+NMKePO
-         Op8iJNpfhoYzdd861cy5OzDtVQrOKxq/Gv36kOkf8i9b6t7HrGuFwOaKaCEyujumtUQs
-         IyAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L/rKcATmeaNcVjKXqpdxqEp5aNsfDE5SuF1Ce5K5Gx8=;
-        b=SCIA9FbBJdowAy+VDfJvlEQEdUcnSEieAch8f4OYXSBkFxmPVYmR0WIVUBMrPrtwAR
-         EwQf0umtkDbKT06PLwFNYz6Kb/aNj9M/vif3lEcNEE0x9O95fpW+NX3voPlTLoVbN00z
-         Vy5ZTScOVy9tFdQJex3hRiSJluXhBnfM6II24y8g1Ymkgr6fdVVY8RP0RLSSDgYJ9NKl
-         Fr/dK1+KPNHU0ZGKxnB0ElvB9ep83vh9wBLMgMGfmm9SfSF+PoRWXIvKTNbEH0/eODi0
-         /dcJWZeSM7mZMRsa8MdHOHOY/shjyD1/csxnsTsc6On7Cr3lOCiIa8PdLcp/8ZUpATVJ
-         toeA==
-X-Gm-Message-State: AOAM532OK122FeFEo1wWYk+oScD/2GGRdnzXQkMNgfaIiSnev/viKdAh
-        w8vHEiZgs1cmTAX7e1f8vEWJtA3IvPgqRZWCxiIyxA==
-X-Google-Smtp-Source: ABdhPJx4Bs0nFKfl5CTgJd/xkkt44Qk/bcR6QdLGXuvFbumHbGkb9Vll29PZl3UYk8Jpd3ENi2eDa1vgYa6cvn2mSNA=
-X-Received: by 2002:a6b:3e89:: with SMTP id l131mr142240ioa.74.1631048541182;
- Tue, 07 Sep 2021 14:02:21 -0700 (PDT)
+        Tue, 7 Sep 2021 17:07:45 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d16 with ME
+        id r96Z250053riaq20396ZGW; Tue, 07 Sep 2021 23:06:35 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 07 Sep 2021 23:06:35 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     minyard@acm.org, zweiss@equinix.com, andrew@aj.id.au
+Cc:     openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] ipmi: kcs_bmc: Fix a memory leak in the error handling path of 'kcs_bmc_serio_add_device()'
+Date:   Tue,  7 Sep 2021 23:06:32 +0200
+Message-Id: <ecbfa15e94e64f4b878ecab1541ea46c74807670.1631048724.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210607123317.3242031-1-robert.marko@sartura.hr>
- <20210607123317.3242031-5-robert.marko@sartura.hr> <CA+HBbNH7wcpfQOX2=vZmW78GoWy_WL3Pz-dMKe0N0ebZDp+oUw@mail.gmail.com>
- <20210713222528.GA952399@robh.at.kernel.org> <CA+HBbNFj5+6sLKxmL8XtsZQ48ch8OjTbJ1bwkDC8dfRiOyWY1Q@mail.gmail.com>
- <20210719225906.GA2769608@robh.at.kernel.org> <CACRpkdbq6Jow6AT9OpsR7Q0JVCWVMcmamh9KHPXMtUnkoe7ZFw@mail.gmail.com>
- <CA+HBbNFEs-=5XTK7PUL+LsgBCcPfwHsCPe4v6byK0x=O_7TRPA@mail.gmail.com>
- <CACRpkdZfZLQMgpMAF2FwSVt1YAzhQJ9ZWkVUjVc2xpmWL7yEvQ@mail.gmail.com> <CA+HBbNHZyYnnyz9=4Hgav96ZH8-R-nYoi300j2x3fgei8aa4zQ@mail.gmail.com>
-In-Reply-To: <CA+HBbNHZyYnnyz9=4Hgav96ZH8-R-nYoi300j2x3fgei8aa4zQ@mail.gmail.com>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Tue, 7 Sep 2021 23:02:10 +0200
-Message-ID: <CA+HBbNE_U3dbnWh-8QasaxfQrQHS4YK8TEr0YebH9mCJsc0JTQ@mail.gmail.com>
-Subject: Re: [PATCH v6 5/6] dt-bindings: mfd: Add Delta TN48M CPLD drivers bindings
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luka Perkov <luka.perkov@sartura.hr>, jmp@epiphyte.org,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 10:03 AM Robert Marko <robert.marko@sartura.hr> wrote:
->
-> On Wed, Aug 11, 2021 at 2:17 PM Linus Walleij <linus.walleij@linaro.org> wrote:
-> >
-> > On Tue, Aug 3, 2021 at 9:23 PM Robert Marko <robert.marko@sartura.hr> wrote:
-> >
-> > > The pins that this driver wants to expose are used for SFP-s only,
-> > > they are provided by the Lattice CPLD which also does other things.
-> > >
-> > > Linux has a generic SFP driver which is used to manage these SFP
-> > > ports, but it only supports GPIO-s, it has no concept of anything else.
-> > > Since the driver is fully generic, I have no idea how could one extend it
-> > > to effectively handle these pins internally, especially since I have more
-> > > switches that use the CPLD for SFP-s as well, even for 48 ports and 192
-> > > pins for them.
-> >
-> > Which file is this driver in so I can look?
->
-> Hi Linus,
-> Sorry for the late reply.
->
-> Sure, here is the generic Linux driver that is used for SFP handling:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/net/phy/sfp.c?h=v5.14-rc7
->
-> >
-> > Maybe it is not a good idea to look for generic code just because
-> > it is convenient? I have had this problem before with GPIO, along
-> > the lines "lemme just do this dirty thing this one time because it
-> > is so convenient for me" (more or less) and the answer is still
-> > "no".
-> >
-> > Can you either augment the driver to handle a regmap with bit indices
-> > instead or write a new similar driver for that or refactor it some other
-> > way?
-> >
-> > It is not a simple solution to your problem, but it might be the right
-> > solution even if it means some more work.
->
-> I understand your position, believe me, I spend some time looking at
-> what would be the logical way for these switches.
-> But I see no way how could the SFP driver be extended in a generic way
-> that would allow supporting different register layouts when it comes to pins.
->
-> >
-> > > GPIO regmap works perfectly for this as its generic enough to cover all of
-> > > these cases.
-> >
-> > Yeah but it might be the wrong thing to do even if it is simple
-> > to use and works.
-> >
-> > > CPLD also provides pins to test the port LED-s per color as well,
-> > > but I have chosen not to expose them so far.
-> >
-> > Have you considered
-> > Documentation/devicetree/bindings/leds/register-bit-led.txt
->
-> Yeah, but unfortunately in this case it wont work as the LED-s
-> are for debugging/test purposes only and you first need to switch
-> the CPLD out of it interpreting the LED state with a BIT flip.
->
-> Regards,
-> Robert
-> >
-> > > > If it is a regmap in Linux then that is fine, just pass the regmap
-> > > > around inside the kernel, OK finished. But really that is an OS
-> > > > detail.
-> > >
-> > > Yes, its regmap but I cant really pass it to the SFP driver as I don't have
-> > > special driver handling the SFP but rather the generic kernel one.
-> > > It only knows how to handle GPIO-s.
-> >
-> > Of course you have to program it. If I know which driver it
-> > is it is easier to provide architecture ideas.
-> >
-> > Yours,
-> > Linus Walleij
+In the unlikely event where 'devm_kzalloc()' fails and 'kzalloc()'
+succeeds, 'port' would be leaking.
 
-Linus,
+Test each allocation separately to avoid the leak.
 
-can I offer some further explanation?
+Fixes: 3a3d2f6a4c64 ("ipmi: kcs_bmc: Add serio adaptor")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/char/ipmi/kcs_bmc_serio.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Regards,
-Robert
->
->
->
-> --
-> Robert Marko
-> Staff Embedded Linux Engineer
-> Sartura Ltd.
-> Lendavska ulica 16a
-> 10000 Zagreb, Croatia
-> Email: robert.marko@sartura.hr
-> Web: www.sartura.hr
-
-
-
+diff --git a/drivers/char/ipmi/kcs_bmc_serio.c b/drivers/char/ipmi/kcs_bmc_serio.c
+index 7948cabde50b..7e2067628a6c 100644
+--- a/drivers/char/ipmi/kcs_bmc_serio.c
++++ b/drivers/char/ipmi/kcs_bmc_serio.c
+@@ -73,10 +73,12 @@ static int kcs_bmc_serio_add_device(struct kcs_bmc_device *kcs_bmc)
+ 	struct serio *port;
+ 
+ 	priv = devm_kzalloc(kcs_bmc->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
+ 
+ 	/* Use kzalloc() as the allocation is cleaned up with kfree() via serio_unregister_port() */
+ 	port = kzalloc(sizeof(*port), GFP_KERNEL);
+-	if (!(priv && port))
++	if (!port)
+ 		return -ENOMEM;
+ 
+ 	port->id.type = SERIO_8042;
 -- 
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
+2.30.2
+
