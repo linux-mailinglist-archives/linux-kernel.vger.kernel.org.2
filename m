@@ -2,138 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15E11402E57
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10429402E5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345856AbhIGS3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 14:29:39 -0400
-Received: from mail-mw2nam08on2127.outbound.protection.outlook.com ([40.107.101.127]:46817
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236461AbhIGS3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 14:29:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FSy0G8cFPTqaqtXd8Ld0wRwD8u1BDbNyk7gjP6vW5Das7GNFug+JzkJVg54wqQqMeY7HyWd637hu0SMjKBT6XCXSvrtfI0bkw2xbSmvXdlwGN4ZQObn0LIkRfvvOslTZzAfrPtnT+O95McdWArD34DnkjR588Fmrd5584/Vbbunt06cM8RFFjwwcg2jX4R3rG1Z955cKbjKfgUoh+KiOI1YHtRMXk/aokV7rRPDrQIuormQVznXrjAMFqv1n/Lo3Iu8zgBuHEkGb/kDQQr2Ki4yJJKyCTx4H+zhhZ/N7PlcC17zLepuRmkfXcI0/leN2aUX2a6vugUOPwkEkMBX2Tw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=BngrG05tIdaOouvnD3jq1PXoDDTBEdl76ytp7KToilM=;
- b=n39zFG1++4cFryRye9AqbvEs8KA1Uw0X4iIb01VpcaSgQByYDob1kER06TZ+kgD7F2tMa2AZMSVWp+rWld3Vf/kg751gMbjAj/PWLWZTb1Uz2qZe8GqCeAVjLTalzNr4WX7h6MEDOblRESA9q3v8NazDzj6uSoyskJlzOvz/L60zhz0GRgLLj53SH4TkuN/i+ZmxFtNqvsOMLg/2OyULPt+Ju/1ZmDEEar1y7mW5tWt1WFVWiBCfhKuy0hwpkakNZeSgcJAANEj/A5xwyvIbMXYX2saNAEl2n9EM0RNFHNALFXfcY2pw6drSerc09xZf1LgjXqDs1o7GXhBdjCjE7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=psu.edu; dmarc=pass action=none header.from=psu.edu; dkim=pass
- header.d=psu.edu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=psu.edu; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BngrG05tIdaOouvnD3jq1PXoDDTBEdl76ytp7KToilM=;
- b=qEy91l7j0PbudwOU7blEikVd4bUjAuWrvMNiDjgThJlb6V5er85r2/4O6HOWupLVtU5TsISBiBScST9ZSnKuvL06VSpQh5PHOeW671i9UdzGGCTLOm0k9r3JDhNERMMLmrxAJvo9Xifwzk8/F0qmHTj20NjrTy5FXtZsLw+t3Z0=
-Received: from BL0PR02MB4370.namprd02.prod.outlook.com (2603:10b6:208:42::31)
- by MN2PR02MB6382.namprd02.prod.outlook.com (2603:10b6:208:1bd::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.22; Tue, 7 Sep
- 2021 18:28:28 +0000
-Received: from BL0PR02MB4370.namprd02.prod.outlook.com
- ([fe80::40fc:3ab5:8af7:7673]) by BL0PR02MB4370.namprd02.prod.outlook.com
- ([fe80::40fc:3ab5:8af7:7673%7]) with mapi id 15.20.4478.025; Tue, 7 Sep 2021
- 18:28:28 +0000
-From:   "Lin, Zhenpeng" <zplin@psu.edu>
-To:     "Lin, Zhenpeng" <zplin@psu.edu>
-CC:     "dccp@vger.kernel.org" <dccp@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "alexey.kodanev@oracle.com" <alexey.kodanev@oracle.com>
-Subject: [PATCH] dccp: don't duplicate ccid when cloning dccp sock
-Thread-Topic: [PATCH] dccp: don't duplicate ccid when cloning dccp sock
-Thread-Index: AQHXpBYmYVTUvVQssESqpTbpnXejmg==
-Date:   Tue, 7 Sep 2021 18:28:28 +0000
-Message-ID: <D95F1297-95A1-4AC9-B0C2-803C453B1BAE@psu.edu>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: psu.edu; dkim=none (message not signed)
- header.d=none;psu.edu; dmarc=none action=none header.from=psu.edu;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ffc2000d-4aec-42d4-a102-08d9722d4982
-x-ms-traffictypediagnostic: MN2PR02MB6382:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR02MB6382B17084523FAAAE75C02FB7D39@MN2PR02MB6382.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5o2ZtMQJMXLlcBwCly4A9Wp/gSmAUNXX3HXToDAxSXG/aVEAOIqCyo24u2uwW4lzRM+3QBeRHEhlRqKmTpHLqEeWyCdYEsww0gJCYr/rpsfyv/bxU9P+EXl542h0V5HUqR37gQFphkkOQceUv4q4RiZ1NIF6XGlfp4nI3YacRT79/SusOx1fbF6+8PyHugA0kLXI/puTCR5J5+I4pRi8iwuElS4be2Iq8+wFpnCN+SaAjCkK2Wlf/0o/uWUMeH7B902xtZmLRs7mq94mE85JjDyMQp+AhJHnj71DQVMG5qpH9ESd0b7LcwV8PIp2IrJCYZU2PJ+yK0eLK23KmrLLgN+GgBUtK3+EyN3/O1Q5IvfOZZK5rdsfX618AXRk//JuWUlmmYNt2XqZy+wBSz/LqYsfJWR/wM51aGpheu0/+GiCpkw/YgJSTmSyNB3CA+4LrJCSC3FXX26JP0NyESobju6i3ttOgWNipiJj5TgC43wfSCO+zO1c1Z56Xi6UDig93+OhpEUOiqyQ5LgijEuE7LZcuTEisUu8F/uBGZbUCwFSybOuMnnTrhvioQYTljdONQYmw90NbtkS0/FcD/IETJKOtSXBfoLsS0SZKvA3rWrCkCaxZzxGxsoNZtIfRrRbTrVX3eAO9dmUve2JlLZJOyibJeBMulyrga4Lq/RcLxgfJpNb62IKCAPCEZo/oGl+JKr9D0A/9idZBDAiGhOZy3O9M9HE5D7rYR0OvFVV19k=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR02MB4370.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(346002)(136003)(376002)(36756003)(66946007)(66556008)(66476007)(66446008)(64756008)(86362001)(2616005)(37006003)(75432002)(6862004)(6506007)(38100700002)(122000001)(478600001)(8676002)(54906003)(4326008)(5660300002)(26005)(186003)(6200100001)(8936002)(6512007)(71200400001)(6486002)(2906002)(38070700005)(91956017)(316002)(76116006)(33656002)(45980500001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?KzF0RXdSU2poYnV6RTNNUDBrSlBwYkU3QW9acVJpUXNkcVRTTkRrWDV4dG9k?=
- =?utf-8?B?SUdzYUVZT0ZQNnQxZ2J5cWU1N2VWLzlUUDBydUdwU29tRmVTM0tkUTF4TlhN?=
- =?utf-8?B?R1pWeUE5Z0tERU5RMUtlOVU5Q3l0K2YzOEtwMC9ESlN2UzJpTWZMZjBMcmhp?=
- =?utf-8?B?QzdTNEU3Z3ZMYmh1YmZYQ2I5S2JUbDJya1JDLzlJUWtvL3g3bmNudCsydGVN?=
- =?utf-8?B?OWlaSHV6NkRVN2ZVWG5rOUFvL0V6U0pZVGNENlY0dVBESm1WU2NkME9FY2l2?=
- =?utf-8?B?MmR4RGtWNEcxQjhkSWFuWHFIQ3ZPUktvaEpPQlV1R2tTUVBDREZ2RVdVdlRx?=
- =?utf-8?B?OE1MTUdVNERGbWdjSWlnRWtsM1dVL3Y4VFNwcVhzRjBFdlUydjRKZnVvSFYr?=
- =?utf-8?B?MzlpUDcxdDRURFFZdVI2STdWQUNhaTlpWU1vTEk2ZmhUclBEOGNRQVl0enNK?=
- =?utf-8?B?OS9hUmhPU2JnZVl0Q3FXdnY5RHM1YlBiVCszWldraFFnS0l1Wjg0cVZ2Nm5U?=
- =?utf-8?B?N3RRdnBySHpNeW1mM2hsaGpqWTFZYVdpblFzcHRSSG1kK1J3Y0pOczh2NXpX?=
- =?utf-8?B?bmhBNjIrZGdhclpiU2FKWHZBQ1czdzJJVXBVdEJGM3ZLbUVJSHZrMU1IM05s?=
- =?utf-8?B?bHdGeWx6aGRmazNoOHFWMkMzQ0xLSmFXQUJZREwwWU44NWtRUzgrTEYvckxa?=
- =?utf-8?B?VXNMV2R1SG53aFQyUjZIU0VwMy8yRDB0aGswbUdyVTBPMEZwRnE3bXhSbnFU?=
- =?utf-8?B?dTF2c0tiUU13ZkQ5bmVrUlhtRWQwcmZPU2x2VGlDWmJvQk53Y1pLTjRLZlVH?=
- =?utf-8?B?Ykl6S0kwKzV4dG5uSkROWHJlR1BMV0hSbTJtYXZMVXREaWEzYzhIMFd4LzZy?=
- =?utf-8?B?NWQzSXVyUHFQWWRkbXZOcy9zV3dWVmd2T0pxSm55ZERzYTRrR3ZnbVgrTXpK?=
- =?utf-8?B?R2lXa2lWdGhLeFdaMVB0TEdqQndDR1Ivd0gzRDZaQjJPSy9sNnEySUZ2UTVC?=
- =?utf-8?B?TDJrd24wSm1WdXFVbUhkT1RpWmFQeHFwYjBkbUhENENsZmcwZkorYi93Nk9t?=
- =?utf-8?B?dnNOVmM3cjJOSW5Td3hQYmhvYitxN0piNGk2bGo4MExKaEZ5enJOVElKcmdk?=
- =?utf-8?B?b0ozK2xaK2laajgzK1RxdDhxNS9iei9hbWE4ZEpObmpYZ0ZRU3Z0T1dES3JB?=
- =?utf-8?B?Wm9KQ0I3S1dqdHB0bmEyUEVYTk5zN1luYXQxNUNEallPdXRKd2VuQWRSd0dE?=
- =?utf-8?B?SWhwWE5NaVJWSGJSZ284aVJWcTJzMFBkQmZqWEhhaTZuTjV5OGJ3bHNnY3pa?=
- =?utf-8?B?anpWNzE0bmltUXFHM3Z5S0d2enQxRUFWTUdpU3JVOTBueThhb2hydjhpYS9j?=
- =?utf-8?B?aWg2YWRKSEZRQXpudkFQR0wvTkZyRS9kZ3VWMjVrMzBuTytJRFBOMVNnODY0?=
- =?utf-8?B?Ylo2VkRORHNjLzFHR0hDN2ZjRWQ1SDBQNGNSMElxV1NWZlFERHBUSlV1K280?=
- =?utf-8?B?NnpIZnlibFpEOGJyKzBJSjdGeHE3VkErZ2llbmowNmxSVUwzVzFRTUp3Zk10?=
- =?utf-8?B?NE55ejBTVVo1aXNqS3EzcjBzNUlXQUhRWUJYaDZpVDI3V1diSkdHakJybEw0?=
- =?utf-8?B?WWFFcmVXbmNiM21VVENtNW1PYUlKNTZ0VUgzZkkxTVdYc2FDMTRhOWJHSlp3?=
- =?utf-8?B?VHB4QjFNS3o3RDJLKzIveE82M3Y1eUc1Y1VnbnozRjFrdmMxTXhMeUpIQk5Q?=
- =?utf-8?Q?xvvdi12CUj++tlLGZ8R8uhRBO/RckPw8gRzmW/M?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <23BB301FAF512542BBDD915D4F818B8F@namprd02.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1345877AbhIGS34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 14:29:56 -0400
+Received: from mail-oo1-f46.google.com ([209.85.161.46]:43567 "EHLO
+        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236461AbhIGS3z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 14:29:55 -0400
+Received: by mail-oo1-f46.google.com with SMTP id y16-20020a4ad6500000b0290258a7ff4058so53455oos.10;
+        Tue, 07 Sep 2021 11:28:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RgWj/Qv5gZmPND1H+/OHor/S2gG4REaKzWiuf8h5NB0=;
+        b=ZXEAb2AMK6xq0DsYjrdaaH9tSSTcOoDgXif5FubqNjHab6SEGfQ2U9bNX9m3PsByM7
+         bV5gX2Jb8dPuK3EUJJ3PNQltrF8nk8Enzu6u8pP52fyyyYRuyrmed3CTOFV7p+SzsXZf
+         MV+uYT6cMuUbCsZphjRUV6FliF0qrGvG+WCHqH0sZIvJudm+gYTsKYz7LJwiCWQEddW4
+         wTTFJ5/bNfAbBJtyqobGREYakOV4Ye0c53oFSubDA3IS817oXFTv088mUK/jZWu6g6BF
+         XuHp/PKObn2cTjxmJUzNjEYKFm++XJjx46GoMyYkPI0cMWZA6V6sLFZ7mt1H5yyaWg0s
+         JmXQ==
+X-Gm-Message-State: AOAM533EqPK8wDk/PbkVN8gtUwldLd97fGxRNYqOQqPwvAcftJH7nCaN
+        kpK5eNnRNAFvgpBIYvnZTA==
+X-Google-Smtp-Source: ABdhPJzpmcGdm/qS9Y4WLEbsZ1OG4RAACOvtY26G2Dl1is2ooI+vLH2rLFKyHl6x6bgGNA7riqeHMg==
+X-Received: by 2002:a4a:2549:: with SMTP id v9mr1131256ooe.28.1631039326491;
+        Tue, 07 Sep 2021 11:28:46 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id j14sm2372334oor.33.2021.09.07.11.28.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 11:28:45 -0700 (PDT)
+Received: (nullmailer pid 107179 invoked by uid 1000);
+        Tue, 07 Sep 2021 18:28:44 -0000
+Date:   Tue, 7 Sep 2021 13:28:44 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org, lgirdwood@gmail.com,
+        broonie@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, jami.kettunen@somainline.org,
+        paul.bouchara@somainline.org, martin.botka@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht, jeffrey.l.hugo@gmail.com
+Subject: Re: [PATCH v7 2/6] dt-bindings: avs: cpr: Convert binding to YAML
+ schema
+Message-ID: <YTevXErwZ+H9BSWr@robh.at.kernel.org>
+References: <20210901155735.629282-1-angelogioacchino.delregno@somainline.org>
+ <20210901155735.629282-3-angelogioacchino.delregno@somainline.org>
 MIME-Version: 1.0
-X-OriginatorOrg: psu.edu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR02MB4370.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ffc2000d-4aec-42d4-a102-08d9722d4982
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Sep 2021 18:28:28.1288
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 7cf48d45-3ddb-4389-a9c1-c115526eb52e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Y6NEeg9s+8r5PTsGKw3pPJqOfevDRdHe145faDzj895Qr4oKIMTma4r2LYBl0A/s
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR02MB6382
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901155735.629282-3-angelogioacchino.delregno@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Q29tbWl0IDI2NzdkMjA2NzczMSAoImRjY3A6IGRvbid0IGZyZWUgY2NpZDJfaGNfdHhfc29jayAu
-Li4iKSBmaXhlZA0KYSBVQUYgYnV0IHJlaW50cm9kdWNlZCBDVkUtMjAxNy02MDc0Lg0KDQpXaGVu
-IHRoZSBzb2NrIGlzIGNsb25lZCwgdHdvIGRjY3BzX2hjX3R4X2NjaWQgd2lsbCByZWZlcmVuY2Ug
-dG8gdGhlDQpzYW1lIGNjaWQuIFNvIG9uZSBjYW4gZnJlZSB0aGUgY2NpZCBvYmplY3QgdHdpY2Ug
-ZnJvbSB0d28gc29ja3MgYWZ0ZXINCmNsb25pbmcuDQoNClRoaXMgaXNzdWUgd2FzIGZvdW5kIGJ5
-ICJIYWRhciBNYW5vciIgYXMgd2VsbCBhbmQgYXNzaWduZWQgd2l0aA0KQ1ZFLTIwMjAtMTYxMTks
-IHdoaWNoIHdhcyBmaXhlZCBpbiBVYnVudHUncyBrZXJuZWwuIFNvIGhlcmUgSSBwb3J0DQp0aGUg
-cGF0Y2ggZnJvbSBVYnVudHUgdG8gZml4IGl0Lg0KDQpUaGUgcGF0Y2ggcHJldmVudHMgY2xvbmVk
-IHNvY2tzIGZyb20gcmVmZXJlbmNpbmcgdGhlIHNhbWUgY2NpZC4NCg0KRml4ZXM6IDI2NzdkMjA2
-NzczMTQxMCAoImRjY3A6IGRvbid0IGZyZWUgY2NpZDJfaGNfdHhfc29jayAuLi4iKQ0KU2lnbmVk
-LW9mZi1ieTogWmhlbnBlbmcgTGluIDx6cGxpbkBwc3UuZWR1Pg0KLS0tDQpuZXQvZGNjcC9taW5p
-c29ja3MuYyB8IDIgKysNCjEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKykNCg0KZGlmZiAt
-LWdpdCBhL25ldC9kY2NwL21pbmlzb2Nrcy5jIGIvbmV0L2RjY3AvbWluaXNvY2tzLmMNCmluZGV4
-IGM1Yzc0YTM0ZDEzOS4uOTFlN2EyMjAyNjk3IDEwMDY0NA0KLS0tIGEvbmV0L2RjY3AvbWluaXNv
-Y2tzLmMNCisrKyBiL25ldC9kY2NwL21pbmlzb2Nrcy5jDQpAQCAtOTQsNiArOTQsOCBAQCBzdHJ1
-Y3Qgc29jayAqZGNjcF9jcmVhdGVfb3BlbnJlcV9jaGlsZChjb25zdCBzdHJ1Y3Qgc29jayAqc2ss
-DQoJCW5ld2RwLT5kY2Nwc19yb2xlCSAgICA9IERDQ1BfUk9MRV9TRVJWRVI7DQoJCW5ld2RwLT5k
-Y2Nwc19oY19yeF9hY2t2ZWMgICA9IE5VTEw7DQoJCW5ld2RwLT5kY2Nwc19zZXJ2aWNlX2xpc3Qg
-ICA9IE5VTEw7DQorCQluZXdkcC0+ZGNjcHNfaGNfcnhfY2NpZCAgICAgPSBOVUxMOw0KKwkJbmV3
-ZHAtPmRjY3BzX2hjX3R4X2NjaWQgICAgID0gTlVMTDsNCgkJbmV3ZHAtPmRjY3BzX3NlcnZpY2UJ
-ICAgID0gZHJlcS0+ZHJlcV9zZXJ2aWNlOw0KCQluZXdkcC0+ZGNjcHNfdGltZXN0YW1wX2VjaG8g
-PSBkcmVxLT5kcmVxX3RpbWVzdGFtcF9lY2hvOw0KCQluZXdkcC0+ZGNjcHNfdGltZXN0YW1wX3Rp
-bWUgPSBkcmVxLT5kcmVxX3RpbWVzdGFtcF90aW1lOw0KLS0NCjIuMjUuMQ0KDQo=
+On Wed, Sep 01, 2021 at 05:57:31PM +0200, AngeloGioacchino Del Regno wrote:
+> Convert the qcom,cpr.txt document to YAML schema and place it in the
+> appropriate directory, since this driver was moved from power/avs
+> to soc/qcom, but forgets to move the documentation.
+> 
+> Fixes: a7305e684fcf ("PM: AVS: qcom-cpr: Move the driver to the qcom specific drivers")
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>  .../bindings/power/avs/qcom,cpr.txt           | 131 +-------------
+>  .../bindings/soc/qcom/qcom,cpr.yaml           | 167 ++++++++++++++++++
+>  MAINTAINERS                                   |   2 +-
+>  3 files changed, 169 insertions(+), 131 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,cpr.yaml
+
+
+> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,cpr.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,cpr.yaml
+> new file mode 100644
+> index 000000000000..20f65427c762
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/qcom/qcom,cpr.yaml
+> @@ -0,0 +1,167 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/soc/qcom/qcom,cpr.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: Qualcomm Core Power Reduction (CPR)
+> +
+> +description: |
+> +  CPR (Core Power Reduction) is a technology to reduce core power on a CPU
+> +  or other device. Each OPP of a device corresponds to a "corner" that has
+> +  a range of valid voltages for a particular frequency. While the device is
+> +  running at a particular frequency, CPR monitors dynamic factors such as
+> +  temperature, etc. and suggests adjustments to the voltage to save power
+> +  and meet silicon characteristic requirements.
+> +
+> +maintainers:
+> +  - Niklas Cassel <nks@flawful.org>
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - qcom,qcs404-cpr
+> +      - const: qcom,cpr
+> +
+> +  reg:
+> +    description: Base address and size of the RBCPR register region
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    items:
+> +      - const: ref
+> +
+> +  clocks:
+> +    items:
+> +      - description: CPR reference clock
+> +
+> +  vdd-apc-supply:
+> +    description: Autonomous Phase Control (APC) power supply
+> +
+> +  '#power-domain-cells':
+> +    const: 0
+> +
+> +  acc-syscon:
+> +    description: phandle to syscon for writing ACC settings
+
+Needs a type reference.
+
+> +
+> +  nvmem-cells:
+> +    minItems: 9
+> +    maxItems: 32
+> +    description: Cells containing the fuse corners and revision data
+> +
+> +  nvmem-cell-names:
+> +    minItems: 9
+> +    maxItems: 32
+
+There were a bunch of names defined that you dropped.
+
+> +
+> +  operating-points-v2: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clock-names
+> +  - clocks
+> +  - vdd-apc-supply
+> +  - "#power-domain-cells"
+> +  - nvmem-cells
+> +  - nvmem-cell-names
+> +  - operating-points-v2
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    cpus {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        cpu@100 {
+> +            compatible = "arm,cortex-a53";
+> +            device_type = "cpu";
+> +            reg = <0x100>;
+> +            operating-points-v2 = <&cpu_opp_table>;
+> +            power-domains = <&cpr>;
+> +            power-domain-names = "cpr";
+> +        };
+> +    };
+> +
+> +    cpu_opp_table: opp-table-cpu {
+> +        compatible = "operating-points-v2-kryo-cpu";
+> +        opp-shared;
+> +
+> +        opp-1094400000 {
+> +            opp-hz = /bits/ 64 <1094400000>;
+> +            required-opps = <&cpr_opp1>;
+> +        };
+> +        opp-1248000000 {
+> +            opp-hz = /bits/ 64 <1248000000>;
+> +            required-opps = <&cpr_opp2>;
+> +        };
+> +        opp-1401600000 {
+> +            opp-hz = /bits/ 64 <1401600000>;
+> +            required-opps = <&cpr_opp3>;
+> +        };
+> +    };
+> +
+> +    cpr_opp_table: opp-table-cpr {
+> +        compatible = "operating-points-v2-qcom-level";
+> +
+> +        cpr_opp1: opp1 {
+> +            opp-level = <1>;
+> +            qcom,opp-fuse-level = <1>;
+> +        };
+> +        cpr_opp2: opp2 {
+> +            opp-level = <2>;
+> +            qcom,opp-fuse-level = <2>;
+> +        };
+> +        cpr_opp3: opp3 {
+> +            opp-level = <3>;
+> +            qcom,opp-fuse-level = <3>;
+> +        };
+> +    };
+> +
+> +    power-controller@b018000 {
+> +        compatible = "qcom,qcs404-cpr", "qcom,cpr";
+> +        reg = <0x0b018000 0x1000>;
+> +        interrupts = <0 15 IRQ_TYPE_EDGE_RISING>;
+> +        clocks = <&xo_board>;
+> +        clock-names = "ref";
+> +        vdd-apc-supply = <&pms405_s3>;
+> +        #power-domain-cells = <0>;
+> +        operating-points-v2 = <&cpr_opp_table>;
+> +        acc-syscon = <&tcsr>;
+> +
+> +        nvmem-cells = <&cpr_efuse_quot_offset1>,
+> +                      <&cpr_efuse_quot_offset2>,
+> +                      <&cpr_efuse_quot_offset3>,
+> +                      <&cpr_efuse_init_voltage1>,
+> +                      <&cpr_efuse_init_voltage2>,
+> +                      <&cpr_efuse_init_voltage3>,
+> +                      <&cpr_efuse_quot1>,
+> +                      <&cpr_efuse_quot2>,
+> +                      <&cpr_efuse_quot3>,
+> +                      <&cpr_efuse_ring1>,
+> +                      <&cpr_efuse_ring2>,
+> +                      <&cpr_efuse_ring3>,
+> +                      <&cpr_efuse_revision>;
+> +        nvmem-cell-names = "cpr0_quotient_offset1",
+> +                           "cpr0_quotient_offset2",
+> +                           "cpr0_quotient_offset3",
+> +                           "cpr0_init_voltage1",
+> +                           "cpr0_init_voltage2",
+> +                           "cpr0_init_voltage3",
+> +                           "cpr0_quotient1",
+> +                           "cpr0_quotient2",
+> +                           "cpr0_quotient3",
+> +                           "cpr0_ring_osc1",
+> +                           "cpr0_ring_osc2",
+> +                           "cpr0_ring_osc3",
+> +                           "cpr_fuse_revision";
+> +    };
+> +...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index f58dad1a1922..90f1db301fae 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -15490,7 +15490,7 @@ M:	Niklas Cassel <nks@flawful.org>
+>  L:	linux-pm@vger.kernel.org
+>  L:	linux-arm-msm@vger.kernel.org
+>  S:	Maintained
+> -F:	Documentation/devicetree/bindings/power/avs/qcom,cpr.txt
+> +F:	Documentation/devicetree/bindings/soc/qcom/qcom,cpr.yaml
+>  F:	drivers/soc/qcom/cpr.c
+>  
+>  QUALCOMM CPUFREQ DRIVER MSM8996/APQ8096
+> -- 
+> 2.32.0
+> 
+> 
