@@ -2,74 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E5640277C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F7B402782
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 13:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343780AbhIGLAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 07:00:36 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:56410
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1343706AbhIGLAV (ORCPT
+        id S1343645AbhIGLDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 07:03:18 -0400
+Received: from mail-vk1-f171.google.com ([209.85.221.171]:36832 "EHLO
+        mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233669AbhIGLDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 07:00:21 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 8867841A67;
-        Tue,  7 Sep 2021 10:59:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1631012353;
-        bh=Nbbb7rLVgfd4DDptZCzReFRmpedOnCrgnNcVj4VWs3M=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=TR+TFdvPZ4rVGF1NV9aD6EJssenTUuVJYmAjN+S+HYRHgEYgqiffLDyqOd4pQISnv
-         6R0UdwG4JcdLDF+Dh0loz2Y07tP2ulWSapTj4EOqbGCkrQr0jHzZvbFVUIi5uGgd2u
-         uzc0R3tvZfCRfFO38Hi5KDjHPVK23ncXjwISeI7HaMTG5XeRSB3nmCrz/emy0rqeaa
-         0LRMYrWXgJHBS9IRpWDZT56HmlteMNU0lg+w6a5Zuyoq3QBeuBE3tO7TFWE8Z1W2OV
-         +9jwydBF5v+2vTku/wmSr27NpwihMQSESNc1buQz3YFpcPvdZTSWNDj8KTebZXNKGZ
-         x0N7eljChCiRg==
-From:   Colin King <colin.king@canonical.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>, linux-edac@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] EDAC/device: Remove redundant initialization of pointer dev_ctl
-Date:   Tue,  7 Sep 2021 11:59:13 +0100
-Message-Id: <20210907105913.15077-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.32.0
+        Tue, 7 Sep 2021 07:03:16 -0400
+Received: by mail-vk1-f171.google.com with SMTP id s126so3153177vkd.3;
+        Tue, 07 Sep 2021 04:02:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=thOJQb3/w47iDmpu71x0KX+1BIUNFnNwW6CY9Btcpmw=;
+        b=YWYVFcX+B9uSLLtUnClSO4/8xw0aOT/mFumXRfUjGG0K4iA7lvagEVDMpq2FiKPAIZ
+         6CPzOG7TLlejC25UbU09n56BD+/zAG72QjI5EaNj2a4ki483S/cuitm81wQB9Js2Uvnn
+         hBAvSfJtD9fzP14l47SB0QuQPpysMcLNZc+67Tn+ntgHeLzrBGfC1cc+4wxLFxSph8BZ
+         w1X7w7gDdw3805Zxe3fcaKWzHORhfhS+fqTX4rvClxe3zbZPG0X0oUkvUSsgpsEgsnyV
+         zCfut2lZnYiC1QAbWI57xLxKPxsVqiqL0/KzuTTVHhGtQhyCn2VDDX5zSGoVzpI5RS9J
+         dU2w==
+X-Gm-Message-State: AOAM532zmrnVTF4fT3bQkwjBxIqH3Qrj/9+bnKt/1y1jnbONG88WEqwN
+        uC01D3+6wF+l1JuFV8iAPYpuK7HMFaznsbCTvOyAQhqE
+X-Google-Smtp-Source: ABdhPJxoxSxZC7+MCNKpE6Lhu7Bx9DoYrGBA9Iw2FRNpnbHs5vD0cbAkh4Lt95bTKc349pEvB+1lYy37QIaWF+DPDZs=
+X-Received: by 2002:a1f:d247:: with SMTP id j68mr7330206vkg.7.1631012529742;
+ Tue, 07 Sep 2021 04:02:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210906134040.96642-1-wangborong@cdjrlc.com> <CAMuHMdXq-ACdy8C7Efamnwz_h=h8_C4-3y14O8-S61EnB7pWmQ@mail.gmail.com>
+ <CAK8P3a03pYn3RvayqxWhHYbS9qcp13B3Mj29iS0hsrD3cpCi6w@mail.gmail.com>
+In-Reply-To: <CAK8P3a03pYn3RvayqxWhHYbS9qcp13B3Mj29iS0hsrD3cpCi6w@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 7 Sep 2021 13:01:58 +0200
+Message-ID: <CAMuHMdWPSofFJcSQHwvGy=E-T74QK2v3L60+feLJ-kEfB3GY5A@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: renesas: no need to initialise global statics
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Jason Wang <wangborong@cdjrlc.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Mon, Sep 6, 2021 at 5:18 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Mon, Sep 6, 2021 at 4:36 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > --- a/drivers/pinctrl/renesas/core.c
+> > > +++ b/drivers/pinctrl/renesas/core.c
+> > > @@ -741,12 +741,12 @@ static int sh_pfc_suspend_init(struct sh_pfc *pfc) { return 0; }
+> > >  #define SH_PFC_MAX_REGS                300
+> > >  #define SH_PFC_MAX_ENUMS       3000
+> > >
+> > > -static unsigned int sh_pfc_errors __initdata = 0;
+> > > -static unsigned int sh_pfc_warnings __initdata = 0;
+> > > -static u32 *sh_pfc_regs __initdata = NULL;
+> > > -static u32 sh_pfc_num_regs __initdata = 0;
+> > > -static u16 *sh_pfc_enums __initdata = NULL;
+> > > -static u32 sh_pfc_num_enums __initdata = 0;
+> > > +static unsigned int sh_pfc_errors __initdata;
+> > > +static unsigned int sh_pfc_warnings __initdata;
+> > > +static u32 *sh_pfc_regs __initdata;
+> > > +static u32 sh_pfc_num_regs __initdata;
+> > > +static u16 *sh_pfc_enums __initdata;
+> > > +static u32 sh_pfc_num_enums __initdata;
+> >
+> > These are special, as they use __initdata.
+> > While dropping the initializers seems to work fine with e.g. gcc 9,
+> > I'm quite sure that would fail with older compiler versions, where
+> > the variable would be put in bss instead of initdata.
+> >
+> > See the example in include/linux/init.h, which explicitly
+> > initializes a variable with zero:
+> >
+> >     static int init_variable __initdata = 0;
+> >
+> > Arnd: do you know in which version of gcc this was fixed?
+> > It seems at least 6.5.0 and later are fine (I don't have all required
+> > shared libs to run e.g. 5.5.0).
+>
+> I think you mixed up what happens: As far as I know, older compilers
+> would put variables without the =0 into .bss, but those with the explicit
+> =0 would end up in .data. Newer compilers treat them exactly the
+> same, and these variables all get put into .bss by default. This seems
+> to already be the case with gcc-4.1, which is the oldest one I could
+> easily try.
+>
+> I'm rather sure that regardless of the compiler version, adding an
+> explicit section attribute like the __initdata would force the section
+> even on the pre-4.1 compilers.
 
-The variable dev_ctl is being initialized with a value that is never
-read, it is being updated later on. The assignment is redundant and
-can be removed.
+I must be misremembering...
 
-Addresses-Coverity: ("Unused value")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/edac/edac_device.c | 1 -
- 1 file changed, 1 deletion(-)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-pinctrl-for-v5.16.
 
-diff --git a/drivers/edac/edac_device.c b/drivers/edac/edac_device.c
-index 8c4d947fb848..a337f7afc3b9 100644
---- a/drivers/edac/edac_device.c
-+++ b/drivers/edac/edac_device.c
-@@ -75,7 +75,6 @@ struct edac_device_ctl_info *edac_device_alloc_ctl_info(
- 	 * provide if we could simply hardcode everything into a single struct.
- 	 */
- 	p = NULL;
--	dev_ctl = edac_align_ptr(&p, sizeof(*dev_ctl), 1);
- 
- 	/* Calc the 'end' offset past end of ONE ctl_info structure
- 	 * which will become the start of the 'instance' array
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.32.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
