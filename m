@@ -2,90 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7128040222F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64071402231
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232766AbhIGCFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 22:05:05 -0400
-Received: from out0.migadu.com ([94.23.1.103]:18602 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230123AbhIGCFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 22:05:04 -0400
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1630980234;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=QWXpSaejyMww3vH7k/Zt9qfcRBFTytSDDJsgJ+Wx+Ds=;
-        b=hfeKjMkC9kvpjSXm7TdKiF1tJL3ZunUSMfBhfTuwFZn0bkd9PKaR8yinF/sdgjjwzRsjP7
-        HatSl2e1kJ9pAg2UF7a+MzV8lm2ytAJkGpJTSWeeD5q9PNjlxncd0WHKa/jjI3wE+NJB70
-        0ISi9SwRvVk7DNcZGhE5f+2NXAfrkmY=
-From:   Jackie Liu <liu.yun@linux.dev>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, liu.yun@linux.dev
-Subject: [PATCH v2] mdacon: fix redefinition of 'scr_memsetw'
-Date:   Tue,  7 Sep 2021 10:03:26 +0800
-Message-Id: <20210907020326.2329486-1-liu.yun@linux.dev>
+        id S233106AbhIGCFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 22:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230123AbhIGCFx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 22:05:53 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93730C061575;
+        Mon,  6 Sep 2021 19:04:47 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id b64so8653605qkg.0;
+        Mon, 06 Sep 2021 19:04:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cs7mCMI8BIob2gIpwkwVdKulQz4rvKjl/wf+ynJ6z9Y=;
+        b=HDcmens1LBj3rKlpU88n/WQYdnrYpD37I8npnEyNuzee+6ZEblyd/Lr4TAgkqwMK6K
+         R6hWuXJdkfWY9YsSrqKtNMelU45wevTKv4D3KGpqlE4aXcYgE+eBMk06rf9+vIcqvK65
+         f6LIFboepPzZnEyOj08SsrrxZtUVy/RuJ54rs2JpyXwEworSh0cHJry4qFPQItAtFHzO
+         rtp5xbXTmJYDHtaj9OYRWdIR9coIM0wC15tyRm0CcVTue4uH6/8HHgSowpVMJvyWr3Lr
+         PjTTvD2VGBc5WESZaojfSJCRBFe3b6UqaIZJw2x8e/UuHtt//oOeB76EttA7HL2G5olL
+         dyVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Cs7mCMI8BIob2gIpwkwVdKulQz4rvKjl/wf+ynJ6z9Y=;
+        b=dQWe42En+HA+wENPmqKUviut75OoPmfLSKcL0l1aG+rXD77afMonm8HQOKnJZ4PJ86
+         vrHDmS6XGkPOhTcfwZdSQDl/Wy1lvjLSM7LrlBDbRfPze7Hlr+Fbel4QA6m7BfGZjKGj
+         neWCu4/wWkNSyaEYQOMuAPKCBOXTz6IQ4tua5S90Phhskza7k9YamJHDR4whykZxLZYL
+         DlfgE2uYgUrvvEZmLlxY7ZtKovGKqIyG8Bn+Nx+tyGdM2F3krXrl15crbNrkxngiO91A
+         yNqrfl1UUJizLTOfLGcbj2xxySIDZikaaI4pXEwaCWDZwv9TxE2FAhL4yqVcAs6+affY
+         X1FQ==
+X-Gm-Message-State: AOAM5310CHKrSL3s57ll9YhFQf4BARTxOEpPwpUzso1cyBCPJmn/B7KQ
+        UsRosmHrObOTi1kpw+4xNxf01otvkUJgG9GBpNE=
+X-Google-Smtp-Source: ABdhPJyPg7oCTcfJ+n3qrn/GXcHEf5/fzs+entEJl9L+5Q4TATk2fCWAfQJ24e71W6LlWk7EKphw3XVEKn+yW1Ze+jE=
+X-Received: by 2002:a05:620a:1299:: with SMTP id w25mr13651420qki.391.1630980286653;
+ Mon, 06 Sep 2021 19:04:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: liu.yun@linux.dev
+References: <20210906094927.524106-1-schnelle@linux.ibm.com>
+In-Reply-To: <20210906094927.524106-1-schnelle@linux.ibm.com>
+From:   "Oliver O'Halloran" <oohall@gmail.com>
+Date:   Tue, 7 Sep 2021 12:04:35 +1000
+Message-ID: <CAOSf1CFyuf9FaeSNparj+7W0mKTPvtcM8vxjHDSFsNDC6k_7xQ@mail.gmail.com>
+Subject: Re: [PATCH 0/5] s390/pci: automatic error recovery
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Linas Vepstas <linasvepstas@gmail.com>,
+        Russell Currey <ruscur@russell.cc>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jackie Liu <liuyun01@kylinos.cn>
+On Mon, Sep 6, 2021 at 7:49 PM Niklas Schnelle <schnelle@linux.ibm.com> wrote:
+>
+> Patch 3 I already sent separately resulting in the discussion below but without
+> a final conclusion.
+>
+> https://lore.kernel.org/lkml/20210720150145.640727-1-schnelle@linux.ibm.com/
+>
+> I believe even though there were some doubts about the use of
+> pci_dev_is_added() by arch code the existing uses as well as the use in the
+> final patch of this series warrant this export.
 
-CONFIG_VGA_CONSOLE=n and CONFIG_MDA_CONSOLE=n will cause vt_buffer.h not
-include <asm/vga.h>.
+The use of pci_dev_is_added() in arch/powerpc was because in the past
+pci_bus_add_device() could be called before pci_device_add(). That was
+fixed a while ago so It should be safe to remove those calls now.
 
-But if we set CONFIG_MDA_CONSOLE=m, mdacon.c include <linux/vt_buffer.h>
-is in front of include <asm/vga.h>. VT_BUF_HAVE_MEMSETW is not defined,
-so vt_buffer.h will define a scr_memsetw, after that, vga.h also define
-a scr_memsetw, so the repeated definition of scr_memsetw appears, builds
-error.
+> Patch 4 "PCI: Export pci_dev_lock()" is basically an extension to commit
+> e3a9b1212b9d ("PCI: Export pci_dev_trylock() and pci_dev_unlock()") which
+> already exported pci_dev_trylock(). In the final patch we make use of
+> pci_dev_lock() to wait for any other exclusive uses of the pdev to be finished
+> before starting recovery.
 
-We only need to make vt_buffer.h also contain vga.h when
-CONFIG_MDA_CONSOLE=m. This problem can be fixed.
-
-BTW, mdacon.c no need to include vga.h forcibly, let vt_buffer.h do it.
-
-Fixes: ac036f9570a2 ("vga: optimise console scrolling")
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-fbdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
----
- drivers/video/console/mdacon.c | 1 -
- include/linux/vt_buffer.h      | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/video/console/mdacon.c b/drivers/video/console/mdacon.c
-index ef29b321967f..5898d01bc492 100644
---- a/drivers/video/console/mdacon.c
-+++ b/drivers/video/console/mdacon.c
-@@ -42,7 +42,6 @@
- #include <linux/init.h>
- 
- #include <asm/io.h>
--#include <asm/vga.h>
- 
- static DEFINE_SPINLOCK(mda_lock);
- 
-diff --git a/include/linux/vt_buffer.h b/include/linux/vt_buffer.h
-index 848db1b1569f..3a79cc27a33b 100644
---- a/include/linux/vt_buffer.h
-+++ b/include/linux/vt_buffer.h
-@@ -16,7 +16,7 @@
- 
- #include <linux/string.h>
- 
--#if defined(CONFIG_VGA_CONSOLE) || defined(CONFIG_MDA_CONSOLE)
-+#if defined(CONFIG_VGA_CONSOLE) || IS_ENABLED(CONFIG_MDA_CONSOLE)
- #include <asm/vga.h>
- #endif
- 
--- 
-2.25.1
-
+Hmm, I noticed the EEH
+(arch/powerpc/kernel/eeh_driver.c:eeh_pe_report_edev())  and the
+generic PCIe error recovery code (see
+drivers/pci/pcie/err.c:report_error_detected()) only call
+device_lock() before entering the driver's error handling callbacks. I
+wonder if they should be using pci_dev_lock() instead. The only real
+difference is that pci_dev_lock() will also block user space from
+accessing the device's config space while error recovery is in
+progress which seems sensible enough.
