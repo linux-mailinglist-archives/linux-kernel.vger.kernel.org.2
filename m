@@ -2,148 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB354022DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 06:26:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A1904022DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 06:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhIGE0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 00:26:23 -0400
-Received: from mo-csw1516.securemx.jp ([210.130.202.155]:58200 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhIGE0V (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 00:26:21 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1516) id 1874PEhb031756; Tue, 7 Sep 2021 13:25:14 +0900
-X-Iguazu-Qid: 34trVrK16G5dw5DW2U
-X-Iguazu-QSIG: v=2; s=0; t=1630988714; q=34trVrK16G5dw5DW2U; m=d+hNUk+CCg0no2MI3kacZBgxgN7HA3TQyMzri5UixKc=
-Received: from imx12-a.toshiba.co.jp (imx12-a.toshiba.co.jp [61.202.160.135])
-        by relay.securemx.jp (mx-mr1513) id 1874PDQf006766
-        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 7 Sep 2021 13:25:13 +0900
-Received: from enc02.toshiba.co.jp (enc02.toshiba.co.jp [61.202.160.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by imx12-a.toshiba.co.jp (Postfix) with ESMTPS id 969A610009A
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:25:09 +0900 (JST)
-Received: from hop101.toshiba.co.jp ([133.199.85.107])
-        by enc02.toshiba.co.jp  with ESMTP id 1874P9be032430
-        for <linux-kernel@vger.kernel.org>; Tue, 7 Sep 2021 13:25:09 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        linux-kernel@vger.kernel.org,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH] arm64: dts: visconti: Add PCIe host controller support for TMPV7708 SoC
-Date:   Tue,  7 Sep 2021 13:25:00 +0900
-X-TSB-HOP: ON
-Message-Id: <20210907042500.1525771-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-X-Mailer: git-send-email 2.32.0
+        id S230143AbhIGE1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 00:27:24 -0400
+Received: from mga01.intel.com ([192.55.52.88]:58320 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229650AbhIGE1X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 00:27:23 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="242375432"
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="242375432"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 21:26:16 -0700
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="605061922"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.239.13.122]) ([10.239.13.122])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 21:26:15 -0700
+Subject: Re: [PATCH] x86/tsx: clear RTM and HLE when MSR_IA32_TSX_CTRL is not
+ supported
+To:     Hao Peng <flyingpenghao@gmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>, tglx@linutronix.de,
+        mingo@redhat.com, x86@kernel.org, linux-kernel@vger.kernel.org,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+References: <CAPm50aJyfxobKhTrS=dC3pQmM5EbwY2xunet3X5XgnnFUEMmBA@mail.gmail.com>
+ <YTXfmRIwWREJgEU9@zn.tnic>
+ <CAPm50aLBt=YkFLi==-9U88YzwoJsmMTfEtj2v3+vx7fSRdDMLA@mail.gmail.com>
+ <f89e1eee-aea8-7c59-3af5-8859a43e121c@intel.com>
+ <CAPm50aLiB+O85mgcKcOZwO6J-DXjwK=p+7npBH-qVdkL-77Huw@mail.gmail.com>
+ <77e8d483-4395-0017-300e-0886f75217bb@intel.com>
+ <CAPm50aL_eJm2s5GJD1OMFK3vt_iHLQrBueiz-NWS38H=Zz378w@mail.gmail.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <cae10a15-1c21-4cf4-dff5-2123613f1b41@intel.com>
+Date:   Tue, 7 Sep 2021 12:26:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.13.0
 MIME-Version: 1.0
+In-Reply-To: <CAPm50aL_eJm2s5GJD1OMFK3vt_iHLQrBueiz-NWS38H=Zz378w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PCIe node and fixed clock for PCIe in TMPV7708's dtsi,
-and tmpv7708-rm-mbrc boards's dts.
+On 9/7/2021 11:40 AM, Hao Peng wrote:
+> On Tue, Sep 7, 2021 at 10:56 AM Xiaoyao Li <xiaoyao.li@intel.com> wrote:
+>>
+>> On 9/7/2021 10:35 AM, Hao Peng wrote:
+>>> On Tue, Sep 7, 2021 at 10:08 AM Xiaoyao Li <xiaoyao.li@intel.com> wrote:
+>>>>
+>>>> On 9/7/2021 9:47 AM, Hao Peng wrote:
+>>>>> On Mon, Sep 6, 2021 at 5:30 PM Borislav Petkov <bp@alien8.de> wrote:
+>>>>>>
+>>>>>> On Mon, Sep 06, 2021 at 10:46:05AM +0800, Hao Peng wrote:
+>>>>>>> If hypervisor does not support MSR_IA32_TSX_CTRL, but guest supports
+>>>>>>> RTM and HLE features, it will affect TAA mitigation.
+>>>>>>>
+>>>>>>> Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+>>>>>>> ---
+>>>>>>>     arch/x86/kernel/cpu/tsx.c | 7 +++++++
+>>>>>>>     1 file changed, 7 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/arch/x86/kernel/cpu/tsx.c b/arch/x86/kernel/cpu/tsx.c
+>>>>>>> index 9c7a5f049292..5e852c14fef2 100644
+>>>>>>> --- a/arch/x86/kernel/cpu/tsx.c
+>>>>>>> +++ b/arch/x86/kernel/cpu/tsx.c
+>>>>>>> @@ -122,6 +122,13 @@ void __init tsx_init(void)
+>>>>>>>
+>>>>>>>            if (!tsx_ctrl_is_supported()) {
+>>>>>>>                    tsx_ctrl_state = TSX_CTRL_NOT_SUPPORTED;
+>>>>>>> +
+>>>>>>> +               /* If hypervisor does not support MSR_IA32_TSX_CTRL emulation,
+>>>>>>> +                * but guest supports RTM and HLE features, it will affect TAA
+>>>>>>> +                * （tsx_async_abort）mitigation.
+>>>>>>> +                */
+>>>>>>> +               setup_clear_cpu_cap(X86_FEATURE_RTM);
+>>>>>>> +               setup_clear_cpu_cap(X86_FEATURE_HLE);
+>>>>
+>>>> anyway, IMHO, we shouldn't do anything here for TAA. It should be in
+>>>> taa_select_mitigation()
+>>>>
+>>>>>>>                    return;
+>>>>>>>            }
+>>>>>>
+>>>>>> How does that even happen - the hypervisor does not support the MSR but
+>>>>>> "guest supports" TSX features?!
+>>>>>>
+>>>>>> I guess the guest is detecting it wrong.
+>>>>>>
+>>>>>> What hypervisor, what guest, how do I reproduce?
+>>>>>>
+>>>>> hypervisor is kvm, guest is linux too.
+>>>>>> Please give full details.
+>>>>>>
+>>>>> The host I used is kernel-5.4, and guest is kernel-5.13.
+>>>>> MSR_IA32_TSX_CTRL is exposed
+>>>>> to guest and guest to support RTM and HLE features, no direct
+>>>>> dependence. at the qemu I
+>>>>> started guest with -cpu host-model.
+>>>>> I have viewed the code of kernel-5.4, and MSR_IA32_TSX_CTRL is not
+>>>>> exposed to guest.
+>>>>
+>>>> Does guest see TAA_NO bit?
+>>>>
+>>> Guest can't see taa_no, which requires updating qemu to solve. But I think
+>>> there is a compatibility process here.
+>>
+>> Anyway, there should be some existing code in kernel already to handle
+>> the case that CPUID reports TRM while MSR_IA32_CORE_CAPABILITIES doesn't
+>> report MSR_TSX_CTRL nor TAA_NO.
+>>
+> Can you point out which patches ? At present, guest is kernel-5.13
+> still has this problem.
 
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
----
- .../boot/dts/toshiba/tmpv7708-rm-mbrc.dts     |  6 +++
- arch/arm64/boot/dts/toshiba/tmpv7708.dtsi     | 52 +++++++++++++++++++
- 2 files changed, 58 insertions(+)
+What's the output of 'cat 
+/sys/devices/system/cpu/vulnerabilities/tsx_async_abort' on your guest?
 
-diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-index 29a4d9fc1e47..9375b0faeea2 100644
---- a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-+++ b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
-@@ -76,3 +76,9 @@ &pwm_mux {
- &pwm {
- 	status = "okay";
- };
-+
-+&pcie {
-+	status = "okay";
-+	clocks = <&extclk100mhz>, <&clk600mhz>, <&clk25mhz>;
-+	clock-names = "ref", "core", "aux";
-+};
-diff --git a/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi b/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-index 4b4231ff43cf..5db9a012d6fc 100644
---- a/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-+++ b/arch/arm64/boot/dts/toshiba/tmpv7708.dtsi
-@@ -134,6 +134,13 @@ uart_clk: uart-clk {
- 		#clock-cells = <0>;
- 	};
- 
-+	clk25mhz: clk25mhz {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <25000000>;
-+		clock-output-names = "clk25mhz";
-+	};
-+
- 	clk125mhz: clk125mhz {
- 		compatible = "fixed-clock";
- 		clock-frequency = <125000000>;
-@@ -148,6 +155,20 @@ clk300mhz: clk300mhz {
- 		clock-output-names = "clk300mhz";
- 	};
- 
-+	clk600mhz: clk600mhz {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <600000000>;
-+		clock-output-names = "clk600mhz";
-+	};
-+
-+	extclk100mhz: extclk100mhz {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <100000000>;
-+		clock-output-names = "extclk100mhz";
-+	};
-+
- 	wdt_clk: wdt-clk {
- 		compatible = "fixed-clock";
- 		clock-frequency = <150000000>;
-@@ -441,6 +462,37 @@ pwm: pwm@241c0000 {
- 			#pwm-cells = <2>;
- 			status = "disabled";
- 		};
-+
-+		pcie: pcie@28400000 {
-+			compatible = "toshiba,visconti-pcie";
-+			reg = <0x0 0x28400000 0x0 0x00400000>,
-+			      <0x0 0x70000000 0x0 0x10000000>,
-+			      <0x0 0x28050000 0x0 0x00010000>,
-+			      <0x0 0x24200000 0x0 0x00002000>,
-+			      <0x0 0x24162000 0x0 0x00001000>;
-+			reg-names  = "dbi", "config", "ulreg", "smu", "mpu";
-+			device_type = "pci";
-+			bus-range = <0x00 0xff>;
-+			num-lanes = <2>;
-+			num-viewport = <8>;
-+
-+			#address-cells = <3>;
-+			#size-cells = <2>;
-+			#interrupt-cells = <1>;
-+			ranges = <0x81000000 0 0x40000000 0 0x40000000 0 0x00010000
-+				  0x82000000 0 0x50000000 0 0x50000000 0 0x20000000>;
-+			interrupts = <GIC_SPI 211 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "msi", "intr";
-+			interrupt-map-mask = <0 0 0 7>;
-+			interrupt-map =
-+				<0 0 0 1 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
-+				 0 0 0 2 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
-+				 0 0 0 3 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH
-+				 0 0 0 4 &gic GIC_SPI 215 IRQ_TYPE_LEVEL_HIGH>;
-+			max-link-speed = <2>;
-+			status = "disabled";
-+		};
- 	};
- };
- 
--- 
-2.32.0
-
+> Thanks.
+>> And the Patch itself makes no sense.
+>>
+>>>>> Thanks.
+>>>>>> --
+>>>>>> Regards/Gruss,
+>>>>>>        Boris.
+>>>>>>
+>>>>>> https://people.kernel.org/tglx/notes-about-netiquette
+>>>>
+>>
 
