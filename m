@@ -2,333 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CFF4026ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 545CC4026EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245185AbhIGKM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 06:12:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245216AbhIGKMz (ORCPT
+        id S245249AbhIGKNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 06:13:46 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:23913 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245105AbhIGKNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 06:12:55 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D739BC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 03:11:48 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id t18so2828013wrb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 03:11:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=M6VI7hu6nrDpy/FRYqSASE+rFeGiqe0QFHElCOeveOo=;
-        b=JoHF+/ZC176lyR574CMp6AL3EzeDLGm5VH0Qs0aWw0+KT4pwFKBxaQXrM1/pbi5c/B
-         eLwTpd6IVqXkfoD1Ex1PQwaMva+jmJvKdHGPpotMoNPUrCcsKiXupsBimWnq7fiB+7lh
-         faCiPPxMe/4Q/0PG9GahTIDyO2E233ngAgK6Z3Vcz6eWCShcBEoRMOPYASEWG5cbx6iy
-         xjDaMzWgj2s5bVVxPvxB/IDvL/iHoQvmky/d2XBxBsLyB4oWodvWK1wPnBDRUDXBReFZ
-         EHI57bHP0nAbqhQ8rvIf/c4mI1VPlGpbfKaTOOp+oTRU/yY17pVkGbp8gN83/sP9JEbb
-         Hs3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M6VI7hu6nrDpy/FRYqSASE+rFeGiqe0QFHElCOeveOo=;
-        b=hFy9GpOqfbN+Y2FFRcYGF9M+Kd9P2EvaYZPm4BxswDRkjCBf3AptdzWQx4cxHEl00d
-         aXWXe2yKxngBYY9C9lbQJV/uqRvLCDPdtVaDXbysZCDT97J4cQJO0wssDzWNN4ZHU7cj
-         J72xMawcELRaniHqA0vVGHn1676pH6H+EflSUhhPxhvj74AqZ3t5TpaM8I5fCfFi6Xxh
-         vAKPbxXI9OW48hr04ZCn+7RPm4CkrwNtkPYE7bnFtIxfGCnL9ABculjzo0SPO6c6QkOZ
-         Lrjw290sDHN3FH7H4e3c1QSoSrxZKgICETYXEWglNe7mRq7FDTkIDj+aSJlzRRKiqXKd
-         Pr0g==
-X-Gm-Message-State: AOAM530R/F2kMvMW5Npmn+iDD5xYajzjqQ1Byh/lcD1bFlH6mKkWoPbJ
-        5Czovf+Na1CjfLJOq5CAcIicSxP5pyxyaQ==
-X-Google-Smtp-Source: ABdhPJw/72hnzp8nPnw3j3a18oHNzb1ZPr7q4elKahn8jbAr0432H+P3Fcpb4Jf48s5E6grM1sr4Qw==
-X-Received: by 2002:adf:c18d:: with SMTP id x13mr18243805wre.380.1631009506860;
-        Tue, 07 Sep 2021 03:11:46 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id l16sm8117637wrh.44.2021.09.07.03.11.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 03:11:46 -0700 (PDT)
-Subject: Re: [PATCH V1 1/4] bindings: nvmem: introduce "reverse-data" property
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210810073510.18218-1-qiangqing.zhang@nxp.com>
- <20210810073510.18218-2-qiangqing.zhang@nxp.com>
- <6e3f6881-929d-1663-58f1-39bf35069175@linaro.org>
- <YRwUyLsvoSpFI9X8@robh.at.kernel.org>
- <DB8PR04MB67951E2312CFD69808B4502BE6FF9@DB8PR04MB6795.eurprd04.prod.outlook.com>
- <f572aca2-167a-be26-d89a-810c7023092f@linaro.org>
- <DB8PR04MB67953613ED725D00027E972BE6D29@DB8PR04MB6795.eurprd04.prod.outlook.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <2ab0b16d-5a22-2abe-e228-c058b5a853ff@linaro.org>
-Date:   Tue, 7 Sep 2021 11:11:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <DB8PR04MB67953613ED725D00027E972BE6D29@DB8PR04MB6795.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=gbk; format=flowed
+        Tue, 7 Sep 2021 06:13:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1631009558;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NoqsE6RzeJ63b2XMCTslouLkpUVTdP62+7GdGZP4LU0=;
+        b=i3CHbROn0nt1byhiqZugM7lG3rh7L2nDA/NFS7+5A1HuvYTBClaMvaAd+eKj9yx6sMO1wn
+        qWIhKx7rqORLqf+Evvgm5EGS1Q3DaxzS8xhHePMR+JfuQOrNkr5+N1zY481k2/RQThZiUb
+        pJ3MtXavHgUfjvoVxJAI1Fe9/81r+HY=
+Received: from EUR02-VE1-obe.outbound.protection.outlook.com
+ (mail-ve1eur02lp2051.outbound.protection.outlook.com [104.47.6.51]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-32--O8Ql131P1-FXDx8m-4q6A-1; Tue, 07 Sep 2021 12:12:37 +0200
+X-MC-Unique: -O8Ql131P1-FXDx8m-4q6A-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LnMaN/3OzsXcZ3gXFpzLWzvagDaAfbNrTLv5rFJH+hLkrJJjjTQzG4yzs65RgVJUs0Kw8ZpDQkFKsf0y1Vej/7fcgXASh0HgxKWMOh0dF0kx3MyW2C72peug4iX1OJTNoH3d11gHh899NlWXzmDJm4O2aibvvc27dnTNRYfBhI0sYArEEmT+UgOsbY6+IObrrGuTuQFLrYf55n9kr5L+/P++lSxmrxdMYcfuY99z0O/iXUpDRIQCUHZUsbPLe5Vmkim61pWAeqMRiPFJ+R9dZzXu4VJwFdp490rzp0GmwXpszSskNweay3xsXYuPsIWio28a/6MdnzwY7C2BX4JE5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=NoqsE6RzeJ63b2XMCTslouLkpUVTdP62+7GdGZP4LU0=;
+ b=kge3izk4Fd0bUQuG8G+Snz+9pyivcl9ZW/sw4nSkHSnmV88faIA2+UglbW2bhYyrNQIvQ77m1b39Gckw1myUAZAk68xNRT+7ge/TRVeN8WUYOsL4PrMp9wzzM2bhA1VYQV6t055HNu8YwKv5jQSdMtxUZBnZ9Zdm5mUJgzziC7WdanslfaG5JGoPNoU3WEW04T7nEQmBXChqlxAUSuvHd0CsfO3DWhlw/UdDu2ffORiLfpJKKmW4coqxiCh0NV4+IrPnihyMTYvYeiI87zcG9K9/7u2IdrY32k2k94Z9xyyfe9UgmLDa1egWNyu/x6i0pACDjz/dipv7QLZ/WEBlJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: lists.xenproject.org; dkim=none (message not signed)
+ header.d=none;lists.xenproject.org; dmarc=none action=none
+ header.from=suse.com;
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com (2603:10a6:803:e7::16)
+ by VI1PR0402MB2703.eurprd04.prod.outlook.com (2603:10a6:800:ae::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Tue, 7 Sep
+ 2021 10:12:33 +0000
+Received: from VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b]) by VI1PR04MB5600.eurprd04.prod.outlook.com
+ ([fe80::4d37:ec64:4e90:b16b%7]) with mapi id 15.20.4500.014; Tue, 7 Sep 2021
+ 10:12:33 +0000
+Subject: [PATCH 8/9] x86/PVH: adjust function/data placement
+From:   Jan Beulich <jbeulich@suse.com>
+To:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+References: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+Message-ID: <cf3fd833-0379-aba5-421d-7f2588d2d881@suse.com>
+Date:   Tue, 7 Sep 2021 12:12:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+In-Reply-To: <4efa804e-3250-227f-00c7-347581366cd4@suse.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PR3P193CA0016.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:102:50::21) To VI1PR04MB5600.eurprd04.prod.outlook.com
+ (2603:10a6:803:e7::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.156.60.236] (37.24.206.209) by PR3P193CA0016.EURP193.PROD.OUTLOOK.COM (2603:10a6:102:50::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Tue, 7 Sep 2021 10:12:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 68249380-d5a4-4ca9-8f0e-08d971e8026e
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB2703:
+X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB27031AB253D6EB13DD2CA58BB3D39@VI1PR0402MB2703.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fG3g44J0l6hwlac5jI3G0mfTy/DXJoU+bFuTnoRWmaEf0fUH+NouvKFRCJqleNM3Yb3gjMsn/BozIZAbIZK/3cLVsMMewJC4KlWCjIXWX6IYo7xbUgU7yj9Z7AQFEhtlG3bmJUsr0aLhLj3BK913X/AnehzXCPL50ADvGhxuJCGFj9wj2UJcaMy7ToverXo3VP/SXjRwYjAn4gwFjvo6hrKEu6e4IP3XkRahrn/hzlUSaSf2DhNK2N0hL3FnMHXTQ0WqZ3/yUQES+MY7d9+ymH/rB0fhenJMEeiUnUWKnyt7k34hhJa7W60qg1sWDeiOY40GiktubBvGPNtJjzXR+EkDzeHQFsEuxE3NQxfKkFApH2F/ji2XjnRrzn7PJJl8kAA8qSvpi9gtbfZiFNzz38tYNfBUUG4hhB+7281pXeztqvnPAxe2B7PpYqfy8rLJAgf9I2N3KsjN98u33Aw7mgnLgAnZ1nvHs0P274ITf5K+lc+EGFTMZwIlkUJTVGmueHy5tkAtxibFWUEVYSqnIy4lztJyYnW4QLmufrh1B8n3rVSXI67DBW8ucjrkGvncANLYqpfIh0jZleiD4XotAGmph46ZUGqdgwfMZhlmaaCMW1I50HPPA+p1JgOS7TpdgaMnzYy5SrgV2iU0QrKafPx/P+t95+UBIrnGb1lKJnADd5dEFoXY776y4Xk+yPODEIBtYoQ7ws9EhuuzBp2356BXRhIsdsHtQ1SmdFa2BxI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5600.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(39860400002)(366004)(376002)(136003)(4326008)(186003)(86362001)(316002)(16576012)(8936002)(31696002)(478600001)(8676002)(36756003)(2616005)(956004)(31686004)(38100700002)(2906002)(26005)(66476007)(54906003)(66556008)(6486002)(5660300002)(110136005)(66946007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MXRxamZQT3A4WnRGMkRhVDlQYVlqVjFIdjNZUmVXMlQzTFdwRHBIOU5saGJW?=
+ =?utf-8?B?cHprTnNybEVhRXFyY21PVXZOd3duRmJGTDJiUFQvLzErSzFiZ2d0VUJsRUNh?=
+ =?utf-8?B?eGJNaDgrTkpDdnFaMlhBRmNwcVI1aXhCbWJTZlJPNzJRVWt2REl3QkVIK1BX?=
+ =?utf-8?B?SWZPYTl5RUdlWW43TTlHL3Z6Mm5BYWphVVRkMkNsNDJWRmNKZXlWNDNPZGI5?=
+ =?utf-8?B?TGl6dHcwV3ErSm93NDc5cjhQYzZPTklpSWdaeDBOUWZua2FSRlVGdUFCaHla?=
+ =?utf-8?B?aG4zMGxmV2VSalpWOVRzQ013VDZMd0cyVXJHRERFejJ4L1U4Lyt6eitRTUcv?=
+ =?utf-8?B?Wk9HZnBnZ1ZuaUlDUm0yNGJSMFZBNDhNQUtxN3RVTHh5RWlRZWxxTXVRdXFX?=
+ =?utf-8?B?bWYyektmYWhXc3JQNE00TVQ5MjFpdzJiampaeERHM1krcUtKRVl0RlphTng1?=
+ =?utf-8?B?OWtHRW5CYW0ySWJNRHBHVUZIZ21DcXNUV01ZaG1HTWFma0x5NHkrNWpuemJR?=
+ =?utf-8?B?ZU13S2E5SDNSWTYwckVXdkNVaFd6MjJaUkQ0anp1UEFOQ0VzbVkvcjhMSjBp?=
+ =?utf-8?B?VjlmaEFLb2s2V1dyQWs4cGFmcm5HdHJpb1hRL1hOcm1BWHBKMVZ5azRmemlU?=
+ =?utf-8?B?NVd1SU5MVkpnbGl6VTFSMmRCQWFMb3RBZlY0TVkrd0lRSlFxSUl3USs2bndl?=
+ =?utf-8?B?SlZ2U0VqMXNaS05CUFlrbnNtOTZUSXprb1pMbmdRNzVtMmhHZk5neS9HTFI0?=
+ =?utf-8?B?U1N4QlhhTk1KT0pOb1ZqVVRWb0NBODdxZUdOelA4eG5jWXVXZ0pxWGNpSTdW?=
+ =?utf-8?B?RWhrY1V6UlU1angxZWZJNmFNdU9zTmpldjZnSzRVcW14N1hiV2ZWZ3phVWhm?=
+ =?utf-8?B?cEpScVo0M0Z4R01xTGxSS2t2eldJTC9Pb3ZrZGk0Wm8xbFQveko3Zk1Qb25L?=
+ =?utf-8?B?dEs0SXJSODdQUWRES0VpcVdGQ2ZsU0tuT2FqaTQ3T3Bhb2NpTzZPTm02Ky83?=
+ =?utf-8?B?TDB2eHppT1JzZGJ2eHM1YUJmTHplK0RudGIxdnNsWVAzc3Y3c1dleFYwOCtD?=
+ =?utf-8?B?RFdoNk5pQkY1c2FjanRmY2VJUzUrbmpPdWVaeXlnTjd0aDQrNXUyWnFMOFhG?=
+ =?utf-8?B?anpaYk9aRVhtaE80T3NUUnEybVVzYTFzMUFwSjJ5Y3MxZ1VDK0xvSktDcjZl?=
+ =?utf-8?B?RnEyU1d1KzdvUWhRekx5d1RPRW13R25UMTZiOVR4RVNxRWxNUmFHaHg5MXlJ?=
+ =?utf-8?B?cXRDOUs1cXBPMy9LWFE5RjluWWs0V0NwbnpSTFBGbVRadnFBV0k2YWVQS3dS?=
+ =?utf-8?B?V2FESmMxMU9FSlBCTmdGODYwbkpia0c5MHdjWkRjeFZlYjdnZHZ5bVlBYjlx?=
+ =?utf-8?B?aWdKaVkvbG1SYmJheTZxeTZWNUgzdVRrOHpXSzlXZ1hXMHVPK2tzYzBxRmcr?=
+ =?utf-8?B?d09uYXdqamZQRXVOZmFIL0JiZTJkanZVTzhsWkVEZlh4VVladkY2MzlybFhW?=
+ =?utf-8?B?bXhRd05pSUNxeEtnRjZzVVY2Y21jZDJ3aUUrVzN5OFY5bkFSMjU1Lzh3S2h6?=
+ =?utf-8?B?NS90dUEzUkZPT0lRVGhXb3pqeHpHYk8xdGdMbEo3R3RlU2gzSGtnUmZIOFZC?=
+ =?utf-8?B?cjVJNURqWEcvNGRISWlNTHFLVzFvQWVEdUtsZGR2VjFDUjRyVy9IZEx0RjNQ?=
+ =?utf-8?B?aUVRSEo4by9uUjJObFpwRzYzUUlycXJHSjU3czMweWM1ZWhOS2VTc1ExRGZw?=
+ =?utf-8?Q?+y4oKiIhmNMgYHsIJNYXUUj34aPo4GubsUT43LK?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 68249380-d5a4-4ca9-8f0e-08d971e8026e
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5600.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 10:12:33.8016
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HYL9YPnNvYfATx1Ct6kT41TdXHkvilXZ+D11gSzDaxvwQ2EmUjX48GJ5ylrJcqA/67UTDyKYc5b+KiXV+Fy+/g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2703
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joakim,
+Two of the variables can live in .init.data, allowing the open-coded
+placing in .data to go away. Another "variable" is used to communicate a
+size value only to very early assembly code, which hence can be both
+const and live in .init.*. Additionally two functions were lacking
+__init annotations.
 
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
 
-On 06/09/2021 09:58, Joakim Zhang wrote:
-> 
-> Hi Srinivas,
-> 
->> -----Original Message-----
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> Sent: 2021年9月3日 20:38
->> To: Joakim Zhang <qiangqing.zhang@nxp.com>; Rob Herring
->> <robh@kernel.org>
->> Cc: shawnguo@kernel.org; kernel@pengutronix.de; dl-linux-imx
->> <linux-imx@nxp.com>; devicetree@vger.kernel.org;
->> linux-kernel@vger.kernel.org
->> Subject: Re: [PATCH V1 1/4] bindings: nvmem: introduce "reverse-data"
->> property
->>
->> Hi Joakim,
->>
->> On 18/08/2021 08:54, Joakim Zhang wrote:
->>>
->>>> -----Original Message-----
->>>> From: Rob Herring <robh@kernel.org>
->>>> Sent: 2021年8月18日 3:58
->>>> To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>>> Cc: Joakim Zhang <qiangqing.zhang@nxp.com>; shawnguo@kernel.org;
->>>> kernel@pengutronix.de; dl-linux-imx <linux-imx@nxp.com>;
->>>> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
->>>> Subject: Re: [PATCH V1 1/4] bindings: nvmem: introduce "reverse-data"
->>>> property
->>>>
->>>> On Wed, Aug 11, 2021 at 11:16:49AM +0100, Srinivas Kandagatla wrote:
->>>>>
->>>>>
->>>>> On 10/08/2021 08:35, Joakim Zhang wrote:
->>>>>> Introduce "reverse-data" property for nvmem provider to reverse buffer.
->>>>>>
->>>>>> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
->>>>>> ---
->>>>>>     Documentation/devicetree/bindings/nvmem/nvmem.yaml | 5 +++++
->>>>>>     1 file changed, 5 insertions(+)
->>>>>>
->>>>>> diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
->>>>>> b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
->>>>>> index b8dc3d2b6e92..bc745083fc64 100644
->>>>>> --- a/Documentation/devicetree/bindings/nvmem/nvmem.yaml
->>>>>> +++ b/Documentation/devicetree/bindings/nvmem/nvmem.yaml
->>>>>> @@ -61,6 +61,11 @@ patternProperties:
->>>>>>                   description:
->>>>>>                     Size in bit within the address range specified by
->> reg.
->>>>>> +      reverse-data:
->>>>>> +        $ref: /schemas/types.yaml#/definitions/flag
->>>>>> +        description:
->>>>>> +          Reverse the data that read from the storage device.
->>>>>> +
->>>>>
->>>>> This new property is only going to solve one of the reverse order
->>>>> issue here.
->>>>> If I remember correctly we have mac-address stored in various formats ex:
->>>>> from old thread I can see
->>>>>
->>>>> Type 1: Octets in ASCII without delimiters. (Swapped/non-Swapped)
->>>>> Type
->>>>> 2: Octets in ASCII with delimiters like (":", ",", ".", "-"... so
->>>>> on)
->>>>> (Swapped/non-Swapped)
->>>>> Type 3: Is the one which stores mac address in Type1/2 but this has
->>>>> to be incremented to be used on other instances of eth.
->>>>> Type 4: Octets as bytes/u8, swapped/non-swapped
->>>>>
->>>>> I think its right time to consider adding compatibles to nvmem-cells
->>>>> to be able to specify encoding information and handle post processing.
->>>>
->>>> Yes. Trying to handle this with never ending new properties will end
->>>> up with a mess. At some point, you just need code to parse the data.
->>>
->>> Thanks, Rob.
->>>
->>> Hi Srinivas,
->>>
->> Firstly Sorry for taking so long to reply as I was on vacation.
->>
->>> Do you plan to implement it?
->>
->> No, Am not planning to do this. But am happy to walk-thru the ideas that I
->> have.
->>
->>>
->>> Or need me follow up? If yes, please input your insights to point me how to
->> work for it.
->>
->> Do we have some kind of meta data/information in nvmem memory to indicate
->> the storage encoding?
-> 
-> No, none of these.
-> 
->> Am I correct to say that this is only issue with mac-address nvmem cell?
-> 
-> I think, yes.
->   
->> Irrespective of where this encoding info comes from we have 2 options.
->>
->> Option 1: Add callback to handle mac-address post-processing with in the
->> provider driver.
-> 
-> Sorry, I am not very familiar with nvmem framework, what's this "callback" mean?
-> Do you also want to introduce a common callback for different vendor drivers to
-> work for mac-address post-processing? Extend the " struct nvmem_config"?
-> 
->> Pros:
->> - It can deal with vendor specific non-standard encodings, and code is mostly
->> with-in vendor specific nvmem provider driver and bindings.
->> - will keep nvmem core simple w.r.t handling data.
->>
->> Cons:
->> - provider driver implement callback and new bindings.
->> - might need to add a nvmem-cell-type binding to be able differentiate the cell
->> types and handle post-processing.
-> 
-> Ahhh, I am not quite understand how to implement for it? Could you please give some
-> draft hints?
-> 
-> If we extend the struct nvmem_config, add a callback to handle mac address, how can we
-> determine which is the mac-address device node? There is no device node info from .reg_read
-> callback.
+--- a/arch/x86/platform/pvh/enlighten.c
++++ b/arch/x86/platform/pvh/enlighten.c
+@@ -16,15 +16,15 @@
+ /*
+  * PVH variables.
+  *
+- * pvh_bootparams and pvh_start_info need to live in the data segment since
++ * pvh_bootparams and pvh_start_info need to live in a data segment since
+  * they are used after startup_{32|64}, which clear .bss, are invoked.
+  */
+-struct boot_params pvh_bootparams __section(".data");
+-struct hvm_start_info pvh_start_info __section(".data");
++struct boot_params __initdata pvh_bootparams;
++struct hvm_start_info __initdata pvh_start_info;
+ 
+-unsigned int pvh_start_info_sz = sizeof(pvh_start_info);
++const unsigned int __initconst pvh_start_info_sz = sizeof(pvh_start_info);
+ 
+-static u64 pvh_get_root_pointer(void)
++static u64 __init pvh_get_root_pointer(void)
+ {
+ 	return pvh_start_info.rsdp_paddr;
+ }
+@@ -107,7 +107,7 @@ void __init __weak xen_pvh_init(struct b
+ 	BUG();
+ }
+ 
+-static void hypervisor_specific_init(bool xen_guest)
++static void __init hypervisor_specific_init(bool xen_guest)
+ {
+ 	if (xen_guest)
+ 		xen_pvh_init(&pvh_bootparams);
 
-
-I have pushed some nvmem core patches which are just compile tested to 
-https://git.kernel.org/pub/scm/linux/kernel/git/srini/nvmem.git/log/?h=topic/post-processing
-
-This should provide the callback hook I was talking about.
-
-Can you take a look at them and let me know if it works for you.
-
-I have also added some test changes to imx provider driver as well, 
-which you might have to take a closer look to get it working.
-
-You need to look at adding/changing two things:
-
-1. setting reverse_mac_address flag in imx driver.
-	Does IMX always has mac-address reversed? if yes then we do not need 
-any new bindings for imx nvmem provider, if no we might need to add some 
-kind of flag to indicate this.
-
-2. In imx devicetree for mac-address nvmem cell make sure you add
-
-cell-type = <NVMEM_CELL_TYPE_MAC_ADDRESS>;
-
-
-
-
-> 
->> Option 2: nvmem core handles the post processing.
->>
->> Pros:
->> - provider driver does not need to implement callbacks
->>
->> Cons:
->> - We have to find a way to define vendor specific non-standard encoding
->> information in generic bindings which is going to be a challenge and high chance
->> of ending up in to much of clutter in generic bindings.
->>
->> Finally, The way I look at this is that once we start adding post-processing in
->> nvmem core then we might endup with code that will not be really used for
->> most of the usecases and might endup with cases that might not be possible to
->> handle in the core.
->>
->>
->> Does Option 1 work for you?
-> 
-> Yes, I also prefer to implement it in specific driver, as you mention above, these code are for
-> very rarely use cases.
-> 
-> If we chose Option 1, I want to implement it totally in specific driver(imx-ocotp.c), and I have a draft,
-> could it be acdeptable?
-Yes, this is the direction, however we need a proper callback to do 
-this. And offset information is still comes from Device tree.
-
-
-Have a look at the patches pushed into topic/post-processing branch.
-
---srini
-> 
-> --- a/drivers/nvmem/imx-ocotp.c
-> +++ b/drivers/nvmem/imx-ocotp.c
-> @@ -76,6 +76,8 @@
->   #define IMX_OCOTP_WR_UNLOCK            0x3E770000
->   #define IMX_OCOTP_READ_LOCKED_VAL      0xBADABADA
-> 
-> +#define IMX_OCOTP_MAC_MAX              0x2     /* The maximum numbers of MAC instance */
-> +
->   static DEFINE_MUTEX(ocotp_mutex);
-> 
->   struct ocotp_priv {
-> @@ -93,11 +95,18 @@ struct ocotp_ctrl_reg {
->          u32 bm_rel_shadows;
->   };
-> 
-> +struct mac_config {
-> +       u32 offset;
-> +       u32 size;
-> +       bool reverse_byte;
-> +};
-> +
->   struct ocotp_params {
->          unsigned int nregs;
->          unsigned int bank_address_words;
->          void (*set_timing)(struct ocotp_priv *priv);
->          struct ocotp_ctrl_reg ctrl;
-> +       struct mac_config mac[IMX_OCOTP_MAC_MAX];
->   };
-> 
->   static int imx_ocotp_wait_for_busy(struct ocotp_priv *priv, u32 flags)
-> @@ -211,6 +220,20 @@ static int imx_ocotp_read(void *context, unsigned int offset,
->          }
-> 
->          index = offset % 4;
-> +
-> +       /* Handle MAC address reverse byte if required */
-> +       for (i = 0; i < IMX_OCOTP_MAC_MAX; i++) {
-> +               if (offset == priv->params->mac[i].offset &&
-> +                   bytes == priv->params->mac[i].size &&
-> +                   priv->params->mac[i].reverse_byte) {
-> +                       u8 *org = &p[index];
-> +                       int j;
-> +
-> +                       for (j = 0; j < bytes/2; j++)
-> +                               swap(org[j], org[bytes-j-1]);
-> +               }
-> +       }
-> +
->          memcpy(val, &p[index], bytes);
-> 
->   read_end:
-> @@ -556,6 +579,12 @@ static const struct ocotp_params imx8mp_params = {
->          .bank_address_words = 0,
->          .set_timing = imx_ocotp_set_imx6_timing,
->          .ctrl = IMX_OCOTP_BM_CTRL_8MP,
-> +       .mac[0].offset = 0x90,
-> +       .mac[0].size = 6,
-> +       .mac[0].reverse_byte = true,
-> +       .mac[1].offset = 0x96,
-> +       .mac[1].size = 6,
-> +       .mac[1].reverse_byte = true,
->   };
-> 
->   static const struct of_device_id imx_ocotp_dt_ids[] = {
-> 
-> 
-> Best Regards,
-> Joakim Zhang
-> 
