@@ -2,162 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CACD402CC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:20:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12DEA402CCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234105AbhIGQV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:21:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41574 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231961AbhIGQV2 (ORCPT
+        id S234437AbhIGQYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 12:24:25 -0400
+Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:52324 "EHLO
+        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230113AbhIGQYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:21:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1631031621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=s5kpwoL6JLP9VWq157hj4yt5pn95OzlSkFYcjxu+uM8=;
-        b=A//GbMzVInx3sIjulM8vMA2hwvrRkGYJHTASDkQ2/e56WCkn6o1BuF9szfdJ2r4jigSVSc
-        wBA48ke7CgXgXcBx6OKsrk26TkUfeb/89wag7B6Ls9sgoBhrSOM0noizfDUHs3UItTJwVd
-        4EBtaP5KQ7o9ZSGfdDuYN5UsED45+QM=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-119-gj_yjZH-OO2k8pzaFrtlzg-1; Tue, 07 Sep 2021 12:20:20 -0400
-X-MC-Unique: gj_yjZH-OO2k8pzaFrtlzg-1
-Received: by mail-ed1-f69.google.com with SMTP id z17-20020a05640240d100b003cac681f4f4so5430288edb.21
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 09:20:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=s5kpwoL6JLP9VWq157hj4yt5pn95OzlSkFYcjxu+uM8=;
-        b=aF3NQDz79Z+bI+vzJwHciO5hrGU9kEVlAqp2KID7NBMfanOLjPBhEtM/dMZewbL4Hq
-         vnKVl8U5lYutngIop/KrIdgfr1XZrOaADY7P2CZvD3XWNgOAhTbTkuW2T7JDTIRfcZPx
-         6stwPW5TYcMrMREdI+JMbY5qCf/m8oyTXnmbi4aYhNWZEp/pDuQNuEXSuktcEOY1yc4i
-         cBwDwZa/xu8rKA9PYeCWKWXZ6F5QtfBkOvUOwseVoJfar7RhL6gyW7yD2mCcvXNx31PN
-         xfQQJ4XsckNzHX6joeg8B4aBgy+a9ruN1M12LQyBn76Rx+hyZjlCh4FJhpUA+JqkW/gU
-         puSA==
-X-Gm-Message-State: AOAM531xqHY+1YTyh/VjELmJS/11zeLoScCinFKEwTvXTau7p2VnW2dA
-        BptfR2U5EILMed/tlGUFSV1SO2KLmJGXne4K79HGhCZSJcFDV5rM3KyKEYq0J33mHDnIsIO5Dj5
-        x5yIFZuMhQsPe50HEd81q+LT9
-X-Received: by 2002:aa7:d351:: with SMTP id m17mr307619edr.72.1631031618935;
-        Tue, 07 Sep 2021 09:20:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxlG1x6vmubv9Q2F6F+Q/kXpwV0kbe4co0LWgBBS7NPE4nU1F3mfGZ5885MxN5txLMEejY+/w==
-X-Received: by 2002:aa7:d351:: with SMTP id m17mr307607edr.72.1631031618753;
-        Tue, 07 Sep 2021 09:20:18 -0700 (PDT)
-Received: from gator.home (cst2-174-132.cust.vodafone.cz. [31.30.174.132])
-        by smtp.gmail.com with ESMTPSA id a24sm6571101edu.49.2021.09.07.09.20.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 09:20:18 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 18:20:16 +0200
-From:   Andrew Jones <drjones@redhat.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Shier <pshier@google.com>, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>, kvmarm@lists.cs.columbia.edu,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 12/12] KVM: arm64: selftests: arch_timer: Support vCPU
- migration
-Message-ID: <20210907162016.2axil4gjjvkafnkx@gator.home>
-References: <20210901211412.4171835-1-rananta@google.com>
- <20210901211412.4171835-13-rananta@google.com>
- <20210903110514.22x3txynin5hg46z@gator.home>
- <CAJHc60xf90-0E8vkge=UC0Mq3Wz3g=n1OuHa2Lchw4G6egJEig@mail.gmail.com>
- <20210906063900.t6rbykpwyau5u32s@gator.home>
- <CAJHc60xEj3Xw9wcSbxCUXg0GE5+NTadQeO17f6hpa9VqQ1o5tg@mail.gmail.com>
+        Tue, 7 Sep 2021 12:24:24 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 42E43821B6;
+        Tue,  7 Sep 2021 19:23:14 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1631031794;
+        bh=DyFRy6mgDgXsW8PfqWeNWX+7xung96yyOFRQPeJPy/M=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=hoAGxUBFPTEBhZOZLuy7ZvLiqjuUOs26qv0erv/QQAxE/wei2tG7zarTQLLB7Qun3
+         j7T8PN8QV8Tif8w+jxPLJHPQzAn0Qdjc3rbbDGs/pteOrBffKiiEwwkHoqsPXygwV+
+         SR8e7cG17Ci0v/n51GYU7A7U8fO4fK1llG8aS6Z4=
+Received: from [192.168.211.115] (192.168.211.115) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 7 Sep 2021 19:23:13 +0300
+Subject: Re: [PATCH 2/5] fs/ntfs3: Use consistent spacing around '+'
+To:     Kari Argillander <kari.argillander@gmail.com>
+CC:     Joe Perches <joe@perches.com>, <ntfs3@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>
+References: <20210831181505.1074767-1-kari.argillander@gmail.com>
+ <20210831181505.1074767-3-kari.argillander@gmail.com>
+ <1d303f4553e67abee4f0c4cdc32231813a4bcb3f.camel@perches.com>
+ <20210902081020.g5hclc45zjng3ll2@kari-VirtualBox>
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Message-ID: <bb8fff4c-ae09-cab0-cd71-c34b872c9211@paragon-software.com>
+Date:   Tue, 7 Sep 2021 19:23:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJHc60xEj3Xw9wcSbxCUXg0GE5+NTadQeO17f6hpa9VqQ1o5tg@mail.gmail.com>
+In-Reply-To: <20210902081020.g5hclc45zjng3ll2@kari-VirtualBox>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.211.115]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 09:14:54AM -0700, Raghavendra Rao Ananta wrote:
-> On Sun, Sep 5, 2021 at 11:39 PM Andrew Jones <drjones@redhat.com> wrote:
-> >
-> > On Fri, Sep 03, 2021 at 01:53:27PM -0700, Raghavendra Rao Ananta wrote:
-> > > On Fri, Sep 3, 2021 at 4:05 AM Andrew Jones <drjones@redhat.com> wrote:
-> > > >
-> > > > On Wed, Sep 01, 2021 at 09:14:12PM +0000, Raghavendra Rao Ananta wrote:
-> > > > > Since the timer stack (hardware and KVM) is per-CPU, there
-> > > > > are potential chances for races to occur when the scheduler
-> > > > > decides to migrate a vCPU thread to a different physical CPU.
-> > > > > Hence, include an option to stress-test this part as well by
-> > > > > forcing the vCPUs to migrate across physical CPUs in the
-> > > > > system at a particular rate.
-> > > > >
-> > > > > Originally, the bug for the fix with commit 3134cc8beb69d0d
-> > > > > ("KVM: arm64: vgic: Resample HW pending state on deactivation")
-> > > > > was discovered using arch_timer test with vCPU migrations and
-> > > > > can be easily reproduced.
-> > > > >
-> > > > > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > > > > ---
-> > > > >  .../selftests/kvm/aarch64/arch_timer.c        | 108 +++++++++++++++++-
-> > > > >  1 file changed, 107 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> > > > > index 1383f33850e9..de246c7afab2 100644
-> > > > > --- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> > > > > +++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-> > > > > @@ -14,6 +14,8 @@
-> > > > >   *
-> > > > >   * The test provides command-line options to configure the timer's
-> > > > >   * period (-p), number of vCPUs (-n), and iterations per stage (-i).
-> > > > > + * To stress-test the timer stack even more, an option to migrate the
-> > > > > + * vCPUs across pCPUs (-m), at a particular rate, is also provided.
-> > > > >   *
-> > > > >   * Copyright (c) 2021, Google LLC.
-> > > > >   */
-> > > > > @@ -24,6 +26,8 @@
-> > > > >  #include <pthread.h>
-> > > > >  #include <linux/kvm.h>
-> > > > >  #include <linux/sizes.h>
-> > > > > +#include <linux/bitmap.h>
-> > > > > +#include <sys/sysinfo.h>
-> > > > >
-> > > > >  #include "kvm_util.h"
-> > > > >  #include "processor.h"
-> > > > > @@ -41,12 +45,14 @@ struct test_args {
-> > > > >       int nr_vcpus;
-> > > > >       int nr_iter;
-> > > > >       int timer_period_ms;
-> > > > > +     int migration_freq_ms;
-> > > > >  };
-> > > > >
-> > > > >  static struct test_args test_args = {
-> > > > >       .nr_vcpus = NR_VCPUS_DEF,
-> > > > >       .nr_iter = NR_TEST_ITERS_DEF,
-> > > > >       .timer_period_ms = TIMER_TEST_PERIOD_MS_DEF,
-> > > > > +     .migration_freq_ms = 0,         /* Turn off migrations by default */
-> > > >
-> > > > I'd rather we enable good tests like these by default.
-> > > >
-> > > Well, that was my original idea, but I was concerned about the ease
-> > > for diagnosing
-> > > things since it'll become too noisy. And so I let it as a personal
-> > > preference. But I can
-> > > include it back and see how it goes.
-> >
-> > Break the tests into two? One run without migration and one with. If
-> > neither work, then we can diagnose the one without first, possibly
-> > avoiding the need to diagnose the one with.
-> >
-> Right. I guess that's where the test's migration switch can come in handy.
-> Let's turn migration ON by default. If we see a failure, we can turn
-> OFF migration
-> and run the tests. I'll try to include some verbose printing for diagnosability.
->
 
-Sounds good. You can also consider using pr_debug if you feel the need to
-balance verbosity with diagnostics.
 
-Thanks,
-drew
+On 02.09.2021 11:10, Kari Argillander wrote:
+> On Wed, Sep 01, 2021 at 09:22:19PM -0700, Joe Perches wrote:
+>> On Tue, 2021-08-31 at 21:15 +0300, Kari Argillander wrote:
+>>> Use consistent spacing around '+' for better code reading. Checkpatch
+>>> will also be happy.
+>>
+>> I think you should remove the + instead
+> 
+> Konstantin can you look this as this was introduce by you just couple
+> days ago? 
+> 
+>>
+>>> diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
+>> []
+>>> @@ -1451,7 +1451,7 @@ int ni_insert_resident(struct ntfs_inode *ni, u32 data_size,
+>>>  		attr->res.flags = RESIDENT_FLAG_INDEXED;
+>>>  
+>>>
+>>>  		/* is_attr_indexed(attr)) == true */
+>>> -		le16_add_cpu(&ni->mi.mrec->hard_links, +1);
+>>> +		le16_add_cpu(&ni->mi.mrec->hard_links, + 1);
+>>
+>> 		le16_add_cpu(&ni->mi.mrec->hard_links, 1);
+>>
+>>
 
+Hi, Kari, Joe!
+Yes, '+' can be removed, it was added for better visibility,
+but it's subjective. 
+After checking code - it's the only place with '+1', so let's remove it.
