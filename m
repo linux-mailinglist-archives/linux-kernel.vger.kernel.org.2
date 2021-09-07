@@ -2,103 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F274402765
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D120402767
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 12:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245399AbhIGKxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 06:53:41 -0400
-Received: from mail-vs1-f49.google.com ([209.85.217.49]:45908 "EHLO
-        mail-vs1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233669AbhIGKxk (ORCPT
+        id S1343512AbhIGKxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 06:53:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233669AbhIGKxy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 06:53:40 -0400
-Received: by mail-vs1-f49.google.com with SMTP id a21so7869337vsp.12;
-        Tue, 07 Sep 2021 03:52:34 -0700 (PDT)
+        Tue, 7 Sep 2021 06:53:54 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2432C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 03:52:48 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id o16-20020a9d2210000000b0051b1e56c98fso12211172ota.8
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 03:52:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
+         :subject:to;
+        bh=OyIB5aWCPQPIxRpPcXS3MVhfx/nzhAHC4exUCuBb7Ys=;
+        b=J/WacDcZgOwqYm5/Xq1eSbuRfC5sAfsIZ3v8deynA1Ni4Mzso7Fl/fex0+/PoGT3+9
+         BpwMaSv+QvlKP/SSVeaaZnRdl+mRJFVg7KkpB6m3ehAfJhIm1bWknayIuEwLxI/0thse
+         HLRn03roOBcX3k3ApoPvhw8srtYRU0Fn63LhbJZ1NdryMnJ5q5xwqBrG4FakVkNeC9fY
+         U84Z9FhBEiY3WC8jUcmqbbRlEs/Obwe7yAJ2UWVjXsbV6cS7mF7+Qnkgb2eeAwUN1t7U
+         ihauSyGM034OPY+mtDKvLYWN93NH/HrACQpg1GTFraaVy/5qg72q7A0QYVrW7R5qJ1Iq
+         u7yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qCf3lFp7ZGPo81H5gKpqZfRLJ1Kl9E59yB1iRSg+398=;
-        b=bH+J8+qsvxBOC7tU8boBHqEQDf6GW+GOiUsKyqs6mbquDv7ZOFQTW0vDrRywcMkL7y
-         CsDfyPEpvvMSHibmZRSULQsqlwBnt+3Qqrs2dWMQM+8K4H3/ba6eycHrllB3GuhLONju
-         lGPWT5PsL269r0bEd481aNytA+ZGX53MEtQrdhViAj3Vi74USzjusbE4lksJvRqi4bHS
-         OMjuv06wedEap1M9pWHGuLsaht8aO8kCI9LMGO+lpn846e9PRBOJWn9Y/TWhRraUyQEP
-         caJ1sSnf7Yn/NcPd0tq09wonblUK29dw44WESxBHjdazE7Z8eJhQknhiJn0DISFr7Rok
-         /3iw==
-X-Gm-Message-State: AOAM530l7Fu/u2kEKKMPruJOYDV8mU21srd6wiDyL35jj8vE88WVRqQ4
-        yFd+5ZGxoFfYWZ4h6Owz8AICTm68QDjHqEKY8mI=
-X-Google-Smtp-Source: ABdhPJwtlynwlS2RjnxuBuaVv2UUOMjVP3bB5VwN/mxwvip/epfm14g2QfISYnoL/c/9wy3QhvSCVhG2PAXLPRrC3l0=
-X-Received: by 2002:a05:6102:2417:: with SMTP id j23mr8477213vsi.35.1631011952978;
- Tue, 07 Sep 2021 03:52:32 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
+         :from:date:message-id:subject:to;
+        bh=OyIB5aWCPQPIxRpPcXS3MVhfx/nzhAHC4exUCuBb7Ys=;
+        b=NLZmOdGa/W7MztCA5UrzR33S6mGxChw/xaWh1wLO/OQYX0COFiojuHQtPRpDDOl0oi
+         bLQ59/X1jrOWbIo5Z9bE2Oqzzm6v7/90ZIaNpJ4xYv/ViwgqTEGP9xm8y/9+3Xma9LoV
+         4mzSK0QbzlXSGIIXaGbCufHa1hOxLE97QT4aE+4Jk8OdBpTQk7u6dcDtpSjeSzuEoF1Q
+         +fmtJNXuvwK5ik+TUam+GTc40Ub3lkvjWOmFKSKsyYG05PaFS9m8lTurT31O1mUhJXI9
+         BhEuh4C40gtwaeLuEDJcaUdaQpOm8aUHV1sTOWk4GSa8kWjmlTaU4bvQWtJ6WQjrIRSc
+         hKnA==
+X-Gm-Message-State: AOAM532mzEhGP/qX30zi2g73bl/HbAT2wrBw2rmFze+RdZHM+XDaEkMc
+        pCWIFn1OreXO7LkNv6qiJhNAIjumDL/5qnDsCDo=
+X-Google-Smtp-Source: ABdhPJxVqTRpSG40+xLzF97h6IzIt5CRrI7eNpE/w+zfU0R5xZ2TvYuKDcWjYTD7Ex+k+RMWuc0511GDEktaPI3cR+U=
+X-Received: by 2002:a9d:4111:: with SMTP id o17mr14048231ote.355.1631011966320;
+ Tue, 07 Sep 2021 03:52:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210902230442.1515531-1-saravanak@google.com>
- <20210902230442.1515531-2-saravanak@google.com> <CAPDyKFpP6pSRSw8_OAW8+ZJNH+CwXtfWBNDcD182gQmzqW=O5g@mail.gmail.com>
- <CAMuHMdVgjxJwd=PbUSR+9mgxexr3O_O6j-3T24GzE08CqzDjjA@mail.gmail.com> <CAPDyKFrGyOWSxe=0DGWNQ75YQgXVa62WF8=pOHNCWUh5PLcdqQ@mail.gmail.com>
-In-Reply-To: <CAPDyKFrGyOWSxe=0DGWNQ75YQgXVa62WF8=pOHNCWUh5PLcdqQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 7 Sep 2021 12:52:21 +0200
-Message-ID: <CAMuHMdVawd1_twGnWE7GzbPKXeKr+gCCXfodiBdECLScHRTBag@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] of: platform: Make sure bus only devices get probed
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>
+Received: by 2002:ac9:1249:0:0:0:0:0 with HTTP; Tue, 7 Sep 2021 03:52:45 -0700 (PDT)
+Reply-To: j8108477@gmail.com
+In-Reply-To: <CAPekpP+Zpz47pLjY76Q1Bc0+L=vR5B-zO1M+fQMcx1-6jN3gww@mail.gmail.com>
+References: <CAPekpP+Zpz47pLjY76Q1Bc0+L=vR5B-zO1M+fQMcx1-6jN3gww@mail.gmail.com>
+From:   Mrs Norah Jane <sla03572@gmail.com>
+Date:   Tue, 7 Sep 2021 12:52:45 +0200
+Message-ID: <CAPekpPJso2Rd1GAnuJgRwLHNASBhAzGz-U1AWKEXnbukEfq6NA@mail.gmail.com>
+Subject: Fwd:
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ulf,
+---------- Forwarded message ----------
+From: Mrs Norah Jane <sla03572@gmail.com>
+Date: Mon, 6 Sep 2021 16:49:02 +0200
+Subject:
+To: sla03572@gmail.com
 
-On Tue, Sep 7, 2021 at 12:36 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> On Fri, 3 Sept 2021 at 16:29, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Fri, Sep 3, 2021 at 11:19 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > On Fri, 3 Sept 2021 at 01:04, Saravana Kannan <saravanak@google.com> wrote:
-> > > > fw_devlink could end up creating device links for bus only devices.
-> > > > However, bus only devices don't get probed and can block probe() or
-> > > > sync_state() [1] call backs of other devices. To avoid this, set up
-> > > > these devices to get probed by the simple-pm-bus.
-> > > >
-> > > > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
-> > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > Tested-by: Saravana Kannan <saravanak@google.com>
-> > >
-> > > Again, this looks like a nice solution to the problem.
-> > >
-> > > One question though. The Kconfig SIMPLE_PM_BUS, should probably be
-> > > "default y" - or something along those lines to make sure fw_devlink
-> > > works as expected.
-> >
-> > I would love for SIMPLE_PM_BUS to go away, and all of its functionality
-> > to be usurped by the standard simple-bus handling.
-> >
-> > In the modern world, everything uses power management and Runtime
-> > PM, and the distinction between "simple-bus" and "simple-pm-bus"
-> > is purely artificial.
->
-> I think it's not that easy, but maybe I am wrong.
->
-> Today we have an opt-in way of supporting runtime PM (and power
-> management). In most cases it's up to drivers or subsystem level code
-> to decide if runtime PM should be enabled for the device.
->
-> Would it really be okay to enable runtime PM for all of them?
-
-You're talking about the software policy side.
-
-From my PoV, the issue is that this decision is leaked into DT, through
-the different compatible values ("simple-pm-bus" vs. "simple-bus").
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+HI, DID YOU RECEIVE MY MAIL?
