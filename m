@@ -2,93 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7DF240221A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7D3402224
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239947AbhIGBs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 21:48:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232766AbhIGBs6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 21:48:58 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6435C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 18:47:52 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id s29so6866291pfw.5
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 18:47:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6mc027pv6u15MDfXa8/3uliAGB1haKo3X34nc3V5v00=;
-        b=oC0DtrPvwGiND0GVCJXzXX+dI34T4Zqz0WDJq566WiviOsRcoCp10XRByr4+cjaegm
-         Mz4YmBM2xfPwYdcc8pL7u6265hJfeL8l5wVMS2lthiuR+gOihgA5sYWpjxMGbSxCy/eY
-         xgZAKIx3setTGWmKAiD4FzZo+dksYXs9e3yMhTRteSmu5D0SgwEUrM86yYzSkE1x1Ny8
-         +CSLi6GoRIUNdcdUsKhUEN31ciH0rSqnIZcFtgJtJOGX6aoeF1I35Ea+QMrPftKVUZAG
-         nvlr9rkU84SzeChGIDD1xlTQmn/7j7CEWx8PHH/wj0vavyzZEmNN8JqwU2+w8b8ZVpgG
-         h3AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6mc027pv6u15MDfXa8/3uliAGB1haKo3X34nc3V5v00=;
-        b=WXCoEXoqDhKFWAKdMgvjL8XYXFEzPzLMO6mWR/XzBdMxlD1kpuaVInevQ9YarLs1+A
-         3N6dLM+RyOSH2j26pHIasy4w2KV2Sp/8d3wb++Ui9EkFcb4SOXlLAROvQHfzoE49/EkH
-         xiDdKyweZWaDugGh1mpw6/mNOo8vmfRJ7SqgUDF0yfahy3E/5ru2R/ji5QszxagFF5vP
-         +btdYkMYN/9RofAGPlkXMmdukEEZLp+s29gXz3I/cKZdf2iBSUAy4tvV4P0QU6qhxLcC
-         bIwtVaCtNPHDyrnV/NAI/hxsrk30cVpLFxVhjzWXkHBYZFa/zQjOzyimCLfEmnYG2HLR
-         KKXQ==
-X-Gm-Message-State: AOAM5320TTgdvpoiLlL0WtOlKaawvTzsxx3H0Qq9y7H9lbxXT1DeFBWn
-        4yp7a9dcIQOZ6P/UYPChXGAc93tIGep8WQ==
-X-Google-Smtp-Source: ABdhPJxUQ+t24jfciNyfQu1gi3O+qJsmIQ4TWAwZD7uUI8KaPuNkV7ME7C8E94lysZjNFushXSkUuQ==
-X-Received: by 2002:a62:36c3:0:b0:3fd:52ea:bd70 with SMTP id d186-20020a6236c3000000b003fd52eabd70mr14379411pfa.38.1630979272172;
-        Mon, 06 Sep 2021 18:47:52 -0700 (PDT)
-Received: from tong-desktop.local (99-105-211-126.lightspeed.sntcca.sbcglobal.net. [99.105.211.126])
-        by smtp.googlemail.com with ESMTPSA id p16sm545172pjz.44.2021.09.06.18.47.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Sep 2021 18:47:51 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Tong Zhang <ztong0001@gmail.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] ALSA: vx222: fix null-ptr-deref
-Date:   Mon,  6 Sep 2021 18:47:45 -0700
-Message-Id: <20210907014746.1445278-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S240889AbhIGB6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 21:58:49 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:56752 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229835AbhIGB6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 6 Sep 2021 21:58:47 -0400
+Received: from BC-Mail-Ex26.internal.baidu.com (unknown [172.31.51.20])
+        by Forcepoint Email with ESMTPS id 98B5652CD701E2D33035;
+        Tue,  7 Sep 2021 09:57:35 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex26.internal.baidu.com (172.31.51.20) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 7 Sep 2021 09:57:35 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 7 Sep 2021 09:57:34 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <caihuoqing@baidu.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "Sascha Hauer" <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/3] iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC
+Date:   Tue, 7 Sep 2021 09:57:20 +0800
+Message-ID: <20210907015724.1377-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex12.internal.baidu.com (172.31.51.52) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-a recent refactor created a null pointer vx in snd_vx222_probe().
-The vx pointer should have been populated in snd_vx222_create() as
-suggested in earlier version, otherwise vx->core.ibl.size will throw an
-error.
+The NXP i.MX 8QuadXPlus SOC has a new ADC IP. These patches add
+driver support for this ADC
 
-[    1.298398] BUG: kernel NULL pointer dereference, address: 00000000000001d8
-[    1.316799] RIP: 0010:snd_vx222_probe+0x155/0x290 [snd_vx222]
+dt-bindings: iio: adc:
+v1->v2: *Fix some indentation issues.
+        *Mark status as okay.
+        *Change clock2 source.
 
-Fixes: 3bde3359aa16 ("ALSA: vx222: Allocate resources with device-managed APIs")
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
- sound/pci/vx222/vx222.c | 1 +
- 1 file changed, 1 insertion(+)
+iio: imx8qxp-adc:
+v1->v2:	*Squash patches 1, 2, 3, and 5 into a single patch.
+	*Add device specific prefix.
+	*Remove the brackets around individual numbers.
+	*Make use of FIELD_PREP() and FIELD_GET().
+	*Remove a lot of cache values.
+	*Replace mlock with adc->lock.
+	*Move adc->value read from isr to the completion.
+	*Set pm_runtime_disable/_put_noidle() before adc_disable.
+	*Add error handler-err_disable_reg/err_unprepare_clk.
+v2->v3: *Add "return 0" to adc_runtime_resume()
 
-diff --git a/sound/pci/vx222/vx222.c b/sound/pci/vx222/vx222.c
-index f48cc20b9e8a..468a6a20dc1e 100644
---- a/sound/pci/vx222/vx222.c
-+++ b/sound/pci/vx222/vx222.c
-@@ -137,6 +137,7 @@ static int snd_vx222_create(struct snd_card *card, struct pci_dev *pci,
- 	}
- 	chip->irq = pci->irq;
- 	card->sync_irq = chip->irq;
-+	*rchip = vx;
- 
- 	return 0;
- }
+v1 link:
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210830172140.414-4-caihuoqing@baidu.com/
+
+Cai Huoqing (3):
+  iio: imx8qxp-adc: Add driver support for NXP IMX8QXP ADC
+  dt-bindings: iio: adc: Add the binding documentation for NXP IMX8QXP
+    ADC
+  MAINTAINERS:  Add the driver info of the NXP IMX8QXP ADC
+
+ .../bindings/iio/adc/nxp,imx8qxp-adc.yaml     |  85 ++++
+ MAINTAINERS                                   |   7 +
+ drivers/iio/adc/Kconfig                       |  10 +
+ drivers/iio/adc/Makefile                      |   1 +
+ drivers/iio/adc/imx8qxp-adc.c                 | 470 ++++++++++++++++++
+ 5 files changed, 573 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
+ create mode 100644 drivers/iio/adc/imx8qxp-adc.c
+
 -- 
 2.25.1
 
