@@ -2,128 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F1B402FB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C004402FB4
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346832AbhIGU1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:27:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346879AbhIGU0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:26:46 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 531E261152;
-        Tue,  7 Sep 2021 20:25:39 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 16:25:37 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Liam Howlett <liam.howlett@oracle.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michel Lespinasse <walken.cr@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v3] mmap_lock: Change trace and locking order
-Message-ID: <20210907162537.27cbf082@gandalf.local.home>
-In-Reply-To: <20210907201456.4036910-1-Liam.Howlett@oracle.com>
-References: <20210907201456.4036910-1-Liam.Howlett@oracle.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1346502AbhIGU1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:27:49 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:39027 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1346457AbhIGU1r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 16:27:47 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 664BF5C0152;
+        Tue,  7 Sep 2021 16:26:40 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute1.internal (MEProxy); Tue, 07 Sep 2021 16:26:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm2; bh=lcpU2CxkGVxmNJlEgg40FlED8MuY
+        46mhZqXqU1CnrRQ=; b=VjcHXlXAALRMftUEOdXM6giehfWYvRiyBMyyYGIXffPZ
+        YMTOvDYAItd4hZB40+/NQjN+W1qaVkX5CUFODvGX/RiVBJYhSOzOz13X6t166qM2
+        EvcU8MY8g9st6pVtZJZ/lnWdutcYf0mZDWWojV4QBBsDvqQNjCSn5n4jienM77Jx
+        dw8MPrEyLYXHwRX1rsm41zQck14brFoKkHL3+7wikiNnSMErysNZVaR8PQg2A89b
+        qZdx6m1vC+gS7r89faBcb4lhVjYtxYEOqPJW8MjiwVmkSS6fl5vxJs67SDBsfmaM
+        KvayNwVDjBCQx2TuCwvadHkWCDItS97ynUJ3JR/Zqw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=lcpU2C
+        xkGVxmNJlEgg40FlED8MuY46mhZqXqU1CnrRQ=; b=KIRudOLKGrSUVYTPzOw7BJ
+        te7I+q51c9DsYZ0Yz1D6oM9MyUQnRfga6EdCYLXNSfF/Ai6P35rwacb+2rWX6N3S
+        Tncij3mLh1lE1a0QbZjc+q05oDgdy1F5EnJN7oXOxqbM8htzHKFkGfVFRRVlUfSH
+        Fzw9jBvydmBrd1Hm/4Rj10sktRbQp+I6bIrpuyH+P+XvioBgRjkOBZpFPopGxioy
+        TWpna7O8efxiE1n0vRcUv4E0Mtxzfp066hMmu7OIET2kxdAZJNtqHNWqHIg931pU
+        1FYmUMJ/FwnznYoaDXnR6G5kNEm0Mg5gADYgIXMWjd9goYvORHqQSG2pDjCPWFOw
+        ==
+X-ME-Sender: <xms:_so3YXDDPjIBTx_RdwC497gX2ANCbQJoppWbdA6mUCwAMp9WPoW0TA>
+    <xme:_so3YdjyhVse3DRyoxKyE_drG6yFaYgm3WNOUIowqVHKDJxt09Y7vzntH5_ikhpS8
+    -ysmSUyrIEkdp_pOsM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudefhedgudehtdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhv
+    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
+    grthhtvghrnhepgfeigeeiffeuhfettdejgfetjeetfeelfefgfefgvddvtdfghfffudeh
+    vdefkeffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epshhvvghnsehsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:_so3YSnOtnZhYCbTHc0NChq0Dfest5tSxwJUQ8GpOzHNEczOWRuFWA>
+    <xmx:_so3YZwJvqmQrOKZhb6G-5dUyUudiTN1FhUErBXbAeLv2MR1Tnm5zw>
+    <xmx:_so3YcQDoGKK0GfB0PtaS38QbuEbrm2BwMOwYkEz8dHnJbi2RTRTkg>
+    <xmx:AMs3YRTjMUWlKqiUoNjyd5LiSh4EGNmrv4eKWnkKiYgb91zF8ry2TA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C7D0C51C0060; Tue,  7 Sep 2021 16:26:38 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-1126-g6962059b07-fm-20210901.001-g6962059b
+Mime-Version: 1.0
+Message-Id: <ff66c30d-1b43-43d3-a4b0-02fe7d346118@www.fastmail.com>
+In-Reply-To: <YTe17jGBobarePaK@sunset>
+References: <20210907145501.69161-1-sven@svenpeter.dev>
+ <20210907145501.69161-3-sven@svenpeter.dev> <YTe17jGBobarePaK@sunset>
+Date:   Tue, 07 Sep 2021 22:26:17 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Alyssa Rosenzweig" <alyssa@rosenzweig.io>
+Cc:     "Jassi Brar" <jassisinghbrar@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
+        "Hector Martin" <marcan@marcan.st>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
+        "Stan Skowronek" <stan@corellium.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: mailbox: Add Apple mailbox bindings
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 7 Sep 2021 20:15:19 +0000
-Liam Howlett <liam.howlett@oracle.com> wrote:
+Hi,
 
-> The ordering of the printed messages from the mmap_lock trace can occur
-> out of order.  This results in confusing trace logs such as:
+
+On Tue, Sep 7, 2021, at 20:56, Alyssa Rosenzweig wrote:
+> > +      - description:
+> > +          M3 mailboxes are an older variant with a slightly different MMIO
+> > +          interface still found on the M1.
+> > +        items:
+> > +          - const: apple,t8103-m3-mailbox
 > 
-> task          cpu     atomic counter: message
-> ---------------------------------------------
-> task-749     [006] ....     14437980: mmap_lock_acquire_returned: mm=00000000c94d28b8 memcg_path= write=true success=true
-> task-750     [007] ....     14437981: mmap_lock_acquire_returned: mm=00000000c94d28b8 memcg_path= write=true success=true
-> task-749     [006] ....     14437983: mmap_lock_released: mm=00000000c94d28b8 memcg_path= write=true
+> Would be nice to document an example of where an M3 mailbox is found.
+
+Sure, I can add a comment that this is used for the coprocessor controlling Thunderbolt.
+
 > 
-> When the actual series of evens are as follows:
+> > +  interrupts:
+> > +    minItems: 4
+> > +    items:
+> > +      - description: send fifo is empty interrupt
+> > +      - description: send fifo is not empty interrupt
+> > +      - description: receive fifo is empty interrupt
+> > +      - description: receive fifo is not empty interrupt
+> > +
+> > +  interrupt-names:
+> > +    minItems: 4
+> > +    items:
+> > +      - const: send-empty
+> > +      - const: send-not-empty
+> > +      - const: recv-empty
+> > +      - const: recv-not-empty
 > 
-> task-749     [006]  mmap_lock_acquire_returned: mm=00000000c94d28b8 memcg_path= write=true success=true
-> task-749     [006]  mmap_lock_released: mm=00000000c94d28b8 memcg_path= write=true
+> If the names became not-constant the asprintf thing goes away, not sure
+> that's better or worse.
+
+I'm not sure I understand your comment here. This property just gives a name
+to the interrupts so that they can be referenced by that instead of a magic
+number between 0 and 4 in the driver.
+
 > 
-> task-750     [007]  mmap_lock_acquire_returned: mm=00000000c94d28b8 memcg_path= write=true success=true
+> > +  clocks:
+> > +    description:
+> > +      Reference to the clock gate phandle(s) if required for this mailbox.
+> > +      Optional since not all mailboxes are attached to a clock gate.
 > 
-> The incorrect ordering of the trace log happens because the release log
-> is outside of the lock itself.  The ordering can be guaranteed by
-> protecting the acquire success and release trace logs by the lock.
+> Do we do anything with the clocks at this point?
 > 
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-> Suggested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-FYI,
-
-If you received Acks for a patch, and you resend just to update the change
-log, you can then include those acks in that email, as the acks were
-already done for the code change. If you change the code, you may need to
-ask to get the review/acks again.
-
-But since this time you only changed the change log, and the code is still
-the same, you should have included:
-
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
--- Steve
+The device tree bindings describe the hardware (as best as we can without proper
+documentation) and some of these mailboxes have clock gates which need to be turned
+on before accessing their MMIO. This driver already tries to do that and works fine
+with the downstream clock driver(s) we have.
 
 
 
-> ---
->  include/linux/mmap_lock.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
-> index 0540f0156f58..b179f1e3541a 100644
-> --- a/include/linux/mmap_lock.h
-> +++ b/include/linux/mmap_lock.h
-> @@ -101,14 +101,14 @@ static inline bool mmap_write_trylock(struct mm_struct *mm)
->  
->  static inline void mmap_write_unlock(struct mm_struct *mm)
->  {
-> -	up_write(&mm->mmap_lock);
->  	__mmap_lock_trace_released(mm, true);
-> +	up_write(&mm->mmap_lock);
->  }
->  
->  static inline void mmap_write_downgrade(struct mm_struct *mm)
->  {
-> -	downgrade_write(&mm->mmap_lock);
->  	__mmap_lock_trace_acquire_returned(mm, false, true);
-> +	downgrade_write(&mm->mmap_lock);
->  }
->  
->  static inline void mmap_read_lock(struct mm_struct *mm)
-> @@ -140,8 +140,8 @@ static inline bool mmap_read_trylock(struct mm_struct *mm)
->  
->  static inline void mmap_read_unlock(struct mm_struct *mm)
->  {
-> -	up_read(&mm->mmap_lock);
->  	__mmap_lock_trace_released(mm, false);
-> +	up_read(&mm->mmap_lock);
->  }
->  
->  static inline bool mmap_read_trylock_non_owner(struct mm_struct *mm)
-> @@ -155,8 +155,8 @@ static inline bool mmap_read_trylock_non_owner(struct mm_struct *mm)
->  
->  static inline void mmap_read_unlock_non_owner(struct mm_struct *mm)
->  {
-> -	up_read_non_owner(&mm->mmap_lock);
->  	__mmap_lock_trace_released(mm, false);
-> +	up_read_non_owner(&mm->mmap_lock);
->  }
->  
->  static inline void mmap_assert_locked(struct mm_struct *mm)
-
+Sven
