@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943274024A7
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF9C4024A6
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242145AbhIGHo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 03:44:28 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:45012 "EHLO baidu.com"
+        id S242791AbhIGHoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 03:44:23 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:45106 "EHLO baidu.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241825AbhIGHn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 03:43:29 -0400
-Received: from BC-Mail-Ex25.internal.baidu.com (unknown [172.31.51.19])
-        by Forcepoint Email with ESMTPS id 1F77427EB0C373F503AD;
-        Tue,  7 Sep 2021 15:42:22 +0800 (CST)
+        id S241870AbhIGHng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 03:43:36 -0400
+Received: from BC-Mail-Ex24.internal.baidu.com (unknown [172.31.51.18])
+        by Forcepoint Email with ESMTPS id 361429DCC28D2C569E46;
+        Tue,  7 Sep 2021 15:42:29 +0800 (CST)
 Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex25.internal.baidu.com (172.31.51.19) with Microsoft SMTP Server
+ BC-Mail-Ex24.internal.baidu.com (172.31.51.18) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Tue, 7 Sep 2021 15:42:21 +0800
+ 15.1.2242.12; Tue, 7 Sep 2021 15:42:28 +0800
 Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
  BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 7 Sep 2021 15:42:21 +0800
+ 15.1.2308.14; Tue, 7 Sep 2021 15:42:28 +0800
 From:   Cai Huoqing <caihuoqing@baidu.com>
 To:     <caihuoqing@baidu.com>
-CC:     Jassi Brar <jassisinghbrar@gmail.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mailbox: xgene-slimpro: Make use of the helper function devm_platform_ioremap_resource()
-Date:   Tue, 7 Sep 2021 15:42:15 +0800
-Message-ID: <20210907074216.2655-1-caihuoqing@baidu.com>
+CC:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] watchdog: ar7_wdt: Make use of the helper function devm_platform_ioremap_resource_byname()
+Date:   Tue, 7 Sep 2021 15:42:22 +0800
+Message-ID: <20210907074223.2706-1-caihuoqing@baidu.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
@@ -39,36 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the devm_platform_ioremap_resource() helper instead of
-calling platform_get_resource() and devm_ioremap_resource()
+Use the devm_platform_ioremap_resource_byname() helper instead of
+calling platform_get_resource_byname() and devm_ioremap_resource()
 separately
 
 Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 ---
- drivers/mailbox/mailbox-xgene-slimpro.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/watchdog/ar7_wdt.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/mailbox/mailbox-xgene-slimpro.c b/drivers/mailbox/mailbox-xgene-slimpro.c
-index 5b3a2dcd5955..946ea773ec33 100644
---- a/drivers/mailbox/mailbox-xgene-slimpro.c
-+++ b/drivers/mailbox/mailbox-xgene-slimpro.c
-@@ -170,7 +170,6 @@ static const struct mbox_chan_ops slimpro_mbox_ops = {
- static int slimpro_mbox_probe(struct platform_device *pdev)
+diff --git a/drivers/watchdog/ar7_wdt.c b/drivers/watchdog/ar7_wdt.c
+index ff37dc91057d..743e171d97a3 100644
+--- a/drivers/watchdog/ar7_wdt.c
++++ b/drivers/watchdog/ar7_wdt.c
+@@ -63,8 +63,6 @@ static DEFINE_SPINLOCK(wdt_lock);
+ /* XXX currently fixed, allows max margin ~68.72 secs */
+ #define prescale_value 0xffff
+ 
+-/* Resource of the WDT registers */
+-static struct resource *ar7_regs_wdt;
+ /* Pointer to the remapped WDT IO space */
+ static struct ar7_wdt *ar7_wdt;
+ 
+@@ -265,9 +263,7 @@ static int ar7_wdt_probe(struct platform_device *pdev)
  {
- 	struct slimpro_mbox *ctx;
--	struct resource *regs;
- 	void __iomem *mb_base;
  	int rc;
- 	int i;
-@@ -181,8 +180,7 @@ static int slimpro_mbox_probe(struct platform_device *pdev)
  
- 	platform_set_drvdata(pdev, ctx);
- 
--	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	mb_base = devm_ioremap_resource(&pdev->dev, regs);
-+	mb_base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(mb_base))
- 		return PTR_ERR(mb_base);
+-	ar7_regs_wdt =
+-		platform_get_resource_byname(pdev, IORESOURCE_MEM, "regs");
+-	ar7_wdt = devm_ioremap_resource(&pdev->dev, ar7_regs_wdt);
++	ar7_wdt = devm_platform_ioremap_resource_byname(pdev, "regs");
+ 	if (IS_ERR(ar7_wdt))
+ 		return PTR_ERR(ar7_wdt);
  
 -- 
 2.25.1
