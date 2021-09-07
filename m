@@ -2,116 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9EF402AE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D05CA402AFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237377AbhIGOjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231174AbhIGOjm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:39:42 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B960BC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:38:36 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id q22so3540548pfu.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:38:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qhhCof7Bxt7WkPbfZU7ElxFgFbYJKUpmBYIoqT3FQG0=;
-        b=dDM249O1jyYEP+sPZcNiaaYYByaEMpzFEK/dirlDIZo1llr4qtiA9AwONG4gfWFxuh
-         GI+LHZeQL/xeGEQ7Yfkgt3/vvEePqhDwrmKdVjtWDvjOavLauOARfD2emyCkCFDIZ3e5
-         RZJODDFiVIiw9T1gza4f7jn3IWawg1iNUGGJLjWdnuO+yJ9asXLrHQr2+tGWyM13pjym
-         1+byStjxJrGiqSwx/wJlrs7mmw75bxC4tAQmD1XUWS2Kmf6OB7eQm5ViyURea6XHmtW+
-         mck5xXQNXvsw8NgSA/A4XmTbdZUQ2dwVHhPiE7RfQH0O5+QpGIXptx+UdEU6zgDpgmg+
-         vWmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qhhCof7Bxt7WkPbfZU7ElxFgFbYJKUpmBYIoqT3FQG0=;
-        b=K+FdzL9esGBYA0I1PeKmQwpDLtmhf2QeOb022G6+1dcyQGQnNuB+ifrCL1NB7oG/fl
-         vpFLEohT+9Tj06aORPekMoOnBSy+RBim3I27MQMPLQCKpM4SjZFp+tu7Q8yfJdviiWTb
-         ofW+A7GV5RKP7Nnx8scX1Hch49xDTb1BPlwlTXBHmWP4DfKdP6M74oDMhZUoID0G4QNO
-         QP9wjOAiyO2xEUJbZyJ0biyCU9fsvvkCMGAr89nA5unGzNwr2q390dwSZu47bhZ0nVuc
-         8xtXSEIji5qZMS2nNY4CIIVSq2qD6SfccTjZEzHeord+3z4dPZlxLRJg99sW160bexRx
-         g6yg==
-X-Gm-Message-State: AOAM531kEoKDYZcvwIlmXq00QHbb5bH7cc3wWkpknzZ6oIQJZhSkRwJ7
-        wN7GMWXzZAsFeMSwgjmWWXQj2g==
-X-Google-Smtp-Source: ABdhPJzl5tT+vIOlvAuqK2CqdOtw1QALWHjYejAcBedH1JDRDyFV2NrE6Q9L+J99MDm/UGDNVHbaHA==
-X-Received: by 2002:a63:c10b:: with SMTP id w11mr17484810pgf.228.1631025516087;
-        Tue, 07 Sep 2021 07:38:36 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j6sm13428682pgq.0.2021.09.07.07.38.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 07:38:35 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 14:38:31 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Russell King, ARM Linux" <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <hca@linux.ibm.com>, gor <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Oleg Nesterov <oleg@redhat.com>, rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
-        shuah <shuah@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-csky <linux-csky@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>,
-        linux-kselftest <linux-kselftest@vger.kernel.org>,
-        Peter Foley <pefoley@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH 1/5] KVM: rseq: Update rseq when processing NOTIFY_RESUME
- on xfer to KVM guest
-Message-ID: <YTd5Z91j9N2LuuIr@google.com>
-References: <20210818001210.4073390-1-seanjc@google.com>
- <20210818001210.4073390-2-seanjc@google.com>
- <1673583543.19718.1629409152244.JavaMail.zimbra@efficios.com>
- <YR7tzZ98XC6OV2vu@google.com>
- <1872633041.20290.1629485463253.JavaMail.zimbra@efficios.com>
- <425456d3-4772-2a1b-9cf3-a5b750b95c2e@redhat.com>
-MIME-Version: 1.0
+        id S244798AbhIGOrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:47:10 -0400
+Received: from gate.crashing.org ([63.228.1.57]:50810 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244071AbhIGOrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 10:47:09 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 187EfdkK007864;
+        Tue, 7 Sep 2021 09:41:39 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 187EfcpQ007861;
+        Tue, 7 Sep 2021 09:41:38 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Tue, 7 Sep 2021 09:41:38 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Linus Torvalds <torvalds@linuxfoundation.org>
+Cc:     Jakub Jelinek <jakub@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
+Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
+Message-ID: <20210907144138.GG1583@gate.crashing.org>
+References: <CAHk-=wjc1rxah3xt8mKN=aCxQigjy3-hEf4xh_Y-r=MXAKVrag@mail.gmail.com> <20210906154642.GV1583@gate.crashing.org> <CAHk-=wj=WpWO_V86cZH99LgZGBbvdDb4wR26ce5van0hJqjzLA@mail.gmail.com> <20210906172701.GX1583@gate.crashing.org> <CAHk-=wh0MBVfA89WLWnCiSnJ2a=hSAoSxfG-jyf7JJeBDPK3ew@mail.gmail.com> <87lf49wodu.fsf@oldenburg.str.redhat.com> <20210906194808.GY1583@gate.crashing.org> <20210906201432.GZ920497@tucnak> <CAHk-=wi80NGPppGmBpc5zuGRAsv4_7qsDu7ehW515J2FJoezAQ@mail.gmail.com> <CAHk-=wikLP4KbTUUY_OKL6doyztjqFNKu_Q713vcrkjthc4S0g@mail.gmail.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <425456d3-4772-2a1b-9cf3-a5b750b95c2e@redhat.com>
+In-Reply-To: <CAHk-=wikLP4KbTUUY_OKL6doyztjqFNKu_Q713vcrkjthc4S0g@mail.gmail.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 06, 2021, Paolo Bonzini wrote:
-> On 20/08/21 20:51, Mathieu Desnoyers wrote:
-> > > Ah, or is it the case that rseq_cs is non-NULL if and only if userspace is in an
-> > > rseq critical section, and because syscalls in critical sections are illegal, by
-> > > definition clearing rseq_cs is a nop unless userspace is misbehaving.
-> > Not quite, as I described above. But we want it to stay set so the CONFIG_DEBUG_RSEQ
-> > code executed when returning from ioctl to userspace will be able to validate that
-> > it is not nested within a rseq critical section.
-> > 
-> > > If that's true, what about explicitly checking that at NOTIFY_RESUME?  Or is it
-> > > not worth the extra code to detect an error that will likely be caught anyways?
-> > The error will indeed already be caught on return from ioctl to userspace, so I
-> > don't see any added value in duplicating this check.
+On Mon, Sep 06, 2021 at 02:24:39PM -0700, Linus Torvalds wrote:
+> There are some *very* core header files that the kernel cannot include
+> from outside. That "stdlib.h" thing already came up in the errors I
+> quoted.
 > 
-> Sean, can you send a v2 (even for this patch only would be okay)?
+> But I think you'll find that you guys want to include things like
+> <errno.h> too, and you'll probably add others (<types.h>? things like
+> that) simply because they always work fine in user space, and you'd
+> not even notice.
 
-Made it all the way to v3 while you were out :-)
+Guess what.  We actually test this.  We do notice.  Except we don't,
+because all those problems do not actually exist.
 
-https://lkml.kernel.org/r/20210901203030.1292304-1-seanjc@google.com
+Long ago there were issues.  We do not live long ago now.
+
+> I'm pretty sure you guys don't really want to deal with the pain that
+> is crazy kernel people that have their very bare environment.
+
+There are many other users that use freestanding environments.  Most of
+them do use the standard headers.
+
+> So you may *think* you want the kernel to use your header files
+> "because compiler portability". Instead, you should be very thankful
+> that we don't, and that you don't have to deal with our mess any more
+> than you already do.
+
+We would like it to be *less* pain, *less* unnecessary work, that is why
+we would like the kernel to use the compiler headers.  Instead of what
+the current patches do: getting rid of more of them, which will end up
+as more work for everyone.
+
+
+Segher
