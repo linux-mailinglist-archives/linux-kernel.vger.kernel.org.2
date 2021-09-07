@@ -2,102 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDD2402A0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C33DC402A12
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344840AbhIGNqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 09:46:25 -0400
-Received: from mga18.intel.com ([134.134.136.126]:61159 "EHLO mga18.intel.com"
+        id S1344798AbhIGNr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 09:47:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344817AbhIGNqY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 09:46:24 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="207318430"
-X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
-   d="scan'208";a="207318430"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 06:45:18 -0700
-X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
-   d="scan'208";a="537981051"
-Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.249.169.12]) ([10.249.169.12])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 06:45:14 -0700
-Subject: Re: [PATCH v2] KVM: VMX: Enable Notify VM exit
-To:     Sean Christopherson <seanjc@google.com>,
-        Chenyi Qiang <chenyi.qiang@intel.com>
-Cc:     pbonzini@redhat.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210525051204.1480610-1-tao3.xu@intel.com>
- <YQRkBI9RFf6lbifZ@google.com>
- <b0c90258-3f68-57a2-664a-e20a6d251e45@intel.com>
- <YQgTPakbT+kCwMLP@google.com>
- <080602dc-f998-ec13-ddf9-42902aa477de@intel.com>
- <YTD4l7L0CKMCQwd5@google.com> <YTD9kIIzAz34Ieeu@google.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <118cd1b9-1b50-3173-05b8-4293412ca78c@intel.com>
-Date:   Tue, 7 Sep 2021 21:45:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S234939AbhIGNr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 09:47:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABB486105A;
+        Tue,  7 Sep 2021 13:46:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631022381;
+        bh=QFljL/tXuu3N1HI7DOzEzMpmHJdD1GvVQpEJe3tl4BI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uXw0xE+YiqviXG3ON0sQof9GpahLt7A+0ifjYfc/M9rz2+9mQp9G2fcYoUCjmC/nY
+         xcmQLEBFJcHUW1OQws6kVUUXgPnTS+nyeGUac3XQV/uRsF2EW7GlXxcnQgAgrVvJmt
+         SBV4mordirP1EONwm8LGbRsvtFmH+HxUEtEnBdWrVWxdQgU4nm3ZCNscXYNECAW95Y
+         /uaFemB7NyDrPwUSz6+x9+taKyMhkJkZhJtxK+EnVqLtYsHz6zPyeEMHCIqP2Wyu4Z
+         ZX9ggHUmQJ2EnD9+iErF6aSioF/1vAbSZmMSQz5jb+uXF3oXU9Iv0SSAF6yWfv9shz
+         QhF4iaYxsB9DQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Armin Wolf <W_Armin@gmx.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] ne2000: fix unused function warning
+Date:   Tue,  7 Sep 2021 15:46:10 +0200
+Message-Id: <20210907134617.185601-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <YTD9kIIzAz34Ieeu@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/2021 12:36 AM, Sean Christopherson wrote:
-> On Thu, Sep 02, 2021, Sean Christopherson wrote:
->> On Tue, Aug 03, 2021, Xiaoyao Li wrote:
->>> On 8/2/2021 11:46 PM, Sean Christopherson wrote:
->>>>>>> @@ -5642,6 +5653,31 @@ static int handle_bus_lock_vmexit(struct kvm_vcpu *vcpu)
->>>>>>>     	return 0;
->>>>>>>     }
->>>>>>> +static int handle_notify(struct kvm_vcpu *vcpu)
->>>>>>> +{
->>>>>>> +	unsigned long exit_qual = vmx_get_exit_qual(vcpu);
->>>>>>> +
->>>>>>> +	if (!(exit_qual & NOTIFY_VM_CONTEXT_INVALID)) {
->>>>>>
->>>>>> What does CONTEXT_INVALID mean?  The ISE doesn't provide any information whatsoever.
->>>>>
->>>>> It means whether the VM context is corrupted and not valid in the VMCS.
->>>>
->>>> Well that's a bit terrifying.  Under what conditions can the VM context become
->>>> corrupted?  E.g. if the context can be corrupted by an inopportune NOTIFY exit,
->>>> then KVM needs to be ultra conservative as a false positive could be fatal to a
->>>> guest.
->>>>
->>>
->>> Short answer is no case will set the VM_CONTEXT_INVALID bit.
->>
->> But something must set it, otherwise it wouldn't exist.  
+From: Arnd Bergmann <arnd@arndb.de>
 
-For existing Intel silicon, no case will set it. Maybe in the future new 
-case will set it.
+Geert noticed a warning on MIPS TX49xx, Atari and presuambly other
+platforms when the driver is built-in but NETDEV_LEGACY_INIT is
+disabled:
 
-> The condition(s) under
->> which it can be set matters because it affects how KVM should respond.  E.g. if
->> the guest can trigger VM_CONTEXT_INVALID at will, then we should probably treat
->> it as a shutdown and reset the VMCS.
-> 
-> Oh, and "shutdown" would be relative to the VMCS, i.e. if L2 triggers a NOTIFY
-> exit with VM_CONTEXT_INVALID then KVM shouldn't kill the entire VM.  The least
-> awful option would probably be to synthesize a shutdown VM-Exit to L1.  That
-> won't communicate to L1 that vmcs12 state is stale/bogus, but I don't see any way
-> to handle that via an existing VM-Exit reason :-/
-> 
->> But if VM_CONTEXT_INVALID can occur if and only if there's a hardware/ucode
->> issue, then we can do:
->>
->> 	if (KVM_BUG_ON(exit_qual & NOTIFY_VM_CONTEXT_INVALID, vcpu->kvm))
->> 		return -EIO;
->>
->> Either way, to enable this by default we need some form of documentation that
->> describes what conditions lead to VM_CONTEXT_INVALID.
+drivers/net/ethernet/8390/ne.c:909:20: warning: ‘ne_add_devices’ defined but not used [-Wunused-function]
 
-I still don't know why the conditions lead to it matters. I think the 
-consensus is that once VM_CONTEXT_INVALID happens, the vcpu can no 
-longer run. Either KVM_BUG_ON() or a specific EXIT to userspace should 
-be OK?
+Merge the two module init functions into a single one with an
+IS_ENABLED() check to replace the incorrect #ifdef.
+
+Fixes: 4228c3942821 ("make legacy ISA probe optional")
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: do a larger rework to avoid introducing a different build error
+---
+ drivers/net/ethernet/8390/ne.c | 22 +++++++---------------
+ 1 file changed, 7 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/net/ethernet/8390/ne.c b/drivers/net/ethernet/8390/ne.c
+index 53660bc8d6ff..9afc712f5948 100644
+--- a/drivers/net/ethernet/8390/ne.c
++++ b/drivers/net/ethernet/8390/ne.c
+@@ -922,13 +922,16 @@ static void __init ne_add_devices(void)
+ 	}
+ }
+ 
+-#ifdef MODULE
+ static int __init ne_init(void)
+ {
+ 	int retval;
+-	ne_add_devices();
++
++	if (IS_MODULE(CONFIG_NE2000))
++		ne_add_devices();
++
+ 	retval = platform_driver_probe(&ne_driver, ne_drv_probe);
+-	if (retval) {
++
++	if (IS_MODULE(CONFIG_NE2000) && retval) {
+ 		if (io[0] == 0)
+ 			pr_notice("ne.c: You must supply \"io=0xNNN\""
+ 			       " value(s) for ISA cards.\n");
+@@ -941,18 +944,8 @@ static int __init ne_init(void)
+ 	return retval;
+ }
+ module_init(ne_init);
+-#else /* MODULE */
+-static int __init ne_init(void)
+-{
+-	int retval = platform_driver_probe(&ne_driver, ne_drv_probe);
+-
+-	/* Unregister unused platform_devices. */
+-	ne_loop_rm_unreg(0);
+-	return retval;
+-}
+-module_init(ne_init);
+ 
+-#ifdef CONFIG_NETDEV_LEGACY_INIT
++#if !defined(MODULE) && defined(CONFIG_NETDEV_LEGACY_INIT)
+ struct net_device * __init ne_probe(int unit)
+ {
+ 	int this_dev;
+@@ -994,7 +987,6 @@ struct net_device * __init ne_probe(int unit)
+ 	return ERR_PTR(-ENODEV);
+ }
+ #endif
+-#endif /* MODULE */
+ 
+ static void __exit ne_exit(void)
+ {
+-- 
+2.29.2
+
