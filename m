@@ -2,76 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F090402804
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 13:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77961402805
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 13:49:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245265AbhIGLuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 07:50:18 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:43924 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235413AbhIGLuP (ORCPT
+        id S245500AbhIGLuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 07:50:19 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:40463 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229827AbhIGLuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 07:50:15 -0400
-Received: by mail-oi1-f170.google.com with SMTP id w19so12378725oik.10;
-        Tue, 07 Sep 2021 04:49:09 -0700 (PDT)
+        Tue, 7 Sep 2021 07:50:14 -0400
+Received: by mail-ot1-f54.google.com with SMTP id 107-20020a9d0bf4000000b0051b8be1192fso12380987oth.7;
+        Tue, 07 Sep 2021 04:49:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=YXDFfDqAdMrMh9/PRAPi/Ueq/DRk2vA8+5/R9I9UfFI=;
-        b=iBPnoi/NoCbRzgfFp4QbBkW5gtgcUlR6AyINnNVOV8lCOGKwfsGJEwrLdQDNXYIG7F
-         ltSGjyNgM4L0IAp3/d5up1/mJfZ1nVY2MQzIxwa096adRVSU8j1jgY+KR4ytaRKW+RoN
-         nsoYiMIIJdHxbg/acPJwIJj9FuRs++U04xP1vLfO/FglxPhE7WA0aE+TJQAF70o+mPyV
-         KkSe9Y37aFjyygC2Bm5PyTzyQp+ckEv6L1QgOS93jxxxvF4Ths2L3V//eKuxtkIvRuBu
-         vTXnOZB+AxBvvDijgzhugD8JPhAyqbQmptd6xu9dVXryULhEHlFVhSTMFIRi5z6/tE7K
-         G8EA==
-X-Gm-Message-State: AOAM530Ghwb5OYyvRiNRL3LTXid5rUpg3Qvv3wdmSC9IO8Fuql+KnCdm
-        dXSiM0CCUqdnRef3dYwjQw==
-X-Google-Smtp-Source: ABdhPJxmI/NxJg96KtKH8oQkT0Y05vgErbp7q7fkN8CHIrfJK9I/w/eUsJcWwOLgxpfWiS7SSJhIVw==
-X-Received: by 2002:aca:c48d:: with SMTP id u135mr2665147oif.106.1631015349336;
-        Tue, 07 Sep 2021 04:49:09 -0700 (PDT)
+        bh=8749oNI+t3oxaJjdYlorDSNDCitAkoaehr9gkop6Gdo=;
+        b=LOWLp5uZLtK+WkmzBsQNnHXU7ZJcJG62SWO9q9B/9YcLgIgwA2fcOn88mzSBCeNzRy
+         3jxGMsQ42AlVWBVpA9A9VFLMO70QnQ7QLKDDTE6PZJVz0qg5cdr/FfmPYuC0mF+F/0Vq
+         LaPXri8lTT+/fKGeeygPobp7swCFNXlBtjttJ51/ztSknrkV0JBtgevSECC5BIHPhD1q
+         B6NBExkfScO+WEF8GygH6YGs7KotGKs7F4eqyzySLJ0qYP5PA/5vxzvbTfVqIbxM5WwK
+         4rTlw+0fnjZK+J92TQDPEkqpO+TMWOp8MRmFUqWD6sr0IwaK4NijBcnSp37TYEhR+J7i
+         JYqg==
+X-Gm-Message-State: AOAM533HrbhtIg7OOY15+ALxEYfb/rpIX24JKnjZ5vQUp8aiRxJvwAA6
+        W6AwPeFrlD5H1fPhW4RRLSnKlgnJ0Q==
+X-Google-Smtp-Source: ABdhPJzI8KS5tP7xX2DU403V2jHx15L00fx4MQQfgtR6q6C3De4596nsagKTEyYFbp1EFLg/nWAeSw==
+X-Received: by 2002:a9d:5787:: with SMTP id q7mr14178594oth.353.1631015347598;
+        Tue, 07 Sep 2021 04:49:07 -0700 (PDT)
 Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
-        by smtp.gmail.com with ESMTPSA id z7sm2370656oti.65.2021.09.07.04.49.08
+        by smtp.gmail.com with ESMTPSA id l21sm2192416oop.22.2021.09.07.04.49.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 04:49:08 -0700 (PDT)
-Received: (nullmailer pid 3599963 invoked by uid 1000);
+        Tue, 07 Sep 2021 04:49:06 -0700 (PDT)
+Received: (nullmailer pid 3599960 invoked by uid 1000);
         Tue, 07 Sep 2021 11:49:05 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20210907015724.1377-3-caihuoqing@baidu.com>
-References: <20210907015724.1377-1-caihuoqing@baidu.com> <20210907015724.1377-3-caihuoqing@baidu.com>
-Subject: Re: [PATCH v3 2/3] dt-bindings: iio: adc: Add the binding documentation for NXP IMX8QXP ADC
+To:     shruthi.sanil@intel.com
+Cc:     tglx@linutronix.de, andriy.shevchenko@linux.intel.com,
+        mallikarjunappa.sangannavar@intel.com, devicetree@vger.kernel.org,
+        mgross@linux.intel.com, kris.pan@linux.intel.com,
+        lakshmi.bai.raja.subramanian@intel.com, daniel.lezcano@linaro.org,
+        robh+dt@kernel.org, srikanth.thokala@intel.com,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210906183621.21075-2-shruthi.sanil@intel.com>
+References: <20210906183621.21075-1-shruthi.sanil@intel.com> <20210906183621.21075-2-shruthi.sanil@intel.com>
+Subject: Re: [PATCH v6 1/2] dt-bindings: timer: Add bindings for Intel Keem Bay SoC Timer
 Date:   Tue, 07 Sep 2021 06:49:05 -0500
-Message-Id: <1631015345.821868.3599962.nullmailer@robh.at.kernel.org>
+Message-Id: <1631015345.791897.3599959.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 07 Sep 2021 09:57:22 +0800, Cai Huoqing wrote:
-> The NXP i.MX 8QuadXPlus SOC has a new ADC IP, so add the binding
-> documentation for NXP IMX8QXP ADC.
+On Tue, 07 Sep 2021 00:06:20 +0530, shruthi.sanil@intel.com wrote:
+> From: Shruthi Sanil <shruthi.sanil@intel.com>
 > 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> Add Device Tree bindings for the Timer IP, which can be used as
+> clocksource and clockevent device in the Intel Keem Bay SoC.
+> 
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+> Signed-off-by: Shruthi Sanil <shruthi.sanil@intel.com>
 > ---
-> v1->v2: *Fix some indentation issues.
->         *Mark status as okay.
->         *Change clock2 source.
-> v1 link:
-> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210830172140.414-5-caihuoqing@baidu.com/
-> 
->  .../bindings/iio/adc/nxp,imx8qxp-adc.yaml     | 85 +++++++++++++++++++
->  1 file changed, 85 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
+>  .../bindings/timer/intel,keembay-timer.yaml   | 173 ++++++++++++++++++
+>  1 file changed, 173 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/timer/intel,keembay-timer.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -80,22 +73,11 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.example.dt.yaml: soc: adc@5a880000:reg:0: [0, 1518862336, 0, 65536] is too long
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.example.dt.yaml: adc@5a880000: 'interrupts-parent' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.example.dt.yaml: adc@5a880000: 'state' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.example.dt.yaml: adc@5a880000: '#address-cells' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.example.dt.yaml: adc@5a880000: '#size-cells' is a required property
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.example.dt.yaml: adc@5a880000: 'assigned-clock-rates' does not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/nxp,imx8qxp-adc.yaml
+Documentation/devicetree/bindings/timer/intel,keembay-timer.example.dt.yaml:0:0: /example-0/soc/gpt@20331000: failed to match any schema with compatible: ['intel,keembay-gpt-creg', 'simple-mfd']
 
 doc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1525098
+See https://patchwork.ozlabs.org/patch/1525030
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
