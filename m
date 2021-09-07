@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDFDF402B71
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 854AE402B75
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345020AbhIGPOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 11:14:18 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:39490 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345014AbhIGPOR (ORCPT
+        id S1345025AbhIGPPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 11:15:02 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:42086 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344934AbhIGPPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 11:14:17 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 187FD1GD055618;
-        Tue, 7 Sep 2021 10:13:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1631027581;
-        bh=oF2VALlTRWuxSdbytcNaL9mtSdLQhvIzoheTr+9eN7M=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=kImC1rBMfbG3QRGINoLhxbnEUU5VuEU+Yn3FlIq9gUHgTznhBji15UIsrbdpscBbD
-         dzhQRoKNUxxlRSPigkO+qTTw2ZQDVFQ0wutOaMMNol2Hj46mPFhtdefSezSWKLYt15
-         m+mfRMqMco7NQ+sXEos0nXWsJRxiql4y1GN/4w/w=
-Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 187FD1nJ113309
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 7 Sep 2021 10:13:01 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE100.ent.ti.com
- (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 7
- Sep 2021 10:13:01 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
- Frontend Transport; Tue, 7 Sep 2021 10:13:01 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 187FD1jF117199;
-        Tue, 7 Sep 2021 10:13:01 -0500
-Date:   Tue, 7 Sep 2021 10:13:01 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Jan Kiszka <jan.kiszka@siemens.com>
-CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Tue, 7 Sep 2021 11:15:01 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 1879PNEU017303;
+        Tue, 7 Sep 2021 17:13:42 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=Iv5+A1gZyiPtQS8RJZjeMkNlMruLTCcjaPLS4K+dK1g=;
+ b=xGjXVuFyIb2TwP9zPdq4r/UuB9gQ4uUkKgRKgnDEyNd7IaYBgz1MiuY2IP6b3oPTSShS
+ je3ZUNB0hEvMVACiPowzUKhNbNDN2+Kfe8bNSPqWKWCXxxJytRLP/1M90rgSGe4tY7Lb
+ fi2Ga2+EUnnW2teV9w2OCurTJ3M4JYXNKGPQt3WC6bnGyk4wWf9BilHsJlXgFFizxKqu
+ f1zdL9CtO1Q+5HXLLFazrV/uQtm8v9PPQ6v+9blVY0LtAoeD7cKhyx15kByCUeYjUPjr
+ mnTDy2DAcl/hyYiDlJpTOqmsaLP0yqFlVKMHgTtOozqwydZr2PglOVzDOXLobr3emsrl vw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3awyx2ukqt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Sep 2021 17:13:42 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EB04A10002A;
+        Tue,  7 Sep 2021 17:13:41 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DF39B22A6C6;
+        Tue,  7 Sep 2021 17:13:41 +0200 (CEST)
+Received: from localhost (10.75.127.46) by SFHDAG1NODE3.st.com (10.75.127.3)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 7 Sep 2021 17:13:41
+ +0200
+From:   Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+To:     Yannick Fertre <yannick.fertre@foss.st.com>,
+        Philippe Cornu <philippe.cornu@foss.st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        Bao Cheng Su <baocheng.su@siemens.com>,
-        Chao Zeng <chao.zeng@siemens.com>
-Subject: Re: [PATCH 1/3] arm64: dts: ti: iot2050: Flip mmc device ordering on
- Advanced devices
-Message-ID: <20210907151301.7fqwmc7hmcyhhybv@carve>
-References: <cover.1631024536.git.jan.kiszka@siemens.com>
- <8e2e435ef67868cb98382b44c51ddb5c8d045d66.1631024536.git.jan.kiszka@siemens.com>
+        <linux-kernel@vger.kernel.org>,
+        Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+        Raphael Gallais-Pou <raphael.gallais-pou@st.com>
+Subject: [PATCH v2] drm/stm: ltdc: attach immutable zpos property to planes
+Date:   Tue, 7 Sep 2021 17:13:23 +0200
+Message-ID: <20210907151323.5850-1-raphael.gallais-pou@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <8e2e435ef67868cb98382b44c51ddb5c8d045d66.1631024536.git.jan.kiszka@siemens.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.46]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG1NODE3.st.com
+ (10.75.127.3)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-07_05,2021-09-07_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16:22-20210907, Jan Kiszka wrote:
-> From: Jan Kiszka <jan.kiszka@siemens.com>
-> 
-> This ensures that the SD card will remain mmc0 across Basic and Advanced
-> devices, also avoiding surprises for users coming from the downstream
-> kernels.
-> 
-> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
-> index ec9617c13cdb..d1d5278e0b94 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
-> @@ -18,6 +18,11 @@ / {
->  	compatible = "siemens,iot2050-advanced", "ti,am654";
->  	model = "SIMATIC IOT2050 Advanced";
->  
-> +	aliases {
-> +		mmc0 = &sdhci1;
-> +		mmc1 = &sdhci0;
-> +	};
+Defines plane ordering by hard-coding an immutable Z position from the
+first plane, used as primary layer, to the next ones as overlay in order
+of instantiation.
 
+This zpos is only an information as it is not possible to modify it,
+blending operations are still applied from the top to the bottom layer.
 
-Should we do this at SoC level?
+This patch helps to remove a warning message from the Android
+Hardware Composer.
+
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+Acked-by: Yannick Fertre <yannick.fertre@foss.st.com>
+Reviewed-by: Yannick Fertre <yannick.fertre@foss.st.com>
+---
+ drivers/gpu/drm/stm/ltdc.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 195de30eb90c..bd603ef5e935 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -1024,6 +1024,8 @@ static int ltdc_crtc_init(struct drm_device *ddev, struct drm_crtc *crtc)
+ 		return -EINVAL;
+ 	}
+ 
++	drm_plane_create_zpos_immutable_property(primary, 0);
++
+ 	ret = drm_crtc_init_with_planes(ddev, crtc, primary, NULL,
+ 					&ltdc_crtc_funcs, NULL);
+ 	if (ret) {
+@@ -1046,6 +1048,7 @@ static int ltdc_crtc_init(struct drm_device *ddev, struct drm_crtc *crtc)
+ 			DRM_ERROR("Can not create overlay plane %d\n", i);
+ 			goto cleanup;
+ 		}
++		drm_plane_create_zpos_immutable_property(overlay, i);
+ 	}
+ 
+ 	return 0;
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.17.1
+
