@@ -2,93 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 116A4402EFB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:30:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07CD2402F01
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344964AbhIGTbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 15:31:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56328 "EHLO
+        id S1345543AbhIGTeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 15:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233485AbhIGTbp (ORCPT
+        with ESMTP id S242169AbhIGTeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 15:31:45 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0932C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:30:38 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id s16so193953ilo.9
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 12:30:38 -0700 (PDT)
+        Tue, 7 Sep 2021 15:34:08 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4681C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:33:01 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id c6so6258pjv.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 12:33:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=v0NXlxBTeEi3do2hDI3EUhz1rB97bKcDUu5e3uBm2y4=;
-        b=CnN0grQMu2KtAdQbiFJTNYhIJ+Ziwuj3At2l8swhKX5m486ypX6krJngp/DyJcJ4Mq
-         tSI/oCUhkRH0imlZqZ85/uQjS5zYVDO9b1hF6A0L2kUoMOyUzu5zB+6ttwQgszU95HuB
-         2isjazjLBht+UNImG/0JdH2z/tVd/wttyKJOW3M3ulCWlTZ1oAeHk6SYUds0Zu17rbqi
-         qV/wQ70K7Qqw5hJZWVZ0vwSrtG9hwfArhhzDBhBhU2eWu2nenTiVHPjD/99HK1IJaRAv
-         tyAlo6FPwzxNwbMK0Mx6jLBc4jNm926+isFNTn7+5xfWFwyObMtiHJQFMiUO5HVM5QwF
-         GKEA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kM9tVwq7irwTqrJ/Yy0JQrecGes212Y12EN0zEFuULg=;
+        b=EbnF+b103gIkqqpqa+fykmOyLRTxyAdNcKeyO2HFiDbsMFAk2ahSsl++vu7qZpG7Cp
+         ZC40lS2gVLJTvxEHRkJj7LkQuF8yCLE4csed/ETMsUE3QjeZKU3jd5gtgdYiSs1g3zL5
+         J3Fk3wLm5lUn3141B6KqkJu4v8T/5a7nzLHLE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=v0NXlxBTeEi3do2hDI3EUhz1rB97bKcDUu5e3uBm2y4=;
-        b=fJX0e2NyPcZZwAZK7TZJMutWy10Vl3JQxNjOthTnrWO3ldPnWYlefCAAqHRAkoSu3E
-         MbKkvVI6AMieinJoN9GyQfl1amU1NEpM0Nkrl8jM87+5H2oT1+4JKk6cDBMc99ZnCW1Y
-         5nJMkjU2182WxaGcggGMe10rqWG8ylijwyb8qAEb2VBjJjXRzdCHMNl8QaodYsmVbIXm
-         PVMopCawxTye6SmijXvzp0fHC42OTYzn+KmAlGEB0u1s28mFGv+Q+n9ZyUCL2z9qx4KH
-         lmMvDg3b67xiyorF21DB4LhpEgQJLaiyr+sKTtaxTNKaaRcSAzHw9FMru3h2kaOT45f7
-         9UBw==
-X-Gm-Message-State: AOAM5335Er27Juu3KWdkt5s3DGJlXICqcKcEfMYZsKRo0MeOHFbbFWLX
-        hV8xlDJbXEvmkBvPh7lAmKT63jMBkd5Yfw==
-X-Google-Smtp-Source: ABdhPJzbZ3DLMj14zw45tQBSXU9Qh7mT+TBcc4oI/+U2vT+tNOF2giUK60tTjS8fJRB0skLQSgy/0Q==
-X-Received: by 2002:a92:d3cf:: with SMTP id c15mr13493524ilh.131.1631043037904;
-        Tue, 07 Sep 2021 12:30:37 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.234.126])
-        by smtp.gmail.com with ESMTPSA id r18sm6260ilo.38.2021.09.07.12.30.36
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kM9tVwq7irwTqrJ/Yy0JQrecGes212Y12EN0zEFuULg=;
+        b=q1agWYvbeF/lluRVUJCY9C4mGcRqRzbmQKKQxZby8QSRHU7dZ7a2svb4GRwAbOf5bc
+         fiaXuCbz1CS4YL5mU4Rm+jC294XjhE/1HB/DrOVxedGSL1CgaFGVPke7IchTa+2SPQgP
+         KG/rLkipvdLUX4UdN+PO7hlhhu7tpx39MryQ/BFn9oxKWm4qiL4Xrhj1hk9gKJ48qSZq
+         KMOO8yWFSNwv95mjkdofsg/wtLvyNPKhqUTk9SDRE508yAP0/6qPcxGb8GYbW447g386
+         jQGUyr7hhVtOCh3eU//7P9GtfR0uca1Hdk4Y62W2ghuamOUTDipwRW/fx3t97xyx2LOs
+         69zg==
+X-Gm-Message-State: AOAM530CJxmm+p474KRbe9U4OUEhOV7enw7jtq/tGEPL90sTr3CdpJII
+        V8Qy2OJfJ+RU9H9d1xV5Y7oyww==
+X-Google-Smtp-Source: ABdhPJynKko1EY7ycMZQk/o77iyI5DtZmQyYOJZGOcArM0hicszPb0UggJr+YQkxxzDjLvwHQvTYzg==
+X-Received: by 2002:a17:90a:9b13:: with SMTP id f19mr31127pjp.224.1631043181149;
+        Tue, 07 Sep 2021 12:33:01 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:c6b2:7ae:474d:36f6])
+        by smtp.gmail.com with UTF8SMTPSA id w11sm11664097pfj.65.2021.09.07.12.33.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 12:30:37 -0700 (PDT)
-Subject: Re: INFO: task hung in io_uring_cancel_generic
-To:     Hao Sun <sunhao.th@gmail.com>, io-uring@vger.kernel.org
-Cc:     Pavel Begunkov <asml.silence@gmail.com>,
-        linux-kernel@vger.kernel.org
-References: <CACkBjsbs2tahJMC_TBZhQUBQiFYhLo-CW+kyzNxyUqgs5NCaXA@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <df072429-3f45-4d9d-c81d-73174aaf2e7d@kernel.dk>
-Date:   Tue, 7 Sep 2021 13:30:36 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 07 Sep 2021 12:33:00 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 12:32:59 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Kalle Valo <kvalo@codeaurora.org>, linux-kernel@vger.kernel.org,
+        ath10k@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+        Govind Singh <govinds@codeaurora.org>,
+        Youghandhar Chintala <youghand@codeaurora.org>,
+        Abhishek Kumar <kuabhs@chromium.org>
+Subject: Re: [PATCH] ath10k: Don't always treat modem stop events as crashes
+Message-ID: <YTe+a0Gu7O6MEy2d@google.com>
+References: <20210905210400.1157870-1-swboyd@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <CACkBjsbs2tahJMC_TBZhQUBQiFYhLo-CW+kyzNxyUqgs5NCaXA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210905210400.1157870-1-swboyd@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/21 5:50 AM, Hao Sun wrote:
-> Hello,
+On Sun, Sep 05, 2021 at 02:04:00PM -0700, Stephen Boyd wrote:
+> When rebooting on sc7180 Trogdor devices I see the following crash from
+> the wifi driver.
 > 
-> When using Healer to fuzz the latest Linux kernel, the following crash
-> was triggered.
+>  ath10k_snoc 18800000.wifi: firmware crashed! (guid 83493570-29a2-4e98-a83e-70048c47669c)
 > 
-> HEAD commit: 7d2a07b76933 Linux 5.14
-> git tree: upstream
-> console output:
-> https://drive.google.com/file/d/1c8uRooM0TwJiTIwEviOCB4RC-hhOgGHR/view?usp=sharing
-> kernel config: https://drive.google.com/file/d/1XD9WYDViQLSXN7RGwH8AGGDvP9JvOghx/view?usp=sharing
-> Similar report:
-> https://groups.google.com/u/1/g/syzkaller-bugs/c/FvdcTiJIGtY/m/PcXkoenUAAAJ
+> This is because a modem stop event looks just like a firmware crash to
+> the driver, the qmi connection is closed in both cases. Use the qcom ssr
+> notifier block to stop treating the qmi connection close event as a
+> firmware crash signal when the modem hasn't actually crashed. See
+> ath10k_qmi_event_server_exit() for more details.
 > 
-> Sorry, I don't have a reproducer for this crash, hope the symbolized
-> report can help.
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: Hao Sun <sunhao.th@gmail.com>
+> This silences the crash message seen during every reboot.
+> 
+> Fixes: 3f14b73c3843 ("ath10k: Enable MSA region dump support for WCN3990")
+> Cc: Govind Singh <govinds@codeaurora.org>
+> Cc: Youghandhar Chintala <youghand@codeaurora.org>
+> Cc: Abhishek Kumar <kuabhs@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  drivers/net/wireless/ath/ath10k/snoc.c | 75 ++++++++++++++++++++++++++
+>  drivers/net/wireless/ath/ath10k/snoc.h |  4 ++
+>  2 files changed, 79 insertions(+)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+> index ea00fbb15601..fc4970e063f8 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/property.h>
+>  #include <linux/regulator/consumer.h>
+> +#include <linux/remoteproc/qcom_rproc.h>
+>  #include <linux/of_address.h>
+>  #include <linux/iommu.h>
+>  
+> @@ -1477,6 +1478,70 @@ void ath10k_snoc_fw_crashed_dump(struct ath10k *ar)
+>  	mutex_unlock(&ar->dump_mutex);
+>  }
+>  
+> +static int ath10k_snoc_modem_notify(struct notifier_block *nb, unsigned long action,
+> +				    void *data)
+> +{
+> +	struct ath10k_snoc *ar_snoc = container_of(nb, struct ath10k_snoc, nb);
+> +	struct ath10k *ar = ar_snoc->ar;
+> +	struct qcom_ssr_notify_data *notify_data = data;
+> +
+> +	switch (action) {
+> +	case QCOM_SSR_BEFORE_POWERUP:
+> +		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem starting event\n");
+> +		clear_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
+> +		break;
+> +
+> +	case QCOM_SSR_AFTER_POWERUP:
+> +		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem running event\n");
+> +		break;
+> +
+> +	case QCOM_SSR_BEFORE_SHUTDOWN:
+> +		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem %s event\n",
+> +			   notify_data->crashed ? "crashed" : "stopping");
+> +		if (!notify_data->crashed)
+> +			set_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
+> +		else
+> +			clear_bit(ATH10K_SNOC_FLAG_UNREGISTERING, &ar_snoc->flags);
+> +		break;
+> +
+> +	case QCOM_SSR_AFTER_SHUTDOWN:
+> +		ath10k_dbg(ar, ATH10K_DBG_SNOC, "received modem offline event\n");
+> +		break;
+> +
+> +	default:
+> +		ath10k_err(ar, "received unrecognized event %lu\n", action);
+> +		break;
+> +	}
+> +
+> +	return NOTIFY_OK;
+> +}
+> +
+> +static int ath10k_modem_init(struct ath10k *ar)
+> +{
+> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+> +	void *notifier;
+> +
+> +	ar_snoc->nb.notifier_call = ath10k_snoc_modem_notify;
+> +
+> +	notifier = qcom_register_ssr_notifier("mpss", &ar_snoc->nb);
+> +	if (IS_ERR(notifier))
+> +		return PTR_ERR(notifier);
+> +
+> +	ar_snoc->notifier = notifier;
+> +
+> +	return 0;
+> +}
+> +
+> +static void ath10k_modem_deinit(struct ath10k *ar)
+> +{
+> +	int ret;
+> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+> +
+> +	ret = qcom_unregister_ssr_notifier(ar_snoc->notifier, &ar_snoc->nb);
+> +	if (ret)
+> +		ath10k_err(ar, "error %d unregistering notifier\n", ret);
+> +}
+> +
+>  static int ath10k_setup_msa_resources(struct ath10k *ar, u32 msa_size)
+>  {
+>  	struct device *dev = ar->dev;
+> @@ -1740,10 +1805,19 @@ static int ath10k_snoc_probe(struct platform_device *pdev)
+>  		goto err_fw_deinit;
+>  	}
+>  
+> +	ret = ath10k_modem_init(ar);
+> +	if (ret) {
+> +		ath10k_err(ar, "failed to initialize modem notifier: %d\n", ret);
 
-Would be great with a reproducer for this one, though...
+nit: ath10k_modem_init() encapsulates/hides the setup of the notifier,
+the error message should be inside the function, as for _deinit()
 
--- 
-Jens Axboe
-
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
