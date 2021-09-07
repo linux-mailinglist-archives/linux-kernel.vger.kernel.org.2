@@ -2,141 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6438A402B63
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 308CA402B9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344958AbhIGPNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 11:13:10 -0400
-Received: from mga18.intel.com ([134.134.136.126]:4526 "EHLO mga18.intel.com"
+        id S1345146AbhIGPT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 11:19:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232090AbhIGPNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 11:13:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="207339740"
-X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
-   d="scan'208";a="207339740"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 08:12:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
-   d="scan'208";a="469229470"
-Received: from chenyu-desktop.sh.intel.com ([10.239.158.176])
-  by orsmga007.jf.intel.com with ESMTP; 07 Sep 2021 08:11:58 -0700
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     linux-acpi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, Chen Yu <yu.c.chen@intel.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org
-Subject: [PATCH 2/5][RFC] efi: Introduce EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and corresponding structures
-Date:   Tue,  7 Sep 2021 23:17:45 +0800
-Message-Id: <14bb2fa2c49934c627aec07077b96720d46b5202.1631025237.git.yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1631025237.git.yu.c.chen@intel.com>
-References: <cover.1631025237.git.yu.c.chen@intel.com>
+        id S1345187AbhIGPTV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 11:19:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EF88610D0;
+        Tue,  7 Sep 2021 15:18:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1631027895;
+        bh=/97m/i74To/vQunmhZyAuwwUMsBBuG+szwVCniQt64A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pqofC4GztYvtJ7O/7E1CiSCDAktqLeJ/I06RGKJsi8i87pRdcWf2hq3o5YN0oRyiF
+         UWfot5qtizBHxuJM5Wj04clC4HTGEpKpyssISmbiZCIE/V49g7YQ7vJ/ZxCX+mLx1c
+         hSyskT5QoGiUQL+2xUnAXJVYObzNjsaKGokGil3w=
+Date:   Tue, 7 Sep 2021 17:18:12 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
+        Sean Wang <sean.wang@mediatek.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@savoirfairelinux.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:MEDIATEK SWITCH DRIVER" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH 4.19.y] net: dsa: mt7530: disable learning on standalone
+ ports
+Message-ID: <YTeCtLaG14TGrTCO@kroah.com>
+References: <20210824055509.1316124-1-dqfext@gmail.com>
+ <YSUQV3jhfbhbf5Ct@sashalap>
+ <CALW65ja3hYGmEqcWZzifP2-0WsJOnxcUXsey2ZH5vDbD0-nDeQ@mail.gmail.com>
+ <YSi8Ky3GqBjnxbhC@kroah.com>
+ <20210902053619.1824464-1-dqfext@gmail.com>
+ <YTBoDaYDJfBz3YzN@kroah.com>
+ <20210903091430.2209627-1-dqfext@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210903091430.2209627-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Platform Firmware Runtime Update image starts with UEFI headers, and the headers
-are defined in UEFI specification, but some of them have not been defined in the
-kernel yet.
+On Fri, Sep 03, 2021 at 05:14:30PM +0800, DENG Qingfang wrote:
+> On Thu, Sep 02, 2021 at 07:58:37AM +0200, Greg KH wrote:
+> > On Thu, Sep 02, 2021 at 01:36:19PM +0800, DENG Qingfang wrote:
+> > > On Fri, Aug 27, 2021 at 12:19:23PM +0200, Greg KH wrote:
+> > > > On Tue, Aug 24, 2021 at 11:57:53PM +0800, DENG Qingfang wrote:
+> > > > > Standalone ports should have address learning disabled, according to
+> > > > > the documentation:
+> > > > > https://www.kernel.org/doc/html/v5.14-rc7/networking/dsa/dsa.html#bridge-layer
+> > > > > dsa_switch_ops on 5.10 or earlier does not have .port_bridge_flags
+> > > > > function so it has to be done differently.
+> > > > > 
+> > > > > I've identified an issue related to this.
+> > > > 
+> > > > What issue is that?  Where was it reported?
+> > > 
+> > > See Florian's message here
+> > > https://lore.kernel.org/stable/20210317003549.3964522-2-f.fainelli@gmail.com/
+> > 
+> > THat is just the patch changelog text, or is it unique to this
+> > stable-only patch?  It is not obvious at all.
+> 
+> The issue is with all DSA drivers that do not disable address learning
+> on standalone ports.
+> 
+> "With learning enabled we would end up with the switch having
+> incorrectly learned the address of the CPU port which typically results
+> in a complete break down of network connectivity until the address
+> learned ages out and gets re-learned, from the correct port this time."
+> 
+> > 
+> > > > > > 2. A partial backport of this patch?
+> > > > > 
+> > > > > The other part does not actually fix anything.
+> > > > 
+> > > > Then why is it not ok to just take the whole thing?
+> > > > 
+> > > > When backporting not-identical-patches, something almost always goes
+> > > > wrong, so we prefer to take the original commit when ever possible.
+> > > 
+> > > Okay. MDB and tag ops can be backported as is, and broadcast/multicast
+> > > flooding can be implemented in .port_egress_floods. 
+> > 
+> > So what are we supposed to do here?
+> 
+> Function port_egress_floods is refactored to port_bridge_flags in commit
+> a8b659e7ff75 ("net: dsa: act as passthrough for bridge port flags"). I can
+> backport the mt7530_port_bridge_flags function as port_egress_floods.
 
-For example, the header layout of a capsule file looks like this:
+I am sorry, I still do not understand what to do here.
 
-EFI_CAPSULE_HEADER
-EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
-EFI_FIRMWARE_IMAGE_AUTHENTICATION
+Ideally we want to take the original patches as get merged into Linus's
+tree.  If that is not possible for some reason, we need to have it
+documented very well why that is so, and to get everyone to agree with
+the different patch that is submitted.
 
-These structures would be used by the Platform Firmware Runtime Update
-driver to parse the format of capsule file to verify if the corresponding
-version number is valid. The EFI_CAPSULE_HEADER has been defined in the
-kernel, however the rest are not, thus introduce corresponding UEFI structures
-accordingly.
+thanks,
 
-The reason why efi_manage_capsule_header_t and efi_manage_capsule_image_header_t
-are packedi might be that:
-According to the uefi spec,
-[Figure 23-6 Firmware Management and Firmware Image Management headers]
-EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER is located at the lowest offset within
-the body of the capsule. And this structure is designed to be unaligned to save
-space, because in this way the adjacent drivers and binary payload elements could
-start on byte boundary with no padding. And the
-EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER is at the head of each payload, so
-packing this structure also makes room for more data.
-
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
----
- include/linux/efi.h | 50 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
-
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 6b5d36babfcc..19ff834e1388 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -148,6 +148,56 @@ typedef struct {
- 	u32 imagesize;
- } efi_capsule_header_t;
- 
-+#pragma pack(1)
-+
-+/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER */
-+typedef struct {
-+	u32	ver;
-+	u16	emb_drv_cnt;
-+	u16	payload_cnt;
-+	/*
-+	 * Variable array indicated by number of
-+	 * (emb_drv_cnt + payload_cnt)
-+	 */
-+	u64	offset_list[];
-+} efi_manage_capsule_header_t;
-+
-+/* EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER */
-+typedef struct {
-+	u32	ver;
-+	guid_t	image_type_id;
-+	u8	image_index;
-+	u8	reserved_bytes[3];
-+	u32	image_size;
-+	u32	vendor_code_size;
-+	/* ver = 2. */
-+	u64	hw_ins;
-+	/* ver = v3. */
-+	u64	capsule_support;
-+} efi_manage_capsule_image_header_t;
-+
-+#pragma pack()
-+
-+/* WIN_CERTIFICATE */
-+typedef struct {
-+	u32	len;
-+	u16	rev;
-+	u16	cert_type;
-+} win_cert_t;
-+
-+/* WIN_CERTIFICATE_UEFI_GUID */
-+typedef struct {
-+	win_cert_t	hdr;
-+	guid_t		cert_type;
-+	u8		cert_data[];
-+} win_cert_uefi_guid_t;
-+
-+/* EFI_FIRMWARE_IMAGE_AUTHENTICATIO */
-+typedef struct {
-+	u64				mon_count;
-+	win_cert_uefi_guid_t		auth_info;
-+} efi_image_auth_t;
-+
- /*
-  * EFI capsule flags
-  */
--- 
-2.25.1
-
+greg k-h
