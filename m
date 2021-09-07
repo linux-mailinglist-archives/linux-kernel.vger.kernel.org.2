@@ -2,100 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C379402ACB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C738A402ADA
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:34:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244179AbhIGOa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:30:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
+        id S235971AbhIGOfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:35:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244330AbhIGOal (ORCPT
+        with ESMTP id S232105AbhIGOfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:30:41 -0400
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EFFDC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:29:35 -0700 (PDT)
-Received: by mail-qv1-xf33.google.com with SMTP id p17so5888069qvo.8
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:29:35 -0700 (PDT)
+        Tue, 7 Sep 2021 10:35:46 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2157AC061757
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:34:40 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id n2so10450090lfk.0
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:34:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=uiwuCaM/ip2ATzb/vAgsfRG3Vq6kM1/Vmxsm0eaBXgI=;
-        b=XiCXDw6vd8aYNn3yIgBnPRJ7yQETxzdciXvvmMsl1G2SvyuSfFQtBFFgR3M49AgOTH
-         Rul0KIxrjGx7CWfOBBTi6iu0mX4Slsg/6Fzqa8aqAOgJUCzLssfQY5c/gsnh+5z/Z5Nh
-         hAQpM0QcERPuFEC042Q7IAiE5wkZPcGluh84c=
+        bh=dCEk6hLFpYFZNzpm9UU+CTkqXyAjw51d6n8hDCnfs50=;
+        b=JOoH5mmNdxb7W0iZVCKlwCuDC6TSHto30Ls7RSjmB+2RApz8Yctqil2lCHtGeRrN9Y
+         Z7kbJ2j1g0FJCF81zx3/ZhGcZdZ2K1UVo++3Nvcy3r8goO5Q5aOkqHB99QVNBezpLH4O
+         58EcbrGI6BIeDMPS3FYP3PmYAcL1GDu4SoY8jjeTEeYN5ALWmIGuvs/jTUk1bPuvL8Lq
+         3L83lVga5gLM0i9nLyH9HTb5keyfdyTAh4V4RL9y3/zFzCxwPZAcrVSEcU/xHQhlcdCC
+         3eqRI8wqqkaSGP+Wef/2c/bEmw9Ce8apuVoJZ+7ROa0XmgGK+m+DSt/a3sQe2sPbPq6L
+         IZgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uiwuCaM/ip2ATzb/vAgsfRG3Vq6kM1/Vmxsm0eaBXgI=;
-        b=tTb6C6n7US7KQQyxsIBVA8dB9guDD5Z3XPMC0j6+q+Vgwat0MXQJn8SE1ar5Kqoeqe
-         EkNegd8X6RDY9NoeS8TGPD+ei1IA/PHXIen6PVIAkerq7QEOPfh3RrygJthGen2LSiwW
-         +xsqoE56XExPI0oKIH5mrXFUiC6/zkabWz96gYzv/NBqqI7EsRaviwaWlAsPPftkLqlj
-         6UF+aq/QHmNGyZlGyvLyaPI3BspY+pIV+1UMoTYrCoiq9PYsw2R2Fnp3W1excDquhPdv
-         aWSzEt9HCLI/LI3VOa+A2a5cjKbotuHuzWdsmDqKJjdRps/SC7Ksqp3RIBm2p1F1aEcC
-         CvqQ==
-X-Gm-Message-State: AOAM533Z1pwXqrA3fAQ9PaLApolaAgQkwKM6FgrdmSrudT/azO0NkWOY
-        UV0jwepdeZb43648pjPvZKdtTi8vggTcKP/FdCg0dg==
-X-Google-Smtp-Source: ABdhPJwPexcnMj82Bzxxv5m1UIj5BWLQNhxv3H7DGR1gOBaGw72OqIecTvWq1Mx/E8Dr3wZGy2d3qWw6p92Nx5vlNis=
-X-Received: by 2002:ad4:498d:: with SMTP id t13mr14976136qvx.55.1631024974444;
- Tue, 07 Sep 2021 07:29:34 -0700 (PDT)
+        bh=dCEk6hLFpYFZNzpm9UU+CTkqXyAjw51d6n8hDCnfs50=;
+        b=jwECZv13R/kLUMisp1LogKCp+3cRWSODrcBytiFgmQZ9K7MzyUe/0HXFsYl5NVbuy0
+         91HJAjM0uzXgE2Wmg2P/Mybj0DssBACIl2+jBKUTt4IOuValga6kj64CJzrLPdiKLQnq
+         /XDbMW5HAUx1qwLrHMsk08L9Gev1m5KrrZqJw9Msa9+gvTuBhqgxhMfLyKsYnc53y/M4
+         avMJm6w+sX6dSLqrYFogRWHwVMnsUtH0LEP2Z7auRZ5U+ThLOLqniMepXbpnHoT9IUch
+         PgJPIJvpxRCaCZjvjclG4v2IJH0fk3RxsGJ3+GvXMSW4LbyYQi3zzmT5hO0YKaxVpJLf
+         SHVg==
+X-Gm-Message-State: AOAM533mfQSTx3hMpWOWihct5+Fm7c73ZxmwddjCL3tiEKCI8mCs1WOI
+        aMmUt2NOf6HY3K00mGLe4oDYTf4CcKyWdLrd88VdZA==
+X-Google-Smtp-Source: ABdhPJyqL+F+/YykfnoB9oEeLu/I1Xfp9XyG6yopHhm1QX7RHxXU6JKarEkVx5/eW4SnQdSHnokUbEnY1AMCVNzEnSY=
+X-Received: by 2002:a05:6512:6cd:: with SMTP id u13mr12905659lff.184.1631025278471;
+ Tue, 07 Sep 2021 07:34:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210907102722.47543-1-bert@biot.com> <20210907102722.47543-5-bert@biot.com>
- <CAFr9PXmCKPfdHnHU7=ALh=j2SDf71ibd8kEnLTK6aPN1vmQVdg@mail.gmail.com>
- <CAK8P3a21N8khjyV-f=p28ZogoakhLTrkoPBd6PeXrigba=7-TQ@mail.gmail.com>
- <CAFr9PXn4JXGKSCDNeKMJDPgfezktyfBsTcq8GErt+ROuumDgrg@mail.gmail.com> <CAK8P3a0y0PhmOdMPnx10zG6s6RfiuC9Ju9s5SMnOk8oZ+cAFMw@mail.gmail.com>
-In-Reply-To: <CAK8P3a0y0PhmOdMPnx10zG6s6RfiuC9Ju9s5SMnOk8oZ+cAFMw@mail.gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Tue, 7 Sep 2021 23:32:20 +0900
-Message-ID: <CAFr9PX=Oi-HJYUFBfJn4pHUSk=drf7otyx473hvq1UC5_gaTHQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] ARM: Add basic support for Airoha EN7523 SoC
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Bert Vermeulen <bert@biot.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        John Crispin <john@phrozen.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Mike Rapoport <rppt@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>
+References: <20210727202004.712665-1-dmitry.baryshkov@linaro.org>
+ <163000270629.1317818.2836576068466077505@swboyd.mtv.corp.google.com>
+ <42c3fa20-7ffa-255f-ca28-6f0aa2aa4a13@linaro.org> <163020909027.2218116.11109424225803296345@swboyd.mtv.corp.google.com>
+ <CAA8EJppo8Zze5ViYOWooHy=RR4ueXNeWiBFyKdtpUcm5Cs69ew@mail.gmail.com>
+In-Reply-To: <CAA8EJppo8Zze5ViYOWooHy=RR4ueXNeWiBFyKdtpUcm5Cs69ew@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 7 Sep 2021 16:34:02 +0200
+Message-ID: <CAPDyKFrv9HM9y1zgPj6x2K84cPuYXOqaQYqtvKZ51itPtt3ghw@mail.gmail.com>
+Subject: Re: [PATCH v6 0/6] clk: qcom: use power-domain for sm8250's clock controllers
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Stephen Boyd <sboyd@kernel.org>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:COMMON CLK FRAMEWORK" <linux-clk@vger.kernel.org>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Sun, 29 Aug 2021 at 17:54, Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On Sun, 29 Aug 2021 at 06:51, Stephen Boyd <sboyd@kernel.org> wrote:
+> >
+> > Quoting Dmitry Baryshkov (2021-08-26 14:56:23)
+> > > On 26/08/2021 21:31, Stephen Boyd wrote:
+> > > > Quoting Dmitry Baryshkov (2021-07-27 13:19:56)
+> > > >> On SM8250 both the display and video clock controllers are powered up by
+> > > >> the MMCX power domain. Handle this by linking clock controllers to the
+> > > >> proper power domain, and using runtime power management to enable and
+> > > >> disable the MMCX power domain.
+> > > >>
+> > > >> Dependencies:
+> > > >> - https://lore.kernel.org/linux-arm-msm/20210703005416.2668319-1-bjorn.andersson@linaro.org/
+> > > >>    (pending)
+> > > >
+> > > > Does this patch series need to go through the qcom tree? Presumably the
+> > > > dependency is going through qcom -> arm-soc
+> > >
+> > > It looks like Bjorn did not apply his patches in the for-5.15 series, so
+> > > we'd have to wait anyway. Probably I should rebase these patches instead
+> > > on Rajendra's required-opps patch (which is going in this window).
+> > >
+> >
+> > Ok. Thanks. I'll drop it from my queue for now.
+>
+> Just for the reference. I've sent v7 of this patchset. After thinking
+> more about power domains relationship, I think we have a hole in the
+> abstraction here. Currently subdomains cause power domains to be
+> powered up, but do not dictate the performance level the parent domain
+> should be working in.
 
-On Tue, 7 Sept 2021 at 23:12, Arnd Bergmann <arnd@arndb.de> wrote:
+That's not entirely true. In genpd_add_subdomain() we verify that if
+the child is powered on, the parent must already be powered on,
+otherwise we treat this a bad setup and return an error code.
 
-> > I think the broken memory controller is still there so somehow I'd
-> > need to get the heavy barrier to work in arm64. I haven't yet worked
-> > out if that's even possible.
->I think I missed that part of the discussion, or I forgot about it already.
->What is the issue you are referring to here?
+What seems to be missing though, is that if there is a performance
+state applied for the child domain, that should be propagated to the
+parent domain too. Right?
 
-Sorry. I should have put a bit more context. This is for the SSD268G
-not the original target of this series. But a similar situation.
-The SSD268G (according to the decompiled device tree) is the same
-hardware as the MSTAR_V7 chips but with a Cortex A53 instead of the
-Cortex A7.
-So it probably has the same memory controller as the MSTAR_V7 stuff
-and that memory controller is not coherent so it needs the kernel to
-make sure memory requests are flushed out to memory before DMA
-happens[0]. For arm I fixed that with the heavy mb callback. With
-arm64 I have no idea how to fix that.
+> While this does not look like an issue for the
+> gdsc (and thus it can be easily solved by the Bjorn's patches, which
+> enforce rpmhpd to be powered on to 'at least lowest possible'
+> performance state, this might be not the case for the future links. I
+> think at some point the pd_add_subdomain() interface should be
+> extended with the ability to specify minimum required performance
+> state when the link becomes on.
 
-I'm interested to see how this Airoha EN7523 series goes as if/when I
-push anything for the SSD268G it'll probably only be for a 32bit
-kernel.
+I guess that minimum performance state could be considered as a
+"required-opp" in the DT node for the power-domain provider, no?
 
-0 - https://elixir.bootlin.com/linux/latest/source/arch/arm/mach-mstar/mstarv7.c#L61
+Another option would simply be to manage this solely in the
+platform/soc specific genpd provider. Would that work?
+
+> Until that time I have changed code to
+> enforce having clock controller in pm resume state when gdsc is
+> enabled, thus CC itself votes on parent's (rpmhpd) performance state.
+>
+>
+> --
+> With best wishes
+> Dmitry
+
+Kind regards
+Uffe
