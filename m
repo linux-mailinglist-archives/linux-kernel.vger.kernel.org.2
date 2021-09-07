@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB630402F32
+	by mail.lfdr.de (Postfix) with ESMTP id D3372402F31
 	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346126AbhIGT5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 15:57:22 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45018 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346094AbhIGT5W (ORCPT
+        id S1346142AbhIGT5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 15:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346094AbhIGT5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 15:57:22 -0400
-Message-ID: <20210907195003.818783000@linutronix.de>
+        Tue, 7 Sep 2021 15:57:23 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CA0C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:56:17 -0700 (PDT)
+Message-ID: <20210907195003.877912206@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631044574;
+        s=2020; t=1631044575;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding;
-        bh=TJTU5kToNJvJJu5pxC6HknMZgPHnhFaDFVPd5v0iGXo=;
-        b=4F+MiYMPqZBdtynG9FFYtcKvsTG7aVQFpBm+z4i4D6OAxvAUdMoJoFFVR3zHO5AjyuxQ0L
-        l8as1SPOfd/S52IliTroPnc1GvL6c/PimaZgRIxrsoE9/quOmXhT8pRryFw0sBcu29bRkW
-        dpdc/Kjb6QmZJ+R1POPxzvXgUJWX1BzfB2EexOHe/hoNK0zRvIJkpZ9TKfPqH27dNvAtfY
-        TkouL9AbtWB3VUlVGYclLs7lbODvgEJw7IxBjYxBoAnr9RdMFxI/DpMEx30YMbybf/OeXu
-        v9IA7Y6DMtPTRNlOi0HmuR3/OPsMimBIK0h3PMuGe1DZJ/HKvmSv3PyU4d6WtA==
+        bh=E3qyVicLO48eluwrQSkA3OguqIzUn4L8Bcq7jWABxpA=;
+        b=JCMVr8cQfVFHhe3QuVn3lSmhasAUQ+Op5jlexXWqoji2rK8Xcs0s/gcSLm5eKMxo7vYkPJ
+        8RHJcu5+QwUC6r/g2GTHct09jZF7jOfSDiIPxi5tucYRBgctn/jmjLcoFRwWiZtqg2rhhX
+        W3cxNX0Tq90AjY2ErTLRg3kW/GEM16ZmBO1tc7mX35IrJy/9B/vLmjezDJUBPhLZWPNAgD
+        dGGK/jo7ih3xQsaJ98Xgjjg0wCGn1oHz7aR5+VJ6OAtMYX7m1rq1WWQ5BH+wMSeaguUm6J
+        L1078jy9lT7U+jXU29D6ZyMusFMMwBBdwV1eLlFv47YQ5XVrqhu1yvQbBp26Ww==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631044574;
+        s=2020e; t=1631044575;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding;
-        bh=TJTU5kToNJvJJu5pxC6HknMZgPHnhFaDFVPd5v0iGXo=;
-        b=mCuNmlV0DxV/TNiPDAMcFmAYj/xoiAHgA2K6SXVEbHWodmHmcWKoMDP5CTsl7V8DXipWdI
-        Kkuz4gRJTMl5hIDg==
+        bh=E3qyVicLO48eluwrQSkA3OguqIzUn4L8Bcq7jWABxpA=;
+        b=JlWCEZoFg1nMu/eDOTc0cUE3mItPls51AEfnoHaqj3fU1Qo1+C8JTA8m1uVXVz1i8V3jLE
+        JjYAmZfRYEhzEzBQ==
 3Message-ID: <20210907193229.370353258@linutronix.de>
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
@@ -42,78 +45,83 @@ Cc:     x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Peter Ziljstra <peterz@infradead.org>
-Subject: [patch V2 01/20] x86/extable: Tidy up redundant handler functions
+Subject: [patch V2 02/20] x86/extable: Get rid of redundant macros
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
-Date:   Tue,  7 Sep 2021 21:56:13 +0200 (CEST)
+Date:   Tue,  7 Sep 2021 21:56:15 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need to have the same code all over the place.
+No point in defining the identical macros twice depending on C or assembly
+mode. They are still identical.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
 V2: New patch
 ---
- arch/x86/mm/extable.c |   16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+ arch/x86/include/asm/asm.h |   37 +++++++++++++------------------------
+ 1 file changed, 13 insertions(+), 24 deletions(-)
 
---- a/arch/x86/mm/extable.c
-+++ b/arch/x86/mm/extable.c
-@@ -39,9 +39,8 @@ EXPORT_SYMBOL(ex_handler_default);
- 				unsigned long error_code,
- 				unsigned long fault_addr)
- {
--	regs->ip = ex_fixup_addr(fixup);
- 	regs->ax = trapnr;
--	return true;
-+	return ex_handler_default(fixup, regs, trapnr, error_code, fault_addr);
- }
- EXPORT_SYMBOL_GPL(ex_handler_fault);
+--- a/arch/x86/include/asm/asm.h
++++ b/arch/x86/include/asm/asm.h
+@@ -132,18 +132,6 @@
+ 	.long (handler) - . ;					\
+ 	.popsection
  
-@@ -76,8 +75,7 @@ EXPORT_SYMBOL_GPL(ex_handler_fprestore);
- 				  unsigned long fault_addr)
- {
- 	WARN_ONCE(trapnr == X86_TRAP_GP, "General protection fault in user access. Non-canonical address?");
--	regs->ip = ex_fixup_addr(fixup);
--	return true;
-+	return ex_handler_default(fixup, regs, trapnr, error_code, fault_addr);
- }
- EXPORT_SYMBOL(ex_handler_uaccess);
+-# define _ASM_EXTABLE(from, to)					\
+-	_ASM_EXTABLE_HANDLE(from, to, ex_handler_default)
+-
+-# define _ASM_EXTABLE_UA(from, to)				\
+-	_ASM_EXTABLE_HANDLE(from, to, ex_handler_uaccess)
+-
+-# define _ASM_EXTABLE_CPY(from, to)				\
+-	_ASM_EXTABLE_HANDLE(from, to, ex_handler_copy)
+-
+-# define _ASM_EXTABLE_FAULT(from, to)				\
+-	_ASM_EXTABLE_HANDLE(from, to, ex_handler_fault)
+-
+ # ifdef CONFIG_KPROBES
+ #  define _ASM_NOKPROBE(entry)					\
+ 	.pushsection "_kprobe_blacklist","aw" ;			\
+@@ -164,18 +152,6 @@
+ 	" .long (" _EXPAND_EXTABLE_HANDLE(handler) ") - .\n"	\
+ 	" .popsection\n"
  
-@@ -87,9 +85,7 @@ EXPORT_SYMBOL(ex_handler_uaccess);
- 			       unsigned long fault_addr)
- {
- 	WARN_ONCE(trapnr == X86_TRAP_GP, "General protection fault in user access. Non-canonical address?");
--	regs->ip = ex_fixup_addr(fixup);
--	regs->ax = trapnr;
--	return true;
-+	return ex_handler_fault(fixup, regs, trapnr, error_code, fault_addr);
- }
- EXPORT_SYMBOL(ex_handler_copy);
+-# define _ASM_EXTABLE(from, to)					\
+-	_ASM_EXTABLE_HANDLE(from, to, ex_handler_default)
+-
+-# define _ASM_EXTABLE_UA(from, to)				\
+-	_ASM_EXTABLE_HANDLE(from, to, ex_handler_uaccess)
+-
+-# define _ASM_EXTABLE_CPY(from, to)				\
+-	_ASM_EXTABLE_HANDLE(from, to, ex_handler_copy)
+-
+-# define _ASM_EXTABLE_FAULT(from, to)				\
+-	_ASM_EXTABLE_HANDLE(from, to, ex_handler_fault)
+-
+ /* For C file, we already have NOKPROBE_SYMBOL macro */
  
-@@ -103,10 +99,9 @@ EXPORT_SYMBOL(ex_handler_copy);
- 		show_stack_regs(regs);
+ /*
+@@ -188,6 +164,19 @@ register unsigned long current_stack_poi
+ #define ASM_CALL_CONSTRAINT "+r" (current_stack_pointer)
+ #endif /* __ASSEMBLY__ */
  
- 	/* Pretend that the read succeeded and returned 0. */
--	regs->ip = ex_fixup_addr(fixup);
- 	regs->ax = 0;
- 	regs->dx = 0;
--	return true;
-+	return ex_handler_default(fixup, regs, trapnr, error_code, fault_addr);
- }
- EXPORT_SYMBOL(ex_handler_rdmsr_unsafe);
++#define _ASM_EXTABLE(from, to)					\
++	_ASM_EXTABLE_HANDLE(from, to, ex_handler_default)
++
++#define _ASM_EXTABLE_UA(from, to)				\
++	_ASM_EXTABLE_HANDLE(from, to, ex_handler_uaccess)
++
++#define _ASM_EXTABLE_CPY(from, to)				\
++	_ASM_EXTABLE_HANDLE(from, to, ex_handler_copy)
++
++#define _ASM_EXTABLE_FAULT(from, to)				\
++	_ASM_EXTABLE_HANDLE(from, to, ex_handler_fault)
++
++
+ #endif /* __KERNEL__ */
  
-@@ -121,8 +116,7 @@ EXPORT_SYMBOL(ex_handler_rdmsr_unsafe);
- 		show_stack_regs(regs);
- 
- 	/* Pretend that the write succeeded. */
--	regs->ip = ex_fixup_addr(fixup);
--	return true;
-+	return ex_handler_default(fixup, regs, trapnr, error_code, fault_addr);
- }
- EXPORT_SYMBOL(ex_handler_wrmsr_unsafe);
- 
+ #endif /* _ASM_X86_ASM_H */
 
