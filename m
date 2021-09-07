@@ -2,165 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDF24022E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 06:41:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660A54022E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 06:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhIGEkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 00:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50382 "EHLO
+        id S233171AbhIGElk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 00:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbhIGEkh (ORCPT
+        with ESMTP id S233071AbhIGEla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 00:40:37 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7788EC061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 21:39:31 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id l24so4869861uai.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 21:39:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=muAtmFk8EW8AT3D1cyjk+uuRCMlDhq4lTi32y59wnD0=;
-        b=iFAs2jn9JfPMhFjxzdFLUoZepMDTpSEGgV69ccxCR22rtqQxvz00SCmCtQ6rgD1uhA
-         NhpdWgrHmgOMOI99tRwMfv4uOyFQxeRyI/ln8CEmWG5kekZOF4lBrgbkQ7d/1xgoD7kX
-         94z5+z55ar1NNCKO3N4mmhZaejQF2yKFNJapesx0Pmjmjp4/cXA6fAlAu2//2FYc0hEM
-         dAVoBN2JN+0K/9L6oFZ/5Wa/ImHX1g94vpfVxV8SDcdQmK3jzF8HFoXBrE/maozFULHo
-         aQcb1YsLmhimzNTIfjOMWqUcmFLVtTioBSGyESoLigYdWkekCuL7AbMQnt1RamZqZZXU
-         IFEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=muAtmFk8EW8AT3D1cyjk+uuRCMlDhq4lTi32y59wnD0=;
-        b=VbeZSdSK8EBY+ETRDuFqBFnBj4b49za6WRQJVnPqQIEx2t7fII1CJctNjdbA/7c0L0
-         Y/vMYcPYQgF1R+KEw1iiYOEBxmI5W/VN/2RX8XvmdOrILDN9YhK4AvcTj7R64p2i+dTF
-         uyJO3w4U1OTwn/k2nVrsGtaBhlam7szbtd/7C/YpPfuV0lGn0BYRM6mhNXI/yJBeQ2Ej
-         caRQCNHVab79YTq//MgLr69s1cG+bX8KOX0N9IKIr6TocMlwR8EBWInz4yK9CitwSlRZ
-         TFR7CQmAW9Jq1xefD5bHGubQ1qfbIK9q2maM6qXGfvmaQ0WKnLQTQXZX+KPZpV3GAqQp
-         7zRA==
-X-Gm-Message-State: AOAM533YEaj+NVqXi6dsPpu84UMl7IgdXC/y6tMJIzXxr12BWFvGA8Zr
-        N+AORv+KqQNNaFw+14yrnSPdF2PUJ/7lAg3neOY=
-X-Google-Smtp-Source: ABdhPJy9Yuu8VOkzcoSdw3osvnCl8rrL+qu/9YWJ53meP7MRr6YGJPsqOwWiVPoc2zXbw8W5FdrcsIrW+9JNO69QPa4=
-X-Received: by 2002:ab0:28d2:: with SMTP id g18mr7379906uaq.40.1630989570562;
- Mon, 06 Sep 2021 21:39:30 -0700 (PDT)
+        Tue, 7 Sep 2021 00:41:30 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5224FC061575;
+        Mon,  6 Sep 2021 21:40:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=zQBa6rh27PGE3wkubOhbLzF3Gt/qmyP7Pg4wfjAggnQ=; b=JOzPiwD1+jsYJR3wixQfVIRdL6
+        S8kz1iSEIdnyt83hIPtmiEoP4sSVJrZgr753CuYPgZCUbXPpepwfGdhz18SAJD58TcUd98rhICj7N
+        jNZ7biMI0A8NtSGKaqNRSlwijifDVDp4X5aZCaC4ZadOeu1brw4ytAEhosoYoOdU8nKh7xg6VF4Vx
+        W0UqMTFO/OqmVKeTzzYDLKtASSBFmpGT/WCwWpYlE5ETdkO3ljuN6F+G92iT2eLrOiqeIzgQTgIBB
+        yHm/354NWba2B3QztIY+5p3s2z0/4FNo7eMHww/CSpniLeBIA/jmpQyPB9KZWGRaLzWY4HjL9MBeu
+        XQbVkzcQ==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mNSuF-002Rre-Gd; Tue, 07 Sep 2021 04:40:23 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2] media: s5p-jpeg: rename JPEG marker constants to prevent build warnings
+Date:   Mon,  6 Sep 2021 21:40:22 -0700
+Message-Id: <20210907044022.30602-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <CAPm50aJyfxobKhTrS=dC3pQmM5EbwY2xunet3X5XgnnFUEMmBA@mail.gmail.com>
- <YTXfmRIwWREJgEU9@zn.tnic> <CAPm50aLBt=YkFLi==-9U88YzwoJsmMTfEtj2v3+vx7fSRdDMLA@mail.gmail.com>
- <f89e1eee-aea8-7c59-3af5-8859a43e121c@intel.com> <CAPm50aLiB+O85mgcKcOZwO6J-DXjwK=p+7npBH-qVdkL-77Huw@mail.gmail.com>
- <77e8d483-4395-0017-300e-0886f75217bb@intel.com> <CAPm50aL_eJm2s5GJD1OMFK3vt_iHLQrBueiz-NWS38H=Zz378w@mail.gmail.com>
- <cae10a15-1c21-4cf4-dff5-2123613f1b41@intel.com>
-In-Reply-To: <cae10a15-1c21-4cf4-dff5-2123613f1b41@intel.com>
-From:   Hao Peng <flyingpenghao@gmail.com>
-Date:   Tue, 7 Sep 2021 12:39:03 +0800
-Message-ID: <CAPm50a+crBuP9wH2zCqcD22+wmsb4pj3A9rT_G+64=EV9KLg5w@mail.gmail.com>
-Subject: Re: [PATCH] x86/tsx: clear RTM and HLE when MSR_IA32_TSX_CTRL is not supported
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, tglx@linutronix.de,
-        mingo@redhat.com, x86@kernel.org, linux-kernel@vger.kernel.org,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 12:26 PM Xiaoyao Li <xiaoyao.li@intel.com> wrote:
->
-> On 9/7/2021 11:40 AM, Hao Peng wrote:
-> > On Tue, Sep 7, 2021 at 10:56 AM Xiaoyao Li <xiaoyao.li@intel.com> wrote=
-:
-> >>
-> >> On 9/7/2021 10:35 AM, Hao Peng wrote:
-> >>> On Tue, Sep 7, 2021 at 10:08 AM Xiaoyao Li <xiaoyao.li@intel.com> wro=
-te:
-> >>>>
-> >>>> On 9/7/2021 9:47 AM, Hao Peng wrote:
-> >>>>> On Mon, Sep 6, 2021 at 5:30 PM Borislav Petkov <bp@alien8.de> wrote=
-:
-> >>>>>>
-> >>>>>> On Mon, Sep 06, 2021 at 10:46:05AM +0800, Hao Peng wrote:
-> >>>>>>> If hypervisor does not support MSR_IA32_TSX_CTRL, but guest suppo=
-rts
-> >>>>>>> RTM and HLE features, it will affect TAA mitigation.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Peng Hao <flyingpeng@tencent.com>
-> >>>>>>> ---
-> >>>>>>>     arch/x86/kernel/cpu/tsx.c | 7 +++++++
-> >>>>>>>     1 file changed, 7 insertions(+)
-> >>>>>>>
-> >>>>>>> diff --git a/arch/x86/kernel/cpu/tsx.c b/arch/x86/kernel/cpu/tsx.=
-c
-> >>>>>>> index 9c7a5f049292..5e852c14fef2 100644
-> >>>>>>> --- a/arch/x86/kernel/cpu/tsx.c
-> >>>>>>> +++ b/arch/x86/kernel/cpu/tsx.c
-> >>>>>>> @@ -122,6 +122,13 @@ void __init tsx_init(void)
-> >>>>>>>
-> >>>>>>>            if (!tsx_ctrl_is_supported()) {
-> >>>>>>>                    tsx_ctrl_state =3D TSX_CTRL_NOT_SUPPORTED;
-> >>>>>>> +
-> >>>>>>> +               /* If hypervisor does not support MSR_IA32_TSX_CT=
-RL emulation,
-> >>>>>>> +                * but guest supports RTM and HLE features, it wi=
-ll affect TAA
-> >>>>>>> +                * =EF=BC=88tsx_async_abort=EF=BC=89mitigation.
-> >>>>>>> +                */
-> >>>>>>> +               setup_clear_cpu_cap(X86_FEATURE_RTM);
-> >>>>>>> +               setup_clear_cpu_cap(X86_FEATURE_HLE);
-> >>>>
-> >>>> anyway, IMHO, we shouldn't do anything here for TAA. It should be in
-> >>>> taa_select_mitigation()
-> >>>>
-> >>>>>>>                    return;
-> >>>>>>>            }
-> >>>>>>
-> >>>>>> How does that even happen - the hypervisor does not support the MS=
-R but
-> >>>>>> "guest supports" TSX features?!
-> >>>>>>
-> >>>>>> I guess the guest is detecting it wrong.
-> >>>>>>
-> >>>>>> What hypervisor, what guest, how do I reproduce?
-> >>>>>>
-> >>>>> hypervisor is kvm, guest is linux too.
-> >>>>>> Please give full details.
-> >>>>>>
-> >>>>> The host I used is kernel-5.4, and guest is kernel-5.13.
-> >>>>> MSR_IA32_TSX_CTRL is exposed
-> >>>>> to guest and guest to support RTM and HLE features, no direct
-> >>>>> dependence. at the qemu I
-> >>>>> started guest with -cpu host-model.
-> >>>>> I have viewed the code of kernel-5.4, and MSR_IA32_TSX_CTRL is not
-> >>>>> exposed to guest.
-> >>>>
-> >>>> Does guest see TAA_NO bit?
-> >>>>
-> >>> Guest can't see taa_no, which requires updating qemu to solve. But I =
-think
-> >>> there is a compatibility process here.
-> >>
-> >> Anyway, there should be some existing code in kernel already to handle
-> >> the case that CPUID reports TRM while MSR_IA32_CORE_CAPABILITIES doesn=
-'t
-> >> report MSR_TSX_CTRL nor TAA_NO.
-> >>
-> > Can you point out which patches ? At present, guest is kernel-5.13
-> > still has this problem.
->
-> What's the output of 'cat
-> /sys/devices/system/cpu/vulnerabilities/tsx_async_abort' on your guest?
->
-Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unkno=
-wn.
-> > Thanks.
-> >> And the Patch itself makes no sense.
-> >>
-> >>>>> Thanks.
-> >>>>>> --
-> >>>>>> Regards/Gruss,
-> >>>>>>        Boris.
-> >>>>>>
-> >>>>>> https://people.kernel.org/tglx/notes-about-netiquette
-> >>>>
-> >>
->
+The use of a macro named 'RST' conflicts with one of the same name
+in arch/mips/include/asm/mach-rc32434/rb.h. This causes build
+warnings on some MIPS builds.
+
+Change the names of the JPEG marker constants to be in their own
+namespace to fix these build warnings and to prevent other similar
+problems in the future.
+
+Fixes these build warnings:
+
+In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos3250.c:14:
+../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+   43 | #define RST                             0xd0
+      | 
+../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+   13 | #define RST             (1 << 15)
+
+In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-s5p.c:13:
+../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+   43 | #define RST                             0xd0
+../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+   13 | #define RST             (1 << 15)
+
+In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos4.c:12:
+../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+   43 | #define RST                             0xd0
+../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+   13 | #define RST             (1 << 15)
+
+In file included from ../drivers/media/platform/s5p-jpeg/jpeg-core.c:31:
+../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
+   43 | #define RST                             0xd0
+../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
+   13 | #define RST             (1 << 15)
+
+Also update the kernel-doc so that the word "marker" is not
+repeated.
+
+Fixes: bb677f3ac434 ("[media] Exynos4 JPEG codec v4l2 driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: linux-media@vger.kernel.org
+Cc: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
+Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: linux-arm-kernel@lists.infradead.org
+---
+v2: change all JPEG marker macros to be in their own namespace (as
+    suggested by Mauro)
+
+ drivers/media/platform/s5p-jpeg/jpeg-core.c |   18 +++++------
+ drivers/media/platform/s5p-jpeg/jpeg-core.h |   28 +++++++++---------
+ 2 files changed, 23 insertions(+), 23 deletions(-)
+
+--- linux-next-20210906.orig/drivers/media/platform/s5p-jpeg/jpeg-core.c
++++ linux-next-20210906/drivers/media/platform/s5p-jpeg/jpeg-core.c
+@@ -1140,8 +1140,8 @@ static bool s5p_jpeg_parse_hdr(struct s5
+ 			continue;
+ 		length = 0;
+ 		switch (c) {
+-		/* SOF0: baseline JPEG */
+-		case SOF0:
++		/* JPEG_MARKER_SOF0: baseline JPEG */
++		case JPEG_MARKER_SOF0:
+ 			if (get_word_be(&jpeg_buffer, &word))
+ 				break;
+ 			length = (long)word - 2;
+@@ -1172,7 +1172,7 @@ static bool s5p_jpeg_parse_hdr(struct s5
+ 			notfound = 0;
+ 			break;
+ 
+-		case DQT:
++		case JPEG_MARKER_DQT:
+ 			if (get_word_be(&jpeg_buffer, &word))
+ 				break;
+ 			length = (long)word - 2;
+@@ -1185,7 +1185,7 @@ static bool s5p_jpeg_parse_hdr(struct s5
+ 			skip(&jpeg_buffer, length);
+ 			break;
+ 
+-		case DHT:
++		case JPEG_MARKER_DHT:
+ 			if (get_word_be(&jpeg_buffer, &word))
+ 				break;
+ 			length = (long)word - 2;
+@@ -1198,15 +1198,15 @@ static bool s5p_jpeg_parse_hdr(struct s5
+ 			skip(&jpeg_buffer, length);
+ 			break;
+ 
+-		case SOS:
++		case JPEG_MARKER_SOS:
+ 			sos = jpeg_buffer.curr - 2; /* 0xffda */
+ 			break;
+ 
+ 		/* skip payload-less markers */
+-		case RST ... RST + 7:
+-		case SOI:
+-		case EOI:
+-		case TEM:
++		case JPEG_MARKER_RST ... JPEG_MARKER_RST + 7:
++		case JPEG_MARKER_SOI:
++		case JPEG_MARKER_EOI:
++		case JPEG_MARKER_TEM:
+ 			break;
+ 
+ 		/* skip uninteresting payload markers */
+--- linux-next-20210906.orig/drivers/media/platform/s5p-jpeg/jpeg-core.h
++++ linux-next-20210906/drivers/media/platform/s5p-jpeg/jpeg-core.h
+@@ -37,15 +37,15 @@
+ #define EXYNOS3250_IRQ_TIMEOUT		0x10000000
+ 
+ /* a selection of JPEG markers */
+-#define TEM				0x01
+-#define SOF0				0xc0
+-#define DHT				0xc4
+-#define RST				0xd0
+-#define SOI				0xd8
+-#define EOI				0xd9
+-#define	SOS				0xda
+-#define DQT				0xdb
+-#define DHP				0xde
++#define JPEG_MARKER_TEM				0x01
++#define JPEG_MARKER_SOF0				0xc0
++#define JPEG_MARKER_DHT				0xc4
++#define JPEG_MARKER_RST				0xd0
++#define JPEG_MARKER_SOI				0xd8
++#define JPEG_MARKER_EOI				0xd9
++#define	JPEG_MARKER_SOS				0xda
++#define JPEG_MARKER_DQT				0xdb
++#define JPEG_MARKER_DHP				0xde
+ 
+ /* Flags that indicate a format can be used for capture/output */
+ #define SJPEG_FMT_FLAG_ENC_CAPTURE	(1 << 0)
+@@ -187,11 +187,11 @@ struct s5p_jpeg_marker {
+  * @fmt:	driver-specific format of this queue
+  * @w:		image width
+  * @h:		image height
+- * @sos:	SOS marker's position relative to the buffer beginning
+- * @dht:	DHT markers' positions relative to the buffer beginning
+- * @dqt:	DQT markers' positions relative to the buffer beginning
+- * @sof:	SOF0 marker's position relative to the buffer beginning
+- * @sof_len:	SOF0 marker's payload length (without length field itself)
++ * @sos:	JPEG_MARKER_SOS's position relative to the buffer beginning
++ * @dht:	JPEG_MARKER_DHT' positions relative to the buffer beginning
++ * @dqt:	JPEG_MARKER_DQT' positions relative to the buffer beginning
++ * @sof:	JPEG_MARKER_SOF0's position relative to the buffer beginning
++ * @sof_len:	JPEG_MARKER_SOF0's payload length (without length field itself)
+  * @size:	image buffer size in bytes
+  */
+ struct s5p_jpeg_q_data {
