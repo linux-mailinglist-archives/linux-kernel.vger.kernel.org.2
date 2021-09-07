@@ -2,46 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26764402F7F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A812402F72
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346226AbhIGUQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:16:52 -0400
-Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:48290 "EHLO
-        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344901AbhIGUQu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:16:50 -0400
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mNhTF-00278w-GQ; Tue, 07 Sep 2021 20:13:29 +0000
-Date:   Tue, 7 Sep 2021 20:13:29 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] namei: Standardize callers of filename_create()
-Message-ID: <YTfH6RW+3+5kVD+y@zeniv-ca.linux.org.uk>
-References: <20210901175144.121048-1-stephen.s.brennan@oracle.com>
- <20210901175144.121048-4-stephen.s.brennan@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901175144.121048-4-stephen.s.brennan@oracle.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        id S241383AbhIGUPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:15:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230474AbhIGUP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 16:15:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8F73460187;
+        Tue,  7 Sep 2021 20:14:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631045662;
+        bh=BkQV6zeg2LQkGC46zrw+hhHOEnp7Tv+sYE/Fj0iNkmU=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=oVMAhW5tteryp/KM9INUTNwvVRdjz+56sVKQcF6E/gJwt8xqVU+TwLIUvnCvrESg/
+         uVMe+U8vgRNlSWqrHGQhULJ05KRljVMzJ/Zd856tYkFgpQjWYJ4o7q+IeHuBVF430X
+         zR/jCkRwwLXvn+HiwmPC+P9YYhGt6XHUcaWY1nE65POcyMyavd3d9OjUVL0aoGtnWx
+         bQs+h2qBbjfMSSwgkvnnzZcIiD8NzC+BYikLIL6L81x0NbC9mXPqvGZ9rxN/kuJIQF
+         wfqomO0kBetGkU82jq8q5cue3nml9Wk+H+7xpgwMO9SV9rj4yZX9vQxMAlG6qaeSXb
+         aEnKyvb4cuXBw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7ACBE60A38;
+        Tue,  7 Sep 2021 20:14:22 +0000 (UTC)
+Subject: Re: [GIT PULL] gpio: updates for v5.15
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210907083613.31268-1-brgl@bgdev.pl>
+References: <20210907083613.31268-1-brgl@bgdev.pl>
+X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210907083613.31268-1-brgl@bgdev.pl>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.15
+X-PR-Tracked-Commit-Id: 889a1b3f35db6ba5ba6a0c23a3a55594570b6a17
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 5e6a5845dd651b00754a62edec2f0a439182024d
+Message-Id: <163104566243.21240.4845140527007156447.pr-tracker-bot@kernel.org>
+Date:   Tue, 07 Sep 2021 20:14:22 +0000
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 10:51:43AM -0700, Stephen Brennan wrote:
->  inline struct dentry *user_path_create(int dfd, const char __user *pathname,
->  				struct path *path, unsigned int lookup_flags)
->  {
-> -	return filename_create(dfd, getname(pathname), path, lookup_flags);
-> +	struct filename *filename;
-> +	struct dentry *dentry;
-> +
-> +	filename = getname(pathname);
-> +	dentry = filename_create(dfd, getname(pathname), path, lookup_flags);
-> +	putname(filename);
-> +	return dentry;
+The pull request you sent on Tue,  7 Sep 2021 10:36:13 +0200:
 
-Leaks, obviously...
+> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.15
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/5e6a5845dd651b00754a62edec2f0a439182024d
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
