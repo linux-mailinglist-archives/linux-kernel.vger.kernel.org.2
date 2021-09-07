@@ -2,70 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9D5402644
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:40:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6944040264C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237024AbhIGJlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 05:41:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35272 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233059AbhIGJlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 05:41:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1080660E94;
-        Tue,  7 Sep 2021 09:40:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631007606;
-        bh=qDsqXTfEHl+y2RDxIJnWS93V2MDiJ7/lsUysqJrLmYw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ohTAqdsPU4Tz3vq5KIimxb9cnh/Sb77Jbxa+1PyCoJo3U2XtV0EvbcEi2Q/hEFhvx
-         /Rj/twDHiPkWuTOyf9sExndh1U5DfHydy+KrnCMo8zPLKxcT4OxYWHi53heUcMwPh+
-         uhZmbbn6oIgve7GSLDndwqN5mSGy8En/LRSwX1WY3lJkpoMp9li4LLvAJ/gSsGX7Cf
-         cVwihzulXIOdZoyjlkIAqSEVL4IVhTh1ikxHBEkkC7wkbiB+OLvWcjppSUVSks0qSA
-         KGF2VGB2gP58vbEaIddYp+v9EXlsauuWwL9WIOKNWulW3nIcGHlwtbTpXR0oKzXDjV
-         U1vzvK0f8/Kcw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 02EBD609F5;
-        Tue,  7 Sep 2021 09:40:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S238485AbhIGJlb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Sep 2021 05:41:31 -0400
+Received: from mail-vk1-f173.google.com ([209.85.221.173]:43828 "EHLO
+        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237269AbhIGJlZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 05:41:25 -0400
+Received: by mail-vk1-f173.google.com with SMTP id b13so3060548vkl.10;
+        Tue, 07 Sep 2021 02:40:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TAsz622F5qwEsYsm7MIr3hPdGKH/XCeo4WFM8+vk59k=;
+        b=lo/n5d6ZHDIFD9l1rW48o5NgoYoMDbQGEZ3u23U41QfxqcQobPk5qJIq4Ncf3EZAdw
+         9gYpMepeW9KkWJGfDEtoM+XnXo0FJ5sa/eRPc/0TToyq86eoOLdG8q3N/XefNHj5t8/+
+         RM0/N9CbDDswbUtOqlKvxR95x/rnsNL9Dm2RmIqLVZfeG0GQVh8X7iqEh5TgTEip7izx
+         8/yh35/JpmOtgem+tYpc7sEJ0i2YiXrHkvhfgLZGQrTcqfJGBvMwrmB3sfcLQ5beS0lX
+         t26lyw7ODBjVXw8rkLLNz9gi77PXIrEW6tPZennG0UBr0WTzghJRczb0hrP1FhNK355H
+         QQ0Q==
+X-Gm-Message-State: AOAM531AVMWHckPtSKpzFZHyO2OPJWijeDmLUGBcJjh/7aOvBPpJocWh
+        kz8X8KZZGk7MeMP6jg0jtMUKbjsGftiP5CF7uunKFfhA8KE=
+X-Google-Smtp-Source: ABdhPJzQ0t5tcnTP03QklrT4XexfYsP+WK8uDqFFzGMqIs3w3FmCay2do6F6BXB1hl56v9lUvlPEizI40x10jX7ewIY=
+X-Received: by 2002:a1f:fc8f:: with SMTP id a137mr7117795vki.19.1631007618885;
+ Tue, 07 Sep 2021 02:40:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bonding: 3ad: pass parameter bond_params by reference
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163100760600.32009.3812329334596885476.git-patchwork-notify@kernel.org>
-Date:   Tue, 07 Sep 2021 09:40:06 +0000
-References: <20210907084534.10323-1-colin.king@canonical.com>
-In-Reply-To: <20210907084534.10323-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     j.vosburgh@gmail.com, vfalico@gmail.com, andy@greyhouse.net,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210907063335.2837366-1-linux@roeck-us.net>
+In-Reply-To: <20210907063335.2837366-1-linux@roeck-us.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 7 Sep 2021 11:40:07 +0200
+Message-ID: <CAMuHMdV_jt4zRQV1WXL8yy-AUNtDvrV5U-TRLcNdvFhTLjfG1A@mail.gmail.com>
+Subject: Re: [PATCH v2] Input: analog: Always use ktime functions
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Günter,
 
-This patch was applied to netdev/net.git (refs/heads/master):
+On Tue, Sep 7, 2021 at 8:35 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> m68k, mips, s390, and sparc allmodconfig images fail to build with the
+> following error.
+>
+> drivers/input/joystick/analog.c:160:2: error:
+>         #warning Precise timer not defined for this architecture.
+>
+> Remove architecture specific time handling code and always use ktime
+> functions to determine time deltas. Also remove the now useless use_ktime
+> kernel parameter.
+>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+> v2: Drop helper functions and use ktime_get() and ktime_sub() directly
+>     Drop 'speed' variable and use NSEC_PER_MSEC directly
+>
+>  drivers/input/joystick/analog.c | 103 ++++----------------------------
+>  1 file changed, 11 insertions(+), 92 deletions(-)
+>
+> diff --git a/drivers/input/joystick/analog.c b/drivers/input/joystick/analog.c
+> index f798922a4598..a9ec41f48068 100644
+> --- a/drivers/input/joystick/analog.c
+> +++ b/drivers/input/joystick/analog.c
 
-On Tue,  7 Sep 2021 09:45:34 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The parameter bond_params is a relatively large 192 byte sized
-> struct so pass it by reference rather than by value to reduce
-> copying.
-> 
-> Addresses-Coverity: ("Big parameter passed by value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> 
-> [...]
+> @@ -275,7 +210,7 @@ static int analog_cooked_read(struct analog_port *port)
+>                 this |= data[i];
+>                 for (j = 0; j < 4; j++)
+>                         if (data[i] & (1 << j))
+> -                               port->axes[j] = (delta(start, time[i]) << ANALOG_FUZZ_BITS) / port->loop;
+> +                               port->axes[j] = (ktime_sub(time[i], start) << ANALOG_FUZZ_BITS) / port->loop;
 
-Here is the summary with links:
-  - bonding: 3ad: pass parameter bond_params by reference
-    https://git.kernel.org/netdev/net/c/bbef56d861f1
+This is now a 64-by-32 division, triggering undefined references to __udivdi3
+on some 32-bit platforms.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Assumed deltas are small, the simple solution of truncating to
+32 bit (like delta() did before):
 
+-  port->axes[j] = (ktime_sub(time[i], start) << ANALOG_FUZZ_BITS) / port->loop;
++ port->axes[j] = ((u32)ktime_sub(time[i], start) << ANALOG_FUZZ_BITS)
+/ port->loop;
 
+is probably safe.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
