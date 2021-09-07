@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA523402A8E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B42402A8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237759AbhIGOQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:16:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39438 "EHLO
+        id S236720AbhIGOQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237256AbhIGOPT (ORCPT
+        with ESMTP id S229650AbhIGOPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:15:19 -0400
-Received: from mail-wm1-x349.google.com (mail-wm1-x349.google.com [IPv6:2a00:1450:4864:20::349])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0BDC0613D9
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:14:12 -0700 (PDT)
-Received: by mail-wm1-x349.google.com with SMTP id r126-20020a1c4484000000b002e8858850abso3457522wma.0
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:14:12 -0700 (PDT)
+        Tue, 7 Sep 2021 10:15:24 -0400
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1798C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:14:14 -0700 (PDT)
+Received: by mail-wr1-x44a.google.com with SMTP id v6-20020adfe4c6000000b001574f9d8336so2149148wrm.15
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:14:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=+Rc+8EwMgZeFDUhTR7EsEOP4LhinEf5yz1jFhEz7Lys=;
-        b=C+fu87GoZkKgIPoEvuCyV89//ZnQ2k/l0TxbqWn0XEyAUEP7eZBz2sQEtKAoLtfAPo
-         i4LUEghiCtacFi/u4ZPEyOr9w+StX0mLitUoVCMJrqQv26+ON3iTipxat+SJB8Z4OWpj
-         Rjz/abmjaqw+fhtK2VgNo5/xLy2Bj8tBR17vDoq2moBJSp0TqEYKtCs4bEiiPYdPpcNa
-         zmBkQP95QLt2XqYlZbVycFi+CRCBDXubJIy0o7OrzSw6+xm+W9cElegagvtA2UzKNxCV
-         R72bRGrU0M/WoCET7xXJt4z286/MhTPWFbyAS4LNDW1YWWBcJfHejyx1DKCTIoVzuCZo
-         4Pyw==
+        bh=xcObahmn+nrr83zfh05tWVTdAkOdXoaYlFTrwb+vDxw=;
+        b=PwTMtZh9hU0VqLk69hEXqYfnxKsjVqFY7wOSFa1J0JB6DQhg2CtMHi//BlIXmlAJcR
+         yl9HreJGMh+fm26LpJy0ArZAj++4Fu4KvyaIdfJ82LB3ATSviQI6qC2cUv53tm+SqOqo
+         ZgPg/NhW5nrFtj6UtT6b7nwehz/BqtUvvuNGJ7Xqvz7NDleWgKV/yIGmUsypiwLCBrLH
+         w/wrxaP8qWrm/esdH1O/wqUUWOxZN/0ETQ/gcpzJMgGZnv0+XxeRCAyCu+4EaPQOHmwf
+         3rgpocuiCwu5u0uohAPSkFEYqzBswRdhUe+J3Ce5DVzKXUaqfnRxeVl7hFxA8IARySQj
+         rdOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=+Rc+8EwMgZeFDUhTR7EsEOP4LhinEf5yz1jFhEz7Lys=;
-        b=I+mMozXuHpEY3F0XWgyJwL5krS9EO6JlcI77EuSOizVpzGXzCFAH392PX0mWn67hxz
-         SnlSR2L+Se0lFd3Ob1ywlin6B4+Rh6P3Anxp0DzcS7RkmuW6Lgs9+VyfG1PYeNb9ZQap
-         YUvIDvsLo4yNnhEYKJwBREXDTgmaZ/sCgD1Ya6mQrUGdhqT1c99q7LL6sZlB6CAlYepi
-         kdWmpjKSQnDRAzvI81jVF0ZwqkCEIeXtS3y01Vz2qI/8b3oX5RyrUXqbDxvP2Q/XyBIY
-         UU1DwAvVMPD0Kd57K96V0jvm8MOUo0IB/hoShmoqQtyrpwuzicL+gWq0r5aHjHttqHK3
-         CK9Q==
-X-Gm-Message-State: AOAM533i8u0Qz553DNVr+LxfCwBO66ResndbiKkgScsmo/KlT4NlSgai
-        4B6k2VteQqL/KdOenJxoph4/POY+UA==
-X-Google-Smtp-Source: ABdhPJy5j8OSOmcWadIfuPxP8jPndBqUduiq6MfhVDnHUz5ko0W2/iEvw7OfLAojWDgpFpRc1AZPp+GF2w==
+        bh=xcObahmn+nrr83zfh05tWVTdAkOdXoaYlFTrwb+vDxw=;
+        b=VKZzCd7oe+xnMGZPyL5IFQzMZtvHw6ohnjdpKnRTN+fVyKLrYNQL2/yLprGbAbtnu7
+         OCpZOC8t2/1JQX11TSYWJkr+/6cEAcvSv0i4Xv9lQZr12fjVS50q81Sf2XyqomUgEELo
+         rjieuzr9lB6NiItcWnBEYIetEePjtME41RGhugioY3g5At5Rgo29OlmF5qvUmNPc5vT0
+         PQ/C838I5Cf6r6uSRJXr7LkwXV6hUw0u+Z5P8OXr5OQXIkXvetuzHmpAa3WLdABeMD6u
+         gcMLRuGhH0C0KuhQNxrh0VAIlIVg7+ok7PE6PKFJfvYpv2ZZvkzNVDPSs51NX7naDP4a
+         66KQ==
+X-Gm-Message-State: AOAM530il6izkz1qf4Q9iqeXA8fA6+I8PPHYgmM6IWSyPl762N94mNkm
+        7NBICJMdglXVVWbrqB2re5Pv3doC+w==
+X-Google-Smtp-Source: ABdhPJz1b1Axug1WWI+1xRe0YSX8kMPS6z8VQ8CJ0thqYCiLI9VeUYCGXaKQD6xIAXx4V6nEcFtte+5HyQ==
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:6800:c1ea:4271:5898])
- (user=elver job=sendgmr) by 2002:a05:600c:4106:: with SMTP id
- j6mr4288917wmi.102.1631024050593; Tue, 07 Sep 2021 07:14:10 -0700 (PDT)
-Date:   Tue,  7 Sep 2021 16:13:05 +0200
+ (user=elver job=sendgmr) by 2002:a05:600c:2193:: with SMTP id
+ e19mr4229864wme.40.1631024053139; Tue, 07 Sep 2021 07:14:13 -0700 (PDT)
+Date:   Tue,  7 Sep 2021 16:13:06 +0200
 In-Reply-To: <20210907141307.1437816-1-elver@google.com>
-Message-Id: <20210907141307.1437816-5-elver@google.com>
+Message-Id: <20210907141307.1437816-6-elver@google.com>
 Mime-Version: 1.0
 References: <20210907141307.1437816-1-elver@google.com>
 X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH 4/6] kasan: common: provide can_alloc in kasan_save_stack()
+Subject: [PATCH 5/6] kasan: generic: introduce kasan_record_aux_stack_noalloc()
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -74,72 +74,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add another argument, can_alloc, to kasan_save_stack() which is passed
-as-is to __stack_depot_save().
-
-No functional change intended.
+Introduce a variant of kasan_record_aux_stack() that does not do any
+memory allocation through stackdepot. This will permit using it in
+contexts that cannot allocate any memory.
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- mm/kasan/common.c  | 6 +++---
- mm/kasan/generic.c | 2 +-
- mm/kasan/kasan.h   | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ include/linux/kasan.h |  2 ++
+ mm/kasan/generic.c    | 14 ++++++++++++--
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 2baf121fb8c5..3e0999892c36 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -30,20 +30,20 @@
- #include "kasan.h"
- #include "../slab.h"
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index dd874a1ee862..736d7b458996 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -370,12 +370,14 @@ static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
+ void kasan_cache_shrink(struct kmem_cache *cache);
+ void kasan_cache_shutdown(struct kmem_cache *cache);
+ void kasan_record_aux_stack(void *ptr);
++void kasan_record_aux_stack_noalloc(void *ptr);
  
--depot_stack_handle_t kasan_save_stack(gfp_t flags)
-+depot_stack_handle_t kasan_save_stack(gfp_t flags, bool can_alloc)
- {
- 	unsigned long entries[KASAN_STACK_DEPTH];
- 	unsigned int nr_entries;
+ #else /* CONFIG_KASAN_GENERIC */
  
- 	nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 0);
- 	nr_entries = filter_irq_stacks(entries, nr_entries);
--	return stack_depot_save(entries, nr_entries, flags);
-+	return __stack_depot_save(entries, nr_entries, flags, can_alloc);
- }
+ static inline void kasan_cache_shrink(struct kmem_cache *cache) {}
+ static inline void kasan_cache_shutdown(struct kmem_cache *cache) {}
+ static inline void kasan_record_aux_stack(void *ptr) {}
++static inline void kasan_record_aux_stack_noalloc(void *ptr) {}
  
- void kasan_set_track(struct kasan_track *track, gfp_t flags)
- {
- 	track->pid = current->pid;
--	track->stack = kasan_save_stack(flags);
-+	track->stack = kasan_save_stack(flags, true);
- }
+ #endif /* CONFIG_KASAN_GENERIC */
  
- #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
 diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index c3f5ba7a294a..2a8e59e6326d 100644
+index 2a8e59e6326d..84a038b07c6f 100644
 --- a/mm/kasan/generic.c
 +++ b/mm/kasan/generic.c
-@@ -345,7 +345,7 @@ void kasan_record_aux_stack(void *addr)
+@@ -328,7 +328,7 @@ DEFINE_ASAN_SET_SHADOW(f3);
+ DEFINE_ASAN_SET_SHADOW(f5);
+ DEFINE_ASAN_SET_SHADOW(f8);
+ 
+-void kasan_record_aux_stack(void *addr)
++static void __kasan_record_aux_stack(void *addr, bool can_alloc)
+ {
+ 	struct page *page = kasan_addr_to_page(addr);
+ 	struct kmem_cache *cache;
+@@ -345,7 +345,17 @@ void kasan_record_aux_stack(void *addr)
  		return;
  
  	alloc_meta->aux_stack[1] = alloc_meta->aux_stack[0];
--	alloc_meta->aux_stack[0] = kasan_save_stack(GFP_NOWAIT);
-+	alloc_meta->aux_stack[0] = kasan_save_stack(GFP_NOWAIT, true);
+-	alloc_meta->aux_stack[0] = kasan_save_stack(GFP_NOWAIT, true);
++	alloc_meta->aux_stack[0] = kasan_save_stack(GFP_NOWAIT, can_alloc);
++}
++
++void kasan_record_aux_stack(void *addr)
++{
++	return __kasan_record_aux_stack(addr, true);
++}
++
++void kasan_record_aux_stack_noalloc(void *addr)
++{
++	return __kasan_record_aux_stack(addr, false);
  }
  
  void kasan_set_free_info(struct kmem_cache *cache,
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index fa02c88b6948..e442d94a8f6e 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -260,7 +260,7 @@ void kasan_report_invalid_free(void *object, unsigned long ip);
- 
- struct page *kasan_addr_to_page(const void *addr);
- 
--depot_stack_handle_t kasan_save_stack(gfp_t flags);
-+depot_stack_handle_t kasan_save_stack(gfp_t flags, bool can_alloc);
- void kasan_set_track(struct kasan_track *track, gfp_t flags);
- void kasan_set_free_info(struct kmem_cache *cache, void *object, u8 tag);
- struct kasan_track *kasan_get_free_track(struct kmem_cache *cache,
 -- 
 2.33.0.153.gba50c8fa24-goog
 
