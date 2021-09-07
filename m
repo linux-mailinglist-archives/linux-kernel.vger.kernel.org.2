@@ -2,70 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9945C402A61
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDE6402A66
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbhIGOFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:05:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbhIGOFg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:05:36 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E6CC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:04:30 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id i21so19946521ejd.2
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:04:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=BjaJWmLI4zeDm18Vg5X74JWuITkJZC2dhqIVbVw40Co=;
-        b=AVfVepjA154vZD6OAoUThZbz/D8U7bMkHMAvZy9bh+Y8qJLfFQYVclrsaaUOifvRuz
-         AeM5TuXdj/ddgHP5Q7w++Ne7VRZ5C4Y/o6aqzsThZ6IQF10UjzOEWWy9Sxsqwhi2L2SL
-         wriMAFQ2xZN4odmJGqT/jkjc4hKt3FCQ1ce+EOP7AD9qZgF20JqcoomOETvkfOe3m+F3
-         SRx1qCoVcMeGH3jSn4JBfjbV6Mfb00rEzU0g5IduJB+sWMwNJPd/mGsgc8SNa42yu8TA
-         S9jtE974BBdSOHR5FYRQX3zr3A8UwdNypfzsLHmc0Vj8l9/LndSgg1gX3aTHOkKFm9ao
-         7lmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=BjaJWmLI4zeDm18Vg5X74JWuITkJZC2dhqIVbVw40Co=;
-        b=Q2C3SQgxUDB1itn0kRsqeBNm+n/AK4xqTfHtrqiTQ/lyGTLJ6zuHHhtY0MKmXSFMhA
-         QS0j8zKRCjIMzMlO0tvr5vFX2DHdSVIWY/TJfAZwZFpyggQH5Ymzk1O74XvXORO9qeyK
-         OXMMzzEVN8Xgf4/U+8B0B8+qdyY+oOl4zHQY6iuJ8btQT4Ef7RJ1D32eL/SOkuntzHqU
-         9T1ogcneIJZRznwGEfioB+Ty1NFHd0iY6mBEGJsYcn/e8janAh2ceo6fheIqmLUeikRR
-         yhvuAFxLFWP3xciZHqQo9lHXxGu9rR2ReF8dAi9CCy0VospZ6++jT8qJh2iG+M0Qi+Mu
-         EeMg==
-X-Gm-Message-State: AOAM530BKNmjrF8gU4e1+OnpWSW5isfLcsVI0ciQB+UmLbBu786dn1AP
-        yUPBOfaPNxDfILU8xb9XTOhJWtP4v6Ns4MbuYDQ=
-X-Google-Smtp-Source: ABdhPJyYEggmIvX/zXu9T8asHpiSe1qcNBtUqH6pY1jiqVsbEwkOjEdoQnXUCZ18YiEbo9m6yDl3EUFrZAj8bL5xYlY=
-X-Received: by 2002:a17:906:d0cd:: with SMTP id bq13mr18885852ejb.66.1631023468368;
- Tue, 07 Sep 2021 07:04:28 -0700 (PDT)
-MIME-Version: 1.0
-Sender: belem.m.teju2015@gmail.com
-Received: by 2002:a17:906:ca4a:b0:5c8:7304:7551 with HTTP; Tue, 7 Sep 2021
- 07:04:27 -0700 (PDT)
-From:   hauck man <hauckpristman@gmail.com>
-Date:   Tue, 7 Sep 2021 07:04:27 -0700
-X-Google-Sender-Auth: NdszRhnZTd_KNqgi2FHHtvgwNOA
-Message-ID: <CAJBJuEXd0pyF=_GYNECbMKMqeSuWWn9qXbt5DUS3YDdZ1kf5Qg@mail.gmail.com>
-Subject: URGENT RESPONSES
-To:     undisclosed-recipients:;
+        id S232251AbhIGOI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:08:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229650AbhIGOIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 10:08:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAAAF6103B;
+        Tue,  7 Sep 2021 14:07:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631023637;
+        bh=+6pq5RkAoSIUZfooNDRh1HsK7vTGdlktLrMWVjASe44=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=QjGn5Z9WvN50IBXQt4+0/uMA1Nsheh/VG4nYFnb+d298Hzj4pdS4YllRxdiOoDQCM
+         j4cvrq+M5qrWFEnOgz8SqW7Io+tku7z5ZuLMnTITy3/ZgYBAg2TAkyyNqiOIx9OUhI
+         pls72UWzM93Fx9OOJie5iJpqfZO2oz7Op1Olpee9+Q4RSsiss15iNqn8bZo4xI/nFt
+         VSRlvMUBIkOHhzag/Lv+2+1HMgGPcNQNhY84AYTdvfhCJ4Z6j5nsbqGBbc4rAaaJG+
+         VwYHGp+9QvK/g0OaSnL58fD9Dshc2FBE1hdk5/fUHdwKHKHl/cihpR8sbK9jrEvrwp
+         k3UVuo8G0nqFA==
+Message-ID: <848905ffa20cf234446b16682cbbcf1e56853950.camel@kernel.org>
+Subject: Re: [PATCH v4 5/6] x86/sgx: Hook sgx_memory_failure() into mainline
+ code
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     "Luck, Tony" <tony.luck@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>
+Cc:     "Zhang, Cathy" <cathy.zhang@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Tue, 07 Sep 2021 17:07:14 +0300
+In-Reply-To: <25db682402d14c34af9ba525cffe85c5@intel.com>
+References: <20210728204653.1509010-1-tony.luck@intel.com>
+         <20210827195543.1667168-1-tony.luck@intel.com>
+         <20210827195543.1667168-6-tony.luck@intel.com>
+         <49fccddbbf92279f575409851a9c682495146ad8.camel@kernel.org>
+         <681d530d72de842c8bf43733c11f3c3f2ebf8c6e.camel@kernel.org>
+         <25db682402d14c34af9ba525cffe85c5@intel.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.36.5-0ubuntu1 
+MIME-Version: 1.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
--- 
+On Mon, 2021-09-06 at 18:51 +0000, Luck, Tony wrote:
+> On Fri, 2021-09-03 at 09:12 +0300, Jarkko Sakkinen wrote:
+> > On Fri, 2021-08-27 at 12:55 -0700, Tony Luck wrote:
+> > > +#ifdef CONFIG_X86_SGX
+> > > +int sgx_memory_failure(unsigned long pfn, int flags);
+> > > +bool sgx_is_epc_page(u64 paddr);
+> > > +#else
+> > > +static inline int sgx_memory_failure(unsigned long pfn, int flags)
+> > > +{
+> > > +	return -ENXIO;
+> > > +}
+> > > +
+> > > +static inline bool sgx_is_epc_page(u64 paddr)
+> > > +{
+> > > +	return false;
+> > > +}
+> > > +#endif
+> >=20
+> > These decl's should be in arch/x86/include/asm/sgx.h, and as part of
+> > patch that contains the implementations.
+>=20
+> But I need to use these functions in arch independent code.  Specifically=
+ in
+> mm/memory-failure.c and drivers/acpi/apei/einj.c
+>=20
+> If I just #include <asm/sgx.h> in those files I'll break the build for ot=
+her
+> architectures.
 
-Sir / Madam,
+What does specifically break the build?
 
-Hi Friend I am the auditing director of the International Finance Bank
-Plc bf I want to transfer an abandoned sum of 10.5 millions USD  to
-your account.50% will be for you.
-No risk involved. Contact me for more details.
-Kindly reply me back to my alternative email address (hauckpristman@gmail.com)
-Thanks
-Mr Huck Pristman.
+/Jarkko
