@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58C7402F47
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3056E402F48
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346518AbhIGT6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 15:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346300AbhIGT5v (ORCPT
+        id S1346215AbhIGT6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 15:58:14 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45238 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1346312AbhIGT5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 15:57:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CAC9C0613CF
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:56:45 -0700 (PDT)
-Message-ID: <20210907195004.835208589@linutronix.de>
+        Tue, 7 Sep 2021 15:57:52 -0400
+Message-ID: <20210907195004.888293505@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1631044603;
+        s=2020; t=1631044605;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding;
-        bh=fBCsbpH9Cg9hzkyxGoEzUABjt5cYk0sCaKpx5p95NY0=;
-        b=rC2oSyX5fvYhcLZLn0OHKwA6UNgBwvOiKmsifnT8nMPxtTBhqJBAJMcGOZWWkIIaH2qerx
-        xXhKMMngj0C+PXKIeI+S9JJrpEMfGWTenWXYNqVLkEU9PAUMoQk8Dz6KC0tJmd7W0TaNCG
-        HqsYGKOh7cew41lO809IVKx2HjeuE2bQC530pgg8Rhnr485zu5O0ISgLh7jkHUHF3x6v0Q
-        eyNFSrjF2S2PiUZ2c3xvirT0JCOlogwIzj6e/Vv/sUfySjS5LKkUDwmMb4qVxG3/pBfBxT
-        Ss7j5qEwJry+VQB3x1sh4wEZLq70bfFeWO2ivu2g50svZ2hw2J1WjZvuwAGZnA==
+        bh=hyvbnbIdba3aIUMikIZq5XBHm5TKNH+S4SCGtu4MYY4=;
+        b=2+FYNx4S/Wxbe4IcMwMjkamVbffkwSRAwHHY+/gdFEnBGM5/izCTNAwwsepbwc/tGqcuNT
+        dJDIojtDpEbiCe3Aeq3R5AnFC+8htWk/Xy9euhOIPp83RrU0bL9QaWDVJsRucSvjkZxKUp
+        Rae/JEQa4vAFZQnLCQLqKm7H/2Fr5p02AeTYDT09/5Ejnaqf6io53I1WYbcOS0smi/Qsia
+        sJiwCuKIEZk8gDVkekvbmntzclnvXgwqQExByJax4gzcOTXTuSuVTyQebhhMIfxmZPMTSF
+        XqmP34LiVwaL3hQWzZq2O6RVfuIIC/AzGAEWKNfNMVxYtdpdpbnvqrDvXvGh/g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1631044603;
+        s=2020e; t=1631044605;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding;
-        bh=fBCsbpH9Cg9hzkyxGoEzUABjt5cYk0sCaKpx5p95NY0=;
-        b=GikMr8YnJxpQ/eoDsI+pPBAXmN/ob28q32IAt0AqApNz12gBWCJw3QKpsP31+amSYqcyXd
-        EwGo9gX583qYcKAw==
+        bh=hyvbnbIdba3aIUMikIZq5XBHm5TKNH+S4SCGtu4MYY4=;
+        b=R9ecQqoTM+1ZrEla93ajKmf6aMPjry2/xqudhKxe5vkwUZPvH0J9kF58lRpKdVWtV4ia4I
+        DVG96NVlenqmvLCA==
 3Message-ID: <20210907193229.370353258@linutronix.de>
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
@@ -45,76 +42,75 @@ Cc:     x86@kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Peter Ziljstra <peterz@infradead.org>
-Subject: [patch V2 19/20] x86/fpu/signal: Change return code of
- check_xstate_in_sigframe() to boolean
+Subject: [patch V2 20/20] x86/fpu/signal: Change return code of
+ restore_fpregs_from_user() to boolean
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-transfer-encoding: 8-bit
-Date:   Tue,  7 Sep 2021 21:56:43 +0200 (CEST)
+Date:   Tue,  7 Sep 2021 21:56:44 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__fpu_sig_restore() only needs success/fail information and no detailed
-error code.
+__fpu_sig_restore() only needs information about success or fail and no
+real error code.
+
+This cleans up the confusing conversion of the trap number, which is
+returned by the *RSTOR() exception fixups, to an error code.
 
 Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/fpu/signal.c |   14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ arch/x86/kernel/fpu/signal.c |   17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
 --- a/arch/x86/kernel/fpu/signal.c
 +++ b/arch/x86/kernel/fpu/signal.c
-@@ -23,8 +23,8 @@ static struct _fpx_sw_bytes fx_sw_reserv
-  * Check for the presence of extended state information in the
-  * user fpstate pointer in the sigcontext.
+@@ -255,8 +255,8 @@ static int __restore_fpregs_from_user(vo
+  * Attempt to restore the FPU registers directly from user memory.
+  * Pagefaults are handled and any errors returned are fatal.
   */
--static inline int check_xstate_in_sigframe(struct fxregs_state __user *fxbuf,
--					   struct _fpx_sw_bytes *fx_sw)
-+static inline bool check_xstate_in_sigframe(struct fxregs_state __user *fxbuf,
-+					    struct _fpx_sw_bytes *fx_sw)
+-static int restore_fpregs_from_user(void __user *buf, u64 xrestore,
+-				    bool fx_only, unsigned int size)
++static bool restore_fpregs_from_user(void __user *buf, u64 xrestore,
++				     bool fx_only, unsigned int size)
  {
- 	int min_xstate_size = sizeof(struct fxregs_state) +
- 			      sizeof(struct xstate_header);
-@@ -32,7 +32,7 @@ static inline int check_xstate_in_sigfra
- 	unsigned int magic2;
+ 	struct fpu *fpu = &current->thread.fpu;
+ 	int ret;
+@@ -285,12 +285,11 @@ static int restore_fpregs_from_user(void
  
- 	if (__copy_from_user(fx_sw, &fxbuf->sw_reserved[0], sizeof(*fx_sw)))
--		return -EFAULT;
+ 		/* Try to handle #PF, but anything else is fatal. */
+ 		if (ret != X86_TRAP_PF)
+-			return -EINVAL;
++			return false;
+ 
+-		ret = fault_in_pages_readable(buf, size);
+-		if (!ret)
++		if (!fault_in_pages_readable(buf, size))
+ 			goto retry;
+-		return ret;
 +		return false;
+ 	}
  
- 	/* Check for the first magic field and other error scenarios. */
- 	if (fx_sw->magic1 != FP_XSTATE_MAGIC1 ||
-@@ -48,10 +48,10 @@ static inline int check_xstate_in_sigfra
- 	 * in the memory layout.
- 	 */
- 	if (__get_user(magic2, (__u32 __user *)(fpstate + fx_sw->xstate_size)))
--		return -EFAULT;
-+		return false;
+ 	/*
+@@ -307,7 +306,7 @@ static int restore_fpregs_from_user(void
  
- 	if (likely(magic2 == FP_XSTATE_MAGIC2))
--		return 0;
-+		return true;
- setfx:
- 	trace_x86_fpu_xstate_check_failed(&current->thread.fpu);
- 
-@@ -59,7 +59,7 @@ static inline int check_xstate_in_sigfra
- 	fx_sw->magic1 = 0;
- 	fx_sw->xstate_size = sizeof(struct fxregs_state);
- 	fx_sw->xfeatures = XFEATURE_MASK_FPSSE;
+ 	fpregs_mark_activate();
+ 	fpregs_unlock();
 -	return 0;
 +	return true;
  }
  
- /*
-@@ -325,7 +325,7 @@ static bool __fpu_restore_sig(void __use
- 	if (use_xsave()) {
- 		struct _fpx_sw_bytes fx_sw_user;
+ static bool __fpu_restore_sig(void __user *buf, void __user *buf_fx,
+@@ -342,8 +341,8 @@ static bool __fpu_restore_sig(void __use
+ 		 * faults. If it does, fall back to the slow path below, going
+ 		 * through the kernel buffer with the enabled pagefault handler.
+ 		 */
+-		return !restore_fpregs_from_user(buf_fx, user_xfeatures, fx_only,
+-						 state_size);
++		return restore_fpregs_from_user(buf_fx, user_xfeatures, fx_only,
++						state_size);
+ 	}
  
--		if (check_xstate_in_sigframe(buf_fx, &fx_sw_user))
-+		if (!check_xstate_in_sigframe(buf_fx, &fx_sw_user))
- 			return false;
- 
- 		fx_only = !fx_sw_user.magic1;
+ 	/*
 
