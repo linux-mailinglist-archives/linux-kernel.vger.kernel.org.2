@@ -2,82 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17FA402BA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1CA402BA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345050AbhIGPWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 11:22:08 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:53386 "EHLO lizzard.sbs.de"
+        id S1345104AbhIGPWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 11:22:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236041AbhIGPWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 11:22:07 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 187FKnVP028526
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 7 Sep 2021 17:20:49 +0200
-Received: from [167.87.245.242] ([167.87.245.242])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 187FKmkV006563;
-        Tue, 7 Sep 2021 17:20:48 +0200
-Subject: Re: [PATCH 1/3] arm64: dts: ti: iot2050: Flip mmc device ordering on
- Advanced devices
-To:     Nishanth Menon <nm@ti.com>
-Cc:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Bao Cheng Su <baocheng.su@siemens.com>,
-        Chao Zeng <chao.zeng@siemens.com>
-References: <cover.1631024536.git.jan.kiszka@siemens.com>
- <8e2e435ef67868cb98382b44c51ddb5c8d045d66.1631024536.git.jan.kiszka@siemens.com>
- <20210907151301.7fqwmc7hmcyhhybv@carve>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <35e0cadf-526c-6402-fb8e-8cdb8b7a0bfe@siemens.com>
-Date:   Tue, 7 Sep 2021 17:20:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S1345073AbhIGPWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 11:22:36 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E015F610FE;
+        Tue,  7 Sep 2021 15:21:29 +0000 (UTC)
+Date:   Tue, 7 Sep 2021 11:21:28 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v2] trace: Add migrate-disabled counter to tracing
+ output.
+Message-ID: <20210907112128.7e670ad7@gandalf.local.home>
+In-Reply-To: <20210906081343.klxtb652s5aphg4z@linutronix.de>
+References: <20210806164907.xtgvrb25eb4isxhd@linutronix.de>
+        <20210806135124.1279fc94@oasis.local.home>
+        <20210810132625.ylssabmsrkygokuv@linutronix.de>
+        <20210903194216.1392b62e@gandalf.local.home>
+        <20210906081343.klxtb652s5aphg4z@linutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210907151301.7fqwmc7hmcyhhybv@carve>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.09.21 17:13, Nishanth Menon wrote:
-> On 16:22-20210907, Jan Kiszka wrote:
->> From: Jan Kiszka <jan.kiszka@siemens.com>
->>
->> This ensures that the SD card will remain mmc0 across Basic and Advanced
->> devices, also avoiding surprises for users coming from the downstream
->> kernels.
->>
->> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
->> ---
->>  arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts | 5 +++++
->>  1 file changed, 5 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
->> index ec9617c13cdb..d1d5278e0b94 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-am6548-iot2050-advanced.dts
->> @@ -18,6 +18,11 @@ / {
->>  	compatible = "siemens,iot2050-advanced", "ti,am654";
->>  	model = "SIMATIC IOT2050 Advanced";
->>  
->> +	aliases {
->> +		mmc0 = &sdhci1;
->> +		mmc1 = &sdhci0;
->> +	};
-> 
-> 
-> Should we do this at SoC level?
-> 
+On Mon, 6 Sep 2021 10:13:43 +0200
+Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
 
-Well, I wouldn't mind - but that would also impact your EVMs. For us,
-this is fine as we are coming from that ordering above with our
-downstream kernel/dts.
+> I left that with that XXX on purpose so you can look and comment and say
+> how to fix it. The problem I had with preempt_count was that only the
+> lower nibble contains the preemption counter. So I thought you could
+> easily came up with something how this can be split or taught to only
+> expose the lower nibble. I didn't after a few attempts.
+> My understanding is that this `preempt_count' is also used in the filter
+> tracefs file so something like "preempt_count > 1" > filter would also
+> match for migrate_count = 2, preempt_count = 1. You seem to be happy to
+> filter in user space.
 
-Jan
+Right. It will break filtering, and I don't see a good way to handle that.
 
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+That said, I'll update the code to handle comparing fields with a mask.
+I'll need to do this with the kernel as well.
+
+I'm fine with breaking the filtering on preempt_count over having it just
+fail to print it at all.
+
+-- Steve
+
