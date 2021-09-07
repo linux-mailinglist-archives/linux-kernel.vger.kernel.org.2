@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CB8402A89
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B87D2402A8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:14:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237456AbhIGOPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39406 "EHLO
+        id S237840AbhIGOPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236696AbhIGOPN (ORCPT
+        with ESMTP id S237150AbhIGOPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:15:13 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC6DC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:14:06 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id t18-20020a05620a0b1200b003f8729fdd04so14671886qkg.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:14:06 -0700 (PDT)
+        Tue, 7 Sep 2021 10:15:17 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3F42C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:14:08 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id b8-20020a0562141148b02902f1474ce8b7so15177742qvt.20
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:14:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=N/5YJhYADcqy8sBs5vH/zCaS3u8GV2W+ZzJdQ0X+ILI=;
-        b=LRISar8+QTrl1Cr1oyWe4vLdGfZUfkMlRlMDd/NK0Kmk7Y/DRBslXQaQ0X7mSxUXmi
-         wm531M1XS426nqxMn1W8GRMqNBjylH38g87qY5EpxICYsHkCs5qHSUKERzjptpi6719j
-         /H4m3kZq8l2uvNx0QnqHX3MM5QXCLSysyxGeMIbtYrxq/s1FGDvWMfmDgG9F/ec3c3xj
-         idHtizK63LEw5945mpWMf49WMrAuJykA23g6B0zm+xUHYrMwrU9WiHBpfUfzb2yEvcES
-         922lt7ECnXTIRcMYgYMWsz6BweWTWVC1fORFAVsMLnaSefXxhf96MSDLdFD0jEgeaOy2
-         4+QQ==
+        bh=ClauTO0DAc/W2CE5FaWJtasGRNKjOeQhVVw0fZ55opA=;
+        b=ICdgop9Bb/UlNIicMIQWpjefBvU62X7yD2tARPBACjMMeNeFKwL6hpa4za3Q+GViph
+         59yYezR+3aidPQ4onhqjPPPGR4f/IJ0F0Lq2blaciGq800jLMrwOi6qn9Tr39ECNIEHI
+         wpHPULsvIva0eZTmQLyc2Xu/kI8dANICLgD99thQF9/xwBQM453Fcpo01BqwkjaiJEc7
+         VW6igdwjJSIfWLdmnBMhQ/2AmmT/YbgKiSok59dlxnsL7bOq1G9Xf8FpiQS0SGrGT4sc
+         IDimGSf/TGzEFVj2tZta1r7d+1QalLw3e4KnH938MLWkG9cgJiBntBlEk2MNKDx+r5/O
+         XgnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=N/5YJhYADcqy8sBs5vH/zCaS3u8GV2W+ZzJdQ0X+ILI=;
-        b=bjWWM2kLe2L8VNv0Q+Aimau7dQ4ognIqZaOYwKkCGYKSkZksGgufLQJTACV75kdnFr
-         HV2dhhRLm+pm1UiKbNBKz59WpcCFIDiYph0iDnGzUoRmIxt4UYqgYtOgVWUTDChTYDQI
-         tkr/MUxFnYppPfNodykOWXuspu8aI6PyAVpS2zR5U/2wr/NgH9GuAOqMI5yM/7fFo5wi
-         3FSi+2jxUuxQMj+Row+DXMZT9fmbOCI+CFgEuOwjhEjy77Au20niNHGmcS0p91PSPn86
-         vdYAQAiewryWnDSUzd1tR/luGx5jBtruL/HPyd1zW/re3pF2gX/5tF6gKACGJ6RmYmyT
-         v61Q==
-X-Gm-Message-State: AOAM530jNx7CHhk8H/Hl7asprVo7EvFRJG64qeE9e55XOYC0unqrUaht
-        6PPETwLrqGWmltWAhoJ64o7sN5y6SQ==
-X-Google-Smtp-Source: ABdhPJyR8jDVjdhyUz93LlcEeykwrpaVXBAWFlVsgNr0Lvtqc/eGJKRewlggnz5eecPqJQAot9SMUph8Aw==
+        bh=ClauTO0DAc/W2CE5FaWJtasGRNKjOeQhVVw0fZ55opA=;
+        b=GzP1WynBcHltzXwffZY7MMReSESt6HzCXtX39C9mewmYodwdse9c7rMg8NcexQkDrO
+         f8AiOkyZhV06E5LnB6vNYAnQqFd7ugKmp9QQJQnT5XdAQrdQRTn5JcOMwExJj0VDMygi
+         2PIXKnH5Pzsr7tVtF00pGcbIEC6+rpITPThRUC/SNmqE0/3QfLAgu2VWDoxuVJLqgonp
+         yWii5/94P35QsKNr7T4ODBl/5TlnRngYRu11tbAqWsERZlaHsLdzQcdp7zk+dR8nAMxi
+         iJWnT6Iszv8YYqgb9nTDzpFMY58TdzT8mLEWhAoAyIo9QjbYAHnkCNM0poTAsegL0zv7
+         n44w==
+X-Gm-Message-State: AOAM531gtlGBNlp3ygvuoBt+gXF9r56SXeN8aUOgkpf5T2PhdbcQuUfZ
+        ojoIWvZsjBndAk0mtMpOlRkELIhTnw==
+X-Google-Smtp-Source: ABdhPJw87QSuzKKPiaQWZq+ibYy/Wvgp6rb9RM4pXrZmwrnDnpMuaZQjS0f+oetPSFS2lDFVXSeJ2ZruVQ==
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:6800:c1ea:4271:5898])
- (user=elver job=sendgmr) by 2002:a0c:be85:: with SMTP id n5mr17013941qvi.59.1631024045883;
- Tue, 07 Sep 2021 07:14:05 -0700 (PDT)
-Date:   Tue,  7 Sep 2021 16:13:03 +0200
+ (user=elver job=sendgmr) by 2002:a05:6214:14f2:: with SMTP id
+ k18mr17256135qvw.19.1631024048156; Tue, 07 Sep 2021 07:14:08 -0700 (PDT)
+Date:   Tue,  7 Sep 2021 16:13:04 +0200
 In-Reply-To: <20210907141307.1437816-1-elver@google.com>
-Message-Id: <20210907141307.1437816-3-elver@google.com>
+Message-Id: <20210907141307.1437816-4-elver@google.com>
 Mime-Version: 1.0
 References: <20210907141307.1437816-1-elver@google.com>
 X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH 2/6] lib/stackdepot: remove unused function argument
+Subject: [PATCH 3/6] lib/stackdepot: introduce __stack_depot_save()
 From:   Marco Elver <elver@google.com>
 To:     elver@google.com
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -74,40 +74,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-alloc_flags in depot_alloc_stack() is no longer used; remove it.
+Add __stack_depot_save(), which provides more fine-grained control over
+stackdepot's memory allocation behaviour, in case stackdepot runs out of
+"stack slabs".
+
+Normally stackdepot uses alloc_pages() in case it runs out of space;
+passing can_alloc==false to __stack_depot_save() prohibits this, at the
+cost of more likely failure to record a stack trace.
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- lib/stackdepot.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ include/linux/stackdepot.h |  4 ++++
+ lib/stackdepot.c           | 42 ++++++++++++++++++++++++++++++++------
+ 2 files changed, 40 insertions(+), 6 deletions(-)
 
+diff --git a/include/linux/stackdepot.h b/include/linux/stackdepot.h
+index 97b36dc53301..b2f7e7c6ba54 100644
+--- a/include/linux/stackdepot.h
++++ b/include/linux/stackdepot.h
+@@ -15,6 +15,10 @@
+ 
+ typedef u32 depot_stack_handle_t;
+ 
++depot_stack_handle_t __stack_depot_save(unsigned long *entries,
++					unsigned int nr_entries,
++					gfp_t gfp_flags, bool can_alloc);
++
+ depot_stack_handle_t stack_depot_save(unsigned long *entries,
+ 				      unsigned int nr_entries, gfp_t gfp_flags);
+ 
 diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 0a2e417f83cb..c80a9f734253 100644
+index c80a9f734253..cab6cf117290 100644
 --- a/lib/stackdepot.c
 +++ b/lib/stackdepot.c
-@@ -102,8 +102,8 @@ static bool init_stack_slab(void **prealloc)
- }
+@@ -248,17 +248,28 @@ unsigned int stack_depot_fetch(depot_stack_handle_t handle,
+ EXPORT_SYMBOL_GPL(stack_depot_fetch);
  
- /* Allocation of a new stack in raw storage */
--static struct stack_record *depot_alloc_stack(unsigned long *entries, int size,
--		u32 hash, void **prealloc, gfp_t alloc_flags)
-+static struct stack_record *
-+depot_alloc_stack(unsigned long *entries, int size, u32 hash, void **prealloc)
+ /**
+- * stack_depot_save - Save a stack trace from an array
++ * __stack_depot_save - Save a stack trace from an array
+  *
+  * @entries:		Pointer to storage array
+  * @nr_entries:		Size of the storage array
+  * @alloc_flags:	Allocation gfp flags
++ * @can_alloc:		Allocate stack slabs (increased chance of failure if false)
++ *
++ * Saves a stack trace from @entries array of size @nr_entries. If @can_alloc is
++ * %true, is allowed to replenish the stack slab pool in case no space is left
++ * (allocates using GFP flags of @alloc_flags). If @can_alloc is %false, avoids
++ * any allocations and will fail if no space is left to store the stack trace.
++ *
++ * Context: Any context, but setting @can_alloc to %false is required if
++ *          alloc_pages() cannot be used from the current context. Currently
++ *          this is the case from contexts where neither %GFP_ATOMIC nor
++ *          %GFP_NOWAIT can be used (NMI, raw_spin_lock).
+  *
+- * Return: The handle of the stack struct stored in depot
++ * Return: The handle of the stack struct stored in depot, 0 on failure.
+  */
+-depot_stack_handle_t stack_depot_save(unsigned long *entries,
+-				      unsigned int nr_entries,
+-				      gfp_t alloc_flags)
++depot_stack_handle_t __stack_depot_save(unsigned long *entries,
++					unsigned int nr_entries,
++					gfp_t alloc_flags, bool can_alloc)
  {
- 	struct stack_record *stack;
- 	size_t required_size = struct_size(stack, entries, size);
-@@ -309,9 +309,8 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
- 
- 	found = find_stack(*bucket, entries, nr_entries, hash);
- 	if (!found) {
--		struct stack_record *new =
--			depot_alloc_stack(entries, nr_entries,
--					  hash, &prealloc, alloc_flags);
-+		struct stack_record *new = depot_alloc_stack(entries, nr_entries, hash, &prealloc);
+ 	struct stack_record *found = NULL, **bucket;
+ 	depot_stack_handle_t retval = 0;
+@@ -291,7 +302,7 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
+ 	 * The smp_load_acquire() here pairs with smp_store_release() to
+ 	 * |next_slab_inited| in depot_alloc_stack() and init_stack_slab().
+ 	 */
+-	if (unlikely(!smp_load_acquire(&next_slab_inited))) {
++	if (unlikely(can_alloc && !smp_load_acquire(&next_slab_inited))) {
+ 		/*
+ 		 * Zero out zone modifiers, as we don't have specific zone
+ 		 * requirements. Keep the flags related to allocation in atomic
+@@ -339,6 +350,25 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
+ fast_exit:
+ 	return retval;
+ }
++EXPORT_SYMBOL_GPL(__stack_depot_save);
 +
- 		if (new) {
- 			new->next = *bucket;
- 			/*
++/**
++ * stack_depot_save - Save a stack trace from an array
++ *
++ * @entries:		Pointer to storage array
++ * @nr_entries:		Size of the storage array
++ * @alloc_flags:	Allocation gfp flags
++ *
++ * Context: Contexts where allocations via alloc_pages() are allowed.
++ *
++ * Return: The handle of the stack struct stored in depot, 0 on failure.
++ */
++depot_stack_handle_t stack_depot_save(unsigned long *entries,
++				      unsigned int nr_entries,
++				      gfp_t alloc_flags)
++{
++	return __stack_depot_save(entries, nr_entries, alloc_flags, true);
++}
+ EXPORT_SYMBOL_GPL(stack_depot_save);
+ 
+ static inline int in_irqentry_text(unsigned long ptr)
 -- 
 2.33.0.153.gba50c8fa24-goog
 
