@@ -2,108 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6574023C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:04:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF32F4023C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235351AbhIGG7s convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Sep 2021 02:59:48 -0400
-Received: from mail-ua1-f42.google.com ([209.85.222.42]:46936 "EHLO
-        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234243AbhIGG7p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 02:59:45 -0400
-Received: by mail-ua1-f42.google.com with SMTP id z3so1161883uav.13;
-        Mon, 06 Sep 2021 23:58:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OxTwiIZcFGYmcioqpYJ/pvuPc70Vbjt+tQekWzFjIis=;
-        b=SdL2eQ06G+bGdf+2O+m7yKel+yZ5JtfCdU65UuQVIRLNtsHUigvlN8WzkS2Dl4Hths
-         FlbCxw6v+/00dnzE9loFRWOgy7o4MhmrQeRZMM07k9VEpyB1g8z+C5I4FUQtyAo/S7FM
-         svNTg7A4mcxCObgQRCwy0MAdfHXgDvM/wyFvBpEvOO1eE/Ye9SdXjswjUJyVb455TwJv
-         u7c+mP5pjMVo4Ei75EpcGzuqklDRn8XjzGfiR/zDEbiiIwrUcJyHrEJSgnxUXd2JgDAV
-         Zz1kiw92dfl5A3Z3C9yf5Txw/SWwU42J12vltiUlhdE8wIyZk9d0iqAgDPmfLl7vNLID
-         OY2A==
-X-Gm-Message-State: AOAM533i/3TdYbNjQ/dVKIYD40lyR8A1EUe82v94FrT4YD/V/OTB5Ke5
-        BteqGrOnjyIcHq2ZYaBar5Kj726muMM3fZqPMJI=
-X-Google-Smtp-Source: ABdhPJwQHpBxcwsSXGhYI1+38cTNcYrcYNi3iCBos6MWHoRITEh4uPlzvhLr+vAbbFMFspfvxoQavqL4ifhK+hMVgfo=
-X-Received: by 2002:ab0:6887:: with SMTP id t7mr7737407uar.114.1630997919262;
- Mon, 06 Sep 2021 23:58:39 -0700 (PDT)
+        id S235872AbhIGHAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 03:00:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234243AbhIGHAf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 03:00:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17B806103E;
+        Tue,  7 Sep 2021 06:59:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630997970;
+        bh=ryRid3J2fsQadfh/YT1iw6bV3VSQSER/I7xMYiaP9b8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Im7aRQYYwaolx6pMtl84QmPf1n5t5CbshYbRO4pbA2eGc8cC5wh1OEHHLjXH5GJ9Y
+         0furFK1FYcV0GeQgQ9zZF87nQyEO+9EKjGge1ZSN0zrIJbIF1qkKef1oKUkkB28D+q
+         wHCB1I6Kg6IR+NUaprmNS2KwprJoR5ZAUFhpwJOe4FhoJOY2vyCMhEEOnrAn1Gr8gb
+         5IJ0AFFLjDoKAY19jjIm1MGCd5b0JRy1nT98tqOJSiBMOQxrlddYWdYoR3wFMchi1C
+         5dmTMcObz6GW1Xe2QSRKtgzVB5wUSm9YD6zDlTIlUEvmOc13YLdmUJvSmzwouVCqv8
+         1xqXwfrSPfkOg==
+Received: by mail-pj1-f43.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so910519pjw.2;
+        Mon, 06 Sep 2021 23:59:30 -0700 (PDT)
+X-Gm-Message-State: AOAM532WYjN51cqGgxn8eileVn05QDnv+xcwp3ZXCPPahF5QpW/3rawi
+        pugKBb+zUr62s1NVaZQjnD4nlglkYS3/TzWnUUE=
+X-Google-Smtp-Source: ABdhPJzuiXAU3Njs3qHP0itPJivYcah6VQ3WQtL0F795tm/YRYBtL5gjJyQ539ZAn0iyBxPlf/BInef1vExv9CfCNQ0=
+X-Received: by 2002:a17:902:a3c1:b0:13a:47a:1c5a with SMTP id
+ q1-20020a170902a3c100b0013a047a1c5amr13820893plb.13.1630997969685; Mon, 06
+ Sep 2021 23:59:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
- <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net> <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
- <20210907053236.GB3271077@hr-amd> <0d63f82c-7bdc-1bf0-f64b-8331291e2d4e@amd.com>
-In-Reply-To: <0d63f82c-7bdc-1bf0-f64b-8331291e2d4e@amd.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 7 Sep 2021 08:58:28 +0200
-Message-ID: <CAMuHMdXgxSMiABLkizoTQrBXvRq20w97+LMGEgNZM8D0BsS6sw@mail.gmail.com>
-Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Huang Rui <ray.huang@amd.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-sparc <sparclinux@vger.kernel.org>
+References: <20210805065429.27485-1-clin@suse.com> <20210805065429.27485-2-clin@suse.com>
+ <YRaxt1LCF+hWaMJU@robh.at.kernel.org> <YR0akXYPYthDuvCh@linux-8mug> <11f8b913-1057-7d30-e936-f27483f9a6e2@suse.de>
+In-Reply-To: <11f8b913-1057-7d30-e936-f27483f9a6e2@suse.de>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Date:   Tue, 7 Sep 2021 08:59:18 +0200
+X-Gmail-Original-Message-ID: <CAJKOXPdZ2iP3-BUk+p5A=UnbGia7s2GAOh84htcEjwB1wNAJrQ@mail.gmail.com>
+Message-ID: <CAJKOXPdZ2iP3-BUk+p5A=UnbGia7s2GAOh84htcEjwB1wNAJrQ@mail.gmail.com>
+Subject: Re: [PATCH 1/8] dt-bindings: arm: fsl: add NXP S32G2 boards
+To:     =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>
+Cc:     Chester Lin <clin@suse.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>,
+        "Lee, Chun-Yi" <jlee@suse.com>, Rob Herring <robh@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 8:25 AM Christian König <christian.koenig@amd.com> wrote:
-> Am 07.09.21 um 07:32 schrieb Huang Rui:
-> > On Tue, Sep 07, 2021 at 07:06:04AM +0800, Linus Torvalds wrote:
-> >> [ Adding some subsystem maintainers ]
-> >>
-> >> On Mon, Sep 6, 2021 at 10:06 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> >>>> But hopefully most cases are just "people haven't cared enough" and
-> >>>> easily fixed.
-> >>> We'll see. For my testbed I disabled the new configuration flag
-> >>> for the time being because its primary focus is boot tests, and
-> >>> there won't be any boot tests if images fail to build.
-> >> Sure, reasonable.
-> >>
-> >> I've checked a few of the build errors by doing the appropriate cross
-> >> compiles, and it doesn't seem bad - but it does seem like we have a
-> >> number of really pointless long-standing warnings that should have
-> >> been fixed long ago.
-> >>
-> >> For example, looking at sparc64, there are several build errors due to
-> >> those warnings now being fatal:
-> >>
-> >>   - drivers/gpu/drm/ttm/ttm_pool.c:386
-> >>
-> >>     This is a type mismatch error. It looks like __fls() on sparc64
-> >> returns 'int'. And the ttm_pool.c code assumes it returns 'unsigned
-> >> long'.
-> >>
-> >>     Oddly enough, the very line after that line does "min_t(unsigned
-> >> int" to get the types in line.
-> >>
-> >>     So  the immediate reason is "sparc64 is different". But the deeper
-> >> reason seems to be that ttm_pool.c has odd type assumptions. But that
-> >> warning should have been fixed long ago, either way.
-> >>
-> >>     Christian/Huang? I get the feeling that both lines in that file
-> >> should use the min_t(). Hmm?
-> >
-> > Shall we align the return type like __fls() on all the arches?
+On Mon, 6 Sept 2021 at 22:38, Andreas F=C3=A4rber <afaerber@suse.de> wrote:
 >
-> I think so, yes. IIRC I was a bit surprised that it returns UL on x86. I
-> mean the maximum possible value here is 63.
+> Hi Chester,
+>
+> On 18.08.21 16:34, Chester Lin wrote:
+> > On Fri, Aug 13, 2021 at 12:53:59PM -0500, Rob Herring wrote:
+> >> On Thu, Aug 05, 2021 at 02:54:22PM +0800, Chester Lin wrote:
+> >>> Add bindings for S32G2's evaluation board (S32G-VNP-EVB) and referenc=
+e
+> >>> design 2 board ( S32G-VNP-RDB2).
+> >>>
+> >>> Signed-off-by: Chester Lin <clin@suse.com>
+> >>> ---
+> >>>  Documentation/devicetree/bindings/arm/fsl.yaml | 7 +++++++
+> >>>  1 file changed, 7 insertions(+)
+> >>>
+> >>> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documen=
+tation/devicetree/bindings/arm/fsl.yaml
+> >>> index e2097011c4b0..3914aa09e503 100644
+> >>> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> >>> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> >>> @@ -983,6 +983,13 @@ properties:
+> >>>            - const: solidrun,lx2160a-cex7
+> >>>            - const: fsl,lx2160a
+> >>>
+> >>> +      - description: S32G2 based Boards
+> >>> +        items:
+> >>> +          - enum:
+> >>> +              - fsl,s32g274a-evb
+> >>> +              - fsl,s32g274a-rdb2
+> >>> +          - const: fsl,s32g2
+> >>
+> >> Given this is an entirely different family from i.MX and new?, shouldn=
+'t
+> >> it use 'nxp' instead of 'fsl'? Either way,
+> >
+> > It sounds good and Radu from NXP has mentioned a similar idea for the
+> > compatible string of linflexuart. To keep the naming consistency, shoul=
+d we
+> > change all 'fsl' to 'nxp' as well?
+>
+> I assume that question was just unclearly phrased, so for the record:
+>
+> ABI stability rules forbid us from changing "all 'fsl'" in compatible
+> strings or property names.
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/=
+Documentation/devicetree/bindings/ABI.rst
+>
+> Deployed firmware providing mainline-merged platforms with DTBs using
+> fsl prefix (e.g., the quoted LX2160A) needs to continue working with
+> newer drivers, and deployed mainline Linux should continue working after
+> firmware updates that modify the DTB provided to Linux.
 
-And ffs() returns int, like in ffs(3).
+This is a new platform/SoC therefore there is no ABI. There is no
+requirement in the kernel that a new ABI (which you define in this
+patchset in the bindings) should be compatible with something
+somewhere. It's some misunderstanding of stable ABI. Therefore all new
+compatibles are allowed to be nxp, not fsl.
 
-Gr{oetje,eeting}s,
+No one here proposed renaming existing compatibles from fsl tro nxp.
+We talk about new ones.
 
-                        Geert
+Different question of course whether you want to be nice to some
+existing out-of-tree users... but then have in mind that we don't care
+about out of tree. :) Anyway being nice to out-of-tree is not part of
+ABI. It's just being nice and useful.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Best regards,
+Krzysztof
