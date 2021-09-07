@@ -2,92 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18461402212
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F02402216
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232492AbhIGBim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 21:38:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29856 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232664AbhIGBij (ORCPT
+        id S238555AbhIGBmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 21:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230143AbhIGBmK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 21:38:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630978653;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LD4HmvA+6ng2SFaOBQkrpmMcYGijXFYTWjOibY469rU=;
-        b=GRrcgupssVywBzH5KljwoqxgVpkvxMg0ydRW5LvLE/qeyWB8zj9HhFmsRbiK8CsFCTCWjI
-        II4nAhmIPfcIbqEbbncVR8od40OvN94r8u7eHPRme6OMvD3E+QxDyp/9d2eM/v1XwId4YB
-        BS0KdBzsR9yuf1DI0ui2oaB6/LJj46M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-420-jemrBUYpPzmuqg88LXk5sw-1; Mon, 06 Sep 2021 21:37:30 -0400
-X-MC-Unique: jemrBUYpPzmuqg88LXk5sw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CFBFF10054F6;
-        Tue,  7 Sep 2021 01:37:27 +0000 (UTC)
-Received: from T590 (ovpn-8-23.pek2.redhat.com [10.72.8.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8619927097;
-        Tue,  7 Sep 2021 01:37:04 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 09:37:05 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
-        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
-        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
-        josef@toxicpanda.com, hch@infradead.org, hare@suse.de,
-        bvanassche@acm.org, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
-        dm-devel@redhat.com, nbd@other.debian.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v3 2/8] scsi/sr: add error handling support for add_disk()
-Message-ID: <YTbCQdieHG07Bz8W@T590>
-References: <20210830212538.148729-1-mcgrof@kernel.org>
- <20210830212538.148729-3-mcgrof@kernel.org>
+        Mon, 6 Sep 2021 21:42:10 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA6CC061575;
+        Mon,  6 Sep 2021 18:41:05 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id s24so76754wmh.4;
+        Mon, 06 Sep 2021 18:41:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6IvLWu/7qfFU33s9UIbv0TYSF6R5mFJDRgiIZtSY5YI=;
+        b=eYNQXbpGg6QXnqsKLpmf4129/MVqlgUnS4D6d5KViJ52OUMe7joeMfisq4aLZ5qjaL
+         0LMkIrxXg1lcLEtmzDhSDkq7kUUZ6JHNT7GKmUS9spR5FVmbcJlCF0WTuNREo9sz9+0Y
+         /zyIDyzYGjHyd24GUAuEEaBTcfvoRCURbcqBgj8OHB23DOi+BEMSSQckryWe7Myo7F8Z
+         kn0cYNVRsFVh9923dcvnPA1+qcNgRJgvl1VSXNmtlwqvOYr8LydcWaHsawN8RDFT3hf7
+         q2NNLf011Y22lWS9xpgroCD3QzAX5Kmlki3tteYYvL7H4Phv8Ey5Y0mZC9oEVQ8Pytql
+         4r0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6IvLWu/7qfFU33s9UIbv0TYSF6R5mFJDRgiIZtSY5YI=;
+        b=LL2T7ti0KvGxxWqC+38JDV4/EWh7XHocEUFXHGN81XuPDncF6XyocSx6vfGtp8KXhH
+         cQrP4FX5N0vl1nn5DhICnpDOUMkXqL/U5lGqX00r/JKQ75RnXiQ5wolfKZF1b1o8RnZc
+         LcswUphzj8COmVXhnUfSJwEgka7UEDg+Vs5F07yYZnQ0sffUE+VoQLH3O+gMLkkmpMtq
+         7CSaznayej2qvo7jrNcYSitsnr1nEqTTcm9ioZAN0b49nBfFvtNBUyJ6Rv606gBN9pAu
+         7L6zsXTURsyBXyvdHaFOupN1EHLFuAPtsRtMLwCqC4Eq4Klcm1Sw1epqdd0XRiRSngj2
+         ug1A==
+X-Gm-Message-State: AOAM531eopyOT4hgq/WDs2wZyKq7qqZVWg5XOwjEUCeNCJtvkFiSUkFg
+        7hKswUxseciQ2/aqLdYGwCW5aZW9waE+DoY0OtA=
+X-Google-Smtp-Source: ABdhPJz9mirFy4n6DSu9TlHhNbwifeKK+OcCA6FshJx0CB/0wysYkAfozRCmyjciWx6bXMM++OtJcTKbStEnS/Pbwy0=
+X-Received: by 2002:a7b:cb53:: with SMTP id v19mr1473587wmj.127.1630978863684;
+ Mon, 06 Sep 2021 18:41:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210830212538.148729-3-mcgrof@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210729183942.2839925-1-robdclark@gmail.com> <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
+ <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
+ <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org> <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+ <CALAqxLUkyXK2gqNMBbtJFfh01ZpcG46dZaM7Zq4jG3OngvFREg@mail.gmail.com>
+ <CAF6AEGsACLcDuszcgmHHs04GghLPiRfei3tGo161yBXsg7Y-YA@mail.gmail.com>
+ <CAMi1Hd0dniDXPNOuh05ywqHKY+cGvAsd-cnD91K1GLppfO=x0w@mail.gmail.com>
+ <CAF6AEGvtw06MYST2PdhqHVpsG4Tec2DnUA-uwFRP-6xqa9yf5Q@mail.gmail.com> <CAMi1Hd1kp8ijH8y3U2sxs5cE3Zfat_v-C3rrGtTK01ry8Om6Lw@mail.gmail.com>
+In-Reply-To: <CAMi1Hd1kp8ijH8y3U2sxs5cE3Zfat_v-C3rrGtTK01ry8Om6Lw@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 6 Sep 2021 18:45:21 -0700
+Message-ID: <CAF6AEGugB5QinhyOxvAiG_V40=mXS20nnqxgk71xe_fmm1iZsw@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Caleb Connolly <caleb.connolly@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 02:25:32PM -0700, Luis Chamberlain wrote:
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling.
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  drivers/scsi/sr.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-> index 2942a4ec9bdd..72fd21844367 100644
-> --- a/drivers/scsi/sr.c
-> +++ b/drivers/scsi/sr.c
-> @@ -779,7 +779,10 @@ static int sr_probe(struct device *dev)
->  	dev_set_drvdata(dev, cd);
->  	disk->flags |= GENHD_FL_REMOVABLE;
->  	sr_revalidate_disk(cd);
-> -	device_add_disk(&sdev->sdev_gendev, disk, NULL);
-> +
-> +	error = device_add_disk(&sdev->sdev_gendev, disk, NULL);
-> +	if (error)
-> +		goto fail_minor;
+On Mon, Sep 6, 2021 at 12:58 PM Amit Pundir <amit.pundir@linaro.org> wrote:
+>
+> On Mon, 6 Sept 2021 at 21:54, Rob Clark <robdclark@gmail.com> wrote:
+> >
+> > On Mon, Sep 6, 2021 at 1:02 AM Amit Pundir <amit.pundir@linaro.org> wrote:
+> > >
+> > > On Sat, 4 Sept 2021 at 01:55, Rob Clark <robdclark@gmail.com> wrote:
+> > > >
+> > > > On Fri, Sep 3, 2021 at 12:39 PM John Stultz <john.stultz@linaro.org> wrote:
+> > > > >
+> > > > > On Thu, Jul 29, 2021 at 1:49 PM Rob Clark <robdclark@gmail.com> wrote:
+> > > > > > On Thu, Jul 29, 2021 at 1:28 PM Caleb Connolly
+> > > > > > <caleb.connolly@linaro.org> wrote:
+> > > > > > > On 29/07/2021 21:24, Rob Clark wrote:
+> > > > > > > > On Thu, Jul 29, 2021 at 1:06 PM Caleb Connolly
+> > > > > > > > <caleb.connolly@linaro.org> wrote:
+> > > > > > > >>
+> > > > > > > >> Hi Rob,
+> > > > > > > >>
+> > > > > > > >> I've done some more testing! It looks like before that patch ("drm/msm: Devfreq tuning") the GPU would never get above
+> > > > > > > >> the second frequency in the OPP table (342MHz) (at least, not in glxgears). With the patch applied it would more
+> > > > > > > >> aggressively jump up to the max frequency which seems to be unstable at the default regulator voltages.
+> > > > > > > >
+> > > > > > > > *ohh*, yeah, ok, that would explain it
+> > > > > > > >
+> > > > > > > >> Hacking the pm8005 s1 regulator (which provides VDD_GFX) up to 0.988v (instead of the stock 0.516v) makes the GPU stable
+> > > > > > > >> at the higher frequencies.
+> > > > > > > >>
+> > > > > > > >> Applying this patch reverts the behaviour, and the GPU never goes above 342MHz in glxgears, losing ~30% performance in
+> > > > > > > >> glxgear.
+> > > > > > > >>
+> > > > > > > >> I think (?) that enabling CPR support would be the proper solution to this - that would ensure that the regulators run
+> > > > > > > >> at the voltage the hardware needs to be stable.
+> > > > > > > >>
+> > > > > > > >> Is hacking the voltage higher (although ideally not quite that high) an acceptable short term solution until we have
+> > > > > > > >> CPR? Or would it be safer to just not make use of the higher frequencies on a630 for now?
+> > > > > > > >>
+> > > > > > > >
+> > > > > > > > tbh, I'm not sure about the regulator stuff and CPR.. Bjorn is already
+> > > > > > > > on CC and I added sboyd, maybe one of them knows better.
+> > > > > > > >
+> > > > > > > > In the short term, removing the higher problematic OPPs from dts might
+> > > > > > > > be a better option than this patch (which I'm dropping), since there
+> > > > > > > > is nothing stopping other workloads from hitting higher OPPs.
+> > > > > > > Oh yeah that sounds like a more sensible workaround than mine .
+> > > > > > > >
+> > > > > > > > I'm slightly curious why I didn't have problems at higher OPPs on my
+> > > > > > > > c630 laptop (sdm850)
+> > > > > > > Perhaps you won the sillicon lottery - iirc sdm850 is binned for higher clocks as is out of the factory.
+> > > > > > >
+> > > > > > > Would it be best to drop the OPPs for all devices? Or just those affected? I guess it's possible another c630 might
+> > > > > > > crash where yours doesn't?
+> > > > > >
+> > > > > > I've not heard any reports of similar issues from the handful of other
+> > > > > > folks with c630's on #aarch64-laptops.. but I can't really say if that
+> > > > > > is luck or not.
+> > > > > >
+> > > > > > Maybe just remove it for affected devices?  But I'll defer to Bjorn.
+> > > > >
+> > > > > Just as another datapoint, I was just marveling at how suddenly smooth
+> > > > > the UI was performing on db845c and Caleb pointed me at the "drm/msm:
+> > > > > Devfreq tuning" patch as the likely cause of the improvement, and
+> > > > > mid-discussion my board crashed into USB crash mode:
+> > > > > [  146.157696][    C0] adreno 5000000.gpu: CP | AHB bus error
+> > > > > [  146.163303][    C0] adreno 5000000.gpu: CP | AHB bus error
+> > > > > [  146.168837][    C0] adreno 5000000.gpu: RBBM | ATB bus overflow
+> > > > > [  146.174960][    C0] adreno 5000000.gpu: CP | HW fault | status=0x00000000
+> > > > > [  146.181917][    C0] adreno 5000000.gpu: CP | AHB bus error
+> > > > > [  146.187547][    C0] adreno 5000000.gpu: CP illegal instruction error
+> > > > > [  146.194009][    C0] adreno 5000000.gpu: CP | AHB bus error
+> > > > > [  146.308909][    T9] Internal error: synchronous external abort:
+> > > > > 96000010 [#1] PREEMPT SMP
+> > > > > [  146.317150][    T9] Modules linked in:
+> > > > > [  146.320941][    T9] CPU: 3 PID: 9 Comm: kworker/u16:1 Tainted: G
+> > > > >     W         5.14.0-mainline-06795-g42b258c2275c #24
+> > > > > [  146.331974][    T9] Hardware name: Thundercomm Dragonboar
+> > > > > Format: Log Type - Time(microsec) - Message - Optional Info
+> > > > > Log Type: B - Since Boot(Power On Reset),  D - Delta,  S - Statistic
+> > > > > S - QC_IMAGE_VERSION_STRING=BOOT.XF.2.0-00371-SDM845LZB-1
+> > > > > S - IMAGE_VARIANT_STRING=SDM845LA
+> > > > > S - OEM_IMAGE_VERSION_STRING=TSBJ-FA-PC-02170
+> > > > >
+> > > > > So Caleb sent me to this thread. :)
+> > > > >
+> > > > > I'm still trying to trip it again, but it does seem like db845c is
+> > > > > also seeing some stability issues with Linus' HEAD.
+> > > > >
+> > > >
+> > > > Caleb's original pastebin seems to have expired (or at least require
+> > > > some sort of ubuntu login to access).. were the crashes he was seeing
+> > > > also 'AHB bus error'?
+> > >
+> > > I can reproduce this hard crash
+> > > https://www.irccloud.com/pastebin/Cu6UJntE/ and a gpu lockup
+> > > https://www.irccloud.com/pastebin/6Ryd2Pug/ at times reliably, by
+> > > running antutu benchmark on pocof1.
+> > >
+> > > Reverting 9bc95570175a ("drm/msm: Devfreq tuning") helps and I no
+> > > longer see these errors.
+> > >
+> > > Complete dmesg for hardcrash https://pastebin.com/raw/GLZVQFQN
+> > >
+> >
+> > Does antutu trigger this issue as easily on db845c?  If no, does
+> > db845c have pmic differences compared to pocof1 and Caleb's phone?
+>
+> Yes I can reproduce this hard crash with antutu on db845c as well with
+> linux/master at 477f70cd2a67 ("Merge tag 'drm-next-2021-08-31-1' of
+> git://anongit.freedesktop.org/drm/drm").
+>
+> Dmesg: https://pastebin.com/raw/xXtvxk0G
+>
 
-You don't undo register_cdrom(), maybe you can use kref_put(&cd->kref, sr_kref_release);
-to simplify the error handling.
+One thing I thought of, which would be worth ruling out, is whether
+this issue only occurs with freq changes immediately after resuming
+the GPU, vs freq changes in general.  Could you try the below patch.
+And if it "fixes" the issue, then try reducing the delay until you
+start seeing GPU hangs again.
 
+----------
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 40c9fef457a4..278b85207ea3 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -1513,6 +1513,8 @@ static int a6xx_pm_resume(struct msm_gpu *gpu)
+  if (ret)
+  return ret;
 
-Thanks,
-Ming
++ msleep(5);
++
+  msm_devfreq_resume(gpu);
 
+  a6xx_llc_activate(a6xx_gpu);
+----------
+
+BR,
+-R
+
+>
+> >
+> > I think we may need some help from qcom here, but I'll go back and
+> > look at older downstream kernels to see if I can find any evidence
+> > that we need to limit how far we change the freq in a single step.
+> > It's not clear to me if there is some physical constraint that the
+> > driver needs to respect, or if we have some missing/incorrect
+> > configuration for a630.  IIRC the downstream kernel is letting the GMU
+> > do more of the freq management, so it might be handling this case for
+> > the kernel.  But the GMU is a bit of a black box to me and I don't
+> > have any docs, so just a guess.
+> >
+> > It would be helpful if someone who can repro this could try the
+> > experiments I mentioned about increasing min_freq and/or decreasing
+> > max_freq to limit the size of the freq change until the issue does not
+> > happen.
+> >
+> > If we have to, we can merge this hack patch to disable freq clamping
+> > on a630.. but that isn't really a fix.  The root issue is a power
+> > issue, 9bc95570175a just made it more likely to see the problem.
+> >
+> > BR,
+> > -R
+> >
+> > > Regards,
+> > > Amit Pundir
+> > >
+> > > >
+> > > > If you have a reliable reproducer, I guess it would be worth seeing if
+> > > > increasing the min_freq (ie. to limit how far we jump the freq in one
+> > > > shot) "fixes" it?
+> > > >
+> > > > I guess I could check downstream kgsl to see if they were doing
+> > > > something to increase freq in smaller increments.. I don't recall that
+> > > > they were but it has been a while since I dug thru that code.  And I
+> > > > suppose downstream it could also be done in their custom tz governor.
+> > > >
+> > > > BR,
+> > > > -R
