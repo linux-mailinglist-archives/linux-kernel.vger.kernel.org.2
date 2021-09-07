@@ -2,193 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7611B402E7A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E990402E7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345987AbhIGSkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 14:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345980AbhIGSkJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 14:40:09 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ECFAC0613C1
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 11:39:02 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 63-20020a250d42000000b0059dc43162c9so180095ybn.23
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 11:39:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=301LxysQcBJybm7Zr97WzyGah9Mc2jXduBLK47CHcWo=;
-        b=RcR05aOOHxdnTig8jgiJJEPJhTOos2LGSimPmkVE/3L47H13fID1nKMh/mI2poArf4
-         ro9K1CMQ9tBTrhMVg04sQqsAQXxHSokaBagbXWKwzc43mqPe1ObOnPQaBFrnm1zcm1WB
-         jF0JT1E2Ev4t8GJ/4vO6CSGJZckEbrtG8YM2DvUZpicvuvNtTO6ZD15+RKwCxXI/iTXE
-         sU5CznyUlSOjOydJu7yXa0dKPNzsVve6lEoRLpFgTAgm2jck/EZLtM1ZWEIa9nLJQJFG
-         Uyxl/nDiQ9GXQBJXP24uwLxbfeHUuPRICLxic57w9JeBMhQVOnWq9DpBjlat3qxslGir
-         6sIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=301LxysQcBJybm7Zr97WzyGah9Mc2jXduBLK47CHcWo=;
-        b=C+Xh310VO4PQIHSBynvxpUfHdpKVQx1INr+znzOLVYHzP4ntDNW1B5H0pN709Xii+l
-         oyf+kaXC7sagfqA6acK1J358IUKTXCnY6/fSB+X18qbwFENu5Xc2jkNeJw6yvd34lo2E
-         Xi5FVYTBUPLVVJMqwGFxvapUq/B0ICusImfx9PBeL05UK71a/cJxKoQfmk/PjRPmEobs
-         +zRyPwLwW2YQMUAUcZFnIOJWIIL2flFWoPXGw0TkW4g6UeZFuEv1OpNcylNnbJjNPMG7
-         bUt2mbtpxNf2idkMvUqT19ZAGOnIgckVlelzDMAHHGLoS2mYQNRvYGdvNeXp98QMGbsm
-         SWfg==
-X-Gm-Message-State: AOAM532RKUz7XpPhhY42nfqHcG75+6t4yKCo/mg+742eMZSCjr7Rxduv
-        JEmRq7ryLLVkjR/2MrR7ds19QEk+IXEvMtzQi70=
-X-Google-Smtp-Source: ABdhPJwXjkFjB6p3Qvjmaa/s3cfB6ETEgjnRavOsqvYZQ5ZgIylPD3crx3iRKw/9e5GeQaXRYj6u6fuofhFKvg6y7gg=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:329a:8c54:7706:34e2])
- (user=ndesaulniers job=sendgmr) by 2002:a25:b941:: with SMTP id
- s1mr24246390ybm.304.1631039941767; Tue, 07 Sep 2021 11:39:01 -0700 (PDT)
-Date:   Tue,  7 Sep 2021 11:38:40 -0700
-Message-Id: <20210907183843.33028-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.33.0.153.gba50c8fa24-goog
-Subject: [PATCH] Revert "Enable '-Werror' by default for all kernel builds"
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     llvm@lists.linux.dev, linux-security-module@vger.kernel.org,
-        linux-toolchains@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vipin Sharma <vipinsh@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1345953AbhIGSo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 14:44:27 -0400
+Received: from mga18.intel.com ([134.134.136.126]:24451 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240131AbhIGSo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 14:44:26 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10100"; a="207403796"
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="207403796"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 11:43:19 -0700
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="464977752"
+Received: from fdiasmor-mobl1.amr.corp.intel.com (HELO pbossart-mobl3.intel.com) ([10.209.186.104])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 11:43:17 -0700
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     tiwai@suse.de, broonie@kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Vijendar Mukunda <Vijendar.Mukunda@amd.com>,
+        Chuhong Yuan <hslester96@gmail.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Gu Shengxian <gushengxian@yulong.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] ASoC: amd: acp: declare and add prefix to 'bt_uart_enable' symbol
+Date:   Tue,  7 Sep 2021 13:42:14 -0500
+Message-Id: <20210907184216.33067-1-pierre-louis.bossart@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 3fe617ccafd6f5bb33c2391d6f4eeb41c1fd0151.
+Sparse reports the following warning:
 
-The above commit seems as though it was merged in response to
-https://lore.kernel.org/linux-hardening/CAHk-=3Dwj4EG=3DkCOaqyPEq5VXa97kyUH=
-sBpBn3DWwE91qcnDytOQ@mail.gmail.com/.
+sound/soc/amd/acp-pcm-dma.c:39:6: error: symbol 'bt_uart_enable' was
+not declared. Should it be static?
 
-While I can appreciate the intent of enabling -Werror, I don't think it
-is the right tool to address the root cause of developers not testing
-certain toolchains or configurations, or taking existing reports they're
-getting serious enough.
+It's not very good practice to export such symbols that can easily
+conflict, add the acp_ prefix and add declaration in header file.
 
-Having more appropriate CI or processes in place to prevent untested
-patches from being merged into mainline may also be worth discussing.
-
-I'd also like to see such a patch sent formally to the list for
-discussion and have time to soak in next rather than be merged directly
-into mainline without either.
-
--Werror is great for preventing new errors from creeping in when a
-codebase is free of warnings for all configs and all targets and the
-toolchain is never updated. Unfortunately, none of the above is the case
-for the Linux kernel at this time.
-
-The addition of new compiler diagnostic flags in the -W group to -Wall
-make toolchain updates excessively more painful. This can lead to
-commits that disable warnings rather than work towards addressing them.
-Some diagnostics are useful but take incredible work or churn to
-completely free a codebase from them.
-
-Warning can be upgraded to errors with -Werror=3Dfoo or downgraded from
-errors back to warnings via -Wno-error=3Dfoo. -Wno-error=3Dfoo is a double
-edged sword; it doesn't help you spot the introduction of additional
-instances of that warning easily.
-
-This change has caused nearly all of our CI to go red, and requires us
-to now disable CONFIG_WERROR until every last target and every last
-config is addressed. Rather than require everyone to disable the above
-config to keep builds going, perhaps certain CI systems should instead
-set CFLAGS_KERNEL=3D-Werror.
-
-Why don't we just fix every warning? We have been, for years, and we're
-still not done yet. See our issue tracker below, contributors wanted.
-
-With more time/active discussion, we can probably land something more
-appropriate. It should involve the Kbuild maintainer and list.
-
-For instance, I have questions around how should such a config interact
-with randconfigs and allconfigs. This config also seems to duplicate the
-existing CONFIG_PPC_DISABLE_WERROR without merging the two.
-
-I do recognize the irony of someone who's spent a lot of time cleaning
-up warnings to be advocating for disabling -Werror...it's not lost on
-me. Our Pixel (n=C3=A9e Nexus) team has been effectively carrying an out of
-tree patch enabling -Werror since before I ever contributed to the
-kernel.
-
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1449
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- Makefile     |  3 ---
- init/Kconfig | 14 --------------
- 2 files changed, 17 deletions(-)
+ sound/soc/amd/acp-da7219-max98357a.c | 6 +++---
+ sound/soc/amd/acp-pcm-dma.c          | 6 +++---
+ sound/soc/amd/acp.h                  | 2 ++
+ 3 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index d45fc2edf186..6bc1c5b17a62 100644
---- a/Makefile
-+++ b/Makefile
-@@ -785,9 +785,6 @@ stackp-flags-$(CONFIG_STACKPROTECTOR_STRONG)      :=3D =
--fstack-protector-strong
-=20
- KBUILD_CFLAGS +=3D $(stackp-flags-y)
-=20
--KBUILD_CFLAGS-$(CONFIG_WERROR) +=3D -Werror
--KBUILD_CFLAGS +=3D $(KBUILD_CFLAGS-y)
--
- ifdef CONFIG_CC_IS_CLANG
- KBUILD_CPPFLAGS +=3D -Qunused-arguments
- # The kernel builds with '-std=3Dgnu89' so use of GNU extensions is accept=
-able.
-diff --git a/init/Kconfig b/init/Kconfig
-index 8cb97f141b70..e708180e9a59 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -137,20 +137,6 @@ config COMPILE_TEST
- 	  here. If you are a user/distributor, say N here to exclude useless
- 	  drivers to be distributed.
-=20
--config WERROR
--	bool "Compile the kernel with warnings as errors"
--	default y
--	help
--	  A kernel build should not cause any compiler warnings, and this
--	  enables the '-Werror' flag to enforce that rule by default.
--
--	  However, if you have a new (or very old) compiler with odd and
--	  unusual warnings, or you have some architecture with problems,
--	  you may need to disable this config option in order to
--	  successfully build the kernel.
--
--	  If in doubt, say Y.
--
- config UAPI_HEADER_TEST
- 	bool "Compile test UAPI headers"
- 	depends on HEADERS_INSTALL && CC_CAN_LINK
-
-base-commit: 4b93c544e90e2b28326182d31ee008eb80e02074
---=20
-2.33.0.153.gba50c8fa24-goog
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index b3df98a9f9f3..b2065f3fe42c 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -33,7 +33,7 @@ static struct clk *da7219_dai_wclk;
+ static struct clk *da7219_dai_bclk;
+ static struct clk *rt5682_dai_wclk;
+ static struct clk *rt5682_dai_bclk;
+-extern bool bt_uart_enable;
++
+ void *acp_soc_is_rltk_max(struct device *dev);
+ 
+ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+@@ -760,8 +760,8 @@ static int cz_probe(struct platform_device *pdev)
+ 				"devm_snd_soc_register_card(%s) failed\n",
+ 				card->name);
+ 	}
+-	bt_uart_enable = !device_property_read_bool(&pdev->dev,
+-						    "bt-pad-enable");
++	acp_bt_uart_enable = !device_property_read_bool(&pdev->dev,
++							"bt-pad-enable");
+ 	return 0;
+ }
+ 
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index 11b3c4f39eba..1f322accd9ea 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -36,8 +36,8 @@
+ #define ST_MIN_BUFFER ST_MAX_BUFFER
+ 
+ #define DRV_NAME "acp_audio_dma"
+-bool bt_uart_enable = true;
+-EXPORT_SYMBOL(bt_uart_enable);
++bool acp_bt_uart_enable = true;
++EXPORT_SYMBOL(acp_bt_uart_enable);
+ 
+ static const struct snd_pcm_hardware acp_pcm_hardware_playback = {
+ 	.info = SNDRV_PCM_INFO_INTERLEAVED |
+@@ -596,7 +596,7 @@ static int acp_init(void __iomem *acp_mmio, u32 asic_type)
+ 	acp_reg_write(val, acp_mmio, mmACP_SOFT_RESET);
+ 
+ 	/* For BT instance change pins from UART to BT */
+-	if (!bt_uart_enable) {
++	if (!acp_bt_uart_enable) {
+ 		val = acp_reg_read(acp_mmio, mmACP_BT_UART_PAD_SEL);
+ 		val |= ACP_BT_UART_PAD_SELECT_MASK;
+ 		acp_reg_write(val, acp_mmio, mmACP_BT_UART_PAD_SEL);
+diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
+index e5ab6c6040a6..85529ed7e5f5 100644
+--- a/sound/soc/amd/acp.h
++++ b/sound/soc/amd/acp.h
+@@ -204,4 +204,6 @@ typedef struct acp_dma_dscr_transfer {
+ 	u32 reserved;
+ } acp_dma_dscr_transfer_t;
+ 
++extern bool acp_bt_uart_enable;
++
+ #endif /*__ACP_HW_H */
+-- 
+2.25.1
 
