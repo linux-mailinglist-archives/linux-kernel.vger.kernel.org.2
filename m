@@ -2,148 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 137F8402B02
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC07C402B0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241711AbhIGOss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:48:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbhIGOsr (ORCPT
+        id S240007AbhIGOuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:50:18 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:15305 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232105AbhIGOuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:48:47 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECEEC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 07:47:40 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so13032755otg.11
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 07:47:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=nci4/B41QF+oBe4qv8ng7lSjST0iQqji29tw2osdDUE=;
-        b=h1YB1wsEW0fCLIr9u5LXZ9btrD1/NYZm1fzH7u9cRNdW+a21qPor8apqb5VWBaLWik
-         7tLKe/waXUlPFtVmutNV1M2YTJ8jVZDaApi2b/AKVCot6RVibp+asxzInYstCeMHoImA
-         UmhRRP4A5jEG9PZkh9991Yrx1q2STZW3DWtD8girtJLo3zIZsb67wefr2SUKRAtWvlkC
-         pubQjsTtAYTL0kBkgZeAbYo2dUwV0Xqjayb+VtKUGahfTFRKrHqju8ccIRZFmWsuqwKR
-         sfS4l5HsMWcW7cWe9sWiMLqz9NDoSqls5uH+akXmDkPiHPXkrvWDysiVCjoyA7EWSfFU
-         XteA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=nci4/B41QF+oBe4qv8ng7lSjST0iQqji29tw2osdDUE=;
-        b=aP9C+IyTKoKMPM2XaM/U15dglSfGqzh061hkj/rvF9vuM5XljVpk7SPFsdGPvEYDds
-         Kvg7SKyixngsWSV0FnPJpILLD+5F33v1UjJwTLUSbpAr/U8Hs5H0oJhpM3o/UHd4o4xH
-         BX5Ojkys2C45khxCt5aJerrG9qXY9MCj3N9GQ87hrWvC4T7yHeulPq2WYMpV+YG3Xq2G
-         neoYG+nN0zeUWkflK4Rs6hSgiMiOiYoO7OizO96P4Vk3SHaTY+sF4YqUxIKqa9JYKmo3
-         /8ErCaBg4b73oNwkQUteO0PESZ9GGZ4ASOa2NtDzvSet+7gZd0vonSWtgUJcZWk6RSG9
-         tY+A==
-X-Gm-Message-State: AOAM531t3zlGWm20YYVbwsLnd2MgiRYIPoy/Vu30lYs32HER0lcqHQTU
-        gcz6V7weT9iFFLi7DFr/CliMofGKlJc=
-X-Google-Smtp-Source: ABdhPJzyPvBNhOVWwvtm2OiBhbOqNt8xeGdpW6vU2u5fiMloYNfAY1+MP/eKZuQfQKu8ZiP13bfSuQ==
-X-Received: by 2002:a05:6830:1dac:: with SMTP id z12mr15390372oti.52.1631026060234;
-        Tue, 07 Sep 2021 07:47:40 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s7sm2244637ook.8.2021.09.07.07.47.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 07:47:39 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 7 Sep 2021 07:47:37 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: Re: QA: Monitor Linux log messages as port of release (candidate)
- testing
-Message-ID: <20210907144737.GF4989@roeck-us.net>
-References: <458e0604-1fe9-bed0-d22f-84540b05ffb1@molgen.mpg.de>
- <20210907125354.GE4989@roeck-us.net>
- <38ac012a-c16e-1ba0-b386-156bb8ddecc4@molgen.mpg.de>
+        Tue, 7 Sep 2021 10:50:16 -0400
+Received: from dggeme766-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4H3p6c74wQz8snd;
+        Tue,  7 Sep 2021 22:48:24 +0800 (CST)
+Received: from [10.174.176.245] (10.174.176.245) by
+ dggeme766-chm.china.huawei.com (10.3.19.112) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.8; Tue, 7 Sep 2021 22:48:52 +0800
+Subject: Re: [PATCH v2 0/3] auth_gss: netns refcount leaks when
+ use-gss-proxy==1
+To:     "J. Bruce Fields" <bfields@fieldses.org>,
+        Wenbin Zeng <wenbin.zeng@gmail.com>, <viro@zeniv.linux.org.uk>,
+        <davem@davemloft.net>, <jlayton@kernel.org>,
+        <trond.myklebust@hammerspace.com>, <anna.schumaker@netapp.com>,
+        <wenbinzeng@tencent.com>, <dsahern@gmail.com>,
+        <nicolas.dichtel@6wind.com>, <willy@infradead.org>,
+        <edumazet@google.com>, <jakub.kicinski@netronome.com>,
+        <tyhicks@canonical.com>, <chuck.lever@oracle.com>,
+        <neilb@suse.com>, <linux-fsdevel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-nfs@vger.kernel.org>
+References: <1556692945-3996-1-git-send-email-wenbinzeng@tencent.com>
+ <1557470163-30071-1-git-send-email-wenbinzeng@tencent.com>
+ <20190515010331.GA3232@fieldses.org>
+ <20190612083755.GA27776@bridge.tencent.com>
+ <20190612155224.GF16331@fieldses.org>
+From:   "wanghai (M)" <wanghai38@huawei.com>
+Message-ID: <2c9e3d91-f4b3-6f6a-0dc0-21cef4fab3bb@huawei.com>
+Date:   Tue, 7 Sep 2021 22:48:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20190612155224.GF16331@fieldses.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <38ac012a-c16e-1ba0-b386-156bb8ddecc4@molgen.mpg.de>
+X-Originating-IP: [10.174.176.245]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme766-chm.china.huawei.com (10.3.19.112)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
 
-On Tue, Sep 07, 2021 at 03:50:39PM +0200, Paul Menzel wrote:
-> Dear Guenter,
-> 
-> 
-> Am 07.09.21 um 14:53 schrieb Guenter Roeck:
-> > On Tue, Sep 07, 2021 at 10:40:31AM +0200, Paul Menzel wrote:
-> 
-> > > Thank you for testing release candidates and releases [1]. Is your test
-> > > setup documented somewhere?
-> > > 
-> > Not really, except its source is available at github:
-> > 	https://github.com/groeck/linux-build-test
-> 
-> Thank you.
-> 
-> > > If not happening already, could the Linux messages (at least up to log level
-> > > warning) also be monitored? For example, in Linux 5.14, a new warning snuck
-> > > in by cefc7ca462 (ACPI: PRM: implement OperationRegion handler for the
-> > > PlatformRtMechanism subtype) [2], which could have been caught early on, and
-> > > fixed before the release.
-> > > 
-> > > The test summaries would then also notify about possible behavior change.
-> > 
-> > Logs are available and can be examined at kerneltests.org/builders.
-> 
-> Sorry for being blind. Under *qemu-tests*, looking at build #1831 [1],
-> clicking on *stdio* [2] under *Steps and Logfiles*, I do not see any Linux
-> logs.
-> 
-> > Reports are generated manually, so it would be way too much effort to add
-> > build warnings to those. Besides, logs are way too noisy to be useful in a
-> > summary e-mail.
-> 
-> Just to avoid misunderstandings, it’s about the Linux run-time logs.
-> 
-Run-time logs are only provided if there are errors or runtime issues
-(crashes, warning tracebacks, or test failures).
+在 2019/6/12 23:52, J. Bruce Fields 写道:
+> On Wed, Jun 12, 2019 at 04:37:55PM +0800, Wenbin Zeng wrote:
+>> On Tue, May 14, 2019 at 09:03:31PM -0400, J. Bruce Fields wrote:
+>>> Whoops, I was slow to test these.  I'm getting failuring krb5 nfs
+>>> mounts, and the following the server's logs.  Dropping the three patches
+>>> for now.
+>> My bad, I should have found it earlier. Thank you for testing it, Bruce.
+>>
+>> I figured it out, the problem that you saw is due to the following code:
+>> the if-condition is incorrect here because sn->gssp_clnt==NULL doesn't mean
+>> inexistence of 'use-gss-proxy':
+> Thanks, but with the new patches I see the following.  I haven't tried
+> to investigate.
+This patchset adds the nsfs_evict()->netns_evict() code for breaking 
+deadlock bugs that exist, but this may cause double free because 
+nsfs_evict()->netns_evict() may be called multiple times.
 
-> > Also, Geert's build reports already provide build warnings and errors.
-> > The same applies to reports sent by 0-day. Indeed, I do see at least
-> > one 0-day report against commit cefc7ca46235.
-> 
-> How can I find that report?
-> 
-I just searched for the SHA.
+for example:
 
-https://www.spinics.net/lists/linux-acpi/msg101721.html
+int main()
+{
+     int fd = open("/proc/self/ns/net", O_RDONLY);
+     close(fd);
 
-> > What would be the point of adding yet another report of build
-> > warnings on top of that ?
-> If the functionality already exists, great. But to be clear, it’s about the
-> runtime logs.
-> 
+     fd = open("/proc/self/ns/net", O_RDONLY);
+     close(fd);
+}
 
-If there are (new) runtime issues (crashes, warnings, or other test failures),
-I usually analyze, bisect, and report the problem against the patch introducing
-the problem unless it was already reported elsewhere.
+Therefore, the nsfs evict cannot be used to break the deadlock.
 
-For example, there is currently a backtrace in arm64 tests:
-
-BUG: sleeping function called from invalid context at kernel/locking/semaphore.c:163
-
-which is due to ACPI code being called from the wrong context.
-Another example is the cirular locking problem reported in various
-mips tests, from mtd code. Both problems have been fixed in -next,
-and the fixes will hopefully be pushed upstream soon.
-
-The qemu tests do not log build warnings. I used to do that, but it
-was way too noisy (some builds used to produce hundreds of build
-warnings). Also, there is no logging data if there are neither
-crashes nor warnings or other test failures, for the same reason.
-If you are looking for complete boot logs, I'd suggest looking at
-test results from kernelci.org.
-
-Thanks,
-Guenter
+A large number of netns leaks may cause OOM problems, currently I can't 
+find a good solution to fix it, does anyone have a good idea?
+> --b.
+>
+> [ 2908.134813] ------------[ cut here ]------------
+> [ 2908.135732] name 'use-gss-proxy'
+> [ 2908.136276] WARNING: CPU: 2 PID: 15032 at fs/proc/generic.c:673 remove_proc_entry+0x124/0x190
+> [ 2908.138144] Modules linked in: nfsv4 rpcsec_gss_krb5 nfsv3 nfs_acl nfs lockd grace auth_rpcgss sunrpc
+> [ 2908.140183] CPU: 2 PID: 15032 Comm: (coredump) Not tainted 5.2.0-rc2-00441-gaef575f54640 #2257
+> [ 2908.142062] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-2.fc30 04/01/2014
+> [ 2908.143756] RIP: 0010:remove_proc_entry+0x124/0x190
+> [ 2908.144519] Code: c3 48 c7 c7 60 24 8b 82 e8 29 16 a5 00 eb d5 48 c7 c7 60 24 8b 82 e8 1b 16 a5 00 4c 89 e6 48 c7 c7 ec 4c 52 82 e8 50 fd db ff <0f> 0b eb b6 48 8b 04 24 83 a8 90 00 00 00 01 e9 78 ff ff ff 4c 89
+> [ 2908.148138] RSP: 0018:ffffc900047bbdb0 EFLAGS: 00010282
+> [ 2908.148945] RAX: 0000000000000000 RBX: ffff888036060580 RCX: 0000000000000000
+> [ 2908.150139] RDX: ffff88807fd24e80 RSI: ffff88807fd165b8 RDI: 00000000ffffffff
+> [ 2908.151334] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> [ 2908.152564] R10: 0000000000000000 R11: 0000000000000000 R12: ffffffffa00adb1b
+> [ 2908.153816] R13: 00007ffc8bda5d30 R14: 0000000000000000 R15: ffff88805e2873a8
+> [ 2908.155007] FS:  00007f470bc27e40(0000) GS:ffff88807fd00000(0000) knlGS:0000000000000000
+> [ 2908.156421] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 2908.157333] CR2: 0000562b07764c58 CR3: 000000005e8ea001 CR4: 00000000001606e0
+> [ 2908.158529] Call Trace:
+> [ 2908.158796]  destroy_use_gss_proxy_proc_entry+0xb7/0x150 [auth_rpcgss]
+> [ 2908.159966]  gss_svc_shutdown_net+0x11/0x170 [auth_rpcgss]
+> [ 2908.160830]  netns_evict+0x2f/0x40
+> [ 2908.161266]  nsfs_evict+0x27/0x40
+> [ 2908.161685]  evict+0xd0/0x1a0
+> [ 2908.162035]  __dentry_kill+0xdf/0x180
+> [ 2908.162520]  dentry_kill+0x50/0x1c0
+> [ 2908.163005]  ? dput+0x1c/0x2b0
+> [ 2908.163369]  dput+0x260/0x2b0
+> [ 2908.163739]  path_put+0x12/0x20
+> [ 2908.164155]  do_faccessat+0x17c/0x240
+> [ 2908.164643]  do_syscall_64+0x50/0x1c0
+> [ 2908.165170]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> [ 2908.165959] RIP: 0033:0x7f47098e2157
+> [ 2908.166445] Code: 77 01 c3 48 8b 15 69 dd 2c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 15 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 39 dd 2c 00 f7 d8 64 89 02 b8
+> [ 2908.169994] RSP: 002b:00007ffc8bda5d28 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
+> [ 2908.171315] RAX: ffffffffffffffda RBX: 0000562b0774d979 RCX: 00007f47098e2157
+> [ 2908.172563] RDX: 00007ffc8bda5d3e RSI: 0000000000000000 RDI: 00007ffc8bda5d30
+> [ 2908.173753] RBP: 00007ffc8bda5d70 R08: 0000000000000000 R09: 0000562b07d0b130
+> [ 2908.174943] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc8bda5d30
+> [ 2908.176163] R13: 0000562b07b34c80 R14: 0000562b07b35120 R15: 0000000000000000
+> [ 2908.177395] irq event stamp: 4256
+> [ 2908.177835] hardirqs last  enabled at (4255): [<ffffffff811221ee>] console_unlock+0x41e/0x590
+> [ 2908.179378] hardirqs last disabled at (4256): [<ffffffff81001b2f>] trace_hardirqs_off_thunk+0x1a/0x1c
+> [ 2908.181031] softirqs last  enabled at (4252): [<ffffffff820002be>] __do_softirq+0x2be/0x4aa
+> [ 2908.182458] softirqs last disabled at (4233): [<ffffffff810bf8e0>] irq_exit+0x80/0x90
+> [ 2908.183869] ---[ end trace d88132b63efc09d8 ]---
+> [ 2908.184620] BUG: kernel NULL pointer dereference, address: 0000000000000030
+> [ 2908.185829] #PF: supervisor read access in kernel mode
+> [ 2908.186924] #PF: error_code(0x0000) - not-present page
+> [ 2908.187887] PGD 0 P4D 0
+> [ 2908.188318] Oops: 0000 [#1] PREEMPT SMP PTI
+> [ 2908.189254] CPU: 2 PID: 15032 Comm: (coredump) Tainted: G        W         5.2.0-rc2-00441-gaef575f54640 #2257
+> [ 2908.192506] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-2.fc30 04/01/2014
+> [ 2908.195137] RIP: 0010:__lock_acquire+0x3d2/0x1d90
+> [ 2908.196414] Code: db 48 8b 84 24 88 00 00 00 65 48 33 04 25 28 00 00 00 0f 85 be 10 00 00 48 8d 65 d8 44 89 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 <48> 81 3f 60 0d 01 83 41 bb 00 00 00 00 45 0f 45 d8 83 fe 01 0f 87
+> [ 2908.202720] RSP: 0018:ffffc900047bbc80 EFLAGS: 00010002
+> [ 2908.204165] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
+> [ 2908.206125] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000030
+> [ 2908.208203] RBP: ffffc900047bbd40 R08: 0000000000000001 R09: 0000000000000000
+> [ 2908.210219] R10: 0000000000000001 R11: 0000000000000001 R12: ffff88807ad91500
+> [ 2908.211386] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000282
+> [ 2908.212532] FS:  00007f470bc27e40(0000) GS:ffff88807fd00000(0000) knlGS:0000000000000000
+> [ 2908.213647] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 2908.214400] CR2: 0000000000000030 CR3: 000000005e8ea001 CR4: 00000000001606e0
+> [ 2908.215393] Call Trace:
+> [ 2908.215589]  ? __lock_acquire+0x255/0x1d90
+> [ 2908.216071]  ? clear_gssp_clnt+0x1b/0x50 [auth_rpcgss]
+> [ 2908.216720]  ? __mutex_lock+0x99/0x920
+> [ 2908.217114]  lock_acquire+0x95/0x1b0
+> [ 2908.217484]  ? cache_purge+0x1c/0x110 [sunrpc]
+> [ 2908.218000]  _raw_spin_lock+0x2f/0x40
+> [ 2908.218370]  ? cache_purge+0x1c/0x110 [sunrpc]
+> [ 2908.218882]  cache_purge+0x1c/0x110 [sunrpc]
+> [ 2908.219346]  gss_svc_shutdown_net+0xb8/0x170 [auth_rpcgss]
+> [ 2908.220104]  netns_evict+0x2f/0x40
+> [ 2908.220439]  nsfs_evict+0x27/0x40
+> [ 2908.220786]  evict+0xd0/0x1a0
+> [ 2908.221050]  __dentry_kill+0xdf/0x180
+> [ 2908.221458]  dentry_kill+0x50/0x1c0
+> [ 2908.221842]  ? dput+0x1c/0x2b0
+> [ 2908.222126]  dput+0x260/0x2b0
+> [ 2908.222384]  path_put+0x12/0x20
+> [ 2908.222753]  do_faccessat+0x17c/0x240
+> [ 2908.223125]  do_syscall_64+0x50/0x1c0
+> [ 2908.223479]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> [ 2908.224152] RIP: 0033:0x7f47098e2157
+> [ 2908.224566] Code: 77 01 c3 48 8b 15 69 dd 2c 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 15 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 8b 15 39 dd 2c 00 f7 d8 64 89 02 b8
+> [ 2908.228198] RSP: 002b:00007ffc8bda5d28 EFLAGS: 00000246 ORIG_RAX: 0000000000000015
+> [ 2908.229496] RAX: ffffffffffffffda RBX: 0000562b0774d979 RCX: 00007f47098e2157
+> [ 2908.230938] RDX: 00007ffc8bda5d3e RSI: 0000000000000000 RDI: 00007ffc8bda5d30
+> [ 2908.232182] RBP: 00007ffc8bda5d70 R08: 0000000000000000 R09: 0000562b07d0b130
+> [ 2908.233481] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc8bda5d30
+> [ 2908.234750] R13: 0000562b07b34c80 R14: 0000562b07b35120 R15: 0000000000000000
+> [ 2908.236068] Modules linked in: nfsv4 rpcsec_gss_krb5 nfsv3 nfs_acl nfs lockd grace auth_rpcgss sunrpc
+> [ 2908.237861] CR2: 0000000000000030
+> [ 2908.238277] ---[ end trace d88132b63efc09d9 ]---
