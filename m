@@ -2,105 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35621403020
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 23:09:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBCD40301F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 23:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347008AbhIGVLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 17:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344715AbhIGVLB (ORCPT
+        id S1346942AbhIGVKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 17:10:48 -0400
+Received: from zeniv-ca.linux.org.uk ([142.44.231.140]:49372 "EHLO
+        zeniv-ca.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344715AbhIGVKr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 17:11:01 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D60C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 14:09:54 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id eb14so15770983edb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 14:09:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C5NPY5Lx+zyVAxeyICgaHLJymUzcNGdqg/vyuIUtGPk=;
-        b=Iu6tlX+GEDCEUsHOVOn3+5fVFv58/hsD1/Ux4jYKeo/sTq5OI3T75unevKpEP9aGmR
-         VyIFASq5zySOGU3+ajM1DzXfgPDE2o94tu0k+omqRSoWft+pQkktVgAERnRBsRZ698RA
-         lLbTIg1nCZZJwWK6G/hW9h1eSENeel/QKUgV8qNdsvDi4D86TftqRjGTtuFsPwrCC5ce
-         SC5P8zdgwcYyBcj5KcT9opMmffrA/PoNWbQIn+cEJadmO7E/DIRa6nuBL+VWYXl3JUbg
-         r1zDjRf9bTU3wt9UJ5Akze03+2VFYyP4zATlMm0XDKQ5rWoMDC3657sEUFkglEngmb9L
-         A5HA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=C5NPY5Lx+zyVAxeyICgaHLJymUzcNGdqg/vyuIUtGPk=;
-        b=ESIlUVCyBvkkOjUfBO5yYuq526dUurPJ4zwgDkQNOpNOgd5bWMh5hjQQRoLm4thbJ0
-         7FSG0Yt3jVAEpEXUERe6b4n7xH7hptiSJRQJXqKCOx5UdZRHXpi3ifOpLIv3GPKyoOGR
-         CVAhuiIKlOTyvvPZfebSNvICEpFJQAVyBwna6C90ir9KyiBevPw+7b2/HQwYjxbnLWfa
-         3ek9s2XDrYkR5ig906BzntP1xG67XjYVGJK7nYGCCMw3tqpxdd71pExXnd8zz4U4kXrG
-         R5Kz/fPQ2I41eQk0XbaDP00DS6UZ8sr4jiOyaBLof0gB+SvMv1FD/xC+S69BoneqSh4g
-         2fAA==
-X-Gm-Message-State: AOAM530t1CDAwy3mSuwolpw4Iw03W4AcDfyjnGUPJNP5Fey36/tj/QeV
-        ooYlC2Rw3xnclls661hUIr4=
-X-Google-Smtp-Source: ABdhPJwVSUeTQyr7P+n1vnUyQP/tub6I3vOdnMbwGX4zLxEcc/pNmafyuEG66MALY49okk2GNa0FkA==
-X-Received: by 2002:a05:6402:2801:: with SMTP id h1mr209390ede.209.1631048993410;
-        Tue, 07 Sep 2021 14:09:53 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:8108:96c0:3b88::dc38])
-        by smtp.gmail.com with ESMTPSA id l7sm107490edb.26.2021.09.07.14.09.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 14:09:52 -0700 (PDT)
-From:   Michael Straube <straube.linux@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, phil@philpotter.co.uk, martin@kaiser.cx,
-        fmdefrancesco@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Michael Straube <straube.linux@gmail.com>
-Subject: [PATCH] staging: r8188eu: remove unused function Hal_ProSetCrystalCap()
-Date:   Tue,  7 Sep 2021 23:09:24 +0200
-Message-Id: <20210907210924.22287-1-straube.linux@gmail.com>
-X-Mailer: git-send-email 2.33.0
+        Tue, 7 Sep 2021 17:10:47 -0400
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mNiLb-0027k6-FO; Tue, 07 Sep 2021 21:09:39 +0000
+Date:   Tue, 7 Sep 2021 21:09:39 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Stephen Brennan <stephen.s.brennan@oracle.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] namei: fix use-after-free and adjust calling
+ conventions
+Message-ID: <YTfVE7IbbTV71Own@zeniv-ca.linux.org.uk>
+References: <20210901175144.121048-1-stephen.s.brennan@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901175144.121048-1-stephen.s.brennan@oracle.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused function Hal_ProSetCrystalCap().
+On Wed, Sep 01, 2021 at 10:51:40AM -0700, Stephen Brennan wrote:
+> Drawing from the comments on the last two patches from me and Dmitry,
+> the concensus is that __filename_parentat() is inherently buggy, and
+> should be removed. But there's some nice consistency to the way that
+> the other functions (filename_create, filename_lookup) are named which
+> would get broken.
+> 
+> I looked at the callers of filename_create and filename_lookup. All are
+> small functions which are trivial to modify to include a putname(). It
+> seems to me that adding a few more lines to these functions is a good
+> traedoff for better clarity on lifetimes (as it's uncommon for functions
+> to drop references to their parameters) and better consistency.
+> 
+> This small series combines the UAF fix from me, and the removal of
+> __filename_parentat() from Dmitry as patch 1. Then I standardize
+> filename_create() and filename_lookup() and their callers.
 
-Signed-off-by: Michael Straube <straube.linux@gmail.com>
----
- drivers/staging/r8188eu/core/rtw_mp.c    | 9 ---------
- drivers/staging/r8188eu/include/rtw_mp.h | 1 -
- 2 files changed, 10 deletions(-)
+	For kern_path_locked() itself, I'd probably go for
 
-diff --git a/drivers/staging/r8188eu/core/rtw_mp.c b/drivers/staging/r8188eu/core/rtw_mp.c
-index dabdd0406f30..82268f754da0 100644
---- a/drivers/staging/r8188eu/core/rtw_mp.c
-+++ b/drivers/staging/r8188eu/core/rtw_mp.c
-@@ -924,12 +924,3 @@ void _rtw_mp_xmit_priv(struct xmit_priv *pxmitpriv)
- exit:
- 	;
- }
--
--void Hal_ProSetCrystalCap(struct adapter *pAdapter, u32 CrystalCapVal)
--{
--	CrystalCapVal = CrystalCapVal & 0x3F;
--
--	// write 0x24[16:11] = 0x24[22:17] = CrystalCap
--	PHY_SetBBReg(pAdapter, REG_AFE_XTAL_CTRL, 0x7FF800,
--		     (CrystalCapVal | (CrystalCapVal << 6)));
--}
-diff --git a/drivers/staging/r8188eu/include/rtw_mp.h b/drivers/staging/r8188eu/include/rtw_mp.h
-index b2befe09d944..73fb6974d076 100644
---- a/drivers/staging/r8188eu/include/rtw_mp.h
-+++ b/drivers/staging/r8188eu/include/rtw_mp.h
-@@ -466,7 +466,6 @@ void Hal_TriggerRFThermalMeter(struct adapter *pAdapter);
- u8 Hal_ReadRFThermalMeter(struct adapter *pAdapter);
- void Hal_SetCCKContinuousTx(struct adapter *pAdapter, u8 bStart);
- void Hal_SetOFDMContinuousTx(struct adapter *pAdapter, u8 bStart);
--void Hal_ProSetCrystalCap (struct adapter *pAdapter , u32 CrystalCapVal);
- void _rtw_mp_xmit_priv(struct xmit_priv *pxmitpriv);
- void MP_PHY_SetRFPathSwitch(struct adapter *pAdapter ,bool bMain);
- 
--- 
-2.33.0
+static struct dentry *__kern_path_locked(struct filename *name, struct path *path)
+{
+        struct dentry *d;
+        struct qstr last;
+        int type, error;
 
+        error = filename_parentat(AT_FDCWD, name, 0, path,
+                                    &last, &type);
+        if (error)
+                return ERR_PTR(error);
+        if (unlikely(type != LAST_NORM)) {
+                path_put(path);
+                return ERR_PTR(-EINVAL);
+        }
+        inode_lock_nested(path->dentry->d_inode, I_MUTEX_PARENT);
+        d = __lookup_hash(&last, path->dentry, 0);
+        if (IS_ERR(d)) {
+                inode_unlock(path->dentry->d_inode);
+                path_put(path);
+        }
+        return d;
+}
+
+static struct dentry *kern_path_locked(const char *name, struct path *path)
+{
+	struct filename *filename = getname_kernel(name);
+	struct dentry *res = __kern_path_locked(filename, path);
+
+	putname(filename);
+	return res;
+}
+
+instead of that messing with gotos - and split renaming from fix in that
+commit.  In 3/3 you have a leak; trivial to fix, fortunately.
+
+Another part I really dislike in that area (not your fault, obviously)
+is
+
+void putname(struct filename *name)
+{
+        if (IS_ERR_OR_NULL(name))
+		return;
+
+in mainline right now.  Could somebody explain when the hell has NULL
+become a possibility here?  OK, I buy putname(ERR_PTR(...)) being
+a no-op, but IME every sodding time we mixed NULL and ERR_PTR() in
+an API we ended up with headache later.
+
+	IS_ERR_OR_NULL() is almost always wrong.  NULL as argument
+for destructor makes sense when constructor can fail with NULL;
+not the case here.
+
+	How about the variant in vfs.git#misc.namei?
