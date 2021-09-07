@@ -2,66 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325B9402D58
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A980402D5A
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345407AbhIGRBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 13:01:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345180AbhIGRBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 13:01:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EF7960EBA;
-        Tue,  7 Sep 2021 17:00:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631034003;
-        bh=wwlWGlgc1Kt0jWuQQ+Z7NUQSVo0eNyUiTRZHhC6q/PY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aDvVZwLu6V/qmAcwq/SwUIiyM9taL9r5uxbS4F10sMy89aHU9h+EUIvsIiXIJ1KfS
-         1AxPpHRg1TPkzr/UBtfB3MGqI8vz5coyXMYZsxC5h3nbdT5le0zHWlGaCCd2jV6dEE
-         TW3XFpwBzaakwAh/Pp9Pfy8A+zll/qB2BHx94UELmFeF5jOu7SkH4a6bqVrmw/PvFJ
-         F2xfY0yM5S3Y2LktCAkqWFDnaadhEM9jA+N7xsulgD+rv2cX5ST1eTERN1Ja+IEPVd
-         gqT2sakmkuY/DIv0uITayZFrqdcgbFJaLsNF7wIF0uEAg4AqmuSmEysxkmHA97n3Jc
-         NevRge/aVnRjA==
-Date:   Tue, 7 Sep 2021 10:00:01 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, allan.nielsen@microchip.com,
-        joergen.andreasen@microchip.com, UNGLinuxDriver@microchip.com,
-        vinicius.gomes@intel.com, michael.chan@broadcom.com,
-        vishal@chelsio.com, saeedm@mellanox.com, jiri@mellanox.com,
-        idosch@mellanox.com, alexandre.belloni@bootlin.com, po.liu@nxp.com,
-        vladimir.oltean@nxp.com, leoyang.li@nxp.com, f.fainelli@gmail.com,
-        andrew@lunn.ch, vivien.didelot@gmail.com, claudiu.manoil@nxp.com
-Subject: Re: [PATCH v4 net-next 0/8] net: dsa: felix: psfp support on
- vsc9959
-Message-ID: <20210907100001.5c8a20eb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210907090915.17866-1-xiaoliang.yang_1@nxp.com>
-References: <20210907090915.17866-1-xiaoliang.yang_1@nxp.com>
+        id S1345426AbhIGRBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 13:01:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232621AbhIGRBh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 13:01:37 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D93C061575;
+        Tue,  7 Sep 2021 10:00:30 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so13566735otk.9;
+        Tue, 07 Sep 2021 10:00:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tX3dLY3KjaJdK+boJZc/jDVbrXqd0jZWFd+gRGqD1s0=;
+        b=JDQqLN0MwwK5CCpl1DnA4YhnQTWZvr8TH6HVybD0AeeTcxvlEvUwKAO1AVnNz+g5Fl
+         F+VYli6qUA/dz6+QZTxAMfsN3DkNBwjnjP4X4YICQi1JZm2ZqZjXje/Zxd6aPlUTkpgb
+         xCI9iENlZWLA0VcWtac6VIx8hJXRv3+hmwVbPx+1sodHQRpAQjqDIoTMziGMRvlRpG8/
+         QudUgxMk5JoVXuTso95DqKHtS2Aw8+WwY5CSfoSLb7gbNFAIgygP58dAzmBidrDkt7LN
+         u4V+EtJEJdwac6M455A+mc3vWCI8YZSv2INqZz8drbbeGoG5CVhKlBWpqt0/rwgxrd5b
+         pMmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tX3dLY3KjaJdK+boJZc/jDVbrXqd0jZWFd+gRGqD1s0=;
+        b=Otv90+FJwAye+7A4CxuPB/GekolIalC7kHm+9Spt9pnVG8xZxdJrfyTFRuSaed2CkL
+         nR1Gv/fUdWvTQpmeLY2jA/Ya8rTHMBWiMYNYHhVQ5asfvb6g644D0+G1J6nXboJ9oydi
+         3moRTZ1ANHtYtxHM0MgSHtWxuKCGZfQ0Q54hm6rgDHegad/mH2WpaL/XH+jhoknD2R3i
+         Q9XV2HQWP4MUE/idR8TRHUeNZdhRI9kto2VXnGv8m6Z6HJXw3epwrhylQB3AQcR0s+FD
+         xQHwxU5dwsKeMxHLiR9xNQXRiZVPS6YGV0svMPkuea1QCh2JZHYVjPVqMZ3YIbSwdD+/
+         UeXw==
+X-Gm-Message-State: AOAM5308I/APPCXkykuSsiiOYu4s+atFDRwbchdJwKYPqzHQahfCaYNt
+        ssybvY7j7MyNnFZB5Oa0gawLKKWSARpzu4GImaAzG9b1
+X-Google-Smtp-Source: ABdhPJzwSR0tEBZdt+IeLRjOaJvXXaOQn4kPRkpLoZWTSbNFLWCZ+U8QwcBpUgbwb+zy7V3LmUG/aj6K0dQ93vW2HLg=
+X-Received: by 2002:a05:6830:25d3:: with SMTP id d19mr16404248otu.357.1631034030040;
+ Tue, 07 Sep 2021 10:00:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210904154106.9550-1-len.baker@gmx.com>
+In-Reply-To: <20210904154106.9550-1-len.baker@gmx.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 7 Sep 2021 13:00:19 -0400
+Message-ID: <CADnq5_P_Vq9Qw+K4-mOf-VYDq20UQJ3k1PE94f9-nqi36qmE3g@mail.gmail.com>
+Subject: Re: [PATCH] drm/radeon: Prefer kcalloc over open coded arithmetic
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kees Cook <keescook@chromium.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, linux-hardening@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  7 Sep 2021 17:09:07 +0800 Xiaoliang Yang wrote:
-> VSC9959 hardware supports Per-Stream Filtering and Policing(PSFP).
-> This patch series add PSFP support on tc flower offload of ocelot
-> driver. Use chain 30000 to distinguish PSFP from VCAP blocks. Add gate
-> and police set to support PSFP in VSC9959 driver.
+Applied.  Thanks!
 
-# Form letter - net-next is closed
+Alex
 
-We have already sent the networking pull request for 5.15
-and therefore net-next is closed for new drivers, features,
-code refactoring and optimizations. We are currently accepting
-bug fixes only.
-
-Please repost when net-next reopens after 5.15-rc1 is cut.
-
-Look out for the announcement on the mailing list or check:
-http://vger.kernel.org/~davem/net-next.html
-
-RFC patches sent for review only are obviously welcome at any time.
+On Sat, Sep 4, 2021 at 11:41 AM Len Baker <len.baker@gmx.com> wrote:
+>
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
+>
+> So, refactor the code a bit to use the purpose specific kcalloc()
+> function instead of the calculated size argument in the kzalloc()
+> function.
+>
+> [1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+>
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+> ---
+>  drivers/gpu/drm/radeon/r600_dpm.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/r600_dpm.c b/drivers/gpu/drm/radeon/r600_dpm.c
+> index 35b77c944701..fd4226b99862 100644
+> --- a/drivers/gpu/drm/radeon/r600_dpm.c
+> +++ b/drivers/gpu/drm/radeon/r600_dpm.c
+> @@ -820,12 +820,12 @@ union fan_info {
+>  static int r600_parse_clk_voltage_dep_table(struct radeon_clock_voltage_dependency_table *radeon_table,
+>                                             ATOM_PPLIB_Clock_Voltage_Dependency_Table *atom_table)
+>  {
+> -       u32 size = atom_table->ucNumEntries *
+> -               sizeof(struct radeon_clock_voltage_dependency_entry);
+>         int i;
+>         ATOM_PPLIB_Clock_Voltage_Dependency_Record *entry;
+>
+> -       radeon_table->entries = kzalloc(size, GFP_KERNEL);
+> +       radeon_table->entries = kcalloc(atom_table->ucNumEntries,
+> +                                       sizeof(struct radeon_clock_voltage_dependency_entry),
+> +                                       GFP_KERNEL);
+>         if (!radeon_table->entries)
+>                 return -ENOMEM;
+>
+> --
+> 2.25.1
+>
