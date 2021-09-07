@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC20402BBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E73402BD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345218AbhIGP0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 11:26:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345209AbhIGP0P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 11:26:15 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D576C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 08:25:09 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id x23so5763202uav.3
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 08:25:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gfHP2sgThQg8v8lbN+JggZp2tkzNElpWzdFKXLFCG6Q=;
-        b=CjL6dPNn7z3OXHGFEWoI6jzNsXPr5UxuLKeWIUNRcv+4BVTpWYG3/Uhuy6WxSQX+5a
-         zCAZFfkFMA2rVvsG+osJcjlvLByKHuE4Mf9hlernIpqK8Ptrxcd7l4DCITyB85wt8yUd
-         9+Ow4qpzjpH2yODj7NoeC+N3GQd/EqTxTQsaw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gfHP2sgThQg8v8lbN+JggZp2tkzNElpWzdFKXLFCG6Q=;
-        b=gcZNxZ9fMjvVAwM0TKNFSlQs1dhcMMwqSIt8NqdJo4gMqf1rgX+3TmcDrsQj0/bDaE
-         Ri0RI2/Rjm7CFY9Ti2nOxJdL8E0AiDv922ky5VkjUapjx4yBAO1TjHIU2aIYao+XrdLz
-         dPe6jsJHR+PSj2KjEm80Gkr2ddUdegOgMdUDjqzU4LWOpothBBw+UWhFk2LGg2G8zII0
-         3c/5ZuMJvSSgUbIaq8C7kCQ1wCHFuWZmueM3etYGdzqK0hPv2n7xGoUqT6NtSJd+XsY1
-         mSzaDxUsK4Jso+KVhPxQXjEjb4IoGq03krh5fduVwJAW5evF/1eRnl/Xw8NjWNTJZrdo
-         q7Uw==
-X-Gm-Message-State: AOAM533Zpg1eBi0SkGwQKZMSEoMW8yBNKRSuhsinY4nr2gpnh3oXg4V1
-        7AYghhtypKYRHW/mf9KBxMJabZqskwaE89JwjT08Jw==
-X-Google-Smtp-Source: ABdhPJyaSPIaBUI16PkzloKRKGzn7kYbkTsVtsV/EG3nkEafmSeiOXKMvyXw3/fFt4HAVmQwz1Au77pTUYJOQXvu7H4=
-X-Received: by 2002:a9f:234a:: with SMTP id 68mr505653uae.13.1631028308416;
- Tue, 07 Sep 2021 08:25:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <000000000000a4cc9405c95d0e1c@google.com>
-In-Reply-To: <000000000000a4cc9405c95d0e1c@google.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 7 Sep 2021 17:24:56 +0200
-Message-ID: <CAJfpegvr1y9VTXb3Gm2F1Y9mZzWYAEYutV8kdhnD2Yyo8FTvcQ@mail.gmail.com>
-Subject: Re: [syzbot] possible deadlock in fuse_reverse_inval_entry
-To:     syzbot <syzbot+9f747458f5990eaa8d43@syzkaller.appspotmail.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: multipart/mixed; boundary="000000000000f13b0d05cb695ed9"
+        id S1345269AbhIGPcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 11:32:19 -0400
+Received: from gate.crashing.org ([63.228.1.57]:49179 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1345158AbhIGPcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 11:32:16 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 187FQwd6012880;
+        Tue, 7 Sep 2021 10:26:58 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 187FQuaU012874;
+        Tue, 7 Sep 2021 10:26:56 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Tue, 7 Sep 2021 10:26:56 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Linus Torvalds <torvalds@linuxfoundation.org>
+Cc:     Jakub Jelinek <jakub@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
+Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
+Message-ID: <20210907152656.GI1583@gate.crashing.org>
+References: <20210906154642.GV1583@gate.crashing.org> <CAHk-=wj=WpWO_V86cZH99LgZGBbvdDb4wR26ce5van0hJqjzLA@mail.gmail.com> <20210906172701.GX1583@gate.crashing.org> <CAHk-=wh0MBVfA89WLWnCiSnJ2a=hSAoSxfG-jyf7JJeBDPK3ew@mail.gmail.com> <87lf49wodu.fsf@oldenburg.str.redhat.com> <20210906194808.GY1583@gate.crashing.org> <20210906201432.GZ920497@tucnak> <CAHk-=wi80NGPppGmBpc5zuGRAsv4_7qsDu7ehW515J2FJoezAQ@mail.gmail.com> <20210906215218.GA920497@tucnak> <CAHk-=wiKy45R2vMHhjr16_Q+iYea-70byuj=mHLvp1GURqdYPA@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiKy45R2vMHhjr16_Q+iYea-70byuj=mHLvp1GURqdYPA@mail.gmail.com>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000f13b0d05cb695ed9
-Content-Type: text/plain; charset="UTF-8"
+On Mon, Sep 06, 2021 at 03:24:41PM -0700, Linus Torvalds wrote:
+> On Mon, Sep 6, 2021 at 2:52 PM Jakub Jelinek <jakub@redhat.com> wrote:
+> >
+> > It is actually not that bad, stdlib.h is indeed included there because of 2
+> > intrinsics out of more than 5000 and when one doesn't need those, just
+> > #define _MM_MALLOC_H_INCLUDED
+> 
+> .. and on clang?
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-master
+Clang apparently has __MM_MALLOC_H  as header guard here.  But Clang
+does say
+  #if __STDC_HOSTED__
+  #include <mm_malloc.h>
+  #endif
+so they do not have this bug in the first place.  GCC should fix this as
+well.  I filed <https://gcc.gnu.org/PR102231>.  Thanks for bringing thisd
+to our attention!
 
---000000000000f13b0d05cb695ed9
-Content-Type: text/x-patch; charset="US-ASCII"; 
-	name="fuse-annotate-lock-in-inval_entry.patch"
-Content-Disposition: attachment; 
-	filename="fuse-annotate-lock-in-inval_entry.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_kta842p30>
-X-Attachment-Id: f_kta842p30
+> There, I think you have to undefine __STDC_HOSTED__. Maybe by using
+> -ffreestanding?
 
-RnJvbTogTWlrbG9zIFN6ZXJlZGkgPG1zemVyZWRpQHJlZGhhdC5jb20+ClN1YmplY3Q6IGZ1c2U6
-IGFubm90YXRlIGxvY2sgaW4gZnVzZV9yZXZlcnNlX2ludmFsX2VudHJ5KCkKCkFkZCBtaXNzaW5n
-IGlub2RlIGxvY2sgYW5ub3RhdGF0aW9uOyBmb3VuZCBieSBzeXpib3QuCgpSZXBvcnRlZC1ieTog
-c3l6Ym90KzlmNzQ3NDU4ZjU5OTBlYWE4ZDQzQHN5emthbGxlci5hcHBzcG90bWFpbC5jb20KU2ln
-bmVkLW9mZi1ieTogTWlrbG9zIFN6ZXJlZGkgPG1zemVyZWRpQHJlZGhhdC5jb20+Ci0tLQogZnMv
-ZnVzZS9kaXIuYyB8ICAgIDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBk
-ZWxldGlvbigtKQoKLS0tIGEvZnMvZnVzZS9kaXIuYworKysgYi9mcy9mdXNlL2Rpci5jCkBAIC0x
-MDcxLDcgKzEwNzEsNyBAQCBpbnQgZnVzZV9yZXZlcnNlX2ludmFsX2VudHJ5KHN0cnVjdCBmdXNl
-CiAJaWYgKCFwYXJlbnQpCiAJCXJldHVybiAtRU5PRU5UOwogCi0JaW5vZGVfbG9jayhwYXJlbnQp
-OworCWlub2RlX2xvY2tfbmVzdGVkKHBhcmVudCwgSV9NVVRFWF9QQVJFTlQpOwogCWlmICghU19J
-U0RJUihwYXJlbnQtPmlfbW9kZSkpCiAJCWdvdG8gdW5sb2NrOwogCg==
---000000000000f13b0d05cb695ed9--
+That defines it to 0, instead, as required by the C standard:
+$ :|gcc -E -dM -|grep HOSTED
+#define __STDC_HOSTED__ 1
+$ :|gcc -E -dM - -ffreestanding|grep HOSTED
+#define __STDC_HOSTED__ 0
+
+Yes, that is how this works: the command line flag says how the macro
+should be defined by the compiler (and changing it in your code is UB
+btw).
+
+> Except if you use -ffreestanding, you lose some very bvasic
+> functionality (*),
+
+(see below)
+
+> And they should very much *not*at*all* be considered some kind of
+> sacred "this is the only way to do things". Because that is clearly
+> not true, and has *never* been true.
+
+Take for example <stdint.h>.  There is no other way to find out what
+types to use for exact-width integers.  Unless you really want to do
+  typedef unsigned int __attribute__((mode (DI))) u64;
+but that is rather unportable to other compilers but GCC.
+
+<stdint.h> *is* the only portable way for getting exact-width integers
+(and some other things).  This is not something we decide, it is not
+something you can decide, it follows directly from the C standard.
+
+Using it is easy.  Not using it leads to the forest of include files and
+preprocessor conditionals the kernel currently uses.
+
+> The usable header files are the odd special case, not the general case.
+> 
+> Really.
+> 
+> Is it really so hard to just admit that the kernel shouldn't use those
+> headers? When we have 30 years of experience in doing exactly that?
+
+That isn't the core issue at hand.  Yes, Linux has implemented all of it
+manually historically, and there even were good reasons for some of
+that.  That does not mean that it would be a good idea to throw out the
+few standard C headers it does use, and implement those with compiler
+internal interfaces instead, which we advice you against.
+
+> (*) iirc, with -ffreestanding gcc doesn't do all the basic memcpy()
+> optimizations. But I forget the exact details.
+
+I would love to hear any details about that.
+
+I do know the Glibc headers do (or did?) some premature optimisation
+wrt. some mem* and str*, hurting performance on newer compilers.  But
+you should not be using the Glibc headers for compiling the kernel at
+all anyway, so maybe there was some bug thereabouts?
+
+
+Segher
