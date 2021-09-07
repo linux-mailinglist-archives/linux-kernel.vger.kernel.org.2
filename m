@@ -2,111 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F7B402782
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 13:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9B6402786
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 13:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343645AbhIGLDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 07:03:18 -0400
-Received: from mail-vk1-f171.google.com ([209.85.221.171]:36832 "EHLO
-        mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233669AbhIGLDQ (ORCPT
+        id S1343718AbhIGLEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 07:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343679AbhIGLED (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 07:03:16 -0400
-Received: by mail-vk1-f171.google.com with SMTP id s126so3153177vkd.3;
-        Tue, 07 Sep 2021 04:02:10 -0700 (PDT)
+        Tue, 7 Sep 2021 07:04:03 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2541C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 04:02:56 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id k13so18761523lfv.2
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 04:02:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t+vH18ohIOKYTcoNO1Jt0h1AH7LB+uCBHd7oEI3ZxPY=;
+        b=mBVf/t85Z2ldsDYn3aICb/edQEOvV3V+et+X1QEax4Wabn76+qSCwzOFPJudvgQs+A
+         GI7YwZ0MHs8r+vw0E2TFNO5fkHFmXUyU/qTiVqQuP8yql4gQ3mhPpmXB9CX9S5sAoqTp
+         NMdGvVnTG0YyRGoS8YJEL/0yAcFQtay31A9O9MVhjwXBYpFYbBW3H6n3c8pGwnNOvoql
+         6kgDwwfl/joyCvU31/NfzeflEedx1j4t2aY8Zo9fH9mqUaokkTc+7EN1hge6C24Ep+Kb
+         ZOOyIgqLbNAkfG7ax1IPs//RvVZ32hcZziC7rtpQ41Dkm7gQpwdPzgr488pjHYUUPBYT
+         MxQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=thOJQb3/w47iDmpu71x0KX+1BIUNFnNwW6CY9Btcpmw=;
-        b=YWYVFcX+B9uSLLtUnClSO4/8xw0aOT/mFumXRfUjGG0K4iA7lvagEVDMpq2FiKPAIZ
-         6CPzOG7TLlejC25UbU09n56BD+/zAG72QjI5EaNj2a4ki483S/cuitm81wQB9Js2Uvnn
-         hBAvSfJtD9fzP14l47SB0QuQPpysMcLNZc+67Tn+ntgHeLzrBGfC1cc+4wxLFxSph8BZ
-         w1X7w7gDdw3805Zxe3fcaKWzHORhfhS+fqTX4rvClxe3zbZPG0X0oUkvUSsgpsEgsnyV
-         zCfut2lZnYiC1QAbWI57xLxKPxsVqiqL0/KzuTTVHhGtQhyCn2VDDX5zSGoVzpI5RS9J
-         dU2w==
-X-Gm-Message-State: AOAM532zmrnVTF4fT3bQkwjBxIqH3Qrj/9+bnKt/1y1jnbONG88WEqwN
-        uC01D3+6wF+l1JuFV8iAPYpuK7HMFaznsbCTvOyAQhqE
-X-Google-Smtp-Source: ABdhPJxoxSxZC7+MCNKpE6Lhu7Bx9DoYrGBA9Iw2FRNpnbHs5vD0cbAkh4Lt95bTKc349pEvB+1lYy37QIaWF+DPDZs=
-X-Received: by 2002:a1f:d247:: with SMTP id j68mr7330206vkg.7.1631012529742;
- Tue, 07 Sep 2021 04:02:09 -0700 (PDT)
+        bh=t+vH18ohIOKYTcoNO1Jt0h1AH7LB+uCBHd7oEI3ZxPY=;
+        b=DdPQg4xmk8Ue3+ANdiQnDJWhE6HqyRiCFlmn4vW84ljpD4AvaUjUxnvkOkbYKOXU3b
+         UnzgrsCYzDJQ2vhlZWNy+wAg6uwdizV0alw514qr+Nxpgoyu8KSjLGiEEPDrc3aC+Zwe
+         ljCdOSYdU56zIxAcHic4N4ALscQtjf713s/QtiHwfBpi8vnLkqmDECNs0QP30UBwR4HN
+         QpxaDZzbdIMcKP3mJ1KdR+EhQVHy75O971xakUJypfMDI2b3CI25bcITAaJzgmo+L/EZ
+         X/gJ+wolF+zCk9vgKX3xuh3XXvhBtoK2T79gsz5zkH50iJRmdxyOq127bplrvoCvFgfU
+         oIuw==
+X-Gm-Message-State: AOAM532pf8mmRgub02y//z6lBVTVAFenKBjqGmXAnaJR9wSc1P0yHDOq
+        ZFdzlAJJ56IKfoMXs2//ySpf/zL99GXqQhAy3ayObw==
+X-Google-Smtp-Source: ABdhPJyJmyq6W+Z+ldm536U+O4DTjXnMBCM1G1ZjrZTdB/meaqumEON7g0DFOi8eaLHpa8yfBnWNSx8wXd9sUrTnBY8=
+X-Received: by 2002:a05:6512:3ca5:: with SMTP id h37mr12608166lfv.254.1631012571855;
+ Tue, 07 Sep 2021 04:02:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210906134040.96642-1-wangborong@cdjrlc.com> <CAMuHMdXq-ACdy8C7Efamnwz_h=h8_C4-3y14O8-S61EnB7pWmQ@mail.gmail.com>
- <CAK8P3a03pYn3RvayqxWhHYbS9qcp13B3Mj29iS0hsrD3cpCi6w@mail.gmail.com>
-In-Reply-To: <CAK8P3a03pYn3RvayqxWhHYbS9qcp13B3Mj29iS0hsrD3cpCi6w@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 7 Sep 2021 13:01:58 +0200
-Message-ID: <CAMuHMdWPSofFJcSQHwvGy=E-T74QK2v3L60+feLJ-kEfB3GY5A@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: renesas: no need to initialise global statics
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Jason Wang <wangborong@cdjrlc.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210902230442.1515531-1-saravanak@google.com>
+ <20210902230442.1515531-2-saravanak@google.com> <CAPDyKFpP6pSRSw8_OAW8+ZJNH+CwXtfWBNDcD182gQmzqW=O5g@mail.gmail.com>
+ <CAMuHMdVgjxJwd=PbUSR+9mgxexr3O_O6j-3T24GzE08CqzDjjA@mail.gmail.com>
+ <CAPDyKFrGyOWSxe=0DGWNQ75YQgXVa62WF8=pOHNCWUh5PLcdqQ@mail.gmail.com> <CAMuHMdVawd1_twGnWE7GzbPKXeKr+gCCXfodiBdECLScHRTBag@mail.gmail.com>
+In-Reply-To: <CAMuHMdVawd1_twGnWE7GzbPKXeKr+gCCXfodiBdECLScHRTBag@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 7 Sep 2021 13:02:15 +0200
+Message-ID: <CAPDyKFoz2Q=cxrK7fEWVEWUJX1P8Ezknj-juCW+GuZvg=mpA-w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] of: platform: Make sure bus only devices get probed
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 6, 2021 at 5:18 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> On Mon, Sep 6, 2021 at 4:36 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > --- a/drivers/pinctrl/renesas/core.c
-> > > +++ b/drivers/pinctrl/renesas/core.c
-> > > @@ -741,12 +741,12 @@ static int sh_pfc_suspend_init(struct sh_pfc *pfc) { return 0; }
-> > >  #define SH_PFC_MAX_REGS                300
-> > >  #define SH_PFC_MAX_ENUMS       3000
+On Tue, 7 Sept 2021 at 12:52, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Ulf,
+>
+> On Tue, Sep 7, 2021 at 12:36 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > On Fri, 3 Sept 2021 at 16:29, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Fri, Sep 3, 2021 at 11:19 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > > > On Fri, 3 Sept 2021 at 01:04, Saravana Kannan <saravanak@google.com> wrote:
+> > > > > fw_devlink could end up creating device links for bus only devices.
+> > > > > However, bus only devices don't get probed and can block probe() or
+> > > > > sync_state() [1] call backs of other devices. To avoid this, set up
+> > > > > these devices to get probed by the simple-pm-bus.
+> > > > >
+> > > > > [1] - https://lore.kernel.org/lkml/CAPDyKFo9Bxremkb1dDrr4OcXSpE0keVze94Cm=zrkOVxHHxBmQ@mail.gmail.com/
+> > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > > Tested-by: Saravana Kannan <saravanak@google.com>
+> > > >
+> > > > Again, this looks like a nice solution to the problem.
+> > > >
+> > > > One question though. The Kconfig SIMPLE_PM_BUS, should probably be
+> > > > "default y" - or something along those lines to make sure fw_devlink
+> > > > works as expected.
 > > >
-> > > -static unsigned int sh_pfc_errors __initdata = 0;
-> > > -static unsigned int sh_pfc_warnings __initdata = 0;
-> > > -static u32 *sh_pfc_regs __initdata = NULL;
-> > > -static u32 sh_pfc_num_regs __initdata = 0;
-> > > -static u16 *sh_pfc_enums __initdata = NULL;
-> > > -static u32 sh_pfc_num_enums __initdata = 0;
-> > > +static unsigned int sh_pfc_errors __initdata;
-> > > +static unsigned int sh_pfc_warnings __initdata;
-> > > +static u32 *sh_pfc_regs __initdata;
-> > > +static u32 sh_pfc_num_regs __initdata;
-> > > +static u16 *sh_pfc_enums __initdata;
-> > > +static u32 sh_pfc_num_enums __initdata;
+> > > I would love for SIMPLE_PM_BUS to go away, and all of its functionality
+> > > to be usurped by the standard simple-bus handling.
+> > >
+> > > In the modern world, everything uses power management and Runtime
+> > > PM, and the distinction between "simple-bus" and "simple-pm-bus"
+> > > is purely artificial.
 > >
-> > These are special, as they use __initdata.
-> > While dropping the initializers seems to work fine with e.g. gcc 9,
-> > I'm quite sure that would fail with older compiler versions, where
-> > the variable would be put in bss instead of initdata.
+> > I think it's not that easy, but maybe I am wrong.
 > >
-> > See the example in include/linux/init.h, which explicitly
-> > initializes a variable with zero:
+> > Today we have an opt-in way of supporting runtime PM (and power
+> > management). In most cases it's up to drivers or subsystem level code
+> > to decide if runtime PM should be enabled for the device.
 > >
-> >     static int init_variable __initdata = 0;
-> >
-> > Arnd: do you know in which version of gcc this was fixed?
-> > It seems at least 6.5.0 and later are fine (I don't have all required
-> > shared libs to run e.g. 5.5.0).
+> > Would it really be okay to enable runtime PM for all of them?
 >
-> I think you mixed up what happens: As far as I know, older compilers
-> would put variables without the =0 into .bss, but those with the explicit
-> =0 would end up in .data. Newer compilers treat them exactly the
-> same, and these variables all get put into .bss by default. This seems
-> to already be the case with gcc-4.1, which is the oldest one I could
-> easily try.
+> You're talking about the software policy side.
 >
-> I'm rather sure that regardless of the compiler version, adding an
-> explicit section attribute like the __initdata would force the section
-> even on the pre-4.1 compilers.
+> From my PoV, the issue is that this decision is leaked into DT, through
+> the different compatible values ("simple-pm-bus" vs. "simple-bus").
 
-I must be misremembering...
+Yes, I do agree with you there.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-pinctrl-for-v5.16.
+On the other hand, it's probably not the only place where it's used as
+"software configuration", so I don't have a big issue with it.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Kind regards
+Uffe
