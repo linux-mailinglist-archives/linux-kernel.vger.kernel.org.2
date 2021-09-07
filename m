@@ -2,101 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC08402FC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19ECC402FC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346513AbhIGUbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:31:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42072 "EHLO
+        id S1346488AbhIGUcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346448AbhIGUbK (ORCPT
+        with ESMTP id S243733AbhIGUcC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:31:10 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC9EC061575;
-        Tue,  7 Sep 2021 13:30:04 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so2297530pjr.1;
-        Tue, 07 Sep 2021 13:30:04 -0700 (PDT)
+        Tue, 7 Sep 2021 16:32:02 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629E6C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:30:55 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id f18so366414lfk.12
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:30:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dQzHW/n6+AZxWAAIo667muUBbxUuxw9wi7r6fWFMw9Y=;
-        b=ms0Sw7US8U0OtDcI+6UH4pynu3O9rstuQRLd8hX53x/1O5fxXG78n9ybhuwvZyk75n
-         ZTKLpIbc2kJsfHHzA+4oH7mbICBHdVQ3H3cOhu0/tspjqoFPoUai/Osz0yVhz4e5p92v
-         lUA41DffByuiRUDutXFjyZ/WZ7ta8HrI+kK99m/5yKLi1qhSFugwjf5QOrEgN74ho0N0
-         Kt0dpX6WMxJ8XsntpacnKZG45Yhv5W6hWR6UQJZDY5hJzxQEOhEzY4l45wL4VFeFWIVT
-         ckho9Xai/481R6RzD2s8y4HZJwCxpliYNTua3IYqM3n+NpfM9FmWLH6X707DhDxMyHDK
-         4wEg==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BHU/b6iOWML31rDQD4Y7YAaTs9mMyU/Uk/P4sJ2b7NA=;
+        b=hVpdIZlAApogbIH1JgUwHFhlKoiKgiQ2kK6X+akQnUfn8TUcb2vVBov14g68Y1PY31
+         BZyxcWoyIZ+b42y6O0Kpb6WAwvPBy4u332g1OTHulr9ASmM9k6VK8JXzqbaYxKAVTQ/q
+         bzh3HwUrbmdxYfMYNocX0hvnds2j35kLTGkp8gJ1c8ixfC3oGPJ5w3y3jRvPHlKvC9P/
+         L4uzM9YwaqpxJKzL61Idmre2I7HXFdD1wQu6ycvx2e8pEsKiwSWgRx9dtd2tOQj/6rMZ
+         RA98YjsfXP0yoYR1l77PV/AZsU0FDvNILFp/SrizCxbOyiFphCgAc8ANJHKhgVtw3NcJ
+         eiQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dQzHW/n6+AZxWAAIo667muUBbxUuxw9wi7r6fWFMw9Y=;
-        b=kJdmObmbYP/ijfEJBhO7RYune2nk0xxIh+pR8uX+XiGU/Bgl8zGd0yPq64s81ze9O3
-         aqWx5JpIXlQFoiXooBMTRAy/bsBDjQLxgrKsl4k0CDCXwm42gbWAo0xqCvEBpOLtMfAq
-         4/3rbthJqdIcFd532/oAdr4s6Dvomg9WuKnU44NJLJBViXDhY4YhGJIavahtniU5JVzU
-         1QrZyW/HvO/wBjObguDGqbgtwdqJY3mbkVG+Di3zKfywoQYFplwjEQ/LVTKyEAR/CzEx
-         nOI6tFIL6zfKSCLLSVzTa/rcU1yog//lQJwuQj2DWjmdlcw1+3Pd9SdtklLhE9piznCS
-         W7xw==
-X-Gm-Message-State: AOAM533TjNMZ5jqm6RRKMq//Ah99HYMSf13Ys/7CgtY1WY/kA5ibgH4o
-        0TNcw7+D8rwnidtwSXNAunE=
-X-Google-Smtp-Source: ABdhPJx76LqGqxy56XZNTwiOd5T8iyICiAeGmq0uJreKwrQ75+yDp5V3hBaeBHtTBj96boGw93u03Q==
-X-Received: by 2002:a17:90b:388e:: with SMTP id mu14mr233077pjb.109.1631046603457;
-        Tue, 07 Sep 2021 13:30:03 -0700 (PDT)
-Received: from tong-desktop.local (99-105-211-126.lightspeed.sntcca.sbcglobal.net. [99.105.211.126])
-        by smtp.googlemail.com with ESMTPSA id j6sm11447957pfn.107.2021.09.07.13.30.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 13:30:03 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Tong Zhang <ztong0001@gmail.com>
-Subject: [PATCH v1] net: macb: fix use after free on rmmod
-Date:   Tue,  7 Sep 2021 13:29:58 -0700
-Message-Id: <20210907202958.692166-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BHU/b6iOWML31rDQD4Y7YAaTs9mMyU/Uk/P4sJ2b7NA=;
+        b=bbCMpVymhtw8D2vLJKEdSfCigI0+0F7VMUd5KFaI8gkxjuOi3ESvwm5+jKW1MDfgRc
+         7+q1hUcb3wyXBrxgScvN2BXlEMXZDr/9WHMClOPt37nrVSHjbBXLST9OCe9oorVCbgc+
+         NorSRb7UsCvJC6fR33XP/KFKUlYOlMKUNXWRHB4s81zFD727GkEUHfP+xw+kYQ0VbxQe
+         aHjGclK+2IPvu2cI07kPYD+OqeK5Rak2i59FkD+CjzMxTRHm/HNfSJIhALhFqPYw4FNu
+         IMLMM5O72omK/QMcR6923A9u+8KgdkPlRud8PhI5sCt+jYezGg28FBaVeKnscu0ql/wG
+         ipjQ==
+X-Gm-Message-State: AOAM5327XpHZOdQw571GkxoSknOIJkhF9GuWlyUUhtT1NURYzRpV9qGt
+        MzrCtQc2MRxRfAsZufS+AH0xG92o7nOUYMK6WobjeQ==
+X-Google-Smtp-Source: ABdhPJzFVFDAojI+TEXcMkjX9qjJ7m1oCYmJv/nUmDIInkxoBZhahPTy/fe1PAmjUHYBPltHTjtGqD8vibWxslCWngU=
+X-Received: by 2002:a05:6512:2291:: with SMTP id f17mr149141lfu.489.1631046652902;
+ Tue, 07 Sep 2021 13:30:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210907183843.33028-1-ndesaulniers@google.com> <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
+In-Reply-To: <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 7 Sep 2021 13:30:42 -0700
+Message-ID: <CAKwvOdkuYoke=Sa8Qziveo9aSA2zaNWEcKW8LZLg+d3TPwHkoA@mail.gmail.com>
+Subject: Re: [PATCH] Revert "Enable '-Werror' by default for all kernel builds"
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     llvm@lists.linux.dev,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vipin Sharma <vipinsh@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-plat_dev->dev->platform_data is released by platform_device_unregister(),
-use of pclk and hclk is use after free. This patch keeps a copy to fix
-the issue.
+On Tue, Sep 7, 2021 at 12:16 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Tue, Sep 7, 2021 at 11:39 AM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > The above commit seems as though it was merged in response to
+> > https://lore.kernel.org/linux-hardening/CAHk-=wj4EG=kCOaqyPEq5VXa97kyUHsBpBn3DWwE91qcnDytOQ@mail.gmail.com/.
+>
+> No. It was merged in response of _years_ of pain, with the last one
+> just being the final drop.
 
-[   31.261225] BUG: KASAN: use-after-free in macb_remove+0x77/0xc6 [macb_pci]
-[   31.275563] Freed by task 306:
-[   30.276782]  platform_device_release+0x25/0x80
+Well, I think it's important to enumerate some of the pain points
+explicitly so that we might all better understand what they are, and
+come to an agreement together on what the right way to resolve them
+is.
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
- drivers/net/ethernet/cadence/macb_pci.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Impulse commits without discussion over a holiday weekend are firmly
+in the category of "I wish you'd rather not have done that."
 
-diff --git a/drivers/net/ethernet/cadence/macb_pci.c b/drivers/net/ethernet/cadence/macb_pci.c
-index 8b7b59908a1a..4dd0cec2e542 100644
---- a/drivers/net/ethernet/cadence/macb_pci.c
-+++ b/drivers/net/ethernet/cadence/macb_pci.c
-@@ -110,10 +110,12 @@ static void macb_remove(struct pci_dev *pdev)
- {
- 	struct platform_device *plat_dev = pci_get_drvdata(pdev);
- 	struct macb_platform_data *plat_data = dev_get_platdata(&plat_dev->dev);
-+	struct clk *pclk = plat_data->pclk;
-+	struct clk *hclk = plat_data->hclk;
- 
- 	platform_device_unregister(plat_dev);
--	clk_unregister(plat_data->pclk);
--	clk_unregister(plat_data->hclk);
-+	clk_unregister(pclk);
-+	clk_unregister(hclk);
- }
- 
- static const struct pci_device_id dev_id_table[] = {
+Let's look closer at the final drop.  I think there's a bigger question here:
+1. did the CI have enough time to run in multiple configurations with
+multiple toolchains to even find a warning, let alone report it?
+2. what did the developer do with the report (if they even got it, see
+1 above)? Ignore it? Proceed with the PR anyways?
+
+it looks to me as though the "final drop" fits into 1 above. I'm not
+sure that -Werror is the correct way to resolve issues from that.
+
+> I'm not going to revert that change. I probably will have to limit it
+> (by making that WERROR option depend on certain expectations), but
+> basically any maintainer who has code that causes warnings should
+> expect that they will have to fix those warnings.
+
+I'm not 100% against it; I think it could land in a more useful
+variation. But it would be good to discuss that on-list, and give it
+time to soak. This is a conversation we should be having with CI
+maintainers IMO, and folks that maintain the build infra, at least.
+I'm happy to kick off that discussion with this RFC.
+
+> If it's clang that generates bogus warnings, then we'll have to start
+> disable clang warnings. The clang people tend to be proud of thir
+> fewer false positives, but so far looking at things, I am not
+> convinced.
+
+Now you're just attacking a strawman.
+
+> And I'm most definitely not convinced when the "let's finally enable
+> -Werror after years of talking about it", people end up going "but but
+> but I have thousands of warnings".
+
+The kernel is full of thousands of warnings at the moment.  It might
+not be for your limited set of configs, targets, and toolchains, but
+the folks running CI are very very well aware that the kernel is far
+from enabling -Werror seriously.
+
+Any given maintainer sending you a PR cannot (and should not, IMO)
+know under what combination of configs, targets, and toolchains you'll
+test under, and -Werror isn't going to help them figure it out.
+
+Not every commit that makes its way to mainline has spent equal
+amounts of soak time in -next. (I suspect there are commits going into
+mainline that spent zero time in -next, not just from you).  Patches
+merged by maintainers shortly before the merge window open have
+minimal coverage compared to older commits they've accepted.  So CI
+systems can't find diagnostics (warnings/errors) in various
+combinations of config/target/toolchain if patches are skipping -next
+or spending a short amount of time in -next.
+
+To be clear, you have merged patches into mainline that broke the
+build for combinations of configs/targets/toolchains that you are not
+testing.  It's not realistic for you or any one person to test all
+such combinations either.  Other software projects have solved this by
+relying on bots to handle merges. Bots that don't forget to test
+combinations of various targets, or enable developers to ignore
+warnings (if the warnings are even reported).
+
+> That's the POINT of that commit. That "but but but I have thousands of
+> warnings" is not acceptable.
+>
+> I spent hours yesterday getting rid of some warnings. It shouldn't be
+> on me fixing peoples code. It shouldn't be on me noticing that people
+> send me crap that warns.
+
+I agree. I disagree that -Werror will solve that.  Developers will get
+the same report from 0day bot, just now as an error rather than
+warning, and they will continue to ignore the report because "well it
+works for me."  (Maybe I'm attacking the strawman now).
+
+> And it really shouldn't be "Linus cares about warnings, so
+> configurations that Linus doesn't test can continue for years to have
+> them".
+
+I agree, and we have been making progress on this. I'd say the advent
+of the various CI systems over the past 5 years is a much welcomed
+improvement in at least understanding which combinations are exposing
+issues.
+
+> My "no warnings" policy isn't exactly new, and people shouldn't be
+> shocked when I then say "time to clean up *YOUR* house too".
+
+We have been cleaning house, for nearly half a decade in my
+experience. Fixing warnings in the Linux kernel for all possible
+configs, targets, and toolchains while the toolchains continue to add
+more diagnostics is more sisyphean than digging a hole in wet sand.
 -- 
-2.25.1
-
+Thanks,
+~Nick Desaulniers
