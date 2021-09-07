@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438D6402B6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F94E402B6E
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345009AbhIGPNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 11:13:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344996AbhIGPNX (ORCPT
+        id S1344996AbhIGPNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 11:13:55 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:41358 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344923AbhIGPNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 11:13:23 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5019C061575;
-        Tue,  7 Sep 2021 08:12:16 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id q11so14980353wrr.9;
-        Tue, 07 Sep 2021 08:12:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5ZP5A58LlRBBGGbuGnMCoDE4Mh32dSN8n7HcWb22LJc=;
-        b=EHZeTc4/BfMb0ZzIn2CyucXS5IEfXi/Xu9sVun7MlD9zhcf8oC+IlvO705YuTAnsJn
-         vmeq7Eu0XUo1e/SAnOvB/TESxoBDIqBmM9jItC1M1ySnsnI2H2zMgth2+KG4UImCKSWg
-         iXsBLfjXNeWmupp64MJn/kPpAejtMZdPSYKOjb5wzK+SCoQWC5faQwcjEsUTmJF/+/Pz
-         QerNaaqM6ytmpVNIx5H8TcvIwvbeBDLZTBSViCiHuMFNxmhe53U2lT9sUKx63agbppNA
-         sUSFCEtysI6z41VmF4rAgzkmA7zFrm5b5CSD+r62SPoYc0bJy1HHL1PpAFrRRpRuZUME
-         jOkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5ZP5A58LlRBBGGbuGnMCoDE4Mh32dSN8n7HcWb22LJc=;
-        b=gl8BQEAJHkpy9yUJT17WskAeUhGaLxFGEob92uRl8cTEa4/axzECsP3scyRjn1RYgN
-         3mc+9PoUEbHTCbdMpo0kZL25PGxTizvXT1/lEA/3Nz0w+TtwZGvFyMh5S5iWywdYVTuD
-         snWHJ9b0NSF56PJT6a0zg+s5lTdxv9bW0e+5ODGMkWKIp30hl9D7VcjTcWshJ7zCUNXQ
-         bb61pT9R5vqmjDXrwqjo3mtm8lzuFi1TGB+aoH1AwW6gzDr7YOvEKlCGpGLX+h8ipvbf
-         SDrEJnHDMjnKRztgg0A0ypCK81FJviCfgSR3dVuqaZc/lfeJv7hp6SRRRnqYqglvZBLh
-         hnJg==
-X-Gm-Message-State: AOAM5313r5HUOAVizoHkG0zrE0Y4ShEnD+zgPRk3f3xG2ftIsUV2YRcN
-        PbWsFDJhW/+yMozOZ923puIxkFDCPgsR6Q==
-X-Google-Smtp-Source: ABdhPJxmZQ+S3bwh/fAgE40A2cXGzZVmmiUSOSc3TCLsBJj29e+zLhq3WuwGAGHUx4z4emqlCPUqZQ==
-X-Received: by 2002:a5d:6dd0:: with SMTP id d16mr18990967wrz.177.1631027535470;
-        Tue, 07 Sep 2021 08:12:15 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:598:b9a6:8ece:d93e:2093:39d0:bcfd])
-        by smtp.gmail.com with ESMTPSA id h16sm11271138wre.52.2021.09.07.08.12.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 08:12:15 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        wsa+renesas@sang-engineering.com, linus.walleij@linaro.org,
-        avri.altman@wdc.com, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     beanhuo@micron.com
-Subject: [PATCH v1 2/2] mmc: core: No need to calculate the timeout value for CQE data transmission
-Date:   Tue,  7 Sep 2021 17:12:04 +0200
-Message-Id: <20210907151204.118861-3-huobean@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210907151204.118861-1-huobean@gmail.com>
-References: <20210907151204.118861-1-huobean@gmail.com>
+        Tue, 7 Sep 2021 11:13:52 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 1879S9ZU017290;
+        Tue, 7 Sep 2021 17:12:25 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=FV8kEVLg/Vi+EHiXTOJ0oqLPW8UKHNrpUZpZ65FIOfY=;
+ b=0tHECFJYPd2z/U55tPxW6Oyi1HCkMSOtM9ZzWDZyF7Xz1kki8wLnt4R6JZTDbo6lpaD/
+ JpfPvLrbUMflQNG28MdTXxR4Gu80xxQ6UrmzLvosguTXXiH4kmf0WOdbl44HDM+QIMh8
+ PaRhcYCMFzicRcN7zCnXwMQf/wLiv3+xtWGuhh6NKIc03Iyh3E6XsrlkGGEHD+q5nB9d
+ YO3/Lrn071/VFmgdB2y3fvcsAfQaR7cMMYhKldEma0U7C3fwXnsdWY6XQcybQnQPVLDI
+ rjLRCA0PnK/rIFKJM5rLbNcwit0IBFb6MwuxeByKJ3Q8Ro6ALkq1xiJ7WxYFlmwq8TAk Xg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 3awyx2ukhy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 07 Sep 2021 17:12:25 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 00E8910002A;
+        Tue,  7 Sep 2021 17:12:24 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag1node3.st.com [10.75.127.3])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D8769229A9F;
+        Tue,  7 Sep 2021 17:12:24 +0200 (CEST)
+Received: from localhost (10.75.127.45) by SFHDAG1NODE3.st.com (10.75.127.3)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 7 Sep 2021 17:12:24
+ +0200
+From:   Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+To:     Yannick Fertre <yannick.fertre@foss.st.com>,
+        Philippe Cornu <philippe.cornu@foss.st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
+        Raphael Gallais-Pou <raphael.gallais-pou@st.com>
+Subject: [PATCH] drm/stm: ltdc: add layer alpha support
+Date:   Tue, 7 Sep 2021 17:12:09 +0200
+Message-ID: <20210907151209.5716-1-raphael.gallais-pou@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG1NODE3.st.com
+ (10.75.127.3)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-07_05,2021-09-07_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+Android Hardware Composer supports alpha values applied to layers.
+Enabling non-opaque layers for the STM CRTC could help offload GPU
+resources for screen composition.
 
-In case CQE is enabled, the timeout value of data transmission is always
-set to be maximum in sdhci_cqe_enable(), so, calculating its timeout value
-is obviously superfluous. Change to return directly, which can save some CPU
-cycle time.
-
-Signed-off-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
 ---
- drivers/mmc/core/core.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/gpu/drm/stm/ltdc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index 240c5af793dc..0b571a3bc988 100644
---- a/drivers/mmc/core/core.c
-+++ b/drivers/mmc/core/core.c
-@@ -649,6 +649,7 @@ EXPORT_SYMBOL(mmc_wait_for_cmd);
- void mmc_set_data_timeout(struct mmc_data *data, const struct mmc_card *card)
- {
- 	unsigned int mult;
-+	struct mmc_host *host = card->host;
+diff --git a/drivers/gpu/drm/stm/ltdc.c b/drivers/gpu/drm/stm/ltdc.c
+index 195de30eb90c..e0fef8bacfa8 100644
+--- a/drivers/gpu/drm/stm/ltdc.c
++++ b/drivers/gpu/drm/stm/ltdc.c
+@@ -845,7 +845,7 @@ static void ltdc_plane_atomic_update(struct drm_plane *plane,
+ 			LXCFBLR_CFBLL | LXCFBLR_CFBP, val);
  
- 	/*
- 	 * SDIO cards only define an upper 1 s limit on access.
-@@ -659,6 +660,13 @@ void mmc_set_data_timeout(struct mmc_data *data, const struct mmc_card *card)
- 		return;
- 	}
+ 	/* Specifies the constant alpha value */
+-	val = CONSTA_MAX;
++	val = newstate->alpha >> 8;
+ 	reg_update_bits(ldev->regs, LTDC_L1CACR + lofs, LXCACR_CONSTA, val);
  
-+	/*
-+	 * In case CQE is enabled, the timeout will be set a maximum timeout in
-+	 * sdhci_cqe_enable(), so, no need to go through the below algorithm.
-+	 */
-+	if (host->cqe_enabled)
-+		return;
+ 	/* Specifies the blending factors */
+@@ -997,6 +997,8 @@ static struct drm_plane *ltdc_plane_create(struct drm_device *ddev,
+ 
+ 	drm_plane_helper_add(plane, &ltdc_plane_helper_funcs);
+ 
++	drm_plane_create_alpha_property(plane);
 +
- 	/*
- 	 * SD cards use a 100 multiplier rather than 10
- 	 */
+ 	DRM_DEBUG_DRIVER("plane:%d created\n", plane->base.id);
+ 
+ 	return plane;
 -- 
-2.25.1
+2.17.1
 
