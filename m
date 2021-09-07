@@ -2,89 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964494024D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBA94024DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241624AbhIGIBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 04:01:50 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:39262 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231366AbhIGIBs (ORCPT
+        id S240480AbhIGIHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 04:07:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231366AbhIGIHP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 04:01:48 -0400
-X-UUID: 289a8e123b5d49daab79ec2ce6a8031d-20210907
-X-UUID: 289a8e123b5d49daab79ec2ce6a8031d-20210907
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <trevor.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 312245765; Tue, 07 Sep 2021 16:00:39 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 7 Sep 2021 16:00:37 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by mtkcas07.mediatek.inc
- (172.21.101.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 7 Sep
- 2021 16:00:37 +0800
-Received: from mtksdccf07 (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 7 Sep 2021 16:00:37 +0800
-Message-ID: <27ca1a1e99193b543102df03f7c256063468f693.camel@mediatek.com>
-Subject: Re: [PATCH] ASoC: mediatek: mt8195: Fix unused initialization of
- pointer etdm_data
-From:   Trevor Wu <trevor.wu@mediatek.com>
-To:     Colin King <colin.king@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Date:   Tue, 7 Sep 2021 16:00:37 +0800
-In-Reply-To: <20210903114928.11743-1-colin.king@canonical.com>
-References: <20210903114928.11743-1-colin.king@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Tue, 7 Sep 2021 04:07:15 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F24C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 01:06:09 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id x19so7540002pfu.4
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 01:06:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d/01MhQ8az2KsubiJsXOE3GvtoJpq/UsCghzy97xeIs=;
+        b=W19V4SgXaBhfcRGI/YwgIiW/M2fm7L1sufN3+pvLeME1PocoeRMqHFIDgCEewYloKj
+         7YAf3uH8dsYXb2wMrtXZRieaQUK9AUSZWosPfSgVZNwa1kJT451vaCAmZCHW+DGQEGk1
+         1x3/rX6eePZmta2/oXgPHbyAQ5IVqPudQfyS4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d/01MhQ8az2KsubiJsXOE3GvtoJpq/UsCghzy97xeIs=;
+        b=KngLpFgZfrzbhzIXJRLT8QfcCQ9nz+OBOe9TJwEhRPchmC0JboXREU178iN/CN2GnO
+         Lg1O+mNgVlEkBNifd6gIHsfkCPf4AO0SKcCVNf7TX4K4jukbEM3gfMSM8zlsZ/i8CCal
+         eiDp8hkls6OK9WMMiXtQTJT0gPt00RBe+e6ce9anniysNi5IbuHRet5x7CB6F7bxgF46
+         jKUiqgK5JYKIk7I1tD+zcMX9/GkypkVX11Og610tn3O3gT2EhpT+1gVdyoXB2TDMltus
+         ZB8txu4F2uYSXxXE2hez9/9G+iXqWoQIHbS2pZ0wEKn7DbgSKQFn11mLUGkByqTX0kLz
+         tWdQ==
+X-Gm-Message-State: AOAM53017HOXOrCF0vAEsRwvSQOAWEzZWjVN4gWS/KrLAbnfd/mhR3kg
+        vgK8NYqVd+Z8QMbMC4FHjQCYYw==
+X-Google-Smtp-Source: ABdhPJzDWNJzzE/YtzGMdaNz0PvSy18J7L4YpoLZeYLWSPCsDqC8NkD4y8/HKcmvH/NgmO1zF7ZKbA==
+X-Received: by 2002:a62:5297:0:b0:3f4:263a:b078 with SMTP id g145-20020a625297000000b003f4263ab078mr15565156pfb.20.1631001969331;
+        Tue, 07 Sep 2021 01:06:09 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:4040:44a5:1453:e72c])
+        by smtp.gmail.com with ESMTPSA id g3sm9838015pfi.197.2021.09.07.01.06.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 01:06:08 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 17:06:04 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Namjae Jeon <linkinjeon@kernel.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steve French <sfrench@samba.org>,
+        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ksmbd: remove unnecessary conditions
+Message-ID: <YTcdbOgmB7758K+/@google.com>
+References: <20210907073428.GD18254@kili>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210907073428.GD18254@kili>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-09-03 at 12:49 +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The pointer etdm_data is being inintialized with a value that is
-> never
-> read, it is later being re-assigned a new value. Remove the redundant
-> initialization.
-> 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  sound/soc/mediatek/mt8195/mt8195-dai-etdm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
-> b/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
-> index 7378e42f2766..ac591d453e1e 100644
-> --- a/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
-> +++ b/sound/soc/mediatek/mt8195/mt8195-dai-etdm.c
-> @@ -2094,7 +2094,7 @@ static int mtk_dai_etdm_set_sysclk(struct
-> snd_soc_dai *dai,
->  {
->  	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
->  	struct mt8195_afe_private *afe_priv = afe->platform_priv;
-> -	struct mtk_dai_etdm_priv *etdm_data = afe_priv->dai_priv[dai-
-> >id];
-> +	struct mtk_dai_etdm_priv *etdm_data;
->  	int dai_id;
+On (21/09/07 10:34), Dan Carpenter wrote:
 >  
->  	dev_dbg(dai->dev, "%s id %d freq %u, dir %d\n",
+>  		id = le32_to_cpu(psid->sub_auth[psid->num_subauth - 1]);
+> -		if (id >= 0) {
+> -			/*
+> -			 * Translate raw sid into kuid in the server's user
+> -			 * namespace.
+> -			 */
+> -			uid = make_kuid(&init_user_ns, id);
+> -
+> -			/* If this is an idmapped mount, apply the idmapping. */
+> -			uid = kuid_from_mnt(user_ns, uid);
+> -			if (uid_valid(uid)) {
+> -				fattr->cf_uid = uid;
+> -				rc = 0;
+> -			}
+> +		/*
+> +		 * Translate raw sid into kuid in the server's user
+> +		 * namespace.
+> +		 */
+> +		uid = make_kuid(&init_user_ns, id);
 
-Acked-by: Trevor Wu <trevor.wu@mediatek.com>
+Can make_kuid() return INVALID_UID? IOW, uid_valid(uid) here as well?
 
-Thanks.
+> +
+> +		/* If this is an idmapped mount, apply the idmapping. */
+> +		uid = kuid_from_mnt(user_ns, uid);
+> +		if (uid_valid(uid)) {
+> +			fattr->cf_uid = uid;
+> +			rc = 0;
+>  		}
 
+[..]
+
+> +		/*
+> +		 * Translate raw sid into kgid in the server's user
+> +		 * namespace.
+> +		 */
+> +		gid = make_kgid(&init_user_ns, id);
+
+Ditto.
+
+> +		/* If this is an idmapped mount, apply the idmapping. */
+> +		gid = kgid_from_mnt(user_ns, gid);
+> +		if (gid_valid(gid)) {
+> +			fattr->cf_gid = gid;
+> +			rc = 0;
