@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D2E4031A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 01:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FE54031B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 01:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346422AbhIGX6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 19:58:09 -0400
-Received: from mga09.intel.com ([134.134.136.24]:12470 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231519AbhIGX6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 19:58:08 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10100"; a="220369543"
-X-IronPort-AV: E=Sophos;i="5.85,276,1624345200"; 
-   d="scan'208";a="220369543"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 16:57:01 -0700
-X-IronPort-AV: E=Sophos;i="5.85,276,1624345200"; 
-   d="scan'208";a="538242883"
-Received: from liao1-mobl.ccr.corp.intel.com (HELO chenyu5-mobl1) ([10.249.169.181])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 16:56:58 -0700
-Date:   Wed, 8 Sep 2021 07:56:55 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@intel.com>,
-        Aubrey Li <aubrey.li@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        linux-efi <linux-efi@vger.kernel.org>
-Subject: Re: [PATCH 2/5][RFC] efi: Introduce
- EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER and corresponding structures
-Message-ID: <20210907235655.GA39306@chenyu5-mobl1>
-References: <cover.1631025237.git.yu.c.chen@intel.com>
- <14bb2fa2c49934c627aec07077b96720d46b5202.1631025237.git.yu.c.chen@intel.com>
- <CAMj1kXH-S5t0kYfTELU_kmhK_Nzmf1WAdZTEGfSFUsDmbG7MYA@mail.gmail.com>
+        id S1346914AbhIHABC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 20:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231519AbhIHABB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 20:01:01 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1594BC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 16:59:55 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id a1so437465ilj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 16:59:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GKEqiH61GNvTizsuqwHMlFfrJQRSeQBmCpOvsRSSlMI=;
+        b=s5GamzllpZ2NXrqK3akabmDh2KGGe4aVrb2BOgYLVpoEE8i9cIt6IPz+Qf+bNEL6AC
+         wxIxDnUPJKzSyEZEXK35UWb9RJMmD9znxRnxHP6zZ4qxQQARAii3yyMTgyWP4WC6Bx6A
+         XlnAHVCIVWJ6cTBS7fl6jCO3MxhnaImd6wZZbD2O7DYW0wlyRrDkuqZw8XzkHHb9r4fK
+         TCLL2FQJtNp17LUxM6sPdx2ZpAVisbPeEb5Ucj8VwmGcPcWidq9j97XQ5zBEi9NxSClO
+         NaI9CAmj6pVurZao2oOvekDI/wo3q9OkebD5ovOeJG4tLyeY3wc8gDsXvan01FA6EIDj
+         2Prw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GKEqiH61GNvTizsuqwHMlFfrJQRSeQBmCpOvsRSSlMI=;
+        b=fC6RiJDBafzrM6d/eRc2GwaEvURiD+mWeGSCDfozUYTiL4ZzJhRMNLhjcXX83ReNrj
+         CGEIVuVVNheynLhQdhWxEW1YTkB4wGjHsUtXbCoeKFmRtBvoyv1Re69THLHuYJIC5rzT
+         dIYFgRDHcdvn5rePHxFOoP+KSFV9f2LLdQodR06orv0ESq975VfzaMOtTuge7wItIWRv
+         xbMrWYH83MYFX6TvrDN+dZ0cULXIJ/YtK/osBWhe18QqbbY2XavPNQY9HnJ8bUou4tfq
+         JGMJtEdA1RIOdhpM1pS4R3JIYPSUEHwGru8STto+UAN1OBLqlrGcWzWTHhXEAJ7xsSMv
+         84OQ==
+X-Gm-Message-State: AOAM53226X0GlhMGQ3TSFTy2wvPwi+fFOCFqKyRliT8uGj2wA8D5OdUJ
+        LI1PHLsVBFjBY9dOSAjHKCyrR8kMy0arMZJ1YqWTgg==
+X-Google-Smtp-Source: ABdhPJz8ZsjXIIvwM70Cwn7aXfQGt/WD4cgPID4ZPI3J8wGYq8OxXyMDZNXB9hiFNp52j/ZC/gu2g45y5UiZ5IjiuEA=
+X-Received: by 2002:a05:6e02:505:: with SMTP id d5mr689712ils.150.1631059194343;
+ Tue, 07 Sep 2021 16:59:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXH-S5t0kYfTELU_kmhK_Nzmf1WAdZTEGfSFUsDmbG7MYA@mail.gmail.com>
+References: <20210820093908.734503-1-nakamura.shun@fujitsu.com>
+ <20210820093908.734503-2-nakamura.shun@fujitsu.com> <YSQBI+FZLBvKr088@robh.at.kernel.org>
+ <OSBPR01MB4600288E176A169C07BF543EF7C59@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+ <CAL_JsqLKD0DZT63MQ9vTumOf1bfRrU9Bt9Qa_GTb1siRsK+Z+g@mail.gmail.com>
+In-Reply-To: <CAL_JsqLKD0DZT63MQ9vTumOf1bfRrU9Bt9Qa_GTb1siRsK+Z+g@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 7 Sep 2021 16:59:42 -0700
+Message-ID: <CAP-5=fW_g9JHKWQoNiwNeSN8MjJ1OA7qLb3JD3ErEi1be4DEiQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] libperf: Add processing to scale the counters
+ obtained during the read() system call when multiplexing
+To:     Rob Herring <robh@kernel.org>
+Cc:     "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 06:06:28PM +0200, Ard Biesheuvel wrote:
-> On Tue, 7 Sept 2021 at 17:12, Chen Yu <yu.c.chen@intel.com> wrote:
-> >
-> > Platform Firmware Runtime Update image starts with UEFI headers, and the headers
-> > are defined in UEFI specification, but some of them have not been defined in the
-> > kernel yet.
-> >
-> > For example, the header layout of a capsule file looks like this:
-> >
-> > EFI_CAPSULE_HEADER
-> > EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER
-> > EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER
-> > EFI_FIRMWARE_IMAGE_AUTHENTICATION
-> >
-> > These structures would be used by the Platform Firmware Runtime Update
-> > driver to parse the format of capsule file to verify if the corresponding
-> > version number is valid. The EFI_CAPSULE_HEADER has been defined in the
-> > kernel, however the rest are not, thus introduce corresponding UEFI structures
-> > accordingly.
-> >
-> > The reason why efi_manage_capsule_header_t and efi_manage_capsule_image_header_t
-> > are packedi might be that:
-> > According to the uefi spec,
-> > [Figure 23-6 Firmware Management and Firmware Image Management headers]
-> > EFI_FIRMWARE_MANAGEMENT_CAPSULE_HEADER is located at the lowest offset within
-> > the body of the capsule. And this structure is designed to be unaligned to save
-> > space, because in this way the adjacent drivers and binary payload elements could
-> > start on byte boundary with no padding. And the
-> > EFI_FIRMWARE_MANAGEMENT_CAPSULE_IMAGE_HEADER is at the head of each payload, so
-> > packing this structure also makes room for more data.
-> >
-> > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> 
-> Who is going to use these definitions? I only see this patch, where is
-> the rest of the series?
+On Tue, Aug 31, 2021 at 5:26 AM Rob Herring <robh@kernel.org> wrote:
 >
-Sorry, Ard, and thanks for taking a look at this patch.
+> On Tue, Aug 24, 2021 at 5:12 AM nakamura.shun@fujitsu.com
+> <nakamura.shun@fujitsu.com> wrote:
+> >
+> > Hi, Rob
+> >
+> > > On Fri, Aug 20, 2021 at 06:39:06PM +0900, Shunsuke Nakamura wrote:
+> > > > perf_evsel__read() scales counters obtained by RDPMC during multiplexing, but
+> > > > does not scale counters obtained by read() system call.
+> > > >
+> > > > Add processing to perf_evsel__read() to scale the counters obtained during the
+> > > > read() system call when multiplexing.
+> > >
+> > > Which one is right though? Changing what read() returns could break
+> > > users, right? Or are you implying that the RDPMC path is correct and
+> > > read() was not. More likely the former case since I wrote the latter.
+> >
+> > perf_evsel__read() returns both the count obtained by RDPMC and the count obtained
+> > by the read() system call when multiplexed with RDPMC enabled.
+> >
+> > That is, there is a mix of scaled and unscaled values.
+> >
+> > As Rob says, when this patch is applied, rescaling the count obtained from
+> > perf_evsel__read() during multiplexing will break the count.
+> >
+> > I think the easiest solution is to change the value you get from RDPMC to not scale
+> > and let the user scale it, but I thought it would be a little inconvenient.
+>
+> Agreed, unless someone else has an opinion. It would be good to do the
+> scaling in libperf with the optimized math op, but I assume there's
+> some reason the user may need unscaled values?
 
-The user of this definitions is an ACPI device driver, named Platform Firmware
-Runtime Update driver. This driver is designed to do firmware update via SMI.
-This driver will do sanity check of the capsule file using these structures before
-the file is passed to SMI. We put this check in kernel space rather than leaving
-it to SMI because the latter is very costly.
+Hi, something I've mentioned on other threads [1] is that running may
+be zero due to multiplexing but enabled be greater. This can lead to a
+divide by zero when scaling. Giving the ratio to the caller gives more
+information - I may be misunderstanding this thread, apologies if so.
 
-The series patch is at:
-https://patchwork.kernel.org/project/linux-acpi/list/?series=543211
-and the user is mainly PATCH 3/5:
-https://patchwork.kernel.org/project/linux-acpi/patch/9b2bd7d1e40633ce6f4845fb5c9e30a3faad5e7a.1631025237.git.yu.c.chen@intel.com/
-in valid_version().
+Thanks,
+Ian
 
-thanks,
-Chenyu
+[1] https://lore.kernel.org/lkml/CAL_JsqKc_qFA59L9e-xXOhE4yBTdVg-Ea9EddimWwqj3XXxhGw@mail.gmail.com/
+
+> Rob
