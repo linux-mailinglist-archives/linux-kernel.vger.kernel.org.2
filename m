@@ -2,97 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60660402D24
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06096402D2D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 18:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345203AbhIGQul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 12:50:41 -0400
-Received: from mail-pl1-f182.google.com ([209.85.214.182]:38787 "EHLO
-        mail-pl1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344728AbhIGQuk (ORCPT
+        id S1345091AbhIGQvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 12:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345157AbhIGQvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 12:50:40 -0400
-Received: by mail-pl1-f182.google.com with SMTP id u1so6192995plq.5;
-        Tue, 07 Sep 2021 09:49:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9ckxfBj+sYI6pH4j0PxlAxe4sHMsPjnlvuDhP/EE4qY=;
-        b=c0fvzMxm3F+sA5SvCRjsemr7j0rC222bzIvyeKcfwpuZsV4c1yGJ3IKu2eHVFh43x+
-         Ifmr+cOo4HKVQtsO+GA9L9dQUe12kcClU4tiGMSH6eLVlPGa0anN0vWCDU2HITZ92frz
-         1kDFAsnxx7szbdX+owvwbTJX7WDInraEF5ENTyGGDXUBcqhVgRmIWD2QhHTDMa0VkU8x
-         AS5AlCZ3NQqHEfXMRknKfpXYlvTUkNe334sZIcgXmKQtIWmxXZAizfieo2N5G4Jx5ZD2
-         bVUqzjDWNSgVV+ErCOvkh1BIF8bKDuphhTCRNwpKfXsDa/zTZcLjEN+i+MsYbcn4opEz
-         URgg==
-X-Gm-Message-State: AOAM532Ajz+oo6IVoSbHE73giO+fQFerJOQVuFkPOhuLe4L0vukgaQT6
-        +8siMfpfNqEjeqg+OagRzUmwCA+RXHQ=
-X-Google-Smtp-Source: ABdhPJxphsb8FOvB+uoa7Gm2EDTY66FANVE1F8aLchUDLMCQWf+CsKiNxP5ZilZWGxsW6LbVDZN7mg==
-X-Received: by 2002:a17:90b:e8e:: with SMTP id fv14mr5572970pjb.150.1631033373499;
-        Tue, 07 Sep 2021 09:49:33 -0700 (PDT)
-Received: from [192.168.50.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id n3sm11087304pfo.101.2021.09.07.09.49.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 09:49:32 -0700 (PDT)
-Subject: Re: [PATCH 2/2] Revert "mq-deadline: Fix request accounting"
-To:     Niklas Cassel <Niklas.Cassel@wdc.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210907142145.112096-1-Niklas.Cassel@wdc.com>
- <20210907142145.112096-3-Niklas.Cassel@wdc.com>
- <d544384b-617f-b7a4-f895-72adc900f41b@acm.org> <YTeOW+GoW/Ps2NXq@x1-carbon>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <36d25cd9-f4ec-0e7f-cbf0-19a71e7d781a@acm.org>
-Date:   Tue, 7 Sep 2021 09:49:30 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Tue, 7 Sep 2021 12:51:03 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE0DC061757
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 09:49:56 -0700 (PDT)
+Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id A8B1622175;
+        Tue,  7 Sep 2021 18:49:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1631033393;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RBIaEU+QYRJFKSVBjVbUGUzxvaWbeZCnz5PKzm5X2GQ=;
+        b=YhiJSkf6SgSXcXZhUZRVN1SrYWpTY2oGzLSHPG+7bLeaQBJ48I4LJgDj9XyIibCV/yBVyD
+        4zQYOCiAXlEhq2I+39/qg3rVbo2tgZcUK2QWxKwfzomgXe70r0HDOoeY3VfmaAQ20HQmBl
+        wb9hyz2JunKJnQupi/UPJwyYZ3Qe9Qk=
+From:   Michael Walle <michael@walle.cc>
+To:     Robin Murphy <robin.murphy@arm.com>, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     "Lukas F . Hartmann" <lukas@mntre.com>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH v2 0/3] drm/etnaviv: IOMMU related fixes
+Date:   Tue,  7 Sep 2021 18:49:42 +0200
+Message-Id: <20210907164945.2309815-1-michael@walle.cc>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YTeOW+GoW/Ps2NXq@x1-carbon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/7/21 9:07 AM, Niklas Cassel wrote:
-> On Tue, Sep 07, 2021 at 07:54:09AM -0700, Bart Van Assche wrote:
->> Please take a look at
->> https://lore.kernel.org/linux-block/18594aff-4a94-8a48-334c-f21ae32120c6@acm.org/
->> If dd_prepare_request() is removed I will have to reintroduce it.
-> 
-> dd_prepare_request() itself is not removed, just the
-> rq->elv.priv[0] = NULL; inside dd_prepare_request().
-> 
-> If you need to modify dd_prepare_request() in a future
-> commit, that should be fine, no?
-> 
-> Without patch 1/2, e->type->ops.requeue_request() can get called
-> both for requests that bypassed the I/O scheduler, and for requests
-> that were inserted in the I/O scheduler.
-> 
-> See:
-> block/blk-mq-sched.h:blk_mq_sched_requeue_request()
-> If the RQF_ELVPRIV flag is not set, e->type->ops.requeue_request()
-> will not be called.
-> 
-> Perhaps you are having issues with requests that were inserted
-> in the scheduler, but later requeued?
-> 
-> If so, shouldn't these fixes help you, since you do not need to
-> worry about passthrough requests resulting in spurious calls to
-> the I/O scheduler callbacks?
+This patch series fixes usage of the etnaviv driver with GPUs behind a
+IOMMU. It was tested on a NXP LS1028A SoC. Together with Lucas' MMU patches
+[1] there are not more (GPU internal) MMU nor (system) IOMMU faults on the
+LS1028A.
 
-In my comment I was indeed referring to requeued requests. If a request
-is requeued the scheduler insert callback function is called multiple
-times. From my point of view this patch series doesn't help much since
-requeued requests are not addressed.
+[1] https://lists.freedesktop.org/archives/etnaviv/2021-August/003682.html
 
-Thanks,
+changes since v1:
+ - don't move the former dma_mask setup code around in patch 2/3. Will
+   avoid any confusion.
 
-Bart.
+Michael Walle (3):
+  drm/etnaviv: use PLATFORM_DEVID_NONE
+  drm/etnaviv: fix dma configuration of the virtual device
+  drm/etnaviv: use a 32 bit mask as coherent DMA mask
+
+ drivers/gpu/drm/etnaviv/etnaviv_drv.c | 41 ++++++++++++++++++++-------
+ 1 file changed, 31 insertions(+), 10 deletions(-)
+
+-- 
+2.30.2
+
