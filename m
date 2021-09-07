@@ -2,121 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DD5A4030BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 00:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F114030C7
+	for <lists+linux-kernel@lfdr.de>; Wed,  8 Sep 2021 00:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347457AbhIGWLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 18:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
+        id S1347486AbhIGWPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 18:15:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236249AbhIGWLN (ORCPT
+        with ESMTP id S241562AbhIGWPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 18:11:13 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A869DC061757
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 15:10:06 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id m25-20020a7bcb99000000b002e751bcb5dbso30044wmi.5
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 15:10:06 -0700 (PDT)
+        Tue, 7 Sep 2021 18:15:34 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B387DC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 15:14:27 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id q26so213013wrc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 15:14:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jvwyaUQt5n0mIy7xaampJ1fxHnCzRU2G9ORyorTcaFg=;
-        b=Z4rmr9kIvWxpCZB7IlbES4y5ojyL37h9G+fB4bQ6OtiadOHiY5YXZ4Ogh2qASFEQtr
-         EGuKvVEt6NBZH8MSZqGGhf41wkdqlwIzt82Bv7oLn09LFnE26opQDzF/NkDVpTF2JOiA
-         0KnC38oF2p+v3u7AtMuhD70OcSxmD0xcKy5UqM6DcBU50A6A8pjO8i2Mu58lrWfJQSUm
-         AJL/DOVUkuq2zzUNhXAAovXCNleAuEm9fIShv6/RRQUFNHmWaHCGDlqoMzvsych/UksC
-         rKAuUjrHwevf/uiPUf1BE18PSrJlTiagDegF+45oe9/aT1/HRpDyLQfWyXGQ6wmuewmI
-         Scnw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=xFotH6edqMtbbzTy8uk9QzUuC79ZGdry8KcHax9XaBY=;
+        b=gtcgoNKwgWnIDZ2Z40MNQJmSvNZ52dGCJcEg40Gfizpfbg7yVKLf92pJt6VNj8TYuu
+         zaK3+JkBFQVfz6Vwa/D8JskhGC9dm4RlcTZrXwn14Y3RyAfkoh3mF95wjV78oB1fWpLY
+         9ZQ2TpCaDoJmoAV0eEx0ACZ2bPJ/PCGNalTLmifc5mtZjsA9hdp6RQ/Jz/eKZzrVwByY
+         YtfRYfshqiBK/XdhXbdt3EgiEPjLWU84B/D2FQD0oZWALfe5l0b8qT1SziKaYbnpCCsJ
+         QvtSd0Rzd3ParrdD4km/C+QkGx8ErrJrylIWE7KLnL/5W+d3saGKTlNEO5MP1DK8ntkN
+         X4eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jvwyaUQt5n0mIy7xaampJ1fxHnCzRU2G9ORyorTcaFg=;
-        b=HWmfFPJMhEAlRTGmSWL+o2pxiqjCyGcyXtOyab0YgucX4BrwkeMaqDQb+mTTDlmSl1
-         DCA38FfDtPjXWvxrkhFeQF+DRyd0wj1TsEBxxITnY9zCYYC2hCPcnZLjQ3S0oGRIRiRx
-         UAQK+wh9miCioYXZrZwdgyi+J//PilmGPHgT/GyaijoXACsMOPT6h78UFk08r1IiW1i7
-         Gb/3M8wHUdt3pQ6MpN98eZFL3w1JFeA4VkJHKO2BDCpBVzbhNE/4KAigsDIAnTuDvxJd
-         RXrEWVnpr/luR/pmvxFz1kP/yJKKYCTdjRvZVF+cv25ygOUJdbQ00MRrqqmmciiZDnNk
-         nbUw==
-X-Gm-Message-State: AOAM531jUIwkVFeEEmGV+GJ8BczXp9zM+4Xk1grAFOAikp3oxELCttVD
-        rSO4UvcYaI9dRb5lcJOeRZOTAw==
-X-Google-Smtp-Source: ABdhPJxP+dFd1KsQhgXsGzKnROx0wlUsDamiYbTKMztXUuGDFqaZrpO3mEzk7mcnUsvSILyh1AsIcg==
-X-Received: by 2002:a1c:cc05:: with SMTP id h5mr408853wmb.5.1631052605160;
-        Tue, 07 Sep 2021 15:10:05 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id h8sm265028wmb.35.2021.09.07.15.10.04
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xFotH6edqMtbbzTy8uk9QzUuC79ZGdry8KcHax9XaBY=;
+        b=qjc9qrNOMulG0/+zZxX0iaBXBp1f5T/U2ctnAonr8tleHoGHDCQFzwqUIJ+x2UyLMJ
+         ijk0Sw2mAjVXCHnhS6o88coHRoAOU1/mPuwccZct0QWeUxJNuOglu7qdFjki5tJbwScs
+         w6L6TH7bL05OkrT9HNOsJz9DdtAMDNGC6R9JlcjTutGUoUW0KggM18IDO1LxO6Thuua0
+         BhSCU8i327pAzpvbK4dRSpjRmwq5Ljtcp3WJdXWvtt3qmfLsUiIAueNVrJM46gtPIleC
+         JuuuMPMwsOiVc8vzn1DqYM4cBD6QqrhJT41Yn9fsgSwow2UGh6Afti54zq1qA5hjpTGW
+         ux9g==
+X-Gm-Message-State: AOAM531ciTC9qspDv3jPF0b5V0fNPPX0dcb/x8dQlcKIEDsKnb4EiZoM
+        z5599pHthi2RP4G87n/+Wouo9Q==
+X-Google-Smtp-Source: ABdhPJzQNzjoIYl7hnw1VXbwu33mfc9UTzINbge4K/7xHYwNuhhESeISiVC+cGG9ow29/yOs+86PPA==
+X-Received: by 2002:adf:c54a:: with SMTP id s10mr524571wrf.405.1631052865921;
+        Tue, 07 Sep 2021 15:14:25 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:6800:c1ea:4271:5898])
+        by smtp.gmail.com with ESMTPSA id i11sm264098wrb.48.2021.09.07.15.14.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 15:10:04 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 23:10:02 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Tue, 07 Sep 2021 15:14:25 -0700 (PDT)
+Date:   Wed, 8 Sep 2021 00:14:19 +0200
+From:   Marco Elver <elver@google.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     llvm@lists.linux.dev,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: r8188eu: remove redundant variable hoffset
-Message-ID: <YTfjOtrlaZscXVTm@equinox>
-References: <20210907085302.10672-1-colin.king@canonical.com>
+        Guenter Roeck <linux@roeck-us.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vipin Sharma <vipinsh@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "Enable '-Werror' by default for all kernel
+ builds"
+Message-ID: <YTfkO2PdnBXQXvsm@elver.google.com>
+References: <20210907183843.33028-1-ndesaulniers@google.com>
+ <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
+ <CAKwvOdkuYoke=Sa8Qziveo9aSA2zaNWEcKW8LZLg+d3TPwHkoA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210907085302.10672-1-colin.king@canonical.com>
+In-Reply-To: <CAKwvOdkuYoke=Sa8Qziveo9aSA2zaNWEcKW8LZLg+d3TPwHkoA@mail.gmail.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 07, 2021 at 09:53:02AM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Tue, Sep 07, 2021 at 01:30PM -0700, Nick Desaulniers wrote:
+> On Tue, Sep 7, 2021 at 12:16 PM Linus Torvalds <torvalds@linux-foundation.org> wrote:
+[...]
+> > I'm not going to revert that change. I probably will have to limit it
+> > (by making that WERROR option depend on certain expectations), but
+> > basically any maintainer who has code that causes warnings should
+> > expect that they will have to fix those warnings.
 > 
-> Variable hoffset is being assigned values but it is never being
-> used. The variable is redundant and can be removed.
-> 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/staging/r8188eu/hal/rtl8188e_hal_init.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-> index 14758361960c..7c12ca548c47 100644
-> --- a/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-> +++ b/drivers/staging/r8188eu/hal/rtl8188e_hal_init.c
-> @@ -1143,7 +1143,7 @@ static u16 hal_EfuseGetCurrentSize_8188e(struct adapter *pAdapter, bool bPseudoT
->  {
->  	int	bContinual = true;
->  	u16	efuse_addr = 0;
-> -	u8 hoffset = 0, hworden = 0;
-> +	u8 hworden = 0;
->  	u8 efuse_data, word_cnts = 0;
->  
->  	if (bPseudoTest)
-> @@ -1156,18 +1156,15 @@ static u16 hal_EfuseGetCurrentSize_8188e(struct adapter *pAdapter, bool bPseudoT
->  	       AVAILABLE_EFUSE_ADDR(efuse_addr)) {
->  		if (efuse_data != 0xFF) {
->  			if ((efuse_data & 0x1F) == 0x0F) {		/* extended header */
-> -				hoffset = efuse_data;
->  				efuse_addr++;
->  				efuse_OneByteRead(pAdapter, efuse_addr, &efuse_data, bPseudoTest);
->  				if ((efuse_data & 0x0F) == 0x0F) {
->  					efuse_addr++;
->  					continue;
->  				} else {
-> -					hoffset = ((hoffset & 0xE0) >> 5) | ((efuse_data & 0xF0) >> 1);
->  					hworden = efuse_data & 0x0F;
->  				}
->  			} else {
-> -				hoffset = (efuse_data >> 4) & 0x0F;
->  				hworden =  efuse_data & 0x0F;
->  			}
->  			word_cnts = Efuse_CalculateWordCnts(hworden);
-> -- 
-> 2.32.0
-> 
+> I'm not 100% against it; I think it could land in a more useful
+> variation. But it would be good to discuss that on-list, and give it
+> time to soak. This is a conversation we should be having with CI
+> maintainers IMO, and folks that maintain the build infra, at least.
+> I'm happy to kick off that discussion with this RFC.
 
-Many thanks Colin, looks good to me.
+Here's a datapoint: I had to disable CONFIG_WERROR on a bunch of syzbot
+instances which started failing because of -Werror [1], because syzbot's
+time is better spent on fuzzing, and having the odd warning in some
+subsystem penalize fuzzing of the entire kernel is not appropriate.
 
-Acked-by: Phillip Potter <phil@philpotter.co.uk>
+[1] https://github.com/google/syzkaller/commit/e096c0a2a414e487412c9669426780ce5acdde9d
 
-Regards,
-Phil
+Getting the kernel built is a hard requirement for any sort of runtime
+testing. Once the kernel is built, runtime testing of various subsystems
+can proceed in parallel. A single warning in some odd subsystem
+penalizing the _entire_ kernel's testing progress is inappropriate. The
+severity of a use-after-free bug found by runtime testing is orders of
+magnitude more severe than some "unused variable" warning. Now such a
+warning would delay finding bugs at runtime on many CI systems that
+haven't yet disabled the warning.
+
+I'm predicting most distributions and runtime-focused CIs will disable
+the warning.
+
+I have formulated this in the form of a patch below, that might move
+this new Kconfig option towards its appropriate usecases by default.
+
+The intent is not to dispute the usefulness of -Werror, but select the
+appropriate usecases by default, limiting friction for all those who can
+do little more than say CONFIG_WERROR=n.
+
+Thanks,
+-- Marco
+
+------ >8 ------
+
+From: Marco Elver <elver@google.com>
+Date: Tue, 7 Sep 2021 23:12:08 +0200
+Subject: [PATCH] kbuild: Only default to -Werror if COMPILE_TEST
+
+The cross-product of the kernel's supported toolchains, architectures,
+and configuration options is large. So large, that it's generally
+accepted to be infeasible to enumerate and build+test them all
+(many compile-testers rely on randomly generated configs).
+
+Without the possibility to enumerate all possible combinations of
+toolchains, architectures, and configuration options, it is inevitable
+that compiler warnings in this space exist.
+
+With -Werror, this means that an innumerable set of kernels are now
+broken, yet had been perfectly usable before (confused compilers, code
+with warnings unused, or luck).
+
+Distributors will necessarily pick a point in the toolchain X arch X
+config space, and if unlucky, will have a broken build. Granted, those
+will likely disable CONFIG_WERROR and move on.
+
+The kernel's default configuration is unlikely to be suitable for all
+users, but it's inappropriate to force many users to set CONFIG_WERROR=n.
+
+This also holds for CI systems which are focused on runtime testing,
+where the odd warning in some subsystem will disrupt testing of the rest
+of the kernel. Many of those runtime-focused CI systems run tests or
+fuzz the kernel using runtime debugging tools. Runtime testing of
+different subsystems can proceed in parallel, and potentially uncover
+serious bugs; halting runtime testing of the entire kernel because of
+the odd warning (now error) in a subsystem or driver is simply
+inappropriate.
+
+Therefore, runtime-focused CI systems will likely choose CONFIG_WERROR=n
+as well.
+
+The appropriate usecase for -Werror is therefore compile-test focused
+builds (often done by developers or CI systems).
+
+Reflect this in the Kconfig option by making the default value of WERROR
+match COMPILE_TEST.
+
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ init/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/init/Kconfig b/init/Kconfig
+index 8cb97f141b70..11f8a845f259 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -139,7 +139,7 @@ config COMPILE_TEST
+ 
+ config WERROR
+ 	bool "Compile the kernel with warnings as errors"
+-	default y
++	default COMPILE_TEST
+ 	help
+ 	  A kernel build should not cause any compiler warnings, and this
+ 	  enables the '-Werror' flag to enforce that rule by default.
+-- 
+2.33.0.153.gba50c8fa24-goog
+
