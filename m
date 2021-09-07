@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E0E402F58
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7946D402F5C
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346239AbhIGUEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:04:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230467AbhIGUEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:04:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C859161106;
-        Tue,  7 Sep 2021 20:03:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631044981;
-        bh=GHY5U3+0IXVjerpc2D86xOqagWOy0yZ5l0MYkJly+sU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VSZqEbIrNDCJTGP2NgiDmbVHwrEH1yz+kRLMwgnx51fVrcMKr5XiXKIuf/bLtOBgo
-         QEWBXK2AkQVySrKZShWAJOfQL/z9efWEhm6Fw3xs33BtC+62frShpIUcvuz9uGM/wg
-         sW2JYwT6EQak30j/o+xCY4hVg2l1JQjg8G/PQbXc8Tl35t2piE8BubXvWYgBTgyA/K
-         c7r4k93UndMXvDF8DeXa3ZLJSPweoOAJEI9AHpSuuMLTFbzn9n8NBMKkWSzTbEPKXg
-         VhIkEDXrzp0gph0h4O3PjKTqav3kwyK+A6T9uoI+pk/9i0pw96kZb9a8FsbICLyJZw
-         nHLoCntOOutlw==
-From:   Vineet Gupta <vgupta@kernel.org>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup.patel@wdc.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Vineet Gupta <vgupta@kernel.org>
-Subject: [PATCH] riscv: mm: don't advertise 1 num_asid for 0 asid bits
-Date:   Tue,  7 Sep 2021 13:02:54 -0700
-Message-Id: <20210907200254.467375-1-vgupta@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S1346283AbhIGUFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:05:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242040AbhIGUFH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 16:05:07 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D33C061757
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:04:00 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so579760otf.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:04:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=TENBxfXEJrx+qep0klzFIcnjVwFP7TPiqnVMsNGOBug=;
+        b=luEnDOJzvHQwGgL5oD/itSmHJe7C1R8V4a5IViGtADCVgsKgv2TIz5DcHiy+iE4r6u
+         bWh+QkKk+u6tXj1AWln+ED05+Rwx/rmFH/+1Sjo3DIoYMNbGAFlSsH+57UAU2rRcpJOX
+         Epw4H7JiE9KFLKbohz7Mi5DLhuFL0WmF4H0QA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=TENBxfXEJrx+qep0klzFIcnjVwFP7TPiqnVMsNGOBug=;
+        b=smuWGTFMsyzDX+WbbrbNaziR05FdQlSQBgy4RE9JmX3kcr9n97B29xhIlWDVLgGgq6
+         JorajQB2Z0TR6BtjSwmJN1kZsRe6EnGONNkdgWWul3Cg8f8oznXqbuxaPv70fraXtW9C
+         CRKJGaL7k7Ve+Q8uBAz1612qZoiMbbhXFGB+ky+aQG0tBClGisyydISHX/Rux1NTGJbk
+         xlhKvETgqNFZmoh81d6srd6+vGDIHG/NppleDhvK27Te/6ru7oA6oKuFyxboqDxJEKw6
+         C43D6HLfoPJA5GCf7xiwBhcudaw7JmWzMBpb+XRZvsh09WgMxbhjjrp+pTUpmKxhe+ea
+         Hxnw==
+X-Gm-Message-State: AOAM530llRknpvHh34n/b8FGDJEoMUBHlmYdQ/gpQL9NVeqYRHj8mmGg
+        OnDrQjbhmdr4DXD597c/gWUaXFqMVnzVCKPtjL5OXA==
+X-Google-Smtp-Source: ABdhPJy9i/DlZKOQrkekswUoYCNt7EYgkeC4BfnnDRyCvPE/fNG4JvccpBXSKKrzKRlyeS0taETaIPWq8jLCedHjcCA=
+X-Received: by 2002:a05:6830:1212:: with SMTP id r18mr102390otp.159.1631045040100;
+ Tue, 07 Sep 2021 13:04:00 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 7 Sep 2021 20:03:59 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1630924867-4663-2-git-send-email-skakit@codeaurora.org>
+References: <1630924867-4663-1-git-send-email-skakit@codeaurora.org> <1630924867-4663-2-git-send-email-skakit@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 7 Sep 2021 20:03:59 +0000
+Message-ID: <CAE-0n53RNDAykhFuDN_Qgwv6ktR8cRQOQxXWmDX9+yXeu4aECw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] dt-bindings: leds: Add pm8350c pmic support
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        satya priya <skakit@codeaurora.org>
+Cc:     mka@chromium.org, kgunda@codeaurora.org,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even if mmu doesn't support ASID, current code calculates @num_asids=1
-which is misleading, so avoid setting any asid related variables in such
-a case.
+Quoting satya priya (2021-09-06 03:41:05)
+> Add pm8350c pmic pwm support.
+>
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
 
-Also while here, print the number of asid bits discovered even for the
-disabled case.
-
-Verified this on Hifive Unmatched.
-
-Signed-off-by: Vineet Gupta <vgupta@kernel.org>
----
- arch/riscv/mm/context.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
-index ee3459cb6750..c8c6f8831a3b 100644
---- a/arch/riscv/mm/context.c
-+++ b/arch/riscv/mm/context.c
-@@ -233,8 +233,10 @@ static int __init asids_init(void)
- 	local_flush_tlb_all();
- 
- 	/* Pre-compute ASID details */
--	num_asids = 1 << asid_bits;
--	asid_mask = num_asids - 1;
-+	if (asid_bits) {
-+		num_asids = 1 << asid_bits;
-+		asid_mask = num_asids - 1;
-+	}
- 
- 	/*
- 	 * Use ASID allocator only if number of HW ASIDs are
-@@ -255,7 +257,7 @@ static int __init asids_init(void)
- 		pr_info("ASID allocator using %lu bits (%lu entries)\n",
- 			asid_bits, num_asids);
- 	} else {
--		pr_info("ASID allocator disabled\n");
-+		pr_info("ASID allocator disabled: %lu bits\n", asid_bits);
- 	}
- 
- 	return 0;
--- 
-2.30.2
-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
