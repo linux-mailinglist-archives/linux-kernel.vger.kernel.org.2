@@ -2,61 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7384023CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42BE54023D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236292AbhIGHGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 03:06:53 -0400
-Received: from mga01.intel.com ([192.55.52.88]:11727 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233576AbhIGHGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 03:06:52 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="242401926"
-X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
-   d="scan'208";a="242401926"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Sep 2021 00:05:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
-   d="scan'208";a="692327309"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga006.fm.intel.com with ESMTP; 07 Sep 2021 00:05:35 -0700
-Subject: Re: [PATCH] perf dlfilter: Add dlfilter-show-cycles
-To:     Andi Kleen <ak@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-References: <20210906160850.22716-1-adrian.hunter@intel.com>
- <7bee95a7-fa31-a801-8068-80c63ba6ccfe@linux.intel.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <b8b1d870-9db2-4b0f-7138-c139e1ef878b@intel.com>
-Date:   Tue, 7 Sep 2021 10:06:03 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.13.0
+        id S237017AbhIGHIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 03:08:19 -0400
+Received: from mail-vk1-f169.google.com ([209.85.221.169]:33727 "EHLO
+        mail-vk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235480AbhIGHIR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 03:08:17 -0400
+Received: by mail-vk1-f169.google.com with SMTP id j5so2955104vki.0;
+        Tue, 07 Sep 2021 00:07:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=34toH65PPpjzHNECWtKzZN6+N1eTTvaJ+1f/TQkpm/4=;
+        b=ItPS4/+bR4Qp+WzAlE3Nd1h3Ro9d5MSku8riD4NSB5fBctk9AcwLFjCUXxlOHORHoq
+         L7B9ASjn/yJpfJgHOeF5UYs2I3vUNGVZ+I9dyT3TD01FZ6D0T4gI2yBOx4Tve/TUbTYq
+         CQUmxWBngiCvG4WYU/s6oRQ9JSlnoUBaFtZDpOuKpXFymJ5aqFG1kcPZYvHEuYT0Wh1o
+         d+N89YHCnslgEFxQZDywfZ6dUTyI1ELs/EQ3LGnnFwOL1NQuM6gGlG1wCKnI6UdWBmXf
+         TRs5pzM6bsbGJHwiqciH3raPcu3gnMmpv9UBBrUHjS508a323Pz+MHMrNmsEonP7cC5v
+         NY4g==
+X-Gm-Message-State: AOAM531pWsYPEijCs6EvTMJGf992/kUrclhmm6pETsTiFKn6e1b7EugL
+        LlLTo55/TmxS1K+4xDYkFhRw9VPpTQFLLW2pvIc=
+X-Google-Smtp-Source: ABdhPJw68jIoiEfAAwDXFLZ9LWNlDd4IcmxBHL4WiVb7QKRzTBsvlTxsKtbCln7drnSR7n/TBfuv9ODhrDtY4VO0EYM=
+X-Received: by 2002:a1f:fc8f:: with SMTP id a137mr6948106vki.19.1630998431244;
+ Tue, 07 Sep 2021 00:07:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7bee95a7-fa31-a801-8068-80c63ba6ccfe@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210907045358.2138282-1-linux@roeck-us.net>
+In-Reply-To: <20210907045358.2138282-1-linux@roeck-us.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 7 Sep 2021 09:07:00 +0200
+Message-ID: <CAMuHMdVEV4spviXmR1hs5YmydFKxWhuZqxtS06ko2v_q8v37PA@mail.gmail.com>
+Subject: Re: [PATCH] spi: tegra20-slink: Declare runtime suspend and resume
+ functions conditionally
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 7/09/21 5:54 am, Andi Kleen wrote:
-> 
-> On 9/6/2021 9:08 AM, Adrian Hunter wrote:
->> Add a new dlfilter to show cycles.
->>
->> Cycle counts are accumulated per CPU (or per thread if CPU is not recorded)
->> from IPC information, and printed together with the change since the last
->> print, at the start of each line.
-> 
-> 
-> Thanks! An example how to use it would be nice 
+On Tue, Sep 7, 2021 at 6:56 AM Guenter Roeck <linux@roeck-us.net> wrote:
+> The following build error is seen with CONFIG_PM=n.
+>
+> drivers/spi/spi-tegra20-slink.c:1188:12: error:
+>         'tegra_slink_runtime_suspend' defined but not used
+> drivers/spi/spi-tegra20-slink.c:1200:12: error:
+>         'tegra_slink_runtime_resume' defined but not used
+>
+> Declare the functions only if PM is enabled. While at it, remove the
+> unnecessary forward declarations.
+>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-I started looking at making an example and noticed that this approach
-does not work very well because the IPC cycle count only increases when
-the IPC is output which (for CYC accurate mode) is only happens when a
-CYC packet is output that corresponds to the current sample.  Seems like
-this needs a re-think, sorry.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
