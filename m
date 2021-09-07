@@ -2,88 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93702402368
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E51E40236B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 08:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbhIGGZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 02:25:22 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:54486 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231828AbhIGGZU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 02:25:20 -0400
-Received: from BC-Mail-Ex16.internal.baidu.com (unknown [172.31.51.56])
-        by Forcepoint Email with ESMTPS id 241E27BF1FE1EDA7FFB7;
-        Tue,  7 Sep 2021 14:24:13 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex16.internal.baidu.com (172.31.51.56) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Tue, 7 Sep 2021 14:24:12 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 7 Sep 2021 14:24:12 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] iio: adc: ad799x: Add a single error handling block at the end of the function.
-Date:   Tue, 7 Sep 2021 14:24:06 +0800
-Message-ID: <20210907062407.1930-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S231996AbhIGG0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 02:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45192 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232056AbhIGG0V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 02:26:21 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57BCC061575;
+        Mon,  6 Sep 2021 23:25:15 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id q39so11481147oiw.12;
+        Mon, 06 Sep 2021 23:25:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/UBwOofpA8/+kaEKqbvd66qjIBGqrp+k0ILuSWWmLkY=;
+        b=Aicscqd2RmIeSemDcchk6eENStnpmmIgSts+GSaLDww4QSqaznLHcLynW1fkrvWYKW
+         fPsHjz8g+91mJE/RtcokXSBi3GqvXN+N5fxeCQjmUiLeNMsy5ejHGb/OSeCWhdDX5N3/
+         1slDbycMzOGKGRYGaVqcxOpzmDOnV6d6heKXXFoorghGO/sL2FdXrBPVDq56Bh4/QOeg
+         AaJb9YDAptuYmB0yMxrA6OhRNCPbdkvmrDd8ylI11AO6KCRpJm2ew3l2H7HUogTMLdKy
+         /JAmLFv5ZyhQSv4H3IeOM5Ev/rDmAFzU7wuIESHi3AxMtYSxPAIWTXaYE2ksQRN+jjTH
+         GluA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/UBwOofpA8/+kaEKqbvd66qjIBGqrp+k0ILuSWWmLkY=;
+        b=Esp3x1Rswji9CXsheDqDBOBh6YJgzIGBS8UABKk8uz+qunpteCQLCHdhsdEyuzb4sq
+         Pu3oRVmYMhbTMUB2CSFEN7JCt4ufogUfVpS6kfYp4lQNkNwlbbtgyZ5d39Vv8SF/7aIi
+         ry7t5tPbZgypEjVjtP9TRbVbNVkFku8ujH+hhjAc0Pq0baBPCPvXDjaGtuSkbWaw4ak9
+         7e1vh/0V+l8lRvIdm7tziAt1wk5JAI58Au6tTqigdv4HdamwEt/ihtM2SGO7PC8Sd696
+         U3knf1I9rAZuMCZOvx69hqtmF5F4Y0nMgI03lZ2Q9D6A2gP5l2wHLQNAG67vpBfjxpGk
+         jeYA==
+X-Gm-Message-State: AOAM533V20EjPrK3OhcpNzZh4FCBLmi3kpqo5Aw279hGQIw5402xGbSR
+        BJ1AiyyGEuUglcWpE6oGxl8XRuxvgaQ=
+X-Google-Smtp-Source: ABdhPJyWqIcc5acgKMcSg7x3Y362n/t0MsRUmGHjl6aqCyUD6jb1pdWhTO/Ec2cxb8w2Kzxu6C0xBA==
+X-Received: by 2002:a05:6808:46:: with SMTP id v6mr1729056oic.61.1630995914864;
+        Mon, 06 Sep 2021 23:25:14 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v10sm2268838otp.25.2021.09.06.23.25.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Sep 2021 23:25:14 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210907050606.2142634-1-linux@roeck-us.net>
+ <YTb/t2Qn0BklAlpk@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH] Input: analog: Always use ktime functions
+Message-ID: <7d5c1a12-19e8-d29f-76f3-88d6bc0acce0@roeck-us.net>
+Date:   Mon, 6 Sep 2021 23:25:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex30.internal.baidu.com (172.31.51.24) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+In-Reply-To: <YTb/t2Qn0BklAlpk@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A single error handling block at the end of the function could
-be brought in to make code a little more concise.
+On 9/6/21 10:59 PM, Dmitry Torokhov wrote:
+> Hi Guenter,
+> 
+> On Mon, Sep 06, 2021 at 10:06:06PM -0700, Guenter Roeck wrote:
+>> m68k, mips, s390, and sparc allmodconfig images fail to build with the
+>> following error.
+>>
+>> drivers/input/joystick/analog.c:160:2: error:
+>> 	#warning Precise timer not defined for this architecture.
+>>
+>> Remove architecture specific time handling code and always use ktime
+>> functions to determine time deltas. Also remove the now useless use_ktime
+>> kernel parameter.
+>>
+>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+>> ---
+>>   drivers/input/joystick/analog.c | 74 ++-------------------------------
+>>   1 file changed, 3 insertions(+), 71 deletions(-)
+>>
+>> diff --git a/drivers/input/joystick/analog.c b/drivers/input/joystick/analog.c
+>> index f798922a4598..4702982182fa 100644
+>> --- a/drivers/input/joystick/analog.c
+>> +++ b/drivers/input/joystick/analog.c
+>> @@ -28,10 +28,6 @@ MODULE_AUTHOR("Vojtech Pavlik <vojtech@ucw.cz>");
+>>   MODULE_DESCRIPTION(DRIVER_DESC);
+>>   MODULE_LICENSE("GPL");
+>>   
+>> -static bool use_ktime = true;
+>> -module_param(use_ktime, bool, 0400);
+>> -MODULE_PARM_DESC(use_ktime, "Use ktime for measuring I/O speed");
+>> -
+>>   /*
+>>    * Option parsing.
+>>    */
+>> @@ -119,64 +115,14 @@ struct analog_port {
+>>   	int axtime;
+>>   };
+>>   
+>> -/*
+>> - * Time macros.
+>> - */
+>> -
+>> -#ifdef __i386__
+>> -
+>> -#include <linux/i8253.h>
+>> -
+>> -#define GET_TIME(x)	do { if (boot_cpu_has(X86_FEATURE_TSC)) x = (unsigned int)rdtsc(); else x = get_time_pit(); } while (0)
+>> -#define DELTA(x,y)	(boot_cpu_has(X86_FEATURE_TSC) ? ((y) - (x)) : ((x) - (y) + ((x) < (y) ? PIT_TICK_RATE / HZ : 0)))
+>> -#define TIME_NAME	(boot_cpu_has(X86_FEATURE_TSC)?"TSC":"PIT")
+>> -static unsigned int get_time_pit(void)
+>> -{
+>> -        unsigned long flags;
+>> -        unsigned int count;
+>> -
+>> -        raw_spin_lock_irqsave(&i8253_lock, flags);
+>> -        outb_p(0x00, 0x43);
+>> -        count = inb_p(0x40);
+>> -        count |= inb_p(0x40) << 8;
+>> -        raw_spin_unlock_irqrestore(&i8253_lock, flags);
+>> -
+>> -        return count;
+>> -}
+>> -#elif defined(__x86_64__)
+>> -#define GET_TIME(x)	do { x = (unsigned int)rdtsc(); } while (0)
+>> -#define DELTA(x,y)	((y)-(x))
+>> -#define TIME_NAME	"TSC"
+>> -#elif defined(__alpha__) || defined(CONFIG_ARM) || defined(CONFIG_ARM64) || defined(CONFIG_PPC) || defined(CONFIG_RISCV)
+>> -#define GET_TIME(x)	do { x = get_cycles(); } while (0)
+>> -#define DELTA(x,y)	((y)-(x))
+>> -#define TIME_NAME	"get_cycles"
+>> -#else
+>> -#define FAKE_TIME
+>> -static unsigned long analog_faketime = 0;
+>> -#define GET_TIME(x)     do { x = analog_faketime++; } while(0)
+>> -#define DELTA(x,y)	((y)-(x))
+>> -#define TIME_NAME	"Unreliable"
+>> -#warning Precise timer not defined for this architecture.
+>> -#endif
+>> -
+>>   static inline u64 get_time(void)
+>>   {
+>> -	if (use_ktime) {
+>> -		return ktime_get_ns();
+>> -	} else {
+>> -		unsigned int x;
+>> -		GET_TIME(x);
+>> -		return x;
+>> -	}
+>> +	return ktime_get_ns();
+>>   }
+>>   
+>>   static inline unsigned int delta(u64 x, u64 y)
+>>   {
+>> -	if (use_ktime)
+>> -		return y - x;
+>> -	else
+>> -		return DELTA((unsigned int)x, (unsigned int)y);
+>> +	return y - x;
+> 
+> I wonder if we should get rid of these wrappers and use ktime_t and
+> ktime_get(), ktime_sub(), etc directly.
+> 
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/iio/adc/ad799x.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+Will do.
 
-diff --git a/drivers/iio/adc/ad799x.c b/drivers/iio/adc/ad799x.c
-index 18bf8386d50a..d3dbc4c1e375 100644
---- a/drivers/iio/adc/ad799x.c
-+++ b/drivers/iio/adc/ad799x.c
-@@ -891,20 +891,23 @@ static int __maybe_unused ad799x_resume(struct device *dev)
- 	}
- 	ret = regulator_enable(st->vref);
- 	if (ret) {
--		regulator_disable(st->reg);
- 		dev_err(dev, "Unable to enable vref regulator\n");
--		return ret;
-+		goto error_disable_reg;
- 	}
- 
- 	/* resync config */
- 	ret = ad799x_update_config(st, st->config);
--	if (ret) {
--		regulator_disable(st->vref);
--		regulator_disable(st->reg);
--		return ret;
--	}
-+	if (ret)
-+		goto error_disable_vref;
- 
- 	return 0;
-+
-+error_disable_vref:
-+	regulator_disable(st->vref);
-+error_disable_reg:
-+	regulator_disable(st->vref);
-+
-+	return ret;
- }
- 
- static SIMPLE_DEV_PM_OPS(ad799x_pm_ops, ad799x_suspend, ad799x_resume);
--- 
-2.25.1
+>>   }
+>>   
+>>   /*
+>> @@ -378,21 +324,7 @@ static void analog_calibrate_timer(struct analog_port *port)
+>>   	u64 t1, t2, t3;
+>>   	unsigned long flags;
+>>   
+>> -	if (use_ktime) {
+>> -		port->speed = 1000000;
+>> -	} else {
+>> -		local_irq_save(flags);
+>> -		t1 = get_time();
+>> -#ifdef FAKE_TIME
+>> -		analog_faketime += 830;
+>> -#endif
+>> -		mdelay(1);
+>> -		t2 = get_time();
+>> -		t3 = get_time();
+>> -		local_irq_restore(flags);
+>> -
+>> -		port->speed = delta(t1, t2) - delta(t2, t3);
+>> -	}
+>> +	port->speed = 1000000;
+> 
+> It seems we could get rid of port->speed.
+> 
 
+Sure. I'll just use NSEC_PER_MSEC directly.
+
+Thanks,
+Guenter
