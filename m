@@ -2,96 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F58840220C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F62C402213
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235860AbhIGBak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 21:30:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25521 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232724AbhIGBaj (ORCPT
+        id S238229AbhIGBk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 21:40:28 -0400
+Received: from emcscan.emc.com.tw ([192.72.220.5]:13493 "EHLO
+        emcscan.emc.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230143AbhIGBkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 21:30:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630978173;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TKgDvqKCjC/sEBRel6+SL/8u4J2HhIt06zHYphh9H0o=;
-        b=X70lgC/0/cpzFAuP7TSbx34A0SIAYhPSCifCICENEDI+AD3ZRJtYWC7llRutiSJcvn5l9x
-        Cyz9/uIUpi0wsB+AZqlOiWI5XMqxGCYmQBefclwC3XuYs/XqnIoTodhzhdNemvRcT5/Bh8
-        AGZtzv+msqfDeYKx/xdXKdH5f0Wpp18=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-34-E4mwGRf4NEamNRpPjMFLvQ-1; Mon, 06 Sep 2021 21:29:32 -0400
-X-MC-Unique: E4mwGRf4NEamNRpPjMFLvQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0326A80124F;
-        Tue,  7 Sep 2021 01:29:29 +0000 (UTC)
-Received: from T590 (ovpn-8-23.pek2.redhat.com [10.72.8.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1B103271B3;
-        Tue,  7 Sep 2021 01:29:06 +0000 (UTC)
-Date:   Tue, 7 Sep 2021 09:29:07 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     axboe@kernel.dk, martin.petersen@oracle.com, jejb@linux.ibm.com,
-        kbusch@kernel.org, sagi@grimberg.me, adrian.hunter@intel.com,
-        beanhuo@micron.com, ulf.hansson@linaro.org, avri.altman@wdc.com,
-        swboyd@chromium.org, agk@redhat.com, snitzer@redhat.com,
-        josef@toxicpanda.com, hch@infradead.org, hare@suse.de,
-        bvanassche@acm.org, linux-scsi@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-mmc@vger.kernel.org,
-        dm-devel@redhat.com, nbd@other.debian.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v3 1/8] scsi/sd: add error handling support for add_disk()
-Message-ID: <YTbAYyo0+rqUZ+L0@T590>
-References: <20210830212538.148729-1-mcgrof@kernel.org>
- <20210830212538.148729-2-mcgrof@kernel.org>
+        Mon, 6 Sep 2021 21:40:24 -0400
+X-Greylist: delayed 591 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 Sep 2021 21:40:24 EDT
+X-IronPort-AV: E=Sophos;i="5.56,253,1539619200"; 
+   d="scan'208";a="42603910"
+Received: from unknown (HELO webmail.emc.com.tw) ([192.168.10.1])
+  by emcscan.emc.com.tw with ESMTP; 07 Sep 2021 09:29:27 +0800
+Received: from 192.168.10.23
+        by webmail.emc.com.tw with MailAudit ESMTP Server V5.0(128811:0:AUTH_RELAY)
+        (envelope-from <jingle.wu@emc.com.tw>); Tue, 07 Sep 2021 09:29:27 +0800 (CST)
+Received: from 218.161.27.213
+        by webmail.emc.com.tw with Mail2000 ESMTPA Server V7.00(2474:1:AUTH_LOGIN)
+        (envelope-from <jingle.wu@emc.com.tw>); Tue, 07 Sep 2021 09:29:26 +0800 (CST)
+From:   "jingle.wu" <jingle.wu@emc.com.tw>
+To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com
+Cc:     phoenix@emc.com.tw, josh.chen@emc.com.tw, dave.wang@emc.com.tw,
+        "jingle.wu" <jingle.wu@emc.com.tw>
+Subject: [PATCH] Input: elan_i2c - Reduce the resume time for WHITEBOX Machine.
+Date:   Tue,  7 Sep 2021 09:29:24 +0800
+Message-Id: <20210907012924.11391-1-jingle.wu@emc.com.tw>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210830212538.148729-2-mcgrof@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 30, 2021 at 02:25:31PM -0700, Luis Chamberlain wrote:
-> We never checked for errors on add_disk() as this function
-> returned void. Now that this is fixed, use the shiny new
-> error handling.
-> 
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  drivers/scsi/sd.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-> index 610ebba0d66e..8c1273fff23e 100644
-> --- a/drivers/scsi/sd.c
-> +++ b/drivers/scsi/sd.c
-> @@ -3487,7 +3487,11 @@ static int sd_probe(struct device *dev)
->  		pm_runtime_set_autosuspend_delay(dev,
->  			sdp->host->hostt->rpm_autosuspend_delay);
->  	}
-> -	device_add_disk(dev, gd, NULL);
-> +
-> +	error = device_add_disk(dev, gd, NULL);
-> +	if (error)
-> +		goto out_free_index;
-> +
+Singed-off-by: Jingle Wu <jingle.wu@emc.com.tw>
+---
+ drivers/input/mouse/elan_i2c.h      | 1 +
+ drivers/input/mouse/elan_i2c_core.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-The error handling is actually wrong, see 
-
-	https://lore.kernel.org/linux-scsi/c93f3010-13c9-e07f-1458-b6b47a27057b@acm.org/T/#t
-
-Maybe you can base on that patch.
-
-
-Thanks,
-Ming
+diff --git a/drivers/input/mouse/elan_i2c.h b/drivers/input/mouse/elan_i2c.h
+index dc4a240f4489..84b4a678b482 100644
+--- a/drivers/input/mouse/elan_i2c.h
++++ b/drivers/input/mouse/elan_i2c.h
+@@ -59,6 +59,7 @@
+ #define ETP_PRODUCT_ID_VOXEL	0x00BF
+ #define ETP_PRODUCT_ID_MAGPIE	0x0120
+ #define ETP_PRODUCT_ID_BOBBA	0x0121
++#define ETP_PRODUCT_ID_WHITEBOX	0x00B8
+ 
+ struct i2c_client;
+ struct completion;
+diff --git a/drivers/input/mouse/elan_i2c_core.c b/drivers/input/mouse/elan_i2c_core.c
+index dad22c1ea6a0..a3edf71982ce 100644
+--- a/drivers/input/mouse/elan_i2c_core.c
++++ b/drivers/input/mouse/elan_i2c_core.c
+@@ -108,6 +108,7 @@ static u32 elan_i2c_lookup_quirks(u16 ic_type, u16 product_id)
+ 		{ 0x10, ETP_PRODUCT_ID_VOXEL, ETP_QUIRK_QUICK_WAKEUP },
+ 		{ 0x14, ETP_PRODUCT_ID_MAGPIE, ETP_QUIRK_QUICK_WAKEUP },
+ 		{ 0x14, ETP_PRODUCT_ID_BOBBA, ETP_QUIRK_QUICK_WAKEUP },
++		{ 0x0D, ETP_PRODUCT_ID_WHITEBOX, ETP_QUIRK_QUICK_WAKEUP },
+ 	};
+ 	u32 quirks = 0;
+ 	int i;
+-- 
+2.20.1
 
