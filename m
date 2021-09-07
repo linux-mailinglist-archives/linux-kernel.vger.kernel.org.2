@@ -2,121 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22003402E66
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1D0402E69
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 20:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345881AbhIGSeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 14:34:19 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:19629 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240131AbhIGSeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 14:34:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1631039590; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=8/bTsEPkNHH3mIi6qPwtnnCgaUulSNkP6mv7djVi7LQ=; b=eASXc0F6gfkiKph8/b5UKzYH6w7wyf7n6XLwGeH/ktMK7yymk3zVmssWF5ICkVB/m8CfREPz
- sr21JKSHD6AldzWANfrNOU2tQy2HNsz6DSknVWSM/IHByGQSzOLInaZC/Es1HhU0uaEKbpb4
- EUTKT56aWAa0r+isVNlyiZJzBnk=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6137b04db52e91333cccd855 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 07 Sep 2021 18:32:45
- GMT
-Sender: quic_subbaram=quicinc.com@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7F78CC4360D; Tue,  7 Sep 2021 18:32:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [10.47.233.232] (Global_NAT1.qualcomm.com [129.46.96.20])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: subbaram)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 409C4C4338F;
-        Tue,  7 Sep 2021 18:32:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.1 smtp.codeaurora.org 409C4C4338F
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=quicinc.com
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=quicinc.com
-Subject: Re: [PATCH] thermal: Fix a NULL pointer dereference
-To:     David Collins <quic_collinsd@quicinc.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <1630715659-5058-1-git-send-email-quic_subbaram@quicinc.com>
- <fe7ba5a5-d39a-dd0a-5cd3-f80ff163162a@quicinc.com>
-From:   Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
-Message-ID: <fa99e05e-43fd-a737-9fe2-753d9ae70530@quicinc.com>
-Date:   Tue, 7 Sep 2021 11:32:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1345928AbhIGSef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 14:34:35 -0400
+Received: from mail-oo1-f50.google.com ([209.85.161.50]:37636 "EHLO
+        mail-oo1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240131AbhIGSee (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 14:34:34 -0400
+Received: by mail-oo1-f50.google.com with SMTP id k20-20020a4ad114000000b0029133123994so69907oor.4;
+        Tue, 07 Sep 2021 11:33:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1Y7kz7rPiF3VaPntLj2tLYmDViv0USAD/qIq0pAgQr4=;
+        b=VK5BGQI13gF5eBqMJcrw3GLIhY7sx0Yb4yblXUFfzLQPZUZQ7VLZnB7u1H833ArphM
+         QnBAKCNxYvBNVwoQ484HRaO5DoOiSQg7uC41yQ4PR2HxEnYulzE8rGy5hsViJlGd6vQM
+         H7y1DFzRet1HxEHRWiNXxN7nIPL0/gPCgk3dBlEGi+EWYTwACoqeihjiNRsI8GxUdO9B
+         Jhw/TNIly5D+p4LBvCZlzQORvGJ47uRcQn/5ikiI5KLODlhY8z2fnzFH0JyuRMSn29QW
+         xnpKu9H4BucW8bRHN4f4Xez/MbwS2YSrsOB+FYXrtM3KEMpnB+zRyqcv9RCqBYxc4LNS
+         VvZA==
+X-Gm-Message-State: AOAM5313ZpwkSGosAfxKdMfShbcTppdfiqitoRb7DgRn6Uf4CdoSLib7
+        PPTd+1BoHHR69i1oWAgjIqjckV66hw==
+X-Google-Smtp-Source: ABdhPJxlNBSI5uLOTxCRNzYNIaAk3qH4LtZ7Xee0x34y1IfrAyuuQA05q4QHPwlRCmrwT68IUwD7Cw==
+X-Received: by 2002:a4a:966d:: with SMTP id r42mr1072671ooi.11.1631039607714;
+        Tue, 07 Sep 2021 11:33:27 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id j14sm2374895oor.33.2021.09.07.11.33.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 11:33:27 -0700 (PDT)
+Received: (nullmailer pid 115718 invoked by uid 1000);
+        Tue, 07 Sep 2021 18:33:25 -0000
+Date:   Tue, 7 Sep 2021 13:33:25 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: display: Add binding for LG.Philips
+ SW43101
+Message-ID: <YTewdZBsgmvwSTnb@robh.at.kernel.org>
+References: <20210901180644.248177-1-y.oudjana@protonmail.com>
+ <20210901180644.248177-3-y.oudjana@protonmail.com>
 MIME-Version: 1.0
-In-Reply-To: <fe7ba5a5-d39a-dd0a-5cd3-f80ff163162a@quicinc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210901180644.248177-3-y.oudjana@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/3/21 6:07 PM, David Collins wrote:
-> On 9/3/21 5:34 PM, Subbaraman Narayanamurthy wrote:
->> of_parse_thermal_zones() parses the thermal-zones node and registers a
->> thermal_zone device for each subnode. However, if a thermal zone is
->> consuming a thermal sensor and that thermal sensor device hasn't probed
->> yet, an attempt to set trip_point_*_temp for that thermal zone device
->> can cause a NULL pointer dereference. Fix it.
->>
->>   console:/sys/class/thermal/thermal_zone87 # echo 120000 > trip_point_0_temp
->>   ...
->>   Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
->>   ...
->>   Call trace:
->>    of_thermal_set_trip_temp+0x40/0xc4
->>    trip_point_temp_store+0xc0/0x1dc
->>    dev_attr_store+0x38/0x88
->>    sysfs_kf_write+0x64/0xc0
->>    kernfs_fop_write_iter+0x108/0x1d0
->>    vfs_write+0x2f4/0x368
->>    ksys_write+0x7c/0xec
->>    __arm64_sys_write+0x20/0x30
->>    el0_svc_common.llvm.7279915941325364641+0xbc/0x1bc
->>    do_el0_svc+0x28/0xa0
->>    el0_svc+0x14/0x24
->>    el0_sync_handler+0x88/0xec
->>    el0_sync+0x1c0/0x200
->>
->> Cc: stable@vger.kernel.org
->> Suggested-by: David Collins <quic_collinsd@quicinc.com>
->> Signed-off-by: Subbaraman Narayanamurthy <quic_subbaram@quicinc.com>
->> ---
->>   drivers/thermal/thermal_of.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
->> index 6379f26..ba53252 100644
->> --- a/drivers/thermal/thermal_of.c
->> +++ b/drivers/thermal/thermal_of.c
->> @@ -301,7 +301,7 @@ static int of_thermal_set_trip_temp(struct thermal_zone_device *tz, int trip,
->>       if (trip >= data->ntrips || trip < 0)
->>           return -EDOM;
->>   -    if (data->ops->set_trip_temp) {
->> +    if (data->ops && data->ops->set_trip_temp) {
->>           int ret;
->>             ret = data->ops->set_trip_temp(data->sensor_data, trip, temp);
->>
->
-> It looks like the same kind of data->ops null pointer dereference issue is present in three other functions within this file: of_thermal_get_temp(), of_thermal_set_emul_temp(), and of_thermal_get_trend().  Should those be fixed along with of_thermal_set_trip_temp() in a single patch?
+On Wed, Sep 01, 2021 at 06:07:30PM +0000, Yassine Oudjana wrote:
+> Add a device tree binding for LG.Philips SW43101.
+> 
+> Signed-off-by: Yassine Oudjana <y.oudjana@protonmail.com>
+> ---
+>  .../display/panel/lgphilips,sw43101.yaml      | 52 +++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/panel/lgphilips,sw43101.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/panel/lgphilips,sw43101.yaml b/Documentation/devicetree/bindings/display/panel/lgphilips,sw43101.yaml
+> new file mode 100644
+> index 000000000000..da049e9f244e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/panel/lgphilips,sw43101.yaml
+> @@ -0,0 +1,52 @@
+> +# SPDX-License-Identifier: BSD-3-Clause
 
-Sure, I can make those changes in this patch itself.
+Not the right license(s). checkpatch.pl will tell you.
 
->
-> Thanks,
-> David
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/panel/lgphilips,sw43101.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: LG.Philips SW43101 1080x1920 OLED panel
+> +
+> +maintainers:
+> +  - Yassine Oudjana <y.oudjana@protonmail.com>
+> +
+> +allOf:
+> +  - $ref: panel-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: lgphilips,sw43101
+
+Looks like this can be added to panel-simple-dsi.yaml instead. Unless it 
+has more than 1 power rail as you didn't document any.
+
+> +
+> +  port: true
+> +  reg: true
+> +  reset-gpios: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reset-gpios
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    dsi {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        panel@0 {
+> +            compatible = "lgphilips,sw43101";
+> +            reg = <0>;
+> +
+> +            reset-gpios = <&msmgpio 8 GPIO_ACTIVE_LOW>;
+> +
+> +            port {
+> +                panel_in: endpoint {
+> +                    remote-endpoint = <&dsi_out>;
+> +                };
+> +            };
+> +        };
+> +    };
+> +
+> +...
+> -- 
+> 2.33.0
+> 
+> 
+> 
