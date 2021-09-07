@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6FD0402931
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 14:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9476E402934
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 14:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344444AbhIGMvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 08:51:25 -0400
-Received: from mail-vs1-f43.google.com ([209.85.217.43]:37847 "EHLO
-        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231600AbhIGMvY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 08:51:24 -0400
-Received: by mail-vs1-f43.google.com with SMTP id i23so8168542vsj.4
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 05:50:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dqzG0edJSf2zwWdbDpmcnFDoPo2y6a0/m9oDx9ZHMOE=;
-        b=eOW/oVyrF22A6j67UftqILlVb070Qqm3W4ckWAm/TJupIVUIlHv+l/FA6+yLOx+bik
-         sTFmbEXnCp2CZtwsLiwQ50pWn1NBpJSntKCgyJ4ZBn6LIpgytTqFYbiIBJ/rAyb0Z2sW
-         gxVDPeTQjruqG3JjBae7Xpwi43lbT1PKpHn9uf7lVt8eFFRv4Aa8h79Yd8HYeiw7tRFv
-         k+7DC8z2mP1D5WPSGpZvaUVjOZ/Rfkll+vEQNhU0xdM78/IPMMimlS7XnFAWPhj+PVhT
-         xm0Faf2ALu7hAMufuM8nCiUqxmRukH0aTnCQrCWlwuG568vVy638DGRqHfLDzmjlTEJh
-         m8lw==
-X-Gm-Message-State: AOAM530t9QKOrAgDn11G2hOEuS6diP9bvEolMXKn4lr3OCoTmfF4faoi
-        syEW7nhIMvEkEFygxi0ooLtZlOvXUjYEn1bByJ9ItSEO
-X-Google-Smtp-Source: ABdhPJxPryL8aTPbGDHY35cMqmQRv/1khmLpGMz1CZxejsOJTmiAIVYrDdEFqOST7n2BhwCskVWCgMtwvi6EEzgxLZQ=
-X-Received: by 2002:a05:6102:b10:: with SMTP id b16mr4947451vst.41.1631019017646;
- Tue, 07 Sep 2021 05:50:17 -0700 (PDT)
+        id S1344477AbhIGMve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 08:51:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344461AbhIGMvc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 08:51:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0E3A610C9;
+        Tue,  7 Sep 2021 12:50:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631019026;
+        bh=eE7IcVilEeLSkeD9jdj8PAa18oA0xgkkm+nApsk0DZk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mMkwAK0Rz3SOyZykHhBCwE0VBctxlyV5+MgeG+U850enODi2uT/+M2Rq2hug7fwPl
+         qy4h25ZnvOAPLKLXHZyBaldi9EAflsZ6d1zQh/rDC2USXMObmmSCAuB+SOEwnbO83o
+         Ihj4oSxY0GNGNk9BAyC8fKuXSbNtgdDFOBGPXo2SG5VY6k17zTLG0PL+cH3YcZlKyI
+         UC/O1TSbses582KUDzHUTUOkexan8c21j/WHDYTGdsOMe+7j/jE/gnsmntNYB1Sqrd
+         swgW2TS6bWkXz+XDJ+JLi1FGMbE2C9mO3staTvxg60WI05XLVsQGS1gbdjb0vesW/C
+         skvdDHMn9SFrQ==
+Received: by mail-ed1-f53.google.com with SMTP id q3so13771959edt.5;
+        Tue, 07 Sep 2021 05:50:26 -0700 (PDT)
+X-Gm-Message-State: AOAM530a4xfavdU0Ezwq/YbD+0CHbRYNYRXzEwTQGVyXfNXYV1jzuHvq
+        J0mG3DO+cgy47u+K4c0uI2Rbo6yFMjFQunXGfw==
+X-Google-Smtp-Source: ABdhPJw5cBPQONabehNgOWu4OgwSuYqkLspA0QJtmUpp9qSSrQXtvo+Sw8Ey+UBtk9U7PrrhKQnPS328rU7+LfBQEPU=
+X-Received: by 2002:aa7:c514:: with SMTP id o20mr18319405edq.318.1631019025305;
+ Tue, 07 Sep 2021 05:50:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210907060729.2391992-1-linux@roeck-us.net>
-In-Reply-To: <20210907060729.2391992-1-linux@roeck-us.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 7 Sep 2021 14:50:06 +0200
-Message-ID: <CAMuHMdVjAdC7bqFcxtfquHxpHJELe=UxWW53DcO-wNYZ-1Sy=w@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Double cast io functions to unsigned long
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <1630661377-31244-1-git-send-email-shengjiu.wang@nxp.com>
+ <1630661377-31244-4-git-send-email-shengjiu.wang@nxp.com> <YTJQcIOU1mMxoIpF@robh.at.kernel.org>
+ <CAL_JsqL_5U0QB5d5VmgX3PMa9LNkyFa+RHWSAzeeTzq6xR=_nA@mail.gmail.com> <CAA+D8ANSR49juFDvPxHECKv7-uSowjdxruqnb=z6vu_CEkujjg@mail.gmail.com>
+In-Reply-To: <CAA+D8ANSR49juFDvPxHECKv7-uSowjdxruqnb=z6vu_CEkujjg@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 7 Sep 2021 07:50:13 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ-vbMHGRkHSEuQQUjmv3dp4zaiYuCdpXimYnuJLQ7amQ@mail.gmail.com>
+Message-ID: <CAL_JsqJ-vbMHGRkHSEuQQUjmv3dp4zaiYuCdpXimYnuJLQ7amQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] dt-bindings: remoteproc: Add fsl,imx-dsp-rproc
+ binding document
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
+        <linux-remoteproc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 8:07 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> m68k builds fail widely with errors such as
+On Fri, Sep 3, 2021 at 9:58 PM Shengjiu Wang <shengjiu.wang@gmail.com> wrote:
 >
-> arch/m68k/include/asm/raw_io.h:20:19: error:
->         cast to pointer from integer of different size
-> arch/m68k/include/asm/raw_io.h:30:32: error:
->         cast to pointer from integer of different size [-Werror=int-to-p
+> Hi Rob
 >
-> On m68k, io functions are defined as macros. The problem is seen if the
-> macro parameter variable size differs from the size of a pointer. Cast
-> the parameter of all io macros to unsigned long before casting it to
-> a pointer to fix the problem.
+> On Sat, Sep 4, 2021 at 12:50 AM Rob Herring <robh+dt@kernel.org> wrote:
+> >
+> > On Fri, Sep 3, 2021 at 11:42 AM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Fri, 03 Sep 2021 17:29:36 +0800, Shengjiu Wang wrote:
+> > > > Define the compatible string and properties needed by imx_dsp_rproc
+> > > > driver.
+> > > >
+> > > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > > > ---
+> > > >  .../remoteproc/fsl,imx-dsp-rproc.yaml         | 131 ++++++++++++++++++
+> > > >  1 file changed, 131 insertions(+)
+> > > >  create mode 100644 Documentation/devicetree/bindings/remoteproc/fsl,imx-dsp-rproc.yaml
+> > > >
+> > >
+> > > Reviewed-by: Rob Herring <robh@kernel.org>
+> >
+> > I take that back. What's the difference with this binding and
+> > Documentation/devicetree/bindings/dsp/fsl,dsp.yaml?
 >
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> Some devices, but two kinds of driver. one for remoteproc
+> framework,  another one is for ALSA.
+> So should I merge fsl,imx-dsp-rproc.yaml to fsl,dsp.yaml?
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k fixes branch.
+You can have 100 drivers for all I care, but it's 1 DT binding for 1
+piece of h/w.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Rob
