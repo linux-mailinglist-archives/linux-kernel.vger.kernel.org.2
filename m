@@ -2,258 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A534025C2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06264025D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244153AbhIGI6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 04:58:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242828AbhIGI6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 04:58:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50391610E9;
-        Tue,  7 Sep 2021 08:56:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631005018;
-        bh=5FwQgdqHiCk4qrBnRBDZ7R7Y2Jv/W7kGMEfNG3K45Ow=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IxBWPDbyminDJoUjkG8JLHkVQs53VG2rSy2PMTLjhNcpkmGV/rqRf7JS/LDrPOvvL
-         wSDxqqwD11o+Mfp/VnMhKJoxmiFXqP0yBBRy/QmAVinmfb7kO7IQ4bH1Y27Lrgpvjp
-         UJJ9zPVeRkZwwddAB3GMtVsFsQPM3dOXsSNZ+OFW49RhRp5t+02cxvMAUXwgVY4vvQ
-         URLmN+R8zK8gjZivYLS546CYX6mtWP/dJIJuKjQaY2QpNPyQ3QBYZ42tY5YfQdT9F9
-         xFvmc64wXVS0AVmJ/HKtdAWGix+Dq7GZjqsFl47aL4BYwjFz9n3fwn6Z+LcUfMDRsm
-         iPiRJAjY7D9sA==
-Received: by mail-wm1-f52.google.com with SMTP id m2so6272504wmm.0;
-        Tue, 07 Sep 2021 01:56:58 -0700 (PDT)
-X-Gm-Message-State: AOAM533yNAenEQkhiknSAHEo/BLeoi4iBidPQeKBSsrXIkbzXlCOkJxA
-        tvy/cGY1h7OHKmpi/bFmuDljPoeY/+9gsltPs5I=
-X-Google-Smtp-Source: ABdhPJyIHAJwziASQyXA9WKTYbsUInPiF9gmsApUbOfB+4JGIVFUSDgi+Cwpjh7mT4/KI95EIaWeWfoocM4PirSjR0s=
-X-Received: by 2002:a1c:3182:: with SMTP id x124mr2756387wmx.35.1631005016875;
- Tue, 07 Sep 2021 01:56:56 -0700 (PDT)
+        id S245439AbhIGJAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 05:00:44 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57262 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244879AbhIGJAS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 05:00:18 -0400
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A95481FE19;
+        Tue,  7 Sep 2021 08:59:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1631005151; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=67kAHH5xohVl5jt4+A4YLbZP3+bIJFVJRf3g+DvSKqI=;
+        b=K933s0Hnyg728XU0LhiQ05M5kWTAbdU+QwfXXgLawP80b2RRouVt48GZafKuvI3OLzAEBw
+        AgRBbQKl48zD3xR+x9jmjovdBaIIzsiw/qjOjBTDexked5n8tB/WBlxNOH5KK7jUAIacVO
+        KYEVGseDoFxBGNOxr+zi3T97fPQiio0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1631005151;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=67kAHH5xohVl5jt4+A4YLbZP3+bIJFVJRf3g+DvSKqI=;
+        b=f+1QheCIte4VpHAXGu0jWwBfn+j7rKhkYaNS78u1bH8ZBUDsqfmrfevjNg1N1VgK3BRbNj
+        UaNFOrAB/cQrZwCA==
+Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id 00DF512FF9;
+        Tue,  7 Sep 2021 08:59:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap1.suse-dmz.suse.de with ESMTPSA
+        id j0JqOt4pN2ESKQAAGKfGzw
+        (envelope-from <afaerber@suse.de>); Tue, 07 Sep 2021 08:59:10 +0000
+Message-ID: <9a64b668-8c8a-4ed9-89b7-c5bc1a74ae45@suse.de>
+Date:   Tue, 7 Sep 2021 10:59:10 +0200
 MIME-Version: 1.0
-References: <20210906142615.GA1917503@roeck-us.net> <CAHk-=wgjTePY1v_D-jszz4NrpTso0CdvB9PcdroPS=TNU1oZMQ@mail.gmail.com>
- <c3790fb9-b83f-9596-18a1-21ace987c850@roeck-us.net> <CAHk-=wi4NW3NC0xWykkw=6LnjQD6D_rtRtxY9g8gQAJXtQMi8A@mail.gmail.com>
- <20210906234921.GA1394069@roeck-us.net>
-In-Reply-To: <20210906234921.GA1394069@roeck-us.net>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 7 Sep 2021 10:56:40 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2H6HMpz26myHXYr+5cR=PM1hbW8=afy5LaEJTj28a8WQ@mail.gmail.com>
-Message-ID: <CAK8P3a2H6HMpz26myHXYr+5cR=PM1hbW8=afy5LaEJTj28a8WQ@mail.gmail.com>
-Subject: Re: [PATCH] Enable '-Werror' by default for all kernel builds
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Huang Rui <ray.huang@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-sparc <sparclinux@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.0.1
+Subject: Re: [PATCH 1/8] dt-bindings: arm: fsl: add NXP S32G2 boards
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Chester Lin <clin@suse.com>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Tim Harvey <tharvey@gateworks.com>,
+        Jagan Teki <jagan@amarulasolutions.com>, s32@nxp.com,
+        catalin-dan.udma@nxp.com, bogdan.hamciuc@nxp.com,
+        bogdan.folea@nxp.com, ciprianmarian.costea@nxp.com,
+        radu-nicolae.pirea@nxp.com, ghennadi.procopciuc@nxp.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Ivan T . Ivanov" <iivanov@suse.de>,
+        "Lee, Chun-Yi" <jlee@suse.com>, Rob Herring <robh@kernel.org>
+References: <20210805065429.27485-1-clin@suse.com>
+ <20210805065429.27485-2-clin@suse.com> <YRaxt1LCF+hWaMJU@robh.at.kernel.org>
+ <YR0akXYPYthDuvCh@linux-8mug> <11f8b913-1057-7d30-e936-f27483f9a6e2@suse.de>
+ <CAJKOXPdZ2iP3-BUk+p5A=UnbGia7s2GAOh84htcEjwB1wNAJrQ@mail.gmail.com>
+From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Organization: SUSE Software Solutions Germany GmbH
+In-Reply-To: <CAJKOXPdZ2iP3-BUk+p5A=UnbGia7s2GAOh84htcEjwB1wNAJrQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 1:51 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> On Mon, Sep 06, 2021 at 04:06:04PM -0700, Linus Torvalds wrote:
-> > [ Adding some subsystem maintainers ]
-> >
-> > On Mon, Sep 6, 2021 at 10:06 AM Guenter Roeck <linux@roeck-us.net> wrot=
-e:
-> > >
-> > > > But hopefully most cases are just "people haven't cared enough" and
-> > > > easily fixed.
-> > >
-> > > We'll see. For my testbed I disabled the new configuration flag
-> > > for the time being because its primary focus is boot tests, and
-> > > there won't be any boot tests if images fail to build.
-> >
-> > Sure, reasonable.
-> >
-> > I've checked a few of the build errors by doing the appropriate cross
-> > compiles, and it doesn't seem bad - but it does seem like we have a
-> > number of really pointless long-standing warnings that should have
-> > been fixed long ago.
+Hi Krzysztof,
 
-I have a tree with fixes for anything that has hit on arm, arm64 or x86.
-There are many reasons why some patch never made it in, but usually
-it's because I was not persistent about resending the fix when the first
-version didn't make it. In other cases I wasn't sure about my own fix.
+On 07.09.21 08:59, Krzysztof Kozlowski wrote:
+> On Mon, 6 Sept 2021 at 22:38, Andreas Färber <afaerber@suse.de> wrote:
+>> On 18.08.21 16:34, Chester Lin wrote:
+>>> On Fri, Aug 13, 2021 at 12:53:59PM -0500, Rob Herring wrote:
+>>>> On Thu, Aug 05, 2021 at 02:54:22PM +0800, Chester Lin wrote:
+>>>>> Add bindings for S32G2's evaluation board (S32G-VNP-EVB) and reference
+>>>>> design 2 board ( S32G-VNP-RDB2).
+>>>>>
+>>>>> Signed-off-by: Chester Lin <clin@suse.com>
+>>>>> ---
+>>>>>  Documentation/devicetree/bindings/arm/fsl.yaml | 7 +++++++
+>>>>>  1 file changed, 7 insertions(+)
+>>>>>
+>>>>> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+>>>>> index e2097011c4b0..3914aa09e503 100644
+>>>>> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+>>>>> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+>>>>> @@ -983,6 +983,13 @@ properties:
+>>>>>            - const: solidrun,lx2160a-cex7
+>>>>>            - const: fsl,lx2160a
+>>>>>
+>>>>> +      - description: S32G2 based Boards
+>>>>> +        items:
+>>>>> +          - enum:
+>>>>> +              - fsl,s32g274a-evb
+>>>>> +              - fsl,s32g274a-rdb2
+>>>>> +          - const: fsl,s32g2
+>>>>
+>>>> Given this is an entirely different family from i.MX and new?, shouldn't
+>>>> it use 'nxp' instead of 'fsl'? Either way,
+>>>
+>>> It sounds good and Radu from NXP has mentioned a similar idea for the
+>>> compatible string of linflexuart. To keep the naming consistency, should we
+>>> change all 'fsl' to 'nxp' as well?
+>>
+>> I assume that question was just unclearly phrased, so for the record:
+>>
+>> ABI stability rules forbid us from changing "all 'fsl'" in compatible
+>> strings or property names.
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/Documentation/devicetree/bindings/ABI.rst
+>>
+>> Deployed firmware providing mainline-merged platforms with DTBs using
+>> fsl prefix (e.g., the quoted LX2160A) needs to continue working with
+>> newer drivers, and deployed mainline Linux should continue working after
+>> firmware updates that modify the DTB provided to Linux.
+> 
+> This is a new platform/SoC therefore there is no ABI. There is no
+> requirement in the kernel that a new ABI (which you define in this
+> patchset in the bindings) should be compatible with something
+> somewhere. It's some misunderstanding of stable ABI. Therefore all new
+> compatibles are allowed to be nxp, not fsl.
+> 
+> No one here proposed renaming existing compatibles from fsl tro nxp.
+> We talk about new ones.
 
-> > For example, looking at sparc64, there are several build errors due to
-> > those warnings now being fatal:
-> >
-> >  - drivers/gpu/drm/ttm/ttm_pool.c:386
-> >
-> >    This is a type mismatch error. It looks like __fls() on sparc64
-> > returns 'int'. And the ttm_pool.c code assumes it returns 'unsigned
-> > long'.
-> >    Oddly enough, the very line after that line does "min_t(unsigned
-> > int" to get the types in line.
-> >    So  the immediate reason is "sparc64 is different".
+Chester seemingly did: "all 'fsl' ... as well", not "all new 'fsl'"
+ones, in the patch context of existing fsl.yaml. Like I said, it may
+just have been unluckily worded.
 
-arc is the same as sparc here, but everything else uses unsigned long.
-We've come a long way in making all those helper functions consistent
-in their types, but there are still a number of exceptions.
+Therefore my saying that it does contain tons of non-new SoC/platform
+bindings that he's not allowed to break by changing them.
 
-> > But the deeper
-> > reason seems to be that ttm_pool.c has odd type assumptions. But that
-> > warning should have been fixed long ago, either way.
-> >
-> >    Christian/Huang? I get the feeling that both lines in that file
-> > should use the min_t(). Hmm?
-> >
-> >  - drivers/input/joystick/analog.c:160
-> >
-> >    #warning Precise timer not defined for this architecture.
-> >
-> >    Unfortunate. I suspect that warning just has to be removed. It has
-> > never caused anything to be fixed, it's old to the point of predating
-> > the git history. Dmitry?
-> >
-> My solution would be to just remove the old code (that isn't using ktime)
-> including the module parameter that disables it. Sure, we want to be
-> backward compatible, but that code is 15+ years old and should really be
-> retired.
+> Different question of course whether you want to be nice to some
+> existing out-of-tree users... but then have in mind that we don't care
+> about out of tree. :) Anyway being nice to out-of-tree is not part of
+> ABI. It's just being nice and useful.
 
-Agreed. I added a couple of architectures to the #ifdef check over time,
-but realistically this driver is only ever used on x86-32 anyway, and
-we don't even care about the others here.
+Nobody is suggesting new S32G ABI be compatible with downstream BSPs.
+These patches and changes we're discussing already differ from the BSP.
 
-If we remove the #else path here, I'd make it "depends on ISA ||
-COMPILE_TEST".
+My point was that as soon as we merge S32G into mainline, it will become
+ABI and shouldn't be changed incompatibly anymore once in a release.
 
-> >  - at least a couple of stringop-overread errors. Attached is a
-> > possible for for one of them.
-> >
-> > The stringop overread is odd, because another one of them is
-> >
-> >    fs/qnx4/dir.c: In function =E2=80=98qnx4_readdir=E2=80=99:
-> >    fs/qnx4/dir.c:51:32: error: =E2=80=98strnlen=E2=80=99 specified boun=
-d 48 exceeds
-> > source size 16 [-Werror=3Dstringop-overread]
-> >       51 |                         size =3D strnlen(de->di_fname, size)=
-;
-> >          |                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> >
-> > but I'm not seeing why that one happens on sparc64, but not on arm64
-> > or x86-64. There doesn't seem to be anything architecture-specific
-> > anywhere in that area.
-> >
-> > Funky.
-> >
-> Not really. That is because de->di_fname is always 16 bytes but size
-> can be 48 if the node is really a link. The use of de is overloaded
-> in that case; de is struct qnx4_inode_entry (where di_fname is 16 bytes)
-> but the actual data is struct qnx4_link_info where the name is 48 bytes
-> long. A possible fix (compile tested only) is below.
->
-> I think the warning/error is only reported with gcc 11.x. Do you possibly
-> use an older compiler for x86/arm64 ?
->
-> Anyway, below is a partial list of build errors I have seen. Some of
-> them are easy to fix (such as the ones due to unused functions),
-> but others seem to be tricky.
+These automotive platforms don't run off-the-shelf distros yet and will
+need to get their bootloaders upstreamed, too. In particular we'll need
+mainline TF-A to merge the SCMI implementation before we can rely on it
+here in the kernel for a clk driver; that's holding up MMC and Ethernet.
 
-This one is worse, I think this is the same warning as the one I
-reported as a false-positive in
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D99673
-and https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D99578
+Best regards,
+Andreas
 
-I submitted a patch in
-https://lore.kernel.org/all/20210322160253.4032422-6-arnd@kernel.org/
-
-To summarize the problems:
-
-- gcc and clang have different approaches to this type of warning: clang
-  tries to only produce diagnostics that are 100% reproducible regardless
-  of compiler internals, while gcc tries to use as much information as it h=
-as
-  to warn about things that may go wrong, including things that it only kno=
-ws
-  because of inlining. Making this warning reliable is a variation of the
-  halting problem, just like the -Wmaybe-uninitialized warnings. The diagno=
-stic
-  is definitely helpful and I found real bugs because of it, but you can ne=
-ver
-  be sure that you have found all instances.
-
-- Some of the -Wstringop-overread warnings (and related ones) from gcc are
-  actually wrong, because the object size is just a heuristic. If you
-have multiple
-  overlapping fixed-length fields in a union, gcc-11 picks one of the union
-  members to determine the size of the string buffer within the structure, =
-even
-  when the string operation uses a different union member as the output, an=
-d
-  that member has the correct size.
-  This is also a common problem: when a new warning option gets introduced
-  first, there are false positives that get fixed in subsequent
-compiler versions.
-
-
-> alpha.log:arch/alpha/kernel/setup.c:493:13: error: 'strcmp' reading 1 or =
-more bytes from a region of size 0 [-Werror=3Dstringop-overread]
-
-I sent a couple of fixes for these: this is another false-postive bug
-in gcc that made it
-into the release, and it triggers on every architecture that accesses
-the boot parameters
-at a fixed pointer. The problem is that gcc treats '(void *)0x12345'
-the same as 'NULL +
-0x12345', and decides that this is an invalid NULL pointer access, so
-the array has
-zero readable bytes.
-
-> alpha.log:drivers/atm/ambassador.c:1747:58: error: passing argument 1 of =
-'virt_to_bus' discards 'volatile' qualifier from pointer target type [-Werr=
-or=3Ddiscarded-qualifiers]
-
-Surely an alpha specific mistake, though we could fix all those
-drivers to drop the
-'volatile'.
-
-> alpha.log:drivers/net/ethernet/amd/ni65.c:751:37: error: cast from pointe=
-r to integer of different size [-Werror=3Dpointer-to-int-cast]
-
-Nobody tests ISA drivers on 64-bit architectures...
-
-> alpha.log:drivers/net/hamradio/6pack.c:71:41: error: unsigned conversion =
-from 'int' to 'unsigned char' changes value from '256' to '0' [-Werror=3Dov=
-erflow]
-
-This driver is apparently broken for any HZ >=3D 1024
-> ppc.log:drivers/net/ethernet/cirrus/cs89x0.c:897:41: error: implicit decl=
-aration of function 'isa_virt_to_bus' [-Werror=3Dimplicit-function-declarat=
-ion]
-
-My fix is in the network tree.
-
-> riscv32.log:drivers/gpu/drm/rockchip/cdn-dp-core.c:1126:12: error: 'cdn_d=
-p_resume' defined but not used [-Werror=3Dunused-function]
-> riscv.log:drivers/gpu/drm/rockchip/cdn-dp-core.c:1126:12: error: 'cdn_dp_=
-resume' defined but not used [-Werror=3Dunused-function]
-
-A fix was submitted today, we get at least a dozen of those for each
-kernel release, and there
-is a plan for avoiding them altogether, but it's a giant treewide
-change that nobody has managed
-to tackle.
-
-> s390.log:arch/s390/kernel/syscall.c:168:1: error: '__do_syscall' uses dyn=
-amic stack allocation [-Werror]
-
-This is add_random_kstack_offset(). No idea why it doesn't trigger on
-x86, but that
-warning should probably get shut up inside of the macro.
-
-> sparc64.log:arch/sparc/kernel/mdesc.c:647:22: error: 'strcmp' reading 1 o=
-r more bytes from a region of size 0 [-Werror=3Dstringop-overread]
-> sparc64.log:arch/sparc/kernel/mdesc.c:692:22: error: 'strcmp' reading 1 o=
-r more bytes from a region of size 0 [-Werror=3Dstringop-overread]
-> sparc64.log:arch/sparc/kernel/mdesc.c:719:21: error: 'strcmp' reading 1 o=
-r more bytes from a region of size 0 [-Werror=3Dstringop-overread]
-
-Same as on alpha
-
-       Arnd
+-- 
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer
+HRB 36809 (AG Nürnberg)
