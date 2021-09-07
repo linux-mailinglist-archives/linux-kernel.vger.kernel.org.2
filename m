@@ -2,112 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633A6402513
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24EC940251D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 10:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242645AbhIGI0a convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 7 Sep 2021 04:26:30 -0400
-Received: from mail-vs1-f50.google.com ([209.85.217.50]:35730 "EHLO
-        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242535AbhIGI0Q (ORCPT
+        id S242725AbhIGI1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 04:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242634AbhIGI1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 04:26:16 -0400
-Received: by mail-vs1-f50.google.com with SMTP id p14so7610659vsm.2;
-        Tue, 07 Sep 2021 01:25:10 -0700 (PDT)
+        Tue, 7 Sep 2021 04:27:05 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80886C0613C1
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 01:25:59 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id y18so11685646ioc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 01:25:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NsKj9cPaLgyBNOvmCyBpPD5MVH61aPQBDGk2ylDvT4I=;
+        b=Cqjo+7flYZt5PVjhviejc951vnn/ZxHjZDDSZm2iE0Rym074UsRk9jSB8UzOfpCM20
+         1L7LsMW2HeQwiSX1w7skzHYqzLwWa4CPoh5LlihNGeqtjjfG1GqmfL5R3o2BrSipgrlA
+         OuBBIr1mdYQh9FPAF67gcxNx2Kiu+zHh65/LVhufxDIGEAhIB9JYe1+R/wotXAyJUivj
+         0EMSCIzmvIGHrrspZkocKYi6byJGjOhIKyix3nw5KN8ARegcY64YWoEaTFwGuSTWs+KI
+         gDgyLFcM0QY8iY+pcGyzE7Iu2oEGesDb4IGg6lFY7iJ0uL/WSxFH76C9e2HTozPJfOAU
+         pvPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=i5otPz9IyNInXN4bHLqTb0mS9hIBl4WWXnjx8UfK1+8=;
-        b=hGKtKYVWwtPBx+cdkbe+Qu+cE8MRQbJDEt17SNywML54Kl9fpRLOTQWO2AtyCJt65r
-         JLpExbQWDfVpMTtpjcC9+2CN8etIkEY3IAIUzlKFghcJrzuh7ejEoy2pAlNXGQXlUUso
-         skSCjdjPTQxJHreBxYKRlcXFKLHmJCXd9n5JfI+8lbIIPKKwlGaJMDcjwxZntr+/UDKs
-         9simxmSqkU5tFjHoAiqlFyjUnQWARFgZ8iBrlf0t/MDkPk6+wbqHKWFe2GgeeEmNmbFj
-         Q8+hW+GHOUj0fMOXs2AxEbzYY6JyHi2URLWlLcMNvrkwWIAp2gSnPMnyzbP+eUh2Y/ET
-         spMQ==
-X-Gm-Message-State: AOAM532vyTGFFJmztXjtsArTJNMqbrA5kivn2USE4F9iQvyGhlttYe93
-        CjCUtrJOEsxr68MHhrJ1WzD70Mb/GCP4Uy2MwJ4=
-X-Google-Smtp-Source: ABdhPJzwZKq9XwQQIWNnk4yre3z52lV+DpCZ+Fh8SeQZudq4WhXPp91m3s38OB9Wl4gw/hVKRQWmznD55GZGp8/YmGU=
-X-Received: by 2002:a67:cb0a:: with SMTP id b10mr8214785vsl.9.1631003110202;
- Tue, 07 Sep 2021 01:25:10 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=NsKj9cPaLgyBNOvmCyBpPD5MVH61aPQBDGk2ylDvT4I=;
+        b=aeCqQcDSH9+KazZjluvjcjxe6hbkp1EIQsmwzlGXSaRxOjQFlIM2iOUtnSAQA7SA0L
+         JI8wWu1jzWHuYW2oCMTn/wmMCRqX1p5VDXUtAJPv0phKWgZtmmEzHiPXulro8N70n/Pu
+         NeeCwQ+ixpCc+yeylaMUdmjSIi4mQc3qhjIhU/nMVJ+CWKPPK5aS+KNorjZzbky2ppv+
+         FyuECItprmyuJ0o2pZ4iSW5cZSTY5Y/31Jz6H5umKIiSkExCg2CPDcVBvlCWTLVSq69c
+         qL6YDgcxOKV2RYqzdfBoM+BCOqF5DU9cFtbKuVvRFeat294EBhDoXWMh6b/wkeglOZE2
+         Q52A==
+X-Gm-Message-State: AOAM530jtAAyGLmT01BaNWkWhh/C7hgXx4MB9N7x7mkZQTmRHE74j4Wg
+        A128yXljeHIa8q3E2KrpHqu5+DxEGIRms/VKvKtXuw==
+X-Google-Smtp-Source: ABdhPJyJyljW5UoDalrx/KiXWJ1AmyFiYxxkN5TxwIiLyNRIfmd72o0Tug4f9p9B9LTcvpjzBQv03fcRV3wdDGSffHI=
+X-Received: by 2002:a02:3846:: with SMTP id v6mr14251170jae.45.1631003158871;
+ Tue, 07 Sep 2021 01:25:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210803114051.2112986-1-arnd@kernel.org> <20210803114051.2112986-11-arnd@kernel.org>
- <CAMuHMdVvBL=qZkWF5DXdKjFMKgT-3X-OUBnLYrqawQijoLG4Xw@mail.gmail.com>
-In-Reply-To: <CAMuHMdVvBL=qZkWF5DXdKjFMKgT-3X-OUBnLYrqawQijoLG4Xw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 7 Sep 2021 10:24:58 +0200
-Message-ID: <CAMuHMdVhN-frrSgsxJ_28_5B+gYROTkN_dPT1yHBsQU+2U4_=g@mail.gmail.com>
-Subject: Re: [PATCH v2 10/14] [net-next] make legacy ISA probe optional
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     netdev <netdev@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>, Andrii Nakryiko <andriin@fb.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Doug Berger <opendmb@gmail.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Finn Thain <fthain@telegraphics.com.au>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, Jessica Yu <jeyu@kernel.org>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>,
-        Sam Creasey <sammy@sammy.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>
+References: <20210729183942.2839925-1-robdclark@gmail.com> <1a38a590-a64e-58ef-1bbf-0ae49c004d05@linaro.org>
+ <CAF6AEGs5dzA7kfO89Uqbh3XmorXoEa=fpW+unk5_oaihHm479Q@mail.gmail.com>
+ <e2cebf65-012d-f818-8202-eb511c996e28@linaro.org> <CAF6AEGs11aYnkL30kp79pMqLTg3_4otFwG2Oc890Of2ndLbELw@mail.gmail.com>
+ <CALAqxLUkyXK2gqNMBbtJFfh01ZpcG46dZaM7Zq4jG3OngvFREg@mail.gmail.com>
+ <CAF6AEGsACLcDuszcgmHHs04GghLPiRfei3tGo161yBXsg7Y-YA@mail.gmail.com>
+ <CAMi1Hd0dniDXPNOuh05ywqHKY+cGvAsd-cnD91K1GLppfO=x0w@mail.gmail.com>
+ <CAF6AEGvtw06MYST2PdhqHVpsG4Tec2DnUA-uwFRP-6xqa9yf5Q@mail.gmail.com>
+ <CAMi1Hd1kp8ijH8y3U2sxs5cE3Zfat_v-C3rrGtTK01ry8Om6Lw@mail.gmail.com> <CAF6AEGugB5QinhyOxvAiG_V40=mXS20nnqxgk71xe_fmm1iZsw@mail.gmail.com>
+In-Reply-To: <CAF6AEGugB5QinhyOxvAiG_V40=mXS20nnqxgk71xe_fmm1iZsw@mail.gmail.com>
+From:   Amit Pundir <amit.pundir@linaro.org>
+Date:   Tue, 7 Sep 2021 13:55:22 +0530
+Message-ID: <CAMi1Hd20xd0Lrp0MuKo=HdDPKeNC_DW08iFoF5wseCH5eB=FzQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: Disable frequency clamping on a630
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Caleb Connolly <caleb.connolly@linaro.org>,
+        Rob Clark <robdclark@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
-
-On Wed, Aug 11, 2021 at 4:50 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Tue, Aug 3, 2021 at 1:41 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > There are very few ISA drivers left that rely on the static probing from
-> > drivers/net/Space.o. Make them all select a new CONFIG_NETDEV_LEGACY_INIT
-> > symbol, and drop the entire probe logic when that is disabled.
-> >
-> > The 9 drivers that are called from Space.c are the same set that
-> > calls netdev_boot_setup_check().
-> >
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Tue, 7 Sept 2021 at 07:11, Rob Clark <robdclark@gmail.com> wrote:
 >
-> > --- a/drivers/net/ethernet/8390/ne.c
-> > +++ b/drivers/net/ethernet/8390/ne.c
-> > @@ -951,6 +951,7 @@ static int __init ne_init(void)
-> >  }
-> >  module_init(ne_init);
-> >
-> > +#ifdef CONFIG_NETDEV_LEGACY_INIT
-> >  struct net_device * __init ne_probe(int unit)
-> >  {
-> >         int this_dev;
-> > @@ -991,6 +992,7 @@ struct net_device * __init ne_probe(int unit)
-> >
-> >         return ERR_PTR(-ENODEV);
-> >  }
-> > +#endif
-> >  #endif /* MODULE */
+> One thing I thought of, which would be worth ruling out, is whether
+> this issue only occurs with freq changes immediately after resuming
+> the GPU, vs freq changes in general.  Could you try the below patch.
+> And if it "fixes" the issue, then try reducing the delay until you
+> start seeing GPU hangs again.
+
+It doesn't fix the crash and I can still reproduce it
+https://pastebin.com/raw/bxK4mAhB
+
 >
-> My rbtx4927 build log says:
+> ----------
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index 40c9fef457a4..278b85207ea3 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -1513,6 +1513,8 @@ static int a6xx_pm_resume(struct msm_gpu *gpu)
+>   if (ret)
+>   return ret;
 >
-> drivers/net/ethernet/8390/ne.c:909:20: warning: ‘ne_add_devices’
-> defined but not used [-Wunused-function]
-
-Same for atari_defconfig.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> + msleep(5);
+> +
+>   msm_devfreq_resume(gpu);
+>
+>   a6xx_llc_activate(a6xx_gpu);
+> ----------
+>
+> BR,
+> -R
