@@ -2,145 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E54840244A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9448240244D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 09:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235147AbhIGH2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 03:28:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231208AbhIGH2N (ORCPT
+        id S235540AbhIGH3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 03:29:48 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:49966 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231161AbhIGH3q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 03:28:13 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DB5C061575;
-        Tue,  7 Sep 2021 00:27:07 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id h16so17704249lfk.10;
-        Tue, 07 Sep 2021 00:27:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=X0MR/JzbyhczX6Z4sq/vQDWWS/j750GwkAgqvzPOzPQ=;
-        b=g+viYzimD1eABLGqXjiUFIXhGCSmnrN8Xz0wWqKRNddp9Bx1K1pvw+ay2GdXArvH2n
-         QDW6talcveaugUo7UE8K2cl+tuZV64ZB6RuVnVWIDQW7qgBiH6s0mpi9HxRIyL6r96es
-         FkNkGAFkKdfX/0+m8Ig6Jm+54m1jGOvuYRQaDiSxt6FRLvTJxZ4VqFqL3AeBPDGIOy/H
-         C2eGpFvvRU04ls2HwXeuUfU6gxKFtmmkkoy366ED53xBhnpqgenxOenCeFmBZc82FgJQ
-         TVGHKCk54fTOQ6Z7LWBa9lMXIZ3KlX2FwGxhV5QPqygEYqm/o9PKtPBrrTh6Oy1ZrVJH
-         cSUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=X0MR/JzbyhczX6Z4sq/vQDWWS/j750GwkAgqvzPOzPQ=;
-        b=akl/Ux7U9uPPpDDc1uYcx2lGyGH7ybuPif5q5w5IWT4BeiAQOwKzCizozrE3xwni1R
-         5DGt/WSWk+H+jsdsb3Sw9xB8Saev7F0sIByInYRWe3Ot8SPxc/ZdR9Pn25mrBzE0Hbn1
-         IEmUKg5LtrPJW8iACtNvg1e3XZ44KNJH9pm1Ui7InqTuzdsMCYafwqTLeTxAYDSQ+ZeJ
-         qAXYPMm4C+Q58dUry96xa189KaaOJMJBn+IL9R0L9w3q0XBBtg1HPAL1LVE8gEEI9GTZ
-         /wayWrWElqSE/oW4FeuVVtnNo4py9uef+H0tzPONk4GXWl1PaLyR3Teoyyx8KIJJxaGn
-         pgkg==
-X-Gm-Message-State: AOAM531UH7HGcLJOomk3YzJPTrR9cNlANuEnojCUwVuL7AjDXiWKtEQM
-        ApvsVak6fKdpRNRlZAnwq7A=
-X-Google-Smtp-Source: ABdhPJxAzR4mxfzUI7fkRkSnRmwRuPJXTNBPzjgMakhWbclZDfa626xjtWU8BOghFGTsr5yxUwn97A==
-X-Received: by 2002:a05:6512:344c:: with SMTP id j12mr11970692lfr.594.1630999626100;
-        Tue, 07 Sep 2021 00:27:06 -0700 (PDT)
-Received: from [192.168.0.192] ([194.146.248.73])
-        by smtp.gmail.com with ESMTPSA id y14sm1341773ljm.39.2021.09.07.00.27.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 00:27:05 -0700 (PDT)
-Subject: Re: [PATCH v2] media: s5p-jpeg: rename JPEG marker constants to
- prevent build warnings
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-media@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <20210907044022.30602-1-rdunlap@infradead.org>
- <20210907081125.21c311f1@coco.lan>
-From:   Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
-Message-ID: <6c69dd69-9ace-114a-f887-3fe0fdd5d500@gmail.com>
-Date:   Tue, 7 Sep 2021 09:27:04 +0200
+        Tue, 7 Sep 2021 03:29:46 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1877Sa0Y005653;
+        Tue, 7 Sep 2021 02:28:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1630999716;
+        bh=2kavq6nJdZBNNM94n6MDZBgCMxqFqFaFHgQiAgBTqFk=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=dGNV9gIgmZz/+VuTqpQiFWnhqUvbVwNzvD+vW5Cpz0VIYUF318qYhHU9XaYXBe5dk
+         3MnPZnC2OfmkvgPuX1RrS1l66LXrmL8wzbkJ0SCFwEdDKjHmv11NTFNOzEgw53kjdV
+         jmuFMPbMzMz5NTPDNYO92dJCk7pOMWz9izkuzBQI=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1877SaQp123467
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 7 Sep 2021 02:28:36 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 7
+ Sep 2021 02:28:35 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14 via
+ Frontend Transport; Tue, 7 Sep 2021 02:28:35 -0500
+Received: from [10.250.232.51] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1877SWW6054093;
+        Tue, 7 Sep 2021 02:28:33 -0500
+Subject: Re: [PATCH] usb: cdns3: fix race condition before setting doorbell
+To:     Pawel Laszczak <pawell@cadence.com>, <peter.chen@kernel.org>
+CC:     <rogerq@kernel.org>, <gregkh@linuxfoundation.org>,
+        <felipe.balbi@linux.intel.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
+References: <20210907062619.34622-1-pawell@gli-login.cadence.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <774df0ea-76e5-b8e2-9bd6-55e4b1cc09f4@ti.com>
+Date:   Tue, 7 Sep 2021 12:58:32 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210907081125.21c311f1@coco.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210907062619.34622-1-pawell@gli-login.cadence.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On 07/09/21 11:56 am, Pawel Laszczak wrote:
+> From: Pawel Laszczak <pawell@cadence.com>
+> 
+> For DEV_VER_V3 version there exist race condition between clearing
+> ep_sts.EP_STS_TRBERR and setting ep_cmd.EP_CMD_DRDY bit.
+> Setting EP_CMD_DRDY will be ignored by controller when
+> EP_STS_TRBERR is set. So, between these two instructions we have
+> a small time gap in which the EP_STSS_TRBERR can be set. In such case
+> the transfer will not start after setting doorbell.
+> 
+> Fixes: 7733f6c32e36 ("usb: cdns3: Add Cadence USB3 DRD Driver")
+> cc: <stable@vger.kernel.org> # 5.12.x
+> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+> ---
 
-W dniu 07.09.2021 o 08:11, Mauro Carvalho Chehab pisze:
-> Em Mon,  6 Sep 2021 21:40:22 -0700
-> Randy Dunlap <rdunlap@infradead.org> escreveu:
-> 
->> The use of a macro named 'RST' conflicts with one of the same name
->> in arch/mips/include/asm/mach-rc32434/rb.h. This causes build
->> warnings on some MIPS builds.
->>
->> Change the names of the JPEG marker constants to be in their own
->> namespace to fix these build warnings and to prevent other similar
->> problems in the future.
->>
->> Fixes these build warnings:
->>
->> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos3250.c:14:
->> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
->>     43 | #define RST                             0xd0
->>        |
->> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
->>     13 | #define RST             (1 << 15)
->>
->> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-s5p.c:13:
->> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
->>     43 | #define RST                             0xd0
->> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
->>     13 | #define RST             (1 << 15)
->>
->> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-hw-exynos4.c:12:
->> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
->>     43 | #define RST                             0xd0
->> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
->>     13 | #define RST             (1 << 15)
->>
->> In file included from ../drivers/media/platform/s5p-jpeg/jpeg-core.c:31:
->> ../drivers/media/platform/s5p-jpeg/jpeg-core.h:43: warning: "RST" redefined
->>     43 | #define RST                             0xd0
->> ../arch/mips/include/asm/mach-rc32434/rb.h:13: note: this is the location of the previous definition
->>     13 | #define RST             (1 << 15)
->>
->> Also update the kernel-doc so that the word "marker" is not
->> repeated.
->>
->> Fixes: bb677f3ac434 ("[media] Exynos4 JPEG codec v4l2 driver")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
->> Cc: linux-media@vger.kernel.org
->> Cc: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
->> Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>
->> Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>
->> Cc: linux-arm-kernel@lists.infradead.org
->> ---
->> v2: change all JPEG marker macros to be in their own namespace (as
->>      suggested by Mauro)
-> 
-> Applied, thanks!
+Reviewed-by: Aswath Govindraju <a-govindraju@ti.com>
+Tested-by: Aswath Govindraju <a-govindraju@ti.com>
 
-You can add
+>  drivers/usb/cdns3/cdns3-gadget.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/drivers/usb/cdns3/cdns3-gadget.c b/drivers/usb/cdns3/cdns3-gadget.c
+> index 80aaab159e58..e9769fab21ea 100644
+> --- a/drivers/usb/cdns3/cdns3-gadget.c
+> +++ b/drivers/usb/cdns3/cdns3-gadget.c
+> @@ -1100,6 +1100,19 @@ static int cdns3_ep_run_stream_transfer(struct cdns3_endpoint *priv_ep,
+>  	return 0;
+>  }
+>  
+> +static void cdns3_rearm_drdy_if_needed(struct cdns3_endpoint *priv_ep)
+> +{
+> +	struct cdns3_device *priv_dev = priv_ep->cdns3_dev;
+> +
+> +	if (priv_dev->dev_ver < DEV_VER_V3)
+> +		return;
+> +
+> +	if (readl(&priv_dev->regs->ep_sts) & EP_STS_TRBERR) {
+> +		writel(EP_STS_TRBERR, &priv_dev->regs->ep_sts);
+> +		writel(EP_CMD_DRDY, &priv_dev->regs->ep_cmd);
+> +	}
+> +}
+> +
+>  /**
+>   * cdns3_ep_run_transfer - start transfer on no-default endpoint hardware
+>   * @priv_ep: endpoint object
+> @@ -1351,6 +1364,7 @@ static int cdns3_ep_run_transfer(struct cdns3_endpoint *priv_ep,
+>  		/*clearing TRBERR and EP_STS_DESCMIS before seting DRDY*/
+>  		writel(EP_STS_TRBERR | EP_STS_DESCMIS, &priv_dev->regs->ep_sts);
+>  		writel(EP_CMD_DRDY, &priv_dev->regs->ep_cmd);
+> +		cdns3_rearm_drdy_if_needed(priv_ep);
+>  		trace_cdns3_doorbell_epx(priv_ep->name,
+>  					 readl(&priv_dev->regs->ep_traddr));
+>  	}
+> 
 
-Acked-by: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
-
-> 
-> Regards,
-> Mauro
-> 
-> Thanks,
-> Mauro
-> 
