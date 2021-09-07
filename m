@@ -2,60 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 945A6402F77
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFBD7402F7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346172AbhIGUPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:15:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45994 "EHLO mail.kernel.org"
+        id S1346404AbhIGUPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:15:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242395AbhIGUPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:15:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7AEC761103;
-        Tue,  7 Sep 2021 20:14:31 +0000 (UTC)
+        id S245440AbhIGUPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 16:15:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id CB43F6112F;
+        Tue,  7 Sep 2021 20:14:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631045671;
-        bh=aZgTVzuisWVI6aLYaa4z1Osmyi5sDi7H5JObQqsSeS4=;
+        s=k20201202; t=1631045673;
+        bh=Yi+98wbo6Gk/OKFSojEtLhP62YL5etY21kMfMo1vums=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=XJp2uiin3Czn9sqHrzEpEESUbbdG2uKgkVPytTZoETMzkvt++GyJH+BeK9j1OaqWy
-         5yFvzBWS/VAVh4i9cG5Jd4R314fMy1XRQETIDD89vOH2DoKq1w1S+SyBZWkP3d7/+p
-         6cVgpmJKgpjw9QyjGIw1gHGI3rmVBJ13zPNSHffulypZccKi62KJ8W02n5k9/dOoVn
-         wAcpU6PWvHgX6IMzgRMK0/sVKsKnOkXSP4NxKOvhI/HH5S0oE30iSNkpc8Pg/TiIpw
-         B3sz0UaeSebwShGEP4kbdC2SMDiH5ro3EtjTdR3kOGs8fke31CQpGTmYs/6uG2Ry1C
-         LtO46ZwaG6JoQ==
+        b=Ah1N/R3yIvyblc3HbVAzn8J/isj6z0eb6ThCBDnX1sxdogAVPK3HzXd7HVGznmb6w
+         bsUGgomd0NAthx09AtQ7WE/81GJeXiZ8eMrO173AjCXrq9IWkysrsYkh2exIkvmdxy
+         eA06NbzWTHMhJmmCmvBvYF+Vluk0rsbTQKWxbr0AvBOHj5O3zgrJv0GD2F9fTp0qWK
+         mfyZ775dnJdKzfeEvPJKvRqrQf5OV4J8yrrAH9QVOqnImJlVTrhlY/g6AqD8n8l3qZ
+         Yr0HkmFr1WAvMzQKdYnMzQpOSmuMAawt59d2JCuarQtjneJtPURx6mJnprwAnRCQn2
+         EfN457sUPtOaQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 74B6560A38;
-        Tue,  7 Sep 2021 20:14:31 +0000 (UTC)
-Subject: Re: [GIT PULL] remoteproc updates for v5.15
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C5CBF60A38;
+        Tue,  7 Sep 2021 20:14:33 +0000 (UTC)
+Subject: Re: [GIT PULL] dmi fix for v5.15
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210907140023.2399178-1-bjorn.andersson@linaro.org>
-References: <20210907140023.2399178-1-bjorn.andersson@linaro.org>
-X-PR-Tracked-List-Id: <linux-remoteproc.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210907140023.2399178-1-bjorn.andersson@linaro.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rproc-v5.15
-X-PR-Tracked-Commit-Id: a0a77028c85ad1f6f36c3ceea21b30dc43721665
+In-Reply-To: <20210907102428.616e5087@endymion>
+References: <20210907102428.616e5087@endymion>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210907102428.616e5087@endymion>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging.git dmi-for-linus
+X-PR-Tracked-Commit-Id: f97a2103f1a75ca70f23deadb4d96a16c4d85e7d
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 21f577b0f48fd3a8871ca4116dad0e9c41ec42b2
-Message-Id: <163104567147.21240.8909190591056439829.pr-tracker-bot@kernel.org>
-Date:   Tue, 07 Sep 2021 20:14:31 +0000
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+X-PR-Merge-Commit-Id: a2b28235335fee2586b4bd16448fb59ed6c80eef
+Message-Id: <163104567380.21240.14512041027240645807.pr-tracker-bot@kernel.org>
+Date:   Tue, 07 Sep 2021 20:14:33 +0000
+To:     Jean Delvare <jdelvare@suse.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Alex Elder <elder@linaro.org>
+        LKML <linux-kernel@vger.kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue,  7 Sep 2021 09:00:23 -0500:
+The pull request you sent on Tue, 7 Sep 2021 10:24:28 +0200:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rproc-v5.15
+> git://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging.git dmi-for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/21f577b0f48fd3a8871ca4116dad0e9c41ec42b2
+https://git.kernel.org/torvalds/c/a2b28235335fee2586b4bd16448fb59ed6c80eef
 
 Thank you!
 
