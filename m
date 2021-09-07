@@ -2,138 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE0D4025D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:00:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC7F94025FD
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245204AbhIGJAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 05:00:53 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:59842 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244961AbhIGJAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 05:00:21 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B08E31A2AB0;
-        Tue,  7 Sep 2021 10:59:14 +0200 (CEST)
-Received: from aprdc01srsp001v.ap-rdc01.nxp.com (aprdc01srsp001v.ap-rdc01.nxp.com [165.114.16.16])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 4CC5E1A13F6;
-        Tue,  7 Sep 2021 10:59:14 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by aprdc01srsp001v.ap-rdc01.nxp.com (Postfix) with ESMTP id DD1A4183AC4C;
-        Tue,  7 Sep 2021 16:59:11 +0800 (+08)
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     allan.nielsen@microchip.com, joergen.andreasen@microchip.com,
-        UNGLinuxDriver@microchip.com, vinicius.gomes@intel.com,
-        michael.chan@broadcom.com, vishal@chelsio.com, saeedm@mellanox.com,
-        jiri@mellanox.com, idosch@mellanox.com,
-        alexandre.belloni@bootlin.com, kuba@kernel.org,
-        xiaoliang.yang_1@nxp.com, po.liu@nxp.com, vladimir.oltean@nxp.com,
-        leoyang.li@nxp.com, f.fainelli@gmail.com, andrew@lunn.ch,
-        vivien.didelot@gmail.com, claudiu.manoil@nxp.com
-Subject: [PATCH v4 net-next 8/8] net: dsa: felix: use vcap policer to set flow meter for psfp
-Date:   Tue,  7 Sep 2021 17:09:15 +0800
-Message-Id: <20210907090915.17866-9-xiaoliang.yang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210907090915.17866-1-xiaoliang.yang_1@nxp.com>
-References: <20210907090915.17866-1-xiaoliang.yang_1@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S244959AbhIGJLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 05:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243766AbhIGJLQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 05:11:16 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17827C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 02:10:10 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a25so18340771ejv.6
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 02:10:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=n5+hR87J9jGsWkS18UhQx1xHYTAbX3jyL7zc+byYnoE=;
+        b=J6WXwrXM6MdanWnIZTBBErxz8LsqiBupx2Hk+Qs04dCov+47QRyfhsn0Whb+ii1Ir7
+         CZinwkkKrXjXlx1t7HWzAg74O1S0dghPmdZy9FQY9atom9A6shfizVVmq2oy/iiXN9Gw
+         6HyJAAWLK96z6VzsWqPWuJj/Bg4F/2MHmHSAhIvdnz8AM1QIJgqYh+LfQJx4ZjfgWPK7
+         3czXE3s/2HG+EU+KsT0Xe9L/PRrAqYDD2vUmMMDbYmeOK/jIrnHPWw5WGMqTClwMSkYH
+         tKhFW+zIycZxNlyacYrdDxXy+f3SYv7DEGG1W+214oadaY13qnBnyZzLuEGSi1kEfHA9
+         70Kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=n5+hR87J9jGsWkS18UhQx1xHYTAbX3jyL7zc+byYnoE=;
+        b=i3CpOE3+YlXfZ5uVMbM9pYyxYSCilK3BGU8iVwHSsg+KuAMoixw4Tz/QTBuu89QXHC
+         V0T+MVLn72fYvM0NZHsK33zmpSsar2927rTjmRb+PA4drhu5Yu9LPKY+Z7Sk6ozZ+6Lp
+         9Y4AJG1f6xTypmeHSv1vNwa7Zrwk3KQAT5JRlzz5UGnH/tMzNTgZdne0XY7dcA50AtH2
+         86PgD7nwzXTPkNWl2jFz3gKTb2JN2RkcPTq6gY+VPpY2FZEJKA04tjjL9KEGMKQrWKr3
+         ybvTiWt9+UVSM2B5jOiurtFrkgBGb7+whovPw5qLqU6cahBKpBrqTVOn4+qKE9qeUa29
+         tTbw==
+X-Gm-Message-State: AOAM530uS5ZmZoTcxtxBdZMm6/4jb2XavK7g9C7Vl77PB0bsBZZCP9N/
+        jILqSVtwXR9qoleq8ZVb2ndXsg==
+X-Google-Smtp-Source: ABdhPJy/YBmN91bP9G+ttPy7MX183v9h/jDq0tqOedtJk2zJwFGmDKT/uiQ89oLmV+arDTeAnMIjEw==
+X-Received: by 2002:a17:906:681:: with SMTP id u1mr17366604ejb.499.1631005808680;
+        Tue, 07 Sep 2021 02:10:08 -0700 (PDT)
+Received: from [192.168.0.13] ([83.216.184.132])
+        by smtp.gmail.com with ESMTPSA id w13sm6525460ede.24.2021.09.07.02.10.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 07 Sep 2021 02:10:08 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v2 2/4] block, bfq: do not idle if only one cgroup is
+ activated
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <da0e53b4-e947-9c91-832e-36da67037f0f@huawei.com>
+Date:   Tue, 7 Sep 2021 11:10:02 +0200
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F1ADC992-11AE-4511-9033-D233CBCA6F26@linaro.org>
+References: <20210806020826.1407257-1-yukuai3@huawei.com>
+ <20210806020826.1407257-3-yukuai3@huawei.com>
+ <21FA636D-2C21-4ACD-B7DE-180ABB1F3562@linaro.org>
+ <da0e53b4-e947-9c91-832e-36da67037f0f@huawei.com>
+To:     "yukuai (C)" <yukuai3@huawei.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add police action to set flow meter table which is defined
-in IEEE802.1Qci. Flow metering is two rates two buckets and three color
-marker to policing the frames, we only enable one rate one bucket in
-this patch.
 
-Flow metering shares a same policer pool with VCAP policers, so the PSFP
-policer calls ocelot_vcap_policer_add() and ocelot_vcap_policer_del() to
-set flow meter police.
 
-Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
----
- drivers/net/dsa/ocelot/felix_vsc9959.c | 32 +++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+> Il giorno 2 set 2021, alle ore 15:31, yukuai (C) <yukuai3@huawei.com> =
+ha scritto:
+>=20
+> On 2021/08/27 1:00, Paolo Valente wrote:
+>> Why do you make these extensive changes, while you can leave all the
+>> function unchanged and just modify the above condition to something
+>> like
+>> || bfqd->num_groups_with_pending_reqs > 1
+>> || (bfqd->num_groups_with_pending_reqs && =
+bfqd->num_queues_with_pending_reqs_in_root)
+>=20
+> Hi, Paolo
+>=20
+> I was thinking that if CONFIG_BFQ_GROUP_IOSCHED is enabled, there is =
+no
+> need to caculate smallest_weight, varied_queue_weights, and
+> multiple_classes_busy:
+>=20
+> If we count root group into num_groups_with_pending_reqs
+> - If num_groups_with_pending_reqs <=3D 1, idle is not needed
 
-diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
-index 1418d2a66bd6..1118101d0ee8 100644
---- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-+++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-@@ -1343,6 +1343,7 @@ static int vsc9959_port_setup_tc(struct dsa_switch *ds, int port,
- 
- #define VSC9959_PSFP_SFID_MAX			175
- #define VSC9959_PSFP_GATE_ID_MAX		183
-+#define VSC9959_PSFP_POLICER_BASE		63
- #define VSC9959_PSFP_POLICER_MAX		383
- #define VSC9959_PSFP_GATE_LIST_NUM		4
- #define VSC9959_PSFP_GATE_CYCLETIME_MIN		5000
-@@ -1854,7 +1855,10 @@ static int vsc9959_psfp_filter_add(struct ocelot *ocelot,
- 	struct felix_stream stream = {0};
- 	struct felix_stream_gate *sgi;
- 	struct ocelot_psfp_list *psfp;
-+	struct ocelot_policer pol;
- 	int ret, i, size;
-+	u64 rate, burst;
-+	u32 index;
- 
- 	psfp = &ocelot->psfp;
- 
-@@ -1873,13 +1877,33 @@ static int vsc9959_psfp_filter_add(struct ocelot *ocelot,
- 			ret = vsc9959_psfp_sgi_table_add(ocelot, sgi);
- 			if (ret) {
- 				kfree(sgi);
--				return ret;
-+				goto err;
- 			}
- 			sfi.sg_valid = 1;
- 			sfi.sgid = sgi->index;
- 			kfree(sgi);
- 			break;
- 		case FLOW_ACTION_POLICE:
-+			index = a->police.index + VSC9959_PSFP_POLICER_BASE;
-+			if (index > VSC9959_PSFP_POLICER_MAX) {
-+				ret = -EINVAL;
-+				goto err;
-+			}
-+
-+			rate = a->police.rate_bytes_ps;
-+			burst = rate * PSCHED_NS2TICKS(a->police.burst);
-+			pol = (struct ocelot_policer) {
-+				.burst = div_u64(burst, PSCHED_TICKS_PER_SEC),
-+				.rate = div_u64(rate, 1000) * 8,
-+			};
-+			ret = ocelot_vcap_policer_add(ocelot, index, &pol);
-+			if (ret)
-+				goto err;
-+
-+			sfi.fm_valid = 1;
-+			sfi.fmid = index;
-+			sfi.maxsdu = a->police.mtu;
-+			break;
- 		default:
- 			return -EOPNOTSUPP;
- 		}
-@@ -1916,6 +1940,9 @@ static int vsc9959_psfp_filter_add(struct ocelot *ocelot,
- 	if (sfi.sg_valid)
- 		vsc9959_psfp_sgi_table_del(ocelot, sfi.sgid);
- 
-+	if (sfi.fm_valid)
-+		ocelot_vcap_policer_del(ocelot, sfi.fmid);
-+
- 	return ret;
- }
- 
-@@ -1939,6 +1966,9 @@ static int vsc9959_psfp_filter_del(struct ocelot *ocelot,
- 	if (sfi->sg_valid)
- 		vsc9959_psfp_sgi_table_del(ocelot, sfi->sgid);
- 
-+	if (sfi->fm_valid)
-+		ocelot_vcap_policer_del(ocelot, sfi->fmid);
-+
- 	vsc9959_psfp_sfi_table_del(ocelot, stream->sfid);
- 
- 	stream->sfid_valid = 0;
--- 
-2.17.1
+Unfortunately, if active queues have different weights or belong to
+different classes, then idling is needed to preserve per-queue
+bandwidths.
+
+Thanks,
+Paolo
+
+> - If num_groups_with_pending_reqs  > 1, idle is needed
+>=20
+> Thus such changes can save some additional overhead.
+>=20
+> Thanks
+> Yu Kuai
+>=20
+>> In addition, I still wonder whether you can simply add also the root
+>> group to bfqd->num_groups_with_pending_reqs (when the root group is
+>> active).  This would make the design much cleaner.
+>> Thanks,
+>> Paolo
+>>> -#endif
+>>> -		;
+>>> +	return varied_queue_weights || multiple_classes_busy;
+>>> }
+>>>=20
+>>> /*
+>>> --=20
+>>> 2.31.1
+>>>=20
+>> .
 
