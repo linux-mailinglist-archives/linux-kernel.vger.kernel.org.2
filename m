@@ -2,420 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D7C4026A1
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55C904026A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 11:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243709AbhIGJ7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 05:59:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:33998 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244535AbhIGJ7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 05:59:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A1416D;
-        Tue,  7 Sep 2021 02:58:14 -0700 (PDT)
-Received: from [10.57.94.84] (unknown [10.57.94.84])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0D4163F766;
-        Tue,  7 Sep 2021 02:58:11 -0700 (PDT)
-Subject: Re: [PATCH 08/10] coresight: trbe: Workaround TRBE errat overwrite in
- FILL mode
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
-        will@kernel.org, catalin.marinas@arm.com, james.morse@arm.com,
-        mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        leo.yan@linaro.org, maz@kernel.org, mark.rutland@arm.com
-References: <20210728135217.591173-1-suzuki.poulose@arm.com>
- <20210728135217.591173-9-suzuki.poulose@arm.com>
- <7edeb6de-5de6-e9b1-c684-a7f5782d9a7b@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <ede246ee-6648-bb32-57b5-4a983d983736@arm.com>
-Date:   Tue, 7 Sep 2021 10:58:10 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S243677AbhIGKAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 06:00:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231194AbhIGKAu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 06:00:50 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5DCC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 02:59:44 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id n18so5489794plp.7
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 02:59:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6E1IHRfuK0QKnb5J1Cnvln+5nY7KJz29n+pahsDSy4w=;
+        b=e7azfc4GEcCjJJdZlC3m3ac8M8sTeFNAH7Ox3mi18QHX6AFOC7K/CsNnGzO5wgEpI3
+         65ucC0HlfVImZWS3c++ObuhAYNEjD8kRNLPCg3IYHK+avZ21+o9kBefWeaTr/052GNgC
+         yzj6RxoZfA+37VAr6OFZbwv0h3jR1gS8N3SW0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6E1IHRfuK0QKnb5J1Cnvln+5nY7KJz29n+pahsDSy4w=;
+        b=bfw7m6rmMF7n6HGTZqkWajxsDLFTfeS12AAyt6UYGaVhsYcOY/8UFYpz190Cs2NbYw
+         orSjZ/4f/1+aK051+rsvFN8JjnxUhvK2S8nJ3/qASt6IyzCQoWvg14L80AlccEa5Hv9E
+         jiTYxpJvxuNB44ElC68Mig1YsIsakFWujiYq2Nxqe7lxL+Y6Uq8ZAEX7MxUDfXeq85lF
+         +ZR93HOd++29Rix9ySbFJ4yBQV1AnRgeuKoJJK9vSHqZUxZYIHxH/y2gbIWBqnBLL+OM
+         tYjZDpV5G7yUIfCtMx7+uQ7TrLGfXlUV5l+53tbPp7UGK6nsu1cj3rCw0/3O7xSs8Dj/
+         NuGA==
+X-Gm-Message-State: AOAM530kY4xCNAAVqb8xUCescPoHO3EZAs9sBXiKYjKUyOvoH7DzF+JV
+        q6lIVLCtaB3vYrEoD+AJmoD9gg==
+X-Google-Smtp-Source: ABdhPJxrogRVtyBb2ubiJ71vxVXr8ITmgC2AAbCgQvpVgvYrXyUudcrxPaSNcnu0OyTUcvNphkPWBg==
+X-Received: by 2002:a17:90a:f18b:: with SMTP id bv11mr3722912pjb.82.1631008784322;
+        Tue, 07 Sep 2021 02:59:44 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:4040:44a5:1453:e72c])
+        by smtp.gmail.com with ESMTPSA id j11sm10337763pfa.10.2021.09.07.02.59.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 02:59:43 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 18:59:38 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Hyunchul Lee <hyc.lee@gmail.com>, linux-cifs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ksmbd: remove unnecessary conditions
+Message-ID: <YTc4ClL0EwuHsPXP@google.com>
+References: <20210907073428.GD18254@kili>
+ <YTcdbOgmB7758K+/@google.com>
+ <20210907085430.GM1957@kadam>
+ <YTcrA2U2n5QAUkt5@google.com>
+ <20210907091411.GG1935@kadam>
 MIME-Version: 1.0
-In-Reply-To: <7edeb6de-5de6-e9b1-c684-a7f5782d9a7b@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210907091411.GG1935@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/08/2021 11:25, Anshuman Khandual wrote:
+On (21/09/07 12:14), Dan Carpenter wrote:
+[..]
+> > > > 
+> > > > Can make_kuid() return INVALID_UID? IOW, uid_valid(uid) here as well?
+> > > 
+> > > No need to check twice.  We're going to check at the end.
+> > > 
+> > > > 
+> > > > > +
+> > > > > +		/* If this is an idmapped mount, apply the idmapping. */
+> > > > > +		uid = kuid_from_mnt(user_ns, uid);
+> > > > > +		if (uid_valid(uid)) {
+> > >                     ^^^^^^^^^^^^^^
+> > > The check here is sufficient.
+> > 
+> > My point was more that a potentially invalid UID is passed to kuid_from_mnt()
+> > and kgid_from_mnt(). I don't see map_id_up(), for example, checking that
+> > passed UID is valid. So decided to double check.
 > 
-> 
-> On 7/28/21 7:22 PM, Suzuki K Poulose wrote:
->> ARM Neoverse-N2 (#2139208) and Cortex-A710(##2119858) suffers from
->> an erratum, which when triggered, might cause the TRBE to overwrite
->> the trace data already collected in FILL mode, in the event of a WRAP.
->> i.e, the TRBE doesn't stop writing the data, instead wraps to the base
->> and could write upto 3 cache line size worth trace. Thus, this could
->> corrupt the trace at the "BASE" pointer.
->>
->> The workaround is to program the write pointer 256bytes from the
->> base, such that if the erratum is triggered, it doesn't overwrite
->> the trace data that was captured. This skipped region could be
->> padded with ignore packets at the end of the session, so that
->> the decoder sees a continuous buffer with some padding at the
->> beginning. The trace data written at the base is considered
->> lost as the limit could have been in the middle of the perf
->> ring buffer, and jumping to the "base" is not acceptable.
-> 
-> If the write pointer is guaranteed to have always started beyond
-> [base + 256] and then wraps around. Why cannot the initial trace
-> at [base .. base + 256] not to be considered for perf ?
+> But you've seen it now, right?
 
-Remember that we could be dealing with a region within the larger
-ring buffer.
-
-Ring buffer
-
-                | write (head + 256)
-                v
-  \---------xxxxx----------------------------------/
-            ^                 ^                   ^
-       head |                 | Limit             Ring buffer end
-
-In this case, you are talking about the area marked as
-"xxx", which ideally should be appearing just after Limit,
-in the normal course of the trace without the erratum.
-
-Thus leaving the data at [base.. base+256] should
-be ideally moved to the end (after limit ptr). And :
-
-1) We don't always have space after the "limit" in the ring buffer.
-2) We don't know if the erratum was triggered at all, under the
-    micro architectural conditions.
-
-So, it is ideal to live with this ignoring the trace for now.
-
-> 
->> We set the flags already to indicate that some amount of trace
->> was lost during the FILL event IRQ. So this is fine.
-> 
-> Right, from perf data flag point of view it is not a problem.
-> But I am still wondering why cannot the trace at the base can
-> not be consumed by perf.
-> 
-
-Please see above.
-
->>
->> One important change with the work around is, we program the
->> TRBBASER_EL1 to current page where we are allowed to write.
->> Otherwise, it could overwrite a region that may be consumed
->> by the perf. Towards this, we always make sure that the
-> 
-> While enabling TRBE after required reconfiguration, this will
-> cause both TRBBASER_EL1 and TRBPTR_EL1 to change each time
-> around (basically TRBBASER_EL1 follows handle->head) ?
-
-Yes. This is to ensure that the TRBE doesn't corrupt the "trace
-data" at the "start" of the actual ring buffer (not the area
-that we are allowed to write). In a nutshell, TRBE is only allowed
-to write within the area [head ... head + size].
-
-> 
->> "handle->head" and thus the trbe_write is PAGE_SIZE aligned,
->> so that we can set the BASE to the PAGE base and move the
->> TRBPTR to the 256bytes offset.
-> 
-> Now that base needs to follow handle->head, both needs to be
-> PAGE_SIZE aligned (including the write pointer) because base
-> pointer needs to be PAGE_SIZE aligned ?
-
-Base must always be page aligned for TRBE. Now, with the erratum,
-the Base must be within [ head ... head + size ]. Thus we cannot
-put TRBPTR (write ptr) outside [TRBBASER ... TRBLIMITR], the
-write ptr follows the base and it is shifted by 256byte to allow
-the scratch space for overwrite, when the erratum triggers.
-
-> 
->>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
->> Cc: Leo Yan <leo.yan@linaro.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> ---
->>   drivers/hwtracing/coresight/coresight-trbe.c | 111 +++++++++++++++++--
->>   1 file changed, 102 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
->> index 9ea28813182b..cd997ed5d918 100644
->> --- a/drivers/hwtracing/coresight/coresight-trbe.c
->> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
->> @@ -17,6 +17,7 @@
->>   
->>   #include <asm/barrier.h>
->>   #include <asm/cputype.h>
->> +#include <asm/cpufeature.h>
->>   
->>   #include "coresight-self-hosted-trace.h"
->>   #include "coresight-trbe.h"
->> @@ -84,9 +85,17 @@ struct trbe_buf {
->>    * per TRBE instance, we keep track of the list of errata that
->>    * affects the given instance of the TRBE.
->>    */
->> -#define TRBE_ERRATA_MAX			0
->> +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE	0
->> +#define TRBE_ERRATA_MAX				1
-> 
-> Although I am not sure how to achieve it, TRBE_ERRATA_MAX should be
-> derived from errata cpucap start and end markers which identify all
-> TRBE specific erratas. The hard coding above could be avoided.
-
-This lets us hand pick the TRBE errata and avoid having to do
-something you say is hard to achieve. What do you think is
-problematic with this approach ?
-
-> 
->> +
->> +/*
->> + * Safe limit for the number of bytes that may be overwritten
->> + * when the erratum is triggered.
-> 
-> Specify which errata ?
-
-There are two distinct CPU errata. I will try to make it a bit more
-clear.
-
-> 
->> + */
->> +#define TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP	256
-> 
-> Needs to have _BYTES. TRBE_ERRATA_OVERWRITE_FILL_MODE_SKIP_BYTES ?
-> 
->>   
->>   static unsigned long trbe_errata_cpucaps[TRBE_ERRATA_MAX] = {
->> +	[TRBE_WORKAROUND_OVERWRITE_FILL_MODE] = ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE,
-> 
-> s/TRBE_WORKAROUND_OVERWRITE_FILL_MODE/TRBE_ERRATA_OVERWRITE_FILL_MODE instead ?
-> 
-> ARM64_WORKAROUND_TRBE_XXX -----> TRBE_ERRATA_XXX
-
-I think WORKAROUND still makes it clear, and is inline with what we 
-follow in generic arm64 and I would prefer to keep that.
-
-> 
->>   };
->>   
->>   /*
->> @@ -531,10 +540,13 @@ static enum trbe_fault_action trbe_get_fault_act(u64 trbsr)
->>   	if ((ec == TRBE_EC_STAGE1_ABORT) || (ec == TRBE_EC_STAGE2_ABORT))
->>   		return TRBE_FAULT_ACT_FATAL;
->>   
->> -	if (is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) {
->> -		if (get_trbe_write_pointer() == get_trbe_base_pointer())
->> -			return TRBE_FAULT_ACT_WRAP;
->> -	}
->> +	/*
->> +	 * It is not necessary to verify the TRBPTR == TRBBASER to detect
->> +	 * a FILL event. Moreover, CPU errata could make this check invalid.
->> +	 */
-> 
-> Why should the check be dropped for CPU instances which dont have the errata ?
-
-Good point.  On the other hand, if the TRBPTR != TRBBASER, that 
-indicates a TRBE erratum. So, I don't see too much value in it. I could
-keep that back in bypassed by the erratum check.
-
-> 
->> +	if (is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED))
->> +		return TRBE_FAULT_ACT_WRAP;
->> +
->>   	return TRBE_FAULT_ACT_SPURIOUS;
->>   }
->>   
->> @@ -544,6 +556,7 @@ static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
->>   {
->>   	u64 write;
->>   	u64 start_off, end_off;
->> +	u64 size;
->>   
->>   	/*
->>   	 * If the TRBE has wrapped around the write pointer has
->> @@ -559,7 +572,18 @@ static unsigned long trbe_get_trace_size(struct perf_output_handle *handle,
->>   
->>   	if (WARN_ON_ONCE(end_off < start_off))
->>   		return 0;
->> -	return (end_off - start_off);
->> +
->> +	size = end_off - start_off;
->> +	/*
->> +	 * If the TRBE is affected by the following erratum, we must fill
->> +	 * the space we skipped with IGNORE packets. And we are always
->> +	 * guaranteed to have at least a PAGE_SIZE space in the buffer.
->> +	 */
->> +	if (trbe_has_erratum(TRBE_WORKAROUND_OVERWRITE_FILL_MODE, buf->cpudata) &&
->> +	    !WARN_ON(size < TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP))
-> 
-> Why warn here ? The skid can some times be less than 256 bytes. OR because
-> now write pointer alignment is PAGE_SIZE (from later code), size too needs
-> to be always a PAGE_SIZE multiple ?
-
-Because, we expect at least a page size worth space before we run.
-(Since BASE, WRITE and LIMIT are page aligned). If that guarantee is 
-broken, we have serious problem with the size calculation logic.
-
-> 
->> +		__trbe_pad_buf(buf, start_off, TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP);
->> +
->> +	return size;
->>   }
->>   
->>   static void *arm_trbe_alloc_buffer(struct coresight_device *csdev,
->> @@ -704,20 +728,73 @@ static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
->>   	return size;
->>   }
->>   
->> +
->> +static int trbe_apply_work_around_before_enable(struct trbe_buf *buf)
->> +{
->> +	/*
->> +	 * TRBE_WORKAROUND_OVERWRITE_FILL_MODE causes the TRBE to overwrite a few cache
->> +	 * line size from the "TRBBASER_EL1" in the event of a "FILL".
->> +	 * Thus, we could loose some amount of the trace at the base.
->> +	 *
->> +	 * To work around this:
->> +	 * - Software must leave 256bytes of space from the base, so that
->> +	 *   the trace collected now is not overwritten.
->> +	 * - Fill the first 256bytes with IGNORE packets for the decoder
->> +	 *   to ignore at the end of the session, so that the decoder ignores
->> +	 *   this gap.
->> +	 *
->> +	 * This also means that, the TRBE driver must set the TRBBASER_EL1
->> +	 * such that, when the erratum is triggered, it doesn't overwrite
->> +	 * the "area" outside the area marked by (handle->head, +size).
->> +	 * So, we make sure that the handle->head is always PAGE aligned,
->> +	 * by tweaking the required alignment for the TRBE (trbe_align).
->> +	 * And when we enable the TRBE,
->> +	 *
->> +	 *   - move the TRBPTR_EL1 to 256bytes past the starting point.
->> +	 *     So that any trace collected in this run is not overwritten.
->> +	 *
->> +	 *   - set the TRBBASER_EL1 to the original trbe_write. This will
->> +	 *     ensure that, if the TRBE hits the erratum, it would only
->> +	 *     write within the region allowed for the TRBE.
->> +	 *
->> +	 * At the trace collection time, we always pad the skipped bytes
->> +	 * with IGNORE packets to make sure the decoder doesn't see any
->> +	 * overwritten packets.
->> +	 */
->> +	if (trbe_has_erratum(TRBE_WORKAROUND_OVERWRITE_FILL_MODE, buf->cpudata)) {
->> +		if (WARN_ON(!IS_ALIGNED(buf->trbe_write, PAGE_SIZE)))
->> +			return -EINVAL;
->> +		buf->trbe_hw_base = buf->trbe_write;
->> +		buf->trbe_write += TRBE_WORKAROUND_OVERWRITE_FILL_MODE_SKIP;
-> 
-> Not sure if I really understood this correctly, but would not the
-> above keep on reducing the usable buffer space for TRBE each time
-> around ? BTW buffer adjustment complexity here requires a proper
-
-Yes, unfortunately, we have to make sure every time the TRBE is
-turned ON, we leave this space. We always recaculate the offsets
-anyway, before turning it ON and this additional step makes sure that
-the WRITE ptr is moved 256bytes (and also the BASE is moved to the
-"head").
-
-I don't think this adjustment changes much. It is only shifting the
-write pointer within the region [head ... limit]. The calculation
-of the head and the limit still remains the same.
-
-> ASCII diagram based illustration like before.
-> 
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->>   static int __arm_trbe_enable(struct trbe_buf *buf,
->>   			     struct perf_output_handle *handle)
->>   {
->> +	int ret = 0;
->> +
->>   	buf->trbe_limit = compute_trbe_buffer_limit(handle);
->>   	buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
->>   	if (buf->trbe_limit == buf->trbe_base) {
->> -		trbe_stop_and_truncate_event(handle);
->> -		return -ENOSPC;
->> +		ret = -ENOSPC;
->> +		goto err;
->>   	}
->>   	/* Set the base of the TRBE to the buffer base */
->>   	buf->trbe_hw_base = buf->trbe_base;
->> +
->> +	ret = trbe_apply_work_around_before_enable(buf);
->> +	if (ret)
->> +		goto err;
->> +
->>   	*this_cpu_ptr(buf->cpudata->drvdata->handle) = handle;
->>   	trbe_enable_hw(buf);
->>   	return 0;
->> +err:
->> +	trbe_stop_and_truncate_event(handle);
->> +	return ret;
->>   }
->>   
->>   static int arm_trbe_enable(struct coresight_device *csdev, u32 mode, void *data)
->> @@ -1003,7 +1080,23 @@ static void arm_trbe_probe_cpu(void *info)
->>   		pr_err("Unsupported alignment on cpu %d\n", cpu);
->>   		goto cpu_clear;
->>   	}
->> -	cpudata->trbe_align = cpudata->trbe_hw_align;
->> +
->> +	/*
->> +	 * If the TRBE is affected by erratum TRBE_WORKAROUND_OVERWRITE_FILL_MODE,
-> 
-> Better to address it with the original errata name i.e
-> ARM64_WORKAROUND_TRBE_OVERWRITE_FILL_MODE instead. But not a big issue
-> though.
-
-We deal with the TRBE_xx name everywhere, for even checking the erratum,
-so using the other one is going to confuse the code reading.
-
-> 
->> +	 * we must always program the TBRPTR_EL1, 256bytes from a page
->> +	 * boundary, with TRBBASER_EL1 set to the page, to prevent
->> +	 * TRBE over-writing 256bytes at TRBBASER_EL1 on FILL event.
->> +	 *
->> +	 * Thus make sure we always align our write pointer to a PAGE_SIZE,
->> +	 * which also guarantees that we have at least a PAGE_SIZE space in
->> +	 * the buffer (TRBLIMITR is PAGE aligned) and thus we can skip
->> +	 * the required bytes at the base.
->> +	 */
-> 
-> Should not TRBPTR_EL1 be aligned to 256 bytes instead, as TRBBASER_EL1 is
-> always at PAGE_SIZE boundary. Hence TRBPTR_EL1 could never be in between
-> base and [base + 256 bytes]. Why alignment needs to go all the way upto
-> PAGE_SIZE instead ? OR am I missing something here ?
-
-Please see the diagram above. When the TRBE wraps, it jumps to the
-TRBBASER, and if that is outside the region permitted for TRBE, i.e 
-[head... head + size], we risk corrupting data potentially consumed by
-the userspace. So, we must make sure that the TRBBASER is within the
-[head...head+size], which is why we update the hw_base accordingly
-when we detect the erratum.
-
-> 
->> +	if (trbe_has_erratum(TRBE_WORKAROUND_OVERWRITE_FILL_MODE, cpudata))
->> +		cpudata->trbe_align = PAGE_SIZE;
->> +	else
->> +		cpudata->trbe_align = cpudata->trbe_hw_align;
->> +
->>   	cpudata->trbe_flag = get_trbe_flag_update(trbidr);
->>   	cpudata->cpu = cpu;
->>   	cpudata->drvdata = drvdata;
->>
-> 
-> I will visit this patch again. Not sure if I really understand all this
-> changes correctly enough.
-
-Please let me know if you have further questions.
-
-Thanks for taking a look
-
-Suzuki
-> 
-
+A linear search in array of 5 elements or a binary search in array of 340
+elements? Yea, I saw it. I'd prefer one extra uid_valid(), if you'd ask
+me - why call the function if we already know that it'll fail.
