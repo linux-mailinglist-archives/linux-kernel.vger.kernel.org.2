@@ -2,99 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3BC40297A
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8958940297F
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 15:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344718AbhIGNNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 09:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243976AbhIGNNa (ORCPT
+        id S1344657AbhIGNOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 09:14:54 -0400
+Received: from protonic.xs4all.nl ([83.163.252.89]:52000 "EHLO
+        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243976AbhIGNOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 09:13:30 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E817C061575;
-        Tue,  7 Sep 2021 06:12:24 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id v10so14390655wrd.4;
-        Tue, 07 Sep 2021 06:12:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FgS+MIH5N3h8N+LQXoZfHIEGWm1MmwH0CNQRBpzXRKg=;
-        b=AZmqDj/66mdp+uMYJu3wK2CgL8REQ2tSE43LMDNDBFEuD7HoSikQC0lpOpWAtfez/a
-         MlBsy2x4xXO9jqw2YNZmqbVoQeYdHLHXtBQQasb3xDFpCiOrY3IlPw9ZkzjgxjtY+NUc
-         ZmOxIEuLW/E/1XAwyCLwINQLPsQRovywddyuykk9qoiIFxmAe6mLShslBwbBBeGLO4VP
-         xCbgSsjZZ5ChfXx2m3XLkfS0h5tMs2Tm+n8A+8yVP8pCX8NVVwhv5dA903cwYYwe8sCm
-         pllA8p89Vy783h6g80cfuJw6t7Eps3neCv9l6/OwaR9NN7On91e0y3DexezyN0tC4z2F
-         /kEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FgS+MIH5N3h8N+LQXoZfHIEGWm1MmwH0CNQRBpzXRKg=;
-        b=VKHeIU8YNWN+RugSU0iVRNbBCDI8/62TGJO9wjegzzLiJPQsOYX8DWFY4iEsoc+iZe
-         Yui9hkTvUatinm3EPODrHc+dKIdeX7X9IG7WeQxGRzvNuJzylCRUJ1Rqis+ChBPWvRw4
-         ChPzs+L2plzJNU0JdW6yhiClO+KusYHeruutPqzFC6/NDLNavM6I0rBiYXSWnTHDjCH2
-         aQtdtnrrzeZN1QTdtVJ6a0t7CchlCkYCwv9SCpujvbqvQpt0DotPveqE3gTke2F9cPlT
-         4sWADsq7DgniFEzn63+nUxcABTEcPGOQwMXgiM6Y+oX8wVY00s9rVoT/IIJjtCAWltzW
-         /QYw==
-X-Gm-Message-State: AOAM5335vqovALXNHbdehisJPU37pqYGPIkT2n6eqwaSqZFQ1ZT3Cg24
-        9Ub5lWcQCFcEVUAVLfyn2A+ufJUjlgI=
-X-Google-Smtp-Source: ABdhPJyUt4DFkV971lutP6SfYRPRGBfe7Syb2BSg2e1q+EKUdxzLDxLuKP3FTUG/RK7Fvf2gppmWvQ==
-X-Received: by 2002:a05:6000:23a:: with SMTP id l26mr18260083wrz.369.1631020342682;
-        Tue, 07 Sep 2021 06:12:22 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id j4sm10708755wrt.23.2021.09.07.06.12.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 06:12:22 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 14:12:20 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/29] 5.10.63-rc1 review
-Message-ID: <YTdlNHq0U+uJa2sM@debian>
-References: <20210906125449.756437409@linuxfoundation.org>
+        Tue, 7 Sep 2021 09:14:54 -0400
+Received: from [192.168.224.11] (ert768.prtnl [192.168.224.11])
+        by sparta.prtnl (Postfix) with ESMTP id 4D2E544A024D;
+        Tue,  7 Sep 2021 15:13:45 +0200 (CEST)
+Subject: Re: [PATCH v1 1/3] dt-bindings: iio: chemical: sensirion,scd4x: Add
+ yaml description
+To:     Rob Herring <robh@kernel.org>
+Cc:     david@protonic.nl, Jonathan Cameron <jic23@kernel.org>,
+        Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-iio@vger.kernel.org
+References: <20210901105911.178646-1-roan@protonic.nl>
+ <20210901105911.178646-2-roan@protonic.nl>
+ <YTJ8z2RpR0JUo2Yk@robh.at.kernel.org>
+From:   Roan van Dijk <roan@protonic.nl>
+Message-ID: <420dc3e5-3bfb-b29f-25bb-bfdadfad9dc2@protonic.nl>
+Date:   Tue, 7 Sep 2021 15:13:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210906125449.756437409@linuxfoundation.org>
+In-Reply-To: <YTJ8z2RpR0JUo2Yk@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: nl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On 03-09-2021 21:51, Rob Herring wrote:
+> On Wed, 01 Sep 2021 12:59:09 +0200, Roan van Dijk wrote:
+>> Add documentation for the SCD4x carbon dioxide sensor from Sensirion.
+>>
+>> Signed-off-by: Roan van Dijk <roan@protonic.nl>
+>> ---
+>>   .../iio/chemical/sensirion,scd4x.yaml         | 46 +++++++++++++++++++
+>>   1 file changed, 46 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/iio/chemical/sensirion,scd4x.yaml
+>>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+Sorry, I forgot about this. It will be added to the next patch.
 
-On Mon, Sep 06, 2021 at 02:55:15PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.63 release.
-> There are 29 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 08 Sep 2021 12:54:40 +0000.
-> Anything received after that time might be too late.
+Thanks,
 
-Build test:
-mips (gcc version 11.1.1 20210816): 63 configs -> no new failure
-arm (gcc version 11.1.1 20210816): 105 configs -> no new failure
-arm64 (gcc version 11.1.1 20210816): 3 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 4 configs -> no failure
-
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
-
-[1]. https://openqa.qa.codethink.co.uk/tests/99
-[2]. https://openqa.qa.codethink.co.uk/tests/100
-
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
---
-Regards
-Sudip
-
+Roan
