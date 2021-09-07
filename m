@@ -2,178 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DE540231E
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 07:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D69D402314
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 07:40:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238758AbhIGFoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 01:44:38 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:39291 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238667AbhIGFog (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 01:44:36 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210907054328epoutp03920927d9fd0306e5db9fd6c7228e23e4~ic90pUXv11718017180epoutp03U
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 05:43:28 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210907054328epoutp03920927d9fd0306e5db9fd6c7228e23e4~ic90pUXv11718017180epoutp03U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1630993408;
-        bh=HTyqdQEDL7epIX9hTmn7Uw23uKGLryIvgU5mRk3lILA=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=ussoj/eYcPVabdWjnwwZ92+eIpGulPHXNnWGLEA/ycQ3LLkUdHLS18XcZj8LwQDvO
-         +WlTwx6Dr7Wk1xciKlWZjrfJ2vDGe/U/10Ohj2FCVQevPYRB7iGvWmPoD98qktKNl3
-         pgJKkslm4KnuCO2HEXVCUChZsJddOeZrACGSdAHs=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210907054327epcas1p209680e5cce58071affe65077b9eca1af~ic9zVL4fY2973829738epcas1p2Y;
-        Tue,  7 Sep 2021 05:43:27 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.38.249]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4H3Z1m72sTz4x9Pt; Tue,  7 Sep
-        2021 05:43:24 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        26.BB.09910.CFBF6316; Tue,  7 Sep 2021 14:43:24 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210907054323epcas1p4eba3cc7c0c7c25dba22c404852069fea~ic9v3ESgf0824108241epcas1p4E;
-        Tue,  7 Sep 2021 05:43:23 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210907054323epsmtrp1cff2aee56db03243995316ba7cb2b02b~ic9v2PQFX1548215482epsmtrp1e;
-        Tue,  7 Sep 2021 05:43:23 +0000 (GMT)
-X-AuditID: b6c32a35-c45ff700000026b6-8f-6136fbfc8f40
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C9.E9.08750.BFBF6316; Tue,  7 Sep 2021 14:43:23 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.100.232]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210907054323epsmtip18b52eb91623cc0460c3af1da0e3f3d7c~ic9vobI-i0662506625epsmtip1D;
-        Tue,  7 Sep 2021 05:43:23 +0000 (GMT)
-From:   Chanwoo Lee <cw9316.lee@samsung.com>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-arm-msm@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        dh0421.hwang@samsung.com, sh043.lee@samsung.com,
-        ChanWoo Lee <cw9316.lee@samsung.com>
-Subject: [PATCH] scsi: ufs-qcom: Remove unneeded code
-Date:   Tue,  7 Sep 2021 14:35:54 +0900
-Message-Id: <20210907053554.1005-1-cw9316.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
+        id S237748AbhIGFh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 01:37:56 -0400
+Received: from mga04.intel.com ([192.55.52.120]:25171 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230486AbhIGFhw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 01:37:52 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10099"; a="218240856"
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="218240856"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2021 22:36:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,274,1624345200"; 
+   d="scan'208";a="430088006"
+Received: from gupta-dev2.jf.intel.com (HELO gupta-dev2.localdomain) ([10.54.74.119])
+  by orsmga006.jf.intel.com with ESMTP; 06 Sep 2021 22:36:46 -0700
+Date:   Mon, 6 Sep 2021 22:38:16 -0700
+From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To:     Hao Peng <flyingpenghao@gmail.com>
+Cc:     Xiaoyao Li <xiaoyao.li@intel.com>, Borislav Petkov <bp@alien8.de>,
+        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/tsx: clear RTM and HLE when MSR_IA32_TSX_CTRL is not
+ supported
+Message-ID: <20210907053816.qldtcxkxxv7hkzgv@gupta-dev2.localdomain>
+References: <CAPm50aJyfxobKhTrS=dC3pQmM5EbwY2xunet3X5XgnnFUEMmBA@mail.gmail.com>
+ <YTXfmRIwWREJgEU9@zn.tnic>
+ <CAPm50aLBt=YkFLi==-9U88YzwoJsmMTfEtj2v3+vx7fSRdDMLA@mail.gmail.com>
+ <f89e1eee-aea8-7c59-3af5-8859a43e121c@intel.com>
+ <CAPm50aLiB+O85mgcKcOZwO6J-DXjwK=p+7npBH-qVdkL-77Huw@mail.gmail.com>
+ <77e8d483-4395-0017-300e-0886f75217bb@intel.com>
+ <CAPm50aL_eJm2s5GJD1OMFK3vt_iHLQrBueiz-NWS38H=Zz378w@mail.gmail.com>
+ <cae10a15-1c21-4cf4-dff5-2123613f1b41@intel.com>
+ <CAPm50a+crBuP9wH2zCqcD22+wmsb4pj3A9rT_G+64=EV9KLg5w@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHJsWRmVeSWpSXmKPExsWy7bCmnu6f32aJBgv/Klmce/ybxeLBvG1s
-        Fi9/XmWzOL3/HYvFjFNtrBb7rp1kt/j1dz27xaIb25gsdjw/w24xcf9ZdovLu+awWXRf38Fm
-        sfz4PyaLpj/7WBz4PDat6mTzuHNtD5vHhEUHGD0+Pr3F4tG3ZRWjx+dNch7tB7qZAtijsm0y
-        UhNTUosUUvOS81My89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgG5WUihLzCkF
-        CgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak5BSYFegVJ+YWl+al6+WlllgZGhgYmQIVJmRnLFm7
-        hq3gH3/F2d+3mBsYl/J2MXJySAiYSJzb9Jmti5GLQ0hgB6PE7WWb2EASQgKfGCUurGaESHwG
-        SqyezQTTcfvWTEaIol2MEm1/RSGKvjBKfLt/kr2LkYODTUBL4vYxb5C4iMA7RolVvc/AVjAL
-        dDFK/DrYxQLSLSxgKvF/eQc7iM0ioCqxvO8l2GpeASuJ1g/LGSG2yUv8ud/DDBEXlDg58wlY
-        LzNQvHnrbGaQoRICUzkkWk/8ZINocJG4/f0JM4QtLPHq+BZ2CFtK4mV/GztEQzOjxKnZ56Cc
-        FkaJ11duQFUZS3z6/JkR5AdmAU2J9bv0IcKKEjt/z2WE2Mwn8e5rDytIiYQAr0RHmxBEiYrE
-        nK5zbDC7Pt54zAphe0isXnSKHRJcsRKrnzxgm8AoPwvJP7OQ/DMLYfECRuZVjGKpBcW56anF
-        hgWG8GhNzs/dxAhOuFqmOxgnvv2gd4iRiYPxEKMEB7OSCO9fc7NEId6UxMqq1KL8+KLSnNTi
-        Q4ymwBCeyCwlmpwPTPl5JfGGJpYGJmZGJhbGlsZmSuK8jK9kEoUE0hNLUrNTUwtSi2D6mDg4
-        pRqYDAPcnm7e9yh++cYVNy+qXz+z2/nWlv/uS3p+J/4I3hS23cRZVkAiU21PubQvS7Z72k9B
-        XpPXgoWdaQLz39Y6n5o0gVG644CeyIqXHAfclI7ry7k0sKp+9DLaUd9Z7Pp8qvuUgCUsL3/d
-        YUyPr1syk0PJ+q7BUoPrtSVC19YF/GNRlJ57RGexyrHZWx9H/Tu/kSMvNLjZuKfApuYfF/ek
-        dzbZjwWORc1d4OC+w/7R21WlmWLsZfWsWrK9hxqm+r/uUfbbeucGd3/kMpOQmRN+KTDZieRP
-        XKjQrtb215lztwpn87sTcblaRq+deattewS8Ap8eeCi820gz2UtS/kJtyu0JPzpu/upWrt9r
-        JaXEUpyRaKjFXFScCACwqdjvQQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDLMWRmVeSWpSXmKPExsWy7bCSnO7v32aJBt0/NC3OPf7NYvFg3jY2
-        i5c/r7JZnN7/jsVixqk2Vot9106yW/z6u57dYtGNbUwWO56fYbeYuP8su8XlXXPYLLqv72Cz
-        WH78H5NF0599LA58HptWdbJ53Lm2h81jwqIDjB4fn95i8ejbsorR4/MmOY/2A91MAexRXDYp
-        qTmZZalF+nYJXBlL1q5hK/jHX3H29y3mBsalvF2MnBwSAiYSt2/NZOxi5OIQEtjBKNF3+iAr
-        REJKYvf+82xdjBxAtrDE4cPFEDWfGCX6b5xhBomzCWhJ3D7mDRIXEfjBKPHi0RewQcwCExgl
-        Fl95ywwySFjAVOL/8g52EJtFQFVied9LNhCbV8BKovXDckaIZfISf+73MEPEBSVOznzCAmIz
-        A8Wbt85mnsDINwtJahaS1AJGplWMkqkFxbnpucWGBUZ5qeV6xYm5xaV56XrJ+bmbGMERoKW1
-        g3HPqg96hxiZOBgPMUpwMCuJ8P41N0sU4k1JrKxKLcqPLyrNSS0+xCjNwaIkznuh62S8kEB6
-        YklqdmpqQWoRTJaJg1OqgUmY/SKX/q6vNjYznZ+lPPoztd7mwDVlUVPvA6v4py36XThdb7aP
-        /CfJ772Jj8Vnzgs4mvfa5ItLSM6PMpUmmb2CR1tDNwqVa73YypXFqsK+SjKqVl+q81y1/Of7
-        ev+Kurw5JVT/JE3LeSQ9o9bD+9G/74Vuyc7zmTXS9OSWbpYXf/53YQ23DIvM5t/FZk/U3nU/
-        Ld/FuN+1NvOP3v8bvBXL5UOD+Xn3mDmr3qznei11fEmtmPuKdTf5WrQPruaLkbgwhcdo7U7P
-        C9cOuYouML9ftf9N+MYz/5/tedgY0sGwX+E7T+YyPk8R9kSdfSnlkZcPq9yOXRp2aU16s9v5
-        nXEGvLKSpy/0bv4z6cCOT0osxRmJhlrMRcWJAP7ycGHvAgAA
-X-CMS-MailID: 20210907054323epcas1p4eba3cc7c0c7c25dba22c404852069fea
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210907054323epcas1p4eba3cc7c0c7c25dba22c404852069fea
-References: <CGME20210907054323epcas1p4eba3cc7c0c7c25dba22c404852069fea@epcas1p4.samsung.com>
+In-Reply-To: <CAPm50a+crBuP9wH2zCqcD22+wmsb4pj3A9rT_G+64=EV9KLg5w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChanWoo Lee <cw9316.lee@samsung.com>
+On 07.09.2021 12:39, Hao Peng wrote:
+>On Tue, Sep 7, 2021 at 12:26 PM Xiaoyao Li <xiaoyao.li@intel.com> wrote:
+>>
+>> On 9/7/2021 11:40 AM, Hao Peng wrote:
+>> > On Tue, Sep 7, 2021 at 10:56 AM Xiaoyao Li <xiaoyao.li@intel.com> wrote:
+>> >>
+>> >> On 9/7/2021 10:35 AM, Hao Peng wrote:
+>> >>> On Tue, Sep 7, 2021 at 10:08 AM Xiaoyao Li <xiaoyao.li@intel.com> wrote:
+>> >>>>
+>> >>>> On 9/7/2021 9:47 AM, Hao Peng wrote:
+>> >>>>> On Mon, Sep 6, 2021 at 5:30 PM Borislav Petkov <bp@alien8.de> wrote:
+>> >>>>>>
+>> >>>>>> On Mon, Sep 06, 2021 at 10:46:05AM +0800, Hao Peng wrote:
+>> >>>>>>> If hypervisor does not support MSR_IA32_TSX_CTRL, but guest supports
+>> >>>>>>> RTM and HLE features, it will affect TAA mitigation.
+>> >>>>>>>
+>> >>>>>>> Signed-off-by: Peng Hao <flyingpeng@tencent.com>
+>> >>>>>>> ---
+>> >>>>>>>     arch/x86/kernel/cpu/tsx.c | 7 +++++++
+>> >>>>>>>     1 file changed, 7 insertions(+)
+>> >>>>>>>
+>> >>>>>>> diff --git a/arch/x86/kernel/cpu/tsx.c b/arch/x86/kernel/cpu/tsx.c
+>> >>>>>>> index 9c7a5f049292..5e852c14fef2 100644
+>> >>>>>>> --- a/arch/x86/kernel/cpu/tsx.c
+>> >>>>>>> +++ b/arch/x86/kernel/cpu/tsx.c
+>> >>>>>>> @@ -122,6 +122,13 @@ void __init tsx_init(void)
+>> >>>>>>>
+>> >>>>>>>            if (!tsx_ctrl_is_supported()) {
+>> >>>>>>>                    tsx_ctrl_state = TSX_CTRL_NOT_SUPPORTED;
+>> >>>>>>> +
+>> >>>>>>> +               /* If hypervisor does not support MSR_IA32_TSX_CTRL emulation,
+>> >>>>>>> +                * but guest supports RTM and HLE features, it will affect TAA
+>> >>>>>>> +                * （tsx_async_abort）mitigation.
+>> >>>>>>> +                */
+>> >>>>>>> +               setup_clear_cpu_cap(X86_FEATURE_RTM);
+>> >>>>>>> +               setup_clear_cpu_cap(X86_FEATURE_HLE);
+>> >>>>
+>> >>>> anyway, IMHO, we shouldn't do anything here for TAA. It should be in
+>> >>>> taa_select_mitigation()
+>> >>>>
+>> >>>>>>>                    return;
+>> >>>>>>>            }
+>> >>>>>>
+>> >>>>>> How does that even happen - the hypervisor does not support the MSR but
+>> >>>>>> "guest supports" TSX features?!
+>> >>>>>>
+>> >>>>>> I guess the guest is detecting it wrong.
+>> >>>>>>
+>> >>>>>> What hypervisor, what guest, how do I reproduce?
+>> >>>>>>
+>> >>>>> hypervisor is kvm, guest is linux too.
+>> >>>>>> Please give full details.
+>> >>>>>>
+>> >>>>> The host I used is kernel-5.4, and guest is kernel-5.13.
+>> >>>>> MSR_IA32_TSX_CTRL is exposed
+>> >>>>> to guest and guest to support RTM and HLE features, no direct
+>> >>>>> dependence. at the qemu I
+>> >>>>> started guest with -cpu host-model.
+>> >>>>> I have viewed the code of kernel-5.4, and MSR_IA32_TSX_CTRL is not
+>> >>>>> exposed to guest.
+>> >>>>
+>> >>>> Does guest see TAA_NO bit?
+>> >>>>
+>> >>> Guest can't see taa_no, which requires updating qemu to solve. But I think
+>> >>> there is a compatibility process here.
+>> >>
+>> >> Anyway, there should be some existing code in kernel already to handle
+>> >> the case that CPUID reports TRM while MSR_IA32_CORE_CAPABILITIES doesn't
+>> >> report MSR_TSX_CTRL nor TAA_NO.
+>> >>
+>> > Can you point out which patches ? At present, guest is kernel-5.13
+>> > still has this problem.
+>>
+>> What's the output of 'cat
+>> /sys/devices/system/cpu/vulnerabilities/tsx_async_abort' on your guest?
+>>
+>Vulnerable: Clear CPU buffers attempted, no microcode; SMT Host state unknown.
 
-Checks information about tx_lanes, but is not used.
+This suggests that the microcode is old. Can you please share the output
+of below cmds on host and guest:
 
-Since the commit below is applied, tx_lanes is deprecated.
- -[2/3] scsi/ufs: qcom: Remove ufs_qcom_phy_*() calls from host
- -Message ID	20180904101719.18049-3-vivek.gautam@codeaurora.org
+	$ grep . /sys/devices/system/cpu/vulnerabilities/*
+	$ lscpu
+	$ grep microcode /proc/cpuinfo | uniq
+	$ cat /proc/cmdline
 
-As a result, link_startup_notify->POST_CHANGE action does nothing.
-No need to read tx_lanes.
-If it is not going to be updated, it looks like it can be removed.
-
-Signed-off-by: ChanWoo Lee <cw9316.lee@samsung.com>
----
- drivers/scsi/ufs/ufs-qcom.c | 23 -----------------------
- 1 file changed, 23 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index 9d9770f1db4f..124557525b5c 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -54,19 +54,6 @@ static void ufs_qcom_dump_regs_wrapper(struct ufs_hba *hba, int offset, int len,
- 	ufshcd_dump_regs(hba, offset, len * 4, prefix);
- }
- 
--static int ufs_qcom_get_connected_tx_lanes(struct ufs_hba *hba, u32 *tx_lanes)
--{
--	int err = 0;
--
--	err = ufshcd_dme_get(hba,
--			UIC_ARG_MIB(PA_CONNECTEDTXDATALANES), tx_lanes);
--	if (err)
--		dev_err(hba->dev, "%s: couldn't read PA_CONNECTEDTXDATALANES %d\n",
--				__func__, err);
--
--	return err;
--}
--
- static int ufs_qcom_host_clk_get(struct device *dev,
- 		const char *name, struct clk **clk_out, bool optional)
- {
-@@ -190,13 +177,6 @@ static int ufs_qcom_init_lane_clks(struct ufs_qcom_host *host)
- 	return err;
- }
- 
--static int ufs_qcom_link_startup_post_change(struct ufs_hba *hba)
--{
--	u32 tx_lanes;
--
--	return ufs_qcom_get_connected_tx_lanes(hba, &tx_lanes);
--}
--
- static int ufs_qcom_check_hibern8(struct ufs_hba *hba)
- {
- 	int err;
-@@ -566,9 +546,6 @@ static int ufs_qcom_link_startup_notify(struct ufs_hba *hba,
- 		if (ufshcd_get_local_unipro_ver(hba) != UFS_UNIPRO_VER_1_41)
- 			err = ufshcd_disable_host_tx_lcc(hba);
- 
--		break;
--	case POST_CHANGE:
--		ufs_qcom_link_startup_post_change(hba);
- 		break;
- 	default:
- 		break;
--- 
-2.29.0
-
+Thanks,
+Pawan
