@@ -2,117 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2345D402D5C
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B93402D5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 19:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345457AbhIGRBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 13:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50280 "EHLO
+        id S1345443AbhIGRCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 13:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345465AbhIGRBo (ORCPT
+        with ESMTP id S1345462AbhIGRCP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 13:01:44 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23368C061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 10:00:38 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id w19-20020a17090aaf9300b00191e6d10a19so2561337pjq.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:00:38 -0700 (PDT)
+        Tue, 7 Sep 2021 13:02:15 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 077BDC061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 10:01:09 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id y17so8628233pfl.13
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 10:01:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=A0sxVmfddG/iMYR9MPhr5LGq+Hc/rulYoKrv0lmk57k=;
-        b=imvK2NfqcweTnq3DfQ3kxb1hyyCHKaJdKjFFwmOFRNGcCgTtZXib10r3SXVdX1Z5Zt
-         Kt14UJeK58D6y9CsD5v7TZqu2/sd20G9+0vs2OYRr8FGpQQ1FWzWh1ikUF/TG8DDkyp0
-         F0YDBFXr2ZX4jkAZRc3ZlmB3vjDSLMZ+u8QirCOPIIHgiDF+hzptraPt4Akrd159DF7P
-         +b60+gZLISbc5rHbH9LOExA+6YeVK+nFwZOyUw37yjrfvIUq8ljRgh16mCAua3Upkbyd
-         EoMyC4xOdUhiEVTkEOKy8zk5EZ0cDxt4dZet2AYVdDEZTxF/MbZDftoJ8niCrKZDCf9I
-         yRzg==
+        bh=eTWAB5IRZ6u+fFBbo38jlDZw3s3Kz/HwTHFwTqUgCyM=;
+        b=HxffgRT4HJI82SYZun9lQga2rWb3tMZra8BfyVs7+MlqsPqxBLj0q9eYIbh5TRPbJX
+         C7K6VLiyrAtOdxB9J8pRTnDq2iXlVoupXwWD7i8gjfh9wIWl2sTx0ZczCjAGXHVwS8us
+         0HxJni+G9UWSGX8VNoeqKtCgovvc9iUG14ao+q9JNS9e4Q9BjjiiJRa/CJXd6m8hm8TG
+         zQRg4AIYZPvZo+1kMU0r+vAQhElWeroPtmWUs5si8KNfnqCkQJ27ysZhSUW+3df1CzQk
+         vWh2CVS4ni69+H24KdpGsg0HEaa92FLkJ9807lTOFcxDNmgpGtIMLgOU9UucSRS0WPP5
+         7lsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=A0sxVmfddG/iMYR9MPhr5LGq+Hc/rulYoKrv0lmk57k=;
-        b=pQCr9JsWnEhXe00JBfzFHE6vgn5/e9BWpuuUpr5/aYM/yyQ+8abv98E8/3k5P0K3xS
-         HFPjCB82OQ9KthUBdnp+IyeKNKPwuDwOVqcBcZufzWplK9jFwnuBlsE5Jc+itINEmXjv
-         Lab7f45YfmWhYJiWdcGSH0U+eB3fqE2C8AYVcSB496DsUD4EQ4NwkEn9vZjuim2Jamx7
-         MgC3dqTGYpdmGtCNDA518pionhUKfvnxYbM6hq3Hzx0cHHVIC0MoXP0xxcLGnKLKM2S7
-         EQUNOaCKCeFETN/SoT0GYGM/7haa1pncJA1rFJjUEfXzlJoTZAir76fsdEEQg10qBHh1
-         /4bw==
-X-Gm-Message-State: AOAM533qgBmdwXtT2NoIB2UKgySXNBNV+RUyU9riQa4kBbdnnFTJrLA7
-        W7bSPLX78eeWJGlnqKMWpFc=
-X-Google-Smtp-Source: ABdhPJx0GYgkTG9aSzp+VK4h1B583iwbvg8d5XIm7VPSBrTdzAq48wrj6nO/RR1gnckHyHtksmcp2g==
-X-Received: by 2002:a17:90a:55cb:: with SMTP id o11mr5682682pjm.244.1631034037561;
-        Tue, 07 Sep 2021 10:00:37 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:998a:2486:f524:8502])
-        by smtp.gmail.com with ESMTPSA id i8sm11545909pfo.117.2021.09.07.10.00.36
+        bh=eTWAB5IRZ6u+fFBbo38jlDZw3s3Kz/HwTHFwTqUgCyM=;
+        b=IsJA/LHo/KTLsfokwXiHlDFSpY9S2Ihjy8s6Zn/4WWPvHt5J1bvqxmnpmvWU45m2tN
+         MigBAAvrol44iSItFKiJ7OxSQ33tWsernfEUfXXQ6lvRCvu2CSeYWWoNDsGn3uJVllKl
+         /xoga6Ta6fbkj05YlL0qqtegDXDE9Z1qkDh3a5eCNyi26PFCaxo0/qOaiGNZY2Z0R7ZH
+         M5BJ23jon27vrTNoSYBfBt9BTlLsLpHiC0kFjX9uGYN3yAvrHSh1pd/eNNUiTLKXvi3/
+         qg7hszdTnCcu28hKk8KXzQcvD+J05cQ/hqebH6v6KL5KTMag+9mSH1t4Q6PSOjiB0vNm
+         pqVA==
+X-Gm-Message-State: AOAM533ePHmQqjO2eUlFcqrlQTgg1O3DZxwqIUgBU/IvU6cB5yvE65My
+        Vt2YwR0b6fvGBLiw/O757JY=
+X-Google-Smtp-Source: ABdhPJzmjtRpbR3Yzd5ozFN07mquPcMva0l+ci5rcbXSo8eBpnwkMjX0CZUF5DyXlTh4nS4MPAp4Ew==
+X-Received: by 2002:a05:6a00:10ca:b0:3fe:3a9b:2100 with SMTP id d10-20020a056a0010ca00b003fe3a9b2100mr21607959pfu.59.1631034068275;
+        Tue, 07 Sep 2021 10:01:08 -0700 (PDT)
+Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
+        by smtp.gmail.com with ESMTPSA id t10sm13401083pge.10.2021.09.07.10.01.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Sep 2021 10:00:37 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Tue, 7 Sep 2021 10:00:35 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Jaewon Kim <jaewon31.kim@samsung.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        YongTaek Lee <ytk.lee@samsung.com>,
-        "jaewon31.kim@gmail.com" <jaewon31.kim@gmail.com>
-Subject: Re: (2) [PATCH] zram_drv: allow reclaim on bio_alloc
-Message-ID: <YTeas6sPrvQKmUHG@google.com>
-References: <YTXTe3U8RrvSAynl@infradead.org>
- <20210906052926.6007-1-jaewon31.kim@samsung.com>
- <CGME20210906052847epcas1p1f53f1ad04ad785d53f64eef150969c34@epcms1p6>
- <20210906091448epcms1p6bcc1f11b0da18e215219e6868ed07914@epcms1p6>
+        Tue, 07 Sep 2021 10:01:07 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 7 Sep 2021 07:01:06 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Zhang Qiao <zhangqiao22@huawei.com>
+Cc:     peterz@infradead.org, juri.lelli@redhat.com,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        vincent.guittot@linaro.org
+Subject: Re: [PATCH] kernel/sched: Fix sched_fork() access an invalid
+ sched_task_group
+Message-ID: <YTea0kK9yL5+GoKt@slm.duckdns.org>
+References: <20210826112635.7404-1-zhangqiao22@huawei.com>
+ <YSztujInfNNXkG5/@hirez.programming.kicks-ass.net>
+ <YS0WF0sxr0ysb6Za@mtj.duckdns.org>
+ <1f0cd867-9c6d-4e22-cadd-06af9f852f7a@huawei.com>
+ <YS60T2bfLpxb6SUY@slm.duckdns.org>
+ <128d52ab-b4ee-65f8-e0a3-2796ef43a98b@huawei.com>
+ <YS+uEmQRmQqAbkmG@slm.duckdns.org>
+ <3df62791-d123-db9b-ec9c-092c47a941cc@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210906091448epcms1p6bcc1f11b0da18e215219e6868ed07914@epcms1p6>
+In-Reply-To: <3df62791-d123-db9b-ec9c-092c47a941cc@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jaewon,
+Hello,
 
-On Mon, Sep 06, 2021 at 06:14:48PM +0900, Jaewon Kim wrote:
-> > 
-> > 
-> >--------- Original Message ---------
-> >Sender : Christoph Hellwig <hch@infradead.org>
-> >Date : 2021-09-06 17:39 (GMT+9)
-> >Title : Re: [PATCH] zram_drv: allow reclaim on bio_alloc
-> > 
-> >On Mon, Sep 06, 2021 at 02:29:26PM +0900, Jaewon Kim wrote:
-> >> The read_from_bdev_async is not called on atomic context. So GFP_NOIO is
-> >> available rather than GFP_ATOMIC. If there were reclaimable pages with
-> >> GFP_NOIO, we can avoid allocation failure and page fault failure.
-> >> 
-> >> Reported-by: Yong-Taek Lee <ytk.lee@samsung.com>
-> >> Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
+On Thu, Sep 02, 2021 at 03:42:15PM +0800, Zhang Qiao wrote:
+> I checked the code again.
+> I don't quite understand what you said, if the child be moved between
+> cgroup_post_fork() and sched_post_sched(), what problems might it cause?
 
-Looks reasonable to me.
-Feel free to add after dealing with Christoph's comment.
+cgroup_post_fork() is where the child's creation is committed from cgroup's
+POV, so it'd be migrating cgroups before the initial creation is finished.
+From glancing, looks like it'll break css_set task counts to begin with.
+This violates the basic assumptions and can cause critical failures in
+subtle ways. The would replace one subtle race with a possibly worse one.
 
-Acked-by: Minchan Kim <minchan@kernel.org>
+Thanks.
 
-Thank you.
-
-> >> ---
-> >>  drivers/block/zram/zram_drv.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >> 
-> >> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-> >> index fcaf2750f68f..53be528a39a2 100644
-> >> --- a/drivers/block/zram/zram_drv.c
-> >> +++ b/drivers/block/zram/zram_drv.c
-> >> @@ -587,7 +587,7 @@ static int read_from_bdev_async(struct zram *zram, struct bio_vec *bvec,
-> >>  {
-> >>          struct bio *bio;
-> >>  
-> >> -        bio = bio_alloc(GFP_ATOMIC, 1);
-> >> +        bio = bio_alloc(GFP_NOIO|__GFP_HIGHMEM, 1);
-> > 
-> >Passing __GFP_HIGHMEM to bio_alloc does not make any sense whatsoever.
-> > 
-> Correct, let me remove __GFP_HIGHMEM if I send v2 patch.
-> Thank you
+-- 
+tejun
