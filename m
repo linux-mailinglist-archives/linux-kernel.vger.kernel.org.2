@@ -2,132 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB7740224F
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54349402251
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 04:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232787AbhIGChG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 6 Sep 2021 22:37:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51984 "EHLO
+        id S232292AbhIGCoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 6 Sep 2021 22:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbhIGChF (ORCPT
+        with ESMTP id S229454AbhIGCon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 6 Sep 2021 22:37:05 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBB0C061575
-        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 19:35:59 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id l24so4749489uai.1
-        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 19:35:59 -0700 (PDT)
+        Mon, 6 Sep 2021 22:44:43 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB1FC061575
+        for <linux-kernel@vger.kernel.org>; Mon,  6 Sep 2021 19:43:37 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id ew6so4981905qvb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 06 Sep 2021 19:43:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bcQBVvZ60mrnxPLYeY7PhO5GlFGEHyH0BOWX/UIfFug=;
-        b=acdPWXKUEnxjE81lb8oAb8zJjypbygoxbca9ok7yBFqGHsCYtEqcC+vYw+UdszyNWS
-         hE3yl+ty8GqLZujWrm4nGPtqIR7LzcaZjr3oT0nPnU8daAHe2Bq1JlsfuimX15l3NsnA
-         l7rc6ST9Si6m+NaI5iYqXdz6lFhZTzy1cBqxUI4qBuhcjRq1EwlGsPAH3HEG3uuVbBaF
-         rXPPq3J0gAE3fvxMLYgbdRgsWnIa7jMtXNrn1yNufTo3dLTWJoUaylDxKfjkXNRH2wuc
-         STj7hL8Ad1qZYRtkv/TjybAcXmM4LSnpx+EFs2l0Ki6FIHy+s5ROkzlLAYYaPTrb4mTa
-         1AmA==
+         :cc;
+        bh=q8EAvjumu/OJAeJcXbA7H2hzcYUuPTK9t0l5alooUiY=;
+        b=Pmo+uYbbkBqdBVNpqse5shcoez2d/H1Qcdv6h/Vy8RLiSqPrt8ejRjpujP6T4rMWVF
+         nEHi0dy/D8Lh6jma63/OfIqutDyThbpRrGfGBDeYn2EziRF76UZ0vJwEtdvXsFaIedOU
+         5/7HSqX1DusB+O1PybFEHlRET0OpfZqdnUjZRSXKbOaHTl71kmakb0Db4Xk3Ag/uotCK
+         EsieL1LsCU4XtvjH/axVR/XfGyr68lBQ+SyJR0Ibp3l+odmIUi4leYeW5V6R0+nTTRhm
+         tuP220jYFGk/ksKx0KA8KsvNZbO3lLUNu5bLE4wcIQ2HNA3NlXQhG4f1SRYueNRTagEh
+         IE3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bcQBVvZ60mrnxPLYeY7PhO5GlFGEHyH0BOWX/UIfFug=;
-        b=TE7q7xcn9K4QqeOQKcd7ryyK7U2QckM69DlpsMNqQgPioE7auN1NPjhPpaHPD7RZr0
-         utiQJ8cRtL7AHDNBlOs2pYwJLFgqZJKi4uTBs2z58BLMece1qPXt4OmUOGy591Ljezy+
-         3bOoSuYqXSkwWq4FCQprAr2fy+yj/+ug0XzyFo8njgTHyZuihz995fBA3Fw06QsMWFF8
-         6MTOJIrKBMz66tC+5TIWUFz9b7Ym2HQuFX7GY08YMmAVD/G28Rd+pCGQMLfYYEdT9Idt
-         KFMtgPKDN45MOTZBPSH/s/9HXzboi5i+ODVOL7ueZAkxCNWF/KIhWNtlI9zLbyGYeqL5
-         wBUA==
-X-Gm-Message-State: AOAM533+HhMi08hZ2DVwm9n9DkJvSZYDfr2KorGYSvohczeP804DKhSI
-        IiutOUOco2N8kCcnq95sdeiyJJT80nfmvXoJWYZVtzNCX0rFnA==
-X-Google-Smtp-Source: ABdhPJz1ALwLd8twnOHkpg2mhRyxVO8v+0kwyNWdMoUU5uddHSDKZBZWkfqabq9Gn4VQCGy9ESd4F95Rzdhjp1T49EQ=
-X-Received: by 2002:a9f:2429:: with SMTP id 38mr7556967uaq.67.1630982159026;
- Mon, 06 Sep 2021 19:35:59 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=q8EAvjumu/OJAeJcXbA7H2hzcYUuPTK9t0l5alooUiY=;
+        b=JscD0tL2NIu9t6UI81DjvV5bZDj6BXEopdfZrAJcOvOvd1Cbn+ZrgJ5Ow/IJh/H2Oe
+         zoGWFbAiKVlcILk47KilghxcvnqzUiaIlWpQ0woQmrBElfWJ4hFB/RXD8Wwj/2mdiXSW
+         3GPUeUYVZb9rsHUcCV/0Xg7+5/pgfzkQASdglKCFFc5Src1EC5zZKfmB9z+8MvCsamWT
+         E5mvlMP6pYn06+eJ/XwaO+ZEvTgRVrKmfsRf7tUENgwOgolwe8WHt3cXWXtYvI+5wuI2
+         QmDSTXIG3hurRZWEYhg7TvCzhGiNJTy/9I3qzag8N2ZzHjn3VthmuTQ0HFT41KZU13Kb
+         /Sww==
+X-Gm-Message-State: AOAM530O1gyrq8Jr8+ICxwMiULV9am11k5cAwZlAAWhCTEz4betRRGma
+        +yV81WCpaoPC4dbw3dKHS5wRyZ0fN8k0IIyBfs5bJrAbRyA=
+X-Google-Smtp-Source: ABdhPJyjPbrX3ue83Z7GFZ6Rrf6Te85hNnUz2Ud9JAzgWqPZ2jaz9QxhFZQk5FOxkPsinhqn+KuRgte7q2aYk1iO95g=
+X-Received: by 2002:a05:6214:11e5:: with SMTP id e5mr1131874qvu.55.1630982616853;
+ Mon, 06 Sep 2021 19:43:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAPm50aJyfxobKhTrS=dC3pQmM5EbwY2xunet3X5XgnnFUEMmBA@mail.gmail.com>
- <YTXfmRIwWREJgEU9@zn.tnic> <CAPm50aLBt=YkFLi==-9U88YzwoJsmMTfEtj2v3+vx7fSRdDMLA@mail.gmail.com>
- <f89e1eee-aea8-7c59-3af5-8859a43e121c@intel.com>
-In-Reply-To: <f89e1eee-aea8-7c59-3af5-8859a43e121c@intel.com>
-From:   Hao Peng <flyingpenghao@gmail.com>
-Date:   Tue, 7 Sep 2021 10:35:31 +0800
-Message-ID: <CAPm50aLiB+O85mgcKcOZwO6J-DXjwK=p+7npBH-qVdkL-77Huw@mail.gmail.com>
-Subject: Re: [PATCH] x86/tsx: clear RTM and HLE when MSR_IA32_TSX_CTRL is not supported
-To:     Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, tglx@linutronix.de,
-        mingo@redhat.com, x86@kernel.org, linux-kernel@vger.kernel.org,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+References: <1630665006-31437-1-git-send-email-shengjiu.wang@nxp.com> <20210906114701.GC4309@sirena.org.uk>
+In-Reply-To: <20210906114701.GC4309@sirena.org.uk>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Tue, 7 Sep 2021 10:43:26 +0800
+Message-ID: <CAA+D8APjyq74FECmH6ZzyVKHOz6MEV0bt+D4-Xkfc-6C5n9hZg@mail.gmail.com>
+Subject: Re: [PATCH for-5.15 0/5] ASoC: fsl: register platform component
+ before registering cpu dai
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, alsa-devel@alsa-project.org,
+        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 10:08 AM Xiaoyao Li <xiaoyao.li@intel.com> wrote:
+Hi Mark
+
+On Mon, Sep 6, 2021 at 7:48 PM Mark Brown <broonie@kernel.org> wrote:
 >
-> On 9/7/2021 9:47 AM, Hao Peng wrote:
-> > On Mon, Sep 6, 2021 at 5:30 PM Borislav Petkov <bp@alien8.de> wrote:
-> >>
-> >> On Mon, Sep 06, 2021 at 10:46:05AM +0800, Hao Peng wrote:
-> >>> If hypervisor does not support MSR_IA32_TSX_CTRL, but guest supports
-> >>> RTM and HLE features, it will affect TAA mitigation.
-> >>>
-> >>> Signed-off-by: Peng Hao <flyingpeng@tencent.com>
-> >>> ---
-> >>>   arch/x86/kernel/cpu/tsx.c | 7 +++++++
-> >>>   1 file changed, 7 insertions(+)
-> >>>
-> >>> diff --git a/arch/x86/kernel/cpu/tsx.c b/arch/x86/kernel/cpu/tsx.c
-> >>> index 9c7a5f049292..5e852c14fef2 100644
-> >>> --- a/arch/x86/kernel/cpu/tsx.c
-> >>> +++ b/arch/x86/kernel/cpu/tsx.c
-> >>> @@ -122,6 +122,13 @@ void __init tsx_init(void)
-> >>>
-> >>>          if (!tsx_ctrl_is_supported()) {
-> >>>                  tsx_ctrl_state =3D TSX_CTRL_NOT_SUPPORTED;
-> >>> +
-> >>> +               /* If hypervisor does not support MSR_IA32_TSX_CTRL e=
-mulation,
-> >>> +                * but guest supports RTM and HLE features, it will a=
-ffect TAA
-> >>> +                * =EF=BC=88tsx_async_abort=EF=BC=89mitigation.
-> >>> +                */
-> >>> +               setup_clear_cpu_cap(X86_FEATURE_RTM);
-> >>> +               setup_clear_cpu_cap(X86_FEATURE_HLE);
+> On Fri, Sep 03, 2021 at 06:30:01PM +0800, Shengjiu Wang wrote:
 >
-> anyway, IMHO, we shouldn't do anything here for TAA. It should be in
-> taa_select_mitigation()
+> > There is no defer probe when adding platform component to
+> > snd_soc_pcm_runtime(rtd), the code is in snd_soc_add_pcm_runtime()
 >
-> >>>                  return;
-> >>>          }
-> >>
-> >> How does that even happen - the hypervisor does not support the MSR bu=
-t
-> >> "guest supports" TSX features?!
-> >>
-> >> I guess the guest is detecting it wrong.
-> >>
-> >> What hypervisor, what guest, how do I reproduce?
-> >>
-> > hypervisor is kvm, guest is linux too.
-> >> Please give full details.
-> >>
-> > The host I used is kernel-5.4, and guest is kernel-5.13.
-> > MSR_IA32_TSX_CTRL is exposed
-> > to guest and guest to support RTM and HLE features, no direct
-> > dependence. at the qemu I
-> > started guest with -cpu host-model.
-> > I have viewed the code of kernel-5.4, and MSR_IA32_TSX_CTRL is not
-> > exposed to guest.
+> ...
 >
-> Does guest see TAA_NO bit?
+> > So if the platform component is not ready at that time, then the
+> > sound card still registered successfully, but platform component
+> > is empty, the sound card can't be used.
 >
-Guest can't see taa_no, which requires updating qemu to solve. But I think
-there is a compatibility process here.
-> > Thanks.
-> >> --
-> >> Regards/Gruss,
-> >>      Boris.
-> >>
-> >> https://people.kernel.org/tglx/notes-about-netiquette
->
+> This sounds like a bug which should be fixed there?
+
+It is hard.
+
+In cpu dai driver we always register two components, one is for
+cpu dai, another is for platform, so for sound card platform and
+cpu share the same node.
+
+        /* Find PLATFORM from registered PLATFORMs */
+        for_each_link_platforms(dai_link, i, platform) {
+                for_each_component(component) {
+                        if (!snd_soc_is_matching_component(platform, component))
+                                continue;
+
+                        snd_soc_rtd_add_component(rtd, component);
+                }
+        }
+
+Above code in snd_soc_add_pcm_runtime() checks components
+for the platform,  because there are two components for the node,
+the first one is the component of cpu dai, which is added by
+registering dai, it is already added in the beginning,  so it is
+duplicated,  but the second one (which is for platform) is not ready,
+then issue happens.
+
+It is hard to add conditions here for defer probe.  And maybe
+some drivers need the same components for cpu and platform.
+Do you have any suggestions?
+
+(The easy way is to fix in each drivers:))
+
+Best Regards
+Wang Shengjiu
