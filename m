@@ -2,58 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B7E402B1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963FE402B36
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 16:57:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245346AbhIGOxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 10:53:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbhIGOxq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 10:53:46 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77180C061575;
-        Tue,  7 Sep 2021 07:52:40 -0700 (PDT)
-Date:   Tue, 7 Sep 2021 16:52:38 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1631026359;
-        bh=rBR2zR4qYK5bAv6dYBRzzsHRiX1WFHqQpOc1+JsquVI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VgWipVkapyOEVwkfXw+q6eXUANQ9cUfmpjzqHwb4QWB25rRkA3+bF/T+Z5SqBAKwD
-         /5C5jJSOgfjDbtrQ7H4Ia4YP8ZfXNzBzNxpvVyD8/K4b47ZXTxqzMvNA/4yCGMKY3t
-         Dh9Si6RIr6Jf78amtbnYa3FsB5kg80tnhGA8ABnE=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Daniel Thompson <daniel.thompson@linaro.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] backlight: propagate errors from get_brightness()
-Message-ID: <cb817cdc-449e-4587-ab79-36be4f49f8d4@t-8ch.de>
-References: <20210907124751.6404-1-linux@weissschuh.net>
- <20210907131005.vvaitvcllbte37zp@maple.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1344872AbhIGO6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 10:58:05 -0400
+Received: from gate.crashing.org ([63.228.1.57]:41622 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344752AbhIGO6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 10:58:04 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 187Eqm0Y009137;
+        Tue, 7 Sep 2021 09:52:48 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 187EqlAQ009134;
+        Tue, 7 Sep 2021 09:52:47 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Tue, 7 Sep 2021 09:52:47 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Jakub Jelinek <jakub@redhat.com>
+Cc:     Linus Torvalds <torvalds@linuxfoundation.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        llvm@lists.linux.dev, linux-toolchains@vger.kernel.org
+Subject: Re: [GIT PULL v2] Kbuild updates for v5.15-rc1
+Message-ID: <20210907145247.GH1583@gate.crashing.org>
+References: <CAHk-=wjc1rxah3xt8mKN=aCxQigjy3-hEf4xh_Y-r=MXAKVrag@mail.gmail.com> <20210906154642.GV1583@gate.crashing.org> <CAHk-=wj=WpWO_V86cZH99LgZGBbvdDb4wR26ce5van0hJqjzLA@mail.gmail.com> <20210906172701.GX1583@gate.crashing.org> <CAHk-=wh0MBVfA89WLWnCiSnJ2a=hSAoSxfG-jyf7JJeBDPK3ew@mail.gmail.com> <87lf49wodu.fsf@oldenburg.str.redhat.com> <20210906194808.GY1583@gate.crashing.org> <20210906201432.GZ920497@tucnak> <CAHk-=wi80NGPppGmBpc5zuGRAsv4_7qsDu7ehW515J2FJoezAQ@mail.gmail.com> <20210906215218.GA920497@tucnak>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210907131005.vvaitvcllbte37zp@maple.lan>
+In-Reply-To: <20210906215218.GA920497@tucnak>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-09-07T14:10+0100, Daniel Thompson wrote:
-> On Tue, Sep 07, 2021 at 02:47:51PM +0200, Thomas Weißschuh wrote:
-> > backlight.h documents "struct backlight_ops->get_brightness()" to return
-> > a negative errno on failure.
-> > So far these errors have not been handled in the backlight core.
-> > This leads to negative values being exposed through sysfs although only
-> > positive values are documented to be reported.
-> > 
-> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> 
-> Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+On Mon, Sep 06, 2021 at 11:52:18PM +0200, Jakub Jelinek wrote:
+> On Mon, Sep 06, 2021 at 02:08:58PM -0700, Linus Torvalds wrote:
+> There is a stddef.h include too and that's it
+> (I must say I don't see the reason for that include though).
 
-Thanks!
+Yeah me neither.  Maybe the header used NULL before?
 
-Thomas
+> Other compiler provided headers (not talking about C++ now) also have no
+> or very limited includes, including stddef.h, stdarg.h, stdatomic.h, etc.
+> The only exceptions are tgmath.h which isn't usable without libc
+> math.h/complex.h,
+
+<tgmath.h> is only for hosted environments.  That requires a C library
+for GCC (we do not implement this stuff ourselves).  The compiler and
+the C library have to work together to get this done, and the relation
+between GCC and Glibc has been a bit too tight for this, it is true.
+
+But a kernel build is not in a hosted environment.
+
+> in some cases stdint.h and limits.h which are in some
+> configurations provided both by the C library and the compiler and include
+> each other in that case (but e.g. stdint.h has an alternate version that
+> only uses compiler provided builtin macros) and openacc.h.
+
+On what targets is <stdint.h> still problematic?  And <limits.h>?
+
+
+Segher
