@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D435402FD2
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62906402FD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 22:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346821AbhIGUjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 16:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
+        id S1346376AbhIGUjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 16:39:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346721AbhIGUjM (ORCPT
+        with ESMTP id S244893AbhIGUjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 16:39:12 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED17EC061575
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:38:04 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id k4so264704lfj.7
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:38:04 -0700 (PDT)
+        Tue, 7 Sep 2021 16:39:42 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E489DC06175F
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 13:38:33 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id g14so125230pfm.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:38:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mb0TuFOIR8PlovfW8+umjV2TU0jRDvx59KT7lZQ01W4=;
-        b=Fn3o+Nyl736I/j8KbStSCoygow4y4ag/Z9/G1wv/qED3nS4bwNU+MH0E2RY+jKFKSj
-         lolZKJjYN3TW++Wi8kSspi9hGh10n2bBXAPzi7tOP9lIX5D82DawS5j9wJyzxFdG37eX
-         XU4IHOyr8LVLl2O+mDEma7S+wboVf0sgS9vu0=
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jZlU/HxXkHz1W926ueyJvmqOEC+o2GIx9Kl1Vxt/VwM=;
+        b=TFnZY8VpjIjap5WXXQNL+cLO62KhC13oY0R3yKPQI5pgOxTKpuF8PFFN4hTfwWUxKQ
+         /mYROqvJPcCXaaMqFEXXWkQ88x4LqJvymD2+j+PBqoimr6WP6pAVIFee751KGm/qpg+r
+         nO5plZpQ2zlptiBiyfpBmul3FFX2P2GdxQTTM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mb0TuFOIR8PlovfW8+umjV2TU0jRDvx59KT7lZQ01W4=;
-        b=p4Sji9n9jJIwLzXWuEGp46h2q8c4oluQZhwu2Zua/1AlNZ9yMl0q3fX+Uyo12lOIGq
-         g2yitAqSpI8/7VplNLyIFhBXFYiNex9KPWu3MpOKqn8LHnSam+QC1FKSSrareCwORzTo
-         tmDVrP3yBaUnJWymDZSNcGuo4piNlqInZDQpnlxNz1R2pPSzULzhn9N0jaooF3pMZxuB
-         9yKlgE/67fS5wUrmgkeAoOKjBuMXRR1u/7mYjokV+5JB6vQPl9WZQt0DkJJv/tP3hoWK
-         iTMrX5DLuQx9lKXJy+VNd11n9QacLUkFuQOOU63HB6ZIcoiFji99/7a9nv+h6+yAcaVW
-         yICA==
-X-Gm-Message-State: AOAM530Zb09ebch6sCRrewwCrVs6mJHgAzPrQoykNXWiVWy33btWrUR4
-        Xuci9bgOJe6s6qYEd59mXKOVlQFLvMiQRBtBDCk=
-X-Google-Smtp-Source: ABdhPJzdrOCWLr/6ziVVSHcUgoeCErtODsOoBB4h+WoBZzlox8j/qwyC5q+FY8mIbhZYwlA6cyJLAA==
-X-Received: by 2002:a05:6512:3d28:: with SMTP id d40mr182513lfv.474.1631047082062;
-        Tue, 07 Sep 2021 13:38:02 -0700 (PDT)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id t11sm683lfc.54.2021.09.07.13.38.01
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jZlU/HxXkHz1W926ueyJvmqOEC+o2GIx9Kl1Vxt/VwM=;
+        b=QdCsxc16LG8UtCg5XSX/Otey11jrPsX6YOAjAYBmjbnXQG5SnNHuhR9IWc9h3/AYZP
+         3XBr+LPRiDaI3OHkyLGeR3gLSwPl0BGHps7pSKTX9D2wELwN4QgwhvuRirfcGbROq7uC
+         4XPqqdPzv27qztY6m8VUXeZD1p7CC6sIQrB/T+zNF0TrJwqKesm+RdTVftUeiBN4G5K0
+         NmOeHLLm4uRddFcvW2C5983o8H2M7P293VhKWZZf5J+4cqOREU6Dg0Ve2oK4nedajA3Y
+         bPWEx594OwsbPwV+qmEvxpqUU1eZh/aH0f5c7JJdO5ESgEcYRXv9p1rEWUmYp0okJAGw
+         +qag==
+X-Gm-Message-State: AOAM530gQSarNzIfU/3oJ2IAEpLcdKk7zoMAtntTIZYYPK8QrM7QiNr3
+        24ovMMuWrys/kERgl6JoKPvIhQ==
+X-Google-Smtp-Source: ABdhPJxVCGqybcGJlQE3JbGNAAUDV47+nxUlRdEc8LY+e6h3CknrbxYjBaMpYK64zu6Mmch0r1Ll8g==
+X-Received: by 2002:a63:be0e:: with SMTP id l14mr151331pgf.363.1631047113499;
+        Tue, 07 Sep 2021 13:38:33 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:c6b2:7ae:474d:36f6])
+        by smtp.gmail.com with UTF8SMTPSA id v4sm9324pff.11.2021.09.07.13.38.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 13:38:01 -0700 (PDT)
-Received: by mail-lj1-f174.google.com with SMTP id f2so637368ljn.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 13:38:01 -0700 (PDT)
-X-Received: by 2002:a2e:a7d0:: with SMTP id x16mr82863ljp.494.1631047081065;
- Tue, 07 Sep 2021 13:38:01 -0700 (PDT)
+        Tue, 07 Sep 2021 13:38:32 -0700 (PDT)
+Date:   Tue, 7 Sep 2021 13:38:31 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] drivers: thermal: tsens: fix wrong check for tzd in
+ irq handlers
+Message-ID: <YTfNx7WQ9QM9t3Z5@google.com>
+References: <20210905174708.4605-1-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-References: <20210907200722.067068005@linutronix.de> <20210907200848.528317169@linutronix.de>
-In-Reply-To: <20210907200848.528317169@linutronix.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 7 Sep 2021 13:37:45 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjBRQeSROGjfRDY-wRuFfa=NVo57xLeHD2Dv1v0Ra+RLg@mail.gmail.com>
-Message-ID: <CAHk-=wjBRQeSROGjfRDY-wRuFfa=NVo57xLeHD2Dv1v0Ra+RLg@mail.gmail.com>
-Subject: Re: [patch V2.1 05/20] x86/extable: Rework the exception table mechanics
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Song Liu <songliubraving@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Peter Ziljstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210905174708.4605-1-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 7, 2021 at 1:24 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Rework the exception fixup mechanics by storing a fixup type number instead
-> of the handler address and invoke the proper handler for each fixup
-> type. Also teach the extable sort to leave the type field alone.
+On Sun, Sep 05, 2021 at 07:47:07PM +0200, Ansuel Smith wrote:
+> Some device can have some thermal sensor disabled from the factory. The
+> current 2 irq handler functions check all the sensor by default and the
+> check if the sensor was actually registered is wrong. The tzd is
+> actually never set if the registration fail hence the IS_ERR check is
+> wrong.
 
-I see why you do this, but it does make the exception handlers less
-flexible. It used to be that you could just make up any exception
-handler without having to inform some centralized place about it.
+Indeed, tsens_register() doesn't assign ->tzd when the registration of
+the sensor fails.
 
-But I guess that's also a downside, and maybe we don't want the extra
-flexibility.
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 
-The bpf case was an example where somebody was able to add their own
-specialized handler, and didn't need to serialize with anybody else.
-
-So I don't hate this, I'm just ambivalent about it. On the one hand I
-like the more strict format, on the other hand it's kind of sad.
-
-The other reaction I have is that the handler type is now wasteful and
-pointless. I think you could make it be about which *section* the
-exception thing is in, and not need that extra ".long" argument to
-hold a couple of bits of data.
-
-So _ASM_EXTABLE_TYPE() could instead do something like this:
-
-  # define _ASM_EXTABLE_TYPE(from, to, type)                     \
-          .pushsection "__ex_table." #type ,"a" ;                         \
-          .balign 4 ;                                             \
-          .long (from) - . ;                                      \
-          .long (to) - . ;                                        \
-          .popsection
-
-and we'd not have any 'type' field in there at all, because the type
-would be determined by the section is is in.
-
-Hmm?
-
-                Linus
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
