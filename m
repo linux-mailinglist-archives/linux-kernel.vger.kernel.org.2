@@ -2,128 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AFD3402ED9
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9281402EDF
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 21:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346010AbhIGTPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 15:15:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52702 "EHLO
+        id S1346033AbhIGTRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 15:17:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345993AbhIGTP3 (ORCPT
+        with ESMTP id S1345371AbhIGTRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 15:15:29 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E9BCC06175F
-        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:14:23 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id l10so154167ilh.8
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 12:14:23 -0700 (PDT)
+        Tue, 7 Sep 2021 15:17:48 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA51C061575
+        for <linux-kernel@vger.kernel.org>; Tue,  7 Sep 2021 12:16:41 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id j12so222879ljg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 12:16:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wptDSYLyDM12oE9PwIaapQVmJMO09viAmQFPtSVPYek=;
-        b=g6tHrIqYCpyi3uj+Y8V0ZzItGWMeRuxbj7UZPUdqo9Ry/Sn6Ke28/Dg30vmx4JzCqo
-         P666Khn7t7fmoEngyabMLFpP8CPK0f0OV9XBYX8VYiMK7gPoOcmKMoEVfQg4SzTjJ3l8
-         Br8oh0YDph1cvQZS95VDMXVGHdGTntHbICFKQ=
+        bh=1fpdy3b2qMHUETeuDFTFbKg8FYwDRtrIQO5YjCA4iis=;
+        b=gvtqQqQ0P76l17nNx5gKAZmX9q0gXmkKiJplZ5GrV0Rp5D/GmeTFvutVYxXDmohdU0
+         Rg7GZWtGpo79LRFlloX9NBLbD7hga1UGVHT5sYVxcyx+e++dSBWbGFVZEFJrEiiMD80f
+         lT+vaaeWPC4g7dOg7Pm63HBqJdzPD3ESYM7uY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wptDSYLyDM12oE9PwIaapQVmJMO09viAmQFPtSVPYek=;
-        b=L1igwMW8x4VyKrX+gdB+kH24g76Lq+Zhk6pNLf5lttfOzgZKa+dm0t7NTP0dR5U9Dr
-         mrFER3JYQyF3HGbrmJp0sUC0eMfJAdYYLO2QC0NRC+ec9ALh5ncWH6qI7VWWLpAA1T0X
-         tfdvUibupX74Cz0BLFA6xVDjBHlPoS6urDtbQGCowGEzIKdDtuTTItv54vkHsZBFcNP8
-         4b2GRv+w5HtITO5FajaoZzBHsAgz2nILSJwVuJis0+/Nqz6H9Ge+PNCzJX58Sied2M8y
-         x5+jr8sKmWUtsw6a7bnZsaorjir9PUD6NtxT1fTnc1Eo7pbnRqt4bl+LzmXxKsQUqeZJ
-         iYnA==
-X-Gm-Message-State: AOAM532q72svfZJBCeAW7xeyF+cwGj3lQKGCEPJbDOWM3NxsNx+Q0yK7
-        1zbVZ7EjgZ6miw82yiGl/tzWPXljjbRxJw==
-X-Google-Smtp-Source: ABdhPJwK14s4/nhzB81p4Y14IMvhxI+ipQkzuuS4HFRsyI8DFwX8++lDLByJD3QzpIYl45gdlFJ8gg==
-X-Received: by 2002:a92:b747:: with SMTP id c7mr12793067ilm.306.1631042062544;
-        Tue, 07 Sep 2021 12:14:22 -0700 (PDT)
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com. [209.85.166.170])
-        by smtp.gmail.com with ESMTPSA id g16sm6569543ilr.40.2021.09.07.12.14.21
+        bh=1fpdy3b2qMHUETeuDFTFbKg8FYwDRtrIQO5YjCA4iis=;
+        b=o3A6TKkh0FTz8r/MUKxKKXx6oaKPxam82mjo2We8RDMNNjRLpWtIBnC6A6gihPJLz8
+         pKDLUIy/3uxt3PhOyUijXRQWDN+4FdpuabIlhJRRhCvVSfoWnwU6ljvXMakc8gtxTmmO
+         zkBMbW7YuwnkrVRXKfS5VXyKcExoKJd6P6l6hVB0EppwUowCdJF/agr1ANuJssMbSQkZ
+         7+mjuGehLFgKXwUO41R9QPN2Tl0G5elw7U+EiINblLIQLir8kZvIbMZ8bfCRxeGpIQ40
+         E6cDSTnQhNqSRHNsEOZY//tplw9ld7U5/zHHnDFA4mkhlgSSRzGRXzj20asO+mhI8S9V
+         Quuw==
+X-Gm-Message-State: AOAM532LFKzq7MmZ8DkeQURIOnBgFWZ4MOgiYqZRr/o56dl7JziP4WMQ
+        6G6ibN4FBN+ctkE8RVOPd8S/MfRcIbYgsmm6Zz4=
+X-Google-Smtp-Source: ABdhPJyNSeGHSy1Ni507W/x8kxKZ5D89a3nezXbH4vCAtBceA0HojbwdedR7fd8EasinUIo/JVUi1g==
+X-Received: by 2002:a2e:7603:: with SMTP id r3mr15607854ljc.98.1631042199452;
+        Tue, 07 Sep 2021 12:16:39 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id x8sm216200lfq.183.2021.09.07.12.16.38
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 Sep 2021 12:14:21 -0700 (PDT)
-Received: by mail-il1-f170.google.com with SMTP id j15so198153ila.1
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 12:14:21 -0700 (PDT)
-X-Received: by 2002:a92:6b0a:: with SMTP id g10mr3631557ilc.27.1631042060676;
- Tue, 07 Sep 2021 12:14:20 -0700 (PDT)
+        Tue, 07 Sep 2021 12:16:38 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id l10so72403lfg.4
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 12:16:38 -0700 (PDT)
+X-Received: by 2002:a05:6512:3da5:: with SMTP id k37mr14175340lfv.655.1631042198154;
+ Tue, 07 Sep 2021 12:16:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <1627581885-32165-1-git-send-email-sibis@codeaurora.org>
- <1627581885-32165-4-git-send-email-sibis@codeaurora.org> <YS5LDb4KDFx/dRnM@google.com>
- <YS5hDq+xblntYbh0@ripper> <fde7bac239f796b039b9be58b391fb77@codeaurora.org>
-In-Reply-To: <fde7bac239f796b039b9be58b391fb77@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 7 Sep 2021 12:14:08 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XHzwvudc4jABHVUC0OkKat-xdvo5yY2xRJ0VP5gds91w@mail.gmail.com>
-Message-ID: <CAD=FV=XHzwvudc4jABHVUC0OkKat-xdvo5yY2xRJ0VP5gds91w@mail.gmail.com>
-Subject: Re: [PATCH 3/4] arm64: dts: qcom: sc7280: Fixup the cpufreq node
-To:     Sibi Sankar <sibis@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Taniya Das <tdas@codeaurora.org>
+References: <20210907183843.33028-1-ndesaulniers@google.com>
+In-Reply-To: <20210907183843.33028-1-ndesaulniers@google.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 7 Sep 2021 12:16:22 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
+Message-ID: <CAHk-=whJOxDefgSA1_ojGbweRJGonWX9_nihA-=fbXFV1DhuxQ@mail.gmail.com>
+Subject: Re: [PATCH] Revert "Enable '-Werror' by default for all kernel builds"
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     llvm@lists.linux.dev,
+        LSM List <linux-security-module@vger.kernel.org>,
+        linux-toolchains@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vipin Sharma <vipinsh@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Sun, Sep 5, 2021 at 8:20 PM Sibi Sankar <sibis@codeaurora.org> wrote:
+On Tue, Sep 7, 2021 at 11:39 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
 >
-> On 2021-08-31 22:34, Bjorn Andersson wrote:
-> > On Tue 31 Aug 08:30 PDT 2021, Matthias Kaehlcke wrote:
-> >
-> >> On Thu, Jul 29, 2021 at 11:34:44PM +0530, Sibi Sankar wrote:
-> >> > Fixup the register regions used by the cpufreq node on SC7280 SoC to
-> >> > support per core L3 DCVS.
-> >> >
-> >> > Fixes: 7dbd121a2c58 ("arm64: dts: qcom: sc7280: Add cpufreq hw node")
-> >> > Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> >>
-> >> This patch landed in the Bjorn's tree, however the corresponding
-> >> driver
-> >> change ("cpufreq: qcom: Re-arrange register offsets to support per
-> >> core
-> >> L3 DCVS" /
-> >> https://patchwork.kernel.org/project/linux-arm-msm/patch/1627581885-32165-3-git-send-email-sibis@codeaurora.org/)
-> >> did not land in any maintainer tree yet AFAIK. IIUC the DT change
-> >> alone
-> >> breaks cpufreq since the changed register regions require the changed
-> >> offset in the cpufreq driver.
-> >>
-> >
-> > Thanks for the note Matthias, it must have slipped by as I scraped the
-> > inbox for things that looked ready.
-> >
-> > I'm actually not in favor of splitting these memory blocks in DT to
-> > facilitate the Linux implementation of splitting that in multiple
-> > drivers...
-> >
-> > But I've not been following up on that discussion.
-> >
-> > Regards,
-> > Bjorn
-> >
-> >> Sibi, please confirm or clarify that my concern is unwarranted.
->
-> Let's drop the patch asap as it breaks
-> SC7280 cpufreq on lnext without the driver
-> changes.
+> The above commit seems as though it was merged in response to
+> https://lore.kernel.org/linux-hardening/CAHk-=wj4EG=kCOaqyPEq5VXa97kyUHsBpBn3DWwE91qcnDytOQ@mail.gmail.com/.
 
-It's already landed so we need a revert:
+No. It was merged in response of _years_ of pain, with the last one
+just being the final drop.
 
-https://lore.kernel.org/r/20210907121220.1.I08460f490473b70de0d768db45f030a4d5c17828@changeid/
+I'm not going to revert that change. I probably will have to limit it
+(by making that WERROR option depend on certain expectations), but
+basically any maintainer who has code that causes warnings should
+expect that they will have to fix those warnings.
 
--Doug
+If it's clang that generates bogus warnings, then we'll have to start
+disable clang warnings. The clang people tend to be proud of thir
+fewer false positives, but so far looking at things, I am not
+convinced.
+
+And I'm most definitely not convinced when the "let's finally enable
+-Werror after years of talking about it", people end up going "but but
+but I have thousands of warnings".
+
+That's the POINT of that commit. That "but but but I have thousands of
+warnings" is not acceptable.
+
+I spent hours yesterday getting rid of some warnings. It shouldn't be
+on me fixing peoples code. It shouldn't be on me noticing that people
+send me crap that warns.
+
+And it really shouldn't be "Linus cares about warnings, so
+configurations that Linus doesn't test can continue for years to have
+them".
+
+My "no warnings" policy isn't exactly new, and people shouldn't be
+shocked when I then say "time to clean up *YOUR* house too".
+
+            Linus
