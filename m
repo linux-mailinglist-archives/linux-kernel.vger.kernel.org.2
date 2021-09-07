@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD21402B80
-	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550C3402B81
+	for <lists+linux-kernel@lfdr.de>; Tue,  7 Sep 2021 17:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345044AbhIGPQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 7 Sep 2021 11:16:22 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:37666 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345032AbhIGPQV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 7 Sep 2021 11:16:21 -0400
-Received: by mail-io1-f72.google.com with SMTP id h3-20020a056602008300b005b7c0e23e11so7508573iob.4
-        for <linux-kernel@vger.kernel.org>; Tue, 07 Sep 2021 08:15:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=dAC0ehQqSL3LXf3Hlk97dfq/+ThOu7yS5FU81XRTVbQ=;
-        b=iGxqXE4ocqXh7fBFFw7Kl+w9AGQRq3pRTS05EI5FqLm9lriwWVEOTasRyjyNz6/yHB
-         G5QM8Of0ZHPWTYQLMKkPvLI0cVsVBqiPopECcTU0JGRKG16MnRQ7rYe9gGARastl4YuO
-         Vvtqin1SIOkOPLwp+d5sUwqfcV3WxjaeKOXEoe5h6E4lMYc4JievOZRVIZoyTTdYEC0K
-         pFNAHZJVgG6NWAShL79jm+Q3B9Qrx+DihAZujgEfqtmLy9lj9bK+qLrFbIyFlzZB7V7m
-         flziNceN1BsE5DTjTZcyO/VLUVw9GXsEWgnMGFwCHPAJY+c5gPRUeAjg8duauot2UCRB
-         fbJg==
-X-Gm-Message-State: AOAM5308t7mvWlqSU4MaWCg3pBNxaFlmltaN7+7hzs0Peq9upSTMZkMk
-        /xyVLKilbIrnvLE8SUvi0oTKroFfPiEMEh7GNTrGiqcJRlJP
-X-Google-Smtp-Source: ABdhPJyWPBb/lQbdU6ZkggxWdWQn90GY2+gBfEII6wnYfsTT/HzIlljaPaCIDLO9zz6oR4MI6S3sTKbUfamOpUmpk5nZgDk/g4RY
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:38d:: with SMTP id y13mr15549698jap.139.1631027714506;
- Tue, 07 Sep 2021 08:15:14 -0700 (PDT)
-Date:   Tue, 07 Sep 2021 08:15:14 -0700
-In-Reply-To: <CAJfpegvOa5cT5eRTsaMtAJ0YfZ1ob_kuW-NNK-emu3ncp2pK7A@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008ac5d405cb693b63@google.com>
-Subject: Re: [syzbot] WARNING in ovl_create_real
-From:   syzbot <syzbot+75eab84fd0af9e8bf66b@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        id S1345062AbhIGPQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 7 Sep 2021 11:16:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1344997AbhIGPQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 7 Sep 2021 11:16:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34E696101C;
+        Tue,  7 Sep 2021 15:15:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631027731;
+        bh=8QnHFxSyXpstvtUXbpEY0AICopW7vmj1G2qcEkEYBkE=;
+        h=From:To:Subject:Date:From;
+        b=YXykw6pPC2bLkNhey01eknLbDFOtnbRbUTRLhBPZEboMp2oR2EQxMjgKGwRbKKF4i
+         10n+rKD3Ldxg/ckMfe5++2Q/TExQoN9SIW9TjAZhkuok284OEx6/5V4yZQjKt8/Wn3
+         BlkBxKOgNuT9Qvo00Fe/gFMv6YDYMrRpUbo3yg7Tzl3dR0x/ud0hY3YUGvI8m87juW
+         YrmlT44TgrD0nBIiCrIruLdf4DOK5/L+kEforWWDZoXncbBjjs2QWRfqwIhqhu1cqs
+         GrlYW4T/pviTiayFL5BjNmOgsNqx3Kxqnr3k2SNwdIrBRse2B09+srBOn+TKVPzwqx
+         kDlQNdgY22uOg==
+From:   zanussi@kernel.org
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <wagi@monom.org>,
+        Clark Williams <williams@redhat.com>,
+        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
+        Tom Zanussi <zanussi@kernel.org>
+Subject: [PATCH RT 0/3] Linux v5.4.143-rt64-rc2
+Date:   Tue,  7 Sep 2021 10:15:26 -0500
+Message-Id: <cover.1631027711.git.zanussi@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Tom Zanussi <zanussi@kernel.org>
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in ovl_create_real
+Dear RT Folks,
 
-overlayfs: negative dentry after mkdir (cgroup2)
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 10918 at fs/overlayfs/dir.c:218 ovl_create_real.cold+0x80/0x1e3 fs/overlayfs/dir.c:216
-Modules linked in:
-CPU: 0 PID: 10918 Comm: syz-executor.0 Not tainted 5.14.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:ovl_create_real.cold+0x80/0x1e3 fs/overlayfs/dir.c:218
-Code: 37 00 48 c1 e0 2a 48 89 da 48 c1 ea 03 80 3c 02 00 74 08 48 89 df e8 81 90 c3 f8 48 8b 33 48 c7 c7 20 0f c4 89 e8 90 73 f9 ff <0f> 0b 4c 89 e5 49 c7 c4 fb ff ff ff e9 5f c7 bb f9 e8 fc 4f 7c f8
-RSP: 0018:ffffc9000cd47958 EFLAGS: 00010282
-RAX: 0000000000000030 RBX: ffffffff8b9bea20 RCX: 0000000000000000
-RDX: ffff8880131c3900 RSI: ffffffff815dcd38 RDI: fffff520019a8f1d
-RBP: ffff88806ee38d38 R08: 0000000000000030 R09: 0000000000000000
-R10: ffffffff815d6ade R11: 0000000000000000 R12: ffff88806ee38d38
-R13: 0000000000004000 R14: ffff88806dd2ed90 R15: ffff88806dd2ee70
-FS:  00007fb3f7195700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055e370d81a70 CR3: 000000002184a000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ovl_workdir_create+0x3a9/0x5b0 fs/overlayfs/super.c:790
- ovl_make_workdir fs/overlayfs/super.c:1364 [inline]
- ovl_get_workdir fs/overlayfs/super.c:1511 [inline]
- ovl_fill_super+0x199a/0x5fb0 fs/overlayfs/super.c:2067
- mount_nodev+0x60/0x110 fs/super.c:1414
- legacy_get_tree+0x105/0x220 fs/fs_context.c:610
- vfs_get_tree+0x89/0x2f0 fs/super.c:1498
- do_new_mount fs/namespace.c:2988 [inline]
- path_mount+0x1320/0x1fa0 fs/namespace.c:3318
- do_mount fs/namespace.c:3331 [inline]
- __do_sys_mount fs/namespace.c:3539 [inline]
- __se_sys_mount fs/namespace.c:3516 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3516
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665e9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fb3f7195188 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 000000000056bf80 RCX: 00000000004665e9
-RDX: 00000000200000c0 RSI: 0000000020000000 RDI: 000000000040000d
-RBP: 00000000004bfcc4 R08: 0000000020000100 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf80
-R13: 00007ffd2744f94f R14: 00007fb3f7195300 R15: 0000000000022000
+This is the RT stable review cycle of patch 5.4.143-rt64-rc2.
+
+Please scream at me if I messed something up. Please test the patches
+too.
+
+The -rc release will be uploaded to kernel.org and will be deleted
+when the final release is out. This is just a review release (or
+release candidate).
+
+The pre-releases will not be pushed to the git repository, only the
+final release is.
+
+If all goes well, this patch will be converted to the next main
+release on 2021-09-10.
+
+To build 5.4.143-rt64-rc2 directly, the following patches should be applied:
+
+  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.4.tar.xz
+
+  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.4.143.xz
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/5.4/patch-5.4.143-rt64-rc2.patch.xz
+
+You can also build from 5.4.143-rt63 by applying the incremental patch:
+
+  https://www.kernel.org/pub/linux/kernel/projects/rt/5.4/incr/patch-5.4.143-rt63-rt64-rc2.patch.xz
 
 
-Tested on:
+Enjoy,
 
-commit:         4b93c544 thunderbolt: test: split up test cases in tb_..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13249aed300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6f8c28906b7bb02d
-dashboard link: https://syzkaller.appspot.com/bug?extid=75eab84fd0af9e8bf66b
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.1
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=10fc0943300000
+-- Tom
+
+
+Andrew Halaney (1):
+  locking/rwsem-rt: Remove might_sleep() in __up_read()
+
+Gregor Beck (1):
+  fscache: fix initialisation of cookie hash table raw spinlocks
+
+Tom Zanussi (1):
+  Linux 5.4.143-rt64-rc2
+
+ fs/fscache/cookie.c       | 2 +-
+ kernel/locking/rwsem-rt.c | 1 -
+ localversion-rt           | 2 +-
+ 3 files changed, 2 insertions(+), 3 deletions(-)
+
+-- 
+2.17.1
 
